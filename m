@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vk0-x22d.google.com ([2607:f8b0:400c:c05::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZYrOQ-0000jQ-Do
- for ath10k@lists.infradead.org; Mon, 07 Sep 2015 08:03:11 +0000
-Received: by vkhf67 with SMTP id f67so39333493vkh.1
- for <ath10k@lists.infradead.org>; Mon, 07 Sep 2015 01:02:47 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <F52F175DFC537F48A43937B50B44BCA28205DA67@EXCHANGE.mediaspot.local>
+Received: from mail.mediaspot.net ([185.37.180.5])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZYrR0-00025A-Ur
+ for ath10k@lists.infradead.org; Mon, 07 Sep 2015 08:05:51 +0000
+From: Alessandro Bolletta <alessandro@mediaspot.net>
+Subject: R: IBSS-RSN support on ath10k only links
+Date: Mon, 7 Sep 2015 08:03:25 +0000
+Message-ID: <F52F175DFC537F48A43937B50B44BCA28205DAB5@EXCHANGE.mediaspot.local>
 References: <F52F175DFC537F48A43937B50B44BCA28205CDDC@EXCHANGE.mediaspot.local>
  <CALhHN=psNe5hh3GuA=z0AC6-Gy-fRTkxUe3+Pop3OMyBwPpshQ@mail.gmail.com>
  <F52F175DFC537F48A43937B50B44BCA28205DA67@EXCHANGE.mediaspot.local>
-Date: Mon, 7 Sep 2015 10:02:47 +0200
-Message-ID: <CALhHN=rXxHKr-8vdctszWY=yitmpDbKZDpX=omqP1OAHuQoAxw@mail.gmail.com>
-Subject: Re: IBSS-RSN support on ath10k only links
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+ <CALhHN=rXxHKr-8vdctszWY=yitmpDbKZDpX=omqP1OAHuQoAxw@mail.gmail.com>
+In-Reply-To: <CALhHN=rXxHKr-8vdctszWY=yitmpDbKZDpX=omqP1OAHuQoAxw@mail.gmail.com>
+Content-Language: it-IT
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +22,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alessandro Bolletta <alessandro@mediaspot.net>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 7 September 2015 at 09:48, Alessandro Bolletta
-<alessandro@mediaspot.net> wrote:
-> Ok, great!
-> Can you also tell me if is it everything working correctly with IBSS-RSN, such as VHT?
-
-VHT was well tested for IBSS-open, so I suspect should woks fine also for RSN.
-But we did only basic tests.
-
-BR
-Janusz
-
-> Alessandro
->
-> -----Messaggio originale-----
-> Da: Janusz Dziedzic [mailto:janusz.dziedzic@tieto.com]
-> Inviato: sabato 5 settembre 2015 22.00
-> A: Alessandro Bolletta <alessandro@mediaspot.net>
-> Cc: ath10k@lists.infradead.org
-> Oggetto: Re: IBSS-RSN support on ath10k only links
->
-> On 5 September 2015 at 17:08, Alessandro Bolletta <alessandro@mediaspot.net> wrote:
->> Hi,
->> What efforts could be needed in order to make IBSS-RSN working on ath10k <--> ath10k links? Is there anybody working actively on it?
->>
-> We did basic testing/implementation using ath10k/ath9k, wpa_supplicant and main (636) firmware and qca6174.
-> Latest code already have WIPHY_FLAG_IBSS_RSN set, so I expect this should work. Some FW issues could be still possible :)
->
-> BR
-> Janusz
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+RG8geW91IGtub3cgaWYgaXMgaXQgbmVlZGVkIEJlbiBHcmVlYXIncyBmaXJtd2FyZSBpbiBvcmRl
+ciB0byBydW4gSUJTUy1SU04gb3IgaXMgaXQgYWxzbyBzdXBwb3J0ZWQgb24gb2ZmaWNpYWwgZmly
+bXdhcmU/DQoNCkFsZXNzYW5kcm8NCg0KLS0tLS1NZXNzYWdnaW8gb3JpZ2luYWxlLS0tLS0NCkRh
+OiBKYW51c3ogRHppZWR6aWMgW21haWx0bzpqYW51c3ouZHppZWR6aWNAdGlldG8uY29tXSANCklu
+dmlhdG86IGx1bmVkw6wgNyBzZXR0ZW1icmUgMjAxNSAxMC4wMw0KQTogQWxlc3NhbmRybyBCb2xs
+ZXR0YSA8YWxlc3NhbmRyb0BtZWRpYXNwb3QubmV0Pg0KQ2M6IGF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnDQpPZ2dldHRvOiBSZTogSUJTUy1SU04gc3VwcG9ydCBvbiBhdGgxMGsgb25seSBsaW5r
+cw0KDQpPbiA3IFNlcHRlbWJlciAyMDE1IGF0IDA5OjQ4LCBBbGVzc2FuZHJvIEJvbGxldHRhIDxh
+bGVzc2FuZHJvQG1lZGlhc3BvdC5uZXQ+IHdyb3RlOg0KPiBPaywgZ3JlYXQhDQo+IENhbiB5b3Ug
+YWxzbyB0ZWxsIG1lIGlmIGlzIGl0IGV2ZXJ5dGhpbmcgd29ya2luZyBjb3JyZWN0bHkgd2l0aCBJ
+QlNTLVJTTiwgc3VjaCBhcyBWSFQ/DQoNClZIVCB3YXMgd2VsbCB0ZXN0ZWQgZm9yIElCU1Mtb3Bl
+biwgc28gSSBzdXNwZWN0IHNob3VsZCB3b2tzIGZpbmUgYWxzbyBmb3IgUlNOLg0KQnV0IHdlIGRp
+ZCBvbmx5IGJhc2ljIHRlc3RzLg0KDQpCUg0KSmFudXN6DQoNCj4gQWxlc3NhbmRybw0KPg0KPiAt
+LS0tLU1lc3NhZ2dpbyBvcmlnaW5hbGUtLS0tLQ0KPiBEYTogSmFudXN6IER6aWVkemljIFttYWls
+dG86amFudXN6LmR6aWVkemljQHRpZXRvLmNvbV0NCj4gSW52aWF0bzogc2FiYXRvIDUgc2V0dGVt
+YnJlIDIwMTUgMjIuMDANCj4gQTogQWxlc3NhbmRybyBCb2xsZXR0YSA8YWxlc3NhbmRyb0BtZWRp
+YXNwb3QubmV0Pg0KPiBDYzogYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gT2dnZXR0bzog
+UmU6IElCU1MtUlNOIHN1cHBvcnQgb24gYXRoMTBrIG9ubHkgbGlua3MNCj4NCj4gT24gNSBTZXB0
+ZW1iZXIgMjAxNSBhdCAxNzowOCwgQWxlc3NhbmRybyBCb2xsZXR0YSA8YWxlc3NhbmRyb0BtZWRp
+YXNwb3QubmV0PiB3cm90ZToNCj4+IEhpLA0KPj4gV2hhdCBlZmZvcnRzIGNvdWxkIGJlIG5lZWRl
+ZCBpbiBvcmRlciB0byBtYWtlIElCU1MtUlNOIHdvcmtpbmcgb24gYXRoMTBrIDwtLT4gYXRoMTBr
+IGxpbmtzPyBJcyB0aGVyZSBhbnlib2R5IHdvcmtpbmcgYWN0aXZlbHkgb24gaXQ/DQo+Pg0KPiBX
+ZSBkaWQgYmFzaWMgdGVzdGluZy9pbXBsZW1lbnRhdGlvbiB1c2luZyBhdGgxMGsvYXRoOWssIHdw
+YV9zdXBwbGljYW50IGFuZCBtYWluICg2MzYpIGZpcm13YXJlIGFuZCBxY2E2MTc0Lg0KPiBMYXRl
+c3QgY29kZSBhbHJlYWR5IGhhdmUgV0lQSFlfRkxBR19JQlNTX1JTTiBzZXQsIHNvIEkgZXhwZWN0
+IHRoaXMgDQo+IHNob3VsZCB3b3JrLiBTb21lIEZXIGlzc3VlcyBjb3VsZCBiZSBzdGlsbCBwb3Nz
+aWJsZSA6KQ0KPg0KPiBCUg0KPiBKYW51c3oNCj4NCj4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18NCj4gYXRoMTBrIG1haWxpbmcgbGlzdA0KPiBhdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2F0aDEwaw0KDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
