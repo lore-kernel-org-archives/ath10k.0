@@ -1,24 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZYzlb-0002l5-OX
- for ath10k@lists.infradead.org; Mon, 07 Sep 2015 16:59:40 +0000
-Message-ID: <55EDC264.4080206@candelatech.com>
-Date: Mon, 07 Sep 2015 09:59:16 -0700
+ id 1ZZ0Ok-0000Gs-6c
+ for ath10k@lists.infradead.org; Mon, 07 Sep 2015 17:40:06 +0000
+Message-ID: <55EDCBDF.3070104@candelatech.com>
+Date: Mon, 07 Sep 2015 10:39:43 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: R: R: IBSS-RSN support on ath10k only links
-References: <F52F175DFC537F48A43937B50B44BCA28205CDDC@EXCHANGE.mediaspot.local>
- <CALhHN=psNe5hh3GuA=z0AC6-Gy-fRTkxUe3+Pop3OMyBwPpshQ@mail.gmail.com>
- <F52F175DFC537F48A43937B50B44BCA28205DA67@EXCHANGE.mediaspot.local>
- <CALhHN=rXxHKr-8vdctszWY=yitmpDbKZDpX=omqP1OAHuQoAxw@mail.gmail.com>
- <F52F175DFC537F48A43937B50B44BCA28205DAB5@EXCHANGE.mediaspot.local>
- <CALhHN=rebT-S3x149RQDUU3QbofUV73wkkmVPuqFzJjrHyMO_A@mail.gmail.com>
- <55EDAF09.5000904@candelatech.com>
- <F52F175DFC537F48A43937B50B44BCA28205E3C3@EXCHANGE.mediaspot.local>
- <55EDB0F0.4070808@candelatech.com>
- <F52F175DFC537F48A43937B50B44BCA28205E430@EXCHANGE.mediaspot.local>
-In-Reply-To: <F52F175DFC537F48A43937B50B44BCA28205E430@EXCHANGE.mediaspot.local>
+Subject: Re: multiple physical interfaces
+References: <55EDB1C5.8000602@tu-bs.de>
+In-Reply-To: <55EDB1C5.8000602@tu-bs.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,73 +18,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alessandro Bolletta <alessandro@mediaspot.net>, Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Harms, Hannes" <hannes.harms@tu-bs.de>, ath10k@lists.infradead.org
 
-SSdtIG5vdCBzdXJlIGl0IGlzIGV2ZXIgYWN0dWFsbHkgdHJ5aW5nIHRvIGxvYWQgbXkgZmlybXdh
-cmUuCgpBdCB0aGUgbGVhc3QsIGl0IGlzIG5hbWVkIHF1aXRlIGEgYml0IGRpZmZlcmVudGx5IHRo
-YW4gdGhlIG1haW4Ka2VybmVsIGRvZXMgdGhpbmdzLgoKWW91IG1pZ2h0IGFzayBhcm91bmQgb24g
-dGhlIG9wZW53cnQgbGlzdChzKS4uLkkga25vdyB0aGVyZSBhcmUgZm9sa3MgdGhhdAphcmUgdXNp
-bmcgbXkgZmlybXdhcmUgb24gb3BlbndydC4KClRoYW5rcywKQmVuCgpPbiAwOS8wNy8yMDE1IDA5
-OjA0IEFNLCBBbGVzc2FuZHJvIEJvbGxldHRhIHdyb3RlOgo+IEknbSB1c2luZyBPcGVud3J0IHRy
-dW5rIEJsZWVkaW5nIEVkZ2UsIHI0NjgwMiwga2VybmVsIDQuMS42Cj4KPiBIZXJlJ3MgdGhlIGxv
-ZzoKPgo+IFsgICAgOC41NTU2OTBdIExvYWRpbmcgbW9kdWxlcyBiYWNrcG9ydGVkIGZyb20gTGlu
-dXggdmVyc2lvbiBtYXN0ZXItMjAxNS0wNy0yMS0wLWc0N2NkMjAzCj4gWyAgICA4LjU2MzcyMl0g
-QmFja3BvcnQgZ2VuZXJhdGVkIGJ5IGJhY2twb3J0cy5naXQgYmFja3BvcnRzLTIwMTUwNjI2LTAt
-Z2MxYTQxNjgKPiBbICAgIDguNTkwNDUzXSBjZmc4MDIxMTogV29ybGQgcmVndWxhdG9yeSBkb21h
-aW4gdXBkYXRlZDoKPiBbICAgIDguNTk1NzAzXSBjZmc4MDIxMTogIERGUyBNYXN0ZXIgcmVnaW9u
-OiB1bnNldAo+IFsgICAgOC42MDAxMThdIGNmZzgwMjExOiAgIChzdGFydF9mcmVxIC0gZW5kX2Zy
-ZXEgQCBiYW5kd2lkdGgpLCAobWF4X2FudGVubmFfZ2FpbiwgbWF4X2VpcnApLCAoZGZzX2NhY190
-aW1lKQo+IFsgICAgOC42MTAwMDldIGNmZzgwMjExOiAgICgyNDAyMDAwIEtIeiAtIDI0NzIwMDAg
-S0h6IEAgNDAwMDAgS0h6KSwgKE4vQSwgMjAwMCBtQm0pLCAoTi9BKQo+IFsgICAgOC42MTgxMzRd
-IGNmZzgwMjExOiAgICgyNDU3MDAwIEtIeiAtIDI0ODIwMDAgS0h6IEAgNDAwMDAgS0h6KSwgKE4v
-QSwgMjAwMCBtQm0pLCAoTi9BKQo+IFsgICAgOC42MjYyNTVdIGNmZzgwMjExOiAgICgyNDc0MDAw
-IEtIeiAtIDI0OTQwMDAgS0h6IEAgMjAwMDAgS0h6KSwgKE4vQSwgMjAwMCBtQm0pLCAoTi9BKQo+
-IFsgICAgOC42MzQzNzJdIGNmZzgwMjExOiAgICg1MTcwMDAwIEtIeiAtIDUyNTAwMDAgS0h6IEAg
-ODAwMDAgS0h6LCAxNjAwMDAgS0h6IEFVVE8pLCAoTi9BLCAyMDAwIG1CbSksIChOL0EpCj4gWyAg
-ICA4LjY0Mzk5MF0gY2ZnODAyMTE6ICAgKDUyNTAwMDAgS0h6IC0gNTMzMDAwMCBLSHogQCA4MDAw
-MCBLSHosIDE2MDAwMCBLSHogQVVUTyksIChOL0EsIDIwMDAgbUJtKSwgKDAgcykKPiBbICAgIDgu
-NjUzNjA3XSBjZmc4MDIxMTogICAoNTQ5MDAwMCBLSHogLSA1NzMwMDAwIEtIeiBAIDE2MDAwMCBL
-SHopLCAoTi9BLCAyMDAwIG1CbSksICgwIHMpCj4gWyAgICA4LjY2MTgxNF0gY2ZnODAyMTE6ICAg
-KDU3MzUwMDAgS0h6IC0gNTgzNTAwMCBLSHogQCA4MDAwMCBLSHopLCAoTi9BLCAyMDAwIG1CbSks
-IChOL0EpCj4gWyAgICA4LjY2OTkzOF0gY2ZnODAyMTE6ICAgKDU3MjQwMDAwIEtIeiAtIDYzNzIw
-MDAwIEtIeiBAIDIxNjAwMDAgS0h6KSwgKE4vQSwgMCBtQm0pLCAoTi9BKQo+IFsgICAgOC44MTk5
-NDddIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBwY2kgaXJxIGxlZ2FjeSBpbnRlcnJ1cHRzIDAg
-aXJxX21vZGUgMCByZXNldF9tb2RlIDAKPiBbICAgIDkuMDM5MTEyXSBhdGgxMGtfcGNpIDAwMDA6
-MDE6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yIGF0aDEway9jYWwtcGNpLTAwMDA6MDE6
-MDAuMC5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPiBbICAgIDkuMDQ5NjMyXSBhdGgxMGtfcGNp
-IDAwMDA6MDE6MDAuMDogRmFsbGluZyBiYWNrIHRvIHVzZXIgaGVscGVyCj4gWyAgICA5LjEyNTI0
-OV0gZmlybXdhcmUgYXRoMTBrIWNhbC1wY2ktMDAwMDowMTowMC4wLmJpbjogZmlybXdhcmVfbG9h
-ZGluZ19zdG9yZTogbWFwIHBhZ2VzIGZhaWxlZAo+IFsgICAgOS4xMzYyOTBdIGF0aDEwa19wY2kg
-MDAwMDowMTowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IgYXRoMTBrL1FDQTk4OFgvaHcy
-LjAvYm9hcmQtcGNpLTE2OGM6MDAzYzoxOWI2OmQwMjMuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0y
-Cj4gWyAgICA5LjE0ODg1Ml0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IEZhbGxpbmcgYmFjayB0
-byB1c2VyIGhlbHBlcgo+IFsgICAgOS4yMjE3NDddIGZpcm13YXJlIGF0aDEwayFRQ0E5ODhYIWh3
-Mi4wIWJvYXJkLXBjaS0xNjhjOjAwM2M6MTliNjpkMDIzLmJpbjogZmlybXdhcmVfbG9hZGluZ19z
-dG9yZTogbWFwIHBhZ2VzIGZhaWxlZAo+IFsgICAgOS4yMzI2ODRdIGF0aDEwa19wY2kgMDAwMDow
-MTowMC4wOiBmYWlsZWQgdG8gbG9hZCBzcGVjIGJvYXJkIGZpbGUsIGZhbGxpbmcgYmFjayB0byBn
-ZW5lcmljOiAtMTEKPiBbICAgIDkuNDA4Mjg0XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogb3Rw
-IGNhbGlicmF0aW9uIGZhaWxlZDogMgo+IFsgICAgOS40MTQyMTJdIGF0aDEwa19wY2kgMDAwMDow
-MTowMC4wOiBmYWlsZWQgdG8gcnVuIG90cDogLTIyCj4gWyAgICA5LjQxOTg3M10gYXRoMTBrX3Bj
-aSAwMDAwOjAxOjAwLjA6IGNvdWxkIG5vdCBpbml0IGNvcmUgKC0yMikKPiBbICAgIDkuNDI1ODk0
-XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogY291bGQgbm90IHByb2JlIGZ3ICgtMjIpCj4KPiAt
-LS0tLU1lc3NhZ2dpbyBvcmlnaW5hbGUtLS0tLQo+IERhOiBCZW4gR3JlZWFyIFttYWlsdG86Z3Jl
-ZWFyYkBjYW5kZWxhdGVjaC5jb21dCj4gSW52aWF0bzogbHVuZWTDrCA3IHNldHRlbWJyZSAyMDE1
-IDE3LjQ1Cj4gQTogQWxlc3NhbmRybyBCb2xsZXR0YSA8YWxlc3NhbmRyb0BtZWRpYXNwb3QubmV0
-PjsgSmFudXN6IER6aWVkemljIDxqYW51c3ouZHppZWR6aWNAdGlldG8uY29tPgo+IENjOiBhdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IE9nZ2V0dG86IFJlOiBSOiBJQlNTLVJTTiBzdXBwb3J0
-IG9uIGF0aDEwayBvbmx5IGxpbmtzCj4KPgo+Cj4gT24gMDkvMDcvMjAxNSAwODo0MCBBTSwgQWxl
-c3NhbmRybyBCb2xsZXR0YSB3cm90ZToKPj4gSGkgQmVuLAo+Pgo+PiBJJ20gdHJ5aW5nIHRvIHJ1
-biB5b3VyIGZpcm13YXJlIG9uIG15IE1pa3JvdGlrIE5ldE1ldGFsIGRldmljZSwgd2hpY2ggZmVh
-dHVyZXMgYSBRQ0E5ODgyIHJhZGlvIGNhcmQsIGJ1dCBpdCBjYW4ndCBiZSBsb2FkZWQuCj4+Cj4+
-IElmIHlvdSBjYW4gaGVscCBtZSBJIGNhbiBwcm92aWRlIHlvdSBteSBkbWVzZyBsb2cuCj4KPiBQ
-bGVhc2UgZG8gcG9zdCBsb2dzLi5hbmQgbGV0IG1lIGtub3cgd2hhdCBPUyBhbmQga2VybmVsIHZl
-cnNpb24geW91IGFyZSB1c2luZy4KPgo+IFRoYW5rcywKPiBCZW4KPgoKLS0gCkJlbiBHcmVlYXIg
-PGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6
-Ly93d3cuY2FuZGVsYXRlY2guY29tCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Yes.  At least with my CT firmware, various combinations seem to
+work fine.
+
+Thanks,
+Ben
+
+On 09/07/2015 08:48 AM, Harms, Hannes wrote:
+> Hi,
+>
+> does ath10k support multiple physical interfaces?
+> For example one interfaces as STA, another in IBSS mode?
+>
+> Regards Hannes
+>
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
