@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZZbpm-0006Xw-BI
- for ath10k@lists.infradead.org; Wed, 09 Sep 2015 09:38:30 +0000
+ id 1ZZbuc-0001k5-Cb
+ for ath10k@lists.infradead.org; Wed, 09 Sep 2015 09:43:30 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Drop probe responses when too many are queued
-References: <1441019095-2364-1-git-send-email-nataraja@qti.qualcomm.com>
-Date: Wed, 9 Sep 2015 12:37:57 +0300
-In-Reply-To: <1441019095-2364-1-git-send-email-nataraja@qti.qualcomm.com>
- (Vivek Natarajan's message of "Mon, 31 Aug 2015 16:34:55 +0530")
-Message-ID: <87y4gg7x1m.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: fix beamformee VHT STS capability
+References: <1441192820-8403-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Wed, 9 Sep 2015 12:42:58 +0300
+In-Reply-To: <1441192820-8403-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Wed, 2 Sep 2015 13:20:19 +0200")
+Message-ID: <87twr47wt9.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,22 +23,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vivek Natarajan <nataraja@qti.qualcomm.com>
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Vivek Natarajan <nataraja@qti.qualcomm.com> writes:
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> In a noisy environment, when multiple interfaces are created,
-> the management tx descriptors are fully occupied by the probe
-> responses from all the interfaces. This prevents a new station
-> from a successful association.
+> The VHT STS CAP shall be reported by firmware to host, like in case of
+> QCA99x0. For QCA6174 hw family this isn't set for some reason.
+> So for this particular chips, let's assume it has the ability to
+> support VHT NDP in up to 4 STSs (which is true by the way).
 >
-> Fix this by limiting the probe responses when the specified
-> threshold limit is reached.
+> Change the published beamformee STS cap accordingly to 3 or to what
+> the firmware reports.
 >
-> Signed-off-by: Vivek Natarajan <nataraja@qti.qualcomm.com>
+> Assumption so far, it suppose to be the num_rf_chains-1, was
+> completely wrong.
+>
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Thanks, applied.
+Thanks, both patches applied.
 
 -- 
 Kalle Valo
