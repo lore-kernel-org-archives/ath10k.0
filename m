@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh04.mail.saunalahti.fi ([62.142.5.110])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZZaqM-0004r9-8Q
- for ath10k@lists.infradead.org; Wed, 09 Sep 2015 08:35:03 +0000
-Subject: [PATCH] ath10k: add ATH10K_FW_FEATURE_RAW_MODE_SUPPORT to
- ath10k_core_fw_feature_str[]
+ id 1ZZbPM-00030R-Hb
+ for ath10k@lists.infradead.org; Wed, 09 Sep 2015 09:11:13 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 09 Sep 2015 11:34:37 +0300
-Message-ID: <20150909083437.12465.89335.stgit@potku.adurom.net>
+Subject: Re: [PATCH 3/3] ath10k: implement mesh support
+References: <1440673024-13696-1-git-send-email-me@bobcopeland.com>
+ <1440673024-13696-4-git-send-email-me@bobcopeland.com>
+ <87oahc9g9h.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 9 Sep 2015 12:10:38 +0300
+In-Reply-To: <87oahc9g9h.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Wed, 09 Sep 2015 10:57:30 +0300")
+Message-ID: <87fv2o9cvl.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,45 +25,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Bob Copeland <me@bobcopeland.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-This was missed in the original commit adding the flag and ath10k only printed "bit10":
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-ath10k_pci 0000:02:00.0: qca988x hw2.0 (0x4100016c, 0x043202ff) fw 10.2.4.70.6-2 api 3
-htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-sta 128 raw 0 hwcrypto 1 features no-p2p,bit10
+> Bob Copeland <me@bobcopeland.com> writes:
+>
+>> Add support for mesh to ath10k.  We simply use an AP virtual interface
+>> in the firmware in order to enable beaconing without TSF adoption, and
+>> use the raw (802.11) transmit mode.
+>>
+>> Due to firmware limitations, the firmware must operate in raw
+>> (non-native 802.11) mode.  As this is configured at firmware init time,
+>> a new "rawmode" modparam is added, and mesh interfaces are available
+>> only if rawmode=true.  The firmware must advertise support for rawmode
+>> (tested successfully with firmware 10.2.4.70-2).
+>>
+>> When loaded with rawmode=1, ath10k can operate an open mesh STA via
+>> something like the following:
+>>
+>>     ip link set wlan0 down
+>>     iw dev wlan0 set type mp
+>>     ip link set wlan0 up
+>>     iw dev wlan0 set freq 5745 80 5775
+>>     iw dev wlan0 mesh join mesh-vht
+>>
+>> Signed-off-by: Bob Copeland <me@bobcopeland.com>
+>
+> I did a quick smoke test and saw the splat below. It's this warning from
+> cfg80211:
+>
+> 			/*
+> 			 * Don't advertise an unsupported type
+> 			 * in a combination.
+> 			 */
+> 			if (WARN_ON((wiphy->interface_modes & types) != types))
+> 				return -EINVAL;
 
-Also add a build test to avoid this happening again.
+Forgot to mention that this was with 10.2.4.70.6-2 (which has the raw
+feature bit set, will push it soon) but rawmode modparam not set. And I
+had applied your patches on top of ath.git master branch (commit
+d89281c7d6bb9).
 
-Fixes: ccec9038c721 ("ath10k: enable raw encap mode and software crypto engine")
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c |    5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index b87b98617073..9e3d89d06445 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -142,12 +142,17 @@ static const char *const ath10k_core_fw_feature_str[] = {
- 	[ATH10K_FW_FEATURE_IGNORE_OTP_RESULT] = "ignore-otp",
- 	[ATH10K_FW_FEATURE_NO_NWIFI_DECAP_4ADDR_PADDING] = "no-4addr-pad",
- 	[ATH10K_FW_FEATURE_SUPPORTS_SKIP_CLOCK_INIT] = "skip-clock-init",
-+	[ATH10K_FW_FEATURE_RAW_MODE_SUPPORT] = "raw-mode",
- };
- 
- static unsigned int ath10k_core_get_fw_feature_str(char *buf,
- 						   size_t buf_len,
- 						   enum ath10k_fw_features feat)
- {
-+	/* make sure that ath10k_core_fw_feature_str[] gets updated */
-+	BUILD_BUG_ON(ARRAY_SIZE(ath10k_core_fw_feature_str) !=
-+		     ATH10K_FW_FEATURE_COUNT);
-+
- 	if (feat >= ARRAY_SIZE(ath10k_core_fw_feature_str) ||
- 	    WARN_ON(!ath10k_core_fw_feature_str[feat])) {
- 		return scnprintf(buf, buf_len, "bit%d", feat);
-
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
