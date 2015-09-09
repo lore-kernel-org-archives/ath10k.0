@@ -1,26 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from marchena.puc.rediris.es ([2001:720:418:ca00::4])
+Received: from mail-yk0-x22b.google.com ([2607:f8b0:4002:c07::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZZYlC-0002W6-HG
- for ath10k@lists.infradead.org; Wed, 09 Sep 2015 06:21:36 +0000
-Received: from [2001:40b0:7c22:6020:ccd9:8dc8:bdfb:2992] (helo=leo)
- by marchena.puc.rediris.es with esmtpsa
- (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256) (Exim 4.80)
- (envelope-from <jbaranda@cttc.es>) id 1ZZYkZ-0008Qb-Oy
- for ath10k@lists.infradead.org; Wed, 09 Sep 2015 08:21:04 +0200
-Received: from [84.88.61.34] (pcjbaranda.cttc.es [84.88.61.34])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by leo (Postfix) with ESMTPSA id 947631FE10
- for <ath10k@lists.infradead.org>; Wed,  9 Sep 2015 08:20:52 +0200 (CEST)
-Message-ID: <55EFCFC8.4050303@cttc.es>
-Date: Wed, 09 Sep 2015 08:20:56 +0200
-From: Jorge Baranda <jbaranda@cttc.es>
+ id 1ZZa2v-0003Iv-M9
+ for ath10k@lists.infradead.org; Wed, 09 Sep 2015 07:43:59 +0000
+Received: by ykcf206 with SMTP id f206so2542386ykc.3
+ for <ath10k@lists.infradead.org>; Wed, 09 Sep 2015 00:43:35 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: WLE600VX from PCEngines
+In-Reply-To: <55EFCFC8.4050303@cttc.es>
 References: <CAGNwC3mbOJcEyrJGB8vcQ8Sa7ip-g+TcuCG9Ksm+8xYvAqiQ6w@mail.gmail.com>
  <CALhHN=rHMicEVMWrHowFwt+U+EwsKeh03SKGfoHtpD+_kKj_4w@mail.gmail.com>
-In-Reply-To: <CALhHN=rHMicEVMWrHowFwt+U+EwsKeh03SKGfoHtpD+_kKj_4w@mail.gmail.com>
+ <55EFCFC8.4050303@cttc.es>
+Date: Wed, 9 Sep 2015 09:43:35 +0200
+Message-ID: <CALhHN=p71pLTUWJLB3Tnt--D0JbWXjw5vafhT=GjmGek_D1CYw@mail.gmail.com>
+Subject: Re: WLE600VX from PCEngines
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,408 +22,272 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Jorge Baranda <jbaranda@cttc.es>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi everyone,
-
-Reading this thread, I would like to share with people some doubts about =
-
-it.
-@Marco, I imagine you want to run your WLE600VX device using the =
-
-802.11ac protocol, isn't it?
-@Janusz, with running wpa_supplicant on both computers, will the ad-hoc =
-
-connection be established? I am starting with these tools and now, I am =
-
-getting used to know how they work. I was creating the ad-hoc connection =
-
-with the iw tool.
-
-Thanks,
-
-
-
-El 09/09/15 07:50, Janusz Dziedzic escribi=F3:
-> On 8 September 2015 at 23:31, Marcel H. <maco@blava.net> wrote:
->> Hi everyone,
->> I have an interesting issue - I'm trying to run the QCA9882 based card
->> in IBSS mode (to be used for BATMAN), however all I can do is to run
->> in in 40Mhz channel width in 5GHz spectrum. Any attempt to run it in
->> 80MHz width resolves in the following:
->>
-> You should run IBSS using fresh wpa_supplicant (best latest code). By
-> default should run in 80MHz.
-> Other case is your regulatory - are you allow to use 80MHz on channel
-> 157? First try 5180.
->
-> eg. of wpa_supplicant config:
->
-> network =3D {
->      ssid=3D"test_ibss"
->      key_mgmt=3DNONE
->      mode=3D1
->      frequency=3D5180
-> }
->
-> BR
-> Janusz
->
->> Interface wlan0
->>      ifindex 5
->>      wdev 0x1
->>      addr 04:f0:21:1b:5f:3b
->>      ssid my-mesh-network
->>      type IBSS
->>      wiphy 0
->>      channel 157 (5785 MHz), width: 40 MHz, center1: 5795 MHz
->> root@voyage2:/opt/ca_node/bin# iw dev wlan0 set freq 5745 80
->> command failed: Invalid argument (-22)
->> root@voyage2:/opt/ca_node/bin# ip link set wlan0 down
->> root@voyage2:/opt/ca_node/bin# iw dev wlan0 set freq 5745 80
->> command failed: Invalid argument (-22)
->>
->>
->> More info:
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->> 06:00.0 Network controller: Qualcomm Atheros QCA988x 802.11ac Wireless
->> Network Adapter
->>      Flags: bus master, fast devsel, latency 0, IRQ 27
->>      Memory at f7400000 (64-bit, non-prefetchable) [size=3D2M]
->>      Expansion ROM at f7600000 [disabled] [size=3D64K]
->>      Capabilities: [40] Power Management version 2
->>      Capabilities: [50] MSI: Enable+ Count=3D1/8 Maskable+ 64bit-
->>      Capabilities: [70] Express Endpoint, MSI 00
->>      Capabilities: [100] Advanced Error Reporting
->>      Capabilities: [140] Virtual Channel
->>      Capabilities: [160] Device Serial Number 00-00-00-00-00-00-00-00
->>      Kernel driver in use: ath10k_pci
->>
->> root@voyage2:/opt/ca_node/bin# iw reg get
->> country US: DFS-FCC
->>      (2402 - 2472 @ 40), (N/A, 30), (N/A)
->>      (5170 - 5250 @ 80), (N/A, 17), (N/A)
->>      (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS
->>      (5735 - 5835 @ 80), (N/A, 30), (N/A)
->>      (57240 - 63720 @ 2160), (N/A, 40), (N/A)
->>
->>
->> root@voyage2:/opt/ca_node/bin# uname -a
->> Linux voyage2 4.2.0-wl-ath-261216-gd89281c #1 SMP Tue Sep 8 14:03:33
->> GMT 2015 i686 GNU/Linux
->> (todays checkout from https://github.com/kvalo/ath + Voyage Linux 0.10 .=
-config)
->>
->> root@voyage2:/lib/firmware/ath10k/QCA988X/hw2.0# md5sum ./firmware-2.bin
->> e2db04b651c2b5ced4732f3f009a1cce  ./firmware-2.bin
->> (this is from the 'main' directory in the
->> https://github.com/kvalo/ath10k-firmware)
->>
->>
->> Wiphy phy0
->>      max # scan SSIDs: 16
->>      max scan IEs length: 195 bytes
->>      Retry short limit: 7
->>      Retry long limit: 4
->>      Coverage class: 0 (up to 0m)
->>      Device supports RSN-IBSS.
->>      Device supports AP-side u-APSD.
->>      Supported Ciphers:
->>          * WEP40 (00-0f-ac:1)
->>          * WEP104 (00-0f-ac:5)
->>          * TKIP (00-0f-ac:2)
->>          * CCMP (00-0f-ac:4)
->>          * CMAC (00-0f-ac:6)
->>      Available Antennas: TX 0x3 RX 0x3
->>      Configured Antennas: TX 0x3 RX 0x3
->>      Supported interface modes:
->>           * IBSS
->>           * managed
->>           * AP
->>           * AP/VLAN
->>           * monitor
->>           * P2P-client
->>           * P2P-GO
->>           * P2P-device
->>      Band 1:
->>          Capabilities: 0x19e3
->>              RX LDPC
->>              HT20/HT40
->>              Static SM Power Save
->>              RX HT20 SGI
->>              RX HT40 SGI
->>              TX STBC
->>              RX STBC 1-stream
->>              Max AMSDU length: 7935 bytes
->>              DSSS/CCK HT40
->>          Maximum RX AMPDU length 65535 bytes (exponent: 0x003)
->>          Minimum RX AMPDU time spacing: 8 usec (0x06)
->>          HT TX/RX MCS rate indexes supported: 0-15
->>          VHT Capabilities (0x338001b2):
->>              Max MPDU length: 11454
->>              Supported Channel Width: neither 160 nor 80+80
->>              RX LDPC
->>              short GI (80 MHz)
->>              TX STBC
->>              RX antenna pattern consistency
->>              TX antenna pattern consistency
->>          VHT RX MCS set:
->>              1 streams: MCS 0-9
->>              2 streams: MCS 0-9
->>              3 streams: not supported
->>              4 streams: not supported
->>              5 streams: not supported
->>              6 streams: not supported
->>              7 streams: not supported
->>              8 streams: not supported
->>          VHT RX highest supported: 0 Mbps
->>          VHT TX MCS set:
->>              1 streams: MCS 0-9
->>              2 streams: MCS 0-9
->>              3 streams: not supported
->>              4 streams: not supported
->>              5 streams: not supported
->>              6 streams: not supported
->>              7 streams: not supported
->>              8 streams: not supported
->>          VHT TX highest supported: 0 Mbps
->>          Bitrates (non-HT):
->>              * 1.0 Mbps
->>              * 2.0 Mbps (short preamble supported)
->>              * 5.5 Mbps (short preamble supported)
->>              * 11.0 Mbps (short preamble supported)
->>              * 6.0 Mbps
->>              * 9.0 Mbps
->>              * 12.0 Mbps
->>              * 18.0 Mbps
->>              * 24.0 Mbps
->>              * 36.0 Mbps
->>              * 48.0 Mbps
->>              * 54.0 Mbps
->>          Frequencies:
->>              * 2412 MHz [1] (30.0 dBm)
->>              * 2417 MHz [2] (30.0 dBm)
->>              * 2422 MHz [3] (30.0 dBm)
->>              * 2427 MHz [4] (30.0 dBm)
->>              * 2432 MHz [5] (30.0 dBm)
->>              * 2437 MHz [6] (30.0 dBm)
->>              * 2442 MHz [7] (30.0 dBm)
->>              * 2447 MHz [8] (30.0 dBm)
->>              * 2452 MHz [9] (30.0 dBm)
->>              * 2457 MHz [10] (30.0 dBm)
->>              * 2462 MHz [11] (30.0 dBm)
->>              * 2467 MHz [12] (disabled)
->>              * 2472 MHz [13] (disabled)
->>              * 2484 MHz [14] (disabled)
->>      Band 2:
->>          Capabilities: 0x19e3
->>              RX LDPC
->>              HT20/HT40
->>              Static SM Power Save
->>              RX HT20 SGI
->>              RX HT40 SGI
->>              TX STBC
->>              RX STBC 1-stream
->>              Max AMSDU length: 7935 bytes
->>              DSSS/CCK HT40
->>          Maximum RX AMPDU length 65535 bytes (exponent: 0x003)
->>          Minimum RX AMPDU time spacing: 8 usec (0x06)
->>          HT TX/RX MCS rate indexes supported: 0-15
->>          VHT Capabilities (0x338001b2):
->>              Max MPDU length: 11454
->>              Supported Channel Width: neither 160 nor 80+80
->>              RX LDPC
->>              short GI (80 MHz)
->>              TX STBC
->>              RX antenna pattern consistency
->>              TX antenna pattern consistency
->>          VHT RX MCS set:
->>              1 streams: MCS 0-9
->>              2 streams: MCS 0-9
->>              3 streams: not supported
->>              4 streams: not supported
->>              5 streams: not supported
->>              6 streams: not supported
->>              7 streams: not supported
->>              8 streams: not supported
->>          VHT RX highest supported: 0 Mbps
->>          VHT TX MCS set:
->>              1 streams: MCS 0-9
->>              2 streams: MCS 0-9
->>              3 streams: not supported
->>              4 streams: not supported
->>              5 streams: not supported
->>              6 streams: not supported
->>              7 streams: not supported
->>              8 streams: not supported
->>          VHT TX highest supported: 0 Mbps
->>          Bitrates (non-HT):
->>              * 6.0 Mbps
->>              * 9.0 Mbps
->>              * 12.0 Mbps
->>              * 18.0 Mbps
->>              * 24.0 Mbps
->>              * 36.0 Mbps
->>              * 48.0 Mbps
->>              * 54.0 Mbps
->>          Frequencies:
->>              * 5180 MHz [36] (17.0 dBm)
->>              * 5200 MHz [40] (17.0 dBm)
->>              * 5220 MHz [44] (17.0 dBm)
->>              * 5240 MHz [48] (17.0 dBm)
->>              * 5260 MHz [52] (23.0 dBm) (no IR, radar detection)
->>                DFS state: usable (for 1076 sec)
->>                DFS CAC time: 60000 ms
->>              * 5280 MHz [56] (23.0 dBm) (no IR, radar detection)
->>                DFS state: usable (for 1076 sec)
->>                DFS CAC time: 60000 ms
->>              * 5300 MHz [60] (23.0 dBm) (no IR, radar detection)
->>                DFS state: usable (for 1076 sec)
->>                DFS CAC time: 60000 ms
->>              * 5320 MHz [64] (23.0 dBm) (no IR, radar detection)
->>                DFS state: usable (for 1076 sec)
->>                DFS CAC time: 60000 ms
->>              * 5500 MHz [100] (disabled)
->>              * 5520 MHz [104] (disabled)
->>              * 5540 MHz [108] (disabled)
->>              * 5560 MHz [112] (disabled)
->>              * 5580 MHz [116] (disabled)
->>              * 5600 MHz [120] (disabled)
->>              * 5620 MHz [124] (disabled)
->>              * 5640 MHz [128] (disabled)
->>              * 5660 MHz [132] (disabled)
->>              * 5680 MHz [136] (disabled)
->>              * 5700 MHz [140] (disabled)
->>              * 5720 MHz [144] (disabled)
->>              * 5745 MHz [149] (30.0 dBm)
->>              * 5765 MHz [153] (30.0 dBm)
->>              * 5785 MHz [157] (30.0 dBm)
->>              * 5805 MHz [161] (30.0 dBm)
->>              * 5825 MHz [165] (30.0 dBm)
->>      Supported commands:
->>           * new_interface
->>           * set_interface
->>           * new_key
->>           * start_ap
->>           * new_station
->>           * set_bss
->>           * authenticate
->>           * associate
->>           * deauthenticate
->>           * disassociate
->>           * join_ibss
->>           * remain_on_channel
->>           * set_tx_bitrate_mask
->>           * frame
->>           * frame_wait_cancel
->>           * set_wiphy_netns
->>           * set_channel
->>           * set_wds_peer
->>           * probe_client
->>           * set_noack_map
->>           * register_beacons
->>           * start_p2p_device
->>           * set_mcast_rate
->>           * testmode
->>           * channel_switch
->>           * Unknown command (104)
->>           * connect
->>           * disconnect
->>      Supported TX frame types:
->>           * IBSS: 0x00 0x10 0x20 0x30 0x40 0x50 0x60 0x70 0x80 0x90
->> 0xa0 0xb0 0xc0 0xd0 0xe0 0xf0
->>           * managed: 0x00 0x10 0x20 0x30 0x40 0x50 0x60 0x70 0x80 0x90
->> 0xa0 0xb0 0xc0 0xd0 0xe0 0xf0
->>           * AP: 0x00 0x10 0x20 0x30 0x40 0x50 0x60 0x70 0x80 0x90 0xa0
->> 0xb0 0xc0 0xd0 0xe0 0xf0
->>           * AP/VLAN: 0x00 0x10 0x20 0x30 0x40 0x50 0x60 0x70 0x80 0x90
->> 0xa0 0xb0 0xc0 0xd0 0xe0 0xf0
->>           * mesh point: 0x00 0x10 0x20 0x30 0x40 0x50 0x60 0x70 0x80
->> 0x90 0xa0 0xb0 0xc0 0xd0 0xe0 0xf0
->>           * P2P-client: 0x00 0x10 0x20 0x30 0x40 0x50 0x60 0x70 0x80
->> 0x90 0xa0 0xb0 0xc0 0xd0 0xe0 0xf0
->>           * P2P-GO: 0x00 0x10 0x20 0x30 0x40 0x50 0x60 0x70 0x80 0x90
->> 0xa0 0xb0 0xc0 0xd0 0xe0 0xf0
->>           * P2P-device: 0x00 0x10 0x20 0x30 0x40 0x50 0x60 0x70 0x80
->> 0x90 0xa0 0xb0 0xc0 0xd0 0xe0 0xf0
->>      Supported RX frame types:
->>           * IBSS: 0x40 0xb0 0xc0 0xd0
->>           * managed: 0x40 0xd0
->>           * AP: 0x00 0x20 0x40 0xa0 0xb0 0xc0 0xd0
->>           * AP/VLAN: 0x00 0x20 0x40 0xa0 0xb0 0xc0 0xd0
->>           * mesh point: 0xb0 0xc0 0xd0
->>           * P2P-client: 0x40 0xd0
->>           * P2P-GO: 0x00 0x20 0x40 0xa0 0xb0 0xc0 0xd0
->>           * P2P-device: 0x40 0xd0
->>      software interface modes (can always be added):
->>           * AP/VLAN
->>           * monitor
->>      valid interface combinations:
->>           * #{ managed, P2P-client } <=3D 8, #{ P2P-GO } <=3D 3, #{
->> P2P-device } <=3D 1, #{ AP } <=3D 7,
->>             total <=3D 8, #channels <=3D 1, STA/AP BI must match
->>      HT Capability overrides:
->>           * MCS: ff ff ff ff ff ff ff ff ff ff
->>           * maximum A-MSDU length
->>           * supported channel width
->>           * short GI for 40 MHz
->>           * max A-MPDU length exponent
->>           * min MPDU start spacing
->>      Device supports TX status socket option.
->>      Device supports HT-IBSS.
->>      Device supports SAE with AUTHENTICATE command
->>      Device supports scan flush.
->>      Device supports per-vif TX power setting
->>      Driver supports a userspace MPM
->>      Driver/device bandwidth changes during BSS lifetime (AP/GO mode)
->>      Device supports static SMPS
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->>
->> I am grateful for any help here and do have some time to help
->> debugging the issue.
->>
->> Marcel
->>
->> --
->>
->> ------------------------------------------------------
->> This message is not intended to have
->> contractual effect
->> ------------------------------------------------------
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
-
--- =
-
-Jorge Baranda
-Research Engineer, MSc
-jorge.baranda@cttc.es
-
-Centre Tecnol=F2gic de Telecomunicacions de Catalunya (CTTC)
-Av. Carl Friedrich Gauss, 7
-08860 Castelldefels, Barcelona (Spain)
-Tel: +34 93 645 29 00  Ext: 2171
-Fax. +34 93 645 29 01
-www.cttc.es
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOSBTZXB0ZW1iZXIgMjAxNSBhdCAwODoyMCwgSm9yZ2UgQmFyYW5kYSA8amJhcmFuZGFAY3R0
+Yy5lcz4gd3JvdGU6Cj4gSGkgZXZlcnlvbmUsCj4KPiBSZWFkaW5nIHRoaXMgdGhyZWFkLCBJIHdv
+dWxkIGxpa2UgdG8gc2hhcmUgd2l0aCBwZW9wbGUgc29tZSBkb3VidHMgYWJvdXQgaXQuCj4gQE1h
+cmNvLCBJIGltYWdpbmUgeW91IHdhbnQgdG8gcnVuIHlvdXIgV0xFNjAwVlggZGV2aWNlIHVzaW5n
+IHRoZSA4MDIuMTFhYwo+IHByb3RvY29sLCBpc24ndCBpdD8KPiBASmFudXN6LCB3aXRoIHJ1bm5p
+bmcgd3BhX3N1cHBsaWNhbnQgb24gYm90aCBjb21wdXRlcnMsIHdpbGwgdGhlIGFkLWhvYwo+IGNv
+bm5lY3Rpb24gYmUgZXN0YWJsaXNoZWQ/IEkgYW0gc3RhcnRpbmcgd2l0aCB0aGVzZSB0b29scyBh
+bmQgbm93LCBJIGFtCj4gZ2V0dGluZyB1c2VkIHRvIGtub3cgaG93IHRoZXkgd29yay4gSSB3YXMg
+Y3JlYXRpbmcgdGhlIGFkLWhvYyBjb25uZWN0aW9uCj4gd2l0aCB0aGUgaXcgdG9vbC4KPgpZZXMg
+eW91IHNob3VsZCB1c2Ugd3BhX3N1cHBsaWNhbnQgb24gYm90aCBQQy4KSW4gdGhlIGZ1dHVyZSBw
+cm9iYWJseSBzb21lb25lIHdpbGwgYWRkIElCU1MtVkhUIHN1cHBvcnQgYWxzbyBmb3IgaXcuCgpC
+UgpKYW51c3oKCj4gVGhhbmtzLAo+Cj4KPgo+IEVsIDA5LzA5LzE1IDA3OjUwLCBKYW51c3ogRHpp
+ZWR6aWMgZXNjcmliacOzOgo+Cj4+IE9uIDggU2VwdGVtYmVyIDIwMTUgYXQgMjM6MzEsIE1hcmNl
+bCBILiA8bWFjb0BibGF2YS5uZXQ+IHdyb3RlOgo+Pj4KPj4+IEhpIGV2ZXJ5b25lLAo+Pj4gSSBo
+YXZlIGFuIGludGVyZXN0aW5nIGlzc3VlIC0gSSdtIHRyeWluZyB0byBydW4gdGhlIFFDQTk4ODIg
+YmFzZWQgY2FyZAo+Pj4gaW4gSUJTUyBtb2RlICh0byBiZSB1c2VkIGZvciBCQVRNQU4pLCBob3dl
+dmVyIGFsbCBJIGNhbiBkbyBpcyB0byBydW4KPj4+IGluIGluIDQwTWh6IGNoYW5uZWwgd2lkdGgg
+aW4gNUdIeiBzcGVjdHJ1bS4gQW55IGF0dGVtcHQgdG8gcnVuIGl0IGluCj4+PiA4ME1IeiB3aWR0
+aCByZXNvbHZlcyBpbiB0aGUgZm9sbG93aW5nOgo+Pj4KPj4gWW91IHNob3VsZCBydW4gSUJTUyB1
+c2luZyBmcmVzaCB3cGFfc3VwcGxpY2FudCAoYmVzdCBsYXRlc3QgY29kZSkuIEJ5Cj4+IGRlZmF1
+bHQgc2hvdWxkIHJ1biBpbiA4ME1Iei4KPj4gT3RoZXIgY2FzZSBpcyB5b3VyIHJlZ3VsYXRvcnkg
+LSBhcmUgeW91IGFsbG93IHRvIHVzZSA4ME1IeiBvbiBjaGFubmVsCj4+IDE1Nz8gRmlyc3QgdHJ5
+IDUxODAuCj4+Cj4+IGVnLiBvZiB3cGFfc3VwcGxpY2FudCBjb25maWc6Cj4+Cj4+IG5ldHdvcmsg
+PSB7Cj4+ICAgICAgc3NpZD0idGVzdF9pYnNzIgo+PiAgICAgIGtleV9tZ210PU5PTkUKPj4gICAg
+ICBtb2RlPTEKPj4gICAgICBmcmVxdWVuY3k9NTE4MAo+PiB9Cj4+Cj4+IEJSCj4+IEphbnVzego+
+Pgo+Pj4gSW50ZXJmYWNlIHdsYW4wCj4+PiAgICAgIGlmaW5kZXggNQo+Pj4gICAgICB3ZGV2IDB4
+MQo+Pj4gICAgICBhZGRyIDA0OmYwOjIxOjFiOjVmOjNiCj4+PiAgICAgIHNzaWQgbXktbWVzaC1u
+ZXR3b3JrCj4+PiAgICAgIHR5cGUgSUJTUwo+Pj4gICAgICB3aXBoeSAwCj4+PiAgICAgIGNoYW5u
+ZWwgMTU3ICg1Nzg1IE1IeiksIHdpZHRoOiA0MCBNSHosIGNlbnRlcjE6IDU3OTUgTUh6Cj4+PiBy
+b290QHZveWFnZTI6L29wdC9jYV9ub2RlL2JpbiMgaXcgZGV2IHdsYW4wIHNldCBmcmVxIDU3NDUg
+ODAKPj4+IGNvbW1hbmQgZmFpbGVkOiBJbnZhbGlkIGFyZ3VtZW50ICgtMjIpCj4+PiByb290QHZv
+eWFnZTI6L29wdC9jYV9ub2RlL2JpbiMgaXAgbGluayBzZXQgd2xhbjAgZG93bgo+Pj4gcm9vdEB2
+b3lhZ2UyOi9vcHQvY2Ffbm9kZS9iaW4jIGl3IGRldiB3bGFuMCBzZXQgZnJlcSA1NzQ1IDgwCj4+
+PiBjb21tYW5kIGZhaWxlZDogSW52YWxpZCBhcmd1bWVudCAoLTIyKQo+Pj4KPj4+Cj4+PiBNb3Jl
+IGluZm86Cj4+PiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PQo+Pj4gMDY6MDAuMCBOZXR3b3JrIGNvbnRyb2xsZXI6IFF1YWxjb21tIEF0aGVyb3Mg
+UUNBOTg4eCA4MDIuMTFhYyBXaXJlbGVzcwo+Pj4gTmV0d29yayBBZGFwdGVyCj4+PiAgICAgIEZs
+YWdzOiBidXMgbWFzdGVyLCBmYXN0IGRldnNlbCwgbGF0ZW5jeSAwLCBJUlEgMjcKPj4+ICAgICAg
+TWVtb3J5IGF0IGY3NDAwMDAwICg2NC1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTJNXQo+
+Pj4gICAgICBFeHBhbnNpb24gUk9NIGF0IGY3NjAwMDAwIFtkaXNhYmxlZF0gW3NpemU9NjRLXQo+
+Pj4gICAgICBDYXBhYmlsaXRpZXM6IFs0MF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDIKPj4+
+ICAgICAgQ2FwYWJpbGl0aWVzOiBbNTBdIE1TSTogRW5hYmxlKyBDb3VudD0xLzggTWFza2FibGUr
+IDY0Yml0LQo+Pj4gICAgICBDYXBhYmlsaXRpZXM6IFs3MF0gRXhwcmVzcyBFbmRwb2ludCwgTVNJ
+IDAwCj4+PiAgICAgIENhcGFiaWxpdGllczogWzEwMF0gQWR2YW5jZWQgRXJyb3IgUmVwb3J0aW5n
+Cj4+PiAgICAgIENhcGFiaWxpdGllczogWzE0MF0gVmlydHVhbCBDaGFubmVsCj4+PiAgICAgIENh
+cGFiaWxpdGllczogWzE2MF0gRGV2aWNlIFNlcmlhbCBOdW1iZXIgMDAtMDAtMDAtMDAtMDAtMDAt
+MDAtMDAKPj4+ICAgICAgS2VybmVsIGRyaXZlciBpbiB1c2U6IGF0aDEwa19wY2kKPj4+Cj4+PiBy
+b290QHZveWFnZTI6L29wdC9jYV9ub2RlL2JpbiMgaXcgcmVnIGdldAo+Pj4gY291bnRyeSBVUzog
+REZTLUZDQwo+Pj4gICAgICAoMjQwMiAtIDI0NzIgQCA0MCksIChOL0EsIDMwKSwgKE4vQSkKPj4+
+ICAgICAgKDUxNzAgLSA1MjUwIEAgODApLCAoTi9BLCAxNyksIChOL0EpCj4+PiAgICAgICg1MjUw
+IC0gNTMzMCBAIDgwKSwgKE4vQSwgMjMpLCAoMCBtcyksIERGUwo+Pj4gICAgICAoNTczNSAtIDU4
+MzUgQCA4MCksIChOL0EsIDMwKSwgKE4vQSkKPj4+ICAgICAgKDU3MjQwIC0gNjM3MjAgQCAyMTYw
+KSwgKE4vQSwgNDApLCAoTi9BKQo+Pj4KPj4+Cj4+PiByb290QHZveWFnZTI6L29wdC9jYV9ub2Rl
+L2JpbiMgdW5hbWUgLWEKPj4+IExpbnV4IHZveWFnZTIgNC4yLjAtd2wtYXRoLTI2MTIxNi1nZDg5
+MjgxYyAjMSBTTVAgVHVlIFNlcCA4IDE0OjAzOjMzCj4+PiBHTVQgMjAxNSBpNjg2IEdOVS9MaW51
+eAo+Pj4gKHRvZGF5cyBjaGVja291dCBmcm9tIGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgg
+KyBWb3lhZ2UgTGludXggMC4xMAo+Pj4gLmNvbmZpZykKPj4+Cj4+PiByb290QHZveWFnZTI6L2xp
+Yi9maXJtd2FyZS9hdGgxMGsvUUNBOTg4WC9odzIuMCMgbWQ1c3VtIC4vZmlybXdhcmUtMi5iaW4K
+Pj4+IGUyZGIwNGI2NTFjMmI1Y2VkNDczMmYzZjAwOWExY2NlICAuL2Zpcm13YXJlLTIuYmluCj4+
+PiAodGhpcyBpcyBmcm9tIHRoZSAnbWFpbicgZGlyZWN0b3J5IGluIHRoZQo+Pj4gaHR0cHM6Ly9n
+aXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2FyZSkKPj4+Cj4+Pgo+Pj4gV2lwaHkgcGh5MAo+
+Pj4gICAgICBtYXggIyBzY2FuIFNTSURzOiAxNgo+Pj4gICAgICBtYXggc2NhbiBJRXMgbGVuZ3Ro
+OiAxOTUgYnl0ZXMKPj4+ICAgICAgUmV0cnkgc2hvcnQgbGltaXQ6IDcKPj4+ICAgICAgUmV0cnkg
+bG9uZyBsaW1pdDogNAo+Pj4gICAgICBDb3ZlcmFnZSBjbGFzczogMCAodXAgdG8gMG0pCj4+PiAg
+ICAgIERldmljZSBzdXBwb3J0cyBSU04tSUJTUy4KPj4+ICAgICAgRGV2aWNlIHN1cHBvcnRzIEFQ
+LXNpZGUgdS1BUFNELgo+Pj4gICAgICBTdXBwb3J0ZWQgQ2lwaGVyczoKPj4+ICAgICAgICAgICog
+V0VQNDAgKDAwLTBmLWFjOjEpCj4+PiAgICAgICAgICAqIFdFUDEwNCAoMDAtMGYtYWM6NSkKPj4+
+ICAgICAgICAgICogVEtJUCAoMDAtMGYtYWM6MikKPj4+ICAgICAgICAgICogQ0NNUCAoMDAtMGYt
+YWM6NCkKPj4+ICAgICAgICAgICogQ01BQyAoMDAtMGYtYWM6NikKPj4+ICAgICAgQXZhaWxhYmxl
+IEFudGVubmFzOiBUWCAweDMgUlggMHgzCj4+PiAgICAgIENvbmZpZ3VyZWQgQW50ZW5uYXM6IFRY
+IDB4MyBSWCAweDMKPj4+ICAgICAgU3VwcG9ydGVkIGludGVyZmFjZSBtb2RlczoKPj4+ICAgICAg
+ICAgICAqIElCU1MKPj4+ICAgICAgICAgICAqIG1hbmFnZWQKPj4+ICAgICAgICAgICAqIEFQCj4+
+PiAgICAgICAgICAgKiBBUC9WTEFOCj4+PiAgICAgICAgICAgKiBtb25pdG9yCj4+PiAgICAgICAg
+ICAgKiBQMlAtY2xpZW50Cj4+PiAgICAgICAgICAgKiBQMlAtR08KPj4+ICAgICAgICAgICAqIFAy
+UC1kZXZpY2UKPj4+ICAgICAgQmFuZCAxOgo+Pj4gICAgICAgICAgQ2FwYWJpbGl0aWVzOiAweDE5
+ZTMKPj4+ICAgICAgICAgICAgICBSWCBMRFBDCj4+PiAgICAgICAgICAgICAgSFQyMC9IVDQwCj4+
+PiAgICAgICAgICAgICAgU3RhdGljIFNNIFBvd2VyIFNhdmUKPj4+ICAgICAgICAgICAgICBSWCBI
+VDIwIFNHSQo+Pj4gICAgICAgICAgICAgIFJYIEhUNDAgU0dJCj4+PiAgICAgICAgICAgICAgVFgg
+U1RCQwo+Pj4gICAgICAgICAgICAgIFJYIFNUQkMgMS1zdHJlYW0KPj4+ICAgICAgICAgICAgICBN
+YXggQU1TRFUgbGVuZ3RoOiA3OTM1IGJ5dGVzCj4+PiAgICAgICAgICAgICAgRFNTUy9DQ0sgSFQ0
+MAo+Pj4gICAgICAgICAgTWF4aW11bSBSWCBBTVBEVSBsZW5ndGggNjU1MzUgYnl0ZXMgKGV4cG9u
+ZW50OiAweDAwMykKPj4+ICAgICAgICAgIE1pbmltdW0gUlggQU1QRFUgdGltZSBzcGFjaW5nOiA4
+IHVzZWMgKDB4MDYpCj4+PiAgICAgICAgICBIVCBUWC9SWCBNQ1MgcmF0ZSBpbmRleGVzIHN1cHBv
+cnRlZDogMC0xNQo+Pj4gICAgICAgICAgVkhUIENhcGFiaWxpdGllcyAoMHgzMzgwMDFiMik6Cj4+
+PiAgICAgICAgICAgICAgTWF4IE1QRFUgbGVuZ3RoOiAxMTQ1NAo+Pj4gICAgICAgICAgICAgIFN1
+cHBvcnRlZCBDaGFubmVsIFdpZHRoOiBuZWl0aGVyIDE2MCBub3IgODArODAKPj4+ICAgICAgICAg
+ICAgICBSWCBMRFBDCj4+PiAgICAgICAgICAgICAgc2hvcnQgR0kgKDgwIE1IeikKPj4+ICAgICAg
+ICAgICAgICBUWCBTVEJDCj4+PiAgICAgICAgICAgICAgUlggYW50ZW5uYSBwYXR0ZXJuIGNvbnNp
+c3RlbmN5Cj4+PiAgICAgICAgICAgICAgVFggYW50ZW5uYSBwYXR0ZXJuIGNvbnNpc3RlbmN5Cj4+
+PiAgICAgICAgICBWSFQgUlggTUNTIHNldDoKPj4+ICAgICAgICAgICAgICAxIHN0cmVhbXM6IE1D
+UyAwLTkKPj4+ICAgICAgICAgICAgICAyIHN0cmVhbXM6IE1DUyAwLTkKPj4+ICAgICAgICAgICAg
+ICAzIHN0cmVhbXM6IG5vdCBzdXBwb3J0ZWQKPj4+ICAgICAgICAgICAgICA0IHN0cmVhbXM6IG5v
+dCBzdXBwb3J0ZWQKPj4+ICAgICAgICAgICAgICA1IHN0cmVhbXM6IG5vdCBzdXBwb3J0ZWQKPj4+
+ICAgICAgICAgICAgICA2IHN0cmVhbXM6IG5vdCBzdXBwb3J0ZWQKPj4+ICAgICAgICAgICAgICA3
+IHN0cmVhbXM6IG5vdCBzdXBwb3J0ZWQKPj4+ICAgICAgICAgICAgICA4IHN0cmVhbXM6IG5vdCBz
+dXBwb3J0ZWQKPj4+ICAgICAgICAgIFZIVCBSWCBoaWdoZXN0IHN1cHBvcnRlZDogMCBNYnBzCj4+
+PiAgICAgICAgICBWSFQgVFggTUNTIHNldDoKPj4+ICAgICAgICAgICAgICAxIHN0cmVhbXM6IE1D
+UyAwLTkKPj4+ICAgICAgICAgICAgICAyIHN0cmVhbXM6IE1DUyAwLTkKPj4+ICAgICAgICAgICAg
+ICAzIHN0cmVhbXM6IG5vdCBzdXBwb3J0ZWQKPj4+ICAgICAgICAgICAgICA0IHN0cmVhbXM6IG5v
+dCBzdXBwb3J0ZWQKPj4+ICAgICAgICAgICAgICA1IHN0cmVhbXM6IG5vdCBzdXBwb3J0ZWQKPj4+
+ICAgICAgICAgICAgICA2IHN0cmVhbXM6IG5vdCBzdXBwb3J0ZWQKPj4+ICAgICAgICAgICAgICA3
+IHN0cmVhbXM6IG5vdCBzdXBwb3J0ZWQKPj4+ICAgICAgICAgICAgICA4IHN0cmVhbXM6IG5vdCBz
+dXBwb3J0ZWQKPj4+ICAgICAgICAgIFZIVCBUWCBoaWdoZXN0IHN1cHBvcnRlZDogMCBNYnBzCj4+
+PiAgICAgICAgICBCaXRyYXRlcyAobm9uLUhUKToKPj4+ICAgICAgICAgICAgICAqIDEuMCBNYnBz
+Cj4+PiAgICAgICAgICAgICAgKiAyLjAgTWJwcyAoc2hvcnQgcHJlYW1ibGUgc3VwcG9ydGVkKQo+
+Pj4gICAgICAgICAgICAgICogNS41IE1icHMgKHNob3J0IHByZWFtYmxlIHN1cHBvcnRlZCkKPj4+
+ICAgICAgICAgICAgICAqIDExLjAgTWJwcyAoc2hvcnQgcHJlYW1ibGUgc3VwcG9ydGVkKQo+Pj4g
+ICAgICAgICAgICAgICogNi4wIE1icHMKPj4+ICAgICAgICAgICAgICAqIDkuMCBNYnBzCj4+PiAg
+ICAgICAgICAgICAgKiAxMi4wIE1icHMKPj4+ICAgICAgICAgICAgICAqIDE4LjAgTWJwcwo+Pj4g
+ICAgICAgICAgICAgICogMjQuMCBNYnBzCj4+PiAgICAgICAgICAgICAgKiAzNi4wIE1icHMKPj4+
+ICAgICAgICAgICAgICAqIDQ4LjAgTWJwcwo+Pj4gICAgICAgICAgICAgICogNTQuMCBNYnBzCj4+
+PiAgICAgICAgICBGcmVxdWVuY2llczoKPj4+ICAgICAgICAgICAgICAqIDI0MTIgTUh6IFsxXSAo
+MzAuMCBkQm0pCj4+PiAgICAgICAgICAgICAgKiAyNDE3IE1IeiBbMl0gKDMwLjAgZEJtKQo+Pj4g
+ICAgICAgICAgICAgICogMjQyMiBNSHogWzNdICgzMC4wIGRCbSkKPj4+ICAgICAgICAgICAgICAq
+IDI0MjcgTUh6IFs0XSAoMzAuMCBkQm0pCj4+PiAgICAgICAgICAgICAgKiAyNDMyIE1IeiBbNV0g
+KDMwLjAgZEJtKQo+Pj4gICAgICAgICAgICAgICogMjQzNyBNSHogWzZdICgzMC4wIGRCbSkKPj4+
+ICAgICAgICAgICAgICAqIDI0NDIgTUh6IFs3XSAoMzAuMCBkQm0pCj4+PiAgICAgICAgICAgICAg
+KiAyNDQ3IE1IeiBbOF0gKDMwLjAgZEJtKQo+Pj4gICAgICAgICAgICAgICogMjQ1MiBNSHogWzld
+ICgzMC4wIGRCbSkKPj4+ICAgICAgICAgICAgICAqIDI0NTcgTUh6IFsxMF0gKDMwLjAgZEJtKQo+
+Pj4gICAgICAgICAgICAgICogMjQ2MiBNSHogWzExXSAoMzAuMCBkQm0pCj4+PiAgICAgICAgICAg
+ICAgKiAyNDY3IE1IeiBbMTJdIChkaXNhYmxlZCkKPj4+ICAgICAgICAgICAgICAqIDI0NzIgTUh6
+IFsxM10gKGRpc2FibGVkKQo+Pj4gICAgICAgICAgICAgICogMjQ4NCBNSHogWzE0XSAoZGlzYWJs
+ZWQpCj4+PiAgICAgIEJhbmQgMjoKPj4+ICAgICAgICAgIENhcGFiaWxpdGllczogMHgxOWUzCj4+
+PiAgICAgICAgICAgICAgUlggTERQQwo+Pj4gICAgICAgICAgICAgIEhUMjAvSFQ0MAo+Pj4gICAg
+ICAgICAgICAgIFN0YXRpYyBTTSBQb3dlciBTYXZlCj4+PiAgICAgICAgICAgICAgUlggSFQyMCBT
+R0kKPj4+ICAgICAgICAgICAgICBSWCBIVDQwIFNHSQo+Pj4gICAgICAgICAgICAgIFRYIFNUQkMK
+Pj4+ICAgICAgICAgICAgICBSWCBTVEJDIDEtc3RyZWFtCj4+PiAgICAgICAgICAgICAgTWF4IEFN
+U0RVIGxlbmd0aDogNzkzNSBieXRlcwo+Pj4gICAgICAgICAgICAgIERTU1MvQ0NLIEhUNDAKPj4+
+ICAgICAgICAgIE1heGltdW0gUlggQU1QRFUgbGVuZ3RoIDY1NTM1IGJ5dGVzIChleHBvbmVudDog
+MHgwMDMpCj4+PiAgICAgICAgICBNaW5pbXVtIFJYIEFNUERVIHRpbWUgc3BhY2luZzogOCB1c2Vj
+ICgweDA2KQo+Pj4gICAgICAgICAgSFQgVFgvUlggTUNTIHJhdGUgaW5kZXhlcyBzdXBwb3J0ZWQ6
+IDAtMTUKPj4+ICAgICAgICAgIFZIVCBDYXBhYmlsaXRpZXMgKDB4MzM4MDAxYjIpOgo+Pj4gICAg
+ICAgICAgICAgIE1heCBNUERVIGxlbmd0aDogMTE0NTQKPj4+ICAgICAgICAgICAgICBTdXBwb3J0
+ZWQgQ2hhbm5lbCBXaWR0aDogbmVpdGhlciAxNjAgbm9yIDgwKzgwCj4+PiAgICAgICAgICAgICAg
+UlggTERQQwo+Pj4gICAgICAgICAgICAgIHNob3J0IEdJICg4MCBNSHopCj4+PiAgICAgICAgICAg
+ICAgVFggU1RCQwo+Pj4gICAgICAgICAgICAgIFJYIGFudGVubmEgcGF0dGVybiBjb25zaXN0ZW5j
+eQo+Pj4gICAgICAgICAgICAgIFRYIGFudGVubmEgcGF0dGVybiBjb25zaXN0ZW5jeQo+Pj4gICAg
+ICAgICAgVkhUIFJYIE1DUyBzZXQ6Cj4+PiAgICAgICAgICAgICAgMSBzdHJlYW1zOiBNQ1MgMC05
+Cj4+PiAgICAgICAgICAgICAgMiBzdHJlYW1zOiBNQ1MgMC05Cj4+PiAgICAgICAgICAgICAgMyBz
+dHJlYW1zOiBub3Qgc3VwcG9ydGVkCj4+PiAgICAgICAgICAgICAgNCBzdHJlYW1zOiBub3Qgc3Vw
+cG9ydGVkCj4+PiAgICAgICAgICAgICAgNSBzdHJlYW1zOiBub3Qgc3VwcG9ydGVkCj4+PiAgICAg
+ICAgICAgICAgNiBzdHJlYW1zOiBub3Qgc3VwcG9ydGVkCj4+PiAgICAgICAgICAgICAgNyBzdHJl
+YW1zOiBub3Qgc3VwcG9ydGVkCj4+PiAgICAgICAgICAgICAgOCBzdHJlYW1zOiBub3Qgc3VwcG9y
+dGVkCj4+PiAgICAgICAgICBWSFQgUlggaGlnaGVzdCBzdXBwb3J0ZWQ6IDAgTWJwcwo+Pj4gICAg
+ICAgICAgVkhUIFRYIE1DUyBzZXQ6Cj4+PiAgICAgICAgICAgICAgMSBzdHJlYW1zOiBNQ1MgMC05
+Cj4+PiAgICAgICAgICAgICAgMiBzdHJlYW1zOiBNQ1MgMC05Cj4+PiAgICAgICAgICAgICAgMyBz
+dHJlYW1zOiBub3Qgc3VwcG9ydGVkCj4+PiAgICAgICAgICAgICAgNCBzdHJlYW1zOiBub3Qgc3Vw
+cG9ydGVkCj4+PiAgICAgICAgICAgICAgNSBzdHJlYW1zOiBub3Qgc3VwcG9ydGVkCj4+PiAgICAg
+ICAgICAgICAgNiBzdHJlYW1zOiBub3Qgc3VwcG9ydGVkCj4+PiAgICAgICAgICAgICAgNyBzdHJl
+YW1zOiBub3Qgc3VwcG9ydGVkCj4+PiAgICAgICAgICAgICAgOCBzdHJlYW1zOiBub3Qgc3VwcG9y
+dGVkCj4+PiAgICAgICAgICBWSFQgVFggaGlnaGVzdCBzdXBwb3J0ZWQ6IDAgTWJwcwo+Pj4gICAg
+ICAgICAgQml0cmF0ZXMgKG5vbi1IVCk6Cj4+PiAgICAgICAgICAgICAgKiA2LjAgTWJwcwo+Pj4g
+ICAgICAgICAgICAgICogOS4wIE1icHMKPj4+ICAgICAgICAgICAgICAqIDEyLjAgTWJwcwo+Pj4g
+ICAgICAgICAgICAgICogMTguMCBNYnBzCj4+PiAgICAgICAgICAgICAgKiAyNC4wIE1icHMKPj4+
+ICAgICAgICAgICAgICAqIDM2LjAgTWJwcwo+Pj4gICAgICAgICAgICAgICogNDguMCBNYnBzCj4+
+PiAgICAgICAgICAgICAgKiA1NC4wIE1icHMKPj4+ICAgICAgICAgIEZyZXF1ZW5jaWVzOgo+Pj4g
+ICAgICAgICAgICAgICogNTE4MCBNSHogWzM2XSAoMTcuMCBkQm0pCj4+PiAgICAgICAgICAgICAg
+KiA1MjAwIE1IeiBbNDBdICgxNy4wIGRCbSkKPj4+ICAgICAgICAgICAgICAqIDUyMjAgTUh6IFs0
+NF0gKDE3LjAgZEJtKQo+Pj4gICAgICAgICAgICAgICogNTI0MCBNSHogWzQ4XSAoMTcuMCBkQm0p
+Cj4+PiAgICAgICAgICAgICAgKiA1MjYwIE1IeiBbNTJdICgyMy4wIGRCbSkgKG5vIElSLCByYWRh
+ciBkZXRlY3Rpb24pCj4+PiAgICAgICAgICAgICAgICBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDEw
+NzYgc2VjKQo+Pj4gICAgICAgICAgICAgICAgREZTIENBQyB0aW1lOiA2MDAwMCBtcwo+Pj4gICAg
+ICAgICAgICAgICogNTI4MCBNSHogWzU2XSAoMjMuMCBkQm0pIChubyBJUiwgcmFkYXIgZGV0ZWN0
+aW9uKQo+Pj4gICAgICAgICAgICAgICAgREZTIHN0YXRlOiB1c2FibGUgKGZvciAxMDc2IHNlYykK
+Pj4+ICAgICAgICAgICAgICAgIERGUyBDQUMgdGltZTogNjAwMDAgbXMKPj4+ICAgICAgICAgICAg
+ICAqIDUzMDAgTUh6IFs2MF0gKDIzLjAgZEJtKSAobm8gSVIsIHJhZGFyIGRldGVjdGlvbikKPj4+
+ICAgICAgICAgICAgICAgIERGUyBzdGF0ZTogdXNhYmxlIChmb3IgMTA3NiBzZWMpCj4+PiAgICAg
+ICAgICAgICAgICBERlMgQ0FDIHRpbWU6IDYwMDAwIG1zCj4+PiAgICAgICAgICAgICAgKiA1MzIw
+IE1IeiBbNjRdICgyMy4wIGRCbSkgKG5vIElSLCByYWRhciBkZXRlY3Rpb24pCj4+PiAgICAgICAg
+ICAgICAgICBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDEwNzYgc2VjKQo+Pj4gICAgICAgICAgICAg
+ICAgREZTIENBQyB0aW1lOiA2MDAwMCBtcwo+Pj4gICAgICAgICAgICAgICogNTUwMCBNSHogWzEw
+MF0gKGRpc2FibGVkKQo+Pj4gICAgICAgICAgICAgICogNTUyMCBNSHogWzEwNF0gKGRpc2FibGVk
+KQo+Pj4gICAgICAgICAgICAgICogNTU0MCBNSHogWzEwOF0gKGRpc2FibGVkKQo+Pj4gICAgICAg
+ICAgICAgICogNTU2MCBNSHogWzExMl0gKGRpc2FibGVkKQo+Pj4gICAgICAgICAgICAgICogNTU4
+MCBNSHogWzExNl0gKGRpc2FibGVkKQo+Pj4gICAgICAgICAgICAgICogNTYwMCBNSHogWzEyMF0g
+KGRpc2FibGVkKQo+Pj4gICAgICAgICAgICAgICogNTYyMCBNSHogWzEyNF0gKGRpc2FibGVkKQo+
+Pj4gICAgICAgICAgICAgICogNTY0MCBNSHogWzEyOF0gKGRpc2FibGVkKQo+Pj4gICAgICAgICAg
+ICAgICogNTY2MCBNSHogWzEzMl0gKGRpc2FibGVkKQo+Pj4gICAgICAgICAgICAgICogNTY4MCBN
+SHogWzEzNl0gKGRpc2FibGVkKQo+Pj4gICAgICAgICAgICAgICogNTcwMCBNSHogWzE0MF0gKGRp
+c2FibGVkKQo+Pj4gICAgICAgICAgICAgICogNTcyMCBNSHogWzE0NF0gKGRpc2FibGVkKQo+Pj4g
+ICAgICAgICAgICAgICogNTc0NSBNSHogWzE0OV0gKDMwLjAgZEJtKQo+Pj4gICAgICAgICAgICAg
+ICogNTc2NSBNSHogWzE1M10gKDMwLjAgZEJtKQo+Pj4gICAgICAgICAgICAgICogNTc4NSBNSHog
+WzE1N10gKDMwLjAgZEJtKQo+Pj4gICAgICAgICAgICAgICogNTgwNSBNSHogWzE2MV0gKDMwLjAg
+ZEJtKQo+Pj4gICAgICAgICAgICAgICogNTgyNSBNSHogWzE2NV0gKDMwLjAgZEJtKQo+Pj4gICAg
+ICBTdXBwb3J0ZWQgY29tbWFuZHM6Cj4+PiAgICAgICAgICAgKiBuZXdfaW50ZXJmYWNlCj4+PiAg
+ICAgICAgICAgKiBzZXRfaW50ZXJmYWNlCj4+PiAgICAgICAgICAgKiBuZXdfa2V5Cj4+PiAgICAg
+ICAgICAgKiBzdGFydF9hcAo+Pj4gICAgICAgICAgICogbmV3X3N0YXRpb24KPj4+ICAgICAgICAg
+ICAqIHNldF9ic3MKPj4+ICAgICAgICAgICAqIGF1dGhlbnRpY2F0ZQo+Pj4gICAgICAgICAgICog
+YXNzb2NpYXRlCj4+PiAgICAgICAgICAgKiBkZWF1dGhlbnRpY2F0ZQo+Pj4gICAgICAgICAgICog
+ZGlzYXNzb2NpYXRlCj4+PiAgICAgICAgICAgKiBqb2luX2lic3MKPj4+ICAgICAgICAgICAqIHJl
+bWFpbl9vbl9jaGFubmVsCj4+PiAgICAgICAgICAgKiBzZXRfdHhfYml0cmF0ZV9tYXNrCj4+PiAg
+ICAgICAgICAgKiBmcmFtZQo+Pj4gICAgICAgICAgICogZnJhbWVfd2FpdF9jYW5jZWwKPj4+ICAg
+ICAgICAgICAqIHNldF93aXBoeV9uZXRucwo+Pj4gICAgICAgICAgICogc2V0X2NoYW5uZWwKPj4+
+ICAgICAgICAgICAqIHNldF93ZHNfcGVlcgo+Pj4gICAgICAgICAgICogcHJvYmVfY2xpZW50Cj4+
+PiAgICAgICAgICAgKiBzZXRfbm9hY2tfbWFwCj4+PiAgICAgICAgICAgKiByZWdpc3Rlcl9iZWFj
+b25zCj4+PiAgICAgICAgICAgKiBzdGFydF9wMnBfZGV2aWNlCj4+PiAgICAgICAgICAgKiBzZXRf
+bWNhc3RfcmF0ZQo+Pj4gICAgICAgICAgICogdGVzdG1vZGUKPj4+ICAgICAgICAgICAqIGNoYW5u
+ZWxfc3dpdGNoCj4+PiAgICAgICAgICAgKiBVbmtub3duIGNvbW1hbmQgKDEwNCkKPj4+ICAgICAg
+ICAgICAqIGNvbm5lY3QKPj4+ICAgICAgICAgICAqIGRpc2Nvbm5lY3QKPj4+ICAgICAgU3VwcG9y
+dGVkIFRYIGZyYW1lIHR5cGVzOgo+Pj4gICAgICAgICAgICogSUJTUzogMHgwMCAweDEwIDB4MjAg
+MHgzMCAweDQwIDB4NTAgMHg2MCAweDcwIDB4ODAgMHg5MAo+Pj4gMHhhMCAweGIwIDB4YzAgMHhk
+MCAweGUwIDB4ZjAKPj4+ICAgICAgICAgICAqIG1hbmFnZWQ6IDB4MDAgMHgxMCAweDIwIDB4MzAg
+MHg0MCAweDUwIDB4NjAgMHg3MCAweDgwIDB4OTAKPj4+IDB4YTAgMHhiMCAweGMwIDB4ZDAgMHhl
+MCAweGYwCj4+PiAgICAgICAgICAgKiBBUDogMHgwMCAweDEwIDB4MjAgMHgzMCAweDQwIDB4NTAg
+MHg2MCAweDcwIDB4ODAgMHg5MCAweGEwCj4+PiAweGIwIDB4YzAgMHhkMCAweGUwIDB4ZjAKPj4+
+ICAgICAgICAgICAqIEFQL1ZMQU46IDB4MDAgMHgxMCAweDIwIDB4MzAgMHg0MCAweDUwIDB4NjAg
+MHg3MCAweDgwIDB4OTAKPj4+IDB4YTAgMHhiMCAweGMwIDB4ZDAgMHhlMCAweGYwCj4+PiAgICAg
+ICAgICAgKiBtZXNoIHBvaW50OiAweDAwIDB4MTAgMHgyMCAweDMwIDB4NDAgMHg1MCAweDYwIDB4
+NzAgMHg4MAo+Pj4gMHg5MCAweGEwIDB4YjAgMHhjMCAweGQwIDB4ZTAgMHhmMAo+Pj4gICAgICAg
+ICAgICogUDJQLWNsaWVudDogMHgwMCAweDEwIDB4MjAgMHgzMCAweDQwIDB4NTAgMHg2MCAweDcw
+IDB4ODAKPj4+IDB4OTAgMHhhMCAweGIwIDB4YzAgMHhkMCAweGUwIDB4ZjAKPj4+ICAgICAgICAg
+ICAqIFAyUC1HTzogMHgwMCAweDEwIDB4MjAgMHgzMCAweDQwIDB4NTAgMHg2MCAweDcwIDB4ODAg
+MHg5MAo+Pj4gMHhhMCAweGIwIDB4YzAgMHhkMCAweGUwIDB4ZjAKPj4+ICAgICAgICAgICAqIFAy
+UC1kZXZpY2U6IDB4MDAgMHgxMCAweDIwIDB4MzAgMHg0MCAweDUwIDB4NjAgMHg3MCAweDgwCj4+
+PiAweDkwIDB4YTAgMHhiMCAweGMwIDB4ZDAgMHhlMCAweGYwCj4+PiAgICAgIFN1cHBvcnRlZCBS
+WCBmcmFtZSB0eXBlczoKPj4+ICAgICAgICAgICAqIElCU1M6IDB4NDAgMHhiMCAweGMwIDB4ZDAK
+Pj4+ICAgICAgICAgICAqIG1hbmFnZWQ6IDB4NDAgMHhkMAo+Pj4gICAgICAgICAgICogQVA6IDB4
+MDAgMHgyMCAweDQwIDB4YTAgMHhiMCAweGMwIDB4ZDAKPj4+ICAgICAgICAgICAqIEFQL1ZMQU46
+IDB4MDAgMHgyMCAweDQwIDB4YTAgMHhiMCAweGMwIDB4ZDAKPj4+ICAgICAgICAgICAqIG1lc2gg
+cG9pbnQ6IDB4YjAgMHhjMCAweGQwCj4+PiAgICAgICAgICAgKiBQMlAtY2xpZW50OiAweDQwIDB4
+ZDAKPj4+ICAgICAgICAgICAqIFAyUC1HTzogMHgwMCAweDIwIDB4NDAgMHhhMCAweGIwIDB4YzAg
+MHhkMAo+Pj4gICAgICAgICAgICogUDJQLWRldmljZTogMHg0MCAweGQwCj4+PiAgICAgIHNvZnR3
+YXJlIGludGVyZmFjZSBtb2RlcyAoY2FuIGFsd2F5cyBiZSBhZGRlZCk6Cj4+PiAgICAgICAgICAg
+KiBBUC9WTEFOCj4+PiAgICAgICAgICAgKiBtb25pdG9yCj4+PiAgICAgIHZhbGlkIGludGVyZmFj
+ZSBjb21iaW5hdGlvbnM6Cj4+PiAgICAgICAgICAgKiAjeyBtYW5hZ2VkLCBQMlAtY2xpZW50IH0g
+PD0gOCwgI3sgUDJQLUdPIH0gPD0gMywgI3sKPj4+IFAyUC1kZXZpY2UgfSA8PSAxLCAjeyBBUCB9
+IDw9IDcsCj4+PiAgICAgICAgICAgICB0b3RhbCA8PSA4LCAjY2hhbm5lbHMgPD0gMSwgU1RBL0FQ
+IEJJIG11c3QgbWF0Y2gKPj4+ICAgICAgSFQgQ2FwYWJpbGl0eSBvdmVycmlkZXM6Cj4+PiAgICAg
+ICAgICAgKiBNQ1M6IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmCj4+PiAgICAgICAgICAg
+KiBtYXhpbXVtIEEtTVNEVSBsZW5ndGgKPj4+ICAgICAgICAgICAqIHN1cHBvcnRlZCBjaGFubmVs
+IHdpZHRoCj4+PiAgICAgICAgICAgKiBzaG9ydCBHSSBmb3IgNDAgTUh6Cj4+PiAgICAgICAgICAg
+KiBtYXggQS1NUERVIGxlbmd0aCBleHBvbmVudAo+Pj4gICAgICAgICAgICogbWluIE1QRFUgc3Rh
+cnQgc3BhY2luZwo+Pj4gICAgICBEZXZpY2Ugc3VwcG9ydHMgVFggc3RhdHVzIHNvY2tldCBvcHRp
+b24uCj4+PiAgICAgIERldmljZSBzdXBwb3J0cyBIVC1JQlNTLgo+Pj4gICAgICBEZXZpY2Ugc3Vw
+cG9ydHMgU0FFIHdpdGggQVVUSEVOVElDQVRFIGNvbW1hbmQKPj4+ICAgICAgRGV2aWNlIHN1cHBv
+cnRzIHNjYW4gZmx1c2guCj4+PiAgICAgIERldmljZSBzdXBwb3J0cyBwZXItdmlmIFRYIHBvd2Vy
+IHNldHRpbmcKPj4+ICAgICAgRHJpdmVyIHN1cHBvcnRzIGEgdXNlcnNwYWNlIE1QTQo+Pj4gICAg
+ICBEcml2ZXIvZGV2aWNlIGJhbmR3aWR0aCBjaGFuZ2VzIGR1cmluZyBCU1MgbGlmZXRpbWUgKEFQ
+L0dPIG1vZGUpCj4+PiAgICAgIERldmljZSBzdXBwb3J0cyBzdGF0aWMgU01QUwo+Pj4gPT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPj4+Cj4+PiBJ
+IGFtIGdyYXRlZnVsIGZvciBhbnkgaGVscCBoZXJlIGFuZCBkbyBoYXZlIHNvbWUgdGltZSB0byBo
+ZWxwCj4+PiBkZWJ1Z2dpbmcgdGhlIGlzc3VlLgo+Pj4KPj4+IE1hcmNlbAo+Pj4KPj4+IC0tCj4+
+Pgo+Pj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tCj4+PiBUaGlzIG1lc3NhZ2UgaXMgbm90IGludGVuZGVkIHRvIGhhdmUKPj4+IGNvbnRyYWN0
+dWFsIGVmZmVjdAo+Pj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCj4+Pgo+Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KPj4+IGF0aDEwayBtYWlsaW5nIGxpc3QKPj4+IGF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCj4+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawo+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwo+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+Cj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4K
+Pgo+Cj4gLS0KPiBKb3JnZSBCYXJhbmRhCj4gUmVzZWFyY2ggRW5naW5lZXIsIE1TYwo+IGpvcmdl
+LmJhcmFuZGFAY3R0Yy5lcwo+Cj4gQ2VudHJlIFRlY25vbMOyZ2ljIGRlIFRlbGVjb211bmljYWNp
+b25zIGRlIENhdGFsdW55YSAoQ1RUQykKPiBBdi4gQ2FybCBGcmllZHJpY2ggR2F1c3MsIDcKPiAw
+ODg2MCBDYXN0ZWxsZGVmZWxzLCBCYXJjZWxvbmEgKFNwYWluKQo+IFRlbDogKzM0IDkzIDY0NSAy
+OSAwMCBFeHQ6IDIxNzEKPiBGYXguICszNCA5MyA2NDUgMjkgMDEKPiB3d3cuY3R0Yy5lcwo+Cj4K
+Pgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRo
+MTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
+MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsK
