@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qg0-x229.google.com ([2607:f8b0:400d:c04::229])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZZrO7-000657-Sp
- for ath10k@lists.infradead.org; Thu, 10 Sep 2015 02:15:00 +0000
-Received: by qgx61 with SMTP id 61so24674819qgx.3
- for <ath10k@lists.infradead.org>; Wed, 09 Sep 2015 19:14:38 -0700 (PDT)
+ id 1ZZuhh-0001Ed-HP
+ for ath10k@lists.infradead.org; Thu, 10 Sep 2015 05:47:26 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 3/3] ath10k: implement mesh support
+References: <1440673024-13696-1-git-send-email-me@bobcopeland.com>
+ <1440673024-13696-4-git-send-email-me@bobcopeland.com>
+ <87oahc9g9h.fsf@kamboji.qca.qualcomm.com>
+ <87fv2o9cvl.fsf@kamboji.qca.qualcomm.com>
+ <20150909164945.GA4062@localhost>
+Date: Thu, 10 Sep 2015 08:46:54 +0300
+In-Reply-To: <20150909164945.GA4062@localhost> (Bob Copeland's message of
+ "Wed, 9 Sep 2015 12:49:45 -0400")
+Message-ID: <87oaha4yi9.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <55F0B995.40407@candelatech.com>
-References: <55CCDBF9.2050205@candelatech.com>
- <CAJn6HhvrmvXFTyxAuxXpbVmQZK6qSRKXJPJkwBY3NfjgPHWECw@mail.gmail.com>
- <55F0B995.40407@candelatech.com>
-Date: Thu, 10 Sep 2015 05:14:38 +0300
-Message-ID: <CAJn6HhuEdaufq_oHz8f2+ETcGEXqBj77iOrt=C4Za+7QtD_i3Q@mail.gmail.com>
-Subject: Re: New CT firmware beta-15 available.
-From: Igor Pavlov <igor.arabesc.pavlov@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +27,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
-Cc: Ben Greear <greearb@candelatech.com>
+To: Bob Copeland <me@bobcopeland.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-2015-09-10 1:58 GMT+03:00 Ben Greear <greearb@candelatech.com>:
-> Does it act any better if you use the official 'firmware-2.bin'
-> for firmware?
+Bob Copeland <me@bobcopeland.com> writes:
 
-No, it's unstable.
-I haven't found stable firmware version yet.
+> On Wed, Sep 09, 2015 at 12:10:38PM +0300, Kalle Valo wrote:
+>> > I did a quick smoke test and saw the splat below. It's this warning from
+>> > cfg80211:
+>> >
+>> > 			/*
+>> > 			 * Don't advertise an unsupported type
+>> > 			 * in a combination.
+>> > 			 */
+>> > 			if (WARN_ON((wiphy->interface_modes & types) != types))
+>> > 				return -EINVAL;
+>
+> OK, this happens when mesh is configured out (we mask off the mesh
+> interface_modes internally but not the types).  Sent an updated version
+> with appropriate ifdefs added.
 
-I tried firmware-4.bin (md5: eca8fd35aec383278223efdf35a00f33,
-0067c0c5dff032fd45137815cdd15134) with the fresh Arch Linux, it's
-unstable too:
-# uname -a
-Linux 4.1.2-2-ARCH #1 SMP PREEMPT Wed Jul 15 08:30:32 UTC 2015 x86_64 GNU/Linux
+Indeed, when I enabled CONFIG_MAC80211_MESH I didn't see the WARN_ON()
+anymore. (I haven't tested your latest version yet, will do it soon)
 
-> What kernel/backport is your OpenWRT based on?
-
-It's standard OpenWRT image from there:
-https://downloads.openwrt.org/chaos_calmer/15.05-rc3/x86/64/
-
-# uname -a
-Linux 3.18.17 #1 SMP Fri Jul 3 20:58:35 CEST 2015 x86_64 GNU/Linux
-
---
-Igor
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
