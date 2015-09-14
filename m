@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from static.88-198-24-112.clients.your-server.de ([88.198.24.112]
- helo=nbd.name)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZbPD3-0006kn-Ir
- for ath10k@lists.infradead.org; Mon, 14 Sep 2015 08:33:59 +0000
-From: Felix Fietkau <nbd@openwrt.org>
-Subject: [PATCH 4.3 RESEND] ath10k: fix DMA related firmware crashes on
- multiple devices
-Date: Mon, 14 Sep 2015 10:33:27 +0200
-Message-Id: <1442219607-12383-1-git-send-email-nbd@openwrt.org>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZbWIQ-00051A-D7
+ for ath10k@lists.infradead.org; Mon, 14 Sep 2015 16:07:58 +0000
+Subject: Re: Need to re-associate firmware peer when SMPS_CHANGED is set?
+References: <55F6540D.9080300@candelatech.com>
+ <CAJ-Vmo=X-6ht1vqJOtJYZWBFr9hMpc3tPYRLrw0tv2GZLiOSKA@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <55F6F0C9.5020603@candelatech.com>
+Date: Mon, 14 Sep 2015 09:07:37 -0700
+MIME-Version: 1.0
+In-Reply-To: <CAJ-Vmo=X-6ht1vqJOtJYZWBFr9hMpc3tPYRLrw0tv2GZLiOSKA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,49 +19,82 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Some platforms really don't like DMA bursts of 256 bytes, and this
-causes the firmware to crash when sending beacons.
-Also, changing this based on the firmware version does not seem to make
-much sense, so use 128 bytes for all versions.
+On 09/14/2015 12:41 AM, Adrian Chadd wrote:
+> Hm! Well, iirc what we did in the rate control code for 11n chips was
+> just to limit the transmit rate control selection to MCS0-7 even
+> though we were in 2- or 3- stream modes.
+>
+> What else is it causing to change?
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Felix Fietkau <nbd@openwrt.org>
----
- drivers/net/wireless/ath/ath10k/hw.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+If rate-ctrl is currently in VHT with MCS 9, and we set the NSS
+to 1, then it can no longer use MCS 9.  Something should proactively
+kick the rate-ctrl logic when this happens.
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 23afcda..678d72a 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -337,7 +337,7 @@ enum ath10k_hw_rate_cck {
- #define TARGET_10X_MAX_FRAG_ENTRIES		0
- 
- /* 10.2 parameters */
--#define TARGET_10_2_DMA_BURST_SIZE		1
-+#define TARGET_10_2_DMA_BURST_SIZE		0
- 
- /* Target specific defines for WMI-TLV firmware */
- #define TARGET_TLV_NUM_VDEVS			4
-@@ -391,7 +391,7 @@ enum ath10k_hw_rate_cck {
- 
- #define TARGET_10_4_TX_DBG_LOG_SIZE		1024
- #define TARGET_10_4_NUM_WDS_ENTRIES		32
--#define TARGET_10_4_DMA_BURST_SIZE		1
-+#define TARGET_10_4_DMA_BURST_SIZE		0
- #define TARGET_10_4_MAC_AGGR_DELIM		0
- #define TARGET_10_4_RX_SKIP_DEFRAG_TIMEOUT_DUP_DETECTION_CHECK 1
- #define TARGET_10_4_VOW_CONFIG			0
+The 10.1 rate-ctrl logic is all sorts of broken, especially with regard
+to configuring this sort of change on the fly.  I'm fixing that in
+CT firmware.  10.1 actually tries to reconfig everything properly
+when SMPS changes, but it will fail to do so because it doesn't know
+how to fetch the rate-ctrl object from the host's memory cache.
+
+I've added an API for driver to request that firmware fetch the rate-ctrl
+object...so calling that, then waiting 1ms, then calling the reassoc() logic
+likely will work at least most of the time.  I didn't want to have to add
+the same fetch + sleep hack for SMPS since the reassoc already does that.
+
+Either way, I can hack the driver accordingly....I'll be testing out my
+changes today.
+
+Hopefully the newer ath10k upstream firmware do this all better, but
+since I don't have source, I've no real idea of that.
+
+Thanks,
+Ben
+
+>
+>
+> -a
+>
+>
+> On 13 September 2015 at 21:58, Ben Greear <greearb@candelatech.com> wrote:
+>> While digging in 10.1 firmware, I notice that setting WMI_PEER_SMPS_STATE
+>> can cause
+>> the chainmask to change.  And, that in turn can change all sorts of things
+>> related to
+>> available rates and such.
+>>
+>> Maybe we should do a re-assoc when we notice SMPS_CHANGED, similar to how it
+>> is done for NSS_CHANGED?
+>>
+>> Thanks,
+>> Ben
+>>
+>> --
+>> Ben Greear <greearb@candelatech.com>
+>> Candela Technologies Inc  http://www.candelatech.com
+>>
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
+
+
 -- 
-2.2.2
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
