@@ -1,11 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH V2] debugfs: don't assume sizeof(bool) to be 4 bytes
-Date: Mon, 14 Sep 2015 17:39:06 +0200
-Message-ID: <1708603.aKpYchk1pa@wuerfel>
-In-Reply-To: <81516fb9c662cc338b5af5b63fbbcde5374e0893.1442202447.git.viresh.kumar@linaro.org>
-References: <81516fb9c662cc338b5af5b63fbbcde5374e0893.1442202447.git.viresh.kumar@linaro.org>
+Date: Tue, 15 Sep 2015 10:13:19 +0100
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V3 2/2] debugfs: don't assume sizeof(bool) to be 4 bytes
+Message-ID: <20150915091319.GH11200@ck-lbox>
+References: <9b705747a138c96c26faee5218f7b47403195b28.1442305897.git.viresh.kumar@linaro.org>
+ <27d37898b4be6b9b9f31b90135f8206ca079a868.1442305897.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <27d37898b4be6b9b9f31b90135f8206ca079a868.1442305897.git.viresh.kumar@linaro.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,30 +20,59 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linaro-kernel@lists.linaro.org
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Avri Altman <avri.altman@intel.com>, Stanislaw Gruszka <sgruszka@redhat.com>, Jiri Slaby <jirislaby@gmail.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Viresh Kumar <viresh.kumar@linaro.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Jaroslav Kysela <perex@perex.cz>, "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>, Kalle Valo <kvalo@qca.qualcomm.com>, Emmanuel Grumbach <emmanuel.grumbach@intel.com>, Luciano Coelho <luciano.coelho@intel.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Ingo Molnar <mingo@kernel.org>, Hariprasad S <hariprasad@chelsio.com>, Thomas Gleixner <tglx@linutronix.de>, Davidlohr Bueso <dave@stgolabs.net>, Eliad Peller <eliad@wizery.com>, Joonsoo Kim <js1304@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Joerg Roedel <joro@8bytes.org>, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, Sebastian Ott <sebott@linux.vnet.ibm.com>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>, Intel Linux Wireless <ilw@linux.intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, Dmitry Monakhov <dmonakhov@openvz.org>, Nick Kossifidis <mickflemm@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Gustavo Padovan <gustavo@padovan.org>, Sasha Levin <sasha.levin@oracle.com>, Tomas Winkler <tomas.winkler@intel.com>, sboyd@codeaurora.org, "open list:B43 WIRELESS DRIVER" <b43-dev@lists.infradead.org>, "James E.J. Bottomley" <JBottomley@odin.com>, Johan Hedberg <johan.hedberg@gmail.com>, Johannes Berg <johannes.berg@intel.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Arik Nemtsov <arik@wizery.com>, Marcel Holtmann <marcel@holtmann.org>, Doug Thompson <dougthompson@xmission.com>, Michal Hocko <mhocko@suse.com>, Akinobu Mita <akinobu.mita@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Michael Kerrisk <mtk.manpages@gmail.com>, Joe Perches <joe@perches.com>, Mark Brown <broonie@kernel.org>, Borislav Petkov <bp@alien8.de>, Oleg Nesterov <oleg@redhat.com>, Florian Fainelli <f.fainelli@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>, "open list:EDAC-CORE" <linux-edac@vger.kernel.org>, "moderated list:ARM64 PORT AARCH64 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, Haggai Eran <haggaie@mellanox.com>, Narsimhulu Musini <nmusini@cisco.com>, Alexander Duyck <alexander.h.duyck@redhat.com>, Chaya Rachel Ivgi <chaya.rachel.ivgi@intel.com>, "open list:CISCO SCSI HBA DRIVER" <linux-scsi@vger.kernel.org>, Brian Silverman <bsilver16384@gmail.com>, "Luis R. Rodriguez" <mcgrof@do-not-panic.com>, gregkh@linuxfoundation.org, "open list:ULTRA-WIDEBAND UWB SUBSYSTEM:" <linux-usb@vger.kernel.org>, "open list:NETWORKING DRIVERS WIRELESS" <linux-wireless@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Sesidhar Baddela <sebaddel@cisco.com>, open list <linux-kernel@vger.kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>, "open list:AMD IOMMU AMD-VI" <iommu@lists.linux-foundation.org>, "open list:QUALCOMM ATHEROS ATH9K WIRELESS DRIVER" <ath9k-devel@lists.ath9k.org>, Rafael Wysocki <rjw@rjwysocki.net>, Wang Long <long.wanglong@huawei.com>, Tejun Heo <tj@kernel.org>, David Rientjes <rientjes@google.com>, QCA ath9k Development <ath9k-devel@qca.qualcomm.com>, Len Brown <lenb@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "open list:CXGB4 ETHERNET DRIVER CXGB4" <netdev@vger.kernel.org>, Larry Finger <Larry.Finger@lwfinger.net>
+To: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: "open list:NETWORKING DRIVERS
+ (WIRELESS)" <linux-wireless@vger.kernel.org>, "moderated list:SOUND - SOC LAYER /
+ DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Avri Altman <avri.altman@intel.com>, Stanislaw Gruszka <sgruszka@redhat.com>, Jiri Slaby <jirislaby@gmail.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Will Deacon <will.deacon@arm.com>, Jaroslav Kysela <perex@perex.cz>, "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>, Kalle Valo <kvalo@qca.qualcomm.com>, Emmanuel Grumbach <emmanuel.grumbach@intel.com>, Luciano Coelho <luciano.coelho@intel.com>, Wang Long <long.wanglong@huawei.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Ingo Molnar <mingo@kernel.org>, open list <linux-kernel@vger.kernel.org>, Johan Hedberg <johan.hedberg@gmail.com>, Davidlohr Bueso <dave@stgolabs.net>, Johannes Berg <johannes.berg@intel.com>, Joonsoo Kim <js1304@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Joerg Roedel <joro@8bytes.org>, "open
+ list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, Sebastian Ott <sebott@linux.vnet.ibm.com>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS
+ DRIVER" <ath10k@lists.infradead.org>, Intel Linux Wireless <ilw@linux.intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, Dmitry Monakhov <dmonakhov@openvz.org>, Nick Kossifidis <mickflemm@gmail.com>, "open list:B43 WIRELESS DRIVER" <b43-dev@lists.infradead.org>, Doug Thompson <dougthompson@xmission.com>, Gustavo Padovan <gustavo@padovan.org>, Sasha Levin <sasha.levin@oracle.com>, Tomas Winkler <tomas.winkler@intel.com>, sboyd@codeaurora.org, Len Brown <lenb@kernel.org>, linaro-kernel@lists.linaro.org, Hariprasad S <hariprasad@chelsio.com>, arnd@arndb.de, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Vlastimil Babka <vbabka@suse.cz>, Arik Nemtsov <arik@wizery.com>, Marcel Holtmann <marcel@holtmann.org>, "James E.J.
+ Bottomley" <JBottomley@odin.com>, Michal Hocko <mhocko@suse.com>, Akinobu Mita <akinobu.mita@gmail.com>, QCA ath9k Development <ath9k-devel@qca.qualcomm.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Tejun Heo <tj@kernel.org>, Mark Brown <broonie@kernel.org>, Borislav Petkov <bp@alien8.de>, Steven Rostedt <rostedt@goodmis.org>, Florian Fainelli <f.fainelli@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mel Gorman <mgorman@suse.de>, "moderated list:ARM64 PORT (AARCH64
+ ARCHITECTURE)" <linux-arm-kernel@lists.infradead.org>, "open list:EDAC-CORE" <linux-edac@vger.kernel.org>, Haggai Eran <haggaie@mellanox.com>, Narsimhulu Musini <nmusini@cisco.com>, Chaya Rachel Ivgi <chaya.rachel.ivgi@intel.com>, "open list:CISCO SCSI
+ HBA DRIVER" <linux-scsi@vger.kernel.org>, Brian Silverman <bsilver16384@gmail.com>, "Luis R. Rodriguez" <mcgrof@do-not-panic.com>, gregkh@linuxfoundation.org, "open list:ULTRA-WIDEBAND (UWB)
+ SUBSYSTEM:" <linux-usb@vger.kernel.org>, Rafael Wysocki <rjw@rjwysocki.net>, Liam Girdwood <lgirdwood@gmail.com>, Sesidhar Baddela <sebaddel@cisco.com>, Andy Lutomirski <luto@amacapital.net>, "open list:BLUETOOTH
+ DRIVERS" <linux-bluetooth@vger.kernel.org>, "open
+ list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>, "open list:QUALCOMM ATHEROS ATH9K
+ WIRELESS DRIVER" <ath9k-devel@lists.ath9k.org>, Thomas Gleixner <tglx@linutronix.de>, Johannes Weiner <hannes@cmpxchg.org>, Joe Perches <joe@perches.com>, Eliad Peller <eliad@wizery.com>, Andrew Morton <akpm@linux-foundation.org>, Alexander Duyck <alexander.h.duyck@redhat.com>, "open list:CXGB4 ETHERNET DRIVER (CXGB4)" <netdev@vger.kernel.org>, Larry Finger <Larry.Finger@lwfinger.net>
 
-On Monday 14 September 2015 09:21:54 Viresh Kumar wrote:
-> diff --git a/drivers/acpi/ec_sys.c b/drivers/acpi/ec_sys.c
-> index b4c216bab22b..bea8e425a8de 100644
-> --- a/drivers/acpi/ec_sys.c
-> +++ b/drivers/acpi/ec_sys.c
-> @@ -128,7 +128,7 @@ static int acpi_ec_add_debugfs(struct acpi_ec *ec, unsigned int ec_device_count)
->  	if (!debugfs_create_x32("gpe", 0444, dev_dir, (u32 *)&first_ec->gpe))
->  		goto error;
->  	if (!debugfs_create_bool("use_global_lock", 0444, dev_dir,
-> -				 (u32 *)&first_ec->global_lock))
-> +				 &first_ec->global_lock))
->  		goto error;
->  
->  	if (write_support)
+On Tue, Sep 15, 2015 at 02:04:59PM +0530, Viresh Kumar wrote:
+> Long back 'bool' type used to be a typecast to 'int', but that changed
+> in v2.6.19. And that is a typecast to _Bool now, which (mostly) takes
+> just a byte. Anyway, the bool type is implementation defined, and better
+> we don't assume its size to be 4 bytes or 1.
+> 
+> The problem with current code is that it reads/writes 4 bytes for a
+> boolean, which will read/update 3 excess bytes following the boolean
+> variable (when sizeof(bool) is 1 byte). And that can lead to hard to fix
+> bugs. It was a nightmare cracking this one.
+> 
+> The debugfs code had this bug since the first time it got introduced,
+> but was never got caught, strange. Maybe the bool variables (monitored
+> by debugfs) were followed by an 'int' or something bigger and the pad
+> bytes made sure, we never see this issue.
+> 
+> But the OPP (Operating performance points) library have three booleans
+> allocated to contiguous bytes and this bug got hit quite soon (The
+> debugfs support for OPP is yet to be merged). It showed up as corruption
+> of the debugfs boolean symbols, where Y were becoming N and vice versa.
+> 
+> Fix it properly by changing the last argument of debugfs_create_bool(),
+> to type 'bool *' instead of 'u32 *', so that it doesn't depend on sizeof
+> bool at all.
+> 
+> That required updates to all user sites as well in a single commit.
+> regmap core was also using debugfs_{read|write}_file_bool(), directly
+> and variable types were updated for that to be bool as well.
+> 
+> Acked-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
 
-This one might need a separate patch that can be backported to stable, as
-the original code is already broken on big-endian 64-bit machines:
-global_lock is 'unsigned long'.
+For the minor wm_adsp change:
 
-	Arnd
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
+Thanks,
+Charles
 
 _______________________________________________
 ath10k mailing list
