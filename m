@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zc0HI-0000BO-Ab
- for ath10k@lists.infradead.org; Wed, 16 Sep 2015 00:08:48 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  Fix CCK rate definitions.
-Date: Tue, 15 Sep 2015 17:08:18 -0700
-Message-Id: <1442362098-24859-1-git-send-email-greearb@candelatech.com>
+ id 1Zc11U-0004av-Kz
+ for ath10k@lists.infradead.org; Wed, 16 Sep 2015 00:56:33 +0000
+From: Ben Greear <greearb@candelatech.com>
+Subject: CT firmware beta-15 can now configure arbitrary rate-sets.
+Message-ID: <55F8BE2B.7030004@candelatech.com>
+Date: Tue, 15 Sep 2015 17:56:11 -0700
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,52 +16,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
+To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-From: Ben Greear <greearb@candelatech.com>
+Here is the changelog note.  This requires some corresponding driver patchs to
+enable configuring the rateset (and fetching the tx-ratectrl memory from the host)
+I tested this on my 4.0.4+ kernel.
 
-The old values did NOT match what is found in 10.1.467
-firmware.  I figure it is likely it is wrong for the others
-as well.
+Should be useful for anyone trying make a station transmit in pure /b mode.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/hw.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+And, likely could help tune various other ratesets as well.  So far, the ath10k
+driver patches do not enable HT or VHT filters, but I hope to add that soon.
+If all goes according to plan, the firmware will just magically work for HT and
+VHT ratemasks.
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 4c5eee4..710ca32 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -202,13 +202,13 @@ enum ath10k_hw_rate_ofdm {
- };
- 
- enum ath10k_hw_rate_cck {
--	ATH10K_HW_RATE_CCK_LP_11M = 0,
--	ATH10K_HW_RATE_CCK_LP_5_5M,
--	ATH10K_HW_RATE_CCK_LP_2M,
--	ATH10K_HW_RATE_CCK_LP_1M,
--	ATH10K_HW_RATE_CCK_SP_11M,
--	ATH10K_HW_RATE_CCK_SP_5_5M,
--	ATH10K_HW_RATE_CCK_SP_2M,
-+	ATH10K_HW_RATE_CCK_LP_11M = 0x40,
-+	ATH10K_HW_RATE_CCK_LP_5_5M = 0x41,
-+	ATH10K_HW_RATE_CCK_LP_2M = 0x42,
-+	ATH10K_HW_RATE_CCK_LP_1M = 0x43,
-+	ATH10K_HW_RATE_CCK_SP_11M = ATH10K_HW_RATE_CCK_LP_11M | 0x4,
-+	ATH10K_HW_RATE_CCK_SP_5_5M = ATH10K_HW_RATE_CCK_LP_5_5M | 0x4,
-+	ATH10K_HW_RATE_CCK_SP_2M = ATH10K_HW_RATE_CCK_LP_2M | 0x4,
- };
- 
- /* Target specific defines for MAIN firmware */
+Some of the ath10k driver patches probably help/work-with upstream firmware as well,
+but I don't have time to deal with dis-entangling it from my CT specific changes.
+If someone else wants to do so, please be my guest.
+
+   *  Allow setting arbitrary rate-mask.  This allows the user to disable all but
+      /b legacy rates, for instance.  It should also allow configuring subsets of
+      all other HT and VHT rates, but that has not yet been tested.
+
+      In addition, fix several bugs that caused the firmware to ignore tx-rate-ctrl
+      settings because it did not properly fetch the cached RAM from the host OS.
+
+      To enable these features, you need to be using the CT kernel patches (currently
+      only in 4.0, but will at least be ported forward to 4.2 sometime soon.  Might
+      not be ported to 3.17 or other older kernels.)
+
+
+http://www.candelatech.com/ath10k.php
+
+
+http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-4.0.dev.y/.git;a=summary
+
+
+Thanks,
+Ben
+
 -- 
-2.4.3
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
