@@ -1,23 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZcbmQ-0007Qt-8J
- for ath10k@lists.infradead.org; Thu, 17 Sep 2015 16:11:27 +0000
-Subject: Re: WLE600VX from PCEngines
-References: <CAGNwC3mbOJcEyrJGB8vcQ8Sa7ip-g+TcuCG9Ksm+8xYvAqiQ6w@mail.gmail.com>
- <CALhHN=rHMicEVMWrHowFwt+U+EwsKeh03SKGfoHtpD+_kKj_4w@mail.gmail.com>
- <55EFCFC8.4050303@cttc.es>
- <CALhHN=p71pLTUWJLB3Tnt--D0JbWXjw5vafhT=GjmGek_D1CYw@mail.gmail.com>
- <CAGNwC3kzphTT2f7p8HT44V_3Lo08j3Q774ObRVFj4Q81Z6yWjg@mail.gmail.com>
- <CAGNwC3kLtBs3pYFPfVZkzxzZUyk_m188hZid59ra0R+miVJw7w@mail.gmail.com>
- <55F01104.6010600@tu-bs.de> <55F01328.4070403@cttc.es>
- <55F014CF.6090809@tu-bs.de> <55FA9590.1090200@cttc.es>
- <55FADEC6.2030107@cttc.es>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <55FAE618.5080603@candelatech.com>
-Date: Thu, 17 Sep 2015 09:11:04 -0700
+Received: from mail-ob0-x229.google.com ([2607:f8b0:4003:c01::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZcdIi-0003Bs-Mx
+ for ath10k@lists.infradead.org; Thu, 17 Sep 2015 17:48:53 +0000
+Received: by obqa2 with SMTP id a2so19312218obq.3
+ for <ath10k@lists.infradead.org>; Thu, 17 Sep 2015 10:48:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <55FADEC6.2030107@cttc.es>
+In-Reply-To: <20150916123937.GB2051@localhost>
+References: <1440673024-13696-1-git-send-email-me@bobcopeland.com>
+ <1440673024-13696-4-git-send-email-me@bobcopeland.com>
+ <CAKf6xpsaygeFJyX_LKH2r82P2Xvih1GGBTAspKtCsZbBcVO9Ug@mail.gmail.com>
+ <20150829222531.GA8604@localhost>
+ <CAEFj987gvasYnRq8tiFeQitbBmoXAr77hXU2cUW_TsH+viUn8g@mail.gmail.com>
+ <20150916123937.GB2051@localhost>
+Date: Fri, 18 Sep 2015 01:48:30 +0800
+Message-ID: <CAEFj986tjgK-=eBaoR3G8m7wf0m32WLutRypPzMfjj2+MW5ybw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ath10k: implement mesh support
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +25,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jorge Baranda <jbaranda@cttc.es>, ath10k@lists.infradead.org, "Marcel H." <maco@blava.net>
+To: Bob Copeland <me@bobcopeland.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Jason Andryuk <jandryuk@gmail.com>
 
-On 09/17/2015 08:39 AM, Jorge Baranda wrote:
-> Dear Marcel and all,
+Hi, Bob
+
+I have also tested with nwifi mode for non-secured mesh. It seems to
+be worked for me with the following two test scenarios:
+
+Node 1 [ath10k] <---> Node 2 [ath10k] <---> Node 3 [ath10k]
+Node 1 [ath10k] <---> Node 2 [ath9k]
+
+I am using the following:
+compat-wireless-2015-07-21 from OpenWRT
+firmware-5.bin_10.2.4.70.6-2
+
+I just wondering whether using raw wifi is better for encrypted mesh later?
+
+----
+Chun-Yeow
+
+On Wed, Sep 16, 2015 at 8:39 PM, Bob Copeland <me@bobcopeland.com> wrote:
+> On Mon, Aug 31, 2015 at 01:43:28AM +0800, Chun-Yeow Yeoh wrote:
+>> Hi, Bob
+>>
+>> > Yes: you don't want to enable raw mode TX / RX decap in the normal
+>> > case because it's fairly inefficient compared to "native" wifi mode,
+>> > according to my understanding.  The latter doesn't support mesh framing
+>> > however.
+>> >
+>>
+>> The native WiFi mode doesn't support mesh framing. Can you elaborate
+>> more on this?
 >
-> I have also followed your setup for trying to configure the wpa_supplicant program to setup a 80MHz link but it has not been possible.
-> After downloading the last version of wpa_supplicant with git (version 2.5), and using your wpa_supplicant.conf file, the link was not possible to be setup (the
-> log file is attached) .
-
-Please post your supplicant .conf file as well.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+> Sorry, missed this before -- the 'nwifi' mode which is the normal
+> datapath for ath10k discards the QoS header and following mesh header
+> when transmitting, if I recall correctly.  I also had some issues with the
+> received frames when using nwifi RX decap with raw mode TX, but I don't
+> recall exactly the problem.  I can retest with these modes if you really
+> want the details.
+>
+> --
+> Bob Copeland %% http://bobcopeland.com/
 
 _______________________________________________
 ath10k mailing list
