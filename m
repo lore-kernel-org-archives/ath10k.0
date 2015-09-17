@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZcWxT-0002xa-Dl
- for ath10k@lists.infradead.org; Thu, 17 Sep 2015 11:02:31 +0000
+ id 1ZcXDi-0006OZ-Op
+ for ath10k@lists.infradead.org; Thu, 17 Sep 2015 11:19:19 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: move hw_scan worker queuing
-References: <1441269825-344-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 17 Sep 2015 14:01:59 +0300
-In-Reply-To: <1441269825-344-1-git-send-email-michal.kazior@tieto.com> (Michal
- Kazior's message of "Thu, 3 Sep 2015 10:43:45 +0200")
-Message-ID: <878u85ux5k.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: add ATH10K_FW_FEATURE_RAW_MODE_SUPPORT to
+ ath10k_core_fw_feature_str[]
+References: <20150909083437.12465.89335.stgit@potku.adurom.net>
+Date: Thu, 17 Sep 2015 14:18:51 +0300
+In-Reply-To: <20150909083437.12465.89335.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Wed, 09 Sep 2015 11:34:37 +0300")
+Message-ID: <87zj0ltht0.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,24 +24,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> The remain_on_channel callback needs different
-> timeout. Calling ieee80211_queue_work() with a
-> shorter delay after calling it with a longer delay
-> will not change the timer. This caused the
-> offchannel timeout worker to not trigger in time
-> and caused the device to stay on channel longer
-> then expected. This could cause some problems and
-> was be easily reproduced with `iw offchannel`
-> command.
+> This was missed in the original commit adding the flag and ath10k only printed "bit10":
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> ath10k_pci 0000:02:00.0: qca988x hw2.0 (0x4100016c, 0x043202ff) fw 10.2.4.70.6-2 api 3
+> htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-sta 128 raw 0 hwcrypto 1 features no-p2p,bit10
+>
+> Also add a build test to avoid this happening again.
+>
+> Fixes: ccec9038c721 ("ath10k: enable raw encap mode and software crypto engine")
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Thanks, applied.
+Applied.
 
 -- 
 Kalle Valo
