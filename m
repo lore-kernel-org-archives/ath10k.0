@@ -1,22 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ob0-x229.google.com ([2607:f8b0:4003:c01::229])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZcdIi-0003Bs-Mx
- for ath10k@lists.infradead.org; Thu, 17 Sep 2015 17:48:53 +0000
-Received: by obqa2 with SMTP id a2so19312218obq.3
- for <ath10k@lists.infradead.org>; Thu, 17 Sep 2015 10:48:31 -0700 (PDT)
+ id 1Zcj2c-0007Ds-TF
+ for ath10k@lists.infradead.org; Thu, 17 Sep 2015 23:56:39 +0000
+Message-ID: <55FB531E.1030001@codeaurora.org>
+Date: Thu, 17 Sep 2015 16:56:14 -0700
+From: Peter Oh <poh@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20150916123937.GB2051@localhost>
+Subject: Re: [PATCH 3/3] ath10k: implement mesh support
 References: <1440673024-13696-1-git-send-email-me@bobcopeland.com>
  <1440673024-13696-4-git-send-email-me@bobcopeland.com>
  <CAKf6xpsaygeFJyX_LKH2r82P2Xvih1GGBTAspKtCsZbBcVO9Ug@mail.gmail.com>
  <20150829222531.GA8604@localhost>
  <CAEFj987gvasYnRq8tiFeQitbBmoXAr77hXU2cUW_TsH+viUn8g@mail.gmail.com>
  <20150916123937.GB2051@localhost>
-Date: Fri, 18 Sep 2015 01:48:30 +0800
-Message-ID: <CAEFj986tjgK-=eBaoR3G8m7wf0m32WLutRypPzMfjj2+MW5ybw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ath10k: implement mesh support
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+ <CAEFj986tjgK-=eBaoR3G8m7wf0m32WLutRypPzMfjj2+MW5ybw@mail.gmail.com>
+In-Reply-To: <CAEFj986tjgK-=eBaoR3G8m7wf0m32WLutRypPzMfjj2+MW5ybw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,52 +24,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bob Copeland <me@bobcopeland.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Jason Andryuk <jandryuk@gmail.com>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, Bob Copeland <me@bobcopeland.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Jason Andryuk <jandryuk@gmail.com>
 
-Hi, Bob
 
-I have also tested with nwifi mode for non-secured mesh. It seems to
-be worked for me with the following two test scenarios:
-
-Node 1 [ath10k] <---> Node 2 [ath10k] <---> Node 3 [ath10k]
-Node 1 [ath10k] <---> Node 2 [ath9k]
-
-I am using the following:
-compat-wireless-2015-07-21 from OpenWRT
-firmware-5.bin_10.2.4.70.6-2
-
-I just wondering whether using raw wifi is better for encrypted mesh later?
-
-----
-Chun-Yeow
-
-On Wed, Sep 16, 2015 at 8:39 PM, Bob Copeland <me@bobcopeland.com> wrote:
-> On Mon, Aug 31, 2015 at 01:43:28AM +0800, Chun-Yeow Yeoh wrote:
->> Hi, Bob
->>
->> > Yes: you don't want to enable raw mode TX / RX decap in the normal
->> > case because it's fairly inefficient compared to "native" wifi mode,
->> > according to my understanding.  The latter doesn't support mesh framing
->> > however.
->> >
->>
->> The native WiFi mode doesn't support mesh framing. Can you elaborate
->> more on this?
+On 09/17/2015 10:48 AM, Yeoh Chun-Yeow wrote:
+> Hi, Bob
 >
-> Sorry, missed this before -- the 'nwifi' mode which is the normal
-> datapath for ath10k discards the QoS header and following mesh header
-> when transmitting, if I recall correctly.  I also had some issues with the
-> received frames when using nwifi RX decap with raw mode TX, but I don't
-> recall exactly the problem.  I can retest with these modes if you really
-> want the details.
+> I have also tested with nwifi mode for non-secured mesh. It seems to
+> be worked for me with the following two test scenarios:
 >
-> --
-> Bob Copeland %% http://bobcopeland.com/
+> Node 1 [ath10k] <---> Node 2 [ath10k] <---> Node 3 [ath10k]
+> Node 1 [ath10k] <---> Node 2 [ath9k]
+>
+> I am using the following:
+> compat-wireless-2015-07-21 from OpenWRT
+> firmware-5.bin_10.2.4.70.6-2
+>
+> I just wondering whether using raw wifi is better for encrypted mesh
+> later?
+nwifi mode will be in trouble when SNAP/LLC encapsulation used since 
+firmware and hardware have no way to distinguish if it's SNAP header or 
+Mesh Control field.
+
+--
+Peter
+>
+> ----
+> Chun-Yeow
+>
+> On Wed, Sep 16, 2015 at 8:39 PM, Bob Copeland <me@bobcopeland.com> wrote:
+>> On Mon, Aug 31, 2015 at 01:43:28AM +0800, Chun-Yeow Yeoh wrote:
+>>> Hi, Bob
+>>>
+>>>> Yes: you don't want to enable raw mode TX / RX decap in the normal
+>>>> case because it's fairly inefficient compared to "native" wifi mode,
+>>>> according to my understanding.  The latter doesn't support mesh
+> framing
+>>>> however.
+>>>>
+>>> The native WiFi mode doesn't support mesh framing. Can you elaborate
+>>> more on this?
+>> Sorry, missed this before -- the 'nwifi' mode which is the normal
+>> datapath for ath10k discards the QoS header and following mesh header
+>> when transmitting, if I recall correctly.  I also had some issues with
+> the
+>> received frames when using nwifi RX decap with raw mode TX, but I don't
+>> recall exactly the problem.  I can retest with these modes if you really
+>> want the details.
+>>
+>> --
+>> Bob Copeland %% http://bobcopeland.com/
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
 
 _______________________________________________
 ath10k mailing list
