@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Wed, 16 Sep 2015 09:24:59 +0200
-From: Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH V3 2/2] debugfs: don't assume sizeof(bool) to be 4 bytes
-Message-ID: <20150916072459.GC4113@nazgul.tnic>
-References: <9b705747a138c96c26faee5218f7b47403195b28.1442305897.git.viresh.kumar@linaro.org>
- <27d37898b4be6b9b9f31b90135f8206ca079a868.1442305897.git.viresh.kumar@linaro.org>
- <1442313464.1914.21.camel@sipsolutions.net>
- <20150915110447.GI6350@linux>
- <20150915094509.46cca84d@gandalf.local.home>
- <CA+55aFxVQ9jD=jUqPZt76EMe_Tb-_SA8v=rOHeR9Ljdsc6=xGQ@mail.gmail.com>
- <20150915134732.7ff50d03@gandalf.local.home>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20150915134732.7ff50d03@gandalf.local.home>
+Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZcSWT-00027g-8b
+ for ath10k@lists.infradead.org; Thu, 17 Sep 2015 06:18:22 +0000
+Received: by lbcao8 with SMTP id ao8so3919797lbc.3
+ for <ath10k@lists.infradead.org>; Wed, 16 Sep 2015 23:17:59 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH] ath10k: fix MSI-X registering for qca99x0
+Date: Thu, 17 Sep 2015 08:17:33 +0200
+Message-Id: <1442470653-25162-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +17,100 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, "Altman, Avri" <avri.altman@intel.com>, Stanislaw Gruszka <sgruszka@redhat.com>, Jiri Slaby <jirislaby@gmail.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Will Deacon <will.deacon@arm.com>, Jaroslav Kysela <perex@perex.cz>, "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>, Kalle Valo <kvalo@qca.qualcomm.com>, "Grumbach,
- Emmanuel" <emmanuel.grumbach@intel.com>, "Coelho,
- Luciano" <luciano.coelho@intel.com>, Wang Long <long.wanglong@huawei.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Ingo Molnar <mingo@kernel.org>, open list <linux-kernel@vger.kernel.org>, Johan Hedberg <johan.hedberg@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Davidlohr Bueso <dave@stgolabs.net>, Joonsoo Kim <js1304@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Joerg Roedel <joro@8bytes.org>, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, Sebastian Ott <sebott@linux.vnet.ibm.com>, "open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>, Intel Linux Wireless <ilw@linux.intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, Dmitry Monakhov <dmonakhov@openvz.org>, Nick Kossifidis <mickflemm@gmail.com>, "open list:B43 WIRELESS DRIVER" <b43-dev@lists.infradead.org>, Viresh Kumar <viresh.kumar@linaro.org>, Gustavo Padovan <gustavo@padovan.org>, Sasha Levin <sasha.levin@oracle.com>, "Winkler,
- Tomas" <tomas.winkler@intel.com>, "sboyd@codeaurora.org" <sboyd@codeaurora.org>, Len Brown <lenb@kernel.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, Hariprasad S <hariprasad@chelsio.com>, "arnd@arndb.de" <arnd@arndb.de>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Vlastimil Babka <vbabka@suse.cz>, Arik Nemtsov <arik@wizery.com>, Marcel Holtmann <marcel@holtmann.org>, Doug Thompson <dougthompson@xmission.com>, Michal Hocko <mhocko@suse.com>, Akinobu Mita <akinobu.mita@gmail.com>, QCA ath9k Development <ath9k-devel@qca.qualcomm.com>, Tejun Heo <tj@kernel.org>, Mark Brown <broonie@kernel.org>, Eliad Peller <eliad@wizery.com>, Takashi Iwai <tiwai@suse.com>, Florian Fainelli <f.fainelli@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Johannes Berg <johannes@sipsolutions.net>, "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" <linux-arm-kernel@lists.infradead.org>, "open list:EDAC-CORE" <linux-edac@vger.kernel.org>, Haggai Eran <haggaie@mellanox.com>, "James E.J. Bottomley" <JBottomley@odin.com>, "Ivgi,
- Chaya Rachel" <chaya.rachel.ivgi@intel.com>, "open list:CISCO SCSI HBA DRIVER" <linux-scsi@vger.kernel.org>, Brian Silverman <bsilver16384@gmail.com>, "Luis R. Rodriguez" <mcgrof@do-not-panic.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" <linux-usb@vger.kernel.org>, Rafael Wysocki <rjw@rjwysocki.net>, Liam Girdwood <lgirdwood@gmail.com>, Sesidhar Baddela <sebaddel@cisco.com>, Andy Lutomirski <luto@amacapital.net>, "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>, "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>, "open list:QUALCOMM ATHEROS ATH9K WIRELESS DRIVER" <ath9k-devel@lists.ath9k.org>, Narsimhulu Musini <nmusini@cisco.com>, Mel Gorman <mgorman@suse.de>, Johannes Weiner <hannes@cmpxchg.org>, Joe Perches <joe@perches.com>, Michael Kerrisk <mtk.manpages@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Alexander Duyck <alexander.h.duyck@redhat.com>, Linus Torvalds <torvalds@linux-foundation.org>, "open list:CXGB4 ETHERNET DRIVER (CXGB4)" <netdev@vger.kernel.org>, Larry Finger <Larry.Finger@lwfinger.net>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-On Tue, Sep 15, 2015 at 01:47:32PM -0400, Steven Rostedt wrote:
-> What do others think when there's a change that goes across the board
-> this much? BCC OK with you, as just an FYI, I'm doing this? Or should
-> just the lists be enough and if you don't see it, too bad?
+In case of qca99x0 and MSI-X supported/enabled we
+failed during interrupts registering with message:
 
-Bcc sounds good to me.
+ath10k_pci 0000:04:00.0: failed to request MSI-X ce irq 50: -22
 
-(Let's see how many bounces I get when I reply to such a huge CC list.
-:-))
+Issue/fix was reproduced/tested using Dell Latitude E6430 laptop.
 
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/hw.h  | 10 ----------
+ drivers/net/wireless/ath/ath10k/pci.c | 18 +++++-------------
+ 2 files changed, 5 insertions(+), 23 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 23afcda..bc421a5 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -414,16 +414,6 @@ enum ath10k_hw_rate_cck {
+ #define CE_COUNT ar->hw_values->ce_count
+ 
+ /*
+- * Total number of PCIe MSI interrupts requested for all interrupt sources.
+- * PCIe standard forces this to be a power of 2.
+- * Some Host OS's limit MSI requests that can be granted to 8
+- * so for now we abide by this limit and avoid requesting more
+- * than that.
+- */
+-#define MSI_NUM_REQUEST_LOG2	3
+-#define MSI_NUM_REQUEST		(1<<MSI_NUM_REQUEST_LOG2)
+-
+-/*
+  * Granted MSIs are assigned as follows:
+  * Firmware uses the first
+  * Remaining MSIs, if any, are used by Copy Engines
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 1046ab6..110fcad6 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2609,12 +2609,9 @@ static int ath10k_pci_request_irq(struct ath10k *ar)
+ 		return ath10k_pci_request_irq_legacy(ar);
+ 	case 1:
+ 		return ath10k_pci_request_irq_msi(ar);
+-	case MSI_NUM_REQUEST:
++	default:
+ 		return ath10k_pci_request_irq_msix(ar);
+ 	}
+-
+-	ath10k_warn(ar, "unknown irq configuration upon request\n");
+-	return -EINVAL;
+ }
+ 
+ static void ath10k_pci_free_irq(struct ath10k *ar)
+@@ -2657,7 +2654,7 @@ static int ath10k_pci_init_irq(struct ath10k *ar)
+ 
+ 	/* Try MSI-X */
+ 	if (ath10k_pci_irq_mode == ATH10K_PCI_IRQ_AUTO) {
+-		ar_pci->num_msi_intrs = MSI_NUM_REQUEST;
++		ar_pci->num_msi_intrs = MSI_ASSIGN_CE_MAX + 1;
+ 		ret = pci_enable_msi_range(ar_pci->pdev, ar_pci->num_msi_intrs,
+ 					   ar_pci->num_msi_intrs);
+ 		if (ret > 0)
+@@ -2705,18 +2702,13 @@ static int ath10k_pci_deinit_irq(struct ath10k *ar)
+ 	switch (ar_pci->num_msi_intrs) {
+ 	case 0:
+ 		ath10k_pci_deinit_irq_legacy(ar);
+-		return 0;
+-	case 1:
+-		/* fall-through */
+-	case MSI_NUM_REQUEST:
+-		pci_disable_msi(ar_pci->pdev);
+-		return 0;
++		break;
+ 	default:
+ 		pci_disable_msi(ar_pci->pdev);
++		break;
+ 	}
+ 
+-	ath10k_warn(ar, "unknown irq configuration upon deinit\n");
+-	return -EINVAL;
++	return 0;
+ }
+ 
+ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
 -- 
-Regards/Gruss,
-    Boris.
+1.9.1
 
-ECO tip #101: Trim your mails when you reply.
---
 
 _______________________________________________
 ath10k mailing list
