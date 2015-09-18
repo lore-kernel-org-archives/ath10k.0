@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZcqZT-00028T-5u
- for ath10k@lists.infradead.org; Fri, 18 Sep 2015 07:59:04 +0000
-Subject: [PATCH 1/2] ath10k: add a_sle32_to_cpu()
+ id 1ZcqZJ-00020n-IO
+ for ath10k@lists.infradead.org; Fri, 18 Sep 2015 07:58:53 +0000
+Subject: [PATCH 0/2] ath10k: implement debugfs interface for Transmit Power
+ Control stats
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Fri, 18 Sep 2015 10:58:35 +0300
-Message-ID: <20150918075835.6983.66350.stgit@potku.adurom.net>
-In-Reply-To: <20150918075706.6983.11216.stgit@potku.adurom.net>
-References: <20150918075706.6983.11216.stgit@potku.adurom.net>
+Date: Fri, 18 Sep 2015 10:58:22 +0300
+Message-ID: <20150918075706.6983.11216.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,53 +24,25 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Copy a_sle32_to_cpu() from ath6kl so that we can easily handle signed __le32
-values. This is needed in struct wmi_pdev_tpc_config_event.
+This implements a simple interface for debugging TPC stats. I did a small hack
+to sparse to check endian usage with signed 32 bit values.
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.h |   21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 3e5a1591f772..95fdc723a996 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -73,6 +73,25 @@ struct wmi_cmd_hdr {
- #define HTC_PROTOCOL_VERSION    0x0002
- #define WMI_PROTOCOL_VERSION    0x0002
- 
-+/*
-+ * There is no signed version of __le32, so for a temporary solution come
-+ * up with our own version. The idea is from fs/ntfs/types.h.
-+ *
-+ * Use a_ prefix so that it doesn't conflict if we get proper support to
-+ * linux/types.h.
-+ */
-+typedef __s32 __bitwise a_sle32;
-+
-+static inline a_sle32 a_cpu_to_sle32(s32 val)
-+{
-+	return (__force a_sle32) cpu_to_le32(val);
-+}
-+
-+static inline s32 a_sle32_to_cpu(a_sle32 val)
-+{
-+	return le32_to_cpu((__force __le32) val);
-+}
-+
- enum wmi_service {
- 	WMI_SERVICE_BEACON_OFFLOAD = 0,
- 	WMI_SERVICE_SCAN_OFFLOAD,
-@@ -3657,7 +3676,7 @@ struct wmi_pdev_tpc_config_event {
- 	__le32 phy_mode;
- 	__le32 twice_antenna_reduction;
- 	__le32 twice_max_rd_power;
--	s32 twice_antenna_gain;
-+	a_sle32 twice_antenna_gain;
- 	__le32 power_limit;
- 	__le32 rate_max;
- 	__le32 num_tx_chain;
+Kalle Valo (1):
+      ath10k: add a_sle32_to_cpu()
+
+Maharaja Kennadyrajan (1):
+      ath10k: implement debugfs interface for Transmit Power Control stats
+
+
+ drivers/net/wireless/ath/ath10k/core.h    |   29 +++
+ drivers/net/wireless/ath/ath10k/debug.c   |  233 +++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/debug.h   |    8 +
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |   19 ++
+ drivers/net/wireless/ath/ath10k/wmi.c     |  269 +++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |   36 ++++
+ 6 files changed, 592 insertions(+), 2 deletions(-)
 
 
 _______________________________________________
