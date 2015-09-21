@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ze3NL-0003Gv-5z
- for ath10k@lists.infradead.org; Mon, 21 Sep 2015 15:51:31 +0000
-Subject: Re: [PATCH] ath10k: Fix CCK rate definitions.
-References: <1442362098-24859-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQkXma5KXpGa3XnnFw=13GRVoTEth0_=K-YNEKru1CpaOA@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <5600276E.6080408@candelatech.com>
-Date: Mon, 21 Sep 2015 08:51:10 -0700
+Received: from smtp-rs1-vallila2.fe.helsinki.fi ([128.214.173.75])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ze6Pg-0000zy-1j
+ for ath10k@lists.infradead.org; Mon, 21 Sep 2015 19:06:09 +0000
+Subject: Re: QCA6164 in Fedora
+References: <55E8ED93.4040504@fedoraproject.org>
+ <55F0D35F.9040704@fedoraproject.org> <55F0DBD9.4090505@fedoraproject.org>
+ <CA+BoTQmcGxxeFTPBHSmRWmWjCXdnLG36XQ81xOywmhvk3OgJbA@mail.gmail.com>
+From: Susi Lehtola <jussilehtola@fedoraproject.org>
+Message-ID: <56005500.9030303@fedoraproject.org>
+Date: Mon, 21 Sep 2015 12:05:36 -0700
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQkXma5KXpGa3XnnFw=13GRVoTEth0_=K-YNEKru1CpaOA@mail.gmail.com>
+In-Reply-To: <CA+BoTQmcGxxeFTPBHSmRWmWjCXdnLG36XQ81xOywmhvk3OgJbA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +25,31 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/21/2015 12:33 AM, Michal Kazior wrote:
-> On 16 September 2015 at 02:08,  <greearb@candelatech.com> wrote:
->> From: Ben Greear <greearb@candelatech.com>
+On 09/21/2015 12:18 AM, Michal Kazior wrote:
+> On 10 September 2015 at 03:24, Susi Lehtola
+> <jussilehtola@fedoraproject.org> wrote:
+>> On 09/09/2015 05:48 PM, Susi Lehtola wrote:
+>>>
+>>> I can confirm the card works with the linux-next tree, using a snapshot
+>>> I took today.
 >>
->> The old values did NOT match what is found in 10.1.467
->> firmware.  I figure it is likely it is wrong for the others
->> as well.
+>>
+>> However, the card only seems to make a 1Mbps connection in the same
+>> situation where my old laptop made a 55Mbps one...
 >
-> Does this fix anything at all?
+> How did you measure this? `iw` tool reports invalid tx bitrate for
+> ath10k due to firmware limitation. Did you test the actual performance
+> (iperf/wget)? Is it downlink or uplink? Are both as bad?
 
-I'm adding support to CT firmware to set arbitrary ratectrl
-masks, and I'm using that enum for part of the implementation.
-
-In the 4.0 kernel, the 'hw-value' for CCK rates is broken since the enum doesn't
-match firmware.
-
-I'll check what code is using that enum and see if it can be fixed.  Otherwise,
-I can fix it with a new enum with the values I need.
-
-Thanks,
-Ben
-
+This was the link speed reported by NetworkManager. But yes, actual 
+performance is much better, seeing 2.2 MB/sec is not uncommon [the 
+internet connection is pretty slow].
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Susi Lehtola
+Fedora Project Contributor
+jussilehtola@fedoraproject.org
 
 _______________________________________________
 ath10k mailing list
