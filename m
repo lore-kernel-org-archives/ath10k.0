@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZdvT8-0005kY-UI
- for ath10k@lists.infradead.org; Mon, 21 Sep 2015 07:24:59 +0000
-Date: Mon, 21 Sep 2015 12:53:51 +0530
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix ldpc param for fixed rate
-Message-ID: <20150921072347.GA28484@qca.qualcomm.com>
-References: <1442389740-29053-1-git-send-email-rmanohar@qti.qualcomm.com>
- <CA+BoTQ=FMCyHtn8BMZv_6awOuLhJNFe5RhB2eNpCQfyk+5Jhcw@mail.gmail.com>
+ id 1Zdvai-0000kO-TO
+ for ath10k@lists.infradead.org; Mon, 21 Sep 2015 07:32:49 +0000
+Received: by wicfx3 with SMTP id fx3so98186557wic.0
+ for <ath10k@lists.infradead.org>; Mon, 21 Sep 2015 00:32:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+BoTQ=FMCyHtn8BMZv_6awOuLhJNFe5RhB2eNpCQfyk+5Jhcw@mail.gmail.com>
+In-Reply-To: <55F88F08.1000703@candelatech.com>
+References: <55F88F08.1000703@candelatech.com>
+Date: Mon, 21 Sep 2015 09:32:27 +0200
+Message-ID: <CA+BoTQ=C3v+tMoM9_-Q7iTDRy=Zx0gxxib1gxkoOaK3tYpoBvg@mail.gmail.com>
+Subject: Re: Bug in CCK hw_rate definitions?
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,46 +20,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On Mon, Sep 21, 2015 at 09:05:54AM +0200, Michal Kazior wrote:
-> On 16 September 2015 at 09:49, Rajkumar Manoharan
-> <rmanohar@qti.qualcomm.com> wrote:
-> > ldpc is not configured for fixed rates. This blocks auto rate vs fixed
-> > rate performance comparison. Since firmware is considering ldpc vdev
-> > param for fixed rate selection, it has to be configured to enable ldpc
-> > for fixed rates.
-> >
-> > Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-> > ---
-> [...]
-> > @@ -6041,6 +6049,7 @@ static int ath10k_mac_op_set_bitrate_mask(struct ieee80211_hw *hw,
-> >         band = def.chan->band;
-> >         ht_mcs_mask = mask->control[band].ht_mcs;
-> >         vht_mcs_mask = mask->control[band].vht_mcs;
-> > +       ldpc = !!(ar->ht_cap_info & WMI_HT_CAP_LDPC);
-> 
-> Is still really correct? LDPC must be supported on the Rx side of
-> destination stations hence I would assume you need to check whether
-> all stations associated are LDPC capable before enabling it (e.g. via
-> ieee80211_iterate_stations_atomic).
->
-I already check with firmware on this regard. Below is the clarification
-got from fw team. So no need to go through sta_iter.
-
-"3) how does fixed rate work for non-LDPC clients (ex. legacy clients),
-if LDPC support is enabled for the given vdev?
-The rates are selected by ANDng the vdev_rates and client rates. If client does not
-support LDPC and LDPC is enabled in vdev then, LDPC will not be used."
-
--Rajkumar
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTUgU2VwdGVtYmVyIDIwMTUgYXQgMjM6MzUsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVs
+YXRlY2guY29tPiB3cm90ZToKPiBhdGgxMGsgaHcuaCBoYXMgdGhpczoKPgo+IGVudW0gYXRoMTBr
+X2h3X3JhdGVfY2NrIHsKPiAgICAgICAgIEFUSDEwS19IV19SQVRFX0NDS19MUF8xMU0gPSAwLAo+
+ICAgICAgICAgQVRIMTBLX0hXX1JBVEVfQ0NLX0xQXzVfNU0sCj4gICAgICAgICBBVEgxMEtfSFdf
+UkFURV9DQ0tfTFBfMk0sCj4gICAgICAgICBBVEgxMEtfSFdfUkFURV9DQ0tfTFBfMU0sCj4KPiBC
+dXQsIGF0IGxlYXN0IGluIDEwLjEgZmlybXdhcmUsIGl0IGFwcGVhcnMgdGhhdCBDQ0sgaHdfcmF0
+ZXMgYXJlIDB4NDAsIDB4NDEsCj4gZXRjCj4gKEZvciB0aG9zZSBvZiB5b3Ugd2l0aCBmaXJtd2Fy
+ZSwgc2VlIGFyNjAwUF9waHkuYywgJ1JDJyBjb2x1bW4gb2YgdGhlIHJhdGUKPiB0YWJsZS4pCj4K
+PiBBbSBJIG1pc3Npbmcgc29tZXRoaW5nIG9yIGlzIHRoZSBkcml2ZXIgY29kZSBqdXN0IHdyb25n
+PwoKVGhlc2UgbWFjcm9zIGFyZSB1c2VkIG9ubHkgdG8gZGVjb2RlIExfU0lHX1JBVEUgbm93LiBJ
+dCBjYW4gdGFrZSB2YWx1ZXMgMC4uMTUuCgpJZiB5b3UgbmVlZC93YW50IHRvIGNoYW5nZSBhdGgx
+MGtfaHdfcmF0ZV9jY2sgeW91J2xsIG5lZWQgdG8gbWFrZSBzdXJlCnRvIHVwZGF0ZSBhdGgxMGtf
+bWFjX2h3X3JhdGVfdG9faWR4KCkgb3IgaXRzIGNhbGxzaXRlIGFjY29yZGluZ2x5LgoKCk1pY2hh
+xYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
+ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
