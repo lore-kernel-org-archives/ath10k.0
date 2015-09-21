@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.mediaspot.net ([185.37.180.5])
+Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZeAQT-0008Ji-DK
- for ath10k@lists.infradead.org; Mon, 21 Sep 2015 23:23:15 +0000
-From: Alessandro Bolletta <alessandro@mediaspot.net>
-Subject: R: R: Link can't get estabilished over RB911AC boards
-Date: Mon, 21 Sep 2015 23:20:39 +0000
-Message-ID: <F52F175DFC537F48A43937B50B44BCA2820829AD@EXCHANGE.mediaspot.local>
+ id 1ZeAbz-0005Ch-SS
+ for ath10k@lists.infradead.org; Mon, 21 Sep 2015 23:35:08 +0000
+Subject: Re: R: R: Link can't get estabilished over RB911AC boards
 References: <F52F175DFC537F48A43937B50B44BCA2820826A4@EXCHANGE.mediaspot.local>
  <56006A50.4000608@candelatech.com>
  <F52F175DFC537F48A43937B50B44BCA2820828DE@EXCHANGE.mediaspot.local>
  <5600904F.4090304@candelatech.com>
-In-Reply-To: <5600904F.4090304@candelatech.com>
-Content-Language: it-IT
+ <F52F175DFC537F48A43937B50B44BCA2820829AD@EXCHANGE.mediaspot.local>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <56009416.5000003@candelatech.com>
+Date: Mon, 21 Sep 2015 16:34:46 -0700
 MIME-Version: 1.0
+In-Reply-To: <F52F175DFC537F48A43937B50B44BCA2820829AD@EXCHANGE.mediaspot.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,108 +22,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Alessandro Bolletta <alessandro@mediaspot.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Ok Ben, thanks for you infos.
-
-Just for curiosity: do you think that ath10k could be better in performance=
-s than official QCA reference drivers (the same used in proprietary distros=
- as RouterOS, for example)?
-
-Alessandro
-
------Messaggio originale-----
-Da: Ben Greear [mailto:greearb@candelatech.com] =
-
-Inviato: marted=EC 22 settembre 2015 01.19
-A: Alessandro Bolletta <alessandro@mediaspot.net>; ath10k@lists.infradead.o=
-rg
-Oggetto: Re: R: Link can't get estabilished over RB911AC boards
-
-On 09/21/2015 03:18 PM, Alessandro Bolletta wrote:
-> Great!
+On 09/21/2015 04:20 PM, Alessandro Bolletta wrote:
+> Ok Ben, thanks for you infos.
 >
-> Ben, could you tell me how to compile CT kernel, for example the 4.2 vers=
-ion, as part of OpenWRT buildroot?
->
-> Also, what do you suggest for stability reasons? CT 4.0 or 4.2?
+> Just for curiosity: do you think that ath10k could be better in performances than official QCA reference drivers (the same used in proprietary distros as RouterOS, for example)?
 
-4.0 is most stable currently, though the last few days I've been committing=
- a lot of barely tested code.  Will test this better shortly.
+As far as I know, the 'official' ath10k dev kits use the same firmware that is available
+on the public git firmware tree, so probably firmware performance is similar unless some third-party company
+has acquired firmware source code and put some considerable effort into it.
 
-And, sorry, but I don't have time right now to help with making this work w=
-ith OpenWrt.  At the least, it is liable to not be trivial.  Search the lis=
-t for 'CT' + 'OpenWRT' an you may find some help...others have posted patch=
--sets for OpenWRT that includes at least many of my patches.
+My CT firmware is primarily focused on stability and features.  I have not made a lot
+of effort to try to optimize speed, though I have had a few people tell me my firmware
+was faster, and I don't recall anyone telling me it was slower.  I suspect it is
+basically about the same.
+
+Possibly a very recent linux kernel + ath10k driver is more efficient than
+reference driver OS's, but I am guessing that would depend greatly on how
+the reference OS is tuned for the hardware in question.
+
+I test on x86 primarily, and have plenty of CPU, so I haven't been
+worrying too much about CPU resources on the host.
 
 
 Thanks,
 Ben
 
->
-> Thanks,
-> Alessandro
->
-> -----Messaggio originale-----
-> Da: Ben Greear [mailto:greearb@candelatech.com]
-> Inviato: luned=EC 21 settembre 2015 22.37
-> A: Alessandro Bolletta <alessandro@mediaspot.net>; =
 
-> ath10k@lists.infradead.org
-> Oggetto: Re: Link can't get estabilished over RB911AC boards
->
-> On 09/21/2015 12:57 PM, Alessandro Bolletta wrote:
->> Hi,
->>
->> I have two Mikrotik RB911AC boards (radio based on QCA9882) in which I i=
-njected OpenWRT 15.05 and ath10k.
->>
->> I managed to get them connected in AP/STA configuration in a very short =
-(2 meters) distance, but when I try to connect them on 5 kilometers, even i=
-f I set the distance parameter on OpenWRT's UCI config files properly, it t=
-ries to connect but after 3 retries, it declares unauthenticated.
->>
->> No problem with the same firmware on ath9k, for example.
->> Signal is stable at -62 dbm, I also tried to change channels and push tx=
- power, but nothing helped to do the trick.
->> Also tried with every firmware combination (10.2.4, CT firmware, 999.999=
-.0.636, 10.1.467.2-1), without success.
->>
->> Is there anybody who can tell me why? Could it be due to the kernel vers=
-ion (i'm running on 3.18.21)?
->
-> You probably need to adjust ack timings.  I have some un-tested firmware =
-support for this in the CT firmware, but I haven't fully wired it up to the=
- driver.
->
-> Someone with a bit of time and skill could add this to the ath10k driver =
-if they wanted to.  This commit has some details.
->
-> http://dmz2.candelatech.com/?p=3Dlinux-4.0.dev.y/.git;a=3Dcommit;h=3Dabd3=
-ee5
-> c4d297e56b854864624152f5704c5df20
->
-> Thanks,
-> Ben
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
->
->
->
-
-
---
+-- 
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
-
-
 
 
 _______________________________________________
