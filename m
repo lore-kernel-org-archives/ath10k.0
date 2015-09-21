@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp-rs1-vallila2.fe.helsinki.fi ([128.214.173.75])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ze6Pg-0000zy-1j
- for ath10k@lists.infradead.org; Mon, 21 Sep 2015 19:06:09 +0000
+ id 1Ze6aw-0006CX-GH
+ for ath10k@lists.infradead.org; Mon, 21 Sep 2015 19:17:47 +0000
 Subject: Re: QCA6164 in Fedora
 References: <55E8ED93.4040504@fedoraproject.org>
- <55F0D35F.9040704@fedoraproject.org> <55F0DBD9.4090505@fedoraproject.org>
- <CA+BoTQmcGxxeFTPBHSmRWmWjCXdnLG36XQ81xOywmhvk3OgJbA@mail.gmail.com>
+ <55F0D35F.9040704@fedoraproject.org>
+ <CA+BoTQkjDGAK4x0FfXoKeqgCuxGNEsD9wfOWnQE_C3f8kLKRTw@mail.gmail.com>
 From: Susi Lehtola <jussilehtola@fedoraproject.org>
-Message-ID: <56005500.9030303@fedoraproject.org>
-Date: Mon, 21 Sep 2015 12:05:36 -0700
+Message-ID: <560057BF.5070303@fedoraproject.org>
+Date: Mon, 21 Sep 2015 12:17:19 -0700
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQmcGxxeFTPBHSmRWmWjCXdnLG36XQ81xOywmhvk3OgJbA@mail.gmail.com>
+In-Reply-To: <CA+BoTQkjDGAK4x0FfXoKeqgCuxGNEsD9wfOWnQE_C3f8kLKRTw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +27,32 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/21/2015 12:18 AM, Michal Kazior wrote:
-> On 10 September 2015 at 03:24, Susi Lehtola
+On 09/21/2015 12:16 AM, Michal Kazior wrote:
+> On 10 September 2015 at 02:48, Susi Lehtola
 > <jussilehtola@fedoraproject.org> wrote:
->> On 09/09/2015 05:48 PM, Susi Lehtola wrote:
->>>
->>> I can confirm the card works with the linux-next tree, using a snapshot
->>> I took today.
+>> The problem in the Fedora kernel is that the direct firmware load fails,
+>> althoug the same firmware works with the linux-next tree.
 >>
->>
->> However, the card only seems to make a 1Mbps connection in the same
->> situation where my old laptop made a 55Mbps one...
+>> What would need to be backported to the 4.1 tree in order to get the card
+>> working?
 >
-> How did you measure this? `iw` tool reports invalid tx bitrate for
-> ath10k due to firmware limitation. Did you test the actual performance
-> (iperf/wget)? Is it downlink or uplink? Are both as bad?
+> You need to cherry-pick at least this patch:
+> https://github.com/kvalo/ath/commit/36582e5d4daeccf68a8a3cef9bc37b60fb7d45b9
+>
+> The problem is qca6164 requires a different board.bin and will not
+> work with one from qca6174. The driver uses the same firmware filepath
+> for both. There's a per-pci-vid/pid board lookup but it's broken I
+> would discourage using it until we come up with a better solution.
 
-This was the link speed reported by NetworkManager. But yes, actual 
-performance is much better, seeing 2.2 MB/sec is not uncommon [the 
-internet connection is pretty slow].
+I tried that but it didn't work; the card was detected but the firmware 
+failed to load. The patch I formed is at
+https://bugzilla.redhat.com/attachment.cgi?id=1069561
+
+The exact same firmware and board.bin works with the linux-next tree.
+
+However, now that the development version of Fedora comes with kernel 
+4.3, I can just recompile the package for my laptop. This problem should 
+solve itself with time..
 -- 
 Susi Lehtola
 Fedora Project Contributor
