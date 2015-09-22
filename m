@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZeAbz-0005Ch-SS
- for ath10k@lists.infradead.org; Mon, 21 Sep 2015 23:35:08 +0000
-Subject: Re: R: R: Link can't get estabilished over RB911AC boards
+ id 1ZeUtp-0000sz-Tg
+ for ath10k@lists.infradead.org; Tue, 22 Sep 2015 21:14:54 +0000
+Subject: Re: R: Link can't get estabilished over RB911AC boards
 References: <F52F175DFC537F48A43937B50B44BCA2820826A4@EXCHANGE.mediaspot.local>
  <56006A50.4000608@candelatech.com>
- <F52F175DFC537F48A43937B50B44BCA2820828DE@EXCHANGE.mediaspot.local>
- <5600904F.4090304@candelatech.com>
- <F52F175DFC537F48A43937B50B44BCA2820829AD@EXCHANGE.mediaspot.local>
+ <F52F175DFC537F48A43937B50B44BCA282084A3D@EXCHANGE.mediaspot.local>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <56009416.5000003@candelatech.com>
-Date: Mon, 21 Sep 2015 16:34:46 -0700
+Message-ID: <5601C4B8.5060807@candelatech.com>
+Date: Tue, 22 Sep 2015 14:14:32 -0700
 MIME-Version: 1.0
-In-Reply-To: <F52F175DFC537F48A43937B50B44BCA2820829AD@EXCHANGE.mediaspot.local>
+In-Reply-To: <F52F175DFC537F48A43937B50B44BCA282084A3D@EXCHANGE.mediaspot.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +26,20 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Alessandro Bolletta <alessandro@mediaspot.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/21/2015 04:20 PM, Alessandro Bolletta wrote:
-> Ok Ben, thanks for you infos.
+On 09/22/2015 02:09 PM, Alessandro Bolletta wrote:
+> Just one more information Ben: this patch introduces ack timing in ath10k, but in order to set it, has it to be triggered manually in debugfs or is it UCI (openwrt) able to set it automatically by his configuration process?
 >
-> Just for curiosity: do you think that ath10k could be better in performances than official QCA reference drivers (the same used in proprietary distros as RouterOS, for example)?
+> Also, there's a little thing that i'm not understanding: is it the firmware that controls ack timings or is it related to ath10k?
+>
+> Thanks in advance and please be patient with me, I'm not an expert, but i'd like to be :)
 
-As far as I know, the 'official' ath10k dev kits use the same firmware that is available
-on the public git firmware tree, so probably firmware performance is similar unless some third-party company
-has acquired firmware source code and put some considerable effort into it.
+debugfs hooks need to be written in ath10k driver to poke the firmware.
+Then, openwrt would need to know how to set the value through debugfs.
 
-My CT firmware is primarily focused on stability and features.  I have not made a lot
-of effort to try to optimize speed, though I have had a few people tell me my firmware
-was faster, and I don't recall anyone telling me it was slower.  I suspect it is
-basically about the same.
-
-Possibly a very recent linux kernel + ath10k driver is more efficient than
-reference driver OS's, but I am guessing that would depend greatly on how
-the reference OS is tuned for the hardware in question.
-
-I test on x86 primarily, and have plenty of CPU, so I haven't been
-worrying too much about CPU resources on the host.
-
+Maybe someone in openwrt can work with me to get this working sometime soon.
 
 Thanks,
 Ben
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
