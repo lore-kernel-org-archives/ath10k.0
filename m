@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.mediaspot.net ([185.37.180.5])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZeUr4-0000Sp-SR
- for ath10k@lists.infradead.org; Tue, 22 Sep 2015 21:12:03 +0000
+ id 1ZeV7G-0005tQ-Kz
+ for ath10k@lists.infradead.org; Tue, 22 Sep 2015 21:28:47 +0000
 From: Alessandro Bolletta <alessandro@mediaspot.net>
 Subject: R: Link can't get estabilished over RB911AC boards
-Date: Tue, 22 Sep 2015 21:09:23 +0000
-Message-ID: <F52F175DFC537F48A43937B50B44BCA282084A3D@EXCHANGE.mediaspot.local>
+Date: Tue, 22 Sep 2015 21:26:13 +0000
+Message-ID: <F52F175DFC537F48A43937B50B44BCA282084AB6@EXCHANGE.mediaspot.local>
 References: <F52F175DFC537F48A43937B50B44BCA2820826A4@EXCHANGE.mediaspot.local>
- <56006A50.4000608@candelatech.com>
-In-Reply-To: <56006A50.4000608@candelatech.com>
+ <CAGNwC3nKb_tJnL44tu0jaV5h2hX2KLqoiLdm-GR+myyKRHZdBQ@mail.gmail.com>
+In-Reply-To: <CAGNwC3nKb_tJnL44tu0jaV5h2hX2KLqoiLdm-GR+myyKRHZdBQ@mail.gmail.com>
 Content-Language: it-IT
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -20,75 +20,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Marcel H." <maco@blava.net>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Just one more information Ben: this patch introduces ack timing in ath10k, =
-but in order to set it, has it to be triggered manually in debugfs or is it=
- UCI (openwrt) able to set it automatically by his configuration process?
-
-Also, there's a little thing that i'm not understanding: is it the firmware=
- that controls ack timings or is it related to ath10k?
-
-Thanks in advance and please be patient with me, I'm not an expert, but i'd=
- like to be :)
-
-Alessandro =
-
-
------Messaggio originale-----
-Da: Ben Greear [mailto:greearb@candelatech.com] =
-
-Inviato: luned=EC 21 settembre 2015 22.37
-A: Alessandro Bolletta <alessandro@mediaspot.net>; ath10k@lists.infradead.o=
-rg
-Oggetto: Re: Link can't get estabilished over RB911AC boards
-
-On 09/21/2015 12:57 PM, Alessandro Bolletta wrote:
-> Hi,
->
-> I have two Mikrotik RB911AC boards (radio based on QCA9882) in which I in=
-jected OpenWRT 15.05 and ath10k.
->
-> I managed to get them connected in AP/STA configuration in a very short (=
-2 meters) distance, but when I try to connect them on 5 kilometers, even if=
- I set the distance parameter on OpenWRT's UCI config files properly, it tr=
-ies to connect but after 3 retries, it declares unauthenticated.
->
-> No problem with the same firmware on ath9k, for example.
-> Signal is stable at -62 dbm, I also tried to change channels and push tx =
-power, but nothing helped to do the trick.
-> Also tried with every firmware combination (10.2.4, CT firmware, 999.999.=
-0.636, 10.1.467.2-1), without success.
->
-> Is there anybody who can tell me why? Could it be due to the kernel versi=
-on (i'm running on 3.18.21)?
-
-You probably need to adjust ack timings.  I have some un-tested firmware su=
-pport for this in the CT firmware, but I haven't fully wired it up to the d=
-river.
-
-Someone with a bit of time and skill could add this to the ath10k driver if=
- they wanted to.  This commit has some details.
-
-http://dmz2.candelatech.com/?p=3Dlinux-4.0.dev.y/.git;a=3Dcommit;h=3Dabd3ee=
-5c4d297e56b854864624152f5704c5df20
-
-Thanks,
-Ben
-
---
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgTWFyY2VsLA0KaGF2ZSB5b3UgcG9ydGVkIENUIGtlcm5lbCBjb21taXRzIGluIE9wZW5XUlQg
+YnVpbGRyb290LCBvciBhcmUgeW91IHJ1bm5pbmcgaXQgaW4gYSBmdWxsIGJsb3duIGRpc3Rybz8N
+Cg0KLS0NCkFsZXNzYW5kcm8gQm9sbGV0dGENCk1lZGlhc3BvdCBTcmwNCg0KDQoNCkRhOiBNYXJj
+ZWwgSC4gW21haWx0bzptYWNvQGJsYXZhLm5ldF0gDQpJbnZpYXRvOiBtYXJ0ZWTDrCAyMiBzZXR0
+ZW1icmUgMjAxNSAyMi40OA0KQTogQWxlc3NhbmRybyBCb2xsZXR0YSA8YWxlc3NhbmRyb0BtZWRp
+YXNwb3QubmV0Pg0KQ2M6IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnDQpPZ2dldHRvOiBSZTog
+TGluayBjYW4ndCBnZXQgZXN0YWJpbGlzaGVkIG92ZXIgUkI5MTFBQyBib2FyZHMNCg0KSGFkIHRo
+ZSB2ZXJ5IHNhbWUgcHJvYmxlbSB3aXRoIG15IGluc3RhbGwuIEN0J3MgNC4wIGtlcm5lbCB3aXRo
+IHRoZWlyIGNvbW11bml0eSAxNSBiZXRhIGZpcm13YXJlIHNvcnRlZCB0aGUgaXNzdWUuwqANCg0K
+T24gTW9uZGF5LCAyMSBTZXB0ZW1iZXIgMjAxNSwgQWxlc3NhbmRybyBCb2xsZXR0YSA8YWxlc3Nh
+bmRyb0BtZWRpYXNwb3QubmV0PiB3cm90ZToNCkhpLA0KDQpJIGhhdmUgdHdvIE1pa3JvdGlrIFJC
+OTExQUMgYm9hcmRzIChyYWRpbyBiYXNlZCBvbiBRQ0E5ODgyKSBpbiB3aGljaCBJIGluamVjdGVk
+IE9wZW5XUlQgMTUuMDUgYW5kIGF0aDEway4NCg0KSSBtYW5hZ2VkIHRvIGdldCB0aGVtIGNvbm5l
+Y3RlZCBpbiBBUC9TVEEgY29uZmlndXJhdGlvbiBpbiBhIHZlcnkgc2hvcnQgKDIgbWV0ZXJzKSBk
+aXN0YW5jZSwgYnV0IHdoZW4gSSB0cnkgdG8gY29ubmVjdCB0aGVtIG9uIDUga2lsb21ldGVycywg
+ZXZlbiBpZiBJIHNldCB0aGUgZGlzdGFuY2UgcGFyYW1ldGVyIG9uIE9wZW5XUlQncyBVQ0kgY29u
+ZmlnIGZpbGVzIHByb3Blcmx5LCBpdCB0cmllcyB0byBjb25uZWN0IGJ1dCBhZnRlciAzIHJldHJp
+ZXMsIGl0IGRlY2xhcmVzIHVuYXV0aGVudGljYXRlZC4NCg0KTm8gcHJvYmxlbSB3aXRoIHRoZSBz
+YW1lIGZpcm13YXJlIG9uIGF0aDlrLCBmb3IgZXhhbXBsZS4NClNpZ25hbCBpcyBzdGFibGUgYXQg
+LTYyIGRibSwgSSBhbHNvIHRyaWVkIHRvIGNoYW5nZSBjaGFubmVscyBhbmQgcHVzaCB0eCBwb3dl
+ciwgYnV0IG5vdGhpbmcgaGVscGVkIHRvIGRvIHRoZSB0cmljay4NCkFsc28gdHJpZWQgd2l0aCBl
+dmVyeSBmaXJtd2FyZSBjb21iaW5hdGlvbiAoMTAuMi40LCBDVCBmaXJtd2FyZSwgOTk5Ljk5OS4w
+LjYzNiwgMTAuMS40NjcuMi0xKSwgd2l0aG91dCBzdWNjZXNzLg0KDQpJcyB0aGVyZSBhbnlib2R5
+IHdobyBjYW4gdGVsbCBtZSB3aHk/IENvdWxkIGl0IGJlIGR1ZSB0byB0aGUga2VybmVsIHZlcnNp
+b24gKGknbSBydW5uaW5nIG9uIDMuMTguMjEpPw0KDQpUaGFua3MgaW4gYWR2YW5jZSwNCg0KLS0N
+CkFsZXNzYW5kcm8gQm9sbGV0dGENCk1lZGlhc3BvdCBTcmwNCg0KDQoNCg0KX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCmF0aDEwayBtYWlsaW5nIGxpc3QN
+CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnDQpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwaw0KDQoNCi0tIA0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NClRoaXMgbWVzc2FnZSBpcyBub3QgaW50
+ZW5kZWQgdG8gaGF2ZQ0KY29udHJhY3R1YWwgZWZmZWN0DQotLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
