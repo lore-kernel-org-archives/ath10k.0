@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
+Received: from mail.mediaspot.net ([185.37.180.5])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZeUtp-0000sz-Tg
- for ath10k@lists.infradead.org; Tue, 22 Sep 2015 21:14:54 +0000
-Subject: Re: R: Link can't get estabilished over RB911AC boards
+ id 1ZeUr4-0000Sp-SR
+ for ath10k@lists.infradead.org; Tue, 22 Sep 2015 21:12:03 +0000
+From: Alessandro Bolletta <alessandro@mediaspot.net>
+Subject: R: Link can't get estabilished over RB911AC boards
+Date: Tue, 22 Sep 2015 21:09:23 +0000
+Message-ID: <F52F175DFC537F48A43937B50B44BCA282084A3D@EXCHANGE.mediaspot.local>
 References: <F52F175DFC537F48A43937B50B44BCA2820826A4@EXCHANGE.mediaspot.local>
  <56006A50.4000608@candelatech.com>
- <F52F175DFC537F48A43937B50B44BCA282084A3D@EXCHANGE.mediaspot.local>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <5601C4B8.5060807@candelatech.com>
-Date: Tue, 22 Sep 2015 14:14:32 -0700
+In-Reply-To: <56006A50.4000608@candelatech.com>
+Content-Language: it-IT
 MIME-Version: 1.0
-In-Reply-To: <F52F175DFC537F48A43937B50B44BCA282084A3D@EXCHANGE.mediaspot.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +20,72 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alessandro Bolletta <alessandro@mediaspot.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/22/2015 02:09 PM, Alessandro Bolletta wrote:
-> Just one more information Ben: this patch introduces ack timing in ath10k, but in order to set it, has it to be triggered manually in debugfs or is it UCI (openwrt) able to set it automatically by his configuration process?
+Just one more information Ben: this patch introduces ack timing in ath10k, =
+but in order to set it, has it to be triggered manually in debugfs or is it=
+ UCI (openwrt) able to set it automatically by his configuration process?
+
+Also, there's a little thing that i'm not understanding: is it the firmware=
+ that controls ack timings or is it related to ath10k?
+
+Thanks in advance and please be patient with me, I'm not an expert, but i'd=
+ like to be :)
+
+Alessandro =
+
+
+-----Messaggio originale-----
+Da: Ben Greear [mailto:greearb@candelatech.com] =
+
+Inviato: luned=EC 21 settembre 2015 22.37
+A: Alessandro Bolletta <alessandro@mediaspot.net>; ath10k@lists.infradead.o=
+rg
+Oggetto: Re: Link can't get estabilished over RB911AC boards
+
+On 09/21/2015 12:57 PM, Alessandro Bolletta wrote:
+> Hi,
 >
-> Also, there's a little thing that i'm not understanding: is it the firmware that controls ack timings or is it related to ath10k?
+> I have two Mikrotik RB911AC boards (radio based on QCA9882) in which I in=
+jected OpenWRT 15.05 and ath10k.
 >
-> Thanks in advance and please be patient with me, I'm not an expert, but i'd like to be :)
+> I managed to get them connected in AP/STA configuration in a very short (=
+2 meters) distance, but when I try to connect them on 5 kilometers, even if=
+ I set the distance parameter on OpenWRT's UCI config files properly, it tr=
+ies to connect but after 3 retries, it declares unauthenticated.
+>
+> No problem with the same firmware on ath9k, for example.
+> Signal is stable at -62 dbm, I also tried to change channels and push tx =
+power, but nothing helped to do the trick.
+> Also tried with every firmware combination (10.2.4, CT firmware, 999.999.=
+0.636, 10.1.467.2-1), without success.
+>
+> Is there anybody who can tell me why? Could it be due to the kernel versi=
+on (i'm running on 3.18.21)?
 
-debugfs hooks need to be written in ath10k driver to poke the firmware.
-Then, openwrt would need to know how to set the value through debugfs.
+You probably need to adjust ack timings.  I have some un-tested firmware su=
+pport for this in the CT firmware, but I haven't fully wired it up to the d=
+river.
 
-Maybe someone in openwrt can work with me to get this working sometime soon.
+Someone with a bit of time and skill could add this to the ath10k driver if=
+ they wanted to.  This commit has some details.
+
+http://dmz2.candelatech.com/?p=3Dlinux-4.0.dev.y/.git;a=3Dcommit;h=3Dabd3ee=
+5c4d297e56b854864624152f5704c5df20
 
 Thanks,
 Ben
 
--- 
+--
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
+
+
+
 
 
 _______________________________________________
