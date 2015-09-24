@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zettf-00049B-Mr
- for ath10k@lists.infradead.org; Wed, 23 Sep 2015 23:56:24 +0000
-Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
- (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id A900940A539
- for <ath10k@lists.infradead.org>; Wed, 23 Sep 2015 16:56:02 -0700 (PDT)
-From: Ben Greear <greearb@candelatech.com>
-Subject: CT 4.2 kernel now supports 80Mhz IBSS
-Message-ID: <56033C12.9020102@candelatech.com>
-Date: Wed, 23 Sep 2015 16:56:02 -0700
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zf7S7-0005ts-Gi
+ for ath10k@lists.infradead.org; Thu, 24 Sep 2015 14:24:52 +0000
+From: <c_mkenna@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Increase pci wakeup timeout to 30 ms
+Date: Thu, 24 Sep 2015 19:54:00 +0530
+Message-ID: <1443104640-13965-1-git-send-email-c_mkenna@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,37 +16,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
 
-I forget exactly all who was asking for this...but hopefully
-they are reading this list...
+From: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
 
-I was missing a patch that allowed HT80 IBSS in my 4.2.
+It is noticed that pci wakeup time is exceeding current timeout (10ms)
+randomly which is tested on QCA988x. So, the wake up time is increased
+to 30 ms and added debug prints to log total timeout.
 
-The beta-15 CT firmware appears to do HT80 IBSS just fine
-with the 4.2 kernel now.
+Signed-off-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 6 +++++-
+ drivers/net/wireless/ath/ath10k/pci.h | 3 ++-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-I have not attempted to enable this feature on my 4.0 kernel yet.
-
-Please also note, I've been hacking on rate-ctrl logic in both 4.0
-and 4.2 kernels (and beta-15 firmware)..so if you try it and find
-something weird, especially in probe requests or association requests,
-please do let me know.  Notes of success are welcome as well of course!
-
-http://www.candelatech.com/ath10k.php
-
-http://dmz2.candelatech.com/git/gitweb.cgi
-
-Thanks,
-Ben
-
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 1046ab6..2df1692 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -452,8 +452,12 @@ static int ath10k_pci_wake_wait(struct ath10k *ar)
+ 	int curr_delay = 5;
+ 
+ 	while (tot_delay < PCIE_WAKE_TIMEOUT) {
+-		if (ath10k_pci_is_awake(ar))
++		if (ath10k_pci_is_awake(ar)) {
++			if (tot_delay > PCIE_WAKE_LATE_US)
++				ath10k_warn(ar, "device wakeup took %d ms which is unusally long, otherwise it works normally.\n",
++					    tot_delay / 1000);
+ 			return 0;
++		}
+ 
+ 		udelay(curr_delay);
+ 		tot_delay += curr_delay;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index 8d364fb..54af2d7 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -230,7 +230,8 @@ static inline struct ath10k_pci *ath10k_pci_priv(struct ath10k *ar)
+ 
+ #define ATH10K_PCI_RX_POST_RETRY_MS 50
+ #define ATH_PCI_RESET_WAIT_MAX 10 /* ms */
+-#define PCIE_WAKE_TIMEOUT 10000	/* 10ms */
++#define PCIE_WAKE_TIMEOUT 30000	/* 30ms */
++#define PCIE_WAKE_LATE_US 10000	/* 10ms */
+ 
+ #define BAR_NUM 0
+ 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.9.1
 
 
 _______________________________________________
