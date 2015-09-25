@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZfMun-00080O-5Y
- for ath10k@lists.infradead.org; Fri, 25 Sep 2015 06:55:30 +0000
+ id 1ZfMuV-0007CE-Ph
+ for ath10k@lists.infradead.org; Fri, 25 Sep 2015 06:55:12 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 3/7] ath10k: register per copy engine receive callbacks
-Date: Fri, 25 Sep 2015 12:23:32 +0530
-Message-ID: <1443164016-3612-4-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 2/7] ath10k: register per copy engine send completion callbacks
+Date: Fri, 25 Sep 2015 12:23:31 +0530
+Message-ID: <1443164016-3612-3-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1443164016-3612-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1443164016-3612-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,329 +25,218 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Register receive callbacks for every copy engines (CE) separately
-instead of having common receive handler. Some of the copy engines
-receives different type of messages (i.e HTT/HTC/pktlog) from target.
-Hence to service them accordingly, register per copy engine receive
-callbacks.
+Register send completion callbacks for every copy engines (CE) separately
+instead of having common completion handler. Since some of the copy
+engines delivers different type of messages, per-CE callbacks help to
+service them differently.
 
 Reviewed-by: Michal Kazior <michal.kazior@tieto.com>
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.c  |  5 ++---
- drivers/net/wireless/ath/ath10k/ce.h  |  4 ++--
- drivers/net/wireless/ath/ath10k/hif.h | 14 --------------
- drivers/net/wireless/ath/ath10k/htc.c | 13 +------------
+ drivers/net/wireless/ath/ath10k/ce.c  |  3 +--
+ drivers/net/wireless/ath/ath10k/ce.h  |  3 ++-
+ drivers/net/wireless/ath/ath10k/hif.h |  2 --
+ drivers/net/wireless/ath/ath10k/htc.c |  7 ++-----
  drivers/net/wireless/ath/ath10k/htc.h |  2 +-
- drivers/net/wireless/ath/ath10k/pci.c | 26 +++++++++-----------------
- drivers/net/wireless/ath/ath10k/pci.h |  2 --
- 7 files changed, 15 insertions(+), 51 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 15 +++++++++------
+ 6 files changed, 15 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index 05cab4f..e90840d 100644
+index cf28fbe..05cab4f 100644
 --- a/drivers/net/wireless/ath/ath10k/ce.c
 +++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -1076,8 +1076,7 @@ void ath10k_ce_deinit_pipe(struct ath10k *ar, unsigned int ce_id)
- }
+@@ -1077,7 +1077,6 @@ void ath10k_ce_deinit_pipe(struct ath10k *ar, unsigned int ce_id)
  
  int ath10k_ce_alloc_pipe(struct ath10k *ar, int ce_id,
--			 const struct ce_attr *attr,
--			 void (*recv_cb)(struct ath10k_ce_pipe *))
-+			 const struct ce_attr *attr)
+ 			 const struct ce_attr *attr,
+-			 void (*send_cb)(struct ath10k_ce_pipe *),
+ 			 void (*recv_cb)(struct ath10k_ce_pipe *))
  {
  	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	struct ath10k_ce_pipe *ce_state = &ar_pci->ce_states[ce_id];
-@@ -1106,7 +1105,7 @@ int ath10k_ce_alloc_pipe(struct ath10k *ar, int ce_id,
- 		ce_state->send_cb = attr->send_cb;
+@@ -1104,7 +1103,7 @@ int ath10k_ce_alloc_pipe(struct ath10k *ar, int ce_id,
+ 	ce_state->src_sz_max = attr->src_sz_max;
+ 
+ 	if (attr->src_nentries)
+-		ce_state->send_cb = send_cb;
++		ce_state->send_cb = attr->send_cb;
  
  	if (attr->dest_nentries)
--		ce_state->recv_cb = recv_cb;
-+		ce_state->recv_cb = attr->recv_cb;
- 
- 	if (attr->src_nentries) {
- 		ce_state->src_ring = ath10k_ce_alloc_src_ring(ar, ce_id, attr);
+ 		ce_state->recv_cb = recv_cb;
 diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index 3829e33..dbb94fd 100644
+index 5c903e15..3829e33 100644
 --- a/drivers/net/wireless/ath/ath10k/ce.h
 +++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -209,8 +209,7 @@ int ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
- 			const struct ce_attr *attr);
+@@ -210,7 +210,6 @@ int ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
  void ath10k_ce_deinit_pipe(struct ath10k *ar, unsigned int ce_id);
  int ath10k_ce_alloc_pipe(struct ath10k *ar, int ce_id,
--			 const struct ce_attr *attr,
--			 void (*recv_cb)(struct ath10k_ce_pipe *));
-+			 const struct ce_attr *attr);
+ 			 const struct ce_attr *attr,
+-			 void (*send_cb)(struct ath10k_ce_pipe *),
+ 			 void (*recv_cb)(struct ath10k_ce_pipe *));
  void ath10k_ce_free_pipe(struct ath10k *ar, int ce_id);
  
- /*==================CE Engine Shutdown=======================*/
-@@ -278,6 +277,7 @@ struct ce_attr {
- 	unsigned int dest_nentries;
+@@ -277,6 +276,8 @@ struct ce_attr {
  
- 	void (*send_cb)(struct ath10k_ce_pipe *);
-+	void (*recv_cb)(struct ath10k_ce_pipe *);
+ 	/* #entries in destination ring - Must be a power of 2 */
+ 	unsigned int dest_nentries;
++
++	void (*send_cb)(struct ath10k_ce_pipe *);
  };
  
  #define SR_BA_ADDRESS		0x0000
 diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
-index 3808920..6e826bb 100644
+index 0c92e02..3808920 100644
 --- a/drivers/net/wireless/ath/ath10k/hif.h
 +++ b/drivers/net/wireless/ath/ath10k/hif.h
-@@ -30,11 +30,6 @@ struct ath10k_hif_sg_item {
- 	u16 len;
+@@ -31,8 +31,6 @@ struct ath10k_hif_sg_item {
  };
  
--struct ath10k_hif_cb {
--	int (*rx_completion)(struct ath10k *ar,
+ struct ath10k_hif_cb {
+-	int (*tx_completion)(struct ath10k *ar,
 -			     struct sk_buff *wbuf);
--};
--
- struct ath10k_hif_ops {
- 	/* send a scatter-gather list to the target */
- 	int (*tx_sg)(struct ath10k *ar, u8 pipe_id,
-@@ -78,9 +73,6 @@ struct ath10k_hif_ops {
- 	 */
- 	void (*send_complete_check)(struct ath10k *ar, u8 pipe_id, int force);
- 
--	void (*set_callbacks)(struct ath10k *ar,
--			      struct ath10k_hif_cb *callbacks);
--
- 	u16 (*get_free_queue_number)(struct ath10k *ar, u8 pipe_id);
- 
- 	u32 (*read32)(struct ath10k *ar, u32 address);
-@@ -161,12 +153,6 @@ static inline void ath10k_hif_send_complete_check(struct ath10k *ar,
- 	ar->hif.ops->send_complete_check(ar, pipe_id, force);
- }
- 
--static inline void ath10k_hif_set_callbacks(struct ath10k *ar,
--					    struct ath10k_hif_cb *callbacks)
--{
--	ar->hif.ops->set_callbacks(ar, callbacks);
--}
--
- static inline u16 ath10k_hif_get_free_queue_number(struct ath10k *ar,
- 						   u8 pipe_id)
- {
+ 	int (*rx_completion)(struct ath10k *ar,
+ 			     struct sk_buff *wbuf);
+ };
 diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 89c0e40..13d0119 100644
+index 97c24b2..89c0e40 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.c
 +++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -302,7 +302,7 @@ static int ath10k_htc_process_trailer(struct ath10k_htc *htc,
- 	return status;
+@@ -181,22 +181,20 @@ err_pull:
+ 	return ret;
  }
  
--int ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
-+void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
+-int ath10k_htc_tx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
++void ath10k_htc_tx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
  {
- 	int status = 0;
  	struct ath10k_htc *htc = &ar->htc;
-@@ -323,7 +323,6 @@ int ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
- 		ath10k_warn(ar, "HTC Rx: invalid eid %d\n", eid);
- 		ath10k_dbg_dump(ar, ATH10K_DBG_HTC, "htc bad header", "",
- 				hdr, sizeof(*hdr));
--		status = -EINVAL;
- 		goto out;
- 	}
+ 	struct ath10k_skb_cb *skb_cb;
+ 	struct ath10k_htc_ep *ep;
  
-@@ -345,7 +344,6 @@ int ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
- 			    payload_len + sizeof(*hdr));
- 		ath10k_dbg_dump(ar, ATH10K_DBG_HTC, "htc bad rx pkt len", "",
- 				hdr, sizeof(*hdr));
--		status = -EINVAL;
- 		goto out;
- 	}
+ 	if (WARN_ON_ONCE(!skb))
+-		return 0;
++		return;
  
-@@ -355,7 +353,6 @@ int ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
- 			   skb->len, payload_len);
- 		ath10k_dbg_dump(ar, ATH10K_DBG_HTC, "htc bad rx pkt len",
- 				"", hdr, sizeof(*hdr));
--		status = -EINVAL;
- 		goto out;
- 	}
+ 	skb_cb = ATH10K_SKB_CB(skb);
+ 	ep = &htc->endpoint[skb_cb->eid];
  
-@@ -371,7 +368,6 @@ int ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
- 		    (trailer_len > payload_len)) {
- 			ath10k_warn(ar, "Invalid trailer length: %d\n",
- 				    trailer_len);
--			status = -EPROTO;
- 			goto out;
- 		}
- 
-@@ -404,7 +400,6 @@ int ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
- 				 * sending unsolicited messages on the ep 0
- 				 */
- 				ath10k_warn(ar, "HTC rx ctrl still processing\n");
--				status = -EINVAL;
- 				complete(&htc->ctl_resp);
- 				goto out;
- 			}
-@@ -436,8 +431,6 @@ int ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
- 	skb = NULL;
- out:
- 	kfree_skb(skb);
+ 	ath10k_htc_notify_tx_completion(ep, skb);
+ 	/* the skb now belongs to the completion handler */
 -
--	return status;
+-	return 0;
  }
- EXPORT_SYMBOL(ath10k_htc_rx_completion_handler);
+ EXPORT_SYMBOL(ath10k_htc_tx_completion_handler);
  
-@@ -839,7 +832,6 @@ int ath10k_htc_start(struct ath10k_htc *htc)
- /* registered target arrival callback from the HIF layer */
- int ath10k_htc_init(struct ath10k *ar)
- {
--	struct ath10k_hif_cb htc_callbacks;
- 	struct ath10k_htc_ep *ep = NULL;
- 	struct ath10k_htc *htc = &ar->htc;
+@@ -851,7 +849,6 @@ int ath10k_htc_init(struct ath10k *ar)
  
-@@ -847,14 +839,11 @@ int ath10k_htc_init(struct ath10k *ar)
- 
- 	ath10k_htc_reset_endpoint_states(htc);
- 
--	/* setup HIF layer callbacks */
--	htc_callbacks.rx_completion = ath10k_htc_rx_completion_handler;
+ 	/* setup HIF layer callbacks */
+ 	htc_callbacks.rx_completion = ath10k_htc_rx_completion_handler;
+-	htc_callbacks.tx_completion = ath10k_htc_tx_completion_handler;
  	htc->ar = ar;
  
  	/* Get HIF default pipe for HTC message exchange */
- 	ep = &htc->endpoint[ATH10K_HTC_EP_0];
- 
--	ath10k_hif_set_callbacks(ar, &htc_callbacks);
- 	ath10k_hif_get_default_pipe(ar, &ep->ul_pipe_id, &ep->dl_pipe_id);
- 
- 	init_completion(&htc->ctl_resp);
 diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index 77b669e..aed3708 100644
+index d1fc8e7..77b669e 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.h
 +++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -356,6 +356,6 @@ int ath10k_htc_send(struct ath10k_htc *htc, enum ath10k_htc_ep_id eid,
+@@ -355,7 +355,7 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+ int ath10k_htc_send(struct ath10k_htc *htc, enum ath10k_htc_ep_id eid,
  		    struct sk_buff *packet);
  struct sk_buff *ath10k_htc_alloc_skb(struct ath10k *ar, int size);
- void ath10k_htc_tx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
--int ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
-+void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
+-int ath10k_htc_tx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
++void ath10k_htc_tx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
+ int ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
  
  #endif
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 2655125..617728d 100644
+index 1046ab6..2655125 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -105,6 +105,7 @@ static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
+@@ -104,6 +104,7 @@ static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
+ 			       struct ath10k_ce_pipe *rx_pipe,
  			       struct bmi_xfer *xfer);
  static int ath10k_pci_qca99x0_chip_reset(struct ath10k *ar);
- static void ath10k_pci_htc_tx_cb(struct ath10k_ce_pipe *ce_state);
-+static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state);
++static void ath10k_pci_htc_tx_cb(struct ath10k_ce_pipe *ce_state);
  
  static const struct ce_attr host_ce_config_wlan[] = {
  	/* CE0: host->target HTC control and raw streams */
-@@ -114,6 +115,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+@@ -112,6 +113,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+ 		.src_nentries = 16,
  		.src_sz_max = 256,
  		.dest_nentries = 0,
- 		.send_cb = ath10k_pci_htc_tx_cb,
-+		.recv_cb = ath10k_pci_htc_rx_cb,
++		.send_cb = ath10k_pci_htc_tx_cb,
  	},
  
  	/* CE1: target->host HTT + HTC control */
-@@ -123,6 +125,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+@@ -120,6 +122,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+ 		.src_nentries = 0,
  		.src_sz_max = 2048,
  		.dest_nentries = 512,
- 		.send_cb = ath10k_pci_htc_tx_cb,
-+		.recv_cb = ath10k_pci_htc_rx_cb,
++		.send_cb = ath10k_pci_htc_tx_cb,
  	},
  
  	/* CE2: target->host WMI */
-@@ -132,6 +135,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+@@ -128,6 +131,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+ 		.src_nentries = 0,
  		.src_sz_max = 2048,
  		.dest_nentries = 128,
- 		.send_cb = ath10k_pci_htc_tx_cb,
-+		.recv_cb = ath10k_pci_htc_rx_cb,
++		.send_cb = ath10k_pci_htc_tx_cb,
  	},
  
  	/* CE3: host->target WMI */
-@@ -141,6 +145,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+@@ -136,6 +140,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+ 		.src_nentries = 32,
  		.src_sz_max = 2048,
  		.dest_nentries = 0,
- 		.send_cb = ath10k_pci_htc_tx_cb,
-+		.recv_cb = ath10k_pci_htc_rx_cb,
++		.send_cb = ath10k_pci_htc_tx_cb,
  	},
  
  	/* CE4: host->target HTT */
-@@ -150,6 +155,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+@@ -144,6 +149,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+ 		.src_nentries = CE_HTT_H2T_MSG_SRC_NENTRIES,
  		.src_sz_max = 256,
  		.dest_nentries = 0,
- 		.send_cb = ath10k_pci_htc_tx_cb,
-+		.recv_cb = ath10k_pci_htc_rx_cb,
++		.send_cb = ath10k_pci_htc_tx_cb,
  	},
  
  	/* CE5: unused */
-@@ -1132,12 +1138,11 @@ static void ath10k_pci_htc_tx_cb(struct ath10k_ce_pipe *ce_state)
+@@ -1102,11 +1108,9 @@ static int ath10k_pci_diag_write32(struct ath10k *ar, u32 address, u32 value)
+ }
+ 
+ /* Called by lower (CE) layer when a send to Target completes. */
+-static void ath10k_pci_ce_send_done(struct ath10k_ce_pipe *ce_state)
++static void ath10k_pci_htc_tx_cb(struct ath10k_ce_pipe *ce_state)
+ {
+ 	struct ath10k *ar = ce_state->ar;
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	struct ath10k_hif_cb *cb = &ar_pci->msg_callbacks_current;
+ 	struct sk_buff_head list;
+ 	struct sk_buff *skb;
+ 	u32 ce_data;
+@@ -1124,7 +1128,7 @@ static void ath10k_pci_ce_send_done(struct ath10k_ce_pipe *ce_state)
+ 	}
+ 
+ 	while ((skb = __skb_dequeue(&list)))
+-		cb->tx_completion(ar, skb);
++		ath10k_htc_tx_completion_handler(ar, skb);
  }
  
  /* Called by lower (CE) layer when data is received from the Target. */
--static void ath10k_pci_ce_recv_data(struct ath10k_ce_pipe *ce_state)
-+static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state)
- {
- 	struct ath10k *ar = ce_state->ar;
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	struct ath10k_pci_pipe *pipe_info =  &ar_pci->pipe_info[ce_state->id];
--	struct ath10k_hif_cb *cb = &ar_pci->msg_callbacks_current;
- 	struct sk_buff *skb;
- 	struct sk_buff_head list;
- 	void *transfer_context;
-@@ -1172,7 +1177,7 @@ static void ath10k_pci_ce_recv_data(struct ath10k_ce_pipe *ce_state)
- 		ath10k_dbg_dump(ar, ATH10K_DBG_PCI_DUMP, NULL, "pci rx: ",
- 				skb->data, skb->len);
+@@ -1579,7 +1583,7 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
  
--		cb->rx_completion(ar, skb);
-+		ath10k_htc_rx_completion_handler(ar, skb);
+ 		ce_ring->per_transfer_context[i] = NULL;
+ 
+-		ar_pci->msg_callbacks_current.tx_completion(ar, skb);
++		ath10k_htc_tx_completion_handler(ar, skb);
  	}
- 
- 	ath10k_pci_rx_post_pipe(pipe_info);
-@@ -1347,17 +1352,6 @@ static void ath10k_pci_hif_send_complete_check(struct ath10k *ar, u8 pipe,
- 	ath10k_ce_per_engine_service(ar, pipe);
  }
  
--static void ath10k_pci_hif_set_callbacks(struct ath10k *ar,
--					 struct ath10k_hif_cb *callbacks)
--{
--	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--
--	ath10k_dbg(ar, ATH10K_DBG_PCI, "pci hif set callbacks\n");
--
--	memcpy(&ar_pci->msg_callbacks_current, callbacks,
--	       sizeof(ar_pci->msg_callbacks_current));
--}
--
- static void ath10k_pci_kill_tasklet(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-@@ -2003,8 +1997,7 @@ static int ath10k_pci_alloc_pipes(struct ath10k *ar)
- 		pipe->pipe_num = i;
+@@ -2000,7 +2004,6 @@ static int ath10k_pci_alloc_pipes(struct ath10k *ar)
  		pipe->hif_ce_state = ar;
  
--		ret = ath10k_ce_alloc_pipe(ar, i, &host_ce_config_wlan[i],
--					   ath10k_pci_ce_recv_data);
-+		ret = ath10k_ce_alloc_pipe(ar, i, &host_ce_config_wlan[i]);
+ 		ret = ath10k_ce_alloc_pipe(ar, i, &host_ce_config_wlan[i],
+-					   ath10k_pci_ce_send_done,
+ 					   ath10k_pci_ce_recv_data);
  		if (ret) {
  			ath10k_err(ar, "failed to allocate copy engine pipe %d: %d\n",
- 				   i, ret);
-@@ -2424,7 +2417,6 @@ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
- 	.map_service_to_pipe	= ath10k_pci_hif_map_service_to_pipe,
- 	.get_default_pipe	= ath10k_pci_hif_get_default_pipe,
- 	.send_complete_check	= ath10k_pci_hif_send_complete_check,
--	.set_callbacks		= ath10k_pci_hif_set_callbacks,
- 	.get_free_queue_number	= ath10k_pci_hif_get_free_queue_number,
- 	.power_up		= ath10k_pci_hif_power_up,
- 	.power_down		= ath10k_pci_hif_power_down,
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index 8d364fb..9c91640 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -175,8 +175,6 @@ struct ath10k_pci {
- 
- 	struct ath10k_pci_pipe pipe_info[CE_COUNT_MAX];
- 
--	struct ath10k_hif_cb msg_callbacks_current;
--
- 	/* Copy Engine used for Diagnostic Accesses */
- 	struct ath10k_ce_pipe *ce_diag;
- 
 -- 
 2.5.2
 
