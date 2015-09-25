@@ -1,25 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from rudy.puc.rediris.es ([2001:720:418:ca01::132])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZfNyl-0001Ms-9W
- for ath10k@lists.infradead.org; Fri, 25 Sep 2015 08:03:40 +0000
-Received: from [84.88.62.208] (helo=leo)
- by rudy.puc.rediris.es with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
- (Exim 4.80) (envelope-from <jbaranda@cttc.es>) id 1ZfNyM-0004c8-Os
- for ath10k@lists.infradead.org; Fri, 25 Sep 2015 10:03:15 +0200
-Received: from [84.88.61.34] (pcjbaranda.cttc.es [84.88.61.34])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by leo (Postfix) with ESMTPSA id D05931FE10
- for <ath10k@lists.infradead.org>; Fri, 25 Sep 2015 10:03:09 +0200 (CEST)
-Message-ID: <5604FFC2.8020405@cttc.es>
-Date: Fri, 25 Sep 2015 10:03:14 +0200
-From: Jorge Baranda <jbaranda@cttc.es>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZfVRH-0001rv-EY
+ for ath10k@lists.infradead.org; Fri, 25 Sep 2015 16:01:36 +0000
+Subject: Re: CT 4.2 kernel now supports 80Mhz IBSS
+References: <56033C12.9020102@candelatech.com> <5604EE3F.40206@cttc.es>
+ <5604FC09.609@tu-bs.de> <5604FE30.3000609@cttc.es>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <56056FCA.3070602@candelatech.com>
+Date: Fri, 25 Sep 2015 09:01:14 -0700
 MIME-Version: 1.0
-Subject: Re: Sending lldp packets with ath10k in ADHOC mode
-References: <5602C17A.6070509@cttc.es>
-In-Reply-To: <5602C17A.6070509@cttc.es>
-Content-Type: multipart/mixed; boundary="------------060909000603010005080906"
+In-Reply-To: <5604FE30.3000609@cttc.es>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,154 +19,128 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Jorge Baranda <jbaranda@cttc.es>, ath10k@lists.infradead.org, "Harms, Hannes" <hannes.harms@tu-bs.de>
 
-This is a multi-part message in MIME format.
---------------060909000603010005080906
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
-
-Dear all,
-
-I upload a wireshark capture to illustrate the behavior previously=20
-described. This wireshark is showing the traffic in the "master" computer.
-It is suppossed that both interfaces should be sending periodicall LLDP=20
-packets (with broadcast mac dst addr), but only the one configured in AP=20
-mode is sending such packets.
-However, when I try to look for a host through the interface configure=20
-in ad-hoc, the ARP process starts with the broadcast ARP request and=20
-this message is sent (and registered bywireshark) through the interface=20
-configure in  ad-hoc. Does the ath10k driver has to do something with=20
-the different treatment of the broadcast packets/protocols?
-Aparently, all broadcast packets should be sent by the wireless=20
-interface no matter its configuration (AP or ad-hoc), isn't it?
-
-Thanks in advance,
-
-Jorge
-
-
-El 23/09/15 17:12, Jorge Baranda escribi=F3:
-> Dear all,
+On 09/25/2015 12:56 AM, Jorge Baranda wrote:
+> Hi Harms,
 >
-> I have a setup which consists of three computers connected by means of=20
-> WLE900VX cards using the ath10k driver.
-> One computer (which we can call master) is equipped with two of these=20
-> cards and I set different modes to connect the "master" with the other=20
-> computers.
-> In particular, a pair of computers (master-computer A) is connected in=20
-> ad-hoc mode and the other pair (master-computer B) is connected in=20
-> AP-STA mode.
+> Thank you very much for your aclaration. I was trying to follow your setu=
+p with the CT kernel 4.0, but with no success, so after the post of Ben, I =
+imagine I
+> have to install CT 4.2 kernel.
+> By the way, I suppose that I have already this patch in my folder of the =
+kernel 4.2 since I downloaded it from git (17/09/15) after you made your po=
+st. Just in
+> case, could you point me out to the patch you are refering to?
+> Other thing,  which CT firmware are you using (mine Release14)? Additiona=
+lly, could you share your .config file for the CT 4.2 kernel? I'm having so=
+me troubles
+> to make this kernel running and I am a little confused.
+
+Please grab the latest CT 4.2 kernel, I rebased the last 10 or so patches a=
+ day or two ago:
+
+# This first command blows away the first 20 commits, so if you have
+# added your own patches, then you need to deal with that properly.
+
+git reset --hard HEAD~20
+git pull
+
+The configs I use are in ./configs/
+
+In particular, the patch I added to enable HT80 IBSS was this:
+
+http://dmz2.candelatech.com/?p=3Dlinux-4.2.dev.y/.git;a=3Dcommit;h=3Dc62006=
+6342699f63dcdd00ce5f4d0feb4f02b1fc
+
+Thanks,
+Ben
+
 >
-> I want to send LLDP packets through both interfaces of master computer=20
-> to perform link discovery. But I have realised that sending LLDP=20
-> messages is only possible through the
-> interface configured as AP. Nevertheless, I've seen that the ad-hoc=20
-> interface is able to send ARP broadcast messages.
-> Due to this fact, when generating the LLDP packets I set as=20
-> destination MAC address the broadcast one, but even so, the ad-hoc=20
-> interface is not sending the LLDP messages.
-> Does anyone have an idea of the reason of this behavior? Which is=20
-> treating differently the ARP and the LLDP packet?
-> I was expecting the ad-hoc interface to forward any kind of packet=20
-> with mac destination address the broadcast address.
+> Thanks again,
 >
-> Thank you very much in advance for your time and attention,
+> Jordi
 >
-> With kind regards,
+>
+> El 25/09/15 09:47, Harms, Hannes escribi=F3:
+>> Hi,
+>>
+>> yes, I was able to get 80 MHz IBSS working with CT 4.2 , but
+>> I also  integrated the missing patch to my kernel  even before Ben menti=
+oned that the patch was missing.
+>> I also forgot that I made this change, sorry
+>>
+>> Regards Hannes
+>>
+>>
+>> Am 25.09.2015 um 08:48 schrieb Jorge Baranda:
+>>> Hi Ben,
+>>>
+>>> I imagine, I am one of the guys you are refering to.
+>>> Within the thread "WLE600VX from PCEngines", I was trying to make worki=
+ng a HT80 IBSS connection with wpa_supplicant, but this connection was only=
+ set to 20MHz.
+>>> I was trying this with the 4.0 kernel, the 10.1.467-ct-14 firmware and =
+the last version (git) of wpa_supplicant (2.5). By the way, has anyone trie=
+d this?
+>>>
+>>> Then, due to this failure, I tried kernel 4.2 because Hannes Harm repor=
+ted success to set HT80 IBSS. But I was not able to configure properly this=
+ kernel
+>>> (compile OK, but the computer does not boot then).
+>>>
+>>> @Ben, could you share a .config file for kernel 4.2? Do you think that =
+Release14 CT firmware would be able to work? I will update the 4.2 kernel, =
+compile it
+>>> and try to see
+>>> if I can set up the HT80 IBSS connection.
+>>>
+>>> Thanks,
+>>>
+>>> Jorge
+>>>
+>>>
+>>> El 24/09/15 01:56, Ben Greear escribi=F3:
+>>>> I forget exactly all who was asking for this...but hopefully
+>>>> they are reading this list...
+>>>>
+>>>> I was missing a patch that allowed HT80 IBSS in my 4.2.
+>>>>
+>>>> The beta-15 CT firmware appears to do HT80 IBSS just fine
+>>>> with the 4.2 kernel now.
+>>>>
+>>>> I have not attempted to enable this feature on my 4.0 kernel yet.
+>>>>
+>>>> Please also note, I've been hacking on rate-ctrl logic in both 4.0
+>>>> and 4.2 kernels (and beta-15 firmware)..so if you try it and find
+>>>> something weird, especially in probe requests or association requests,
+>>>> please do let me know.  Notes of success are welcome as well of course!
+>>>>
+>>>> http://www.candelatech.com/ath10k.php
+>>>>
+>>>> http://dmz2.candelatech.com/git/gitweb.cgi
+>>>>
+>>>> Thanks,
+>>>> Ben
+>>>>
+>>>
+>>>
+>>
+>
 >
 
 
---=20
-Jorge Baranda
-Research Engineer, MSc
-jorge.baranda@cttc.es
+-- =
 
-Centre Tecnol=F2gic de Telecomunicacions de Catalunya (CTTC)
-Av. Carl Friedrich Gauss, 7
-08860 Castelldefels, Barcelona (Spain)
-Tel: +34 93 645 29 00  Ext: 2171
-Fax. +34 93 645 29 01
-www.cttc.es
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
-
---------------060909000603010005080906
-Content-Type: application/octet-stream;
- name="arp_lldp_packets.pcapng"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="arp_lldp_packets.pcapng"
-
-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
-VAAAAA==
---------------060909000603010005080906
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---------------060909000603010005080906--
