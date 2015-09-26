@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZfbzS-0003Tn-Gs
- for ath10k@lists.infradead.org; Fri, 25 Sep 2015 23:01:19 +0000
-From: Ben Greear <greearb@candelatech.com>
-Subject: Can we ignore frames with invalid BSSID in IBSS mode?
-Message-ID: <5605D228.7050609@candelatech.com>
-Date: Fri, 25 Sep 2015 16:00:56 -0700
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zfu1m-0004hq-Fn
+ for ath10k@lists.infradead.org; Sat, 26 Sep 2015 18:16:54 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 4.3 RESEND] ath10k: fix DMA related firmware crashes on
+ multiple devices
+References: <1442219607-12383-1-git-send-email-nbd@openwrt.org>
+Date: Sat, 26 Sep 2015 21:16:21 +0300
+In-Reply-To: <1442219607-12383-1-git-send-email-nbd@openwrt.org> (Felix
+ Fietkau's message of "Mon, 14 Sep 2015 10:33:27 +0200")
+Message-ID: <87wpvdcah6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,32 +20,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Felix Fietkau <nbd@openwrt.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-It seems that ath10k ar988X hardware has a bug where the BSSID
-for IBSS AMSDU frames is all zeros.  The 'main' 636 ath10k firmware
-does not seem to use AMSDUs for IBSS, and when I enable it in my CT
-firmware, then I see the breakage.  So, I suspect it is not
-just a simple software/firmware bug.
+Felix Fietkau <nbd@openwrt.org> writes:
 
-If I simply ignore the bssid_match check in ieee80211_accept_frame,
-then it seems everything runs fine.
+> Some platforms really don't like DMA bursts of 256 bytes, and this
+> causes the firmware to crash when sending beacons.
+> Also, changing this based on the firmware version does not seem to make
+> much sense, so use 128 bytes for all versions.
+>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
 
-So, I'm curious if anyone knows what sorts of bad things could happen
-if the bssid_match check is ignored?  Maybe bcast/mcast frames could
-be accepted when they shouldn't be in certain cases?
-
-Thanks,
-Ben
+Thanks, applied to ath-current branch in ath.git.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
