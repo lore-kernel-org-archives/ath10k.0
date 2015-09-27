@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgBUL-0005oI-2I
- for ath10k@lists.infradead.org; Sun, 27 Sep 2015 12:55:35 +0000
+ id 1ZgBXA-0006On-OQ
+ for ath10k@lists.infradead.org; Sun, 27 Sep 2015 12:58:29 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix ldpc param for fixed rate
-References: <1442389740-29053-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Sun, 27 Sep 2015 15:55:02 +0300
-In-Reply-To: <1442389740-29053-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Wed, 16 Sep 2015 13:19:00 +0530")
-Message-ID: <87bncoc995.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix MSI-X registering for qca99x0
+References: <1442470653-25162-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Sun, 27 Sep 2015 15:57:56 +0300
+In-Reply-To: <1442470653-25162-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Thu, 17 Sep 2015 08:17:33 +0200")
+Message-ID: <877fncc94b.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,17 +23,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-> ldpc is not configured for fixed rates. This blocks auto rate vs fixed
-> rate performance comparison. Since firmware is considering ldpc vdev
-> param for fixed rate selection, it has to be configured to enable ldpc
-> for fixed rates.
+> In case of qca99x0 and MSI-X supported/enabled we
+> failed during interrupts registering with message:
 >
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> ath10k_pci 0000:04:00.0: failed to request MSI-X ce irq 50: -22
+>
+> Issue/fix was reproduced/tested using Dell Latitude E6430 laptop.
+>
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
 Thanks, applied.
 
