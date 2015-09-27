@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zfu1m-0004hq-Fn
- for ath10k@lists.infradead.org; Sat, 26 Sep 2015 18:16:54 +0000
+ id 1ZgBPe-0003k9-Vk
+ for ath10k@lists.infradead.org; Sun, 27 Sep 2015 12:50:43 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 4.3 RESEND] ath10k: fix DMA related firmware crashes on
- multiple devices
-References: <1442219607-12383-1-git-send-email-nbd@openwrt.org>
-Date: Sat, 26 Sep 2015 21:16:21 +0300
-In-Reply-To: <1442219607-12383-1-git-send-email-nbd@openwrt.org> (Felix
- Fietkau's message of "Mon, 14 Sep 2015 10:33:27 +0200")
-Message-ID: <87wpvdcah6.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath: fix incorrect PPB on JAPAN chirp radar
+References: <1441819724-25344-1-git-send-email-poh@qca.qualcomm.com>
+Date: Sun, 27 Sep 2015 15:50:09 +0300
+In-Reply-To: <1441819724-25344-1-git-send-email-poh@qca.qualcomm.com> (Peter
+ Oh's message of "Wed, 9 Sep 2015 10:28:44 -0700")
+Message-ID: <87oagoc9ha.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,20 +23,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Felix Fietkau <nbd@openwrt.org>
+To: Peter Oh <poh@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Felix Fietkau <nbd@openwrt.org> writes:
+Peter Oh <poh@qca.qualcomm.com> writes:
 
-> Some platforms really don't like DMA bursts of 256 bytes, and this
-> causes the firmware to crash when sending beacons.
-> Also, changing this based on the firmware version does not seem to make
-> much sense, so use 128 bytes for all versions.
+> The number of pulses per burst on Japan chirp radar is
+> between 1 and 3. The previous value, 20, is representing
+> number of bursts, but since current DFS detector is using
+> pulse detection other than bursts, use the pulse number
+> for correct radar detection.
+> Also using the highest number helps to avoid false detection.
 >
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
 
-Thanks, applied to ath-current branch in ath.git.
+Thanks, applied.
 
 -- 
 Kalle Valo
