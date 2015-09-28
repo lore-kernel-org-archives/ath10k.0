@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
+Received: from mail-ig0-f178.google.com ([209.85.213.178])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgSrG-0007C6-RB
- for ath10k@lists.infradead.org; Mon, 28 Sep 2015 07:28:24 +0000
-Received: by wiclk2 with SMTP id lk2so91513661wic.0
- for <ath10k@lists.infradead.org>; Mon, 28 Sep 2015 00:27:58 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <5608DD30.6010606@cttc.es>
-References: <56033C12.9020102@candelatech.com> <5604EE3F.40206@cttc.es>
- <5604FC09.609@tu-bs.de> <5604FE30.3000609@cttc.es>
- <56056FCA.3070602@candelatech.com> <5608DD30.6010606@cttc.es>
-Date: Mon, 28 Sep 2015 09:27:58 +0200
-Message-ID: <CALhHN=rG7P8D6w0EeB087v=kJk1aWheYaYPPxrzo0sDFy3XpoQ@mail.gmail.com>
-Subject: Re: CT 4.2 kernel now supports 80Mhz IBSS
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+ id 1ZgY2d-0000oF-Se
+ for ath10k@lists.infradead.org; Mon, 28 Sep 2015 13:00:28 +0000
+Received: by igcrk20 with SMTP id rk20so52298179igc.1
+ for <ath10k@lists.infradead.org>; Mon, 28 Sep 2015 06:00:06 -0700 (PDT)
+From: Bob Copeland <me@bobcopeland.com>
+Subject: [PATCH] ath10k: only advertise mesh support in raw mode
+Date: Mon, 28 Sep 2015 08:59:52 -0400
+Message-Id: <1443445192-30464-1-git-send-email-me@bobcopeland.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,91 +17,289 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jorge Baranda <jorge.baranda@cttc.es>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: linux-wireless@vger.kernel.org
+Cc: Bob Copeland <me@bobcopeland.com>, ath10k@lists.infradead.org
 
-T24gMjggU2VwdGVtYmVyIDIwMTUgYXQgMDg6MjQsIEpvcmdlIEJhcmFuZGEgPGpvcmdlLmJhcmFu
-ZGFAY3R0Yy5lcz4gd3JvdGU6Cj4gSGkgQmVuLCBIYXJtcywKPgo+IFRoYW5rIHlvdSB2ZXJ5IG11
-Y2ggZm9yIHRoZSBpbmZvcm1hdGlvbi4KPiBJIHdpbGwgdHJ5IGl0LiBJIGhvcGUgSSBjYW4gc2V0
-IHRoZSBsaW5rIHRvIDgwTUh6IHdpdGggdGhlIG5ldyBrZXJuZWwuCj4KQlRXLCBuZXdlc3QgaXcg
-YWxyZWFkeSBzdXBwb3J0IGlic3MgYW5kIDgwTUh6IC0gc28geW91IGRvbid0IG5lZWQKd3BhX3N1
-cHBsaWNhbnQgYW55bW9yZS4KCkJSCkphbnVzegoKPiBUaGFua3MgYWdhaW4sCj4KPiBSZWdhcmRz
-LAo+Cj4gSm9yZGkKPgo+Cj4gRWwgMjUvMDkvMjAxNSBhIGxhcyAxODowMSwgQmVuIEdyZWVhciBl
-c2NyaWJpw7M6Cj4+Cj4+IE9uIDA5LzI1LzIwMTUgMTI6NTYgQU0sIEpvcmdlIEJhcmFuZGEgd3Jv
-dGU6Cj4+Pgo+Pj4gSGkgSGFybXMsCj4+Pgo+Pj4gVGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgeW91
-ciBhY2xhcmF0aW9uLiBJIHdhcyB0cnlpbmcgdG8gZm9sbG93IHlvdXIKPj4+IHNldHVwIHdpdGgg
-dGhlIENUIGtlcm5lbCA0LjAsIGJ1dCB3aXRoIG5vIHN1Y2Nlc3MsIHNvIGFmdGVyIHRoZSBwb3N0
-IG9mIEJlbiwKPj4+IEkgaW1hZ2luZSBJCj4+PiBoYXZlIHRvIGluc3RhbGwgQ1QgNC4yIGtlcm5l
-bC4KPj4+IEJ5IHRoZSB3YXksIEkgc3VwcG9zZSB0aGF0IEkgaGF2ZSBhbHJlYWR5IHRoaXMgcGF0
-Y2ggaW4gbXkgZm9sZGVyIG9mIHRoZQo+Pj4ga2VybmVsIDQuMiBzaW5jZSBJIGRvd25sb2FkZWQg
-aXQgZnJvbSBnaXQgKDE3LzA5LzE1KSBhZnRlciB5b3UgbWFkZSB5b3VyCj4+PiBwb3N0LiBKdXN0
-IGluCj4+PiBjYXNlLCBjb3VsZCB5b3UgcG9pbnQgbWUgb3V0IHRvIHRoZSBwYXRjaCB5b3UgYXJl
-IHJlZmVyaW5nIHRvPwo+Pj4gT3RoZXIgdGhpbmcsICB3aGljaCBDVCBmaXJtd2FyZSBhcmUgeW91
-IHVzaW5nIChtaW5lIFJlbGVhc2UxNCk/Cj4+PiBBZGRpdGlvbmFsbHksIGNvdWxkIHlvdSBzaGFy
-ZSB5b3VyIC5jb25maWcgZmlsZSBmb3IgdGhlIENUIDQuMiBrZXJuZWw/IEknbQo+Pj4gaGF2aW5n
-IHNvbWUgdHJvdWJsZXMKPj4+IHRvIG1ha2UgdGhpcyBrZXJuZWwgcnVubmluZyBhbmQgSSBhbSBh
-IGxpdHRsZSBjb25mdXNlZC4KPj4KPj4KPj4gUGxlYXNlIGdyYWIgdGhlIGxhdGVzdCBDVCA0LjIg
-a2VybmVsLCBJIHJlYmFzZWQgdGhlIGxhc3QgMTAgb3Igc28gcGF0Y2hlcwo+PiBhIGRheSBvciB0
-d28gYWdvOgo+Pgo+PiAjIFRoaXMgZmlyc3QgY29tbWFuZCBibG93cyBhd2F5IHRoZSBmaXJzdCAy
-MCBjb21taXRzLCBzbyBpZiB5b3UgaGF2ZQo+PiAjIGFkZGVkIHlvdXIgb3duIHBhdGNoZXMsIHRo
-ZW4geW91IG5lZWQgdG8gZGVhbCB3aXRoIHRoYXQgcHJvcGVybHkuCj4+Cj4+IGdpdCByZXNldCAt
-LWhhcmQgSEVBRH4yMAo+PiBnaXQgcHVsbAo+Pgo+PiBUaGUgY29uZmlncyBJIHVzZSBhcmUgaW4g
-Li9jb25maWdzLwo+Pgo+PiBJbiBwYXJ0aWN1bGFyLCB0aGUgcGF0Y2ggSSBhZGRlZCB0byBlbmFi
-bGUgSFQ4MCBJQlNTIHdhcyB0aGlzOgo+Pgo+Pgo+PiBodHRwOi8vZG16Mi5jYW5kZWxhdGVjaC5j
-b20vP3A9bGludXgtNC4yLmRldi55Ly5naXQ7YT1jb21taXQ7aD1jNjIwMDY2MzQyNjk5ZjYzZGNk
-ZDAwY2U1ZjRkMGZlYjRmMDJiMWZjCj4+Cj4+IFRoYW5rcywKPj4gQmVuCj4+Cj4+Pgo+Pj4gVGhh
-bmtzIGFnYWluLAo+Pj4KPj4+IEpvcmRpCj4+Pgo+Pj4KPj4+IEVsIDI1LzA5LzE1IDA5OjQ3LCBI
-YXJtcywgSGFubmVzIGVzY3JpYmnDszoKPj4+Pgo+Pj4+IEhpLAo+Pj4+Cj4+Pj4geWVzLCBJIHdh
-cyBhYmxlIHRvIGdldCA4MCBNSHogSUJTUyB3b3JraW5nIHdpdGggQ1QgNC4yICwgYnV0Cj4+Pj4g
-SSBhbHNvICBpbnRlZ3JhdGVkIHRoZSBtaXNzaW5nIHBhdGNoIHRvIG15IGtlcm5lbCAgZXZlbiBi
-ZWZvcmUgQmVuCj4+Pj4gbWVudGlvbmVkIHRoYXQgdGhlIHBhdGNoIHdhcyBtaXNzaW5nLgo+Pj4+
-IEkgYWxzbyBmb3Jnb3QgdGhhdCBJIG1hZGUgdGhpcyBjaGFuZ2UsIHNvcnJ5Cj4+Pj4KPj4+PiBS
-ZWdhcmRzIEhhbm5lcwo+Pj4+Cj4+Pj4KPj4+PiBBbSAyNS4wOS4yMDE1IHVtIDA4OjQ4IHNjaHJp
-ZWIgSm9yZ2UgQmFyYW5kYToKPj4+Pj4KPj4+Pj4gSGkgQmVuLAo+Pj4+Pgo+Pj4+PiBJIGltYWdp
-bmUsIEkgYW0gb25lIG9mIHRoZSBndXlzIHlvdSBhcmUgcmVmZXJpbmcgdG8uCj4+Pj4+IFdpdGhp
-biB0aGUgdGhyZWFkICJXTEU2MDBWWCBmcm9tIFBDRW5naW5lcyIsIEkgd2FzIHRyeWluZyB0byBt
-YWtlCj4+Pj4+IHdvcmtpbmcgYSBIVDgwIElCU1MgY29ubmVjdGlvbiB3aXRoIHdwYV9zdXBwbGlj
-YW50LCBidXQgdGhpcyBjb25uZWN0aW9uIHdhcwo+Pj4+PiBvbmx5IHNldCB0byAyME1Iei4KPj4+
-Pj4gSSB3YXMgdHJ5aW5nIHRoaXMgd2l0aCB0aGUgNC4wIGtlcm5lbCwgdGhlIDEwLjEuNDY3LWN0
-LTE0IGZpcm13YXJlIGFuZAo+Pj4+PiB0aGUgbGFzdCB2ZXJzaW9uIChnaXQpIG9mIHdwYV9zdXBw
-bGljYW50ICgyLjUpLiBCeSB0aGUgd2F5LCBoYXMgYW55b25lIHRyaWVkCj4+Pj4+IHRoaXM/Cj4+
-Pj4+Cj4+Pj4+IFRoZW4sIGR1ZSB0byB0aGlzIGZhaWx1cmUsIEkgdHJpZWQga2VybmVsIDQuMiBi
-ZWNhdXNlIEhhbm5lcyBIYXJtCj4+Pj4+IHJlcG9ydGVkIHN1Y2Nlc3MgdG8gc2V0IEhUODAgSUJT
-Uy4gQnV0IEkgd2FzIG5vdCBhYmxlIHRvIGNvbmZpZ3VyZSBwcm9wZXJseQo+Pj4+PiB0aGlzIGtl
-cm5lbAo+Pj4+PiAoY29tcGlsZSBPSywgYnV0IHRoZSBjb21wdXRlciBkb2VzIG5vdCBib290IHRo
-ZW4pLgo+Pj4+Pgo+Pj4+PiBAQmVuLCBjb3VsZCB5b3Ugc2hhcmUgYSAuY29uZmlnIGZpbGUgZm9y
-IGtlcm5lbCA0LjI/IERvIHlvdSB0aGluayB0aGF0Cj4+Pj4+IFJlbGVhc2UxNCBDVCBmaXJtd2Fy
-ZSB3b3VsZCBiZSBhYmxlIHRvIHdvcms/IEkgd2lsbCB1cGRhdGUgdGhlIDQuMiBrZXJuZWwsCj4+
-Pj4+IGNvbXBpbGUgaXQKPj4+Pj4gYW5kIHRyeSB0byBzZWUKPj4+Pj4gaWYgSSBjYW4gc2V0IHVw
-IHRoZSBIVDgwIElCU1MgY29ubmVjdGlvbi4KPj4+Pj4KPj4+Pj4gVGhhbmtzLAo+Pj4+Pgo+Pj4+
-PiBKb3JnZQo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBFbCAyNC8wOS8xNSAwMTo1NiwgQmVuIEdyZWVhciBl
-c2NyaWJpw7M6Cj4+Pj4+Pgo+Pj4+Pj4gSSBmb3JnZXQgZXhhY3RseSBhbGwgd2hvIHdhcyBhc2tp
-bmcgZm9yIHRoaXMuLi5idXQgaG9wZWZ1bGx5Cj4+Pj4+PiB0aGV5IGFyZSByZWFkaW5nIHRoaXMg
-bGlzdC4uLgo+Pj4+Pj4KPj4+Pj4+IEkgd2FzIG1pc3NpbmcgYSBwYXRjaCB0aGF0IGFsbG93ZWQg
-SFQ4MCBJQlNTIGluIG15IDQuMi4KPj4+Pj4+Cj4+Pj4+PiBUaGUgYmV0YS0xNSBDVCBmaXJtd2Fy
-ZSBhcHBlYXJzIHRvIGRvIEhUODAgSUJTUyBqdXN0IGZpbmUKPj4+Pj4+IHdpdGggdGhlIDQuMiBr
-ZXJuZWwgbm93Lgo+Pj4+Pj4KPj4+Pj4+IEkgaGF2ZSBub3QgYXR0ZW1wdGVkIHRvIGVuYWJsZSB0
-aGlzIGZlYXR1cmUgb24gbXkgNC4wIGtlcm5lbCB5ZXQuCj4+Pj4+Pgo+Pj4+Pj4gUGxlYXNlIGFs
-c28gbm90ZSwgSSd2ZSBiZWVuIGhhY2tpbmcgb24gcmF0ZS1jdHJsIGxvZ2ljIGluIGJvdGggNC4w
-Cj4+Pj4+PiBhbmQgNC4yIGtlcm5lbHMgKGFuZCBiZXRhLTE1IGZpcm13YXJlKS4uc28gaWYgeW91
-IHRyeSBpdCBhbmQgZmluZAo+Pj4+Pj4gc29tZXRoaW5nIHdlaXJkLCBlc3BlY2lhbGx5IGluIHBy
-b2JlIHJlcXVlc3RzIG9yIGFzc29jaWF0aW9uIHJlcXVlc3RzLAo+Pj4+Pj4gcGxlYXNlIGRvIGxl
-dCBtZSBrbm93LiAgTm90ZXMgb2Ygc3VjY2VzcyBhcmUgd2VsY29tZSBhcyB3ZWxsIG9mCj4+Pj4+
-PiBjb3Vyc2UhCj4+Pj4+Pgo+Pj4+Pj4gaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20vYXRoMTBr
-LnBocAo+Pj4+Pj4KPj4+Pj4+IGh0dHA6Ly9kbXoyLmNhbmRlbGF0ZWNoLmNvbS9naXQvZ2l0d2Vi
-LmNnaQo+Pj4+Pj4KPj4+Pj4+IFRoYW5rcywKPj4+Pj4+IEJlbgo+Pj4+Pj4KPj4+Pj4KPj4+Pj4K
-Pj4+Pgo+Pj4KPj4+Cj4+Cj4+Cj4KPgo+IC0tCj4gSm9yZ2UgQmFyYW5kYQo+IFJlc2VhcmNoIEVu
-Z2luZWVyLCBNU2MKPiBqb3JnZS5iYXJhbmRhQGN0dGMuZXMKPgo+IENlbnRyZSBUZWNub2zDsmdp
-YyBkZSBUZWxlY29tdW5pY2FjaW9ucyBkZSBDYXRhbHVueWEgKENUVEMpCj4gQXYuIENhcmwgRnJp
-ZWRyaWNoIEdhdXNzLCA3Cj4gMDg4NjAgQ2FzdGVsbGRlZmVscywgQmFyY2Vsb25hIChTcGFpbikK
-PiBUZWw6ICszNCA5MyA2NDUgMjkgMDAgRXh0OiAyMTcxCj4gRmF4LiArMzQgOTMgNjQ1IDI5IDAx
-Cj4gd3d3LmN0dGMuZXMKPgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
-awoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
-IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Rather than always advertising mesh support and then generating
+an error when the user attempts to bring up the device without
+rawmode, only advertise it when available: that is, if the module
+is loaded with rawmode=1, the firmware supports it, and the
+device/firmware supports an AP virtual interface internally.
+
+Signed-off-by: Bob Copeland <me@bobcopeland.com>
+---
+Actually, I think this is perhaps worse than just spitting out an
+error on interface up, but I'm sending anyway because it was requested
+a couple of times in review.
+
+The reason this is so ugly is that the structures in question are
+defined const in the API; when also declared const in the driver,
+they go into the .rodata section and the interface limit types
+cannot be changed without causing a fault.  So this patch removes
+const in a bunch of places and adds casts to const where required.
+
+Another approach might be changing cfg80211 to silently remove interface
+types from advertised combinations when the given mode is not also
+in interface_modes, instead of warning and failing registration as it
+does today.  But this would make errors here harder to spot.
+
+Or we can keep it the way it is with the driver failing and showing an
+error on add interface.  I'm okay with any of these approaches really.
+
+ drivers/net/wireless/ath/ath10k/mac.c | 98 ++++++++++++++++++++++-------------
+ 1 file changed, 63 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 20d002c..c689613 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4209,11 +4209,6 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		arvif->vdev_type = WMI_VDEV_TYPE_IBSS;
+ 		break;
+ 	case NL80211_IFTYPE_MESH_POINT:
+-		if (!test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
+-			ret = -EINVAL;
+-			ath10k_warn(ar, "must load driver with rawmode=1 to add mesh interfaces\n");
+-			goto err;
+-		}
+ 		arvif->vdev_type = WMI_VDEV_TYPE_AP;
+ 		break;
+ 	case NL80211_IFTYPE_AP:
+@@ -6755,7 +6750,7 @@ void ath10k_mac_destroy(struct ath10k *ar)
+ 	ieee80211_free_hw(ar->hw);
+ }
+ 
+-static const struct ieee80211_iface_limit ath10k_if_limits[] = {
++static struct ieee80211_iface_limit ath10k_if_limits[] = {
+ 	{
+ 	.max	= 8,
+ 	.types	= BIT(NL80211_IFTYPE_STATION)
+@@ -6772,23 +6767,17 @@ static const struct ieee80211_iface_limit ath10k_if_limits[] = {
+ 	{
+ 	.max	= 7,
+ 	.types	= BIT(NL80211_IFTYPE_AP)
+-#ifdef CONFIG_MAC80211_MESH
+-		| BIT(NL80211_IFTYPE_MESH_POINT)
+-#endif
+ 	},
+ };
+ 
+-static const struct ieee80211_iface_limit ath10k_10x_if_limits[] = {
++static struct ieee80211_iface_limit ath10k_10x_if_limits[] = {
+ 	{
+ 	.max	= 8,
+ 	.types	= BIT(NL80211_IFTYPE_AP)
+-#ifdef CONFIG_MAC80211_MESH
+-		| BIT(NL80211_IFTYPE_MESH_POINT)
+-#endif
+ 	},
+ };
+ 
+-static const struct ieee80211_iface_combination ath10k_if_comb[] = {
++static struct ieee80211_iface_combination ath10k_if_comb[] = {
+ 	{
+ 		.limits = ath10k_if_limits,
+ 		.n_limits = ARRAY_SIZE(ath10k_if_limits),
+@@ -6798,7 +6787,7 @@ static const struct ieee80211_iface_combination ath10k_if_comb[] = {
+ 	},
+ };
+ 
+-static const struct ieee80211_iface_combination ath10k_10x_if_comb[] = {
++static struct ieee80211_iface_combination ath10k_10x_if_comb[] = {
+ 	{
+ 		.limits = ath10k_10x_if_limits,
+ 		.n_limits = ARRAY_SIZE(ath10k_10x_if_limits),
+@@ -6814,7 +6803,7 @@ static const struct ieee80211_iface_combination ath10k_10x_if_comb[] = {
+ 	},
+ };
+ 
+-static const struct ieee80211_iface_limit ath10k_tlv_if_limit[] = {
++static struct ieee80211_iface_limit ath10k_tlv_if_limit[] = {
+ 	{
+ 		.max = 2,
+ 		.types = BIT(NL80211_IFTYPE_STATION),
+@@ -6822,9 +6811,6 @@ static const struct ieee80211_iface_limit ath10k_tlv_if_limit[] = {
+ 	{
+ 		.max = 2,
+ 		.types = BIT(NL80211_IFTYPE_AP) |
+-#ifdef CONFIG_MAC80211_MESH
+-			 BIT(NL80211_IFTYPE_MESH_POINT) |
+-#endif
+ 			 BIT(NL80211_IFTYPE_P2P_CLIENT) |
+ 			 BIT(NL80211_IFTYPE_P2P_GO),
+ 	},
+@@ -6834,7 +6820,7 @@ static const struct ieee80211_iface_limit ath10k_tlv_if_limit[] = {
+ 	},
+ };
+ 
+-static const struct ieee80211_iface_limit ath10k_tlv_qcs_if_limit[] = {
++static struct ieee80211_iface_limit ath10k_tlv_qcs_if_limit[] = {
+ 	{
+ 		.max = 2,
+ 		.types = BIT(NL80211_IFTYPE_STATION),
+@@ -6846,9 +6832,6 @@ static const struct ieee80211_iface_limit ath10k_tlv_qcs_if_limit[] = {
+ 	{
+ 		.max = 1,
+ 		.types = BIT(NL80211_IFTYPE_AP) |
+-#ifdef CONFIG_MAC80211_MESH
+-			 BIT(NL80211_IFTYPE_MESH_POINT) |
+-#endif
+ 			 BIT(NL80211_IFTYPE_P2P_GO),
+ 	},
+ 	{
+@@ -6857,7 +6840,7 @@ static const struct ieee80211_iface_limit ath10k_tlv_qcs_if_limit[] = {
+ 	},
+ };
+ 
+-static const struct ieee80211_iface_limit ath10k_tlv_if_limit_ibss[] = {
++static struct ieee80211_iface_limit ath10k_tlv_if_limit_ibss[] = {
+ 	{
+ 		.max = 1,
+ 		.types = BIT(NL80211_IFTYPE_STATION),
+@@ -6907,7 +6890,7 @@ static struct ieee80211_iface_combination ath10k_tlv_qcs_if_comb[] = {
+ 	},
+ };
+ 
+-static const struct ieee80211_iface_limit ath10k_10_4_if_limits[] = {
++static struct ieee80211_iface_limit ath10k_10_4_if_limits[] = {
+ 	{
+ 		.max = 1,
+ 		.types = BIT(NL80211_IFTYPE_STATION),
+@@ -6915,13 +6898,10 @@ static const struct ieee80211_iface_limit ath10k_10_4_if_limits[] = {
+ 	{
+ 		.max	= 16,
+ 		.types	= BIT(NL80211_IFTYPE_AP)
+-#ifdef CONFIG_MAC80211_MESH
+-			| BIT(NL80211_IFTYPE_MESH_POINT)
+-#endif
+ 	},
+ };
+ 
+-static const struct ieee80211_iface_combination ath10k_10_4_if_comb[] = {
++static struct ieee80211_iface_combination ath10k_10_4_if_comb[] = {
+ 	{
+ 		.limits = ath10k_10_4_if_limits,
+ 		.n_limits = ARRAY_SIZE(ath10k_10_4_if_limits),
+@@ -6937,6 +6917,43 @@ static const struct ieee80211_iface_combination ath10k_10_4_if_comb[] = {
+ 	},
+ };
+ 
++static
++void ath10k_if_comb_add_mesh(struct ath10k *ar,
++			     struct ieee80211_iface_combination *if_comb)
++{
++	int i;
++
++	for (i = 0; i < if_comb->n_limits; i++) {
++		struct ieee80211_iface_limit *limit =
++			(struct ieee80211_iface_limit *)&if_comb->limits[i];
++
++		/* we can support mesh if we already support AP */
++		if (limit->types & BIT(NL80211_IFTYPE_AP)) {
++			limit->types |= BIT(NL80211_IFTYPE_MESH_POINT);
++			ar->hw->wiphy->interface_modes |=
++				BIT(NL80211_IFTYPE_MESH_POINT);
++		}
++	}
++}
++
++static void ath10k_enable_mesh(struct ath10k *ar)
++{
++	int i;
++
++	if (!config_enabled(CONFIG_MAC80211_MESH))
++		return;
++
++#define ATH10K_IF_COMB_ADD_MESH(comb_array) \
++	for (i = 0; i < ARRAY_SIZE(comb_array); i++) \
++		ath10k_if_comb_add_mesh(ar, &comb_array[i])
++
++	ATH10K_IF_COMB_ADD_MESH(ath10k_if_comb);
++	ATH10K_IF_COMB_ADD_MESH(ath10k_10x_if_comb);
++	ATH10K_IF_COMB_ADD_MESH(ath10k_tlv_if_comb);
++	ATH10K_IF_COMB_ADD_MESH(ath10k_tlv_qcs_if_comb);
++	ATH10K_IF_COMB_ADD_MESH(ath10k_10_4_if_comb);
++}
++
+ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
+ {
+ 	struct ieee80211_sta_vht_cap vht_cap = {0};
+@@ -7142,8 +7159,7 @@ int ath10k_mac_register(struct ath10k *ar)
+ 
+ 	ar->hw->wiphy->interface_modes =
+ 		BIT(NL80211_IFTYPE_STATION) |
+-		BIT(NL80211_IFTYPE_AP) |
+-		BIT(NL80211_IFTYPE_MESH_POINT);
++		BIT(NL80211_IFTYPE_AP);
+ 
+ 	ar->hw->wiphy->available_antennas_rx = ar->supp_rx_chainmask;
+ 	ar->hw->wiphy->available_antennas_tx = ar->supp_tx_chainmask;
+@@ -7154,6 +7170,9 @@ int ath10k_mac_register(struct ath10k *ar)
+ 			BIT(NL80211_IFTYPE_P2P_CLIENT) |
+ 			BIT(NL80211_IFTYPE_P2P_GO);
+ 
++	if (test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags))
++		ath10k_enable_mesh(ar);
++
+ 	ieee80211_hw_set(ar->hw, SIGNAL_DBM);
+ 	ieee80211_hw_set(ar->hw, SUPPORTS_PS);
+ 	ieee80211_hw_set(ar->hw, SUPPORTS_DYNAMIC_PS);
+@@ -7238,7 +7257,9 @@ int ath10k_mac_register(struct ath10k *ar)
+ 
+ 	switch (ar->wmi.op_version) {
+ 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
+-		ar->hw->wiphy->iface_combinations = ath10k_if_comb;
++		ar->hw->wiphy->iface_combinations =
++			(const struct ieee80211_iface_combination *)
++			ath10k_if_comb;
+ 		ar->hw->wiphy->n_iface_combinations =
+ 			ARRAY_SIZE(ath10k_if_comb);
+ 		ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
+@@ -7246,11 +7267,14 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	case ATH10K_FW_WMI_OP_VERSION_TLV:
+ 		if (test_bit(WMI_SERVICE_ADAPTIVE_OCS, ar->wmi.svc_map)) {
+ 			ar->hw->wiphy->iface_combinations =
++				(const struct ieee80211_iface_combination *)
+ 				ath10k_tlv_qcs_if_comb;
+ 			ar->hw->wiphy->n_iface_combinations =
+ 				ARRAY_SIZE(ath10k_tlv_qcs_if_comb);
+ 		} else {
+-			ar->hw->wiphy->iface_combinations = ath10k_tlv_if_comb;
++			ar->hw->wiphy->iface_combinations =
++				(const struct ieee80211_iface_combination *)
++				ath10k_tlv_if_comb;
+ 			ar->hw->wiphy->n_iface_combinations =
+ 				ARRAY_SIZE(ath10k_tlv_if_comb);
+ 		}
+@@ -7259,12 +7283,16 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	case ATH10K_FW_WMI_OP_VERSION_10_1:
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2:
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
+-		ar->hw->wiphy->iface_combinations = ath10k_10x_if_comb;
++		ar->hw->wiphy->iface_combinations =
++			(const struct ieee80211_iface_combination *)
++			ath10k_10x_if_comb;
+ 		ar->hw->wiphy->n_iface_combinations =
+ 			ARRAY_SIZE(ath10k_10x_if_comb);
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_4:
+-		ar->hw->wiphy->iface_combinations = ath10k_10_4_if_comb;
++		ar->hw->wiphy->iface_combinations =
++			(const struct ieee80211_iface_combination *)
++			ath10k_10_4_if_comb;
+ 		ar->hw->wiphy->n_iface_combinations =
+ 			ARRAY_SIZE(ath10k_10_4_if_comb);
+ 		break;
+-- 
+2.1.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
