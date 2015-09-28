@@ -1,27 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from marchena.puc.rediris.es ([2001:720:418:ca00::4])
+Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgRsP-00058t-Nd
- for ath10k@lists.infradead.org; Mon, 28 Sep 2015 06:25:32 +0000
-Received: from [2001:40b0:7c22:6020:b180:ae88:f6eb:15e9] (helo=leo)
- by marchena.puc.rediris.es with esmtpsa
- (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256) (Exim 4.80)
- (envelope-from <jorge.baranda@cttc.es>) id 1ZgRrp-00053d-UV
- for ath10k@lists.infradead.org; Mon, 28 Sep 2015 08:24:59 +0200
-Received: from [84.88.61.34] (pcjbaranda.cttc.es [84.88.61.34])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by leo (Postfix) with ESMTPSA id A56E81FE10
- for <ath10k@lists.infradead.org>; Mon, 28 Sep 2015 08:24:50 +0200 (CEST)
-Subject: Re: CT 4.2 kernel now supports 80Mhz IBSS
+ id 1ZgSrG-0007C6-RB
+ for ath10k@lists.infradead.org; Mon, 28 Sep 2015 07:28:24 +0000
+Received: by wiclk2 with SMTP id lk2so91513661wic.0
+ for <ath10k@lists.infradead.org>; Mon, 28 Sep 2015 00:27:58 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <5608DD30.6010606@cttc.es>
 References: <56033C12.9020102@candelatech.com> <5604EE3F.40206@cttc.es>
  <5604FC09.609@tu-bs.de> <5604FE30.3000609@cttc.es>
- <56056FCA.3070602@candelatech.com>
-From: Jorge Baranda <jorge.baranda@cttc.es>
-Message-ID: <5608DD30.6010606@cttc.es>
-Date: Mon, 28 Sep 2015 08:24:48 +0200
-MIME-Version: 1.0
-In-Reply-To: <56056FCA.3070602@candelatech.com>
+ <56056FCA.3070602@candelatech.com> <5608DD30.6010606@cttc.es>
+Date: Mon, 28 Sep 2015 09:27:58 +0200
+Message-ID: <CALhHN=rG7P8D6w0EeB087v=kJk1aWheYaYPPxrzo0sDFy3XpoQ@mail.gmail.com>
+Subject: Re: CT 4.2 kernel now supports 80Mhz IBSS
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,172 +22,91 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Jorge Baranda <jorge.baranda@cttc.es>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi Ben, Harms,
-
-Thank you very much for the information.
-I will try it. I hope I can set the link to 80MHz with the new kernel.
-
-Thanks again,
-
-Regards,
-
-Jordi
-
-El 25/09/2015 a las 18:01, Ben Greear escribi=F3:
-> On 09/25/2015 12:56 AM, Jorge Baranda wrote:
->> Hi Harms,
->>
->> Thank you very much for your aclaration. I was trying to follow your =
-
->> setup with the CT kernel 4.0, but with no success, so after the post =
-
->> of Ben, I imagine I
->> have to install CT 4.2 kernel.
->> By the way, I suppose that I have already this patch in my folder of =
-
->> the kernel 4.2 since I downloaded it from git (17/09/15) after you =
-
->> made your post. Just in
->> case, could you point me out to the patch you are refering to?
->> Other thing,  which CT firmware are you using (mine Release14)? =
-
->> Additionally, could you share your .config file for the CT 4.2 =
-
->> kernel? I'm having some troubles
->> to make this kernel running and I am a little confused.
->
-> Please grab the latest CT 4.2 kernel, I rebased the last 10 or so =
-
-> patches a day or two ago:
->
-> # This first command blows away the first 20 commits, so if you have
-> # added your own patches, then you need to deal with that properly.
->
-> git reset --hard HEAD~20
-> git pull
->
-> The configs I use are in ./configs/
->
-> In particular, the patch I added to enable HT80 IBSS was this:
->
-> http://dmz2.candelatech.com/?p=3Dlinux-4.2.dev.y/.git;a=3Dcommit;h=3Dc620=
-066342699f63dcdd00ce5f4d0feb4f02b1fc =
-
->
->
-> Thanks,
-> Ben
->
->>
->> Thanks again,
->>
->> Jordi
->>
->>
->> El 25/09/15 09:47, Harms, Hannes escribi=F3:
->>> Hi,
->>>
->>> yes, I was able to get 80 MHz IBSS working with CT 4.2 , but
->>> I also  integrated the missing patch to my kernel  even before Ben =
-
->>> mentioned that the patch was missing.
->>> I also forgot that I made this change, sorry
->>>
->>> Regards Hannes
->>>
->>>
->>> Am 25.09.2015 um 08:48 schrieb Jorge Baranda:
->>>> Hi Ben,
->>>>
->>>> I imagine, I am one of the guys you are refering to.
->>>> Within the thread "WLE600VX from PCEngines", I was trying to make =
-
->>>> working a HT80 IBSS connection with wpa_supplicant, but this =
-
->>>> connection was only set to 20MHz.
->>>> I was trying this with the 4.0 kernel, the 10.1.467-ct-14 firmware =
-
->>>> and the last version (git) of wpa_supplicant (2.5). By the way, has =
-
->>>> anyone tried this?
->>>>
->>>> Then, due to this failure, I tried kernel 4.2 because Hannes Harm =
-
->>>> reported success to set HT80 IBSS. But I was not able to configure =
-
->>>> properly this kernel
->>>> (compile OK, but the computer does not boot then).
->>>>
->>>> @Ben, could you share a .config file for kernel 4.2? Do you think =
-
->>>> that Release14 CT firmware would be able to work? I will update the =
-
->>>> 4.2 kernel, compile it
->>>> and try to see
->>>> if I can set up the HT80 IBSS connection.
->>>>
->>>> Thanks,
->>>>
->>>> Jorge
->>>>
->>>>
->>>> El 24/09/15 01:56, Ben Greear escribi=F3:
->>>>> I forget exactly all who was asking for this...but hopefully
->>>>> they are reading this list...
->>>>>
->>>>> I was missing a patch that allowed HT80 IBSS in my 4.2.
->>>>>
->>>>> The beta-15 CT firmware appears to do HT80 IBSS just fine
->>>>> with the 4.2 kernel now.
->>>>>
->>>>> I have not attempted to enable this feature on my 4.0 kernel yet.
->>>>>
->>>>> Please also note, I've been hacking on rate-ctrl logic in both 4.0
->>>>> and 4.2 kernels (and beta-15 firmware)..so if you try it and find
->>>>> something weird, especially in probe requests or association =
-
->>>>> requests,
->>>>> please do let me know.  Notes of success are welcome as well of =
-
->>>>> course!
->>>>>
->>>>> http://www.candelatech.com/ath10k.php
->>>>>
->>>>> http://dmz2.candelatech.com/git/gitweb.cgi
->>>>>
->>>>> Thanks,
->>>>> Ben
->>>>>
->>>>
->>>>
->>>
->>
->>
->
->
-
-
--- =
-
-Jorge Baranda
-Research Engineer, MSc
-jorge.baranda@cttc.es
-
-Centre Tecnol=F2gic de Telecomunicacions de Catalunya (CTTC)
-Av. Carl Friedrich Gauss, 7
-08860 Castelldefels, Barcelona (Spain)
-Tel: +34 93 645 29 00  Ext: 2171
-Fax. +34 93 645 29 01
-www.cttc.es
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjggU2VwdGVtYmVyIDIwMTUgYXQgMDg6MjQsIEpvcmdlIEJhcmFuZGEgPGpvcmdlLmJhcmFu
+ZGFAY3R0Yy5lcz4gd3JvdGU6Cj4gSGkgQmVuLCBIYXJtcywKPgo+IFRoYW5rIHlvdSB2ZXJ5IG11
+Y2ggZm9yIHRoZSBpbmZvcm1hdGlvbi4KPiBJIHdpbGwgdHJ5IGl0LiBJIGhvcGUgSSBjYW4gc2V0
+IHRoZSBsaW5rIHRvIDgwTUh6IHdpdGggdGhlIG5ldyBrZXJuZWwuCj4KQlRXLCBuZXdlc3QgaXcg
+YWxyZWFkeSBzdXBwb3J0IGlic3MgYW5kIDgwTUh6IC0gc28geW91IGRvbid0IG5lZWQKd3BhX3N1
+cHBsaWNhbnQgYW55bW9yZS4KCkJSCkphbnVzegoKPiBUaGFua3MgYWdhaW4sCj4KPiBSZWdhcmRz
+LAo+Cj4gSm9yZGkKPgo+Cj4gRWwgMjUvMDkvMjAxNSBhIGxhcyAxODowMSwgQmVuIEdyZWVhciBl
+c2NyaWJpw7M6Cj4+Cj4+IE9uIDA5LzI1LzIwMTUgMTI6NTYgQU0sIEpvcmdlIEJhcmFuZGEgd3Jv
+dGU6Cj4+Pgo+Pj4gSGkgSGFybXMsCj4+Pgo+Pj4gVGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgeW91
+ciBhY2xhcmF0aW9uLiBJIHdhcyB0cnlpbmcgdG8gZm9sbG93IHlvdXIKPj4+IHNldHVwIHdpdGgg
+dGhlIENUIGtlcm5lbCA0LjAsIGJ1dCB3aXRoIG5vIHN1Y2Nlc3MsIHNvIGFmdGVyIHRoZSBwb3N0
+IG9mIEJlbiwKPj4+IEkgaW1hZ2luZSBJCj4+PiBoYXZlIHRvIGluc3RhbGwgQ1QgNC4yIGtlcm5l
+bC4KPj4+IEJ5IHRoZSB3YXksIEkgc3VwcG9zZSB0aGF0IEkgaGF2ZSBhbHJlYWR5IHRoaXMgcGF0
+Y2ggaW4gbXkgZm9sZGVyIG9mIHRoZQo+Pj4ga2VybmVsIDQuMiBzaW5jZSBJIGRvd25sb2FkZWQg
+aXQgZnJvbSBnaXQgKDE3LzA5LzE1KSBhZnRlciB5b3UgbWFkZSB5b3VyCj4+PiBwb3N0LiBKdXN0
+IGluCj4+PiBjYXNlLCBjb3VsZCB5b3UgcG9pbnQgbWUgb3V0IHRvIHRoZSBwYXRjaCB5b3UgYXJl
+IHJlZmVyaW5nIHRvPwo+Pj4gT3RoZXIgdGhpbmcsICB3aGljaCBDVCBmaXJtd2FyZSBhcmUgeW91
+IHVzaW5nIChtaW5lIFJlbGVhc2UxNCk/Cj4+PiBBZGRpdGlvbmFsbHksIGNvdWxkIHlvdSBzaGFy
+ZSB5b3VyIC5jb25maWcgZmlsZSBmb3IgdGhlIENUIDQuMiBrZXJuZWw/IEknbQo+Pj4gaGF2aW5n
+IHNvbWUgdHJvdWJsZXMKPj4+IHRvIG1ha2UgdGhpcyBrZXJuZWwgcnVubmluZyBhbmQgSSBhbSBh
+IGxpdHRsZSBjb25mdXNlZC4KPj4KPj4KPj4gUGxlYXNlIGdyYWIgdGhlIGxhdGVzdCBDVCA0LjIg
+a2VybmVsLCBJIHJlYmFzZWQgdGhlIGxhc3QgMTAgb3Igc28gcGF0Y2hlcwo+PiBhIGRheSBvciB0
+d28gYWdvOgo+Pgo+PiAjIFRoaXMgZmlyc3QgY29tbWFuZCBibG93cyBhd2F5IHRoZSBmaXJzdCAy
+MCBjb21taXRzLCBzbyBpZiB5b3UgaGF2ZQo+PiAjIGFkZGVkIHlvdXIgb3duIHBhdGNoZXMsIHRo
+ZW4geW91IG5lZWQgdG8gZGVhbCB3aXRoIHRoYXQgcHJvcGVybHkuCj4+Cj4+IGdpdCByZXNldCAt
+LWhhcmQgSEVBRH4yMAo+PiBnaXQgcHVsbAo+Pgo+PiBUaGUgY29uZmlncyBJIHVzZSBhcmUgaW4g
+Li9jb25maWdzLwo+Pgo+PiBJbiBwYXJ0aWN1bGFyLCB0aGUgcGF0Y2ggSSBhZGRlZCB0byBlbmFi
+bGUgSFQ4MCBJQlNTIHdhcyB0aGlzOgo+Pgo+Pgo+PiBodHRwOi8vZG16Mi5jYW5kZWxhdGVjaC5j
+b20vP3A9bGludXgtNC4yLmRldi55Ly5naXQ7YT1jb21taXQ7aD1jNjIwMDY2MzQyNjk5ZjYzZGNk
+ZDAwY2U1ZjRkMGZlYjRmMDJiMWZjCj4+Cj4+IFRoYW5rcywKPj4gQmVuCj4+Cj4+Pgo+Pj4gVGhh
+bmtzIGFnYWluLAo+Pj4KPj4+IEpvcmRpCj4+Pgo+Pj4KPj4+IEVsIDI1LzA5LzE1IDA5OjQ3LCBI
+YXJtcywgSGFubmVzIGVzY3JpYmnDszoKPj4+Pgo+Pj4+IEhpLAo+Pj4+Cj4+Pj4geWVzLCBJIHdh
+cyBhYmxlIHRvIGdldCA4MCBNSHogSUJTUyB3b3JraW5nIHdpdGggQ1QgNC4yICwgYnV0Cj4+Pj4g
+SSBhbHNvICBpbnRlZ3JhdGVkIHRoZSBtaXNzaW5nIHBhdGNoIHRvIG15IGtlcm5lbCAgZXZlbiBi
+ZWZvcmUgQmVuCj4+Pj4gbWVudGlvbmVkIHRoYXQgdGhlIHBhdGNoIHdhcyBtaXNzaW5nLgo+Pj4+
+IEkgYWxzbyBmb3Jnb3QgdGhhdCBJIG1hZGUgdGhpcyBjaGFuZ2UsIHNvcnJ5Cj4+Pj4KPj4+PiBS
+ZWdhcmRzIEhhbm5lcwo+Pj4+Cj4+Pj4KPj4+PiBBbSAyNS4wOS4yMDE1IHVtIDA4OjQ4IHNjaHJp
+ZWIgSm9yZ2UgQmFyYW5kYToKPj4+Pj4KPj4+Pj4gSGkgQmVuLAo+Pj4+Pgo+Pj4+PiBJIGltYWdp
+bmUsIEkgYW0gb25lIG9mIHRoZSBndXlzIHlvdSBhcmUgcmVmZXJpbmcgdG8uCj4+Pj4+IFdpdGhp
+biB0aGUgdGhyZWFkICJXTEU2MDBWWCBmcm9tIFBDRW5naW5lcyIsIEkgd2FzIHRyeWluZyB0byBt
+YWtlCj4+Pj4+IHdvcmtpbmcgYSBIVDgwIElCU1MgY29ubmVjdGlvbiB3aXRoIHdwYV9zdXBwbGlj
+YW50LCBidXQgdGhpcyBjb25uZWN0aW9uIHdhcwo+Pj4+PiBvbmx5IHNldCB0byAyME1Iei4KPj4+
+Pj4gSSB3YXMgdHJ5aW5nIHRoaXMgd2l0aCB0aGUgNC4wIGtlcm5lbCwgdGhlIDEwLjEuNDY3LWN0
+LTE0IGZpcm13YXJlIGFuZAo+Pj4+PiB0aGUgbGFzdCB2ZXJzaW9uIChnaXQpIG9mIHdwYV9zdXBw
+bGljYW50ICgyLjUpLiBCeSB0aGUgd2F5LCBoYXMgYW55b25lIHRyaWVkCj4+Pj4+IHRoaXM/Cj4+
+Pj4+Cj4+Pj4+IFRoZW4sIGR1ZSB0byB0aGlzIGZhaWx1cmUsIEkgdHJpZWQga2VybmVsIDQuMiBi
+ZWNhdXNlIEhhbm5lcyBIYXJtCj4+Pj4+IHJlcG9ydGVkIHN1Y2Nlc3MgdG8gc2V0IEhUODAgSUJT
+Uy4gQnV0IEkgd2FzIG5vdCBhYmxlIHRvIGNvbmZpZ3VyZSBwcm9wZXJseQo+Pj4+PiB0aGlzIGtl
+cm5lbAo+Pj4+PiAoY29tcGlsZSBPSywgYnV0IHRoZSBjb21wdXRlciBkb2VzIG5vdCBib290IHRo
+ZW4pLgo+Pj4+Pgo+Pj4+PiBAQmVuLCBjb3VsZCB5b3Ugc2hhcmUgYSAuY29uZmlnIGZpbGUgZm9y
+IGtlcm5lbCA0LjI/IERvIHlvdSB0aGluayB0aGF0Cj4+Pj4+IFJlbGVhc2UxNCBDVCBmaXJtd2Fy
+ZSB3b3VsZCBiZSBhYmxlIHRvIHdvcms/IEkgd2lsbCB1cGRhdGUgdGhlIDQuMiBrZXJuZWwsCj4+
+Pj4+IGNvbXBpbGUgaXQKPj4+Pj4gYW5kIHRyeSB0byBzZWUKPj4+Pj4gaWYgSSBjYW4gc2V0IHVw
+IHRoZSBIVDgwIElCU1MgY29ubmVjdGlvbi4KPj4+Pj4KPj4+Pj4gVGhhbmtzLAo+Pj4+Pgo+Pj4+
+PiBKb3JnZQo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBFbCAyNC8wOS8xNSAwMTo1NiwgQmVuIEdyZWVhciBl
+c2NyaWJpw7M6Cj4+Pj4+Pgo+Pj4+Pj4gSSBmb3JnZXQgZXhhY3RseSBhbGwgd2hvIHdhcyBhc2tp
+bmcgZm9yIHRoaXMuLi5idXQgaG9wZWZ1bGx5Cj4+Pj4+PiB0aGV5IGFyZSByZWFkaW5nIHRoaXMg
+bGlzdC4uLgo+Pj4+Pj4KPj4+Pj4+IEkgd2FzIG1pc3NpbmcgYSBwYXRjaCB0aGF0IGFsbG93ZWQg
+SFQ4MCBJQlNTIGluIG15IDQuMi4KPj4+Pj4+Cj4+Pj4+PiBUaGUgYmV0YS0xNSBDVCBmaXJtd2Fy
+ZSBhcHBlYXJzIHRvIGRvIEhUODAgSUJTUyBqdXN0IGZpbmUKPj4+Pj4+IHdpdGggdGhlIDQuMiBr
+ZXJuZWwgbm93Lgo+Pj4+Pj4KPj4+Pj4+IEkgaGF2ZSBub3QgYXR0ZW1wdGVkIHRvIGVuYWJsZSB0
+aGlzIGZlYXR1cmUgb24gbXkgNC4wIGtlcm5lbCB5ZXQuCj4+Pj4+Pgo+Pj4+Pj4gUGxlYXNlIGFs
+c28gbm90ZSwgSSd2ZSBiZWVuIGhhY2tpbmcgb24gcmF0ZS1jdHJsIGxvZ2ljIGluIGJvdGggNC4w
+Cj4+Pj4+PiBhbmQgNC4yIGtlcm5lbHMgKGFuZCBiZXRhLTE1IGZpcm13YXJlKS4uc28gaWYgeW91
+IHRyeSBpdCBhbmQgZmluZAo+Pj4+Pj4gc29tZXRoaW5nIHdlaXJkLCBlc3BlY2lhbGx5IGluIHBy
+b2JlIHJlcXVlc3RzIG9yIGFzc29jaWF0aW9uIHJlcXVlc3RzLAo+Pj4+Pj4gcGxlYXNlIGRvIGxl
+dCBtZSBrbm93LiAgTm90ZXMgb2Ygc3VjY2VzcyBhcmUgd2VsY29tZSBhcyB3ZWxsIG9mCj4+Pj4+
+PiBjb3Vyc2UhCj4+Pj4+Pgo+Pj4+Pj4gaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20vYXRoMTBr
+LnBocAo+Pj4+Pj4KPj4+Pj4+IGh0dHA6Ly9kbXoyLmNhbmRlbGF0ZWNoLmNvbS9naXQvZ2l0d2Vi
+LmNnaQo+Pj4+Pj4KPj4+Pj4+IFRoYW5rcywKPj4+Pj4+IEJlbgo+Pj4+Pj4KPj4+Pj4KPj4+Pj4K
+Pj4+Pgo+Pj4KPj4+Cj4+Cj4+Cj4KPgo+IC0tCj4gSm9yZ2UgQmFyYW5kYQo+IFJlc2VhcmNoIEVu
+Z2luZWVyLCBNU2MKPiBqb3JnZS5iYXJhbmRhQGN0dGMuZXMKPgo+IENlbnRyZSBUZWNub2zDsmdp
+YyBkZSBUZWxlY29tdW5pY2FjaW9ucyBkZSBDYXRhbHVueWEgKENUVEMpCj4gQXYuIENhcmwgRnJp
+ZWRyaWNoIEdhdXNzLCA3Cj4gMDg4NjAgQ2FzdGVsbGRlZmVscywgQmFyY2Vsb25hIChTcGFpbikK
+PiBUZWw6ICszNCA5MyA2NDUgMjkgMDAgRXh0OiAyMTcxCj4gRmF4LiArMzQgOTMgNjQ1IDI5IDAx
+Cj4gd3d3LmN0dGMuZXMKPgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
+awoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
+IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
