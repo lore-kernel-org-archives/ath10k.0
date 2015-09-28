@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-f178.google.com ([209.85.213.178])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgY2d-0000oF-Se
- for ath10k@lists.infradead.org; Mon, 28 Sep 2015 13:00:28 +0000
-Received: by igcrk20 with SMTP id rk20so52298179igc.1
- for <ath10k@lists.infradead.org>; Mon, 28 Sep 2015 06:00:06 -0700 (PDT)
-From: Bob Copeland <me@bobcopeland.com>
-Subject: [PATCH] ath10k: only advertise mesh support in raw mode
-Date: Mon, 28 Sep 2015 08:59:52 -0400
-Message-Id: <1443445192-30464-1-git-send-email-me@bobcopeland.com>
+ id 1ZgY4Y-0001Ps-KA
+ for ath10k@lists.infradead.org; Mon, 28 Sep 2015 13:02:27 +0000
+From: <akolli@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Disable PCI PS for QCA988X and QCA99X0
+Date: Mon, 28 Sep 2015 18:31:18 +0530
+Message-ID: <1443445278-11051-1-git-send-email-akolli@qti.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,286 +16,220 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Bob Copeland <me@bobcopeland.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-Rather than always advertising mesh support and then generating
-an error when the user attempts to bring up the device without
-rawmode, only advertise it when available: that is, if the module
-is loaded with rawmode=1, the firmware supports it, and the
-device/firmware supports an AP virtual interface internally.
+From: Anilkumar Kolli <akolli@qti.qualcomm.com>
 
-Signed-off-by: Bob Copeland <me@bobcopeland.com>
+This patch disables PCI PS for QCA988X and QCA99X0, Since PCI PS is
+validated for QCA6174, let it be enabled only for QCA6174. It would be
+better to execute PCI PS related functions only for the supported devices.
+
+PCI time out issue is observed with QCA99X0 on x86 platform, We will
+disable PCI PS for QCA988X and QCA99X0 until PCI PS is properly implemented.
+
+Taking and releasing ps_lock is causing higher CPU consumption. Michal Kazior
+suggested ps_lock overhead to be reworked so that ath10k_pci_wake/sleep
+functions are called less often, i.e. move the powersave logic up (only during
+irq handling, tx path, submitting fw commands).
+
+Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
 ---
-Actually, I think this is perhaps worse than just spitting out an
-error on interface up, but I'm sending anyway because it was requested
-a couple of times in review.
 
-The reason this is so ugly is that the structures in question are
-defined const in the API; when also declared const in the driver,
-they go into the .rodata section and the interface limit types
-cannot be changed without causing a fault.  So this patch removes
-const in a bunch of places and adds casts to const where required.
+ drivers/net/wireless/ath/ath10k/pci.c | 83 ++++++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/pci.h |  6 +++
+ 2 files changed, 88 insertions(+), 1 deletion(-)
 
-Another approach might be changing cfg80211 to silently remove interface
-types from advertised combinations when the given mode is not also
-in interface_modes, instead of warning and failing registration as it
-does today.  But this would make errors here harder to spot.
-
-Or we can keep it the way it is with the driver failing and showing an
-error on add interface.  I'm okay with any of these approaches really.
-
- drivers/net/wireless/ath/ath10k/mac.c | 98 ++++++++++++++++++++++-------------
- 1 file changed, 63 insertions(+), 35 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 20d002c..c689613 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4209,11 +4209,6 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 		arvif->vdev_type = WMI_VDEV_TYPE_IBSS;
- 		break;
- 	case NL80211_IFTYPE_MESH_POINT:
--		if (!test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
--			ret = -EINVAL;
--			ath10k_warn(ar, "must load driver with rawmode=1 to add mesh interfaces\n");
--			goto err;
--		}
- 		arvif->vdev_type = WMI_VDEV_TYPE_AP;
- 		break;
- 	case NL80211_IFTYPE_AP:
-@@ -6755,7 +6750,7 @@ void ath10k_mac_destroy(struct ath10k *ar)
- 	ieee80211_free_hw(ar->hw);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 1046ab6..36b6f34 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -465,12 +465,53 @@ static int ath10k_pci_wake_wait(struct ath10k *ar)
+ 	return -ETIMEDOUT;
  }
  
--static const struct ieee80211_iface_limit ath10k_if_limits[] = {
-+static struct ieee80211_iface_limit ath10k_if_limits[] = {
- 	{
- 	.max	= 8,
- 	.types	= BIT(NL80211_IFTYPE_STATION)
-@@ -6772,23 +6767,17 @@ static const struct ieee80211_iface_limit ath10k_if_limits[] = {
- 	{
- 	.max	= 7,
- 	.types	= BIT(NL80211_IFTYPE_AP)
--#ifdef CONFIG_MAC80211_MESH
--		| BIT(NL80211_IFTYPE_MESH_POINT)
--#endif
- 	},
- };
- 
--static const struct ieee80211_iface_limit ath10k_10x_if_limits[] = {
-+static struct ieee80211_iface_limit ath10k_10x_if_limits[] = {
- 	{
- 	.max	= 8,
- 	.types	= BIT(NL80211_IFTYPE_AP)
--#ifdef CONFIG_MAC80211_MESH
--		| BIT(NL80211_IFTYPE_MESH_POINT)
--#endif
- 	},
- };
- 
--static const struct ieee80211_iface_combination ath10k_if_comb[] = {
-+static struct ieee80211_iface_combination ath10k_if_comb[] = {
- 	{
- 		.limits = ath10k_if_limits,
- 		.n_limits = ARRAY_SIZE(ath10k_if_limits),
-@@ -6798,7 +6787,7 @@ static const struct ieee80211_iface_combination ath10k_if_comb[] = {
- 	},
- };
- 
--static const struct ieee80211_iface_combination ath10k_10x_if_comb[] = {
-+static struct ieee80211_iface_combination ath10k_10x_if_comb[] = {
- 	{
- 		.limits = ath10k_10x_if_limits,
- 		.n_limits = ARRAY_SIZE(ath10k_10x_if_limits),
-@@ -6814,7 +6803,7 @@ static const struct ieee80211_iface_combination ath10k_10x_if_comb[] = {
- 	},
- };
- 
--static const struct ieee80211_iface_limit ath10k_tlv_if_limit[] = {
-+static struct ieee80211_iface_limit ath10k_tlv_if_limit[] = {
- 	{
- 		.max = 2,
- 		.types = BIT(NL80211_IFTYPE_STATION),
-@@ -6822,9 +6811,6 @@ static const struct ieee80211_iface_limit ath10k_tlv_if_limit[] = {
- 	{
- 		.max = 2,
- 		.types = BIT(NL80211_IFTYPE_AP) |
--#ifdef CONFIG_MAC80211_MESH
--			 BIT(NL80211_IFTYPE_MESH_POINT) |
--#endif
- 			 BIT(NL80211_IFTYPE_P2P_CLIENT) |
- 			 BIT(NL80211_IFTYPE_P2P_GO),
- 	},
-@@ -6834,7 +6820,7 @@ static const struct ieee80211_iface_limit ath10k_tlv_if_limit[] = {
- 	},
- };
- 
--static const struct ieee80211_iface_limit ath10k_tlv_qcs_if_limit[] = {
-+static struct ieee80211_iface_limit ath10k_tlv_qcs_if_limit[] = {
- 	{
- 		.max = 2,
- 		.types = BIT(NL80211_IFTYPE_STATION),
-@@ -6846,9 +6832,6 @@ static const struct ieee80211_iface_limit ath10k_tlv_qcs_if_limit[] = {
- 	{
- 		.max = 1,
- 		.types = BIT(NL80211_IFTYPE_AP) |
--#ifdef CONFIG_MAC80211_MESH
--			 BIT(NL80211_IFTYPE_MESH_POINT) |
--#endif
- 			 BIT(NL80211_IFTYPE_P2P_GO),
- 	},
- 	{
-@@ -6857,7 +6840,7 @@ static const struct ieee80211_iface_limit ath10k_tlv_qcs_if_limit[] = {
- 	},
- };
- 
--static const struct ieee80211_iface_limit ath10k_tlv_if_limit_ibss[] = {
-+static struct ieee80211_iface_limit ath10k_tlv_if_limit_ibss[] = {
- 	{
- 		.max = 1,
- 		.types = BIT(NL80211_IFTYPE_STATION),
-@@ -6907,7 +6890,7 @@ static struct ieee80211_iface_combination ath10k_tlv_qcs_if_comb[] = {
- 	},
- };
- 
--static const struct ieee80211_iface_limit ath10k_10_4_if_limits[] = {
-+static struct ieee80211_iface_limit ath10k_10_4_if_limits[] = {
- 	{
- 		.max = 1,
- 		.types = BIT(NL80211_IFTYPE_STATION),
-@@ -6915,13 +6898,10 @@ static const struct ieee80211_iface_limit ath10k_10_4_if_limits[] = {
- 	{
- 		.max	= 16,
- 		.types	= BIT(NL80211_IFTYPE_AP)
--#ifdef CONFIG_MAC80211_MESH
--			| BIT(NL80211_IFTYPE_MESH_POINT)
--#endif
- 	},
- };
- 
--static const struct ieee80211_iface_combination ath10k_10_4_if_comb[] = {
-+static struct ieee80211_iface_combination ath10k_10_4_if_comb[] = {
- 	{
- 		.limits = ath10k_10_4_if_limits,
- 		.n_limits = ARRAY_SIZE(ath10k_10_4_if_limits),
-@@ -6937,6 +6917,43 @@ static const struct ieee80211_iface_combination ath10k_10_4_if_comb[] = {
- 	},
- };
- 
-+static
-+void ath10k_if_comb_add_mesh(struct ath10k *ar,
-+			     struct ieee80211_iface_combination *if_comb)
++static int ath10k_pci_force_wake(struct ath10k *ar)
 +{
-+	int i;
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	unsigned long flags;
++	int ret = 0;
 +
-+	for (i = 0; i < if_comb->n_limits; i++) {
-+		struct ieee80211_iface_limit *limit =
-+			(struct ieee80211_iface_limit *)&if_comb->limits[i];
++	spin_lock_irqsave(&ar_pci->ps_lock, flags);
 +
-+		/* we can support mesh if we already support AP */
-+		if (limit->types & BIT(NL80211_IFTYPE_AP)) {
-+			limit->types |= BIT(NL80211_IFTYPE_MESH_POINT);
-+			ar->hw->wiphy->interface_modes |=
-+				BIT(NL80211_IFTYPE_MESH_POINT);
-+		}
++	if (!ar_pci->ps_awake) {
++		iowrite32(PCIE_SOC_WAKE_V_MASK,
++				ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS +
++				PCIE_SOC_WAKE_ADDRESS);
++
++		ret = ath10k_pci_wake_wait(ar);
++		if (ret == 0)
++			ar_pci->ps_awake = true;
 +	}
++
++	spin_unlock_irqrestore(&ar_pci->ps_lock, flags);
++
++	return ret;
 +}
 +
-+static void ath10k_enable_mesh(struct ath10k *ar)
++static void ath10k_pci_force_sleep(struct ath10k *ar)
 +{
-+	int i;
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	unsigned long flags;
 +
-+	if (!config_enabled(CONFIG_MAC80211_MESH))
++	spin_lock_irqsave(&ar_pci->ps_lock, flags);
++
++	iowrite32(PCIE_SOC_WAKE_RESET,
++			ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS +
++			PCIE_SOC_WAKE_ADDRESS);
++	ar_pci->ps_awake = false;
++
++	spin_unlock_irqrestore(&ar_pci->ps_lock, flags);
++}
++
+ static int ath10k_pci_wake(struct ath10k *ar)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	unsigned long flags;
+ 	int ret = 0;
+ 
++	if (ar_pci->pci_ps == 0)
++		return ret;
++
+ 	spin_lock_irqsave(&ar_pci->ps_lock, flags);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_PCI_PS, "pci ps wake refcount %lu awake %d\n",
+@@ -502,6 +543,9 @@ static void ath10k_pci_sleep(struct ath10k *ar)
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	unsigned long flags;
+ 
++	if (ar_pci->pci_ps == 0)
 +		return;
 +
-+#define ATH10K_IF_COMB_ADD_MESH(comb_array) \
-+	for (i = 0; i < ARRAY_SIZE(comb_array); i++) \
-+		ath10k_if_comb_add_mesh(ar, &comb_array[i])
+ 	spin_lock_irqsave(&ar_pci->ps_lock, flags);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_PCI_PS, "pci ps sleep refcount %lu awake %d\n",
+@@ -544,6 +588,11 @@ static void ath10k_pci_sleep_sync(struct ath10k *ar)
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	unsigned long flags;
+ 
++	if (ar_pci->pci_ps == 0) {
++		ath10k_pci_force_sleep(ar);
++		return;
++	}
 +
-+	ATH10K_IF_COMB_ADD_MESH(ath10k_if_comb);
-+	ATH10K_IF_COMB_ADD_MESH(ath10k_10x_if_comb);
-+	ATH10K_IF_COMB_ADD_MESH(ath10k_tlv_if_comb);
-+	ATH10K_IF_COMB_ADD_MESH(ath10k_tlv_qcs_if_comb);
-+	ATH10K_IF_COMB_ADD_MESH(ath10k_10_4_if_comb);
-+}
+ 	del_timer_sync(&ar_pci->ps_timer);
+ 
+ 	spin_lock_irqsave(&ar_pci->ps_lock, flags);
+@@ -2397,6 +2446,15 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	struct pci_dev *pdev = ar_pci->pdev;
+ 	u32 val;
++	int ret = 0;
 +
- static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
++	if (ar_pci->pci_ps == 0) {
++		ret = ath10k_pci_force_wake(ar);
++		if (ret) {
++			ath10k_err(ar, "failed to wake up target: %d\n", ret);
++			return ret;
++		}
++	}
+ 
+ 	/* Suspend/Resume resets the PCI configuration space, so we have to
+ 	 * re-disable the RETRY_TIMEOUT register (0x41) to keep PCI Tx retries
+@@ -2407,7 +2465,7 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
+ 	if ((val & 0x0000ff00) != 0)
+ 		pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
+ 
+-	return 0;
++	return ret;
+ }
+ #endif
+ 
+@@ -2501,6 +2559,16 @@ static irqreturn_t ath10k_pci_interrupt_handler(int irq, void *arg)
  {
- 	struct ieee80211_sta_vht_cap vht_cap = {0};
-@@ -7142,8 +7159,7 @@ int ath10k_mac_register(struct ath10k *ar)
- 
- 	ar->hw->wiphy->interface_modes =
- 		BIT(NL80211_IFTYPE_STATION) |
--		BIT(NL80211_IFTYPE_AP) |
--		BIT(NL80211_IFTYPE_MESH_POINT);
-+		BIT(NL80211_IFTYPE_AP);
- 
- 	ar->hw->wiphy->available_antennas_rx = ar->supp_rx_chainmask;
- 	ar->hw->wiphy->available_antennas_tx = ar->supp_tx_chainmask;
-@@ -7154,6 +7170,9 @@ int ath10k_mac_register(struct ath10k *ar)
- 			BIT(NL80211_IFTYPE_P2P_CLIENT) |
- 			BIT(NL80211_IFTYPE_P2P_GO);
- 
-+	if (test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags))
-+		ath10k_enable_mesh(ar);
+ 	struct ath10k *ar = arg;
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	int ret;
 +
- 	ieee80211_hw_set(ar->hw, SIGNAL_DBM);
- 	ieee80211_hw_set(ar->hw, SUPPORTS_PS);
- 	ieee80211_hw_set(ar->hw, SUPPORTS_DYNAMIC_PS);
-@@ -7238,7 +7257,9 @@ int ath10k_mac_register(struct ath10k *ar)
++	if (ar_pci->pci_ps == 0) {
++		ret = ath10k_pci_force_wake(ar);
++		if (ret) {
++			ath10k_warn(ar, "failed to wake device up on irq: \
++					%d\n", ret);
++			return IRQ_NONE;
++		}
++	}
  
- 	switch (ar->wmi.op_version) {
- 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
--		ar->hw->wiphy->iface_combinations = ath10k_if_comb;
-+		ar->hw->wiphy->iface_combinations =
-+			(const struct ieee80211_iface_combination *)
-+			ath10k_if_comb;
- 		ar->hw->wiphy->n_iface_combinations =
- 			ARRAY_SIZE(ath10k_if_comb);
- 		ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
-@@ -7246,11 +7267,14 @@ int ath10k_mac_register(struct ath10k *ar)
- 	case ATH10K_FW_WMI_OP_VERSION_TLV:
- 		if (test_bit(WMI_SERVICE_ADAPTIVE_OCS, ar->wmi.svc_map)) {
- 			ar->hw->wiphy->iface_combinations =
-+				(const struct ieee80211_iface_combination *)
- 				ath10k_tlv_qcs_if_comb;
- 			ar->hw->wiphy->n_iface_combinations =
- 				ARRAY_SIZE(ath10k_tlv_qcs_if_comb);
- 		} else {
--			ar->hw->wiphy->iface_combinations = ath10k_tlv_if_comb;
-+			ar->hw->wiphy->iface_combinations =
-+				(const struct ieee80211_iface_combination *)
-+				ath10k_tlv_if_comb;
- 			ar->hw->wiphy->n_iface_combinations =
- 				ARRAY_SIZE(ath10k_tlv_if_comb);
- 		}
-@@ -7259,12 +7283,16 @@ int ath10k_mac_register(struct ath10k *ar)
- 	case ATH10K_FW_WMI_OP_VERSION_10_1:
- 	case ATH10K_FW_WMI_OP_VERSION_10_2:
- 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
--		ar->hw->wiphy->iface_combinations = ath10k_10x_if_comb;
-+		ar->hw->wiphy->iface_combinations =
-+			(const struct ieee80211_iface_combination *)
-+			ath10k_10x_if_comb;
- 		ar->hw->wiphy->n_iface_combinations =
- 			ARRAY_SIZE(ath10k_10x_if_comb);
+ 	if (ar_pci->num_msi_intrs == 0) {
+ 		if (!ath10k_pci_irq_pending(ar))
+@@ -2908,17 +2976,21 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	struct ath10k_pci *ar_pci;
+ 	enum ath10k_hw_rev hw_rev;
+ 	u32 chip_id;
++	bool pci_ps;
+ 
+ 	switch (pci_dev->device) {
+ 	case QCA988X_2_0_DEVICE_ID:
+ 		hw_rev = ATH10K_HW_QCA988X;
++		pci_ps = false;
  		break;
- 	case ATH10K_FW_WMI_OP_VERSION_10_4:
--		ar->hw->wiphy->iface_combinations = ath10k_10_4_if_comb;
-+		ar->hw->wiphy->iface_combinations =
-+			(const struct ieee80211_iface_combination *)
-+			ath10k_10_4_if_comb;
- 		ar->hw->wiphy->n_iface_combinations =
- 			ARRAY_SIZE(ath10k_10_4_if_comb);
+ 	case QCA6164_2_1_DEVICE_ID:
+ 	case QCA6174_2_1_DEVICE_ID:
+ 		hw_rev = ATH10K_HW_QCA6174;
++		pci_ps = true;
  		break;
+ 	case QCA99X0_2_0_DEVICE_ID:
+ 		hw_rev = ATH10K_HW_QCA99X0;
++		pci_ps = false;
+ 		break;
+ 	default:
+ 		WARN_ON(1);
+@@ -2939,6 +3011,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	ar_pci->dev = &pdev->dev;
+ 	ar_pci->ar = ar;
+ 	ar->dev_id = pci_dev->device;
++	ar_pci->pci_ps = pci_ps;
+ 
+ 	if (pdev->subsystem_vendor || pdev->subsystem_device)
+ 		scnprintf(ar->spec_board_id, sizeof(ar->spec_board_id),
+@@ -2970,6 +3043,14 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	ath10k_pci_ce_deinit(ar);
+ 	ath10k_pci_irq_disable(ar);
+ 
++	if (ar_pci->pci_ps == 0) {
++		ret = ath10k_pci_force_wake(ar);
++		if (ret) {
++			ath10k_warn(ar, "failed to wake up device : %d\n", ret);
++			goto err_free_pipes;
++		}
++	}
++
+ 	ret = ath10k_pci_init_irq(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to init irqs: %d\n", ret);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index 8d364fb..faba10d 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -221,6 +221,12 @@ struct ath10k_pci {
+ 	 * powersave register state changes.
+ 	 */
+ 	bool ps_awake;
++
++	/* pci power save, disable for QCA988X and QCA99X0.
++	 * Writing 'false' to this variable avoids frequent locking
++	 * on MMIO read/write.
++	 */
++	bool pci_ps;
+ };
+ 
+ static inline struct ath10k_pci *ath10k_pci_priv(struct ath10k *ar)
 -- 
-2.1.4
+1.9.1
 
 
 _______________________________________________
