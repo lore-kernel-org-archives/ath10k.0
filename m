@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zgihl-0005AU-Fp
- for ath10k@lists.infradead.org; Tue, 29 Sep 2015 00:23:38 +0000
+ id 1Zh1jM-0003WQ-5y
+ for ath10k@lists.infradead.org; Tue, 29 Sep 2015 20:42:32 +0000
+Subject: Re: Bug in CCK hw_rate definitions?
+References: <55F88F08.1000703@candelatech.com>
+ <CA+BoTQ=C3v+tMoM9_-Q7iTDRy=Zx0gxxib1gxkoOaK3tYpoBvg@mail.gmail.com>
 From: Ben Greear <greearb@candelatech.com>
-Subject: CT firmware beta-15 can now do A-MSDU with IBSS interfaces.
-Message-ID: <5609D9F4.4000407@candelatech.com>
-Date: Mon, 28 Sep 2015 17:23:16 -0700
+Message-ID: <560AF7A1.7080408@candelatech.com>
+Date: Tue, 29 Sep 2015 13:42:09 -0700
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQ=C3v+tMoM9_-Q7iTDRy=Zx0gxxib1gxkoOaK3tYpoBvg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +23,37 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Here is the changelog note.  This requires some corresponding driver patches to
-enable the A-MSDU with IBSS because the ath10k hardware (or maybe firmware bug)
-causes the BSSID in A-MSDU packets to be all zeros.
+On 09/21/2015 12:32 AM, Michal Kazior wrote:
+> On 15 September 2015 at 23:35, Ben Greear <greearb@candelatech.com> wrote:
+>> ath10k hw.h has this:
+>>
+>> enum ath10k_hw_rate_cck {
+>>          ATH10K_HW_RATE_CCK_LP_11M = 0,
+>>          ATH10K_HW_RATE_CCK_LP_5_5M,
+>>          ATH10K_HW_RATE_CCK_LP_2M,
+>>          ATH10K_HW_RATE_CCK_LP_1M,
+>>
+>> But, at least in 10.1 firmware, it appears that CCK hw_rates are 0x40, 0x41,
+>> etc
+>> (For those of you with firmware, see ar600P_phy.c, 'RC' column of the rate
+>> table.)
+>>
+>> Am I missing something or is the driver code just wrong?
+>
+> These macros are used only to decode L_SIG_RATE now. It can take values 0..15.
+>
+> If you need/want to change ath10k_hw_rate_cck you'll need to make sure
+> to update ath10k_mac_hw_rate_to_idx() or its callsite accordingly.
 
-So, in CT 4.0 and 4.2 kernels there is a patch that allows all-zero BSSIDs
-on IBSS interfaces.  Only tested on 4.2 so far.
+Just to close the loop on this:
 
-This gives a modest performance gain, depending on RF environment.
+I was confused about exactly how this was being used.
 
-I also have had a bug in the beta-15 rate-ctrl code for a week or two,
-and I fixed that today as well.  Performance should be back up to
-previous rates.
-
-
-In addition, the ath10k firmware was always adding Legacy /b and /ag
-IEs to probe requests, and the mac80211 stack was as well.  I have fixed
-CT firmware to not crap itself when requested to not send any legacy
-IEs, and this allows the host to have full control.  This also keeps
-duplicate IEs off the air.  For backwards compat, if you want to take
-advantage of this feature, you need CT kernels (or patches).
-
-
- From release notes:
-
-   *  Allow disabling firmware-added legacy, HT and VHT related IEs in probe requests.
-      The host can do a better job of adding these, and this keeps there from being
-      duplicated IEs in probe requests.  Requires kernel patch to take advantage of
-      these new features.
-
-   *  IBSS:  Allow enabling A-MSDU for IBSS.  It appears there is a bug in the
-      hardware or firmware that causes the BSSID to be zero when diong A-MSDU frames
-      for IBSS interfaces.  I cannot figure out how to fix that, and it may just not
-      be fixable due to hardware issues.
-
-      But, the receiving host could be configured (hacked?) to just match on the
-      destination address and ignore the BSSID address, and then it appears to work
-      just fine.
-
-      CT Kernel (4.2 now, maybe 4.0 soon) has patches to allow enabling IBSS A-MSDU
-      in the CT firmware.  By default, A-MSDU is (still) disabled for IBSS.
-
-      # Enable A-MSDU IBSS on wiphy0 radio.
-      echo 0x500000001 > /debug/ieee80211/wiphy0/ath10k/ct_special
-      # Disable A-MSDU IBSS on wiphy0 radio.
-      echo 0x500000000 > /debug/ieee80211/wiphy0/ath10k/ct_special
-
-
-http://www.candelatech.com/ath10k.php
-
-
-http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-4.0.dev.y/.git;a=summary
-http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-4.2.dev.y/.git;a=summary
+In the end, I have this working to my satisfaction without having
+to change the enums.
 
 Thanks,
 Ben
