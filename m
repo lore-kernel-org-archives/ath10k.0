@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zh1jM-0003WQ-5y
- for ath10k@lists.infradead.org; Tue, 29 Sep 2015 20:42:32 +0000
-Subject: Re: Bug in CCK hw_rate definitions?
-References: <55F88F08.1000703@candelatech.com>
- <CA+BoTQ=C3v+tMoM9_-Q7iTDRy=Zx0gxxib1gxkoOaK3tYpoBvg@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <560AF7A1.7080408@candelatech.com>
-Date: Tue, 29 Sep 2015 13:42:09 -0700
-MIME-Version: 1.0
-In-Reply-To: <CA+BoTQ=C3v+tMoM9_-Q7iTDRy=Zx0gxxib1gxkoOaK3tYpoBvg@mail.gmail.com>
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZhBAi-0006ov-SF
+ for ath10k@lists.infradead.org; Wed, 30 Sep 2015 06:47:26 +0000
+Message-ID: <1443595615.1859.2.camel@sipsolutions.net>
+Subject: Re: Can we ignore frames with invalid BSSID in IBSS mode?
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 30 Sep 2015 08:46:55 +0200
+In-Reply-To: <5605D228.7050609@candelatech.com>
+ (sfid-20150926_010105_789618_F93D668E)
+References: <5605D228.7050609@candelatech.com>
+ (sfid-20150926_010105_789618_F93D668E)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,49 +20,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-On 09/21/2015 12:32 AM, Michal Kazior wrote:
-> On 15 September 2015 at 23:35, Ben Greear <greearb@candelatech.com> wrote:
->> ath10k hw.h has this:
->>
->> enum ath10k_hw_rate_cck {
->>          ATH10K_HW_RATE_CCK_LP_11M = 0,
->>          ATH10K_HW_RATE_CCK_LP_5_5M,
->>          ATH10K_HW_RATE_CCK_LP_2M,
->>          ATH10K_HW_RATE_CCK_LP_1M,
->>
->> But, at least in 10.1 firmware, it appears that CCK hw_rates are 0x40, 0x41,
->> etc
->> (For those of you with firmware, see ar600P_phy.c, 'RC' column of the rate
->> table.)
->>
->> Am I missing something or is the driver code just wrong?
->
-> These macros are used only to decode L_SIG_RATE now. It can take values 0..15.
->
-> If you need/want to change ath10k_hw_rate_cck you'll need to make sure
-> to update ath10k_mac_hw_rate_to_idx() or its callsite accordingly.
+On Fri, 2015-09-25 at 16:00 -0700, Ben Greear wrote:
+> It seems that ath10k ar988X hardware has a bug where the BSSID
+> for IBSS AMSDU frames is all zeros.  The 'main' 636 ath10k firmware
+> does not seem to use AMSDUs for IBSS, and when I enable it in my CT
+> firmware, then I see the breakage.  So, I suspect it is not
+> just a simple software/firmware bug.
+> 
+> If I simply ignore the bssid_match check in ieee80211_accept_frame,
+> then it seems everything runs fine.
+> 
+> So, I'm curious if anyone knows what sorts of bad things could happen
+> if the bssid_match check is ignored?  Maybe bcast/mcast frames could
+> be accepted when they shouldn't be in certain cases?
+> 
 
-Just to close the loop on this:
+You could end up accepting multicast frames from a different,
+overlapping, BSS? Seems like a bad idea.
 
-I was confused about exactly how this was being used.
-
-In the end, I have this working to my satisfaction without having
-to change the enums.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+johannes
 
 _______________________________________________
 ath10k mailing list
