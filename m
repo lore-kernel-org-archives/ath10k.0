@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zhj4u-0004t6-17
- for ath10k@lists.infradead.org; Thu, 01 Oct 2015 18:59:40 +0000
-Message-ID: <560D8276.6040107@codeaurora.org>
-Date: Thu, 01 Oct 2015 11:59:02 -0700
-From: Peter Oh <poh@codeaurora.org>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zi9yj-0003p2-QB
+ for ath10k@lists.infradead.org; Fri, 02 Oct 2015 23:43:06 +0000
+From: Ben Greear <greearb@candelatech.com>
+Subject: Slow ramp-up for single-stream TCP throughput on 4.2 kernel.
+Message-ID: <560F1672.5000602@candelatech.com>
+Date: Fri, 2 Oct 2015 16:42:42 -0700
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: only advertise mesh support in raw mode
-References: <1443445192-30464-1-git-send-email-me@bobcopeland.com>
- <56097882.4090004@codeaurora.org> <20151001025432.GA1664@localhost>
-In-Reply-To: <20151001025432.GA1664@localhost>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +20,69 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bob Copeland <me@bobcopeland.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: netdev <netdev@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+
+I'm seeing something that looks more dodgy than normal.
+
+Test case id ath10k station uploading to ath10k AP.
+
+AP is always running 4.2 kernel in this case, and both systems are using
+the same ath10k firmware.
+
+I have tuned the stack:
+
+echo 4000000 > /proc/sys/net/core/wmem_max
+echo 4096 87380 50000000 > /proc/sys/net/ipv4/tcp_rmem
+echo 4096 16384 50000000 > /proc/sys/net/ipv4/tcp_wmem
+echo 50000000 > /proc/sys/net/core/rmem_max
+echo 30000 > /proc/sys/net/core/netdev_max_backlog
+echo 1024000 > /proc/sys/net/ipv4/tcp_limit_output_bytes
 
 
-On 09/30/2015 07:54 PM, Bob Copeland wrote:
-> On Mon, Sep 28, 2015 at 10:27:30AM -0700, Peter Oh wrote:
->> I prefer the current design to this new approach because drivers already
->> know if it's mesh capable or not at build time, hence adding runtime
->> configuration is redundant.
-> I do think the proposed patch is a bit overboard, so I suppose my vote is
-> to
-> keep it the way it is, even if a little user-unfriendly.
->
->> One more thing we have to think about is enabling mesh in only raw mode.
->> In standard view point, mesh is only available in raw mode on ath10k,
->> however ath10k is also able to run mesh in native WiFi mode in current
->> mac80211 design since mac80211 handles packets per interface. So that
->> mac80211 knows that packets are for mesh without looking at mesh control
->> present bit when they come into mesh interface.
-> This is true, it'll work with mac80211, but it violates the standard
-> (802.11-2012 8.2.4.7.3).
-I agree.
->
-> For the benefit of others, as I just retested non-rawmode -- the issue is
-> that QoS control in nwifi frames is missing the "Mesh Control Present"
-> bit.
-> However, it still includes the mesh control field, which is the part
-> that has the mesh sequence number and address extension fields.
->
-> As a result, a packet parser might misinterpret the mesh control field as
-> the LLC header -- the wireshark dissector at least gets confused like
-> this.
->
-> I would think a small change to ath10k firmware could fix this though,
-> vendor willing.
-I'm working with firmware guy and there is possibility that firmware 
-handles this issue properly.
->
+On the 3.17.8+ kernel, single stream TCP very quickly (1-2 seconds) reaches about
+525Mbps upload throughput (station to AP).
+
+But, when station machine is running the 4.2 kernel, the connection goes to
+about 30Mbps for 5-10 seconds, then may ramp up to 200-300Mbps, and may plateau
+at around 400Mbps after another minute or two.  Once, I saw it finally reach 500+Mbps
+after about 3 minutes.
+
+Both behaviors are repeatable in my testing.
+
+For 4.2, I tried setting the send/rcv buffers to 2Mbps,
+I tried leaving them at system defaults, same behavior.  I tried doubling
+the tcp_limit_output_bytes to 2048k, and that had no affect.
+
+Netstat shows about 1MB of data setting in the TX queue for
+for 3.17 and 4.2 kernels when this test is running.
+
+If I start a 50-stream TCP test, then total throughput is 500+Mbps
+on 4.2, and generally correlates well with whatever UDP can do at
+that time.
+
+A 50-stream throughput has virtually identical performance to the 1 stream
+test on the 3.17 kernel.
+
+
+For the 4.0.4+ kernel, single stream stuck at 30Mbps and would not budge (4.2 does this sometimes too,
+perhaps it would have gone up if I had waited more than the ~15 seconds that I did)
+50 stream stuck at 420Mbps and would not improve, but it ramped to that quickly.
+100 stream test ran at 560Mbps throughput, which is about the maximum TCP throughput
+we normally see for ath10k over-the-air.
+
+
+I'm interested to know if someone has any suggestions for things to tune in 4.2
+or 4.0 that might help this, or any reason why I might be seeing this behaviour.
+
+I'm also interested to know if anyone else sees similar behaviour.
+
 Thanks,
-Peter
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
