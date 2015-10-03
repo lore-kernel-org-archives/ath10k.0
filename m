@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZiAZt-0003W3-TO
- for ath10k@lists.infradead.org; Sat, 03 Oct 2015 00:21:30 +0000
-Subject: Re: Slow ramp-up for single-stream TCP throughput on 4.2 kernel.
-References: <560F1672.5000602@candelatech.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <560F1F74.9010207@candelatech.com>
-Date: Fri, 2 Oct 2015 17:21:08 -0700
+Received: from mail-ob0-x22f.google.com ([2607:f8b0:4003:c01::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZiPh9-0005It-2u
+ for ath10k@lists.infradead.org; Sat, 03 Oct 2015 16:29:59 +0000
+Received: by obbbh8 with SMTP id bh8so102324629obb.0
+ for <ath10k@lists.infradead.org>; Sat, 03 Oct 2015 09:29:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <560F1672.5000602@candelatech.com>
+In-Reply-To: <560F1F74.9010207@candelatech.com>
+References: <560F1672.5000602@candelatech.com>
+ <560F1F74.9010207@candelatech.com>
+Date: Sat, 3 Oct 2015 12:29:36 -0400
+Message-ID: <CADVnQym4U_dVVRdOVhORvVabwFjSHTQJ_LbbbYtzWVu0=mAp_A@mail.gmail.com>
+Subject: Re: Slow ramp-up for single-stream TCP throughput on 4.2 kernel.
+From: Neal Cardwell <ncardwell@google.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,124 +21,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: netdev <netdev@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: netdev <netdev@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-Gah, seems 'cubic' related.  That is the default tcp cong ctrl
-I was using (same in 3.17, for that matter).
+On Fri, Oct 2, 2015 at 8:21 PM, Ben Greear <greearb@candelatech.com> wrote:
+> Gah, seems 'cubic' related.  That is the default tcp cong ctrl
+> I was using (same in 3.17, for that matter).
 
-Most other rate-ctrls vastly out-perform it.
+There have been recent changes to CUBIC that may account for this. If
+you could repeat your test with more instrumentation, eg "nstat", that
+would be very helpful.
 
+nstat > /dev/null
+# run one test
+nstat
 
+Also, if you could take a sender-side tcpdump trace of the test, that
+would be very useful (default capture length, grabbing just headers,
+is fine).
 
-On 10/02/2015 04:42 PM, Ben Greear wrote:
-> I'm seeing something that looks more dodgy than normal.
+Thanks!
 
-Gah, seems 'cubic' related. That is the default tcp cong ctrl
-I was using (same in 3.17, for that matter).
-
-Most other rate-ctrls vastly out-perform it.
-
-Here's a throughput graph for single-stream TCP for each of the rate-ctrl
-in 4.2
-
-http://www.candelatech.com/downloads/tcp_cong_ctrl_ath10k_4.2.pdf
-
-I'll re-run and annotate this for posterity's sake, but basically, I started with
-'cubic', and then ran each of these in order:
-
-[root@ben-ota-1 lanforge]# echo reno > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo bic > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo cdg > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo dctcp > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo westwood > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo highspeed > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo hybla > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo htcp > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo vegas > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo veno > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo scalable > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo lp > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo yeah > /proc/sys/net/ipv4/tcp_congestion_control
-[root@ben-ota-1 lanforge]# echo illinois > /proc/sys/net/ipv4/tcp_congestion_control
-
-
-The first low non-spike is cubic, then reno does OK, etc.
-CDG was the next abject failure.
-Vegas sucks
-Yeah has issues, but is not horrible.
-
-
-Thanks,
-Ben
-
-
-
->
-> Test case id ath10k station uploading to ath10k AP.
->
-> AP is always running 4.2 kernel in this case, and both systems are using
-> the same ath10k firmware.
->
-> I have tuned the stack:
->
-> echo 4000000 > /proc/sys/net/core/wmem_max
-> echo 4096 87380 50000000 > /proc/sys/net/ipv4/tcp_rmem
-> echo 4096 16384 50000000 > /proc/sys/net/ipv4/tcp_wmem
-> echo 50000000 > /proc/sys/net/core/rmem_max
-> echo 30000 > /proc/sys/net/core/netdev_max_backlog
-> echo 1024000 > /proc/sys/net/ipv4/tcp_limit_output_bytes
->
->
-> On the 3.17.8+ kernel, single stream TCP very quickly (1-2 seconds) reaches about
-> 525Mbps upload throughput (station to AP).
->
-> But, when station machine is running the 4.2 kernel, the connection goes to
-> about 30Mbps for 5-10 seconds, then may ramp up to 200-300Mbps, and may plateau
-> at around 400Mbps after another minute or two.  Once, I saw it finally reach 500+Mbps
-> after about 3 minutes.
->
-> Both behaviors are repeatable in my testing.
->
-> For 4.2, I tried setting the send/rcv buffers to 2Mbps,
-> I tried leaving them at system defaults, same behavior.  I tried doubling
-> the tcp_limit_output_bytes to 2048k, and that had no affect.
->
-> Netstat shows about 1MB of data setting in the TX queue for
-> for 3.17 and 4.2 kernels when this test is running.
->
-> If I start a 50-stream TCP test, then total throughput is 500+Mbps
-> on 4.2, and generally correlates well with whatever UDP can do at
-> that time.
->
-> A 50-stream throughput has virtually identical performance to the 1 stream
-> test on the 3.17 kernel.
->
->
-> For the 4.0.4+ kernel, single stream stuck at 30Mbps and would not budge (4.2 does this sometimes too,
-> perhaps it would have gone up if I had waited more than the ~15 seconds that I did)
-> 50 stream stuck at 420Mbps and would not improve, but it ramped to that quickly.
-> 100 stream test ran at 560Mbps throughput, which is about the maximum TCP throughput
-> we normally see for ath10k over-the-air.
->
->
-> I'm interested to know if someone has any suggestions for things to tune in 4.2
-> or 4.0 that might help this, or any reason why I might be seeing this behaviour.
->
-> I'm also interested to know if anyone else sees similar behaviour.
->
-> Thanks,
-> Ben
->
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+neal
 
 _______________________________________________
 ath10k mailing list
