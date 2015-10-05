@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zj5w8-0005eU-4j
- for ath10k@lists.infradead.org; Mon, 05 Oct 2015 13:36:17 +0000
-Message-ID: <56127CB9.1020100@candelatech.com>
-Date: Mon, 05 Oct 2015 06:35:53 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: Slow ramp-up for single-stream TCP throughput on 4.2 kernel.
-References: <560F1672.5000602@candelatech.com>		<560F1F74.9010207@candelatech.com>		<CADVnQym4U_dVVRdOVhORvVabwFjSHTQJ_LbbbYtzWVu0=mAp_A@mail.gmail.com>		<56105AD2.7070906@candelatech.com>	
- <CADVnQynKmhrpD63sF5aWPYo9f8L3wOMuEyACBnTdkzQQ=D1_uA@mail.gmail.com>	
- <56115C68.1080803@candelatech.com>
- <1443979705.32531.71.camel@edumazet-glaptop2.roam.corp.google.com>
-In-Reply-To: <1443979705.32531.71.camel@edumazet-glaptop2.roam.corp.google.com>
+Received: from mail-ig0-f178.google.com ([209.85.213.178])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zj6v3-0007aR-Qd
+ for ath10k@lists.infradead.org; Mon, 05 Oct 2015 14:39:14 +0000
+Received: by igxx6 with SMTP id x6so58667977igx.1
+ for <ath10k@lists.infradead.org>; Mon, 05 Oct 2015 07:38:51 -0700 (PDT)
+Received: from amphitrite.acdjdg.dingman.org
+ ([2601:801:200:c44c:ba86:87ff:fe46:f003])
+ by smtp.gmail.com with ESMTPSA id q11sm10367975ioe.19.2015.10.05.07.38.50
+ for <ath10k@lists.infradead.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 05 Oct 2015 07:38:50 -0700 (PDT)
+Message-ID: <1444055929.9501.14.camel@dingman.org>
+Subject: QCA6164 txbf failure
+From: "Andrew C. Dingman" <andrew@dingman.org>
+Date: Mon, 05 Oct 2015 10:38:49 -0400
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,62 +24,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: netdev <netdev@vger.kernel.org>, Eric Dumazet <edumazet@google.com>, Neal Cardwell <ncardwell@google.com>, ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-
-
-On 10/04/2015 10:28 AM, Eric Dumazet wrote:
-> On Sun, 2015-10-04 at 10:05 -0700, Ben Greear wrote:
->
->> I guess I'll just stop using Cubic.  Any suggestions for another
->> congestion algorithm to use?  I'd prefer something that worked well
->> in pretty much any network condition, of course, and it has to work with
->> ath10k.
->>
->> We can also run some tests with 1G, 10G, ath10k, ath9k, and in conjunction
->> with network emulators and various congestion control algorithms.
->
-> You could use cubic , but disable or tune HyStart, which is known to be
-> problematic anyway.
->
-> echo  0 >/sys/module/tcp_cubic/parameters/hystart_detect
-
-I ran some more tests this morning.  The first bump in the graph
-has the setting above.  Seems to work pretty good.
-
-The second is using RENO.  Also good, and a small bit of higher over-all
-throughput (about 555-560Mbps of RX throughput).
-
-Third is 'highspeed'.  It ramps up quickly, but seems a bit more jagged, and
-not quite as fast as RENO.
-
->
-> Or try
->
-> echo 40 >/sys/module/tcp_cubic/parameters/hystart_low_window
-
-The last graph is this setting (with hystart_detect set back to 3,
-which was the default on my system).
-
-This is better than stock cubic, but it still is awful compared
-to the others.
-
-http://www.candelatech.com/downloads/tcp_cong_ath10k_2.pdf
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SXQgbG9va3MgbGlrZSB0aGUgUUNBNjE2NCBpbiBteSBMZW5vdm8gWW9nYSAzIDExIiBoYXMgcHJv
+YmxlbXMgd2l0aAp0eGJmLiBJJ20gdXNpbmcgRmVkb3JhIHdpdGggYSA0LjMuMC1yYzMga2VybmVs
+IGZyb20gS29qaS4gKEEKZGV2ZWxvcG1lbnQgYnVpbGQgc3lzdGVtIC0gaXQncyBub3QgYSByZWxl
+YXNlZCBrZXJuZWwpCgpVc2luZyBmaXJtd2FyZSBmcm9twqBodHRwczovL2dpdGh1Yi5jb20va3Zh
+bG8vYXRoMTBrLWZpcm13YXJlLmdpdMKgZXhjZXB0CmZvciB0aGUgYm9hcmQuYmluLCB3aGljaCBj
+YW1lwqBodHRwczovL2dpdGh1Yi5jb20vYXRvbmR3YWwvYXRoMTBrLWZpcm13YQpyZS5naXQuIFNw
+ZWNpZmljYWxseSwgdG8gZ2V0IHRoZSBjYXJkIHRvIGJvb3QgSSByYW4gInN1ZG8gY3AKYXRoMTBr
+L1FDQTYxNjQvaHcyLjEvYm9hcmQuYmluCi9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTYxNzQvaHcy
+LjEvYm9hcmQtcGNpLTE2OGM6MDA0MToxN2FhOjM1NDUuYmluIgpmcm9tIHRoZSBsYXR0ZXIgZ2l0
+IHJlcG8uCgpVc2luZyB0aGUgdW5tb2RpZmllZCA0LjMga2VybmVsIGFib3ZlLCB0aGlzIGFsbG93
+ZWQgdGhlIGNhcmQgdG8gYmUKcmVjb2duaXplZCwgYW5kIGV2ZW4gcmVwb3J0IHN1Y2Nlc3NmdWwg
+YXV0aGVudGljYXRpb24gYW5kIGFzc29jaWF0aW9uCnRvIGFuIGFjY2VzcyBwb2ludCBpbiBkbWVz
+Zy4gSG93ZXZlciwgaXQgbmV2ZXIgY29tcGxldGVkIGEgY29ubmVjdGlvbiwKYW5kIHNjYW5uaW5n
+IGFjY2VzcyBwb2ludHMgZmFpbGVkLgoKQmFzZWQgb24gdGhlIGRtZXNnIG91dHB1dCwgbWljaGFs
+ayBpbiBJUkMgc3VnZ2VzdGVkIHRoYXQgSSB0cnkgYXBwbHlpbmcKdGhlIHBhdGNoIGZyb20gaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE1LUF1Z3VzdC8KMDA1
+OTA5Lmh0bWwuwqBXaXRoIHRoYXQgY2hhbmdlLCB0aGUgZGV2aWNlIHNlZW1zIHRvIHdvcmsgZmlu
+ZS4KCi1BbmRyZXcKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
