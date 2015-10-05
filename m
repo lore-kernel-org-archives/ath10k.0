@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zj7j2-0008Uy-9t
- for ath10k@lists.infradead.org; Mon, 05 Oct 2015 15:30:52 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: Use station's current operating mode from
- assoc request
-References: <1443168068-5719-1-git-send-email-nataraja@qti.qualcomm.com>
-Date: Mon, 5 Oct 2015 18:30:17 +0300
-In-Reply-To: <1443168068-5719-1-git-send-email-nataraja@qti.qualcomm.com>
- (Vivek Natarajan's message of "Fri, 25 Sep 2015 13:31:08 +0530")
-Message-ID: <87twq52v06.fsf@kamboji.qca.qualcomm.com>
+ id 1Zj8Ds-0002n3-OI
+ for ath10k@lists.infradead.org; Mon, 05 Oct 2015 16:02:45 +0000
+From: Vivek Natarajan <nataraja@qti.qualcomm.com>
+Subject: [PATCH v3] ath10k: Use station's current operating mode from assoc
+ request
+Date: Mon, 5 Oct 2015 21:32:08 +0530
+Message-ID: <1444060928-5702-1-git-send-email-nataraja@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,26 +21,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vivek Natarajan <nataraja@qti.qualcomm.com>
+To: kvalo@qca.qualcomm.com
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Vivek Natarajan <nataraja@qti.qualcomm.com> writes:
+The current number of spatial streams used by the client is advertised
+as a separate IE in assoc request. Use this information to set
+the NSS operating mode.
 
-> The current number of spatial streams used by the client is advertised
-> as a separate IE in assoc request. Use this information to set
-> the NSS operating mode.
->
-> Fixes: 45c9abc059fa ("ath10k: implement more versatile set_bitrate_mask").
-> Signed-off-by: Vivek Natarajan <nataraja@qti.qualcomm.com>
+Fixes: 45c9abc059fa ("ath10k: implement more versatile set_bitrate_mask").
+Signed-off-by: Vivek Natarajan <nataraja@qti.qualcomm.com>
+---
+v3: Fix max_nss type.
 
-This adds a new warning:
+ drivers/net/wireless/ath/ath10k/mac.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_peer_assoc_h_ht':
-drivers/net/wireless/ath/ath10k/mac.c:2172:131: warning: comparison of distinct pointer types lacks a cast [enabled by default]
-drivers/net/wireless/ath/ath10k/mac.c:2172:49: error: incompatible types in comparison expression (different type sizes)
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 79490ad..32ad6f3 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2084,7 +2084,8 @@ static void ath10k_peer_assoc_h_ht(struct ath10k *ar,
+ 	enum ieee80211_band band;
+ 	const u8 *ht_mcs_mask;
+ 	const u16 *vht_mcs_mask;
+-	int i, n, max_nss;
++	int i, n;
++	u8 max_nss;
+ 	u32 stbc;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+@@ -2169,7 +2170,7 @@ static void ath10k_peer_assoc_h_ht(struct ath10k *ar,
+ 			arg->peer_ht_rates.rates[i] = i;
+ 	} else {
+ 		arg->peer_ht_rates.num_rates = n;
+-		arg->peer_num_spatial_streams = max_nss;
++		arg->peer_num_spatial_streams = min(sta->rx_nss, max_nss);
+ 	}
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac ht peer %pM mcs cnt %d nss %d\n",
 -- 
-Kalle Valo
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
