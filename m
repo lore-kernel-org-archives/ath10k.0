@@ -1,23 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-f179.google.com ([209.85.213.179])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zj72G-0005hM-Ug
- for ath10k@lists.infradead.org; Mon, 05 Oct 2015 14:46:41 +0000
-Received: by igcpb10 with SMTP id pb10so64448891igc.1
- for <ath10k@lists.infradead.org>; Mon, 05 Oct 2015 07:46:20 -0700 (PDT)
-Received: from amphitrite.acdjdg.dingman.org
- ([2601:801:200:c44c:ba86:87ff:fe46:f003])
- by smtp.gmail.com with ESMTPSA id m138sm10373709ioe.33.2015.10.05.07.46.19
- for <ath10k@lists.infradead.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 05 Oct 2015 07:46:19 -0700 (PDT)
-Message-ID: <1444056378.9501.17.camel@dingman.org>
-Subject: Re: QCA6164 txbf failure
-From: "Andrew C. Dingman" <andrew@dingman.org>
-Date: Mon, 05 Oct 2015 10:46:18 -0400
-In-Reply-To: <1444055929.9501.14.camel@dingman.org>
-References: <1444055929.9501.14.camel@dingman.org>
-Mime-Version: 1.0
+ id 1Zj7j2-0008Uy-9t
+ for ath10k@lists.infradead.org; Mon, 05 Oct 2015 15:30:52 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: Use station's current operating mode from
+ assoc request
+References: <1443168068-5719-1-git-send-email-nataraja@qti.qualcomm.com>
+Date: Mon, 5 Oct 2015 18:30:17 +0300
+In-Reply-To: <1443168068-5719-1-git-send-email-nataraja@qti.qualcomm.com>
+ (Vivek Natarajan's message of "Fri, 25 Sep 2015 13:31:08 +0530")
+Message-ID: <87twq52v06.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,48 +20,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Vivek Natarajan <nataraja@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gTW9uLCAyMDE1LTEwLTA1IGF0IDEwOjM4IC0wNDAwLCBBbmRyZXcgQy4gRGluZ21hbiB3cm90
-ZToKPiBJdCBsb29rcyBsaWtlIHRoZSBRQ0E2MTY0IGluIG15IExlbm92byBZb2dhIDMgMTEiIGhh
-cyBwcm9ibGVtcyB3aXRoCj4gdHhiZi4gSSdtIHVzaW5nIEZlZG9yYSB3aXRoIGEgNC4zLjAtcmMz
-IGtlcm5lbCBmcm9tIEtvamkuIChBCj4gZGV2ZWxvcG1lbnQgYnVpbGQgc3lzdGVtIC0gaXQncyBu
-b3QgYSByZWxlYXNlZCBrZXJuZWwpCj4gCj4gVXNpbmcgZmlybXdhcmUgZnJvbcKgaHR0cHM6Ly9n
-aXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2FyZS5naXTCoGV4Y2UKPiBwdAo+IGZvciB0aGUg
-Ym9hcmQuYmluLCB3aGljaCBjYW1lwqBodHRwczovL2dpdGh1Yi5jb20vYXRvbmR3YWwvYXRoMTBr
-LWZpcm0KPiB3YQo+IHJlLmdpdC4gU3BlY2lmaWNhbGx5LCB0byBnZXQgdGhlIGNhcmQgdG8gYm9v
-dCBJIHJhbiAic3VkbyBjcAo+IGF0aDEway9RQ0E2MTY0L2h3Mi4xL2JvYXJkLmJpbgo+IC9saWIv
-ZmlybXdhcmUvYXRoMTBrL1FDQTYxNzQvaHcyLjEvYm9hcmQtcGNpLTE2OGM6MDA0MToxN2FhOjM1
-NDUuYmluIgo+IGZyb20gdGhlIGxhdHRlciBnaXQgcmVwby4KPiAKPiBVc2luZyB0aGUgdW5tb2Rp
-ZmllZCA0LjMga2VybmVsIGFib3ZlLCB0aGlzIGFsbG93ZWQgdGhlIGNhcmQgdG8gYmUKPiByZWNv
-Z25pemVkLCBhbmQgZXZlbiByZXBvcnQgc3VjY2Vzc2Z1bCBhdXRoZW50aWNhdGlvbiBhbmQgYXNz
-b2NpYXRpb24KPiB0byBhbiBhY2Nlc3MgcG9pbnQgaW4gZG1lc2cuIEhvd2V2ZXIsIGl0IG5ldmVy
-IGNvbXBsZXRlZCBhCj4gY29ubmVjdGlvbiwKPiBhbmQgc2Nhbm5pbmcgYWNjZXNzIHBvaW50cyBm
-YWlsZWQuCj4gCj4gQmFzZWQgb24gdGhlIGRtZXNnIG91dHB1dCwgbWljaGFsayBpbiBJUkMgc3Vn
-Z2VzdGVkIHRoYXQgSSB0cnkKPiBhcHBseWluZwo+IHRoZSBwYXRjaCBmcm9tIGh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAxNS1BdWd1cwo+IHQvCj4gMDA1OTA5
-Lmh0bWwuwqBXaXRoIHRoYXQgY2hhbmdlLCB0aGUgZGV2aWNlIHNlZW1zIHRvIHdvcmsgZmluZS4K
-CkFkZGluZyBmb3IgY29tcGxldGVuZXNzOgoKVGhlIGRldmljZSBpbiBxdWVzdGlvbiwgYXMgc2hv
-d24gYnkgbHNwY2kKICAgIFsgICAgYW5kcmV3QGFtcGhpdHJpdGUgICAgIH5dJCBzdWRvIGxzcGNp
-IC12IC1uIC1zIDI6MAogICAgMDI6MDAuMCAwMjgwOiAxNjhjOjAwNDEgKHJldiAyMCkKICAgIAkg
-ICAgU3Vic3lzdGVtOiAxN2FhOjM1NDUKICAgIAkgICAgRmxhZ3M6IGJ1cyBtYXN0ZXIsIGZhc3Qg
-ZGV2c2VsLCBsYXRlbmN5IDAsIElSUSA1MAogICAgCSAgICBNZW1vcnkgYXQgYzEwMDAwMDAgKDY0
-LWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3NpemU9Mk1dCiAgICAJICAgIENhcGFiaWxpdGllczog
-WzQwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMwogICAgCSAgICBDYXBhYmlsaXRpZXM6IFs1
-MF0gTVNJOiBFbmFibGUrIENvdW50PTgvOCBNYXNrYWJsZSsgNjRiaXQtCiAgICAJICAgIENhcGFi
-aWxpdGllczogWzcwXSBFeHByZXNzIEVuZHBvaW50LCBNU0kgMDAKICAgIAkgICAgQ2FwYWJpbGl0
-aWVzOiBbMTAwXSBBZHZhbmNlZCBFcnJvciBSZXBvcnRpbmcKICAgIAkgICAgQ2FwYWJpbGl0aWVz
-OiBbMTQ4XSBWaXJ0dWFsIENoYW5uZWwKICAgIAkgICAgQ2FwYWJpbGl0aWVzOiBbMTY4XSBEZXZp
-Y2UgU2VyaWFsIE51bWJlciAwMC0wMC0wMC0wMC0wMC0wMC0wMC0KICAgIDAwCiAgICAJICAgIENh
-cGFiaWxpdGllczogWzE3OF0gTGF0ZW5jeSBUb2xlcmFuY2UgUmVwb3J0aW5nCiAgICAJICAgIENh
-cGFiaWxpdGllczogWzE4MF0gTDEgUE0gU3Vic3RhdGVzCiAgICAJICAgIEtlcm5lbCBkcml2ZXIg
-aW4gdXNlOiBhdGgxMGtfcGNpCiAgICAJICAgIEtlcm5lbCBtb2R1bGVzOiBhdGgxMGtfcGNpCgpB
-bHNvLCBtaWNoYWxrIHBvaW50cyBvdXQgdGhhdCB0aGUgbG9nIGNvbnRhaW5lZCAiZmFpbGVkIHRv
-IHBva2UgcGVlcgpYWFggcGFyYW0gZm9yIHBzIHdvcmthcm91bmQgb24gdmRldiBZOiAtMTEiCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Vivek Natarajan <nataraja@qti.qualcomm.com> writes:
+
+> The current number of spatial streams used by the client is advertised
+> as a separate IE in assoc request. Use this information to set
+> the NSS operating mode.
+>
+> Fixes: 45c9abc059fa ("ath10k: implement more versatile set_bitrate_mask").
+> Signed-off-by: Vivek Natarajan <nataraja@qti.qualcomm.com>
+
+This adds a new warning:
+
+drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_peer_assoc_h_ht':
+drivers/net/wireless/ath/ath10k/mac.c:2172:131: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+drivers/net/wireless/ath/ath10k/mac.c:2172:49: error: incompatible types in comparison expression (different type sizes)
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
