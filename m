@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from emh03.mail.saunalahti.fi ([62.142.5.109])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZjR0V-0006Tr-Kv
- for ath10k@lists.infradead.org; Tue, 06 Oct 2015 12:06:12 +0000
+ id 1ZjS68-0006z3-Dt
+ for ath10k@lists.infradead.org; Tue, 06 Oct 2015 13:16:05 +0000
+Subject: [PATCH 0/2] ath10k: implement board API 2 support
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: use pre-allocated DMA buffer in Tx
-References: <1443117270-16790-1-git-send-email-poh@qca.qualcomm.com>
-Date: Tue, 6 Oct 2015 15:05:42 +0300
-In-Reply-To: <1443117270-16790-1-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Thu, 24 Sep 2015 10:54:30 -0700")
-Message-ID: <874mi42odl.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 06 Oct 2015 16:15:39 +0300
+Message-ID: <20151006131455.14278.28222.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,22 +20,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+Implement board 2 API to make it easier to have multiple board files and
+automatically choose correct one.
 
-> ath10k driver is using dma_pool_alloc per packet and dma_pool_free
-> in coresponding at Tx completion.
-> Use of pre-allocated DMA buffer in Tx will improve saving CPU resource
-> by 5% while it consumes about 56KB memory more as trade off.
->
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
 
-Applied, thanks.
+Manikanta Pubbisetty (2):
+      ath10k: add board 2 API support
+      ath10k: select board data based on BMI chip id and board id
 
--- 
-Kalle Valo
+
+ drivers/net/wireless/ath/ath10k/bmi.h   |   10 +
+ drivers/net/wireless/ath/ath10k/core.c  |  328 +++++++++++++++++++++++++++----
+ drivers/net/wireless/ath/ath10k/core.h  |   13 +
+ drivers/net/wireless/ath/ath10k/debug.c |   16 +-
+ drivers/net/wireless/ath/ath10k/hw.h    |   13 +
+ drivers/net/wireless/ath/ath10k/pci.c   |   13 +
+ 6 files changed, 338 insertions(+), 55 deletions(-)
+
 
 _______________________________________________
 ath10k mailing list
