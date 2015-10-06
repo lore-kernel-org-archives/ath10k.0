@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZjQdh-0004bk-5l
- for ath10k@lists.infradead.org; Tue, 06 Oct 2015 11:42:37 +0000
+ id 1ZjQfO-0005Ag-SO
+ for ath10k@lists.infradead.org; Tue, 06 Oct 2015 11:44:23 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/6] ath10k: few checkpatch fixes
-References: <20151001105001.8770.96252.stgit@potku.adurom.net>
-Date: Tue, 6 Oct 2015 14:42:05 +0300
-In-Reply-To: <20151001105001.8770.96252.stgit@potku.adurom.net> (Kalle Valo's
- message of "Thu, 01 Oct 2015 13:50:38 +0300")
-Message-ID: <87h9m42pgy.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/2] ath10k: implement debugfs interface for Transmit
+ Power Control stats
+References: <20150918075706.6983.11216.stgit@potku.adurom.net>
+Date: Tue, 6 Oct 2015 14:43:50 +0300
+In-Reply-To: <20150918075706.6983.11216.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Fri, 18 Sep 2015 10:58:22 +0300")
+Message-ID: <87d1ws2pe1.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,19 +29,18 @@ Cc: linux-wireless@vger.kernel.org
 
 Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> I found few checkpatch warnings and fixed those. All trivial.
+> This implements a simple interface for debugging TPC stats. I did a small hack
+> to sparse to check endian usage with signed 32 bit values.
 >
 > ---
 >
-> Kalle Valo (6):
->       ath10k: fix checkpatch warning about logical continuations
->       ath10k: indentation fixes
->       ath10k: brace style fixes
->       ath10k: remove void function return statements
->       ath10k: fix whitespace usage
->       ath10k: split an unnecessary long line
+> Kalle Valo (1):
+>       ath10k: add a_sle32_to_cpu()
+>
+> Maharaja Kennadyrajan (1):
+>       ath10k: implement debugfs interface for Transmit Power Control stats
 
-All six applied.
+Applied.
 
 -- 
 Kalle Valo
