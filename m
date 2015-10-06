@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zj8Ds-0002n3-OI
- for ath10k@lists.infradead.org; Mon, 05 Oct 2015 16:02:45 +0000
-From: Vivek Natarajan <nataraja@qti.qualcomm.com>
-Subject: [PATCH v3] ath10k: Use station's current operating mode from assoc
- request
-Date: Mon, 5 Oct 2015 21:32:08 +0530
-Message-ID: <1444060928-5702-1-git-send-email-nataraja@qti.qualcomm.com>
+Received: from smtp-relay-00.dondominio.net ([31.214.176.13]
+ helo=smtp-relay.dondominio.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZjONR-0002sT-PN
+ for ath10k@lists.infradead.org; Tue, 06 Oct 2015 09:17:42 +0000
+Received: from mail-node.dondominio.com 
+ by smtp-relay.dondominio.com (Postfix) with ESMTP id 33F7E4227D
+ for <ath10k@lists.infradead.org>; Tue,  6 Oct 2015 11:09:29 +0200 (CEST)
+Message-ID: <56138FBF.1010109@aoifes.com>
+Date: Tue, 06 Oct 2015 11:09:19 +0200
+From: =?UTF-8?B?w4FuZ2VsIFN1ZXJv?= <angel.suero@aoifes.com>
 MIME-Version: 1.0
+Subject: [ath10k] Disable multicast rates
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,53 +20,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: =?UTF-8?B?R2VtYSBQw6lyZXo=?= <gema.perez@aoifes.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-The current number of spatial streams used by the client is advertised
-as a separate IE in assoc request. Use this information to set
-the NSS operating mode.
-
-Fixes: 45c9abc059fa ("ath10k: implement more versatile set_bitrate_mask").
-Signed-off-by: Vivek Natarajan <nataraja@qti.qualcomm.com>
----
-v3: Fix max_nss type.
-
- drivers/net/wireless/ath/ath10k/mac.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 79490ad..32ad6f3 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2084,7 +2084,8 @@ static void ath10k_peer_assoc_h_ht(struct ath10k *ar,
- 	enum ieee80211_band band;
- 	const u8 *ht_mcs_mask;
- 	const u16 *vht_mcs_mask;
--	int i, n, max_nss;
-+	int i, n;
-+	u8 max_nss;
- 	u32 stbc;
- 
- 	lockdep_assert_held(&ar->conf_mutex);
-@@ -2169,7 +2170,7 @@ static void ath10k_peer_assoc_h_ht(struct ath10k *ar,
- 			arg->peer_ht_rates.rates[i] = i;
- 	} else {
- 		arg->peer_ht_rates.num_rates = n;
--		arg->peer_num_spatial_streams = max_nss;
-+		arg->peer_num_spatial_streams = min(sta->rx_nss, max_nss);
- 	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac ht peer %pM mcs cnt %d nss %d\n",
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+RGVhciBNci4gVmFsbywKCkxldCBtZSBpbnRyb2R1Y2UgeW91IHRvIG91ciBjb21wYW55LiBBT0lG
+RVMgaXMgYSBzcGFuaXNoIGNvbXBhbnkgd2hpY2gKZGV2ZWxvcHMgc29mdHdhcmUgZm9yIGVtYmVk
+ZGVkIHN5c3RlbXMuIFdlIGFyZSB1c2luZyB3aXJlbGVzcyBtb2R1bGVzIGluCm91ciBzeXN0ZW1z
+LiBUaGVzZSBtb2R1bGVzIGFyZSB1c2luZyB0aGUgYXRoMTBrIGRyaXZlci4KCldlIGFyZSBkb2lu
+ZyBzb21lIHdpcmVsZXNzIHN0cmVhbWluZyB0ZXN0cyB1c2luZyBnK24gd2lyZWxlc3MgbW9kZSBh
+bmQKd2UgaGF2ZSBzb21lIGRvdWJ0cyByZWdhcmRpbmcgdGhlIGF0aDEwayBkcml2ZXIuCgpQbGVh
+c2UsIGNhbiB5b3UgZ2l2ZSB0byB1cyBzb21lIGhpbnRzIGluIGhvdyB0byBkaXNhYmxlIHRoZSBn
+IG1vZGUKKGxlZ2FjeSByYXRlcykgZm9yIHRoZSBtdWx0aWNhc3QgZnJhbWVzPyBXZSB3b3VsZCBs
+aWtlIHRvIGhhdmUgaGlnaGVyCm11bHRpY2FzdCBzdHJlYW0gcmF0ZXMgaW4gb3VyIHRlc3RzLgoK
+VGhhbmtzIGluIGFkdmFuY2UuCgpSZWdhcmRzLAotLSAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBbmdlbCBT
+dWVybyBDYW1wYW5vClNlbmlvciBTVyBEZXZlbG9wZXIKCkNhbGxlIEl0w6FsaWNhIDEsIDHCqiBQ
+bGFudGEKNDE5MDAgQ2FtYXMgKFNldmlsbGEpCgpFbWFpbDogYW5nZWwuc3Vlcm9AYW9pZmVzLmNv
+bSA8bWFpbHRvOmFuZ2VsLnN1ZXJvQGFvaWZlcy5jb20+ClRlbDogKCszNCkgOTU1IDIyOCA1MzMK
+U2t5cGU6IGFuZ2VsLnN1ZXJvLm5ldApXZWI6IHd3dy5hb2lmZXMuY29tIDxodHRwOi8vd3d3LmFv
+aWZlcy5jb20+CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxhIGluZm9ybWFjacOzbiBjb250ZW5pZGEgZW4g
+ZXN0ZSBjb3JyZW8gZXMgY29uZmlkZW5jaWFsIHkgcHVlZGUgc2VyCnByaXZpbGVnaWFkYS4gRXN0
+w6EgZGlyaWdpZGEgZXhjbHVzaXZhbWVudGUgYSBsb3MgZGVzdGluYXRhcmlvcyBpbmRpY2Fkb3MK
+YXJyaWJhLiBTaSBVc3RlZCBubyBlcyB1bm8gZGUgbG9zIGRlc3RpbmF0YXJpb3MsIGxlIHF1ZWRh
+IHRvdGFsbWVudGUKcHJvaGliaWRvIGVsIHVzbywgZGlzdHJpYnVjacOzbiwgcHVibGljYWNpw7Nu
+IG8gY29waWEgZGUgbGEgaW5mb3JtYWNpw7NuCmNvbnRlbmlkYSBlbiBlc3RlIGNvcnJlby4gRXMg
+c3UgcHJvcGlhIHJlc3BvbnNhYmlsaWRhZCBlc2NhbmVhciBlc3RlCmNvcnJlbyBhc8OtIGNvbW8g
+c3VzIGFkanVudG9zIHBhcmEgZGV0ZWN0YXIgdmlydXMuIFNpIFVzdGVkIGhhIHJlY2liaWRvCmVz
+dGUgY29ycmVvIHBvciBlcnJvciwgcG9yIGZhdm9yIGluZMOtcXVlbm9zbG8gbG8gbcOhcyBicmV2
+ZSBwb3NpYmxlIGEKaW5mb0Bhb2lmZXMuY29tIDxtYWlsdG86aW5mb0Bhb2lmZXMuY29tPiB5IGJv
+cnJlIGVzdGUgY29ycmVvIGRlIHN1IHNpc3RlbWEuCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGUgaW5mb3Jt
+YXRpb24gY29udGFpbmVkIGluIHRoaXMgZS1tYWlsIHRyYW5zbWlzc2lvbiBpcyBjb25maWRlbnRp
+YWwKYW5kIG1heSBiZSBwcml2aWxlZ2VkLiBJdCBpcyBpbnRlbmRlZCBvbmx5IGZvciB0aGUgYWRk
+cmVzc2VlKHMpIHN0YXRlZAphYm92ZS4gSWYgeW91IGFyZSBub3QgYW4gYWRkcmVzc2VlLCBhbnkg
+dXNlLCBkaXNzZW1pbmF0aW9uLApkaXN0cmlidXRpb24sIHB1YmxpY2F0aW9uIG9yIGNvcHlpbmcg
+b2YgdGhlIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbgp0aGlzIGUtbWFpbCBpcyBzdHJpY3RseSBw
+cm9oaWJpdGVkLiBJdCBpcyB5b3VyIHJlc3BvbnNpYmlsaXR5IHRvIHNjYW4KdGhpcyBlbWFpbCBh
+bmQgYW55IGF0dGFjaG1lbnRzIGZvciB2aXJ1c2VzLiBJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlz
+CmUtbWFpbCBpbiBlcnJvciwgcGxlYXNlIGltbWVkaWF0ZWx5IG5vdGlmeSB1cyBhdCBpbmZvQGFv
+aWZlcy5jb20KPG1haWx0bzppbmZvQGFvaWZlcy5jb20+IGFuZCBkZWxldGUgdGhlIGUtbWFpbCBm
+cm9tIHlvdXIgc3lzdGVtLgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
