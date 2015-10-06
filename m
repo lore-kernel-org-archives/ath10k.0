@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-relay-00.dondominio.net ([31.214.176.13]
- helo=smtp-relay.dondominio.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZjONR-0002sT-PN
- for ath10k@lists.infradead.org; Tue, 06 Oct 2015 09:17:42 +0000
-Received: from mail-node.dondominio.com 
- by smtp-relay.dondominio.com (Postfix) with ESMTP id 33F7E4227D
- for <ath10k@lists.infradead.org>; Tue,  6 Oct 2015 11:09:29 +0200 (CEST)
-Message-ID: <56138FBF.1010109@aoifes.com>
-Date: Tue, 06 Oct 2015 11:09:19 +0200
-From: =?UTF-8?B?w4FuZ2VsIFN1ZXJv?= <angel.suero@aoifes.com>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZjQdh-0004bk-5l
+ for ath10k@lists.infradead.org; Tue, 06 Oct 2015 11:42:37 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 0/6] ath10k: few checkpatch fixes
+References: <20151001105001.8770.96252.stgit@potku.adurom.net>
+Date: Tue, 6 Oct 2015 14:42:05 +0300
+In-Reply-To: <20151001105001.8770.96252.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Thu, 01 Oct 2015 13:50:38 +0300")
+Message-ID: <87h9m42pgy.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: [ath10k] Disable multicast rates
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,52 +19,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: =?UTF-8?B?R2VtYSBQw6lyZXo=?= <gema.perez@aoifes.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-RGVhciBNci4gVmFsbywKCkxldCBtZSBpbnRyb2R1Y2UgeW91IHRvIG91ciBjb21wYW55LiBBT0lG
-RVMgaXMgYSBzcGFuaXNoIGNvbXBhbnkgd2hpY2gKZGV2ZWxvcHMgc29mdHdhcmUgZm9yIGVtYmVk
-ZGVkIHN5c3RlbXMuIFdlIGFyZSB1c2luZyB3aXJlbGVzcyBtb2R1bGVzIGluCm91ciBzeXN0ZW1z
-LiBUaGVzZSBtb2R1bGVzIGFyZSB1c2luZyB0aGUgYXRoMTBrIGRyaXZlci4KCldlIGFyZSBkb2lu
-ZyBzb21lIHdpcmVsZXNzIHN0cmVhbWluZyB0ZXN0cyB1c2luZyBnK24gd2lyZWxlc3MgbW9kZSBh
-bmQKd2UgaGF2ZSBzb21lIGRvdWJ0cyByZWdhcmRpbmcgdGhlIGF0aDEwayBkcml2ZXIuCgpQbGVh
-c2UsIGNhbiB5b3UgZ2l2ZSB0byB1cyBzb21lIGhpbnRzIGluIGhvdyB0byBkaXNhYmxlIHRoZSBn
-IG1vZGUKKGxlZ2FjeSByYXRlcykgZm9yIHRoZSBtdWx0aWNhc3QgZnJhbWVzPyBXZSB3b3VsZCBs
-aWtlIHRvIGhhdmUgaGlnaGVyCm11bHRpY2FzdCBzdHJlYW0gcmF0ZXMgaW4gb3VyIHRlc3RzLgoK
-VGhhbmtzIGluIGFkdmFuY2UuCgpSZWdhcmRzLAotLSAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBbmdlbCBT
-dWVybyBDYW1wYW5vClNlbmlvciBTVyBEZXZlbG9wZXIKCkNhbGxlIEl0w6FsaWNhIDEsIDHCqiBQ
-bGFudGEKNDE5MDAgQ2FtYXMgKFNldmlsbGEpCgpFbWFpbDogYW5nZWwuc3Vlcm9AYW9pZmVzLmNv
-bSA8bWFpbHRvOmFuZ2VsLnN1ZXJvQGFvaWZlcy5jb20+ClRlbDogKCszNCkgOTU1IDIyOCA1MzMK
-U2t5cGU6IGFuZ2VsLnN1ZXJvLm5ldApXZWI6IHd3dy5hb2lmZXMuY29tIDxodHRwOi8vd3d3LmFv
-aWZlcy5jb20+CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxhIGluZm9ybWFjacOzbiBjb250ZW5pZGEgZW4g
-ZXN0ZSBjb3JyZW8gZXMgY29uZmlkZW5jaWFsIHkgcHVlZGUgc2VyCnByaXZpbGVnaWFkYS4gRXN0
-w6EgZGlyaWdpZGEgZXhjbHVzaXZhbWVudGUgYSBsb3MgZGVzdGluYXRhcmlvcyBpbmRpY2Fkb3MK
-YXJyaWJhLiBTaSBVc3RlZCBubyBlcyB1bm8gZGUgbG9zIGRlc3RpbmF0YXJpb3MsIGxlIHF1ZWRh
-IHRvdGFsbWVudGUKcHJvaGliaWRvIGVsIHVzbywgZGlzdHJpYnVjacOzbiwgcHVibGljYWNpw7Nu
-IG8gY29waWEgZGUgbGEgaW5mb3JtYWNpw7NuCmNvbnRlbmlkYSBlbiBlc3RlIGNvcnJlby4gRXMg
-c3UgcHJvcGlhIHJlc3BvbnNhYmlsaWRhZCBlc2NhbmVhciBlc3RlCmNvcnJlbyBhc8OtIGNvbW8g
-c3VzIGFkanVudG9zIHBhcmEgZGV0ZWN0YXIgdmlydXMuIFNpIFVzdGVkIGhhIHJlY2liaWRvCmVz
-dGUgY29ycmVvIHBvciBlcnJvciwgcG9yIGZhdm9yIGluZMOtcXVlbm9zbG8gbG8gbcOhcyBicmV2
-ZSBwb3NpYmxlIGEKaW5mb0Bhb2lmZXMuY29tIDxtYWlsdG86aW5mb0Bhb2lmZXMuY29tPiB5IGJv
-cnJlIGVzdGUgY29ycmVvIGRlIHN1IHNpc3RlbWEuCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGUgaW5mb3Jt
-YXRpb24gY29udGFpbmVkIGluIHRoaXMgZS1tYWlsIHRyYW5zbWlzc2lvbiBpcyBjb25maWRlbnRp
-YWwKYW5kIG1heSBiZSBwcml2aWxlZ2VkLiBJdCBpcyBpbnRlbmRlZCBvbmx5IGZvciB0aGUgYWRk
-cmVzc2VlKHMpIHN0YXRlZAphYm92ZS4gSWYgeW91IGFyZSBub3QgYW4gYWRkcmVzc2VlLCBhbnkg
-dXNlLCBkaXNzZW1pbmF0aW9uLApkaXN0cmlidXRpb24sIHB1YmxpY2F0aW9uIG9yIGNvcHlpbmcg
-b2YgdGhlIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbgp0aGlzIGUtbWFpbCBpcyBzdHJpY3RseSBw
-cm9oaWJpdGVkLiBJdCBpcyB5b3VyIHJlc3BvbnNpYmlsaXR5IHRvIHNjYW4KdGhpcyBlbWFpbCBh
-bmQgYW55IGF0dGFjaG1lbnRzIGZvciB2aXJ1c2VzLiBJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlz
-CmUtbWFpbCBpbiBlcnJvciwgcGxlYXNlIGltbWVkaWF0ZWx5IG5vdGlmeSB1cyBhdCBpbmZvQGFv
-aWZlcy5jb20KPG1haWx0bzppbmZvQGFvaWZlcy5jb20+IGFuZCBkZWxldGUgdGhlIGUtbWFpbCBm
-cm9tIHlvdXIgc3lzdGVtLgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
+
+> I found few checkpatch warnings and fixed those. All trivial.
+>
+> ---
+>
+> Kalle Valo (6):
+>       ath10k: fix checkpatch warning about logical continuations
+>       ath10k: indentation fixes
+>       ath10k: brace style fixes
+>       ath10k: remove void function return statements
+>       ath10k: fix whitespace usage
+>       ath10k: split an unnecessary long line
+
+All six applied.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
