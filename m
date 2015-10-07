@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZjbYB-0002qg-VK
- for ath10k@lists.infradead.org; Tue, 06 Oct 2015 23:21:40 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  Fix OFDM rx-rate reporting.
-Date: Tue,  6 Oct 2015 16:21:15 -0700
-Message-Id: <1444173675-16833-1-git-send-email-greearb@candelatech.com>
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zjgzn-0001b5-CW
+ for ath10k@lists.infradead.org; Wed, 07 Oct 2015 05:10:32 +0000
+From: <c_traja@qti.qualcomm.com>
+Subject: [PATCH] Revert "mac80211: remove exposing 'mfp' to drivers"
+Date: Wed, 7 Oct 2015 10:40:04 +0530
+Message-ID: <1444194604-12637-1-git-send-email-c_traja@qti.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,85 +16,84 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: johannes@sipsolutions.net, ath10k@lists.infradead.org
+Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-From: Ben Greear <greearb@candelatech.com>
+From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
-The ath10k hw_rate codes are duplicated for
-cck and ofdm modes, so we have to check a flag to
-see if rate is cck or not when searching for
-the proper bitrate.
+This reverts commit 5c48f1201744233d4f235c7dd916d5196ed20716.
 
-This fixes monitor mode reporting invalid rates
-on my setup.
+Some device drivers (ath10k) offload part of aggregation including AddBA/DelBA
+negotiations to firmware. In such scenario, the PMF configuration of
+the station needs to be provided to driver to enable encryption of
+AddBA/DelBA action frames.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
+Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 2 +-
- drivers/net/wireless/ath/ath10k/mac.c    | 8 +++++++-
- drivers/net/wireless/ath/ath10k/mac.h    | 2 +-
- 3 files changed, 9 insertions(+), 3 deletions(-)
+Notes:
+	> ath10k change using this mfp configuration will follow.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index ca3ff1c..7c634b5 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -671,7 +671,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 		rate &= ~RX_PPDU_START_RATE_FLAG;
+ include/net/mac80211.h |    2 ++
+ net/mac80211/cfg.c     |    1 +
+ net/mac80211/mlme.c    |    6 +++++-
+ 3 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+index 4ec6fed..1bb2a2b 100644
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -1683,6 +1683,7 @@ struct ieee80211_sta_rates {
+  * @tdls: indicates whether the STA is a TDLS peer
+  * @tdls_initiator: indicates the STA is an initiator of the TDLS link. Only
+  *	valid if the STA is a TDLS peer in the first place.
++ * @mfp: indicates whether the STA uses management frame protection or not.
+  * @txq: per-TID data TX queues (if driver uses the TXQ abstraction)
+  */
+ struct ieee80211_sta {
+@@ -1700,6 +1701,7 @@ struct ieee80211_sta {
+ 	struct ieee80211_sta_rates __rcu *rates;
+ 	bool tdls;
+ 	bool tdls_initiator;
++	bool mfp;
  
- 		sband = &ar->mac.sbands[status->band];
--		status->rate_idx = ath10k_mac_hw_rate_to_idx(sband, rate);
-+		status->rate_idx = ath10k_mac_hw_rate_to_idx(sband, rate, cck);
- 		break;
- 	case HTT_RX_HT:
- 	case HTT_RX_HT_WITH_TXBF:
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 34d47f9..e091c37 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -91,7 +91,7 @@ static u8 ath10k_mac_bitrate_to_rate(int bitrate)
- }
+ 	struct ieee80211_txq *txq[IEEE80211_NUM_TIDS];
  
- u8 ath10k_mac_hw_rate_to_idx(const struct ieee80211_supported_band *sband,
--			     u8 hw_rate)
-+			     u8 hw_rate, u8 cck)
- {
- 	const struct ieee80211_rate *rate;
- 	int i;
-@@ -99,6 +99,12 @@ u8 ath10k_mac_hw_rate_to_idx(const struct ieee80211_supported_band *sband,
- 	for (i = 0; i < sband->n_bitrates; i++) {
- 		rate = &sband->bitrates[i];
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index 68e551e..63d03da 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -1138,6 +1138,7 @@ static int sta_apply_parameters(struct ieee80211_local *local,
+ 	}
  
-+		/* hw_rate values are not unique, have to tie-break with bitrate
-+		 * and cck check.
-+		 */
-+		if (ath10k_mac_bitrate_is_cck(rate->bitrate) && !cck)
-+			continue;
-+
- 		if (rate->hw_value == hw_rate)
- 			return i;
- 		else if (rate->flags & IEEE80211_RATE_SHORT_PREAMBLE &&
-diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
-index 4497002..7dce7b1 100644
---- a/drivers/net/wireless/ath/ath10k/mac.h
-+++ b/drivers/net/wireless/ath/ath10k/mac.h
-@@ -71,7 +71,7 @@ void ath10k_mac_handle_tx_pause(struct ath10k *ar, u32 vdev_id,
- 				enum wmi_tlv_tx_pause_action action);
+ 	if (mask & BIT(NL80211_STA_FLAG_MFP)) {
++		sta->sta.mfp = !!(set & BIT(NL80211_STA_FLAG_MFP));
+ 		if (set & BIT(NL80211_STA_FLAG_MFP))
+ 			set_sta_flag(sta, WLAN_STA_MFP);
+ 		else
+diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
+index 56ef9a8..9c450ff 100644
+--- a/net/mac80211/mlme.c
++++ b/net/mac80211/mlme.c
+@@ -3044,8 +3044,12 @@ static bool ieee80211_assoc_success(struct ieee80211_sub_if_data *sdata,
  
- u8 ath10k_mac_hw_rate_to_idx(const struct ieee80211_supported_band *sband,
--			     u8 hw_rate);
-+			     u8 hw_rate, u8 cck);
- u8 ath10k_mac_bitrate_to_idx(const struct ieee80211_supported_band *sband,
- 			     u32 bitrate);
+ 	rate_control_rate_init(sta);
+ 
+-	if (ifmgd->flags & IEEE80211_STA_MFP_ENABLED)
++	if (ifmgd->flags & IEEE80211_STA_MFP_ENABLED) {
+ 		set_sta_flag(sta, WLAN_STA_MFP);
++		sta->sta.mfp = true;
++	} else {
++		sta->sta.mfp = false;
++	}
+ 
+ 	sta->sta.wme = elems.wmm_param && local->hw.queues >= IEEE80211_NUM_ACS;
  
 -- 
-2.4.3
+1.7.9.5
 
 
 _______________________________________________
