@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZlchZ-0008Bh-RD
- for ath10k@lists.infradead.org; Mon, 12 Oct 2015 12:59:43 +0000
+ id 1ZlchK-00083T-R0
+ for ath10k@lists.infradead.org; Mon, 12 Oct 2015 12:59:27 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2 7/7] ath10k: remove htc polling for tx completion
-Date: Mon, 12 Oct 2015 18:27:06 +0530
-Message-ID: <1444654626-3290-8-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2 6/7] ath10k: remove unused dl_is_polled
+Date: Mon, 12 Oct 2015 18:27:05 +0530
+Message-ID: <1444654626-3290-7-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1444654626-3290-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1444654626-3290-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,157 +25,123 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Since polling for tx completion is handled whenever target to host
-messages are received, removing the unnecessary polling mechanism for
-send completion at HTC level.
+Since polling for received messages not supported, remove unused
+dl_is_polled.
 
 Reviewed-by: Michal Kazior <michal.kazior@tieto.com>
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/hif.h |  9 +++------
- drivers/net/wireless/ath/ath10k/htc.c | 26 +-------------------------
+ drivers/net/wireless/ath/ath10k/hif.h |  7 +++----
+ drivers/net/wireless/ath/ath10k/htc.c |  7 +++----
  drivers/net/wireless/ath/ath10k/htc.h |  1 -
- drivers/net/wireless/ath/ath10k/pci.c | 14 +++-----------
- 4 files changed, 7 insertions(+), 43 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 11 +++--------
+ 4 files changed, 9 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
-index 633594c..89e7076 100644
+index 6e826bb..633594c 100644
 --- a/drivers/net/wireless/ath/ath10k/hif.h
 +++ b/drivers/net/wireless/ath/ath10k/hif.h
-@@ -58,8 +58,7 @@ struct ath10k_hif_ops {
- 	void (*stop)(struct ath10k *ar);
+@@ -59,7 +59,7 @@ struct ath10k_hif_ops {
  
  	int (*map_service_to_pipe)(struct ath10k *ar, u16 service_id,
--				   u8 *ul_pipe, u8 *dl_pipe,
--				   int *ul_is_polled);
-+				   u8 *ul_pipe, u8 *dl_pipe);
+ 				   u8 *ul_pipe, u8 *dl_pipe,
+-				   int *ul_is_polled, int *dl_is_polled);
++				   int *ul_is_polled);
  
  	void (*get_default_pipe)(struct ath10k *ar, u8 *ul_pipe, u8 *dl_pipe);
  
-@@ -132,12 +131,10 @@ static inline void ath10k_hif_stop(struct ath10k *ar)
- 
+@@ -133,12 +133,11 @@ static inline void ath10k_hif_stop(struct ath10k *ar)
  static inline int ath10k_hif_map_service_to_pipe(struct ath10k *ar,
  						 u16 service_id,
--						 u8 *ul_pipe, u8 *dl_pipe,
--						 int *ul_is_polled)
-+						 u8 *ul_pipe, u8 *dl_pipe)
+ 						 u8 *ul_pipe, u8 *dl_pipe,
+-						 int *ul_is_polled,
+-						 int *dl_is_polled)
++						 int *ul_is_polled)
  {
  	return ar->hif.ops->map_service_to_pipe(ar, service_id,
--						ul_pipe, dl_pipe,
--						ul_is_polled);
-+						ul_pipe, dl_pipe);
+ 						ul_pipe, dl_pipe,
+-						ul_is_polled, dl_is_polled);
++						ul_is_polled);
  }
  
  static inline void ath10k_hif_get_default_pipe(struct ath10k *ar,
 diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 20e0c48..5b3c6bc 100644
+index 13d0119..20e0c48 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.c
 +++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -23,16 +23,6 @@
- /* Send */
- /********/
- 
--static inline void ath10k_htc_send_complete_check(struct ath10k_htc_ep *ep,
--						  int force)
--{
--	/*
--	 * Check whether HIF has any prior sends that have finished,
--	 * have not had the post-processing done.
--	 */
--	ath10k_hif_send_complete_check(ep->htc->ar, ep->ul_pipe_id, force);
--}
--
- static void ath10k_htc_control_tx_complete(struct ath10k *ar,
- 					   struct sk_buff *skb)
- {
-@@ -328,15 +318,6 @@ void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
- 
- 	ep = &htc->endpoint[eid];
- 
--	/*
--	 * If this endpoint that received a message from the target has
--	 * a to-target HIF pipe whose send completions are polled rather
--	 * than interrupt-driven, this is a good point to ask HIF to check
--	 * whether it has any completed sends to handle.
--	 */
--	if (ep->ul_is_polled)
--		ath10k_htc_send_complete_check(ep, 1);
--
- 	payload_len = __le16_to_cpu(hdr->len);
- 
- 	if (payload_len + sizeof(*hdr) > ATH10K_HTC_MAX_LEN) {
-@@ -758,8 +739,7 @@ setup:
- 	status = ath10k_hif_map_service_to_pipe(htc->ar,
+@@ -759,8 +759,7 @@ setup:
  						ep->service_id,
  						&ep->ul_pipe_id,
--						&ep->dl_pipe_id,
--						&ep->ul_is_polled);
-+						&ep->dl_pipe_id);
+ 						&ep->dl_pipe_id,
+-						&ep->ul_is_polled,
+-						&ep->dl_is_polled);
++						&ep->ul_is_polled);
  	if (status)
  		return status;
  
-@@ -768,10 +748,6 @@ setup:
- 		   htc_service_name(ep->service_id), ep->ul_pipe_id,
+@@ -770,8 +769,8 @@ setup:
  		   ep->dl_pipe_id, ep->eid);
  
--	ath10k_dbg(ar, ATH10K_DBG_BOOT,
--		   "boot htc ep %d ul polled %d\n",
--		   ep->eid, ep->ul_is_polled);
--
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
+-		   "boot htc ep %d ul polled %d dl polled %d\n",
+-		   ep->eid, ep->ul_is_polled, ep->dl_is_polled);
++		   "boot htc ep %d ul polled %d\n",
++		   ep->eid, ep->ul_is_polled);
+ 
  	if (disable_credit_flow_ctrl && ep->tx_credit_flow_enabled) {
  		ep->tx_credit_flow_enabled = false;
- 		ath10k_dbg(ar, ATH10K_DBG_BOOT,
 diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index 2ddd41e..e70aa38 100644
+index aed3708..2ddd41e 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.h
 +++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -312,7 +312,6 @@ struct ath10k_htc_ep {
- 	int max_ep_message_len;
+@@ -313,7 +313,6 @@ struct ath10k_htc_ep {
  	u8 ul_pipe_id;
  	u8 dl_pipe_id;
--	int ul_is_polled; /* call HIF to get tx completions */
+ 	int ul_is_polled; /* call HIF to get tx completions */
+-	int dl_is_polled; /* call HIF to fetch rx (not implemented) */
  
  	u8 seq_no; /* for debugging */
  	int tx_credits;
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index a2b384b..77da58a 100644
+index 447c4c6..a2b384b 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1451,9 +1451,8 @@ static void ath10k_pci_kill_tasklet(struct ath10k *ar)
- 	del_timer_sync(&ar_pci->rx_post_retry);
- }
+@@ -1453,8 +1453,7 @@ static void ath10k_pci_kill_tasklet(struct ath10k *ar)
  
--static int ath10k_pci_hif_map_service_to_pipe(struct ath10k *ar,
--					      u16 service_id, u8 *ul_pipe,
--					      u8 *dl_pipe, int *ul_is_polled)
-+static int ath10k_pci_hif_map_service_to_pipe(struct ath10k *ar, u16 service_id,
-+					      u8 *ul_pipe, u8 *dl_pipe)
+ static int ath10k_pci_hif_map_service_to_pipe(struct ath10k *ar,
+ 					      u16 service_id, u8 *ul_pipe,
+-					      u8 *dl_pipe, int *ul_is_polled,
+-					      int *dl_is_polled)
++					      u8 *dl_pipe, int *ul_is_polled)
  {
  	const struct service_to_pipe *entry;
  	bool ul_set = false, dl_set = false;
-@@ -1494,24 +1493,17 @@ static int ath10k_pci_hif_map_service_to_pipe(struct ath10k *ar,
- 	if (WARN_ON(!ul_set || !dl_set))
- 		return -ENOENT;
+@@ -1462,9 +1461,6 @@ static int ath10k_pci_hif_map_service_to_pipe(struct ath10k *ar,
  
--	*ul_is_polled =
--		(host_ce_config_wlan[*ul_pipe].flags & CE_ATTR_DIS_INTR) != 0;
+ 	ath10k_dbg(ar, ATH10K_DBG_PCI, "pci hif map service\n");
+ 
+-	/* polling for received messages not supported */
+-	*dl_is_polled = 0;
 -
- 	return 0;
- }
+ 	for (i = 0; i < ARRAY_SIZE(target_service_to_ce_map_wlan); i++) {
+ 		entry = &target_service_to_ce_map_wlan[i];
  
+@@ -1507,7 +1503,7 @@ static int ath10k_pci_hif_map_service_to_pipe(struct ath10k *ar,
  static void ath10k_pci_hif_get_default_pipe(struct ath10k *ar,
  					    u8 *ul_pipe, u8 *dl_pipe)
  {
--	int ul_is_polled;
--
+-	int ul_is_polled, dl_is_polled;
++	int ul_is_polled;
+ 
  	ath10k_dbg(ar, ATH10K_DBG_PCI, "pci hif get default pipe\n");
  
- 	(void)ath10k_pci_hif_map_service_to_pipe(ar,
+@@ -1515,8 +1511,7 @@ static void ath10k_pci_hif_get_default_pipe(struct ath10k *ar,
  						 ATH10K_HTC_SVC_ID_RSVD_CTRL,
--						 ul_pipe,
--						 dl_pipe,
--						 &ul_is_polled);
-+						 ul_pipe, dl_pipe);
+ 						 ul_pipe,
+ 						 dl_pipe,
+-						 &ul_is_polled,
+-						 &dl_is_polled);
++						 &ul_is_polled);
  }
  
  static void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
