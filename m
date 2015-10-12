@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zlcgq-0007m0-Qx
- for ath10k@lists.infradead.org; Mon, 12 Oct 2015 12:58:57 +0000
+ id 1Zlch5-0007vY-RN
+ for ath10k@lists.infradead.org; Mon, 12 Oct 2015 12:59:12 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2 4/7] ath10k: export htt tx rx handlers
-Date: Mon, 12 Oct 2015 18:27:03 +0530
-Message-ID: <1444654626-3290-5-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2 5/7] ath10k: Configure copy engine 5 for HTT messages
+Date: Mon, 12 Oct 2015 18:27:04 +0530
+Message-ID: <1444654626-3290-6-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1444654626-3290-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1444654626-3290-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,59 +25,162 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Some special copy engines delivers messages directly to HTT by
-bypassing HTC layer. Hence exporting tx_completion and rx_handler
-for delivering the data to HTT layer.
+Currently target to host (T2H) HTT messages are received at copy engine 1.
+These messages are processed by HTC layer in both host and target.
+To avoid HTC level processing overhead in both host and target,
+the unused copy engine 5 is being used for receiving HTT T2H messages.
+This will speedup the receive data processing as well as htt tx completion.
+Hence host and target copy engine configuration tables are updated
+to enable CE5 pipe. The in-direction HTT mapping is now pointing to CE5
+for all HTT T2H.
+
+Moreover HTT send completion messages are polled from HTC handler
+as CE 4 is not interrupt-driven. For faster tx completion, CE4 polling
+needs to be done whenever CE pipe which transports HTT Rx (target->host)
+is processed. This avoids overhead of polling HTT messages from HTC
+layer. Servicing CE 4 faster is helping to solve "failed to transmit
+packet, dropping: -105".
 
 Reviewed-by: Michal Kazior <michal.kazior@tieto.com>
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    | 1 +
- drivers/net/wireless/ath/ath10k/htt_rx.c | 1 +
- drivers/net/wireless/ath/ath10k/htt_tx.c | 6 ++++++
- 3 files changed, 8 insertions(+)
+v2:
+ * fix invalid dma memory access (ATH10K_SKB_RXCB is used instead of
+   ATH10K_SKB_CB in htt_tx_cb)
+ * Process CE 4 send completion first before processing rx
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index db0a99b..2bad50e 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1591,6 +1591,7 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt);
- int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
- 				u8 max_subfrms_ampdu,
- 				u8 max_subfrms_amsdu);
-+void ath10k_htt_hif_tx_complete(struct ath10k *ar, struct sk_buff *skb);
+ drivers/net/wireless/ath/ath10k/pci.c | 70 +++++++++++++++++++++++++++++------
+ 1 file changed, 59 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index efeb766..447c4c6 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -106,6 +106,8 @@ static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
+ static int ath10k_pci_qca99x0_chip_reset(struct ath10k *ar);
+ static void ath10k_pci_htc_tx_cb(struct ath10k_ce_pipe *ce_state);
+ static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state);
++static void ath10k_pci_htt_tx_cb(struct ath10k_ce_pipe *ce_state);
++static void ath10k_pci_htt_rx_cb(struct ath10k_ce_pipe *ce_state);
  
- void __ath10k_htt_tx_dec_pending(struct ath10k_htt *htt, bool limit_mgmt_desc);
- int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb);
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 606c1a3..6060dda 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2125,6 +2125,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 	/* Free the indication buffer */
- 	dev_kfree_skb_any(skb);
+ static const struct ce_attr host_ce_config_wlan[] = {
+ 	/* CE0: host->target HTC control and raw streams */
+@@ -150,15 +152,16 @@ static const struct ce_attr host_ce_config_wlan[] = {
+ 		.src_nentries = CE_HTT_H2T_MSG_SRC_NENTRIES,
+ 		.src_sz_max = 256,
+ 		.dest_nentries = 0,
+-		.send_cb = ath10k_pci_htc_tx_cb,
++		.send_cb = ath10k_pci_htt_tx_cb,
+ 	},
+ 
+-	/* CE5: unused */
++	/* CE5: target->host HTT (HIF->HTT) */
+ 	{
+ 		.flags = CE_ATTR_FLAGS,
+ 		.src_nentries = 0,
+-		.src_sz_max = 0,
+-		.dest_nentries = 0,
++		.src_sz_max = 512,
++		.dest_nentries = 512,
++		.recv_cb = ath10k_pci_htt_rx_cb,
+ 	},
+ 
+ 	/* CE6: target autonomous hif_memcpy */
+@@ -264,12 +267,12 @@ static const struct ce_pipe_config target_ce_config_wlan[] = {
+ 
+ 	/* NB: 50% of src nentries, since tx has 2 frags */
+ 
+-	/* CE5: unused */
++	/* CE5: target->host HTT (HIF->HTT) */
+ 	{
+ 		.pipenum = __cpu_to_le32(5),
+-		.pipedir = __cpu_to_le32(PIPEDIR_OUT),
++		.pipedir = __cpu_to_le32(PIPEDIR_IN),
+ 		.nentries = __cpu_to_le32(32),
+-		.nbytes_max = __cpu_to_le32(2048),
++		.nbytes_max = __cpu_to_le32(512),
+ 		.flags = __cpu_to_le32(CE_ATTR_FLAGS),
+ 		.reserved = __cpu_to_le32(0),
+ 	},
+@@ -403,7 +406,7 @@ static const struct service_to_pipe target_service_to_ce_map_wlan[] = {
+ 	{
+ 		__cpu_to_le32(ATH10K_HTC_SVC_ID_HTT_DATA_MSG),
+ 		__cpu_to_le32(PIPEDIR_IN),	/* in = DL = target -> host */
+-		__cpu_to_le32(1),
++		__cpu_to_le32(5),
+ 	},
+ 
+ 	/* (Additions here) */
+@@ -1174,8 +1177,9 @@ static void ath10k_pci_htc_tx_cb(struct ath10k_ce_pipe *ce_state)
+ 		ath10k_htc_tx_completion_handler(ar, skb);
  }
-+EXPORT_SYMBOL(ath10k_htt_t2h_msg_handler);
  
- static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+-/* Called by lower (CE) layer when data is received from the Target. */
+-static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state)
++static void ath10k_pci_process_rx_cb(struct ath10k_ce_pipe *ce_state,
++				     void (*callback)(struct ath10k *ar,
++						      struct sk_buff *skb))
  {
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 5551747..1682397 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -187,6 +187,12 @@ void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
- 	dev_kfree_skb_any(skb);
+ 	struct ath10k *ar = ce_state->ar;
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+@@ -1214,12 +1218,56 @@ static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state)
+ 		ath10k_dbg_dump(ar, ATH10K_DBG_PCI_DUMP, NULL, "pci rx: ",
+ 				skb->data, skb->len);
+ 
+-		ath10k_htc_rx_completion_handler(ar, skb);
++		callback(ar, skb);
+ 	}
+ 
+ 	ath10k_pci_rx_post_pipe(pipe_info);
  }
  
-+void ath10k_htt_hif_tx_complete(struct ath10k *ar, struct sk_buff *skb)
++/* Called by lower (CE) layer when data is received from the Target. */
++static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state)
 +{
-+	dev_kfree_skb_any(skb);
++	ath10k_pci_process_rx_cb(ce_state, ath10k_htc_rx_completion_handler);
 +}
-+EXPORT_SYMBOL(ath10k_htt_hif_tx_complete);
 +
- int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt)
++/* Called by lower (CE) layer when a send to HTT Target completes. */
++static void ath10k_pci_htt_tx_cb(struct ath10k_ce_pipe *ce_state)
++{
++	struct ath10k *ar = ce_state->ar;
++	struct sk_buff *skb;
++	u32 ce_data;
++	unsigned int nbytes;
++	unsigned int transfer_id;
++
++	while (ath10k_ce_completed_send_next(ce_state, (void **)&skb, &ce_data,
++					     &nbytes, &transfer_id) == 0) {
++		/* no need to call tx completion for NULL pointers */
++		if (!skb)
++			continue;
++
++		dma_unmap_single(ar->dev, ATH10K_SKB_CB(skb)->paddr,
++				 skb->len, DMA_TO_DEVICE);
++		ath10k_htt_hif_tx_complete(ar, skb);
++	}
++}
++
++static void ath10k_pci_htt_rx_deliver(struct ath10k *ar, struct sk_buff *skb)
++{
++	skb_pull(skb, sizeof(struct ath10k_htc_hdr));
++	ath10k_htt_t2h_msg_handler(ar, skb);
++}
++
++/* Called by lower (CE) layer when HTT data is received from the Target. */
++static void ath10k_pci_htt_rx_cb(struct ath10k_ce_pipe *ce_state)
++{
++	/* CE4 polling needs to be done whenever CE pipe which transports
++	 * HTT Rx (target->host) is processed.
++	 */
++	ath10k_ce_per_engine_service(ce_state->ar, 4);
++
++	ath10k_pci_process_rx_cb(ce_state, ath10k_pci_htt_rx_deliver);
++}
++
+ static int ath10k_pci_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+ 				struct ath10k_hif_sg_item *items, int n_items)
  {
- 	struct ath10k *ar = htt->ar;
 -- 
 2.6.0
 
