@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zka8B-0006ph-2E
- for ath10k@lists.infradead.org; Fri, 09 Oct 2015 16:02:51 +0000
-From: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Subject: Re: [PATCH 0/7] ath10k: add copy engine fast path support
-Date: Fri, 9 Oct 2015 16:02:14 +0000
-Message-ID: <1444406541089.12284@qti.qualcomm.com>
-References: <1443164016-3612-1-git-send-email-rmanohar@qti.qualcomm.com>,
- <87612gqcnn.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87612gqcnn.fsf@kamboji.qca.qualcomm.com>
+ id 1ZlVRY-0000YH-UA
+ for ath10k@lists.infradead.org; Mon, 12 Oct 2015 05:14:41 +0000
+From: "Kennady Rajan, Maharaja" <c_mkenna@qti.qualcomm.com>
+Subject: RE: [PATCH] ath10k: Enable adaptive CCA
+Date: Mon, 12 Oct 2015 05:14:08 +0000
+Message-ID: <e8ed6213bc5a4b458ae865bcaa23b804@APSANEXR01B.ap.qualcomm.com>
+References: <1444210033-25901-1-git-send-email-c_mkenna@qti.qualcomm.com>
+ <87io6gqfgn.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87io6gqfgn.fsf@kamboji.qca.qualcomm.com>
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -27,37 +27,49 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-> > Below patchset adds fast path support for uplink traffic by bypassing
-> > HTC layer processing. This is enabled by making use of unused copy
-> > engine 5 to receive HTT messages directly from HIF layer. From initial
-> > validation in VHT80/5G mode TCP UL is improved to 900Mbps from ~840Mbps
-> > in conducted test.
-> >
-> > -Rajkumar
-> >
-> > Rajkumar Manoharan (7):
-> >   ath10k: export htc tx rx handlers
-> >   ath10k: register per copy engine send completion callbacks
-> >   ath10k: register per copy engine receive callbacks
-> >   ath10k: export htt tx rx handlers
-> >   ath10k: Configure copy engine 5 for HTT messages
-> >   ath10k: remove unused dl_is_polled
-> >   ath10k: remove htc polling for tx completion
-> 
-> With these patches I'm seeing a DMA warning every time with qca988x
-> during firmware boot (tested three out of three times, rebooted after
-> every test):
-> 
-> [   60.458260] ------------[ cut here ]------------
-> [   60.458374] WARNING: CPU: 1 PID: 0 at lib/dma-debug.c:1090 check_unmap+0x815/0x940()
-> [   60.458457] ath10k_pci 0000:02:00.0: DMA-API: device driver tries to free an invalid DMA memory address
-> [   60.458557] Modules linked in: ath10k_pci ath10k_core ath mac80211 cfg80211 [last unloaded: cfg80211]
-> [   60.458941] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 4.3.0-rc3-wl-ath+ #1082
-> [   60.458981] Hardware name: Hewlett-Packard HP ProBook 6540b/1722, BIOS 68CDD Ver. F.04 01/27/2010
+<c_mkenna@qti.qualcomm.com> writes:
 
-Thanks for reporting this issue. Will post revised patchset asap.
+> From: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+>
+>> European Union has made it mandatory that all devices working in 2.4 
+>> GHz has to adhere to the ETSI specification (ETSI EN 300 328 V1.9.1) 
+>> beginnig this year. The standard basically speaks about interferences 
+>> in 2.4Ghz band.
+>> For example, when 802.11 device detects interference, TX must be 
+>> stopped as long as interference is present.
+>
+>> Adaptive CCA is a feature, when enabled the device learns from the 
+>> environment and configures CCA levels adaptively. This will improve 
+>> detecting interferences and the device can stop trasmissions till the 
+>> interference is present eventually leading to good performances in 
+>> varying interference conditions.
+>
+>> The patch includes code for enabling adaptive CCA for 10.2.4 firmware 
+>> on QCA988X.
+>
+> Signed-off-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+> Signed-off-by: Manikanta Pubbisetty <c_mpubbi@qti.qualcomm.com>
 
--Rajkumar
+>There are conflicts, please rebase and resend:
+
+>Applying: ath10k: Enable adaptive CCA
+>Using index info to reconstruct a base tree...
+>Falling back to patching base and 3-way merge...
+>Auto-merging drivers/net/wireless/ath/ath10k/wmi.h
+>Auto-merging drivers/net/wireless/ath/ath10k/wmi.c
+>CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi.c
+>Auto-merging drivers/net/wireless/ath/ath10k/wmi-ops.h
+>CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-ops.h
+>Auto-merging drivers/net/wireless/ath/ath10k/mac.c
+>Auto-merging drivers/net/wireless/ath/ath10k/core.h
+>Failed to merge in the changes.
+>Patch failed at 0001 ath10k: Enable adaptive CCA
+
+Sure, I will resend again after rebase.
+
+Regards,
+Maha
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
