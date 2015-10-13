@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zlz32-00040k-JG
- for ath10k@lists.infradead.org; Tue, 13 Oct 2015 12:51:21 +0000
+ id 1Zlz6v-0006ES-6c
+ for ath10k@lists.infradead.org; Tue, 13 Oct 2015 12:55:21 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/2] ath10k: implement board API 2 support
-In-Reply-To: <20151006131455.14278.28222.stgit@potku.adurom.net> (Kalle Valo's
- message of "Tue, 06 Oct 2015 16:15:39 +0300")
-References: <20151006131455.14278.28222.stgit@potku.adurom.net>
-Date: Tue, 13 Oct 2015 15:50:45 +0300
-Message-ID: <87r3kzortm.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Fix cleanup in ath10k_thermal_unregister
+References: <1444300383-9645-1-git-send-email-mohammed@qca.qualcomm.com>
+Date: Tue, 13 Oct 2015 15:54:48 +0300
+In-Reply-To: <1444300383-9645-1-git-send-email-mohammed@qca.qualcomm.com>
+ (Mohammed Shafi Shajakhan's message of "Thu, 8 Oct 2015 16:03:03
+ +0530")
+Message-ID: <87mvvnormv.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,21 +24,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
 
-> Implement board 2 API to make it easier to have multiple board files and
-> automatically choose correct one.
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 >
-> ---
+> First remove the 'cooling_device#n' syslink created
+> for ath10k and then unregsiter from the thermal subsystem(cooling)
 >
-> Manikanta Pubbisetty (2):
->       ath10k: add board 2 API support
->       ath10k: select board data based on BMI chip id and board id
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Applied.
+Applied, thanks.
 
 -- 
 Kalle Valo
