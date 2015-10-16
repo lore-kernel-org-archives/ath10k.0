@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zn4Lx-0000Sv-Pn
- for ath10k@lists.infradead.org; Fri, 16 Oct 2015 12:43:22 +0000
+ id 1Zn4Ul-0006S6-RW
+ for ath10k@lists.infradead.org; Fri, 16 Oct 2015 12:52:28 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/2 v2] ath10k: add fw_stats support to 10.4 firmware
-References: <1444812862-11173-1-git-send-email-c_traja@qti.qualcomm.com>
-Date: Fri, 16 Oct 2015 15:42:44 +0300
-In-Reply-To: <1444812862-11173-1-git-send-email-c_traja@qti.qualcomm.com> (c.
- traja's message of "Wed, 14 Oct 2015 14:24:22 +0530")
-Message-ID: <87twprgf23.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/7] ath10k: add copy engine fast path support
+References: <1444654626-3290-1-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Fri, 16 Oct 2015 15:51:44 +0300
+In-Reply-To: <1444654626-3290-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Mon, 12 Oct 2015 18:26:59 +0530")
+Message-ID: <87pp0fgen3.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,54 +23,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_traja@qti.qualcomm.com
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-<c_traja@qti.qualcomm.com> writes:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> From: Manikanta <c_mpubbi@qti.qualcomm.com>
+> Below patchset adds fast path support for uplink traffic by bypassing
+> HTC layer processing. This is enabled by making use of unused copy
+> engine 5 to receive HTT messages directly from HIF layer. From initial
+> validation in VHT80/5G mode TCP UL is improved to 900Mbps from ~840Mbps
+> in conducted test.
 >
-> This patch adds support for getting firmware debug stats in 10.4 fw.
+> -Rajkumar
 >
-> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+> v2:
+>  * fix invalid dma memory access (ATH10K_SKB_RXCB is used instead of
+>    ATH10K_SKB_CB in htt_tx_cb)
+>  * register either send_cb or recv_cb callback not both for
+>    appropriate CE.
+>  * Process CE 4 send completion first before processing rx
+>  
+> Rajkumar Manoharan (7):
+>   ath10k: export htc tx rx handlers
+>   ath10k: register per copy engine send completion callbacks
+>   ath10k: register per copy engine receive callbacks
+>   ath10k: export htt tx rx handlers
+>   ath10k: Configure copy engine 5 for HTT messages
+>   ath10k: remove unused dl_is_polled
+>   ath10k: remove htc polling for tx completion
 
-This patch adds new warnings:
-
-drivers/net/wireless/ath/ath10k/wmi.c:7121:6: warning: symbol 'ath10k_wmi_10_4_fw_stats_fill' was not declared. Should it be static?
-drivers/net/wireless/ath/ath10k/wmi.c:7122: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/wmi.h:6323: Alignment should match open parenthesis
-
-And while testing this I found this buggy:
-
-root@lainahp:/sys/kernel/debug/ieee80211/phy0/ath10k# tail -20 fw_stats 
-   MPDU errors (FCS, MIC, ENC)          0
-        Num Rx Overflow errors          0
-
-             ath10k VDEV stats (0)
-             =================
-
-
-             ath10k PEER stats (2)
-             =================
-
-              Peer MAC address 02:00:00:00:03:00
-                     Peer RSSI 0
-                  Peer TX rate 5120
-                  Peer RX rate 0
-
-              Peer MAC address 00:00:00:00:10:68
-                     Peer RSSI 34236
-                  Peer TX rate 31
-                  Peer RX rate 0
-
-The last two bytes of the client's mac address are bc:85 and 34236 is
-0x85bc so ath10k is definitely not parsing the peer stats correctly.
-
-I used:
-
-[   68.077601] ath10k_pci 0000:02:00.0: pci irq msi interrupts 1 irq_mode 0 reset_mode 0
-[   72.516344] ath10k_pci 0000:02:00.0: qca99x0 hw2.0 (0x01000000, 0x003801ff bmi 1:1) fw 10.4.1.00030-1 fwapi 5 bdapi 2 htt-ver 2.2 wmi-op 6 htt-op 4 cal otp max-sta 512 raw 0 hwcrypto 1 features no-p2p
-[   72.516468] ath10k_pci 0000:02:00.0: debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
+All 7 applied, thanks. I wasn't able to reproduce the warning anymore,
+tested with both qca988x and qca99x0.
 
 -- 
 Kalle Valo
