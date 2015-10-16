@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-ob0-f174.google.com ([209.85.214.174])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zn4eD-0004dI-F7
- for ath10k@lists.infradead.org; Fri, 16 Oct 2015 13:02:13 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2 v2] ath10k: Make fw stats prints specific to firmware
- version
-References: <1444812821-11138-1-git-send-email-c_traja@qti.qualcomm.com>
-Date: Fri, 16 Oct 2015 16:01:34 +0300
-In-Reply-To: <1444812821-11138-1-git-send-email-c_traja@qti.qualcomm.com> (c.
- traja's message of "Wed, 14 Oct 2015 14:23:41 +0530")
-Message-ID: <87lhb3ge6p.fsf@kamboji.qca.qualcomm.com>
+ id 1Zn8GR-0006JT-Jb
+ for ath10k@lists.infradead.org; Fri, 16 Oct 2015 16:53:56 +0000
+Received: by obbzf10 with SMTP id zf10so95215710obb.2
+ for <ath10k@lists.infradead.org>; Fri, 16 Oct 2015 09:53:34 -0700 (PDT)
 MIME-Version: 1.0
+Date: Fri, 16 Oct 2015 09:53:34 -0700
+Message-ID: <CAJ+vNU2q1kLBs8wXRN++62bn24ohthFr=0htDMBh7qxsqmeodg@mail.gmail.com>
+Subject: FCC DFS support
+From: Tim Harvey <tharvey@gateworks.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +22,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_traja@qti.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, linux-wireless@vger.kernel.org
 
-<c_traja@qti.qualcomm.com> writes:
+Greetings,
 
-> From: Manikanta <c_mpubbi@qti.qualcomm.com>
->
-> The patch makes debug stats prints fw specific by adding a new member
-> in wmi_ops
->
-> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+Is FCC DFS support (from the updated rules released in Aug 2014) fully
+supported in ath10k by the driver/firmware/cards?
 
-This patch added few checkpatch warnings, I fixed them in the pending
-branch.
+The linux-wireless DFS page [1] has some great info but doesn't really
+list what is currently in place and working and doesn't mention ath10k
+specifically and I didn't see anything on the ath10k page either [2].
 
-drivers/net/wireless/ath/ath10k/wmi-ops.h:1297: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/wmi.c:6628: Missing a blank line after declarations
-drivers/net/wireless/ath/ath10k/wmi.c:6638: Missing a blank line after declarations
+Thanks for any info!
 
-Also I fixed Manikanta's name and added his Signed-off-by line which you
-had accidentally dropped.
+Regards,
 
--- 
-Kalle Valo
+Tim
+
+[1] - https://wireless.wiki.kernel.org/en/developers/dfs
+[2] - https://wireless.wiki.kernel.org/en/users/drivers/ath10k
 
 _______________________________________________
 ath10k mailing list
