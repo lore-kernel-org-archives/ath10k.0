@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from shadbolt.e.decadent.org.uk ([88.96.1.126])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZnsdL-0002yh-4Q
- for ath10k@lists.infradead.org; Sun, 18 Oct 2015 18:24:40 +0000
-Message-ID: <1445192636.31451.74.camel@decadent.org.uk>
+ id 1Znskt-0006Xu-F8
+ for ath10k@lists.infradead.org; Sun, 18 Oct 2015 18:32:31 +0000
+Message-ID: <1445193116.31451.78.camel@decadent.org.uk>
 Subject: Re: [PATCH 1/5] ath10k: QCA988X hw2.0: add board.bin
 From: Ben Hutchings <ben@decadent.org.uk>
-Date: Sun, 18 Oct 2015 19:23:56 +0100
-In-Reply-To: <1444905644-16296-1-git-send-email-kvalo@qca.qualcomm.com>
+Date: Sun, 18 Oct 2015 19:31:56 +0100
+In-Reply-To: <1445192636.31451.74.camel@decadent.org.uk>
 References: <1444905644-16296-1-git-send-email-kvalo@qca.qualcomm.com>
+ <1445192636.31451.74.camel@decadent.org.uk>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -18,73 +19,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1124238346603659542=="
+Content-Type: multipart/mixed; boundary="===============0852681512732118512=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>, linux-firmware@kernel.org
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 
---===============1124238346603659542==
+--===============0852681512732118512==
 Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-vdJEA4LPcNMYdiDMFA4s"
+	protocol="application/pgp-signature"; boundary="=-NzPf6A/jMeFiavFvmkTH"
 
 
---=-vdJEA4LPcNMYdiDMFA4s
+--=-NzPf6A/jMeFiavFvmkTH
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2015-10-15 at 13:40 +0300, Kalle Valo wrote:
-> In commit 40d14143b787 ("ath10k: add firmware 10.2.4.45 as firmware-4.bin=
-") I
-> forgot to commit board.bin file and that's why it was not included in the
-> commit even I had added an entry to WHENCE. Add that now.
+On Sun, 2015-10-18 at 19:23 +0100, Ben Hutchings wrote:
+> On Thu, 2015-10-15 at 13:40 +0300, Kalle Valo wrote:
+> > In commit 40d14143b787 ("ath10k: add firmware 10.2.4.45 as firmware-4.b=
+in") I
+> > forgot to commit board.bin file and that's why it was not included in t=
+he
+> > commit even I had added an entry to WHENCE. Add that now.
+> >=20
+> > At the same time also add Version field for firmware-4.bin.
+> >=20
+> > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> [...]
 >=20
-> At the same time also add Version field for firmware-4.bin.
->=20
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-[...]
-
-I've applied this and the following 4 patches. =C2=A0However, I'm not
-entirely happy with copyright acknowledgements going into the
-notice_ath10k*.txt files which aren't referenced anywhere. =C2=A0It would b=
+> I've applied this and the following 4 patches. =C2=A0However, I'm not
+> entirely happy with copyright acknowledgements going into the
+> notice_ath10k*.txt files which aren't referenced anywhere. =C2=A0It would=
+ be
+> easy for downstream distributors to miss that they should be packaged
+> along with the firmware blobs they relate to. =C2=A0Please can you combin=
 e
-easy for downstream distributors to miss that they should be packaged
-along with the firmware blobs they relate to. =C2=A0Please can you combine
-these with the QCA licence file or add references to these files from
-WHENCE?
+> these with the QCA licence file or add references to these files from
+> WHENCE?
+>=20
+
+Also please make sure that all text files are encoded as UTF-8 (or
+ASCII). =C2=A0A couple of the notices had quote characters which I
+eventually worked out to be GB2312-encoded.
 
 Ben.
 
 --=20
 Ben Hutchings
 A free society is one where it is safe to be unpopular. - Adlai Stevenson
---=-vdJEA4LPcNMYdiDMFA4s
+--=-NzPf6A/jMeFiavFvmkTH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIVAwUAViPjvOe/yOyVhhEJAQo/oQ//dzw4c4bjNVcTg7r2PxHNUgPTFmQFCIUL
-rJN3ZYLeqzlF5c9Fs49DfMhTJ9uSem/x2zOpTlch0wZfBWL/H2l3F2EPJZsaBfzx
-ymDnrO5A0Kf45sUiuEkR5dLG5PMziiQpYKyRWVNymREtTypOyy2FeB42GvVP3r9H
-uXR/NAXehfLwHYoE9XWv8QXSiZy+uFNrY9A3+qK3wXlOWkFkWdqgWnLu47Eck64p
-MS3HsSDmUAgAQw0Q/kT681ynBcNBpyuHgwkn17IVQqx2F+ofeAG+m0A78/0wul1F
-edlF6eHa7UBl6dWrgclE/BrN2HjhOUbhlMwfOprEhdW96C+YDSlChK9IBWZdMUD6
-bBbx0UyZy/TLMVib3ffiq4moTWYVh3ymoz5WXGq45QLsMY7j0V2aPlxNo18IdT61
-7/eZnSqYj7k0XWtP/3qoGoTW1lno0yLzzrplxrYud3OwplVvwcFs169mvTqrc0qv
-bsvFjox9DdD+4XmwMeifB5QAKBEwyf6LJ7CRSosgdJdnHYO2zP+X87PDz1tduBqm
-pBwGaKxlB/VTiNN15d461RLyhQ/WttvcvXmGoLdw8AtMpUhbqYZJgvk6k7Jfur/i
-GBIuOe+di1GRAi2SFWhAkAs/Qw6r0tzHKEHUL4KIx+QiwWbGLb4fNhizpyVTBq0x
-aWsrw7ksMZI=
-=S6fM
+iQIVAwUAViPlnOe/yOyVhhEJAQq0LQ//UBT1r3CBNjLGZ8zI2pxvEY+wvO2GHGnT
+G92zw8td7FnA+tjIRgFolP5j5C+jK+YU7m2IXywJHiTagUBUG+Ea4rMIZNaO7kv7
+BSWqrc/JPr8lyYUv379iRMM+nDb5PySomv9VXCBbcaP27QFI9LM1cJi+APvZqXgy
+OF9y5XZcoFRwvU8Cg9Ze5WDOoOhv9G5iuvBbDVxZkRQUpY2pGivYv+eth7AUr4il
+P/TpRN53kw5cwqSEJJi73dC9htf9htHz/uqnPxm1lI3GXr0mnxBVfqYw909RTMUd
+XyAxy/iWqzQ5EXe16pWdYrEBFqEbVE1Q7c9g4LJDYsO/TdNsVZC55cAHYWkLnVwD
+htvy2c+z+sEO3NSCj2uNYNWGKXkyrB0GhJvX9E2Fjdo479PL3Wpxlo51/+4EpTcZ
+9K0O7rwEX7lY/PaPG+H8IdQynmRNb1DxLhIX7C6gmk2ezacGl/sziVWBR6p7svIG
+DNvD/FrPK1xhrhyJSZdB+bKqJWirc1BQyGSHG5rpMOjsjYp0cgq/QguC66/h0Sjl
+WFv3DFrTBUaKGVw0mUVue8wgfrZe4gkwNh/J4NPbVEegU2mDISSwIqGQZ123dRlv
+rXaWASpGb0xsVJ1DfEdiZz5OXLKvcZAnrNEm5EKkkip8a4AtNe23uEP2RoXAjEsE
+jvIDA030C/8=
+=tp5S
 -----END PGP SIGNATURE-----
 
---=-vdJEA4LPcNMYdiDMFA4s--
+--=-NzPf6A/jMeFiavFvmkTH--
 
 
---===============1124238346603659542==
+--===============0852681512732118512==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -95,4 +104,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---===============1124238346603659542==--
+--===============0852681512732118512==--
