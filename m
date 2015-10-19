@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-f53.google.com ([209.85.218.53])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZoAX5-0007WD-F3
- for ath10k@lists.infradead.org; Mon, 19 Oct 2015 13:31:27 +0000
-Received: by oies66 with SMTP id s66so58213588oie.1
- for <ath10k@lists.infradead.org>; Mon, 19 Oct 2015 06:31:01 -0700 (PDT)
+ id 1ZoBcl-0003PQ-TH
+ for ath10k@lists.infradead.org; Mon, 19 Oct 2015 14:41:20 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Disable PCI PS for QCA988X and QCA99X0
+References: <1443445278-11051-1-git-send-email-akolli@qti.qualcomm.com>
+Date: Mon, 19 Oct 2015 17:40:40 +0300
+In-Reply-To: <1443445278-11051-1-git-send-email-akolli@qti.qualcomm.com>
+ (akolli@qti.qualcomm.com's message of "Mon, 28 Sep 2015 18:31:18
+ +0530")
+Message-ID: <87zizegbvb.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <5624B374.5080209@neratec.com>
-References: <CAJ+vNU2q1kLBs8wXRN++62bn24ohthFr=0htDMBh7qxsqmeodg@mail.gmail.com>
- <5624B374.5080209@neratec.com>
-Date: Mon, 19 Oct 2015 06:31:01 -0700
-Message-ID: <CAJ+vNU2gWU5HcN9oy+T33sN-ufzDKS=_3n0BLM75Pr7=PbHhtw@mail.gmail.com>
-Subject: Re: FCC DFS support
-From: Tim Harvey <tharvey@gateworks.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +24,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Zefir Kurtisi <zefir.kurtisi@neratec.com>
-Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: akolli@qti.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Mon, Oct 19, 2015 at 2:10 AM, Zefir Kurtisi
-<zefir.kurtisi@neratec.com> wrote:
-> On 10/16/2015 06:53 PM, Tim Harvey wrote:
->> Greetings,
->>
->> Is FCC DFS support (from the updated rules released in Aug 2014) fully
->> supported in ath10k by the driver/firmware/cards?
->>
->> The linux-wireless DFS page [1] has some great info but doesn't really
->> list what is currently in place and working and doesn't mention ath10k
->> specifically and I didn't see anything on the ath10k page either [2].
->>
->> Thanks for any info!
->>
->> Regards,
->>
->> Tim
->>
->> [1] - https://wireless.wiki.kernel.org/en/developers/dfs
->> [2] - https://wireless.wiki.kernel.org/en/users/drivers/ath10k
->> --
->>
->
-> Hi Tim,
->
-> you're right, unfortunately the DFS documentation in [1] is quite outdated -
-> basically in its initial state from 2011 when ath10k was unknown. It took around
-> four years to get the work done, and since numerous parties contributed at
-> different times and different modules (driver, mac/cfg, hostapd), the
-> documentation has not always been updated accordingly.
->
-> But the more important fact is: yes, ath10 and ath9k today fully support FCC.
->
-> We certified one of our ath9k based products for FCC and ETSI some months ago, and
-> I got confirmations that ath10k also passed certification testing for FCC.
->
-> It is relevant to note that both drivers use the same radar pattern detector (and
-> all upper layers anyway), so that if ath9k passed, ath10k most probably will also
-> do (and vice versa).
->
->
-> Hth,
-> Zefir
->
->
+<akolli@qti.qualcomm.com> writes:
 
-Zefir,
+> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+>
+> This patch disables PCI PS for QCA988X and QCA99X0, Since PCI PS is
+> validated for QCA6174, let it be enabled only for QCA6174. It would be
+> better to execute PCI PS related functions only for the supported devices.
+>
+> PCI time out issue is observed with QCA99X0 on x86 platform, We will
+> disable PCI PS for QCA988X and QCA99X0 until PCI PS is properly implemented.
+>
+> Taking and releasing ps_lock is causing higher CPU consumption. Michal Kazior
+> suggested ps_lock overhead to be reworked so that ath10k_pci_wake/sleep
+> functions are called less often, i.e. move the powersave logic up (only during
+> irq handling, tx path, submitting fw commands).
+>
+> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
 
-Thank you for the information!
+Applied, thanks.
 
-Tim
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
