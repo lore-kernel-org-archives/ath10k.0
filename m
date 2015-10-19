@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZoBcl-0003PQ-TH
- for ath10k@lists.infradead.org; Mon, 19 Oct 2015 14:41:20 +0000
+ id 1ZoBed-0004Vp-RA
+ for ath10k@lists.infradead.org; Mon, 19 Oct 2015 14:43:16 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Disable PCI PS for QCA988X and QCA99X0
-References: <1443445278-11051-1-git-send-email-akolli@qti.qualcomm.com>
-Date: Mon, 19 Oct 2015 17:40:40 +0300
-In-Reply-To: <1443445278-11051-1-git-send-email-akolli@qti.qualcomm.com>
- (akolli@qti.qualcomm.com's message of "Mon, 28 Sep 2015 18:31:18
- +0530")
-Message-ID: <87zizegbvb.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/2 v2] ath10k: print firwmare stats specific to firmware
+ version
+References: <1444812751-11103-1-git-send-email-c_traja@qti.qualcomm.com>
+Date: Mon, 19 Oct 2015 17:42:40 +0300
+In-Reply-To: <1444812751-11103-1-git-send-email-c_traja@qti.qualcomm.com> (c.
+ traja's message of "Wed, 14 Oct 2015 14:22:31 +0530")
+Message-ID: <87vba2gbrz.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,28 +24,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: akolli@qti.qualcomm.com
+To: c_traja@qti.qualcomm.com
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-<akolli@qti.qualcomm.com> writes:
+<c_traja@qti.qualcomm.com> writes:
 
-> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+> From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 >
-> This patch disables PCI PS for QCA988X and QCA99X0, Since PCI PS is
-> validated for QCA6174, let it be enabled only for QCA6174. It would be
-> better to execute PCI PS related functions only for the supported devices.
+> Currently printing fw stats in ath10k is common to all firmware versions.
+> Printing all the stats might lead to confusion because some of the stats
+> are firmware specific and when printed will have 0's.
+> Below patchset prints firmware stats specific to firmware.
 >
-> PCI time out issue is observed with QCA99X0 on x86 platform, We will
-> disable PCI PS for QCA988X and QCA99X0 until PCI PS is properly implemented.
+> v2:
+>         > All the filtered functions moved to wmi.c
+>         > Added firmware stats support for 10.4 firmware.
 >
-> Taking and releasing ps_lock is causing higher CPU consumption. Michal Kazior
-> suggested ps_lock overhead to be reworked so that ath10k_pci_wake/sleep
-> functions are called less often, i.e. move the powersave logic up (only during
-> irq handling, tx path, submitting fw commands).
->
-> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
+> Manikanta (2):
+>   ath10k: Make fw stats prints specific to firmware version
 
-Applied, thanks.
+Applied this patch.
+
+>   ath10k: add fw_stats support to 10.4 firmware
+
+Dropped this patch due to the bug I saw. Please resend once you have
+fixed that.
 
 -- 
 Kalle Valo
