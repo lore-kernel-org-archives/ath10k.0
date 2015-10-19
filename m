@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126])
+Received: from mail.neratec.com ([46.140.151.2])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Znskt-0006Xu-F8
- for ath10k@lists.infradead.org; Sun, 18 Oct 2015 18:32:31 +0000
-Message-ID: <1445193116.31451.78.camel@decadent.org.uk>
-Subject: Re: [PATCH 1/5] ath10k: QCA988X hw2.0: add board.bin
-From: Ben Hutchings <ben@decadent.org.uk>
-Date: Sun, 18 Oct 2015 19:31:56 +0100
-In-Reply-To: <1445192636.31451.74.camel@decadent.org.uk>
-References: <1444905644-16296-1-git-send-email-kvalo@qca.qualcomm.com>
- <1445192636.31451.74.camel@decadent.org.uk>
-Mime-Version: 1.0
+ id 1Zo6Sm-00020i-CI
+ for ath10k@lists.infradead.org; Mon, 19 Oct 2015 09:10:41 +0000
+Subject: Re: FCC DFS support
+References: <CAJ+vNU2q1kLBs8wXRN++62bn24ohthFr=0htDMBh7qxsqmeodg@mail.gmail.com>
+From: Zefir Kurtisi <zefir.kurtisi@neratec.com>
+Message-ID: <5624B374.5080209@neratec.com>
+Date: Mon, 19 Oct 2015 11:10:12 +0200
+MIME-Version: 1.0
+In-Reply-To: <CAJ+vNU2q1kLBs8wXRN++62bn24ohthFr=0htDMBh7qxsqmeodg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,89 +18,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0852681512732118512=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, linux-firmware@kernel.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Tim Harvey <tharvey@gateworks.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, linux-wireless@vger.kernel.org
+
+On 10/16/2015 06:53 PM, Tim Harvey wrote:
+> Greetings,
+> 
+> Is FCC DFS support (from the updated rules released in Aug 2014) fully
+> supported in ath10k by the driver/firmware/cards?
+> 
+> The linux-wireless DFS page [1] has some great info but doesn't really
+> list what is currently in place and working and doesn't mention ath10k
+> specifically and I didn't see anything on the ath10k page either [2].
+> 
+> Thanks for any info!
+> 
+> Regards,
+> 
+> Tim
+> 
+> [1] - https://wireless.wiki.kernel.org/en/developers/dfs
+> [2] - https://wireless.wiki.kernel.org/en/users/drivers/ath10k
+> --
+> 
+
+Hi Tim,
+
+you're right, unfortunately the DFS documentation in [1] is quite outdated -
+basically in its initial state from 2011 when ath10k was unknown. It took around
+four years to get the work done, and since numerous parties contributed at
+different times and different modules (driver, mac/cfg, hostapd), the
+documentation has not always been updated accordingly.
+
+But the more important fact is: yes, ath10 and ath9k today fully support FCC.
+
+We certified one of our ath9k based products for FCC and ETSI some months ago, and
+I got confirmations that ath10k also passed certification testing for FCC.
+
+It is relevant to note that both drivers use the same radar pattern detector (and
+all upper layers anyway), so that if ath9k passed, ath10k most probably will also
+do (and vice versa).
 
 
---===============0852681512732118512==
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-NzPf6A/jMeFiavFvmkTH"
+Hth,
+Zefir
 
 
---=-NzPf6A/jMeFiavFvmkTH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, 2015-10-18 at 19:23 +0100, Ben Hutchings wrote:
-> On Thu, 2015-10-15 at 13:40 +0300, Kalle Valo wrote:
-> > In commit 40d14143b787 ("ath10k: add firmware 10.2.4.45 as firmware-4.b=
-in") I
-> > forgot to commit board.bin file and that's why it was not included in t=
-he
-> > commit even I had added an entry to WHENCE. Add that now.
-> >=20
-> > At the same time also add Version field for firmware-4.bin.
-> >=20
-> > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-> [...]
->=20
-> I've applied this and the following 4 patches. =C2=A0However, I'm not
-> entirely happy with copyright acknowledgements going into the
-> notice_ath10k*.txt files which aren't referenced anywhere. =C2=A0It would=
- be
-> easy for downstream distributors to miss that they should be packaged
-> along with the firmware blobs they relate to. =C2=A0Please can you combin=
-e
-> these with the QCA licence file or add references to these files from
-> WHENCE?
->=20
-
-Also please make sure that all text files are encoded as UTF-8 (or
-ASCII). =C2=A0A couple of the notices had quote characters which I
-eventually worked out to be GB2312-encoded.
-
-Ben.
-
---=20
-Ben Hutchings
-A free society is one where it is safe to be unpopular. - Adlai Stevenson
---=-NzPf6A/jMeFiavFvmkTH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIVAwUAViPlnOe/yOyVhhEJAQq0LQ//UBT1r3CBNjLGZ8zI2pxvEY+wvO2GHGnT
-G92zw8td7FnA+tjIRgFolP5j5C+jK+YU7m2IXywJHiTagUBUG+Ea4rMIZNaO7kv7
-BSWqrc/JPr8lyYUv379iRMM+nDb5PySomv9VXCBbcaP27QFI9LM1cJi+APvZqXgy
-OF9y5XZcoFRwvU8Cg9Ze5WDOoOhv9G5iuvBbDVxZkRQUpY2pGivYv+eth7AUr4il
-P/TpRN53kw5cwqSEJJi73dC9htf9htHz/uqnPxm1lI3GXr0mnxBVfqYw909RTMUd
-XyAxy/iWqzQ5EXe16pWdYrEBFqEbVE1Q7c9g4LJDYsO/TdNsVZC55cAHYWkLnVwD
-htvy2c+z+sEO3NSCj2uNYNWGKXkyrB0GhJvX9E2Fjdo479PL3Wpxlo51/+4EpTcZ
-9K0O7rwEX7lY/PaPG+H8IdQynmRNb1DxLhIX7C6gmk2ezacGl/sziVWBR6p7svIG
-DNvD/FrPK1xhrhyJSZdB+bKqJWirc1BQyGSHG5rpMOjsjYp0cgq/QguC66/h0Sjl
-WFv3DFrTBUaKGVw0mUVue8wgfrZe4gkwNh/J4NPbVEegU2mDISSwIqGQZ123dRlv
-rXaWASpGb0xsVJ1DfEdiZz5OXLKvcZAnrNEm5EKkkip8a4AtNe23uEP2RoXAjEsE
-jvIDA030C/8=
-=tp5S
------END PGP SIGNATURE-----
-
---=-NzPf6A/jMeFiavFvmkTH--
-
-
---===============0852681512732118512==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============0852681512732118512==--
