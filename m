@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh04.mail.saunalahti.fi ([62.142.5.110])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZoV2y-0004d4-8c
- for ath10k@lists.infradead.org; Tue, 20 Oct 2015 11:25:42 +0000
-Subject: [PATCH v2] ath10k: add FW API support to test mode
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Tue, 20 Oct 2015 14:25:13 +0300
-Message-ID: <20151020112513.14879.47438.stgit@potku.adurom.net>
+ id 1ZoVEx-0001ak-CU
+ for ath10k@lists.infradead.org; Tue, 20 Oct 2015 11:38:04 +0000
+From: <c_traja@qti.qualcomm.com>
+Subject: [PATCH v3] ath10k: add fw_stats support to 10.4 firmware
+Date: Tue, 20 Oct 2015 17:07:48 +0530
+Message-ID: <1445341068-24498-1-git-send-email-c_traja@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,353 +21,488 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, Manikanta Pubbisetty <c_mpubbi@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-From: Alan Liu <alanliu@qca.qualcomm.com>
+From: Manikanta Pubbisetty <c_mpubbi@qti.qualcomm.com>
 
-Add WMI-TLV and FW API support in ath10k testmode.
-Ath10k can get right wmi command format from UTF image
-to communicate UTF firmware.
+This patch adds support for getting firmware debug stats in 10.4 fw.
 
-Signed-off-by: Alan Liu <alanliu@qca.qualcomm.com>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+Signed-off-by: Manikanta Pubbisetty <c_mpubbi@qti.qualcomm.com>
+Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c     |    4 -
- drivers/net/wireless/ath/ath10k/core.h     |    5 +
- drivers/net/wireless/ath/ath10k/hw.h       |    1 
- drivers/net/wireless/ath/ath10k/testmode.c |  202 ++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/wmi-tlv.c  |   14 ++
- 5 files changed, 205 insertions(+), 21 deletions(-)
+v3:
+	>Fixed the parsing error for client's mac address.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 13de3617d5ab..b7a82ae3b3fa 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -568,8 +568,8 @@ static int ath10k_download_fw(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 		}
- 		break;
- 	case ATH10K_FIRMWARE_MODE_UTF:
--		data = ar->testmode.utf->data;
--		data_len = ar->testmode.utf->size;
-+		data = ar->testmode.utf_firmware_data;
-+		data_len = ar->testmode.utf_firmware_len;
- 		mode_name = "utf";
- 		break;
- 	default:
+ drivers/net/wireless/ath/ath10k/core.h |  12 ++
+ drivers/net/wireless/ath/ath10k/wmi.c  | 211 +++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h  | 135 +++++++++++++++++++++
+ 3 files changed, 358 insertions(+)
+
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 7cc7cdd56c95..a6371108be9b 100644
+index 7cc7cdd..c1970ae 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -814,9 +814,12 @@ struct ath10k {
- 	struct {
- 		/* protected by conf_mutex */
- 		const struct firmware *utf;
-+		char utf_version[32];
-+		const void *utf_firmware_data;
-+		size_t utf_firmware_len;
- 		DECLARE_BITMAP(orig_fw_features, ATH10K_FW_FEATURE_COUNT);
- 		enum ath10k_fw_wmi_op_version orig_wmi_op_version;
--
-+		enum ath10k_fw_wmi_op_version op_version;
- 		/* protected by data_lock */
- 		bool utf_monitor;
- 	} testmode;
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 2d87737e35ff..0c8ea0226684 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -94,6 +94,7 @@ enum qca6174_chip_id_rev {
- #define ATH10K_FW_API5_FILE		"firmware-5.bin"
+@@ -214,6 +214,7 @@ struct ath10k_fw_stats_pdev {
+ 	s32 hw_queued;
+ 	s32 hw_reaped;
+ 	s32 underrun;
++	u32 hw_paused;
+ 	s32 tx_abort;
+ 	s32 mpdus_requed;
+ 	u32 tx_ko;
+@@ -226,6 +227,16 @@ struct ath10k_fw_stats_pdev {
+ 	u32 pdev_resets;
+ 	u32 phy_underrun;
+ 	u32 txop_ovf;
++	u32 seq_posted;
++	u32 seq_failed_queueing;
++	u32 seq_completed;
++	u32 seq_restarted;
++	u32 mu_seq_posted;
++	u32 mpdus_sw_flush;
++	u32 mpdus_hw_filter;
++	u32 mpdus_truncated;
++	u32 mpdus_ack_failed;
++	u32 mpdus_expired;
  
- #define ATH10K_FW_UTF_FILE		"utf.bin"
-+#define ATH10K_FW_UTF_API2_FILE		"utf-2.bin"
+ 	/* PDEV RX stats */
+ 	s32 mid_ppdu_route_change;
+@@ -242,6 +253,7 @@ struct ath10k_fw_stats_pdev {
+ 	s32 phy_errs;
+ 	s32 phy_err_drop;
+ 	s32 mpdu_errs;
++	s32 rx_ovfl_errs;
+ };
  
- /* includes also the null byte */
- #define ATH10K_FIRMWARE_MAGIC               "QCA-ATH10K"
-diff --git a/drivers/net/wireless/ath/ath10k/testmode.c b/drivers/net/wireless/ath/ath10k/testmode.c
-index b084f88da102..1d5a2fdcbf56 100644
---- a/drivers/net/wireless/ath/ath10k/testmode.c
-+++ b/drivers/net/wireless/ath/ath10k/testmode.c
-@@ -139,11 +139,181 @@ static int ath10k_tm_cmd_get_version(struct ath10k *ar, struct nlattr *tb[])
- 	return cfg80211_testmode_reply(skb);
+ struct ath10k_fw_stats {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 6e7d7a7..1b97fef 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2475,6 +2475,47 @@ void ath10k_wmi_pull_pdev_stats_tx(const struct wmi_pdev_stats_tx *src,
+ 	dst->txop_ovf = __le32_to_cpu(src->txop_ovf);
  }
  
--static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
-+static int ath10k_tm_fetch_utf_firmware_api_2(struct ath10k *ar)
++static void
++ath10k_wmi_10_4_pull_pdev_stats_tx(const struct wmi_10_4_pdev_stats_tx *src,
++				   struct ath10k_fw_stats_pdev *dst)
 +{
-+	size_t len, magic_len, ie_len;
-+	struct ath10k_fw_ie *hdr;
-+	char filename[100];
-+	__le32 *version;
-+	const u8 *data;
-+	int ie_id, ret;
-+
-+	snprintf(filename, sizeof(filename), "%s/%s",
-+		 ar->hw_params.fw.dir, ATH10K_FW_UTF_API2_FILE);
-+
-+	/* load utf firmware image */
-+	ret = request_firmware(&ar->testmode.utf, filename, ar->dev);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to retrieve utf firmware '%s': %d\n",
-+			    filename, ret);
-+		return ret;
-+	}
-+
-+	data = ar->testmode.utf->data;
-+	len = ar->testmode.utf->size;
-+
-+	/* FIXME: call release_firmware() in error cases */
-+
-+	/* magic also includes the null byte, check that as well */
-+	magic_len = strlen(ATH10K_FIRMWARE_MAGIC) + 1;
-+
-+	if (len < magic_len) {
-+		ath10k_err(ar, "utf firmware file is too small to contain magic\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	if (memcmp(data, ATH10K_FIRMWARE_MAGIC, magic_len) != 0) {
-+		ath10k_err(ar, "invalid firmware magic\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	/* jump over the padding */
-+	magic_len = ALIGN(magic_len, 4);
-+
-+	len -= magic_len;
-+	data += magic_len;
-+
-+	/* loop elements */
-+	while (len > sizeof(struct ath10k_fw_ie)) {
-+		hdr = (struct ath10k_fw_ie *)data;
-+
-+		ie_id = le32_to_cpu(hdr->id);
-+		ie_len = le32_to_cpu(hdr->len);
-+
-+		len -= sizeof(*hdr);
-+		data += sizeof(*hdr);
-+
-+		if (len < ie_len) {
-+			ath10k_err(ar, "invalid length for FW IE %d (%zu < %zu)\n",
-+				   ie_id, len, ie_len);
-+			ret = -EINVAL;
-+			goto err;
-+		}
-+
-+		switch (ie_id) {
-+		case ATH10K_FW_IE_FW_VERSION:
-+			if (ie_len > sizeof(ar->testmode.utf_version) - 1)
-+				break;
-+
-+			memcpy(ar->testmode.utf_version, data, ie_len);
-+			ar->testmode.utf_version[ie_len] = '\0';
-+
-+			ath10k_dbg(ar, ATH10K_DBG_TESTMODE,
-+				   "testmode found fw utf version %s\n",
-+				   ar->testmode.utf_version);
-+			break;
-+		case ATH10K_FW_IE_TIMESTAMP:
-+			/* ignore timestamp, but don't warn about it either */
-+			break;
-+		case ATH10K_FW_IE_FW_IMAGE:
-+			ath10k_dbg(ar, ATH10K_DBG_TESTMODE,
-+				   "testmode found fw image ie (%zd B)\n",
-+				   ie_len);
-+
-+			ar->testmode.utf_firmware_data = data;
-+			ar->testmode.utf_firmware_len = ie_len;
-+			break;
-+		case ATH10K_FW_IE_WMI_OP_VERSION:
-+			if (ie_len != sizeof(u32))
-+				break;
-+			version = (__le32 *)data;
-+			ar->testmode.op_version = le32_to_cpup(version);
-+			ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode found fw ie wmi op version %d\n",
-+				   ar->testmode.op_version);
-+			break;
-+		default:
-+			ath10k_warn(ar, "Unknown testmode FW IE: %u\n",
-+				    le32_to_cpu(hdr->id));
-+			break;
-+		}
-+		/* jump over the padding */
-+		ie_len = ALIGN(ie_len, 4);
-+
-+		len -= ie_len;
-+		data += ie_len;
-+	}
-+
-+	if (!ar->testmode.utf_firmware_data || !ar->testmode.utf_firmware_len) {
-+		ath10k_err(ar, "No ATH10K_FW_IE_FW_IMAGE found\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	return 0;
-+
-+err:
-+	release_firmware(ar->testmode.utf);
-+
-+	return ret;
++	dst->comp_queued = __le32_to_cpu(src->comp_queued);
++	dst->comp_delivered = __le32_to_cpu(src->comp_delivered);
++	dst->msdu_enqued = __le32_to_cpu(src->msdu_enqued);
++	dst->mpdu_enqued = __le32_to_cpu(src->mpdu_enqued);
++	dst->wmm_drop = __le32_to_cpu(src->wmm_drop);
++	dst->local_enqued = __le32_to_cpu(src->local_enqued);
++	dst->local_freed = __le32_to_cpu(src->local_freed);
++	dst->hw_queued = __le32_to_cpu(src->hw_queued);
++	dst->hw_reaped = __le32_to_cpu(src->hw_reaped);
++	dst->underrun = __le32_to_cpu(src->underrun);
++	dst->tx_abort = __le32_to_cpu(src->tx_abort);
++	dst->mpdus_requed = __le32_to_cpu(src->mpdus_requed);
++	dst->tx_ko = __le32_to_cpu(src->tx_ko);
++	dst->data_rc = __le32_to_cpu(src->data_rc);
++	dst->self_triggers = __le32_to_cpu(src->self_triggers);
++	dst->sw_retry_failure = __le32_to_cpu(src->sw_retry_failure);
++	dst->illgl_rate_phy_err = __le32_to_cpu(src->illgl_rate_phy_err);
++	dst->pdev_cont_xretry = __le32_to_cpu(src->pdev_cont_xretry);
++	dst->pdev_tx_timeout = __le32_to_cpu(src->pdev_tx_timeout);
++	dst->pdev_resets = __le32_to_cpu(src->pdev_resets);
++	dst->phy_underrun = __le32_to_cpu(src->phy_underrun);
++	dst->txop_ovf = __le32_to_cpu(src->txop_ovf);
++	dst->hw_paused = __le32_to_cpu(src->hw_paused);
++	dst->seq_posted = __le32_to_cpu(src->seq_posted);
++	dst->seq_failed_queueing =
++		__le32_to_cpu(src->seq_failed_queueing);
++	dst->seq_completed = __le32_to_cpu(src->seq_completed);
++	dst->seq_restarted = __le32_to_cpu(src->seq_restarted);
++	dst->mu_seq_posted = __le32_to_cpu(src->mu_seq_posted);
++	dst->mpdus_sw_flush = __le32_to_cpu(src->mpdus_sw_flush);
++	dst->mpdus_hw_filter = __le32_to_cpu(src->mpdus_hw_filter);
++	dst->mpdus_truncated = __le32_to_cpu(src->mpdus_truncated);
++	dst->mpdus_ack_failed = __le32_to_cpu(src->mpdus_ack_failed);
++	dst->mpdus_hw_filter = __le32_to_cpu(src->mpdus_hw_filter);
++	dst->mpdus_expired = __le32_to_cpu(src->mpdus_expired);
 +}
 +
-+static int ath10k_tm_fetch_utf_firmware_api_1(struct ath10k *ar)
+ void ath10k_wmi_pull_pdev_stats_rx(const struct wmi_pdev_stats_rx *src,
+ 				   struct ath10k_fw_stats_pdev *dst)
  {
- 	char filename[100];
- 	int ret;
+@@ -2785,6 +2826,86 @@ static int ath10k_wmi_10_2_4_op_pull_fw_stats(struct ath10k *ar,
+ 	return 0;
+ }
  
-+	snprintf(filename, sizeof(filename), "%s/%s",
-+		 ar->hw_params.fw.dir, ATH10K_FW_UTF_FILE);
++static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
++					    struct sk_buff *skb,
++					    struct ath10k_fw_stats *stats)
++{
++	const struct wmi_10_2_stats_event *ev = (void *)skb->data;
++	u32 num_pdev_stats;
++	u32 num_pdev_ext_stats;
++	u32 num_vdev_stats;
++	u32 num_peer_stats;
++	int i;
 +
-+	/* load utf firmware image */
-+	ret = request_firmware(&ar->testmode.utf, filename, ar->dev);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to retrieve utf firmware '%s': %d\n",
-+			    filename, ret);
-+		return ret;
++	if (!skb_pull(skb, sizeof(*ev)))
++		return -EPROTO;
++
++	num_pdev_stats = __le32_to_cpu(ev->num_pdev_stats);
++	num_pdev_ext_stats = __le32_to_cpu(ev->num_pdev_ext_stats);
++	num_vdev_stats = __le32_to_cpu(ev->num_vdev_stats);
++	num_peer_stats = __le32_to_cpu(ev->num_peer_stats);
++
++	for (i = 0; i < num_pdev_stats; i++) {
++		const struct wmi_10_4_pdev_stats *src;
++		struct ath10k_fw_stats_pdev *dst;
++
++		src = (void *)skb->data;
++		if (!skb_pull(skb, sizeof(*src)))
++			return -EPROTO;
++
++		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
++		if (!dst)
++			continue;
++
++		ath10k_wmi_pull_pdev_stats_base(&src->base, dst);
++		ath10k_wmi_10_4_pull_pdev_stats_tx(&src->tx, dst);
++		ath10k_wmi_pull_pdev_stats_rx(&src->rx, dst);
++		dst->rx_ovfl_errs = __le32_to_cpu(src->rx_ovfl_errs);
++		ath10k_wmi_pull_pdev_stats_extra(&src->extra, dst);
++
++		list_add_tail(&dst->list, &stats->pdevs);
 +	}
 +
-+	/* We didn't find FW UTF API 1 ("utf.bin") does not advertise
-+	 * firmware features. Do an ugly hack where we force the firmware
-+	 * features to match with 10.1 branch so that wmi.c will use the
-+	 * correct WMI interface.
-+	 */
++	for (i = 0; i < num_pdev_ext_stats; i++) {
++		const struct wmi_10_2_pdev_ext_stats *src;
 +
-+	ar->testmode.op_version = ATH10K_FW_WMI_OP_VERSION_10_1;
-+	ar->testmode.utf_firmware_data = ar->testmode.utf->data;
-+	ar->testmode.utf_firmware_len = ar->testmode.utf->size;
++		src = (void *)skb->data;
++		if (!skb_pull(skb, sizeof(*src)))
++			return -EPROTO;
++
++		/* FIXME: expose values to userspace
++		 *
++		 * Note: Even though this loop seems to do nothing it is
++		 * required to parse following sub-structures properly.
++		 */
++	}
++
++	/* fw doesn't implement vdev stats */
++
++	for (i = 0; i < num_peer_stats; i++) {
++		const struct wmi_10_4_peer_stats *src;
++		struct ath10k_fw_stats_peer *dst;
++
++		src = (void *)skb->data;
++		if (!skb_pull(skb, sizeof(*src)))
++			return -EPROTO;
++
++		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
++		if (!dst)
++			continue;
++
++		ether_addr_copy(dst->peer_macaddr, src->peer_macaddr.addr);
++		dst->peer_rssi = __le32_to_cpu(src->peer_rssi);
++		dst->peer_tx_rate = __le32_to_cpu(src->peer_tx_rate);
++		dst->peer_rx_rate = __le32_to_cpu(src->peer_rx_rate);
++		/* FIXME: expose 10.4 specific values */
++
++		list_add_tail(&dst->list, &stats->peers);
++	}
 +
 +	return 0;
 +}
 +
-+static int ath10k_tm_fetch_firmware(struct ath10k *ar)
+ void ath10k_wmi_event_update_stats(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI, "WMI_UPDATE_STATS_EVENTID\n");
+@@ -4931,6 +5052,9 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		ath10k_dbg(ar, ATH10K_DBG_WMI,
+ 			   "received event id %d not implemented\n", id);
+ 		break;
++	case WMI_10_4_UPDATE_STATS_EVENTID:
++		ath10k_wmi_event_update_stats(ar, skb);
++		break;
+ 	default:
+ 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
+ 		break;
+@@ -6996,6 +7120,90 @@ unlock:
+ 		buf[len] = 0;
+ }
+ 
++void ath10k_wmi_10_4_op_fw_stats_fill(struct ath10k *ar,
++				      struct ath10k_fw_stats *fw_stats,
++				      char *buf)
 +{
-+	int ret;
++	u32 len = 0;
++	u32 buf_len = ATH10K_FW_STATS_BUF_SIZE;
++	const struct ath10k_fw_stats_pdev *pdev;
++	const struct ath10k_fw_stats_vdev *vdev;
++	const struct ath10k_fw_stats_peer *peer;
++	size_t num_peers;
++	size_t num_vdevs;
 +
-+	ret = ath10k_tm_fetch_utf_firmware_api_2(ar);
-+	if (ret == 0) {
-+		ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode using fw utf api 2");
-+		return 0;
++	spin_lock_bh(&ar->data_lock);
++
++	pdev = list_first_entry_or_null(&fw_stats->pdevs,
++					struct ath10k_fw_stats_pdev, list);
++	if (!pdev) {
++		ath10k_warn(ar, "failed to get pdev stats\n");
++		goto unlock;
 +	}
 +
-+	ret = ath10k_tm_fetch_utf_firmware_api_1(ar);
-+	if (ret) {
-+		ath10k_err(ar, "failed to fetch utf firmware binary: %d", ret);
-+		return ret;
++	num_peers = ath10k_wmi_fw_stats_num_peers(&fw_stats->peers);
++	num_vdevs = ath10k_wmi_fw_stats_num_vdevs(&fw_stats->vdevs);
++
++	ath10k_wmi_fw_pdev_base_stats_fill(pdev, buf, &len);
++	ath10k_wmi_fw_pdev_extra_stats_fill(pdev, buf, &len);
++	ath10k_wmi_fw_pdev_tx_stats_fill(pdev, buf, &len);
++
++	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
++			"HW paused", pdev->hw_paused);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
++			"Seqs posted", pdev->seq_posted);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
++			"Seqs failed queueing", pdev->seq_failed_queueing);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
++			"Seqs completed", pdev->seq_completed);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
++			"Seqs restarted", pdev->seq_restarted);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
++			"MU Seqs posted", pdev->mu_seq_posted);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
++			"MPDUs SW flushed", pdev->mpdus_sw_flush);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
++			"MPDUs HW filtered", pdev->mpdus_hw_filter);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
++			"MPDUs truncated", pdev->mpdus_truncated);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
++			"MPDUs receive no ACK", pdev->mpdus_ack_failed);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
++			"MPDUs expired", pdev->mpdus_expired);
++
++	ath10k_wmi_fw_pdev_rx_stats_fill(pdev, buf, &len);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
++			"Num Rx Overflow errors", pdev->rx_ovfl_errs);
++
++	len += scnprintf(buf + len, buf_len - len, "\n");
++	len += scnprintf(buf + len, buf_len - len, "%30s (%zu)\n",
++			"ath10k VDEV stats", num_vdevs);
++	len += scnprintf(buf + len, buf_len - len, "%30s\n\n",
++				"=================");
++
++	list_for_each_entry(vdev, &fw_stats->vdevs, list) {
++		ath10k_wmi_fw_vdev_stats_fill(vdev, buf, &len);
 +	}
 +
-+	ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode using utf api 1");
++	len += scnprintf(buf + len, buf_len - len, "\n");
++	len += scnprintf(buf + len, buf_len - len, "%30s (%zu)\n",
++			"ath10k PEER stats", num_peers);
++	len += scnprintf(buf + len, buf_len - len, "%30s\n\n",
++				"=================");
 +
-+	return 0;
-+}
++	list_for_each_entry(peer, &fw_stats->peers, list) {
++		ath10k_wmi_fw_peer_stats_fill(peer, buf, &len);
++	}
 +
-+static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
-+{
-+	const char *ver;
-+	int ret;
++unlock:
++	spin_unlock_bh(&ar->data_lock);
 +
- 	ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode cmd utf start\n");
- 
- 	mutex_lock(&ar->conf_mutex);
-@@ -165,36 +335,27 @@ static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
- 		goto err;
- 	}
- 
--	snprintf(filename, sizeof(filename), "%s/%s",
--		 ar->hw_params.fw.dir, ATH10K_FW_UTF_FILE);
--
--	/* load utf firmware image */
--	ret = request_firmware(&ar->testmode.utf, filename, ar->dev);
-+	ret = ath10k_tm_fetch_firmware(ar);
- 	if (ret) {
--		ath10k_warn(ar, "failed to retrieve utf firmware '%s': %d\n",
--			    filename, ret);
-+		ath10k_err(ar, "failed to fetch UTF firmware: %d", ret);
- 		goto err;
- 	}
- 
- 	spin_lock_bh(&ar->data_lock);
--
- 	ar->testmode.utf_monitor = true;
--
- 	spin_unlock_bh(&ar->data_lock);
--
- 	BUILD_BUG_ON(sizeof(ar->fw_features) !=
- 		     sizeof(ar->testmode.orig_fw_features));
- 
- 	memcpy(ar->testmode.orig_fw_features, ar->fw_features,
- 	       sizeof(ar->fw_features));
- 	ar->testmode.orig_wmi_op_version = ar->wmi.op_version;
--
--	/* utf.bin firmware image does not advertise firmware features. Do
--	 * an ugly hack where we force the firmware features so that wmi.c
--	 * will use the correct WMI interface.
--	 */
- 	memset(ar->fw_features, 0, sizeof(ar->fw_features));
--	ar->wmi.op_version = ATH10K_FW_WMI_OP_VERSION_10_1;
-+
-+	ar->wmi.op_version = ar->testmode.op_version;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode wmi version %d\n",
-+		   ar->wmi.op_version);
- 
- 	ret = ath10k_hif_power_up(ar);
- 	if (ret) {
-@@ -212,7 +373,12 @@ static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
- 
- 	ar->state = ATH10K_STATE_UTF;
- 
--	ath10k_info(ar, "UTF firmware started\n");
-+	if (strlen(ar->testmode.utf_version) > 0)
-+		ver = ar->testmode.utf_version;
++	if (len >= buf_len)
++		buf[len - 1] = 0;
 +	else
-+		ver = "API 1";
++		buf[len] = 0;
++}
 +
-+	ath10k_info(ar, "UTF firmware %s started\n", ver);
+ static const struct wmi_ops wmi_ops = {
+ 	.rx = ath10k_wmi_op_rx,
+ 	.map_svc = wmi_main_svc_map,
+@@ -7261,6 +7469,7 @@ static const struct wmi_ops wmi_10_4_ops = {
+ 	.rx = ath10k_wmi_10_4_op_rx,
+ 	.map_svc = wmi_10_4_svc_map,
  
- 	mutex_unlock(&ar->conf_mutex);
++	.pull_fw_stats = ath10k_wmi_10_4_op_pull_fw_stats,
+ 	.pull_scan = ath10k_wmi_op_pull_scan_ev,
+ 	.pull_mgmt_rx = ath10k_wmi_10_4_op_pull_mgmt_rx_ev,
+ 	.pull_ch_info = ath10k_wmi_10_4_op_pull_ch_info_ev,
+@@ -7310,9 +7519,11 @@ static const struct wmi_ops wmi_10_4_ops = {
+ 	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
+ 	.gen_addba_set_resp = ath10k_wmi_op_gen_addba_set_resp,
+ 	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
++	.fw_stats_fill = ath10k_wmi_10_4_op_fw_stats_fill,
  
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 8f835480a62c..6fbd17b69469 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -23,6 +23,7 @@
- #include "wmi-ops.h"
- #include "wmi-tlv.h"
- #include "p2p.h"
-+#include "testmode.h"
+ 	/* shared with 10.2 */
+ 	.gen_peer_assoc = ath10k_wmi_10_2_op_gen_peer_assoc,
++	.gen_request_stats = ath10k_wmi_op_gen_request_stats,
+ };
  
- /***************/
- /* TLV helpers */
-@@ -419,6 +420,7 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_cmd_hdr *cmd_hdr;
- 	enum wmi_tlv_event_id id;
-+	bool consumed;
+ int ath10k_wmi_attach(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 6e84d1c..b48e6e8 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -3862,6 +3862,111 @@ struct wmi_pdev_stats_tx {
+ 	__le32 txop_ovf;
+ } __packed;
  
- 	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
- 	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
-@@ -428,6 +430,18 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 
- 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
- 
-+	consumed = ath10k_tm_event_wmi(ar, id, skb);
++struct wmi_10_4_pdev_stats_tx {
++	/* Num HTT cookies queued to dispatch list */
++	__le32 comp_queued;
 +
-+	/* Ready event must be handled normally also in UTF mode so that we
-+	 * know the UTF firmware has booted, others we are just bypass WMI
-+	 * events to testmode.
++	/* Num HTT cookies dispatched */
++	__le32 comp_delivered;
++
++	/* Num MSDU queued to WAL */
++	__le32 msdu_enqued;
++
++	/* Num MPDU queue to WAL */
++	__le32 mpdu_enqued;
++
++	/* Num MSDUs dropped by WMM limit */
++	__le32 wmm_drop;
++
++	/* Num Local frames queued */
++	__le32 local_enqued;
++
++	/* Num Local frames done */
++	__le32 local_freed;
++
++	/* Num queued to HW */
++	__le32 hw_queued;
++
++	/* Num PPDU reaped from HW */
++	__le32 hw_reaped;
++
++	/* Num underruns */
++	__le32 underrun;
++
++	/* HW Paused. */
++	__le32  hw_paused;
++
++	/* Num PPDUs cleaned up in TX abort */
++	__le32 tx_abort;
++
++	/* Num MPDUs requed by SW */
++	__le32 mpdus_requed;
++
++	/* excessive retries */
++	__le32 tx_ko;
++
++	/* data hw rate code */
++	__le32 data_rc;
++
++	/* Scheduler self triggers */
++	__le32 self_triggers;
++
++	/* frames dropped due to excessive sw retries */
++	__le32 sw_retry_failure;
++
++	/* illegal rate phy errors  */
++	__le32 illgl_rate_phy_err;
++
++	/* wal pdev continuous xretry */
++	__le32 pdev_cont_xretry;
++
++	/* wal pdev tx timeouts */
++	__le32 pdev_tx_timeout;
++
++	/* wal pdev resets  */
++	__le32 pdev_resets;
++
++	/* frames dropped due to non-availability of stateless TIDs */
++	__le32 stateless_tid_alloc_failure;
++
++	__le32 phy_underrun;
++
++	/* MPDU is more than txop limit */
++	__le32 txop_ovf;
++
++	/* Number of Sequences posted */
++	__le32 seq_posted;
++
++	/* Number of Sequences failed queueing */
++	__le32 seq_failed_queueing;
++
++	/* Number of Sequences completed */
++	__le32 seq_completed;
++
++	/* Number of Sequences restarted */
++	__le32 seq_restarted;
++
++	/* Number of MU Sequences posted */
++	__le32 mu_seq_posted;
++
++	/* Num MPDUs flushed by SW, HWPAUSED,SW TXABORT(Reset,channel change) */
++	__le32 mpdus_sw_flush;
++
++	/* Num MPDUs filtered by HW, all filter condition (TTL expired) */
++	__le32 mpdus_hw_filter;
++
++	/* Num MPDUs truncated by PDG
++	 * (TXOP, TBTT, PPDU_duration based on rate, dyn_bw)
 +	 */
-+	if (consumed && id != WMI_TLV_READY_EVENTID) {
-+		ath10k_dbg(ar, ATH10K_DBG_WMI,
-+			   "wmi tlv testmode consumed 0x%x\n", id);
-+		goto out;
-+	}
++	__le32 mpdus_truncated;
 +
- 	switch (id) {
- 	case WMI_TLV_MGMT_RX_EVENTID:
- 		ath10k_wmi_event_mgmt_rx(ar, skb);
++	/* Num MPDUs that was tried but didn't receive ACK or BA */
++	__le32 mpdus_ack_failed;
++
++	/* Num MPDUs that was dropped due to expiry. */
++	__le32 mpdus_expired;
++} __packed;
++
+ struct wmi_pdev_stats_rx {
+ 	/* Cnts any change in ring routing mid-ppdu */
+ 	__le32 mid_ppdu_route_change;
+@@ -4035,6 +4140,16 @@ struct wmi_10_2_pdev_stats {
+ 	struct wmi_pdev_stats_extra extra;
+ } __packed;
+ 
++struct wmi_10_4_pdev_stats {
++	struct wmi_pdev_stats_base base;
++	struct wmi_10_4_pdev_stats_tx tx;
++	struct wmi_pdev_stats_rx rx;
++	__le32 rx_ovfl_errs;
++	struct wmi_pdev_stats_mem mem;
++	__le32 sram_free_size;
++	struct wmi_pdev_stats_extra extra;
++} __packed;
++
+ /*
+  * VDEV statistics
+  * TODO: add all VDEV stats here
+@@ -4076,6 +4191,23 @@ struct wmi_10_2_4_peer_stats {
+ 	__le32 unknown_value; /* FIXME: what is this word? */
+ } __packed;
+ 
++struct wmi_10_4_peer_stats {
++	struct wmi_mac_addr peer_macaddr;
++	__le32 peer_rssi;
++	__le32 peer_rssi_seq_num;
++	__le32 peer_tx_rate;
++	__le32 peer_rx_rate;
++	__le32 current_per;
++	__le32 retries;
++	__le32 tx_rate_count;
++	__le32 max_4ms_frame_len;
++	__le32 total_sub_frames;
++	__le32 tx_bytes;
++	__le32 num_pkt_loss_overflow[4];
++	__le32 num_pkt_loss_excess_retry[4];
++	__le32 peer_rssi_changed;
++} __packed;
++
+ struct wmi_10_2_pdev_ext_stats {
+ 	__le32 rx_rssi_comb;
+ 	__le32 rx_rssi[4];
+@@ -6188,5 +6320,8 @@ void ath10k_wmi_10x_op_fw_stats_fill(struct ath10k *ar,
+ 				     char *buf);
+ size_t ath10k_wmi_fw_stats_num_peers(struct list_head *head);
+ size_t ath10k_wmi_fw_stats_num_vdevs(struct list_head *head);
++void ath10k_wmi_10_4_op_fw_stats_fill(struct ath10k *ar,
++				      struct ath10k_fw_stats *fw_stats,
++				      char *buf);
+ 
+ #endif /* _WMI_H_ */
+-- 
+1.9.1
 
 
 _______________________________________________
