@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZoYWr-00077V-IF
- for ath10k@lists.infradead.org; Tue, 20 Oct 2015 15:08:45 +0000
+ id 1ZoYcE-0001B0-NP
+ for ath10k@lists.infradead.org; Tue, 20 Oct 2015 15:14:22 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add notice.txt references to WHENCE
-References: <1445352802-18789-1-git-send-email-kvalo@qca.qualcomm.com>
- <1445353351.2561.19.camel@decadent.org.uk>
-Date: Tue, 20 Oct 2015 18:08:08 +0300
-In-Reply-To: <1445353351.2561.19.camel@decadent.org.uk> (Ben Hutchings's
- message of "Tue, 20 Oct 2015 16:02:31 +0100")
-Message-ID: <87io61bmsn.fsf@kamboji.qca.qualcomm.com>
+Subject: [PATCH v2] ath10k: add notice.txt references to WHENCE
+Date: Tue, 20 Oct 2015 18:13:29 +0300
+Message-ID: <1445354009-20338-1-git-send-email-kvalo@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,21 +16,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, linux-firmware@kernel.org
+To: linux-firmware@kernel.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-QmVuIEh1dGNoaW5ncyA8YmVuQGRlY2FkZW50Lm9yZy51az4gd3JpdGVzOgoKPiBPbiBUdWUsIDIw
-MTUtMTAtMjAgYXQgMTc6NTMgKzAzMDAsIEthbGxlIFZhbG8gd3JvdGU6Cj4+IFRoaXMgaXMgdG8g
-bWFrZSBzdXJlIHRoYXQgdGhlIG5vdGljZSBmaWxlcyBnZXQgYXV0b21hdGljYWxseSBpbmNsdWRl
-ZC4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6IEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
-b20+Cj4KPiBXaGlsZSBpdCBpc24ndCBhY3R1YWxseSBzcGVjaWZpZWQgaGVyZSwgSSBleHBlY3Qg
-dGhlIEZpbGU6IGxpbmVzIHRvCj4gcmVmZXIgdG8gdGhlIGZpcm13YXJlIGl0c2VsZi4gwqBQbGVh
-c2UgcHV0IHRoZXNlIHJlZmVyZW5jZXMgdW5kZXJuZWF0aAo+IHRoZSBMaWNlbmNlOiBmaWVsZHMu
-CgpPaywgSSdsbCByZXNwaW4gYW5kIHNlbmQgdjIuCgotLSAKS2FsbGUgVmFsbwoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+This is to make sure that the notice files get automatically included.
+
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ WHENCE |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/WHENCE b/WHENCE
+index 9b7e8e8526aa..ded2e7ad161b 100755
+--- a/WHENCE
++++ b/WHENCE
+@@ -2393,17 +2393,22 @@ Driver: ath10k - Qualcomm Atheros support for QCA988x family of chips
+ File: ath10k/QCA988X/hw2.0/board.bin
+ File: ath10k/QCA988X/hw2.0/firmware-4.bin
+ Version: 10.2.4.45
++Licence: ath10k/QCA988X/hw2.0/notice_ath10k_firmware-4.txt
+ File: ath10k/QCA988X/hw2.0/firmware-5.bin
+ Version: 10.2.4.70.9-2
++Licence: ath10k/QCA988X/hw2.0/notice_ath10k_firmware-5.txt
+ File: ath10k/QCA6174/hw2.1/board.bin
+ File: ath10k/QCA6174/hw2.1/firmware-5.bin
+ Version: WLAN.RM.1.1-00141
++Licence: ath10k/QCA6174/hw2.1/notice_ath10k_firmware-5.txt
+ File: ath10k/QCA6174/hw3.0/board.bin
+ File: ath10k/QCA6174/hw3.0/firmware-4.bin
+ Version: WLAN.RM.2.0-00180-QCARMSWPZ-1
++Licence: ath10k/QCA6174/hw3.0/notice_ath10k_firmware-4.txt
+ File: ath10k/QCA99X0/hw2.0/board.bin
+ File: ath10k/QCA99X0/hw2.0/firmware-5.bin
+ Version: 10.4.1.00030-1
++Licence: ath10k/QCA99X0/hw2.0/notice_ath10k_firmware-5.txt
+ 
+ Licence: Redistributable. See LICENSE.QualcommAtheros_ath10k for details
+ 
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
