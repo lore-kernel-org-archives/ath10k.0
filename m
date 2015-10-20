@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-pa0-x241.google.com ([2607:f8b0:400e:c03::241])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZoYcE-0001B0-NP
- for ath10k@lists.infradead.org; Tue, 20 Oct 2015 15:14:22 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: [PATCH v2] ath10k: add notice.txt references to WHENCE
-Date: Tue, 20 Oct 2015 18:13:29 +0300
-Message-ID: <1445354009-20338-1-git-send-email-kvalo@qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1Zobia-0004A4-4t
+ for ath10k@lists.infradead.org; Tue, 20 Oct 2015 18:33:04 +0000
+Received: by pacik9 with SMTP id ik9so2880428pac.3
+ for <ath10k@lists.infradead.org>; Tue, 20 Oct 2015 11:32:43 -0700 (PDT)
+From: manikanta.pubbisetty@gmail.com
+Subject: [PATCH] ath10k: consolidate if statements in ath10k_wmi_event_mgmt_rx
+Date: Tue, 20 Oct 2015 11:32:46 +0530
+Message-Id: <1445320966-17024-1-git-send-email-manikanta.pubbisetty@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,49 +17,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-firmware@kernel.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Manikanta Pubbisetty <manikanta.pubbisetty@gmail.com>, linux-wireless@vger.kernel.org
 
-This is to make sure that the notice files get automatically included.
+From: Manikanta Pubbisetty <manikanta.pubbisetty@gmail.com>
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+This patch combines several if statements into a single if condition
+in WMI management rx handler. Found during code review.
+
+Signed-off-by: Manikanta Pubbisetty <manikanta.pubbisetty@gmail.com>
 ---
- WHENCE |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi.c | 19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
 
-diff --git a/WHENCE b/WHENCE
-index 9b7e8e8526aa..ded2e7ad161b 100755
---- a/WHENCE
-+++ b/WHENCE
-@@ -2393,17 +2393,22 @@ Driver: ath10k - Qualcomm Atheros support for QCA988x family of chips
- File: ath10k/QCA988X/hw2.0/board.bin
- File: ath10k/QCA988X/hw2.0/firmware-4.bin
- Version: 10.2.4.45
-+Licence: ath10k/QCA988X/hw2.0/notice_ath10k_firmware-4.txt
- File: ath10k/QCA988X/hw2.0/firmware-5.bin
- Version: 10.2.4.70.9-2
-+Licence: ath10k/QCA988X/hw2.0/notice_ath10k_firmware-5.txt
- File: ath10k/QCA6174/hw2.1/board.bin
- File: ath10k/QCA6174/hw2.1/firmware-5.bin
- Version: WLAN.RM.1.1-00141
-+Licence: ath10k/QCA6174/hw2.1/notice_ath10k_firmware-5.txt
- File: ath10k/QCA6174/hw3.0/board.bin
- File: ath10k/QCA6174/hw3.0/firmware-4.bin
- Version: WLAN.RM.2.0-00180-QCARMSWPZ-1
-+Licence: ath10k/QCA6174/hw3.0/notice_ath10k_firmware-4.txt
- File: ath10k/QCA99X0/hw2.0/board.bin
- File: ath10k/QCA99X0/hw2.0/firmware-5.bin
- Version: 10.4.1.00030-1
-+Licence: ath10k/QCA99X0/hw2.0/notice_ath10k_firmware-5.txt
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 6e7d7a7..a9d42ef 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2200,22 +2200,9 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	ath10k_dbg(ar, ATH10K_DBG_MGMT,
+ 		   "event mgmt rx status %08x\n", rx_status);
  
- Licence: Redistributable. See LICENSE.QualcommAtheros_ath10k for details
- 
+-	if (test_bit(ATH10K_CAC_RUNNING, &ar->dev_flags)) {
+-		dev_kfree_skb(skb);
+-		return 0;
+-	}
+-
+-	if (rx_status & WMI_RX_STATUS_ERR_DECRYPT) {
+-		dev_kfree_skb(skb);
+-		return 0;
+-	}
+-
+-	if (rx_status & WMI_RX_STATUS_ERR_KEY_CACHE_MISS) {
+-		dev_kfree_skb(skb);
+-		return 0;
+-	}
+-
+-	if (rx_status & WMI_RX_STATUS_ERR_CRC) {
++	if ((test_bit(ATH10K_CAC_RUNNING, &ar->dev_flags)) ||
++	    (rx_stats & (WMI_RX_STATUS_ERR_DECRYPT |
++	    WMI_RX_STATUS_ERR_KEY_CACHE_MISS | WMI_RX_STATUS_ERR_CRC))) {
+ 		dev_kfree_skb(skb);
+ 		return 0;
+ 	}
 -- 
-1.7.9.5
+1.9.1
 
 
 _______________________________________________
