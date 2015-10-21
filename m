@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZocdB-00071e-KH
- for ath10k@lists.infradead.org; Tue, 20 Oct 2015 19:31:34 +0000
-Received: by pacfv9 with SMTP id fv9so31002571pac.3
- for <ath10k@lists.infradead.org>; Tue, 20 Oct 2015 12:31:13 -0700 (PDT)
-Message-ID: <5625E6BD.6020307@gmail.com>
-Date: Tue, 20 Oct 2015 12:31:17 +0530
-From: Manikanta Pubbisetty <manikanta.pubbisetty@gmail.com>
+ id 1ZonU0-0005ns-9I
+ for ath10k@lists.infradead.org; Wed, 21 Oct 2015 07:06:49 +0000
+Received: by wicll6 with SMTP id ll6so76739481wic.0
+ for <ath10k@lists.infradead.org>; Wed, 21 Oct 2015 00:06:22 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: add FW API support to test mode
+In-Reply-To: <5625E6BD.6020307@gmail.com>
 References: <20151020112513.14879.47438.stgit@potku.adurom.net>
-In-Reply-To: <20151020112513.14879.47438.stgit@potku.adurom.net>
+ <5625E6BD.6020307@gmail.com>
+Date: Wed, 21 Oct 2015 09:06:22 +0200
+Message-ID: <CA+BoTQnSQmdCCqF43+Q5cxyVVLrM_BxRMT+Ydpfe6_5yRV2+Lw@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: add FW API support to test mode
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,382 +21,128 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Manikanta Pubbisetty <manikanta.pubbisetty@gmail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
-
-On 10/20/2015 04:55 PM, Kalle Valo wrote:
-> From: Alan Liu <alanliu@qca.qualcomm.com>
->
-> Add WMI-TLV and FW API support in ath10k testmode.
-> Ath10k can get right wmi command format from UTF image
-> to communicate UTF firmware.
->
-> Signed-off-by: Alan Liu <alanliu@qca.qualcomm.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-> ---
->   drivers/net/wireless/ath/ath10k/core.c     |    4 -
->   drivers/net/wireless/ath/ath10k/core.h     |    5 +
->   drivers/net/wireless/ath/ath10k/hw.h       |    1
->   drivers/net/wireless/ath/ath10k/testmode.c |  202 ++++++++++++++++++++++++++--
->   drivers/net/wireless/ath/ath10k/wmi-tlv.c  |   14 ++
->   5 files changed, 205 insertions(+), 21 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 13de3617d5ab..b7a82ae3b3fa 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -568,8 +568,8 @@ static int ath10k_download_fw(struct ath10k *ar, enum ath10k_firmware_mode mode)
->   		}
->   		break;
->   	case ATH10K_FIRMWARE_MODE_UTF:
-> -		data = ar->testmode.utf->data;
-> -		data_len = ar->testmode.utf->size;
-> +		data = ar->testmode.utf_firmware_data;
-> +		data_len = ar->testmode.utf_firmware_len;
->   		mode_name = "utf";
->   		break;
->   	default:
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 7cc7cdd56c95..a6371108be9b 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -814,9 +814,12 @@ struct ath10k {
->   	struct {
->   		/* protected by conf_mutex */
->   		const struct firmware *utf;
-> +		char utf_version[32];
-> +		const void *utf_firmware_data;
-> +		size_t utf_firmware_len;
->   		DECLARE_BITMAP(orig_fw_features, ATH10K_FW_FEATURE_COUNT);
->   		enum ath10k_fw_wmi_op_version orig_wmi_op_version;
-> -
-> +		enum ath10k_fw_wmi_op_version op_version;
->   		/* protected by data_lock */
->   		bool utf_monitor;
->   	} testmode;
-> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-> index 2d87737e35ff..0c8ea0226684 100644
-> --- a/drivers/net/wireless/ath/ath10k/hw.h
-> +++ b/drivers/net/wireless/ath/ath10k/hw.h
-> @@ -94,6 +94,7 @@ enum qca6174_chip_id_rev {
->   #define ATH10K_FW_API5_FILE		"firmware-5.bin"
->
->   #define ATH10K_FW_UTF_FILE		"utf.bin"
-> +#define ATH10K_FW_UTF_API2_FILE		"utf-2.bin"
->
->   /* includes also the null byte */
->   #define ATH10K_FIRMWARE_MAGIC               "QCA-ATH10K"
-> diff --git a/drivers/net/wireless/ath/ath10k/testmode.c b/drivers/net/wireless/ath/ath10k/testmode.c
-> index b084f88da102..1d5a2fdcbf56 100644
-> --- a/drivers/net/wireless/ath/ath10k/testmode.c
-> +++ b/drivers/net/wireless/ath/ath10k/testmode.c
-> @@ -139,11 +139,181 @@ static int ath10k_tm_cmd_get_version(struct ath10k *ar, struct nlattr *tb[])
->   	return cfg80211_testmode_reply(skb);
->   }
->
-> -static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
-> +static int ath10k_tm_fetch_utf_firmware_api_2(struct ath10k *ar)
-> +{
-> +	size_t len, magic_len, ie_len;
-> +	struct ath10k_fw_ie *hdr;
-> +	char filename[100];
-> +	__le32 *version;
-> +	const u8 *data;
-> +	int ie_id, ret;
-> +
-> +	snprintf(filename, sizeof(filename), "%s/%s",
-> +		 ar->hw_params.fw.dir, ATH10K_FW_UTF_API2_FILE);
-> +
-> +	/* load utf firmware image */
-> +	ret = request_firmware(&ar->testmode.utf, filename, ar->dev);
-> +	if (ret) {
-> +		ath10k_warn(ar, "failed to retrieve utf firmware '%s': %d\n",
-> +			    filename, ret);
-> +		return ret;
-> +	}
-> +
-> +	data = ar->testmode.utf->data;
-> +	len = ar->testmode.utf->size;
-> +
-> +	/* FIXME: call release_firmware() in error cases */
-> +
-> +	/* magic also includes the null byte, check that as well */
-> +	magic_len = strlen(ATH10K_FIRMWARE_MAGIC) + 1;
-> +
-> +	if (len < magic_len) {
-> +		ath10k_err(ar, "utf firmware file is too small to contain magic\n");
-> +		ret = -EINVAL;
-> +		goto err;
-> +	}
-> +
-> +	if (memcmp(data, ATH10K_FIRMWARE_MAGIC, magic_len) != 0) {
-> +		ath10k_err(ar, "invalid firmware magic\n");
-> +		ret = -EINVAL;
-> +		goto err;
-> +	}
-> +
-> +	/* jump over the padding */
-> +	magic_len = ALIGN(magic_len, 4);
-> +
-> +	len -= magic_len;
-> +	data += magic_len;
-> +
-> +	/* loop elements */
-> +	while (len > sizeof(struct ath10k_fw_ie)) {
-> +		hdr = (struct ath10k_fw_ie *)data;
-> +
-> +		ie_id = le32_to_cpu(hdr->id);
-> +		ie_len = le32_to_cpu(hdr->len);
-> +
-> +		len -= sizeof(*hdr);
-> +		data += sizeof(*hdr);
-> +
-> +		if (len < ie_len) {
-> +			ath10k_err(ar, "invalid length for FW IE %d (%zu < %zu)\n",
-> +				   ie_id, len, ie_len);
-> +			ret = -EINVAL;
-> +			goto err;
-> +		}
-> +
-> +		switch (ie_id) {
-> +		case ATH10K_FW_IE_FW_VERSION:
-
-Something like ATH10K_UTF_IE_FW_VERSION or ATH10K_TESTMODE_IE_FW_VERSION 
-would be less confusing and better, isn't it?
-
-> +			if (ie_len > sizeof(ar->testmode.utf_version) - 1)
-> +				break;
-> +
-> +			memcpy(ar->testmode.utf_version, data, ie_len);
-> +			ar->testmode.utf_version[ie_len] = '\0';
-> +
-> +			ath10k_dbg(ar, ATH10K_DBG_TESTMODE,
-> +				   "testmode found fw utf version %s\n",
-> +				   ar->testmode.utf_version);
-> +			break;
-> +		case ATH10K_FW_IE_TIMESTAMP:
-
-ATH10K_UTF_IE_TIMESTAMP?
-
-> +			/* ignore timestamp, but don't warn about it either */
-> +			break;
-> +		case ATH10K_FW_IE_FW_IMAGE:
-
-ATH10K_UTF_IE_FW_IMAGE?
-
-> +			ath10k_dbg(ar, ATH10K_DBG_TESTMODE,
-> +				   "testmode found fw image ie (%zd B)\n",
-> +				   ie_len);
-> +
-> +			ar->testmode.utf_firmware_data = data;
-> +			ar->testmode.utf_firmware_len = ie_len;
-> +			break;
-> +		case ATH10K_FW_IE_WMI_OP_VERSION:
-
-ATH10K_UTF_IE_WMI_OP_VERSION?
-
-> +			if (ie_len != sizeof(u32))
-> +				break;
-> +			version = (__le32 *)data;
-> +			ar->testmode.op_version = le32_to_cpup(version);
-> +			ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode found fw ie wmi op version %d\n",
-> +				   ar->testmode.op_version);
-> +			break;
-> +		default:
-> +			ath10k_warn(ar, "Unknown testmode FW IE: %u\n",
-> +				    le32_to_cpu(hdr->id));
-> +			break;
-> +		}
-> +		/* jump over the padding */
-> +		ie_len = ALIGN(ie_len, 4);
-> +
-> +		len -= ie_len;
-> +		data += ie_len;
-> +	}
-> +
-> +	if (!ar->testmode.utf_firmware_data || !ar->testmode.utf_firmware_len) {
-> +		ath10k_err(ar, "No ATH10K_FW_IE_FW_IMAGE found\n");
-> +		ret = -EINVAL;
-> +		goto err;
-> +	}
-> +
-> +	return 0;
-> +
-> +err:
-> +	release_firmware(ar->testmode.utf);
-> +
-> +	return ret;
-> +}
-> +
-> +static int ath10k_tm_fetch_utf_firmware_api_1(struct ath10k *ar)
->   {
->   	char filename[100];
->   	int ret;
->
-> +	snprintf(filename, sizeof(filename), "%s/%s",
-> +		 ar->hw_params.fw.dir, ATH10K_FW_UTF_FILE);
-> +
-> +	/* load utf firmware image */
-> +	ret = request_firmware(&ar->testmode.utf, filename, ar->dev);
-> +	if (ret) {
-> +		ath10k_warn(ar, "failed to retrieve utf firmware '%s': %d\n",
-> +			    filename, ret);
-> +		return ret;
-> +	}
-> +
-> +	/* We didn't find FW UTF API 1 ("utf.bin") does not advertise
-> +	 * firmware features. Do an ugly hack where we force the firmware
-> +	 * features to match with 10.1 branch so that wmi.c will use the
-> +	 * correct WMI interface.
-> +	 */
-> +
-> +	ar->testmode.op_version = ATH10K_FW_WMI_OP_VERSION_10_1;
-> +	ar->testmode.utf_firmware_data = ar->testmode.utf->data;
-> +	ar->testmode.utf_firmware_len = ar->testmode.utf->size;
-> +
-> +	return 0;
-> +}
-> +
-> +static int ath10k_tm_fetch_firmware(struct ath10k *ar)
-> +{
-> +	int ret;
-> +
-> +	ret = ath10k_tm_fetch_utf_firmware_api_2(ar);
-> +	if (ret == 0) {
-> +		ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode using fw utf api 2");
-> +		return 0;
-> +	}
-> +
-> +	ret = ath10k_tm_fetch_utf_firmware_api_1(ar);
-> +	if (ret) {
-> +		ath10k_err(ar, "failed to fetch utf firmware binary: %d", ret);
-> +		return ret;
-> +	}
-> +
-> +	ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode using utf api 1");
-> +
-> +	return 0;
-> +}
-> +
-> +static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
-> +{
-> +	const char *ver;
-> +	int ret;
-> +
->   	ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode cmd utf start\n");
->
->   	mutex_lock(&ar->conf_mutex);
-> @@ -165,36 +335,27 @@ static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
->   		goto err;
->   	}
->
-> -	snprintf(filename, sizeof(filename), "%s/%s",
-> -		 ar->hw_params.fw.dir, ATH10K_FW_UTF_FILE);
-> -
-> -	/* load utf firmware image */
-> -	ret = request_firmware(&ar->testmode.utf, filename, ar->dev);
-> +	ret = ath10k_tm_fetch_firmware(ar);
->   	if (ret) {
-> -		ath10k_warn(ar, "failed to retrieve utf firmware '%s': %d\n",
-> -			    filename, ret);
-> +		ath10k_err(ar, "failed to fetch UTF firmware: %d", ret);
->   		goto err;
->   	}
->
->   	spin_lock_bh(&ar->data_lock);
-> -
->   	ar->testmode.utf_monitor = true;
-> -
->   	spin_unlock_bh(&ar->data_lock);
-> -
->   	BUILD_BUG_ON(sizeof(ar->fw_features) !=
->   		     sizeof(ar->testmode.orig_fw_features));
->
->   	memcpy(ar->testmode.orig_fw_features, ar->fw_features,
->   	       sizeof(ar->fw_features));
->   	ar->testmode.orig_wmi_op_version = ar->wmi.op_version;
-> -
-> -	/* utf.bin firmware image does not advertise firmware features. Do
-> -	 * an ugly hack where we force the firmware features so that wmi.c
-> -	 * will use the correct WMI interface.
-> -	 */
->   	memset(ar->fw_features, 0, sizeof(ar->fw_features));
-> -	ar->wmi.op_version = ATH10K_FW_WMI_OP_VERSION_10_1;
-> +
-> +	ar->wmi.op_version = ar->testmode.op_version;
-> +
-> +	ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode wmi version %d\n",
-> +		   ar->wmi.op_version);
->
->   	ret = ath10k_hif_power_up(ar);
->   	if (ret) {
-> @@ -212,7 +373,12 @@ static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
->
->   	ar->state = ATH10K_STATE_UTF;
->
-> -	ath10k_info(ar, "UTF firmware started\n");
-> +	if (strlen(ar->testmode.utf_version) > 0)
-> +		ver = ar->testmode.utf_version;
-> +	else
-> +		ver = "API 1";
-> +
-> +	ath10k_info(ar, "UTF firmware %s started\n", ver);
->
->   	mutex_unlock(&ar->conf_mutex);
->
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> index 8f835480a62c..6fbd17b69469 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> @@ -23,6 +23,7 @@
->   #include "wmi-ops.h"
->   #include "wmi-tlv.h"
->   #include "p2p.h"
-> +#include "testmode.h"
->
->   /***************/
->   /* TLV helpers */
-> @@ -419,6 +420,7 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
->   {
->   	struct wmi_cmd_hdr *cmd_hdr;
->   	enum wmi_tlv_event_id id;
-> +	bool consumed;
->
->   	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
->   	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
-> @@ -428,6 +430,18 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
->
->   	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
->
-> +	consumed = ath10k_tm_event_wmi(ar, id, skb);
-> +
-> +	/* Ready event must be handled normally also in UTF mode so that we
-> +	 * know the UTF firmware has booted, others we are just bypass WMI
-> +	 * events to testmode.
-> +	 */
-> +	if (consumed && id != WMI_TLV_READY_EVENTID) {
-> +		ath10k_dbg(ar, ATH10K_DBG_WMI,
-> +			   "wmi tlv testmode consumed 0x%x\n", id);
-> +		goto out;
-> +	}
-> +
->   	switch (id) {
->   	case WMI_TLV_MGMT_RX_EVENTID:
->   		ath10k_wmi_event_mgmt_rx(ar, skb);
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAgT2N0b2JlciAyMDE1IGF0IDA5OjAxLCBNYW5pa2FudGEgUHViYmlzZXR0eQo8bWFuaWth
+bnRhLnB1YmJpc2V0dHlAZ21haWwuY29tPiB3cm90ZToKPgo+Cj4gT24gMTAvMjAvMjAxNSAwNDo1
+NSBQTSwgS2FsbGUgVmFsbyB3cm90ZToKPj4KPj4gRnJvbTogQWxhbiBMaXUgPGFsYW5saXVAcWNh
+LnF1YWxjb21tLmNvbT4KPj4KPj4gQWRkIFdNSS1UTFYgYW5kIEZXIEFQSSBzdXBwb3J0IGluIGF0
+aDEwayB0ZXN0bW9kZS4KPj4gQXRoMTBrIGNhbiBnZXQgcmlnaHQgd21pIGNvbW1hbmQgZm9ybWF0
+IGZyb20gVVRGIGltYWdlCj4+IHRvIGNvbW11bmljYXRlIFVURiBmaXJtd2FyZS4KPj4KPj4gU2ln
+bmVkLW9mZi1ieTogQWxhbiBMaXUgPGFsYW5saXVAcWNhLnF1YWxjb21tLmNvbT4KPj4gU2lnbmVk
+LW9mZi1ieTogS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNvbT4KPj4gLS0tCj4+ICAg
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMgICAgIHwgICAgNCAtCj4+ICAg
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmggICAgIHwgICAgNSArCj4+ICAg
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ody5oICAgICAgIHwgICAgMQo+PiAgIGRy
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdGVzdG1vZGUuYyB8ICAyMDIKPj4gKysrKysr
+KysrKysrKysrKysrKysrKysrKystLQo+PiAgIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
+MGsvd21pLXRsdi5jICB8ICAgMTQgKysKPj4gICA1IGZpbGVzIGNoYW5nZWQsIDIwNSBpbnNlcnRp
+b25zKCspLCAyMSBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway9jb3JlLmMKPj4gaW5kZXggMTNkZTM2MTdkNWFiLi5iN2E4MmFlM2IzZmEgMTAwNjQ0Cj4+
+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4+ICsrKyBiL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4+IEBAIC01NjgsOCArNTY4LDgg
+QEAgc3RhdGljIGludCBhdGgxMGtfZG93bmxvYWRfZncoc3RydWN0IGF0aDEwayAqYXIsIGVudW0K
+Pj4gYXRoMTBrX2Zpcm13YXJlX21vZGUgbW9kZSkKPj4gICAgICAgICAgICAgICAgIH0KPj4gICAg
+ICAgICAgICAgICAgIGJyZWFrOwo+PiAgICAgICAgIGNhc2UgQVRIMTBLX0ZJUk1XQVJFX01PREVf
+VVRGOgo+PiAtICAgICAgICAgICAgICAgZGF0YSA9IGFyLT50ZXN0bW9kZS51dGYtPmRhdGE7Cj4+
+IC0gICAgICAgICAgICAgICBkYXRhX2xlbiA9IGFyLT50ZXN0bW9kZS51dGYtPnNpemU7Cj4+ICsg
+ICAgICAgICAgICAgICBkYXRhID0gYXItPnRlc3Rtb2RlLnV0Zl9maXJtd2FyZV9kYXRhOwo+PiAr
+ICAgICAgICAgICAgICAgZGF0YV9sZW4gPSBhci0+dGVzdG1vZGUudXRmX2Zpcm13YXJlX2xlbjsK
+Pj4gICAgICAgICAgICAgICAgIG1vZGVfbmFtZSA9ICJ1dGYiOwo+PiAgICAgICAgICAgICAgICAg
+YnJlYWs7Cj4+ICAgICAgICAgZGVmYXVsdDoKPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCj4+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway9jb3JlLmgKPj4gaW5kZXggN2NjN2NkZDU2Yzk1Li5hNjM3MTEwOGJlOWIgMTAwNjQ0Cj4+
+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCj4+ICsrKyBiL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCj4+IEBAIC04MTQsOSArODE0LDEy
+IEBAIHN0cnVjdCBhdGgxMGsgewo+PiAgICAgICAgIHN0cnVjdCB7Cj4+ICAgICAgICAgICAgICAg
+ICAvKiBwcm90ZWN0ZWQgYnkgY29uZl9tdXRleCAqLwo+PiAgICAgICAgICAgICAgICAgY29uc3Qg
+c3RydWN0IGZpcm13YXJlICp1dGY7Cj4+ICsgICAgICAgICAgICAgICBjaGFyIHV0Zl92ZXJzaW9u
+WzMyXTsKPj4gKyAgICAgICAgICAgICAgIGNvbnN0IHZvaWQgKnV0Zl9maXJtd2FyZV9kYXRhOwo+
+PiArICAgICAgICAgICAgICAgc2l6ZV90IHV0Zl9maXJtd2FyZV9sZW47Cj4+ICAgICAgICAgICAg
+ICAgICBERUNMQVJFX0JJVE1BUChvcmlnX2Z3X2ZlYXR1cmVzLCBBVEgxMEtfRldfRkVBVFVSRV9D
+T1VOVCk7Cj4+ICAgICAgICAgICAgICAgICBlbnVtIGF0aDEwa19md193bWlfb3BfdmVyc2lvbiBv
+cmlnX3dtaV9vcF92ZXJzaW9uOwo+PiAtCj4+ICsgICAgICAgICAgICAgICBlbnVtIGF0aDEwa19m
+d193bWlfb3BfdmVyc2lvbiBvcF92ZXJzaW9uOwo+PiAgICAgICAgICAgICAgICAgLyogcHJvdGVj
+dGVkIGJ5IGRhdGFfbG9jayAqLwo+PiAgICAgICAgICAgICAgICAgYm9vbCB1dGZfbW9uaXRvcjsK
+Pj4gICAgICAgICB9IHRlc3Rtb2RlOwo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxl
+c3MvYXRoL2F0aDEway9ody5oCj4+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9o
+dy5oCj4+IGluZGV4IDJkODc3MzdlMzVmZi4uMGM4ZWEwMjI2Njg0IDEwMDY0NAo+PiAtLS0gYS9k
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h3LmgKPj4gKysrIGIvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9ody5oCj4+IEBAIC05NCw2ICs5NCw3IEBAIGVudW0gcWNhNjE3
+NF9jaGlwX2lkX3JldiB7Cj4+ICAgI2RlZmluZSBBVEgxMEtfRldfQVBJNV9GSUxFICAgICAgICAg
+ICAiZmlybXdhcmUtNS5iaW4iCj4+Cj4+ICAgI2RlZmluZSBBVEgxMEtfRldfVVRGX0ZJTEUgICAg
+ICAgICAgICAidXRmLmJpbiIKPj4gKyNkZWZpbmUgQVRIMTBLX0ZXX1VURl9BUEkyX0ZJTEUgICAg
+ICAgICAgICAgICAgInV0Zi0yLmJpbiIKPj4KPj4gICAvKiBpbmNsdWRlcyBhbHNvIHRoZSBudWxs
+IGJ5dGUgKi8KPj4gICAjZGVmaW5lIEFUSDEwS19GSVJNV0FSRV9NQUdJQyAgICAgICAgICAgICAg
+ICJRQ0EtQVRIMTBLIgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway90ZXN0bW9kZS5jCj4+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway90ZXN0
+bW9kZS5jCj4+IGluZGV4IGIwODRmODhkYTEwMi4uMWQ1YTJmZGNiZjU2IDEwMDY0NAo+PiAtLS0g
+YS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3Rlc3Rtb2RlLmMKPj4gKysrIGIvZHJp
+dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway90ZXN0bW9kZS5jCj4+IEBAIC0xMzksMTEgKzEz
+OSwxODEgQEAgc3RhdGljIGludCBhdGgxMGtfdG1fY21kX2dldF92ZXJzaW9uKHN0cnVjdCBhdGgx
+MGsKPj4gKmFyLCBzdHJ1Y3QgbmxhdHRyICp0YltdKQo+PiAgICAgICAgIHJldHVybiBjZmc4MDIx
+MV90ZXN0bW9kZV9yZXBseShza2IpOwo+PiAgIH0KPj4KPj4gLXN0YXRpYyBpbnQgYXRoMTBrX3Rt
+X2NtZF91dGZfc3RhcnQoc3RydWN0IGF0aDEwayAqYXIsIHN0cnVjdCBubGF0dHIKPj4gKnRiW10p
+Cj4+ICtzdGF0aWMgaW50IGF0aDEwa190bV9mZXRjaF91dGZfZmlybXdhcmVfYXBpXzIoc3RydWN0
+IGF0aDEwayAqYXIpCj4+ICt7Cj4+ICsgICAgICAgc2l6ZV90IGxlbiwgbWFnaWNfbGVuLCBpZV9s
+ZW47Cj4+ICsgICAgICAgc3RydWN0IGF0aDEwa19md19pZSAqaGRyOwo+PiArICAgICAgIGNoYXIg
+ZmlsZW5hbWVbMTAwXTsKPj4gKyAgICAgICBfX2xlMzIgKnZlcnNpb247Cj4+ICsgICAgICAgY29u
+c3QgdTggKmRhdGE7Cj4+ICsgICAgICAgaW50IGllX2lkLCByZXQ7Cj4+ICsKPj4gKyAgICAgICBz
+bnByaW50ZihmaWxlbmFtZSwgc2l6ZW9mKGZpbGVuYW1lKSwgIiVzLyVzIiwKPj4gKyAgICAgICAg
+ICAgICAgICBhci0+aHdfcGFyYW1zLmZ3LmRpciwgQVRIMTBLX0ZXX1VURl9BUEkyX0ZJTEUpOwo+
+PiArCj4+ICsgICAgICAgLyogbG9hZCB1dGYgZmlybXdhcmUgaW1hZ2UgKi8KPj4gKyAgICAgICBy
+ZXQgPSByZXF1ZXN0X2Zpcm13YXJlKCZhci0+dGVzdG1vZGUudXRmLCBmaWxlbmFtZSwgYXItPmRl
+dik7Cj4+ICsgICAgICAgaWYgKHJldCkgewo+PiArICAgICAgICAgICAgICAgYXRoMTBrX3dhcm4o
+YXIsICJmYWlsZWQgdG8gcmV0cmlldmUgdXRmIGZpcm13YXJlICclcyc6Cj4+ICVkXG4iLAo+PiAr
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsZW5hbWUsIHJldCk7Cj4+ICsgICAgICAgICAg
+ICAgICByZXR1cm4gcmV0Owo+PiArICAgICAgIH0KPj4gKwo+PiArICAgICAgIGRhdGEgPSBhci0+
+dGVzdG1vZGUudXRmLT5kYXRhOwo+PiArICAgICAgIGxlbiA9IGFyLT50ZXN0bW9kZS51dGYtPnNp
+emU7Cj4+ICsKPj4gKyAgICAgICAvKiBGSVhNRTogY2FsbCByZWxlYXNlX2Zpcm13YXJlKCkgaW4g
+ZXJyb3IgY2FzZXMgKi8KPj4gKwo+PiArICAgICAgIC8qIG1hZ2ljIGFsc28gaW5jbHVkZXMgdGhl
+IG51bGwgYnl0ZSwgY2hlY2sgdGhhdCBhcyB3ZWxsICovCj4+ICsgICAgICAgbWFnaWNfbGVuID0g
+c3RybGVuKEFUSDEwS19GSVJNV0FSRV9NQUdJQykgKyAxOwo+PiArCj4+ICsgICAgICAgaWYgKGxl
+biA8IG1hZ2ljX2xlbikgewo+PiArICAgICAgICAgICAgICAgYXRoMTBrX2VycihhciwgInV0ZiBm
+aXJtd2FyZSBmaWxlIGlzIHRvbyBzbWFsbCB0byBjb250YWluCj4+IG1hZ2ljXG4iKTsKPj4gKyAg
+ICAgICAgICAgICAgIHJldCA9IC1FSU5WQUw7Cj4+ICsgICAgICAgICAgICAgICBnb3RvIGVycjsK
+Pj4gKyAgICAgICB9Cj4+ICsKPj4gKyAgICAgICBpZiAobWVtY21wKGRhdGEsIEFUSDEwS19GSVJN
+V0FSRV9NQUdJQywgbWFnaWNfbGVuKSAhPSAwKSB7Cj4+ICsgICAgICAgICAgICAgICBhdGgxMGtf
+ZXJyKGFyLCAiaW52YWxpZCBmaXJtd2FyZSBtYWdpY1xuIik7Cj4+ICsgICAgICAgICAgICAgICBy
+ZXQgPSAtRUlOVkFMOwo+PiArICAgICAgICAgICAgICAgZ290byBlcnI7Cj4+ICsgICAgICAgfQo+
+PiArCj4+ICsgICAgICAgLyoganVtcCBvdmVyIHRoZSBwYWRkaW5nICovCj4+ICsgICAgICAgbWFn
+aWNfbGVuID0gQUxJR04obWFnaWNfbGVuLCA0KTsKPj4gKwo+PiArICAgICAgIGxlbiAtPSBtYWdp
+Y19sZW47Cj4+ICsgICAgICAgZGF0YSArPSBtYWdpY19sZW47Cj4+ICsKPj4gKyAgICAgICAvKiBs
+b29wIGVsZW1lbnRzICovCj4+ICsgICAgICAgd2hpbGUgKGxlbiA+IHNpemVvZihzdHJ1Y3QgYXRo
+MTBrX2Z3X2llKSkgewo+PiArICAgICAgICAgICAgICAgaGRyID0gKHN0cnVjdCBhdGgxMGtfZndf
+aWUgKilkYXRhOwo+PiArCj4+ICsgICAgICAgICAgICAgICBpZV9pZCA9IGxlMzJfdG9fY3B1KGhk
+ci0+aWQpOwo+PiArICAgICAgICAgICAgICAgaWVfbGVuID0gbGUzMl90b19jcHUoaGRyLT5sZW4p
+Owo+PiArCj4+ICsgICAgICAgICAgICAgICBsZW4gLT0gc2l6ZW9mKCpoZHIpOwo+PiArICAgICAg
+ICAgICAgICAgZGF0YSArPSBzaXplb2YoKmhkcik7Cj4+ICsKPj4gKyAgICAgICAgICAgICAgIGlm
+IChsZW4gPCBpZV9sZW4pIHsKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBrX2Vycihh
+ciwgImludmFsaWQgbGVuZ3RoIGZvciBGVyBJRSAlZCAoJXp1IDwKPj4gJXp1KVxuIiwKPj4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZV9pZCwgbGVuLCBpZV9sZW4pOwo+PiAr
+ICAgICAgICAgICAgICAgICAgICAgICByZXQgPSAtRUlOVkFMOwo+PiArICAgICAgICAgICAgICAg
+ICAgICAgICBnb3RvIGVycjsKPj4gKyAgICAgICAgICAgICAgIH0KPj4gKwo+PiArICAgICAgICAg
+ICAgICAgc3dpdGNoIChpZV9pZCkgewo+PiArICAgICAgICAgICAgICAgY2FzZSBBVEgxMEtfRldf
+SUVfRldfVkVSU0lPTjoKPgo+Cj4gU29tZXRoaW5nIGxpa2UgQVRIMTBLX1VURl9JRV9GV19WRVJT
+SU9OIG9yIEFUSDEwS19URVNUTU9ERV9JRV9GV19WRVJTSU9OCj4gd291bGQgYmUgbGVzcyBjb25m
+dXNpbmcgYW5kIGJldHRlciwgaXNuJ3QgaXQ/CgpJIGRvbid0IHJlYWxseSBzZWUgYSByZWFzb24g
+dG8uIFVURiBpcyBqdXN0IGFub3RoZXIgbWFpbiBwcm9ncmFtIHRvCnJ1biBvbiB0aGUgZGV2aWNl
+LgoKSWYgYW55dGhpbmcgSSB3b3VsZCBzdWdnZXN0IHRvIHVuaWZ5IHRoZSBGVyBBUEkgcGFyc2lu
+ZyBsb2dpYyB0byB3b3JrCndpdGggYSBkZWRpY2F0ZWQgc3RydWN0dXJlIGluc3RlYWQgb2YgYHN0
+cnVjdCBhdGgxMGtgIGRpcmVjdGx5LCBpLmUuCgogIHN0cnVjdCBhdGgxMGtfZncgewogICAgdm9p
+ZCAqZGF0YTsKICAgIHNpemVfdCBkYXRhX2xlbjsKICAgIGVudW0gd21pX29wX3ZlcnNpb24gd21p
+X29wX3ZlcnNpb247CiAgICAvLyAuLi4KICB9OwoKICBpbnQgYXRoMTBrX2NvcmVfZndfYXBpX3Bh
+cnNlKHN0cnVjdCBhdGgxMGsgKmFyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3Ry
+dWN0IGF0aDEwa19mdyAqYXJmdywKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVj
+dCBmaXJtd2FyZSAqZncpCiAgIHsKICAgICAvLyBwYXJzZSBhbmQgZmlsbCBpbiBgYXJmd2AKICAg
+fQoKICBzdHJ1Y3QgYXRoMTBrIHsKICAgIC8vIC4uLgogICAgc3RydWN0IGF0aDEwa19mdyBmd19u
+b3JtYWw7CiAgICBzdHJ1Y3QgYXRoMTBrX2Z3IGZ3X3V0ZjsKICAgIC8vIC4uLgogIH07CgoKTWlj
+aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
