@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZpHTd-0000IS-NX
- for ath10k@lists.infradead.org; Thu, 22 Oct 2015 15:08:26 +0000
+ id 1ZpHTT-0000DR-Nz
+ for ath10k@lists.infradead.org; Thu, 22 Oct 2015 15:08:19 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 4/4] ath10k: remove shadow copy of CE descriptors for source
- ring
-Date: Thu, 22 Oct 2015 20:36:42 +0530
-Message-ID: <1445526402-28522-5-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 3/4] ath10k: cleanup copy engine send completion
+Date: Thu, 22 Oct 2015 20:36:41 +0530
+Message-ID: <1445526402-28522-4-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1445526402-28522-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1445526402-28522-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -26,100 +25,176 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-For the messages from host to target, shadow copy of CE descriptors
-are maintained in source ring. Before writing actual CE descriptor,
-first shadow copy is filled and then it is copied to CE address space.
-To optimize in download path and to reduce d-cache pressure, removing
-shadow copy of CE descriptors. This will also reduce driver memory
-consumption by 33KB during on device probing.
+The physical address necessary to unmap DMA ('bufferp') is stored
+in ath10k_skb_cb as 'paddr'. ath10k doesn't rely on the meta/transfer_id
+when handling send completion (htc ep id is stored in sk_buff control
+buffer). So the unused output arguments {bufferp, nbytesp and transfer_idp}
+are removed from CE send completion. This change is needed before removing
+the shadow copy of copy engine (CE) descriptors in follow up patch.
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.c  | 22 ----------------------
- drivers/net/wireless/ath/ath10k/ce.h  |  6 ------
- drivers/net/wireless/ath/ath10k/pci.c |  5 -----
- 3 files changed, 33 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.c  | 24 +++---------------------
+ drivers/net/wireless/ath/ath10k/ce.h  | 10 ++--------
+ drivers/net/wireless/ath/ath10k/pci.c | 28 +++++++---------------------
+ 3 files changed, 12 insertions(+), 50 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index 52021a9..edf3629 100644
+index d9fba1d..52021a9 100644
 --- a/drivers/net/wireless/ath/ath10k/ce.c
 +++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -921,27 +921,6 @@ ath10k_ce_alloc_src_ring(struct ath10k *ar, unsigned int ce_id,
- 			src_ring->base_addr_ce_space_unaligned,
- 			CE_DESC_RING_ALIGN);
+@@ -578,17 +578,13 @@ int ath10k_ce_revoke_recv_next(struct ath10k_ce_pipe *ce_state,
+  * The caller takes responsibility for any necessary locking.
+  */
+ int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
+-					 void **per_transfer_contextp,
+-					 u32 *bufferp,
+-					 unsigned int *nbytesp,
+-					 unsigned int *transfer_idp)
++					 void **per_transfer_contextp)
+ {
+ 	struct ath10k_ce_ring *src_ring = ce_state->src_ring;
+ 	u32 ctrl_addr = ce_state->ctrl_addr;
+ 	struct ath10k *ar = ce_state->ar;
+ 	unsigned int nentries_mask = src_ring->nentries_mask;
+ 	unsigned int sw_index = src_ring->sw_index;
+-	struct ce_desc *sdesc, *sbase;
+ 	unsigned int read_index;
  
--	/*
--	 * Also allocate a shadow src ring in regular
--	 * mem to use for faster access.
--	 */
--	src_ring->shadow_base_unaligned =
--		kmalloc((nentries * sizeof(struct ce_desc) +
--			 CE_DESC_RING_ALIGN), GFP_KERNEL);
--	if (!src_ring->shadow_base_unaligned) {
--		dma_free_coherent(ar->dev,
--				  (nentries * sizeof(struct ce_desc) +
--				   CE_DESC_RING_ALIGN),
--				  src_ring->base_addr_owner_space,
--				  src_ring->base_addr_ce_space);
--		kfree(src_ring);
--		return ERR_PTR(-ENOMEM);
--	}
+ 	if (src_ring->hw_index == sw_index) {
+@@ -613,15 +609,6 @@ int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
+ 	if (read_index == sw_index)
+ 		return -EIO;
+ 
+-	sbase = src_ring->shadow_base;
+-	sdesc = CE_SRC_RING_TO_DESC(sbase, sw_index);
 -
--	src_ring->shadow_base = PTR_ALIGN(
--			src_ring->shadow_base_unaligned,
--			CE_DESC_RING_ALIGN);
+-	/* Return data from completed source descriptor */
+-	*bufferp = __le32_to_cpu(sdesc->addr);
+-	*nbytesp = __le16_to_cpu(sdesc->nbytes);
+-	*transfer_idp = MS(__le16_to_cpu(sdesc->flags),
+-			   CE_DESC_FLAGS_META_DATA);
 -
- 	return src_ring;
+ 	if (per_transfer_contextp)
+ 		*per_transfer_contextp =
+ 			src_ring->per_transfer_context[sw_index];
+@@ -696,10 +683,7 @@ int ath10k_ce_cancel_send_next(struct ath10k_ce_pipe *ce_state,
  }
  
-@@ -1120,7 +1099,6 @@ void ath10k_ce_free_pipe(struct ath10k *ar, int ce_id)
- 	struct ath10k_ce_pipe *ce_state = &ar_pci->ce_states[ce_id];
+ int ath10k_ce_completed_send_next(struct ath10k_ce_pipe *ce_state,
+-				  void **per_transfer_contextp,
+-				  u32 *bufferp,
+-				  unsigned int *nbytesp,
+-				  unsigned int *transfer_idp)
++				  void **per_transfer_contextp)
+ {
+ 	struct ath10k *ar = ce_state->ar;
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+@@ -707,9 +691,7 @@ int ath10k_ce_completed_send_next(struct ath10k_ce_pipe *ce_state,
  
- 	if (ce_state->src_ring) {
--		kfree(ce_state->src_ring->shadow_base_unaligned);
- 		dma_free_coherent(ar->dev,
- 				  (ce_state->src_ring->nentries *
- 				   sizeof(struct ce_desc) +
+ 	spin_lock_bh(&ar_pci->ce_lock);
+ 	ret = ath10k_ce_completed_send_next_nolock(ce_state,
+-						   per_transfer_contextp,
+-						   bufferp, nbytesp,
+-						   transfer_idp);
++						   per_transfer_contextp);
+ 	spin_unlock_bh(&ar_pci->ce_lock);
+ 
+ 	return ret;
 diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index 67f90ec..47b734c 100644
+index dbb94fd..67f90ec 100644
 --- a/drivers/net/wireless/ath/ath10k/ce.h
 +++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -100,12 +100,6 @@ struct ath10k_ce_ring {
+@@ -192,16 +192,10 @@ int ath10k_ce_completed_recv_next(struct ath10k_ce_pipe *ce_state,
+  * Pops 1 completed send buffer from Source ring.
+  */
+ int ath10k_ce_completed_send_next(struct ath10k_ce_pipe *ce_state,
+-				  void **per_transfer_contextp,
+-				  u32 *bufferp,
+-				  unsigned int *nbytesp,
+-				  unsigned int *transfer_idp);
++				  void **per_transfer_contextp);
  
- 	/* CE address space */
- 	u32 base_addr_ce_space;
--	/*
--	 * Start of shadow copy of descriptors, within regular memory.
--	 * Aligned to descriptor-size boundary.
--	 */
--	void *shadow_base_unaligned;
--	struct ce_desc *shadow_base;
+ int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
+-					 void **per_transfer_contextp,
+-					 u32 *bufferp,
+-					 unsigned int *nbytesp,
+-					 unsigned int *transfer_idp);
++					 void **per_transfer_contextp);
  
- 	/* keep last */
- 	void *per_transfer_context[0];
+ /*==================CE Engine Initialization=======================*/
+ 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 8100025..4a65385 100644
+index 6f3c3e0..8100025 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1594,7 +1594,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
- 	struct ath10k_pci *ar_pci;
- 	struct ath10k_ce_pipe *ce_pipe;
- 	struct ath10k_ce_ring *ce_ring;
--	struct ce_desc *ce_desc;
- 	struct sk_buff *skb;
- 	int i;
+@@ -910,9 +910,8 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 			goto done;
  
-@@ -1609,10 +1608,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
- 	if (!pci_pipe->buf_sz)
+ 		i = 0;
+-		while (ath10k_ce_completed_send_next_nolock(ce_diag, NULL, &buf,
+-							    &completed_nbytes,
+-							    &id) != 0) {
++		while (ath10k_ce_completed_send_next_nolock(ce_diag,
++							    NULL) != 0) {
+ 			mdelay(1);
+ 			if (i++ > DIAG_ACCESS_CE_TIMEOUT_MS) {
+ 				ret = -EBUSY;
+@@ -1073,9 +1072,8 @@ static int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 			goto done;
+ 
+ 		i = 0;
+-		while (ath10k_ce_completed_send_next_nolock(ce_diag, NULL, &buf,
+-							    &completed_nbytes,
+-							    &id) != 0) {
++		while (ath10k_ce_completed_send_next_nolock(ce_diag,
++							    NULL) != 0) {
+ 			mdelay(1);
+ 
+ 			if (i++ > DIAG_ACCESS_CE_TIMEOUT_MS) {
+@@ -1139,13 +1137,9 @@ static void ath10k_pci_htc_tx_cb(struct ath10k_ce_pipe *ce_state)
+ 	struct ath10k *ar = ce_state->ar;
+ 	struct sk_buff_head list;
+ 	struct sk_buff *skb;
+-	u32 ce_data;
+-	unsigned int nbytes;
+-	unsigned int transfer_id;
+ 
+ 	__skb_queue_head_init(&list);
+-	while (ath10k_ce_completed_send_next(ce_state, (void **)&skb, &ce_data,
+-					     &nbytes, &transfer_id) == 0) {
++	while (ath10k_ce_completed_send_next(ce_state, (void **)&skb) == 0) {
+ 		/* no need to call tx completion for NULL pointers */
+ 		if (skb == NULL)
+ 			continue;
+@@ -1215,12 +1209,8 @@ static void ath10k_pci_htt_tx_cb(struct ath10k_ce_pipe *ce_state)
+ {
+ 	struct ath10k *ar = ce_state->ar;
+ 	struct sk_buff *skb;
+-	u32 ce_data;
+-	unsigned int nbytes;
+-	unsigned int transfer_id;
+ 
+-	while (ath10k_ce_completed_send_next(ce_state, (void **)&skb, &ce_data,
+-					     &nbytes, &transfer_id) == 0) {
++	while (ath10k_ce_completed_send_next(ce_state, (void **)&skb) == 0) {
+ 		/* no need to call tx completion for NULL pointers */
+ 		if (!skb)
+ 			continue;
+@@ -1796,12 +1786,8 @@ err_dma:
+ static void ath10k_pci_bmi_send_done(struct ath10k_ce_pipe *ce_state)
+ {
+ 	struct bmi_xfer *xfer;
+-	u32 ce_data;
+-	unsigned int nbytes;
+-	unsigned int transfer_id;
+ 
+-	if (ath10k_ce_completed_send_next(ce_state, (void **)&xfer, &ce_data,
+-					  &nbytes, &transfer_id))
++	if (ath10k_ce_completed_send_next(ce_state, (void **)&xfer))
  		return;
  
--	ce_desc = ce_ring->shadow_base;
--	if (WARN_ON(!ce_desc))
--		return;
--
- 	for (i = 0; i < ce_ring->nentries; i++) {
- 		skb = ce_ring->per_transfer_context[i];
- 		if (!skb)
+ 	xfer->tx_done = true;
 -- 
 2.6.1
 
