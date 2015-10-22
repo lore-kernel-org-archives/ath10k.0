@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zonp0-0006mF-MB
- for ath10k@lists.infradead.org; Wed, 21 Oct 2015 07:28:31 +0000
-Received: by wijp11 with SMTP id p11so80764553wij.0
- for <ath10k@lists.infradead.org>; Wed, 21 Oct 2015 00:28:08 -0700 (PDT)
+ id 1ZpHSy-0008Uv-Pm
+ for ath10k@lists.infradead.org; Thu, 22 Oct 2015 15:07:48 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH 1/4] ath10k: use local memory instead of shadow descriptor in
+ ce_send
+Date: Thu, 22 Oct 2015 20:36:39 +0530
+Message-ID: <1445526402-28522-2-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1445526402-28522-1-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1445526402-28522-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <56273D3F.6080804@gmail.com>
-References: <20151020112513.14879.47438.stgit@potku.adurom.net>
- <5625E6BD.6020307@gmail.com>
- <CA+BoTQnSQmdCCqF43+Q5cxyVVLrM_BxRMT+Ydpfe6_5yRV2+Lw@mail.gmail.com>
- <56273D3F.6080804@gmail.com>
-Date: Wed, 21 Oct 2015 09:28:08 +0200
-Message-ID: <CA+BoTQ=y3-AmpTbpurCvEd2RxQHmMjbU+r7Gy57oz9LsC3VR1Q@mail.gmail.com>
-Subject: Re: [PATCH v2] ath10k: add FW API support to test mode
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +19,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Manikanta <manikanta.pubbisetty@gmail.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-T24gMjEgT2N0b2JlciAyMDE1IGF0IDA5OjIyLCBNYW5pa2FudGEgPG1hbmlrYW50YS5wdWJiaXNl
-dHR5QGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gV2VkbmVzZGF5IDIxIE9jdG9iZXIgMjAxNSAxMjoz
-NiBQTSwgTWljaGFsIEthemlvciB3cm90ZToKPj4gT24gMjAgT2N0b2JlciAyMDE1IGF0IDA5OjAx
-LCBNYW5pa2FudGEgUHViYmlzZXR0eQo+PiA8bWFuaWthbnRhLnB1YmJpc2V0dHlAZ21haWwuY29t
-PiB3cm90ZToKPj4+IE9uIDEwLzIwLzIwMTUgMDQ6NTUgUE0sIEthbGxlIFZhbG8gd3JvdGU6Cj4+
-Pj4KPj4+PiBGcm9tOiBBbGFuIExpdSA8YWxhbmxpdUBxY2EucXVhbGNvbW0uY29tPgo+Pj4+Cj4+
-Pj4gQWRkIFdNSS1UTFYgYW5kIEZXIEFQSSBzdXBwb3J0IGluIGF0aDEwayB0ZXN0bW9kZS4KPj4+
-PiBBdGgxMGsgY2FuIGdldCByaWdodCB3bWkgY29tbWFuZCBmb3JtYXQgZnJvbSBVVEYgaW1hZ2UK
-Pj4+PiB0byBjb21tdW5pY2F0ZSBVVEYgZmlybXdhcmUuCj4+Pj4KPj4+PiBTaWduZWQtb2ZmLWJ5
-OiBBbGFuIExpdSA8YWxhbmxpdUBxY2EucXVhbGNvbW0uY29tPgo+Pj4+IFNpZ25lZC1vZmYtYnk6
-IEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+Cj4+Pj4gLS0tClsuLi5dCj4+Pj4g
-KyAgICAgICAvKiBsb29wIGVsZW1lbnRzICovCj4+Pj4gKyAgICAgICB3aGlsZSAobGVuID4gc2l6
-ZW9mKHN0cnVjdCBhdGgxMGtfZndfaWUpKSB7Cj4+Pj4gKyAgICAgICAgICAgICAgIGhkciA9IChz
-dHJ1Y3QgYXRoMTBrX2Z3X2llICopZGF0YTsKPj4+PiArCj4+Pj4gKyAgICAgICAgICAgICAgIGll
-X2lkID0gbGUzMl90b19jcHUoaGRyLT5pZCk7Cj4+Pj4gKyAgICAgICAgICAgICAgIGllX2xlbiA9
-IGxlMzJfdG9fY3B1KGhkci0+bGVuKTsKPj4+PiArCj4+Pj4gKyAgICAgICAgICAgICAgIGxlbiAt
-PSBzaXplb2YoKmhkcik7Cj4+Pj4gKyAgICAgICAgICAgICAgIGRhdGEgKz0gc2l6ZW9mKCpoZHIp
-Owo+Pj4+ICsKPj4+PiArICAgICAgICAgICAgICAgaWYgKGxlbiA8IGllX2xlbikgewo+Pj4+ICsg
-ICAgICAgICAgICAgICAgICAgICAgIGF0aDEwa19lcnIoYXIsICJpbnZhbGlkIGxlbmd0aCBmb3Ig
-RlcgSUUgJWQgKCV6dQo+Pj4+IDwKPj4+PiAlenUpXG4iLAo+Pj4+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgaWVfaWQsIGxlbiwgaWVfbGVuKTsKPj4+PiArICAgICAgICAgICAg
-ICAgICAgICAgICByZXQgPSAtRUlOVkFMOwo+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgIGdv
-dG8gZXJyOwo+Pj4+ICsgICAgICAgICAgICAgICB9Cj4+Pj4gKwo+Pj4+ICsgICAgICAgICAgICAg
-ICBzd2l0Y2ggKGllX2lkKSB7Cj4+Pj4gKyAgICAgICAgICAgICAgIGNhc2UgQVRIMTBLX0ZXX0lF
-X0ZXX1ZFUlNJT046Cj4+Pgo+Pj4KPj4+IFNvbWV0aGluZyBsaWtlIEFUSDEwS19VVEZfSUVfRldf
-VkVSU0lPTiBvciBBVEgxMEtfVEVTVE1PREVfSUVfRldfVkVSU0lPTgo+Pj4gd291bGQgYmUgbGVz
-cyBjb25mdXNpbmcgYW5kIGJldHRlciwgaXNuJ3QgaXQ/Cj4+Cj4+IEkgZG9uJ3QgcmVhbGx5IHNl
-ZSBhIHJlYXNvbiB0by4gVVRGIGlzIGp1c3QgYW5vdGhlciBtYWluIHByb2dyYW0gdG8KPj4gcnVu
-IG9uIHRoZSBkZXZpY2UuCj4+Cj4+IElmIGFueXRoaW5nIEkgd291bGQgc3VnZ2VzdCB0byB1bmlm
-eSB0aGUgRlcgQVBJIHBhcnNpbmcgbG9naWMgdG8gd29yawo+PiB3aXRoIGEgZGVkaWNhdGVkIHN0
-cnVjdHVyZSBpbnN0ZWFkIG9mIGBzdHJ1Y3QgYXRoMTBrYCBkaXJlY3RseSwgaS5lLgo+Pgo+PiAg
-ICBzdHJ1Y3QgYXRoMTBrX2Z3IHsKPj4gICAgICB2b2lkICpkYXRhOwo+PiAgICAgIHNpemVfdCBk
-YXRhX2xlbjsKPj4gICAgICBlbnVtIHdtaV9vcF92ZXJzaW9uIHdtaV9vcF92ZXJzaW9uOwo+PiAg
-ICAgIC8vIC4uLgo+PiAgICB9Owo+Pgo+PiAgICBpbnQgYXRoMTBrX2NvcmVfZndfYXBpX3BhcnNl
-KHN0cnVjdCBhdGgxMGsgKmFyLAo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0
-cnVjdCBhdGgxMGtfZncgKmFyZncsCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-c3RydWN0IGZpcm13YXJlICpmdykKPj4gICAgIHsKPj4gICAgICAgLy8gcGFyc2UgYW5kIGZpbGwg
-aW4gYGFyZndgCj4+ICAgICB9Cj4+Cj4+ICAgIHN0cnVjdCBhdGgxMGsgewo+PiAgICAgIC8vIC4u
-Lgo+PiAgICAgIHN0cnVjdCBhdGgxMGtfZncgZndfbm9ybWFsOwo+PiAgICAgIHN0cnVjdCBhdGgx
-MGtfZncgZndfdXRmOwo+PiAgICAgIC8vIC4uLgo+PiAgICB9Owo+Pgo+Pgo+PiBNaWNoYcWCCj4K
-PiBIbW1tLCB0aGlzIHdheSB3ZSB3aWxsIGhhdmUgYSB1bmlmaWVkIGZpcm13YXJlIHBhcnNpbmcg
-bG9naWMuIElzIHRoaXMgYSB0YXNrCj4gd2hpY2ggY2FuIGJlIHRha2VuIHVwIGVhc2lseSBvciBh
-bnkgb3RoZXIgaGlkZGVuIGNvbXBsZXhpdGllcyBhcmUgaW52bG92ZWQKPiA/LgoKRGVjb3VwbGlu
-ZyB0aGUgcGFyc2luZyBsb2dpYyBzaG91bGQgYmUgcmF0aGVyIGVhc3kuIEkgZG9uJ3QgdGhpbmsK
-dGhlcmUgYXJlIGFueSBnb3RjaGFzLgoKCj4gSSBtZWFuIGNhbiB3ZSBkbyB0aGUgY2hhbmdlcyBm
-b3IgY3VycmVudCBwYXJzaW5nIGxvZ2ljIGFuZCB0aGVuIHJld29yayB0aGUKPiB0ZXN0IG1vZGUg
-cGF0Y2ggPyB3aGF0IGlzIHlvdXIgc3VnZ2VzdGlvbiA/CgpJZiB5b3Ugd2FudCB0byBkbyB0aGUg
-dW5pZmllZCBwYXJzaW5nIGxvZ2ljIGFwcHJvYWNoIHlvdSBzaG91bGQgZmlyc3QKZGVjb3VwbGUg
-dGhlIGxvZ2ljIChpLmUuIG1ha2UgaXQgbm90IGZpbGwgYHN0cnVjdCBhdGgxMGtgIGRpcmVjdGx5
-KQphbmQgdGhlbiByZXdvcmsgdGhlIHRlc3Rtb2RlIHBhdGNoIG9uIHRvcCBvZiB0aGF0LgoKCk1p
-Y2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
-aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Currently to avoid uncached memory access while filling up copy engine
+descriptors, shadow descriptors are used. This can be optimized further
+by removing shadow descriptors. To achieve that first shadow ring
+dependency in ce_send is removed by creating local copy of the
+descriptor on stack and make a one-shot copy into the "uncached"
+descriptor.
+
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/ce.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 84220c3..d9fba1d 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -274,7 +274,7 @@ int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
+ {
+ 	struct ath10k *ar = ce_state->ar;
+ 	struct ath10k_ce_ring *src_ring = ce_state->src_ring;
+-	struct ce_desc *desc, *sdesc;
++	struct ce_desc *desc, sdesc;
+ 	unsigned int nentries_mask = src_ring->nentries_mask;
+ 	unsigned int sw_index = src_ring->sw_index;
+ 	unsigned int write_index = src_ring->write_index;
+@@ -294,7 +294,6 @@ int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
+ 
+ 	desc = CE_SRC_RING_TO_DESC(src_ring->base_addr_owner_space,
+ 				   write_index);
+-	sdesc = CE_SRC_RING_TO_DESC(src_ring->shadow_base, write_index);
+ 
+ 	desc_flags |= SM(transfer_id, CE_DESC_FLAGS_META_DATA);
+ 
+@@ -303,11 +302,11 @@ int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
+ 	if (flags & CE_SEND_FLAG_BYTE_SWAP)
+ 		desc_flags |= CE_DESC_FLAGS_BYTE_SWAP;
+ 
+-	sdesc->addr   = __cpu_to_le32(buffer);
+-	sdesc->nbytes = __cpu_to_le16(nbytes);
+-	sdesc->flags  = __cpu_to_le16(desc_flags);
++	sdesc.addr   = __cpu_to_le32(buffer);
++	sdesc.nbytes = __cpu_to_le16(nbytes);
++	sdesc.flags  = __cpu_to_le16(desc_flags);
+ 
+-	*desc = *sdesc;
++	*desc = sdesc;
+ 
+ 	src_ring->per_transfer_context[write_index] = per_transfer_context;
+ 
+-- 
+2.6.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
