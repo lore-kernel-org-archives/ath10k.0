@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZpbW5-0002NQ-C8
- for ath10k@lists.infradead.org; Fri, 23 Oct 2015 12:32:17 +0000
+ id 1ZpbVe-0002JD-BF
+ for ath10k@lists.infradead.org; Fri, 23 Oct 2015 12:31:50 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2 2/4] ath10k: remove send completion validation in diag
- read/write
-Date: Fri, 23 Oct 2015 18:01:04 +0530
-Message-ID: <1445603466-14138-3-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1445603466-14138-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1445603466-14138-1-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2 0/4] ath10k: remove shadow copy engine descriptors
+Date: Fri, 23 Oct 2015 18:01:02 +0530
+Message-ID: <1445603466-14138-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,53 +23,24 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-CE diag window access is serialized (it has to be by design) so
-there's no way to get a different send completion. so there's no
-need for post completion validation.
+Below series remove shadow copy of CE descriptors for source ring.
+Removing the shadow copy should reduce d-cache pressure and memory
+usage of the driver.
 
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 20 --------------------
- 1 file changed, 20 deletions(-)
+v2:
+ * Since ce_send is not using shadow, fix send completion as well.
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 5c05b0c..6f3c3e0 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -920,16 +920,6 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- 			}
- 		}
- 
--		if (nbytes != completed_nbytes) {
--			ret = -EIO;
--			goto done;
--		}
--
--		if (buf != (u32)address) {
--			ret = -EIO;
--			goto done;
--		}
--
- 		i = 0;
- 		while (ath10k_ce_completed_recv_next_nolock(ce_diag, NULL, &buf,
- 							    &completed_nbytes,
-@@ -1094,16 +1084,6 @@ static int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 			}
- 		}
- 
--		if (nbytes != completed_nbytes) {
--			ret = -EIO;
--			goto done;
--		}
--
--		if (buf != ce_data) {
--			ret = -EIO;
--			goto done;
--		}
--
- 		i = 0;
- 		while (ath10k_ce_completed_recv_next_nolock(ce_diag, NULL, &buf,
- 							    &completed_nbytes,
+Rajkumar Manoharan (4):
+  ath10k: use local memory instead of shadow descriptor in ce_send
+  ath10k: remove send completion validation in diag read/write
+  ath10k: cleanup copy engine send completion
+  ath10k: remove shadow copy of CE descriptors for source ring
+
+ drivers/net/wireless/ath/ath10k/ce.c  | 57 +++++------------------------------
+ drivers/net/wireless/ath/ath10k/ce.h  | 16 ++--------
+ drivers/net/wireless/ath/ath10k/pci.c | 53 +++++---------------------------
+ 3 files changed, 17 insertions(+), 109 deletions(-)
+
 -- 
 2.6.1
 
