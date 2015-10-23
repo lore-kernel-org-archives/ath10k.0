@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZpbWa-0002V6-Ta
- for ath10k@lists.infradead.org; Fri, 23 Oct 2015 12:32:49 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2 4/4] ath10k: remove shadow copy of CE descriptors for
- source ring
-Date: Fri, 23 Oct 2015 18:01:06 +0530
-Message-ID: <1445603466-14138-5-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1445603466-14138-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1445603466-14138-1-git-send-email-rmanohar@qti.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZphlE-0001GE-2Z
+ for ath10k@lists.infradead.org; Fri, 23 Oct 2015 19:12:21 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 5DC4D40A5C4
+ for <ath10k@lists.infradead.org>; Fri, 23 Oct 2015 12:11:57 -0700 (PDT)
+From: Ben Greear <greearb@candelatech.com>
+Subject: QCA 4x4 board.bin issues.
+Message-ID: <562A867C.4030901@candelatech.com>
+Date: Fri, 23 Oct 2015 12:11:56 -0700
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,109 +21,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: ath10k <ath10k@lists.infradead.org>
 
-For the messages from host to target, shadow copy of CE descriptors
-are maintained in source ring. Before writing actual CE descriptor,
-first shadow copy is filled and then it is copied to CE address space.
-To optimize in download path and to reduce d-cache pressure, removing
-shadow copy of CE descriptors. This will also reduce driver memory
-consumption by 33KB during on device probing.
+Hello!
 
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/ce.c  | 22 ----------------------
- drivers/net/wireless/ath/ath10k/ce.h  |  6 ------
- drivers/net/wireless/ath/ath10k/pci.c |  5 -----
- 3 files changed, 33 deletions(-)
+I'm trying to bring up a qca99x0 NIC from Compex, based on CUS239 from what
+I can tell,  on today's ath.git and stock firmware from ath10k-firmware tree.
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index 52021a9..edf3629 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -921,27 +921,6 @@ ath10k_ce_alloc_src_ring(struct ath10k *ar, unsigned int ce_id,
- 			src_ring->base_addr_ce_space_unaligned,
- 			CE_DESC_RING_ALIGN);
- 
--	/*
--	 * Also allocate a shadow src ring in regular
--	 * mem to use for faster access.
--	 */
--	src_ring->shadow_base_unaligned =
--		kmalloc((nentries * sizeof(struct ce_desc) +
--			 CE_DESC_RING_ALIGN), GFP_KERNEL);
--	if (!src_ring->shadow_base_unaligned) {
--		dma_free_coherent(ar->dev,
--				  (nentries * sizeof(struct ce_desc) +
--				   CE_DESC_RING_ALIGN),
--				  src_ring->base_addr_owner_space,
--				  src_ring->base_addr_ce_space);
--		kfree(src_ring);
--		return ERR_PTR(-ENOMEM);
--	}
--
--	src_ring->shadow_base = PTR_ALIGN(
--			src_ring->shadow_base_unaligned,
--			CE_DESC_RING_ALIGN);
--
- 	return src_ring;
- }
- 
-@@ -1120,7 +1099,6 @@ void ath10k_ce_free_pipe(struct ath10k *ar, int ce_id)
- 	struct ath10k_ce_pipe *ce_state = &ar_pci->ce_states[ce_id];
- 
- 	if (ce_state->src_ring) {
--		kfree(ce_state->src_ring->shadow_base_unaligned);
- 		dma_free_coherent(ar->dev,
- 				  (ce_state->src_ring->nentries *
- 				   sizeof(struct ce_desc) +
-diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index 67f90ec..47b734c 100644
---- a/drivers/net/wireless/ath/ath10k/ce.h
-+++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -100,12 +100,6 @@ struct ath10k_ce_ring {
- 
- 	/* CE address space */
- 	u32 base_addr_ce_space;
--	/*
--	 * Start of shadow copy of descriptors, within regular memory.
--	 * Aligned to descriptor-size boundary.
--	 */
--	void *shadow_base_unaligned;
--	struct ce_desc *shadow_base;
- 
- 	/* keep last */
- 	void *per_transfer_context[0];
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 8100025..4a65385 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1594,7 +1594,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
- 	struct ath10k_pci *ar_pci;
- 	struct ath10k_ce_pipe *ce_pipe;
- 	struct ath10k_ce_ring *ce_ring;
--	struct ce_desc *ce_desc;
- 	struct sk_buff *skb;
- 	int i;
- 
-@@ -1609,10 +1608,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
- 	if (!pci_pipe->buf_sz)
- 		return;
- 
--	ce_desc = ce_ring->shadow_base;
--	if (WARN_ON(!ce_desc))
--		return;
--
- 	for (i = 0; i < ce_ring->nentries; i++) {
- 		skb = ce_ring->per_transfer_context[i];
- 		if (!skb)
+I tried naming the boardData_AR900B_CUS239_5G_v2_001.bin to board-2.bin
+but it evidently has bad magic.
+
+Should it actually be board-2.bin, or named something differently?
+
+Thanks,
+Ben
+
 -- 
-2.6.1
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
