@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZpUrJ-0005Zx-L3
- for ath10k@lists.infradead.org; Fri, 23 Oct 2015 05:25:47 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Adjust the RX packet pad offset at QCA99X0 4addr
- mode
-References: <1445575816-4500-1-git-send-email-yanbol@qca.qualcomm.com>
-Date: Fri, 23 Oct 2015 08:24:49 +0300
-In-Reply-To: <1445575816-4500-1-git-send-email-yanbol@qca.qualcomm.com> (Yanbo
- Li's message of "Thu, 22 Oct 2015 21:50:16 -0700")
-Message-ID: <877fme40ny.fsf@kamboji.qca.qualcomm.com>
+ id 1ZpVSc-0005kK-MH
+ for ath10k@lists.infradead.org; Fri, 23 Oct 2015 06:04:19 +0000
+From: Vivek Natarajan <nataraja@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Add support for pktlog in QCA99X0
+Date: Fri, 23 Oct 2015 11:33:23 +0530
+Message-ID: <1445580203-3273-1-git-send-email-nataraja@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,78 +20,94 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yanbo Li <yanbol@qca.qualcomm.com>
-Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: kvalo@qca.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Yanbo Li <yanbol@qca.qualcomm.com> writes:
+This patch adds pktlog support for 10.4 fw versions.
 
-> The QCA99X0 4 addresses RX packets pad 2 bytes at the beginning of
-> MSDU instead the end of ieee80211 header to keep align. The currently
-> RX data path can't parse the header correctly in this case. This
-> patch fixes it for QCA99X0
->
-> Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 13de3617d5ab..3c1d07c191d5 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -58,6 +58,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->  		.otp_exe_param = 0,
->  		.channel_counters_freq_hz = 88000,
->  		.max_probe_resp_desc_thres = 0,
-> +		.loc_4addr_pad = ATH10K_4ADDR_PAD_AFT,
->  		.fw = {
->  			.dir = QCA988X_HW_2_0_FW_DIR,
->  			.fw = QCA988X_HW_2_0_FW_FILE,
-> @@ -75,6 +76,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->  		.otp_exe_param = 0,
->  		.channel_counters_freq_hz = 88000,
->  		.max_probe_resp_desc_thres = 0,
-> +		.loc_4addr_pad = ATH10K_4ADDR_PAD_AFT,
->  		.fw = {
->  			.dir = QCA6174_HW_2_1_FW_DIR,
->  			.fw = QCA6174_HW_2_1_FW_FILE,
-> @@ -92,6 +94,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->  		.otp_exe_param = 0,
->  		.channel_counters_freq_hz = 88000,
->  		.max_probe_resp_desc_thres = 0,
-> +		.loc_4addr_pad = ATH10K_4ADDR_PAD_AFT,
->  		.fw = {
->  			.dir = QCA6174_HW_3_0_FW_DIR,
->  			.fw = QCA6174_HW_3_0_FW_FILE,
-> @@ -109,6 +112,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->  		.otp_exe_param = 0,
->  		.channel_counters_freq_hz = 88000,
->  		.max_probe_resp_desc_thres = 0,
-> +		.loc_4addr_pad = ATH10K_4ADDR_PAD_AFT,
->  		.fw = {
->  			/* uses same binaries as hw3.0 */
->  			.dir = QCA6174_HW_3_0_FW_DIR,
-> @@ -128,6 +132,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->  		.continuous_frag_desc = true,
->  		.channel_counters_freq_hz = 150000,
->  		.max_probe_resp_desc_thres = 24,
-> +		.loc_4addr_pad = ATH10K_4ADDR_PAD_PRE,
->  		.fw = {
->  			.dir = QCA99X0_HW_2_0_FW_DIR,
->  			.fw = QCA99X0_HW_2_0_FW_FILE,
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 7cc7cdd56c95..b4db8bbf85ce 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -646,6 +646,9 @@ struct ath10k {
->  		 */
->  		u32 max_probe_resp_desc_thres;
->  
-> +		/* The padding bytes's location is different on various chips */
-> +		enum ath10k_loc_4addr_pad loc_4addr_pad;
+Signed-off-by: Vivek Natarajan <nataraja@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/hw.h  | 10 ++++++++++
+ drivers/net/wireless/ath/ath10k/pci.c | 22 ++++++++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
-I think that loc prefix is a bit misleading, it reminds me of
-locationing/positioning etc. What about ath10k_hw_4addr_pad?
-
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 2d87737..2fd5dc1 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -261,6 +261,16 @@ struct ath10k_pktlog_hdr {
+ 	u8 payload[0];
+ } __packed;
+ 
++struct ath10k_pktlog_10_4_hdr {
++	__le16 flags;
++	__le16 missed_cnt;
++	__le16 log_type;
++	__le16 size;
++	__le32 timestamp;
++	__le32 type_specific_data;
++	u8 payload[0];
++} __packed;
++
+ enum ath10k_hw_rate_ofdm {
+ 	ATH10K_HW_RATE_OFDM_48M = 0,
+ 	ATH10K_HW_RATE_OFDM_24M,
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 5c05b0c..eb460d9 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -108,6 +108,7 @@ static void ath10k_pci_htc_tx_cb(struct ath10k_ce_pipe *ce_state);
+ static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state);
+ static void ath10k_pci_htt_tx_cb(struct ath10k_ce_pipe *ce_state);
+ static void ath10k_pci_htt_rx_cb(struct ath10k_ce_pipe *ce_state);
++static void ath10k_pci_pktlog_rx_cb(struct ath10k_ce_pipe *ce_state);
+ 
+ static const struct ce_attr host_ce_config_wlan[] = {
+ 	/* CE0: host->target HTC control and raw streams */
+@@ -186,6 +187,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+ 		.src_nentries = 0,
+ 		.src_sz_max = 2048,
+ 		.dest_nentries = 128,
++		.recv_cb = ath10k_pci_pktlog_rx_cb,
+ 	},
+ 
+ 	/* CE9 target autonomous qcache memcpy */
+@@ -1224,12 +1226,32 @@ static void ath10k_pci_process_rx_cb(struct ath10k_ce_pipe *ce_state,
+ 	ath10k_pci_rx_post_pipe(pipe_info);
+ }
+ 
++static void ath10k_pci_pktlog_completion_handler(struct ath10k *ar,
++						struct sk_buff *skb)
++{
++	struct ath10k_pktlog_10_4_hdr *hdr =
++		(struct ath10k_pktlog_10_4_hdr *)skb->data;
++
++	trace_ath10k_htt_pktlog(ar, hdr->payload,
++				sizeof(*hdr) + __le16_to_cpu(hdr->size));
++
++	dev_kfree_skb_any(skb);
++}
++
+ /* Called by lower (CE) layer when data is received from the Target. */
+ static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state)
+ {
+ 	ath10k_pci_process_rx_cb(ce_state, ath10k_htc_rx_completion_handler);
+ }
+ 
++/* Called by lower (CE) layer when data is received from the Target.
++ * Only 10.4 firmware uses separate CE to transfer pktlog data.
++ */
++static void ath10k_pci_pktlog_rx_cb(struct ath10k_ce_pipe *ce_state)
++{
++	ath10k_pci_process_rx_cb(ce_state, ath10k_pci_pktlog_completion_handler);
++}
++
+ /* Called by lower (CE) layer when a send to HTT Target completes. */
+ static void ath10k_pci_htt_tx_cb(struct ath10k_ce_pipe *ce_state)
+ {
 -- 
-Kalle Valo
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
