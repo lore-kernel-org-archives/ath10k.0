@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zqc5a-0006v1-EV
- for ath10k@lists.infradead.org; Mon, 26 Oct 2015 07:21:09 +0000
-Received: by wicll6 with SMTP id ll6so100594357wic.1
- for <ath10k@lists.infradead.org>; Mon, 26 Oct 2015 00:20:29 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <562C5328.4060002@gmx.net>
-References: <562C5328.4060002@gmx.net>
-Date: Mon, 26 Oct 2015 08:20:29 +0100
-Message-ID: <CA+BoTQ=BXTSB0ZMJ9v4kBoGN1MC3TjZvjkqx2ndn0hjbPM7z3A@mail.gmail.com>
-Subject: Re: Support for QCA6174 [168c:003e]
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1Zqdz2-0007a2-UO
+ for ath10k@lists.infradead.org; Mon, 26 Oct 2015 09:22:29 +0000
+Received: by pacfa8 with SMTP id fa8so4148199pac.0
+ for <ath10k@lists.infradead.org>; Mon, 26 Oct 2015 02:22:07 -0700 (PDT)
+From: manikanta.pubbisetty@gmail.com
+Subject: [PATCH] ath10k: update antenna configuration after setting in fw
+Date: Mon, 26 Oct 2015 14:52:10 +0530
+Message-Id: <1445851330-18736-1-git-send-email-manikanta.pubbisetty@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,83 +17,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michael Krupp <michaelkrupp@gmx.net>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Manikanta Pubbisetty <manikanta.pubbisetty@gmail.com>, linux-wireless@vger.kernel.org
 
-T24gMjUgT2N0b2JlciAyMDE1IGF0IDA0OjU3LCBNaWNoYWVsIEtydXBwIDxtaWNoYWVsa3J1cHBA
-Z214Lm5ldD4gd3JvdGU6Cj4gSGVsbG8sCj4KPiBJIGp1c3QgYm91Z2h0IGEgQXNwaXJlIFZONy03
-OTJHLCBidXQgc28gZmFyIEkgd2FzIG5vdCBhYmxlIHRvIGdldCB3aXJlbGVzcwo+IHdvcmtpbmcu
-Cj4gVGhlIGNoaXAgcmVwb3J0cyBhcyBRQ0E2MTc0IFsxNjhjOjAwM2VdIGFuZCBpdCBsb29rcyBs
-aWtlIHRoZSBib2FyZC5iaW4KPiBjYW5ub3QgYmUgbG9hZGVkOgo+Cj4gICAgIE9jdCAyNSAwNDoy
-NzowNSBkZWJpYW4ga2VybmVsOiBbIDQ4MzMuOTAyNDU0XSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAu
-MDoKPiBsaW1pdGluZyBpcnEgbW9kZSB0bzogMQo+ICAgICBPY3QgMjUgMDQ6Mjc6MDUgZGViaWFu
-IGtlcm5lbDogWyA0ODMzLjkwMjQ2MV0gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6Cj4gcGNpIGly
-cSBsZWdhY3kgaW50ZXJydXB0cyAwIGlycV9tb2RlIDEgcmVzZXRfbW9kZSAwCj4gICAgIE9jdCAy
-NSAwNDoyNzowNSBkZWJpYW4ga2VybmVsOiBbIDQ4MzQuMTYyMjM2XSBhdGgxMGtfcGNpIDAwMDA6
-MDc6MDAuMDoKPiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IgYXRoMTBrL2NhbC1wY2ktMDAwMDow
-NzowMC4wLmJpbiBmYWlsZWQgd2l0aCBlcnJvcgo+IC0yCj4gICAgIE9jdCAyNSAwNDoyNzowNSBk
-ZWJpYW4ga2VybmVsOiBbIDQ4MzQuMTYyMjUwXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDoKPiBE
-aXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPiBhdGgxMGsvUUNBNjE3NC9odzMuMC9ib2FyZC1wY2kt
-MTY4YzowMDNlOjExYWQ6MDgwNy5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPiAgICAgT2N0IDI1
-IDA0OjI3OjA1IGRlYmlhbiBrZXJuZWw6IFsgNDgzNC4xNjIyNTNdIGF0aDEwa19wY2kgMDAwMDow
-NzowMC4wOgo+IGZhaWxlZCB0byBsb2FkIHNwZWMgYm9hcmQgZmlsZSwgZmFsbGluZyBiYWNrIHRv
-IGdlbmVyaWM6IC0yCj4gICAgIE9jdCAyNSAwNDoyNzowNSBkZWJpYW4ga2VybmVsOiBbIDQ4MzQu
-MTYyMjgzXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDoKPiBEaXJlY3QgZmlybXdhcmUgbG9hZCBm
-b3IgYXRoMTBrL1FDQTYxNzQvaHczLjAvZmlybXdhcmUtNS5iaW4gZmFpbGVkIHdpdGgKPiBlcnJv
-ciAtMgo+ICAgICBPY3QgMjUgMDQ6Mjc6MDUgZGViaWFuIGtlcm5lbDogWyA0ODM0LjE2MjI4Nl0g
-YXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6Cj4gY291bGQgbm90IGZldGNoIGZpcm13YXJlIGZpbGUg
-J2F0aDEway9RQ0E2MTc0L2h3My4wL2Zpcm13YXJlLTUuYmluJzogLTIKPiAgICAgT2N0IDI1IDA0
-OjI3OjA3IGRlYmlhbiBrZXJuZWw6IFsgNDgzNi4yODA0MDldIGF0aDEwa19wY2kgMDAwMDowNzow
-MC4wOgo+IHFjYTYxNzQgaHczLjIgKDB4MDUwMzAwMDAsIDB4MDAzNDBhZmYsIDE2OGM6MDAzZTox
-MWFkOjA4MDcgZmFsbGJhY2spIGZ3Cj4gV0xBTi5STS4yLjAtMDAxODAtUUNBUk1TV1BaLTEgYXBp
-IDQgaHR0IDMuMjYgd21pIDQgY2FsIG90cCBtYXhfc3RhIDMyCj4gICAgIE9jdCAyNSAwNDoyNzow
-NyBkZWJpYW4ga2VybmVsOiBbIDQ4MzYuMjgwNDEzXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDoK
-PiBkZWJ1ZyAwIGRlYnVnZnMgMCB0cmFjaW5nIDAgZGZzIDAgdGVzdG1vZGUgMAo+ICAgICBPY3Qg
-MjUgMDQ6Mjc6MDggZGViaWFuIGtlcm5lbDogWyA0ODM3LjI3ODUwOF0gYXRoMTBrX3BjaSAwMDAw
-OjA3OjAwLjA6Cj4gc3VzcGVuZCB0aW1lZCBvdXQgLSB0YXJnZXQgcGF1c2UgZXZlbnQgbmV2ZXIg
-Y2FtZQo+ICAgICBPY3QgMjUgMDQ6Mjc6MDggZGViaWFuIHN5c3RlbWRbMV06IFN0YXJ0aW5nIExv
-YWQvU2F2ZSBSRiBLaWxsIFN3aXRjaAo+IFN0YXR1cy4uLgo+ICAgICBPY3QgMjUgMDQ6Mjc6MDgg
-ZGViaWFuIGtlcm5lbDogWyA0ODM3LjM2NzMwMl0gYXRoOiBFRVBST00gcmVnZG9tYWluOgo+IDB4
-NmMKPiAgICAgT2N0IDI1IDA0OjI3OjA4IGRlYmlhbiBrZXJuZWw6IFsgNDgzNy4zNjczMDRdIGF0
-aDogRUVQUk9NIGluZGljYXRlcyB3ZQo+IHNob3VsZCBleHBlY3QgYSBkaXJlY3QgcmVncGFpciBt
-YXAKPiAgICAgT2N0IDI1IDA0OjI3OjA4IGRlYmlhbiBrZXJuZWw6IFsgNDgzNy4zNjczMDZdIGF0
-aDogQ291bnRyeSBhbHBoYTIgYmVpbmcKPiB1c2VkOiAwMAo+ICAgICBPY3QgMjUgMDQ6Mjc6MDgg
-ZGViaWFuIGtlcm5lbDogWyA0ODM3LjM2NzMwN10gYXRoOiBSZWdwYWlyIHVzZWQ6IDB4NmMKPiAg
-ICAgT2N0IDI1IDA0OjI3OjA4IGRlYmlhbiBrZXJuZWw6IFsgNDgzNy4zNjkwMDhdIGF0aDEwa19w
-Y2kgMDAwMDowNzowMC4wCj4gd2xwN3MwOiByZW5hbWVkIGZyb20gd2xhbjAKPiAgICAgT2N0IDI1
-IDA0OjI3OjA4IGRlYmlhbiBzeXN0ZW1kWzFdOiBTdGFydGVkIExvYWQvU2F2ZSBSRiBLaWxsIFN3
-aXRjaAo+IFN0YXR1cy4KPgo+Cj4gSSBhbHNvIHRyaWVkIHJlbmFtaW5nIC8gc3ltbGlua2luZyB0
-aGUgZmlybXdhcmUtNC5iaW4gdG8gZmlybXdhcmUtNS5iaW4sIGJ1dAo+IHRoYXQgZG9lcyBub3Qg
-c2VlbSB0byBoYXZlIGFueSBlZmZlY3QsCj4gb3RoZXIgdGhhbiBnZXR0aW5nIHJpZCBvZiB0aGUg
-ZXJyb3IgbWVzc2FnZSBvbiBsaW5lcyA2IGFuZCA3LgoKYXRoMTBrIGtlZXBzIGJhY2t3YXJkIGNv
-bXBhdGliaWxpdHkgd2l0aCB1c2Vyc3BhY2UgYW5kIGl0IGhhcyBhCmZhbGxiYWNrIG1lY2hhbmlz
-bSB3aGVuIHRyeWluZyB0byBmaW5kIGZpcm13YXJlIGZpbGVzLiBUaGF0IHdoeSB5b3UKc2VlIHRo
-ZXNlICJlcnJvciIgbWVzc2FnZXMuCgpJdCBkb2VzIGxvYWQgdGhlIGJvYXJkLmJpbi4gSWYgaXQg
-ZGlkbid0IGZpbmQgYW55IGJvYXJkLmJpbiBpdCB3b3VsZApub3QgcmVnaXN0ZXIgYSB3aXBoeSBh
-bmQgeW91IHdvdWxkIG5vdCBzZWUgYSB3aXJlbGVzcyBpbnRlcmZhY2Ugb24KeW91ciBzeXN0ZW0u
-CgoKPiBBbHNvIGZvbGxvd2VkIHRoZSAncWNhNjE2NCBzdXBwb3J0JyBkaXNjdXNzaW9uLCBidXQg
-c3RpbGwgY291bGQgbm90IGdldCBpdAo+IHdvcmtpbmc6Cj4gICogaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE1LUF1Z3VzdC8wMDU3NTIuaHRtbAo+Cj4KPiBJ
-IHRyaWVkIHNldmVyYWwga2VybmVsIHZlcnNpb25zLCBzdGFydGluZyBmcm9tIDQuMi4wIChkZWJp
-YW4pIHVwIHRvIGxhdGVzdAo+IDQuMi40IChrZXJuZWwub3JnKS4KPiBBbGwgb2YgdGhlbSBzZWVt
-IHRvIGluY2x1ZGUgdGhlIHBhdGNoIG1lbnRpb25lZCBpbiB0aGUgdGhyZWFkIGkgbGlua2VkCj4g
-ZXJsaWVyOgo+ICogaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8y
-MDE1LUF1Z3VzdC8wMDU3NzUuaHRtbAo+Cj4KPiBXaGVuIHRyeWluZyB0byAndXAnIHRoZSBkZXZp
-Y2UgdmlhICdpZmNvbmZpZyB3bHA3czAgdXAnOgo+Cj4gICAgIE9jdCAyNSAwNDozMTozNiBkZWJp
-YW4ga2VybmVsOiBbIDUxMDQuNTcwMDkyXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDoKPiBmYWls
-ZWQgdG8gZW5hYmxlIGFkYXB0aXZlIHFjczogLTExCj4gICAgIE9jdCAyNSAwNDozMTozOSBkZWJp
-YW4ga2VybmVsOiBbIDUxMDcuNTY5NzQ4XSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDoKPiBjb3Vs
-ZCBub3Qgc3VzcGVuZCB0YXJnZXQgKC0xMSkKClRoaXMgc3VnZ2VzdHMgeW91IGhhdmUgYW4gaW52
-YWxpZCBib2FyZC5iaW4uIEZyb20gdGhlIGxvZ3MgaXQgbG9va3MKbGlrZSB5b3UgaGF2ZSBvbmUg
-b2YgdGhlIG5ld2VyIHFjYTYxNzQgY2hpcHMgKGh3My4yIGluc3RlYWQgb2YgaHcyLngpLgpJZiB5
-b3Ugd2FudCBpdCB0byBnZXQgaXQgd29ya2luZyBhc2FwIHlvdSdsbCBuZWVkIHRvIGxvb2sgaW50
-byB3aW5kb3dzCmRyaXZlciBmb3IgdGhlIGRldmljZSBhbmQgZXh0cmFjdCBhbiBhZGVxdWF0ZSBl
-ZXByb20vYm9hcmQgZmlsZSB3aGljaAptYXRjaGVzIHlvdXIgZGV2aWNlJ3Mgc3Vic3lzdGVtIHBy
-b2R1Y3QvdmVuZG9yIGlkcy4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCg==
+From: Manikanta Pubbisetty <manikanta.pubbisetty@gmail.com>
+
+Updating tx/rx antenna configuration in ath10k is done even before
+it is set in target. If setting of the tx/rx antenna config fails then
+we will maintain incorrect configuration in ath10k and APIs like
+get_antenna will provide incorrect information.
+
+This patch updates the antenna configuration in ath10k after it is set
+successfully in target.
+
+Signed-off-by: Manikanta Pubbisetty <manikanta.pubbisetty@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 484c1a1..8d0ce37 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3771,9 +3771,6 @@ static int __ath10k_set_antenna(struct ath10k *ar, u32 tx_ant, u32 rx_ant)
+ 	ath10k_check_chain_mask(ar, tx_ant, "tx");
+ 	ath10k_check_chain_mask(ar, rx_ant, "rx");
+ 
+-	ar->cfg_tx_chainmask = tx_ant;
+-	ar->cfg_rx_chainmask = rx_ant;
+-
+ 	if ((ar->state != ATH10K_STATE_ON) &&
+ 	    (ar->state != ATH10K_STATE_RESTARTED))
+ 		return 0;
+@@ -3794,6 +3791,9 @@ static int __ath10k_set_antenna(struct ath10k *ar, u32 tx_ant, u32 rx_ant)
+ 		return ret;
+ 	}
+ 
++	ar->cfg_tx_chainmask = tx_ant;
++	ar->cfg_rx_chainmask = rx_ant;
++
+ 	return 0;
+ }
+ 
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
