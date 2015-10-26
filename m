@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.net ([212.227.15.18])
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZqCRM-0007CN-Oc
- for ath10k@lists.infradead.org; Sun, 25 Oct 2015 03:57:53 +0000
-Received: from [192.168.178.29] ([178.4.164.14]) by mail.gmx.com (mrgmx003)
- with ESMTPSA (Nemesis) id 0MI4yc-1ZnSbv3jYs-003qz1 for
- <ath10k@lists.infradead.org>; Sun, 25 Oct 2015 04:57:30 +0100
-From: Michael Krupp <michaelkrupp@gmx.net>
-Subject: Support for QCA6174 [168c:003e]
-Message-ID: <562C5328.4060002@gmx.net>
-Date: Sun, 25 Oct 2015 04:57:28 +0100
+ id 1Zqc5a-0006v1-EV
+ for ath10k@lists.infradead.org; Mon, 26 Oct 2015 07:21:09 +0000
+Received: by wicll6 with SMTP id ll6so100594357wic.1
+ for <ath10k@lists.infradead.org>; Mon, 26 Oct 2015 00:20:29 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <562C5328.4060002@gmx.net>
+References: <562C5328.4060002@gmx.net>
+Date: Mon, 26 Oct 2015 08:20:29 +0100
+Message-ID: <CA+BoTQ=BXTSB0ZMJ9v4kBoGN1MC3TjZvjkqx2ndn0hjbPM7z3A@mail.gmail.com>
+Subject: Re: Support for QCA6174 [168c:003e]
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,153 +20,83 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Michael Krupp <michaelkrupp@gmx.net>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hello,
-
-I just bought a Aspire VN7-792G, but so far I was not able to get 
-wireless working.
-The chip reports as QCA6174 [168c:003e] and it looks like the board.bin 
-cannot be loaded:
-
-     Oct 25 04:27:05 debian kernel: [ 4833.902454] ath10k_pci 
-0000:07:00.0: limiting irq mode to: 1
-     Oct 25 04:27:05 debian kernel: [ 4833.902461] ath10k_pci 
-0000:07:00.0: pci irq legacy interrupts 0 irq_mode 1 reset_mode 0
-     Oct 25 04:27:05 debian kernel: [ 4834.162236] ath10k_pci 
-0000:07:00.0: Direct firmware load for ath10k/cal-pci-0000:07:00.0.bin 
-failed with error -2
-     Oct 25 04:27:05 debian kernel: [ 4834.162250] ath10k_pci 
-0000:07:00.0: Direct firmware load for 
-ath10k/QCA6174/hw3.0/board-pci-168c:003e:11ad:0807.bin failed with error -2
-     Oct 25 04:27:05 debian kernel: [ 4834.162253] ath10k_pci 
-0000:07:00.0: failed to load spec board file, falling back to generic: -2
-     Oct 25 04:27:05 debian kernel: [ 4834.162283] ath10k_pci 
-0000:07:00.0: Direct firmware load for 
-ath10k/QCA6174/hw3.0/firmware-5.bin failed with error -2
-     Oct 25 04:27:05 debian kernel: [ 4834.162286] ath10k_pci 
-0000:07:00.0: could not fetch firmware file 
-'ath10k/QCA6174/hw3.0/firmware-5.bin': -2
-     Oct 25 04:27:07 debian kernel: [ 4836.280409] ath10k_pci 
-0000:07:00.0: qca6174 hw3.2 (0x05030000, 0x00340aff, 168c:003e:11ad:0807 
-fallback) fw WLAN.RM.2.0-00180-QCARMSWPZ-1 api 4 htt 3.26 wmi 4 cal otp 
-max_sta 32
-     Oct 25 04:27:07 debian kernel: [ 4836.280413] ath10k_pci 
-0000:07:00.0: debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
-     Oct 25 04:27:08 debian kernel: [ 4837.278508] ath10k_pci 
-0000:07:00.0: suspend timed out - target pause event never came
-     Oct 25 04:27:08 debian systemd[1]: Starting Load/Save RF Kill 
-Switch Status...
-     Oct 25 04:27:08 debian kernel: [ 4837.367302] ath: EEPROM 
-regdomain: 0x6c
-     Oct 25 04:27:08 debian kernel: [ 4837.367304] ath: EEPROM indicates 
-we should expect a direct regpair map
-     Oct 25 04:27:08 debian kernel: [ 4837.367306] ath: Country alpha2 
-being used: 00
-     Oct 25 04:27:08 debian kernel: [ 4837.367307] ath: Regpair used: 0x6c
-     Oct 25 04:27:08 debian kernel: [ 4837.369008] ath10k_pci 
-0000:07:00.0 wlp7s0: renamed from wlan0
-     Oct 25 04:27:08 debian systemd[1]: Started Load/Save RF Kill Switch 
-Status.
-
-
-I also tried renaming / symlinking the firmware-4.bin to firmware-5.bin, 
-but that does not seem to have any effect,
-other than getting rid of the error message on lines 6 and 7.
-
-
-Also followed the 'qca6164 support' discussion, but still could not get 
-it working:
-  * http://lists.infradead.org/pipermail/ath10k/2015-August/005752.html
-
-
-I tried several kernel versions, starting from 4.2.0 (debian) up to 
-latest 4.2.4 (kernel.org).
-All of them seem to include the patch mentioned in the thread i linked 
-erlier:
-* http://lists.infradead.org/pipermail/ath10k/2015-August/005775.html
-
-
-When trying to 'up' the device via 'ifconfig wlp7s0 up':
-
-     Oct 25 04:31:36 debian kernel: [ 5104.570092] ath10k_pci 
-0000:07:00.0: failed to enable adaptive qcs: -11
-     Oct 25 04:31:39 debian kernel: [ 5107.569748] ath10k_pci 
-0000:07:00.0: could not suspend target (-11)
-
-
-
-I tired the following firmware images:
-  * https://github.com/kvalo/ath10k-firmware
-  * https://github.com/sumdog/ath10k-firmware
-  * 
-https://github.com/kvalo/ath10k-firmware/tree/b247aca880e2b228dddc647eb853e36a0627b189/ath10k/QCA6174/hw3.0
-  * 
-https://github.com/atondwal/ath10k-firmware/commit/88fca85ef59d708b9874e5b7885416b58aef9ee7
-
---
-
-     # uname -a
-     Linux debian 4.2.4 #2 SMP Sat Oct 24 23:56:33 CEST 2015 x86_64 
-GNU/Linux
-
-     # lspci
-     00:00.0 Host bridge: Intel Corporation Sky Lake Host Bridge/DRAM 
-Registers (rev 07)
-     00:01.0 PCI bridge: Intel Corporation Sky Lake PCIe Controller 
-(x16) (rev 07)
-     00:02.0 VGA compatible controller: Intel Corporation Device 191b 
-(rev 06)
-     00:14.0 USB controller: Intel Corporation Sunrise Point-H USB 3.0 
-xHCI Controller (rev 31)
-     00:14.2 Signal processing controller: Intel Corporation Sunrise 
-Point-H Thermal subsystem (rev 31)
-     00:15.0 Signal processing controller: Intel Corporation Sunrise 
-Point-H LPSS I2C Controller #0 (rev 31)
-     00:15.1 Signal processing controller: Intel Corporation Sunrise 
-Point-H LPSS I2C Controller #1 (rev 31)
-     00:16.0 Communication controller: Intel Corporation Sunrise Point-H 
-CSME HECI #1 (rev 31)
-     00:17.0 SATA controller: Intel Corporation Sunrise Point-H SATA 
-Controller [AHCI mode] (rev 31)
-     00:1c.0 PCI bridge: Intel Corporation Sunrise Point-H PCI Express 
-Root Port #3 (rev f1)
-     00:1c.3 PCI bridge: Intel Corporation Sunrise Point-H PCI Express 
-Root Port #4 (rev f1)
-     00:1f.0 ISA bridge: Intel Corporation Sunrise Point-H LPC 
-Controller (rev 31)
-     00:1f.2 Memory controller: Intel Corporation Sunrise Point-H PMC 
-(rev 31)
-     00:1f.3 Multimedia audio controller: Intel Corporation Sunrise 
-Point-H HD Audio (rev 31)
-     00:1f.4 SMBus: Intel Corporation Sunrise Point-H SMBus (rev 31)
-     01:00.0 3D controller: NVIDIA Corporation GM107M [GeForce GTX 950M] 
-(rev a2)
-     07:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac 
-Wireless Network Adapter (rev 32)
-     08:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. 
-RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 15)
-
-     # lshw -c network
-       *-network UNCLAIMED
-            description: Network controller
-            product: QCA6174 802.11ac Wireless Network Adapter
-            vendor: Qualcomm Atheros
-            physical id: 0
-            bus info: pci@0000:07:00.0
-            version: 32
-            width: 64 bits
-            clock: 33MHz
-            capabilities: pm msi pciexpress cap_list
-            configuration: latency=0
-            resources: memory:54000000-541fffff
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjUgT2N0b2JlciAyMDE1IGF0IDA0OjU3LCBNaWNoYWVsIEtydXBwIDxtaWNoYWVsa3J1cHBA
+Z214Lm5ldD4gd3JvdGU6Cj4gSGVsbG8sCj4KPiBJIGp1c3QgYm91Z2h0IGEgQXNwaXJlIFZONy03
+OTJHLCBidXQgc28gZmFyIEkgd2FzIG5vdCBhYmxlIHRvIGdldCB3aXJlbGVzcwo+IHdvcmtpbmcu
+Cj4gVGhlIGNoaXAgcmVwb3J0cyBhcyBRQ0E2MTc0IFsxNjhjOjAwM2VdIGFuZCBpdCBsb29rcyBs
+aWtlIHRoZSBib2FyZC5iaW4KPiBjYW5ub3QgYmUgbG9hZGVkOgo+Cj4gICAgIE9jdCAyNSAwNDoy
+NzowNSBkZWJpYW4ga2VybmVsOiBbIDQ4MzMuOTAyNDU0XSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAu
+MDoKPiBsaW1pdGluZyBpcnEgbW9kZSB0bzogMQo+ICAgICBPY3QgMjUgMDQ6Mjc6MDUgZGViaWFu
+IGtlcm5lbDogWyA0ODMzLjkwMjQ2MV0gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6Cj4gcGNpIGly
+cSBsZWdhY3kgaW50ZXJydXB0cyAwIGlycV9tb2RlIDEgcmVzZXRfbW9kZSAwCj4gICAgIE9jdCAy
+NSAwNDoyNzowNSBkZWJpYW4ga2VybmVsOiBbIDQ4MzQuMTYyMjM2XSBhdGgxMGtfcGNpIDAwMDA6
+MDc6MDAuMDoKPiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IgYXRoMTBrL2NhbC1wY2ktMDAwMDow
+NzowMC4wLmJpbiBmYWlsZWQgd2l0aCBlcnJvcgo+IC0yCj4gICAgIE9jdCAyNSAwNDoyNzowNSBk
+ZWJpYW4ga2VybmVsOiBbIDQ4MzQuMTYyMjUwXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDoKPiBE
+aXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPiBhdGgxMGsvUUNBNjE3NC9odzMuMC9ib2FyZC1wY2kt
+MTY4YzowMDNlOjExYWQ6MDgwNy5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPiAgICAgT2N0IDI1
+IDA0OjI3OjA1IGRlYmlhbiBrZXJuZWw6IFsgNDgzNC4xNjIyNTNdIGF0aDEwa19wY2kgMDAwMDow
+NzowMC4wOgo+IGZhaWxlZCB0byBsb2FkIHNwZWMgYm9hcmQgZmlsZSwgZmFsbGluZyBiYWNrIHRv
+IGdlbmVyaWM6IC0yCj4gICAgIE9jdCAyNSAwNDoyNzowNSBkZWJpYW4ga2VybmVsOiBbIDQ4MzQu
+MTYyMjgzXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDoKPiBEaXJlY3QgZmlybXdhcmUgbG9hZCBm
+b3IgYXRoMTBrL1FDQTYxNzQvaHczLjAvZmlybXdhcmUtNS5iaW4gZmFpbGVkIHdpdGgKPiBlcnJv
+ciAtMgo+ICAgICBPY3QgMjUgMDQ6Mjc6MDUgZGViaWFuIGtlcm5lbDogWyA0ODM0LjE2MjI4Nl0g
+YXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6Cj4gY291bGQgbm90IGZldGNoIGZpcm13YXJlIGZpbGUg
+J2F0aDEway9RQ0E2MTc0L2h3My4wL2Zpcm13YXJlLTUuYmluJzogLTIKPiAgICAgT2N0IDI1IDA0
+OjI3OjA3IGRlYmlhbiBrZXJuZWw6IFsgNDgzNi4yODA0MDldIGF0aDEwa19wY2kgMDAwMDowNzow
+MC4wOgo+IHFjYTYxNzQgaHczLjIgKDB4MDUwMzAwMDAsIDB4MDAzNDBhZmYsIDE2OGM6MDAzZTox
+MWFkOjA4MDcgZmFsbGJhY2spIGZ3Cj4gV0xBTi5STS4yLjAtMDAxODAtUUNBUk1TV1BaLTEgYXBp
+IDQgaHR0IDMuMjYgd21pIDQgY2FsIG90cCBtYXhfc3RhIDMyCj4gICAgIE9jdCAyNSAwNDoyNzow
+NyBkZWJpYW4ga2VybmVsOiBbIDQ4MzYuMjgwNDEzXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDoK
+PiBkZWJ1ZyAwIGRlYnVnZnMgMCB0cmFjaW5nIDAgZGZzIDAgdGVzdG1vZGUgMAo+ICAgICBPY3Qg
+MjUgMDQ6Mjc6MDggZGViaWFuIGtlcm5lbDogWyA0ODM3LjI3ODUwOF0gYXRoMTBrX3BjaSAwMDAw
+OjA3OjAwLjA6Cj4gc3VzcGVuZCB0aW1lZCBvdXQgLSB0YXJnZXQgcGF1c2UgZXZlbnQgbmV2ZXIg
+Y2FtZQo+ICAgICBPY3QgMjUgMDQ6Mjc6MDggZGViaWFuIHN5c3RlbWRbMV06IFN0YXJ0aW5nIExv
+YWQvU2F2ZSBSRiBLaWxsIFN3aXRjaAo+IFN0YXR1cy4uLgo+ICAgICBPY3QgMjUgMDQ6Mjc6MDgg
+ZGViaWFuIGtlcm5lbDogWyA0ODM3LjM2NzMwMl0gYXRoOiBFRVBST00gcmVnZG9tYWluOgo+IDB4
+NmMKPiAgICAgT2N0IDI1IDA0OjI3OjA4IGRlYmlhbiBrZXJuZWw6IFsgNDgzNy4zNjczMDRdIGF0
+aDogRUVQUk9NIGluZGljYXRlcyB3ZQo+IHNob3VsZCBleHBlY3QgYSBkaXJlY3QgcmVncGFpciBt
+YXAKPiAgICAgT2N0IDI1IDA0OjI3OjA4IGRlYmlhbiBrZXJuZWw6IFsgNDgzNy4zNjczMDZdIGF0
+aDogQ291bnRyeSBhbHBoYTIgYmVpbmcKPiB1c2VkOiAwMAo+ICAgICBPY3QgMjUgMDQ6Mjc6MDgg
+ZGViaWFuIGtlcm5lbDogWyA0ODM3LjM2NzMwN10gYXRoOiBSZWdwYWlyIHVzZWQ6IDB4NmMKPiAg
+ICAgT2N0IDI1IDA0OjI3OjA4IGRlYmlhbiBrZXJuZWw6IFsgNDgzNy4zNjkwMDhdIGF0aDEwa19w
+Y2kgMDAwMDowNzowMC4wCj4gd2xwN3MwOiByZW5hbWVkIGZyb20gd2xhbjAKPiAgICAgT2N0IDI1
+IDA0OjI3OjA4IGRlYmlhbiBzeXN0ZW1kWzFdOiBTdGFydGVkIExvYWQvU2F2ZSBSRiBLaWxsIFN3
+aXRjaAo+IFN0YXR1cy4KPgo+Cj4gSSBhbHNvIHRyaWVkIHJlbmFtaW5nIC8gc3ltbGlua2luZyB0
+aGUgZmlybXdhcmUtNC5iaW4gdG8gZmlybXdhcmUtNS5iaW4sIGJ1dAo+IHRoYXQgZG9lcyBub3Qg
+c2VlbSB0byBoYXZlIGFueSBlZmZlY3QsCj4gb3RoZXIgdGhhbiBnZXR0aW5nIHJpZCBvZiB0aGUg
+ZXJyb3IgbWVzc2FnZSBvbiBsaW5lcyA2IGFuZCA3LgoKYXRoMTBrIGtlZXBzIGJhY2t3YXJkIGNv
+bXBhdGliaWxpdHkgd2l0aCB1c2Vyc3BhY2UgYW5kIGl0IGhhcyBhCmZhbGxiYWNrIG1lY2hhbmlz
+bSB3aGVuIHRyeWluZyB0byBmaW5kIGZpcm13YXJlIGZpbGVzLiBUaGF0IHdoeSB5b3UKc2VlIHRo
+ZXNlICJlcnJvciIgbWVzc2FnZXMuCgpJdCBkb2VzIGxvYWQgdGhlIGJvYXJkLmJpbi4gSWYgaXQg
+ZGlkbid0IGZpbmQgYW55IGJvYXJkLmJpbiBpdCB3b3VsZApub3QgcmVnaXN0ZXIgYSB3aXBoeSBh
+bmQgeW91IHdvdWxkIG5vdCBzZWUgYSB3aXJlbGVzcyBpbnRlcmZhY2Ugb24KeW91ciBzeXN0ZW0u
+CgoKPiBBbHNvIGZvbGxvd2VkIHRoZSAncWNhNjE2NCBzdXBwb3J0JyBkaXNjdXNzaW9uLCBidXQg
+c3RpbGwgY291bGQgbm90IGdldCBpdAo+IHdvcmtpbmc6Cj4gICogaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE1LUF1Z3VzdC8wMDU3NTIuaHRtbAo+Cj4KPiBJ
+IHRyaWVkIHNldmVyYWwga2VybmVsIHZlcnNpb25zLCBzdGFydGluZyBmcm9tIDQuMi4wIChkZWJp
+YW4pIHVwIHRvIGxhdGVzdAo+IDQuMi40IChrZXJuZWwub3JnKS4KPiBBbGwgb2YgdGhlbSBzZWVt
+IHRvIGluY2x1ZGUgdGhlIHBhdGNoIG1lbnRpb25lZCBpbiB0aGUgdGhyZWFkIGkgbGlua2VkCj4g
+ZXJsaWVyOgo+ICogaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8y
+MDE1LUF1Z3VzdC8wMDU3NzUuaHRtbAo+Cj4KPiBXaGVuIHRyeWluZyB0byAndXAnIHRoZSBkZXZp
+Y2UgdmlhICdpZmNvbmZpZyB3bHA3czAgdXAnOgo+Cj4gICAgIE9jdCAyNSAwNDozMTozNiBkZWJp
+YW4ga2VybmVsOiBbIDUxMDQuNTcwMDkyXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDoKPiBmYWls
+ZWQgdG8gZW5hYmxlIGFkYXB0aXZlIHFjczogLTExCj4gICAgIE9jdCAyNSAwNDozMTozOSBkZWJp
+YW4ga2VybmVsOiBbIDUxMDcuNTY5NzQ4XSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDoKPiBjb3Vs
+ZCBub3Qgc3VzcGVuZCB0YXJnZXQgKC0xMSkKClRoaXMgc3VnZ2VzdHMgeW91IGhhdmUgYW4gaW52
+YWxpZCBib2FyZC5iaW4uIEZyb20gdGhlIGxvZ3MgaXQgbG9va3MKbGlrZSB5b3UgaGF2ZSBvbmUg
+b2YgdGhlIG5ld2VyIHFjYTYxNzQgY2hpcHMgKGh3My4yIGluc3RlYWQgb2YgaHcyLngpLgpJZiB5
+b3Ugd2FudCBpdCB0byBnZXQgaXQgd29ya2luZyBhc2FwIHlvdSdsbCBuZWVkIHRvIGxvb2sgaW50
+byB3aW5kb3dzCmRyaXZlciBmb3IgdGhlIGRldmljZSBhbmQgZXh0cmFjdCBhbiBhZGVxdWF0ZSBl
+ZXByb20vYm9hcmQgZmlsZSB3aGljaAptYXRjaGVzIHlvdXIgZGV2aWNlJ3Mgc3Vic3lzdGVtIHBy
+b2R1Y3QvdmVuZG9yIGlkcy4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
+MTBrCg==
