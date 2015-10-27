@@ -1,15 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.net ([212.227.17.20])
+Received: from mout.gmx.net ([212.227.15.18])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zr2oz-0003pX-OQ
- for ath10k@lists.infradead.org; Tue, 27 Oct 2015 11:53:46 +0000
-Message-ID: <562F65AF.8020905@gmx.net>
-Date: Tue, 27 Oct 2015 12:53:19 +0100
+ id 1Zr2wp-000883-2d
+ for ath10k@lists.infradead.org; Tue, 27 Oct 2015 12:01:51 +0000
+Message-ID: <562F6790.8070601@gmx.net>
+Date: Tue, 27 Oct 2015 13:01:20 +0100
 From: Michael Krupp <michaelkrupp@gmx.net>
 MIME-Version: 1.0
-Subject: Re: QCA6174 bringup
-References: <1445926088032-08658f66-eef54963-c02dda7f@gmail.com>
-In-Reply-To: <1445926088032-08658f66-eef54963-c02dda7f@gmail.com>
+Subject: Re: Support for QCA6174 [168c:003e]
+References: <562C5328.4060002@gmx.net>
+ <CA+BoTQ=BXTSB0ZMJ9v4kBoGN1MC3TjZvjkqx2ndn0hjbPM7z3A@mail.gmail.com>
+ <562E98AC.9010208@gmx.net>
+ <CA+BoTQm59x1KZGrkqXZAMfqoe5=Z03wszvWiNw+feqNinsa9Hw@mail.gmail.com>
+ <562F5E5D.5090205@gmx.net>
+ <CA+BoTQ=zyC4aGW+1HNG7d7Ae3yr6SCdt6YRYQ9rhK7iqokYMCg@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=zyC4aGW+1HNG7d7Ae3yr6SCdt6YRYQ9rhK7iqokYMCg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,66 +23,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6351504203306437615=="
+Content-Type: multipart/mixed; boundary="===============1971252828674312456=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ganesh GR <ganeshgr6@gmail.com>
+To: michal.kazior@tieto.com
 Cc: ath10k@lists.infradead.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============6351504203306437615==
+--===============1971252828674312456==
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="5AVmF9TNOgXj75cGAhNGOos5iXSjPgdSr"
+ boundary="5ah2VRfuKpui9eiDDq8qxLK7HpIh3MsKB"
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---5AVmF9TNOgXj75cGAhNGOos5iXSjPgdSr
+--5ah2VRfuKpui9eiDDq8qxLK7HpIh3MsKB
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Hello Ganesh,
+Hello Micha=C5=82,
+
+thank you for pointing me to those discussions.
 
 
-I downloaded the official Windows 10 driver from acer.com and extracted t=
-he
-setup file using InstallShield [1] Cab Viewer [2]. The 30-day trial versi=
-on
-is sufficient to do this.
-
-Inside the "main" setup file, there was another setup.exe for the atheros=
-
-driver itself. I extracted it using UniExtract [3].
-
-The inner setup file contained a couple of eeprom_* files inside the "dri=
-vers"
-directory. I then copied the one matching my device to "board.bin".
-
-In my case: /lib/firmware/ath10k/QCA6174/hw3.0/board.bin
+I will repeat my tests using iperf to also cover UDP, and will also try s=
+ome
+older kernel releases, pre-dating 3.19. Also I'll try another AP as menti=
+oned
+earlier.
 
 
 Michael
 
-[1] http://learn.flexerasoftware.com/IS-EVAL-InstallShield-Professional-D=
-E
-[2] http://helpnet.installshield.com/installshield22helplib/helplibrary/I=
-sCabView.htm
-[3] http://legroom.net/software/uniextract
+On 10/27/2015 12:27 PM, Michal Kazior wrote:
+> On 27 October 2015 at 12:22, Michael Krupp <michaelkrupp@gmx.net> wrote=
+:
+>> Hello Micha=C5=82
+>>
+>> yes, I checked the actual performance via netcat, scp and rsync. I'll =
+report
+>> back once I have tested against another AP.
+>=20
+> TCP performance is known to be tricky/poor in various scenarios. There
+> were some discussions in the past:
+>=20
+>  - http://lists.infradead.org/pipermail/ath10k/2015-October/006160.html=
 
-On 10/27/2015 07:07 AM, Ganesh GR wrote:
-> Hi Michael,
+>  - http://thread.gmane.org/gmane.linux.network/348420
 >=20
-> I am very excited to know how did you you extract board binary from win=
-dows driver, do you have windows driver source ?.
 >=20
-> Regards
-> Ganesh
+> Micha=C5=82
 >=20
-> Sent using CloudMagic <https://cloudmagic.com/k/d/mailapp?ct=3Dpi&cv=3D=
-6.0.64&pv=3D7.1.2>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 >=20
 
 
---5AVmF9TNOgXj75cGAhNGOos5iXSjPgdSr
+--5ah2VRfuKpui9eiDDq8qxLK7HpIh3MsKB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -85,25 +88,25 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCAAGBQJWL2WyAAoJEEI+U8JQBNx3eoUP/A20eRlsHIYCD/Wz12OOHr+O
-h8ADvUHV5h6ti9zlju/OYgfcbqt0CEiCCkEi9oY9RzkqrpsehZR1IdOAsL5+wzTI
-EFQ6IboOoDfQYvRitMJ9AcfB2XdH3/GCMnH2xExIDQdO+4fR3SkyAJDJM6QdMSBG
-N1zW0xbgunxDjKlPojtGC2Xazntp5WpntU8kYI6RRhLPSZdxtciYEpnNZzuinq8m
-6BG/wabjqMtw3nQNryAEpgirsmGQ1RUMLYywA5TJvC3lEBKYKP9DHcRvSsiZvotO
-VhAkJGORh/bdeKbDEneJPaAc6ObGuOJ1dfRf0Sri1/gCpILEObzX+c2eV0AJ+fP/
-ou/T7tyrDct0pMUeBJU3XN1NaafepkI1QWacgaoxCs+toJAisuN2reeT9pr/RJsU
-MNETWOYV43WtI86FWJmYfgRtvHmQm5UE3c4h7EkC/39sKqW/FOntoDd8hP5HGAQ6
-Jw17jqsp1ouWFgS9xKE2IpV5usQpJjtWdjxSH3uWPD0j9BuFQzquJSKwFmt5I4wb
-5CSLu75CG9DxTBwloD6SZlxu25zhifdZDeftbiV/qXrRPGC9h3OtcokbOyc5Pu3L
-LPZz2BPY8IyAY40zayfjbR4b7VSokHfbjqbvkDV1Ec0x7J+38wacN6IHgq+Vnb80
-jP5Yh+zcV5U81on155TV
-=C49m
+iQIcBAEBCAAGBQJWL2eTAAoJEEI+U8JQBNx3i9IP/2vHJwFmmhyS7pnrjzx1dyU/
+ln6mz+c7cI+bD9q2c7aZN3x1uWcQByEoMqK9XqFVZxB/w6+vMjXFE2ptM7zkbKf0
+CwrXLQDEC+uiafLXLZ+4Qt771s2yLcjRwxQU9tZkOCL0RMEjeSn202lKgL2WK0X2
+QZz5rtTtcGehnwT7KF8lnsdFaBKbPlsyKeyO2x6QDTEsP1UImbDSsxQR7W0nWo6z
+iSBoeKmbaIsVXz3SaFg2b3sM/Ty6OsxlF9v/q4n4vrJ6WG/Hs9dbJ86zoB6+RO3K
+XBKMdq+Zs7/rcu3Dlqsls95GENufcE7j3ag5MetvQ92F69y53nvAdeWqwz2ouwx1
+Liwpg6y/fxJZgmdY7x8iCya5IhIFr1aQPQS7/MICzNBfA7Az1lU8OM7d+Fltc1Zx
+Yu0gUm0HEJl/luLOU3jOgOh5Jax2JM18QhteIJulWv2qKlXNlplIS8o92eBfOfod
+Y/425SXQ5zJsOdwQJ9vwSlFISWIgf+/YJJyCCM8+H6oD+PEbcROFV0N3TZDTuSLS
+L4BjodS8PlDBA+cGTh973xqqfNg8aKepzYUk97ao1I2uYt5PL/6BmGtP99pwPhaJ
++xG6xZrp0D9KxV9Ppsl+WxFDsBKFvBGzGvZgFVamYRD60e0o18a43rerQZAOjigw
+YbFy/QHA5pM7u1dQQl14
+=5fkd
 -----END PGP SIGNATURE-----
 
---5AVmF9TNOgXj75cGAhNGOos5iXSjPgdSr--
+--5ah2VRfuKpui9eiDDq8qxLK7HpIh3MsKB--
 
 
---===============6351504203306437615==
+--===============1971252828674312456==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -114,4 +117,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---===============6351504203306437615==--
+--===============1971252828674312456==--
