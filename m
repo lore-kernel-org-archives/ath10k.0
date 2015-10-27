@@ -1,15 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-yk0-x22e.google.com ([2607:f8b0:4002:c07::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zr3HM-0003Ec-MH
- for ath10k@lists.infradead.org; Tue, 27 Oct 2015 12:23:08 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 4/4] ath10k: reload HT/VHT capabilities on antenna change
-Date: Tue, 27 Oct 2015 17:51:14 +0530
-Message-ID: <1445948474-16738-4-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1445948474-16738-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1445948474-16738-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1Zr6XP-0006Eg-8N
+ for ath10k@lists.infradead.org; Tue, 27 Oct 2015 15:51:52 +0000
+Received: by ykba4 with SMTP id a4so216684989ykb.3
+ for <ath10k@lists.infradead.org>; Tue, 27 Oct 2015 08:51:29 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <562E6727.3090504@candelatech.com>
+References: <CAGJdtRAxPKvNZAZK=YMTGd0mJKP=e2gatyofPz-1KpPj_kU5Rw@mail.gmail.com>
+ <562E42CB.4090809@candelatech.com>
+ <CAGJdtRDAZzcJG1Cx7TTHL0iPa6GP1jq3eQNf9qTwhn=pnzKqMg@mail.gmail.com>
+ <562E6727.3090504@candelatech.com>
+Date: Tue, 27 Oct 2015 23:51:29 +0800
+Message-ID: <CAGJdtRA7TRQ191U-U8z1K0rVRQQRAU6qBshVmhES--1kYGAayw@mail.gmail.com>
+Subject: Re: Specific MAC address impact performance
+From: Yu-Chieh <jay0607@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,108 +27,109 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
 
-To reflect configured antenna settings in HT/VHT MCS map,
-reload the HT/VHT capabilities upon antenna change.
+Hi Ben,
+i did some experiments today.
+1. change the node C to AP mode (using same MAC),  performance of A to B is good
+2. keep node C as adhoc mode but chaneg the cell-id and ssid.
+performance is deteriorated
+I am just wondering if any packet of adhoc mode(beacon? probe request?
+probe response) will screw up wifi network?
 
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 39 +++++++++++++++++++++++++----------
- 1 file changed, 28 insertions(+), 11 deletions(-)
+Thanks,
+Jay
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 2217494..5782ec9 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3897,6 +3897,29 @@ static struct ieee80211_sta_ht_cap ath10k_get_ht_cap(struct ath10k *ar)
- 	return ht_cap;
- }
- 
-+static void ath10k_mac_setup_ht_vht_cap(struct ath10k *ar)
-+{
-+	struct ieee80211_supported_band *band;
-+	struct ieee80211_sta_vht_cap vht_cap;
-+	struct ieee80211_sta_ht_cap ht_cap;
-+
-+	ht_cap = ath10k_get_ht_cap(ar);
-+	vht_cap = ath10k_create_vht_cap(ar);
-+
-+	if (ar->phy_capability & WHAL_WLAN_11G_CAPABILITY) {
-+		band = &ar->mac.sbands[IEEE80211_BAND_2GHZ];
-+		band->ht_cap = ht_cap;
-+
-+		/* Enable the VHT support at 2.4 GHz */
-+		band->vht_cap = vht_cap;
-+	}
-+	if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY) {
-+		band = &ar->mac.sbands[IEEE80211_BAND_5GHZ];
-+		band->ht_cap = ht_cap;
-+		band->vht_cap = vht_cap;
-+	}
-+}
-+
- static int __ath10k_set_antenna(struct ath10k *ar, u32 tx_ant, u32 rx_ant)
- {
- 	int ret;
-@@ -3929,6 +3952,9 @@ static int __ath10k_set_antenna(struct ath10k *ar, u32 tx_ant, u32 rx_ant)
- 		return ret;
- 	}
- 
-+	/* Reload HT/VHT capability */
-+	ath10k_mac_setup_ht_vht_cap(ar);
-+
- 	return 0;
- }
- 
-@@ -7090,8 +7116,6 @@ int ath10k_mac_register(struct ath10k *ar)
- 		WLAN_CIPHER_SUITE_AES_CMAC,
- 	};
- 	struct ieee80211_supported_band *band;
--	struct ieee80211_sta_vht_cap vht_cap;
--	struct ieee80211_sta_ht_cap ht_cap;
- 	void *channels;
- 	int ret;
- 
-@@ -7099,9 +7123,6 @@ int ath10k_mac_register(struct ath10k *ar)
- 
- 	SET_IEEE80211_DEV(ar->hw, ar->dev);
- 
--	ht_cap = ath10k_get_ht_cap(ar);
--	vht_cap = ath10k_create_vht_cap(ar);
--
- 	BUILD_BUG_ON((ARRAY_SIZE(ath10k_2ghz_channels) +
- 		      ARRAY_SIZE(ath10k_5ghz_channels)) !=
- 		     ATH10K_NUM_CHANS);
-@@ -7120,10 +7141,6 @@ int ath10k_mac_register(struct ath10k *ar)
- 		band->channels = channels;
- 		band->n_bitrates = ath10k_g_rates_size;
- 		band->bitrates = ath10k_g_rates;
--		band->ht_cap = ht_cap;
--
--		/* Enable the VHT support at 2.4 GHz */
--		band->vht_cap = vht_cap;
- 
- 		ar->hw->wiphy->bands[IEEE80211_BAND_2GHZ] = band;
- 	}
-@@ -7142,11 +7159,11 @@ int ath10k_mac_register(struct ath10k *ar)
- 		band->channels = channels;
- 		band->n_bitrates = ath10k_a_rates_size;
- 		band->bitrates = ath10k_a_rates;
--		band->ht_cap = ht_cap;
--		band->vht_cap = vht_cap;
- 		ar->hw->wiphy->bands[IEEE80211_BAND_5GHZ] = band;
- 	}
- 
-+	ath10k_mac_setup_ht_vht_cap(ar);
-+
- 	ar->hw->wiphy->interface_modes =
- 		BIT(NL80211_IFTYPE_STATION) |
- 		BIT(NL80211_IFTYPE_AP) |
--- 
-2.6.2
-
+2015-10-27 1:47 GMT+08:00 Ben Greear <greearb@candelatech.com>:
+> On 10/26/2015 10:38 AM, Yu-Chieh wrote:
+>>
+>> Hi Ben,
+>> I also geuss that mignt be BSSID mask issue, however i have no idea
+>> about the patten
+>> I can find bssid_mask function in ath5k and ath9k but not in ath10k.
+>> Do your suggest me to use XX:XX:XX:YY:YY:XX, XX should be same and YY
+>> could be different?
+>
+>
+> Please try something that works properly with the way ath9k does it's
+> mask and see if that fixes your problem in ath10k.
+>
+> Basically, if your NIC has an address:  00 11 22 33 44 55, then change the
+> 33 and/or 44
+> octets when creating secondary vifs.  This assumes you buy your NICs in
+> batches and the
+> low octet is likely unique.
+>
+> As long as you have a unique octet among all of your radios in the local RF
+> environment, then you should be fine.
+>
+> Somewhere there was once a security related document on how to screw up
+> wifi networks by setting a mask to purposefully cause troubles....you might
+> try to find that and see if it provides some more precise details on
+> the masking algorithm.
+>
+> Thanks,
+> Ben
+>
+>>
+>> Thanks.
+>>
+>> Jay
+>>
+>> 2015-10-26 23:12 GMT+08:00 Ben Greear <greearb@candelatech.com>:
+>>>
+>>> Your probably have BSSID mask collision.  Rule of thumb is to leave
+>>> all octets the same except the second and third (from the right)
+>>> byte.  That usually gives you unique masks assuming the right-most
+>>> byte is unique for your radios.
+>>>
+>>> Thanks,
+>>> Ben
+>>>
+>>>
+>>>
+>>> On 10/26/2015 03:50 AM, Yu-Chieh wrote:
+>>>>
+>>>>
+>>>> Hi,
+>>>>
+>>>> I am working on IBSS mode by using ath10k. However i met some problem
+>>>> about the performance issue
+>>>> First of all, i set up two nodes, A (74:DA:38:19:19:DC) and B
+>>>> (74:DA:38:06:E1:96) and run iperf.
+>>>> i can get around 170 Mbps form A to B
+>>>>
+>>>> Then, i turn on the third node C(74:DA:38:06:E1:BE).
+>>>> The performance is deteriorated to around 30Mbps.
+>>>> If i turn off node C, the performance go back to 170 Mbps.
+>>>>
+>>>> At the same environment and same devices, i jsut change the mac of B
+>>>> to (74:DA:38:06:E1:B2)
+>>>> Everything is good.
+>>>> No matter node c is on or off, the performance always keep on 170Mbps.
+>>>>
+>>>> Anyone have any idea about this problem?
+>>>>
+>>>> Jay
+>>>>
+>>>> _______________________________________________
+>>>> ath10k mailing list
+>>>> ath10k@lists.infradead.org
+>>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>>>
+>>>
+>>> --
+>>> Ben Greear <greearb@candelatech.com>
+>>> Candela Technologies Inc  http://www.candelatech.com
+>>
+>>
+>
+>
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+>
 
 _______________________________________________
 ath10k mailing list
