@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zr9Y8-0001k3-KO
- for ath10k@lists.infradead.org; Tue, 27 Oct 2015 19:04:49 +0000
-Received: by wijp11 with SMTP id p11so228419139wij.0
- for <ath10k@lists.infradead.org>; Tue, 27 Oct 2015 12:04:27 -0700 (PDT)
+ id 1Zr9YD-0001mG-Tp
+ for ath10k@lists.infradead.org; Tue, 27 Oct 2015 19:04:54 +0000
+Received: by wicfv8 with SMTP id fv8so176589006wic.0
+ for <ath10k@lists.infradead.org>; Tue, 27 Oct 2015 12:04:32 -0700 (PDT)
 From: Punit Vara <punitvara@gmail.com>
-Subject: [RESEND PATCH 09/10] net: wireless: brcm80211: Remove unneeded
- variable ret_code returning 0
-Date: Wed, 28 Oct 2015 00:32:44 +0530
-Message-Id: <1445972565-14963-9-git-send-email-punitvara@gmail.com>
+Subject: [RESEND PATCH 10/10] net: wireless: ath: Remove unneeded variable ret
+ returning 0
+Date: Wed, 28 Oct 2015 00:32:45 +0530
+Message-Id: <1445972565-14963-10-git-send-email-punitvara@gmail.com>
 In-Reply-To: <1445972565-14963-1-git-send-email-punitvara@gmail.com>
 References: <1445972565-14963-1-git-send-email-punitvara@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -28,48 +28,40 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com
 Cc: netdev@vger.kernel.org, Punit Vara <punitvara@gmail.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-This patch is to the brcmsmac/stf.c that fixes up warning caught by
+This patch is to the ath5k/eeprom.c that fixes up warning caught by
 coccicheck:
 
--Unneeded variable: "ret_code". Return "0" on line 328
+-Unneeded variable: "ret". Return "0" on line 1733
 
-Remove unneccesary variable ret_code created to return zero.
+Remove unneccesary variable ret created to return zero.
 
 Signed-off-by: Punit Vara <punitvara@gmail.com>
 ---
- drivers/net/wireless/brcm80211/brcmsmac/stf.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath5k/eeprom.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/brcm80211/brcmsmac/stf.c b/drivers/net/wireless/brcm80211/brcmsmac/stf.c
-index dd91627..71ddf42 100644
---- a/drivers/net/wireless/brcm80211/brcmsmac/stf.c
-+++ b/drivers/net/wireless/brcm80211/brcmsmac/stf.c
-@@ -306,7 +306,6 @@ int brcms_c_stf_txchain_set(struct brcms_c_info *wlc, s32 int_val, bool force)
-  */
- int brcms_c_stf_ss_update(struct brcms_c_info *wlc, struct brcms_band *band)
- {
--	int ret_code = 0;
- 	u8 prev_stf_ss;
- 	u8 upd_stf_ss;
+diff --git a/drivers/net/wireless/ath/ath5k/eeprom.c b/drivers/net/wireless/ath/ath5k/eeprom.c
+index 94d34ee..673ab8d 100644
+--- a/drivers/net/wireless/ath/ath5k/eeprom.c
++++ b/drivers/net/wireless/ath/ath5k/eeprom.c
+@@ -1707,7 +1707,7 @@ ath5k_eeprom_read_spur_chans(struct ath5k_hw *ah)
+ 	struct ath5k_eeprom_info *ee = &ah->ah_capabilities.cap_eeprom;
+ 	u32 offset;
+ 	u16 val;
+-	int ret = 0, i;
++	int i;
  
-@@ -325,7 +324,7 @@ int brcms_c_stf_ss_update(struct brcms_c_info *wlc, struct brcms_band *band)
- 				    PHY_TXC1_MODE_SISO : PHY_TXC1_MODE_CDD;
- 	} else {
- 		if (wlc->band != band)
--			return ret_code;
-+			return 0;
- 		upd_stf_ss = (wlc->stf->txstreams == 1) ?
- 				PHY_TXC1_MODE_SISO : band->band_stf_ss_mode;
- 	}
-@@ -334,7 +333,7 @@ int brcms_c_stf_ss_update(struct brcms_c_info *wlc, struct brcms_band *band)
- 		brcms_b_band_stf_ss_set(wlc->hw, upd_stf_ss);
+ 	offset = AR5K_EEPROM_CTL(ee->ee_version) +
+ 				AR5K_EEPROM_N_CTLS(ee->ee_version);
+@@ -1730,7 +1730,7 @@ ath5k_eeprom_read_spur_chans(struct ath5k_hw *ah)
+ 		}
  	}
  
--	return ret_code;
+-	return ret;
 +	return 0;
  }
  
- int brcms_c_stf_attach(struct brcms_c_info *wlc)
+ 
 -- 
 2.5.3
 
