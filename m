@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x242.google.com ([2a00:1450:400c:c05::242])
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zr9Y0-0001hX-K2
- for ath10k@lists.infradead.org; Tue, 27 Oct 2015 19:04:41 +0000
-Received: by wicuv6 with SMTP id uv6so29614020wic.2
- for <ath10k@lists.infradead.org>; Tue, 27 Oct 2015 12:04:21 -0700 (PDT)
+ id 1Zr9Y8-0001k3-KO
+ for ath10k@lists.infradead.org; Tue, 27 Oct 2015 19:04:49 +0000
+Received: by wijp11 with SMTP id p11so228419139wij.0
+ for <ath10k@lists.infradead.org>; Tue, 27 Oct 2015 12:04:27 -0700 (PDT)
 From: Punit Vara <punitvara@gmail.com>
-Subject: [RESEND PATCH 08/10] net: wireless: brcm80211: Remove unneeded
- variable which return 0
-Date: Wed, 28 Oct 2015 00:32:43 +0530
-Message-Id: <1445972565-14963-8-git-send-email-punitvara@gmail.com>
+Subject: [RESEND PATCH 09/10] net: wireless: brcm80211: Remove unneeded
+ variable ret_code returning 0
+Date: Wed, 28 Oct 2015 00:32:44 +0530
+Message-Id: <1445972565-14963-9-git-send-email-punitvara@gmail.com>
 In-Reply-To: <1445972565-14963-1-git-send-email-punitvara@gmail.com>
 References: <1445972565-14963-1-git-send-email-punitvara@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -28,38 +28,48 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com
 Cc: netdev@vger.kernel.org, Punit Vara <punitvara@gmail.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-This is patch to the brcmsmac/main.c that removes unnecessary variable
-which was declared to return zero.
+This patch is to the brcmsmac/stf.c that fixes up warning caught by
+coccicheck:
 
-This patch fixes up warning reported by coccicheck:
--Unneeded variable: "err". Return "0" on line 3788
+-Unneeded variable: "ret_code". Return "0" on line 328
+
+Remove unneccesary variable ret_code created to return zero.
 
 Signed-off-by: Punit Vara <punitvara@gmail.com>
 ---
- drivers/net/wireless/brcm80211/brcmsmac/main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/wireless/brcm80211/brcmsmac/stf.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/brcm80211/brcmsmac/main.c b/drivers/net/wireless/brcm80211/brcmsmac/main.c
-index 9728be0..9d717b6 100644
---- a/drivers/net/wireless/brcm80211/brcmsmac/main.c
-+++ b/drivers/net/wireless/brcm80211/brcmsmac/main.c
-@@ -3777,7 +3777,6 @@ static void brcms_c_set_ps_ctrl(struct brcms_c_info *wlc)
+diff --git a/drivers/net/wireless/brcm80211/brcmsmac/stf.c b/drivers/net/wireless/brcm80211/brcmsmac/stf.c
+index dd91627..71ddf42 100644
+--- a/drivers/net/wireless/brcm80211/brcmsmac/stf.c
++++ b/drivers/net/wireless/brcm80211/brcmsmac/stf.c
+@@ -306,7 +306,6 @@ int brcms_c_stf_txchain_set(struct brcms_c_info *wlc, s32 int_val, bool force)
   */
- static int brcms_c_set_mac(struct brcms_bss_cfg *bsscfg)
+ int brcms_c_stf_ss_update(struct brcms_c_info *wlc, struct brcms_band *band)
  {
--	int err = 0;
- 	struct brcms_c_info *wlc = bsscfg->wlc;
+-	int ret_code = 0;
+ 	u8 prev_stf_ss;
+ 	u8 upd_stf_ss;
  
- 	/* enter the MAC addr into the RXE match registers */
-@@ -3785,7 +3784,7 @@ static int brcms_c_set_mac(struct brcms_bss_cfg *bsscfg)
+@@ -325,7 +324,7 @@ int brcms_c_stf_ss_update(struct brcms_c_info *wlc, struct brcms_band *band)
+ 				    PHY_TXC1_MODE_SISO : PHY_TXC1_MODE_CDD;
+ 	} else {
+ 		if (wlc->band != band)
+-			return ret_code;
++			return 0;
+ 		upd_stf_ss = (wlc->stf->txstreams == 1) ?
+ 				PHY_TXC1_MODE_SISO : band->band_stf_ss_mode;
+ 	}
+@@ -334,7 +333,7 @@ int brcms_c_stf_ss_update(struct brcms_c_info *wlc, struct brcms_band *band)
+ 		brcms_b_band_stf_ss_set(wlc->hw, upd_stf_ss);
+ 	}
  
- 	brcms_c_ampdu_macaddr_upd(wlc);
- 
--	return err;
+-	return ret_code;
 +	return 0;
  }
  
- /* Write the BSS config's BSSID address to core (set_bssid in d11procs.tcl).
+ int brcms_c_stf_attach(struct brcms_c_info *wlc)
 -- 
 2.5.3
 
