@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrBHU-0007uY-1F
- for ath10k@lists.infradead.org; Tue, 27 Oct 2015 20:55:44 +0000
-Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
- (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 2876940A959
- for <ath10k@lists.infradead.org>; Tue, 27 Oct 2015 13:55:23 -0700 (PDT)
-From: Ben Greear <greearb@candelatech.com>
-Subject: Crash in hacked 'ath' tree on module removal.
-Message-ID: <562FE4BA.30106@candelatech.com>
-Date: Tue, 27 Oct 2015 13:55:22 -0700
-MIME-Version: 1.0
+Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZrOr3-0000Xm-PZ
+ for ath10k@lists.infradead.org; Wed, 28 Oct 2015 11:25:23 +0000
+Received: by lbbes7 with SMTP id es7so3165199lbb.2
+ for <ath10k@lists.infradead.org>; Wed, 28 Oct 2015 04:24:54 -0700 (PDT)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH] ath10k: add QCA9377 chipset support
+Date: Wed, 28 Oct 2015 12:24:34 +0100
+Message-Id: <1446031474-29368-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,99 +17,205 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-I've added all my normal set of kernel patches and I'm running non-stock
-firmware for QCA99X NIC.  So, feel free to ignore, but I don't think I've
-messed with anything that could cause this.
+Add the hardware name, revision and update the pci_id table.
 
-On module removal, I see this splat:
+Currently there're two HW ref. designs available I'm aware of,
+with 1.0.2 and 1.1 chip revisions. I've access and been using
+the first one so far and this patch cover only it.
 
-[ 4480.895505] ath10k_pci 0000:05:00.0: could not request stats (type 1 ret -95)
-[ 4480.895509] ath10k_pci 0000:05:00.0: failed to get fw stats for ethtool: -95
-[ 4480.908775] ath10k_pci 0000:05:00.0: could not request stats (type 1 ret -95)
-[ 4480.908778] ath10k_pci 0000:05:00.0: failed to get fw stats for ethtool: -95
-[ 4480.912267] ath10k_pci 0000:05:00.0: mac vdev 0 delete (remove interface)
-[ 4480.912271] ath10k_pci 0000:05:00.0: WMI vdev delete id 0
-[ 4483.915642] ath10k_pci 0000:05:00.0: failed to delete WMI vdev 0: -11
-[ 4483.915697] ath10k_pci 0000:05:00.0: wmi disable pktlog
-[ 4489.922496] ath10k_pci 0000:05:00.0: could not suspend target (-11)
-[ 4489.922512] ath10k_pci 0000:05:00.0: boot hif stop
-[ 4489.922586] ath10k_pci 0000:05:00.0: boot qca99x0 chip reset
-[ 4489.922587] ath10k_pci 0000:05:00.0: boot cold reset
-[ 4489.964540] ath10k_pci 0000:05:00.0: boot cold reset complete
-[ 4489.964548] ath10k_pci 0000:05:00.0: boot waiting target to initialise
-[ 4489.964564] ath10k_pci 0000:05:00.0: boot target indicator 2
-[ 4489.964570] ath10k_pci 0000:05:00.0: boot target initialised
-[ 4489.964572] ath10k_pci 0000:05:00.0: boot qca99x0 chip reset complete (cold)
-[ 4489.965967] ath10k_pci 0000:05:00.0: boot hif power down
-[ 4489.982117] BUG: unable to handle kernel NULL pointer dereference at 000000000000035c
-[ 4489.988889] IP: [<ffffffffa0d5939d>] ath10k_pci_free_irq+0x38/0x50 [ath10k_pci]
-[ 4489.995094] PGD cbeb1067 PUD c6453067 PMD 0
-[ 4489.998294] Oops: 0000 [#1] PREEMPT SMP
-[ 4490.001167] Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 8021q garp mrp stp llc bnep bluetooth fuse macvlan pktgen 
-rpcsec_gss_krb5 nfsv4 nfs fscache coretemp hwmon intel_rapl ath10k_pci(-) ath10k_core ath mac80211 snd_hda_codec_hdmi iosf_mbi iTCO_wdt iTCO_vendor_support 
-x86_pkg_temp_thermal intel_powerclamp kvm_intel snd_hda_codec_realtek kvm joydev snd_hda_codec_generic cfg80211 snd_hda_intel microcode pcspkr serio_raw 
-i2c_i801 snd_hda_codec snd_hda_core snd_hwdep snd_seq snd_seq_device lpc_ich snd_pcm snd_timer snd shpchp soundcore 8250_fintek nfsd auth_rpcgss nfs_acl lockd 
-grace sunrpc ata_generic pata_acpi i915 e1000e i2c_algo_bit ptp pps_core drm_kms_helper drm i2c_core fjes video ipv6 [last unloaded: ath9k_hw]
-[ 4490.069708] CPU: 1 PID: 17257 Comm: rmmod Tainted: G        W       4.3.0-rc6-wl-ath+ #28
-[ 4490.077172] Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
-[ 4490.086161] task: ffff8800d4ba9cc0 ti: ffff8800c65e4000 task.ti: ffff8800c65e4000
-[ 4490.093010] RIP: 0010:[<ffffffffa0d5939d>]  [<ffffffffa0d5939d>] ath10k_pci_free_irq+0x38/0x50 [ath10k_pci]
-[ 4490.102186] RSP: 0018:ffff8800c65e7de0  EFLAGS: 00010297
-[ 4490.106932] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000007fffffff
-[ 4490.113530] RDX: 0000000000000000 RSI: ffff880213789c40 RDI: ffff880213789c40
-[ 4490.120151] RBP: ffff8800c65e7df8 R08: 0000000000000000 R09: 0000000000000000
-[ 4490.126804] R10: ffff8800c65e7e48 R11: 0000000000080001 R12: ffff880213789c40
-[ 4490.133471] R13: 0000000000000001 R14: 0000000000000000 R15: 00000000020dd250
-[ 4490.140156] FS:  00007f29e68b2740(0000) GS:ffff88021ea80000(0000) knlGS:0000000000000000
-[ 4490.147831] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 4490.153184] CR2: 000000000000035c CR3: 00000000c6451000 CR4: 00000000000406e0
-[ 4490.159958] Stack:
-[ 4490.161607]  ffff880213789c40 ffff880215132000 ffffffffa0d5f4a0 ffff8800c65e7e10
-[ 4490.168749]  ffffffffa0d59a92 ffff880215132098 ffff8800c65e7e38 ffffffff81374298
-[ 4490.175911]  ffff880215132098 ffffffffa0d5f508 ffff8802151320f8 ffff8800c65e7e58
-[ 4490.183094] Call Trace:
-[ 4490.185277]  [<ffffffffa0d59a92>] ath10k_pci_remove+0x35/0x70 [ath10k_pci]
-[ 4490.191934]  [<ffffffff81374298>] pci_device_remove+0x34/0x8e
-[ 4490.197475]  [<ffffffff8144ac39>] __device_release_driver+0x93/0x107
-[ 4490.203651]  [<ffffffff8144ad6d>] driver_detach+0x85/0xab
-[ 4490.208882]  [<ffffffff8144a052>] bus_remove_driver+0x8e/0xab
-[ 4490.214470]  [<ffffffff8144b364>] driver_unregister+0x3f/0x42
-[ 4490.220069]  [<ffffffff81373b32>] pci_unregister_driver+0x23/0x7c
-[ 4490.226034]  [<ffffffffa0d5da6f>] ath10k_pci_exit+0x10/0x12 [ath10k_pci]
-[ 4490.232632]  [<ffffffff81146268>] SyS_delete_module+0x124/0x1c0
-[ 4490.238465]  [<ffffffff81003909>] ? syscall_return_slowpath+0xc8/0x10b
-[ 4490.244931]  [<ffffffff816892b6>] entry_SYSCALL_64_fastpath+0x16/0x75
-[ 4490.251315] Code: 54 49 89 fc 53 31 db 41 83 bc 24 60 2b 00 00 00 44 89 e8 41 0f 4f 84 24 60 2b 00 00 39 c3 7d 1c 49 8b 84 24 38 2b 00 00 4c 89 e6 <8b> b8 5c 
-03 00 00 01 df ff c3 e8 e4 d6 3c e0 eb cb 5b 41 5c 41
-[ 4490.272502] RIP  [<ffffffffa0d5939d>] ath10k_pci_free_irq+0x38/0x50 [ath10k_pci]
-[ 4490.280052]  RSP <ffff8800c65e7de0>
-[ 4490.283689] CR2: 000000000000035c
-[ 4490.296196] ---[ end trace ff6e1b7ef7fa8afc ]---
+QCA9377 inherits most of the stuff (e.g. fw interfaces)
+from QCA61x4 design, so the integration was pretty straightforward.
 
-(gdb) l *(ath10k_pci_free_irq+0x38)
-0x3c1 is in ath10k_pci_free_irq (/home/greearb/git/linux.ath/drivers/net/wireless/ath/ath10k/pci.c:3042).
-3037		int i;
-3038	
-3039		/* There's at least one interrupt irregardless whether its legacy INTR
-3040		 * or MSI or MSI-X */
-3041		for (i = 0; i < max(1, ar_pci->num_msi_intrs); i++)
-3042			free_irq(ar_pci->pdev->irq + i, ar);
-3043	}
-3044	
-3045	static void ath10k_pci_init_irq_tasklets(struct ath10k *ar)
-3046	{
-(gdb)
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c      | 16 ++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h        | 12 ++++++++++++
+ drivers/net/wireless/ath/ath10k/pci.c       | 17 +++++++++++++++++
+ drivers/net/wireless/ath/ath10k/targaddrs.h |  3 +++
+ 4 files changed, 48 insertions(+)
 
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 13de3617d5ab..828aefce8a7a 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -137,6 +137,21 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+ 		},
+ 	},
++	{
++		.id = QCA9377_HW_1_0_DEV_VERSION,
++		.name = "qca9377 hw1.0",
++		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
++		.uart_pin = 7,
++		.otp_exe_param = 0,
++		.fw = {
++			.dir = QCA9377_HW_1_0_FW_DIR,
++			.fw = QCA9377_HW_1_0_FW_FILE,
++			.otp = QCA9377_HW_1_0_OTP_FILE,
++			.board = QCA9377_HW_1_0_BOARD_DATA_FILE,
++			.board_size = QCA9377_BOARD_DATA_SZ,
++			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
++		},
++	},
+ };
+ 
+ static const char *const ath10k_core_fw_feature_str[] = {
+@@ -1900,6 +1915,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 		ar->hw_values = &qca988x_values;
+ 		break;
+ 	case ATH10K_HW_QCA6174:
++	case ATH10K_HW_QCA9377:
+ 		ar->regs = &qca6174_regs;
+ 		ar->hw_values = &qca6174_values;
+ 		break;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 2d87737e35ff..31734298d305 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -84,6 +84,16 @@ enum qca6174_chip_id_rev {
+ #define QCA99X0_HW_2_0_BOARD_DATA_FILE "board.bin"
+ #define QCA99X0_HW_2_0_PATCH_LOAD_ADDR	0x1234
+ 
++/* QCA9377 1.0 definitions */
++#define QCA9377_HW_1_0_DEV_VERSION     0x05020001
++#define QCA9377_HW_1_0_CHIP_ID_REV     0x1
++#define QCA9377_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA9377/hw1.0"
++#define QCA9377_HW_1_0_FW_FILE         "firmware.bin"
++#define QCA9377_HW_1_0_OTP_FILE        "otp.bin"
++#define QCA9377_HW_1_0_BOARD_DATA_FILE "board.bin"
++#define QCA9377_HW_1_0_PATCH_LOAD_ADDR	0x1234
++
++
+ #define ATH10K_FW_API2_FILE		"firmware-2.bin"
+ #define ATH10K_FW_API3_FILE		"firmware-3.bin"
+ 
+@@ -176,6 +186,7 @@ enum ath10k_hw_rev {
+ 	ATH10K_HW_QCA988X,
+ 	ATH10K_HW_QCA6174,
+ 	ATH10K_HW_QCA99X0,
++	ATH10K_HW_QCA9377,
+ };
+ 
+ struct ath10k_hw_regs {
+@@ -228,6 +239,7 @@ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
+ #define QCA_REV_988X(ar) ((ar)->hw_rev == ATH10K_HW_QCA988X)
+ #define QCA_REV_6174(ar) ((ar)->hw_rev == ATH10K_HW_QCA6174)
+ #define QCA_REV_99X0(ar) ((ar)->hw_rev == ATH10K_HW_QCA99X0)
++#define QCA_REV_9377(ar) ((ar)->hw_rev == ATH10K_HW_QCA9377)
+ 
+ /* Known pecularities:
+  *  - raw appears in nwifi decap, raw and nwifi appear in ethernet decap
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 5c05b0cf54a1..63de50c52a5f 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -61,12 +61,14 @@ MODULE_PARM_DESC(reset_mode, "0: auto, 1: warm only (default: 0)");
+ #define QCA6164_2_1_DEVICE_ID	(0x0041)
+ #define QCA6174_2_1_DEVICE_ID	(0x003e)
+ #define QCA99X0_2_0_DEVICE_ID	(0x0040)
++#define QCA9377_1_0_DEVICE_ID	(0x0042)
+ 
+ static const struct pci_device_id ath10k_pci_id_table[] = {
+ 	{ PCI_VDEVICE(ATHEROS, QCA988X_2_0_DEVICE_ID) }, /* PCI-E QCA988X V2 */
+ 	{ PCI_VDEVICE(ATHEROS, QCA6164_2_1_DEVICE_ID) }, /* PCI-E QCA6164 V2.1 */
+ 	{ PCI_VDEVICE(ATHEROS, QCA6174_2_1_DEVICE_ID) }, /* PCI-E QCA6174 V2.1 */
+ 	{ PCI_VDEVICE(ATHEROS, QCA99X0_2_0_DEVICE_ID) }, /* PCI-E QCA99X0 V2 */
++	{ PCI_VDEVICE(ATHEROS, QCA9377_1_0_DEVICE_ID) }, /* PCI-E QCA9377 V1 */
+ 	{0}
+ };
+ 
+@@ -90,6 +92,7 @@ static const struct ath10k_pci_supp_chip ath10k_pci_supp_chips[] = {
+ 	{ QCA6174_2_1_DEVICE_ID, QCA6174_HW_3_2_CHIP_ID_REV },
+ 
+ 	{ QCA99X0_2_0_DEVICE_ID, QCA99X0_HW_2_0_CHIP_ID_REV },
++	{ QCA9377_1_0_DEVICE_ID, QCA9377_HW_1_0_CHIP_ID_REV },
+ };
+ 
+ static void ath10k_pci_buffer_cleanup(struct ath10k *ar);
+@@ -827,6 +830,7 @@ static u32 ath10k_pci_targ_cpu_to_ce_addr(struct ath10k *ar, u32 addr)
+ 	switch (ar->hw_rev) {
+ 	case ATH10K_HW_QCA988X:
+ 	case ATH10K_HW_QCA6174:
++	case ATH10K_HW_QCA9377:
+ 		val = (ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+ 					  CORE_CTRL_ADDRESS) &
+ 		       0x7ff) << 21;
+@@ -1513,6 +1517,7 @@ static void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
+ 	switch (ar->hw_rev) {
+ 	case ATH10K_HW_QCA988X:
+ 	case ATH10K_HW_QCA6174:
++	case ATH10K_HW_QCA9377:
+ 		val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+ 					CORE_CTRL_ADDRESS);
+ 		val &= ~CORE_CTRL_PCIE_REG_31_MASK;
+@@ -1534,6 +1539,7 @@ static void ath10k_pci_irq_msi_fw_unmask(struct ath10k *ar)
+ 	switch (ar->hw_rev) {
+ 	case ATH10K_HW_QCA988X:
+ 	case ATH10K_HW_QCA6174:
++	case ATH10K_HW_QCA9377:
+ 		val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+ 					CORE_CTRL_ADDRESS);
+ 		val |= CORE_CTRL_PCIE_REG_31_MASK;
+@@ -1911,6 +1917,8 @@ static int ath10k_pci_get_num_banks(struct ath10k *ar)
+ 			return 9;
+ 		}
+ 		break;
++	case QCA9377_1_0_DEVICE_ID:
++		return 2;
+ 	}
+ 
+ 	ath10k_warn(ar, "unknown number of banks, assuming 1\n");
+@@ -2371,6 +2379,8 @@ static int ath10k_pci_chip_reset(struct ath10k *ar)
+ 		return ath10k_pci_qca988x_chip_reset(ar);
+ 	else if (QCA_REV_6174(ar))
+ 		return ath10k_pci_qca6174_chip_reset(ar);
++	else if (QCA_REV_9377(ar))
++		return ath10k_pci_qca6174_chip_reset(ar);
+ 	else if (QCA_REV_99X0(ar))
+ 		return ath10k_pci_qca99x0_chip_reset(ar);
+ 	else
+@@ -3003,6 +3013,9 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		hw_rev = ATH10K_HW_QCA99X0;
+ 		pci_ps = false;
+ 		break;
++	case QCA9377_1_0_DEVICE_ID:
++		hw_rev = ATH10K_HW_QCA9377;
++		break;
+ 	default:
+ 		WARN_ON(1);
+ 		return -ENOTSUPP;
+@@ -3204,3 +3217,7 @@ MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" ATH10K_FW_API4_FILE);
+ MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" ATH10K_FW_API5_FILE);
+ MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" QCA6174_HW_3_0_BOARD_DATA_FILE);
+ MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" ATH10K_BOARD_API2_FILE);
++
++/* QCA9377 1.0 firmware files */
++MODULE_FIRMWARE(QCA9377_HW_1_0_FW_DIR "/" ATH10K_FW_API5_FILE);
++MODULE_FIRMWARE(QCA9377_HW_1_0_FW_DIR "/" QCA9377_HW_1_0_BOARD_DATA_FILE);
+diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
+index 768bef629099..05a421bc322a 100644
+--- a/drivers/net/wireless/ath/ath10k/targaddrs.h
++++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
+@@ -450,6 +450,9 @@ Fw Mode/SubMode Mask
+ #define QCA6174_BOARD_DATA_SZ     8192
+ #define QCA6174_BOARD_EXT_DATA_SZ 0
+ 
++#define QCA9377_BOARD_DATA_SZ     QCA6174_BOARD_DATA_SZ
++#define QCA9377_BOARD_EXT_DATA_SZ 0
++
+ #define QCA99X0_BOARD_DATA_SZ	  12288
+ #define QCA99X0_BOARD_EXT_DATA_SZ 0
+ 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+2.1.2
 
 
 _______________________________________________
