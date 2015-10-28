@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yk0-x22a.google.com ([2607:f8b0:4002:c07::22a])
+Received: from mail-lb0-x22d.google.com ([2a00:1450:4010:c04::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrQ8i-0007Z6-Ie
- for ath10k@lists.infradead.org; Wed, 28 Oct 2015 12:47:41 +0000
-Received: by ykba4 with SMTP id a4so5990812ykb.3
- for <ath10k@lists.infradead.org>; Wed, 28 Oct 2015 05:47:19 -0700 (PDT)
+ id 1ZrQt6-000147-Q9
+ for ath10k@lists.infradead.org; Wed, 28 Oct 2015 13:35:37 +0000
+Received: by lbbes7 with SMTP id es7so5732990lbb.2
+ for <ath10k@lists.infradead.org>; Wed, 28 Oct 2015 06:35:14 -0700 (PDT)
+Subject: Re: [RESEND PATCH 07/10] net: wireless: iwlegacy: Remove unneeded
+ variable ret
+References: <1445972565-14963-1-git-send-email-punitvara@gmail.com>
+ <1445972565-14963-7-git-send-email-punitvara@gmail.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <5630CF11.8080504@cogentembedded.com>
+Date: Wed, 28 Oct 2015 16:35:13 +0300
 MIME-Version: 1.0
-In-Reply-To: <201510281954.CJInakYj%fengguang.wu@intel.com>
-References: <1446031474-29368-1-git-send-email-bartosz.markowski@tieto.com>
- <201510281954.CJInakYj%fengguang.wu@intel.com>
-Date: Wed, 28 Oct 2015 13:47:19 +0100
-Message-ID: <CACKGw+Fj+H8AuG7uqa7iswnsxJJ3w==Uby_2FNkY-7ehBayVJg@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: add QCA9377 chipset support
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
+In-Reply-To: <1445972565-14963-7-git-send-email-punitvara@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +22,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Punit Vara <punitvara@gmail.com>, kvalo@qca.qualcomm.com
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-On 28 October 2015 at 12:51, kbuild test robot <lkp@intel.com> wrote:
-> Hi Bartosz,
->
-> [auto build test WARNING on next-20151022 -- if it's inappropriate base, please suggest rules for selecting the more suitable base]
->
-> url:    https://github.com/0day-ci/linux/commits/Bartosz-Markowski/ath10k-add-QCA9377-chipset-support/20151028-192708
-> config: i386-randconfig-x004-201543 (attached as .config)
-> reproduce:
->         # save the attached .config to linux build tree
->         make ARCH=i386
->
-> Note: it may well be a FALSE warning. FWIW you are at least aware of it now.
-> http://gcc.gnu.org/wiki/Better_Uninitialized_Warnings
->
-> All warnings (new ones prefixed by >>):
->
->    drivers/net/wireless/ath/ath10k/pci.c: In function 'ath10k_pci_probe':
->>> drivers/net/wireless/ath/ath10k/pci.c:3040:17: warning: 'pci_ps' may be used uninitialized in this function [-Wmaybe-uninitialized]
->      ar_pci->pci_ps = pci_ps;
->                     ^
+Hello.
 
-I will send a v2 then :-)
+On 10/27/2015 10:02 PM, Punit Vara wrote:
 
-Bartosz
+> This patch is to the 3945-mac.c file that fixes up following warning
+> by coccicheck:
+>
+> drivers/net/wireless/iwlegacy/3945-mac.c:247:5-8: Unneeded variable:
+> "ret". Return "- EOPNOTSUPP" on line 249
+>
+> Return -EOPNOTSUPP directly instead of return using ret
+>
+> Signed-off-by: Punit Vara <punitvara@gmail.com>
+> ---
+>   drivers/net/wireless/iwlegacy/3945-mac.c | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/drivers/net/wireless/iwlegacy/3945-mac.c b/drivers/net/wireless/iwlegacy/3945-mac.c
+> index af1b3e6..ff4dc44 100644
+> --- a/drivers/net/wireless/iwlegacy/3945-mac.c
+> +++ b/drivers/net/wireless/iwlegacy/3945-mac.c
+> @@ -244,9 +244,7 @@ il3945_set_dynamic_key(struct il_priv *il, struct ieee80211_key_conf *keyconf,
+>   static int
+>   il3945_remove_static_key(struct il_priv *il)
+>   {
+> -	int ret = -EOPNOTSUPP;
+> -
+> -	return ret;
+> +	return -EOPNOTSUPP;
+>   }
+>
+>   static int
+> @@ -529,7 +527,6 @@ il3945_tx_skb(struct il_priv *il,
+>   		if (unlikely(tid >= MAX_TID_COUNT))
+>   			goto drop;
+>   	}
+> -
+
+    Unrelated white space change.
+
+MBR, Sergei
+
 
 _______________________________________________
 ath10k mailing list
