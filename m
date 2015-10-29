@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrkyK-0002ME-CB
- for ath10k@lists.infradead.org; Thu, 29 Oct 2015 11:02:21 +0000
+ id 1Zrl0J-0002XB-V2
+ for ath10k@lists.infradead.org; Thu, 29 Oct 2015 11:04:24 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/4] ath10k: remove supported chain mask
-References: <1445948474-16738-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Thu, 29 Oct 2015 13:01:40 +0200
-In-Reply-To: <1445948474-16738-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Tue, 27 Oct 2015 17:51:11 +0530")
-Message-ID: <87fv0uq6p7.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: add QCA9377 chipset support
+References: <1446041393-4652-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Thu, 29 Oct 2015 13:03:42 +0200
+In-Reply-To: <1446041393-4652-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Wed, 28 Oct 2015 15:09:53 +0100")
+Message-ID: <87bnbiq6lt.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,17 +23,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> Removing supported chainmask fields as it can be always derived
-> from num_rf_chains.
+> Add the hardware name, revision and update the pci_id table.
 >
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Currently there're two HW ref. designs available I'm aware of,
+> with 1.0.2 and 1.1 chip revisions. I've access and been using
+> the first one so far and this patch cover only it.
+>
+> QCA9377 inherits most of the stuff (e.g. fw interfaces)
+> from QCA61x4 design, so the integration was pretty straightforward.
+>
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 
-All four patches applied, thanks.
+Applied, thanks.
+
+I pushed the firmware image here:
+
+https://github.com/kvalo/ath10k-firmware/tree/master/QCA9377/hw1.0
+
+All reports, good or bad, are very welcome.
 
 -- 
 Kalle Valo
