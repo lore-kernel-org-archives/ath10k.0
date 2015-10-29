@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zrku9-0000tw-Fj
- for ath10k@lists.infradead.org; Thu, 29 Oct 2015 10:58:01 +0000
+ id 1ZrkwF-00013s-N0
+ for ath10k@lists.infradead.org; Thu, 29 Oct 2015 11:00:12 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: add fw_stats support to 10.4 firmware
-References: <1445341068-24498-1-git-send-email-c_traja@qti.qualcomm.com>
-Date: Thu, 29 Oct 2015 12:57:19 +0200
-In-Reply-To: <1445341068-24498-1-git-send-email-c_traja@qti.qualcomm.com> (c.
- traja's message of "Tue, 20 Oct 2015 17:07:48 +0530")
-Message-ID: <87oafiq6wg.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/4] ath10k: remove shadow copy engine descriptors
+References: <1445603466-14138-1-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Thu, 29 Oct 2015 12:59:33 +0200
+In-Reply-To: <1445603466-14138-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Fri, 23 Oct 2015 18:01:02 +0530")
+Message-ID: <87k2q6q6sq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,19 +23,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_traja@qti.qualcomm.com
-Cc: Manikanta Pubbisetty <c_mpubbi@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-<c_traja@qti.qualcomm.com> writes:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> From: Manikanta Pubbisetty <c_mpubbi@qti.qualcomm.com>
+> Below series remove shadow copy of CE descriptors for source ring.
+> Removing the shadow copy should reduce d-cache pressure and memory
+> usage of the driver.
 >
-> This patch adds support for getting firmware debug stats in 10.4 fw.
+> v2:
+>  * Since ce_send is not using shadow, fix send completion as well.
 >
-> Signed-off-by: Manikanta Pubbisetty <c_mpubbi@qti.qualcomm.com>
-> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+> Rajkumar Manoharan (4):
+>   ath10k: use local memory instead of shadow descriptor in ce_send
+>   ath10k: remove send completion validation in diag read/write
+>   ath10k: cleanup copy engine send completion
+>   ath10k: remove shadow copy of CE descriptors for source ring
 
-Applied, thanks.
+All four applied, thanks.
 
 -- 
 Kalle Valo
