@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtCKl-0002N0-H3
- for ath10k@lists.infradead.org; Mon, 02 Nov 2015 10:27:28 +0000
-Received: by wmeg8 with SMTP id g8so56272615wme.1
- for <ath10k@lists.infradead.org>; Mon, 02 Nov 2015 02:27:05 -0800 (PST)
+ id 1ZtClD-0005jM-AT
+ for ath10k@lists.infradead.org; Mon, 02 Nov 2015 10:54:47 +0000
+Message-ID: <563740CE.7080806@qti.qualcomm.com>
+Date: Mon, 2 Nov 2015 16:24:06 +0530
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1446453229-22982-2-git-send-email-vthiagar@qti.qualcomm.com>
-References: <1446453229-22982-1-git-send-email-vthiagar@qti.qualcomm.com>
- <1446453229-22982-2-git-send-email-vthiagar@qti.qualcomm.com>
-Date: Mon, 2 Nov 2015 11:27:04 +0100
-Message-ID: <CA+BoTQn4WHGU8nbrcqZyBTm1tkdJZk5NJT63SXi4s7tp=mGiXg@mail.gmail.com>
 Subject: Re: [PATCH 2/2] ath10k: Fix peerid configuration in htt tx desc for
  htt version < 3.4
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <1446453229-22982-1-git-send-email-vthiagar@qti.qualcomm.com>	<1446453229-22982-2-git-send-email-vthiagar@qti.qualcomm.com>
+ <CA+BoTQn4WHGU8nbrcqZyBTm1tkdJZk5NJT63SXi4s7tp=mGiXg@mail.gmail.com>
+In-Reply-To: <CA+BoTQn4WHGU8nbrcqZyBTm1tkdJZk5NJT63SXi4s7tp=mGiXg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,63 +20,78 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMiBOb3ZlbWJlciAyMDE1IGF0IDA5OjMzLCBWYXNhbnRoYWt1bWFyIFRoaWFnYXJhamFuCjx2
-dGhpYWdhckBxdGkucXVhbGNvbW0uY29tPiB3cm90ZToKPiBPZiBhIHdvcmQgaW4gc3RydWN0IGh0
-dF9kYXRhX3R4X2Rlc2MgaHR0IHZlcnNpb24gPj0gMy40IGZpcm13YXJlIHVzZXMgTFNCIDE2LWJp
-dAo+IGZvciBmcmVxdWVuY3kgY29uZmlndXJhdGlvbiB3aGljaCBpcyB1c2VkIGZvciBvZmZjaGFu
-bmVsIHR4IGFuZCBNU0IgMTYtYml0Cj4gaXMgZm9yIHBlZXJpZC4gQnV0IG90aGVyIGZpcm13YXJl
-cyB1c2luZyB2ZXJzaW9uIDIuWCAoMTAuMSwgMTAuMi4yLCAxMC4yLjQKPiBhbmQgMTAuNCkgYXJl
-IHVzaW5nIDMyLWJpdCBmb3IgcGVlcmlkIGluIGh0dCB0eCBkZXNjLiBTbyBmYXIgbm8gaXNzdWUg
-aXMgZm91bmQKPiB3aXRoIHRoZSBleGlzdGluZyBjb2RlIHNldHRpbmcgcGVlcmlkIGFuZCBmcmVx
-IGZvciBIVFQgdmVyc2lvbiAyLlgsIHRoaXMgY291bGQKPiBiZSBtYWlubHkgYmVjYXVzZSBvZiAw
-IGFzIGZyZXF1ZWN5IChob21lIGNoYW5uZWwpIGlzIGJlaW5nIGFsd2F5cyBwYXNzZWQgd2l0aAo+
-IHRob3NlIGZpcm13YXJlcy4gVGhlcmUgbWF5IGJlIGlzc3VlcyB3aGVuIG5vbi16ZXJvIGZyZXEg
-aXMgcGFzc2VkIHdpdGggZmlybXdhcmUKPiB1c2luZyA8IDMuNCBodHQgdmVyc2lvbi4gVG8gYmUg
-c2FmZSB1c2UgdGFyZ2V0X3ZlcnNpb25fbWFqb3IgYW5kIHRhcmdldF92ZXJzaW9uX21pbm9yCj4g
-YWxvbmcgd2l0aCBodHQtb3AtdmVyc2lvbiBiZWZvcmUgY29uZmlndXJpbmcgcGVlciBpZCBhbmQg
-ZnJlcSBpbiBodHQgdHggZGVzYy4KPgo+IEZpeGVzOiA4ZDZkMzYyNDM2MTAgKCJhdGgxMGs6IGZp
-eCBvZmZjaGFuIHJlbGlhYmlsaXR5IikKPiBTaWduZWQtb2ZmLWJ5OiBWYXNhbnRoYWt1bWFyIFRo
-aWFnYXJhamFuIDx2dGhpYWdhckBxdGkucXVhbGNvbW0uY29tPgo+IC0tLQo+ICBkcml2ZXJzL25l
-dC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dC5oICAgIHwgIDkgKysrKysrKy0tCj4gIGRyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3R4LmMgfCAxMyArKysrKysrKysrKy0tCj4gIDIg
-ZmlsZXMgY2hhbmdlZCwgMTggaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKPgo+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dC5oIGIvZHJpdmVycy9u
-ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHQuaAo+IGluZGV4IDJiYWQ1MGUuLjQ0ZmI0ZjIgMTAw
-NjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHQuaAo+ICsrKyBi
-L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0LmgKPiBAQCAtMTY2LDggKzE2Niwx
-MyBAQCBzdHJ1Y3QgaHR0X2RhdGFfdHhfZGVzYyB7Cj4gICAgICAgICBfX2xlMTYgbGVuOwo+ICAg
-ICAgICAgX19sZTE2IGlkOwo+ICAgICAgICAgX19sZTMyIGZyYWdzX3BhZGRyOwo+IC0gICAgICAg
-X19sZTE2IHBlZXJpZDsKPiAtICAgICAgIF9fbGUxNiBmcmVxOwo+ICsgICAgICAgdW5pb24gewo+
-ICsgICAgICAgICAgICAgICBfX2xlMzIgcGVlcmlkOwo+ICsgICAgICAgICAgICAgICBzdHJ1Y3Qg
-ewo+ICsgICAgICAgICAgICAgICAgICAgICAgIF9fbGUxNiBwZWVyaWQ7Cj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgX19sZTE2IGZyZXE7Cj4gKyAgICAgICAgICAgICAgIH0gX19wYWNrZWQgb2Zm
-Y2hhbl90eDsKPiArICAgICAgIH0gX19wYWNrZWQ7Cj4gICAgICAgICB1OCBwcmVmZXRjaFswXTsg
-Lyogc3RhcnQgb2YgZnJhbWUsIGZvciBGVyBjbGFzc2lmaWNhdGlvbiBlbmdpbmUgKi8KPiAgfSBf
-X3BhY2tlZDsKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
-L2h0dF90eC5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfdHguYwo+IGlu
-ZGV4IDE2ODIzOTcuLmJmMTkyNDcgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway9odHRfdHguYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
-MGsvaHR0X3R4LmMKPiBAQCAtNjgxLDggKzY4MSwxNyBAQCBpbnQgYXRoMTBrX2h0dF90eChzdHJ1
-Y3QgYXRoMTBrX2h0dCAqaHR0LCBzdHJ1Y3Qgc2tfYnVmZiAqbXNkdSkKPiAgICAgICAgIHNrYl9j
-Yi0+aHR0LnR4YnVmLT5jbWRfdHgubGVuID0gX19jcHVfdG9fbGUxNihtc2R1LT5sZW4pOwo+ICAg
-ICAgICAgc2tiX2NiLT5odHQudHhidWYtPmNtZF90eC5pZCA9IF9fY3B1X3RvX2xlMTYobXNkdV9p
-ZCk7Cj4gICAgICAgICBza2JfY2ItPmh0dC50eGJ1Zi0+Y21kX3R4LmZyYWdzX3BhZGRyID0gX19j
-cHVfdG9fbGUzMihmcmFnc19wYWRkcik7Cj4gLSAgICAgICBza2JfY2ItPmh0dC50eGJ1Zi0+Y21k
-X3R4LnBlZXJpZCA9IF9fY3B1X3RvX2xlMTYoSFRUX0lOVkFMSURfUEVFUklEKTsKPiAtICAgICAg
-IHNrYl9jYi0+aHR0LnR4YnVmLT5jbWRfdHguZnJlcSA9IF9fY3B1X3RvX2xlMTYoc2tiX2NiLT5o
-dHQuZnJlcSk7Cj4gKyAgICAgICBpZiAoYXItPmh0dC50YXJnZXRfdmVyc2lvbl9tYWpvciA+PSAz
-ICYmCj4gKyAgICAgICAgICAgYXItPmh0dC50YXJnZXRfdmVyc2lvbl9taW5vciA+PSA0ICYmCj4g
-KyAgICAgICAgICAgYXItPmh0dC5vcF92ZXJzaW9uID09IEFUSDEwS19GV19IVFRfT1BfVkVSU0lP
-Tl9UTFYpIHsKCkhtbS4uIEkgdGhpbmsgaXQnZCBiZSBiZXR0ZXIgdG8gcmVuYW1lCmF0aDEwa19t
-YWNfbmVlZF9vZmZjaGFuX3R4X3dvcmsoKSB0bywgZS5nLgphdGgxMGtfaHR0X3R4X2ZybV9oYXNf
-ZnJlcSgpIGFuZCBhZGQgdGhlIGh0dC5vcF92ZXJzaW9uIGNoZWNrIHRvIGl0LgoKCk1pY2hhxYIK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
-YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Monday 02 November 2015 03:57 PM, Michal Kazior wrote:
+> On 2 November 2015 at 09:33, Vasanthakumar Thiagarajan
+> <vthiagar@qti.qualcomm.com> wrote:
+>> Of a word in struct htt_data_tx_desc htt version >= 3.4 firmware uses LSB 16-bit
+>> for frequency configuration which is used for offchannel tx and MSB 16-bit
+>> is for peerid. But other firmwares using version 2.X (10.1, 10.2.2, 10.2.4
+>> and 10.4) are using 32-bit for peerid in htt tx desc. So far no issue is found
+>> with the existing code setting peerid and freq for HTT version 2.X, this could
+>> be mainly because of 0 as frequecy (home channel) is being always passed with
+>> those firmwares. There may be issues when non-zero freq is passed with firmware
+>> using < 3.4 htt version. To be safe use target_version_major and target_version_minor
+>> along with htt-op-version before configuring peer id and freq in htt tx desc.
+>>
+>> Fixes: 8d6d36243610 ("ath10k: fix offchan reliability")
+>> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+>> ---
+>>   drivers/net/wireless/ath/ath10k/htt.h    |  9 +++++++--
+>>   drivers/net/wireless/ath/ath10k/htt_tx.c | 13 +++++++++++--
+>>   2 files changed, 18 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+>> index 2bad50e..44fb4f2 100644
+>> --- a/drivers/net/wireless/ath/ath10k/htt.h
+>> +++ b/drivers/net/wireless/ath/ath10k/htt.h
+>> @@ -166,8 +166,13 @@ struct htt_data_tx_desc {
+>>          __le16 len;
+>>          __le16 id;
+>>          __le32 frags_paddr;
+>> -       __le16 peerid;
+>> -       __le16 freq;
+>> +       union {
+>> +               __le32 peerid;
+>> +               struct {
+>> +                       __le16 peerid;
+>> +                       __le16 freq;
+>> +               } __packed offchan_tx;
+>> +       } __packed;
+>>          u8 prefetch[0]; /* start of frame, for FW classification engine */
+>>   } __packed;
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+>> index 1682397..bf19247 100644
+>> --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
+>> +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+>> @@ -681,8 +681,17 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+>>          skb_cb->htt.txbuf->cmd_tx.len = __cpu_to_le16(msdu->len);
+>>          skb_cb->htt.txbuf->cmd_tx.id = __cpu_to_le16(msdu_id);
+>>          skb_cb->htt.txbuf->cmd_tx.frags_paddr = __cpu_to_le32(frags_paddr);
+>> -       skb_cb->htt.txbuf->cmd_tx.peerid = __cpu_to_le16(HTT_INVALID_PEERID);
+>> -       skb_cb->htt.txbuf->cmd_tx.freq = __cpu_to_le16(skb_cb->htt.freq);
+>> +       if (ar->htt.target_version_major >= 3 &&
+>> +           ar->htt.target_version_minor >= 4 &&
+>> +           ar->htt.op_version == ATH10K_FW_HTT_OP_VERSION_TLV) {
+>
+> Hmm.. I think it'd be better to rename
+> ath10k_mac_need_offchan_tx_work() to, e.g.
+> ath10k_htt_tx_frm_has_freq() and add the htt.op_version check to it.
+
+
+Sure, thanks.
+
+Vasanth
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
