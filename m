@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtAZS-0006iC-8A
- for ath10k@lists.infradead.org; Mon, 02 Nov 2015 08:34:30 +0000
+ id 1ZtAZh-0006it-2F
+ for ath10k@lists.infradead.org; Mon, 02 Nov 2015 08:34:45 +0000
 From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH 1/2] ath10k: Fix peer assoc complete WMI command for 10.4
-Date: Mon, 2 Nov 2015 14:03:48 +0530
-Message-ID: <1446453229-22982-1-git-send-email-vthiagar@qti.qualcomm.com>
+Subject: [PATCH 2/2] ath10k: Fix peerid configuration in htt tx desc for htt
+ version < 3.4
+Date: Mon, 2 Nov 2015 14:03:49 +0530
+Message-ID: <1446453229-22982-2-git-send-email-vthiagar@qti.qualcomm.com>
+In-Reply-To: <1446453229-22982-1-git-send-email-vthiagar@qti.qualcomm.com>
+References: <1446453229-22982-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,107 +26,67 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-There is an extra 4-byte member when compared to WMI 10.2 added to assoc
-complete command in WMI 10.4. This new member is used for 160Mhz related
-configuration. This WMI command mismatch between host and firmware does
-not cause any real issues because this new member is not used in 10.4
-firmwares so far (10.4.1.00030-1). This difference in WMI command interface
-brings in a new wmi_ops for 10.4 gen_peer_assoc(). No noticeable functionality
-differences with this change can be seen with the current 10.4 firmwares, but
-the WMI interface has to be fixed to work with future 10.4 firmwares which may
-be using this new member.
+Of a word in struct htt_data_tx_desc htt version >= 3.4 firmware uses LSB 16-bit
+for frequency configuration which is used for offchannel tx and MSB 16-bit
+is for peerid. But other firmwares using version 2.X (10.1, 10.2.2, 10.2.4
+and 10.4) are using 32-bit for peerid in htt tx desc. So far no issue is found
+with the existing code setting peerid and freq for HTT version 2.X, this could
+be mainly because of 0 as frequecy (home channel) is being always passed with
+those firmwares. There may be issues when non-zero freq is passed with firmware
+using < 3.4 htt version. To be safe use target_version_major and target_version_minor
+along with htt-op-version before configuring peer id and freq in htt tx desc.
 
+Fixes: 8d6d36243610 ("ath10k: fix offchan reliability")
 Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 37 ++++++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wmi.h |  5 +++++
- 2 files changed, 41 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htt.h    |  9 +++++++--
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 13 +++++++++++--
+ 2 files changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 7569db0..e8614ab 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -6328,6 +6328,16 @@ ath10k_wmi_peer_assoc_fill_10_2(struct ath10k *ar, void *buf,
- 	cmd->info0 = __cpu_to_le32(info0);
- }
- 
-+static void
-+ath10k_wmi_peer_assoc_fill_10_4(struct ath10k *ar, void *buf,
-+				const struct wmi_peer_assoc_complete_arg *arg)
-+{
-+	struct wmi_10_4_peer_assoc_complete_cmd *cmd = buf;
-+
-+	ath10k_wmi_peer_assoc_fill_10_2(ar, buf, arg);
-+	cmd->peer_bw_rxnss_override = 0;
-+}
-+
- static int
- ath10k_wmi_peer_assoc_check_arg(const struct wmi_peer_assoc_complete_arg *arg)
- {
-@@ -6417,6 +6427,31 @@ ath10k_wmi_10_2_op_gen_peer_assoc(struct ath10k *ar,
- }
- 
- static struct sk_buff *
-+ath10k_wmi_10_4_op_gen_peer_assoc(struct ath10k *ar,
-+				  const struct wmi_peer_assoc_complete_arg *arg)
-+{
-+	size_t len = sizeof(struct wmi_10_4_peer_assoc_complete_cmd);
-+	struct sk_buff *skb;
-+	int ret;
-+
-+	ret = ath10k_wmi_peer_assoc_check_arg(arg);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	skb = ath10k_wmi_alloc_skb(ar, len);
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ath10k_wmi_peer_assoc_fill_10_4(ar, skb->data, arg);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI,
-+		   "wmi peer assoc vdev %d addr %pM (%s)\n",
-+		   arg->vdev_id, arg->addr,
-+		   arg->peer_reassoc ? "reassociate" : "new");
-+	return skb;
-+}
-+
-+static struct sk_buff *
- ath10k_wmi_10_2_op_gen_pdev_get_temperature(struct ath10k *ar)
- {
- 	struct sk_buff *skb;
-@@ -7536,6 +7571,7 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	.gen_peer_delete = ath10k_wmi_op_gen_peer_delete,
- 	.gen_peer_flush = ath10k_wmi_op_gen_peer_flush,
- 	.gen_peer_set_param = ath10k_wmi_op_gen_peer_set_param,
-+	.gen_peer_assoc = ath10k_wmi_10_4_op_gen_peer_assoc,
- 	.gen_set_psmode = ath10k_wmi_op_gen_set_psmode,
- 	.gen_set_sta_ps = ath10k_wmi_op_gen_set_sta_ps,
- 	.gen_set_ap_ps = ath10k_wmi_op_gen_set_ap_ps,
-@@ -7555,7 +7591,6 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	.fw_stats_fill = ath10k_wmi_10_4_op_fw_stats_fill,
- 
- 	/* shared with 10.2 */
--	.gen_peer_assoc = ath10k_wmi_10_2_op_gen_peer_assoc,
- 	.gen_request_stats = ath10k_wmi_op_gen_request_stats,
- };
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index a8ea93e..ab6d218 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -5741,6 +5741,11 @@ struct wmi_10_2_peer_assoc_complete_cmd {
- 	__le32 info0; /* WMI_PEER_ASSOC_INFO0_ */
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 2bad50e..44fb4f2 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -166,8 +166,13 @@ struct htt_data_tx_desc {
+ 	__le16 len;
+ 	__le16 id;
+ 	__le32 frags_paddr;
+-	__le16 peerid;
+-	__le16 freq;
++	union {
++		__le32 peerid;
++		struct {
++			__le16 peerid;
++			__le16 freq;
++		} __packed offchan_tx;
++	} __packed;
+ 	u8 prefetch[0]; /* start of frame, for FW classification engine */
  } __packed;
  
-+struct wmi_10_4_peer_assoc_complete_cmd {
-+	struct wmi_10_2_peer_assoc_complete_cmd cmd;
-+	__le32 peer_bw_rxnss_override;
-+} __packed;
-+
- struct wmi_peer_assoc_complete_arg {
- 	u8 addr[ETH_ALEN];
- 	u32 vdev_id;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 1682397..bf19247 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -681,8 +681,17 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	skb_cb->htt.txbuf->cmd_tx.len = __cpu_to_le16(msdu->len);
+ 	skb_cb->htt.txbuf->cmd_tx.id = __cpu_to_le16(msdu_id);
+ 	skb_cb->htt.txbuf->cmd_tx.frags_paddr = __cpu_to_le32(frags_paddr);
+-	skb_cb->htt.txbuf->cmd_tx.peerid = __cpu_to_le16(HTT_INVALID_PEERID);
+-	skb_cb->htt.txbuf->cmd_tx.freq = __cpu_to_le16(skb_cb->htt.freq);
++	if (ar->htt.target_version_major >= 3 &&
++	    ar->htt.target_version_minor >= 4 &&
++	    ar->htt.op_version == ATH10K_FW_HTT_OP_VERSION_TLV) {
++		skb_cb->htt.txbuf->cmd_tx.offchan_tx.peerid =
++				__cpu_to_le16(HTT_INVALID_PEERID);
++		skb_cb->htt.txbuf->cmd_tx.offchan_tx.freq =
++				__cpu_to_le16(skb_cb->htt.freq);
++	} else {
++		skb_cb->htt.txbuf->cmd_tx.peerid =
++				__cpu_to_le32(HTT_INVALID_PEERID);
++	}
+ 
+ 	trace_ath10k_htt_tx(ar, msdu_id, msdu->len, vdev_id, tid);
+ 	ath10k_dbg(ar, ATH10K_DBG_HTT,
 -- 
 1.9.1
 
