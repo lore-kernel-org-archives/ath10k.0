@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22d.google.com ([2a00:1450:4010:c04::22d])
+Received: from mail-lb0-x234.google.com ([2a00:1450:4010:c04::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtFin-0005HL-6e
- for ath10k@lists.infradead.org; Mon, 02 Nov 2015 14:04:32 +0000
-Received: by lbjm5 with SMTP id m5so88672418lbj.3
- for <ath10k@lists.infradead.org>; Mon, 02 Nov 2015 06:04:07 -0800 (PST)
+ id 1ZtFik-0005Hl-KR
+ for ath10k@lists.infradead.org; Mon, 02 Nov 2015 14:04:30 +0000
+Received: by lbbes7 with SMTP id es7so88523822lbb.2
+ for <ath10k@lists.infradead.org>; Mon, 02 Nov 2015 06:04:08 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 5/8] ath10k: remove freq from skb_cb
-Date: Mon,  2 Nov 2015 15:03:05 +0100
-Message-Id: <1446472988-2603-6-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 6/8] ath10k: pack up flags in skb_cb
+Date: Mon,  2 Nov 2015 15:03:06 +0100
+Message-Id: <1446472988-2603-7-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1446472988-2603-1-git-send-email-michal.kazior@tieto.com>
 References: <1446472988-2603-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,107 +27,144 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-It was wasteful to keep it in the struct.
+It was wasteful to have all the flags as separate
+bools.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h   | 1 -
- drivers/net/wireless/ath/ath10k/htt_tx.c | 9 +++++++--
- drivers/net/wireless/ath/ath10k/mac.c    | 5 +----
- 3 files changed, 8 insertions(+), 7 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h   | 13 +++++++------
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  4 ++--
+ drivers/net/wireless/ath/ath10k/mac.c    | 10 +++++++---
+ drivers/net/wireless/ath/ath10k/wmi.c    | 12 ++++++++----
+ 4 files changed, 24 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index f24a5feb2220..64a248f780b9 100644
+index 64a248f780b9..59ec9a8098d0 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -88,7 +88,6 @@ struct ath10k_skb_cb {
+@@ -81,22 +81,23 @@ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+ 	return "unknown";
+ }
+ 
++enum ath10k_skb_flags {
++	ATH10K_SKB_F_NO_HWCRYPT = BIT(0),
++	ATH10K_SKB_F_DTIM_ZERO = BIT(1),
++	ATH10K_SKB_F_DELIVER_CAB = BIT(2),
++};
++
+ struct ath10k_skb_cb {
+ 	dma_addr_t paddr;
++	u8 flags;
+ 	u8 eid;
+ 	u8 vdev_id;
  
  	struct {
  		u8 tid;
--		u16 freq;
- 		bool nohwcrypt;
+-		bool nohwcrypt;
  		struct ath10k_htt_txbuf *txbuf;
  		u32 txbuf_paddr;
+ 	} __packed htt;
+-
+-	struct {
+-		bool dtim_zero;
+-		bool deliver_cab;
+-	} bcn;
+ } __packed;
+ 
+ struct ath10k_skb_rxcb {
 diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index bada9695a4fb..05ce99ad6ca2 100644
+index 05ce99ad6ca2..a572576bf6c4 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -531,6 +531,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	struct ath10k *ar = htt->ar;
- 	struct device *dev = ar->dev;
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
-+	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
- 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
- 	struct ath10k_hif_sg_item sg_items[2];
- 	struct htt_data_tx_desc_frag *frags;
-@@ -540,6 +541,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	int res;
- 	u8 flags0 = 0;
- 	u16 msdu_id, flags1 = 0;
-+	u16 freq = 0;
- 	u32 frags_paddr = 0;
- 	struct htt_msdu_ext_desc *ext_desc = NULL;
- 	bool limit_mgmt_desc = false;
-@@ -591,6 +593,9 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 		goto err_free_msdu_id;
- 	}
+@@ -579,7 +579,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
+ 	     ieee80211_is_disassoc(hdr->frame_control)) &&
+ 	     ieee80211_has_protected(hdr->frame_control)) {
+ 		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+-	} else if (!skb_cb->htt.nohwcrypt &&
++	} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
+ 		   txmode == ATH10K_HW_TXRX_RAW &&
+ 		   ieee80211_has_protected(hdr->frame_control)) {
+ 		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+@@ -659,7 +659,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
+ 			prefetch_len);
+ 	skb_cb->htt.txbuf->htc_hdr.flags = 0;
  
-+	if (unlikely(info->flags & IEEE80211_TX_CTL_TX_OFFCHAN))
-+		freq = ar->scan.roc_freq;
-+
- 	switch (txmode) {
- 	case ATH10K_HW_TXRX_RAW:
- 	case ATH10K_HW_TXRX_NATIVE_WIFI:
-@@ -680,13 +685,13 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	skb_cb->htt.txbuf->cmd_tx.id = __cpu_to_le16(msdu_id);
- 	skb_cb->htt.txbuf->cmd_tx.frags_paddr = __cpu_to_le32(frags_paddr);
- 	skb_cb->htt.txbuf->cmd_tx.peerid = __cpu_to_le16(HTT_INVALID_PEERID);
--	skb_cb->htt.txbuf->cmd_tx.freq = __cpu_to_le16(skb_cb->htt.freq);
-+	skb_cb->htt.txbuf->cmd_tx.freq = __cpu_to_le16(freq);
+-	if (skb_cb->htt.nohwcrypt)
++	if (skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT)
+ 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
  
- 	trace_ath10k_htt_tx(ar, msdu_id, msdu->len, vdev_id, tid);
- 	ath10k_dbg(ar, ATH10K_DBG_HTT,
- 		   "htt tx flags0 %hhu flags1 %hu len %d id %hu frags_paddr %08x, msdu_paddr %08x vdev %hhu tid %hhu freq %hu\n",
- 		   flags0, flags1, msdu->len, msdu_id, frags_paddr,
--		   (u32)skb_cb->paddr, vdev_id, tid, skb_cb->htt.freq);
-+		   (u32)skb_cb->paddr, vdev_id, tid, freq);
- 	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt tx msdu: ",
- 			msdu->data, msdu->len);
- 	trace_ath10k_tx_hdr(ar, msdu->data, msdu->len);
+ 	flags1 |= SM((u16)vdev_id, HTT_DATA_TX_DESC_FLAGS1_VDEV_ID);
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9c76934b3bf0..ddf2ad2f3955 100644
+index ddf2ad2f3955..105a2e61c2ae 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3517,6 +3517,7 @@ void __ath10k_scan_finish(struct ath10k *ar)
- 	case ATH10K_SCAN_STARTING:
- 		ar->scan.state = ATH10K_SCAN_IDLE;
- 		ar->scan_channel = NULL;
-+		ar->scan.roc_freq = 0;
- 		ath10k_offchan_tx_purge(ar);
- 		cancel_delayed_work(&ar->scan.timeout);
- 		complete_all(&ar->scan.completed);
-@@ -3672,7 +3673,6 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+@@ -3661,6 +3661,7 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 		      struct sk_buff *skb)
+ {
+ 	struct ath10k *ar = hw->priv;
++	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+ 	struct ieee80211_vif *vif = info->control.vif;
+ 	struct ieee80211_sta *sta = control->sta;
+@@ -3673,9 +3674,12 @@ static void ath10k_tx(struct ieee80211_hw *hw,
  
  	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
  
--	ATH10K_SKB_CB(skb)->htt.freq = 0;
- 	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
- 	ATH10K_SKB_CB(skb)->htt.nohwcrypt = !ath10k_tx_h_use_hwcrypto(vif, skb);
- 	ATH10K_SKB_CB(skb)->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
-@@ -3697,13 +3697,10 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+-	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
+-	ATH10K_SKB_CB(skb)->htt.nohwcrypt = !ath10k_tx_h_use_hwcrypto(vif, skb);
+-	ATH10K_SKB_CB(skb)->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
++	skb_cb->flags = 0;
++	if (!ath10k_tx_h_use_hwcrypto(vif, skb))
++		skb_cb->flags |= ATH10K_SKB_F_NO_HWCRYPT;
++
++	skb_cb->htt.tid = ath10k_tx_h_get_tid(hdr);
++	skb_cb->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
  
- 	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
- 		spin_lock_bh(&ar->data_lock);
--		ATH10K_SKB_CB(skb)->htt.freq = ar->scan.roc_freq;
- 		ATH10K_SKB_CB(skb)->vdev_id = ar->scan.vdev_id;
+ 	switch (txmode) {
+ 	case ATH10K_HW_TXRX_MGMT:
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 7569db0f69b5..022d42d29486 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1660,6 +1660,8 @@ static void ath10k_wmi_tx_beacon_nowait(struct ath10k_vif *arvif)
+ 	struct ath10k *ar = arvif->ar;
+ 	struct ath10k_skb_cb *cb;
+ 	struct sk_buff *bcn;
++	bool dtim_zero;
++	bool deliver_cab;
+ 	int ret;
+ 
+ 	spin_lock_bh(&ar->data_lock);
+@@ -1679,12 +1681,14 @@ static void ath10k_wmi_tx_beacon_nowait(struct ath10k_vif *arvif)
+ 		arvif->beacon_state = ATH10K_BEACON_SENDING;
  		spin_unlock_bh(&ar->data_lock);
  
- 		if (ath10k_mac_need_offchan_tx_work(ar)) {
--			ATH10K_SKB_CB(skb)->htt.freq = 0;
--
- 			ath10k_dbg(ar, ATH10K_DBG_MAC, "queued offchannel skb %p\n",
- 				   skb);
++		dtim_zero = !!(cb->flags & ATH10K_SKB_F_DTIM_ZERO);
++		deliver_cab = !!(cb->flags & ATH10K_SKB_F_DELIVER_CAB);
+ 		ret = ath10k_wmi_beacon_send_ref_nowait(arvif->ar,
+ 							arvif->vdev_id,
+ 							bcn->data, bcn->len,
+ 							cb->paddr,
+-							cb->bcn.dtim_zero,
+-							cb->bcn.deliver_cab);
++							dtim_zero,
++							deliver_cab);
  
+ 		spin_lock_bh(&ar->data_lock);
+ 
+@@ -3115,10 +3119,10 @@ static void ath10k_wmi_update_tim(struct ath10k *ar,
+ 	memcpy(tim->virtual_map, arvif->u.ap.tim_bitmap, pvm_len);
+ 
+ 	if (tim->dtim_count == 0) {
+-		ATH10K_SKB_CB(bcn)->bcn.dtim_zero = true;
++		ATH10K_SKB_CB(bcn)->flags |= ATH10K_SKB_F_DTIM_ZERO;
+ 
+ 		if (__le32_to_cpu(tim_info->tim_mcast) == 1)
+-			ATH10K_SKB_CB(bcn)->bcn.deliver_cab = true;
++			ATH10K_SKB_CB(bcn)->flags |= ATH10K_SKB_F_DELIVER_CAB;
+ 	}
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_MGMT, "dtim %d/%d mcast %d pvmlen %d\n",
 -- 
 2.1.4
 
