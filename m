@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-am1on0077.outbound.protection.outlook.com ([157.56.112.77]
+ helo=emea01-am1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtClD-0005jM-AT
- for ath10k@lists.infradead.org; Mon, 02 Nov 2015 10:54:47 +0000
-Message-ID: <563740CE.7080806@qti.qualcomm.com>
-Date: Mon, 2 Nov 2015 16:24:06 +0530
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+ id 1ZtDHC-0005R9-5h
+ for ath10k@lists.infradead.org; Mon, 02 Nov 2015 11:27:51 +0000
+From: Tomi Saarnio <Tomi.Saarnio@ekahau.com>
+Subject: Question: ath10k and tcpdump antenna noise information missing
+Date: Mon, 2 Nov 2015 11:27:26 +0000
+Message-ID: <DB5PR02MB063103DC3F0089F66D588415FE2C0@DB5PR02MB0631.eurprd02.prod.outlook.com>
+References: <DB5PR02MB0631EFCD121C0F9F6BAC1C4EFE2C0@DB5PR02MB0631.eurprd02.prod.outlook.com>
+In-Reply-To: <DB5PR02MB0631EFCD121C0F9F6BAC1C4EFE2C0@DB5PR02MB0631.eurprd02.prod.outlook.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] ath10k: Fix peerid configuration in htt tx desc for
- htt version < 3.4
-References: <1446453229-22982-1-git-send-email-vthiagar@qti.qualcomm.com>	<1446453229-22982-2-git-send-email-vthiagar@qti.qualcomm.com>
- <CA+BoTQn4WHGU8nbrcqZyBTm1tkdJZk5NJT63SXi4s7tp=mGiXg@mail.gmail.com>
-In-Reply-To: <CA+BoTQn4WHGU8nbrcqZyBTm1tkdJZk5NJT63SXi4s7tp=mGiXg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,76 +20,78 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Monday 02 November 2015 03:57 PM, Michal Kazior wrote:
-> On 2 November 2015 at 09:33, Vasanthakumar Thiagarajan
-> <vthiagar@qti.qualcomm.com> wrote:
->> Of a word in struct htt_data_tx_desc htt version >= 3.4 firmware uses LSB 16-bit
->> for frequency configuration which is used for offchannel tx and MSB 16-bit
->> is for peerid. But other firmwares using version 2.X (10.1, 10.2.2, 10.2.4
->> and 10.4) are using 32-bit for peerid in htt tx desc. So far no issue is found
->> with the existing code setting peerid and freq for HTT version 2.X, this could
->> be mainly because of 0 as frequecy (home channel) is being always passed with
->> those firmwares. There may be issues when non-zero freq is passed with firmware
->> using < 3.4 htt version. To be safe use target_version_major and target_version_minor
->> along with htt-op-version before configuring peer id and freq in htt tx desc.
->>
->> Fixes: 8d6d36243610 ("ath10k: fix offchan reliability")
->> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
->> ---
->>   drivers/net/wireless/ath/ath10k/htt.h    |  9 +++++++--
->>   drivers/net/wireless/ath/ath10k/htt_tx.c | 13 +++++++++++--
->>   2 files changed, 18 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
->> index 2bad50e..44fb4f2 100644
->> --- a/drivers/net/wireless/ath/ath10k/htt.h
->> +++ b/drivers/net/wireless/ath/ath10k/htt.h
->> @@ -166,8 +166,13 @@ struct htt_data_tx_desc {
->>          __le16 len;
->>          __le16 id;
->>          __le32 frags_paddr;
->> -       __le16 peerid;
->> -       __le16 freq;
->> +       union {
->> +               __le32 peerid;
->> +               struct {
->> +                       __le16 peerid;
->> +                       __le16 freq;
->> +               } __packed offchan_tx;
->> +       } __packed;
->>          u8 prefetch[0]; /* start of frame, for FW classification engine */
->>   } __packed;
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
->> index 1682397..bf19247 100644
->> --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
->> +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
->> @@ -681,8 +681,17 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
->>          skb_cb->htt.txbuf->cmd_tx.len = __cpu_to_le16(msdu->len);
->>          skb_cb->htt.txbuf->cmd_tx.id = __cpu_to_le16(msdu_id);
->>          skb_cb->htt.txbuf->cmd_tx.frags_paddr = __cpu_to_le32(frags_paddr);
->> -       skb_cb->htt.txbuf->cmd_tx.peerid = __cpu_to_le16(HTT_INVALID_PEERID);
->> -       skb_cb->htt.txbuf->cmd_tx.freq = __cpu_to_le16(skb_cb->htt.freq);
->> +       if (ar->htt.target_version_major >= 3 &&
->> +           ar->htt.target_version_minor >= 4 &&
->> +           ar->htt.op_version == ATH10K_FW_HTT_OP_VERSION_TLV) {
->
-> Hmm.. I think it'd be better to rename
-> ath10k_mac_need_offchan_tx_work() to, e.g.
-> ath10k_htt_tx_frm_has_freq() and add the htt.op_version check to it.
+Hi, =
 
 
-Sure, thanks.
+I have been trying to figure out how to get the antenna noise information f=
+rom the tcpdump.
+So far, no luck.
 
-Vasanth
+The purpose is to estimate the channel noise level and quality using the an=
+tenna signal level
+(which is available in the tcpdump already) and the antenna noise level (th=
+e missing piece of
+the puzzle).
 
+For example:
+
+# tcpdump -ni wlan0 -c 10 2> /dev/null
+
+ [63933.453161] device wlan0 entered promiscuous mode
+15:22:43.038447 1.0 Mb/s 2412 MHz[63934.205367] device wlan0 left promiscuo=
+us mode
+=A011b -60dB signal antenna 0 Beacon (NM-WLAN2) [1.0* 2.0* 5.5* 11.0* 9.0 1=
+8.0 36.0 54.0 Mbit] ESS CH: 1, PRIVACY
+15:22:43.038853 11.0 Mb/s 2412 MHz 11b -31dB signal antenna 0 Probe Respons=
+e (aaaa) [9.0 11.0* 12.0 18.0 24.0 36.0 48.0 54.0 Mbit] CH: 1, PRIVACY
+15:22:43.039077 5421223us tsft 11.0 Mb/s 2412 MHz 11b -38dB signal antenna =
+0 Acknowledgment RA:00:19:07:c5:58:11
+15:22:43.039469 11.0 Mb/s 2412 MHz 11b -31dB signal antenna 0 Probe Respons=
+e (bbbb) [9.0 11.0* 12.0 18.0 24.0 36.0 48.0 54.0 Mbit] CH: 1, PRIVACY
+15:22:43.039694 5421839us tsft 11.0 Mb/s 2412 MHz 11b -39dB signal antenna =
+0 Acknowledgment RA:00:19:07:c5:58:1e
+15:22:43.040062 11.0 Mb/s 2412 MHz 11b -31dB signal antenna 0 Beacon (cccc)=
+ [9.0 11.0* 12.0 18.0 24.0 36.0 48.0 54.0 Mbit] ESS CH: 1, PRIVACY
+15:22:43.040298 5422447us tsft 11.0 Mb/s 2412 MHz 11b -31dB signal antenna =
+0 Clear-To-Send RA:00:19:07:c5:58:1e
+15:22:43.040580 5421593us tsft 11.0 Mb/s 2412 MHz 11b -31dB signal antenna =
+0 CF +QoS Data IV:4d23 Pad 20 KeyID 0
+15:22:43.040659 5422747us tsft 5.5 Mb/s 2412 MHz 11b -38dB signal antenna 0=
+ Acknowledgment RA:00:19:07:c5:58:1e
+15:22:43.043266 5425416us tsft 11.0 Mb/s 2412 MHz 11b -28dB signal antenna =
+0 Clear-To-Send RA:00:19:07:c5:58:1e
+
+(Note: it seems that the board didn't enter the promiscous mode, but appare=
+ntly the tcpdump
+captures data successfully.)
+
+The platform is Gateworks Ventana board with the latest kernel 4 build and =
+WLE600VX Ath10k miniPCIe board.
+"Linux OpenWrt 4.1.6 #2 SMP Thu Oct 29 15:18:59 EET 2015 armv7l GNU/Linux"
+ The ath10k firmware version is firmware-2.bin_10.1.467.2-1, but I have als=
+o tried firmware-5.bin_10.2.4.70.10-2.
+
+Questions:
+
+- Does the current athk10k firmware and/or driver support the antenna noise=
+ information?
+- If the current driver doesn't support the feature yet, any plans when it =
+would be available?
+- If the current driver does provide the missing information, how can I get=
+ it to the tcpdump capture?
+- Is there any other ways of obtaining the same information by not=A0using =
+tcpdump?
+
+Any pointers and suggestions greatly appreciated.
+
+Best regards,
+Tomi Saarnio
 
 _______________________________________________
 ath10k mailing list
