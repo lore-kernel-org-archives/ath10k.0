@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x234.google.com ([2a00:1450:4010:c04::234])
+Received: from mail-lf0-x232.google.com ([2a00:1450:4010:c07::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtFik-0005FD-KJ
- for ath10k@lists.infradead.org; Mon, 02 Nov 2015 14:04:28 +0000
-Received: by lbbes7 with SMTP id es7so88522246lbb.2
- for <ath10k@lists.infradead.org>; Mon, 02 Nov 2015 06:04:03 -0800 (PST)
+ id 1ZtFij-0005B8-IN
+ for ath10k@lists.infradead.org; Mon, 02 Nov 2015 14:04:27 +0000
+Received: by lffz202 with SMTP id z202so62208875lff.3
+ for <ath10k@lists.infradead.org>; Mon, 02 Nov 2015 06:04:01 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/8] ath10k: rename function to adhere to naming convention
-Date: Mon,  2 Nov 2015 15:03:02 +0100
-Message-Id: <1446472988-2603-3-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1446472988-2603-1-git-send-email-michal.kazior@tieto.com>
-References: <1446472988-2603-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 0/8] ath10k: clean up ath10k_skb_cb
+Date: Mon,  2 Nov 2015 15:03:00 +0100
+Message-Id: <1446472988-2603-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +25,38 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-All functions should have ath10k_{filename}_
-prefixes.
+The ath10k_skb_cb structure wasn't really space
+efficient. Some stuff is removed or replaced with
+more compact representation.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+This cleanup is necessary for future features.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 58230cd04174..14a705ca87b2 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3139,8 +3139,10 @@ static u8 ath10k_tx_h_get_vdev_id(struct ath10k *ar, struct ieee80211_vif *vif)
- }
- 
- static enum ath10k_hw_txrx_mode
--ath10k_tx_h_get_txmode(struct ath10k *ar, struct ieee80211_vif *vif,
--		       struct ieee80211_sta *sta, struct sk_buff *skb)
-+ath10k_mac_tx_h_get_txmode(struct ath10k *ar,
-+			   struct ieee80211_vif *vif,
-+			   struct ieee80211_sta *sta,
-+			   struct sk_buff *skb)
- {
- 	const struct ieee80211_hdr *hdr = (void *)skb->data;
- 	__le16 fc = hdr->frame_control;
-@@ -3653,7 +3655,8 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
- 	ATH10K_SKB_CB(skb)->htt.nohwcrypt = !ath10k_tx_h_use_hwcrypto(vif, skb);
- 	ATH10K_SKB_CB(skb)->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
--	ATH10K_SKB_CB(skb)->txmode = ath10k_tx_h_get_txmode(ar, vif, sta, skb);
-+	ATH10K_SKB_CB(skb)->txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta,
-+								skb);
- 
- 	switch (ATH10K_SKB_CB(skb)->txmode) {
- 	case ATH10K_HW_TXRX_MGMT:
+The size of ath10k_skb_cb:
+
+          before   after
+ x86-32   26       12
+ x86-64   34       20
+
+
+Michal Kazior (8):
+  ath10k: merge is_protected with nohwcrypt
+  ath10k: rename function to adhere to naming convention
+  ath10k: remove txmode from skb_cb
+  ath10k: remove is_offchan
+  ath10k: remove freq from skb_cb
+  ath10k: pack up flags in skb_cb
+  ath10k: replace vdev_id and tid in skb cb
+  ath10k: store msdu_id instead of txbuf pointers
+
+ drivers/net/wireless/ath/ath10k/core.h   |  27 +++----
+ drivers/net/wireless/ath/ath10k/htt.h    |   3 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 111 ++++++++++++++++++-----------
+ drivers/net/wireless/ath/ath10k/mac.c    | 116 +++++++++++++++----------------
+ drivers/net/wireless/ath/ath10k/mac.h    |   1 +
+ drivers/net/wireless/ath/ath10k/txrx.c   |   7 +-
+ drivers/net/wireless/ath/ath10k/wmi.c    |  22 ++++--
+ 7 files changed, 165 insertions(+), 122 deletions(-)
+
 -- 
 2.1.4
 
