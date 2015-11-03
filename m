@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-am1on0077.outbound.protection.outlook.com ([157.56.112.77]
- helo=emea01-am1-obe.outbound.protection.outlook.com)
+Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtVMF-00015J-Gh
- for ath10k@lists.infradead.org; Tue, 03 Nov 2015 06:46:17 +0000
-From: Tomi Saarnio <Tomi.Saarnio@ekahau.com>
-Subject: Re: Question: ath10k and tcpdump antenna noise information missing
-Date: Tue, 3 Nov 2015 06:45:51 +0000
-Message-ID: <DB5PR02MB06315E3384316A68FB184D81FE2B0@DB5PR02MB0631.eurprd02.prod.outlook.com>
-References: <DB5PR02MB0631EFCD121C0F9F6BAC1C4EFE2C0@DB5PR02MB0631.eurprd02.prod.outlook.com>,
- <DB5PR02MB063103DC3F0089F66D588415FE2C0@DB5PR02MB0631.eurprd02.prod.outlook.com>
-In-Reply-To: <DB5PR02MB063103DC3F0089F66D588415FE2C0@DB5PR02MB0631.eurprd02.prod.outlook.com>
-Content-Language: en-US
+ id 1ZtWGU-0008D3-25
+ for ath10k@lists.infradead.org; Tue, 03 Nov 2015 07:44:24 +0000
+Received: by wicll6 with SMTP id ll6so64066601wic.0
+ for <ath10k@lists.infradead.org>; Mon, 02 Nov 2015 23:43:58 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <DB5PR02MB06315E3384316A68FB184D81FE2B0@DB5PR02MB0631.eurprd02.prod.outlook.com>
+References: <DB5PR02MB0631EFCD121C0F9F6BAC1C4EFE2C0@DB5PR02MB0631.eurprd02.prod.outlook.com>
+ <DB5PR02MB063103DC3F0089F66D588415FE2C0@DB5PR02MB0631.eurprd02.prod.outlook.com>
+ <DB5PR02MB06315E3384316A68FB184D81FE2B0@DB5PR02MB0631.eurprd02.prod.outlook.com>
+From: Tomasz Skapski <tomasz.skapski@tieto.com>
+Date: Tue, 3 Nov 2015 08:43:39 +0100
+Message-ID: <CABkMH_rPXXmhBmBiuZNGbD805TnLKv4R5FjYXfPiX_6jdBAkCQ@mail.gmail.com>
+Subject: Re: Question: ath10k and tcpdump antenna noise information missing
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,89 +22,91 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Tomi Saarnio <Tomi.Saarnio@ekahau.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi all,
-
-More information on this. When I run the following bash script, the iw survey dump returns channel noise value,
-but I have no idea whether this value would be identical to the "antenna noise" that the tcpdump should return. 
-
-while [ 1 ]
-do
-  iwlist wlan0 scan > /dev/null
-  reset
-  iw wlan0 survey dump | grep "noise"
-done
-
-And, running the iwlist scan + iw survey dump is v-e-r-y s-l-o-w as it scans all the channels supported, where as
-the tcpdump will return the antenna noise only on the specific channel we are monitoring.
-
-Any suggestions?
-
-Best regards,
-Tomi Saarnio
-
-________________________________________
-From: ath10k <ath10k-bounces@lists.infradead.org> on behalf of Tomi Saarnio <Tomi.Saarnio@ekahau.com>
-Sent: Monday, November 2, 2015 1:27 PM
-To: ath10k@lists.infradead.org
-Subject: Question: ath10k and tcpdump antenna noise information missing
-
-Hi,
-
-I have been trying to figure out how to get the antenna noise information from the tcpdump.
-So far, no luck.
-
-The purpose is to estimate the channel noise level and quality using the antenna signal level
-(which is available in the tcpdump already) and the antenna noise level (the missing piece of
-the puzzle).
-
-For example:
-
-# tcpdump -ni wlan0 -c 10 2> /dev/null
-
- [63933.453161] device wlan0 entered promiscuous mode
-15:22:43.038447 1.0 Mb/s 2412 MHz[63934.205367] device wlan0 left promiscuous mode
- 11b -60dB signal antenna 0 Beacon (NM-WLAN2) [1.0* 2.0* 5.5* 11.0* 9.0 18.0 36.0 54.0 Mbit] ESS CH: 1, PRIVACY
-15:22:43.038853 11.0 Mb/s 2412 MHz 11b -31dB signal antenna 0 Probe Response (aaaa) [9.0 11.0* 12.0 18.0 24.0 36.0 48.0 54.0 Mbit] CH: 1, PRIVACY
-15:22:43.039077 5421223us tsft 11.0 Mb/s 2412 MHz 11b -38dB signal antenna 0 Acknowledgment RA:00:19:07:c5:58:11
-15:22:43.039469 11.0 Mb/s 2412 MHz 11b -31dB signal antenna 0 Probe Response (bbbb) [9.0 11.0* 12.0 18.0 24.0 36.0 48.0 54.0 Mbit] CH: 1, PRIVACY
-15:22:43.039694 5421839us tsft 11.0 Mb/s 2412 MHz 11b -39dB signal antenna 0 Acknowledgment RA:00:19:07:c5:58:1e
-15:22:43.040062 11.0 Mb/s 2412 MHz 11b -31dB signal antenna 0 Beacon (cccc) [9.0 11.0* 12.0 18.0 24.0 36.0 48.0 54.0 Mbit] ESS CH: 1, PRIVACY
-15:22:43.040298 5422447us tsft 11.0 Mb/s 2412 MHz 11b -31dB signal antenna 0 Clear-To-Send RA:00:19:07:c5:58:1e
-15:22:43.040580 5421593us tsft 11.0 Mb/s 2412 MHz 11b -31dB signal antenna 0 CF +QoS Data IV:4d23 Pad 20 KeyID 0
-15:22:43.040659 5422747us tsft 5.5 Mb/s 2412 MHz 11b -38dB signal antenna 0 Acknowledgment RA:00:19:07:c5:58:1e
-15:22:43.043266 5425416us tsft 11.0 Mb/s 2412 MHz 11b -28dB signal antenna 0 Clear-To-Send RA:00:19:07:c5:58:1e
-
-(Note: it seems that the board didn't enter the promiscous mode, but apparently the tcpdump
-captures data successfully.)
-
-The platform is Gateworks Ventana board with the latest kernel 4 build and WLE600VX Ath10k miniPCIe board.
-"Linux OpenWrt 4.1.6 #2 SMP Thu Oct 29 15:18:59 EET 2015 armv7l GNU/Linux"
- The ath10k firmware version is firmware-2.bin_10.1.467.2-1, but I have also tried firmware-5.bin_10.2.4.70.10-2.
-
-Questions:
-
-- Does the current athk10k firmware and/or driver support the antenna noise information?
-- If the current driver doesn't support the feature yet, any plans when it would be available?
-- If the current driver does provide the missing information, how can I get it to the tcpdump capture?
-- Is there any other ways of obtaining the same information by not using tcpdump?
-
-Any pointers and suggestions greatly appreciated.
-
-Best regards,
-Tomi Saarnio
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgVG9taSwKCnlvdSBjYW4gc2NhbiBvbmx5IG9uIGdpdmVuIGZyZXF1ZW5jaWVzIHVzaW5nIGl3
+OgoKaXcgZGV2IDxkZXZuYW1lPiBzY2FuIFstdV0gW2ZyZXEgPGZyZXE+Kl0gW2llcyA8aGV4IGFz
+IDAwOjExOi4uPl0KW3NzaWQgPHNzaWQ+KnxwYXNzaXZlXQpTY2FuIG9uIHRoZSBnaXZlbiBmcmVx
+dWVuY2llcyBhbmQgcHJvYmUgZm9yIHRoZSBnaXZlbiBTU0lEcwoob3Igd2lsZGNhcmQgaWYgbm90
+IGdpdmVuKSB1bmxlc3MgcGFzc2l2ZSBzY2FubmluZyBpcyByZXF1ZXN0ZWQuCklmIC11IGlzIHNw
+ZWNpZmllZCBwcmludCB1bmtub3duIGRhdGEgaW4gdGhlIHNjYW4gcmVzdWx0cy4KU3BlY2lmaWVk
+ICh2ZW5kb3IpIElFcyBtdXN0IGJlIHdlbGwtZm9ybWVkLgoKSXQgc2hvdWxkIHNwZWVkIHVwIHlv
+dXIgc2NyaXB0LgoKUmVnYXJkcywKVG9tYXN6IFNrxIVwc2tpCgoKT24gMyBOb3ZlbWJlciAyMDE1
+IGF0IDA3OjQ1LCBUb21pIFNhYXJuaW8gPFRvbWkuU2Fhcm5pb0Bla2FoYXUuY29tPiB3cm90ZToK
+PiBIaSBhbGwsCj4KPiBNb3JlIGluZm9ybWF0aW9uIG9uIHRoaXMuIFdoZW4gSSBydW4gdGhlIGZv
+bGxvd2luZyBiYXNoIHNjcmlwdCwgdGhlIGl3IHN1cnZleSBkdW1wIHJldHVybnMgY2hhbm5lbCBu
+b2lzZSB2YWx1ZSwKPiBidXQgSSBoYXZlIG5vIGlkZWEgd2hldGhlciB0aGlzIHZhbHVlIHdvdWxk
+IGJlIGlkZW50aWNhbCB0byB0aGUgImFudGVubmEgbm9pc2UiIHRoYXQgdGhlIHRjcGR1bXAgc2hv
+dWxkIHJldHVybi4KPgo+IHdoaWxlIFsgMSBdCj4gZG8KPiAgIGl3bGlzdCB3bGFuMCBzY2FuID4g
+L2Rldi9udWxsCj4gICByZXNldAo+ICAgaXcgd2xhbjAgc3VydmV5IGR1bXAgfCBncmVwICJub2lz
+ZSIKPiBkb25lCj4KPiBBbmQsIHJ1bm5pbmcgdGhlIGl3bGlzdCBzY2FuICsgaXcgc3VydmV5IGR1
+bXAgaXMgdi1lLXIteSBzLWwtby13IGFzIGl0IHNjYW5zIGFsbCB0aGUgY2hhbm5lbHMgc3VwcG9y
+dGVkLCB3aGVyZSBhcwo+IHRoZSB0Y3BkdW1wIHdpbGwgcmV0dXJuIHRoZSBhbnRlbm5hIG5vaXNl
+IG9ubHkgb24gdGhlIHNwZWNpZmljIGNoYW5uZWwgd2UgYXJlIG1vbml0b3JpbmcuCj4KPiBBbnkg
+c3VnZ2VzdGlvbnM/Cj4KPiBCZXN0IHJlZ2FyZHMsCj4gVG9taSBTYWFybmlvCj4KPiBfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gRnJvbTogYXRoMTBrIDxhdGgxMGst
+Ym91bmNlc0BsaXN0cy5pbmZyYWRlYWQub3JnPiBvbiBiZWhhbGYgb2YgVG9taSBTYWFybmlvIDxU
+b21pLlNhYXJuaW9AZWthaGF1LmNvbT4KPiBTZW50OiBNb25kYXksIE5vdmVtYmVyIDIsIDIwMTUg
+MToyNyBQTQo+IFRvOiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IFN1YmplY3Q6IFF1ZXN0
+aW9uOiBhdGgxMGsgYW5kIHRjcGR1bXAgYW50ZW5uYSBub2lzZSBpbmZvcm1hdGlvbiBtaXNzaW5n
+Cj4KPiBIaSwKPgo+IEkgaGF2ZSBiZWVuIHRyeWluZyB0byBmaWd1cmUgb3V0IGhvdyB0byBnZXQg
+dGhlIGFudGVubmEgbm9pc2UgaW5mb3JtYXRpb24gZnJvbSB0aGUgdGNwZHVtcC4KPiBTbyBmYXIs
+IG5vIGx1Y2suCj4KPiBUaGUgcHVycG9zZSBpcyB0byBlc3RpbWF0ZSB0aGUgY2hhbm5lbCBub2lz
+ZSBsZXZlbCBhbmQgcXVhbGl0eSB1c2luZyB0aGUgYW50ZW5uYSBzaWduYWwgbGV2ZWwKPiAod2hp
+Y2ggaXMgYXZhaWxhYmxlIGluIHRoZSB0Y3BkdW1wIGFscmVhZHkpIGFuZCB0aGUgYW50ZW5uYSBu
+b2lzZSBsZXZlbCAodGhlIG1pc3NpbmcgcGllY2Ugb2YKPiB0aGUgcHV6emxlKS4KPgo+IEZvciBl
+eGFtcGxlOgo+Cj4gIyB0Y3BkdW1wIC1uaSB3bGFuMCAtYyAxMCAyPiAvZGV2L251bGwKPgo+ICBb
+NjM5MzMuNDUzMTYxXSBkZXZpY2Ugd2xhbjAgZW50ZXJlZCBwcm9taXNjdW91cyBtb2RlCj4gMTU6
+MjI6NDMuMDM4NDQ3IDEuMCBNYi9zIDI0MTIgTUh6WzYzOTM0LjIwNTM2N10gZGV2aWNlIHdsYW4w
+IGxlZnQgcHJvbWlzY3VvdXMgbW9kZQo+ICAxMWIgLTYwZEIgc2lnbmFsIGFudGVubmEgMCBCZWFj
+b24gKE5NLVdMQU4yKSBbMS4wKiAyLjAqIDUuNSogMTEuMCogOS4wIDE4LjAgMzYuMCA1NC4wIE1i
+aXRdIEVTUyBDSDogMSwgUFJJVkFDWQo+IDE1OjIyOjQzLjAzODg1MyAxMS4wIE1iL3MgMjQxMiBN
+SHogMTFiIC0zMWRCIHNpZ25hbCBhbnRlbm5hIDAgUHJvYmUgUmVzcG9uc2UgKGFhYWEpIFs5LjAg
+MTEuMCogMTIuMCAxOC4wIDI0LjAgMzYuMCA0OC4wIDU0LjAgTWJpdF0gQ0g6IDEsIFBSSVZBQ1kK
+PiAxNToyMjo0My4wMzkwNzcgNTQyMTIyM3VzIHRzZnQgMTEuMCBNYi9zIDI0MTIgTUh6IDExYiAt
+MzhkQiBzaWduYWwgYW50ZW5uYSAwIEFja25vd2xlZGdtZW50IFJBOjAwOjE5OjA3OmM1OjU4OjEx
+Cj4gMTU6MjI6NDMuMDM5NDY5IDExLjAgTWIvcyAyNDEyIE1IeiAxMWIgLTMxZEIgc2lnbmFsIGFu
+dGVubmEgMCBQcm9iZSBSZXNwb25zZSAoYmJiYikgWzkuMCAxMS4wKiAxMi4wIDE4LjAgMjQuMCAz
+Ni4wIDQ4LjAgNTQuMCBNYml0XSBDSDogMSwgUFJJVkFDWQo+IDE1OjIyOjQzLjAzOTY5NCA1NDIx
+ODM5dXMgdHNmdCAxMS4wIE1iL3MgMjQxMiBNSHogMTFiIC0zOWRCIHNpZ25hbCBhbnRlbm5hIDAg
+QWNrbm93bGVkZ21lbnQgUkE6MDA6MTk6MDc6YzU6NTg6MWUKPiAxNToyMjo0My4wNDAwNjIgMTEu
+MCBNYi9zIDI0MTIgTUh6IDExYiAtMzFkQiBzaWduYWwgYW50ZW5uYSAwIEJlYWNvbiAoY2NjYykg
+WzkuMCAxMS4wKiAxMi4wIDE4LjAgMjQuMCAzNi4wIDQ4LjAgNTQuMCBNYml0XSBFU1MgQ0g6IDEs
+IFBSSVZBQ1kKPiAxNToyMjo0My4wNDAyOTggNTQyMjQ0N3VzIHRzZnQgMTEuMCBNYi9zIDI0MTIg
+TUh6IDExYiAtMzFkQiBzaWduYWwgYW50ZW5uYSAwIENsZWFyLVRvLVNlbmQgUkE6MDA6MTk6MDc6
+YzU6NTg6MWUKPiAxNToyMjo0My4wNDA1ODAgNTQyMTU5M3VzIHRzZnQgMTEuMCBNYi9zIDI0MTIg
+TUh6IDExYiAtMzFkQiBzaWduYWwgYW50ZW5uYSAwIENGICtRb1MgRGF0YSBJVjo0ZDIzIFBhZCAy
+MCBLZXlJRCAwCj4gMTU6MjI6NDMuMDQwNjU5IDU0MjI3NDd1cyB0c2Z0IDUuNSBNYi9zIDI0MTIg
+TUh6IDExYiAtMzhkQiBzaWduYWwgYW50ZW5uYSAwIEFja25vd2xlZGdtZW50IFJBOjAwOjE5OjA3
+OmM1OjU4OjFlCj4gMTU6MjI6NDMuMDQzMjY2IDU0MjU0MTZ1cyB0c2Z0IDExLjAgTWIvcyAyNDEy
+IE1IeiAxMWIgLTI4ZEIgc2lnbmFsIGFudGVubmEgMCBDbGVhci1Uby1TZW5kIFJBOjAwOjE5OjA3
+OmM1OjU4OjFlCj4KPiAoTm90ZTogaXQgc2VlbXMgdGhhdCB0aGUgYm9hcmQgZGlkbid0IGVudGVy
+IHRoZSBwcm9taXNjb3VzIG1vZGUsIGJ1dCBhcHBhcmVudGx5IHRoZSB0Y3BkdW1wCj4gY2FwdHVy
+ZXMgZGF0YSBzdWNjZXNzZnVsbHkuKQo+Cj4gVGhlIHBsYXRmb3JtIGlzIEdhdGV3b3JrcyBWZW50
+YW5hIGJvYXJkIHdpdGggdGhlIGxhdGVzdCBrZXJuZWwgNCBidWlsZCBhbmQgV0xFNjAwVlggQXRo
+MTBrIG1pbmlQQ0llIGJvYXJkLgo+ICJMaW51eCBPcGVuV3J0IDQuMS42ICMyIFNNUCBUaHUgT2N0
+IDI5IDE1OjE4OjU5IEVFVCAyMDE1IGFybXY3bCBHTlUvTGludXgiCj4gIFRoZSBhdGgxMGsgZmly
+bXdhcmUgdmVyc2lvbiBpcyBmaXJtd2FyZS0yLmJpbl8xMC4xLjQ2Ny4yLTEsIGJ1dCBJIGhhdmUg
+YWxzbyB0cmllZCBmaXJtd2FyZS01LmJpbl8xMC4yLjQuNzAuMTAtMi4KPgo+IFF1ZXN0aW9uczoK
+Pgo+IC0gRG9lcyB0aGUgY3VycmVudCBhdGhrMTBrIGZpcm13YXJlIGFuZC9vciBkcml2ZXIgc3Vw
+cG9ydCB0aGUgYW50ZW5uYSBub2lzZSBpbmZvcm1hdGlvbj8KPiAtIElmIHRoZSBjdXJyZW50IGRy
+aXZlciBkb2Vzbid0IHN1cHBvcnQgdGhlIGZlYXR1cmUgeWV0LCBhbnkgcGxhbnMgd2hlbiBpdCB3
+b3VsZCBiZSBhdmFpbGFibGU/Cj4gLSBJZiB0aGUgY3VycmVudCBkcml2ZXIgZG9lcyBwcm92aWRl
+IHRoZSBtaXNzaW5nIGluZm9ybWF0aW9uLCBob3cgY2FuIEkgZ2V0IGl0IHRvIHRoZSB0Y3BkdW1w
+IGNhcHR1cmU/Cj4gLSBJcyB0aGVyZSBhbnkgb3RoZXIgd2F5cyBvZiBvYnRhaW5pbmcgdGhlIHNh
+bWUgaW5mb3JtYXRpb24gYnkgbm90IHVzaW5nIHRjcGR1bXA/Cj4KPiBBbnkgcG9pbnRlcnMgYW5k
+IHN1Z2dlc3Rpb25zIGdyZWF0bHkgYXBwcmVjaWF0ZWQuCj4KPiBCZXN0IHJlZ2FyZHMsCj4gVG9t
+aSBTYWFybmlvCj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+
+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4KPiBf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGF0aDEwayBt
+YWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCg==
