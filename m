@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtUzq-00081U-Ts
- for ath10k@lists.infradead.org; Tue, 03 Nov 2015 06:23:07 +0000
+ id 1ZtUzi-00080G-4W
+ for ath10k@lists.infradead.org; Tue, 03 Nov 2015 06:22:58 +0000
 From: Vivek Natarajan <nataraja@qti.qualcomm.com>
 Subject: [PATCH v2] ath10k: Add support for pktlog in QCA99X0
-Date: Tue, 3 Nov 2015 11:52:10 +0530
-Message-ID: <1446531730-3850-1-git-send-email-nataraja@qti.qualcomm.com>
+Date: Tue, 3 Nov 2015 11:52:21 +0530
+Message-ID: <1446531741-3884-1-git-send-email-nataraja@qti.qualcomm.com>
+In-Reply-To: <n>
+References: <n>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
