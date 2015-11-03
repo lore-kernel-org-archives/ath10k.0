@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtUxU-0007Iu-Jc
- for ath10k@lists.infradead.org; Tue, 03 Nov 2015 06:20:41 +0000
-From: Vivek Natarajan <nataraja@qti.qualcomm.com>
-Subject: [PATCH v2] ath10k: Add support for pktlog in QCA99X0
-Date: Tue, 3 Nov 2015 11:49:55 +0530
-Message-ID: <1446531596-3719-1-git-send-email-nataraja@qti.qualcomm.com>
+ id 1ZtUz2-0007qo-Iv
+ for ath10k@lists.infradead.org; Tue, 03 Nov 2015 06:22:17 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix invalid NSS for 4x4 devices
+Date: Tue, 3 Nov 2015 11:51:33 +0530
+Message-ID: <1446531693-23453-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,115 +20,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, stable@vger.kernel.org
 
-This patch adds pktlog support for 10.4 fw versions.
+The number of spatial streams that are derived from chain mask
+for 4x4 devices is using wrong bitmask and conditional check.
+This is affecting downlink throughput for QCA99x0 devices. Earlier
+cfg_tx_chainmask is not filled by default until user configured it
+and so get_nss_from_chainmask never be called. This issue is exposed
+by recent commit 166de3f1895d ("ath10k: remove supported chain mask").
+By default maximum supported chain mask is filled in cfg_tx_chainmask.
 
-Signed-off-by: Vivek Natarajan <nataraja@qti.qualcomm.com>
+Cc: stable@vger.kernel.org
+Fixes: 5572a95b4b ("ath10k: apply chainmask settings to vdev on
+creation")
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
-v2: Move pktlog_completion_handler to htt_rx.c
+ drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/net/wireless/ath/ath10k/htt.h    |  2 ++
- drivers/net/wireless/ath/ath10k/htt_rx.c | 12 ++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h     | 10 ++++++++++
- drivers/net/wireless/ath/ath10k/pci.c    | 11 +++++++++++
- 4 files changed, 35 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 2bad50e..74ccfb29 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1598,5 +1598,7 @@ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb);
- void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
- int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *);
- int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *);
-+void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
-+					     struct sk_buff *skb);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index a7411fe..95a55405 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4225,7 +4225,7 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
  
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 6060dda..d1dc1ba 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2127,6 +2127,18 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- }
- EXPORT_SYMBOL(ath10k_htt_t2h_msg_handler);
- 
-+void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
-+					     struct sk_buff *skb)
-+{
-+	struct ath10k_pktlog_10_4_hdr *hdr =
-+		(struct ath10k_pktlog_10_4_hdr *)skb->data;
-+
-+	trace_ath10k_htt_pktlog(ar, hdr->payload,
-+				sizeof(*hdr) + __le16_to_cpu(hdr->size));
-+	dev_kfree_skb_any(skb);
-+}
-+EXPORT_SYMBOL(ath10k_htt_rx_pktlog_completion_handler);
-+
- static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+ static u32 get_nss_from_chainmask(u16 chain_mask)
  {
- 	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 2d87737..2fd5dc1 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -261,6 +261,16 @@ struct ath10k_pktlog_hdr {
- 	u8 payload[0];
- } __packed;
- 
-+struct ath10k_pktlog_10_4_hdr {
-+	__le16 flags;
-+	__le16 missed_cnt;
-+	__le16 log_type;
-+	__le16 size;
-+	__le32 timestamp;
-+	__le32 type_specific_data;
-+	u8 payload[0];
-+} __packed;
-+
- enum ath10k_hw_rate_ofdm {
- 	ATH10K_HW_RATE_OFDM_48M = 0,
- 	ATH10K_HW_RATE_OFDM_24M,
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 5c05b0c..5fed194 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -108,6 +108,7 @@ static void ath10k_pci_htc_tx_cb(struct ath10k_ce_pipe *ce_state);
- static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state);
- static void ath10k_pci_htt_tx_cb(struct ath10k_ce_pipe *ce_state);
- static void ath10k_pci_htt_rx_cb(struct ath10k_ce_pipe *ce_state);
-+static void ath10k_pci_pktlog_rx_cb(struct ath10k_ce_pipe *ce_state);
- 
- static const struct ce_attr host_ce_config_wlan[] = {
- 	/* CE0: host->target HTC control and raw streams */
-@@ -186,6 +187,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
- 		.src_nentries = 0,
- 		.src_sz_max = 2048,
- 		.dest_nentries = 128,
-+		.recv_cb = ath10k_pci_pktlog_rx_cb,
- 	},
- 
- 	/* CE9 target autonomous qcache memcpy */
-@@ -1230,6 +1232,15 @@ static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state)
- 	ath10k_pci_process_rx_cb(ce_state, ath10k_htc_rx_completion_handler);
- }
- 
-+/* Called by lower (CE) layer when data is received from the Target.
-+ * Only 10.4 firmware uses separate CE to transfer pktlog data.
-+ */
-+static void ath10k_pci_pktlog_rx_cb(struct ath10k_ce_pipe *ce_state)
-+{
-+	ath10k_pci_process_rx_cb(ce_state,
-+				 ath10k_htt_rx_pktlog_completion_handler);
-+}
-+
- /* Called by lower (CE) layer when a send to HTT Target completes. */
- static void ath10k_pci_htt_tx_cb(struct ath10k_ce_pipe *ce_state)
- {
+-	if ((chain_mask & 0x15) == 0x15)
++	if ((chain_mask & 0xf) == 0xf)
+ 		return 4;
+ 	else if ((chain_mask & 0x7) == 0x7)
+ 		return 3;
 -- 
-1.9.1
+2.6.2
 
 
 _______________________________________________
