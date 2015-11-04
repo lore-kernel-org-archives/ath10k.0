@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtsWo-0001ET-Kp
- for ath10k@lists.infradead.org; Wed, 04 Nov 2015 07:30:44 +0000
-Received: by wicll6 with SMTP id ll6so84079555wic.0
- for <ath10k@lists.infradead.org>; Tue, 03 Nov 2015 23:30:10 -0800 (PST)
+ id 1ZtsxB-0006kV-SF
+ for ath10k@lists.infradead.org; Wed, 04 Nov 2015 07:57:58 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 2/2] ath10k: set peer MFP flag in peer assoc command
+References: <1444194961-12777-1-git-send-email-c_traja@qti.qualcomm.com>
+ <87pozvidiu.fsf@kamboji.qca.qualcomm.com>
+ <39ba89200efb4ef0a2f5ccd5aca878a6@aphydexm01b.ap.qualcomm.com>
+Date: Wed, 4 Nov 2015 09:57:20 +0200
+In-Reply-To: <39ba89200efb4ef0a2f5ccd5aca878a6@aphydexm01b.ap.qualcomm.com>
+ (Tamizh Chelvam Raja's message of "Wed, 4 Nov 2015 05:20:43 +0000")
+Message-ID: <87egg6dwnz.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <45672dcebea40166c2e5edc31c818b96@openmailbox.org>
-References: <45672dcebea40166c2e5edc31c818b96@openmailbox.org>
-Date: Wed, 4 Nov 2015 08:30:10 +0100
-Message-ID: <CA+BoTQkmR95XqsKsjeDOR1b_+0srg8ydFgutfUG+M6C27XwrMw@mail.gmail.com>
-Subject: Re: QCA6174 seemingly randomly fails to wake
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,55 +21,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: theros@openmailbox.org
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>
+Cc: "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gNCBOb3ZlbWJlciAyMDE1IGF0IDAxOjAwLCAgPHRoZXJvc0BvcGVubWFpbGJveC5vcmc+IHdy
-b3RlOgo+IEhlbGxvLAo+Cj4gSSBhbSBoYXZpbmcgaXNzdWVzIHdpdGggdGhlIGF0aDEwayBkcml2
-ZXIgYW5kIHRoZSBRdWFsY29tbSBBdGhlcm9zIFFDQTYxNzQKPiBuZXR3b3JrIGFkYXB0ZXIuIFNl
-ZW1pbmdseSByYW5kb21seSwgdGhlIHdpcmVsZXNzIGNvbm5lY3Rpb24gb24gbXkgbGFwdG9wCj4g
-c3RvcHMgd29ya2luZy4gZG1lc2cgb3V0cHV0cyBhIGxvbmcgc2VyaWVzIG9mOgo+Cj4gWzExMDYx
-LjY0NTkyOV0gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBm
-b3Igd3JpdGUzMiBvZgo+IDB4MDAwMDAyNWMgYXQgMHgwMDAzNTQzYzogLTExMAoKVGhpcyBsb29r
-cyB2ZXJ5IHNpbWlsYXIgdG8gaG93IFFDQTk5WDAgZmFpbGVkIHdoZW4gUENJIFBTIHdhcyBlbmFi
-bGVkCmZvciB0aGUgY2FyZDoKCiAgaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWls
-L2F0aDEway8yMDE1LVNlcHRlbWJlci8wMDU5MzkuaHRtbAoKQXMgZmFyIGFzIEkga25vdyB0aGUg
-cmVhc29uIG9mIGZhaWx1cmUgaXMgbm90IHJlYWxseSB1bmRlcnN0b29kIGFuZCBpdApzaW1wbHkg
-d2FzIGRpc2FibGVkIHRvIGZpeCByZWxpYWJpbGl0eS4KCkl0IHNlZW1zIHRoYXQgUUNBNjE3NCBz
-dWZmZXJzIGZyb20gdGhpcyBhcyB3ZWxsIC0gYXQgbGVhc3Qgb24geW91cgpwbGF0Zm9ybS4gVGhp
-cyBpcyByYXRoZXIgc2FkIGFzIHdlJ2xsIHByb2JhYmx5IG5lZWQgdG8gZGlzYWJsZSBpdCBieQpk
-ZWZhdWx0IGZvciBRQ0E2MTc0IG5vdyBhcyB3ZWxsIHdoaWNoIHdpbGwgaW5jcmVhc2UgcG93ZXIg
-Y29uc3VtcHRpb24KYSBsaXR0bGUgYml0LgoKCj4gUmFyZWx5IGEgcmVib290IGZpeGVzIHRoaXMg
-YW5kIEkgY2FuIHVzZSB0aGUgbmV0d29yayBhZGFwdGVyIGFnYWluLCBidXQgbW9yZQo+IG9mdGVu
-IHRoYW4gbm90LCBhZnRlciBhIHJlYm9vdCwgdGhlcmUgaXMgbm8gb3V0cHV0IHJlbGF0ZWQgdG8g
-YXRoMTBrIGluCj4gZG1lc2cgYW5kIHRoZSBsYXB0b3AgaXMgYmVoYXZpbmcgYXMgaWYgdGhlIG5l
-dHdvcmsgYWRhcHRlciBpcyBub3QgcHJlc2VudC4KPiBUaGUgYWRhcHRlciBldmVudHVhbGx5IHN0
-YXJ0cyB3b3JraW5nIGFnYWluIC0gSSBoYXZlIG5vdCBub3RpY2VkIGEgc3BlY2lmaWMKPiBwYXR0
-ZXJuLCBzb21ldGltZXMgaXQgaXMgYWZ0ZXIgYSBmZXcgaG91cnMsIHNvbWV0aW1lcyBJIGNvdWxk
-bid0IGdldCBpdAo+IHdvcmtpbmcgZm9yIGRheXMuCj4KPiBJIGhhdmUgdHJpZWQgdGhvcm91Z2hs
-eSBzZWFyY2hpbmcgb25saW5lIGJ1dCB3YXMgdW5hYmxlIHRvIGZpbmQgYW55dGhpbmcKPiB0aGF0
-IHdvdWxkIGJlIG9mIGhlbHAuIEkgZG8gYWRtaXQgSSBhbSBhIGxpdHRsZSBvdXQgb2YgbXkgZGVw
-dGggaGVyZSwgYnV0IEkKPiB3aWxsIGhhcHBpbHkgcHJvdmlkZSBhbnkgZnVydGhlciBpbmZvcm1h
-dGlvbiBuZWNlc3NhcnkgaW4gb3JkZXIgdG8gZGlhZ25vc2UKPiBhbmQgZml4IHRoaXMuCj4KPiBJ
-IGFtIG9uIFh1YnVudHUgMTUuMTAsIGtlcm5lbCA0LjIuMC0xNi1nZW5lcmljLgoKQ2FuIHlvdSBw
-ZXJoYXBzIHRyeSBjb21waWxpbmcgdGhlIGtlcm5lbCBmcm9tOgoKICBnaXQ6Ly9naXQua2VybmVs
-Lm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQva3ZhbG8vYXRoLmdpdAoKd2l0aCB0aGUgZm9s
-bG93aW5nIGRpZmYgYXBwbGllZDoKCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9h
-dGgvYXRoMTBrL3BjaS5jCmIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYwpp
-bmRleCAzZmNhMjAwYjk4NmMuLmVkZjdhNzYzN2Q4OCAxMDA2NDQKLS0tIGEvZHJpdmVycy9uZXQv
-d2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYworKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
-YXRoMTBrL3BjaS5jCkBAIC0yOTY4LDcgKzI5NjgsNyBAQCBzdGF0aWMgaW50IGF0aDEwa19wY2lf
-cHJvYmUoc3RydWN0IHBjaV9kZXYgKnBkZXYsCiAgICAgICAgY2FzZSBRQ0E2MTY0XzJfMV9ERVZJ
-Q0VfSUQ6CiAgICAgICAgY2FzZSBRQ0E2MTc0XzJfMV9ERVZJQ0VfSUQ6CiAgICAgICAgICAgICAg
-ICBod19yZXYgPSBBVEgxMEtfSFdfUUNBNjE3NDsKLSAgICAgICAgICAgICAgIHBjaV9wcyA9IHRy
-dWU7CisgICAgICAgICAgICAgICBwY2lfcHMgPSBmYWxzZTsKICAgICAgICAgICAgICAgIGJyZWFr
-OwogICAgICAgIGNhc2UgUUNBOTlYMF8yXzBfREVWSUNFX0lEOgogICAgICAgICAgICAgICAgaHdf
-cmV2ID0gQVRIMTBLX0hXX1FDQTk5WDA7CgphbmQgcmVwb3J0IGJhY2sgaWYgdGhpcyBmaXhlcyB0
-aGUgcHJvYmxlbSBmb3IgeW91LCBwbGVhc2U/CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+"Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com> writes:
+
+>>> From: Tamizh chelvam <c_traja@qti.qualcomm.com>
+>>>
+>>> Set peer's management frame protection flag in peer assoc command, 
+>>> this setting will enable/disable encrytion of management frames in fw.
+>>>
+>>> Setting of this flag is based on whether MFP is enabled/disabled at 
+>>> STA and a firmware feature flag ATH10K_FW_FEATURE_MFP_SUPPORT. This is 
+>>> because only firmwares 10.1.561 and above have support for MFP.
+>>>
+>>> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+>>> Signed-off-by: Manikanta pubbisetty <c_mpubbi@qti.qualcomm.com>
+>
+>>There was a trivial conflict, please check my conflict resolution in the pending branch:
+>
+>>https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=c33d4ded1d2db2166c14afe602fe7ef645a5b16b
+>
+>
+> When I try to apply this patch. I got following conflict.
+>
+> Checking patch drivers/net/wireless/ath/ath10k/core.c...
+> Checking patch drivers/net/wireless/ath/ath10k/core.h...
+> Hunk #1 succeeded at 512 (offset -1 lines).
+> Checking patch drivers/net/wireless/ath/ath10k/htt_tx.c...
+> Checking patch drivers/net/wireless/ath/ath10k/mac.c...
+> error: while searching for:
+
+I don't know what you are trying to do, but I apply the patches from the
+pending branch to ath-next. You might get a conflict if you apply the
+patch to another branch.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
