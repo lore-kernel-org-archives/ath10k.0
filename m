@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zu29D-0007F8-96
- for ath10k@lists.infradead.org; Wed, 04 Nov 2015 17:46:59 +0000
+ id 1Zu2GQ-0000ia-5e
+ for ath10k@lists.infradead.org; Wed, 04 Nov 2015 17:54:26 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix invalid NSS for 4x4 devices
-References: <1446531693-23453-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Wed, 4 Nov 2015 19:46:11 +0200
-In-Reply-To: <1446531693-23453-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Tue, 3 Nov 2015 11:51:33 +0530")
-Message-ID: <87pozpbqu4.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 4/4] ath10k: add QCA9377 hw1.0 support
+References: <1446638015-23310-1-git-send-email-bartosz.markowski@tieto.com>
+ <1446638015-23310-5-git-send-email-bartosz.markowski@tieto.com>
+Date: Wed, 4 Nov 2015 19:53:45 +0200
+In-Reply-To: <1446638015-23310-5-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Wed, 4 Nov 2015 12:53:35 +0100")
+Message-ID: <87lhadbqhi.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,25 +24,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> The number of spatial streams that are derived from chain mask
-> for 4x4 devices is using wrong bitmask and conditional check.
-> This is affecting downlink throughput for QCA99x0 devices. Earlier
-> cfg_tx_chainmask is not filled by default until user configured it
-> and so get_nss_from_chainmask never be called. This issue is exposed
-> by recent commit 166de3f1895d ("ath10k: remove supported chain mask").
-> By default maximum supported chain mask is filled in cfg_tx_chainmask.
+> Add new BMI target version and chip id revision. Register it
+> on supported chips list.
 >
-> Cc: stable@vger.kernel.org
-> Fixes: 5572a95b4b ("ath10k: apply chainmask settings to vdev on
-> creation")
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 
-I'm planning to send this to 4.3-rc releases.
+This one has whitespace issues:
+
+drivers/net/wireless/ath/ath10k/core.c:163: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/core.c:163: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/core.c:164: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/core.c:164: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/core.c:165: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/core.c:165: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/core.c:166: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/core.c:166: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/core.c:167: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/core.c:167: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/core.c:168: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/core.c:168: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/core.c:169: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/core.c:169: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/core.c:170: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/core.c:170: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/core.c:171: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/core.c:171: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/core.c:172: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/core.c:172: please, no spaces at the start of a line
+
 
 -- 
 Kalle Valo
