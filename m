@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ztwdq-0000uV-Se
- for ath10k@lists.infradead.org; Wed, 04 Nov 2015 11:54:15 +0000
-Received: by wmff134 with SMTP id f134so39394833wmf.0
- for <ath10k@lists.infradead.org>; Wed, 04 Nov 2015 03:53:49 -0800 (PST)
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH 2/4] ath10k: update missing hw_params of QCA9377 hw1.1
-Date: Wed,  4 Nov 2015 12:53:33 +0100
-Message-Id: <1446638015-23310-3-git-send-email-bartosz.markowski@tieto.com>
-In-Reply-To: <1446638015-23310-1-git-send-email-bartosz.markowski@tieto.com>
-References: <1446638015-23310-1-git-send-email-bartosz.markowski@tieto.com>
+ id 1ZtwpU-0007lL-IO
+ for ath10k@lists.infradead.org; Wed, 04 Nov 2015 12:06:17 +0000
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Subject: [PATCH V2 0/3] Fix few WMI/HTT interfaces
+Date: Wed, 4 Nov 2015 17:35:34 +0530
+Message-ID: <1446638737-7953-1-git-send-email-vthiagar@qti.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +16,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-The uart_pin was incorrectly configured for QCA9377
-and the recently added hw_params were omitted.
+This patch set fixes mismatch in peer_assoc complete wmi command for
+version 10.4 and peer_id configuration for HTT version < 3.4.
 
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+V2:
+	- Add cover letter
+	- Rename ath10k_mac_need_offchan_tx_work() to
+	  ath10k_mac_tx_frm_has_freq(). Add htt-op-version check
+	  to the helper and use it in ath10k_htt_tx() while configuring
+	  peerid.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index c8f6ca284b9d..a30d41559134 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -141,8 +141,10 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
- 		.name = "qca9377 hw1.1",
- 		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
--		.uart_pin = 7,
-+		.uart_pin = 6,
- 		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
-+		.max_probe_resp_desc_thres = 0,
- 		.fw = {
- 			.dir = QCA9377_HW_1_0_FW_DIR,
- 			.fw = QCA9377_HW_1_0_FW_FILE,
+Vasanthakumar Thiagarajan (3):
+  ath10k: Fix peer assoc complete WMI command for 10.4
+  ath10k: Rename the helper which is used for off-channel tx
+  ath10k: Fix peerid configuration in htt tx desc for htt version < 3.4
+
+ drivers/net/wireless/ath/ath10k/htt.h    |  9 ++++++--
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 11 ++++++++--
+ drivers/net/wireless/ath/ath10k/mac.c    |  9 ++++----
+ drivers/net/wireless/ath/ath10k/mac.h    |  1 +
+ drivers/net/wireless/ath/ath10k/wmi.c    | 37 +++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi.h    |  5 +++++
+ 6 files changed, 63 insertions(+), 9 deletions(-)
+
 -- 
-2.1.2
+1.9.1
 
 
 _______________________________________________
