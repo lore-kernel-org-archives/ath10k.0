@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x232.google.com ([2a00:1450:4010:c04::232])
+Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZuGGw-0006YS-IZ
+ id 1ZuGGx-0006Z2-CL
  for ath10k@lists.infradead.org; Thu, 05 Nov 2015 08:51:56 +0000
-Received: by lbbwb3 with SMTP id wb3so30372971lbb.1
- for <ath10k@lists.infradead.org>; Thu, 05 Nov 2015 00:51:30 -0800 (PST)
+Received: by lfbf136 with SMTP id f136so54255461lfb.0
+ for <ath10k@lists.infradead.org>; Thu, 05 Nov 2015 00:51:33 -0800 (PST)
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH v2 1/4] ath10k: fix the currently supported QCA9377 target
- version name
-Date: Thu,  5 Nov 2015 09:50:40 +0100
-Message-Id: <1446713443-22542-2-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH v2 4/4] ath10k: add QCA9377 hw1.0 support
+Date: Thu,  5 Nov 2015 09:50:43 +0100
+Message-Id: <1446713443-22542-5-git-send-email-bartosz.markowski@tieto.com>
 In-Reply-To: <1446713443-22542-1-git-send-email-bartosz.markowski@tieto.com>
 References: <1446713443-22542-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -28,79 +27,79 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-When introducing the original QCA9377 support, the chip target
-version was wrongly picked. The chip advertising itself with
-bmi target value equal to 0x05020001 is in fact a 1.1 revision.
-I realized this once I got a real 1.1 hw to play with.
+Add new BMI target version and chip id revision. Register it
+on supported chips list.
 
 Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 4 ++--
- drivers/net/wireless/ath/ath10k/hw.h   | 8 ++++++--
- drivers/net/wireless/ath/ath10k/pci.c  | 2 +-
- 3 files changed, 9 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 18 ++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
+ drivers/net/wireless/ath/ath10k/pci.c  |  2 ++
+ 3 files changed, 23 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index dc4fc4e8d5ef..11e42720035b 100644
+index 9b32cb38eb45..c02e7038a1e6 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -138,8 +138,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+@@ -161,6 +161,24 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
  		},
  	},
  	{
--		.id = QCA9377_HW_1_0_DEV_VERSION,
--		.name = "qca9377 hw1.0",
-+		.id = QCA9377_HW_1_1_DEV_VERSION,
-+		.name = "qca9377 hw1.1",
- 		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
- 		.otp_exe_param = 0,
++		.id = QCA9377_HW_1_0_DEV_VERSION,
++		.dev_id = QCA9377_1_0_DEVICE_ID,
++		.name = "qca9377 hw1.0",
++		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
++		.uart_pin = 6,
++		.otp_exe_param = 0,
++		.channel_counters_freq_hz = 88000,
++		.max_probe_resp_desc_thres = 0,
++		.fw = {
++			.dir = QCA9377_HW_1_0_FW_DIR,
++			.fw = QCA9377_HW_1_0_FW_FILE,
++			.otp = QCA9377_HW_1_0_OTP_FILE,
++			.board = QCA9377_HW_1_0_BOARD_DATA_FILE,
++			.board_size = QCA9377_BOARD_DATA_SZ,
++			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
++		},
++	},
++	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+ 		.dev_id = QCA9377_1_0_DEVICE_ID,
+ 		.name = "qca9377 hw1.1",
 diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 557d8d2d06aa..62d6dd569090 100644
+index 3a5c68ac5d34..8ef3c0e487b8 100644
 --- a/drivers/net/wireless/ath/ath10k/hw.h
 +++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -42,6 +42,8 @@
+@@ -48,6 +48,8 @@
  #define QCA6174_HW_3_0_VERSION		0x05020000
  #define QCA6174_HW_3_2_VERSION		0x05030000
  
-+#define QCA9377_HW_1_1_DEV_VERSION	0x05020001
-+
++/* QCA9377 target BMI version signatures */
++#define QCA9377_HW_1_0_DEV_VERSION	0x05020000
+ #define QCA9377_HW_1_1_DEV_VERSION	0x05020001
+ 
  enum qca6174_pci_rev {
- 	QCA6174_PCI_REV_1_1 = 0x11,
- 	QCA6174_PCI_REV_1_3 = 0x13,
-@@ -60,6 +62,10 @@ enum qca6174_chip_id_rev {
- 	QCA6174_HW_3_2_CHIP_ID_REV = 10,
+@@ -69,6 +71,7 @@ enum qca6174_chip_id_rev {
  };
  
-+enum qca9377_chip_id_rev {
-+	QCA9377_HW_1_1_CHIP_ID_REV = 0x1,
-+};
-+
- #define QCA6174_HW_2_1_FW_DIR		"ath10k/QCA6174/hw2.1"
- #define QCA6174_HW_2_1_FW_FILE		"firmware.bin"
- #define QCA6174_HW_2_1_OTP_FILE		"otp.bin"
-@@ -85,8 +91,6 @@ enum qca6174_chip_id_rev {
- #define QCA99X0_HW_2_0_PATCH_LOAD_ADDR	0x1234
+ enum qca9377_chip_id_rev {
++	QCA9377_HW_1_0_CHIP_ID_REV = 0x0,
+ 	QCA9377_HW_1_1_CHIP_ID_REV = 0x1,
+ };
  
- /* QCA9377 1.0 definitions */
--#define QCA9377_HW_1_0_DEV_VERSION     0x05020001
--#define QCA9377_HW_1_0_CHIP_ID_REV     0x1
- #define QCA9377_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA9377/hw1.0"
- #define QCA9377_HW_1_0_FW_FILE         "firmware.bin"
- #define QCA9377_HW_1_0_OTP_FILE        "otp.bin"
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 5c91a673cf80..b3ab44c6fd18 100644
+index 0be43b80a9a4..6c46814012ef 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -92,7 +92,7 @@ static const struct ath10k_pci_supp_chip ath10k_pci_supp_chips[] = {
+@@ -86,6 +86,8 @@ static const struct ath10k_pci_supp_chip ath10k_pci_supp_chips[] = {
  	{ QCA6174_2_1_DEVICE_ID, QCA6174_HW_3_2_CHIP_ID_REV },
  
  	{ QCA99X0_2_0_DEVICE_ID, QCA99X0_HW_2_0_CHIP_ID_REV },
--	{ QCA9377_1_0_DEVICE_ID, QCA9377_HW_1_0_CHIP_ID_REV },
-+	{ QCA9377_1_0_DEVICE_ID, QCA9377_HW_1_1_CHIP_ID_REV },
++
++	{ QCA9377_1_0_DEVICE_ID, QCA9377_HW_1_0_CHIP_ID_REV },
+ 	{ QCA9377_1_0_DEVICE_ID, QCA9377_HW_1_1_CHIP_ID_REV },
  };
  
- static void ath10k_pci_buffer_cleanup(struct ath10k *ar);
 -- 
 2.1.2
 
