@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-am1on0086.outbound.protection.outlook.com ([157.56.112.86]
+ helo=emea01-am1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZuIKg-0003Kp-VP
- for ath10k@lists.infradead.org; Thu, 05 Nov 2015 11:03:58 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH V2 0/3] Fix few WMI/HTT interfaces
-References: <1446638737-7953-1-git-send-email-vthiagar@qti.qualcomm.com>
- <87h9l1bq7o.fsf@kamboji.qca.qualcomm.com>
- <20151105045754.GA12919@qca.qualcomm.com>
-Date: Thu, 5 Nov 2015 13:03:15 +0200
-In-Reply-To: <20151105045754.GA12919@qca.qualcomm.com> (Vasanthakumar
- Thiagarajan's message of "Thu, 5 Nov 2015 10:28:00 +0530")
-Message-ID: <87d1vobte4.fsf@kamboji.qca.qualcomm.com>
+ id 1ZuKkT-0003y3-HY
+ for ath10k@lists.infradead.org; Thu, 05 Nov 2015 13:38:43 +0000
+From: Tomi Saarnio <Tomi.Saarnio@ekahau.com>
+Subject: Re: Question: ath10k and tcpdump antenna noise information missing
+Date: Thu, 5 Nov 2015 13:38:17 +0000
+Message-ID: <DB5PR02MB0631E7B41DB8DB60D381AD3EFE290@DB5PR02MB0631.eurprd02.prod.outlook.com>
+References: <DB5PR02MB0631EFCD121C0F9F6BAC1C4EFE2C0@DB5PR02MB0631.eurprd02.prod.outlook.com>
+ <DB5PR02MB063103DC3F0089F66D588415FE2C0@DB5PR02MB0631.eurprd02.prod.outlook.com>
+ <DB5PR02MB06315E3384316A68FB184D81FE2B0@DB5PR02MB0631.eurprd02.prod.outlook.com>,
+ <CABkMH_rPXXmhBmBiuZNGbD805TnLKv4R5FjYXfPiX_6jdBAkCQ@mail.gmail.com>,
+ <DB5PR02MB063111D3446567B944A3B8FBFE2B0@DB5PR02MB0631.eurprd02.prod.outlook.com>
+In-Reply-To: <DB5PR02MB063111D3446567B944A3B8FBFE2B0@DB5PR02MB0631.eurprd02.prod.outlook.com>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,50 +28,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
+Hi All,
 
-> On Wed, Nov 04, 2015 at 07:59:39PM +0200, Kalle Valo wrote:
->> Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
->> 
->> > This patch set fixes mismatch in peer_assoc complete wmi command for
->> > version 10.4 and peer_id configuration for HTT version < 3.4.
->> >
->> > V2:
->> > 	- Add cover letter
->> > 	- Rename ath10k_mac_need_offchan_tx_work() to
->> > 	  ath10k_mac_tx_frm_has_freq(). Add htt-op-version check
->> > 	  to the helper and use it in ath10k_htt_tx() while configuring
->> > 	  peerid.
->> >
->> > Vasanthakumar Thiagarajan (3):
->> >   ath10k: Fix peer assoc complete WMI command for 10.4
->> >   ath10k: Rename the helper which is used for off-channel tx
->> >   ath10k: Fix peerid configuration in htt tx desc for htt version < 3.4
->> 
->> These had a conflict but you didn't use ath.git as the baseline so I
->> can't easily fix them. Please try always to use clean ath.git master
->> branch as the baseline for your patches.
->> 
->> Applying: ath10k: Fix peer assoc complete WMI command for 10.4
->> fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/wmi.h).
->> Repository lacks necessary blobs to fall back on 3-way merge.
->> Cannot fall back to three-way merge.
->> Patch failed at 0001 ath10k: Fix peer assoc complete WMI command for 10.4
->
-> Sorry for this. I prepared these patches on ath:master on top of my other pending
-> patch set. Not sure what went wrong.
+After some digging, I found  this piece of code in Linux kernel 4.1 file
+net/mac80211/rx.c in function ieee80211_add_rx_radiotap_header:
 
-If you have two patchsets you shouldn't have them on the same branch,
-unless they have a strict dependency with each other of course. I prefer
-that you have two separate topic branches which both use the master
-branch as the baseline as then it's easiest for me to handle conflicts
-etc.
+...
+	/* IEEE80211_RADIOTAP_DBM_ANTSIGNAL */
+	if (local->hw.flags & IEEE80211_HW_SIGNAL_DBM &&
+	    !(status->flag & RX_FLAG_NO_SIGNAL_VAL)) {
+		*pos = status->signal;
+		rthdr->it_present |=
+			cpu_to_le32(1 << IEEE80211_RADIOTAP_DBM_ANTSIGNAL);
+		pos++;
+	}
 
--- 
-Kalle Valo
+	/* IEEE80211_RADIOTAP_LOCK_QUALITY is missing */
+
+	if (!status->chains) {
+		/* IEEE80211_RADIOTAP_ANTENNA */
+		*pos = status->antenna;
+		pos++;
+	}
+
+	/* IEEE80211_RADIOTAP_DB_ANTNOISE is not used */
+
+	/* IEEE80211_RADIOTAP_RX_FLAGS */
+	/* ensure 2 byte alignment for the 2 byte field as required */
+...
+
+The comment 	/* IEEE80211_RADIOTAP_DB_ANTNOISE is not used */ tells quite
+clearly why the antenna noise information is not be available in the radiotap and tcpdump.
+
+Clearly this is not a driver issue any more, but a network layer issue. I will try to look
+a solution elsewhere how to get the antenna noise information into userspace in a proper way.
+
+Best regards,
+Tomi Saarnio
 
 _______________________________________________
 ath10k mailing list
