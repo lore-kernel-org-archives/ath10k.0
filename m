@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yk0-x22a.google.com ([2607:f8b0:4002:c07::22a])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZuGKB-0000fS-Hz
- for ath10k@lists.infradead.org; Thu, 05 Nov 2015 08:55:16 +0000
-Received: by ykek133 with SMTP id k133so119761164yke.2
- for <ath10k@lists.infradead.org>; Thu, 05 Nov 2015 00:54:54 -0800 (PST)
+ id 1ZuIKg-0003Kp-VP
+ for ath10k@lists.infradead.org; Thu, 05 Nov 2015 11:03:58 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH V2 0/3] Fix few WMI/HTT interfaces
+References: <1446638737-7953-1-git-send-email-vthiagar@qti.qualcomm.com>
+ <87h9l1bq7o.fsf@kamboji.qca.qualcomm.com>
+ <20151105045754.GA12919@qca.qualcomm.com>
+Date: Thu, 5 Nov 2015 13:03:15 +0200
+In-Reply-To: <20151105045754.GA12919@qca.qualcomm.com> (Vasanthakumar
+ Thiagarajan's message of "Thu, 5 Nov 2015 10:28:00 +0530")
+Message-ID: <87d1vobte4.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87lhadbqhi.fsf@kamboji.qca.qualcomm.com>
-References: <1446638015-23310-1-git-send-email-bartosz.markowski@tieto.com>
- <1446638015-23310-5-git-send-email-bartosz.markowski@tieto.com>
- <87lhadbqhi.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 5 Nov 2015 09:54:54 +0100
-Message-ID: <CACKGw+HSx6btFRtj9gMr=ORd9zEbo8=6dukUxMnJkEn-+-Ud5A@mail.gmail.com>
-Subject: Re: [PATCH 4/4] ath10k: add QCA9377 hw1.0 support
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +25,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 4 November 2015 at 18:53, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Bartosz Markowski <bartosz.markowski@tieto.com> writes:
+Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
+
+> On Wed, Nov 04, 2015 at 07:59:39PM +0200, Kalle Valo wrote:
+>> Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
+>> 
+>> > This patch set fixes mismatch in peer_assoc complete wmi command for
+>> > version 10.4 and peer_id configuration for HTT version < 3.4.
+>> >
+>> > V2:
+>> > 	- Add cover letter
+>> > 	- Rename ath10k_mac_need_offchan_tx_work() to
+>> > 	  ath10k_mac_tx_frm_has_freq(). Add htt-op-version check
+>> > 	  to the helper and use it in ath10k_htt_tx() while configuring
+>> > 	  peerid.
+>> >
+>> > Vasanthakumar Thiagarajan (3):
+>> >   ath10k: Fix peer assoc complete WMI command for 10.4
+>> >   ath10k: Rename the helper which is used for off-channel tx
+>> >   ath10k: Fix peerid configuration in htt tx desc for htt version < 3.4
+>> 
+>> These had a conflict but you didn't use ath.git as the baseline so I
+>> can't easily fix them. Please try always to use clean ath.git master
+>> branch as the baseline for your patches.
+>> 
+>> Applying: ath10k: Fix peer assoc complete WMI command for 10.4
+>> fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/wmi.h).
+>> Repository lacks necessary blobs to fall back on 3-way merge.
+>> Cannot fall back to three-way merge.
+>> Patch failed at 0001 ath10k: Fix peer assoc complete WMI command for 10.4
 >
->> Add new BMI target version and chip id revision. Register it
->> on supported chips list.
->>
->> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
->
-> This one has whitespace issues:
->
-> drivers/net/wireless/ath/ath10k/core.c:163: code indent should use tabs where possible
-> drivers/net/wireless/ath/ath10k/core.c:163: please, no spaces at the start of a line
-> drivers/net/wireless/ath/ath10k/core.c:164: code indent should use tabs where possible
-> drivers/net/wireless/ath/ath10k/core.c:164: please, no spaces at the start of a line
-> drivers/net/wireless/ath/ath10k/core.c:165: code indent should use tabs where possible
-> drivers/net/wireless/ath/ath10k/core.c:165: please, no spaces at the start of a line
-> drivers/net/wireless/ath/ath10k/core.c:166: code indent should use tabs where possible
-> drivers/net/wireless/ath/ath10k/core.c:166: please, no spaces at the start of a line
-> drivers/net/wireless/ath/ath10k/core.c:167: code indent should use tabs where possible
-> drivers/net/wireless/ath/ath10k/core.c:167: please, no spaces at the start of a line
-> drivers/net/wireless/ath/ath10k/core.c:168: code indent should use tabs where possible
-> drivers/net/wireless/ath/ath10k/core.c:168: please, no spaces at the start of a line
-> drivers/net/wireless/ath/ath10k/core.c:169: code indent should use tabs where possible
-> drivers/net/wireless/ath/ath10k/core.c:169: please, no spaces at the start of a line
-> drivers/net/wireless/ath/ath10k/core.c:170: code indent should use tabs where possible
-> drivers/net/wireless/ath/ath10k/core.c:170: please, no spaces at the start of a line
-> drivers/net/wireless/ath/ath10k/core.c:171: code indent should use tabs where possible
-> drivers/net/wireless/ath/ath10k/core.c:171: please, no spaces at the start of a line
-> drivers/net/wireless/ath/ath10k/core.c:172: code indent should use tabs where possible
-> drivers/net/wireless/ath/ath10k/core.c:172: please, no spaces at the start of a line
+> Sorry for this. I prepared these patches on ath:master on top of my other pending
+> patch set. Not sure what went wrong.
 
-Sorry about that. I've resend it now.
-
-
+If you have two patchsets you shouldn't have them on the same branch,
+unless they have a strict dependency with each other of course. I prefer
+that you have two separate topic branches which both use the master
+branch as the baseline as then it's easiest for me to handle conflicts
+etc.
 
 -- 
-Bartosz
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
