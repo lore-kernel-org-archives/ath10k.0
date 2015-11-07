@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZuZrQ-0001Tv-RZ
- for ath10k@lists.infradead.org; Fri, 06 Nov 2015 05:46:54 +0000
-Message-ID: <563C3E8A.8050904@qti.qualcomm.com>
-Date: Fri, 6 Nov 2015 11:15:46 +0530
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+ id 1Zuz6u-0002xv-Pw
+ for ath10k@lists.infradead.org; Sat, 07 Nov 2015 08:44:33 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: patch "ath10k: drop probe responses when too many are queued"
+ added to staging-testing
+References: <14468483293347@kroah.com>
+Date: Sat, 7 Nov 2015 10:43:52 +0200
+In-Reply-To: <14468483293347@kroah.com> (gregkh@linuxfoundation.org's message
+ of "Fri, 6 Nov 2015 14:18:49 -0800")
+Message-ID: <87mvuq9p2v.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH V2 0/3] Fix few WMI/HTT interfaces
-References: <1446638737-7953-1-git-send-email-vthiagar@qti.qualcomm.com>	<87h9l1bq7o.fsf@kamboji.qca.qualcomm.com>	<20151105045754.GA12919@qca.qualcomm.com>
- <87d1vobte4.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87d1vobte4.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,57 +20,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: gregkh@linuxfoundation.org
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thursday 05 November 2015 04:33 PM, Kalle Valo wrote:
-> Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
->
->> On Wed, Nov 04, 2015 at 07:59:39PM +0200, Kalle Valo wrote:
->>> Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
->>>
->>>> This patch set fixes mismatch in peer_assoc complete wmi command for
->>>> version 10.4 and peer_id configuration for HTT version < 3.4.
->>>>
->>>> V2:
->>>> 	- Add cover letter
->>>> 	- Rename ath10k_mac_need_offchan_tx_work() to
->>>> 	  ath10k_mac_tx_frm_has_freq(). Add htt-op-version check
->>>> 	  to the helper and use it in ath10k_htt_tx() while configuring
->>>> 	  peerid.
->>>>
->>>> Vasanthakumar Thiagarajan (3):
->>>>    ath10k: Fix peer assoc complete WMI command for 10.4
->>>>    ath10k: Rename the helper which is used for off-channel tx
->>>>    ath10k: Fix peerid configuration in htt tx desc for htt version < 3.4
->>>
->>> These had a conflict but you didn't use ath.git as the baseline so I
->>> can't easily fix them. Please try always to use clean ath.git master
->>> branch as the baseline for your patches.
->>>
->>> Applying: ath10k: Fix peer assoc complete WMI command for 10.4
->>> fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/wmi.h).
->>> Repository lacks necessary blobs to fall back on 3-way merge.
->>> Cannot fall back to three-way merge.
->>> Patch failed at 0001 ath10k: Fix peer assoc complete WMI command for 10.4
->>
->> Sorry for this. I prepared these patches on ath:master on top of my other pending
->> patch set. Not sure what went wrong.
->
-> If you have two patchsets you shouldn't have them on the same branch,
-> unless they have a strict dependency with each other of course. I prefer
-> that you have two separate topic branches which both use the master
-> branch as the baseline as then it's easiest for me to handle conflicts
-> etc.
->
+Hi Greg,
 
-Sure, thanks.
+<gregkh@linuxfoundation.org> writes:
 
-Vasanth
+> This is a note to let you know that I've just added the patch titled
+>
+>     ath10k: drop probe responses when too many are queued
+>
+> to my staging git tree which can be found at
+>     git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git
+> in the staging-testing branch.
+>
+> The patch will show up in the next release of the linux-next tree
+> (usually sometime within the next 24 hours during the week.)
+>
+> The patch will be merged to the staging-next branch sometime soon,
+> after it passes testing, and the merge window is open.
+>
+> If you have any questions about this process, please let me know.
+
+Did you apply this and the few other ath10k patches to staging by
+mistake? I had already applied them to my ath.git tree and linus already
+has them:
+
+7b7da0a02192 ath10k: drop probe responses when too many are queued
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
