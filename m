@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZvpbQ-0002UL-VT
- for ath10k@lists.infradead.org; Mon, 09 Nov 2015 16:47:33 +0000
-Subject: Re: ath10k AP "failed to delete peer" errors when using Nexus 5X
-References: <CADLC3L1xeetwWLn1FbSyzvFYHvPw2z8C3OmQ-w9Bi0U=iLqZiA@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <5640CE0E.8040206@candelatech.com>
-Date: Mon, 9 Nov 2015 08:47:10 -0800
+Received: from mail-yk0-x234.google.com ([2607:f8b0:4002:c07::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zvpfs-0004MD-MZ
+ for ath10k@lists.infradead.org; Mon, 09 Nov 2015 16:52:10 +0000
+Received: by ykek133 with SMTP id k133so274754274yke.2
+ for <ath10k@lists.infradead.org>; Mon, 09 Nov 2015 08:51:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CADLC3L1xeetwWLn1FbSyzvFYHvPw2z8C3OmQ-w9Bi0U=iLqZiA@mail.gmail.com>
+In-Reply-To: <1446713443-22542-1-git-send-email-bartosz.markowski@tieto.com>
+References: <1446713443-22542-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Mon, 9 Nov 2015 17:51:45 +0100
+Message-ID: <CACKGw+FsY0nK4ppyhOXLfD2JgZHhDFyfbpeCv+5hixfHPyuZUA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] update ath10k support for QCA9377 chips
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,52 +20,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Robert Hancock <hancockrwd@gmail.com>, ath10k@lists.infradead.org, linux-wireless <linux-wireless@vger.kernel.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-On 11/08/2015 10:02 PM, Robert Hancock wrote:
-> I'm using OpenWRT on a TP-Link Archer C7, currently running
-> development rev 47397 which is kernel 4.1.1 and compat-wireless
-> 2015-10-26. Ever since I got a new Nexus 5X phone, it seems like
-> periodically (once a day or so), the 5GHz wireless (using ath10k)
-> craps out and I get a bunch of errors in the kernel log on the router.
-> I have to reboot the router to get the 5GHz working again. Full kernel
-> log from one of these failures is below. Any thoughts on what is going
-> on here?
+On 5 November 2015 at 09:50, Bartosz Markowski
+<bartosz.markowski@tieto.com> wrote:
+> * Clarifying the naming scheme for QCA9377 targets
+> * Adding the dev_id mathod (RFC) as a HW identification helper
+> * updating missing hw_params for 1.1 target
+
+Linking the ubuntu forum thread and some good news from the Acer E15
+owners: http://ubuntuforums.org/showthread.php?t=2300861
+
+> ---
 >
-> There are reports of a newer Android build (which I don't have yet)
-> which supposedly has some wireless fixes on the Nexus 5X, but I'm not
-> sure what it could be doing that would be causing the router to crap
-> out like this.
+> Notes:
+>   v2:
+>    * rebase
+>    * fix the whitespace mess in patch 4/4 [Kalle]
+>
+> Bartosz Markowski (4):
+>   ath10k: fix the currently supported QCA9377 target version name
+>   ath10k: update missing hw_params of QCA9377 hw1.1
+>   ath10k: introduce dev_id to hw_params
+>   ath10k: add QCA9377 hw1.0 support
+>
+>  drivers/net/wireless/ath/ath10k/core.c | 49 ++++++++++++++++++++++++++++++++--
+>  drivers/net/wireless/ath/ath10k/core.h |  1 +
+>  drivers/net/wireless/ath/ath10k/hw.h   | 17 ++++++++++--
+>  drivers/net/wireless/ath/ath10k/pci.c  |  8 ++----
+>  4 files changed, 65 insertions(+), 10 deletions(-)
+>
+> --
+> 2.1.2
+>
 
-> [ 2178.931641] ---[ end trace 6751cc6390d26848 ]---
-> [ 2181.926812] ath10k_pci 0000:01:00.0: failed to delete peer
-> 8c:3a:e3:15:29:f3 for vdev 0: -11
-> [ 2184.946721] ath10k_pci 0000:01:00.0: failed to set beacon mode for
-> vdev 0: -11
-> [ 2187.946538] ath10k_pci 0000:01:00.0: failed to set dtim period for
-> vdev 0: -11
-> [ 2190.986373] ath10k_pci 0000:01:00.0: failed to recalculate rts/cts
-> prot for vdev 0: -11
-> [ 2193.986210] ath10k_pci 0000:01:00.0: failed to set protection mode
-> 0 on vdev 0: -11
-> [ 2196.986045] ath10k_pci 0000:01:00.0: failed to set preamble for vdev 0: -11
 
-Usually this means firmware has stopped processing WMI messages.
-
-You might try different firmware versions in hopes one of them fixes the
-problem.
-
-Thanks,
-Ben
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Bartosz Markowski, Software Architect
 
+Tieto Poland Sp. z o.o., Product Development Services
+Swobodna 1 st., 50-088 Wroclaw, Poland
+email bartosz.markowski@tieto.com, mobile +48 668 168 256,
+www.tieto.com
 
 _______________________________________________
 ath10k mailing list
