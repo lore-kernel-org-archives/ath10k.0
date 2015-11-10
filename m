@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yk0-x234.google.com ([2607:f8b0:4002:c07::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zvpfs-0004MD-MZ
- for ath10k@lists.infradead.org; Mon, 09 Nov 2015 16:52:10 +0000
-Received: by ykek133 with SMTP id k133so274754274yke.2
- for <ath10k@lists.infradead.org>; Mon, 09 Nov 2015 08:51:45 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zvxg5-0002s5-UX
+ for ath10k@lists.infradead.org; Tue, 10 Nov 2015 01:24:54 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 8639E40AF76
+ for <ath10k@lists.infradead.org>; Mon,  9 Nov 2015 17:24:32 -0800 (PST)
+From: Ben Greear <greearb@candelatech.com>
+Subject: Setting 3x3 NIC to 2x2
+Message-ID: <56414750.8080706@candelatech.com>
+Date: Mon, 9 Nov 2015 17:24:32 -0800
 MIME-Version: 1.0
-In-Reply-To: <1446713443-22542-1-git-send-email-bartosz.markowski@tieto.com>
-References: <1446713443-22542-1-git-send-email-bartosz.markowski@tieto.com>
-Date: Mon, 9 Nov 2015 17:51:45 +0100
-Message-ID: <CACKGw+FsY0nK4ppyhOXLfD2JgZHhDFyfbpeCv+5hixfHPyuZUA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] update ath10k support for QCA9377 chips
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +21,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k <ath10k@lists.infradead.org>
 
-On 5 November 2015 at 09:50, Bartosz Markowski
-<bartosz.markowski@tieto.com> wrote:
-> * Clarifying the naming scheme for QCA9377 targets
-> * Adding the dev_id mathod (RFC) as a HW identification helper
-> * updating missing hw_params for 1.1 target
+Hello!
 
-Linking the ubuntu forum thread and some good news from the Acer E15
-owners: http://ubuntuforums.org/showthread.php?t=2300861
+For this case:  2 PCs, one 3x3 peregrine ath10k NIC in each.  Once acting as AP,
+the other as a station.  Testing UDP upload performance.
 
-> ---
->
-> Notes:
->   v2:
->    * rebase
->    * fix the whitespace mess in patch 4/4 [Kalle]
->
-> Bartosz Markowski (4):
->   ath10k: fix the currently supported QCA9377 target version name
->   ath10k: update missing hw_params of QCA9377 hw1.1
->   ath10k: introduce dev_id to hw_params
->   ath10k: add QCA9377 hw1.0 support
->
->  drivers/net/wireless/ath/ath10k/core.c | 49 ++++++++++++++++++++++++++++++++--
->  drivers/net/wireless/ath/ath10k/core.h |  1 +
->  drivers/net/wireless/ath/ath10k/hw.h   | 17 ++++++++++--
->  drivers/net/wireless/ath/ath10k/pci.c  |  8 ++----
->  4 files changed, 65 insertions(+), 10 deletions(-)
->
-> --
-> 2.1.2
->
+Someone reported a problem where they thought they had a 2x2 ath10k NIC
+but in reality it was 3x3.  They had only the first two antenna connected.
+
+Using stock Fedora 21 kernel and firmware-4.bin, performance was horrible..around 8-10Mbps
+UDP throughput at best.  This was on 2.4 band, so VHT is disabled.
+
+I think the first issue is that performance is so bad if you are missing a single
+antenna.  (In my lab, a similar setup with 3 antenna connected was giving 120+Mbps
+throughput).
 
 
+The second problem I saw only on non-stock firmware & driver, so of course problem
+could be related to that:
+
+If I start up system in 3x3 mode, and then try to change to 2x2
+by setting the tx-antenna mask with iw, then it *appears* that everything
+is passed down to the firmware properly, but performance is horrible
+(5-10Mbps).  Forcing rate-ctrl to use a higher fixed speed makes things worse,
+so it's not just rate-ctrl messing up.
+
+Restarting all network devices on that radio, which causes a soft NIC
+reboot, does not fix the problem.  (I reset both AP and STA machines
+radios multiple times)
+
+But, if I do a full reboot, then the system comes up happy and will
+negotiate up to 300Mbps nominal rate (ie, full 2x2 capabilities).
+
+I suspect there may be bugs in setting up registers down in the
+firmware, but I have not taken a close look at it at.
+
+As always, I'm curious if others have seen similar problems (or, tried this
+and NOT seen such problems.)
+
+Thanks,
+Ben
 
 -- 
-Bartosz Markowski, Software Architect
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
-Tieto Poland Sp. z o.o., Product Development Services
-Swobodna 1 st., 50-088 Wroclaw, Poland
-email bartosz.markowski@tieto.com, mobile +48 668 168 256,
-www.tieto.com
 
 _______________________________________________
 ath10k mailing list
