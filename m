@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x229.google.com ([2a00:1450:4010:c07::229])
+Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zw8ju-0008Nj-RM
- for ath10k@lists.infradead.org; Tue, 10 Nov 2015 13:13:36 +0000
-Received: by lffz63 with SMTP id z63so47627132lff.0
- for <ath10k@lists.infradead.org>; Tue, 10 Nov 2015 05:13:13 -0800 (PST)
+ id 1Zw8jn-0008Nc-MV
+ for ath10k@lists.infradead.org; Tue, 10 Nov 2015 13:13:30 +0000
+Received: by lbbcs9 with SMTP id cs9so14112089lbb.1
+ for <ath10k@lists.infradead.org>; Tue, 10 Nov 2015 05:13:05 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 9/9] ath10k: store msdu_id instead of txbuf pointers
-Date: Tue, 10 Nov 2015 14:10:55 +0100
-Message-Id: <1447161055-2283-10-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 4/9] ath10k: remove is_offchan
+Date: Tue, 10 Nov 2015 14:10:50 +0100
+Message-Id: <1447161055-2283-5-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1447161055-2283-1-git-send-email-michal.kazior@tieto.com>
 References: <1446472988-2603-1-git-send-email-michal.kazior@tieto.com>
  <1447161055-2283-1-git-send-email-michal.kazior@tieto.com>
@@ -28,154 +28,87 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Txbuf is no longer a DMA pool and can be easily
-tracked with a mere msdu_id. This saves 10 bytes
-on 64bit systems and 6 bytes on 32bit systems of
-precious sk_buff control buffer.
+It was wasteful to keep it in the struct.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h   |  6 +---
- drivers/net/wireless/ath/ath10k/htt_tx.c | 53 ++++++++++++++++----------------
- 2 files changed, 27 insertions(+), 32 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h | 1 -
+ drivers/net/wireless/ath/ath10k/mac.c  | 4 +---
+ drivers/net/wireless/ath/ath10k/mac.h  | 1 +
+ drivers/net/wireless/ath/ath10k/txrx.c | 7 ++++++-
+ 4 files changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 8d17761ad101..15238efc1e4d 100644
+index 2f48772418ec..344849dd93c8 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -93,12 +93,8 @@ struct ath10k_skb_cb {
- 	dma_addr_t paddr;
- 	u8 flags;
- 	u8 eid;
-+	u16 msdu_id;
- 	struct ieee80211_vif *vif;
--
--	struct {
--		struct ath10k_htt_txbuf *txbuf;
--		u32 txbuf_paddr;
--	} __packed htt;
- } __packed;
+@@ -89,7 +89,6 @@ struct ath10k_skb_cb {
+ 	struct {
+ 		u8 tid;
+ 		u16 freq;
+-		bool is_offchan;
+ 		bool nohwcrypt;
+ 		struct ath10k_htt_txbuf *txbuf;
+ 		u32 txbuf_paddr;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index dd4770ec7ecc..f7e4fba63b44 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3297,7 +3297,7 @@ static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar,
+ 	}
+ }
  
- struct ath10k_skb_rxcb {
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index a337fb9328a9..5c440d6c4f11 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -539,8 +539,6 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	memcpy(cmd->mgmt_tx.hdr, msdu->data,
- 	       min_t(int, msdu->len, HTT_MGMT_FRM_HDR_DOWNLOAD_LEN));
+-static bool ath10k_mac_need_offchan_tx_work(struct ath10k *ar)
++bool ath10k_mac_need_offchan_tx_work(struct ath10k *ar)
+ {
+ 	/* FIXME: Not really sure since when the behaviour changed. At some
+ 	 * point new firmware stopped requiring creation of peer entries for
+@@ -3679,7 +3679,6 @@ static void ath10k_tx(struct ieee80211_hw *hw,
  
--	skb_cb->htt.txbuf = NULL;
--
- 	res = ath10k_htc_send(&htt->ar->htc, htt->eid, txdesc);
- 	if (res)
- 		goto err_unmap_msdu;
-@@ -570,6 +568,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
- 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
- 	struct ath10k_hif_sg_item sg_items[2];
-+	struct ath10k_htt_txbuf *txbuf;
- 	struct htt_data_tx_desc_frag *frags;
- 	bool is_eth = (txmode == ATH10K_HW_TXRX_ETHERNET);
- 	u8 vdev_id = ath10k_htt_tx_get_vdev_id(ar, msdu);
-@@ -580,6 +579,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	u16 msdu_id, flags1 = 0;
- 	u16 freq = 0;
- 	u32 frags_paddr = 0;
-+	u32 txbuf_paddr;
- 	struct htt_msdu_ext_desc *ext_desc = NULL;
- 	bool limit_mgmt_desc = false;
- 	bool is_probe_resp = false;
-@@ -607,9 +607,9 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	prefetch_len = min(htt->prefetch_len, msdu->len);
- 	prefetch_len = roundup(prefetch_len, 4);
+ 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
  
--	skb_cb->htt.txbuf = &htt->txbuf.vaddr[msdu_id];
--	skb_cb->htt.txbuf_paddr = htt->txbuf.paddr +
--		(sizeof(struct ath10k_htt_txbuf) * msdu_id);
-+	txbuf = &htt->txbuf.vaddr[msdu_id];
-+	txbuf_paddr = htt->txbuf.paddr +
-+		      (sizeof(struct ath10k_htt_txbuf) * msdu_id);
+-	ATH10K_SKB_CB(skb)->htt.is_offchan = false;
+ 	ATH10K_SKB_CB(skb)->htt.freq = 0;
+ 	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
+ 	ATH10K_SKB_CB(skb)->htt.nohwcrypt = !ath10k_tx_h_use_hwcrypto(vif, skb);
+@@ -3711,7 +3710,6 @@ static void ath10k_tx(struct ieee80211_hw *hw,
  
- 	if ((ieee80211_is_action(hdr->frame_control) ||
- 	     ieee80211_is_deauth(hdr->frame_control) ||
-@@ -653,14 +653,14 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 			frags_paddr =  htt->frag_desc.paddr +
- 				(sizeof(struct htt_msdu_ext_desc) * msdu_id);
- 		} else {
--			frags = skb_cb->htt.txbuf->frags;
-+			frags = txbuf->frags;
- 			frags[0].dword_addr.paddr =
- 				__cpu_to_le32(skb_cb->paddr);
- 			frags[0].dword_addr.len = __cpu_to_le32(msdu->len);
- 			frags[1].dword_addr.paddr = 0;
- 			frags[1].dword_addr.len = 0;
+ 		if (ath10k_mac_need_offchan_tx_work(ar)) {
+ 			ATH10K_SKB_CB(skb)->htt.freq = 0;
+-			ATH10K_SKB_CB(skb)->htt.is_offchan = true;
  
--			frags_paddr = skb_cb->htt.txbuf_paddr;
-+			frags_paddr = txbuf_paddr;
- 		}
- 		flags0 |= SM(txmode, HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
- 		break;
-@@ -689,12 +689,11 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	 * avoid extra memory allocations, compress data structures and thus
- 	 * improve performance. */
+ 			ath10k_dbg(ar, ATH10K_DBG_MAC, "queued offchannel skb %p\n",
+ 				   skb);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
+index e3cefe4c7cfd..ff09d6986fae 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.h
++++ b/drivers/net/wireless/ath/ath10k/mac.h
+@@ -58,6 +58,7 @@ bool ath10k_mac_is_peer_wep_key_set(struct ath10k *ar, const u8 *addr,
+ 				    u8 keyidx);
+ int ath10k_mac_vif_chan(struct ieee80211_vif *vif,
+ 			struct cfg80211_chan_def *def);
++bool ath10k_mac_need_offchan_tx_work(struct ath10k *ar);
  
--	skb_cb->htt.txbuf->htc_hdr.eid = htt->eid;
--	skb_cb->htt.txbuf->htc_hdr.len = __cpu_to_le16(
--			sizeof(skb_cb->htt.txbuf->cmd_hdr) +
--			sizeof(skb_cb->htt.txbuf->cmd_tx) +
--			prefetch_len);
--	skb_cb->htt.txbuf->htc_hdr.flags = 0;
-+	txbuf->htc_hdr.eid = htt->eid;
-+	txbuf->htc_hdr.len = __cpu_to_le16(sizeof(txbuf->cmd_hdr) +
-+					   sizeof(txbuf->cmd_tx) +
-+					   prefetch_len);
-+	txbuf->htc_hdr.flags = 0;
+ void ath10k_mac_handle_beacon(struct ath10k *ar, struct sk_buff *skb);
+ void ath10k_mac_handle_beacon_miss(struct ath10k *ar, u32 vdev_id);
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 6d1105ab4592..655947bef6cc 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -23,7 +23,12 @@
  
- 	if (skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT)
- 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
-@@ -715,14 +714,14 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	 */
- 	flags1 |= HTT_DATA_TX_DESC_FLAGS1_POSTPONED;
+ static void ath10k_report_offchan_tx(struct ath10k *ar, struct sk_buff *skb)
+ {
+-	if (!ATH10K_SKB_CB(skb)->htt.is_offchan)
++	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++
++	if (likely(!(info->flags & IEEE80211_TX_CTL_TX_OFFCHAN)))
++		return;
++
++	if (!ath10k_mac_need_offchan_tx_work(ar))
+ 		return;
  
--	skb_cb->htt.txbuf->cmd_hdr.msg_type = HTT_H2T_MSG_TYPE_TX_FRM;
--	skb_cb->htt.txbuf->cmd_tx.flags0 = flags0;
--	skb_cb->htt.txbuf->cmd_tx.flags1 = __cpu_to_le16(flags1);
--	skb_cb->htt.txbuf->cmd_tx.len = __cpu_to_le16(msdu->len);
--	skb_cb->htt.txbuf->cmd_tx.id = __cpu_to_le16(msdu_id);
--	skb_cb->htt.txbuf->cmd_tx.frags_paddr = __cpu_to_le32(frags_paddr);
--	skb_cb->htt.txbuf->cmd_tx.peerid = __cpu_to_le16(HTT_INVALID_PEERID);
--	skb_cb->htt.txbuf->cmd_tx.freq = __cpu_to_le16(freq);
-+	txbuf->cmd_hdr.msg_type = HTT_H2T_MSG_TYPE_TX_FRM;
-+	txbuf->cmd_tx.flags0 = flags0;
-+	txbuf->cmd_tx.flags1 = __cpu_to_le16(flags1);
-+	txbuf->cmd_tx.len = __cpu_to_le16(msdu->len);
-+	txbuf->cmd_tx.id = __cpu_to_le16(msdu_id);
-+	txbuf->cmd_tx.frags_paddr = __cpu_to_le32(frags_paddr);
-+	txbuf->cmd_tx.peerid = __cpu_to_le16(HTT_INVALID_PEERID);
-+	txbuf->cmd_tx.freq = __cpu_to_le16(freq);
- 
- 	trace_ath10k_htt_tx(ar, msdu_id, msdu->len, vdev_id, tid);
- 	ath10k_dbg(ar, ATH10K_DBG_HTT,
-@@ -736,12 +735,12 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 
- 	sg_items[0].transfer_id = 0;
- 	sg_items[0].transfer_context = NULL;
--	sg_items[0].vaddr = &skb_cb->htt.txbuf->htc_hdr;
--	sg_items[0].paddr = skb_cb->htt.txbuf_paddr +
--			    sizeof(skb_cb->htt.txbuf->frags);
--	sg_items[0].len = sizeof(skb_cb->htt.txbuf->htc_hdr) +
--			  sizeof(skb_cb->htt.txbuf->cmd_hdr) +
--			  sizeof(skb_cb->htt.txbuf->cmd_tx);
-+	sg_items[0].vaddr = &txbuf->htc_hdr;
-+	sg_items[0].paddr = txbuf_paddr +
-+			    sizeof(txbuf->frags);
-+	sg_items[0].len = sizeof(txbuf->htc_hdr) +
-+			  sizeof(txbuf->cmd_hdr) +
-+			  sizeof(txbuf->cmd_tx);
- 
- 	sg_items[1].transfer_id = 0;
- 	sg_items[1].transfer_context = NULL;
+ 	/* If the original wait_for_completion() timed out before
 -- 
 2.1.4
 
