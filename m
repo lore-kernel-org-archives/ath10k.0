@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
+Received: from mail-lf0-x22b.google.com ([2a00:1450:4010:c07::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zw8jn-0008Nc-MV
- for ath10k@lists.infradead.org; Tue, 10 Nov 2015 13:13:30 +0000
-Received: by lbbcs9 with SMTP id cs9so14112089lbb.1
- for <ath10k@lists.infradead.org>; Tue, 10 Nov 2015 05:13:05 -0800 (PST)
+ id 1Zw8jr-0008Ni-Nk
+ for ath10k@lists.infradead.org; Tue, 10 Nov 2015 13:13:33 +0000
+Received: by lffu14 with SMTP id u14so27452687lff.1
+ for <ath10k@lists.infradead.org>; Tue, 10 Nov 2015 05:13:12 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 4/9] ath10k: remove is_offchan
-Date: Tue, 10 Nov 2015 14:10:50 +0100
-Message-Id: <1447161055-2283-5-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 8/9] ath10k: replace vdev_id and tid in skb cb
+Date: Tue, 10 Nov 2015 14:10:54 +0100
+Message-Id: <1447161055-2283-9-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1447161055-2283-1-git-send-email-michal.kazior@tieto.com>
 References: <1446472988-2603-1-git-send-email-michal.kazior@tieto.com>
  <1447161055-2283-1-git-send-email-michal.kazior@tieto.com>
@@ -28,87 +28,225 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-It was wasteful to keep it in the struct.
+This prepares the driver for future ieee80211_txq
+and wake_tx_queue() support.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h | 1 -
- drivers/net/wireless/ath/ath10k/mac.c  | 4 +---
- drivers/net/wireless/ath/ath10k/mac.h  | 1 +
- drivers/net/wireless/ath/ath10k/txrx.c | 7 ++++++-
- 4 files changed, 8 insertions(+), 5 deletions(-)
+
+Notes:
+    v2:
+     * fix parsing eth frame as 802.11
+
+ drivers/net/wireless/ath/ath10k/core.h   |  4 ++--
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 36 +++++++++++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/mac.c    | 40 +++++---------------------------
+ drivers/net/wireless/ath/ath10k/wmi.c    | 10 +++++++-
+ 4 files changed, 50 insertions(+), 40 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 2f48772418ec..344849dd93c8 100644
+index b9137b1f76d1..8d17761ad101 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -89,7 +89,6 @@ struct ath10k_skb_cb {
+@@ -86,16 +86,16 @@ enum ath10k_skb_flags {
+ 	ATH10K_SKB_F_DTIM_ZERO = BIT(1),
+ 	ATH10K_SKB_F_DELIVER_CAB = BIT(2),
+ 	ATH10K_SKB_F_MGMT = BIT(3),
++	ATH10K_SKB_F_QOS = BIT(4),
+ };
+ 
+ struct ath10k_skb_cb {
+ 	dma_addr_t paddr;
+ 	u8 flags;
+ 	u8 eid;
+-	u8 vdev_id;
++	struct ieee80211_vif *vif;
+ 
  	struct {
- 		u8 tid;
- 		u16 freq;
--		bool is_offchan;
- 		bool nohwcrypt;
+-		u8 tid;
  		struct ath10k_htt_txbuf *txbuf;
  		u32 txbuf_paddr;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index dd4770ec7ecc..f7e4fba63b44 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3297,7 +3297,7 @@ static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar,
- 	}
+ 	} __packed htt;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 3d1c46a82895..a337fb9328a9 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -439,6 +439,35 @@ int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
+ 	return 0;
  }
  
--static bool ath10k_mac_need_offchan_tx_work(struct ath10k *ar)
-+bool ath10k_mac_need_offchan_tx_work(struct ath10k *ar)
++static u8 ath10k_htt_tx_get_vdev_id(struct ath10k *ar, struct sk_buff *skb)
++{
++	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(skb);
++	struct ath10k_vif *arvif = (void *)cb->vif->drv_priv;
++
++	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN)
++		return ar->scan.vdev_id;
++	else if (cb->vif)
++		return arvif->vdev_id;
++	else if (ar->monitor_started)
++		return ar->monitor_vdev_id;
++	else
++		return 0;
++}
++
++static u8 ath10k_htt_tx_get_tid(struct sk_buff *skb, bool is_eth)
++{
++	struct ieee80211_hdr *hdr = (void *)skb->data;
++	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(skb);
++
++	if (!is_eth && ieee80211_is_mgmt(hdr->frame_control))
++		return HTT_DATA_TX_EXT_TID_MGMT;
++	else if (cb->flags & ATH10K_SKB_F_QOS)
++		return skb->priority % IEEE80211_QOS_CTL_TID_MASK;
++	else
++		return HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
++}
++
+ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
  {
- 	/* FIXME: Not really sure since when the behaviour changed. At some
- 	 * point new firmware stopped requiring creation of peer entries for
-@@ -3679,7 +3679,6 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 	struct ath10k *ar = htt->ar;
+@@ -446,7 +475,7 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	struct sk_buff *txdesc = NULL;
+ 	struct htt_cmd *cmd;
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
+-	u8 vdev_id = skb_cb->vdev_id;
++	u8 vdev_id = ath10k_htt_tx_get_vdev_id(ar, msdu);
+ 	int len = 0;
+ 	int msdu_id = -1;
+ 	int res;
+@@ -542,8 +571,9 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
+ 	struct ath10k_hif_sg_item sg_items[2];
+ 	struct htt_data_tx_desc_frag *frags;
+-	u8 vdev_id = skb_cb->vdev_id;
+-	u8 tid = skb_cb->htt.tid;
++	bool is_eth = (txmode == ATH10K_HW_TXRX_ETHERNET);
++	u8 vdev_id = ath10k_htt_tx_get_vdev_id(ar, msdu);
++	u8 tid = ath10k_htt_tx_get_tid(msdu, is_eth);
+ 	int prefetch_len;
+ 	int res;
+ 	u8 flags0 = 0;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 2f99552acad4..c2387839f25d 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3119,32 +3119,6 @@ void ath10k_mac_handle_tx_pause_vdev(struct ath10k *ar, u32 vdev_id,
+ 	spin_unlock_bh(&ar->htt.tx_lock);
+ }
  
- 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
+-static u8 ath10k_tx_h_get_tid(struct ieee80211_hdr *hdr)
+-{
+-	if (ieee80211_is_mgmt(hdr->frame_control))
+-		return HTT_DATA_TX_EXT_TID_MGMT;
+-
+-	if (!ieee80211_is_data_qos(hdr->frame_control))
+-		return HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
+-
+-	if (!is_unicast_ether_addr(ieee80211_get_DA(hdr)))
+-		return HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
+-
+-	return ieee80211_get_qos_ctl(hdr)[0] & IEEE80211_QOS_CTL_TID_MASK;
+-}
+-
+-static u8 ath10k_tx_h_get_vdev_id(struct ath10k *ar, struct ieee80211_vif *vif)
+-{
+-	if (vif)
+-		return ath10k_vif_to_arvif(vif)->vdev_id;
+-
+-	if (ar->monitor_started)
+-		return ar->monitor_vdev_id;
+-
+-	ath10k_warn(ar, "failed to resolve vdev id\n");
+-	return 0;
+-}
+-
+ static enum ath10k_hw_txrx_mode
+ ath10k_mac_tx_h_get_txmode(struct ath10k *ar,
+ 			   struct ieee80211_vif *vif,
+@@ -3241,7 +3215,7 @@ static void ath10k_tx_h_nwifi(struct ieee80211_hw *hw, struct sk_buff *skb)
+ 	 */
+ 	hdr = (void *)skb->data;
+ 	if (ieee80211_is_qos_nullfunc(hdr->frame_control))
+-		cb->htt.tid = HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
++		cb->flags &= ~ATH10K_SKB_F_QOS;
  
--	ATH10K_SKB_CB(skb)->htt.is_offchan = false;
- 	ATH10K_SKB_CB(skb)->htt.freq = 0;
- 	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
- 	ATH10K_SKB_CB(skb)->htt.nohwcrypt = !ath10k_tx_h_use_hwcrypto(vif, skb);
-@@ -3711,7 +3710,6 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 	hdr->frame_control &= ~__cpu_to_le16(IEEE80211_STYPE_QOS_DATA);
+ }
+@@ -3409,9 +3383,9 @@ void ath10k_offchan_tx_work(struct work_struct *work)
  
+ 		hdr = (struct ieee80211_hdr *)skb->data;
+ 		peer_addr = ieee80211_get_DA(hdr);
+-		vdev_id = ATH10K_SKB_CB(skb)->vdev_id;
+ 
+ 		spin_lock_bh(&ar->data_lock);
++		vdev_id = ar->scan.vdev_id;
+ 		peer = ath10k_peer_find(ar, vdev_id, peer_addr);
+ 		spin_unlock_bh(&ar->data_lock);
+ 
+@@ -3688,8 +3662,10 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 	if (ieee80211_is_mgmt(hdr->frame_control))
+ 		skb_cb->flags |= ATH10K_SKB_F_MGMT;
+ 
+-	skb_cb->htt.tid = ath10k_tx_h_get_tid(hdr);
+-	skb_cb->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
++	if (ieee80211_is_data_qos(hdr->frame_control))
++		skb_cb->flags |= ATH10K_SKB_F_QOS;
++
++	skb_cb->vif = vif;
+ 
+ 	switch (txmode) {
+ 	case ATH10K_HW_TXRX_MGMT:
+@@ -3710,10 +3686,6 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 	}
+ 
+ 	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
+-		spin_lock_bh(&ar->data_lock);
+-		ATH10K_SKB_CB(skb)->vdev_id = ar->scan.vdev_id;
+-		spin_unlock_bh(&ar->data_lock);
+-
  		if (ath10k_mac_need_offchan_tx_work(ar)) {
- 			ATH10K_SKB_CB(skb)->htt.freq = 0;
--			ATH10K_SKB_CB(skb)->htt.is_offchan = true;
- 
  			ath10k_dbg(ar, ATH10K_DBG_MAC, "queued offchannel skb %p\n",
  				   skb);
-diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
-index e3cefe4c7cfd..ff09d6986fae 100644
---- a/drivers/net/wireless/ath/ath10k/mac.h
-+++ b/drivers/net/wireless/ath/ath10k/mac.h
-@@ -58,6 +58,7 @@ bool ath10k_mac_is_peer_wep_key_set(struct ath10k *ar, const u8 *addr,
- 				    u8 keyidx);
- int ath10k_mac_vif_chan(struct ieee80211_vif *vif,
- 			struct cfg80211_chan_def *def);
-+bool ath10k_mac_need_offchan_tx_work(struct ath10k *ar);
- 
- void ath10k_mac_handle_beacon(struct ath10k *ar, struct sk_buff *skb);
- void ath10k_mac_handle_beacon_miss(struct ath10k *ar, u32 vdev_id);
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 6d1105ab4592..655947bef6cc 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -23,7 +23,12 @@
- 
- static void ath10k_report_offchan_tx(struct ath10k *ar, struct sk_buff *skb)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 854136e0d6c8..e4237cd95360 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1814,16 +1814,24 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
+ static struct sk_buff *
+ ath10k_wmi_op_gen_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
  {
--	if (!ATH10K_SKB_CB(skb)->htt.is_offchan)
-+	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-+
-+	if (likely(!(info->flags & IEEE80211_TX_CTL_TX_OFFCHAN)))
-+		return;
-+
-+	if (!ath10k_mac_need_offchan_tx_work(ar))
- 		return;
++	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(msdu);
++	struct ath10k_vif *arvif = (void *)cb->vif->drv_priv;
+ 	struct wmi_mgmt_tx_cmd *cmd;
+ 	struct ieee80211_hdr *hdr;
+ 	struct sk_buff *skb;
+ 	int len;
++	u32 vdev_id;
+ 	u32 buf_len = msdu->len;
+ 	u16 fc;
  
- 	/* If the original wait_for_completion() timed out before
+ 	hdr = (struct ieee80211_hdr *)msdu->data;
+ 	fc = le16_to_cpu(hdr->frame_control);
+ 
++	if (cb->vif)
++		vdev_id = arvif->vdev_id;
++	else
++		vdev_id = 0;
++
+ 	if (WARN_ON_ONCE(!ieee80211_is_mgmt(hdr->frame_control)))
+ 		return ERR_PTR(-EINVAL);
+ 
+@@ -1845,7 +1853,7 @@ ath10k_wmi_op_gen_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
+ 
+ 	cmd = (struct wmi_mgmt_tx_cmd *)skb->data;
+ 
+-	cmd->hdr.vdev_id = __cpu_to_le32(ATH10K_SKB_CB(msdu)->vdev_id);
++	cmd->hdr.vdev_id = __cpu_to_le32(vdev_id);
+ 	cmd->hdr.tx_rate = 0;
+ 	cmd->hdr.tx_power = 0;
+ 	cmd->hdr.buf_len = __cpu_to_le32(buf_len);
 -- 
 2.1.4
 
