@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ob0-x22c.google.com ([2607:f8b0:4003:c01::22c])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwGrN-0004lX-9b
- for ath10k@lists.infradead.org; Tue, 10 Nov 2015 21:53:49 +0000
-Received: by obdgf3 with SMTP id gf3so8260133obd.3
- for <ath10k@lists.infradead.org>; Tue, 10 Nov 2015 13:53:26 -0800 (PST)
+ id 1ZwU6L-0004mk-Pb
+ for ath10k@lists.infradead.org; Wed, 11 Nov 2015 12:02:10 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: poll HTT send completion when CE 5 is unused
+Date: Wed, 11 Nov 2015 17:31:26 +0530
+Message-ID: <1447243286-22116-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-Date: Tue, 10 Nov 2015 14:53:26 -0700
-Message-ID: <CAFMvBt38Ld9TUpVHWD2yKSViLjN-dX4hLWXzAK9ZxoXCUr0JcA@mail.gmail.com>
-Subject: FCC Continuous TX testing
-From: "Theodore A. Roth" <troth@openavr.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +21,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Theodore Roth <theodore_roth@trimble.com>
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-We are working on a product that uses an Ath10k mini-PCIe module and we are
-preparing for FCC testing.
+commit a70587b3389a ("ath10k: configure copy engine 5 for HTT messages")
+moved send completion polling under HTT Rx (CE 5) service routine. For
+QCA6174 based devices copy engine 1 (CE 1) is used for HTT Rx instead
+of CE 5. So send completion never be called. This is causing "failed to
+transmit packet, dropping: -105" errors. Fix this by processing send
+completion from CE 1 service routine instead of CE 5.
 
-Are there any facilities in the Ath10k driver for putting the device
-into continuous
-transmit mode?
+Tested-by: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-Between google searches and looking in the linux-4.3.y driver source,
-I don't see
-anything promising. I did come across the CONFIG_NL80211_TESTMODE option,
-but that hasn't yielded anything (although I still have some more digging in the
-source to do there).
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 5c91a67..698e669 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -112,6 +112,7 @@ static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state);
+ static void ath10k_pci_htt_tx_cb(struct ath10k_ce_pipe *ce_state);
+ static void ath10k_pci_htt_rx_cb(struct ath10k_ce_pipe *ce_state);
+ static void ath10k_pci_pktlog_rx_cb(struct ath10k_ce_pipe *ce_state);
++static void ath10k_pci_htt_htc_rx_cb(struct ath10k_ce_pipe *ce_state);
+ 
+ static const struct ce_attr host_ce_config_wlan[] = {
+ 	/* CE0: host->target HTC control and raw streams */
+@@ -129,7 +130,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+ 		.src_nentries = 0,
+ 		.src_sz_max = 2048,
+ 		.dest_nentries = 512,
+-		.recv_cb = ath10k_pci_htc_rx_cb,
++		.recv_cb = ath10k_pci_htt_htc_rx_cb,
+ 	},
+ 
+ 	/* CE2: target->host WMI */
+@@ -1210,6 +1211,16 @@ static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state)
+ 	ath10k_pci_process_rx_cb(ce_state, ath10k_htc_rx_completion_handler);
+ }
+ 
++static void ath10k_pci_htt_htc_rx_cb(struct ath10k_ce_pipe *ce_state)
++{
++	/* CE4 polling needs to be done whenever CE pipe which transports
++	 * HTT Rx (target->host) is processed.
++	 */
++	ath10k_ce_per_engine_service(ce_state->ar, 4);
++
++	ath10k_pci_process_rx_cb(ce_state, ath10k_htc_rx_completion_handler);
++}
++
+ /* Called by lower (CE) layer when data is received from the Target.
+  * Only 10.4 firmware uses separate CE to transfer pktlog data.
+  */
+-- 
+2.6.2
 
-I did come across references to the Atheros Radio Test tool, but could
-not find any
-references as to how to obtain it from QCA.
-
-I also saw references to a QCA open source NDA program, but could not find any
-links to actually join this program. Is it still active?
-
-Any insight from those that have done FCC testing with ath10k products would be
-greatly appreciated.
-
-Thanks.
-
-Ted Roth
 
 _______________________________________________
 ath10k mailing list
