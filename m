@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwvzD-0000z3-8J
- for ath10k@lists.infradead.org; Thu, 12 Nov 2015 17:48:39 +0000
+ id 1ZwwAH-00017H-KF
+ for ath10k@lists.infradead.org; Thu, 12 Nov 2015 18:00:06 +0000
 From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH] ath10k: Enable VHT for Mesh
-Date: Thu, 12 Nov 2015 09:47:44 -0800
-Message-ID: <1447350464-3993-1-git-send-email-poh@qca.qualcomm.com>
+Subject: [PATCH v2] cfg80211: add VHT support for Mesh
+Date: Thu, 12 Nov 2015 09:59:12 -0800
+Message-ID: <ab294ba62856f00c06dde10b1bf57f5f341a7198.1447351137.git.poh@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,33 +20,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: johannes@sipsolutions.net, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Mesh until now has no framework for VHT support which
-requires NL80211 and wpa_supplicant updates communicating
-with wireless drivers for capabilities.
-I've sent patches of NL80211 and wpa_supplicant separately
-that can be used for Mesh VHT support.
-Also enable ath10k Mesh VHT support in this patch.
+Add NL80211_EXT_FEATURE_VHT_MESH flag to allow drivers
+to indicate support for VHT in Mesh mode.
+This flag will be used by wireless drivers to indicate
+the capability of VHT Mesh support and wpa_supplicant to inspect
+wireless drivers' capability of VHT Mesh.
+In addition to this patch, separate patches to ath10k driver and
+wpa_supplicant are also sent out.
 
 Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a53e213..d38e4d8 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7266,6 +7266,7 @@ int ath10k_mac_register(struct ath10k *ar)
- 	}
+---
+v2:
+	- updated commit message for details
+---
+ include/uapi/linux/nl80211.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
+index 1f0b4cf..4a16ed5 100644
+--- a/include/uapi/linux/nl80211.h
++++ b/include/uapi/linux/nl80211.h
+@@ -4389,12 +4389,14 @@ enum nl80211_feature_flags {
+ /**
+  * enum nl80211_ext_feature_index - bit index of extended features.
+  * @NL80211_EXT_FEATURE_VHT_IBSS: This driver supports IBSS with VHT datarates.
++ * @NL80211_EXT_FEATURE_VHT_MESH: This driver supports Mesh with VHT datarates.
+  *
+  * @NUM_NL80211_EXT_FEATURES: number of extended features.
+  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
+  */
+ enum nl80211_ext_feature_index {
+ 	NL80211_EXT_FEATURE_VHT_IBSS,
++	NL80211_EXT_FEATURE_VHT_MESH,
  
- 	wiphy_ext_feature_set(ar->hw->wiphy, NL80211_EXT_FEATURE_VHT_IBSS);
-+	wiphy_ext_feature_set(ar->hw->wiphy, NL80211_EXT_FEATURE_VHT_MESH);
- 
- 	/*
- 	 * on LL hardware queues are managed entirely by the FW
+ 	/* add new features before the definition below */
+ 	NUM_NL80211_EXT_FEATURES,
 -- 
 1.9.1
 
