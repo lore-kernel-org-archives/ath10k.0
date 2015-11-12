@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwvoK-0003YU-2M
- for ath10k@lists.infradead.org; Thu, 12 Nov 2015 17:37:25 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH] cfg80211: add VHT support for Mesh
-Date: Thu, 12 Nov 2015 09:36:31 -0800
-Message-ID: <1447349791-3849-1-git-send-email-poh@qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1Zwvy5-0000ks-TM
+ for ath10k@lists.infradead.org; Thu, 12 Nov 2015 17:47:31 +0000
+Message-ID: <1447350423.2131.2.camel@sipsolutions.net>
+Subject: Re: [PATCH] cfg80211: add VHT support for Mesh
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 12 Nov 2015 18:47:03 +0100
+In-Reply-To: <1447349791-3849-1-git-send-email-poh@qca.qualcomm.com>
+References: <1447349791-3849-1-git-send-email-poh@qca.qualcomm.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +22,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: johannes@sipsolutions.net, ath10k@lists.infradead.org
+To: Peter Oh <poh@qca.qualcomm.com>, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Add NL80211_EXT_FEATURE_VHT_MESH flag to allow drivers
-to indicate support for VHT in Mesh mode.
+On Thu, 2015-11-12 at 09:36 -0800, Peter Oh wrote:
+> Add NL80211_EXT_FEATURE_VHT_MESH flag to allow drivers
+> to indicate support for VHT in Mesh mode.
+> 
+I'm confused. Why would it be needed? You haven't added any API or
+anything where userspace would do something differently based on
+whether or not it's supported? There's nothing checking the flag, so
+where's the point?
 
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
----
- include/uapi/linux/nl80211.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index 1f0b4cf..4a16ed5 100644
---- a/include/uapi/linux/nl80211.h
-+++ b/include/uapi/linux/nl80211.h
-@@ -4389,12 +4389,14 @@ enum nl80211_feature_flags {
- /**
-  * enum nl80211_ext_feature_index - bit index of extended features.
-  * @NL80211_EXT_FEATURE_VHT_IBSS: This driver supports IBSS with VHT datarates.
-+ * @NL80211_EXT_FEATURE_VHT_MESH: This driver supports Mesh with VHT datarates.
-  *
-  * @NUM_NL80211_EXT_FEATURES: number of extended features.
-  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
-  */
- enum nl80211_ext_feature_index {
- 	NL80211_EXT_FEATURE_VHT_IBSS,
-+	NL80211_EXT_FEATURE_VHT_MESH,
- 
- 	/* add new features before the definition below */
- 	NUM_NL80211_EXT_FEATURES,
--- 
-1.9.1
-
+johannes
 
 _______________________________________________
 ath10k mailing list
