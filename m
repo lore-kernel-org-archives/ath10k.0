@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from gateway32.websitewelcome.com ([192.185.145.102])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwwAH-00017H-KF
- for ath10k@lists.infradead.org; Thu, 12 Nov 2015 18:00:06 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH v2] cfg80211: add VHT support for Mesh
-Date: Thu, 12 Nov 2015 09:59:12 -0800
-Message-ID: <ab294ba62856f00c06dde10b1bf57f5f341a7198.1447351137.git.poh@qca.qualcomm.com>
+ id 1ZwwGX-0004pq-2V
+ for ath10k@lists.infradead.org; Thu, 12 Nov 2015 18:06:35 +0000
+Received: from cm1.websitewelcome.com (cm.websitewelcome.com [192.185.0.102])
+ by gateway32.websitewelcome.com (Postfix) with ESMTP id 0211E3060FAC0
+ for <ath10k@lists.infradead.org>; Thu, 12 Nov 2015 11:42:47 -0600 (CST)
+From: "Michael Rex" <mrex@tranzeo.com>
+Subject: RE: FCC Continuous TX testing
+Date: Thu, 12 Nov 2015 09:42:49 -0800
+Message-ID: <00d901d11d71$8d37cf50$a7a76df0$@tranzeo.com>
 MIME-Version: 1.0
+Content-Language: en-ca
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +24,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: johannes@sipsolutions.net, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: troth@openavr.org
+Cc: theodore_roth@trimble.com, ath10k@lists.infradead.org
 
-Add NL80211_EXT_FEATURE_VHT_MESH flag to allow drivers
-to indicate support for VHT in Mesh mode.
-This flag will be used by wireless drivers to indicate
-the capability of VHT Mesh support and wpa_supplicant to inspect
-wireless drivers' capability of VHT Mesh.
-In addition to this patch, separate patches to ath10k driver and
-wpa_supplicant are also sent out.
+Ted,
 
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
-
----
-v2:
-	- updated commit message for details
----
- include/uapi/linux/nl80211.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index 1f0b4cf..4a16ed5 100644
---- a/include/uapi/linux/nl80211.h
-+++ b/include/uapi/linux/nl80211.h
-@@ -4389,12 +4389,14 @@ enum nl80211_feature_flags {
- /**
-  * enum nl80211_ext_feature_index - bit index of extended features.
-  * @NL80211_EXT_FEATURE_VHT_IBSS: This driver supports IBSS with VHT datarates.
-+ * @NL80211_EXT_FEATURE_VHT_MESH: This driver supports Mesh with VHT datarates.
-  *
-  * @NUM_NL80211_EXT_FEATURES: number of extended features.
-  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
-  */
- enum nl80211_ext_feature_index {
- 	NL80211_EXT_FEATURE_VHT_IBSS,
-+	NL80211_EXT_FEATURE_VHT_MESH,
+You mention your product uses the mPCIe card, so I'm guessing you have an
+Ethernet port.  I am of the opinion that Ethernet based devices require
+maximum throughput (worst case) through radio and Ethernet at maximum cat5
+length (worst case) to take proper emissions measurements and that testing
+with the ART tool is not correct. The ART program, intended for testing and
+developing the radio modules, does not behave the same way as Ath10k or
+QCA's closed driver and so the real world product behaves differently at
+maximum power with multiple chains.  This results in products shipping over
+the approved limits.  I see this in the lab test reports all the time.
  
- 	/* add new features before the definition below */
- 	NUM_NL80211_EXT_FEATURES,
--- 
-1.9.1
+I don't see many other companies exercising the Ethernet like I am
+understood to believe is required, so you may need to check with your test
+lab on proper test methodology (testing to the letter instead of the 'spirit
+of the rules').  It certainly is harder to pass when exercising the Ethernet
+and that is why I suspect this corner is cut in other vendor testing (given
+the lack of filtering on the Ethernet ports in products).
+
+Generating maximum duty throughput (ie, transmitting UDP at full size frame)
+using a utility like iperf, Ixia, Smartbits, Veriwave, etc would be my
+recommended method of generating the traffic.  It is slower than
+transmitting null frames for the sole purpose of RF measurements, but I
+think this is the true, legal way for an Ethernet based wireless device.
+
+Best regards,
+Mike
+
+
+----------------------------------------------------------------------
+
+Message: 1
+Date: Tue, 10 Nov 2015 14:53:26 -0700
+From: "Theodore A. Roth" <troth@openavr.org>
+To: ath10k@lists.infradead.org
+Cc: Theodore Roth <theodore_roth@trimble.com>
+Subject: FCC Continuous TX testing
+Message-ID:
+	<CAFMvBt38Ld9TUpVHWD2yKSViLjN-dX4hLWXzAK9ZxoXCUr0JcA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+
+We are working on a product that uses an Ath10k mini-PCIe module and we are
+preparing for FCC testing.
+
+Are there any facilities in the Ath10k driver for putting the device
+into continuous
+transmit mode?
+
+Between google searches and looking in the linux-4.3.y driver source,
+I don't see
+anything promising. I did come across the CONFIG_NL80211_TESTMODE option,
+but that hasn't yielded anything (although I still have some more digging in
+the
+source to do there).
+
+I did come across references to the Atheros Radio Test tool, but could
+not find any
+references as to how to obtain it from QCA.
+
+I also saw references to a QCA open source NDA program, but could not find
+any
+links to actually join this program. Is it still active?
+
+Any insight from those that have done FCC testing with ath10k products would
+be
+greatly appreciated.
+
+Thanks.
+
+Ted Roth
+
+
+
+------------------------------
 
 
 _______________________________________________
