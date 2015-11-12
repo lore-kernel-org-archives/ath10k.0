@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yk0-x22a.google.com ([2607:f8b0:4002:c07::22a])
+Received: from mail-io0-x22e.google.com ([2607:f8b0:4001:c06::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwelI-0005S7-Vb
- for ath10k@lists.infradead.org; Wed, 11 Nov 2015 23:25:10 +0000
-Received: by ykfs79 with SMTP id s79so76559082ykf.1
- for <ath10k@lists.infradead.org>; Wed, 11 Nov 2015 15:24:47 -0800 (PST)
+ id 1ZwpQH-0000r9-ML
+ for ath10k@lists.infradead.org; Thu, 12 Nov 2015 10:48:10 +0000
+Received: by ioir85 with SMTP id r85so20187871ioi.1
+ for <ath10k@lists.infradead.org>; Thu, 12 Nov 2015 02:47:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <5640CE0E.8040206@candelatech.com>
-References: <CADLC3L1xeetwWLn1FbSyzvFYHvPw2z8C3OmQ-w9Bi0U=iLqZiA@mail.gmail.com>
- <5640CE0E.8040206@candelatech.com>
-Date: Wed, 11 Nov 2015 17:24:47 -0600
-Message-ID: <CADLC3L3JU0iCPMNttyj7J24JkttiuCatd-VMP-yH1Yfxy7HsLg@mail.gmail.com>
-Subject: Re: ath10k AP "failed to delete peer" errors when using Nexus 5X
-From: Robert Hancock <hancockrwd@gmail.com>
+In-Reply-To: <1447266082-10933-1-git-send-email-ryanhsu@qca.qualcomm.com>
+References: <1447266082-10933-1-git-send-email-ryanhsu@qca.qualcomm.com>
+From: Julian Calaby <julian.calaby@gmail.com>
+Date: Thu, 12 Nov 2015 21:47:28 +1100
+Message-ID: <CAGRGNgXOPDF1fK6X2b-qiTBOLqh+fcScEDDZAoEWTJLDrXPFuA@mail.gmail.com>
+Subject: Re: [PATCH v3] ath10k: Override CE5 configuration for QCA6147 device
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,121 +24,100 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Ryan Hsu <ryanhsu@qca.qualcomm.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-On Mon, Nov 9, 2015 at 10:47 AM, Ben Greear <greearb@candelatech.com> wrote:
-> On 11/08/2015 10:02 PM, Robert Hancock wrote:
->>
->> I'm using OpenWRT on a TP-Link Archer C7, currently running
->> development rev 47397 which is kernel 4.1.1 and compat-wireless
->> 2015-10-26. Ever since I got a new Nexus 5X phone, it seems like
->> periodically (once a day or so), the 5GHz wireless (using ath10k)
->> craps out and I get a bunch of errors in the kernel log on the router.
->> I have to reboot the router to get the 5GHz working again. Full kernel
->> log from one of these failures is below. Any thoughts on what is going
->> on here?
->>
->> There are reports of a newer Android build (which I don't have yet)
->> which supposedly has some wireless fixes on the Nexus 5X, but I'm not
->> sure what it could be doing that would be causing the router to crap
->> out like this.
->
->
->> [ 2178.931641] ---[ end trace 6751cc6390d26848 ]---
->> [ 2181.926812] ath10k_pci 0000:01:00.0: failed to delete peer
->> 8c:3a:e3:15:29:f3 for vdev 0: -11
->> [ 2184.946721] ath10k_pci 0000:01:00.0: failed to set beacon mode for
->> vdev 0: -11
->> [ 2187.946538] ath10k_pci 0000:01:00.0: failed to set dtim period for
->> vdev 0: -11
->> [ 2190.986373] ath10k_pci 0000:01:00.0: failed to recalculate rts/cts
->> prot for vdev 0: -11
->> [ 2193.986210] ath10k_pci 0000:01:00.0: failed to set protection mode
->> 0 on vdev 0: -11
->> [ 2196.986045] ath10k_pci 0000:01:00.0: failed to set preamble for vdev 0:
->> -11
->
->
-> Usually this means firmware has stopped processing WMI messages.
->
-> You might try different firmware versions in hopes one of them fixes the
-> problem.
->
-> Thanks,
-> Ben
+Hi Ryan,
 
-I tried switching to the 10.2.4.70.10-2 firmware version, which seems
-to be the latest version I can find for QCA988X. It seemed like it was
-working better (though it's hard to say as it happens sporadically),
-but then the failure happened again. Are there any newer versions than
-that one, or any other ideas?
+On Thu, Nov 12, 2015 at 5:21 AM, Ryan Hsu <ryanhsu@qca.qualcomm.com> wrote:
+> 'Commit a70587b3389a ("ath10k: configure copy engine 5 for HTT messages")'
+> Introduces to use the unused CE5 for target to host message.
+>
+> For the device like QCA6174, CE5 already assigned for other feature.
+> So for QCA6174, override the CE5 configuration and use the CE1 instead.
+>
+> This patch is based on Rajkumar's earlier patch.
+>
+> Fixes: a70587b3389a ("ath10k: configure copy engine 5 for HTT messages")
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Signed-off-by: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/pci.c | 32 +++++++++++++++++++++++++++++---
+>  1 file changed, 29 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+> index 5c91a67..2a48376 100644
+> --- a/drivers/net/wireless/ath/ath10k/pci.c
+> +++ b/drivers/net/wireless/ath/ath10k/pci.c
+> @@ -113,7 +113,7 @@ static void ath10k_pci_htt_tx_cb(struct ath10k_ce_pipe *ce_state);
+>  static void ath10k_pci_htt_rx_cb(struct ath10k_ce_pipe *ce_state);
+>  static void ath10k_pci_pktlog_rx_cb(struct ath10k_ce_pipe *ce_state);
+>
+> -static const struct ce_attr host_ce_config_wlan[] = {
+> +static struct ce_attr host_ce_config_wlan[] = {
+>         /* CE0: host->target HTC control and raw streams */
+>         {
+>                 .flags = CE_ATTR_FLAGS,
+> @@ -219,7 +219,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+>  };
+>
+>  /* Target firmware's Copy Engine configuration. */
+> -static const struct ce_pipe_config target_ce_config_wlan[] = {
+> +static struct ce_pipe_config target_ce_config_wlan[] = {
+>         /* CE0: host->target HTC control and raw streams */
+>         {
+>                 .pipenum = __cpu_to_le32(0),
+> @@ -332,7 +332,7 @@ static const struct ce_pipe_config target_ce_config_wlan[] = {
+>   * This table is derived from the CE_PCI TABLE, above.
+>   * It is passed to the Target at startup for use by firmware.
+>   */
+> -static const struct service_to_pipe target_service_to_ce_map_wlan[] = {
+> +static struct service_to_pipe target_service_to_ce_map_wlan[] = {
+>         {
+>                 __cpu_to_le32(ATH10K_HTC_SVC_ID_WMI_DATA_VO),
+>                 __cpu_to_le32(PIPEDIR_OUT),     /* out = UL = host -> target */
+> @@ -2038,6 +2038,29 @@ static int ath10k_pci_init_config(struct ath10k *ar)
+>         return 0;
+>  }
+>
+> +static void ath10k_pci_override_ce_config(struct ath10k *ar)
+> +{
+> +       struct ce_attr *attr;
+> +       struct ce_pipe_config *config;
+> +
+> +       /* For QCA6174 we're overriding the Copy Engine 5 configuration,
+> +        * since it is currently used for other feature.
+> +        */
+> +
+> +       /* Override Host's Copy Engine 5 configuration */
+> +       attr = &host_ce_config_wlan[5];
+> +       attr->src_sz_max = 0;
+> +       attr->dest_nentries = 0;
+> +
+> +       /* Override Target firmware's Copy Engine configuration */
+> +       config = &target_ce_config_wlan[5];
+> +       config->pipedir = __cpu_to_le32(PIPEDIR_OUT);
+> +       config->nbytes_max = __cpu_to_le32(2048);
+> +
+> +       /* Map from service/endpoint to Copy Engine */
+> +       target_service_to_ce_map_wlan[15].pipenum = __cpu_to_le32(1);
+> +}
+> +
 
-[   48.612363] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
-0x043202ff sub 0000:0000) fw 10.2.4.70.10-2 fwapi 5 bdapi 1 htt-ver
-2.1 wmi-op 5 htt-op 2 cal file max-sta 128 raw 0 hwcrypto 1 features
-no-p2p,raw-mode
+Stupid question: Why not have two different versions of each struct?
+One for QCA6174 and one for everyone else, and choose the appropriate
+one when they're uploaded to the firmware / used?
 
-..
+I believe there's a struct full of part specific data, it could
+potentially go in there.
 
-[72071.328152] ath10k_pci 0000:01:00.0: failed to delete peer
-64:bc:0c:46:e4:55 for vdev 0: -145
-[72071.336819] ------------[ cut here ]------------
-[72071.341644] WARNING: CPU: 0 PID: 2189 at
-/home/rob/openwrt/build_dir/target-mips_34kc_musl-1.1.11/linux-ar71xx_generic/compat-wireless-2015-10-26/net/mac80211/sta_info.c:918
-sta_set_sinfo+0x938/0x9d0 [mac80211]()
-[72071.360803] Modules linked in: pppoe ppp_async iptable_nat ath9k
-pppox ppp_generic nf_nat_ipv4 nf_conntrack_ipv6 nf_conntrack_ipv4
-ipt_REJECT ipt_MASQUERADE ath9k_common xt_time xt_tcpudp xt_tcpmss
-xt_string xt_statistic xt_state xt_recent xt_nat xt_multiport xt_mark
-xt_mac xt_limit xt_length xt_id xt_hl xt_helper xt_ecn xt_dscp
-xt_conntrack xt_connmark xt_connlimit xt_connbytes xt_comment
-xt_TCPMSS xt_REDIRECT xt_LOG xt_HL xt_DSCP xt_CT xt_CLASSIFY usblp
-ts_kmp ts_fsm ts_bm slhc nf_reject_ipv4 nf_nat_redirect
-nf_nat_masquerade_ipv4 nf_nat_ftp nf_nat nf_log_ipv4 nf_defrag_ipv6
-nf_defrag_ipv4 nf_conntrack_rtcache nf_conntrack_ftp iptable_raw
-iptable_mangle iptable_filter ipt_ECN ip_tables crc_ccitt ath9k_hw
-em_cmp em_nbyte sch_teql sch_dsmark sch_tbf sch_pie act_ipt sch_gred
-sch_htb cls_basic sch_prio
-[72071.433472]  em_meta act_police em_text sch_codel sch_fq sch_sfq
-sch_red act_connmark nf_conntrack act_skbedit act_mirred em_u32
-cls_u32 cls_tcindex cls_flow cls_route cls_fw sch_hfsc sch_ingress
-ath10k_pci ath10k_core ath mac80211 cfg80211 compat ledtrig_usbdev
-xt_set ip_set_list_set ip_set_hash_netiface ip_set_hash_netport
-ip_set_hash_netnet ip_set_hash_net ip_set_hash_netportnet
-ip_set_hash_mac ip_set_hash_ipportnet ip_set_hash_ipportip
-ip_set_hash_ipport ip_set_hash_ipmark ip_set_hash_ip
-ip_set_bitmap_port ip_set_bitmap_ipmac ip_set_bitmap_ip ip_set
-nfnetlink ip6t_REJECT nf_reject_ipv6 nf_log_ipv6 nf_log_common
-ip6table_raw ip6table_mangle ip6table_filter ip6_tables x_tables msdos
-ifb sit tunnel4 ip_tunnel vfat fat usb_storage ohci_platform ohci_hcd
-ehci_platform ehci_hcd sd_mod scsi_mod gpio_button_hotplug
-[72071.505606]  ext4 jbd2 mbcache usbcore nls_base usb_common crc16 crypto_hash
-[72071.511521] CPU: 0 PID: 2189 Comm: hostapd Not tainted 4.1.11 #2
-[72071.517609] Stack : 803e42d2 00000034 00000000 00000001 8033cd38
-80388723 878f6ab8 0000088d
-      803e352c 00000000 00000004 00000008 00000000 800a5d90 00000003 803420ac
-      00000396 00000000 803405c0 86a317e4 00000000 800a4418 803e42d2 000000c8
-      00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-      00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-      ...
-[72071.554023] Call Trace:
-[72071.556520] [<80072180>] show_stack+0x50/0x84
-[72071.560964] [<80081a48>] warn_slowpath_common+0xa0/0xd0
-[72071.566297] [<80081b00>] warn_slowpath_null+0x18/0x24
-[72071.571548] [<873869ec>] sta_set_sinfo+0x938/0x9d0 [mac80211]
+Thanks,
 
-[72071.578995] ---[ end trace 8a40faa59ba0f534 ]---
-[72387.104598] ath10k_pci 0000:01:00.0: failed to install key for vdev
-0 peer 8c:3a:e3:15:29:f3: -145
-[72387.113708] wlan0: failed to remove key (0, 8c:3a:e3:15:29:f3) from
-hardware (-145)
-[72387.129423] ath10k_pci 0000:01:00.0: cipher 0 is not supported
-[72387.135418] ath10k_pci 0000:01:00.0: failed to remove peer wep key 0: -122
-[72387.142395] ath10k_pci 0000:01:00.0: failed to clear all peer wep
-keys for vdev 0: -122
-[72387.150541] ath10k_pci 0000:01:00.0: failed to disassociate
-station: 8c:3a:e3:15:29:f3 vdev 0: -122
+-- 
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
 
 _______________________________________________
 ath10k mailing list
