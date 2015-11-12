@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zwwji-0004sY-P4
- for ath10k@lists.infradead.org; Thu, 12 Nov 2015 18:36:43 +0000
-From: Yanbo Li <yanbol@qca.qualcomm.com>
-Subject: [PATCH] ath10k: Fix the wrong RX rate idx report at 11G mode
-Date: Thu, 12 Nov 2015 10:36:10 -0800
-Message-ID: <1447353370-24465-1-git-send-email-yanbol@qca.qualcomm.com>
+ id 1ZwxAa-0008ON-Ji
+ for ath10k@lists.infradead.org; Thu, 12 Nov 2015 19:04:29 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/4] update ath10k support for QCA9377 chips
+References: <1446713443-22542-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Thu, 12 Nov 2015 21:03:51 +0200
+In-Reply-To: <1446713443-22542-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Thu, 5 Nov 2015 09:50:39 +0100")
+Message-ID: <874mgr6nvs.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,66 +23,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-The RX rate idx is not correctly for 11G mode OFDM packet.
-Because the bitrate table start with CCK index instead of OFDM.
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
+> * Clarifying the naming scheme for QCA9377 targets
+> * Adding the dev_id mathod (RFC) as a HW identification helper
+> * updating missing hw_params for 1.1 target
+>
+> ---
+>
+> Notes:
+>   v2:
+>    * rebase
+>    * fix the whitespace mess in patch 4/4 [Kalle]
+>
+> Bartosz Markowski (4):
+>   ath10k: fix the currently supported QCA9377 target version name
+>   ath10k: update missing hw_params of QCA9377 hw1.1
+>   ath10k: introduce dev_id to hw_params
+>   ath10k: add QCA9377 hw1.0 support
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 6060dda4e910..9dcf93d1bd24 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -674,7 +674,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 		rate &= ~RX_PPDU_START_RATE_FLAG;
- 
- 		sband = &ar->mac.sbands[status->band];
--		status->rate_idx = ath10k_mac_hw_rate_to_idx(sband, rate);
-+		status->rate_idx = ath10k_mac_hw_rate_to_idx(sband, rate, cck);
- 		break;
- 	case HTT_RX_HT:
- 	case HTT_RX_HT_WITH_TXBF:
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 484c1a10372f..02feb5fe27d5 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -90,7 +90,7 @@ static u8 ath10k_mac_bitrate_to_rate(int bitrate)
- }
- 
- u8 ath10k_mac_hw_rate_to_idx(const struct ieee80211_supported_band *sband,
--			     u8 hw_rate)
-+			     u8 hw_rate, bool cck)
- {
- 	const struct ieee80211_rate *rate;
- 	int i;
-@@ -98,6 +98,9 @@ u8 ath10k_mac_hw_rate_to_idx(const struct ieee80211_supported_band *sband,
- 	for (i = 0; i < sband->n_bitrates; i++) {
- 		rate = &sband->bitrates[i];
- 
-+		if (ath10k_mac_bitrate_is_cck(rate->bitrate) != cck)
-+			continue;
-+
- 		if (rate->hw_value == hw_rate)
- 			return i;
- 		else if (rate->flags & IEEE80211_RATE_SHORT_PREAMBLE &&
-diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
-index e3cefe4c7cfd..3b0f0fd2af9e 100644
---- a/drivers/net/wireless/ath/ath10k/mac.h
-+++ b/drivers/net/wireless/ath/ath10k/mac.h
-@@ -66,7 +66,7 @@ void ath10k_mac_handle_tx_pause_vdev(struct ath10k *ar, u32 vdev_id,
- 				     enum wmi_tlv_tx_pause_action action);
- 
- u8 ath10k_mac_hw_rate_to_idx(const struct ieee80211_supported_band *sband,
--			     u8 hw_rate);
-+			     u8 hw_rate, bool cck);
- u8 ath10k_mac_bitrate_to_idx(const struct ieee80211_supported_band *sband,
- 			     u32 bitrate);
- 
+Applied to ath-current, thanks.
+
 -- 
-1.9.1
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
