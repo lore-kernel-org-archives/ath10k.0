@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyPoI-0001UI-Tu
- for ath10k@lists.infradead.org; Mon, 16 Nov 2015 19:51:31 +0000
+ id 1ZyQPh-0000YO-0k
+ for ath10k@lists.infradead.org; Mon, 16 Nov 2015 20:30:10 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Fix the wrong RX rate idx report at 11G mode
-References: <1447353370-24465-1-git-send-email-yanbol@qca.qualcomm.com>
-Date: Mon, 16 Nov 2015 21:50:55 +0200
-In-Reply-To: <1447353370-24465-1-git-send-email-yanbol@qca.qualcomm.com>
- (Yanbo Li's message of "Thu, 12 Nov 2015 10:36:10 -0800")
-Message-ID: <87a8qd2068.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: poll HTT send completion when CE 5 is unused
+References: <1447243286-22116-1-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Mon, 16 Nov 2015 22:29:21 +0200
+In-Reply-To: <1447243286-22116-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Wed, 11 Nov 2015 17:31:26 +0530")
+Message-ID: <871tbp1ye6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,17 +23,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yanbo Li <yanbol@qca.qualcomm.com>
-Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Yanbo Li <yanbol@qca.qualcomm.com> writes:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> The RX rate idx is not correctly for 11G mode OFDM packet.
-> Because the bitrate table start with CCK index instead of OFDM.
+> commit a70587b3389a ("ath10k: configure copy engine 5 for HTT messages")
+> moved send completion polling under HTT Rx (CE 5) service routine. For
+> QCA6174 based devices copy engine 1 (CE 1) is used for HTT Rx instead
+> of CE 5. So send completion never be called. This is causing "failed to
+> transmit packet, dropping: -105" errors. Fix this by processing send
+> completion from CE 1 service routine instead of CE 5.
 >
-> Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
+> Tested-by: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Applied, thanks.
+Applied to ath-current, thanks. I had a trivial conflict, please review
+carefully my changes:
+
+https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=ath-current&id=6419fdbb6f90e147690f8833cba59d289d613da5
 
 -- 
 Kalle Valo
