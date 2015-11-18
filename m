@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22d.google.com ([2a00:1450:4010:c07::22d])
+Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
  by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1Zyvmf-0000YC-NC
- for ath10k@lists.infradead.org; Wed, 18 Nov 2015 05:59:58 +0000
-Received: by lffu14 with SMTP id u14so19584474lff.1
- for <ath10k@lists.infradead.org>; Tue, 17 Nov 2015 21:59:35 -0800 (PST)
+ id 1Zyvo3-0000g2-0Q
+ for ath10k@lists.infradead.org; Wed, 18 Nov 2015 06:01:23 +0000
+Received: by lbblt2 with SMTP id lt2so18429900lbb.3
+ for <ath10k@lists.infradead.org>; Tue, 17 Nov 2015 21:59:30 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v3 5/9] ath10k: remove freq from skb_cb
-Date: Wed, 18 Nov 2015 06:59:19 +0100
-Message-Id: <1447826363-16818-6-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3 1/9] ath10k: merge is_protected with nohwcrypt
+Date: Wed, 18 Nov 2015 06:59:15 +0100
+Message-Id: <1447826363-16818-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
 References: <87mvuj585b.fsf@kamboji.qca.qualcomm.com>
  <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
@@ -28,109 +28,90 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-It was wasteful to keep it in the struct.
+It was wasteful to have two flags describing
+the same thing.
+
+While at it fix code style of
+ath10k_tx_h_use_hwcrypto().
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h   | 1 -
- drivers/net/wireless/ath/ath10k/htt_tx.c | 9 +++++++--
- drivers/net/wireless/ath/ath10k/mac.c    | 5 +----
- 3 files changed, 8 insertions(+), 7 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h   |  1 -
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  3 ---
+ drivers/net/wireless/ath/ath10k/mac.c    | 14 ++++++++++----
+ 3 files changed, 10 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 89a83e3c5cb6..804fd2e5bc38 100644
+index 938431ffed4d..b91f69286a4f 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -88,7 +88,6 @@ struct ath10k_skb_cb {
+@@ -86,7 +86,6 @@ struct ath10k_skb_cb {
+ 	u8 eid;
+ 	u8 vdev_id;
+ 	enum ath10k_hw_txrx_mode txmode;
+-	bool is_protected;
  
  	struct {
  		u8 tid;
--		u16 freq;
- 		bool nohwcrypt;
- 		struct ath10k_htt_txbuf *txbuf;
- 		u32 txbuf_paddr;
 diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index f6fb4f131542..a7d8798b2f37 100644
+index 8f76b9d96486..b57335d47c78 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -538,6 +538,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	struct ath10k *ar = htt->ar;
- 	struct device *dev = ar->dev;
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
-+	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
- 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
- 	struct ath10k_hif_sg_item sg_items[2];
- 	struct htt_data_tx_desc_frag *frags;
-@@ -547,6 +548,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	int res;
- 	u8 flags0 = 0;
- 	u16 msdu_id, flags1 = 0;
-+	u16 freq = 0;
- 	u32 frags_paddr = 0;
- 	struct htt_msdu_ext_desc *ext_desc = NULL;
- 	bool limit_mgmt_desc = false;
-@@ -598,6 +600,9 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 		goto err_free_msdu_id;
- 	}
+@@ -663,9 +663,6 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	if (skb_cb->htt.nohwcrypt)
+ 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
  
-+	if (unlikely(info->flags & IEEE80211_TX_CTL_TX_OFFCHAN))
-+		freq = ar->scan.roc_freq;
-+
- 	switch (txmode) {
- 	case ATH10K_HW_TXRX_RAW:
- 	case ATH10K_HW_TXRX_NATIVE_WIFI:
-@@ -690,7 +695,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 		skb_cb->htt.txbuf->cmd_tx.offchan_tx.peerid =
- 				__cpu_to_le16(HTT_INVALID_PEERID);
- 		skb_cb->htt.txbuf->cmd_tx.offchan_tx.freq =
--				__cpu_to_le16(skb_cb->htt.freq);
-+				__cpu_to_le16(freq);
- 	} else {
- 		skb_cb->htt.txbuf->cmd_tx.peerid =
- 				__cpu_to_le32(HTT_INVALID_PEERID);
-@@ -700,7 +705,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	ath10k_dbg(ar, ATH10K_DBG_HTT,
- 		   "htt tx flags0 %hhu flags1 %hu len %d id %hu frags_paddr %08x, msdu_paddr %08x vdev %hhu tid %hhu freq %hu\n",
- 		   flags0, flags1, msdu->len, msdu_id, frags_paddr,
--		   (u32)skb_cb->paddr, vdev_id, tid, skb_cb->htt.freq);
-+		   (u32)skb_cb->paddr, vdev_id, tid, freq);
- 	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt tx msdu: ",
- 			msdu->data, msdu->len);
- 	trace_ath10k_tx_hdr(ar, msdu->data, msdu->len);
+-	if (!skb_cb->is_protected)
+-		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
+-
+ 	flags1 |= SM((u16)vdev_id, HTT_DATA_TX_DESC_FLAGS1_VDEV_ID);
+ 	flags1 |= SM((u16)tid, HTT_DATA_TX_DESC_FLAGS1_EXT_TID);
+ 	if (msdu->ip_summed == CHECKSUM_PARTIAL &&
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 164a3e5ae6da..0ca5d5bea509 100644
+index 20e73729c397..ab2e5677f771 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3528,6 +3528,7 @@ void __ath10k_scan_finish(struct ath10k *ar)
- 	case ATH10K_SCAN_STARTING:
- 		ar->scan.state = ATH10K_SCAN_IDLE;
- 		ar->scan_channel = NULL;
-+		ar->scan.roc_freq = 0;
- 		ath10k_offchan_tx_purge(ar);
- 		cancel_delayed_work(&ar->scan.timeout);
- 		complete_all(&ar->scan.completed);
-@@ -3683,7 +3684,6 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+@@ -3200,14 +3200,22 @@ ath10k_tx_h_get_txmode(struct ath10k *ar, struct ieee80211_vif *vif,
+ }
  
- 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
+ static bool ath10k_tx_h_use_hwcrypto(struct ieee80211_vif *vif,
+-				     struct sk_buff *skb) {
+-	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++				     struct sk_buff *skb)
++{
++	const struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++	const struct ieee80211_hdr *hdr = (void *)skb->data;
+ 	const u32 mask = IEEE80211_TX_INTFL_DONT_ENCRYPT |
+ 			 IEEE80211_TX_CTL_INJECTED;
++
++	if (!ieee80211_has_protected(hdr->frame_control))
++		return false;
++
+ 	if ((info->flags & mask) == mask)
+ 		return false;
++
+ 	if (vif)
+ 		return !ath10k_vif_to_arvif(vif)->nohwcrypt;
++
+ 	return true;
+ }
  
--	ATH10K_SKB_CB(skb)->htt.freq = 0;
- 	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
+@@ -3646,7 +3654,6 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 	struct ieee80211_vif *vif = info->control.vif;
+ 	struct ieee80211_sta *sta = control->sta;
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+-	__le16 fc = hdr->frame_control;
+ 
+ 	/* We should disable CCK RATE due to P2P */
+ 	if (info->flags & IEEE80211_TX_CTL_NO_CCK_RATE)
+@@ -3658,7 +3665,6 @@ static void ath10k_tx(struct ieee80211_hw *hw,
  	ATH10K_SKB_CB(skb)->htt.nohwcrypt = !ath10k_tx_h_use_hwcrypto(vif, skb);
  	ATH10K_SKB_CB(skb)->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
-@@ -3708,13 +3708,10 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 	ATH10K_SKB_CB(skb)->txmode = ath10k_tx_h_get_txmode(ar, vif, sta, skb);
+-	ATH10K_SKB_CB(skb)->is_protected = ieee80211_has_protected(fc);
  
- 	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
- 		spin_lock_bh(&ar->data_lock);
--		ATH10K_SKB_CB(skb)->htt.freq = ar->scan.roc_freq;
- 		ATH10K_SKB_CB(skb)->vdev_id = ar->scan.vdev_id;
- 		spin_unlock_bh(&ar->data_lock);
- 
- 		if (!ath10k_mac_tx_frm_has_freq(ar)) {
--			ATH10K_SKB_CB(skb)->htt.freq = 0;
--
- 			ath10k_dbg(ar, ATH10K_DBG_MAC, "queued offchannel skb %p\n",
- 				   skb);
- 
+ 	switch (ATH10K_SKB_CB(skb)->txmode) {
+ 	case ATH10K_HW_TXRX_MGMT:
 -- 
 2.1.4
 
