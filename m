@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyjnQ-00049l-Fp
- for ath10k@lists.infradead.org; Tue, 17 Nov 2015 17:11:57 +0000
-Subject: Re: TX-Power limits for ath10k based card on Linux 3.18.24 (long term
- support)?
-References: <564B5004.7070103@candelatech.com>
- <403673121.6466400.1447779779000.JavaMail.yahoo@mail.yahoo.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <564B5FC3.60501@candelatech.com>
-Date: Tue, 17 Nov 2015 09:11:31 -0800
+Received: from mail-yk0-x22a.google.com ([2607:f8b0:4002:c07::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZyssG-0001JF-Fw
+ for ath10k@lists.infradead.org; Wed, 18 Nov 2015 02:53:33 +0000
+Received: by ykdr82 with SMTP id r82so41948256ykd.3
+ for <ath10k@lists.infradead.org>; Tue, 17 Nov 2015 18:53:11 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <403673121.6466400.1447779779000.JavaMail.yahoo@mail.yahoo.com>
+In-Reply-To: <CADLC3L3JU0iCPMNttyj7J24JkttiuCatd-VMP-yH1Yfxy7HsLg@mail.gmail.com>
+References: <CADLC3L1xeetwWLn1FbSyzvFYHvPw2z8C3OmQ-w9Bi0U=iLqZiA@mail.gmail.com>
+ <5640CE0E.8040206@candelatech.com>
+ <CADLC3L3JU0iCPMNttyj7J24JkttiuCatd-VMP-yH1Yfxy7HsLg@mail.gmail.com>
+Date: Tue, 17 Nov 2015 20:53:11 -0600
+Message-ID: <CADLC3L2=YOp8tJr03rHgQC4CqzdyGhCacqDK7kWYGt2gFsy24Q@mail.gmail.com>
+Subject: Re: ath10k AP "failed to delete peer" errors when using Nexus 5X
+From: Robert Hancock <hancockrwd@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,44 +22,129 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joerg Pommnitz <pommnitz@yahoo.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-On 11/17/2015 09:02 AM, Joerg Pommnitz wrote:
-> Ben,
-> thanks for taking the time to answer. I followed your suggestion and repeated my tests
-> with your beta-15 firmware.
-> The results are interesting. At first I thought nothing had changed. The txpower was about 10dB,
+On Wed, Nov 11, 2015 at 5:24 PM, Robert Hancock <hancockrwd@gmail.com> wrote:
+> On Mon, Nov 9, 2015 at 10:47 AM, Ben Greear <greearb@candelatech.com> wrote:
+>> On 11/08/2015 10:02 PM, Robert Hancock wrote:
+>>>
+>>> I'm using OpenWRT on a TP-Link Archer C7, currently running
+>>> development rev 47397 which is kernel 4.1.1 and compat-wireless
+>>> 2015-10-26. Ever since I got a new Nexus 5X phone, it seems like
+>>> periodically (once a day or so), the 5GHz wireless (using ath10k)
+>>> craps out and I get a bunch of errors in the kernel log on the router.
+>>> I have to reboot the router to get the 5GHz working again. Full kernel
+>>> log from one of these failures is below. Any thoughts on what is going
+>>> on here?
+>>>
+>>> There are reports of a newer Android build (which I don't have yet)
+>>> which supposedly has some wireless fixes on the Nexus 5X, but I'm not
+>>> sure what it could be doing that would be causing the router to crap
+>>> out like this.
+>>
+>>
+>>> [ 2178.931641] ---[ end trace 6751cc6390d26848 ]---
+>>> [ 2181.926812] ath10k_pci 0000:01:00.0: failed to delete peer
+>>> 8c:3a:e3:15:29:f3 for vdev 0: -11
+>>> [ 2184.946721] ath10k_pci 0000:01:00.0: failed to set beacon mode for
+>>> vdev 0: -11
+>>> [ 2187.946538] ath10k_pci 0000:01:00.0: failed to set dtim period for
+>>> vdev 0: -11
+>>> [ 2190.986373] ath10k_pci 0000:01:00.0: failed to recalculate rts/cts
+>>> prot for vdev 0: -11
+>>> [ 2193.986210] ath10k_pci 0000:01:00.0: failed to set protection mode
+>>> 0 on vdev 0: -11
+>>> [ 2196.986045] ath10k_pci 0000:01:00.0: failed to set preamble for vdev 0:
+>>> -11
+>>
+>>
+>> Usually this means firmware has stopped processing WMI messages.
+>>
+>> You might try different firmware versions in hopes one of them fixes the
+>> problem.
+>>
+>> Thanks,
+>> Ben
 >
-> far short of the expected 20dB. Playing around with "iw dev ap set txpower fixed ... " did not result in significiant changes.
+> I tried switching to the 10.2.4.70.10-2 firmware version, which seems
+> to be the latest version I can find for QCA988X. It seemed like it was
+> working better (though it's hard to say as it happens sporadically),
+> but then the failure happened again. Are there any newer versions than
+> that one, or any other ideas?
 >
-> However, when I add an attenuator between the powermeter and the antenna, the measured txpower markedly increased. With 10dB attenuation I get 12dB, with 20dB attenuation the txpower increases to more than 15dB.
+> [   48.612363] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
+> 0x043202ff sub 0000:0000) fw 10.2.4.70.10-2 fwapi 5 bdapi 1 htt-ver
+> 2.1 wmi-op 5 htt-op 2 cal file max-sta 128 raw 0 hwcrypto 1 features
+> no-p2p,raw-mode
 >
-> Question: Is this the expected behaviour? Can I force a fixed txpower instead of this dynamic adaptation?
+> ..
+>
+> [72071.328152] ath10k_pci 0000:01:00.0: failed to delete peer
+> 64:bc:0c:46:e4:55 for vdev 0: -145
+> [72071.336819] ------------[ cut here ]------------
+> [72071.341644] WARNING: CPU: 0 PID: 2189 at
+> /home/rob/openwrt/build_dir/target-mips_34kc_musl-1.1.11/linux-ar71xx_generic/compat-wireless-2015-10-26/net/mac80211/sta_info.c:918
+> sta_set_sinfo+0x938/0x9d0 [mac80211]()
+> [72071.360803] Modules linked in: pppoe ppp_async iptable_nat ath9k
+> pppox ppp_generic nf_nat_ipv4 nf_conntrack_ipv6 nf_conntrack_ipv4
+> ipt_REJECT ipt_MASQUERADE ath9k_common xt_time xt_tcpudp xt_tcpmss
+> xt_string xt_statistic xt_state xt_recent xt_nat xt_multiport xt_mark
+> xt_mac xt_limit xt_length xt_id xt_hl xt_helper xt_ecn xt_dscp
+> xt_conntrack xt_connmark xt_connlimit xt_connbytes xt_comment
+> xt_TCPMSS xt_REDIRECT xt_LOG xt_HL xt_DSCP xt_CT xt_CLASSIFY usblp
+> ts_kmp ts_fsm ts_bm slhc nf_reject_ipv4 nf_nat_redirect
+> nf_nat_masquerade_ipv4 nf_nat_ftp nf_nat nf_log_ipv4 nf_defrag_ipv6
+> nf_defrag_ipv4 nf_conntrack_rtcache nf_conntrack_ftp iptable_raw
+> iptable_mangle iptable_filter ipt_ECN ip_tables crc_ccitt ath9k_hw
+> em_cmp em_nbyte sch_teql sch_dsmark sch_tbf sch_pie act_ipt sch_gred
+> sch_htb cls_basic sch_prio
+> [72071.433472]  em_meta act_police em_text sch_codel sch_fq sch_sfq
+> sch_red act_connmark nf_conntrack act_skbedit act_mirred em_u32
+> cls_u32 cls_tcindex cls_flow cls_route cls_fw sch_hfsc sch_ingress
+> ath10k_pci ath10k_core ath mac80211 cfg80211 compat ledtrig_usbdev
+> xt_set ip_set_list_set ip_set_hash_netiface ip_set_hash_netport
+> ip_set_hash_netnet ip_set_hash_net ip_set_hash_netportnet
+> ip_set_hash_mac ip_set_hash_ipportnet ip_set_hash_ipportip
+> ip_set_hash_ipport ip_set_hash_ipmark ip_set_hash_ip
+> ip_set_bitmap_port ip_set_bitmap_ipmac ip_set_bitmap_ip ip_set
+> nfnetlink ip6t_REJECT nf_reject_ipv6 nf_log_ipv6 nf_log_common
+> ip6table_raw ip6table_mangle ip6table_filter ip6_tables x_tables msdos
+> ifb sit tunnel4 ip_tunnel vfat fat usb_storage ohci_platform ohci_hcd
+> ehci_platform ehci_hcd sd_mod scsi_mod gpio_button_hotplug
+> [72071.505606]  ext4 jbd2 mbcache usbcore nls_base usb_common crc16 crypto_hash
+> [72071.511521] CPU: 0 PID: 2189 Comm: hostapd Not tainted 4.1.11 #2
+> [72071.517609] Stack : 803e42d2 00000034 00000000 00000001 8033cd38
+> 80388723 878f6ab8 0000088d
+>       803e352c 00000000 00000004 00000008 00000000 800a5d90 00000003 803420ac
+>       00000396 00000000 803405c0 86a317e4 00000000 800a4418 803e42d2 000000c8
+>       00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+>       00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+>       ...
+> [72071.554023] Call Trace:
+> [72071.556520] [<80072180>] show_stack+0x50/0x84
+> [72071.560964] [<80081a48>] warn_slowpath_common+0xa0/0xd0
+> [72071.566297] [<80081b00>] warn_slowpath_null+0x18/0x24
+> [72071.571548] [<873869ec>] sta_set_sinfo+0x938/0x9d0 [mac80211]
+>
+> [72071.578995] ---[ end trace 8a40faa59ba0f534 ]---
+> [72387.104598] ath10k_pci 0000:01:00.0: failed to install key for vdev
+> 0 peer 8c:3a:e3:15:29:f3: -145
+> [72387.113708] wlan0: failed to remove key (0, 8c:3a:e3:15:29:f3) from
+> hardware (-145)
+> [72387.129423] ath10k_pci 0000:01:00.0: cipher 0 is not supported
+> [72387.135418] ath10k_pci 0000:01:00.0: failed to remove peer wep key 0: -122
+> [72387.142395] ath10k_pci 0000:01:00.0: failed to clear all peer wep
+> keys for vdev 0: -122
+> [72387.150541] ath10k_pci 0000:01:00.0: failed to disassociate
+> station: 8c:3a:e3:15:29:f3 vdev 0: -122
 
-I'm not aware of any logic in the firmware that would adjust power automatically
-based on attenuation on the antenna connectors.
-
-Any chance the issue is how you are measuring things?
-
-Maybe try the same test with an ath9k NIC and see how it performs?
-
-Do you see similar results with other firmware when you add attenuation?
-
-Are you connecting just to channel 0 on the NIC, or are you connecting to
-all three antenna ports?  With 11g, you should only see signal on the
-first channel I think.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Just as an update, ath10k-firmware recently added a new 10.2.4.70.12-2
+firmware version for QCA988X, which seems to fix this problem.
 
 _______________________________________________
 ath10k mailing list
