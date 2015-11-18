@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22c.google.com ([2a00:1450:4010:c07::22c])
+Received: from mail-lb0-x229.google.com ([2a00:1450:4010:c04::229])
  by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1Zyvme-0000Xy-RT
- for ath10k@lists.infradead.org; Wed, 18 Nov 2015 05:59:57 +0000
-Received: by lffu14 with SMTP id u14so19584282lff.1
- for <ath10k@lists.infradead.org>; Tue, 17 Nov 2015 21:59:34 -0800 (PST)
+ id 1Zyvmc-0000XS-Mk
+ for ath10k@lists.infradead.org; Wed, 18 Nov 2015 05:59:55 +0000
+Received: by lbblt2 with SMTP id lt2so18429743lbb.3
+ for <ath10k@lists.infradead.org>; Tue, 17 Nov 2015 21:59:29 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v3 4/9] ath10k: remove is_offchan
-Date: Wed, 18 Nov 2015 06:59:18 +0100
-Message-Id: <1447826363-16818-5-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3 0/9] ath10k: clean up ath10k_skb_cb
+Date: Wed, 18 Nov 2015 06:59:14 +0100
+Message-Id: <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <87mvuj585b.fsf@kamboji.qca.qualcomm.com>
 References: <87mvuj585b.fsf@kamboji.qca.qualcomm.com>
- <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,65 +27,45 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-It was wasteful to keep it in the struct.
+The ath10k_skb_cb structure wasn't really space
+efficient. Some stuff is removed or replaced with
+more compact representation.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/core.h | 1 -
- drivers/net/wireless/ath/ath10k/mac.c  | 2 --
- drivers/net/wireless/ath/ath10k/txrx.c | 7 ++++++-
- 3 files changed, 6 insertions(+), 4 deletions(-)
+This cleanup is necessary for future features.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 0228000ecf50..89a83e3c5cb6 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -89,7 +89,6 @@ struct ath10k_skb_cb {
- 	struct {
- 		u8 tid;
- 		u16 freq;
--		bool is_offchan;
- 		bool nohwcrypt;
- 		struct ath10k_htt_txbuf *txbuf;
- 		u32 txbuf_paddr;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 4d3b8dc8e5de..164a3e5ae6da 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3683,7 +3683,6 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 
- 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
- 
--	ATH10K_SKB_CB(skb)->htt.is_offchan = false;
- 	ATH10K_SKB_CB(skb)->htt.freq = 0;
- 	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
- 	ATH10K_SKB_CB(skb)->htt.nohwcrypt = !ath10k_tx_h_use_hwcrypto(vif, skb);
-@@ -3715,7 +3714,6 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 
- 		if (!ath10k_mac_tx_frm_has_freq(ar)) {
- 			ATH10K_SKB_CB(skb)->htt.freq = 0;
--			ATH10K_SKB_CB(skb)->htt.is_offchan = true;
- 
- 			ath10k_dbg(ar, ATH10K_DBG_MAC, "queued offchannel skb %p\n",
- 				   skb);
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 6d1105ab4592..9e14c04ac89f 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -23,7 +23,12 @@
- 
- static void ath10k_report_offchan_tx(struct ath10k *ar, struct sk_buff *skb)
- {
--	if (!ATH10K_SKB_CB(skb)->htt.is_offchan)
-+	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-+
-+	if (likely(!(info->flags & IEEE80211_TX_CTL_TX_OFFCHAN)))
-+		return;
-+
-+	if (ath10k_mac_tx_frm_has_freq(ar))
- 		return;
- 
- 	/* If the original wait_for_completion() timed out before
+The size of ath10k_skb_cb:
+
+          before   after
+ x86-32   26       12
+ x86-64   34       20
+
+
+v3:
+ * rebase
+
+v2:
+ * fix a bug (patch 7/9 introduced)
+
+
+Michal Kazior (9):
+  ath10k: merge is_protected with nohwcrypt
+  ath10k: rename function to adhere to naming convention
+  ath10k: remove txmode from skb_cb
+  ath10k: remove is_offchan
+  ath10k: remove freq from skb_cb
+  ath10k: pack up flags in skb_cb
+  ath10k: fix tx header parsing
+  ath10k: replace vdev_id and tid in skb cb
+  ath10k: store msdu_id instead of txbuf pointers
+
+ drivers/net/wireless/ath/ath10k/core.h   |  28 +++-----
+ drivers/net/wireless/ath/ath10k/htt.h    |   4 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 116 +++++++++++++++++++-----------
+ drivers/net/wireless/ath/ath10k/mac.c    | 117 ++++++++++++++++---------------
+ drivers/net/wireless/ath/ath10k/txrx.c   |  15 ++--
+ drivers/net/wireless/ath/ath10k/wmi.c    |  22 ++++--
+ 6 files changed, 173 insertions(+), 129 deletions(-)
+
 -- 
 2.1.4
 
