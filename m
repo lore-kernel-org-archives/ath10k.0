@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22b.google.com ([2a00:1450:4010:c04::22b])
+Received: from mail-lb0-x234.google.com ([2a00:1450:4010:c04::234])
  by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1Zyvo4-0000g3-AK
- for ath10k@lists.infradead.org; Wed, 18 Nov 2015 06:01:24 +0000
-Received: by lbbcs9 with SMTP id cs9so18394348lbb.1
- for <ath10k@lists.infradead.org>; Tue, 17 Nov 2015 21:59:31 -0800 (PST)
+ id 1ZyvoB-0000g6-OS
+ for ath10k@lists.infradead.org; Wed, 18 Nov 2015 06:01:32 +0000
+Received: by lbbsy6 with SMTP id sy6so18359008lbb.2
+ for <ath10k@lists.infradead.org>; Tue, 17 Nov 2015 21:59:39 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v3 2/9] ath10k: rename function to adhere to naming convention
-Date: Wed, 18 Nov 2015 06:59:16 +0100
-Message-Id: <1447826363-16818-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3 8/9] ath10k: replace vdev_id and tid in skb cb
+Date: Wed, 18 Nov 2015 06:59:22 +0100
+Message-Id: <1447826363-16818-9-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
 References: <87mvuj585b.fsf@kamboji.qca.qualcomm.com>
  <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
@@ -28,41 +28,225 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-All functions should have ath10k_{filename}_
-prefixes.
+This prepares the driver for future ieee80211_txq
+and wake_tx_queue() support.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index ab2e5677f771..be323ad537ad 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3149,8 +3149,10 @@ static u8 ath10k_tx_h_get_vdev_id(struct ath10k *ar, struct ieee80211_vif *vif)
+Notes:
+    v2:
+     * fix parsing eth frame as 802.11
+
+ drivers/net/wireless/ath/ath10k/core.h   |  4 ++--
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 36 +++++++++++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/mac.c    | 40 +++++---------------------------
+ drivers/net/wireless/ath/ath10k/wmi.c    | 10 +++++++-
+ 4 files changed, 50 insertions(+), 40 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 6bbd95477325..75dee79ec206 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -86,16 +86,16 @@ enum ath10k_skb_flags {
+ 	ATH10K_SKB_F_DTIM_ZERO = BIT(1),
+ 	ATH10K_SKB_F_DELIVER_CAB = BIT(2),
+ 	ATH10K_SKB_F_MGMT = BIT(3),
++	ATH10K_SKB_F_QOS = BIT(4),
+ };
+ 
+ struct ath10k_skb_cb {
+ 	dma_addr_t paddr;
+ 	u8 flags;
+ 	u8 eid;
+-	u8 vdev_id;
++	struct ieee80211_vif *vif;
+ 
+ 	struct {
+-		u8 tid;
+ 		struct ath10k_htt_txbuf *txbuf;
+ 		u32 txbuf_paddr;
+ 	} __packed htt;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index c955c6b6ea9d..23e047b0aca3 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -439,6 +439,35 @@ int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
+ 	return 0;
  }
  
- static enum ath10k_hw_txrx_mode
--ath10k_tx_h_get_txmode(struct ath10k *ar, struct ieee80211_vif *vif,
--		       struct ieee80211_sta *sta, struct sk_buff *skb)
-+ath10k_mac_tx_h_get_txmode(struct ath10k *ar,
-+			   struct ieee80211_vif *vif,
-+			   struct ieee80211_sta *sta,
-+			   struct sk_buff *skb)
++static u8 ath10k_htt_tx_get_vdev_id(struct ath10k *ar, struct sk_buff *skb)
++{
++	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(skb);
++	struct ath10k_vif *arvif = (void *)cb->vif->drv_priv;
++
++	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN)
++		return ar->scan.vdev_id;
++	else if (cb->vif)
++		return arvif->vdev_id;
++	else if (ar->monitor_started)
++		return ar->monitor_vdev_id;
++	else
++		return 0;
++}
++
++static u8 ath10k_htt_tx_get_tid(struct sk_buff *skb, bool is_eth)
++{
++	struct ieee80211_hdr *hdr = (void *)skb->data;
++	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(skb);
++
++	if (!is_eth && ieee80211_is_mgmt(hdr->frame_control))
++		return HTT_DATA_TX_EXT_TID_MGMT;
++	else if (cb->flags & ATH10K_SKB_F_QOS)
++		return skb->priority % IEEE80211_QOS_CTL_TID_MASK;
++	else
++		return HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
++}
++
+ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
  {
- 	const struct ieee80211_hdr *hdr = (void *)skb->data;
- 	__le16 fc = hdr->frame_control;
-@@ -3664,7 +3666,8 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
- 	ATH10K_SKB_CB(skb)->htt.nohwcrypt = !ath10k_tx_h_use_hwcrypto(vif, skb);
- 	ATH10K_SKB_CB(skb)->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
--	ATH10K_SKB_CB(skb)->txmode = ath10k_tx_h_get_txmode(ar, vif, sta, skb);
-+	ATH10K_SKB_CB(skb)->txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta,
-+								skb);
+ 	struct ath10k *ar = htt->ar;
+@@ -446,7 +475,7 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	struct sk_buff *txdesc = NULL;
+ 	struct htt_cmd *cmd;
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
+-	u8 vdev_id = skb_cb->vdev_id;
++	u8 vdev_id = ath10k_htt_tx_get_vdev_id(ar, msdu);
+ 	int len = 0;
+ 	int msdu_id = -1;
+ 	int res;
+@@ -542,8 +571,9 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
+ 	struct ath10k_hif_sg_item sg_items[2];
+ 	struct htt_data_tx_desc_frag *frags;
+-	u8 vdev_id = skb_cb->vdev_id;
+-	u8 tid = skb_cb->htt.tid;
++	bool is_eth = (txmode == ATH10K_HW_TXRX_ETHERNET);
++	u8 vdev_id = ath10k_htt_tx_get_vdev_id(ar, msdu);
++	u8 tid = ath10k_htt_tx_get_tid(msdu, is_eth);
+ 	int prefetch_len;
+ 	int res;
+ 	u8 flags0 = 0;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index fd36200e5396..cb95314b8058 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3122,32 +3122,6 @@ void ath10k_mac_handle_tx_pause_vdev(struct ath10k *ar, u32 vdev_id,
+ 	spin_unlock_bh(&ar->htt.tx_lock);
+ }
  
- 	switch (ATH10K_SKB_CB(skb)->txmode) {
+-static u8 ath10k_tx_h_get_tid(struct ieee80211_hdr *hdr)
+-{
+-	if (ieee80211_is_mgmt(hdr->frame_control))
+-		return HTT_DATA_TX_EXT_TID_MGMT;
+-
+-	if (!ieee80211_is_data_qos(hdr->frame_control))
+-		return HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
+-
+-	if (!is_unicast_ether_addr(ieee80211_get_DA(hdr)))
+-		return HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
+-
+-	return ieee80211_get_qos_ctl(hdr)[0] & IEEE80211_QOS_CTL_TID_MASK;
+-}
+-
+-static u8 ath10k_tx_h_get_vdev_id(struct ath10k *ar, struct ieee80211_vif *vif)
+-{
+-	if (vif)
+-		return ath10k_vif_to_arvif(vif)->vdev_id;
+-
+-	if (ar->monitor_started)
+-		return ar->monitor_vdev_id;
+-
+-	ath10k_warn(ar, "failed to resolve vdev id\n");
+-	return 0;
+-}
+-
+ static enum ath10k_hw_txrx_mode
+ ath10k_mac_tx_h_get_txmode(struct ath10k *ar,
+ 			   struct ieee80211_vif *vif,
+@@ -3244,7 +3218,7 @@ static void ath10k_tx_h_nwifi(struct ieee80211_hw *hw, struct sk_buff *skb)
+ 	 */
+ 	hdr = (void *)skb->data;
+ 	if (ieee80211_is_qos_nullfunc(hdr->frame_control))
+-		cb->htt.tid = HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
++		cb->flags &= ~ATH10K_SKB_F_QOS;
+ 
+ 	hdr->frame_control &= ~__cpu_to_le16(IEEE80211_STYPE_QOS_DATA);
+ }
+@@ -3413,9 +3387,9 @@ void ath10k_offchan_tx_work(struct work_struct *work)
+ 
+ 		hdr = (struct ieee80211_hdr *)skb->data;
+ 		peer_addr = ieee80211_get_DA(hdr);
+-		vdev_id = ATH10K_SKB_CB(skb)->vdev_id;
+ 
+ 		spin_lock_bh(&ar->data_lock);
++		vdev_id = ar->scan.vdev_id;
+ 		peer = ath10k_peer_find(ar, vdev_id, peer_addr);
+ 		spin_unlock_bh(&ar->data_lock);
+ 
+@@ -3692,8 +3666,10 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 	if (ieee80211_is_mgmt(hdr->frame_control))
+ 		skb_cb->flags |= ATH10K_SKB_F_MGMT;
+ 
+-	skb_cb->htt.tid = ath10k_tx_h_get_tid(hdr);
+-	skb_cb->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
++	if (ieee80211_is_data_qos(hdr->frame_control))
++		skb_cb->flags |= ATH10K_SKB_F_QOS;
++
++	skb_cb->vif = vif;
+ 
+ 	switch (txmode) {
  	case ATH10K_HW_TXRX_MGMT:
+@@ -3714,10 +3690,6 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 	}
+ 
+ 	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
+-		spin_lock_bh(&ar->data_lock);
+-		ATH10K_SKB_CB(skb)->vdev_id = ar->scan.vdev_id;
+-		spin_unlock_bh(&ar->data_lock);
+-
+ 		if (!ath10k_mac_tx_frm_has_freq(ar)) {
+ 			ath10k_dbg(ar, ATH10K_DBG_MAC, "queued offchannel skb %p\n",
+ 				   skb);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 6028a598c199..2a44d63a03cd 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1814,16 +1814,24 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
+ static struct sk_buff *
+ ath10k_wmi_op_gen_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
+ {
++	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(msdu);
++	struct ath10k_vif *arvif = (void *)cb->vif->drv_priv;
+ 	struct wmi_mgmt_tx_cmd *cmd;
+ 	struct ieee80211_hdr *hdr;
+ 	struct sk_buff *skb;
+ 	int len;
++	u32 vdev_id;
+ 	u32 buf_len = msdu->len;
+ 	u16 fc;
+ 
+ 	hdr = (struct ieee80211_hdr *)msdu->data;
+ 	fc = le16_to_cpu(hdr->frame_control);
+ 
++	if (cb->vif)
++		vdev_id = arvif->vdev_id;
++	else
++		vdev_id = 0;
++
+ 	if (WARN_ON_ONCE(!ieee80211_is_mgmt(hdr->frame_control)))
+ 		return ERR_PTR(-EINVAL);
+ 
+@@ -1845,7 +1853,7 @@ ath10k_wmi_op_gen_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
+ 
+ 	cmd = (struct wmi_mgmt_tx_cmd *)skb->data;
+ 
+-	cmd->hdr.vdev_id = __cpu_to_le32(ATH10K_SKB_CB(msdu)->vdev_id);
++	cmd->hdr.vdev_id = __cpu_to_le32(vdev_id);
+ 	cmd->hdr.tx_rate = 0;
+ 	cmd->hdr.tx_power = 0;
+ 	cmd->hdr.buf_len = __cpu_to_le32(buf_len);
 -- 
 2.1.4
 
