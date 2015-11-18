@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yk0-x22a.google.com ([2607:f8b0:4002:c07::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyssG-0001JF-Fw
- for ath10k@lists.infradead.org; Wed, 18 Nov 2015 02:53:33 +0000
-Received: by ykdr82 with SMTP id r82so41948256ykd.3
- for <ath10k@lists.infradead.org>; Tue, 17 Nov 2015 18:53:11 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CADLC3L3JU0iCPMNttyj7J24JkttiuCatd-VMP-yH1Yfxy7HsLg@mail.gmail.com>
-References: <CADLC3L1xeetwWLn1FbSyzvFYHvPw2z8C3OmQ-w9Bi0U=iLqZiA@mail.gmail.com>
- <5640CE0E.8040206@candelatech.com>
- <CADLC3L3JU0iCPMNttyj7J24JkttiuCatd-VMP-yH1Yfxy7HsLg@mail.gmail.com>
-Date: Tue, 17 Nov 2015 20:53:11 -0600
-Message-ID: <CADLC3L2=YOp8tJr03rHgQC4CqzdyGhCacqDK7kWYGt2gFsy24Q@mail.gmail.com>
-Subject: Re: ath10k AP "failed to delete peer" errors when using Nexus 5X
-From: Robert Hancock <hancockrwd@gmail.com>
+Received: from mail-lf0-x234.google.com ([2a00:1450:4010:c07::234])
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1Zyvmh-0000YX-PM
+ for ath10k@lists.infradead.org; Wed, 18 Nov 2015 06:00:00 +0000
+Received: by lffu14 with SMTP id u14so19584726lff.1
+ for <ath10k@lists.infradead.org>; Tue, 17 Nov 2015 21:59:37 -0800 (PST)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v3 6/9] ath10k: pack up flags in skb_cb
+Date: Wed, 18 Nov 2015 06:59:20 +0100
+Message-Id: <1447826363-16818-7-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
+References: <87mvuj585b.fsf@kamboji.qca.qualcomm.com>
+ <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,129 +20,155 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-On Wed, Nov 11, 2015 at 5:24 PM, Robert Hancock <hancockrwd@gmail.com> wrote:
-> On Mon, Nov 9, 2015 at 10:47 AM, Ben Greear <greearb@candelatech.com> wrote:
->> On 11/08/2015 10:02 PM, Robert Hancock wrote:
->>>
->>> I'm using OpenWRT on a TP-Link Archer C7, currently running
->>> development rev 47397 which is kernel 4.1.1 and compat-wireless
->>> 2015-10-26. Ever since I got a new Nexus 5X phone, it seems like
->>> periodically (once a day or so), the 5GHz wireless (using ath10k)
->>> craps out and I get a bunch of errors in the kernel log on the router.
->>> I have to reboot the router to get the 5GHz working again. Full kernel
->>> log from one of these failures is below. Any thoughts on what is going
->>> on here?
->>>
->>> There are reports of a newer Android build (which I don't have yet)
->>> which supposedly has some wireless fixes on the Nexus 5X, but I'm not
->>> sure what it could be doing that would be causing the router to crap
->>> out like this.
->>
->>
->>> [ 2178.931641] ---[ end trace 6751cc6390d26848 ]---
->>> [ 2181.926812] ath10k_pci 0000:01:00.0: failed to delete peer
->>> 8c:3a:e3:15:29:f3 for vdev 0: -11
->>> [ 2184.946721] ath10k_pci 0000:01:00.0: failed to set beacon mode for
->>> vdev 0: -11
->>> [ 2187.946538] ath10k_pci 0000:01:00.0: failed to set dtim period for
->>> vdev 0: -11
->>> [ 2190.986373] ath10k_pci 0000:01:00.0: failed to recalculate rts/cts
->>> prot for vdev 0: -11
->>> [ 2193.986210] ath10k_pci 0000:01:00.0: failed to set protection mode
->>> 0 on vdev 0: -11
->>> [ 2196.986045] ath10k_pci 0000:01:00.0: failed to set preamble for vdev 0:
->>> -11
->>
->>
->> Usually this means firmware has stopped processing WMI messages.
->>
->> You might try different firmware versions in hopes one of them fixes the
->> problem.
->>
->> Thanks,
->> Ben
->
-> I tried switching to the 10.2.4.70.10-2 firmware version, which seems
-> to be the latest version I can find for QCA988X. It seemed like it was
-> working better (though it's hard to say as it happens sporadically),
-> but then the failure happened again. Are there any newer versions than
-> that one, or any other ideas?
->
-> [   48.612363] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
-> 0x043202ff sub 0000:0000) fw 10.2.4.70.10-2 fwapi 5 bdapi 1 htt-ver
-> 2.1 wmi-op 5 htt-op 2 cal file max-sta 128 raw 0 hwcrypto 1 features
-> no-p2p,raw-mode
->
-> ..
->
-> [72071.328152] ath10k_pci 0000:01:00.0: failed to delete peer
-> 64:bc:0c:46:e4:55 for vdev 0: -145
-> [72071.336819] ------------[ cut here ]------------
-> [72071.341644] WARNING: CPU: 0 PID: 2189 at
-> /home/rob/openwrt/build_dir/target-mips_34kc_musl-1.1.11/linux-ar71xx_generic/compat-wireless-2015-10-26/net/mac80211/sta_info.c:918
-> sta_set_sinfo+0x938/0x9d0 [mac80211]()
-> [72071.360803] Modules linked in: pppoe ppp_async iptable_nat ath9k
-> pppox ppp_generic nf_nat_ipv4 nf_conntrack_ipv6 nf_conntrack_ipv4
-> ipt_REJECT ipt_MASQUERADE ath9k_common xt_time xt_tcpudp xt_tcpmss
-> xt_string xt_statistic xt_state xt_recent xt_nat xt_multiport xt_mark
-> xt_mac xt_limit xt_length xt_id xt_hl xt_helper xt_ecn xt_dscp
-> xt_conntrack xt_connmark xt_connlimit xt_connbytes xt_comment
-> xt_TCPMSS xt_REDIRECT xt_LOG xt_HL xt_DSCP xt_CT xt_CLASSIFY usblp
-> ts_kmp ts_fsm ts_bm slhc nf_reject_ipv4 nf_nat_redirect
-> nf_nat_masquerade_ipv4 nf_nat_ftp nf_nat nf_log_ipv4 nf_defrag_ipv6
-> nf_defrag_ipv4 nf_conntrack_rtcache nf_conntrack_ftp iptable_raw
-> iptable_mangle iptable_filter ipt_ECN ip_tables crc_ccitt ath9k_hw
-> em_cmp em_nbyte sch_teql sch_dsmark sch_tbf sch_pie act_ipt sch_gred
-> sch_htb cls_basic sch_prio
-> [72071.433472]  em_meta act_police em_text sch_codel sch_fq sch_sfq
-> sch_red act_connmark nf_conntrack act_skbedit act_mirred em_u32
-> cls_u32 cls_tcindex cls_flow cls_route cls_fw sch_hfsc sch_ingress
-> ath10k_pci ath10k_core ath mac80211 cfg80211 compat ledtrig_usbdev
-> xt_set ip_set_list_set ip_set_hash_netiface ip_set_hash_netport
-> ip_set_hash_netnet ip_set_hash_net ip_set_hash_netportnet
-> ip_set_hash_mac ip_set_hash_ipportnet ip_set_hash_ipportip
-> ip_set_hash_ipport ip_set_hash_ipmark ip_set_hash_ip
-> ip_set_bitmap_port ip_set_bitmap_ipmac ip_set_bitmap_ip ip_set
-> nfnetlink ip6t_REJECT nf_reject_ipv6 nf_log_ipv6 nf_log_common
-> ip6table_raw ip6table_mangle ip6table_filter ip6_tables x_tables msdos
-> ifb sit tunnel4 ip_tunnel vfat fat usb_storage ohci_platform ohci_hcd
-> ehci_platform ehci_hcd sd_mod scsi_mod gpio_button_hotplug
-> [72071.505606]  ext4 jbd2 mbcache usbcore nls_base usb_common crc16 crypto_hash
-> [72071.511521] CPU: 0 PID: 2189 Comm: hostapd Not tainted 4.1.11 #2
-> [72071.517609] Stack : 803e42d2 00000034 00000000 00000001 8033cd38
-> 80388723 878f6ab8 0000088d
->       803e352c 00000000 00000004 00000008 00000000 800a5d90 00000003 803420ac
->       00000396 00000000 803405c0 86a317e4 00000000 800a4418 803e42d2 000000c8
->       00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
->       00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
->       ...
-> [72071.554023] Call Trace:
-> [72071.556520] [<80072180>] show_stack+0x50/0x84
-> [72071.560964] [<80081a48>] warn_slowpath_common+0xa0/0xd0
-> [72071.566297] [<80081b00>] warn_slowpath_null+0x18/0x24
-> [72071.571548] [<873869ec>] sta_set_sinfo+0x938/0x9d0 [mac80211]
->
-> [72071.578995] ---[ end trace 8a40faa59ba0f534 ]---
-> [72387.104598] ath10k_pci 0000:01:00.0: failed to install key for vdev
-> 0 peer 8c:3a:e3:15:29:f3: -145
-> [72387.113708] wlan0: failed to remove key (0, 8c:3a:e3:15:29:f3) from
-> hardware (-145)
-> [72387.129423] ath10k_pci 0000:01:00.0: cipher 0 is not supported
-> [72387.135418] ath10k_pci 0000:01:00.0: failed to remove peer wep key 0: -122
-> [72387.142395] ath10k_pci 0000:01:00.0: failed to clear all peer wep
-> keys for vdev 0: -122
-> [72387.150541] ath10k_pci 0000:01:00.0: failed to disassociate
-> station: 8c:3a:e3:15:29:f3 vdev 0: -122
+It was wasteful to have all the flags as separate
+bools.
 
-Just as an update, ath10k-firmware recently added a new 10.2.4.70.12-2
-firmware version for QCA988X, which seems to fix this problem.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h   | 13 +++++++------
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  4 ++--
+ drivers/net/wireless/ath/ath10k/mac.c    | 10 +++++++---
+ drivers/net/wireless/ath/ath10k/wmi.c    | 12 ++++++++----
+ 4 files changed, 24 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 804fd2e5bc38..6b9b37329621 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -81,22 +81,23 @@ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+ 	return "unknown";
+ }
+ 
++enum ath10k_skb_flags {
++	ATH10K_SKB_F_NO_HWCRYPT = BIT(0),
++	ATH10K_SKB_F_DTIM_ZERO = BIT(1),
++	ATH10K_SKB_F_DELIVER_CAB = BIT(2),
++};
++
+ struct ath10k_skb_cb {
+ 	dma_addr_t paddr;
++	u8 flags;
+ 	u8 eid;
+ 	u8 vdev_id;
+ 
+ 	struct {
+ 		u8 tid;
+-		bool nohwcrypt;
+ 		struct ath10k_htt_txbuf *txbuf;
+ 		u32 txbuf_paddr;
+ 	} __packed htt;
+-
+-	struct {
+-		bool dtim_zero;
+-		bool deliver_cab;
+-	} bcn;
+ } __packed;
+ 
+ struct ath10k_skb_rxcb {
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index a7d8798b2f37..c955c6b6ea9d 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -586,7 +586,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
+ 	     ieee80211_is_disassoc(hdr->frame_control)) &&
+ 	     ieee80211_has_protected(hdr->frame_control)) {
+ 		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+-	} else if (!skb_cb->htt.nohwcrypt &&
++	} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
+ 		   txmode == ATH10K_HW_TXRX_RAW &&
+ 		   ieee80211_has_protected(hdr->frame_control)) {
+ 		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+@@ -666,7 +666,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
+ 			prefetch_len);
+ 	skb_cb->htt.txbuf->htc_hdr.flags = 0;
+ 
+-	if (skb_cb->htt.nohwcrypt)
++	if (skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT)
+ 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
+ 
+ 	flags1 |= SM((u16)vdev_id, HTT_DATA_TX_DESC_FLAGS1_VDEV_ID);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 0ca5d5bea509..38c241596965 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3672,6 +3672,7 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 		      struct sk_buff *skb)
+ {
+ 	struct ath10k *ar = hw->priv;
++	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+ 	struct ieee80211_vif *vif = info->control.vif;
+ 	struct ieee80211_sta *sta = control->sta;
+@@ -3684,9 +3685,12 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 
+ 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
+ 
+-	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
+-	ATH10K_SKB_CB(skb)->htt.nohwcrypt = !ath10k_tx_h_use_hwcrypto(vif, skb);
+-	ATH10K_SKB_CB(skb)->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
++	skb_cb->flags = 0;
++	if (!ath10k_tx_h_use_hwcrypto(vif, skb))
++		skb_cb->flags |= ATH10K_SKB_F_NO_HWCRYPT;
++
++	skb_cb->htt.tid = ath10k_tx_h_get_tid(hdr);
++	skb_cb->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
+ 
+ 	switch (txmode) {
+ 	case ATH10K_HW_TXRX_MGMT:
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 902107934edd..6028a598c199 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1715,6 +1715,8 @@ static void ath10k_wmi_tx_beacon_nowait(struct ath10k_vif *arvif)
+ 	struct ath10k *ar = arvif->ar;
+ 	struct ath10k_skb_cb *cb;
+ 	struct sk_buff *bcn;
++	bool dtim_zero;
++	bool deliver_cab;
+ 	int ret;
+ 
+ 	spin_lock_bh(&ar->data_lock);
+@@ -1734,12 +1736,14 @@ static void ath10k_wmi_tx_beacon_nowait(struct ath10k_vif *arvif)
+ 		arvif->beacon_state = ATH10K_BEACON_SENDING;
+ 		spin_unlock_bh(&ar->data_lock);
+ 
++		dtim_zero = !!(cb->flags & ATH10K_SKB_F_DTIM_ZERO);
++		deliver_cab = !!(cb->flags & ATH10K_SKB_F_DELIVER_CAB);
+ 		ret = ath10k_wmi_beacon_send_ref_nowait(arvif->ar,
+ 							arvif->vdev_id,
+ 							bcn->data, bcn->len,
+ 							cb->paddr,
+-							cb->bcn.dtim_zero,
+-							cb->bcn.deliver_cab);
++							dtim_zero,
++							deliver_cab);
+ 
+ 		spin_lock_bh(&ar->data_lock);
+ 
+@@ -3157,10 +3161,10 @@ static void ath10k_wmi_update_tim(struct ath10k *ar,
+ 	memcpy(tim->virtual_map, arvif->u.ap.tim_bitmap, pvm_len);
+ 
+ 	if (tim->dtim_count == 0) {
+-		ATH10K_SKB_CB(bcn)->bcn.dtim_zero = true;
++		ATH10K_SKB_CB(bcn)->flags |= ATH10K_SKB_F_DTIM_ZERO;
+ 
+ 		if (__le32_to_cpu(tim_info->tim_mcast) == 1)
+-			ATH10K_SKB_CB(bcn)->bcn.deliver_cab = true;
++			ATH10K_SKB_CB(bcn)->flags |= ATH10K_SKB_F_DELIVER_CAB;
+ 	}
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_MGMT, "dtim %d/%d mcast %d pvmlen %d\n",
+-- 
+2.1.4
+
 
 _______________________________________________
 ath10k mailing list
