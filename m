@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
+Received: from mail-lb0-x22b.google.com ([2a00:1450:4010:c04::22b])
  by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1Zyvo6-0000g4-Es
- for ath10k@lists.infradead.org; Wed, 18 Nov 2015 06:01:27 +0000
-Received: by lbbsy6 with SMTP id sy6so18358041lbb.2
- for <ath10k@lists.infradead.org>; Tue, 17 Nov 2015 21:59:32 -0800 (PST)
+ id 1Zyvo4-0000g3-AK
+ for ath10k@lists.infradead.org; Wed, 18 Nov 2015 06:01:24 +0000
+Received: by lbbcs9 with SMTP id cs9so18394348lbb.1
+ for <ath10k@lists.infradead.org>; Tue, 17 Nov 2015 21:59:31 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v3 3/9] ath10k: remove txmode from skb_cb
-Date: Wed, 18 Nov 2015 06:59:17 +0100
-Message-Id: <1447826363-16818-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3 2/9] ath10k: rename function to adhere to naming convention
+Date: Wed, 18 Nov 2015 06:59:16 +0100
+Message-Id: <1447826363-16818-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
 References: <87mvuj585b.fsf@kamboji.qca.qualcomm.com>
  <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
@@ -28,192 +28,41 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-It was wasteful to keep it in the struct because
-it can be passed as function argument down the tx
-path.
+All functions should have ath10k_{filename}_
+prefixes.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h   |  1 -
- drivers/net/wireless/ath/ath10k/htt.h    |  4 +++-
- drivers/net/wireless/ath/ath10k/htt_tx.c |  9 +++----
- drivers/net/wireless/ath/ath10k/mac.c    | 40 ++++++++++++++++++++++++--------
- 4 files changed, 38 insertions(+), 16 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index b91f69286a4f..0228000ecf50 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -85,7 +85,6 @@ struct ath10k_skb_cb {
- 	dma_addr_t paddr;
- 	u8 eid;
- 	u8 vdev_id;
--	enum ath10k_hw_txrx_mode txmode;
- 
- 	struct {
- 		u8 tid;
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 2b87ed6458db..47ca048feaf0 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1602,7 +1602,9 @@ void __ath10k_htt_tx_dec_pending(struct ath10k_htt *htt, bool limit_mgmt_desc);
- int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb);
- void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
- int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *);
--int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *);
-+int ath10k_htt_tx(struct ath10k_htt *htt,
-+		  enum ath10k_hw_txrx_mode txmode,
-+		  struct sk_buff *msdu);
- void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
- 					     struct sk_buff *skb);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index b57335d47c78..f6fb4f131542 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -532,7 +532,8 @@ err:
- 	return res;
- }
- 
--int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
-+int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
-+		  struct sk_buff *msdu)
- {
- 	struct ath10k *ar = htt->ar;
- 	struct device *dev = ar->dev;
-@@ -584,7 +585,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	     ieee80211_has_protected(hdr->frame_control)) {
- 		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
- 	} else if (!skb_cb->htt.nohwcrypt &&
--		   skb_cb->txmode == ATH10K_HW_TXRX_RAW &&
-+		   txmode == ATH10K_HW_TXRX_RAW &&
- 		   ieee80211_has_protected(hdr->frame_control)) {
- 		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
- 	}
-@@ -597,7 +598,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 		goto err_free_msdu_id;
- 	}
- 
--	switch (skb_cb->txmode) {
-+	switch (txmode) {
- 	case ATH10K_HW_TXRX_RAW:
- 	case ATH10K_HW_TXRX_NATIVE_WIFI:
- 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
-@@ -626,7 +627,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 
- 			frags_paddr = skb_cb->htt.txbuf_paddr;
- 		}
--		flags0 |= SM(skb_cb->txmode, HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+		flags0 |= SM(txmode, HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
- 		break;
- 	case ATH10K_HW_TXRX_MGMT:
- 		flags0 |= SM(ATH10K_HW_TXRX_MGMT,
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index be323ad537ad..4d3b8dc8e5de 100644
+index ab2e5677f771..be323ad537ad 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3335,24 +3335,24 @@ unlock:
- 	return ret;
+@@ -3149,8 +3149,10 @@ static u8 ath10k_tx_h_get_vdev_id(struct ath10k *ar, struct ieee80211_vif *vif)
  }
  
--static void ath10k_mac_tx(struct ath10k *ar, struct sk_buff *skb)
-+static void ath10k_mac_tx(struct ath10k *ar, enum ath10k_hw_txrx_mode txmode,
-+			  struct sk_buff *skb)
+ static enum ath10k_hw_txrx_mode
+-ath10k_tx_h_get_txmode(struct ath10k *ar, struct ieee80211_vif *vif,
+-		       struct ieee80211_sta *sta, struct sk_buff *skb)
++ath10k_mac_tx_h_get_txmode(struct ath10k *ar,
++			   struct ieee80211_vif *vif,
++			   struct ieee80211_sta *sta,
++			   struct sk_buff *skb)
  {
--	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(skb);
- 	struct ath10k_htt *htt = &ar->htt;
- 	int ret = 0;
- 
--	switch (cb->txmode) {
-+	switch (txmode) {
- 	case ATH10K_HW_TXRX_RAW:
- 	case ATH10K_HW_TXRX_NATIVE_WIFI:
- 	case ATH10K_HW_TXRX_ETHERNET:
--		ret = ath10k_htt_tx(htt, skb);
-+		ret = ath10k_htt_tx(htt, txmode, skb);
- 		break;
- 	case ATH10K_HW_TXRX_MGMT:
- 		if (test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
- 			     ar->fw_features))
- 			ret = ath10k_mac_tx_wmi_mgmt(ar, skb);
- 		else if (ar->htt.target_version_major >= 3)
--			ret = ath10k_htt_tx(htt, skb);
-+			ret = ath10k_htt_tx(htt, txmode, skb);
- 		else
- 			ret = ath10k_htt_mgmt_tx(htt, skb);
- 		break;
-@@ -3382,9 +3382,13 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- {
- 	struct ath10k *ar = container_of(work, struct ath10k, offchan_tx_work);
- 	struct ath10k_peer *peer;
-+	struct ath10k_vif *arvif;
- 	struct ieee80211_hdr *hdr;
-+	struct ieee80211_vif *vif;
-+	struct ieee80211_sta *sta;
- 	struct sk_buff *skb;
- 	const u8 *peer_addr;
-+	enum ath10k_hw_txrx_mode txmode;
- 	int vdev_id;
- 	int ret;
- 	unsigned long time_left;
-@@ -3434,7 +3438,22 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 		ar->offchan_tx_skb = skb;
- 		spin_unlock_bh(&ar->data_lock);
- 
--		ath10k_mac_tx(ar, skb);
-+		/* It's safe to access vif and sta - conf_mutex guarantees that
-+		 * sta_state() and remove_interface() are locked exclusively
-+		 * out wrt to this offchannel worker.
-+		 */
-+		arvif = ath10k_get_arvif(ar, vdev_id);
-+		if (arvif) {
-+			vif = arvif->vif;
-+			sta = ieee80211_find_sta(vif, peer_addr);
-+		} else {
-+			vif = NULL;
-+			sta = NULL;
-+		}
-+
-+		txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
-+
-+		ath10k_mac_tx(ar, txmode, skb);
- 
- 		time_left =
- 		wait_for_completion_timeout(&ar->offchan_tx_completed, 3 * HZ);
-@@ -3656,20 +3675,21 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 	struct ieee80211_vif *vif = info->control.vif;
- 	struct ieee80211_sta *sta = control->sta;
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
-+	enum ath10k_hw_txrx_mode txmode;
- 
- 	/* We should disable CCK RATE due to P2P */
- 	if (info->flags & IEEE80211_TX_CTL_NO_CCK_RATE)
- 		ath10k_dbg(ar, ATH10K_DBG_MAC, "IEEE80211_TX_CTL_NO_CCK_RATE\n");
- 
-+	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
-+
- 	ATH10K_SKB_CB(skb)->htt.is_offchan = false;
- 	ATH10K_SKB_CB(skb)->htt.freq = 0;
+ 	const struct ieee80211_hdr *hdr = (void *)skb->data;
+ 	__le16 fc = hdr->frame_control;
+@@ -3664,7 +3666,8 @@ static void ath10k_tx(struct ieee80211_hw *hw,
  	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
  	ATH10K_SKB_CB(skb)->htt.nohwcrypt = !ath10k_tx_h_use_hwcrypto(vif, skb);
  	ATH10K_SKB_CB(skb)->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
--	ATH10K_SKB_CB(skb)->txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta,
--								skb);
+-	ATH10K_SKB_CB(skb)->txmode = ath10k_tx_h_get_txmode(ar, vif, sta, skb);
++	ATH10K_SKB_CB(skb)->txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta,
++								skb);
  
--	switch (ATH10K_SKB_CB(skb)->txmode) {
-+	switch (txmode) {
+ 	switch (ATH10K_SKB_CB(skb)->txmode) {
  	case ATH10K_HW_TXRX_MGMT:
- 	case ATH10K_HW_TXRX_NATIVE_WIFI:
- 		ath10k_tx_h_nwifi(hw, skb);
-@@ -3706,7 +3726,7 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 		}
- 	}
- 
--	ath10k_mac_tx(ar, skb);
-+	ath10k_mac_tx(ar, txmode, skb);
- }
- 
- /* Must not be called with conf_mutex held as workers can use that also. */
 -- 
 2.1.4
 
