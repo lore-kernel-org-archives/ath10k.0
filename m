@@ -2,15 +2,15 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from nm.newmedia-net.de ([217.113.179.122]
  helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzRF2-0004qW-Lb
- for ath10k@lists.infradead.org; Thu, 19 Nov 2015 15:35:21 +0000
+ id 1ZzRFb-00064E-91
+ for ath10k@lists.infradead.org; Thu, 19 Nov 2015 15:35:56 +0000
 References: <87mvuj585b.fsf@kamboji.qca.qualcomm.com>
  <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
  <1447826363-16818-10-git-send-email-michal.kazior@tieto.com>
  <564DE65C.9030407@dd-wrt.com> <564DEBBE.1040308@candelatech.com>
 From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <564DEC25.1030401@dd-wrt.com>
-Date: Thu, 19 Nov 2015 16:35:01 +0100
+Message-ID: <564DEC48.7050502@dd-wrt.com>
+Date: Thu, 19 Nov 2015 16:35:36 +0100
 MIME-Version: 1.0
 In-Reply-To: <564DEBBE.1040308@candelatech.com>
 Subject: Re: QCA998X not working at all
@@ -47,8 +47,7 @@ Am 19.11.2015 um 16:33 schrieb Ben Greear:
 >> on it
 >
 > What kernel, what firmware, what board.bin are you using?
-plain ath10k with kernel 3.18.23. standard firmware-5 from ath10k 
-github, same for board.
+ath10k is the latest used in openwrt. so 23.10. if i remember correct
 >
 > Thanks,
 > Ben
