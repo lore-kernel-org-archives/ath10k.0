@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zz65Y-00007b-I2
- for ath10k@lists.infradead.org; Wed, 18 Nov 2015 17:00:09 +0000
-Subject: Re: TX-Power limits for ath10k based card on Linux 3.18.24 (offlist)
-References: <018201d12175$a4604d80$ed20e880$@tranzeo.com>
- <898991972.6790146.1447837274772.JavaMail.yahoo@mail.yahoo.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <564CAE82.3090908@candelatech.com>
-Date: Wed, 18 Nov 2015 08:59:46 -0800
+Received: from mail-yk0-x232.google.com ([2607:f8b0:4002:c07::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZzMAZ-00039O-4N
+ for ath10k@lists.infradead.org; Thu, 19 Nov 2015 10:10:25 +0000
+Received: by ykfs79 with SMTP id s79so102922328ykf.1
+ for <ath10k@lists.infradead.org>; Thu, 19 Nov 2015 02:09:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <898991972.6790146.1447837274772.JavaMail.yahoo@mail.yahoo.com>
+In-Reply-To: <trinity-4c2e549c-06f4-4928-89eb-6ec669ff3681-1447860514624@3capp-gmx-bs61>
+References: <trinity-4c2e549c-06f4-4928-89eb-6ec669ff3681-1447860514624@3capp-gmx-bs61>
+Date: Thu, 19 Nov 2015 11:09:57 +0100
+Message-ID: <CACKGw+Fw=9EZAM1SxWcF612s=OePH0sKPc7fUywjJ=6r9yVovw@mail.gmail.com>
+Subject: Re: QCA6174 hw2.1 Firmware crash when connecting to a 5GHz network
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,171 +20,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joerg Pommnitz <pommnitz@yahoo.com>, Michael Rex <mrex@tranzeo.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: =?UTF-8?B?J01pa2UgSmFlY2tlcicg4oCO4oCO?= <jaecker@kohlstaedt.de>, Michael Schaefer <schaeferm@iabg.de>
+To: Roman Bange <mofasofa123@gmx.de>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On 11/18/2015 01:01 AM, Joerg Pommnitz wrote:
-> Michael, Ben,
-> thanks for the illuminating answers. From Michaels latest reply I gather that the hardware is actually capable of transmitting with full power on a single chain/antenna, but that the current firmware or driver limits the tx power on a single chain in a way that makes sure that the combined tx power of all available chains is within the regulatory limits. Is this correct?
-> What would it take to enable full tx power for a single chain?
-
-My firmware should at least ask the hardware to transmit at full requested power
-on a single chain when using legacy rates (or 1x1 HT/VHT rates).
-
-I think you need to test with fixed rates so that you know what
-rate you are sending, and make sure you are 99%+ duty cycle so that
-you can trust your measurement tools...
-
-Thanks,
-Ben
-
-
+On 18 November 2015 at 16:28, Roman Bange <mofasofa123@gmx.de> wrote:
+> Hey,
 >
->   -- Regards       Joerg
+> im getting a firmware crash when i try to connect to a 5GHz network.
+> I tested the older firmware WLAN.RM.1.1-00141, which is now provided in linux-firmware, and SW_RM.1.1.1-00157-QCARMSWPZ-1, which is provided by you in ath10k-firmware.
 >
+> SW_RM.1.1.1-00157-QCARMSWPZ-1 didn't crash but i wasn't able to connect either.
 >
+> In addition i tested a solution that worked for me with the 4.1 Kernel where i extracted the firmware out of the windows driver (and can be found here (https://github.com/sumdog/ath10k-firmware). This solution didn't worked for me too.
 >
->> Michael Rex <mrex@tranzeo.com> schrieb am 21:22 Dienstag, 17.November 2015:
->>> Ben,
->>
->> That is definitely a good way to do it.  That seems to be the way lab
->> engineers have been configuring ART during the tests, but as you can see
->> from Compex datasheet, they are marketing the combined power of 2 and 3
->> chains, not making them the same regardless of chains. So they are marketing
->> it higher than their approved certificate says... I think nearly all MFG's
->> are doing that 'false' advertising.  Well, perhaps maybe not your
->> customer
->> who went through approvals...
->>
->> Since an individual chain is capable of full power, and companies want to
->> market and sell the highest power, I think it would be better (better
->> meaning max power achievable) to allow all 3 chains to go full power rather
->> than 1/3 power, but it would have to be done in time for the certification.
->> Not sure how complex the code would have to be to allow both methods of
->> target power setting, but you're kind of stuck for the people who already
->> approved on that driver behaviour.  It probably would increase power density
->> and other things and perhaps fail unless target power decreased to pass the
->> limit.
->>
->> Hard to say which way is better, but your method is the safer method of
->> passing approvals.  Given the expense of approvals, having it pass first try
->> might be more critical than squeezing out every dBm for the datasheet (tech
->> vs sales argument).
->>
->> Regards,
->> Mike
->>
->>
->> -----Original Message-----
->> From: Ben Greear [mailto:greearb@candelatech.com]
->> Sent: November 17, 2015 11:48 AM
->> To: Michael Rex; pommnitz@yahoo.com
->> Subject: Re: TX-Power limits for ath10k based card on Linux 3.18.24
->> (offlist)
->>
->> On 11/17/2015 11:20 AM, Michael Rex wrote:
->>>   Joerg,
->>>
->>>   The power at 11g is 15-19dBm, not 20dBm as shown in this screenshot.
->> There is no such thing as 2 chains power in 11g (they have diversity, which
->> means A port
->>>   or B port, there is no MIMO processing going on there to sum the powers).
->> That is a fallacy but they won't remove it from their datasheet.
->>>
->>>   The power will fluctuate, depending on the data rate used.  So when you
->> had less attenuation, it likely transmitted at 54M. When you added
->> attenuation, it
->>>   adapted to 6M and output 4dBm more.  You'd have to see the received
->> data
->> rate on the receiver, or test equipment that can detect it (I believe there
->> is still an
->>>   issue reporting data rate in Ath10k?).  The power for 48M is likely 16,
->> and 36M is likely 17dBm, so you kind of have to know what data rate is being
->> sent to
->>>   know how close to expected you really are. Otherwise, you could be 4dBm
->> off from your expectation, but its exactly as designed.
->>
->> You can force the data-frame transmit rate in ath10k firmware, and, at least
->> with my hacked kernel and firmware,
->> you can also force the management and broadcast/mcast frames to a specific
->> legacy rate.
->>
->> So, you should be able to force to 6Mbps, do a test, and then force to
->> 54Mbps, and do
->> another test to verify the tx-power at different rates.
->>
->> The change I made to my firmware regarding tx power is something like this:
->>
->> Original code took total-requested-power, and basically divided by 3 if NIC
->> was 3x3 capable.
->>
->> I changed it to set up tx-power based on the number of chains that a
->> particular rate would use, so
->> legacy rates got full power, 2x2 got 1/2 power, and 3x3 got 1/3 power per
->> chain.
->>
->> I'm not 100% sure this is correct, but it seems to work, and at least one
->> company using
->> my firmware passed regulatory testing with no problems related to tx
->> power...
->>
->> Thanks,
->> Ben
->>
->>
->>>
->>>   Power accuracy is also not guaranteed and commonly outside of +/- 2dBm.
->> However, Compex is /usually/ one of the good ones you can usually count on
->> within -2dBm
->>>   of accuracy (I wouldn't bet money on it, quality varies for all
->> manufacturers).  So it is important to have accurately calibrated test
->> setups with measured
->>>   losses of cables and connectors, as NOTHING (short of $$$ parts) is ever
->> their rating.  For example, ALL my mini circuits 20dBm attenuators are
->> closer to 21dBm
->>>   than 20dBm.  All the cheap splitters have more than 4.3dBm of insertion
->> loss where people often expect 3dBm.  The attenuators like Aeroflex that are
->> 6X the cost
->>>   will be like 10.1dBm and 20.2dBm on their respective ratings as a
->> comparison of quality, in my experience.
->>>
->>>   In an earlier previous gen 11n Compex card, when you put the card in 11g
->> mode and used left chain (their firmware using the closed Qualcomm fusion
->> driver), you
->>>   got full output power. When you used right chain, there was like 7dBm
->> less.  Compex couldn't explain it to me, we just had to note it and move on.
->> Who knows if
->>>   something like that is part of the problem.  It could have been an antenna
->> misconfiguration in their calibration.  Likely, they often just accept the
->> Qualcomm
->>>   reference platform for the most part.
->>>
->>>   How accurate is your test setup and measurements? If you don't have
->> tested
->> losses, you can probably only say +/- 3dBm on your numbers, or just relative
->>>   measurement testing.
->>>
->>>   Best regards,
->>>
->>>   Mike
->>>
->>
->>
->> --
->> Ben Greear <greearb@candelatech.com>
->> Candela Technologies Inc  http://www.candelatech.com
->>
->
+> I tested the firmware with 4.2.0-16 under Ubuntu, but experienced the same problem with the stable releases 4.2.6 and 4.3 too. I have not tested the 4.4-rc1 Kernel yet because its not compilable with the Ubuntu packages.
 
+The firmware crash you experience with "older" firmwares got fixed in
+the 000157.
+It's most likely related with wrong txbf capability advertisement,
+which your card (and firmware for it) does not support.
+
+May I ask what AP you test with?
+
+> I attached the related dmesg logs to this mail.
+
+When you use the 000157 firmware you can see there's a successful
+auth/assoc seq. but later on for some reason there's a local deauth
+triggered.
+
+[   58.966382] wlp3s0: authenticate with f0:7f:06:2a:44:2d
+[   59.008957] wlp3s0: send auth to f0:7f:06:2a:44:2d (try 1/3)
+[   59.009546] wlp3s0: authenticated
+[   59.014268] wlp3s0: associate with f0:7f:06:2a:44:2d (try 1/3)
+[   59.019139] wlp3s0: RX AssocResp from f0:7f:06:2a:44:2d (capab=0x11
+status=0 aid=6)
+[   59.022291] wlp3s0: associated
+[   59.022324] IPv6: ADDRCONF(NETDEV_CHANGE): wlp3s0: link becomes ready
+...
+[   62.130412] wlp3s0: deauthenticating from f0:7f:06:2a:44:2d by
+local choice (Reason: 3=DEAUTH_LEAVING)
+
+And these steps repeat in your log.
+
+Could you try to connect with the AP w/o the network manager (using
+wpa_supplicant / wpa_cli directly)?
+
+> Best regards,
+> Roman
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Bartosz
 
 _______________________________________________
 ath10k mailing list
