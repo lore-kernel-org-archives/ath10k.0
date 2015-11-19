@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm13-vm0.bullet.mail.bf1.yahoo.com ([98.139.213.79])
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzNrl-0004YA-Jh
- for ath10k@lists.infradead.org; Thu, 19 Nov 2015 11:59:06 +0000
-Date: Thu, 19 Nov 2015 11:58:38 +0000 (UTC)
-From: Joerg Pommnitz <pommnitz@yahoo.com>
-Message-ID: <1749993920.7465237.1447934318588.JavaMail.yahoo@mail.yahoo.com>
-Subject: Yesterdays kernel/git/kvalo/ath.git failes with COMPEX WLE600VX
+ id 1ZzQrI-0002Pm-WB
+ for ath10k@lists.infradead.org; Thu, 19 Nov 2015 15:10:49 +0000
+References: <87mvuj585b.fsf@kamboji.qca.qualcomm.com>
+ <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
+ <1447826363-16818-10-git-send-email-michal.kazior@tieto.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <564DE65C.9030407@dd-wrt.com>
+Date: Thu, 19 Nov 2015 16:10:20 +0100
 MIME-Version: 1.0
-References: <1749993920.7465237.1447934318588.JavaMail.yahoo.ref@mail.yahoo.com>
+In-Reply-To: <1447826363-16818-10-git-send-email-michal.kazior@tieto.com>
+Subject: QCA998X not working at all
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,35 +21,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: Joerg Pommnitz <pommnitz@yahoo.com>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-Hello all,
-Kalles current git tree fails to initialize my COMPEX WLE600VX. The kernel log shows
-[   16.373978] ath10k_pci 0000:05:00.0: failed to wake up device : -110
-[   16.374118] ath10k_pci: probe of 0000:05:00.0 failed with error -110
-
-
-For comparison, with 3.18.24 I get:
-[   16.083400] ath10k_pci 0000:05:00.0: irq 18 for MSI/MSI-X
-[   16.083443] ath10k_pci 0000:05:00.0: pci irq msi interrupts 1 irq_mode 0 reset_mode 0
-[   16.408686] ath10k_pci 0000:05:00.0: Direct firmware load for ath10k/QCA988X/hw2.0/firmware-3.bin failed with error -2
-[   16.408697] ath10k_pci 0000:05:00.0: Falling back to user helper
-[   16.411071] ath10k_pci 0000:05:00.0: could not fetch firmware file 'ath10k/QCA988X/hw2.0/firmware-3.bin': -11
-[   17.845673] ath10k_pci 0000:05:00.0: qca988x hw2.0 (0x4100016c, 0x043222ff) fw 10.1.467.2-1 api 2 htt 2.1
-[   17.845685] ath10k_pci 0000:05:00.0: debug 1 debugfs 1 tracing 1 dfs 0 testmode 0
-[   18.426968] ath10k_pci 0000:05:00.0 ap: renamed from wlan0
-[   35.073267] ath10k_pci 0000:05:00.0: peer-unmap-event: unknown peer id 2
-[   39.294061] ath10k_pci 0000:05:00.0: peer-unmap-event: unknown peer id 2
-[   46.083727] ath10k_pci 0000:05:00.0: peer-unmap-event: unknown peer id 2
+  6.064984] ath10k_pci 0000:01:00.0: enabling device (0140 -> 0142)
+[    6.065432] ath10k_pci 0000:01:00.0: pci irq legacy interrupts 0 
+irq_mode 0 reset_mode 0
+[    8.448583] ath10k_pci 0000:01:00.0: unable to read from the device
+[    8.448614] ath10k_pci 0000:01:00.0: could not execute otp for board 
+id check: -110
+[    8.453657] ath10k_pci 0000:01:00.0: failed to get board id from otp 
+for qca99x0: -110
+[    8.461352] ath10k_pci 0000:01:00.0: could not probe fw (-110)
 
 
-The problem with Kalles GIT tree is 100% reproducible. I don't know when this problem came up.
- -- Regards       Joerg
+it seems that the there is some sort of problem with the otp. 
+unfortunatly ath10k gives also no usefull information about the reason.
+this is a embedded ap148 based device (ipq8064) with QCA998X chipsets on it
+
+Sebastian
 
 _______________________________________________
 ath10k mailing list
