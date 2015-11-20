@@ -1,12 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zzpav-0007QV-MX
- for ath10k@lists.infradead.org; Fri, 20 Nov 2015 17:35:34 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH] ath10k: fix board data fetch error message
-Date: Fri, 20 Nov 2015 09:33:14 -0800
-Message-ID: <1448040794-1139-1-git-send-email-poh@qca.qualcomm.com>
+ id 1ZzpyT-0004yU-2p
+ for ath10k@lists.infradead.org; Fri, 20 Nov 2015 17:59:55 +0000
+From: "Li, Yanbo" <yanbol@qca.qualcomm.com>
+Subject: RE: [PATCH] ath10k: Adjust the RX packet pad offset at QCA99X0 4addr
+ mode
+Date: Fri, 20 Nov 2015 17:59:27 +0000
+Message-ID: <3d283d4cea8a45fd8717ad5848626f3c@nasanexm02e.na.qualcomm.com>
+References: <1445575816-4500-1-git-send-email-yanbol@qca.qualcomm.com>
+ <877fme40ny.fsf@kamboji.qca.qualcomm.com>
+ <2cd04da006cb4f2a8eea859b6aad3e10@nasanexm02e.na.qualcomm.com>
+ <87si45zmpj.fsf@kamboji.qca.qualcomm.com>
+ <20151120133214.GA15797@shafi-laptop>
+In-Reply-To: <20151120133214.GA15797@shafi-laptop>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,35 +28,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-The error message order of board data fetch is board info,
-directory, and then file name, hence place print arguments
-in the order.
 
-Fixes: 0a51b343abfe ("ath10k: add board 2 API support")
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index dc4fc4e..6b5ece7 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -844,7 +844,7 @@ out:
- 	if (!ar->board_data || !ar->board_len) {
- 		ath10k_err(ar,
- 			   "failed to fetch board data for %s from %s/%s\n",
--			   ar->hw_params.fw.dir, boardname, filename);
-+			   boardname, ar->hw_params.fw.dir, filename);
- 		ret = -ENODATA;
- 		goto err;
- 	}
--- 
-1.9.1
+> -----Original Message-----
+> From: Shajakhan, Mohammed Shafi (Mohammed Shafi)
+> Sent: Friday, November 20, 2015 5:32 AM
+> To: Valo, Kalle
+> Cc: Li, Yanbo; linux-wireless@vger.kernel.org; ath10k@lists.infradead.org
+> Subject: Re: [PATCH] ath10k: Adjust the RX packet pad offset at QCA99X0
+> 4addr mode
+> 
+> Hi Kalle\Yanbo,
+> 
+> On Mon, Nov 16, 2015 at 10:57:44PM +0200, Kalle Valo wrote:
+> > "Li, Yanbo" <yanbol@qca.qualcomm.com> writes:
+> >
+> > >> > +		/* The padding bytes's location is different on various
+> chips */
+> > >> > +		enum ath10k_loc_4addr_pad loc_4addr_pad;
+> > >>
+> > >> I think that loc prefix is a bit misleading, it reminds me of
+> > >> locationing/positioning etc. What about ath10k_hw_4addr_pad?
+> > >>
+> > >
+> > >
+> > > There is already a FW feature defined as
+> > > "ATH10K_FW_FEATURE_NO_NWIFI_DECAP_4ADDR_PADDIND" and the
+> relative
+> > > string is "no-4addr-pad", if we just remove the "loc" prefix, it may
+> > > be confuse with this FW feature.
+> > >
+> > > How about we change the loc to offset in this case or any better
+> suggestion?
+> >
+> > I did some naming changes in the pending branch:
+> >
+> > https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=p
+> > ending&id=42cd3832cd7c78bfeabb639a4086c7838fda5b57
+> >
+> > Please review and let me know what you think.
 
+Looks good to me, thanks Kalle.
+
+BR /Yanbo
 
 _______________________________________________
 ath10k mailing list
