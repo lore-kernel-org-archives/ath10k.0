@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzjyO-0008Pl-Kj
- for ath10k@lists.infradead.org; Fri, 20 Nov 2015 11:35:26 +0000
+ id 1ZzkGn-0002fh-Ad
+ for ath10k@lists.infradead.org; Fri, 20 Nov 2015 11:54:25 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Yesterdays kernel/git/kvalo/ath.git failes with COMPEX WLE600VX
-References: <1749993920.7465237.1447934318588.JavaMail.yahoo.ref@mail.yahoo.com>
- <1749993920.7465237.1447934318588.JavaMail.yahoo@mail.yahoo.com>
-Date: Fri, 20 Nov 2015 13:34:48 +0200
-In-Reply-To: <1749993920.7465237.1447934318588.JavaMail.yahoo@mail.yahoo.com>
- (Joerg Pommnitz's message of "Thu, 19 Nov 2015 11:58:38 +0000 (UTC)")
-Message-ID: <87a8q8uco7.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: QCA998X not working at all
+References: <87mvuj585b.fsf@kamboji.qca.qualcomm.com>
+ <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
+ <1447826363-16818-10-git-send-email-michal.kazior@tieto.com>
+ <564DE65C.9030407@dd-wrt.com> <564DEBBE.1040308@candelatech.com>
+ <564DEC25.1030401@dd-wrt.com> <564DF53C.50009@candelatech.com>
+ <564E02F1.3090306@dd-wrt.com> <564E130D.4080201@dd-wrt.com>
+Date: Fri, 20 Nov 2015 13:53:40 +0200
+In-Reply-To: <564E130D.4080201@dd-wrt.com> (Sebastian Gottschall's message of
+ "Thu, 19 Nov 2015 19:21:01 +0100")
+Message-ID: <87wptcsx8b.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,48 +28,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joerg Pommnitz <pommnitz@yahoo.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: ath10k@lists.infradead.org
 
-Joerg Pommnitz <pommnitz@yahoo.com> writes:
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
 
-> Hello all,
-> Kalles current git tree fails to initialize my COMPEX WLE600VX. The kernel log shows
-> [   16.373978] ath10k_pci 0000:05:00.0: failed to wake up device : -110
-> [   16.374118] ath10k_pci: probe of 0000:05:00.0 failed with error -110
+> simple solution.
+>
+> as for ath9k. otp must be ignored for various chipsets, since they
+> wont return valid results
+>
+> --- core.c (Revision 2702)
+> +++ core.c (Arbeitskopie)
+> @@ -1735,9 +1735,8 @@
+>
+>   ret = ath10k_core_get_board_id_from_otp(ar);
+>   if (ret && ret != -EOPNOTSUPP) {
+> -  ath10k_err(ar, "failed to get board id from otp for qca99x0: %d\n",
+> +  ath10k_err(ar, "failed to get board id from otp for qca99x0: %d,
+> ignore\n",
+>          ret);
+> -  return ret;
+>   }
+>
+>   ret = ath10k_core_fetch_board_file(ar);
 
-Can you send full dmesg, right from the beginning of the boot, please?
-It might give some hints.
+I'm guessing in your case otp.bin crashes as the calibration data is in
+flash (and not in otp). Can you send dmesg from a successful ath10k boot
+so that I can verify ath10k reads the calibration data from a file?
 
-I have a similar problem in one of my laptop (lenovo thinkpad x230). The
-patch below helps with that one, but I haven't investigated it more yet.
-
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2811,6 +2811,18 @@ static int ath10k_pci_claim(struct ath10k *ar)
- 
-        pci_set_drvdata(pdev, ar);
- 
-+       /*
-+        * Without any knowledge of the Host, the Target may have been
-reset or
-+        * power cycled and its Config Space may no longer reflect the
-PCI
-+        * address space that was assigned earlier by the PCI
-infrastructure.
-+        * Refresh it now.
-+        */
-+       ret = pci_assign_resource(pdev, BAR_NUM);
-+       if (ret) {
-+               ath10k_err(ar, "failed to assign PCI space: %d\n", ret);
-+               return ret;
-+       }
-+
-        ret = pci_enable_device(pdev);
-        if (ret) {
-                ath10k_err(ar, "failed to enable pci device: %d\n",
-                ret);
-
+I think I have an idea how to cleanly fix this.
 
 -- 
 Kalle Valo
