@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from arrakis.dune.hu ([78.24.191.176])
+Received: from static.88-198-24-112.clients.your-server.de ([88.198.24.112]
+ helo=nbd.name)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1Atu-0008NO-K2
- for ath10k@lists.infradead.org; Tue, 24 Nov 2015 10:32:44 +0000
-Subject: Re: [PATCH 2/2] ath10k: do not use coherent memory for tx buffers
-References: <1448284729-98078-1-git-send-email-nbd@openwrt.org>
- <1448284729-98078-2-git-send-email-nbd@openwrt.org>
- <56534C01.8030407@codeaurora.org> <56535875.2080204@openwrt.org>
- <56536006.6030500@codeaurora.org>
+ id 1a1AyN-0002ko-UC
+ for ath10k@lists.infradead.org; Tue, 24 Nov 2015 10:37:20 +0000
 From: Felix Fietkau <nbd@openwrt.org>
-Message-ID: <56543CAE.4030803@openwrt.org>
-Date: Tue, 24 Nov 2015 11:32:14 +0100
-MIME-Version: 1.0
-In-Reply-To: <56536006.6030500@codeaurora.org>
+Subject: [PATCH] ath10k: stop abusing GFP_DMA
+Date: Tue, 24 Nov 2015 11:36:52 +0100
+Message-Id: <1448361412-22589-1-git-send-email-nbd@openwrt.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,52 +16,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@codeaurora.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: linux-wireless@vger.kernel.org
+Cc: poh@codeaurora.org, ath10k@lists.infradead.org, kvalo@codeaurora.org
 
-On 2015-11-23 19:50, Peter Oh wrote:
-> 
-> On 11/23/2015 10:18 AM, Felix Fietkau wrote:
->> On 2015-11-23 18:25, Peter Oh wrote:
->>> Hi,
->>>
->>> Have you measured the peak throughput?
->>> The pre-allocated coherent memory concept was introduced as once of peak
->>> throughput improvement.
->> It's all still pre-allocated and pre-mapped.
-> Right. I mis-guessed with the title.
->>
->>> IIRC, dma_map_single takes about 4 us on Cortex A7 and dma_unmap_single
->>> also takes time to invalid cache.
->> That's why I didn't put a map/unmap in the hot path. There is only a
->> cache sync there. With coherent memory, every single word access blocks
->> until the transaction is complete. With cached/mapped memory, the CPU
->> can fill the cachelines first, then flush it in one go. This usually
->> ends up being faster than working with coherent memory directly.
->>
->>> Please share your tput number before and after, so I don't need to worry
->>> about performance degrade.
->> I don't have an ideal setup for tput tests at the moment, so I can't
->> give you any numbers.
-> Could you share any rough number?
->>   However, on the device that I'm testing on
->> (IPQ806x based), this patch makes the difference between working and
->> non-working wifi, fixing the regression introduced by your pre-allocated
->> coherent memory patch.
-> Thank you for the catch up and fix.
-> Btw, the regression can be fixed by using GFP_KERNEL, instead of 
-> GFP_DMA, right?
-I just did some timing measurements, and it seems that the DMA coherent
-variant is roughly 200 nanoseconds faster. Maybe the extra latency is
-caused by the CPU filling the cacheline from RAM first.
+Allocations from the DMA zone were originally added for legacy ISA
+stuff, or PCI devices that have specific limitations in their DMA
+addressing capabilities. It has no place in ath10k, which can do
+full 32-bit DMA.
 
-Kalle, please only merge the first one and drop this patch.
-I will send a replacement for it.
+Fixes memory allocation errors on some platforms.
 
-- Felix
+Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 4 ++--
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 396645b..8f240e1 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -536,7 +536,7 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 
+ 	size = htt->rx_ring.size * sizeof(htt->rx_ring.paddrs_ring);
+ 
+-	vaddr = dma_alloc_coherent(htt->ar->dev, size, &paddr, GFP_DMA);
++	vaddr = dma_alloc_coherent(htt->ar->dev, size, &paddr, GFP_KERNEL);
+ 	if (!vaddr)
+ 		goto err_dma_ring;
+ 
+@@ -545,7 +545,7 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 
+ 	vaddr = dma_alloc_coherent(htt->ar->dev,
+ 				   sizeof(*htt->rx_ring.alloc_idx.vaddr),
+-				   &paddr, GFP_DMA);
++				   &paddr, GFP_KERNEL);
+ 	if (!vaddr)
+ 		goto err_dma_idx;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 8f76b9d..ed62ec8 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -111,7 +111,7 @@ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
+ 	size = htt->max_num_pending_tx * sizeof(struct ath10k_htt_txbuf);
+ 	htt->txbuf.vaddr = dma_alloc_coherent(ar->dev, size,
+ 						  &htt->txbuf.paddr,
+-						  GFP_DMA);
++						  GFP_KERNEL);
+ 	if (!htt->txbuf.vaddr) {
+ 		ath10k_err(ar, "failed to alloc tx buffer\n");
+ 		ret = -ENOMEM;
+@@ -124,7 +124,7 @@ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
+ 	size = htt->max_num_pending_tx * sizeof(struct htt_msdu_ext_desc);
+ 	htt->frag_desc.vaddr = dma_alloc_coherent(ar->dev, size,
+ 						  &htt->frag_desc.paddr,
+-						  GFP_DMA);
++						  GFP_KERNEL);
+ 	if (!htt->frag_desc.vaddr) {
+ 		ath10k_warn(ar, "failed to alloc fragment desc memory\n");
+ 		ret = -ENOMEM;
+-- 
+2.2.2
+
 
 _______________________________________________
 ath10k mailing list
