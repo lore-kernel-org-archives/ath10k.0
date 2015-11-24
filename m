@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1Hvi-0007HS-Ez
- for ath10k@lists.infradead.org; Tue, 24 Nov 2015 18:03:06 +0000
-Date: Wed, 25 Nov 2015 02:00:53 +0800
+ id 1a1I0C-0002Nt-6n
+ for ath10k@lists.infradead.org; Tue, 24 Nov 2015 18:07:42 +0000
+Date: Wed, 25 Nov 2015 02:08:00 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH 3/3] ath10k: apply Mesh subtype when Mesh interface
- created.
-Message-ID: <201511250120.YaFuLRGU%fengguang.wu@intel.com>
+Subject: Re: [PATCH 1/3] ath10k: update WMI 10.x service map
+Message-ID: <201511250259.cZuahhJu%fengguang.wu@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="Q68bSM7Ycu6FN28Q"
+Content-Type: multipart/mixed; boundary="uAKRQypu60I7Lcqm"
 Content-Disposition: inline
-In-Reply-To: <1448386655-13936-4-git-send-email-poh@qca.qualcomm.com>
+In-Reply-To: <1448386655-13936-2-git-send-email-poh@qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,7 +25,7 @@ To: Peter Oh <poh@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, kbuild-all@01.org, ath10k@lists.infradead.org
 
 
---Q68bSM7Ycu6FN28Q
+--uAKRQypu60I7Lcqm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -47,7 +46,7 @@ All errors (new ones prefixed by >>):
                     from drivers/net/wireless/ath/ath10k/mac.h:22,
                     from drivers/net/wireless/ath/ath10k/mac.c:18:
    drivers/net/wireless/ath/ath10k/wmi.h: In function 'wmi_10x_svc_map':
-   drivers/net/wireless/ath/ath10k/wmi.h:457:9: error: 'WMI_SERVICE_MESH' undeclared (first use in this function)
+>> drivers/net/wireless/ath/ath10k/wmi.h:457:9: error: 'WMI_SERVICE_MESH' undeclared (first use in this function)
             WMI_SERVICE_MESH, len);
             ^
    drivers/net/wireless/ath/ath10k/wmi.h:398:14: note: in definition of macro 'SVCMAP'
@@ -59,51 +58,97 @@ All errors (new ones prefixed by >>):
    drivers/net/wireless/ath/ath10k/wmi.h:398:14: note: in definition of macro 'SVCMAP'
        __set_bit(y, out); \
                  ^
-   drivers/net/wireless/ath/ath10k/wmi.h:459:9: error: 'WMI_SERVICE_EXT_RES_CFG_SUPPORT' undeclared (first use in this function)
+>> drivers/net/wireless/ath/ath10k/wmi.h:459:9: error: 'WMI_SERVICE_EXT_RES_CFG_SUPPORT' undeclared (first use in this function)
             WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
             ^
    drivers/net/wireless/ath/ath10k/wmi.h:398:14: note: in definition of macro 'SVCMAP'
        __set_bit(y, out); \
                  ^
-   In file included from include/linux/bitops.h:36:0,
-                    from include/linux/kernel.h:10,
-                    from include/asm-generic/bug.h:13,
-                    from arch/x86/include/asm/bug.h:35,
-                    from include/linux/bug.h:4,
-                    from include/net/mac80211.h:18,
-                    from drivers/net/wireless/ath/ath10k/mac.h:21,
-                    from drivers/net/wireless/ath/ath10k/mac.c:18:
-   drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_add_interface':
->> drivers/net/wireless/ath/ath10k/mac.c:4353:16: error: 'WMI_SERVICE_MESH' undeclared (first use in this function)
-      if (test_bit(WMI_SERVICE_MESH, ar->wmi.svc_map)) {
-                   ^
-   arch/x86/include/asm/bitops.h:336:25: note: in definition of macro 'test_bit'
-     (__builtin_constant_p((nr))  \
-                            ^
 
-vim +/WMI_SERVICE_MESH +4353 drivers/net/wireless/ath/ath10k/mac.c
+vim +/WMI_SERVICE_MESH +457 drivers/net/wireless/ath/ath10k/wmi.h
 
-  4347				arvif->vdev_subtype = WMI_VDEV_SUBTYPE_P2P_CLIENT;
-  4348			break;
-  4349		case NL80211_IFTYPE_ADHOC:
-  4350			arvif->vdev_type = WMI_VDEV_TYPE_IBSS;
-  4351			break;
-  4352		case NL80211_IFTYPE_MESH_POINT:
-> 4353			if (test_bit(WMI_SERVICE_MESH, ar->wmi.svc_map)) {
-  4354				arvif->vdev_subtype = WMI_VDEV_SUBTYPE_MESH;
-  4355			} else if (!test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
-  4356				ret = -EINVAL;
+   392		 __le32_to_cpu((wmi_svc_bmap)[(svc_id)/(sizeof(u32))]) & \
+   393		 BIT((svc_id)%(sizeof(u32))))
+   394	
+   395	#define SVCMAP(x, y, len) \
+   396		do { \
+   397			if (WMI_SERVICE_IS_ENABLED((in), (x), (len))) \
+ > 398				__set_bit(y, out); \
+   399		} while (0)
+   400	
+   401	static inline void wmi_10x_svc_map(const __le32 *in, unsigned long *out,
+   402					   size_t len)
+   403	{
+   404		SVCMAP(WMI_10X_SERVICE_BEACON_OFFLOAD,
+   405		       WMI_SERVICE_BEACON_OFFLOAD, len);
+   406		SVCMAP(WMI_10X_SERVICE_SCAN_OFFLOAD,
+   407		       WMI_SERVICE_SCAN_OFFLOAD, len);
+   408		SVCMAP(WMI_10X_SERVICE_ROAM_OFFLOAD,
+   409		       WMI_SERVICE_ROAM_OFFLOAD, len);
+   410		SVCMAP(WMI_10X_SERVICE_BCN_MISS_OFFLOAD,
+   411		       WMI_SERVICE_BCN_MISS_OFFLOAD, len);
+   412		SVCMAP(WMI_10X_SERVICE_STA_PWRSAVE,
+   413		       WMI_SERVICE_STA_PWRSAVE, len);
+   414		SVCMAP(WMI_10X_SERVICE_STA_ADVANCED_PWRSAVE,
+   415		       WMI_SERVICE_STA_ADVANCED_PWRSAVE, len);
+   416		SVCMAP(WMI_10X_SERVICE_AP_UAPSD,
+   417		       WMI_SERVICE_AP_UAPSD, len);
+   418		SVCMAP(WMI_10X_SERVICE_AP_DFS,
+   419		       WMI_SERVICE_AP_DFS, len);
+   420		SVCMAP(WMI_10X_SERVICE_11AC,
+   421		       WMI_SERVICE_11AC, len);
+   422		SVCMAP(WMI_10X_SERVICE_BLOCKACK,
+   423		       WMI_SERVICE_BLOCKACK, len);
+   424		SVCMAP(WMI_10X_SERVICE_PHYERR,
+   425		       WMI_SERVICE_PHYERR, len);
+   426		SVCMAP(WMI_10X_SERVICE_BCN_FILTER,
+   427		       WMI_SERVICE_BCN_FILTER, len);
+   428		SVCMAP(WMI_10X_SERVICE_RTT,
+   429		       WMI_SERVICE_RTT, len);
+   430		SVCMAP(WMI_10X_SERVICE_RATECTRL,
+   431		       WMI_SERVICE_RATECTRL, len);
+   432		SVCMAP(WMI_10X_SERVICE_WOW,
+   433		       WMI_SERVICE_WOW, len);
+   434		SVCMAP(WMI_10X_SERVICE_RATECTRL_CACHE,
+   435		       WMI_SERVICE_RATECTRL_CACHE, len);
+   436		SVCMAP(WMI_10X_SERVICE_IRAM_TIDS,
+   437		       WMI_SERVICE_IRAM_TIDS, len);
+   438		SVCMAP(WMI_10X_SERVICE_BURST,
+   439		       WMI_SERVICE_BURST, len);
+   440		SVCMAP(WMI_10X_SERVICE_SMART_ANTENNA_SW_SUPPORT,
+   441		       WMI_SERVICE_SMART_ANTENNA_SW_SUPPORT, len);
+   442		SVCMAP(WMI_10X_SERVICE_FORCE_FW_HANG,
+   443		       WMI_SERVICE_FORCE_FW_HANG, len);
+   444		SVCMAP(WMI_10X_SERVICE_SMART_ANTENNA_HW_SUPPORT,
+   445		       WMI_SERVICE_SMART_ANTENNA_HW_SUPPORT, len);
+   446		SVCMAP(WMI_10X_SERVICE_ATF,
+   447		       WMI_SERVICE_ATF, len);
+   448		SVCMAP(WMI_10X_SERVICE_COEX_GPIO,
+   449		       WMI_SERVICE_COEX_GPIO, len);
+   450		SVCMAP(WMI_10X_SERVICE_AUX_SPECTRAL_INTF,
+   451		       WMI_SERVICE_AUX_SPECTRAL_INTF, len);
+   452		SVCMAP(WMI_10X_SERVICE_AUX_CHAN_LOAD_INTF,
+   453		       WMI_SERVICE_AUX_CHAN_LOAD_INTF, len);
+   454		SVCMAP(WMI_10X_SERVICE_BSS_CHANNEL_INFO_64,
+   455		       WMI_SERVICE_BSS_CHANNEL_INFO_64, len);
+   456		SVCMAP(WMI_10X_SERVICE_MESH,
+ > 457		       WMI_SERVICE_MESH, len);
+   458		SVCMAP(WMI_10X_SERVICE_EXT_RES_CFG_SUPPORT,
+ > 459		       WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
+   460	}
+   461	
+   462	static inline void wmi_main_svc_map(const __le32 *in, unsigned long *out,
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---Q68bSM7Ycu6FN28Q
+--uAKRQypu60I7Lcqm
 Content-Type: application/octet-stream
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICNOkVFYAAy5jb25maWcAlFxRd+M2rn7vr/CZ3ofdh5lJ0jSdnnvyQEmUzVoSFZJy7Lzo
+H4sICEWlVFYAAy5jb25maWcAlFxRd+M2rn7vr/CZ3ofdh5lJ0jSdnnvyQEmUzVoSFZJy7Lzo
 uImnzWkmno2d7sy/vwApWSQFZff2oRMRIEWCAPgBoPzjDz/O2Otx/2V7fLzfPj19n/2xe969
 bI+7h9nnx6fd/84yOaukmfFMmA/AXDw+v377+O3TVXt1Obv8cPnh7P3L/flsuXt53j3N0v3z
 58c/XqH/4/75hx9/SGWVizmwJsJcf+8f17Z38Dw8iEob1aRGyKrNeCozrgZizVXe8hWvjAZG
@@ -573,7 +618,7 @@ ZkDQi3dUO1SiO0xNUbh4KkGsvUrqzb8h0V2XtLg0iLkQqXMvWuGKt2A5aORynHqBPTCNybAh
 nmVo4KrVpGmT/VBk6E9cNKDzxpESR939/fQQkaA6s4OLiql3GnIKSlY2hXV1sItC18ySofPC
 RNzFAXKttZcw0H9PkiPDtH4BAA==
 
---Q68bSM7Ycu6FN28Q
+--uAKRQypu60I7Lcqm
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -584,4 +629,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---Q68bSM7Ycu6FN28Q--
+--uAKRQypu60I7Lcqm--
