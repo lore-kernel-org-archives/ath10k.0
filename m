@@ -1,11 +1,11 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm38-vm5.bullet.mail.bf1.yahoo.com ([72.30.239.21])
+Received: from nm39-vm0.bullet.mail.ne1.yahoo.com ([98.138.229.160])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1Gn5-0007cx-Jo
- for ath10k@lists.infradead.org; Tue, 24 Nov 2015 16:50:04 +0000
-Date: Tue, 24 Nov 2015 16:49:37 +0000 (UTC)
+ id 1a1Gtl-0003AJ-Ff
+ for ath10k@lists.infradead.org; Tue, 24 Nov 2015 16:56:58 +0000
+Date: Tue, 24 Nov 2015 16:53:38 +0000 (UTC)
 From: Joerg Pommnitz <pommnitz@yahoo.com>
-Message-ID: <783909936.9966106.1448383777336.JavaMail.yahoo@mail.yahoo.com>
+Message-ID: <55084199.10559917.1448384018556.JavaMail.yahoo@mail.yahoo.com>
 In-Reply-To: <87mvu3qtur.fsf@kamboji.qca.qualcomm.com>
 References: <87mvu3qtur.fsf@kamboji.qca.qualcomm.com>
 Subject: Re: kvalo firmware confusion
@@ -26,19 +26,14 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Thanks for the clarification.
-Somebody should update 
+And a little bit of nagging: the current driver is still broken for me.
+See http://lists.infradead.org/pipermail/ath10k/2015-November/006494.html
 
-
-
-https://wireless.wiki.kernel.org/en/users/Drivers/ath10k/firmware
-
-It states, that 10.2 is for 3.18.
  -- Regards       Joerg
 
 
 
-> Kalle Valo <kvalo@qca.qualcomm.com> schrieb am 16:50 Dienstag, 24.November 2015:
+> Kalle Valo <kvalo@qca.qualcomm.com> schrieb am 16:51 Dienstag, 24.November 2015:
 > > Joerg Pommnitz <pommnitz@yahoo.com> writes:
 > 
 > 
