@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from emh06.mail.saunalahti.fi ([62.142.5.116])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1Z5B-000830-Ca
- for ath10k@lists.infradead.org; Wed, 25 Nov 2015 12:21:57 +0000
+ id 1a1aHZ-0002Jp-FA
+ for ath10k@lists.infradead.org; Wed, 25 Nov 2015 13:38:50 +0000
+Subject: [PATCH 4/6] ath10k: split driver info messages during device
+ initialisation
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Yesterdays kernel/git/kvalo/ath.git failes with COMPEX WLE600VX
-References: <87a8q8uco7.fsf@kamboji.qca.qualcomm.com>
- <1137895868.8098680.1448026264465.JavaMail.yahoo@mail.yahoo.com>
-Date: Wed, 25 Nov 2015 14:21:19 +0200
-In-Reply-To: <1137895868.8098680.1448026264465.JavaMail.yahoo@mail.yahoo.com>
- (Joerg Pommnitz's message of "Fri, 20 Nov 2015 13:31:04 +0000 (UTC)")
-Message-ID: <87fuzunubk.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 25 Nov 2015 15:38:27 +0200
+Message-ID: <20151125133827.25507.71671.stgit@potku.adurom.net>
+In-Reply-To: <20151125133654.25507.10863.stgit@potku.adurom.net>
+References: <20151125133654.25507.10863.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,56 +23,152 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joerg Pommnitz <pommnitz@yahoo.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Joerg Pommnitz <pommnitz@yahoo.com> writes:
+Earlier we printed all the info messages after a successful device
+initialisation and firmware boot, but that's problematic if something goes
+wrong and there's no easy way to know what firmware version was used and so on.
 
-> Kalle, attached are dmesg logs from 3.18.24 and your git tree. The
-> patch from your mail is _NOT_ yet applied.
+Split the info messages into smaller pieces and print them as soon as we have
+the info available.
 
-Thanks. So the ath10k board is on slot 0000:05:00.0. In 4.3 log I saw
-this warning:
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c  |    6 ++++
+ drivers/net/wireless/ath/ath10k/debug.c |   44 ++++++++++++++++++++-----------
+ drivers/net/wireless/ath/ath10k/debug.h |    4 +++
+ 3 files changed, 38 insertions(+), 16 deletions(-)
 
-[    0.488080] pci 0000:05:00.0: can't claim BAR 0 [mem
-0xe8000000-0xe81fffff 64bit]: address conflict with PCI Bus 0000:01
-[mem 0xe8000000-0xe85fffff]
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 78fe1863ad04..32917be5a6d9 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1751,6 +1751,8 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 		goto err_power_down;
+ 	}
+ 
++	ath10k_debug_print_hwfw_info(ar);
++
+ 	ret = ath10k_core_get_board_id_from_otp(ar);
+ 	if (ret && ret != -EOPNOTSUPP) {
+ 		ath10k_err(ar, "failed to get board id from otp: %d\n",
+@@ -1764,6 +1766,8 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 		goto err_free_firmware_files;
+ 	}
+ 
++	ath10k_debug_print_board_info(ar);
++
+ 	ret = ath10k_core_init_firmware_features(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "fatal problem with firmware features: %d\n",
+@@ -1786,7 +1790,7 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 		goto err_unlock;
+ 	}
+ 
+-	ath10k_print_driver_info(ar);
++	ath10k_debug_print_boot_info(ar);
+ 	ath10k_core_stop(ar);
+ 
+ 	mutex_unlock(&ar->conf_mutex);
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 2bc7ae21ade4..ebe3e52cdd1d 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -122,41 +122,48 @@ void ath10k_info(struct ath10k *ar, const char *fmt, ...)
+ }
+ EXPORT_SYMBOL(ath10k_info);
+ 
+-void ath10k_print_driver_info(struct ath10k *ar)
++void ath10k_debug_print_hwfw_info(struct ath10k *ar)
+ {
+ 	char fw_features[128] = {};
+-	char boardinfo[100];
+ 
+ 	ath10k_core_get_fw_features_str(ar, fw_features, sizeof(fw_features));
+ 
+-	if (ar->id.bmi_ids_valid)
+-		scnprintf(boardinfo, sizeof(boardinfo), "%d:%d",
+-			  ar->id.bmi_chip_id, ar->id.bmi_board_id);
+-	else
+-		scnprintf(boardinfo, sizeof(boardinfo), "N/A");
+-
+ 	ath10k_info(ar, "%s target 0x%08x chip_id 0x%08x sub %04x:%04x",
+ 		    ar->hw_params.name,
+ 		    ar->target_version,
+ 		    ar->chip_id,
+ 		    ar->id.subsystem_vendor, ar->id.subsystem_device);
+ 
++	ath10k_info(ar, "kconfig debug %d debugfs %d tracing %d dfs %d testmode %d\n",
++		    config_enabled(CONFIG_ATH10K_DEBUG),
++		    config_enabled(CONFIG_ATH10K_DEBUGFS),
++		    config_enabled(CONFIG_ATH10K_TRACING),
++		    config_enabled(CONFIG_ATH10K_DFS_CERTIFIED),
++		    config_enabled(CONFIG_NL80211_TESTMODE));
++
+ 	ath10k_info(ar, "firmware ver %s api %d features %s\n",
+ 		    ar->hw->wiphy->fw_version,
+ 		    ar->fw_api,
+ 		    fw_features);
++}
++
++void ath10k_debug_print_board_info(struct ath10k *ar)
++{
++	char boardinfo[100];
++
++	if (ar->id.bmi_ids_valid)
++		scnprintf(boardinfo, sizeof(boardinfo), "%d:%d",
++			  ar->id.bmi_chip_id, ar->id.bmi_board_id);
++	else
++		scnprintf(boardinfo, sizeof(boardinfo), "N/A");
+ 
+ 	ath10k_info(ar, "board_file api %d bmi_id %s",
+ 		    ar->bd_api,
+ 		    boardinfo);
++}
+ 
+-	ath10k_info(ar, "kconfig debug %d debugfs %d tracing %d dfs %d testmode %d\n",
+-		    config_enabled(CONFIG_ATH10K_DEBUG),
+-		    config_enabled(CONFIG_ATH10K_DEBUGFS),
+-		    config_enabled(CONFIG_ATH10K_TRACING),
+-		    config_enabled(CONFIG_ATH10K_DFS_CERTIFIED),
+-		    config_enabled(CONFIG_NL80211_TESTMODE));
+-
++void ath10k_debug_print_boot_info(struct ath10k *ar)
++{
+ 	ath10k_info(ar, "htt-ver %d.%d wmi-op %d htt-op %d cal %s max-sta %d raw %d hwcrypto %d\n",
+ 		    ar->htt.target_version_major,
+ 		    ar->htt.target_version_minor,
+@@ -167,6 +174,13 @@ void ath10k_print_driver_info(struct ath10k *ar)
+ 		    test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags),
+ 		    !test_bit(ATH10K_FLAG_HW_CRYPTO_DISABLED, &ar->dev_flags));
+ }
++
++void ath10k_print_driver_info(struct ath10k *ar)
++{
++	ath10k_debug_print_hwfw_info(ar);
++	ath10k_debug_print_board_info(ar);
++	ath10k_debug_print_boot_info(ar);
++}
+ EXPORT_SYMBOL(ath10k_print_driver_info);
+ 
+ void ath10k_err(struct ath10k *ar, const char *fmt, ...)
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 7de780c4ec8d..814719cf4f22 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -63,6 +63,10 @@ extern unsigned int ath10k_debug_mask;
+ __printf(2, 3) void ath10k_info(struct ath10k *ar, const char *fmt, ...);
+ __printf(2, 3) void ath10k_err(struct ath10k *ar, const char *fmt, ...);
+ __printf(2, 3) void ath10k_warn(struct ath10k *ar, const char *fmt, ...);
++
++void ath10k_debug_print_hwfw_info(struct ath10k *ar);
++void ath10k_debug_print_board_info(struct ath10k *ar);
++void ath10k_debug_print_boot_info(struct ath10k *ar);
+ void ath10k_print_driver_info(struct ath10k *ar);
+ 
+ #ifdef CONFIG_ATH10K_DEBUGFS
 
-Also the BAR configurations look different, 3.18 has:
-
-[    0.596024] pci 0000:05:00.0: BAR 6: assigned [mem 0xe8200000-0xe820ffff pref]
-
-but 4.3 has:
-
-[    0.660123] pci 0000:05:00.0: BAR 0: assigned [mem 0x48400000-0x485fffff 64bit]
-[    0.664037] pci 0000:05:00.0: BAR 6: assigned [mem 0x48290000-0x4829ffff pref]
-
-The chances are that this has something to do with your problem. Also in
-a private email[1] you mentioned that latest ath10k works with 3.18
-kernel, right? This makes me suspect that this is a problem outside
-ath10k, but I'm not a PCI bus expert so I'm not really sure.
-
-I recommend that next you try other major kernel versions (3.19, 4.0,
-4.1 and so on) and find out what release first introduced the
-regression. Remember always to take full dmesg logs like you have done
-now. And once you have that send a mail to proper lists asking for help,
-for example at least linux-wireless and linux-pci. But please continue
-to CC ath10k list also, it's interesting to know what is causing this.
-
-And even better is that if you can run full bisect to find the offending
-commit, but that takes a quite long time.
-
-> BTW, patch gives an offset of 99 lines when applying to your git tree.
-> Is this relative to a branch?
-
-The patch was few weeks old, I haven't rebased it since so that's
-normal. I just hope it applied to the change to the correct location.
-
-[1] Please do not send private email, the discussions should happen on
-the list.
-
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
