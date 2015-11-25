@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1VVz-0004rc-1b
- for ath10k@lists.infradead.org; Wed, 25 Nov 2015 08:33:23 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: kvalo firmware confusion
-References: <87610qqyjz.fsf@kamboji.qca.qualcomm.com>
- <1054851299.10547923.1448439983636.JavaMail.yahoo@mail.yahoo.com>
-Date: Wed, 25 Nov 2015 10:32:45 +0200
-In-Reply-To: <1054851299.10547923.1448439983636.JavaMail.yahoo@mail.yahoo.com>
- (Joerg Pommnitz's message of "Wed, 25 Nov 2015 08:26:23 +0000 (UTC)")
-Message-ID: <87twoapjgy.fsf@kamboji.qca.qualcomm.com>
+Received: from smtp28.msg.oleane.net ([62.161.4.28])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a1XVs-0006Cc-QC
+ for ath10k@lists.infradead.org; Wed, 25 Nov 2015 10:41:29 +0000
+From: "voncken" <cedric.voncken@acksys.fr>
+References: <773DB8A82AB6A046AE0195C68612A31901C5AFA5@sbs2003.acksys.local>	<5654D6A8.9050002@candelatech.com>
+ <CA+BoTQk2UXskCOPafxmd-2YzAceg=oMd1BKkDpwcX2LwazVQ-A@mail.gmail.com>
+ <5655530B.9030407@candelatech.com>
+In-Reply-To: <5655530B.9030407@candelatech.com>
+Subject: RE: ATH10 firmware question
+Date: Wed, 25 Nov 2015 11:41:05 +0100
+Message-ID: <04a201d1276d$c9a6b7c0$5cf42740$@acksys.fr>
 MIME-Version: 1.0
+Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +25,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joerg Pommnitz <pommnitz@yahoo.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: 'Ben Greear' <greearb@candelatech.com>, 'Michal Kazior' <michal.kazior@tieto.com>
+Cc: 'linux-wireless' <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Joerg Pommnitz <pommnitz@yahoo.com> writes:
+Hi, 
 
-> It complains about not being able to find firmware-3.bin. I'm not sure about the
-> order. I'll try again with firmware-3.bin in the firmware directory.
+Thanks for your answer.
 
-It should try firmware-3.bin first and then try firmware-2.bin.
+> >>>
+> >>>          Hi,
+> >>>
+> >>>          I have a simple test platform.
+> >>>          One PC connected to an equipment. This equipment is set in
+> >>> AP mode.
+> >>>          Another PC connected to another equipment. This equipment
+> >>> is set in STA + WDS mode.
+> >>>
+> >>>          Both equipment use the same openwrt Firmware (compat
+> >>> 2015-07-21), I only changed the ath10k firmware (in
+> >>> /lib/firmware/ath10k/...).
+> >>>          Both equipment has the same hardware.
+> >>>          I used a clear channel, and VHT80.
+> >>>          The radio was connected with a coaxial cable and I placed
+> >>> 40 dBm attenuation per Rf chain.
+> >>>          I used the WLN350NX radio card from compex.
+> >>>
+> >>>          First test : ATH10K firmware 10.2.4.70-2 on both equipment
+> >>>                  An iperf from PC connected to the AP to the PC
+> >>> connected to the STA give 919 Mbps.
+> >>>                  An iperf from PC connected to the STA to the PC
+> >>> connected to the AP give 500 Mbps.
+> >>>
+> >>>          Second test : ATHK firmware 10.2.4.70.10-2 on both equipment
+> >>>                  An iperf from PC connected to the AP to the PC
+> >>> connected to the STA give 921 Mbps.
+> >>>                  An iperf from PC connected to the STA to the PC
+> >>> connected to the AP give 441 Mbps.
+> >>>
+> >>>          If I cross the computer I have the same result. I did
+> >>> several time these test and I always have the same result.
+> >>
+> >>
+> >> We see similar.  One thing we notice is that if you actually try to
+> >> send less throughput, then you get better overall throughput.
+> >>
+> >> In other words, trying to send 1Gbps UDP frames will give you more
+> >> poor throughput than trying to send 650Mbps (in the upload direction).
+> >>
+> >> I thought it might be a poor interaction regarding backoff in the
+> >> ath10k driver/firmware (see the congestion bins in firmware for why
+> >> this is the case), but even fixing that in firmware didn't improve
+> >> the situation in my testing.
+> >
+> > If CPU is the bottleneck on DUT than overcommiting the UDP traffic at
+> > the source may lead the ethernet driver to waste CPU cycles on the
+> > DUT.
+> 
+> You are correct about the overcommit in general, but our systems are quite
+> overpowered.
+> 
+> We are testing with 3.5Ghz E5 quad-core systems...it is not just a CPU
+> usage issue.  And, exact same hardware runs great (close to 900Mbps) in AP
+> download mode.
+>
+In my case I'm testing with mips 64 dual core at 1.2 GHz. The CPU load is around 50% during my test. I'm agree with Ben, the issue is not in CPU.
 
--- 
-Kalle Valo
+I tried this morning with different firmware version. I only change the ath10K firmware in client side and I only test the client Tx performance.
+
+Test with firmware 999.999.0.636
+Unfortunately this firmware does not support the WDS mode, I need to update my setting. With this firmware I have a better performance, I can reach 700 Mbps. 
+
+Test with firmware 10.1.467-ct-15 from candelatech (full community version)
+I tested in WDS setting and the same setting of previous firmware to be sure the setting have no impact on the performance. In both case I can reach around 650 Mbps.
+I tested with beta-16 firmware from candelatech, but I have a similar performance.
+
+Thanks
+Cedric.
+
 
 _______________________________________________
 ath10k mailing list
