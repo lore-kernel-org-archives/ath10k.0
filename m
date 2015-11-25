@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp28.msg.oleane.net ([62.161.4.28])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1XVs-0006Cc-QC
- for ath10k@lists.infradead.org; Wed, 25 Nov 2015 10:41:29 +0000
-From: "voncken" <cedric.voncken@acksys.fr>
-References: <773DB8A82AB6A046AE0195C68612A31901C5AFA5@sbs2003.acksys.local>	<5654D6A8.9050002@candelatech.com>
- <CA+BoTQk2UXskCOPafxmd-2YzAceg=oMd1BKkDpwcX2LwazVQ-A@mail.gmail.com>
- <5655530B.9030407@candelatech.com>
-In-Reply-To: <5655530B.9030407@candelatech.com>
-Subject: RE: ATH10 firmware question
-Date: Wed, 25 Nov 2015 11:41:05 +0100
-Message-ID: <04a201d1276d$c9a6b7c0$5cf42740$@acksys.fr>
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a1XSL-0001Rd-87
+ for ath10k@lists.infradead.org; Wed, 25 Nov 2015 10:37:48 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 2/2] ath10k: do not use coherent memory for tx buffers
+References: <1448284729-98078-1-git-send-email-nbd@openwrt.org>
+ <1448284729-98078-2-git-send-email-nbd@openwrt.org>
+ <56534C01.8030407@codeaurora.org> <56535875.2080204@openwrt.org>
+ <56536006.6030500@codeaurora.org> <56543CAE.4030803@openwrt.org>
+Date: Wed, 25 Nov 2015 12:37:08 +0200
+In-Reply-To: <56543CAE.4030803@openwrt.org> (Felix Fietkau's message of "Tue, 
+ 24 Nov 2015 11:32:14 +0100")
+Message-ID: <87610qpdpn.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,83 +26,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Ben Greear' <greearb@candelatech.com>, 'Michal Kazior' <michal.kazior@tieto.com>
-Cc: 'linux-wireless' <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Felix Fietkau <nbd@openwrt.org>
+Cc: Peter Oh <poh@codeaurora.org>, ath10k@lists.infradead.org
 
-Hi, 
+Felix Fietkau <nbd@openwrt.org> writes:
 
-Thanks for your answer.
-
-> >>>
-> >>>          Hi,
-> >>>
-> >>>          I have a simple test platform.
-> >>>          One PC connected to an equipment. This equipment is set in
-> >>> AP mode.
-> >>>          Another PC connected to another equipment. This equipment
-> >>> is set in STA + WDS mode.
-> >>>
-> >>>          Both equipment use the same openwrt Firmware (compat
-> >>> 2015-07-21), I only changed the ath10k firmware (in
-> >>> /lib/firmware/ath10k/...).
-> >>>          Both equipment has the same hardware.
-> >>>          I used a clear channel, and VHT80.
-> >>>          The radio was connected with a coaxial cable and I placed
-> >>> 40 dBm attenuation per Rf chain.
-> >>>          I used the WLN350NX radio card from compex.
-> >>>
-> >>>          First test : ATH10K firmware 10.2.4.70-2 on both equipment
-> >>>                  An iperf from PC connected to the AP to the PC
-> >>> connected to the STA give 919 Mbps.
-> >>>                  An iperf from PC connected to the STA to the PC
-> >>> connected to the AP give 500 Mbps.
-> >>>
-> >>>          Second test : ATHK firmware 10.2.4.70.10-2 on both equipment
-> >>>                  An iperf from PC connected to the AP to the PC
-> >>> connected to the STA give 921 Mbps.
-> >>>                  An iperf from PC connected to the STA to the PC
-> >>> connected to the AP give 441 Mbps.
-> >>>
-> >>>          If I cross the computer I have the same result. I did
-> >>> several time these test and I always have the same result.
-> >>
-> >>
-> >> We see similar.  One thing we notice is that if you actually try to
-> >> send less throughput, then you get better overall throughput.
-> >>
-> >> In other words, trying to send 1Gbps UDP frames will give you more
-> >> poor throughput than trying to send 650Mbps (in the upload direction).
-> >>
-> >> I thought it might be a poor interaction regarding backoff in the
-> >> ath10k driver/firmware (see the congestion bins in firmware for why
-> >> this is the case), but even fixing that in firmware didn't improve
-> >> the situation in my testing.
-> >
-> > If CPU is the bottleneck on DUT than overcommiting the UDP traffic at
-> > the source may lead the ethernet driver to waste CPU cycles on the
-> > DUT.
-> 
-> You are correct about the overcommit in general, but our systems are quite
-> overpowered.
-> 
-> We are testing with 3.5Ghz E5 quad-core systems...it is not just a CPU
-> usage issue.  And, exact same hardware runs great (close to 900Mbps) in AP
-> download mode.
+>>>   However, on the device that I'm testing on
+>>> (IPQ806x based), this patch makes the difference between working and
+>>> non-working wifi, fixing the regression introduced by your pre-allocated
+>>> coherent memory patch.
+>>
+>> Thank you for the catch up and fix.
+>> Btw, the regression can be fixed by using GFP_KERNEL, instead of 
+>> GFP_DMA, right?
 >
-In my case I'm testing with mips 64 dual core at 1.2 GHz. The CPU load is around 50% during my test. I'm agree with Ben, the issue is not in CPU.
+> I just did some timing measurements, and it seems that the DMA coherent
+> variant is roughly 200 nanoseconds faster. Maybe the extra latency is
+> caused by the CPU filling the cacheline from RAM first.
+>
+> Kalle, please only merge the first one and drop this patch.
+> I will send a replacement for it.
 
-I tried this morning with different firmware version. I only change the ath10K firmware in client side and I only test the client Tx performance.
+Ok, patch 2 dropped.
 
-Test with firmware 999.999.0.636
-Unfortunately this firmware does not support the WDS mode, I need to update my setting. With this firmware I have a better performance, I can reach 700 Mbps. 
-
-Test with firmware 10.1.467-ct-15 from candelatech (full community version)
-I tested in WDS setting and the same setting of previous firmware to be sure the setting have no impact on the performance. In both case I can reach around 650 Mbps.
-I tested with beta-16 firmware from candelatech, but I have a similar performance.
-
-Thanks
-Cedric.
-
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
