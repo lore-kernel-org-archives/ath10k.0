@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1RYH-0004My-HT
- for ath10k@lists.infradead.org; Wed, 25 Nov 2015 04:19:30 +0000
-Received: by wmec201 with SMTP id c201so53553706wme.1
- for <ath10k@lists.infradead.org>; Tue, 24 Nov 2015 20:19:03 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a1TRA-0004ac-Uj
+ for ath10k@lists.infradead.org; Wed, 25 Nov 2015 06:20:18 +0000
+Message-ID: <5655530B.9030407@candelatech.com>
+Date: Tue, 24 Nov 2015 22:19:55 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <5654D6A8.9050002@candelatech.com>
-References: <773DB8A82AB6A046AE0195C68612A31901C5AFA5@sbs2003.acksys.local>
- <5654D6A8.9050002@candelatech.com>
-Date: Wed, 25 Nov 2015 05:19:03 +0100
-Message-ID: <CA+BoTQk2UXskCOPafxmd-2YzAceg=oMd1BKkDpwcX2LwazVQ-A@mail.gmail.com>
 Subject: Re: ATH10 firmware question
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <773DB8A82AB6A046AE0195C68612A31901C5AFA5@sbs2003.acksys.local>	<5654D6A8.9050002@candelatech.com>
+ <CA+BoTQk2UXskCOPafxmd-2YzAceg=oMd1BKkDpwcX2LwazVQ-A@mail.gmail.com>
+In-Reply-To: <CA+BoTQk2UXskCOPafxmd-2YzAceg=oMd1BKkDpwcX2LwazVQ-A@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,51 +19,82 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Cedric VONCKEN <cedric.voncken@acksys.fr>
 
-T24gMjQgTm92ZW1iZXIgMjAxNSBhdCAyMjoyOSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxh
-dGVjaC5jb20+IHdyb3RlOgo+IE9uIDExLzI0LzIwMTUgMTA6MDcgQU0sIENlZHJpYyBWT05DS0VO
-IHdyb3RlOgo+Pgo+PiAgICAgICAgIEhpLAo+Pgo+PiAgICAgICAgIEkgaGF2ZSBhIHNpbXBsZSB0
-ZXN0IHBsYXRmb3JtLgo+PiAgICAgICAgIE9uZSBQQyBjb25uZWN0ZWQgdG8gYW4gZXF1aXBtZW50
-LiBUaGlzIGVxdWlwbWVudCBpcyBzZXQgaW4gQVAKPj4gbW9kZS4KPj4gICAgICAgICBBbm90aGVy
-IFBDIGNvbm5lY3RlZCB0byBhbm90aGVyIGVxdWlwbWVudC4gVGhpcyBlcXVpcG1lbnQgaXMgc2V0
-Cj4+IGluIFNUQSArIFdEUyBtb2RlLgo+Pgo+PiAgICAgICAgIEJvdGggZXF1aXBtZW50IHVzZSB0
-aGUgc2FtZSBvcGVud3J0IEZpcm13YXJlIChjb21wYXQKPj4gMjAxNS0wNy0yMSksIEkgb25seSBj
-aGFuZ2VkIHRoZSBhdGgxMGsgZmlybXdhcmUgKGluCj4+IC9saWIvZmlybXdhcmUvYXRoMTBrLy4u
-LikuCj4+ICAgICAgICAgQm90aCBlcXVpcG1lbnQgaGFzIHRoZSBzYW1lIGhhcmR3YXJlLgo+PiAg
-ICAgICAgIEkgdXNlZCBhIGNsZWFyIGNoYW5uZWwsIGFuZCBWSFQ4MC4KPj4gICAgICAgICBUaGUg
-cmFkaW8gd2FzIGNvbm5lY3RlZCB3aXRoIGEgY29heGlhbCBjYWJsZSBhbmQgSSBwbGFjZWQgNDAg
-ZEJtCj4+IGF0dGVudWF0aW9uIHBlciBSZiBjaGFpbi4KPj4gICAgICAgICBJIHVzZWQgdGhlIFdM
-TjM1ME5YIHJhZGlvIGNhcmQgZnJvbSBjb21wZXguCj4+Cj4+ICAgICAgICAgRmlyc3QgdGVzdCA6
-IEFUSDEwSyBmaXJtd2FyZSAxMC4yLjQuNzAtMiBvbiBib3RoIGVxdWlwbWVudAo+PiAgICAgICAg
-ICAgICAgICAgQW4gaXBlcmYgZnJvbSBQQyBjb25uZWN0ZWQgdG8gdGhlIEFQIHRvIHRoZSBQQyBj
-b25uZWN0ZWQKPj4gdG8gdGhlIFNUQSBnaXZlIDkxOSBNYnBzLgo+PiAgICAgICAgICAgICAgICAg
-QW4gaXBlcmYgZnJvbSBQQyBjb25uZWN0ZWQgdG8gdGhlIFNUQSB0byB0aGUgUEMKPj4gY29ubmVj
-dGVkIHRvIHRoZSBBUCBnaXZlIDUwMCBNYnBzLgo+Pgo+PiAgICAgICAgIFNlY29uZCB0ZXN0IDog
-QVRISyBmaXJtd2FyZSAxMC4yLjQuNzAuMTAtMiBvbiBib3RoIGVxdWlwbWVudAo+PiAgICAgICAg
-ICAgICAgICAgQW4gaXBlcmYgZnJvbSBQQyBjb25uZWN0ZWQgdG8gdGhlIEFQIHRvIHRoZSBQQyBj
-b25uZWN0ZWQKPj4gdG8gdGhlIFNUQSBnaXZlIDkyMSBNYnBzLgo+PiAgICAgICAgICAgICAgICAg
-QW4gaXBlcmYgZnJvbSBQQyBjb25uZWN0ZWQgdG8gdGhlIFNUQSB0byB0aGUgUEMKPj4gY29ubmVj
-dGVkIHRvIHRoZSBBUCBnaXZlIDQ0MSBNYnBzLgo+Pgo+PiAgICAgICAgIElmIEkgY3Jvc3MgdGhl
-IGNvbXB1dGVyIEkgaGF2ZSB0aGUgc2FtZSByZXN1bHQuIEkgZGlkIHNldmVyYWwKPj4gdGltZSB0
-aGVzZSB0ZXN0IGFuZCBJIGFsd2F5cyBoYXZlIHRoZSBzYW1lIHJlc3VsdC4KPgo+Cj4gV2Ugc2Vl
-IHNpbWlsYXIuICBPbmUgdGhpbmcgd2Ugbm90aWNlIGlzIHRoYXQgaWYgeW91IGFjdHVhbGx5IHRy
-eSB0byBzZW5kCj4gbGVzcwo+IHRocm91Z2hwdXQsIHRoZW4geW91IGdldCBiZXR0ZXIgb3ZlcmFs
-bCB0aHJvdWdocHV0Lgo+Cj4gSW4gb3RoZXIgd29yZHMsIHRyeWluZyB0byBzZW5kIDFHYnBzIFVE
-UCBmcmFtZXMgd2lsbCBnaXZlIHlvdSBtb3JlIHBvb3IKPiB0aHJvdWdocHV0IHRoYW4gdHJ5aW5n
-IHRvIHNlbmQgNjUwTWJwcyAoaW4gdGhlIHVwbG9hZCBkaXJlY3Rpb24pLgo+Cj4gSSB0aG91Z2h0
-IGl0IG1pZ2h0IGJlIGEgcG9vciBpbnRlcmFjdGlvbiByZWdhcmRpbmcgYmFja29mZiBpbiB0aGUK
-PiBhdGgxMGsgZHJpdmVyL2Zpcm13YXJlIChzZWUgdGhlIGNvbmdlc3Rpb24gYmlucyBpbiBmaXJt
-d2FyZSBmb3Igd2h5Cj4gdGhpcyBpcyB0aGUgY2FzZSksIGJ1dCBldmVuIGZpeGluZyB0aGF0IGlu
-IGZpcm13YXJlIGRpZG4ndCBpbXByb3ZlCj4gdGhlIHNpdHVhdGlvbiBpbiBteSB0ZXN0aW5nLgoK
-SWYgQ1BVIGlzIHRoZSBib3R0bGVuZWNrIG9uIERVVCB0aGFuIG92ZXJjb21taXRpbmcgdGhlIFVE
-UCB0cmFmZmljIGF0CnRoZSBzb3VyY2UgbWF5IGxlYWQgdGhlIGV0aGVybmV0IGRyaXZlciB0byB3
-YXN0ZSBDUFUgY3ljbGVzIG9uIHRoZQpEVVQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+
+
+On 11/24/2015 08:19 PM, Michal Kazior wrote:
+> On 24 November 2015 at 22:29, Ben Greear <greearb@candelatech.com> wrote:
+>> On 11/24/2015 10:07 AM, Cedric VONCKEN wrote:
+>>>
+>>>          Hi,
+>>>
+>>>          I have a simple test platform.
+>>>          One PC connected to an equipment. This equipment is set in AP
+>>> mode.
+>>>          Another PC connected to another equipment. This equipment is set
+>>> in STA + WDS mode.
+>>>
+>>>          Both equipment use the same openwrt Firmware (compat
+>>> 2015-07-21), I only changed the ath10k firmware (in
+>>> /lib/firmware/ath10k/...).
+>>>          Both equipment has the same hardware.
+>>>          I used a clear channel, and VHT80.
+>>>          The radio was connected with a coaxial cable and I placed 40 dBm
+>>> attenuation per Rf chain.
+>>>          I used the WLN350NX radio card from compex.
+>>>
+>>>          First test : ATH10K firmware 10.2.4.70-2 on both equipment
+>>>                  An iperf from PC connected to the AP to the PC connected
+>>> to the STA give 919 Mbps.
+>>>                  An iperf from PC connected to the STA to the PC
+>>> connected to the AP give 500 Mbps.
+>>>
+>>>          Second test : ATHK firmware 10.2.4.70.10-2 on both equipment
+>>>                  An iperf from PC connected to the AP to the PC connected
+>>> to the STA give 921 Mbps.
+>>>                  An iperf from PC connected to the STA to the PC
+>>> connected to the AP give 441 Mbps.
+>>>
+>>>          If I cross the computer I have the same result. I did several
+>>> time these test and I always have the same result.
+>>
+>>
+>> We see similar.  One thing we notice is that if you actually try to send
+>> less
+>> throughput, then you get better overall throughput.
+>>
+>> In other words, trying to send 1Gbps UDP frames will give you more poor
+>> throughput than trying to send 650Mbps (in the upload direction).
+>>
+>> I thought it might be a poor interaction regarding backoff in the
+>> ath10k driver/firmware (see the congestion bins in firmware for why
+>> this is the case), but even fixing that in firmware didn't improve
+>> the situation in my testing.
+>
+> If CPU is the bottleneck on DUT than overcommiting the UDP traffic at
+> the source may lead the ethernet driver to waste CPU cycles on the
+> DUT.
+
+You are correct about the overcommit in general, but our systems are quite
+overpowered.
+
+We are testing with 3.5Ghz E5 quad-core systems...it is not just a CPU usage
+issue.  And, exact same hardware runs great (close to 900Mbps) in AP download mode.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
