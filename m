@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1L9a-0003De-H0
- for ath10k@lists.infradead.org; Tue, 24 Nov 2015 21:29:35 +0000
-Subject: Re: ATH10 firmware question
-References: <773DB8A82AB6A046AE0195C68612A31901C5AFA5@sbs2003.acksys.local>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <5654D6A8.9050002@candelatech.com>
-Date: Tue, 24 Nov 2015 13:29:12 -0800
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a1Ooc-0001uh-Ut
+ for ath10k@lists.infradead.org; Wed, 25 Nov 2015 01:24:12 +0000
+Message-ID: <56550D40.3090603@codeaurora.org>
+Date: Tue, 24 Nov 2015 17:22:08 -0800
+From: Peter Oh <poh@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <773DB8A82AB6A046AE0195C68612A31901C5AFA5@sbs2003.acksys.local>
+Subject: Re: [PATCH 1/3] ath10k: update WMI 10.x service map
+References: <201511250520.vewzfdmy%fengguang.wu@intel.com>
+In-Reply-To: <201511250520.vewzfdmy%fengguang.wu@intel.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,80 +22,238 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Cedric VONCKEN <cedric.voncken@acksys.fr>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: kbuild test robot <lkp@intel.com>, Peter Oh <poh@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, kbuild-all@01.org, ath10k@lists.infradead.org
 
-On 11/24/2015 10:07 AM, Cedric VONCKEN wrote:
-> 	Hi,
->
-> 	I have a simple test platform.
-> 	One PC connected to an equipment. This equipment is set in AP
-> mode.
-> 	Another PC connected to another equipment. This equipment is set
-> in STA + WDS mode.
->
-> 	Both equipment use the same openwrt Firmware (compat
-> 2015-07-21), I only changed the ath10k firmware (in
-> /lib/firmware/ath10k/...).
-> 	Both equipment has the same hardware.
-> 	I used a clear channel, and VHT80.
-> 	The radio was connected with a coaxial cable and I placed 40 dBm
-> attenuation per Rf chain.
-> 	I used the WLN350NX radio card from compex.
-> 	
-> 	First test : ATH10K firmware 10.2.4.70-2 on both equipment
-> 		An iperf from PC connected to the AP to the PC connected
-> to the STA give 919 Mbps.
-> 		An iperf from PC connected to the STA to the PC
-> connected to the AP give 500 Mbps.
->
-> 	Second test : ATHK firmware 10.2.4.70.10-2 on both equipment
-> 		An iperf from PC connected to the AP to the PC connected
-> to the STA give 921 Mbps.
-> 		An iperf from PC connected to the STA to the PC
-> connected to the AP give 441 Mbps.
->
-> 	If I cross the computer I have the same result. I did several
-> time these test and I always have the same result.
-
-We see similar.  One thing we notice is that if you actually try to send less
-throughput, then you get better overall throughput.
-
-In other words, trying to send 1Gbps UDP frames will give you more poor
-throughput than trying to send 650Mbps (in the upload direction).
-
-I thought it might be a poor interaction regarding backoff in the
-ath10k driver/firmware (see the congestion bins in firmware for why
-this is the case), but even fixing that in firmware didn't improve
-the situation in my testing.
+I believe the robot report is false.
+Am I right?
 
 Thanks,
-Ben
-
+Peter
+On 11/24/2015 01:19 PM, kbuild test robot wrote:
+> Hi Peter,
 >
-> 	Is it the expected result?
-> 	What is the recommanded firmware version for each mode?
-> 	
-> 	Thanks for your help.
+> [auto build test WARNING on net-next/master]
+> [also build test WARNING on v4.4-rc2 next-20151124]
 >
-> 	Cedric Voncken.
-> 	
+> url:
+> https://github.com/0day-ci/linux/commits/Peter-Oh/ath10k-introduce-Mesh-su
+> pport-in-native-WiFi-mode-for-QCA988X/20151125-014059
+> config: m68k-allmodconfig (attached as .config)
+> reproduce:
+>          wget
+> https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/
+> make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # save the attached .config to linux build tree
+>          make.cross ARCH=m68k
 >
+> All warnings (new ones prefixed by >>):
 >
+>     In file included from include/linux/bitops.h:36:0,
+>                      from include/linux/kernel.h:10,
+>                      from include/asm-generic/bug.h:13,
+>                      from arch/m68k/include/asm/bug.h:28,
+>                      from include/linux/bug.h:4,
+>                      from include/net/mac80211.h:18,
+>                      from drivers/net/wireless/ath/ath10k/mac.h:21,
+>                      from drivers/net/wireless/ath/ath10k/mac.c:18:
+>     drivers/net/wireless/ath/ath10k/wmi.h: In function 'wmi_10x_svc_map':
+>     drivers/net/wireless/ath/ath10k/wmi.h:457:9: error: 'WMI_SERVICE_MESH'
+> undeclared (first use in this function)
+>              WMI_SERVICE_MESH, len);
+>              ^
+>     arch/m68k/include/asm/bitops.h:63:50: note: in definition of macro
+> 'set_bit'
+>      #define set_bit(nr, vaddr) (__builtin_constant_p(nr) ? \
+>                                                       ^
+>>> drivers/net/wireless/ath/ath10k/wmi.h:398:4: note: in expansion of
+> macro '__set_bit'
+>         __set_bit(y, out); \
+>         ^
+>>> drivers/net/wireless/ath/ath10k/wmi.h:456:2: note: in expansion of
+> macro 'SVCMAP'
+>       SVCMAP(WMI_10X_SERVICE_MESH,
+>       ^
+>     drivers/net/wireless/ath/ath10k/wmi.h:457:9: note: each undeclared
+> identifier is reported only once for each function it appears in
+>              WMI_SERVICE_MESH, len);
+>              ^
+>     arch/m68k/include/asm/bitops.h:63:50: note: in definition of macro
+> 'set_bit'
+>      #define set_bit(nr, vaddr) (__builtin_constant_p(nr) ? \
+>                                                       ^
+>>> drivers/net/wireless/ath/ath10k/wmi.h:398:4: note: in expansion of
+> macro '__set_bit'
+>         __set_bit(y, out); \
+>         ^
+>>> drivers/net/wireless/ath/ath10k/wmi.h:456:2: note: in expansion of
+> macro 'SVCMAP'
+>       SVCMAP(WMI_10X_SERVICE_MESH,
+>       ^
+>     drivers/net/wireless/ath/ath10k/wmi.h:459:9: error:
+> 'WMI_SERVICE_EXT_RES_CFG_SUPPORT' undeclared (first use in this function)
+>              WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
+>              ^
+>     arch/m68k/include/asm/bitops.h:63:50: note: in definition of macro
+> 'set_bit'
+>      #define set_bit(nr, vaddr) (__builtin_constant_p(nr) ? \
+>                                                       ^
+>>> drivers/net/wireless/ath/ath10k/wmi.h:398:4: note: in expansion of
+> macro '__set_bit'
+>         __set_bit(y, out); \
+>         ^
+>     drivers/net/wireless/ath/ath10k/wmi.h:458:2: note: in expansion of
+> macro 'SVCMAP'
+>       SVCMAP(WMI_10X_SERVICE_EXT_RES_CFG_SUPPORT,
+>       ^
 >
+> vim +/__set_bit +398 drivers/net/wireless/ath/ath10k/wmi.h
 >
+> 37b9f933 Michal Kazior 2014-11-27  392
+> __le32_to_cpu((wmi_svc_bmap)[(svc_id)/(sizeof(u32))]) & \
+> cff990ce Michal Kazior 2014-08-04  393
+> BIT((svc_id)%(sizeof(u32))))
+> cff990ce Michal Kazior 2014-08-04  394
+> 37b9f933 Michal Kazior 2014-11-27  395  #define SVCMAP(x, y, len) \
+> cff990ce Michal Kazior 2014-08-04  396  	do { \
+> 37b9f933 Michal Kazior 2014-11-27  397  		if
+> (WMI_SERVICE_IS_ENABLED((in), (x), (len))) \
+> cff990ce Michal Kazior 2014-08-04 @398
+> __set_bit(y, out); \
+> cff990ce Michal Kazior 2014-08-04  399  	} while (0)
+> cff990ce Michal Kazior 2014-08-04  400
+> 37b9f933 Michal Kazior 2014-11-27  401  static inline void
+> wmi_10x_svc_map(const __le32 *in, unsigned long *out,
+> 37b9f933 Michal Kazior 2014-11-27  402
+> size_t len)
+> cff990ce Michal Kazior 2014-08-04  403  {
+> cff990ce Michal Kazior 2014-08-04  404
+> SVCMAP(WMI_10X_SERVICE_BEACON_OFFLOAD,
+> 37b9f933 Michal Kazior 2014-11-27  405
+> WMI_SERVICE_BEACON_OFFLOAD, len);
+> cff990ce Michal Kazior 2014-08-04  406
+> SVCMAP(WMI_10X_SERVICE_SCAN_OFFLOAD,
+> 37b9f933 Michal Kazior 2014-11-27  407
+> WMI_SERVICE_SCAN_OFFLOAD, len);
+> cff990ce Michal Kazior 2014-08-04  408
+> SVCMAP(WMI_10X_SERVICE_ROAM_OFFLOAD,
+> 37b9f933 Michal Kazior 2014-11-27  409
+> WMI_SERVICE_ROAM_OFFLOAD, len);
+> cff990ce Michal Kazior 2014-08-04  410
+> SVCMAP(WMI_10X_SERVICE_BCN_MISS_OFFLOAD,
+> 37b9f933 Michal Kazior 2014-11-27  411
+> WMI_SERVICE_BCN_MISS_OFFLOAD, len);
+> cff990ce Michal Kazior 2014-08-04  412
+> SVCMAP(WMI_10X_SERVICE_STA_PWRSAVE,
+> 37b9f933 Michal Kazior 2014-11-27  413
+> WMI_SERVICE_STA_PWRSAVE, len);
+> cff990ce Michal Kazior 2014-08-04  414
+> SVCMAP(WMI_10X_SERVICE_STA_ADVANCED_PWRSAVE,
+> 37b9f933 Michal Kazior 2014-11-27  415
+> WMI_SERVICE_STA_ADVANCED_PWRSAVE, len);
+> cff990ce Michal Kazior 2014-08-04  416
+> SVCMAP(WMI_10X_SERVICE_AP_UAPSD,
+> 37b9f933 Michal Kazior 2014-11-27  417
+> WMI_SERVICE_AP_UAPSD, len);
+> cff990ce Michal Kazior 2014-08-04  418
+> SVCMAP(WMI_10X_SERVICE_AP_DFS,
+> 37b9f933 Michal Kazior 2014-11-27  419  	       WMI_SERVICE_AP_DFS,
+> len);
+> cff990ce Michal Kazior 2014-08-04  420
+> SVCMAP(WMI_10X_SERVICE_11AC,
+> 37b9f933 Michal Kazior 2014-11-27  421  	       WMI_SERVICE_11AC,
+> len);
+> cff990ce Michal Kazior 2014-08-04  422
+> SVCMAP(WMI_10X_SERVICE_BLOCKACK,
+> 37b9f933 Michal Kazior 2014-11-27  423
+> WMI_SERVICE_BLOCKACK, len);
+> cff990ce Michal Kazior 2014-08-04  424
+> SVCMAP(WMI_10X_SERVICE_PHYERR,
+> 37b9f933 Michal Kazior 2014-11-27  425  	       WMI_SERVICE_PHYERR,
+> len);
+> cff990ce Michal Kazior 2014-08-04  426
+> SVCMAP(WMI_10X_SERVICE_BCN_FILTER,
+> 37b9f933 Michal Kazior 2014-11-27  427
+> WMI_SERVICE_BCN_FILTER, len);
+> cff990ce Michal Kazior 2014-08-04  428
+> SVCMAP(WMI_10X_SERVICE_RTT,
+> 37b9f933 Michal Kazior 2014-11-27  429  	       WMI_SERVICE_RTT,
+> len);
+> cff990ce Michal Kazior 2014-08-04  430
+> SVCMAP(WMI_10X_SERVICE_RATECTRL,
+> 37b9f933 Michal Kazior 2014-11-27  431
+> WMI_SERVICE_RATECTRL, len);
+> cff990ce Michal Kazior 2014-08-04  432
+> SVCMAP(WMI_10X_SERVICE_WOW,
+> 37b9f933 Michal Kazior 2014-11-27  433  	       WMI_SERVICE_WOW,
+> len);
+> cff990ce Michal Kazior 2014-08-04  434
+> SVCMAP(WMI_10X_SERVICE_RATECTRL_CACHE,
+> 37b9f933 Michal Kazior 2014-11-27  435
+> WMI_SERVICE_RATECTRL_CACHE, len);
+> cff990ce Michal Kazior 2014-08-04  436
+> SVCMAP(WMI_10X_SERVICE_IRAM_TIDS,
+> 37b9f933 Michal Kazior 2014-11-27  437
+> WMI_SERVICE_IRAM_TIDS, len);
+> cff990ce Michal Kazior 2014-08-04  438
+> SVCMAP(WMI_10X_SERVICE_BURST,
+> 37b9f933 Michal Kazior 2014-11-27  439  	       WMI_SERVICE_BURST,
+> len);
+> cff990ce Michal Kazior 2014-08-04  440
+> SVCMAP(WMI_10X_SERVICE_SMART_ANTENNA_SW_SUPPORT,
+> 37b9f933 Michal Kazior 2014-11-27  441
+> WMI_SERVICE_SMART_ANTENNA_SW_SUPPORT, len);
+> cff990ce Michal Kazior 2014-08-04  442
+> SVCMAP(WMI_10X_SERVICE_FORCE_FW_HANG,
+> 37b9f933 Michal Kazior 2014-11-27  443
+> WMI_SERVICE_FORCE_FW_HANG, len);
+> cff990ce Michal Kazior 2014-08-04  444
+> SVCMAP(WMI_10X_SERVICE_SMART_ANTENNA_HW_SUPPORT,
+> 37b9f933 Michal Kazior 2014-11-27  445
+> WMI_SERVICE_SMART_ANTENNA_HW_SUPPORT, len);
+> 52c22a63 Yanbo Li      2015-04-15  446
+> SVCMAP(WMI_10X_SERVICE_ATF,
+> 52c22a63 Yanbo Li      2015-04-15  447  	       WMI_SERVICE_ATF,
+> len);
+> de0c789b Yanbo Li      2015-04-15  448
+> SVCMAP(WMI_10X_SERVICE_COEX_GPIO,
+> de0c789b Yanbo Li      2015-04-15  449
+> WMI_SERVICE_COEX_GPIO, len);
+> 96a31b26 Peter Oh      2015-11-24  450
+> SVCMAP(WMI_10X_SERVICE_AUX_SPECTRAL_INTF,
+> 96a31b26 Peter Oh      2015-11-24  451
+> WMI_SERVICE_AUX_SPECTRAL_INTF, len);
+> 96a31b26 Peter Oh      2015-11-24  452
+> SVCMAP(WMI_10X_SERVICE_AUX_CHAN_LOAD_INTF,
+> 96a31b26 Peter Oh      2015-11-24  453
+> WMI_SERVICE_AUX_CHAN_LOAD_INTF, len);
+> 96a31b26 Peter Oh      2015-11-24  454
+> SVCMAP(WMI_10X_SERVICE_BSS_CHANNEL_INFO_64,
+> 96a31b26 Peter Oh      2015-11-24  455
+> WMI_SERVICE_BSS_CHANNEL_INFO_64, len);
+> 96a31b26 Peter Oh      2015-11-24 @456
+> SVCMAP(WMI_10X_SERVICE_MESH,
+> 96a31b26 Peter Oh      2015-11-24 @457  	       WMI_SERVICE_MESH,
+> len);
+> 96a31b26 Peter Oh      2015-11-24  458
+> SVCMAP(WMI_10X_SERVICE_EXT_RES_CFG_SUPPORT,
+> 96a31b26 Peter Oh      2015-11-24  459
+> WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
+> 5e3dd157 Kalle Valo    2013-06-12  460  }
 >
+> :::::: The code at line 398 was first introduced by commit
+> :::::: cff990ce7ddd6a43f86757867399a8a64aa29af9 ath10k: fix wmi service
+> bitmap debug
 >
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> :::::: TO: Michal Kazior <michal.kazior@tieto.com>
+> :::::: CC: Kalle Valo <kvalo@qca.qualcomm.com>
 >
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+> ---
+> 0-DAY kernel test infrastructure                Open Source Technology
+> Center
+> https://lists.01.org/pipermail/kbuild-all                   Intel
+> Corporation
 
 
 _______________________________________________
