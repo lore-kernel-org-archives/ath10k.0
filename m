@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1Ooc-0001uh-Ut
- for ath10k@lists.infradead.org; Wed, 25 Nov 2015 01:24:12 +0000
-Message-ID: <56550D40.3090603@codeaurora.org>
-Date: Tue, 24 Nov 2015 17:22:08 -0800
-From: Peter Oh <poh@codeaurora.org>
+ id 1a1RYH-0004My-HT
+ for ath10k@lists.infradead.org; Wed, 25 Nov 2015 04:19:30 +0000
+Received: by wmec201 with SMTP id c201so53553706wme.1
+ for <ath10k@lists.infradead.org>; Tue, 24 Nov 2015 20:19:03 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/3] ath10k: update WMI 10.x service map
-References: <201511250520.vewzfdmy%fengguang.wu@intel.com>
-In-Reply-To: <201511250520.vewzfdmy%fengguang.wu@intel.com>
+In-Reply-To: <5654D6A8.9050002@candelatech.com>
+References: <773DB8A82AB6A046AE0195C68612A31901C5AFA5@sbs2003.acksys.local>
+ <5654D6A8.9050002@candelatech.com>
+Date: Wed, 25 Nov 2015 05:19:03 +0100
+Message-ID: <CA+BoTQk2UXskCOPafxmd-2YzAceg=oMd1BKkDpwcX2LwazVQ-A@mail.gmail.com>
+Subject: Re: ATH10 firmware question
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,245 +21,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kbuild test robot <lkp@intel.com>, Peter Oh <poh@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, kbuild-all@01.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Cedric VONCKEN <cedric.voncken@acksys.fr>
 
-I believe the robot report is false.
-Am I right?
-
-Thanks,
-Peter
-On 11/24/2015 01:19 PM, kbuild test robot wrote:
-> Hi Peter,
->
-> [auto build test WARNING on net-next/master]
-> [also build test WARNING on v4.4-rc2 next-20151124]
->
-> url:
-> https://github.com/0day-ci/linux/commits/Peter-Oh/ath10k-introduce-Mesh-su
-> pport-in-native-WiFi-mode-for-QCA988X/20151125-014059
-> config: m68k-allmodconfig (attached as .config)
-> reproduce:
->          wget
-> https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/
-> make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # save the attached .config to linux build tree
->          make.cross ARCH=m68k
->
-> All warnings (new ones prefixed by >>):
->
->     In file included from include/linux/bitops.h:36:0,
->                      from include/linux/kernel.h:10,
->                      from include/asm-generic/bug.h:13,
->                      from arch/m68k/include/asm/bug.h:28,
->                      from include/linux/bug.h:4,
->                      from include/net/mac80211.h:18,
->                      from drivers/net/wireless/ath/ath10k/mac.h:21,
->                      from drivers/net/wireless/ath/ath10k/mac.c:18:
->     drivers/net/wireless/ath/ath10k/wmi.h: In function 'wmi_10x_svc_map':
->     drivers/net/wireless/ath/ath10k/wmi.h:457:9: error: 'WMI_SERVICE_MESH'
-> undeclared (first use in this function)
->              WMI_SERVICE_MESH, len);
->              ^
->     arch/m68k/include/asm/bitops.h:63:50: note: in definition of macro
-> 'set_bit'
->      #define set_bit(nr, vaddr) (__builtin_constant_p(nr) ? \
->                                                       ^
->>> drivers/net/wireless/ath/ath10k/wmi.h:398:4: note: in expansion of
-> macro '__set_bit'
->         __set_bit(y, out); \
->         ^
->>> drivers/net/wireless/ath/ath10k/wmi.h:456:2: note: in expansion of
-> macro 'SVCMAP'
->       SVCMAP(WMI_10X_SERVICE_MESH,
->       ^
->     drivers/net/wireless/ath/ath10k/wmi.h:457:9: note: each undeclared
-> identifier is reported only once for each function it appears in
->              WMI_SERVICE_MESH, len);
->              ^
->     arch/m68k/include/asm/bitops.h:63:50: note: in definition of macro
-> 'set_bit'
->      #define set_bit(nr, vaddr) (__builtin_constant_p(nr) ? \
->                                                       ^
->>> drivers/net/wireless/ath/ath10k/wmi.h:398:4: note: in expansion of
-> macro '__set_bit'
->         __set_bit(y, out); \
->         ^
->>> drivers/net/wireless/ath/ath10k/wmi.h:456:2: note: in expansion of
-> macro 'SVCMAP'
->       SVCMAP(WMI_10X_SERVICE_MESH,
->       ^
->     drivers/net/wireless/ath/ath10k/wmi.h:459:9: error:
-> 'WMI_SERVICE_EXT_RES_CFG_SUPPORT' undeclared (first use in this function)
->              WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
->              ^
->     arch/m68k/include/asm/bitops.h:63:50: note: in definition of macro
-> 'set_bit'
->      #define set_bit(nr, vaddr) (__builtin_constant_p(nr) ? \
->                                                       ^
->>> drivers/net/wireless/ath/ath10k/wmi.h:398:4: note: in expansion of
-> macro '__set_bit'
->         __set_bit(y, out); \
->         ^
->     drivers/net/wireless/ath/ath10k/wmi.h:458:2: note: in expansion of
-> macro 'SVCMAP'
->       SVCMAP(WMI_10X_SERVICE_EXT_RES_CFG_SUPPORT,
->       ^
->
-> vim +/__set_bit +398 drivers/net/wireless/ath/ath10k/wmi.h
->
-> 37b9f933 Michal Kazior 2014-11-27  392
-> __le32_to_cpu((wmi_svc_bmap)[(svc_id)/(sizeof(u32))]) & \
-> cff990ce Michal Kazior 2014-08-04  393
-> BIT((svc_id)%(sizeof(u32))))
-> cff990ce Michal Kazior 2014-08-04  394
-> 37b9f933 Michal Kazior 2014-11-27  395  #define SVCMAP(x, y, len) \
-> cff990ce Michal Kazior 2014-08-04  396  	do { \
-> 37b9f933 Michal Kazior 2014-11-27  397  		if
-> (WMI_SERVICE_IS_ENABLED((in), (x), (len))) \
-> cff990ce Michal Kazior 2014-08-04 @398
-> __set_bit(y, out); \
-> cff990ce Michal Kazior 2014-08-04  399  	} while (0)
-> cff990ce Michal Kazior 2014-08-04  400
-> 37b9f933 Michal Kazior 2014-11-27  401  static inline void
-> wmi_10x_svc_map(const __le32 *in, unsigned long *out,
-> 37b9f933 Michal Kazior 2014-11-27  402
-> size_t len)
-> cff990ce Michal Kazior 2014-08-04  403  {
-> cff990ce Michal Kazior 2014-08-04  404
-> SVCMAP(WMI_10X_SERVICE_BEACON_OFFLOAD,
-> 37b9f933 Michal Kazior 2014-11-27  405
-> WMI_SERVICE_BEACON_OFFLOAD, len);
-> cff990ce Michal Kazior 2014-08-04  406
-> SVCMAP(WMI_10X_SERVICE_SCAN_OFFLOAD,
-> 37b9f933 Michal Kazior 2014-11-27  407
-> WMI_SERVICE_SCAN_OFFLOAD, len);
-> cff990ce Michal Kazior 2014-08-04  408
-> SVCMAP(WMI_10X_SERVICE_ROAM_OFFLOAD,
-> 37b9f933 Michal Kazior 2014-11-27  409
-> WMI_SERVICE_ROAM_OFFLOAD, len);
-> cff990ce Michal Kazior 2014-08-04  410
-> SVCMAP(WMI_10X_SERVICE_BCN_MISS_OFFLOAD,
-> 37b9f933 Michal Kazior 2014-11-27  411
-> WMI_SERVICE_BCN_MISS_OFFLOAD, len);
-> cff990ce Michal Kazior 2014-08-04  412
-> SVCMAP(WMI_10X_SERVICE_STA_PWRSAVE,
-> 37b9f933 Michal Kazior 2014-11-27  413
-> WMI_SERVICE_STA_PWRSAVE, len);
-> cff990ce Michal Kazior 2014-08-04  414
-> SVCMAP(WMI_10X_SERVICE_STA_ADVANCED_PWRSAVE,
-> 37b9f933 Michal Kazior 2014-11-27  415
-> WMI_SERVICE_STA_ADVANCED_PWRSAVE, len);
-> cff990ce Michal Kazior 2014-08-04  416
-> SVCMAP(WMI_10X_SERVICE_AP_UAPSD,
-> 37b9f933 Michal Kazior 2014-11-27  417
-> WMI_SERVICE_AP_UAPSD, len);
-> cff990ce Michal Kazior 2014-08-04  418
-> SVCMAP(WMI_10X_SERVICE_AP_DFS,
-> 37b9f933 Michal Kazior 2014-11-27  419  	       WMI_SERVICE_AP_DFS,
-> len);
-> cff990ce Michal Kazior 2014-08-04  420
-> SVCMAP(WMI_10X_SERVICE_11AC,
-> 37b9f933 Michal Kazior 2014-11-27  421  	       WMI_SERVICE_11AC,
-> len);
-> cff990ce Michal Kazior 2014-08-04  422
-> SVCMAP(WMI_10X_SERVICE_BLOCKACK,
-> 37b9f933 Michal Kazior 2014-11-27  423
-> WMI_SERVICE_BLOCKACK, len);
-> cff990ce Michal Kazior 2014-08-04  424
-> SVCMAP(WMI_10X_SERVICE_PHYERR,
-> 37b9f933 Michal Kazior 2014-11-27  425  	       WMI_SERVICE_PHYERR,
-> len);
-> cff990ce Michal Kazior 2014-08-04  426
-> SVCMAP(WMI_10X_SERVICE_BCN_FILTER,
-> 37b9f933 Michal Kazior 2014-11-27  427
-> WMI_SERVICE_BCN_FILTER, len);
-> cff990ce Michal Kazior 2014-08-04  428
-> SVCMAP(WMI_10X_SERVICE_RTT,
-> 37b9f933 Michal Kazior 2014-11-27  429  	       WMI_SERVICE_RTT,
-> len);
-> cff990ce Michal Kazior 2014-08-04  430
-> SVCMAP(WMI_10X_SERVICE_RATECTRL,
-> 37b9f933 Michal Kazior 2014-11-27  431
-> WMI_SERVICE_RATECTRL, len);
-> cff990ce Michal Kazior 2014-08-04  432
-> SVCMAP(WMI_10X_SERVICE_WOW,
-> 37b9f933 Michal Kazior 2014-11-27  433  	       WMI_SERVICE_WOW,
-> len);
-> cff990ce Michal Kazior 2014-08-04  434
-> SVCMAP(WMI_10X_SERVICE_RATECTRL_CACHE,
-> 37b9f933 Michal Kazior 2014-11-27  435
-> WMI_SERVICE_RATECTRL_CACHE, len);
-> cff990ce Michal Kazior 2014-08-04  436
-> SVCMAP(WMI_10X_SERVICE_IRAM_TIDS,
-> 37b9f933 Michal Kazior 2014-11-27  437
-> WMI_SERVICE_IRAM_TIDS, len);
-> cff990ce Michal Kazior 2014-08-04  438
-> SVCMAP(WMI_10X_SERVICE_BURST,
-> 37b9f933 Michal Kazior 2014-11-27  439  	       WMI_SERVICE_BURST,
-> len);
-> cff990ce Michal Kazior 2014-08-04  440
-> SVCMAP(WMI_10X_SERVICE_SMART_ANTENNA_SW_SUPPORT,
-> 37b9f933 Michal Kazior 2014-11-27  441
-> WMI_SERVICE_SMART_ANTENNA_SW_SUPPORT, len);
-> cff990ce Michal Kazior 2014-08-04  442
-> SVCMAP(WMI_10X_SERVICE_FORCE_FW_HANG,
-> 37b9f933 Michal Kazior 2014-11-27  443
-> WMI_SERVICE_FORCE_FW_HANG, len);
-> cff990ce Michal Kazior 2014-08-04  444
-> SVCMAP(WMI_10X_SERVICE_SMART_ANTENNA_HW_SUPPORT,
-> 37b9f933 Michal Kazior 2014-11-27  445
-> WMI_SERVICE_SMART_ANTENNA_HW_SUPPORT, len);
-> 52c22a63 Yanbo Li      2015-04-15  446
-> SVCMAP(WMI_10X_SERVICE_ATF,
-> 52c22a63 Yanbo Li      2015-04-15  447  	       WMI_SERVICE_ATF,
-> len);
-> de0c789b Yanbo Li      2015-04-15  448
-> SVCMAP(WMI_10X_SERVICE_COEX_GPIO,
-> de0c789b Yanbo Li      2015-04-15  449
-> WMI_SERVICE_COEX_GPIO, len);
-> 96a31b26 Peter Oh      2015-11-24  450
-> SVCMAP(WMI_10X_SERVICE_AUX_SPECTRAL_INTF,
-> 96a31b26 Peter Oh      2015-11-24  451
-> WMI_SERVICE_AUX_SPECTRAL_INTF, len);
-> 96a31b26 Peter Oh      2015-11-24  452
-> SVCMAP(WMI_10X_SERVICE_AUX_CHAN_LOAD_INTF,
-> 96a31b26 Peter Oh      2015-11-24  453
-> WMI_SERVICE_AUX_CHAN_LOAD_INTF, len);
-> 96a31b26 Peter Oh      2015-11-24  454
-> SVCMAP(WMI_10X_SERVICE_BSS_CHANNEL_INFO_64,
-> 96a31b26 Peter Oh      2015-11-24  455
-> WMI_SERVICE_BSS_CHANNEL_INFO_64, len);
-> 96a31b26 Peter Oh      2015-11-24 @456
-> SVCMAP(WMI_10X_SERVICE_MESH,
-> 96a31b26 Peter Oh      2015-11-24 @457  	       WMI_SERVICE_MESH,
-> len);
-> 96a31b26 Peter Oh      2015-11-24  458
-> SVCMAP(WMI_10X_SERVICE_EXT_RES_CFG_SUPPORT,
-> 96a31b26 Peter Oh      2015-11-24  459
-> WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
-> 5e3dd157 Kalle Valo    2013-06-12  460  }
->
-> :::::: The code at line 398 was first introduced by commit
-> :::::: cff990ce7ddd6a43f86757867399a8a64aa29af9 ath10k: fix wmi service
-> bitmap debug
->
-> :::::: TO: Michal Kazior <michal.kazior@tieto.com>
-> :::::: CC: Kalle Valo <kvalo@qca.qualcomm.com>
->
-> ---
-> 0-DAY kernel test infrastructure                Open Source Technology
-> Center
-> https://lists.01.org/pipermail/kbuild-all                   Intel
-> Corporation
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjQgTm92ZW1iZXIgMjAxNSBhdCAyMjoyOSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxh
+dGVjaC5jb20+IHdyb3RlOgo+IE9uIDExLzI0LzIwMTUgMTA6MDcgQU0sIENlZHJpYyBWT05DS0VO
+IHdyb3RlOgo+Pgo+PiAgICAgICAgIEhpLAo+Pgo+PiAgICAgICAgIEkgaGF2ZSBhIHNpbXBsZSB0
+ZXN0IHBsYXRmb3JtLgo+PiAgICAgICAgIE9uZSBQQyBjb25uZWN0ZWQgdG8gYW4gZXF1aXBtZW50
+LiBUaGlzIGVxdWlwbWVudCBpcyBzZXQgaW4gQVAKPj4gbW9kZS4KPj4gICAgICAgICBBbm90aGVy
+IFBDIGNvbm5lY3RlZCB0byBhbm90aGVyIGVxdWlwbWVudC4gVGhpcyBlcXVpcG1lbnQgaXMgc2V0
+Cj4+IGluIFNUQSArIFdEUyBtb2RlLgo+Pgo+PiAgICAgICAgIEJvdGggZXF1aXBtZW50IHVzZSB0
+aGUgc2FtZSBvcGVud3J0IEZpcm13YXJlIChjb21wYXQKPj4gMjAxNS0wNy0yMSksIEkgb25seSBj
+aGFuZ2VkIHRoZSBhdGgxMGsgZmlybXdhcmUgKGluCj4+IC9saWIvZmlybXdhcmUvYXRoMTBrLy4u
+LikuCj4+ICAgICAgICAgQm90aCBlcXVpcG1lbnQgaGFzIHRoZSBzYW1lIGhhcmR3YXJlLgo+PiAg
+ICAgICAgIEkgdXNlZCBhIGNsZWFyIGNoYW5uZWwsIGFuZCBWSFQ4MC4KPj4gICAgICAgICBUaGUg
+cmFkaW8gd2FzIGNvbm5lY3RlZCB3aXRoIGEgY29heGlhbCBjYWJsZSBhbmQgSSBwbGFjZWQgNDAg
+ZEJtCj4+IGF0dGVudWF0aW9uIHBlciBSZiBjaGFpbi4KPj4gICAgICAgICBJIHVzZWQgdGhlIFdM
+TjM1ME5YIHJhZGlvIGNhcmQgZnJvbSBjb21wZXguCj4+Cj4+ICAgICAgICAgRmlyc3QgdGVzdCA6
+IEFUSDEwSyBmaXJtd2FyZSAxMC4yLjQuNzAtMiBvbiBib3RoIGVxdWlwbWVudAo+PiAgICAgICAg
+ICAgICAgICAgQW4gaXBlcmYgZnJvbSBQQyBjb25uZWN0ZWQgdG8gdGhlIEFQIHRvIHRoZSBQQyBj
+b25uZWN0ZWQKPj4gdG8gdGhlIFNUQSBnaXZlIDkxOSBNYnBzLgo+PiAgICAgICAgICAgICAgICAg
+QW4gaXBlcmYgZnJvbSBQQyBjb25uZWN0ZWQgdG8gdGhlIFNUQSB0byB0aGUgUEMKPj4gY29ubmVj
+dGVkIHRvIHRoZSBBUCBnaXZlIDUwMCBNYnBzLgo+Pgo+PiAgICAgICAgIFNlY29uZCB0ZXN0IDog
+QVRISyBmaXJtd2FyZSAxMC4yLjQuNzAuMTAtMiBvbiBib3RoIGVxdWlwbWVudAo+PiAgICAgICAg
+ICAgICAgICAgQW4gaXBlcmYgZnJvbSBQQyBjb25uZWN0ZWQgdG8gdGhlIEFQIHRvIHRoZSBQQyBj
+b25uZWN0ZWQKPj4gdG8gdGhlIFNUQSBnaXZlIDkyMSBNYnBzLgo+PiAgICAgICAgICAgICAgICAg
+QW4gaXBlcmYgZnJvbSBQQyBjb25uZWN0ZWQgdG8gdGhlIFNUQSB0byB0aGUgUEMKPj4gY29ubmVj
+dGVkIHRvIHRoZSBBUCBnaXZlIDQ0MSBNYnBzLgo+Pgo+PiAgICAgICAgIElmIEkgY3Jvc3MgdGhl
+IGNvbXB1dGVyIEkgaGF2ZSB0aGUgc2FtZSByZXN1bHQuIEkgZGlkIHNldmVyYWwKPj4gdGltZSB0
+aGVzZSB0ZXN0IGFuZCBJIGFsd2F5cyBoYXZlIHRoZSBzYW1lIHJlc3VsdC4KPgo+Cj4gV2Ugc2Vl
+IHNpbWlsYXIuICBPbmUgdGhpbmcgd2Ugbm90aWNlIGlzIHRoYXQgaWYgeW91IGFjdHVhbGx5IHRy
+eSB0byBzZW5kCj4gbGVzcwo+IHRocm91Z2hwdXQsIHRoZW4geW91IGdldCBiZXR0ZXIgb3ZlcmFs
+bCB0aHJvdWdocHV0Lgo+Cj4gSW4gb3RoZXIgd29yZHMsIHRyeWluZyB0byBzZW5kIDFHYnBzIFVE
+UCBmcmFtZXMgd2lsbCBnaXZlIHlvdSBtb3JlIHBvb3IKPiB0aHJvdWdocHV0IHRoYW4gdHJ5aW5n
+IHRvIHNlbmQgNjUwTWJwcyAoaW4gdGhlIHVwbG9hZCBkaXJlY3Rpb24pLgo+Cj4gSSB0aG91Z2h0
+IGl0IG1pZ2h0IGJlIGEgcG9vciBpbnRlcmFjdGlvbiByZWdhcmRpbmcgYmFja29mZiBpbiB0aGUK
+PiBhdGgxMGsgZHJpdmVyL2Zpcm13YXJlIChzZWUgdGhlIGNvbmdlc3Rpb24gYmlucyBpbiBmaXJt
+d2FyZSBmb3Igd2h5Cj4gdGhpcyBpcyB0aGUgY2FzZSksIGJ1dCBldmVuIGZpeGluZyB0aGF0IGlu
+IGZpcm13YXJlIGRpZG4ndCBpbXByb3ZlCj4gdGhlIHNpdHVhdGlvbiBpbiBteSB0ZXN0aW5nLgoK
+SWYgQ1BVIGlzIHRoZSBib3R0bGVuZWNrIG9uIERVVCB0aGFuIG92ZXJjb21taXRpbmcgdGhlIFVE
+UCB0cmFmZmljIGF0CnRoZSBzb3VyY2UgbWF5IGxlYWQgdGhlIGV0aGVybmV0IGRyaXZlciB0byB3
+YXN0ZSBDUFUgY3ljbGVzIG9uIHRoZQpEVVQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
