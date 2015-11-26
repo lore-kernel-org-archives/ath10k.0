@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1wVm-0004TC-Jd
- for ath10k@lists.infradead.org; Thu, 26 Nov 2015 13:22:59 +0000
-Date: Thu, 26 Nov 2015 13:22:28 +0000
-From: Mark Brown <broonie@kernel.org>
-Message-ID: <20151126132228.GG1929@sirena.org.uk>
-References: <E1a1sVV-00079q-My@optimist> <20151126121551.GE1929@sirena.org.uk>
- <87y4dllysz.fsf@kamboji.qca.qualcomm.com>
+ id 1a1ybe-0006ch-6S
+ for ath10k@lists.infradead.org; Thu, 26 Nov 2015 15:37:11 +0000
+From: Michal Marek <mmarek@suse.com>
+Subject: [PATCH] ath10: Fix build with CONFIG_THERMAL=m
+Date: Thu, 26 Nov 2015 16:36:38 +0100
+Message-Id: <1448552198-26911-1-git-send-email-mmarek@suse.com>
+In-Reply-To: <201511260039.iQbaOe1h%fengguang.wu@intel.com>
+References: <201511260039.iQbaOe1h%fengguang.wu@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <87y4dllysz.fsf@kamboji.qca.qualcomm.com>
-Subject: Re: next-20151126 build: 3 failures 15 warnings (next-20151126)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,64 +18,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7932092006684580858=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linaro-kernel@lists.linaro.org, kernel-build-reports@lists.linaro.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, linux-next@vger.kernel.org
+To: linux-kbuild@vger.kernel.org
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, fengguang.wu@intel.com, kbuild-all@01.org, ath10k@lists.infradead.org
 
-
---===============7932092006684580858==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZOBTspFzEMOlPevk"
-Content-Disposition: inline
-
-
---ZOBTspFzEMOlPevk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Nov 26, 2015 at 02:39:40PM +0200, Kalle Valo wrote:
-> Mark Brown <broonie@kernel.org> writes:
-
-> > It looks like this was somehow triggered as part of the reorganisation
-> > of the WiFi directory structure.
-
-> This is surprising and also worrying, any ideas why? It would be good to
-> understand the root cause in case there's a bug in wireless drivers
-> directory reorganisation.
-
-No, I didn't make much effort to check though since the use of ifdef was
-clearly a bug waiting to happen anyway, I was more surprised it worked
-at all than anything.
-
---ZOBTspFzEMOlPevk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWVweTAAoJECTWi3JdVIfQ1KgH/RBdqvEUc+9LSwYI0LHtPzfW
-BxmFqs8xqr81JBpmBXi3u8Pqog+0xWrLZefsIssfDRfO3t1IcA0tkk9SuSDkjCsv
-sKe960Bxa/1yBPnP67/GuNWNc5iOkE1y5BVTa10PKxs9Be77oZAZEANCMwaxwWeo
-FpUaSbH8UcZ+lx5yT10mqAIEK1HWlXiRuZNrM/AxV9/0Y2lmjNBM8CEY9wMfBn+E
-vEszFh9SAAbUMczh6j3O0xM9OF+qnZVfTnrPEcE7a4l1Y2IzKBaU/sRJZ644fYnJ
-T469/8UtKr1/2kTGFil1s7j2kJ9rr0chMdipGP6bqiE8pUtFVAsGuj8mIX34090=
-=+mvw
------END PGP SIGNATURE-----
-
---ZOBTspFzEMOlPevk--
-
-
---===============7932092006684580858==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============7932092006684580858==--
+QWZ0ZXIgY29tbWl0IGNmNGYyMTkzOGUxMyAoImtidWlsZDogQWxsb3cgdG8gc3BlY2lmeSBjb21w
+b3NpdGUgbW9kdWxlcwp3aXRoIG1vZG5hbWUtbSIpLCB0aGVybWFsLmMgZ2V0cyBpbmNsdWRlZCBp
+biB0aGUgZHJpdmVyIGFuZCB0aGUgYnVpbGQKZmFpbHMgd2l0aAoKZHJpdmVycy9uZXQvd2lyZWxl
+c3MvYXRoL2F0aDEway90aGVybWFsLmM6MTE5OjY6IGVycm9yOiByZWRlZmluaXRpb24gb2Yg4oCY
+YXRoMTBrX3RoZXJtYWxfZXZlbnRfdGVtcGVyYXR1cmXigJkKZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway90aGVybWFsLmg6NTQ6MjA6IG5vdGU6IHByZXZpb3VzIGRlZmluaXRpb24gb2Yg
+4oCYYXRoMTBrX3RoZXJtYWxfZXZlbnRfdGVtcGVyYXR1cmXigJkgd2FzIGhlcmUKZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway90aGVybWFsLmM6MTM2OjY6IGVycm9yOiByZWRlZmluaXRp
+b24gb2Yg4oCYYXRoMTBrX3RoZXJtYWxfc2V0X3Rocm90dGxpbmfigJkKZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway90aGVybWFsLmg6NTk6MjA6IG5vdGU6IHByZXZpb3VzIGRlZmluaXRp
+b24gb2Yg4oCYYXRoMTBrX3RoZXJtYWxfc2V0X3Rocm90dGxpbmfigJkgd2FzIGhlcmUKZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway90aGVybWFsLmM6MTYyOjU6IGVycm9yOiByZWRlZmlu
+aXRpb24gb2Yg4oCYYXRoMTBrX3RoZXJtYWxfcmVnaXN0ZXLigJkKZHJpdmVycy9uZXQvd2lyZWxl
+c3MvYXRoL2F0aDEway90aGVybWFsLmg6NDU6MTk6IG5vdGU6IHByZXZpb3VzIGRlZmluaXRpb24g
+b2Yg4oCYYXRoMTBrX3RoZXJtYWxfcmVnaXN0ZXLigJkgd2FzIGhlcmUKZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway90aGVybWFsLmM6MjE2OjY6IGVycm9yOiByZWRlZmluaXRpb24gb2Yg
+4oCYYXRoMTBrX3RoZXJtYWxfdW5yZWdpc3RlcuKAmQpkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL3RoZXJtYWwuaDo1MDoyMDogbm90ZTogcHJldmlvdXMgZGVmaW5pdGlvbiBvZiDigJhh
+dGgxMGtfdGhlcm1hbF91bnJlZ2lzdGVy4oCZIHdhcyBoZXJlCgpDaGFuZ2UgdGhlICNpZmRlZiB0
+byByZWZsZWN0IHRoZSBuZXcga2J1aWxkIGJlaGF2aW9yLgoKUmVwb3J0ZWQtYnk6IGtidWlsZCB0
+ZXN0IHJvYm90IDxmZW5nZ3Vhbmcud3VAaW50ZWwuY29tPgpTaWduZWQtb2ZmLWJ5OiBNaWNoYWwg
+TWFyZWsgPG1tYXJla0BzdXNlLmNvbT4KLS0tCiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL3RoZXJtYWwuaCB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBk
+ZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+dGhlcm1hbC5oIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway90aGVybWFsLmgKaW5k
+ZXggYjYxMGVhNWNhYWU4Li5jOTIyM2U5ZTk2MmYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvdGhlcm1hbC5oCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9hdGgxMGsvdGhlcm1hbC5oCkBAIC0zNiw3ICszNiw3IEBAIHN0cnVjdCBhdGgxMGtfdGhlcm1h
+bCB7CiAJaW50IHRlbXBlcmF0dXJlOwogfTsKIAotI2lmZGVmIENPTkZJR19USEVSTUFMCisjaWYg
+SVNfUkVBQ0hBQkxFKENPTkZJR19USEVSTUFMKQogaW50IGF0aDEwa190aGVybWFsX3JlZ2lzdGVy
+KHN0cnVjdCBhdGgxMGsgKmFyKTsKIHZvaWQgYXRoMTBrX3RoZXJtYWxfdW5yZWdpc3RlcihzdHJ1
+Y3QgYXRoMTBrICphcik7CiB2b2lkIGF0aDEwa190aGVybWFsX2V2ZW50X3RlbXBlcmF0dXJlKHN0
+cnVjdCBhdGgxMGsgKmFyLCBpbnQgdGVtcGVyYXR1cmUpOwotLSAKMi4xLjQKCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
+CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
