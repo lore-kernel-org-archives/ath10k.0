@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1zt3-0006aF-I9
- for ath10k@lists.infradead.org; Thu, 26 Nov 2015 16:59:14 +0000
+ id 1a1zw5-0008CJ-Gw
+ for ath10k@lists.infradead.org; Thu, 26 Nov 2015 17:02:22 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: next-20151126 build: 3 failures 15 warnings (next-20151126)
-References: <E1a1sVV-00079q-My@optimist> <20151126121551.GE1929@sirena.org.uk>
- <87y4dllysz.fsf@kamboji.qca.qualcomm.com>
- <20151126132228.GG1929@sirena.org.uk>
-Date: Thu, 26 Nov 2015 18:58:32 +0200
-In-Reply-To: <20151126132228.GG1929@sirena.org.uk> (Mark Brown's message of
- "Thu, 26 Nov 2015 13:22:28 +0000")
-Message-ID: <87lh9kn1dz.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10: Fix build with CONFIG_THERMAL=m
+References: <201511260039.iQbaOe1h%fengguang.wu@intel.com>
+ <1448552198-26911-1-git-send-email-mmarek@suse.com>
+Date: Thu, 26 Nov 2015 19:01:42 +0200
+In-Reply-To: <1448552198-26911-1-git-send-email-mmarek@suse.com> (Michal
+ Marek's message of "Thu, 26 Nov 2015 16:36:38 +0100")
+Message-ID: <87h9k8n18p.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,40 +20,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linaro-kernel@lists.linaro.org, kernel-build-reports@lists.linaro.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, linux-next@vger.kernel.org
+To: Michal Marek <mmarek@suse.com>
+Cc: fengguang.wu@intel.com, linux-wireless@vger.kernel.org, kbuild-all@01.org, ath10k@lists.infradead.org, linux-kbuild@vger.kernel.org
 
-Mark Brown <broonie@kernel.org> writes:
-
-> On Thu, Nov 26, 2015 at 02:39:40PM +0200, Kalle Valo wrote:
->> Mark Brown <broonie@kernel.org> writes:
->
->> > It looks like this was somehow triggered as part of the reorganisation
->> > of the WiFi directory structure.
->
->> This is surprising and also worrying, any ideas why? It would be good to
->> understand the root cause in case there's a bug in wireless drivers
->> directory reorganisation.
->
-> No, I didn't make much effort to check though since the use of ifdef was
-> clearly a bug waiting to happen anyway, I was more surprised it worked
-> at all than anything.
-
-Michal Marek explains[1] that this is due to commit cf4f21938e13
-("kbuild: Allow to specify composite modules with modname-m") and has
-nothing to do with the wireless drivers reorganisation. I'll drop this
-patch as Michal will apply his fix to the kbuild tree.
-
-[1] https://patchwork.kernel.org/patch/7707801/
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+KyBsaW51eC13aXJlbGVzcwoKTWljaGFsIE1hcmVrIDxtbWFyZWtAc3VzZS5jb20+IHdyaXRlczoK
+Cj4gQWZ0ZXIgY29tbWl0IGNmNGYyMTkzOGUxMyAoImtidWlsZDogQWxsb3cgdG8gc3BlY2lmeSBj
+b21wb3NpdGUgbW9kdWxlcwo+IHdpdGggbW9kbmFtZS1tIiksIHRoZXJtYWwuYyBnZXRzIGluY2x1
+ZGVkIGluIHRoZSBkcml2ZXIgYW5kIHRoZSBidWlsZAo+IGZhaWxzIHdpdGgKPgo+IGRyaXZlcnMv
+bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdGhlcm1hbC5jOjExOTo2OiBlcnJvcjogcmVkZWZpbml0
+aW9uIG9mIOKAmGF0aDEwa190aGVybWFsX2V2ZW50X3RlbXBlcmF0dXJl4oCZCj4gZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway90aGVybWFsLmg6NTQ6MjA6IG5vdGU6IHByZXZpb3VzIGRl
+ZmluaXRpb24gb2Yg4oCYYXRoMTBrX3RoZXJtYWxfZXZlbnRfdGVtcGVyYXR1cmXigJkgd2FzIGhl
+cmUKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3RoZXJtYWwuYzoxMzY6NjogZXJy
+b3I6IHJlZGVmaW5pdGlvbiBvZiDigJhhdGgxMGtfdGhlcm1hbF9zZXRfdGhyb3R0bGluZ+KAmQo+
+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdGhlcm1hbC5oOjU5OjIwOiBub3RlOiBw
+cmV2aW91cyBkZWZpbml0aW9uIG9mIOKAmGF0aDEwa190aGVybWFsX3NldF90aHJvdHRsaW5n4oCZ
+IHdhcyBoZXJlCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway90aGVybWFsLmM6MTYy
+OjU6IGVycm9yOiByZWRlZmluaXRpb24gb2Yg4oCYYXRoMTBrX3RoZXJtYWxfcmVnaXN0ZXLigJkK
+PiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3RoZXJtYWwuaDo0NToxOTogbm90ZTog
+cHJldmlvdXMgZGVmaW5pdGlvbiBvZiDigJhhdGgxMGtfdGhlcm1hbF9yZWdpc3RlcuKAmSB3YXMg
+aGVyZQo+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvdGhlcm1hbC5jOjIxNjo2OiBl
+cnJvcjogcmVkZWZpbml0aW9uIG9mIOKAmGF0aDEwa190aGVybWFsX3VucmVnaXN0ZXLigJkKPiBk
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3RoZXJtYWwuaDo1MDoyMDogbm90ZTogcHJl
+dmlvdXMgZGVmaW5pdGlvbiBvZiDigJhhdGgxMGtfdGhlcm1hbF91bnJlZ2lzdGVy4oCZIHdhcyBo
+ZXJlCj4KPiBDaGFuZ2UgdGhlICNpZmRlZiB0byByZWZsZWN0IHRoZSBuZXcga2J1aWxkIGJlaGF2
+aW9yLgo+Cj4gUmVwb3J0ZWQtYnk6IGtidWlsZCB0ZXN0IHJvYm90IDxmZW5nZ3Vhbmcud3VAaW50
+ZWwuY29tPgo+IFNpZ25lZC1vZmYtYnk6IE1pY2hhbCBNYXJlayA8bW1hcmVrQHN1c2UuY29tPgoK
+UGxlYXNlIGZpeCB0aGUgc3ViamVjdCBwcmVmaXggdG8gImF0aDEwazogIiwgb3RoZXJ3aXNlIGxv
+b2tzIGdvb2QuIEZlZWwKZnJlZSB0byBhcHBseSB0aGlzIHRvIHRoZSBrYnVpbGQgdHJlZS4KCkFj
+a2VkLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPgoKLS0gCkthbGxlIFZh
+bG8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
+ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
