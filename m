@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3Q1v-0006PM-R9
- for ath10k@lists.infradead.org; Mon, 30 Nov 2015 15:06:17 +0000
+ id 1a3Q39-0006nw-Nq
+ for ath10k@lists.infradead.org; Mon, 30 Nov 2015 15:07:32 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix board data fetch error message
-References: <1448040794-1139-1-git-send-email-poh@qca.qualcomm.com>
-Date: Mon, 30 Nov 2015 17:05:40 +0200
-In-Reply-To: <1448040794-1139-1-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Fri, 20 Nov 2015 09:33:14 -0800")
-Message-ID: <8737vnjznf.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: stop abusing GFP_DMA
+References: <1448361412-22589-1-git-send-email-nbd@openwrt.org>
+Date: Mon, 30 Nov 2015 17:06:38 +0200
+In-Reply-To: <1448361412-22589-1-git-send-email-nbd@openwrt.org> (Felix
+ Fietkau's message of "Tue, 24 Nov 2015 11:36:52 +0100")
+Message-ID: <87two3il1d.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,17 +23,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Felix Fietkau <nbd@openwrt.org>
+Cc: poh@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+Felix Fietkau <nbd@openwrt.org> writes:
 
-> The error message order of board data fetch is board info,
-> directory, and then file name, hence place print arguments
-> in the order.
+> Allocations from the DMA zone were originally added for legacy ISA
+> stuff, or PCI devices that have specific limitations in their DMA
+> addressing capabilities. It has no place in ath10k, which can do
+> full 32-bit DMA.
 >
-> Fixes: 0a51b343abfe ("ath10k: add board 2 API support")
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+> Fixes memory allocation errors on some platforms.
+>
+> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
 
 Applied, thanks.
 
