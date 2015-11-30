@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3Q41-00071f-BU
- for ath10k@lists.infradead.org; Mon, 30 Nov 2015 15:08:25 +0000
+ id 1a3QBa-0003hK-HD
+ for ath10k@lists.infradead.org; Mon, 30 Nov 2015 15:16:14 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/3] ath10k: introduce Mesh support in native WiFi mode
- for QCA988X
-References: <1448386655-13936-1-git-send-email-poh@qca.qualcomm.com>
-Date: Mon, 30 Nov 2015 17:07:52 +0200
-In-Reply-To: <1448386655-13936-1-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Tue, 24 Nov 2015 09:37:32 -0800")
-Message-ID: <87lh9fikzb.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/6] ath10k: print crc32 checksum
+References: <20151125133654.25507.10863.stgit@potku.adurom.net>
+Date: Mon, 30 Nov 2015 17:15:40 +0200
+In-Reply-To: <20151125133654.25507.10863.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Wed, 25 Nov 2015 15:37:56 +0200")
+Message-ID: <87h9k3ikmb.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,22 +23,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> QCA988X firmware has started supporting Mesh frame in native Wi-Fi mode
-> by adding its subtype since 10.2.4.70.12-2.
-> Hence update its WMI service map and vdev subtypes to be used for Mesh in
-> native Wi-Fi mode.
+> Print crc32 checksum for firmware and board files. Also some improvements how
+> we print info messages during boot.
 >
-> Peter Oh (3):
->   ath10k: update WMI 10.x service map
->   ath10k: introduce new subtypes for proxy STA and Mesh
->   ath10k: apply Mesh subtype when Mesh interface created.
+> ---
+>
+> Kalle Valo (6):
+>       ath10k: fix otp board id error message
+>       ath10k: reorganise hardware and firmware info messages
+>       ath10k: always show bmi chip ids and subdevice ids
+>       ath10k: split driver info messages during device initialisation
+>       ath10k: print crc32 checksums for firmware and board files
+>       ath10k: implement fw_checksums debugfs file
 
-All three applied, thanks.
+All six applied.
 
 -- 
 Kalle Valo
