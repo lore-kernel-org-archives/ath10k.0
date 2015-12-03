@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x236.google.com ([2607:f8b0:4001:c06::236])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4Iu6-0000qU-BB
- for ath10k@lists.infradead.org; Thu, 03 Dec 2015 01:41:50 +0000
-Received: by iouu10 with SMTP id u10so67442933iou.0
- for <ath10k@lists.infradead.org>; Wed, 02 Dec 2015 17:41:28 -0800 (PST)
+ id 1a4Y4f-0006ZC-9D
+ for ath10k@lists.infradead.org; Thu, 03 Dec 2015 17:53:45 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH] ath10k: allow Mesh Point to install peer security key
+Date: Thu, 3 Dec 2015 09:50:55 -0800
+Message-ID: <1449165055-27782-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <565F52E8.9050109@candelatech.com>
-References: <565F52E8.9050109@candelatech.com>
-Date: Wed, 2 Dec 2015 17:41:28 -0800
-Message-ID: <CAJ-Vmom9JER-ie4QEtH_y51ha0VuhxUsPCAbFUBjpThVf6u9SA@mail.gmail.com>
-Subject: Re: Does ath10k peregrine support beamforming?
-From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +20,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On 2 December 2015 at 12:22, Ben Greear <greearb@candelatech.com> wrote:
-> It seems the 10.2.4.97-2 firmware does not advertise beam-forming
-> capabilities
-> in the VHT capabilites.
->
->
-> Any idea if the peregrine chipset and/or firmware is supposed to support
-> this?
+Mesh Point requires peer security key install when running
+in secured mode since it's a type of peer links, otherwise peer
+link will be removed due to key install failure.
 
-IIRC, there was /some/ beamforming support in peregrine, but certainly
-not enough to use as an AP.
+MFP feature set is required to run Mesh in secured mode and
+QCA988X firmware, 10.2.4.70.14-2 and above, is the only one
+supporting secured Mesh at this moment.
 
-I think that stuff got more fixed up in Beeliner. I'll ask that when
-I'm out at QCA next.
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index bcb364d..b4bdeb0 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -250,7 +250,8 @@ static int ath10k_install_peer_wep_keys(struct ath10k_vif *arvif,
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+ 	if (WARN_ON(arvif->vif->type != NL80211_IFTYPE_AP &&
+-		    arvif->vif->type != NL80211_IFTYPE_ADHOC))
++		    arvif->vif->type != NL80211_IFTYPE_ADHOC &&
++		    arvif->vif->type != NL80211_IFTYPE_MESH_POINT))
+ 		return -EINVAL;
+ 
+ 	spin_lock_bh(&ar->data_lock);
+-- 
+1.9.1
 
--a
 
 _______________________________________________
 ath10k mailing list
