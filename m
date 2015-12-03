@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4Y4f-0006ZC-9D
- for ath10k@lists.infradead.org; Thu, 03 Dec 2015 17:53:45 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH] ath10k: allow Mesh Point to install peer security key
-Date: Thu, 3 Dec 2015 09:50:55 -0800
-Message-ID: <1449165055-27782-1-git-send-email-poh@qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a4ZwD-0007Fr-Ib
+ for ath10k@lists.infradead.org; Thu, 03 Dec 2015 19:53:09 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 55DA740A959
+ for <ath10k@lists.infradead.org>; Thu,  3 Dec 2015 11:52:47 -0800 (PST)
+From: Ben Greear <greearb@candelatech.com>
+Subject: Bugs in wake-queue logic.
+Message-ID: <56609D8E.9010703@candelatech.com>
+Date: Thu, 3 Dec 2015 11:52:46 -0800
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,42 +21,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: ath10k <ath10k@lists.infradead.org>
 
-Mesh Point requires peer security key install when running
-in secured mode since it's a type of peer links, otherwise peer
-link will be removed due to key install failure.
+So, after tweaking a firmware image to actually be able to use
+all tx-buffers, then queues can actually be stopped on the host
+now.
 
-MFP feature set is required to run Mesh in secured mode and
-QCA988X firmware, 10.2.4.70.14-2 and above, is the only one
-supporting secured Mesh at this moment.
+I'm now getting splats related to tx-queue being
+out of range.
 
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Why are we using vdev_id as the queue-id below?
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index bcb364d..b4bdeb0 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -250,7 +250,8 @@ static int ath10k_install_peer_wep_keys(struct ath10k_vif *arvif,
- 	lockdep_assert_held(&ar->conf_mutex);
- 
- 	if (WARN_ON(arvif->vif->type != NL80211_IFTYPE_AP &&
--		    arvif->vif->type != NL80211_IFTYPE_ADHOC))
-+		    arvif->vif->type != NL80211_IFTYPE_ADHOC &&
-+		    arvif->vif->type != NL80211_IFTYPE_MESH_POINT))
- 		return -EINVAL;
- 
- 	spin_lock_bh(&ar->data_lock);
+void ath10k_mac_vif_tx_unlock(struct ath10k_vif *arvif, int reason)
+{
+         struct ath10k *ar = arvif->ar;
+
+         lockdep_assert_held(&ar->htt.tx_lock);
+
+         WARN_ON(reason >= BITS_PER_LONG);
+         arvif->tx_paused &= ~BIT(reason);
+
+         if (ar->tx_paused)
+                 return;
+
+         if (arvif->tx_paused)
+                 return;
+
+         ieee80211_wake_queue(ar->hw, arvif->vdev_id);
+}
+
+
+Thanks,
+Ben
+
 -- 
-1.9.1
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
