@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4mSZ-0006mo-I8
- for ath10k@lists.infradead.org; Fri, 04 Dec 2015 09:15:25 +0000
-Received: by wmww144 with SMTP id w144so56325315wmw.0
- for <ath10k@lists.infradead.org>; Fri, 04 Dec 2015 01:15:02 -0800 (PST)
+ id 1a5D6i-0006lj-7Q
+ for ath10k@lists.infradead.org; Sat, 05 Dec 2015 13:42:37 +0000
+Received: by wmvv187 with SMTP id v187so110364057wmv.1
+ for <ath10k@lists.infradead.org>; Sat, 05 Dec 2015 05:42:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <5661331D.3050600@candelatech.com>
+In-Reply-To: <56609D8E.9010703@candelatech.com>
 References: <56609D8E.9010703@candelatech.com>
- <CALhHN=q7HebGUxgLznBhnNWjCMfmm1cx_5t8kh_Y-TbMVZBOdQ@mail.gmail.com>
- <CALhHN=p9e4T-UhdqJ2JajcvkAfi4Huz+Oexpfzk-FdrxSzkGfA@mail.gmail.com>
- <5661331D.3050600@candelatech.com>
-Date: Fri, 4 Dec 2015 10:15:01 +0100
-Message-ID: <CALhHN=oM4y4q9+kZ4x_867sy+v2Y9jhC3uSNcrvcgPgA3XENDA@mail.gmail.com>
+Date: Sat, 5 Dec 2015 19:12:08 +0530
+Message-ID: <CA+BoTQmPh4+CL0Mfchfvo6yY5V7O1GdOMOu68nD+Cg90EjV7ZA@mail.gmail.com>
 Subject: Re: Bugs in wake-queue logic.
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,61 +27,43 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On 4 December 2015 at 07:30, Ben Greear <greearb@candelatech.com> wrote:
+On 04/12/2015, Ben Greear <greearb@candelatech.com> wrote:
+> So, after tweaking a firmware image to actually be able to use
+> all tx-buffers, then queues can actually be stopped on the host
+> now.
 >
+> I'm now getting splats related to tx-queue being
+> out of range.
 >
-> On 12/03/2015 10:11 PM, Janusz Dziedzic wrote:
->>
->> On 4 December 2015 at 07:06, Janusz Dziedzic <janusz.dziedzic@tieto.com>
->> wrote:
->>>
->>> On 3 December 2015 at 20:52, Ben Greear <greearb@candelatech.com> wrote:
->>>>
->>>> So, after tweaking a firmware image to actually be able to use
->>>> all tx-buffers, then queues can actually be stopped on the host
->>>> now.
->>>>
->>>> I'm now getting splats related to tx-queue being
->>>> out of range.
->>>>
->>>> Why are we using vdev_id as the queue-id below?
->>>>
->>> This is comment in the code:
->>>
->>>          /* Using vdev_id as queue number will make it very easy to do
->>> per-vif
->>>           * tx queue locking. This shouldn't wrap due to interface
->>> combinations
->>>           * but do a modulo for correctness sake and prevent using
->>> offchannel tx
->>>           * queues for regular vif tx.
->>>           */
->>>
->> BTW, I think Michal will send soon "new" design for that because of
->> MU-MIMO implementation.
+> Why are we using vdev_id as the queue-id below?
 >
+> void ath10k_mac_vif_tx_unlock(struct ath10k_vif *arvif, int reason)
+> {
+>          struct ath10k *ar = arvif->ar;
 >
-> It would be nice if ath10k could gracefully deal with 64 vdevs using only
-> the default 16 maximum tx-queues supported by mac80211.
+>          lockdep_assert_held(&ar->htt.tx_lock);
 >
-I think Michal changed also mac80211 (netdev) queues - that can be
-used/locked per station for MU-MIMO case.
-I think he will send paches soon, while now he stuck in Chennai do to
-flooding ...
+>          WARN_ON(reason >= BITS_PER_LONG);
+>          arvif->tx_paused &= ~BIT(reason);
+>
+>          if (ar->tx_paused)
+>                  return;
+>
+>          if (arvif->tx_paused)
+>                  return;
+>
+>          ieee80211_wake_queue(ar->hw, arvif->vdev_id);
 
-BR
-Janusz
+I guess you could try replacing arvif->vdev_id with
+arvif->vif->cab_queue. This along with vif->hw_queue[] share the same
+queue number associated with vdev_id. Refer to the add_interface()
+implementation, please.
 
-> I wrote a patch that extended max-queues to 65, but not sure it will
-> make it upstream...
->
->
-> Thanks,
-> Ben
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
+You don't need to increase mac80211's max_queues unless you intend to
+support a similar host queue control via firmware events like qca6174.
+
+
+Michal
 
 _______________________________________________
 ath10k mailing list
