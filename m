@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a6JfT-0003Rk-AS
- for ath10k@lists.infradead.org; Tue, 08 Dec 2015 14:55:04 +0000
+ id 1a6Jf3-0003Iz-Dl
+ for ath10k@lists.infradead.org; Tue, 08 Dec 2015 14:54:37 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: do not use coherent memory for allocated
- device memory chunks
-References: <1448908321-3042-1-git-send-email-nbd@openwrt.org>
-Date: Tue, 8 Dec 2015 16:54:27 +0200
-In-Reply-To: <1448908321-3042-1-git-send-email-nbd@openwrt.org> (Felix
- Fietkau's message of "Mon, 30 Nov 2015 19:32:01 +0100")
-Message-ID: <87si3d9ejg.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Remove unnecessary amsdu/ampdu assignment in
+ debugfs
+References: <1448902779-3582-1-git-send-email-mohammed@qca.qualcomm.com>
+Date: Tue, 8 Dec 2015 16:53:59 +0200
+In-Reply-To: <1448902779-3582-1-git-send-email-mohammed@qca.qualcomm.com>
+ (Mohammed Shafi Shajakhan's message of "Mon, 30 Nov 2015 22:29:39
+ +0530")
+Message-ID: <87wpsp9ek8.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,17 +25,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Felix Fietkau <nbd@openwrt.org>
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Felix Fietkau <nbd@openwrt.org> writes:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
 
-> Coherent memory is more expensive to allocate (and constrained on some
-> architectures where it has to be pre-allocated). It is also completely
-> unnecessary, since the host has no reason to even access these allocated
-> memory spaces
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 >
-> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+> The default values of max_num_amsdu / max_num_amdpu is assigned a
+> default value as part of 'ath10k_core_init_firmware_features'
+>
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
 Applied, thanks.
 
