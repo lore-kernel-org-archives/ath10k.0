@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a6Jf3-0003Iz-Dl
- for ath10k@lists.infradead.org; Tue, 08 Dec 2015 14:54:37 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Remove unnecessary amsdu/ampdu assignment in
- debugfs
-References: <1448902779-3582-1-git-send-email-mohammed@qca.qualcomm.com>
-Date: Tue, 8 Dec 2015 16:53:59 +0200
-In-Reply-To: <1448902779-3582-1-git-send-email-mohammed@qca.qualcomm.com>
- (Mohammed Shafi Shajakhan's message of "Mon, 30 Nov 2015 22:29:39
- +0530")
-Message-ID: <87wpsp9ek8.fsf@kamboji.qca.qualcomm.com>
+Received: from smtp-out04.msg.oleane.net ([62.161.7.2])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a6Kuh-00020I-W5
+ for ath10k@lists.infradead.org; Tue, 08 Dec 2015 16:14:53 +0000
+Received: from smtp02.msg.oleane.net (smtp02.mail.priv [172.17.20.111]) 
+ by smtp-out04.msg.oleane.net with ESMTP id tB8FkMt0024121
+ for <ath10k@lists.infradead.org>; Tue, 8 Dec 2015 16:46:22 +0100
+Content-class: urn:content-classes:message
+Subject: ATH10K VLAN firmware issue
+Date: Tue, 8 Dec 2015 15:29:24 +0100
 MIME-Version: 1.0
+Message-ID: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
+From: "Cedric VONCKEN" <cedric.voncken@acksys.fr>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +24,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, linux-wireless <linux-wireless@vger.kernel.org>
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
+	I'm testing to transmit frame with 802.1q tag (VLAN).
 
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
->
-> The default values of max_num_amsdu / max_num_amdpu is assigned a
-> default value as part of 'ath10k_core_init_firmware_features'
->
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+	My client is set in STA + WDS and the netdev is bridged with
+eth0.
+	I have a computer with vlan configuration set connected to the
+STA eth0.
 
-Applied, thanks.
+	If I try to transmit frames with 802.1q tag, the frames are not
+sent.
+	I checked with wireless sniffer, and I don't see the frame with
+VLAN tag (the frames without VLAN tag are sent).
 
--- 
-Kalle Valo
+	I tested with firmware 10.2.4.70.14-2 from kale github,
+10.1.467-ct-com-full-015 from candelatech and 10.2.4.70-2 from openwrt,
+and in all cases I have the same issue.
+
+	Thanks for your help.
+
+	
 
 _______________________________________________
 ath10k mailing list
