@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out04.msg.oleane.net ([62.161.7.2])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a6Kuh-00020I-W5
- for ath10k@lists.infradead.org; Tue, 08 Dec 2015 16:14:53 +0000
-Received: from smtp02.msg.oleane.net (smtp02.mail.priv [172.17.20.111]) 
- by smtp-out04.msg.oleane.net with ESMTP id tB8FkMt0024121
- for <ath10k@lists.infradead.org>; Tue, 8 Dec 2015 16:46:22 +0100
-Content-class: urn:content-classes:message
-Subject: ATH10K VLAN firmware issue
-Date: Tue, 8 Dec 2015 15:29:24 +0100
+Received: from aserp1040.oracle.com ([141.146.126.69])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a6cJw-00026b-J4
+ for ath10k@lists.infradead.org; Wed, 09 Dec 2015 10:50:05 +0000
+Date: Wed, 9 Dec 2015 13:49:35 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: re: ath10k: replace vdev_id and tid in skb cb
+Message-ID: <20151209104935.GL3173@mwanda>
 MIME-Version: 1.0
-Message-ID: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
-From: "Cedric VONCKEN" <cedric.voncken@acksys.fr>
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +21,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless <linux-wireless@vger.kernel.org>
+To: michal.kazior@tieto.com
+Cc: ath10k@lists.infradead.org
 
-	I'm testing to transmit frame with 802.1q tag (VLAN).
+Hello Michal Kazior,
 
-	My client is set in STA + WDS and the netdev is bridged with
-eth0.
-	I have a computer with vlan configuration set connected to the
-STA eth0.
+This is a semi-automatic email about new static checker warnings.
 
-	If I try to transmit frames with 802.1q tag, the frames are not
-sent.
-	I checked with wireless sniffer, and I don't see the frame with
-VLAN tag (the frames without VLAN tag are sent).
+The patch 609db229b42f: "ath10k: replace vdev_id and tid in skb cb" 
+from Nov 18, 2015, leads to the following Smatch complaint:
 
-	I tested with firmware 10.2.4.70.14-2 from kale github,
-10.1.467-ct-com-full-015 from candelatech and 10.2.4.70-2 from openwrt,
-and in all cases I have the same issue.
+drivers/net/wireless/ath/ath10k/htt_tx.c:450 ath10k_htt_tx_get_vdev_id()
+	 warn: variable dereferenced before check 'cb->vif' (see line 446)
 
-	Thanks for your help.
+drivers/net/wireless/ath/ath10k/htt_tx.c
+   445		struct ath10k_skb_cb *cb = ATH10K_SKB_CB(skb);
+   446		struct ath10k_vif *arvif = (void *)cb->vif->drv_priv;
+                                                   ^^^^^^^^^
+Dereference.
 
-	
+   447	
+   448		if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN)
+   449			return ar->scan.vdev_id;
+   450		else if (cb->vif)
+                         ^^^^^^^
+Checked too late.
+
+   451			return arvif->vdev_id;
+   452		else if (ar->monitor_started)
+
+See also:
+drivers/net/wireless/ath/ath10k/wmi.c:1830 ath10k_wmi_op_gen_mgmt_tx() warn: variable dereferenced before check 'cb->vif' (see line 1818)
+
+regards,
+dan carpenter
 
 _______________________________________________
 ath10k mailing list
