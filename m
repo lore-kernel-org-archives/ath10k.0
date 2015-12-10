@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out03.msg.oleane.net ([62.161.7.1])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a6j9U-0002gL-EX
- for ath10k@lists.infradead.org; Wed, 09 Dec 2015 18:07:46 +0000
-Received: from smtp03.msg.oleane.net (smtp03.mail.priv [172.17.20.112]) 
- by smtp-out03.msg.oleane.net with ESMTP id tB9HkDlQ027401
- for <ath10k@lists.infradead.org>; Wed, 9 Dec 2015 18:46:13 +0100
-From: "voncken" <cedric.voncken@acksys.fr>
-References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
- <566849DB.9040901@candelatech.com>
-In-Reply-To: <566849DB.9040901@candelatech.com>
-Subject: RE: ATH10K VLAN firmware issue
-Date: Wed, 9 Dec 2015 18:24:43 +0100
-Message-ID: <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a6xn3-0001gx-3s
+ for ath10k@lists.infradead.org; Thu, 10 Dec 2015 09:45:34 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH 2/2] ath10k: reduce indentation by moving powersave check
+ within function
+Date: Thu, 10 Dec 2015 15:14:27 +0530
+Message-ID: <1449740667-25901-2-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1449740667-25901-1-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1449740667-25901-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,65 +19,90 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Ben Greear' <greearb@candelatech.com>, ath10k@lists.infradead.org, 'linux-wireless' <linux-wireless@vger.kernel.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
+For devices that does not support PCI power save, force wake up
+API is used. So move powersave check inside force wakeup to reduce
+one level indentation.
 
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 34 +++++++++++++++-------------------
+ 1 file changed, 15 insertions(+), 19 deletions(-)
 
-> -----Message d'origine-----
-> De=A0: Ben Greear [mailto:greearb@candelatech.com]
-> Envoy=E9=A0: mercredi 9 d=E9cembre 2015 16:34
-> =C0=A0: Cedric VONCKEN; ath10k@lists.infradead.org; linux-wireless
-> Objet=A0: Re: ATH10K VLAN firmware issue
-> =
-
-> This only happens when you use STA  + WDS, or is .1q broken for you in
-> other cases as well?
-
-No, this issue occurs in all modes (STA, STA + WDS, AP).
-
-Thanks
-
-Cedric.
-
-> =
-
-> Thanks,
-> Ben
-> =
-
-> On 12/08/2015 06:29 AM, Cedric VONCKEN wrote:
-> > 	I'm testing to transmit frame with 802.1q tag (VLAN).
-> >
-> > 	My client is set in STA + WDS and the netdev is bridged with eth0.
-> > 	I have a computer with vlan configuration set connected to the STA
-> > eth0.
-> >
-> > 	If I try to transmit frames with 802.1q tag, the frames are not
-sent.
-> > 	I checked with wireless sniffer, and I don't see the frame with VLAN
-> > tag (the frames without VLAN tag are sent).
-> >
-> > 	I tested with firmware 10.2.4.70.14-2 from kale github,
-> > 10.1.467-ct-com-full-015 from candelatech and 10.2.4.70-2 from
-> > openwrt, and in all cases I have the same issue.
-> >
-> > 	Thanks for your help.
-> >
-> >
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe
-> > linux-wireless" in the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> >
-> =
-
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 473a141..c6aaad2 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -487,6 +487,9 @@ static int ath10k_pci_force_wake(struct ath10k *ar)
+ 	unsigned long flags;
+ 	int ret = 0;
+ 
++	if (ar_pci->pci_ps)
++		return ret;
++
+ 	spin_lock_irqsave(&ar_pci->ps_lock, flags);
+ 
+ 	if (!ar_pci->ps_awake) {
+@@ -2480,12 +2483,10 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
+ 	u32 val;
+ 	int ret = 0;
+ 
+-	if (ar_pci->pci_ps == 0) {
+-		ret = ath10k_pci_force_wake(ar);
+-		if (ret) {
+-			ath10k_err(ar, "failed to wake up target: %d\n", ret);
+-			return ret;
+-		}
++	ret = ath10k_pci_force_wake(ar);
++	if (ret) {
++		ath10k_err(ar, "failed to wake up target: %d\n", ret);
++		return ret;
+ 	}
+ 
+ 	/* Suspend/Resume resets the PCI configuration space, so we have to
+@@ -2592,13 +2593,10 @@ static irqreturn_t ath10k_pci_interrupt_handler(int irq, void *arg)
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int ret;
+ 
+-	if (ar_pci->pci_ps == 0) {
+-		ret = ath10k_pci_force_wake(ar);
+-		if (ret) {
+-			ath10k_warn(ar, "failed to wake device up on irq: %d\n",
+-				    ret);
+-			return IRQ_NONE;
+-		}
++	ret = ath10k_pci_force_wake(ar);
++	if (ret) {
++		ath10k_warn(ar, "failed to wake device up on irq: %d\n", ret);
++		return IRQ_NONE;
+ 	}
+ 
+ 	if (ar_pci->num_msi_intrs == 0) {
+@@ -3071,12 +3069,10 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		goto err_sleep;
+ 	}
+ 
+-	if (ar_pci->pci_ps == 0) {
+-		ret = ath10k_pci_force_wake(ar);
+-		if (ret) {
+-			ath10k_warn(ar, "failed to wake up device : %d\n", ret);
+-			goto err_free_pipes;
+-		}
++	ret = ath10k_pci_force_wake(ar);
++	if (ret) {
++		ath10k_warn(ar, "failed to wake up device : %d\n", ret);
++		goto err_free_pipes;
+ 	}
+ 
+ 	ath10k_pci_ce_deinit(ar);
+-- 
+2.6.3
 
 
 _______________________________________________
