@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a9gXe-0000nB-3C
- for ath10k@lists.infradead.org; Thu, 17 Dec 2015 21:56:55 +0000
-Message-ID: <56732F64.2020508@qca.qualcomm.com>
-Date: Thu, 17 Dec 2015 13:55:48 -0800
+ id 1a9gdV-0003X1-7i
+ for ath10k@lists.infradead.org; Thu, 17 Dec 2015 22:02:57 +0000
+Message-ID: <567330CE.3080808@qca.qualcomm.com>
+Date: Thu, 17 Dec 2015 14:01:50 -0800
 From: Peter Oh <poh@qca.qualcomm.com>
 MIME-Version: 1.0
 Subject: Re: [PATCH] ath10k: add modparam 'hw_csum' to make HW checksum
  configurable
-References: <1450290051-15593-1-git-send-email-poh@qca.qualcomm.com>	<5671AD10.70004@openwrt.org>	<5671C99A.703@codeaurora.org>	<5671CAF5.6010606@openwrt.org>	<5671CDBD.5060006@codeaurora.org>	<5671CF63.9040308@openwrt.org>	<5671D56F.8030903@codeaurora.org>	<5671DDA1.5030709@openwrt.org>	<5671F8B7.2060801@codeaurora.org>
- <CA+BoTQmOg3gACzk5PAtkyDo1a5WJuCauOXPZKqL+cgVi+n1HCg@mail.gmail.com>
-In-Reply-To: <CA+BoTQmOg3gACzk5PAtkyDo1a5WJuCauOXPZKqL+cgVi+n1HCg@mail.gmail.com>
+References: <1450290051-15593-1-git-send-email-poh@qca.qualcomm.com>
+ <5671AD10.70004@openwrt.org> <5671C99A.703@codeaurora.org>
+ <5671CAF5.6010606@openwrt.org> <5671CDBD.5060006@codeaurora.org>
+ <5671CF63.9040308@openwrt.org> <5671D56F.8030903@codeaurora.org>
+ <5671DDA1.5030709@openwrt.org> <5671F8B7.2060801@codeaurora.org>
+ <5671FADD.6010009@openwrt.org>
+In-Reply-To: <5671FADD.6010009@openwrt.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +24,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, Peter Oh <poh@codeaurora.org>
-Cc: "nbd@openwrt.org" <nbd@openwrt.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Felix Fietkau <nbd@openwrt.org>, Peter Oh <poh@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Ck9uIDEyLzE2LzIwMTUgMTE6MjkgUE0sIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4gT24gMTcgRGVj
-ZW1iZXIgMjAxNSBhdCAwMDo1MCwgUGV0ZXIgT2ggPHBvaEBjb2RlYXVyb3JhLm9yZz4gd3JvdGU6
-Cj4+IE9uIDEyLzE2LzIwMTUgMDE6NTQgUE0sIEZlbGl4IEZpZXRrYXUgd3JvdGU6Cj4+PiBPbiAy
-MDE1LTEyLTE2IDIyOjE5LCBQZXRlciBPaCB3cm90ZToKPiBbLi4uXQo+Pj4+IElmIG1lbnRpb25l
-ZCB0byB1c2UgdGhlIGZ1bmN0aW9uIHRvIG1lc2ggZnJhbWUgb25seSB3aXRob3V0IHRvdWNoaW5n
-Cj4+Pj4gbWFjODAyMTEsIHRoZW4gaG93IGRvIHlvdSBzdWdnZXN0IGl0IHRvIGFwcGx5IGl0IG9u
-bHkgdG8gbWVzaCBmcmFtZQo+Pj4+IHdpdGhvdXQgaW50ZXJmZXJlIG90aGVyIGRhdGEgZnJhbWVz
-Pwo+Pj4+IENhbiB5b3Ugc2hhcmUgeW91ciBleGFtcGxlPwo+Pj4gSXQncyB0cml2aWFsIC0gaW4g
-YXRoMTBrX3R4IHlvdSBkbyB0aGlzOgo+Pj4KPj4+IGlmICh2aWYtPnR5cGUgPT0gTkw4MDIxMV9J
-RlRZUEVfTUVTSF9QT0lOVCAmJgo+Pj4gICAgICAgc2tiLT5pcF9zdW1tZWQgPT0gQ0hFQ0tTVU1f
-UEFSVElBTCkKPj4+ICAgICAgICAgIHNrYl9jaGVja3N1bV9oZWxwKHNrYik7Cgo+PiBUaGFuayB5
-b3UgRmVsaXggZm9yIHRoZSBxdWljayByZXNwb25zZS4KPj4gSSBhZ3JlZSBvbiB5b3VyIHVzZXIg
-ZXhwZXJpZW5jZSBvcGluaW9uLAo+PiBidXQgd2hhdCBkbyB5b3UgdGhpbmsgd2hlbiBhdGgxMGsg
-aGFzIGEgbmV3IGNoaXAgc3VwcG9ydGluZyBIVyBjaGVja3N1bSBmb3IKPj4gTWVzaD8KPiBZb3Ug
-Y2FuIHNpbXBseSBpbnRyb2R1Y2UgYSBmdy1mZWF0dXJlIGZsYWcgc2F5aW5nCj4gInN1cHBvcnRz
-X21lc2hfY3N1bV9vZmZsb2FkIiBsYXRlciBhbmQgc2tpcCB0aGUgc2tiX2NoZWNrc3VtX2hlbHAo
-KSBpZgo+IGl0J3Mgc2V0LgpJZiB3ZSByZWx5IG9uIGZ3LWZlYXR1cmUgZmxhZywgdGhlbiB3ZSBh
-cmUgbm90IGFibGUgdG8gdXNlIEhXIGNoZWNrc3VtIAphdCBhbGwgZXZlbiBmb3IgQVAvU1RBIGlu
-dGVyZmFjZXMuCgo+Cj4gTWljaGHFggpUaGFua3MsClBldGVyCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+
+On 12/16/2015 03:59 PM, Felix Fietkau wrote:
+> On 2015-12-17 00:50, Peter Oh wrote:
+>> On 12/16/2015 01:54 PM, Felix Fietkau wrote:
+>>> On 2015-12-16 22:19, Peter Oh wrote:
+>>>> On 12/16/2015 12:53 PM, Felix Fietkau wrote:
+>>>>> On 2015-12-16 21:46, Peter Oh wrote:
+>>>>>> On 12/16/2015 12:35 PM, Felix Fietkau wrote:
+>>>>>>> On 2015-12-16 21:29, Peter Oh wrote:
+>>>>>>>> On 12/16/2015 10:27 AM, Felix Fietkau wrote:
+>>>>>>>>> On 2015-12-16 19:20, Peter Oh wrote:
+>>>>>>>>>> Some hardwares such as QCA988X and QCA99X0 doesn't have
+>>>>>>>>>> capability of checksum offload when frame formats are not
+>>>>>>>>>> suitable for it such as Mesh frame.
+>>>>>>>>>> Hence add a module parameter, hw_csum, to make checksum offload
+>>>>>>>>>> configurable during module registration time.
+>>>>>>>>>>
+>>>>>>>>>> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+>>>>>>>>> How about instead of inventing yet another crappy module parameter, you
+>>>>>>>>> call skb_checksum_help() in the driver in cases where the hardware is
+>>>>>>>>> unable to offload the checksum calculation.
+>>>>>>>>>
+>>>>>>>>> That way the user has to worry about less driver specific hackery ;)
+>>>>>>>> That will be good option for hardware not supporting HW checksum, but I
+>>>>>>>> mind that using the function will add more workload per every packet on
+>>>>>>>> critical data path when HW supports checksum resulting in throughput down.
+>>>>>>> I didn't mean calling it for every single frame in the data path.
+>>>>>>> What I'm suggesting is calling it selectively only for mesh frames, or
+>>>>>>> any other frames that the hardware cannot offload, and leaving the rest
+>>>>>>> for the hardware to process.
+>>>>>>>
+>>>>>>> There should be no performance difference between disabling checksum
+>>>>>>> offload and calling skb_checksum_help from the driver.
+>>>>>> To call it selectively for Mesh frame or interface, we need to add it on
+>>>>>> mac80211 layer such as ieee80211_build_hdr() since driver layer does not
+>>>>>> care the interface type in data path.
+>>>>> No need to change mac80211 - it only touches the headers, and
+>>>>> skb_checksum_help does not care about that. The skb has enough
+>>>>> information for it to find the right range to calculate the checksum and
+>>>>> the place to store it.
+>>>> If mentioned to use the function to mesh frame only without touching
+>>>> mac80211, then how do you suggest it to apply it only to mesh frame
+>>>> without interfere other data frames?
+>>>> Can you share your example?
+>>> It's trivial - in ath10k_tx you do this:
+>>>
+>>> if (vif->type == NL80211_IFTYPE_MESH_POINT &&
+>>>       skb->ip_summed == CHECKSUM_PARTIAL)
+>>> 	skb_checksum_help(skb);
+>> Thank you Felix for the quick response.
+>> I agree on your user experience opinion,
+>> but what do you think when ath10k has a new chip supporting HW checksum
+>> for Mesh?
+> Then you simply update the checks. What's the big deal?
+keep adding condition to such data path is not a good option.
+I also considered again about user experiences and reached to that this 
+patch won't disturb user experience since the products will ship with 
+proper module settings. for instance the parameter will be turned on if 
+product support it other wise will be turned off as they shipped, so 
+that users don't need to touch it.
+In addition, for enterprise customers, they do care even a very small 
+performance drop or enhancement especially when they are running BMT 
+among vendors.
+So we need to avoid adding extra codes in data path in my opinion.
+> - Felix
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
