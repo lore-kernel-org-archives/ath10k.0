@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from arrakis.dune.hu ([78.24.191.176])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aA3kx-0001Ky-Ux
- for ath10k@lists.infradead.org; Fri, 18 Dec 2015 22:44:12 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH] ath10k: Set SM power save disabled to default value
-Date: Fri, 18 Dec 2015 14:43:44 -0800
-Message-ID: <1450478624-21881-1-git-send-email-poh@qca.qualcomm.com>
+ id 1aAfHI-0001hO-Ec
+ for ath10k@lists.infradead.org; Sun, 20 Dec 2015 14:48:05 +0000
+Subject: Re: Issue with QCA9980 initialization
+References: <CAD1MEwcSoCvfcp1v8L4=Bu9rk08hJ4BXSVS83d3+0RRwzF292A@mail.gmail.com>
+From: Felix Fietkau <nbd@openwrt.org>
+Message-ID: <5676BF7F.8010701@openwrt.org>
+Date: Sun, 20 Dec 2015 15:47:27 +0100
 MIME-Version: 1.0
+In-Reply-To: <CAD1MEwcSoCvfcp1v8L4=Bu9rk08hJ4BXSVS83d3+0RRwzF292A@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,36 +18,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Josh Bendavid <joshbendavid@gmail.com>, ath10k@lists.infradead.org
 
-VXNlIFNNUFMgZGlzYWJsZWQgYXMgZGVmYXVsdCBiZWNhdXNlIEZXIGRvZXMgbm90IGluZGljYXRl
-CmFueSBzdXBwb3J0IG9mIFNNUFMuCgpUaGlzIGNoYW5nZSB3aWxsIGhlbHAgU1RBcyBvdXQgdGhh
-dCBkb27igJl0IHN1cHBvcnQgU01QUyBmcm9tCnN0aWNraW5nIG9uIDFTUywgc2luY2UgdGhleSBk
-b27igJl0IGhhdmUgbWV0aG9kIHRvIGNoYW5nZSBpdApiYWNrIHRvIG11bHRpcGxlIGNoYWlucy4K
-ClRoaXMgY2hhbmdlIGFsc28gc2hvdWxkIG5vdCBhZmZlY3QgcG93ZXIgY29uc3VtcHRpb24gb2Yg
-U1RBcwpzdXBwb3J0aW5nIFNNUFMsIGJlY2F1c2UgdGhleSBhcmUgY2FwYWJsZSB0byBzd2l0Y2gg
-dGhlIG1vZGUKdG8gZHluYW1pYyBvciBzdGF0aWMgZWl0aGVyIGF0IHRoZSBlbmQgb2YgZnJhbWUg
-c2VxdWVuY2Ugb3IKYnkgdXNpbmcgU01QUyBhY3Rpb24gZnJhbWUuCgpTaWduZWQtb2ZmLWJ5OiBQ
-ZXRlciBPaCA8cG9oQHFjYS5xdWFsY29tbS5jb20+Ci0tLQogZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway9tYWMuYyB8IDMgKystCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCsp
-LCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway9tYWMuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKaW5kZXgg
-YjRiZGViMC4uNjE0NmEyOSAxMDA2NDQKLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway9tYWMuYworKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCkBA
-IC0zODYwLDcgKzM4NjAsOCBAQCBzdGF0aWMgc3RydWN0IGllZWU4MDIxMV9zdGFfaHRfY2FwIGF0
-aDEwa19nZXRfaHRfY2FwKHN0cnVjdCBhdGgxMGsgKmFyKQogCWh0X2NhcC5hbXBkdV9kZW5zaXR5
-ID0gSUVFRTgwMjExX0hUX01QRFVfREVOU0lUWV84OwogCWh0X2NhcC5jYXAgfD0gSUVFRTgwMjEx
-X0hUX0NBUF9TVVBfV0lEVEhfMjBfNDA7CiAJaHRfY2FwLmNhcCB8PSBJRUVFODAyMTFfSFRfQ0FQ
-X0RTU1NDQ0s0MDsKLQlodF9jYXAuY2FwIHw9IFdMQU5fSFRfQ0FQX1NNX1BTX1NUQVRJQyA8PCBJ
-RUVFODAyMTFfSFRfQ0FQX1NNX1BTX1NISUZUOworCWh0X2NhcC5jYXAgfD0KKwkJV0xBTl9IVF9D
-QVBfU01fUFNfRElTQUJMRUQgPDwgSUVFRTgwMjExX0hUX0NBUF9TTV9QU19TSElGVDsKIAogCWlm
-IChhci0+aHRfY2FwX2luZm8gJiBXTUlfSFRfQ0FQX0hUMjBfU0dJKQogCQlodF9jYXAuY2FwIHw9
-IElFRUU4MDIxMV9IVF9DQVBfU0dJXzIwOwotLSAKMS45LjEKCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+On 2015-12-17 13:10, Josh Bendavid wrote:
+> I have a problem with QCA9980 initialization.
+> 
+> Hardware/software environment is a TP-Link Archer C2600 with Openwrt
+> trunk + patches for the c2600.  (This device has two QCA9980
+> controllers for simultaneous dual band operation)
+> 
+> Openwrt is currently populating the firmware files as follows
+> 
+> https://github.com/kvalo/ath10k-firmware/blob/69f955c3dd95d97c7c30960aa5c9852c80b85cc3/QCA99X0/hw2.0/boardData_AR900B_CUS239_5G_v2_001.bin
+> -> /lib/firmware/ath10k/QCA99X0/hw2.0/board.bin
+> 
+> https://github.com/kvalo/ath10k-firmware/blob/69f955c3dd95d97c7c30960aa5c9852c80b85cc3/QCA99X0/hw2.0/firmware-5.bin_10.4.1.00030-1
+> -> /lib/firmware/ath10k/QCA99X0/hw2.0/firmware-5.bin
+> 
+> https://www.codeaurora.org/cgit/quic/qsdk/oss/firmware/ath10k-firmware/plain/ath10k/QCA99X0/hw2.0/board-2.bin?id=ddcec9efd245da9365c474f513a855a55f3ac7fe
+> -> /lib/firmware/ath10k/QCA99X0/hw2.0/board-2.bin
+> 
+> Then I am extracting (at hardware initialization time) the appropriate
+> calibration data from the ART partition on the router flash
+> 
+> offset/count 4096/12064 -> /lib/firmware/ath10k/cal-pci-0000:01:00.0.bin
+> offset/count 20480/12064 -> /lib/firmware/ath10k/cal-pci-0001:01:00.0.bin
+> 
+> Using ath10k as shipped with compat-wireless in openwrt trunk out of
+> the box I get the output in attached nopatch.txt (and wireless is not
+> functioning clearly)
+> 
+> Using instead the patch from
+> http://lists.infradead.org/pipermail/ath10k/2015-November/006489.html
+> 
+> Then I get the output in attached patch.txt, and wireless is working
+> correctly with both radios.
+> 
+> Is it a known problem?  Is there a mistake somewhere in how I am
+> populating /lib/firmware, or is the applied patch the correct fix for
+> the time being?
+It's a known problem. ath10k has a bug where it needlessly tries to
+extract the OTP board id and fetch data from board-2.bin (and fails if
+it can't) even though it already has valid per-radio cal-data.
+
+- Felix
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
