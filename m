@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from exchange.luceor.com ([178.33.245.144])
+Received: from mail.argela.com.tr ([95.0.156.7] helo=exch-ist.argela.com.tr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aBKor-0007WP-5X
- for ath10k@lists.infradead.org; Tue, 22 Dec 2015 11:09:30 +0000
-From: Simon Malthieu <simon.malthieu@luceor.com>
-Subject: PTK rekeying bug
-Message-ID: <56792F52.10406@luceor.com>
-Date: Tue, 22 Dec 2015 12:09:06 +0100
+ id 1aBOEm-0007kP-4j
+ for ath10k@lists.infradead.org; Tue, 22 Dec 2015 14:48:28 +0000
+From: Onur Eker <Onur.Eker@argela.com.tr>
+Subject: IBSS mode performance degradation
+Date: Tue, 22 Dec 2015 14:48:04 +0000
+Message-ID: <431D237B1EA07F49A28D2D0F9FA079EF95DC6363@exch-ist.argela.com.tr>
+Content-Language: tr-TR
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,36 +17,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-  Hi,
+Hi,
 
-I have a bug with PTK rekeying, when I set this option in hostapd : 
-wpa_ptk_rekey, the first PTK handshake goes well at the start of the 
-connection (AP-STA), but after the rekey (The 4-way EAPOL handshake goes 
-well), all the packets sent by the STA are truncated of 16 Bytes. For 
-example with a ping I can see at the reception that all the ICMP packets 
-have 16 Bytes less, but also the ARP packets.
+During my tests on more than 2 nodes in IBSS mode, I find out that switching off a node degrades other nodes' communications. My setup is as follows:
 
-They are well decrypted by the AP though. At the second rekey, the ptk 
-handshake doesn't work because the EAPOL packets are truncated, hostapd 
-says 'frame too short for this IEEE 802.1X packets' and disconnects the STA.
+Phy: more than 2 nodes in IBSS mode at VHT-80, same channel, same BSSI
+Nodes: 20151203 compat-wireless backports, '636' firmware, openwrt trunk, QCA9880 v2 (archer c7)
+All nodes can communicate each other directly, forwarding/routing is not active.
 
-With a 3rd radio I can tell that the packets are truncated also in the 
-air so it must be a STA problem. With the htt_dump (on the STA) debug 
-option of ath10k I can tell that the packets are not altered here, the 
-frames are ok
+When any of these nodes are switched off via power off or interface down, communication between other nodes are almost cut off for at least a minute (i.e. unstable very high ping values between nodes).
 
-The problem still exists with latest compat-wireless (2015-12-03) and 
-latest QCA988X firmware  : firmware-5.bin_10.2.4.70.15-2
-
-I am using two compex cards (WLE900VX).
-
-Thanks in advance for the help.
+Thanks,
+Onur
 
 _______________________________________________
 ath10k mailing list
