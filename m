@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
+Received: from mail.kernel.org ([198.145.29.136])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aE4rZ-0003kA-EH
- for ath10k@lists.infradead.org; Wed, 30 Dec 2015 00:43:37 +0000
-Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
- (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 2385840B79B
- for <ath10k@lists.infradead.org>; Tue, 29 Dec 2015 16:43:15 -0800 (PST)
-Subject: Re: Today's kvalo/ath.git crashes upon trying to load beeliner NIC.
-References: <568316CE.4040708@candelatech.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <568328A2.3070501@candelatech.com>
-Date: Tue, 29 Dec 2015 16:43:14 -0800
+ id 1aEJj3-0006vV-2q
+ for ath10k@lists.infradead.org; Wed, 30 Dec 2015 16:35:49 +0000
+Date: Wed, 30 Dec 2015 10:35:24 -0600
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt: bindings: add bindings for ipq4019 wifi block
+Message-ID: <20151230163524.GA26810@rob-hp-laptop>
+References: <1450848915-9772-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <568316CE.4040708@candelatech.com>
+Content-Disposition: inline
+In-Reply-To: <1450848915-9772-1-git-send-email-rmani@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,62 +19,84 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Raja Mani <rmani@qti.qualcomm.com>
+Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, mmcclint@qca.qualcomm.com, agross@codeaurora.org
 
-enabling vt-d in the BIOS made this go away
+On Wed, Dec 23, 2015 at 11:05:15AM +0530, Raja Mani wrote:
+> Add device tree binding documentation details for wifi block present
+> in Qualcomm IPQ4019 SoC into qcom,ath10k.txt.
+> 
+> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+> ---
+>  .../bindings/net/wireless/qcom,ath10k.txt          | 87 ++++++++++++++++++++--
+>  1 file changed, 82 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> index edefc26..ffd0742 100644
+> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> @@ -1,17 +1,42 @@
+>  * Qualcomm Atheros ath10k wireless devices
+>  
+> -For ath10k devices the calibration data can be provided through Device
+> -Tree. The node is a child node of the PCI controller.
 
-Still can't get the wlan2 on the 4x4 NIC to associate to an AP (ath9k),
-however.
+So it is now not a PCI device?
 
-Thanks,
-Ben
+> -
+>  Required properties:
+> --compatible : Should be "qcom,ath10k"
+> +- compatible: Should be one of the following:
+> +	* "qcom,ath10k"
+> +	* "qcom,ipq4019-wifi"
 
-On 12/29/2015 03:27 PM, Ben Greear wrote:
-> This is with stock firmware.  It was at least somewhat working back
-> in the 4.3-rc6 time-frame.....
->
->
-> DMA: Out of SW-IOMMU space for 274432 bytes at device 0000:05:00.0
-> Kernel panic - not syncing: DMA: Random memory could be DMA read
->
-> CPU: 0 PID: 256 Comm: kworker/u8:3 Not tainted 4.4.0-rc7-wt-ath+ #32
-> Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
-> Workqueue: ath10k_aux_wq ath10k_wmi_event_service_ready_work [ath10k_core]
->   0000000000000000 ffff8802138dfc38 ffffffff813388c8 ffffffff81ab333b
->   ffff8802138dfcb8 ffffffff81196589 ffff880200000008 ffff8802138dfcc8
->   ffff8802138dfc60 ffffffff811968f5 ffff88021ea0dab8 0000000000000042
-> Call Trace:
->   [<ffffffff813388c8>] dump_stack+0x4b/0x6c
->   [<ffffffff81196589>] panic+0xc2/0x209
->   [<ffffffff811968f5>] ? printk+0x43/0x4b
->   [<ffffffff8135c0bc>] swiotlb_map_page+0xe0/0x178
->   [<ffffffffa0dbf3f4>] dma_map_single_attrs.constprop.33+0x6c/0x6e [ath10k_core]
->   [<ffffffffa0dc5dc5>] ath10k_wmi_event_service_ready_work+0x4c6/0x561 [ath10k_core]
->   [<ffffffff810fa734>] process_one_work+0x151/0x261
->   [<ffffffff810facd7>] worker_thread+0x1e4/0x28f
->   [<ffffffff810faaf3>] ? rescuer_thread+0x285/0x285
->   [<ffffffff810feec1>] kthread+0xa0/0xa8
->   [<ffffffff810fee21>] ? kthread_parkme+0x1f/0x1f
->   [<ffffffff8169b70f>] ret_from_fork+0x3f/0x70
->   [<ffffffff810fee21>] ? kthread_parkme+0x1f/0x1f
-> Kernel Offset: disabled
-> ---[ end Kernel panic - not syncing: DMA: Random memory could be DMA read
->
->
-> Thanks,
-> Ben
->
->
+One is a standalone PCI device and one is embedded block in an SOC? 
+These should be more separated as all these new properties would only 
+apply in the latter case.
 
+>  
+>  Optional properties:
+> +- reg: Address and length of the register set for the device.
+> +- core-id: Core number associated to the device.
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+This needs a better explanation.
 
+> +- resets: Must contain an entry for each entry in reset-names.
+> +          See ../reset/reseti.txt for details.
+> +- reset-names: Must include the list of following reset names,
+> +	       "wifi_cpu_init"
+> +	       "wifi_radio_srif"
+> +	       "wifi_radio_warm"
+> +	       "wifi_radio_cold"
+> +	       "wifi_core_warm"
+> +	       "wifi_core_cold"
+> +- clocks: List of clock specifiers, must contain an entry for each required
+> +          entry in clock-names.
+> +- clock-names: Should contain the clock names "wifi_wcss_cmd", "wifi_wcss_ref",
+> +               "wifi_wcss_rtc".
+> +- interrupts: List of interrupt lines. Must contain an entry
+> +	      for each entry in the interrupt-names property.
+> +- interrupt-names: Must include the entries for MSI interrupt
+> +		   names ("msi0" to "msi15") and legacy interrupt
+> +		   name ("legacy"),
+> +- qca,msi_addr: MSI interrupt address.
+> +- qca,msi_base: Base value to add before writing MSI data into
+> +		MSI address register.
+
+Why don't the standard MSI properties work?
+
+>  - qcom,ath10k-calibration-data : calibration data as an array, the
+>  				 length can vary between hw versions
+> +- status: Either "disabled" or "ok".
+> +
+
+No need to document status here.
+
+Rob
 
 _______________________________________________
 ath10k mailing list
