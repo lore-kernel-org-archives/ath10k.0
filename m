@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aEOiY-0000ms-Os
- for ath10k@lists.infradead.org; Wed, 30 Dec 2015 21:55:39 +0000
-Subject: Re: [PATCH v2] ath10k: do not use coherent memory for allocated
- device memory chunks
-References: <1448908321-3042-1-git-send-email-nbd@openwrt.org>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <568452C5.7090700@candelatech.com>
-Date: Wed, 30 Dec 2015 13:55:17 -0800
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aEVzr-0002wn-9R
+ for ath10k@lists.infradead.org; Thu, 31 Dec 2015 05:42:00 +0000
+Message-ID: <5684BFEF.8080302@qti.qualcomm.com>
+Date: Thu, 31 Dec 2015 11:11:03 +0530
+From: Raja Mani <rmani@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1448908321-3042-1-git-send-email-nbd@openwrt.org>
+Subject: Re: [PATCH] dt: bindings: add bindings for ipq4019 wifi block
+References: <1450848915-9772-1-git-send-email-rmani@qti.qualcomm.com>
+ <20151230163524.GA26810@rob-hp-laptop>
+In-Reply-To: <20151230163524.GA26810@rob-hp-laptop>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +23,135 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Felix Fietkau <nbd@openwrt.org>, linux-wireless@vger.kernel.org
-Cc: kvalo@codeaurora.org, ath10k@lists.infradead.org
+To: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, mmcclint@qca.qualcomm.com, agross@codeaurora.org
 
-On 11/30/2015 10:32 AM, Felix Fietkau wrote:
-> Coherent memory is more expensive to allocate (and constrained on some
-> architectures where it has to be pre-allocated). It is also completely
-> unnecessary, since the host has no reason to even access these allocated
-> memory spaces
+
+On Wednesday 30 December 2015 10:05 PM, Rob Herring wrote:
+> On Wed, Dec 23, 2015 at 11:05:15AM +0530, Raja Mani wrote:
+>> Add device tree binding documentation details for wifi block present
+>> in Qualcomm IPQ4019 SoC into qcom,ath10k.txt.
+>>
+>> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+>> ---
+>>   .../bindings/net/wireless/qcom,ath10k.txt          | 87 ++++++++++++++++++++--
+>>   1 file changed, 82 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+>> index edefc26..ffd0742 100644
+>> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+>> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+>> @@ -1,17 +1,42 @@
+>>   * Qualcomm Atheros ath10k wireless devices
+>>
+>> -For ath10k devices the calibration data can be provided through Device
+>> -Tree. The node is a child node of the PCI controller.
 >
-> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+> So it is now not a PCI device?
 
-> -	memset(ar->wmi.mem_chunks[idx].vaddr, 0, pool_size);
-> +	if (!num_units)
-> +		return -ENOMEM;
-> +
-> +	paddr = dma_map_single(ar->dev, vaddr, pool_size, DMA_TO_DEVICE);
-> +	if (dma_mapping_error(ar->dev, paddr)) {
-> +		kfree(vaddr);
-> +		return -ENOMEM;
-> +	}
+Right now, ath10k wireless driver has support for PCI devices. There is
+a plan to extend ath10k driver to support wifi devices which are 
+connected over AHB as well (enumeration will happen via device tree node).
 
-Are you sure you have the direction correct for the 'dma_map_single'
-call?
+Qualcomm IPQ4019 SoC has two inbuilt wifi block which are connected over 
+AHB bus (not connected over PCI bus) and also has one external PCI
+slot where we can connect standalone wifi PCI devices.
 
-I thought this memory was for the NIC to scribble in, and probably
-host should never even bother reading or writing it?
+In future, ath10k would support both PCI and AHB. For PCI based
+devices, only calibration data is supplied via device tree. For AHB
+based devices (ie, ipq4019), all wifi properties are supplied
+via device tree (including irq, reg addr, cal data,etc).
 
-The reason I started looking at this is that I see these errors when
-trying to use a 4x4 wave-2 ath10k NIC in a 4.4.0-rc7 ath kernel:
+>
+>> -
+>>   Required properties:
+>> --compatible : Should be "qcom,ath10k"
+>> +- compatible: Should be one of the following:
+>> +	* "qcom,ath10k"
+>> +	* "qcom,ipq4019-wifi"
+>
+> One is a standalone PCI device and one is embedded block in an SOC?
 
-[  202.489625] wlan0: authenticate with 00:0e:8e:f8:73:96
-[  202.784533] DMAR: DRHD: handling fault status reg 3
-[  202.786246] wlan0: send auth to 00:0e:8e:f8:73:96 (try 1/3)
-[  202.788133] DMAR: DMAR:[DMA Write] Request device [05:00.0] fault addr ff5de000
-DMAR:[fault reason 05] PTE Write access is not set
-[  202.887410] wlan0: send auth to 00:0e:8e:f8:73:96 (try 2/3)
-[  202.988423] wlan0: send auth to 00:0e:8e:f8:73:96 (try 3/3)
-[  203.089437] wlan0: authentication with 00:0e:8e:f8:73:96 timed out
+Yes, it's possible to have this combination (one in SoC + one in
+standalone PCI device in the same platform).
 
-This is on an Intel x86-64 system with IOMMU (VT-d) enabled.
+> These should be more separated as all these new properties would only
+> apply in the latter case.
 
-I'm likely having more than one problem since a 4.3.0-rc6+ kernel is not
-working with this NIC either...
+Sorry, i didn't get this point. I mentioned it under optional
+properties. Whichever properties applies to particular wifi, only
+those parameters are needed. For example, for PCI based devices,
+only calibration data is needed, for AHB based devices most the
+properties are needed.
 
-Thanks,
-Ben
+Is it fine if add below text some thing like this ?
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+"only "qcom,ath10k-calibration-data" is applicable for PCI based
+devices, rest of the members are applicable only for AHB based
+devices"
 
+Correct me if i am wrong.
+
+>
+>>
+>>   Optional properties:
+>> +- reg: Address and length of the register set for the device.
+>> +- core-id: Core number associated to the device.
+>
+> This needs a better explanation.
+
+Sure, Let me add below text in next version.
+
+"core-id is numeric number associated to the wifi block.
+  For example, 0 means first block, 1 means second wifi block,etc."
+
+>
+>> +- resets: Must contain an entry for each entry in reset-names.
+>> +          See ../reset/reseti.txt for details.
+>> +- reset-names: Must include the list of following reset names,
+>> +	       "wifi_cpu_init"
+>> +	       "wifi_radio_srif"
+>> +	       "wifi_radio_warm"
+>> +	       "wifi_radio_cold"
+>> +	       "wifi_core_warm"
+>> +	       "wifi_core_cold"
+>> +- clocks: List of clock specifiers, must contain an entry for each required
+>> +          entry in clock-names.
+>> +- clock-names: Should contain the clock names "wifi_wcss_cmd", "wifi_wcss_ref",
+>> +               "wifi_wcss_rtc".
+>> +- interrupts: List of interrupt lines. Must contain an entry
+>> +	      for each entry in the interrupt-names property.
+>> +- interrupt-names: Must include the entries for MSI interrupt
+>> +		   names ("msi0" to "msi15") and legacy interrupt
+>> +		   name ("legacy"),
+>> +- qca,msi_addr: MSI interrupt address.
+>> +- qca,msi_base: Base value to add before writing MSI data into
+>> +		MSI address register.
+>
+> Why don't the standard MSI properties work?
+
+Standard msi controller mapping is not needed. Basically, msi property 
+defined above just goes to the firmware runs in wifi block. Meaning, 
+Driver will read it and push it to firmware. That's all.
+
+>
+>>   - qcom,ath10k-calibration-data : calibration data as an array, the
+>>   				 length can vary between hw versions
+>> +- status: Either "disabled" or "ok".
+>> +
+>
+> No need to document status here.
+
+Sure, will remove it in next version.
+
+>
+> Rob
+>
+
+Thanks for the review.
+
+--
+Raja
 
 _______________________________________________
 ath10k mailing list
