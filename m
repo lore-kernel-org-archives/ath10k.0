@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aEVzr-0002wn-9R
- for ath10k@lists.infradead.org; Thu, 31 Dec 2015 05:42:00 +0000
-Message-ID: <5684BFEF.8080302@qti.qualcomm.com>
-Date: Thu, 31 Dec 2015 11:11:03 +0530
-From: Raja Mani <rmani@qti.qualcomm.com>
+ id 1aEd56-0007CR-Cx
+ for ath10k@lists.infradead.org; Thu, 31 Dec 2015 13:15:52 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: wake up device before accessing registers
+References: <1449740667-25901-1-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Thu, 31 Dec 2015 15:14:32 +0200
+In-Reply-To: <1449740667-25901-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Thu, 10 Dec 2015 15:14:26 +0530")
+Message-ID: <8760zeoj47.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] dt: bindings: add bindings for ipq4019 wifi block
-References: <1450848915-9772-1-git-send-email-rmani@qti.qualcomm.com>
- <20151230163524.GA26810@rob-hp-laptop>
-In-Reply-To: <20151230163524.GA26810@rob-hp-laptop>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,139 +19,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, mmcclint@qca.qualcomm.com, agross@codeaurora.org
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-On Wednesday 30 December 2015 10:05 PM, Rob Herring wrote:
-> On Wed, Dec 23, 2015 at 11:05:15AM +0530, Raja Mani wrote:
->> Add device tree binding documentation details for wifi block present
->> in Qualcomm IPQ4019 SoC into qcom,ath10k.txt.
->>
->> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
->> ---
->>   .../bindings/net/wireless/qcom,ath10k.txt          | 87 ++++++++++++++++++++--
->>   1 file changed, 82 insertions(+), 5 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> index edefc26..ffd0742 100644
->> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> @@ -1,17 +1,42 @@
->>   * Qualcomm Atheros ath10k wireless devices
->>
->> -For ath10k devices the calibration data can be provided through Device
->> -Tree. The node is a child node of the PCI controller.
+> commit 1aaf8efba0ae ("ath10k: disable PCI PS for QCA988X
+> and QCA99X0") partially reverts pci soc powersave support added by
+> commit 77258d409ce4 ("ath10k: enable pci soc powersaving"). While
+> reverting the change, pci wake up function is called after accessing
+> pci registers instead of prior to access. The assumption is that chip
+> is woken up before accessing its registers.Though this change does not
+> fix any known issues, this might help to avoid unknown or low power
+> platform specific issues.
 >
-> So it is now not a PCI device?
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Right now, ath10k wireless driver has support for PCI devices. There is
-a plan to extend ath10k driver to support wifi devices which are 
-connected over AHB as well (enumeration will happen via device tree node).
+Both patches applied, thanks.
 
-Qualcomm IPQ4019 SoC has two inbuilt wifi block which are connected over 
-AHB bus (not connected over PCI bus) and also has one external PCI
-slot where we can connect standalone wifi PCI devices.
-
-In future, ath10k would support both PCI and AHB. For PCI based
-devices, only calibration data is supplied via device tree. For AHB
-based devices (ie, ipq4019), all wifi properties are supplied
-via device tree (including irq, reg addr, cal data,etc).
-
->
->> -
->>   Required properties:
->> --compatible : Should be "qcom,ath10k"
->> +- compatible: Should be one of the following:
->> +	* "qcom,ath10k"
->> +	* "qcom,ipq4019-wifi"
->
-> One is a standalone PCI device and one is embedded block in an SOC?
-
-Yes, it's possible to have this combination (one in SoC + one in
-standalone PCI device in the same platform).
-
-> These should be more separated as all these new properties would only
-> apply in the latter case.
-
-Sorry, i didn't get this point. I mentioned it under optional
-properties. Whichever properties applies to particular wifi, only
-those parameters are needed. For example, for PCI based devices,
-only calibration data is needed, for AHB based devices most the
-properties are needed.
-
-Is it fine if add below text some thing like this ?
-
-"only "qcom,ath10k-calibration-data" is applicable for PCI based
-devices, rest of the members are applicable only for AHB based
-devices"
-
-Correct me if i am wrong.
-
->
->>
->>   Optional properties:
->> +- reg: Address and length of the register set for the device.
->> +- core-id: Core number associated to the device.
->
-> This needs a better explanation.
-
-Sure, Let me add below text in next version.
-
-"core-id is numeric number associated to the wifi block.
-  For example, 0 means first block, 1 means second wifi block,etc."
-
->
->> +- resets: Must contain an entry for each entry in reset-names.
->> +          See ../reset/reseti.txt for details.
->> +- reset-names: Must include the list of following reset names,
->> +	       "wifi_cpu_init"
->> +	       "wifi_radio_srif"
->> +	       "wifi_radio_warm"
->> +	       "wifi_radio_cold"
->> +	       "wifi_core_warm"
->> +	       "wifi_core_cold"
->> +- clocks: List of clock specifiers, must contain an entry for each required
->> +          entry in clock-names.
->> +- clock-names: Should contain the clock names "wifi_wcss_cmd", "wifi_wcss_ref",
->> +               "wifi_wcss_rtc".
->> +- interrupts: List of interrupt lines. Must contain an entry
->> +	      for each entry in the interrupt-names property.
->> +- interrupt-names: Must include the entries for MSI interrupt
->> +		   names ("msi0" to "msi15") and legacy interrupt
->> +		   name ("legacy"),
->> +- qca,msi_addr: MSI interrupt address.
->> +- qca,msi_base: Base value to add before writing MSI data into
->> +		MSI address register.
->
-> Why don't the standard MSI properties work?
-
-Standard msi controller mapping is not needed. Basically, msi property 
-defined above just goes to the firmware runs in wifi block. Meaning, 
-Driver will read it and push it to firmware. That's all.
-
->
->>   - qcom,ath10k-calibration-data : calibration data as an array, the
->>   				 length can vary between hw versions
->> +- status: Either "disabled" or "ok".
->> +
->
-> No need to document status here.
-
-Sure, will remove it in next version.
-
->
-> Rob
->
-
-Thanks for the review.
-
---
-Raja
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
