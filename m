@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
+Received: from smtp12.openmailbox.org ([62.4.1.46])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHvtU-0003ek-Vk
- for ath10k@lists.infradead.org; Sat, 09 Jan 2016 15:57:33 +0000
-Received: by mail-wm0-x22d.google.com with SMTP id f206so167673314wmf.0
- for <ath10k@lists.infradead.org>; Sat, 09 Jan 2016 07:57:12 -0800 (PST)
+ id 1aI2uo-0005Ed-K4
+ for ath10k@lists.infradead.org; Sat, 09 Jan 2016 23:27:23 +0000
 MIME-Version: 1.0
-Date: Sat, 9 Jan 2016 17:57:10 +0200
-Message-ID: <CANfLQra4yJy_VGX4DpnUusda3TsJAy4Zojhz7-OKozaiHsEmeQ@mail.gmail.com>
-Subject: ath10k driver on Android
-From: Gucea Doru <gucea.doru@gmail.com>
+Date: Sun, 10 Jan 2016 00:26:49 +0100
+From: theros@openmailbox.org
+Subject: Re: QCA6174 seemingly randomly fails to wake
+In-Reply-To: <CA+BoTQkmR95XqsKsjeDOR1b_+0srg8ydFgutfUG+M6C27XwrMw@mail.gmail.com>
+References: <45672dcebea40166c2e5edc31c818b96@openmailbox.org>
+ <CA+BoTQkmR95XqsKsjeDOR1b_+0srg8ydFgutfUG+M6C27XwrMw@mail.gmail.com>
+Message-ID: <1b49b497f4f2551430f7594521c9d9b0@openmailbox.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,34 +19,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: marek.kwaczynski@tieto.com, kvalo@qca.qualcomm.com, bartosz.markowski@tieto.com
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k@lists.infradead.org
 
-Hello,
-
-On the wiki page for ath10k [1] it is mentioned that ath10k driver has
-support for QCA6174 chipset.
-QCA6174 is present on a list of Android devices: Samsung Galaxy S5 LTE
-A [1], OnePlus 2 [3].
-
-My question is the next one: how could I verify that the above
-smartphones, containing QC0A6174 WiFi chipset, are using the ath10k
-driver?
-
-I mention that this information will help me on my Master thesis.
-
-[1] https://wireless.wiki.kernel.org/en/users/drivers/ath10k
-[2] http://www.androidauthority.com/galaxy-s5-lte-a-battery-benchmark-414550/
-[3] https://www.ifixit.com/Teardown/OnePlus+2+Teardown/45352
-
-Regards,
-Doru
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+U29ycnkgYWJvdXQgdGhlIGxhdGUgcmVzcG9uc2UsIEkgd2FzIHdpdGhvdXQgbXkgbGFwdG9wIGR1
+ZSB0byBhbiAKdW5yZWxhdGVkIHByb2JsZW0uCgpUaGUgcGF0Y2ggc2VlbXMgdG8gaGF2ZSBmaXhl
+ZCB0aGUgaXNzdWUgLSBpdCBkaWRuJ3Qgb2NjdXIgYWdhaW4gYWZ0ZXIgCmFwcGx5aW5nIGl0LiBJ
+IGRpZCBob3dldmVyIHVzZSBkcml2ZXIgYmFja3BvcnRzIGFuZCBhcHBsaWVkIHRoZSBwYXRjaCB0
+byAKdGhvc2UgbXlzZWxmLCBhcyBvcHBvc2VkIHRvIGNvbXBpbGluZyB0aGUgZW50aXJlIGtlcm5l
+bCBmcm9tIHRoZSAKcmVwb3NpdG9yeSB5b3UgcHJvdmlkZWQuCgpPbiAyMDE1LTExLTA0IDA4OjMw
+LCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDQgTm92ZW1iZXIgMjAxNSBhdCAwMTowMCwgIDx0
+aGVyb3NAb3Blbm1haWxib3gub3JnPiB3cm90ZToKPj4gSGVsbG8sCj4+IAo+PiBJIGFtIGhhdmlu
+ZyBpc3N1ZXMgd2l0aCB0aGUgYXRoMTBrIGRyaXZlciBhbmQgdGhlIFF1YWxjb21tIEF0aGVyb3Mg
+Cj4+IFFDQTYxNzQKPj4gbmV0d29yayBhZGFwdGVyLiBTZWVtaW5nbHkgcmFuZG9tbHksIHRoZSB3
+aXJlbGVzcyBjb25uZWN0aW9uIG9uIG15IAo+PiBsYXB0b3AKPj4gc3RvcHMgd29ya2luZy4gZG1l
+c2cgb3V0cHV0cyBhIGxvbmcgc2VyaWVzIG9mOgo+PiAKPj4gWzExMDYxLjY0NTkyOV0gYXRoMTBr
+X3BjaSAwMDAwOjA3OjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3IgCj4+IHdyaXRlMzIg
+b2YKPj4gMHgwMDAwMDI1YyBhdCAweDAwMDM1NDNjOiAtMTEwCj4gCj4gVGhpcyBsb29rcyB2ZXJ5
+IHNpbWlsYXIgdG8gaG93IFFDQTk5WDAgZmFpbGVkIHdoZW4gUENJIFBTIHdhcyBlbmFibGVkCj4g
+Zm9yIHRoZSBjYXJkOgo+IAo+ICAgCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJt
+YWlsL2F0aDEway8yMDE1LVNlcHRlbWJlci8wMDU5MzkuaHRtbAo+IAo+IEFzIGZhciBhcyBJIGtu
+b3cgdGhlIHJlYXNvbiBvZiBmYWlsdXJlIGlzIG5vdCByZWFsbHkgdW5kZXJzdG9vZCBhbmQgaXQK
+PiBzaW1wbHkgd2FzIGRpc2FibGVkIHRvIGZpeCByZWxpYWJpbGl0eS4KPiAKPiBJdCBzZWVtcyB0
+aGF0IFFDQTYxNzQgc3VmZmVycyBmcm9tIHRoaXMgYXMgd2VsbCAtIGF0IGxlYXN0IG9uIHlvdXIK
+PiBwbGF0Zm9ybS4gVGhpcyBpcyByYXRoZXIgc2FkIGFzIHdlJ2xsIHByb2JhYmx5IG5lZWQgdG8g
+ZGlzYWJsZSBpdCBieQo+IGRlZmF1bHQgZm9yIFFDQTYxNzQgbm93IGFzIHdlbGwgd2hpY2ggd2ls
+bCBpbmNyZWFzZSBwb3dlciBjb25zdW1wdGlvbgo+IGEgbGl0dGxlIGJpdC4KPiAKPiAKPj4gUmFy
+ZWx5IGEgcmVib290IGZpeGVzIHRoaXMgYW5kIEkgY2FuIHVzZSB0aGUgbmV0d29yayBhZGFwdGVy
+IGFnYWluLCAKPj4gYnV0IG1vcmUKPj4gb2Z0ZW4gdGhhbiBub3QsIGFmdGVyIGEgcmVib290LCB0
+aGVyZSBpcyBubyBvdXRwdXQgcmVsYXRlZCB0byBhdGgxMGsgCj4+IGluCj4+IGRtZXNnIGFuZCB0
+aGUgbGFwdG9wIGlzIGJlaGF2aW5nIGFzIGlmIHRoZSBuZXR3b3JrIGFkYXB0ZXIgaXMgbm90IAo+
+PiBwcmVzZW50Lgo+PiBUaGUgYWRhcHRlciBldmVudHVhbGx5IHN0YXJ0cyB3b3JraW5nIGFnYWlu
+IC0gSSBoYXZlIG5vdCBub3RpY2VkIGEgCj4+IHNwZWNpZmljCj4+IHBhdHRlcm4sIHNvbWV0aW1l
+cyBpdCBpcyBhZnRlciBhIGZldyBob3Vycywgc29tZXRpbWVzIEkgY291bGRuJ3QgZ2V0IAo+PiBp
+dAo+PiB3b3JraW5nIGZvciBkYXlzLgo+PiAKPj4gSSBoYXZlIHRyaWVkIHRob3JvdWdobHkgc2Vh
+cmNoaW5nIG9ubGluZSBidXQgd2FzIHVuYWJsZSB0byBmaW5kIAo+PiBhbnl0aGluZwo+PiB0aGF0
+IHdvdWxkIGJlIG9mIGhlbHAuIEkgZG8gYWRtaXQgSSBhbSBhIGxpdHRsZSBvdXQgb2YgbXkgZGVw
+dGggaGVyZSwgCj4+IGJ1dCBJCj4+IHdpbGwgaGFwcGlseSBwcm92aWRlIGFueSBmdXJ0aGVyIGlu
+Zm9ybWF0aW9uIG5lY2Vzc2FyeSBpbiBvcmRlciB0byAKPj4gZGlhZ25vc2UKPj4gYW5kIGZpeCB0
+aGlzLgo+PiAKPj4gSSBhbSBvbiBYdWJ1bnR1IDE1LjEwLCBrZXJuZWwgNC4yLjAtMTYtZ2VuZXJp
+Yy4KPiAKPiBDYW4geW91IHBlcmhhcHMgdHJ5IGNvbXBpbGluZyB0aGUga2VybmVsIGZyb206Cj4g
+Cj4gICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQva3ZhbG8v
+YXRoLmdpdAo+IAo+IHdpdGggdGhlIGZvbGxvd2luZyBkaWZmIGFwcGxpZWQ6Cj4gCj4gZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiBiL2RyaXZlcnMv
+bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiBpbmRleCAzZmNhMjAwYjk4NmMuLmVkZjdh
+NzYzN2Q4OCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3Bj
+aS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYwo+IEBAIC0y
+OTY4LDcgKzI5NjgsNyBAQCBzdGF0aWMgaW50IGF0aDEwa19wY2lfcHJvYmUoc3RydWN0IHBjaV9k
+ZXYgKnBkZXYsCj4gICAgICAgICBjYXNlIFFDQTYxNjRfMl8xX0RFVklDRV9JRDoKPiAgICAgICAg
+IGNhc2UgUUNBNjE3NF8yXzFfREVWSUNFX0lEOgo+ICAgICAgICAgICAgICAgICBod19yZXYgPSBB
+VEgxMEtfSFdfUUNBNjE3NDsKPiAtICAgICAgICAgICAgICAgcGNpX3BzID0gdHJ1ZTsKPiArICAg
+ICAgICAgICAgICAgcGNpX3BzID0gZmFsc2U7Cj4gICAgICAgICAgICAgICAgIGJyZWFrOwo+ICAg
+ICAgICAgY2FzZSBRQ0E5OVgwXzJfMF9ERVZJQ0VfSUQ6Cj4gICAgICAgICAgICAgICAgIGh3X3Jl
+diA9IEFUSDEwS19IV19RQ0E5OVgwOwo+IAo+IGFuZCByZXBvcnQgYmFjayBpZiB0aGlzIGZpeGVz
+IHRoZSBwcm9ibGVtIGZvciB5b3UsIHBsZWFzZT8KPiAKPiAKPiBNaWNoYcWCCj4gCj4gX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGlu
+ZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
