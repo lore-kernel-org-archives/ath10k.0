@@ -1,13 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aIVMe-0004wj-9C
- for ath10k@lists.infradead.org; Mon, 11 Jan 2016 05:50:02 +0000
-From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH v2] dt: bindings: add bindings for ipq4019 wifi block
-Date: Mon, 11 Jan 2016 11:19:03 +0530
-Message-ID: <1452491343-8803-1-git-send-email-rmani@qti.qualcomm.com>
+ id 1aIbu5-0006Gt-Mt
+ for ath10k@lists.infradead.org; Mon, 11 Jan 2016 12:48:59 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id f206so266627941wmf.0
+ for <ath10k@lists.infradead.org>; Mon, 11 Jan 2016 04:48:30 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <1b49b497f4f2551430f7594521c9d9b0@openmailbox.org>
+References: <45672dcebea40166c2e5edc31c818b96@openmailbox.org>
+ <CA+BoTQkmR95XqsKsjeDOR1b_+0srg8ydFgutfUG+M6C27XwrMw@mail.gmail.com>
+ <1b49b497f4f2551430f7594521c9d9b0@openmailbox.org>
+Date: Mon, 11 Jan 2016 13:48:28 +0100
+Message-ID: <CA+BoTQkdD9+pcTOzZJAOR4-G2vZ8AeYBvhutwa=5XHy9xOUPuQ@mail.gmail.com>
+Subject: Re: QCA6174 seemingly randomly fails to wake
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,150 +22,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: agross@codeaurora.org, devicetree@vger.kernel.org
-Cc: linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Raja Mani <rmani@qti.qualcomm.com>
+To: theros@openmailbox.org
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Add device tree binding documentation details for wifi block present
-in Qualcomm IPQ4019 SoC into "qcom,ath10k.txt".
-
-Right now, ath10k wireless driver has support for PCI based wlan devices.
-There is a plan to extend ath10k driver to support wifi devices which are
-connected over AHB as well (enumeration will happen via device tree node).
-For AHB based devices (ie, ipq4019), all wifi properties are supplied via
-device tree (including irq, reg addr, cal data,etc).
-
-Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
----
-v2 changes:
- - Improved "core-id" description - [Rob]
- - Removed "status" documentation - [Rob]
- - Added description which properties are applicable
-   for ahb and which are applicable for pci devices - [Rob]
- - Improved commit msg to explain the context.
- - Renamed "qca,msi_addr" to "qcom,msi_addr" and
-   "qca,msi_base" to "qcom,msi_base" to follow uniformity.
-
- .../bindings/net/wireless/qcom,ath10k.txt          | 88 ++++++++++++++++++++--
- 1 file changed, 83 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index edefc26..d1595d2 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -1,17 +1,44 @@
- * Qualcomm Atheros ath10k wireless devices
- 
--For ath10k devices the calibration data can be provided through Device
--Tree. The node is a child node of the PCI controller.
--
- Required properties:
---compatible : Should be "qcom,ath10k"
-+- compatible: Should be one of the following:
-+	* "qcom,ath10k"
-+	* "qcom,ipq4019-wifi"
- 
- Optional properties:
-+- reg: Address and length of the register set for the device.
-+- core-id: Numeric number associated to the wifi block.
-+           (0 means first wifi block, 1 means second wifi block, etc).
-+- resets: Must contain an entry for each entry in reset-names.
-+          See ../reset/reseti.txt for details.
-+- reset-names: Must include the list of following reset names,
-+	       "wifi_cpu_init"
-+	       "wifi_radio_srif"
-+	       "wifi_radio_warm"
-+	       "wifi_radio_cold"
-+	       "wifi_core_warm"
-+	       "wifi_core_cold"
-+- clocks: List of clock specifiers, must contain an entry for each required
-+          entry in clock-names.
-+- clock-names: Should contain the clock names "wifi_wcss_cmd", "wifi_wcss_ref",
-+               "wifi_wcss_rtc".
-+- interrupts: List of interrupt lines. Must contain an entry
-+	      for each entry in the interrupt-names property.
-+- interrupt-names: Must include the entries for MSI interrupt
-+		   names ("msi0" to "msi15") and legacy interrupt
-+		   name ("legacy"),
-+- qcom,msi_addr: MSI interrupt address.
-+- qcom,msi_base: Base value to add before writing MSI data into
-+		MSI address register.
- - qcom,ath10k-calibration-data : calibration data as an array, the
- 				 length can vary between hw versions
- 
-+Most of above properties are applicable to ahb based wlan device.
-+Whereas, pci based wlan device needs only "qcom,ath10k-calibration-data".
-+
-+Example (to supply the calibration data alone):
- 
--Example:
-+In this example, the node is defined as child node of the PCI controller.
- 
- pci {
- 	pcie@0 {
-@@ -28,3 +55,54 @@ pci {
- 		};
- 	};
- };
-+
-+Example (to supply ipq4019 SoC wifi block details):
-+
-+wifi0: wifi@a000000 {
-+	compatible = "qcom,ipq4019-wifi";
-+	reg = <0xa000000 0x200000>;
-+	core-id = <0x0>;
-+	resets = <&gcc WIFI0_CPU_INIT_RESET>,
-+		 <&gcc WIFI0_RADIO_SRIF_RESET>,
-+		 <&gcc WIFI0_RADIO_WARM_RESET>,
-+		 <&gcc WIFI0_RADIO_COLD_RESET>,
-+		 <&gcc WIFI0_CORE_WARM_RESET>,
-+		 <&gcc WIFI0_CORE_COLD_RESET>;
-+	reset-names = "wifi_cpu_init",
-+		      "wifi_radio_srif",
-+		      "wifi_radio_warm",
-+		      "wifi_radio_cold",
-+		      "wifi_core_warm",
-+		      "wifi_core_cold";
-+	clocks = <&gcc GCC_WCSS2G_CLK>,
-+		 <&gcc GCC_WCSS2G_REF_CLK>,
-+		 <&gcc GCC_WCSS2G_RTC_CLK>;
-+	clock-names = "wifi_wcss_cmd",
-+		      "wifi_wcss_ref",
-+		      "wifi_wcss_rtc";
-+	interrupts = <0 0x20 0x1>,
-+		     <0 0x21 0x1>,
-+		     <0 0x22 0x1>,
-+		     <0 0x23 0x1>,
-+		     <0 0x24 0x1>,
-+		     <0 0x25 0x1>,
-+		     <0 0x26 0x1>,
-+		     <0 0x27 0x1>,
-+		     <0 0x28 0x1>,
-+		     <0 0x29 0x1>,
-+		     <0 0x2a 0x1>,
-+		     <0 0x2b 0x1>,
-+		     <0 0x2c 0x1>,
-+		     <0 0x2d 0x1>,
-+		     <0 0x2e 0x1>,
-+		     <0 0x2f 0x1>,
-+		     <0 0xa8 0x0>;
-+	interrupt-names = "msi0",  "msi1",  "msi2",  "msi3",
-+			  "msi4",  "msi5",  "msi6",  "msi7",
-+			  "msi8",  "msi9",  "msi10", "msi11",
-+			  "msi12", "msi13", "msi14", "msi15",
-+			  "legacy";
-+	qcom,msi_addr = <0x0b006040>;
-+	qcom,msi_base = <0x40>;
-+	qcom,ath10k-calibration-data = [ 01 02 03 ... ];
-+};
--- 
-1.8.1.2
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTAgSmFudWFyeSAyMDE2IGF0IDAwOjI2LCAgPHRoZXJvc0BvcGVubWFpbGJveC5vcmc+IHdy
+b3RlOgo+IFNvcnJ5IGFib3V0IHRoZSBsYXRlIHJlc3BvbnNlLCBJIHdhcyB3aXRob3V0IG15IGxh
+cHRvcCBkdWUgdG8gYW4gdW5yZWxhdGVkCj4gcHJvYmxlbS4KPgo+IFRoZSBwYXRjaCBzZWVtcyB0
+byBoYXZlIGZpeGVkIHRoZSBpc3N1ZSAtIGl0IGRpZG4ndCBvY2N1ciBhZ2FpbiBhZnRlcgo+IGFw
+cGx5aW5nIGl0LiBJIGRpZCBob3dldmVyIHVzZSBkcml2ZXIgYmFja3BvcnRzIGFuZCBhcHBsaWVk
+IHRoZSBwYXRjaCB0bwo+IHRob3NlIG15c2VsZiwgYXMgb3Bwb3NlZCB0byBjb21waWxpbmcgdGhl
+IGVudGlyZSBrZXJuZWwgZnJvbSB0aGUgcmVwb3NpdG9yeQo+IHlvdSBwcm92aWRlZC4KClRoYXQn
+cyBnb29kIG5ld3MgKHRvIHVzZXJzIGxpa2UgeW91IHdobyBoYXZlIGJyb2tlbiBxY2E2MTc0KS4g
+SXMgbXkKdW5kZXJzdGFuZGluZyBjb3JyZWN0IHRoYXQgeW91IGRvdWJsZS1jaGVja2VkIHRoYXQg
+KndpdGhvdXQqIHRoZSBwYXRjaApxY2E2MTc0IGZhaWxzIHRvIHdvcms/IFRoZXJlIGNvdWxkIGJl
+IHNvbWV0aGluZyBlbHNlIHRoYXQgZml4ZWQgdGhlCnByb2JsZW0gZm9yIHlvdSBvdGhlcndpc2Uu
+CgoKTWljaGHFggoKPiBPbiAyMDE1LTExLTA0IDA4OjMwLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+
+Pgo+PiBPbiA0IE5vdmVtYmVyIDIwMTUgYXQgMDE6MDAsICA8dGhlcm9zQG9wZW5tYWlsYm94Lm9y
+Zz4gd3JvdGU6Cj4+Pgo+Pj4gSGVsbG8sCj4+Pgo+Pj4gSSBhbSBoYXZpbmcgaXNzdWVzIHdpdGgg
+dGhlIGF0aDEwayBkcml2ZXIgYW5kIHRoZSBRdWFsY29tbSBBdGhlcm9zCj4+PiBRQ0E2MTc0Cj4+
+PiBuZXR3b3JrIGFkYXB0ZXIuIFNlZW1pbmdseSByYW5kb21seSwgdGhlIHdpcmVsZXNzIGNvbm5l
+Y3Rpb24gb24gbXkgbGFwdG9wCj4+PiBzdG9wcyB3b3JraW5nLiBkbWVzZyBvdXRwdXRzIGEgbG9u
+ZyBzZXJpZXMgb2Y6Cj4+Pgo+Pj4gWzExMDYxLjY0NTkyOV0gYXRoMTBrX3BjaSAwMDAwOjA3OjAw
+LjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3Igd3JpdGUzMgo+Pj4gb2YKPj4+IDB4MDAwMDAy
+NWMgYXQgMHgwMDAzNTQzYzogLTExMAo+Pgo+Pgo+PiBUaGlzIGxvb2tzIHZlcnkgc2ltaWxhciB0
+byBob3cgUUNBOTlYMCBmYWlsZWQgd2hlbiBQQ0kgUFMgd2FzIGVuYWJsZWQKPj4gZm9yIHRoZSBj
+YXJkOgo+Pgo+PiAgIGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9hdGgxMGsv
+MjAxNS1TZXB0ZW1iZXIvMDA1OTM5Lmh0bWwKPj4KPj4gQXMgZmFyIGFzIEkga25vdyB0aGUgcmVh
+c29uIG9mIGZhaWx1cmUgaXMgbm90IHJlYWxseSB1bmRlcnN0b29kIGFuZCBpdAo+PiBzaW1wbHkg
+d2FzIGRpc2FibGVkIHRvIGZpeCByZWxpYWJpbGl0eS4KPj4KPj4gSXQgc2VlbXMgdGhhdCBRQ0E2
+MTc0IHN1ZmZlcnMgZnJvbSB0aGlzIGFzIHdlbGwgLSBhdCBsZWFzdCBvbiB5b3VyCj4+IHBsYXRm
+b3JtLiBUaGlzIGlzIHJhdGhlciBzYWQgYXMgd2UnbGwgcHJvYmFibHkgbmVlZCB0byBkaXNhYmxl
+IGl0IGJ5Cj4+IGRlZmF1bHQgZm9yIFFDQTYxNzQgbm93IGFzIHdlbGwgd2hpY2ggd2lsbCBpbmNy
+ZWFzZSBwb3dlciBjb25zdW1wdGlvbgo+PiBhIGxpdHRsZSBiaXQuCj4+Cj4+Cj4+PiBSYXJlbHkg
+YSByZWJvb3QgZml4ZXMgdGhpcyBhbmQgSSBjYW4gdXNlIHRoZSBuZXR3b3JrIGFkYXB0ZXIgYWdh
+aW4sIGJ1dAo+Pj4gbW9yZQo+Pj4gb2Z0ZW4gdGhhbiBub3QsIGFmdGVyIGEgcmVib290LCB0aGVy
+ZSBpcyBubyBvdXRwdXQgcmVsYXRlZCB0byBhdGgxMGsgaW4KPj4+IGRtZXNnIGFuZCB0aGUgbGFw
+dG9wIGlzIGJlaGF2aW5nIGFzIGlmIHRoZSBuZXR3b3JrIGFkYXB0ZXIgaXMgbm90Cj4+PiBwcmVz
+ZW50Lgo+Pj4gVGhlIGFkYXB0ZXIgZXZlbnR1YWxseSBzdGFydHMgd29ya2luZyBhZ2FpbiAtIEkg
+aGF2ZSBub3Qgbm90aWNlZCBhCj4+PiBzcGVjaWZpYwo+Pj4gcGF0dGVybiwgc29tZXRpbWVzIGl0
+IGlzIGFmdGVyIGEgZmV3IGhvdXJzLCBzb21ldGltZXMgSSBjb3VsZG4ndCBnZXQgaXQKPj4+IHdv
+cmtpbmcgZm9yIGRheXMuCj4+Pgo+Pj4gSSBoYXZlIHRyaWVkIHRob3JvdWdobHkgc2VhcmNoaW5n
+IG9ubGluZSBidXQgd2FzIHVuYWJsZSB0byBmaW5kIGFueXRoaW5nCj4+PiB0aGF0IHdvdWxkIGJl
+IG9mIGhlbHAuIEkgZG8gYWRtaXQgSSBhbSBhIGxpdHRsZSBvdXQgb2YgbXkgZGVwdGggaGVyZSwg
+YnV0Cj4+PiBJCj4+PiB3aWxsIGhhcHBpbHkgcHJvdmlkZSBhbnkgZnVydGhlciBpbmZvcm1hdGlv
+biBuZWNlc3NhcnkgaW4gb3JkZXIgdG8KPj4+IGRpYWdub3NlCj4+PiBhbmQgZml4IHRoaXMuCj4+
+Pgo+Pj4gSSBhbSBvbiBYdWJ1bnR1IDE1LjEwLCBrZXJuZWwgNC4yLjAtMTYtZ2VuZXJpYy4KPj4K
+Pj4KPj4gQ2FuIHlvdSBwZXJoYXBzIHRyeSBjb21waWxpbmcgdGhlIGtlcm5lbCBmcm9tOgo+Pgo+
+PiAgIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9rdmFsby9h
+dGguZ2l0Cj4+Cj4+IHdpdGggdGhlIGZvbGxvd2luZyBkaWZmIGFwcGxpZWQ6Cj4+Cj4+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCj4+IGIvZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYwo+PiBpbmRleCAzZmNhMjAwYjk4NmMuLmVk
+ZjdhNzYzN2Q4OCAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay9wY2kuYwo+PiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCj4+
+IEBAIC0yOTY4LDcgKzI5NjgsNyBAQCBzdGF0aWMgaW50IGF0aDEwa19wY2lfcHJvYmUoc3RydWN0
+IHBjaV9kZXYgKnBkZXYsCj4+ICAgICAgICAgY2FzZSBRQ0E2MTY0XzJfMV9ERVZJQ0VfSUQ6Cj4+
+ICAgICAgICAgY2FzZSBRQ0E2MTc0XzJfMV9ERVZJQ0VfSUQ6Cj4+ICAgICAgICAgICAgICAgICBo
+d19yZXYgPSBBVEgxMEtfSFdfUUNBNjE3NDsKPj4gLSAgICAgICAgICAgICAgIHBjaV9wcyA9IHRy
+dWU7Cj4+ICsgICAgICAgICAgICAgICBwY2lfcHMgPSBmYWxzZTsKPj4gICAgICAgICAgICAgICAg
+IGJyZWFrOwo+PiAgICAgICAgIGNhc2UgUUNBOTlYMF8yXzBfREVWSUNFX0lEOgo+PiAgICAgICAg
+ICAgICAgICAgaHdfcmV2ID0gQVRIMTBLX0hXX1FDQTk5WDA7Cj4+Cj4+IGFuZCByZXBvcnQgYmFj
+ayBpZiB0aGlzIGZpeGVzIHRoZSBwcm9ibGVtIGZvciB5b3UsIHBsZWFzZT8KPj4KPj4KPj4gTWlj
+aGHFggo+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Xwo+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+
+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4KPgoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
+aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
