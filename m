@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp12.openmailbox.org ([62.4.1.46])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aI2uo-0005Ed-K4
- for ath10k@lists.infradead.org; Sat, 09 Jan 2016 23:27:23 +0000
+ id 1aIVMe-0004wj-9C
+ for ath10k@lists.infradead.org; Mon, 11 Jan 2016 05:50:02 +0000
+From: Raja Mani <rmani@qti.qualcomm.com>
+Subject: [PATCH v2] dt: bindings: add bindings for ipq4019 wifi block
+Date: Mon, 11 Jan 2016 11:19:03 +0530
+Message-ID: <1452491343-8803-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
-Date: Sun, 10 Jan 2016 00:26:49 +0100
-From: theros@openmailbox.org
-Subject: Re: QCA6174 seemingly randomly fails to wake
-In-Reply-To: <CA+BoTQkmR95XqsKsjeDOR1b_+0srg8ydFgutfUG+M6C27XwrMw@mail.gmail.com>
-References: <45672dcebea40166c2e5edc31c818b96@openmailbox.org>
- <CA+BoTQkmR95XqsKsjeDOR1b_+0srg8ydFgutfUG+M6C27XwrMw@mail.gmail.com>
-Message-ID: <1b49b497f4f2551430f7594521c9d9b0@openmailbox.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,67 +16,150 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k@lists.infradead.org
+To: agross@codeaurora.org, devicetree@vger.kernel.org
+Cc: linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Raja Mani <rmani@qti.qualcomm.com>
 
-U29ycnkgYWJvdXQgdGhlIGxhdGUgcmVzcG9uc2UsIEkgd2FzIHdpdGhvdXQgbXkgbGFwdG9wIGR1
-ZSB0byBhbiAKdW5yZWxhdGVkIHByb2JsZW0uCgpUaGUgcGF0Y2ggc2VlbXMgdG8gaGF2ZSBmaXhl
-ZCB0aGUgaXNzdWUgLSBpdCBkaWRuJ3Qgb2NjdXIgYWdhaW4gYWZ0ZXIgCmFwcGx5aW5nIGl0LiBJ
-IGRpZCBob3dldmVyIHVzZSBkcml2ZXIgYmFja3BvcnRzIGFuZCBhcHBsaWVkIHRoZSBwYXRjaCB0
-byAKdGhvc2UgbXlzZWxmLCBhcyBvcHBvc2VkIHRvIGNvbXBpbGluZyB0aGUgZW50aXJlIGtlcm5l
-bCBmcm9tIHRoZSAKcmVwb3NpdG9yeSB5b3UgcHJvdmlkZWQuCgpPbiAyMDE1LTExLTA0IDA4OjMw
-LCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDQgTm92ZW1iZXIgMjAxNSBhdCAwMTowMCwgIDx0
-aGVyb3NAb3Blbm1haWxib3gub3JnPiB3cm90ZToKPj4gSGVsbG8sCj4+IAo+PiBJIGFtIGhhdmlu
-ZyBpc3N1ZXMgd2l0aCB0aGUgYXRoMTBrIGRyaXZlciBhbmQgdGhlIFF1YWxjb21tIEF0aGVyb3Mg
-Cj4+IFFDQTYxNzQKPj4gbmV0d29yayBhZGFwdGVyLiBTZWVtaW5nbHkgcmFuZG9tbHksIHRoZSB3
-aXJlbGVzcyBjb25uZWN0aW9uIG9uIG15IAo+PiBsYXB0b3AKPj4gc3RvcHMgd29ya2luZy4gZG1l
-c2cgb3V0cHV0cyBhIGxvbmcgc2VyaWVzIG9mOgo+PiAKPj4gWzExMDYxLjY0NTkyOV0gYXRoMTBr
-X3BjaSAwMDAwOjA3OjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3IgCj4+IHdyaXRlMzIg
-b2YKPj4gMHgwMDAwMDI1YyBhdCAweDAwMDM1NDNjOiAtMTEwCj4gCj4gVGhpcyBsb29rcyB2ZXJ5
-IHNpbWlsYXIgdG8gaG93IFFDQTk5WDAgZmFpbGVkIHdoZW4gUENJIFBTIHdhcyBlbmFibGVkCj4g
-Zm9yIHRoZSBjYXJkOgo+IAo+ICAgCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJt
-YWlsL2F0aDEway8yMDE1LVNlcHRlbWJlci8wMDU5MzkuaHRtbAo+IAo+IEFzIGZhciBhcyBJIGtu
-b3cgdGhlIHJlYXNvbiBvZiBmYWlsdXJlIGlzIG5vdCByZWFsbHkgdW5kZXJzdG9vZCBhbmQgaXQK
-PiBzaW1wbHkgd2FzIGRpc2FibGVkIHRvIGZpeCByZWxpYWJpbGl0eS4KPiAKPiBJdCBzZWVtcyB0
-aGF0IFFDQTYxNzQgc3VmZmVycyBmcm9tIHRoaXMgYXMgd2VsbCAtIGF0IGxlYXN0IG9uIHlvdXIK
-PiBwbGF0Zm9ybS4gVGhpcyBpcyByYXRoZXIgc2FkIGFzIHdlJ2xsIHByb2JhYmx5IG5lZWQgdG8g
-ZGlzYWJsZSBpdCBieQo+IGRlZmF1bHQgZm9yIFFDQTYxNzQgbm93IGFzIHdlbGwgd2hpY2ggd2ls
-bCBpbmNyZWFzZSBwb3dlciBjb25zdW1wdGlvbgo+IGEgbGl0dGxlIGJpdC4KPiAKPiAKPj4gUmFy
-ZWx5IGEgcmVib290IGZpeGVzIHRoaXMgYW5kIEkgY2FuIHVzZSB0aGUgbmV0d29yayBhZGFwdGVy
-IGFnYWluLCAKPj4gYnV0IG1vcmUKPj4gb2Z0ZW4gdGhhbiBub3QsIGFmdGVyIGEgcmVib290LCB0
-aGVyZSBpcyBubyBvdXRwdXQgcmVsYXRlZCB0byBhdGgxMGsgCj4+IGluCj4+IGRtZXNnIGFuZCB0
-aGUgbGFwdG9wIGlzIGJlaGF2aW5nIGFzIGlmIHRoZSBuZXR3b3JrIGFkYXB0ZXIgaXMgbm90IAo+
-PiBwcmVzZW50Lgo+PiBUaGUgYWRhcHRlciBldmVudHVhbGx5IHN0YXJ0cyB3b3JraW5nIGFnYWlu
-IC0gSSBoYXZlIG5vdCBub3RpY2VkIGEgCj4+IHNwZWNpZmljCj4+IHBhdHRlcm4sIHNvbWV0aW1l
-cyBpdCBpcyBhZnRlciBhIGZldyBob3Vycywgc29tZXRpbWVzIEkgY291bGRuJ3QgZ2V0IAo+PiBp
-dAo+PiB3b3JraW5nIGZvciBkYXlzLgo+PiAKPj4gSSBoYXZlIHRyaWVkIHRob3JvdWdobHkgc2Vh
-cmNoaW5nIG9ubGluZSBidXQgd2FzIHVuYWJsZSB0byBmaW5kIAo+PiBhbnl0aGluZwo+PiB0aGF0
-IHdvdWxkIGJlIG9mIGhlbHAuIEkgZG8gYWRtaXQgSSBhbSBhIGxpdHRsZSBvdXQgb2YgbXkgZGVw
-dGggaGVyZSwgCj4+IGJ1dCBJCj4+IHdpbGwgaGFwcGlseSBwcm92aWRlIGFueSBmdXJ0aGVyIGlu
-Zm9ybWF0aW9uIG5lY2Vzc2FyeSBpbiBvcmRlciB0byAKPj4gZGlhZ25vc2UKPj4gYW5kIGZpeCB0
-aGlzLgo+PiAKPj4gSSBhbSBvbiBYdWJ1bnR1IDE1LjEwLCBrZXJuZWwgNC4yLjAtMTYtZ2VuZXJp
-Yy4KPiAKPiBDYW4geW91IHBlcmhhcHMgdHJ5IGNvbXBpbGluZyB0aGUga2VybmVsIGZyb206Cj4g
-Cj4gICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQva3ZhbG8v
-YXRoLmdpdAo+IAo+IHdpdGggdGhlIGZvbGxvd2luZyBkaWZmIGFwcGxpZWQ6Cj4gCj4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiBiL2RyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiBpbmRleCAzZmNhMjAwYjk4NmMuLmVkZjdh
-NzYzN2Q4OCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3Bj
-aS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYwo+IEBAIC0y
-OTY4LDcgKzI5NjgsNyBAQCBzdGF0aWMgaW50IGF0aDEwa19wY2lfcHJvYmUoc3RydWN0IHBjaV9k
-ZXYgKnBkZXYsCj4gICAgICAgICBjYXNlIFFDQTYxNjRfMl8xX0RFVklDRV9JRDoKPiAgICAgICAg
-IGNhc2UgUUNBNjE3NF8yXzFfREVWSUNFX0lEOgo+ICAgICAgICAgICAgICAgICBod19yZXYgPSBB
-VEgxMEtfSFdfUUNBNjE3NDsKPiAtICAgICAgICAgICAgICAgcGNpX3BzID0gdHJ1ZTsKPiArICAg
-ICAgICAgICAgICAgcGNpX3BzID0gZmFsc2U7Cj4gICAgICAgICAgICAgICAgIGJyZWFrOwo+ICAg
-ICAgICAgY2FzZSBRQ0E5OVgwXzJfMF9ERVZJQ0VfSUQ6Cj4gICAgICAgICAgICAgICAgIGh3X3Jl
-diA9IEFUSDEwS19IV19RQ0E5OVgwOwo+IAo+IGFuZCByZXBvcnQgYmFjayBpZiB0aGlzIGZpeGVz
-IHRoZSBwcm9ibGVtIGZvciB5b3UsIHBsZWFzZT8KPiAKPiAKPiBNaWNoYcWCCj4gCj4gX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGlu
-ZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+Add device tree binding documentation details for wifi block present
+in Qualcomm IPQ4019 SoC into "qcom,ath10k.txt".
+
+Right now, ath10k wireless driver has support for PCI based wlan devices.
+There is a plan to extend ath10k driver to support wifi devices which are
+connected over AHB as well (enumeration will happen via device tree node).
+For AHB based devices (ie, ipq4019), all wifi properties are supplied via
+device tree (including irq, reg addr, cal data,etc).
+
+Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+---
+v2 changes:
+ - Improved "core-id" description - [Rob]
+ - Removed "status" documentation - [Rob]
+ - Added description which properties are applicable
+   for ahb and which are applicable for pci devices - [Rob]
+ - Improved commit msg to explain the context.
+ - Renamed "qca,msi_addr" to "qcom,msi_addr" and
+   "qca,msi_base" to "qcom,msi_base" to follow uniformity.
+
+ .../bindings/net/wireless/qcom,ath10k.txt          | 88 ++++++++++++++++++++--
+ 1 file changed, 83 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index edefc26..d1595d2 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -1,17 +1,44 @@
+ * Qualcomm Atheros ath10k wireless devices
+ 
+-For ath10k devices the calibration data can be provided through Device
+-Tree. The node is a child node of the PCI controller.
+-
+ Required properties:
+--compatible : Should be "qcom,ath10k"
++- compatible: Should be one of the following:
++	* "qcom,ath10k"
++	* "qcom,ipq4019-wifi"
+ 
+ Optional properties:
++- reg: Address and length of the register set for the device.
++- core-id: Numeric number associated to the wifi block.
++           (0 means first wifi block, 1 means second wifi block, etc).
++- resets: Must contain an entry for each entry in reset-names.
++          See ../reset/reseti.txt for details.
++- reset-names: Must include the list of following reset names,
++	       "wifi_cpu_init"
++	       "wifi_radio_srif"
++	       "wifi_radio_warm"
++	       "wifi_radio_cold"
++	       "wifi_core_warm"
++	       "wifi_core_cold"
++- clocks: List of clock specifiers, must contain an entry for each required
++          entry in clock-names.
++- clock-names: Should contain the clock names "wifi_wcss_cmd", "wifi_wcss_ref",
++               "wifi_wcss_rtc".
++- interrupts: List of interrupt lines. Must contain an entry
++	      for each entry in the interrupt-names property.
++- interrupt-names: Must include the entries for MSI interrupt
++		   names ("msi0" to "msi15") and legacy interrupt
++		   name ("legacy"),
++- qcom,msi_addr: MSI interrupt address.
++- qcom,msi_base: Base value to add before writing MSI data into
++		MSI address register.
+ - qcom,ath10k-calibration-data : calibration data as an array, the
+ 				 length can vary between hw versions
+ 
++Most of above properties are applicable to ahb based wlan device.
++Whereas, pci based wlan device needs only "qcom,ath10k-calibration-data".
++
++Example (to supply the calibration data alone):
+ 
+-Example:
++In this example, the node is defined as child node of the PCI controller.
+ 
+ pci {
+ 	pcie@0 {
+@@ -28,3 +55,54 @@ pci {
+ 		};
+ 	};
+ };
++
++Example (to supply ipq4019 SoC wifi block details):
++
++wifi0: wifi@a000000 {
++	compatible = "qcom,ipq4019-wifi";
++	reg = <0xa000000 0x200000>;
++	core-id = <0x0>;
++	resets = <&gcc WIFI0_CPU_INIT_RESET>,
++		 <&gcc WIFI0_RADIO_SRIF_RESET>,
++		 <&gcc WIFI0_RADIO_WARM_RESET>,
++		 <&gcc WIFI0_RADIO_COLD_RESET>,
++		 <&gcc WIFI0_CORE_WARM_RESET>,
++		 <&gcc WIFI0_CORE_COLD_RESET>;
++	reset-names = "wifi_cpu_init",
++		      "wifi_radio_srif",
++		      "wifi_radio_warm",
++		      "wifi_radio_cold",
++		      "wifi_core_warm",
++		      "wifi_core_cold";
++	clocks = <&gcc GCC_WCSS2G_CLK>,
++		 <&gcc GCC_WCSS2G_REF_CLK>,
++		 <&gcc GCC_WCSS2G_RTC_CLK>;
++	clock-names = "wifi_wcss_cmd",
++		      "wifi_wcss_ref",
++		      "wifi_wcss_rtc";
++	interrupts = <0 0x20 0x1>,
++		     <0 0x21 0x1>,
++		     <0 0x22 0x1>,
++		     <0 0x23 0x1>,
++		     <0 0x24 0x1>,
++		     <0 0x25 0x1>,
++		     <0 0x26 0x1>,
++		     <0 0x27 0x1>,
++		     <0 0x28 0x1>,
++		     <0 0x29 0x1>,
++		     <0 0x2a 0x1>,
++		     <0 0x2b 0x1>,
++		     <0 0x2c 0x1>,
++		     <0 0x2d 0x1>,
++		     <0 0x2e 0x1>,
++		     <0 0x2f 0x1>,
++		     <0 0xa8 0x0>;
++	interrupt-names = "msi0",  "msi1",  "msi2",  "msi3",
++			  "msi4",  "msi5",  "msi6",  "msi7",
++			  "msi8",  "msi9",  "msi10", "msi11",
++			  "msi12", "msi13", "msi14", "msi15",
++			  "legacy";
++	qcom,msi_addr = <0x0b006040>;
++	qcom,msi_base = <0x40>;
++	qcom,ath10k-calibration-data = [ 01 02 03 ... ];
++};
+-- 
+1.8.1.2
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
