@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
+Received: from caladan.freestone.net ([193.5.68.20])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aIyEP-0005fv-Al
- for ath10k@lists.infradead.org; Tue, 12 Jan 2016 12:39:31 +0000
-From: "B R Manjula" <brm@cdot.in>
-Subject: Re: ath10k drivers on t1024 freescale board
-Date: Tue, 12 Jan 2016 17:34:32 +0530
-Message-Id: <20160112120432.M22899@cdot.in>
-In-Reply-To: <CA+BoTQmmq1K2jEz-pmAErx3dkdrh6uZ1PxLXSRXOoziNapciYg@mail.gmail.com>
-References: <20160112065332.M45517@cdot.in>
- <CA+BoTQmmq1K2jEz-pmAErx3dkdrh6uZ1PxLXSRXOoziNapciYg@mail.gmail.com>
+ id 1aJ1Nr-0007Kn-HG
+ for ath10k@lists.infradead.org; Tue, 12 Jan 2016 16:01:25 +0000
+From: Matthias Cramer <cramer@freestone.net>
+Subject: Unable to get a Compex WLE600NX working with hostapd
+Message-ID: <56952343.5050908@freestone.net>
+Date: Tue, 12 Jan 2016 17:01:07 +0100
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,79 +16,147 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-UGxlYXNlIGNhbiB5b3UgcHJvdmlkZSB1c2VmdWwgbGlua3MgdG8gY3Jvc3MtY29tcGlsYXRpb24g
-d2UgYXJlIGdldHRpbmcgaXNzdWVzIHdoaWxlIApjcm9zcy1jb21waWxpbmcgZm9yIHRhcmdldDoK
-ClRob3VnaCBJIGFtIGNyb3NzLWNvbXBpbGluZyBpdCBpcyBnaXZpbmcgZm9sbG93aW5nIGVycm9y
-OgoKVGhlIGNvbmYgaXMgbm90IGV4ZWN1dGluZyBvbiB0aGUgaG9zdDoKCm1ha2UgZGVmY29uZmln
-LWF0aDEwawpwb3dlcnBjNjQtZnNsLWxpbnV4LWdjYyAgLW1oYXJkLWZsb2F0IC1tNjQgLW1jcHU9
-ZTU1MDAgLS1zeXNyb290PS9vcHQvZnNsLQpuZXR3b3JraW5nL1FvcklRLVNESy1WMS43L3N5c3Jv
-b3RzL3BwYzY0ZTU1MDAtZnNsLWxpbnV4IC1XYWxsIC1XbWlzc2luZy1wcm90b3R5cGVzIC0KV3N0
-cmljdC1wcm90b3R5cGVzIC1PMiAtZm9taXQtZnJhbWUtcG9pbnRlciAgIC1jIC1vIGNvbmYubyBj
-b25mLmMKcG93ZXJwYzY0LWZzbC1saW51eC1nY2MgIC1taGFyZC1mbG9hdCAtbTY0IC1tY3B1PWU1
-NTAwIC0tc3lzcm9vdD0vb3B0L2ZzbC0KbmV0d29ya2luZy9Rb3JJUS1TREstVjEuNy9zeXNyb290
-cy9wcGM2NGU1NTAwLWZzbC1saW51eCAtV2FsbCAtV21pc3NpbmctcHJvdG90eXBlcyAtCldzdHJp
-Y3QtcHJvdG90eXBlcyAtTzIgLWZvbWl0LWZyYW1lLXBvaW50ZXIgICAtYyAtbyB6Y29uZi50YWIu
-byB6Y29uZi50YWIuYwpJbiBmaWxlIGluY2x1ZGVkIGZyb20gemNvbmYudGFiLmM6MjUwMzowOgpt
-ZW51LmM6IEluIGZ1bmN0aW9uICdnZXRfc3ltYm9sX3N0cic6Cm1lbnUuYzo1NjE6MTg6IHdhcm5p
-bmc6ICdqdW1wJyBtYXkgYmUgdXNlZCB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24gWy1X
-bWF5YmUtCnVuaW5pdGlhbGl6ZWRdCiAgICAganVtcC0+b2Zmc2V0ID0gci0+bGVuIC0gMTsKICAg
-ICAgICAgICAgICAgICAgXgptZW51LmM6NTE1OjE5OiBub3RlOiAnanVtcCcgd2FzIGRlY2xhcmVk
-IGhlcmUKICBzdHJ1Y3QganVtcF9rZXkgKmp1bXA7CiAgICAgICAgICAgICAgICAgICBeCnBvd2Vy
-cGM2NC1mc2wtbGludXgtZ2NjICAtbWhhcmQtZmxvYXQgLW02NCAtbWNwdT1lNTUwMCAtLXN5c3Jv
-b3Q9L29wdC9mc2wtCm5ldHdvcmtpbmcvUW9ySVEtU0RLLVYxLjcvc3lzcm9vdHMvcHBjNjRlNTUw
-MC1mc2wtbGludXggICBjb25mLm8gemNvbmYudGFiLm8gICAtbyBjb25mCi4va2NvbmYvY29uZjog
-Li9rY29uZi9jb25mOiBjYW5ub3QgZXhlY3V0ZSBiaW5hcnkgZmlsZQptYWtlWzFdOiAqKiogW2Rl
-ZmNvbmZpZy1hdGgxMGtdIEVycm9yIDEyNgptYWtlOiAqKiogW2RlZmNvbmZpZy1hdGgxMGtdIEVy
-cm9yIDIKCgoKCk9uIFR1ZSwgMTIgSmFuIDIwMTYgMDk6MDQ6NTcgKzAxMDAsIE1pY2hhbCBLYXpp
-b3Igd3JvdGUKPiBPbiAxMiBKYW51YXJ5IDIwMTYgYXQgMDg6MDUsIEIgUiBNYW5qdWxhIDxicm1A
-Y2RvdC5pbj4gd3JvdGU6Cj4gPiBIZWxsbyAsCj4gPgo+ID4gV2UgYXJlIHVzaW5nIGtlcm5lbCAz
-LjExIG9uIEZSRUVTQ0FMRSByZWZlcmVuY2UgYm9hcmQgVDEwMjRSREItNjRiaXQgYm9hcmQgdHJ5
-aW5nIHRvCj4gPiBicmluZ3VwIGF0aDEwayBkcml2ZXJzIHdlIGFyZSB1c2luZyBXTEUtOTAwVlgt
-N0FBICgxMWFjIHBjaWUgbWluaSBjYXJkKSB3ZSAKZG93bmxvYWRlZAo+ID4gdGhlCj4gPiBmaXJt
-d2FyZSBmcm9tIHRoZSBmb2xsb3dpbmcgc2l0ZToKPiA+IGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFs
-by9hdGgxMGstZmlybXdhcmUvYmxvYi9tYXN0ZXIvUUNBOTg4WC9tYWluL2Zpcm13YXJlLQo+ID4g
-Mi5iaW5fOTk5Ljk5OS4wLjYzNgo+ID4gcmVwbGFjZWQgYXMgZmlybXdhcmUuYmluIGluIHRoZSBk
-aXJlY3RvcnkgL2xpYi9maXJtd2FyZS9hdGgxMGsvUUNBOTg4WC9odzIuMAo+ID4KPiA+IGJvYXJk
-LmJpbiBpcyBkb3dubG9hZGVkIGZyb20KPiA+IGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgx
-MGstZmlybXdhcmUvYmxvYi9tYXN0ZXIvUUNBOTg4WC9ib2FyZC5iaW4KPiA+Cj4gPiBhbmQgb3Rw
-LmJpbiB3YXMgbm90IGZvdW5kIHdlIGp1c3QgcGxhY2VkIHNvbWUgZmlsZSBpbiB0aGUgbmFtZSBh
-cyBvdHAuYmluCj4gPgo+ID4gd2UgYXJlIGdldHRpbmcgdGhlIGZvbGxvd2luZyBpc3N1ZToKPiA+
-Cj4gPiBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogQkFSIDA6IGFzc2lnbmVkIFttZW0gMHhjMDAw
-MDAwMDAtMHhjMDAxZmZmZmYgNjRiaXRdCj4gPiBhdGgxMGs6IE1TSS1YIGRpZG4ndCBzdWNjZWVk
-ICgxKSwgdHJ5aW5nIE1TSQo+ID4gYXRoMTBrOiBNU0kgaW50ZXJydXB0IGhhbmRsaW5nCj4gPiBh
-dGgxMGs6IEhhcmR3YXJlIG5hbWUgcWNhOTg4eCBodzIuMCB2ZXJzaW9uIDB4NDEwMDAxNmMKPiA+
-IGF0aDEwazogZWFybHkgZmlybXdhcmUgZXZlbnQgaW5kaWNhdGVkCj4gPiBhdGgxMGs6IHVuYWJs
-ZSB0byB3cml0ZSB0byB0aGUgZGV2aWNlCj4gPiBhdGgxMGs6IGNvdWxkIG5vdCB3cml0ZSBvdHAg
-KC0xMTApCj4gPiBhdGgxMGs6IGNvdWxkIG5vdCBpbml0IGNvcmUgKC0xMTApCj4gPiBhdGgxMGs6
-IGNvdWxkIG5vdCBwcm9iZSBmdyAoLTExMCkKPiA+IGF0aDEwazogY291bGQgbm90IHJlZ2lzdGVy
-IGRyaXZlciBjb3JlICgtMTEwKQo+ID4gYXRoMTBrX3BjaTogcHJvYmUgb2YgMDAwMDowMTowMC4w
-IGZhaWxlZCB3aXRoIGVycm9yIC0xMTAKPiA+Cj4gPiB3aGF0IGNvdWxkIGJlIHRoZSByZWFzb24u
-Cj4gCj4gWW91IGNhbid0IGp1c3QgZ28gYWJvdXQgYW5kIHVzZSBGVyBBUEkyIGZpcm13YXJlIGFz
-IEZXIEFQSTEgb25lLiBObwo+IHdvbmRlciBkZXZpY2UgY3Jhc2hlZC4KPiAKPiBBbHNvIHlvdSBj
-YW4ndCBqdXN0IHBsYWNlIGFueSBmaWxlIGluc3RlYWQgb2Ygb3RwLmJpbi4KPiAKPiBNb3Jlb3Zl
-ciB5b3UncmUgdXNpbmcgYW4gYXJjYW5lIHZlcnNpb24gb2YgYXRoMTBrLiBJdCdzIHdhc3RlZnVs
-IGlmCj4geW91J3JlIGdvaW5nIHRvIHJlcG9ydCBwcm9ibGVtcyB0aGF0IHdlcmUgYWxyZWFkeSBm
-aXhlZC4gUGxlYXNlCj4gdXBncmFkZSB0aGUga2VybmVsIG9yIHVzZSBiYWNrcG9ydHM6Cj4gCj4g
-ICBodHRwczovL3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi91c2Vycy9kcml2ZXJzL2F0aDEw
-ay9iYWNrcG9ydHMKPiAKPiBNaWNoYcWCCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2F0aDEwawoKCkRpc2NsYWltZXI6Ci0tLS0tLS0tLS0KVGhpcyBlbWFpbCBhbmQgYW55IGZp
-bGVzIHRyYW5zbWl0dGVkIHdpdGggaXQgYXJlIGNvbmZpZGVudGlhbCBhbmQgaW50ZW5kZWQgc29s
-ZWx5IGZvciAKdGhlIHVzZSBvZiB0aGUgaW5kaXZpZHVhbCBvciBlbnRpdHkgdG8gd2hvbSB0aGV5
-IGFyZSBhZGRyZXNzZWQuwqAgSWYgeW91IGFyZSBub3QgdGhlIAppbnRlbmRlZCByZWNpcGllbnQg
-eW91IGFyZSBub3RpZmllZCB0aGF0IGRpc2Nsb3NpbmcsIGNvcHlpbmcsIGRpc3RyaWJ1dGluZyBv
-ciB0YWtpbmcgCmFueSBhY3Rpb24gaW4gcmVsaWFuY2Ugb24gdGhlIGNvbnRlbnRzIG9mIHRoaXMg
-aW5mb3JtYXRpb24gaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gVGhlIApzZW5kZXIgZG9lcyBub3Qg
-YWNjZXB0IGxpYWJpbGl0eSBmb3IgYW55IGVycm9ycyBvciBvbWlzc2lvbnMgaW4gdGhlIGNvbnRl
-bnRzIG9mIHRoaXMgCm1lc3NhZ2UsIHdoaWNoIGFyaXNlIGFzIGEgcmVzdWx0IG9mIGUtbWFpbCB0
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
-IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hi All
+
+I already spent several hours trying to build an AP with hostapd and a Compex WLE600NX card.
+I have found several examples which seemed to work for the author on this mailing list but all more than 1 year old.
+
+My system runs Debian unstable with kernel 4.3.0-1-amd64 (stable and testing do not have the ath10k firmware).
+hostapd v2.3
+
+my config looks like this (is one of the configs I found here with very small changes):
+
+----------------------------------------------------------------------------------------
+
+### hostapd configuration file
+ctrl_interface=/var/run/hostapd
+interface=wlp4s0
+driver=nl80211
+bridge=br0
+
+### IEEE 802.11
+ssid=ath10k
+hw_mode=a
+channel=0
+max_num_sta=128
+auth_algs=1
+disassoc_low_ack=1
+
+### DFS
+ieee80211h=1
+ieee80211d=1
+country_code=CH
+
+### IEEE 802.11n
+ieee80211n=1
+ht_capab=[HT40+][LDPC][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1][DSSS_CCK-40]
+
+### IEEE 802.11ac
+ieee80211ac=1
+vht_oper_chwidth=1
+vht_capab=[MAX-MPDU-11454][RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP7][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+
+### WPA/IEEE 802.11i
+wpa=2
+wpa_key_mgmt=WPA-PSK
+wpa_passphrase=12345678
+wpa_pairwise=CCMP
+
+### Wi-Fi Protected Setup (WPS)
+wps_state=2
+ap_setup_locked=0
+wps_pin_requests=/var/run/hostapd_wps_pin_requests
+device_name=QCA Access Point
+manufacturer=Qualcomm Atheros
+device_type=6-0050F204-1
+config_methods=virtual_push_button physical_push_button label keypad virtual_display
+pbc_in_m1=1
+ap_pin=12345670
+upnp_iface=br-lan
+eap_server=1
+
+### hostapd event logger configuration
+logger_syslog=127
+logger_syslog_level=2
+logger_stdout=127
+logger_stdout_level=2
+
+### WMM
+wmm_enabled=1
+uapsd_advertisement_enabled=1
+wmm_ac_bk_cwmin=4
+wmm_ac_bk_cwmax=10
+wmm_ac_bk_aifs=7
+wmm_ac_bk_txop_limit=0
+wmm_ac_bk_acm=0
+wmm_ac_be_aifs=3
+wmm_ac_be_cwmin=4
+wmm_ac_be_cwmax=10
+wmm_ac_be_txop_limit=0
+wmm_ac_be_acm=0
+wmm_ac_vi_aifs=2
+wmm_ac_vi_cwmin=3
+wmm_ac_vi_cwmax=4
+wmm_ac_vi_txop_limit=94
+wmm_ac_vi_acm=0
+wmm_ac_vo_aifs=2
+wmm_ac_vo_cwmin=2
+wmm_ac_vo_cwmax=3
+wmm_ac_vo_txop_limit=47
+wmm_ac_vo_acm=0
+
+### TX queue parameters
+tx_queue_data3_aifs=7
+tx_queue_data3_cwmin=15
+tx_queue_data3_cwmax=1023
+tx_queue_data3_burst=0
+tx_queue_data2_aifs=3
+tx_queue_data2_cwmin=15
+tx_queue_data2_cwmax=63
+tx_queue_data2_burst=0
+tx_queue_data1_aifs=1
+tx_queue_data1_cwmin=7
+tx_queue_data1_cwmax=15
+tx_queue_data1_burst=3.0
+tx_queue_data0_aifs=1
+tx_queue_data0_cwmin=3
+tx_queue_data0_cwmax=7
+tx_queue_data0_burst=1.5
+
+----------------------------------------------------------------------------------------
+
+This is the output if I start hostapd form the console:
+
+Configuration file: hostapd.conf
+wlp4s0: interface state UNINITIALIZED->COUNTRY_UPDATE
+ACS: Automatic channel selection started, this may take a bit
+wlp4s0: interface state COUNTRY_UPDATE->ACS
+wlp4s0: ACS-STARTED
+wlp4s0: ACS-COMPLETED freq=5260 channel=52
+wlp4s0: interface state ACS->HT_SCAN
+wlp4s0: interface state HT_SCAN->DFS
+wlp4s0: DFS-CAC-START freq=5260 chan=52 sec_chan=1, width=1, seg0=58, seg1=0, cac_time=0s
+DFS start_dfs_cac() failed, -1
+Interface initialization failed
+wlp4s0: interface state DFS->DISABLED
+wlp4s0: AP-DISABLED
+hostapd_free_hapd_data: Interface wlp4s0 wasn't started
+
+I also tried several different configs all with no usable result.
+
+Any guidance is very welcome.
+
+Regards
+
+  Matthias
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
