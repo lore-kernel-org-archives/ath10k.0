@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
+Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJG6m-0005jn-LY
- for ath10k@lists.infradead.org; Wed, 13 Jan 2016 07:44:46 +0000
-Received: by mail-wm0-x229.google.com with SMTP id f206so282353891wmf.0
- for <ath10k@lists.infradead.org>; Tue, 12 Jan 2016 23:44:24 -0800 (PST)
+ id 1aJJhn-0004Rw-Gb
+ for ath10k@lists.infradead.org; Wed, 13 Jan 2016 11:35:12 +0000
+Received: by mail-lb0-x22f.google.com with SMTP id x4so32229751lbm.0
+ for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 03:34:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <569552AF.2090504@freestone.net>
-References: <56952343.5050908@freestone.net>
- <CA+BoTQkAnxFHEn3zkj6VmB+mhzgOznhvkE8su96eXXcDmN0+hA@mail.gmail.com>
- <569552AF.2090504@freestone.net>
-Date: Wed, 13 Jan 2016 08:44:23 +0100
-Message-ID: <CA+BoTQ=aRx_ehNCehdHzar-V9MfDL+4iXD9NfW27PqQXJ0RF5g@mail.gmail.com>
-Subject: Re: Unable to get a Compex WLE600NX working with hostapd
-From: Michal Kazior <michal.kazior@tieto.com>
+Date: Wed, 13 Jan 2016 15:34:49 +0400
+Message-ID: <CAGvpMW8JW+a6-MS=TrRNFvBDG4LWYFR+2fM09dFhQEes7NEn4w@mail.gmail.com>
+Subject: 
+From: Alexey Ivanov <alexeyivan@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,98 +18,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Matthias Cramer <cramer@freestone.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-KyBsaXN0CgpQbGVhc2UgZG9uJ3Qgc3RyaXAgdGhlIG1haWxpbmcgbGlzdCBhd2F5IGZyb20gQ2Mu
-CgoKT24gMTIgSmFudWFyeSAyMDE2IGF0IDIwOjIzLCBNYXR0aGlhcyBDcmFtZXIgPGNyYW1lckBm
-cmVlc3RvbmUubmV0PiB3cm90ZToKPiBIaSBNaWNoYWwKPgo+IFRoYW5rcyBmb3IgeW91ciByZXBs
-eS4gSSBwbGF5ZWQgYXJvdW5kIGEgbGl0dGxlIG1vcmUsIGRpc2FibGVkIERGUywgc2V0IHRoZSBj
-aGFubmVsIG1hbnVhbGx5IHRvIDQwIG9yIDQ0LCBubyBsdWNrLgo+Cj4gQXR0YWNoZWQgdGhlIG91
-dHB1dCBvZiB0aGUgY29tbWFuZHMgeW91IHRvbGQgbWUgYmVmb3JlIGFueSBjaGFuZ2VzIHdoZXJl
-IG1hZGUuCj4KPiBJbiB0aGUgQUNTIHNjYW4gbGlzdCBJIG9ubHkgc2VlIGNoYW5uZWxzIDQwIGFu
-ZCA0NCBpbiB0aGUgNUdIeiBiYW5kIC4uLiBJIHRoaW5rIHRoYXQgaXMgc3RyYW5nZS4KCk9rIHRo
-ZSBhdHRhY2hlZCBmaWxlczoKCnJvb3RAc3RhcmdhdGU6fiMgIGl3IHJlZyBnZXQKY291bnRyeSAw
-MDogREZTLVVOU0VUCigyNDAyIC0gMjQ3MiBAIDQwKSwgKDYsIDIwKSwgKE4vQSkKKDI0NTcgLSAy
-NDgyIEAgNDApLCAoNiwgMjApLCAoTi9BKSwgUEFTU0lWRS1TQ0FOCigyNDc0IC0gMjQ5NCBAIDIw
-KSwgKDYsIDIwKSwgKE4vQSksIE5PLU9GRE0sIFBBU1NJVkUtU0NBTgooNTE3MCAtIDUyNTAgQCAx
-NjApLCAoNiwgMjApLCAoTi9BKSwgUEFTU0lWRS1TQ0FOCig1MjUwIC0gNTMzMCBAIDE2MCksICg2
-LCAyMCksICgwIG1zKSwgREZTLCBQQVNTSVZFLVNDQU4KKDU0OTAgLSA1NzMwIEAgMTYwKSwgKDYs
-IDIwKSwgKDAgbXMpLCBERlMsIFBBU1NJVkUtU0NBTgooNTczNSAtIDU4MzUgQCA4MCksICg2LCAy
-MCksIChOL0EpLCBQQVNTSVZFLVNDQU4KKDU3MjQwIC0gNjM3MjAgQCAyMTYwKSwgKE4vQSwgMCks
-IChOL0EpCgpUaGlzIG1heSBzdWdnZXN0IHlvdSBkb24ndCBoYXZlIENSREEgcnVubmluZyBwcm9w
-ZXJseSBzaW5jZSB5b3UncmUKc3R1Y2sgb24gd29ybGQgcmVndWxhdG9yeSBkb21haW4uCgpgaXds
-aXN0YCBzaG93cyB5b3UgaGF2ZSBubyBjaGFubmVscyBhdmFpbGFibGUgZm9yIGluaXRpYXRpbmcK
-cmFkaWF0aW9uLiBUaGlzIGlzIGR1ZSB0byB0aGUgcmVndWxhdG9yeSBwcm9ibGVtLgoKRnJlcXVl
-bmNpZXM6CiogNTE4MCBNSHogWzM2XSAoMzAuMCBkQm0pIChubyBJUikKKiA1MjAwIE1IeiBbNDBd
-ICgzMC4wIGRCbSkgKG5vIElSKQoqIDUyMjAgTUh6IFs0NF0gKDMwLjAgZEJtKSAobm8gSVIpCiog
-NTI0MCBNSHogWzQ4XSAoMzAuMCBkQm0pIChubyBJUikKKiA1MjYwIE1IeiBbNTJdICgzMC4wIGRC
-bSkgKG5vIElSLCByYWRhciBkZXRlY3Rpb24pCiBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDE2MiBz
-ZWMpCiBERlMgQ0FDIHRpbWU6IDAgbXMKKiA1MjgwIE1IeiBbNTZdICgzMC4wIGRCbSkgKG5vIElS
-LCByYWRhciBkZXRlY3Rpb24pCiBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDE2MiBzZWMpCiBERlMg
-Q0FDIHRpbWU6IDAgbXMKKiA1MzAwIE1IeiBbNjBdICgzMC4wIGRCbSkgKG5vIElSLCByYWRhciBk
-ZXRlY3Rpb24pCiBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDE2MiBzZWMpCiBERlMgQ0FDIHRpbWU6
-IDAgbXMKKiA1MzIwIE1IeiBbNjRdICgzMC4wIGRCbSkgKG5vIElSLCByYWRhciBkZXRlY3Rpb24p
-CiBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDE2MiBzZWMpCiBERlMgQ0FDIHRpbWU6IDAgbXMKKiA1
-NTAwIE1IeiBbMTAwXSAoZGlzYWJsZWQpCiogNTUyMCBNSHogWzEwNF0gKGRpc2FibGVkKQoqIDU1
-NDAgTUh6IFsxMDhdIChkaXNhYmxlZCkKKiA1NTYwIE1IeiBbMTEyXSAoZGlzYWJsZWQpCiogNTU4
-MCBNSHogWzExNl0gKGRpc2FibGVkKQoqIDU2MDAgTUh6IFsxMjBdIChkaXNhYmxlZCkKKiA1NjIw
-IE1IeiBbMTI0XSAoZGlzYWJsZWQpCiogNTY0MCBNSHogWzEyOF0gKGRpc2FibGVkKQoqIDU2NjAg
-TUh6IFsxMzJdIChkaXNhYmxlZCkKKiA1NjgwIE1IeiBbMTM2XSAoZGlzYWJsZWQpCiogNTcwMCBN
-SHogWzE0MF0gKGRpc2FibGVkKQoqIDU3MjAgTUh6IFsxNDRdICgzMC4wIGRCbSkgKG5vIElSKQoq
-IDU3NDUgTUh6IFsxNDldICgzMC4wIGRCbSkgKG5vIElSKQoqIDU3NjUgTUh6IFsxNTNdICgzMC4w
-IGRCbSkgKG5vIElSKQoqIDU3ODUgTUh6IFsxNTddICgzMC4wIGRCbSkgKG5vIElSKQoqIDU4MDUg
-TUh6IFsxNjFdICgzMC4wIGRCbSkgKG5vIElSKQoqIDU4MjUgTUh6IFsxNjVdICgzMC4wIGRCbSkg
-KG5vIElSKQoKWW91IGFsc28gZG9uJ3QgaGF2ZSBjZXJ0aWZpY2F0aW9uIG9udXMgaW4gdGhlIGtl
-cm5lbCBhbmQgaGF2ZSBubyByYWRhcgpkZXRlY3Rpb24gaW4gaW50ZXJmYWNlIGNvbWJpbmF0aW9u
-czoKCmFsaWQgaW50ZXJmYWNlIGNvbWJpbmF0aW9uczoKKiAjeyBBUCB9IDw9IDgsCiAgdG90YWwg
-PD0gOCwgI2NoYW5uZWxzIDw9IDEsIFNUQS9BUCBCSSBtdXN0IG1hdGNoCgpZb3UnZCBoYXZlIHRv
-IHJlY29tcGlsZSB0aGUga2VybmVsIHlvdXJzZWxmIGFuZCBlbmFibGUgdGhlIG9udXMgYW5kCkRG
-UyBmb3IgYXRoL2F0aDEwayBtb2R1bGVzIGlmIHlvdSB3YW50IHRvIHVzZSBjaGFubmVscyA1Mi0x
-NDAuCgpIb3dldmVyIEkgd291bGQgZmlyc3QgbG9vayBpbnRvIHRoZSByZWd1bGF0b3J5IGRvbWFp
-biBwcm9ibGVtLiBEbyB5b3UKaGF2ZSBjcmRhIGluc3RhbGxlZCBvbiB5b3VyIHN5c3RlbT8gKGFw
-dC1nZXQgaW5zdGFsbCBjcmRhKSBJcyBpdCB1cCB0bwpkYXRlPwoKCk1pY2hhxYIKCgo+Cj4gUmVn
-YXJkcwo+Cj4gICBNYXR0aGlhcwo+Cj4gT24gMTIvMDEvMTYgMTc6MTMsIE1pY2hhbCBLYXppb3Ig
-d3JvdGU6Cj4+IE9uIDEyIEphbnVhcnkgMjAxNiBhdCAxNzowMSwgTWF0dGhpYXMgQ3JhbWVyIDxj
-cmFtZXJAZnJlZXN0b25lLm5ldD4gd3JvdGU6Cj4+PiBIaSBBbGwKPj4+Cj4+PiBJIGFscmVhZHkg
-c3BlbnQgc2V2ZXJhbCBob3VycyB0cnlpbmcgdG8gYnVpbGQgYW4gQVAgd2l0aCBob3N0YXBkIGFu
-ZCBhIENvbXBleCBXTEU2MDBOWCBjYXJkLgo+Pj4gSSBoYXZlIGZvdW5kIHNldmVyYWwgZXhhbXBs
-ZXMgd2hpY2ggc2VlbWVkIHRvIHdvcmsgZm9yIHRoZSBhdXRob3Igb24gdGhpcyBtYWlsaW5nIGxp
-c3QgYnV0IGFsbCBtb3JlIHRoYW4gMSB5ZWFyIG9sZC4KPj4+Cj4+PiBNeSBzeXN0ZW0gcnVucyBE
-ZWJpYW4gdW5zdGFibGUgd2l0aCBrZXJuZWwgNC4zLjAtMS1hbWQ2NCAoc3RhYmxlIGFuZCB0ZXN0
-aW5nIGRvIG5vdCBoYXZlIHRoZSBhdGgxMGsgZmlybXdhcmUpLgo+Pj4gaG9zdGFwZCB2Mi4zCj4+
-Pgo+Pj4gbXkgY29uZmlnIGxvb2tzIGxpa2UgdGhpcyAoaXMgb25lIG9mIHRoZSBjb25maWdzIEkg
-Zm91bmQgaGVyZSB3aXRoIHZlcnkgc21hbGwgY2hhbmdlcyk6Cj4+IFsuLi5dCj4+PiAjIyMgREZT
-Cj4+PiBpZWVlODAyMTFoPTEKPj4+IGllZWU4MDIxMWQ9MQo+Pj4gY291bnRyeV9jb2RlPUNICj4+
-IFsuLi5dCj4+PiBUaGlzIGlzIHRoZSBvdXRwdXQgaWYgSSBzdGFydCBob3N0YXBkIGZvcm0gdGhl
-IGNvbnNvbGU6Cj4+Pgo+Pj4gQ29uZmlndXJhdGlvbiBmaWxlOiBob3N0YXBkLmNvbmYKPj4+IHds
-cDRzMDogaW50ZXJmYWNlIHN0YXRlIFVOSU5JVElBTElaRUQtPkNPVU5UUllfVVBEQVRFCj4+PiBB
-Q1M6IEF1dG9tYXRpYyBjaGFubmVsIHNlbGVjdGlvbiBzdGFydGVkLCB0aGlzIG1heSB0YWtlIGEg
-Yml0Cj4+PiB3bHA0czA6IGludGVyZmFjZSBzdGF0ZSBDT1VOVFJZX1VQREFURS0+QUNTCj4+PiB3
-bHA0czA6IEFDUy1TVEFSVEVECj4+PiB3bHA0czA6IEFDUy1DT01QTEVURUQgZnJlcT01MjYwIGNo
-YW5uZWw9NTIKPj4+IHdscDRzMDogaW50ZXJmYWNlIHN0YXRlIEFDUy0+SFRfU0NBTgo+Pj4gd2xw
-NHMwOiBpbnRlcmZhY2Ugc3RhdGUgSFRfU0NBTi0+REZTCj4+PiB3bHA0czA6IERGUy1DQUMtU1RB
-UlQgZnJlcT01MjYwIGNoYW49NTIgc2VjX2NoYW49MSwgd2lkdGg9MSwgc2VnMD01OCwgc2VnMT0w
-LCBjYWNfdGltZT0wcwo+Pj4gREZTIHN0YXJ0X2Rmc19jYWMoKSBmYWlsZWQsIC0xCj4+IFsuLi5d
-Cj4+Cj4+IENhbiB5b3UgdHJ5IHJ1bm5pbmcgd2l0aCAiLWRkZGQiIGZvciBtb3JlIGRlYnVnIG91
-dHB1dD8KPj4KPj4gSSBkb24ndCBrbm93IGhvdyBkZWJpYW4gYnVpbGRzIHRoZSBrZXJuZWwgYnV0
-IGl0IG1pZ2h0IG5vdCBoYXZlIHRoZQo+PiByZWd1bGF0b3J5IG9udXMgZW5hYmxlZCAod2hpY2gg
-aXMgcmVxdWlyZWQgZm9yIERGUyBvcGVyYXRpb24pLgo+Pgo+PiBHZW5lcmFsbHkgc2VlIG91dHB1
-dCBvZiB0aGVzZSB0d28gY29tbWFuZHM6Cj4+ICBpdyBsaXN0Cj4+ICBpdyByZWcgZ2V0Cj4+Cj4+
-IEluIHRoZSBmaXJzdCBvbmUgeW91IG5lZWQgdG8gc2VlIHNvbWV0aGluZyBsaWtlIHRoZSBmb2xs
-b3dpbmcgdG8gYmUKPj4gYWJsZSB0byB1c2UgREZTIGNoYW5uZWxzOgo+Pgo+PiAgIHJhZGFyIGRl
-dGVjdCB3aWR0aHM6IHsgMjAgTUh6IChubyBIVCksIDIwIE1IeiwgNDAgTUh6LCA4MCBNSHogfQo+
-Pgo+PiBCdXQgbWF5YmUgeW91IGRvbid0IHJlYWxseSBuZWVkIERGUyBjaGFubmVscz8gSW4gdGhh
-dCBjYXNlIHlvdSBjYW4gdXNlCj4+IGNoYW5uZWxzIDM2LDQwLDQ0LDQ4IG9yIDE0OSwxNTQsMTU5
-LDE2MyBkZXBlbmRpbmcgb24geW91ciByZWd1bGF0b3J5Cj4+IHNldHRpbmdzLiBBZ2FpbiAtIGBp
-dyBsaXN0YCB3aWxsIGhlbHAgeW91IHNlZSB3aGljaCBjaGFubmVscyBhcmUKPj4gYWxsb3dlZCBh
-bmQgd2hpY2ggYXJlbid0Lgo+Pgo+Pgo+PiBNaWNoYcWCCj4+Cj4+IF9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IGF0aDEwayBtYWlsaW5nIGxpc3QKPj4g
-YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPj4KPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
-aDEwawo=
+I'm trying to run OpenWrt(r48016) with ath10k driver on this device
+(https://wikidevi.com/wiki/EnGenius_EAP1750H)
+
+The calibration data is present at 0x5000@ART. I've copied it to board.bin
+
+But the driver fails to load:
+[   10.313982] ath10k_pci 0000:00:00.0: pci irq legacy interrupts 0
+irq_mode 0 reset_mode 0
+[   10.526214] ath10k_pci 0000:00:00.0: Direct firmware load for
+ath10k/cal-pci-0000:00:00.0.bin failed with error -2
+[   10.536740] ath10k_pci 0000:00:00.0: Falling back to user helper
+[   10.611930] firmware ath10k!cal-pci-0000:00:00.0.bin:
+firmware_loading_store: map pages failed
+[   10.749685] ath10k_pci 0000:00:00.0: qca988x hw2.0 target
+0x4100016c chip_id 0x043202ff sub 0000:0000
+[   10.759085] ath10k_pci 0000:00:00.0: kconfig debug 1 debugfs 1
+tracing 0 dfs 0 testmode 1
+[   10.772154] ath10k_pci 0000:00:00.0: firmware ver 10.2.4.97 api 5
+features no-p2p crc32 f91e34f2
+[   10.821280] ath10k_pci 0000:00:00.0: Direct firmware load for
+ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
+[   10.831887] ath10k_pci 0000:00:00.0: Falling back to user helper
+[   10.907421] firmware ath10k!QCA988X!hw2.0!board-2.bin:
+firmware_loading_store: map pages failed
+[   10.916658] ath10k_pci 0000:00:00.0: board_file api 1 bmi_id N/A
+crc32 bebc7c08
+[   11.012769] ath10k_pci 0000:00:00.0: otp calibration failed: 2
+[   11.018708] ath10k_pci 0000:00:00.0: failed to run otp: -22
+[   11.024367] ath10k_pci 0000:00:00.0: could not init core (-22)
+[   11.030370] ath10k_pci 0000:00:00.0: could not probe fw (-22)
+
+
+The output after insmod ath10k_core skip_otp=Y:
+
+[ 1346.161436] ath10k_pci 0000:00:00.0: pci irq legacy interrupts 0
+irq_mode 0 reset_mode 0
+[ 1346.376382] ath10k_pci 0000:00:00.0: Direct firmware load for
+ath10k/cal-pci-0000:00:00.0.bin failed with error -2
+[ 1346.386932] ath10k_pci 0000:00:00.0: Falling back to user helper
+[ 1346.463861] firmware ath10k!cal-pci-0000:00:00.0.bin:
+firmware_loading_store: map pages failed
+[ 1346.475118] ath10k_pci 0000:00:00.0: qca988x hw2.0 target
+0x4100016c chip_id 0x043202ff sub 0000:0000
+[ 1346.484521] ath10k_pci 0000:00:00.0: kconfig debug 1 debugfs 1
+tracing 0 dfs 0 testmode 1
+[ 1346.497614] ath10k_pci 0000:00:00.0: firmware ver 10.2.4.97 api 5
+features no-p2p crc32 f91e34f2
+[ 1346.548363] ath10k_pci 0000:00:00.0: Direct firmware load for
+ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
+[ 1346.558999] ath10k_pci 0000:00:00.0: Falling back to user helper
+[ 1346.635967] firmware ath10k!QCA988X!hw2.0!board-2.bin:
+firmware_loading_store: map pages failed
+[ 1346.645156] ath10k_pci 0000:00:00.0:
+board_file api 1 bmi_id N/A crc32 bebc7c08
+[ 1347.782528] ath10k_pci 0000:00:00.0: htt-ver 2.1 wmi-op 5 htt-op 2
+cal otp max-sta 128 raw 0 hwcrypto 1
+
+
+The original QSDK version by EnGenius works good.
+What am I doing wrong? Or the
+board_file api 1 is not supported by ath10k?
+
+--
+Best regards,
+Alex Ivanov
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
