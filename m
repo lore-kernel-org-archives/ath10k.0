@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJNf4-0003Bo-Af
- for ath10k@lists.infradead.org; Wed, 13 Jan 2016 15:48:39 +0000
+ id 1aJNfE-0003Hi-Ai
+ for ath10k@lists.infradead.org; Wed, 13 Jan 2016 15:48:49 +0000
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH 5/7] ath10k: Provision to support periodic peer stats update
-Date: Wed, 13 Jan 2016 21:16:32 +0530
-Message-ID: <1452699994-5078-6-git-send-email-mohammed@qca.qualcomm.com>
+Subject: [PATCH 6/7] ath10k: Enable periodic peer stats update
+Date: Wed, 13 Jan 2016 21:16:33 +0530
+Message-ID: <1452699994-5078-7-git-send-email-mohammed@qca.qualcomm.com>
 In-Reply-To: <1452699994-5078-1-git-send-email-mohammed@qca.qualcomm.com>
 References: <1452699994-5078-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
@@ -27,55 +27,41 @@ Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, Mohamme
 
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Enable support for periodic peer stats update when peer stats
-service is enabled. The host to update the peer stats received
-from the firmware periodically, since firmware will reset this to zero
-after sometime (due to memory constraints)
-
-While enabling periodic peer / vdev stats cleanup the existing
-list in debugfs if max limit is reached, so that the new stats is
-updated.
-
-Ideally speaking based on 'Michal Kazior's' suggestion
-we need to completely move to periodic update of all the stats making
-the 'ping - pong' method obselete. This requires a bit of re-work and
-some testing as well, also confirmation regarding backward comptability
-for various firmware and chipsets. Hence allow periodic update only
-for peer_stats.
+Register for 500ms as periodic peer stats update period,
+and parameters like rx_duration that needs to be tracked
+in host can be achieved by this provision, also periodic
+stats update is the future of fw_stats and shall be extended
+for pdev / vdev stats irrespecitive PEER_STATS service is enabled
+or not
 
 Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/debug.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 4fb1e0e..3b8da81 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -347,7 +347,8 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
- 	 *     delivered which is treated as end-of-data and is itself discarded
- 	 */
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 2dba57c..fd4b4df 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4103,6 +4103,18 @@ static int ath10k_start(struct ieee80211_hw *hw)
  
--	if (ar->debug.fw_stats_done) {
-+	if (ar->debug.fw_stats_done &&
-+	    !test_bit(WMI_SERVICE_PEER_STATS, ar->wmi.svc_map)) {
- 		ath10k_warn(ar, "received unsolicited stats update event\n");
- 		goto free;
- 	}
-@@ -372,11 +373,13 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
- 			/* Although this is unlikely impose a sane limit to
- 			 * prevent firmware from DoS-ing the host.
- 			 */
-+			ath10k_fw_stats_peers_free(&ar->debug.fw_stats.peers);
- 			ath10k_warn(ar, "dropping fw peer stats\n");
- 			goto free;
- 		}
+ 	ar->ani_enabled = true;
  
- 		if (num_vdevs >= BITS_PER_LONG) {
-+			ath10k_fw_stats_vdevs_free(&ar->debug.fw_stats.vdevs);
- 			ath10k_warn(ar, "dropping fw vdev stats\n");
- 			goto free;
- 		}
++	if (test_bit(WMI_SERVICE_PEER_STATS, ar->wmi.svc_map)) {
++		param = ar->wmi.pdev_param->peer_stats_update_period;
++		ret = ath10k_wmi_pdev_set_param(ar, param,
++					PEER_DEFAULT_STATS_UPDATE_PERIOD);
++		if (ret) {
++			ath10k_warn(ar,
++				    "failed to set peer stats period : %d\n",
++				    ret);
++			goto err_core_stop;
++		}
++	}
++
+ 	ar->num_started_vdevs = 0;
+ 	ath10k_regd_update(ar);
+ 
 -- 
 1.7.9.5
 
