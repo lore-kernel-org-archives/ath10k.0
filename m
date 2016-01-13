@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJNeO-0002rn-Ta
- for ath10k@lists.infradead.org; Wed, 13 Jan 2016 15:47:57 +0000
+ id 1aJNes-00036N-Gm
+ for ath10k@lists.infradead.org; Wed, 13 Jan 2016 15:48:27 +0000
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH 3/7] ath10k: Cleanup setting pdev paramaters
-Date: Wed, 13 Jan 2016 21:16:30 +0530
-Message-ID: <1452699994-5078-4-git-send-email-mohammed@qca.qualcomm.com>
+Subject: [PATCH 4/7] ath10k: Rename few function names of firmware stats
+Date: Wed, 13 Jan 2016 21:16:31 +0530
+Message-ID: <1452699994-5078-5-git-send-email-mohammed@qca.qualcomm.com>
 In-Reply-To: <1452699994-5078-1-git-send-email-mohammed@qca.qualcomm.com>
 References: <1452699994-5078-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
@@ -27,80 +27,71 @@ Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, Mohamme
 
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Replace the local variable 'burst_enable' with 'param'
-for mapping and setting pdev paraemeters and with this patch
-pretty easy to extend support for new parameters adhering to
-linux kernel coding guidelines
+Prerequisite patch to address checkpatch errors for the next patch
+in this series, this function names are bit too long, make it short
 
 Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath10k/debug.c |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index b4bdeb0..2dba57c 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3987,7 +3987,7 @@ static int ath10k_set_antenna(struct ieee80211_hw *hw, u32 tx_ant, u32 rx_ant)
- static int ath10k_start(struct ieee80211_hw *hw)
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 2bdf540..4fb1e0e 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -276,7 +276,7 @@ static const struct file_operations fops_wmi_services = {
+ 	.llseek = default_llseek,
+ };
+ 
+-static void ath10k_debug_fw_stats_pdevs_free(struct list_head *head)
++static void ath10k_fw_stats_pdevs_free(struct list_head *head)
  {
- 	struct ath10k *ar = hw->priv;
--	u32 burst_enable;
-+	u32 param;
- 	int ret = 0;
+ 	struct ath10k_fw_stats_pdev *i, *tmp;
  
- 	/*
-@@ -4030,13 +4030,15 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 		goto err_power_down;
+@@ -286,7 +286,7 @@ static void ath10k_debug_fw_stats_pdevs_free(struct list_head *head)
  	}
+ }
  
--	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->pmf_qos, 1);
-+	param = ar->wmi.pdev_param->pmf_qos;
-+	ret = ath10k_wmi_pdev_set_param(ar, param, 1);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to enable PMF QOS: %d\n", ret);
- 		goto err_core_stop;
+-static void ath10k_debug_fw_stats_vdevs_free(struct list_head *head)
++static void ath10k_fw_stats_vdevs_free(struct list_head *head)
+ {
+ 	struct ath10k_fw_stats_vdev *i, *tmp;
+ 
+@@ -296,7 +296,7 @@ static void ath10k_debug_fw_stats_vdevs_free(struct list_head *head)
  	}
+ }
  
--	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->dynamic_bw, 1);
-+	param = ar->wmi.pdev_param->dynamic_bw;
-+	ret = ath10k_wmi_pdev_set_param(ar, param, 1);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to enable dynamic BW: %d\n", ret);
- 		goto err_core_stop;
-@@ -4052,8 +4054,8 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 	}
+-static void ath10k_debug_fw_stats_peers_free(struct list_head *head)
++static void ath10k_fw_stats_peers_free(struct list_head *head)
+ {
+ 	struct ath10k_fw_stats_peer *i, *tmp;
  
- 	if (test_bit(WMI_SERVICE_BURST, ar->wmi.svc_map)) {
--		burst_enable = ar->wmi.pdev_param->burst_enable;
--		ret = ath10k_wmi_pdev_set_param(ar, burst_enable, 0);
-+		param = ar->wmi.pdev_param->burst_enable;
-+		ret = ath10k_wmi_pdev_set_param(ar, param, 0);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to disable burst: %d\n", ret);
- 			goto err_core_stop;
-@@ -4071,8 +4073,8 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 	 * this problem.
+@@ -310,9 +310,9 @@ static void ath10k_debug_fw_stats_reset(struct ath10k *ar)
+ {
+ 	spin_lock_bh(&ar->data_lock);
+ 	ar->debug.fw_stats_done = false;
+-	ath10k_debug_fw_stats_pdevs_free(&ar->debug.fw_stats.pdevs);
+-	ath10k_debug_fw_stats_vdevs_free(&ar->debug.fw_stats.vdevs);
+-	ath10k_debug_fw_stats_peers_free(&ar->debug.fw_stats.peers);
++	ath10k_fw_stats_pdevs_free(&ar->debug.fw_stats.pdevs);
++	ath10k_fw_stats_vdevs_free(&ar->debug.fw_stats.vdevs);
++	ath10k_fw_stats_peers_free(&ar->debug.fw_stats.peers);
+ 	spin_unlock_bh(&ar->data_lock);
+ }
+ 
+@@ -391,9 +391,9 @@ free:
+ 	/* In some cases lists have been spliced and cleared. Free up
+ 	 * resources if that is not the case.
  	 */
+-	ath10k_debug_fw_stats_pdevs_free(&stats.pdevs);
+-	ath10k_debug_fw_stats_vdevs_free(&stats.vdevs);
+-	ath10k_debug_fw_stats_peers_free(&stats.peers);
++	ath10k_fw_stats_pdevs_free(&stats.pdevs);
++	ath10k_fw_stats_vdevs_free(&stats.vdevs);
++	ath10k_fw_stats_peers_free(&stats.peers);
  
--	ret = ath10k_wmi_pdev_set_param(ar,
--					ar->wmi.pdev_param->arp_ac_override, 0);
-+	param = ar->wmi.pdev_param->arp_ac_override;
-+	ret = ath10k_wmi_pdev_set_param(ar, param, 0);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to set arp ac override parameter: %d\n",
- 			    ret);
-@@ -4091,8 +4093,8 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 		}
- 	}
- 
--	ret = ath10k_wmi_pdev_set_param(ar,
--					ar->wmi.pdev_param->ani_enable, 1);
-+	param = ar->wmi.pdev_param->ani_enable;
-+	ret = ath10k_wmi_pdev_set_param(ar, param, 1);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to enable ani by default: %d\n",
- 			    ret);
+ 	spin_unlock_bh(&ar->data_lock);
+ }
 -- 
 1.7.9.5
 
