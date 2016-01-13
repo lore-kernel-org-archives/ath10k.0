@@ -1,21 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
+Received: from mail-ig0-x22a.google.com ([2607:f8b0:4001:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJMpA-0000cH-8K
- for ath10k@lists.infradead.org; Wed, 13 Jan 2016 14:55:01 +0000
-Received: by mail-wm0-x236.google.com with SMTP id f206so375837234wmf.0
- for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 06:54:39 -0800 (PST)
+ id 1aJMtE-0002RX-TX
+ for ath10k@lists.infradead.org; Wed, 13 Jan 2016 14:59:13 +0000
+Received: by mail-ig0-x22a.google.com with SMTP id ik10so173402596igb.1
+ for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 06:58:51 -0800 (PST)
+From: John Detter <john@detter.com>
+Subject: Re: [ath10K] QCA6174 firmware
+References: <56965AA3.2020708@detter.com>
+ <CA+BoTQmTaQnEqtogURerBCLi9aRfPHUCbVPbKDuCJaJ3nUpQKg@mail.gmail.com>
+Message-ID: <56966627.2030104@detter.com>
+Date: Wed, 13 Jan 2016 08:58:47 -0600
 MIME-Version: 1.0
-In-Reply-To: <CAGvpMW_wSfe8m+WtwhS0aRj8o0MioPi2o2FKZ3Vjk7ei-x7iOw@mail.gmail.com>
-References: <CAGvpMW8JW+a6-MS=TrRNFvBDG4LWYFR+2fM09dFhQEes7NEn4w@mail.gmail.com>
- <CA+BoTQk313y4GA-yq01LBad8ccf2OepU6vP_t7PjAJ1a1DR_7Q@mail.gmail.com>
- <CAGvpMW9d8RZGpfBd2H0W35fVUQoi9jcZvQmTC7ztW+dPVcxOhg@mail.gmail.com>
- <CA+BoTQk7O4Lq2rcZG9pLZJij27COWiCUz=g8SNEp2df3CKV-vg@mail.gmail.com>
- <CAGvpMW_wSfe8m+WtwhS0aRj8o0MioPi2o2FKZ3Vjk7ei-x7iOw@mail.gmail.com>
-Date: Wed, 13 Jan 2016 15:54:38 +0100
-Message-ID: <CA+BoTQ=OtLnfmas=TYOdTOTEtkeoaxd7BuT5O7ircpd+oMecgw@mail.gmail.com>
-Subject: Re:
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <CA+BoTQmTaQnEqtogURerBCLi9aRfPHUCbVPbKDuCJaJ3nUpQKg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +21,121 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alexey Ivanov <alexeyivan@gmail.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTMgSmFudWFyeSAyMDE2IGF0IDE1OjQ1LCBBbGV4ZXkgSXZhbm92IDxhbGV4ZXlpdmFuQGdt
-YWlsLmNvbT4gd3JvdGU6Cj4+U3RyYW5nZS4uCj4KPiBEbyB5b3UgaGF2ZSBhbnkgaWRlYSB3aGF0
-IGl0IGNhbiBiZT8KPiAibWFwIHBhZ2VzIGZhaWxlZCIgc2VlbXMgdG8gYmUgYSByZXN1bHQgb2Yg
-ZmFpbGluZyB0byB2bWFwKCkgYnVmZmVyIGluCj4gZndfbWFwX3BhZ2VzX2J1ZigpIGluIGZpcm13
-YXJlX2xvYWRpbmdfc3RvcmUoKQoKSXQncyB0aGUgc2FtZSBtZXNzYWdlIGFzIHdoZW4geW91IGRp
-ZG4ndCBoYXZlIHRoZSBjYWwuYmluIGZpbGUgYXQgYWxsLgpBcmUgeW91IHN1cmUgeW91IHBsYWNl
-ZCBpdCBjb3JyZWN0bHk/IFBlcmhhcHMgYSBmaWxlbmFtZSB0eXBvPwoKQW5vdGhlciBpZGVhIGlz
-IGluaXRyYW1mcyB3aGljaCBpcyB1c2VkIGR1cmluZyBlYXJseSBib290IGFuZCB3aGljaApkb2Vz
-bid0IGluY2x1ZGUgZmlsZXMgZnJvbSByb290ZnMgKG1lYW5pbmcgeW91J2QgaGF2ZSB0byByZWJ1
-aWxkIGl0KSAtCm5vdCBzdXJlIGlmIHRoaXMgaXMgdGhlIGNhc2UgdGhvdWdoLiBZb3UgY2FuIHJ1
-bGUgaXQgb3V0IGJ5IHJlbG9hZGluZwp0aGUgZHJpdmVyIGFmdGVyIGJvb3Rpbmcgc28gdGhhdCBp
-dCBzdXJlbHkgaGFzIGFjY2VzcyB0byB5b3VyIHJvb3RmcydzCi9saWIvZmlybXdhcmU6CgogIHJt
-bW9kIGF0aDEwa19wY2kgJiYgbW9kcHJvYmUgYXRoMTBrX3BjaQoKCk1pY2hhxYIKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
-c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Michal,
+
+Thanks for the speedy response! The dmesg, lspci and lshw outputs were generated when running 4.2.0, I didn't know you needed 4.4 in order for it to use board-2.bin. Even if I upgraded back to 4.4 the firmware still wouldn't work right?
+
+Thanks for the help,
+
+- John
+
+
+On 01/13/2016 08:40 AM, Michal Kazior wrote:
+> On 13 January 2016 at 15:09, John Detter<john@detter.com>  wrote:
+>> Hello everyone,
+>>
+>> I recently bought a laptop (Samsung) that has a Qualcomm Atheros QCA6174
+>> card. I have tried using the firmware from both kvalo's repo and the
+>> official linux-firmware repo and neither of them have worked. I am running a
+>> fresh Ubuntu 15.10 installation (Linux 4.2.0). I have also tried installing
+>> Ubuntu Gnome 15.10 with the mainline kernel build (Linux 4.4.0) and that
+>> didn't work either. The laptop I'm using does have a button on the keyboard
+>> to enable/disable the wifi and I'm not sure if it's causing an issue or not.
+>> I have checked rfkill list and there is neither a hard nor soft block on the
+>> wlan. I'm not really sure where to go from here, any help would be much
+>> appreciated!
+>>
+>> Thanks for your time,
+>>
+>> - John
+>>
+>> Directory structure when I tried firmware from linux-firmware:
+>>
+>> root@Ubuntu-15:/lib/firmware/ath10k/QCA6174/hw3.0#  pwd
+>> /lib/firmware/ath10k/QCA6174/hw3.0
+>> root@Ubuntu-15:/lib/firmware/ath10k/QCA6174/hw3.0#  ls -al
+>> total 744
+>> drwxr-xr-x 4 root root   4096 Jan 13 07:41 .
+>> drwxr-xr-x 4 root root   4096 Jan 13 07:39 ..
+>> -rw-r--r-- 1 root root   8124 Jan 13 07:38 board.bin
+>> lrwxrwxrwx 1 root root     11 Jan 13 07:41 board-pci-168c:003e:144d:412f.bin
+>> -> ./board.bin
+>> -rw-r--r-- 1 root root 733784 Jan 13 07:39 firmware-4.bin
+>> lrwxrwxrwx 1 root root     16 Jan 13 07:40 firmware-5.bin ->
+>> ./firmware-4.bin
+>>
+>> Directory structure when I tried kvalo's firmware:
+>>
+>> root@Ubuntu-15:/lib/firmware/ath10k/QCA6174/hw3.0#  pwd
+>> /lib/firmware/ath10k/QCA6174/hw3.0
+>> root@Ubuntu-15:/lib/firmware/ath10k/QCA6174/hw3.0/new#  ls -al
+>> total 844
+>> drwxr-xr-x 2 root root   4096 Jan 13 07:31 .
+>> drwxr-xr-x 4 root root   4096 Jan 13 07:41 ..
+>> -rw-r--r-- 1 root root  24692 Jan 13 07:17 board-2.bin
+>> -rw-r--r-- 1 root root   8124 Jan 13 07:17 board.bin
+>> lrwxrwxrwx 1 root root     11 Jan 13 07:17 board-pci-168c:003e:144d:412f.bin
+>> -> ./board.bin
+>> -rw-r--r-- 1 root root 733784 Jan 13 07:17
+>> firmware-4.bin_WLAN.RM.2.0-00180-QCARMSWPZ-1
+>> lrwxrwxrwx 1 root root     44 Jan 13 07:18 firmware-5.bin ->
+>> firmware-4.bin_WLAN.RM.2.0-00180-QCARMSWPZ-1
+>> -rw-r--r-- 1 root root  79801 Jan 13 07:17
+>> notice.txt_WLAN.RM.2.0-00180-QCARMSWPZ-1
+>>
+>>
+>> Here is the relevant part of my dmesg log:
+>>
+>> jdetter@Ubuntu-15:~$ dmesg | grep ath10
+>> [    6.789911] ath10k_pci 0000:3b:00.0: enabling device (0000 -> 0002)
+>> [    6.791752] ath10k_pci 0000:3b:00.0: pci irq msi-x interrupts 8 irq_mode
+>> 0 reset_mode 0
+>> [    7.009504] ath10k_pci 0000:3b:00.0: Direct firmware load for
+>> ath10k/cal-pci-0000:3b:00.0.bin failed with error -2
+>> [    9.145690] ath10k_pci 0000:3b:00.0: qca6174 hw3.2 (0x05030000,
+>> 0x00340aff, 168c:003e:144d:412f) fw WLAN.RM.2.0-00180-QCARMSWPZ-1 api 5 htt
+>> 3.26 wmi 4 cal otp max_sta 32
+>> [    9.145694] ath10k_pci 0000:3b:00.0: debug 0 debugfs 1 tracing 1 dfs 0
+>> testmode 0
+>> [   10.144947] ath10k_pci 0000:3b:00.0: suspend timed out - target pause
+>> event never came
+>> [   13.219455] ath10k_pci 0000:3b:00.0 wlp59s0: renamed from wlan0
+>> [   18.479782] ath10k_pci 0000:3b:00.0: failed to enable dynamic BW: -11
+>> [   21.479376] ath10k_pci 0000:3b:00.0: could not suspend target (-11)
+>> [   29.770121] ath10k_pci 0000:3b:00.0: failed to enable dynamic BW: -11
+>> [   32.769665] ath10k_pci 0000:3b:00.0: could not suspend target (-11)
+> Firmware command timeouts (-11) suggest that wrong board file was used
+> to boot the device.
+>
+> The currently available board-2.bin doesn't seem to include your
+> device (168c:003e:144d:412f). You can list them with:
+>
+> ; strings board-2.bin | grep vendor
+> bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3361m
+> bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3362m
+> bus=pci,vendor=168c,device=003e,subsystem-vendor=168c,subsystem-device=3363m
+>
+> Was this run on 4.4 or 4.2?
+>
+> The board-2.bin support was added in 4.4. Prior to this the driver
+> would try to load the board-pci-xxx. files. You can:
+>   a) scream louder and complain to your card vendor and/or qualcomm
+>   b) use pre-4.4 kernel, get windows driver, extract .inf and eeprom
+> files from it, look for the one that matches your device
+> (168c:003e:144d:412f) and use it as board-pci-168c:003e:144d:412f.bin
+>
+>
+> Michal
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
