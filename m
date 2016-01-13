@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x236.google.com ([2a00:1450:4010:c04::236])
+Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJLyF-0005sO-37
- for ath10k@lists.infradead.org; Wed, 13 Jan 2016 14:00:19 +0000
-Received: by mail-lb0-x236.google.com with SMTP id oh2so291593522lbb.3
- for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 05:59:58 -0800 (PST)
+ id 1aJLyG-0005sj-6g
+ for ath10k@lists.infradead.org; Wed, 13 Jan 2016 14:00:21 +0000
+Received: by mail-lb0-x233.google.com with SMTP id x4so34390008lbm.0
+ for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 05:59:59 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 0/5] ath10k: add basic hostq support
-Date: Wed, 13 Jan 2016 15:01:03 +0100
-Message-Id: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/5] ath10k: rename some HTT events
+Date: Wed, 13 Jan 2016 15:01:04 +0100
+Message-Id: <1452693668-30030-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
+References: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +27,79 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-There's a new firmware feature which uses a shared
-DMA memory so host can share it's per-sta per-tid
-queue size which is then subsequently used for
-firmware to assist in deciding which frames to put
-on the intermediate host-device tx queue.
+New names make a bit more sense.
 
-This patchset adds only basic support to make
-the firmware supporting the feature happy and
-running at all. Without it firmware would freeze
-shortly after booting.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt.c    | 8 ++++----
+ drivers/net/wireless/ath/ath10k/htt.h    | 8 ++++----
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 4 ++--
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-More patches will follow some time later to add
-the "new data path" logic.
-
-
-Michal Kazior (5):
-  ath10k: rename some HTT events
-  ath10k: add new htt definitions
-  ath10k: add new FW_FEATURE_PEER_FLOW_CONTROL
-  ath10k: clean up cont frag desc init code
-  ath10k: implement basic support for new tx path firmware
-
- drivers/net/wireless/ath/ath10k/core.c   |   1 +
- drivers/net/wireless/ath/ath10k/core.h   |   9 ++
- drivers/net/wireless/ath/ath10k/htt.c    |   8 +-
- drivers/net/wireless/ath/ath10k/htt.h    | 169 +++++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/htt_rx.c |   8 +-
- drivers/net/wireless/ath/ath10k/htt_tx.c | 146 +++++++++++++++++++++-----
- 6 files changed, 302 insertions(+), 39 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
+index 3e6ba63dfdff..7561f22f10f9 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.c
++++ b/drivers/net/wireless/ath/ath10k/htt.c
+@@ -131,12 +131,12 @@ static const enum htt_t2h_msg_type htt_10_4_t2h_msg_types[] = {
+ 	[HTT_10_4_T2H_MSG_TYPE_AGGR_CONF] = HTT_T2H_MSG_TYPE_AGGR_CONF,
+ 	[HTT_10_4_T2H_MSG_TYPE_TX_FETCH_IND] =
+ 				HTT_T2H_MSG_TYPE_TX_FETCH_IND,
+-	[HTT_10_4_T2H_MSG_TYPE_TX_FETCH_CONF] =
+-				HTT_T2H_MSG_TYPE_TX_FETCH_CONF,
++	[HTT_10_4_T2H_MSG_TYPE_TX_FETCH_CONFIRM] =
++				HTT_T2H_MSG_TYPE_TX_FETCH_CONFIRM,
+ 	[HTT_10_4_T2H_MSG_TYPE_STATS_NOUPLOAD] =
+ 				HTT_T2H_MSG_TYPE_STATS_NOUPLOAD,
+-	[HTT_10_4_T2H_MSG_TYPE_TX_LOW_LATENCY_IND] =
+-				HTT_T2H_MSG_TYPE_TX_LOW_LATENCY_IND,
++	[HTT_10_4_T2H_MSG_TYPE_TX_MODE_SWITCH_IND] =
++				HTT_T2H_MSG_TYPE_TX_MODE_SWITCH_IND,
+ };
+ 
+ int ath10k_htt_connect(struct ath10k_htt *htt)
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 47ca048feaf0..edd3b9070de9 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -413,10 +413,10 @@ enum htt_10_4_t2h_msg_type {
+ 	HTT_10_4_T2H_MSG_TYPE_EN_STATS               = 0x14,
+ 	HTT_10_4_T2H_MSG_TYPE_AGGR_CONF              = 0x15,
+ 	HTT_10_4_T2H_MSG_TYPE_TX_FETCH_IND           = 0x16,
+-	HTT_10_4_T2H_MSG_TYPE_TX_FETCH_CONF          = 0x17,
++	HTT_10_4_T2H_MSG_TYPE_TX_FETCH_CONFIRM       = 0x17,
+ 	HTT_10_4_T2H_MSG_TYPE_STATS_NOUPLOAD         = 0x18,
+ 	/* 0x19 to 0x2f are reserved */
+-	HTT_10_4_T2H_MSG_TYPE_TX_LOW_LATENCY_IND     = 0x30,
++	HTT_10_4_T2H_MSG_TYPE_TX_MODE_SWITCH_IND     = 0x30,
+ 	/* keep this last */
+ 	HTT_10_4_T2H_NUM_MSGS
+ };
+@@ -449,8 +449,8 @@ enum htt_t2h_msg_type {
+ 	HTT_T2H_MSG_TYPE_TEST,
+ 	HTT_T2H_MSG_TYPE_EN_STATS,
+ 	HTT_T2H_MSG_TYPE_TX_FETCH_IND,
+-	HTT_T2H_MSG_TYPE_TX_FETCH_CONF,
+-	HTT_T2H_MSG_TYPE_TX_LOW_LATENCY_IND,
++	HTT_T2H_MSG_TYPE_TX_FETCH_CONFIRM,
++	HTT_T2H_MSG_TYPE_TX_MODE_SWITCH_IND,
+ 	/* keep this last */
+ 	HTT_T2H_NUM_MSGS
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 91afa3ae414c..d923f64e4f42 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2125,8 +2125,8 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	case HTT_T2H_MSG_TYPE_EN_STATS:
+ 	case HTT_T2H_MSG_TYPE_TX_FETCH_IND:
+-	case HTT_T2H_MSG_TYPE_TX_FETCH_CONF:
+-	case HTT_T2H_MSG_TYPE_TX_LOW_LATENCY_IND:
++	case HTT_T2H_MSG_TYPE_TX_FETCH_CONFIRM:
++	case HTT_T2H_MSG_TYPE_TX_MODE_SWITCH_IND:
+ 	default:
+ 		ath10k_warn(ar, "htt event (%d) not handled\n",
+ 			    resp->hdr.msg_type);
 -- 
 2.1.4
 
