@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x234.google.com ([2a00:1450:4010:c07::234])
+Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJLyK-0005wh-1u
- for ath10k@lists.infradead.org; Wed, 13 Jan 2016 14:00:26 +0000
-Received: by mail-lf0-x234.google.com with SMTP id m198so108396239lfm.0
- for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 06:00:03 -0800 (PST)
+ id 1aJLyL-00067h-7e
+ for ath10k@lists.infradead.org; Wed, 13 Jan 2016 14:00:27 +0000
+Received: by mail-lf0-x233.google.com with SMTP id m198so108396616lfm.0
+ for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 06:00:04 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 4/5] ath10k: clean up cont frag desc init code
-Date: Wed, 13 Jan 2016 15:01:07 +0100
-Message-Id: <1452693668-30030-5-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 5/5] ath10k: implement basic support for new tx path firmware
+Date: Wed, 13 Jan 2016 15:01:08 +0100
+Message-Id: <1452693668-30030-6-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
 References: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,54 +27,106 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This makes the code easier to extend and re-use.
+This allows to use the new firmware which
+implements the new tx data path. Without this
+patch firmware supporting new tx path stops
+responding shortly after booting.
 
-While at it fix _warn to _err. Other than that
-there are no functional changes.
+This patch doesn't implement the entire pull-push
+logic available in the new firmware. This will be
+done in subsequent patches.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_tx.c | 58 ++++++++++++++++++++++----------
- 1 file changed, 41 insertions(+), 17 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h    |  8 +++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  4 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 88 +++++++++++++++++++++++++++++---
+ 3 files changed, 91 insertions(+), 9 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 0c5628dafabf..13391ea4422d 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1665,6 +1665,14 @@ struct ath10k_htt {
+ 		dma_addr_t paddr;
+ 		struct ath10k_htt_txbuf *vaddr;
+ 	} txbuf;
++
++	struct {
++		struct htt_q_state *vaddr;
++		dma_addr_t paddr;
++		u16 num_peers;
++		u16 num_tids;
++		enum htt_q_depth_type type;
++	} tx_q_state;
+ };
+ 
+ #define RX_HTT_HDR_STATUS_LEN 64
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index d923f64e4f42..248405b53ef4 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2123,10 +2123,12 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	case HTT_T2H_MSG_TYPE_AGGR_CONF:
+ 		break;
+-	case HTT_T2H_MSG_TYPE_EN_STATS:
+ 	case HTT_T2H_MSG_TYPE_TX_FETCH_IND:
+ 	case HTT_T2H_MSG_TYPE_TX_FETCH_CONFIRM:
+ 	case HTT_T2H_MSG_TYPE_TX_MODE_SWITCH_IND:
++		/* TODO: Implement pull-push logic */
++		break;
++	case HTT_T2H_MSG_TYPE_EN_STATS:
+ 	default:
+ 		ath10k_warn(ar, "htt event (%d) not handled\n",
+ 			    resp->hdr.msg_type);
 diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index b3adadb5f824..41a9811820e8 100644
+index 41a9811820e8..3cc2261b459e 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -97,6 +97,41 @@ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id)
- 	idr_remove(&htt->pending_tx, msdu_id);
+@@ -132,6 +132,50 @@ static int ath10k_htt_tx_alloc_cont_frag_desc(struct ath10k_htt *htt)
+ 	return 0;
  }
  
-+static void ath10k_htt_tx_free_cont_frag_desc(struct ath10k_htt *htt)
-+{
-+	size_t size;
-+
-+	if (!htt->frag_desc.vaddr)
-+		return;
-+
-+	size = htt->max_num_pending_tx * sizeof(struct htt_msdu_ext_desc);
-+
-+	dma_free_coherent(htt->ar->dev,
-+			  size,
-+			  htt->frag_desc.vaddr,
-+			  htt->frag_desc.paddr);
-+}
-+
-+static int ath10k_htt_tx_alloc_cont_frag_desc(struct ath10k_htt *htt)
++static void ath10k_htt_tx_free_txq(struct ath10k_htt *htt)
 +{
 +	struct ath10k *ar = htt->ar;
 +	size_t size;
 +
-+	if (!ar->hw_params.continuous_frag_desc)
++	if (!test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL, ar->fw_features))
++		return;
++
++	size = sizeof(*htt->tx_q_state.vaddr);
++
++	dma_unmap_single(ar->dev, htt->tx_q_state.paddr, size, DMA_TO_DEVICE);
++	kfree(htt->tx_q_state.vaddr);
++}
++
++static int ath10k_htt_tx_alloc_txq(struct ath10k_htt *htt)
++{
++	struct ath10k *ar = htt->ar;
++	size_t size;
++	int ret;
++
++	if (!test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL, ar->fw_features))
 +		return 0;
 +
-+	size = htt->max_num_pending_tx * sizeof(struct htt_msdu_ext_desc);
-+	htt->frag_desc.vaddr = dma_alloc_coherent(ar->dev, size,
-+						  &htt->frag_desc.paddr,
-+						  GFP_DMA);
-+	if (!htt->frag_desc.vaddr) {
-+		ath10k_err(ar, "failed to alloc fragment desc memory\n");
++	htt->tx_q_state.num_peers = HTT_TX_Q_STATE_NUM_PEERS;
++	htt->tx_q_state.num_tids = HTT_TX_Q_STATE_NUM_TIDS;
++	htt->tx_q_state.type = HTT_Q_DEPTH_TYPE_BYTES;
++
++	size = sizeof(*htt->tx_q_state.vaddr);
++	htt->tx_q_state.vaddr = kzalloc(size, GFP_KERNEL);
++	if (!htt->tx_q_state.vaddr)
 +		return -ENOMEM;
++
++	htt->tx_q_state.paddr = dma_map_single(ar->dev, htt->tx_q_state.vaddr,
++					       size, DMA_TO_DEVICE);
++	ret = dma_mapping_error(ar->dev, htt->tx_q_state.paddr);
++	if (ret) {
++		ath10k_warn(ar, "failed to dma map tx_q_state: %d\n", ret);
++		kfree(htt->tx_q_state.vaddr);
++		return -EIO;
 +	}
 +
 +	return 0;
@@ -83,55 +135,81 @@ index b3adadb5f824..41a9811820e8 100644
  int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
  {
  	struct ath10k *ar = htt->ar;
-@@ -118,20 +153,12 @@ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
- 		goto free_idr_pending_tx;
- 	}
- 
--	if (!ar->hw_params.continuous_frag_desc)
--		goto skip_frag_desc_alloc;
--
--	size = htt->max_num_pending_tx * sizeof(struct htt_msdu_ext_desc);
--	htt->frag_desc.vaddr = dma_alloc_coherent(ar->dev, size,
--						  &htt->frag_desc.paddr,
--						  GFP_KERNEL);
--	if (!htt->frag_desc.vaddr) {
--		ath10k_warn(ar, "failed to alloc fragment desc memory\n");
--		ret = -ENOMEM;
-+	ret = ath10k_htt_tx_alloc_cont_frag_desc(htt);
-+	if (ret) {
-+		ath10k_err(ar, "failed to alloc cont frag desc: %d\n", ret);
+@@ -159,8 +203,17 @@ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
  		goto free_txbuf;
  	}
  
--skip_frag_desc_alloc:
++	ret = ath10k_htt_tx_alloc_txq(htt);
++	if (ret) {
++		ath10k_err(ar, "failed to alloc txq: %d\n", ret);
++		goto free_frag_desc;
++	}
++
  	return 0;
  
++free_frag_desc:
++	ath10k_htt_tx_free_cont_frag_desc(htt);
++
  free_txbuf:
-@@ -139,8 +166,10 @@ free_txbuf:
+ 	size = htt->max_num_pending_tx *
  			  sizeof(struct ath10k_htt_txbuf);
- 	dma_free_coherent(htt->ar->dev, size, htt->txbuf.vaddr,
- 			  htt->txbuf.paddr);
-+
- free_idr_pending_tx:
- 	idr_destroy(&htt->pending_tx);
-+
- 	return ret;
- }
- 
-@@ -174,12 +203,7 @@ void ath10k_htt_tx_free(struct ath10k_htt *htt)
+@@ -203,6 +256,7 @@ void ath10k_htt_tx_free(struct ath10k_htt *htt)
  				  htt->txbuf.paddr);
  	}
  
--	if (htt->frag_desc.vaddr) {
--		size = htt->max_num_pending_tx *
--				  sizeof(struct htt_msdu_ext_desc);
--		dma_free_coherent(htt->ar->dev, size, htt->frag_desc.vaddr,
--				  htt->frag_desc.paddr);
--	}
-+	ath10k_htt_tx_free_cont_frag_desc(htt);
++	ath10k_htt_tx_free_txq(htt);
+ 	ath10k_htt_tx_free_cont_frag_desc(htt);
  }
  
- void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
+@@ -292,7 +346,9 @@ int ath10k_htt_send_frag_desc_bank_cfg(struct ath10k_htt *htt)
+ 	struct ath10k *ar = htt->ar;
+ 	struct sk_buff *skb;
+ 	struct htt_cmd *cmd;
++	struct htt_frag_desc_bank_cfg *cfg;
+ 	int ret, size;
++	u8 info;
+ 
+ 	if (!ar->hw_params.continuous_frag_desc)
+ 		return 0;
+@@ -310,14 +366,30 @@ int ath10k_htt_send_frag_desc_bank_cfg(struct ath10k_htt *htt)
+ 	skb_put(skb, size);
+ 	cmd = (struct htt_cmd *)skb->data;
+ 	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_FRAG_DESC_BANK_CFG;
+-	cmd->frag_desc_bank_cfg.info = 0;
+-	cmd->frag_desc_bank_cfg.num_banks = 1;
+-	cmd->frag_desc_bank_cfg.desc_size = sizeof(struct htt_msdu_ext_desc);
+-	cmd->frag_desc_bank_cfg.bank_base_addrs[0] =
+-				__cpu_to_le32(htt->frag_desc.paddr);
+-	cmd->frag_desc_bank_cfg.bank_id[0].bank_min_id = 0;
+-	cmd->frag_desc_bank_cfg.bank_id[0].bank_max_id =
+-				__cpu_to_le16(htt->max_num_pending_tx - 1);
++
++	info = 0;
++	info |= SM(htt->tx_q_state.type,
++		   HTT_FRAG_DESC_BANK_CFG_INFO_Q_STATE_DEPTH_TYPE);
++
++	if (test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL, ar->fw_features))
++		info |= HTT_FRAG_DESC_BANK_CFG_INFO_Q_STATE_VALID;
++
++	cfg = &cmd->frag_desc_bank_cfg;
++	cfg->info = info;
++	cfg->num_banks = 1;
++	cfg->desc_size = sizeof(struct htt_msdu_ext_desc);
++	cfg->bank_base_addrs[0] = __cpu_to_le32(htt->frag_desc.paddr);
++	cfg->bank_id[0].bank_min_id = 0;
++	cfg->bank_id[0].bank_max_id = __cpu_to_le16(htt->max_num_pending_tx -
++						    1);
++
++	cfg->q_state.paddr = cpu_to_le32(htt->tx_q_state.paddr);
++	cfg->q_state.num_peers = cpu_to_le16(htt->tx_q_state.num_peers);
++	cfg->q_state.num_tids = cpu_to_le16(htt->tx_q_state.num_tids);
++	cfg->q_state.record_size = HTT_TX_Q_STATE_ENTRY_SIZE;
++	cfg->q_state.record_multiplier = HTT_TX_Q_STATE_ENTRY_MULTIPLIER;
++
++	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt frag desc bank cmd\n");
+ 
+ 	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
+ 	if (ret) {
 -- 
 2.1.4
 
