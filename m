@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJMx5-0004eD-N3
- for ath10k@lists.infradead.org; Wed, 13 Jan 2016 15:03:12 +0000
-Received: by mail-wm0-x234.google.com with SMTP id f206so299397896wmf.0
- for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 07:02:51 -0800 (PST)
+ id 1aJNdx-0002l3-FX
+ for ath10k@lists.infradead.org; Wed, 13 Jan 2016 15:47:32 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH 1/7] ath10k: Add support for parsing per STA rx_duration for
+ 10.2.4
+Date: Wed, 13 Jan 2016 21:16:28 +0530
+Message-ID: <1452699994-5078-2-git-send-email-mohammed@qca.qualcomm.com>
+In-Reply-To: <1452699994-5078-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1452699994-5078-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <56966627.2030104@detter.com>
-References: <56965AA3.2020708@detter.com>
- <CA+BoTQmTaQnEqtogURerBCLi9aRfPHUCbVPbKDuCJaJ3nUpQKg@mail.gmail.com>
- <56966627.2030104@detter.com>
-Date: Wed, 13 Jan 2016 16:02:50 +0100
-Message-ID: <CA+BoTQnhDzq=vuPjgnyTAO1xgiYiJfVcOEdLGg78rbto7Kyn4A@mail.gmail.com>
-Subject: Re: [ath10K] QCA6174 firmware
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +19,160 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: John Detter <john@detter.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-T24gMTMgSmFudWFyeSAyMDE2IGF0IDE1OjU4LCBKb2huIERldHRlciA8am9obkBkZXR0ZXIuY29t
-PiB3cm90ZToKPiBNaWNoYWwsCj4KPiBUaGFua3MgZm9yIHRoZSBzcGVlZHkgcmVzcG9uc2UhIFRo
-ZSBkbWVzZywgbHNwY2kgYW5kIGxzaHcgb3V0cHV0cyB3ZXJlCj4gZ2VuZXJhdGVkIHdoZW4gcnVu
-bmluZyA0LjIuMCwgSSBkaWRuJ3Qga25vdyB5b3UgbmVlZGVkIDQuNCBpbiBvcmRlciBmb3IgaXQK
-PiB0byB1c2UgYm9hcmQtMi5iaW4uIEV2ZW4gaWYgSSB1cGdyYWRlZCBiYWNrIHRvIDQuNCB0aGUg
-ZmlybXdhcmUgc3RpbGwKPiB3b3VsZG4ndCB3b3JrIHJpZ2h0PwoKQ29ycmVjdC4gVGhlIG1haW4g
-cHJvYmxlbSBhdCBoYW5kIGlzIGluY29ycmVjdCBib2FyZCBkYXRhIHdoaWNoIGlzCnVzZWQgdG8g
-KHNpbXBseSBzYXlpbmcpIGNvbmZpZ3VyZS9pbml0aWFsaXplIHRoZSBkZXZpY2UuCgpZb3UgbWF5
-IHN0aWxsIHdhbnQgNC40IHRob3VnaC4gSXQgbWF5IGNvbnRhaW4gZml4ZXMgZm9yIG90aGVyIHBy
-b2JsZW1zCnRoYXQgeW91IHN0aWxsIGhhdmVuJ3QgcmVhY2hlZCB0by4KCgpNaWNoYcWCCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
-ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+
+Add support for parsing 'peer_rx_duration' as part
+of 10.2.4 peer_stats. Also register PEER_STATS service
+for parsing 'rx_duration' (and for any new fields to be added
+as part of peer_stats). Have checks for backward compatibility with
+older 10.2.4 firmware incase PEER_STATS service is not enabled
+
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h |    1 +
+ drivers/net/wireless/ath/ath10k/wmi.c  |   22 ++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.h  |   12 ++++++++++++
+ 3 files changed, 33 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 7840cf3..d47a085 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -159,6 +159,7 @@ struct ath10k_fw_stats_peer {
+ 	u32 peer_rssi;
+ 	u32 peer_tx_rate;
+ 	u32 peer_rx_rate; /* 10x only */
++	u32 rx_duration;
+ };
+ 
+ struct ath10k_fw_stats_vdev {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index a7c3d29..c610d17 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2862,11 +2862,20 @@ static int ath10k_wmi_10_2_4_op_pull_fw_stats(struct ath10k *ar,
+ 	/* fw doesn't implement vdev stats */
+ 
+ 	for (i = 0; i < num_peer_stats; i++) {
+-		const struct wmi_10_2_4_peer_stats *src;
++		const struct wmi_10_2_4_ext_peer_stats *src;
+ 		struct ath10k_fw_stats_peer *dst;
++		int stats_len;
++		bool ext_peer_stats_support;
++
++		ext_peer_stats_support = test_bit(WMI_SERVICE_PEER_STATS,
++						  ar->wmi.svc_map);
++		if (ext_peer_stats_support)
++			stats_len = sizeof(struct wmi_10_2_4_ext_peer_stats);
++		else
++			stats_len = sizeof(struct wmi_10_2_4_peer_stats);
+ 
+ 		src = (void *)skb->data;
+-		if (!skb_pull(skb, sizeof(*src)))
++		if (!skb_pull(skb, stats_len))
+ 			return -EPROTO;
+ 
+ 		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
+@@ -2876,6 +2885,9 @@ static int ath10k_wmi_10_2_4_op_pull_fw_stats(struct ath10k *ar,
+ 		ath10k_wmi_pull_peer_stats(&src->common.old, dst);
+ 
+ 		dst->peer_rx_rate = __le32_to_cpu(src->common.peer_rx_rate);
++
++		if (ext_peer_stats_support)
++			dst->rx_duration = __le32_to_cpu(src->rx_duration);
+ 		/* FIXME: expose 10.2 specific values */
+ 
+ 		list_add_tail(&dst->list, &stats->peers);
+@@ -5517,6 +5529,9 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
+ 	    test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map))
+ 		features |= WMI_10_2_COEX_GPIO;
+ 
++	if (test_bit(WMI_SERVICE_PEER_STATS, ar->wmi.svc_map))
++		features |= WMI_10_2_PEER_STATS;
++
+ 	cmd->resource_config.feature_mask = __cpu_to_le32(features);
+ 
+ 	memcpy(&cmd->resource_config.common, &config, sizeof(config));
+@@ -7126,6 +7141,9 @@ ath10k_wmi_fw_peer_stats_fill(const struct ath10k_fw_stats_peer *peer,
+ 			"Peer TX rate", peer->peer_tx_rate);
+ 	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
+ 			"Peer RX rate", peer->peer_rx_rate);
++	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++			"Peer RX duration", peer->rx_duration);
++
+ 	len += scnprintf(buf + len, buf_len - len, "\n");
+ 	*length = len;
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index d85ad78..e1bb02b 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -177,6 +177,7 @@ enum wmi_service {
+ 	WMI_SERVICE_BSS_CHANNEL_INFO_64,
+ 	WMI_SERVICE_EXT_RES_CFG_SUPPORT,
+ 	WMI_SERVICE_MESH,
++	WMI_SERVICE_PEER_STATS,
+ 
+ 	/* keep last */
+ 	WMI_SERVICE_MAX,
+@@ -213,6 +214,7 @@ enum wmi_10x_service {
+ 	WMI_10X_SERVICE_BSS_CHANNEL_INFO_64,
+ 	WMI_10X_SERVICE_MESH,
+ 	WMI_10X_SERVICE_EXT_RES_CFG_SUPPORT,
++	WMI_10X_SERVICE_PEER_STATS,
+ };
+ 
+ enum wmi_main_service {
+@@ -386,6 +388,7 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_BSS_CHANNEL_INFO_64);
+ 	SVCSTR(WMI_SERVICE_EXT_RES_CFG_SUPPORT);
+ 	SVCSTR(WMI_SERVICE_MESH);
++	SVCSTR(WMI_SERVICE_PEER_STATS);
+ 	default:
+ 		return NULL;
+ 	}
+@@ -463,6 +466,8 @@ static inline void wmi_10x_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_MESH, len);
+ 	SVCMAP(WMI_10X_SERVICE_EXT_RES_CFG_SUPPORT,
+ 	       WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
++	SVCMAP(WMI_10X_SERVICE_PEER_STATS,
++	       WMI_SERVICE_PEER_STATS, len);
+ }
+ 
+ static inline void wmi_main_svc_map(const __le32 *in, unsigned long *out,
+@@ -2417,6 +2422,7 @@ enum wmi_10_2_feature_mask {
+ 	WMI_10_2_RX_BATCH_MODE = BIT(0),
+ 	WMI_10_2_ATF_CONFIG    = BIT(1),
+ 	WMI_10_2_COEX_GPIO     = BIT(3),
++	WMI_10_2_PEER_STATS    = BIT(7),
+ };
+ 
+ struct wmi_resource_config_10_2 {
+@@ -4230,6 +4236,12 @@ struct wmi_10_2_4_peer_stats {
+ 	__le32 unknown_value; /* FIXME: what is this word? */
+ } __packed;
+ 
++struct wmi_10_2_4_ext_peer_stats {
++	struct wmi_10_2_peer_stats common;
++	__le32 peer_rssi_changed;
++	__le32 rx_duration;
++} __packed;
++
+ struct wmi_10_4_peer_stats {
+ 	struct wmi_mac_addr peer_macaddr;
+ 	__le32 peer_rssi;
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
