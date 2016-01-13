@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x230.google.com ([2a00:1450:4010:c07::230])
+Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJLyI-0005uA-VM
- for ath10k@lists.infradead.org; Wed, 13 Jan 2016 14:00:24 +0000
-Received: by mail-lf0-x230.google.com with SMTP id h129so60645221lfh.3
- for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 06:00:02 -0800 (PST)
+ id 1aJM3g-00024S-8J
+ for ath10k@lists.infradead.org; Wed, 13 Jan 2016 14:05:57 +0000
+Received: by mail-wm0-x22a.google.com with SMTP id b14so373539366wmb.1
+ for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 06:05:35 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <CAGvpMW9d8RZGpfBd2H0W35fVUQoi9jcZvQmTC7ztW+dPVcxOhg@mail.gmail.com>
+References: <CAGvpMW8JW+a6-MS=TrRNFvBDG4LWYFR+2fM09dFhQEes7NEn4w@mail.gmail.com>
+ <CA+BoTQk313y4GA-yq01LBad8ccf2OepU6vP_t7PjAJ1a1DR_7Q@mail.gmail.com>
+ <CAGvpMW9d8RZGpfBd2H0W35fVUQoi9jcZvQmTC7ztW+dPVcxOhg@mail.gmail.com>
+Date: Wed, 13 Jan 2016 15:05:33 +0100
+Message-ID: <CA+BoTQk7O4Lq2rcZG9pLZJij27COWiCUz=g8SNEp2df3CKV-vg@mail.gmail.com>
+Subject: Re:
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/5] ath10k: add new FW_FEATURE_PEER_FLOW_CONTROL
-Date: Wed, 13 Jan 2016 15:01:06 +0100
-Message-Id: <1452693668-30030-4-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
-References: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,66 +22,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Alexey Ivanov <alexeyivan@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-This feature flag will be used for firmware which
-supports pull-push model where host shares it's
-software queue state with firmware and firmware
-generates fetch requests telling host which queues
-to dequeue tx from.
-
-Primary function of this is improved MU-MIMO
-performance with multiple clients.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 1 +
- drivers/net/wireless/ath/ath10k/core.h | 9 +++++++++
- 2 files changed, 10 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index b41eb3f4ee56..48a26206c5c1 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -217,6 +217,7 @@ static const char *const ath10k_core_fw_feature_str[] = {
- 	[ATH10K_FW_FEATURE_RAW_MODE_SUPPORT] = "raw-mode",
- 	[ATH10K_FW_FEATURE_SUPPORTS_ADAPTIVE_CCA] = "adaptive-cca",
- 	[ATH10K_FW_FEATURE_MFP_SUPPORT] = "mfp",
-+	[ATH10K_FW_FEATURE_PEER_FLOW_CONTROL] = "peer-flow-ctrl",
- };
- 
- static unsigned int ath10k_core_get_fw_feature_str(char *buf,
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 7840cf3ef7a6..822e3195533a 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -510,6 +510,15 @@ enum ath10k_fw_features {
- 	/* Firmware supports management frame protection */
- 	ATH10K_FW_FEATURE_MFP_SUPPORT = 12,
- 
-+	/* Firmware supports pull-push model where host shares it's software
-+	 * queue state with firmware and firmware generates fetch requests
-+	 * telling host which queues to dequeue tx from.
-+	 *
-+	 * Primary function of this is improved MU-MIMO performance with
-+	 * multiple clients.
-+	 */
-+	ATH10K_FW_FEATURE_PEER_FLOW_CONTROL = 13,
-+
- 	/* keep last */
- 	ATH10K_FW_FEATURE_COUNT,
- };
--- 
-2.1.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+KyBsaXN0CgpQbGVhc2UgbWFrZSBzdXJlIHRvIHJlcGx5IHdpdGggdGhlIG1haWxpbmcgbGlzdCBp
+biBDQyBuZXh0IHRpbWUuCgpPbiAxMyBKYW51YXJ5IDIwMTYgYXQgMTU6MDEsIEFsZXhleSBJdmFu
+b3YgPGFsZXhleWl2YW5AZ21haWwuY29tPiB3cm90ZToKPiBTb3JyeSBmb3Igd3Jvbmcgc3ViamVj
+dAo+Cj4gYWZ0ZXIgcHV0dGluZyBkYXRhIHRvIGNhbC1wY2ktMDAwMDowMDowMC4wLmJpbjoKPiBb
+ICAgMTEuNjgyMTg4XSBmaXJtd2FyZSBhdGgxMGshY2FsLXBjaS0wMDAwOjAwOjAwLjAuYmluOgo+
+IGZpcm13YXJlX2xvYWRpbmdfc3RvcmU6IG1hcCBwYWdlcyBmYWlsZWQKPiBvdGhlciBvdXRwdXQg
+aXMgdGhlIHNhbWUKClN0cmFuZ2UuLgoKCj4gQW55d2F5LCBkYXRhIGF0IDB4NTAwMCBpbiBBUlQg
+bG9va3MgbGlrZSBib2FyZC5iaW4uIEl0IGJlZ2lucyB3aXRoCj4gMHg0NCAweDA4IGFuZCBjb250
+YWlucyBzdHJpbmcgY3VzMjIzLTAyMi1uMTcyNSBpbnNpZGUKClRlY2huaWNhbGx5IGJvYXJkLmJp
+biBpcyBtb3JlIG9mIGEgdGVtcGxhdGUuIEl0IGRvZXNuJ3QgaGF2ZQpjYWxpYnJhdGlvbiBkYXRh
+IGFuZCBpdCBkb2Vzbid0IGhhdmUgYSBtYWMgYWRkcmVzcy4gVGhlc2UgYXJlCnR5cGljYWxseSBw
+dWxsZWQgZnJvbSBFRVBST00gb2YgYSBnaXZlbiBkZXZpY2UgYnkgdXNpbmcgb3RwLmJpbiAoaXQn
+cwpqdXN0IGEgcHJvZ3JhbSB0aGF0IGlzIGV4ZWN1dGVkIG9uIHRoZSBkZXZpY2UgU29DL0NQVSku
+CgpXaGVuIHlvdSBjb25zaWRlciBtb3N0IHJvdXRlcnMgdGhvdWdoIHRoZWlyIFdMQU4gZGV2aWNl
+cyBoYXZlIHRoZQpFRVBST00gZW1wdHkgYW5kIGhhdmUgdGhlaXIgY2FsaWJyYXRpb24gZGF0YSBz
+dG9yZWQgb3V0LW9mLWJhbmQgb24KRmxhc2ggcGFydGl0aW9ucy4gVGhlc2UgYXJlIGJhc2ljYWxs
+eSBib2FyZC5iaW4gZmlsZXMgcHJlLWZpbGxlZCB3aXRoCm1hYyBhZGRyZXNzIGFuZCBjYWxpYnJh
+dGlvbiBkYXRhLCBoZW5jZSBhdGgxMGsgY2FsbHMgdGhlbSAiY2FsLmJpbiIuCgoKCk1pY2hhxYIK
+Cj4gT24gMTMgSmFudWFyeSAyMDE2IGF0IDE3OjEyLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6
+aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4+IE9uIDEzIEphbnVhcnkgMjAxNiBhdCAxMjozNCwgQWxl
+eGV5IEl2YW5vdiA8YWxleGV5aXZhbkBnbWFpbC5jb20+IHdyb3RlOgo+Pj4gSSdtIHRyeWluZyB0
+byBydW4gT3BlbldydChyNDgwMTYpIHdpdGggYXRoMTBrIGRyaXZlciBvbiB0aGlzIGRldmljZQo+
+Pj4gKGh0dHBzOi8vd2lraWRldmkuY29tL3dpa2kvRW5HZW5pdXNfRUFQMTc1MEgpCj4+Pgo+Pj4g
+VGhlIGNhbGlicmF0aW9uIGRhdGEgaXMgcHJlc2VudCBhdCAweDUwMDBAQVJULiBJJ3ZlIGNvcGll
+ZCBpdCB0byBib2FyZC5iaW4KPj4KPj4gQ2FsaWJyYXRpb24gZGF0YSAhPSBib2FyZC5iaW4uCj4+
+Cj4+IFlvdSBzaG91bGQgcHV0IHRoZSBkYXRhIGFzIGNhbC1wY2ktMDAwMDowMDowMC4wLmJpbi4K
+Pj4KPj4KPj4gTWljaGHFggo+Cj4KPgo+IC0tCj4gQmVzdCByZWdhcmRzLAo+IEFsZXggSXZhbm92
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
