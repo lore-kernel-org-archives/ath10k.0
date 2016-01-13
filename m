@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
+Received: from mail-lf0-x234.google.com ([2a00:1450:4010:c07::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJLyG-0005sj-6g
- for ath10k@lists.infradead.org; Wed, 13 Jan 2016 14:00:21 +0000
-Received: by mail-lb0-x233.google.com with SMTP id x4so34390008lbm.0
- for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 05:59:59 -0800 (PST)
+ id 1aJLyK-0005wh-1u
+ for ath10k@lists.infradead.org; Wed, 13 Jan 2016 14:00:26 +0000
+Received: by mail-lf0-x234.google.com with SMTP id m198so108396239lfm.0
+ for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 06:00:03 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/5] ath10k: rename some HTT events
-Date: Wed, 13 Jan 2016 15:01:04 +0100
-Message-Id: <1452693668-30030-2-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 4/5] ath10k: clean up cont frag desc init code
+Date: Wed, 13 Jan 2016 15:01:07 +0100
+Message-Id: <1452693668-30030-5-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
 References: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,79 +27,111 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-New names make a bit more sense.
+This makes the code easier to extend and re-use.
+
+While at it fix _warn to _err. Other than that
+there are no functional changes.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.c    | 8 ++++----
- drivers/net/wireless/ath/ath10k/htt.h    | 8 ++++----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 4 ++--
- 3 files changed, 10 insertions(+), 10 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 58 ++++++++++++++++++++++----------
+ 1 file changed, 41 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index 3e6ba63dfdff..7561f22f10f9 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -131,12 +131,12 @@ static const enum htt_t2h_msg_type htt_10_4_t2h_msg_types[] = {
- 	[HTT_10_4_T2H_MSG_TYPE_AGGR_CONF] = HTT_T2H_MSG_TYPE_AGGR_CONF,
- 	[HTT_10_4_T2H_MSG_TYPE_TX_FETCH_IND] =
- 				HTT_T2H_MSG_TYPE_TX_FETCH_IND,
--	[HTT_10_4_T2H_MSG_TYPE_TX_FETCH_CONF] =
--				HTT_T2H_MSG_TYPE_TX_FETCH_CONF,
-+	[HTT_10_4_T2H_MSG_TYPE_TX_FETCH_CONFIRM] =
-+				HTT_T2H_MSG_TYPE_TX_FETCH_CONFIRM,
- 	[HTT_10_4_T2H_MSG_TYPE_STATS_NOUPLOAD] =
- 				HTT_T2H_MSG_TYPE_STATS_NOUPLOAD,
--	[HTT_10_4_T2H_MSG_TYPE_TX_LOW_LATENCY_IND] =
--				HTT_T2H_MSG_TYPE_TX_LOW_LATENCY_IND,
-+	[HTT_10_4_T2H_MSG_TYPE_TX_MODE_SWITCH_IND] =
-+				HTT_T2H_MSG_TYPE_TX_MODE_SWITCH_IND,
- };
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index b3adadb5f824..41a9811820e8 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -97,6 +97,41 @@ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id)
+ 	idr_remove(&htt->pending_tx, msdu_id);
+ }
  
- int ath10k_htt_connect(struct ath10k_htt *htt)
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 47ca048feaf0..edd3b9070de9 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -413,10 +413,10 @@ enum htt_10_4_t2h_msg_type {
- 	HTT_10_4_T2H_MSG_TYPE_EN_STATS               = 0x14,
- 	HTT_10_4_T2H_MSG_TYPE_AGGR_CONF              = 0x15,
- 	HTT_10_4_T2H_MSG_TYPE_TX_FETCH_IND           = 0x16,
--	HTT_10_4_T2H_MSG_TYPE_TX_FETCH_CONF          = 0x17,
-+	HTT_10_4_T2H_MSG_TYPE_TX_FETCH_CONFIRM       = 0x17,
- 	HTT_10_4_T2H_MSG_TYPE_STATS_NOUPLOAD         = 0x18,
- 	/* 0x19 to 0x2f are reserved */
--	HTT_10_4_T2H_MSG_TYPE_TX_LOW_LATENCY_IND     = 0x30,
-+	HTT_10_4_T2H_MSG_TYPE_TX_MODE_SWITCH_IND     = 0x30,
- 	/* keep this last */
- 	HTT_10_4_T2H_NUM_MSGS
- };
-@@ -449,8 +449,8 @@ enum htt_t2h_msg_type {
- 	HTT_T2H_MSG_TYPE_TEST,
- 	HTT_T2H_MSG_TYPE_EN_STATS,
- 	HTT_T2H_MSG_TYPE_TX_FETCH_IND,
--	HTT_T2H_MSG_TYPE_TX_FETCH_CONF,
--	HTT_T2H_MSG_TYPE_TX_LOW_LATENCY_IND,
-+	HTT_T2H_MSG_TYPE_TX_FETCH_CONFIRM,
-+	HTT_T2H_MSG_TYPE_TX_MODE_SWITCH_IND,
- 	/* keep this last */
- 	HTT_T2H_NUM_MSGS
- };
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 91afa3ae414c..d923f64e4f42 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2125,8 +2125,8 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case HTT_T2H_MSG_TYPE_EN_STATS:
- 	case HTT_T2H_MSG_TYPE_TX_FETCH_IND:
--	case HTT_T2H_MSG_TYPE_TX_FETCH_CONF:
--	case HTT_T2H_MSG_TYPE_TX_LOW_LATENCY_IND:
-+	case HTT_T2H_MSG_TYPE_TX_FETCH_CONFIRM:
-+	case HTT_T2H_MSG_TYPE_TX_MODE_SWITCH_IND:
- 	default:
- 		ath10k_warn(ar, "htt event (%d) not handled\n",
- 			    resp->hdr.msg_type);
++static void ath10k_htt_tx_free_cont_frag_desc(struct ath10k_htt *htt)
++{
++	size_t size;
++
++	if (!htt->frag_desc.vaddr)
++		return;
++
++	size = htt->max_num_pending_tx * sizeof(struct htt_msdu_ext_desc);
++
++	dma_free_coherent(htt->ar->dev,
++			  size,
++			  htt->frag_desc.vaddr,
++			  htt->frag_desc.paddr);
++}
++
++static int ath10k_htt_tx_alloc_cont_frag_desc(struct ath10k_htt *htt)
++{
++	struct ath10k *ar = htt->ar;
++	size_t size;
++
++	if (!ar->hw_params.continuous_frag_desc)
++		return 0;
++
++	size = htt->max_num_pending_tx * sizeof(struct htt_msdu_ext_desc);
++	htt->frag_desc.vaddr = dma_alloc_coherent(ar->dev, size,
++						  &htt->frag_desc.paddr,
++						  GFP_DMA);
++	if (!htt->frag_desc.vaddr) {
++		ath10k_err(ar, "failed to alloc fragment desc memory\n");
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++
+ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
+ {
+ 	struct ath10k *ar = htt->ar;
+@@ -118,20 +153,12 @@ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
+ 		goto free_idr_pending_tx;
+ 	}
+ 
+-	if (!ar->hw_params.continuous_frag_desc)
+-		goto skip_frag_desc_alloc;
+-
+-	size = htt->max_num_pending_tx * sizeof(struct htt_msdu_ext_desc);
+-	htt->frag_desc.vaddr = dma_alloc_coherent(ar->dev, size,
+-						  &htt->frag_desc.paddr,
+-						  GFP_KERNEL);
+-	if (!htt->frag_desc.vaddr) {
+-		ath10k_warn(ar, "failed to alloc fragment desc memory\n");
+-		ret = -ENOMEM;
++	ret = ath10k_htt_tx_alloc_cont_frag_desc(htt);
++	if (ret) {
++		ath10k_err(ar, "failed to alloc cont frag desc: %d\n", ret);
+ 		goto free_txbuf;
+ 	}
+ 
+-skip_frag_desc_alloc:
+ 	return 0;
+ 
+ free_txbuf:
+@@ -139,8 +166,10 @@ free_txbuf:
+ 			  sizeof(struct ath10k_htt_txbuf);
+ 	dma_free_coherent(htt->ar->dev, size, htt->txbuf.vaddr,
+ 			  htt->txbuf.paddr);
++
+ free_idr_pending_tx:
+ 	idr_destroy(&htt->pending_tx);
++
+ 	return ret;
+ }
+ 
+@@ -174,12 +203,7 @@ void ath10k_htt_tx_free(struct ath10k_htt *htt)
+ 				  htt->txbuf.paddr);
+ 	}
+ 
+-	if (htt->frag_desc.vaddr) {
+-		size = htt->max_num_pending_tx *
+-				  sizeof(struct htt_msdu_ext_desc);
+-		dma_free_coherent(htt->ar->dev, size, htt->frag_desc.vaddr,
+-				  htt->frag_desc.paddr);
+-	}
++	ath10k_htt_tx_free_cont_frag_desc(htt);
+ }
+ 
+ void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
 -- 
 2.1.4
 
