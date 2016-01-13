@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
+Received: from mail-lf0-x230.google.com ([2a00:1450:4010:c07::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJLyH-0005tj-NQ
- for ath10k@lists.infradead.org; Wed, 13 Jan 2016 14:00:23 +0000
-Received: by mail-lb0-x22a.google.com with SMTP id cl12so73600049lbc.1
- for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 06:00:01 -0800 (PST)
+ id 1aJLyI-0005uA-VM
+ for ath10k@lists.infradead.org; Wed, 13 Jan 2016 14:00:24 +0000
+Received: by mail-lf0-x230.google.com with SMTP id h129so60645221lfh.3
+ for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 06:00:02 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/5] ath10k: add new htt definitions
-Date: Wed, 13 Jan 2016 15:01:05 +0100
-Message-Id: <1452693668-30030-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 3/5] ath10k: add new FW_FEATURE_PEER_FLOW_CONTROL
+Date: Wed, 13 Jan 2016 15:01:06 +0100
+Message-Id: <1452693668-30030-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
 References: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,206 +27,53 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-These definitions are associated with some
-improvements upcomming for 10.4 and QCA99X0.
+This feature flag will be used for firmware which
+supports pull-push model where host shares it's
+software queue state with firmware and firmware
+generates fetch requests telling host which queues
+to dequeue tx from.
+
+Primary function of this is improved MU-MIMO
+performance with multiple clients.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h | 153 +++++++++++++++++++++++++++++++++-
- 1 file changed, 150 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 1 +
+ drivers/net/wireless/ath/ath10k/core.h | 9 +++++++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index edd3b9070de9..0c5628dafabf 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -52,6 +52,7 @@ enum htt_h2t_msg_type { /* host-to-target */
- 	/* This command is used for sending management frames in HTT < 3.0.
- 	 * HTT >= 3.0 uses TX_FRM for everything. */
- 	HTT_H2T_MSG_TYPE_MGMT_TX            = 7,
-+	HTT_H2T_MSG_TYPE_TX_FETCH_RESP      = 11,
- 
- 	HTT_H2T_NUM_MSGS /* keep this last */
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index b41eb3f4ee56..48a26206c5c1 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -217,6 +217,7 @@ static const char *const ath10k_core_fw_feature_str[] = {
+ 	[ATH10K_FW_FEATURE_RAW_MODE_SUPPORT] = "raw-mode",
+ 	[ATH10K_FW_FEATURE_SUPPORTS_ADAPTIVE_CCA] = "adaptive-cca",
+ 	[ATH10K_FW_FEATURE_MFP_SUPPORT] = "mfp",
++	[ATH10K_FW_FEATURE_PEER_FLOW_CONTROL] = "peer-flow-ctrl",
  };
-@@ -1306,9 +1307,43 @@ struct htt_frag_desc_bank_id {
-  * so we use a conservatively safe value for now */
- #define HTT_FRAG_DESC_BANK_MAX 4
  
--#define HTT_FRAG_DESC_BANK_CFG_INFO_PDEV_ID_MASK 0x03
--#define HTT_FRAG_DESC_BANK_CFG_INFO_PDEV_ID_LSB  0
--#define HTT_FRAG_DESC_BANK_CFG_INFO_SWAP         (1 << 2)
-+#define HTT_FRAG_DESC_BANK_CFG_INFO_PDEV_ID_MASK		0x03
-+#define HTT_FRAG_DESC_BANK_CFG_INFO_PDEV_ID_LSB			0
-+#define HTT_FRAG_DESC_BANK_CFG_INFO_SWAP			BIT(2)
-+#define HTT_FRAG_DESC_BANK_CFG_INFO_Q_STATE_VALID		BIT(3)
-+#define HTT_FRAG_DESC_BANK_CFG_INFO_Q_STATE_DEPTH_TYPE_MASK	BIT(4)
-+#define HTT_FRAG_DESC_BANK_CFG_INFO_Q_STATE_DEPTH_TYPE_LSB	4
-+
-+enum htt_q_depth_type {
-+	HTT_Q_DEPTH_TYPE_BYTES = 0,
-+	HTT_Q_DEPTH_TYPE_MSDUS = 1,
-+};
-+
-+#define HTT_TX_Q_STATE_NUM_PEERS		(TARGET_10_4_NUM_QCACHE_PEERS_MAX + \
-+						 TARGET_10_4_NUM_VDEVS)
-+#define HTT_TX_Q_STATE_NUM_TIDS			8
-+#define HTT_TX_Q_STATE_ENTRY_SIZE		1
-+#define HTT_TX_Q_STATE_ENTRY_MULTIPLIER		0
-+
-+/**
-+ * htt_q_state_conf - part of htt_frag_desc_bank_cfg for host q state config
-+ *
-+ * Defines host q state format and behavior. See htt_q_state.
-+ *
-+ * @record_size: Defines the size of each host q entry in bytes. In practice
-+ *	however firmware (at least 10.4.3-00191) ignores this host
-+ *	configuration value and uses hardcoded value of 1.
-+ * @record_multiplier: This is valid only when q depth type is MSDUs. It
-+ *	defines the exponent for the power of 2 multiplication.
-+ */
-+struct htt_q_state_conf {
-+	__le32 paddr;
-+	__le16 num_peers;
-+	__le16 num_tids;
-+	u8 record_size;
-+	u8 record_multiplier;
-+	u8 pad[2];
-+} __packed;
+ static unsigned int ath10k_core_get_fw_feature_str(char *buf,
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 7840cf3ef7a6..822e3195533a 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -510,6 +510,15 @@ enum ath10k_fw_features {
+ 	/* Firmware supports management frame protection */
+ 	ATH10K_FW_FEATURE_MFP_SUPPORT = 12,
  
- struct htt_frag_desc_bank_cfg {
- 	u8 info; /* HTT_FRAG_DESC_BANK_CFG_INFO_ */
-@@ -1316,6 +1351,114 @@ struct htt_frag_desc_bank_cfg {
- 	u8 desc_size;
- 	__le32 bank_base_addrs[HTT_FRAG_DESC_BANK_MAX];
- 	struct htt_frag_desc_bank_id bank_id[HTT_FRAG_DESC_BANK_MAX];
-+	struct htt_q_state_conf q_state;
-+} __packed;
++	/* Firmware supports pull-push model where host shares it's software
++	 * queue state with firmware and firmware generates fetch requests
++	 * telling host which queues to dequeue tx from.
++	 *
++	 * Primary function of this is improved MU-MIMO performance with
++	 * multiple clients.
++	 */
++	ATH10K_FW_FEATURE_PEER_FLOW_CONTROL = 13,
 +
-+#define HTT_TX_Q_STATE_ENTRY_COEFFICIENT	128
-+#define HTT_TX_Q_STATE_ENTRY_FACTOR_MASK	0x3f
-+#define HTT_TX_Q_STATE_ENTRY_FACTOR_LSB		0
-+#define HTT_TX_Q_STATE_ENTRY_EXP_MASK		0xc0
-+#define HTT_TX_Q_STATE_ENTRY_EXP_LSB		6
-+
-+/**
-+ * htt_q_state - shared between host and firmware via DMA
-+ *
-+ * This structure is used for the host to expose it's software queue state to
-+ * firmware so that its rate control can schedule fetch requests for optimized
-+ * performance. This is most notably used for MU-MIMO aggregation when multiple
-+ * MU clients are connected.
-+ *
-+ * @count: Each element defines the host queue depth. When q depth type was
-+ *	configured as HTT_Q_DEPTH_TYPE_BYTES then each entry is defined as:
-+ *	FACTOR * 128 * 8^EXP (see HTT_TX_Q_STATE_ENTRY_FACTOR_MASK and
-+ *	HTT_TX_Q_STATE_ENTRY_EXP_MASK). When q depth type was configured as
-+ *	HTT_Q_DEPTH_TYPE_MSDUS the number of packets is scaled by 2 **
-+ *	record_multiplier (see htt_q_state_conf).
-+ * @map: Used by firmware to quickly check which host queues are not empty. It
-+ *	is a bitmap simply saying.
-+ * @seq: Used by firmware to quickly check if the host queues were updated
-+ *	since it last checked.
-+ *
-+ * FIXME: Is the q_state map[] size calculation really correct?
-+ */
-+struct htt_q_state {
-+	u8 count[HTT_TX_Q_STATE_NUM_TIDS][HTT_TX_Q_STATE_NUM_PEERS];
-+	u32 map[HTT_TX_Q_STATE_NUM_TIDS][(HTT_TX_Q_STATE_NUM_PEERS + 31) / 32];
-+	__le32 seq;
-+} __packed;
-+
-+#define HTT_TX_FETCH_RECORD_INFO_PEER_ID_MASK	0x0fff
-+#define HTT_TX_FETCH_RECORD_INFO_PEER_ID_LSB	0
-+#define HTT_TX_FETCH_RECORD_INFO_TID_MASK	0xf000
-+#define HTT_TX_FETCH_RECORD_INFO_TID_LSB	12
-+
-+struct htt_tx_fetch_record {
-+	__le16 info; /* HTT_TX_FETCH_IND_RECORD_INFO_ */
-+	__le16 num_msdus;
-+	__le32 num_bytes;
-+} __packed;
-+
-+struct htt_tx_fetch_ind {
-+	u8 pad0;
-+	__le16 fetch_seq_num;
-+	__le32 token;
-+	__le16 num_resp_ids;
-+	__le16 num_records;
-+	struct htt_tx_fetch_record records[0];
-+	__le32 resp_ids[0]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
-+} __packed;
-+
-+static inline void *
-+ath10k_htt_get_tx_fetch_ind_resp_ids(struct htt_tx_fetch_ind *ind)
-+{
-+	return (void *)&ind->records[le16_to_cpu(ind->num_records)];
-+}
-+
-+struct htt_tx_fetch_resp {
-+	u8 pad0;
-+	__le16 resp_id;
-+	__le16 fetch_seq_num;
-+	__le16 num_records;
-+	__le32 token;
-+	struct htt_tx_fetch_record records[0];
-+} __packed;
-+
-+struct htt_tx_fetch_confirm {
-+	u8 pad0;
-+	__le16 num_resp_ids;
-+	__le32 resp_ids[0];
-+} __packed;
-+
-+enum htt_tx_mode_switch_mode {
-+	HTT_TX_MODE_SWITCH_PUSH = 0,
-+	HTT_TX_MODE_SWITCH_PUSH_PULL = 1,
-+};
-+
-+#define HTT_TX_MODE_SWITCH_IND_INFO0_ENABLE		BIT(0)
-+#define HTT_TX_MODE_SWITCH_IND_INFO0_NUM_RECORDS_MASK	0xfffe
-+#define HTT_TX_MODE_SWITCH_IND_INFO0_NUM_RECORDS_LSB	1
-+
-+#define HTT_TX_MODE_SWITCH_IND_INFO1_MODE_MASK		0x0003
-+#define HTT_TX_MODE_SWITCH_IND_INFO1_MODE_LSB		0
-+#define HTT_TX_MODE_SWITCH_IND_INFO1_THRESHOLD_MASK	0xfffc
-+#define HTT_TX_MODE_SWITCH_IND_INFO1_THRESHOLD_LSB	2
-+
-+#define HTT_TX_MODE_SWITCH_RECORD_INFO0_PEER_ID_MASK	0x0fff
-+#define HTT_TX_MODE_SWITCH_RECORD_INFO0_PEER_ID_LSB	0
-+#define HTT_TX_MODE_SWITCH_RECORD_INFO0_TID_MASK	0xf000
-+#define HTT_TX_MODE_SWITCH_RECORD_INFO0_TID_LSB		12
-+
-+struct htt_tx_mode_switch_record {
-+	__le16 info0; /* HTT_TX_MODE_SWITCH_RECORD_INFO0_ */
-+	__le16 num_max_msdus;
-+} __packed;
-+
-+struct htt_tx_mode_switch_ind {
-+	u8 pad0;
-+	__le16 info0; /* HTT_TX_MODE_SWITCH_IND_INFO0_ */
-+	__le16 info1; /* HTT_TX_MODE_SWITCH_IND_INFO1_ */
-+	u8 pad1[2];
-+	struct htt_tx_mode_switch_record records[0];
- } __packed;
- 
- union htt_rx_pn_t {
-@@ -1340,6 +1483,7 @@ struct htt_cmd {
- 		struct htt_oob_sync_req oob_sync_req;
- 		struct htt_aggr_conf aggr_conf;
- 		struct htt_frag_desc_bank_cfg frag_desc_bank_cfg;
-+		struct htt_tx_fetch_resp tx_fetch_resp;
- 	};
- } __packed;
- 
-@@ -1364,6 +1508,9 @@ struct htt_resp {
- 		struct htt_rx_pn_ind rx_pn_ind;
- 		struct htt_rx_offload_ind rx_offload_ind;
- 		struct htt_rx_in_ord_ind rx_in_ord_ind;
-+		struct htt_tx_fetch_ind tx_fetch_ind;
-+		struct htt_tx_fetch_confirm tx_fetch_confirm;
-+		struct htt_tx_mode_switch_ind tx_mode_switch_ind;
- 	};
- } __packed;
- 
+ 	/* keep last */
+ 	ATH10K_FW_FEATURE_COUNT,
+ };
 -- 
 2.1.4
 
