@@ -1,21 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJlzR-0007LI-4q
- for ath10k@lists.infradead.org; Thu, 14 Jan 2016 17:47:18 +0000
-Message-ID: <5697DEB6.10208@codeaurora.org>
-Date: Thu, 14 Jan 2016 09:45:26 -0800
-From: Peter Oh <poh@codeaurora.org>
+ id 1aJrV2-00059w-9c
+ for ath10k@lists.infradead.org; Thu, 14 Jan 2016 23:40:17 +0000
+From: Yanbo Li <yanbol@qca.qualcomm.com>
+Subject: [PATCH] ath10k: Remove the p2p notice of absence info from 10.2.4 FW
+ beacon info
+Date: Thu, 14 Jan 2016 15:39:19 -0800
+Message-ID: <1452814759-20377-1-git-send-email-yanbol@qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re:
-References: <CAGvpMW8JW+a6-MS=TrRNFvBDG4LWYFR+2fM09dFhQEes7NEn4w@mail.gmail.com>
- <CA+BoTQk313y4GA-yq01LBad8ccf2OepU6vP_t7PjAJ1a1DR_7Q@mail.gmail.com>
- <CAGvpMW9d8RZGpfBd2H0W35fVUQoi9jcZvQmTC7ztW+dPVcxOhg@mail.gmail.com>
- <CA+BoTQk7O4Lq2rcZG9pLZJij27COWiCUz=g8SNEp2df3CKV-vg@mail.gmail.com>
- <CAGvpMW_wSfe8m+WtwhS0aRj8o0MioPi2o2FKZ3Vjk7ei-x7iOw@mail.gmail.com>
- <CA+BoTQ=OtLnfmas=TYOdTOTEtkeoaxd7BuT5O7ircpd+oMecgw@mail.gmail.com>
- <CAGvpMW9mYhyoHZq+Lt1jCkowEiKuKH2_4Vqm+37Y4nK_W-1R+Q@mail.gmail.com>
-In-Reply-To: <CAGvpMW9mYhyoHZq+Lt1jCkowEiKuKH2_4Vqm+37Y4nK_W-1R+Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +17,112 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alexey Ivanov <alexeyivan@gmail.com>, Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k@lists.infradead.org
+To: kvalo@qca.qualcomm.com
+Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Ck9uIDAxLzEzLzIwMTYgMDk6MzYgUE0sIEFsZXhleSBJdmFub3Ygd3JvdGU6Cj4gWWVzLCB5b3Un
-cmUgcmlnaHQsIE1pY2hhxYIKPiBwdXR0aW5nIGNhbC5iaW4gdG8gbGliL2Zpcm13YXJlL2F0aDEw
-ayBoZWxwZWQKPiAoYmVmb3JlIEkgcHV0IGl0IHRvIGxpYi9maXJtd2FyZS9hdGgxMGsvUUNBOTg4
-WC9odzIuMC8pCj4KPiBidXQgdGhlIG1hYyBhZGRyZXNzIGlzIHN0aWxsIDAwOjAzOjdGOjAwOjAw
-OjAwCmNhbCBmaWxlIGhhcyBhIG1hYyBhZGRyZXNzIGluIGl0IGFuZCBhdGgxMGsgdXNlcyBpdCBh
-cyBkZWZhdWx0IHVubGVzcyAKc29tZSBvdGhlciBzY3JpcHRzIGNoYW5nZSBpdCBkdXJpbmcgYm9v
-dC4KPiB0aGUgb3V0cHV0IG5vdyBpczoKPiBbICAgMTEuMzgxMTk4XSBhdGgxMGtfcGNpIDAwMDA6
-MDA6MDAuMDogcGNpIGlycSBsZWdhY3kgaW50ZXJydXB0cyAwCj4gaXJxX21vZGUgMCByZXNldF9t
-b2RlIDAKPiBbICAgMTEuNzI1ODMzXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogcWNhOTg4eCBo
-dzIuMCB0YXJnZXQKPiAweDQxMDAwMTZjIGNoaXBfaWQgMHgwNDMyMDJmZiBzdWIgMDAwMDowMDAw
-Cj4gWyAgIDExLjczNTIyNl0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGtjb25maWcgZGVidWcg
-MSBkZWJ1Z2ZzIDEKPiB0cmFjaW5nIDAgZGZzIDAgdGVzdG1vZGUgMQo+IFsgICAxMS43NDgyODhd
-IGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBmaXJtd2FyZSB2ZXIgMTAuMi40Ljk3IGFwaSA1Cj4g
-ZmVhdHVyZXMgbm8tcDJwIGNyYzMyIGY5MWUzNGYyCj4gWyAgIDExLjc5NzM3N10gYXRoMTBrX3Bj
-aSAwMDAwOjAwOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvcgo+IGF0aDEway9RQ0E5ODhY
-L2h3Mi4wL2JvYXJkLTIuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4gWyAgIDExLjgwNzk4NV0g
-YXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IEZhbGxpbmcgYmFjayB0byB1c2VyIGhlbHBlcgo+IFsg
-ICAxMS44ODI5NjBdIGZpcm13YXJlIGF0aDEwayFRQ0E5ODhYIWh3Mi4wIWJvYXJkLTIuYmluOgo+
-IGZpcm13YXJlX2xvYWRpbmdfc3RvcmU6IG1hcCBwYWdlcyBmYWlsZWQKPiBbICAgMTEuODkzMDQ0
-XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogYm9hcmRfZmlsZSBhcGkgMSBibWlfaWQgTi9BCj4g
-Y3JjMzIgZTYyM2IzYmUKPiBbICAgMTIuOTQ3MzUyXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDog
-aHR0LXZlciAyLjEgd21pLW9wIDUgaHR0LW9wIDIKPiBjYWwgZmlsZSBtYXgtc3RhIDEyOCByYXcg
-MCBod2NyeXB0byAxCj4KPiBBcyBJIHVuZGVyc3RhbmQsIGFmdGVyIGNvcnJlY3QgY2FsaWJyYXRp
-b24gdGhlcmUgc2hvdWxkIGJlIG5vcm1hbCBtYWM/Cj4KPiBPbiAxMyBKYW51YXJ5IDIwMTYgYXQg
-MTg6NTQsIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPj4g
-T24gMTMgSmFudWFyeSAyMDE2IGF0IDE1OjQ1LCBBbGV4ZXkgSXZhbm92IDxhbGV4ZXlpdmFuQGdt
-YWlsLmNvbT4gd3JvdGU6Cj4+Pj4gU3RyYW5nZS4uCj4+PiBEbyB5b3UgaGF2ZSBhbnkgaWRlYSB3
-aGF0IGl0IGNhbiBiZT8KPj4+ICJtYXAgcGFnZXMgZmFpbGVkIiBzZWVtcyB0byBiZSBhIHJlc3Vs
-dCBvZiBmYWlsaW5nIHRvIHZtYXAoKSBidWZmZXIgaW4KPj4+IGZ3X21hcF9wYWdlc19idWYoKSBp
-biBmaXJtd2FyZV9sb2FkaW5nX3N0b3JlKCkKPj4gSXQncyB0aGUgc2FtZSBtZXNzYWdlIGFzIHdo
-ZW4geW91IGRpZG4ndCBoYXZlIHRoZSBjYWwuYmluIGZpbGUgYXQgYWxsLgo+PiBBcmUgeW91IHN1
-cmUgeW91IHBsYWNlZCBpdCBjb3JyZWN0bHk/IFBlcmhhcHMgYSBmaWxlbmFtZSB0eXBvPwo+Pgo+
-PiBBbm90aGVyIGlkZWEgaXMgaW5pdHJhbWZzIHdoaWNoIGlzIHVzZWQgZHVyaW5nIGVhcmx5IGJv
-b3QgYW5kIHdoaWNoCj4+IGRvZXNuJ3QgaW5jbHVkZSBmaWxlcyBmcm9tIHJvb3RmcyAobWVhbmlu
-ZyB5b3UnZCBoYXZlIHRvIHJlYnVpbGQgaXQpIC0KPj4gbm90IHN1cmUgaWYgdGhpcyBpcyB0aGUg
-Y2FzZSB0aG91Z2guIFlvdSBjYW4gcnVsZSBpdCBvdXQgYnkgcmVsb2FkaW5nCj4+IHRoZSBkcml2
-ZXIgYWZ0ZXIgYm9vdGluZyBzbyB0aGF0IGl0IHN1cmVseSBoYXMgYWNjZXNzIHRvIHlvdXIgcm9v
-dGZzJ3MKPj4gL2xpYi9maXJtd2FyZToKPj4KPj4gICAgcm1tb2QgYXRoMTBrX3BjaSAmJiBtb2Rw
-cm9iZSBhdGgxMGtfcGNpCj4+Cj4+Cj4+IE1pY2hhxYIKPgo+CgoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+The p2p NOA never been supported at 10.2.4 FW, remove it to avoid SWBA
+event parse error for multi beacon interval case.
+
+Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 46 ++++++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi.h | 10 ++++++++
+ 2 files changed, 55 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index a7c3d299639b..fcc9ffd396da 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3244,6 +3244,50 @@ static int ath10k_wmi_op_pull_swba_ev(struct ath10k *ar, struct sk_buff *skb,
+ 	return 0;
+ }
+ 
++static int ath10k_wmi_10_2_4_op_pull_swba_ev(struct ath10k *ar,
++					     struct sk_buff *skb,
++					     struct wmi_swba_ev_arg *arg)
++{
++	struct wmi_10_2_4_host_swba_event *ev = (void *)skb->data;
++	u32 map;
++	size_t i;
++
++	if (skb->len < sizeof(*ev))
++		return -EPROTO;
++
++	skb_pull(skb, sizeof(*ev));
++	arg->vdev_map = ev->vdev_map;
++
++	for (i = 0, map = __le32_to_cpu(ev->vdev_map); map; map >>= 1) {
++		if (!(map & BIT(0)))
++			continue;
++
++		/* If this happens there were some changes in firmware and
++		 * ath10k should update the max size of tim_info array.
++		 */
++		if (WARN_ON_ONCE(i == ARRAY_SIZE(arg->tim_info)))
++			break;
++
++		if (__le32_to_cpu(ev->bcn_info[i].tim_info.tim_len) >
++		     sizeof(ev->bcn_info[i].tim_info.tim_bitmap)) {
++			ath10k_warn(ar, "refusing to parse invalid swba structure\n");
++			return -EPROTO;
++		}
++
++		arg->tim_info[i].tim_len = ev->bcn_info[i].tim_info.tim_len;
++		arg->tim_info[i].tim_mcast = ev->bcn_info[i].tim_info.tim_mcast;
++		arg->tim_info[i].tim_bitmap =
++				ev->bcn_info[i].tim_info.tim_bitmap;
++		arg->tim_info[i].tim_changed =
++				ev->bcn_info[i].tim_info.tim_changed;
++		arg->tim_info[i].tim_num_ps_pending =
++				ev->bcn_info[i].tim_info.tim_num_ps_pending;
++		i++;
++	}
++
++	return 0;
++}
++
+ static int ath10k_wmi_10_4_op_pull_swba_ev(struct ath10k *ar,
+ 					   struct sk_buff *skb,
+ 					   struct wmi_swba_ev_arg *arg)
+@@ -7566,7 +7610,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
+ 	.pull_ch_info = ath10k_wmi_op_pull_ch_info_ev,
+ 	.pull_vdev_start = ath10k_wmi_op_pull_vdev_start_ev,
+ 	.pull_peer_kick = ath10k_wmi_op_pull_peer_kick_ev,
+-	.pull_swba = ath10k_wmi_op_pull_swba_ev,
++	.pull_swba = ath10k_wmi_10_2_4_op_pull_swba_ev,
+ 	.pull_phyerr_hdr = ath10k_wmi_op_pull_phyerr_ev_hdr,
+ 	.pull_phyerr = ath10k_wmi_op_pull_phyerr_ev,
+ 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index d85ad7855d20..58d33a7fd5db 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -5442,6 +5442,16 @@ struct wmi_host_swba_event {
+ 	struct wmi_bcn_info bcn_info[0];
+ } __packed;
+ 
++struct wmi_10_2_4_bcn_info {
++	struct wmi_tim_info tim_info;
++	/* The 10.2.4 FW doesn't have p2p NOA info */
++} __packed;
++
++struct wmi_10_2_4_host_swba_event {
++	__le32 vdev_map;
++	struct wmi_10_2_4_bcn_info bcn_info[0];
++} __packed;
++
+ /* 16 words = 512 client + 1 word = for guard */
+ #define WMI_10_4_TIM_BITMAP_ARRAY_SIZE 17
+ 
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
