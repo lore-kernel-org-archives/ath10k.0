@@ -1,15 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJNfn-0003Yb-3w
- for ath10k@lists.infradead.org; Wed, 13 Jan 2016 15:49:24 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH 7/7] ath10k: Add debugfs support for Per STA total rx duration
-Date: Wed, 13 Jan 2016 21:16:34 +0530
-Message-ID: <1452699994-5078-8-git-send-email-mohammed@qca.qualcomm.com>
-In-Reply-To: <1452699994-5078-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1452699994-5078-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1aJaau-0006kx-MP
+ for ath10k@lists.infradead.org; Thu, 14 Jan 2016 05:37:13 +0000
+Received: by mail-wm0-x234.google.com with SMTP id f206so323920387wmf.0
+ for <ath10k@lists.infradead.org>; Wed, 13 Jan 2016 21:36:52 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQ=OtLnfmas=TYOdTOTEtkeoaxd7BuT5O7ircpd+oMecgw@mail.gmail.com>
+References: <CAGvpMW8JW+a6-MS=TrRNFvBDG4LWYFR+2fM09dFhQEes7NEn4w@mail.gmail.com>
+ <CA+BoTQk313y4GA-yq01LBad8ccf2OepU6vP_t7PjAJ1a1DR_7Q@mail.gmail.com>
+ <CAGvpMW9d8RZGpfBd2H0W35fVUQoi9jcZvQmTC7ztW+dPVcxOhg@mail.gmail.com>
+ <CA+BoTQk7O4Lq2rcZG9pLZJij27COWiCUz=g8SNEp2df3CKV-vg@mail.gmail.com>
+ <CAGvpMW_wSfe8m+WtwhS0aRj8o0MioPi2o2FKZ3Vjk7ei-x7iOw@mail.gmail.com>
+ <CA+BoTQ=OtLnfmas=TYOdTOTEtkeoaxd7BuT5O7ircpd+oMecgw@mail.gmail.com>
+Date: Thu, 14 Jan 2016 09:36:51 +0400
+Message-ID: <CAGvpMW9mYhyoHZq+Lt1jCkowEiKuKH2_4Vqm+37Y4nK_W-1R+Q@mail.gmail.com>
+Subject: Re:
+From: Alexey Ivanov <alexeyivan@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,158 +25,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k@lists.infradead.org
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-
-Add debugfs support for per client total rx duration, track this
-via the report of Peer stats rx duration reported for every 500ms
-
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.h        |    1 +
- drivers/net/wireless/ath/ath10k/debug.c       |    9 ++++--
- drivers/net/wireless/ath/ath10k/debug.h       |    6 ++++
- drivers/net/wireless/ath/ath10k/debugfs_sta.c |   41 +++++++++++++++++++++++++
- 4 files changed, 54 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index d47a085..921b86a 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -316,6 +316,7 @@ struct ath10k_sta {
- #ifdef CONFIG_MAC80211_DEBUGFS
- 	/* protected by conf_mutex */
- 	bool aggr_mode;
-+	u64 rx_duration;
- #endif
- };
- 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 3b8da81..8d4148a 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -319,7 +319,7 @@ static void ath10k_debug_fw_stats_reset(struct ath10k *ar)
- void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct ath10k_fw_stats stats = {};
--	bool is_start, is_started, is_end;
-+	bool is_start, is_started, is_end, peer_stats_svc;
- 	size_t num_peers;
- 	size_t num_vdevs;
- 	int ret;
-@@ -347,8 +347,8 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
- 	 *     delivered which is treated as end-of-data and is itself discarded
- 	 */
- 
--	if (ar->debug.fw_stats_done &&
--	    !test_bit(WMI_SERVICE_PEER_STATS, ar->wmi.svc_map)) {
-+	peer_stats_svc = test_bit(WMI_SERVICE_PEER_STATS, ar->wmi.svc_map);
-+	if (ar->debug.fw_stats_done && !peer_stats_svc) {
- 		ath10k_warn(ar, "received unsolicited stats update event\n");
- 		goto free;
- 	}
-@@ -384,6 +384,9 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
- 			goto free;
- 		}
- 
-+		if (peer_stats_svc)
-+			ath10k_sta_update_rx_duration(ar, &stats.peers);
-+
- 		list_splice_tail_init(&stats.peers, &ar->debug.fw_stats.peers);
- 		list_splice_tail_init(&stats.vdevs, &ar->debug.fw_stats.vdevs);
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 814719c..f273478 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -153,6 +153,12 @@ ath10k_debug_get_new_fw_crash_data(struct ath10k *ar)
- #ifdef CONFIG_MAC80211_DEBUGFS
- void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			    struct ieee80211_sta *sta, struct dentry *dir);
-+void ath10k_sta_update_rx_duration(struct ath10k *ar, struct list_head *peer);
-+#else
-+static inline void ath10k_sta_update_rx_duration(struct ath10k *ar,
-+						 struct list_head *peer)
-+{
-+}
- #endif /* CONFIG_MAC80211_DEBUGFS */
- 
- #ifdef CONFIG_ATH10K_DEBUG
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index 95b5c49..67ef75b 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -18,6 +18,23 @@
- #include "wmi-ops.h"
- #include "debug.h"
- 
-+void ath10k_sta_update_rx_duration(struct ath10k *ar, struct list_head *head)
-+{	struct ieee80211_sta *sta;
-+	struct ath10k_fw_stats_peer *peer;
-+	struct ath10k_sta *arsta;
-+
-+	rcu_read_lock();
-+	list_for_each_entry(peer, head, list) {
-+		sta = ieee80211_find_sta_by_ifaddr(ar->hw, peer->peer_macaddr,
-+						   NULL);
-+		if (!sta)
-+			continue;
-+		arsta = (struct ath10k_sta *)sta->drv_priv;
-+		arsta->rx_duration += (u64)peer->rx_duration;
-+	}
-+	rcu_read_unlock();
-+}
-+
- static ssize_t ath10k_dbg_sta_read_aggr_mode(struct file *file,
- 					     char __user *user_buf,
- 					     size_t count, loff_t *ppos)
-@@ -232,6 +249,28 @@ static const struct file_operations fops_delba = {
- 	.llseek = default_llseek,
- };
- 
-+static ssize_t ath10k_dbg_sta_read_rx_duration(struct file *file,
-+					       char __user *user_buf,
-+					       size_t count, loff_t *ppos)
-+{
-+	struct ieee80211_sta *sta = file->private_data;
-+	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	char buf[100];
-+	int len = 0;
-+
-+	len = scnprintf(buf, sizeof(buf),
-+			"%llu usecs\n", arsta->rx_duration);
-+
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-+}
-+
-+static const struct file_operations fops_rx_duration = {
-+	.read = ath10k_dbg_sta_read_rx_duration,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			    struct ieee80211_sta *sta, struct dentry *dir)
- {
-@@ -240,4 +279,6 @@ void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 	debugfs_create_file("addba", S_IWUSR, dir, sta, &fops_addba);
- 	debugfs_create_file("addba_resp", S_IWUSR, dir, sta, &fops_addba_resp);
- 	debugfs_create_file("delba", S_IWUSR, dir, sta, &fops_delba);
-+	debugfs_create_file("rx_duration", S_IRUGO, dir, sta,
-+			    &fops_rx_duration);
- }
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+WWVzLCB5b3UncmUgcmlnaHQsIE1pY2hhxYIKcHV0dGluZyBjYWwuYmluIHRvIGxpYi9maXJtd2Fy
+ZS9hdGgxMGsgaGVscGVkCihiZWZvcmUgSSBwdXQgaXQgdG8gbGliL2Zpcm13YXJlL2F0aDEway9R
+Q0E5ODhYL2h3Mi4wLykKCmJ1dCB0aGUgbWFjIGFkZHJlc3MgaXMgc3RpbGwgMDA6MDM6N0Y6MDA6
+MDA6MDAKCnRoZSBvdXRwdXQgbm93IGlzOgpbICAgMTEuMzgxMTk4XSBhdGgxMGtfcGNpIDAwMDA6
+MDA6MDAuMDogcGNpIGlycSBsZWdhY3kgaW50ZXJydXB0cyAwCmlycV9tb2RlIDAgcmVzZXRfbW9k
+ZSAwClsgICAxMS43MjU4MzNdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBxY2E5ODh4IGh3Mi4w
+IHRhcmdldAoweDQxMDAwMTZjIGNoaXBfaWQgMHgwNDMyMDJmZiBzdWIgMDAwMDowMDAwClsgICAx
+MS43MzUyMjZdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBrY29uZmlnIGRlYnVnIDEgZGVidWdm
+cyAxCnRyYWNpbmcgMCBkZnMgMCB0ZXN0bW9kZSAxClsgICAxMS43NDgyODhdIGF0aDEwa19wY2kg
+MDAwMDowMDowMC4wOiBmaXJtd2FyZSB2ZXIgMTAuMi40Ljk3IGFwaSA1CmZlYXR1cmVzIG5vLXAy
+cCBjcmMzMiBmOTFlMzRmMgpbICAgMTEuNzk3Mzc3XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDog
+RGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yCmF0aDEway9RQ0E5ODhYL2h3Mi4wL2JvYXJkLTIuYmlu
+IGZhaWxlZCB3aXRoIGVycm9yIC0yClsgICAxMS44MDc5ODVdIGF0aDEwa19wY2kgMDAwMDowMDow
+MC4wOiBGYWxsaW5nIGJhY2sgdG8gdXNlciBoZWxwZXIKWyAgIDExLjg4Mjk2MF0gZmlybXdhcmUg
+YXRoMTBrIVFDQTk4OFghaHcyLjAhYm9hcmQtMi5iaW46CmZpcm13YXJlX2xvYWRpbmdfc3RvcmU6
+IG1hcCBwYWdlcyBmYWlsZWQKWyAgIDExLjg5MzA0NF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6
+IGJvYXJkX2ZpbGUgYXBpIDEgYm1pX2lkIE4vQQpjcmMzMiBlNjIzYjNiZQpbICAgMTIuOTQ3MzUy
+XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogaHR0LXZlciAyLjEgd21pLW9wIDUgaHR0LW9wIDIK
+Y2FsIGZpbGUgbWF4LXN0YSAxMjggcmF3IDAgaHdjcnlwdG8gMQoKQXMgSSB1bmRlcnN0YW5kLCBh
+ZnRlciBjb3JyZWN0IGNhbGlicmF0aW9uIHRoZXJlIHNob3VsZCBiZSBub3JtYWwgbWFjPwoKT24g
+MTMgSmFudWFyeSAyMDE2IGF0IDE4OjU0LCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRp
+ZXRvLmNvbT4gd3JvdGU6Cj4gT24gMTMgSmFudWFyeSAyMDE2IGF0IDE1OjQ1LCBBbGV4ZXkgSXZh
+bm92IDxhbGV4ZXlpdmFuQGdtYWlsLmNvbT4gd3JvdGU6Cj4+PlN0cmFuZ2UuLgo+Pgo+PiBEbyB5
+b3UgaGF2ZSBhbnkgaWRlYSB3aGF0IGl0IGNhbiBiZT8KPj4gIm1hcCBwYWdlcyBmYWlsZWQiIHNl
+ZW1zIHRvIGJlIGEgcmVzdWx0IG9mIGZhaWxpbmcgdG8gdm1hcCgpIGJ1ZmZlciBpbgo+PiBmd19t
+YXBfcGFnZXNfYnVmKCkgaW4gZmlybXdhcmVfbG9hZGluZ19zdG9yZSgpCj4KPiBJdCdzIHRoZSBz
+YW1lIG1lc3NhZ2UgYXMgd2hlbiB5b3UgZGlkbid0IGhhdmUgdGhlIGNhbC5iaW4gZmlsZSBhdCBh
+bGwuCj4gQXJlIHlvdSBzdXJlIHlvdSBwbGFjZWQgaXQgY29ycmVjdGx5PyBQZXJoYXBzIGEgZmls
+ZW5hbWUgdHlwbz8KPgo+IEFub3RoZXIgaWRlYSBpcyBpbml0cmFtZnMgd2hpY2ggaXMgdXNlZCBk
+dXJpbmcgZWFybHkgYm9vdCBhbmQgd2hpY2gKPiBkb2Vzbid0IGluY2x1ZGUgZmlsZXMgZnJvbSBy
+b290ZnMgKG1lYW5pbmcgeW91J2QgaGF2ZSB0byByZWJ1aWxkIGl0KSAtCj4gbm90IHN1cmUgaWYg
+dGhpcyBpcyB0aGUgY2FzZSB0aG91Z2guIFlvdSBjYW4gcnVsZSBpdCBvdXQgYnkgcmVsb2FkaW5n
+Cj4gdGhlIGRyaXZlciBhZnRlciBib290aW5nIHNvIHRoYXQgaXQgc3VyZWx5IGhhcyBhY2Nlc3Mg
+dG8geW91ciByb290ZnMncwo+IC9saWIvZmlybXdhcmU6Cj4KPiAgIHJtbW9kIGF0aDEwa19wY2kg
+JiYgbW9kcHJvYmUgYXRoMTBrX3BjaQo+Cj4KPiBNaWNoYcWCCgoKCi0tIApCZXN0IHJlZ2FyZHMs
+CkFsZXggSXZhbm92CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
