@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-qk0-x234.google.com ([2607:f8b0:400d:c09::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJg36-0004WB-Fg
- for ath10k@lists.infradead.org; Thu, 14 Jan 2016 11:26:41 +0000
-From: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-Subject: Re: Re:
-Date: Thu, 14 Jan 2016 11:26:11 +0000
-Message-ID: <1452770769631.95608@qti.qualcomm.com>
+ id 1aJh69-0004mm-I1
+ for ath10k@lists.infradead.org; Thu, 14 Jan 2016 12:33:55 +0000
+Received: by mail-qk0-x234.google.com with SMTP id q19so239482312qke.3
+ for <ath10k@lists.infradead.org>; Thu, 14 Jan 2016 04:33:32 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1452770769631.95608@qti.qualcomm.com>
 References: <CAGvpMW8JW+a6-MS=TrRNFvBDG4LWYFR+2fM09dFhQEes7NEn4w@mail.gmail.com>
  <CA+BoTQk313y4GA-yq01LBad8ccf2OepU6vP_t7PjAJ1a1DR_7Q@mail.gmail.com>
  <CAGvpMW9d8RZGpfBd2H0W35fVUQoi9jcZvQmTC7ztW+dPVcxOhg@mail.gmail.com>
@@ -14,11 +14,13 @@ References: <CAGvpMW8JW+a6-MS=TrRNFvBDG4LWYFR+2fM09dFhQEes7NEn4w@mail.gmail.com>
  <CAGvpMW_wSfe8m+WtwhS0aRj8o0MioPi2o2FKZ3Vjk7ei-x7iOw@mail.gmail.com>
  <CA+BoTQ=OtLnfmas=TYOdTOTEtkeoaxd7BuT5O7ircpd+oMecgw@mail.gmail.com>
  <CAGvpMW9mYhyoHZq+Lt1jCkowEiKuKH2_4Vqm+37Y4nK_W-1R+Q@mail.gmail.com>
- <CA+BoTQn0ia0tF4QXM+L4gu2GLmeAatMrWsLADe57L9j=yun8QA@mail.gmail.com>,
+ <CA+BoTQn0ia0tF4QXM+L4gu2GLmeAatMrWsLADe57L9j=yun8QA@mail.gmail.com>
  <CAGvpMW9YEZdXTMkg7UdGqrKqUtu0i+LFAO7GCyVmWLJUi+W_ZQ@mail.gmail.com>
-In-Reply-To: <CAGvpMW9YEZdXTMkg7UdGqrKqUtu0i+LFAO7GCyVmWLJUi+W_ZQ@mail.gmail.com>
-Content-Language: en-IN
-MIME-Version: 1.0
+ <1452770769631.95608@qti.qualcomm.com>
+Date: Thu, 14 Jan 2016 16:33:31 +0400
+Message-ID: <CAGvpMW-numrwZDpmLVXFwJJQT0D0Xs6YN1paaRfP40Y6moMxWw@mail.gmail.com>
+Subject: Re: Re:
+From: Alexey Ivanov <alexeyivan@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,86 +29,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alexey Ivanov <alexeyivan@gmail.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-Hi Alex,
-
-not sure this thread might be useful to you
-https://lists.openwrt.org/pipermail/openwrt-devel/2015-June/033894.html
-
-if the script is part of preinit and create .bin files, it will executed be=
-fore wifi comes up.
-
-regards
-shafi
-________________________________________
-From: ath10k <ath10k-bounces@lists.infradead.org> on behalf of Alexey Ivano=
-v <alexeyivan@gmail.com>
-Sent: 14 January 2016 16:44
-To: michal.kazior@tieto.com
-Cc: ath10k@lists.infradead.org
-Subject: Re:
-
-OK, Micha=B3
-Thank you,
-
-I found preinit scripts. some of them do ifconfig and some
-do patching of the default mac in firmware.bin
-
-On 14 January 2016 at 11:21, Michal Kazior <michal.kazior@tieto.com> wrote:
-> On 14 January 2016 at 06:36, Alexey Ivanov <alexeyivan@gmail.com> wrote:
->> Yes, you're right, Micha=B3
->> putting cal.bin to lib/firmware/ath10k helped
->> (before I put it to lib/firmware/ath10k/QCA988X/hw2.0/)
->>
->> but the mac address is still 00:03:7F:00:00:00
->>
->> the output now is:
->> [   11.381198] ath10k_pci 0000:00:00.0: pci irq legacy interrupts 0
->> irq_mode 0 reset_mode 0
->> [   11.725833] ath10k_pci 0000:00:00.0: qca988x hw2.0 target
->> 0x4100016c chip_id 0x043202ff sub 0000:0000
->> [   11.735226] ath10k_pci 0000:00:00.0: kconfig debug 1 debugfs 1
->> tracing 0 dfs 0 testmode 1
->> [   11.748288] ath10k_pci 0000:00:00.0: firmware ver 10.2.4.97 api 5
->> features no-p2p crc32 f91e34f2
->> [   11.797377] ath10k_pci 0000:00:00.0: Direct firmware load for
->> ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
->> [   11.807985] ath10k_pci 0000:00:00.0: Falling back to user helper
->> [   11.882960] firmware ath10k!QCA988X!hw2.0!board-2.bin:
->> firmware_loading_store: map pages failed
->> [   11.893044] ath10k_pci 0000:00:00.0: board_file api 1 bmi_id N/A
->> crc32 e623b3be
->> [   12.947352] ath10k_pci 0000:00:00.0: htt-ver 2.1 wmi-op 5 htt-op 2
->> cal file max-sta 128 raw 0 hwcrypto 1
->>
->> As I understand, after correct calibration there should be normal mac?
->
-> Not necessarily. I think some routers have mac addresses elsewhere. If
-> you look at OpenWRT scripts you should probably find a few
-> scripts/hacks that put it in board.bin (the reason for the filename is
-> that at the time cal.bin support wasn't in ath10k yet).
->
->
-> Micha=B3
-
-
-
---
-Best regards,
-Alex Ivanov
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VGhhbmsgeW91LCBNb2hhbW1lZCBTaGFmaSwKCkknbGwgdHJ5IHRvIGltcGVtZW50IGl0CgpPbiAx
+NCBKYW51YXJ5IDIwMTYgYXQgMTU6MjYsIFNoYWpha2hhbiwgTW9oYW1tZWQgU2hhZmkgKE1vaGFt
+bWVkClNoYWZpKSA8bW9oYW1tZWRAcXRpLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4gSGkgQWxleCwK
+Pgo+IG5vdCBzdXJlIHRoaXMgdGhyZWFkIG1pZ2h0IGJlIHVzZWZ1bCB0byB5b3UKPiBodHRwczov
+L2xpc3RzLm9wZW53cnQub3JnL3BpcGVybWFpbC9vcGVud3J0LWRldmVsLzIwMTUtSnVuZS8wMzM4
+OTQuaHRtbAo+Cj4gaWYgdGhlIHNjcmlwdCBpcyBwYXJ0IG9mIHByZWluaXQgYW5kIGNyZWF0ZSAu
+YmluIGZpbGVzLCBpdCB3aWxsIGV4ZWN1dGVkIGJlZm9yZSB3aWZpIGNvbWVzIHVwLgo+Cj4gcmVn
+YXJkcwo+IHNoYWZpCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
+IEZyb206IGF0aDEwayA8YXRoMTBrLWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZz4gb24gYmVo
+YWxmIG9mIEFsZXhleSBJdmFub3YgPGFsZXhleWl2YW5AZ21haWwuY29tPgo+IFNlbnQ6IDE0IEph
+bnVhcnkgMjAxNiAxNjo0NAo+IFRvOiBtaWNoYWwua2F6aW9yQHRpZXRvLmNvbQo+IENjOiBhdGgx
+MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IFN1YmplY3Q6IFJlOgo+Cj4gT0ssIE1pY2hhxYIKPiBU
+aGFuayB5b3UsCj4KPiBJIGZvdW5kIHByZWluaXQgc2NyaXB0cy4gc29tZSBvZiB0aGVtIGRvIGlm
+Y29uZmlnIGFuZCBzb21lCj4gZG8gcGF0Y2hpbmcgb2YgdGhlIGRlZmF1bHQgbWFjIGluIGZpcm13
+YXJlLmJpbgo+Cj4gT24gMTQgSmFudWFyeSAyMDE2IGF0IDExOjIxLCBNaWNoYWwgS2F6aW9yIDxt
+aWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4+IE9uIDE0IEphbnVhcnkgMjAxNiBhdCAw
+NjozNiwgQWxleGV5IEl2YW5vdiA8YWxleGV5aXZhbkBnbWFpbC5jb20+IHdyb3RlOgo+Pj4gWWVz
+LCB5b3UncmUgcmlnaHQsIE1pY2hhxYIKPj4+IHB1dHRpbmcgY2FsLmJpbiB0byBsaWIvZmlybXdh
+cmUvYXRoMTBrIGhlbHBlZAo+Pj4gKGJlZm9yZSBJIHB1dCBpdCB0byBsaWIvZmlybXdhcmUvYXRo
+MTBrL1FDQTk4OFgvaHcyLjAvKQo+Pj4KPj4+IGJ1dCB0aGUgbWFjIGFkZHJlc3MgaXMgc3RpbGwg
+MDA6MDM6N0Y6MDA6MDA6MDAKPj4+Cj4+PiB0aGUgb3V0cHV0IG5vdyBpczoKPj4+IFsgICAxMS4z
+ODExOThdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBwY2kgaXJxIGxlZ2FjeSBpbnRlcnJ1cHRz
+IDAKPj4+IGlycV9tb2RlIDAgcmVzZXRfbW9kZSAwCj4+PiBbICAgMTEuNzI1ODMzXSBhdGgxMGtf
+cGNpIDAwMDA6MDA6MDAuMDogcWNhOTg4eCBodzIuMCB0YXJnZXQKPj4+IDB4NDEwMDAxNmMgY2hp
+cF9pZCAweDA0MzIwMmZmIHN1YiAwMDAwOjAwMDAKPj4+IFsgICAxMS43MzUyMjZdIGF0aDEwa19w
+Y2kgMDAwMDowMDowMC4wOiBrY29uZmlnIGRlYnVnIDEgZGVidWdmcyAxCj4+PiB0cmFjaW5nIDAg
+ZGZzIDAgdGVzdG1vZGUgMQo+Pj4gWyAgIDExLjc0ODI4OF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAw
+LjA6IGZpcm13YXJlIHZlciAxMC4yLjQuOTcgYXBpIDUKPj4+IGZlYXR1cmVzIG5vLXAycCBjcmMz
+MiBmOTFlMzRmMgo+Pj4gWyAgIDExLjc5NzM3N10gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IERp
+cmVjdCBmaXJtd2FyZSBsb2FkIGZvcgo+Pj4gYXRoMTBrL1FDQTk4OFgvaHcyLjAvYm9hcmQtMi5i
+aW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPj4+IFsgICAxMS44MDc5ODVdIGF0aDEwa19wY2kgMDAw
+MDowMDowMC4wOiBGYWxsaW5nIGJhY2sgdG8gdXNlciBoZWxwZXIKPj4+IFsgICAxMS44ODI5NjBd
+IGZpcm13YXJlIGF0aDEwayFRQ0E5ODhYIWh3Mi4wIWJvYXJkLTIuYmluOgo+Pj4gZmlybXdhcmVf
+bG9hZGluZ19zdG9yZTogbWFwIHBhZ2VzIGZhaWxlZAo+Pj4gWyAgIDExLjg5MzA0NF0gYXRoMTBr
+X3BjaSAwMDAwOjAwOjAwLjA6IGJvYXJkX2ZpbGUgYXBpIDEgYm1pX2lkIE4vQQo+Pj4gY3JjMzIg
+ZTYyM2IzYmUKPj4+IFsgICAxMi45NDczNTJdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBodHQt
+dmVyIDIuMSB3bWktb3AgNSBodHQtb3AgMgo+Pj4gY2FsIGZpbGUgbWF4LXN0YSAxMjggcmF3IDAg
+aHdjcnlwdG8gMQo+Pj4KPj4+IEFzIEkgdW5kZXJzdGFuZCwgYWZ0ZXIgY29ycmVjdCBjYWxpYnJh
+dGlvbiB0aGVyZSBzaG91bGQgYmUgbm9ybWFsIG1hYz8KPj4KPj4gTm90IG5lY2Vzc2FyaWx5LiBJ
+IHRoaW5rIHNvbWUgcm91dGVycyBoYXZlIG1hYyBhZGRyZXNzZXMgZWxzZXdoZXJlLiBJZgo+PiB5
+b3UgbG9vayBhdCBPcGVuV1JUIHNjcmlwdHMgeW91IHNob3VsZCBwcm9iYWJseSBmaW5kIGEgZmV3
+Cj4+IHNjcmlwdHMvaGFja3MgdGhhdCBwdXQgaXQgaW4gYm9hcmQuYmluICh0aGUgcmVhc29uIGZv
+ciB0aGUgZmlsZW5hbWUgaXMKPj4gdGhhdCBhdCB0aGUgdGltZSBjYWwuYmluIHN1cHBvcnQgd2Fz
+bid0IGluIGF0aDEwayB5ZXQpLgo+Pgo+Pgo+PiBNaWNoYcWCCj4KPgo+Cj4gLS0KPiBCZXN0IHJl
+Z2FyZHMsCj4gQWxleCBJdmFub3YKPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsKCgoKLS0gCkJlc3QgcmVnYXJkcywKQWxleCBJdmFub3YKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
+QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hdGgxMGsK
