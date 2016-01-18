@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qg0-x22c.google.com ([2607:f8b0:400d:c04::22c])
+Received: from mail-db3on0054.outbound.protection.outlook.com ([157.55.234.54]
+ helo=emea01-db3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aL1Fv-0007CL-HJ
- for ath10k@lists.infradead.org; Mon, 18 Jan 2016 04:17:28 +0000
-Received: by mail-qg0-x22c.google.com with SMTP id 6so470603741qgy.1
- for <ath10k@lists.infradead.org>; Sun, 17 Jan 2016 20:17:07 -0800 (PST)
+ id 1aLA8p-00073h-JA
+ for ath10k@lists.infradead.org; Mon, 18 Jan 2016 13:46:45 +0000
+From: Tomi Saarnio <Tomi.Saarnio@ekahau.com>
+Subject: Regulatory Domains and Japan Channel 14
+Date: Mon, 18 Jan 2016 13:46:20 +0000
+Message-ID: <e252a74fb07d43bfb91910e6a513fa29DB5PR02MB0631B2535A2228C868A8B7C1FEC00@DB5PR02MB0631.eurprd02.prod.outlook.com>
+Content-Language: en-US
+Content-ID: <0E8150007906554FBDB43E3E5CB948C9@eurprd02.prod.outlook.com>
 MIME-Version: 1.0
-Date: Mon, 18 Jan 2016 09:47:06 +0530
-Message-ID: <CACS2Gtt=JB1mDVcK2Gg3CPWW_HHRSyu0k7oUca9yB7h5p_Ggsg@mail.gmail.com>
-Subject: ATH10K: Firmware is crashing in AP Mode
-From: Naveen S <naveensd93@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,126 +19,187 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-
-Hi All,
-
-       I have compiled backports ATH10k driver. With this I tried
-enabling  a AP using hostapd, AP is coming up. After some time I am
-able see some firmware crash, Then AP is going down immediately and it
-is coming up after 2 to 3 mins  and sometimes it's not coming up.
-        Can anyone tell me what is cause for FW crash and how to fix this?.
-
-[ 4348.378519] ath10k_pci 0000:01:00.0: firmware crashed! (uuid n/a)
-[ 4348.384599] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
-0x043202ff) fw 10.2.4.70.9-2 api 5 htt 2.1 wmi 5 cal otp max_sta 128
-[ 4348.396482] ath10k_pci 0000:01:00.0: debug 1 debugfs 0 tracing 0
-dfs 0 testmode 0
-[ 4348.405975] ath10k_pci 0000:01:00.0: firmware register dump:
-[ 4348.411619] ath10k_pci 0000:01:00.0: [00]: 0x4100016C 0x000015B3
-0x009B44BF 0x00955B31
-[ 4348.419506] ath10k_pci 0000:01:00.0: [04]: 0x009B44BF 0x00060530
-0x00000000 0x00010007
-[ 4348.427385] ath10k_pci 0000:01:00.0: [08]: 0x00415068 0x00955A00
-0x0040FAA4 0x00000010
-[ 4348.435272] ath10k_pci 0000:01:00.0: [12]: 0x00000009 0xFFFFFFFF
-0x00958360 0x0095836B
-[ 4348.443159] ath10k_pci 0000:01:00.0: [16]: 0x00958080 0x0094085D
-0x00000000 0x00000000
-[ 4348.451045] ath10k_pci 0000:01:00.0: [20]: 0x409B44BF 0x0040ACE4
-0x00000001 0x0000004A
-[ 4348.458932] ath10k_pci 0000:01:00.0: [24]: 0x809B2522 0x0040AD44
-0x00000000 0xC09B44BF
-[ 4348.466810] ath10k_pci 0000:01:00.0: [28]: 0x809B25B0 0x0040AD94
-0x0040AE04 0x00400000
-[ 4348.474696] ath10k_pci 0000:01:00.0: [32]: 0x809B1CB2 0x0040ADC4
-0x00000001 0x0040AE04
-[ 4348.482582] ath10k_pci 0000:01:00.0: [36]: 0x809BFB39 0x0040ADE4
-0x00411F38 0x00411F5C
-[ 4348.490469] ath10k_pci 0000:01:00.0: [40]: 0x809BF33C 0x0040AE04
-0x00000001 0x00000000
-[ 4348.498356] ath10k_pci 0000:01:00.0: [44]: 0x809BF113 0x0040AEA4
-0x0041F7CC 0x00412598
-[ 4348.506233] ath10k_pci 0000:01:00.0: [48]: 0x809BEF99 0x0040AEC4
-0x0041F7CC 0x00000001
-[ 4348.514120] ath10k_pci 0000:01:00.0: [52]: 0x80940F18 0x0040AF14
-0x00000011 0x00403AD4
-[ 4348.522007] ath10k_pci 0000:01:00.0: [56]: 0x80940EEA 0x0040AF44
-0x00400000 0x00000000
-[ 4348.609835] ieee80211 phy0: Hardware restart was requested
-[ 4348.615327] ------------[ cut here ]------------
-[ 4348.620029] WARNING: CPU: 0 PID: 8653 at
-/media/freescale/sdd1/Naveen/backports-4.2.6-1/net/mac80211/main.c:255
-ieee80211_restart_work+0x38)
-[ 4348.634055] ieee80211_restart_work called with hardware scan in progress
-[ 4348.640843] Modules linked in: xt_conntrack ipt_MASQUERADE
-bluetooth iptable_raw xt_connmark xt_tcpudp xt_mark xt_length
-xt_comment xt_mult)
-[ 4348.675709] CPU: 0 PID: 8653 Comm: kworker/0:0 Tainted: G
-O 3.12.37-rt51+ls1+gaaa395f #1
-[ 4348.684701] Workqueue: events ieee80211_restart_work [mac80211]
-[ 4348.690664] [<80014948>] (unwind_backtrace+0x0/0xdc) from
-[<80010e74>] (show_stack+0x10/0x14)
-[ 4348.699338] [<80010e74>] (show_stack+0x10/0x14) from [<80565ecc>]
-(dump_stack+0x70/0x8c)
-[ 4348.707519] [<80565ecc>] (dump_stack+0x70/0x8c) from [<80020124>]
-(warn_slowpath_common+0x60/0x84)
-[ 4348.716492] [<80020124>] (warn_slowpath_common+0x60/0x84) from
-[<80020174>] (warn_slowpath_fmt+0x2c/0x3c)
-[ 4348.726092] [<80020174>] (warn_slowpath_fmt+0x2c/0x3c) from
-[<7f086198>] (ieee80211_restart_work+0x38/0x84 [mac80211])
-[ 4348.736812] [<7f086198>] (ieee80211_restart_work+0x38/0x84
-[mac80211]) from [<800347dc>] (process_one_work+0x224/0x340)
-[ 4348.747574] [<800347dc>] (process_one_work+0x224/0x340) from
-[<800353c8>] (worker_thread+0x238/0x380)
-[ 4348.756857] [<800353c8>] (worker_thread+0x238/0x380) from
-[<8003a19c>] (kthread+0x98/0xa0)
-[ 4348.765121] [<8003a19c>] (kthread+0x98/0xa0) from [<8000d8d8>]
-(ret_from_fork+0x14/0x3c)
-[ 4348.773192] ---[ end trace bcbe7994af837485 ]---
-[ 4350.180565] ath10k_pci 0000:01:00.0: device successfully recovered
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 
-Card: Compex WLE900VX 7AA
-Platform: ARM ( Freescale)
-Kernel version: 3.12.19
-ATH10K version: backports-4.2.6-1
-ATH10k Firmwares: firmware-5.bin_10.2.4.70.15-2,
-firmware-4.bin_10.2.4.48, firmware-3.bin_10.2.2.39.6-1
-firmware-2.bin_10.1.467.3-1
-Hostapd version: 2.4
+Dear All,
+
+We are trying to perform scanning at the 2.4GHz band with the JP (Japan) re=
+gulatory domain, but it seems that the ath10k refuses to scan the channel 1=
+4 although the channel 14 is a valid channel in Japan (with certain rate an=
+d transmit power limitations).
+
+We have set up an AP for the channel 14 (The AP is for Japanese market) and=
+ it is visible when capturing beacon frames with our existing network monit=
+oring gear on channel 14.
+
+We have tried with two different ath10k firmwares. The setup is running the=
+ ath10k on a Gateworks Ventana board with Linux OpenWrt 4.1.6 provided by G=
+ateworks.
+
+Firmware 1:
+
+[=A0=A0 11.222699] ath10k_pci 0000:03:00.0: enabling device (0140 -> 0142)
+[=A0=A0 11.229671] ath10k_pci 0000:03:00.0: pci irq legacy interrupts 0 irq=
+_mode 0 reset_mode 0
+[=A0=A0 11.463218] ath10k_pci 0000:03:00.0: Direct firmware load for ath10k=
+/cal-pci-0000:03:00.0.bin failed with error -2
+[=A0=A0 11.473612] ath10k_pci 0000:03:00.0: Falling back to user helper
+[=A0=A0 11.488114] firmware ath10k!cal-pci-0000:03:00.0.bin: firmware_loadi=
+ng_store: map pages failed
+[=A0=A0 12.699649] ath10k_pci 0000:03:00.0: qca988x hw2.0 (0x4100016c, 0x04=
+3202ff) fw 10.2.4.70-2 api 5 htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-sta =
+128 features no-p2p
+[=A0=A0 12.716354] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.716370] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.716385] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.716400] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.725776] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.725793] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.735298] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.735326] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.735355] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.735378] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.796065] ath10k_pci 0000:03:00.0: debug 0 debugfs 1 tracing 0 dfs=
+ 1 testmode 1
+[=A0=A0 12.915521] ath10k_pci 0000:06:00.0: enabling device (0140 -> 0142)
+[=A0=A0 12.922648] ath10k_pci 0000:06:00.0: pci irq legacy interrupts 0 irq=
+_mode 0 reset_mode 0
+[=A0=A0 13.141720] ath10k_pci 0000:06:00.0: Direct firmware load for ath10k=
+/cal-pci-0000:06:00.0.bin failed with error -2
+[=A0=A0 13.152120] ath10k_pci 0000:06:00.0: Falling back to user helper
+[=A0=A0 13.166544] firmware ath10k!cal-pci-0000:06:00.0.bin: firmware_loadi=
+ng_store: map pages failed
+[=A0=A0 14.333721] ath10k_pci 0000:06:00.0: qca988x hw2.0 (0x4100016c, 0x04=
+3202ff) fw 10.2.4.70-2 api 5 htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-sta =
+128 features no-p2p
+[=A0=A0 14.348433] ath10k_pci 0000:06:00.0: debug 0 debugfs 1 tracing 0 dfs=
+ 1 testmode 1
 
 
-Hostapd configuration file:
+Firmware 2:
 
-##################basic hostapd configurtions##################
-country_code=US
-interface=wlan1
-ctrl_interface=/var/run/hostapd
-ctrl_interface_group=0
-driver=nl80211
-ssid=TESTING_AP
-hw_mode=a
-channel=36
+[=A0=A0 11.322556] ath10k_pci 0000:03:00.0: enabling device (0140 -> 0142)
+[=A0=A0 11.331562] ath10k_pci 0000:03:00.0: pci irq legacy interrupts 0 irq=
+_mode 0 reset_mode 0
+[=A0=A0 11.547193] ath10k_pci 0000:03:00.0: Direct firmware load for ath10k=
+/cal-pci-0000:03:00.0.bin failed with error -2
+[=A0=A0 11.557589] ath10k_pci 0000:03:00.0: Falling back to user helper
+[=A0=A0 11.571973] firmware ath10k!cal-pci-0000:03:00.0.bin: firmware_loadi=
+ng_store: map pages failed
+[=A0=A0 12.775156] ath10k_pci 0000:03:00.0: qca988x hw2.0 (0x4100016c, 0x04=
+3202ff) fw 10.2.4.70.17-2 api 5 htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-s=
+ta 128 features no-p2p
+[=A0=A0 12.790225] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.790244] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.790259] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.790275] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.790289] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.790304] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.790319] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.790334] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.790353] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.790368] ath10k_pci 0000:03:00.0: no channel configured; ignoring=
+ frame(s)!
+[=A0=A0 12.864307] ath10k_pci 0000:03:00.0: debug 0 debugfs 1 tracing 0 dfs=
+ 1 testmode 1
+[=A0=A0 12.979191] ath10k_pci 0000:06:00.0: enabling device (0140 -> 0142)
+[=A0=A0 12.986343] ath10k_pci 0000:06:00.0: pci irq legacy interrupts 0 irq=
+_mode 0 reset_mode 0
+[=A0=A0 13.205675] ath10k_pci 0000:06:00.0: Direct firmware load for ath10k=
+/cal-pci-0000:06:00.0.bin failed with error -2
+[=A0=A0 13.216077] ath10k_pci 0000:06:00.0: Falling back to user helper
+[=A0=A0 13.230590] firmware ath10k!cal-pci-0000:06:00.0.bin: firmware_loadi=
+ng_store: map pages failed
+[=A0=A0 14.403062] ath10k_pci 0000:06:00.0: qca988x hw2.0 (0x4100016c, 0x04=
+3202ff) fw 10.2.4.70.17-2 api 5 htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-s=
+ta 128 features no-p2p
+[=A0=A0 14.418343] ath10k_pci 0000:06:00.0: debug 0 debugfs 1 tracing 0 dfs=
+ 1 testmode
 
-##################wpa1 security enable############
-wpa=1
-wpa_passphrase=freescale321
-wpa_key_mgmt=WPA-PSK
-wpa_pairwise=CCMP TKIP
+Set the regulatory domain to JP:
 
-### IEEE 802.11n
-ieee80211n=1
-ht_capab=[HT40+][LDPC][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1][DSSS_CCK-40]
+# iw reg set JP
 
-### IEEE 802.11ac
-ieee80211ac=1
-vht_oper_chwidth=1
-vht_capab=[MAX-MPDU-11454][RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP7][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+[=A0 123.871988] cfg80211: Regulatory domain changed to country: JP
+[=A0 123.877850] cfg80211:=A0 DFS Master region: JProot@OpenWrt:/# =
+
+[=A0 123.882030] cfg80211:=A0=A0 (start_freq - end_freq @ bandwidth), (max_=
+antenna_gain, max_eirp), (dfs_cac_time)
+[=A0 123.893148] cfg80211:=A0=A0 (2402000 KHz - 2482000 KHz @ 40000 KHz), (=
+N/A, 2000 mBm), (N/A)
+[=A0 123.901187] cfg80211:=A0=A0 (2474000 KHz - 2494000 KHz @ 20000 KHz), (=
+N/A, 2000 mBm), (N/A)
+[=A0 123.909220] cfg80211:=A0=A0 (4910000 KHz - 4990000 KHz @ 40000 KHz), (=
+N/A, 2300 mBm), (N/A)
+[=A0 123.917231] cfg80211:=A0=A0 (5030000 KHz - 5090000 KHz @ 40000 KHz), (=
+N/A, 2300 mBm), (N/A)
+[=A0 123.925261] cfg80211:=A0=A0 (5170000 KHz - 5250000 KHz @ 80000 KHz, 16=
+0000 KHz AUTO), (N/A, 2000 mBm), (N/A)
+[=A0 123.934766] cfg80211:=A0=A0 (5250000 KHz - 5330000 KHz @ 80000 KHz, 16=
+0000 KHz AUTO), (N/A, 2000 mBm), (0 s)
+[=A0 123.944273] cfg80211:=A0=A0 (5490000 KHz - 5710000 KHz @ 160000 KHz), =
+(N/A, 2300 mBm), (0 s)
+[=A0 123.952387] cfg80211:=A0=A0 (59000000 KHz - 66000000 KHz @ 2160000 KHz=
+), (N/A, 1000 mBm), (N/A)
+
+Verify the regulatory domain:
+
+# iw reg get
+
+global
+country JP: DFS-JP
+=A0=A0 =A0(2402 - 2482 @ 40), (N/A, 20), (N/A)
+=A0=A0 =A0(2474 - 2494 @ 20), (N/A, 20), (N/A), NO-OFDM
+=A0=A0 =A0(4910 - 4990 @ 40), (N/A, 23), (N/A)
+=A0=A0 =A0(5030 - 5090 @ 40), (N/A, 23), (N/A)
+=A0=A0 =A0(5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
+=A0=A0 =A0(5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
+=A0=A0 =A0(5490 - 5710 @ 160), (N/A, 23), (0 ms), DFS
+=A0=A0 =A0(59000 - 66000 @ 2160), (N/A, 10), (N/A)
+
+Perform passive scanning:
+
+# ifconfig wlan0 up
+
+# iw dev wlan0 scan passive | grep freq | sort
+
+The scanning produces a list of frequencies where the APs were heard but no=
+ channel 14 frequency 2484.
+
+Questions: =
+
+
+- Will the Japan channel 14 be supported by ath10k for the scanning in near=
+ future?
+- What is the current status=A0of the regulatory domains in general in the =
+ath10k driver/firmware?
+
+Best regards,
+Tomi Saarnio
 
 _______________________________________________
 ath10k mailing list
