@@ -1,24 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ste-pvt-msa1.bahnhof.se ([213.80.101.70])
+Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aLEiQ-0004CR-AB
- for ath10k@lists.infradead.org; Mon, 18 Jan 2016 18:39:47 +0000
-Received: from localhost (localhost [127.0.0.1])
- by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id EF3B83F881
- for <ath10k@lists.infradead.org>; Mon, 18 Jan 2016 19:39:22 +0100 (CET)
-Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
- by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id FM4DQ_aONdIw for <ath10k@lists.infradead.org>;
- Mon, 18 Jan 2016 19:39:17 +0100 (CET)
-Received: from [192.168.1.100] (h-61-220.a163.priv.bahnhof.se [79.136.61.220])
- (Authenticated sender: mb175661)
- by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id AE1683F87F
- for <ath10k@lists.infradead.org>; Mon, 18 Jan 2016 19:39:17 +0100 (CET)
-From: =?UTF-8?Q?Per_=c3=96stlund?= <perost86@gmail.com>
-Subject: QCA6174 on Asus Z170I Pro Gaming
-Message-ID: <569D3155.4000103@gmail.com>
-Date: Mon, 18 Jan 2016 19:39:17 +0100
+ id 1aLRp0-00030a-Rs
+ for ath10k@lists.infradead.org; Tue, 19 Jan 2016 08:39:28 +0000
+Received: by mail-wm0-x22f.google.com with SMTP id 123so81356615wmz.0
+ for <ath10k@lists.infradead.org>; Tue, 19 Jan 2016 00:39:02 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <569D3155.4000103@gmail.com>
+References: <569D3155.4000103@gmail.com>
+Date: Tue, 19 Jan 2016 09:39:01 +0100
+Message-ID: <CA+BoTQnuYcmpGV61wzUc_x5ft5jDCSBQhdgHb0O3ZcTW95Auxg@mail.gmail.com>
+Subject: Re: QCA6174 on Asus Z170I Pro Gaming
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,85 +20,99 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: =?UTF-8?B?UGVyIMOWc3RsdW5k?= <perost86@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi,
-
-I'm trying to get the wifi on my Asus Z170I Pro Gaming to work, but 
-haven't had any luck so far.
-
-lspci says:
-Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac Wireless 
-Network Adapter [168c:003e] (rev 32)
-Subsystem: ASUSTeK Computer Inc. Device [1043:86cd]
-
-I'm using the 4.4 kernel, on Arch Linux 64-bit (linux-4.4-3 package from 
-testing repo). Out of the box ath10k doesn't work at all, complaining 
-that it can't find firmware-5.bin. Copying firmware-4.bin to 
-firmware-5.bin gets me further, with dmesg saying this:
-
-[ 4237.917517] ath10k_pci 0000:05:00.0: pci irq msi interrupts 1 
-irq_mode 0 reset_mode 0
-[ 4238.139726] ath10k_pci 0000:05:00.0: Direct firmware load for 
-ath10k/cal-pci-0000:05:00.0.bin failed with error -2
-[ 4238.139742] ath10k_pci 0000:05:00.0: Direct firmware load for 
-ath10k/QCA6174/hw3.0/firmware-5.bin failed with error -2
-[ 4238.139745] ath10k_pci 0000:05:00.0: could not fetch firmware file 
-'ath10k/QCA6174/hw3.0/firmware-5.bin': -2
-[ 4238.202052] ath10k_pci 0000:05:00.0: Direct firmware load for 
-ath10k/QCA6174/hw3.0/board-2.bin failed with error -2
-[ 4240.318396] ath10k_pci 0000:05:00.0: qca6174 hw3.2 (0x05030000, 
-0x00340aff sub 1043:86cd) fw WLAN.RM.2.0-00180-QCARMSWPZ-1 fwapi 4 bdapi 
-1 htt-ver 3.26 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1 
-features wowlan,ignore-otp,no-4addr-pad
-[ 4240.318399] ath10k_pci 0000:05:00.0: debug 0 debugfs 1 tracing 0 dfs 
-0 testmode 0
-[ 4243.317764] ath10k_pci 0000:05:00.0: could not suspend target (-11)
-[ 4243.378790] ath: EEPROM regdomain: 0x6c
-[ 4243.378794] ath: EEPROM indicates we should expect a direct regpair map
-[ 4243.378796] ath: Country alpha2 being used: 00
-[ 4243.378797] ath: Regpair used: 0x6c
-[ 4243.380678] ath10k_pci 0000:05:00.0 wlp5s0: renamed from wlan0
-[ 4365.040838] ath10k_pci 0000:05:00.0: pci irq msi interrupts 1 
-irq_mode 0 reset_mode 0
-[ 4365.264862] ath10k_pci 0000:05:00.0: Direct firmware load for 
-ath10k/cal-pci-0000:05:00.0.bin failed with error -2
-[ 4365.327022] ath10k_pci 0000:05:00.0: Direct firmware load for 
-ath10k/QCA6174/hw3.0/board-2.bin failed with error -2
-
-The interface can't be brought up though:
-# ip link set wlp5s0 up
-RTNETLINK answers: Resource temporarily unavailable
-
-I've tried various other firmwares (kvalo's, and other ones in the pull 
-requests for his repo), but they either give me a "found invalid board 
-magic" error or doesn't work any better than the one I got with the 
-linux-firmware package. I tried extracting the firmware myself from the 
-Windows drivers from Asus, which had both qca61x4_1_1_2.bin and 
-qca61x4_2_2.bin, using the instructions from [1]. The first failed with 
-"failed to receive control response completion, polling..", the second 
-worked as well as the one in linux-firmware.
-
-The Asus driver also comes with a lot of eeprom-files, and I didn't know 
-which one to use. So I wrote a script that copied each one to 
-/lib/firmware/ath10k/QCA6174/hw3.0/board-2.bin and reloaded the driver, 
-but all of them failed with the invalid board magic error.
-
-Now I'm out of ideas, so does anyone have any suggestion on what to try 
-next?
-
-[1] 
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1383184/comments/115
-
-Regards,
-Per
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTggSmFudWFyeSAyMDE2IGF0IDE5OjM5LCBQZXIgw5ZzdGx1bmQgPHBlcm9zdDg2QGdtYWls
+LmNvbT4gd3JvdGU6Cj4gSGksCj4KPiBJJ20gdHJ5aW5nIHRvIGdldCB0aGUgd2lmaSBvbiBteSBB
+c3VzIFoxNzBJIFBybyBHYW1pbmcgdG8gd29yaywgYnV0IGhhdmVuJ3QKPiBoYWQgYW55IGx1Y2sg
+c28gZmFyLgo+Cj4gbHNwY2kgc2F5czoKPiBOZXR3b3JrIGNvbnRyb2xsZXIgWzAyODBdOiBRdWFs
+Y29tbSBBdGhlcm9zIFFDQTYxNzQgODAyLjExYWMgV2lyZWxlc3MKPiBOZXR3b3JrIEFkYXB0ZXIg
+WzE2OGM6MDAzZV0gKHJldiAzMikKPiBTdWJzeXN0ZW06IEFTVVNUZUsgQ29tcHV0ZXIgSW5jLiBE
+ZXZpY2UgWzEwNDM6ODZjZF0KPgo+IEknbSB1c2luZyB0aGUgNC40IGtlcm5lbCwgb24gQXJjaCBM
+aW51eCA2NC1iaXQgKGxpbnV4LTQuNC0zIHBhY2thZ2UgZnJvbQo+IHRlc3RpbmcgcmVwbykuIE91
+dCBvZiB0aGUgYm94IGF0aDEwayBkb2Vzbid0IHdvcmsgYXQgYWxsLCBjb21wbGFpbmluZyB0aGF0
+Cj4gaXQgY2FuJ3QgZmluZCBmaXJtd2FyZS01LmJpbi4gQ29weWluZyBmaXJtd2FyZS00LmJpbiB0
+byBmaXJtd2FyZS01LmJpbiBnZXRzCj4gbWUgZnVydGhlciwgd2l0aCBkbWVzZyBzYXlpbmcgdGhp
+czoKClBsZWFzZSwgZG9uJ3QgZG8gdGhhdC4gSXQncyBwb2ludGxlc3MuCgphdGgxMGsgaGFzIGEg
+ZmFsbGJhY2sgc3lzdGVtLiBJZiBpdCBkb2Vzbid0IGZpbmQgZmlybXdhcmUtNS5iaW4gaXQnbGwK
+bG9vayBmb3IgLTQsIC0zLCAtMiBhcyB3ZWxsLiBUaGUgbWVzc2FnZSB5b3Ugc2VlIGluIHRoZSBr
+ZXJuZWwgbG9nIGlzCmp1c3QgYSBzaWRlIGVmZmVjdCBvZiBob3cgdG8ga2VybmVsIEFQSSB3b3Jr
+cyBhdCB0aGlzIHRpbWUuCgoKPiBbIDQyMzcuOTE3NTE3XSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAu
+MDogcGNpIGlycSBtc2kgaW50ZXJydXB0cyAxIGlycV9tb2RlIDAKPiByZXNldF9tb2RlIDAKPiBb
+IDQyMzguMTM5NzI2XSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxv
+YWQgZm9yCj4gYXRoMTBrL2NhbC1wY2ktMDAwMDowNTowMC4wLmJpbiBmYWlsZWQgd2l0aCBlcnJv
+ciAtMgo+IFsgNDIzOC4xMzk3NDJdIGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBEaXJlY3QgZmly
+bXdhcmUgbG9hZCBmb3IKPiBhdGgxMGsvUUNBNjE3NC9odzMuMC9maXJtd2FyZS01LmJpbiBmYWls
+ZWQgd2l0aCBlcnJvciAtMgo+IFsgNDIzOC4xMzk3NDVdIGF0aDEwa19wY2kgMDAwMDowNTowMC4w
+OiBjb3VsZCBub3QgZmV0Y2ggZmlybXdhcmUgZmlsZQo+ICdhdGgxMGsvUUNBNjE3NC9odzMuMC9m
+aXJtd2FyZS01LmJpbic6IC0yCj4gWyA0MjM4LjIwMjA1Ml0gYXRoMTBrX3BjaSAwMDAwOjA1OjAw
+LjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvcgo+IGF0aDEway9RQ0E2MTc0L2h3My4wL2JvYXJk
+LTIuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4gWyA0MjQwLjMxODM5Nl0gYXRoMTBrX3BjaSAw
+MDAwOjA1OjAwLjA6IHFjYTYxNzQgaHczLjIgKDB4MDUwMzAwMDAsCj4gMHgwMDM0MGFmZiBzdWIg
+MTA0Mzo4NmNkKSBmdyBXTEFOLlJNLjIuMC0wMDE4MC1RQ0FSTVNXUFotMSBmd2FwaSA0IGJkYXBp
+IDEKPiBodHQtdmVyIDMuMjYgd21pLW9wIDQgaHR0LW9wIDMgY2FsIG90cCBtYXgtc3RhIDMyIHJh
+dyAwIGh3Y3J5cHRvIDEgZmVhdHVyZXMKPiB3b3dsYW4saWdub3JlLW90cCxuby00YWRkci1wYWQK
+CllvdSBoYXZlIHRoZSBodzMuMi4gSXQgaXMgc2Vuc2l0aXZlIHRvIGJvYXJkIGRhdGEgZmlsZXMg
+KGJvYXJkLmJpbiAvCmJvYXJkLTIuYmluKS4KCgo+IFsgNDI0MC4zMTgzOTldIGF0aDEwa19wY2kg
+MDAwMDowNTowMC4wOiBkZWJ1ZyAwIGRlYnVnZnMgMSB0cmFjaW5nIDAgZGZzIDAKPiB0ZXN0bW9k
+ZSAwCj4gWyA0MjQzLjMxNzc2NF0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IGNvdWxkIG5vdCBz
+dXNwZW5kIHRhcmdldCAoLTExKQo+IFsgNDI0My4zNzg3OTBdIGF0aDogRUVQUk9NIHJlZ2RvbWFp
+bjogMHg2Ywo+IFsgNDI0My4zNzg3OTRdIGF0aDogRUVQUk9NIGluZGljYXRlcyB3ZSBzaG91bGQg
+ZXhwZWN0IGEgZGlyZWN0IHJlZ3BhaXIgbWFwCj4gWyA0MjQzLjM3ODc5Nl0gYXRoOiBDb3VudHJ5
+IGFscGhhMiBiZWluZyB1c2VkOiAwMAo+IFsgNDI0My4zNzg3OTddIGF0aDogUmVncGFpciB1c2Vk
+OiAweDZjCj4gWyA0MjQzLjM4MDY3OF0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjAgd2xwNXMwOiBy
+ZW5hbWVkIGZyb20gd2xhbjAKCkxvb2tzIG9rYXkuCgoKPiBbIDQzNjUuMDQwODM4XSBhdGgxMGtf
+cGNpIDAwMDA6MDU6MDAuMDogcGNpIGlycSBtc2kgaW50ZXJydXB0cyAxIGlycV9tb2RlIDAKPiBy
+ZXNldF9tb2RlIDAKPiBbIDQzNjUuMjY0ODYyXSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogRGly
+ZWN0IGZpcm13YXJlIGxvYWQgZm9yCj4gYXRoMTBrL2NhbC1wY2ktMDAwMDowNTowMC4wLmJpbiBm
+YWlsZWQgd2l0aCBlcnJvciAtMgo+IFsgNDM2NS4zMjcwMjJdIGF0aDEwa19wY2kgMDAwMDowNTow
+MC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPiBhdGgxMGsvUUNBNjE3NC9odzMuMC9ib2Fy
+ZC0yLmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMgoKTG9va3MgbGlrZSB5b3UgcmVsb2FkZWQgdGhl
+IGRyaXZlciBhbmQgbm90aGluZyBhY3R1YWxseSBoYXBwZW5lZCBpbgpiZXR3ZWVuLiBQZXJoYXBz
+IHlvdXIgc3lzbG9nIChvciBqb3VybmFsZCBJIHN1cHBvc2UpIGZpbHRlcmVkIHNvbWUKbWVzc2Fn
+ZXM/CgoKPgo+IFRoZSBpbnRlcmZhY2UgY2FuJ3QgYmUgYnJvdWdodCB1cCB0aG91Z2g6Cj4gIyBp
+cCBsaW5rIHNldCB3bHA1czAgdXAKPiBSVE5FVExJTksgYW5zd2VyczogUmVzb3VyY2UgdGVtcG9y
+YXJpbHkgdW5hdmFpbGFibGUKClRoZSBrZXJuZWwgbG9nIGRvZXNuJ3QgcmVhbGx5IG1hdGNoIHdo
+YXQgeW91J3JlIGRvaW5nIGhlcmUuCgpUaGUgZXJyb3IgaXMgRUFHQUlOICgxMSkuIFRoaXMgaXMg
+dmVyeSBsaWtlbHkgZHVlIHRvIGEgRlcgdGltZW91dAp3aGljaCB3b3VsZCBiZSBzZWVuIGluIHRo
+ZSBrZXJuZWwgbG9nLgoKVGhlIG1vc3QgY29tbW9uIHJlYXNvbiBGVyB0aW1lcyBvdXQgb24gUUNB
+NjE3NCBodzMuMiBpcyBpbmNvcnJlY3QKYm9hcmQgZmlsZS4gVGhlIHJlYXNvbiBpcyB0aGUgZGVm
+YXVsdCBib2FyZC5iaW4gZG9lc24ndCB3b3JrIHdpdGgKaHczLjIgYW5kIHRoZSBib2FyZC0yLmJp
+biBkb2Vzbid0IGluY2x1ZGUgdGhlIHByb3BlciBtYXBwaW5ncyBlaXRoZXIKeWV0IChzZWUgdGhl
+IG90aGVyIHRocmVhZCBpbiB0aGUgYXJjaGl2ZXMgLSB0aGVyZSdzIGEgbG90IG9mIHNpbWlsYXIK
+Y29tcGxhaW50cykuCgoKPiBJJ3ZlIHRyaWVkIHZhcmlvdXMgb3RoZXIgZmlybXdhcmVzIChrdmFs
+bydzLCBhbmQgb3RoZXIgb25lcyBpbiB0aGUgcHVsbAo+IHJlcXVlc3RzIGZvciBoaXMgcmVwbyks
+IGJ1dCB0aGV5IGVpdGhlciBnaXZlIG1lIGEgImZvdW5kIGludmFsaWQgYm9hcmQKPiBtYWdpYyIg
+ZXJyb3Igb3IgZG9lc24ndCB3b3JrIGFueSBiZXR0ZXIgdGhhbiB0aGUgb25lIEkgZ290IHdpdGgg
+dGhlCgpUaGF0J3Mgd2hhdCB5b3UgZ2V0IHdoZW4geW91IHJlbmFtZSBmaWxlcyBob3dldmVyIHlv
+dSBsaWtlLiBZb3UKcHJvYmFibHkgd2FudGVkIHRvIHVzZSBib2FyZC5iaW4gYXMgYm9hcmQtMi5i
+aW4gZmlsZSwgcmlnaHQ/IFRoaXMKd29uJ3Qgd29yay4KCgo+IGxpbnV4LWZpcm13YXJlIHBhY2th
+Z2UuIEkgdHJpZWQgZXh0cmFjdGluZyB0aGUgZmlybXdhcmUgbXlzZWxmIGZyb20gdGhlCj4gV2lu
+ZG93cyBkcml2ZXJzIGZyb20gQXN1cywgd2hpY2ggaGFkIGJvdGggcWNhNjF4NF8xXzFfMi5iaW4g
+YW5kCj4gcWNhNjF4NF8yXzIuYmluLCB1c2luZyB0aGUgaW5zdHJ1Y3Rpb25zIGZyb20gWzFdLiBU
+aGUgZmlyc3QgZmFpbGVkIHdpdGgKPiAiZmFpbGVkIHRvIHJlY2VpdmUgY29udHJvbCByZXNwb25z
+ZSBjb21wbGV0aW9uLCBwb2xsaW5nLi4iLCB0aGUgc2Vjb25kCj4gd29ya2VkIGFzIHdlbGwgYXMg
+dGhlIG9uZSBpbiBsaW51eC1maXJtd2FyZS4KCllvdSBlbmNvZGVkIHRoZSBiaW5hcnkgaW5jb3Jy
+ZWN0IHByb2JhYmx5LgoKVGhlIHByb2JsZW0geW91J3JlIGZhY2luZyBpc24ndCBmaXJtd2FyZSBw
+cm9ibGVtIHBlciBzZS4gSXQgaXMgYm9hcmQKZmlsZSBwcm9ibGVtIG1vc3QgbGlrZWx5LgoKCj4g
+VGhlIEFzdXMgZHJpdmVyIGFsc28gY29tZXMgd2l0aCBhIGxvdCBvZiBlZXByb20tZmlsZXMsIGFu
+ZCBJIGRpZG4ndCBrbm93Cj4gd2hpY2ggb25lIHRvIHVzZS4gU28gSSB3cm90ZSBhIHNjcmlwdCB0
+aGF0IGNvcGllZCBlYWNoIG9uZSB0bwo+IC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTYxNzQvaHcz
+LjAvYm9hcmQtMi5iaW4gYW5kIHJlbG9hZGVkIHRoZSBkcml2ZXIsIGJ1dAo+IGFsbCBvZiB0aGVt
+IGZhaWxlZCB3aXRoIHRoZSBpbnZhbGlkIGJvYXJkIG1hZ2ljIGVycm9yLgoKWWFkYSB5YWRhLiBi
+b2FyZC0yLmJpbiBpcyBUTFYgZm9ybWF0dGVkLiBUaGUgZWVwcm9tIGZpbGVzIGFyZQpiYXNpY2Fs
+bHkgYm9hcmQuYmluIGZpbGVzICh0aGUgQVBJMSBib2FyZCBmaWxlcykuIFlvdSBuZWVkIHRvIHJl
+bW92ZQpib2FyZC0yLmJpbiBhbmQgdXNlIHRoZSBlZXByb20gZmlsZXMgZnJvbSB3aW5kb3dzIGRy
+aXZlciBhcyBib2FyZC5iaW4uCgpZb3UgY2FuIGFjdHVhbGx5IGZpZ3VyZSBvdXQgd2hpY2ggb25l
+IHRvIHVzZSBpZiB5b3UgbG9vayBhdCB0aGUgLmluZgpmaWxlIGluIHRoZSB3aW5kb3dzIGRyaXZl
+ci4gVGhlcmUncyBhIHNlY3Rpb24gY29udGFpbmluZyBtYXBwaW5ncyBmb3IKdmVuZG9yL3Byb2R1
+Y3QgaWRzIChpbmNsdWRpbmcgc3Vic3lzdGVtIGlkcywgd2hpY2ggaXMgMTA0Mzo4NmNkIGluCnlv
+dXIgY2FzZSB3aGljaCBjYW4gYmUgc2VlbiBpbiBib3RoIGF0aDEwayBwcmludCBhbmQgbHNwY2kp
+LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
