@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22f.google.com ([2a00:1450:4010:c07::22f])
+Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMFYp-0000Mb-NQ
- for ath10k@lists.infradead.org; Thu, 21 Jan 2016 13:46:06 +0000
-Received: by mail-lf0-x22f.google.com with SMTP id h129so27133887lfh.3
- for <ath10k@lists.infradead.org>; Thu, 21 Jan 2016 05:45:43 -0800 (PST)
+ id 1aMFYz-0000OL-UJ
+ for ath10k@lists.infradead.org; Thu, 21 Jan 2016 13:46:16 +0000
+Received: by mail-lb0-x231.google.com with SMTP id oh2so23418907lbb.3
+ for <ath10k@lists.infradead.org>; Thu, 21 Jan 2016 05:45:53 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 04/13] ath10k: maintain peer_id for each sta and vif
-Date: Thu, 21 Jan 2016 14:46:37 +0100
-Message-Id: <1453384006-31907-5-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 12/13] ath10k: keep track of queue depth per txq
+Date: Thu, 21 Jan 2016 14:46:45 +0100
+Message-Id: <1453384006-31907-13-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1453384006-31907-1-git-send-email-michal.kazior@tieto.com>
 References: <1453384006-31907-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,112 +27,82 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The 10.4.3 firmware with congestion control
-guarantees that each peer has only a single
-peer_id mapping.
-
-The 1:1 mapping isn't the case for older firmwares
-(e.g. 10.4.1, 10.2, 10.1) but it should not
-matter. This 1:1 mapping is going to be only used
-by future code which inherently (flow-wise) is for
-10.4.3.
+This will be necessary for later.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h |  2 ++
- drivers/net/wireless/ath/ath10k/mac.c  | 38 ++++++++++++++++++++++++++++++++++
- 2 files changed, 40 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.h | 2 +-
+ drivers/net/wireless/ath/ath10k/mac.c  | 5 +++++
+ drivers/net/wireless/ath/ath10k/txrx.c | 7 +++++++
+ 3 files changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 822e3195533a..4b19c71bf6a5 100644
+index 5be56a8343bd..f51887c6be74 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -309,6 +309,7 @@ struct ath10k_sta {
- 	u32 bw;
- 	u32 nss;
- 	u32 smps;
-+	u16 peer_id;
+@@ -306,7 +306,7 @@ struct ath10k_peer {
+ };
  
- 	struct work_struct update_wk;
+ struct ath10k_txq {
+-	/* TBD */
++	unsigned long num_fw_queued;
+ };
  
-@@ -330,6 +331,7 @@ struct ath10k_vif {
- 	struct list_head list;
- 
- 	u32 vdev_id;
-+	u16 peer_id;
- 	enum wmi_vdev_type vdev_type;
- 	enum wmi_vdev_subtype vdev_subtype;
- 	u32 beacon_interval;
+ struct ath10k_sta {
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 212c840e1599..ec4fae8dcb92 100644
+index 639da03572e0..0dc16de1d9fb 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4411,6 +4411,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- {
+@@ -3639,6 +3639,7 @@ static int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 	const bool is_presp = false;
  	struct ath10k *ar = hw->priv;
- 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
-+	struct ath10k_peer *peer;
- 	enum wmi_sta_powersave_param param;
- 	int ret = 0;
- 	u32 value;
-@@ -4605,6 +4606,24 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 				    arvif->vdev_id, ret);
- 			goto err_vdev_delete;
- 		}
-+
-+		spin_lock_bh(&ar->data_lock);
-+
-+		peer = ath10k_peer_find(ar, arvif->vdev_id, vif->addr);
-+		if (!peer) {
-+			ath10k_warn(ar, "failed to lookup peer %pM on vdev %i\n",
-+				    vif->addr, arvif->vdev_id);
-+			spin_unlock_bh(&ar->data_lock);
-+			ret = -ENOENT;
-+			goto err_peer_delete;
-+		}
-+
-+		arvif->peer_id = find_first_bit(peer->peer_ids,
-+						ATH10K_MAX_NUM_PEER_IDS);
-+
-+		spin_unlock_bh(&ar->data_lock);
-+	} else {
-+		arvif->peer_id = HTT_INVALID_PEERID;
+ 	struct ath10k_htt *htt = &ar->htt;
++	struct ath10k_txq *artxq = (void *)txq->drv_priv;
+ 	struct ieee80211_vif *vif = txq->vif;
+ 	struct ieee80211_sta *sta = txq->sta;
+ 	enum ath10k_hw_txrx_mode txmode;
+@@ -3678,6 +3679,10 @@ static int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 		return ret;
  	}
  
- 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
-@@ -5486,6 +5505,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 	struct ath10k *ar = hw->priv;
- 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
- 	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	struct ath10k_peer *peer;
- 	int ret = 0;
++	spin_lock_bh(&ar->htt.tx_lock);
++	artxq->num_fw_queued++;
++	spin_unlock_bh(&ar->htt.tx_lock);
++
+ 	return 0;
+ }
  
- 	if (old_state == IEEE80211_STA_NOTEXIST &&
-@@ -5536,6 +5556,24 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			goto exit;
- 		}
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 202e5192235b..ea4d3000c8c3 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -55,7 +55,9 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 	struct ath10k *ar = htt->ar;
+ 	struct device *dev = ar->dev;
+ 	struct ieee80211_tx_info *info;
++	struct ieee80211_txq *txq;
+ 	struct ath10k_skb_cb *skb_cb;
++	struct ath10k_txq *artxq;
+ 	struct sk_buff *msdu;
+ 	bool limit_mgmt_desc = false;
  
-+		spin_lock_bh(&ar->data_lock);
-+
-+		peer = ath10k_peer_find(ar, arvif->vdev_id, sta->addr);
-+		if (!peer) {
-+			ath10k_warn(ar, "failed to lookup peer %pM on vdev %i\n",
-+				    vif->addr, arvif->vdev_id);
-+			spin_unlock_bh(&ar->data_lock);
-+			ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
-+			ath10k_mac_dec_num_stations(arvif, sta);
-+			ret = -ENOENT;
-+			goto exit;
-+		}
-+
-+		arsta->peer_id = find_first_bit(peer->peer_ids,
-+						ATH10K_MAX_NUM_PEER_IDS);
-+
-+		spin_unlock_bh(&ar->data_lock);
-+
- 		if (!sta->tdls)
- 			goto exit;
+@@ -80,11 +82,16 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 	}
  
+ 	skb_cb = ATH10K_SKB_CB(msdu);
++	txq = skb_cb->txq;
++	artxq = (void *)txq->drv_priv;
+ 
+ 	if (unlikely(skb_cb->flags & ATH10K_SKB_F_MGMT) &&
+ 	    ar->hw_params.max_probe_resp_desc_thres)
+ 		limit_mgmt_desc = true;
+ 
++	if (txq)
++		artxq->num_fw_queued--;
++
+ 	ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
+ 	ath10k_htt_tx_dec_pending(htt, limit_mgmt_desc);
+ 	if (htt->num_pending_tx == 0)
 -- 
 2.1.4
 
