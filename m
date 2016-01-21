@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMF2b-0001NP-8W
- for ath10k@lists.infradead.org; Thu, 21 Jan 2016 13:12:46 +0000
-Received: by mail-lf0-x233.google.com with SMTP id 17so26277971lfz.1
- for <ath10k@lists.infradead.org>; Thu, 21 Jan 2016 05:12:24 -0800 (PST)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/5] ath10k: add new FW_FEATURE_PEER_FLOW_CONTROL
-Date: Thu, 21 Jan 2016 14:13:25 +0100
-Message-Id: <1453382007-24622-4-git-send-email-michal.kazior@tieto.com>
+ id 1aMFEZ-0005V6-Vp
+ for ath10k@lists.infradead.org; Thu, 21 Jan 2016 13:25:08 +0000
+Received: by mail-wm0-x233.google.com with SMTP id 123so174083671wmz.0
+ for <ath10k@lists.infradead.org>; Thu, 21 Jan 2016 05:24:46 -0800 (PST)
+MIME-Version: 1.0
 In-Reply-To: <1453382007-24622-1-git-send-email-michal.kazior@tieto.com>
 References: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
  <1453382007-24622-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 21 Jan 2016 14:24:44 +0100
+Message-ID: <CA+BoTQkp7fyRVXSW4Ox-wD52YGqLJVNV7Qa4eSzS4UQzUoEJsQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] ath10k: add basic hostq support
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,66 +21,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>
 
-This feature flag will be used for firmware which
-supports pull-push model where host shares it's
-software queue state with firmware and firmware
-generates fetch requests telling host which queues
-to dequeue tx from.
-
-Primary function of this is improved MU-MIMO
-performance with multiple clients.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 1 +
- drivers/net/wireless/ath/ath10k/core.h | 9 +++++++++
- 2 files changed, 10 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index b41eb3f4ee56..48a26206c5c1 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -217,6 +217,7 @@ static const char *const ath10k_core_fw_feature_str[] = {
- 	[ATH10K_FW_FEATURE_RAW_MODE_SUPPORT] = "raw-mode",
- 	[ATH10K_FW_FEATURE_SUPPORTS_ADAPTIVE_CCA] = "adaptive-cca",
- 	[ATH10K_FW_FEATURE_MFP_SUPPORT] = "mfp",
-+	[ATH10K_FW_FEATURE_PEER_FLOW_CONTROL] = "peer-flow-ctrl",
- };
- 
- static unsigned int ath10k_core_get_fw_feature_str(char *buf,
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 7840cf3ef7a6..822e3195533a 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -510,6 +510,15 @@ enum ath10k_fw_features {
- 	/* Firmware supports management frame protection */
- 	ATH10K_FW_FEATURE_MFP_SUPPORT = 12,
- 
-+	/* Firmware supports pull-push model where host shares it's software
-+	 * queue state with firmware and firmware generates fetch requests
-+	 * telling host which queues to dequeue tx from.
-+	 *
-+	 * Primary function of this is improved MU-MIMO performance with
-+	 * multiple clients.
-+	 */
-+	ATH10K_FW_FEATURE_PEER_FLOW_CONTROL = 13,
-+
- 	/* keep last */
- 	ATH10K_FW_FEATURE_COUNT,
- };
--- 
-2.1.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjEgSmFudWFyeSAyMDE2IGF0IDE0OjEzLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9y
+QHRpZXRvLmNvbT4gd3JvdGU6Cj4gVGhlcmUncyBhIG5ldyBmaXJtd2FyZSBmZWF0dXJlIHdoaWNo
+IHVzZXMgYSBzaGFyZWQKPiBETUEgbWVtb3J5IHNvIGhvc3QgY2FuIHNoYXJlIGl0J3MgcGVyLXN0
+YSBwZXItdGlkCj4gcXVldWUgc2l6ZSB3aGljaCBpcyB0aGVuIHN1YnNlcXVlbnRseSB1c2VkIGZv
+cgo+IGZpcm13YXJlIHRvIGFzc2lzdCBpbiBkZWNpZGluZyB3aGljaCBmcmFtZXMgdG8gcHV0Cj4g
+b24gdGhlIGludGVybWVkaWF0ZSBob3N0LWRldmljZSB0eCBxdWV1ZS4KPgo+IFRoaXMgcGF0Y2hz
+ZXQgYWRkcyBvbmx5IGJhc2ljIHN1cHBvcnQgdG8gbWFrZQo+IHRoZSBmaXJtd2FyZSBzdXBwb3J0
+aW5nIHRoZSBmZWF0dXJlIGhhcHB5IGFuZAo+IHJ1bm5pbmcgYXQgYWxsLiBXaXRob3V0IGl0IGZp
+cm13YXJlIHdvdWxkIGZyZWV6ZQo+IHNob3J0bHkgYWZ0ZXIgYm9vdGluZy4KPgo+IE1vcmUgcGF0
+Y2hlcyB3aWxsIGZvbGxvdyBzb21lIHRpbWUgbGF0ZXIgdG8gYWRkCj4gdGhlICJuZXcgZGF0YSBw
+YXRoIiBsb2dpYy4KPgo+Cj4gdjI6Cj4gICogZml4IGdmcCBhbGxvY2F0aW9uIFtCZW5dCgpTb3Jy
+eSBmb3Igd3JvbmcgZW1haWwgc3ViamVjdHMuIEFwcGFyZW50bHkgZ2l0IHNlbmQtZW1haWwgd2Fz
+bid0IGhhcHB5CndpdGggIi0tc3ViamVjdCBQQVRDSHYyIiBhcyBvcHBvc2VkIHRvICItLXN1Ympl
+Y3Q9UEFUQ0h2MiIgLi4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
+Cg==
