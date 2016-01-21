@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22c.google.com ([2a00:1450:4010:c04::22c])
+Received: from mail-lb0-x229.google.com ([2a00:1450:4010:c04::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMFYu-0000NP-Rm
- for ath10k@lists.infradead.org; Thu, 21 Jan 2016 13:46:14 +0000
-Received: by mail-lb0-x22c.google.com with SMTP id bc4so23434869lbc.2
- for <ath10k@lists.infradead.org>; Thu, 21 Jan 2016 05:45:48 -0800 (PST)
+ id 1aMFYx-0000Ng-QO
+ for ath10k@lists.infradead.org; Thu, 21 Jan 2016 13:46:17 +0000
+Received: by mail-lb0-x229.google.com with SMTP id bc4so23435640lbc.2
+ for <ath10k@lists.infradead.org>; Thu, 21 Jan 2016 05:45:51 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 08/13] ath10k: implement updating shared htt txq state
-Date: Thu, 21 Jan 2016 14:46:41 +0100
-Message-Id: <1453384006-31907-9-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 10/13] ath10k: implement flushing of pending frames in txqs
+Date: Thu, 21 Jan 2016 14:46:43 +0100
+Message-Id: <1453384006-31907-11-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1453384006-31907-1-git-send-email-michal.kazior@tieto.com>
 References: <1453384006-31907-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,185 +27,158 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Firmware 10.4.3 onwards can support a pull-push Tx
-model where it shares a Tx queue state with the
-host.
-
-The host updates the DMA region it pointed to
-during HTT setup whenever number of software
-queued from (on host) changes. Based on this
-information firmware issues fetch requests to the
-host telling the host how many frames from a list
-of given stations/tids should be submitted to the
-firmware.
-
-The code won't be called because not all
-appropriate HTT events are processed yet.
+Firmware supporting pull-push tx model may request
+a switch between modes. When switching from
+pull-push to push-only it will be necessary to
+flush all pending frames. The code will do that
+once other bits that actually trigger it are added.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    |   3 +
- drivers/net/wireless/ath/ath10k/htt_tx.c | 100 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/mac.c    |   9 ++-
- 3 files changed, 111 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.h   |  1 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  3 ++
+ drivers/net/wireless/ath/ath10k/mac.c    | 82 ++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/mac.h    |  1 +
+ 4 files changed, 87 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 65dcd22f31df..b1e40f44e76b 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1667,6 +1667,7 @@ struct ath10k_htt {
- 	} txbuf;
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index d09d6fdf1149..38ed4bbd220b 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -607,6 +607,7 @@ static inline const char *ath10k_scan_state_str(enum ath10k_scan_state state)
  
- 	struct {
-+		bool enabled;
- 		struct htt_q_state *vaddr;
- 		dma_addr_t paddr;
- 		u16 num_peers;
-@@ -1758,6 +1759,8 @@ int ath10k_htt_tx_fetch_resp(struct ath10k *ar,
- 			     struct htt_tx_fetch_record *records,
- 			     size_t num_records);
+ enum ath10k_tx_pause_reason {
+ 	ATH10K_TX_PAUSE_Q_FULL,
++	ATH10K_TX_PAUSE_Q_FLUSH_PENDING,
+ 	ATH10K_TX_PAUSE_MAX,
+ };
  
-+void ath10k_htt_tx_txq_update(struct ieee80211_hw *hw,
-+			      struct ieee80211_txq *txq);
- void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt,
- 			       bool is_mgmt);
- int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt,
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 225f0561b3fd..5ef0a1b3773c 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -22,6 +22,106 @@
- #include "txrx.h"
- #include "debug.h"
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index be7dc88b3316..6e3d95c95568 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2244,6 +2244,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		}
  
-+static u8 ath10k_htt_tx_txq_calc_size(size_t count)
+ 		ath10k_txrx_tx_unref(htt, &tx_done);
++		ath10k_mac_tx_push_pending(ar);
+ 		break;
+ 	}
+ 	case HTT_T2H_MSG_TYPE_TX_COMPL_IND:
+@@ -2370,6 +2371,8 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+ 		dev_kfree_skb_any(skb);
+ 	}
+ 
++	ath10k_mac_tx_push_pending(ar);
++
+ 	spin_lock_bh(&htt->rx_ring.lock);
+ 	while ((skb = __skb_dequeue(&htt->rx_compl_q))) {
+ 		resp = (struct htt_resp *)skb->data;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 205ccf3760a3..42020c22eaed 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3710,6 +3710,88 @@ static void ath10k_mac_tx_wake(struct ieee80211_hw *hw,
+ 	ath10k_htt_tx_txq_update(hw, txq);
+ }
+ 
++struct ath10k_mac_tx_push_arg {
++	struct ieee80211_hw *hw;
++	bool more;
++};
++
++static void ath10k_mac_tx_push_pending_txq(struct ieee80211_hw *hw,
++					   struct ieee80211_txq *txq,
++					   struct ath10k_mac_tx_push_arg *arg)
 +{
-+	int exp;
-+	int factor;
++	bool can_push;
++	bool has_more;
++	int ret;
 +
-+	exp = 0;
-+	factor = count >> 7;
++	if (!txq)
++		return;
 +
-+	while (factor >= 64 && exp < 4) {
-+		factor >>= 3;
-+		exp++;
++	while (txq->qdepth > 0) {
++		if (!ath10k_mac_tx_can_push(hw, txq))
++			break;
++
++		ret = ath10k_mac_tx_push_txq(hw, txq);
++		if (ret)
++			break;
 +	}
 +
-+	if (exp == 4)
-+		return 0xff;
++	can_push = ath10k_mac_tx_can_push(hw, txq);
++	has_more = txq->qdepth > 0;
 +
-+	if (count > 0)
-+		factor = max(1, factor);
-+
-+	return SM(exp, HTT_TX_Q_STATE_ENTRY_EXP) |
-+	       SM(factor, HTT_TX_Q_STATE_ENTRY_FACTOR);
++	if (can_push && has_more)
++		arg->more = true;
 +}
 +
-+static void __ath10k_htt_tx_txq_recalc(struct ieee80211_hw *hw,
-+				       struct ieee80211_txq *txq)
++static void ath10k_mac_tx_push_pending_vif_iter(void *data,
++						u8 *mac,
++						struct ieee80211_vif *vif)
 +{
-+	struct ath10k *ar = hw->priv;
-+	struct ath10k_sta *arsta = (void *)txq->sta->drv_priv;
-+	struct ath10k_vif *arvif = (void *)txq->vif->drv_priv;
-+	int idx;
-+	u32 bit;
-+	u16 peer_id;
-+	u8 tid;
-+	u8 count;
++	struct ath10k_mac_tx_push_arg *arg = data;
++	struct ieee80211_hw *hw = arg->hw;
 +
-+	lockdep_assert_held(&ar->htt.tx_lock);
-+
-+	if (!ar->htt.tx_q_state.enabled)
-+		return;
-+
-+	if (txq->sta)
-+		peer_id = arsta->peer_id;
-+	else
-+		peer_id = arvif->peer_id;
-+
-+	tid = txq->tid;
-+	bit = BIT(peer_id % 32);
-+	idx = peer_id / 32;
-+	count = ath10k_htt_tx_txq_calc_size(txq->qsize);
-+
-+	if (unlikely(peer_id >= ar->htt.tx_q_state.num_peers) ||
-+	    unlikely(tid >= ar->htt.tx_q_state.num_tids)) {
-+		ath10k_warn(ar, "refusing to update txq for peer_id %hu tid %hhu due to out of bounds\n",
-+			    peer_id, tid);
-+		return;
-+	}
-+
-+	ar->htt.tx_q_state.vaddr->count[tid][peer_id] = count;
-+	ar->htt.tx_q_state.vaddr->map[tid][idx] &= ~bit;
-+	ar->htt.tx_q_state.vaddr->map[tid][idx] |= count ? bit : 0;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx txq state update peer_id %hu tid %hhu count %hhu\n",
-+		   peer_id, tid, count);
++	ath10k_mac_tx_push_pending_txq(hw, vif->txq, arg);
 +}
 +
-+static void __ath10k_htt_tx_txq_sync(struct ath10k *ar)
++static void ath10k_mac_tx_push_pending_sta_iter(void *data,
++						struct ieee80211_sta *sta)
 +{
-+	u32 seq;
-+	size_t size;
++	struct ath10k_mac_tx_push_arg *arg = data;
++	struct ieee80211_hw *hw = arg->hw;
++	int tid;
 +
-+	lockdep_assert_held(&ar->htt.tx_lock);
-+
-+	if (!ar->htt.tx_q_state.enabled)
-+		return;
-+
-+	seq = le32_to_cpu(ar->htt.tx_q_state.vaddr->seq);
-+	seq++;
-+	ar->htt.tx_q_state.vaddr->seq = cpu_to_le32(seq);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx txq state update commit seq %u\n",
-+		   seq);
-+
-+	size = sizeof(*ar->htt.tx_q_state.vaddr);
-+	dma_sync_single_for_device(ar->dev,
-+				   ar->htt.tx_q_state.paddr,
-+				   size,
-+				   DMA_TO_DEVICE);
++	for (tid = 0; tid < ARRAY_SIZE(sta->txq); tid++)
++		ath10k_mac_tx_push_pending_txq(hw, sta->txq[tid], arg);
 +}
 +
-+void ath10k_htt_tx_txq_update(struct ieee80211_hw *hw,
-+			      struct ieee80211_txq *txq)
++void ath10k_mac_tx_push_pending(struct ath10k *ar)
 +{
-+	struct ath10k *ar = hw->priv;
++	struct ieee80211_hw *hw = ar->hw;
++	struct ath10k_mac_tx_push_arg arg = {};
++
++	if (likely(!(ar->tx_paused & BIT(ATH10K_TX_PAUSE_Q_FLUSH_PENDING))))
++		return;
++
++	arg.hw = hw;
++	arg.more = false;
++
++	ieee80211_iterate_active_interfaces_atomic(hw,
++						   IEEE80211_IFACE_ITER_NORMAL,
++						   ath10k_mac_tx_push_pending_vif_iter,
++						   &arg);
++	if (arg.more)
++		return;
++
++	ieee80211_iterate_stations_atomic(hw,
++					  ath10k_mac_tx_push_pending_sta_iter,
++					  &arg);
++	if (arg.more)
++		return;
 +
 +	spin_lock_bh(&ar->htt.tx_lock);
-+	__ath10k_htt_tx_txq_recalc(hw, txq);
-+	__ath10k_htt_tx_txq_sync(ar);
++	ath10k_mac_tx_unlock(ar, ATH10K_TX_PAUSE_Q_FLUSH_PENDING);
 +	spin_unlock_bh(&ar->htt.tx_lock);
 +}
 +
- void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt,
- 			       bool is_mgmt)
- {
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 111baa104f8e..d9566ba70af3 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3695,12 +3695,19 @@ static void ath10k_mac_tx_push(struct ieee80211_hw *hw,
- 				    txq->vif->addr, ret);
- 		return;
- 	}
-+
-+	ath10k_htt_tx_txq_update(hw, txq);
- }
- 
- static void ath10k_mac_tx_wake(struct ieee80211_hw *hw,
- 			       struct ieee80211_txq *txq)
- {
--	WARN_ON(1); /* TBD */
-+	/* TODO: Possible optimization is to defer the updates until a certain
-+	 * time/quantity threshold is reached to avoid hammering DMA and
-+	 * flushing d-caches for each submitted msdu.
-+	 */
-+
-+	ath10k_htt_tx_txq_update(hw, txq);
- }
- 
  /************/
+ /* Scanning */
+ /************/
+diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
+index 53091588090d..453f606a250e 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.h
++++ b/drivers/net/wireless/ath/ath10k/mac.h
+@@ -75,6 +75,7 @@ void ath10k_mac_tx_unlock(struct ath10k *ar, int reason);
+ void ath10k_mac_vif_tx_lock(struct ath10k_vif *arvif, int reason);
+ void ath10k_mac_vif_tx_unlock(struct ath10k_vif *arvif, int reason);
+ bool ath10k_mac_tx_frm_has_freq(struct ath10k *ar);
++void ath10k_mac_tx_push_pending(struct ath10k *ar);
+ 
+ static inline struct ath10k_vif *ath10k_vif_to_arvif(struct ieee80211_vif *vif)
+ {
 -- 
 2.1.4
 
