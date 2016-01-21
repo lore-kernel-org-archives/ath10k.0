@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yk0-x235.google.com ([2607:f8b0:4002:c07::235])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMBQB-0001Vm-6g
- for ath10k@lists.infradead.org; Thu, 21 Jan 2016 09:20:52 +0000
-Received: by mail-yk0-x235.google.com with SMTP id k129so41653292yke.0
- for <ath10k@lists.infradead.org>; Thu, 21 Jan 2016 01:20:30 -0800 (PST)
+ id 1aMDhE-0003rH-AS
+ for ath10k@lists.infradead.org; Thu, 21 Jan 2016 11:46:36 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v3] dt: bindings: add bindings for ipq4019 wifi block
+References: <1452664604-8014-1-git-send-email-rmani@qti.qualcomm.com>
+ <20160115022021.GA27099@rob-hp-laptop>
+Date: Thu, 21 Jan 2016 13:46:02 +0200
+In-Reply-To: <20160115022021.GA27099@rob-hp-laptop> (Rob Herring's message of
+ "Thu, 14 Jan 2016 20:20:21 -0600")
+Message-ID: <87y4bjyx39.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CANCHnQr1y0wVuzqpBnoUcCXD-WGnw_D0W5vE7ba39eALSas6Ew@mail.gmail.com>
-References: <CANCHnQoi_PiQC=Y2H_5eotKG1g9La1=Sxcob2C2cww-MfX8QYQ@mail.gmail.com>
- <CA+BoTQ=+R_URXt6-n=9+HPs7fBg5FszCLVDxosfsQ9DQ78QNUg@mail.gmail.com>
- <CANCHnQr1y0wVuzqpBnoUcCXD-WGnw_D0W5vE7ba39eALSas6Ew@mail.gmail.com>
-Date: Thu, 21 Jan 2016 10:20:30 +0100
-Message-ID: <CANCHnQrrr2j9hxWPdCdzpVp-2BAiXUDC=yYmxX0YwDkMAMgf_Q@mail.gmail.com>
-Subject: Re: 5GHz AP on a QCA988x
-From: Jeroen Roovers <jeroen.roovers@airfi.aero>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,119 +20,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Raja Mani <rmani@qti.qualcomm.com>, agross@codeaurora.org
 
-V2hlbiBJIHNldCBpdCB0byBYWiAod2hpY2ggaXMgYSB3b3JrIGluIHByb2dyZXNzKSBJIGdldCB0
-aGlzIG91dHB1dDoKCmNvdW50cnkgWFo6IERGUy1VTlNFVAogICAgICAgICgyNDAyIC0gMjQ3MiBA
-IDQwKSwgKE4vQSwgMjApLCAoTi9BKQogICAgICAgICgyNDU3IC0gMjQ4MiBAIDIwKSwgKE4vQSwg
-MjApLCAoTi9BKQogICAgICAgICgyNDc0IC0gMjQ5NCBAIDIwKSwgKE4vQSwgMjApLCAoTi9BKQog
-ICAgICAgICg1MTcwIC0gNTI1MCBAIDgwKSwgKE4vQSwgMjApLCAoTi9BKQogICAgICAgICg1MjUw
-IC0gNTMzMCBAIDgwKSwgKE4vQSwgMjApLCAoTi9BKQogICAgICAgICg1NDkwIC0gNTczMCBAIDE2
-MCksIChOL0EsIDIwKSwgKE4vQSkKICAgICAgICAoNTczNSAtIDU4MzUgQCA4MCksIChOL0EsIDIw
-KSwgKE4vQSkKCls2NzUzMC44MjQ1NzBdIGNmZzgwMjExOiBSZWd1bGF0b3J5IGRvbWFpbiBjaGFu
-Z2VkIHRvIGNvdW50cnk6IFhaCls2NzUzMC44MjQ1NzNdIGNmZzgwMjExOiAgREZTIE1hc3RlciBy
-ZWdpb246IHVuc2V0Cls2NzUzMC44MjQ1NzddIGNmZzgwMjExOiAgIChzdGFydF9mcmVxIC0gZW5k
-X2ZyZXEgQCBiYW5kd2lkdGgpLAoobWF4X2FudGVubmFfZ2FpbiwgbWF4X2VpcnApLCAoZGZzX2Nh
-Y190aW1lKQpbNjc1MzAuODI0NTgzXSBjZmc4MDIxMTogICAoMjQwMjAwMCBLSHogLSAyNDcyMDAw
-IEtIeiBAIDQwMDAwIEtIeiksCihOL0EsIDIwMDAgbUJtKSwgKE4vQSkKWzY3NTMwLjgyNDU4OF0g
-Y2ZnODAyMTE6ICAgKDI0NTcwMDAgS0h6IC0gMjQ4MjAwMCBLSHogQCAyMDAwMCBLSHopLAooTi9B
-LCAyMDAwIG1CbSksIChOL0EpCls2NzUzMC44MjQ1OTJdIGNmZzgwMjExOiAgICgyNDc0MDAwIEtI
-eiAtIDI0OTQwMDAgS0h6IEAgMjAwMDAgS0h6KSwKKE4vQSwgMjAwMCBtQm0pLCAoTi9BKQpbNjc1
-MzAuODI0NTk3XSBjZmc4MDIxMTogICAoNTE3MDAwMCBLSHogLSA1MjUwMDAwIEtIeiBAIDgwMDAw
-IEtIeiksCihOL0EsIDIwMDAgbUJtKSwgKE4vQSkKWzY3NTMwLjgyNDYwMV0gY2ZnODAyMTE6ICAg
-KDUyNTAwMDAgS0h6IC0gNTMzMDAwMCBLSHogQCA4MDAwMCBLSHopLAooTi9BLCAyMDAwIG1CbSks
-IChOL0EpCls2NzUzMC44MjQ2MDVdIGNmZzgwMjExOiAgICg1NDkwMDAwIEtIeiAtIDU3MzAwMDAg
-S0h6IEAgMTYwMDAwIEtIeiksCihOL0EsIDIwMDAgbUJtKSwgKE4vQSkKWzY3NTMwLjgyNDYxMF0g
-Y2ZnODAyMTE6ICAgKDU3MzUwMDAgS0h6IC0gNTgzNTAwMCBLSHogQCA4MDAwMCBLSHopLAooTi9B
-LCAyMDAwIG1CbSksIChOL0EpCls2NzU5MC44MjY1MDBdIGNmZzgwMjExOiBWZXJpZnlpbmcgYWN0
-aXZlIGludGVyZmFjZXMgYWZ0ZXIgcmVnIGNoYW5nZQoKCgpPbiAyMSBKYW51YXJ5IDIwMTYgYXQg
-MTA6MTUsIEplcm9lbiBSb292ZXJzIDxqZXJvZW4ucm9vdmVyc0BhaXJmaS5hZXJvPiB3cm90ZToK
-PiBjb3VudHJ5IDAwOiBERlMtVU5TRVQKPiAgICAgICAgICgyNDAyIC0gMjQ3MiBAIDQwKSwgKDYs
-IDIwKSwgKE4vQSkKPiAgICAgICAgICgyNDU3IC0gMjQ4MiBAIDQwKSwgKDYsIDIwKSwgKE4vQSks
-IFBBU1NJVkUtU0NBTgo+ICAgICAgICAgKDI0NzQgLSAyNDk0IEAgMjApLCAoNiwgMjApLCAoTi9B
-KSwgTk8tT0ZETSwgUEFTU0lWRS1TQ0FOCj4gICAgICAgICAoNTE3MCAtIDUyNTAgQCAxNjApLCAo
-NiwgMjApLCAoTi9BKSwgUEFTU0lWRS1TQ0FOCj4gICAgICAgICAoNTI1MCAtIDUzMzAgQCAxNjAp
-LCAoNiwgMjApLCAoMCBtcyksIERGUywgUEFTU0lWRS1TQ0FOCj4gICAgICAgICAoNTQ5MCAtIDU3
-MzAgQCAxNjApLCAoNiwgMjApLCAoMCBtcyksIERGUywgUEFTU0lWRS1TQ0FOCj4gICAgICAgICAo
-NTczNSAtIDU4MzUgQCA4MCksICg2LCAyMCksIChOL0EpLCBQQVNTSVZFLVNDQU4KPiAgICAgICAg
-ICg1NzI0MCAtIDYzNzIwIEAgMjE2MCksIChOL0EsIDApLCAoTi9BKQo+Cj4gWyAgIDEzLjU4Nzg3
-MF0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IHBjaSBpcnEgbXNpIGludGVycnVwdHMgMQo+IGly
-cV9tb2RlIDAgcmVzZXRfbW9kZSAwCj4gWyAgIDE0LjA2Mjk0M10gYXRoMTBrX3BjaSAwMDAwOjAy
-OjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvcgo+IGF0aDEway9jYWwtcGNpLTAwMDA6MDI6
-MDAuMC5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPiBbICAgMTQuMzI3MTkxXSBhdGgxMGtfcGNp
-IDAwMDA6MDI6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yCj4gYXRoMTBrL1FDQTk4OFgv
-aHcyLjAvYm9hcmQtMi5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPiBbICAgMTUuNjI1Nzk0XSBh
-dGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogcWNhOTg4eCBodzIuMCAoMHg0MTAwMDE2YywKPiAweDA0
-MzIwMmZmIHN1YiAwMDAwOjAwMDApIGZ3IDEwLjIuNC43MC4xNy0yIGZ3YXBpIDUgYmRhcGkgMSBo
-dHQtdmVyCj4gMi4xIHdtaS1vcCA1IGh0dC1vcCAyIGNhbCBvdHAgbWF4LXN0YSAxMjggcmF3IDAg
-aHdjcnlwdG8gMSBmZWF0dXJlcwo+IG5vLXAycCxyYXctbW9kZQo+IFsgICAxNS42MjU3OTZdIGF0
-aDEwa19wY2kgMDAwMDowMjowMC4wOiBkZWJ1ZyAxIGRlYnVnZnMgMSB0cmFjaW5nIDEKPiBkZnMg
-MSB0ZXN0bW9kZSAwCj4gWyAgIDE1LjY4NjgxN10gYXRoOiBFRVBST00gcmVnZG9tYWluOiAweDZh
-Cj4gWyAgIDE1LjY4NjgxOF0gYXRoOiBFRVBST00gaW5kaWNhdGVzIHdlIHNob3VsZCBleHBlY3Qg
-YSBkaXJlY3QgcmVncGFpciBtYXAKPiBbICAgMTUuNjg2ODIwXSBhdGg6IENvdW50cnkgYWxwaGEy
-IGJlaW5nIHVzZWQ6IDAwCj4gWyAgIDE1LjY4NjgyMF0gYXRoOiBSZWdwYWlyIHVzZWQ6IDB4NmEK
-PiBbNjcwMDkuMjQ4Njk3XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogcGNpIGlycSBtc2kgaW50
-ZXJydXB0cyAxCj4gaXJxX21vZGUgMCByZXNldF9tb2RlIDAKPiBbNjcwMDkuMzc5MTkxXSBhdGgx
-MGtfcGNpIDAwMDA6MDI6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yCj4gYXRoMTBrL2Nh
-bC1wY2ktMDAwMDowMjowMC4wLmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMgo+IFs2NzAwOS40MzUx
-NTZdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPiBh
-dGgxMGsvUUNBOTg4WC9odzIuMC9ib2FyZC0yLmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMgo+IFs2
-NzAxMC42MzUwNjNdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBxY2E5ODh4IGh3Mi4wICgweDQx
-MDAwMTZjLAo+IDB4MDQzMjAyZmYgc3ViIDAwMDA6MDAwMCkgZncgMTAuMi40LjcwLjE3LTIgZndh
-cGkgNSBiZGFwaSAxIGh0dC12ZXIKPiAyLjEgd21pLW9wIDUgaHR0LW9wIDIgY2FsIG90cCBtYXgt
-c3RhIDEyOCByYXcgMCBod2NyeXB0byAxIGZlYXR1cmVzCj4gbm8tcDJwLHJhdy1tb2RlCj4gWzY3
-MDEwLjYzNTEwMV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGRlYnVnIDEgZGVidWdmcyAxIHRy
-YWNpbmcgMQo+IGRmcyAxIHRlc3Rtb2RlIDAKPiBbNjcwMTAuNjk1MTQzXSBhdGg6IEVFUFJPTSBy
-ZWdkb21haW46IDB4NmEKPiBbNjcwMTAuNjk1MTUwXSBhdGg6IEVFUFJPTSBpbmRpY2F0ZXMgd2Ug
-c2hvdWxkIGV4cGVjdCBhIGRpcmVjdCByZWdwYWlyIG1hcAo+IFs2NzAxMC42OTUxNTZdIGF0aDog
-Q291bnRyeSBhbHBoYTIgYmVpbmcgdXNlZDogMDAKPiBbNjcwMTAuNjk1MTU5XSBhdGg6IFJlZ3Bh
-aXIgdXNlZDogMHg2YQo+Cj4gT24gMjEgSmFudWFyeSAyMDE2IGF0IDA5OjUyLCBNaWNoYWwgS2F6
-aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4+IE9uIDIxIEphbnVhcnkgMjAx
-NiBhdCAwOTozOCwgSmVyb2VuIFJvb3ZlcnMgPGplcm9lbi5yb292ZXJzQGFpcmZpLmFlcm8+IHdy
-b3RlOgo+Pj4gMDI6MDAuMCBOZXR3b3JrIGNvbnRyb2xsZXI6IFF1YWxjb21tIEF0aGVyb3MgUUNB
-OTg2eC85ODh4IDgwMi4xMWFjCj4+PiBXaXJlbGVzcyBOZXR3b3JrIEFkYXB0ZXIKPj4+ICAgICAg
-ICAgRmxhZ3M6IGJ1cyBtYXN0ZXIsIGZhc3QgZGV2c2VsLCBsYXRlbmN5IDAsIElSUSAyOAo+Pj4g
-ICAgICAgICBNZW1vcnkgYXQgZmUyMDAwMDAgKDY0LWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3Np
-emU9Mk1dCj4+PiAgICAgICAgIEV4cGFuc2lvbiBST00gYXQgZmU0MDAwMDAgW2Rpc2FibGVkXSBb
-c2l6ZT02NEtdCj4+PiAgICAgICAgIENhcGFiaWxpdGllczogWzQwXSBQb3dlciBNYW5hZ2VtZW50
-IHZlcnNpb24gMgo+Pj4gICAgICAgICBDYXBhYmlsaXRpZXM6IFs1MF0gTVNJOiBFbmFibGUrIENv
-dW50PTEvOCBNYXNrYWJsZSsgNjRiaXQtCj4+PiAgICAgICAgIENhcGFiaWxpdGllczogWzcwXSBF
-eHByZXNzIEVuZHBvaW50LCBNU0kgMDAKPj4+ICAgICAgICAgQ2FwYWJpbGl0aWVzOiBbMTAwXSBB
-ZHZhbmNlZCBFcnJvciBSZXBvcnRpbmcKPj4+ICAgICAgICAgQ2FwYWJpbGl0aWVzOiBbMTQwXSBW
-aXJ0dWFsIENoYW5uZWwKPj4+ICAgICAgICAgQ2FwYWJpbGl0aWVzOiBbMTYwXSBEZXZpY2UgU2Vy
-aWFsIE51bWJlciAwMC0wMC0wMC0wMC0wMC0wMC0wMC0wMAo+Pj4gICAgICAgICBLZXJuZWwgZHJp
-dmVyIGluIHVzZTogYXRoMTBrX3BjaQo+Pj4gICAgICAgICBLZXJuZWwgbW9kdWxlczogYXRoMTBr
-X3BjaQo+Pj4KPj4+IFZlbmRvci9kZXZpY2UgSUQ6IDE2OGM6MDAzYwo+Pj4KPj4+IEkgYW0gdHJ5
-aW5nIHRvIGdldCBhIDVHSFogQVAgd29ya2luZyBvbiB0aGUgYWJvdmUgZGV2aWNlLCB1c2luZyBh
-Cj4+PiBMaW51eCA0LjQuMCBrZXJuZWwgb24gYSBnZW5lcmljIFBDIHJpZ2h0IG5vdywgaW4gaG9w
-ZXMgb2YgZ2V0dGluZyBzYW1lCj4+PiB0byB3b3JrIG9uIGFuIGVtYmVkZGVkIChBUk0sIGJ1dCBp
-dCdzIG5vdCBpbXBvcnRhbnQpIHN5c3RlbSBpbiB0aGUKPj4+IG5lYXIgZnV0dXJlLgo+Pj4KPj4+
-IEFueSBhdHRlbXB0IHRvIGdldCB0aGF0IHVwIGVuZHMgaW4gYSByZWd1bGF0b3J5LWJhc2VkIHJl
-ZnVzYWwgdG8gb3Blbgo+Pj4gSVIgb24gYW55IDVHSHogYmFuZCBmcmVxdWVuY3ksIGV2ZW4gd2hl
-biBJIGFkZCAicmVndWxhdG9yeSBvbnVzIiBhbmQgYQo+Pj4gbmV3IFhaIHJlZ2lvbiAoaGV5LCB0
-aGlzIGlzIGludGVuZGVkIHRvIHdvcmsgZXNwZWNpYWxseSBpbgo+Pj4gImludGVybmF0aW9uYWwg
-d2F0ZXJzIikgaW4gYSBkYi50eHQgSSBkZWZpbmUgbXlzZWxmIHdoaWNoIHNob3VsZCBncmFudAo+
-Pj4gZXZlcnl0aGluZyBJIGV2ZXIgd2FudGVkLiBJcyB0aGVyZSBzb21ldGhpbmcgdGhlIGZpcm13
-YXJlIGlzCj4+PiBvdmVycmlkaW5nIGhlcmU/Cj4+Pgo+Pj4gRmlybXdhcmUgYXMgb2YgdGhlIGxh
-dGVzdCB3b3VsZCBiZToKPj4+Cj4+PiAvbGliL2Zpcm13YXJlL2F0aDEway9RQ0E5ODhYL2h3Mi4w
-L2Zpcm13YXJlLTUuYmluXzEwLjIuNC43MC4xNy0yCj4+Pgo+Pj4gSSBjb3VsZCBhdHRhY2ggbG9n
-cyBidXQgSSB0aG91Z2h0IEkgbWlnaHQgYmUgbWlzc2luZyBzb21ldGhpbmcgdmVyeSBvYnZpb3Vz
-Lgo+Pgo+PiAiaXcgbGlzdCIgYW5kICJpdyByZWcgZ2V0IiBpcyB2ZXJ5IGdvb2Qgc3RhcnQuIEtl
-cm5lbCBsb2cgd2lsbCBiZQo+PiB1c2VmdWwgYXMgd2VsbCB0byBrbm93IGRldmljZSByZWd1bGF0
-b3J5Lgo+Pgo+PiBEbyB5b3UgaGF2ZSBvdGhlciB3aWZpIGNhcmRzIG9uIHRoaXMgc3lzdGVtPyBJ
-IHJlY2FsbCB0aGlzIGNvdWxkIGNhdXNlCj4+IHByb2JsZW1zLiBOb3Qgc3VyZSBpZiB0aGF0J3Mg
-c3RpbGwgdGhlIGNhc2UgYnV0IG1heSBiZSB3b3J0aAo+PiBjb25zaWRlcmluZy4KPj4KPj4gSW4g
-Y2FzZSB5b3UncmUgbm90IGF3YXJlOiBjaGFubmVscyBydWxlcyBhcmUgYSByZXN1bHQgb2YgaW50
-ZXJzZWN0ZWQKPj4gc3lzdGVtIGxldmVsIHJlZ3VsYXRvcnkgYW5kIGRldmljZSAodGFrZW4gZnJv
-bSBlZXByb20pIHJlZ3VsYXRvcnkuCj4+IFRoaXMgY2FuIHNvbWV0aW1lcyBjb25mdXNlIGJlY2F1
-c2UgeW91IHRoaW5rIHlvdSdyZSBzZXR0aW5nIHJlZ2lvbiBYWgo+PiB3aGljaCBhbGxvd3MgdXNl
-IG9mIGNoYW5uZWwgMzYgYnV0IGl0IHJlbWFpbnMgdW5hdmFpbGFibGUgZHVlIHRvIHRoZQo+PiBk
-ZXZpY2UncyByZWd1bGF0b3J5Lgo+Pgo+Pgo+PiBNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+Rob Herring <robh@kernel.org> writes:
+
+> On Wed, Jan 13, 2016 at 11:26:44AM +0530, Raja Mani wrote:
+>> Add device tree binding documentation details for wifi block present
+>> in Qualcomm IPQ4019 SoC into "qcom,ath10k.txt".
+>> 
+>> Right now, ath10k wireless driver has support for PCI based wlan devices.
+>> There is a plan to extend ath10k driver to support wifi devices which are
+>> connected over AHB as well (enumeration will happen via device tree node).
+>> For AHB based devices (ie, ipq4019), all wifi properties are supplied via
+>> device tree (including irq, reg addr, cal data,etc).
+>> 
+>> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+>> ---
+>> v3 changes:
+>>   - Removed core-id - [Rob]
+>>   - Documented which compatible string corresponds to pci devices
+>>     and which corresponds to ahb devices. - [Rob]
+>> 
+>> v2 changes:
+>>  - Improved "core-id" description - [Rob]
+>>  - Removed "status" documentation - [Rob]
+>>  - Added description which properties are applicable
+>>    for ahb and which are applicable for pci devices - [Rob]
+>>  - Improved commit msg to explain the context.
+>>  - Renamed "qca,msi_addr" to "qcom,msi_addr" and
+>>    "qca,msi_base" to "qcom,msi_base" to follow uniformity.
+>> 
+>>  .../bindings/net/wireless/qcom,ath10k.txt          | 89 ++++++++++++++++++++--
+>>  1 file changed, 84 insertions(+), 5 deletions(-)
+>
+> A few typos, otherwise:
+>
+> Acked-by: Rob Herring <robh@kernel.org>
+
+Rob, thank you for the review. I fixed the typos in ath.git pending
+branch and will properly apply this in few days.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
