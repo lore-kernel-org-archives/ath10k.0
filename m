@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yk0-x22f.google.com ([2607:f8b0:4002:c07::22f])
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMAlL-0004z8-66
- for ath10k@lists.infradead.org; Thu, 21 Jan 2016 08:38:39 +0000
-Received: by mail-yk0-x22f.google.com with SMTP id k129so40669041yke.0
- for <ath10k@lists.infradead.org>; Thu, 21 Jan 2016 00:38:18 -0800 (PST)
+ id 1aMAye-0003b8-Vv
+ for ath10k@lists.infradead.org; Thu, 21 Jan 2016 08:52:26 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id r129so162569268wmr.0
+ for <ath10k@lists.infradead.org>; Thu, 21 Jan 2016 00:52:04 -0800 (PST)
 MIME-Version: 1.0
-Date: Thu, 21 Jan 2016 09:38:18 +0100
-Message-ID: <CANCHnQoi_PiQC=Y2H_5eotKG1g9La1=Sxcob2C2cww-MfX8QYQ@mail.gmail.com>
-Subject: 5GHz AP on a QCA988x
-From: Jeroen Roovers <jeroen.roovers@airfi.aero>
+In-Reply-To: <CANCHnQoi_PiQC=Y2H_5eotKG1g9La1=Sxcob2C2cww-MfX8QYQ@mail.gmail.com>
+References: <CANCHnQoi_PiQC=Y2H_5eotKG1g9La1=Sxcob2C2cww-MfX8QYQ@mail.gmail.com>
+Date: Thu, 21 Jan 2016 09:52:03 +0100
+Message-ID: <CA+BoTQ=+R_URXt6-n=9+HPs7fBg5FszCLVDxosfsQ9DQ78QNUg@mail.gmail.com>
+Subject: Re: 5GHz AP on a QCA988x
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,51 +20,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Jeroen Roovers <jeroen.roovers@airfi.aero>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-02:00.0 Network controller: Qualcomm Atheros QCA986x/988x 802.11ac
-Wireless Network Adapter
-        Flags: bus master, fast devsel, latency 0, IRQ 28
-        Memory at fe200000 (64-bit, non-prefetchable) [size=2M]
-        Expansion ROM at fe400000 [disabled] [size=64K]
-        Capabilities: [40] Power Management version 2
-        Capabilities: [50] MSI: Enable+ Count=1/8 Maskable+ 64bit-
-        Capabilities: [70] Express Endpoint, MSI 00
-        Capabilities: [100] Advanced Error Reporting
-        Capabilities: [140] Virtual Channel
-        Capabilities: [160] Device Serial Number 00-00-00-00-00-00-00-00
-        Kernel driver in use: ath10k_pci
-        Kernel modules: ath10k_pci
-
-Vendor/device ID: 168c:003c
-
-I am trying to get a 5GHZ AP working on the above device, using a
-Linux 4.4.0 kernel on a generic PC right now, in hopes of getting same
-to work on an embedded (ARM, but it's not important) system in the
-near future.
-
-Any attempt to get that up ends in a regulatory-based refusal to open
-IR on any 5GHz band frequency, even when I add "regulatory onus" and a
-new XZ region (hey, this is intended to work especially in
-"international waters") in a db.txt I define myself which should grant
-everything I ever wanted. Is there something the firmware is
-overriding here?
-
-Firmware as of the latest would be:
-
-/lib/firmware/ath10k/QCA988X/hw2.0/firmware-5.bin_10.2.4.70.17-2
-
-I could attach logs but I thought I might be missing something very obvious.
-
-
-Kind regards,
-     jer
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjEgSmFudWFyeSAyMDE2IGF0IDA5OjM4LCBKZXJvZW4gUm9vdmVycyA8amVyb2VuLnJvb3Zl
+cnNAYWlyZmkuYWVybz4gd3JvdGU6Cj4gMDI6MDAuMCBOZXR3b3JrIGNvbnRyb2xsZXI6IFF1YWxj
+b21tIEF0aGVyb3MgUUNBOTg2eC85ODh4IDgwMi4xMWFjCj4gV2lyZWxlc3MgTmV0d29yayBBZGFw
+dGVyCj4gICAgICAgICBGbGFnczogYnVzIG1hc3RlciwgZmFzdCBkZXZzZWwsIGxhdGVuY3kgMCwg
+SVJRIDI4Cj4gICAgICAgICBNZW1vcnkgYXQgZmUyMDAwMDAgKDY0LWJpdCwgbm9uLXByZWZldGNo
+YWJsZSkgW3NpemU9Mk1dCj4gICAgICAgICBFeHBhbnNpb24gUk9NIGF0IGZlNDAwMDAwIFtkaXNh
+YmxlZF0gW3NpemU9NjRLXQo+ICAgICAgICAgQ2FwYWJpbGl0aWVzOiBbNDBdIFBvd2VyIE1hbmFn
+ZW1lbnQgdmVyc2lvbiAyCj4gICAgICAgICBDYXBhYmlsaXRpZXM6IFs1MF0gTVNJOiBFbmFibGUr
+IENvdW50PTEvOCBNYXNrYWJsZSsgNjRiaXQtCj4gICAgICAgICBDYXBhYmlsaXRpZXM6IFs3MF0g
+RXhwcmVzcyBFbmRwb2ludCwgTVNJIDAwCj4gICAgICAgICBDYXBhYmlsaXRpZXM6IFsxMDBdIEFk
+dmFuY2VkIEVycm9yIFJlcG9ydGluZwo+ICAgICAgICAgQ2FwYWJpbGl0aWVzOiBbMTQwXSBWaXJ0
+dWFsIENoYW5uZWwKPiAgICAgICAgIENhcGFiaWxpdGllczogWzE2MF0gRGV2aWNlIFNlcmlhbCBO
+dW1iZXIgMDAtMDAtMDAtMDAtMDAtMDAtMDAtMDAKPiAgICAgICAgIEtlcm5lbCBkcml2ZXIgaW4g
+dXNlOiBhdGgxMGtfcGNpCj4gICAgICAgICBLZXJuZWwgbW9kdWxlczogYXRoMTBrX3BjaQo+Cj4g
+VmVuZG9yL2RldmljZSBJRDogMTY4YzowMDNjCj4KPiBJIGFtIHRyeWluZyB0byBnZXQgYSA1R0ha
+IEFQIHdvcmtpbmcgb24gdGhlIGFib3ZlIGRldmljZSwgdXNpbmcgYQo+IExpbnV4IDQuNC4wIGtl
+cm5lbCBvbiBhIGdlbmVyaWMgUEMgcmlnaHQgbm93LCBpbiBob3BlcyBvZiBnZXR0aW5nIHNhbWUK
+PiB0byB3b3JrIG9uIGFuIGVtYmVkZGVkIChBUk0sIGJ1dCBpdCdzIG5vdCBpbXBvcnRhbnQpIHN5
+c3RlbSBpbiB0aGUKPiBuZWFyIGZ1dHVyZS4KPgo+IEFueSBhdHRlbXB0IHRvIGdldCB0aGF0IHVw
+IGVuZHMgaW4gYSByZWd1bGF0b3J5LWJhc2VkIHJlZnVzYWwgdG8gb3Blbgo+IElSIG9uIGFueSA1
+R0h6IGJhbmQgZnJlcXVlbmN5LCBldmVuIHdoZW4gSSBhZGQgInJlZ3VsYXRvcnkgb251cyIgYW5k
+IGEKPiBuZXcgWFogcmVnaW9uIChoZXksIHRoaXMgaXMgaW50ZW5kZWQgdG8gd29yayBlc3BlY2lh
+bGx5IGluCj4gImludGVybmF0aW9uYWwgd2F0ZXJzIikgaW4gYSBkYi50eHQgSSBkZWZpbmUgbXlz
+ZWxmIHdoaWNoIHNob3VsZCBncmFudAo+IGV2ZXJ5dGhpbmcgSSBldmVyIHdhbnRlZC4gSXMgdGhl
+cmUgc29tZXRoaW5nIHRoZSBmaXJtd2FyZSBpcwo+IG92ZXJyaWRpbmcgaGVyZT8KPgo+IEZpcm13
+YXJlIGFzIG9mIHRoZSBsYXRlc3Qgd291bGQgYmU6Cj4KPiAvbGliL2Zpcm13YXJlL2F0aDEway9R
+Q0E5ODhYL2h3Mi4wL2Zpcm13YXJlLTUuYmluXzEwLjIuNC43MC4xNy0yCj4KPiBJIGNvdWxkIGF0
+dGFjaCBsb2dzIGJ1dCBJIHRob3VnaHQgSSBtaWdodCBiZSBtaXNzaW5nIHNvbWV0aGluZyB2ZXJ5
+IG9idmlvdXMuCgoiaXcgbGlzdCIgYW5kICJpdyByZWcgZ2V0IiBpcyB2ZXJ5IGdvb2Qgc3RhcnQu
+IEtlcm5lbCBsb2cgd2lsbCBiZQp1c2VmdWwgYXMgd2VsbCB0byBrbm93IGRldmljZSByZWd1bGF0
+b3J5LgoKRG8geW91IGhhdmUgb3RoZXIgd2lmaSBjYXJkcyBvbiB0aGlzIHN5c3RlbT8gSSByZWNh
+bGwgdGhpcyBjb3VsZCBjYXVzZQpwcm9ibGVtcy4gTm90IHN1cmUgaWYgdGhhdCdzIHN0aWxsIHRo
+ZSBjYXNlIGJ1dCBtYXkgYmUgd29ydGgKY29uc2lkZXJpbmcuCgpJbiBjYXNlIHlvdSdyZSBub3Qg
+YXdhcmU6IGNoYW5uZWxzIHJ1bGVzIGFyZSBhIHJlc3VsdCBvZiBpbnRlcnNlY3RlZApzeXN0ZW0g
+bGV2ZWwgcmVndWxhdG9yeSBhbmQgZGV2aWNlICh0YWtlbiBmcm9tIGVlcHJvbSkgcmVndWxhdG9y
+eS4KVGhpcyBjYW4gc29tZXRpbWVzIGNvbmZ1c2UgYmVjYXVzZSB5b3UgdGhpbmsgeW91J3JlIHNl
+dHRpbmcgcmVnaW9uIFhaCndoaWNoIGFsbG93cyB1c2Ugb2YgY2hhbm5lbCAzNiBidXQgaXQgcmVt
+YWlucyB1bmF2YWlsYWJsZSBkdWUgdG8gdGhlCmRldmljZSdzIHJlZ3VsYXRvcnkuCgoKTWljaGHF
+ggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
+IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
