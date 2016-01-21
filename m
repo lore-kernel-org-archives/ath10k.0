@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+Received: from mail-yk0-x22f.google.com ([2607:f8b0:4002:c07::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aM8JX-0007v6-Ou
- for ath10k@lists.infradead.org; Thu, 21 Jan 2016 06:01:48 +0000
-Received: by mail-wm0-x232.google.com with SMTP id b14so63018131wmb.1
- for <ath10k@lists.infradead.org>; Wed, 20 Jan 2016 22:01:24 -0800 (PST)
+ id 1aMAlL-0004z8-66
+ for ath10k@lists.infradead.org; Thu, 21 Jan 2016 08:38:39 +0000
+Received: by mail-yk0-x22f.google.com with SMTP id k129so40669041yke.0
+ for <ath10k@lists.infradead.org>; Thu, 21 Jan 2016 00:38:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <569FE132.7040006@candelatech.com>
-References: <1452693668-30030-1-git-send-email-michal.kazior@tieto.com>
- <1452693668-30030-5-git-send-email-michal.kazior@tieto.com>
- <569FE132.7040006@candelatech.com>
-Date: Thu, 21 Jan 2016 07:01:23 +0100
-Message-ID: <CA+BoTQkvZN65dPN4anjEwu3H-yNkgHJz60MY5stNwqvTxRTTjA@mail.gmail.com>
-Subject: Re: [PATCH 4/5] ath10k: clean up cont frag desc init code
-From: Michal Kazior <michal.kazior@tieto.com>
+Date: Thu, 21 Jan 2016 09:38:18 +0100
+Message-ID: <CANCHnQoi_PiQC=Y2H_5eotKG1g9La1=Sxcob2C2cww-MfX8QYQ@mail.gmail.com>
+Subject: 5GHz AP on a QCA988x
+From: Jeroen Roovers <jeroen.roovers@airfi.aero>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +18,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-T24gMjAgSmFudWFyeSAyMDE2IGF0IDIwOjM0LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
-ZWNoLmNvbT4gd3JvdGU6Cj4gT24gMDEvMTMvMjAxNiAwNjowMSBBTSwgTWljaGFsIEthemlvciB3
-cm90ZToKPj4KPj4gVGhpcyBtYWtlcyB0aGUgY29kZSBlYXNpZXIgdG8gZXh0ZW5kIGFuZCByZS11
-c2UuCj4+Cj4+IFdoaWxlIGF0IGl0IGZpeCBfd2FybiB0byBfZXJyLiBPdGhlciB0aGFuIHRoYXQK
-Pj4gdGhlcmUgYXJlIG5vIGZ1bmN0aW9uYWwgY2hhbmdlcy4KPj4KPj4gU2lnbmVkLW9mZi1ieTog
-TWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4+IC0tLQo+PiAgIGRyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3R4LmMgfCA1OAo+PiArKysrKysrKysrKysr
-KysrKysrKysrLS0tLS0tLS0tLQo+PiAgIDEgZmlsZSBjaGFuZ2VkLCA0MSBpbnNlcnRpb25zKCsp
-LCAxNyBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNz
-L2F0aC9hdGgxMGsvaHR0X3R4LmMKPj4gYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
-L2h0dF90eC5jCj4+IGluZGV4IGIzYWRhZGI1ZjgyNC4uNDFhOTgxMTgyMGU4IDEwMDY0NAo+PiAt
-LS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF90eC5jCj4+ICsrKyBiL2Ry
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3R4LmMKPj4gQEAgLTk3LDYgKzk3LDQx
-IEBAIHZvaWQgYXRoMTBrX2h0dF90eF9mcmVlX21zZHVfaWQoc3RydWN0IGF0aDEwa19odHQgKmh0
-dCwKPj4gdTE2IG1zZHVfaWQpCj4+ICAgICAgICAgaWRyX3JlbW92ZSgmaHR0LT5wZW5kaW5nX3R4
-LCBtc2R1X2lkKTsKPj4gICB9Cj4+Cj4+ICtzdGF0aWMgdm9pZCBhdGgxMGtfaHR0X3R4X2ZyZWVf
-Y29udF9mcmFnX2Rlc2Moc3RydWN0IGF0aDEwa19odHQgKmh0dCkKPj4gK3sKPj4gKyAgICAgICBz
-aXplX3Qgc2l6ZTsKPj4gKwo+PiArICAgICAgIGlmICghaHR0LT5mcmFnX2Rlc2MudmFkZHIpCj4+
-ICsgICAgICAgICAgICAgICByZXR1cm47Cj4+ICsKPj4gKyAgICAgICBzaXplID0gaHR0LT5tYXhf
-bnVtX3BlbmRpbmdfdHggKiBzaXplb2Yoc3RydWN0IGh0dF9tc2R1X2V4dF9kZXNjKTsKPj4gKwo+
-PiArICAgICAgIGRtYV9mcmVlX2NvaGVyZW50KGh0dC0+YXItPmRldiwKPj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgICBzaXplLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgIGh0dC0+ZnJh
-Z19kZXNjLnZhZGRyLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgIGh0dC0+ZnJhZ19kZXNj
-LnBhZGRyKTsKPj4gK30KPj4gKwo+PiArc3RhdGljIGludCBhdGgxMGtfaHR0X3R4X2FsbG9jX2Nv
-bnRfZnJhZ19kZXNjKHN0cnVjdCBhdGgxMGtfaHR0ICpodHQpCj4+ICt7Cj4+ICsgICAgICAgc3Ry
-dWN0IGF0aDEwayAqYXIgPSBodHQtPmFyOwo+PiArICAgICAgIHNpemVfdCBzaXplOwo+PiArCj4+
-ICsgICAgICAgaWYgKCFhci0+aHdfcGFyYW1zLmNvbnRpbnVvdXNfZnJhZ19kZXNjKQo+PiArICAg
-ICAgICAgICAgICAgcmV0dXJuIDA7Cj4+ICsKPj4gKyAgICAgICBzaXplID0gaHR0LT5tYXhfbnVt
-X3BlbmRpbmdfdHggKiBzaXplb2Yoc3RydWN0IGh0dF9tc2R1X2V4dF9kZXNjKTsKPj4gKyAgICAg
-ICBodHQtPmZyYWdfZGVzYy52YWRkciA9IGRtYV9hbGxvY19jb2hlcmVudChhci0+ZGV2LCBzaXpl
-LAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICZo
-dHQtPmZyYWdfZGVzYy5wYWRkciwKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBHRlBfRE1BKTsKPgo+Cj4gRGlkIHlvdSBtZWFuIHRvIGNoYW5nZSBH
-RlBfS0VSTkVMIHRvIEdGUF9ETUE/CgpBaCwgZ29vZCBjYXRjaCEgSSBvYnZpb3VzbHkgbWVhbnQg
-dG8ga2VlcCBHRlBfS0VSTkVMLiBJIG11c3QndmUgbWlzc2VkCnRoYXQgZHVyaW5nIGEgcmViYXNl
-IGF0IHNvbWUgcG9pbnQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
-awo=
+02:00.0 Network controller: Qualcomm Atheros QCA986x/988x 802.11ac
+Wireless Network Adapter
+        Flags: bus master, fast devsel, latency 0, IRQ 28
+        Memory at fe200000 (64-bit, non-prefetchable) [size=2M]
+        Expansion ROM at fe400000 [disabled] [size=64K]
+        Capabilities: [40] Power Management version 2
+        Capabilities: [50] MSI: Enable+ Count=1/8 Maskable+ 64bit-
+        Capabilities: [70] Express Endpoint, MSI 00
+        Capabilities: [100] Advanced Error Reporting
+        Capabilities: [140] Virtual Channel
+        Capabilities: [160] Device Serial Number 00-00-00-00-00-00-00-00
+        Kernel driver in use: ath10k_pci
+        Kernel modules: ath10k_pci
+
+Vendor/device ID: 168c:003c
+
+I am trying to get a 5GHZ AP working on the above device, using a
+Linux 4.4.0 kernel on a generic PC right now, in hopes of getting same
+to work on an embedded (ARM, but it's not important) system in the
+near future.
+
+Any attempt to get that up ends in a regulatory-based refusal to open
+IR on any 5GHz band frequency, even when I add "regulatory onus" and a
+new XZ region (hey, this is intended to work especially in
+"international waters") in a db.txt I define myself which should grant
+everything I ever wanted. Is there something the firmware is
+overriding here?
+
+Firmware as of the latest would be:
+
+/lib/firmware/ath10k/QCA988X/hw2.0/firmware-5.bin_10.2.4.70.17-2
+
+I could attach logs but I thought I might be missing something very obvious.
+
+
+Kind regards,
+     jer
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
