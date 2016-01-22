@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMcwD-0003Wt-Bl
- for ath10k@lists.infradead.org; Fri, 22 Jan 2016 14:43:45 +0000
-Message-ID: <56A2400A.6060209@candelatech.com>
-Date: Fri, 22 Jan 2016 06:43:22 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-yk0-x232.google.com ([2607:f8b0:4002:c07::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aMduC-0004aU-3i
+ for ath10k@lists.infradead.org; Fri, 22 Jan 2016 15:45:44 +0000
+Received: by mail-yk0-x232.google.com with SMTP id k129so91107774yke.0
+ for <ath10k@lists.infradead.org>; Fri, 22 Jan 2016 07:45:23 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: 5GHz AP on a QCA988x
-References: <CANCHnQoi_PiQC=Y2H_5eotKG1g9La1=Sxcob2C2cww-MfX8QYQ@mail.gmail.com>
- <CA+BoTQ=+R_URXt6-n=9+HPs7fBg5FszCLVDxosfsQ9DQ78QNUg@mail.gmail.com>
- <CANCHnQr1y0wVuzqpBnoUcCXD-WGnw_D0W5vE7ba39eALSas6Ew@mail.gmail.com>
- <CA+BoTQ=p9A3kDL1qWekaKMHX4GVeLZmGat0Y3k-78Tzkvf_Urg@mail.gmail.com>
- <CANCHnQrupReimOceW04uZrexiXDL7F8+MN6sO7NNh5zgkGvUEg@mail.gmail.com>
-In-Reply-To: <CANCHnQrupReimOceW04uZrexiXDL7F8+MN6sO7NNh5zgkGvUEg@mail.gmail.com>
+In-Reply-To: <20160122125155.GI14453@localhost>
+References: <CANCHnQoZJ2Oy7VdCCe-Lv=V0Z_yp86m2z4anG-G=QbZxi69suA@mail.gmail.com>
+ <CANCHnQp5yF9O3Wo72-FJjDVYFouPj-YoXt+6RmLWTvYavomvMg@mail.gmail.com>
+ <CANCHnQryCaT9-qVfVrGO8Y8=cK_4pxbBArtfRQewp_gYA7hMHQ@mail.gmail.com>
+ <20160122125155.GI14453@localhost>
+Date: Fri, 22 Jan 2016 16:45:22 +0100
+Message-ID: <CANCHnQqTXtjbuGtZHFLCEn4K+u+bqyKzEOL5DvSPSSZiPT04Xg@mail.gmail.com>
+Subject: Re: Mesh on ath10k drops all packets
+From: Jeroen Roovers <jeroen.roovers@airfi.aero>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +23,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jeroen Roovers <jeroen.roovers@airfi.aero>, Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Bob Copeland <me@bobcopeland.com>
+Cc: ath10k@lists.infradead.org
 
+On 22 January 2016 at 13:51, Bob Copeland <me@bobcopeland.com> wrote:
+> On Fri, Jan 22, 2016 at 12:01:36PM +0100, Jeroen Roovers wrote:
+>> Maybe related?
+>
+> Could be.
 
+[..]
 
-On 01/22/2016 02:11 AM, Jeroen Roovers wrote:
-> So I would somehow need to fix the EEPROM, then? :)
+> What happens with non-secure mesh, i.e.:
+>
+> user_mpm=1
+> network={
+>     mode=5
+>     ssid="_"
+>     frequency=2412
+>     key_mgmt=NONE
+> }
 
-You just need to hack the driver to change the regulatory domain.  You do not
-need to muck with the firmware or eeprom or anything like that.
+That works fine!
 
-http://dmz2.candelatech.com/?p=linux-4.0.dev.y/.git;a=commitdiff;h=6f8337e5380a59fe498cea96d096bef4c60b4201;hp=f936faa45dc793704ff35f135473f1c390054f4d
+> You don't really need to specify proto, pairwise, and group, by the way.
 
-Thanks,
-Ben
+I seem to recall having to do this for an older version of wpa_supplicant.
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+>> > On 22 January 2016 at 11:38, Jeroen Roovers <jeroen.roovers@airfi.aero> wrote:
+>> >> Jan 22 11:34:21 wim kernel: wlan0: TBTT : max clockdrift=0; too small to adjust
+>> >> Jan 22 11:34:22 wim kernel: wlan0: STA 40:e2:30:cb:9a:11 : offset was
+>> >> invalid, t_offset=1712128384
+>> >> Jan 22 11:34:22 wim kernel: wlan0: TBTT : max clockdrift=0; too small to adjust
+>> >> Jan 22 11:34:23 wim kernel: wlan0: STA 40:e2:30:cb:9a:11 : is adjusting TBTT
+>> >> Jan 22 11:34:23 wim kernel: wlan0: TBTT : max clockdrift=0; too small to adjust
+>> >> Jan 22 11:34:24 wim kernel: wlan0: STA 40:e2:30:cb:9a:11 : offset was
+>> >> invalid, t_offset=1714176384
+>
+> All of this is just mesh sync debugging, you actually don't really need
+> mesh sync unless you are doing power save, collision avoidance, or
+> controlled channel access, none of which are fully implemented in the
+> kernel.
+
+Yes, that seems to be because I turned on lots of debug output in the
+ath10 driver.
+
+Regards,
+     jer
 
 _______________________________________________
 ath10k mailing list
