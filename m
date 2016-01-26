@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aO581-0000J4-0r
- for ath10k@lists.infradead.org; Tue, 26 Jan 2016 15:01:57 +0000
+ id 1aO58q-0000On-BM
+ for ath10k@lists.infradead.org; Tue, 26 Jan 2016 15:02:52 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] dt: bindings: add bindings for ipq4019 wifi block
-References: <1452664604-8014-1-git-send-email-rmani@qti.qualcomm.com>
-Date: Tue, 26 Jan 2016 17:01:17 +0200
-In-Reply-To: <1452664604-8014-1-git-send-email-rmani@qti.qualcomm.com> (Raja
- Mani's message of "Wed, 13 Jan 2016 11:26:44 +0530")
-Message-ID: <87y4bcpepu.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: prevent txrx running for too long
+References: <1452693172-28340-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 26 Jan 2016 17:01:57 +0200
+In-Reply-To: <1452693172-28340-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 13 Jan 2016 14:52:52 +0100")
+Message-ID: <87twm0peoq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,21 +23,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Raja Mani <rmani@qti.qualcomm.com>
-Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, agross@codeaurora.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Raja Mani <rmani@qti.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Add device tree binding documentation details for wifi block present
-> in Qualcomm IPQ4019 SoC into "qcom,ath10k.txt".
+> On multicore systems it was possible for the txrx
+> tasklet to keep on running for long periods of
+> time on a single CPU due to tx completion
+> processing. Another CPU could feed the running
+> tasklet for an indefinite amount of time.
 >
-> Right now, ath10k wireless driver has support for PCI based wlan devices.
-> There is a plan to extend ath10k driver to support wifi devices which are
-> connected over AHB as well (enumeration will happen via device tree node).
-> For AHB based devices (ie, ipq4019), all wifi properties are supplied via
-> device tree (including irq, reg addr, cal data,etc).
+> The tasklet is now guaranteed to run a finite
+> amount of time and is limited by HTT CE Rx ring
+> depth.
 >
-> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+> This improves behavior when RPS is used on target
+> system and might improve TCP handling as well.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
 Applied, thanks.
 
