@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aO0re-0004Zf-7v
- for ath10k@lists.infradead.org; Tue, 26 Jan 2016 10:28:50 +0000
-Received: by mail-wm0-x22d.google.com with SMTP id n5so122412029wmn.0
- for <ath10k@lists.infradead.org>; Tue, 26 Jan 2016 02:28:21 -0800 (PST)
+ id 1aO581-0000J4-0r
+ for ath10k@lists.infradead.org; Tue, 26 Jan 2016 15:01:57 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v3] dt: bindings: add bindings for ipq4019 wifi block
+References: <1452664604-8014-1-git-send-email-rmani@qti.qualcomm.com>
+Date: Tue, 26 Jan 2016 17:01:17 +0200
+In-Reply-To: <1452664604-8014-1-git-send-email-rmani@qti.qualcomm.com> (Raja
+ Mani's message of "Wed, 13 Jan 2016 11:26:44 +0530")
+Message-ID: <87y4bcpepu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnOfc-obhJR7woqg1=ZWBeOEDSQsaXTF1-wqH8V-Z-eRg@mail.gmail.com>
-References: <1453384006-31907-1-git-send-email-michal.kazior@tieto.com>
- <1453384006-31907-14-git-send-email-michal.kazior@tieto.com>
- <56A1182A.4060309@codeaurora.org>
- <CA+BoTQnOfc-obhJR7woqg1=ZWBeOEDSQsaXTF1-wqH8V-Z-eRg@mail.gmail.com>
-Date: Tue, 26 Jan 2016 11:28:20 +0100
-Message-ID: <CA+BoTQ=ujALZiD5njhd=4e6iASJpxUeL7Kh_Pe_1zbAe9hLYcw@mail.gmail.com>
-Subject: Re: [PATCH 13/13] ath10k: implement push-pull tx
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +19,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@codeaurora.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Raja Mani <rmani@qti.qualcomm.com>
+Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, agross@codeaurora.org
 
-T24gMjIgSmFudWFyeSAyMDE2IGF0IDA4OjQ3LCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9y
-QHRpZXRvLmNvbT4gd3JvdGU6Cj4gT24gMjEgSmFudWFyeSAyMDE2IGF0IDE4OjQwLCBQZXRlciBP
-aCA8cG9oQGNvZGVhdXJvcmEub3JnPiB3cm90ZToKPj4gT24gMDEvMjEvMjAxNiAwNTo0NiBBTSwg
-TWljaGFsIEthemlvciB3cm90ZToKWy4uLl0KPj4+ICAgLSAgICAgLyogVE9ETzogYXBwbHkgY29u
-ZmlndXJhdGlvbiAqLwo+Pj4gKyAgICAgICByY3VfcmVhZF91bmxvY2soKTsKPj4+ICsKPj4+ICsg
-ICAgICAgc3Bpbl9sb2NrX2JoKCZhci0+aHR0LnR4X2xvY2spOwo+Pj4gKyAgICAgICBhdGgxMGtf
-bWFjX3R4X2xvY2soYXIsIEFUSDEwS19UWF9QQVVTRV9RX0ZMVVNIX1BFTkRJTkcpOwo+Pj4gKyAg
-ICAgICBzcGluX3VubG9ja19iaCgmYXItPmh0dC50eF9sb2NrKTsKPj4+ICsKPj4KPj4gSXNuJ3Qg
-aXQgcHJvdmVkIGl0IGJyZWFrIE1lc2ggZnJvbSB3b3JraW5nPwo+Cj4gWWVzLCBnb29kIHBvaW50
-LiBJJ20gc3RpbGwgd29ya2luZyBvbiB0aGlzIC0gSSBzaG91bGQndmUgbWVudGlvbmVkCj4gdGhh
-dCBpbiB0aGUgY292ZXIgbGV0dGVyLgo+Cj4gTm9uZXRoZWxlc3MgSSB3YW50ZWQgdG8gZ2V0IHRo
-ZSByZXZpZXcgcHJvY2VzcyBnb2luZyBmb3IgdGhpcyBwYXRjaHNldC4KPgo+IEknbGwgYWRkcmVz
-cyB0aGUgbWVzaCBwcm9ibGVtIGluIHYyLgoKRm9yIHRoZSByZWNvcmQgLSB0aGUgcHJvYmxlbSB0
-dXJuZWQgb3V0IHRvIGJlIGEgYnVnIGluIG1hYzgwMjExIG1lc2gKZndkaW5nLCBzZWU6CgogIGh0
-dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvODEwODcxMS8KCgpNaWNoYcWCCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
-ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Raja Mani <rmani@qti.qualcomm.com> writes:
+
+> Add device tree binding documentation details for wifi block present
+> in Qualcomm IPQ4019 SoC into "qcom,ath10k.txt".
+>
+> Right now, ath10k wireless driver has support for PCI based wlan devices.
+> There is a plan to extend ath10k driver to support wifi devices which are
+> connected over AHB as well (enumeration will happen via device tree node).
+> For AHB based devices (ie, ipq4019), all wifi properties are supplied via
+> device tree (including irq, reg addr, cal data,etc).
+>
+> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+
+Applied, thanks.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
