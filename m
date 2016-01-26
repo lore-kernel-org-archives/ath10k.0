@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aO59F-0000QL-GT
- for ath10k@lists.infradead.org; Tue, 26 Jan 2016 15:03:14 +0000
+ id 1aO5AO-0000mi-Su
+ for ath10k@lists.infradead.org; Tue, 26 Jan 2016 15:04:25 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/7] Add support for Per STA Rx duration
-References: <1452699994-5078-1-git-send-email-mohammed@qca.qualcomm.com>
-Date: Tue, 26 Jan 2016 17:02:35 +0200
-In-Reply-To: <1452699994-5078-1-git-send-email-mohammed@qca.qualcomm.com>
- (Mohammed Shafi Shajakhan's message of "Wed, 13 Jan 2016 21:16:27
- +0530")
-Message-ID: <87powopeno.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Remove the p2p notice of absence info from 10.2.4
+ FW beacon info
+References: <1452814759-20377-1-git-send-email-yanbol@qca.qualcomm.com>
+Date: Tue, 26 Jan 2016 17:03:50 +0200
+In-Reply-To: <1452814759-20377-1-git-send-email-yanbol@qca.qualcomm.com>
+ (Yanbo Li's message of "Thu, 14 Jan 2016 15:39:19 -0800")
+Message-ID: <87lh7cpell.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,31 +24,15 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Yanbo Li <yanbol@qca.qualcomm.com>
+Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
+Yanbo Li <yanbol@qca.qualcomm.com> writes:
 
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> The p2p NOA never been supported at 10.2.4 FW, remove it to avoid SWBA
+> event parse error for multi beacon interval case.
 >
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
->
-> *Enable parsing of rx_duration as part of peer stats support
->  by the new 10.2.4 firmware
-> *Add support to dump per STA rx_duration  (usecs)
-> *Pre-requisite cleanups
-> *For calculating total rx-duration in host, enable provision to
->  support periodic peer stats update.
-> *Also enable mac80211 debugfs entry to track per STA rx duration(usecs)
->
-> Mohammed Shafi Shajakhan (7):
->   ath10k: Add support for parsing per STA rx_duration for 10.2.4
->   ath10k: Fix naming Peer stats rssi_changed field in 10.2.4
->   ath10k: Cleanup setting pdev paramaters
->   ath10k: Rename few function names of firmware stats
->   ath10k: Provision to support periodic peer stats update
->   ath10k: Enable periodic peer stats update
->   ath10k: Add debugfs support for Per STA total rx duration
+> Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
 
 Applied, thanks.
 
