@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aO58q-0000On-BM
- for ath10k@lists.infradead.org; Tue, 26 Jan 2016 15:02:52 +0000
+ id 1aO59F-0000QL-GT
+ for ath10k@lists.infradead.org; Tue, 26 Jan 2016 15:03:14 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: prevent txrx running for too long
-References: <1452693172-28340-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 26 Jan 2016 17:01:57 +0200
-In-Reply-To: <1452693172-28340-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 13 Jan 2016 14:52:52 +0100")
-Message-ID: <87twm0peoq.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/7] Add support for Per STA Rx duration
+References: <1452699994-5078-1-git-send-email-mohammed@qca.qualcomm.com>
+Date: Tue, 26 Jan 2016 17:02:35 +0200
+In-Reply-To: <1452699994-5078-1-git-send-email-mohammed@qca.qualcomm.com>
+ (Mohammed Shafi Shajakhan's message of "Wed, 13 Jan 2016 21:16:27
+ +0530")
+Message-ID: <87powopeno.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,25 +24,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
 
-> On multicore systems it was possible for the txrx
-> tasklet to keep on running for long periods of
-> time on a single CPU due to tx completion
-> processing. Another CPU could feed the running
-> tasklet for an indefinite amount of time.
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 >
-> The tasklet is now guaranteed to run a finite
-> amount of time and is limited by HTT CE Rx ring
-> depth.
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 >
-> This improves behavior when RPS is used on target
-> system and might improve TCP handling as well.
+> *Enable parsing of rx_duration as part of peer stats support
+>  by the new 10.2.4 firmware
+> *Add support to dump per STA rx_duration  (usecs)
+> *Pre-requisite cleanups
+> *For calculating total rx-duration in host, enable provision to
+>  support periodic peer stats update.
+> *Also enable mac80211 debugfs entry to track per STA rx duration(usecs)
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Mohammed Shafi Shajakhan (7):
+>   ath10k: Add support for parsing per STA rx_duration for 10.2.4
+>   ath10k: Fix naming Peer stats rssi_changed field in 10.2.4
+>   ath10k: Cleanup setting pdev paramaters
+>   ath10k: Rename few function names of firmware stats
+>   ath10k: Provision to support periodic peer stats update
+>   ath10k: Enable periodic peer stats update
+>   ath10k: Add debugfs support for Per STA total rx duration
 
 Applied, thanks.
 
