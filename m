@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOMrn-0004Ek-IJ
- for ath10k@lists.infradead.org; Wed, 27 Jan 2016 09:58:24 +0000
+ id 1aOMrn-0004G6-IG
+ for ath10k@lists.infradead.org; Wed, 27 Jan 2016 09:58:25 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 06/12] ath10k: add helper functions in ahb.c for reg rd/wr
-Date: Wed, 27 Jan 2016 15:24:27 +0530
-Message-ID: <1453888473-2879-7-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH 07/12] ath10k: add clock ctrl related functions in ahb
+Date: Wed, 27 Jan 2016 15:24:28 +0530
+Message-ID: <1453888473-2879-8-git-send-email-rmani@qti.qualcomm.com>
 In-Reply-To: <1453888473-2879-1-git-send-email-rmani@qti.qualcomm.com>
 References: <1453888473-2879-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,134 +25,179 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-qca4019 deals with below register memory region to control the clock,
-reset, etc.
+pre qca4019 chipsets has/uses internal clock generator for
+the operation. But, qca4019 uses external clocks supplied from
+outside of target (ie, outside of wifi core). Three different clocks
+(cmd clock, ref clock, rtc clock) comes into picture in qca4019.
+All those clocks needs to configured with help of global clock
+controller (gcc) to make qca4019 functioning.
 
-        - Memory to control wifi core
-        - gcc (outside of wifi)
-        - tcsr (outside of wifi)
-
-Add new helper functions to perform read/write in above registers
-spaces. Actual ioremap for above registers are done in later patch.
-Struct ath10k_ahb is introduced to maintain ahb specific info and
-memory this struct will be allocated in the continuation of struct
-ath10k_pci (again, memory ath10k_ahb is allocated in the later patch).
+Add functions for clock init/deinit, clock enable/disable in ahb.
+This is just a preparation, functions added in this patch will be
+used in later patches.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/ahb.c | 55 +++++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/ahb.h |  7 +++++
- drivers/net/wireless/ath/ath10k/pci.h |  6 ++++
- 3 files changed, 68 insertions(+)
+ drivers/net/wireless/ath/ath10k/ahb.c | 123 ++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/ahb.h |   4 ++
+ 2 files changed, 127 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-index 129f4f4..eab4b47 100644
+index eab4b47..11185c0 100644
 --- a/drivers/net/wireless/ath/ath10k/ahb.c
 +++ b/drivers/net/wireless/ath/ath10k/ahb.c
-@@ -17,6 +17,7 @@
+@@ -15,6 +15,7 @@
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
  #include <linux/module.h>
++#include <linux/clk.h>
  #include "core.h"
  #include "debug.h"
-+#include "pci.h"
- #include "ahb.h"
+ #include "pci.h"
+@@ -84,6 +85,128 @@ static int ath10k_ahb_get_num_banks(struct ath10k *ar)
+ 	return 1;
+ }
  
- static const struct of_device_id ath10k_ahb_of_match[] = {
-@@ -29,6 +30,60 @@ static const struct of_device_id ath10k_ahb_of_match[] = {
- 
- MODULE_DEVICE_TABLE(of, ath10k_ahb_of_match);
- 
-+static inline struct ath10k_ahb *ath10k_ahb_priv(struct ath10k *ar)
++static int ath10k_ahb_clock_init(struct ath10k *ar)
 +{
-+	return &((struct ath10k_pci *)ar->drv_priv)->ahb[0];
++	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
++	struct device *dev;
++	int ret;
++
++	dev = &ar_ahb->pdev->dev;
++
++	ar_ahb->cmd_clk = clk_get(dev, "wifi_wcss_cmd");
++	if (IS_ERR_OR_NULL(ar_ahb->cmd_clk)) {
++		ath10k_err(ar, "failed to get cmd clk: %ld\n",
++			   PTR_ERR(ar_ahb->cmd_clk));
++		ret = ar_ahb->cmd_clk ? PTR_ERR(ar_ahb->cmd_clk) : -ENODEV;
++		goto out;
++	}
++
++	ar_ahb->ref_clk = clk_get(dev, "wifi_wcss_ref");
++	if (IS_ERR_OR_NULL(ar_ahb->ref_clk)) {
++		ath10k_err(ar, "failed to get ref clk: %ld\n",
++			   PTR_ERR(ar_ahb->ref_clk));
++		ret = ar_ahb->ref_clk ? PTR_ERR(ar_ahb->ref_clk) : -ENODEV;
++		goto err_cmd_clk_put;
++	}
++
++	ar_ahb->rtc_clk = clk_get(dev, "wifi_wcss_rtc");
++	if (IS_ERR_OR_NULL(ar_ahb->rtc_clk)) {
++		ath10k_err(ar, "failed to get rtc clk: %ld\n",
++			   PTR_ERR(ar_ahb->rtc_clk));
++		ret = ar_ahb->rtc_clk ? PTR_ERR(ar_ahb->rtc_clk) : -ENODEV;
++		goto err_ref_clk_put;
++	}
++
++	return 0;
++
++err_ref_clk_put:
++	clk_put(ar_ahb->ref_clk);
++
++err_cmd_clk_put:
++	clk_put(ar_ahb->cmd_clk);
++
++out:
++	return ret;
 +}
 +
-+static void ath10k_ahb_write32(struct ath10k *ar, u32 offset, u32 value)
++static void ath10k_ahb_clock_deinit(struct ath10k *ar)
 +{
 +	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
 +
-+	iowrite32(value, ar_ahb->mem + offset);
++	if (!IS_ERR_OR_NULL(ar_ahb->cmd_clk))
++		clk_put(ar_ahb->cmd_clk);
++
++	if (!IS_ERR_OR_NULL(ar_ahb->ref_clk))
++		clk_put(ar_ahb->ref_clk);
++
++	if (!IS_ERR_OR_NULL(ar_ahb->rtc_clk))
++		clk_put(ar_ahb->rtc_clk);
++
++	ar_ahb->cmd_clk = NULL;
++	ar_ahb->ref_clk = NULL;
++	ar_ahb->rtc_clk = NULL;
 +}
 +
-+static u32 ath10k_ahb_read32(struct ath10k *ar, u32 offset)
++static int ath10k_ahb_clock_enable(struct ath10k *ar)
++{
++	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
++	struct device *dev;
++	int ret;
++
++	dev = &ar_ahb->pdev->dev;
++
++	if (IS_ERR_OR_NULL(ar_ahb->cmd_clk) ||
++	    IS_ERR_OR_NULL(ar_ahb->ref_clk) ||
++	    IS_ERR_OR_NULL(ar_ahb->rtc_clk)) {
++		ath10k_err(ar, "clock(s) is/are not initialized\n");
++		ret = -EIO;
++		goto out;
++	}
++
++	ret = clk_prepare_enable(ar_ahb->cmd_clk);
++	if (ret) {
++		ath10k_err(ar, "failed to enable cmd clk: %d\n", ret);
++		goto out;
++	}
++
++	ret = clk_prepare_enable(ar_ahb->ref_clk);
++	if (ret) {
++		ath10k_err(ar, "failed to enable ref clk: %d\n", ret);
++		goto err_cmd_clk_disable;
++	}
++
++	ret = clk_prepare_enable(ar_ahb->rtc_clk);
++	if (ret) {
++		ath10k_err(ar, "failed to enable rtc clk: %d\n", ret);
++		goto err_ref_clk_disable;
++	}
++
++	return 0;
++
++err_ref_clk_disable:
++	clk_disable_unprepare(ar_ahb->ref_clk);
++
++err_cmd_clk_disable:
++	clk_disable_unprepare(ar_ahb->cmd_clk);
++
++out:
++	return ret;
++}
++
++static void ath10k_ahb_clock_disable(struct ath10k *ar)
 +{
 +	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
 +
-+	return ioread32(ar_ahb->mem + offset);
-+}
++	if (!IS_ERR_OR_NULL(ar_ahb->cmd_clk))
++		clk_disable_unprepare(ar_ahb->cmd_clk);
 +
-+static u32 ath10k_ahb_gcc_read32(struct ath10k *ar, u32 offset)
-+{
-+	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
++	if (!IS_ERR_OR_NULL(ar_ahb->ref_clk))
++		clk_disable_unprepare(ar_ahb->ref_clk);
 +
-+	return ioread32(ar_ahb->gcc_mem + offset);
-+}
-+
-+static void ath10k_ahb_tcsr_write32(struct ath10k *ar, u32 offset, u32 value)
-+{
-+	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
-+
-+	iowrite32(value, ar_ahb->tcsr_mem + offset);
-+}
-+
-+static u32 ath10k_ahb_tcsr_read32(struct ath10k *ar, u32 offset)
-+{
-+	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
-+
-+	return ioread32(ar_ahb->tcsr_mem + offset);
-+}
-+
-+static u32 ath10k_ahb_soc_read32(struct ath10k *ar, u32 addr)
-+{
-+	return ath10k_ahb_read32(ar, RTC_SOC_BASE_ADDRESS + addr);
-+}
-+
-+static int ath10k_ahb_get_num_banks(struct ath10k *ar)
-+{
-+	if (ar->hw_rev == ATH10K_HW_QCA4019)
-+		return 1;
-+
-+	ath10k_warn(ar, "unknown number of banks, assuming 1\n");
-+	return 1;
++	if (!IS_ERR_OR_NULL(ar_ahb->rtc_clk))
++		clk_disable_unprepare(ar_ahb->rtc_clk);
 +}
 +
  static int ath10k_ahb_probe(struct platform_device *pdev)
  {
  	return 0;
 diff --git a/drivers/net/wireless/ath/ath10k/ahb.h b/drivers/net/wireless/ath/ath10k/ahb.h
-index d1afe93..77d15af 100644
+index 77d15af..753b433 100644
 --- a/drivers/net/wireless/ath/ath10k/ahb.h
 +++ b/drivers/net/wireless/ath/ath10k/ahb.h
-@@ -20,6 +20,13 @@
- 
- #include <linux/platform_device.h>
- 
-+struct ath10k_ahb {
-+	struct platform_device *pdev;
-+	void __iomem *mem;
-+	void __iomem *gcc_mem;
-+	void __iomem *tcsr_mem;
-+};
+@@ -25,6 +25,10 @@ struct ath10k_ahb {
+ 	void __iomem *mem;
+ 	void __iomem *gcc_mem;
+ 	void __iomem *tcsr_mem;
 +
- #ifdef CONFIG_ATH10K_AHB
- 
- int ath10k_ahb_init(void);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index c2d4a79..249c73a 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -234,6 +234,12 @@ struct ath10k_pci {
- 	bool pci_ps;
- 
- 	const struct ath10k_bus_ops *bus_ops;
-+
-+	/* Keep this entry in the last, memory for struct ath10k_ahb is
-+	 * allocated (ahb support enabled case) in the continuation of
-+	 * this struct.
-+	 */
-+	struct ath10k_ahb ahb[0];
++	struct clk *cmd_clk;
++	struct clk *ref_clk;
++	struct clk *rtc_clk;
  };
  
- static inline struct ath10k_pci *ath10k_pci_priv(struct ath10k *ar)
+ #ifdef CONFIG_ATH10K_AHB
 -- 
 1.8.1.2
 
