@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aO8wJ-0007l4-Kn
- for ath10k@lists.infradead.org; Tue, 26 Jan 2016 19:06:08 +0000
-Message-ID: <56A7C2ED.4010809@codeaurora.org>
-Date: Tue, 26 Jan 2016 11:03:09 -0800
-From: Peter Oh <poh@codeaurora.org>
+ id 1aOMqo-0003XJ-80
+ for ath10k@lists.infradead.org; Wed, 27 Jan 2016 09:57:24 +0000
+From: Raja Mani <rmani@qti.qualcomm.com>
+Subject: [PATCH 03/12] ath10k: pull reusable code from pci probe and remove
+ for ahb
+Date: Wed, 27 Jan 2016 15:24:24 +0530
+Message-ID: <1453888473-2879-4-git-send-email-rmani@qti.qualcomm.com>
+In-Reply-To: <1453888473-2879-1-git-send-email-rmani@qti.qualcomm.com>
+References: <1453888473-2879-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 13/13] ath10k: implement push-pull tx
-References: <1453384006-31907-1-git-send-email-michal.kazior@tieto.com>	<1453384006-31907-14-git-send-email-michal.kazior@tieto.com>	<56A1182A.4060309@codeaurora.org>	<CA+BoTQnOfc-obhJR7woqg1=ZWBeOEDSQsaXTF1-wqH8V-Z-eRg@mail.gmail.com>
- <CA+BoTQ=ujALZiD5njhd=4e6iASJpxUeL7Kh_Pe_1zbAe9hLYcw@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=ujALZiD5njhd=4e6iASJpxUeL7Kh_Pe_1zbAe9hLYcw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +19,163 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-Ck9uIDAxLzI2LzIwMTYgMDI6MjggQU0sIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4gT24gMjIgSmFu
-dWFyeSAyMDE2IGF0IDA4OjQ3LCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNv
-bT4gd3JvdGU6Cj4+IE9uIDIxIEphbnVhcnkgMjAxNiBhdCAxODo0MCwgUGV0ZXIgT2ggPHBvaEBj
-b2RlYXVyb3JhLm9yZz4gd3JvdGU6Cj4+PiBPbiAwMS8yMS8yMDE2IDA1OjQ2IEFNLCBNaWNoYWwg
-S2F6aW9yIHdyb3RlOgo+IFsuLi5dCj4+Pj4gICAgLSAgICAgLyogVE9ETzogYXBwbHkgY29uZmln
-dXJhdGlvbiAqLwo+Pj4+ICsgICAgICAgcmN1X3JlYWRfdW5sb2NrKCk7Cj4+Pj4gKwo+Pj4+ICsg
-ICAgICAgc3Bpbl9sb2NrX2JoKCZhci0+aHR0LnR4X2xvY2spOwo+Pj4+ICsgICAgICAgYXRoMTBr
-X21hY190eF9sb2NrKGFyLCBBVEgxMEtfVFhfUEFVU0VfUV9GTFVTSF9QRU5ESU5HKTsKPj4+PiAr
-ICAgICAgIHNwaW5fdW5sb2NrX2JoKCZhci0+aHR0LnR4X2xvY2spOwo+Pj4+ICsKPj4+IElzbid0
-IGl0IHByb3ZlZCBpdCBicmVhayBNZXNoIGZyb20gd29ya2luZz8KPj4gWWVzLCBnb29kIHBvaW50
-LiBJJ20gc3RpbGwgd29ya2luZyBvbiB0aGlzIC0gSSBzaG91bGQndmUgbWVudGlvbmVkCj4+IHRo
-YXQgaW4gdGhlIGNvdmVyIGxldHRlci4KPj4KPj4gTm9uZXRoZWxlc3MgSSB3YW50ZWQgdG8gZ2V0
-IHRoZSByZXZpZXcgcHJvY2VzcyBnb2luZyBmb3IgdGhpcyBwYXRjaHNldC4KPj4KPj4gSSdsbCBh
-ZGRyZXNzIHRoZSBtZXNoIHByb2JsZW0gaW4gdjIuCj4gRm9yIHRoZSByZWNvcmQgLSB0aGUgcHJv
-YmxlbSB0dXJuZWQgb3V0IHRvIGJlIGEgYnVnIGluIG1hYzgwMjExIG1lc2gKPiBmd2RpbmcsIHNl
-ZToKPgo+ICAgIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvODEwODcxMS8KSSd2
-ZSB2ZXJpZmllZCB0aGF0IHRoZSBwYXRjaCBmaXhlZCB0aGUgbWVzaCBpc3N1ZS4KVGhhbmsgeW91
-IE1pY2hhbC4KPgo+Cj4gTWljaGHFggoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Some of the code present in ath10k_pci_{probe|remove} are reusable
+in ahb case too. To avoid code duplication, move reusable code to
+new functions. Later, those new functions can be called from ahb
+module's probe and exit functions.
+
+Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 64 +++++++++++++++++++++++------------
+ drivers/net/wireless/ath/ath10k/pci.h |  2 ++
+ 2 files changed, 44 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index c5f6604..6ef878c 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3009,6 +3009,37 @@ static bool ath10k_pci_chip_is_supported(u32 dev_id, u32 chip_id)
+ 	return false;
+ }
+ 
++int ath10k_pci_setup_resource(struct ath10k *ar)
++{
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	int ret;
++
++	spin_lock_init(&ar_pci->ce_lock);
++	spin_lock_init(&ar_pci->ps_lock);
++
++	setup_timer(&ar_pci->rx_post_retry, ath10k_pci_rx_replenish_retry,
++		    (unsigned long)ar);
++
++	if (QCA_REV_6174(ar))
++		ath10k_pci_override_ce_config(ar);
++
++	ret = ath10k_pci_alloc_pipes(ar);
++	if (ret) {
++		ath10k_err(ar, "failed to allocate copy engine pipes: %d\n",
++			   ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++void ath10k_pci_release_resource(struct ath10k *ar)
++{
++	ath10k_pci_kill_tasklet(ar);
++	ath10k_pci_ce_deinit(ar);
++	ath10k_pci_free_pipes(ar);
++}
++
+ static const struct ath10k_bus_ops ath10k_pci_bus_ops = {
+ 	.read32		= ath10k_bus_pci_read32,
+ 	.write32	= ath10k_bus_pci_write32,
+@@ -3072,34 +3103,25 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	ar->id.subsystem_vendor = pdev->subsystem_vendor;
+ 	ar->id.subsystem_device = pdev->subsystem_device;
+ 
+-	spin_lock_init(&ar_pci->ce_lock);
+-	spin_lock_init(&ar_pci->ps_lock);
+-
+-	setup_timer(&ar_pci->rx_post_retry, ath10k_pci_rx_replenish_retry,
+-		    (unsigned long)ar);
+ 	setup_timer(&ar_pci->ps_timer, ath10k_pci_ps_timer,
+ 		    (unsigned long)ar);
+ 
+-	ret = ath10k_pci_claim(ar);
++	ret = ath10k_pci_setup_resource(ar);
+ 	if (ret) {
+-		ath10k_err(ar, "failed to claim device: %d\n", ret);
++		ath10k_err(ar, "failed to setup resource: %d\n", ret);
+ 		goto err_core_destroy;
+ 	}
+ 
+-	if (QCA_REV_6174(ar))
+-		ath10k_pci_override_ce_config(ar);
+-
+-	ret = ath10k_pci_alloc_pipes(ar);
++	ret = ath10k_pci_claim(ar);
+ 	if (ret) {
+-		ath10k_err(ar, "failed to allocate copy engine pipes: %d\n",
+-			   ret);
+-		goto err_sleep;
++		ath10k_err(ar, "failed to claim device: %d\n", ret);
++		goto err_free_pipes;
+ 	}
+ 
+ 	ret = ath10k_pci_force_wake(ar);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to wake up device : %d\n", ret);
+-		goto err_free_pipes;
++		goto err_sleep;
+ 	}
+ 
+ 	ath10k_pci_ce_deinit(ar);
+@@ -3108,7 +3130,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	ret = ath10k_pci_init_irq(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to init irqs: %d\n", ret);
+-		goto err_free_pipes;
++		goto err_sleep;
+ 	}
+ 
+ 	ath10k_info(ar, "pci irq %s interrupts %d irq_mode %d reset_mode %d\n",
+@@ -3154,13 +3176,13 @@ err_free_irq:
+ err_deinit_irq:
+ 	ath10k_pci_deinit_irq(ar);
+ 
+-err_free_pipes:
+-	ath10k_pci_free_pipes(ar);
+-
+ err_sleep:
+ 	ath10k_pci_sleep_sync(ar);
+ 	ath10k_pci_release(ar);
+ 
++err_free_pipes:
++	ath10k_pci_free_pipes(ar);
++
+ err_core_destroy:
+ 	ath10k_core_destroy(ar);
+ 
+@@ -3184,10 +3206,8 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
+ 
+ 	ath10k_core_unregister(ar);
+ 	ath10k_pci_free_irq(ar);
+-	ath10k_pci_kill_tasklet(ar);
+ 	ath10k_pci_deinit_irq(ar);
+-	ath10k_pci_ce_deinit(ar);
+-	ath10k_pci_free_pipes(ar);
++	ath10k_pci_release_resource(ar);
+ 	ath10k_pci_sleep_sync(ar);
+ 	ath10k_pci_release(ar);
+ 	ath10k_core_destroy(ar);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index 41f3fac..fcfdbca 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -292,6 +292,8 @@ void ath10k_pci_enable_legacy_irq(struct ath10k *ar);
+ bool ath10k_pci_irq_pending(struct ath10k *ar);
+ void ath10k_pci_disable_and_clear_legacy_irq(struct ath10k *ar);
+ int ath10k_pci_wait_for_target_init(struct ath10k *ar);
++int ath10k_pci_setup_resource(struct ath10k *ar);
++void ath10k_pci_release_resource(struct ath10k *ar);
+ 
+ /* QCA6174 is known to have Tx/Rx issues when SOC_WAKE register is poked too
+  * frequently. To avoid this put SoC to sleep after a very conservative grace
+-- 
+1.8.1.2
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
