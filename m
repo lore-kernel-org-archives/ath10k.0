@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOMrn-0004G6-IG
- for ath10k@lists.infradead.org; Wed, 27 Jan 2016 09:58:25 +0000
+ id 1aOMs6-0004Ox-F0
+ for ath10k@lists.infradead.org; Wed, 27 Jan 2016 09:58:44 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 07/12] ath10k: add clock ctrl related functions in ahb
-Date: Wed, 27 Jan 2016 15:24:28 +0530
-Message-ID: <1453888473-2879-8-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH 08/12] ath10k: add reset ctrl related functions in ahb
+Date: Wed, 27 Jan 2016 15:24:29 +0530
+Message-ID: <1453888473-2879-9-git-send-email-rmani@qti.qualcomm.com>
 In-Reply-To: <1453888473-2879-1-git-send-email-rmani@qti.qualcomm.com>
 References: <1453888473-2879-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,40 +25,48 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-pre qca4019 chipsets has/uses internal clock generator for
-the operation. But, qca4019 uses external clocks supplied from
-outside of target (ie, outside of wifi core). Three different clocks
-(cmd clock, ref clock, rtc clock) comes into picture in qca4019.
-All those clocks needs to configured with help of global clock
-controller (gcc) to make qca4019 functioning.
-
-Add functions for clock init/deinit, clock enable/disable in ahb.
-This is just a preparation, functions added in this patch will be
-used in later patches.
+To perform reset on qca4019 wifi, multiple reset lines needs
+to be toggled in a sequence with help of reset controller support
+in the kernel. This patch adds functions to reset control init/deinit
+and release reset.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/ahb.c | 123 ++++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/ahb.h |   4 ++
- 2 files changed, 127 insertions(+)
+ drivers/net/wireless/ath/ath10k/Kconfig |   2 +-
+ drivers/net/wireless/ath/ath10k/ahb.c   | 138 ++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/ahb.h   |   6 ++
+ 3 files changed, 145 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
+index d7f207a..db1ca62 100644
+--- a/drivers/net/wireless/ath/ath10k/Kconfig
++++ b/drivers/net/wireless/ath/ath10k/Kconfig
+@@ -17,7 +17,7 @@ config ATH10K_PCI
+ 
+ config ATH10K_AHB
+ 	bool "Atheros ath10k AHB support"
+-	depends on ATH10K_PCI && OF
++	depends on ATH10K_PCI && OF && RESET_CONTROLLER
+ 	---help---
+ 	  This module adds support for AHB bus
+ 
 diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-index eab4b47..11185c0 100644
+index 11185c0..d1f1972 100644
 --- a/drivers/net/wireless/ath/ath10k/ahb.c
 +++ b/drivers/net/wireless/ath/ath10k/ahb.c
-@@ -15,6 +15,7 @@
-  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+@@ -16,6 +16,7 @@
   */
  #include <linux/module.h>
-+#include <linux/clk.h>
+ #include <linux/clk.h>
++#include <linux/reset.h>
  #include "core.h"
  #include "debug.h"
  #include "pci.h"
-@@ -84,6 +85,128 @@ static int ath10k_ahb_get_num_banks(struct ath10k *ar)
- 	return 1;
+@@ -207,6 +208,143 @@ static void ath10k_ahb_clock_disable(struct ath10k *ar)
+ 		clk_disable_unprepare(ar_ahb->rtc_clk);
  }
  
-+static int ath10k_ahb_clock_init(struct ath10k *ar)
++static int ath10k_ahb_rst_ctrl_init(struct ath10k *ar)
 +{
 +	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
 +	struct device *dev;
@@ -66,135 +74,152 @@ index eab4b47..11185c0 100644
 +
 +	dev = &ar_ahb->pdev->dev;
 +
-+	ar_ahb->cmd_clk = clk_get(dev, "wifi_wcss_cmd");
-+	if (IS_ERR_OR_NULL(ar_ahb->cmd_clk)) {
-+		ath10k_err(ar, "failed to get cmd clk: %ld\n",
-+			   PTR_ERR(ar_ahb->cmd_clk));
-+		ret = ar_ahb->cmd_clk ? PTR_ERR(ar_ahb->cmd_clk) : -ENODEV;
++	ar_ahb->core_cold_rst = reset_control_get(dev, "wifi_core_cold");
++	if (IS_ERR_OR_NULL(ar_ahb->core_cold_rst)) {
++		ath10k_err(ar, "failed to get core cold rst ctrl: %ld\n",
++			   PTR_ERR(ar_ahb->core_cold_rst));
++		ret = ar_ahb->core_cold_rst ?
++			PTR_ERR(ar_ahb->core_cold_rst) : -ENODEV;
 +		goto out;
 +	}
 +
-+	ar_ahb->ref_clk = clk_get(dev, "wifi_wcss_ref");
-+	if (IS_ERR_OR_NULL(ar_ahb->ref_clk)) {
-+		ath10k_err(ar, "failed to get ref clk: %ld\n",
-+			   PTR_ERR(ar_ahb->ref_clk));
-+		ret = ar_ahb->ref_clk ? PTR_ERR(ar_ahb->ref_clk) : -ENODEV;
-+		goto err_cmd_clk_put;
++	ar_ahb->radio_cold_rst = reset_control_get(dev, "wifi_radio_cold");
++	if (IS_ERR_OR_NULL(ar_ahb->radio_cold_rst)) {
++		ath10k_err(ar, "failed to get radio cold rst ctrl: %ld\n",
++			   PTR_ERR(ar_ahb->radio_cold_rst));
++		ret = ar_ahb->radio_cold_rst ?
++			PTR_ERR(ar_ahb->radio_cold_rst) : -ENODEV;
++		goto err_core_cold_rst_put;
 +	}
 +
-+	ar_ahb->rtc_clk = clk_get(dev, "wifi_wcss_rtc");
-+	if (IS_ERR_OR_NULL(ar_ahb->rtc_clk)) {
-+		ath10k_err(ar, "failed to get rtc clk: %ld\n",
-+			   PTR_ERR(ar_ahb->rtc_clk));
-+		ret = ar_ahb->rtc_clk ? PTR_ERR(ar_ahb->rtc_clk) : -ENODEV;
-+		goto err_ref_clk_put;
++	ar_ahb->radio_warm_rst = reset_control_get(dev, "wifi_radio_warm");
++	if (IS_ERR_OR_NULL(ar_ahb->radio_warm_rst)) {
++		ath10k_err(ar, "failed to get radio warm rst ctrl: %ld\n",
++			   PTR_ERR(ar_ahb->radio_warm_rst));
++		ret = ar_ahb->radio_warm_rst ?
++			PTR_ERR(ar_ahb->radio_warm_rst) : -ENODEV;
++		goto err_radio_cold_rst_put;
++	}
++
++	ar_ahb->radio_srif_rst = reset_control_get(dev, "wifi_radio_srif");
++	if (IS_ERR_OR_NULL(ar_ahb->radio_srif_rst)) {
++		ath10k_err(ar, "failed to get radio srif rst ctrl: %ld\n",
++			   PTR_ERR(ar_ahb->radio_srif_rst));
++		ret = ar_ahb->radio_srif_rst ?
++			PTR_ERR(ar_ahb->radio_srif_rst) : -ENODEV;
++		goto err_radio_warm_rst_put;
++	}
++
++	ar_ahb->cpu_init_rst = reset_control_get(dev, "wifi_cpu_init");
++	if (IS_ERR_OR_NULL(ar_ahb->cpu_init_rst)) {
++		ath10k_err(ar, "failed to get cpu init rst ctrl: %ld\n",
++			   PTR_ERR(ar_ahb->cpu_init_rst));
++		ret = ar_ahb->cpu_init_rst ?
++			PTR_ERR(ar_ahb->cpu_init_rst) : -ENODEV;
++		goto err_radio_srif_rst_put;
 +	}
 +
 +	return 0;
 +
-+err_ref_clk_put:
-+	clk_put(ar_ahb->ref_clk);
++err_radio_srif_rst_put:
++	reset_control_put(ar_ahb->radio_srif_rst);
 +
-+err_cmd_clk_put:
-+	clk_put(ar_ahb->cmd_clk);
++err_radio_warm_rst_put:
++	reset_control_put(ar_ahb->radio_warm_rst);
++
++err_radio_cold_rst_put:
++	reset_control_put(ar_ahb->radio_cold_rst);
++
++err_core_cold_rst_put:
++	reset_control_put(ar_ahb->core_cold_rst);
 +
 +out:
 +	return ret;
 +}
 +
-+static void ath10k_ahb_clock_deinit(struct ath10k *ar)
++static void ath10k_ahb_rst_ctrl_deinit(struct ath10k *ar)
 +{
 +	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
 +
-+	if (!IS_ERR_OR_NULL(ar_ahb->cmd_clk))
-+		clk_put(ar_ahb->cmd_clk);
++	if (!IS_ERR_OR_NULL(ar_ahb->core_cold_rst))
++		reset_control_put(ar_ahb->core_cold_rst);
 +
-+	if (!IS_ERR_OR_NULL(ar_ahb->ref_clk))
-+		clk_put(ar_ahb->ref_clk);
++	if (!IS_ERR_OR_NULL(ar_ahb->radio_cold_rst))
++		reset_control_put(ar_ahb->radio_cold_rst);
 +
-+	if (!IS_ERR_OR_NULL(ar_ahb->rtc_clk))
-+		clk_put(ar_ahb->rtc_clk);
++	if (!IS_ERR_OR_NULL(ar_ahb->radio_warm_rst))
++		reset_control_put(ar_ahb->radio_warm_rst);
 +
-+	ar_ahb->cmd_clk = NULL;
-+	ar_ahb->ref_clk = NULL;
-+	ar_ahb->rtc_clk = NULL;
++	if (!IS_ERR_OR_NULL(ar_ahb->radio_srif_rst))
++		reset_control_put(ar_ahb->radio_srif_rst);
++
++	if (!IS_ERR_OR_NULL(ar_ahb->cpu_init_rst))
++		reset_control_put(ar_ahb->cpu_init_rst);
++
++	ar_ahb->core_cold_rst = NULL;
++	ar_ahb->radio_cold_rst = NULL;
++	ar_ahb->radio_warm_rst = NULL;
++	ar_ahb->radio_srif_rst = NULL;
++	ar_ahb->cpu_init_rst = NULL;
 +}
 +
-+static int ath10k_ahb_clock_enable(struct ath10k *ar)
++static int ath10k_ahb_release_reset(struct ath10k *ar)
 +{
 +	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
-+	struct device *dev;
 +	int ret;
 +
-+	dev = &ar_ahb->pdev->dev;
-+
-+	if (IS_ERR_OR_NULL(ar_ahb->cmd_clk) ||
-+	    IS_ERR_OR_NULL(ar_ahb->ref_clk) ||
-+	    IS_ERR_OR_NULL(ar_ahb->rtc_clk)) {
-+		ath10k_err(ar, "clock(s) is/are not initialized\n");
-+		ret = -EIO;
-+		goto out;
++	if (IS_ERR_OR_NULL(ar_ahb->radio_cold_rst) ||
++	    IS_ERR_OR_NULL(ar_ahb->radio_warm_rst) ||
++	    IS_ERR_OR_NULL(ar_ahb->radio_srif_rst) ||
++	    IS_ERR_OR_NULL(ar_ahb->cpu_init_rst)) {
++		ath10k_err(ar, "rst ctrl(s) is/are not initialized\n");
++		return -EINVAL;
 +	}
 +
-+	ret = clk_prepare_enable(ar_ahb->cmd_clk);
++	ret = reset_control_deassert(ar_ahb->radio_cold_rst);
 +	if (ret) {
-+		ath10k_err(ar, "failed to enable cmd clk: %d\n", ret);
-+		goto out;
++		ath10k_err(ar, "failed to deassert radio cold rst: %d\n", ret);
++		return ret;
 +	}
 +
-+	ret = clk_prepare_enable(ar_ahb->ref_clk);
++	ret = reset_control_deassert(ar_ahb->radio_warm_rst);
 +	if (ret) {
-+		ath10k_err(ar, "failed to enable ref clk: %d\n", ret);
-+		goto err_cmd_clk_disable;
++		ath10k_err(ar, "failed to deassert radio warm rst: %d\n", ret);
++		return ret;
 +	}
 +
-+	ret = clk_prepare_enable(ar_ahb->rtc_clk);
++	ret = reset_control_deassert(ar_ahb->radio_srif_rst);
 +	if (ret) {
-+		ath10k_err(ar, "failed to enable rtc clk: %d\n", ret);
-+		goto err_ref_clk_disable;
++		ath10k_err(ar, "failed to deassert radio srif rst: %d\n", ret);
++		return ret;
++	}
++
++	ret = reset_control_deassert(ar_ahb->cpu_init_rst);
++	if (ret) {
++		ath10k_err(ar, "failed to deassert cpu init rst: %d\n", ret);
++		return ret;
 +	}
 +
 +	return 0;
-+
-+err_ref_clk_disable:
-+	clk_disable_unprepare(ar_ahb->ref_clk);
-+
-+err_cmd_clk_disable:
-+	clk_disable_unprepare(ar_ahb->cmd_clk);
-+
-+out:
-+	return ret;
-+}
-+
-+static void ath10k_ahb_clock_disable(struct ath10k *ar)
-+{
-+	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
-+
-+	if (!IS_ERR_OR_NULL(ar_ahb->cmd_clk))
-+		clk_disable_unprepare(ar_ahb->cmd_clk);
-+
-+	if (!IS_ERR_OR_NULL(ar_ahb->ref_clk))
-+		clk_disable_unprepare(ar_ahb->ref_clk);
-+
-+	if (!IS_ERR_OR_NULL(ar_ahb->rtc_clk))
-+		clk_disable_unprepare(ar_ahb->rtc_clk);
 +}
 +
  static int ath10k_ahb_probe(struct platform_device *pdev)
  {
  	return 0;
 diff --git a/drivers/net/wireless/ath/ath10k/ahb.h b/drivers/net/wireless/ath/ath10k/ahb.h
-index 77d15af..753b433 100644
+index 753b433..2904b7b 100644
 --- a/drivers/net/wireless/ath/ath10k/ahb.h
 +++ b/drivers/net/wireless/ath/ath10k/ahb.h
-@@ -25,6 +25,10 @@ struct ath10k_ahb {
- 	void __iomem *mem;
- 	void __iomem *gcc_mem;
- 	void __iomem *tcsr_mem;
+@@ -29,6 +29,12 @@ struct ath10k_ahb {
+ 	struct clk *cmd_clk;
+ 	struct clk *ref_clk;
+ 	struct clk *rtc_clk;
 +
-+	struct clk *cmd_clk;
-+	struct clk *ref_clk;
-+	struct clk *rtc_clk;
++	struct reset_control *core_cold_rst;
++	struct reset_control *radio_cold_rst;
++	struct reset_control *radio_warm_rst;
++	struct reset_control *radio_srif_rst;
++	struct reset_control *cpu_init_rst;
  };
  
  #ifdef CONFIG_ATH10K_AHB
