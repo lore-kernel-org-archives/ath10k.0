@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOVJM-0006Q7-BY
- for ath10k@lists.infradead.org; Wed, 27 Jan 2016 18:59:26 +0000
+ id 1aOVKw-0000Ha-Nr
+ for ath10k@lists.infradead.org; Wed, 27 Jan 2016 19:01:03 +0000
 From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH 4/4] ath10k: add abstraction layer for vdev subtype
-Date: Wed, 27 Jan 2016 10:55:57 -0800
-Message-ID: <1453920957-9908-5-git-send-email-poh@qca.qualcomm.com>
-In-Reply-To: <1453920957-9908-1-git-send-email-poh@qca.qualcomm.com>
-References: <1453920957-9908-1-git-send-email-poh@qca.qualcomm.com>
+Subject: [PATCH 0/4] ath10k: rename mesh and add abstraction layer
+Date: Wed, 27 Jan 2016 10:55:53 -0800
+Message-ID: <1453920957-9908-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,286 +23,25 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Abstraction layer for vdev subtype is added to solve
-subtype mismatch and to give flexible compatibility
-among different firmware revisions.
+Split Mesh service to 11s Mesh and non-11s Mesh according to
+firmware service bit to help users distinguish 11s Mesh from
+non 11s Mesh.
+And add abstraction layer for vdev subtype to solve subtype mismatch
+and to give flexible compatibility among different firmware revisions.
 
-For instance, 10.2 and 10.4 firmware has different
-definition of their vdev subtypes for Mesh.
-10.4 defined subtype 6 for 802.11s Mesh while 10.2 uses 5.
-Hence use the abstraction API to get right subtype to use.
+Peter Oh (4):
+  ath10k: rename Mesh related service names
+  ath10k: update 10.4 WMI service map
+  ath10k: use vif->type and vif->p2p for P2P_GO check
+  ath10k: add abstraction layer for vdev subtype
 
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c     | 15 ++++---
+ drivers/net/wireless/ath/ath10k/mac.c     | 25 +++++------
  drivers/net/wireless/ath/ath10k/wmi-ops.h | 11 +++++
  drivers/net/wireless/ath/ath10k/wmi-tlv.c |  1 +
- drivers/net/wireless/ath/ath10k/wmi.c     | 70 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h     | 42 ++++++++++++++++---
- 5 files changed, 128 insertions(+), 11 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c     | 72 ++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi.h     | 69 +++++++++++++++++++++++------
+ 5 files changed, 153 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 2940b00..c9a39ab 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4345,25 +4345,29 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 		   bit, ar->free_vdev_map);
- 
- 	arvif->vdev_id = bit;
--	arvif->vdev_subtype = WMI_VDEV_SUBTYPE_NONE;
-+	arvif->vdev_subtype =
-+		ath10k_wmi_get_vdev_subtype(ar, WMI_VDEV_SUBTYPE_NONE);
- 
- 	switch (vif->type) {
- 	case NL80211_IFTYPE_P2P_DEVICE:
- 		arvif->vdev_type = WMI_VDEV_TYPE_STA;
--		arvif->vdev_subtype = WMI_VDEV_SUBTYPE_P2P_DEVICE;
-+		arvif->vdev_subtype = ath10k_wmi_get_vdev_subtype
-+					(ar, WMI_VDEV_SUBTYPE_P2P_DEVICE);
- 		break;
- 	case NL80211_IFTYPE_UNSPECIFIED:
- 	case NL80211_IFTYPE_STATION:
- 		arvif->vdev_type = WMI_VDEV_TYPE_STA;
- 		if (vif->p2p)
--			arvif->vdev_subtype = WMI_VDEV_SUBTYPE_P2P_CLIENT;
-+			arvif->vdev_subtype = ath10k_wmi_get_vdev_subtype
-+					(ar, WMI_VDEV_SUBTYPE_P2P_CLIENT);
- 		break;
- 	case NL80211_IFTYPE_ADHOC:
- 		arvif->vdev_type = WMI_VDEV_TYPE_IBSS;
- 		break;
- 	case NL80211_IFTYPE_MESH_POINT:
- 		if (test_bit(WMI_SERVICE_MESH_11S, ar->wmi.svc_map)) {
--			arvif->vdev_subtype = WMI_VDEV_SUBTYPE_MESH_11S;
-+			arvif->vdev_subtype = ath10k_wmi_get_vdev_subtype
-+						(ar, WMI_VDEV_SUBTYPE_MESH_11S);
- 		} else if (!test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
- 			ret = -EINVAL;
- 			ath10k_warn(ar, "must load driver with rawmode=1 to add mesh interfaces\n");
-@@ -4375,7 +4379,8 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 		arvif->vdev_type = WMI_VDEV_TYPE_AP;
- 
- 		if (vif->p2p)
--			arvif->vdev_subtype = WMI_VDEV_SUBTYPE_P2P_GO;
-+			arvif->vdev_subtype = ath10k_wmi_get_vdev_subtype
-+						(ar, WMI_VDEV_SUBTYPE_P2P_GO);
- 		break;
- 	case NL80211_IFTYPE_MONITOR:
- 		arvif->vdev_type = WMI_VDEV_TYPE_MONITOR;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 8f4f6a8..32ab34e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -186,6 +186,8 @@ struct wmi_ops {
- 							u8 enable,
- 							u32 detect_level,
- 							u32 detect_margin);
-+	int (*get_vdev_subtype)(struct ath10k *ar,
-+				enum wmi_vdev_subtype subtype);
- };
- 
- int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
-@@ -1327,4 +1329,13 @@ ath10k_wmi_pdev_enable_adaptive_cca(struct ath10k *ar, u8 enable,
- 				   ar->wmi.cmd->pdev_enable_adaptive_cca_cmdid);
- }
- 
-+static inline int
-+ath10k_wmi_get_vdev_subtype(struct ath10k *ar, enum wmi_vdev_subtype subtype)
-+{
-+	if (!ar->wmi.ops->get_vdev_subtype)
-+		return -EOPNOTSUPP;
-+
-+	return ar->wmi.ops->get_vdev_subtype(ar, subtype);
-+}
-+
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 3b3a27b..1085932 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -3483,6 +3483,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.gen_tdls_peer_update = ath10k_wmi_tlv_op_gen_tdls_peer_update,
- 	.gen_adaptive_qcs = ath10k_wmi_tlv_op_gen_adaptive_qcs,
- 	.fw_stats_fill = ath10k_wmi_main_op_fw_stats_fill,
-+	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
- };
- 
- static const struct wmi_peer_flags_map wmi_tlv_peer_flags_map = {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 723fb9bc..f14b9e5 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -7351,6 +7351,71 @@ unlock:
- 		buf[len] = 0;
- }
- 
-+int ath10k_wmi_op_get_vdev_subtype(struct ath10k *ar,
-+				   enum wmi_vdev_subtype subtype)
-+{
-+	switch (subtype) {
-+	case WMI_VDEV_SUBTYPE_NONE:
-+		return WMI_VDEV_SUBTYPE_LEGACY_NONE;
-+	case WMI_VDEV_SUBTYPE_P2P_DEVICE:
-+		return WMI_VDEV_SUBTYPE_LEGACY_P2P_DEV;
-+	case WMI_VDEV_SUBTYPE_P2P_CLIENT:
-+		return WMI_VDEV_SUBTYPE_LEGACY_P2P_CLI;
-+	case WMI_VDEV_SUBTYPE_P2P_GO:
-+		return WMI_VDEV_SUBTYPE_LEGACY_P2P_GO;
-+	case WMI_VDEV_SUBTYPE_PROXY_STA:
-+		return WMI_VDEV_SUBTYPE_LEGACY_PROXY_STA;
-+	case WMI_VDEV_SUBTYPE_MESH_11S:
-+	case WMI_VDEV_SUBTYPE_MESH_NON_11S:
-+		return -ENOTSUPP;
-+	}
-+	return -ENOTSUPP;
-+}
-+
-+static int ath10k_wmi_10_2_4_op_get_vdev_subtype(struct ath10k *ar,
-+						 enum wmi_vdev_subtype subtype)
-+{
-+	switch (subtype) {
-+	case WMI_VDEV_SUBTYPE_NONE:
-+		return WMI_VDEV_SUBTYPE_10_2_4_NONE;
-+	case WMI_VDEV_SUBTYPE_P2P_DEVICE:
-+		return WMI_VDEV_SUBTYPE_10_2_4_P2P_DEV;
-+	case WMI_VDEV_SUBTYPE_P2P_CLIENT:
-+		return WMI_VDEV_SUBTYPE_10_2_4_P2P_CLI;
-+	case WMI_VDEV_SUBTYPE_P2P_GO:
-+		return WMI_VDEV_SUBTYPE_10_2_4_P2P_GO;
-+	case WMI_VDEV_SUBTYPE_PROXY_STA:
-+		return WMI_VDEV_SUBTYPE_10_2_4_PROXY_STA;
-+	case WMI_VDEV_SUBTYPE_MESH_11S:
-+		return WMI_VDEV_SUBTYPE_10_2_4_MESH_11S;
-+	case WMI_VDEV_SUBTYPE_MESH_NON_11S:
-+		return -ENOTSUPP;
-+	}
-+	return -ENOTSUPP;
-+}
-+
-+static int ath10k_wmi_10_4_op_get_vdev_subtype(struct ath10k *ar,
-+					       enum wmi_vdev_subtype subtype)
-+{
-+	switch (subtype) {
-+	case WMI_VDEV_SUBTYPE_NONE:
-+		return WMI_VDEV_SUBTYPE_10_4_NONE;
-+	case WMI_VDEV_SUBTYPE_P2P_DEVICE:
-+		return WMI_VDEV_SUBTYPE_10_4_P2P_DEV;
-+	case WMI_VDEV_SUBTYPE_P2P_CLIENT:
-+		return WMI_VDEV_SUBTYPE_10_4_P2P_CLI;
-+	case WMI_VDEV_SUBTYPE_P2P_GO:
-+		return WMI_VDEV_SUBTYPE_10_4_P2P_GO;
-+	case WMI_VDEV_SUBTYPE_PROXY_STA:
-+		return WMI_VDEV_SUBTYPE_10_4_PROXY_STA;
-+	case WMI_VDEV_SUBTYPE_MESH_11S:
-+		return WMI_VDEV_SUBTYPE_10_4_MESH_11S;
-+	case WMI_VDEV_SUBTYPE_MESH_NON_11S:
-+		return WMI_VDEV_SUBTYPE_10_4_MESH_NON_11S;
-+	}
-+	return -ENOTSUPP;
-+}
-+
- static const struct wmi_ops wmi_ops = {
- 	.rx = ath10k_wmi_op_rx,
- 	.map_svc = wmi_main_svc_map,
-@@ -7410,6 +7475,7 @@ static const struct wmi_ops wmi_ops = {
- 	.gen_addba_set_resp = ath10k_wmi_op_gen_addba_set_resp,
- 	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
- 	.fw_stats_fill = ath10k_wmi_main_op_fw_stats_fill,
-+	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
- 	/* .gen_p2p_go_bcn_ie not implemented */
-@@ -7477,6 +7543,7 @@ static const struct wmi_ops wmi_10_1_ops = {
- 	.gen_addba_set_resp = ath10k_wmi_op_gen_addba_set_resp,
- 	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
- 	.fw_stats_fill = ath10k_wmi_10x_op_fw_stats_fill,
-+	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
- 	/* .gen_p2p_go_bcn_ie not implemented */
-@@ -7545,6 +7612,7 @@ static const struct wmi_ops wmi_10_2_ops = {
- 	.gen_addba_set_resp = ath10k_wmi_op_gen_addba_set_resp,
- 	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
- 	.fw_stats_fill = ath10k_wmi_10x_op_fw_stats_fill,
-+	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
- 	/* .gen_pdev_enable_adaptive_cca not implemented */
- };
- 
-@@ -7611,6 +7679,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
- 	.fw_stats_fill = ath10k_wmi_10x_op_fw_stats_fill,
- 	.gen_pdev_enable_adaptive_cca =
- 		ath10k_wmi_op_gen_pdev_enable_adaptive_cca,
-+	.get_vdev_subtype = ath10k_wmi_10_2_4_op_get_vdev_subtype,
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
- 	/* .gen_p2p_go_bcn_ie not implemented */
-@@ -7677,6 +7746,7 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	/* shared with 10.2 */
- 	.gen_request_stats = ath10k_wmi_op_gen_request_stats,
- 	.gen_pdev_get_temperature = ath10k_wmi_10_2_op_gen_pdev_get_temperature,
-+	.get_vdev_subtype = ath10k_wmi_10_4_op_get_vdev_subtype,
- };
- 
- int ath10k_wmi_attach(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 90b6581..68be0b7 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4285,12 +4285,40 @@ enum wmi_vdev_type {
- };
- 
- enum wmi_vdev_subtype {
--	WMI_VDEV_SUBTYPE_NONE       = 0,
--	WMI_VDEV_SUBTYPE_P2P_DEVICE = 1,
--	WMI_VDEV_SUBTYPE_P2P_CLIENT = 2,
--	WMI_VDEV_SUBTYPE_P2P_GO     = 3,
--	WMI_VDEV_SUBTYPE_PROXY_STA	= 4,
--	WMI_VDEV_SUBTYPE_MESH_11S   = 5,
-+	WMI_VDEV_SUBTYPE_NONE,
-+	WMI_VDEV_SUBTYPE_P2P_DEVICE,
-+	WMI_VDEV_SUBTYPE_P2P_CLIENT,
-+	WMI_VDEV_SUBTYPE_P2P_GO,
-+	WMI_VDEV_SUBTYPE_PROXY_STA,
-+	WMI_VDEV_SUBTYPE_MESH_11S,
-+	WMI_VDEV_SUBTYPE_MESH_NON_11S,
-+};
-+
-+enum wmi_vdev_subtype_legacy {
-+	WMI_VDEV_SUBTYPE_LEGACY_NONE      = 0,
-+	WMI_VDEV_SUBTYPE_LEGACY_P2P_DEV   = 1,
-+	WMI_VDEV_SUBTYPE_LEGACY_P2P_CLI   = 2,
-+	WMI_VDEV_SUBTYPE_LEGACY_P2P_GO    = 3,
-+	WMI_VDEV_SUBTYPE_LEGACY_PROXY_STA = 4,
-+};
-+
-+enum wmi_vdev_subtype_10_2_4 {
-+	WMI_VDEV_SUBTYPE_10_2_4_NONE      = 0,
-+	WMI_VDEV_SUBTYPE_10_2_4_P2P_DEV   = 1,
-+	WMI_VDEV_SUBTYPE_10_2_4_P2P_CLI   = 2,
-+	WMI_VDEV_SUBTYPE_10_2_4_P2P_GO    = 3,
-+	WMI_VDEV_SUBTYPE_10_2_4_PROXY_STA = 4,
-+	WMI_VDEV_SUBTYPE_10_2_4_MESH_11S  = 5,
-+};
-+
-+enum wmi_vdev_subtype_10_4 {
-+	WMI_VDEV_SUBTYPE_10_4_NONE         = 0,
-+	WMI_VDEV_SUBTYPE_10_4_P2P_DEV      = 1,
-+	WMI_VDEV_SUBTYPE_10_4_P2P_CLI      = 2,
-+	WMI_VDEV_SUBTYPE_10_4_P2P_GO       = 3,
-+	WMI_VDEV_SUBTYPE_10_4_PROXY_STA    = 4,
-+	WMI_VDEV_SUBTYPE_10_4_MESH_NON_11S = 5,
-+	WMI_VDEV_SUBTYPE_10_4_MESH_11S     = 6,
- };
- 
- /* values for vdev_subtype */
-@@ -6451,5 +6479,7 @@ size_t ath10k_wmi_fw_stats_num_vdevs(struct list_head *head);
- void ath10k_wmi_10_4_op_fw_stats_fill(struct ath10k *ar,
- 				      struct ath10k_fw_stats *fw_stats,
- 				      char *buf);
-+int ath10k_wmi_op_get_vdev_subtype(struct ath10k *ar,
-+				   enum wmi_vdev_subtype subtype);
- 
- #endif /* _WMI_H_ */
 -- 
 1.9.1
 
