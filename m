@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOVJ1-0006DQ-Mq
- for ath10k@lists.infradead.org; Wed, 27 Jan 2016 18:59:04 +0000
+ id 1aOVJ0-0006DQ-5F
+ for ath10k@lists.infradead.org; Wed, 27 Jan 2016 18:59:03 +0000
 From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH 3/4] ath10k: use vif->type and vif->p2p for P2P_GO check
-Date: Wed, 27 Jan 2016 10:55:56 -0800
-Message-ID: <1453920957-9908-4-git-send-email-poh@qca.qualcomm.com>
+Subject: [PATCH 2/4] ath10k: update 10.4 WMI service map
+Date: Wed, 27 Jan 2016 10:55:55 -0800
+Message-ID: <1453920957-9908-3-git-send-email-poh@qca.qualcomm.com>
 In-Reply-To: <1453920957-9908-1-git-send-email-poh@qca.qualcomm.com>
 References: <1453920957-9908-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
@@ -25,56 +25,59 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Interface type P2P_GO can be checked by either arvif->vdev_type
-and arvif->vdev_subtype or vif->type and vif->p2p.
-Use later one to avoid more cpu consumption that could happen
-when subtype abstraction layer change is introduced.
+Update 10.4 WMI service map to sync to the latest 10.4 firmware
+as of 1/20/2016.
 
 Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 8 ++------
- drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
- 2 files changed, 3 insertions(+), 7 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 6bf5c91..2940b00 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1358,10 +1358,7 @@ static int ath10k_mac_setup_bcn_p2p_ie(struct ath10k_vif *arvif,
- 	const u8 *p2p_ie;
- 	int ret;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 26a1bb9..90b6581 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -178,6 +178,8 @@ enum wmi_service {
+ 	WMI_SERVICE_EXT_RES_CFG_SUPPORT,
+ 	WMI_SERVICE_MESH_11S,
+ 	WMI_SERVICE_MESH_NON_11S,
++	WMI_SERVICE_RESTRT_CHNL_SUPPORT,
++	WMI_SERVICE_PEER_STATS,
  
--	if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
--		return 0;
--
--	if (arvif->vdev_subtype != WMI_VDEV_SUBTYPE_P2P_GO)
-+	if (arvif->vif->type != NL80211_IFTYPE_AP || !arvif->vif->p2p)
- 		return 0;
+ 	/* keep last */
+ 	WMI_SERVICE_MAX,
+@@ -296,6 +298,9 @@ enum wmi_10_4_service {
+ 	WMI_10_4_SERVICE_BSS_CHANNEL_INFO_64,
+ 	WMI_10_4_SERVICE_EXT_RES_CFG_SUPPORT,
+ 	WMI_10_4_SERVICE_MESH_NON_11S,
++	WMI_10_4_SERVICE_RESTRT_CHNL_SUPPORT,
++	WMI_10_4_SERVICE_PEER_STATS,
++	WMI_10_4_SERVICE_MESH_11S,
+ };
  
- 	mgmt = (void *)bcn->data;
-@@ -3259,8 +3256,7 @@ static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar,
- 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+ static inline char *wmi_service_name(int service_id)
+@@ -388,6 +393,8 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_EXT_RES_CFG_SUPPORT);
+ 	SVCSTR(WMI_SERVICE_MESH_11S);
+ 	SVCSTR(WMI_SERVICE_MESH_NON_11S);
++	SVCSTR(WMI_SERVICE_RESTRT_CHNL_SUPPORT);
++	SVCSTR(WMI_SERVICE_PEER_STATS);
+ 	default:
+ 		return NULL;
+ 	}
+@@ -627,6 +634,12 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
+ 	SVCMAP(WMI_10_4_SERVICE_MESH_NON_11S,
+ 	       WMI_SERVICE_MESH_NON_11S, len);
++	SVCMAP(WMI_10_4_SERVICE_RESTRT_CHNL_SUPPORT,
++	       WMI_SERVICE_RESTRT_CHNL_SUPPORT, len);
++	SVCMAP(WMI_10_4_SERVICE_PEER_STATS,
++	       WMI_SERVICE_PEER_STATS, len);
++	SVCMAP(WMI_10_4_SERVICE_MESH_11S,
++	       WMI_SERVICE_MESH_11S, len);
+ }
  
- 	/* This is case only for P2P_GO */
--	if (arvif->vdev_type != WMI_VDEV_TYPE_AP ||
--	    arvif->vdev_subtype != WMI_VDEV_SUBTYPE_P2P_GO)
-+	if (vif->type != NL80211_IFTYPE_AP || !vif->p2p)
- 		return;
- 
- 	if (unlikely(ieee80211_is_probe_resp(hdr->frame_control))) {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index a7c3d29..723fb9bc 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3184,7 +3184,7 @@ static void ath10k_wmi_update_noa(struct ath10k *ar, struct ath10k_vif *arvif,
- 				  struct sk_buff *bcn,
- 				  const struct wmi_p2p_noa_info *noa)
- {
--	if (arvif->vdev_subtype != WMI_VDEV_SUBTYPE_P2P_GO)
-+	if (!arvif->vif->p2p)
- 		return;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MGMT, "noa changed: %d\n", noa->changed);
+ #undef SVCMAP
 -- 
 1.9.1
 
