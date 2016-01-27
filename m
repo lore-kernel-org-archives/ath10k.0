@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOVKw-0000Ha-Nr
- for ath10k@lists.infradead.org; Wed, 27 Jan 2016 19:01:03 +0000
+ id 1aOVKx-0000Ha-Ij
+ for ath10k@lists.infradead.org; Wed, 27 Jan 2016 19:01:04 +0000
 From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH 0/4] ath10k: rename mesh and add abstraction layer
-Date: Wed, 27 Jan 2016 10:55:53 -0800
-Message-ID: <1453920957-9908-1-git-send-email-poh@qca.qualcomm.com>
+Subject: [PATCH 1/4] ath10k: rename Mesh related service names
+Date: Wed, 27 Jan 2016 10:55:54 -0800
+Message-ID: <1453920957-9908-2-git-send-email-poh@qca.qualcomm.com>
+In-Reply-To: <1453920957-9908-1-git-send-email-poh@qca.qualcomm.com>
+References: <1453920957-9908-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,25 +25,95 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Split Mesh service to 11s Mesh and non-11s Mesh according to
-firmware service bit to help users distinguish 11s Mesh from
-non 11s Mesh.
-And add abstraction layer for vdev subtype to solve subtype mismatch
-and to give flexible compatibility among different firmware revisions.
+WMI_10_4_SERVICE_MESH bit is for non IEEE802.11s Mesh.
+Hence rename it to WMI_10_4_SERVICE_MESH_NON_11S.
+Also add _11S as post-fix to each of WMI_SERVICE_MESH and
+WMI_VDEV_SUBTYPE_MESH specifying the service is for 11s Mesh.
+This will help users to distinguish 11s Mesh from non 11s Mesh.
 
-Peter Oh (4):
-  ath10k: rename Mesh related service names
-  ath10k: update 10.4 WMI service map
-  ath10k: use vif->type and vif->p2p for P2P_GO check
-  ath10k: add abstraction layer for vdev subtype
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |  4 ++--
+ drivers/net/wireless/ath/ath10k/wmi.h | 16 +++++++++-------
+ 2 files changed, 11 insertions(+), 9 deletions(-)
 
- drivers/net/wireless/ath/ath10k/mac.c     | 25 +++++------
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 11 +++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  1 +
- drivers/net/wireless/ath/ath10k/wmi.c     | 72 ++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wmi.h     | 69 +++++++++++++++++++++++------
- 5 files changed, 153 insertions(+), 25 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 6146a29..6bf5c91 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4366,8 +4366,8 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		arvif->vdev_type = WMI_VDEV_TYPE_IBSS;
+ 		break;
+ 	case NL80211_IFTYPE_MESH_POINT:
+-		if (test_bit(WMI_SERVICE_MESH, ar->wmi.svc_map)) {
+-			arvif->vdev_subtype = WMI_VDEV_SUBTYPE_MESH;
++		if (test_bit(WMI_SERVICE_MESH_11S, ar->wmi.svc_map)) {
++			arvif->vdev_subtype = WMI_VDEV_SUBTYPE_MESH_11S;
+ 		} else if (!test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
+ 			ret = -EINVAL;
+ 			ath10k_warn(ar, "must load driver with rawmode=1 to add mesh interfaces\n");
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index d85ad78..26a1bb9 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -176,7 +176,8 @@ enum wmi_service {
+ 	WMI_SERVICE_AUX_CHAN_LOAD_INTF,
+ 	WMI_SERVICE_BSS_CHANNEL_INFO_64,
+ 	WMI_SERVICE_EXT_RES_CFG_SUPPORT,
+-	WMI_SERVICE_MESH,
++	WMI_SERVICE_MESH_11S,
++	WMI_SERVICE_MESH_NON_11S,
+ 
+ 	/* keep last */
+ 	WMI_SERVICE_MAX,
+@@ -294,7 +295,7 @@ enum wmi_10_4_service {
+ 	WMI_10_4_SERVICE_AUX_CHAN_LOAD_INTF,
+ 	WMI_10_4_SERVICE_BSS_CHANNEL_INFO_64,
+ 	WMI_10_4_SERVICE_EXT_RES_CFG_SUPPORT,
+-	WMI_10_4_SERVICE_MESH,
++	WMI_10_4_SERVICE_MESH_NON_11S,
+ };
+ 
+ static inline char *wmi_service_name(int service_id)
+@@ -385,7 +386,8 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_AUX_CHAN_LOAD_INTF);
+ 	SVCSTR(WMI_SERVICE_BSS_CHANNEL_INFO_64);
+ 	SVCSTR(WMI_SERVICE_EXT_RES_CFG_SUPPORT);
+-	SVCSTR(WMI_SERVICE_MESH);
++	SVCSTR(WMI_SERVICE_MESH_11S);
++	SVCSTR(WMI_SERVICE_MESH_NON_11S);
+ 	default:
+ 		return NULL;
+ 	}
+@@ -460,7 +462,7 @@ static inline void wmi_10x_svc_map(const __le32 *in, unsigned long *out,
+ 	SVCMAP(WMI_10X_SERVICE_BSS_CHANNEL_INFO_64,
+ 	       WMI_SERVICE_BSS_CHANNEL_INFO_64, len);
+ 	SVCMAP(WMI_10X_SERVICE_MESH,
+-	       WMI_SERVICE_MESH, len);
++	       WMI_SERVICE_MESH_11S, len);
+ 	SVCMAP(WMI_10X_SERVICE_EXT_RES_CFG_SUPPORT,
+ 	       WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
+ }
+@@ -623,8 +625,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_BSS_CHANNEL_INFO_64, len);
+ 	SVCMAP(WMI_10_4_SERVICE_EXT_RES_CFG_SUPPORT,
+ 	       WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
+-	SVCMAP(WMI_10_4_SERVICE_MESH,
+-	       WMI_SERVICE_MESH, len);
++	SVCMAP(WMI_10_4_SERVICE_MESH_NON_11S,
++	       WMI_SERVICE_MESH_NON_11S, len);
+ }
+ 
+ #undef SVCMAP
+@@ -4275,7 +4277,7 @@ enum wmi_vdev_subtype {
+ 	WMI_VDEV_SUBTYPE_P2P_CLIENT = 2,
+ 	WMI_VDEV_SUBTYPE_P2P_GO     = 3,
+ 	WMI_VDEV_SUBTYPE_PROXY_STA	= 4,
+-	WMI_VDEV_SUBTYPE_MESH		= 5,
++	WMI_VDEV_SUBTYPE_MESH_11S   = 5,
+ };
+ 
+ /* values for vdev_subtype */
 -- 
 1.9.1
 
