@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOMsV-0004i8-Gk
- for ath10k@lists.infradead.org; Wed, 27 Jan 2016 09:59:08 +0000
+ id 1aOMsL-0004aI-G9
+ for ath10k@lists.infradead.org; Wed, 27 Jan 2016 09:58:59 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 10/12] ath10k: include irq related functions in ahb
-Date: Wed, 27 Jan 2016 15:24:31 +0530
-Message-ID: <1453888473-2879-11-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH 09/12] ath10k: add chip and bus halt logic in ahb
+Date: Wed, 27 Jan 2016 15:24:30 +0530
+Message-ID: <1453888473-2879-10-git-send-email-rmani@qti.qualcomm.com>
 In-Reply-To: <1453888473-2879-1-git-send-email-rmani@qti.qualcomm.com>
 References: <1453888473-2879-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,85 +25,165 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-Add irq related functions to register,handle,release,disable interrupt.
-
-qca4019 supports msi interrupt, but it has the problem. Until the issue
-gets sorted out, only legacy interrupt model is enabled and used.
+Add function to perform chip halt sequence and function to halt axi
+bus in ahb module. Mainly used in the scenario like driver unload.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/ahb.c | 44 +++++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/ahb.h |  2 ++
- 2 files changed, 46 insertions(+)
+ drivers/net/wireless/ath/ath10k/ahb.c | 113 ++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/ahb.h |  15 +++++
+ 2 files changed, 128 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-index 2305078..29d0b6c 100644
+index d1f1972..2305078 100644
 --- a/drivers/net/wireless/ath/ath10k/ahb.c
 +++ b/drivers/net/wireless/ath/ath10k/ahb.c
-@@ -458,6 +458,50 @@ static void ath10k_ahb_halt_chip(struct ath10k *ar)
- 	ath10k_dbg(ar, ATH10K_DBG_AHB, "core %d reset done\n", core_id);
+@@ -345,6 +345,119 @@ static int ath10k_ahb_release_reset(struct ath10k *ar)
+ 	return 0;
  }
  
-+static irqreturn_t ath10k_ahb_interrupt_handler(int irq, void *arg)
++static void ath10k_ahb_halt_axi_bus(struct ath10k *ar, u32 haltreq_reg,
++				    u32 haltack_reg)
 +{
-+	struct ath10k *ar = arg;
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	unsigned long timeout;
++	u32 val;
 +
-+	if (!ath10k_pci_irq_pending(ar))
-+		return IRQ_NONE;
++	/* Issue halt axi bus request */
++	val = ath10k_ahb_tcsr_read32(ar, haltreq_reg);
++	val |= AHB_AXI_BUS_HALT_REQ;
++	ath10k_ahb_tcsr_write32(ar, haltreq_reg, val);
 +
-+	ath10k_pci_disable_and_clear_legacy_irq(ar);
-+	tasklet_schedule(&ar_pci->intr_tq);
++	/* Wait for axi bus halted ack */
++	timeout = jiffies + msecs_to_jiffies(ATH10K_AHB_AXI_BUS_HALT_TIMEOUT);
++	do {
++		val = ath10k_ahb_tcsr_read32(ar, haltack_reg);
++		if (val & AHB_AXI_BUS_HALT_ACK)
++			break;
 +
-+	return IRQ_HANDLED;
-+}
++		mdelay(1);
++	} while (time_before(jiffies, timeout));
 +
-+static int ath10k_ahb_request_irq_legacy(struct ath10k *ar)
-+{
-+	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
-+	int ret;
-+
-+	ret = request_irq(ar_ahb->irq,
-+			  ath10k_ahb_interrupt_handler,
-+			  IRQF_SHARED, "ath10k_ahb", ar);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to request legacy irq %d: %d\n",
-+			    ar_ahb->irq, ret);
-+		return ret;
++	if (!(val & AHB_AXI_BUS_HALT_ACK)) {
++		ath10k_err(ar, "failed to halt axi bus: %d\n", val);
++		return;
 +	}
 +
-+	return 0;
++	ath10k_dbg(ar, ATH10K_DBG_AHB, "axi bus halted\n");
 +}
 +
-+static void ath10k_ahb_release_irq_legacy(struct ath10k *ar)
++static void ath10k_ahb_halt_chip(struct ath10k *ar)
 +{
 +	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
++	u32 core_id, glb_cfg_reg, haltreq_reg, haltack_reg;
++	u32 val;
++	int ret;
 +
-+	free_irq(ar_ahb->irq, ar);
-+}
++	if (IS_ERR_OR_NULL(ar_ahb->core_cold_rst) ||
++	    IS_ERR_OR_NULL(ar_ahb->radio_cold_rst) ||
++	    IS_ERR_OR_NULL(ar_ahb->radio_warm_rst) ||
++	    IS_ERR_OR_NULL(ar_ahb->radio_srif_rst) ||
++	    IS_ERR_OR_NULL(ar_ahb->cpu_init_rst)) {
++		ath10k_err(ar, "rst ctrl(s) is/are not initialized\n");
++		return;
++	}
 +
-+static void ath10k_ahb_irq_disable(struct ath10k *ar)
-+{
-+	ath10k_ce_disable_interrupts(ar);
-+	ath10k_pci_disable_and_clear_legacy_irq(ar);
++	core_id = ath10k_ahb_read32(ar, ATH10K_AHB_WLAN_CORE_ID_REG);
++
++	switch (core_id) {
++	case 0:
++		glb_cfg_reg = ATH10K_AHB_TCSR_WIFI0_GLB_CFG;
++		haltreq_reg = ATH10K_AHB_TCSR_WCSS0_HALTREQ;
++		haltack_reg = ATH10K_AHB_TCSR_WCSS0_HALTACK;
++		break;
++	case 1:
++		glb_cfg_reg = ATH10K_AHB_TCSR_WIFI1_GLB_CFG;
++		haltreq_reg = ATH10K_AHB_TCSR_WCSS1_HALTREQ;
++		haltack_reg = ATH10K_AHB_TCSR_WCSS1_HALTACK;
++		break;
++	default:
++		ath10k_err(ar, "invalid core id %d found, skipping reset sequence\n",
++			   core_id);
++		return;
++	}
++
++	ath10k_ahb_halt_axi_bus(ar, haltreq_reg, haltack_reg);
++
++	val = ath10k_ahb_tcsr_read32(ar, glb_cfg_reg);
++	val |= TCSR_WIFIX_GLB_CFG_DISABLE_CORE_CLK;
++	ath10k_ahb_tcsr_write32(ar, glb_cfg_reg, val);
++
++	ret = reset_control_assert(ar_ahb->core_cold_rst);
++	if (ret)
++		ath10k_err(ar, "failed to assert core cold rst: %d\n", ret);
++	msleep(1);
++
++	ret = reset_control_assert(ar_ahb->radio_cold_rst);
++	if (ret)
++		ath10k_err(ar, "failed to assert radio cold rst: %d\n", ret);
++	msleep(1);
++
++	ret = reset_control_assert(ar_ahb->radio_warm_rst);
++	if (ret)
++		ath10k_err(ar, "failed to assert radio warm rst: %d\n", ret);
++	msleep(1);
++
++	ret = reset_control_assert(ar_ahb->radio_srif_rst);
++	if (ret)
++		ath10k_err(ar, "failed to assert radio srif rst: %d\n", ret);
++	msleep(1);
++
++	ret = reset_control_assert(ar_ahb->cpu_init_rst);
++	if (ret)
++		ath10k_err(ar, "failed to assert cpu init rst: %d\n", ret);
++	msleep(10);
++
++	/* Clear halt req and core clock disable req before
++	 * deasserting wifi core reset.
++	 */
++	val = ath10k_ahb_tcsr_read32(ar, haltreq_reg);
++	val &= ~AHB_AXI_BUS_HALT_REQ;
++	ath10k_ahb_tcsr_write32(ar, haltreq_reg, val);
++
++	val = ath10k_ahb_tcsr_read32(ar, glb_cfg_reg);
++	val &= ~TCSR_WIFIX_GLB_CFG_DISABLE_CORE_CLK;
++	ath10k_ahb_tcsr_write32(ar, glb_cfg_reg, val);
++
++	ret = reset_control_deassert(ar_ahb->core_cold_rst);
++	if (ret)
++		ath10k_err(ar, "failed to deassert core cold rst: %d\n", ret);
++
++	ath10k_dbg(ar, ATH10K_DBG_AHB, "core %d reset done\n", core_id);
 +}
 +
  static int ath10k_ahb_probe(struct platform_device *pdev)
  {
  	return 0;
 diff --git a/drivers/net/wireless/ath/ath10k/ahb.h b/drivers/net/wireless/ath/ath10k/ahb.h
-index 4761eeb..97c40e4 100644
+index 2904b7b..4761eeb 100644
 --- a/drivers/net/wireless/ath/ath10k/ahb.h
 +++ b/drivers/net/wireless/ath/ath10k/ahb.h
-@@ -26,6 +26,8 @@ struct ath10k_ahb {
- 	void __iomem *gcc_mem;
- 	void __iomem *tcsr_mem;
+@@ -39,6 +39,21 @@ struct ath10k_ahb {
  
-+	int irq;
+ #ifdef CONFIG_ATH10K_AHB
+ 
++#define ATH10K_AHB_WLAN_CORE_ID_REG          0x82030
 +
- 	struct clk *cmd_clk;
- 	struct clk *ref_clk;
- 	struct clk *rtc_clk;
++#define ATH10K_AHB_TCSR_WIFI0_GLB_CFG        0x49000
++#define ATH10K_AHB_TCSR_WIFI1_GLB_CFG        0x49004
++#define TCSR_WIFIX_GLB_CFG_DISABLE_CORE_CLK  BIT(25)
++
++#define ATH10K_AHB_TCSR_WCSS0_HALTREQ        0x52000
++#define ATH10K_AHB_TCSR_WCSS1_HALTREQ        0x52010
++#define ATH10K_AHB_TCSR_WCSS0_HALTACK        0x52004
++#define ATH10K_AHB_TCSR_WCSS1_HALTACK        0x52014
++
++#define ATH10K_AHB_AXI_BUS_HALT_TIMEOUT      10 /* msec */
++#define AHB_AXI_BUS_HALT_REQ                 1
++#define AHB_AXI_BUS_HALT_ACK                 1
++
+ int ath10k_ahb_init(void);
+ void ath10k_ahb_exit(void);
+ 
 -- 
 1.8.1.2
 
