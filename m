@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOVUw-00073r-MO
- for ath10k@lists.infradead.org; Wed, 27 Jan 2016 19:11:23 +0000
-Subject: Re: [PATCH 4/4] ath10k: add abstraction layer for vdev subtype
+Received: from mail-qg0-x243.google.com ([2607:f8b0:400d:c04::243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aOVx2-0005eZ-5n
+ for ath10k@lists.infradead.org; Wed, 27 Jan 2016 19:40:24 +0000
+Received: by mail-qg0-x243.google.com with SMTP id 94so1153692qgt.1
+ for <ath10k@lists.infradead.org>; Wed, 27 Jan 2016 11:40:03 -0800 (PST)
+Date: Wed, 27 Jan 2016 14:39:56 -0500
+From: Bob Copeland <me@bobcopeland.com>
+Subject: Re: [PATCH 0/4] ath10k: rename mesh and add abstraction layer
+Message-ID: <20160127193955.GC12639@localhost>
 References: <1453920957-9908-1-git-send-email-poh@qca.qualcomm.com>
- <1453920957-9908-5-git-send-email-poh@qca.qualcomm.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <56A91645.9040602@candelatech.com>
-Date: Wed, 27 Jan 2016 11:11:01 -0800
 MIME-Version: 1.0
-In-Reply-To: <1453920957-9908-5-git-send-email-poh@qca.qualcomm.com>
+Content-Disposition: inline
+In-Reply-To: <1453920957-9908-1-git-send-email-poh@qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,70 +21,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Peter Oh <poh@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 01/27/2016 10:55 AM, Peter Oh wrote:
-> Abstraction layer for vdev subtype is added to solve
-> subtype mismatch and to give flexible compatibility
-> among different firmware revisions.
->
-> For instance, 10.2 and 10.4 firmware has different
-> definition of their vdev subtypes for Mesh.
-> 10.4 defined subtype 6 for 802.11s Mesh while 10.2 uses 5.
-> Hence use the abstraction API to get right subtype to use.
->
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
-> ---
->   drivers/net/wireless/ath/ath10k/mac.c     | 15 ++++---
->   drivers/net/wireless/ath/ath10k/wmi-ops.h | 11 +++++
->   drivers/net/wireless/ath/ath10k/wmi-tlv.c |  1 +
->   drivers/net/wireless/ath/ath10k/wmi.c     | 70 +++++++++++++++++++++++++++++++
->   drivers/net/wireless/ath/ath10k/wmi.h     | 42 ++++++++++++++++---
->   5 files changed, 128 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index 2940b00..c9a39ab 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -4345,25 +4345,29 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
->   		   bit, ar->free_vdev_map);
->
->   	arvif->vdev_id = bit;
-> -	arvif->vdev_subtype = WMI_VDEV_SUBTYPE_NONE;
-> +	arvif->vdev_subtype =
-> +		ath10k_wmi_get_vdev_subtype(ar, WMI_VDEV_SUBTYPE_NONE);
->
->   	switch (vif->type) {
->   	case NL80211_IFTYPE_P2P_DEVICE:
->   		arvif->vdev_type = WMI_VDEV_TYPE_STA;
-> -		arvif->vdev_subtype = WMI_VDEV_SUBTYPE_P2P_DEVICE;
-> +		arvif->vdev_subtype = ath10k_wmi_get_vdev_subtype
-> +					(ar, WMI_VDEV_SUBTYPE_P2P_DEVICE);
+On Wed, Jan 27, 2016 at 10:55:53AM -0800, Peter Oh wrote:
+> Split Mesh service to 11s Mesh and non-11s Mesh according to
+> firmware service bit to help users distinguish 11s Mesh from
+> non 11s Mesh.
+> And add abstraction layer for vdev subtype to solve subtype mismatch
+> and to give flexible compatibility among different firmware revisions.
 
-Would it maybe be simpler code to just assign these types to the ar struct at
-firmware init time.  And then do something like:
-
-arvif->vdev_subtype = ar->p2p_subtype;
-
-Or even maybe:
-
-arvif->vdev_subtype = ar->subtype_for_viftype[vif->type];
-
-I'm not sure how much it matters, but in general I find the abstraction in
-ath10k makes it hard to read through the code.
-
-Thanks,
-Ben
+Out of curiosity, which non-11s mesh, if you can share?
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Bob Copeland %% http://bobcopeland.com/
 
 _______________________________________________
 ath10k mailing list
