@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOMqo-0003XJ-80
- for ath10k@lists.infradead.org; Wed, 27 Jan 2016 09:57:24 +0000
+ id 1aOMqG-0003F3-7J
+ for ath10k@lists.infradead.org; Wed, 27 Jan 2016 09:56:50 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 03/12] ath10k: pull reusable code from pci probe and remove
- for ahb
-Date: Wed, 27 Jan 2016 15:24:24 +0530
-Message-ID: <1453888473-2879-4-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH 02/12] ath10k: make ath10k_pci_read32/write32() ops more
+ generic
+Date: Wed, 27 Jan 2016 15:24:23 +0530
+Message-ID: <1453888473-2879-3-git-send-email-rmani@qti.qualcomm.com>
 In-Reply-To: <1453888473-2879-1-git-send-email-rmani@qti.qualcomm.com>
 References: <1453888473-2879-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -26,151 +26,146 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-Some of the code present in ath10k_pci_{probe|remove} are reusable
-in ahb case too. To avoid code duplication, move reusable code to
-new functions. Later, those new functions can be called from ahb
-module's probe and exit functions.
+ath10k_pci_read32/write32() does work more specific to
+PCI by ensuring pci wake/sleep for every read and write.
+There is a plan to use most of stuff available in pci.c
+(irq stuff, copy engine, etc) for AHB case. Such kind
+of pci wake/sleep for every read/write is not required
+in AHB case (qca4019). All those reusable areas in pci.c
+and ce.c calls ath10k_pci_read32/write32() for low level
+read and write.
+
+In fact, ath10k_pci_read32/write32() should do what it does
+today for PCI case. But for AHB, it has to do differently.
+To make ath10k_pci_read32/write32() more generic, new function
+pointers are added in ar_pci for the function which does
+operation more close to the bus. Later, corresponding bus
+specific read and write function will be mapped to that.
+
+ath10k_pci_read32/write32() are changed to call directly
+those function pointers without worrying which bus underlying
+to it. Also, the function to get number of bank is changed
+in the same way.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 64 +++++++++++++++++++++++------------
- drivers/net/wireless/ath/ath10k/pci.h |  2 ++
- 2 files changed, 44 insertions(+), 22 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 34 +++++++++++++++++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/pci.h |  8 ++++++++
+ 2 files changed, 39 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index c5f6604..6ef878c 100644
+index 956e548..c5f6604 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3009,6 +3009,37 @@ static bool ath10k_pci_chip_is_supported(u32 dev_id, u32 chip_id)
+@@ -619,7 +619,7 @@ static void ath10k_pci_sleep_sync(struct ath10k *ar)
+ 	spin_unlock_irqrestore(&ar_pci->ps_lock, flags);
+ }
+ 
+-void ath10k_pci_write32(struct ath10k *ar, u32 offset, u32 value)
++static void ath10k_bus_pci_write32(struct ath10k *ar, u32 offset, u32 value)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int ret;
+@@ -641,7 +641,7 @@ void ath10k_pci_write32(struct ath10k *ar, u32 offset, u32 value)
+ 	ath10k_pci_sleep(ar);
+ }
+ 
+-u32 ath10k_pci_read32(struct ath10k *ar, u32 offset)
++static u32 ath10k_bus_pci_read32(struct ath10k *ar, u32 offset)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	u32 val;
+@@ -666,6 +666,20 @@ u32 ath10k_pci_read32(struct ath10k *ar, u32 offset)
+ 	return val;
+ }
+ 
++inline void ath10k_pci_write32(struct ath10k *ar, u32 offset, u32 value)
++{
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++
++	ar_pci->bus_ops->write32(ar, offset, value);
++}
++
++inline u32 ath10k_pci_read32(struct ath10k *ar, u32 offset)
++{
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++
++	return ar_pci->bus_ops->read32(ar, offset);
++}
++
+ u32 ath10k_pci_soc_read32(struct ath10k *ar, u32 addr)
+ {
+ 	return ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS + addr);
+@@ -1906,6 +1920,13 @@ static int ath10k_pci_get_num_banks(struct ath10k *ar)
+ 	return 1;
+ }
+ 
++static int ath10k_bus_get_num_banks(struct ath10k *ar)
++{
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++
++	return ar_pci->bus_ops->get_num_banks(ar);
++}
++
+ int ath10k_pci_init_config(struct ath10k *ar)
+ {
+ 	u32 interconnect_targ_addr;
+@@ -2017,7 +2038,7 @@ int ath10k_pci_init_config(struct ath10k *ar)
+ 	/* first bank is switched to IRAM */
+ 	ealloc_value |= ((HI_EARLY_ALLOC_MAGIC << HI_EARLY_ALLOC_MAGIC_SHIFT) &
+ 			 HI_EARLY_ALLOC_MAGIC_MASK);
+-	ealloc_value |= ((ath10k_pci_get_num_banks(ar) <<
++	ealloc_value |= ((ath10k_bus_get_num_banks(ar) <<
+ 			  HI_EARLY_ALLOC_IRAM_BANKS_SHIFT) &
+ 			 HI_EARLY_ALLOC_IRAM_BANKS_MASK);
+ 
+@@ -2988,6 +3009,12 @@ static bool ath10k_pci_chip_is_supported(u32 dev_id, u32 chip_id)
  	return false;
  }
  
-+int ath10k_pci_setup_resource(struct ath10k *ar)
-+{
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+	int ret;
++static const struct ath10k_bus_ops ath10k_pci_bus_ops = {
++	.read32		= ath10k_bus_pci_read32,
++	.write32	= ath10k_bus_pci_write32,
++	.get_num_banks	= ath10k_pci_get_num_banks,
++};
 +
-+	spin_lock_init(&ar_pci->ce_lock);
-+	spin_lock_init(&ar_pci->ps_lock);
-+
-+	setup_timer(&ar_pci->rx_post_retry, ath10k_pci_rx_replenish_retry,
-+		    (unsigned long)ar);
-+
-+	if (QCA_REV_6174(ar))
-+		ath10k_pci_override_ce_config(ar);
-+
-+	ret = ath10k_pci_alloc_pipes(ar);
-+	if (ret) {
-+		ath10k_err(ar, "failed to allocate copy engine pipes: %d\n",
-+			   ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+void ath10k_pci_release_resource(struct ath10k *ar)
-+{
-+	ath10k_pci_kill_tasklet(ar);
-+	ath10k_pci_ce_deinit(ar);
-+	ath10k_pci_free_pipes(ar);
-+}
-+
- static const struct ath10k_bus_ops ath10k_pci_bus_ops = {
- 	.read32		= ath10k_bus_pci_read32,
- 	.write32	= ath10k_bus_pci_write32,
-@@ -3072,34 +3103,25 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	ar->id.subsystem_vendor = pdev->subsystem_vendor;
- 	ar->id.subsystem_device = pdev->subsystem_device;
+ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 			    const struct pci_device_id *pci_dev)
+ {
+@@ -3038,6 +3065,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	ar_pci->ar = ar;
+ 	ar->dev_id = pci_dev->device;
+ 	ar_pci->pci_ps = pci_ps;
++	ar_pci->bus_ops = &ath10k_pci_bus_ops;
  
--	spin_lock_init(&ar_pci->ce_lock);
--	spin_lock_init(&ar_pci->ps_lock);
--
--	setup_timer(&ar_pci->rx_post_retry, ath10k_pci_rx_replenish_retry,
--		    (unsigned long)ar);
- 	setup_timer(&ar_pci->ps_timer, ath10k_pci_ps_timer,
- 		    (unsigned long)ar);
- 
--	ret = ath10k_pci_claim(ar);
-+	ret = ath10k_pci_setup_resource(ar);
- 	if (ret) {
--		ath10k_err(ar, "failed to claim device: %d\n", ret);
-+		ath10k_err(ar, "failed to setup resource: %d\n", ret);
- 		goto err_core_destroy;
- 	}
- 
--	if (QCA_REV_6174(ar))
--		ath10k_pci_override_ce_config(ar);
--
--	ret = ath10k_pci_alloc_pipes(ar);
-+	ret = ath10k_pci_claim(ar);
- 	if (ret) {
--		ath10k_err(ar, "failed to allocate copy engine pipes: %d\n",
--			   ret);
--		goto err_sleep;
-+		ath10k_err(ar, "failed to claim device: %d\n", ret);
-+		goto err_free_pipes;
- 	}
- 
- 	ret = ath10k_pci_force_wake(ar);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to wake up device : %d\n", ret);
--		goto err_free_pipes;
-+		goto err_sleep;
- 	}
- 
- 	ath10k_pci_ce_deinit(ar);
-@@ -3108,7 +3130,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	ret = ath10k_pci_init_irq(ar);
- 	if (ret) {
- 		ath10k_err(ar, "failed to init irqs: %d\n", ret);
--		goto err_free_pipes;
-+		goto err_sleep;
- 	}
- 
- 	ath10k_info(ar, "pci irq %s interrupts %d irq_mode %d reset_mode %d\n",
-@@ -3154,13 +3176,13 @@ err_free_irq:
- err_deinit_irq:
- 	ath10k_pci_deinit_irq(ar);
- 
--err_free_pipes:
--	ath10k_pci_free_pipes(ar);
--
- err_sleep:
- 	ath10k_pci_sleep_sync(ar);
- 	ath10k_pci_release(ar);
- 
-+err_free_pipes:
-+	ath10k_pci_free_pipes(ar);
-+
- err_core_destroy:
- 	ath10k_core_destroy(ar);
- 
-@@ -3184,10 +3206,8 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
- 
- 	ath10k_core_unregister(ar);
- 	ath10k_pci_free_irq(ar);
--	ath10k_pci_kill_tasklet(ar);
- 	ath10k_pci_deinit_irq(ar);
--	ath10k_pci_ce_deinit(ar);
--	ath10k_pci_free_pipes(ar);
-+	ath10k_pci_release_resource(ar);
- 	ath10k_pci_sleep_sync(ar);
- 	ath10k_pci_release(ar);
- 	ath10k_core_destroy(ar);
+ 	ar->id.vendor = pdev->vendor;
+ 	ar->id.device = pdev->device;
 diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index 41f3fac..fcfdbca 100644
+index ae76131..41f3fac 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.h
 +++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -292,6 +292,8 @@ void ath10k_pci_enable_legacy_irq(struct ath10k *ar);
- bool ath10k_pci_irq_pending(struct ath10k *ar);
- void ath10k_pci_disable_and_clear_legacy_irq(struct ath10k *ar);
- int ath10k_pci_wait_for_target_init(struct ath10k *ar);
-+int ath10k_pci_setup_resource(struct ath10k *ar);
-+void ath10k_pci_release_resource(struct ath10k *ar);
+@@ -157,6 +157,12 @@ struct ath10k_pci_supp_chip {
+ 	u32 rev_id;
+ };
  
- /* QCA6174 is known to have Tx/Rx issues when SOC_WAKE register is poked too
-  * frequently. To avoid this put SoC to sleep after a very conservative grace
++struct ath10k_bus_ops {
++	u32 (*read32)(struct ath10k *ar, u32 offset);
++	void (*write32)(struct ath10k *ar, u32 offset, u32 value);
++	int (*get_num_banks)(struct ath10k *ar);
++};
++
+ struct ath10k_pci {
+ 	struct pci_dev *pdev;
+ 	struct device *dev;
+@@ -225,6 +231,8 @@ struct ath10k_pci {
+ 	 * on MMIO read/write.
+ 	 */
+ 	bool pci_ps;
++
++	const struct ath10k_bus_ops *bus_ops;
+ };
+ 
+ static inline struct ath10k_pci *ath10k_pci_priv(struct ath10k *ar)
 -- 
 1.8.1.2
 
