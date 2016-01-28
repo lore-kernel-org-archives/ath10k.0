@@ -1,22 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOlC9-0006yD-PN
- for ath10k@lists.infradead.org; Thu, 28 Jan 2016 11:57:03 +0000
-Received: by mail-wm0-x233.google.com with SMTP id l66so22003994wml.0
- for <ath10k@lists.infradead.org>; Thu, 28 Jan 2016 03:56:41 -0800 (PST)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1aOuZL-0005UQ-BK
+ for ath10k@lists.infradead.org; Thu, 28 Jan 2016 21:57:35 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH v2 2/4] ath10k: update 10.4 WMI service map
+Date: Thu, 28 Jan 2016 13:54:08 -0800
+Message-ID: <20d44823ecdacb54a92efaf56020c9d2f2cc4ff5.1454015989.git.poh@qca.qualcomm.com>
+In-Reply-To: <cover.1454015989.git.poh@qca.qualcomm.com>
+References: <cover.1454015989.git.poh@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <20160128110956.M61787@cdot.in>
-References: <20160128045052.M14316@universe.cdotb.ernet.in>
- <20160128055132.M19451@cdot.in>
- <CA+BoTQnjcdZxN39zt5XnrduBmUdgJpwuwh-sVOzw9HMGFdZeeA@mail.gmail.com>
- <CANCHnQpr5=-1UmRz1TSBAfqoUic1HWEX86vfFom59FcYoca71A@mail.gmail.com>
- <CA+BoTQ=bd=fu6poMAP8nFZKLczwKOaYRX_7FBNZ3=vgX+_R2Vw@mail.gmail.com>
- <20160128110956.M61787@cdot.in>
-Date: Thu, 28 Jan 2016 12:56:40 +0100
-Message-ID: <CA+BoTQnff4pp91_kJ5sYehK5AU9Vy=yx15+BkK4sZngNZi0Bxg@mail.gmail.com>
-Subject: Re: Issues with Compex WLE900VX in 80211AC mode
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +18,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: B R Manjula <brm@cdot.in>
-Cc: Jeroen Roovers <jeroen.roovers@airfi.aero>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-T24gMjggSmFudWFyeSAyMDE2IGF0IDEyOjE5LCBCIFIgTWFuanVsYSA8YnJtQGNkb3QuaW4+IHdy
-b3RlOgo+IFRoYW5rcyBhIGxvdCAgTXIuTWljaGVsIGFuZCBNci5KZXJvZW4gZm9yIHRoZSBpbnB1
-dHMuCj4KPiBwbGVhc2UgZmluZCBhdHRhY2hlZCBsb2cgZmlsZSBvZiBpdyBsaXN0IGFuZCBpdyBy
-ZWcgZ2V0IGNvbW1hbmRzIGluIG91ciB0ZXN0IHNldHVwLAo+IGFsc28gZmluZCB0aGUgYXR0YWNo
-ZWQgY29uZmlndXJhdGlvbiBmaWxlIHdsYW4wX2FjLmNuZgo+IEFsc28gc3VnZ2VzdCB1cyBpZiBh
-bnkgY2hhbmdlcyByZXF1aXJlZC4gKGxpa2Ugb3BlcmF0aW5nIGNoYW5uZWwsIHZodF9jYXAgJiBl
-dGMpCj4KPiBSZWdhcmRzLAo+IE1hbmp1bGEKW2RvemVuIG9mIGVtcHR5IGxpbmVzXQoKUGxlYXNl
-IHRyeSB0byBhdm9pZCBzZW5kaW5nIGJhZGx5IGZvcm1hdHRlZCBtZXNzYWdlcyA6KQoKRnJvbSB0
-aGUgbG9ncyB5b3UgcHJvdmlkZWQgaXQgbG9va3MgbGlrZSB5b3UncmUgc3R1Y2sgYXQgd29ybGQK
-cmVndWxhdG9yeSAoMDApLiBUaGlzIG1lYW5zIHRoYXQgeW91IGhhdmUgYW4gZW1wdHkgZGIudHh0
-IGZpbGUgKGlmIHlvdQpjb21waWxlZCBrZXJuZWwgd2l0aCBidWlsdC1pbiByZWd1bGF0b3J5KSBv
-ciB5b3VyIHN5c3RlbSBkb2Vzbid0IGhhdmUKQ1JEQSBiaW5hcnkgYW5kL29yIHJlZ3VsYXRvcnkg
-ZGF0YWJhc2UgZm9yIGl0IHRvIHVzZS4gWW91IG1pZ2h0IGJlCm1pc3NpbmcgdWRldi9ob3RwbHVn
-IHRvIGhhbmRsZSB0aGUgQ1JEQSByZXF1ZXN0IGFzIHdlbGwgSSB0aGluay4KCgpNaWNoYcWCCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Update 10.4 WMI service map to sync to the latest 10.4 firmware
+as of 1/20/2016.
+
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 0458bf6..031018a 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -179,6 +179,7 @@ enum wmi_service {
+ 	WMI_SERVICE_MESH_11S,
+ 	WMI_SERVICE_MESH_NON_11S,
+ 	WMI_SERVICE_PEER_STATS,
++	WMI_SERVICE_RESTRT_CHNL_SUPPORT,
+ 
+ 	/* keep last */
+ 	WMI_SERVICE_MAX,
+@@ -298,6 +299,9 @@ enum wmi_10_4_service {
+ 	WMI_10_4_SERVICE_BSS_CHANNEL_INFO_64,
+ 	WMI_10_4_SERVICE_EXT_RES_CFG_SUPPORT,
+ 	WMI_10_4_SERVICE_MESH_NON_11S,
++	WMI_10_4_SERVICE_RESTRT_CHNL_SUPPORT,
++	WMI_10_4_SERVICE_PEER_STATS,
++	WMI_10_4_SERVICE_MESH_11S,
+ };
+ 
+ static inline char *wmi_service_name(int service_id)
+@@ -391,6 +395,7 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_MESH_11S);
+ 	SVCSTR(WMI_SERVICE_MESH_NON_11S);
+ 	SVCSTR(WMI_SERVICE_PEER_STATS);
++	SVCSTR(WMI_SERVICE_RESTRT_CHNL_SUPPORT);
+ 	default:
+ 		return NULL;
+ 	}
+@@ -632,6 +637,12 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
+ 	SVCMAP(WMI_10_4_SERVICE_MESH_NON_11S,
+ 	       WMI_SERVICE_MESH_NON_11S, len);
++	SVCMAP(WMI_10_4_SERVICE_RESTRT_CHNL_SUPPORT,
++	       WMI_SERVICE_RESTRT_CHNL_SUPPORT, len);
++	SVCMAP(WMI_10_4_SERVICE_PEER_STATS,
++	       WMI_SERVICE_PEER_STATS, len);
++	SVCMAP(WMI_10_4_SERVICE_MESH_11S,
++	       WMI_SERVICE_MESH_11S, len);
+ }
+ 
+ #undef SVCMAP
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
