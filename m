@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-yk0-x22d.google.com ([2607:f8b0:4002:c07::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOiIp-0002OF-1x
- for ath10k@lists.infradead.org; Thu, 28 Jan 2016 08:51:46 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/4] ath10k: rename mesh and add abstraction layer
-References: <1453920957-9908-1-git-send-email-poh@qca.qualcomm.com>
-Date: Thu, 28 Jan 2016 10:51:08 +0200
-In-Reply-To: <1453920957-9908-1-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Wed, 27 Jan 2016 10:55:53 -0800")
-Message-ID: <87vb6ekryb.fsf@kamboji.qca.qualcomm.com>
+ id 1aOjAY-0006xF-5I
+ for ath10k@lists.infradead.org; Thu, 28 Jan 2016 09:47:14 +0000
+Received: by mail-yk0-x22d.google.com with SMTP id a85so24354735ykb.1
+ for <ath10k@lists.infradead.org>; Thu, 28 Jan 2016 01:46:53 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQnfQKLB2YjGLsZxZmmNxkWuCdvcwLvki-axLHGhdrGXnQ@mail.gmail.com>
+References: <CADaZW1FURsp=S5uctjm52gQEB=bsqv3Jo-9nAw8uvPO84LEfqw@mail.gmail.com>
+ <CA+BoTQnfQKLB2YjGLsZxZmmNxkWuCdvcwLvki-axLHGhdrGXnQ@mail.gmail.com>
+From: Bartlomiej Grzeskowiak <bartlomiej.grzeskowiak@gmail.com>
+Date: Thu, 28 Jan 2016 10:46:23 +0100
+Message-ID: <CADaZW1G86dnfnWziDimRMDYHAxnqLqMqxPsKdTSKScrJsye2Dw@mail.gmail.com>
+Subject: Re: Can not get 802.11ac with ath10k QCA6147 chip (802.11abgn works)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +21,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Peter Oh <poh@qca.qualcomm.com> writes:
-
-> Split Mesh service to 11s Mesh and non-11s Mesh according to
-> firmware service bit to help users distinguish 11s Mesh from
-> non 11s Mesh.
-> And add abstraction layer for vdev subtype to solve subtype mismatch
-> and to give flexible compatibility among different firmware revisions.
->
-> Peter Oh (4):
->   ath10k: rename Mesh related service names
->   ath10k: update 10.4 WMI service map
->   ath10k: use vif->type and vif->p2p for P2P_GO check
->   ath10k: add abstraction layer for vdev subtype
-
-There are conflicts, please rebase.
-
-Applying: ath10k: rename Mesh related service names
-Using index info to reconstruct a base tree...
-Falling back to patching base and 3-way merge...
-Auto-merging drivers/net/wireless/ath/ath10k/wmi.h
-CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi.h
-Auto-merging drivers/net/wireless/ath/ath10k/mac.c
-Failed to merge in the changes.
-Patch failed at 0001 ath10k: rename Mesh related service names
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgTWljaGFsLAoKVGhhbmsgeW91IGZvciB0aGUgaGludC4KCkZyb20gdGhlIGl3IGFwcCBJIHNl
+ZQpjaGFubmVsIDExMiAoNTU2MCBNSHopLCB3aWR0aDogODAgTUh6LCBjZW50ZXIxOiA1NTMwIE1I
+egoKSWYgSSB1bmRlcnN0YW5kIGl0IGNvcnJlY3RseSBpdCBwcm92ZXMgdGhhdCA4MDIuMTFhYyBt
+b2RlIGlzIHVzZWQuCkkgd291bGQgYmUgdGhhbmtmdWwgaWYgeW91IGNvdWxkIGNvbmZpcm0uCgoj
+IGl3IHdsYW4wIGluZm8KSW50ZXJmYWNlIHdsYW4wCmlmaW5kZXggNAp3ZGV2IDB4MQphZGRyIGQ0
+OjdiOmIwOjAzOmExOmQ4CnR5cGUgbWFuYWdlZAp3aXBoeSAwCmNoYW5uZWwgMTEyICg1NTYwIE1I
+eiksIHdpZHRoOiA4MCBNSHosIGNlbnRlcjE6IDU1MzAgTUh6CgoKIyBpdyB3bGFuMCBsaW5rCkNv
+bm5lY3RlZCB0byBlNDpmNDpjNjoxMjo5MTowOCAob24gd2xhbjApClNTSUQ6IE5FVEdFQVJhYzVH
+LmxhYgpmcmVxOiA1NTYwClJYOiA4MjYxMjM1IGJ5dGVzICg0NzA2NCBwYWNrZXRzKQpUWDogOTkw
+IGJ5dGVzICg5IHBhY2tldHMpCnNpZ25hbDogLTE4IGRCbQp0eCBiaXRyYXRlOiA2LjAgTUJpdC9z
+Cgpic3MgZmxhZ3M6IHNob3J0LXNsb3QtdGltZQpkdGltIHBlcmlvZDogMgpiZWFjb24gaW50OiAx
+MDAKCiMgaXcgd2xhbjAgc3RhdGlvbiBkdW1wClN0YXRpb24gZTQ6ZjQ6YzY6MTI6OTE6MDggKG9u
+IHdsYW4wKQppbmFjdGl2ZSB0aW1lOiA0ODc1OTkwIG1zCnJ4IGJ5dGVzOiA4MjkxMTM0CnJ4IHBh
+Y2tldHM6IDQ3MjM1CnR4IGJ5dGVzOiA5OTAKdHggcGFja2V0czogOQp0eCByZXRyaWVzOiAwCnR4
+IGZhaWxlZDogMApzaWduYWw6ICAgLTE4IGRCbQpzaWduYWwgYXZnOiAtMTcgZEJtCnR4IGJpdHJh
+dGU6IDYuMCBNQml0L3MKcnggYml0cmF0ZTogNi4wIE1CaXQvcwphdXRob3JpemVkOiB5ZXMKYXV0
+aGVudGljYXRlZDogeWVzCnByZWFtYmxlOiBsb25nCldNTS9XTUU6IHllcwpNRlA6IG5vClRETFMg
+cGVlcjogbm8KCgoyMDE2LTAxLTI4IDk6NTIgR01UKzAxOjAwIE1pY2hhbCBLYXppb3IgPG1pY2hh
+bC5rYXppb3JAdGlldG8uY29tPjoKPiBPbiAyOCBKYW51YXJ5IDIwMTYgYXQgMDk6MzgsIEJhcnRs
+b21pZWogR3J6ZXNrb3dpYWsKPiA8YmFydGxvbWllai5ncnplc2tvd2lha0BnbWFpbC5jb20+IHdy
+b3RlOgo+PiBJIHVzZSBhdGgxMGsgZHJpdmVyIGZvciBvdXIgUUNBNjE0NyBjaGlwIGZvciBhIHdo
+aWxlIG5vdy4gSG93ZXZlciBJCj4+IGhhdmUgcmVhbGl6ZWQgdGhhdCA4MDIuMTEgbW9kZSByZXBv
+cnRlZCBpbiBteSBzeXN0ZW0gaXMgYWJnbi4gaXdjb25maWcKPj4gYW5kIGxpbmtzcGVlZCBpbiB3
+cGFfY2xpIHJlcG9ydHMgNiBNYnMgc3BlZWQuCj4+ICMgaXdjb25maWcgd2xhbjAKPj4gd2xhbjAg
+SUVFRSA4MDIuMTFhYmduIEVTU0lEOiJORVRHRUFSYWM1Ry5sYWIiCj4+IE1vZGU6TWFuYWdlZCBG
+cmVxdWVuY3k6NS4xOCBHSHogQWNjZXNzIFBvaW50OiBFNDpGNDpDNjoxMjo5MTowOAo+PiBCaXQg
+UmF0ZT02IE1iL3MgVHgtUG93ZXI9MzAgZEJtCj4+IFJldHJ5IHNob3J0IGxpbWl0OjcgUlRTIHRo
+cjpvZmYgRnJhZ21lbnQgdGhyOm9mZgo+Cj4gaXdjb25maWcgaXMgYW4gYW5jaWVudCB0b29sIGZv
+ciBkcml2ZXIgdXNpbmcgd2V4dC4gQWxsIHVwc3RyZWFtCj4gZHJpdmVycyB1c2Ugbmw4MDIxMS4g
+VXNlIGBpd2AgdG9vbCBpbnN0ZWFkLCBwbGVhc2UuIFlvdSBjYW4gZ2V0Cj4gcmVsZXZhbnQgaW5m
+b3JtYXRpb24gd2l0aDoKPiAgIGl3IHdsYW4wIGluZm8KPiAgIGl3IHdsYW4wIGxpbmsKPiAgIGl3
+IHdsYW4wIHN0YXRpb24gZHVtcAo+Cj4gVGhlIGluZm8vbGluayAoaWYgeW91IGRvbid0IHVzZSBh
+biBhbmNpZW50IGBpd2AgdGhhdCBpcykgd2lsbCB0ZWxsIHlvdQo+IHRoZSBjaGFubmVsIGFuZCBj
+aGFubmVsIHdpZHRoIHRoYXQgdGhlIGRldmljZSBpcyB0dW5lZCB0byBzbyB5b3UgY2FuCj4gZ3Vl
+c3MgaWYgeW91IHJ1biAxMWFjIGlmIHlvdSBzZWUgY2hhbm5lbCB3aWR0aCBhdCA4ME1Iei4KPgo+
+IFRoZSByZXBvcnRlZCB0eCBiaXRyYXRlIGlzIGJ1Z2d5IGJlY2F1c2UgRlcgZG9lc24ndCByZXBv
+cnQgaXQgc28gaXQKPiBzdGF5cyBhdCAiemVybyIgd2hpY2ggaXMgaW50ZXJwcmV0ZWQgYnkgdGhl
+IHN5c3RlbSBhcyA2bWJwcy4gVGhpcyBpcwo+IG1lbnRpb25lZCBvbiB0aGUgd2lraToKPgo+ICAg
+aHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNlcnMvZHJpdmVycy9hdGgxMGsj
+a25vd25fYnVnc2xpbWl0YXRpb25zCj4KPgo+IE1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hdGgxMGsK
