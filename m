@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQp2M-0004XT-0T
- for ath10k@lists.infradead.org; Wed, 03 Feb 2016 04:27:26 +0000
-Received: by mail-io0-x242.google.com with SMTP id m139so1886101ioe.2
- for <ath10k@lists.infradead.org>; Tue, 02 Feb 2016 20:27:05 -0800 (PST)
+ id 1aQzWP-00012Y-Mp
+ for ath10k@lists.infradead.org; Wed, 03 Feb 2016 15:39:10 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH 2/2] ath10k: Fix pointless update of peer stats list
+Date: Wed, 3 Feb 2016 21:07:43 +0530
+Message-ID: <1454513863-2703-3-git-send-email-mohammed@qca.qualcomm.com>
+In-Reply-To: <1454513863-2703-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1454513863-2703-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Tue, 2 Feb 2016 20:27:04 -0800
-Message-ID: <CABy9W5=2-P+61L1uFbcdB0ky-hAwo05D95mkq3cuk8k898m-dA@mail.gmail.com>
-Subject: Recovery from ath10k errors
-From: Ann Lo <annlo.tech@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +23,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Hello,
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Is there a recommended solution to recover from ath10k errors without
-reboot? Example errors are:
+We periodically receive f/w stats event for updating
+the rx duration and there is no reason to keep on appending
+the f/w stats peer list, as this gets completely cleaned up when
+the user polls for f/w stats {pdev, vdev, peer stats}. Only don't
+print the warning message in the case PEER_STATS service is enabled
 
-- Repeated occurrences of "ath10k: SWBA overrun on vdev 0" leading to
-other errors.
+Fixes: 856e7c3 ("ath10k: add debugfs support for Per STA total rx duration")
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/debug.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-It appears that ath10k is in a strange state when errors happen. If we
-use "modprobe -r ath10k_pci", this call just hangs. (The ifconfig
-command hangs too).
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index d80a44e..06581fa 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -351,8 +351,10 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+ 	if (peer_stats_svc)
+ 		ath10k_sta_update_rx_duration(ar, &stats.peers);
+ 
+-	if (ar->debug.fw_stats_done && !peer_stats_svc) {
+-		ath10k_warn(ar, "received unsolicited stats update event\n");
++	if (ar->debug.fw_stats_done) {
++		if (!peer_stats_svc)
++			ath10k_warn(ar, "received unsolicited stats update event\n");
++
+ 		goto free;
+ 	}
+ 
+-- 
+1.7.9.5
 
-We use kernel version 3.14.28. We have tried both Qualcomm firmware
-999.999.0.636 and 10.1.467.3-1. Our hardware is WLE900VX.
-
-Thanks,
-Ann
 
 _______________________________________________
 ath10k mailing list
