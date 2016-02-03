@@ -1,15 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-x244.google.com ([2607:f8b0:4001:c05::244])
+Received: from outbound61.reliabledns.org ([199.96.156.61])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aR3B4-0005d5-0R
- for ath10k@lists.infradead.org; Wed, 03 Feb 2016 19:33:22 +0000
-Received: by mail-ig0-x244.google.com with SMTP id mw1so3039549igb.2
- for <ath10k@lists.infradead.org>; Wed, 03 Feb 2016 11:33:01 -0800 (PST)
+ id 1aR6nb-0007C3-Cp
+ for ath10k@lists.infradead.org; Wed, 03 Feb 2016 23:25:24 +0000
+Received: from ssd10.stablehost.com ([199.96.156.87])
+ by filter01.reliabledns.org with esmtps (TLSv1.2:DHE-RSA-AES256-SHA:256)
+ (Exim 4.85) (envelope-from <gnunn@gexperts.com>) id 1aR6mV-00039D-OL
+ for ath10k@lists.infradead.org; Wed, 03 Feb 2016 16:24:23 -0700
+Received: from mail-ob0-f180.google.com ([209.85.214.180]:36762)
+ by ssd10.stablehost.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+ (Exim 4.86) (envelope-from <gnunn@gexperts.com>) id 1aR6n4-0000zs-IY
+ for ath10k@lists.infradead.org; Wed, 03 Feb 2016 18:24:50 -0500
+Received: by mail-ob0-f180.google.com with SMTP id ba1so49769828obb.3
+ for <ath10k@lists.infradead.org>; Wed, 03 Feb 2016 15:24:51 -0800 (PST)
 MIME-Version: 1.0
-Date: Wed, 3 Feb 2016 11:33:01 -0800
-Message-ID: <CABy9W5nGFA7r0dr-7jVj_i4uEAmn5dywKdiUpCNgS6=H-Z7JOg@mail.gmail.com>
-Subject: SWBA errors and no ssid
-From: Ann Lo <annlo.tech@gmail.com>
+Date: Wed, 3 Feb 2016 18:24:51 -0500
+Message-ID: <CAC68LD_iJo388qq5JGezQNredBVhpFGKmZBB+Jy5s75ehv_ZUA@mail.gmail.com>
+Subject: ath10k missing firmware/crash kernel 4.4.1
+From: Gerald Nunn <gnunn@gexperts.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,85 +32,248 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
-Hello,
+I just got a new laptop that has a killer n1525 m.2 wifi/bluetooth
+card in it and I'm not having any luck getting it going. The card is
+shown as follows in lspci:
 
-We are seeking for expert opinions on "SWBA errors" and any possible
-workarounds. If we run AP+client mode, and the client scans for an
-nonexistent ssid, then "SWBA errors" happen easily. From this point
-on, the ssid of the AP is no longer visible. We use kernel 3.14.28,
-Qualcomm firmware 10.1.167.3-1, and WLE900VX. Qualcomm firmware
-999.999.0.636 has the same problem except that it does not report
-"SWBA errors". Is it possible that we can fix this problem by porting
-some patches?
+lspci -nnn|grep -i atheros
+04:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac
+Wireless Network Adapter [168c:003e] (rev 20)
 
-Details of errors
-============
-[ 3455.101199] ath10k: SWBA overrun on vdev 0
-[ 3455.203616] ath10k: SWBA overrun on vdev 0
-[ 3455.305992] ath10k: SWBA overrun on vdev 0
-[ 3455.408389] ath10k: SWBA overrun on vdev 0
-[ 3455.510768] ath10k: SWBA overrun on vdev 0
-[ 3455.613164] ath10k: SWBA overrun on vdev 0
-[ 3455.715557] ath10k: SWBA overrun on vdev 0
-[ 3455.817992] ath10k: SWBA overrun on vdev 0
-[ 3455.920360] ath10k: SWBA overrun on vdev 0
-[ 3456.022768] ath10k: SWBA overrun on vdev 0
-[ 3457.946735] uap0: failed to remove key (0, a4:2b:8c:04:6d:a8) from
-hardware (-11)
-[ 3460.118597] net_ratelimit: 40 callbacks suppressed
-[ 3460.123463] ath10k: SWBA overrun on vdev 0
-[ 3460.221003] ath10k: SWBA overrun on vdev 0
-[ 3460.323398] ath10k: SWBA overrun on vdev 0
-[ 3460.425785] ath10k: SWBA overrun on vdev 0
-[ 3460.528186] ath10k: SWBA overrun on vdev 0
-[ 3460.630568] ath10k: SWBA overrun on vdev 0
-[ 3460.732971] ath10k: SWBA overrun on vdev 0
-[ 3460.835370] ath10k: SWBA overrun on vdev 0
-[ 3460.937767] ath10k: SWBA overrun on vdev 0
-[ 3460.946679] ath10k: could not remove peer wep key 0 (-11)
-[ 3460.952134] ------------[ cut here ]------------
-[ 3460.956874] WARNING: CPU: 0 PID: 4349 at
-net/mac80211/sta_info.c:894 __sta_info_destroy_part2+0x124/0x18c()
-[ 3460.966703] Modules linked in: ath10k_pci ath10k_core ath usb_f_ecm
-g_ether usb_f_rndis libcomposite u_ether
-[ 3460.976913] CPU: 0 PID: 4349 Comm: hostapd Not tainted 3.14.28 #1
-[ 3460.983379] [<80015418>] (unwind_backtrace) from [<80011708>]
-(show_stack+0x10/0x14)
-[ 3460.991237] [<80011708>] (show_stack) from [<805d5d44>]
-(dump_stack+0x7c/0xbc)
-[ 3460.998567] [<805d5d44>] (dump_stack) from [<8002d408>]
-(warn_slowpath_common+0x70/0x8c)
-[ 3461.006776] [<8002d408>] (warn_slowpath_common) from [<8002d4c0>]
-(warn_slowpath_null+0x1c/0x24)
-[ 3461.015602] [<8002d4c0>] (warn_slowpath_null) from [<805a6278>]
-(__sta_info_destroy_part2+0x124/0x18c)
-[ 3461.024988] [<805a6278>] (__sta_info_destroy_part2) from
-[<805a6300>] (__sta_info_destroy+0x20/0x28)
-[ 3461.034224] [<805a6300>] (__sta_info_destroy) from [<805a6370>]
-(sta_info_destroy_addr_bss+0x28/0x40)
-[ 3461.043676] [<805a6370>] (sta_info_destroy_addr_bss) from
-[<8044dc74>] (genl_rcv_msg+0x230/0x390)
-[ 3461.052658] [<8044dc74>] (genl_rcv_msg) from [<8044d218>]
-(netlink_rcv_skb+0xb4/0xd8)
-[ 3461.060591] [<8044d218>] (netlink_rcv_skb) from [<8044da34>]
-(genl_rcv+0x24/0x34)
-[ 3461.068149] [<8044da34>] (genl_rcv) from [<8044cb98>]
-(netlink_unicast+0x150/0x1d4)
-[ 3461.075842] [<8044cb98>] (netlink_unicast) from [<8044cf8c>]
-(netlink_sendmsg+0x2b8/0x394)
-[ 3461.084188] [<8044cf8c>] (netlink_sendmsg) from [<8040fa6c>]
-(sock_sendmsg+0x88/0xac)
-[ 3461.092312] [<8040fa6c>] (sock_sendmsg) from [<80410d88>]
-(___sys_sendmsg.part.34+0x284/0x290)
-[ 3461.101050] [<80410d88>] (___sys_sendmsg.part.34) from [<80411e6c>]
-(__sys_sendmsg+0x4c/0x7c)
-[ 3461.109664] [<80411e6c>] (__sys_sendmsg) from [<8000e4a0>]
-(ret_fast_syscall+0x0/0x30)
-[ 3461.117706] ---[ end trace 8aae701f637ad7b2 ]---
+When I first start the computer, dmesg shows the following and it
+looks like it can't find some firmware files?
 
+[   10.409623] ath10k_pci 0000:04:00.0: enabling device (0000 -> 0002)
+[   10.410078] ath10k_pci 0000:04:00.0: pci irq msi-x interrupts 8
+irq_mode 0 reset_mode 0
+[   10.636095] ath10k_pci 0000:04:00.0: Direct firmware load for
+ath10k/cal-pci-0000:04:00.0.bin failed with error -2
+[   10.703810] ath10k_pci 0000:04:00.0: Direct firmware load for
+ath10k/QCA6174/hw2.1/board-2.bin failed with error -2
+[   11.902871] ath10k_pci 0000:04:00.0: qca6174 hw2.1 (0x05010000,
+0x003405ff sub 1a56:1525) fw WLAN.RM.1.1-00141 fwapi 5 bdapi 1 htt-ver
+3.1 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1 features
+ignore-otp,no-4addr-pad
+[   11.902872] ath10k_pci 0000:04:00.0: debug 0 debugfs 1 tracing 0
+dfs 0 testmode 0
+[   11.975601] ath10k_pci 0000:04:00.0 wlp4s0: renamed from wlan0
+[   14.642196] ath10k_pci 0000:04:00.0: no channel configured;
+ignoring frame(s)!
+[  295.623274] ath10k_pci 0000:04:00.0: no channel configured;
+ignoring frame(s)!
+[  547.623369] ath10k_pci 0000:04:00.0: no channel configured;
+ignoring frame(s)!
+[  610.399182] ath10k_pci 0000:04:00.0: no channel configured;
+ignoring frame(s)!
+[ 1618.358522] ath10k_pci 0000:04:00.0: no channel configured;
+ignoring frame(s)!
+[ 1681.255584] ath10k_pci 0000:04:00.0: no channel configured;
+ignoring frame(s)!
+[ 1807.333199] ath10k_pci 0000:04:00.0: no channel configured;
+ignoring frame(s)!
 
-Thanks,
-Ann
+When I try to connect to a wifi network, I get the following in dmesg
+showing a firmware crash:
+
+[ 2180.498167] ath10k_pci 0000:04:00.0: firmware crashed! (uuid
+5350ffdc-524c-4c3f-b35f-d412a5bbf84a)
+[ 2180.498174] ath10k_pci 0000:04:00.0: qca6174 hw2.1 (0x05010000,
+0x003405ff sub 1a56:1525) fw WLAN.RM.1.1-00141 fwapi 5 bdapi 1 htt-ver
+3.1 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1 features
+ignore-otp,no-4addr-pad
+[ 2180.498176] ath10k_pci 0000:04:00.0: debug 0 debugfs 1 tracing 0
+dfs 0 testmode 0
+[ 2180.500203] ath10k_pci 0000:04:00.0: firmware register dump:
+[ 2180.500205] ath10k_pci 0000:04:00.0: [00]: 0x05010000 0x000015B3
+0x00939797 0x00955B31
+[ 2180.500206] ath10k_pci 0000:04:00.0: [04]: 0x00939797 0x00060330
+0x00000000 0x00000000
+[ 2180.500207] ath10k_pci 0000:04:00.0: [08]: 0x00413980 0x0000FFFF
+0x00000000 0x00000000
+[ 2180.500209] ath10k_pci 0000:04:00.0: [12]: 0x00000009 0xFFFFFFFF
+0x0096C09C 0x0096C0A7
+[ 2180.500210] ath10k_pci 0000:04:00.0: [16]: 0x0096BDBC 0x009287BD
+0x00000000 0x009287BD
+[ 2180.500211] ath10k_pci 0000:04:00.0: [20]: 0x40939797 0x0041A700
+0x00407124 0x00000000
+[ 2180.500212] ath10k_pci 0000:04:00.0: [24]: 0x8093D6C4 0x0041A760
+0x004059D0 0xC0939797
+[ 2180.500213] ath10k_pci 0000:04:00.0: [28]: 0x8094777F 0x0041A780
+0x0046D5D8 0x00000001
+[ 2180.500214] ath10k_pci 0000:04:00.0: [32]: 0x800AA427 0x0041A7B0
+0x0046D5D8 0x00000001
+[ 2180.500215] ath10k_pci 0000:04:00.0: [36]: 0x800AA58E 0x0041A7D0
+0x00424824 0x00000001
+[ 2180.500216] ath10k_pci 0000:04:00.0: [40]: 0x80994D90 0x0041A7F0
+0x00424824 0x0041A838
+[ 2180.500217] ath10k_pci 0000:04:00.0: [44]: 0x80996DC6 0x0041A820
+0x0046F888 0x00412984
+[ 2180.500218] ath10k_pci 0000:04:00.0: [48]: 0x800B43F5 0x0041A860
+0x004222F8 0x00005008
+[ 2180.500219] ath10k_pci 0000:04:00.0: [52]: 0x809A6ACC 0x0041A8F0
+0x0042930C 0x0042CA24
+[ 2180.500220] ath10k_pci 0000:04:00.0: [56]: 0x809A6120 0x0041A930
+0x0041A958 0x00427110
+[ 2180.510721] ath10k_pci 0000:04:00.0: failed to poke peer
+ac:22:0b:d0:9b:d4 param for ps workaround on vdev 0: -108
+[ 2182.035685] ath10k_pci 0000:04:00.0: firmware crashed! (uuid
+a8a94439-1c5d-4ab5-a612-6816852e8f75)
+[ 2182.035695] ath10k_pci 0000:04:00.0: qca6174 hw2.1 (0x05010000,
+0x003405ff sub 1a56:1525) fw WLAN.RM.1.1-00141 fwapi 5 bdapi 1 htt-ver
+3.1 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1 features
+ignore-otp,no-4addr-pad
+[ 2182.035697] ath10k_pci 0000:04:00.0: debug 0 debugfs 1 tracing 0
+dfs 0 testmode 0
+[ 2182.037720] ath10k_pci 0000:04:00.0: firmware register dump:
+[ 2182.037722] ath10k_pci 0000:04:00.0: [00]: 0x05010000 0x000015B3
+0x00939797 0x00955B31
+[ 2182.037724] ath10k_pci 0000:04:00.0: [04]: 0x00939797 0x00060330
+0x00000000 0x00000000
+[ 2182.037726] ath10k_pci 0000:04:00.0: [08]: 0x00413980 0x0000FFFF
+0x00000000 0x00000000
+[ 2182.037727] ath10k_pci 0000:04:00.0: [12]: 0x00000009 0xFFFFFFFF
+0x0096C09C 0x0096C0A7
+[ 2182.037729] ath10k_pci 0000:04:00.0: [16]: 0x0096BDBC 0x00935C65
+0x00000000 0x00000000
+[ 2182.037730] ath10k_pci 0000:04:00.0: [20]: 0x40939797 0x0041A700
+0x00407124 0x00000000
+[ 2182.037732] ath10k_pci 0000:04:00.0: [24]: 0x8093D6C4 0x0041A760
+0x004059D0 0xC0939797
+[ 2182.037733] ath10k_pci 0000:04:00.0: [28]: 0x8094777F 0x0041A780
+0x0046D5D8 0x00000001
+[ 2182.037735] ath10k_pci 0000:04:00.0: [32]: 0x800AA427 0x0041A7B0
+0x0046D5D8 0x00000001
+[ 2182.037736] ath10k_pci 0000:04:00.0: [36]: 0x800AA58E 0x0041A7D0
+0x00424824 0x00000001
+[ 2182.037738] ath10k_pci 0000:04:00.0: [40]: 0x80994D90 0x0041A7F0
+0x00424824 0x0041A838
+[ 2182.037739] ath10k_pci 0000:04:00.0: [44]: 0x80996DC6 0x0041A820
+0x0046F888 0x00412984
+[ 2182.037741] ath10k_pci 0000:04:00.0: [48]: 0x800B43F5 0x0041A860
+0x004222F8 0x00005008
+[ 2182.037742] ath10k_pci 0000:04:00.0: [52]: 0x809A6ACC 0x0041A8F0
+0x0042930C 0x0042CA24
+[ 2182.037744] ath10k_pci 0000:04:00.0: [56]: 0x809A6120 0x0041A930
+0x0041A958 0x00427110
+[ 2182.038997] ath10k_pci 0000:04:00.0: failed to poke peer
+ac:22:0b:d0:9b:d4 param for ps workaround on vdev 0: -108
+[ 2182.039000] ath10k_pci 0000:04:00.0: failed to set 2g txpower 0: -108
+[ 2182.039001] ath10k_pci 0000:04:00.0: failed to setup tx power 0: -108
+[ 2182.039002] ath10k_pci 0000:04:00.0: failed to recalc tx power: -108
+[ 2182.039003] ath10k_pci 0000:04:00.0: failed to set PS Mode 0 for vdev 0: -108
+[ 2182.039004] ath10k_pci 0000:04:00.0: failed to setup powersave: -108
+[ 2182.039005] ath10k_pci 0000:04:00.0: failed to setup ps on vdev 0: -108
+[ 2182.039007] ath10k_pci 0000:04:00.0: failed to set vdev wmm params
+on vdev 1: -108
+[ 2182.039009] ath10k_pci 0000:04:00.0: failed to set vdev wmm params
+on vdev 1: -108
+[ 2182.039016] ath10k_pci 0000:04:00.0: device successfully recovered
+[ 2183.562688] ath10k_pci 0000:04:00.0: firmware crashed! (uuid
+038c9313-4a1f-440b-8974-799361e3ea2b)
+[ 2183.562698] ath10k_pci 0000:04:00.0: qca6174 hw2.1 (0x05010000,
+0x003405ff sub 1a56:1525) fw WLAN.RM.1.1-00141 fwapi 5 bdapi 1 htt-ver
+3.1 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1 features
+ignore-otp,no-4addr-pad
+[ 2183.562700] ath10k_pci 0000:04:00.0: debug 0 debugfs 1 tracing 0
+dfs 0 testmode 0
+[ 2183.564724] ath10k_pci 0000:04:00.0: firmware register dump:
+[ 2183.564725] ath10k_pci 0000:04:00.0: [00]: 0x05010000 0x000015B3
+0x00939797 0x00955B31
+[ 2183.564727] ath10k_pci 0000:04:00.0: [04]: 0x00939797 0x00060330
+0x00000000 0x00000000
+[ 2183.564729] ath10k_pci 0000:04:00.0: [08]: 0x00413980 0x0000FFFF
+0x00000000 0x00000000
+[ 2183.564730] ath10k_pci 0000:04:00.0: [12]: 0x00000009 0xFFFFFFFF
+0x0096C09C 0x0096C0A7
+[ 2183.564731] ath10k_pci 0000:04:00.0: [16]: 0x0096BDBC 0x009286B6
+0x00000000 0x00000000
+[ 2183.564733] ath10k_pci 0000:04:00.0: [20]: 0x40939797 0x0041A700
+0x00407124 0x00000000
+[ 2183.564734] ath10k_pci 0000:04:00.0: [24]: 0x8093D6C4 0x0041A760
+0x004059D0 0xC0939797
+[ 2183.564736] ath10k_pci 0000:04:00.0: [28]: 0x8094777F 0x0041A780
+0x0046D5D8 0x00000001
+[ 2183.564737] ath10k_pci 0000:04:00.0: [32]: 0x800AA427 0x0041A7B0
+0x0046D5D8 0x00000001
+[ 2183.564738] ath10k_pci 0000:04:00.0: [36]: 0x800AA58E 0x0041A7D0
+0x00424824 0x00000001
+[ 2183.564740] ath10k_pci 0000:04:00.0: [40]: 0x80994D90 0x0041A7F0
+0x00424824 0x0041A838
+[ 2183.564741] ath10k_pci 0000:04:00.0: [44]: 0x80996DC6 0x0041A820
+0x0046F888 0x00412984
+[ 2183.564743] ath10k_pci 0000:04:00.0: [48]: 0x800B43F5 0x0041A860
+0x004222F8 0x00005008
+[ 2183.564744] ath10k_pci 0000:04:00.0: [52]: 0x809A6ACC 0x0041A8F0
+0x0042930C 0x0042CA24
+[ 2183.564746] ath10k_pci 0000:04:00.0: [56]: 0x809A6120 0x0041A930
+0x0041A958 0x00427110
+[ 2192.039957] ath10k_warn: 14 callbacks suppressed
+[ 2192.039961] ath10k_pci 0000:04:00.0: failed to delete peer
+ac:22:0b:d0:9b:d4 for vdev 0: -108
+[ 2192.039972] Modules linked in: bnep fuse usblp bbswitch(O)
+snd_hda_codec_hdmi arc4 snd_usb_audio snd_usbmidi_lib snd_rawmidi
+snd_seq_device joydev mousedev ath3k uvcvideo videobuf2_vmalloc
+videobuf2_memops btusb videobuf2_v4l2 btrtl btbcm videobuf2_core
+btintel v4l2_common bluetooth videodev media nvram iTCO_wdt msr
+iTCO_vendor_support mxm_wmi tpm_crb intel_rapl iosf_mbi
+x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm
+nls_iso8859_1 nls_cp437 vfat irqbypass fat pcspkr psmouse evdev
+input_leds mac_hid serio_raw ath10k_pci ath10k_core ath mac80211
+r8168(O) cfg80211 i915 snd_hda_codec_realtek rfkill
+snd_hda_codec_generic rtsx_pci_ms memstick r8169 lpc_ich mii thermal
+snd_soc_rt5640 fan snd_hda_intel snd_soc_rl6231 drm_kms_helper battery
+snd_hda_codec snd_soc_core drm snd_hda_core snd_compress
+[ 2192.040171] ath10k_pci 0000:04:00.0: failed to recalculate rts/cts
+prot for vdev 0: -108
+[ 2192.040173] ath10k_pci 0000:04:00.0: failed to set protection mode
+0 on vdev 0: -108
+[ 2192.040174] ath10k_pci 0000:04:00.0: failed to set erp slot for vdev 0: -108
+[ 2192.040175] ath10k_pci 0000:04:00.0: failed to set preamble for vdev 0: -108
+[ 2192.040177] ath10k_pci 0000:04:00.0: faield to down vdev 0: -108
+[ 2192.040179] ath10k_pci 0000:04:00.0: failed to submit vdev param
+txbf 0x0: -108
+[ 2192.040180] ath10k_pci 0000:04:00.0: failed to recalc txbf for vdev 0: -108
+[ 2192.040182] ath10k_pci 0000:04:00.0: failed to set vdev wmm params
+on vdev 0: -108
+[ 2192.040183] ath10k_pci 0000:04:00.0: failed to set vdev wmm params
+on vdev 0: -108
+[ 2197.142254] ath10k_warn: 9 callbacks suppressed
+[ 2197.142259] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2198.142551] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2199.142818] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2200.143090] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2202.550492] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2203.551233] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2204.551938] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2205.552624] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2206.553298] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2207.554193] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2208.555221] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2209.556242] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2210.557034] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2211.557712] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2212.558396] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2213.559085] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2214.559797] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2215.560993] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2216.562280] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2217.563572] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2218.564757] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2219.565945] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2220.567137] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2221.568314] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2222.569531] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2223.570723] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2224.572075] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2225.573376] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2226.574725] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2227.576183] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+[ 2227.977857] ath10k_pci 0000:04:00.0: failed to start hw scan: -108
+
+I'm using the following kernel:
+
+Linux gnunn-laptop2 4.4.1-1-ARCH #1 SMP PREEMPT Mon Feb 1 08:16:18 CET
+2016 x86_64 GNU/Linux
 
 _______________________________________________
 ath10k mailing list
