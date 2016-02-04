@@ -1,20 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x241.google.com ([2607:f8b0:4001:c06::241])
- by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1aRH5A-0003tI-5M
- for ath10k@lists.infradead.org; Thu, 04 Feb 2016 10:24:12 +0000
-Received: by mail-io0-x241.google.com with SMTP id f81so4026258iof.0
- for <ath10k@lists.infradead.org>; Thu, 04 Feb 2016 02:23:50 -0800 (PST)
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aRO6I-0004Jn-9J
+ for ath10k@lists.infradead.org; Thu, 04 Feb 2016 17:53:51 +0000
+Received: by mail-wm0-x241.google.com with SMTP id r129so13243863wmr.0
+ for <ath10k@lists.infradead.org>; Thu, 04 Feb 2016 09:53:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnkPaYkZyQWA1y_58RhnVYzxwAnPOnCdmhT0RAdPkJw0w@mail.gmail.com>
-References: <CABy9W5nGFA7r0dr-7jVj_i4uEAmn5dywKdiUpCNgS6=H-Z7JOg@mail.gmail.com>
- <CA+BoTQmiMaE6tmR=TwrJ0o9w-vt8Ee8GSSy4JKE11aCzhjCP4w@mail.gmail.com>
- <CABy9W5=42zBwFbLSaHr8g6ZSxrUtgxhLHD4KxazLxiMDJC-9Xg@mail.gmail.com>
- <CA+BoTQnkPaYkZyQWA1y_58RhnVYzxwAnPOnCdmhT0RAdPkJw0w@mail.gmail.com>
-Date: Thu, 4 Feb 2016 02:23:50 -0800
-Message-ID: <CABy9W5kSJOAJViDmt_RCXGa2wnXukmEwp0E_k5pfQNewCUhZOQ@mail.gmail.com>
-Subject: Re: SWBA errors and no ssid
-From: Ann Lo <annlo.tech@gmail.com>
+In-Reply-To: <CACiydbLBuzj0ZhF8MuCbdMQUWhnOV9t62dqV9S_RpdO9DTRZFA@mail.gmail.com>
+References: <1444654626-3290-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <CACiydbLcjNGdpc+dtBFCTAUrC0RtEhtxoxf3+XhXk24soX_qQg@mail.gmail.com>
+ <1454221875643.60351@qti.qualcomm.com>
+ <CACiydbLk5=EH8Nz=FnL+B3itfXiRLbLUARg4ovWe7okLsZzyRQ@mail.gmail.com>
+ <1454250192327.17956@qti.qualcomm.com>
+ <CACiydbK4CY3XTqy=aXPqb-5K3Df3T6ZtSoND213uHQnfhk8ZqQ@mail.gmail.com>
+ <CACiydbLBuzj0ZhF8MuCbdMQUWhnOV9t62dqV9S_RpdO9DTRZFA@mail.gmail.com>
+Date: Thu, 4 Feb 2016 19:53:28 +0200
+Message-ID: <CACiydb+pvtw4M_bvKmFZPMzk60STh+uTSC-BokQ0HTEKO5esRQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] ath10k: add copy engine fast path support
+From: Roman Yeryomin <leroi.lists@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,84 +26,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGkgTWljaGFsLAoKVGhpcyBpcyBnb29kIGluZm9ybWF0aW9uLgoKVGhhbmtzLApBbm4KCk9uIFRo
-dSwgRmViIDQsIDIwMTYgYXQgMTo0MSBBTSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0
-aWV0by5jb20+IHdyb3RlOgo+IE9uIDQgRmVicnVhcnkgMjAxNiBhdCAxMDozMywgQW5uIExvIDxh
-bm5sby50ZWNoQGdtYWlsLmNvbT4gd3JvdGU6Cj4+IEhpIE1pY2hhbCwKPj4KPj4gVGhhbmtzIGZv
-ciB5b3VyIGluZm9ybWF0aW9uIGFuZCBzdWdnZXN0aW9uLiBBIGxpbWl0YXRpb24gd2UgaGF2ZSBp
-cwo+PiB0aGF0IHdlIGRlYWwgd2l0aCBib2FyZCBzdXBwb3J0IHBhY2thZ2Uga2VybmVsLCBhbmQg
-d2UgbmVlZCB0byB3b3JyeQo+PiBhYm91dCBvdGhlciBkcml2ZXJzIGFzIHdlbGwuIFdlIGFyZSBo
-b3BpbmcgdG8gbWFrZSBtaW5pbWFsIGNoYW5nZXMuCj4+IFRoZXJlIGFwcGVhciB0byBiZSBhIG51
-bWJlciBvZiBjaGFuZ2VzIGluIHRoaXMgYXJlYSwgaW5jbHVkaW5nOgo+Pgo+PiBhdGgxMGs6IGlt
-cGxlbWVudCBhbmQgdXNlIG5ldyBiZWFjb24gbWV0aG9kCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAxNC1KYW51YXJ5LzAwMDk0MC5odG1sCj4+Cj4+IHRo
-ZSBiZXN0IGF0aDEwayBkcml2ZXIKPj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJt
-YWlsL2F0aDEway8yMDE1LUF1Z3VzdC8wMDU4MTUuaHRtbAo+Pgo+PiBJcyBpdCBwb3NzaWJsZSB0
-byBhcHBseSBhIG51bWJlciBvZiBwYXRjaGVzIHRvIEtlcm5lbCAzLjE0LjI4PyBPciwKPj4gcG9y
-dCBhdGgxMGsgZnJvbSBLZXJuZWwgMy4xOSB3aGljaCBpcyBuZXdlciBidXQgbm90IGFzIG5ldyBh
-cyBLZXJuZWwKPj4gNC40PyBJcyBRdWFsY29tbSBmaXJtd2FyZSAxMC4yLjQuNzAuMiB0aGUgb25s
-eSBzb2x1dGlvbj8KPgo+IEJhY2twb3J0cyBhbGxvdyB5b3UgdG8gdXNlIG5ld2VyIGRyaXZlcnMg
-d2l0aCBvbGRlciBrZXJuZWwuCj4KPiBJZiB0aGF0LCBmb3Igc29tZSByZWFzb24sIGRvZXNuJ3Qg
-c3VpdCB5b3UgeW91J3JlIHByb2JhYmx5IGxlZnQgd2l0aAo+IGFwcHJvYWNoIHRha2VuIHdpdGgg
-dGhlIGRyaXZlciBmb3IgY2hyb21pdW06Cj4KPiAgIGh0dHBzOi8vZ3JvdXBzLmdvb2dsZS5jb20v
-YS9jaHJvbWl1bS5vcmcvZm9ydW0vIyF0b3BpYy9jaHJvbWl1bS1vcy1yZXZpZXdzL3FVYWdlWGhZ
-RGI4Cj4KPiAoVGhpcyB3YXMgZG9uZSBiYXNlZCBvbiB3aGF0IG9yaWdpbmFsbHkgSW50ZWwgZ3V5
-cyBkaWQgd2l0aCB0aGVpciBpd2wgZHJpdmVyKQo+Cj4gQ2hlcnJ5LXBpY2tpbmcgY2hhbmdlcyBt
-YW51YWxseSBpcyBnb2luZyB0byBiZSBhIG1ham9yIHBhaW4gd2l0aCBhbgo+IGluc2FuZSBjYXNj
-YWRlIG9mIGNoYW5nZXMgKHBvc3NpYmx5IGNvbmZsaWN0aW5nIHdpdGggc29tZSBjdXN0b20KPiBj
-aGFuZ2VzIGluIHRoZSBrZXJuZWwgeW91IHVzZSkuCj4KPgo+IE1pY2hhxYIKPgo+Cj4+Cj4+IFRo
-YW5rcywKPj4gQW5uCj4+Cj4+IE9uIFdlZCwgRmViIDMsIDIwMTYgYXQgMTE6NDMgUE0sIE1pY2hh
-bCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPj4+IE9uIDMgRmVicnVh
-cnkgMjAxNiBhdCAyMDozMywgQW5uIExvIDxhbm5sby50ZWNoQGdtYWlsLmNvbT4gd3JvdGU6Cj4+
-Pj4gSGVsbG8sCj4+Pj4KPj4+PiBXZSBhcmUgc2Vla2luZyBmb3IgZXhwZXJ0IG9waW5pb25zIG9u
-ICJTV0JBIGVycm9ycyIgYW5kIGFueSBwb3NzaWJsZQo+Pj4+IHdvcmthcm91bmRzLiBJZiB3ZSBy
-dW4gQVArY2xpZW50IG1vZGUsIGFuZCB0aGUgY2xpZW50IHNjYW5zIGZvciBhbgo+Pj4+IG5vbmV4
-aXN0ZW50IHNzaWQsIHRoZW4gIlNXQkEgZXJyb3JzIiBoYXBwZW4gZWFzaWx5LiBGcm9tIHRoaXMg
-cG9pbnQKPj4+PiBvbiwgdGhlIHNzaWQgb2YgdGhlIEFQIGlzIG5vIGxvbmdlciB2aXNpYmxlLiBX
-ZSB1c2Uga2VybmVsIDMuMTQuMjgsCj4+Pj4gUXVhbGNvbW0gZmlybXdhcmUgMTAuMS4xNjcuMy0x
-LCBhbmQgV0xFOTAwVlguIFF1YWxjb21tIGZpcm13YXJlCj4+Pj4gOTk5Ljk5OS4wLjYzNiBoYXMg
-dGhlIHNhbWUgcHJvYmxlbSBleGNlcHQgdGhhdCBpdCBkb2VzIG5vdCByZXBvcnQKPj4+PiAiU1dC
-QSBlcnJvcnMiLiBJcyBpdCBwb3NzaWJsZSB0aGF0IHdlIGNhbiBmaXggdGhpcyBwcm9ibGVtIGJ5
-IHBvcnRpbmcKPj4+PiBzb21lIHBhdGNoZXM/Cj4+Pj4KPj4+PiBEZXRhaWxzIG9mIGVycm9ycwo+
-Pj4+ID09PT09PT09PT09PQo+Pj4+IFsgMzQ1NS4xMDExOTldIGF0aDEwazogU1dCQSBvdmVycnVu
-IG9uIHZkZXYgMAo+Pj4+IFsgMzQ1NS4yMDM2MTZdIGF0aDEwazogU1dCQSBvdmVycnVuIG9uIHZk
-ZXYgMAo+Pj4+IFsgMzQ1NS4zMDU5OTJdIGF0aDEwazogU1dCQSBvdmVycnVuIG9uIHZkZXYgMAo+
-Pj4+IFsgMzQ1NS40MDgzODldIGF0aDEwazogU1dCQSBvdmVycnVuIG9uIHZkZXYgMAo+Pj4+IFsg
-MzQ1NS41MTA3NjhdIGF0aDEwazogU1dCQSBvdmVycnVuIG9uIHZkZXYgMAo+Pj4+IFsgMzQ1NS42
-MTMxNjRdIGF0aDEwazogU1dCQSBvdmVycnVuIG9uIHZkZXYgMAo+Pj4+IFsgMzQ1NS43MTU1NTdd
-IGF0aDEwazogU1dCQSBvdmVycnVuIG9uIHZkZXYgMAo+Pj4+IFsgMzQ1NS44MTc5OTJdIGF0aDEw
-azogU1dCQSBvdmVycnVuIG9uIHZkZXYgMAo+Pj4+IFsgMzQ1NS45MjAzNjBdIGF0aDEwazogU1dC
-QSBvdmVycnVuIG9uIHZkZXYgMAo+Pj4+IFsgMzQ1Ni4wMjI3NjhdIGF0aDEwazogU1dCQSBvdmVy
-cnVuIG9uIHZkZXYgMAo+Pj4+IFsgMzQ1Ny45NDY3MzVdIHVhcDA6IGZhaWxlZCB0byByZW1vdmUg
-a2V5ICgwLCBhNDoyYjo4YzowNDo2ZDphOCkgZnJvbQo+Pj4+IGhhcmR3YXJlICgtMTEpCj4+Pj4g
-WyAzNDYwLjExODU5N10gbmV0X3JhdGVsaW1pdDogNDAgY2FsbGJhY2tzIHN1cHByZXNzZWQKPj4+
-PiBbIDM0NjAuMTIzNDYzXSBhdGgxMGs6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAKPj4+PiBbIDM0
-NjAuMjIxMDAzXSBhdGgxMGs6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAKPj4+PiBbIDM0NjAuMzIz
-Mzk4XSBhdGgxMGs6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAKPj4+PiBbIDM0NjAuNDI1Nzg1XSBh
-dGgxMGs6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAKPj4+PiBbIDM0NjAuNTI4MTg2XSBhdGgxMGs6
-IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAKPj4+PiBbIDM0NjAuNjMwNTY4XSBhdGgxMGs6IFNXQkEg
-b3ZlcnJ1biBvbiB2ZGV2IDAKPj4+PiBbIDM0NjAuNzMyOTcxXSBhdGgxMGs6IFNXQkEgb3ZlcnJ1
-biBvbiB2ZGV2IDAKPj4+PiBbIDM0NjAuODM1MzcwXSBhdGgxMGs6IFNXQkEgb3ZlcnJ1biBvbiB2
-ZGV2IDAKPj4+PiBbIDM0NjAuOTM3NzY3XSBhdGgxMGs6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAK
-Pj4+PiBbIDM0NjAuOTQ2Njc5XSBhdGgxMGs6IGNvdWxkIG5vdCByZW1vdmUgcGVlciB3ZXAga2V5
-IDAgKC0xMSkKPj4+Cj4+PiBMb29rcyBsaWtlIGZpcm13YXJlIGhhcyBoYW5nZWQuIEkgcmVjYWxs
-IHRoZXJlIHdlcmUgd2VpcmQgaXNzdWVzIGEKPj4+IGxvbmcgdGltZSBhZ28uCj4+Pgo+Pj4gU1dC
-QSBpcyBhbiBldmVudCByZXBvcnRlZCBieSBmaXJtd2FyZSB0byBob3N0IHByb21wdGluZyBpdCB0
-byBzdWJtaXQgYQo+Pj4gbmV3IGJlYWNvbiBmcmFtZSB0aGF0IGlzIHRvIGJlIHNlbnQgb3V0LiBU
-aGUgIm92ZXJydW4iIG1lYW5zIHRoYXQgdGhlCj4+PiBkcml2ZXIgaXMgdW5hYmxlIHRvIHN1Ym1p
-dCB0aGUgYmVhY29uIGJlY2F1c2UgZmlybXdhcmUgY29tbWFuZCBwaXBlIGlzCj4+PiBidXN5Lgo+
-Pj4KPj4+IFlvdSdyZSB1c2luZyBxdWl0ZSBhbiBvbGQga2VybmVsLiBDYW4geW91IHBlcmhhcHMg
-dHJ5IDQuND8gSWYgeW91Cj4+PiBjYW4ndCByZXBsYWNlIHRoZSBrZXJuZWwgZm9yIHNvbWUgcmVh
-c29uIGRpZCB5b3UgdGhpbmsgYWJvdXQgdXNpbmcKPj4+IGJhY2twb3J0c1sxXT8KPj4+Cj4+PiBb
-MV06IGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3VzZXJzL2RyaXZlcnMvYXRo
-MTBrL2JhY2twb3J0cwo+Pj4KPj4+Cj4+PiBNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+On 1 February 2016 at 14:35, Roman Yeryomin <leroi.lists@gmail.com> wrote:
+> On 1 February 2016 at 11:54, Roman Yeryomin <leroi.lists@gmail.com> wrote:
+>> On 31 January 2016 at 16:23, Manoharan, Rajkumar
+>> <rmanohar@qti.qualcomm.com> wrote:
+>>>>On 31 January 2016 at 08:31, Manoharan, Rajkumar
+>>>><rmanohar@qti.qualcomm.com> wrote:
+>>>>>>> Below patchset adds fast path support for uplink traffic by bypassing
+>>>>>>> HTC layer processing. This is enabled by making use of unused copy
+>>>>>>> engine 5 to receive HTT messages directly from HIF layer. From initial
+>>>>>>> validation in VHT80/5G mode TCP UL is improved to 900Mbps from ~840Mbps
+>>>>>>> in conducted test.
+>>>>>>>
+>>>>>>
+>>>>>>Hi Rajkumar,
+>>>>>>
+>>>>>>I'm very curious what hardware did you use to do the tests?
+>>>>>>Because with Dragonfly+Peregrine 3x3 I'm able to get only ~550Mbps :(
+>>>>>>
+>>>>>
+>>>>> Roman,
+>>>>>
+>>>>> It is verified in AP148 platform which IPQ8064 (1.4GHz dual core) platform.
+>>>>> Throughput will be lower in low end systems like AP135 (unicore processor).
+>>>>
+>>>> OK, but QSDK built with proprietary driver can reach 800Mbps at least.
+>>>> 900/800 Mbps difference is fine (ethernet software bridging is >900,
+>>>> e.g.) but 900/550 Mbps difference is not fine, there must be something
+>>>> ath10k is not doing or doing in a wrong way.
+>>>
+>>> While ago, Michal did an experiments to improve performance by offloading
+>>> encap/decap to firmware. Can you try with below patch set? I hope there might
+>>> be some conflicts since the change is outdated. Please make sure to enable
+>>> CONFIG_ATH10K_802_3_FORMAT switch.
+>>>
+>>> http://lists.infradead.org/pipermail/ath10k/2014-December/003935.html
+>>>
+>>> In one of my experiments, replacing netif_receive_skb to netif_rx in mac80211/rx.c
+>>> had improved rx performance in AP135. I dont have data right now. Can you give a try?
+>>
+>> After quick testing with 2x2 system I didn't see any significant improvement.
+>> Will test on 3x3 little bit later.
+>
+> 3x3 didn't perform better either. That's with 4.4 and backports from 2016-01-10.
+> One weird thing I see is about 15% idle cpu.
+> Any ideas?
+
+Looks like one of the bottlenecks was in rx ring size of ethernet
+driver. There is a switch (on ap152) and it looks like it gives large
+bursts of packets which SoC's gmac cannot handle with short rx rings
+and (relatively) slow wifi tx path.
+Now I can get 700Mbps with 3x3 and still see up to 5% cpu idle. Much
+better but not as good as proprietary driver.
+Any ideas how to improve it further?
+
+Regards,
+Roman
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
