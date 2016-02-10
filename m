@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aRpWD-0005A5-Ba
- for ath10k@lists.infradead.org; Fri, 05 Feb 2016 23:10:25 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k: Document alloc_frag_desc_for_data_pkt config option.
-Date: Fri,  5 Feb 2016 15:10:02 -0800
-Message-Id: <1454713802-21244-1-git-send-email-greearb@candelatech.com>
+Received: from mail-qg0-x229.google.com ([2607:f8b0:400d:c04::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aTY75-00027S-R5
+ for ath10k@lists.infradead.org; Wed, 10 Feb 2016 16:59:38 +0000
+Received: by mail-qg0-x229.google.com with SMTP id b67so18156963qgb.1
+ for <ath10k@lists.infradead.org>; Wed, 10 Feb 2016 08:59:14 -0800 (PST)
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+Subject: [PATCH] ath10k: fix erroneous return value
+Date: Wed, 10 Feb 2016 11:58:55 -0500
+Message-Id: <1455123535-26751-1-git-send-email-a.s.protopopov@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +22,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Anton Protopopov <a.s.protopopov@gmail.com>
 
-From: Ben Greear <greearb@candelatech.com>
+The ath10k_pci_hif_exchange_bmi_msg() function may return the positive
+value EIO instead of -EIO in case of error.
 
-This will help anyone trying to use the ack-rssi reporting
-feature with the host-specified TX-rate option in 10.4 firmware.
-
-Signed-off-by: Ben Greear <greearb@candelatech.com>
+Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index e27a3ba..9f7cfc1 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2678,9 +2678,14 @@ struct wmi_resource_config_10_4 {
- 	 */
- 	__le32 iphdr_pad_config;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index ee925c6..526acde 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1756,7 +1756,7 @@ static int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
+ 					    DMA_FROM_DEVICE);
+ 		ret = dma_mapping_error(ar->dev, resp_paddr);
+ 		if (ret) {
+-			ret = EIO;
++			ret = -EIO;
+ 			goto err_req;
+ 		}
  
--	/* qwrap configuration
-+	/* qwrap configuration (bits 15-0)
- 	 * 1  - This is qwrap configuration
- 	 * 0  - This is not qwrap
-+	 *
-+	 * Bits 31-16 is alloc_frag_desc_for_data_pkt (1 enables, 0 disables)
-+	 * In order to get ack-RSSI reporting and to specify the tx-rate for
-+	 * individual frames, this option must be enabled.  This uses an extra
-+	 * 4 bytes per tx-msdu descriptor, so don't enable it unless you need it.
- 	 */
- 	__le32 qwrap_config;
- } __packed;
 -- 
-2.4.3
+2.6.5
 
 
 _______________________________________________
