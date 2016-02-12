@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x22a.google.com ([2607:f8b0:4001:c06::22a])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aU0bR-0005gP-BV
- for ath10k@lists.infradead.org; Thu, 11 Feb 2016 23:24:49 +0000
-Received: by mail-io0-x22a.google.com with SMTP id z135so4950645iof.0
- for <ath10k@lists.infradead.org>; Thu, 11 Feb 2016 15:24:28 -0800 (PST)
+ id 1aU6x4-0004Cp-Op
+ for ath10k@lists.infradead.org; Fri, 12 Feb 2016 06:11:35 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH 1/2] ath10k: reduce rx_lock contention for htt rx indication
+Date: Fri, 12 Feb 2016 11:40:58 +0530
+Message-ID: <1455257459-13343-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1455123535-26751-1-git-send-email-a.s.protopopov@gmail.com>
-References: <1455123535-26751-1-git-send-email-a.s.protopopov@gmail.com>
-From: Julian Calaby <julian.calaby@gmail.com>
-Date: Fri, 12 Feb 2016 10:24:09 +1100
-Message-ID: <CAGRGNgXr-XS+sCBDCKMKT0x_uQBeiUqS9fNigkBt6x7LbNJkPQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: fix erroneous return value
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,54 +20,74 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Anton Protopopov <a.s.protopopov@gmail.com>
-Cc: netdev <netdev@vger.kernel.org>, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Hi All,
+Received frame indications are queued into a skb list and latest
+processed by txrx tasklet. This skb queue is protected by htt rx lock.
+Since the entire rx processing till delivering frame to mac80211 and
+replenish tasks are processed under rx_lock protection, there might be
+some delay in queuing newly received rx frame into that list on
+multicore systems. Optimize this by using skb list lock while accessing
+rx completion queue instead of htt rx lock.
 
-On Thu, Feb 11, 2016 at 3:58 AM, Anton Protopopov
-<a.s.protopopov@gmail.com> wrote:
-> The ath10k_pci_hif_exchange_bmi_msg() function may return the positive
-> value EIO instead of -EIO in case of error.
->
-> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-This looks right to me.
-
-Reviewed-by: Julian Calaby <julian.calaby@gmail.com>
-
-> ---
->  drivers/net/wireless/ath/ath10k/pci.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-> index ee925c6..526acde 100644
-> --- a/drivers/net/wireless/ath/ath10k/pci.c
-> +++ b/drivers/net/wireless/ath/ath10k/pci.c
-> @@ -1756,7 +1756,7 @@ static int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
->                                             DMA_FROM_DEVICE);
->                 ret = dma_mapping_error(ar->dev, resp_paddr);
->                 if (ret) {
-> -                       ret = EIO;
-> +                       ret = -EIO;
->                         goto err_req;
->                 }
->
-> --
-> 2.6.5
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index cc957a6..bedd8c3 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2011,9 +2011,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	}
+ 	case HTT_T2H_MSG_TYPE_RX_IND:
+-		spin_lock_bh(&htt->rx_ring.lock);
+-		__skb_queue_tail(&htt->rx_compl_q, skb);
+-		spin_unlock_bh(&htt->rx_ring.lock);
++		skb_queue_tail(&htt->rx_compl_q, skb);
+ 		tasklet_schedule(&htt->txrx_compl_task);
+ 		return;
+ 	case HTT_T2H_MSG_TYPE_PEER_MAP: {
+@@ -2111,9 +2109,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	}
+ 	case HTT_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND: {
+-		spin_lock_bh(&htt->rx_ring.lock);
+-		__skb_queue_tail(&htt->rx_in_ord_compl_q, skb);
+-		spin_unlock_bh(&htt->rx_ring.lock);
++		skb_queue_tail(&htt->rx_in_ord_compl_q, skb);
+ 		tasklet_schedule(&htt->txrx_compl_task);
+ 		return;
+ 	}
+@@ -2174,16 +2170,18 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+ 		dev_kfree_skb_any(skb);
+ 	}
+ 
+-	spin_lock_bh(&htt->rx_ring.lock);
+-	while ((skb = __skb_dequeue(&htt->rx_compl_q))) {
++	while ((skb = skb_dequeue(&htt->rx_compl_q))) {
+ 		resp = (struct htt_resp *)skb->data;
++		spin_lock_bh(&htt->rx_ring.lock);
+ 		ath10k_htt_rx_handler(htt, &resp->rx_ind);
++		spin_unlock_bh(&htt->rx_ring.lock);
+ 		dev_kfree_skb_any(skb);
+ 	}
+ 
+-	while ((skb = __skb_dequeue(&htt->rx_in_ord_compl_q))) {
++	while ((skb = skb_dequeue(&htt->rx_in_ord_compl_q))) {
++		spin_lock_bh(&htt->rx_ring.lock);
+ 		ath10k_htt_rx_in_ord_ind(ar, skb);
++		spin_unlock_bh(&htt->rx_ring.lock);
+ 		dev_kfree_skb_any(skb);
+ 	}
+-	spin_unlock_bh(&htt->rx_ring.lock);
+ }
 -- 
-Julian Calaby
+2.7.0
 
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
 
 _______________________________________________
 ath10k mailing list
