@@ -1,15 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aU6xH-0004EJ-LK
- for ath10k@lists.infradead.org; Fri, 12 Feb 2016 06:11:48 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 2/2] ath10k: process htt rx indication as batch mode
-Date: Fri, 12 Feb 2016 11:40:59 +0530
-Message-ID: <1455257459-13343-2-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1455257459-13343-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1455257459-13343-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1aUKMk-0004kn-W3
+ for ath10k@lists.infradead.org; Fri, 12 Feb 2016 20:31:00 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id c200so36770087wme.0
+ for <ath10k@lists.infradead.org>; Fri, 12 Feb 2016 12:30:38 -0800 (PST)
+Received: from localhost
+ (HSI-KBW-091-089-228-074.hsi2.kabel-badenwuerttemberg.de. [91.89.228.74])
+ by smtp.gmail.com with ESMTPSA id b5sm3830465wmh.15.2016.02.12.12.30.35
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 12 Feb 2016 12:30:35 -0800 (PST)
+Date: Fri, 12 Feb 2016 21:30:36 +0100
+From: Tobias Predel <tobias.predel@gmail.com>
+Subject: ath10k and QCA3977 - random transfer rate losses
+Message-ID: <20160212203036.GA22070@localhost>
 MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +30,101 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-On multicore systems, it is possible that txrx tasket can run
-in parallel with pci tasklet (i.e smp affinity of ath10k irq is
-assigned to multiple CPUs). Feeding and consuming from the same
-rx completion list leads to txrx tasklet runs for longer period.
-Prevent this by processing a snapshot of rx queue by moving list
-into temporary list. Consecutive received frames will be processed
-in next batch.
+Hello,
 
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+I bought a new laptop from ASUS, Product Name E205SA and installed Arch Linux. Unfortunately, the included WLAN chipset from Qualcomm  (QCA 9377) doesn't seem to work well with Linux. Beside of being recognized, the driver/device functions normally for the first minutes after boot, but then the transfer rate is suddenly lowering from around 700 kbs to 200 kbs and less, making Internet unusable. After a while, it's recovering a bit but it seems to be random (like it's trying to sleep/power save mode?). This behavior occures for my home network as well as at my university's network. As wifi access wasn't a issue with the Windows 10 OEM installation, I guess that this might a driver/firmware/configuration problem. 
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index bedd8c3..61d9507 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2155,22 +2155,34 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
- 	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
- 	struct ath10k *ar = htt->ar;
- 	struct sk_buff_head tx_q;
-+	struct sk_buff_head rx_q;
-+	struct sk_buff_head rx_ind_q;
- 	struct htt_resp *resp;
- 	struct sk_buff *skb;
- 	unsigned long flags;
- 
- 	__skb_queue_head_init(&tx_q);
-+	__skb_queue_head_init(&rx_q);
-+	__skb_queue_head_init(&rx_ind_q);
- 
- 	spin_lock_irqsave(&htt->tx_compl_q.lock, flags);
- 	skb_queue_splice_init(&htt->tx_compl_q, &tx_q);
- 	spin_unlock_irqrestore(&htt->tx_compl_q.lock, flags);
- 
-+	spin_lock_irqsave(&htt->rx_compl_q.lock, flags);
-+	skb_queue_splice_init(&htt->rx_compl_q, &rx_q);
-+	spin_unlock_irqrestore(&htt->rx_compl_q.lock, flags);
-+
-+	spin_lock_irqsave(&htt->rx_in_ord_compl_q.lock, flags);
-+	skb_queue_splice_init(&htt->rx_in_ord_compl_q, &rx_ind_q);
-+	spin_unlock_irqrestore(&htt->rx_in_ord_compl_q.lock, flags);
-+
- 	while ((skb = __skb_dequeue(&tx_q))) {
- 		ath10k_htt_rx_frm_tx_compl(htt->ar, skb);
- 		dev_kfree_skb_any(skb);
- 	}
- 
--	while ((skb = skb_dequeue(&htt->rx_compl_q))) {
-+	while ((skb = __skb_dequeue(&rx_q))) {
- 		resp = (struct htt_resp *)skb->data;
- 		spin_lock_bh(&htt->rx_ring.lock);
- 		ath10k_htt_rx_handler(htt, &resp->rx_ind);
-@@ -2178,7 +2190,7 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
- 		dev_kfree_skb_any(skb);
- 	}
- 
--	while ((skb = skb_dequeue(&htt->rx_in_ord_compl_q))) {
-+	while ((skb = __skb_dequeue(&rx_ind_q))) {
- 		spin_lock_bh(&htt->rx_ring.lock);
- 		ath10k_htt_rx_in_ord_ind(ar, skb);
- 		spin_unlock_bh(&htt->rx_ring.lock);
--- 
-2.7.0
+dmesg indicates
+[   13.401917] ath: EEPROM regdomain: 0x6a
+[   13.403870] ath: EEPROM indicates we should expect a direct regpair map
+[   13.405919] ath: Country alpha2 being used: 00
+[   13.407837] ath: Regpair used: 0x6a
+and
+[   11.267403] ath10k_pci 0000:02:00.0: pci irq msi interrupts 1 irq_mode 0 reset_mode 0
+[   11.500220] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/cal-pci-0000:02:00.0.bin failed with error -2
+[   11.583900] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/QCA9377/hw1.0/board-2.bin failed with error -2
+[   13.394121] ath10k_pci 0000:02:00.0: qca9377 hw1.0 (0x05020000, 0x003820ff sub 1a3b:2231) fw WLAN.TF.1.0-00267-1 fwapi 5 bdapi 1 htt-ver 3.1 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1 features ignore-otp
+[   13.398452] ath10k_pci 0000:02:00.0: debug 1 debugfs 1 tracing 0 dfs 0 testmode 0
+[   13.422666] ath10k_pci 0000:02:00.0 wlp2s0: renamed from wlan0
 
+The firmware files were downloaded from the git repository <https://github.com/kvalo/ath10k-firmware>. In addition to that iwconfig gives me a high number of invalid miscs. I use kernel 4.4.1 (Arch Linux). ethtools -i wlp2s0 prints out 
+
+driver: ath10k_pci
+version: 4.4.1-2-ARCH
+firmware-version: WLAN.TF.1.0-00267-1
+expansion-rom-version: 
+bus-info: 0000:02:00.0
+supports-statistics: yes
+supports-test: no
+supports-eeprom-access: no
+supports-register-dump: no
+supports-priv-flags: no
+
+and lspci provides
+
+02:00.0 Network controller: Qualcomm Atheros Device 0042 (rev 30)
+	Subsystem: AzureWave Device 2231
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0, Cache Line Size: 64 bytes
+	Interrupt: pin A routed to IRQ 315
+	Region 0: Memory at 81000000 (64-bit, non-prefetchable) [size=2M]
+	Capabilities: [40] Power Management version 3
+		Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+		Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+	Capabilities: [50] MSI: Enable+ Count=1/8 Maskable+ 64bit-
+		Address: fee0f00c  Data: 4163
+		Masking: fffffffe  Pending: 00000000
+	Capabilities: [70] Express (v2) Endpoint, MSI 00
+		DevCap:	MaxPayload 256 bytes, PhantFunc 0, Latency L0s unlimited, L1 <64us
+			ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset-
+		DevCtl:	Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
+			RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop-
+			MaxPayload 128 bytes, MaxReadReq 512 bytes
+		DevSta:	CorrErr+ UncorrErr- FatalErr- UnsuppReq+ AuxPwr+ TransPend-
+		LnkCap:	Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit Latency L0s <4us, L1 <64us
+			ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp+
+		LnkCtl:	ASPM L0s L1 Enabled; RCB 64 bytes Disabled- CommClk+
+			ExtSynch- ClockPM+ AutWidDis- BWInt- AutBWInt-
+		LnkSta:	Speed 2.5GT/s, Width x1, TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+		DevCap2: Completion Timeout: Not Supported, TimeoutDis+, LTR+, OBFF Via message
+		DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis-, LTR+, OBFF Disabled
+		LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- SpeedDis-
+			 Transmit Margin: Normal Operating Range, EnterModifiedCompliance- ComplianceSOS-
+			 Compliance De-emphasis: -6dB
+		LnkSta2: Current De-emphasis Level: -6dB, EqualizationComplete-, EqualizationPhase1-
+			 EqualizationPhase2-, EqualizationPhase3-, LinkEqualizationRequest-
+	Capabilities: [100 v2] Advanced Error Reporting
+		UESta:	DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+		UEMsk:	DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+		UESvrt:	DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
+		CESta:	RxErr- BadTLP- BadDLLP- Rollover- Timeout- NonFatalErr-
+		CEMsk:	RxErr- BadTLP- BadDLLP- Rollover- Timeout- NonFatalErr+
+		AERCap:	First Error Pointer: 00, GenCap- CGenEn- ChkCap- ChkEn-
+	Capabilities: [148 v1] Virtual Channel
+		Caps:	LPEVC=0 RefClk=100ns PATEntryBits=1
+		Arb:	Fixed- WRR32- WRR64- WRR128-
+		Ctrl:	ArbSelect=Fixed
+		Status:	InProgress-
+		VC0:	Caps:	PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
+			Arb:	Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
+			Ctrl:	Enable+ ID=0 ArbSelect=Fixed TC/VC=ff
+			Status:	NegoPending- InProgress-
+	Capabilities: [168 v1] Device Serial Number 00-00-00-00-00-00-00-00
+	Capabilities: [178 v1] Latency Tolerance Reporting
+		Max snoop latency: 15360ns
+		Max no snoop latency: 15360ns
+	Capabilities: [180 v1] L1 PM Substates
+		L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Substates+
+			  PortCommonModeRestoreTime=50us PortTPowerOnTime=10us
+	Kernel driver in use: ath10k_pci
+	Kernel modules: ath10k_pci
+
+Could anyone give me a hint how I might fix this? Any help is greatly appreciated.
+
+Regards,
+Tobias
 
 _______________________________________________
 ath10k mailing list
