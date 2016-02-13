@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+Received: from mail-vk0-x22a.google.com ([2607:f8b0:400c:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aUKMk-0004kn-W3
- for ath10k@lists.infradead.org; Fri, 12 Feb 2016 20:31:00 +0000
-Received: by mail-wm0-x22c.google.com with SMTP id c200so36770087wme.0
- for <ath10k@lists.infradead.org>; Fri, 12 Feb 2016 12:30:38 -0800 (PST)
-Received: from localhost
- (HSI-KBW-091-089-228-074.hsi2.kabel-badenwuerttemberg.de. [91.89.228.74])
- by smtp.gmail.com with ESMTPSA id b5sm3830465wmh.15.2016.02.12.12.30.35
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 12 Feb 2016 12:30:35 -0800 (PST)
-Date: Fri, 12 Feb 2016 21:30:36 +0100
-From: Tobias Predel <tobias.predel@gmail.com>
-Subject: ath10k and QCA3977 - random transfer rate losses
-Message-ID: <20160212203036.GA22070@localhost>
+ id 1aUTsC-0002A8-Ut
+ for ath10k@lists.infradead.org; Sat, 13 Feb 2016 06:40:06 +0000
+Received: by mail-vk0-x22a.google.com with SMTP id c3so75811701vkb.3
+ for <ath10k@lists.infradead.org>; Fri, 12 Feb 2016 22:39:43 -0800 (PST)
+Received: from darkstar ([161.0.247.254])
+ by smtp.gmail.com with ESMTPSA id 71sm700372vkc.3.2016.02.12.22.39.40
+ for <ath10k@lists.infradead.org> (version=TLSv1/SSLv3 cipher=OTHER);
+ Fri, 12 Feb 2016 22:39:41 -0800 (PST)
+From: gloudon.jamie@gmail.com
+Date: Sat, 13 Feb 2016 02:39:26 -0400
+Subject: QCA6174 firmware crash in monitor mode 
+Message-ID: <20160213063926.GA1767@darkstar>
 MIME-Version: 1.0
 Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
@@ -31,100 +29,75 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
-Hello,
+QCA6147 monitor mode stopped working ever since after kernel v4.3. Here is the firmware crash log:
 
-I bought a new laptop from ASUS, Product Name E205SA and installed Arch Linux. Unfortunately, the included WLAN chipset from Qualcomm  (QCA 9377) doesn't seem to work well with Linux. Beside of being recognized, the driver/device functions normally for the first minutes after boot, but then the transfer rate is suddenly lowering from around 700 kbs to 200 kbs and less, making Internet unusable. After a while, it's recovering a bit but it seems to be random (like it's trying to sleep/power save mode?). This behavior occures for my home network as well as at my university's network. As wifi access wasn't a issue with the Windows 10 OEM installation, I guess that this might a driver/firmware/configuration problem. 
+Feb 13 01:39:36 darkstar kernel: [   34.010363] ath10k_pci 0000:01:00.0: qca6174 hw2.1 target 0x05010000 chip_id 0x003405ff sub 168c:3344
+Feb 13 01:39:36 darkstar kernel: [   34.010373] ath10k_pci 0000:01:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 0 testmode 0
+Feb 13 01:39:36 darkstar kernel: [   34.012252] ath10k_pci 0000:01:00.0: firmware ver SW_RM.1.1.1-00157-QCARMSWPZ-1 api 5 features ignore-otp,no-4addr-pad crc32 10bf8e08
+Feb 13 01:39:36 darkstar kernel: [   34.012291] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 cdb586cf
+Feb 13 01:39:36 darkstar kernel: [   34.012301] ath10k_pci 0000:01:00.0: htt-ver 3.1 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+Feb 13 01:39:36 darkstar kernel: [   34.067918] ieee80211 phy0: Hardware restart was requested
 
-dmesg indicates
-[   13.401917] ath: EEPROM regdomain: 0x6a
-[   13.403870] ath: EEPROM indicates we should expect a direct regpair map
-[   13.405919] ath: Country alpha2 being used: 00
-[   13.407837] ath: Regpair used: 0x6a
-and
-[   11.267403] ath10k_pci 0000:02:00.0: pci irq msi interrupts 1 irq_mode 0 reset_mode 0
-[   11.500220] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/cal-pci-0000:02:00.0.bin failed with error -2
-[   11.583900] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/QCA9377/hw1.0/board-2.bin failed with error -2
-[   13.394121] ath10k_pci 0000:02:00.0: qca9377 hw1.0 (0x05020000, 0x003820ff sub 1a3b:2231) fw WLAN.TF.1.0-00267-1 fwapi 5 bdapi 1 htt-ver 3.1 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1 features ignore-otp
-[   13.398452] ath10k_pci 0000:02:00.0: debug 1 debugfs 1 tracing 0 dfs 0 testmode 0
-[   13.422666] ath10k_pci 0000:02:00.0 wlp2s0: renamed from wlan0
+Feb 13 01:39:36 darkstar kernel: [   34.010318] ath10k_pci 0000:01:00.0: firmware crashed! (uuid cb6fc88d-918d-4c7a-af69-15a713136bf7)
+Feb 13 01:39:36 darkstar kernel: [   34.014330] ath10k_pci 0000:01:00.0: firmware register dump:
+Feb 13 01:39:36 darkstar kernel: [   34.014340] ath10k_pci 0000:01:00.0: [00]: 0x05010000 0x00000000 0x0099987C 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014349] ath10k_pci 0000:01:00.0: [04]: 0x00000000 0x00000000 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014358] ath10k_pci 0000:01:00.0: [08]: 0x00000000 0x00000000 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014366] ath10k_pci 0000:01:00.0: [12]: 0x00000000 0x00000000 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014375] ath10k_pci 0000:01:00.0: [16]: 0x00000000 0x00000000 0x00000000 0x0099987C
+Feb 13 01:39:36 darkstar kernel: [   34.014384] ath10k_pci 0000:01:00.0: [20]: 0x00000000 0x004018F0 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014392] ath10k_pci 0000:01:00.0: [24]: 0x00000000 0x00000000 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014401] ath10k_pci 0000:01:00.0: [28]: 0x00000000 0x00000000 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014409] ath10k_pci 0000:01:00.0: [32]: 0x00000000 0x00000000 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014418] ath10k_pci 0000:01:00.0: [36]: 0x00000000 0x00000000 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014426] ath10k_pci 0000:01:00.0: [40]: 0x00000000 0x00000000 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014435] ath10k_pci 0000:01:00.0: [44]: 0x00000000 0x00000000 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014443] ath10k_pci 0000:01:00.0: [48]: 0x00000000 0x00000000 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014452] ath10k_pci 0000:01:00.0: [52]: 0x00000000 0x00000000 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014460] ath10k_pci 0000:01:00.0: [56]: 0x00000000 0x00000000 0x00000000 0x00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014625] ath10k_pci 0000:01:00.0: failed to set 2g txpower 0: -108
+Feb 13 01:39:36 darkstar kernel: [   34.014636] ath10k_pci 0000:01:00.0: failed to setup tx power 0: -108
+Feb 13 01:39:36 darkstar kernel: [   34.014644] ath10k_pci 0000:01:00.0: failed to recalc tx power: -108
+Feb 13 01:39:36 darkstar kernel: [   34.014714] ------------[ cut here ]------------
+Feb 13 01:39:36 darkstar kernel: [   34.014730] WARNING: CPU: 1 PID: 1471 at net/mac80211/iface.c:421 ieee80211_add_virtual_monitor+0xd7/0x17c()
+Feb 13 01:39:36 darkstar kernel: [   34.014739] CPU: 1 PID: 1471 Comm: ifconfig Not tainted 4.5.0-rc3 #3
+Feb 13 01:39:36 darkstar kernel: [   34.014745] Hardware name: Dell Inc. Inspiron 11 - 3147/06G7R2, BIOS A05 03/16/2015
+Feb 13 01:39:36 darkstar kernel: [   34.014750]  00000000 00000286 f53fbdb4 c11c002d 00000000 c1732845 f53fbdcc c1037740
+Feb 13 01:39:36 darkstar kernel: [   34.014767]  c14d18e6 f58e6000 f54803e0 ffffff94 f53fbddc c10377f1 00000009 00000000
+Feb 13 01:39:36 darkstar kernel: [   34.014782]  f53fbdf4 c14d18e6 698e7e68 f63454c8 f63454c0 00000000 f53fbe1c c14d22a5
+Feb 13 01:39:36 darkstar kernel: [   34.014796] Call Trace:
+Feb 13 01:39:36 darkstar kernel: [   34.014809]  [<c11c002d>] dump_stack+0x47/0x5b
+Feb 13 01:39:36 darkstar kernel: [   34.014820]  [<c1037740>] warn_slowpath_common+0x7e/0x95
+Feb 13 01:39:36 darkstar kernel: [   34.014828]  [<c14d18e6>] ? ieee80211_add_virtual_monitor+0xd7/0x17c
+Feb 13 01:39:36 darkstar kernel: [   34.014837]  [<c10377f1>] warn_slowpath_null+0x14/0x18
+Feb 13 01:39:36 darkstar kernel: [   34.014845]  [<c14d18e6>] ieee80211_add_virtual_monitor+0xd7/0x17c
+Feb 13 01:39:36 darkstar kernel: [   34.014853]  [<c14d22a5>] ieee80211_do_open+0x285/0x5be
+Feb 13 01:39:36 darkstar kernel: [   34.014862]  [<c14d2620>] ieee80211_open+0x42/0x4d
+Feb 13 01:39:36 darkstar kernel: [   34.014871]  [<c1436d6a>] __dev_open+0x7e/0xd1
+Feb 13 01:39:36 darkstar kernel: [   34.014879]  [<c1436fc7>] __dev_change_flags+0x98/0x124
+Feb 13 01:39:36 darkstar kernel: [   34.014888]  [<c1437078>] dev_change_flags+0x25/0x50
+Feb 13 01:39:36 darkstar kernel: [   34.014897]  [<c147cee9>] devinet_ioctl+0x211/0x4b0
+Feb 13 01:39:36 darkstar kernel: [   34.014906]  [<c147dc7a>] inet_ioctl+0x81/0x9a
+Feb 13 01:39:36 darkstar kernel: [   34.014916]  [<c14228db>] sock_ioctl+0x165/0x186
+Feb 13 01:39:36 darkstar kernel: [   34.014930]  [<c1422776>] ? sock_fasync+0x6b/0x6b
+Feb 13 01:39:36 darkstar kernel: [   34.014934]  [<c10eb8f7>] vfs_ioctl+0x1c/0x26
+Feb 13 01:39:36 darkstar kernel: [   34.014937]  [<c10ec2fb>] do_vfs_ioctl+0x4a6/0x510
+Feb 13 01:39:36 darkstar kernel: [   34.014941]  [<c10d79db>] ? virt_to_head_page+0x19/0x1b
+Feb 13 01:39:36 darkstar kernel: [   34.014945]  [<c10da3c0>] ? kmem_cache_free+0x37/0xd9
+Feb 13 01:39:36 darkstar kernel: [   34.014949]  [<c10e6baa>] ? putname+0x44/0x47
+Feb 13 01:39:36 darkstar kernel: [   34.014952]  [<c10e6baa>] ? putname+0x44/0x47
+Feb 13 01:39:36 darkstar kernel: [   34.014956]  [<c10dee01>] ? do_sys_open+0xc0/0xca
+Feb 13 01:39:36 darkstar kernel: [   34.014959]  [<c10ec3a6>] SyS_ioctl+0x41/0x5b
+Feb 13 01:39:36 darkstar kernel: [   34.014963]  [<c1001167>] do_syscall_32_irqs_on+0x3e/0x50
+Feb 13 01:39:36 darkstar kernel: [   34.014968]  [<c15072f6>] entry_INT80_32+0x2a/0x2a
+Feb 13 01:39:36 darkstar kernel: [   34.014983] ---[ end trace 46261952c940b8db ]---
+Feb 13 01:39:36 darkstar kernel: [   34.046345] ath10k_pci 0000:01:00.0: device has crashed during init
+Feb 13 01:39:36 darkstar kernel: [   34.067412] ath10k_pci 0000:01:00.0: device has crashed during init
+Feb 13 01:39:36 darkstar kernel: [   34.067426] ath10k_pci 0000:01:00.0: failed to wait for target init: -70
+Feb 13 01:39:36 darkstar kernel: [   34.100453] ath10k_pci 0000:01:00.0: device has crashed during init
+Feb 13 01:39:36 darkstar kernel: [   34.121502] ath10k_pci 0000:01:00.0: device has crashed during init
+Feb 13 01:39:36 darkstar kernel: [   34.121517] ath10k_pci 0000:01:00.0: failed to wait for target init: -70
 
-The firmware files were downloaded from the git repository <https://github.com/kvalo/ath10k-firmware>. In addition to that iwconfig gives me a high number of invalid miscs. I use kernel 4.4.1 (Arch Linux). ethtools -i wlp2s0 prints out 
-
-driver: ath10k_pci
-version: 4.4.1-2-ARCH
-firmware-version: WLAN.TF.1.0-00267-1
-expansion-rom-version: 
-bus-info: 0000:02:00.0
-supports-statistics: yes
-supports-test: no
-supports-eeprom-access: no
-supports-register-dump: no
-supports-priv-flags: no
-
-and lspci provides
-
-02:00.0 Network controller: Qualcomm Atheros Device 0042 (rev 30)
-	Subsystem: AzureWave Device 2231
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-	Latency: 0, Cache Line Size: 64 bytes
-	Interrupt: pin A routed to IRQ 315
-	Region 0: Memory at 81000000 (64-bit, non-prefetchable) [size=2M]
-	Capabilities: [40] Power Management version 3
-		Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-		Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-	Capabilities: [50] MSI: Enable+ Count=1/8 Maskable+ 64bit-
-		Address: fee0f00c  Data: 4163
-		Masking: fffffffe  Pending: 00000000
-	Capabilities: [70] Express (v2) Endpoint, MSI 00
-		DevCap:	MaxPayload 256 bytes, PhantFunc 0, Latency L0s unlimited, L1 <64us
-			ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset-
-		DevCtl:	Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
-			RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop-
-			MaxPayload 128 bytes, MaxReadReq 512 bytes
-		DevSta:	CorrErr+ UncorrErr- FatalErr- UnsuppReq+ AuxPwr+ TransPend-
-		LnkCap:	Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit Latency L0s <4us, L1 <64us
-			ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp+
-		LnkCtl:	ASPM L0s L1 Enabled; RCB 64 bytes Disabled- CommClk+
-			ExtSynch- ClockPM+ AutWidDis- BWInt- AutBWInt-
-		LnkSta:	Speed 2.5GT/s, Width x1, TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-		DevCap2: Completion Timeout: Not Supported, TimeoutDis+, LTR+, OBFF Via message
-		DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis-, LTR+, OBFF Disabled
-		LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- SpeedDis-
-			 Transmit Margin: Normal Operating Range, EnterModifiedCompliance- ComplianceSOS-
-			 Compliance De-emphasis: -6dB
-		LnkSta2: Current De-emphasis Level: -6dB, EqualizationComplete-, EqualizationPhase1-
-			 EqualizationPhase2-, EqualizationPhase3-, LinkEqualizationRequest-
-	Capabilities: [100 v2] Advanced Error Reporting
-		UESta:	DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-		UEMsk:	DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-		UESvrt:	DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
-		CESta:	RxErr- BadTLP- BadDLLP- Rollover- Timeout- NonFatalErr-
-		CEMsk:	RxErr- BadTLP- BadDLLP- Rollover- Timeout- NonFatalErr+
-		AERCap:	First Error Pointer: 00, GenCap- CGenEn- ChkCap- ChkEn-
-	Capabilities: [148 v1] Virtual Channel
-		Caps:	LPEVC=0 RefClk=100ns PATEntryBits=1
-		Arb:	Fixed- WRR32- WRR64- WRR128-
-		Ctrl:	ArbSelect=Fixed
-		Status:	InProgress-
-		VC0:	Caps:	PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
-			Arb:	Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
-			Ctrl:	Enable+ ID=0 ArbSelect=Fixed TC/VC=ff
-			Status:	NegoPending- InProgress-
-	Capabilities: [168 v1] Device Serial Number 00-00-00-00-00-00-00-00
-	Capabilities: [178 v1] Latency Tolerance Reporting
-		Max snoop latency: 15360ns
-		Max no snoop latency: 15360ns
-	Capabilities: [180 v1] L1 PM Substates
-		L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Substates+
-			  PortCommonModeRestoreTime=50us PortTPowerOnTime=10us
-	Kernel driver in use: ath10k_pci
-	Kernel modules: ath10k_pci
-
-Could anyone give me a hint how I might fix this? Any help is greatly appreciated.
-
-Regards,
-Tobias
 
 _______________________________________________
 ath10k mailing list
