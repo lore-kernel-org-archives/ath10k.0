@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
+Received: from mout.kundenserver.de ([217.72.192.75])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aVgtU-0000Ls-51
- for ath10k@lists.infradead.org; Tue, 16 Feb 2016 14:46:26 +0000
-Received: by mail-wm0-x22d.google.com with SMTP id a4so103536408wme.1
- for <ath10k@lists.infradead.org>; Tue, 16 Feb 2016 06:46:02 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <35449B299288584097A15B3FEB9C3E580A9AD7020B@SBS-GHMT.ghmt.local>
+ id 1aVh9Z-0006sF-BH
+ for ath10k@lists.infradead.org; Tue, 16 Feb 2016 15:03:37 +0000
+Received: from gatekeeper.ghmt.de ([188.210.45.230]) by
+ mrelayeu.kundenserver.de (mreue101) with ESMTPSA (Nemesis) id
+ 0LaCyM-1a88yP0ew2-00m389 for <ath10k@lists.infradead.org>; Tue, 16 Feb 2016
+ 16:02:39 +0100
+From: "Lindner, Frank" <Frank.Lindner@ghmt.de>
+Date: Tue, 16 Feb 2016 16:02:01 +0100
+Subject: AW: Bug: QCA9880 hw2.0: TX-Rate Display in Wireshark
+Message-ID: <35449B299288584097A15B3FEB9C3E580A9AD70216@SBS-GHMT.ghmt.local>
 References: <35449B299288584097A15B3FEB9C3E580A9AD7020B@SBS-GHMT.ghmt.local>
-Date: Tue, 16 Feb 2016 15:46:01 +0100
-Message-ID: <CA+BoTQkRj180iXtx2nwwMVkiomS=umBm-+CPvbHiWTdvMCR5og@mail.gmail.com>
-Subject: Re: Bug: QCA9880 hw2.0: TX-Rate Display in Wireshark
-From: Michal Kazior <michal.kazior@tieto.com>
+ <CA+BoTQkRj180iXtx2nwwMVkiomS=umBm-+CPvbHiWTdvMCR5og@mail.gmail.com>
+In-Reply-To: <CA+BoTQkRj180iXtx2nwwMVkiomS=umBm-+CPvbHiWTdvMCR5og@mail.gmail.com>
+Content-Language: de-DE
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +28,40 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Lindner, Frank" <Frank.Lindner@ghmt.de>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTYgRmVicnVhcnkgMjAxNiBhdCAxNTozMywgTGluZG5lciwgRnJhbmsgPEZyYW5rLkxpbmRu
-ZXJAZ2htdC5kZT4gd3JvdGU6Cj4gSGkgdGhlcmUsCj4KPiBJJ20gdXNpbmcgUUNBOTgwIGh3Mi4w
-IChDb21wZXggV0xFOTAwVlg1KSBpbiBtb25pdG9yIG1vZGUuIFVzaW5nIExpbnV4IEtlcm5lbCA0
-LjMuMyBhbmQgYXRoMTBrIGZpcm13YXJlIDEwLjIuNC43MC4xOS0yLgo+IFdoZW4gY2FwdHVyaW5n
-IDIuNCBHSHogV0lGSSBvcGVyYXRpbmcgaW4gODAyLjExZyAoMSB0byA1NCBNYml0L3MpLCBXaXJl
-c2hhcmsgZGlzcGxheXMgb25seSAxLCAyLCA1LjUgb3IgMTEgTWJpdC9zIGFzIFRYIHJhdGUgZm9y
-IHRoZSBmcmFtZXMuIFdoZW4gY2FwdHVyaW5nIGluIHBhcmFsbGVsIHdpdGggQWlycGNhcCBvbiBX
-aW5kb3dzIG9yIGEgUmFsaW5rLWJhc2VkIGNhcmQgaW4gbW9uaXRvciBtb2RlLCBmcmFtZSBUWCBy
-YXRlIGlzIGRpc3BsYXllZCBjb3JyZWN0bHkgd2l0aCAxIHRvIDU0IE1iaXQvcy4KPiBJIGFsc28g
-dHJpZWQgb2xkZXIgZmlybXdhcmUgdmVyc2lvbnMuIFNhbWUgaXNzdWUuCj4gQWxzbyB3aGVuIHRy
-eWluZyB0byBjYXB0dXJlIHdpdGggdGNwZHVtcCwgb25seSB1cCAxMSBNYml0L3MgaXMgc2hvd24u
-Cj4gSXMgdGhpcyBhIGtub3duIGlzc3VlPwo+IElzIHRoZXJlIGFueSBmaXggZm9yIHRoaXM/Cgpo
-dHRwczovL3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi91c2Vycy9kcml2ZXJzL2F0aDEwayNr
-bm93bl9idWdzbGltaXRhdGlvbnMKCklmIHlvdSBkb24ndCBtaW5kIGRpcnR5aW5nIHlvdXIgaGFu
-ZHMgd2l0aCBzb21lIEMgY29kZSB5b3UgY2FuIHRyeQp1c2luZyB0aGUgZm9sbG93aW5nIHBhdGNo
-IChpdCB3aWxsIG5vdCBjbGVhbmx5IGFwcGx5IHRvIHVwc3RyZWFtCmtlcm5lbCBidXQgc2hvdWxk
-IGJlIGZhaXJseSBzdHJhaWdodGZvcndhcmQgdG8gcG9ydCk6CgogIGh0dHBzOi8vZ3JvdXBzLmdv
-b2dsZS5jb20vYS9jaHJvbWl1bS5vcmcvZm9ydW0vIyF0b3BpYy9jaHJvbWl1bS1vcy1jaGVja2lu
-cy9ZR1ltNmdOVW5FRQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+SGkgTWljaGFsLA0KDQp0aGFua3MgZm9yIHlvdXIgaW5zdGFudCByZXNwb25zZS4NCk1heSBJIGFz
+ayB3aHkgdGhpcyBpc24ndCBpbXBsZW1lbnRlZCBpbiBhIG5ldyBmaXJtd2FyZSByZWxlYXNlPw0K
+SXMgdGhlcmUgYSBzaG9ydCBtYW51YWwsIHdoYXQgYW5kIHdoZXJlIEkgbmVlZCB0byBlZGl0IHRo
+ZSBjb2RlIGFuZCBob3cgdG8gY29tcGlsZSBpdD8gSSdtIG5vdCB0aGF0IGZhbWlsaWFyIHdpdGgg
+Y29kaW5nIG9uIHRoYXQgbGV2ZWwuDQpUaGFua3MuDQoNCkJlc3QgUmVnYXJkcywNCkZyYW5rDQoN
+Ci0tLS0tVXJzcHLDvG5nbGljaGUgTmFjaHJpY2h0LS0tLS0NClZvbjogTWljaGFsIEthemlvciBb
+bWFpbHRvOm1pY2hhbC5rYXppb3JAdGlldG8uY29tXQ0KR2VzZW5kZXQ6IERpZW5zdGFnLCAxNi4g
+RmVicnVhciAyMDE2IDE1OjQ2DQpBbjogTGluZG5lciwgRnJhbmsNCkNjOiBhdGgxMGtAbGlzdHMu
+aW5mcmFkZWFkLm9yZw0KQmV0cmVmZjogUmU6IEJ1ZzogUUNBOTg4MCBodzIuMDogVFgtUmF0ZSBE
+aXNwbGF5IGluIFdpcmVzaGFyaw0KDQpPbiAxNiBGZWJydWFyeSAyMDE2IGF0IDE1OjMzLCBMaW5k
+bmVyLCBGcmFuayA8RnJhbmsuTGluZG5lckBnaG10LmRlPiB3cm90ZToNCj4gSGkgdGhlcmUsDQo+
+DQo+IEknbSB1c2luZyBRQ0E5ODAgaHcyLjAgKENvbXBleCBXTEU5MDBWWDUpIGluIG1vbml0b3Ig
+bW9kZS4gVXNpbmcgTGludXggS2VybmVsIDQuMy4zIGFuZCBhdGgxMGsgZmlybXdhcmUgMTAuMi40
+LjcwLjE5LTIuDQo+IFdoZW4gY2FwdHVyaW5nIDIuNCBHSHogV0lGSSBvcGVyYXRpbmcgaW4gODAy
+LjExZyAoMSB0byA1NCBNYml0L3MpLCBXaXJlc2hhcmsgZGlzcGxheXMgb25seSAxLCAyLCA1LjUg
+b3IgMTEgTWJpdC9zIGFzIFRYIHJhdGUgZm9yIHRoZSBmcmFtZXMuIFdoZW4gY2FwdHVyaW5nIGlu
+IHBhcmFsbGVsIHdpdGggQWlycGNhcCBvbiBXaW5kb3dzIG9yIGEgUmFsaW5rLWJhc2VkIGNhcmQg
+aW4gbW9uaXRvciBtb2RlLCBmcmFtZSBUWCByYXRlIGlzIGRpc3BsYXllZCBjb3JyZWN0bHkgd2l0
+aCAxIHRvIDU0IE1iaXQvcy4NCj4gSSBhbHNvIHRyaWVkIG9sZGVyIGZpcm13YXJlIHZlcnNpb25z
+LiBTYW1lIGlzc3VlLg0KPiBBbHNvIHdoZW4gdHJ5aW5nIHRvIGNhcHR1cmUgd2l0aCB0Y3BkdW1w
+LCBvbmx5IHVwIDExIE1iaXQvcyBpcyBzaG93bi4NCj4gSXMgdGhpcyBhIGtub3duIGlzc3VlPw0K
+PiBJcyB0aGVyZSBhbnkgZml4IGZvciB0aGlzPw0KDQpodHRwczovL3dpcmVsZXNzLndpa2kua2Vy
+bmVsLm9yZy9lbi91c2Vycy9kcml2ZXJzL2F0aDEwayNrbm93bl9idWdzbGltaXRhdGlvbnMNCg0K
+SWYgeW91IGRvbid0IG1pbmQgZGlydHlpbmcgeW91ciBoYW5kcyB3aXRoIHNvbWUgQyBjb2RlIHlv
+dSBjYW4gdHJ5IHVzaW5nIHRoZSBmb2xsb3dpbmcgcGF0Y2ggKGl0IHdpbGwgbm90IGNsZWFubHkg
+YXBwbHkgdG8gdXBzdHJlYW0ga2VybmVsIGJ1dCBzaG91bGQgYmUgZmFpcmx5IHN0cmFpZ2h0Zm9y
+d2FyZCB0byBwb3J0KToNCg0KICBodHRwczovL2dyb3Vwcy5nb29nbGUuY29tL2EvY2hyb21pdW0u
+b3JnL2ZvcnVtLyMhdG9waWMvY2hyb21pdW0tb3MtY2hlY2tpbnMvWUdZbTZnTlVuRUUNCg0KDQpN
+aWNoYcWCDQoNCg0KDQpWb3JzdGFuZHN2b3JzaXR6ZW5kZXI6IERpcGwuLUluZy4gRGlyayBXaWxo
+ZWxtDQpBdWZzaWNodHNyYXRzdm9yc2l0emVuZGVyOiBEci4tSW5nLiBQZXRlciBIYXNzZQ0KSGFu
+ZGVsc3JlZ2lzdGVyOiBIUkIgU2FhcmJyw7xja2VuIE5yLiAxMzIwMQ0KVXN0LklEIE5yLjogREUg
+MTUzODA3NjI3DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
