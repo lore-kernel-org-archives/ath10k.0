@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
+Received: from mail-ig0-x22f.google.com ([2607:f8b0:4001:c05::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aXVFZ-0007Ai-1T
- for ath10k@lists.infradead.org; Sun, 21 Feb 2016 14:44:41 +0000
-Received: by mail-wm0-x22d.google.com with SMTP id g62so138471935wme.1
- for <ath10k@lists.infradead.org>; Sun, 21 Feb 2016 06:44:19 -0800 (PST)
-Date: Sun, 21 Feb 2016 15:44:19 +0100
-From: Tobias Predel <tobias.predel@gmail.com>
-Subject: Re: ath10k and QCA3977 - random transfer rate losses
-Message-ID: <20160221144419.GA9138@localhost.fritz.box>
+ id 1aXYpI-0005ig-9s
+ for ath10k@lists.infradead.org; Sun, 21 Feb 2016 18:33:49 +0000
+Received: by mail-ig0-x22f.google.com with SMTP id xg9so64076090igb.1
+ for <ath10k@lists.infradead.org>; Sun, 21 Feb 2016 10:33:27 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20160221144419.GA9138@localhost.fritz.box>
 References: <20160212203036.GA22070@localhost> <56BF1C48.9000206@gmail.com>
  <20160214154651.GA16161@localhost.fritz.box>
  <56C0C12F.5010900@gmail.com>
@@ -18,9 +16,11 @@ References: <20160212203036.GA22070@localhost> <56BF1C48.9000206@gmail.com>
  <CAJ-VmomFHCiiK+OQfafcSJFda7c=WU+bbgK7fpm7GT37LS1YKw@mail.gmail.com>
  <20160219172300.GA9252@localhost.fritz.box>
  <a65854576afe4e5c84ec772f7202f709@NALASEXR01G.na.qualcomm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <a65854576afe4e5c84ec772f7202f709@NALASEXR01G.na.qualcomm.com>
+ <20160221144419.GA9138@localhost.fritz.box>
+Date: Sun, 21 Feb 2016 10:33:26 -0800
+Message-ID: <CAJ-VmokgsUui600Gbz_3JBDS2Ko3FReSNM8ehhfhfA7QtGqUbA@mail.gmail.com>
+Subject: Re: ath10k and QCA3977 - random transfer rate losses
+From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,64 +33,73 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Hsu, Ryan" <ryanhsu@qca.qualcomm.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, vagner_ <vagnerrener@gmail.com>
+To: Tobias Predel <tobias.predel@gmail.com>
+Cc: vagner_ <vagnerrener@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Hsu,
+ Ryan" <ryanhsu@qca.qualcomm.com>
 
-Hello again,
-
-one last word about the the board files:
-
-I extracted the board files from an AsusTek Windows Driver installer
-that included the Qualcomm driver files for diverse variants of QCA9377
-built in Samsung, Asus (Askey), Acer, Lenovo notebooks.
-
-An archive with all these files can be found at the comment 10 of my bug report
-<https://bugzilla.kernel.org/show_bug.cgi?id=112451#c10>
-including board files (eeprom_*.bin) for NFA425, NFA435 (A), NFA455.
-
-If some people experience trouble, those might look at the netathr10x.inf 
-to find out which eeprom board file is needed or try out by installing
-it to /lib/firmware/ath10k/QCA9377/hw1.0/board.bin. 
-
-Those board files are using api 1 and must be named board.bin.
-firmware-5.bin is still to be pulled from kvalo's github repo.
-
-Thank you to all for your support. I wish the best!
-
-Tobias
+Right, so just to be clear - it's just the board file updates that
+make it all work fine?
 
 
-On Fri, Feb 19, 2016 at 05:55:26PM +0000, Hsu, Ryan wrote:
-> Glad that help!
-> 
-> I've cc that file to Kalle, hope we can see that get merged soon.
-> 
-> Ryan
-> 
-> > -----Original Message-----
-> > From: Tobias Predel [mailto:tobias.predel@gmail.com]
-> > Sent: Friday, February 19, 2016 09:23 AM
-> > To: Adrian Chadd
-> > Cc: Hsu, Ryan; ath10k@lists.infradead.org; vagner_
-> > Subject: Re: ath10k and QCA3977 - random transfer rate losses
-> > 
-> > On Fri, Feb 19, 2016 at 08:07:49AM -0800, Adrian Chadd wrote:
-> > > Ok, so it's a board file problem? this can be solved by telling kvalo@
-> > > about it, right?
-> > >
-> > >
-> > > -a
-> > 
-> > Yes, they differ and the board-2.bin file isn't included neither in linux-
-> > firmware nor in kvalo's repository.
-> > 
-> > MD5 checksums:
-> > 73cca12b9398f0cecaa3cfa35c8961b7  board-2.bin
-> > 44349f6ae93cf9ceffb164f58d4fb124  board.bin
-> > 
-> > I'll try to contact him and send the board file.
-> > 
-> > Tobias
+-a
+
+
+On 21 February 2016 at 06:44, Tobias Predel <tobias.predel@gmail.com> wrote:
+> Hello again,
+>
+> one last word about the the board files:
+>
+> I extracted the board files from an AsusTek Windows Driver installer
+> that included the Qualcomm driver files for diverse variants of QCA9377
+> built in Samsung, Asus (Askey), Acer, Lenovo notebooks.
+>
+> An archive with all these files can be found at the comment 10 of my bug report
+> <https://bugzilla.kernel.org/show_bug.cgi?id=112451#c10>
+> including board files (eeprom_*.bin) for NFA425, NFA435 (A), NFA455.
+>
+> If some people experience trouble, those might look at the netathr10x.inf
+> to find out which eeprom board file is needed or try out by installing
+> it to /lib/firmware/ath10k/QCA9377/hw1.0/board.bin.
+>
+> Those board files are using api 1 and must be named board.bin.
+> firmware-5.bin is still to be pulled from kvalo's github repo.
+>
+> Thank you to all for your support. I wish the best!
+>
+> Tobias
+>
+>
+> On Fri, Feb 19, 2016 at 05:55:26PM +0000, Hsu, Ryan wrote:
+>> Glad that help!
+>>
+>> I've cc that file to Kalle, hope we can see that get merged soon.
+>>
+>> Ryan
+>>
+>> > -----Original Message-----
+>> > From: Tobias Predel [mailto:tobias.predel@gmail.com]
+>> > Sent: Friday, February 19, 2016 09:23 AM
+>> > To: Adrian Chadd
+>> > Cc: Hsu, Ryan; ath10k@lists.infradead.org; vagner_
+>> > Subject: Re: ath10k and QCA3977 - random transfer rate losses
+>> >
+>> > On Fri, Feb 19, 2016 at 08:07:49AM -0800, Adrian Chadd wrote:
+>> > > Ok, so it's a board file problem? this can be solved by telling kvalo@
+>> > > about it, right?
+>> > >
+>> > >
+>> > > -a
+>> >
+>> > Yes, they differ and the board-2.bin file isn't included neither in linux-
+>> > firmware nor in kvalo's repository.
+>> >
+>> > MD5 checksums:
+>> > 73cca12b9398f0cecaa3cfa35c8961b7  board-2.bin
+>> > 44349f6ae93cf9ceffb164f58d4fb124  board.bin
+>> >
+>> > I'll try to contact him and send the board file.
+>> >
+>> > Tobias
 
 _______________________________________________
 ath10k mailing list
