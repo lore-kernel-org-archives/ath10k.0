@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aYV0A-0006fl-O4
- for ath10k@lists.infradead.org; Wed, 24 Feb 2016 08:40:56 +0000
-Received: by mail-wm0-x233.google.com with SMTP id g62so233734357wme.0
- for <ath10k@lists.infradead.org>; Wed, 24 Feb 2016 00:40:26 -0800 (PST)
+ id 1aYY87-0005N2-6r
+ for ath10k@lists.infradead.org; Wed, 24 Feb 2016 12:01:22 +0000
+From: "Kolli, Anilkumar" <akolli@qti.qualcomm.com>
+Subject: RE: [PATCH] ath10k: Reduce number of peers to support peer stats
+ feature
+Date: Wed, 24 Feb 2016 12:00:42 +0000
+Message-ID: <0f84723798674549adbf41ef948703a9@aphydexm01a.ap.qualcomm.com>
+References: <1456210197-27892-1-git-send-email-akolli@qti.qualcomm.com>
+ <56CC6471.8050204@candelatech.com>
+In-Reply-To: <56CC6471.8050204@candelatech.com>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <bed91e066a4998603c33ebcfaf507ccd2fabab5e.1456256461.git.poh@qca.qualcomm.com>
-References: <bed91e066a4998603c33ebcfaf507ccd2fabab5e.1456256461.git.poh@qca.qualcomm.com>
-Date: Wed, 24 Feb 2016 09:40:25 +0100
-Message-ID: <CA+BoTQ=GhHdbkiy9sNVM+BgFcrnsgNb_RxO+c8b_tpgacVYzWg@mail.gmail.com>
-Subject: Re: [PATCH v2] ath10k: set MAC timestamp in management Rx frame
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +21,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-T24gMjMgRmVicnVhcnkgMjAxNiBhdCAyMDo0NCwgUGV0ZXIgT2ggPHBvaEBxY2EucXVhbGNvbW0u
-Y29tPiB3cm90ZToKPiBGcm9tOiBwb2ggPHBvaEBxY2EucXVhbGNvbW0uY29tPgo+Cj4gQ2hlY2sg
-YW5kIHNldCBSeCBNQUMgdGltZXN0YW1wIHdoZW4gZmlybXdhcmUgaW5kaWNhdGVzIGl0Lgo+IEZp
-cm13YXJlIGFkZHMgaXQgaW4gUnggYmVhY29uIGZyYW1lIG9ubHkgYXQgdGhpcyBtb21lbnQuCj4g
-RHJpdmVyIGFuZCBtYWM4MDIxMSBtYXkgdXRpbGl6ZSBpdCB0byBkZXRlY3Qgc3VjaCBjbG9ja2Ry
-aWZ0Cj4gb3IgYmVhY29uIGNvbGxpc2lvbiBhbmQgdXNlIHRoZSByZXN1bHQgZm9yIGJlYWNvbiBj
-b2xsaXNpb24KPiBhdm9pZGFuY2UuCj4KPiBTaWduZWQtb2ZmLWJ5OiBwb2ggPHBvaEBxY2EucXVh
-bGNvbW0uY29tPgoKWW91ciBmcm9tL3Mtby1iIGRvZXNuJ3Qgc2VlbSByaWdodCAtIGp1c3QgInBv
-aCI/IFNob3VsZG4ndCBpdCBzYXkKIlBldGVyIE9oIiBpbnN0ZWFkPyA6KQoKCgo+IC0tLQo+Cj4g
-djI6Cj4gICAgICAgICAtIGZpeCBrYnVpbGQgdGVzdCByb2JvdCB3YXJuaW5nLCBsZWZ0IHNoaWZ0
-IGNvdW50ID49IHdpZHRoIG9mIHR5cGUsCj4gICAgICAgICBhdCBfX2xlMzJfdG9fY3B1KGFyZy5l
-eHRfaW5mby5yeF9tYWNfdGltZXN0YW1wX3UzMikgPDwgMzIKPgo+ICBkcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL3dtaS5jIHwgMTQgKysrKysrKysrKysrKysKPiAgZHJpdmVycy9uZXQv
-d2lyZWxlc3MvYXRoL2F0aDEway93bWkuaCB8ICA4ICsrKysrKysrCj4gIDIgZmlsZXMgY2hhbmdl
-ZCwgMjIgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNz
-L2F0aC9hdGgxMGsvd21pLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5j
-Cj4gaW5kZXggMGYwMWE4ZC4uYjJhNGNkYSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL3dtaS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway93bWkuYwo+IEBAIC0yMTY3LDYgKzIxNjcsNyBAQCBzdGF0aWMgaW50IGF0aDEwa193bWlf
-b3BfcHVsbF9tZ210X3J4X2V2KHN0cnVjdCBhdGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAqc2ti
-LAo+ICAgICAgICAgc3RydWN0IHdtaV9tZ210X3J4X2V2ZW50X3YxICpldl92MTsKPiAgICAgICAg
-IHN0cnVjdCB3bWlfbWdtdF9yeF9ldmVudF92MiAqZXZfdjI7Cj4gICAgICAgICBzdHJ1Y3Qgd21p
-X21nbXRfcnhfaGRyX3YxICpldl9oZHI7Cj4gKyAgICAgICBzdHJ1Y3Qgd21pX21nbXRfcnhfZXh0
-X2luZm8gKmV4dF9pbmZvOwo+ICAgICAgICAgc2l6ZV90IHB1bGxfbGVuOwo+ICAgICAgICAgdTMy
-IG1zZHVfbGVuOwo+Cj4gQEAgLTIxOTUsNiArMjE5NiwxMiBAQCBzdGF0aWMgaW50IGF0aDEwa193
-bWlfb3BfcHVsbF9tZ210X3J4X2V2KHN0cnVjdCBhdGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAq
-c2tiLAo+ICAgICAgICAgaWYgKHNrYi0+bGVuIDwgbXNkdV9sZW4pCj4gICAgICAgICAgICAgICAg
-IHJldHVybiAtRVBST1RPOwo+Cj4gKyAgICAgICBpZiAoYXJnLT5zdGF0dXMgJiBXTUlfUlhfU1RB
-VFVTX0VYVF9JTkZPKSB7Cj4gKyAgICAgICAgICAgICAgIGV4dF9pbmZvID0gKHN0cnVjdCB3bWlf
-bWdtdF9yeF9leHRfaW5mbyAqKQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgIChza2ItPmRh
-dGEgKyBhcmctPmJ1Zl9sZW4pOwoKSSB3b3VsZCBleHBlY3QgdGhlIGV4dF9pbmZvIHN0cnVjdHVy
-ZSB0byBiZSBhbGlnbmVkIGF0IDQgYnl0ZQpib3VuZGFyaWVzIChvciBpcyBpdD8pIGJ1dCBidWZf
-bGVuIGlzbid0IGd1YXJhbnRlZWQgdG8gYmUgbXVsdGlwbGUgb2YKNC4gVGhpcyBjb3VsZCBtZWFu
-IHlvdSBncmFiIGdhcmJhZ2UgaW4gc29tZSBjYXNlcyBkZXBlbmRpbmcgb24gdGhlCm1nbXQgZnJh
-bWUgc2l6ZSAoaS5lLiB3aGV0aGVyIGl0cyBzaXplIGlzIG11bHRpcGxlIG9mIDQpLiBJdCBtaWdo
-dCBiZQpjb2luY2lkZW5jZSBpdCB3b3JrcyBmb3IgeW91PwoKCk1pY2hhxYIKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
-YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi Ben,
+
+We have one more patch to enable/disable this feature.
+If we do not need this feature, disable this feature and number
+of peers won't be reduced.
+
+Thanks,
+Anil.
+
+-----Original Message-----
+From: Ben Greear [mailto:greearb@candelatech.com] 
+Sent: Tuesday, February 23, 2016 7:24 PM
+To: Kolli, Anilkumar; ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
+Subject: Re: [PATCH] ath10k: Reduce number of peers to support peer stats feature
+
+
+
+On 02/22/2016 10:49 PM, akolli@qti.qualcomm.com wrote:
+> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+>
+> To enable per peer stats feature we are reducing the number of peers.
+> Firmware has introduced tx stats feature. We have memory limitation in 
+> firmware to add these additional bytes.
+
+Maybe this is OK for defaults, but we should also give the user the ability to configure various things, including disabling pktlog, setting number of vdevs, peers, tids, etc.  Maybe something like the parseable config file patch I linked too earlier?
+
+http://dmz2.candelatech.com/?p=linux-4.4.dev.y/.git;a=commit;h=6708e4047d91edf234239943332bc2f0d124d009
+
+You can also save a lot of RAM in your firmware if you naturally pack your structs better, and remove un-used members from various structures, etc.
+
+Thanks,
+Ben
+
+--
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
