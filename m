@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by casper.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1aYZr2-0005rB-8p
- for ath10k@lists.infradead.org; Wed, 24 Feb 2016 13:51:49 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/4] ath10k: rename mesh and add abstraction layer
-Date: Wed, 24 Feb 2016 13:51:22 +0000
-Message-ID: <87k2lui5d7.fsf@kamboji.qca.qualcomm.com>
-References: <cover.1454015989.git.poh@qca.qualcomm.com>
-In-Reply-To: <cover.1454015989.git.poh@qca.qualcomm.com> (Peter Oh's message
- of "Thu, 28 Jan 2016 13:54:06 -0800")
-Content-Language: en-US
-Content-ID: <AA440A8C8532184EBD16A4E2BE52B0C1@qualcomm.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aYhcU-0002JW-OD
+ for ath10k@lists.infradead.org; Wed, 24 Feb 2016 22:09:20 +0000
+Message-ID: <56CE29A9.8040404@codeaurora.org>
+Date: Wed, 24 Feb 2016 14:07:37 -0800
+From: Peter Oh <poh@codeaurora.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH v2] ath10k: set MAC timestamp in management Rx frame
+References: <bed91e066a4998603c33ebcfaf507ccd2fabab5e.1456256461.git.poh@qca.qualcomm.com>
+ <CA+BoTQ=GhHdbkiy9sNVM+BgFcrnsgNb_RxO+c8b_tpgacVYzWg@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=GhHdbkiy9sNVM+BgFcrnsgNb_RxO+c8b_tpgacVYzWg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +19,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Oh, Peter" <poh@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>, Peter Oh <poh@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Peter Oh <poh@qca.qualcomm.com> writes:
-
-> Split Mesh service to 11s Mesh and non-11s Mesh according to
-> firmware service bit to help users distinguish 11s Mesh from
-> non 11s Mesh.
-> And add abstraction layer for vdev subtype to solve subtype mismatch
-> and to give flexible compatibility among different firmware revisions.
->
-> v2:
->  * Rebased. No code changes.
->
-> Peter Oh (4):
->   ath10k: rename Mesh related service names
->   ath10k: update 10.4 WMI service map
->   ath10k: use vif->type and vif->p2p for P2P_GO check
->   ath10k: add abstraction layer for vdev subtype
-
-All applied, thanks.
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Ck9uIDAyLzI0LzIwMTYgMTI6NDAgQU0sIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4gT24gMjMgRmVi
+cnVhcnkgMjAxNiBhdCAyMDo0NCwgUGV0ZXIgT2ggPHBvaEBxY2EucXVhbGNvbW0uY29tPiB3cm90
+ZToKPj4gRnJvbTogcG9oIDxwb2hAcWNhLnF1YWxjb21tLmNvbT4KPj4KPj4gQ2hlY2sgYW5kIHNl
+dCBSeCBNQUMgdGltZXN0YW1wIHdoZW4gZmlybXdhcmUgaW5kaWNhdGVzIGl0Lgo+PiBGaXJtd2Fy
+ZSBhZGRzIGl0IGluIFJ4IGJlYWNvbiBmcmFtZSBvbmx5IGF0IHRoaXMgbW9tZW50Lgo+PiBEcml2
+ZXIgYW5kIG1hYzgwMjExIG1heSB1dGlsaXplIGl0IHRvIGRldGVjdCBzdWNoIGNsb2NrZHJpZnQK
+Pj4gb3IgYmVhY29uIGNvbGxpc2lvbiBhbmQgdXNlIHRoZSByZXN1bHQgZm9yIGJlYWNvbiBjb2xs
+aXNpb24KPj4gYXZvaWRhbmNlLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBwb2ggPHBvaEBxY2EucXVh
+bGNvbW0uY29tPgo+IFlvdXIgZnJvbS9zLW8tYiBkb2Vzbid0IHNlZW0gcmlnaHQgLSBqdXN0ICJw
+b2giPyBTaG91bGRuJ3QgaXQgc2F5Cj4gIlBldGVyIE9oIiBpbnN0ZWFkPyA6KQo+Cj4KPgo+PiAt
+LS0KPj4KPj4gdjI6Cj4+ICAgICAgICAgIC0gZml4IGtidWlsZCB0ZXN0IHJvYm90IHdhcm5pbmcs
+IGxlZnQgc2hpZnQgY291bnQgPj0gd2lkdGggb2YKPj4gdHlwZSwKPj4gICAgICAgICAgYXQgX19s
+ZTMyX3RvX2NwdShhcmcuZXh0X2luZm8ucnhfbWFjX3RpbWVzdGFtcF91MzIpIDw8IDMyCj4+Cj4+
+ICAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYyB8IDE0ICsrKysrKysrKysr
+KysrCj4+ICAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaCB8ICA4ICsrKysr
+KysrCj4+ICAgMiBmaWxlcyBjaGFuZ2VkLCAyMiBpbnNlcnRpb25zKCspCj4+Cj4+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCj4+IGIvZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwo+PiBpbmRleCAwZjAxYThkLi5iMmE0Y2RhIDEw
+MDY0NAo+PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCj4+ICsr
+KyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKPj4gQEAgLTIxNjcsNiAr
+MjE2Nyw3IEBAIHN0YXRpYyBpbnQgYXRoMTBrX3dtaV9vcF9wdWxsX21nbXRfcnhfZXYoc3RydWN0
+Cj4+IGF0aDEwayAqYXIsIHN0cnVjdCBza19idWZmICpza2IsCj4+ICAgICAgICAgIHN0cnVjdCB3
+bWlfbWdtdF9yeF9ldmVudF92MSAqZXZfdjE7Cj4+ICAgICAgICAgIHN0cnVjdCB3bWlfbWdtdF9y
+eF9ldmVudF92MiAqZXZfdjI7Cj4+ICAgICAgICAgIHN0cnVjdCB3bWlfbWdtdF9yeF9oZHJfdjEg
+KmV2X2hkcjsKPj4gKyAgICAgICBzdHJ1Y3Qgd21pX21nbXRfcnhfZXh0X2luZm8gKmV4dF9pbmZv
+Owo+PiAgICAgICAgICBzaXplX3QgcHVsbF9sZW47Cj4+ICAgICAgICAgIHUzMiBtc2R1X2xlbjsK
+Pj4KPj4gQEAgLTIxOTUsNiArMjE5NiwxMiBAQCBzdGF0aWMgaW50IGF0aDEwa193bWlfb3BfcHVs
+bF9tZ210X3J4X2V2KHN0cnVjdAo+PiBhdGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiLAo+
+PiAgICAgICAgICBpZiAoc2tiLT5sZW4gPCBtc2R1X2xlbikKPj4gICAgICAgICAgICAgICAgICBy
+ZXR1cm4gLUVQUk9UTzsKPj4KPj4gKyAgICAgICBpZiAoYXJnLT5zdGF0dXMgJiBXTUlfUlhfU1RB
+VFVTX0VYVF9JTkZPKSB7Cj4+ICsgICAgICAgICAgICAgICBleHRfaW5mbyA9IChzdHJ1Y3Qgd21p
+X21nbXRfcnhfZXh0X2luZm8gKikKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgKHNrYi0+
+ZGF0YSArIGFyZy0+YnVmX2xlbik7Cj4gSSB3b3VsZCBleHBlY3QgdGhlIGV4dF9pbmZvIHN0cnVj
+dHVyZSB0byBiZSBhbGlnbmVkIGF0IDQgYnl0ZQo+IGJvdW5kYXJpZXMgKG9yIGlzIGl0PykKWWVz
+Lgo+IGJ1dCBidWZfbGVuIGlzbid0IGd1YXJhbnRlZWQgdG8gYmUgbXVsdGlwbGUgb2YKPiA0LgpD
+b3JyZWN0Lgo+ICAgVGhpcyBjb3VsZCBtZWFuIHlvdSBncmFiIGdhcmJhZ2UgaW4gc29tZSBjYXNl
+cyBkZXBlbmRpbmcgb24gdGhlCj4gbWdtdCBmcmFtZSBzaXplIChpLmUuIHdoZXRoZXIgaXRzIHNp
+emUgaXMgbXVsdGlwbGUgb2YgNCkuIEl0IG1pZ2h0IGJlCj4gY29pbmNpZGVuY2UgaXQgd29ya3Mg
+Zm9yIHlvdT8KSSdsbCBzZW5kIG91dCAzcmQgcGF0Y2guCj4KPgo+IE1pY2hhxYIKPgo+IF9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxp
+bmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCg==
