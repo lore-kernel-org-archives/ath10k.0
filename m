@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aYIuh-0005Sa-NF
- for ath10k@lists.infradead.org; Tue, 23 Feb 2016 19:46:28 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH v2] ath10k: set MAC timestamp in management Rx frame
-Date: Tue, 23 Feb 2016 11:44:34 -0800
-Message-ID: <bed91e066a4998603c33ebcfaf507ccd2fabab5e.1456256461.git.poh@qca.qualcomm.com>
+ id 1aYV0A-0006fl-O4
+ for ath10k@lists.infradead.org; Wed, 24 Feb 2016 08:40:56 +0000
+Received: by mail-wm0-x233.google.com with SMTP id g62so233734357wme.0
+ for <ath10k@lists.infradead.org>; Wed, 24 Feb 2016 00:40:26 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <bed91e066a4998603c33ebcfaf507ccd2fabab5e.1456256461.git.poh@qca.qualcomm.com>
+References: <bed91e066a4998603c33ebcfaf507ccd2fabab5e.1456256461.git.poh@qca.qualcomm.com>
+Date: Wed, 24 Feb 2016 09:40:25 +0100
+Message-ID: <CA+BoTQ=GhHdbkiy9sNVM+BgFcrnsgNb_RxO+c8b_tpgacVYzWg@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: set MAC timestamp in management Rx frame
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,107 +20,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Peter Oh <poh@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: poh <poh@qca.qualcomm.com>
-
-Check and set Rx MAC timestamp when firmware indicates it.
-Firmware adds it in Rx beacon frame only at this moment.
-Driver and mac80211 may utilize it to detect such clockdrift
-or beacon collision and use the result for beacon collision
-avoidance.
-
-Signed-off-by: poh <poh@qca.qualcomm.com>
----
-
-v2:
-	- fix kbuild test robot warning, left shift count >= width of type,
-	at __le32_to_cpu(arg.ext_info.rx_mac_timestamp_u32) << 32
-
- drivers/net/wireless/ath/ath10k/wmi.c | 14 ++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h |  8 ++++++++
- 2 files changed, 22 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 0f01a8d..b2a4cda 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2167,6 +2167,7 @@ static int ath10k_wmi_op_pull_mgmt_rx_ev(struct ath10k *ar, struct sk_buff *skb,
- 	struct wmi_mgmt_rx_event_v1 *ev_v1;
- 	struct wmi_mgmt_rx_event_v2 *ev_v2;
- 	struct wmi_mgmt_rx_hdr_v1 *ev_hdr;
-+	struct wmi_mgmt_rx_ext_info *ext_info;
- 	size_t pull_len;
- 	u32 msdu_len;
- 
-@@ -2195,6 +2196,12 @@ static int ath10k_wmi_op_pull_mgmt_rx_ev(struct ath10k *ar, struct sk_buff *skb,
- 	if (skb->len < msdu_len)
- 		return -EPROTO;
- 
-+	if (arg->status & WMI_RX_STATUS_EXT_INFO) {
-+		ext_info = (struct wmi_mgmt_rx_ext_info *)
-+			   (skb->data + arg->buf_len);
-+		memcpy(&arg->ext_info, ext_info,
-+		       sizeof(struct wmi_mgmt_rx_ext_info));
-+	}
- 	/* the WMI buffer might've ended up being padded to 4 bytes due to HTC
- 	 * trailer with credit update. Trim the excess garbage.
- 	 */
-@@ -2281,6 +2288,13 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	if (rx_status & WMI_RX_STATUS_ERR_MIC)
- 		status->flag |= RX_FLAG_MMIC_ERROR;
- 
-+	if (rx_status & WMI_RX_STATUS_EXT_INFO) {
-+		status->mactime =
-+			__le32_to_cpu(arg.ext_info.rx_mac_timestamp_l32) |
-+			(u64)__le32_to_cpu(arg.ext_info.rx_mac_timestamp_u32)
-+			<< 32;
-+		status->flag |= RX_FLAG_MACTIME_END;
-+	}
- 	/* Hardware can Rx CCK rates on 5GHz. In that case phy_mode is set to
- 	 * MODE_11B. This means phy_mode is not a reliable source for the band
- 	 * of mgmt rx.
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 806d4bb..8667a6b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3025,11 +3025,18 @@ struct wmi_10_4_mgmt_rx_event {
- 	u8 buf[0];
- } __packed;
- 
-+struct wmi_mgmt_rx_ext_info {
-+	__le32 rx_mac_timestamp_l32;
-+	__le32 rx_mac_timestamp_u32;
-+} __packed;
-+
- #define WMI_RX_STATUS_OK			0x00
- #define WMI_RX_STATUS_ERR_CRC			0x01
- #define WMI_RX_STATUS_ERR_DECRYPT		0x08
- #define WMI_RX_STATUS_ERR_MIC			0x10
- #define WMI_RX_STATUS_ERR_KEY_CACHE_MISS	0x20
-+/* Extension data at the end of mgmt frame */
-+#define WMI_RX_STATUS_EXT_INFO		0x40
- 
- #define PHY_ERROR_GEN_SPECTRAL_SCAN		0x26
- #define PHY_ERROR_GEN_FALSE_RADAR_EXT		0x24
-@@ -6076,6 +6083,7 @@ struct wmi_mgmt_rx_ev_arg {
- 	__le32 phy_mode;
- 	__le32 buf_len;
- 	__le32 status; /* %WMI_RX_STATUS_ */
-+	struct wmi_mgmt_rx_ext_info ext_info;
- };
- 
- struct wmi_ch_info_ev_arg {
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjMgRmVicnVhcnkgMjAxNiBhdCAyMDo0NCwgUGV0ZXIgT2ggPHBvaEBxY2EucXVhbGNvbW0u
+Y29tPiB3cm90ZToKPiBGcm9tOiBwb2ggPHBvaEBxY2EucXVhbGNvbW0uY29tPgo+Cj4gQ2hlY2sg
+YW5kIHNldCBSeCBNQUMgdGltZXN0YW1wIHdoZW4gZmlybXdhcmUgaW5kaWNhdGVzIGl0Lgo+IEZp
+cm13YXJlIGFkZHMgaXQgaW4gUnggYmVhY29uIGZyYW1lIG9ubHkgYXQgdGhpcyBtb21lbnQuCj4g
+RHJpdmVyIGFuZCBtYWM4MDIxMSBtYXkgdXRpbGl6ZSBpdCB0byBkZXRlY3Qgc3VjaCBjbG9ja2Ry
+aWZ0Cj4gb3IgYmVhY29uIGNvbGxpc2lvbiBhbmQgdXNlIHRoZSByZXN1bHQgZm9yIGJlYWNvbiBj
+b2xsaXNpb24KPiBhdm9pZGFuY2UuCj4KPiBTaWduZWQtb2ZmLWJ5OiBwb2ggPHBvaEBxY2EucXVh
+bGNvbW0uY29tPgoKWW91ciBmcm9tL3Mtby1iIGRvZXNuJ3Qgc2VlbSByaWdodCAtIGp1c3QgInBv
+aCI/IFNob3VsZG4ndCBpdCBzYXkKIlBldGVyIE9oIiBpbnN0ZWFkPyA6KQoKCgo+IC0tLQo+Cj4g
+djI6Cj4gICAgICAgICAtIGZpeCBrYnVpbGQgdGVzdCByb2JvdCB3YXJuaW5nLCBsZWZ0IHNoaWZ0
+IGNvdW50ID49IHdpZHRoIG9mIHR5cGUsCj4gICAgICAgICBhdCBfX2xlMzJfdG9fY3B1KGFyZy5l
+eHRfaW5mby5yeF9tYWNfdGltZXN0YW1wX3UzMikgPDwgMzIKPgo+ICBkcml2ZXJzL25ldC93aXJl
+bGVzcy9hdGgvYXRoMTBrL3dtaS5jIHwgMTQgKysrKysrKysrKysrKysKPiAgZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway93bWkuaCB8ICA4ICsrKysrKysrCj4gIDIgZmlsZXMgY2hhbmdl
+ZCwgMjIgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNz
+L2F0aC9hdGgxMGsvd21pLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5j
+Cj4gaW5kZXggMGYwMWE4ZC4uYjJhNGNkYSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJl
+bGVzcy9hdGgvYXRoMTBrL3dtaS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway93bWkuYwo+IEBAIC0yMTY3LDYgKzIxNjcsNyBAQCBzdGF0aWMgaW50IGF0aDEwa193bWlf
+b3BfcHVsbF9tZ210X3J4X2V2KHN0cnVjdCBhdGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAqc2ti
+LAo+ICAgICAgICAgc3RydWN0IHdtaV9tZ210X3J4X2V2ZW50X3YxICpldl92MTsKPiAgICAgICAg
+IHN0cnVjdCB3bWlfbWdtdF9yeF9ldmVudF92MiAqZXZfdjI7Cj4gICAgICAgICBzdHJ1Y3Qgd21p
+X21nbXRfcnhfaGRyX3YxICpldl9oZHI7Cj4gKyAgICAgICBzdHJ1Y3Qgd21pX21nbXRfcnhfZXh0
+X2luZm8gKmV4dF9pbmZvOwo+ICAgICAgICAgc2l6ZV90IHB1bGxfbGVuOwo+ICAgICAgICAgdTMy
+IG1zZHVfbGVuOwo+Cj4gQEAgLTIxOTUsNiArMjE5NiwxMiBAQCBzdGF0aWMgaW50IGF0aDEwa193
+bWlfb3BfcHVsbF9tZ210X3J4X2V2KHN0cnVjdCBhdGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAq
+c2tiLAo+ICAgICAgICAgaWYgKHNrYi0+bGVuIDwgbXNkdV9sZW4pCj4gICAgICAgICAgICAgICAg
+IHJldHVybiAtRVBST1RPOwo+Cj4gKyAgICAgICBpZiAoYXJnLT5zdGF0dXMgJiBXTUlfUlhfU1RB
+VFVTX0VYVF9JTkZPKSB7Cj4gKyAgICAgICAgICAgICAgIGV4dF9pbmZvID0gKHN0cnVjdCB3bWlf
+bWdtdF9yeF9leHRfaW5mbyAqKQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgIChza2ItPmRh
+dGEgKyBhcmctPmJ1Zl9sZW4pOwoKSSB3b3VsZCBleHBlY3QgdGhlIGV4dF9pbmZvIHN0cnVjdHVy
+ZSB0byBiZSBhbGlnbmVkIGF0IDQgYnl0ZQpib3VuZGFyaWVzIChvciBpcyBpdD8pIGJ1dCBidWZf
+bGVuIGlzbid0IGd1YXJhbnRlZWQgdG8gYmUgbXVsdGlwbGUgb2YKNC4gVGhpcyBjb3VsZCBtZWFu
+IHlvdSBncmFiIGdhcmJhZ2UgaW4gc29tZSBjYXNlcyBkZXBlbmRpbmcgb24gdGhlCm1nbXQgZnJh
+bWUgc2l6ZSAoaS5lLiB3aGV0aGVyIGl0cyBzaXplIGlzIG11bHRpcGxlIG9mIDQpLiBJdCBtaWdo
+dCBiZQpjb2luY2lkZW5jZSBpdCB3b3JrcyBmb3IgeW91PwoKCk1pY2hhxYIKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hdGgxMGsK
