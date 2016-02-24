@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aYhcU-0002JW-OD
- for ath10k@lists.infradead.org; Wed, 24 Feb 2016 22:09:20 +0000
-Message-ID: <56CE29A9.8040404@codeaurora.org>
-Date: Wed, 24 Feb 2016 14:07:37 -0800
-From: Peter Oh <poh@codeaurora.org>
+ id 1aYhnQ-0005Ex-Cq
+ for ath10k@lists.infradead.org; Wed, 24 Feb 2016 22:20:37 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH v3] ath10k: set MAC timestamp in management Rx frame
+Date: Wed, 24 Feb 2016 14:18:51 -0800
+Message-ID: <4c705dc7a2c0aa857da4e6eaf6e8ed47c354b9ea.1456351768.git.poh@qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: set MAC timestamp in management Rx frame
-References: <bed91e066a4998603c33ebcfaf507ccd2fabab5e.1456256461.git.poh@qca.qualcomm.com>
- <CA+BoTQ=GhHdbkiy9sNVM+BgFcrnsgNb_RxO+c8b_tpgacVYzWg@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=GhHdbkiy9sNVM+BgFcrnsgNb_RxO+c8b_tpgacVYzWg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,55 +16,108 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, Peter Oh <poh@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Ck9uIDAyLzI0LzIwMTYgMTI6NDAgQU0sIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4gT24gMjMgRmVi
-cnVhcnkgMjAxNiBhdCAyMDo0NCwgUGV0ZXIgT2ggPHBvaEBxY2EucXVhbGNvbW0uY29tPiB3cm90
-ZToKPj4gRnJvbTogcG9oIDxwb2hAcWNhLnF1YWxjb21tLmNvbT4KPj4KPj4gQ2hlY2sgYW5kIHNl
-dCBSeCBNQUMgdGltZXN0YW1wIHdoZW4gZmlybXdhcmUgaW5kaWNhdGVzIGl0Lgo+PiBGaXJtd2Fy
-ZSBhZGRzIGl0IGluIFJ4IGJlYWNvbiBmcmFtZSBvbmx5IGF0IHRoaXMgbW9tZW50Lgo+PiBEcml2
-ZXIgYW5kIG1hYzgwMjExIG1heSB1dGlsaXplIGl0IHRvIGRldGVjdCBzdWNoIGNsb2NrZHJpZnQK
-Pj4gb3IgYmVhY29uIGNvbGxpc2lvbiBhbmQgdXNlIHRoZSByZXN1bHQgZm9yIGJlYWNvbiBjb2xs
-aXNpb24KPj4gYXZvaWRhbmNlLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBwb2ggPHBvaEBxY2EucXVh
-bGNvbW0uY29tPgo+IFlvdXIgZnJvbS9zLW8tYiBkb2Vzbid0IHNlZW0gcmlnaHQgLSBqdXN0ICJw
-b2giPyBTaG91bGRuJ3QgaXQgc2F5Cj4gIlBldGVyIE9oIiBpbnN0ZWFkPyA6KQo+Cj4KPgo+PiAt
-LS0KPj4KPj4gdjI6Cj4+ICAgICAgICAgIC0gZml4IGtidWlsZCB0ZXN0IHJvYm90IHdhcm5pbmcs
-IGxlZnQgc2hpZnQgY291bnQgPj0gd2lkdGggb2YKPj4gdHlwZSwKPj4gICAgICAgICAgYXQgX19s
-ZTMyX3RvX2NwdShhcmcuZXh0X2luZm8ucnhfbWFjX3RpbWVzdGFtcF91MzIpIDw8IDMyCj4+Cj4+
-ICAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYyB8IDE0ICsrKysrKysrKysr
-KysrCj4+ICAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaCB8ICA4ICsrKysr
-KysrCj4+ICAgMiBmaWxlcyBjaGFuZ2VkLCAyMiBpbnNlcnRpb25zKCspCj4+Cj4+IGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCj4+IGIvZHJpdmVycy9u
-ZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwo+PiBpbmRleCAwZjAxYThkLi5iMmE0Y2RhIDEw
-MDY0NAo+PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCj4+ICsr
-KyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKPj4gQEAgLTIxNjcsNiAr
-MjE2Nyw3IEBAIHN0YXRpYyBpbnQgYXRoMTBrX3dtaV9vcF9wdWxsX21nbXRfcnhfZXYoc3RydWN0
-Cj4+IGF0aDEwayAqYXIsIHN0cnVjdCBza19idWZmICpza2IsCj4+ICAgICAgICAgIHN0cnVjdCB3
-bWlfbWdtdF9yeF9ldmVudF92MSAqZXZfdjE7Cj4+ICAgICAgICAgIHN0cnVjdCB3bWlfbWdtdF9y
-eF9ldmVudF92MiAqZXZfdjI7Cj4+ICAgICAgICAgIHN0cnVjdCB3bWlfbWdtdF9yeF9oZHJfdjEg
-KmV2X2hkcjsKPj4gKyAgICAgICBzdHJ1Y3Qgd21pX21nbXRfcnhfZXh0X2luZm8gKmV4dF9pbmZv
-Owo+PiAgICAgICAgICBzaXplX3QgcHVsbF9sZW47Cj4+ICAgICAgICAgIHUzMiBtc2R1X2xlbjsK
-Pj4KPj4gQEAgLTIxOTUsNiArMjE5NiwxMiBAQCBzdGF0aWMgaW50IGF0aDEwa193bWlfb3BfcHVs
-bF9tZ210X3J4X2V2KHN0cnVjdAo+PiBhdGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiLAo+
-PiAgICAgICAgICBpZiAoc2tiLT5sZW4gPCBtc2R1X2xlbikKPj4gICAgICAgICAgICAgICAgICBy
-ZXR1cm4gLUVQUk9UTzsKPj4KPj4gKyAgICAgICBpZiAoYXJnLT5zdGF0dXMgJiBXTUlfUlhfU1RB
-VFVTX0VYVF9JTkZPKSB7Cj4+ICsgICAgICAgICAgICAgICBleHRfaW5mbyA9IChzdHJ1Y3Qgd21p
-X21nbXRfcnhfZXh0X2luZm8gKikKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgKHNrYi0+
-ZGF0YSArIGFyZy0+YnVmX2xlbik7Cj4gSSB3b3VsZCBleHBlY3QgdGhlIGV4dF9pbmZvIHN0cnVj
-dHVyZSB0byBiZSBhbGlnbmVkIGF0IDQgYnl0ZQo+IGJvdW5kYXJpZXMgKG9yIGlzIGl0PykKWWVz
-Lgo+IGJ1dCBidWZfbGVuIGlzbid0IGd1YXJhbnRlZWQgdG8gYmUgbXVsdGlwbGUgb2YKPiA0LgpD
-b3JyZWN0Lgo+ICAgVGhpcyBjb3VsZCBtZWFuIHlvdSBncmFiIGdhcmJhZ2UgaW4gc29tZSBjYXNl
-cyBkZXBlbmRpbmcgb24gdGhlCj4gbWdtdCBmcmFtZSBzaXplIChpLmUuIHdoZXRoZXIgaXRzIHNp
-emUgaXMgbXVsdGlwbGUgb2YgNCkuIEl0IG1pZ2h0IGJlCj4gY29pbmNpZGVuY2UgaXQgd29ya3Mg
-Zm9yIHlvdT8KSSdsbCBzZW5kIG91dCAzcmQgcGF0Y2guCj4KPgo+IE1pY2hhxYIKPgo+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxp
-bmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+Check and set Rx MAC timestamp when firmware indicates it.
+Firmware adds it in Rx beacon frame only at this moment.
+Driver and mac80211 may utilize it to detect such clockdrift
+or beacon collision and use the result for beacon collision
+avoidance.
+
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+
+v2:
+	- fix kbuild test robot warning, left shift count >= width of type,
+	at __le32_to_cpu(arg.ext_info.rx_mac_timestamp_u32) << 32
+v3:
+	- correct ext_info to start 4-byte aligned
+	- make struct wmi_mgmt_rx_ext_info 4-byte aligned to comply FW's intention.
+
+ drivers/net/wireless/ath/ath10k/wmi.c | 14 ++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h |  8 ++++++++
+ 2 files changed, 22 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 0f01a8d..c1ed015 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2167,6 +2167,7 @@ static int ath10k_wmi_op_pull_mgmt_rx_ev(struct ath10k *ar, struct sk_buff *skb,
+ 	struct wmi_mgmt_rx_event_v1 *ev_v1;
+ 	struct wmi_mgmt_rx_event_v2 *ev_v2;
+ 	struct wmi_mgmt_rx_hdr_v1 *ev_hdr;
++	struct wmi_mgmt_rx_ext_info *ext_info;
+ 	size_t pull_len;
+ 	u32 msdu_len;
+ 
+@@ -2195,6 +2196,12 @@ static int ath10k_wmi_op_pull_mgmt_rx_ev(struct ath10k *ar, struct sk_buff *skb,
+ 	if (skb->len < msdu_len)
+ 		return -EPROTO;
+ 
++	if (arg->status & WMI_RX_STATUS_EXT_INFO) {
++		ext_info = (struct wmi_mgmt_rx_ext_info *)
++			   (skb->data + round_up(arg->buf_len, sizeof(u32)));
++		memcpy(&arg->ext_info, ext_info,
++		       sizeof(struct wmi_mgmt_rx_ext_info));
++	}
+ 	/* the WMI buffer might've ended up being padded to 4 bytes due to HTC
+ 	 * trailer with credit update. Trim the excess garbage.
+ 	 */
+@@ -2281,6 +2288,13 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	if (rx_status & WMI_RX_STATUS_ERR_MIC)
+ 		status->flag |= RX_FLAG_MMIC_ERROR;
+ 
++	if (rx_status & WMI_RX_STATUS_EXT_INFO) {
++		status->mactime =
++			__le32_to_cpu(arg.ext_info.rx_mac_timestamp_l32) |
++			(u64)__le32_to_cpu(arg.ext_info.rx_mac_timestamp_u32)
++			<< 32;
++		status->flag |= RX_FLAG_MACTIME_END;
++	}
+ 	/* Hardware can Rx CCK rates on 5GHz. In that case phy_mode is set to
+ 	 * MODE_11B. This means phy_mode is not a reliable source for the band
+ 	 * of mgmt rx.
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 806d4bb..6595ce9 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -3025,11 +3025,18 @@ struct wmi_10_4_mgmt_rx_event {
+ 	u8 buf[0];
+ } __packed;
+ 
++struct wmi_mgmt_rx_ext_info {
++	__le32 rx_mac_timestamp_l32;
++	__le32 rx_mac_timestamp_u32;
++} __packed __aligned(4);
++
+ #define WMI_RX_STATUS_OK			0x00
+ #define WMI_RX_STATUS_ERR_CRC			0x01
+ #define WMI_RX_STATUS_ERR_DECRYPT		0x08
+ #define WMI_RX_STATUS_ERR_MIC			0x10
+ #define WMI_RX_STATUS_ERR_KEY_CACHE_MISS	0x20
++/* Extension data at the end of mgmt frame */
++#define WMI_RX_STATUS_EXT_INFO		0x40
+ 
+ #define PHY_ERROR_GEN_SPECTRAL_SCAN		0x26
+ #define PHY_ERROR_GEN_FALSE_RADAR_EXT		0x24
+@@ -6076,6 +6083,7 @@ struct wmi_mgmt_rx_ev_arg {
+ 	__le32 phy_mode;
+ 	__le32 buf_len;
+ 	__le32 status; /* %WMI_RX_STATUS_ */
++	struct wmi_mgmt_rx_ext_info ext_info;
+ };
+ 
+ struct wmi_ch_info_ev_arg {
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
