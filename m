@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aYZry-00028X-IJ
- for ath10k@lists.infradead.org; Wed, 24 Feb 2016 13:53:01 +0000
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by casper.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1aYZr2-0005rB-8p
+ for ath10k@lists.infradead.org; Wed, 24 Feb 2016 13:51:49 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/2] add hw param and wmi changes for qca4019
-Date: Wed, 24 Feb 2016 13:51:47 +0000
-Message-ID: <87fuwii5ce.fsf@kamboji.qca.qualcomm.com>
-References: <1454065512-8238-1-git-send-email-rmani@qti.qualcomm.com>
-In-Reply-To: <1454065512-8238-1-git-send-email-rmani@qti.qualcomm.com> (Raja
- Mani's message of "Fri, 29 Jan 2016 16:35:10 +0530")
+Subject: Re: [PATCH v2 0/4] ath10k: rename mesh and add abstraction layer
+Date: Wed, 24 Feb 2016 13:51:22 +0000
+Message-ID: <87k2lui5d7.fsf@kamboji.qca.qualcomm.com>
+References: <cover.1454015989.git.poh@qca.qualcomm.com>
+In-Reply-To: <cover.1454015989.git.poh@qca.qualcomm.com> (Peter Oh's message
+ of "Thu, 28 Jan 2016 13:54:06 -0800")
 Content-Language: en-US
-Content-ID: <E0A0345AA3785F4F8A05FAB7786DA889@qualcomm.com>
+Content-ID: <AA440A8C8532184EBD16A4E2BE52B0C1@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,18 +25,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Mani, Raja" <rmani@qti.qualcomm.com>
+To: "Oh, Peter" <poh@qca.qualcomm.com>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Raja Mani <rmani@qti.qualcomm.com> writes:
+Peter Oh <poh@qca.qualcomm.com> writes:
 
-> This patch series includes hw param and wmi changes needed for qca4019.
+> Split Mesh service to 11s Mesh and non-11s Mesh according to
+> firmware service bit to help users distinguish 11s Mesh from
+> non 11s Mesh.
+> And add abstraction layer for vdev subtype to solve subtype mismatch
+> and to give flexible compatibility among different firmware revisions.
 >
-> Raja Mani (2):
->   ath10k: add qca4019 hw params
->   ath10k: populate qca4019 fw specific wmi init params
+> v2:
+>  * Rebased. No code changes.
+>
+> Peter Oh (4):
+>   ath10k: rename Mesh related service names
+>   ath10k: update 10.4 WMI service map
+>   ath10k: use vif->type and vif->p2p for P2P_GO check
+>   ath10k: add abstraction layer for vdev subtype
 
-Both applied, thanks.
+All applied, thanks.
 
 -- 
 Kalle Valo
