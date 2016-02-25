@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aYztL-0007M6-O3
- for ath10k@lists.infradead.org; Thu, 25 Feb 2016 17:39:56 +0000
-From: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Subject: Re: [PATCH 1/4] ath10k: remove supported chain mask
-Date: Thu, 25 Feb 2016 17:39:08 +0000
-Message-ID: <1456421947524.85405@qti.qualcomm.com>
-References: <1445948474-16738-1-git-send-email-rmanohar@qti.qualcomm.com>
- <87fv0uq6p7.fsf@kamboji.qca.qualcomm.com>,
- <CALhHN=orRg2mkjcJ1TGssjEocNrRWEhhDV=SKGYANQ-c+YEyzA@mail.gmail.com>,
- <1456233812853.59898@qti.qualcomm.com>
-In-Reply-To: <1456233812853.59898@qti.qualcomm.com>
-Content-Language: en-US
+ id 1aZ0wq-0005qQ-Ie
+ for ath10k@lists.infradead.org; Thu, 25 Feb 2016 18:47:37 +0000
+Message-ID: <56CF4BDE.1060404@codeaurora.org>
+Date: Thu, 25 Feb 2016 10:45:50 -0800
+From: Peter Oh <poh@codeaurora.org>
 MIME-Version: 1.0
+Subject: Re: Which firmware has raw mode support
+References: <56CF24B4.8030807@dks-koeln.de>
+In-Reply-To: <56CF24B4.8030807@dks-koeln.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +18,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "janusz.dziedzic@tieto.com" <janusz.dziedzic@tieto.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>, "greearb@candelatech.com" <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Xue Liu <xue.liu@dks-koeln.de>, ath10k@lists.infradead.org
 
->>>> Removing supported chainmask fields as it can be always derived
->>>> from num_rf_chains.
->>>>
->>>> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
->>>
->> Hello,
->>
->> This one break monitor mode for qca988x and 10.x firmware:
->> After Revert "ath10k: remove supported chain mask" - works correctly.
->>
->Janusz,
+
+On 02/25/2016 07:58 AM, Xue Liu wrote:
+> Hello,
 >
-> Thanks for reporting. Will send out patch asap.
+> I have a WLE900VX (QCA9880) 11ac card and would like to do some mesh 
+> test.
 >
+> I have try some firmware from 
+> https://github.com/kvalo/ath10k-firmware/tree/master/QCA988X/10.2.4 
+> but no luck.
+>
+> Could someone tell me that which firmware has raw mode support. That 
+> is very appreciate.
+raw mode supported since firmware-5.bin_10.2.4.70.6-2 .
+check out and try it from 
+https://github.com/kvalo/ath10k-firmware/tree/master/QCA988X/10.2.4
 
-Janusz,
+--
+Peter
 
-It seems the change ("ath10k: remove supported chain mask") just exposed an
-hidden problem. The same target assert can be reproduced by below sequence
-even after reverting the commit.
-
-ifconfig wlan0 down
-iw wlan0 set type monitor
-iw phy0 set antenna 7
-ifconfig wlan0 up
-
-The actual cause of target assert is below commit.
-
-commit 5572a95b4b5768187652a346356e39e7542ca6e0
-Author: Ben Greear <greearb@candelatech.com>
-Date:   Mon Nov 24 16:22:10 2014 +0200
-
-    ath10k: apply chainmask settings to vdev on creation
-
-Configuring NSS vdev param on interface addition is causing the target assert in 10.1 firmware.
-Just creating monitor interface is causing assert with qca_main firmware.
-
-
--Rajkumar
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
