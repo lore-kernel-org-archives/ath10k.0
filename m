@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aYysj-0000Qg-11
- for ath10k@lists.infradead.org; Thu, 25 Feb 2016 16:35:13 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: set MAC timestamp in management Rx frame
-Date: Thu, 25 Feb 2016 16:34:45 +0000
-Message-ID: <87k2lsd9zv.fsf@kamboji.qca.qualcomm.com>
-References: <4c705dc7a2c0aa857da4e6eaf6e8ed47c354b9ea.1456351768.git.poh@qca.qualcomm.com>
-In-Reply-To: <4c705dc7a2c0aa857da4e6eaf6e8ed47c354b9ea.1456351768.git.poh@qca.qualcomm.com>
- (Peter Oh's message of "Wed, 24 Feb 2016 14:18:51 -0800")
+ id 1aYztL-0007M6-O3
+ for ath10k@lists.infradead.org; Thu, 25 Feb 2016 17:39:56 +0000
+From: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Subject: Re: [PATCH 1/4] ath10k: remove supported chain mask
+Date: Thu, 25 Feb 2016 17:39:08 +0000
+Message-ID: <1456421947524.85405@qti.qualcomm.com>
+References: <1445948474-16738-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <87fv0uq6p7.fsf@kamboji.qca.qualcomm.com>,
+ <CALhHN=orRg2mkjcJ1TGssjEocNrRWEhhDV=SKGYANQ-c+YEyzA@mail.gmail.com>,
+ <1456233812853.59898@qti.qualcomm.com>
+In-Reply-To: <1456233812853.59898@qti.qualcomm.com>
 Content-Language: en-US
-Content-ID: <2912F8AF8CA9874FA2BBD901947C214B@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,36 +26,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Oh, Peter" <poh@qca.qualcomm.com>
+To: "janusz.dziedzic@tieto.com" <janusz.dziedzic@tieto.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>, "greearb@candelatech.com" <greearb@candelatech.com>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Peter Oh <poh@qca.qualcomm.com> writes:
-
-> Check and set Rx MAC timestamp when firmware indicates it.
-> Firmware adds it in Rx beacon frame only at this moment.
-> Driver and mac80211 may utilize it to detect such clockdrift
-> or beacon collision and use the result for beacon collision
-> avoidance.
+>>>> Removing supported chainmask fields as it can be always derived
+>>>> from num_rf_chains.
+>>>>
+>>>> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+>>>
+>> Hello,
+>>
+>> This one break monitor mode for qca988x and 10.x firmware:
+>> After Revert "ath10k: remove supported chain mask" - works correctly.
+>>
+>Janusz,
 >
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
-> ---
+> Thanks for reporting. Will send out patch asap.
 >
-> v2:
-> 	- fix kbuild test robot warning, left shift count >= width of type,
-> 	at __le32_to_cpu(arg.ext_info.rx_mac_timestamp_u32) << 32
-> v3:
-> 	- correct ext_info to start 4-byte aligned
-> 	- make struct wmi_mgmt_rx_ext_info 4-byte aligned to comply FW's intention.
 
-I see new warnings:
+Janusz,
 
-drivers/net/wireless/ath/ath10k/wmi.c:2199:16: warning: restricted __le32 degrades to integer
-drivers/net/wireless/ath/ath10k/wmi.c:2201:41: warning: restricted __le32 degrades to integer
-drivers/net/wireless/ath/ath10k/wmi.c:2201:41: warning: cast to restricted __le32
-drivers/net/wireless/ath/ath10k/wmi.c:2201:41: warning: restricted __le32 degrades to integer
+It seems the change ("ath10k: remove supported chain mask") just exposed an
+hidden problem. The same target assert can be reproduced by below sequence
+even after reverting the commit.
 
--- 
-Kalle Valo
+ifconfig wlan0 down
+iw wlan0 set type monitor
+iw phy0 set antenna 7
+ifconfig wlan0 up
+
+The actual cause of target assert is below commit.
+
+commit 5572a95b4b5768187652a346356e39e7542ca6e0
+Author: Ben Greear <greearb@candelatech.com>
+Date:   Mon Nov 24 16:22:10 2014 +0200
+
+    ath10k: apply chainmask settings to vdev on creation
+
+Configuring NSS vdev param on interface addition is causing the target assert in 10.1 firmware.
+Just creating monitor interface is causing assert with qca_main firmware.
+
+
+-Rajkumar
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
