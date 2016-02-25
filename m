@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.17.13])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aYyJn-0000FD-AI
- for ath10k@lists.infradead.org; Thu, 25 Feb 2016 15:59:07 +0000
-Received: from xue.liu@dks-koeln.de ([87.79.65.72]) by
- mrelayeu.kundenserver.de (mreue101) with ESMTPSA (Nemesis) id
- 0Lba15-1a5fAM1JpD-00lDxT for <ath10k@lists.infradead.org>; Thu, 25 Feb 2016
- 16:58:45 +0100
-From: Xue Liu <xue.liu@dks-koeln.de>
-Subject: Which firmware has raw mode support
-Message-ID: <56CF24B4.8030807@dks-koeln.de>
-Date: Thu, 25 Feb 2016 16:58:44 +0100
+ id 1aYysj-0000Qg-11
+ for ath10k@lists.infradead.org; Thu, 25 Feb 2016 16:35:13 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v3] ath10k: set MAC timestamp in management Rx frame
+Date: Thu, 25 Feb 2016 16:34:45 +0000
+Message-ID: <87k2lsd9zv.fsf@kamboji.qca.qualcomm.com>
+References: <4c705dc7a2c0aa857da4e6eaf6e8ed47c354b9ea.1456351768.git.poh@qca.qualcomm.com>
+In-Reply-To: <4c705dc7a2c0aa857da4e6eaf6e8ed47c354b9ea.1456351768.git.poh@qca.qualcomm.com>
+ (Peter Oh's message of "Wed, 24 Feb 2016 14:18:51 -0800")
+Content-Language: en-US
+Content-ID: <2912F8AF8CA9874FA2BBD901947C214B@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,27 +21,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: "Oh, Peter" <poh@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hello,
+Peter Oh <poh@qca.qualcomm.com> writes:
 
-I have a WLE900VX (QCA9880) 11ac card and would like to do some mesh test.
+> Check and set Rx MAC timestamp when firmware indicates it.
+> Firmware adds it in Rx beacon frame only at this moment.
+> Driver and mac80211 may utilize it to detect such clockdrift
+> or beacon collision and use the result for beacon collision
+> avoidance.
+>
+> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+> ---
+>
+> v2:
+> 	- fix kbuild test robot warning, left shift count >= width of type,
+> 	at __le32_to_cpu(arg.ext_info.rx_mac_timestamp_u32) << 32
+> v3:
+> 	- correct ext_info to start 4-byte aligned
+> 	- make struct wmi_mgmt_rx_ext_info 4-byte aligned to comply FW's intention.
 
-I have try some firmware from 
-https://github.com/kvalo/ath10k-firmware/tree/master/QCA988X/10.2.4 but 
-no luck.
+I see new warnings:
 
-Could someone tell me that which firmware has raw mode support. That is 
-very appreciate.
+drivers/net/wireless/ath/ath10k/wmi.c:2199:16: warning: restricted __le32 degrades to integer
+drivers/net/wireless/ath/ath10k/wmi.c:2201:41: warning: restricted __le32 degrades to integer
+drivers/net/wireless/ath/ath10k/wmi.c:2201:41: warning: cast to restricted __le32
+drivers/net/wireless/ath/ath10k/wmi.c:2201:41: warning: restricted __le32 degrades to integer
 
-Regards,
-
-Xue Liu
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
