@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aZNhm-0005OM-Ut
- for ath10k@lists.infradead.org; Fri, 26 Feb 2016 19:05:36 +0000
+ id 1aZNjZ-0005ur-Dt
+ for ath10k@lists.infradead.org; Fri, 26 Feb 2016 19:07:25 +0000
 From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH v5] ath10k: set MAC timestamp in management Rx frame
-Date: Fri, 26 Feb 2016 11:03:38 -0800
-Message-ID: <5bc6ba3b4d5743dc641b85c2c4233631f5b3319a.1456513260.git.poh@qca.qualcomm.com>
+Subject: [PATCH] ath10k: parse Rx MAC timestamp in mgmt frame for FW 10.4
+Date: Fri, 26 Feb 2016 11:05:31 -0800
+Message-ID: <1456513531-14528-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,46 +23,32 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Check and set Rx MAC timestamp when firmware indicates it.
-Firmware adds it in Rx beacon frame only at this moment.
-Driver and mac80211 may utilize it to detect such clockdrift
+Check and parse Rx MAC timestamp when firmware sets its flag
+to status variable.
+10.4 firmware adds it in Rx beacon frame only at this moment.
+Drivers and mac80211 may utilize it to detect such clockdrift
 or beacon collision and use the result for beacon collision
 avoidance.
 
 Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
 ---
-
-v2:
- - fix kbuild test robot warning, left shift count >= width of type,
-   at __le32_to_cpu(arg.ext_info.rx_mac_timestamp_u32) << 32
-v3:
- - correct ext_info to start 4-byte aligned
- - make struct wmi_mgmt_rx_ext_info 4-byte aligned to comply FW's intention
-v4:
- - fix endianness warnings, restricted __le32 degrades to integer
-v5:
- - use ALIGN for better read
-
- drivers/net/wireless/ath/ath10k/wmi.c | 15 +++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h |  8 ++++++++
- 2 files changed, 23 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 1ce6742..a343e74 100644
+index 1ce6742..94968d6 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2167,8 +2167,10 @@ static int ath10k_wmi_op_pull_mgmt_rx_ev(struct ath10k *ar, struct sk_buff *skb,
- 	struct wmi_mgmt_rx_event_v1 *ev_v1;
- 	struct wmi_mgmt_rx_event_v2 *ev_v2;
- 	struct wmi_mgmt_rx_hdr_v1 *ev_hdr;
-+	struct wmi_mgmt_rx_ext_info *ext_info;
+@@ -2211,6 +2211,8 @@ static int ath10k_wmi_10_4_op_pull_mgmt_rx_ev(struct ath10k *ar,
+ 	struct wmi_10_4_mgmt_rx_hdr *ev_hdr;
  	size_t pull_len;
  	u32 msdu_len;
++	struct wmi_mgmt_rx_ext_info *ext_info;
 +	u32 len;
  
- 	if (test_bit(ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX, ar->fw_features)) {
- 		ev_v2 = (struct wmi_mgmt_rx_event_v2 *)skb->data;
-@@ -2195,6 +2197,12 @@ static int ath10k_wmi_op_pull_mgmt_rx_ev(struct ath10k *ar, struct sk_buff *skb,
+ 	ev = (struct wmi_10_4_mgmt_rx_event *)skb->data;
+ 	ev_hdr = &ev->hdr;
+@@ -2231,6 +2233,13 @@ static int ath10k_wmi_10_4_op_pull_mgmt_rx_ev(struct ath10k *ar,
  	if (skb->len < msdu_len)
  		return -EPROTO;
  
@@ -72,54 +58,10 @@ index 1ce6742..a343e74 100644
 +		memcpy(&arg->ext_info, ext_info,
 +		       sizeof(struct wmi_mgmt_rx_ext_info));
 +	}
- 	/* the WMI buffer might've ended up being padded to 4 bytes due to HTC
- 	 * trailer with credit update. Trim the excess garbage.
- 	 */
-@@ -2281,6 +2289,13 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	if (rx_status & WMI_RX_STATUS_ERR_MIC)
- 		status->flag |= RX_FLAG_MMIC_ERROR;
- 
-+	if (rx_status & WMI_RX_STATUS_EXT_INFO) {
-+		status->mactime =
-+			__le32_to_cpu(arg.ext_info.rx_mac_timestamp_l32) |
-+			(u64)__le32_to_cpu(arg.ext_info.rx_mac_timestamp_u32)
-+			<< 32;
-+		status->flag |= RX_FLAG_MACTIME_END;
-+	}
- 	/* Hardware can Rx CCK rates on 5GHz. In that case phy_mode is set to
- 	 * MODE_11B. This means phy_mode is not a reliable source for the band
- 	 * of mgmt rx.
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 4d3cbc4..f209d51 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3037,11 +3037,18 @@ struct wmi_10_4_mgmt_rx_event {
- 	u8 buf[0];
- } __packed;
- 
-+struct wmi_mgmt_rx_ext_info {
-+	__le32 rx_mac_timestamp_l32;
-+	__le32 rx_mac_timestamp_u32;
-+} __packed __aligned(4);
 +
- #define WMI_RX_STATUS_OK			0x00
- #define WMI_RX_STATUS_ERR_CRC			0x01
- #define WMI_RX_STATUS_ERR_DECRYPT		0x08
- #define WMI_RX_STATUS_ERR_MIC			0x10
- #define WMI_RX_STATUS_ERR_KEY_CACHE_MISS	0x20
-+/* Extension data at the end of mgmt frame */
-+#define WMI_RX_STATUS_EXT_INFO		0x40
+ 	/* Make sure bytes added for padding are removed. */
+ 	skb_trim(skb, msdu_len);
  
- #define PHY_ERROR_GEN_SPECTRAL_SCAN		0x26
- #define PHY_ERROR_GEN_FALSE_RADAR_EXT		0x24
-@@ -6116,6 +6123,7 @@ struct wmi_mgmt_rx_ev_arg {
- 	__le32 phy_mode;
- 	__le32 buf_len;
- 	__le32 status; /* %WMI_RX_STATUS_ */
-+	struct wmi_mgmt_rx_ext_info ext_info;
- };
- 
- struct wmi_ch_info_ev_arg {
 -- 
 1.9.1
 
