@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
- id 1aZHa4-0006NH-Hn
- for ath10k@lists.infradead.org; Fri, 26 Feb 2016 12:33:13 +0000
-Message-ID: <56CC6471.8050204@candelatech.com>
-Date: Tue, 23 Feb 2016 05:53:53 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aZIjZ-0000Jx-OA
+ for ath10k@lists.infradead.org; Fri, 26 Feb 2016 13:47:07 +0000
+Received: by mail-oi0-x234.google.com with SMTP id k67so5303417oia.3
+ for <ath10k@lists.infradead.org>; Fri, 26 Feb 2016 05:46:45 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Reduce number of peers to support peer stats
- feature
-References: <1456210197-27892-1-git-send-email-akolli@qti.qualcomm.com>
-In-Reply-To: <1456210197-27892-1-git-send-email-akolli@qti.qualcomm.com>
+In-Reply-To: <56CF4BDE.1060404@codeaurora.org>
+References: <56CF24B4.8030807@dks-koeln.de> <56CF4BDE.1060404@codeaurora.org>
+Date: Fri, 26 Feb 2016 21:46:44 +0800
+Message-ID: <CAEFj9871Ga=Q+u3dW=gf5V=E2Hr1rRQ7gjd_DX4Z9TTdVpu4pg@mail.gmail.com>
+Subject: Re: Which firmware has raw mode support
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,38 +20,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: akolli@qti.qualcomm.com, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Peter Oh <poh@codeaurora.org>
+Cc: Xue Liu <xue.liu@dks-koeln.de>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+You can take a look on dmesg to further confirm:
+ath10k_pci 0000:06:00.0: firmware ver 10.2.4.70.19-2 api 5 features
+no-p2p,raw-mode,mfp crc32 809ef648
 
+----
+Chun-Yeow
 
-On 02/22/2016 10:49 PM, akolli@qti.qualcomm.com wrote:
-> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+On Fri, Feb 26, 2016 at 2:45 AM, Peter Oh <poh@codeaurora.org> wrote:
 >
-> To enable per peer stats feature we are reducing the number of peers.
-> Firmware has introduced tx stats feature. We have memory limitation in
-> firmware to add these additional bytes.
-
-Maybe this is OK for defaults, but we should also give the user the ability
-to configure various things, including disabling pktlog, setting number
-of vdevs, peers, tids, etc.  Maybe something like the parseable config file
-patch I linked too earlier?
-
-http://dmz2.candelatech.com/?p=linux-4.4.dev.y/.git;a=commit;h=6708e4047d91edf234239943332bc2f0d124d009
-
-You can also save a lot of RAM in your firmware if you naturally pack your structs
-better, and remove un-used members from various structures, etc.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+> On 02/25/2016 07:58 AM, Xue Liu wrote:
+>>
+>> Hello,
+>>
+>> I have a WLE900VX (QCA9880) 11ac card and would like to do some mesh test.
+>>
+>> I have try some firmware from
+>> https://github.com/kvalo/ath10k-firmware/tree/master/QCA988X/10.2.4 but no
+>> luck.
+>>
+>> Could someone tell me that which firmware has raw mode support. That is
+>> very appreciate.
+>
+> raw mode supported since firmware-5.bin_10.2.4.70.6-2 .
+> check out and try it from
+> https://github.com/kvalo/ath10k-firmware/tree/master/QCA988X/10.2.4
+>
+> --
+> Peter
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
