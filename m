@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x231.google.com ([2a00:1450:4010:c07::231])
+Received: from mail-lb0-x234.google.com ([2a00:1450:4010:c04::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aahbZ-0000S3-SK
- for ath10k@lists.infradead.org; Tue, 01 Mar 2016 10:32:42 +0000
-Received: by mail-lf0-x231.google.com with SMTP id j78so110092867lfb.1
- for <ath10k@lists.infradead.org>; Tue, 01 Mar 2016 02:32:17 -0800 (PST)
+ id 1aajDK-00085V-Bk
+ for ath10k@lists.infradead.org; Tue, 01 Mar 2016 12:15:43 +0000
+Received: by mail-lb0-x234.google.com with SMTP id of3so97719549lbc.1
+ for <ath10k@lists.infradead.org>; Tue, 01 Mar 2016 04:15:21 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 06/11] ath10k: add new htt message generation/parsing logic
-Date: Tue,  1 Mar 2016 11:32:51 +0100
-Message-Id: <1456828376-2795-7-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1456828376-2795-1-git-send-email-michal.kazior@tieto.com>
-References: <1453384006-31907-1-git-send-email-michal.kazior@tieto.com>
- <1456828376-2795-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 2/2] ath10k: change htt tx desc/qcache peer limit config
+Date: Tue,  1 Mar 2016 13:16:11 +0100
+Message-Id: <1456834571-9847-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1456834571-9847-1-git-send-email-michal.kazior@tieto.com>
+References: <1456834571-9847-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,315 +27,121 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This merely adds some parsing, generation and
-sanity checks with placeholders for real
-code/functionality to be added later.
+The number of HTT Tx descriptors and qcache peer
+limit aren't hw-specific. In fact they are
+firmware specific and should not be placed in
+hw_params.
+
+The QCA4019 limits were submitted with the peer
+flow control firmware only and to my understanding
+there's no non-peer-flow-ctrl QCA4019 firmware.
+
+However QCA99X0 is planned to run firmware
+supporting the feature as well. Therefore this
+patch enables QCA99X0 to use 2500 tx descriptors
+whenever possible instead of just 1424.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    |   5 +
- drivers/net/wireless/ath/ath10k/htt_rx.c | 198 ++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/htt_tx.c |  53 +++++++++
- 3 files changed, 255 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.c | 11 ++++++-----
+ drivers/net/wireless/ath/ath10k/core.h |  2 --
+ drivers/net/wireless/ath/ath10k/hw.h   |  4 ++++
+ drivers/net/wireless/ath/ath10k/wmi.c  | 10 ++++++++--
+ 4 files changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index cb6d4fd687da..65dcd22f31df 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1752,6 +1752,11 @@ int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
- 				u8 max_subfrms_ampdu,
- 				u8 max_subfrms_amsdu);
- void ath10k_htt_hif_tx_complete(struct ath10k *ar, struct sk_buff *skb);
-+int ath10k_htt_tx_fetch_resp(struct ath10k *ar,
-+			     __le32 token,
-+			     __le16 fetch_seq_num,
-+			     struct htt_tx_fetch_record *records,
-+			     size_t num_records);
- 
- void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt,
- 			       bool is_mgmt);
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index cc957a625605..be7dc88b3316 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1982,6 +1982,198 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
- 	tasklet_schedule(&htt->rx_replenish_task);
- }
- 
-+static void ath10k_htt_rx_tx_fetch_resp_id_confirm(struct ath10k *ar,
-+						   const __le32 *resp_ids,
-+						   int num_resp_ids)
-+{
-+	int i;
-+	u32 resp_id;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 4d3176492ae7..d7d94bf7e0db 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -156,8 +156,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.channel_counters_freq_hz = 150000,
+ 		.max_probe_resp_desc_thres = 24,
+ 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_BEFORE,
+-		.num_msdu_desc = 1424,
+-		.qcache_active_peers = 50,
+ 		.tx_chain_mask = 0xf,
+ 		.rx_chain_mask = 0xf,
+ 		.max_spatial_stream = 4,
+@@ -217,8 +215,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.channel_counters_freq_hz = 125000,
+ 		.max_probe_resp_desc_thres = 24,
+ 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_BEFORE,
+-		.num_msdu_desc = 2500,
+-		.qcache_active_peers = 35,
+ 		.tx_chain_mask = 0x3,
+ 		.rx_chain_mask = 0x3,
+ 		.max_spatial_stream = 2,
+@@ -1533,9 +1529,14 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->num_active_peers = TARGET_10_4_ACTIVE_PEERS;
+ 		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
+ 		ar->num_tids = TARGET_10_4_TGT_NUM_TIDS;
+-		ar->htt.max_num_pending_tx = ar->hw_params.num_msdu_desc;
+ 		ar->fw_stats_req_mask = WMI_STAT_PEER;
+ 		ar->max_spatial_stream = ar->hw_params.max_spatial_stream;
 +
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx fetch confirm num_resp_ids %d\n",
-+		   num_resp_ids);
-+
-+	for (i = 0; i < num_resp_ids; i++) {
-+		resp_id = le32_to_cpu(resp_ids[i]);
-+
-+		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx fetch confirm resp_id %u\n",
-+			   resp_id);
-+
-+		/* TODO: free resp_id */
-+	}
-+}
-+
-+static void ath10k_htt_rx_tx_fetch_ind(struct ath10k *ar, struct sk_buff *skb)
-+{
-+	struct htt_resp *resp = (struct htt_resp *)skb->data;
-+	struct htt_tx_fetch_record *record;
-+	size_t len;
-+	size_t max_num_bytes;
-+	size_t max_num_msdus;
-+	const __le32 *resp_ids;
-+	u16 num_records;
-+	u16 num_resp_ids;
-+	u16 peer_id;
-+	u8 tid;
-+	int i;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx fetch ind\n");
-+
-+	len = sizeof(resp->hdr) + sizeof(resp->tx_fetch_ind);
-+	if (unlikely(skb->len < len)) {
-+		ath10k_warn(ar, "received corrupted tx_fetch_ind event: buffer too short\n");
-+		return;
-+	}
-+
-+	num_records = le16_to_cpu(resp->tx_fetch_ind.num_records);
-+	num_resp_ids = le16_to_cpu(resp->tx_fetch_ind.num_resp_ids);
-+
-+	len += sizeof(resp->tx_fetch_ind.records[0]) * num_records;
-+	len += sizeof(resp->tx_fetch_ind.resp_ids[0]) * num_resp_ids;
-+
-+	if (unlikely(skb->len < len)) {
-+		ath10k_warn(ar, "received corrupted tx_fetch_ind event: too many records/resp_ids\n");
-+		return;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx fetch ind num records %hu num resps %hu seq %hu\n",
-+		   num_records, num_resp_ids,
-+		   le16_to_cpu(resp->tx_fetch_ind.fetch_seq_num));
-+
-+	/* TODO: runtime sanity checks */
-+
-+	for (i = 0; i < num_records; i++) {
-+		record = &resp->tx_fetch_ind.records[i];
-+		peer_id = MS(le16_to_cpu(record->info),
-+			     HTT_TX_FETCH_RECORD_INFO_PEER_ID);
-+		tid = MS(le16_to_cpu(record->info),
-+			 HTT_TX_FETCH_RECORD_INFO_TID);
-+		max_num_msdus = le16_to_cpu(record->num_msdus);
-+		max_num_bytes = le32_to_cpu(record->num_bytes);
-+
-+		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx fetch record %i peer_id %hu tid %hhu msdus %zu bytes %zu\n",
-+			   i, peer_id, tid, max_num_msdus, max_num_bytes);
-+
-+		if (unlikely(peer_id >= ar->htt.tx_q_state.num_peers) ||
-+		    unlikely(tid >= ar->htt.tx_q_state.num_tids)) {
-+			ath10k_warn(ar, "received out of range peer_id %hu tid %hhu\n",
-+				    peer_id, tid);
-+			continue;
-+		}
-+
-+		/* TODO: dequeue and submit tx to device */
-+	}
-+
-+	resp_ids = ath10k_htt_get_tx_fetch_ind_resp_ids(&resp->tx_fetch_ind);
-+	ath10k_htt_rx_tx_fetch_resp_id_confirm(ar, resp_ids, num_resp_ids);
-+
-+	/* TODO: generate and send fetch response to device */
-+}
-+
-+static void ath10k_htt_rx_tx_fetch_confirm(struct ath10k *ar,
-+					   struct sk_buff *skb)
-+{
-+	const struct htt_resp *resp = (void *)skb->data;
-+	size_t len;
-+	int num_resp_ids;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx fetch confirm\n");
-+
-+	len = sizeof(resp->hdr) + sizeof(resp->tx_fetch_confirm);
-+	if (unlikely(skb->len < len)) {
-+		ath10k_warn(ar, "received corrupted tx_fetch_confirm event: buffer too short\n");
-+		return;
-+	}
-+
-+	num_resp_ids = le16_to_cpu(resp->tx_fetch_confirm.num_resp_ids);
-+	len += sizeof(resp->tx_fetch_confirm.resp_ids[0]) * num_resp_ids;
-+
-+	if (unlikely(skb->len < len)) {
-+		ath10k_warn(ar, "received corrupted tx_fetch_confirm event: resp_ids buffer overflow\n");
-+		return;
-+	}
-+
-+	ath10k_htt_rx_tx_fetch_resp_id_confirm(ar,
-+					       resp->tx_fetch_confirm.resp_ids,
-+					       num_resp_ids);
-+}
-+
-+static void ath10k_htt_rx_tx_mode_switch_ind(struct ath10k *ar,
-+					     struct sk_buff *skb)
-+{
-+	const struct htt_resp *resp = (void *)skb->data;
-+	const struct htt_tx_mode_switch_record *record;
-+	size_t len;
-+	size_t num_records;
-+	enum htt_tx_mode_switch_mode mode;
-+	bool enable;
-+	u16 info0;
-+	u16 info1;
-+	u16 threshold;
-+	u16 peer_id;
-+	u8 tid;
-+	int i;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx mode switch ind\n");
-+
-+	len = sizeof(resp->hdr) + sizeof(resp->tx_mode_switch_ind);
-+	if (unlikely(skb->len < len)) {
-+		ath10k_warn(ar, "received corrupted tx_mode_switch_ind event: buffer too short\n");
-+		return;
-+	}
-+
-+	info0 = le16_to_cpu(resp->tx_mode_switch_ind.info0);
-+	info1 = le16_to_cpu(resp->tx_mode_switch_ind.info1);
-+
-+	enable = !!(info0 & HTT_TX_MODE_SWITCH_IND_INFO0_ENABLE);
-+	num_records = MS(info0, HTT_TX_MODE_SWITCH_IND_INFO1_THRESHOLD);
-+	mode = MS(info1, HTT_TX_MODE_SWITCH_IND_INFO1_MODE);
-+	threshold = MS(info1, HTT_TX_MODE_SWITCH_IND_INFO1_THRESHOLD);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_HTT,
-+		   "htt rx tx mode switch ind info0 0x%04hx info1 0x%04hx enable %d num records %zd mode %d threshold %hu\n",
-+		   info0, info1, enable, num_records, mode, threshold);
-+
-+	len += sizeof(resp->tx_mode_switch_ind.records[0]) * num_records;
-+
-+	if (unlikely(skb->len < len)) {
-+		ath10k_warn(ar, "received corrupted tx_mode_switch_mode_ind event: too many records\n");
-+		return;
-+	}
-+
-+	switch (mode) {
-+	case HTT_TX_MODE_SWITCH_PUSH:
-+	case HTT_TX_MODE_SWITCH_PUSH_PULL:
-+		break;
-+	default:
-+		ath10k_warn(ar, "received invalid tx_mode_switch_mode_ind mode %d, ignoring\n",
-+			    mode);
-+		return;
-+	}
-+
-+	if (!enable)
-+		return;
-+
-+	/* TODO: apply configuration */
-+
-+	for (i = 0; i < num_records; i++) {
-+		record = &resp->tx_mode_switch_ind.records[i];
-+		info0 = le16_to_cpu(record->info0);
-+		peer_id = MS(info0, HTT_TX_MODE_SWITCH_RECORD_INFO0_PEER_ID);
-+		tid = MS(info0, HTT_TX_MODE_SWITCH_RECORD_INFO0_TID);
-+
-+		if (unlikely(peer_id >= ar->htt.tx_q_state.num_peers) ||
-+		    unlikely(tid >= ar->htt.tx_q_state.num_tids)) {
-+			ath10k_warn(ar, "received out of range peer_id %hu tid %hhu\n",
-+				    peer_id, tid);
-+			continue;
-+		}
-+
-+		/* TODO: apply configuration */
-+	}
-+
-+	/* TODO: apply configuration */
-+}
-+
- void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct ath10k_htt *htt = &ar->htt;
-@@ -2124,9 +2316,13 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 	case HTT_T2H_MSG_TYPE_AGGR_CONF:
++		if (test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL,
++			     ar->fw_features))
++			ar->htt.max_num_pending_tx = TARGET_10_4_NUM_MSDU_DESC_PFC;
++		else
++			ar->htt.max_num_pending_tx = TARGET_10_4_NUM_MSDU_DESC;
  		break;
- 	case HTT_T2H_MSG_TYPE_TX_FETCH_IND:
-+		ath10k_htt_rx_tx_fetch_ind(ar, skb);
-+		break;
- 	case HTT_T2H_MSG_TYPE_TX_FETCH_CONFIRM:
-+		ath10k_htt_rx_tx_fetch_confirm(ar, skb);
-+		break;
- 	case HTT_T2H_MSG_TYPE_TX_MODE_SWITCH_IND:
--		/* TODO: Implement pull-push logic */
-+		ath10k_htt_rx_tx_mode_switch_ind(ar, skb);
- 		break;
- 	case HTT_T2H_MSG_TYPE_EN_STATS:
- 	default:
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 860661d3812f..225f0561b3fd 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -526,6 +526,59 @@ int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
- 	return 0;
- }
+ 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
+ 	case ATH10K_FW_WMI_OP_VERSION_MAX:
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index a62b62a62266..1f116edbdf28 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -680,8 +680,6 @@ struct ath10k {
+ 		/* The padding bytes's location is different on various chips */
+ 		enum ath10k_hw_4addr_pad hw_4addr_pad;
  
-+int ath10k_htt_tx_fetch_resp(struct ath10k *ar,
-+			     __le32 token,
-+			     __le16 fetch_seq_num,
-+			     struct htt_tx_fetch_record *records,
-+			     size_t num_records)
-+{
-+	struct sk_buff *skb;
-+	struct htt_cmd *cmd;
-+	u16 resp_id;
-+	int len = 0;
-+	int ret;
+-		u32 num_msdu_desc;
+-		u32 qcache_active_peers;
+ 		u32 tx_chain_mask;
+ 		u32 rx_chain_mask;
+ 		u32 max_spatial_stream;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 2dece8db83f8..d5939a99dc45 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -426,10 +426,14 @@ enum ath10k_hw_4addr_pad {
+ #define TARGET_10_4_ACTIVE_PEERS		0
+ 
+ #define TARGET_10_4_NUM_QCACHE_PEERS_MAX	512
++#define TARGET_10_4_QCACHE_ACTIVE_PEERS		50
++#define TARGET_10_4_QCACHE_ACTIVE_PEERS_PFC	35
+ #define TARGET_10_4_NUM_OFFLOAD_PEERS		0
+ #define TARGET_10_4_NUM_OFFLOAD_REORDER_BUFFS	0
+ #define TARGET_10_4_NUM_PEER_KEYS		2
+ #define TARGET_10_4_TGT_NUM_TIDS		((TARGET_10_4_NUM_PEERS) * 2)
++#define TARGET_10_4_NUM_MSDU_DESC		(1024 + 400)
++#define TARGET_10_4_NUM_MSDU_DESC_PFC		2500
+ #define TARGET_10_4_AST_SKID_LIMIT		32
+ 
+ /* 100 ms for video, best-effort, and background */
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 1ce67423224a..fee27b2ca6c0 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -4617,10 +4617,16 @@ static void ath10k_wmi_event_service_ready_work(struct work_struct *work)
+ 	}
+ 
+ 	if (test_bit(WMI_SERVICE_PEER_CACHING, ar->wmi.svc_map)) {
++		if (test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL,
++			     ar->fw_features))
++			ar->num_active_peers = TARGET_10_4_QCACHE_ACTIVE_PEERS_PFC +
++					       ar->max_num_vdevs;
++		else
++			ar->num_active_peers = TARGET_10_4_QCACHE_ACTIVE_PEERS +
++					       ar->max_num_vdevs;
 +
-+	len += sizeof(cmd->hdr);
-+	len += sizeof(cmd->tx_fetch_resp);
-+	len += sizeof(cmd->tx_fetch_resp.records[0]) * num_records;
-+
-+	skb = ath10k_htc_alloc_skb(ar, len);
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	resp_id = 0; /* TODO: allocate resp_id */
-+	ret = 0;
-+	if (ret)
-+		goto err_free_skb;
-+
-+	skb_put(skb, len);
-+	cmd = (struct htt_cmd *)skb->data;
-+	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_TX_FETCH_RESP;
-+	cmd->tx_fetch_resp.resp_id = cpu_to_le16(resp_id);
-+	cmd->tx_fetch_resp.fetch_seq_num = fetch_seq_num;
-+	cmd->tx_fetch_resp.num_records = cpu_to_le16(num_records);
-+	cmd->tx_fetch_resp.token = token;
-+
-+	memcpy(cmd->tx_fetch_resp.records, records,
-+	       sizeof(records[0]) * num_records);
-+
-+	ret = ath10k_htc_send(&ar->htc, ar->htt.eid, skb);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to submit htc command: %d\n", ret);
-+		goto err_free_resp_id;
-+	}
-+
-+	return 0;
-+
-+err_free_resp_id:
-+	(void)resp_id; /* TODO: free resp_id */
-+
-+err_free_skb:
-+	dev_kfree_skb_any(skb);
-+
-+	return ret;
-+}
-+
- static u8 ath10k_htt_tx_get_vdev_id(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+ 		ar->max_num_peers = TARGET_10_4_NUM_QCACHE_PEERS_MAX +
+ 				    ar->max_num_vdevs;
+-		ar->num_active_peers = ar->hw_params.qcache_active_peers +
+-				       ar->max_num_vdevs;
+ 		ar->num_tids = ar->num_active_peers * 2;
+ 		ar->max_num_stations = TARGET_10_4_NUM_QCACHE_PEERS_MAX;
+ 	}
 -- 
 2.1.4
 
