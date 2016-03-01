@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22c.google.com ([2a00:1450:4010:c07::22c])
+Received: from mail-lf0-x231.google.com ([2a00:1450:4010:c07::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aahbZ-0000TT-MW
- for ath10k@lists.infradead.org; Tue, 01 Mar 2016 10:32:39 +0000
-Received: by mail-lf0-x22c.google.com with SMTP id l83so62921947lfd.3
- for <ath10k@lists.infradead.org>; Tue, 01 Mar 2016 02:32:22 -0800 (PST)
+ id 1aahbZ-0000S3-SK
+ for ath10k@lists.infradead.org; Tue, 01 Mar 2016 10:32:42 +0000
+Received: by mail-lf0-x231.google.com with SMTP id j78so110092867lfb.1
+ for <ath10k@lists.infradead.org>; Tue, 01 Mar 2016 02:32:17 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 09/11] ath10k: store txq in skb_cb
-Date: Tue,  1 Mar 2016 11:32:54 +0100
-Message-Id: <1456828376-2795-10-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 06/11] ath10k: add new htt message generation/parsing logic
+Date: Tue,  1 Mar 2016 11:32:51 +0100
+Message-Id: <1456828376-2795-7-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1456828376-2795-1-git-send-email-michal.kazior@tieto.com>
 References: <1453384006-31907-1-git-send-email-michal.kazior@tieto.com>
  <1456828376-2795-1-git-send-email-michal.kazior@tieto.com>
@@ -28,105 +28,315 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This will be necessary for later.
+This merely adds some parsing, generation and
+sanity checks with placeholders for real
+code/functionality to be added later.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h |  1 +
- drivers/net/wireless/ath/ath10k/mac.c  | 19 +++++++++++++++++--
- 2 files changed, 18 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h    |   5 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 198 ++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  53 +++++++++
+ 3 files changed, 255 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 7df35628ca35..89f789f3e5b4 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -98,6 +98,7 @@ struct ath10k_skb_cb {
- 	u8 eid;
- 	u16 msdu_id;
- 	struct ieee80211_vif *vif;
-+	struct ieee80211_txq *txq;
- } __packed;
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index cb6d4fd687da..65dcd22f31df 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1752,6 +1752,11 @@ int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
+ 				u8 max_subfrms_ampdu,
+ 				u8 max_subfrms_amsdu);
+ void ath10k_htt_hif_tx_complete(struct ath10k *ar, struct sk_buff *skb);
++int ath10k_htt_tx_fetch_resp(struct ath10k *ar,
++			     __le32 token,
++			     __le16 fetch_seq_num,
++			     struct htt_tx_fetch_record *records,
++			     size_t num_records);
  
- struct ath10k_skb_rxcb {
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 900c64b65b43..8d02d53fdc2c 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3307,6 +3307,7 @@ static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar,
- 
- static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
- 				    struct ieee80211_vif *vif,
-+				    struct ieee80211_txq *txq,
- 				    struct sk_buff *skb)
- {
- 	struct ieee80211_hdr *hdr = (void *)skb->data;
-@@ -3323,6 +3324,7 @@ static void ath10k_mac_tx_h_fill_cb(struct ath10k *ar,
- 		cb->flags |= ATH10K_SKB_F_QOS;
- 
- 	cb->vif = vif;
-+	cb->txq = txq;
+ void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt,
+ 			       bool is_mgmt);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index cc957a625605..be7dc88b3316 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1982,6 +1982,198 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 	tasklet_schedule(&htt->rx_replenish_task);
  }
  
- bool ath10k_mac_tx_frm_has_freq(struct ath10k *ar)
-@@ -3633,6 +3635,9 @@ static void ath10k_mac_txq_init(struct ieee80211_txq *txq)
- static void ath10k_mac_txq_unref(struct ath10k *ar, struct ieee80211_txq *txq)
- {
- 	struct ath10k_txq *artxq = (void *)txq->drv_priv;
-+	struct ath10k_skb_cb *cb;
-+	struct sk_buff *msdu;
-+	int msdu_id;
- 
- 	if (!txq)
- 		return;
-@@ -3641,6 +3646,14 @@ static void ath10k_mac_txq_unref(struct ath10k *ar, struct ieee80211_txq *txq)
- 	if (!list_empty(&artxq->list))
- 		list_del_init(&artxq->list);
- 	spin_unlock_bh(&ar->txqs_lock);
++static void ath10k_htt_rx_tx_fetch_resp_id_confirm(struct ath10k *ar,
++						   const __le32 *resp_ids,
++						   int num_resp_ids)
++{
++	int i;
++	u32 resp_id;
 +
-+	spin_lock_bh(&ar->htt.tx_lock);
-+	idr_for_each_entry(&ar->htt.pending_tx, msdu, msdu_id) {
-+		cb = ATH10K_SKB_CB(msdu);
-+		if (cb->txq == txq)
-+			cb->txq = NULL;
++	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx fetch confirm num_resp_ids %d\n",
++		   num_resp_ids);
++
++	for (i = 0; i < num_resp_ids; i++) {
++		resp_id = le32_to_cpu(resp_ids[i]);
++
++		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx fetch confirm resp_id %u\n",
++			   resp_id);
++
++		/* TODO: free resp_id */
 +	}
-+	spin_unlock_bh(&ar->htt.tx_lock);
++}
++
++static void ath10k_htt_rx_tx_fetch_ind(struct ath10k *ar, struct sk_buff *skb)
++{
++	struct htt_resp *resp = (struct htt_resp *)skb->data;
++	struct htt_tx_fetch_record *record;
++	size_t len;
++	size_t max_num_bytes;
++	size_t max_num_msdus;
++	const __le32 *resp_ids;
++	u16 num_records;
++	u16 num_resp_ids;
++	u16 peer_id;
++	u8 tid;
++	int i;
++
++	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx fetch ind\n");
++
++	len = sizeof(resp->hdr) + sizeof(resp->tx_fetch_ind);
++	if (unlikely(skb->len < len)) {
++		ath10k_warn(ar, "received corrupted tx_fetch_ind event: buffer too short\n");
++		return;
++	}
++
++	num_records = le16_to_cpu(resp->tx_fetch_ind.num_records);
++	num_resp_ids = le16_to_cpu(resp->tx_fetch_ind.num_resp_ids);
++
++	len += sizeof(resp->tx_fetch_ind.records[0]) * num_records;
++	len += sizeof(resp->tx_fetch_ind.resp_ids[0]) * num_resp_ids;
++
++	if (unlikely(skb->len < len)) {
++		ath10k_warn(ar, "received corrupted tx_fetch_ind event: too many records/resp_ids\n");
++		return;
++	}
++
++	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx fetch ind num records %hu num resps %hu seq %hu\n",
++		   num_records, num_resp_ids,
++		   le16_to_cpu(resp->tx_fetch_ind.fetch_seq_num));
++
++	/* TODO: runtime sanity checks */
++
++	for (i = 0; i < num_records; i++) {
++		record = &resp->tx_fetch_ind.records[i];
++		peer_id = MS(le16_to_cpu(record->info),
++			     HTT_TX_FETCH_RECORD_INFO_PEER_ID);
++		tid = MS(le16_to_cpu(record->info),
++			 HTT_TX_FETCH_RECORD_INFO_TID);
++		max_num_msdus = le16_to_cpu(record->num_msdus);
++		max_num_bytes = le32_to_cpu(record->num_bytes);
++
++		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx fetch record %i peer_id %hu tid %hhu msdus %zu bytes %zu\n",
++			   i, peer_id, tid, max_num_msdus, max_num_bytes);
++
++		if (unlikely(peer_id >= ar->htt.tx_q_state.num_peers) ||
++		    unlikely(tid >= ar->htt.tx_q_state.num_tids)) {
++			ath10k_warn(ar, "received out of range peer_id %hu tid %hhu\n",
++				    peer_id, tid);
++			continue;
++		}
++
++		/* TODO: dequeue and submit tx to device */
++	}
++
++	resp_ids = ath10k_htt_get_tx_fetch_ind_resp_ids(&resp->tx_fetch_ind);
++	ath10k_htt_rx_tx_fetch_resp_id_confirm(ar, resp_ids, num_resp_ids);
++
++	/* TODO: generate and send fetch response to device */
++}
++
++static void ath10k_htt_rx_tx_fetch_confirm(struct ath10k *ar,
++					   struct sk_buff *skb)
++{
++	const struct htt_resp *resp = (void *)skb->data;
++	size_t len;
++	int num_resp_ids;
++
++	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx fetch confirm\n");
++
++	len = sizeof(resp->hdr) + sizeof(resp->tx_fetch_confirm);
++	if (unlikely(skb->len < len)) {
++		ath10k_warn(ar, "received corrupted tx_fetch_confirm event: buffer too short\n");
++		return;
++	}
++
++	num_resp_ids = le16_to_cpu(resp->tx_fetch_confirm.num_resp_ids);
++	len += sizeof(resp->tx_fetch_confirm.resp_ids[0]) * num_resp_ids;
++
++	if (unlikely(skb->len < len)) {
++		ath10k_warn(ar, "received corrupted tx_fetch_confirm event: resp_ids buffer overflow\n");
++		return;
++	}
++
++	ath10k_htt_rx_tx_fetch_resp_id_confirm(ar,
++					       resp->tx_fetch_confirm.resp_ids,
++					       num_resp_ids);
++}
++
++static void ath10k_htt_rx_tx_mode_switch_ind(struct ath10k *ar,
++					     struct sk_buff *skb)
++{
++	const struct htt_resp *resp = (void *)skb->data;
++	const struct htt_tx_mode_switch_record *record;
++	size_t len;
++	size_t num_records;
++	enum htt_tx_mode_switch_mode mode;
++	bool enable;
++	u16 info0;
++	u16 info1;
++	u16 threshold;
++	u16 peer_id;
++	u8 tid;
++	int i;
++
++	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx tx mode switch ind\n");
++
++	len = sizeof(resp->hdr) + sizeof(resp->tx_mode_switch_ind);
++	if (unlikely(skb->len < len)) {
++		ath10k_warn(ar, "received corrupted tx_mode_switch_ind event: buffer too short\n");
++		return;
++	}
++
++	info0 = le16_to_cpu(resp->tx_mode_switch_ind.info0);
++	info1 = le16_to_cpu(resp->tx_mode_switch_ind.info1);
++
++	enable = !!(info0 & HTT_TX_MODE_SWITCH_IND_INFO0_ENABLE);
++	num_records = MS(info0, HTT_TX_MODE_SWITCH_IND_INFO1_THRESHOLD);
++	mode = MS(info1, HTT_TX_MODE_SWITCH_IND_INFO1_MODE);
++	threshold = MS(info1, HTT_TX_MODE_SWITCH_IND_INFO1_THRESHOLD);
++
++	ath10k_dbg(ar, ATH10K_DBG_HTT,
++		   "htt rx tx mode switch ind info0 0x%04hx info1 0x%04hx enable %d num records %zd mode %d threshold %hu\n",
++		   info0, info1, enable, num_records, mode, threshold);
++
++	len += sizeof(resp->tx_mode_switch_ind.records[0]) * num_records;
++
++	if (unlikely(skb->len < len)) {
++		ath10k_warn(ar, "received corrupted tx_mode_switch_mode_ind event: too many records\n");
++		return;
++	}
++
++	switch (mode) {
++	case HTT_TX_MODE_SWITCH_PUSH:
++	case HTT_TX_MODE_SWITCH_PUSH_PULL:
++		break;
++	default:
++		ath10k_warn(ar, "received invalid tx_mode_switch_mode_ind mode %d, ignoring\n",
++			    mode);
++		return;
++	}
++
++	if (!enable)
++		return;
++
++	/* TODO: apply configuration */
++
++	for (i = 0; i < num_records; i++) {
++		record = &resp->tx_mode_switch_ind.records[i];
++		info0 = le16_to_cpu(record->info0);
++		peer_id = MS(info0, HTT_TX_MODE_SWITCH_RECORD_INFO0_PEER_ID);
++		tid = MS(info0, HTT_TX_MODE_SWITCH_RECORD_INFO0_TID);
++
++		if (unlikely(peer_id >= ar->htt.tx_q_state.num_peers) ||
++		    unlikely(tid >= ar->htt.tx_q_state.num_tids)) {
++			ath10k_warn(ar, "received out of range peer_id %hu tid %hhu\n",
++				    peer_id, tid);
++			continue;
++		}
++
++		/* TODO: apply configuration */
++	}
++
++	/* TODO: apply configuration */
++}
++
+ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct ath10k_htt *htt = &ar->htt;
+@@ -2124,9 +2316,13 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 	case HTT_T2H_MSG_TYPE_AGGR_CONF:
+ 		break;
+ 	case HTT_T2H_MSG_TYPE_TX_FETCH_IND:
++		ath10k_htt_rx_tx_fetch_ind(ar, skb);
++		break;
+ 	case HTT_T2H_MSG_TYPE_TX_FETCH_CONFIRM:
++		ath10k_htt_rx_tx_fetch_confirm(ar, skb);
++		break;
+ 	case HTT_T2H_MSG_TYPE_TX_MODE_SWITCH_IND:
+-		/* TODO: Implement pull-push logic */
++		ath10k_htt_rx_tx_mode_switch_ind(ar, skb);
+ 		break;
+ 	case HTT_T2H_MSG_TYPE_EN_STATS:
+ 	default:
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 860661d3812f..225f0561b3fd 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -526,6 +526,59 @@ int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
+ 	return 0;
  }
  
- static bool ath10k_mac_tx_can_push(struct ieee80211_hw *hw,
-@@ -3679,7 +3692,7 @@ static int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
- 		return -ENOENT;
- 	}
- 
--	ath10k_mac_tx_h_fill_cb(ar, vif, skb);
-+	ath10k_mac_tx_h_fill_cb(ar, vif, txq, skb);
- 
- 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
- 	txpath = ath10k_mac_tx_h_get_txpath(ar, skb, txmode);
-@@ -3909,6 +3922,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
++int ath10k_htt_tx_fetch_resp(struct ath10k *ar,
++			     __le32 token,
++			     __le16 fetch_seq_num,
++			     struct htt_tx_fetch_record *records,
++			     size_t num_records)
++{
++	struct sk_buff *skb;
++	struct htt_cmd *cmd;
++	u16 resp_id;
++	int len = 0;
++	int ret;
++
++	len += sizeof(cmd->hdr);
++	len += sizeof(cmd->tx_fetch_resp);
++	len += sizeof(cmd->tx_fetch_resp.records[0]) * num_records;
++
++	skb = ath10k_htc_alloc_skb(ar, len);
++	if (!skb)
++		return -ENOMEM;
++
++	resp_id = 0; /* TODO: allocate resp_id */
++	ret = 0;
++	if (ret)
++		goto err_free_skb;
++
++	skb_put(skb, len);
++	cmd = (struct htt_cmd *)skb->data;
++	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_TX_FETCH_RESP;
++	cmd->tx_fetch_resp.resp_id = cpu_to_le16(resp_id);
++	cmd->tx_fetch_resp.fetch_seq_num = fetch_seq_num;
++	cmd->tx_fetch_resp.num_records = cpu_to_le16(num_records);
++	cmd->tx_fetch_resp.token = token;
++
++	memcpy(cmd->tx_fetch_resp.records, records,
++	       sizeof(records[0]) * num_records);
++
++	ret = ath10k_htc_send(&ar->htc, ar->htt.eid, skb);
++	if (ret) {
++		ath10k_warn(ar, "failed to submit htc command: %d\n", ret);
++		goto err_free_resp_id;
++	}
++
++	return 0;
++
++err_free_resp_id:
++	(void)resp_id; /* TODO: free resp_id */
++
++err_free_skb:
++	dev_kfree_skb_any(skb);
++
++	return ret;
++}
++
+ static u8 ath10k_htt_tx_get_vdev_id(struct ath10k *ar, struct sk_buff *skb)
+ {
  	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
- 	struct ieee80211_vif *vif = info->control.vif;
- 	struct ieee80211_sta *sta = control->sta;
-+	struct ieee80211_txq *txq = NULL;
- 	struct ieee80211_hdr *hdr = (void *)skb->data;
- 	enum ath10k_hw_txrx_mode txmode;
- 	enum ath10k_mac_tx_path txpath;
-@@ -3917,7 +3931,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
- 	bool is_presp;
- 	int ret;
- 
--	ath10k_mac_tx_h_fill_cb(ar, vif, skb);
-+	ath10k_mac_tx_h_fill_cb(ar, vif, txq, skb);
- 
- 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
- 	txpath = ath10k_mac_tx_h_get_txpath(ar, skb, txmode);
-@@ -4985,6 +4999,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 	spin_unlock_bh(&ar->data_lock);
- 
- 	ath10k_peer_cleanup(ar, arvif->vdev_id);
-+	ath10k_mac_txq_unref(ar, vif->txq);
- 
- 	if (vif->type == NL80211_IFTYPE_MONITOR) {
- 		ar->monitor_arvif = NULL;
 -- 
 2.1.4
 
