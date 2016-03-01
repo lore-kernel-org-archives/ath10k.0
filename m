@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x232.google.com ([2a00:1450:4010:c07::232])
+Received: from mail-lf0-x22d.google.com ([2a00:1450:4010:c07::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aahbc-0000Sr-SC
- for ath10k@lists.infradead.org; Tue, 01 Mar 2016 10:32:45 +0000
-Received: by mail-lf0-x232.google.com with SMTP id j78so110093672lfb.1
- for <ath10k@lists.infradead.org>; Tue, 01 Mar 2016 02:32:20 -0800 (PST)
+ id 1aahbW-0000R5-SC
+ for ath10k@lists.infradead.org; Tue, 01 Mar 2016 10:32:35 +0000
+Received: by mail-lf0-x22d.google.com with SMTP id l83so62920030lfd.3
+ for <ath10k@lists.infradead.org>; Tue, 01 Mar 2016 02:32:14 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 08/11] ath10k: implement updating shared htt txq state
-Date: Tue,  1 Mar 2016 11:32:53 +0100
-Message-Id: <1456828376-2795-9-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 04/11] ath10k: maintain peer_id for each sta and vif
+Date: Tue,  1 Mar 2016 11:32:49 +0100
+Message-Id: <1456828376-2795-5-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1456828376-2795-1-git-send-email-michal.kazior@tieto.com>
 References: <1453384006-31907-1-git-send-email-michal.kazior@tieto.com>
  <1456828376-2795-1-git-send-email-michal.kazior@tieto.com>
@@ -28,185 +28,112 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Firmware 10.4.3 onwards can support a pull-push Tx
-model where it shares a Tx queue state with the
-host.
+The 10.4.3 firmware with congestion control
+guarantees that each peer has only a single
+peer_id mapping.
 
-The host updates the DMA region it pointed to
-during HTT setup whenever number of software
-queued from (on host) changes. Based on this
-information firmware issues fetch requests to the
-host telling the host how many frames from a list
-of given stations/tids should be submitted to the
-firmware.
-
-The code won't be called because not all
-appropriate HTT events are processed yet.
+The 1:1 mapping isn't the case for older firmwares
+(e.g. 10.4.1, 10.2, 10.1) but it should not
+matter. This 1:1 mapping is going to be only used
+by future code which inherently (flow-wise) is for
+10.4.3.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    |   3 +
- drivers/net/wireless/ath/ath10k/htt_tx.c | 104 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/mac.c    |   3 +
- 3 files changed, 110 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.h |  2 ++
+ drivers/net/wireless/ath/ath10k/mac.c  | 38 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 40 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 65dcd22f31df..b1e40f44e76b 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1667,6 +1667,7 @@ struct ath10k_htt {
- 	} txbuf;
- 
- 	struct {
-+		bool enabled;
- 		struct htt_q_state *vaddr;
- 		dma_addr_t paddr;
- 		u16 num_peers;
-@@ -1758,6 +1759,8 @@ int ath10k_htt_tx_fetch_resp(struct ath10k *ar,
- 			     struct htt_tx_fetch_record *records,
- 			     size_t num_records);
- 
-+void ath10k_htt_tx_txq_update(struct ieee80211_hw *hw,
-+			      struct ieee80211_txq *txq);
- void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt,
- 			       bool is_mgmt);
- int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt,
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 225f0561b3fd..6643be8692b5 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -22,6 +22,110 @@
- #include "txrx.h"
- #include "debug.h"
- 
-+static u8 ath10k_htt_tx_txq_calc_size(size_t count)
-+{
-+	int exp;
-+	int factor;
-+
-+	exp = 0;
-+	factor = count >> 7;
-+
-+	while (factor >= 64 && exp < 4) {
-+		factor >>= 3;
-+		exp++;
-+	}
-+
-+	if (exp == 4)
-+		return 0xff;
-+
-+	if (count > 0)
-+		factor = max(1, factor);
-+
-+	return SM(exp, HTT_TX_Q_STATE_ENTRY_EXP) |
-+	       SM(factor, HTT_TX_Q_STATE_ENTRY_FACTOR);
-+}
-+
-+static void __ath10k_htt_tx_txq_recalc(struct ieee80211_hw *hw,
-+				       struct ieee80211_txq *txq)
-+{
-+	struct ath10k *ar = hw->priv;
-+	struct ath10k_sta *arsta = (void *)txq->sta->drv_priv;
-+	struct ath10k_vif *arvif = (void *)txq->vif->drv_priv;
-+	unsigned long frame_cnt;
-+	unsigned long byte_cnt;
-+	int idx;
-+	u32 bit;
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index a62b62a62266..523585e85f35 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -313,6 +313,7 @@ struct ath10k_sta {
+ 	u32 bw;
+ 	u32 nss;
+ 	u32 smps;
 +	u16 peer_id;
-+	u8 tid;
-+	u8 count;
-+
-+	lockdep_assert_held(&ar->htt.tx_lock);
-+
-+	if (!ar->htt.tx_q_state.enabled)
-+		return;
-+
-+	if (txq->sta)
-+		peer_id = arsta->peer_id;
-+	else
-+		peer_id = arvif->peer_id;
-+
-+	tid = txq->tid;
-+	bit = BIT(peer_id % 32);
-+	idx = peer_id / 32;
-+
-+	ieee80211_txq_get_depth(txq, &frame_cnt, &byte_cnt);
-+	count = ath10k_htt_tx_txq_calc_size(byte_cnt);
-+
-+	if (unlikely(peer_id >= ar->htt.tx_q_state.num_peers) ||
-+	    unlikely(tid >= ar->htt.tx_q_state.num_tids)) {
-+		ath10k_warn(ar, "refusing to update txq for peer_id %hu tid %hhu due to out of bounds\n",
-+			    peer_id, tid);
-+		return;
-+	}
-+
-+	ar->htt.tx_q_state.vaddr->count[tid][peer_id] = count;
-+	ar->htt.tx_q_state.vaddr->map[tid][idx] &= ~bit;
-+	ar->htt.tx_q_state.vaddr->map[tid][idx] |= count ? bit : 0;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx txq state update peer_id %hu tid %hhu count %hhu\n",
-+		   peer_id, tid, count);
-+}
-+
-+static void __ath10k_htt_tx_txq_sync(struct ath10k *ar)
-+{
-+	u32 seq;
-+	size_t size;
-+
-+	lockdep_assert_held(&ar->htt.tx_lock);
-+
-+	if (!ar->htt.tx_q_state.enabled)
-+		return;
-+
-+	seq = le32_to_cpu(ar->htt.tx_q_state.vaddr->seq);
-+	seq++;
-+	ar->htt.tx_q_state.vaddr->seq = cpu_to_le32(seq);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx txq state update commit seq %u\n",
-+		   seq);
-+
-+	size = sizeof(*ar->htt.tx_q_state.vaddr);
-+	dma_sync_single_for_device(ar->dev,
-+				   ar->htt.tx_q_state.paddr,
-+				   size,
-+				   DMA_TO_DEVICE);
-+}
-+
-+void ath10k_htt_tx_txq_update(struct ieee80211_hw *hw,
-+			      struct ieee80211_txq *txq)
-+{
-+	struct ath10k *ar = hw->priv;
-+
-+	spin_lock_bh(&ar->htt.tx_lock);
-+	__ath10k_htt_tx_txq_recalc(hw, txq);
-+	__ath10k_htt_tx_txq_sync(ar);
-+	spin_unlock_bh(&ar->htt.tx_lock);
-+}
-+
- void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt,
- 			       bool is_mgmt)
- {
+ 
+ 	struct work_struct update_wk;
+ 
+@@ -335,6 +336,7 @@ struct ath10k_vif {
+ 	struct list_head list;
+ 
+ 	u32 vdev_id;
++	u16 peer_id;
+ 	enum wmi_vdev_type vdev_type;
+ 	enum wmi_vdev_subtype vdev_subtype;
+ 	u32 beacon_interval;
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 74a42e3465e4..900c64b65b43 100644
+index 140ad250ea69..72b8f177445d 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3725,6 +3725,7 @@ void ath10k_mac_tx_push_pending(struct ath10k *ar)
+@@ -4421,6 +4421,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ {
+ 	struct ath10k *ar = hw->priv;
+ 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
++	struct ath10k_peer *peer;
+ 	enum wmi_sta_powersave_param param;
+ 	int ret = 0;
+ 	u32 value;
+@@ -4620,6 +4621,24 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 				    arvif->vdev_id, ret);
+ 			goto err_vdev_delete;
+ 		}
++
++		spin_lock_bh(&ar->data_lock);
++
++		peer = ath10k_peer_find(ar, arvif->vdev_id, vif->addr);
++		if (!peer) {
++			ath10k_warn(ar, "failed to lookup peer %pM on vdev %i\n",
++				    vif->addr, arvif->vdev_id);
++			spin_unlock_bh(&ar->data_lock);
++			ret = -ENOENT;
++			goto err_peer_delete;
++		}
++
++		arvif->peer_id = find_first_bit(peer->peer_ids,
++						ATH10K_MAX_NUM_PEER_IDS);
++
++		spin_unlock_bh(&ar->data_lock);
++	} else {
++		arvif->peer_id = HTT_INVALID_PEERID;
+ 	}
+ 
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+@@ -5501,6 +5520,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 	struct ath10k *ar = hw->priv;
+ 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+ 	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
++	struct ath10k_peer *peer;
+ 	int ret = 0;
+ 
+ 	if (old_state == IEEE80211_STA_NOTEXIST &&
+@@ -5551,6 +5571,24 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 			goto exit;
  		}
  
- 		list_del_init(&artxq->list);
-+		ath10k_htt_tx_txq_update(hw, txq);
- 
- 		if (artxq == last || (ret < 0 && ret != -ENOENT)) {
- 			if (ret != -ENOENT)
-@@ -3967,6 +3968,8 @@ static void ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
- 
- 		tasklet_schedule(&ar->htt.txrx_compl_task);
- 	}
++		spin_lock_bh(&ar->data_lock);
 +
-+	ath10k_htt_tx_txq_update(hw, txq);
- }
++		peer = ath10k_peer_find(ar, arvif->vdev_id, sta->addr);
++		if (!peer) {
++			ath10k_warn(ar, "failed to lookup peer %pM on vdev %i\n",
++				    vif->addr, arvif->vdev_id);
++			spin_unlock_bh(&ar->data_lock);
++			ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
++			ath10k_mac_dec_num_stations(arvif, sta);
++			ret = -ENOENT;
++			goto exit;
++		}
++
++		arsta->peer_id = find_first_bit(peer->peer_ids,
++						ATH10K_MAX_NUM_PEER_IDS);
++
++		spin_unlock_bh(&ar->data_lock);
++
+ 		if (!sta->tdls)
+ 			goto exit;
  
- /* Must not be called with conf_mutex held as workers can use that also. */
 -- 
 2.1.4
 
