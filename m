@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from caladan.dune.hu ([78.24.191.180] helo=arrakis.dune.hu)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aakoV-0000KS-Rz
- for ath10k@lists.infradead.org; Tue, 01 Mar 2016 13:58:13 +0000
-Subject: Re: [PATCH] ath10k: Fix mgmt tx status for 10.4.3 firmware.
-References: <1456782654-24723-1-git-send-email-greearb@candelatech.com>
-From: Felix Fietkau <nbd@openwrt.org>
-Message-ID: <56D56052.2010007@openwrt.org>
-Date: Tue, 1 Mar 2016 10:26:42 +0100
+ id 1aaoVm-0005Qk-HT
+ for ath10k@lists.infradead.org; Tue, 01 Mar 2016 17:55:07 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH v6] ath10k: set MAC timestamp in management Rx frame
+Date: Tue, 1 Mar 2016 09:52:49 -0800
+Message-ID: <5c9a7c5d47974cf3e72cd114e140027e2a4bbdab.1456854314.git.poh@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1456782654-24723-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +20,108 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-On 2016-02-29 22:50, greearb@candelatech.com wrote:
-> From: Ben Greear <greearb@candelatech.com>
-> 
-> When testing a 10.4.3 firmware in station mode, I notice that
-> when the AP is powered down, the ath10k does not notice AP is gone
-> because mgt frames get tx status of 3, which is not handled.
-> 
-> It appears that status 3 means something similar to failed-retry.
-> 
-> Treating it thus lets the station disconnect properly.
-> 
-> Tested against a non-stock 10.4.3 firmware, but likely upstream
-> firmware acts similarly in this case.
-> 
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> ---
-> 
-> This patch is against a heavily patched tree based on 4.4, hopefully
-> it can be applied to upstream code w/out too much trouble.
-> 
-> Someone should verify this on stock 10.4-ish firmware before applying.
-> 
->  drivers/net/wireless/ath/ath10k/htt.h    |  4 +++-
->  drivers/net/wireless/ath/ath10k/htt_rx.c | 11 +++++++++--
->  2 files changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-> index c31a31f..de663a6 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt.h
-> +++ b/drivers/net/wireless/ath/ath10k/htt.h
-> @@ -309,7 +309,9 @@ struct htt_mgmt_tx_desc {
->  enum htt_mgmt_tx_status {
->  	HTT_MGMT_TX_STATUS_OK    = 0,
->  	HTT_MGMT_TX_STATUS_RETRY = 1,
-> -	HTT_MGMT_TX_STATUS_DROP  = 2
-> +	HTT_MGMT_TX_STATUS_DROP  = 2,
-> +	HTT_MGMT_TX_STATUS_TXFILT = 3 /* Seems to be logically similar to
-> +					 RETRY failure. */
-In that case the driver should probably set IEEE80211_TX_STAT_TX_FILTERED
+Check and set Rx MAC timestamp when firmware indicates it.
+Firmware adds it in Rx beacon frame only at this moment.
+Driver and mac80211 may utilize it to detect such clockdrift
+or beacon collision and use the result for beacon collision
+avoidance.
 
-- Felix
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+
+v2:
+ - fix kbuild test robot warning, left shift count >= width of type,
+   at __le32_to_cpu(arg.ext_info.rx_mac_timestamp_u32) << 32
+v3:
+ - correct ext_info to start 4-byte aligned
+ - make struct wmi_mgmt_rx_ext_info 4-byte aligned to comply FW's intention
+v4:
+ - fix endianness warnings, restricted __le32 degrades to integer
+v5:
+ - use ALIGN for better read
+v6:
+ - use __le64 instead of 2 __le32 variables to simplify substitution
+
+ drivers/net/wireless/ath/ath10k/wmi.c | 13 +++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h |  7 +++++++
+ 2 files changed, 20 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 1ce6742..20d5e35 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2167,8 +2167,10 @@ static int ath10k_wmi_op_pull_mgmt_rx_ev(struct ath10k *ar, struct sk_buff *skb,
+ 	struct wmi_mgmt_rx_event_v1 *ev_v1;
+ 	struct wmi_mgmt_rx_event_v2 *ev_v2;
+ 	struct wmi_mgmt_rx_hdr_v1 *ev_hdr;
++	struct wmi_mgmt_rx_ext_info *ext_info;
+ 	size_t pull_len;
+ 	u32 msdu_len;
++	u32 len;
+ 
+ 	if (test_bit(ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX, ar->fw_features)) {
+ 		ev_v2 = (struct wmi_mgmt_rx_event_v2 *)skb->data;
+@@ -2195,6 +2197,12 @@ static int ath10k_wmi_op_pull_mgmt_rx_ev(struct ath10k *ar, struct sk_buff *skb,
+ 	if (skb->len < msdu_len)
+ 		return -EPROTO;
+ 
++	if (le32_to_cpu(arg->status) & WMI_RX_STATUS_EXT_INFO) {
++		len = ALIGN(le32_to_cpu(arg->buf_len), 4);
++		ext_info = (struct wmi_mgmt_rx_ext_info *)(skb->data + len);
++		memcpy(&arg->ext_info, ext_info,
++		       sizeof(struct wmi_mgmt_rx_ext_info));
++	}
+ 	/* the WMI buffer might've ended up being padded to 4 bytes due to HTC
+ 	 * trailer with credit update. Trim the excess garbage.
+ 	 */
+@@ -2281,6 +2289,11 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	if (rx_status & WMI_RX_STATUS_ERR_MIC)
+ 		status->flag |= RX_FLAG_MMIC_ERROR;
+ 
++	if (rx_status & WMI_RX_STATUS_EXT_INFO) {
++		status->mactime =
++			__le64_to_cpu(arg.ext_info.rx_mac_timestamp);
++		status->flag |= RX_FLAG_MACTIME_END;
++	}
+ 	/* Hardware can Rx CCK rates on 5GHz. In that case phy_mode is set to
+ 	 * MODE_11B. This means phy_mode is not a reliable source for the band
+ 	 * of mgmt rx.
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 4d3cbc4..bb42f7a 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -3037,11 +3037,17 @@ struct wmi_10_4_mgmt_rx_event {
+ 	u8 buf[0];
+ } __packed;
+ 
++struct wmi_mgmt_rx_ext_info {
++	__le64 rx_mac_timestamp;
++} __packed __aligned(4);
++
+ #define WMI_RX_STATUS_OK			0x00
+ #define WMI_RX_STATUS_ERR_CRC			0x01
+ #define WMI_RX_STATUS_ERR_DECRYPT		0x08
+ #define WMI_RX_STATUS_ERR_MIC			0x10
+ #define WMI_RX_STATUS_ERR_KEY_CACHE_MISS	0x20
++/* Extension data at the end of mgmt frame */
++#define WMI_RX_STATUS_EXT_INFO		0x40
+ 
+ #define PHY_ERROR_GEN_SPECTRAL_SCAN		0x26
+ #define PHY_ERROR_GEN_FALSE_RADAR_EXT		0x24
+@@ -6116,6 +6122,7 @@ struct wmi_mgmt_rx_ev_arg {
+ 	__le32 phy_mode;
+ 	__le32 buf_len;
+ 	__le32 status; /* %WMI_RX_STATUS_ */
++	struct wmi_mgmt_rx_ext_info ext_info;
+ };
+ 
+ struct wmi_ch_info_ev_arg {
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
