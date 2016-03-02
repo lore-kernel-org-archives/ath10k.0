@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ab7Up-000419-8R
- for ath10k@lists.infradead.org; Wed, 02 Mar 2016 14:11:23 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH 2/2] ath10k: Remove debugfs support for Per STA total rx
- duration
-Date: Wed, 2 Mar 2016 19:40:33 +0530
-Message-ID: <1456927833-32231-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1ab810-0006hQ-U1
+ for ath10k@lists.infradead.org; Wed, 02 Mar 2016 14:44:39 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix firmware assert in monitor mode
+Date: Wed, 2 Mar 2016 20:13:52 +0530
+Message-ID: <1456929832-6147-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,71 +21,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+commit 166de3f1895d ("ath10k: remove supported chain mask") had revealed
+an issue on monitor mode. Configuring NSS upon monitor interface
+creation is causing target assert in all qca9888x and qca6174 firmware.
+Firmware assert issue can be reproduced by below sequence even after
+reverting commit 166de3f1895d ("ath10k: remove supported chain mask").
 
-cfg80211/nl80211 interface changes for per STA total rx-duration and
-very basic 'ath10k_sta_statistics'  mac80211 callback is implemented
-to extend support for per station statistics from the driver.
+ip link set wlan0 down
+iw wlan0 set type monitor
+iw phy0 set antenna 7
+ip link set wlan0 up
 
-Also provision in 'iw dev wlan#N station dump' to parse rx-duration
-is supported. So its safer to remove the debugfs entry for per STA
-rx-duration
+This issue is originally reported on qca9888 with 10.1 firmware.
 
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Fixes: 5572a95b4b ("ath10k: apply chainmask settings to vdev on creation")
+Reported-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
-Dependencies:
+ drivers/net/wireless/ath/ath10k/mac.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-1. cfg80211/nl80211: Add support for NL80211_STA_INFO_RX_DURATION
-2. iw: Add support for NL80211_STA_INFO_RX_DURATION netlink.
-3. ath10k: Add support for ath10k_sta_statistics support
-
- drivers/net/wireless/ath/ath10k/debugfs_sta.c |   24 ------------------------
- 1 file changed, 24 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index 8502cdb..083f259 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -271,28 +271,6 @@ static const struct file_operations fops_delba = {
- 	.llseek = default_llseek,
- };
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 78999c9..c42866d 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4489,7 +4489,10 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		goto err_vdev_delete;
+ 	}
  
--static ssize_t ath10k_dbg_sta_read_rx_duration(struct file *file,
--					       char __user *user_buf,
--					       size_t count, loff_t *ppos)
--{
--	struct ieee80211_sta *sta = file->private_data;
--	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
--	char buf[100];
--	int len = 0;
--
--	len = scnprintf(buf, sizeof(buf),
--			"%llu usecs\n", arsta->rx_duration);
--
--	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
--}
--
--static const struct file_operations fops_rx_duration = {
--	.read = ath10k_dbg_sta_read_rx_duration,
--	.open = simple_open,
--	.owner = THIS_MODULE,
--	.llseek = default_llseek,
--};
--
- void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			    struct ieee80211_sta *sta, struct dentry *dir)
- {
-@@ -301,6 +279,4 @@ void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 	debugfs_create_file("addba", S_IWUSR, dir, sta, &fops_addba);
- 	debugfs_create_file("addba_resp", S_IWUSR, dir, sta, &fops_addba_resp);
- 	debugfs_create_file("delba", S_IWUSR, dir, sta, &fops_delba);
--	debugfs_create_file("rx_duration", S_IRUGO, dir, sta,
--			    &fops_rx_duration);
- }
+-	if (ar->cfg_tx_chainmask) {
++	/* Configuring number of spatial stream for monitor interface is causing
++	 * target assert in qca9888 and qca6174.
++	 */
++	if (ar->cfg_tx_chainmask && (vif->type != NL80211_IFTYPE_MONITOR)) {
+ 		u16 nss = get_nss_from_chainmask(ar->cfg_tx_chainmask);
+ 
+ 		vdev_param = ar->wmi.vdev_param->nss;
 -- 
-1.7.9.5
+2.7.2
 
 
 _______________________________________________
