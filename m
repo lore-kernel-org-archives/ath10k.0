@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ab7Su-0002AT-9J
- for ath10k@lists.infradead.org; Wed, 02 Mar 2016 14:09:24 +0000
+ id 1ab7UR-0003ux-G5
+ for ath10k@lists.infradead.org; Wed, 02 Mar 2016 14:11:01 +0000
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] cfg80211/nl80211: Add support for NL80211_STA_INFO_RX_DURATION
-Date: Wed, 2 Mar 2016 19:38:30 +0530
-Message-ID: <1456927710-32073-1-git-send-email-mohammed@qca.qualcomm.com>
+Subject: [PATCH 1/2] ath10k: Add support for ath10k_sta_statistics support
+Date: Wed, 2 Mar 2016 19:40:12 +0530
+Message-ID: <1456927812-32193-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,96 +20,89 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: mohammed@codeaurora.org, johannes@sipsolutions.net, kvalo@codeaurora.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Add support for new netlink attribute 'NL80211_STA_INFO_RX_DURATION'
-This flag will be set when drivers can fill rx_duration ( approximate
-total air time(usecs) for unicast data/management frames from the
-connected client) via 'drv_sta_statistics' callback
+Enable support for 'drv_sta_statistics' callback.
+Export rx_duration support if available to cfg80211/nl80211
 
-Also make sta_info flags 'filled' as 64 bit to accomodate for new
-per station stats. Extend 'PUT_SINFO' for supporting rx_duration
-field and any new per sta information in future
+This can also act as a placeholder for any new per STA stats support
 
 Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 ---
- include/net/cfg80211.h       |    5 ++++-
- include/uapi/linux/nl80211.h |    3 +++
- net/wireless/nl80211.c       |    3 ++-
- 3 files changed, 9 insertions(+), 2 deletions(-)
+Dependencies:
 
-diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index 9bcaaf7..b8bf024 100644
---- a/include/net/cfg80211.h
-+++ b/include/net/cfg80211.h
-@@ -1060,11 +1060,13 @@ struct cfg80211_tid_stats {
-  * @rx_beacon: number of beacons received from this peer
-  * @rx_beacon_signal_avg: signal strength average (in dBm) for beacons received
-  *	from this peer
-+ * @rx_duration: approximate total air time(usecs) for unicast data/management
-+ * 	frames from the connected client
-  * @pertid: per-TID statistics, see &struct cfg80211_tid_stats, using the last
-  *	(IEEE80211_NUM_TIDS) index for MSDUs not encapsulated in QoS-MPDUs.
-  */
- struct station_info {
--	u32 filled;
-+	u64 filled;
- 	u32 connected_time;
- 	u32 inactive_time;
- 	u64 rx_bytes;
-@@ -1103,6 +1105,7 @@ struct station_info {
- 	u32 expected_throughput;
+1. cfg80211/nl80211: Add support for NL80211_STA_INFO_RX_DURATION
+2. iw: Add support for NL80211_STA_INFO_RX_DURATION netlink
+ attribute
+
+ drivers/net/wireless/ath/ath10k/debug.h       |    4 ++++
+ drivers/net/wireless/ath/ath10k/debugfs_sta.c |   22 ++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/mac.c         |    1 +
+ 3 files changed, 27 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 6206edd..01c500f 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -155,6 +155,10 @@ ath10k_debug_get_new_fw_crash_data(struct ath10k *ar)
+ void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 			    struct ieee80211_sta *sta, struct dentry *dir);
+ void ath10k_sta_update_rx_duration(struct ath10k *ar, struct list_head *peer);
++void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
++			   struct ieee80211_sta *sta,
++			   struct station_info *sinfo);
++
+ #else
+ static inline void ath10k_sta_update_rx_duration(struct ath10k *ar,
+ 						 struct list_head *peer)
+diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+index 67ef75b..8502cdb 100644
+--- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
++++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+@@ -35,6 +35,28 @@ void ath10k_sta_update_rx_duration(struct ath10k *ar, struct list_head *head)
+ 	rcu_read_unlock();
+ }
  
- 	u64 rx_beacon;
-+	u64 rx_duration;
- 	u8 rx_beacon_signal_avg;
- 	struct cfg80211_tid_stats pertid[IEEE80211_NUM_TIDS + 1];
++void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
++			   struct ieee80211_sta *sta,
++			   struct station_info *sinfo)
++{
++	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
++	struct ath10k *ar = arsta->arvif->ar;
++
++	mutex_lock(&ar->conf_mutex);
++
++	if (ar->state != ATH10K_STATE_ON ||
++	    ar->state != ATH10K_STATE_RESTARTED)
++		goto out;
++
++	if (!test_bit(WMI_SERVICE_PEER_STATS, ar->wmi.svc_map))
++		goto out;
++
++	sinfo->rx_duration = arsta->rx_duration;
++	sinfo->filled |= 1ULL << NL80211_STA_INFO_RX_DURATION;
++out:
++	mutex_unlock(&ar->conf_mutex);
++}
++
+ static ssize_t ath10k_dbg_sta_read_aggr_mode(struct file *file,
+ 					     char __user *user_buf,
+ 					     size_t count, loff_t *ppos)
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index d5ef201..69a1dcf 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6852,6 +6852,7 @@ static const struct ieee80211_ops ath10k_ops = {
+ #endif
+ #ifdef CONFIG_MAC80211_DEBUGFS
+ 	.sta_add_debugfs		= ath10k_sta_add_debugfs,
++	.sta_statistics			= ath10k_sta_statistics,
+ #endif
  };
-diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index 5b7b5eb..1220a7b 100644
---- a/include/uapi/linux/nl80211.h
-+++ b/include/uapi/linux/nl80211.h
-@@ -2464,6 +2464,8 @@ enum nl80211_sta_bss_param {
-  *	TID+1 and the special TID 16 (i.e. value 17) is used for non-QoS frames;
-  *	each one of those is again nested with &enum nl80211_tid_stats
-  *	attributes carrying the actual values.
-+ * @NL80211_STA_INFO_RX_DURATION: approximate total air time(usecs) for unicast
-+ * 	data/management frames from the connected client
-  * @__NL80211_STA_INFO_AFTER_LAST: internal
-  * @NL80211_STA_INFO_MAX: highest possible station info attribute
-  */
-@@ -2500,6 +2502,7 @@ enum nl80211_sta_info {
- 	NL80211_STA_INFO_BEACON_RX,
- 	NL80211_STA_INFO_BEACON_SIGNAL_AVG,
- 	NL80211_STA_INFO_TID_STATS,
-+	NL80211_STA_INFO_RX_DURATION,
  
- 	/* keep last */
- 	__NL80211_STA_INFO_AFTER_LAST,
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index d4786f2..a81c016 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -3719,7 +3719,7 @@ static int nl80211_send_station(struct sk_buff *msg, u32 cmd, u32 portid,
- 		goto nla_put_failure;
- 
- #define PUT_SINFO(attr, memb, type) do {				\
--	if (sinfo->filled & BIT(NL80211_STA_INFO_ ## attr) &&		\
-+	if (sinfo->filled & (1ULL << NL80211_STA_INFO_ ## attr) &&	\
- 	    nla_put_ ## type(msg, NL80211_STA_INFO_ ## attr,		\
- 			     sinfo->memb))				\
- 		goto nla_put_failure;					\
-@@ -3745,6 +3745,7 @@ static int nl80211_send_station(struct sk_buff *msg, u32 cmd, u32 portid,
- 	PUT_SINFO(LLID, llid, u16);
- 	PUT_SINFO(PLID, plid, u16);
- 	PUT_SINFO(PLINK_STATE, plink_state, u8);
-+	PUT_SINFO(RX_DURATION, rx_duration, u64);
- 
- 	switch (rdev->wiphy.signal_type) {
- 	case CFG80211_SIGNAL_TYPE_MBM:
 -- 
 1.7.9.5
 
