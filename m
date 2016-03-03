@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1abVLE-00070w-4d
- for ath10k@lists.infradead.org; Thu, 03 Mar 2016 15:39:06 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: QCA6174 firmware crash in monitor mode
-Date: Thu, 3 Mar 2016 15:38:37 +0000
-Message-ID: <8737s7372f.fsf@kamboji.qca.qualcomm.com>
-References: <20160213063926.GA1767@darkstar>
-In-Reply-To: <20160213063926.GA1767@darkstar> (gloudon jamie's message of
- "Sat, 13 Feb 2016 02:39:26 -0400")
-Content-Language: en-US
-Content-ID: <9672CE8549A28B48800AA8C8109DADB5@qualcomm.com>
-MIME-Version: 1.0
+ id 1abVSl-0004g4-62
+ for ath10k@lists.infradead.org; Thu, 03 Mar 2016 15:46:52 +0000
+Message-ID: <1457019983.2044.29.camel@sipsolutions.net>
+Subject: Re: [PATCH] cfg80211/nl80211: Add support for
+ NL80211_STA_INFO_RX_DURATION
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 03 Mar 2016 16:46:23 +0100
+In-Reply-To: <1456927710-32073-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1456927710-32073-1-git-send-email-mohammed@qca.qualcomm.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +23,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "gloudon.jamie@gmail.com" <gloudon.jamie@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+Cc: mohammed@codeaurora.org, kvalo@codeaurora.org, ath10k@lists.infradead.org
 
-gloudon.jamie@gmail.com writes:
+On Wed, 2016-03-02 at 19:38 +0530, Mohammed Shafi Shajakhan wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> 
+> Add support for new netlink attribute 'NL80211_STA_INFO_RX_DURATION'
+> This flag will be set when drivers can fill rx_duration ( approximate
+> total air time(usecs) for unicast data/management frames from the
+> connected client) via 'drv_sta_statistics' callback
 
-> QCA6147 monitor mode stopped working ever since after kernel v4.3.
-> Here is the firmware crash log:
->
-> Feb 13 01:39:36 darkstar kernel: [   34.010363] ath10k_pci 0000:01:00.0: qca6174 hw2.1 target 0x05010000 chip_id 0x003405ff sub 168c:3344
-> Feb 13 01:39:36 darkstar kernel: [   34.010373] ath10k_pci 0000:01:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 0 testmode 0
-> Feb 13 01:39:36 darkstar kernel: [   34.012252] ath10k_pci 0000:01:00.0: firmware ver SW_RM.1.1.1-00157-QCARMSWPZ-1 api 5 features ignore-otp,no-4addr-pad crc32 10bf8e08
-> Feb 13 01:39:36 darkstar kernel: [   34.012291] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 cdb586cf
-> Feb 13 01:39:36 darkstar kernel: [   34.012301] ath10k_pci 0000:01:00.0: htt-ver 3.1 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
-> Feb 13 01:39:36 darkstar kernel: [   34.067918] ieee80211 phy0: Hardware restart was requested
->
-> Feb 13 01:39:36 darkstar kernel: [   34.010318] ath10k_pci 0000:01:00.0: firmware crashed! (uuid cb6fc88d-918d-4c7a-af69-15a713136bf7)
-> Feb 13 01:39:36 darkstar kernel: [   34.014330] ath10k_pci 0000:01:00.0: firmware register dump:
-> Feb 13 01:39:36 darkstar kernel: [   34.014340] ath10k_pci 0000:01:00.0: [00]: 0x05010000 0x00000000 0x0099987C 0x00000000
-> Feb 13 01:39:36 darkstar kernel: [   34.014349] ath10k_pci 0000:01:00.0: [04]: 0x00000000 0x00000000 0x00000000 0x00000000
+So, what's that useful for?
 
-Does this patch fix it?
+Are you really sure you mean "unicast"? What if the station is the AP?
+Why wouldn't multicast frames it transmitted be accounted for?
 
-ath10k: fix firmware assert in monitor mode
+> Also make sta_info flags 'filled' as 64 bit to accomodate for new
 
-https://patchwork.kernel.org/patch/8481281/
+typo: accommodate
 
--- 
-Kalle Valo
+johannes
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
