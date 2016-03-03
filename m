@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1abVnV-0007xU-OW
- for ath10k@lists.infradead.org; Thu, 03 Mar 2016 16:08:18 +0000
-Message-ID: <1457021271.2044.34.camel@sipsolutions.net>
+ id 1abVzt-0000DT-4b
+ for ath10k@lists.infradead.org; Thu, 03 Mar 2016 16:21:05 +0000
+Date: Thu, 3 Mar 2016 21:50:36 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
 Subject: Re: [PATCH] cfg80211/nl80211: Add support for
  NL80211_STA_INFO_RX_DURATION
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 03 Mar 2016 17:07:51 +0100
-In-Reply-To: <20160303160048.GA5243@atheros-ThinkPad-T61>
+Message-ID: <20160303162036.GB5243@atheros-ThinkPad-T61>
 References: <1456927710-32073-1-git-send-email-mohammed@qca.qualcomm.com>
  <1457019983.2044.29.camel@sipsolutions.net>
  <20160303160048.GA5243@atheros-ThinkPad-T61>
-Mime-Version: 1.0
+ <1457021271.2044.34.camel@sipsolutions.net>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1457021271.2044.34.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +23,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: linux-wireless@vger.kernel.org, kvalo@codeaurora.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-T24gVGh1LCAyMDE2LTAzLTAzIGF0IDIxOjMwICswNTMwLCBNb2hhbW1lZCBTaGFmaSBTaGFqYWto
-YW4gd3JvdGU6Cgo+IFtzaGFmaV0gVGhpcyBpcyBwYXJ0IG9mIHRoZSBQZXIgU3RhdGlvbiBzdGF0
-aXN0aWNzIHJlcXVpcmVtZW50LAoKSGVoLiBXaG9zZSByZXF1aXJlbWVudHM/IDopCgo+IHRoZSBp
-bmZvcm1hdGlvbiBmcm9tICdpdyBkZXYgd2xhbiNOIHN0YXRpb24gZHVtcCcgd2hpY2ggaGFzCj4g
-cnhfZHVyYXRpb24KPiBmaWVsZCB3aWxsIGJlIHVzZWQgYnkgYXBwbGljYXRpb24gYXNzZXNpbmcg
-dGhlIHN0YXRpc3RpY3MKPiAvcGVyZm9ybWFuY2Ugb2YgdmFyaW91cyBjbGllbnRzIGNvbm5lY3Rl
-ZCB0byBvdXIgQVAuIFdlIHdpbGwgcGxvdAo+IGEgZ3JhcGggYmFzZWQgb24gdGhpcyBpbmZvcm1h
-dGlvbiAoYXNzZXNpbmcgdGhlIHJ4IHRpbWUgc3BlbnQgYnkKPiBBUCBmb3IgdmFyaW91cyBjbGll
-bnRzKS4KPiAKPiA+IAo+ID4gQXJlIHlvdSByZWFsbHkgc3VyZSB5b3UgbWVhbiAidW5pY2FzdCI/
-IFdoYXQgaWYgdGhlIHN0YXRpb24gaXMgdGhlCj4gPiBBUD8gV2h5IHdvdWxkbid0IG11bHRpY2Fz
-dCBmcmFtZXMgaXQgdHJhbnNtaXR0ZWQgYmUgYWNjb3VudGVkIGZvcj8KPiAKPiBbc2hhZmldIFRo
-aXMgaXMgYmFzZWQgb24gdGhlIGltcGxlbWVudGF0aW9uIGJ5IHRoZSBkcml2ZXIvZmlybXdhcmUu
-Cj4gV2UgYXJlIGZvY3VzZWQgb24gdGhlIEFQIHNpZGUgc28gdW5pY2FzdCBmcmFtZXMsIGlmIHlv
-dSBhcmUgb2sgd2l0aAo+IHRoaXMgY2hhbmdlLCBpIGNhbiBjaGFuZ2UgdGhlIGRvY3VtZW50YXRp
-b24gdG8gYmUgc3BlY2lmaWMgKGdlbmVyaWMKPiBmb3IgYWxsIHRoZSBkcml2ZXJzKSDCoHNvbWV0
-aGluZyBsaWtlIGltcGxlbWVudGF0aW9uIHNwZWNpZmljIChwbGVhc2UKPiBhZHZpc2UpCgpPaywg
-YnV0IGZvciBBUCBzaWRlIEkgZG9uJ3Qgc2VlIHRoZSBkaWZmZXJlbmNlIGJldHdlZW4gInVuaWNh
-c3QiIGFuZAoiYWxsIGZyYW1lcyIsIHNpbmNlIGFsbCBmcmFtZXMgZnJvbSB0aGF0IHN0YXRpb24g
-c2hvdWxkIGJlIHVuaWNhc3Q/CkFwYXJ0LCBwZXJoYXBzLCBmcm9tIHNvbWUgbWFuYWdlbWVudCBm
-cmFtZXMgdGhlIHN0YXRpb24gbWlnaHQgc2VuZApvdXRzaWRlIHRoZSBCU1MsIGJ1dCB0aGF0J3Mg
-bm90IGxpa2VseSB0byBtYXR0ZXIgbXVjaD8KCklPVywgd2h5IG5vdCBzcGVjaWZ5IGFsbCBmcmFt
-ZXMsIGFuZCBsZXQgdGhpcyBtYWtlIHNvbWUgc2Vuc2UgZm9yIG90aGVyCmludGVyZmFjZSBtb2Rl
-cz8KCmpvaGFubmVzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hi johannes,
+
+On Thu, Mar 03, 2016 at 05:07:51PM +0100, Johannes Berg wrote:
+> On Thu, 2016-03-03 at 21:30 +0530, Mohammed Shafi Shajakhan wrote:
+> =
+
+> > [shafi] This is part of the Per Station statistics requirement,
+> =
+
+> Heh. Whose requirements? :)
+
+[shafi] We have this as part of ath10k debugfs based on the end user (or) a
+customer requirement and i think its make more sense to have this common ac=
+ross all
+wifi drivers rather thank simply dumping it in ath10k debugfs. I think its
+similar to 'ieee80211_frame_duration'(?) in mac80211 but for drivers like a=
+th10k
+where this is calculated in firmware for rx and implementation specific.
+
+> =
+
+> > the information from 'iw dev wlan#N station dump' which has
+> > rx_duration
+> > field will be used by application assesing the statistics
+> > /performance of various clients connected to our AP. We will plot
+> > a graph based on this information (assesing the rx time spent by
+> > AP for various clients).
+> > =
+
+> > > =
+
+> > > Are you really sure you mean "unicast"? What if the station is the
+> > > AP? Why wouldn't multicast frames it transmitted be accounted for?
+> > =
+
+> > [shafi] This is based on the implementation by the driver/firmware.
+> > We are focused on the AP side so unicast frames, if you are ok with
+> > this change, i can change the documentation to be specific (generic
+> > for all the drivers) =A0something like implementation specific (please
+> > advise)
+> =
+
+> Ok, but for AP side I don't see the difference between "unicast" and
+> "all frames", since all frames from that station should be unicast?
+> Apart, perhaps, from some management frames the station might send
+> outside the BSS, but that's not likely to matter much?
+
+[shafi] exactly, I can change the documentation as you wish and
+this is implementation specific, and we have implemented like this in ath10k
+targeting AP mode.
+
+> =
+
+> IOW, why not specify all frames, and let this make some sense for other
+> interface modes?
+>
+[shafi] Agreed.
+
+regards,
+shafi
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
