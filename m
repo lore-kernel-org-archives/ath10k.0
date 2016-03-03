@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ab810-0006hQ-U1
- for ath10k@lists.infradead.org; Wed, 02 Mar 2016 14:44:39 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix firmware assert in monitor mode
-Date: Wed, 2 Mar 2016 20:13:52 +0530
-Message-ID: <1456929832-6147-1-git-send-email-rmanohar@qti.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
+ id 1abLDL-0007QU-FZ
+ for ath10k@lists.infradead.org; Thu, 03 Mar 2016 04:50:15 +0000
+Message-ID: <56D7B511.3040406@candelatech.com>
+Date: Wed, 02 Mar 2016 19:52:49 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Bug report for ath10k and scanning many ssids.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,52 +16,95 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-commit 166de3f1895d ("ath10k: remove supported chain mask") had revealed
-an issue on monitor mode. Configuring NSS upon monitor interface
-creation is causing target assert in all qca9888x and qca6174 firmware.
-Firmware assert issue can be reproduced by below sequence even after
-reverting commit 166de3f1895d ("ath10k: remove supported chain mask").
+There is a bug in at least 10.1 ath10k firmware where the scan machine
+cannot send more than 5 or so probe requests due to running out of firmware
+management buffers..  Stock firmware is not smart enough to
+wait a bit and send them later.  To reproduce, use a supplicant file like
+this (below).  Maybe there is a way to work around it in the driver, but probably
+better to just fix the firmware...  A quick glance at 10.4 firmware makes
+me think the bug is very likely there as well.
 
-ip link set wlan0 down
-iw wlan0 set type monitor
-iw phy0 set antenna 7
-ip link set wlan0 up
+Thanks,
+Ben
 
-This issue is originally reported on qca9888 with 10.1 firmware.
 
-Fixes: 5572a95b4b ("ath10k: apply chainmask settings to vdev on creation")
-Reported-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ctrl_interface=/var/run/wpa_supplicant
+ctrl_interface_group=0
+eapol_version=1
+ap_scan=1
+country=US
+autoscan=periodic:10
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 78999c9..c42866d 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4489,7 +4489,10 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 		goto err_vdev_delete;
- 	}
- 
--	if (ar->cfg_tx_chainmask) {
-+	/* Configuring number of spatial stream for monitor interface is causing
-+	 * target assert in qca9888 and qca6174.
-+	 */
-+	if (ar->cfg_tx_chainmask && (vif->type != NL80211_IFTYPE_MONITOR)) {
- 		u16 nss = get_nss_from_chainmask(ar->cfg_tx_chainmask);
- 
- 		vdev_param = ar->wmi.vdev_param->nss;
+network={
+ssid="nonexist1"
+scan_ssid=1
+key_mgmt=NONE
+}
+
+network={
+ssid="nonexist2"
+scan_ssid=1
+key_mgmt=NONE
+}
+
+network={
+ssid="nonexist3"
+scan_ssid=1
+key_mgmt=NONE
+}
+
+network={
+ssid="nonexist4"
+scan_ssid=1
+key_mgmt=NONE
+}
+
+network={
+ssid="nonexist5"
+scan_ssid=1
+key_mgmt=NONE
+}
+
+network={
+ssid="nonexist6"
+scan_ssid=1
+key_mgmt=NONE
+}
+
+network={
+ssid="nonexist7"
+scan_ssid=1
+key_mgmt=NONE
+}
+
+network={
+ssid="nonexist8"
+scan_ssid=1
+key_mgmt=NONE
+}
+
+network={
+ssid="nonexist9"
+scan_ssid=1
+key_mgmt=NONE
+}
+
+network={
+ssid="dd-wrt-ath1"
+scan_ssid=1
+key_mgmt=NONE
+}
+
+
 -- 
-2.7.2
-
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
