@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1abVzt-0000DT-4b
- for ath10k@lists.infradead.org; Thu, 03 Mar 2016 16:21:05 +0000
-Date: Thu, 3 Mar 2016 21:50:36 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH] cfg80211/nl80211: Add support for
- NL80211_STA_INFO_RX_DURATION
-Message-ID: <20160303162036.GB5243@atheros-ThinkPad-T61>
-References: <1456927710-32073-1-git-send-email-mohammed@qca.qualcomm.com>
- <1457019983.2044.29.camel@sipsolutions.net>
- <20160303160048.GA5243@atheros-ThinkPad-T61>
- <1457021271.2044.34.camel@sipsolutions.net>
+ id 1abXEB-0006ye-De
+ for ath10k@lists.infradead.org; Thu, 03 Mar 2016 17:39:56 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: Per radio configuration
+Date: Thu, 3 Mar 2016 17:39:29 +0000
+Message-ID: <87y49z1mwj.fsf@kamboji.qca.qualcomm.com>
+References: <56B3BCF0.7070408@candelatech.com>
+ <877fhj3774.fsf@kamboji.qca.qualcomm.com>	<56D8694D.9040502@candelatech.com>
+In-Reply-To: <56D8694D.9040502@candelatech.com> (Ben Greear's message of "Thu, 
+ 3 Mar 2016 08:41:49 -0800")
+Content-Language: en-US
+Content-ID: <D823EA38EFFEF047ACDF36739CF231DF@qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1457021271.2044.34.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,74 +22,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-wireless@vger.kernel.org, kvalo@codeaurora.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Hi johannes,
+Ben Greear <greearb@candelatech.com> writes:
 
-On Thu, Mar 03, 2016 at 05:07:51PM +0100, Johannes Berg wrote:
-> On Thu, 2016-03-03 at 21:30 +0530, Mohammed Shafi Shajakhan wrote:
-> =
-
-> > [shafi] This is part of the Per Station statistics requirement,
-> =
-
-> Heh. Whose requirements? :)
-
-[shafi] We have this as part of ath10k debugfs based on the end user (or) a
-customer requirement and i think its make more sense to have this common ac=
-ross all
-wifi drivers rather thank simply dumping it in ath10k debugfs. I think its
-similar to 'ieee80211_frame_duration'(?) in mac80211 but for drivers like a=
-th10k
-where this is calculated in firmware for rx and implementation specific.
-
-> =
-
-> > the information from 'iw dev wlan#N station dump' which has
-> > rx_duration
-> > field will be used by application assesing the statistics
-> > /performance of various clients connected to our AP. We will plot
-> > a graph based on this information (assesing the rx time spent by
-> > AP for various clients).
-> > =
-
-> > > =
-
-> > > Are you really sure you mean "unicast"? What if the station is the
-> > > AP? Why wouldn't multicast frames it transmitted be accounted for?
-> > =
-
-> > [shafi] This is based on the implementation by the driver/firmware.
-> > We are focused on the AP side so unicast frames, if you are ok with
-> > this change, i can change the documentation to be specific (generic
-> > for all the drivers) =A0something like implementation specific (please
-> > advise)
-> =
-
-> Ok, but for AP side I don't see the difference between "unicast" and
-> "all frames", since all frames from that station should be unicast?
-> Apart, perhaps, from some management frames the station might send
-> outside the BSS, but that's not likely to matter much?
-
-[shafi] exactly, I can change the documentation as you wish and
-this is implementation specific, and we have implemented like this in ath10k
-targeting AP mode.
-
-> =
-
-> IOW, why not specify all frames, and let this make some sense for other
-> interface modes?
+>> Ok, so basically an .ini file for the driver.
+>>
+>>> When parsing, Lines starting with # would be ignored.
+>>> Any un-known tokens would be ignored, for backwards/forwards compatibility.
+>>>
+>>> This file would be loaded and parsed before loading other firmware
+>>> images so that we can use particular firmware images per radio. This
+>>> further lets one optimize one radio for one thing, one for another.
+>>> For instance, if someone requires IBSS and wants to use stock QCA
+>>> firmware, they can use the 'main' firmware for that radio, and the
+>>> most recent one for another radio that needs to be a stable AP.
+>>>
+>>> In addition to this, we would need to store the vdev combinations
+>>> in RAM in the 'ar' struct, so we could get rid of all of the static,
+>>> hard-coded members and set the capabilities to match the requested
+>>> values.
+>>>
+>>> Any opinions on this?  Something that might be worthwhile for upstream?
+>>
+>> I have seen lots of out-of-tree drivers having something like this but I
+>> doubt that something like this would be acceptable in upstream. Anyway
+>> this is something which should be discussed in linux-wireless with a
+>> wider audience, maybe even in lkml.
 >
-[shafi] Agreed.
+> You are the maintainer, so, do *you* like the idea?  
 
-regards,
-shafi
+I'm _one_ of the maintainers, a big difference :) This is not just about
+ath10k but all wireless drivers (or maybe even about all network
+drivers).
 
+I think that there's more and more need for something like this[1] in
+wireless drivers. I read your mail about this only today (yeah, I'm
+backlogged quite a lot) but I actually talked about this very problem at
+the Wireless Summit in Sevilla. It didn't get very far and no real
+solution was found except doing the configuration via debugfs and
+restarting the firmware. Not really an ideal solution.
+
+But I don't think the .ini approach is really doable either, having an
+ini parser in kernel sounds scary. Hopefully there is a better way to do
+it.
+
+> If you don't, then there is no use in me putting more effort into it
+> for upstream use.
+>
+> If you do, then I will work on cleaning up a patch for upstream and post
+> it to a wider audience.
+
+I think this needs a lot more discussion before using time for the
+actual implementation.
+
+[1] I mean something like device specific module parameters (instead of
+    driver global parameters we have now) where you can set parameters
+    per PCI/USB/SDIO device.
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
