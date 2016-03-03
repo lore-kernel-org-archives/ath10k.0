@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1abVIU-0005fV-8T
- for ath10k@lists.infradead.org; Thu, 03 Mar 2016 15:36:19 +0000
+ id 1abVLE-00070w-4d
+ for ath10k@lists.infradead.org; Thu, 03 Mar 2016 15:39:06 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: Per radio configuration
-Date: Thu, 3 Mar 2016 15:35:48 +0000
-Message-ID: <877fhj3774.fsf@kamboji.qca.qualcomm.com>
-References: <56B3BCF0.7070408@candelatech.com>
-In-Reply-To: <56B3BCF0.7070408@candelatech.com> (Ben Greear's message of "Thu, 
- 4 Feb 2016 13:04:48 -0800")
+Subject: Re: QCA6174 firmware crash in monitor mode
+Date: Thu, 3 Mar 2016 15:38:37 +0000
+Message-ID: <8737s7372f.fsf@kamboji.qca.qualcomm.com>
+References: <20160213063926.GA1767@darkstar>
+In-Reply-To: <20160213063926.GA1767@darkstar> (gloudon jamie's message of
+ "Sat, 13 Feb 2016 02:39:26 -0400")
 Content-Language: en-US
-Content-ID: <B5FE17993324C34A89AB073D7D5CFCD0@qualcomm.com>
+Content-ID: <9672CE8549A28B48800AA8C8109DADB5@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,64 +25,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: "gloudon.jamie@gmail.com" <gloudon.jamie@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> writes:
+gloudon.jamie@gmail.com writes:
 
-> Hello!
+> QCA6147 monitor mode stopped working ever since after kernel v4.3.
+> Here is the firmware crash log:
 >
-> I'm considering a case where I have multiple ath10k NICs in
-> a system, possibly not all the same chipset.
+> Feb 13 01:39:36 darkstar kernel: [   34.010363] ath10k_pci 0000:01:00.0: qca6174 hw2.1 target 0x05010000 chip_id 0x003405ff sub 168c:3344
+> Feb 13 01:39:36 darkstar kernel: [   34.010373] ath10k_pci 0000:01:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 0 testmode 0
+> Feb 13 01:39:36 darkstar kernel: [   34.012252] ath10k_pci 0000:01:00.0: firmware ver SW_RM.1.1.1-00157-QCARMSWPZ-1 api 5 features ignore-otp,no-4addr-pad crc32 10bf8e08
+> Feb 13 01:39:36 darkstar kernel: [   34.012291] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 cdb586cf
+> Feb 13 01:39:36 darkstar kernel: [   34.012301] ath10k_pci 0000:01:00.0: htt-ver 3.1 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+> Feb 13 01:39:36 darkstar kernel: [   34.067918] ieee80211 phy0: Hardware restart was requested
 >
-> I may want to have one optimized for smaller number of vdevs and more
-> peers, and another many vdevs, fewer peers, etc.  Some chipsets
->
-> Module options are not optimal for this since there is no easy way to
-> have different options for different NICs.
->
-> I'm thinking about making a loadable 'firmware' file that has
-> text-based config, something like:
->
-> # First radio
-> Device=05:00.0
-> 	vdev_count=8
-> 	peer_count=128
->         firmware_name=firmware-5-b.bin
-> 	firmware_ver=5
->
-> # Second radio
-> Device=06:00.0
-> 	vdev_count=4
-> 	peer_count=200
->         firmware_name=firmware-2.bin
-> 	firmware_ver=2
->
-> # End of file
+> Feb 13 01:39:36 darkstar kernel: [   34.010318] ath10k_pci 0000:01:00.0: firmware crashed! (uuid cb6fc88d-918d-4c7a-af69-15a713136bf7)
+> Feb 13 01:39:36 darkstar kernel: [   34.014330] ath10k_pci 0000:01:00.0: firmware register dump:
+> Feb 13 01:39:36 darkstar kernel: [   34.014340] ath10k_pci 0000:01:00.0: [00]: 0x05010000 0x00000000 0x0099987C 0x00000000
+> Feb 13 01:39:36 darkstar kernel: [   34.014349] ath10k_pci 0000:01:00.0: [04]: 0x00000000 0x00000000 0x00000000 0x00000000
 
-Ok, so basically an .ini file for the driver.
+Does this patch fix it?
 
-> When parsing, Lines starting with # would be ignored.
-> Any un-known tokens would be ignored, for backwards/forwards compatibility.
->
-> This file would be loaded and parsed before loading other firmware
-> images so that we can use particular firmware images per radio. This
-> further lets one optimize one radio for one thing, one for another.
-> For instance, if someone requires IBSS and wants to use stock QCA
-> firmware, they can use the 'main' firmware for that radio, and the
-> most recent one for another radio that needs to be a stable AP.
->
-> In addition to this, we would need to store the vdev combinations
-> in RAM in the 'ar' struct, so we could get rid of all of the static,
-> hard-coded members and set the capabilities to match the requested
-> values.
->
-> Any opinions on this?  Something that might be worthwhile for upstream?
+ath10k: fix firmware assert in monitor mode
 
-I have seen lots of out-of-tree drivers having something like this but I
-doubt that something like this would be acceptable in upstream. Anyway
-this is something which should be discussed in linux-wireless with a
-wider audience, maybe even in lkml.
+https://patchwork.kernel.org/patch/8481281/
 
 -- 
 Kalle Valo
