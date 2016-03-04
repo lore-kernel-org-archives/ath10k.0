@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ablIM-0006oo-GC
- for ath10k@lists.infradead.org; Fri, 04 Mar 2016 08:41:10 +0000
+ id 1ablIq-0006va-Ox
+ for ath10k@lists.infradead.org; Fri, 04 Mar 2016 08:41:41 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: fix pktlog in QCA99X0
-Date: Fri, 4 Mar 2016 08:40:46 +0000
-Message-ID: <87a8mezldf.fsf@kamboji.qca.qualcomm.com>
-References: <1454686969-5740-1-git-send-email-arnagara@qti.qualcomm.com>
-In-Reply-To: <1454686969-5740-1-git-send-email-arnagara@qti.qualcomm.com>
- (Ashok Raj Nagarajan's message of "Fri, 5 Feb 2016 21:12:48 +0530")
+Subject: Re: [PATCH] ath10k: fix erroneous return value
+Date: Fri, 4 Mar 2016 08:41:15 +0000
+Message-ID: <8760x2zlcn.fsf@kamboji.qca.qualcomm.com>
+References: <1455123535-26751-1-git-send-email-a.s.protopopov@gmail.com>
+In-Reply-To: <1455123535-26751-1-git-send-email-a.s.protopopov@gmail.com>
+ (Anton Protopopov's message of "Wed, 10 Feb 2016 11:58:55 -0500")
 Content-Language: en-US
-Content-ID: <6F7EA0562A99D34D8E9464C2E4B34497@qualcomm.com>
+Content-ID: <79582C88FC1A8E4296C2A2DC849892A6@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,20 +25,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Nagarajan, Ashok Raj" <arnagara@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Anton Protopopov <a.s.protopopov@gmail.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Ashok Raj Nagarajan <arnagara@qti.qualcomm.com> writes:
+Anton Protopopov <a.s.protopopov@gmail.com> writes:
 
-> Currently, we are providing wrong payload data of pktlog to trace points.
-> Data we receive from FW through copy engine 8 contains pktlog data alone.
-> We don't need to parse anything in driver before handing it to trace
-> points.
+> The ath10k_pci_hif_exchange_bmi_msg() function may return the positive
+> value EIO instead of -EIO in case of error.
 >
-> Fixes: afb0bf7f530b ("ath10k: add support for pktlog in QCA99X0")
-> Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 
-Both applied, thanks.
+Applied, thanks.
 
 -- 
 Kalle Valo
