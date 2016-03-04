@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ablK9-0007Bm-AA
- for ath10k@lists.infradead.org; Fri, 04 Mar 2016 08:43:01 +0000
+ id 1ablLK-0007MG-2T
+ for ath10k@lists.infradead.org; Fri, 04 Mar 2016 08:44:14 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: reduce rx_lock contention for htt rx
- indication
-Date: Fri, 4 Mar 2016 08:42:33 +0000
-Message-ID: <871t7qzlah.fsf@kamboji.qca.qualcomm.com>
-References: <1455257459-13343-1-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1455257459-13343-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Fri, 12 Feb 2016 11:40:58 +0530")
+Subject: Re: [PATCH] ath10k: Reduce number of peers to support peer stats
+ feature
+Date: Fri, 4 Mar 2016 08:43:43 +0000
+Message-ID: <87wppiy6o5.fsf@kamboji.qca.qualcomm.com>
+References: <1456210197-27892-1-git-send-email-akolli@qti.qualcomm.com>
+In-Reply-To: <1456210197-27892-1-git-send-email-akolli@qti.qualcomm.com>
+ (akolli@qti.qualcomm.com's message of "Tue, 23 Feb 2016 12:19:57	+0530")
 Content-Language: en-US
-Content-ID: <C79A9C6B900AB748AA53FCE317855E2C@qualcomm.com>
+Content-ID: <609A3E0DD8EE3047A7596D48ADB6498E@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,22 +26,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+To: "Kolli, Anilkumar" <akolli@qti.qualcomm.com>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+<akolli@qti.qualcomm.com> writes:
 
-> Received frame indications are queued into a skb list and latest
-> processed by txrx tasklet. This skb queue is protected by htt rx lock.
-> Since the entire rx processing till delivering frame to mac80211 and
-> replenish tasks are processed under rx_lock protection, there might be
-> some delay in queuing newly received rx frame into that list on
-> multicore systems. Optimize this by using skb list lock while accessing
-> rx completion queue instead of htt rx lock.
+> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
 >
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> To enable per peer stats feature we are reducing the number of peers.
+> Firmware has introduced tx stats feature. We have memory limitation in
+> firmware to add these additional bytes.
+>
+> These are the new variables introduced in the firmware.
+> ========		=======================
+> Variable	      	Bytes required/per rate
+> ========		=======================
+> TX success packets 	1
+> TX failed packets	1
+> Retry packets		1
+> Success bytes		2
+> TX failed bytes		2
+> Retry bytes		2
+> Tx duration		4
+> Rate			1
+> Bw and AMPDU flags	1
+> Total			16 (because of allocation in word pattern)
+>
+> Firmware sends these tx_stats in pktlog.
+> If we consider 4 feedbacks at a time, Frimware need about ~1K memory for coding
+> and 8192 bytes required / per rate [ 4*16*128(peers)].
+> To accommodate this firmware needs to reduce 10 peers.
+>
+> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
 
-Both applied, thanks.
+Applied, thanks.
+
+I add a note in the commit log that this fixes a crash with
+firmware-5.bin_10.2.4.70.22-2.
 
 -- 
 Kalle Valo
