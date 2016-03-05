@@ -1,21 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-vk0-x229.google.com ([2607:f8b0:400c:c05::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1abrnh-0003wg-Vj
- for ath10k@lists.infradead.org; Fri, 04 Mar 2016 15:37:58 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 10/13] ath10k: implement flushing of pending frames in txqs
-Date: Fri, 4 Mar 2016 15:37:28 +0000
-Message-ID: <87twkmw8y5.fsf@kamboji.qca.qualcomm.com>
-References: <1453384006-31907-1-git-send-email-michal.kazior@tieto.com>
- <1453384006-31907-11-git-send-email-michal.kazior@tieto.com>
- <87h9gmy538.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQmgMBfz+Dkf-+0gDHvnhk5OA4_ZGZgwYDKXG5yP-xMRYw@mail.gmail.com>
-In-Reply-To: <CA+BoTQmgMBfz+Dkf-+0gDHvnhk5OA4_ZGZgwYDKXG5yP-xMRYw@mail.gmail.com>	(Michal
- Kazior's message of "Fri, 4 Mar 2016 10:52:04 +0100")
-Content-Language: en-US
-Content-ID: <926EC7E91D09144DA08D350C977DEF36@qualcomm.com>
+ id 1ac5zH-0001s0-1N
+ for ath10k@lists.infradead.org; Sat, 05 Mar 2016 06:46:51 +0000
+Received: by mail-vk0-x229.google.com with SMTP id c3so74693579vkb.3
+ for <ath10k@lists.infradead.org>; Fri, 04 Mar 2016 22:46:30 -0800 (PST)
+From: gloudon.jamie@gmail.com
+Date: Sat, 5 Mar 2016 02:46:12 -0400
+Subject: Re: QCA6174 firmware crash in monitor mode
+Message-ID: <20160305064544.GA1809@darkstar>
+References: <20160213063926.GA1767@darkstar>
+ <8737s7372f.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <8737s7372f.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,57 +26,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "gloudon.jamie@gmail.com" <gloudon.jamie@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+On Thu, Mar 03, 2016 at 03:38:37PM +0000, Valo, Kalle wrote:
+> gloudon.jamie@gmail.com writes:
+> 
+> > QCA6147 monitor mode stopped working ever since after kernel v4.3.
+> > Here is the firmware crash log:
+> >
+> > Feb 13 01:39:36 darkstar kernel: [   34.010363] ath10k_pci 0000:01:00.0: qca6174 hw2.1 target 0x05010000 chip_id 0x003405ff sub 168c:3344
+> > Feb 13 01:39:36 darkstar kernel: [   34.010373] ath10k_pci 0000:01:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 0 testmode 0
+> > Feb 13 01:39:36 darkstar kernel: [   34.012252] ath10k_pci 0000:01:00.0: firmware ver SW_RM.1.1.1-00157-QCARMSWPZ-1 api 5 features ignore-otp,no-4addr-pad crc32 10bf8e08
+> > Feb 13 01:39:36 darkstar kernel: [   34.012291] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 cdb586cf
+> > Feb 13 01:39:36 darkstar kernel: [   34.012301] ath10k_pci 0000:01:00.0: htt-ver 3.1 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+> > Feb 13 01:39:36 darkstar kernel: [   34.067918] ieee80211 phy0: Hardware restart was requested
+> >
+> > Feb 13 01:39:36 darkstar kernel: [   34.010318] ath10k_pci 0000:01:00.0: firmware crashed! (uuid cb6fc88d-918d-4c7a-af69-15a713136bf7)
+> > Feb 13 01:39:36 darkstar kernel: [   34.014330] ath10k_pci 0000:01:00.0: firmware register dump:
+> > Feb 13 01:39:36 darkstar kernel: [   34.014340] ath10k_pci 0000:01:00.0: [00]: 0x05010000 0x00000000 0x0099987C 0x00000000
+> > Feb 13 01:39:36 darkstar kernel: [   34.014349] ath10k_pci 0000:01:00.0: [04]: 0x00000000 0x00000000 0x00000000 0x00000000
+> 
+> Does this patch fix it?
+> 
+> ath10k: fix firmware assert in monitor mode
+> 
+> https://patchwork.kernel.org/patch/8481281/
+> 
+> -- 
+> Kalle Valo
 
-> On 4 March 2016 at 10:17, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->>
->>> Firmware supporting pull-push tx model may request
->>> a switch between modes. When switching from
->>> pull-push to push-only it will be necessary to
->>> flush all pending frames. The code will do that
->>> once other bits that actually trigger it are added.
->>>
->>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
->>
->> This fails to apply:
->>
->> fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/htt_rx.c).
->> Repository lacks necessary blobs to fall back on 3-way merge.
->> Cannot fall back to three-way merge.
->> Patch failed at 0010 ath10k: implement flushing of pending frames in txqs
->>
->>> @@ -2370,6 +2371,8 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
->>>               dev_kfree_skb_any(skb);
->>>       }
->>>
->>> +     ath10k_mac_tx_push_pending(ar);
->>> +
->>>       spin_lock_bh(&htt->rx_ring.lock);
->>>       while ((skb = __skb_dequeue(&htt->rx_compl_q))) {
->>>               resp = (struct htt_resp *)skb->data;
->>
->> This hunk seems to be the problem. I could try to fix it myself but the
->> function has changed so I would prefer that you respin.
->
-> This patch is in v1. It's base included some extra patches that
-> weren't in ath.git at the time.
->
-> The v2 patchset has this patch squashed into wake_tx_queue patch and
-> the entire v2 patchset is based solely on ath.git without any extra
-> patches in between. Did patchwork confuse these patchsets?
+Yes, the patch works. Thanks! Forgot to CC ath10k mailing list.
 
-No, it was me who got confused :) I was accidentally applying v1 instead
-of v2.
+Regards,
+Jamie Gloudon
 
-But v2 also has conflicts with ath-next. I need to first update my trees
-to get latest cfg80211/mac80211 and then I'll try again.
-
--- 
-Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
