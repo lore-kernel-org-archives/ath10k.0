@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1acS9w-0006aO-78
- for ath10k@lists.infradead.org; Sun, 06 Mar 2016 06:27:20 +0000
+ id 1acTQU-0008Jq-3T
+ for ath10k@lists.infradead.org; Sun, 06 Mar 2016 07:48:31 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2] ath10k: move mgmt descriptor limit handle under mgmt_tx
+Date: Sun, 6 Mar 2016 13:17:49 +0530
+Message-ID: <1457250469-22994-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-Date: Sun, 06 Mar 2016 11:56:58 +0530
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: [PATCH] ath10k: move mgmt descriptor limit handle under mgmt_tx
-In-Reply-To: <56DBADE6.5060507@candelatech.com>
-References: <1457187017-12913-1-git-send-email-rmanohar@qti.qualcomm.com>
- <56DAED8E.6020407@candelatech.com>
- <08ae455b4733d8c1607427b10acc759c@codeaurora.org>
- <56DBADE6.5060507@candelatech.com>
-Message-ID: <6515868944c103e2b5bf0ed4e6f22924@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,78 +16,331 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-On , Ben Greear wrote:
-> On 03/05/2016 08:00 PM, Rajkumar Manoharan wrote:
->> On , Ben Greear wrote:
->>> On 03/05/2016 06:10 AM, Rajkumar Manoharan wrote:
->>>> Firmware reserves few descriptors for management frames 
->>>> transmission.
->>>> In 16 MBSSID scenario, these slots will be easy exhausted due to 
->>>> frequent
->>>> probe responses. So for 10.4 based solutions, probe responses are 
->>>> limited
->>>> by a threshold (24).
->>> 
->>> Do you mean probe requests or probe responses?
->>> 
->> I meant probe responses in AP mode.
->> 
->>> A single hardware scan request with lots of ssids in it will utilize 
->>> all
->>> firmware tx management frames (which is 5, it seems).  In my testing, 
->>> the
->>> firmware would just never send probe requests for the rest of the 
->>> ssids
->>> because the firmware scan state machine logic is broken.
->>> 
->> Hmm... firmware expects both ssid and bssid list to be filled for 
->> multiple probe
->> requests. Better to try with different probe spacing time, repeat 
->> probe time and
->> probe delay and dwell time as these params change prob_req behavior in 
->> firmware.
-> 
-> It was easier to just fix the firmware than to hack the
-> rest of the stack.
-> 
-I didn't mean to hack the stack :) but scan params should not be 
-constant for all type
-of scan requests.
+Firmware reserves few descriptors for management frames transmission.
+In 16 MBSSID scenario, these slots will be easy exhausted due to frequent
+probe responses. So for 10.4 based solutions, probe responses are limited
+by a threshold (24).
 
->> Anyway this change is not related to scan functionality.
->> 
->>> If you really do mean responses, then it sounds like it would be 
->>> better to
->>> use the normal RX path for mgt frames in the firmware...
->>> 
->> Let me clarify. Sending probe responses in AP mode are limited by a 
->> threshold
->> for qca99x0 ("ath10k: drop probe responses when too many are queued"). 
->> This change
->> moves probe response checks under mgmt_tx from common data path.
-> 
-> Ok, I'll take a look at that.  I've implemented MGT frames over the 
-> completely
-> normal HTT data-path transport, so probably I won't hit that in my 
-> systems
-> anyway (there should be no internal mgt-frame limitation, except for 
-> locally
-> created things like probe requests during scan).  But, I could be 
-> missing
-> something...I'm really just getting started with 10.4...
-> 
-Great.. just noticed that this change needs to be rebased on top of 
-Michal's recent
-data path series. Let me send next version.
+management tx path is separate for all except tlv based solutions. Since
+tlv solutions (qca6174 & qca9377) do not support 16 AP interfaces, it is
+safe to move management descriptor limitation check under mgmt_tx
+function. Though CPU improvement is negligible, unlikely conditions or
+never hit conditions in hot path can be avoided on data transmission.
 
--Rajkumar
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+v2:
+  - rebased on top of Michal changes
+
+ drivers/net/wireless/ath/ath10k/htt.h    |  9 ++++---
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  7 +++++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 41 +++++++++++++++++++-------------
+ drivers/net/wireless/ath/ath10k/mac.c    | 34 ++++++++++++++++----------
+ drivers/net/wireless/ath/ath10k/txrx.c   | 18 ++++++--------
+ drivers/net/wireless/ath/ath10k/txrx.h   |  4 ++--
+ 6 files changed, 65 insertions(+), 48 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 02cf55d..26717e9 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1767,11 +1767,10 @@ void ath10k_htt_tx_txq_update(struct ieee80211_hw *hw,
+ void ath10k_htt_tx_txq_recalc(struct ieee80211_hw *hw,
+ 			      struct ieee80211_txq *txq);
+ void ath10k_htt_tx_txq_sync(struct ath10k *ar);
+-void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt,
+-			       bool is_mgmt);
+-int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt,
+-			      bool is_mgmt,
+-			      bool is_presp);
++void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt);
++int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt);
++void ath10k_htt_tx_mgmt_dec_pending(struct ath10k_htt *htt);
++int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_presp);
+ 
+ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb);
+ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index adf35b0..9892f92 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2326,7 +2326,12 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 			break;
+ 		}
+ 
+-		ath10k_txrx_tx_unref(htt, &tx_done);
++		status = ath10k_txrx_tx_unref(htt, &tx_done);
++		if (!status) {
++			spin_lock_bh(&htt->tx_lock);
++			ath10k_htt_tx_mgmt_dec_pending(htt);
++			spin_unlock_bh(&htt->tx_lock);
++		}
+ 		ath10k_mac_tx_push_pending(ar);
+ 		break;
+ 	}
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index a30c34e..f2703bc 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -149,22 +149,30 @@ void ath10k_htt_tx_txq_update(struct ieee80211_hw *hw,
+ 	spin_unlock_bh(&ar->htt.tx_lock);
+ }
+ 
+-void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt,
+-			       bool is_mgmt)
++void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt)
+ {
+ 	lockdep_assert_held(&htt->tx_lock);
+ 
+-	if (is_mgmt)
+-		htt->num_pending_mgmt_tx--;
+-
+ 	htt->num_pending_tx--;
+ 	if (htt->num_pending_tx == htt->max_num_pending_tx - 1)
+ 		ath10k_mac_tx_unlock(htt->ar, ATH10K_TX_PAUSE_Q_FULL);
+ }
+ 
+-int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt,
+-			      bool is_mgmt,
+-			      bool is_presp)
++int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt)
++{
++	lockdep_assert_held(&htt->tx_lock);
++
++	if (htt->num_pending_tx >= htt->max_num_pending_tx)
++		return -EBUSY;
++
++	htt->num_pending_tx++;
++	if (htt->num_pending_tx == htt->max_num_pending_tx)
++		ath10k_mac_tx_lock(htt->ar, ATH10K_TX_PAUSE_Q_FULL);
++
++	return 0;
++}
++
++int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_presp)
+ {
+ 	struct ath10k *ar = htt->ar;
+ 
+@@ -173,22 +181,23 @@ int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt,
+ 	if (htt->num_pending_tx >= htt->max_num_pending_tx)
+ 		return -EBUSY;
+ 
+-	if (is_mgmt &&
+-	    is_presp &&
++	if (is_presp &&
+ 	    ar->hw_params.max_probe_resp_desc_thres &&
+ 	    ar->hw_params.max_probe_resp_desc_thres < htt->num_pending_mgmt_tx)
+ 		return -EBUSY;
+ 
+-	if (is_mgmt)
+-		htt->num_pending_mgmt_tx++;
+-
+-	htt->num_pending_tx++;
+-	if (htt->num_pending_tx == htt->max_num_pending_tx)
+-		ath10k_mac_tx_lock(htt->ar, ATH10K_TX_PAUSE_Q_FULL);
++	htt->num_pending_mgmt_tx++;
+ 
+ 	return 0;
+ }
+ 
++void ath10k_htt_tx_mgmt_dec_pending(struct ath10k_htt *htt)
++{
++	lockdep_assert_held(&htt->tx_lock);
++
++	htt->num_pending_mgmt_tx--;
++}
++
+ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb)
+ {
+ 	struct ath10k *ar = htt->ar;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ebff9c0..34a89d7 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3699,8 +3699,6 @@ static bool ath10k_mac_tx_can_push(struct ieee80211_hw *hw,
+ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 			   struct ieee80211_txq *txq)
+ {
+-	const bool is_mgmt = false;
+-	const bool is_presp = false;
+ 	struct ath10k *ar = hw->priv;
+ 	struct ath10k_htt *htt = &ar->htt;
+ 	struct ath10k_txq *artxq = (void *)txq->drv_priv;
+@@ -3713,7 +3711,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 	int ret;
+ 
+ 	spin_lock_bh(&ar->htt.tx_lock);
+-	ret = ath10k_htt_tx_inc_pending(htt, is_mgmt, is_presp);
++	ret = ath10k_htt_tx_inc_pending(htt);
+ 	spin_unlock_bh(&ar->htt.tx_lock);
+ 
+ 	if (ret)
+@@ -3722,7 +3720,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 	skb = ieee80211_tx_dequeue(hw, txq);
+ 	if (!skb) {
+ 		spin_lock_bh(&ar->htt.tx_lock);
+-		ath10k_htt_tx_dec_pending(htt, is_mgmt);
++		ath10k_htt_tx_dec_pending(htt);
+ 		spin_unlock_bh(&ar->htt.tx_lock);
+ 
+ 		return -ENOENT;
+@@ -3739,7 +3737,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 		ath10k_warn(ar, "failed to push frame: %d\n", ret);
+ 
+ 		spin_lock_bh(&ar->htt.tx_lock);
+-		ath10k_htt_tx_dec_pending(htt, is_mgmt);
++		ath10k_htt_tx_dec_pending(htt);
+ 		spin_unlock_bh(&ar->htt.tx_lock);
+ 
+ 		return ret;
+@@ -3979,13 +3977,22 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+ 	is_htt = (txpath == ATH10K_MAC_TX_HTT ||
+ 		  txpath == ATH10K_MAC_TX_HTT_MGMT);
+ 
+-	if (is_htt) {
+-		spin_lock_bh(&ar->htt.tx_lock);
+-
+-		is_mgmt = ieee80211_is_mgmt(hdr->frame_control);
++	is_mgmt = ieee80211_is_mgmt(hdr->frame_control);
++	spin_lock_bh(&ar->htt.tx_lock);
++	if (is_mgmt) {
+ 		is_presp = ieee80211_is_probe_resp(hdr->frame_control);
+ 
+-		ret = ath10k_htt_tx_inc_pending(htt, is_mgmt, is_presp);
++		ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_presp);
++		if (ret) {
++			ath10k_warn(ar, "failed to increase tx mgmt pending count: %d, dropping\n",
++				    ret);
++			spin_unlock_bh(&ar->htt.tx_lock);
++			ieee80211_free_txskb(ar->hw, skb);
++			return;
++		}
++	}
++	if (is_htt) {
++		ret = ath10k_htt_tx_inc_pending(htt);
+ 		if (ret) {
+ 			ath10k_warn(ar, "failed to increase tx pending count: %d, dropping\n",
+ 				    ret);
+@@ -3993,16 +4000,17 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+ 			ieee80211_free_txskb(ar->hw, skb);
+ 			return;
+ 		}
+-
+-		spin_unlock_bh(&ar->htt.tx_lock);
+ 	}
++	spin_unlock_bh(&ar->htt.tx_lock);
+ 
+ 	ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to transmit frame: %d\n", ret);
+ 		if (is_htt) {
+ 			spin_lock_bh(&ar->htt.tx_lock);
+-			ath10k_htt_tx_dec_pending(htt, is_mgmt);
++			ath10k_htt_tx_dec_pending(htt);
++			if (is_mgmt)
++				ath10k_htt_tx_mgmt_dec_pending(htt);
+ 			spin_unlock_bh(&ar->htt.tx_lock);
+ 		}
+ 		return;
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index ea4d300..48e26cd 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -49,8 +49,8 @@ out:
+ 	spin_unlock_bh(&ar->data_lock);
+ }
+ 
+-void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+-			  const struct htt_tx_done *tx_done)
++int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
++			 const struct htt_tx_done *tx_done)
+ {
+ 	struct ath10k *ar = htt->ar;
+ 	struct device *dev = ar->dev;
+@@ -59,7 +59,6 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 	struct ath10k_skb_cb *skb_cb;
+ 	struct ath10k_txq *artxq;
+ 	struct sk_buff *msdu;
+-	bool limit_mgmt_desc = false;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_HTT,
+ 		   "htt tx completion msdu_id %u discard %d no_ack %d success %d\n",
+@@ -69,7 +68,7 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 	if (tx_done->msdu_id >= htt->max_num_pending_tx) {
+ 		ath10k_warn(ar, "warning: msdu_id %d too big, ignoring\n",
+ 			    tx_done->msdu_id);
+-		return;
++		return -EINVAL;
+ 	}
+ 
+ 	spin_lock_bh(&htt->tx_lock);
+@@ -78,22 +77,18 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 		ath10k_warn(ar, "received tx completion for invalid msdu_id: %d\n",
+ 			    tx_done->msdu_id);
+ 		spin_unlock_bh(&htt->tx_lock);
+-		return;
++		return -ENOENT;
+ 	}
+ 
+ 	skb_cb = ATH10K_SKB_CB(msdu);
+ 	txq = skb_cb->txq;
+ 	artxq = (void *)txq->drv_priv;
+ 
+-	if (unlikely(skb_cb->flags & ATH10K_SKB_F_MGMT) &&
+-	    ar->hw_params.max_probe_resp_desc_thres)
+-		limit_mgmt_desc = true;
+-
+ 	if (txq)
+ 		artxq->num_fw_queued--;
+ 
+ 	ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
+-	ath10k_htt_tx_dec_pending(htt, limit_mgmt_desc);
++	ath10k_htt_tx_dec_pending(htt);
+ 	if (htt->num_pending_tx == 0)
+ 		wake_up(&htt->empty_tx_wq);
+ 	spin_unlock_bh(&htt->tx_lock);
+@@ -108,7 +103,7 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 
+ 	if (tx_done->discard) {
+ 		ieee80211_free_txskb(htt->ar->hw, msdu);
+-		return;
++		return 0;
+ 	}
+ 
+ 	if (!(info->flags & IEEE80211_TX_CTL_NO_ACK))
+@@ -122,6 +117,7 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 
+ 	ieee80211_tx_status(htt->ar->hw, msdu);
+ 	/* we do not own the msdu anymore */
++	return 0;
+ }
+ 
+ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.h b/drivers/net/wireless/ath/ath10k/txrx.h
+index a90e09f..e7ea1ae 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.h
++++ b/drivers/net/wireless/ath/ath10k/txrx.h
+@@ -19,8 +19,8 @@
+ 
+ #include "htt.h"
+ 
+-void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+-			  const struct htt_tx_done *tx_done);
++int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
++			 const struct htt_tx_done *tx_done);
+ 
+ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
+ 				     const u8 *addr);
+-- 
+2.7.2
+
 
 _______________________________________________
 ath10k mailing list
