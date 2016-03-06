@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1acZVz-0006Vn-J5
- for ath10k@lists.infradead.org; Sun, 06 Mar 2016 14:18:36 +0000
+ id 1acZf9-00030n-Rx
+ for ath10k@lists.infradead.org; Sun, 06 Mar 2016 14:28:04 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 00/11] ath10k: implement push-pull tx model
-Date: Sun, 6 Mar 2016 14:18:02 +0000
-Message-ID: <874mcjwv04.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 07/11] ath10k: implement wake_tx_queue
+Date: Sun, 6 Mar 2016 14:27:37 +0000
+Message-ID: <87ziubvfzm.fsf@kamboji.qca.qualcomm.com>
 References: <1453384006-31907-1-git-send-email-michal.kazior@tieto.com>
  <1456828376-2795-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1456828376-2795-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 1 Mar 2016 11:32:45 +0100")
+ <1456828376-2795-8-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1456828376-2795-8-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 1 Mar 2016 11:32:52 +0100")
 Content-Language: en-US
-Content-ID: <88AC41F9374F3045B96E4599CCCD7CC8@qualcomm.com>
+Content-ID: <FC69EB540BCBFC4E8119749E030B9D2D@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,55 +32,21 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@l
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This adds support for the new logic where host
-> tells firmware how many frames are queued for each
-> station/tid and then firmware asks host to submit
-> frames for given station/tid.
+> This implements very basic support for software
+> queueing. It also contains some knobs that will be
+> patched later.
 >
-> The patch count is a bit high but I tried
-> splitting the patches as much as possible to keep
-> them short and easy to review. Hopefully it's not
-> going to be a huge headache.
->
-> v2:
->  - squashes some patches
->  - reworked pending frame scheduling
->
->
-> Michal Kazior (11):
->   ath10k: refactor tx code
->   ath10k: unify txpath decision
->   ath10k: refactor tx pending management
->   ath10k: maintain peer_id for each sta and vif
->   ath10k: add fast peer_map lookup
->   ath10k: add new htt message generation/parsing logic
->   ath10k: implement wake_tx_queue
->   ath10k: implement updating shared htt txq state
->   ath10k: store txq in skb_cb
->   ath10k: keep track of queue depth per txq
->   ath10k: implement push-pull tx
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-I saw two conflicts, please double check my resolutions in the pending
-branch:
+Oddly this patch introduces a new warning:
 
-Applying: ath10k: implement wake_tx_queue
-Using index info to reconstruct a base tree...
-Falling back to patching base and 3-way merge...
-Auto-merging drivers/net/wireless/ath/ath10k/htt_rx.c
-CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/htt_rx.c
-Auto-merging drivers/net/wireless/ath/ath10k/core.c
-Failed to merge in the changes.
-Patch failed at 0007 ath10k: implement wake_tx_queue
+drivers/net/wireless/ath/ath10k/mac.c: In function ath10k_mac_op_tx:
+drivers/net/wireless/ath/ath10k/mac.c:3949:29: warning: is_mgmt may be used uninitialized in this function [-Wuninitialized]
 
-[...]
+But I think that's just a false warning, most likely because my gcc is
+ancient. Do you agree?
 
-Applying: ath10k: implement push-pull tx
-Using index info to reconstruct a base tree...
-Falling back to patching base and 3-way merge...
-Auto-merging drivers/net/wireless/ath/ath10k/htt_rx.c
-CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/htt_rx.c
-Failed to merge in the changes.
-Patch failed at 0011 ath10k: implement push-pull tx
+gcc (Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3
 
 -- 
 Kalle Valo
