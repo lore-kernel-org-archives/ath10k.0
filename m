@@ -1,21 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1acrbG-00033B-Ip
- for ath10k@lists.infradead.org; Mon, 07 Mar 2016 09:37:33 +0000
+ id 1acrmx-0006iB-EZ
+ for ath10k@lists.infradead.org; Mon, 07 Mar 2016 09:49:21 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 07/11] ath10k: implement wake_tx_queue
-Date: Mon, 7 Mar 2016 09:36:50 +0000
-Message-ID: <87mvqavdcl.fsf@kamboji.qca.qualcomm.com>
-References: <1453384006-31907-1-git-send-email-michal.kazior@tieto.com>
- <1456828376-2795-1-git-send-email-michal.kazior@tieto.com>
- <1456828376-2795-8-git-send-email-michal.kazior@tieto.com>
- <87ziubvfzm.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQm=vskz3WhSZjQcMLscWEs4NVoM37hpoYHMiaQb0fYyAw@mail.gmail.com>
-In-Reply-To: <CA+BoTQm=vskz3WhSZjQcMLscWEs4NVoM37hpoYHMiaQb0fYyAw@mail.gmail.com>	(Michal
- Kazior's message of "Mon, 7 Mar 2016 07:04:16 +0100")
+Subject: Re: [PATCH 1/2] ath10k: fix HTT Tx CE ring size
+Date: Mon, 7 Mar 2016 09:48:53 +0000
+Message-ID: <87egbmvcsd.fsf@kamboji.qca.qualcomm.com>
+References: <1456834571-9847-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1456834571-9847-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 1 Mar 2016 13:16:10 +0100")
 Content-Language: en-US
-Content-ID: <C69128F2DC178947AF713BE815BFA19B@qualcomm.com>
+Content-ID: <DB09CCEFB0245B4387D5E9E0BA37059F@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -34,32 +30,14 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@l
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> On 6 March 2016 at 15:27, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->>
->>> This implements very basic support for software
->>> queueing. It also contains some knobs that will be
->>> patched later.
->>>
->>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
->>
->> Oddly this patch introduces a new warning:
->>
->> drivers/net/wireless/ath/ath10k/mac.c: In function ath10k_mac_op_tx:
->> drivers/net/wireless/ath/ath10k/mac.c:3949:29: warning: is_mgmt may be used uninitialized in this function [-Wuninitialized]
->>
->> But I think that's just a false warning, most likely because my gcc is
->> ancient. Do you agree?
+> QCA4019 can queue up to 2500 frames at a time.
+> This means it requires roughly 5000 entires on the
+> ring to work properly. Otherwise random tx failure
+> may occur.
 >
-> Yes, I agree. It must be the fact is_mgmt is set/used across two
-> is_htt condition branches.
->
->
->> gcc (Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3
->
-> gcc (Debian 4.9.2-10) 4.9.2 -- no warning for me.
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Actually kbuild also found this but let's just ignore it.
+Both patches applied, thanks.
 
 -- 
 Kalle Valo
