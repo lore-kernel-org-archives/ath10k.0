@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1acxuo-0002oF-RX
- for ath10k@lists.infradead.org; Mon, 07 Mar 2016 16:22:53 +0000
+ id 1acxxO-0005IC-3e
+ for ath10k@lists.infradead.org; Mon, 07 Mar 2016 16:24:59 +0000
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [RFC] mac80211: Add support for per station rx stats histogram
-Date: Mon, 7 Mar 2016 21:50:50 +0530
-Message-ID: <1457367650-13319-1-git-send-email-mohammed@qca.qualcomm.com>
+Subject: [RFC v1] mac80211: Add support for per station rx stats histogram
+Date: Mon, 7 Mar 2016 21:53:29 +0530
+Message-ID: <1457367809-13637-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -45,11 +45,11 @@ Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
 ---
  net/mac80211/Kconfig       |   12 +++
- net/mac80211/debugfs_sta.c |  231 ++++++++++++++++++++++++++++++++++++++++++++
+ net/mac80211/debugfs_sta.c |  225 ++++++++++++++++++++++++++++++++++++++++++++
  net/mac80211/debugfs_sta.h |    5 +
  net/mac80211/rx.c          |    2 +
  net/mac80211/sta_info.h    |   23 +++++
- 5 files changed, 273 insertions(+)
+ 5 files changed, 267 insertions(+)
 
 diff --git a/net/mac80211/Kconfig b/net/mac80211/Kconfig
 index 3891cbd..89fb17c 100644
@@ -75,10 +75,10 @@ index 3891cbd..89fb17c 100644
  	int "Station hash table maximum size" if MAC80211_DEBUG_MENU
  	default 0
 diff --git a/net/mac80211/debugfs_sta.c b/net/mac80211/debugfs_sta.c
-index a39512f..85c66ef 100644
+index a39512f..ed095f3 100644
 --- a/net/mac80211/debugfs_sta.c
 +++ b/net/mac80211/debugfs_sta.c
-@@ -289,6 +289,136 @@ static ssize_t sta_ht_capa_read(struct file *file, char __user *userbuf,
+@@ -289,6 +289,130 @@ static ssize_t sta_ht_capa_read(struct file *file, char __user *userbuf,
  }
  STA_OPS(ht_capa);
  
@@ -206,16 +206,10 @@ index a39512f..85c66ef 100644
 +}
 +STA_OPS(rx_stats);
 +
-+static ssize_t sta_vht_capa_read(struct file *file, char __user *userbuf,
-+				 size_t count, loff_t *ppos)
-+{
-+	char buf[128], *p = buf;
-+	struct sta_info *sta = file->private_data;
-+
  static ssize_t sta_vht_capa_read(struct file *file, char __user *userbuf,
  				 size_t count, loff_t *ppos)
  {
-@@ -332,6 +462,106 @@ STA_OPS(vht_capa);
+@@ -332,6 +456,106 @@ STA_OPS(vht_capa);
  		debugfs_create_u64(#name, 0400, sta->debugfs.dir,	\
  			(u64 *) &sta->field);
  
@@ -322,7 +316,7 @@ index a39512f..85c66ef 100644
  void ieee80211_sta_debugfs_add(struct sta_info *sta)
  {
  	struct ieee80211_local *local = sta->local;
-@@ -365,6 +595,7 @@ void ieee80211_sta_debugfs_add(struct sta_info *sta)
+@@ -365,6 +589,7 @@ void ieee80211_sta_debugfs_add(struct sta_info *sta)
  	DEBUGFS_ADD(agg_status);
  	DEBUGFS_ADD(ht_capa);
  	DEBUGFS_ADD(vht_capa);
