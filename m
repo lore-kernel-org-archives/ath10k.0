@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adFSx-0000V4-Mb
- for ath10k@lists.infradead.org; Tue, 08 Mar 2016 11:06:17 +0000
-Received: by mail-wm0-x22e.google.com with SMTP id l68so125967915wml.0
- for <ath10k@lists.infradead.org>; Tue, 08 Mar 2016 03:05:54 -0800 (PST)
+ id 1adFa4-0003WX-U4
+ for ath10k@lists.infradead.org; Tue, 08 Mar 2016 11:13:37 +0000
 MIME-Version: 1.0
-In-Reply-To: <1457250469-22994-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1457250469-22994-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Tue, 8 Mar 2016 12:05:53 +0100
-Message-ID: <CA+BoTQmnY0omFh0iddjcVBXubt3WC49DpFumUBY=NSCYs-PuHw@mail.gmail.com>
+Date: Tue, 08 Mar 2016 16:43:15 +0530
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
 Subject: Re: [PATCH v2] ath10k: move mgmt descriptor limit handle under mgmt_tx
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <CA+BoTQmnY0omFh0iddjcVBXubt3WC49DpFumUBY=NSCYs-PuHw@mail.gmail.com>
+References: <1457250469-22994-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <CA+BoTQmnY0omFh0iddjcVBXubt3WC49DpFumUBY=NSCYs-PuHw@mail.gmail.com>
+Message-ID: <f6e8455efdbf88d7f41d9889ef0e353a@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,79 +19,115 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-T24gNiBNYXJjaCAyMDE2IGF0IDA4OjQ3LCBSYWprdW1hciBNYW5vaGFyYW4gPHJtYW5vaGFyQHF0
-aS5xdWFsY29tbS5jb20+IHdyb3RlOgo+IEZpcm13YXJlIHJlc2VydmVzIGZldyBkZXNjcmlwdG9y
-cyBmb3IgbWFuYWdlbWVudCBmcmFtZXMgdHJhbnNtaXNzaW9uLgo+IEluIDE2IE1CU1NJRCBzY2Vu
-YXJpbywgdGhlc2Ugc2xvdHMgd2lsbCBiZSBlYXN5IGV4aGF1c3RlZCBkdWUgdG8gZnJlcXVlbnQK
-PiBwcm9iZSByZXNwb25zZXMuIFNvIGZvciAxMC40IGJhc2VkIHNvbHV0aW9ucywgcHJvYmUgcmVz
-cG9uc2VzIGFyZSBsaW1pdGVkCj4gYnkgYSB0aHJlc2hvbGQgKDI0KS4KPgo+IG1hbmFnZW1lbnQg
-dHggcGF0aCBpcyBzZXBhcmF0ZSBmb3IgYWxsIGV4Y2VwdCB0bHYgYmFzZWQgc29sdXRpb25zLiBT
-aW5jZQo+IHRsdiBzb2x1dGlvbnMgKHFjYTYxNzQgJiBxY2E5Mzc3KSBkbyBub3Qgc3VwcG9ydCAx
-NiBBUCBpbnRlcmZhY2VzLCBpdCBpcwo+IHNhZmUgdG8gbW92ZSBtYW5hZ2VtZW50IGRlc2NyaXB0
-b3IgbGltaXRhdGlvbiBjaGVjayB1bmRlciBtZ210X3R4Cj4gZnVuY3Rpb24uIFRob3VnaCBDUFUg
-aW1wcm92ZW1lbnQgaXMgbmVnbGlnaWJsZSwgdW5saWtlbHkgY29uZGl0aW9ucyBvcgo+IG5ldmVy
-IGhpdCBjb25kaXRpb25zIGluIGhvdCBwYXRoIGNhbiBiZSBhdm9pZGVkIG9uIGRhdGEgdHJhbnNt
-aXNzaW9uLgo+Cj4gU2lnbmVkLW9mZi1ieTogUmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBx
-dGkucXVhbGNvbW0uY29tPgo+IC0tLQo+IHYyOgo+ICAgLSByZWJhc2VkIG9uIHRvcCBvZiBNaWNo
-YWwgY2hhbmdlcwpbLi4uXQo+IEBAIC0zOTc5LDEzICszOTc3LDIyIEBAIHN0YXRpYyB2b2lkIGF0
-aDEwa19tYWNfb3BfdHgoc3RydWN0IGllZWU4MDIxMV9odyAqaHcsCj4gICAgICAgICBpc19odHQg
-PSAodHhwYXRoID09IEFUSDEwS19NQUNfVFhfSFRUIHx8Cj4gICAgICAgICAgICAgICAgICAgdHhw
-YXRoID09IEFUSDEwS19NQUNfVFhfSFRUX01HTVQpOwo+Cj4gLSAgICAgICBpZiAoaXNfaHR0KSB7
-Cj4gLSAgICAgICAgICAgICAgIHNwaW5fbG9ja19iaCgmYXItPmh0dC50eF9sb2NrKTsKPiAtCj4g
-LSAgICAgICAgICAgICAgIGlzX21nbXQgPSBpZWVlODAyMTFfaXNfbWdtdChoZHItPmZyYW1lX2Nv
-bnRyb2wpOwo+ICsgICAgICAgaXNfbWdtdCA9IGllZWU4MDIxMV9pc19tZ210KGhkci0+ZnJhbWVf
-Y29udHJvbCk7Cj4gKyAgICAgICBzcGluX2xvY2tfYmgoJmFyLT5odHQudHhfbG9jayk7Cj4gKyAg
-ICAgICBpZiAoaXNfbWdtdCkgewo+ICAgICAgICAgICAgICAgICBpc19wcmVzcCA9IGllZWU4MDIx
-MV9pc19wcm9iZV9yZXNwKGhkci0+ZnJhbWVfY29udHJvbCk7Cj4KPiAtICAgICAgICAgICAgICAg
-cmV0ID0gYXRoMTBrX2h0dF90eF9pbmNfcGVuZGluZyhodHQsIGlzX21nbXQsIGlzX3ByZXNwKTsK
-PiArICAgICAgICAgICAgICAgcmV0ID0gYXRoMTBrX2h0dF90eF9tZ210X2luY19wZW5kaW5nKGh0
-dCwgaXNfcHJlc3ApOwo+ICsgICAgICAgICAgICAgICBpZiAocmV0KSB7Cj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgYXRoMTBrX3dhcm4oYXIsICJmYWlsZWQgdG8gaW5jcmVhc2UgdHggbWdtdCBw
-ZW5kaW5nIGNvdW50OiAlZCwgZHJvcHBpbmdcbiIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgcmV0KTsKPiArICAgICAgICAgICAgICAgICAgICAgICBzcGluX3VubG9ja19i
-aCgmYXItPmh0dC50eF9sb2NrKTsKPiArICAgICAgICAgICAgICAgICAgICAgICBpZWVlODAyMTFf
-ZnJlZV90eHNrYihhci0+aHcsIHNrYik7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJu
-Owo+ICsgICAgICAgICAgICAgICB9Cj4gKyAgICAgICB9Cj4gKyAgICAgICBpZiAoaXNfaHR0KSB7
-Cj4gKyAgICAgICAgICAgICAgIHJldCA9IGF0aDEwa19odHRfdHhfaW5jX3BlbmRpbmcoaHR0KTsK
-PiAgICAgICAgICAgICAgICAgaWYgKHJldCkgewo+ICAgICAgICAgICAgICAgICAgICAgICAgIGF0
-aDEwa193YXJuKGFyLCAiZmFpbGVkIHRvIGluY3JlYXNlIHR4IHBlbmRpbmcgY291bnQ6ICVkLCBk
-cm9wcGluZ1xuIiwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXQpOwoK
-VGhpcyBkb2Vzbid0IGxvb2sgZ29vZC4KCllvdSdsbCBjYWxsIGF0aDEwa19odHRfdHhfbWdtdF9p
-bmNfcGVuZGluZygpIHJlZ2FyZGxlc3Mgb2YgdGhlIHR4IHBhdGgKYmVpbmcgY2hvc2VuLiBGV0lX
-IEl0IGNvdWxkIGJlIFdNSSBvbiBvbGRlciBmaXJtd2FyZSwgb29wcy4KCkhvbGRpbmcgdGhlIGxv
-Y2sgZm9yIHRoZSBlbnRpcmUgdGltZSBkb2Vzbid0IG1ha2UgbXVjaCBzZW5zZSBlaXRoZXIsIGRv
-ZXMgaXQ/CgpJIHRoaW5rIGl0IHNob3VsZCBiZSBtb3JlIGxpa2U6CgogaWYgKGlzX2h0dCkgewog
-ICAgaXNfbWdtdCA9IC4uOwogICAgaXNfcHJlc3AgPSAuLjsKCiAgICBsb2NrKCkKICAgIHJldCA9
-IGluY19wZW5kaW5nKGh0dCk7CiAgICBpZiAocmV0KSB7IHVubG9jaygpOyBnb3RvIGRyb3AgfQoK
-ICAgIHJldCA9IG1nbXRfaW5jX3BlbmRpbmcoaHR0LCBpc19tZ210LCBpc19wcmVzcCk7CiAgICBp
-ZiAocmV0KSB7IGRlY19wZW5kaW5nKGh0dCk7IHVubG9jaygpOyBnb3RvIGRyb3AgfQoKICAgIHVu
-bG9jaygpOwogfQogLi4uCiByZXQgPSBtYWNfdHgoKQogaWYgKHJldCkgewogICBpZiAoaXNfaHR0
-KSB7CiAgICAgbG9jaygpOwogICAgIGRlY19wZW5kaW5nKCk7CiAgICAgaWYgKGlzX21nbXQpCiAg
-ICAgICAgbWdtdF9kZWNfcGVuZGluZygpCiAgICAgdW5sb2NrKCk7CiB9Cgpubz8KCgo+IEBAIC0z
-OTkzLDE2ICs0MDAwLDE3IEBAIHN0YXRpYyB2b2lkIGF0aDEwa19tYWNfb3BfdHgoc3RydWN0IGll
-ZWU4MDIxMV9odyAqaHcsCj4gICAgICAgICAgICAgICAgICAgICAgICAgaWVlZTgwMjExX2ZyZWVf
-dHhza2IoYXItPmh3LCBza2IpOwo+ICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybjsKPiAg
-ICAgICAgICAgICAgICAgfQo+IC0KPiAtICAgICAgICAgICAgICAgc3Bpbl91bmxvY2tfYmgoJmFy
-LT5odHQudHhfbG9jayk7Cj4gICAgICAgICB9Cj4gKyAgICAgICBzcGluX3VubG9ja19iaCgmYXIt
-Pmh0dC50eF9sb2NrKTsKPgo+ICAgICAgICAgcmV0ID0gYXRoMTBrX21hY190eChhciwgdmlmLCBz
-dGEsIHR4bW9kZSwgdHhwYXRoLCBza2IpOwo+ICAgICAgICAgaWYgKHJldCkgewo+ICAgICAgICAg
-ICAgICAgICBhdGgxMGtfd2FybihhciwgImZhaWxlZCB0byB0cmFuc21pdCBmcmFtZTogJWRcbiIs
-IHJldCk7Cj4gICAgICAgICAgICAgICAgIGlmIChpc19odHQpIHsKPiAgICAgICAgICAgICAgICAg
-ICAgICAgICBzcGluX2xvY2tfYmgoJmFyLT5odHQudHhfbG9jayk7Cj4gLSAgICAgICAgICAgICAg
-ICAgICAgICAgYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZyhodHQsIGlzX21nbXQpOwo+ICsgICAg
-ICAgICAgICAgICAgICAgICAgIGF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmcoaHR0KTsKPiArICAg
-ICAgICAgICAgICAgICAgICAgICBpZiAoaXNfbWdtdCkKPiArICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIGF0aDEwa19odHRfdHhfbWdtdF9kZWNfcGVuZGluZyhodHQpOwoKQW5kIG5vdyB0
-aGUgbWdtdF9kZWNfcGVuZGluZygpIGlzIHVuYmFsYW5jZWQuIFlvdSB1bmNvbmRpdGlvbmFsbHkg
-KHdydAppc19odHQpIGluY3JlYXNlIHRoZSBtZ210X2luY19wZW5kaW5nIGJ1dCBkZWNyZW1lbnQg
-b25seSBpZiBpc19odHQgaXMKdHJ1ZS4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+On , Michal Kazior wrote:
+> On 6 March 2016 at 08:47, Rajkumar Manoharan 
+> <rmanohar@qti.qualcomm.com> wrote:
+>> Firmware reserves few descriptors for management frames transmission.
+>> In 16 MBSSID scenario, these slots will be easy exhausted due to 
+>> frequent
+>> probe responses. So for 10.4 based solutions, probe responses are 
+>> limited
+>> by a threshold (24).
+>> 
+>> management tx path is separate for all except tlv based solutions. 
+>> Since
+>> tlv solutions (qca6174 & qca9377) do not support 16 AP interfaces, it 
+>> is
+>> safe to move management descriptor limitation check under mgmt_tx
+>> function. Though CPU improvement is negligible, unlikely conditions or
+>> never hit conditions in hot path can be avoided on data transmission.
+>> 
+>> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+>> ---
+>> v2:
+>>   - rebased on top of Michal changes
+> [...]
+>> @@ -3979,13 +3977,22 @@ static void ath10k_mac_op_tx(struct 
+>> ieee80211_hw *hw,
+>>         is_htt = (txpath == ATH10K_MAC_TX_HTT ||
+>>                   txpath == ATH10K_MAC_TX_HTT_MGMT);
+>> 
+>> -       if (is_htt) {
+>> -               spin_lock_bh(&ar->htt.tx_lock);
+>> -
+>> -               is_mgmt = ieee80211_is_mgmt(hdr->frame_control);
+>> +       is_mgmt = ieee80211_is_mgmt(hdr->frame_control);
+>> +       spin_lock_bh(&ar->htt.tx_lock);
+>> +       if (is_mgmt) {
+>>                 is_presp = 
+>> ieee80211_is_probe_resp(hdr->frame_control);
+>> 
+>> -               ret = ath10k_htt_tx_inc_pending(htt, is_mgmt, 
+>> is_presp);
+>> +               ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_presp);
+>> +               if (ret) {
+>> +                       ath10k_warn(ar, "failed to increase tx mgmt 
+>> pending count: %d, dropping\n",
+>> +                                   ret);
+>> +                       spin_unlock_bh(&ar->htt.tx_lock);
+>> +                       ieee80211_free_txskb(ar->hw, skb);
+>> +                       return;
+>> +               }
+>> +       }
+>> +       if (is_htt) {
+>> +               ret = ath10k_htt_tx_inc_pending(htt);
+>>                 if (ret) {
+>>                         ath10k_warn(ar, "failed to increase tx pending 
+>> count: %d, dropping\n",
+>>                                     ret);
+> 
+> This doesn't look good.
+> 
+> You'll call ath10k_htt_tx_mgmt_inc_pending() regardless of the tx path
+> being chosen. FWIW It could be WMI on older firmware, oops.
+> 
+Good catch.. Since inc_pending is moved out of htt_tx, i missed to 
+handle it for htt alone.
+
+
+> Holding the lock for the entire time doesn't make much sense either, 
+> does it?
+> 
+> I think it should be more like:
+> 
+>  if (is_htt) {
+>     is_mgmt = ..;
+>     is_presp = ..;
+> 
+>     lock()
+>     ret = inc_pending(htt);
+>     if (ret) { unlock(); goto drop }
+> 
+>     ret = mgmt_inc_pending(htt, is_mgmt, is_presp);
+>     if (ret) { dec_pending(htt); unlock(); goto drop }
+> 
+>     unlock();
+>  }
+>  ...
+>  ret = mac_tx()
+>  if (ret) {
+>    if (is_htt) {
+>      lock();
+>      dec_pending();
+>      if (is_mgmt)
+>         mgmt_dec_pending()
+>      unlock();
+>  }
+> 
+> no?
+> 
+yes.. now it looks good. thanks for your comments
+
+-Rajkumar
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
