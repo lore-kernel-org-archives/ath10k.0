@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adKjK-0001HA-KT
- for ath10k@lists.infradead.org; Tue, 08 Mar 2016 16:43:31 +0000
-MIME-Version: 1.0
-Date: Tue, 08 Mar 2016 22:13:09 +0530
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: [PATCH v3] ath10k: move mgmt descriptor limit handle under mgmt_tx
-In-Reply-To: <CA+BoTQk3i9QjF-W_1AZpMcwyceO-KDx8=R-swP0J-thqdxRcMg@mail.gmail.com>
-References: <1457438096-20071-1-git-send-email-rmanohar@qti.qualcomm.com>
- <CA+BoTQ=Huzf7WoXMXcyj8yrykrJOd5BMc1EnmccqZgt7M1M_uA@mail.gmail.com>
- <aa44bd32c9f94d8d1a90840189ac0602@codeaurora.org>
- <CA+BoTQk3i9QjF-W_1AZpMcwyceO-KDx8=R-swP0J-thqdxRcMg@mail.gmail.com>
-Message-ID: <3f8bfeb73178ec267d088f91a2f0350a@codeaurora.org>
+ id 1adKsO-00089p-Kv
+ for ath10k@lists.infradead.org; Tue, 08 Mar 2016 16:52:54 +0000
+Message-ID: <1457455943.24270.8.camel@sipsolutions.net>
+Subject: Re: [PATCH v1] cfg80211/nl80211: Add support for
+ NL80211_STA_INFO_RX_DURATION
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Tue, 08 Mar 2016 17:52:23 +0100
+In-Reply-To: <1457348614-10584-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1457348614-10584-1-git-send-email-mohammed@qca.qualcomm.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,69 +19,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+Cc: mohammed@codeaurora.org, kvalo@codeaurora.org, ath10k@lists.infradead.org
 
-On , Michal Kazior wrote:
-> On 8 March 2016 at 13:54, Rajkumar Manoharan <rmanohar@codeaurora.org> 
-> wrote:
->> On , Michal Kazior wrote:
->>> 
->>> On 8 March 2016 at 12:54, Rajkumar Manoharan 
->>> <rmanohar@qti.qualcomm.com>
->>> wrote:
-...]
->>>> 
->>>>         skb_cb = ATH10K_SKB_CB(msdu);
->>>>         txq = skb_cb->txq;
->>>>         artxq = (void *)txq->drv_priv;
->>>> 
->>>> -       if (unlikely(skb_cb->flags & ATH10K_SKB_F_MGMT) &&
->>>> -           ar->hw_params.max_probe_resp_desc_thres)
->>>> -               limit_mgmt_desc = true;
->>>> -
->>> 
->>> 
->>> Oh wait.. I didn't pay attention before, but this looks rather ugly.
->>> With this you will actually make the num_pending_mgmt_tx spin
->>> endlessly upwards on firmware with HTT 3.0 (and uses TX_FRM for mgmt
->>> tx and TX_COMPL_IND for completions), no?
->>> 
->> Oops.. num_pending_mgmt_tx should be incremented only for MGMT_TX. 
->> Thats
->> why it is moved out of txrx_tx_unref.
-> 
-> Hmm.. in that case I think you should change is_htt in mac_op_tx() to
-> compare only against TX_HTT_MGMT (instead of both TX_HTT and
-> TX_HTT_MGMT).
-> 
-> Note, the is_mgmt should stay as it is possible for the TX_HTT_MGMT to
-> be used for non-mgmt frames in some cases. This also implies you need
-> to check for ATH10K_SKB_F_MGMT on the mgmt-tx-completion event as well
-> (you might get to handle NullFunc there).
-> 
-If a frame is transmitted via MGMT_TX, the reserved descriptor slots 
-will be
-used in firmware. So irrespective of type,  num_pending_mgmt_tx should 
-count
-all frames that are transmitted via MGMT_TX to control probe resp. Here 
-mgmt_tx
-does not mean frame type but HTT tx type (HTT_H2T_MSG_TYPE_MGMT_TX).
-
-So ATH10K_SKB_F_MGMT check in tx-compl is not needed. As you pointed 
-out,
-since nullfunc also uses MGMT_TX, is_mgmt should be as below. (not frame 
-type)
-
-is_mgmt = (txpath == ATH10K_MAC_TX_HTT_MGMT);
-
--Rajkumar
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gTW9uLCAyMDE2LTAzLTA3IGF0IDE2OjMzICswNTMwLCBNb2hhbW1lZCBTaGFmaSBTaGFqYWto
+YW4gd3JvdGU6Cj4gRnJvbTogTW9oYW1tZWQgU2hhZmkgU2hhamFraGFuIDxtb2hhbW1lZEBxdGku
+cXVhbGNvbW0uY29tPgo+IAo+IEFkZCBzdXBwb3J0IGZvciBuZXcgbmV0bGluayBhdHRyaWJ1dGUg
+J05MODAyMTFfU1RBX0lORk9fUlhfRFVSQVRJT04nCj4gVGhpcyBmbGFnIHdpbGwgYmUgc2V0IHdo
+ZW4gZHJpdmVycyBjYW4gZmlsbCByeF9kdXJhdGlvbiAodmVuZG9yCj4gc3BlY2lmaWMgdG90YWwg
+YWlyIHRpbWUodXNlY3MpIGZvciBkYXRhL21hbmFnZW1lbnQgZnJhbWVzIGZyb20gdGhlCj4gY29u
+bmVjdGVkIGNsaWVudCkgdmlhICdkcnZfc3RhX3N0YXRpc3RpY3MnIGNhbGxiYWNrCj4gCj4gQWxz
+byBtYWtlIHN0YV9pbmZvIGZsYWdzICdmaWxsZWQnIGFzIDY0IGJpdCB0byBhY2NvbW1vZGF0ZSBm
+b3IgbmV3Cj4gcGVyIHN0YXRpb24gc3RhdHMuIEV4dGVuZCAnUFVUX1NJTkZPJyBmb3Igc3VwcG9y
+dGluZyByeF9kdXJhdGlvbgo+IGZpZWxkIGFuZCBhbnkgbmV3IHBlciBzdGEgaW5mb3JtYXRpb24g
+aW4gZnV0dXJlCj4gCj4gU2lnbmVkLW9mZi1ieTogTW9oYW1tZWQgU2hhZmkgU2hhamFraGFuIDxt
+b2hhbW1lZEBxdGkucXVhbGNvbW0uY29tPgo+IC0tLQo+IFt2MV3CoAo+IDEuIEZpeGVkIHR5cG8g
+Zm9yIGFjY29tbW9kYXRlCj4gMi4gY2hhbmdlZCB0aGUgZG9jIGZvciByeF9kdXJhdGlvbiBhcyAn
+dmVuZG9yIHNwZWNpZmljCj4gaW1wbGVtZW50YXRpb24nCgpObywgSSB3YW50IGl0IGRlZmluZWQg
+Zm9yIGFsbCBjYXNlcywgbm90IGxlZnQgdW5kZWZpbmVkLgoKam9oYW5uZXMKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hdGgxMGsK
