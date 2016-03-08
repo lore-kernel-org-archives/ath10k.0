@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adFa4-0003WX-U4
- for ath10k@lists.infradead.org; Tue, 08 Mar 2016 11:13:37 +0000
+ id 1adFhq-0002c6-OW
+ for ath10k@lists.infradead.org; Tue, 08 Mar 2016 11:21:40 +0000
 MIME-Version: 1.0
-Date: Tue, 08 Mar 2016 16:43:15 +0530
+Date: Tue, 08 Mar 2016 16:51:17 +0530
 From: Rajkumar Manoharan <rmanohar@codeaurora.org>
 Subject: Re: [PATCH v2] ath10k: move mgmt descriptor limit handle under mgmt_tx
 In-Reply-To: <CA+BoTQmnY0omFh0iddjcVBXubt3WC49DpFumUBY=NSCYs-PuHw@mail.gmail.com>
 References: <1457250469-22994-1-git-send-email-rmanohar@qti.qualcomm.com>
  <CA+BoTQmnY0omFh0iddjcVBXubt3WC49DpFumUBY=NSCYs-PuHw@mail.gmail.com>
-Message-ID: <f6e8455efdbf88d7f41d9889ef0e353a@codeaurora.org>
+Message-ID: <4ac3af9a07398243a8a363692cc62f47@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -88,42 +88,13 @@ On , Michal Kazior wrote:
 > You'll call ath10k_htt_tx_mgmt_inc_pending() regardless of the tx path
 > being chosen. FWIW It could be WMI on older firmware, oops.
 > 
-Good catch.. Since inc_pending is moved out of htt_tx, i missed to 
-handle it for htt alone.
-
-
 > Holding the lock for the entire time doesn't make much sense either, 
 > does it?
 > 
-> I think it should be more like:
-> 
->  if (is_htt) {
->     is_mgmt = ..;
->     is_presp = ..;
-> 
->     lock()
->     ret = inc_pending(htt);
->     if (ret) { unlock(); goto drop }
-> 
->     ret = mgmt_inc_pending(htt, is_mgmt, is_presp);
->     if (ret) { dec_pending(htt); unlock(); goto drop }
-> 
->     unlock();
->  }
->  ...
->  ret = mac_tx()
->  if (ret) {
->    if (is_htt) {
->      lock();
->      dec_pending();
->      if (is_mgmt)
->         mgmt_dec_pending()
->      unlock();
->  }
-> 
-> no?
-> 
-yes.. now it looks good. thanks for your comments
+inc_pending is being called from different contexts. So it is possible 
+that inc_pending will return false
+after mgmt_inc_pending. Thats why lock is hold until both got increased 
+successfully.
 
 -Rajkumar
 
