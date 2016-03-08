@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yw0-x229.google.com ([2607:f8b0:4002:c05::229])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adKfJ-0007a3-Hc
- for ath10k@lists.infradead.org; Tue, 08 Mar 2016 16:39:22 +0000
-Received: by mail-yw0-x229.google.com with SMTP id g3so16437972ywa.3
- for <ath10k@lists.infradead.org>; Tue, 08 Mar 2016 08:39:01 -0800 (PST)
-Date: Tue, 8 Mar 2016 11:38:58 -0500
-From: Matthew Keeler <mjkeeler7@gmail.com>
-Message-ID: <etPan.56df0022.51e3bd34.e2e@wireless-tns3477l.keeler.lan>
-In-Reply-To: <CA+BoTQkzEu_Xc17iQfECCeH-VkFXhWUOGNsno8a80EP_32Wc3g@mail.gmail.com>
-References: <etPan.56dedd37.c95b5e3.e2e@wireless-tns3477l.keeler.lan>
- <CA+BoTQkzEu_Xc17iQfECCeH-VkFXhWUOGNsno8a80EP_32Wc3g@mail.gmail.com>
- <CA+BoTQkzEu_Xc17iQfECCeH-VkFXhWUOGNsno8a80EP_32Wc3g@mail.gmail.com>
-Subject: Re: Performance degradation over time
+ id 1adKjK-0001HA-KT
+ for ath10k@lists.infradead.org; Tue, 08 Mar 2016 16:43:31 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
+Date: Tue, 08 Mar 2016 22:13:09 +0530
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: Re: [PATCH v3] ath10k: move mgmt descriptor limit handle under mgmt_tx
+In-Reply-To: <CA+BoTQk3i9QjF-W_1AZpMcwyceO-KDx8=R-swP0J-thqdxRcMg@mail.gmail.com>
+References: <1457438096-20071-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <CA+BoTQ=Huzf7WoXMXcyj8yrykrJOd5BMc1EnmccqZgt7M1M_uA@mail.gmail.com>
+ <aa44bd32c9f94d8d1a90840189ac0602@codeaurora.org>
+ <CA+BoTQk3i9QjF-W_1AZpMcwyceO-KDx8=R-swP0J-thqdxRcMg@mail.gmail.com>
+Message-ID: <3f8bfeb73178ec267d088f91a2f0350a@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +21,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-wqAKSSBhbSB1c2luZyBmaXJtd2FyZSB2ZXJzaW9uIDEwLjIuNC43MC45LTIgKGZyb20gdGhlIGxp
-bnV4LWZpcm13YXJlIGFyY2ggcGFja2FnZSkuIFNvIGl0IGxvb2tzIHRvIGJlIGEgbGl0dGxlIG91
-dCBvZiBkYXRlLiBJIHdpbGwgdHJ5IHRoZSBsYXRlc3QgZmlybXdhcmUgYW5kIHNlZSBpZiBpdCBm
-aXhlcyB0aGluZ3MuICAKClRoYW5rcyBmb3IgdGhlIHRpcHMgYWJvdXQgdGhlIHNpbXVsYXRlIGZp
-cm13YXJlIGNyYXNoIGFuZCB0aGUgZncgc3RhdHMuwqAKCi0tICAKTWF0dCBLZWVsZXIKCk9uIE1h
-cmNoIDgsIDIwMTYgYXQgMTE6MzI6NTgsIE1pY2hhbCBLYXppb3IgKG1pY2hhbC5rYXppb3JAdGll
-dG8uY29tKG1haWx0bzptaWNoYWwua2F6aW9yQHRpZXRvLmNvbSkpIHdyb3RlOgoKPiBPbiA4IE1h
-cmNoIDIwMTYgYXQgMTU6MDksIE1hdHRoZXcgS2VlbGVyIHdyb3RlOgo+ID4KPiA+IEkgaGF2ZSBh
-biBhcmNoIGxpbnV4IGJveCBydW5uaW5nIGtlcm5lbCB2ZXJzaW9uIDQuNCBhbmQgd2l0aGluIGl0
-IHR3byBBaXJldG9zIEFFWC1RQ0E5ODgwLU5YIGNhcmRzIGluIGl0LiBJIGhhdmUgaG9zdGFwZCBj
-b25maWd1cmVkIHRvIHVzZSBvbmUgZm9yIDIuNCBHSHogYmduIGFuZCB0aGUgb3RoZXIgZm9yIDUg
-R0h6IG4vYWMuIEFmdGVyIGEgZnJlc2ggYm9vdCBvZiB0aGUgYm94IEkgY2FuIGdldCBhYm91dCA1
-ME1icHMgb3ZlciAyLjQgR0h6IHVzaW5nIGlwZXJmIGFuZCAzNTAtNDAwTUJwcyBvdmVyIDVHSHou
-IEFmdGVyIGEgY291cGxlIG9mIGRheXMgb3Igc28gdGhlIHBlcmZvcm1hbmNlIG9mIG15IDIuNEdI
-eiBjYXJkIGlzIGRyb3BwaW5nIHRvIGFib3V0IDVNYnBzLiBIYXMgYW55b25lIGVsc2UgaGFkIHNp
-bWlsYXIgaXNzdWVzIHdpdGggdGhpcyBraW5kIG9mIHBlcmZvcm1hbmNlIGRlZ3JhZGF0aW9uIG9y
-IGRvZXMgYW55b25lIGtub3cgYSBnb29kIHBsYWNlIHRvIHN0YXJ0IHRvIHRyeSBhbmQgZmlndXJl
-IHdoeSB0aGlzIGNvdWxkIGJlIGhhcHBlbmluZy4KPiA+Cj4gPiBBIGNvdXBsZSB0aGluZ3MgSSBo
-YXZlIGNoZWNrZWQ6IG5vdGhpbmcgaW4gZG1lc2csIG5vdGhpbmcgYWJub3JtYWwgaW4gaG9zdGFw
-ZCBsb2dzLCByZXN0YXJ0aW5nIGhvc3RhcGQgZG9lc27igJl0IHNlZW0gdG8gaGVscCwgb25seSBy
-ZWJvb3RpbmcgaGVscHMuCj4gIAo+IEhpLAo+ICAKPiBZb3UgZGlkbid0IG1lbnRpb24gZmlybXdh
-cmUgdmVyc2lvbiB0aGF0IHlvdSdyZSB1c2luZzoKPiAgCj4gZG1lc2cgfCBncmVwIGF0aDEway4q
-ZmlybXdhcmUKPiAgCj4gRnJvbSB0aGUgbG9va3Mgb2YgaXQgaXQgc2VlbXMgbGlrZSBhIGZpcm13
-YXJlIChwcm9iYWJseSByYXRlIGNvbnRyb2wKPiBtb2R1bGUpIGlzc3VlIGFuZCB5b3UgY2FuJ3Qg
-ZG8gbXVjaCBpbiBkcml2ZXIgYWJvdXQgdGhhdC4gQXQgYmVzdCB5b3UKPiBjb3VsZCBmb3JjZSBm
-aXJtd2FyZSByZWJvb3QgdmlhIGRlYnVnZnMgdG8gd29ya2Fyb3VuZCB0aGUgcHJvYmxlbToKPiAg
-Cj4gZWNobyBody1yZXN0YXJ0ID4gL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeTAvYXRo
-MTBrL3NpbXVsYXRlX2Z3X2NyYXNoCj4gIAo+IEZXSVcgSSBzdWdnZXN0IHlvdSB0byB0cnkgb3V0
-IGxhdGVzdCAxMC4yLjQgaWYgeW91IGRpZG4ndCBkbyB0aGF0IGFscmVhZHksIGUuZy4KPiAgCj4g
-aHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2FyZS9ibG9iL21hc3Rlci9RQ0E5
-ODhYLzEwLjIuNC9maXJtd2FyZS01LmJpbl8xMC4yLjQuNzAuMjItMgo+ICAKPiBJIGd1ZXNzIHlv
-dSBjb3VsZCBhbHNvIHRyeSBnZXR0aW5nIGZ3IHN0YXRzIGFmdGVyIGZyZXNoIGJvb3QgYW5kIHRo
-ZW4KPiBhZnRlciB0aGUgcHJvYmxlbSBpcyBvYnNlcnZlZCBhbmQgY29tcGFyZToKPiAgCj4gY2F0
-IC9zeXMva2VybmVsL2RlYnVnL2llZWU4MDIxMS9waHkwL2F0aDEway9md19zdGF0cwo+ICAKPiAg
-Cj4gTWljaGHFggoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On , Michal Kazior wrote:
+> On 8 March 2016 at 13:54, Rajkumar Manoharan <rmanohar@codeaurora.org> 
+> wrote:
+>> On , Michal Kazior wrote:
+>>> 
+>>> On 8 March 2016 at 12:54, Rajkumar Manoharan 
+>>> <rmanohar@qti.qualcomm.com>
+>>> wrote:
+...]
+>>>> 
+>>>>         skb_cb = ATH10K_SKB_CB(msdu);
+>>>>         txq = skb_cb->txq;
+>>>>         artxq = (void *)txq->drv_priv;
+>>>> 
+>>>> -       if (unlikely(skb_cb->flags & ATH10K_SKB_F_MGMT) &&
+>>>> -           ar->hw_params.max_probe_resp_desc_thres)
+>>>> -               limit_mgmt_desc = true;
+>>>> -
+>>> 
+>>> 
+>>> Oh wait.. I didn't pay attention before, but this looks rather ugly.
+>>> With this you will actually make the num_pending_mgmt_tx spin
+>>> endlessly upwards on firmware with HTT 3.0 (and uses TX_FRM for mgmt
+>>> tx and TX_COMPL_IND for completions), no?
+>>> 
+>> Oops.. num_pending_mgmt_tx should be incremented only for MGMT_TX. 
+>> Thats
+>> why it is moved out of txrx_tx_unref.
+> 
+> Hmm.. in that case I think you should change is_htt in mac_op_tx() to
+> compare only against TX_HTT_MGMT (instead of both TX_HTT and
+> TX_HTT_MGMT).
+> 
+> Note, the is_mgmt should stay as it is possible for the TX_HTT_MGMT to
+> be used for non-mgmt frames in some cases. This also implies you need
+> to check for ATH10K_SKB_F_MGMT on the mgmt-tx-completion event as well
+> (you might get to handle NullFunc there).
+> 
+If a frame is transmitted via MGMT_TX, the reserved descriptor slots 
+will be
+used in firmware. So irrespective of type,  num_pending_mgmt_tx should 
+count
+all frames that are transmitted via MGMT_TX to control probe resp. Here 
+mgmt_tx
+does not mean frame type but HTT tx type (HTT_H2T_MSG_TYPE_MGMT_TX).
+
+So ATH10K_SKB_F_MGMT check in tx-compl is not needed. As you pointed 
+out,
+since nullfunc also uses MGMT_TX, is_mgmt should be as below. (not frame 
+type)
+
+is_mgmt = (txpath == ATH10K_MAC_TX_HTT_MGMT);
+
+-Rajkumar
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
