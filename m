@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adEAt-000189-89
- for ath10k@lists.infradead.org; Tue, 08 Mar 2016 09:43:32 +0000
-Date: Tue, 8 Mar 2016 15:12:50 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [RFC v1] mac80211: Add support for per station rx stats histogram
-Message-ID: <20160308094250.GA3685@atheros-ThinkPad-T61>
-References: <1457367809-13637-1-git-send-email-mohammed@qca.qualcomm.com>
- <1457424451.2283.2.camel@sipsolutions.net>
+ id 1adFSx-0000V4-Mb
+ for ath10k@lists.infradead.org; Tue, 08 Mar 2016 11:06:17 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id l68so125967915wml.0
+ for <ath10k@lists.infradead.org>; Tue, 08 Mar 2016 03:05:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1457424451.2283.2.camel@sipsolutions.net>
+In-Reply-To: <1457250469-22994-1-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1457250469-22994-1-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Tue, 8 Mar 2016 12:05:53 +0100
+Message-ID: <CA+BoTQmnY0omFh0iddjcVBXubt3WC49DpFumUBY=NSCYs-PuHw@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: move mgmt descriptor limit handle under mgmt_tx
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,67 +20,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi Johannes,
-
-On Tue, Mar 08, 2016 at 09:07:31AM +0100, Johannes Berg wrote:
-> On Mon, 2016-03-07 at 21:53 +0530, Mohammed Shafi Shajakhan wrote:
-> >=A0
-> > +#define IEEE80211_HT_MCS_NUM		32
-> > +#define IEEE80211_VHT_MCS_NUM		10
-> > +#define IEEE80211_BW_NUM		4
-> > +#define IEEE80211_NSS_NUM		4
-> > +#define IEEE80211_GI_NUM		2
-> > +#define IEEE80211_RATE_TABLE_NUM	320
-> > +#define IEEE80211_LEGACY_RATE_NUM	12
-> =
-
-> > +#ifdef CONFIG_MAC80211_DEBUG_PER_STA_RX_STATS
-> > +	u64 rx_legacy_pkt[IEEE80211_LEGACY_RATE_NUM];
-> > +	u64 rx_ht_pkt[IEEE80211_HT_MCS_NUM];
-> > +	u64 rx_vht_pkt[IEEE80211_VHT_MCS_NUM];
-> > +	u64 rx_bw_pkt[IEEE80211_BW_NUM];
-> > +	u64 rx_nss_pkt[IEEE80211_NSS_NUM];
-> > +	u64 rx_gi_pkt[IEEE80211_GI_NUM];
-> > +	u64 rx_rate_pkt[IEEE80211_RATE_TABLE_NUM];
-> > +	u64 rx_legacy_byte[IEEE80211_LEGACY_RATE_NUM];
-> > +	u64 rx_ht_byte[IEEE80211_HT_MCS_NUM];
-> > +	u64 rx_vht_byte[IEEE80211_VHT_MCS_NUM];
-> > +	u64 rx_bw_byte[IEEE80211_BW_NUM];
-> > +	u64 rx_nss_byte[IEEE80211_NSS_NUM];
-> > +	u64 rx_gi_byte[IEEE80211_GI_NUM];
-> > +	u64 rx_rate_byte[IEEE80211_RATE_TABLE_NUM];
-> > +#endif
-> =
-
-> Do you know how much data this is?!
-> =
-
-> Felix is going to kill both of us if I apply it.
-
-[shafi] :-(
-
-> =
-
-> Please look at reviving my rate-statistics patch and do the remaining
-> work in userspace:
-> =
-
-> http://thread.gmane.org/gmane.linux.kernel.wireless.general/133172
->
-
-[shafi] thank you, I will check this out.
-
-regards,
-shafi
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNiBNYXJjaCAyMDE2IGF0IDA4OjQ3LCBSYWprdW1hciBNYW5vaGFyYW4gPHJtYW5vaGFyQHF0
+aS5xdWFsY29tbS5jb20+IHdyb3RlOgo+IEZpcm13YXJlIHJlc2VydmVzIGZldyBkZXNjcmlwdG9y
+cyBmb3IgbWFuYWdlbWVudCBmcmFtZXMgdHJhbnNtaXNzaW9uLgo+IEluIDE2IE1CU1NJRCBzY2Vu
+YXJpbywgdGhlc2Ugc2xvdHMgd2lsbCBiZSBlYXN5IGV4aGF1c3RlZCBkdWUgdG8gZnJlcXVlbnQK
+PiBwcm9iZSByZXNwb25zZXMuIFNvIGZvciAxMC40IGJhc2VkIHNvbHV0aW9ucywgcHJvYmUgcmVz
+cG9uc2VzIGFyZSBsaW1pdGVkCj4gYnkgYSB0aHJlc2hvbGQgKDI0KS4KPgo+IG1hbmFnZW1lbnQg
+dHggcGF0aCBpcyBzZXBhcmF0ZSBmb3IgYWxsIGV4Y2VwdCB0bHYgYmFzZWQgc29sdXRpb25zLiBT
+aW5jZQo+IHRsdiBzb2x1dGlvbnMgKHFjYTYxNzQgJiBxY2E5Mzc3KSBkbyBub3Qgc3VwcG9ydCAx
+NiBBUCBpbnRlcmZhY2VzLCBpdCBpcwo+IHNhZmUgdG8gbW92ZSBtYW5hZ2VtZW50IGRlc2NyaXB0
+b3IgbGltaXRhdGlvbiBjaGVjayB1bmRlciBtZ210X3R4Cj4gZnVuY3Rpb24uIFRob3VnaCBDUFUg
+aW1wcm92ZW1lbnQgaXMgbmVnbGlnaWJsZSwgdW5saWtlbHkgY29uZGl0aW9ucyBvcgo+IG5ldmVy
+IGhpdCBjb25kaXRpb25zIGluIGhvdCBwYXRoIGNhbiBiZSBhdm9pZGVkIG9uIGRhdGEgdHJhbnNt
+aXNzaW9uLgo+Cj4gU2lnbmVkLW9mZi1ieTogUmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBx
+dGkucXVhbGNvbW0uY29tPgo+IC0tLQo+IHYyOgo+ICAgLSByZWJhc2VkIG9uIHRvcCBvZiBNaWNo
+YWwgY2hhbmdlcwpbLi4uXQo+IEBAIC0zOTc5LDEzICszOTc3LDIyIEBAIHN0YXRpYyB2b2lkIGF0
+aDEwa19tYWNfb3BfdHgoc3RydWN0IGllZWU4MDIxMV9odyAqaHcsCj4gICAgICAgICBpc19odHQg
+PSAodHhwYXRoID09IEFUSDEwS19NQUNfVFhfSFRUIHx8Cj4gICAgICAgICAgICAgICAgICAgdHhw
+YXRoID09IEFUSDEwS19NQUNfVFhfSFRUX01HTVQpOwo+Cj4gLSAgICAgICBpZiAoaXNfaHR0KSB7
+Cj4gLSAgICAgICAgICAgICAgIHNwaW5fbG9ja19iaCgmYXItPmh0dC50eF9sb2NrKTsKPiAtCj4g
+LSAgICAgICAgICAgICAgIGlzX21nbXQgPSBpZWVlODAyMTFfaXNfbWdtdChoZHItPmZyYW1lX2Nv
+bnRyb2wpOwo+ICsgICAgICAgaXNfbWdtdCA9IGllZWU4MDIxMV9pc19tZ210KGhkci0+ZnJhbWVf
+Y29udHJvbCk7Cj4gKyAgICAgICBzcGluX2xvY2tfYmgoJmFyLT5odHQudHhfbG9jayk7Cj4gKyAg
+ICAgICBpZiAoaXNfbWdtdCkgewo+ICAgICAgICAgICAgICAgICBpc19wcmVzcCA9IGllZWU4MDIx
+MV9pc19wcm9iZV9yZXNwKGhkci0+ZnJhbWVfY29udHJvbCk7Cj4KPiAtICAgICAgICAgICAgICAg
+cmV0ID0gYXRoMTBrX2h0dF90eF9pbmNfcGVuZGluZyhodHQsIGlzX21nbXQsIGlzX3ByZXNwKTsK
+PiArICAgICAgICAgICAgICAgcmV0ID0gYXRoMTBrX2h0dF90eF9tZ210X2luY19wZW5kaW5nKGh0
+dCwgaXNfcHJlc3ApOwo+ICsgICAgICAgICAgICAgICBpZiAocmV0KSB7Cj4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgYXRoMTBrX3dhcm4oYXIsICJmYWlsZWQgdG8gaW5jcmVhc2UgdHggbWdtdCBw
+ZW5kaW5nIGNvdW50OiAlZCwgZHJvcHBpbmdcbiIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgcmV0KTsKPiArICAgICAgICAgICAgICAgICAgICAgICBzcGluX3VubG9ja19i
+aCgmYXItPmh0dC50eF9sb2NrKTsKPiArICAgICAgICAgICAgICAgICAgICAgICBpZWVlODAyMTFf
+ZnJlZV90eHNrYihhci0+aHcsIHNrYik7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJu
+Owo+ICsgICAgICAgICAgICAgICB9Cj4gKyAgICAgICB9Cj4gKyAgICAgICBpZiAoaXNfaHR0KSB7
+Cj4gKyAgICAgICAgICAgICAgIHJldCA9IGF0aDEwa19odHRfdHhfaW5jX3BlbmRpbmcoaHR0KTsK
+PiAgICAgICAgICAgICAgICAgaWYgKHJldCkgewo+ICAgICAgICAgICAgICAgICAgICAgICAgIGF0
+aDEwa193YXJuKGFyLCAiZmFpbGVkIHRvIGluY3JlYXNlIHR4IHBlbmRpbmcgY291bnQ6ICVkLCBk
+cm9wcGluZ1xuIiwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXQpOwoK
+VGhpcyBkb2Vzbid0IGxvb2sgZ29vZC4KCllvdSdsbCBjYWxsIGF0aDEwa19odHRfdHhfbWdtdF9p
+bmNfcGVuZGluZygpIHJlZ2FyZGxlc3Mgb2YgdGhlIHR4IHBhdGgKYmVpbmcgY2hvc2VuLiBGV0lX
+IEl0IGNvdWxkIGJlIFdNSSBvbiBvbGRlciBmaXJtd2FyZSwgb29wcy4KCkhvbGRpbmcgdGhlIGxv
+Y2sgZm9yIHRoZSBlbnRpcmUgdGltZSBkb2Vzbid0IG1ha2UgbXVjaCBzZW5zZSBlaXRoZXIsIGRv
+ZXMgaXQ/CgpJIHRoaW5rIGl0IHNob3VsZCBiZSBtb3JlIGxpa2U6CgogaWYgKGlzX2h0dCkgewog
+ICAgaXNfbWdtdCA9IC4uOwogICAgaXNfcHJlc3AgPSAuLjsKCiAgICBsb2NrKCkKICAgIHJldCA9
+IGluY19wZW5kaW5nKGh0dCk7CiAgICBpZiAocmV0KSB7IHVubG9jaygpOyBnb3RvIGRyb3AgfQoK
+ICAgIHJldCA9IG1nbXRfaW5jX3BlbmRpbmcoaHR0LCBpc19tZ210LCBpc19wcmVzcCk7CiAgICBp
+ZiAocmV0KSB7IGRlY19wZW5kaW5nKGh0dCk7IHVubG9jaygpOyBnb3RvIGRyb3AgfQoKICAgIHVu
+bG9jaygpOwogfQogLi4uCiByZXQgPSBtYWNfdHgoKQogaWYgKHJldCkgewogICBpZiAoaXNfaHR0
+KSB7CiAgICAgbG9jaygpOwogICAgIGRlY19wZW5kaW5nKCk7CiAgICAgaWYgKGlzX21nbXQpCiAg
+ICAgICAgbWdtdF9kZWNfcGVuZGluZygpCiAgICAgdW5sb2NrKCk7CiB9Cgpubz8KCgo+IEBAIC0z
+OTkzLDE2ICs0MDAwLDE3IEBAIHN0YXRpYyB2b2lkIGF0aDEwa19tYWNfb3BfdHgoc3RydWN0IGll
+ZWU4MDIxMV9odyAqaHcsCj4gICAgICAgICAgICAgICAgICAgICAgICAgaWVlZTgwMjExX2ZyZWVf
+dHhza2IoYXItPmh3LCBza2IpOwo+ICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybjsKPiAg
+ICAgICAgICAgICAgICAgfQo+IC0KPiAtICAgICAgICAgICAgICAgc3Bpbl91bmxvY2tfYmgoJmFy
+LT5odHQudHhfbG9jayk7Cj4gICAgICAgICB9Cj4gKyAgICAgICBzcGluX3VubG9ja19iaCgmYXIt
+Pmh0dC50eF9sb2NrKTsKPgo+ICAgICAgICAgcmV0ID0gYXRoMTBrX21hY190eChhciwgdmlmLCBz
+dGEsIHR4bW9kZSwgdHhwYXRoLCBza2IpOwo+ICAgICAgICAgaWYgKHJldCkgewo+ICAgICAgICAg
+ICAgICAgICBhdGgxMGtfd2FybihhciwgImZhaWxlZCB0byB0cmFuc21pdCBmcmFtZTogJWRcbiIs
+IHJldCk7Cj4gICAgICAgICAgICAgICAgIGlmIChpc19odHQpIHsKPiAgICAgICAgICAgICAgICAg
+ICAgICAgICBzcGluX2xvY2tfYmgoJmFyLT5odHQudHhfbG9jayk7Cj4gLSAgICAgICAgICAgICAg
+ICAgICAgICAgYXRoMTBrX2h0dF90eF9kZWNfcGVuZGluZyhodHQsIGlzX21nbXQpOwo+ICsgICAg
+ICAgICAgICAgICAgICAgICAgIGF0aDEwa19odHRfdHhfZGVjX3BlbmRpbmcoaHR0KTsKPiArICAg
+ICAgICAgICAgICAgICAgICAgICBpZiAoaXNfbWdtdCkKPiArICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIGF0aDEwa19odHRfdHhfbWdtdF9kZWNfcGVuZGluZyhodHQpOwoKQW5kIG5vdyB0
+aGUgbWdtdF9kZWNfcGVuZGluZygpIGlzIHVuYmFsYW5jZWQuIFlvdSB1bmNvbmRpdGlvbmFsbHkg
+KHdydAppc19odHQpIGluY3JlYXNlIHRoZSBtZ210X2luY19wZW5kaW5nIGJ1dCBkZWNyZW1lbnQg
+b25seSBpZiBpc19odHQgaXMKdHJ1ZS4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCg==
