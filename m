@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adYQg-0001gW-20
- for ath10k@lists.infradead.org; Wed, 09 Mar 2016 07:21:10 +0000
+ id 1adYbU-0006Mz-JY
+ for ath10k@lists.infradead.org; Wed, 09 Mar 2016 07:32:21 +0000
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH v2] iw: Add support for NL80211_STA_INFO_RX_DURATION netlink
- attribute
-Date: Wed, 9 Mar 2016 12:50:36 +0530
-Message-ID: <1457508036-16756-1-git-send-email-mohammed@qca.qualcomm.com>
+Subject: [PATCH v1 1/2] ath10k: Add support for ath10k_sta_statistics support
+Date: Wed, 9 Mar 2016 13:01:20 +0530
+Message-ID: <1457508681-17546-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,67 +20,89 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: mohammed@codeaurora.org, johannes@sipsolutions.net, kvalo@codeaurora.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Enable support for parsing per station rx-duration (usecs)
-via adding support for new netlink attribute NL80211_STA_INFO_RX_DURATION
+Enable support for 'drv_sta_statistics' callback.
+Export rx_duration support if available to cfg80211/nl80211
 
-rx_duration is an approximate total air time(usecs) for all the frames
-frames from a connected client. This will get dumped as
-part of 'iw dev wlan#N station dump'
+This can also act as a placeholder for any new per STA stats support
 
 Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 ---
- nl80211.h |    3 +++
- station.c |    5 +++++
- 2 files changed, 8 insertions(+)
+Dependencies:
 
-diff --git a/nl80211.h b/nl80211.h
-index 5b7b5eb..d11198f 100644
---- a/nl80211.h
-+++ b/nl80211.h
-@@ -2464,6 +2464,8 @@ enum nl80211_sta_bss_param {
-  *	TID+1 and the special TID 16 (i.e. value 17) is used for non-QoS frames;
-  *	each one of those is again nested with &enum nl80211_tid_stats
-  *	attributes carrying the actual values.
-+ * @NL80210_STA_INFO_RX_DURATION: approximate total air time(usecs) for all the
-+ *	frames from a connected client
-  * @__NL80211_STA_INFO_AFTER_LAST: internal
-  * @NL80211_STA_INFO_MAX: highest possible station info attribute
-  */
-@@ -2500,6 +2502,7 @@ enum nl80211_sta_info {
- 	NL80211_STA_INFO_BEACON_RX,
- 	NL80211_STA_INFO_BEACON_SIGNAL_AVG,
- 	NL80211_STA_INFO_TID_STATS,
-+	NL80211_STA_INFO_RX_DURATION,
- 
- 	/* keep last */
- 	__NL80211_STA_INFO_AFTER_LAST,
-diff --git a/station.c b/station.c
-index b5ccf4a..a730db1 100644
---- a/station.c
-+++ b/station.c
-@@ -147,6 +147,7 @@ static int print_sta_handler(struct nl_msg *msg, void *arg)
- 		[NL80211_STA_INFO_NONPEER_PM] = { .type = NLA_U32},
- 		[NL80211_STA_INFO_CHAIN_SIGNAL] = { .type = NLA_NESTED },
- 		[NL80211_STA_INFO_CHAIN_SIGNAL_AVG] = { .type = NLA_NESTED },
-+		[NL80211_STA_INFO_RX_DURATION] = { .type = NLA_U64 },
- 	};
- 	char *chain;
- 
-@@ -226,6 +227,10 @@ static int print_sta_handler(struct nl_msg *msg, void *arg)
- 		printf("\n\trx bitrate:\t%s", buf);
- 	}
- 
-+	if (sinfo[NL80211_STA_INFO_RX_DURATION])
-+		printf("\n\trx duration:\t%lld us",
-+		       (unsigned long long)nla_get_u64(sinfo[NL80211_STA_INFO_RX_DURATION]));
+1. cfg80211/nl80211: Add support for NL80211_STA_INFO_RX_DURATION
+2. iw: Add support for NL80211_STA_INFO_RX_DURATION netlink
+ attribute
+3. ath10k: Enable debugfs provision to enable Peer Stats feature
+
+ drivers/net/wireless/ath/ath10k/debug.h       |    4 ++++
+ drivers/net/wireless/ath/ath10k/debugfs_sta.c |   22 ++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/mac.c         |    1 +
+ 3 files changed, 27 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 6206edd..01c500f 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -155,6 +155,10 @@ ath10k_debug_get_new_fw_crash_data(struct ath10k *ar)
+ void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 			    struct ieee80211_sta *sta, struct dentry *dir);
+ void ath10k_sta_update_rx_duration(struct ath10k *ar, struct list_head *peer);
++void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
++			   struct ieee80211_sta *sta,
++			   struct station_info *sinfo);
 +
- 	if (sinfo[NL80211_STA_INFO_EXPECTED_THROUGHPUT]) {
- 		uint32_t thr;
+ #else
+ static inline void ath10k_sta_update_rx_duration(struct ath10k *ar,
+ 						 struct list_head *peer)
+diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+index 67ef75b..4c459f2 100644
+--- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
++++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+@@ -35,6 +35,28 @@ void ath10k_sta_update_rx_duration(struct ath10k *ar, struct list_head *head)
+ 	rcu_read_unlock();
+ }
+ 
++void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
++			   struct ieee80211_sta *sta,
++			   struct station_info *sinfo)
++{
++	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
++	struct ath10k *ar = arsta->arvif->ar;
++
++	mutex_lock(&ar->conf_mutex);
++
++	if (ar->state != ATH10K_STATE_ON ||
++	    ar->state != ATH10K_STATE_RESTARTED)
++		goto out;
++
++	if (!ath10k_peer_stats_enabled(ar))
++		goto out;
++
++	sinfo->rx_duration = arsta->rx_duration;
++	sinfo->filled |= 1ULL << NL80211_STA_INFO_RX_DURATION;
++out:
++	mutex_unlock(&ar->conf_mutex);
++}
++
+ static ssize_t ath10k_dbg_sta_read_aggr_mode(struct file *file,
+ 					     char __user *user_buf,
+ 					     size_t count, loff_t *ppos)
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index d5ef201..69a1dcf 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6852,6 +6852,7 @@ static const struct ieee80211_ops ath10k_ops = {
+ #endif
+ #ifdef CONFIG_MAC80211_DEBUGFS
+ 	.sta_add_debugfs		= ath10k_sta_add_debugfs,
++	.sta_statistics			= ath10k_sta_statistics,
+ #endif
+ };
  
 -- 
 1.7.9.5
