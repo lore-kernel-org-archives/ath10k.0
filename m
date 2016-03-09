@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adXIj-0004aQ-FY
- for ath10k@lists.infradead.org; Wed, 09 Mar 2016 06:08:54 +0000
+ id 1adXOn-0006Zg-PD
+ for ath10k@lists.infradead.org; Wed, 09 Mar 2016 06:15:10 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id p65so178014375wmp.1
+ for <ath10k@lists.infradead.org>; Tue, 08 Mar 2016 22:14:49 -0800 (PST)
 MIME-Version: 1.0
-Date: Wed, 09 Mar 2016 11:38:31 +0530
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: [PATCH v4] ath10k: move mgmt descriptor limit handle under mgmt_tx
-In-Reply-To: <CA+BoTQmxg7vK6KBENrx+P3vK_nYV4-h_yiavEBQi1oFTAANR=w@mail.gmail.com>
+In-Reply-To: <8a472460d3b4aa7ce614bdfe73b29844@codeaurora.org>
 References: <1457457934-8563-1-git-send-email-rmanohar@qti.qualcomm.com>
  <CA+BoTQmxg7vK6KBENrx+P3vK_nYV4-h_yiavEBQi1oFTAANR=w@mail.gmail.com>
-Message-ID: <8a472460d3b4aa7ce614bdfe73b29844@codeaurora.org>
+ <8a472460d3b4aa7ce614bdfe73b29844@codeaurora.org>
+Date: Wed, 9 Mar 2016 07:14:48 +0100
+Message-ID: <CA+BoTQmPccuZR=szNSqOg9uxtB9=QmbvQR8r88uDrd=9bUwakg@mail.gmail.com>
+Subject: Re: [PATCH v4] ath10k: move mgmt descriptor limit handle under mgmt_tx
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,58 +22,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On , Michal Kazior wrote:
-> On 8 March 2016 at 18:25, Rajkumar Manoharan 
-> <rmanohar@qti.qualcomm.com> wrote:
-> [...]
->> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
->> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
->> @@ -2326,7 +2326,12 @@ void ath10k_htt_t2h_msg_handler(struct ath10k 
->> *ar, struct sk_buff *skb)
->>                         break;
->>                 }
->> 
->> -               ath10k_txrx_tx_unref(htt, &tx_done);
->> +               status = ath10k_txrx_tx_unref(htt, &tx_done);
->> +               if (!status) {
->> +                       spin_lock_bh(&htt->tx_lock);
->> +                       ath10k_htt_tx_mgmt_dec_pending(htt);
->> +                       spin_unlock_bh(&htt->tx_lock);
->> +               }
-> [...]
->> @@ -3978,14 +3976,13 @@ static void ath10k_mac_op_tx(struct 
->> ieee80211_hw *hw,
->>         txpath = ath10k_mac_tx_h_get_txpath(ar, skb, txmode);
->>         is_htt = (txpath == ATH10K_MAC_TX_HTT ||
->>                   txpath == ATH10K_MAC_TX_HTT_MGMT);
->> +       is_mgmt = (txpath == ATH10K_MAC_TX_HTT_MGMT);
-> 
-> Are you sure you want to be counting nullfuncs here in as well (and
-> possibly other frames that end up, for whatever reason, on htt-mgmt
-> tx-path?)
-> 
-
-frames that are transmitted via MGMT_TX are using reserved descriptor 
-slots in firmware. So irrespective of frame type, num_pending_mgmt_tx 
-should count all to limit probe resp. Here mgmt_tx does not mean frame 
-type but HTT txmode (HTT_H2T_MSG_TYPE_MGMT_TX).
-
-So ATH10K_SKB_F_MGMT check in tx-compl is not needed. is_mgmt = (txpath 
-== ATH10K_MAC_TX_HTT_MGMT);
-
-Do you see any issues if nullfunc/other data via MGMT_TX are counted.
-
--Rajkumar
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOSBNYXJjaCAyMDE2IGF0IDA3OjA4LCBSYWprdW1hciBNYW5vaGFyYW4gPHJtYW5vaGFyQGNv
+ZGVhdXJvcmEub3JnPiB3cm90ZToKPiBPbiAsIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+Cj4+IE9u
+IDggTWFyY2ggMjAxNiBhdCAxODoyNSwgUmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBxdGku
+cXVhbGNvbW0uY29tPgo+PiB3cm90ZToKPj4gWy4uLl0KPj4+Cj4+PiAtLS0gYS9kcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jCj4+PiArKysgYi9kcml2ZXJzL25ldC93aXJl
+bGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jCj4+PiBAQCAtMjMyNiw3ICsyMzI2LDEyIEBAIHZvaWQg
+YXRoMTBrX2h0dF90MmhfbXNnX2hhbmRsZXIoc3RydWN0IGF0aDEwayAqYXIsCj4+PiBzdHJ1Y3Qg
+c2tfYnVmZiAqc2tiKQo+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7Cj4+PiAgICAg
+ICAgICAgICAgICAgfQo+Pj4KPj4+IC0gICAgICAgICAgICAgICBhdGgxMGtfdHhyeF90eF91bnJl
+ZihodHQsICZ0eF9kb25lKTsKPj4+ICsgICAgICAgICAgICAgICBzdGF0dXMgPSBhdGgxMGtfdHhy
+eF90eF91bnJlZihodHQsICZ0eF9kb25lKTsKPj4+ICsgICAgICAgICAgICAgICBpZiAoIXN0YXR1
+cykgewo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgc3Bpbl9sb2NrX2JoKCZodHQtPnR4X2xv
+Y2spOwo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBrX2h0dF90eF9tZ210X2RlY19w
+ZW5kaW5nKGh0dCk7Cj4+PiArICAgICAgICAgICAgICAgICAgICAgICBzcGluX3VubG9ja19iaCgm
+aHR0LT50eF9sb2NrKTsKPj4+ICsgICAgICAgICAgICAgICB9Cj4+Cj4+IFsuLi5dCj4+Pgo+Pj4g
+QEAgLTM5NzgsMTQgKzM5NzYsMTMgQEAgc3RhdGljIHZvaWQgYXRoMTBrX21hY19vcF90eChzdHJ1
+Y3QgaWVlZTgwMjExX2h3Cj4+PiAqaHcsCj4+PiAgICAgICAgIHR4cGF0aCA9IGF0aDEwa19tYWNf
+dHhfaF9nZXRfdHhwYXRoKGFyLCBza2IsIHR4bW9kZSk7Cj4+PiAgICAgICAgIGlzX2h0dCA9ICh0
+eHBhdGggPT0gQVRIMTBLX01BQ19UWF9IVFQgfHwKPj4+ICAgICAgICAgICAgICAgICAgIHR4cGF0
+aCA9PSBBVEgxMEtfTUFDX1RYX0hUVF9NR01UKTsKPj4+ICsgICAgICAgaXNfbWdtdCA9ICh0eHBh
+dGggPT0gQVRIMTBLX01BQ19UWF9IVFRfTUdNVCk7Cj4+Cj4+Cj4+IEFyZSB5b3Ugc3VyZSB5b3Ug
+d2FudCB0byBiZSBjb3VudGluZyBudWxsZnVuY3MgaGVyZSBpbiBhcyB3ZWxsIChhbmQKPj4gcG9z
+c2libHkgb3RoZXIgZnJhbWVzIHRoYXQgZW5kIHVwLCBmb3Igd2hhdGV2ZXIgcmVhc29uLCBvbiBo
+dHQtbWdtdAo+PiB0eC1wYXRoPykKPj4KPgo+IGZyYW1lcyB0aGF0IGFyZSB0cmFuc21pdHRlZCB2
+aWEgTUdNVF9UWCBhcmUgdXNpbmcgcmVzZXJ2ZWQgZGVzY3JpcHRvciBzbG90cwo+IGluIGZpcm13
+YXJlLiBTbyBpcnJlc3BlY3RpdmUgb2YgZnJhbWUgdHlwZSwgbnVtX3BlbmRpbmdfbWdtdF90eCBz
+aG91bGQgY291bnQKPiBhbGwgdG8gbGltaXQgcHJvYmUgcmVzcC4gSGVyZSBtZ210X3R4IGRvZXMg
+bm90IG1lYW4gZnJhbWUgdHlwZSBidXQgSFRUCj4gdHhtb2RlIChIVFRfSDJUX01TR19UWVBFX01H
+TVRfVFgpLgo+Cj4gU28gQVRIMTBLX1NLQl9GX01HTVQgY2hlY2sgaW4gdHgtY29tcGwgaXMgbm90
+IG5lZWRlZC4gaXNfbWdtdCA9ICh0eHBhdGggPT0KPiBBVEgxMEtfTUFDX1RYX0hUVF9NR01UKTsK
+Pgo+IERvIHlvdSBzZWUgYW55IGlzc3VlcyBpZiBudWxsZnVuYy9vdGhlciBkYXRhIHZpYSBNR01U
+X1RYIGFyZSBjb3VudGVkLgoKSWYgZmlybXdhcmUgaGFuZGxlcyB0aGVtIHRoZSBzYW1lIHdheSBp
+dCBzaG91bGQgYmUgb2theSBJIGd1ZXNzLiBJCndvdWxkIGRvIHN1Z2dlc3QgdG8gbWFrZSB0aGUg
+Y29tbWl0IGxvZyBtb3JlIGV4cGxpY2l0IG9uIHRoaXMgdGhvdWdoCihpLmUuIHRoZSBsaW1pdCBp
+cyBmb3IgdGhlIHBhdGggaXRzZWxmLCBub3QgZm9yIG1nbXQgZnJhbWVzIHBlciBzZSkuCgoKTWlj
+aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
