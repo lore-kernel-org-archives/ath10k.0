@@ -1,22 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yk0-x235.google.com ([2607:f8b0:4002:c07::235])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1addWA-0005p3-Cd
- for ath10k@lists.infradead.org; Wed, 09 Mar 2016 12:47:11 +0000
-Received: by mail-yk0-x235.google.com with SMTP id z7so19885104yka.0
- for <ath10k@lists.infradead.org>; Wed, 09 Mar 2016 04:46:49 -0800 (PST)
-Date: Wed, 9 Mar 2016 07:46:47 -0500
-From: Matthew Keeler <mjkeeler7@gmail.com>
-Message-ID: <etPan.56e01b37.15c9c8e.e2e@wireless-tns3477l.keeler.lan>
-In-Reply-To: <CA+BoTQnWwg8B78uQ1Qb0yDv=0w9WVwZB=OcBCe8sOVjDvOgx5Q@mail.gmail.com>
-References: <etPan.56dedd37.c95b5e3.e2e@wireless-tns3477l.keeler.lan>
- <CA+BoTQkzEu_Xc17iQfECCeH-VkFXhWUOGNsno8a80EP_32Wc3g@mail.gmail.com>
- <etPan.56df0022.51e3bd34.e2e@wireless-tns3477l.keeler.lan>
- <etPan.56df8415.399e1573.e2e@wireless-tns3477l.keeler.lan>
- <CA+BoTQnWwg8B78uQ1Qb0yDv=0w9WVwZB=OcBCe8sOVjDvOgx5Q@mail.gmail.com>
-Subject: Re: Performance degradation over time
+ id 1addwD-0000he-Pw
+ for ath10k@lists.infradead.org; Wed, 09 Mar 2016 13:14:06 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH v2] cfg80211/nl80211: Add support for
+ NL80211_STA_INFO_RX_DURATION
+Date: Wed, 9 Mar 2016 18:43:02 +0530
+Message-ID: <1457529183-18983-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +17,104 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: linux-wireless@vger.kernel.org
+Cc: mohammed@codeaurora.org, johannes@sipsolutions.net, kvalo@codeaurora.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-wqBIb3cgY2FuIEkgdGVsbCBpZiBjYWxpYnJhdGlvbiBpcyBkb25lIGluIEVFUFJPTSBvciBvdXQt
-b2YtYmFuZD8KCgotLSAgCk1hdHQgS2VlbGVyCgpPbiBNYXJjaCA5LCAyMDE2IGF0IDAxOjAwOjQ1
-LCBNaWNoYWwgS2F6aW9yIChtaWNoYWwua2F6aW9yQHRpZXRvLmNvbShtYWlsdG86bWljaGFsLmth
-emlvckB0aWV0by5jb20pKSB3cm90ZToKCj4gT24gOSBNYXJjaCAyMDE2IGF0IDAzOjAxLCBNYXR0
-aGV3IEtlZWxlciB3cm90ZToKPiA+Cj4gPiBTbyB3aXRoIHRoZSBtb3N0IHJlY2VudCBmaXJtd2Fy
-ZSBJIGFtIGV4cGVyaWVuY2luZyBkaWZmZXJlbnQgcGVyZm9ybWFuY2UgaXNzdWVzLiBGaXJzdCwg
-dGhlIGxhdGVzdCBmaXJtd2FyZSBhZnRlciBjb21pbmcgdXAgZG9lcyBzaWduaWZpY2FudGx5IGxl
-c3MgdGhhbiBpdCB1c2VkIHRvLiBGb3IgMi40IEdIeiB3aGVyZSBiZWZvcmUgaXQgd291bGQgZG8g
-fjUwTWJwcyBpdCBub3cgY2FuIG9ubHkgYXZlcmFnZSB+MzBNYnBzICh0aGUgcmF0ZSBpcyBzcG9y
-YWRpYyB0aG91Z2ggYW55d2hlcmUgZnJvbSAxME1icHMgdG8gNDBNYnBzKSBhbmQgdGhpcyBpcyBh
-Ym91dCAzIGluY2hlcyBhd2F5IGZyb20gbXkgYW50ZW5uYXMgb24gYW4gdW51c2VkIGNoYW5uZWwu
-IFNlY29uZGx5IHNvbWV0aW1lcyBJIGhhdmUgc2VlbiBpdCBkcm9wIGRvd24gdG8gPCAuMSBNYnBz
-LiBJIGdyYWJiZWQgdGhlIGZ3X3N0YXRzLiBPbmUgdGhpbmcgdGhhdCBzZWVtcyBkcmFzdGljYWxs
-eSBkaWZmZXJlbnQgYmV0d2VlbiBteSAyLjQgR2h6IGFuZCBteSA1IEdoeiBpcyB0aGF0IDIuNCBo
-YXMgZXh0cmVtZWx5IGhpZ2ggZXJyb3IgY291bnRzIHdoZXJlIG15IDUgR0h6IGlzIDwgNDAwLiBD
-b3VsZCB0aGlzIGJlIGEgc3ltcHRvbSBvZiBtaXNjb25maWd1cmF0aW9uIG9yIG1vcmUgZmlybXdh
-cmUgaXNzdWVzPwo+ICAKPiBUaGUgb25seSB0aGluZyB0aGF0IGNvbWVzIHRvIG1pbmQgaXMgdGhh
-dCB0aGlzIGNvdWxkIGJlIHJlbGF0ZWQgdG8KPiAobWlzKWNhbGlicmF0aW9uLgo+ICAKPiBEb2Vz
-IHlvdXIgY2FyZCBjb250YWluIGNhbGlicmF0aW9uIGluIEVFUFJPTSBvciBpcyBpdCBvdXQtb2Yt
-YmFuZD8gRG8KPiBub3RlOiBtYW55IGNhcmRzIGZvdW5kIGluIHJvdXRlcnMgaGF2ZSBvdXQtb2Yt
-YmFuZCBjYWwgZGF0YS4gSWYgaXQncwo+IGluIEVFUFJPTSB0aGlzIGNvdWxkIGJlIGVpdGhlciBh
-IHF1aXJrIGluIGJvYXJkLmJpbiBvciBvdHAuYmluICh3aGljaAo+IGlzIGVtYmVkZGVkIGluIHRo
-ZSBmaXJtd2FyZSBibG9iKS4gWW91IGNvdWxkIHRyeSBleHBlcmltZW50aW5nIHdpdGgKPiBkaWZm
-ZXJlbnQgZmlybXdhcmUgdmVyc2lvbnMgKGluY2x1ZGluZyAxMC4xLjQ2NykgdG8gc2VlIGlmIGl0
-IGNoYW5nZXMKPiBtdWNoLgo+ICAKPiAgCj4gTWljaGHFggoKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hdGgxMGsK
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+
+Add support for new netlink attribute 'NL80211_STA_INFO_RX_DURATION'
+This flag will be set when drivers can fill rx_duration (aggregate
+PPDU duration(usecs) for all the frames from a peer) via
+'drv_sta_statistics' callback
+
+Also make sta_info flags 'filled' as 64 bit to accommodate for new
+per station stats. Extend 'PUT_SINFO' for supporting rx_duration
+field and any new per sta information in future
+
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ include/net/cfg80211.h       |    4 +++-
+ include/uapi/linux/nl80211.h |    3 +++
+ net/wireless/nl80211.c       |    3 ++-
+ 3 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+index 9bcaaf7..a9552f6 100644
+--- a/include/net/cfg80211.h
++++ b/include/net/cfg80211.h
+@@ -1060,11 +1060,12 @@ struct cfg80211_tid_stats {
+  * @rx_beacon: number of beacons received from this peer
+  * @rx_beacon_signal_avg: signal strength average (in dBm) for beacons received
+  *	from this peer
++ * @rx_duration: aggregate PPDU duration(usecs) for all the frames from a peer
+  * @pertid: per-TID statistics, see &struct cfg80211_tid_stats, using the last
+  *	(IEEE80211_NUM_TIDS) index for MSDUs not encapsulated in QoS-MPDUs.
+  */
+ struct station_info {
+-	u32 filled;
++	u64 filled;
+ 	u32 connected_time;
+ 	u32 inactive_time;
+ 	u64 rx_bytes;
+@@ -1103,6 +1104,7 @@ struct station_info {
+ 	u32 expected_throughput;
+ 
+ 	u64 rx_beacon;
++	u64 rx_duration;
+ 	u8 rx_beacon_signal_avg;
+ 	struct cfg80211_tid_stats pertid[IEEE80211_NUM_TIDS + 1];
+ };
+diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
+index 5b7b5eb..361b2cd 100644
+--- a/include/uapi/linux/nl80211.h
++++ b/include/uapi/linux/nl80211.h
+@@ -2464,6 +2464,8 @@ enum nl80211_sta_bss_param {
+  *	TID+1 and the special TID 16 (i.e. value 17) is used for non-QoS frames;
+  *	each one of those is again nested with &enum nl80211_tid_stats
+  *	attributes carrying the actual values.
++ * @NL80211_STA_INFO_RX_DURATION: aggregate ppdu duration(usecs) for all the
++ *	frames from a peer
+  * @__NL80211_STA_INFO_AFTER_LAST: internal
+  * @NL80211_STA_INFO_MAX: highest possible station info attribute
+  */
+@@ -2500,6 +2502,7 @@ enum nl80211_sta_info {
+ 	NL80211_STA_INFO_BEACON_RX,
+ 	NL80211_STA_INFO_BEACON_SIGNAL_AVG,
+ 	NL80211_STA_INFO_TID_STATS,
++	NL80211_STA_INFO_RX_DURATION,
+ 
+ 	/* keep last */
+ 	__NL80211_STA_INFO_AFTER_LAST,
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index d4786f2..a81c016 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -3719,7 +3719,7 @@ static int nl80211_send_station(struct sk_buff *msg, u32 cmd, u32 portid,
+ 		goto nla_put_failure;
+ 
+ #define PUT_SINFO(attr, memb, type) do {				\
+-	if (sinfo->filled & BIT(NL80211_STA_INFO_ ## attr) &&		\
++	if (sinfo->filled & (1ULL << NL80211_STA_INFO_ ## attr) &&	\
+ 	    nla_put_ ## type(msg, NL80211_STA_INFO_ ## attr,		\
+ 			     sinfo->memb))				\
+ 		goto nla_put_failure;					\
+@@ -3745,6 +3745,7 @@ static int nl80211_send_station(struct sk_buff *msg, u32 cmd, u32 portid,
+ 	PUT_SINFO(LLID, llid, u16);
+ 	PUT_SINFO(PLID, plid, u16);
+ 	PUT_SINFO(PLINK_STATE, plink_state, u8);
++	PUT_SINFO(RX_DURATION, rx_duration, u64);
+ 
+ 	switch (rdev->wiphy.signal_type) {
+ 	case CFG80211_SIGNAL_TYPE_MBM:
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
