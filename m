@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adhES-0003J2-4C
- for ath10k@lists.infradead.org; Wed, 09 Mar 2016 16:45:08 +0000
-Date: Wed, 9 Mar 2016 22:14:33 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH v1 1/2] ath10k: Add support for ath10k_sta_statistics
- support
-Message-ID: <20160309164433.GB10524@atheros-ThinkPad-T61>
-References: <201603091546.RFfnsS0y%fengguang.wu@intel.com>
- <87oaanr4g7.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87oaanr4g7.fsf@kamboji.qca.qualcomm.com>
+ id 1adhuB-0006zN-OI
+ for ath10k@lists.infradead.org; Wed, 09 Mar 2016 17:28:17 +0000
+Message-ID: <1457544468.2042.20.camel@sipsolutions.net>
+Subject: Re: [RFC v1] mac80211: Add support for per station rx stats histogram
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 09 Mar 2016 18:27:48 +0100
+In-Reply-To: <20160309163038.GA9410@atheros-ThinkPad-T61>
+References: <1457367809-13637-1-git-send-email-mohammed@qca.qualcomm.com>
+ <1457424451.2283.2.camel@sipsolutions.net>
+ <20160308094250.GA3685@atheros-ThinkPad-T61>
+ <20160309163038.GA9410@atheros-ThinkPad-T61>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,57 +21,20 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "kbuild-all@01.org" <kbuild-all@01.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, kbuild test robot <lkp@intel.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
- Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-On Wed, Mar 09, 2016 at 04:39:30PM +0000, Valo, Kalle wrote:
-> kbuild test robot <lkp@intel.com> writes:
-> 
-> > Hi Mohammed,
-> >
-> > [auto build test ERROR on wireless-drivers-next/master]
-> > [also build test ERROR on next-20160309]
-> > [cannot apply to v4.5-rc7]
-> > [if your patch is applied to the wrong git tree, please drop us a note to help improving the system]
-> >
-> > url:    https://github.com/0day-ci/linux/commits/Mohammed-Shafi-Shajakhan/ath10k-Add-support-for-ath10k_sta_statistics-support/20160309-153522
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next.git master
-> > config: sparc64-allmodconfig (attached as .config)
-> > reproduce:
-> >         wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # save the attached .config to linux build tree
-> >         make.cross ARCH=sparc64 
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >    drivers/net/wireless/ath/ath10k/debugfs_sta.c: In function 'ath10k_sta_statistics':
-> >>> drivers/net/wireless/ath/ath10k/debugfs_sta.c:51:2: error: implicit declaration of function 'ath10k_peer_stats_enabled' [-Werror=implicit-function-declaration]
-> >      if (!ath10k_peer_stats_enabled(ar))
-
-[shafi] this is due to the dependency patch in ath10k "ath10k: Enable debugfs
-provision to enable Peer Stats feature"
-
-> >      ^
-> >>> drivers/net/wireless/ath/ath10k/debugfs_sta.c:54:7: error: 'struct station_info' has no member named 'rx_duration'
-> >      sinfo->rx_duration = arsta->rx_duration;
-> >           ^
-> >>> drivers/net/wireless/ath/ath10k/debugfs_sta.c:55:27: error: 'NL80211_STA_INFO_RX_DURATION' undeclared (first use in this function)
-> >      sinfo->filled |= 1ULL << NL80211_STA_INFO_RX_DURATION;
-> >                               ^
-> >    drivers/net/wireless/ath/ath10k/debugfs_sta.c:55:27: note: each undeclared identifier is reported only once for each function it appears in
-> >    cc1: some warnings being treated as errors
-> 
-> This is expected as the patches depend on mac80211 patches.
->
-[shafi] thanks Kalle !, yes correct .
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gV2VkLCAyMDE2LTAzLTA5IGF0IDIyOjAwICswNTMwLCBNb2hhbW1lZCBTaGFmaSBTaGFqYWto
+YW4gd3JvdGU6Cj7CoAo+IEkgaGFkIHN0YXJ0ZWQgc3R1ZHlpbmcodW5kZXJzdGFuZCkgeW91ciBw
+YXRjaC4gUGxlYXNlCj4gbGV0IG1lIGtub3cgaWYgeW91IGhhdmUgYWxyZWFkeSBhZGRlZCBzdXBw
+b3J0IGZvciB0aGUgc2FtZQo+IGluIHVzZXJzcGFjZSBhcyB3ZWxsLCB3ZSBsaWtlIHRvIHVzZSB5
+b3VyIGNoYW5nZXMgYW5kIHBvc3NpYmx5Cj4gYWRkIGFueSBjaGFuZ2VzIHRoYXQgYWRkcmVzc2Vz
+IHJ4X3N0YXRzIGhpc3RvZ3JhbSBhcyB3ZWxsCgpJIGhhZCBhIHZlcnkgbWluaW1hbCBmaWxlIGlu
+IGl3LCBidXQgdGhhdCdzIGFsbDoKCmh0dHBzOi8vcC5zaXBzb2x1dGlvbnMubmV0Lzc0NGMwODU0
+YmMwMmM5NWYudHh0Cgpqb2hhbm5lcwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
