@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adh0z-0005cT-H5
- for ath10k@lists.infradead.org; Wed, 09 Mar 2016 16:31:14 +0000
-Date: Wed, 9 Mar 2016 22:00:38 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [RFC v1] mac80211: Add support for per station rx stats histogram
-Message-ID: <20160309163038.GA9410@atheros-ThinkPad-T61>
-References: <1457367809-13637-1-git-send-email-mohammed@qca.qualcomm.com>
- <1457424451.2283.2.camel@sipsolutions.net>
- <20160308094250.GA3685@atheros-ThinkPad-T61>
+ id 1adh9c-0001fw-GI
+ for ath10k@lists.infradead.org; Wed, 09 Mar 2016 16:40:09 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v1 1/2] ath10k: Add support for ath10k_sta_statistics
+ support
+Date: Wed, 9 Mar 2016 16:39:30 +0000
+Message-ID: <87oaanr4g7.fsf@kamboji.qca.qualcomm.com>
+References: <201603091546.RFfnsS0y%fengguang.wu@intel.com>
+In-Reply-To: <201603091546.RFfnsS0y%fengguang.wu@intel.com> (kbuild test
+ robot's message of "Wed, 9 Mar 2016 15:42:40 +0800")
+Content-Language: en-US
+Content-ID: <CDDDE0EDD69B6F448C8737C7A5B15FC5@qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20160308094250.GA3685@atheros-ThinkPad-T61>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,93 +22,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: kbuild test robot <lkp@intel.com>
+Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "kbuild-all@01.org" <kbuild-all@01.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
+ Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
 
-Hi Johannes,
+kbuild test robot <lkp@intel.com> writes:
 
-I am able to apply both your patches in my local tree(with very very
-minimal conflict)
-http://thread.gmane.org/gmane.linux.kernel.wireless.general/133172
+> Hi Mohammed,
+>
+> [auto build test ERROR on wireless-drivers-next/master]
+> [also build test ERROR on next-20160309]
+> [cannot apply to v4.5-rc7]
+> [if your patch is applied to the wrong git tree, please drop us a note to help improving the system]
+>
+> url:    https://github.com/0day-ci/linux/commits/Mohammed-Shafi-Shajakhan/ath10k-Add-support-for-ath10k_sta_statistics-support/20160309-153522
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next.git master
+> config: sparc64-allmodconfig (attached as .config)
+> reproduce:
+>         wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         make.cross ARCH=sparc64 
+>
+> All errors (new ones prefixed by >>):
+>
+>    drivers/net/wireless/ath/ath10k/debugfs_sta.c: In function 'ath10k_sta_statistics':
+>>> drivers/net/wireless/ath/ath10k/debugfs_sta.c:51:2: error: implicit declaration of function 'ath10k_peer_stats_enabled' [-Werror=implicit-function-declaration]
+>      if (!ath10k_peer_stats_enabled(ar))
+>      ^
+>>> drivers/net/wireless/ath/ath10k/debugfs_sta.c:54:7: error: 'struct station_info' has no member named 'rx_duration'
+>      sinfo->rx_duration = arsta->rx_duration;
+>           ^
+>>> drivers/net/wireless/ath/ath10k/debugfs_sta.c:55:27: error: 'NL80211_STA_INFO_RX_DURATION' undeclared (first use in this function)
+>      sinfo->filled |= 1ULL << NL80211_STA_INFO_RX_DURATION;
+>                               ^
+>    drivers/net/wireless/ath/ath10k/debugfs_sta.c:55:27: note: each undeclared identifier is reported only once for each function it appears in
+>    cc1: some warnings being treated as errors
 
-I had started studying(understand) your patch. Please
-let me know if you have already added support for the same
-in userspace as well, we like to use your changes and possibly
-add any changes that addresses rx_stats histogram as well
+This is expected as the patches depend on mac80211 patches.
 
-I will keep you posted for any other queries/ clarification,
-thanks !
-
--shafi
-
-On Tue, Mar 08, 2016 at 03:12:50PM +0530, Mohammed Shafi Shajakhan wrote:
-> Hi Johannes,
-> =
-
-> On Tue, Mar 08, 2016 at 09:07:31AM +0100, Johannes Berg wrote:
-> > On Mon, 2016-03-07 at 21:53 +0530, Mohammed Shafi Shajakhan wrote:
-> > >=A0
-> > > +#define IEEE80211_HT_MCS_NUM		32
-> > > +#define IEEE80211_VHT_MCS_NUM		10
-> > > +#define IEEE80211_BW_NUM		4
-> > > +#define IEEE80211_NSS_NUM		4
-> > > +#define IEEE80211_GI_NUM		2
-> > > +#define IEEE80211_RATE_TABLE_NUM	320
-> > > +#define IEEE80211_LEGACY_RATE_NUM	12
-> > =
-
-> > > +#ifdef CONFIG_MAC80211_DEBUG_PER_STA_RX_STATS
-> > > +	u64 rx_legacy_pkt[IEEE80211_LEGACY_RATE_NUM];
-> > > +	u64 rx_ht_pkt[IEEE80211_HT_MCS_NUM];
-> > > +	u64 rx_vht_pkt[IEEE80211_VHT_MCS_NUM];
-> > > +	u64 rx_bw_pkt[IEEE80211_BW_NUM];
-> > > +	u64 rx_nss_pkt[IEEE80211_NSS_NUM];
-> > > +	u64 rx_gi_pkt[IEEE80211_GI_NUM];
-> > > +	u64 rx_rate_pkt[IEEE80211_RATE_TABLE_NUM];
-> > > +	u64 rx_legacy_byte[IEEE80211_LEGACY_RATE_NUM];
-> > > +	u64 rx_ht_byte[IEEE80211_HT_MCS_NUM];
-> > > +	u64 rx_vht_byte[IEEE80211_VHT_MCS_NUM];
-> > > +	u64 rx_bw_byte[IEEE80211_BW_NUM];
-> > > +	u64 rx_nss_byte[IEEE80211_NSS_NUM];
-> > > +	u64 rx_gi_byte[IEEE80211_GI_NUM];
-> > > +	u64 rx_rate_byte[IEEE80211_RATE_TABLE_NUM];
-> > > +#endif
-> > =
-
-> > Do you know how much data this is?!
-> > =
-
-> > Felix is going to kill both of us if I apply it.
-> =
-
-> [shafi] :-(
-> =
-
-> > =
-
-> > Please look at reviving my rate-statistics patch and do the remaining
-> > work in userspace:
-> > =
-
-> > http://thread.gmane.org/gmane.linux.kernel.wireless.general/133172
-> >
-> =
-
-> [shafi] thank you, I will check this out.
-> =
-
-> regards,
-> shafi
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-wireless"=
- in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
