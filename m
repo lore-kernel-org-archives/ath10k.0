@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adaRs-0001cc-Hh
- for ath10k@lists.infradead.org; Wed, 09 Mar 2016 09:30:33 +0000
-Message-ID: <1457515803.2042.1.camel@sipsolutions.net>
+ id 1adaab-0003j6-8l
+ for ath10k@lists.infradead.org; Wed, 09 Mar 2016 09:39:33 +0000
+Date: Wed, 9 Mar 2016 15:08:45 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
 Subject: Re: [PATCH v2] cfg80211/nl80211: Add support for
  NL80211_STA_INFO_RX_DURATION
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 09 Mar 2016 10:30:03 +0100
-In-Reply-To: <1457508003-16700-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <20160309093845.GA6695@atheros-ThinkPad-T61>
 References: <1457508003-16700-1-git-send-email-mohammed@qca.qualcomm.com>
-Mime-Version: 1.0
+ <1457515803.2042.1.camel@sipsolutions.net>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1457515803.2042.1.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,20 +21,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>, linux-wireless@vger.kernel.org
-Cc: mohammed@codeaurora.org, kvalo@codeaurora.org, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-wireless@vger.kernel.org, kvalo@codeaurora.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-T24gV2VkLCAyMDE2LTAzLTA5IGF0IDEyOjUwICswNTMwLCBNb2hhbW1lZCBTaGFmaSBTaGFqYWto
-YW4gd3JvdGU6Cj7CoAo+ICsgKiBAcnhfZHVyYXRpb246IGFwcHJveGltYXRlIHRvdGFsIGFpciB0
-aW1lKHVzZWNzKSBmb3IgYWxsIHRoZQo+IGZyYW1lcyBmcm9tIGEKPiArICoJY29ubmVjdGVkIGNs
-aWVudAoKSSBkb24ndCBzZWUgd2h5IHRoaXMgc2hvdWxkIGJlIHJlc3RyaWN0ZWQgdG8gImNvbm5l
-Y3RlZCBjbGllbnRzIi4gVGhlCnNhbWUgdmFsdWUgY291bGQgYmUgdXNlZCBmb3IgYSBtZXNoIHBl
-ZXIuIE9yIFRETFMgcGVlci4gT3IgdGhlIEFQIG9uIGEKbWFuYWdlZCBjb25uZWN0aW9uLiBPciBh
-bGwgdGhlIG90aGVyIHR5cGVzIG9mIFNUQS4KCmpvaGFubmVzCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+On Wed, Mar 09, 2016 at 10:30:03AM +0100, Johannes Berg wrote:
+> On Wed, 2016-03-09 at 12:50 +0530, Mohammed Shafi Shajakhan wrote:
+> >=A0
+> > + * @rx_duration: approximate total air time(usecs) for all the
+> > frames from a
+> > + *	connected client
+> =
+
+> I don't see why this should be restricted to "connected clients". The
+> same value could be used for a mesh peer. Or TDLS peer. Or the AP on a
+> managed connection. Or all the other types of STA.
+
+[shafi] Please suggest if this is ok ? I will be thankful
+if you can suggest a better one if this is not ok
+
+* @rx_duration: approximate total air time(usecs) for all the
+ frames from a peer
+
+ regards,
+ shafi
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
