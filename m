@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adwj3-0005M4-5J
- for ath10k@lists.infradead.org; Thu, 10 Mar 2016 09:17:46 +0000
-From: <akolli@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix debugfs pktlog_filter write
-Date: Thu, 10 Mar 2016 14:48:58 +0530
-Message-ID: <1457601538-30751-1-git-send-email-akolli@qti.qualcomm.com>
+ id 1adxbI-0005He-Mf
+ for ath10k@lists.infradead.org; Thu, 10 Mar 2016 10:14:20 +0000
+From: Raja Mani <rmani@qti.qualcomm.com>
+Subject: [PATCH 2/3] ath10k: move cal data len to hw_params
+Date: Thu, 10 Mar 2016 15:42:37 +0530
+Message-ID: <1457604758-14454-3-git-send-email-rmani@qti.qualcomm.com>
+In-Reply-To: <1457604758-14454-1-git-send-email-rmani@qti.qualcomm.com>
+References: <1457604758-14454-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,40 +23,169 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wireless@vger.kernel.org, stable@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+ath10k_download_cal_dt() compares obtained cal data content length
+against QCA988X_CAL_DATA_LEN (2116 bytes). It was written by keeping
+qca988x in mind. In fact, cal data length is more chip specific.
+To make ath10k_download_cal_dt() more generic and reusable for other
+chipsets (like qca4019), cal data length is moved to hw_params.
 
-It is observed that, we are disabling the packet log if we write same
-value to the pktlog_filter for the second time. Always enable pktlogs
-on non zero filter.
-
-Fixes: 90174455ae05 ("ath10k: add support to configure pktlog filter")
-Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
+Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/debug.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.c  | 11 ++++++++++-
+ drivers/net/wireless/ath/ath10k/core.h  |  1 +
+ drivers/net/wireless/ath/ath10k/debug.c |  7 ++++---
+ drivers/net/wireless/ath/ath10k/hw.h    |  2 --
+ 4 files changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 076d29b53ddf..0f834646e6a7 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2019,7 +2019,12 @@ static ssize_t ath10k_write_pktlog_filter(struct file *file,
- 		goto out;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 4ec4d72..2a901c6 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -60,6 +60,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.channel_counters_freq_hz = 88000,
+ 		.max_probe_resp_desc_thres = 0,
+ 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
++		.cal_data_len = 2116,
+ 		.fw = {
+ 			.dir = QCA988X_HW_2_0_FW_DIR,
+ 			.fw = QCA988X_HW_2_0_FW_FILE,
+@@ -78,6 +79,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.otp_exe_param = 0,
+ 		.channel_counters_freq_hz = 88000,
+ 		.max_probe_resp_desc_thres = 0,
++		.cal_data_len = 8124,
+ 		.fw = {
+ 			.dir = QCA6174_HW_2_1_FW_DIR,
+ 			.fw = QCA6174_HW_2_1_FW_FILE,
+@@ -97,6 +99,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.channel_counters_freq_hz = 88000,
+ 		.max_probe_resp_desc_thres = 0,
+ 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
++		.cal_data_len = 8124,
+ 		.fw = {
+ 			.dir = QCA6174_HW_2_1_FW_DIR,
+ 			.fw = QCA6174_HW_2_1_FW_FILE,
+@@ -116,6 +119,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.channel_counters_freq_hz = 88000,
+ 		.max_probe_resp_desc_thres = 0,
+ 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
++		.cal_data_len = 8124,
+ 		.fw = {
+ 			.dir = QCA6174_HW_3_0_FW_DIR,
+ 			.fw = QCA6174_HW_3_0_FW_FILE,
+@@ -135,6 +139,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.channel_counters_freq_hz = 88000,
+ 		.max_probe_resp_desc_thres = 0,
+ 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
++		.cal_data_len = 8124,
+ 		.fw = {
+ 			/* uses same binaries as hw3.0 */
+ 			.dir = QCA6174_HW_3_0_FW_DIR,
+@@ -159,6 +164,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.tx_chain_mask = 0xf,
+ 		.rx_chain_mask = 0xf,
+ 		.max_spatial_stream = 4,
++		.cal_data_len = 12064,
+ 		.fw = {
+ 			.dir = QCA99X0_HW_2_0_FW_DIR,
+ 			.fw = QCA99X0_HW_2_0_FW_FILE,
+@@ -177,6 +183,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.otp_exe_param = 0,
+ 		.channel_counters_freq_hz = 88000,
+ 		.max_probe_resp_desc_thres = 0,
++		.cal_data_len = 8124,
+ 		.fw = {
+ 			.dir = QCA9377_HW_1_0_FW_DIR,
+ 			.fw = QCA9377_HW_1_0_FW_FILE,
+@@ -195,6 +202,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.otp_exe_param = 0,
+ 		.channel_counters_freq_hz = 88000,
+ 		.max_probe_resp_desc_thres = 0,
++		.cal_data_len = 8124,
+ 		.fw = {
+ 			.dir = QCA9377_HW_1_0_FW_DIR,
+ 			.fw = QCA9377_HW_1_0_FW_FILE,
+@@ -218,6 +226,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.tx_chain_mask = 0x3,
+ 		.rx_chain_mask = 0x3,
+ 		.max_spatial_stream = 2,
++		.cal_data_len = 12064,
+ 		.fw = {
+ 			.dir = QCA4019_HW_1_0_FW_DIR,
+ 			.fw = QCA4019_HW_1_0_FW_FILE,
+@@ -503,7 +512,7 @@ static int ath10k_download_cal_dt(struct ath10k *ar, const char *dt_name)
+ 		return -ENOENT;
  	}
  
--	if (filter && (filter != ar->debug.pktlog_filter)) {
-+	if (filter == ar->debug.pktlog_filter) {
-+		ret = count;
-+		goto out;
-+	}
-+
-+	if (filter) {
- 		ret = ath10k_wmi_pdev_pktlog_enable(ar, filter);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to enable pktlog filter %x: %d\n",
+-	if (data_len != QCA988X_CAL_DATA_LEN) {
++	if (data_len != ar->hw_params.cal_data_len) {
+ 		ath10k_warn(ar, "invalid calibration data length in DT: %d\n",
+ 			    data_len);
+ 		ret = -EMSGSIZE;
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 23ba03f..322a9eb 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -695,6 +695,7 @@ struct ath10k {
+ 		u32 tx_chain_mask;
+ 		u32 rx_chain_mask;
+ 		u32 max_spatial_stream;
++		u32 cal_data_len;
+ 
+ 		struct ath10k_hw_params_fw {
+ 			const char *dir;
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 076d29b..48f2835 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1447,7 +1447,7 @@ static int ath10k_debug_cal_data_open(struct inode *inode, struct file *file)
+ 		goto err;
+ 	}
+ 
+-	buf = vmalloc(QCA988X_CAL_DATA_LEN);
++	buf = vmalloc(ar->hw_params.cal_data_len);
+ 	if (!buf) {
+ 		ret = -ENOMEM;
+ 		goto err;
+@@ -1462,7 +1462,7 @@ static int ath10k_debug_cal_data_open(struct inode *inode, struct file *file)
+ 	}
+ 
+ 	ret = ath10k_hif_diag_read(ar, le32_to_cpu(addr), buf,
+-				   QCA988X_CAL_DATA_LEN);
++				   ar->hw_params.cal_data_len);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to read calibration data: %d\n", ret);
+ 		goto err_vfree;
+@@ -1487,10 +1487,11 @@ static ssize_t ath10k_debug_cal_data_read(struct file *file,
+ 					  char __user *user_buf,
+ 					  size_t count, loff_t *ppos)
+ {
++	struct ath10k *ar = file->private_data;
+ 	void *buf = file->private_data;
+ 
+ 	return simple_read_from_buffer(user_buf, count, ppos,
+-				       buf, QCA988X_CAL_DATA_LEN);
++				       buf, ar->hw_params.cal_data_len);
+ }
+ 
+ static int ath10k_debug_cal_data_release(struct inode *inode,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 1ff617b..c0179bc 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -134,8 +134,6 @@ enum qca9377_chip_id_rev {
+ 
+ #define REG_DUMP_COUNT_QCA988X 60
+ 
+-#define QCA988X_CAL_DATA_LEN		2116
+-
+ struct ath10k_fw_ie {
+ 	__le32 id;
+ 	__le32 len;
 -- 
-1.7.9.5
+1.8.1.2
 
 
 _______________________________________________
