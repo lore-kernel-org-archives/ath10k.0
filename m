@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adxbI-0005He-Mf
- for ath10k@lists.infradead.org; Thu, 10 Mar 2016 10:14:20 +0000
+ id 1adxbI-0005FD-Mn
+ for ath10k@lists.infradead.org; Thu, 10 Mar 2016 10:14:26 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 2/3] ath10k: move cal data len to hw_params
-Date: Thu, 10 Mar 2016 15:42:37 +0530
-Message-ID: <1457604758-14454-3-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH 1/3] ath10k: pass cal data location as an argument to
+ ath10k_download_cal_{file|dt}
+Date: Thu, 10 Mar 2016 15:42:36 +0530
+Message-ID: <1457604758-14454-2-git-send-email-rmani@qti.qualcomm.com>
 In-Reply-To: <1457604758-14454-1-git-send-email-rmani@qti.qualcomm.com>
 References: <1457604758-14454-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,165 +26,101 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-ath10k_download_cal_dt() compares obtained cal data content length
-against QCA988X_CAL_DATA_LEN (2116 bytes). It was written by keeping
-qca988x in mind. In fact, cal data length is more chip specific.
-To make ath10k_download_cal_dt() more generic and reusable for other
-chipsets (like qca4019), cal data length is moved to hw_params.
+Both ath10k_download_cal_file() and ath10k_download_cal_dt() uses
+hard coded file pointer (ar->cal_file) and device tree entry
+(qcom,ath10k-calibration-data) respectively to get calibration
+data content.
+
+There is a need to use those two functions in qca4019 calibration
+download sequence with different file pointer and device tree entry name.
+Modify those two functions to take cal data location as an argument.
+So that it can serve the purpose for other file pointer and device
+tree entry.
+
+This is just preparation before adding actual qca4019 calibration
+download sequence. No functional changes.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c  | 11 ++++++++++-
- drivers/net/wireless/ath/ath10k/core.h  |  1 +
- drivers/net/wireless/ath/ath10k/debug.c |  7 ++++---
- drivers/net/wireless/ath/ath10k/hw.h    |  2 --
- 4 files changed, 15 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 24 +++++++++++-------------
+ 1 file changed, 11 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 4ec4d72..2a901c6 100644
+index 2389c07..4ec4d72 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -60,6 +60,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
- 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
-+		.cal_data_len = 2116,
- 		.fw = {
- 			.dir = QCA988X_HW_2_0_FW_DIR,
- 			.fw = QCA988X_HW_2_0_FW_FILE,
-@@ -78,6 +79,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.otp_exe_param = 0,
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
-+		.cal_data_len = 8124,
- 		.fw = {
- 			.dir = QCA6174_HW_2_1_FW_DIR,
- 			.fw = QCA6174_HW_2_1_FW_FILE,
-@@ -97,6 +99,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
- 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
-+		.cal_data_len = 8124,
- 		.fw = {
- 			.dir = QCA6174_HW_2_1_FW_DIR,
- 			.fw = QCA6174_HW_2_1_FW_FILE,
-@@ -116,6 +119,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
- 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
-+		.cal_data_len = 8124,
- 		.fw = {
- 			.dir = QCA6174_HW_3_0_FW_DIR,
- 			.fw = QCA6174_HW_3_0_FW_FILE,
-@@ -135,6 +139,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
- 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
-+		.cal_data_len = 8124,
- 		.fw = {
- 			/* uses same binaries as hw3.0 */
- 			.dir = QCA6174_HW_3_0_FW_DIR,
-@@ -159,6 +164,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_chain_mask = 0xf,
- 		.rx_chain_mask = 0xf,
- 		.max_spatial_stream = 4,
-+		.cal_data_len = 12064,
- 		.fw = {
- 			.dir = QCA99X0_HW_2_0_FW_DIR,
- 			.fw = QCA99X0_HW_2_0_FW_FILE,
-@@ -177,6 +183,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.otp_exe_param = 0,
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
-+		.cal_data_len = 8124,
- 		.fw = {
- 			.dir = QCA9377_HW_1_0_FW_DIR,
- 			.fw = QCA9377_HW_1_0_FW_FILE,
-@@ -195,6 +202,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.otp_exe_param = 0,
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
-+		.cal_data_len = 8124,
- 		.fw = {
- 			.dir = QCA9377_HW_1_0_FW_DIR,
- 			.fw = QCA9377_HW_1_0_FW_FILE,
-@@ -218,6 +226,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.tx_chain_mask = 0x3,
- 		.rx_chain_mask = 0x3,
- 		.max_spatial_stream = 2,
-+		.cal_data_len = 12064,
- 		.fw = {
- 			.dir = QCA4019_HW_1_0_FW_DIR,
- 			.fw = QCA4019_HW_1_0_FW_FILE,
-@@ -503,7 +512,7 @@ static int ath10k_download_cal_dt(struct ath10k *ar, const char *dt_name)
- 		return -ENOENT;
- 	}
- 
--	if (data_len != QCA988X_CAL_DATA_LEN) {
-+	if (data_len != ar->hw_params.cal_data_len) {
- 		ath10k_warn(ar, "invalid calibration data length in DT: %d\n",
- 			    data_len);
- 		ret = -EMSGSIZE;
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 23ba03f..322a9eb 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -695,6 +695,7 @@ struct ath10k {
- 		u32 tx_chain_mask;
- 		u32 rx_chain_mask;
- 		u32 max_spatial_stream;
-+		u32 cal_data_len;
- 
- 		struct ath10k_hw_params_fw {
- 			const char *dir;
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 076d29b..48f2835 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1447,7 +1447,7 @@ static int ath10k_debug_cal_data_open(struct inode *inode, struct file *file)
- 		goto err;
- 	}
- 
--	buf = vmalloc(QCA988X_CAL_DATA_LEN);
-+	buf = vmalloc(ar->hw_params.cal_data_len);
- 	if (!buf) {
- 		ret = -ENOMEM;
- 		goto err;
-@@ -1462,7 +1462,7 @@ static int ath10k_debug_cal_data_open(struct inode *inode, struct file *file)
- 	}
- 
- 	ret = ath10k_hif_diag_read(ar, le32_to_cpu(addr), buf,
--				   QCA988X_CAL_DATA_LEN);
-+				   ar->hw_params.cal_data_len);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to read calibration data: %d\n", ret);
- 		goto err_vfree;
-@@ -1487,10 +1487,11 @@ static ssize_t ath10k_debug_cal_data_read(struct file *file,
- 					  char __user *user_buf,
- 					  size_t count, loff_t *ppos)
- {
-+	struct ath10k *ar = file->private_data;
- 	void *buf = file->private_data;
- 
- 	return simple_read_from_buffer(user_buf, count, ppos,
--				       buf, QCA988X_CAL_DATA_LEN);
-+				       buf, ar->hw_params.cal_data_len);
+@@ -462,18 +462,18 @@ exit:
+ 	return ret;
  }
  
- static int ath10k_debug_cal_data_release(struct inode *inode,
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 1ff617b..c0179bc 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -134,8 +134,6 @@ enum qca9377_chip_id_rev {
+-static int ath10k_download_cal_file(struct ath10k *ar)
++static int ath10k_download_cal_file(struct ath10k *ar,
++				    const struct firmware *file)
+ {
+ 	int ret;
  
- #define REG_DUMP_COUNT_QCA988X 60
+-	if (!ar->cal_file)
++	if (!file)
+ 		return -ENOENT;
  
--#define QCA988X_CAL_DATA_LEN		2116
--
- struct ath10k_fw_ie {
- 	__le32 id;
- 	__le32 len;
+-	if (IS_ERR(ar->cal_file))
+-		return PTR_ERR(ar->cal_file);
++	if (IS_ERR(file))
++		return PTR_ERR(file);
+ 
+-	ret = ath10k_download_board_data(ar, ar->cal_file->data,
+-					 ar->cal_file->size);
++	ret = ath10k_download_board_data(ar, file->data, file->size);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to download cal_file data: %d\n", ret);
+ 		return ret;
+@@ -484,7 +484,7 @@ static int ath10k_download_cal_file(struct ath10k *ar)
+ 	return 0;
+ }
+ 
+-static int ath10k_download_cal_dt(struct ath10k *ar)
++static int ath10k_download_cal_dt(struct ath10k *ar, const char *dt_name)
+ {
+ 	struct device_node *node;
+ 	int data_len;
+@@ -498,8 +498,7 @@ static int ath10k_download_cal_dt(struct ath10k *ar)
+ 		 */
+ 		return -ENOENT;
+ 
+-	if (!of_get_property(node, "qcom,ath10k-calibration-data",
+-			     &data_len)) {
++	if (!of_get_property(node, dt_name, &data_len)) {
+ 		/* The calibration data node is optional */
+ 		return -ENOENT;
+ 	}
+@@ -517,8 +516,7 @@ static int ath10k_download_cal_dt(struct ath10k *ar)
+ 		goto out;
+ 	}
+ 
+-	ret = of_property_read_u8_array(node, "qcom,ath10k-calibration-data",
+-					data, data_len);
++	ret = of_property_read_u8_array(node, dt_name, data, data_len);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to read calibration data from DT: %d\n",
+ 			    ret);
+@@ -1258,7 +1256,7 @@ static int ath10k_download_cal_data(struct ath10k *ar)
+ {
+ 	int ret;
+ 
+-	ret = ath10k_download_cal_file(ar);
++	ret = ath10k_download_cal_file(ar, ar->cal_file);
+ 	if (ret == 0) {
+ 		ar->cal_mode = ATH10K_CAL_MODE_FILE;
+ 		goto done;
+@@ -1268,7 +1266,7 @@ static int ath10k_download_cal_data(struct ath10k *ar)
+ 		   "boot did not find a calibration file, try DT next: %d\n",
+ 		   ret);
+ 
+-	ret = ath10k_download_cal_dt(ar);
++	ret = ath10k_download_cal_dt(ar, "qcom,ath10k-calibration-data");
+ 	if (ret == 0) {
+ 		ar->cal_mode = ATH10K_CAL_MODE_DT;
+ 		goto done;
 -- 
 1.8.1.2
 
