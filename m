@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adxbZ-0005Uk-7w
- for ath10k@lists.infradead.org; Thu, 10 Mar 2016 10:14:41 +0000
+ id 1adxc8-000634-65
+ for ath10k@lists.infradead.org; Thu, 10 Mar 2016 10:15:24 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 3/3] ath10k: incorporate qca4019 cal data download sequence
-Date: Thu, 10 Mar 2016 15:42:38 +0530
-Message-ID: <1457604758-14454-4-git-send-email-rmani@qti.qualcomm.com>
-In-Reply-To: <1457604758-14454-1-git-send-email-rmani@qti.qualcomm.com>
-References: <1457604758-14454-1-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH] dt: bindings: add new dt entry for pre calibration in qcom,
+ ath10k.txt
+Date: Thu, 10 Mar 2016 15:42:04 +0530
+Message-ID: <1457604724-14378-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,213 +21,82 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
+To: kvalo@qca.qualcomm.com
+Cc: devicetree@vger.kernel.org, robh@kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Raja Mani <rmani@qti.qualcomm.com>
 
-qca4019 calibration data is stored in the host memory and it's mandatory
-to download it even before reading board id and chip id from the target.
-Also, there is a need to execute otp (download and run) twice, one after
-cal data download and another one after board data download.
+There two things done in this patch,
 
-Existing cal data file name 'cal-<bus>-<id>.bin' and device tree entry
-'qcom,ath10k-calibration-data' used in ath10k has assumption that it
-carries other data (like board data) also along with the calibration data.
-But, qca4019 cal data contains pure calibration data (doesn't include
-any other info). So, using existing same cal file name and DT entry
-in qca4019 case would alter the purpose of it. To avoid this, new cal
-file name 'pre-cal-<bus>-<id>.bin' and new device tree entry name
-'qcom,ath10k-pre-calibration-data are introduced.
+1) Existing device tree entry 'qcom,ath10k-calibration-data' carries
+   not only calibration data, it carries board specific data too.
+   So, make appropriate update in doc.
 
-Overall qca4019's firmware download sequence would look like,
-
-   1) Download cal data (either from a file or device tree entry)
-      at the address specified by target in the host interest area
-      member "hi_board_data".
-
-   2) Download otp and run with 0x10 (PARAM_GET_EEPROM_BOARD_ID)
-      as a argument.
-
-      At this point, otp will take back up of downloaded cal data
-      content in another location in the target and return valid
-      board id and chip id to the host.
-
-   3) Download board data at the address specified by target
-      in host interest area member "hi_board_data".
-
-   4) Download otp and run with 0x10000 (PARAM_FLASH_SECTION_ALL) as
-      a argument.
-
-      Now otp will apply cal data content from it's backup on top
-      of board data download in step 3 and prepare final data base.
-
-   5) Download code swap and athwlan binary content.
-
-Above sequences are implemented (step 1 to step 4) in the name of
-pre calibration configuration.
+2) ipq4019 wifi needs new devie tree entry to carry calibration
+   data alone (called pre cal data, it doesn't include any other info).
+   Using 'qcom,ath10k-calibration-data' for ipq4019 would alter
+   the purpose of it. Hence, add new device tree entry called
+   'qcom,ath10k-pre-calibration-data' to carry only pre calibration data.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 85 +++++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/core.h | 11 ++++-
- 2 files changed, 94 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 2a901c6..3d05929 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -729,6 +729,14 @@ static int ath10k_fetch_cal_file(struct ath10k *ar)
- {
- 	char filename[100];
+Below patches covers the corresponding changes in the ath10k driver.
+It's posted separately to ath10k and linux-wireless mailing list.
+
+  1) ath10k: pass cal data location as an argument to ath10k_download_cal_{file|dt}
+  2) ath10k: move cal data len to hw_params
+  3) ath10k: incorporate qca4019 cal data download sequence
+
+ .../bindings/net/wireless/qcom,ath10k.txt          | 23 +++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index 96aae6b..74d7f0a 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -5,12 +5,18 @@ Required properties:
+ 	* "qcom,ath10k"
+ 	* "qcom,ipq4019-wifi"
  
-+	/* pre-cal-<bus>-<id>.bin */
-+	scnprintf(filename, sizeof(filename), "pre-cal-%s-%s.bin",
-+		  ath10k_bus_str(ar->hif.bus), dev_name(ar->dev));
-+
-+	ar->pre_cal_file = ath10k_fetch_fw_file(ar, ATH10K_FW_DIR, filename);
-+	if (!IS_ERR(ar->pre_cal_file))
-+		goto success;
-+
- 	/* cal-<bus>-<id>.bin */
- 	scnprintf(filename, sizeof(filename), "cal-%s-%s.bin",
- 		  ath10k_bus_str(ar->hif.bus), dev_name(ar->dev));
-@@ -737,7 +745,7 @@ static int ath10k_fetch_cal_file(struct ath10k *ar)
- 	if (IS_ERR(ar->cal_file))
- 		/* calibration file is optional, don't print any warnings */
- 		return PTR_ERR(ar->cal_file);
--
-+success:
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "found calibration file %s/%s\n",
- 		   ATH10K_FW_DIR, filename);
+-PCI based devices uses compatible string "qcom,ath10k" and takes only
+-calibration data via "qcom,ath10k-calibration-data". Rest of the properties
+-are not applicable for PCI based devices.
++PCI based devices uses compatible string "qcom,ath10k" and takes calibration
++data along with board specific data via "qcom,ath10k-calibration-data".
++Rest of the properties are not applicable for PCI based devices.
  
-@@ -1261,10 +1269,76 @@ success:
- 	return 0;
- }
+ AHB based devices (i.e. ipq4019) uses compatible string "qcom,ipq4019-wifi"
+-and also uses most of the properties defined in this doc.
++and also uses most of the properties defined in this doc (except
++"qcom,ath10k-calibration-data"). It uses "qcom,ath10k-pre-calibration-data"
++to carry pre calibration data.
++
++In general, entry "qcom,ath10k-pre-calibration-data" and
++"qcom,ath10k-calibration-data" conflict with each other and only one
++can be provided per device.
  
-+static int ath10k_core_pre_cal_download(struct ath10k *ar)
-+{
-+	int ret;
-+
-+	ret = ath10k_download_cal_file(ar, ar->pre_cal_file);
-+	if (ret == 0) {
-+		ar->cal_mode = ATH10K_PRE_CAL_MODE_FILE;
-+		goto success;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT,
-+		   "boot did not find a pre calibration file, try DT next: %d\n",
-+		   ret);
-+
-+	ret = ath10k_download_cal_dt(ar, "qcom,ath10k-pre-calibration-data");
-+	if (ret) {
-+		ath10k_dbg(ar, ATH10K_DBG_BOOT,
-+			   "unable to load pre cal data from DT: %d\n", ret);
-+		return ret;
-+	}
-+	ar->cal_mode = ATH10K_PRE_CAL_MODE_DT;
-+
-+success:
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot using calibration mode %s\n",
-+		   ath10k_cal_mode_str(ar->cal_mode));
-+
-+	return 0;
-+}
-+
-+static int ath10k_core_pre_cal_config(struct ath10k *ar)
-+{
-+	int ret;
-+
-+	ret = ath10k_core_pre_cal_download(ar);
-+	if (ret) {
-+		ath10k_dbg(ar, ATH10K_DBG_BOOT,
-+			   "failed to load pre cal data: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = ath10k_core_get_board_id_from_otp(ar);
-+	if (ret) {
-+		ath10k_err(ar, "failed to get board id: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = ath10k_download_and_run_otp(ar);
-+	if (ret) {
-+		ath10k_err(ar, "failed to run otp: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT,
-+		   "pre cal configuration done successfully\n");
-+
-+	return 0;
-+}
-+
- static int ath10k_download_cal_data(struct ath10k *ar)
- {
- 	int ret;
+ Optional properties:
+ - reg: Address and length of the register set for the device.
+@@ -35,8 +41,11 @@ Optional properties:
+ - qcom,msi_addr: MSI interrupt address.
+ - qcom,msi_base: Base value to add before writing MSI data into
+ 		MSI address register.
+-- qcom,ath10k-calibration-data : calibration data as an array, the
+-				 length can vary between hw versions
++- qcom,ath10k-calibration-data : calibration data + board specific data
++				 as an array, the length can vary between
++				 hw versions.
++- qcom,ath10k-pre-calibration-data : pre calibration data as an array,
++				     the length can vary between hw versions.
  
-+	ret = ath10k_core_pre_cal_config(ar);
-+	if (ret == 0)
-+		return 0;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT,
-+		   "pre cal download procedure failed, try cal file: %d\n",
-+		   ret);
-+
- 	ret = ath10k_download_cal_file(ar, ar->cal_file);
- 	if (ret == 0) {
- 		ar->cal_mode = ATH10K_CAL_MODE_FILE;
-@@ -1842,6 +1916,15 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ Example (to supply the calibration data alone):
  
- 	ath10k_debug_print_hwfw_info(ar);
- 
-+	ret = ath10k_core_pre_cal_download(ar);
-+	if (ret) {
-+		/* pre calibration data download is not necessary
-+		 * for all the chipsets. Ignore failures and continue.
-+		 */
-+		ath10k_dbg(ar, ATH10K_DBG_BOOT,
-+			   "could not load pre cal data: %d\n", ret);
-+	}
-+
- 	ret = ath10k_core_get_board_id_from_otp(ar);
- 	if (ret && ret != -EOPNOTSUPP) {
- 		ath10k_err(ar, "failed to get board id from otp: %d\n",
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 322a9eb..d9481ea 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -567,6 +567,8 @@ enum ath10k_cal_mode {
- 	ATH10K_CAL_MODE_FILE,
- 	ATH10K_CAL_MODE_OTP,
- 	ATH10K_CAL_MODE_DT,
-+	ATH10K_PRE_CAL_MODE_FILE,
-+	ATH10K_PRE_CAL_MODE_DT,
+@@ -105,5 +114,5 @@ wifi0: wifi@a000000 {
+ 			  "legacy";
+ 	qcom,msi_addr = <0x0b006040>;
+ 	qcom,msi_base = <0x40>;
+-	qcom,ath10k-calibration-data = [ 01 02 03 ... ];
++	qcom,ath10k-pre-calibration-data = [ 01 02 03 ... ];
  };
- 
- enum ath10k_crypt_mode {
-@@ -585,6 +587,10 @@ static inline const char *ath10k_cal_mode_str(enum ath10k_cal_mode mode)
- 		return "otp";
- 	case ATH10K_CAL_MODE_DT:
- 		return "dt";
-+	case ATH10K_PRE_CAL_MODE_FILE:
-+		return "pre-cal-file";
-+	case ATH10K_PRE_CAL_MODE_DT:
-+		return "pre-cal-dt";
- 	}
- 
- 	return "unknown";
-@@ -719,7 +725,10 @@ struct ath10k {
- 	const void *firmware_data;
- 	size_t firmware_len;
- 
--	const struct firmware *cal_file;
-+	union {
-+		const struct firmware *pre_cal_file;
-+		const struct firmware *cal_file;
-+	};
- 
- 	struct {
- 		const void *firmware_codeswap_data;
 -- 
 1.8.1.2
 
