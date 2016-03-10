@@ -1,20 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adtwg-0003Wv-21
- for ath10k@lists.infradead.org; Thu, 10 Mar 2016 06:19:38 +0000
-Date: Thu, 10 Mar 2016 11:48:58 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [RFC v1] mac80211: Add support for per station rx stats histogram
-Message-ID: <20160310061858.GB11345@atheros-ThinkPad-T61>
-References: <1457367809-13637-1-git-send-email-mohammed@qca.qualcomm.com>
- <1457424451.2283.2.camel@sipsolutions.net>
- <20160308094250.GA3685@atheros-ThinkPad-T61>
- <20160309163038.GA9410@atheros-ThinkPad-T61>
- <1457544468.2042.20.camel@sipsolutions.net>
+ id 1adwj3-0005M4-5J
+ for ath10k@lists.infradead.org; Thu, 10 Mar 2016 09:17:46 +0000
+From: <akolli@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix debugfs pktlog_filter write
+Date: Thu, 10 Mar 2016 14:48:58 +0530
+Message-ID: <1457601538-30751-1-git-send-email-akolli@qti.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1457544468.2042.20.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +16,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: ath10k@lists.infradead.org
+Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wireless@vger.kernel.org, stable@vger.kernel.org
 
-On Wed, Mar 09, 2016 at 06:27:48PM +0100, Johannes Berg wrote:
-> On Wed, 2016-03-09 at 22:00 +0530, Mohammed Shafi Shajakhan wrote:
-> >=A0
-> > I had started studying(understand) your patch. Please
-> > let me know if you have already added support for the same
-> > in userspace as well, we like to use your changes and possibly
-> > add any changes that addresses rx_stats histogram as well
-> =
+From: Anilkumar Kolli <akolli@qti.qualcomm.com>
 
-> I had a very minimal file in iw, but that's all:
-> =
+It is observed that, we are disabling the packet log if we write same
+value to the pktlog_filter for the second time. Always enable pktlogs
+on non zero filter.
 
-> https://p.sipsolutions.net/744c0854bc02c95f.txt
->
-[shafi] thank you for sharing this Johannes
+Fixes: 90174455ae05 ("ath10k: add support to configure pktlog filter")
+Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/debug.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
--shafi
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 076d29b53ddf..0f834646e6a7 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -2019,7 +2019,12 @@ static ssize_t ath10k_write_pktlog_filter(struct file *file,
+ 		goto out;
+ 	}
+ 
+-	if (filter && (filter != ar->debug.pktlog_filter)) {
++	if (filter == ar->debug.pktlog_filter) {
++		ret = count;
++		goto out;
++	}
++
++	if (filter) {
+ 		ret = ath10k_wmi_pdev_pktlog_enable(ar, filter);
+ 		if (ret) {
+ 			ath10k_warn(ar, "failed to enable pktlog filter %x: %d\n",
+-- 
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
