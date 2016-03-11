@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aeGLn-000307-Is
- for ath10k@lists.infradead.org; Fri, 11 Mar 2016 06:15:04 +0000
-From: <akolli@qti.qualcomm.com>
-Subject: [PATCH v2] ath10k: fix debugfs pktlog_filter write
-Date: Fri, 11 Mar 2016 11:46:39 +0530
-Message-ID: <1457676999-32678-1-git-send-email-akolli@qti.qualcomm.com>
+ id 1aeLwF-00038i-Sj
+ for ath10k@lists.infradead.org; Fri, 11 Mar 2016 12:13:04 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: deliver mgmt frames from htt to monitor vifs only
+Date: Fri, 11 Mar 2016 12:12:37 +0000
+Message-ID: <87d1r1nrgr.fsf@kamboji.qca.qualcomm.com>
+References: <1448888219-2798-1-git-send-email-grzegorz.bajorski@tieto.com>
+In-Reply-To: <1448888219-2798-1-git-send-email-grzegorz.bajorski@tieto.com>
+ (Grzegorz Bajorski's message of "Mon, 30 Nov 2015 13:56:59 +0100")
+Content-Language: en-US
+Content-ID: <628A27C1F3CCAF4AA36C645DA76EC068@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,47 +25,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wireless@vger.kernel.org, stable@vger.kernel.org
+To: "grzegorz.bajorski@tieto.com" <grzegorz.bajorski@tieto.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+Grzegorz Bajorski <grzegorz.bajorski@tieto.com> writes:
 
-It is observed that, we are disabling the packet log if we write same
-value to the pktlog_filter for the second time. Always enable pktlogs
-on non zero filter.
+> Until now only WMI originating mgmt frames were
+> reported to mac80211. Management frames on HTT
+> were basically dropped (except frames which looked
+> like management but had FCS error).
+>
+> To allow sniffing all frames (including offloaded
+> frames) without interfering with mac80211
+> operation and states a new rx_flag was introduced
+> and is not being used to distinguish frames and
+> classify them for mac80211.
+>
+> Signed-off-by: Grzegorz Bajorski <grzegorz.bajorski@tieto.com>
+> ---
+> depends on:
+> mac80211: allow drivers to report (non-)monitor frames
 
-Fixes: 90174455ae05 ("ath10k: add support to configure pktlog filter")
-Cc: stable@vger.kernel.org
-Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
----
-v2:
- * added stable@vger.kernel.org
+Applied, thanks.
 
- drivers/net/wireless/ath/ath10k/debug.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 076d29b53ddf..0f834646e6a7 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2019,7 +2019,12 @@ static ssize_t ath10k_write_pktlog_filter(struct file *file,
- 		goto out;
- 	}
- 
--	if (filter && (filter != ar->debug.pktlog_filter)) {
-+	if (filter == ar->debug.pktlog_filter) {
-+		ret = count;
-+		goto out;
-+	}
-+
-+	if (filter) {
- 		ret = ath10k_wmi_pdev_pktlog_enable(ar, filter);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to enable pktlog filter %x: %d\n",
 -- 
-1.7.9.5
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
