@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aeLwF-00038i-Sj
- for ath10k@lists.infradead.org; Fri, 11 Mar 2016 12:13:04 +0000
+ id 1aeLx8-0003OY-0w
+ for ath10k@lists.infradead.org; Fri, 11 Mar 2016 12:13:58 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: deliver mgmt frames from htt to monitor vifs only
-Date: Fri, 11 Mar 2016 12:12:37 +0000
-Message-ID: <87d1r1nrgr.fsf@kamboji.qca.qualcomm.com>
-References: <1448888219-2798-1-git-send-email-grzegorz.bajorski@tieto.com>
-In-Reply-To: <1448888219-2798-1-git-send-email-grzegorz.bajorski@tieto.com>
- (Grzegorz Bajorski's message of "Mon, 30 Nov 2015 13:56:59 +0100")
+Subject: Re: [PATCH v6] ath10k: set MAC timestamp in management Rx frame
+Date: Fri, 11 Mar 2016 12:13:32 +0000
+Message-ID: <878u1pnrf7.fsf@kamboji.qca.qualcomm.com>
+References: <5c9a7c5d47974cf3e72cd114e140027e2a4bbdab.1456854314.git.poh@qca.qualcomm.com>
+In-Reply-To: <5c9a7c5d47974cf3e72cd114e140027e2a4bbdab.1456854314.git.poh@qca.qualcomm.com>
+ (Peter Oh's message of "Tue, 1 Mar 2016 09:52:49 -0800")
 Content-Language: en-US
-Content-ID: <628A27C1F3CCAF4AA36C645DA76EC068@qualcomm.com>
+Content-ID: <512776230AECEB42A3296F98F6C94FF4@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,26 +25,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "grzegorz.bajorski@tieto.com" <grzegorz.bajorski@tieto.com>
+To: "Oh, Peter" <poh@qca.qualcomm.com>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Grzegorz Bajorski <grzegorz.bajorski@tieto.com> writes:
+Peter Oh <poh@qca.qualcomm.com> writes:
 
-> Until now only WMI originating mgmt frames were
-> reported to mac80211. Management frames on HTT
-> were basically dropped (except frames which looked
-> like management but had FCS error).
+> Check and set Rx MAC timestamp when firmware indicates it.
+> Firmware adds it in Rx beacon frame only at this moment.
+> Driver and mac80211 may utilize it to detect such clockdrift
+> or beacon collision and use the result for beacon collision
+> avoidance.
 >
-> To allow sniffing all frames (including offloaded
-> frames) without interfering with mac80211
-> operation and states a new rx_flag was introduced
-> and is not being used to distinguish frames and
-> classify them for mac80211.
->
-> Signed-off-by: Grzegorz Bajorski <grzegorz.bajorski@tieto.com>
-> ---
-> depends on:
-> mac80211: allow drivers to report (non-)monitor frames
+> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
 
 Applied, thanks.
 
