@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1afq1A-0007e5-7p
- for ath10k@lists.infradead.org; Tue, 15 Mar 2016 14:32:17 +0000
+ id 1afq15-0007du-37
+ for ath10k@lists.infradead.org; Tue, 15 Mar 2016 14:32:11 +0000
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH 1/2] ath10k: Introduce Extended Resource Config support for
- 10.4
-Date: Tue, 15 Mar 2016 20:00:49 +0530
-Message-ID: <1458052250-2529-2-git-send-email-mohammed@qca.qualcomm.com>
+Subject: [PATCH 2/2] ath10k: Enable parsing per station rx duration for 10.4
+Date: Tue, 15 Mar 2016 20:00:50 +0530
+Message-ID: <1458052250-2529-3-git-send-email-mohammed@qca.qualcomm.com>
 In-Reply-To: <1458052250-2529-1-git-send-email-mohammed@qca.qualcomm.com>
 References: <1458052250-2529-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
@@ -24,173 +23,171 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>, mohammed@codeaurora.org, Kalle Valo <kvalo@qca.qualcomm.com>, Raja Mani <rmani@qti.qualcomm.com>, kvalo@codeaurora.org
+Cc: mohammed@codeaurora.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-From: Raja Mani <rmani@qti.qualcomm.com>
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Add API support for Extended Resource Configuration for 10.4. This
-is useful to enable new features like Peer Stats, LTEU etc if the
-firmware advertises support for the service. This is also done to
-provide backward compatibility with older firmware. Also for clarity
-send default host platform type as 'WMI_HOST_PLATFORM_HIGH_PERF',
-though this should not make any difference in functionality
+Rx duration support for per station is part of extended peer
+stats, enable provision to parse the same and provide backward
+compatibility based on the 'stats_id' event
 
-Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h |   23 ++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c     |   24 +++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h     |   33 ++++++++++++++++++++++++++++-
- 3 files changed, 79 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.c |   19 ++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi.c  |   30 ++++++++++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/wmi.h  |   16 ++++++++++++++++
+ 3 files changed, 58 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 32ab34e..7fb00dc 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -186,6 +186,9 @@ struct wmi_ops {
- 							u8 enable,
- 							u32 detect_level,
- 							u32 detect_margin);
-+	struct sk_buff *(*ext_resource_config)(struct ath10k *ar,
-+					       enum wmi_host_platform_type type,
-+					       u32 fw_feature_bitmap);
- 	int (*get_vdev_subtype)(struct ath10k *ar,
- 				enum wmi_vdev_subtype subtype);
- };
-@@ -1330,6 +1333,26 @@ ath10k_wmi_pdev_enable_adaptive_cca(struct ath10k *ar, u8 enable,
- }
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 2389c07..5e37e61 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1534,7 +1534,8 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->num_active_peers = TARGET_10_4_ACTIVE_PEERS;
+ 		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
+ 		ar->num_tids = TARGET_10_4_TGT_NUM_TIDS;
+-		ar->fw_stats_req_mask = WMI_STAT_PEER;
++		ar->fw_stats_req_mask = WMI_10_4_STAT_PEER |
++					WMI_10_4_STAT_PEER_EXTD;
+ 		ar->max_spatial_stream = ar->hw_params.max_spatial_stream;
  
- static inline int
-+ath10k_wmi_ext_resource_config(struct ath10k *ar,
-+			       enum wmi_host_platform_type type,
-+			       u32 fw_feature_bitmap)
-+{
-+	struct sk_buff *skb;
-+
-+	if (!ar->wmi.ops->ext_resource_config)
-+		return -EOPNOTSUPP;
-+
-+	skb = ar->wmi.ops->ext_resource_config(ar, type,
-+					       fw_feature_bitmap);
-+
-+	if (IS_ERR(skb))
-+		return PTR_ERR(skb);
-+
-+	return ath10k_wmi_cmd_send(ar, skb,
-+				   ar->wmi.cmd->ext_resource_cfg_cmdid);
-+}
-+
-+static inline int
- ath10k_wmi_get_vdev_subtype(struct ath10k *ar, enum wmi_vdev_subtype subtype)
+ 		if (test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL,
+@@ -1579,6 +1580,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
  {
- 	if (!ar->wmi.ops->get_vdev_subtype)
+ 	int status;
++	u32 val;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+@@ -1699,6 +1701,21 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "firmware %s booted\n",
+ 		   ar->hw->wiphy->fw_version);
+ 
++	if (test_bit(WMI_SERVICE_EXT_RES_CFG_SUPPORT, ar->wmi.svc_map)) {
++		val = 0;
++		if (ath10k_peer_stats_enabled(ar))
++			val = WMI_10_4_PEER_STATS;
++
++		status = ath10k_wmi_ext_resource_config(ar,
++							WMI_HOST_PLATFORM_HIGH_PERF, val);
++		if (status) {
++			ath10k_err(ar,
++				   "failed to send ext resource cfg command : %d\n",
++				   status);
++			goto err_hif_stop;
++		}
++	}
++
+ 	status = ath10k_wmi_cmd_init(ar);
+ 	if (status) {
+ 		ath10k_err(ar, "could not send WMI init command (%d)\n",
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index c260894..fcef9a0 100644
+index fcef9a0..7542ed8 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -705,6 +705,7 @@ static struct wmi_cmd_map wmi_10_4_cmd_map = {
- 	.set_cca_params_cmdid = WMI_10_4_SET_CCA_PARAMS_CMDID,
- 	.pdev_bss_chan_info_request_cmdid =
- 			WMI_10_4_PDEV_BSS_CHAN_INFO_REQUEST_CMDID,
-+	.ext_resource_cfg_cmdid = WMI_10_4_EXT_RESOURCE_CFG_CMDID,
- };
- 
- /* MAIN WMI VDEV param map */
-@@ -7509,6 +7510,28 @@ static int ath10k_wmi_10_4_op_get_vdev_subtype(struct ath10k *ar,
- 	return -ENOTSUPP;
+@@ -2632,6 +2632,16 @@ void ath10k_wmi_pull_peer_stats(const struct wmi_peer_stats *src,
+ 	dst->peer_tx_rate = __le32_to_cpu(src->peer_tx_rate);
  }
  
-+static struct sk_buff *
-+ath10k_wmi_10_4_ext_resource_config(struct ath10k *ar,
-+				    enum wmi_host_platform_type type,
-+				    u32 fw_feature_bitmap)
++static void
++ath10k_wmi_10_4_pull_peer_stats(const struct wmi_10_4_peer_stats *src,
++				struct ath10k_fw_stats_peer *dst)
 +{
-+	struct wmi_ext_resource_config_10_4_cmd *cmd;
-+	struct sk_buff *skb;
-+
-+	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	cmd = (struct wmi_ext_resource_config_10_4_cmd *)skb->data;
-+	cmd->host_platform_config = __cpu_to_le32(type);
-+	cmd->fw_feature_bitmap = __cpu_to_le32(fw_feature_bitmap);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI,
-+		   "host platform type :%d firmware feature bitmap :%08x\n",
-+		   type, fw_feature_bitmap);
-+	return skb;
++	ether_addr_copy(dst->peer_macaddr, src->peer_macaddr.addr);
++	dst->peer_rssi = __le32_to_cpu(src->peer_rssi);
++	dst->peer_tx_rate = __le32_to_cpu(src->peer_tx_rate);
++	dst->peer_rx_rate = __le32_to_cpu(src->peer_rx_rate);
 +}
 +
- static const struct wmi_ops wmi_ops = {
- 	.rx = ath10k_wmi_op_rx,
- 	.map_svc = wmi_main_svc_map,
-@@ -7835,6 +7858,7 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	.gen_addba_set_resp = ath10k_wmi_op_gen_addba_set_resp,
- 	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
- 	.fw_stats_fill = ath10k_wmi_10_4_op_fw_stats_fill,
-+	.ext_resource_config = ath10k_wmi_10_4_ext_resource_config,
+ static int ath10k_wmi_main_op_pull_fw_stats(struct ath10k *ar,
+ 					    struct sk_buff *skb,
+ 					    struct ath10k_fw_stats *stats)
+@@ -2925,6 +2935,7 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
+ 	u32 num_pdev_ext_stats;
+ 	u32 num_vdev_stats;
+ 	u32 num_peer_stats;
++	u32 stats_id;
+ 	int i;
  
- 	/* shared with 10.2 */
- 	.gen_request_stats = ath10k_wmi_op_gen_request_stats,
+ 	if (!skb_pull(skb, sizeof(*ev)))
+@@ -2934,6 +2945,7 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
+ 	num_pdev_ext_stats = __le32_to_cpu(ev->num_pdev_ext_stats);
+ 	num_vdev_stats = __le32_to_cpu(ev->num_vdev_stats);
+ 	num_peer_stats = __le32_to_cpu(ev->num_peer_stats);
++	stats_id = __le32_to_cpu(ev->stats_id);
+ 
+ 	for (i = 0; i < num_pdev_stats; i++) {
+ 		const struct wmi_10_4_pdev_stats *src;
+@@ -2973,22 +2985,28 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
+ 	/* fw doesn't implement vdev stats */
+ 
+ 	for (i = 0; i < num_peer_stats; i++) {
+-		const struct wmi_10_4_peer_stats *src;
++		const struct wmi_10_4_peer_extd_stats *src;
+ 		struct ath10k_fw_stats_peer *dst;
++		int stats_len;
++		bool extd_peer_stats = !!(stats_id & WMI_10_4_STAT_PEER_EXTD);
++
++		if (extd_peer_stats)
++			stats_len = sizeof(struct wmi_10_4_peer_extd_stats);
++		else
++			stats_len = sizeof(struct wmi_10_4_peer_stats);
+ 
+ 		src = (void *)skb->data;
+-		if (!skb_pull(skb, sizeof(*src)))
++		if (!skb_pull(skb, stats_len))
+ 			return -EPROTO;
+ 
+ 		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
+ 		if (!dst)
+ 			continue;
+ 
+-		ether_addr_copy(dst->peer_macaddr, src->peer_macaddr.addr);
+-		dst->peer_rssi = __le32_to_cpu(src->peer_rssi);
+-		dst->peer_tx_rate = __le32_to_cpu(src->peer_tx_rate);
+-		dst->peer_rx_rate = __le32_to_cpu(src->peer_rx_rate);
++		ath10k_wmi_10_4_pull_peer_stats(&src->common, dst);
+ 		/* FIXME: expose 10.4 specific values */
++		if (extd_peer_stats)
++			dst->rx_duration = src->rx_duration;
+ 
+ 		list_add_tail(&dst->list, &stats->peers);
+ 	}
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index bb42f7a..1d3e085 100644
+index 1d3e085..8626bb1 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -816,6 +816,7 @@ struct wmi_cmd_map {
- 	u32 set_cca_params_cmdid;
- 	u32 pdev_bss_chan_info_request_cmdid;
- 	u32 pdev_enable_adaptive_cca_cmdid;
-+	u32 ext_resource_cfg_cmdid;
+@@ -4104,6 +4104,13 @@ enum wmi_stats_id {
+ 	WMI_STAT_VDEV_RATE = BIT(5),
  };
  
- /*
-@@ -2665,7 +2666,32 @@ struct wmi_resource_config_10_4 {
- 	 * 0  - This is not qwrap
- 	 */
- 	__le32 qwrap_config;
--} __packed;
-+} __packed
-+
-+/**
-+ * enum wmi_10_4_feature_mask - WMI 10.4 feature enable/disable flags
-+ * @WMI_10_4_LTEU_SUPPORT: LTEU config
-+ * @WMI_10_4_COEX_GPIO_SUPPORT: COEX GPIO config
-+ * @WMI_10_4_AUX_RADIO_SPECTRAL_INTF: AUX Radio Enhancement for spectral scan
-+ * @WMI_10_4_AUX_RADIO_CHAN_LOAD_INTF: AUX Radio Enhancement for chan load scan
-+ * @WMI_10_4_BSS_CHANNEL_INFO_64: BSS channel info stats
-+ * @WMI_10_4_PEER_STATS: Per station stats
-+ */
-+enum wmi_10_4_feature_mask {
-+	WMI_10_4_LTEU_SUPPORT			= BIT(0),
-+	WMI_10_4_COEX_GPIO_SUPPORT		= BIT(1),
-+	WMI_10_4_AUX_RADIO_SPECTRAL_INTF	= BIT(2),
-+	WMI_10_4_AUX_RADIO_CHAN_LOAD_INTF	= BIT(3),
-+	WMI_10_4_BSS_CHANNEL_INFO_64		= BIT(4),
-+	WMI_10_4_PEER_STATS			= BIT(5),
++enum wmi_10_4_stats_id {
++	WMI_10_4_STAT_PEER		= BIT(0),
++	WMI_10_4_STAT_AP		= BIT(1),
++	WMI_10_4_STAT_INST		= BIT(2),
++	WMI_10_4_STAT_PEER_EXTD		= BIT(3),
 +};
 +
-+struct wmi_ext_resource_config_10_4_cmd {
-+	/* contains enum wmi_host_platform_type */
-+	__le32 host_platform_config;
-+	/* see enum wmi_10_4_feature_mask */
-+	__le32 fw_feature_bitmap;
-+};
- 
- /* strucutre describing host memory chunk. */
- struct host_memory_chunk {
-@@ -6408,6 +6434,11 @@ struct wmi_pdev_set_adaptive_cca_params {
- 	__le32 cca_detect_margin;
+ struct wlan_inst_rssi_args {
+ 	__le16 cfg_retry_count;
+ 	__le16 retry_count;
+@@ -4303,6 +4310,15 @@ struct wmi_10_4_peer_stats {
+ 	__le32 peer_rssi_changed;
  } __packed;
  
-+enum wmi_host_platform_type {
-+	WMI_HOST_PLATFORM_HIGH_PERF,
-+	WMI_HOST_PLATFORM_LOW_PERF,
-+};
++struct wmi_10_4_peer_extd_stats {
++	struct wmi_10_4_peer_stats common;
++	struct wmi_mac_addr peer_macaddr;
++	__le32 inactive_time;
++	__le32 peer_chain_rssi;
++	__le32 rx_duration;
++	__le32 reserved[10];
++} __packed;
 +
- struct ath10k;
- struct ath10k_vif;
- struct ath10k_fw_stats_pdev;
+ struct wmi_10_2_pdev_ext_stats {
+ 	__le32 rx_rssi_comb;
+ 	__le32 rx_rssi[4];
 -- 
 1.7.9.5
 
