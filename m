@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1afliQ-0005Ca-M8
- for ath10k@lists.infradead.org; Tue, 15 Mar 2016 09:56:39 +0000
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Advertise force AP scan feature
-Date: Tue, 15 Mar 2016 15:25:53 +0530
-Message-ID: <1458035753-20727-1-git-send-email-vthiagar@qti.qualcomm.com>
+ id 1afq0w-0007ab-8F
+ for ath10k@lists.infradead.org; Tue, 15 Mar 2016 14:32:03 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH 0/2] Parsing per station rx duration for 10.4
+Date: Tue, 15 Mar 2016 20:00:48 +0530
+Message-ID: <1458052250-2529-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,35 +21,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+Cc: mohammed@codeaurora.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Results obtained from scan can be used for spectrum management by
-doing something like building information of preferred channel
-lists and sharing them with stations around. It is to be noted
-that traffic to the connected stations would be affected during
-the scan.
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Peer Stats for 10.4 is enabled by Extended Resource Configuration
+API (based on one of the earlier patch from Raja Mani), and parsing
+of the same is based also 'stats_id' which also provides backward
+compatibility with older f/w (or) ath10k by design
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index ebff9c0..48b789c 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7697,7 +7697,8 @@ int ath10k_mac_register(struct ath10k *ar)
- 	ar->hw->wiphy->max_remain_on_channel_duration = 5000;
- 
- 	ar->hw->wiphy->flags |= WIPHY_FLAG_AP_UAPSD;
--	ar->hw->wiphy->features |= NL80211_FEATURE_AP_MODE_CHAN_WIDTH_CHANGE;
-+	ar->hw->wiphy->features |= NL80211_FEATURE_AP_MODE_CHAN_WIDTH_CHANGE |
-+				   NL80211_FEATURE_AP_SCAN;
- 
- 	ar->hw->wiphy->max_ap_assoc_sta = ar->max_num_stations;
- 
+review help:
+
+1. Fixed documentation related comments from Kalle / Michal
+2. Fixed indentation related comments from Michal
+3. Removed the check for excluding peer stats for test mode (Michal)
+4. Fix checking for peer stats feature enabled
+
+Dependency over
+
+[PATCH v5] ath10k: Enable debugfs provision to enable Peer Stats
+
+Mohammed Shafi Shajakhan (1):
+  ath10k: Enable parsing per station rx duration for 10.4
+
+Raja Mani (1):
+  ath10k: Introduce Extended Resource Config support for 10.4
+
+ drivers/net/wireless/ath/ath10k/core.c    |   19 +++++++++-
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |   23 ++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |   54 +++++++++++++++++++++++++----
+ drivers/net/wireless/ath/ath10k/wmi.h     |   49 +++++++++++++++++++++++++-
+ 4 files changed, 137 insertions(+), 8 deletions(-)
+
 -- 
-1.9.1
+1.7.9.5
 
 
 _______________________________________________
