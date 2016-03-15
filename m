@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aeLx8-0003OY-0w
- for ath10k@lists.infradead.org; Fri, 11 Mar 2016 12:13:58 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v6] ath10k: set MAC timestamp in management Rx frame
-Date: Fri, 11 Mar 2016 12:13:32 +0000
-Message-ID: <878u1pnrf7.fsf@kamboji.qca.qualcomm.com>
-References: <5c9a7c5d47974cf3e72cd114e140027e2a4bbdab.1456854314.git.poh@qca.qualcomm.com>
-In-Reply-To: <5c9a7c5d47974cf3e72cd114e140027e2a4bbdab.1456854314.git.poh@qca.qualcomm.com>
- (Peter Oh's message of "Tue, 1 Mar 2016 09:52:49 -0800")
-Content-Language: en-US
-Content-ID: <512776230AECEB42A3296F98F6C94FF4@qualcomm.com>
+ id 1afliQ-0005Ca-M8
+ for ath10k@lists.infradead.org; Tue, 15 Mar 2016 09:56:39 +0000
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Advertise force AP scan feature
+Date: Tue, 15 Mar 2016 15:25:53 +0530
+Message-ID: <1458035753-20727-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,23 +20,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Oh, Peter" <poh@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+Results obtained from scan can be used for spectrum management by
+doing something like building information of preferred channel
+lists and sharing them with stations around. It is to be noted
+that traffic to the connected stations would be affected during
+the scan.
 
-> Check and set Rx MAC timestamp when firmware indicates it.
-> Firmware adds it in Rx beacon frame only at this moment.
-> Driver and mac80211 may utilize it to detect such clockdrift
-> or beacon collision and use the result for beacon collision
-> avoidance.
->
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Applied, thanks.
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ebff9c0..48b789c 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7697,7 +7697,8 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	ar->hw->wiphy->max_remain_on_channel_duration = 5000;
+ 
+ 	ar->hw->wiphy->flags |= WIPHY_FLAG_AP_UAPSD;
+-	ar->hw->wiphy->features |= NL80211_FEATURE_AP_MODE_CHAN_WIDTH_CHANGE;
++	ar->hw->wiphy->features |= NL80211_FEATURE_AP_MODE_CHAN_WIDTH_CHANGE |
++				   NL80211_FEATURE_AP_SCAN;
+ 
+ 	ar->hw->wiphy->max_ap_assoc_sta = ar->max_num_stations;
+ 
 -- 
-Kalle Valo
+1.9.1
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
