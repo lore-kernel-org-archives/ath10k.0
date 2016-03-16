@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-lb0-x22b.google.com ([2a00:1450:4010:c04::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1afq15-0007du-37
- for ath10k@lists.infradead.org; Tue, 15 Mar 2016 14:32:11 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH 2/2] ath10k: Enable parsing per station rx duration for 10.4
-Date: Tue, 15 Mar 2016 20:00:50 +0530
-Message-ID: <1458052250-2529-3-git-send-email-mohammed@qca.qualcomm.com>
-In-Reply-To: <1458052250-2529-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1458052250-2529-1-git-send-email-mohammed@qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1ag8V7-0002pp-TZ
+ for ath10k@lists.infradead.org; Wed, 16 Mar 2016 10:16:27 +0000
+Received: by mail-lb0-x22b.google.com with SMTP id x1so44541608lbj.3
+ for <ath10k@lists.infradead.org>; Wed, 16 Mar 2016 03:15:49 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [RFCv2 0/3] mac80211: implement fq codel
+Date: Wed, 16 Mar 2016 11:17:55 +0100
+Message-Id: <1458123478-1795-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,178 +17,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: linux-wireless@vger.kernel.org
+Cc: nbd@openwrt.org, emmanuel.grumbach@intel.com, netdev@vger.kernel.org, dave.taht@gmail.com, ath10k@lists.infradead.org, codel@lists.bufferbloat.net, Michal Kazior <michal.kazior@tieto.com>, make-wifi-fast@lists.bufferbloat.net, johannes@sipsolutions.net, Tim Shepard <shep@alum.mit.edu>
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Hi,
 
-Rx duration support for per station is part of extended peer
-stats, enable provision to parse the same and provide backward
-compatibility based on the 'stats_id' event
+Most notable changes:
+ * fixes (duh); fairness should work better now,
+ * EWMA codel target based on estimated service
+   time,
+ * new tx scheduling helper with in-flight
+   duration limiting (same idea Emmanuel
+   had for iwlwifi),
+ * added a few debugfs hooks.
+ * ath10k proof-of-concept that uses the new tx
+   scheduling (will post results in separate
+   email)
 
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c |   19 ++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wmi.c  |   30 ++++++++++++++++++++++++------
- drivers/net/wireless/ath/ath10k/wmi.h  |   16 ++++++++++++++++
- 3 files changed, 58 insertions(+), 7 deletions(-)
+The patch grew pretty big and I plan on splitting
+it before next submission. Any suggestions?
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 2389c07..5e37e61 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1534,7 +1534,8 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		ar->num_active_peers = TARGET_10_4_ACTIVE_PEERS;
- 		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
- 		ar->num_tids = TARGET_10_4_TGT_NUM_TIDS;
--		ar->fw_stats_req_mask = WMI_STAT_PEER;
-+		ar->fw_stats_req_mask = WMI_10_4_STAT_PEER |
-+					WMI_10_4_STAT_PEER_EXTD;
- 		ar->max_spatial_stream = ar->hw_params.max_spatial_stream;
- 
- 		if (test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL,
-@@ -1579,6 +1580,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
- {
- 	int status;
-+	u32 val;
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
-@@ -1699,6 +1701,21 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "firmware %s booted\n",
- 		   ar->hw->wiphy->fw_version);
- 
-+	if (test_bit(WMI_SERVICE_EXT_RES_CFG_SUPPORT, ar->wmi.svc_map)) {
-+		val = 0;
-+		if (ath10k_peer_stats_enabled(ar))
-+			val = WMI_10_4_PEER_STATS;
-+
-+		status = ath10k_wmi_ext_resource_config(ar,
-+							WMI_HOST_PLATFORM_HIGH_PERF, val);
-+		if (status) {
-+			ath10k_err(ar,
-+				   "failed to send ext resource cfg command : %d\n",
-+				   status);
-+			goto err_hif_stop;
-+		}
-+	}
-+
- 	status = ath10k_wmi_cmd_init(ar);
- 	if (status) {
- 		ath10k_err(ar, "could not send WMI init command (%d)\n",
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index fcef9a0..7542ed8 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2632,6 +2632,16 @@ void ath10k_wmi_pull_peer_stats(const struct wmi_peer_stats *src,
- 	dst->peer_tx_rate = __le32_to_cpu(src->peer_tx_rate);
- }
- 
-+static void
-+ath10k_wmi_10_4_pull_peer_stats(const struct wmi_10_4_peer_stats *src,
-+				struct ath10k_fw_stats_peer *dst)
-+{
-+	ether_addr_copy(dst->peer_macaddr, src->peer_macaddr.addr);
-+	dst->peer_rssi = __le32_to_cpu(src->peer_rssi);
-+	dst->peer_tx_rate = __le32_to_cpu(src->peer_tx_rate);
-+	dst->peer_rx_rate = __le32_to_cpu(src->peer_rx_rate);
-+}
-+
- static int ath10k_wmi_main_op_pull_fw_stats(struct ath10k *ar,
- 					    struct sk_buff *skb,
- 					    struct ath10k_fw_stats *stats)
-@@ -2925,6 +2935,7 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
- 	u32 num_pdev_ext_stats;
- 	u32 num_vdev_stats;
- 	u32 num_peer_stats;
-+	u32 stats_id;
- 	int i;
- 
- 	if (!skb_pull(skb, sizeof(*ev)))
-@@ -2934,6 +2945,7 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
- 	num_pdev_ext_stats = __le32_to_cpu(ev->num_pdev_ext_stats);
- 	num_vdev_stats = __le32_to_cpu(ev->num_vdev_stats);
- 	num_peer_stats = __le32_to_cpu(ev->num_peer_stats);
-+	stats_id = __le32_to_cpu(ev->stats_id);
- 
- 	for (i = 0; i < num_pdev_stats; i++) {
- 		const struct wmi_10_4_pdev_stats *src;
-@@ -2973,22 +2985,28 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
- 	/* fw doesn't implement vdev stats */
- 
- 	for (i = 0; i < num_peer_stats; i++) {
--		const struct wmi_10_4_peer_stats *src;
-+		const struct wmi_10_4_peer_extd_stats *src;
- 		struct ath10k_fw_stats_peer *dst;
-+		int stats_len;
-+		bool extd_peer_stats = !!(stats_id & WMI_10_4_STAT_PEER_EXTD);
-+
-+		if (extd_peer_stats)
-+			stats_len = sizeof(struct wmi_10_4_peer_extd_stats);
-+		else
-+			stats_len = sizeof(struct wmi_10_4_peer_stats);
- 
- 		src = (void *)skb->data;
--		if (!skb_pull(skb, sizeof(*src)))
-+		if (!skb_pull(skb, stats_len))
- 			return -EPROTO;
- 
- 		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
- 		if (!dst)
- 			continue;
- 
--		ether_addr_copy(dst->peer_macaddr, src->peer_macaddr.addr);
--		dst->peer_rssi = __le32_to_cpu(src->peer_rssi);
--		dst->peer_tx_rate = __le32_to_cpu(src->peer_tx_rate);
--		dst->peer_rx_rate = __le32_to_cpu(src->peer_rx_rate);
-+		ath10k_wmi_10_4_pull_peer_stats(&src->common, dst);
- 		/* FIXME: expose 10.4 specific values */
-+		if (extd_peer_stats)
-+			dst->rx_duration = src->rx_duration;
- 
- 		list_add_tail(&dst->list, &stats->peers);
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 1d3e085..8626bb1 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4104,6 +4104,13 @@ enum wmi_stats_id {
- 	WMI_STAT_VDEV_RATE = BIT(5),
- };
- 
-+enum wmi_10_4_stats_id {
-+	WMI_10_4_STAT_PEER		= BIT(0),
-+	WMI_10_4_STAT_AP		= BIT(1),
-+	WMI_10_4_STAT_INST		= BIT(2),
-+	WMI_10_4_STAT_PEER_EXTD		= BIT(3),
-+};
-+
- struct wlan_inst_rssi_args {
- 	__le16 cfg_retry_count;
- 	__le16 retry_count;
-@@ -4303,6 +4310,15 @@ struct wmi_10_4_peer_stats {
- 	__le32 peer_rssi_changed;
- } __packed;
- 
-+struct wmi_10_4_peer_extd_stats {
-+	struct wmi_10_4_peer_stats common;
-+	struct wmi_mac_addr peer_macaddr;
-+	__le32 inactive_time;
-+	__le32 peer_chain_rssi;
-+	__le32 rx_duration;
-+	__le32 reserved[10];
-+} __packed;
-+
- struct wmi_10_2_pdev_ext_stats {
- 	__le32 rx_rssi_comb;
- 	__le32 rx_rssi[4];
+The tx scheduling probably needs more work and
+testing. I didn't evaluate how CPU intensive it is
+nor how it influences things like peak throughput
+(lab conditions et al) yet.
+
+I've uploaded a branch for convenience:
+
+  https://github.com/kazikcz/linux/tree/fqmac-rfc-v2
+
+This is based on Kalle's ath tree.
+
+
+Michal Kazior (3):
+  mac80211: implement fq_codel for software queuing
+  ath10k: report per-station tx/rate rates to mac80211
+  ath10k: use ieee80211_tx_schedule()
+
+ drivers/net/wireless/ath/ath10k/core.c  |   2 -
+ drivers/net/wireless/ath/ath10k/core.h  |   8 +-
+ drivers/net/wireless/ath/ath10k/debug.c |  61 ++-
+ drivers/net/wireless/ath/ath10k/mac.c   | 126 +++---
+ drivers/net/wireless/ath/ath10k/wmi.h   |   2 +-
+ include/net/mac80211.h                  |  96 ++++-
+ net/mac80211/agg-tx.c                   |   8 +-
+ net/mac80211/cfg.c                      |   2 +-
+ net/mac80211/codel.h                    | 264 +++++++++++++
+ net/mac80211/codel_i.h                  |  89 +++++
+ net/mac80211/debugfs.c                  | 267 +++++++++++++
+ net/mac80211/ieee80211_i.h              |  45 ++-
+ net/mac80211/iface.c                    |  25 +-
+ net/mac80211/main.c                     |   9 +-
+ net/mac80211/rx.c                       |   2 +-
+ net/mac80211/sta_info.c                 |  10 +-
+ net/mac80211/sta_info.h                 |  27 ++
+ net/mac80211/status.c                   |  64 ++++
+ net/mac80211/tx.c                       | 658 ++++++++++++++++++++++++++++++--
+ net/mac80211/util.c                     |  21 +-
+ 20 files changed, 1629 insertions(+), 157 deletions(-)
+ create mode 100644 net/mac80211/codel.h
+ create mode 100644 net/mac80211/codel_i.h
+
 -- 
-1.7.9.5
+2.1.4
 
 
 _______________________________________________
