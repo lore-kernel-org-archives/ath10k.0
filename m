@@ -1,18 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
+Received: from mail-qk0-x22f.google.com ([2607:f8b0:400d:c09::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1agVrK-0002yb-B3
- for ath10k@lists.infradead.org; Thu, 17 Mar 2016 11:12:55 +0000
-Received: by mail-wm0-x235.google.com with SMTP id p65so112002919wmp.0
- for <ath10k@lists.infradead.org>; Thu, 17 Mar 2016 04:12:33 -0700 (PDT)
+ id 1agVri-0003B1-E7
+ for ath10k@lists.infradead.org; Thu, 17 Mar 2016 11:13:20 +0000
+Received: by mail-qk0-x22f.google.com with SMTP id o6so33463016qkc.2
+ for <ath10k@lists.infradead.org>; Thu, 17 Mar 2016 04:12:58 -0700 (PDT)
+Date: Thu, 17 Mar 2016 07:12:48 -0400
+From: Bob Copeland <me@bobcopeland.com>
+Subject: Re: [RFCv2 0/3] mac80211: implement fq codel
+Message-ID: <20160317111248.GC1238@localhost>
+References: <1458123478-1795-1-git-send-email-michal.kazior@tieto.com>
+ <CA+BoTQ=65mHN5iLnZjTE+tyEG7nfmCx4NZNbGRF6+VpRaNmOYw@mail.gmail.com>
+ <CAA93jw5cUaj_qM+CYHHoRaghLDLC+BUgF4AjT=Oec+SB-zb74g@mail.gmail.com>
+ <CAA93jw6tDdiYuginPbUY1DFJLiDxofHMFN6j2BvQPabPmBtuRw@mail.gmail.com>
+ <20160316185531.GA1771@localhost>
+ <CAGyitvMDEUiNx7HD=XKjXNHnFvZ_gxD_BbQx3AP-57_+dBeD4A@mail.gmail.com>
+ <CA+BoTQnFN6VANn=5EUvHc0Dbfh4Zv0HraOto2ySN3_HdOpD7Sg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1458211740-6875-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1458211740-6875-1-git-send-email-mohammed@qca.qualcomm.com>
-Date: Thu, 17 Mar 2016 12:12:31 +0100
-Message-ID: <CA+BoTQkk30nPEKiP-8FA2DcddJ_SL90txgHQeua7GCauR_M2dg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ath10k: Add support for ath10k_sta_statistics
- support
-From: Michal Kazior <michal.kazior@tieto.com>
+Content-Disposition: inline
+In-Reply-To: <CA+BoTQnFN6VANn=5EUvHc0Dbfh4Zv0HraOto2ySN3_HdOpD7Sg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +27,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Network Development <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, Dave Taht <dave.taht@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Jasmine Strong <jas@eero.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, make-wifi-fast@lists.bufferbloat.net
 
-T24gMTcgTWFyY2ggMjAxNiBhdCAxMTo0OCwgTW9oYW1tZWQgU2hhZmkgU2hhamFraGFuCjxtb2hh
-bW1lZEBxdGkucXVhbGNvbW0uY29tPiB3cm90ZToKWy4uLl0KPiArdm9pZCBhdGgxMGtfc3RhX3N0
-YXRpc3RpY3Moc3RydWN0IGllZWU4MDIxMV9odyAqaHcsIHN0cnVjdCBpZWVlODAyMTFfdmlmICp2
-aWYsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGllZWU4MDIxMV9zdGEgKnN0
-YSwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3Qgc3RhdGlvbl9pbmZvICpzaW5m
-bykKPiArewo+ICsgICAgICAgc3RydWN0IGF0aDEwa19zdGEgKmFyc3RhID0gKHN0cnVjdCBhdGgx
-MGtfc3RhICopc3RhLT5kcnZfcHJpdjsKPiArICAgICAgIHN0cnVjdCBhdGgxMGsgKmFyID0gYXJz
-dGEtPmFydmlmLT5hcjsKPiArCj4gKyAgICAgICBtdXRleF9sb2NrKCZhci0+Y29uZl9tdXRleCk7
-Cj4gKwo+ICsgICAgICAgaWYgKGFyLT5zdGF0ZSAhPSBBVEgxMEtfU1RBVEVfT04gJiYKPiArICAg
-ICAgICAgICBhci0+c3RhdGUgIT0gQVRIMTBLX1NUQVRFX1JFU1RBUlRFRCkKPiArICAgICAgICAg
-ICAgICAgZ290byBvdXQ7CgpEbyB5b3UgcmVhbGx5IG5lZWQgbXV0ZXggYW5kIGFyLT5zdGF0ZSBj
-aGVjayBpbiB0aGlzIGZ1bmN0aW9uPwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+On Thu, Mar 17, 2016 at 09:55:03AM +0100, Michal Kazior wrote:
+> If you consider Wi-Fi is half-duplex and latency in the entire stack
+> (for processing ICMP and UDP_RR) is greater than 11e contention window
+> timings you can get your BE flow responses with extra delay (since
+> other queues might have responses ready quicker).
+
+Got it, that makes sense.  Thanks for the explanation!
+
+-- 
+Bob Copeland %% http://bobcopeland.com/
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
