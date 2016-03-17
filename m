@@ -1,22 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1agW07-0000It-SK
- for ath10k@lists.infradead.org; Thu, 17 Mar 2016 11:22:00 +0000
-Received: by mail-wm0-x234.google.com with SMTP id p65so112347475wmp.0
- for <ath10k@lists.infradead.org>; Thu, 17 Mar 2016 04:21:39 -0700 (PDT)
+ id 1agVzI-00006D-0K
+ for ath10k@lists.infradead.org; Thu, 17 Mar 2016 11:21:08 +0000
+Date: Thu, 17 Mar 2016 16:50:34 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH v2 1/2] ath10k: Add support for ath10k_sta_statistics
+ support
+Message-ID: <20160317112022.GA27512@atheros-ThinkPad-T61>
+References: <1458211740-6875-1-git-send-email-mohammed@qca.qualcomm.com>
+ <CA+BoTQkk30nPEKiP-8FA2DcddJ_SL90txgHQeua7GCauR_M2dg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <etPan.56e01b37.15c9c8e.e2e@wireless-tns3477l.keeler.lan>
-References: <etPan.56dedd37.c95b5e3.e2e@wireless-tns3477l.keeler.lan>
- <CA+BoTQkzEu_Xc17iQfECCeH-VkFXhWUOGNsno8a80EP_32Wc3g@mail.gmail.com>
- <etPan.56df0022.51e3bd34.e2e@wireless-tns3477l.keeler.lan>
- <etPan.56df8415.399e1573.e2e@wireless-tns3477l.keeler.lan>
- <CA+BoTQnWwg8B78uQ1Qb0yDv=0w9WVwZB=OcBCe8sOVjDvOgx5Q@mail.gmail.com>
- <etPan.56e01b37.15c9c8e.e2e@wireless-tns3477l.keeler.lan>
-Date: Thu, 17 Mar 2016 12:21:37 +0100
-Message-ID: <CA+BoTQ=XD4_rGKnCr8Z_bk_pfG=XrxUtPBOmTZJubvYM_tf8Jw@mail.gmail.com>
-Subject: Re: Performance degradation over time
-From: Michal Kazior <michal.kazior@tieto.com>
+Content-Disposition: inline
+In-Reply-To: <CA+BoTQkk30nPEKiP-8FA2DcddJ_SL90txgHQeua7GCauR_M2dg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +21,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Matthew Keeler <mjkeeler7@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-U29ycnkgZm9yIHRoZSBsYXRlIHJlcGx5LgoKTm9ybWFsbHkgb25lIHNob3VsZCBleHBlY3QgT1RQ
-IHRvIGZhaWwgYW5kIHRodXMsIGF0aDEwayB0byBmYWlsIHRvCmxvYWQuIE1vcmVvdmVyLCBpZiB5
-b3UgYm91Z2h0IHRoZSBjYXJkIHN0YW5kYWxvbmUgaXQgcHJvYmFibHkgaGFzCmNhbGlicmF0aW9u
-IGRhdGEuLiBvciBhdCBsZWFzdCBJIHRoaW5rIGl0IHNob3VsZC4gRGV2aWNlcyBmb3VuZCBpbgpy
-b3V0ZXJzIGNhbiBoYXZlIGNhbGlicmF0aW9uIGRhdGEgc3RvcmVkIG9uIGdlbmVyaWMgZmxhc2gg
-cGFydGl0aW9uCmluc3RlYWQgb2YgZGVkaWNhdGVkIHdpZmkgZWVwcm9tLgoKT25lIHRoaW5rIHlv
-dSBjb3VsZCBzZWUgd2l0aCB1bmNhbGlicmF0ZWQgZGV2aWNlIGlzIGEgcmFuZG9tIG1hYyBvbgp0
-aGUgd2xhbiBpbnRlcmZhY2UgKGUuZy4gMDA6MDM6N2Y6eHg6eHg6eHgpIG9yIHNvbWUgc3VzcGlj
-aW91cyBsb29raW5nCm9uZSAoZS5nLiAwMDowMzo3ZjoxMToyMjozMykuCgoKTWljaGHFggoKCgpP
-biA5IE1hcmNoIDIwMTYgYXQgMTM6NDYsIE1hdHRoZXcgS2VlbGVyIDxtamtlZWxlcjdAZ21haWwu
-Y29tPiB3cm90ZToKPiAgSG93IGNhbiBJIHRlbGwgaWYgY2FsaWJyYXRpb24gaXMgZG9uZSBpbiBF
-RVBST00gb3Igb3V0LW9mLWJhbmQ/Cj4KPgo+IC0tCj4gTWF0dCBLZWVsZXIKPgo+IE9uIE1hcmNo
-IDksIDIwMTYgYXQgMDE6MDA6NDUsIE1pY2hhbCBLYXppb3IgKG1pY2hhbC5rYXppb3JAdGlldG8u
-Y29tKG1haWx0bzptaWNoYWwua2F6aW9yQHRpZXRvLmNvbSkpIHdyb3RlOgo+Cj4+IE9uIDkgTWFy
-Y2ggMjAxNiBhdCAwMzowMSwgTWF0dGhldyBLZWVsZXIgd3JvdGU6Cj4+ID4KPj4gPiBTbyB3aXRo
-IHRoZSBtb3N0IHJlY2VudCBmaXJtd2FyZSBJIGFtIGV4cGVyaWVuY2luZyBkaWZmZXJlbnQgcGVy
-Zm9ybWFuY2UgaXNzdWVzLiBGaXJzdCwgdGhlIGxhdGVzdCBmaXJtd2FyZSBhZnRlciBjb21pbmcg
-dXAgZG9lcyBzaWduaWZpY2FudGx5IGxlc3MgdGhhbiBpdCB1c2VkIHRvLiBGb3IgMi40IEdIeiB3
-aGVyZSBiZWZvcmUgaXQgd291bGQgZG8gfjUwTWJwcyBpdCBub3cgY2FuIG9ubHkgYXZlcmFnZSB+
-MzBNYnBzICh0aGUgcmF0ZSBpcyBzcG9yYWRpYyB0aG91Z2ggYW55d2hlcmUgZnJvbSAxME1icHMg
-dG8gNDBNYnBzKSBhbmQgdGhpcyBpcyBhYm91dCAzIGluY2hlcyBhd2F5IGZyb20gbXkgYW50ZW5u
-YXMgb24gYW4gdW51c2VkIGNoYW5uZWwuIFNlY29uZGx5IHNvbWV0aW1lcyBJIGhhdmUgc2VlbiBp
-dCBkcm9wIGRvd24gdG8gPCAuMSBNYnBzLiBJIGdyYWJiZWQgdGhlIGZ3X3N0YXRzLiBPbmUgdGhp
-bmcgdGhhdCBzZWVtcyBkcmFzdGljYWxseSBkaWZmZXJlbnQgYmV0d2VlbiBteSAyLjQgR2h6IGFu
-ZCBteSA1IEdoeiBpcyB0aGF0IDIuNCBoYXMgZXh0cmVtZWx5IGhpZ2ggZXJyb3IgY291bnRzIHdo
-ZXJlIG15IDUgR0h6IGlzIDwgNDAwLiBDb3VsZCB0aGlzIGJlIGEgc3ltcHRvbSBvZiBtaXNjb25m
-aWd1cmF0aW9uIG9yIG1vcmUgZmlybXdhcmUgaXNzdWVzPwo+Pgo+PiBUaGUgb25seSB0aGluZyB0
-aGF0IGNvbWVzIHRvIG1pbmQgaXMgdGhhdCB0aGlzIGNvdWxkIGJlIHJlbGF0ZWQgdG8KPj4gKG1p
-cyljYWxpYnJhdGlvbi4KPj4KPj4gRG9lcyB5b3VyIGNhcmQgY29udGFpbiBjYWxpYnJhdGlvbiBp
-biBFRVBST00gb3IgaXMgaXQgb3V0LW9mLWJhbmQ/IERvCj4+IG5vdGU6IG1hbnkgY2FyZHMgZm91
-bmQgaW4gcm91dGVycyBoYXZlIG91dC1vZi1iYW5kIGNhbCBkYXRhLiBJZiBpdCdzCj4+IGluIEVF
-UFJPTSB0aGlzIGNvdWxkIGJlIGVpdGhlciBhIHF1aXJrIGluIGJvYXJkLmJpbiBvciBvdHAuYmlu
-ICh3aGljaAo+PiBpcyBlbWJlZGRlZCBpbiB0aGUgZmlybXdhcmUgYmxvYikuIFlvdSBjb3VsZCB0
-cnkgZXhwZXJpbWVudGluZyB3aXRoCj4+IGRpZmZlcmVudCBmaXJtd2FyZSB2ZXJzaW9ucyAoaW5j
-bHVkaW5nIDEwLjEuNDY3KSB0byBzZWUgaWYgaXQgY2hhbmdlcwo+PiBtdWNoLgo+Pgo+Pgo+PiBN
-aWNoYcWCCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi Michal,
+
+On Thu, Mar 17, 2016 at 12:12:31PM +0100, Michal Kazior wrote:
+> On 17 March 2016 at 11:48, Mohammed Shafi Shajakhan
+> <mohammed@qti.qualcomm.com> wrote:
+> [...]
+> > +void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+> > +                          struct ieee80211_sta *sta,
+> > +                          struct station_info *sinfo)
+> > +{
+> > +       struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
+> > +       struct ath10k *ar = arsta->arvif->ar;
+> > +
+> > +       mutex_lock(&ar->conf_mutex);
+> > +
+> > +       if (ar->state != ATH10K_STATE_ON &&
+> > +           ar->state != ATH10K_STATE_RESTARTED)
+> > +               goto out;
+> 
+> Do you really need mutex and ar->state check in this function?
+>
+
+[shafi] By default peer stats will be disabled, we are enabling this by debugfs
+(hw-restart) so i thought these checks are needed , please advise .. Do you say
+they  will be never hit 
+
+regards
+shafi
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
