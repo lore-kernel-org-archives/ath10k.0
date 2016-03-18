@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.136])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1agx6t-00059W-UK
- for ath10k@lists.infradead.org; Fri, 18 Mar 2016 16:18:48 +0000
-Date: Fri, 18 Mar 2016 11:18:23 -0500
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt: bindings: add new dt entry for pre calibration in
- qcom,ath10k.txt
-Message-ID: <20160318161823.GA5558@rob-hp-laptop>
-References: <1457604724-14378-1-git-send-email-rmani@qti.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
+ id 1ah14w-00075w-Uj
+ for ath10k@lists.infradead.org; Fri, 18 Mar 2016 20:33:04 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 46FE740B2C6
+ for <ath10k@lists.infradead.org>; Fri, 18 Mar 2016 13:25:59 -0700 (PDT)
+From: Ben Greear <greearb@candelatech.com>
+Subject: Why does the driver configure only 2 keys per peer?
+Message-ID: <56EC6456.2060007@candelatech.com>
+Date: Fri, 18 Mar 2016 13:25:58 -0700
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1457604724-14378-1-git-send-email-rmani@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,44 +21,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Raja Mani <rmani@qti.qualcomm.com>
-Cc: devicetree@vger.kernel.org, kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-On Thu, Mar 10, 2016 at 03:42:04PM +0530, Raja Mani wrote:
-> There two things done in this patch,
-> 
-> 1) Existing device tree entry 'qcom,ath10k-calibration-data' carries
->    not only calibration data, it carries board specific data too.
->    So, make appropriate update in doc.
-> 
-> 2) ipq4019 wifi needs new devie tree entry to carry calibration
->    data alone (called pre cal data, it doesn't include any other info).
->    Using 'qcom,ath10k-calibration-data' for ipq4019 would alter
->    the purpose of it. Hence, add new device tree entry called
->    'qcom,ath10k-pre-calibration-data' to carry only pre calibration data.
-> 
-> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
-> ---
-> 
-> Below patches covers the corresponding changes in the ath10k driver.
-> It's posted separately to ath10k and linux-wireless mailing list.
+For instance:
 
-Generally the series should be posted together. The rest should not be 
-merged until this patch is accepted.
+#define TARGET_10_4_NUM_PEER_KEYS		2
 
-> 
->   1) ath10k: pass cal data location as an argument to ath10k_download_cal_{file|dt}
->   2) ath10k: move cal data len to hw_params
->   3) ath10k: incorporate qca4019 cal data download sequence
-> 
->  .../bindings/net/wireless/qcom,ath10k.txt          | 23 +++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
+But, there are 4 key-ids, and so the driver can attempt to allocate 3 per peer.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Now, the self-peer probably only has one key ever (and that is blank key),
+but that still averages to 5 per vdev (when vdev has 2 peers), and if AP peers can have more than 2
+keys, then the average is even worse for them.
+
+In 10.1, I ended up using '4' instead of 2.
+
+I guess I'm about to repeat that change for 10.4 firmware.
+
+But, I'm curious why someone thought 2 was OK to begin with?
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
