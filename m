@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1agpIJ-0001YI-Ui
- for ath10k@lists.infradead.org; Fri, 18 Mar 2016 07:58:04 +0000
+ id 1agpFj-0006M6-Ih
+ for ath10k@lists.infradead.org; Fri, 18 Mar 2016 07:55:24 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: fix debugfs pktlog_filter write
-Date: Fri, 18 Mar 2016 07:57:32 +0000
-Message-ID: <8760wki5g4.fsf@kamboji.qca.qualcomm.com>
-References: <1457676999-32678-1-git-send-email-akolli@qti.qualcomm.com>
-In-Reply-To: <1457676999-32678-1-git-send-email-akolli@qti.qualcomm.com>
- (akolli@qti.qualcomm.com's message of "Fri, 11 Mar 2016 11:46:39	+0530")
+Subject: Re: [PATCH] ath10k: free cached fw bin contents when get board id
+ fails
+Date: Fri, 18 Mar 2016 07:54:46 +0000
+Message-ID: <87a8lwi5kq.fsf@kamboji.qca.qualcomm.com>
+References: <1457585707-11344-1-git-send-email-rmani@qti.qualcomm.com>
+In-Reply-To: <1457585707-11344-1-git-send-email-rmani@qti.qualcomm.com> (Raja
+ Mani's message of "Thu, 10 Mar 2016 10:25:07 +0530")
 Content-Language: en-US
-Content-ID: <1E816FD5271BAF4F95F72D0CF759C639@qualcomm.com>
+Content-ID: <6906A8A5BBA4EC44888A2B12962B4D07@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,20 +26,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Kolli, Anilkumar" <akolli@qti.qualcomm.com>
-Cc: "akolli@codeaurora.org" <akolli@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Raja Mani <rmani@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-<akolli@qti.qualcomm.com> writes:
+Raja Mani <rmani@qti.qualcomm.com> writes:
 
-> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+> ath10k_core_probe_fw() simply returns error without freeing
+> cached firmware file content when get board id operation fails.
+> Free cached fw bin data in failure case to avoid memory leak.
 >
-> It is observed that, we are disabling the packet log if we write same
-> value to the pktlog_filter for the second time. Always enable pktlogs
-> on non zero filter.
->
-> Fixes: 90174455ae05 ("ath10k: add support to configure pktlog filter")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
+> Fixes: db0984e51a18 ("ath10k: select board data based on BMI chip id and board id")
+> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 
 Applied, thanks.
 
