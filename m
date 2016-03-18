@@ -1,22 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from g4t3428.houston.hp.com ([15.201.208.56])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1agbfw-0008DZ-Bx
- for ath10k@lists.infradead.org; Thu, 17 Mar 2016 17:25:33 +0000
-Subject: Re: [Codel] [RFCv2 0/3] mac80211: implement fq codel
-References: <1458123478-1795-1-git-send-email-michal.kazior@tieto.com>
- <CA+BoTQ=65mHN5iLnZjTE+tyEG7nfmCx4NZNbGRF6+VpRaNmOYw@mail.gmail.com>
- <CAA93jw5cUaj_qM+CYHHoRaghLDLC+BUgF4AjT=Oec+SB-zb74g@mail.gmail.com>
- <CAA93jw6tDdiYuginPbUY1DFJLiDxofHMFN6j2BvQPabPmBtuRw@mail.gmail.com>
- <20160316185531.GA1771@localhost>
- <CAGyitvMDEUiNx7HD=XKjXNHnFvZ_gxD_BbQx3AP-57_+dBeD4A@mail.gmail.com>
- <CA+BoTQnFN6VANn=5EUvHc0Dbfh4Zv0HraOto2ySN3_HdOpD7Sg@mail.gmail.com>
- <CAA93jw7TuBLVi9k-+2=J27j-Qs+sS3UNaQNTMF9D2MQ13fQY9A@mail.gmail.com>
-From: Rick Jones <rick.jones2@hpe.com>
-Message-ID: <56EAE85F.3010407@hpe.com>
-Date: Thu, 17 Mar 2016 10:24:47 -0700
+ id 1agpBi-0003R7-Fz
+ for ath10k@lists.infradead.org; Fri, 18 Mar 2016 07:51:15 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: handle channel change htt event
+Date: Fri, 18 Mar 2016 07:50:43 +0000
+Message-ID: <87io0ki5rh.fsf@kamboji.qca.qualcomm.com>
+References: <1457458043-9593-1-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1457458043-9593-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Tue, 8 Mar 2016 22:57:23 +0530")
+Content-Language: en-US
+Content-ID: <B7E5350441004849989C6CAF808419D3@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAA93jw7TuBLVi9k-+2=J27j-Qs+sS3UNaQNTMF9D2MQ13fQY9A@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +21,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>, Michal Kazior <michal.kazior@tieto.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Jasmine Strong <jas@eero.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Network Development <netdev@vger.kernel.org>
+To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 03/17/2016 10:00 AM, Dave Taht wrote:
-> netperf's udp_rr is not how much traffic conventionally behaves. It
-> doesn't do tcp slow start or congestion control in particular...
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-Nor would one expect it to need to, unless one were using "burst mode" 
-to have more than one transaction inflight at one time.
+> Whenever firmware is configuring operating channel during scan or
+> home channel, channel change event will be indicated to host. In some
+> cases (device probe/ last vdev down), target will be configured to
+> default channel whereas host is unaware of target's operating channel.
+> This leads to packet drop due to unknown channel and kernel log will be
+> filled up with "no channel configured; ignoring frame(s)!". Fix that
+> by handling HTT_T2H_MSG_TYPE_CHAN_CHANGE event.
+>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-And unless one uses the test-specific -e option to provide a very crude 
-retransmission mechanism based on a socket read timeout, neither does 
-UDP_RR recover from lost datagrams.
+Applied, thanks.
 
-happy benchmarking,
-
-rick jones
-http://www.netperf.org/
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
