@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiKt2-0003jV-He
- for ath10k@lists.infradead.org; Tue, 22 Mar 2016 11:54:13 +0000
+ id 1aiKtC-0003mU-Hf
+ for ath10k@lists.infradead.org; Tue, 22 Mar 2016 11:54:23 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 5/9] ath10k: speedup htt rx descriptor processing for rx_ind
-Date: Tue, 22 Mar 2016 17:22:15 +0530
-Message-ID: <1458647539-17213-6-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 6/9] ath10k: register ath10k_htt_htc_t2h_msg_handler
+Date: Tue, 22 Mar 2016 17:22:16 +0530
+Message-ID: <1458647539-17213-7-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,135 +25,101 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-In follow up patch, htt rx descriptors will be reused instead of
-dealloc and refill. To achieve that htt rx indication messages
-should not be deferred and should be processed in pci tasklet itself.
-Also from rx indication message, mpdu_count alone is used. So it is
-maintained as atomic variable and all rx amsdu handlers are done
-processed from txrx tasklet. This change get rid of rx_compl_q usage.
+Except qca61x4 family chips (qca6164, qca6174), copy engine 5 is used
+for receiving target to host htt messages. In follow up patch, CE5
+descriptors will be reused. In such case, same API can not be used as
+htc layer callback where the response messages will be freed at the end.
+Hence register new API for HTC layer that free up received message and
+keep the message handler common for both HTC and HIF layers.
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    |  1 +
- drivers/net/wireless/ath/ath10k/htt_rx.c | 39 +++++++++++++++-----------------
- 2 files changed, 19 insertions(+), 21 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.c    |  2 +-
+ drivers/net/wireless/ath/ath10k/htt.h    |  3 ++-
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 22 +++++++++++++++-------
+ 3 files changed, 18 insertions(+), 9 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
+index 7561f22..17a3008 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.c
++++ b/drivers/net/wireless/ath/ath10k/htt.c
+@@ -149,7 +149,7 @@ int ath10k_htt_connect(struct ath10k_htt *htt)
+ 	memset(&conn_resp, 0, sizeof(conn_resp));
+ 
+ 	conn_req.ep_ops.ep_tx_complete = ath10k_htt_htc_tx_complete;
+-	conn_req.ep_ops.ep_rx_complete = ath10k_htt_t2h_msg_handler;
++	conn_req.ep_ops.ep_rx_complete = ath10k_htt_htc_t2h_msg_handler;
+ 
+ 	/* connect to control service */
+ 	conn_req.service_id = ATH10K_HTC_SVC_ID_HTT_DATA_MSG;
 diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 76c4bae..27a65ec 100644
+index 27a65ec..1adcae4 100644
 --- a/drivers/net/wireless/ath/ath10k/htt.h
 +++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1663,6 +1663,7 @@ struct ath10k_htt {
- 	 * used to avoid further failures */
- 	bool rx_confused;
- 	struct tasklet_struct rx_replenish_task;
-+	atomic_t num_mpdus_ready;
+@@ -1765,7 +1765,8 @@ int ath10k_htt_rx_ring_refill(struct ath10k *ar);
+ void ath10k_htt_rx_free(struct ath10k_htt *htt);
  
- 	/* This is used to group tx/rx completions separately and process them
- 	 * in batches to reduce cache stalls */
+ void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb);
+-void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb);
++void ath10k_htt_htc_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb);
++bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb);
+ int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt);
+ int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie);
+ int ath10k_htt_send_frag_desc_bank_cfg(struct ath10k_htt *htt);
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 3fdbfee..dde2237 100644
+index dde2237..31be0c6 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -526,6 +526,7 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
- 	skb_queue_head_init(&htt->rx_compl_q);
- 	skb_queue_head_init(&htt->rx_in_ord_compl_q);
- 	skb_queue_head_init(&htt->tx_fetch_ind_q);
-+	atomic_set(&htt->num_mpdus_ready, 0);
- 
- 	tasklet_init(&htt->txrx_compl_task, ath10k_htt_txrx_compl_task,
- 		     (unsigned long)htt);
-@@ -1564,8 +1565,8 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
- 	return 0;
+@@ -2219,7 +2219,18 @@ static inline enum ieee80211_band phy_mode_to_band(u32 phy_mode)
+ 	return band;
  }
  
--static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
--				  struct htt_rx_indication *rx)
-+static void ath10k_htt_rx_proc_rx_ind(struct ath10k_htt *htt,
-+				      struct htt_rx_indication *rx)
+-void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
++void ath10k_htt_htc_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
++{
++	bool release;
++
++	release = ath10k_htt_t2h_msg_handler(ar, skb);
++
++	/* Free the indication buffer */
++	if (release)
++		dev_kfree_skb_any(skb);
++}
++
++bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
  {
- 	struct ath10k *ar = htt->ar;
- 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
-@@ -1584,19 +1585,16 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 	for (i = 0; i < num_mpdu_ranges; i++)
- 		mpdu_count += mpdu_ranges[i].mpdu_count;
- 
--	while (mpdu_count--) {
--		if (ath10k_htt_rx_handle_amsdu(htt) < 0)
--			break;
--	}
-+	atomic_add(mpdu_count, &htt->num_mpdus_ready);
- 
--	tasklet_schedule(&htt->rx_replenish_task);
-+	tasklet_schedule(&htt->txrx_compl_task);
- }
- 
- static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt)
- {
--	ath10k_htt_rx_handle_amsdu(htt);
-+	atomic_inc(&htt->num_mpdus_ready);
- 
--	tasklet_schedule(&htt->rx_replenish_task);
-+	tasklet_schedule(&htt->txrx_compl_task);
- }
- 
- static void ath10k_htt_rx_tx_compl_ind(struct ath10k *ar,
-@@ -2250,9 +2248,8 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	}
- 	case HTT_T2H_MSG_TYPE_RX_IND:
--		skb_queue_tail(&htt->rx_compl_q, skb);
--		tasklet_schedule(&htt->txrx_compl_task);
--		return;
-+		ath10k_htt_rx_proc_rx_ind(htt, &resp->rx_ind);
-+		break;
- 	case HTT_T2H_MSG_TYPE_PEER_MAP: {
- 		struct htt_peer_map_event ev = {
- 			.vdev_id = resp->peer_map.vdev_id,
-@@ -2419,19 +2416,15 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
- 	struct sk_buff_head rx_q;
- 	struct sk_buff_head rx_ind_q;
- 	struct sk_buff_head tx_ind_q;
--	struct htt_resp *resp;
- 	struct sk_buff *skb;
- 	unsigned long flags;
-+	int num_mpdus;
- 
- 	__skb_queue_head_init(&rx_q);
- 	__skb_queue_head_init(&rx_ind_q);
- 	__skb_queue_head_init(&tx_ind_q);
- 
- 
--	spin_lock_irqsave(&htt->rx_compl_q.lock, flags);
--	skb_queue_splice_init(&htt->rx_compl_q, &rx_q);
--	spin_unlock_irqrestore(&htt->rx_compl_q.lock, flags);
--
- 	spin_lock_irqsave(&htt->rx_in_ord_compl_q.lock, flags);
- 	skb_queue_splice_init(&htt->rx_in_ord_compl_q, &rx_ind_q);
- 	spin_unlock_irqrestore(&htt->rx_in_ord_compl_q.lock, flags);
-@@ -2455,10 +2448,12 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
- 
- 	ath10k_mac_tx_push_pending(ar);
- 
--	while ((skb = __skb_dequeue(&rx_q))) {
--		resp = (struct htt_resp *)skb->data;
--		ath10k_htt_rx_handler(htt, &resp->rx_ind);
+ 	struct ath10k_htt *htt = &ar->htt;
+ 	struct htt_resp *resp = (struct htt_resp *)skb->data;
+@@ -2235,8 +2246,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 	if (resp->hdr.msg_type >= ar->htt.t2h_msg_types_max) {
+ 		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx, unsupported msg_type: 0x%0X\n max: 0x%0X",
+ 			   resp->hdr.msg_type, ar->htt.t2h_msg_types_max);
 -		dev_kfree_skb_any(skb);
-+	num_mpdus = atomic_read(&htt->num_mpdus_ready);
-+	atomic_sub(num_mpdus, &htt->num_mpdus_ready);
-+
-+	while (num_mpdus--) {
-+		if (ath10k_htt_rx_handle_amsdu(htt))
-+			break;
+-		return;
++		return true;
  	}
+ 	type = ar->htt.t2h_msg_types[resp->hdr.msg_type];
  
- 	while ((skb = __skb_dequeue(&rx_ind_q))) {
-@@ -2467,4 +2462,6 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
- 		spin_unlock_bh(&htt->rx_ring.lock);
- 		dev_kfree_skb_any(skb);
+@@ -2352,7 +2362,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 	case HTT_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND: {
+ 		skb_queue_tail(&htt->rx_in_ord_compl_q, skb);
+ 		tasklet_schedule(&htt->txrx_compl_task);
+-		return;
++		return false;
  	}
-+
-+	tasklet_schedule(&htt->rx_replenish_task);
+ 	case HTT_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND:
+ 		break;
+@@ -2394,9 +2404,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 				skb->data, skb->len);
+ 		break;
+ 	};
+-
+-	/* Free the indication buffer */
+-	dev_kfree_skb_any(skb);
++	return true;
  }
+ EXPORT_SYMBOL(ath10k_htt_t2h_msg_handler);
+ 
 -- 
 2.7.4
 
