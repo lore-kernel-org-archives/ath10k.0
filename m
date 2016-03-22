@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-oi0-x229.google.com ([2607:f8b0:4003:c06::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiKu1-00042z-F9
- for ath10k@lists.infradead.org; Tue, 22 Mar 2016 11:55:14 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 9/9] ath10k: combine txrx and replenish task
-Date: Tue, 22 Mar 2016 17:22:19 +0530
-Message-ID: <1458647539-17213-10-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1aiNEa-0000pI-US
+ for ath10k@lists.infradead.org; Tue, 22 Mar 2016 14:24:37 +0000
+Received: by mail-oi0-x229.google.com with SMTP id w20so121474963oia.2
+ for <ath10k@lists.infradead.org>; Tue, 22 Mar 2016 07:24:16 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQ=hgkm2AwMb=kinx+Ezf3vjduCKNH4LNRcV_goDWH4_Vg@mail.gmail.com>
+References: <CAA93jw5AAWua23TbQHZX47XcFLEqU6T=NpxuLqa6FiffBf91Fw@mail.gmail.com>
+ <CA+BoTQ=hgkm2AwMb=kinx+Ezf3vjduCKNH4LNRcV_goDWH4_Vg@mail.gmail.com>
+Date: Tue, 22 Mar 2016 07:24:15 -0700
+Message-ID: <CAA93jw7h6sTe=4pFi3-Rxqa45bNoRyYMSfzWxbb5GbLRJ02SJQ@mail.gmail.com>
+Subject: Re: [RFCv2 0/3] mac80211: implement fq codel
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,125 +21,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Jasmine Strong <jas@eero.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, make-wifi-fast@lists.bufferbloat.net
 
-Since tx completion and rx indication processing are moved out
-of txrx tasklet and rx ring lock contention also removed from txrx
-for rx_ind messages, it would be efficient to combine both replenish
-and txrx tasks. Refill threshold is adjusted for both AP135 and AP148
-(low and high end systems). With this adjustment in AP135, TCP DL is
-improved from 603 Mbps to 620 Mbps and UDP DL is improved from 758 Mbps
-to 803 Mbps. Also no watchdog are observed on UDP BiDi.
-
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/htt.h    |  3 +--
- drivers/net/wireless/ath/ath10k/htt_rx.c | 21 ++++++---------------
- 2 files changed, 7 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 1adcae4..60bd9fe 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1662,7 +1662,6 @@ struct ath10k_htt {
- 	/* set if host-fw communication goes haywire
- 	 * used to avoid further failures */
- 	bool rx_confused;
--	struct tasklet_struct rx_replenish_task;
- 	atomic_t num_mpdus_ready;
- 
- 	/* This is used to group tx/rx completions separately and process them
-@@ -1737,7 +1736,7 @@ struct htt_rx_desc {
- 
- /* Refill a bunch of RX buffers for each refill round so that FW/HW can handle
-  * aggregated traffic more nicely. */
--#define ATH10K_HTT_MAX_NUM_REFILL 16
-+#define ATH10K_HTT_MAX_NUM_REFILL 100
- 
- /*
-  * DMA_MAP expects the buffer to be an integral number of cache lines.
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 31be0c6..96a7417 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -31,6 +31,8 @@
- /* when under memory pressure rx ring refill may fail and needs a retry */
- #define HTT_RX_RING_REFILL_RETRY_MS 50
- 
-+#define HTT_RX_RING_REFILL_RESCHED_MS 5
-+
- static int ath10k_htt_rx_get_csum_state(struct sk_buff *skb);
- static void ath10k_htt_txrx_compl_task(unsigned long ptr);
- 
-@@ -192,7 +194,8 @@ static void ath10k_htt_rx_msdu_buff_replenish(struct ath10k_htt *htt)
- 		mod_timer(&htt->rx_ring.refill_retry_timer, jiffies +
- 			  msecs_to_jiffies(HTT_RX_RING_REFILL_RETRY_MS));
- 	} else if (num_deficit > 0) {
--		tasklet_schedule(&htt->rx_replenish_task);
-+		mod_timer(&htt->rx_ring.refill_retry_timer, jiffies +
-+			  msecs_to_jiffies(HTT_RX_RING_REFILL_RESCHED_MS));
- 	}
- 	spin_unlock_bh(&htt->rx_ring.lock);
- }
-@@ -223,7 +226,6 @@ int ath10k_htt_rx_ring_refill(struct ath10k *ar)
- void ath10k_htt_rx_free(struct ath10k_htt *htt)
- {
- 	del_timer_sync(&htt->rx_ring.refill_retry_timer);
--	tasklet_kill(&htt->rx_replenish_task);
- 	tasklet_kill(&htt->txrx_compl_task);
- 
- 	skb_queue_purge(&htt->rx_compl_q);
-@@ -380,13 +382,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 	return msdu_chaining;
- }
- 
--static void ath10k_htt_rx_replenish_task(unsigned long ptr)
--{
--	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
--
--	ath10k_htt_rx_msdu_buff_replenish(htt);
--}
--
- static struct sk_buff *ath10k_htt_rx_pop_paddr(struct ath10k_htt *htt,
- 					       u32 paddr)
- {
-@@ -520,9 +515,6 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
- 	htt->rx_ring.sw_rd_idx.msdu_payld = 0;
- 	hash_init(htt->rx_ring.skb_table);
- 
--	tasklet_init(&htt->rx_replenish_task, ath10k_htt_rx_replenish_task,
--		     (unsigned long)htt);
--
- 	skb_queue_head_init(&htt->rx_compl_q);
- 	skb_queue_head_init(&htt->rx_in_ord_compl_q);
- 	skb_queue_head_init(&htt->tx_fetch_ind_q);
-@@ -1912,8 +1904,7 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
- 			return;
- 		}
- 	}
--
--	tasklet_schedule(&htt->rx_replenish_task);
-+	ath10k_htt_rx_msdu_buff_replenish(htt);
- }
- 
- static void ath10k_htt_rx_tx_fetch_resp_id_confirm(struct ath10k *ar,
-@@ -2471,5 +2462,5 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
- 		dev_kfree_skb_any(skb);
- 	}
- 
--	tasklet_schedule(&htt->rx_replenish_task);
-+	ath10k_htt_rx_msdu_buff_replenish(htt);
- }
--- 
-2.7.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+V2UgaGF2ZSBhIGh1Z2UgY2MgbGlzdCBvbiB0aGlzIHRocmVhZCwgYW5kIGFkbWl0dGVkbHkgdGhp
+cyB3b3JrIGRvZXMKY3V0IGFjcm9zcyBhIGdyZWF0IGRlYWwgb2Ygd2lyZWxlc3MsIHBvdGVudGlh
+bGx5LCBidXQgZG9lcyBuZXRkZXYgbmVlZAp0byBiZSBvbiBpdD8KdGhlcmUncyBiZWVuIG5vdGhp
+bmcgY29kZWwgc3BlY2lmaWMgb24gaXQgaW4gYSB3aGlsZSwgc28gSSBjdXQgdGhvc2UKZnJvbSB0
+aGUgY2MuCgpPbiBUdWUsIE1hciAyMiwgMjAxNiBhdCAxOjA1IEFNLCBNaWNoYWwgS2F6aW9yIDxt
+aWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4gT24gMjEgTWFyY2ggMjAxNiBhdCAxODox
+MCwgRGF2ZSBUYWh0IDxkYXZlLnRhaHRAZ21haWwuY29tPiB3cm90ZToKPj4gdGh4Lgo+Pgo+PiBh
+IGxvdCB0byBkaWdlc3QuCj4+Cj4+IEEpIHF1aWNrIG5vdGVzIG9uICJmbGVudC1ndWkgYnVyc3Rz
+XzExZS0yMDE2LTAzLTIxVDA5Ki5neiIKPj4KPj4gMSkgdGhlIG5ldyBidXJzdHNfMTFlIHRlc3Qg
+KnNob3VsZCogaGF2ZSBzdHVjayBzdHVmZiBpbiB0aGUgVkkgYW5kIFZPCj4+IHF1ZXVlcywgYW5k
+IHRoZXJlICpzaG91bGQqIGhhdmUgYmVlbiBzb21lIHNvcnQgb2YgZGlmZmVyZW5jZSBzaG93biBv
+bgo+PiB0aGUgcGxvdHMgd2l0aCBpdC4gVGhlcmUgd2Fzbid0Lgo+Cj4gdHJhZmZpYy1nZW4gZ2Vu
+ZXJhdGVzIG9ubHkgQkUgdHJhZmZpYy4gRXZlcnl0aGluZyBlbHNlIHJ1bnMgVURQX1JSCj4gd2hp
+Y2ggZG9lc24ndCBnZW5lcmF0ZSBhIGxvdCBvZiB0cmFmZmljLgo+Cj4KPj4gRm9yIGRpZmZzZXJ2
+IG1hcmtpbmdzIEkgdXNlZCBCRT1DUzAsIEJLPUNTMSwgVkk9Q1M1LCBhbmQgVk89RUYuCj4+IENT
+Ni9DUzcgc2hvdWxkIGFsc28gbGFuZCBpbiBWTyAoYXQgbGVhc3Qgd2l0aCB0aGUgc29mdCBtYWMg
+aGFuZGxlcgo+PiBsYXN0IEkgbG9va2VkKS4gSXMgdGhlcmUgYSB3YXkgdG8gY2hlY2sgaWYgeW91
+IGFyZSBpbmRlZWQgZXhlcmNpc2luZwo+PiBhbGwgZm91ciA4MDIuMTFlIGhhcmR3YXJlIHF1ZXVl
+cyBpbiB0aGlzIHRlc3Q/IGluIGF0aDlrIGl0IGlzIHRoZQo+PiAieG1pdCIgc3lzZnMgdmFyLi4u
+Lgo+Cj4gSG1tLi4gdGhlcmUgYXJlIG5vIHR4cSBzdGF0cy4gSSBndWVzcyBpdCBtYWtlcyBzZW5z
+ZSB0byBoYXZlIHRoZW0/CgphdGg5ayB4bWl0IGhhcyBiZWVuIHVzZWZ1bCB0byBjYXB0dXJlLiBJ
+J20ga2luZCBvZiB1bmNvbnZpbmNlZCB0aG9zZQpzdGF0cyBhcmUgY29ycmVjdCwgYXQgdGhlIG1v
+bWVudCwgYnV0Li4uCgo+IFRoZXJlIGlzIC9zeXMva2VybmVsL2RlYnVnL2llZWU4MDIxMS9waHkq
+L2ZxIHdoaWNoIGR1bXBzIHN0YXRlIG9mIGFsbAo+IHF1ZXVlcyB3aGljaCB3aWxsIGJlIG1vc3Rs
+eSBlbXB0eSB3aXRoIFVEUF9SUi4gWW91IGNhbiBydW4gbmV0cGVyZiBVRFAKPiBzdHJlYW0gd2l0
+aCBkaWZmc2VydiBtYXJraW5nIHRvIHNlZSBvbnRvIHdoaWNoIHRpZCB0aGV5IGFyZSBtYXBwZWQu
+Cj4gWW91IGNhbiBzZWUgdGlkLUFDIG1hcHBpbmdzIGhlcmU6Cj4gaHR0cHM6Ly93aXJlbGVzcy53
+aWtpLmtlcm5lbC5vcmcvZW4vZGV2ZWxvcGVycy9kb2N1bWVudGF0aW9uL21hYzgwMjExL3F1ZXVl
+cwoKV2UgY2FuIHRyeSB0byBjYXB0dXJlIHRob3NlLCBidXQgc2FtcGxpbmcgc3VtbWFyeSBwZXIt
+c3RhdGlvbiBzdGF0cwp0aWVzIGJhY2sgYmV0dGVyIHRvIGFjdHVhbCB0cmFmZmljIGFuYWx5c2lz
+LgoKQWxzbyB1c2VmdWwgdG8gY2FwdHVyZSBoYXMgYmVlbiB0aGUgbWluc3RyZWwgc3RhdHMsIHRo
+ZSBtaW5zdHJlbC1ibHVlcwp2ZXJzaW9uIHByb3ZpZGVkIHRoZXNlIGluIGEgaGFuZHkgY3N2IGZv
+cm1hdC4KCj4gSSBqdXN0IGNoZWNrZWQgYW5kIEVGIGVuZHMgdXAgYXMgdGlkNSB3aGljaCBpcyBW
+SS4gSXQncyBhY3R1YWxseSB0aGUKPiBzYW1lIGFzIENTNS4gWW91IGNhbiB1c2UgQ1M3IHRvIHJ1
+biBvbiB0aWQ3IHdoaWNoIGlzIFZPLgoKVGhlIGludGVudCBvZiBDUzYgaXMgc29tZXdoYXQgaW5j
+b21wYXRpYmxlIHdpdGggVk8ncyBpbnRlbnQsIGJ1dCB3ZQpjYW4gYXJndWUgZGlmZnNlcnYncyB1
+c2VmdWxuZXNzIGFuZCBtYXBwaW5ncyBhbm90aGVyIGRheS4KCkkgaGF2ZSBjaGFuZ2VkIHRoZSBi
+dXJzdHNfMTFlIHRlc3QgdG8gdXNlIENTNywgd2hpY2ggd2lsbCBicmVhawpwYXJzaW5nIG91ciBw
+cmV2aW91cyB0ZXN0IHJ1bnMnIGRhdGEsIGJ1dCBhY3R1YWxseSB0ZXN0IHdoYXQgSSdkCmludGVu
+ZGVkIHRvIHRlc3QgaW4gdGhlIGZpcnN0IHBsYWNlLgoKPj4gMikgSW4gYWxsIHRoZSBvbGQgY2Fz
+ZXMgdGhlIEJFIFVEUF9SUiBmbG93IGRpZWQgb24gdGhlIGZpcnN0IGJ1cnN0Cj4+ICh3aHk/KSwg
+YW5kIHRoZSBmdWxscGF0Y2ggcHJlc2VydmVkIGl0Lgo+Cj4gSSB0aGluayBpdCdzIHJlbGF0ZWQg
+dG8gbXkgc2V0dXAgd2hpY2ggaW52b2x2ZXMgdmV0aCBwYWlycy4gSSB1c2UgdGhlbQo+IHRvIHNp
+bXVsYXRlIGJyaWRnaW5nL0FQIGJlaGF2aW9yIGJ1dCBtYXliZSBpdCdzIG5vdCBkb2luZyB0aGUg
+am9iCj4gcmlnaHQsIGhtbS4uCj4KPgo+PiAoSSB3b3VsZCBoYXZlIGtpbmQgb2YgaG9wZWQgdG8K
+Pj4gaGF2ZSBzZWVuIHRoZSBCSyBmbG93IGRpZSwgYWN0dWFsbHksIGluIHRoZSBmdWxscGF0Y2gp
+Cj4KPiBUaGVyZSdzIG5vIGV4dHJhIHdlaWdodCBwcmlvcml0eSB0byBCSy4gVGhlIGRpZmZlcmVu
+Y2UgYmV0d2VlbiBCRSBhbmQKPiBCSyBpbiA4MDIuMTEgaXMgY29udGVudGlvbiB3aW5kb3cgYWNj
+ZXNzIHRpbWUgc28gQksgZ2V0cyBsZXNzIHR4b3BzCj4gc3RhdGlzdGljYWxseS4gQm90aCBzaGFy
+ZSB0aGUgc2FtZSB0eG9wLCB3aGljaCBpcyA1LjQ4NG1zIGluIG1vc3QKPiBjYXNlcy4KClVtLCB3
+ZWxsLCBhbm90aGVyIGRheS4KCj4KPj4gMykgSSBhbSBhbHNvIGNvbmZ1c2VkIG9uIDgwMi4xMWFj
+IC0gY2FuIFZPIGFnZ3JlZ2F0ZT8gKCBjYW4ndCBpbiBpbiA4MDIuMTFuKS4KPgo+IFllcywgaXQg
+c2hvdWxkIGJlIGFsYmVpdCBWSSBhbmQgVk8gaGF2ZSBzaG9ydGVyIHR4b3AgY29tcGFyZWQgdG8K
+PiBCRS9CSzogMy4wMDhtcyBhbmQgMS41MDRtcyByZXNwZWN0aXZlbHkuCgpOb3QgYmVpbmcgYWJs
+ZSB0byBhZ2dyZWdhdGUgaW4gVk8gaW4gbiB3YXMgYSBiYWQgdGhpbmcuIFRoZXJlIGlzIGFuCmF3
+ZnVsIGxvdCBJIGxpa2UgYWJvdXQgYWMgb3ZlciBuLgoKPgo+IFVEUF9SUiBkb2Vzbid0IHJlYWxs
+eSBjcmVhdGUgYSBsb3Qgb2Ygb3Bwb3J0dW5pdGllcyBmb3IgYWdncmVnYXRpb24uCj4gSWYgeW91
+IHdhbnQgdG8gc2VlIGhvdyBkaWZmZXJlbnQgcXVldWVzIGJlaGF2ZSB3aGVuIGxvYWRlZCB5b3Un
+bGwgbmVlZAo+IHRvIG1vZGlmeSB0cmFmZmljLWdlbiBhbmQgYWRkIGJ1cnN0cyBhY3Jvc3MgZGlm
+ZmVyZW50IEFDcyBpbiB0aGUKPiBidXJzdHNfMTFlIHRlc3QuCgpvciBmbG9vZCB0aGUgcXVldWVz
+IHdpdGggb3RoZXIgdGVzdHMgbGlrZSBycnVsIG9yIHRva2UncyBlbmhhbmNlbWVudAp0byB0cmFm
+ZmljLWdlbi4gOikgSSBsaWtlZCBiZWluZyBhYmxlIHRvIGFyYml0cmFyaWx5IG1hcmsgdWRwIHBh
+Y2tldHMKZWNuIGNhcGFibGUuLi4KCj4KPgo+IE1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hdGgxMGsK
