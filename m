@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x229.google.com ([2607:f8b0:4003:c06::229])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiNEa-0000pI-US
- for ath10k@lists.infradead.org; Tue, 22 Mar 2016 14:24:37 +0000
-Received: by mail-oi0-x229.google.com with SMTP id w20so121474963oia.2
- for <ath10k@lists.infradead.org>; Tue, 22 Mar 2016 07:24:16 -0700 (PDT)
+ id 1aiV3n-00062G-3J
+ for ath10k@lists.infradead.org; Tue, 22 Mar 2016 22:46:00 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH v2] ath10k: parse Rx MAC timestamp in mgmt frame for FW 10.4
+Date: Tue, 22 Mar 2016 15:44:53 -0700
+Message-ID: <20caae0068a19c546f87ef4a25e3651af92c02ab.1458686620.git.poh@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQ=hgkm2AwMb=kinx+Ezf3vjduCKNH4LNRcV_goDWH4_Vg@mail.gmail.com>
-References: <CAA93jw5AAWua23TbQHZX47XcFLEqU6T=NpxuLqa6FiffBf91Fw@mail.gmail.com>
- <CA+BoTQ=hgkm2AwMb=kinx+Ezf3vjduCKNH4LNRcV_goDWH4_Vg@mail.gmail.com>
-Date: Tue, 22 Mar 2016 07:24:15 -0700
-Message-ID: <CAA93jw7h6sTe=4pFi3-Rxqa45bNoRyYMSfzWxbb5GbLRJ02SJQ@mail.gmail.com>
-Subject: Re: [RFCv2 0/3] mac80211: implement fq codel
-From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,76 +16,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Jasmine Strong <jas@eero.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, make-wifi-fast@lists.bufferbloat.net
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-V2UgaGF2ZSBhIGh1Z2UgY2MgbGlzdCBvbiB0aGlzIHRocmVhZCwgYW5kIGFkbWl0dGVkbHkgdGhp
-cyB3b3JrIGRvZXMKY3V0IGFjcm9zcyBhIGdyZWF0IGRlYWwgb2Ygd2lyZWxlc3MsIHBvdGVudGlh
-bGx5LCBidXQgZG9lcyBuZXRkZXYgbmVlZAp0byBiZSBvbiBpdD8KdGhlcmUncyBiZWVuIG5vdGhp
-bmcgY29kZWwgc3BlY2lmaWMgb24gaXQgaW4gYSB3aGlsZSwgc28gSSBjdXQgdGhvc2UKZnJvbSB0
-aGUgY2MuCgpPbiBUdWUsIE1hciAyMiwgMjAxNiBhdCAxOjA1IEFNLCBNaWNoYWwgS2F6aW9yIDxt
-aWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4gT24gMjEgTWFyY2ggMjAxNiBhdCAxODox
-MCwgRGF2ZSBUYWh0IDxkYXZlLnRhaHRAZ21haWwuY29tPiB3cm90ZToKPj4gdGh4Lgo+Pgo+PiBh
-IGxvdCB0byBkaWdlc3QuCj4+Cj4+IEEpIHF1aWNrIG5vdGVzIG9uICJmbGVudC1ndWkgYnVyc3Rz
-XzExZS0yMDE2LTAzLTIxVDA5Ki5neiIKPj4KPj4gMSkgdGhlIG5ldyBidXJzdHNfMTFlIHRlc3Qg
-KnNob3VsZCogaGF2ZSBzdHVjayBzdHVmZiBpbiB0aGUgVkkgYW5kIFZPCj4+IHF1ZXVlcywgYW5k
-IHRoZXJlICpzaG91bGQqIGhhdmUgYmVlbiBzb21lIHNvcnQgb2YgZGlmZmVyZW5jZSBzaG93biBv
-bgo+PiB0aGUgcGxvdHMgd2l0aCBpdC4gVGhlcmUgd2Fzbid0Lgo+Cj4gdHJhZmZpYy1nZW4gZ2Vu
-ZXJhdGVzIG9ubHkgQkUgdHJhZmZpYy4gRXZlcnl0aGluZyBlbHNlIHJ1bnMgVURQX1JSCj4gd2hp
-Y2ggZG9lc24ndCBnZW5lcmF0ZSBhIGxvdCBvZiB0cmFmZmljLgo+Cj4KPj4gRm9yIGRpZmZzZXJ2
-IG1hcmtpbmdzIEkgdXNlZCBCRT1DUzAsIEJLPUNTMSwgVkk9Q1M1LCBhbmQgVk89RUYuCj4+IENT
-Ni9DUzcgc2hvdWxkIGFsc28gbGFuZCBpbiBWTyAoYXQgbGVhc3Qgd2l0aCB0aGUgc29mdCBtYWMg
-aGFuZGxlcgo+PiBsYXN0IEkgbG9va2VkKS4gSXMgdGhlcmUgYSB3YXkgdG8gY2hlY2sgaWYgeW91
-IGFyZSBpbmRlZWQgZXhlcmNpc2luZwo+PiBhbGwgZm91ciA4MDIuMTFlIGhhcmR3YXJlIHF1ZXVl
-cyBpbiB0aGlzIHRlc3Q/IGluIGF0aDlrIGl0IGlzIHRoZQo+PiAieG1pdCIgc3lzZnMgdmFyLi4u
-Lgo+Cj4gSG1tLi4gdGhlcmUgYXJlIG5vIHR4cSBzdGF0cy4gSSBndWVzcyBpdCBtYWtlcyBzZW5z
-ZSB0byBoYXZlIHRoZW0/CgphdGg5ayB4bWl0IGhhcyBiZWVuIHVzZWZ1bCB0byBjYXB0dXJlLiBJ
-J20ga2luZCBvZiB1bmNvbnZpbmNlZCB0aG9zZQpzdGF0cyBhcmUgY29ycmVjdCwgYXQgdGhlIG1v
-bWVudCwgYnV0Li4uCgo+IFRoZXJlIGlzIC9zeXMva2VybmVsL2RlYnVnL2llZWU4MDIxMS9waHkq
-L2ZxIHdoaWNoIGR1bXBzIHN0YXRlIG9mIGFsbAo+IHF1ZXVlcyB3aGljaCB3aWxsIGJlIG1vc3Rs
-eSBlbXB0eSB3aXRoIFVEUF9SUi4gWW91IGNhbiBydW4gbmV0cGVyZiBVRFAKPiBzdHJlYW0gd2l0
-aCBkaWZmc2VydiBtYXJraW5nIHRvIHNlZSBvbnRvIHdoaWNoIHRpZCB0aGV5IGFyZSBtYXBwZWQu
-Cj4gWW91IGNhbiBzZWUgdGlkLUFDIG1hcHBpbmdzIGhlcmU6Cj4gaHR0cHM6Ly93aXJlbGVzcy53
-aWtpLmtlcm5lbC5vcmcvZW4vZGV2ZWxvcGVycy9kb2N1bWVudGF0aW9uL21hYzgwMjExL3F1ZXVl
-cwoKV2UgY2FuIHRyeSB0byBjYXB0dXJlIHRob3NlLCBidXQgc2FtcGxpbmcgc3VtbWFyeSBwZXIt
-c3RhdGlvbiBzdGF0cwp0aWVzIGJhY2sgYmV0dGVyIHRvIGFjdHVhbCB0cmFmZmljIGFuYWx5c2lz
-LgoKQWxzbyB1c2VmdWwgdG8gY2FwdHVyZSBoYXMgYmVlbiB0aGUgbWluc3RyZWwgc3RhdHMsIHRo
-ZSBtaW5zdHJlbC1ibHVlcwp2ZXJzaW9uIHByb3ZpZGVkIHRoZXNlIGluIGEgaGFuZHkgY3N2IGZv
-cm1hdC4KCj4gSSBqdXN0IGNoZWNrZWQgYW5kIEVGIGVuZHMgdXAgYXMgdGlkNSB3aGljaCBpcyBW
-SS4gSXQncyBhY3R1YWxseSB0aGUKPiBzYW1lIGFzIENTNS4gWW91IGNhbiB1c2UgQ1M3IHRvIHJ1
-biBvbiB0aWQ3IHdoaWNoIGlzIFZPLgoKVGhlIGludGVudCBvZiBDUzYgaXMgc29tZXdoYXQgaW5j
-b21wYXRpYmxlIHdpdGggVk8ncyBpbnRlbnQsIGJ1dCB3ZQpjYW4gYXJndWUgZGlmZnNlcnYncyB1
-c2VmdWxuZXNzIGFuZCBtYXBwaW5ncyBhbm90aGVyIGRheS4KCkkgaGF2ZSBjaGFuZ2VkIHRoZSBi
-dXJzdHNfMTFlIHRlc3QgdG8gdXNlIENTNywgd2hpY2ggd2lsbCBicmVhawpwYXJzaW5nIG91ciBw
-cmV2aW91cyB0ZXN0IHJ1bnMnIGRhdGEsIGJ1dCBhY3R1YWxseSB0ZXN0IHdoYXQgSSdkCmludGVu
-ZGVkIHRvIHRlc3QgaW4gdGhlIGZpcnN0IHBsYWNlLgoKPj4gMikgSW4gYWxsIHRoZSBvbGQgY2Fz
-ZXMgdGhlIEJFIFVEUF9SUiBmbG93IGRpZWQgb24gdGhlIGZpcnN0IGJ1cnN0Cj4+ICh3aHk/KSwg
-YW5kIHRoZSBmdWxscGF0Y2ggcHJlc2VydmVkIGl0Lgo+Cj4gSSB0aGluayBpdCdzIHJlbGF0ZWQg
-dG8gbXkgc2V0dXAgd2hpY2ggaW52b2x2ZXMgdmV0aCBwYWlycy4gSSB1c2UgdGhlbQo+IHRvIHNp
-bXVsYXRlIGJyaWRnaW5nL0FQIGJlaGF2aW9yIGJ1dCBtYXliZSBpdCdzIG5vdCBkb2luZyB0aGUg
-am9iCj4gcmlnaHQsIGhtbS4uCj4KPgo+PiAoSSB3b3VsZCBoYXZlIGtpbmQgb2YgaG9wZWQgdG8K
-Pj4gaGF2ZSBzZWVuIHRoZSBCSyBmbG93IGRpZSwgYWN0dWFsbHksIGluIHRoZSBmdWxscGF0Y2gp
-Cj4KPiBUaGVyZSdzIG5vIGV4dHJhIHdlaWdodCBwcmlvcml0eSB0byBCSy4gVGhlIGRpZmZlcmVu
-Y2UgYmV0d2VlbiBCRSBhbmQKPiBCSyBpbiA4MDIuMTEgaXMgY29udGVudGlvbiB3aW5kb3cgYWNj
-ZXNzIHRpbWUgc28gQksgZ2V0cyBsZXNzIHR4b3BzCj4gc3RhdGlzdGljYWxseS4gQm90aCBzaGFy
-ZSB0aGUgc2FtZSB0eG9wLCB3aGljaCBpcyA1LjQ4NG1zIGluIG1vc3QKPiBjYXNlcy4KClVtLCB3
-ZWxsLCBhbm90aGVyIGRheS4KCj4KPj4gMykgSSBhbSBhbHNvIGNvbmZ1c2VkIG9uIDgwMi4xMWFj
-IC0gY2FuIFZPIGFnZ3JlZ2F0ZT8gKCBjYW4ndCBpbiBpbiA4MDIuMTFuKS4KPgo+IFllcywgaXQg
-c2hvdWxkIGJlIGFsYmVpdCBWSSBhbmQgVk8gaGF2ZSBzaG9ydGVyIHR4b3AgY29tcGFyZWQgdG8K
-PiBCRS9CSzogMy4wMDhtcyBhbmQgMS41MDRtcyByZXNwZWN0aXZlbHkuCgpOb3QgYmVpbmcgYWJs
-ZSB0byBhZ2dyZWdhdGUgaW4gVk8gaW4gbiB3YXMgYSBiYWQgdGhpbmcuIFRoZXJlIGlzIGFuCmF3
-ZnVsIGxvdCBJIGxpa2UgYWJvdXQgYWMgb3ZlciBuLgoKPgo+IFVEUF9SUiBkb2Vzbid0IHJlYWxs
-eSBjcmVhdGUgYSBsb3Qgb2Ygb3Bwb3J0dW5pdGllcyBmb3IgYWdncmVnYXRpb24uCj4gSWYgeW91
-IHdhbnQgdG8gc2VlIGhvdyBkaWZmZXJlbnQgcXVldWVzIGJlaGF2ZSB3aGVuIGxvYWRlZCB5b3Un
-bGwgbmVlZAo+IHRvIG1vZGlmeSB0cmFmZmljLWdlbiBhbmQgYWRkIGJ1cnN0cyBhY3Jvc3MgZGlm
-ZmVyZW50IEFDcyBpbiB0aGUKPiBidXJzdHNfMTFlIHRlc3QuCgpvciBmbG9vZCB0aGUgcXVldWVz
-IHdpdGggb3RoZXIgdGVzdHMgbGlrZSBycnVsIG9yIHRva2UncyBlbmhhbmNlbWVudAp0byB0cmFm
-ZmljLWdlbi4gOikgSSBsaWtlZCBiZWluZyBhYmxlIHRvIGFyYml0cmFyaWx5IG1hcmsgdWRwIHBh
-Y2tldHMKZWNuIGNhcGFibGUuLi4KCj4KPgo+IE1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hdGgxMGsK
+Check and parse Rx MAC timestamp when firmware sets its flag
+to status variable.
+10.4 firmware adds it in Rx beacon frame only at this moment.
+Drivers and mac80211 may utilize it to detect such clockdrift
+or beacon collision and use the result for beacon collision
+avoidance.
+
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+
+v2:
+ * Rebased. no code changes.
+
+ drivers/net/wireless/ath/ath10k/wmi.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 9137566..9977876 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2191,6 +2191,8 @@ static int ath10k_wmi_10_4_op_pull_mgmt_rx_ev(struct ath10k *ar,
+ 	struct wmi_10_4_mgmt_rx_hdr *ev_hdr;
+ 	size_t pull_len;
+ 	u32 msdu_len;
++	struct wmi_mgmt_rx_ext_info *ext_info;
++	u32 len;
+ 
+ 	ev = (struct wmi_10_4_mgmt_rx_event *)skb->data;
+ 	ev_hdr = &ev->hdr;
+@@ -2211,6 +2213,13 @@ static int ath10k_wmi_10_4_op_pull_mgmt_rx_ev(struct ath10k *ar,
+ 	if (skb->len < msdu_len)
+ 		return -EPROTO;
+ 
++	if (le32_to_cpu(arg->status) & WMI_RX_STATUS_EXT_INFO) {
++		len = ALIGN(le32_to_cpu(arg->buf_len), 4);
++		ext_info = (struct wmi_mgmt_rx_ext_info *)(skb->data + len);
++		memcpy(&arg->ext_info, ext_info,
++		       sizeof(struct wmi_mgmt_rx_ext_info));
++	}
++
+ 	/* Make sure bytes added for padding are removed. */
+ 	skb_trim(skb, msdu_len);
+ 
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
