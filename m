@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+Received: from mail2.tohojo.dk ([77.235.48.147])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiHK8-0001lB-5c
- for ath10k@lists.infradead.org; Tue, 22 Mar 2016 08:05:57 +0000
-Received: by mail-wm0-x232.google.com with SMTP id l68so140209639wml.0
- for <ath10k@lists.infradead.org>; Tue, 22 Mar 2016 01:05:35 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAA93jw5AAWua23TbQHZX47XcFLEqU6T=NpxuLqa6FiffBf91Fw@mail.gmail.com>
-References: <CAA93jw5AAWua23TbQHZX47XcFLEqU6T=NpxuLqa6FiffBf91Fw@mail.gmail.com>
-Date: Tue, 22 Mar 2016 09:05:32 +0100
-Message-ID: <CA+BoTQ=hgkm2AwMb=kinx+Ezf3vjduCKNH4LNRcV_goDWH4_Vg@mail.gmail.com>
+ id 1aiIyU-0001qq-N2
+ for ath10k@lists.infradead.org; Tue, 22 Mar 2016 09:51:43 +0000
+From: =?utf-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
 Subject: Re: [RFCv2 0/3] mac80211: implement fq codel
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <CAA93jw5AAWua23TbQHZX47XcFLEqU6T=NpxuLqa6FiffBf91Fw@mail.gmail.com>
+ <CA+BoTQ=hgkm2AwMb=kinx+Ezf3vjduCKNH4LNRcV_goDWH4_Vg@mail.gmail.com>
+Date: Tue, 22 Mar 2016 10:51:12 +0100
+In-Reply-To: <CA+BoTQ=hgkm2AwMb=kinx+Ezf3vjduCKNH4LNRcV_goDWH4_Vg@mail.gmail.com>
+ (Michal Kazior's message of "Tue, 22 Mar 2016 09:05:32 +0100")
+Message-ID: <8737rirgbz.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +20,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
-Cc: Network Development <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Jasmine Strong <jas@eero.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, make-wifi-fast@lists.bufferbloat.net
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Network Development <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, Dave Taht <dave.taht@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Jasmine Strong <jas@eero.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, make-wifi-fast@lists.bufferbloat.net
 
-T24gMjEgTWFyY2ggMjAxNiBhdCAxODoxMCwgRGF2ZSBUYWh0IDxkYXZlLnRhaHRAZ21haWwuY29t
-PiB3cm90ZToKPiB0aHguCj4KPiBhIGxvdCB0byBkaWdlc3QuCj4KPiBBKSBxdWljayBub3RlcyBv
-biAiZmxlbnQtZ3VpIGJ1cnN0c18xMWUtMjAxNi0wMy0yMVQwOSouZ3oiCj4KPiAxKSB0aGUgbmV3
-IGJ1cnN0c18xMWUgdGVzdCAqc2hvdWxkKiBoYXZlIHN0dWNrIHN0dWZmIGluIHRoZSBWSSBhbmQg
-Vk8KPiBxdWV1ZXMsIGFuZCB0aGVyZSAqc2hvdWxkKiBoYXZlIGJlZW4gc29tZSBzb3J0IG9mIGRp
-ZmZlcmVuY2Ugc2hvd24gb24KPiB0aGUgcGxvdHMgd2l0aCBpdC4gVGhlcmUgd2Fzbid0LgoKdHJh
-ZmZpYy1nZW4gZ2VuZXJhdGVzIG9ubHkgQkUgdHJhZmZpYy4gRXZlcnl0aGluZyBlbHNlIHJ1bnMg
-VURQX1JSCndoaWNoIGRvZXNuJ3QgZ2VuZXJhdGUgYSBsb3Qgb2YgdHJhZmZpYy4KCgo+IEZvciBk
-aWZmc2VydiBtYXJraW5ncyBJIHVzZWQgQkU9Q1MwLCBCSz1DUzEsIFZJPUNTNSwgYW5kIFZPPUVG
-Lgo+IENTNi9DUzcgc2hvdWxkIGFsc28gbGFuZCBpbiBWTyAoYXQgbGVhc3Qgd2l0aCB0aGUgc29m
-dCBtYWMgaGFuZGxlcgo+IGxhc3QgSSBsb29rZWQpLiBJcyB0aGVyZSBhIHdheSB0byBjaGVjayBp
-ZiB5b3UgYXJlIGluZGVlZCBleGVyY2lzaW5nCj4gYWxsIGZvdXIgODAyLjExZSBoYXJkd2FyZSBx
-dWV1ZXMgaW4gdGhpcyB0ZXN0PyBpbiBhdGg5ayBpdCBpcyB0aGUKPiAieG1pdCIgc3lzZnMgdmFy
-Li4uLgoKSG1tLi4gdGhlcmUgYXJlIG5vIHR4cSBzdGF0cy4gSSBndWVzcyBpdCBtYWtlcyBzZW5z
-ZSB0byBoYXZlIHRoZW0/CgpUaGVyZSBpcyAvc3lzL2tlcm5lbC9kZWJ1Zy9pZWVlODAyMTEvcGh5
-Ki9mcSB3aGljaCBkdW1wcyBzdGF0ZSBvZiBhbGwKcXVldWVzIHdoaWNoIHdpbGwgYmUgbW9zdGx5
-IGVtcHR5IHdpdGggVURQX1JSLiBZb3UgY2FuIHJ1biBuZXRwZXJmIFVEUApzdHJlYW0gd2l0aCBk
-aWZmc2VydiBtYXJraW5nIHRvIHNlZSBvbnRvIHdoaWNoIHRpZCB0aGV5IGFyZSBtYXBwZWQuCllv
-dSBjYW4gc2VlIHRpZC1BQyBtYXBwaW5ncyBoZXJlOgpodHRwczovL3dpcmVsZXNzLndpa2kua2Vy
-bmVsLm9yZy9lbi9kZXZlbG9wZXJzL2RvY3VtZW50YXRpb24vbWFjODAyMTEvcXVldWVzCgpJIGp1
-c3QgY2hlY2tlZCBhbmQgRUYgZW5kcyB1cCBhcyB0aWQ1IHdoaWNoIGlzIFZJLiBJdCdzIGFjdHVh
-bGx5IHRoZQpzYW1lIGFzIENTNS4gWW91IGNhbiB1c2UgQ1M3IHRvIHJ1biBvbiB0aWQ3IHdoaWNo
-IGlzIFZPLgoKCj4gMikgSW4gYWxsIHRoZSBvbGQgY2FzZXMgdGhlIEJFIFVEUF9SUiBmbG93IGRp
-ZWQgb24gdGhlIGZpcnN0IGJ1cnN0Cj4gKHdoeT8pLCBhbmQgdGhlIGZ1bGxwYXRjaCBwcmVzZXJ2
-ZWQgaXQuCgpJIHRoaW5rIGl0J3MgcmVsYXRlZCB0byBteSBzZXR1cCB3aGljaCBpbnZvbHZlcyB2
-ZXRoIHBhaXJzLiBJIHVzZSB0aGVtCnRvIHNpbXVsYXRlIGJyaWRnaW5nL0FQIGJlaGF2aW9yIGJ1
-dCBtYXliZSBpdCdzIG5vdCBkb2luZyB0aGUgam9iCnJpZ2h0LCBobW0uLgoKCj4gKEkgd291bGQg
-aGF2ZSBraW5kIG9mIGhvcGVkIHRvCj4gaGF2ZSBzZWVuIHRoZSBCSyBmbG93IGRpZSwgYWN0dWFs
-bHksIGluIHRoZSBmdWxscGF0Y2gpCgpUaGVyZSdzIG5vIGV4dHJhIHdlaWdodCBwcmlvcml0eSB0
-byBCSy4gVGhlIGRpZmZlcmVuY2UgYmV0d2VlbiBCRSBhbmQKQksgaW4gODAyLjExIGlzIGNvbnRl
-bnRpb24gd2luZG93IGFjY2VzcyB0aW1lIHNvIEJLIGdldHMgbGVzcyB0eG9wcwpzdGF0aXN0aWNh
-bGx5LiBCb3RoIHNoYXJlIHRoZSBzYW1lIHR4b3AsIHdoaWNoIGlzIDUuNDg0bXMgaW4gbW9zdApj
-YXNlcy4KCgo+IDMpIEkgYW0gYWxzbyBjb25mdXNlZCBvbiA4MDIuMTFhYyAtIGNhbiBWTyBhZ2dy
-ZWdhdGU/ICggY2FuJ3QgaW4gaW4gODAyLjExbikuCgpZZXMsIGl0IHNob3VsZCBiZSBhbGJlaXQg
-VkkgYW5kIFZPIGhhdmUgc2hvcnRlciB0eG9wIGNvbXBhcmVkIHRvCkJFL0JLOiAzLjAwOG1zIGFu
-ZCAxLjUwNG1zIHJlc3BlY3RpdmVseS4KClVEUF9SUiBkb2Vzbid0IHJlYWxseSBjcmVhdGUgYSBs
-b3Qgb2Ygb3Bwb3J0dW5pdGllcyBmb3IgYWdncmVnYXRpb24uCklmIHlvdSB3YW50IHRvIHNlZSBo
-b3cgZGlmZmVyZW50IHF1ZXVlcyBiZWhhdmUgd2hlbiBsb2FkZWQgeW91J2xsIG5lZWQKdG8gbW9k
-aWZ5IHRyYWZmaWMtZ2VuIGFuZCBhZGQgYnVyc3RzIGFjcm9zcyBkaWZmZXJlbnQgQUNzIGluIHRo
-ZQpidXJzdHNfMTFlIHRlc3QuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
-aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> traffic-gen generates only BE traffic. Everything else runs UDP_RR
+> which doesn't generate a lot of traffic.
+
+Good point. Fixed that: the newest git version of traffic-gen supports a
+-t parameter which will be set as the TOS byte on outgoing traffic
+(literal; no smart diffserv handling, so you can override the ECN bits
+as well).
+
+Added support for a burst-tos test parameter in the Flent burst test
+configs which will use this new parameter if set.
+
+-Toke
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
