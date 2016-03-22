@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiKt8-0003jV-Q1
- for ath10k@lists.infradead.org; Tue, 22 Mar 2016 11:54:19 +0000
+ id 1aiKt2-0003jV-He
+ for ath10k@lists.infradead.org; Tue, 22 Mar 2016 11:54:13 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 7/9] ath10k: cleanup copy engine receive next completion
-Date: Tue, 22 Mar 2016 17:22:17 +0530
-Message-ID: <1458647539-17213-8-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 5/9] ath10k: speedup htt rx descriptor processing for rx_ind
+Date: Tue, 22 Mar 2016 17:22:15 +0530
+Message-ID: <1458647539-17213-6-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,229 +25,135 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-The physical address necessary to unmap DMA ('bufferp') is stored
-in ath10k_skb_cb as 'paddr'. For diag register read and write
-operations, 'paddr' is stored in transfer context. ath10k doesn't rely
-on the meta/transfer_id. So the unused output arguments {bufferp, nbytesp
-and transfer_idp} are removed from CE recv_next completion.
+In follow up patch, htt rx descriptors will be reused instead of
+dealloc and refill. To achieve that htt rx indication messages
+should not be deferred and should be processed in pci tasklet itself.
+Also from rx indication message, mpdu_count alone is used. So it is
+maintained as atomic variable and all rx amsdu handlers are done
+processed from txrx tasklet. This change get rid of rx_compl_q usage.
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.c  | 21 +++--------------
- drivers/net/wireless/ath/ath10k/ce.h  | 10 ++------
- drivers/net/wireless/ath/ath10k/pci.c | 43 ++++++++++++++---------------------
- 3 files changed, 22 insertions(+), 52 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h    |  1 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 39 +++++++++++++++-----------------
+ 2 files changed, 19 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index edf3629..d6da404 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -444,14 +444,10 @@ int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr)
-  */
- int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
- 					 void **per_transfer_contextp,
--					 u32 *bufferp,
--					 unsigned int *nbytesp,
--					 unsigned int *transfer_idp,
--					 unsigned int *flagsp)
-+					 unsigned int *nbytesp)
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 76c4bae..27a65ec 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1663,6 +1663,7 @@ struct ath10k_htt {
+ 	 * used to avoid further failures */
+ 	bool rx_confused;
+ 	struct tasklet_struct rx_replenish_task;
++	atomic_t num_mpdus_ready;
+ 
+ 	/* This is used to group tx/rx completions separately and process them
+ 	 * in batches to reduce cache stalls */
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 3fdbfee..dde2237 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -526,6 +526,7 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 	skb_queue_head_init(&htt->rx_compl_q);
+ 	skb_queue_head_init(&htt->rx_in_ord_compl_q);
+ 	skb_queue_head_init(&htt->tx_fetch_ind_q);
++	atomic_set(&htt->num_mpdus_ready, 0);
+ 
+ 	tasklet_init(&htt->txrx_compl_task, ath10k_htt_txrx_compl_task,
+ 		     (unsigned long)htt);
+@@ -1564,8 +1565,8 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
+ 	return 0;
+ }
+ 
+-static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+-				  struct htt_rx_indication *rx)
++static void ath10k_htt_rx_proc_rx_ind(struct ath10k_htt *htt,
++				      struct htt_rx_indication *rx)
  {
- 	struct ath10k_ce_ring *dest_ring = ce_state->dest_ring;
- 	unsigned int nentries_mask = dest_ring->nentries_mask;
--	struct ath10k *ar = ce_state->ar;
- 	unsigned int sw_index = dest_ring->sw_index;
+ 	struct ath10k *ar = htt->ar;
+ 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
+@@ -1584,19 +1585,16 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 	for (i = 0; i < num_mpdu_ranges; i++)
+ 		mpdu_count += mpdu_ranges[i].mpdu_count;
  
- 	struct ce_desc *base = dest_ring->base_addr_owner_space;
-@@ -476,14 +472,7 @@ int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
- 	desc->nbytes = 0;
+-	while (mpdu_count--) {
+-		if (ath10k_htt_rx_handle_amsdu(htt) < 0)
+-			break;
+-	}
++	atomic_add(mpdu_count, &htt->num_mpdus_ready);
  
- 	/* Return data from completed destination descriptor */
--	*bufferp = __le32_to_cpu(sdesc.addr);
- 	*nbytesp = nbytes;
--	*transfer_idp = MS(__le16_to_cpu(sdesc.flags), CE_DESC_FLAGS_META_DATA);
--
--	if (__le16_to_cpu(sdesc.flags) & CE_DESC_FLAGS_BYTE_SWAP)
--		*flagsp = CE_RECV_FLAG_SWAPPED;
--	else
--		*flagsp = 0;
+-	tasklet_schedule(&htt->rx_replenish_task);
++	tasklet_schedule(&htt->txrx_compl_task);
+ }
  
- 	if (per_transfer_contextp)
- 		*per_transfer_contextp =
-@@ -501,10 +490,7 @@ int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
- 
- int ath10k_ce_completed_recv_next(struct ath10k_ce_pipe *ce_state,
- 				  void **per_transfer_contextp,
--				  u32 *bufferp,
--				  unsigned int *nbytesp,
--				  unsigned int *transfer_idp,
--				  unsigned int *flagsp)
-+				  unsigned int *nbytesp)
+ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt)
  {
- 	struct ath10k *ar = ce_state->ar;
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-@@ -513,8 +499,7 @@ int ath10k_ce_completed_recv_next(struct ath10k_ce_pipe *ce_state,
- 	spin_lock_bh(&ar_pci->ce_lock);
- 	ret = ath10k_ce_completed_recv_next_nolock(ce_state,
- 						   per_transfer_contextp,
--						   bufferp, nbytesp,
--						   transfer_idp, flagsp);
-+						   nbytesp);
- 	spin_unlock_bh(&ar_pci->ce_lock);
+-	ath10k_htt_rx_handle_amsdu(htt);
++	atomic_inc(&htt->num_mpdus_ready);
  
- 	return ret;
-diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index dac6768..68717e5 100644
---- a/drivers/net/wireless/ath/ath10k/ce.h
-+++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -177,10 +177,7 @@ int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr);
-  */
- int ath10k_ce_completed_recv_next(struct ath10k_ce_pipe *ce_state,
- 				  void **per_transfer_contextp,
--				  u32 *bufferp,
--				  unsigned int *nbytesp,
--				  unsigned int *transfer_idp,
--				  unsigned int *flagsp);
-+				  unsigned int *nbytesp);
- /*
-  * Supply data for the next completed unprocessed send descriptor.
-  * Pops 1 completed send buffer from Source ring.
-@@ -212,10 +209,7 @@ int ath10k_ce_revoke_recv_next(struct ath10k_ce_pipe *ce_state,
+-	tasklet_schedule(&htt->rx_replenish_task);
++	tasklet_schedule(&htt->txrx_compl_task);
+ }
  
- int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
- 					 void **per_transfer_contextp,
--					 u32 *bufferp,
--					 unsigned int *nbytesp,
--					 unsigned int *transfer_idp,
--					 unsigned int *flagsp);
-+					 unsigned int *nbytesp);
- 
- /*
-  * Support clean shutdown by allowing the caller to cancel
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index b3cff1d..290a61a 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -870,10 +870,8 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int ret = 0;
--	u32 buf;
-+	u32 *buf;
- 	unsigned int completed_nbytes, orig_nbytes, remaining_bytes;
--	unsigned int id;
--	unsigned int flags;
- 	struct ath10k_ce_pipe *ce_diag;
- 	/* Host buffer address in CE space */
- 	u32 ce_data;
-@@ -909,7 +907,7 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- 		nbytes = min_t(unsigned int, remaining_bytes,
- 			       DIAG_TRANSFER_LIMIT);
- 
--		ret = __ath10k_ce_rx_post_buf(ce_diag, NULL, ce_data);
-+		ret = __ath10k_ce_rx_post_buf(ce_diag, &ce_data, ce_data);
- 		if (ret != 0)
- 			goto done;
- 
-@@ -940,9 +938,10 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- 		}
- 
- 		i = 0;
--		while (ath10k_ce_completed_recv_next_nolock(ce_diag, NULL, &buf,
--							    &completed_nbytes,
--							    &id, &flags) != 0) {
-+		while (ath10k_ce_completed_recv_next_nolock(ce_diag,
-+							    (void **)&buf,
-+							    &completed_nbytes)
-+								!= 0) {
- 			mdelay(1);
- 
- 			if (i++ > DIAG_ACCESS_CE_TIMEOUT_MS) {
-@@ -956,7 +955,7 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- 			goto done;
- 		}
- 
--		if (buf != ce_data) {
-+		if (*buf != ce_data) {
- 			ret = -EIO;
- 			goto done;
- 		}
-@@ -1026,10 +1025,8 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int ret = 0;
--	u32 buf;
-+	u32 *buf;
- 	unsigned int completed_nbytes, orig_nbytes, remaining_bytes;
--	unsigned int id;
--	unsigned int flags;
- 	struct ath10k_ce_pipe *ce_diag;
- 	void *data_buf = NULL;
- 	u32 ce_data;	/* Host buffer address in CE space */
-@@ -1078,7 +1075,7 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 		nbytes = min_t(int, remaining_bytes, DIAG_TRANSFER_LIMIT);
- 
- 		/* Set up to receive directly into Target(!) address */
--		ret = __ath10k_ce_rx_post_buf(ce_diag, NULL, address);
-+		ret = __ath10k_ce_rx_post_buf(ce_diag, &address, address);
- 		if (ret != 0)
- 			goto done;
- 
-@@ -1103,9 +1100,10 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 		}
- 
- 		i = 0;
--		while (ath10k_ce_completed_recv_next_nolock(ce_diag, NULL, &buf,
--							    &completed_nbytes,
--							    &id, &flags) != 0) {
-+		while (ath10k_ce_completed_recv_next_nolock(ce_diag,
-+							    (void **)&buf,
-+							    &completed_nbytes)
-+								!= 0) {
- 			mdelay(1);
- 
- 			if (i++ > DIAG_ACCESS_CE_TIMEOUT_MS) {
-@@ -1119,7 +1117,7 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 			goto done;
- 		}
- 
--		if (buf != address) {
-+		if (*buf != address) {
- 			ret = -EIO;
- 			goto done;
- 		}
-@@ -1181,15 +1179,11 @@ static void ath10k_pci_process_rx_cb(struct ath10k_ce_pipe *ce_state,
+ static void ath10k_htt_rx_tx_compl_ind(struct ath10k *ar,
+@@ -2250,9 +2248,8 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	}
+ 	case HTT_T2H_MSG_TYPE_RX_IND:
+-		skb_queue_tail(&htt->rx_compl_q, skb);
+-		tasklet_schedule(&htt->txrx_compl_task);
+-		return;
++		ath10k_htt_rx_proc_rx_ind(htt, &resp->rx_ind);
++		break;
+ 	case HTT_T2H_MSG_TYPE_PEER_MAP: {
+ 		struct htt_peer_map_event ev = {
+ 			.vdev_id = resp->peer_map.vdev_id,
+@@ -2419,19 +2416,15 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+ 	struct sk_buff_head rx_q;
+ 	struct sk_buff_head rx_ind_q;
+ 	struct sk_buff_head tx_ind_q;
+-	struct htt_resp *resp;
  	struct sk_buff *skb;
- 	struct sk_buff_head list;
- 	void *transfer_context;
--	u32 ce_data;
- 	unsigned int nbytes, max_nbytes;
--	unsigned int transfer_id;
--	unsigned int flags;
+ 	unsigned long flags;
++	int num_mpdus;
  
- 	__skb_queue_head_init(&list);
- 	while (ath10k_ce_completed_recv_next(ce_state, &transfer_context,
--					     &ce_data, &nbytes, &transfer_id,
--					     &flags) == 0) {
-+					     &nbytes) == 0) {
- 		skb = transfer_context;
- 		max_nbytes = skb->len + skb_tailroom(skb);
- 		dma_unmap_single(ar->dev, ATH10K_SKB_RXCB(skb)->paddr,
-@@ -1835,13 +1829,10 @@ static void ath10k_pci_bmi_recv_data(struct ath10k_ce_pipe *ce_state)
- {
- 	struct ath10k *ar = ce_state->ar;
- 	struct bmi_xfer *xfer;
--	u32 ce_data;
- 	unsigned int nbytes;
--	unsigned int transfer_id;
--	unsigned int flags;
+ 	__skb_queue_head_init(&rx_q);
+ 	__skb_queue_head_init(&rx_ind_q);
+ 	__skb_queue_head_init(&tx_ind_q);
  
--	if (ath10k_ce_completed_recv_next(ce_state, (void **)&xfer, &ce_data,
--					  &nbytes, &transfer_id, &flags))
-+	if (ath10k_ce_completed_recv_next(ce_state, (void **)&xfer,
-+					  &nbytes))
- 		return;
  
- 	if (WARN_ON_ONCE(!xfer))
+-	spin_lock_irqsave(&htt->rx_compl_q.lock, flags);
+-	skb_queue_splice_init(&htt->rx_compl_q, &rx_q);
+-	spin_unlock_irqrestore(&htt->rx_compl_q.lock, flags);
+-
+ 	spin_lock_irqsave(&htt->rx_in_ord_compl_q.lock, flags);
+ 	skb_queue_splice_init(&htt->rx_in_ord_compl_q, &rx_ind_q);
+ 	spin_unlock_irqrestore(&htt->rx_in_ord_compl_q.lock, flags);
+@@ -2455,10 +2448,12 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+ 
+ 	ath10k_mac_tx_push_pending(ar);
+ 
+-	while ((skb = __skb_dequeue(&rx_q))) {
+-		resp = (struct htt_resp *)skb->data;
+-		ath10k_htt_rx_handler(htt, &resp->rx_ind);
+-		dev_kfree_skb_any(skb);
++	num_mpdus = atomic_read(&htt->num_mpdus_ready);
++	atomic_sub(num_mpdus, &htt->num_mpdus_ready);
++
++	while (num_mpdus--) {
++		if (ath10k_htt_rx_handle_amsdu(htt))
++			break;
+ 	}
+ 
+ 	while ((skb = __skb_dequeue(&rx_ind_q))) {
+@@ -2467,4 +2462,6 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+ 		spin_unlock_bh(&htt->rx_ring.lock);
+ 		dev_kfree_skb_any(skb);
+ 	}
++
++	tasklet_schedule(&htt->rx_replenish_task);
+ }
 -- 
 2.7.4
 
