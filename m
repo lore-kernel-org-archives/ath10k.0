@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiKsl-0003fg-6u
- for ath10k@lists.infradead.org; Tue, 22 Mar 2016 11:53:56 +0000
+ id 1aiKt8-0003jV-Q1
+ for ath10k@lists.infradead.org; Tue, 22 Mar 2016 11:54:19 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 4/9] ath10k: cleanup amsdu processing for rx indication
-Date: Tue, 22 Mar 2016 17:22:14 +0530
-Message-ID: <1458647539-17213-5-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 7/9] ath10k: cleanup copy engine receive next completion
+Date: Tue, 22 Mar 2016 17:22:17 +0530
+Message-ID: <1458647539-17213-8-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,164 +25,229 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-Make amsdu handlers (i.e amsdu_pop and rx_h_handler) common to both
-rx_ind and frag_ind htt events. It is sufficient to hold rx_ring lock
-for amsdu_pop alone and no need to hold it until the packets are
-delivered to mac80211. This helps to reduce rx_lock contention as well.
+The physical address necessary to unmap DMA ('bufferp') is stored
+in ath10k_skb_cb as 'paddr'. For diag register read and write
+operations, 'paddr' is stored in transfer context. ath10k doesn't rely
+on the meta/transfer_id. So the unused output arguments {bufferp, nbytesp
+and transfer_idp} are removed from CE recv_next completion.
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 100 +++++++++++++------------------
- 1 file changed, 41 insertions(+), 59 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.c  | 21 +++--------------
+ drivers/net/wireless/ath/ath10k/ce.h  | 10 ++------
+ drivers/net/wireless/ath/ath10k/pci.c | 43 ++++++++++++++---------------------
+ 3 files changed, 22 insertions(+), 52 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index abb712f..3fdbfee 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1528,20 +1528,49 @@ static void ath10k_htt_rx_h_filter(struct ath10k *ar,
- 	__skb_queue_purge(amsdu);
- }
- 
-+static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
-+{
-+	struct ath10k *ar = htt->ar;
-+	static struct ieee80211_rx_status rx_status;
-+	struct sk_buff_head amsdu;
-+	int ret;
-+
-+	__skb_queue_head_init(&amsdu);
-+
-+	spin_lock_bh(&htt->rx_ring.lock);
-+	if (htt->rx_confused) {
-+		spin_unlock_bh(&htt->rx_ring.lock);
-+		return -EIO;
-+	}
-+	ret = ath10k_htt_rx_amsdu_pop(htt, &amsdu);
-+	spin_unlock_bh(&htt->rx_ring.lock);
-+
-+	if (ret < 0) {
-+		ath10k_warn(ar, "rx ring became corrupted: %d\n", ret);
-+		__skb_queue_purge(&amsdu);
-+		/* FIXME: It's probably a good idea to reboot the
-+		 * device instead of leaving it inoperable.
-+		 */
-+		htt->rx_confused = true;
-+		return ret;
-+	}
-+
-+	ath10k_htt_rx_h_ppdu(ar, &amsdu, &rx_status, 0xffff);
-+	ath10k_htt_rx_h_unchain(ar, &amsdu, ret > 0);
-+	ath10k_htt_rx_h_filter(ar, &amsdu, &rx_status);
-+	ath10k_htt_rx_h_mpdu(ar, &amsdu, &rx_status);
-+	ath10k_htt_rx_h_deliver(ar, &amsdu, &rx_status);
-+
-+	return 0;
-+}
-+
- static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 				  struct htt_rx_indication *rx)
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index edf3629..d6da404 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -444,14 +444,10 @@ int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr)
+  */
+ int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
+ 					 void **per_transfer_contextp,
+-					 u32 *bufferp,
+-					 unsigned int *nbytesp,
+-					 unsigned int *transfer_idp,
+-					 unsigned int *flagsp)
++					 unsigned int *nbytesp)
  {
- 	struct ath10k *ar = htt->ar;
--	struct ieee80211_rx_status *rx_status = &htt->rx_status;
- 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
--	struct sk_buff_head amsdu;
- 	int num_mpdu_ranges;
--	int i, ret, mpdu_count = 0;
+ 	struct ath10k_ce_ring *dest_ring = ce_state->dest_ring;
+ 	unsigned int nentries_mask = dest_ring->nentries_mask;
+-	struct ath10k *ar = ce_state->ar;
+ 	unsigned int sw_index = dest_ring->sw_index;
+ 
+ 	struct ce_desc *base = dest_ring->base_addr_owner_space;
+@@ -476,14 +472,7 @@ int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
+ 	desc->nbytes = 0;
+ 
+ 	/* Return data from completed destination descriptor */
+-	*bufferp = __le32_to_cpu(sdesc.addr);
+ 	*nbytesp = nbytes;
+-	*transfer_idp = MS(__le16_to_cpu(sdesc.flags), CE_DESC_FLAGS_META_DATA);
 -
--	lockdep_assert_held(&htt->rx_ring.lock);
--
--	if (htt->rx_confused)
--		return;
-+	int i, mpdu_count = 0;
+-	if (__le16_to_cpu(sdesc.flags) & CE_DESC_FLAGS_BYTE_SWAP)
+-		*flagsp = CE_RECV_FLAG_SWAPPED;
+-	else
+-		*flagsp = 0;
  
- 	num_mpdu_ranges = MS(__le32_to_cpu(rx->hdr.info1),
- 			     HTT_RX_INDICATION_INFO1_NUM_MPDU_RANGES);
-@@ -1556,63 +1585,18 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 		mpdu_count += mpdu_ranges[i].mpdu_count;
+ 	if (per_transfer_contextp)
+ 		*per_transfer_contextp =
+@@ -501,10 +490,7 @@ int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
  
- 	while (mpdu_count--) {
--		__skb_queue_head_init(&amsdu);
--		ret = ath10k_htt_rx_amsdu_pop(htt, &amsdu);
--		if (ret < 0) {
--			ath10k_warn(ar, "rx ring became corrupted: %d\n", ret);
--			__skb_queue_purge(&amsdu);
--			/* FIXME: It's probably a good idea to reboot the
--			 * device instead of leaving it inoperable.
--			 */
--			htt->rx_confused = true;
-+		if (ath10k_htt_rx_handle_amsdu(htt) < 0)
- 			break;
--		}
--
--		ath10k_htt_rx_h_ppdu(ar, &amsdu, rx_status, 0xffff);
--		ath10k_htt_rx_h_unchain(ar, &amsdu, ret > 0);
--		ath10k_htt_rx_h_filter(ar, &amsdu, rx_status);
--		ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status);
--		ath10k_htt_rx_h_deliver(ar, &amsdu, rx_status);
- 	}
- 
- 	tasklet_schedule(&htt->rx_replenish_task);
- }
- 
--static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
--				       struct htt_rx_fragment_indication *frag)
-+static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt)
+ int ath10k_ce_completed_recv_next(struct ath10k_ce_pipe *ce_state,
+ 				  void **per_transfer_contextp,
+-				  u32 *bufferp,
+-				  unsigned int *nbytesp,
+-				  unsigned int *transfer_idp,
+-				  unsigned int *flagsp)
++				  unsigned int *nbytesp)
  {
--	struct ath10k *ar = htt->ar;
--	struct ieee80211_rx_status *rx_status = &htt->rx_status;
--	struct sk_buff_head amsdu;
--	int ret;
--
--	__skb_queue_head_init(&amsdu);
--
--	spin_lock_bh(&htt->rx_ring.lock);
--	ret = ath10k_htt_rx_amsdu_pop(htt, &amsdu);
--	spin_unlock_bh(&htt->rx_ring.lock);
-+	ath10k_htt_rx_handle_amsdu(htt);
+ 	struct ath10k *ar = ce_state->ar;
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+@@ -513,8 +499,7 @@ int ath10k_ce_completed_recv_next(struct ath10k_ce_pipe *ce_state,
+ 	spin_lock_bh(&ar_pci->ce_lock);
+ 	ret = ath10k_ce_completed_recv_next_nolock(ce_state,
+ 						   per_transfer_contextp,
+-						   bufferp, nbytesp,
+-						   transfer_idp, flagsp);
++						   nbytesp);
+ 	spin_unlock_bh(&ar_pci->ce_lock);
  
- 	tasklet_schedule(&htt->rx_replenish_task);
--
--	ath10k_dbg(ar, ATH10K_DBG_HTT_DUMP, "htt rx frag ahead\n");
--
--	if (ret) {
--		ath10k_warn(ar, "failed to pop amsdu from httr rx ring for fragmented rx %d\n",
--			    ret);
--		__skb_queue_purge(&amsdu);
--		return;
--	}
--
--	if (skb_queue_len(&amsdu) != 1) {
--		ath10k_warn(ar, "failed to pop frag amsdu: too many msdus\n");
--		__skb_queue_purge(&amsdu);
--		return;
--	}
--
--	ath10k_htt_rx_h_ppdu(ar, &amsdu, rx_status, 0xffff);
--	ath10k_htt_rx_h_filter(ar, &amsdu, rx_status);
--	ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status);
--	ath10k_htt_rx_h_deliver(ar, &amsdu, rx_status);
- }
+ 	return ret;
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index dac6768..68717e5 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -177,10 +177,7 @@ int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr);
+  */
+ int ath10k_ce_completed_recv_next(struct ath10k_ce_pipe *ce_state,
+ 				  void **per_transfer_contextp,
+-				  u32 *bufferp,
+-				  unsigned int *nbytesp,
+-				  unsigned int *transfer_idp,
+-				  unsigned int *flagsp);
++				  unsigned int *nbytesp);
+ /*
+  * Supply data for the next completed unprocessed send descriptor.
+  * Pops 1 completed send buffer from Source ring.
+@@ -212,10 +209,7 @@ int ath10k_ce_revoke_recv_next(struct ath10k_ce_pipe *ce_state,
  
- static void ath10k_htt_rx_tx_compl_ind(struct ath10k *ar,
-@@ -2331,7 +2315,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 	case HTT_T2H_MSG_TYPE_RX_FRAG_IND: {
- 		ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt event: ",
- 				skb->data, skb->len);
--		ath10k_htt_rx_frag_handler(htt, &resp->rx_frag_ind);
-+		ath10k_htt_rx_frag_handler(htt);
- 		break;
- 	}
- 	case HTT_T2H_MSG_TYPE_TEST:
-@@ -2473,9 +2457,7 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+ int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
+ 					 void **per_transfer_contextp,
+-					 u32 *bufferp,
+-					 unsigned int *nbytesp,
+-					 unsigned int *transfer_idp,
+-					 unsigned int *flagsp);
++					 unsigned int *nbytesp);
  
- 	while ((skb = __skb_dequeue(&rx_q))) {
- 		resp = (struct htt_resp *)skb->data;
--		spin_lock_bh(&htt->rx_ring.lock);
- 		ath10k_htt_rx_handler(htt, &resp->rx_ind);
--		spin_unlock_bh(&htt->rx_ring.lock);
- 		dev_kfree_skb_any(skb);
- 	}
+ /*
+  * Support clean shutdown by allowing the caller to cancel
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index b3cff1d..290a61a 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -870,10 +870,8 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int ret = 0;
+-	u32 buf;
++	u32 *buf;
+ 	unsigned int completed_nbytes, orig_nbytes, remaining_bytes;
+-	unsigned int id;
+-	unsigned int flags;
+ 	struct ath10k_ce_pipe *ce_diag;
+ 	/* Host buffer address in CE space */
+ 	u32 ce_data;
+@@ -909,7 +907,7 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 		nbytes = min_t(unsigned int, remaining_bytes,
+ 			       DIAG_TRANSFER_LIMIT);
  
+-		ret = __ath10k_ce_rx_post_buf(ce_diag, NULL, ce_data);
++		ret = __ath10k_ce_rx_post_buf(ce_diag, &ce_data, ce_data);
+ 		if (ret != 0)
+ 			goto done;
+ 
+@@ -940,9 +938,10 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 		}
+ 
+ 		i = 0;
+-		while (ath10k_ce_completed_recv_next_nolock(ce_diag, NULL, &buf,
+-							    &completed_nbytes,
+-							    &id, &flags) != 0) {
++		while (ath10k_ce_completed_recv_next_nolock(ce_diag,
++							    (void **)&buf,
++							    &completed_nbytes)
++								!= 0) {
+ 			mdelay(1);
+ 
+ 			if (i++ > DIAG_ACCESS_CE_TIMEOUT_MS) {
+@@ -956,7 +955,7 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 			goto done;
+ 		}
+ 
+-		if (buf != ce_data) {
++		if (*buf != ce_data) {
+ 			ret = -EIO;
+ 			goto done;
+ 		}
+@@ -1026,10 +1025,8 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int ret = 0;
+-	u32 buf;
++	u32 *buf;
+ 	unsigned int completed_nbytes, orig_nbytes, remaining_bytes;
+-	unsigned int id;
+-	unsigned int flags;
+ 	struct ath10k_ce_pipe *ce_diag;
+ 	void *data_buf = NULL;
+ 	u32 ce_data;	/* Host buffer address in CE space */
+@@ -1078,7 +1075,7 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 		nbytes = min_t(int, remaining_bytes, DIAG_TRANSFER_LIMIT);
+ 
+ 		/* Set up to receive directly into Target(!) address */
+-		ret = __ath10k_ce_rx_post_buf(ce_diag, NULL, address);
++		ret = __ath10k_ce_rx_post_buf(ce_diag, &address, address);
+ 		if (ret != 0)
+ 			goto done;
+ 
+@@ -1103,9 +1100,10 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 		}
+ 
+ 		i = 0;
+-		while (ath10k_ce_completed_recv_next_nolock(ce_diag, NULL, &buf,
+-							    &completed_nbytes,
+-							    &id, &flags) != 0) {
++		while (ath10k_ce_completed_recv_next_nolock(ce_diag,
++							    (void **)&buf,
++							    &completed_nbytes)
++								!= 0) {
+ 			mdelay(1);
+ 
+ 			if (i++ > DIAG_ACCESS_CE_TIMEOUT_MS) {
+@@ -1119,7 +1117,7 @@ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 			goto done;
+ 		}
+ 
+-		if (buf != address) {
++		if (*buf != address) {
+ 			ret = -EIO;
+ 			goto done;
+ 		}
+@@ -1181,15 +1179,11 @@ static void ath10k_pci_process_rx_cb(struct ath10k_ce_pipe *ce_state,
+ 	struct sk_buff *skb;
+ 	struct sk_buff_head list;
+ 	void *transfer_context;
+-	u32 ce_data;
+ 	unsigned int nbytes, max_nbytes;
+-	unsigned int transfer_id;
+-	unsigned int flags;
+ 
+ 	__skb_queue_head_init(&list);
+ 	while (ath10k_ce_completed_recv_next(ce_state, &transfer_context,
+-					     &ce_data, &nbytes, &transfer_id,
+-					     &flags) == 0) {
++					     &nbytes) == 0) {
+ 		skb = transfer_context;
+ 		max_nbytes = skb->len + skb_tailroom(skb);
+ 		dma_unmap_single(ar->dev, ATH10K_SKB_RXCB(skb)->paddr,
+@@ -1835,13 +1829,10 @@ static void ath10k_pci_bmi_recv_data(struct ath10k_ce_pipe *ce_state)
+ {
+ 	struct ath10k *ar = ce_state->ar;
+ 	struct bmi_xfer *xfer;
+-	u32 ce_data;
+ 	unsigned int nbytes;
+-	unsigned int transfer_id;
+-	unsigned int flags;
+ 
+-	if (ath10k_ce_completed_recv_next(ce_state, (void **)&xfer, &ce_data,
+-					  &nbytes, &transfer_id, &flags))
++	if (ath10k_ce_completed_recv_next(ce_state, (void **)&xfer,
++					  &nbytes))
+ 		return;
+ 
+ 	if (WARN_ON_ONCE(!xfer))
 -- 
 2.7.4
 
