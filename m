@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.tohojo.dk ([77.235.48.147])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiIyU-0001qq-N2
- for ath10k@lists.infradead.org; Tue, 22 Mar 2016 09:51:43 +0000
-From: =?utf-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [RFCv2 0/3] mac80211: implement fq codel
-References: <CAA93jw5AAWua23TbQHZX47XcFLEqU6T=NpxuLqa6FiffBf91Fw@mail.gmail.com>
- <CA+BoTQ=hgkm2AwMb=kinx+Ezf3vjduCKNH4LNRcV_goDWH4_Vg@mail.gmail.com>
-Date: Tue, 22 Mar 2016 10:51:12 +0100
-In-Reply-To: <CA+BoTQ=hgkm2AwMb=kinx+Ezf3vjduCKNH4LNRcV_goDWH4_Vg@mail.gmail.com>
- (Michal Kazior's message of "Tue, 22 Mar 2016 09:05:32 +0100")
-Message-ID: <8737rirgbz.fsf@toke.dk>
+ id 1aiKru-0003Zj-7G
+ for ath10k@lists.infradead.org; Tue, 22 Mar 2016 11:53:03 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH 0/9] ath10k: improve throughput performance
+Date: Tue, 22 Mar 2016 17:22:10 +0530
+Message-ID: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,23 +20,65 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Network Development <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, Dave Taht <dave.taht@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Jasmine Strong <jas@eero.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, make-wifi-fast@lists.bufferbloat.net
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Hi All,
 
-> traffic-gen generates only BE traffic. Everything else runs UDP_RR
-> which doesn't generate a lot of traffic.
+In order to reuse HTT Rx descriptor (copy engine 5), HTT response
+processing should be decoupled from txrx data processing. This change also
+helps to reduce rx ring lock contention. As txrx tasklet's work load is
+reduced, rx replenish task can be combined with txrx_task. Refilling
+complete rx ring from txrx tasket is affecting UDP UL traffic in AP135
+platform. Hence existing refill threshold is updated to meet peak
+throughput in both AP135 and AP148 platforms. Instead of tasklet existing
+refill timer is used to reschedule replenish work at an interval of 5 ms
+incase of more deficit.
 
-Good point. Fixed that: the newest git version of traffic-gen supports a
--t parameter which will be set as the TOS byte on outgoing traffic
-(literal; no smart diffserv handling, so you can override the ECN bits
-as well).
+This series are experimented in both AP148(QCA99x0) & IPQ4019 platforms.
+Below are consolidated report alongwith CPU usage. Thanks Tamizh for helping 
+to verify the changes.
 
-Added support for a burst-tos test parameter in the Flent burst test
-configs which will use this new parameter if set.
+        IPQ4019(TOT)  IPQ4019(+rework)   AP148(TOT)     AP148(+rework)
+        ===========   ===============    ==========     =============
+TCP DL   639 (40%)       646 (42%)       1134 (71%)      1134 (71%)
+TCP UL   661 (31%)       663 (30%)       1244 (71%)      1270 (72%)
+UDP DL   670 (50%)       682 (49%)       1240 (73%)      1244 (75%)
 
--Toke
+        AP135 (OpenWrt TOT)     AP135 (+changes)
+        ==================      ===============
+
+TCP DL          603             620
+TCP UL          430             428
+UDP DL          758             803
+UDP UL          420             450
+
+-Rajkumar
+
+Rajkumar Manoharan (9):
+  ath10k: speedup htt rx descriptor processing for tx completion
+  ath10k: copy tx fetch indication message
+  ath10k: remove unused fw_desc processing
+  ath10k: cleanup amsdu processing for rx indication
+  ath10k: speedup htt rx descriptor processing for rx_ind
+  ath10k: register ath10k_htt_htc_t2h_msg_handler
+  ath10k: cleanup copy engine receive next completion
+  ath10k: reuse copy engine 5 (htt rx) descriptors
+  ath10k: combine txrx and replenish task
+
+ drivers/net/wireless/ath/ath10k/ce.c     |  44 ++---
+ drivers/net/wireless/ath/ath10k/ce.h     |  13 +-
+ drivers/net/wireless/ath/ath10k/htt.c    |   2 +-
+ drivers/net/wireless/ath/ath10k/htt.h    |  25 ++-
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 301 ++++++++++++-------------------
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  14 +-
+ drivers/net/wireless/ath/ath10k/pci.c    | 106 ++++++++---
+ drivers/net/wireless/ath/ath10k/txrx.c   |  12 +-
+ 8 files changed, 260 insertions(+), 257 deletions(-)
+
+-- 
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
