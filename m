@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiKtb-0003vl-5t
- for ath10k@lists.infradead.org; Tue, 22 Mar 2016 11:54:51 +0000
+ id 1aiKu1-00042z-F9
+ for ath10k@lists.infradead.org; Tue, 22 Mar 2016 11:55:14 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 8/9] ath10k: reuse copy engine 5 (htt rx) descriptors
-Date: Tue, 22 Mar 2016 17:22:18 +0530
-Message-ID: <1458647539-17213-9-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 9/9] ath10k: combine txrx and replenish task
+Date: Tue, 22 Mar 2016 17:22:19 +0530
+Message-ID: <1458647539-17213-10-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,190 +25,113 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-Whenever htt rx indication i.e target to host messages are received
-on rx copy engine (CE5), the message will be freed after processing
-the response. Then CE 5 will be refilled with new descriptors at
-post rx processing. This memory alloc and free operations can be avoided
-by reusing the same descriptors.
-
-During CE pipe allocation, full ring is not initialized i.e n-1 entries
-are filled up. So for CE 5 full ring should be filled up to reuse
-descriptors. Moreover CE 5 write index will be updated in single shot
-instead of incremental access. This could avoid multiple pci_write and
-ce_ring access. From experiments, It improves CPU usage by ~3% in IPQ4019
-platform.
+Since tx completion and rx indication processing are moved out
+of txrx tasklet and rx ring lock contention also removed from txrx
+for rx_ind messages, it would be efficient to combine both replenish
+and txrx tasks. Refill threshold is adjusted for both AP135 and AP148
+(low and high end systems). With this adjustment in AP135, TCP DL is
+improved from 603 Mbps to 620 Mbps and UDP DL is improved from 758 Mbps
+to 803 Mbps. Also no watchdog are observed on UDP BiDi.
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.c  | 23 +++++++++++--
- drivers/net/wireless/ath/ath10k/ce.h  |  3 ++
- drivers/net/wireless/ath/ath10k/pci.c | 63 +++++++++++++++++++++++++++++++++--
- 3 files changed, 84 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h    |  3 +--
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 21 ++++++---------------
+ 2 files changed, 7 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index d6da404..7212802 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -411,7 +411,8 @@ int __ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr)
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 1adcae4..60bd9fe 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1662,7 +1662,6 @@ struct ath10k_htt {
+ 	/* set if host-fw communication goes haywire
+ 	 * used to avoid further failures */
+ 	bool rx_confused;
+-	struct tasklet_struct rx_replenish_task;
+ 	atomic_t num_mpdus_ready;
  
- 	lockdep_assert_held(&ar_pci->ce_lock);
+ 	/* This is used to group tx/rx completions separately and process them
+@@ -1737,7 +1736,7 @@ struct htt_rx_desc {
  
--	if (CE_RING_DELTA(nentries_mask, write_index, sw_index - 1) == 0)
-+	if ((pipe->id != 5) &&
-+	    CE_RING_DELTA(nentries_mask, write_index, sw_index - 1) == 0)
- 		return -ENOSPC;
+ /* Refill a bunch of RX buffers for each refill round so that FW/HW can handle
+  * aggregated traffic more nicely. */
+-#define ATH10K_HTT_MAX_NUM_REFILL 16
++#define ATH10K_HTT_MAX_NUM_REFILL 100
  
- 	desc->addr = __cpu_to_le32(paddr);
-@@ -425,6 +426,19 @@ int __ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr)
- 	return 0;
- }
+ /*
+  * DMA_MAP expects the buffer to be an integral number of cache lines.
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 31be0c6..96a7417 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -31,6 +31,8 @@
+ /* when under memory pressure rx ring refill may fail and needs a retry */
+ #define HTT_RX_RING_REFILL_RETRY_MS 50
  
-+void ath10k_ce_rx_update_write_idx(struct ath10k_ce_pipe *pipe, u32 nentries)
-+{
-+	struct ath10k *ar = pipe->ar;
-+	struct ath10k_ce_ring *dest_ring = pipe->dest_ring;
-+	unsigned int nentries_mask = dest_ring->nentries_mask;
-+	unsigned int write_index = dest_ring->write_index;
-+	u32 ctrl_addr = pipe->ctrl_addr;
++#define HTT_RX_RING_REFILL_RESCHED_MS 5
 +
-+	write_index = CE_RING_IDX_ADD(nentries_mask, write_index, nentries);
-+	ath10k_ce_dest_ring_write_index_set(ar, ctrl_addr, write_index);
-+	dest_ring->write_index = write_index;
-+}
-+
- int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr)
- {
- 	struct ath10k *ar = pipe->ar;
-@@ -478,8 +492,11 @@ int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
- 		*per_transfer_contextp =
- 			dest_ring->per_transfer_context[sw_index];
+ static int ath10k_htt_rx_get_csum_state(struct sk_buff *skb);
+ static void ath10k_htt_txrx_compl_task(unsigned long ptr);
  
--	/* sanity */
--	dest_ring->per_transfer_context[sw_index] = NULL;
-+	/* Copy engine 5 (HTT Rx) will reuse the same transfer context.
-+	 * So update transfer context all CEs except CE5.
-+	 */
-+	if (ce_state->id != 5)
-+		dest_ring->per_transfer_context[sw_index] = NULL;
- 
- 	/* Update sw_index */
- 	sw_index = CE_RING_IDX_INCR(nentries_mask, sw_index);
-diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index 68717e5..25cafcf 100644
---- a/drivers/net/wireless/ath/ath10k/ce.h
-+++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -166,6 +166,7 @@ int ath10k_ce_num_free_src_entries(struct ath10k_ce_pipe *pipe);
- int __ath10k_ce_rx_num_free_bufs(struct ath10k_ce_pipe *pipe);
- int __ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr);
- int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr);
-+void ath10k_ce_rx_update_write_idx(struct ath10k_ce_pipe *pipe, u32 nentries);
- 
- /* recv flags */
- /* Data is byte-swapped */
-@@ -410,6 +411,8 @@ static inline u32 ath10k_ce_base_address(struct ath10k *ar, unsigned int ce_id)
- 	(((int)(toidx)-(int)(fromidx)) & (nentries_mask))
- 
- #define CE_RING_IDX_INCR(nentries_mask, idx) (((idx) + 1) & (nentries_mask))
-+#define CE_RING_IDX_ADD(nentries_mask, idx, num) \
-+		(((idx) + (num)) & (nentries_mask))
- 
- #define CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_LSB \
- 				ar->regs->ce_wrap_intr_sum_host_msi_lsb
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 290a61a..0b305ef 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -809,7 +809,8 @@ static void ath10k_pci_rx_post_pipe(struct ath10k_pci_pipe *pipe)
- 	spin_lock_bh(&ar_pci->ce_lock);
- 	num = __ath10k_ce_rx_num_free_bufs(ce_pipe);
- 	spin_unlock_bh(&ar_pci->ce_lock);
--	while (num--) {
-+
-+	while (num >= 0) {
- 		ret = __ath10k_pci_rx_post_buf(pipe);
- 		if (ret) {
- 			if (ret == -ENOSPC)
-@@ -819,6 +820,7 @@ static void ath10k_pci_rx_post_pipe(struct ath10k_pci_pipe *pipe)
- 				  ATH10K_PCI_RX_POST_RETRY_MS);
- 			break;
- 		}
-+		num--;
+@@ -192,7 +194,8 @@ static void ath10k_htt_rx_msdu_buff_replenish(struct ath10k_htt *htt)
+ 		mod_timer(&htt->rx_ring.refill_retry_timer, jiffies +
+ 			  msecs_to_jiffies(HTT_RX_RING_REFILL_RETRY_MS));
+ 	} else if (num_deficit > 0) {
+-		tasklet_schedule(&htt->rx_replenish_task);
++		mod_timer(&htt->rx_ring.refill_retry_timer, jiffies +
++			  msecs_to_jiffies(HTT_RX_RING_REFILL_RESCHED_MS));
  	}
+ 	spin_unlock_bh(&htt->rx_ring.lock);
  }
- 
-@@ -1212,6 +1214,63 @@ static void ath10k_pci_process_rx_cb(struct ath10k_ce_pipe *ce_state,
- 	ath10k_pci_rx_post_pipe(pipe_info);
- }
- 
-+static void ath10k_pci_process_htt_rx_cb(struct ath10k_ce_pipe *ce_state,
-+					 void (*callback)(struct ath10k *ar,
-+							  struct sk_buff *skb))
-+{
-+	struct ath10k *ar = ce_state->ar;
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+	struct ath10k_pci_pipe *pipe_info =  &ar_pci->pipe_info[ce_state->id];
-+	struct ath10k_ce_pipe *ce_pipe = pipe_info->ce_hdl;
-+	struct sk_buff *skb;
-+	struct sk_buff_head list;
-+	void *transfer_context;
-+	unsigned int nbytes, max_nbytes, nentries;
-+	int orig_len;
-+
-+	/* No need to aquire ce_lock for CE5, since this is the only place CE5
-+	 * is processed other than init and deinit. Before releasing CE5
-+	 * buffers, interrupts are disabled. Thus CE5 access is serialized.
-+	 */
-+	__skb_queue_head_init(&list);
-+	while (ath10k_ce_completed_recv_next_nolock(ce_state, &transfer_context,
-+						    &nbytes) == 0) {
-+		skb = transfer_context;
-+		max_nbytes = skb->len + skb_tailroom(skb);
-+
-+		if (unlikely(max_nbytes < nbytes)) {
-+			ath10k_warn(ar, "rxed more than expected (nbytes %d, max %d)",
-+				    nbytes, max_nbytes);
-+			continue;
-+		}
-+
-+		dma_sync_single_for_cpu(ar->dev, ATH10K_SKB_RXCB(skb)->paddr,
-+					max_nbytes, DMA_FROM_DEVICE);
-+		skb_put(skb, nbytes);
-+		__skb_queue_tail(&list, skb);
-+	}
-+
-+	nentries = skb_queue_len(&list);
-+	while ((skb = __skb_dequeue(&list))) {
-+		ath10k_dbg(ar, ATH10K_DBG_PCI, "pci rx ce pipe %d len %d\n",
-+			   ce_state->id, skb->len);
-+		ath10k_dbg_dump(ar, ATH10K_DBG_PCI_DUMP, NULL, "pci rx: ",
-+				skb->data, skb->len);
-+
-+		orig_len = skb->len;
-+		callback(ar, skb);
-+		skb_push(skb, orig_len - skb->len);
-+		skb_reset_tail_pointer(skb);
-+		skb_trim(skb, 0);
-+
-+		/*let device gain the buffer again*/
-+		dma_sync_single_for_device(ar->dev, ATH10K_SKB_RXCB(skb)->paddr,
-+					   skb->len + skb_tailroom(skb),
-+					   DMA_FROM_DEVICE);
-+	}
-+	ath10k_ce_rx_update_write_idx(ce_pipe, nentries);
-+}
-+
- /* Called by lower (CE) layer when data is received from the Target. */
- static void ath10k_pci_htc_rx_cb(struct ath10k_ce_pipe *ce_state)
+@@ -223,7 +226,6 @@ int ath10k_htt_rx_ring_refill(struct ath10k *ar)
+ void ath10k_htt_rx_free(struct ath10k_htt *htt)
  {
-@@ -1268,7 +1327,7 @@ static void ath10k_pci_htt_rx_cb(struct ath10k_ce_pipe *ce_state)
- 	 */
- 	ath10k_ce_per_engine_service(ce_state->ar, 4);
+ 	del_timer_sync(&htt->rx_ring.refill_retry_timer);
+-	tasklet_kill(&htt->rx_replenish_task);
+ 	tasklet_kill(&htt->txrx_compl_task);
  
--	ath10k_pci_process_rx_cb(ce_state, ath10k_pci_htt_rx_deliver);
-+	ath10k_pci_process_htt_rx_cb(ce_state, ath10k_pci_htt_rx_deliver);
+ 	skb_queue_purge(&htt->rx_compl_q);
+@@ -380,13 +382,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ 	return msdu_chaining;
  }
  
- int ath10k_pci_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+-static void ath10k_htt_rx_replenish_task(unsigned long ptr)
+-{
+-	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
+-
+-	ath10k_htt_rx_msdu_buff_replenish(htt);
+-}
+-
+ static struct sk_buff *ath10k_htt_rx_pop_paddr(struct ath10k_htt *htt,
+ 					       u32 paddr)
+ {
+@@ -520,9 +515,6 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 	htt->rx_ring.sw_rd_idx.msdu_payld = 0;
+ 	hash_init(htt->rx_ring.skb_table);
+ 
+-	tasklet_init(&htt->rx_replenish_task, ath10k_htt_rx_replenish_task,
+-		     (unsigned long)htt);
+-
+ 	skb_queue_head_init(&htt->rx_compl_q);
+ 	skb_queue_head_init(&htt->rx_in_ord_compl_q);
+ 	skb_queue_head_init(&htt->tx_fetch_ind_q);
+@@ -1912,8 +1904,7 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 			return;
+ 		}
+ 	}
+-
+-	tasklet_schedule(&htt->rx_replenish_task);
++	ath10k_htt_rx_msdu_buff_replenish(htt);
+ }
+ 
+ static void ath10k_htt_rx_tx_fetch_resp_id_confirm(struct ath10k *ar,
+@@ -2471,5 +2462,5 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+ 		dev_kfree_skb_any(skb);
+ 	}
+ 
+-	tasklet_schedule(&htt->rx_replenish_task);
++	ath10k_htt_rx_msdu_buff_replenish(htt);
+ }
 -- 
 2.7.4
 
