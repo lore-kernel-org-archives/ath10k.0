@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aihaA-000838-Ob
- for ath10k@lists.infradead.org; Wed, 23 Mar 2016 12:08:15 +0000
+ id 1aihav-00088l-Lf
+ for ath10k@lists.infradead.org; Wed, 23 Mar 2016 12:09:02 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] dt: bindings: add new dt entry for pre calibration in
- qcom, ath10k.txt
-Date: Wed, 23 Mar 2016 12:07:49 +0000
-Message-ID: <87poulfld8.fsf@kamboji.qca.qualcomm.com>
-References: <1457604724-14378-1-git-send-email-rmani@qti.qualcomm.com>
-In-Reply-To: <1457604724-14378-1-git-send-email-rmani@qti.qualcomm.com> (Raja
- Mani's message of "Thu, 10 Mar 2016 15:42:04 +0530")
+Subject: Re: [PATCH 0/3] ath10k: add calibration data download support for
+ qca4019
+Date: Wed, 23 Mar 2016 12:08:36 +0000
+Message-ID: <87lh59flbw.fsf@kamboji.qca.qualcomm.com>
+References: <1457604758-14454-1-git-send-email-rmani@qti.qualcomm.com>
+In-Reply-To: <1457604758-14454-1-git-send-email-rmani@qti.qualcomm.com> (Raja
+ Mani's message of "Thu, 10 Mar 2016 15:42:35 +0530")
 Content-Language: en-US
-Content-ID: <58C490DB42889445B42B5F44F353681D@qualcomm.com>
+Content-ID: <896F297D29B0AA4EAF6497883F36DC1F@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,25 +27,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Raja Mani <rmani@qti.qualcomm.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "robh@kernel.org" <robh@kernel.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Raja Mani <rmani@qti.qualcomm.com> writes:
 
-> There two things done in this patch,
+> The necessary update in dt binding doc
+> (Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt) is done
+> in below patch and it's posted separately,
+>   
+>   "dt: bindings: add new dt entry for pre calibration in qcom,ath10k.txt"
 >
-> 1) Existing device tree entry 'qcom,ath10k-calibration-data' carries
->    not only calibration data, it carries board specific data too.
->    So, make appropriate update in doc.
->
-> 2) ipq4019 wifi needs new devie tree entry to carry calibration
->    data alone (called pre cal data, it doesn't include any other info).
->    Using 'qcom,ath10k-calibration-data' for ipq4019 would alter
->    the purpose of it. Hence, add new device tree entry called
->    'qcom,ath10k-pre-calibration-data' to carry only pre calibration data.
->
-> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+> Raja Mani (3):
+>   ath10k: pass cal data location as an argument to
+>     ath10k_download_cal_{file|dt}
+>   ath10k: move cal data len to hw_params
+>   ath10k: incorporate qca4019 cal data download sequence
 
-Applied, thanks.
+All three applied, thanks.
 
 -- 
 Kalle Valo
