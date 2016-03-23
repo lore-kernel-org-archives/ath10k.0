@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiiWy-0000py-G6
- for ath10k@lists.infradead.org; Wed, 23 Mar 2016 13:09:01 +0000
-From: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-Subject: RE: [PATCH v1 3/3] ath10k: Enable parsing per station rx duration for
- 10.4
-Date: Wed, 23 Mar 2016 13:08:32 +0000
-Message-ID: <ec91f62c5b2a4c59b72df074d6ba37f0@aphydexm01b.ap.qualcomm.com>
-References: <1458132214-4896-1-git-send-email-mohammed@qca.qualcomm.com>
- <1458132214-4896-3-git-send-email-mohammed@qca.qualcomm.com>
- <8737rhfiy7.fsf@kamboji.qca.qualcomm.com>
- <20160323130331.GA21534@atheros-ThinkPad-T61>
-In-Reply-To: <20160323130331.GA21534@atheros-ThinkPad-T61>
-Content-Language: en-US
+ id 1aim3V-0001Io-92
+ for ath10k@lists.infradead.org; Wed, 23 Mar 2016 16:54:51 +0000
+Received: by mail-wm0-x22a.google.com with SMTP id p65so32442210wmp.0
+ for <ath10k@lists.infradead.org>; Wed, 23 Mar 2016 09:54:27 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <56F27596.3080506@dks-koeln.de>
+References: <56F27596.3080506@dks-koeln.de>
+Date: Wed, 23 Mar 2016 17:54:25 +0100
+Message-ID: <CA+BoTQndwokRf467hN0QZREZ1-hprHCHovMX2pi7X8oUUvpOGw@mail.gmail.com>
+Subject: Re: UDP throughput problems with WDS and ath10k
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +20,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Xue Liu <xue.liu@dks-koeln.de>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi Kalle,
-
-I will make sure, I will run sparse before sending it for review
-http://linuxwireless.org/en/users/Drivers/ath10k/CodingStyle/#Linux_style
-
-make drivers/net/wireless/ath/ath10k/ C=2 CF="-D__CHECK_ENDIAN__"
-
-regret the inconvenience so caused  (including the compilation error)
-
-regards,
-shafi
-
------Original Message-----
-From: Mohammed Shafi Shajakhan [mailto:mohammed@codeaurora.org] 
-Sent: Wednesday, March 23, 2016 6:34 PM
-To: Valo, Kalle <kvalo@qca.qualcomm.com>
-Cc: Shajakhan, Mohammed Shafi (Mohammed Shafi) <mohammed@qti.qualcomm.com>; ath10k@lists.infradead.org; linux-wireless@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] ath10k: Enable parsing per station rx duration for 10.4
-
-Hi Kalle,
-
-On Wed, Mar 23, 2016 at 01:00:01PM +0000, Valo, Kalle wrote:
-> Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
-> 
-> > From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> >
-> > Rx duration support for per station is part of extended peer stats, 
-> > enable provision to parse the same and provide backward 
-> > compatibility based on the 'stats_id' event
-> >
-> > Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> 
-> There was a new sparse warning:
-> 
-> drivers/net/wireless/ath/ath10k/wmi.c:2978:42: warning: incorrect type in assignment (different base types)
-> drivers/net/wireless/ath/ath10k/wmi.c:2978:42:    expected unsigned int [unsigned] [usertype] rx_duration
-> drivers/net/wireless/ath/ath10k/wmi.c:2978:42:    got restricted __le32 const [usertype] rx_duration
-> 
-> I fixed it like this in the pending branch, please double check:
-
-[shafi] thanks for fixing this, sorry i missed this.
-
-> 
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -2975,7 +2975,7 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
->                 ath10k_wmi_10_4_pull_peer_stats(&src->common, dst);
->                 /* FIXME: expose 10.4 specific values */
->                 if (extd_peer_stats)
-> -                       dst->rx_duration = src->rx_duration;
-> +                       dst->rx_duration = 
-> + __le32_to_cpu(src->rx_duration);
->  
->                 list_add_tail(&dst->list, &stats->peers);
->         }
->
-regards,
-shafi
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjMgTWFyY2ggMjAxNiBhdCAxMTo1MywgWHVlIExpdSA8eHVlLmxpdUBka3Mta29lbG4uZGU+
+IHdyb3RlOgo+IEhlbGxvIGV2ZXJ5b25lLAo+Cj4gTm93IEkgYW0gZG9pbmcgcG9pbnQgdG8gcG9p
+bnQgIHRocm91Z2hwdXQgdGVzdCB1c2luZyAgYW5kIGF0aDEway4gVGhlCj4gaGFyZHdhcmVzIGFy
+ZSBjbGVhcmZvZyBBMSBib2FyZCB3aXRoIGFybWFkYSAzODggYW5kIFdMRTkwMFZYIChRQ0E5ODgw
+KS4gVGhlCj4gT3BlbldSVCB0cnVuayBpcyBydW5uaW5nIG9uIGl0Lgo+Cj4gQXQgZmlyc3QgSSBk
+aWQgVURQIHRocm91Z2hwdXQgdGVzdCAoIFdEUyBBUCA8LS0tPiBXRFMgQ2xpZW50ICkgd2l0aCBp
+cGVyZjMKPiBzZXJ2ZXIgb24gdGhlIFdEUyBBUC4gVGhlIHRocm91Z2hwdXQgaXMgYXBwcm94IDYz
+MCBNYnBzLiAgQnV0IGlmIHRoZSBzZXJ2ZXIKPiBzZW5kcyB0aGUgZGF0YSwgdGhlIHRocm91Z2hw
+dXQgd2lsbCByaXNlIHRvIDcwMCBNYnBzLiAgSSBkaWQgdGhlCj4gYmlkaXJlY3Rpb25hbCB0ZXN0
+IGZvciBtYW55IHRpbWVzLiBUaGUgVURQIGRhdGEgdHJhbnNmZXJyaW5nIGZyb20gQVAgc2lkZQo+
+IGFsd2F5cyBoYXMgNzAgLSA4MCBNYnBzIG1vcmUgdGhyb3VnaHB1dC4KPgo+IEluIHRoZSBzYW1l
+IHNpdHVhdGlvbiwgSSBkaWQgVURQIHRocm91Z2hwdXQgdGVzdCBiZXR3ZWVuIFBDIGFuZCBXRFMg
+QVAgKCBQQwo+IDwtLS0tPldEUyBDbGllbnQgPC0tLS0+IFdEUyBBUCApIC4gVGhlIFBDIGlzIGNv
+bm5lY3RlZCB3aXRoIHRoZSBXRFMgY2xpZW50Cj4gdmlhIEdiRSBwb3J0LiAgSSBoYXZlIGZvdW5k
+IGEgbW9yZSBpbnRlcmVzdGluZyByZXN1bHQuIFRoZSBkYXRhIHRocm91Z2hwdXQKPiBpcyBhYm91
+dCA2NzggTWJwcyB3aGVuIHRoZSBkYXRhIGlzIHRyYW5zbWl0dGVkIGZyb20gQVAgdG8gUEMuIFRo
+ZXJlIGlzCj4gYWxtb3N0IG5vIHBlcmZvcm1hbmNlIGxvc3MuIEJ1dCB0aGUgdGhyb3VnaHB1dCBp
+cyBvbmx5IGFib3V0IDQyNSBNcGJzIGZyb20KPiBQQyB0byBBUC4KPgo+IENhbiBhbnlvbmUgZ2l2
+ZSBtZSBzb21lIGFkdmlzZXMgb3Igc29tZSBpbmZvIGFib3V0IHRoZSByZWFzb24gYW5kIGhvdyB0
+bwo+IGltcHJvdmUgdGhlIHRyYW5zbWl0dGluZyBwZXJmb3JtYW5jZSBmcm9tIFBDIHRvIEFQIHNp
+ZGUuIFRoYW5rIHlvdS4KClRoaXMgaXMgd2VpcmQuIERpZCB5b3UgY2hlY2sgQ1BVIHV0aWxpemF0
+aW9uIG9uIGFsbCBpbnZvbHZlZCBkZXZpY2VzCihQQywgV0RTIENsaWVudCwgV0RTIEFQKT8gRGlk
+IHlvdSB0cnkgdHdlYWtpbmcgaXBlcmYgcGFyYW1ldGVycywgZS5nLgpudW1iZXIgb2YgdGhyZWFk
+cywgYnVmZmVyIHNpemVzPyBQbGF5aW5nIGFyb3VuZCB3aXRoIHNvbWUgcGFyYW1ldGVycwpjb3Vs
+ZCBuYXJyb3cgZG93biB0aGUgcHJvYmxlbS4KCk5vcm1hbGx5IEkgd291bGQgZXhwZWN0IHRoZSBy
+ZXZlcnNlIHBlcmZvcm1hbmNlIGRyb3AgKGkuZS4gc2xvd2VyCnBlcmZvcm1hbmNlIHdoZW4gdHJh
+ZmZpYyBpcyBnZW5lcmF0ZWQgbG9jYWxseSBvbiBXRFMgQ2xpZW50KS4KCgpNaWNoYcWCCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
+ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
