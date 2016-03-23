@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aihbE-0008Aw-Ki
- for ath10k@lists.infradead.org; Wed, 23 Mar 2016 12:09:21 +0000
+ id 1aihbu-0008Lh-LH
+ for ath10k@lists.infradead.org; Wed, 23 Mar 2016 12:10:04 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/2] ath10k: fix tx hangs
-Date: Wed, 23 Mar 2016 12:09:15 +0000
-Message-ID: <87h9fxflat.fsf@kamboji.qca.qualcomm.com>
-References: <1458208265-16715-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1458208265-16715-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 17 Mar 2016 10:51:03 +0100")
+Subject: Re: [PATCH] ath10k: fix null deref if device crashes early
+Date: Wed, 23 Mar 2016 12:09:37 +0000
+Message-ID: <87d1qlfla6.fsf@kamboji.qca.qualcomm.com>
+References: <1458208328-16827-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1458208328-16827-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 17 Mar 2016 10:52:08 +0100")
 Content-Language: en-US
-Content-ID: <88A32B90310AE44AAC1C3C56434DFB52@qualcomm.com>
+Content-ID: <DCC419A9AD9BAC4E82A261FE2444FF90@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,16 +30,15 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@l
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> My recent wake-tx-queue/pull-push related patches
-> introduced a regression that can cause tx to hang
-> under certain circumstances.
+> If device failed to init during early probing
+> (which is quite rare) it triggered driver to
+> compute crc before ar->firmware was ready causing
+> an oops.
 >
->
-> Michal Kazior (2):
->   ath10k: fix tx hang
->   ath10k: fix pull-push tx threshold handling
+> Fixes: 3e58044b61a9 ("ath10k: print crc32 checksums for firmware and board files")
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Both applied, thanks.
+Applied, thanks.
 
 -- 
 Kalle Valo
