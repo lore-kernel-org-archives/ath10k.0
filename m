@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aim3V-0001Io-92
- for ath10k@lists.infradead.org; Wed, 23 Mar 2016 16:54:51 +0000
-Received: by mail-wm0-x22a.google.com with SMTP id p65so32442210wmp.0
- for <ath10k@lists.infradead.org>; Wed, 23 Mar 2016 09:54:27 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <56F27596.3080506@dks-koeln.de>
-References: <56F27596.3080506@dks-koeln.de>
-Date: Wed, 23 Mar 2016 17:54:25 +0100
-Message-ID: <CA+BoTQndwokRf467hN0QZREZ1-hprHCHovMX2pi7X8oUUvpOGw@mail.gmail.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
+ id 1aimTA-0007i2-3M
+ for ath10k@lists.infradead.org; Wed, 23 Mar 2016 17:21:21 +0000
 Subject: Re: UDP throughput problems with WDS and ath10k
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <56F27596.3080506@dks-koeln.de>
+ <CA+BoTQndwokRf467hN0QZREZ1-hprHCHovMX2pi7X8oUUvpOGw@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <56F2D062.2050104@candelatech.com>
+Date: Wed, 23 Mar 2016 10:20:34 -0700
+MIME-Version: 1.0
+In-Reply-To: <CA+BoTQndwokRf467hN0QZREZ1-hprHCHovMX2pi7X8oUUvpOGw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +19,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Xue Liu <xue.liu@dks-koeln.de>
+To: Michal Kazior <michal.kazior@tieto.com>, Xue Liu <xue.liu@dks-koeln.de>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjMgTWFyY2ggMjAxNiBhdCAxMTo1MywgWHVlIExpdSA8eHVlLmxpdUBka3Mta29lbG4uZGU+
-IHdyb3RlOgo+IEhlbGxvIGV2ZXJ5b25lLAo+Cj4gTm93IEkgYW0gZG9pbmcgcG9pbnQgdG8gcG9p
-bnQgIHRocm91Z2hwdXQgdGVzdCB1c2luZyAgYW5kIGF0aDEway4gVGhlCj4gaGFyZHdhcmVzIGFy
-ZSBjbGVhcmZvZyBBMSBib2FyZCB3aXRoIGFybWFkYSAzODggYW5kIFdMRTkwMFZYIChRQ0E5ODgw
-KS4gVGhlCj4gT3BlbldSVCB0cnVuayBpcyBydW5uaW5nIG9uIGl0Lgo+Cj4gQXQgZmlyc3QgSSBk
-aWQgVURQIHRocm91Z2hwdXQgdGVzdCAoIFdEUyBBUCA8LS0tPiBXRFMgQ2xpZW50ICkgd2l0aCBp
-cGVyZjMKPiBzZXJ2ZXIgb24gdGhlIFdEUyBBUC4gVGhlIHRocm91Z2hwdXQgaXMgYXBwcm94IDYz
-MCBNYnBzLiAgQnV0IGlmIHRoZSBzZXJ2ZXIKPiBzZW5kcyB0aGUgZGF0YSwgdGhlIHRocm91Z2hw
-dXQgd2lsbCByaXNlIHRvIDcwMCBNYnBzLiAgSSBkaWQgdGhlCj4gYmlkaXJlY3Rpb25hbCB0ZXN0
-IGZvciBtYW55IHRpbWVzLiBUaGUgVURQIGRhdGEgdHJhbnNmZXJyaW5nIGZyb20gQVAgc2lkZQo+
-IGFsd2F5cyBoYXMgNzAgLSA4MCBNYnBzIG1vcmUgdGhyb3VnaHB1dC4KPgo+IEluIHRoZSBzYW1l
-IHNpdHVhdGlvbiwgSSBkaWQgVURQIHRocm91Z2hwdXQgdGVzdCBiZXR3ZWVuIFBDIGFuZCBXRFMg
-QVAgKCBQQwo+IDwtLS0tPldEUyBDbGllbnQgPC0tLS0+IFdEUyBBUCApIC4gVGhlIFBDIGlzIGNv
-bm5lY3RlZCB3aXRoIHRoZSBXRFMgY2xpZW50Cj4gdmlhIEdiRSBwb3J0LiAgSSBoYXZlIGZvdW5k
-IGEgbW9yZSBpbnRlcmVzdGluZyByZXN1bHQuIFRoZSBkYXRhIHRocm91Z2hwdXQKPiBpcyBhYm91
-dCA2NzggTWJwcyB3aGVuIHRoZSBkYXRhIGlzIHRyYW5zbWl0dGVkIGZyb20gQVAgdG8gUEMuIFRo
-ZXJlIGlzCj4gYWxtb3N0IG5vIHBlcmZvcm1hbmNlIGxvc3MuIEJ1dCB0aGUgdGhyb3VnaHB1dCBp
-cyBvbmx5IGFib3V0IDQyNSBNcGJzIGZyb20KPiBQQyB0byBBUC4KPgo+IENhbiBhbnlvbmUgZ2l2
-ZSBtZSBzb21lIGFkdmlzZXMgb3Igc29tZSBpbmZvIGFib3V0IHRoZSByZWFzb24gYW5kIGhvdyB0
-bwo+IGltcHJvdmUgdGhlIHRyYW5zbWl0dGluZyBwZXJmb3JtYW5jZSBmcm9tIFBDIHRvIEFQIHNp
-ZGUuIFRoYW5rIHlvdS4KClRoaXMgaXMgd2VpcmQuIERpZCB5b3UgY2hlY2sgQ1BVIHV0aWxpemF0
-aW9uIG9uIGFsbCBpbnZvbHZlZCBkZXZpY2VzCihQQywgV0RTIENsaWVudCwgV0RTIEFQKT8gRGlk
-IHlvdSB0cnkgdHdlYWtpbmcgaXBlcmYgcGFyYW1ldGVycywgZS5nLgpudW1iZXIgb2YgdGhyZWFk
-cywgYnVmZmVyIHNpemVzPyBQbGF5aW5nIGFyb3VuZCB3aXRoIHNvbWUgcGFyYW1ldGVycwpjb3Vs
-ZCBuYXJyb3cgZG93biB0aGUgcHJvYmxlbS4KCk5vcm1hbGx5IEkgd291bGQgZXhwZWN0IHRoZSBy
-ZXZlcnNlIHBlcmZvcm1hbmNlIGRyb3AgKGkuZS4gc2xvd2VyCnBlcmZvcm1hbmNlIHdoZW4gdHJh
-ZmZpYyBpcyBnZW5lcmF0ZWQgbG9jYWxseSBvbiBXRFMgQ2xpZW50KS4KCgpNaWNoYcWCCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
-ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On 03/23/2016 09:54 AM, Michal Kazior wrote:
+> On 23 March 2016 at 11:53, Xue Liu <xue.liu@dks-koeln.de> wrote:
+>> Hello everyone,
+>>
+>> Now I am doing point to point  throughput test using  and ath10k. The
+>> hardwares are clearfog A1 board with armada 388 and WLE900VX (QCA9880). The
+>> OpenWRT trunk is running on it.
+>>
+>> At first I did UDP throughput test ( WDS AP <---> WDS Client ) with iperf3
+>> server on the WDS AP. The throughput is approx 630 Mbps.  But if the server
+>> sends the data, the throughput will rise to 700 Mbps.  I did the
+>> bidirectional test for many times. The UDP data transferring from AP side
+>> always has 70 - 80 Mbps more throughput.
+>>
+>> In the same situation, I did UDP throughput test between PC and WDS AP ( PC
+>> <---->WDS Client <----> WDS AP ) . The PC is connected with the WDS client
+>> via GbE port.  I have found a more interesting result. The data throughput
+>> is about 678 Mbps when the data is transmitted from AP to PC. There is
+>> almost no performance loss. But the throughput is only about 425 Mpbs from
+>> PC to AP.
+>>
+>> Can anyone give me some advises or some info about the reason and how to
+>> improve the transmitting performance from PC to AP side. Thank you.
+>
+> This is weird. Did you check CPU utilization on all involved devices
+> (PC, WDS Client, WDS AP)? Did you try tweaking iperf parameters, e.g.
+> number of threads, buffer sizes? Playing around with some parameters
+> could narrow down the problem.
+>
+> Normally I would expect the reverse performance drop (i.e. slower
+> performance when traffic is generated locally on WDS Client).
+
+I don't know about WDS, but we definitely see slower upload (from station perspective)
+than download rates, using identical hardware for AP and STA devices.
+
+Patches posted to ath10k list yesterday claim to resolve at least some of this,
+but I have not tested those yet...
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
