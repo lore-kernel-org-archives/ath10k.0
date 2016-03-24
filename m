@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aj6Bj-0001B4-3z
- for ath10k@lists.infradead.org; Thu, 24 Mar 2016 14:24:40 +0000
-Subject: [PATCH 4/4] ath10k: prefer ether_addr_copy() over memcpy()
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 24 Mar 2016 16:24:07 +0200
-Message-ID: <20160324142406.15808.88737.stgit@potku.adurom.net>
-In-Reply-To: <20160324142217.15808.22638.stgit@potku.adurom.net>
-References: <20160324142217.15808.22638.stgit@potku.adurom.net>
+ id 1aj7Zb-0005vO-8C
+ for ath10k@lists.infradead.org; Thu, 24 Mar 2016 15:53:24 +0000
+From: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Subject: Re: [PATCH 1/9] ath10k: speedup htt rx descriptor processing for tx
+ completion
+Date: Thu, 24 Mar 2016 15:52:53 +0000
+Message-ID: <1458834773112.89396@qti.qualcomm.com>
+References: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <1458647539-17213-2-git-send-email-rmanohar@qti.qualcomm.com>,
+ <8760wcdnws.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <8760wcdnws.fsf@kamboji.qca.qualcomm.com>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,34 +26,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Fixes checkpatch warning:
+[...]
+>
+>> @@ -1712,7 +1710,20 @@ static void ath10k_htt_rx_frm_tx_compl(struct ath10k *ar,
+>>       for (i = 0; i < resp->data_tx_completion.num_msdus; i++) {
+>>               msdu_id = resp->data_tx_completion.msdus[i];
+>>               tx_done.msdu_id = __le16_to_cpu(msdu_id);
+>> -             ath10k_txrx_tx_unref(htt, &tx_done);
+>> +
+>> +             /* kfifo_put: In practice firmware shouldn't fire off per-CE
+>> +              * interrupt and main interrupt (MSI/-X range case) for the same
+>> +              * HTC service so it should be safe to use kfifo_put w/o lock.
+>> +              *
+>> +              * From kfifo_put() documentation:
+>> +              *  Note that with only one concurrent reader and one concurrent
+>> +              *  writer, you don't need extra locking to use these macro.
+>> +              */
+>> +             if (!kfifo_put(&htt->txdone_fifo, tx_done)) {
+>> +                     ath10k_warn(ar, "txdone fifo overrun, msdu_id %d status %d\n",
+>> +                                 tx_done.msdu_id, tx_done.status);
+>> +                     ath10k_txrx_tx_unref(htt, &tx_done);
+>> +             }
+>
+> I see two new warnings on the kfifo_put() call:
+>
+> drivers/net/wireless/ath/ath10k/htt_rx.c:1722:22: warning: cast to non-scalar
+> drivers/net/wireless/ath/ath10k/htt_rx.c:1722:22: warning: cast from non-scalar
+> 
+> But I suspect they are false warnings due to my old compiler:
+> 
+> gcc (Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3
+> 
+> Opinions?
+> 
+Hmm... I am not sure why older compiler is not complaining this. Unfortunately
+both x86 and cross compiler are not throwing any warnings though :(
 
-drivers/net/wireless/ath/ath10k/wmi.c:5800: Prefer ether_addr_copy() over memcpy() if the Ethernet addresses are __aligned(2)
+gcc version 5.3.0 (GCC)
+Target: x86_64-unknown-linux-gnu
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/wmi.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+gcc version 4.8.3 (OpenWrt/Linaro GCC 4.8-2014.04 r47724)
+Target: arm-openwrt-linux-uclibcgnueabi
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index ffb300823376..c0ce56804afa 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -5797,9 +5797,8 @@ ath10k_wmi_put_start_scan_tlvs(struct wmi_start_scan_tlvs *tlvs,
- 		bssids->num_bssid = __cpu_to_le32(arg->n_bssids);
- 
- 		for (i = 0; i < arg->n_bssids; i++)
--			memcpy(&bssids->bssid_list[i],
--			       arg->bssids[i].bssid,
--			       ETH_ALEN);
-+			ether_addr_copy(bssids->bssid_list[i].addr,
-+					arg->bssids[i].bssid);
- 
- 		ptr += sizeof(*bssids);
- 		ptr += sizeof(struct wmi_mac_addr) * arg->n_bssids;
+Any suggestions welcome.
+
+-Rajkumar
 
 
 _______________________________________________
