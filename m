@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aj01O-0003lD-00
- for ath10k@lists.infradead.org; Thu, 24 Mar 2016 07:49:36 +0000
-Received: by mail-wm0-x234.google.com with SMTP id u125so2012860wmg.1
- for <ath10k@lists.infradead.org>; Thu, 24 Mar 2016 00:49:13 -0700 (PDT)
+ id 1aj3xu-0007Lf-7Y
+ for ath10k@lists.infradead.org; Thu, 24 Mar 2016 12:02:14 +0000
+Date: Thu, 24 Mar 2016 17:31:17 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH v2 1/2] ath10k: Add support for ath10k_sta_statistics
+ support
+Message-ID: <20160324120117.GA30872@atheros-ThinkPad-T61>
+References: <1458211740-6875-1-git-send-email-mohammed@qca.qualcomm.com>
+ <CA+BoTQkk30nPEKiP-8FA2DcddJ_SL90txgHQeua7GCauR_M2dg@mail.gmail.com>
+ <20160317112022.GA27512@atheros-ThinkPad-T61>
+ <CA+BoTQ=DG=oixf2LtVbxvRL6WvnQDcyOHP=ayHbmNAsQrTPMvA@mail.gmail.com>
+ <20160317122956.GA30285@atheros-ThinkPad-T61>
 MIME-Version: 1.0
-In-Reply-To: <20160324071923.GB23410@atheros-ThinkPad-T61>
-References: <1458123478-1795-1-git-send-email-michal.kazior@tieto.com>
- <1458123478-1795-3-git-send-email-michal.kazior@tieto.com>
- <20160324071923.GB23410@atheros-ThinkPad-T61>
-Date: Thu, 24 Mar 2016 08:49:12 +0100
-Message-ID: <CA+BoTQmRBog+oSMCKUUzTV1Jm_Mip0ZA9mnpkZ14hDUq32Dszg@mail.gmail.com>
-Subject: Re: [RFCv2 2/3] ath10k: report per-station tx/rate rates to mac80211
-From: Michal Kazior <michal.kazior@tieto.com>
+Content-Disposition: inline
+In-Reply-To: <20160317122956.GA30285@atheros-ThinkPad-T61>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,157 +24,103 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Cc: Felix Fietkau <nbd@openwrt.org>, Emmanuel Grumbach <emmanuel.grumbach@intel.com>, Network Development <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, Dave Taht <dave.taht@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, codel@lists.bufferbloat.net, make-wifi-fast@lists.bufferbloat.net, Johannes Berg <johannes@sipsolutions.net>, Tim Shepard <shep@alum.mit.edu>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "kvalo@codeaurora.org" <kvalo@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-T24gMjQgTWFyY2ggMjAxNiBhdCAwODoxOSwgTW9oYW1tZWQgU2hhZmkgU2hhamFraGFuCjxtb2hh
-bW1lZEBjb2RlYXVyb3JhLm9yZz4gd3JvdGU6Cj4gSGkgTWljaGFsLAo+Cj4gT24gV2VkLCBNYXIg
-MTYsIDIwMTYgYXQgMTE6MTc6NTdBTSArMDEwMCwgTWljaGFsIEthemlvciB3cm90ZToKPj4gVGhl
-IHJhdGUgY29udHJvbCBpcyBvZmZsb2FkZWQgYnkgZmlybXdhcmUgc28gaXQncwo+PiBjaGFsbGFu
-Z2luZyB0byBwcm92aWRlIGV4cGVjdGVkIHRocm91Z2hwdXQgdmFsdWUKPj4gZm9yIGdpdmVuIHN0
-YXRpb24uCj4+Cj4+IFRoaXMgYXBwcm9hY2ggaXMgbmFpdmUgYXMgaXQgcmVwb3J0cyBsYXN0IHR4
-IHJhdGUKPj4gdXNlZCBmb3IgZ2l2ZW4gc3RhdGlvbiBhcyBwcm92aWRlZCBieSBmaXJtd2FyZQo+
-PiBzdGF0IGV2ZW50Lgo+Pgo+PiBUaGlzIHNob3VsZCBiZSBzdWZmaWNpZW50IGZvciBhaXJ0aW1l
-IGVzdGltYXRpb24KPj4gdXNlZCBmb3IgZnEtY29kZWwtaW4tbWFjODAyMTEgdHggc2NoZWR1bGlu
-Zwo+PiBwdXJwb3NlcyBub3cuCj4+Cj4+IFRoaXMgcGF0Y2ggdXNlcyBhIHZlcnkgaGFja3kgd2F5
-IHRvIGdldCB0aGUgc3RhdHMuCj4+IFRoaXMgaXMgc3VmZmljaWVudCBmb3IgcHJvb2Ytb2YtY29u
-Y2VwdCBidXQgbXVzdAo+PiBiZSBjbGVhbmVkIHVwIHByb3Blcmx5IGV2ZW50dWFsbHkuCj4+Cj4+
-IFNpZ25lZC1vZmYtYnk6IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPgo+
-PiAtLS0KPj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oICB8ICA1ICsr
-Kwo+PiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jIHwgNjEgKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKystLS0tCj4+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
-YXRoMTBrL21hYy5jICAgfCAyNiArKysrKysrKy0tLS0tLQo+PiAgZHJpdmVycy9uZXQvd2lyZWxl
-c3MvYXRoL2F0aDEway93bWkuaCAgIHwgIDIgKy0KPj4gIDQgZmlsZXMgY2hhbmdlZCwgNzYgaW5z
-ZXJ0aW9ucygrKSwgMTggZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25l
-dC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaCBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvY29yZS5oCj4+IGluZGV4IDIzYmEwM2ZiN2E1Zi4uM2Y3NjY2OWQ0NGNmIDEwMDY0NAo+
-PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaAo+PiArKysgYi9k
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaAo+PiBAQCAtMzMxLDYgKzMzMSw5
-IEBAIHN0cnVjdCBhdGgxMGtfc3RhIHsKPj4gICAgICAgLyogcHJvdGVjdGVkIGJ5IGNvbmZfbXV0
-ZXggKi8KPj4gICAgICAgYm9vbCBhZ2dyX21vZGU7Cj4+ICAgICAgIHU2NCByeF9kdXJhdGlvbjsK
-Pj4gKwo+PiArICAgICB1MzIgdHhfcmF0ZV9rYnBzOwo+PiArICAgICB1MzIgcnhfcmF0ZV9rYnBz
-Owo+PiAgI2VuZGlmCj4+ICB9Owo+Pgo+PiBAQCAtMzcyLDYgKzM3NSw4IEBAIHN0cnVjdCBhdGgx
-MGtfdmlmIHsKPj4gICAgICAgczggZGVmX3dlcF9rZXlfaWR4Owo+Pgo+PiAgICAgICB1MTYgdHhf
-c2VxX25vOwo+PiArICAgICB1MzIgdHhfcmF0ZV9rYnBzOwo+PiArICAgICB1MzIgcnhfcmF0ZV9r
-YnBzOwo+Pgo+PiAgICAgICB1bmlvbiB7Cj4+ICAgICAgICAgICAgICAgc3RydWN0IHsKPj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYyBiL2RyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYwo+PiBpbmRleCAwNzZkMjliNTNkZGYu
-LmNjN2ViZjA0YWUwMCAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway9kZWJ1Zy5jCj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVi
-dWcuYwo+PiBAQCAtMzE2LDYgKzMxNiw1OCBAQCBzdGF0aWMgdm9pZCBhdGgxMGtfZGVidWdfZndf
-c3RhdHNfcmVzZXQoc3RydWN0IGF0aDEwayAqYXIpCj4+ICAgICAgIHNwaW5fdW5sb2NrX2JoKCZh
-ci0+ZGF0YV9sb2NrKTsKPj4gIH0KPj4KPj4gK3N0YXRpYyB2b2lkIGF0aDEwa19tYWNfdXBkYXRl
-X3R4cnhfcmF0ZV9pdGVyKHZvaWQgKmRhdGEsCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB1OCAqbWFjLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgc3RydWN0IGllZWU4MDIxMV92aWYgKnZpZikKPj4gK3sKPj4gKyAgICAg
-c3RydWN0IGF0aDEwa19md19zdGF0c19wZWVyICpwZWVyID0gZGF0YTsKPj4gKyAgICAgc3RydWN0
-IGF0aDEwa192aWYgKmFydmlmOwo+PiArCj4+ICsgICAgIGlmIChtZW1jbXAodmlmLT5hZGRyLCBw
-ZWVyLT5wZWVyX21hY2FkZHIsIEVUSF9BTEVOKSkKPj4gKyAgICAgICAgICAgICByZXR1cm47Cj4+
-ICsKPj4gKyAgICAgYXJ2aWYgPSAodm9pZCAqKXZpZi0+ZHJ2X3ByaXY7Cj4+ICsgICAgIGFydmlm
-LT50eF9yYXRlX2ticHMgPSBwZWVyLT5wZWVyX3R4X3JhdGU7Cj4+ICsgICAgIGFydmlmLT5yeF9y
-YXRlX2ticHMgPSBwZWVyLT5wZWVyX3J4X3JhdGU7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyB2b2lk
-IGF0aDEwa19tYWNfdXBkYXRlX3R4cnhfcmF0ZShzdHJ1Y3QgYXRoMTBrICphciwKPj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgYXRoMTBrX2Z3X3N0YXRzICpz
-dGF0cykKPj4gK3sKPj4gKyAgICAgc3RydWN0IGllZWU4MDIxMV9odyAqaHcgPSBhci0+aHc7Cj4+
-ICsgICAgIHN0cnVjdCBhdGgxMGtfZndfc3RhdHNfcGVlciAqcGVlcjsKPj4gKyAgICAgc3RydWN0
-IGF0aDEwa19zdGEgKmFyc3RhOwo+PiArICAgICBzdHJ1Y3QgaWVlZTgwMjExX3N0YSAqc3RhOwo+
-PiArICAgICBjb25zdCB1OCAqbG9jYWxhZGRyID0gTlVMTDsKPj4gKwo+PiArICAgICByY3VfcmVh
-ZF9sb2NrKCk7Cj4+ICsKPj4gKyAgICAgbGlzdF9mb3JfZWFjaF9lbnRyeShwZWVyLCAmc3RhdHMt
-PnBlZXJzLCBsaXN0KSB7Cj4+ICsgICAgICAgICAgICAgLyogVGhpcyBkb2Vzbid0IGFjY291bnQg
-Zm9yIG11bHRpcGxlIFNUQSBjb25uZWN0ZWQgb24gZGlmZmVyZW50Cj4+ICsgICAgICAgICAgICAg
-ICogdmlmcy4gVW5mb3J0dW5hdGVseSB0aGVyZSdzIG5vIHdheSB0byBkZXJpdmUgdGhhdCBmcm9t
-IHRoZSBhdmFpbGFibGUKPj4gKyAgICAgICAgICAgICAgKiBpbmZvcm1hdGlvbi4KPj4gKyAgICAg
-ICAgICAgICAgKi8KPj4gKyAgICAgICAgICAgICBzdGEgPSBpZWVlODAyMTFfZmluZF9zdGFfYnlf
-aWZhZGRyKGh3LAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgcGVlci0+cGVlcl9tYWNhZGRyLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgbG9jYWxhZGRyKTsKPj4gKyAgICAgICAgICAgICBpZiAoIXN0
-YSkgewo+PiArICAgICAgICAgICAgICAgICAgICAgLyogVGhpcyB0cmllcyB0byB1cGRhdGUgbXVs
-dGljYXN0IHJhdGVzICovCj4+ICsgICAgICAgICAgICAgICAgICAgICBpZWVlODAyMTFfaXRlcmF0
-ZV9hY3RpdmVfaW50ZXJmYWNlc19hdG9taWMoCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgaHcsCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-SUVFRTgwMjExX0lGQUNFX0lURVJfTk9STUFMLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIGF0aDEwa19tYWNfdXBkYXRlX3R4cnhfcmF0ZV9pdGVyLAo+PiArICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBlZXIpOwo+PiArICAgICAgICAgICAgICAg
-ICAgICAgY29udGludWU7Cj4+ICsgICAgICAgICAgICAgfQo+PiArCj4+ICsgICAgICAgICAgICAg
-YXJzdGEgPSAodm9pZCAqKXN0YS0+ZHJ2X3ByaXY7Cj4+ICsgICAgICAgICAgICAgYXJzdGEtPnR4
-X3JhdGVfa2JwcyA9IHBlZXItPnBlZXJfdHhfcmF0ZTsKPj4gKyAgICAgICAgICAgICBhcnN0YS0+
-cnhfcmF0ZV9rYnBzID0gcGVlci0+cGVlcl9yeF9yYXRlOwo+PiArICAgICB9Cj4+ICsKPj4gKyAg
-ICAgcmN1X3JlYWRfdW5sb2NrKCk7Cj4+ICt9Cj4+ICsKPj4gIHZvaWQgYXRoMTBrX2RlYnVnX2Z3
-X3N0YXRzX3Byb2Nlc3Moc3RydWN0IGF0aDEwayAqYXIsIHN0cnVjdCBza19idWZmICpza2IpCj4+
-ICB7Cj4+ICAgICAgIHN0cnVjdCBhdGgxMGtfZndfc3RhdHMgc3RhdHMgPSB7fTsKPj4gQEAgLTMz
-NSw2ICszODcsOCBAQCB2b2lkIGF0aDEwa19kZWJ1Z19md19zdGF0c19wcm9jZXNzKHN0cnVjdCBh
-dGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKQo+PiAgICAgICAgICAgICAgIGdvdG8gZnJl
-ZTsKPj4gICAgICAgfQo+Pgo+PiArICAgICBhdGgxMGtfbWFjX3VwZGF0ZV90eHJ4X3JhdGUoYXIs
-ICZzdGF0cyk7Cj4+ICsKPj4gICAgICAgLyogU3RhdCBkYXRhIG1heSBleGNlZWQgaHRjLXdtaSBi
-dWZmZXIgbGltaXQuIEluIHN1Y2ggY2FzZSBmaXJtd2FyZQo+PiAgICAgICAgKiBzcGxpdHMgdGhl
-IHN0YXRzIGRhdGEgYW5kIGRlbGl2ZXJzIGl0IGluIGEgcGluZy1wb25nIGZhc2hpb24gb2YKPj4g
-ICAgICAgICogcmVxdWVzdCBjbWQtdXBkYXRlIGV2ZW50Lgo+PiBAQCAtMzUxLDEzICs0MDUsNiBA
-QCB2b2lkIGF0aDEwa19kZWJ1Z19md19zdGF0c19wcm9jZXNzKHN0cnVjdCBhdGgxMGsgKmFyLCBz
-dHJ1Y3Qgc2tfYnVmZiAqc2tiKQo+PiAgICAgICBpZiAocGVlcl9zdGF0c19zdmMpCj4+ICAgICAg
-ICAgICAgICAgYXRoMTBrX3N0YV91cGRhdGVfcnhfZHVyYXRpb24oYXIsICZzdGF0cy5wZWVycyk7
-Cj4+Cj4+IC0gICAgIGlmIChhci0+ZGVidWcuZndfc3RhdHNfZG9uZSkgewo+PiAtICAgICAgICAg
-ICAgIGlmICghcGVlcl9zdGF0c19zdmMpCj4+IC0gICAgICAgICAgICAgICAgICAgICBhdGgxMGtf
-d2FybihhciwgInJlY2VpdmVkIHVuc29saWNpdGVkIHN0YXRzIHVwZGF0ZSBldmVudFxuIik7Cj4+
-IC0KPj4gLSAgICAgICAgICAgICBnb3RvIGZyZWU7Cj4+IC0gICAgIH0KPj4gLQo+Cj4gW3NoYWZp
-XSBBcyB5b3UgaGFkIHN1Z2dlc3RlZCBwcmV2aW91c2x5LCBzaG91bGQgd2UgY29tcGxldGVseSBj
-bGVhbiB1cCB0aGlzIHBpbmcKPiAtIHBvbmcgcmVzcG9uc2UgYXBwcm9hY2ggZm9yIGYvdyBzdGF0
-cywgKG9yKSB0aGlzIHNob3VsZCBiZSByZXRhaW5lZCB0byBzdXBwb3J0Cj4gYmFja3dhcmQgY29t
-cGF0aWJpbGl0eSBhbmQgYWxzbyBmb3Igc3VwcG9ydGluZyBwaW5nIC0gcG9uZyByZXNwb25zZSB3
-aGVuIHVzZXIKPiBjYXRzIGZvciBmdy1zdGF0cyAodmlhIGRlYnVnZnMpIChpIGRpZCBzZWUgaW4g
-dGhlIGNvbW1pdCBtZXNzYWdlIHRoaXMgbmVlZHMgdG8KPiBiZSBjbGVhbmVkIHVwKQoKSSB0aGlu
-ayBpdCBtYWtlcyBzZW5zZSB0byByZW1vdmUgdGhlIHBpbmctcG9uZyBsb2dpYyBhbmQgcmVseSBv
-bgpwZXJpb2RpYyB1cGRhdGVzIGFsb25lLCBpbmNsdWRpbmcgZndfc3RhdHMgYW5kIGV0aHN0YXRz
-IGhhbmRsaW5nLgoKCj4+IC0gICAgIGlmICh0ZXN0X2JpdChXTUlfU0VSVklDRV9QRUVSX1NUQVRT
-LCBhci0+d21pLnN2Y19tYXApKSB7Cj4+IC0gICAgICAgICAgICAgcGFyYW0gPSBhci0+d21pLnBk
-ZXZfcGFyYW0tPnBlZXJfc3RhdHNfdXBkYXRlX3BlcmlvZDsKPj4gLSAgICAgICAgICAgICByZXQg
-PSBhdGgxMGtfd21pX3BkZXZfc2V0X3BhcmFtKGFyLCBwYXJhbSwKPj4gLSAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFBFRVJfREVGQVVMVF9TVEFUU19VUERBVEVf
-UEVSSU9EKTsKPj4gLSAgICAgICAgICAgICBpZiAocmV0KSB7Cj4+IC0gICAgICAgICAgICAgICAg
-ICAgICBhdGgxMGtfd2FybihhciwKPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICJmYWlsZWQgdG8gc2V0IHBlZXIgc3RhdHMgcGVyaW9kIDogJWRcbiIsCj4+IC0gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICByZXQpOwo+PiAtICAgICAgICAgICAgICAgICAgICAgZ290
-byBlcnJfY29yZV9zdG9wOwo+PiAtICAgICAgICAgICAgIH0KPj4gKyAgICAgcGFyYW0gPSBhci0+
-d21pLnBkZXZfcGFyYW0tPnBlZXJfc3RhdHNfdXBkYXRlX3BlcmlvZDsKPj4gKyAgICAgcmV0ID0g
-YXRoMTBrX3dtaV9wZGV2X3NldF9wYXJhbShhciwgcGFyYW0sCj4+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgUEVFUl9ERUZBVUxUX1NUQVRTX1VQREFURV9QRVJJT0QpOwo+
-PiArICAgICBpZiAocmV0KSB7Cj4+ICsgICAgICAgICAgICAgYXRoMTBrX3dhcm4oYXIsCj4+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgImZhaWxlZCB0byBzZXQgcGVlciBzdGF0cyBwZXJpb2Qg
-OiAlZFxuIiwKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICByZXQpOwo+PiArICAgICAgICAg
-ICAgIGdvdG8gZXJyX2NvcmVfc3RvcDsKPj4gICAgICAgfQo+Cj4gW3NoYWZpXSBJZiBpIGFtIGNv
-cnJlY3QgdGhpcyBjaGFuZ2UgcmVxdWlyZXMgJ1BFRVJfU1RBVFMnIHRvIGJlIGVuYWJsZWQgYnkK
-PiBkZWZhdWx0LgoKTm8sIGl0IGRvZXMgbm90LiBQZXJpb2RpYyBzdGF0cyBoYXZlIGJlZW4gYXZh
-aWxhYmxlIHNpbmNlIGZvcmV2ZXIuCgoKPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvd21pLmggYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dt
-aS5oCj4+IGluZGV4IDRkM2NiYzQ0ZmNkMi4uMjg3N2EzYTI3Yjk1IDEwMDY0NAo+PiAtLS0gYS9k
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oCj4+ICsrKyBiL2RyaXZlcnMvbmV0
-L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmgKPj4gQEAgLTMyOTYsNyArMzI5Niw3IEBAIHN0cnVj
-dCB3bWlfY3NhX2V2ZW50IHsKPj4gIC8qIHRoZSBkZWZpbml0aW9uIG9mIGRpZmZlcmVudCBQREVW
-IHBhcmFtZXRlcnMgKi8KPj4gICNkZWZpbmUgUERFVl9ERUZBVUxUX1NUQVRTX1VQREFURV9QRVJJ
-T0QgICAgNTAwCj4+ICAjZGVmaW5lIFZERVZfREVGQVVMVF9TVEFUU19VUERBVEVfUEVSSU9EICAg
-IDUwMAo+PiAtI2RlZmluZSBQRUVSX0RFRkFVTFRfU1RBVFNfVVBEQVRFX1BFUklPRCAgICA1MDAK
-Pj4gKyNkZWZpbmUgUEVFUl9ERUZBVUxUX1NUQVRTX1VQREFURV9QRVJJT0QgICAgMTAwCj4KPiBb
-c2hhZmldIElzIHRoaXMgZm9yIG1vcmUgZ3JhbnVsYXJpdHkgc2luY2UgNTAwbXMgaXMgbm90IHN1
-ZmZpY2llbnQgPywgSSB1bmRlcnN0YW5kCj4gdGhlIGZpcm13YXJlIGhhcyBkZWZhdWx0IHN0YXRz
-X3VwZGF0ZV9wZXJpb2QgYXMgNTAwbXMgYW5kIGkgaG9wZSBpdCBzdXBwb3J0cwo+IDEwMG1zIGFz
-IHdlbGwsIEFsc28gaWYgd2UgYXJlIGdvaW5nIHRvIHN1cHBvcnQgcGVyaW9kIHN0YXRzIHVwZGF0
-ZSB3ZSBtYXkgbmVlZCB0bwo+IGFjY3VtdWxhdGUgdGhlIGluZm9ybWF0aW9uIGluIGRyaXZlciAo
-bGlrZSB0aGlzIGNoYW5nZSBhbmQgcnhfZHVyYXRpb24KClRoZSBwYXRjaCBpcyB1c2VkIGZvciBy
-b3VnaCByYXRlIGVzdGltYXRpb24gd2hpY2ggaXMgdXNlZCB0byBrZWVwIFR4CnF1ZXVlcyBmaWxs
-ZWQgb25seSB3aXRoIDEtMiB0eG9wcyB3b3J0aCBvZiBkYXRhLiBTaWduYWwgY29uZGl0aW9ucyBj
-YW4KY2hhbmdlIHZhc3RseSBzbyBJIGZpZ3VyZWQgSSBuZWVkIHRoZSBwZWVyIHN0YXQgdXBkYXRl
-IGV2ZW50cyBjb21lCm1vcmUgb2Z0ZW4uIEkgZGlkbid0IHJlYWxseSB2ZXJpZnkgaWYgdGhleSBj
-b21lIGV2ZXJ5IDEwMG1zLiBUaGUgcGF0Y2gKYWxyZWFkeSBzZXJ2ZWQgaXQncyBqb2IgYXMgYSBw
-cm9vZi1vZi1jb25jZXB0IGZvciBzbWFydGVyIHR4IHF1ZXVpbmcuCgoKPiBJIHdpbGwgdHJ5IHRv
-IHRha2UgdGhpcyBjaGFuZ2UsIHJlYmFzZSBpdCB0byBUT1QgYW5kIHNlZSBob3cgaXQgZ29lcy4K
-ClRoZXJlJ3MgcmVhbGx5IG5vIGJlbmVmaXQgaXQgdGFraW5nIHRoaXMgcGF0Y2ggYXMgYSBiYXNp
-cyBmb3IgcGVyaW9kaWMKc3RhdCBoYW5kbGluZy4gTWFqb3JpdHkgb2YgdGhpcyBwYXRjaCBpcyBq
-dXN0IGhhbmRsaW5nIHBlZXJfdHhfcmF0ZQpmb3IgcmF0ZSBlc3RpbWF0aW9uIHB1cnBvc2VzLiBG
-ZWVsIGZyZWUgdG8ga25vY2sgeW91cnNlbGYgb3V0IHdpdGgKcmlwcGluZyBvdXQgdGhlIHBpbmct
-cG9uZyBzdGF0IHN0dWZmIHRob3VnaCA6KQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hdGgxMGsK
+Hi Michal / Kalle,
+
+> 
+> On Thu, Mar 17, 2016 at 12:35:00PM +0100, Michal Kazior wrote:
+> > On 17 March 2016 at 12:20, Mohammed Shafi Shajakhan
+> > <mohammed@codeaurora.org> wrote:
+> > > Hi Michal,
+> > >
+> > > On Thu, Mar 17, 2016 at 12:12:31PM +0100, Michal Kazior wrote:
+> > >> On 17 March 2016 at 11:48, Mohammed Shafi Shajakhan
+> > >> <mohammed@qti.qualcomm.com> wrote:
+> > >> [...]
+> > >> > +void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+> > >> > +                          struct ieee80211_sta *sta,
+> > >> > +                          struct station_info *sinfo)
+> > >> > +{
+> > >> > +       struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
+> > >> > +       struct ath10k *ar = arsta->arvif->ar;
+> > >> > +
+> > >> > +       mutex_lock(&ar->conf_mutex);
+> > >> > +
+> > >> > +       if (ar->state != ATH10K_STATE_ON &&
+> > >> > +           ar->state != ATH10K_STATE_RESTARTED)
+> > >> > +               goto out;
+> > >>
+> > >> Do you really need mutex and ar->state check in this function?
+> > >>
+> > >
+> > > [shafi] By default peer stats will be disabled, we are enabling this by debugfs
+> > > (hw-restart) so i thought these checks are needed , please advise .. Do you say
+> > > they  will be never hit
+> > 
+> > Hmm.. I think mac80211 shouldn't call sta_statistics() before
+> > sta_state() during recovery (it makes no sense). In practice I think
+> > this isn't enforced in which case it's a mac80211 bug.
+> 
+> [shafi] sure i will check this. If the hardware is restarting there should
+> be no stations connected and station related info.
+
+[shafi] I did not see any checks in mac80211 to prevent this (may be i missed
+something), but i did remove the checks and tested it, could not find warnings, crashes
+(or) garbage values, so is it safer to remove (unless we find some issue with
+this) ?, please suggest Michal.
+
+i was doing this parallely in two terminals
+
+a) while true
+do
+cat rx_stats | grep duration -A 2
+done
+
+b) /sys/kernel/debug/ieee80211/phy0/ath10k# echo 1 > peer_stats 
+ /sys/kernel/debug/ieee80211/phy0/ath10k# echo 0 > peer_stats 
+
+ (or)
+ /sys/kernel/debug/ieee80211/phy0/ath10k# echo hw-restart > simulate_fw_crash 
+
+
+
+> 
+> > 
+> > Anyway, this isn't much of a problem now. You only read out u64 from
+> > `arsta` (sta->drv_priv). Even if it's uninitialized/undefined there's
+> > no way for you to crash the system (it's not a list, spinlock or any
+> > other complex data structure). Worst case userspace will get garbage
+> > rx_duration value if it happens to get_station() while hw-restart is
+> > ongoing.
+> 
+> [shafi] will check this ..
+
+[shafi] agree though i could not see any checks in mac80211 to prevent
+sta_set_sinfo (or check for the station state), i did not see any issues in my
+testing
+
+> 
+> > 
+> > It'd be good to verify this is actually a problem and - assuming you
+> > want to guarantee correct readouts at all times - to fix the problem
+> > in mac80211.
+> >
+> [shafi] ok, sure
+
+[shafi] I really don't have a deeper understanding of mac80211 code,
+i need to go through it thoroughly if i need to have checks for this
+if they were not already there.
+
+regards,
+shafi
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
