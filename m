@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aj4In-0000El-3E
- for ath10k@lists.infradead.org; Thu, 24 Mar 2016 12:23:50 +0000
-Date: Thu, 24 Mar 2016 17:53:17 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [RFCv2 2/3] ath10k: report per-station tx/rate rates to mac80211
-Message-ID: <20160324122317.GB30872@atheros-ThinkPad-T61>
+ id 1aj4Qb-0005NG-NK
+ for ath10k@lists.infradead.org; Thu, 24 Mar 2016 12:31:55 +0000
+Received: by mail-wm0-x22a.google.com with SMTP id l68so63425686wml.1
+ for <ath10k@lists.infradead.org>; Thu, 24 Mar 2016 05:31:33 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20160324122317.GB30872@atheros-ThinkPad-T61>
 References: <1458123478-1795-1-git-send-email-michal.kazior@tieto.com>
  <1458123478-1795-3-git-send-email-michal.kazior@tieto.com>
  <20160324071923.GB23410@atheros-ThinkPad-T61>
  <CA+BoTQmRBog+oSMCKUUzTV1Jm_Mip0ZA9mnpkZ14hDUq32Dszg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+BoTQmRBog+oSMCKUUzTV1Jm_Mip0ZA9mnpkZ14hDUq32Dszg@mail.gmail.com>
+ <20160324122317.GB30872@atheros-ThinkPad-T61>
+Date: Thu, 24 Mar 2016 13:31:32 +0100
+Message-ID: <CA+BoTQkX=USr1d_0NCNgjK+_P8Ae0GqxTzVMAqRHFm4incxXXA@mail.gmail.com>
+Subject: Re: [RFCv2 2/3] ath10k: report per-station tx/rate rates to mac80211
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,233 +24,158 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
 Cc: Felix Fietkau <nbd@openwrt.org>, Emmanuel Grumbach <emmanuel.grumbach@intel.com>, Network Development <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, Dave Taht <dave.taht@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, codel@lists.bufferbloat.net, make-wifi-fast@lists.bufferbloat.net, Johannes Berg <johannes@sipsolutions.net>, Tim Shepard <shep@alum.mit.edu>
 
-On Thu, Mar 24, 2016 at 08:49:12AM +0100, Michal Kazior wrote:
-> On 24 March 2016 at 08:19, Mohammed Shafi Shajakhan
-> <mohammed@codeaurora.org> wrote:
-> > Hi Michal,
-> >
-> > On Wed, Mar 16, 2016 at 11:17:57AM +0100, Michal Kazior wrote:
-> >> The rate control is offloaded by firmware so it's
-> >> challanging to provide expected throughput value
-> >> for given station.
-> >>
-> >> This approach is naive as it reports last tx rate
-> >> used for given station as provided by firmware
-> >> stat event.
-> >>
-> >> This should be sufficient for airtime estimation
-> >> used for fq-codel-in-mac80211 tx scheduling
-> >> purposes now.
-> >>
-> >> This patch uses a very hacky way to get the stats.
-> >> This is sufficient for proof-of-concept but must
-> >> be cleaned up properly eventually.
-> >>
-> >> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> >> ---
-> >>  drivers/net/wireless/ath/ath10k/core.h  |  5 +++
-> >>  drivers/net/wireless/ath/ath10k/debug.c | 61 +++++++++++++++++++++++++++++----
-> >>  drivers/net/wireless/ath/ath10k/mac.c   | 26 ++++++++------
-> >>  drivers/net/wireless/ath/ath10k/wmi.h   |  2 +-
-> >>  4 files changed, 76 insertions(+), 18 deletions(-)
-> >>
-> >> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> >> index 23ba03fb7a5f..3f76669d44cf 100644
-> >> --- a/drivers/net/wireless/ath/ath10k/core.h
-> >> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> >> @@ -331,6 +331,9 @@ struct ath10k_sta {
-> >>       /* protected by conf_mutex */
-> >>       bool aggr_mode;
-> >>       u64 rx_duration;
-> >> +
-> >> +     u32 tx_rate_kbps;
-> >> +     u32 rx_rate_kbps;
-> >>  #endif
-> >>  };
-> >>
-> >> @@ -372,6 +375,8 @@ struct ath10k_vif {
-> >>       s8 def_wep_key_idx;
-> >>
-> >>       u16 tx_seq_no;
-> >> +     u32 tx_rate_kbps;
-> >> +     u32 rx_rate_kbps;
-> >>
-> >>       union {
-> >>               struct {
-> >> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-> >> index 076d29b53ddf..cc7ebf04ae00 100644
-> >> --- a/drivers/net/wireless/ath/ath10k/debug.c
-> >> +++ b/drivers/net/wireless/ath/ath10k/debug.c
-> >> @@ -316,6 +316,58 @@ static void ath10k_debug_fw_stats_reset(struct ath10k *ar)
-> >>       spin_unlock_bh(&ar->data_lock);
-> >>  }
-> >>
-> >> +static void ath10k_mac_update_txrx_rate_iter(void *data,
-> >> +                                          u8 *mac,
-> >> +                                          struct ieee80211_vif *vif)
-> >> +{
-> >> +     struct ath10k_fw_stats_peer *peer = data;
-> >> +     struct ath10k_vif *arvif;
-> >> +
-> >> +     if (memcmp(vif->addr, peer->peer_macaddr, ETH_ALEN))
-> >> +             return;
-> >> +
-> >> +     arvif = (void *)vif->drv_priv;
-> >> +     arvif->tx_rate_kbps = peer->peer_tx_rate;
-> >> +     arvif->rx_rate_kbps = peer->peer_rx_rate;
-> >> +}
-> >> +
-> >> +static void ath10k_mac_update_txrx_rate(struct ath10k *ar,
-> >> +                                     struct ath10k_fw_stats *stats)
-> >> +{
-> >> +     struct ieee80211_hw *hw = ar->hw;
-> >> +     struct ath10k_fw_stats_peer *peer;
-> >> +     struct ath10k_sta *arsta;
-> >> +     struct ieee80211_sta *sta;
-> >> +     const u8 *localaddr = NULL;
-> >> +
-> >> +     rcu_read_lock();
-> >> +
-> >> +     list_for_each_entry(peer, &stats->peers, list) {
-> >> +             /* This doesn't account for multiple STA connected on different
-> >> +              * vifs. Unfortunately there's no way to derive that from the available
-> >> +              * information.
-> >> +              */
-> >> +             sta = ieee80211_find_sta_by_ifaddr(hw,
-> >> +                                                peer->peer_macaddr,
-> >> +                                                localaddr);
-> >> +             if (!sta) {
-> >> +                     /* This tries to update multicast rates */
-> >> +                     ieee80211_iterate_active_interfaces_atomic(
-> >> +                                     hw,
-> >> +                                     IEEE80211_IFACE_ITER_NORMAL,
-> >> +                                     ath10k_mac_update_txrx_rate_iter,
-> >> +                                     peer);
-> >> +                     continue;
-> >> +             }
-> >> +
-> >> +             arsta = (void *)sta->drv_priv;
-> >> +             arsta->tx_rate_kbps = peer->peer_tx_rate;
-> >> +             arsta->rx_rate_kbps = peer->peer_rx_rate;
-> >> +     }
-> >> +
-> >> +     rcu_read_unlock();
-> >> +}
-> >> +
-> >>  void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
-> >>  {
-> >>       struct ath10k_fw_stats stats = {};
-> >> @@ -335,6 +387,8 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
-> >>               goto free;
-> >>       }
-> >>
-> >> +     ath10k_mac_update_txrx_rate(ar, &stats);
-> >> +
-> >>       /* Stat data may exceed htc-wmi buffer limit. In such case firmware
-> >>        * splits the stats data and delivers it in a ping-pong fashion of
-> >>        * request cmd-update event.
-> >> @@ -351,13 +405,6 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
-> >>       if (peer_stats_svc)
-> >>               ath10k_sta_update_rx_duration(ar, &stats.peers);
-> >>
-> >> -     if (ar->debug.fw_stats_done) {
-> >> -             if (!peer_stats_svc)
-> >> -                     ath10k_warn(ar, "received unsolicited stats update event\n");
-> >> -
-> >> -             goto free;
-> >> -     }
-> >> -
-> >
-> > [shafi] As you had suggested previously, should we completely clean up this ping
-> > - pong response approach for f/w stats, (or) this should be retained to support
-> > backward compatibility and also for supporting ping - pong response when user
-> > cats for fw-stats (via debugfs) (i did see in the commit message this needs to
-> > be cleaned up)
-> 
-> I think it makes sense to remove the ping-pong logic and rely on
-> periodic updates alone, including fw_stats and ethstats handling.
-> 
-> 
-> >> -     if (test_bit(WMI_SERVICE_PEER_STATS, ar->wmi.svc_map)) {
-> >> -             param = ar->wmi.pdev_param->peer_stats_update_period;
-> >> -             ret = ath10k_wmi_pdev_set_param(ar, param,
-> >> -                                             PEER_DEFAULT_STATS_UPDATE_PERIOD);
-> >> -             if (ret) {
-> >> -                     ath10k_warn(ar,
-> >> -                                 "failed to set peer stats period : %d\n",
-> >> -                                 ret);
-> >> -                     goto err_core_stop;
-> >> -             }
-> >> +     param = ar->wmi.pdev_param->peer_stats_update_period;
-> >> +     ret = ath10k_wmi_pdev_set_param(ar, param,
-> >> +                                     PEER_DEFAULT_STATS_UPDATE_PERIOD);
-> >> +     if (ret) {
-> >> +             ath10k_warn(ar,
-> >> +                         "failed to set peer stats period : %d\n",
-> >> +                         ret);
-> >> +             goto err_core_stop;
-> >>       }
-> >
-> > [shafi] If i am correct this change requires 'PEER_STATS' to be enabled by
-> > default.
-> 
-> No, it does not. Periodic stats have been available since forever.
-
-[shafi] Michal, sorry i was talking about enabling WMI_PEER_STATS feature for
-10.2, and we have a patch pushed recently to reduce the number of peers if
-'WMI_PEER_STATS' feature is enabled(avoiding f/w crash due to memory
-constraints) . But this patch requires the feature to be
-turned ON always (with periodic stats update as well for evey 100ms). Please
-correct me if my understanding is wrong.
-
-> 
-> 
-> >> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-> >> index 4d3cbc44fcd2..2877a3a27b95 100644
-> >> --- a/drivers/net/wireless/ath/ath10k/wmi.h
-> >> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-> >> @@ -3296,7 +3296,7 @@ struct wmi_csa_event {
-> >>  /* the definition of different PDEV parameters */
-> >>  #define PDEV_DEFAULT_STATS_UPDATE_PERIOD    500
-> >>  #define VDEV_DEFAULT_STATS_UPDATE_PERIOD    500
-> >> -#define PEER_DEFAULT_STATS_UPDATE_PERIOD    500
-> >> +#define PEER_DEFAULT_STATS_UPDATE_PERIOD    100
-> >
-> > [shafi] Is this for more granularity since 500ms is not sufficient ?, I understand
-> > the firmware has default stats_update_period as 500ms and i hope it supports
-> > 100ms as well, Also if we are going to support period stats update we may need to
-> > accumulate the information in driver (like this change and rx_duration
-> 
-> The patch is used for rough rate estimation which is used to keep Tx
-> queues filled only with 1-2 txops worth of data. Signal conditions can
-> change vastly so I figured I need the peer stat update events come
-> more often. I didn't really verify if they come every 100ms. The patch
-> already served it's job as a proof-of-concept for smarter tx queuing.
-
-[shafi] Ok, sure. I understand very soon we will get this in ath10k as well
-(though it is a POC) 
- 
-> 
-> > I will try to take this change, rebase it to TOT and see how it goes.
-> 
-> There's really no benefit it taking this patch as a basis for periodic
-> stat handling. Majority of this patch is just handling peer_tx_rate
-> for rate estimation purposes. Feel free to knock yourself out with
-> ripping out the ping-pong stat stuff though :)
->
-[shafi] sure Michal, thanks !
-
-regards,
-shafi
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjQgTWFyY2ggMjAxNiBhdCAxMzoyMywgTW9oYW1tZWQgU2hhZmkgU2hhamFraGFuCjxtb2hh
+bW1lZEBjb2RlYXVyb3JhLm9yZz4gd3JvdGU6Cj4gT24gVGh1LCBNYXIgMjQsIDIwMTYgYXQgMDg6
+NDk6MTJBTSArMDEwMCwgTWljaGFsIEthemlvciB3cm90ZToKPj4gT24gMjQgTWFyY2ggMjAxNiBh
+dCAwODoxOSwgTW9oYW1tZWQgU2hhZmkgU2hhamFraGFuCj4+IDxtb2hhbW1lZEBjb2RlYXVyb3Jh
+Lm9yZz4gd3JvdGU6Cj4+ID4gSGkgTWljaGFsLAo+PiA+Cj4+ID4gT24gV2VkLCBNYXIgMTYsIDIw
+MTYgYXQgMTE6MTc6NTdBTSArMDEwMCwgTWljaGFsIEthemlvciB3cm90ZToKPj4gPj4gVGhlIHJh
+dGUgY29udHJvbCBpcyBvZmZsb2FkZWQgYnkgZmlybXdhcmUgc28gaXQncwo+PiA+PiBjaGFsbGFu
+Z2luZyB0byBwcm92aWRlIGV4cGVjdGVkIHRocm91Z2hwdXQgdmFsdWUKPj4gPj4gZm9yIGdpdmVu
+IHN0YXRpb24uCj4+ID4+Cj4+ID4+IFRoaXMgYXBwcm9hY2ggaXMgbmFpdmUgYXMgaXQgcmVwb3J0
+cyBsYXN0IHR4IHJhdGUKPj4gPj4gdXNlZCBmb3IgZ2l2ZW4gc3RhdGlvbiBhcyBwcm92aWRlZCBi
+eSBmaXJtd2FyZQo+PiA+PiBzdGF0IGV2ZW50Lgo+PiA+Pgo+PiA+PiBUaGlzIHNob3VsZCBiZSBz
+dWZmaWNpZW50IGZvciBhaXJ0aW1lIGVzdGltYXRpb24KPj4gPj4gdXNlZCBmb3IgZnEtY29kZWwt
+aW4tbWFjODAyMTEgdHggc2NoZWR1bGluZwo+PiA+PiBwdXJwb3NlcyBub3cuCj4+ID4+Cj4+ID4+
+IFRoaXMgcGF0Y2ggdXNlcyBhIHZlcnkgaGFja3kgd2F5IHRvIGdldCB0aGUgc3RhdHMuCj4+ID4+
+IFRoaXMgaXMgc3VmZmljaWVudCBmb3IgcHJvb2Ytb2YtY29uY2VwdCBidXQgbXVzdAo+PiA+PiBi
+ZSBjbGVhbmVkIHVwIHByb3Blcmx5IGV2ZW50dWFsbHkuCj4+ID4+Cj4+ID4+IFNpZ25lZC1vZmYt
+Ynk6IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPgo+PiA+PiAtLS0KPj4g
+Pj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oICB8ICA1ICsrKwo+PiA+
+PiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jIHwgNjEgKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKystLS0tCj4+ID4+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL21hYy5jICAgfCAyNiArKysrKysrKy0tLS0tLQo+PiA+PiAgZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway93bWkuaCAgIHwgIDIgKy0KPj4gPj4gIDQgZmlsZXMgY2hhbmdlZCwg
+NzYgaW5zZXJ0aW9ucygrKSwgMTggZGVsZXRpb25zKC0pCj4+ID4+Cj4+ID4+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaCBiL2RyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCj4+ID4+IGluZGV4IDIzYmEwM2ZiN2E1Zi4uM2Y3NjY2
+OWQ0NGNmIDEwMDY0NAo+PiA+PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L2NvcmUuaAo+PiA+PiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUu
+aAo+PiA+PiBAQCAtMzMxLDYgKzMzMSw5IEBAIHN0cnVjdCBhdGgxMGtfc3RhIHsKPj4gPj4gICAg
+ICAgLyogcHJvdGVjdGVkIGJ5IGNvbmZfbXV0ZXggKi8KPj4gPj4gICAgICAgYm9vbCBhZ2dyX21v
+ZGU7Cj4+ID4+ICAgICAgIHU2NCByeF9kdXJhdGlvbjsKPj4gPj4gKwo+PiA+PiArICAgICB1MzIg
+dHhfcmF0ZV9rYnBzOwo+PiA+PiArICAgICB1MzIgcnhfcmF0ZV9rYnBzOwo+PiA+PiAgI2VuZGlm
+Cj4+ID4+ICB9Owo+PiA+Pgo+PiA+PiBAQCAtMzcyLDYgKzM3NSw4IEBAIHN0cnVjdCBhdGgxMGtf
+dmlmIHsKPj4gPj4gICAgICAgczggZGVmX3dlcF9rZXlfaWR4Owo+PiA+Pgo+PiA+PiAgICAgICB1
+MTYgdHhfc2VxX25vOwo+PiA+PiArICAgICB1MzIgdHhfcmF0ZV9rYnBzOwo+PiA+PiArICAgICB1
+MzIgcnhfcmF0ZV9rYnBzOwo+PiA+Pgo+PiA+PiAgICAgICB1bmlvbiB7Cj4+ID4+ICAgICAgICAg
+ICAgICAgc3RydWN0IHsKPj4gPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9hdGgxMGsvZGVidWcuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcu
+Ywo+PiA+PiBpbmRleCAwNzZkMjliNTNkZGYuLmNjN2ViZjA0YWUwMCAxMDA2NDQKPj4gPj4gLS0t
+IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jCj4+ID4+ICsrKyBiL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYwo+PiA+PiBAQCAtMzE2LDYgKzMx
+Niw1OCBAQCBzdGF0aWMgdm9pZCBhdGgxMGtfZGVidWdfZndfc3RhdHNfcmVzZXQoc3RydWN0IGF0
+aDEwayAqYXIpCj4+ID4+ICAgICAgIHNwaW5fdW5sb2NrX2JoKCZhci0+ZGF0YV9sb2NrKTsKPj4g
+Pj4gIH0KPj4gPj4KPj4gPj4gK3N0YXRpYyB2b2lkIGF0aDEwa19tYWNfdXBkYXRlX3R4cnhfcmF0
+ZV9pdGVyKHZvaWQgKmRhdGEsCj4+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICB1OCAqbWFjLAo+PiA+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgc3RydWN0IGllZWU4MDIxMV92aWYgKnZpZikKPj4gPj4gK3sKPj4gPj4gKyAg
+ICAgc3RydWN0IGF0aDEwa19md19zdGF0c19wZWVyICpwZWVyID0gZGF0YTsKPj4gPj4gKyAgICAg
+c3RydWN0IGF0aDEwa192aWYgKmFydmlmOwo+PiA+PiArCj4+ID4+ICsgICAgIGlmIChtZW1jbXAo
+dmlmLT5hZGRyLCBwZWVyLT5wZWVyX21hY2FkZHIsIEVUSF9BTEVOKSkKPj4gPj4gKyAgICAgICAg
+ICAgICByZXR1cm47Cj4+ID4+ICsKPj4gPj4gKyAgICAgYXJ2aWYgPSAodm9pZCAqKXZpZi0+ZHJ2
+X3ByaXY7Cj4+ID4+ICsgICAgIGFydmlmLT50eF9yYXRlX2ticHMgPSBwZWVyLT5wZWVyX3R4X3Jh
+dGU7Cj4+ID4+ICsgICAgIGFydmlmLT5yeF9yYXRlX2ticHMgPSBwZWVyLT5wZWVyX3J4X3JhdGU7
+Cj4+ID4+ICt9Cj4+ID4+ICsKPj4gPj4gK3N0YXRpYyB2b2lkIGF0aDEwa19tYWNfdXBkYXRlX3R4
+cnhfcmF0ZShzdHJ1Y3QgYXRoMTBrICphciwKPj4gPj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBzdHJ1Y3QgYXRoMTBrX2Z3X3N0YXRzICpzdGF0cykKPj4gPj4gK3sKPj4g
+Pj4gKyAgICAgc3RydWN0IGllZWU4MDIxMV9odyAqaHcgPSBhci0+aHc7Cj4+ID4+ICsgICAgIHN0
+cnVjdCBhdGgxMGtfZndfc3RhdHNfcGVlciAqcGVlcjsKPj4gPj4gKyAgICAgc3RydWN0IGF0aDEw
+a19zdGEgKmFyc3RhOwo+PiA+PiArICAgICBzdHJ1Y3QgaWVlZTgwMjExX3N0YSAqc3RhOwo+PiA+
+PiArICAgICBjb25zdCB1OCAqbG9jYWxhZGRyID0gTlVMTDsKPj4gPj4gKwo+PiA+PiArICAgICBy
+Y3VfcmVhZF9sb2NrKCk7Cj4+ID4+ICsKPj4gPj4gKyAgICAgbGlzdF9mb3JfZWFjaF9lbnRyeShw
+ZWVyLCAmc3RhdHMtPnBlZXJzLCBsaXN0KSB7Cj4+ID4+ICsgICAgICAgICAgICAgLyogVGhpcyBk
+b2Vzbid0IGFjY291bnQgZm9yIG11bHRpcGxlIFNUQSBjb25uZWN0ZWQgb24gZGlmZmVyZW50Cj4+
+ID4+ICsgICAgICAgICAgICAgICogdmlmcy4gVW5mb3J0dW5hdGVseSB0aGVyZSdzIG5vIHdheSB0
+byBkZXJpdmUgdGhhdCBmcm9tIHRoZSBhdmFpbGFibGUKPj4gPj4gKyAgICAgICAgICAgICAgKiBp
+bmZvcm1hdGlvbi4KPj4gPj4gKyAgICAgICAgICAgICAgKi8KPj4gPj4gKyAgICAgICAgICAgICBz
+dGEgPSBpZWVlODAyMTFfZmluZF9zdGFfYnlfaWZhZGRyKGh3LAo+PiA+PiArICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGVlci0+cGVlcl9tYWNhZGRyLAo+
+PiA+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbG9j
+YWxhZGRyKTsKPj4gPj4gKyAgICAgICAgICAgICBpZiAoIXN0YSkgewo+PiA+PiArICAgICAgICAg
+ICAgICAgICAgICAgLyogVGhpcyB0cmllcyB0byB1cGRhdGUgbXVsdGljYXN0IHJhdGVzICovCj4+
+ID4+ICsgICAgICAgICAgICAgICAgICAgICBpZWVlODAyMTFfaXRlcmF0ZV9hY3RpdmVfaW50ZXJm
+YWNlc19hdG9taWMoCj4+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+aHcsCj4+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgSUVFRTgwMjEx
+X0lGQUNFX0lURVJfTk9STUFMLAo+PiA+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGF0aDEwa19tYWNfdXBkYXRlX3R4cnhfcmF0ZV9pdGVyLAo+PiA+PiArICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBlZXIpOwo+PiA+PiArICAgICAgICAgICAgICAg
+ICAgICAgY29udGludWU7Cj4+ID4+ICsgICAgICAgICAgICAgfQo+PiA+PiArCj4+ID4+ICsgICAg
+ICAgICAgICAgYXJzdGEgPSAodm9pZCAqKXN0YS0+ZHJ2X3ByaXY7Cj4+ID4+ICsgICAgICAgICAg
+ICAgYXJzdGEtPnR4X3JhdGVfa2JwcyA9IHBlZXItPnBlZXJfdHhfcmF0ZTsKPj4gPj4gKyAgICAg
+ICAgICAgICBhcnN0YS0+cnhfcmF0ZV9rYnBzID0gcGVlci0+cGVlcl9yeF9yYXRlOwo+PiA+PiAr
+ICAgICB9Cj4+ID4+ICsKPj4gPj4gKyAgICAgcmN1X3JlYWRfdW5sb2NrKCk7Cj4+ID4+ICt9Cj4+
+ID4+ICsKPj4gPj4gIHZvaWQgYXRoMTBrX2RlYnVnX2Z3X3N0YXRzX3Byb2Nlc3Moc3RydWN0IGF0
+aDEwayAqYXIsIHN0cnVjdCBza19idWZmICpza2IpCj4+ID4+ICB7Cj4+ID4+ICAgICAgIHN0cnVj
+dCBhdGgxMGtfZndfc3RhdHMgc3RhdHMgPSB7fTsKPj4gPj4gQEAgLTMzNSw2ICszODcsOCBAQCB2
+b2lkIGF0aDEwa19kZWJ1Z19md19zdGF0c19wcm9jZXNzKHN0cnVjdCBhdGgxMGsgKmFyLCBzdHJ1
+Y3Qgc2tfYnVmZiAqc2tiKQo+PiA+PiAgICAgICAgICAgICAgIGdvdG8gZnJlZTsKPj4gPj4gICAg
+ICAgfQo+PiA+Pgo+PiA+PiArICAgICBhdGgxMGtfbWFjX3VwZGF0ZV90eHJ4X3JhdGUoYXIsICZz
+dGF0cyk7Cj4+ID4+ICsKPj4gPj4gICAgICAgLyogU3RhdCBkYXRhIG1heSBleGNlZWQgaHRjLXdt
+aSBidWZmZXIgbGltaXQuIEluIHN1Y2ggY2FzZSBmaXJtd2FyZQo+PiA+PiAgICAgICAgKiBzcGxp
+dHMgdGhlIHN0YXRzIGRhdGEgYW5kIGRlbGl2ZXJzIGl0IGluIGEgcGluZy1wb25nIGZhc2hpb24g
+b2YKPj4gPj4gICAgICAgICogcmVxdWVzdCBjbWQtdXBkYXRlIGV2ZW50Lgo+PiA+PiBAQCAtMzUx
+LDEzICs0MDUsNiBAQCB2b2lkIGF0aDEwa19kZWJ1Z19md19zdGF0c19wcm9jZXNzKHN0cnVjdCBh
+dGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKQo+PiA+PiAgICAgICBpZiAocGVlcl9zdGF0
+c19zdmMpCj4+ID4+ICAgICAgICAgICAgICAgYXRoMTBrX3N0YV91cGRhdGVfcnhfZHVyYXRpb24o
+YXIsICZzdGF0cy5wZWVycyk7Cj4+ID4+Cj4+ID4+IC0gICAgIGlmIChhci0+ZGVidWcuZndfc3Rh
+dHNfZG9uZSkgewo+PiA+PiAtICAgICAgICAgICAgIGlmICghcGVlcl9zdGF0c19zdmMpCj4+ID4+
+IC0gICAgICAgICAgICAgICAgICAgICBhdGgxMGtfd2FybihhciwgInJlY2VpdmVkIHVuc29saWNp
+dGVkIHN0YXRzIHVwZGF0ZSBldmVudFxuIik7Cj4+ID4+IC0KPj4gPj4gLSAgICAgICAgICAgICBn
+b3RvIGZyZWU7Cj4+ID4+IC0gICAgIH0KPj4gPj4gLQo+PiA+Cj4+ID4gW3NoYWZpXSBBcyB5b3Ug
+aGFkIHN1Z2dlc3RlZCBwcmV2aW91c2x5LCBzaG91bGQgd2UgY29tcGxldGVseSBjbGVhbiB1cCB0
+aGlzIHBpbmcKPj4gPiAtIHBvbmcgcmVzcG9uc2UgYXBwcm9hY2ggZm9yIGYvdyBzdGF0cywgKG9y
+KSB0aGlzIHNob3VsZCBiZSByZXRhaW5lZCB0byBzdXBwb3J0Cj4+ID4gYmFja3dhcmQgY29tcGF0
+aWJpbGl0eSBhbmQgYWxzbyBmb3Igc3VwcG9ydGluZyBwaW5nIC0gcG9uZyByZXNwb25zZSB3aGVu
+IHVzZXIKPj4gPiBjYXRzIGZvciBmdy1zdGF0cyAodmlhIGRlYnVnZnMpIChpIGRpZCBzZWUgaW4g
+dGhlIGNvbW1pdCBtZXNzYWdlIHRoaXMgbmVlZHMgdG8KPj4gPiBiZSBjbGVhbmVkIHVwKQo+Pgo+
+PiBJIHRoaW5rIGl0IG1ha2VzIHNlbnNlIHRvIHJlbW92ZSB0aGUgcGluZy1wb25nIGxvZ2ljIGFu
+ZCByZWx5IG9uCj4+IHBlcmlvZGljIHVwZGF0ZXMgYWxvbmUsIGluY2x1ZGluZyBmd19zdGF0cyBh
+bmQgZXRoc3RhdHMgaGFuZGxpbmcuCj4+Cj4+Cj4+ID4+IC0gICAgIGlmICh0ZXN0X2JpdChXTUlf
+U0VSVklDRV9QRUVSX1NUQVRTLCBhci0+d21pLnN2Y19tYXApKSB7Cj4+ID4+IC0gICAgICAgICAg
+ICAgcGFyYW0gPSBhci0+d21pLnBkZXZfcGFyYW0tPnBlZXJfc3RhdHNfdXBkYXRlX3BlcmlvZDsK
+Pj4gPj4gLSAgICAgICAgICAgICByZXQgPSBhdGgxMGtfd21pX3BkZXZfc2V0X3BhcmFtKGFyLCBw
+YXJhbSwKPj4gPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IFBFRVJfREVGQVVMVF9TVEFUU19VUERBVEVfUEVSSU9EKTsKPj4gPj4gLSAgICAgICAgICAgICBp
+ZiAocmV0KSB7Cj4+ID4+IC0gICAgICAgICAgICAgICAgICAgICBhdGgxMGtfd2FybihhciwKPj4g
+Pj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJmYWlsZWQgdG8gc2V0IHBlZXIg
+c3RhdHMgcGVyaW9kIDogJWRcbiIsCj4+ID4+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICByZXQpOwo+PiA+PiAtICAgICAgICAgICAgICAgICAgICAgZ290byBlcnJfY29yZV9zdG9w
+Owo+PiA+PiAtICAgICAgICAgICAgIH0KPj4gPj4gKyAgICAgcGFyYW0gPSBhci0+d21pLnBkZXZf
+cGFyYW0tPnBlZXJfc3RhdHNfdXBkYXRlX3BlcmlvZDsKPj4gPj4gKyAgICAgcmV0ID0gYXRoMTBr
+X3dtaV9wZGV2X3NldF9wYXJhbShhciwgcGFyYW0sCj4+ID4+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgUEVFUl9ERUZBVUxUX1NUQVRTX1VQREFURV9QRVJJT0QpOwo+PiA+
+PiArICAgICBpZiAocmV0KSB7Cj4+ID4+ICsgICAgICAgICAgICAgYXRoMTBrX3dhcm4oYXIsCj4+
+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgImZhaWxlZCB0byBzZXQgcGVlciBzdGF0cyBw
+ZXJpb2QgOiAlZFxuIiwKPj4gPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICByZXQpOwo+PiA+
+PiArICAgICAgICAgICAgIGdvdG8gZXJyX2NvcmVfc3RvcDsKPj4gPj4gICAgICAgfQo+PiA+Cj4+
+ID4gW3NoYWZpXSBJZiBpIGFtIGNvcnJlY3QgdGhpcyBjaGFuZ2UgcmVxdWlyZXMgJ1BFRVJfU1RB
+VFMnIHRvIGJlIGVuYWJsZWQgYnkKPj4gPiBkZWZhdWx0Lgo+Pgo+PiBObywgaXQgZG9lcyBub3Qu
+IFBlcmlvZGljIHN0YXRzIGhhdmUgYmVlbiBhdmFpbGFibGUgc2luY2UgZm9yZXZlci4KPgo+IFtz
+aGFmaV0gTWljaGFsLCBzb3JyeSBpIHdhcyB0YWxraW5nIGFib3V0IGVuYWJsaW5nIFdNSV9QRUVS
+X1NUQVRTIGZlYXR1cmUgZm9yCj4gMTAuMiwgYW5kIHdlIGhhdmUgYSBwYXRjaCBwdXNoZWQgcmVj
+ZW50bHkgdG8gcmVkdWNlIHRoZSBudW1iZXIgb2YgcGVlcnMgaWYKPiAnV01JX1BFRVJfU1RBVFMn
+IGZlYXR1cmUgaXMgZW5hYmxlZChhdm9pZGluZyBmL3cgY3Jhc2ggZHVlIHRvIG1lbW9yeQo+IGNv
+bnN0cmFpbnRzKSAuIEJ1dCB0aGlzIHBhdGNoIHJlcXVpcmVzIHRoZSBmZWF0dXJlIHRvIGJlCj4g
+dHVybmVkIE9OIGFsd2F5cyAod2l0aCBwZXJpb2RpYyBzdGF0cyB1cGRhdGUgYXMgd2VsbCBmb3Ig
+ZXZleSAxMDBtcykuIFBsZWFzZQo+IGNvcnJlY3QgbWUgaWYgbXkgdW5kZXJzdGFuZGluZyBpcyB3
+cm9uZy4KClBlcmlvZGljIHN0YXRzIGFuZCBleHRlbmRlZCBzdGF0cyBhcmUgdHdvIHNlcGFyYXRl
+IHRoaW5ncy4KCldNSV9QRUVSX1NUQVRTIGlzIGEgZmVhdHVyZSB3aGljaCBwcm9tcHRzIGZpcm13
+YXJlIHRvIGdhdGhlciBtb3JlCnN0YXRpc3RpY3MgYW5kIHRoZW4gcmVwb3J0IHRoZW0gdG8gaG9z
+dCB2aWEgc3RhdCB1cGRhdGUgZXZlbnQgYW5kCmluY2x1ZGVzLCBlLmcuIHJ4X2R1cmF0aW9uLiBE
+dWUgdG8gaG93IHJ4X2R1cmF0aW9uIHdhcyBkZXNpZ25lZCBpbgpmaXJtd2FyZSBpdCBuZWVkcyB0
+byBiZSBjb21iaW5lZCB3aXRoIHJlYWRpbmcgb3V0IHRoZSBzdGF0cyBvZnRlbiB0bwptYWtlIGl0
+IHVzYWJsZS4gUGVyaW9kaWMgc3RhdHMgd2VyZSB1c2VkIGluc3RlYWQgb2YgZXhwbGljaXQKcGlu
+Zy1wb25nLgoKUGVyaW9kaWMgc3RhdHMgaXMganVzdCBvbmUgb2YgdHdvIHdheXMgKHRoZSBvdGhl
+ciBiZWluZyBwaW5nLXBvbmcpCmFza2luZyBmaXJtd2FyZSBmb3Igc3RhdCB1cGRhdGUgZXZlbnQu
+IEl0IGhhcyBiZWVuIGluIGZpcm13YXJlIHNpbmNlCmZvcmV2ZXIuCgoKTWljaGHFggoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
