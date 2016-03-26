@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ajOBD-0005gz-Dh
- for ath10k@lists.infradead.org; Fri, 25 Mar 2016 09:37:23 +0000
-Received: by mail-lb0-x230.google.com with SMTP id bc4so45761849lbc.2
- for <ath10k@lists.infradead.org>; Fri, 25 Mar 2016 02:36:57 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFC] ath10k: implement dql for htt tx
-Date: Fri, 25 Mar 2016 10:39:03 +0100
-Message-Id: <1458898743-21118-1-git-send-email-michal.kazior@tieto.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
+ id 1aje2x-0004LZ-9L
+ for ath10k@lists.infradead.org; Sat, 26 Mar 2016 02:33:53 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 4A5F440D706
+ for <ath10k@lists.infradead.org>; Fri, 25 Mar 2016 19:27:23 -0700 (PDT)
+From: Ben Greear <greearb@candelatech.com>
+Subject: Deadlock on (faked) firmware crash, CUS239, modified 10.4.3 firmware.
+Message-ID: <56F5F38A.2070602@candelatech.com>
+Date: Fri, 25 Mar 2016 19:27:22 -0700
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,261 +21,1077 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, dave.taht@gmail.com, codel@lists.bufferbloat.net, Michal Kazior <michal.kazior@tieto.com>
+To: ath10k <ath10k@lists.infradead.org>
 
-This implements a very naive dynamic queue limits
-on the flat HTT Tx. In some of my tests (using
-flent) it seems to reduce induced latency by
-orders of magnitude (e.g. when enforcing 6mbps
-tx rates 2500ms -> 150ms). But at the same time it
-introduces TCP throughput buildup over time
-(instead of immediate bump to max). More
-importantly I didn't observe it to make things
-much worse (yet).
+I've been seeing this for a while now.  When firmware crashes, often the OS at least
+partially locks up.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
+This is modified 4.4.6 driver/kernel, modified 10.4.3 firmware.  I had 35 stations associated,
+and reset one.  Flush fails (maybe because nothing stops tx on other vdevs while flushing one?)
+and I added a fake firmware crash even in case flush fails.
 
-I'm not sure yet if it's worth to consider this
-patch for merging per se. My motivation was to
-have something to prove mac80211 fq works and to
-see if DQL can learn the proper queue limit in
-face of wireless rate control at all.
+Then, I get deadlock.  I've seen other similar deadlocks when the firmware crashed due
+to 'natural' causes when adding vdevs....
 
-I'll do a follow up post with flent test results
-and some notes.
+Looks like the same process is not actually stuck in one place...each time the kernel splats,
+it is in a different place..spinning and spinning.  Maybe it needs a bail-out on firmware
+crash?
 
 
- drivers/net/wireless/ath/ath10k/core.h   |  2 ++
- drivers/net/wireless/ath/ath10k/htt_rx.c | 12 ++++++++----
- drivers/net/wireless/ath/ath10k/htt_tx.c |  8 +++++++-
- drivers/net/wireless/ath/ath10k/mac.c    | 26 ++++++++++++++++++++------
- drivers/net/wireless/ath/ath10k/txrx.c   |  6 +++++-
- drivers/net/wireless/ath/ath10k/txrx.h   |  3 ++-
- 6 files changed, 44 insertions(+), 13 deletions(-)
+[  280.693815] sta34: deauthenticating from 04:f0:21:f6:85:1c by local choice (Reason: 3=DEAUTH_LEAVING)
+[  285.702648] ath10k_pci 0000:05:00.0: failed to flush transmit queue (skip 0 ar-state 1): time-left 0 tx-pending 4
+[  285.712506] ath10k_pci 0000:05:00.0: Failed to flush, and flush-all supported by this NIC.  Restart firmware.
+[  285.722011] ath10k_pci 0000:05:00.0: firmware crashed! (uuid af114163-986b-4e8b-8e65-8946850d73ea)
+[  285.730573] ath10k_pci 0000:05:00.0: qca99x0 hw2.0 target 0x01000000 chip_id 0x003b01ff sub 168c:0002
+[  285.739403] ath10k_pci 0000:05:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
+[  285.747692] ath10k_pci 0000:05:00.0: firmware ver 10.4.3-ct-xtH-006-de1ce62 api 5 features 
+peer-flow-ctrl,txstatus-noack,wmi-10.x-CT,rxswcrypt-CT,ratemask-CT,regdump-CT,txrate-CT,flush-all-CT,pingpong-CT,ch-regs-CT,nop-CT,htt-mgt-CT,set-special-CT,no-bmiss-CT 
+crc32 19fb2010
+[  285.773634] ath10k_pci 0000:05:00.0: board_file api 1 bmi_id 1:1 crc32 7e56fd07
+[  285.780691] ath10k_pci 0000:05:00.0: htt-ver 2.2 wmi-op 6 htt-op 4 cal otp max-sta 72 raw 0 hwcrypto 1
+[  285.791801] ath10k_pci 0000:05:00.0: firmware register dump:
+[  285.797225] ath10k_pci 0000:05:00.0: [00]: 0x00940678 0x00400C00 0x00980000 0x009C21D8
+[  285.804932] ath10k_pci 0000:05:00.0: [04]: 0x009C2100 0x00941AF4 0x00941B88 0x00941B3C
+[  285.812653] ath10k_pci 0000:05:00.0: [08]: 0x00941B1C 0x00942CD0 0x00942BC4 0x00942BAC
+[  285.820350] ath10k_pci 0000:05:00.0: [12]: 0x00941CDC 0x00942D24 0x00942D04 0x00942D0C
+[  285.828052] ath10k_pci 0000:05:00.0: [16]: 0x00942D14 0x00942D1C 0x009431B0 0x00942EEC
+[  285.835746] ath10k_pci 0000:05:00.0: [20]: 0x00942EC8 0x00942D4C 0x00942F00 0x00942E64
+[  285.843429] ath10k_pci 0000:05:00.0: [24]: 0x00942D80 0x00942ED8 0x00942E9C 0x00943150
+[  285.851115] ath10k_pci 0000:05:00.0: [28]: 0x00943198 0x009431A8 0x009431C0 0x00943014
+[  285.858798] ath10k_pci 0000:05:00.0: [32]: 0x00942F4C 0x00942DE0 0x00942E00 0x00942E3C
+[  285.866472] ath10k_pci 0000:05:00.0: [36]: 0x00943508 0x00943B24 0x00943B6C 0x00943C94
+[  285.874147] ath10k_pci 0000:05:00.0: [40]: 0x00943CF4 0x00943D08 0x00943D70 0x009406A4
+[  285.881817] ath10k_pci 0000:05:00.0: [44]: 0x009406B8 0x009C1E0C 0x00943E94 0x00943A90
+[  285.889481] ath10k_pci 0000:05:00.0: [48]: 0x00943730 0x00943368 0x00943690 0x009436B4
+[  285.897157] ath10k_pci 0000:05:00.0: [52]: 0x009436C8 0x009436EC 0x009531E8 0x009531F8
+[  285.904820] ath10k_pci 0000:05:00.0: [56]: 0x009531F0 0x009406B0 0x00943EA0 0x00943A18
+[  285.914519] ath10k_pci 0000:05:00.0: debug log header, dbuf: 0x418bb0  dropped: 0
+[  285.922778] ath10k_pci 0000:05:00.0: [0] next: 0x418bc8 buf: 0x414f40 sz: 1500 len: 0 count: 0 free: 0
+[  285.932866] ath10k_pci 0000:05:00.0: [1] next: 0x418bb0 buf: 0x415530 sz: 1500 len: 0 count: 0 free: 0
+[  285.967965] ath10k_pci 0000:05:00.0: dropping dbg buffer due to crash since read
+[  285.975171] ath10k_pci 0000:05:00.0: ath10k_pci ATH10K_DBG_BUFFER:
+[  285.981158] ath10k: [0000]: 0002C27B 0888581B 0000851C 00000000 0002C27B 0088581D
+[  285.988455] ath10k_pci 0000:05:00.0: ATH10K_END
+[  286.019951] ieee80211 wiphy3: Hardware restart was requested
+[  286.025603] ath10k_pci 0000:05:00.0: found sta peer 04:f0:21:f6:85:1c entry on vdev 34 after it was supposedly removed
+[  286.025609] DMAR: DRHD: handling fault status reg 2
+[  286.025615] DMAR: DMAR:[DMA Read] Request device [05:00.0] fault addr 0
+DMAR:[fault reason 06] PTE Read access is not set
+[  286.053454] ath10k_pci 0000:05:00.0: failed to set protection mode 0 on vdev 34: -108
+[  286.061244] ath10k_pci 0000:05:00.0: failed to set erp slot for vdev 34: -108
+[  286.068323] ath10k_pci 0000:05:00.0: failed to set preamble for vdev 34: -108
+[  286.075402] ath10k_pci 0000:05:00.0: failed to down vdev 34: -108
+[  286.081433] ath10k_pci 0000:05:00.0: failed to set wmm params: -108
+[  286.087640] ath10k_pci 0000:05:00.0: failed to set wmm params: -108
+[  286.093814] ath10k_pci 0000:05:00.0: failed to set wmm params: -108
+[  286.099975] ath10k_pci 0000:05:00.0: failed to set wmm params: -108
+[  286.106144] ath10k_pci 0000:05:00.0: failed to stop WMI vdev 34: -108
+[  286.112413] ath10k_pci 0000:05:00.0: failed to stop vdev 34: -108
+[  286.119673] ------------[ cut here ]------------
+[  286.124629] WARNING: CPU: 1 PID: 7825 at /home/greearb/git/linux-4.4.dev.y/net/mac80211/key.c:804 ieee80211_free_keys+0x143/0x1ca [mac80211]()
+[  286.138322] Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 8021q garp mrp stp llc bnep bluetooth fuse macvlan wanlink(O) 
+pktgen rpcsec_gss_krb5 nfsv4 nfs fscache iTCO_wdt iTCO_vendor_support coretemp ath9k ath10k_pci hwmon ath9k_common ath10k_core ath9k_hw intel_rapl iosf_mbi ath 
+x86_pkg_temp_thermal intel_powerclamp mac80211 kvm_intel kvm joydev irqbypass pcspkr serio_raw cfg80211 snd_hda_codec_hdmi lpc_ich i2c_i801 
+snd_hda_codec_realtek snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_seq snd_seq_device snd_pcm 8250_fintek snd_timer snd shpchp 
+soundcore tpm_tis tpm nfsd auth_rpcgss nfs_acl lockd grace sunrpc ata_generic pata_acpi i915 e1000e ptp pps_core i2c_algo_bit drm_kms_helper drm i2c_core fjes 
+video ipv6 [last unloaded: nf_conntrack]
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index b6c157ef705a..d8eebcd2b0b0 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -630,6 +630,8 @@ struct ath10k {
- 	struct device *dev;
- 	u8 mac_addr[ETH_ALEN];
- 
-+	struct dql dql;
-+
- 	enum ath10k_hw_rev hw_rev;
- 	u16 dev_id;
- 	u32 chip_id;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 2da8ccf3da05..38bc8bf46b67 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1679,7 +1679,8 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
- }
- 
- static void ath10k_htt_rx_frm_tx_compl(struct ath10k *ar,
--				       struct sk_buff *skb)
-+				       struct sk_buff *skb,
-+				       unsigned int *completed)
- {
- 	struct ath10k_htt *htt = &ar->htt;
- 	struct htt_resp *resp = (struct htt_resp *)skb->data;
-@@ -1712,7 +1713,7 @@ static void ath10k_htt_rx_frm_tx_compl(struct ath10k *ar,
- 	for (i = 0; i < resp->data_tx_completion.num_msdus; i++) {
- 		msdu_id = resp->data_tx_completion.msdus[i];
- 		tx_done.msdu_id = __le16_to_cpu(msdu_id);
--		ath10k_txrx_tx_unref(htt, &tx_done);
-+		ath10k_txrx_tx_unref(htt, &tx_done, completed);
- 	}
- }
- 
-@@ -2354,7 +2355,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 			break;
- 		}
- 
--		status = ath10k_txrx_tx_unref(htt, &tx_done);
-+		status = ath10k_txrx_tx_unref(htt, &tx_done, NULL);
- 		if (!status) {
- 			spin_lock_bh(&htt->tx_lock);
- 			ath10k_htt_tx_mgmt_dec_pending(htt);
-@@ -2482,6 +2483,7 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
- 	struct htt_resp *resp;
- 	struct sk_buff *skb;
- 	unsigned long flags;
-+	unsigned int completed = 0;
- 
- 	__skb_queue_head_init(&tx_q);
- 	__skb_queue_head_init(&rx_q);
-@@ -2505,10 +2507,12 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
- 	spin_unlock_irqrestore(&htt->tx_fetch_ind_q.lock, flags);
- 
- 	while ((skb = __skb_dequeue(&tx_q))) {
--		ath10k_htt_rx_frm_tx_compl(htt->ar, skb);
-+		ath10k_htt_rx_frm_tx_compl(htt->ar, skb, &completed);
- 		dev_kfree_skb_any(skb);
- 	}
- 
-+	dql_completed(&htt->ar->dql, completed);
-+
- 	while ((skb = __skb_dequeue(&tx_ind_q))) {
- 		ath10k_htt_rx_tx_fetch_ind(ar, skb);
- 		dev_kfree_skb_any(skb);
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index b2ae122381ca..2b7f7802f9f1 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -367,7 +367,7 @@ static int ath10k_htt_tx_clean_up_pending(int msdu_id, void *skb, void *ctx)
- 	tx_done.discard = 1;
- 	tx_done.msdu_id = msdu_id;
- 
--	ath10k_txrx_tx_unref(htt, &tx_done);
-+	ath10k_txrx_tx_unref(htt, &tx_done, NULL);
- 
- 	return 0;
- }
-@@ -378,6 +378,7 @@ void ath10k_htt_tx_free(struct ath10k_htt *htt)
- 
- 	idr_for_each(&htt->pending_tx, ath10k_htt_tx_clean_up_pending, htt->ar);
- 	idr_destroy(&htt->pending_tx);
-+	dql_reset(&htt->ar->dql);
- 
- 	if (htt->txbuf.vaddr) {
- 		size = htt->max_num_pending_tx *
-@@ -839,6 +840,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	u16 freq = 0;
- 	u32 frags_paddr = 0;
- 	u32 txbuf_paddr;
-+	size_t skb_len;
- 	struct htt_msdu_ext_desc *ext_desc = NULL;
- 
- 	spin_lock_bh(&htt->tx_lock);
-@@ -1000,12 +1002,16 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	sg_items[1].paddr = skb_cb->paddr;
- 	sg_items[1].len = prefetch_len;
- 
-+	skb_len = msdu->len;
-+
- 	res = ath10k_hif_tx_sg(htt->ar,
- 			       htt->ar->htc.endpoint[htt->eid].ul_pipe_id,
- 			       sg_items, ARRAY_SIZE(sg_items));
- 	if (res)
- 		goto err_unmap_msdu;
- 
-+	dql_queued(&ar->dql, skb_len);
-+
- 	return 0;
- 
- err_unmap_msdu:
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index ed00853ea9cc..c848049ffdf3 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3755,23 +3755,35 @@ void ath10k_mac_tx_push_pending(struct ath10k *ar)
- 	struct ieee80211_hw *hw = ar->hw;
- 	struct ieee80211_txq *txq;
- 	struct ath10k_txq *artxq;
--	struct ath10k_txq *last;
- 	int ret;
- 	int max;
- 
- 	spin_lock_bh(&ar->txqs_lock);
- 	rcu_read_lock();
- 
--	last = list_last_entry(&ar->txqs, struct ath10k_txq, list);
--	while (!list_empty(&ar->txqs)) {
-+	for (;;) {
-+		if (list_empty(&ar->txqs))
-+			break;
-+
-+		if (dql_avail(&ar->dql) < 0)
-+			break;
-+
- 		artxq = list_first_entry(&ar->txqs, struct ath10k_txq, list);
- 		txq = container_of((void *)artxq, struct ieee80211_txq,
- 				   drv_priv);
- 
--		/* Prevent aggressive sta/tid taking over tx queue */
- 		max = 16;
- 		ret = 0;
--		while (ath10k_mac_tx_can_push(hw, txq) && max--) {
-+		for (;;) {
-+			if (!max--)
-+				break;
-+
-+			if (!ath10k_mac_tx_can_push(hw, txq))
-+				break;
-+
-+			if (dql_avail(&ar->dql) < 0)
-+				break;
-+
- 			ret = ath10k_mac_tx_push_txq(hw, txq);
- 			if (ret < 0)
- 				break;
-@@ -3783,7 +3795,7 @@ void ath10k_mac_tx_push_pending(struct ath10k *ar)
- 
- 		ath10k_htt_tx_txq_update(hw, txq);
- 
--		if (artxq == last || (ret < 0 && ret != -ENOENT))
-+		if (ret < 0 && ret != -ENOENT)
- 			break;
- 	}
- 
-@@ -4331,6 +4343,8 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 
- 	mutex_lock(&ar->conf_mutex);
- 
-+	dql_init(&ar->dql, HZ);
-+
- 	switch (ar->state) {
- 	case ATH10K_STATE_OFF:
- 		ar->state = ATH10K_STATE_ON;
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 48e26cdfe9a5..122c8edf10a1 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -50,7 +50,8 @@ out:
- }
- 
- int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
--			 const struct htt_tx_done *tx_done)
-+			 const struct htt_tx_done *tx_done,
-+			 unsigned int *completed)
- {
- 	struct ath10k *ar = htt->ar;
- 	struct device *dev = ar->dev;
-@@ -87,6 +88,9 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 	if (txq)
- 		artxq->num_fw_queued--;
- 
-+	if (completed)
-+		*completed += msdu->len;
-+
- 	ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
- 	ath10k_htt_tx_dec_pending(htt);
- 	if (htt->num_pending_tx == 0)
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.h b/drivers/net/wireless/ath/ath10k/txrx.h
-index e7ea1ae1c438..3a655270bcc5 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.h
-+++ b/drivers/net/wireless/ath/ath10k/txrx.h
-@@ -20,7 +20,8 @@
- #include "htt.h"
- 
- int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
--			 const struct htt_tx_done *tx_done);
-+			 const struct htt_tx_done *tx_done,
-+			 unsigned int *completed);
- 
- struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
- 				     const u8 *addr);
+[  286.217587] CPU: 3 PID: 7825 Comm: ip Tainted: G        W  O    4.4.6+ #21
+[  286.224367] Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
+[  286.233967]  0000000000000000 ffff8801fd107648 ffffffff8137086d 0000000000000000
+[  286.241381]  0000000000000009 ffff8801fd107680 ffffffff810ee1eb ffffffffa0aaa6de
+[  286.248800]  ffff880201af4a40 ffff8801fd1076a8 ffff8800d4dc0a60 ffff8801fd107690
+[  286.256233] Call Trace:
+[  286.258652]  [<ffffffff8137086d>] dump_stack+0x81/0xb6
+[  286.263779]  [<ffffffff810ee1eb>] warn_slowpath_common+0x94/0xad
+[  286.269810]  [<ffffffffa0aaa6de>] ? ieee80211_free_keys+0x143/0x1ca [mac80211]
+[  286.277044]  [<ffffffff810ee2a8>] warn_slowpath_null+0x15/0x17
+[  286.282919]  [<ffffffffa0aaa6de>] ieee80211_free_keys+0x143/0x1ca [mac80211]
+[  286.290020]  [<ffffffffa0a91562>] ieee80211_do_stop+0x489/0x6ed [mac80211]
+[  286.296937]  [<ffffffff8112d4b9>] ? trace_hardirqs_on+0xd/0xf
+[  286.302728]  [<ffffffff810f23ad>] ? __local_bh_enable_ip+0xa4/0xb9
+[  286.308958]  [<ffffffff816f9f9a>] ? _raw_spin_unlock_bh+0x30/0x33
+[  286.315127]  [<ffffffffa0a917db>] ieee80211_stop+0x15/0x19 [mac80211]
+[  286.321621]  [<ffffffff816364cf>] __dev_close_many+0xaf/0xd2
+[  286.327325]  [<ffffffff81636524>] __dev_close+0x32/0x47
+[  286.332596]  [<ffffffff8163ef6e>] __dev_change_flags+0xa4/0x13a
+[  286.338553]  [<ffffffff8163f023>] dev_change_flags+0x1f/0x54
+[  286.344248]  [<ffffffff8164a34f>] do_setlink+0x2fb/0x958
+[  286.349581]  [<ffffffff8112d0d0>] ? mark_lock+0x24/0x201
+[  286.354893]  [<ffffffff8112d0d0>] ? mark_lock+0x24/0x201
+[  286.360193]  [<ffffffff8112d0d0>] ? mark_lock+0x24/0x201
+[  286.365442]  [<ffffffff8112d0d0>] ? mark_lock+0x24/0x201
+[  286.370652]  [<ffffffff8164d823>] rtnl_newlink+0x363/0x6c2
+[  286.376023]  [<ffffffff816361e7>] ? netdev_master_upper_dev_get+0xd/0x50
+[  286.382611]  [<ffffffff8164d5be>] ? rtnl_newlink+0xfe/0x6c2
+[  286.388057]  [<ffffffff810f5e7d>] ? ns_capable+0x43/0x5a
+[  286.393238]  [<ffffffff8164dcf8>] rtnetlink_rcv_msg+0x176/0x185
+[  286.399034]  [<ffffffff816493ca>] ? rtnl_lock+0x12/0x14
+[  286.404139]  [<ffffffff8112eb5c>] ? lock_release+0x1bb/0x3bd
+[  286.409686]  [<ffffffff8164db82>] ? rtnl_newlink+0x6c2/0x6c2
+[  286.415246]  [<ffffffff81669293>] netlink_rcv_skb+0x45/0x89
+[  286.420731]  [<ffffffff81649fe0>] rtnetlink_rcv+0x1e/0x25
+[  286.426062]  [<ffffffff81668c0a>] netlink_unicast+0xdc/0x154
+[  286.431658]  [<ffffffff8166913d>] netlink_sendmsg+0x4bb/0x4d2
+[  286.437346]  [<ffffffff8162477d>] sock_sendmsg+0x2e/0x3f
+[  286.442590]  [<ffffffff81625095>] ___sys_sendmsg+0x1bb/0x253
+[  286.448144]  [<ffffffff81152de0>] ? current_kernel_time64+0xb/0x31
+[  286.454188]  [<ffffffff8112eb5c>] ? lock_release+0x1bb/0x3bd
+[  286.459671]  [<ffffffff8112eb5c>] ? lock_release+0x1bb/0x3bd
+[  286.465104]  [<ffffffff8112e908>] ? lock_acquire+0x132/0x1cb
+[  286.470495]  [<ffffffff81152a9c>] ? read_seqcount_begin.constprop.23+0x6b/0x87
+[  286.477418]  [<ffffffff8112d490>] ? trace_hardirqs_on_caller+0x16f/0x18b
+[  286.483789]  [<ffffffff81225af1>] ? __fget_light+0x48/0x6c
+[  286.488909]  [<ffffffff81625403>] __sys_sendmsg+0x3d/0x5b
+[  286.493902]  [<ffffffff81625403>] ? __sys_sendmsg+0x3d/0x5b
+[  286.499061]  [<ffffffff8162542e>] SyS_sendmsg+0xd/0x17
+[  286.503757]  [<ffffffff816fa736>] entry_SYSCALL_64_fastpath+0x16/0x7a
+[  286.509843] ---[ end trace 8889d1df0badbc98 ]---
+[  286.514068] ath10k_pci 0000:05:00.0: failed to delete WMI vdev 34: -108
+[  286.520257] ath10k_pci 0000:05:00.0: found vif peer 04:f0:21:9f:52:d1 entry on vdev 34 after it was supposedly removed
+[  286.530558] ath10k_pci 0000:05:00.0: removing stale peer 04:f0:21:f6:85:1c from vdev_id 34
+[  286.544564] ath10k_pci 0000:05:00.0: failed to create WMI vdev 34: -108
+[  287.130640] wlan3: Failed to send nullfunc to AP 04:f0:21:f6:85:1c after 1000ms, disconnecting
+[  289.180099] ath10k_pci 0000:05:00.0: UART prints enabled: 19200, tx-pin: 7
+[  289.229958] ath10k_pci 0000:05:00.0: 10.4 wmi init: vdevs: 36  peers: 72  tid: 144
+[  289.237180] ath10k_pci 0000:05:00.0: using rx swcrypt
+[  289.241879] ath10k_pci 0000:05:00.0: msdu-desc: 1024
+[  289.318425] ath10k_pci 0000:05:00.0: wmi print 'P 72/72 V 36 K 216 T 298  msdu-desc: 1024  sw-crypt: 1'
+[  289.327500] ath10k_pci 0000:05:00.0: wmi print 'free: 8440 iram: 11300 sram: 9436'
+[  289.539697] ath10k_pci 0000:05:00.0: dropping dbg buffer due to crash since read
+[  289.546739] ath10k_pci 0000:05:00.0: ath10k_pci ATH10K_DBG_BUFFER:
+[  289.552609] ath10k: [0000]: 00000A84 13FC0007 00002070 00000024 00000048 00070000 00000ACC 17FC582E
+[  289.561338] ath10k: [0008]: 00000003 0000001E 00000388 00000388 00000000 00000ACC 17FC582E 00000012
+[  289.570083] ath10k: [0016]: 0000001E 00000388 00000388 00000000 00000ACC 17FC582E 00000045 0000001E
+[  289.578858] ath10k: [0024]: 00000388 00000388 00000000 00000ACC 17FC582E 00000067 0000001E 00000388
+[  289.587638] ath10k: [0032]: 00000388 00000000 00000B9C 14005853 51100001 000F3A0C 000003FC 00000001
+[  289.596882] ath10k: [0040]: 00442DF0 00000B9C 14005856 71109990 00425914 00000000 0044B8CC 00001200
+[  289.605721] ath10k: [0048]: 00000B9C 14005856 71109990 00425914 00000000 0044B8B8 00098000 00000B9C
+[  289.614540] ath10k: [0056]: 0C005851 00425914 00442DF0 00000001 00000B9C 0C006403 00000000 00000100
+[  289.623393] ath10k: [0064]: 00000000 00000B9C 04003C25 00000000 00000B9C 14005856 71109990 00425914
+[  289.632243] ath10k: [0072]: 00000000 0044B8A4 01000000 00000B9D 07FC4C02 00000004 00000BA0 14045853
+[  289.641103] ath10k: [0080]: 51100001 000F39C4 000003FC 00000002 00442D20 00000BA0 14045856 71109990
+[  289.649973] ath10k: [0088]: 0042584C 00000000 0044B890 00001200 00000BA0 14045856 71109990 0042584C
+[  289.658851] ath10k: [0096]: 00000000 0044B87C 00098000 00000BA0 0C045851 0042584C 00442D20 00000001
+[  289.667753] ath10k: [0104]: 00000BA0 0C046403 00000000 00000100 00000000 00000BA0 04043C25 00000000
+[  289.676660] ath10k: [0112]: 00000BA0 14045856 71109990 0042584C 00000000 0044B868 01000000 00000BA0
+[  289.685572] ath10k: [0120]: 07FC4C02 00000004 00000BA2 14085853 51100001 000F397C 000003FC 00000003
+[  289.694496] ath10k: [0128]: 00442C50 00000BA2 14085856 71109990 00425784 00000000 0044B854 00001200
+[  289.703434] ath10k: [0136]: 00000BA2 14085856 71109990 00425784 00000000 0044B840 00098000 00000BA2
+[  289.712405] ath10k: [0144]: 0C085851 00425784 00442C50 00000001 00000BA2 0C086403 00000000 00000100
+[  289.721380] ath10k: [0152]: 00000000 00000BA2 04083C25 00000000 00000BA2 14085856 71109990 00425784
+[  289.730367] ath10k: [0160]: 00000000 0044B82C 01000000 00000BA2 07FC4C02 00000004 00000BA5 140C5853
+[  289.739361] ath10k: [0168]: 51100001 000F3934 000003FC 00000004 00442B80 00000BA5 140C5856 71109990
+[  289.748373] ath10k: [0176]: 004256BC 00000000 0044B818 00001200 00000BA5 140C5856 71109990 004256BC
+[  289.757397] ath10k: [0184]: 00000000 0044B804 00098000 00000BA5 0C0C5851 004256BC 00442B80 00000001
+[  289.766441] ath10k: [0192]: 00000BA5 0C0C6403 00000000 00000100 00000000 00000BA5 040C3C25 00000000
+[  289.775510] ath10k: [0200]: 00000BA5 140C5856 71109990 004256BC 00000000 0044B7F0 01000000 00000BA5
+[  289.784589] ath10k: [0208]: 07FC4C02 00000004 00000BA8 14105853 51100001 000F38EC 000003FC 00000005
+[  289.793681] ath10k: [0216]: 00442AB0 00000BA8 14105856 71109990 004255F4 00000000 0044B7DC 00001200
+[  289.802777] ath10k: [0224]: 00000BA8 14105856 71109990 004255F4 00000000 0044B7C8 00098000 00000BA8
+[  289.811894] ath10k: [0232]: 0C105851 004255F4 00442AB0 00000001 00000BA8 0C106403 00000000 00000100
+[  289.821016] ath10k: [0240]: 00000000 00000BA8 04103C25 00000000 00000BA8 14105856 71109990 004255F4
+[  289.830146] ath10k: [0248]: 00000000 0044B7B4 01000000 00000BA8 07FC4C02 00000004 00000BAA 14145853
+[  289.839283] ath10k: [0256]: 51100001 000F38A4 000003FC 00000006 004429E0 00000BAA 14145856 71109990
+[  289.848432] ath10k: [0264]: 0042552C 00000000 0044B7A0 00001200 00000BAA 14145856 71109990 0042552C
+[  289.857591] ath10k: [0272]: 00000000 0044B78C 00098000 00000BAA 0C145851 0042552C 004429E0 00000001
+[  289.866758] ath10k: [0280]: 00000BAA 0C146403 00000000 00000100 00000000 00000BAA 04143C25 00000000
+[  289.875917] ath10k: [0288]: 00000BAB 14145856 71109990 0042552C 00000000 0044B778 01000000 00000BAB
+[  289.885062] ath10k: [0296]: 07FC4C02 00000004 00000BAD 14185853 51100001 000F385C 000003FC 00000007
+[  289.894206] ath10k: [0304]: 00442910 00000BAD 14185856 71109990 00425464 00000000 0044B764 00001200
+[  289.903348] ath10k: [0312]: 00000BAD 14185856 71109990 00425464 00000000 0044B750 00098000 00000BAD
+[  289.912495] ath10k: [0320]: 0C185851 00425464 00442910 00000001 00000BAD 0C186403 00000000 00000100
+[  289.921638] ath10k: [0328]: 00000000 00000BAD 04183C25 00000000 00000BAD 14185856 71109990 00425464
+[  289.930783] ath10k: [0336]: 00000000 0044B73C 01000000 00000BAD 07FC4C02 00000004 00000BB0 141C5853
+[  289.939948] ath10k: [0344]: 51100001 000F3814 000003FC 00000008 00442840 00000BB0 141C5856 71109990
+[  289.949109] ath10k: [0352]: 0042539C 00000000 0044B728 00001200 00000BB0 141C5856 71109990 0042539C
+[  289.958271] ath10k: [0360]: 00000000 0044B714 00098000 00000BB0 0C1C5851 0042539C 00442840 00000001
+[  289.967444] ath10k_pci 0000:05:00.0: ATH10K_END
+[  289.972166] ath10k_pci 0000:05:00.0: dropping dbg buffer due to crash since read
+[  289.979677] ath10k_pci 0000:05:00.0: ath10k_pci ATH10K_DBG_BUFFER:
+[  289.985966] ath10k: [0000]: 00000BB0 0C1C6403 00000000 00000100 00000000 00000BB0 041C3C25 00000000
+[  289.995149] ath10k: [0008]: 00000BB0 141C5856 71109990 0042539C 00000000 0044B700 01000000 00000BB7
+[  290.004332] ath10k: [0016]: 07FC4C02 00000004 00000BBA 14205853 51100001 000F37CC 000003FC 00000009
+[  290.013523] ath10k: [0024]: 00442770 00000BBA 14205856 71109990 004252D4 00000000 0044B6EC 00001200
+[  290.023312] ath10k: [0032]: 00000BBA 14205856 71109990 004252D4 00000000 0044B6D8 00098000 00000BBA
+[  290.032497] ath10k: [0040]: 0C205851 004252D4 00442770 00000001 00000BBA 0C206403 00000000 00000100
+[  290.041693] ath10k: [0048]: 00000000 00000BBA 04203C25 00000000 00000BBA 14205856 71109990 004252D4
+[  290.050888] ath10k: [0056]: 00000000 0044B6C4 01000000 00000BBA 07FC4C02 00000004 00000BBD 14245853
+[  290.060075] ath10k: [0064]: 51100001 000F3784 000003FC 0000000A 004426A0 00000BBD 14245856 71109990
+[  290.069271] ath10k: [0072]: 0042520C 00000000 0044B6B0 00001200 00000BBD 14245856 71109990 0042520C
+[  290.078458] ath10k: [0080]: 00000000 0044B69C 00098000 00000BBD 0C245851 0042520C 004426A0 00000001
+[  290.087647] ath10k: [0088]: 00000BBD 0C246403 00000000 00000100 00000000 00000BBD 04243C25 00000000
+[  290.096841] ath10k: [0096]: 00000BBD 14245856 71109990 0042520C 00000000 0044B688 01000000 00000BBD
+[  290.106038] ath10k: [0104]: 07FC4C02 00000004 00000BBF 14285853 51100001 000F373C 000003FC 0000000B
+[  290.115225] ath10k: [0112]: 004425D0 00000BBF 14285856 71109990 00425144 00000000 0044B674 00001200
+[  290.124412] ath10k: [0120]: 00000BBF 14285856 71109990 00425144 00000000 0044B660 00098000 00000BBF
+[  290.133598] ath10k: [0128]: 0C285851 00425144 004425D0 00000001 00000BBF 0C286403 00000000 00000100
+[  290.142785] ath10k: [0136]: 00000000 00000BBF 04283C25 00000000 00000BBF 14285856 71109990 00425144
+[  290.151969] ath10k: [0144]: 00000000 0044B64C 01000000 00000BBF 07FC4C02 00000004 00000BC2 142C5853
+[  290.161150] ath10k: [0152]: 51100001 000F36F4 000003FC 0000000C 00442500 00000BC2 142C5856 71109990
+[  290.170334] ath10k: [0160]: 0042507C 00000000 0044B638 00001200 00000BC2 142C5856 71109990 0042507C
+[  290.179524] ath10k: [0168]: 00000000 0044B624 00098000 00000BC2 0C2C5851 0042507C 00442500 00000001
+[  290.188716] ath10k: [0176]: 00000BC2 0C2C6403 00000000 00000100 00000000 00000BC2 042C3C25 00000000
+[  290.197902] ath10k: [0184]: 00000BC2 142C5856 71109990 0042507C 00000000 0044B610 01000000 00000BC2
+[  290.207084] ath10k: [0192]: 07FC4C02 00000004 00000BC5 14305853 51100001 000F36AC 000003FC 0000000D
+[  290.216277] ath10k: [0200]: 00442430 00000BC5 14305856 71109990 00424FB4 00000000 0044B5FC 00001200
+[  290.225464] ath10k: [0208]: 00000BC5 14305856 71109990 00424FB4 00000000 0044B5E8 00098000 00000BC5
+[  290.234644] ath10k: [0216]: 0C305851 00424FB4 00442430 00000001 00000BC5 0C306403 00000000 00000100
+[  290.243826] ath10k: [0224]: 00000000 00000BC5 04303C25 00000000 00000BC5 14305856 71109990 00424FB4
+[  290.253014] ath10k: [0232]: 00000000 0044B5D4 01000000 00000BC5 07FC4C02 00000004 00000BC7 14345853
+[  290.262192] ath10k: [0240]: 51100001 000F3664 000003FC 0000000E 00442360 00000BC7 14345856 71109990
+[  290.271371] ath10k: [0248]: 00424EEC 00000000 0044B5C0 00001200 00000BC7 14345856 71109990 00424EEC
+[  290.280554] ath10k: [0256]: 00000000 0044B5AC 00098000 00000BC7 0C345851 00424EEC 00442360 00000001
+[  290.289737] ath10k: [0264]: 00000BC7 0C346403 00000000 00000100 00000000 00000BC7 04343C25 00000000
+[  290.298918] ath10k: [0272]: 00000BC7 14345856 71109990 00424EEC 00000000 0044B598 01000000 00000BC7
+[  290.308101] ath10k: [0280]: 07FC4C02 00000004 00000BCA 14385853 51100001 000F361C 000003FC 0000000F
+[  290.317279] ath10k: [0288]: 00442290 00000BCA 14385856 71109990 00424E24 00000000 0044B584 00001200
+[  290.326453] ath10k: [0296]: 00000BCA 14385856 71109990 00424E24 00000000 0044B570 00098000 00000BCA
+[  290.335626] ath10k: [0304]: 0C385851 00424E24 00442290 00000001 00000BCA 0C386403 00000000 00000100
+[  290.344804] ath10k: [0312]: 00000000 00000BCA 04383C25 00000000 00000BCA 14385856 71109990 00424E24
+[  290.353981] ath10k: [0320]: 00000000 0044B55C 01000000 00000BCA 07FC4C02 00000004 00000BCD 143C5853
+[  290.363150] ath10k: [0328]: 51100001 000F35D4 000003FC 00000010 004421C0 00000BCD 143C5856 71109990
+[  290.372325] ath10k: [0336]: 00424D5C 00000000 0044B548 00001200 00000BCD 143C5856 71109990 00424D5C
+[  290.381499] ath10k: [0344]: 00000000 0044B534 00098000 00000BCD 0C3C5851 00424D5C 004421C0 00000001
+[  290.390670] ath10k: [0352]: 00000BCD 0C3C6403 00000000 00000100 00000000 00000BCD 043C3C25 00000000
+[  290.399838] ath10k: [0360]: 00000BCD 143C5856 71109990 00424D5C 00000000 0044B520 01000000 00000BCD
+[  290.409006] ath10k: [0368]: 07FC4C02 00000004
+[  290.413481] ath10k_pci 0000:05:00.0: ATH10K_END
+[  290.418103] ath10k_pci 0000:05:00.0: dropping dbg buffer due to crash since read
+[  290.425594] ath10k_pci 0000:05:00.0: ath10k_pci ATH10K_DBG_BUFFER:
+[  290.431861] ath10k: [0000]: 00000BCF 14405853 51100001 000F358C 000003FC 00000011 004420F0 00000BCF
+[  290.441011] ath10k: [0008]: 14405856 71109990 00424C94 00000000 0044B50C 00001200 00000BCF 14405856
+[  290.450159] ath10k: [0016]: 71109990 00424C94 00000000 0044B4F8 00098000 00000BCF 0C405851 00424C94
+[  290.459312] ath10k: [0024]: 004420F0 00000001 00000BCF 0C406403 00000000 00000100 00000000 00000BCF
+[  290.468468] ath10k: [0032]: 04403C25 00000000 00000BCF 14405856 71109990 00424C94 00000000 0044B4E4
+[  290.477615] ath10k: [0040]: 01000000 00000BD0 07FC4C02 00000004 00000BD2 14445853 51100001 000F3544
+[  290.486768] ath10k: [0048]: 000003FC 00000012 00442020 00000BD2 14445856 71109990 00424BCC 00000000
+[  290.495922] ath10k: [0056]: 0044B4D0 00001200 00000BD2 14445856 71109990 00424BCC 00000000 0044B4BC
+[  290.505078] ath10k: [0064]: 00098000 00000BD2 0C445851 00424BCC 00442020 00000001 00000BD2 0C446403
+[  290.514235] ath10k: [0072]: 00000000 00000100 00000000 00000BD2 04443C25 00000000 00000BD2 14445856
+[  290.523394] ath10k: [0080]: 71109990 00424BCC 00000000 0044B4A8 01000000 00000BD2 07FC4C02 00000004
+[  290.532550] ath10k: [0088]: 00000BD5 14485853 51100001 000F34FC 000003FC 00000013 00441F50 00000BD5
+[  290.541709] ath10k: [0096]: 14485856 71109990 00424B04 00000000 0044B494 00001200 00000BD5 14485856
+[  290.550864] ath10k: [0104]: 71109990 00424B04 00000000 0044B480 00098000 00000BD5 0C485851 00424B04
+[  290.560029] ath10k: [0112]: 00441F50 00000001 00000BD5 0C486403 00000000 00000100 00000000 00000BD5
+[  290.569188] ath10k: [0120]: 04483C25 00000000 00000BD5 14485856 71109990 00424B04 00000000 0044B46C
+[  290.578347] ath10k: [0128]: 01000000 00000BD5 07FC4C02 00000004 00000BD8 144C5853 51100001 000F34B4
+[  290.587502] ath10k: [0136]: 000003FC 00000014 00441E80 00000BD8 144C5856 71109990 00424A3C 00000000
+[  290.596657] ath10k: [0144]: 0044B458 00001200 00000BD8 144C5856 71109990 00424A3C 00000000 0044B444
+[  290.605814] ath10k: [0152]: 00098000 00000BD8 0C4C5851 00424A3C 00441E80 00000001 00000BD8 0C4C6403
+[  290.614978] ath10k: [0160]: 00000000 00000100 00000000 00000BD8 044C3C25 00000000 00000BD8 144C5856
+[  290.624139] ath10k: [0168]: 71109990 00424A3C 00000000 0044B430 01000000 00000BD8 07FC4C02 00000004
+[  290.633292] ath10k: [0176]: 00000BDA 14505853 51100001 000F346C 000003FC 00000015 00441DB0 00000BDA
+[  290.642451] ath10k: [0184]: 14505856 71109990 00424974 00000000 0044B41C 00001200 00000BDA 14505856
+[  290.651603] ath10k: [0192]: 71109990 00424974 00000000 0044B408 00098000 00000BDA 0C505851 00424974
+[  290.660781] ath10k: [0200]: 00441DB0 00000001 00000BDA 0C506403 00000000 00000100 00000000 00000BDA
+[  290.669948] ath10k: [0208]: 04503C25 00000000 00000BDA 14505856 71109990 00424974 00000000 0044B3F4
+[  290.679113] ath10k: [0216]: 01000000 00000BDA 07FC4C02 00000004 00000BDD 14545853 51100001 000F3424
+[  290.688268] ath10k: [0224]: 000003FC 00000016 00441CE0 00000BDD 14545856 71109990 004248AC 00000000
+[  290.697424] ath10k: [0232]: 0044B3E0 00001200 00000BDD 14545856 71109990 004248AC 00000000 0044B3CC
+[  290.706578] ath10k: [0240]: 00098000 00000BDD 0C545851 004248AC 00441CE0 00000001 00000BDD 0C546403
+[  290.715751] ath10k: [0248]: 00000000 00000100 00000000 00000BDD 04543C25 00000000 00000BDD 14545856
+[  290.724928] ath10k: [0256]: 71109990 004248AC 00000000 0044B3B8 01000000 00000BDD 07FC4C02 00000004
+[  290.734095] ath10k: [0264]: 00000BE0 14585853 51100001 000F33DC 000003FC 00000017 00441C10 00000BE0
+[  290.743255] ath10k: [0272]: 14585856 71109990 004247E4 00000000 0044B3A4 00001200 00000BE0 14585856
+[  290.752417] ath10k: [0280]: 71109990 004247E4 00000000 0044B390 00098000 00000BE0 0C585851 004247E4
+[  290.761578] ath10k: [0288]: 00441C10 00000001 00000BE0 0C586403 00000000 00000100 00000000 00000BE0
+[  290.770747] ath10k: [0296]: 04583C25 00000000 00000BE0 14585856 71109990 004247E4 00000000 0044B37C
+[  290.779910] ath10k: [0304]: 01000000 00000BE0 07FC4C02 00000004 00000BE3 145C5853 51100001 000F3394
+[  290.789079] ath10k: [0312]: 000003FC 00000018 00441B40 00000BE3 145C5856 71109990 0042471C 00000000
+[  290.798244] ath10k: [0320]: 0044B368 00001200 00000BE3 145C5856 71109990 0042471C 00000000 0044B354
+[  290.807410] ath10k: [0328]: 00098000 00000BE3 0C5C5851 0042471C 00441B40 00000001 00000BE3 0C5C6403
+[  290.816576] ath10k: [0336]: 00000000 00000100 00000000 00000BE3 045C3C25 00000000 00000BE3 145C5856
+[  290.825746] ath10k: [0344]: 71109990 0042471C 00000000 0044B340 01000000 00000BE3 07FC4C02 00000004
+[  290.834907] ath10k: [0352]: 00000BE5 14605853 51100001 000F334C 000003FC 00000019 00441A70 00000BE5
+[  290.844090] ath10k: [0360]: 14605856 71109990 00424654 00000000 0044B32C 00001200 00000BE5 14605856
+[  290.853274] ath10k: [0368]: 71109990 00424654 00000000 0044B318 00098000
+[  290.860116] ath10k_pci 0000:05:00.0: ATH10K_END
+[  290.864781] ath10k_pci 0000:05:00.0: dropping dbg buffer due to crash since read
+[  290.872303] ath10k_pci 0000:05:00.0: ath10k_pci ATH10K_DBG_BUFFER:
+[  290.878589] ath10k: [0000]: 00000BE5 0C605851 00424654 00441A70 00000001 00000BE5 0C606403 00000000
+[  290.887765] ath10k: [0008]: 00000100 00000000 00000BE5 04603C25 00000000 00000BE5 14605856 71109990
+[  290.896936] ath10k: [0016]: 00424654 00000000 0044B304 01000000 00000BE6 07FC4C02 00000004 00000BE8
+[  290.906097] ath10k: [0024]: 14645853 51100001 000F3304 000003FC 0000001A 004419A0 00000BE8 14645856
+[  290.915257] ath10k: [0032]: 71109990 0042458C 00000000 0044B2F0 00001200 00000BE8 14645856 71109990
+[  290.924415] ath10k: [0040]: 0042458C 00000000 0044B2DC 00098000 00000BE8 0C645851 0042458C 004419A0
+[  290.933571] ath10k: [0048]: 00000001 00000BE8 0C646403 00000000 00000100 00000000 00000BE8 04643C25
+[  290.942726] ath10k: [0056]: 00000000 00000BE8 14645856 71109990 0042458C 00000000 0044B2C8 01000000
+[  290.951880] ath10k: [0064]: 00000BE8 07FC4C02 00000004 00000BEB 14685853 51100001 000F32BC 000003FC
+[  290.961038] ath10k: [0072]: 0000001B 004418D0 00000BEB 14685856 71109990 004244C4 00000000 0044B2B4
+[  290.970191] ath10k: [0080]: 00001200 00000BEB 14685856 71109990 004244C4 00000000 0044B2A0 00098000
+[  290.979338] ath10k: [0088]: 00000BEB 0C685851 004244C4 004418D0 00000001 00000BEB 0C686403 00000000
+[  290.988482] ath10k: [0096]: 00000100 00000000 00000BEB 04683C25 00000000 00000BEB 14685856 71109990
+[  290.997620] ath10k: [0104]: 004244C4 00000000 0044B28C 01000000 00000BEB 07FC4C02 00000004 00000BED
+[  291.006756] ath10k: [0112]: 146C5853 51100001 000F3274 000003FC 0000001C 00441800 00000BED 146C5856
+[  291.015887] ath10k: [0120]: 71109990 004243FC 00000000 0044B278 00001200 00000BED 146C5856 71109990
+[  291.025017] ath10k: [0128]: 004243FC 00000000 0044B264 00098000 00000BED 0C6C5851 004243FC 00441800
+[  291.034141] ath10k: [0136]: 00000001 00000BED 0C6C6403 00000000 00000100 00000000 00000BED 046C3C25
+[  291.043264] ath10k: [0144]: 00000000 00000BED 146C5856 71109990 004243FC 00000000 0044B250 01000000
+[  291.052379] ath10k: [0152]: 00000BEE 07FC4C02 00000004 00000BF0 14705853 51100001 000F322C 000003FC
+[  291.061503] ath10k: [0160]: 0000001D 00441730 00000BF0 14705856 71109990 00424334 00000000 0044B23C
+[  291.070616] ath10k: [0168]: 00001200 00000BF0 14705856 71109990 00424334 00000000 0044B228 00098000
+[  291.079727] ath10k: [0176]: 00000BF0 0C705851 00424334 00441730 00000001 00000BF0 0C706403 00000000
+[  291.088842] ath10k: [0184]: 00000100 00000000 00000BF0 04703C25 00000000 00000BF0 14705856 71109990
+[  291.097956] ath10k: [0192]: 00424334 00000000 0044B214 01000000 00000BF0 07FC4C02 00000004 00000BF3
+[  291.107063] ath10k: [0200]: 14745853 51100001 000F31E4 000003FC 0000001E 00441660 00000BF3 14745856
+[  291.116167] ath10k: [0208]: 71109990 0042426C 00000000 0044B200 00001200 00000BF3 14745856 71109990
+[  291.125272] ath10k: [0216]: 0042426C 00000000 0044B1EC 00098000 00000BF3 0C745851 0042426C 00441660
+[  291.134369] ath10k: [0224]: 00000001 00000BF3 0C746403 00000000 00000100 00000000 00000BF3 04743C25
+[  291.143466] ath10k: [0232]: 00000000 00000BF3 14745856 71109990 0042426C 00000000 0044B1D8 01000000
+[  291.152559] ath10k: [0240]: 00000BF3 07FC4C02 00000004 00000BF6 14785853 51100001 000F319C 000003FC
+[  291.161654] ath10k: [0248]: 0000001F 00441590 00000BF6 14785856 71109990 004241A4 00000000 0044B1C4
+[  291.170745] ath10k: [0256]: 00001200 00000BF6 14785856 71109990 004241A4 00000000 0044B1B0 00098000
+[  291.179842] ath10k: [0264]: 00000BF6 0C785851 004241A4 00441590 00000001 00000BF6 0C786403 00000000
+[  291.188952] ath10k: [0272]: 00000100 00000000 00000BF6 04783C25 00000000 00000BF6 14785856 71109990
+[  291.198045] ath10k: [0280]: 004241A4 00000000 0044B19C 01000000 00000BF6 07FC4C02 00000004 00000BF8
+[  291.207125] ath10k: [0288]: 147C5853 51100001 000F3154 000003FC 00000020 004414C0 00000BF8 147C5856
+[  291.216208] ath10k: [0296]: 71109990 004240DC 00000000 0044B188 00001200 00000BF8 147C5856 71109990
+[  291.225287] ath10k: [0304]: 004240DC 00000000 0044B174 00098000 00000BF8 0C7C5851 004240DC 004414C0
+[  291.234372] ath10k: [0312]: 00000001 00000BF8 0C7C6403 00000000 00000100 00000000 00000BF8 047C3C25
+[  291.243459] ath10k: [0320]: 00000000 00000BF8 147C5856 71109990 004240DC 00000000 0044B160 01000000
+[  291.252535] ath10k: [0328]: 00000BF8 07FC4C02 00000004 00000BFB 14805853 51100001 000F310C 000003FC
+[  291.261609] ath10k: [0336]: 00000021 004413F0 00000BFB 14805856 71109990 00424014 00000000 0044B14C
+[  291.270686] ath10k: [0344]: 00001200 00000BFB 14805856 71109990 00424014 00000000 0044B138 00098000
+[  291.279766] ath10k: [0352]: 00000BFB 0C805851 00424014 004413F0 00000001 00000BFB 0C806403 00000000
+[  291.288847] ath10k: [0360]: 00000100 00000000 00000BFB 04803C25 00000000 00000BFB 14805856 71109990
+[  291.297936] ath10k: [0368]: 00424014 00000000 0044B124 01000000
+[  291.303895] ath10k_pci 0000:05:00.0: ATH10K_END
+[  291.308884] ath10k_pci 0000:05:00.0: dropping dbg buffer due to crash since read
+[  291.316927] ath10k_pci 0000:05:00.0: ath10k_pci ATH10K_DBG_BUFFER:
+[  291.316997] ath10k_pci 0000:05:00.0: found sta peer 04:f0:21:f6:85:1c entry on vdev 0 after it was supposedly removed
+[  291.333772] ath10k: [0000]: 00000BFB 07FC4C02 00000004 00000BFE 14845853 51100001 000F30C4 000003FC
+[  291.342862] ath10k: [0008]: 00000022 00441320 00000BFE 14845856 71109990 00423F4C 00000000 0044B110
+[  291.351949] ath10k: [0016]: 00001200 00000BFE 14845856 71109990 00423F4C 00000000 0044B0FC 00098000
+[  291.361043] ath10k: [0024]: 00000BFE 0C845851 00423F4C 00441320 00000001 00000BFE 0C846403 00000000
+[  291.370140] ath10k: [0032]: 00000100 00000000 00000BFE 04843C25 00000000 00000BFE 14845856 71109990
+[  291.379228] ath10k: [0040]: 00423F4C 00000000 0044B0E8 01000000 00000BFE 07FC4C02 00000004 00000C00
+[  291.388314] ath10k: [0048]: 14885853 51100001 000F307C 000003FC 00000023 00441250 00000C00 14885856
+[  291.397398] ath10k: [0056]: 71109990 00423E84 00000000 0044B0D4 00001200 00000C00 14885856 71109990
+[  291.406481] ath10k: [0064]: 00423E84 00000000 0044B0C0 00098000 00000C00 0C885851 00423E84 00441250
+[  291.415571] ath10k: [0072]: 00000001 00000C00 0C886403 00000000 00000100 00000000 00000C00 04883C25
+[  291.424667] ath10k: [0080]: 00000000 00000C00 14885856 71109990 00423E84 00000000 0044B0AC 01000000
+[  291.433767] ath10k: [0088]: 00000C01 07FC4C02 00000004 00000C05 08003812 000F5394 00425914 00000C05
+[  291.442859] ath10k: [0096]: 10003809 0000143C 00000001 00000000 00000000 00000C05 0BFC5805 000A143C
+[  291.451947] ath10k: [0104]: 00000000
+[  291.455559] ath10k_pci 0000:05:00.0: ATH10K_END
+[  291.461128] sta0: Failed to send nullfunc to AP 04:f0:21:f6:85:1c after 1000ms, disconnecting
+[  291.464881] ath10k_pci 0000:05:00.0: failed to set PS Mode 1 for vdev 12: -105
+[  291.464883] ath10k_pci 0000:05:00.0: failed to setup powersave: -105
+[  291.464885] ath10k_pci 0000:05:00.0: failed to setup ps on vdev 0: -105
+[  291.464941] ath10k_pci 0000:05:00.0: failed to start WMI vdev 1: -105
+[  291.464943] ath10k_pci 0000:05:00.0: failed to start vdev 1 addr 04:f0:21:76:2e:d1 on freq 5180: -105
+[  291.465001] ath10k_pci 0000:05:00.0: failed to create wmi peer 04:f0:21:f6:85:1c on vdev 1: -105
+[  291.465003] ath10k_pci 0000:05:00.0: failed to add peer 04:f0:21:f6:85:1c for vdev 1 when adding a new sta: -105
+[  291.465005] ------------[ cut here ]------------
+[  291.465039] WARNING: CPU: 2 PID: 794 at /home/greearb/git/linux-4.4.dev.y/net/mac80211/util.c:1934 ieee80211_reconfig+0x89f/0x101e [mac80211]()
+[  291.465089] Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 8021q garp mrp stp llc bnep bluetooth fuse macvlan wanlink(O) 
+pktgen rpcsec_gss_krb5 nfsv4 nfs fscache iTCO_wdt iTCO_vendor_support coretemp ath9k ath10k_pci hwmon ath9k_common ath10k_core ath9k_hw intel_rapl iosf_mbi ath 
+x86_pkg_temp_thermal intel_powerclamp mac80211 kvm_intel kvm joydev irqbypass pcspkr serio_raw cfg80211 snd_hda_codec_hdmi lpc_ich i2c_i801 
+snd_hda_codec_realtek snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_seq snd_seq_device snd_pcm 8250_fintek snd_timer snd shpchp 
+soundcore tpm_tis tpm nfsd auth_rpcgss nfs_acl lockd grace sunrpc ata_generic pata_acpi i915 e1000e ptp pps_core i2c_algo_bit drm_kms_helper drm i2c_core fjes 
+video ipv6 [last unloaded: nf_conntrack]
+
+[  291.465092] CPU: 2 PID: 794 Comm: kworker/2:3 Tainted: G        W  O    4.4.6+ #21
+[  291.465093] Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
+[  291.465110] Workqueue: events_freezable ieee80211_restart_work [mac80211]
+[  291.465113]  0000000000000000 ffff8800d4b1bce8 ffffffff8137086d 0000000000000000
+[  291.465115]  0000000000000009 ffff8800d4b1bd20 ffffffff810ee1eb ffffffffa0aae318
+[  291.465117]  ffff8800d4dc0a60 ffff8800ceaaca40 ffff8800d4dc0a60 ffff8800cac68000
+[  291.465117] Call Trace:
+[  291.465122]  [<ffffffff8137086d>] dump_stack+0x81/0xb6
+[  291.465125]  [<ffffffff810ee1eb>] warn_slowpath_common+0x94/0xad
+[  291.465148]  [<ffffffffa0aae318>] ? ieee80211_reconfig+0x89f/0x101e [mac80211]
+[  291.465151]  [<ffffffff810ee2a8>] warn_slowpath_null+0x15/0x17
+[  291.465174]  [<ffffffffa0aae318>] ieee80211_reconfig+0x89f/0x101e [mac80211]
+[  291.465190]  [<ffffffffa0a782da>] ieee80211_restart_work+0x83/0x8f [mac80211]
+[  291.465194]  [<ffffffff8110471a>] process_one_work+0x260/0x4db
+[  291.465196]  [<ffffffff81104e50>] worker_thread+0x1e9/0x29b
+[  291.465199]  [<ffffffff81104c67>] ? rescuer_thread+0x2a8/0x2a8
+[  291.465201]  [<ffffffff81104c67>] ? rescuer_thread+0x2a8/0x2a8
+[  291.465203]  [<ffffffff81109bfb>] kthread+0xcf/0xd7
+[  291.465206]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  291.465208]  [<ffffffff816faaef>] ret_from_fork+0x3f/0x70
+[  291.465210]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  291.465212] ---[ end trace 8889d1df0badbc99 ]---
+[  291.465257] ath10k_pci 0000:05:00.0: failed to set wmm params: -105
+[  291.465296] ath10k_pci 0000:05:00.0: failed to set wmm params: -105
+[  291.465334] ath10k_pci 0000:05:00.0: failed to set wmm params: -105
+[  291.465372] ath10k_pci 0000:05:00.0: failed to set wmm params: -105
+[  292.222537] ath10k_pci 0000:05:00.0: dropping dbg buffer due to crash since read
+[  292.222540] ath10k_pci 0000:05:00.0: ath10k_pci ATH10K_DBG_BUFFER:
+[  292.222544] ath10k: [0000]: 000012CC 10005858 31100002 00425914 0000000A 00000000 000012CC 10005858
+[  292.222546] ath10k: [0008]: 31100002 00425914 0000000E 00000000 000012CC 08003813 000F5394 00000001
+[  292.222549] ath10k: [0016]: 000012CC 08003812 000F5394 00425914 000012CD 13FC5808 711A0A01 00000000
+[  292.222551] ath10k: [0024]: 00000002 FFFFFFFF 000012CD 0BFC3023 00000000 00000000 000012CF 08003812
+[  292.222554] ath10k: [0032]: 000F5394 00425914 00001360 10005858 31100002 00425914 0000000A 00000000
+[  292.222556] ath10k: [0040]: 00001360 10005858 31100002 00425914 0000000E 00000000 00001360 08003813
+[  292.222559] ath10k: [0048]: 000F5394 00000000 00001360 08003812 000F5394 00425914 00001360 13FC5808
+[  292.222561] ath10k: [0056]: 711A0A01 00000002 00000002 FFFFFFFF 00001360 0BFC3023 00000000 00000000
+[  292.222563] ath10k_pci 0000:05:00.0: ATH10K_END
+[  296.669145] ath10k_pci 0000:04:00.0: no channel configured; ignoring frame(s)!
+[  316.477677] NMI watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [kworker/u8:3:257]
+[  316.477720] Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 8021q garp mrp stp llc bnep bluetooth fuse macvlan wanlink(O) 
+pktgen rpcsec_gss_krb5 nfsv4 nfs fscache iTCO_wdt iTCO_vendor_support coretemp ath9k ath10k_pci hwmon ath9k_common ath10k_core ath9k_hw intel_rapl iosf_mbi ath 
+x86_pkg_temp_thermal intel_powerclamp mac80211 kvm_intel kvm joydev irqbypass pcspkr serio_raw cfg80211 snd_hda_codec_hdmi lpc_ich i2c_i801 
+snd_hda_codec_realtek snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_seq snd_seq_device snd_pcm 8250_fintek snd_timer snd shpchp 
+soundcore tpm_tis tpm nfsd auth_rpcgss nfs_acl lockd grace sunrpc ata_generic pata_acpi i915 e1000e ptp pps_core i2c_algo_bit drm_kms_helper drm i2c_core fjes 
+video ipv6 [last unloaded: nf_conntrack]
+
+[  316.477721] irq event stamp: 2111179
+[  316.477727] hardirqs last  enabled at (2111179): [<ffffffff8113c347>] vprintk_emit+0x3ab/0x46a
+[  316.477730] hardirqs last disabled at (2111178): [<ffffffff8113bff8>] vprintk_emit+0x5c/0x46a
+[  316.477742] softirqs last  enabled at (2111014): [<ffffffffa0e30965>] ath10k_set_key+0x136/0x602 [ath10k_core]
+[  316.477749] softirqs last disabled at (2111012): [<ffffffffa0e30946>] ath10k_set_key+0x117/0x602 [ath10k_core]
+[  316.477751] CPU: 1 PID: 257 Comm: kworker/u8:3 Tainted: G        W  O    4.4.6+ #21
+[  316.477752] Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
+[  316.477780] Workqueue: wiphy3 ieee80211_iface_work [mac80211]
+[  316.477781] task: ffff880212d225c0 ti: ffff880212d50000 task.ti: ffff880212d50000
+[  316.477790] RIP: 0010:[<ffffffffa0e38c1b>]  [<ffffffffa0e38c1b>] ath10k_mac_tx_push_pending+0xc1/0x12d [ath10k_core]
+[  316.477791] RSP: 0018:ffff88021ea83c80  EFLAGS: 00000213
+[  316.477792] RAX: 0000000000000000 RBX: ffff8800cac694a0 RCX: ffff8801f4ce54a0
+[  316.477793] RDX: 0000000000000000 RSI: ffff8800d4dc58e0 RDI: 0000000000000000
+[  316.477794] RBP: ffff88021ea83cc0 R08: 0000000000000007 R09: 0000000000000000
+[  316.477795] R10: ffff880212d225c0 R11: 00000043d37d19c0 R12: ffff8800d4dc0a60
+[  316.477795] R13: ffff8800d4dc4340 R14: ffff8800d4dc58e0 R15: ffff8800cac69488
+[  316.477797] FS:  0000000000000000(0000) GS:ffff88021ea80000(0000) knlGS:0000000000000000
+[  316.477798] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  316.477799] CR2: 00007f0de5404e50 CR3: 0000000001c0a000 CR4: 00000000000406e0
+[  316.477800] Stack:
+[  316.477802]  0000000000000001 ffff8800d4dc58a8 ffff8801fb78c4a0 ffff88021ea83e80
+[  316.477804]  0000000000000000 ffff8800d4dc4d90 ffff8800d4dc5160 0000000000000202
+[  316.477806]  ffff88021ea83f00 ffffffffa0e47465 00000000000cafee 0000000000000000
+[  316.477806] Call Trace:
+[  316.477817]  <IRQ>
+
+// BEN:  rx-ring-lock
+[  316.477817]  [<ffffffffa0e47465>] ath10k_htt_txrx_compl_task+0x6d2/0xae1 [ath10k_core]
+[  316.477821]  [<ffffffff810f23ad>] ? __local_bh_enable_ip+0xa4/0xb9
+[  316.477823]  [<ffffffff81381d71>] ? find_next_bit+0x15/0x1b
+[  316.477826]  [<ffffffff8112acd5>] ? trace_hardirqs_off+0xd/0xf
+[  316.477829]  [<ffffffff8104659b>] ? __x2apic_send_IPI_mask+0x12e/0x14d
+[  316.477832]  [<ffffffff81151f4e>] ? run_posix_cpu_timers+0x5a/0x42b
+[  316.477835]  [<ffffffff8103e8a8>] ? native_smp_send_reschedule+0x58/0x5a
+[  316.477837]  [<ffffffff8112d4b9>] ? trace_hardirqs_on+0xd/0xf
+[  316.477840]  [<ffffffff816f9fc9>] ? _raw_spin_unlock_irq+0x2c/0x3f
+[  316.477843]  [<ffffffff810f29e0>] tasklet_action+0xc0/0xcf
+[  316.477845]  [<ffffffff810f1ff6>] __do_softirq+0x1a4/0x407
+[  316.477847]  [<ffffffff810f2462>] irq_exit+0x40/0x94
+[  316.477849]  [<ffffffff81041347>] smp_apic_timer_interrupt+0x2e/0x39
+[  316.477851]  [<ffffffff816fb53c>] apic_timer_interrupt+0x8c/0xa0
+[  316.477854]  <EOI>
+[  316.477855]  [<ffffffff8145bed5>] ? vt_console_print+0x294/0x2a3
+[  316.477857]  [<ffffffff81139dce>] ? arch_local_irq_restore+0x6/0xd
+[  316.477859]  [<ffffffff8113bef3>] console_unlock+0x3aa/0x453
+[  316.477861]  [<ffffffff8113c3ad>] vprintk_emit+0x411/0x46a
+[  316.477863]  [<ffffffff8113c516>] vprintk_default+0x18/0x1a
+[  316.477866]  [<ffffffff811b31e9>] printk+0x43/0x4b
+[  316.477892]  [<ffffffffa0abf804>] __sdata_err+0x54/0x162 [mac80211]
+[  316.477917]  [<ffffffffa0ac6109>] ieee80211_sta_work+0x594/0xda9 [mac80211]
+[  316.477919]  [<ffffffff8112d30b>] ? mark_held_locks+0x5e/0x74
+[  316.477921]  [<ffffffff8112d490>] ? trace_hardirqs_on_caller+0x16f/0x18b
+[  316.477923]  [<ffffffff816fa024>] ? _raw_spin_unlock_irqrestore+0x48/0x5d
+[  316.477942]  [<ffffffffa0a8ff3e>] ieee80211_iface_work+0x335/0x34e [mac80211]
+[  316.477945]  [<ffffffff8110471a>] process_one_work+0x260/0x4db
+[  316.477948]  [<ffffffff81104e50>] worker_thread+0x1e9/0x29b
+[  316.477950]  [<ffffffff81104c67>] ? rescuer_thread+0x2a8/0x2a8
+[  316.477951]  [<ffffffff81109bfb>] kthread+0xcf/0xd7
+[  316.477954]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  316.477956]  [<ffffffff816faaef>] ret_from_fork+0x3f/0x70
+[  316.477957]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  316.477976] Code: 83 f8 fe 48 89 4e 08 48 89 31 48 89 1b 48 89 5b 08 74 18 49 8b 8d a8 15 00 00 49 89 9d a8 15 00 00 4c 89 33 48 89 4b 08 48 89 19 <4c> 89 fe 
+4c 89 e7 89 45 c4 e8 c5 f5 00 00 48 39 5d d0 8b 45 c4
+[  344.485995] NMI watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [kworker/u8:3:257]
+[  344.486038] Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 8021q garp mrp stp llc bnep bluetooth fuse macvlan wanlink(O) 
+pktgen rpcsec_gss_krb5 nfsv4 nfs fscache iTCO_wdt iTCO_vendor_support coretemp ath9k ath10k_pci hwmon ath9k_common ath10k_core ath9k_hw intel_rapl iosf_mbi ath 
+x86_pkg_temp_thermal intel_powerclamp mac80211 kvm_intel kvm joydev irqbypass pcspkr serio_raw cfg80211 snd_hda_codec_hdmi lpc_ich i2c_i801 
+snd_hda_codec_realtek snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_seq snd_seq_device snd_pcm 8250_fintek snd_timer snd shpchp 
+soundcore tpm_tis tpm nfsd auth_rpcgss nfs_acl lockd grace sunrpc ata_generic pata_acpi i915 e1000e ptp pps_core i2c_algo_bit drm_kms_helper drm i2c_core fjes 
+video ipv6 [last unloaded: nf_conntrack]
+
+[  344.486039] irq event stamp: 2111179
+[  344.486045] hardirqs last  enabled at (2111179): [<ffffffff8113c347>] vprintk_emit+0x3ab/0x46a
+[  344.486048] hardirqs last disabled at (2111178): [<ffffffff8113bff8>] vprintk_emit+0x5c/0x46a
+[  344.486059] softirqs last  enabled at (2111014): [<ffffffffa0e30965>] ath10k_set_key+0x136/0x602 [ath10k_core]
+[  344.486067] softirqs last disabled at (2111012): [<ffffffffa0e30946>] ath10k_set_key+0x117/0x602 [ath10k_core]
+[  344.486069] CPU: 1 PID: 257 Comm: kworker/u8:3 Tainted: G        W  O L  4.4.6+ #21
+[  344.486070] Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
+[  344.486097] Workqueue: wiphy3 ieee80211_iface_work [mac80211]
+[  344.486099] task: ffff880212d225c0 ti: ffff880212d50000 task.ti: ffff880212d50000
+[  344.486102] RIP: 0010:[<ffffffff81130e58>]  [<ffffffff81130e58>] do_raw_spin_lock+0x97/0xfa
+[  344.486103] RSP: 0018:ffff88021ea83c00  EFLAGS: 00000246
+[  344.486104] RAX: 0000000000000000 RBX: ffff8800d4dc4f60 RCX: 0000000000000000
+[  344.486105] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff8800d4dc4f60
+[  344.486106] RBP: ffff88021ea83c20 R08: 0000000000000001 R09: 0000000000000000
+[  344.486107] R10: ffff880212d225c0 R11: 00000043d37d19c0 R12: ffff8800d4dc4340
+[  344.486108] R13: ffff8800d4dc0a60 R14: ffff8800d4dc58e0 R15: ffff8800cac69488
+[  344.486109] FS:  0000000000000000(0000) GS:ffff88021ea80000(0000) knlGS:0000000000000000
+[  344.486110] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  344.486111] CR2: 00007f0de5404e50 CR3: 0000000001c0a000 CR4: 00000000000406e0
+[  344.486112] Stack:
+[  344.486114]  ffff8800d4dc4f60 ffff8800d4dc4340 ffff8800d4dc0a60 ffff8800d4dc58e0
+[  344.486116]  ffff88021ea83c40 ffffffff816f9e33 ffffffffa0e48213 ffff8800d4dc4f60
+[  344.486118]  ffff88021ea83c70 ffffffffa0e48213 ffff8800cac69488 ffff8800cac694a0
+[  344.486119] Call Trace:
+[  344.486123]  <IRQ>
+
+BEN:  htt->tx_lock
+[  344.486124]  [<ffffffff816f9e33>] _raw_spin_lock_bh+0x39/0x40
+[  344.486133]  [<ffffffffa0e48213>] ? ath10k_htt_tx_txq_update+0x25/0x4a [ath10k_core]
+[  344.486143]  [<ffffffffa0e48213>] ath10k_htt_tx_txq_update+0x25/0x4a [ath10k_core]
+[  344.486150]  [<ffffffffa0e38c29>] ath10k_mac_tx_push_pending+0xcf/0x12d [ath10k_core]
+[  344.486159]  [<ffffffffa0e47465>] ath10k_htt_txrx_compl_task+0x6d2/0xae1 [ath10k_core]
+[  344.486163]  [<ffffffff810f23ad>] ? __local_bh_enable_ip+0xa4/0xb9
+[  344.486167]  [<ffffffff81381d71>] ? find_next_bit+0x15/0x1b
+[  344.486169]  [<ffffffff8112acd5>] ? trace_hardirqs_off+0xd/0xf
+[  344.486172]  [<ffffffff8104659b>] ? __x2apic_send_IPI_mask+0x12e/0x14d
+[  344.486175]  [<ffffffff81151f4e>] ? run_posix_cpu_timers+0x5a/0x42b
+[  344.486177]  [<ffffffff8103e8a8>] ? native_smp_send_reschedule+0x58/0x5a
+[  344.486180]  [<ffffffff8112d4b9>] ? trace_hardirqs_on+0xd/0xf
+[  344.486181]  [<ffffffff816f9fc9>] ? _raw_spin_unlock_irq+0x2c/0x3f
+[  344.486184]  [<ffffffff810f29e0>] tasklet_action+0xc0/0xcf
+[  344.486186]  [<ffffffff810f1ff6>] __do_softirq+0x1a4/0x407
+[  344.486188]  [<ffffffff810f2462>] irq_exit+0x40/0x94
+[  344.486190]  [<ffffffff81041347>] smp_apic_timer_interrupt+0x2e/0x39
+[  344.486192]  [<ffffffff816fb53c>] apic_timer_interrupt+0x8c/0xa0
+[  344.486195]  <EOI>
+[  344.486195]  [<ffffffff8145bed5>] ? vt_console_print+0x294/0x2a3
+[  344.486197]  [<ffffffff81139dce>] ? arch_local_irq_restore+0x6/0xd
+[  344.486199]  [<ffffffff8113bef3>] console_unlock+0x3aa/0x453
+[  344.486201]  [<ffffffff8113c3ad>] vprintk_emit+0x411/0x46a
+[  344.486204]  [<ffffffff8113c516>] vprintk_default+0x18/0x1a
+[  344.486206]  [<ffffffff811b31e9>] printk+0x43/0x4b
+[  344.486231]  [<ffffffffa0abf804>] __sdata_err+0x54/0x162 [mac80211]
+[  344.486257]  [<ffffffffa0ac6109>] ieee80211_sta_work+0x594/0xda9 [mac80211]
+[  344.486259]  [<ffffffff8112d30b>] ? mark_held_locks+0x5e/0x74
+[  344.486260]  [<ffffffff8112d490>] ? trace_hardirqs_on_caller+0x16f/0x18b
+[  344.486262]  [<ffffffff816fa024>] ? _raw_spin_unlock_irqrestore+0x48/0x5d
+[  344.486281]  [<ffffffffa0a8ff3e>] ieee80211_iface_work+0x335/0x34e [mac80211]
+[  344.486285]  [<ffffffff8110471a>] process_one_work+0x260/0x4db
+[  344.486287]  [<ffffffff81104e50>] worker_thread+0x1e9/0x29b
+[  344.486289]  [<ffffffff81104c67>] ? rescuer_thread+0x2a8/0x2a8
+[  344.486291]  [<ffffffff81109bfb>] kthread+0xcf/0xd7
+[  344.486293]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  344.486295]  [<ffffffff816faaef>] ret_from_fork+0x3f/0x70
+[  344.486297]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  344.486316] Code: c0 74 28 4c 69 2d 55 02 ae 00 e8 03 00 00 45 31 e4 41 be 01 00 00 00 4d 39 e5 74 2f 8b 03 85 c0 75 5d f0 44 0f b1 33 85 c0 75 54 <65> 8b 05 
+b9 92 ed 7e 89 43 08 65 48 8b 04 25 40 be 00 00 48 89
+[  358.248229] INFO: rcu_preempt self-detected stall on CPU
+[  358.248234] 	1-...: (1 GPs behind) idle=5eb/140000000000002/0 softirq=30949/30953 fqs=21666
+[  358.248236] 	 (t=65000 jiffies g=10421 c=10420 q=1265)
+[  358.248237] Task dump for CPU 1:
+[  358.248240] kworker/u8:3    R  running task        0   257      2 0x00000008
+[  358.248265] Workqueue: wiphy3 ieee80211_iface_work [mac80211]
+[  358.248267]  0000000000000000 ffff88021ea839b0 ffffffff811157ba 0000000000000001
+[  358.248269]  ffffffff81c5a180 ffff88021ea839c8 ffffffff81117568 ffffffff81c5a180
+[  358.248271]  ffff88021ea839f8 ffffffff81145f27 ffffffff81c5a180 ffff88021ea97b80
+[  358.248272] Call Trace:
+[  358.248276]  <IRQ>  [<ffffffff811157ba>] sched_show_task+0x103/0x108
+[  358.248278]  [<ffffffff81117568>] dump_cpu_task+0x32/0x35
+[  358.248280]  [<ffffffff81145f27>] rcu_dump_cpu_stacks+0x71/0x92
+[  358.248282]  [<ffffffff81149680>] rcu_check_callbacks+0x24f/0x6cd
+[  358.248285]  [<ffffffff8114d996>] update_process_times+0x2a/0x4f
+[  358.248288]  [<ffffffff81159dc1>] tick_sched_handle+0x42/0x51
+[  358.248290]  [<ffffffff8115a047>] tick_sched_timer+0x34/0x5a
+[  358.248292]  [<ffffffff8114e3ef>] __hrtimer_run_queues+0x170/0x362
+[  358.248294]  [<ffffffff8115a013>] ? tick_sched_do_timer+0x29/0x29
+[  358.248295]  [<ffffffff8114e995>] hrtimer_interrupt+0x6f/0x12f
+[  358.248298]  [<ffffffff81040baf>] local_apic_timer_interrupt+0x46/0x49
+[  358.248300]  [<ffffffff81041342>] smp_apic_timer_interrupt+0x29/0x39
+[  358.248302]  [<ffffffff816fb53c>] apic_timer_interrupt+0x8c/0xa0
+[  358.248314]  [<ffffffffa0e481f8>] ? ath10k_htt_tx_txq_update+0xa/0x4a [ath10k_core]
+
+BEN: Probably holding txqs_lock, blocked on tx_lock in mac_tx_push_txq?
+
+[  358.248321]  [<ffffffffa0e38c29>] ath10k_mac_tx_push_pending+0xcf/0x12d [ath10k_core]
+[  358.248330]  [<ffffffffa0e47465>] ath10k_htt_txrx_compl_task+0x6d2/0xae1 [ath10k_core]
+[  358.248333]  [<ffffffff810f23ad>] ? __local_bh_enable_ip+0xa4/0xb9
+[  358.248335]  [<ffffffff81381d71>] ? find_next_bit+0x15/0x1b
+[  358.248337]  [<ffffffff8112acd5>] ? trace_hardirqs_off+0xd/0xf
+[  358.248340]  [<ffffffff8104659b>] ? __x2apic_send_IPI_mask+0x12e/0x14d
+[  358.248342]  [<ffffffff81151f4e>] ? run_posix_cpu_timers+0x5a/0x42b
+[  358.248344]  [<ffffffff8103e8a8>] ? native_smp_send_reschedule+0x58/0x5a
+[  358.248346]  [<ffffffff8112d4b9>] ? trace_hardirqs_on+0xd/0xf
+[  358.248348]  [<ffffffff816f9fc9>] ? _raw_spin_unlock_irq+0x2c/0x3f
+[  358.248350]  [<ffffffff810f29e0>] tasklet_action+0xc0/0xcf
+[  358.248352]  [<ffffffff810f1ff6>] __do_softirq+0x1a4/0x407
+[  358.248355]  [<ffffffff810f2462>] irq_exit+0x40/0x94
+[  358.248357]  [<ffffffff81041347>] smp_apic_timer_interrupt+0x2e/0x39
+[  358.248358]  [<ffffffff816fb53c>] apic_timer_interrupt+0x8c/0xa0
+[  358.248361]  <EOI>  [<ffffffff8145bed5>] ? vt_console_print+0x294/0x2a3
+[  358.248363]  [<ffffffff81139dce>] ? arch_local_irq_restore+0x6/0xd
+[  358.248365]  [<ffffffff8113bef3>] console_unlock+0x3aa/0x453
+[  358.248367]  [<ffffffff8113c3ad>] vprintk_emit+0x411/0x46a
+[  358.248369]  [<ffffffff8113c516>] vprintk_default+0x18/0x1a
+[  358.248371]  [<ffffffff811b31e9>] printk+0x43/0x4b
+[  358.248397]  [<ffffffffa0abf804>] __sdata_err+0x54/0x162 [mac80211]
+[  358.248422]  [<ffffffffa0ac6109>] ieee80211_sta_work+0x594/0xda9 [mac80211]
+[  358.248424]  [<ffffffff8112d30b>] ? mark_held_locks+0x5e/0x74
+[  358.248426]  [<ffffffff8112d490>] ? trace_hardirqs_on_caller+0x16f/0x18b
+[  358.248428]  [<ffffffff816fa024>] ? _raw_spin_unlock_irqrestore+0x48/0x5d
+[  358.248447]  [<ffffffffa0a8ff3e>] ieee80211_iface_work+0x335/0x34e [mac80211]
+[  358.248450]  [<ffffffff8110471a>] process_one_work+0x260/0x4db
+[  358.248452]  [<ffffffff81104e50>] worker_thread+0x1e9/0x29b
+[  358.248454]  [<ffffffff81104c67>] ? rescuer_thread+0x2a8/0x2a8
+[  358.248456]  [<ffffffff81109bfb>] kthread+0xcf/0xd7
+[  358.248458]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  358.248460]  [<ffffffff816faaef>] ret_from_fork+0x3f/0x70
+[  358.248462]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  360.414427] INFO: rcu_sched detected stalls on CPUs/tasks:
+[  360.414432] 	1-...: (1 GPs behind) idle=5eb/140000000000001/0 softirq=30101/30953 fqs=21666
+[  360.414435] 	(detected by 3, t=65002 jiffies, g=427, c=426, q=2)
+[  360.414436] Task dump for CPU 1:
+[  360.414440] kworker/u8:3    R  running task        0   257      2 0x00000008
+[  360.414475] Workqueue: wiphy3 ieee80211_iface_work [mac80211]
+[  360.414480]  0000000000000051 00000000ffffffff 0000000000000051 ffffffff82b70b22
+[  360.414483]  0000000000000000 ffff880212d53ba8 ffffffff8113c3ad ffffffffa0aea707
+[  360.414486]  0000000000000000 0000000000000000 0000000000000007 0000000000000246
+[  360.414487] Call Trace:
+[  360.414492]  [<ffffffff8113c3ad>] ? vprintk_emit+0x411/0x46a
+[  360.414495]  [<ffffffff8113c516>] ? vprintk_default+0x18/0x1a
+[  360.414498]  [<ffffffff811b31e9>] ? printk+0x43/0x4b
+[  360.414534]  [<ffffffffa0abf804>] ? __sdata_err+0x54/0x162 [mac80211]
+[  360.414570]  [<ffffffffa0ac6109>] ? ieee80211_sta_work+0x594/0xda9 [mac80211]
+[  360.414574]  [<ffffffff8112d30b>] ? mark_held_locks+0x5e/0x74
+[  360.414576]  [<ffffffff8112d490>] ? trace_hardirqs_on_caller+0x16f/0x18b
+[  360.414580]  [<ffffffff816fa024>] ? _raw_spin_unlock_irqrestore+0x48/0x5d
+[  360.414610]  [<ffffffffa0a8ff3e>] ? ieee80211_iface_work+0x335/0x34e [mac80211]
+[  360.414614]  [<ffffffff8110471a>] ? process_one_work+0x260/0x4db
+[  360.414618]  [<ffffffff81104e50>] ? worker_thread+0x1e9/0x29b
+[  360.414621]  [<ffffffff81104c67>] ? rescuer_thread+0x2a8/0x2a8
+[  360.414623]  [<ffffffff81109bfb>] ? kthread+0xcf/0xd7
+[  360.414627]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  360.414630]  [<ffffffff816faaef>] ? ret_from_fork+0x3f/0x70
+[  360.414632]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  384.489713] NMI watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [kworker/u8:3:257]
+[  384.489754] Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 8021q garp mrp stp llc bnep bluetooth fuse macvlan wanlink(O) 
+pktgen rpcsec_gss_krb5 nfsv4 nfs fscache iTCO_wdt iTCO_vendor_support coretemp ath9k ath10k_pci hwmon ath9k_common ath10k_core ath9k_hw intel_rapl iosf_mbi ath 
+x86_pkg_temp_thermal intel_powerclamp mac80211 kvm_intel kvm joydev irqbypass pcspkr serio_raw cfg80211 snd_hda_codec_hdmi lpc_ich i2c_i801 
+snd_hda_codec_realtek snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_seq snd_seq_device snd_pcm 8250_fintek snd_timer snd shpchp 
+soundcore tpm_tis tpm nfsd auth_rpcgss nfs_acl lockd grace sunrpc ata_generic pata_acpi i915 e1000e ptp pps_core i2c_algo_bit drm_kms_helper drm i2c_core fjes 
+video ipv6 [last unloaded: nf_conntrack]
+
+[  384.489755] irq event stamp: 2111179
+[  384.489761] hardirqs last  enabled at (2111179): [<ffffffff8113c347>] vprintk_emit+0x3ab/0x46a
+[  384.489763] hardirqs last disabled at (2111178): [<ffffffff8113bff8>] vprintk_emit+0x5c/0x46a
+[  384.489775] softirqs last  enabled at (2111014): [<ffffffffa0e30965>] ath10k_set_key+0x136/0x602 [ath10k_core]
+[  384.489782] softirqs last disabled at (2111012): [<ffffffffa0e30946>] ath10k_set_key+0x117/0x602 [ath10k_core]
+[  384.489784] CPU: 1 PID: 257 Comm: kworker/u8:3 Tainted: G        W  O L  4.4.6+ #21
+[  384.489785] Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
+[  384.489812] Workqueue: wiphy3 ieee80211_iface_work [mac80211]
+[  384.489813] task: ffff880212d225c0 ti: ffff880212d50000 task.ti: ffff880212d50000
+[  384.489818] RIP: 0010:[<ffffffff810f1b23>]  [<ffffffff810f1b23>] __local_bh_disable_ip+0x42/0x7a
+[  384.489819] RSP: 0018:ffff88021ea83c10  EFLAGS: 00000246
+[  384.489820] RAX: 0000000000000246 RBX: 0000000000000201 RCX: ffff8801f4ce54a0
+[  384.489820] RDX: 0000000000000000 RSI: 0000000000000201 RDI: ffffffffa0e48213
+[  384.489821] RBP: ffff88021ea83c28 R08: 0000000000000007 R09: 0000000000000000
+[  384.489822] R10: ffff880212d225c0 R11: 00000043d37d19c0 R12: ffff8800d4dc4340
+[  384.489823] R13: ffffffffa0e48213 R14: ffff8800d4dc58e0 R15: ffff8800cac69488
+[  384.489824] FS:  0000000000000000(0000) GS:ffff88021ea80000(0000) knlGS:0000000000000000
+[  384.489826] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  384.489827] CR2: 00007f0de5404e50 CR3: 0000000001c0a000 CR4: 00000000000406e0
+[  384.489827] Stack:
+[  384.489830]  ffff8800d4dc4f60 ffff8800d4dc4340 ffff8800d4dc0a60 ffff88021ea83c40
+[  384.489831]  ffffffff816f9e10 ffff8800d4dc4f60 ffff88021ea83c70 ffffffffa0e48213
+[  384.489833]  ffff8800cac69488 ffff8800cac694a0 ffff8800d4dc0a60 ffff8800d4dc4340
+[  384.489834] Call Trace:
+[  384.489838]  <IRQ>
+[  384.489838]  [<ffffffff816f9e10>] _raw_spin_lock_bh+0x16/0x40
+[  384.489848]  [<ffffffffa0e48213>] ath10k_htt_tx_txq_update+0x25/0x4a [ath10k_core]
+[  384.489855]  [<ffffffffa0e38c29>] ath10k_mac_tx_push_pending+0xcf/0x12d [ath10k_core]
+[  384.489864]  [<ffffffffa0e47465>] ath10k_htt_txrx_compl_task+0x6d2/0xae1 [ath10k_core]
+[  384.489867]  [<ffffffff810f23ad>] ? __local_bh_enable_ip+0xa4/0xb9
+[  384.489870]  [<ffffffff81381d71>] ? find_next_bit+0x15/0x1b
+[  384.489872]  [<ffffffff8112acd5>] ? trace_hardirqs_off+0xd/0xf
+[  384.489876]  [<ffffffff8104659b>] ? __x2apic_send_IPI_mask+0x12e/0x14d
+[  384.489879]  [<ffffffff81151f4e>] ? run_posix_cpu_timers+0x5a/0x42b
+[  384.489880]  [<ffffffff8103e8a8>] ? native_smp_send_reschedule+0x58/0x5a
+[  384.489883]  [<ffffffff8112d4b9>] ? trace_hardirqs_on+0xd/0xf
+[  384.489884]  [<ffffffff816f9fc9>] ? _raw_spin_unlock_irq+0x2c/0x3f
+[  384.489887]  [<ffffffff810f29e0>] tasklet_action+0xc0/0xcf
+[  384.489889]  [<ffffffff810f1ff6>] __do_softirq+0x1a4/0x407
+[  384.489891]  [<ffffffff810f2462>] irq_exit+0x40/0x94
+[  384.489893]  [<ffffffff81041347>] smp_apic_timer_interrupt+0x2e/0x39
+[  384.489895]  [<ffffffff816fb53c>] apic_timer_interrupt+0x8c/0xa0
+[  384.489898]  <EOI>
+[  384.489898]  [<ffffffff8145bed5>] ? vt_console_print+0x294/0x2a3
+[  384.489900]  [<ffffffff81139dce>] ? arch_local_irq_restore+0x6/0xd
+[  384.489902]  [<ffffffff8113bef3>] console_unlock+0x3aa/0x453
+[  384.489904]  [<ffffffff8113c3ad>] vprintk_emit+0x411/0x46a
+[  384.489907]  [<ffffffff8113c516>] vprintk_default+0x18/0x1a
+[  384.489909]  [<ffffffff811b31e9>] printk+0x43/0x4b
+[  384.489934]  [<ffffffffa0abf804>] __sdata_err+0x54/0x162 [mac80211]
+[  384.489960]  [<ffffffffa0ac6109>] ieee80211_sta_work+0x594/0xda9 [mac80211]
+[  384.489962]  [<ffffffff8112d30b>] ? mark_held_locks+0x5e/0x74
+[  384.489963]  [<ffffffff8112d490>] ? trace_hardirqs_on_caller+0x16f/0x18b
+[  384.489965]  [<ffffffff816fa024>] ? _raw_spin_unlock_irqrestore+0x48/0x5d
+[  384.489985]  [<ffffffffa0a8ff3e>] ieee80211_iface_work+0x335/0x34e [mac80211]
+[  384.489988]  [<ffffffff8110471a>] process_one_work+0x260/0x4db
+[  384.489990]  [<ffffffff81104e50>] worker_thread+0x1e9/0x29b
+[  384.489992]  [<ffffffff81104c67>] ? rescuer_thread+0x2a8/0x2a8
+[  384.489994]  [<ffffffff81109bfb>] kthread+0xcf/0xd7
+[  384.489996]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  384.489998]  [<ffffffff816faaef>] ret_from_fork+0x3f/0x70
+[  384.490000]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  384.490019] Code: 53 89 f3 74 21 80 3d c9 20 c1 00 00 75 18 be 63 00 00 00 48 c7 c7 f4 a5 a9 81 e8 7c c7 ff ff c6 05 af 20 c1 00 01 e8 de fb ff ff <49> 89 c4 
+e8 f0 fb ff ff 65 01 1d 9e a2 f1 7e 65 8b 35 97 a2 f1
+[  412.492484] NMI watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [kworker/u8:3:257]
+[  412.492527] Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 8021q garp mrp stp llc bnep bluetooth fuse macvlan wanlink(O) 
+pktgen rpcsec_gss_krb5 nfsv4 nfs fscache iTCO_wdt iTCO_vendor_support coretemp ath9k ath10k_pci hwmon ath9k_common ath10k_core ath9k_hw intel_rapl iosf_mbi ath 
+x86_pkg_temp_thermal intel_powerclamp mac80211 kvm_intel kvm joydev irqbypass pcspkr serio_raw cfg80211 snd_hda_codec_hdmi lpc_ich i2c_i801 
+snd_hda_codec_realtek snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_seq snd_seq_device snd_pcm 8250_fintek snd_timer snd shpchp 
+soundcore tpm_tis tpm nfsd auth_rpcgss nfs_acl lockd grace sunrpc ata_generic pata_acpi i915 e1000e ptp pps_core i2c_algo_bit drm_kms_helper drm i2c_core fjes 
+video ipv6 [last unloaded: nf_conntrack]
+
+[  412.492528] irq event stamp: 2111179
+[  412.492534] hardirqs last  enabled at (2111179): [<ffffffff8113c347>] vprintk_emit+0x3ab/0x46a
+[  412.492537] hardirqs last disabled at (2111178): [<ffffffff8113bff8>] vprintk_emit+0x5c/0x46a
+[  412.492549] softirqs last  enabled at (2111014): [<ffffffffa0e30965>] ath10k_set_key+0x136/0x602 [ath10k_core]
+[  412.492556] softirqs last disabled at (2111012): [<ffffffffa0e30946>] ath10k_set_key+0x117/0x602 [ath10k_core]
+[  412.492559] CPU: 1 PID: 257 Comm: kworker/u8:3 Tainted: G        W  O L  4.4.6+ #21
+[  412.492560] Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
+[  412.492587] Workqueue: wiphy3 ieee80211_iface_work [mac80211]
+[  412.492588] task: ffff880212d225c0 ti: ffff880212d50000 task.ti: ffff880212d50000
+[  412.492592] RIP: 0010:[<ffffffff81130e2c>]  [<ffffffff81130e2c>] do_raw_spin_lock+0x6b/0xfa
+[  412.492593] RSP: 0018:ffff88021ea83c00  EFLAGS: 00000246
+[  412.492594] RAX: 0000000000000000 RBX: ffff8800d4dc4f60 RCX: 0000000000000000
+[  412.492595] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff8800d4dc4f60
+[  412.492596] RBP: ffff88021ea83c20 R08: 0000000000000001 R09: 0000000000000000
+[  412.492597] R10: ffff880212d225c0 R11: 00000043d37d19c0 R12: ffff8800d4dc4340
+[  412.492597] R13: ffff8800d4dc0a60 R14: ffff8800d4dc58e0 R15: ffff8800cac69488
+[  412.492599] FS:  0000000000000000(0000) GS:ffff88021ea80000(0000) knlGS:0000000000000000
+[  412.492600] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  412.492601] CR2: 00007f0de5404e50 CR3: 0000000001c0a000 CR4: 00000000000406e0
+[  412.492602] Stack:
+[  412.492604]  ffff8800d4dc4f60 ffff8800d4dc4340 ffff8800d4dc0a60 ffff8800d4dc58e0
+[  412.492606]  ffff88021ea83c40 ffffffff816f9e33 ffffffffa0e48213 ffff8800d4dc4f60
+[  412.492608]  ffff88021ea83c70 ffffffffa0e48213 ffff8800cac69488 ffff8800cac694a0
+[  412.492608] Call Trace:
+[  412.492613]  <IRQ>
+[  412.492613]  [<ffffffff816f9e33>] _raw_spin_lock_bh+0x39/0x40
+[  412.492623]  [<ffffffffa0e48213>] ? ath10k_htt_tx_txq_update+0x25/0x4a [ath10k_core]
+[  412.492632]  [<ffffffffa0e48213>] ath10k_htt_tx_txq_update+0x25/0x4a [ath10k_core]
+[  412.492639]  [<ffffffffa0e38c29>] ath10k_mac_tx_push_pending+0xcf/0x12d [ath10k_core]
+[  412.492648]  [<ffffffffa0e47465>] ath10k_htt_txrx_compl_task+0x6d2/0xae1 [ath10k_core]
+[  412.492652]  [<ffffffff810f23ad>] ? __local_bh_enable_ip+0xa4/0xb9
+[  412.492656]  [<ffffffff81381d71>] ? find_next_bit+0x15/0x1b
+[  412.492658]  [<ffffffff8112acd5>] ? trace_hardirqs_off+0xd/0xf
+[  412.492661]  [<ffffffff8104659b>] ? __x2apic_send_IPI_mask+0x12e/0x14d
+[  412.492663]  [<ffffffff81151f4e>] ? run_posix_cpu_timers+0x5a/0x42b
+[  412.492665]  [<ffffffff8103e8a8>] ? native_smp_send_reschedule+0x58/0x5a
+[  412.492667]  [<ffffffff8112d4b9>] ? trace_hardirqs_on+0xd/0xf
+[  412.492669]  [<ffffffff816f9fc9>] ? _raw_spin_unlock_irq+0x2c/0x3f
+[  412.492671]  [<ffffffff810f29e0>] tasklet_action+0xc0/0xcf
+[  412.492673]  [<ffffffff810f1ff6>] __do_softirq+0x1a4/0x407
+[  412.492675]  [<ffffffff810f2462>] irq_exit+0x40/0x94
+[  412.492677]  [<ffffffff81041347>] smp_apic_timer_interrupt+0x2e/0x39
+[  412.492680]  [<ffffffff816fb53c>] apic_timer_interrupt+0x8c/0xa0
+[  412.492683]  <EOI>
+[  412.492683]  [<ffffffff8145bed5>] ? vt_console_print+0x294/0x2a3
+[  412.492685]  [<ffffffff81139dce>] ? arch_local_irq_restore+0x6/0xd
+[  412.492687]  [<ffffffff8113bef3>] console_unlock+0x3aa/0x453
+[  412.492689]  [<ffffffff8113c3ad>] vprintk_emit+0x411/0x46a
+[  412.492691]  [<ffffffff8113c516>] vprintk_default+0x18/0x1a
+[  412.492694]  [<ffffffff811b31e9>] printk+0x43/0x4b
+[  412.492719]  [<ffffffffa0abf804>] __sdata_err+0x54/0x162 [mac80211]
+[  412.492745]  [<ffffffffa0ac6109>] ieee80211_sta_work+0x594/0xda9 [mac80211]
+[  412.492746]  [<ffffffff8112d30b>] ? mark_held_locks+0x5e/0x74
+[  412.492748]  [<ffffffff8112d490>] ? trace_hardirqs_on_caller+0x16f/0x18b
+[  412.492750]  [<ffffffff816fa024>] ? _raw_spin_unlock_irqrestore+0x48/0x5d
+[  412.492769]  [<ffffffffa0a8ff3e>] ieee80211_iface_work+0x335/0x34e [mac80211]
+[  412.492772]  [<ffffffff8110471a>] process_one_work+0x260/0x4db
+[  412.492775]  [<ffffffff81104e50>] worker_thread+0x1e9/0x29b
+[  412.492777]  [<ffffffff81104c67>] ? rescuer_thread+0x2a8/0x2a8
+[  412.492779]  [<ffffffff81109bfb>] kthread+0xcf/0xd7
+[  412.492781]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  412.492783]  [<ffffffff816faaef>] ret_from_fork+0x3f/0x70
+[  412.492785]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  412.492803] Code: ff 65 8b 05 0f 93 ed 7e 39 43 08 75 0f 48 c7 c6 a5 19 aa 81 48 89 df e8 2a ff ff ff 8b 03 85 c0 75 0d ba 01 00 00 00 f0 0f b1 13 <85> c0 74 
+28 4c 69 2d 55 02 ae 00 e8 03 00 00 45 31 e4 41 be 01
+[  440.494887] NMI watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [kworker/u8:3:257]
+[  440.494927] Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 8021q garp mrp stp llc bnep bluetooth fuse macvlan wanlink(O) 
+pktgen rpcsec_gss_krb5 nfsv4 nfs fscache iTCO_wdt iTCO_vendor_support coretemp ath9k ath10k_pci hwmon ath9k_common ath10k_core ath9k_hw intel_rapl iosf_mbi ath 
+x86_pkg_temp_thermal intel_powerclamp mac80211 kvm_intel kvm joydev irqbypass pcspkr serio_raw cfg80211 snd_hda_codec_hdmi lpc_ich i2c_i801 
+snd_hda_codec_realtek snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_seq snd_seq_device snd_pcm 8250_fintek snd_timer snd shpchp 
+soundcore tpm_tis tpm nfsd auth_rpcgss nfs_acl lockd grace sunrpc ata_generic pata_acpi i915 e1000e ptp pps_core i2c_algo_bit drm_kms_helper drm i2c_core fjes 
+video ipv6 [last unloaded: nf_conntrack]
+
+[  440.494928] irq event stamp: 2111179
+[  440.494935] hardirqs last  enabled at (2111179): [<ffffffff8113c347>] vprintk_emit+0x3ab/0x46a
+[  440.494937] hardirqs last disabled at (2111178): [<ffffffff8113bff8>] vprintk_emit+0x5c/0x46a
+[  440.494948] softirqs last  enabled at (2111014): [<ffffffffa0e30965>] ath10k_set_key+0x136/0x602 [ath10k_core]
+[  440.494955] softirqs last disabled at (2111012): [<ffffffffa0e30946>] ath10k_set_key+0x117/0x602 [ath10k_core]
+[  440.494958] CPU: 1 PID: 257 Comm: kworker/u8:3 Tainted: G        W  O L  4.4.6+ #21
+[  440.494959] Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
+[  440.494987] Workqueue: wiphy3 ieee80211_iface_work [mac80211]
+[  440.494988] task: ffff880212d225c0 ti: ffff880212d50000 task.ti: ffff880212d50000
+[  440.494992] RIP: 0010:[<ffffffff81130e58>]  [<ffffffff81130e58>] do_raw_spin_lock+0x97/0xfa
+[  440.494993] RSP: 0018:ffff88021ea83c00  EFLAGS: 00000246
+[  440.494994] RAX: 0000000000000000 RBX: ffff8800d4dc4f60 RCX: 0000000000000000
+[  440.494995] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff8800d4dc4f60
+[  440.494995] RBP: ffff88021ea83c20 R08: 0000000000000001 R09: 0000000000000000
+[  440.494996] R10: ffff880212d225c0 R11: 00000043d37d19c0 R12: ffff8800d4dc4340
+[  440.494997] R13: ffff8800d4dc0a60 R14: ffff8800d4dc58e0 R15: ffff8800cac69488
+[  440.494999] FS:  0000000000000000(0000) GS:ffff88021ea80000(0000) knlGS:0000000000000000
+[  440.495000] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  440.495001] CR2: 00007f0de5404e50 CR3: 0000000001c0a000 CR4: 00000000000406e0
+[  440.495002] Stack:
+[  440.495004]  ffff8800d4dc4f60 ffff8800d4dc4340 ffff8800d4dc0a60 ffff8800d4dc58e0
+[  440.495006]  ffff88021ea83c40 ffffffff816f9e33 ffffffffa0e48213 ffff8800d4dc4f60
+[  440.495007]  ffff88021ea83c70 ffffffffa0e48213 ffff8800cac69488 ffff8800cac694a0
+[  440.495008] Call Trace:
+[  440.495012]  <IRQ>
+[  440.495013]  [<ffffffff816f9e33>] _raw_spin_lock_bh+0x39/0x40
+[  440.495022]  [<ffffffffa0e48213>] ? ath10k_htt_tx_txq_update+0x25/0x4a [ath10k_core]
+[  440.495031]  [<ffffffffa0e48213>] ath10k_htt_tx_txq_update+0x25/0x4a [ath10k_core]
+[  440.495039]  [<ffffffffa0e38c29>] ath10k_mac_tx_push_pending+0xcf/0x12d [ath10k_core]
+[  440.495048]  [<ffffffffa0e47465>] ath10k_htt_txrx_compl_task+0x6d2/0xae1 [ath10k_core]
+[  440.495052]  [<ffffffff810f23ad>] ? __local_bh_enable_ip+0xa4/0xb9
+[  440.495055]  [<ffffffff81381d71>] ? find_next_bit+0x15/0x1b
+[  440.495057]  [<ffffffff8112acd5>] ? trace_hardirqs_off+0xd/0xf
+[  440.495061]  [<ffffffff8104659b>] ? __x2apic_send_IPI_mask+0x12e/0x14d
+[  440.495064]  [<ffffffff81151f4e>] ? run_posix_cpu_timers+0x5a/0x42b
+[  440.495066]  [<ffffffff8103e8a8>] ? native_smp_send_reschedule+0x58/0x5a
+[  440.495069]  [<ffffffff8112d4b9>] ? trace_hardirqs_on+0xd/0xf
+[  440.495070]  [<ffffffff816f9fc9>] ? _raw_spin_unlock_irq+0x2c/0x3f
+[  440.495073]  [<ffffffff810f29e0>] tasklet_action+0xc0/0xcf
+[  440.495075]  [<ffffffff810f1ff6>] __do_softirq+0x1a4/0x407
+[  440.495077]  [<ffffffff810f2462>] irq_exit+0x40/0x94
+[  440.495079]  [<ffffffff81041347>] smp_apic_timer_interrupt+0x2e/0x39
+[  440.495081]  [<ffffffff816fb53c>] apic_timer_interrupt+0x8c/0xa0
+[  440.495084]  <EOI>
+[  440.495084]  [<ffffffff8145bed5>] ? vt_console_print+0x294/0x2a3
+[  440.495087]  [<ffffffff81139dce>] ? arch_local_irq_restore+0x6/0xd
+[  440.495089]  [<ffffffff8113bef3>] console_unlock+0x3aa/0x453
+[  440.495091]  [<ffffffff8113c3ad>] vprintk_emit+0x411/0x46a
+[  440.495093]  [<ffffffff8113c516>] vprintk_default+0x18/0x1a
+[  440.495095]  [<ffffffff811b31e9>] printk+0x43/0x4b
+[  440.495121]  [<ffffffffa0abf804>] __sdata_err+0x54/0x162 [mac80211]
+[  440.495146]  [<ffffffffa0ac6109>] ieee80211_sta_work+0x594/0xda9 [mac80211]
+[  440.495148]  [<ffffffff8112d30b>] ? mark_held_locks+0x5e/0x74
+[  440.495150]  [<ffffffff8112d490>] ? trace_hardirqs_on_caller+0x16f/0x18b
+[  440.495152]  [<ffffffff816fa024>] ? _raw_spin_unlock_irqrestore+0x48/0x5d
+[  440.495171]  [<ffffffffa0a8ff3e>] ieee80211_iface_work+0x335/0x34e [mac80211]
+[  440.495174]  [<ffffffff8110471a>] process_one_work+0x260/0x4db
+[  440.495176]  [<ffffffff81104e50>] worker_thread+0x1e9/0x29b
+[  440.495179]  [<ffffffff81104c67>] ? rescuer_thread+0x2a8/0x2a8
+[  440.495180]  [<ffffffff81109bfb>] kthread+0xcf/0xd7
+[  440.495183]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  440.495185]  [<ffffffff816faaef>] ret_from_fork+0x3f/0x70
+[  440.495186]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  440.495205] Code: c0 74 28 4c 69 2d 55 02 ae 00 e8 03 00 00 45 31 e4 41 be 01 00 00 00 4d 39 e5 74 2f 8b 03 85 c0 75 5d f0 44 0f b1 33 85 c0 75 54 <65> 8b 05 
+b9 92 ed 7e 89 43 08 65 48 8b 04 25 40 be 00 00 48 89
+[  468.495764] NMI watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [kworker/u8:3:257]
+[  468.495805] Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 8021q garp mrp stp llc bnep bluetooth fuse macvlan wanlink(O) 
+pktgen rpcsec_gss_krb5 nfsv4 nfs fscache iTCO_wdt iTCO_vendor_support coretemp ath9k ath10k_pci hwmon ath9k_common ath10k_core ath9k_hw intel_rapl iosf_mbi ath 
+x86_pkg_temp_thermal intel_powerclamp mac80211 kvm_intel kvm joydev irqbypass pcspkr serio_raw cfg80211 snd_hda_codec_hdmi lpc_ich i2c_i801 
+snd_hda_codec_realtek snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_seq snd_seq_device snd_pcm 8250_fintek snd_timer snd shpchp 
+soundcore tpm_tis tpm nfsd auth_rpcgss nfs_acl lockd grace sunrpc ata_generic pata_acpi i915 e1000e ptp pps_core i2c_algo_bit drm_kms_helper drm i2c_core fjes 
+video ipv6 [last unloaded: nf_conntrack]
+
+[  468.495807] irq event stamp: 2111179
+[  468.495813] hardirqs last  enabled at (2111179): [<ffffffff8113c347>] vprintk_emit+0x3ab/0x46a
+[  468.495815] hardirqs last disabled at (2111178): [<ffffffff8113bff8>] vprintk_emit+0x5c/0x46a
+[  468.495827] softirqs last  enabled at (2111014): [<ffffffffa0e30965>] ath10k_set_key+0x136/0x602 [ath10k_core]
+[  468.495834] softirqs last disabled at (2111012): [<ffffffffa0e30946>] ath10k_set_key+0x117/0x602 [ath10k_core]
+[  468.495837] CPU: 1 PID: 257 Comm: kworker/u8:3 Tainted: G        W  O L  4.4.6+ #21
+[  468.495838] Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
+[  468.495866] Workqueue: wiphy3 ieee80211_iface_work [mac80211]
+[  468.495867] task: ffff880212d225c0 ti: ffff880212d50000 task.ti: ffff880212d50000
+[  468.495871] RIP: 0010:[<ffffffff81130f26>]  [<ffffffff81130f26>] do_raw_spin_unlock+0x32/0x80
+[  468.495871] RSP: 0018:ffff88021ea83c20  EFLAGS: 00000202
+[  468.495872] RAX: 0000000000000001 RBX: ffff8800d4dc4f60 RCX: 0000000040c7d6f4
+[  468.495873] RDX: ffffffffa0e48230 RSI: 0000000000000001 RDI: ffff8800d4dc4f60
+[  468.495874] RBP: ffff88021ea83c28 R08: 0000000000000007 R09: 0000000000000000
+[  468.495875] R10: ffff880212d225c0 R11: 00000043d37d19c0 R12: ffff8800d4dc4340
+[  468.495876] R13: ffff8800d4dc0a60 R14: ffff8800d4dc58e0 R15: ffff8800cac69488
+[  468.495877] FS:  0000000000000000(0000) GS:ffff88021ea80000(0000) knlGS:0000000000000000
+[  468.495878] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  468.495879] CR2: 00007f0de5404e50 CR3: 0000000001c0a000 CR4: 00000000000406e0
+[  468.495880] Stack:
+[  468.495883]  ffff8800d4dc4f60 ffff88021ea83c40 ffffffff816f9f8c ffff8800d4dc4f60
+[  468.495884]  ffff88021ea83c70 ffffffffa0e48230 ffff8800cac69488 ffff8800cac694a0
+[  468.495886]  ffff8800d4dc0a60 ffff8800d4dc4340 ffff88021ea83cc0 ffffffffa0e38c29
+[  468.495887] Call Trace:
+[  468.495891]  <IRQ>
+[  468.495891]  [<ffffffff816f9f8c>] _raw_spin_unlock_bh+0x22/0x33
+[  468.495901]  [<ffffffffa0e48230>] ath10k_htt_tx_txq_update+0x42/0x4a [ath10k_core]
+[  468.495909]  [<ffffffffa0e38c29>] ath10k_mac_tx_push_pending+0xcf/0x12d [ath10k_core]
+[  468.495918]  [<ffffffffa0e47465>] ath10k_htt_txrx_compl_task+0x6d2/0xae1 [ath10k_core]
+[  468.495922]  [<ffffffff810f23ad>] ? __local_bh_enable_ip+0xa4/0xb9
+[  468.495925]  [<ffffffff81381d71>] ? find_next_bit+0x15/0x1b
+[  468.495927]  [<ffffffff8112acd5>] ? trace_hardirqs_off+0xd/0xf
+[  468.495930]  [<ffffffff8104659b>] ? __x2apic_send_IPI_mask+0x12e/0x14d
+[  468.495932]  [<ffffffff81151f4e>] ? run_posix_cpu_timers+0x5a/0x42b
+[  468.495934]  [<ffffffff8103e8a8>] ? native_smp_send_reschedule+0x58/0x5a
+[  468.495936]  [<ffffffff8112d4b9>] ? trace_hardirqs_on+0xd/0xf
+[  468.495938]  [<ffffffff816f9fc9>] ? _raw_spin_unlock_irq+0x2c/0x3f
+[  468.495940]  [<ffffffff810f29e0>] tasklet_action+0xc0/0xcf
+[  468.495942]  [<ffffffff810f1ff6>] __do_softirq+0x1a4/0x407
+[  468.495945]  [<ffffffff810f2462>] irq_exit+0x40/0x94
+[  468.495947]  [<ffffffff81041347>] smp_apic_timer_interrupt+0x2e/0x39
+[  468.495949]  [<ffffffff816fb53c>] apic_timer_interrupt+0x8c/0xa0
+[  468.495952]  <EOI>
+[  468.495952]  [<ffffffff8145bed5>] ? vt_console_print+0x294/0x2a3
+[  468.495954]  [<ffffffff81139dce>] ? arch_local_irq_restore+0x6/0xd
+[  468.495956]  [<ffffffff8113bef3>] console_unlock+0x3aa/0x453
+[  468.495958]  [<ffffffff8113c3ad>] vprintk_emit+0x411/0x46a
+[  468.495960]  [<ffffffff8113c516>] vprintk_default+0x18/0x1a
+[  468.495962]  [<ffffffff811b31e9>] printk+0x43/0x4b
+[  468.495988]  [<ffffffffa0abf804>] __sdata_err+0x54/0x162 [mac80211]
+[  468.496013]  [<ffffffffa0ac6109>] ieee80211_sta_work+0x594/0xda9 [mac80211]
+[  468.496015]  [<ffffffff8112d30b>] ? mark_held_locks+0x5e/0x74
+[  468.496017]  [<ffffffff8112d490>] ? trace_hardirqs_on_caller+0x16f/0x18b
+[  468.496019]  [<ffffffff816fa024>] ? _raw_spin_unlock_irqrestore+0x48/0x5d
+[  468.496038]  [<ffffffffa0a8ff3e>] ieee80211_iface_work+0x335/0x34e [mac80211]
+[  468.496041]  [<ffffffff8110471a>] process_one_work+0x260/0x4db
+[  468.496043]  [<ffffffff81104e50>] worker_thread+0x1e9/0x29b
+[  468.496045]  [<ffffffff81104c67>] ? rescuer_thread+0x2a8/0x2a8
+[  468.496047]  [<ffffffff81109bfb>] kthread+0xcf/0xd7
+[  468.496050]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  468.496052]  [<ffffffff816faaef>] ret_from_fork+0x3f/0x70
+[  468.496053]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  468.496072] Code: 04 ad 4e ad de 48 89 fb 74 0c 48 c7 c6 9b 19 aa 81 e8 36 fe ff ff 8b 03 85 c0 75 0f 48 c7 c6 c4 19 aa 81 48 89 df e8 21 fe ff ff <65> 48 8b 
+04 25 40 be 00 00 48 39 43 10 74 0f 48 c7 c6 d5 19 aa
+[  496.496640] NMI watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [kworker/u8:3:257]
+[  496.496678] Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 8021q garp mrp stp llc bnep bluetooth fuse macvlan wanlink(O) 
+pktgen rpcsec_gss_krb5 nfsv4 nfs fscache iTCO_wdt iTCO_vendor_support coretemp ath9k ath10k_pci hwmon ath9k_common ath10k_core ath9k_hw intel_rapl iosf_mbi ath 
+x86_pkg_temp_thermal intel_powerclamp mac80211 kvm_intel kvm joydev irqbypass pcspkr serio_raw cfg80211 snd_hda_codec_hdmi lpc_ich i2c_i801 
+snd_hda_codec_realtek snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_seq snd_seq_device snd_pcm 8250_fintek snd_timer snd shpchp 
+soundcore tpm_tis tpm nfsd auth_rpcgss nfs_acl lockd grace sunrpc ata_generic pata_acpi i915 e1000e ptp pps_core i2c_algo_bit drm_kms_helper drm i2c_core fjes 
+video ipv6 [last unloaded: nf_conntrack]
+
+[  496.496679] irq event stamp: 2111179
+[  496.496684] hardirqs last  enabled at (2111179): [<ffffffff8113c347>] vprintk_emit+0x3ab/0x46a
+[  496.496686] hardirqs last disabled at (2111178): [<ffffffff8113bff8>] vprintk_emit+0x5c/0x46a
+[  496.496696] softirqs last  enabled at (2111014): [<ffffffffa0e30965>] ath10k_set_key+0x136/0x602 [ath10k_core]
+[  496.496703] softirqs last disabled at (2111012): [<ffffffffa0e30946>] ath10k_set_key+0x117/0x602 [ath10k_core]
+[  496.496706] CPU: 1 PID: 257 Comm: kworker/u8:3 Tainted: G        W  O L  4.4.6+ #21
+[  496.496706] Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
+[  496.496732] Workqueue: wiphy3 ieee80211_iface_work [mac80211]
+[  496.496733] task: ffff880212d225c0 ti: ffff880212d50000 task.ti: ffff880212d50000
+[  496.496744] RIP: 0010:[<ffffffffa0e48102>]  [<ffffffffa0e48102>] __ath10k_htt_tx_txq_sync+0x5a/0xa7 [ath10k_core]
+[  496.496745] RSP: 0018:ffff88021ea83c30  EFLAGS: 00000246
+[  496.496746] RAX: ffff8801fe57e000 RBX: ffff8800d4dc4340 RCX: 000000004b0a0e45
+[  496.496747] RDX: ffffffffa0e6ced4 RSI: 0000000000000008 RDI: ffff8800d4dc4340
+[  496.496747] RBP: ffff88021ea83c40 R08: 0000000000000007 R09: 0000000000000000
+[  496.496748] R10: ffff880212d225c0 R11: 00000043d37d19c0 R12: ffff8800d4dc4340
+[  496.496749] R13: ffff8800d4dc0a60 R14: ffff8800d4dc58e0 R15: ffff8800cac69488
+[  496.496751] FS:  0000000000000000(0000) GS:ffff88021ea80000(0000) knlGS:0000000000000000
+[  496.496752] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  496.496753] CR2: 00007f0de5404e50 CR3: 0000000001c0a000 CR4: 00000000000406e0
+[  496.496753] Stack:
+[  496.496756]  ffff8800d4dc4f60 ffff8800d4dc58e0 ffff88021ea83c70 ffffffffa0e48228
+[  496.496757]  ffff8800cac69488 ffff8800cac694a0 ffff8800d4dc0a60 ffff8800d4dc4340
+[  496.496759]  ffff88021ea83cc0 ffffffffa0e38c29 0000000000000001 ffff8800d4dc58a8
+[  496.496760] Call Trace:
+[  496.496770]  <IRQ>
+[  496.496770]  [<ffffffffa0e48228>] ath10k_htt_tx_txq_update+0x3a/0x4a [ath10k_core]
+[  496.496778]  [<ffffffffa0e38c29>] ath10k_mac_tx_push_pending+0xcf/0x12d [ath10k_core]
+[  496.496787]  [<ffffffffa0e47465>] ath10k_htt_txrx_compl_task+0x6d2/0xae1 [ath10k_core]
+[  496.496790]  [<ffffffff810f23ad>] ? __local_bh_enable_ip+0xa4/0xb9
+[  496.496792]  [<ffffffff81381d71>] ? find_next_bit+0x15/0x1b
+[  496.496794]  [<ffffffff8112acd5>] ? trace_hardirqs_off+0xd/0xf
+[  496.496797]  [<ffffffff8104659b>] ? __x2apic_send_IPI_mask+0x12e/0x14d
+[  496.496800]  [<ffffffff81151f4e>] ? run_posix_cpu_timers+0x5a/0x42b
+[  496.496802]  [<ffffffff8103e8a8>] ? native_smp_send_reschedule+0x58/0x5a
+[  496.496804]  [<ffffffff8112d4b9>] ? trace_hardirqs_on+0xd/0xf
+[  496.496807]  [<ffffffff816f9fc9>] ? _raw_spin_unlock_irq+0x2c/0x3f
+[  496.496810]  [<ffffffff810f29e0>] tasklet_action+0xc0/0xcf
+[  496.496812]  [<ffffffff810f1ff6>] __do_softirq+0x1a4/0x407
+[  496.496814]  [<ffffffff810f2462>] irq_exit+0x40/0x94
+[  496.496816]  [<ffffffff81041347>] smp_apic_timer_interrupt+0x2e/0x39
+[  496.496818]  [<ffffffff816fb53c>] apic_timer_interrupt+0x8c/0xa0
+[  496.496821]  <EOI>
+[  496.496821]  [<ffffffff8145bed5>] ? vt_console_print+0x294/0x2a3
+[  496.496823]  [<ffffffff81139dce>] ? arch_local_irq_restore+0x6/0xd
+[  496.496826]  [<ffffffff8113bef3>] console_unlock+0x3aa/0x453
+[  496.496828]  [<ffffffff8113c3ad>] vprintk_emit+0x411/0x46a
+[  496.496830]  [<ffffffff8113c516>] vprintk_default+0x18/0x1a
+[  496.496832]  [<ffffffff811b31e9>] printk+0x43/0x4b
+[  496.496858]  [<ffffffffa0abf804>] __sdata_err+0x54/0x162 [mac80211]
+[  496.496883]  [<ffffffffa0ac6109>] ieee80211_sta_work+0x594/0xda9 [mac80211]
+[  496.496884]  [<ffffffff8112d30b>] ? mark_held_locks+0x5e/0x74
+[  496.496886]  [<ffffffff8112d490>] ? trace_hardirqs_on_caller+0x16f/0x18b
+[  496.496888]  [<ffffffff816fa024>] ? _raw_spin_unlock_irqrestore+0x48/0x5d
+[  496.496907]  [<ffffffffa0a8ff3e>] ieee80211_iface_work+0x335/0x34e [mac80211]
+[  496.496910]  [<ffffffff8110471a>] process_one_work+0x260/0x4db
+[  496.496913]  [<ffffffff81104e50>] worker_thread+0x1e9/0x29b
+[  496.496915]  [<ffffffff81104c67>] ? rescuer_thread+0x2a8/0x2a8
+[  496.496917]  [<ffffffff81109bfb>] kthread+0xcf/0xd7
+[  496.496919]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  496.496921]  [<ffffffff816faaef>] ret_from_fork+0x3f/0x70
+[  496.496923]  [<ffffffff81109b2c>] ? kthread_parkme+0x1f/0x1f
+[  496.496941] Code: 0f 00 00 01 75 6d 48 8b 83 f8 0e 00 00 be 08 00 00 00 48 89 df 8b 90 a0 12 00 00 8d 4a 01 48 c7 c2 d4 ce e6 a0 89 88 a0 12 00 00 <e8> 2c 27 
+ff ff 4c 8b b3 70 02 00 00 4c 89 f7 e8 cc fb ff ff 48
+[  516.285250] sysrq: SysRq : Show Locks Held
+[  516.285251]
+Showing all locks held in the system:
+[  516.285253] 3 locks held by systemd/1:
+[  516.285263]  #0:  (sb_writers#6){.+.+.+}, at: [<ffffffff8120fea6>] __sb_start_write+0x5a/0xab
+[  516.285268]  #1:  (&of->mutex){+.+.+.}, at: [<ffffffff81276bbc>] kernfs_fop_write+0x95/0x14e
+[  516.285274]  #2:  (cgroup_mutex){+.+.+.}, at: [<ffffffff8116b811>] cgroup_kn_lock_live+0x4b/0x98
+[  516.285277] 3 locks held by kworker/1:0/15:
+[  516.285282]  #0:  ("events"){.+.+.+}, at: [<ffffffff811045fd>] process_one_work+0x143/0x4db
+[  516.285287]  #1:  (cfg80211_disconnect_work){+.+.+.}, at: [<ffffffff811045fd>] process_one_work+0x143/0x4db
+[  516.285292]  #2:  (rtnl_mutex){+.+.+.}, at: [<ffffffff816493ca>] rtnl_lock+0x12/0x14
+[  516.285298] 3 locks held by kworker/3:2/399:
+[  516.285302]  #0:  ("events"){.+.+.+}, at: [<ffffffff811045fd>] process_one_work+0x143/0x4db
+[  516.285307]  #1:  ((linkwatch_work).work){+.+.+.}, at: [<ffffffff811045fd>] process_one_work+0x143/0x4db
+[  516.285310]  #2:  (rtnl_mutex){+.+.+.}, at: [<ffffffff816493ca>] rtnl_lock+0x12/0x14
+[  516.285312] 2 locks held by systemd-journal/589:
+[  516.285317]  #0:  (&p->lock){+.+.+.}, at: [<ffffffff8122b62e>] seq_read+0x37/0x34b
+[  516.285321]  #1:  (cgroup_mutex){+.+.+.}, at: [<ffffffff8116feee>] proc_cgroup_show+0x49/0x20c
+[  516.285324] 4 locks held by kworker/2:3/794:
+[  516.285328]  #0:  ("events_freezable"){.+.+.+}, at: [<ffffffff811045fd>] process_one_work+0x143/0x4db
+[  516.285333]  #1:  ((&local->restart_work)){+.+.+.}, at: [<ffffffff811045fd>] process_one_work+0x143/0x4db
+[  516.285336]  #2:  (rtnl_mutex){+.+.+.}, at: [<ffffffff816493ca>] rtnl_lock+0x12/0x14
+[  516.285371]  #3:  (&wdev->mtx){+.+.+.}, at: [<ffffffffa0aae3a2>] ieee80211_reconfig+0x929/0x101e [mac80211]
+[  516.285374] 2 locks held by agetty/1198:
+[  516.285380]  #0:  (&tty->ldisc_sem){++++++}, at: [<ffffffff816f9cd0>] ldsem_down_read+0x2d/0x32
+[  516.285402]  #1:  (&ldata->atomic_read_lock){+.+...}, at: [<ffffffff8144d4e6>] n_tty_read+0xf7/0x7ae
+[  516.285409] 3 locks held by polkitd/1353:
+[  516.285414]  #0:  (&f->f_pos_lock){+.+.+.}, at: [<ffffffff812266a7>] __fdget_pos+0x35/0x3b
+[  516.285418]  #1:  (&p->lock){+.+.+.}, at: [<ffffffff8122b62e>] seq_read+0x37/0x34b
+[  516.285422]  #2:  (cgroup_mutex){+.+.+.}, at: [<ffffffff8116feee>] proc_cgroup_show+0x49/0x20c
+[  516.285426] 1 lock held by mission-control/1463:
+[  516.285430]  #0:  (rtnl_mutex){+.+.+.}, at: [<ffffffff816493ca>] rtnl_lock+0x12/0x14
+[  516.285432] 2 locks held by bash/1552:
+[  516.285436]  #0:  (&tty->ldisc_sem){++++++}, at: [<ffffffff816f9cd0>] ldsem_down_read+0x2d/0x32
+[  516.285440]  #1:  (&ldata->atomic_read_lock){+.+...}, at: [<ffffffff8144d4e6>] n_tty_read+0xf7/0x7ae
+[  516.285441] 3 locks held by kworker/1:3/1644:
+[  516.285446]  #0:  ("events"){.+.+.+}, at: [<ffffffff811045fd>] process_one_work+0x143/0x4db
+[  516.285450]  #1:  (wireless_nlevent_work){+.+.+.}, at: [<ffffffff811045fd>] process_one_work+0x143/0x4db
+[  516.285453]  #2:  (rtnl_mutex){+.+.+.}, at: [<ffffffff816493ca>] rtnl_lock+0x12/0x14
+[  516.285455] 2 locks held by wpa_supplicant/2939:
+[  516.285460]  #0:  (cb_lock){++++++}, at: [<ffffffff816698cc>] genl_rcv+0x14/0x32
+[  516.285464]  #1:  (genl_mutex){+.+.+.}, at: [<ffffffff81669550>] genl_lock+0x12/0x14
+[  516.285468] 3 locks held by bash/7525:
+[  516.285473]  #0:  (sb_writers#5){.+.+.+}, at: [<ffffffff8120fea6>] __sb_start_write+0x5a/0xab
+[  516.285477]  #1:  (rcu_read_lock){......}, at: [<ffffffff81452cc4>] __handle_sysrq+0x0/0x1bd
+[  516.285482]  #2:  (tasklist_lock){.+.+..}, at: [<ffffffff8112c2b9>] debug_show_all_locks+0x48/0x15f
+[  516.285483] 2 locks held by bash/7726:
+[  516.285487]  #0:  (&tty->ldisc_sem){++++++}, at: [<ffffffff816f9cd0>] ldsem_down_read+0x2d/0x32
+[  516.285490]  #1:  (&ldata->atomic_read_lock){+.+...}, at: [<ffffffff8144d4e6>] n_tty_read+0xf7/0x7ae
+[  516.285492] 3 locks held by iw/7828:
+[  516.285495]  #0:  (cb_lock){++++++}, at: [<ffffffff816698cc>] genl_rcv+0x14/0x32
+[  516.285499]  #1:  (genl_mutex){+.+.+.}, at: [<ffffffff81669550>] genl_lock+0x12/0x14
+[  516.285502]  #2:  (rtnl_mutex){+.+.+.}, at: [<ffffffff816493ca>] rtnl_lock+0x12/0x14
+
+[  516.285503] =============================================
+
+[root@ath10k ~]#
+
+Thanks,
+Ben
+
 -- 
-2.1.4
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
