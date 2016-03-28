@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x235.google.com ([2607:f8b0:4003:c06::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ajrKS-0006fu-0p
- for ath10k@lists.infradead.org; Sat, 26 Mar 2016 16:44:49 +0000
-Received: by mail-oi0-x235.google.com with SMTP id d205so126561042oia.0
- for <ath10k@lists.infradead.org>; Sat, 26 Mar 2016 09:44:26 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
+ id 1akcen-0008VU-R8
+ for ath10k@lists.infradead.org; Mon, 28 Mar 2016 19:16:58 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 701CB40EA14
+ for <ath10k@lists.infradead.org>; Mon, 28 Mar 2016 12:01:38 -0700 (PDT)
+From: Ben Greear <greearb@candelatech.com>
+Subject: hacked 4.4.6+, 10.4.3 firmware, Running out of ring-index for pipe-id
+ 3 (WMI).
+Message-ID: <56F97F91.10007@candelatech.com>
+Date: Mon, 28 Mar 2016 12:01:37 -0700
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQk7q7VerNC1KZK49REHn9rfo6sG5zW54P=-K3XkOL77pQ@mail.gmail.com>
-References: <1458898743-21118-1-git-send-email-michal.kazior@tieto.com>
- <CA+BoTQk7q7VerNC1KZK49REHn9rfo6sG5zW54P=-K3XkOL77pQ@mail.gmail.com>
-Date: Sat, 26 Mar 2016 09:44:26 -0700
-Message-ID: <CAA93jw7BEsEOP8O2BQFXUibkGzkzBZuyWxBxs5XDCZmOt6D+Qg@mail.gmail.com>
-Subject: Re: [RFC] ath10k: implement dql for htt tx
-From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,139 +22,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-RGVhciBNaWNoYWw6CgpJIGNvbW1lbnRlZCBvbiBhbmQgcHV0IHVwIHlvdXIgcmVzdWx0cyBmb3Ig
-dGhlIGJhc2VsaW5lIGRyaXZlciBoZXJlOgoKaHR0cDovL2Jsb2cuY2Vyb3dydC5vcmcvcG9zdC9y
-dHRfZmFpcl9vbl93aWZpLwoKQW5kIHRoZSB3b25kZXJmdWwgcmVzdWx0IHlvdSBnb3QgZm9yIHRo
-ZSBmaXJzdCBldmVyIGZxX2NvZGVsLWlzaAppbXBsZW1lbnRhdGlvbiBoZXJlOgoKaHR0cDovL2Js
-b2cuY2Vyb3dydC5vcmcvcG9zdC9mcV9jb2RlbF9vbl9hdGgxMGsvCgpJIGFtIHJ1bm5pbmcgYmVo
-aW5kIG9uIHRoaXMgcGF0Y2ggc2V0LCBidXQgYSBjb3VwbGUgcXVpY2sgY29tbWVudHMuCgoKT24g
-RnJpLCBNYXIgMjUsIDIwMTYgYXQgMjo1NSBBTSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlv
-ckB0aWV0by5jb20+IHdyb3RlOgo+IE9uIDI1IE1hcmNoIDIwMTYgYXQgMTA6MzksIE1pY2hhbCBL
-YXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPj4gVGhpcyBpbXBsZW1lbnRz
-IGEgdmVyeSBuYWl2ZSBkeW5hbWljIHF1ZXVlIGxpbWl0cwo+PiBvbiB0aGUgZmxhdCBIVFQgVHgu
-IEluIHNvbWUgb2YgbXkgdGVzdHMgKHVzaW5nCj4+IGZsZW50KSBpdCBzZWVtcyB0byByZWR1Y2Ug
-aW5kdWNlZCBsYXRlbmN5IGJ5Cj4+IG9yZGVycyBvZiBtYWduaXR1ZGUgKGUuZy4gd2hlbiBlbmZv
-cmNpbmcgNm1icHMKPj4gdHggcmF0ZXMgMjUwMG1zIC0+IDE1MG1zKS4gQnV0IGF0IHRoZSBzYW1l
-IHRpbWUgaXQKPj4gaW50cm9kdWNlcyBUQ1AgdGhyb3VnaHB1dCBidWlsZHVwIG92ZXIgdGltZQo+
-PiAoaW5zdGVhZCBvZiBpbW1lZGlhdGUgYnVtcCB0byBtYXgpLiBNb3JlCj4+IGltcG9ydGFudGx5
-IEkgZGlkbid0IG9ic2VydmUgaXQgdG8gbWFrZSB0aGluZ3MKPj4gbXVjaCB3b3JzZSAoeWV0KS4K
-Pj4KPj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5j
-b20+Cj4+IC0tLQo+Pgo+PiBJJ20gbm90IHN1cmUgeWV0IGlmIGl0J3Mgd29ydGggdG8gY29uc2lk
-ZXIgdGhpcwo+PiBwYXRjaCBmb3IgbWVyZ2luZyBwZXIgc2UuIE15IG1vdGl2YXRpb24gd2FzIHRv
-Cj4+IGhhdmUgc29tZXRoaW5nIHRvIHByb3ZlIG1hYzgwMjExIGZxIHdvcmtzIGFuZCB0bwo+PiBz
-ZWUgaWYgRFFMIGNhbiBsZWFybiB0aGUgcHJvcGVyIHF1ZXVlIGxpbWl0IGluCj4+IGZhY2Ugb2Yg
-d2lyZWxlc3MgcmF0ZSBjb250cm9sIGF0IGFsbC4KPj4KPj4gSSdsbCBkbyBhIGZvbGxvdyB1cCBw
-b3N0IHdpdGggZmxlbnQgdGVzdCByZXN1bHRzCj4+IGFuZCBzb21lIG5vdGVzLgo+Cj4gSGVyZSdz
-IGEgc2hvcnQgZGVzY3JpcHRpb24gd2hhdC1pcy13aGF0IHRlc3QgbmFtaW5nOgo+ICAtIHN3L2Zx
-IGNvbnRhaW5zIG9ubHkgdHhxL2Zsb3cgc3R1ZmYgKG5vIHNjaGVkdWxpbmcsIG5vIHR4b3AgcXVl
-dWUgbGltaXRzKQo+ICAtIHN3L2F0aDEwa19kcWwgY29udGFpbnMgb25seSBhdGgxMGsgcGF0Y2gg
-d2hpY2ggYXBwbGllcyBEUUwgdG8KPiBkcml2ZXItZmlybXdhcmUgdHggcXVldWUgbmFpdmVseQo+
-ICAtIHN3L2ZxK2F0aDEwa19kcWwgaXMgb2J2aW91cwo+ICAtIHN3L2Jhc2UgdG9kYXkncyBhdGgu
-Z2l0L21hc3RlciBjaGVja291dCB1c2VkIGFzIGJhc2UKPiAgLSAidmVyeWZhc3QiIHRlc3RzIFRD
-UCB0cHV0IHRvIHJlZmVyZW5jZSByZWNlaXZlciAoNCBhbnRlbm5hcykKPiAgLSAiZmFzdCIgdGVz
-dHMgVENQIHRwdXQgdG8gcmVmIHJlY2VpdmVyICgxIGFudGVubmEpCj4gIC0gInNsb3ciIHRlc3Rz
-IFRDUCB0cHV0IHRvIHJlZiByZWNlaXZlciAoMSAqdW5wbHVnZ2VkKiBhbnRlbm5hKQo+ICAtICJm
-YXN0K3Nsb3ciIHRlc3RzIHNoYXJpbmcgYmV0d2VlbiAiZmFzdCIgYW5kICJzbG93Igo+ICAtICJh
-dXRvcmF0ZSIgdXNlcyBkZWZhdWx0IHJhdGUgY29udHJvbAo+ICAtICJyYXRlNm0iIHVzZXMgZml4
-ZWQtdHgtcmF0ZSBhdCA2bWJwcwo+ICAtIHRoZSB0ZXN0IHVzZXMgUUNBOTg4MCB3LyAxMC4xLjQ2
-Nwo+ICAtIG5vIHJydWwgdGVzdHMsIHNvcnJ5IERhdmUhIDopCgpycnVsIHdvdWxkIGJlIGEgZ29v
-ZCBiYXNlbGluZSB0byBoYXZlLCBidXQgbm8gbmVlZCB0byB3YXN0ZSB5b3VyIHRpbWUKb24gcnVu
-bmluZyBpdCBldmVyeSB0aW1lIGFzIHlldC4gSXQgc3RyZXNzZXMgb3V0IGJvdGggc2lkZXMgb2Yg
-dGhlCmxpbmsgc28gd2hlbmV2ZXIgeW91IGdldCB0d28gZGV2aWNlcyB3aXRoIHRoZXNlIGRyaXZl
-ciBjaGFuZ2VzIG9uIHRoZW0KaXQgd291bGQgYmUgImludGVyZXN0aW5nIi4gSXQncyB0aGUgbWVh
-bmVzdCwgbmFzdGllc3QgdGVzdCB3ZSBoYXZlLi4uCmlmIHlvdSBjYW4gZ2V0IHBhc3QgdGhlIHJy
-dWwsIHlvdSd2ZSB0cnVseSB3b24uCgpDb25zaXN0ZW50bHkgdXNpbmcgdGNwX2ZhaXJfdXAgd2l0
-aCAxLDIsNCBmbG93cyBhbmQgMS00IHN0YXRpb25zIGFzCnlvdSBhcmUgbm93IGlzIGdvb2QgZW5v
-dWdoLgoKZG9pbmcgYSBtb3JlIHZvaXAtbGlrZSB0ZXN0IHdpdGggc2xhbW1pbmcgZC1pdGcgaW50
-byB5b3VyIHRlc3Qgd291bGQgYmUgZ29vZC4uLgoKPgo+IE9ic2VydmF0aW9ucyAvIGNvbmNsdXNp
-b25zOgo+ICAtIERRTCBidWlsZHMgdXAgdGhyb3VnaHB1dCBzbG93bHkgb24gInZlcnlmYXN0Ijsg
-aW4gc29tZSB0ZXN0cyBpdAo+IGRvZXNuJ3QgZ2V0IHRvIHJlYWNoIHBlYWsgKHJvdWdobHkgMjEw
-bWJwcyBhdmVyYWdlKSBiZWNhdXNlIHRoZSB0ZXN0Cj4gaXMgdG9vIHNob3J0CgpJdCBsb29rcyBs
-aWtlIGhhdmluZyBhY2Nlc3MgdG8gdGhlIHJhdGUgY29udHJvbCBpbmZvIGhlcmUgZm9yIHRoZQpp
-bml0aWFsIGFuZCBvbmdvaW5nIGVzdGltYXRlcyB3aWxsIHJlYWN0IGZhc3RlciBhbmQgYmV0dGVy
-IHRoYW4gZHFsCmNhbi4gSSBsb3ZlZCB0aGUgcG90ZW50aWFsIGhlcmUgaW4gZ2V0dGluZyBmdWxs
-IHJhdGUgZm9yIHdlYiB0cmFmZmljCmluIHRoZSB1c3VhbCAyc2Vjb25kIGJ1cnN0IHlvdSBnZXQg
-aXQgaW4gKHNlZSBhYm92ZSBibG9nIGVudHJpZXMpCgo+ICAtIERRTCBzaG93cyBiZXR0ZXIgbGF0
-ZW5jeSByZXN1bHRzIGluIGFsbW9zdCBhbGwgY2FzZXMgY29tcGFyZWQgdG8KPiB0aGUgdHhvcCBi
-YXNlZCBzY2hlZHVsaW5nIGZyb20gbXkgbWFjODAyMTEgUkZDIChidXQgaSBoYXZlbid0Cj4gdGhv
-cm91Z2hseSBsb29rZWQgYXQgKmFsbCogdGhlIGRhdGE7IEkgbWlnaHQndmUgbWlzc2VkIGEgY2Fz
-ZSB3aGVyZSBpdAo+IHBlcmZvcm1zIHdvcnNlKQoKV2VsbCwgaWYgeW91IGFyZSBub3Qgc2F0dXJh
-dGluZyB0aGUgbGluaywgbGF0ZW5jeSB3aWxsIGJlIGJldHRlci4KU2hvd2luZyBob3cgbXVjaCBs
-ZXNzIGxhdGVuY3kgaXMgcG9zc2libGUsIGlzIGdvb2QgdG9vLCBidXQuLi4uCgo+ICAtIGxhdGVu
-Y3kgaW1wcm92ZW1lbnQgc2VlbiBvbiBzdy9hdGgxMGtfZHFsIEAgcmF0ZTZtLGZhc3QgY29tcGFy
-ZWQgdG8KPiBzdy9iYXNlICgxODAwbXMgLT4gMTYwbXMpIGNhbiBiZSBleHBsYWluZWQgYnkgdGhl
-IGZhY3QgdGhhdCB0eHEgQUMKPiBsaW1pdCBpcyAyNTYgYW5kIHNpbmNlIGFsbCBUQ1Agc3RyZWFt
-cyBydW4gb24gQkUgKGFuZCBmcV9jb2RlbCBhcyB0aGUKPiBxZGlzYykgdGhlIGluZHVjZWQgdHhx
-IGxhdGVuY3kgaXMgMjU2ICogKDE1MDAgLyAoNioxMDI0KjEwMjQvOC4pKSAvIDQKPiA9IH4xMjJt
-cyB3aGljaCBpcyBwcmV0dHkgY2xvc2UgdG8gdGhlIHRlc3QgZGF0YSAodGhlIGZvcm11bGEgaWdu
-b3Jlcwo+IE1BQyBvdmVyaGVhZCwgc28gdGhlIGxhdGVuY3kgaW4gcHJhY3RpY2UgaXMgbGFyZ2Vy
-KS4gT25jZSB5b3UgY29uc2lkZXIKPiB0aGUgb3ZlcmhlYWQgYW5kIGluLWZsaWdodCBwYWNrZXRz
-IG9uIGRyaXZlci1maXJtd2FyZSB0eCBxdWV1ZSAxNjBtcwo+IGRvZXNuJ3Qgc2VlbSBzdHJhbmdl
-LiBNb3Jlb3ZlciB3aGVuIHlvdSBjb21wYXJlIHRoZSBzYW1lIGNhc2Ugd2l0aAo+IHN3L2ZxK2F0
-aDEwa19kcWwgeW91IGNhbiBjbGVhcmx5IHNlZSB0aGUgYWR2YW50YWdlIG9mIGhhdmluZyBmcV9j
-b2RlbAo+IGluIG1hYzgwMjExIHNvZnR3YXJlIHF1ZXVpbmcgLSB0aGUgbGF0ZW5jeSBkcm9wcyBi
-eSAoYW5vdGhlcikgb3JkZXIgb2YKPiBtYWduaXR1ZGUgYmVjYXVzZSBub3cgaW5jb21taW5nIElD
-TVBzIGFyZSB0cmVhdGVkIGFzIG5ldywgYnVyc3R5IGZsb3dzCj4gYW5kIGdldCBmZWQgdG8gdGhl
-IGRldmljZSBxdWlja2x5LgoKCkl0IGlzIGFsd2F5cyBnb29kIHRvIHRlc3QgY29kZWwgYW5kIGZx
-X2NvZGVsIHNlcGFyYXRlbHksIHBhcnRpY3VsYXJseQpvbiBhIG5ldyBjb2RlbCBpbXBsZW1lbnRh
-dGlvbi4gVGhlcmUgYXJlIHNvIG1hbnkgd2F5cyB0byBnZXQgY29kZWwKd3Jvbmcgb3IgYWRkIGFu
-IG9wdGltaXphdGlvbiB0aGF0IGRvZXNuJ3Qgd29yayAoc3BlYWtpbmcgYXMgc29tZW9uZQp0aGF0
-IGhhcyBnb3QgaXQgd3Jvbmcgb2Z0ZW4pCgpJZiB5b3UgYXJlIGdldHRpbmcgYSBmcSByZXN1bHQg
-b2YgMTIgbXMsIHRoYXQgbWVhbnMgeW91IGFyZSBnZXR0aW5nCmRhdGEgaW50byB0aGUgZGV2aWNl
-IHdpdGggYSB+MTJtcyBzdGFuZGluZyBxdWV1ZSB0aGVyZS4gT24gYSBnb29kIGRheQp5b3UnZCBz
-ZWUgcGVyaGFwcyAxNy0yMm1zIGZvciAiY29kZWwgdGFyZ2V0IDVtcyIgaW4gdGhhdCBjYXNlLCBv
-biB0aGUKcnR0X2ZhaXJfdXAgc2VyaWVzIG9mIHRlc3RzLgoKaWYgeW91IGFyZSBnZXR0aW5nIGEg
-cHVyZSBjb2RlbCByZXN1bHQgb2YgMTYwbXMsIHRoYXQgbWVhbnMgdGhlCmltcGxlbWVudGF0aW9u
-IGlzIGJyb2tlbi4gQnV0IEkgdGhpbmsgKGFmdGVyIGhhdmluZyByZWFkIHlvdXIKZGVzY3JpcHRp
-b24gdHdpY2UpLCB0aGUgYmFzZWxpbmUgcmVzdWx0IHRvZGF5IG9mIDE2MG1zIG9mIHF1ZXVpbmcg
-d2FzCndpdGggYSBmcV9jb2RlbCAqcWRpc2MqIGRvaW5nIHRoZSB3b3JrIG9uIHRvcCBvZiBodWdl
-IGJ1ZmZlcnMsIHRoZQpyZXN1bHRzIGEgZmV3IGRheXMgYWdvIHdlcmUgd2l0aCBhIGZxX2NvZGVs
-IDgwMi4xMSBsYXllciwgYW5kIHRoZQpyZXN1bHRzIHRvZGF5IHlvdSBhcmUgY29tcGFyaW5nLCBh
-cmUgcHVyZSBmcSAobm8gY29kZWwpIGluIHRoZSA4MDIuMTFlCnN0YWNrLCB3aXRoIGZpeGVkIChh
-bmQgZHFsKSBidWZmZXJpbmc/CgppZiBzby4gWWVhISBTY2llbmNlIQoKLi4uCgpPbmUgb2YgdGhl
-IGZsYXdzIG9mIHRoZSBmbGVudCB0ZXN0cyBpcyB0aGF0IGNvbmNlcHR1YWxseSB0aGV5IHdlcmUK
-ZGV2ZWxvcGVkIGJlZm9yZSB0aGUgZnEgc3R1ZmYgd29uIHNvIGJpZywgYW5kIGxvb2tpbmcgaGFy
-ZCBhdCB0aGUKcGVyLXF1ZXVlIGxhdGVuY3kgZm9yIHRoZSBmYXQgZmxvd3MgcmVxdWlyZXMgZWl0
-aGVyIGxvb2tpbmcgaGFyZCBhdAp0aGUgcGFja2V0IGNhcHR1cmVzIG9yIHNhbXBsaW5nIHRoZSBh
-Y3R1YWwgcXVldWUgbGVuZ3RoLiBUaGVyZSBpcyB0aGF0CnNhbXBsaW5nIGNhcGFiaWxpdHkgaW4g
-dmFyaW91cyBmbGVudCB0ZXN0cywgYnV0IGF0IHRoZSBtb21lbnQgaXQgb25seQpzYW1wbGVzIHdo
-YXQgdGMgcHJvdmlkZXMgKERyb3BzLCBtYXJrcywgYW5kIGxlbmd0aCkgYW5kIGl0IGRvZXMgbm90
-Cmxvb2sgbGlrZSB0aGVyZSBpcyBhIHNuYXBzaG90IHF1ZXVlIGxlbmd0aCBleHBvcnRlZCBmcm9t
-IHRoYXQgYXRoMTBrCmRyaXZlcj8KCi4uLgoKQXMgZm9yIGEgc3RhbmRpbmcgcXVldWUgb2YgMTJt
-cyBhdCBhbGwgaW4gd2lmaS4uLiBhbmQgbWFraW5nIHRoZSBmcQpwb3J0aW9uIHdvcmsgYmV0dGVy
-LCBpdCB3b3VsZCBiZSBxdWl0ZSBuaWNlIHRvIGdldCB0aGF0IGRvd24gYSBiaXQKbW9yZS4gT25l
-IHRob3VnaHQgKGZvciB0ZXN0aW5nIHB1cnBvc2VzKSB3b3VsZCBiZSB0byBmaXggYSB0eG9wIGF0
-CjEwMjQsMjA0OCwzeHh4dXMgZm9yIHNvbWUgdGVzdCBydW5zLiBJIHJlYWxseSBkb24ndCBoYXZl
-IGEgYSBmZWVsIGZvcgpmcmFtaW5nIG92ZXJoZWFkIG9uIHRoZSBsYXRlc3Qgc3RhbmRhcmRzLiAo
-SSBsb2F0aGUgdGhlIGlkZWEgb2YKaG9sZGluZyB0aGUgbWVkaWEgZm9yIG1vcmUgdGhhbiAyLTNt
-cyB3aGVuIHlvdSBoYXZlIG90aGVyIHN0dWZmIGNvbWluZwppbiBiZWhpbmQgaXQuLi4pCgogQW5v
-dGhlciBpcyB0byBob2xkIG9mZiBwcmVwYXJpbmcgYW5kIHN1Ym1pdHRpbmcgYSBuZXcgYmF0Y2gg
-b2YKcGFja2V0czsgd2hlbiB5b3Uga25vdyB0aGUgZXhpc3RpbmcgVElEIHdpbGwgdGFrZSA0bXMg
-dG8gdHJhbnNtaXQsCmRlZmVyIGdyYWJiaW5nIHRoZSBuZXh0IGJhdGNoIGZvciAzbXMuIEV0Yy4K
-Ckl0IHdvdWxkIGJlIGdsb3Jpb3VzIHRvIHNlZSB3aWZpIGNhcGFibGUgb2YgZGVjZW50IHR3aXRj
-aCBnYW1pbmcgYWdhaW4uLi4KCj4gIC0gc2xvdytmYXN0IGNhc2Ugc3RpbGwgc3Vja3MgYnV0IHRo
-YXQncyBleHBlY3RlZCBiZWNhdXNlIERRTCBoYXNuJ3QKPiBiZWVuIGFwcGxpZWQgcGVyLXN0YXRp
-b24KPgo+ICAtIHN3L2ZxIGhhcyBsb3dlciBwZWFrIHRocm91Z2hwdXQgKCJ2ZXJ5ZmFzdCIpIGNv
-bXBhcmVkIHRvIHN3L2Jhc2UKPiAodGhpcyBhY3R1YWxseSBwcm92ZXMgY3VycmVudCAtIGFuZCB2
-ZXJ5IHlvdW5nIGxlYXN0IHRvIHNheSAtIGF0aDEwawo+IHdha2UtdHgtcXVldWUgaW1wbGVtZW50
-YXRpb24gaXMgZGVmaWNpZW50OyBhdGgxMGtfZHFsIGltcHJvdmVzIGl0IGFuZAo+IHN3L2ZxK2F0
-aDEwa19kcWwgY2xpbWJzIHVwIHRvIHRoZSBtYXggdGhyb3VnaHB1dCBvdmVyIHRpbWUpCj4KPgo+
-IFRvIHN1bSB0aGluZ3MgdXA6Cj4gIC0gRFFMIG1pZ2h0IGJlIGFibGUgdG8gcmVwbGFjZSB0aGUg
-ZXhwbGljaXQgdHhvcCBxdWV1ZSBsaW1pdGluZwo+ICh3aGljaCByZXF1aXJlcyByYXRlIGNvbnRy
-b2wgaW5mbykKCkkgYW0gcGVzc2ltaXN0aWMuIFBlcmhhcHMgYXMgYSBmYWxsYmFjaz8KCj4gIC0g
-bWFjODAyMTEgZmFpciBxdWV1aW5nIHdvcmtzCgo6KQoKPgo+IEEgZmV3IHBsb3RzIGZvciBxdWlj
-ayBhbmQgZWFzeSByZWZlcmVuY2U6Cj4KPiAgIGh0dHA6Ly9pbWd1ci5jb20vYS9UbnZiUQo+Cj4K
-PiBNaWNoYcWCCj4KPiBQUy4gSSdtIG5vdCBmZWVsaW5nIGNvbWZvcnRhYmxlIGF0dGFjaGluZyAx
-TUIgYXR0YWNobWVudCB0byBhIG1haWxpbmcKPiBsaXN0LiBJcyB0aGlzIG9rYXkgb3Igc2hvdWxk
-IEkgdXNlIHNvbWV0aGluZyBlbHNlIG5leHQgdGltZT8KCkkveW91IGNhbiBzbGFtIHJlc3VsdHMg
-aW50byB0aGUgZ2l0aHViIGJsb2djZXJvd3J0IHJlcG8gYW5kIHRoZW4gcHVsbApvdXQgc3R1ZmYg
-c2VsZWN0aXZlbHkuLi4uCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+I'm seeing the ring-full messages below when running 35 stations on
+modified 10.4.3 firmware.  I also have serial console logging enabled, so
+things are running a bit slow...this seems to exacerbate the issue.
+
+[   91.108923] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2 credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+[   91.108932] ath10k_pci 0000:05:00.0: could not request stats (type 128 ret -105)
+[   91.108942] ath10k_pci 0000:05:00.0: hif-tx-sg, full, nentries_mask: 0x1f  write_idx: 2 sw-idx: 3  n_items: 1 pipe-id: 3
+[   91.108944] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2 credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+[   91.108952] ath10k_pci 0000:05:00.0: could not request stats (type 1 ret -105)
+[   91.108953] ath10k_pci 0000:05:00.0: failed to get fw stats for ethtool: -105
+[   91.109039] ath10k_pci 0000:05:00.0: hif-tx-sg, full, nentries_mask: 0x1f  write_idx: 2 sw-idx: 3  n_items: 1 pipe-id: 3
+[   91.109041] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2 credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+[   91.109050] ath10k_pci 0000:05:00.0: could not request stats (type 128 ret -105)
+[   91.109060] ath10k_pci 0000:05:00.0: hif-tx-sg, full, nentries_mask: 0x1f  write_idx: 2 sw-idx: 3  n_items: 1 pipe-id: 3
+[   91.109062] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2 credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+[   91.109070] ath10k_pci 0000:05:00.0: could not request stats (type 1 ret -105)
+[   91.109072] ath10k_pci 0000:05:00.0: failed to get fw stats for ethtool: -105
+[   91.109157] ath10k_pci 0000:05:00.0: hif-tx-sg, full, nentries_mask: 0x1f  write_idx: 2 sw-idx: 3  n_items: 1 pipe-id: 3
+[   91.109160] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2 credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+
+
+I am struggling to understand how the pipe can be full since we have tx-credits logic
+enabled for the WMI pipe.
+
+Any suggestions on what sort of bugs could cause this?
+
+And, should the ath10k_wmi_cmd_send retry when we get a -105 return
+code in hopes it will free up shortly instead of just failing and leaving
+the system in invalid state?
+
+
+Debug message comes from the warning I added below:
+
+static int ath10k_pci_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+				struct ath10k_hif_sg_item *items, int n_items)
+{
+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+	struct ath10k_pci_pipe *pci_pipe = &ar_pci->pipe_info[pipe_id];
+	struct ath10k_ce_pipe *ce_pipe = pci_pipe->ce_hdl;
+	struct ath10k_ce_ring *src_ring = ce_pipe->src_ring;
+	unsigned int nentries_mask;
+	unsigned int sw_index;
+	unsigned int write_index;
+	int err, i = 0;
+
+	spin_lock_bh(&ar_pci->ce_lock);
+
+	nentries_mask = src_ring->nentries_mask;
+	sw_index = src_ring->sw_index;
+	write_index = src_ring->write_index;
+
+	if (unlikely(CE_RING_DELTA(nentries_mask,
+				   write_index, sw_index - 1) < n_items)) {
+		ath10k_warn(ar, "hif-tx-sg, full, nentries_mask: 0x%x  write_idx: %d sw-idx: %d  n_items: %d pipe-id: %d\n",
+			    nentries_mask, write_index, sw_index, n_items, pipe_id);
+		err = -ENOBUFS;
+		goto err;
+	}
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
