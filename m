@@ -1,22 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
- by casper.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1akwBR-0007Si-On
- for ath10k@lists.infradead.org; Tue, 29 Mar 2016 16:07:58 +0000
-References: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
- <1458647539-17213-2-git-send-email-rmanohar@qti.qualcomm.com>
- <8760wcdnws.fsf@kamboji.qca.qualcomm.com>
- <1458834773112.89396@qti.qualcomm.com>
- <87bn5xd96c.fsf@kamboji.qca.qualcomm.com>
- <276aecc9-73a9-d71e-5aac-69c4eacf38d8@dd-wrt.com>
- <1459249346817.95969@qti.qualcomm.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <8a95156f-e269-990f-f000-1526b5ecc148@dd-wrt.com>
-Date: Tue, 29 Mar 2016 18:02:54 +0200
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
+ id 1akxD6-0007GA-He
+ for ath10k@lists.infradead.org; Tue, 29 Mar 2016 17:13:45 +0000
+Subject: Re: hacked 4.4.6+, 10.4.3 firmware, Running out of ring-index for
+ pipe-id 3 (WMI).
+References: <56F97F91.10007@candelatech.com>
+ <CA+BoTQnzFiS2HpUweNzwhiUD3Gaa40pZq+z8GhHLn5STq1OgHQ@mail.gmail.com>
+ <56FAA3D5.3070409@candelatech.com>
+ <CAJ-Vmo=RzwymMtdWkrKTEnf+FU=Q3MU3QNqFneq74Qcn3BMfyg@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <56FAB79D.2020203@candelatech.com>
+Date: Tue, 29 Mar 2016 10:13:01 -0700
 MIME-Version: 1.0
-In-Reply-To: <1459249346817.95969@qti.qualcomm.com>
-Subject: Re: latest ath10k pending tree bug's
+In-Reply-To: <CAJ-Vmo=RzwymMtdWkrKTEnf+FU=Q3MU3QNqFneq74Qcn3BMfyg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,55 +26,116 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>
+To: Adrian Chadd <adrian.chadd@gmail.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-tryed  it . it works.
+On 03/29/2016 10:08 AM, Adrian Chadd wrote:
+> Does it eventually catch up?
 
-thanks for quick solution
+It seems to.
 
-Sebastian
+> IE, put a wait completion in there?
 
-Am 29.03.2016 um 13:02 schrieb Manoharan, Rajkumar:
->> the new introduced code which initialized the precal data for new
->> chipsets will break QCA99XX support.
->> so ath10k fails to initialize.
->> i commented out
->> ret = ath10k_core_pre_cal_config(ar);
->> and
->>    ret = ath10k_core_pre_cal_download(ar);
->>
->> to get it working again. this might not affect real pcie cards. but on
->> IPQ8064 based boards with on board wifi cards it shows that behaviour.
->>
-> Can you please try below change?
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index ca45da3..cf90c87 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -725,10 +725,8 @@ struct ath10k {
->          const void *firmware_data;
->          size_t firmware_len;
->
-> -       union {
-> -               const struct firmware *pre_cal_file;
-> -               const struct firmware *cal_file;
-> -       };
-> +       const struct firmware *pre_cal_file;
-> +       const struct firmware *cal_file;
->
->          struct {
->                  const void *firmware_codeswap_data;
->
->> in addition this message here floods the kernel log
->> [125917.204121] ath10k_pci 0001:01:00.0: failed to increase tx mgmt
->> pending count: -16, dropping
->> but it has no further visible side effects
->>
-> Yeah... It is harmless but better to lower debug level.
->
-> -Rajkumar
+Maybe so, but the current wait-completion waits on tx-credits,
+so more like I'd need to put the whole wait-completion in a loop
+and add a small sleep, maybe?
 
+Or, maybe try to force a read of the CE entries if the CE logic
+ever detects the ring is full?
+
+Thanks,
+Ben
+
+>
+> On Mar 29, 2016 8:49 AM, "Ben Greear" <greearb@candelatech.com <mailto:greearb@candelatech.com>> wrote:
+>
+>     On 03/29/2016 01:05 AM, Michal Kazior wrote:
+>
+>         On 28 March 2016 at 21:01, Ben Greear <greearb@candelatech.com <mailto:greearb@candelatech.com>> wrote:
+>
+>             I'm seeing the ring-full messages below when running 35 stations on
+>             modified 10.4.3 firmware.  I also have serial console logging enabled, so
+>             things are running a bit slow...this seems to exacerbate the issue.
+>
+>             [   91.108923] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2
+>             credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+>             [   91.108932] ath10k_pci 0000:05:00.0: could not request stats (type 128
+>             ret -105)
+>             [   91.108942] ath10k_pci 0000:05:00.0: hif-tx-sg, full, nentries_mask: 0x1f
+>             write_idx: 2 sw-idx: 3  n_items: 1 pipe-id: 3
+>             [   91.108944] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2
+>             credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+>             [   91.108952] ath10k_pci 0000:05:00.0: could not request stats (type 1 ret
+>             -105)
+>             [   91.108953] ath10k_pci 0000:05:00.0: failed to get fw stats for ethtool:
+>             -105
+>             [   91.109039] ath10k_pci 0000:05:00.0: hif-tx-sg, full, nentries_mask: 0x1f
+>             write_idx: 2 sw-idx: 3  n_items: 1 pipe-id: 3
+>             [   91.109041] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2
+>             credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+>             [   91.109050] ath10k_pci 0000:05:00.0: could not request stats (type 128
+>             ret -105)
+>             [   91.109060] ath10k_pci 0000:05:00.0: hif-tx-sg, full, nentries_mask: 0x1f
+>             write_idx: 2 sw-idx: 3  n_items: 1 pipe-id: 3
+>             [   91.109062] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2
+>             credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+>             [   91.109070] ath10k_pci 0000:05:00.0: could not request stats (type 1 ret
+>             -105)
+>             [   91.109072] ath10k_pci 0000:05:00.0: failed to get fw stats for ethtool:
+>             -105
+>             [   91.109157] ath10k_pci 0000:05:00.0: hif-tx-sg, full, nentries_mask: 0x1f
+>             write_idx: 2 sw-idx: 3  n_items: 1 pipe-id: 3
+>             [   91.109160] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2
+>             credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+>
+>
+>             I am struggling to understand how the pipe can be full since we have
+>             tx-credits logic
+>             enabled for the WMI pipe.
+>
+>             Any suggestions on what sort of bugs could cause this?
+>
+>             And, should the ath10k_wmi_cmd_send retry when we get a -105 return
+>             code in hopes it will free up shortly instead of just failing and leaving
+>             the system in invalid state?
+>
+>
+>         It probably shouldn't. As you've pointed out HTC tx credits should
+>         prevent this in the first place. If you see -105 it means something is
+>         really broken and needs to be fixed properly.
+>
+>         A thing that comes to mind is that CE -for whatever reason- would need
+>         to stop completing CE ring items. Are you running with MSI? 1 or
+>         multiple interrupts? Did you try forcing legacy interrupt mode to rule
+>         out MSI problems?
+>
+>         You could add a debug messages to see if the HTC-WMI CE ring gets tx
+>         completions properly.
+>
+>
+>     I don't think I'm using MSI.  Could it be that whatever logic that should
+>     be processing the tx-completions is just running slower than whatever is
+>     handling the WMI messages (and credits)?
+>
+>     Thanks,
+>     Ben
+>
+>
+>     --
+>     Ben Greear <greearb@candelatech.com <mailto:greearb@candelatech.com>>
+>     Candela Technologies Inc http://www.candelatech.com
+>
+>
+>     _______________________________________________
+>     ath10k mailing list
+>     ath10k@lists.infradead.org <mailto:ath10k@lists.infradead.org>
+>     http://lists.infradead.org/mailman/listinfo/ath10k
+>
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
