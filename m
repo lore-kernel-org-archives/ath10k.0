@@ -1,22 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x229.google.com ([2607:f8b0:4001:c06::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akxib-0002Ri-8b
- for ath10k@lists.infradead.org; Tue, 29 Mar 2016 17:46:17 +0000
-Received: by mail-io0-x229.google.com with SMTP id e3so32449189ioa.1
- for <ath10k@lists.infradead.org>; Tue, 29 Mar 2016 10:45:56 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
+ id 1al0Ao-0000AH-4j
+ for ath10k@lists.infradead.org; Tue, 29 Mar 2016 20:23:34 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id D4ECA40EB1F
+ for <ath10k@lists.infradead.org>; Tue, 29 Mar 2016 12:26:14 -0700 (PDT)
+From: Ben Greear <greearb@candelatech.com>
+Subject: How is tx-flushing supposed to work now?
+Message-ID: <56FAD6D6.9030105@candelatech.com>
+Date: Tue, 29 Mar 2016 12:26:14 -0700
 MIME-Version: 1.0
-In-Reply-To: <56FAB79D.2020203@candelatech.com>
-References: <56F97F91.10007@candelatech.com>
- <CA+BoTQnzFiS2HpUweNzwhiUD3Gaa40pZq+z8GhHLn5STq1OgHQ@mail.gmail.com>
- <56FAA3D5.3070409@candelatech.com>
- <CAJ-Vmo=RzwymMtdWkrKTEnf+FU=Q3MU3QNqFneq74Qcn3BMfyg@mail.gmail.com>
- <56FAB79D.2020203@candelatech.com>
-Date: Tue, 29 Mar 2016 10:45:44 -0700
-Message-ID: <CAJ-VmokzeRX=ZPtP+JJqfL+tL60GR8aZpaBCCxVHZ=D8JRD3ww@mail.gmail.com>
-Subject: Re: hacked 4.4.6+, 10.4.3 firmware, Running out of ring-index for
- pipe-id 3 (WMI).
-From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +21,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-On 29 March 2016 at 10:13, Ben Greear <greearb@candelatech.com> wrote:
-> On 03/29/2016 10:08 AM, Adrian Chadd wrote:
->>
->> Does it eventually catch up?
->
->
-> It seems to.
->
->> IE, put a wait completion in there?
->
->
-> Maybe so, but the current wait-completion waits on tx-credits,
-> so more like I'd need to put the whole wait-completion in a loop
-> and add a small sleep, maybe?
->
-> Or, maybe try to force a read of the CE entries if the CE logic
-> ever detects the ring is full?
+When we have multiple vdevs, and the 10.4.3 firmware with the tx-push logic,
+how is flushing supposed to work?
 
-Right. A little sleep (as long as its in a place where you can do it!)
-just to check would be good. I'd also print out the CE ring contents
-as well - see where the firmware has gotten to.
+First, when we get a flush, should we first purge any frames not yet pushed
+to the firmware?
 
+And second, what keeps other vdevs from continuing to transmit frames while one
+vdev is trying to be flushed?
 
+Thanks,
+Ben
 
--adrian
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
