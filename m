@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
- id 1akvwg-0006bm-51
- for ath10k@lists.infradead.org; Tue, 29 Mar 2016 15:52:43 +0000
-Subject: Re: Deadlock on (faked) firmware crash, CUS239, modified 10.4.3
- firmware.
-References: <56F5F38A.2070602@candelatech.com>
- <CA+BoTQmwGONqJ0MgccrMzzx9UsGuRCZpdy1RSqdgkcNm_te0xQ@mail.gmail.com>
+ id 1akw4A-0006fT-N3
+ for ath10k@lists.infradead.org; Tue, 29 Mar 2016 16:00:29 +0000
+Subject: Re: [RFC] ath10k: implement dql for htt tx
+References: <1458898743-21118-1-git-send-email-michal.kazior@tieto.com>
+ <CA+BoTQk7q7VerNC1KZK49REHn9rfo6sG5zW54P=-K3XkOL77pQ@mail.gmail.com>
+ <CAA93jw7BEsEOP8O2BQFXUibkGzkzBZuyWxBxs5XDCZmOt6D+Qg@mail.gmail.com>
+ <CA+BoTQnDtWNGQGkBNeBGSrjkjQc4dFuivQTL=0_1D+ooE-9+RQ@mail.gmail.com>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <56FAA344.4010003@candelatech.com>
-Date: Tue, 29 Mar 2016 08:46:12 -0700
+Message-ID: <56FAA518.2000805@candelatech.com>
+Date: Tue, 29 Mar 2016 08:54:00 -0700
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQmwGONqJ0MgccrMzzx9UsGuRCZpdy1RSqdgkcNm_te0xQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQnDtWNGQGkBNeBGSrjkjQc4dFuivQTL=0_1D+ooE-9+RQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,83 +21,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>, Dave Taht <dave.taht@gmail.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMDMvMjkvMjAxNiAwMToxNCBBTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAyNiBNYXJj
-aCAyMDE2IGF0IDAzOjI3LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3Jv
-dGU6Cj4+IEkndmUgYmVlbiBzZWVpbmcgdGhpcyBmb3IgYSB3aGlsZSBub3cuICBXaGVuIGZpcm13
-YXJlIGNyYXNoZXMsIG9mdGVuIHRoZSBPUwo+PiBhdCBsZWFzdAo+PiBwYXJ0aWFsbHkgbG9ja3Mg
-dXAuCj4+Cj4+IFRoaXMgaXMgbW9kaWZpZWQgNC40LjYgZHJpdmVyL2tlcm5lbCwgbW9kaWZpZWQg
-MTAuNC4zIGZpcm13YXJlLiAgSSBoYWQgMzUKPj4gc3RhdGlvbnMgYXNzb2NpYXRlZCwKPj4gYW5k
-IHJlc2V0IG9uZS4gIEZsdXNoIGZhaWxzIChtYXliZSBiZWNhdXNlIG5vdGhpbmcgc3RvcHMgdHgg
-b24gb3RoZXIgdmRldnMKPj4gd2hpbGUgZmx1c2hpbmcgb25lPykKPj4gYW5kIEkgYWRkZWQgYSBm
-YWtlIGZpcm13YXJlIGNyYXNoIGV2ZW4gaW4gY2FzZSBmbHVzaCBmYWlscy4KPj4KPj4gVGhlbiwg
-SSBnZXQgZGVhZGxvY2suICBJJ3ZlIHNlZW4gb3RoZXIgc2ltaWxhciBkZWFkbG9ja3Mgd2hlbiB0
-aGUgZmlybXdhcmUKPj4gY3Jhc2hlZCBkdWUKPj4gdG8gJ25hdHVyYWwnIGNhdXNlcyB3aGVuIGFk
-ZGluZyB2ZGV2cy4uLi4KPj4KPj4gTG9va3MgbGlrZSB0aGUgc2FtZSBwcm9jZXNzIGlzIG5vdCBh
-Y3R1YWxseSBzdHVjayBpbiBvbmUgcGxhY2UuLi5lYWNoIHRpbWUKPj4gdGhlIGtlcm5lbCBzcGxh
-dHMsCj4+IGl0IGlzIGluIGEgZGlmZmVyZW50IHBsYWNlLi5zcGlubmluZyBhbmQgc3Bpbm5pbmcu
-ICBNYXliZSBpdCBuZWVkcyBhCj4+IGJhaWwtb3V0IG9uIGZpcm13YXJlCj4+IGNyYXNoPwo+IFsu
-Li5dCj4+IFsgIDMxNi40Nzc2NzddIE5NSSB3YXRjaGRvZzogQlVHOiBzb2Z0IGxvY2t1cCAtIENQ
-VSMxIHN0dWNrIGZvciAyMnMhCj4+IFtrd29ya2VyL3U4OjM6MjU3XQo+PiBbICAzMTYuNDc3NzIw
-XSBNb2R1bGVzIGxpbmtlZCBpbjogbmZfY29ubnRyYWNrX25ldGxpbmsgbmZfY29ubnRyYWNrCj4+
-IG5mbmV0bGluayBuZl9kZWZyYWdfaXB2NCA4MDIxcSBnYXJwIG1ycCBzdHAgbGxjIGJuZXAgYmx1
-ZXRvb3RoIGZ1c2UgbWFjdmxhbgo+PiB3YW5saW5rKE8pIHBrdGdlbiBycGNzZWNfZ3NzX2tyYjUg
-bmZzdjQgbmZzIGZzY2FjaGUgaVRDT193ZHQKPj4gaVRDT192ZW5kb3Jfc3VwcG9ydCBjb3JldGVt
-cCBhdGg5ayBhdGgxMGtfcGNpIGh3bW9uIGF0aDlrX2NvbW1vbiBhdGgxMGtfY29yZQo+PiBhdGg5
-a19odyBpbnRlbF9yYXBsIGlvc2ZfbWJpIGF0aCB4ODZfcGtnX3RlbXBfdGhlcm1hbCBpbnRlbF9w
-b3dlcmNsYW1wCj4+IG1hYzgwMjExIGt2bV9pbnRlbCBrdm0gam95ZGV2IGlycWJ5cGFzcyBwY3Nw
-a3Igc2VyaW9fcmF3IGNmZzgwMjExCj4+IHNuZF9oZGFfY29kZWNfaGRtaSBscGNfaWNoIGkyY19p
-ODAxIHNuZF9oZGFfY29kZWNfcmVhbHRlawo+PiBzbmRfaGRhX2NvZGVjX2dlbmVyaWMgc25kX2hk
-YV9pbnRlbCBzbmRfaGRhX2NvZGVjIHNuZF9oZGFfY29yZSBzbmRfaHdkZXAKPj4gc25kX3NlcSBz
-bmRfc2VxX2RldmljZSBzbmRfcGNtIDgyNTBfZmludGVrIHNuZF90aW1lciBzbmQgc2hwY2hwIHNv
-dW5kY29yZQo+PiB0cG1fdGlzIHRwbSBuZnNkIGF1dGhfcnBjZ3NzIG5mc19hY2wgbG9ja2QgZ3Jh
-Y2Ugc3VucnBjIGF0YV9nZW5lcmljCj4+IHBhdGFfYWNwaSBpOTE1IGUxMDAwZSBwdHAgcHBzX2Nv
-cmUgaTJjX2FsZ29fYml0IGRybV9rbXNfaGVscGVyIGRybSBpMmNfY29yZQo+PiBmamVzIHZpZGVv
-IGlwdjYgW2xhc3QgdW5sb2FkZWQ6IG5mX2Nvbm50cmFja10KPj4KPj4gWyAgMzE2LjQ3NzcyMV0g
-aXJxIGV2ZW50IHN0YW1wOiAyMTExMTc5Cj4+IFsgIDMxNi40Nzc3MjddIGhhcmRpcnFzIGxhc3Qg
-IGVuYWJsZWQgYXQgKDIxMTExNzkpOiBbPGZmZmZmZmZmODExM2MzNDc+XQo+PiB2cHJpbnRrX2Vt
-aXQrMHgzYWIvMHg0NmEKPj4gWyAgMzE2LjQ3NzczMF0gaGFyZGlycXMgbGFzdCBkaXNhYmxlZCBh
-dCAoMjExMTE3OCk6IFs8ZmZmZmZmZmY4MTEzYmZmOD5dCj4+IHZwcmludGtfZW1pdCsweDVjLzB4
-NDZhCj4+IFsgIDMxNi40Nzc3NDJdIHNvZnRpcnFzIGxhc3QgIGVuYWJsZWQgYXQgKDIxMTEwMTQp
-OiBbPGZmZmZmZmZmYTBlMzA5NjU+XQo+PiBhdGgxMGtfc2V0X2tleSsweDEzNi8weDYwMiBbYXRo
-MTBrX2NvcmVdCj4+IFsgIDMxNi40Nzc3NDldIHNvZnRpcnFzIGxhc3QgZGlzYWJsZWQgYXQgKDIx
-MTEwMTIpOiBbPGZmZmZmZmZmYTBlMzA5NDY+XQo+PiBhdGgxMGtfc2V0X2tleSsweDExNy8weDYw
-MiBbYXRoMTBrX2NvcmVdCj4+IFsgIDMxNi40Nzc3NTFdIENQVTogMSBQSUQ6IDI1NyBDb21tOiBr
-d29ya2VyL3U4OjMgVGFpbnRlZDogRyAgICAgICAgVyAgTwo+PiA0LjQuNisgIzIxCj4+IFsgIDMx
-Ni40Nzc3NTJdIEhhcmR3YXJlIG5hbWU6IFRvIGJlIGZpbGxlZCBieSBPLkUuTS4gVG8gYmUgZmls
-bGVkIGJ5Cj4+IE8uRS5NLi9IVVJPTlJJVkVSLCBCSU9TIDQuNi41IDA1LzAyLzIwMTIKPj4gWyAg
-MzE2LjQ3Nzc4MF0gV29ya3F1ZXVlOiB3aXBoeTMgaWVlZTgwMjExX2lmYWNlX3dvcmsgW21hYzgw
-MjExXQo+PiBbICAzMTYuNDc3NzgxXSB0YXNrOiBmZmZmODgwMjEyZDIyNWMwIHRpOiBmZmZmODgw
-MjEyZDUwMDAwIHRhc2sudGk6Cj4+IGZmZmY4ODAyMTJkNTAwMDAKPj4gWyAgMzE2LjQ3Nzc5MF0g
-UklQOiAwMDEwOls8ZmZmZmZmZmZhMGUzOGMxYj5dICBbPGZmZmZmZmZmYTBlMzhjMWI+XQo+PiBh
-dGgxMGtfbWFjX3R4X3B1c2hfcGVuZGluZysweGMxLzB4MTJkIFthdGgxMGtfY29yZV0KPgo+IEp1
-c3QgaW4gY2FzZSwgZG8geW91IGhhdmUgdGhlc2UgYXBwbGllZD8KPgo+ICAgNzUwZWVlZDg5Y2Yz
-IGF0aDEwazogZml4IHB1bGwtcHVzaCB0eCB0aHJlc2hvbGQgaGFuZGxpbmcKPiAgIDlkNzFkNDdl
-ZWQyMCBhdGgxMGs6IGZpeCB0eCBoYW5nCgpJIGhhdmUgYm90aCBvZiB0aGVzZS4uLkknbGwgdHJ5
-IHlvdXIgcGF0Y2ggYmVsb3cuCgpJIGZpcnN0IGhhdmUgdG8gZml4IHRoZSBoYXNoLXRhYmxlIGJ1
-Z3MgaW4gbWFjODAyMTEsIGFzIHRoZXkgYnJlYWsKc28gbWFueSB0aGluZ3MgdGhhdCBpdCBpcyBo
-YXJkIHRvIHRlc3QgdGhlIHJlc3Qgb2YgdGhlIHN5c3RlbS4uLgoKVGhhbmtzLApCZW4KCj4KPiBI
-bW0uLiBJZiBpdCBzdGlsbCByZXByb2R1Y2VzIGNhbiB5b3UgdHJ5IHRoZSBmb2xsb3dpbmcgZGlm
-Zj8KPgo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPiArKysg
-Yi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4gQEAgLTM3ODAsNiArMzc4
-MCw4IEBAIHZvaWQgYXRoMTBrX21hY190eF9wdXNoX3BlbmRpbmcoc3RydWN0IGF0aDEwayAqYXIp
-Cj4gICAgICAgICAgICAgICAgICBsaXN0X2RlbF9pbml0KCZhcnR4cS0+bGlzdCk7Cj4gICAgICAg
-ICAgICAgICAgICBpZiAocmV0ICE9IC1FTk9FTlQpCj4gICAgICAgICAgICAgICAgICAgICAgICAg
-IGxpc3RfYWRkX3RhaWwoJmFydHhxLT5saXN0LCAmYXItPnR4cXMpOwo+ICsgICAgICAgICAgICAg
-ICBlbHNlIGlmIChhcnR4cSA9PSBsYXN0KQo+ICsgICAgICAgICAgICAgICAgICAgICAgIGxhc3Qg
-PSBsaXN0X2xhc3RfZW50cnkoJmFyLT50eHFzLCBzdHJ1Y3QKPiBhdGgxMGtfdHhxLCBsaXN0KTsK
-Pgo+ICAgICAgICAgICAgICAgICAgYXRoMTBrX2h0dF90eF90eHFfdXBkYXRlKGh3LCB0eHEpOwo+
-Cj4KPiBNaWNoYcWCCj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-Zwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4K
-CgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVjaG5v
-bG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+On 03/29/2016 12:49 AM, Michal Kazior wrote:
+
+>> if you are getting a pure codel result of 160ms, that means the
+>> implementation is broken. But I think (after having read your
+>> description twice), the baseline result today of 160ms of queuing was
+>> with a fq_codel *qdisc* doing the work on top of huge buffers,
+>
+> Yes. The 160ms is with fq_codel qdisc with ath10k doing DQL at 6mbps.
+> Without DQL ath10k would clog up all tx slots (1424 of them) with
+> frames. At 6mbps you typically want/need a handful (5-10) of frames to
+> be queued.
+
+Have you actually verified you can use all tx slots?  The way the
+firmware uses it's tx buffers I think you may not be able to actually
+do that...and in practice, you will get a lot fewer usable tx-buffers
+than configured....
+
+THanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
