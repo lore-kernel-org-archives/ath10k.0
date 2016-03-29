@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akonT-00010Y-Nl
- for ath10k@lists.infradead.org; Tue, 29 Mar 2016 08:14:44 +0000
-Received: by mail-wm0-x229.google.com with SMTP id 20so14457456wmh.1
- for <ath10k@lists.infradead.org>; Tue, 29 Mar 2016 01:14:23 -0700 (PDT)
+ id 1akpQd-0007Lr-TE
+ for ath10k@lists.infradead.org; Tue, 29 Mar 2016 08:55:12 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH v3 1/2] ath10k: Add support for ath10k_sta_statistics support
+Date: Tue, 29 Mar 2016 14:24:01 +0530
+Message-ID: <1459241642-3730-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <56F5F38A.2070602@candelatech.com>
-References: <56F5F38A.2070602@candelatech.com>
-Date: Tue, 29 Mar 2016 10:14:22 +0200
-Message-ID: <CA+BoTQmwGONqJ0MgccrMzzx9UsGuRCZpdy1RSqdgkcNm_te0xQ@mail.gmail.com>
-Subject: Re: Deadlock on (faked) firmware crash, CUS239,
- modified 10.4.3 firmware.
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,72 +16,93 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-T24gMjYgTWFyY2ggMjAxNiBhdCAwMzoyNywgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
-aC5jb20+IHdyb3RlOgo+IEkndmUgYmVlbiBzZWVpbmcgdGhpcyBmb3IgYSB3aGlsZSBub3cuICBX
-aGVuIGZpcm13YXJlIGNyYXNoZXMsIG9mdGVuIHRoZSBPUwo+IGF0IGxlYXN0Cj4gcGFydGlhbGx5
-IGxvY2tzIHVwLgo+Cj4gVGhpcyBpcyBtb2RpZmllZCA0LjQuNiBkcml2ZXIva2VybmVsLCBtb2Rp
-ZmllZCAxMC40LjMgZmlybXdhcmUuICBJIGhhZCAzNQo+IHN0YXRpb25zIGFzc29jaWF0ZWQsCj4g
-YW5kIHJlc2V0IG9uZS4gIEZsdXNoIGZhaWxzIChtYXliZSBiZWNhdXNlIG5vdGhpbmcgc3RvcHMg
-dHggb24gb3RoZXIgdmRldnMKPiB3aGlsZSBmbHVzaGluZyBvbmU/KQo+IGFuZCBJIGFkZGVkIGEg
-ZmFrZSBmaXJtd2FyZSBjcmFzaCBldmVuIGluIGNhc2UgZmx1c2ggZmFpbHMuCj4KPiBUaGVuLCBJ
-IGdldCBkZWFkbG9jay4gIEkndmUgc2VlbiBvdGhlciBzaW1pbGFyIGRlYWRsb2NrcyB3aGVuIHRo
-ZSBmaXJtd2FyZQo+IGNyYXNoZWQgZHVlCj4gdG8gJ25hdHVyYWwnIGNhdXNlcyB3aGVuIGFkZGlu
-ZyB2ZGV2cy4uLi4KPgo+IExvb2tzIGxpa2UgdGhlIHNhbWUgcHJvY2VzcyBpcyBub3QgYWN0dWFs
-bHkgc3R1Y2sgaW4gb25lIHBsYWNlLi4uZWFjaCB0aW1lCj4gdGhlIGtlcm5lbCBzcGxhdHMsCj4g
-aXQgaXMgaW4gYSBkaWZmZXJlbnQgcGxhY2UuLnNwaW5uaW5nIGFuZCBzcGlubmluZy4gIE1heWJl
-IGl0IG5lZWRzIGEKPiBiYWlsLW91dCBvbiBmaXJtd2FyZQo+IGNyYXNoPwpbLi4uXQo+IFsgIDMx
-Ni40Nzc2NzddIE5NSSB3YXRjaGRvZzogQlVHOiBzb2Z0IGxvY2t1cCAtIENQVSMxIHN0dWNrIGZv
-ciAyMnMhCj4gW2t3b3JrZXIvdTg6MzoyNTddCj4gWyAgMzE2LjQ3NzcyMF0gTW9kdWxlcyBsaW5r
-ZWQgaW46IG5mX2Nvbm50cmFja19uZXRsaW5rIG5mX2Nvbm50cmFjawo+IG5mbmV0bGluayBuZl9k
-ZWZyYWdfaXB2NCA4MDIxcSBnYXJwIG1ycCBzdHAgbGxjIGJuZXAgYmx1ZXRvb3RoIGZ1c2UgbWFj
-dmxhbgo+IHdhbmxpbmsoTykgcGt0Z2VuIHJwY3NlY19nc3Nfa3JiNSBuZnN2NCBuZnMgZnNjYWNo
-ZSBpVENPX3dkdAo+IGlUQ09fdmVuZG9yX3N1cHBvcnQgY29yZXRlbXAgYXRoOWsgYXRoMTBrX3Bj
-aSBod21vbiBhdGg5a19jb21tb24gYXRoMTBrX2NvcmUKPiBhdGg5a19odyBpbnRlbF9yYXBsIGlv
-c2ZfbWJpIGF0aCB4ODZfcGtnX3RlbXBfdGhlcm1hbCBpbnRlbF9wb3dlcmNsYW1wCj4gbWFjODAy
-MTEga3ZtX2ludGVsIGt2bSBqb3lkZXYgaXJxYnlwYXNzIHBjc3BrciBzZXJpb19yYXcgY2ZnODAy
-MTEKPiBzbmRfaGRhX2NvZGVjX2hkbWkgbHBjX2ljaCBpMmNfaTgwMSBzbmRfaGRhX2NvZGVjX3Jl
-YWx0ZWsKPiBzbmRfaGRhX2NvZGVjX2dlbmVyaWMgc25kX2hkYV9pbnRlbCBzbmRfaGRhX2NvZGVj
-IHNuZF9oZGFfY29yZSBzbmRfaHdkZXAKPiBzbmRfc2VxIHNuZF9zZXFfZGV2aWNlIHNuZF9wY20g
-ODI1MF9maW50ZWsgc25kX3RpbWVyIHNuZCBzaHBjaHAgc291bmRjb3JlCj4gdHBtX3RpcyB0cG0g
-bmZzZCBhdXRoX3JwY2dzcyBuZnNfYWNsIGxvY2tkIGdyYWNlIHN1bnJwYyBhdGFfZ2VuZXJpYwo+
-IHBhdGFfYWNwaSBpOTE1IGUxMDAwZSBwdHAgcHBzX2NvcmUgaTJjX2FsZ29fYml0IGRybV9rbXNf
-aGVscGVyIGRybSBpMmNfY29yZQo+IGZqZXMgdmlkZW8gaXB2NiBbbGFzdCB1bmxvYWRlZDogbmZf
-Y29ubnRyYWNrXQo+Cj4gWyAgMzE2LjQ3NzcyMV0gaXJxIGV2ZW50IHN0YW1wOiAyMTExMTc5Cj4g
-WyAgMzE2LjQ3NzcyN10gaGFyZGlycXMgbGFzdCAgZW5hYmxlZCBhdCAoMjExMTE3OSk6IFs8ZmZm
-ZmZmZmY4MTEzYzM0Nz5dCj4gdnByaW50a19lbWl0KzB4M2FiLzB4NDZhCj4gWyAgMzE2LjQ3Nzcz
-MF0gaGFyZGlycXMgbGFzdCBkaXNhYmxlZCBhdCAoMjExMTE3OCk6IFs8ZmZmZmZmZmY4MTEzYmZm
-OD5dCj4gdnByaW50a19lbWl0KzB4NWMvMHg0NmEKPiBbICAzMTYuNDc3NzQyXSBzb2Z0aXJxcyBs
-YXN0ICBlbmFibGVkIGF0ICgyMTExMDE0KTogWzxmZmZmZmZmZmEwZTMwOTY1Pl0KPiBhdGgxMGtf
-c2V0X2tleSsweDEzNi8weDYwMiBbYXRoMTBrX2NvcmVdCj4gWyAgMzE2LjQ3Nzc0OV0gc29mdGly
-cXMgbGFzdCBkaXNhYmxlZCBhdCAoMjExMTAxMik6IFs8ZmZmZmZmZmZhMGUzMDk0Nj5dCj4gYXRo
-MTBrX3NldF9rZXkrMHgxMTcvMHg2MDIgW2F0aDEwa19jb3JlXQo+IFsgIDMxNi40Nzc3NTFdIENQ
-VTogMSBQSUQ6IDI1NyBDb21tOiBrd29ya2VyL3U4OjMgVGFpbnRlZDogRyAgICAgICAgVyAgTwo+
-IDQuNC42KyAjMjEKPiBbICAzMTYuNDc3NzUyXSBIYXJkd2FyZSBuYW1lOiBUbyBiZSBmaWxsZWQg
-YnkgTy5FLk0uIFRvIGJlIGZpbGxlZCBieQo+IE8uRS5NLi9IVVJPTlJJVkVSLCBCSU9TIDQuNi41
-IDA1LzAyLzIwMTIKPiBbICAzMTYuNDc3NzgwXSBXb3JrcXVldWU6IHdpcGh5MyBpZWVlODAyMTFf
-aWZhY2Vfd29yayBbbWFjODAyMTFdCj4gWyAgMzE2LjQ3Nzc4MV0gdGFzazogZmZmZjg4MDIxMmQy
-MjVjMCB0aTogZmZmZjg4MDIxMmQ1MDAwMCB0YXNrLnRpOgo+IGZmZmY4ODAyMTJkNTAwMDAKPiBb
-ICAzMTYuNDc3NzkwXSBSSVA6IDAwMTA6WzxmZmZmZmZmZmEwZTM4YzFiPl0gIFs8ZmZmZmZmZmZh
-MGUzOGMxYj5dCj4gYXRoMTBrX21hY190eF9wdXNoX3BlbmRpbmcrMHhjMS8weDEyZCBbYXRoMTBr
-X2NvcmVdCgpKdXN0IGluIGNhc2UsIGRvIHlvdSBoYXZlIHRoZXNlIGFwcGxpZWQ/CgogNzUwZWVl
-ZDg5Y2YzIGF0aDEwazogZml4IHB1bGwtcHVzaCB0eCB0aHJlc2hvbGQgaGFuZGxpbmcKIDlkNzFk
-NDdlZWQyMCBhdGgxMGs6IGZpeCB0eCBoYW5nCgpIbW0uLiBJZiBpdCBzdGlsbCByZXByb2R1Y2Vz
-IGNhbiB5b3UgdHJ5IHRoZSBmb2xsb3dpbmcgZGlmZj8KCi0tLSBhL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvbWFjLmMKKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
-ay9tYWMuYwpAQCAtMzc4MCw2ICszNzgwLDggQEAgdm9pZCBhdGgxMGtfbWFjX3R4X3B1c2hfcGVu
-ZGluZyhzdHJ1Y3QgYXRoMTBrICphcikKICAgICAgICAgICAgICAgIGxpc3RfZGVsX2luaXQoJmFy
-dHhxLT5saXN0KTsKICAgICAgICAgICAgICAgIGlmIChyZXQgIT0gLUVOT0VOVCkKICAgICAgICAg
-ICAgICAgICAgICAgICAgbGlzdF9hZGRfdGFpbCgmYXJ0eHEtPmxpc3QsICZhci0+dHhxcyk7Cisg
-ICAgICAgICAgICAgICBlbHNlIGlmIChhcnR4cSA9PSBsYXN0KQorICAgICAgICAgICAgICAgICAg
-ICAgICBsYXN0ID0gbGlzdF9sYXN0X2VudHJ5KCZhci0+dHhxcywgc3RydWN0CmF0aDEwa190eHEs
-IGxpc3QpOwoKICAgICAgICAgICAgICAgIGF0aDEwa19odHRfdHhfdHhxX3VwZGF0ZShodywgdHhx
-KTsKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+
+Enable support for 'drv_sta_statistics' callback.
+Export rx_duration support if available to cfg80211/nl80211
+
+This can also act as a placeholder for any new per STA stats support
+
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+[v3] removed conditions for ath10k state checks based on Michal's suggestion
+
+Dependencies:
+
+1. cfg80211/nl80211: Add support for NL80211_STA_INFO_RX_DURATION (under review)
+2. iw: Add support for NL80211_STA_INFO_RX_DURATION netlink
+ attribute (under review)
+3. ath10k: Enable debugfs provision to enable Peer Stats feature (merged in pending branch)
+
+ drivers/net/wireless/ath/ath10k/debug.h       |    4 ++++
+ drivers/net/wireless/ath/ath10k/debugfs_sta.c |   14 ++++++++++++++
+ drivers/net/wireless/ath/ath10k/mac.c         |    1 +
+ 3 files changed, 19 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 6206edd..01c500f 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -155,6 +155,10 @@ ath10k_debug_get_new_fw_crash_data(struct ath10k *ar)
+ void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 			    struct ieee80211_sta *sta, struct dentry *dir);
+ void ath10k_sta_update_rx_duration(struct ath10k *ar, struct list_head *peer);
++void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
++			   struct ieee80211_sta *sta,
++			   struct station_info *sinfo);
++
+ #else
+ static inline void ath10k_sta_update_rx_duration(struct ath10k *ar,
+ 						 struct list_head *peer)
+diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+index 67ef75b..c5396bf 100644
+--- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
++++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+@@ -35,6 +35,20 @@ void ath10k_sta_update_rx_duration(struct ath10k *ar, struct list_head *head)
+ 	rcu_read_unlock();
+ }
+ 
++void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
++			   struct ieee80211_sta *sta,
++			   struct station_info *sinfo)
++{
++	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
++	struct ath10k *ar = arsta->arvif->ar;
++
++	if (!ath10k_peer_stats_enabled(ar))
++		return;
++
++	sinfo->rx_duration = arsta->rx_duration;
++	sinfo->filled |= 1ULL << NL80211_STA_INFO_RX_DURATION;
++}
++
+ static ssize_t ath10k_dbg_sta_read_aggr_mode(struct file *file,
+ 					     char __user *user_buf,
+ 					     size_t count, loff_t *ppos)
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 20d72e2..02edeff 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7271,6 +7271,7 @@ static const struct ieee80211_ops ath10k_ops = {
+ #endif
+ #ifdef CONFIG_MAC80211_DEBUGFS
+ 	.sta_add_debugfs		= ath10k_sta_add_debugfs,
++	.sta_statistics			= ath10k_sta_statistics,
+ #endif
+ };
+ 
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
