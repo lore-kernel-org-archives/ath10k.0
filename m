@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alDWr-0002tc-Sv
- for ath10k@lists.infradead.org; Wed, 30 Mar 2016 10:39:14 +0000
-Received: by mail-wm0-x233.google.com with SMTP id 127so91711295wmu.1
- for <ath10k@lists.infradead.org>; Wed, 30 Mar 2016 03:38:53 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
+ id 1alHDv-0006A6-1S
+ for ath10k@lists.infradead.org; Wed, 30 Mar 2016 14:35:55 +0000
+Message-ID: <56FBE41E.5080407@candelatech.com>
+Date: Wed, 30 Mar 2016 07:35:10 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <56FAD6D6.9030105@candelatech.com>
-References: <56FAD6D6.9030105@candelatech.com>
-Date: Wed, 30 Mar 2016 12:38:52 +0200
-Message-ID: <CA+BoTQn8ptm785Dn14fT7OObFoTEeq2ym7AQFmu889P_BDt6jw@mail.gmail.com>
 Subject: Re: How is tx-flushing supposed to work now?
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <56FAD6D6.9030105@candelatech.com>
+ <CA+BoTQn8ptm785Dn14fT7OObFoTEeq2ym7AQFmu889P_BDt6jw@mail.gmail.com>
+In-Reply-To: <CA+BoTQn8ptm785Dn14fT7OObFoTEeq2ym7AQFmu889P_BDt6jw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +19,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-T24gMjkgTWFyY2ggMjAxNiBhdCAyMToyNiwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
-aC5jb20+IHdyb3RlOgo+IFdoZW4gd2UgaGF2ZSBtdWx0aXBsZSB2ZGV2cywgYW5kIHRoZSAxMC40
-LjMgZmlybXdhcmUgd2l0aCB0aGUgdHgtcHVzaCBsb2dpYywKPiBob3cgaXMgZmx1c2hpbmcgc3Vw
-cG9zZWQgdG8gd29yaz8KClRoaXMgaXNuJ3QgcmVhbGx5IGFzIG11Y2ggYWJvdXQgcHVsbC1wdXNo
-IGxvZ2ljIGluIDEwLjQuMyBhcyBpdCBpcwphYm91dCB3YWtlX3R4X3F1ZXVlKCkgaW4gZ2VuZXJh
-bCwgaXMgaXQ/CgoKPiBGaXJzdCwgd2hlbiB3ZSBnZXQgYSBmbHVzaCwgc2hvdWxkIHdlIGZpcnN0
-IHB1cmdlIGFueSBmcmFtZXMgbm90IHlldCBwdXNoZWQKPiB0byB0aGUgZmlybXdhcmU/CgpJIHdv
-dWxkIGV4cGVjdCBtYWM4MDIxMSB0byBwdXJnZSB0eHFzLgoKCj4gQW5kIHNlY29uZCwgd2hhdCBr
-ZWVwcyBvdGhlciB2ZGV2cyBmcm9tIGNvbnRpbnVpbmcgdG8gdHJhbnNtaXQgZnJhbWVzIHdoaWxl
-Cj4gb25lCj4gdmRldiBpcyB0cnlpbmcgdG8gYmUgZmx1c2hlZD8KCkhtbS4uIEkgZ3Vlc3MgYXRo
-MTBrIGZsdXNoKCkgaW1wbGVtZW50YXRpb24gZG9lc24ndCByZWFsbHkgZG8gd2hhdCBpdApzaG91
-bGQuIEl0IHNob3VsZCB3YWl0IGp1c3QgZm9yIGZyYW1lcyBmb3IgZ2l2ZW4gdmlmIGJ1dCBpdCB3
-YWl0cyBmb3IKZXZlcnl0aGluZy4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
-bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-YXRoMTBrCg==
+
+
+On 03/30/2016 03:38 AM, Michal Kazior wrote:
+> On 29 March 2016 at 21:26, Ben Greear <greearb@candelatech.com> wrote:
+>> When we have multiple vdevs, and the 10.4.3 firmware with the tx-push logic,
+>> how is flushing supposed to work?
+>
+> This isn't really as much about pull-push logic in 10.4.3 as it is
+> about wake_tx_queue() in general, is it?
+
+Maybe, I'm a bit confused about how it all works.
+
+>> First, when we get a flush, should we first purge any frames not yet pushed
+>> to the firmware?
+>
+> I would expect mac80211 to purge txqs.
+>
+>
+>> And second, what keeps other vdevs from continuing to transmit frames while
+>> one
+>> vdev is trying to be flushed?
+>
+> Hmm.. I guess ath10k flush() implementation doesn't really do what it
+> should. It should wait just for frames for given vif but it waits for
+> everything.
+
+Yes, I think so.  If mac80211 is trying to flush a single vif, then
+probably it is letting other vifs on the same radio still transmit as well,
+so likely ath10k tx-queues are not going to go to zero in that case.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
