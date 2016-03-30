@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
+Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alCzZ-0001m2-KN
- for ath10k@lists.infradead.org; Wed, 30 Mar 2016 10:04:50 +0000
-Received: by mail-wm0-x22f.google.com with SMTP id p65so63892730wmp.0
- for <ath10k@lists.infradead.org>; Wed, 30 Mar 2016 03:04:29 -0700 (PDT)
+ id 1alD21-0003qJ-RO
+ for ath10k@lists.infradead.org; Wed, 30 Mar 2016 10:07:22 +0000
+Received: by mail-wm0-x230.google.com with SMTP id p65so63998267wmp.0
+ for <ath10k@lists.infradead.org>; Wed, 30 Mar 2016 03:07:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAA93jw4ooS_oc___qTzwqmZ4BPbOSem0Z8V_qc0zq2hh5Qv2Rg@mail.gmail.com>
-References: <1458898743-21118-1-git-send-email-michal.kazior@tieto.com>
- <CA+BoTQk7q7VerNC1KZK49REHn9rfo6sG5zW54P=-K3XkOL77pQ@mail.gmail.com>
- <CAA93jw7BEsEOP8O2BQFXUibkGzkzBZuyWxBxs5XDCZmOt6D+Qg@mail.gmail.com>
- <CA+BoTQnDtWNGQGkBNeBGSrjkjQc4dFuivQTL=0_1D+ooE-9+RQ@mail.gmail.com>
- <CAA93jw4ooS_oc___qTzwqmZ4BPbOSem0Z8V_qc0zq2hh5Qv2Rg@mail.gmail.com>
-Date: Wed, 30 Mar 2016 12:04:27 +0200
-Message-ID: <CA+BoTQ=b+5xTraZ-D31k_9dQAYRBiWWF9_G3=VVb0SbS=Q3eFA@mail.gmail.com>
-Subject: Re: [RFC] ath10k: implement dql for htt tx
+In-Reply-To: <56FAF40B.1040301@candelatech.com>
+References: <56FAF40B.1040301@candelatech.com>
+Date: Wed, 30 Mar 2016 12:07:00 +0200
+Message-ID: <CA+BoTQkfYwCfH2iWyzWbugCK50whafctRtfy928tzHpo7oq7ZQ@mail.gmail.com>
+Subject: Re: Why is peer->peer_ids a bitmap?
 From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,54 +20,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-T24gMzAgTWFyY2ggMjAxNiBhdCAwMjo1NywgRGF2ZSBUYWh0IDxkYXZlLnRhaHRAZ21haWwuY29t
-PiB3cm90ZToKPiBBcyBhIHNpZGUgbm90ZSBvZiB3aWZpIGlkZWFzIGNvbXBsZW1lbnRhcnkgdG8g
-Y29kZWwsIHBsZWFzZSBzZWU6Cj4KPiBodHRwOi8vYmxvZy5jZXJvd3J0Lm9yZy9wb3N0L3NlbGVj
-dGl2ZV91bnByb3RlY3QvCj4KPiBPbiBUdWUsIE1hciAyOSwgMjAxNiBhdCAxMjo0OSBBTSwgTWlj
-aGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgpbLi4uXQo+PiBPbiB0
-aGUgb3RoZXIgaGFuZCBEUUwgd2lsbCByZWFjdCBhbHNvIHRvIGhvc3Qgc3lzdGVtIGludGVycnVw
-dCBzZXJ2aWNlCj4+IHRpbWUuIE9uIHNsb3cgQ1BVcyAodHlwaWNhbGx5IGZvdW5kIG9uIHJvdXRl
-cnMgYW5kIHN1Y2gpIHlvdSBtaWdodCBlbmQKPj4gdXAgZ3JpbmRpbmcgdGhlIENQVSBzbyBtdWNo
-IHlvdSBuZWVkIGRlZXBlciB0eCBxdWV1ZXMgdG8ga2VlcCB0aGUgaHcKPj4gYnVzeSAoYW5kIHRo
-ZXJlZm9yZSBrZWVwIHBlcmZvcm1hbmNlIG1heGVkKS4gRFFMIHNob3VsZCBhdXRvbWF0aWNhbGx5
-Cj4+IGFkanVzdCB0byB0aGF0IHdoaWxlICJ0eG9wIGxpbWl0IiBtaWdodCBub3QuCj4KPiBNbW1t
-Li4uLiBjdXJyZW50IG11bHRpLWNvcmUgZ2VuZXJhdGlvbiBhcm0gcm91dGVycyBzaG91bGQgYmUg
-ZmFzdCBlbm91Z2guCgpXaGlsZSB0aGlzIGhlbHBzIGl0IGRvZXNuJ3QgbWVhbiB5b3UgY2FuIG1h
-Z2ljYWxseSB1bi1zZXJpYWxpemUKaW50ZXJydXB0L3R4cnggY29tcGxldGlvbiB3b3JrLgoKClsu
-Li5dCj4+Pj4gVG8gc3VtIHRoaW5ncyB1cDoKPj4+PiAgLSBEUUwgbWlnaHQgYmUgYWJsZSB0byBy
-ZXBsYWNlIHRoZSBleHBsaWNpdCB0eG9wIHF1ZXVlIGxpbWl0aW5nCj4+Pj4gKHdoaWNoIHJlcXVp
-cmVzIHJhdGUgY29udHJvbCBpbmZvKQo+Pj4KPj4+IEkgYW0gcGVzc2ltaXN0aWMuIFBlcmhhcHMg
-YXMgYSBmYWxsYmFjaz8KPj4KPj4gQXQgZmlyc3QgSSB3YXMgKHRvbykgY29uc2lkZXJpbmcgRFFM
-IGFzIGEgbmljZSBmYWxsYmFjayBidXQgdGhlIG1vcmUgSQo+PiB0aGluayBhYm91dCB0aGUgbW9y
-ZSBpdCBtYWtlcyBzZW5zZSB0byB1c2UgaXQgYXMgdGhlIG1haW4gc291cmNlIG9mCj4+IGRlcml2
-aW5nIHRpbWUgc2xpY2VzIGZvciB0eCBzY2hlZHVsaW5nLgo+Cj4gSSBkb24ndCByZWFsbHkgZ2V0
-IGhvdyBkcWwgY2FuIGJlIGFwcGxpZWQgcGVyIHN0YXRpb24gaW4gaXQncyBjdXJyZW50IGZvcnJt
-LgoKSSB3YXMgdGhpbmtpbmcgb2YgdGhlIGZvbGxvd2luZyBzY2hlbWU6CiAtIGRpc2FibGUgZXhj
-ZXNzaXZlIHJldHJpZXMgaW4gZncgKGFwcGFyZW50bHkgZG9hYmxlIHZpYSBXTUkgcGRldiBwYXJh
-bWV0ZXIpCiAtIGRlZmljaXQtYmFzZWQgcm91bmQtcm9iaW4gb3ZlciBzdGF0aW9ucwogLSBtYWlu
-dGFpbiBEUUwgc3RydWN0dXJlIHBlciBzdGF0aW9uCiAtIHdoZW4gc3RhdGlvbiBnZXRzIGl0cyB0
-dXJuIHRvIHhtaXQgcHVzaCBmcmFtZXMgdG8gZncKIC0ga2VlcCBkb2luZyB0aGF0ICh3aXRoIHJl
-Z2FyZCB0byBwZXIgc3RhdGlvbiBEUUwgbGltaXRzKSB1bnRpbCBlaXRoZXI6CiAgIC0gYXNzb2Np
-YXRlZCBzb2Z0d2FyZSBxdWV1ZSBiZWNvbWVzIGVtcHR5CiAgIC0gMSB0aW1lc2xpY2UgZm9yIGdp
-dmVuIHN0YXRpb24gaGFzIGVsYXBzZWQKICAgICAtIGkgd2FzIHRoaW5raW5nIG9mIGV4dHJhY3Rp
-bmcgdGltZXNsaWNlcyBmcm9tIERRTCBvciBtYWludGFpbmluZwppdCBzZXBhcmF0ZWx5CiAtIHRy
-eSBuZXh0IHN0YXRpb24KIC0gZG8gbm90IHN1Ym1pdCBwYWNrZXRzIHRvIG11bHRpcGxlIHN0YXRp
-b25zIGF0IG9uY2UgKE1VIHdpbGwgbmVlZAptb3JlIHdvcmsuLiksIGkuZS4gYWx3YXlzIGRyYWlu
-IHR4IGNvbXBsZXRlbHkgYmVmb3JlIHN3aXRjaGluZyB0byBuZXh0CnN0YXRpb24KIC0gZWFjaCBz
-dGF0aW9uIG1heSBuZWVkIGEgZGlmZmVyZW50IHRpbWVzbGljZSAodG8gc3F1ZWV6ZSBvdXQgbWF4
-CmJ1cnN0IHBlcmZvcm1hbmNlKQoKClsuLi5dCj4+Pj4gUFMuIEknbSBub3QgZmVlbGluZyBjb21m
-b3J0YWJsZSBhdHRhY2hpbmcgMU1CIGF0dGFjaG1lbnQgdG8gYSBtYWlsaW5nCj4+Pj4gbGlzdC4g
-SXMgdGhpcyBva2F5IG9yIHNob3VsZCBJIHVzZSBzb21ldGhpbmcgZWxzZSBuZXh0IHRpbWU/Cj4+
-Pgo+Pj4gSS95b3UgY2FuIHNsYW0gcmVzdWx0cyBpbnRvIHRoZSBnaXRodWIgYmxvZ2Nlcm93cnQg
-cmVwbyBhbmQgdGhlbiBwdWxsCj4+PiBvdXQgc3R1ZmYgc2VsZWN0aXZlbHkuLi4uCj4+Cj4+IEdv
-b2QgaWRlYSwgdGhhbmtzIQo+Cj4gWW91IGdvdCBjb21taXQgcHJpdnMuCgpZZXAsIHRoYW5rcyEK
-CgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On 29 March 2016 at 23:30, Ben Greear <greearb@candelatech.com> wrote:
+> Can a single peer object really have more than one ID?
+
+When you install keys you typically get more ids via htt-peer-map
+event. I think there were some other cases as well..
+
+
+> Is this trying to deal with shared peer objects, perhaps?
+
+This was developed very long ago when peer-id mapping wasn't really
+well understood. Perhaps we could make do without peer id map now?
+i.e. only care about the first htt-peer-map per peer address?
+
+
+Michal
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
