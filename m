@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
- id 1alIGg-0006ya-MD
- for ath10k@lists.infradead.org; Wed, 30 Mar 2016 15:42:51 +0000
-Subject: Re: Why is peer->peer_ids a bitmap?
-References: <56FAF40B.1040301@candelatech.com>
- <CA+BoTQkfYwCfH2iWyzWbugCK50whafctRtfy928tzHpo7oq7ZQ@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <56FBF3CF.5090009@candelatech.com>
-Date: Wed, 30 Mar 2016 08:42:07 -0700
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1alIHM-0006zg-WB
+ for ath10k@lists.infradead.org; Wed, 30 Mar 2016 15:43:33 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH 3/3] ath10k: fix unconditional num_mpdus_ready subtraction
+Date: Wed, 30 Mar 2016 21:12:31 +0530
+Message-ID: <1459352551-11773-3-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1459352551-11773-1-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1459352551-11773-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQkfYwCfH2iWyzWbugCK50whafctRtfy928tzHpo7oq7ZQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,43 +18,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-On 03/30/2016 03:07 AM, Michal Kazior wrote:
-> On 29 March 2016 at 23:30, Ben Greear <greearb@candelatech.com> wrote:
->> Can a single peer object really have more than one ID?
->
-> When you install keys you typically get more ids via htt-peer-map
-> event. I think there were some other cases as well..
->
->
->> Is this trying to deal with shared peer objects, perhaps?
->
-> This was developed very long ago when peer-id mapping wasn't really
-> well understood. Perhaps we could make do without peer id map now?
-> i.e. only care about the first htt-peer-map per peer address?
+Decrement num_mpdus_ready only when rx amsdu is processed successfully.
+Not doing so, will result in leak and impact stabilty under low memory
+cases.
 
-The 10.4.3 firmware can probably still do shared peers, though not sure if it actually
-happens in practice, and I'm not sure it that would cause this bitmap to
-ever have more than one bit set anyway.
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-It just struck me as strange, mainly, and since the radio struct has
-a peer array indexed by the peer-id, then it would seem that we should never
-have duplicate bits set in any of the peer objects.  And, if that is correct,
-then the bitmap or similar should probably be in the radio struct instead of
-in peer objects.
-
-Thanks,
-Ben
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 96a7417..9696c2e 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2412,14 +2412,12 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+ 	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
+ 	struct ath10k *ar = htt->ar;
+ 	struct htt_tx_done tx_done = {};
+-	struct sk_buff_head rx_q;
+ 	struct sk_buff_head rx_ind_q;
+ 	struct sk_buff_head tx_ind_q;
+ 	struct sk_buff *skb;
+ 	unsigned long flags;
+ 	int num_mpdus;
+ 
+-	__skb_queue_head_init(&rx_q);
+ 	__skb_queue_head_init(&rx_ind_q);
+ 	__skb_queue_head_init(&tx_ind_q);
+ 
+@@ -2448,11 +2446,13 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+ 	ath10k_mac_tx_push_pending(ar);
+ 
+ 	num_mpdus = atomic_read(&htt->num_mpdus_ready);
+-	atomic_sub(num_mpdus, &htt->num_mpdus_ready);
+ 
+-	while (num_mpdus--) {
++	while (num_mpdus) {
+ 		if (ath10k_htt_rx_handle_amsdu(htt))
+ 			break;
++
++		num_mpdus--;
++		atomic_dec(&htt->num_mpdus_ready);
+ 	}
+ 
+ 	while ((skb = __skb_dequeue(&rx_ind_q))) {
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+2.7.4
 
 
 _______________________________________________
