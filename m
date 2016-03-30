@@ -1,21 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
- id 1alMqa-0003Qy-D1
- for ath10k@lists.infradead.org; Wed, 30 Mar 2016 20:36:12 +0000
-Subject: Re: hacked 4.4.6+, 10.4.3 firmware, Running out of ring-index for
- pipe-id 3 (WMI).
-References: <56F97F91.10007@candelatech.com>
- <CA+BoTQnzFiS2HpUweNzwhiUD3Gaa40pZq+z8GhHLn5STq1OgHQ@mail.gmail.com>
- <56FAA3D5.3070409@candelatech.com>
- <CAJ-Vmo=RzwymMtdWkrKTEnf+FU=Q3MU3QNqFneq74Qcn3BMfyg@mail.gmail.com>
- <56FAB79D.2020203@candelatech.com>
- <CAJ-VmokzeRX=ZPtP+JJqfL+tL60GR8aZpaBCCxVHZ=D8JRD3ww@mail.gmail.com>
+ id 1alNI3-0003oZ-8w
+ for ath10k@lists.infradead.org; Wed, 30 Mar 2016 21:04:35 +0000
+Subject: Re: How is tx-flushing supposed to work now?
+References: <56FAD6D6.9030105@candelatech.com>
+ <CA+BoTQn8ptm785Dn14fT7OObFoTEeq2ym7AQFmu889P_BDt6jw@mail.gmail.com>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <56FC3213.7050103@candelatech.com>
-Date: Wed, 30 Mar 2016 13:07:47 -0700
+Message-ID: <56FC3C30.5060302@candelatech.com>
+Date: Wed, 30 Mar 2016 13:50:56 -0700
 MIME-Version: 1.0
-In-Reply-To: <CAJ-VmokzeRX=ZPtP+JJqfL+tL60GR8aZpaBCCxVHZ=D8JRD3ww@mail.gmail.com>
+In-Reply-To: <CA+BoTQn8ptm785Dn14fT7OObFoTEeq2ym7AQFmu889P_BDt6jw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +19,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On 03/29/2016 10:45 AM, Adrian Chadd wrote:
-> On 29 March 2016 at 10:13, Ben Greear <greearb@candelatech.com> wrote:
->> On 03/29/2016 10:08 AM, Adrian Chadd wrote:
->>>
->>> Does it eventually catch up?
->>
->>
->> It seems to.
->>
->>> IE, put a wait completion in there?
->>
->>
->> Maybe so, but the current wait-completion waits on tx-credits,
->> so more like I'd need to put the whole wait-completion in a loop
->> and add a small sleep, maybe?
->>
->> Or, maybe try to force a read of the CE entries if the CE logic
->> ever detects the ring is full?
->
-> Right. A little sleep (as long as its in a place where you can do it!)
-> just to check would be good. I'd also print out the CE ring contents
-> as well - see where the firmware has gotten to.
-
-This seemed to help my system, but I also fixed some other bugs that made
-the system work better over-all, so not sure this is a complete fix on its
-own.  I'll send a patch in case someone wants to give it a try.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDMvMzAvMjAxNiAwMzozOCBBTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAyOSBNYXJj
+aCAyMDE2IGF0IDIxOjI2LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3Jv
+dGU6Cj4+IFdoZW4gd2UgaGF2ZSBtdWx0aXBsZSB2ZGV2cywgYW5kIHRoZSAxMC40LjMgZmlybXdh
+cmUgd2l0aCB0aGUgdHgtcHVzaCBsb2dpYywKPj4gaG93IGlzIGZsdXNoaW5nIHN1cHBvc2VkIHRv
+IHdvcms/Cj4KPiBUaGlzIGlzbid0IHJlYWxseSBhcyBtdWNoIGFib3V0IHB1bGwtcHVzaCBsb2dp
+YyBpbiAxMC40LjMgYXMgaXQgaXMKPiBhYm91dCB3YWtlX3R4X3F1ZXVlKCkgaW4gZ2VuZXJhbCwg
+aXMgaXQ/CgpJbiBwYXJ0aWN1bGFyLCBJIGFtIGN1cmlvdXMgYWJvdXQgdGhlIGFyLT50eHFzLCBh
+bmQgdGhlIGF0aDEwa19tYWNfdHhfcHVzaF9wZW5kaW5nCm1ldGhvZC4gIFNob3VsZCB3ZSBwdXJn
+ZSB0aGUgYXItPnR4cXMgYXMgcGFydCBvZiB0aGUgZmx1c2ggbG9naWM/CgpUaGFua3MsCkJlbgoK
+Cj4KPgo+PiBGaXJzdCwgd2hlbiB3ZSBnZXQgYSBmbHVzaCwgc2hvdWxkIHdlIGZpcnN0IHB1cmdl
+IGFueSBmcmFtZXMgbm90IHlldCBwdXNoZWQKPj4gdG8gdGhlIGZpcm13YXJlPwo+Cj4gSSB3b3Vs
+ZCBleHBlY3QgbWFjODAyMTEgdG8gcHVyZ2UgdHhxcy4KPgo+Cj4+IEFuZCBzZWNvbmQsIHdoYXQg
+a2VlcHMgb3RoZXIgdmRldnMgZnJvbSBjb250aW51aW5nIHRvIHRyYW5zbWl0IGZyYW1lcyB3aGls
+ZQo+PiBvbmUKPj4gdmRldiBpcyB0cnlpbmcgdG8gYmUgZmx1c2hlZD8KPgo+IEhtbS4uIEkgZ3Vl
+c3MgYXRoMTBrIGZsdXNoKCkgaW1wbGVtZW50YXRpb24gZG9lc24ndCByZWFsbHkgZG8gd2hhdCBp
+dAo+IHNob3VsZC4gSXQgc2hvdWxkIHdhaXQganVzdCBmb3IgZnJhbWVzIGZvciBnaXZlbiB2aWYg
+YnV0IGl0IHdhaXRzIGZvcgo+IGV2ZXJ5dGhpbmcuCj4KPgo+IE1pY2hhxYIKPgoKCi0tIApCZW4g
+R3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5j
+ICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsK
