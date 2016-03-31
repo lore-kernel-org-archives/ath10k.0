@@ -1,8 +1,8 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
- id 1aletW-0006OQ-3T
- for ath10k@lists.infradead.org; Thu, 31 Mar 2016 15:52:26 +0000
+ id 1alfiU-0006nU-Jl
+ for ath10k@lists.infradead.org; Thu, 31 Mar 2016 16:45:07 +0000
 Subject: Re: hacked 4.4.6+, 10.4.3 firmware, Running out of ring-index for
  pipe-id 3 (WMI).
 References: <56F97F91.10007@candelatech.com>
@@ -10,8 +10,8 @@ References: <56F97F91.10007@candelatech.com>
  <56FAA3D5.3070409@candelatech.com>
  <CA+BoTQkmc2z8kWu=dcHJ2WMwi631ePqcQyjj59_95kv1aLdC1g@mail.gmail.com>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <56FD478E.6040209@candelatech.com>
-Date: Thu, 31 Mar 2016 08:51:42 -0700
+Message-ID: <56FD53E8.3020200@candelatech.com>
+Date: Thu, 31 Mar 2016 09:44:24 -0700
 MIME-Version: 1.0
 In-Reply-To: <CA+BoTQkmc2z8kWu=dcHJ2WMwi631ePqcQyjj59_95kv1aLdC1g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -123,21 +123,18 @@ On 03/30/2016 11:51 PM, Michal Kazior wrote:
 > tasklet. This could, in theory, result in some weird race as HTC Tx
 > credits and CE Tx pipe completions are not guaranteed to be
 > serialized.
-
-That could be what happened.
-
 >
 > Or maybe you're using some forced WMI commands in your fork and
 > disregard Tx credits in some cases? This could explain the problem
 > even when running with a single interrupt.
 
-I'm not forcing WMI commands, and if I were really managing to queue up 30
-WMI cmds in the firmware, it seems it would have crashed the firmware since
-it does not contain many local resources (ie, only 2).
+So, I am using MSI-X, I guess?
+
+# dmesg|grep -i msi
+[65284.853372] ath10k_pci 0000:05:00.0: pci irq msi-x interrupts 13 irq_mode 0 reset_mode 0
 
 Thanks,
 Ben
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
