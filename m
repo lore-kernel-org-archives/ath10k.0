@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
- id 1aljhf-0000R4-QJ
- for ath10k@lists.infradead.org; Thu, 31 Mar 2016 21:00:32 +0000
+ id 1aljnE-0000Vt-K7
+ for ath10k@lists.infradead.org; Thu, 31 Mar 2016 21:06:16 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 2/3] ath10k:  Ensure peer_map references are cleaned up.
-Date: Thu, 31 Mar 2016 13:59:45 -0700
-Message-Id: <1459457986-29222-2-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1459457986-29222-1-git-send-email-greearb@candelatech.com>
-References: <1459457986-29222-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 1/3] ath10k: Ensure txrx-compl-task is stopped when cleaning
+ htt-tx.
+Date: Thu, 31 Mar 2016 13:59:44 -0700
+Message-Id: <1459457986-29222-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,65 +26,26 @@ Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-While debugging OS crashes due to firmware crashes, I enabled
-kasan, and it noticed that peer objects were being used-after-freed.
-
-Looks like there are two places we could be leaving stale references
-in the peer-map, so clean that up.
+Otherwise, the txrx-compl-task may access some bad memory?
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0a81ca2..07b155d 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -794,6 +794,7 @@ static void ath10k_peer_cleanup(struct ath10k *ar, u32 vdev_id)
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 07b960e..58e88d3 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -376,6 +376,8 @@ void ath10k_htt_tx_free(struct ath10k_htt *htt)
  {
- 	struct ath10k_peer *peer, *tmp;
- 	int peer_id;
-+	int i;
+ 	int size;
  
- 	lockdep_assert_held(&ar->conf_mutex);
- 
-@@ -812,6 +813,15 @@ static void ath10k_peer_cleanup(struct ath10k *ar, u32 vdev_id)
- 			ar->peer_map[peer_id] = NULL;
- 		}
- 
-+		/* Double check that peer is properly un-referenced from the peer_map */
-+		for (i = 0; i < ARRAY_SIZE(ar->peer_map); i++) {
-+			if (ar->peer_map[i] == peer) {
-+				ath10k_warn(ar, "ERROR:  Faile to properly clean up peer: %p %pM, idx: %d, will fix.\n",
-+					    peer, peer->addr, i);
-+				ar->peer_map[i] = NULL;
-+			}
-+		}
++	tasklet_kill(&htt->txrx_compl_task);
 +
- 		list_del(&peer->list);
- 		kfree(peer);
- 		ar->num_peers--;
-@@ -840,6 +850,7 @@ void ath10k_dump_peer_info(struct ath10k *ar)
- static void ath10k_peer_cleanup_all(struct ath10k *ar)
- {
- 	struct ath10k_peer *peer, *tmp;
-+	int i;
+ 	idr_for_each(&htt->pending_tx, ath10k_htt_tx_clean_up_pending, htt->ar);
+ 	idr_destroy(&htt->pending_tx);
  
- 	lockdep_assert_held(&ar->conf_mutex);
- 
-@@ -850,6 +861,11 @@ static void ath10k_peer_cleanup_all(struct ath10k *ar)
- 		list_del(&peer->list);
- 		kfree(peer);
- 	}
-+
-+	/* Clean up peer-map */
-+	for (i = 0; i < ARRAY_SIZE(ar->peer_map); i++)
-+		ar->peer_map[i] = NULL;
-+
- 	spin_unlock_bh(&ar->data_lock);
- 
- 	ar->num_peers = 0;
 -- 
 2.4.3
 
