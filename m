@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mout.kundenserver.de ([212.227.126.134])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1albWJ-0008Ta-F7
- for ath10k@lists.infradead.org; Thu, 31 Mar 2016 12:16:16 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: remove MSI range support
-Date: Thu, 31 Mar 2016 17:45:22 +0530
-Message-ID: <1459426522-25925-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1aldiL-00015S-V7
+ for ath10k@lists.infradead.org; Thu, 31 Mar 2016 14:36:51 +0000
+Subject: Re: UDP throughput problems with WDS and ath10k
+References: <56F27596.3080506@dks-koeln.de>
+ <CA+BoTQndwokRf467hN0QZREZ1-hprHCHovMX2pi7X8oUUvpOGw@mail.gmail.com>
+ <56F2D062.2050104@candelatech.com>
+From: Xue Liu <xue.liu@dks-koeln.de>
+Message-ID: <ad55aa16-af01-6f1c-bf97-c02316335ddc@dks-koeln.de>
+Date: Thu, 31 Mar 2016 16:36:19 +0200
 MIME-Version: 1.0
+In-Reply-To: <56F2D062.2050104@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,329 +20,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
+To: Ben Greear <greearb@candelatech.com>, Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-MSI-X is never well-tested, might contain bugs and generally isn't
-really all that useful to maintain. Also ath10k is mainly used with
-shared/singly-MSI interrupt systems. Hence removing MSI range support.
-This change will be useful for further cleanup in copy engine lock
-and to add NAPI support.
+Hello,
 
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 158 ++++------------------------------
- drivers/net/wireless/ath/ath10k/pci.h |  11 +--
- 2 files changed, 18 insertions(+), 151 deletions(-)
+I have test throughput with different 3  parameters. But the results are 
+similar. The data rate from PC via  Client to the AP decreases 
+significantly comparing with the reverse direction.
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 0b305ef..3dc111f 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -745,10 +745,7 @@ static inline const char *ath10k_pci_get_irq_method(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 
--	if (ar_pci->num_msi_intrs > 1)
--		return "msi-x";
--
--	if (ar_pci->num_msi_intrs == 1)
-+	if (ar_pci->oper_irq_mode == ATH10K_PCI_IRQ_MSI)
- 		return "msi";
- 
- 	return "legacy";
-@@ -1502,13 +1499,8 @@ void ath10k_pci_hif_send_complete_check(struct ath10k *ar, u8 pipe,
- void ath10k_pci_kill_tasklet(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	int i;
- 
- 	tasklet_kill(&ar_pci->intr_tq);
--	tasklet_kill(&ar_pci->msi_fw_err);
--
--	for (i = 0; i < CE_COUNT; i++)
--		tasklet_kill(&ar_pci->pipe_info[i].intr);
- 
- 	del_timer_sync(&ar_pci->rx_post_retry);
- }
-@@ -1624,10 +1616,8 @@ static void ath10k_pci_irq_disable(struct ath10k *ar)
- static void ath10k_pci_irq_sync(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	int i;
- 
--	for (i = 0; i < max(1, ar_pci->num_msi_intrs); i++)
--		synchronize_irq(ar_pci->pdev->irq + i);
-+	synchronize_irq(ar_pci->pdev->irq);
- }
- 
- static void ath10k_pci_irq_enable(struct ath10k *ar)
-@@ -2596,65 +2586,6 @@ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
- #endif
- };
- 
--static void ath10k_pci_ce_tasklet(unsigned long ptr)
--{
--	struct ath10k_pci_pipe *pipe = (struct ath10k_pci_pipe *)ptr;
--	struct ath10k_pci *ar_pci = pipe->ar_pci;
--
--	ath10k_ce_per_engine_service(ar_pci->ar, pipe->pipe_num);
--}
--
--static void ath10k_msi_err_tasklet(unsigned long data)
--{
--	struct ath10k *ar = (struct ath10k *)data;
--
--	if (!ath10k_pci_has_fw_crashed(ar)) {
--		ath10k_warn(ar, "received unsolicited fw crash interrupt\n");
--		return;
--	}
--
--	ath10k_pci_irq_disable(ar);
--	ath10k_pci_fw_crashed_clear(ar);
--	ath10k_pci_fw_crashed_dump(ar);
--}
--
--/*
-- * Handler for a per-engine interrupt on a PARTICULAR CE.
-- * This is used in cases where each CE has a private MSI interrupt.
-- */
--static irqreturn_t ath10k_pci_per_engine_handler(int irq, void *arg)
--{
--	struct ath10k *ar = arg;
--	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	int ce_id = irq - ar_pci->pdev->irq - MSI_ASSIGN_CE_INITIAL;
--
--	if (ce_id < 0 || ce_id >= ARRAY_SIZE(ar_pci->pipe_info)) {
--		ath10k_warn(ar, "unexpected/invalid irq %d ce_id %d\n", irq,
--			    ce_id);
--		return IRQ_HANDLED;
--	}
--
--	/*
--	 * NOTE: We are able to derive ce_id from irq because we
--	 * use a one-to-one mapping for CE's 0..5.
--	 * CE's 6 & 7 do not use interrupts at all.
--	 *
--	 * This mapping must be kept in sync with the mapping
--	 * used by firmware.
--	 */
--	tasklet_schedule(&ar_pci->pipe_info[ce_id].intr);
--	return IRQ_HANDLED;
--}
--
--static irqreturn_t ath10k_pci_msi_fw_handler(int irq, void *arg)
--{
--	struct ath10k *ar = arg;
--	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--
--	tasklet_schedule(&ar_pci->msi_fw_err);
--	return IRQ_HANDLED;
--}
--
- /*
-  * Top-level interrupt handler for all PCI interrupts from a Target.
-  * When a block of MSI interrupts is allocated, this top-level handler
-@@ -2672,7 +2603,7 @@ static irqreturn_t ath10k_pci_interrupt_handler(int irq, void *arg)
- 		return IRQ_NONE;
- 	}
- 
--	if (ar_pci->num_msi_intrs == 0) {
-+	if (ar_pci->oper_irq_mode == ATH10K_PCI_IRQ_LEGACY) {
- 		if (!ath10k_pci_irq_pending(ar))
- 			return IRQ_NONE;
- 
-@@ -2699,43 +2630,10 @@ static void ath10k_pci_tasklet(unsigned long data)
- 	ath10k_ce_per_engine_service_any(ar);
- 
- 	/* Re-enable legacy irq that was disabled in the irq handler */
--	if (ar_pci->num_msi_intrs == 0)
-+	if (ar_pci->oper_irq_mode == ATH10K_PCI_IRQ_LEGACY)
- 		ath10k_pci_enable_legacy_irq(ar);
- }
- 
--static int ath10k_pci_request_irq_msix(struct ath10k *ar)
--{
--	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	int ret, i;
--
--	ret = request_irq(ar_pci->pdev->irq + MSI_ASSIGN_FW,
--			  ath10k_pci_msi_fw_handler,
--			  IRQF_SHARED, "ath10k_pci", ar);
--	if (ret) {
--		ath10k_warn(ar, "failed to request MSI-X fw irq %d: %d\n",
--			    ar_pci->pdev->irq + MSI_ASSIGN_FW, ret);
--		return ret;
--	}
--
--	for (i = MSI_ASSIGN_CE_INITIAL; i <= MSI_ASSIGN_CE_MAX; i++) {
--		ret = request_irq(ar_pci->pdev->irq + i,
--				  ath10k_pci_per_engine_handler,
--				  IRQF_SHARED, "ath10k_pci", ar);
--		if (ret) {
--			ath10k_warn(ar, "failed to request MSI-X ce irq %d: %d\n",
--				    ar_pci->pdev->irq + i, ret);
--
--			for (i--; i >= MSI_ASSIGN_CE_INITIAL; i--)
--				free_irq(ar_pci->pdev->irq + i, ar);
--
--			free_irq(ar_pci->pdev->irq + MSI_ASSIGN_FW, ar);
--			return ret;
--		}
--	}
--
--	return 0;
--}
--
- static int ath10k_pci_request_irq_msi(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-@@ -2774,41 +2672,28 @@ static int ath10k_pci_request_irq(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 
--	switch (ar_pci->num_msi_intrs) {
--	case 0:
-+	switch (ar_pci->oper_irq_mode) {
-+	case ATH10K_PCI_IRQ_LEGACY:
- 		return ath10k_pci_request_irq_legacy(ar);
--	case 1:
-+	case ATH10K_PCI_IRQ_MSI:
- 		return ath10k_pci_request_irq_msi(ar);
- 	default:
--		return ath10k_pci_request_irq_msix(ar);
-+		return -EINVAL;
- 	}
- }
- 
- static void ath10k_pci_free_irq(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	int i;
- 
--	/* There's at least one interrupt irregardless whether its legacy INTR
--	 * or MSI or MSI-X */
--	for (i = 0; i < max(1, ar_pci->num_msi_intrs); i++)
--		free_irq(ar_pci->pdev->irq + i, ar);
-+	free_irq(ar_pci->pdev->irq, ar);
- }
- 
- void ath10k_pci_init_irq_tasklets(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	int i;
- 
- 	tasklet_init(&ar_pci->intr_tq, ath10k_pci_tasklet, (unsigned long)ar);
--	tasklet_init(&ar_pci->msi_fw_err, ath10k_msi_err_tasklet,
--		     (unsigned long)ar);
--
--	for (i = 0; i < CE_COUNT; i++) {
--		ar_pci->pipe_info[i].ar_pci = ar_pci;
--		tasklet_init(&ar_pci->pipe_info[i].intr, ath10k_pci_ce_tasklet,
--			     (unsigned long)&ar_pci->pipe_info[i]);
--	}
- }
- 
- static int ath10k_pci_init_irq(struct ath10k *ar)
-@@ -2822,20 +2707,9 @@ static int ath10k_pci_init_irq(struct ath10k *ar)
- 		ath10k_info(ar, "limiting irq mode to: %d\n",
- 			    ath10k_pci_irq_mode);
- 
--	/* Try MSI-X */
--	if (ath10k_pci_irq_mode == ATH10K_PCI_IRQ_AUTO) {
--		ar_pci->num_msi_intrs = MSI_ASSIGN_CE_MAX + 1;
--		ret = pci_enable_msi_range(ar_pci->pdev, ar_pci->num_msi_intrs,
--					   ar_pci->num_msi_intrs);
--		if (ret > 0)
--			return 0;
--
--		/* fall-through */
--	}
--
- 	/* Try MSI */
- 	if (ath10k_pci_irq_mode != ATH10K_PCI_IRQ_LEGACY) {
--		ar_pci->num_msi_intrs = 1;
-+		ar_pci->oper_irq_mode = ATH10K_PCI_IRQ_MSI;
- 		ret = pci_enable_msi(ar_pci->pdev);
- 		if (ret == 0)
- 			return 0;
-@@ -2851,7 +2725,7 @@ static int ath10k_pci_init_irq(struct ath10k *ar)
- 	 * This write might get lost if target has NOT written BAR.
- 	 * For now, fix the race by repeating the write in below
- 	 * synchronization checking. */
--	ar_pci->num_msi_intrs = 0;
-+	ar_pci->oper_irq_mode = ATH10K_PCI_IRQ_LEGACY;
- 
- 	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + PCIE_INTR_ENABLE_ADDRESS,
- 			   PCIE_INTR_FIRMWARE_MASK | PCIE_INTR_CE_MASK_ALL);
-@@ -2869,8 +2743,8 @@ static int ath10k_pci_deinit_irq(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 
--	switch (ar_pci->num_msi_intrs) {
--	case 0:
-+	switch (ar_pci->oper_irq_mode) {
-+	case ATH10K_PCI_IRQ_LEGACY:
- 		ath10k_pci_deinit_irq_legacy(ar);
- 		break;
- 	default:
-@@ -2908,7 +2782,7 @@ int ath10k_pci_wait_for_target_init(struct ath10k *ar)
- 		if (val & FW_IND_INITIALIZED)
- 			break;
- 
--		if (ar_pci->num_msi_intrs == 0)
-+		if (ar_pci->oper_irq_mode == ATH10K_PCI_IRQ_LEGACY)
- 			/* Fix potential race by repeating CORE_BASE writes */
- 			ath10k_pci_enable_legacy_irq(ar);
- 
-@@ -3186,8 +3060,8 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 		goto err_sleep;
- 	}
- 
--	ath10k_info(ar, "pci irq %s interrupts %d irq_mode %d reset_mode %d\n",
--		    ath10k_pci_get_irq_method(ar), ar_pci->num_msi_intrs,
-+	ath10k_info(ar, "pci irq %s oper_irq_mode %d irq_mode %d reset_mode %d\n",
-+		    ath10k_pci_get_irq_method(ar), ar_pci->oper_irq_mode,
- 		    ath10k_pci_irq_mode, ath10k_pci_reset_mode);
- 
- 	ret = ath10k_pci_request_irq(ar);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index 249c73a..d12fe70 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -148,9 +148,6 @@ struct ath10k_pci_pipe {
- 
- 	/* protects compl_free and num_send_allowed */
- 	spinlock_t pipe_lock;
--
--	struct ath10k_pci *ar_pci;
--	struct tasklet_struct intr;
- };
- 
- struct ath10k_pci_supp_chip {
-@@ -171,14 +168,10 @@ struct ath10k_pci {
- 	void __iomem *mem;
- 	size_t mem_len;
- 
--	/*
--	 * Number of MSI interrupts granted, 0 --> using legacy PCI line
--	 * interrupts.
--	 */
--	int num_msi_intrs;
-+	/* Operating interrupt mode */
-+	u8 oper_irq_mode;
- 
- 	struct tasklet_struct intr_tq;
--	struct tasklet_struct msi_fw_err;
- 
- 	struct ath10k_pci_pipe pipe_info[CE_COUNT_MAX];
- 
--- 
-2.7.4
+During the test I also obverse the CPU load of client and AP. When the 
+data is sent from PC, the AP has ~2% CPU load, ~63 nic and ~25% sirq. 
+The client has ~0% CPU load ~78% nic and ~20% sirq. When the data sent 
+from AP, the AP has ~1% cpu ~69% nic and 7% sirq. The client has ~0% 
+cpu, 76% nic and ~24% sirq.
+
+The test diagram is shown as
+
+PC(GbE) --- (GbE)WDS Client (Wireless) --- (Wireless) WDS AP.
+
+Did anyone else tries with such setup ?
+
+
+On 23/03/16 18:20, Ben Greear wrote:
+> On 03/23/2016 09:54 AM, Michal Kazior wrote:
+>> On 23 March 2016 at 11:53, Xue Liu <xue.liu@dks-koeln.de> wrote:
+>>> Hello everyone,
+>>>
+>>> Now I am doing point to point  throughput test using  and ath10k. The
+>>> hardwares are clearfog A1 board with armada 388 and WLE900VX 
+>>> (QCA9880). The
+>>> OpenWRT trunk is running on it.
+>>>
+>>> At first I did UDP throughput test ( WDS AP <---> WDS Client ) with 
+>>> iperf3
+>>> server on the WDS AP. The throughput is approx 630 Mbps.  But if the 
+>>> server
+>>> sends the data, the throughput will rise to 700 Mbps.  I did the
+>>> bidirectional test for many times. The UDP data transferring from AP 
+>>> side
+>>> always has 70 - 80 Mbps more throughput.
+>>>
+>>> In the same situation, I did UDP throughput test between PC and WDS 
+>>> AP ( PC
+>>> <---->WDS Client <----> WDS AP ) . The PC is connected with the WDS 
+>>> client
+>>> via GbE port.  I have found a more interesting result. The data 
+>>> throughput
+>>> is about 678 Mbps when the data is transmitted from AP to PC. There is
+>>> almost no performance loss. But the throughput is only about 425 
+>>> Mpbs from
+>>> PC to AP.
+>>>
+>>> Can anyone give me some advises or some info about the reason and 
+>>> how to
+>>> improve the transmitting performance from PC to AP side. Thank you.
+>>
+>> This is weird. Did you check CPU utilization on all involved devices
+>> (PC, WDS Client, WDS AP)? Did you try tweaking iperf parameters, e.g.
+>> number of threads, buffer sizes? Playing around with some parameters
+>> could narrow down the problem.
+>>
+>> Normally I would expect the reverse performance drop (i.e. slower
+>> performance when traffic is generated locally on WDS Client).
+>
+> I don't know about WDS, but we definitely see slower upload (from 
+> station perspective)
+> than download rates, using identical hardware for AP and STA devices.
+>
+> Patches posted to ath10k list yesterday claim to resolve at least some 
+> of this,
+> but I have not tested those yet...
+>
+> Thanks,
+> Ben
+>
+>
 
 
 _______________________________________________
