@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aleZa-0007oK-Rv
- for ath10k@lists.infradead.org; Thu, 31 Mar 2016 15:31:53 +0000
-Received: by mail-ig0-x22d.google.com with SMTP id ui10so60893524igc.1
- for <ath10k@lists.infradead.org>; Thu, 31 Mar 2016 08:31:30 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
+ id 1aletW-0006OQ-3T
+ for ath10k@lists.infradead.org; Thu, 31 Mar 2016 15:52:26 +0000
+Subject: Re: hacked 4.4.6+, 10.4.3 firmware, Running out of ring-index for
+ pipe-id 3 (WMI).
+References: <56F97F91.10007@candelatech.com>
+ <CA+BoTQnzFiS2HpUweNzwhiUD3Gaa40pZq+z8GhHLn5STq1OgHQ@mail.gmail.com>
+ <56FAA3D5.3070409@candelatech.com>
+ <CA+BoTQkmc2z8kWu=dcHJ2WMwi631ePqcQyjj59_95kv1aLdC1g@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <56FD478E.6040209@candelatech.com>
+Date: Thu, 31 Mar 2016 08:51:42 -0700
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQm5-Yarw9TTLiN4jvuH2cdELxRBQvJ_+TFmthZkMBOVyg@mail.gmail.com>
-References: <1459368643-13300-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQm5-Yarw9TTLiN4jvuH2cdELxRBQvJ_+TFmthZkMBOVyg@mail.gmail.com>
-Date: Thu, 31 Mar 2016 08:31:29 -0700
-Message-ID: <CAJ-VmonC=NaXmLbboyJwmQSOg6yt_1aQgU8WYQRZk65KViE14Q@mail.gmail.com>
-Subject: Re: [PATCH] wmi: Retry if CE logic is out of buffers.
-From: Adrian Chadd <adrian@freebsd.org>
+In-Reply-To: <CA+BoTQkmc2z8kWu=dcHJ2WMwi631ePqcQyjj59_95kv1aLdC1g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,84 +22,127 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On 30 March 2016 at 23:55, Michal Kazior <michal.kazior@tieto.com> wrote:
-> On 30 March 2016 at 22:10,  <greearb@candelatech.com> wrote:
->> From: Ben Greear <greearb@candelatech.com>
+On 03/30/2016 11:51 PM, Michal Kazior wrote:
+> On 29 March 2016 at 17:48, Ben Greear <greearb@candelatech.com> wrote:
+>> On 03/29/2016 01:05 AM, Michal Kazior wrote:
+>>>
+>>> On 28 March 2016 at 21:01, Ben Greear <greearb@candelatech.com> wrote:
+>>>>
+>>>> I'm seeing the ring-full messages below when running 35 stations on
+>>>> modified 10.4.3 firmware.  I also have serial console logging enabled, so
+>>>> things are running a bit slow...this seems to exacerbate the issue.
+>>>>
+>>>> [   91.108923] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2
+>>>> credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+>>>> [   91.108932] ath10k_pci 0000:05:00.0: could not request stats (type 128
+>>>> ret -105)
+>>>> [   91.108942] ath10k_pci 0000:05:00.0: hif-tx-sg, full, nentries_mask:
+>>>> 0x1f
+>>>> write_idx: 2 sw-idx: 3  n_items: 1 pipe-id: 3
+>>>> [   91.108944] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2
+>>>> credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+>>>> [   91.108952] ath10k_pci 0000:05:00.0: could not request stats (type 1
+>>>> ret
+>>>> -105)
+>>>> [   91.108953] ath10k_pci 0000:05:00.0: failed to get fw stats for
+>>>> ethtool:
+>>>> -105
+>>>> [   91.109039] ath10k_pci 0000:05:00.0: hif-tx-sg, full, nentries_mask:
+>>>> 0x1f
+>>>> write_idx: 2 sw-idx: 3  n_items: 1 pipe-id: 3
+>>>> [   91.109041] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2
+>>>> credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+>>>> [   91.109050] ath10k_pci 0000:05:00.0: could not request stats (type 128
+>>>> ret -105)
+>>>> [   91.109060] ath10k_pci 0000:05:00.0: hif-tx-sg, full, nentries_mask:
+>>>> 0x1f
+>>>> write_idx: 2 sw-idx: 3  n_items: 1 pipe-id: 3
+>>>> [   91.109062] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2
+>>>> credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+>>>> [   91.109070] ath10k_pci 0000:05:00.0: could not request stats (type 1
+>>>> ret
+>>>> -105)
+>>>> [   91.109072] ath10k_pci 0000:05:00.0: failed to get fw stats for
+>>>> ethtool:
+>>>> -105
+>>>> [   91.109157] ath10k_pci 0000:05:00.0: hif-tx-sg, full, nentries_mask:
+>>>> 0x1f
+>>>> write_idx: 2 sw-idx: 3  n_items: 1 pipe-id: 3
+>>>> [   91.109160] ath10k_pci 0000:05:00.0: htc failed hif-tx-sq: -105 eid: 2
+>>>> credits: 1 ep->tx_credits: 1  credit-flow-enabled: 1
+>>>>
+>>>>
+>>>> I am struggling to understand how the pipe can be full since we have
+>>>> tx-credits logic
+>>>> enabled for the WMI pipe.
+>>>>
+>>>> Any suggestions on what sort of bugs could cause this?
+>>>>
+>>>> And, should the ath10k_wmi_cmd_send retry when we get a -105 return
+>>>> code in hopes it will free up shortly instead of just failing and leaving
+>>>> the system in invalid state?
+>>>
+>>>
+>>> It probably shouldn't. As you've pointed out HTC tx credits should
+>>> prevent this in the first place. If you see -105 it means something is
+>>> really broken and needs to be fixed properly.
+>>>
+>>> A thing that comes to mind is that CE -for whatever reason- would need
+>>> to stop completing CE ring items. Are you running with MSI? 1 or
+>>> multiple interrupts? Did you try forcing legacy interrupt mode to rule
+>>> out MSI problems?
+>>>
+>>> You could add a debug messages to see if the HTC-WMI CE ring gets tx
+>>> completions properly.
 >>
->> I believe the CE tx buffer reaping logic may be able to fall
->> behind in certain cases (lots of serial console logging, lots
->> of WMI messages).
 >>
->> Dropping WMI messages is a very serious problem, so it is worth
->> waiting a bit in hopes the tx buffers become available again.
->>
->> Signed-off-by: Ben Greear <greearb@candelatech.com>
->> ---
->>
->> Probably the ath10k_err should be made dbg or rate-limited before
->> this goes upstream..in meantime, it might help shed some light on
->> this problem.
->>
->>  drivers/net/wireless/ath/ath10k/wmi.c | 15 ++++++++++++++-
->>  1 file changed, 14 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
->> index f042711..43d23fc 100644
->> --- a/drivers/net/wireless/ath/ath10k/wmi.c
->> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
->> @@ -1819,6 +1819,7 @@ static void ath10k_wmi_op_ep_tx_credits(struct ath10k *ar)
->>  int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
->>  {
->>         int ret = -EOPNOTSUPP;
->> +       int retry = 1000;
->>
->>         might_sleep();
->>
->> @@ -1832,7 +1833,19 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
->>                 /* try to send pending beacons first. they take priority */
->>                 ath10k_wmi_tx_beacons_nowait(ar);
->>
->> -               ret = ath10k_wmi_cmd_send_nowait(ar, skb, cmd_id);
->> +               while (--retry) {
->> +                       ret = ath10k_wmi_cmd_send_nowait(ar, skb, cmd_id);
->> +                       if ((ret == -ENOBUFS) &&
->> +                           !test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags)) {
->> +                               /* CE transport logic is full, maybe we cannot reap entries fast
->> +                                * enough?
->> +                                */
->> +                               ath10k_err(ar, "CE transport is full, sleeping for 1ms\n");
->> +                               msleep(1);
->> +                               continue;
->> +                       }
->> +                       break;
->> +               }
+>> I don't think I'm using MSI.  Could it be that whatever logic that should
+>> be processing the tx-completions is just running slower than whatever is
+>> handling the WMI messages (and credits)?
 >
-> This looks like a workaround to me. This problem shouldn't be
-> happening in the first place as far as design is concerned.
+> Your WMI command queue is limited to HTC Tx credits (2, right?). This
+> means you can enqueue, in practice, 2 CE items to WMI's CE Tx pipe.
+> Once you've done that you have to wait until next interrupt carrying
+> HTC Rx message with Tx Credit Update. If you get this it implies FW
+> received your WMI commands which implies WMI's CE Tx pipe was updated
+> (and at least the 2 CE's associated with your WMI commands have been
+> consumed/completed). Even if you assume CE processing ordering is
+> reversed (i.e. HTC Rx gets processed before HTC Tx completions are)
+> you still should be able to have enqueued no more than 4 CE items at a
+> time as far as WMI is concerned.
 >
-> If it does the only reason I can think of is if MSI-range support is exercised.
+> Now, if you assume MSI-range (multiple MSI interrupts; a vector) is
+> enabled, you can service each CE pipe in a separate interrupt and
+> tasklet. This could, in theory, result in some weird race as HTC Tx
+> credits and CE Tx pipe completions are not guaranteed to be
+> serialized.
+
+That could be what happened.
+
 >
-> Anyway, It'd be a lot more sane to instead poll WMI's CE Tx pipe when
-> processing WMI's CE Rx pipe (but that's still -arguably- unnecessary)
-> instead of retrying in WMI..
+> Or maybe you're using some forced WMI commands in your fork and
+> disregard Tx credits in some cases? This could explain the problem
+> even when running with a single interrupt.
 
-I think polling TX when processing WMI RX isn't a bad idea. If Ben's
-doing a lot of WMI stuff then the interrupt latency or scheduling may
-be getting in the way.
+I'm not forcing WMI commands, and if I were really managing to queue up 30
+WMI cmds in the firmware, it seems it would have crashed the firmware since
+it does not contain many local resources (ie, only 2).
 
-But I'd like to first verify that the problem isn't something silly
-like you're not seeing the interrupt because it didn't fire in the
-first place...
+Thanks,
+Ben
 
 
--adrian
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
