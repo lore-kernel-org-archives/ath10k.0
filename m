@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
- id 1am5oI-0000Ym-Vn
- for ath10k@lists.infradead.org; Fri, 01 Apr 2016 20:36:51 +0000
-Subject: Re: [PATCH 1/3] ath10k: Ensure txrx-compl-task is stopped when
- cleaning htt-tx.
-References: <1459457986-29222-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQnmMKoK9z2QnTgBeRkXR0GdR1WV0XpOzD7JZnJ6QbHQ1w@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <56FEDBB8.2080404@candelatech.com>
-Date: Fri, 1 Apr 2016 13:36:08 -0700
-MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnmMKoK9z2QnTgBeRkXR0GdR1WV0XpOzD7JZnJ6QbHQ1w@mail.gmail.com>
+ id 1am6NJ-0000lj-W5
+ for ath10k@lists.infradead.org; Fri, 01 Apr 2016 21:13:02 +0000
+From: greearb@candelatech.com
+Subject: [PATCH v2 2/5] ath10k:  Ensure peer_map references are cleaned up.
+Date: Fri,  1 Apr 2016 14:12:09 -0700
+Message-Id: <1459545132-11295-2-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1459545132-11295-1-git-send-email-greearb@candelatech.com>
+References: <1459545132-11295-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,48 +17,78 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
-On 03/31/2016 11:12 PM, Michal Kazior wrote:
-> On 31 March 2016 at 22:59,  <greearb@candelatech.com> wrote:
->> From: Ben Greear <greearb@candelatech.com>
->>
->> Otherwise, the txrx-compl-task may access some bad memory?
->>
->> Signed-off-by: Ben Greear <greearb@candelatech.com>
->> ---
->>   drivers/net/wireless/ath/ath10k/htt_tx.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
->> index 07b960e..58e88d3 100644
->> --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
->> +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
->> @@ -376,6 +376,8 @@ void ath10k_htt_tx_free(struct ath10k_htt *htt)
->>   {
->>          int size;
->>
->> +       tasklet_kill(&htt->txrx_compl_task);
->> +
->
-> I think, instead, the ordering of ath10k_htt_tx_free() and
-> ath10k_htt_rx_free() should be reversed. It's already in the "correct"
-> order in ath10k_core_stop() on error path.
+From: Ben Greear <greearb@candelatech.com>
 
-That seems a bit too subtle for my taste, but either way
-is fine with me.  You want to cook up a patch?
+While debugging OS crashes due to firmware crashes, I enabled
+kasan, and it noticed that peer objects were being used-after-freed.
 
-Thanks,
-Ben
+Looks like there are two places we could be leaving stale references
+in the peer-map, so clean that up.
 
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 8783119..5e5cc9c 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -794,6 +794,7 @@ static void ath10k_peer_cleanup(struct ath10k *ar, u32 vdev_id)
+ {
+ 	struct ath10k_peer *peer, *tmp;
+ 	int peer_id;
++	int i;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+@@ -812,6 +813,17 @@ static void ath10k_peer_cleanup(struct ath10k *ar, u32 vdev_id)
+ 			ar->peer_map[peer_id] = NULL;
+ 		}
+ 
++		/* Double check that peer is properly un-referenced from
++		 * the peer_map
++		 */
++		for (i = 0; i < ARRAY_SIZE(ar->peer_map); i++) {
++			if (ar->peer_map[i] == peer) {
++				ath10k_warn(ar, "removing stale peer_map entry for %pM (ptr %p idx %d)\n",
++					    peer->addr, peer, i);
++				ar->peer_map[i] = NULL;
++			}
++		}
++
+ 		list_del(&peer->list);
+ 		kfree(peer);
+ 		ar->num_peers--;
+@@ -840,6 +852,7 @@ void ath10k_dump_peer_info(struct ath10k *ar)
+ static void ath10k_peer_cleanup_all(struct ath10k *ar)
+ {
+ 	struct ath10k_peer *peer, *tmp;
++	int i;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+@@ -850,6 +863,10 @@ static void ath10k_peer_cleanup_all(struct ath10k *ar)
+ 		list_del(&peer->list);
+ 		kfree(peer);
+ 	}
++
++	for (i = 0; i < ARRAY_SIZE(ar->peer_map); i++)
++		ar->peer_map[i] = NULL;
++
+ 	spin_unlock_bh(&ar->data_lock);
+ 
+ 	ar->num_peers = 0;
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+2.4.3
 
 
 _______________________________________________
