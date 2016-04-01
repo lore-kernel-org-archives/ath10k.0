@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alu1c-0003Vg-Ij
- for ath10k@lists.infradead.org; Fri, 01 Apr 2016 08:01:49 +0000
-Received: by mail-wm0-x22c.google.com with SMTP id f198so14847617wme.0
- for <ath10k@lists.infradead.org>; Fri, 01 Apr 2016 01:01:25 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
+ id 1alzmq-0005uL-R9
+ for ath10k@lists.infradead.org; Fri, 01 Apr 2016 14:10:57 +0000
+Message-ID: <56FE7FEA.5090708@candelatech.com>
+Date: Fri, 01 Apr 2016 07:04:26 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQk7q7VerNC1KZK49REHn9rfo6sG5zW54P=-K3XkOL77pQ@mail.gmail.com>
-References: <1458898743-21118-1-git-send-email-michal.kazior@tieto.com>
- <CA+BoTQk7q7VerNC1KZK49REHn9rfo6sG5zW54P=-K3XkOL77pQ@mail.gmail.com>
-Date: Fri, 1 Apr 2016 10:01:24 +0200
-Message-ID: <CA+BoTQ=8rZ8mo=MXcWrq3Yxj63k9aMh2W=2dPZCkYVvv=XRcCw@mail.gmail.com>
-Subject: Re: [RFC] ath10k: implement dql for htt tx
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Re: [PATCH 3/3] ath10k: Add BUG_ON if we over-write peer-map pointer.
+References: <1459457986-29222-1-git-send-email-greearb@candelatech.com>	<1459457986-29222-3-git-send-email-greearb@candelatech.com>
+ <CA+BoTQkL5OM-QLVVe0RHEOoN-Vj4a0+U9EfaUf=2n+PO3mPDyQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQkL5OM-QLVVe0RHEOoN-Vj4a0+U9EfaUf=2n+PO3mPDyQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,79 +19,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: make-wifi-fast@lists.bufferbloat.net, linux-wireless <linux-wireless@vger.kernel.org>, Dave Taht <dave.taht@gmail.com>, codel@lists.bufferbloat.net, Michal Kazior <michal.kazior@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-UmUtcG9zdGluZyB0ZXh0IG9ubHkgYXMgaXQgd2FzIGJsb2NrZWQgYnkgbW9zdCBtYWlsaW5nIGxp
-c3Qgc2VydmVyczoKClRoZSBvcmlnaW5hbCBhdHRhY2htZW50IGNhbiBiZSBmZXRjaGVkIGF0Ogog
-IGh0dHA6Ly9rYXppa2N6LmdpdGh1Yi5pby9kbC8yMDE2LTA0LTAxLWZsZW50LWF0aDEway1kcWwu
-dGFyLmd6CgpPbiAyNSBNYXJjaCAyMDE2IGF0IDEwOjU1LCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwu
-a2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4gT24gMjUgTWFyY2ggMjAxNiBhdCAxMDozOSwgTWlj
-aGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+PiBUaGlzIGltcGxl
-bWVudHMgYSB2ZXJ5IG5haXZlIGR5bmFtaWMgcXVldWUgbGltaXRzCj4+IG9uIHRoZSBmbGF0IEhU
-VCBUeC4gSW4gc29tZSBvZiBteSB0ZXN0cyAodXNpbmcKPj4gZmxlbnQpIGl0IHNlZW1zIHRvIHJl
-ZHVjZSBpbmR1Y2VkIGxhdGVuY3kgYnkKPj4gb3JkZXJzIG9mIG1hZ25pdHVkZSAoZS5nLiB3aGVu
-IGVuZm9yY2luZyA2bWJwcwo+PiB0eCByYXRlcyAyNTAwbXMgLT4gMTUwbXMpLiBCdXQgYXQgdGhl
-IHNhbWUgdGltZSBpdAo+PiBpbnRyb2R1Y2VzIFRDUCB0aHJvdWdocHV0IGJ1aWxkdXAgb3ZlciB0
-aW1lCj4+IChpbnN0ZWFkIG9mIGltbWVkaWF0ZSBidW1wIHRvIG1heCkuIE1vcmUKPj4gaW1wb3J0
-YW50bHkgSSBkaWRuJ3Qgb2JzZXJ2ZSBpdCB0byBtYWtlIHRoaW5ncwo+PiBtdWNoIHdvcnNlICh5
-ZXQpLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRp
-ZXRvLmNvbT4KPj4gLS0tCj4+Cj4+IEknbSBub3Qgc3VyZSB5ZXQgaWYgaXQncyB3b3J0aCB0byBj
-b25zaWRlciB0aGlzCj4+IHBhdGNoIGZvciBtZXJnaW5nIHBlciBzZS4gTXkgbW90aXZhdGlvbiB3
-YXMgdG8KPj4gaGF2ZSBzb21ldGhpbmcgdG8gcHJvdmUgbWFjODAyMTEgZnEgd29ya3MgYW5kIHRv
-Cj4+IHNlZSBpZiBEUUwgY2FuIGxlYXJuIHRoZSBwcm9wZXIgcXVldWUgbGltaXQgaW4KPj4gZmFj
-ZSBvZiB3aXJlbGVzcyByYXRlIGNvbnRyb2wgYXQgYWxsLgo+Pgo+PiBJJ2xsIGRvIGEgZm9sbG93
-IHVwIHBvc3Qgd2l0aCBmbGVudCB0ZXN0IHJlc3VsdHMKPj4gYW5kIHNvbWUgbm90ZXMuCj4KPiBI
-ZXJlJ3MgYSBzaG9ydCBkZXNjcmlwdGlvbiB3aGF0LWlzLXdoYXQgdGVzdCBuYW1pbmc6Cj4gIC0g
-c3cvZnEgY29udGFpbnMgb25seSB0eHEvZmxvdyBzdHVmZiAobm8gc2NoZWR1bGluZywgbm8gdHhv
-cCBxdWV1ZSBsaW1pdHMpCj4gIC0gc3cvYXRoMTBrX2RxbCBjb250YWlucyBvbmx5IGF0aDEwayBw
-YXRjaCB3aGljaCBhcHBsaWVzIERRTCB0bwo+IGRyaXZlci1maXJtd2FyZSB0eCBxdWV1ZSBuYWl2
-ZWx5Cj4gIC0gc3cvZnErYXRoMTBrX2RxbCBpcyBvYnZpb3VzCj4gIC0gc3cvYmFzZSB0b2RheSdz
-IGF0aC5naXQvbWFzdGVyIGNoZWNrb3V0IHVzZWQgYXMgYmFzZQo+ICAtICJ2ZXJ5ZmFzdCIgdGVz
-dHMgVENQIHRwdXQgdG8gcmVmZXJlbmNlIHJlY2VpdmVyICg0IGFudGVubmFzKQo+ICAtICJmYXN0
-IiB0ZXN0cyBUQ1AgdHB1dCB0byByZWYgcmVjZWl2ZXIgKDEgYW50ZW5uYSkKPiAgLSAic2xvdyIg
-dGVzdHMgVENQIHRwdXQgdG8gcmVmIHJlY2VpdmVyICgxICp1bnBsdWdnZWQqIGFudGVubmEpCj4g
-IC0gImZhc3Qrc2xvdyIgdGVzdHMgc2hhcmluZyBiZXR3ZWVuICJmYXN0IiBhbmQgInNsb3ciCj4g
-IC0gImF1dG9yYXRlIiB1c2VzIGRlZmF1bHQgcmF0ZSBjb250cm9sCj4gIC0gInJhdGU2bSIgdXNl
-cyBmaXhlZC10eC1yYXRlIGF0IDZtYnBzCj4gIC0gdGhlIHRlc3QgdXNlcyBRQ0E5ODgwIHcvIDEw
-LjEuNDY3Cj4gIC0gbm8gcnJ1bCB0ZXN0cywgc29ycnkgRGF2ZSEgOikKPgo+IFwKPiBPYnNlcnZh
-dGlvbnMgLyBjb25jbHVzaW9uczoKPiAgLSBEUUwgYnVpbGRzIHVwIHRocm91Z2hwdXQgc2xvd2x5
-IG9uICJ2ZXJ5ZmFzdCI7IGluIHNvbWUgdGVzdHMgaXQKPiBkb2Vzbid0IGdldCB0byByZWFjaCBw
-ZWFrIChyb3VnaGx5IDIxMG1icHMgYXZlcmFnZSkgYmVjYXVzZSB0aGUgdGVzdAo+IGlzIHRvbyBz
-aG9ydAo+Cj4gIC0gRFFMIHNob3dzIGJldHRlciBsYXRlbmN5IHJlc3VsdHMgaW4gYWxtb3N0IGFs
-bCBjYXNlcyBjb21wYXJlZCB0bwo+IHRoZSB0eG9wIGJhc2VkIHNjaGVkdWxpbmcgZnJvbSBteSBt
-YWM4MDIxMSBSRkMgKGJ1dCBpIGhhdmVuJ3QKPiB0aG9yb3VnaGx5IGxvb2tlZCBhdCAqYWxsKiB0
-aGUgZGF0YTsgSSBtaWdodCd2ZSBtaXNzZWQgYSBjYXNlIHdoZXJlIGl0Cj4gcGVyZm9ybXMgd29y
-c2UpCj4KPiAgLSBsYXRlbmN5IGltcHJvdmVtZW50IHNlZW4gb24gc3cvYXRoMTBrX2RxbCBAIHJh
-dGU2bSxmYXN0IGNvbXBhcmVkIHRvCj4gc3cvYmFzZSAoMTgwMG1zIC0+IDE2MG1zKSBjYW4gYmUg
-ZXhwbGFpbmVkIGJ5IHRoZSBmYWN0IHRoYXQgdHhxIEFDCj4gbGltaXQgaXMgMjU2IGFuZCBzaW5j
-ZSBhbGwgVENQIHN0cmVhbXMgcnVuIG9uIEJFIChhbmQgZnFfY29kZWwgYXMgdGhlCj4gcWRpc2Mp
-IHRoZSBpbmR1Y2VkIHR4cSBsYXRlbmN5IGlzIDI1NiAqICgxNTAwIC8gKDYqMTAyNCoxMDI0Lzgu
-KSkgLyA0Cj4gPSB+MTIybXMgd2hpY2ggaXMgcHJldHR5IGNsb3NlIHRvIHRoZSB0ZXN0IGRhdGEg
-KHRoZSBmb3JtdWxhIGlnbm9yZXMKPiBNQUMgb3ZlcmhlYWQsIHNvIHRoZSBsYXRlbmN5IGluIHBy
-YWN0aWNlIGlzIGxhcmdlcikuIE9uY2UgeW91IGNvbnNpZGVyCj4gdGhlIG92ZXJoZWFkIGFuZCBp
-bi1mbGlnaHQgcGFja2V0cyBvbiBkcml2ZXItZmlybXdhcmUgdHggcXVldWUgMTYwbXMKPiBkb2Vz
-bid0IHNlZW0gc3RyYW5nZS4gTW9yZW92ZXIgd2hlbiB5b3UgY29tcGFyZSB0aGUgc2FtZSBjYXNl
-IHdpdGgKPiBzdy9mcSthdGgxMGtfZHFsIHlvdSBjYW4gY2xlYXJseSBzZWUgdGhlIGFkdmFudGFn
-ZSBvZiBoYXZpbmcgZnFfY29kZWwKPiBpbiBtYWM4MDIxMSBzb2Z0d2FyZSBxdWV1aW5nIC0gdGhl
-IGxhdGVuY3kgZHJvcHMgYnkgKGFub3RoZXIpIG9yZGVyIG9mCj4gbWFnbml0dWRlIGJlY2F1c2Ug
-bm93IGluY29tbWluZyBJQ01QcyBhcmUgdHJlYXRlZCBhcyBuZXcsIGJ1cnN0eSBmbG93cwo+IGFu
-ZCBnZXQgZmVkIHRvIHRoZSBkZXZpY2UgcXVpY2tseS4KPgo+ICAtIHNsb3crZmFzdCBjYXNlIHN0
-aWxsIHN1Y2tzIGJ1dCB0aGF0J3MgZXhwZWN0ZWQgYmVjYXVzZSBEUUwgaGFzbid0Cj4gYmVlbiBh
-cHBsaWVkIHBlci1zdGF0aW9uCj4KPiAgLSBzdy9mcSBoYXMgbG93ZXIgcGVhayB0aHJvdWdocHV0
-ICgidmVyeWZhc3QiKSBjb21wYXJlZCB0byBzdy9iYXNlCj4gKHRoaXMgYWN0dWFsbHkgcHJvdmVz
-IGN1cnJlbnQgLSBhbmQgdmVyeSB5b3VuZyBsZWFzdCB0byBzYXkgLSBhdGgxMGsKPiB3YWtlLXR4
-LXF1ZXVlIGltcGxlbWVudGF0aW9uIGlzIGRlZmljaWVudDsgYXRoMTBrX2RxbCBpbXByb3ZlcyBp
-dCBhbmQKPiBzdy9mcSthdGgxMGtfZHFsIGNsaW1icyB1cCB0byB0aGUgbWF4IHRocm91Z2hwdXQg
-b3ZlciB0aW1lKQo+Cj4KPiBUbyBzdW0gdGhpbmdzIHVwOgo+ICAtIERRTCBtaWdodCBiZSBhYmxl
-IHRvIHJlcGxhY2UgdGhlIGV4cGxpY2l0IHR4b3AgcXVldWUgbGltaXRpbmcKPiAod2hpY2ggcmVx
-dWlyZXMgcmF0ZSBjb250cm9sIGluZm8pCj4gIC0gbWFjODAyMTEgZmFpciBxdWV1aW5nIHdvcmtz
-Cj4KPgo+IEEgZmV3IHBsb3RzIGZvciBxdWljayBhbmQgZWFzeSByZWZlcmVuY2U6Cj4KPiAgIGh0
-dHA6Ly9pbWd1ci5jb20vYS9UbnZiUQoKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+
+
+On 03/31/2016 11:09 PM, Michal Kazior wrote:
+> On 31 March 2016 at 22:59,  <greearb@candelatech.com> wrote:
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> Not sure this can happen, but seems like a reasonable sanity
+>> check.
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>> ---
+>>   drivers/net/wireless/ath/ath10k/txrx.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+>> index 94c27f6..172b1d6 100644
+>> --- a/drivers/net/wireless/ath/ath10k/txrx.c
+>> +++ b/drivers/net/wireless/ath/ath10k/txrx.c
+>> @@ -309,6 +309,7 @@ void ath10k_peer_map_event(struct ath10k_htt *htt,
+>>          ath10k_warn(ar, /*ATH10K_DBG_HTT,*/ "htt peer map vdev %d peer %pM id %d\n",
+>>                     ev->vdev_id, ev->addr, ev->peer_id);
+>>
+>> +       BUG_ON(ar->peer_map[ev->peer_id] && (ar->peer_map[ev->peer_id] != peer));
+>
+> Does this really need to be a BUG_ON?
+
+It means we have memory or logic corruption, or maybe we are out of sync with the
+firmware, so I think it should be very visible, at least for a while.  I haven't
+hit it, so not sure it can happen anyway....
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
