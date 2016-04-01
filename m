@@ -1,17 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
- id 1alrYi-0002mq-Fn
- for ath10k@lists.infradead.org; Fri, 01 Apr 2016 05:23:48 +0000
-Message-ID: <56FE05B7.80104@candelatech.com>
-Date: Thu, 31 Mar 2016 22:23:03 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1alrbG-00019K-JM
+ for ath10k@lists.infradead.org; Fri, 01 Apr 2016 05:26:27 +0000
+Received: by mail-wm0-x229.google.com with SMTP id 127so7299103wmu.1
+ for <ath10k@lists.infradead.org>; Thu, 31 Mar 2016 22:26:06 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: hacked 4.4.6+, 10.4.3 firmware, Running out of ring-index for
- pipe-id 3 (WMI).
-References: <56F97F91.10007@candelatech.com>	<CA+BoTQnzFiS2HpUweNzwhiUD3Gaa40pZq+z8GhHLn5STq1OgHQ@mail.gmail.com>	<56FAA3D5.3070409@candelatech.com>	<CA+BoTQkmc2z8kWu=dcHJ2WMwi631ePqcQyjj59_95kv1aLdC1g@mail.gmail.com>	<56FD53E8.3020200@candelatech.com>
- <CA+BoTQmFhqpyH--ik7YP8rbimVJnw+aC_go3xrPmYhrLTA5KHg@mail.gmail.com>
-In-Reply-To: <CA+BoTQmFhqpyH--ik7YP8rbimVJnw+aC_go3xrPmYhrLTA5KHg@mail.gmail.com>
+In-Reply-To: <56FD77A1.2010807@candelatech.com>
+References: <56F5F38A.2070602@candelatech.com>
+ <CA+BoTQmwGONqJ0MgccrMzzx9UsGuRCZpdy1RSqdgkcNm_te0xQ@mail.gmail.com>
+ <56FC52F5.7080407@candelatech.com>
+ <CA+BoTQ=ZPA87-5iK7YtxQSAW-SeXaaBU1j+9gVMC-5c7cpTwrA@mail.gmail.com>
+ <56FD77A1.2010807@candelatech.com>
+Date: Fri, 1 Apr 2016 07:26:05 +0200
+Message-ID: <CA+BoTQn9WOaCeTz22WS7FDe6ypu2Dxeu82zYKrQ+CyUxxqCa1Q@mail.gmail.com>
+Subject: Re: Deadlock on (faked) firmware crash, CUS239,
+ modified 10.4.3 firmware.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,50 +25,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Ben Greear <greearb@candelatech.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-
-
-On 03/31/2016 10:18 PM, Michal Kazior wrote:
-> On 31 March 2016 at 18:44, Ben Greear <greearb@candelatech.com> wrote:
->> On 03/30/2016 11:51 PM, Michal Kazior wrote:
-
->>
->> So, I am using MSI-X, I guess?
->>
->> # dmesg|grep -i msi
->> [65284.853372] ath10k_pci 0000:05:00.0: pci irq msi-x interrupts 13 irq_mode
->> 0 reset_mode 0
->
-> Yep. This at least makes it possible for this weird problem to come
-> into existance. However I still find it a little hard to believe for
-> tasklets to be scheduled this badly. Maybe the device doesn't assert
-> interrupts properly as Adrian suggested? Or maybe they are not mapped
-> properly? I think you're actually the first one to exercise MSI-range
-> support on qca99x0.
-
-I applied Rajkumar's patch to disable msi-x today, so maybe that will be
-the end of those problems.
-
-I think upstream might want a warn-on for that wmi issue, even if you don't
-add the work-around code though...just to see if someone else hits it.
-
-If you drop the wrong WMI message, often your best hope is that firmware crashes
-right away, so we should really be quite loud about not sending a WMI message.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMzEgTWFyY2ggMjAxNiBhdCAyMToxNiwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
+aC5jb20+IHdyb3RlOgpbLi4uXQo+IEkgdHJpZWQgYWRkaW5nIGNoZWNrIGZvciBGVyBjcmFzaCB5
+ZXN0ZXJkYXksIGJ1dCB0aGF0IGRpZCBub3QgaGVscC4KPgo+IFRvZGF5LCBJIGFkZGVkIGEgbGlt
+aXQgb2YgMjAwMCBsb29wcy4gIEkgc2VlIHRoYXQgaGl0LCBhbmQgdGhlbiBrZXJuZWwKPiBjcmFz
+aGVzLiAgTWF5YmUgbXkgcGF0Y2ggaXMgd3JvbmcuCj4KPiBJJ3ZlIHRyaWVkIHRvIGFwcGx5IChh
+bG1vc3QpIGV2ZXJ5IHBhdGNoIGluIGxpbnV4LmF0aCByZWxhdGVkIHRvIGF0aDEwaywKPiBpbmNs
+dWRpbmcgYSBmZXcgZnJvbSB0aGUgbWFpbGluZyBsaXN0IHRoYXQgaGF2ZSBub3QgYmVlbiBhcHBs
+aWVkIHlldC4KPgo+IE15IHB1c2gtcGVuZGluZyBtZXRob2Qgbm93IGxvb2tzIGxpa2UgdGhpczoK
+Pgo+IHZvaWQgYXRoMTBrX21hY190eF9wdXNoX3BlbmRpbmcoc3RydWN0IGF0aDEwayAqYXIpCj4g
+ewpbLi4uXQo+IH0KCkxvb2tzIHNhbmUuCgoKPiBUaGUgY3Jhc2ggSSBnZXQgaXMgdGhpczoKPgo+
+Cj4gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IGZpcm13YXJlIGNyYXNoZWQhICh1dWlkCj4gMmEx
+MTg3MDgtOTc3ZC00M2Q2LThkNDAtMDc5ZGRlYzk5ZWIzKQpbLi4uXQo+IEJVRzogdW5hYmxlIHRv
+IGhhbmRsZSBrZXJuZWwgcGFnaW5nIHJlcXVlc3QgYXQgMDAwMDAwMDAwMDAwMTAwMAo+IElQOiBb
+PGZmZmZmZmZmYTA4ZTk4MTA+XSBfX3NrYl9kZXF1ZXVlKzB4MmUvMHgzNyBbbWFjODAyMTFdCgpI
+bW0uLiBEbyB5b3UgaGF2ZSAyYTU4ZDQyYzFlMDEgKCJtYWM4MDIxMTogZml4IHR4cSBxdWV1ZSBy
+ZWxhdGVkCmNyYXNoZXMiKSBhcHBsaWVkPwoKWW91IG1pZ2h0IHdhbnQgdG8gc3RhcnQgZHVtcGlu
+ZyBlYWNoIGl0ZXJhdGlvbiBvZiBwdXNoX3BlbmRpbmcoKSBhZnRlcgpGVyBjcmFzaGVzIHRvIHNl
+ZSBpZiBhbGwgcG9pbnRlcnMgYXJlIGZpbmUgYW5kIHdoYXQgcmV0dmFsIGFyZSBzcGl0dGVkCm91
+dCBieSBlYWNoIHB1c2hfdHhxKCkuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawo=
