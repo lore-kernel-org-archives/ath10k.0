@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
- id 1allZE-00018q-BD
- for ath10k@lists.infradead.org; Thu, 31 Mar 2016 22:59:56 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  Clean up peer when sta goes away.
-Date: Thu, 31 Mar 2016 15:59:11 -0700
-Message-Id: <1459465151-24874-1-git-send-email-greearb@candelatech.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1alrPG-0003Rx-Hy
+ for ath10k@lists.infradead.org; Fri, 01 Apr 2016 05:14:02 +0000
+MIME-Version: 1.0
+Date: Fri, 01 Apr 2016 10:43:38 +0530
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: Re: [PATCH 2/3] ath10k: remove unnecessary warning for probe response
+ drops
+In-Reply-To: <56FD5716.6030406@candelatech.com>
+References: <1459352551-11773-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <1459352551-11773-2-git-send-email-rmanohar@qti.qualcomm.com>
+ <56FD5716.6030406@candelatech.com>
+Message-ID: <43fd44912f230a28f0f49e303c0078f5@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,49 +21,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-From: Ben Greear <greearb@candelatech.com>
+On 2016-03-31 22:27, Ben Greear wrote:
+> On 03/30/2016 08:42 AM, Rajkumar Manoharan wrote:
+>> qca99x0 and qca4019 solutions limit probe responses transmissions.
+>> Logging warning message for each probe response drop is flooding
+>> kernel log unnecessary with " failed to increase tx mgmt pending
+>> count: -16, dropping". Hence reducing log level to debug.
+> 
+> Is there any realistic way to see this message if we are not running
+> many vAP on one radio?
+> 
+As of now this message can be seen only with qca99x0 which has 24 as 
+max_probe_resp_desc_thres. Only possible way in single vAP is that in 
+congested environment when DUT is receiving probe requests more 
+frequently.
 
-If WMI and/or firmware has issues removing the peer object,
-then we still need to clean up the peer object in the driver.
+> I guess many probe requests or other management frames could also
+> cause this problem?
+> 
+Exactly.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 07b155d..3ec973e 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6500,9 +6500,15 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 				continue;
- 
- 			if (peer->sta == sta) {
--				ath10k_warn(ar, "found sta peer %pM id: %d entry on vdev %i after it was supposedly removed\n",
--					    sta->addr, i, arvif->vdev_id);
-+				ath10k_warn(ar, "found sta peer %p %pM id: %d entry on vdev %i after it was supposedly removed\n",
-+					    peer, sta->addr, i, arvif->vdev_id);
- 				peer->sta = NULL;
-+
-+				/* Clean up the peer object as well since we must have failed to do this above. */
-+				list_del(&peer->list);
-+				ar->peer_map[i] = NULL;
-+				kfree(peer);
-+				ar->num_peers--;
- 			}
- 		}
- 		spin_unlock_bh(&ar->data_lock);
--- 
-2.4.3
-
+-Rajkumar
 
 _______________________________________________
 ath10k mailing list
