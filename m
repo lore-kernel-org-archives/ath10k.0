@@ -1,22 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alrUF-0005Oh-BO
- for ath10k@lists.infradead.org; Fri, 01 Apr 2016 05:19:13 +0000
-Received: by mail-wm0-x229.google.com with SMTP id f198so10552275wme.0
- for <ath10k@lists.infradead.org>; Thu, 31 Mar 2016 22:18:49 -0700 (PDT)
+ id 1alrUU-0005Tg-Sw
+ for ath10k@lists.infradead.org; Fri, 01 Apr 2016 05:19:27 +0000
 MIME-Version: 1.0
-In-Reply-To: <56FD53E8.3020200@candelatech.com>
-References: <56F97F91.10007@candelatech.com>
- <CA+BoTQnzFiS2HpUweNzwhiUD3Gaa40pZq+z8GhHLn5STq1OgHQ@mail.gmail.com>
- <56FAA3D5.3070409@candelatech.com>
- <CA+BoTQkmc2z8kWu=dcHJ2WMwi631ePqcQyjj59_95kv1aLdC1g@mail.gmail.com>
- <56FD53E8.3020200@candelatech.com>
-Date: Fri, 1 Apr 2016 07:18:48 +0200
-Message-ID: <CA+BoTQmFhqpyH--ik7YP8rbimVJnw+aC_go3xrPmYhrLTA5KHg@mail.gmail.com>
-Subject: Re: hacked 4.4.6+, 10.4.3 firmware, Running out of ring-index for
- pipe-id 3 (WMI).
-From: Michal Kazior <michal.kazior@tieto.com>
+Date: Fri, 01 Apr 2016 10:49:05 +0530
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: Re: [PATCH 3/3] ath10k: fix unconditional num_mpdus_ready subtraction
+In-Reply-To: <56FD71D3.5090103@candelatech.com>
+References: <1459352551-11773-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <1459352551-11773-3-git-send-email-rmanohar@qti.qualcomm.com>
+ <56FD71D3.5090103@candelatech.com>
+Message-ID: <73a1d6a04908fe060559d1a6e9afb128@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,107 +20,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-T24gMzEgTWFyY2ggMjAxNiBhdCAxODo0NCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
-aC5jb20+IHdyb3RlOgo+IE9uIDAzLzMwLzIwMTYgMTE6NTEgUE0sIE1pY2hhbCBLYXppb3Igd3Jv
-dGU6Cj4+Cj4+IE9uIDI5IE1hcmNoIDIwMTYgYXQgMTc6NDgsIEJlbiBHcmVlYXIgPGdyZWVhcmJA
-Y2FuZGVsYXRlY2guY29tPiB3cm90ZToKPj4+Cj4+PiBPbiAwMy8yOS8yMDE2IDAxOjA1IEFNLCBN
-aWNoYWwgS2F6aW9yIHdyb3RlOgo+Pj4+Cj4+Pj4KPj4+PiBPbiAyOCBNYXJjaCAyMDE2IGF0IDIx
-OjAxLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4+Pj4+Cj4+
-Pj4+Cj4+Pj4+IEknbSBzZWVpbmcgdGhlIHJpbmctZnVsbCBtZXNzYWdlcyBiZWxvdyB3aGVuIHJ1
-bm5pbmcgMzUgc3RhdGlvbnMgb24KPj4+Pj4gbW9kaWZpZWQgMTAuNC4zIGZpcm13YXJlLiAgSSBh
-bHNvIGhhdmUgc2VyaWFsIGNvbnNvbGUgbG9nZ2luZyBlbmFibGVkLAo+Pj4+PiBzbwo+Pj4+PiB0
-aGluZ3MgYXJlIHJ1bm5pbmcgYSBiaXQgc2xvdy4uLnRoaXMgc2VlbXMgdG8gZXhhY2VyYmF0ZSB0
-aGUgaXNzdWUuCj4+Pj4+Cj4+Pj4+IFsgICA5MS4xMDg5MjNdIGF0aDEwa19wY2kgMDAwMDowNTow
-MC4wOiBodGMgZmFpbGVkIGhpZi10eC1zcTogLTEwNSBlaWQ6Cj4+Pj4+IDIKPj4+Pj4gY3JlZGl0
-czogMSBlcC0+dHhfY3JlZGl0czogMSAgY3JlZGl0LWZsb3ctZW5hYmxlZDogMQo+Pj4+PiBbICAg
-OTEuMTA4OTMyXSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogY291bGQgbm90IHJlcXVlc3Qgc3Rh
-dHMgKHR5cGUKPj4+Pj4gMTI4Cj4+Pj4+IHJldCAtMTA1KQo+Pj4+PiBbICAgOTEuMTA4OTQyXSBh
-dGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogaGlmLXR4LXNnLCBmdWxsLCBuZW50cmllc19tYXNrOgo+
-Pj4+PiAweDFmCj4+Pj4+IHdyaXRlX2lkeDogMiBzdy1pZHg6IDMgIG5faXRlbXM6IDEgcGlwZS1p
-ZDogMwo+Pj4+PiBbICAgOTEuMTA4OTQ0XSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogaHRjIGZh
-aWxlZCBoaWYtdHgtc3E6IC0xMDUgZWlkOgo+Pj4+PiAyCj4+Pj4+IGNyZWRpdHM6IDEgZXAtPnR4
-X2NyZWRpdHM6IDEgIGNyZWRpdC1mbG93LWVuYWJsZWQ6IDEKPj4+Pj4gWyAgIDkxLjEwODk1Ml0g
-YXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IGNvdWxkIG5vdCByZXF1ZXN0IHN0YXRzICh0eXBlIDEK
-Pj4+Pj4gcmV0Cj4+Pj4+IC0xMDUpCj4+Pj4+IFsgICA5MS4xMDg5NTNdIGF0aDEwa19wY2kgMDAw
-MDowNTowMC4wOiBmYWlsZWQgdG8gZ2V0IGZ3IHN0YXRzIGZvcgo+Pj4+PiBldGh0b29sOgo+Pj4+
-PiAtMTA1Cj4+Pj4+IFsgICA5MS4xMDkwMzldIGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBoaWYt
-dHgtc2csIGZ1bGwsIG5lbnRyaWVzX21hc2s6Cj4+Pj4+IDB4MWYKPj4+Pj4gd3JpdGVfaWR4OiAy
-IHN3LWlkeDogMyAgbl9pdGVtczogMSBwaXBlLWlkOiAzCj4+Pj4+IFsgICA5MS4xMDkwNDFdIGF0
-aDEwa19wY2kgMDAwMDowNTowMC4wOiBodGMgZmFpbGVkIGhpZi10eC1zcTogLTEwNSBlaWQ6Cj4+
-Pj4+IDIKPj4+Pj4gY3JlZGl0czogMSBlcC0+dHhfY3JlZGl0czogMSAgY3JlZGl0LWZsb3ctZW5h
-YmxlZDogMQo+Pj4+PiBbICAgOTEuMTA5MDUwXSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogY291
-bGQgbm90IHJlcXVlc3Qgc3RhdHMgKHR5cGUKPj4+Pj4gMTI4Cj4+Pj4+IHJldCAtMTA1KQo+Pj4+
-PiBbICAgOTEuMTA5MDYwXSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogaGlmLXR4LXNnLCBmdWxs
-LCBuZW50cmllc19tYXNrOgo+Pj4+PiAweDFmCj4+Pj4+IHdyaXRlX2lkeDogMiBzdy1pZHg6IDMg
-IG5faXRlbXM6IDEgcGlwZS1pZDogMwo+Pj4+PiBbICAgOTEuMTA5MDYyXSBhdGgxMGtfcGNpIDAw
-MDA6MDU6MDAuMDogaHRjIGZhaWxlZCBoaWYtdHgtc3E6IC0xMDUgZWlkOgo+Pj4+PiAyCj4+Pj4+
-IGNyZWRpdHM6IDEgZXAtPnR4X2NyZWRpdHM6IDEgIGNyZWRpdC1mbG93LWVuYWJsZWQ6IDEKPj4+
-Pj4gWyAgIDkxLjEwOTA3MF0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IGNvdWxkIG5vdCByZXF1
-ZXN0IHN0YXRzICh0eXBlIDEKPj4+Pj4gcmV0Cj4+Pj4+IC0xMDUpCj4+Pj4+IFsgICA5MS4xMDkw
-NzJdIGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBmYWlsZWQgdG8gZ2V0IGZ3IHN0YXRzIGZvcgo+
-Pj4+PiBldGh0b29sOgo+Pj4+PiAtMTA1Cj4+Pj4+IFsgICA5MS4xMDkxNTddIGF0aDEwa19wY2kg
-MDAwMDowNTowMC4wOiBoaWYtdHgtc2csIGZ1bGwsIG5lbnRyaWVzX21hc2s6Cj4+Pj4+IDB4MWYK
-Pj4+Pj4gd3JpdGVfaWR4OiAyIHN3LWlkeDogMyAgbl9pdGVtczogMSBwaXBlLWlkOiAzCj4+Pj4+
-IFsgICA5MS4xMDkxNjBdIGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBodGMgZmFpbGVkIGhpZi10
-eC1zcTogLTEwNSBlaWQ6Cj4+Pj4+IDIKPj4+Pj4gY3JlZGl0czogMSBlcC0+dHhfY3JlZGl0czog
-MSAgY3JlZGl0LWZsb3ctZW5hYmxlZDogMQo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBJIGFtIHN0cnVnZ2xp
-bmcgdG8gdW5kZXJzdGFuZCBob3cgdGhlIHBpcGUgY2FuIGJlIGZ1bGwgc2luY2Ugd2UgaGF2ZQo+
-Pj4+PiB0eC1jcmVkaXRzIGxvZ2ljCj4+Pj4+IGVuYWJsZWQgZm9yIHRoZSBXTUkgcGlwZS4KPj4+
-Pj4KPj4+Pj4gQW55IHN1Z2dlc3Rpb25zIG9uIHdoYXQgc29ydCBvZiBidWdzIGNvdWxkIGNhdXNl
-IHRoaXM/Cj4+Pj4+Cj4+Pj4+IEFuZCwgc2hvdWxkIHRoZSBhdGgxMGtfd21pX2NtZF9zZW5kIHJl
-dHJ5IHdoZW4gd2UgZ2V0IGEgLTEwNSByZXR1cm4KPj4+Pj4gY29kZSBpbiBob3BlcyBpdCB3aWxs
-IGZyZWUgdXAgc2hvcnRseSBpbnN0ZWFkIG9mIGp1c3QgZmFpbGluZyBhbmQKPj4+Pj4gbGVhdmlu
-Zwo+Pj4+PiB0aGUgc3lzdGVtIGluIGludmFsaWQgc3RhdGU/Cj4+Pj4KPj4+Pgo+Pj4+Cj4+Pj4g
-SXQgcHJvYmFibHkgc2hvdWxkbid0LiBBcyB5b3UndmUgcG9pbnRlZCBvdXQgSFRDIHR4IGNyZWRp
-dHMgc2hvdWxkCj4+Pj4gcHJldmVudCB0aGlzIGluIHRoZSBmaXJzdCBwbGFjZS4gSWYgeW91IHNl
-ZSAtMTA1IGl0IG1lYW5zIHNvbWV0aGluZyBpcwo+Pj4+IHJlYWxseSBicm9rZW4gYW5kIG5lZWRz
-IHRvIGJlIGZpeGVkIHByb3Blcmx5Lgo+Pj4+Cj4+Pj4gQSB0aGluZyB0aGF0IGNvbWVzIHRvIG1p
-bmQgaXMgdGhhdCBDRSAtZm9yIHdoYXRldmVyIHJlYXNvbi0gd291bGQgbmVlZAo+Pj4+IHRvIHN0
-b3AgY29tcGxldGluZyBDRSByaW5nIGl0ZW1zLiBBcmUgeW91IHJ1bm5pbmcgd2l0aCBNU0k/IDEg
-b3IKPj4+PiBtdWx0aXBsZSBpbnRlcnJ1cHRzPyBEaWQgeW91IHRyeSBmb3JjaW5nIGxlZ2FjeSBp
-bnRlcnJ1cHQgbW9kZSB0byBydWxlCj4+Pj4gb3V0IE1TSSBwcm9ibGVtcz8KPj4+Pgo+Pj4+IFlv
-dSBjb3VsZCBhZGQgYSBkZWJ1ZyBtZXNzYWdlcyB0byBzZWUgaWYgdGhlIEhUQy1XTUkgQ0Ugcmlu
-ZyBnZXRzIHR4Cj4+Pj4gY29tcGxldGlvbnMgcHJvcGVybHkuCj4+Pgo+Pj4KPj4+Cj4+PiBJIGRv
-bid0IHRoaW5rIEknbSB1c2luZyBNU0kuICBDb3VsZCBpdCBiZSB0aGF0IHdoYXRldmVyIGxvZ2lj
-IHRoYXQgc2hvdWxkCj4+PiBiZSBwcm9jZXNzaW5nIHRoZSB0eC1jb21wbGV0aW9ucyBpcyBqdXN0
-IHJ1bm5pbmcgc2xvd2VyIHRoYW4gd2hhdGV2ZXIgaXMKPj4+IGhhbmRsaW5nIHRoZSBXTUkgbWVz
-c2FnZXMgKGFuZCBjcmVkaXRzKT8KPj4KPj4KPj4gWW91ciBXTUkgY29tbWFuZCBxdWV1ZSBpcyBs
-aW1pdGVkIHRvIEhUQyBUeCBjcmVkaXRzICgyLCByaWdodD8pLiBUaGlzCj4+IG1lYW5zIHlvdSBj
-YW4gZW5xdWV1ZSwgaW4gcHJhY3RpY2UsIDIgQ0UgaXRlbXMgdG8gV01JJ3MgQ0UgVHggcGlwZS4K
-Pj4gT25jZSB5b3UndmUgZG9uZSB0aGF0IHlvdSBoYXZlIHRvIHdhaXQgdW50aWwgbmV4dCBpbnRl
-cnJ1cHQgY2FycnlpbmcKPj4gSFRDIFJ4IG1lc3NhZ2Ugd2l0aCBUeCBDcmVkaXQgVXBkYXRlLiBJ
-ZiB5b3UgZ2V0IHRoaXMgaXQgaW1wbGllcyBGVwo+PiByZWNlaXZlZCB5b3VyIFdNSSBjb21tYW5k
-cyB3aGljaCBpbXBsaWVzIFdNSSdzIENFIFR4IHBpcGUgd2FzIHVwZGF0ZWQKPj4gKGFuZCBhdCBs
-ZWFzdCB0aGUgMiBDRSdzIGFzc29jaWF0ZWQgd2l0aCB5b3VyIFdNSSBjb21tYW5kcyBoYXZlIGJl
-ZW4KPj4gY29uc3VtZWQvY29tcGxldGVkKS4gRXZlbiBpZiB5b3UgYXNzdW1lIENFIHByb2Nlc3Np
-bmcgb3JkZXJpbmcgaXMKPj4gcmV2ZXJzZWQgKGkuZS4gSFRDIFJ4IGdldHMgcHJvY2Vzc2VkIGJl
-Zm9yZSBIVEMgVHggY29tcGxldGlvbnMgYXJlKQo+PiB5b3Ugc3RpbGwgc2hvdWxkIGJlIGFibGUg
-dG8gaGF2ZSBlbnF1ZXVlZCBubyBtb3JlIHRoYW4gNCBDRSBpdGVtcyBhdCBhCj4+IHRpbWUgYXMg
-ZmFyIGFzIFdNSSBpcyBjb25jZXJuZWQuCj4+Cj4+IE5vdywgaWYgeW91IGFzc3VtZSBNU0ktcmFu
-Z2UgKG11bHRpcGxlIE1TSSBpbnRlcnJ1cHRzOyBhIHZlY3RvcikgaXMKPj4gZW5hYmxlZCwgeW91
-IGNhbiBzZXJ2aWNlIGVhY2ggQ0UgcGlwZSBpbiBhIHNlcGFyYXRlIGludGVycnVwdCBhbmQKPj4g
-dGFza2xldC4gVGhpcyBjb3VsZCwgaW4gdGhlb3J5LCByZXN1bHQgaW4gc29tZSB3ZWlyZCByYWNl
-IGFzIEhUQyBUeAo+PiBjcmVkaXRzIGFuZCBDRSBUeCBwaXBlIGNvbXBsZXRpb25zIGFyZSBub3Qg
-Z3VhcmFudGVlZCB0byBiZQo+PiBzZXJpYWxpemVkLgo+Pgo+PiBPciBtYXliZSB5b3UncmUgdXNp
-bmcgc29tZSBmb3JjZWQgV01JIGNvbW1hbmRzIGluIHlvdXIgZm9yayBhbmQKPj4gZGlzcmVnYXJk
-IFR4IGNyZWRpdHMgaW4gc29tZSBjYXNlcz8gVGhpcyBjb3VsZCBleHBsYWluIHRoZSBwcm9ibGVt
-Cj4+IGV2ZW4gd2hlbiBydW5uaW5nIHdpdGggYSBzaW5nbGUgaW50ZXJydXB0Lgo+Cj4KPiBTbywg
-SSBhbSB1c2luZyBNU0ktWCwgSSBndWVzcz8KPgo+ICMgZG1lc2d8Z3JlcCAtaSBtc2kKPiBbNjUy
-ODQuODUzMzcyXSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogcGNpIGlycSBtc2kteCBpbnRlcnJ1
-cHRzIDEzIGlycV9tb2RlCj4gMCByZXNldF9tb2RlIDAKClllcC4gVGhpcyBhdCBsZWFzdCBtYWtl
-cyBpdCBwb3NzaWJsZSBmb3IgdGhpcyB3ZWlyZCBwcm9ibGVtIHRvIGNvbWUKaW50byBleGlzdGFu
-Y2UuIEhvd2V2ZXIgSSBzdGlsbCBmaW5kIGl0IGEgbGl0dGxlIGhhcmQgdG8gYmVsaWV2ZSBmb3IK
-dGFza2xldHMgdG8gYmUgc2NoZWR1bGVkIHRoaXMgYmFkbHkuIE1heWJlIHRoZSBkZXZpY2UgZG9l
-c24ndCBhc3NlcnQKaW50ZXJydXB0cyBwcm9wZXJseSBhcyBBZHJpYW4gc3VnZ2VzdGVkPyBPciBt
-YXliZSB0aGV5IGFyZSBub3QgbWFwcGVkCnByb3Blcmx5PyBJIHRoaW5rIHlvdSdyZSBhY3R1YWxs
-eSB0aGUgZmlyc3Qgb25lIHRvIGV4ZXJjaXNlIE1TSS1yYW5nZQpzdXBwb3J0IG9uIHFjYTk5eDAu
-CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On 2016-04-01 00:22, Ben Greear wrote:
+> On 03/30/2016 08:42 AM, Rajkumar Manoharan wrote:
+>> Decrement num_mpdus_ready only when rx amsdu is processed 
+>> successfully.
+>> Not doing so, will result in leak and impact stabilty under low memory
+>> cases.
+> 
+> Should this patch be rebased on top of the "ath10k: process htt rx
+> indication as batch mode" patch?
+> 
+It should be on top of "ath10k: speedup htt rx descriptor processing for 
+rx_ind". Instead of sending next version of original series, i sent it 
+as follow up.
+
+-Rajkumar
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
