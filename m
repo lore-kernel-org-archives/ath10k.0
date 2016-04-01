@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
- id 1am6Su-0000oD-AE
+ id 1am6Su-0000oE-9f
  for ath10k@lists.infradead.org; Fri, 01 Apr 2016 21:18:48 +0000
 From: greearb@candelatech.com
-Subject: [PATCH v2 3/5] ath10k: Add WARN_ON if we over-write peer-map pointer.
-Date: Fri,  1 Apr 2016 14:12:10 -0700
-Message-Id: <1459545132-11295-3-git-send-email-greearb@candelatech.com>
+Subject: [PATCH v2 4/5] ath10k:  Clean up peer when sta goes away.
+Date: Fri,  1 Apr 2016 14:12:11 -0700
+Message-Id: <1459545132-11295-4-git-send-email-greearb@candelatech.com>
 In-Reply-To: <1459545132-11295-1-git-send-email-greearb@candelatech.com>
 References: <1459545132-11295-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,26 +27,38 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-Not sure this can happen, but seems like a reasonable sanity
-check.
+If WMI and/or firmware has issues removing the peer object,
+then we still need to clean up the peer object in the driver.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/txrx.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index a779a4e..2edef8a 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -309,6 +309,7 @@ void ath10k_peer_map_event(struct ath10k_htt *htt,
- 	ath10k_warn(ar, /*ATH10K_DBG_HTT,*/ "htt peer map vdev %d peer %pM id %d\n",
- 		   ev->vdev_id, ev->addr, ev->peer_id);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5e5cc9c..020dd25 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6501,9 +6501,17 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 				continue;
  
-+	WARN_ON(ar->peer_map[ev->peer_id] && (ar->peer_map[ev->peer_id] != peer));
- 	ar->peer_map[ev->peer_id] = peer;
- 	set_bit(ev->peer_id, peer->peer_ids);
- exit:
+ 			if (peer->sta == sta) {
+-				ath10k_warn(ar, "found sta peer %pM id: %d entry on vdev %i after it was supposedly removed\n",
+-					    sta->addr, i, arvif->vdev_id);
++				ath10k_warn(ar, "found sta peer %pM (ptr %p id %d) entry on vdev %i after it was supposedly removed\n",
++					    sta->addr, peer, i, arvif->vdev_id);
+ 				peer->sta = NULL;
++
++				/* Clean up the peer object as well since we
++				 * must have failed to do this above.
++				 */
++				list_del(&peer->list);
++				ar->peer_map[i] = NULL;
++				kfree(peer);
++				ar->num_peers--;
+ 			}
+ 		}
+ 		spin_unlock_bh(&ar->data_lock);
 -- 
 2.4.3
 
