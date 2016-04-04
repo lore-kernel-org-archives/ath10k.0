@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1an5u3-0006EM-27
- for ath10k@lists.infradead.org; Mon, 04 Apr 2016 14:55:00 +0000
+ id 1an5uu-0008G9-Q8
+ for ath10k@lists.infradead.org; Mon, 04 Apr 2016 14:55:53 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v1 1/3] ath10k: Enable debugfs provision to enable Peer
- Stats feature
-Date: Mon, 4 Apr 2016 14:54:26 +0000
-Message-ID: <878u0te867.fsf@kamboji.qca.qualcomm.com>
-References: <1458132214-4896-1-git-send-email-mohammed@qca.qualcomm.com>
-In-Reply-To: <1458132214-4896-1-git-send-email-mohammed@qca.qualcomm.com>
- (Mohammed Shafi Shajakhan's message of "Wed, 16 Mar 2016 18:13:32	+0530")
+Subject: Re: [PATCH 0/9] ath10k: improve throughput performance
+Date: Mon, 4 Apr 2016 14:55:16 +0000
+Message-ID: <874mbhe84s.fsf@kamboji.qca.qualcomm.com>
+References: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1458647539-17213-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Tue, 22 Mar 2016 17:22:10 +0530")
 Content-Language: en-US
-Content-ID: <6ECF4323DDA7E44B8A0A3BB88761C991@qualcomm.com>
+Content-ID: <75E4BB45AED26C4FB17C33846273DA10@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,25 +25,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> Hi All,
 >
-> Provide a debugfs entry to enable/ disable Peer Stats feature.
-> Peer Stats feature is for developers/users who are more interested
-> in studying in Rx/Tx stats with multiple clients connected, hence
-> disable this by default. Enabling this feature by default results
-> in unneccessary processing of Peer Stats event for every 500ms
-> and updating peer_stats list (allocating memory) and cleaning it up
-> ifexceeds the higher limit and this can be an unnecessary overhead
-> during long run stress testing.
+> In order to reuse HTT Rx descriptor (copy engine 5), HTT response
+> processing should be decoupled from txrx data processing. This change also
+> helps to reduce rx ring lock contention. As txrx tasklet's work load is
+> reduced, rx replenish task can be combined with txrx_task. Refilling
+> complete rx ring from txrx tasket is affecting UDP UL traffic in AP135
+> platform. Hence existing refill threshold is updated to meet peak
+> throughput in both AP135 and AP148 platforms. Instead of tasklet existing
+> refill timer is used to reschedule replenish work at an interval of 5 ms
+> incase of more deficit.
 >
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> This series are experimented in both AP148(QCA99x0) & IPQ4019 platforms.
+> Below are consolidated report alongwith CPU usage. Thanks Tamizh for helping 
+> to verify the changes.
+>
+>         IPQ4019(TOT)  IPQ4019(+rework)   AP148(TOT)     AP148(+rework)
+>         ===========   ===============    ==========     =============
+> TCP DL   639 (40%)       646 (42%)       1134 (71%)      1134 (71%)
+> TCP UL   661 (31%)       663 (30%)       1244 (71%)      1270 (72%)
+> UDP DL   670 (50%)       682 (49%)       1240 (73%)      1244 (75%)
+>
+>         AP135 (OpenWrt TOT)     AP135 (+changes)
+>         ==================      ===============
+>
+> TCP DL          603             620
+> TCP UL          430             428
+> UDP DL          758             803
+> UDP UL          420             450
+>
+> -Rajkumar
+>
+> Rajkumar Manoharan (9):
+>   ath10k: speedup htt rx descriptor processing for tx completion
+>   ath10k: copy tx fetch indication message
+>   ath10k: remove unused fw_desc processing
+>   ath10k: cleanup amsdu processing for rx indication
+>   ath10k: speedup htt rx descriptor processing for rx_ind
+>   ath10k: register ath10k_htt_htc_t2h_msg_handler
+>   ath10k: cleanup copy engine receive next completion
+>   ath10k: reuse copy engine 5 (htt rx) descriptors
+>   ath10k: combine txrx and replenish task
 
-All three applied, thanks.
+Applied, thanks.
 
 -- 
 Kalle Valo
