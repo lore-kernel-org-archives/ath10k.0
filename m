@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22b.google.com ([2a00:1450:4010:c07::22b])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1an4TY-0007H4-96
- for ath10k@lists.infradead.org; Mon, 04 Apr 2016 13:23:29 +0000
-Received: by mail-lf0-x22b.google.com with SMTP id g184so96084489lfb.3
- for <ath10k@lists.infradead.org>; Mon, 04 Apr 2016 06:23:07 -0700 (PDT)
+ id 1an5u3-0006EM-27
+ for ath10k@lists.infradead.org; Mon, 04 Apr 2016 14:55:00 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v1 1/3] ath10k: Enable debugfs provision to enable Peer
+ Stats feature
+Date: Mon, 4 Apr 2016 14:54:26 +0000
+Message-ID: <878u0te867.fsf@kamboji.qca.qualcomm.com>
+References: <1458132214-4896-1-git-send-email-mohammed@qca.qualcomm.com>
+In-Reply-To: <1458132214-4896-1-git-send-email-mohammed@qca.qualcomm.com>
+ (Mohammed Shafi Shajakhan's message of "Wed, 16 Mar 2016 18:13:32	+0530")
+Content-Language: en-US
+Content-ID: <6ECF4323DDA7E44B8A0A3BB88761C991@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <570263D4.4010501@student.tuwien.ac.at>
-References: <570263D4.4010501@student.tuwien.ac.at>
-Date: Mon, 4 Apr 2016 15:23:06 +0200
-Message-ID: <CA+BoTQmgyHSHfo5=Vmcm+wiFv3_YiE2oLMuOfUGAgZQgtkzYsA@mail.gmail.com>
-Subject: Re: Troubles with ath10k and QCA9882 Chipset
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,52 +22,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Stefan Feirer <e0926020@student.tuwien.ac.at>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gNCBBcHJpbCAyMDE2IGF0IDE0OjUzLCBTdGVmYW4gRmVpcmVyIDxlMDkyNjAyMEBzdHVkZW50
-LnR1d2llbi5hYy5hdD4gd3JvdGU6Cj4gSGVsbG8sCj4KPiBJJ20gdHJ5aW5nIHRvIHNldHVwIHRo
-ZSBQQ0llIFdpZmkgQ2FyZCBDb21wZXggV0xFNjAwVlggd2l0aCBRQ0E5ODgyIENoaXBzZXQKPiBh
-bmQgYXRoMTBrX3BjaSBrZXJuZWwgbW9kdWwgb24gYW4gZXZhbHVhdGlvbiBib2FyZCAoZXZhbHVh
-dGlvbiBib2FyZAo+IHZhci1zb20tbXg2IGZyb20gdmFyaXNjaXRlKS4KPiBUaGVyZWZvcmUgSSBj
-b21waWxlZCBhIGxpbnV4IGVtYmVkZGVkIHZlcnNpb24gd2l0aCB5b2N0byBhbmQga2VybmVsIHZl
-cnNpb24KPiAzLjE0LiBUaGUgYXRoMTBrIG1vZHVsZXMgYXJlIGJhY2twb3J0ZWQuCj4gV2hlbiBJ
-IGxvYWQgdGhlIGtlcm5lbCBtb2R1bCBhdGgxMGtfcGNpIEkgZ2V0IHRoZSBmb2xsb3dpbmcgZG1l
-c2cgb3V0cHV0OgpbLi4uXQo+IFRoZSBvdXRwdXQgb2YgZG1lc2cgd2l0aCBhdGgxMGtfcGNpIGly
-cV9tb2RlPTEgYW5kIGF0aDEwa19jb3JlCj4gZGVidWdfbWFzaz0weDAwMDAwNDMyIHNob3dzOgo+
-ClsuLi5dCj4gWyAxNjI2Ljk5MTM2Nl0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGJtaSBkb25l
-Cj4gWyAxNjI2Ljk5MTM5MF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGh0dCB0eCBtYXggbnVt
-IHBlbmRpbmcgdHggMTQyNAo+IFsgMTYyNi45OTE0MjBdIGF0aDEwa19wY2kgMDAwMDowMTowMC4w
-OiBodHQgcnggcmluZyBzaXplIDIwNDggZmlsbF9sZXZlbAo+IDEwMjMKPiBbIDE2MjYuOTkxNDI4
-XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogYm9vdCBoaWYgc3RhcnQKPiBbIDE2MjcuOTkzNzgy
-XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmFpbGVkIHRvIHJlY2VpdmUgY29udHJvbCByZXNw
-b25zZQo+IGNvbXBsZXRpb24sIHBvbGxpbmcuLgo+IFsgMTYyOC4wMDExMzZdIGF0aDEwa19wY2kg
-MDAwMDowMTowMC4wOiBib290IGh0YyBzZXJ2aWNlICdDb250cm9sJyB1bCBwaXBlIDAKPiBkbCBw
-aXBlIDEgZWlkIDAgcmVhZHkKPiBbIDE2MjguMDAxMTU3XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAu
-MDogYm9vdCBodGMgZXAgMCB1bCBwb2xsZWQgMCBkbCBwb2xsZWQKPiAwCj4gWyAxNjI4LjAwMTE3
-NV0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGJvb3QgaHRjIHNlcnZpY2UgJ0NvbnRyb2wnIGVp
-ZCAwIFRYCj4gZmxvdyBjb250cm9sIGRpc2FibGVkCj4gWyAxNjI4LjAwMTE5NF0gYXRoMTBrX3Bj
-aSAwMDAwOjAxOjAwLjA6IGJvb3QgaHRjIHNlcnZpY2UgSFRUIERhdGEgZG9lcyBub3QKPiBhbGxv
-Y2F0ZSB0YXJnZXQgY3JlZGl0cwo+IFsgMTYyOC45OTM4MDhdIGF0aDEwa19wY2kgMDAwMDowMTow
-MC4wOiBTZXJ2aWNlIGNvbm5lY3QgdGltZW91dDogMAo+IFsgMTYyOC45OTg0NTNdIGF0aDEwa19w
-Y2kgMDAwMDowMTowMC4wOiBmYWlsZWQgdG8gY29ubmVjdCBodHQgKC0xMTApCgpJbnRlcmVzdGlu
-Zy4gVGhlIHN1Y2Nlc3MgKGh0YyBjb250cm9sIGVuZHBvaW50IDAgYmVpbmcgcmVhZHkpIGFmdGVy
-CmZhaWx1cmUgdG8gcmVjZWl2ZSBhIGNvbXBsZXRpb24uLiBBcHBhcmVudGx5IGludGVycnVwdHMg
-YXJlbid0CmRlbGl2ZXJlZCBwcm9wZXJseSBhcyBhIGxhdGVyIGF0dGVtcHQgdG8gd2FpdCBmb3Ig
-YSBjb21wbGV0aW9uIHRpbWVzCm91dCBhZ2Fpbi4KCk9yaWdpbmFsbHkgdGhlIHBvbGxpbmcgd2Fz
-IGFkZGVkIHRvIHdvcmthcm91bmQgd2VpcmQgdmlydHVhbCBtYWNoaW5lCnBjaS1wYXNzdGhyb3Vn
-aCBwcm9ibGVtIEkgd2FzIHNlZWluZyAocHJvYmFibHkgc29tZSByYWNlIG91dHNpZGUgb2YKYXRo
-MTBrKSB0aGF0IGhhcHBlbmVkIG9ubHkgZm9yIHRoZSBpbml0aWFsIGRldmljZSBraWNrLW9mZi4K
-CkFzIGZvciB0aGUgYWN0dWFsIHJlYXNvbiB3aHkgaW50ZXJydXB0cyBhcmVuJ3QgZGVsaXZlcmVk
-IG9uIHlvdXIKc3lzdGVtIC0gbm8gaWRlYS4gTWF5YmUgdGhlIHBsYXRmb3JtIGlzbid0IGJyb3Vn
-aHQgdXAgcHJvcGVybHkgKGkuZS4Ka2VybmVsL2NvcmUgaXNzdWUgZG9lc24ndCBwcm9wZXJseSB1
-bm1hc2sgaW50ZXJydXB0cz8pIG9yIGF0aDEwayBsYWNrcwpzb21lIHNtYWxsIGJpdCBpbiB0aGUg
-cGNpIHByb2JpbmcgdGhhdCBpc24ndCBuZWNlc3Nhcnkgb24gb3RoZXIKcGxhdGZvcm1zIHRvIHdv
-cmsgaGVuY2Ugd2FzIG1pc3NlZC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
-bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-YXRoMTBrCg==
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
+
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+>
+> Provide a debugfs entry to enable/ disable Peer Stats feature.
+> Peer Stats feature is for developers/users who are more interested
+> in studying in Rx/Tx stats with multiple clients connected, hence
+> disable this by default. Enabling this feature by default results
+> in unneccessary processing of Peer Stats event for every 500ms
+> and updating peer_stats list (allocating memory) and cleaning it up
+> ifexceeds the higher limit and this can be an unnecessary overhead
+> during long run stress testing.
+>
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+
+All three applied, thanks.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
