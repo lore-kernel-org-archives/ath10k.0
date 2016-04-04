@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1an5x6-0001os-IT
- for ath10k@lists.infradead.org; Mon, 04 Apr 2016 14:58:05 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: parse Rx MAC timestamp in mgmt frame for FW
- 10.4
-Date: Mon, 4 Apr 2016 14:57:40 +0000
-Message-ID: <87zit9ctgb.fsf@kamboji.qca.qualcomm.com>
-References: <20caae0068a19c546f87ef4a25e3651af92c02ab.1458686620.git.poh@qca.qualcomm.com>
-In-Reply-To: <20caae0068a19c546f87ef4a25e3651af92c02ab.1458686620.git.poh@qca.qualcomm.com>
- (Peter Oh's message of "Tue, 22 Mar 2016 15:44:53 -0700")
-Content-Language: en-US
-Content-ID: <7F5E96288889A7438D52D1643B8F0B5A@qualcomm.com>
+ id 1anDnV-0003i6-Ol
+ for ath10k@lists.infradead.org; Mon, 04 Apr 2016 23:20:43 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH 2/3] ath10k: update 10.4 WMI vdev parameters
+Date: Mon, 4 Apr 2016 16:19:15 -0700
+Message-ID: <1459811956-26186-3-git-send-email-poh@qca.qualcomm.com>
+In-Reply-To: <1459811956-26186-1-git-send-email-poh@qca.qualcomm.com>
+References: <1459811956-26186-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,24 +22,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Oh, Peter" <poh@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+Update 10.4 WMI vdev param to sync to current 10.4 firmware
+as of 2/23/2016.
 
-> Check and parse Rx MAC timestamp when firmware sets its flag
-> to status variable.
-> 10.4 firmware adds it in Rx beacon frame only at this moment.
-> Drivers and mac80211 may utilize it to detect such clockdrift
-> or beacon collision and use the result for beacon collision
-> avoidance.
->
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Applied, thanks.
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 8225d90..e10df2e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -4957,6 +4957,12 @@ enum wmi_10_4_vdev_param {
+ 	WMI_10_4_VDEV_PARAM_MERU_VC,
+ 	WMI_10_4_VDEV_PARAM_RX_DECAP_TYPE,
+ 	WMI_10_4_VDEV_PARAM_BW_NSS_RATEMASK,
++	WMI_10_4_VDEV_PARAM_SENSOR_AP,
++	WMI_10_4_VDEV_PARAM_BEACON_RATE,
++	WMI_10_4_VDEV_PARAM_DTIM_ENABLE_CTS,
++	WMI_10_4_VDEV_PARAM_STA_KICKOUT,
++	WMI_10_4_VDEV_PARAM_CAPABILITIES,
++	WMI_10_4_VDEV_PARAM_TSF_INCREMENT,
+ };
+ 
+ #define WMI_VDEV_PARAM_TXBF_SU_TX_BFEE BIT(0)
 -- 
-Kalle Valo
+1.9.1
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
