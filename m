@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
+Received: from mail2.student.tuwien.ac.at ([193.170.74.22])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1an2tJ-0008LI-H0
- for ath10k@lists.infradead.org; Mon, 04 Apr 2016 11:42:05 +0000
-Received: by mail-lb0-x230.google.com with SMTP id vo2so157254474lbb.1
- for <ath10k@lists.infradead.org>; Mon, 04 Apr 2016 04:41:36 -0700 (PDT)
+ id 1an43e-0002Cp-Um
+ for ath10k@lists.infradead.org; Mon, 04 Apr 2016 12:56:46 +0000
+Received: from [192.168.0.203] ([212.69.186.40]) (authenticated bits=0)
+ by mail2.student.tuwien.ac.at (8.13.8/8.13.8) with ESMTP id u34CreDQ004627
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-SHA bits=128 verify=NO)
+ for <ath10k@lists.infradead.org>; Mon, 4 Apr 2016 14:53:41 +0200
+From: Stefan Feirer <e0926020@student.tuwien.ac.at>
+Subject: Troubles with ath10k and QCA9882 Chipset
+Message-ID: <570263D4.4010501@student.tuwien.ac.at>
+Date: Mon, 4 Apr 2016 14:53:40 +0200
 MIME-Version: 1.0
-In-Reply-To: <etPan.57024f71.296df9e.72f@TNS3477L.keeler.lan>
-References: <etPan.57024f71.296df9e.72f@TNS3477L.keeler.lan>
-Date: Mon, 4 Apr 2016 13:41:33 +0200
-Message-ID: <CA+BoTQkD2Pv9X-wGrRALjBcO2X=uQ2W1=N9XbULF=seuzfOJaA@mail.gmail.com>
-Subject: Re: Trouble with multiple cards
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +20,239 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Matthew Keeler <mjkeeler7@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-T24gNCBBcHJpbCAyMDE2IGF0IDEzOjI2LCBNYXR0aGV3IEtlZWxlciA8bWprZWVsZXI3QGdtYWls
-LmNvbT4gd3JvdGU6Cj4KPiBJIGhhdmUgYmVlbiBydW5uaW5nIHR3byBRQ0E5ODgwIGJhc2VkIGNh
-cmRzIGZvciBhIGNvdXBsZSBvZiBtb250aHMgbm93LiBSZWNlbnRseSBJIG5lZWRlZCB0byB1cGRh
-dGUgc29tZSBwYWNrYWdlcyBvbiB0aGUgcm91dGVyIGFuZCByZWJvb3QgYW5kIGV2ZXIgc2luY2Ug
-SSBoYXZlIG5vdCBiZWVuIGFibGUgdG8gZ2V0IGJvdGggd29ya2luZyBhZ2Fpbi4gSSBoYXZlIHRy
-aWVkIGRvd25ncmFkaW5nIHRoZSBwYWNrYWdlcyAoYWx0aG91Z2ggbm9uZSB3ZXJlIHJlbGF0ZWQg
-dG8gdGhlIGtlcm5lbC9kcml2ZXIgb3IgdGhlIGZpcm13YXJlIHRvIG5vIGF2YWlsLgoKQ2FuIHlv
-dSBsaXN0IHdoYXQgcGFja2FnZXMgd2VyZSB1cGRhdGVkLCBwbGVhc2U/CgoKPiBDYXJkczogQWly
-ZXRvcyBBRVgtUUNBOTg4LU5YCj4gU3lzdGVtOiBBcmNoIExpbnV4IHdpdGgga2VybmVsIDQuNC41
-Cj4gRmlybXdhcmVzIHRyaWVkOiBFdmVyeXRoaW5nIGZyb20gMTAuMi40LjcwLjktMiB0aHJvdWdo
-IDEwLjIuNC43MC4zMS0yCj4KPiBUaGUgc3ltcHRvbXMgYXJlIHRoYXQgdXBvbiBib290IG1vc3Qg
-b2YgdGhlIHRpbWUgb25lIG9mIHRoZSB0d28gY2FyZHMgZG9lc27igJl0IHRoaW5rIGl0IGNhbi9z
-aG91bGQgdHJhbnNtaXQgb24gYW55IDVHSHogZnJlcXVlbmN5IChJIGhhdmVu4oCZdCBzZWVuIHRo
-ZSBpc3N1ZSB3aXRoIDIuNEdIeiBmcmVxdWVuY3kgYmFuZCkuIFdpdGggZG1lc2cgSSBjYW4gc2Vl
-IHR3byBzZXRzIG9mIGxvZ3MgYWJvdXQgdGhlIEVFUFJPTSByZWdkb21haW4gYmVpbmcgMHgwIGFu
-ZCBpdCBldmVudHVhbGx5IHNldHRpbmcgbXkgcmVndWxhdG9yeSBkb21haW4gdG8gMHgzYSBVUy4g
-aXcgcmVnIGdldCBhbHNvIGNvbmZpcm1zIHRoYXQgYm90aCBjYXJkcyBoYXZlIHRoZSByaWdodCBV
-UyByZWd1bGF0b3J5IGRvbWFpbi4gT25lIHRoaW5nIHdoaWNoIGRvZXMgc29tZXRpbWVzIGNsZWFy
-IGl0IHVwIGlzIHRvICJybW1vZCBhdGgxMGtfcGNpIGF0aDEwa19jb3JlICYmIG1vZHByb2JlIGF0
-aDEwa19wY2nigJ0uIEl0IGRvZXNu4oCZdCB3b3JrIGV2ZXJ5IHRpbWUgdGhvdWdoLgoKU21lbGxz
-IGxpa2UgcmVndWxhdG9yeSBwcm9ibGVtLCBub3QgYXRoMTBrIHBlciBzZS4KCgo+IFNvIDEpIFNo
-b3VsZCAyIGF0aDEwayBjYXJkcyBjb2V4aXN0IHByb3Blcmx5IGFuZCAyKSBIYXMgYW55b25lIHNl
-ZW4gc2ltaWxhciBiZWhhdmlvciBhbmQga25vdyBob3cgdG8gZml4IGl0LgoKVGhpcyBzaG91bGQg
-d29yayBmaW5lLgoKQ2FuIHlvdSBwb3N0IGtlcm5lbCBsb2dzIHdoZW4gaXQgd29ya3MvYnJlYWtz
-PyBEbyB5b3UgaGF2ZSBDUkRBCmluc3RhbGxlZC91cC10by1kYXRlPyBDYW4geW91IHRyeSBjaGVj
-a2luZyBvdXRwdXQgb2YgYGl3IHJlZyBnZXRgIHdoZW4KaXQgd29ya3MvYnJlYWtzPwoKCk1pY2hh
-xYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
-ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hello,
+
+I'm trying to setup the PCIe Wifi Card Compex WLE600VX with QCA9882 Chipset and ath10k_pci kernel modul on an evaluation board (evaluation board var-som-mx6 from variscite).
+Therefore I compiled a linux embedded version with yocto and kernel version 3.14. The ath10k modules are backported.
+When I load the kernel modul ath10k_pci I get the following dmesg output:
+
+[ 2901.856446] Loading modules backported from Linux version R8.6_SP1-0-g4d167bf
+[ 2901.862303] Backport generated by backports.git R8.6_SP1-0-g4677dc3
+[ 2901.876752] cfg80211: Calling CRDA to update world regulatory domain
+[ 2901.893545] cfg80211: World regulatory domain updated:
+[ 2901.897798] cfg80211:  DFS Master region: unset
+[ 2901.900862] cfg80211:   (start_freq - end_freq @ bandwidth), (max_antenna_gain, max_eirp), (dfs_cac_time)
+[ 2901.909748] cfg80211:   (2402000 KHz - 2472000 KHz @ 40000 KHz), (N/A, 2000 mBm), (N/A)
+[ 2901.914553] ath10k_pci 0000:01:00.0: pci irq msi interrupts 1 irq_mode 0 reset_mode 0
+[ 2901.923260] cfg80211:   (2457000 KHz - 2482000 KHz @ 40000 KHz), (N/A, 2000 mBm), (N/A)
+[ 2901.930121] cfg80211:   (2474000 KHz - 2494000 KHz @ 20000 KHz), (N/A, 2000 mBm), (N/A)
+[ 2901.937027] cfg80211:   (5170000 KHz - 5250000 KHz @ 80000 KHz, 160000 KHz AUTO), (N/A, 2000 mBm), (N/A)
+[ 2901.945387] cfg80211:   (5250000 KHz - 5330000 KHz @ 80000 KHz, 160000 KHz AUTO), (N/A, 2000 mBm), (0 s)
+[ 2901.953568] cfg80211:   (5490000 KHz - 5730000 KHz @ 160000 KHz), (N/A, 2000 mBm), (0 s)
+[ 2901.960388] cfg80211:   (5735000 KHz - 5835000 KHz @ 80000 KHz), (N/A, 2000 mBm), (N/A)
+[ 2901.967108] cfg80211:   (57240000 KHz - 63720000 KHz @ 2160000 KHz), (N/A, 0 mBm), (N/A)
+[ 2902.086707] ath10k_pci 0000:01:00.0: Direct firmware load failed with error -2
+[ 2902.092652] ath10k_pci 0000:01:00.0: Falling back to user helper
+[ 2904.263750] ath10k_pci 0000:01:00.0: failed to receive control response completion, polling..
+[ 2905.263823] ath10k_pci 0000:01:00.0: Service connect timeout: 0
+[ 2905.268467] ath10k_pci 0000:01:00.0: failed to connect htt (-110)
+[ 2905.351035] ath10k_pci 0000:01:00.0: could not init core (-110)
+[ 2905.356001] ath10k_pci 0000:01:00.0: could not probe fw (-110)
+
+#lspci
+00:00.0 PCI bridge: Synopsys, Inc. Device abcd (rev 01)
+01:00.0 Network controller: Qualcomm Atheros QCA988x 802.11ac Wireless Network Adapter
+
+I tried to load different firmware versions (firmware-2.bin, firmware-3.bin, firmware-4.bin) but no one works.
+I suppose the firmware isn't the problem but pcie.
+
+The output of dmesg with ath10k_pci irq_mode=1 and ath10k_core debug_mask=0x00000432 shows:
+
+[ 1621.913337] Loading modules backported from Linux version R8.6_SP1-0-g4d167bf
+[ 1621.919999] Backport generated by backports.git R8.6_SP1-0-g4677dc3
+[ 1621.935447] cfg80211: Calling CRDA to update world regulatory domain
+[ 1621.950629] cfg80211: World regulatory domain updated:
+[ 1621.954558] cfg80211:  DFS Master region: unset
+[ 1621.957625] cfg80211:   (start_freq - end_freq @ bandwidth), (max_antenna_gain, max_eirp), (dfs_cac_time)
+[ 1621.966228] cfg80211:   (2402000 KHz - 2472000 KHz @ 40000 KHz), (N/A, 2000 mBm), (N/A)
+[ 1621.972938] cfg80211:   (2457000 KHz - 2482000 KHz @ 40000 KHz), (N/A, 2000 mBm), (N/A)
+[ 1621.979714] cfg80211:   (2474000 KHz - 2494000 KHz @ 20000 KHz), (N/A, 2000 mBm), (N/A)
+[ 1621.986439] cfg80211:   (5170000 KHz - 5250000 KHz @ 80000 KHz, 160000 KHz AUTO), (N/A, 2000 mBm), (N/A)
+[ 1621.994641] cfg80211:   (5250000 KHz - 5330000 KHz @ 80000 KHz, 160000 KHz AUTO), (N/A, 2000 mBm), (0 s)
+[ 1622.002822] cfg80211:   (5490000 KHz - 5730000 KHz @ 160000 KHz), (N/A, 2000 mBm), (0 s)
+[ 1622.009637] cfg80211:   (5735000 KHz - 5835000 KHz @ 80000 KHz), (N/A, 2000 mBm), (N/A)
+[ 1622.016358] cfg80211:   (57240000 KHz - 63720000 KHz @ 2160000 KHz), (N/A, 0 mBm), (N/A)
+[ 1625.581434] ath10k_pci 0000:01:00.0: boot pci_mem 0xc2400000
+[ 1625.593005] ath10k_pci 0000:01:00.0: limiting irq mode to: 1
+[ 1625.597836] ath10k_pci 0000:01:00.0: pci irq legacy interrupts 0 irq_mode 1 reset_mode 0
+[ 1625.605055] ath10k_pci 0000:01:00.0: boot 988x chip reset
+[ 1625.605065] ath10k_pci 0000:01:00.0: boot warm reset
+[ 1625.643780] ath10k_pci 0000:01:00.0: boot init ce src ring id 0 entries 16 base_addr ac0fb000
+[ 1625.643809] ath10k_pci 0000:01:00.0: boot ce dest ring id 1 entries 512 base_addr ac0fc000
+[ 1625.643834] ath10k_pci 0000:01:00.0: boot ce dest ring id 2 entries 32 base_addr ac0fe000
+[ 1625.643861] ath10k_pci 0000:01:00.0: boot init ce src ring id 3 entries 32 base_addr ac0ff000
+[ 1625.643905] ath10k_pci 0000:01:00.0: boot init ce src ring id 4 entries 4096 base_addr ac1e0000
+[ 1625.643932] ath10k_pci 0000:01:00.0: boot init ce src ring id 7 entries 2 base_addr ac1bc000
+[ 1625.643954] ath10k_pci 0000:01:00.0: boot ce dest ring id 7 entries 2 base_addr ac1bd000
+[ 1625.643962] ath10k_pci 0000:01:00.0: boot waiting target to initialise
+[ 1625.643972] ath10k_pci 0000:01:00.0: boot target indicator 0
+[ 1625.653988] ath10k_pci 0000:01:00.0: boot target indicator 0
+[ 1625.664004] ath10k_pci 0000:01:00.0: boot target indicator 2
+[ 1625.664020] ath10k_pci 0000:01:00.0: boot target initialised
+[ 1625.683792] ath10k_pci 0000:01:00.0: boot init ce src ring id 0 entries 16 base_addr ac0fb000
+[ 1625.683819] ath10k_pci 0000:01:00.0: boot ce dest ring id 1 entries 512 base_addr ac0fc000
+[ 1625.683841] ath10k_pci 0000:01:00.0: boot ce dest ring id 2 entries 32 base_addr ac0fe000
+[ 1625.683865] ath10k_pci 0000:01:00.0: boot init ce src ring id 3 entries 32 base_addr ac0ff000
+[ 1625.683903] ath10k_pci 0000:01:00.0: boot init ce src ring id 4 entries 4096 base_addr ac1e0000
+[ 1625.683928] ath10k_pci 0000:01:00.0: boot init ce src ring id 7 entries 2 base_addr ac1bc000
+[ 1625.683948] ath10k_pci 0000:01:00.0: boot ce dest ring id 7 entries 2 base_addr ac1bd000
+[ 1625.683955] ath10k_pci 0000:01:00.0: boot waiting target to initialise
+[ 1625.683963] ath10k_pci 0000:01:00.0: boot target indicator 0
+[ 1625.694521] ath10k_pci 0000:01:00.0: boot target indicator 0
+[ 1625.704537] ath10k_pci 0000:01:00.0: boot target indicator 2
+[ 1625.704550] ath10k_pci 0000:01:00.0: boot target initialised
+[ 1625.704556] ath10k_pci 0000:01:00.0: boot warm reset complete
+[ 1625.704582] ath10k_pci 0000:01:00.0: boot init ce src ring id 0 entries 16 base_addr ac0fb000
+[ 1625.704607] ath10k_pci 0000:01:00.0: boot ce dest ring id 1 entries 512 base_addr ac0fc000
+[ 1625.704629] ath10k_pci 0000:01:00.0: boot ce dest ring id 2 entries 32 base_addr ac0fe000
+[ 1625.704653] ath10k_pci 0000:01:00.0: boot init ce src ring id 3 entries 32 base_addr ac0ff000
+[ 1625.704692] ath10k_pci 0000:01:00.0: boot init ce src ring id 4 entries 4096 base_addr ac1e0000
+[ 1625.704717] ath10k_pci 0000:01:00.0: boot init ce src ring id 7 entries 2 base_addr ac1bc000
+[ 1625.704737] ath10k_pci 0000:01:00.0: boot ce dest ring id 7 entries 2 base_addr ac1bd000
+[ 1625.705759] ath10k_pci 0000:01:00.0: boot chip reset complete (warm)
+[ 1625.705782] ath10k_pci 0000:01:00.0: boot hif power up
+[ 1625.705791] ath10k_pci 0000:01:00.0: boot 988x chip reset
+[ 1625.705797] ath10k_pci 0000:01:00.0: boot warm reset
+[ 1625.743774] ath10k_pci 0000:01:00.0: boot init ce src ring id 0 entries 16 base_addr ac0fb000
+[ 1625.743800] ath10k_pci 0000:01:00.0: boot ce dest ring id 1 entries 512 base_addr ac0fc000
+[ 1625.743821] ath10k_pci 0000:01:00.0: boot ce dest ring id 2 entries 32 base_addr ac0fe000
+[ 1625.743846] ath10k_pci 0000:01:00.0: boot init ce src ring id 3 entries 32 base_addr ac0ff000
+[ 1625.743886] ath10k_pci 0000:01:00.0: boot init ce src ring id 4 entries 4096 base_addr ac1e0000
+[ 1625.743910] ath10k_pci 0000:01:00.0: boot init ce src ring id 7 entries 2 base_addr ac1bc000
+[ 1625.743931] ath10k_pci 0000:01:00.0: boot ce dest ring id 7 entries 2 base_addr ac1bd000
+[ 1625.743938] ath10k_pci 0000:01:00.0: boot waiting target to initialise
+[ 1625.743947] ath10k_pci 0000:01:00.0: boot target indicator 0
+[ 1625.754548] ath10k_pci 0000:01:00.0: boot target indicator 0
+[ 1625.764564] ath10k_pci 0000:01:00.0: boot target indicator 2
+[ 1625.764579] ath10k_pci 0000:01:00.0: boot target initialised
+[ 1625.783768] ath10k_pci 0000:01:00.0: boot init ce src ring id 0 entries 16 base_addr ac0fb000
+[ 1625.783794] ath10k_pci 0000:01:00.0: boot ce dest ring id 1 entries 512 base_addr ac0fc000
+[ 1625.783817] ath10k_pci 0000:01:00.0: boot ce dest ring id 2 entries 32 base_addr ac0fe000
+[ 1625.783840] ath10k_pci 0000:01:00.0: boot init ce src ring id 3 entries 32 base_addr ac0ff000
+[ 1625.783879] ath10k_pci 0000:01:00.0: boot init ce src ring id 4 entries 4096 base_addr ac1e0000
+[ 1625.783902] ath10k_pci 0000:01:00.0: boot init ce src ring id 7 entries 2 base_addr ac1bc000
+[ 1625.783923] ath10k_pci 0000:01:00.0: boot ce dest ring id 7 entries 2 base_addr ac1bd000
+[ 1625.783929] ath10k_pci 0000:01:00.0: boot waiting target to initialise
+[ 1625.783937] ath10k_pci 0000:01:00.0: boot target indicator 0
+[ 1625.793951] ath10k_pci 0000:01:00.0: boot target indicator 0
+[ 1625.803966] ath10k_pci 0000:01:00.0: boot target indicator 2
+[ 1625.803979] ath10k_pci 0000:01:00.0: boot target initialised
+[ 1625.803985] ath10k_pci 0000:01:00.0: boot warm reset complete
+[ 1625.804010] ath10k_pci 0000:01:00.0: boot init ce src ring id 0 entries 16 base_addr ac0fb000
+[ 1625.804035] ath10k_pci 0000:01:00.0: boot ce dest ring id 1 entries 512 base_addr ac0fc000
+[ 1625.804056] ath10k_pci 0000:01:00.0: boot ce dest ring id 2 entries 32 base_addr ac0fe000
+[ 1625.804079] ath10k_pci 0000:01:00.0: boot init ce src ring id 3 entries 32 base_addr ac0ff000
+[ 1625.804118] ath10k_pci 0000:01:00.0: boot init ce src ring id 4 entries 4096 base_addr ac1e0000
+[ 1625.804141] ath10k_pci 0000:01:00.0: boot init ce src ring id 7 entries 2 base_addr ac1bc000
+[ 1625.804162] ath10k_pci 0000:01:00.0: boot ce dest ring id 7 entries 2 base_addr ac1bd000
+[ 1625.805184] ath10k_pci 0000:01:00.0: boot chip reset complete (warm)
+[ 1625.805209] ath10k_pci 0000:01:00.0: boot init ce src ring id 0 entries 16 base_addr ac0fb000
+[ 1625.805232] ath10k_pci 0000:01:00.0: boot ce dest ring id 1 entries 512 base_addr ac0fc000
+[ 1625.805252] ath10k_pci 0000:01:00.0: boot ce dest ring id 2 entries 32 base_addr ac0fe000
+[ 1625.805278] ath10k_pci 0000:01:00.0: boot init ce src ring id 3 entries 32 base_addr ac0ff000
+[ 1625.805316] ath10k_pci 0000:01:00.0: boot init ce src ring id 4 entries 4096 base_addr ac1e0000
+[ 1625.805339] ath10k_pci 0000:01:00.0: boot init ce src ring id 7 entries 2 base_addr ac1bc000
+[ 1625.805360] ath10k_pci 0000:01:00.0: boot ce dest ring id 7 entries 2 base_addr ac1bd000
+[ 1625.816494] ath10k_pci 0000:01:00.0: bmi get target info
+[ 1625.816677] ath10k_pci 0000:01:00.0: Hardware name qca988x hw2.0 version 0x4100016c
+[ 1625.816714] ath10k_pci 0000:01:00.0: Direct firmware load failed with error -2
+[ 1625.822638] ath10k_pci 0000:01:00.0: Falling back to user helper
+[ 1625.828579] ath10k_pci 0000:01:00.0: trying fw api 4
+[ 1625.829338] ath10k_pci 0000:01:00.0: found fw version 10.2.4.48
+[ 1625.829350] ath10k_pci 0000:01:00.0: found fw timestamp 1425640336
+[ 1625.829358] ath10k_pci 0000:01:00.0: found otp image ie (7205 B)
+[ 1625.829366] ath10k_pci 0000:01:00.0: found fw image ie (234918 B)
+[ 1625.829373] ath10k_pci 0000:01:00.0: found firmware features ie (1 B)
+[ 1625.829379] ath10k_pci 0000:01:00.0: Enabling feature bit: 2
+[ 1625.829386] ath10k_pci 0000:01:00.0: Enabling feature bit: 3
+[ 1625.829393] ath10k_pci 0000:01:00.0: features
+[ 1625.829403] ath10k_pci 0000:01:00.0: 00000000: 0c 00 00 00                                      ....
+[ 1625.829411] ath10k_pci 0000:01:00.0: found fw ie wmi op version 5
+[ 1625.829480] ath10k_pci 0000:01:00.0: using fw api 4
+[ 1625.829489] ath10k_pci 0000:01:00.0: bmi start
+[ 1625.829497] ath10k_pci 0000:01:00.0: bmi write address 0x400800 length 4
+[ 1625.829525] ath10k_pci 0000:01:00.0: bmi read address 0x400810 length 4
+[ 1625.829613] ath10k_pci 0000:01:00.0: bmi write address 0x400810 length 4
+[ 1625.829635] ath10k_pci 0000:01:00.0: bmi write address 0x400844 length 4
+[ 1625.829683] ath10k_pci 0000:01:00.0: bmi write address 0x400904 length 4
+[ 1625.829728] ath10k_pci 0000:01:00.0: boot did not find a calibration file, try DT next: -2
+[ 1625.829737] ath10k_pci 0000:01:00.0: boot did not find DT entry, try OTP next: -2
+[ 1625.829745] ath10k_pci 0000:01:00.0: bmi read address 0x4008ac length 4
+[ 1625.829815] ath10k_pci 0000:01:00.0: boot push board extended data addr 0x0
+[ 1625.829822] ath10k_pci 0000:01:00.0: bmi read address 0x400854 length 4
+[ 1625.829881] ath10k_pci 0000:01:00.0: bmi write address 0x401cc0 length 2116
+[ 1625.833779] ath10k_pci 0000:01:00.0: bmi write address 0x400858 length 4
+[ 1625.834027] ath10k_pci 0000:01:00.0: boot upload otp to 0x1234 len 7205
+[ 1625.834036] ath10k_pci 0000:01:00.0: bmi fast download address 0x1234 buffer 0xc1e48034 length 7205
+[ 1625.834043] ath10k_pci 0000:01:00.0: bmi lz stream start address 0x1234
+[ 1625.834069] ath10k_pci 0000:01:00.0: bmi lz data buffer 0xc1e48034 length 7204
+[ 1625.859453] ath10k_pci 0000:01:00.0: bmi lz data buffer 0xa81bbe94 length 4
+[ 1625.859498] ath10k_pci 0000:01:00.0: bmi lz stream start address 0x0
+[ 1625.859532] ath10k_pci 0000:01:00.0: bmi execute address 0x1234 param 0x0
+[ 1625.978033] ath10k_pci 0000:01:00.0: bmi execute result 0x0
+[ 1625.978042] ath10k_pci 0000:01:00.0: boot otp execute result 0
+[ 1625.978050] ath10k_pci 0000:01:00.0: boot using calibration mode otp
+[ 1625.978060] ath10k_pci 0000:01:00.0: boot uploading firmware image c1e49c64 len 234918 mode normal
+[ 1625.978067] ath10k_pci 0000:01:00.0: bmi fast download address 0x1234 buffer 0xc1e49c64 length 234918
+[ 1625.978073] ath10k_pci 0000:01:00.0: bmi lz stream start address 0x1234
+[ 1625.978092] ath10k_pci 0000:01:00.0: bmi lz data buffer 0xc1e49c64 length 234916
+[ 1626.990979] ath10k_pci 0000:01:00.0: bmi lz data buffer 0xa81bbe94 length 4
+[ 1626.991291] ath10k_pci 0000:01:00.0: bmi lz stream start address 0x0
+[ 1626.991338] ath10k_pci 0000:01:00.0: bmi write address 0x400814 length 4
+[ 1626.991366] ath10k_pci 0000:01:00.0: bmi done
+[ 1626.991390] ath10k_pci 0000:01:00.0: htt tx max num pending tx 1424
+[ 1626.991420] ath10k_pci 0000:01:00.0: htt rx ring size 2048 fill_level 1023
+[ 1626.991428] ath10k_pci 0000:01:00.0: boot hif start
+[ 1627.993782] ath10k_pci 0000:01:00.0: failed to receive control response completion, polling..
+[ 1628.001136] ath10k_pci 0000:01:00.0: boot htc service 'Control' ul pipe 0 dl pipe 1 eid 0 ready
+[ 1628.001157] ath10k_pci 0000:01:00.0: boot htc ep 0 ul polled 0 dl polled 0
+[ 1628.001175] ath10k_pci 0000:01:00.0: boot htc service 'Control' eid 0 TX flow control disabled
+[ 1628.001194] ath10k_pci 0000:01:00.0: boot htc service HTT Data does not allocate target credits
+[ 1628.993808] ath10k_pci 0000:01:00.0: Service connect timeout: 0
+[ 1628.998453] ath10k_pci 0000:01:00.0: failed to connect htt (-110)
+[ 1629.003261] ath10k_pci 0000:01:00.0: boot hif stop
+[ 1629.003276] ath10k_pci 0000:01:00.0: boot warm reset
+[ 1629.033812] ath10k_pci 0000:01:00.0: boot init ce src ring id 0 entries 16 base_addr ac0fb000
+[ 1629.033851] ath10k_pci 0000:01:00.0: boot ce dest ring id 1 entries 512 base_addr ac0fc000
+[ 1629.033882] ath10k_pci 0000:01:00.0: boot ce dest ring id 2 entries 32 base_addr ac0fe000
+[ 1629.033914] ath10k_pci 0000:01:00.0: boot init ce src ring id 3 entries 32 base_addr ac0ff000
+[ 1629.033968] ath10k_pci 0000:01:00.0: boot init ce src ring id 4 entries 4096 base_addr ac1e0000
+[ 1629.034000] ath10k_pci 0000:01:00.0: boot init ce src ring id 7 entries 2 base_addr ac1bc000
+[ 1629.034028] ath10k_pci 0000:01:00.0: boot ce dest ring id 7 entries 2 base_addr ac1bd000
+[ 1629.034044] ath10k_pci 0000:01:00.0: boot waiting target to initialise
+[ 1629.034060] ath10k_pci 0000:01:00.0: boot target indicator 0
+[ 1629.045735] ath10k_pci 0000:01:00.0: boot target indicator 0
+[ 1629.056046] ath10k_pci 0000:01:00.0: boot target indicator 2
+[ 1629.056059] ath10k_pci 0000:01:00.0: boot target initialised
+[ 1629.073769] ath10k_pci 0000:01:00.0: boot init ce src ring id 0 entries 16 base_addr ac0fb000
+[ 1629.073796] ath10k_pci 0000:01:00.0: boot ce dest ring id 1 entries 512 base_addr ac0fc000
+[ 1629.073819] ath10k_pci 0000:01:00.0: boot ce dest ring id 2 entries 32 base_addr ac0fe000
+[ 1629.073842] ath10k_pci 0000:01:00.0: boot init ce src ring id 3 entries 32 base_addr ac0ff000
+[ 1629.073881] ath10k_pci 0000:01:00.0: boot init ce src ring id 4 entries 4096 base_addr ac1e0000
+[ 1629.073904] ath10k_pci 0000:01:00.0: boot init ce src ring id 7 entries 2 base_addr ac1bc000
+[ 1629.073925] ath10k_pci 0000:01:00.0: boot ce dest ring id 7 entries 2 base_addr ac1bd000
+[ 1629.073931] ath10k_pci 0000:01:00.0: boot waiting target to initialise
+[ 1629.073938] ath10k_pci 0000:01:00.0: boot target indicator 0
+[ 1629.084552] ath10k_pci 0000:01:00.0: boot target indicator 0
+[ 1629.094566] ath10k_pci 0000:01:00.0: boot target indicator 2
+[ 1629.094579] ath10k_pci 0000:01:00.0: boot target initialised
+[ 1629.094586] ath10k_pci 0000:01:00.0: boot warm reset complete
+[ 1629.098076] ath10k_pci 0000:01:00.0: could not init core (-110)
+[ 1629.102739] ath10k_pci 0000:01:00.0: boot hif power down
+[ 1629.102748] ath10k_pci 0000:01:00.0: could not probe fw (-110)
+
+
+I hope there is someone who can help me!
+Thanks, Stefan Feirer
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
