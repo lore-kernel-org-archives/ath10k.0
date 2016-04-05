@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anQT1-0000U5-Bv
- for ath10k@lists.infradead.org; Tue, 05 Apr 2016 12:52:24 +0000
+ id 1anQdQ-0002Zt-Bf
+ for ath10k@lists.infradead.org; Tue, 05 Apr 2016 13:03:10 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: remove MSI range support
-Date: Tue, 5 Apr 2016 12:51:52 +0000
-Message-ID: <87oa9ob4m0.fsf@kamboji.qca.qualcomm.com>
-References: <1459426522-25925-1-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1459426522-25925-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Thu, 31 Mar 2016 17:45:22 +0530")
+Subject: Re: [PATCH] ath10k: Fix deadlock when peer cannot be created.
+Date: Tue, 5 Apr 2016 13:02:43 +0000
+Message-ID: <87k2kcb43y.fsf@kamboji.qca.qualcomm.com>
+References: <1459379297-21496-1-git-send-email-greearb@candelatech.com>
+ <CAGRGNgWEua3EOePQFRS_AR5BnSUPUhFrudWs2hY7YPLizxnyhQ@mail.gmail.com>
+In-Reply-To: <CAGRGNgWEua3EOePQFRS_AR5BnSUPUhFrudWs2hY7YPLizxnyhQ@mail.gmail.com>	(Julian
+ Calaby's message of "Thu, 31 Mar 2016 12:41:54 +1100")
 Content-Language: en-US
-Content-ID: <D04CF63A63A8A242BEB5740E7DC445D9@qualcomm.com>
+Content-ID: <7A2B8D3F3E3F004A8FFFF1B2C4041504@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,34 +26,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Julian Calaby <julian.calaby@gmail.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Julian Calaby <julian.calaby@gmail.com> writes:
 
-> MSI-X is never well-tested, might contain bugs and generally isn't
-> really all that useful to maintain. Also ath10k is mainly used with
-> shared/singly-MSI interrupt systems. Hence removing MSI range support.
-> This change will be useful for further cleanup in copy engine lock
-> and to add NAPI support.
+> On Thu, Mar 31, 2016 at 10:08 AM,  <greearb@candelatech.com> wrote:
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> We must not attempt to send WMI packets while dholding the data-lock,
 >
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> s/dholding/holding/ ?
 
-[...]
-
-> @@ -171,14 +168,10 @@ struct ath10k_pci {
->  	void __iomem *mem;
->  	size_t mem_len;
->  
-> -	/*
-> -	 * Number of MSI interrupts granted, 0 --> using legacy PCI line
-> -	 * interrupts.
-> -	 */
-> -	int num_msi_intrs;
-> +	/* Operating interrupt mode */
-> +	u8 oper_irq_mode;
-
-Shouldn't this be enum ath10k_pci_irq_mode?
+I fixed it in the pending branch.
 
 -- 
 Kalle Valo
