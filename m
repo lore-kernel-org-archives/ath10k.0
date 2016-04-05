@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anQPS-00046n-CT
- for ath10k@lists.infradead.org; Tue, 05 Apr 2016 12:48:43 +0000
+ id 1anQT1-0000U5-Bv
+ for ath10k@lists.infradead.org; Tue, 05 Apr 2016 12:52:24 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 3/3] ath10k: fix unconditional num_mpdus_ready subtraction
-Date: Tue, 5 Apr 2016 12:48:14 +0000
-Message-ID: <87shz0b4s2.fsf@kamboji.qca.qualcomm.com>
-References: <1459352551-11773-1-git-send-email-rmanohar@qti.qualcomm.com>
- <1459352551-11773-3-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1459352551-11773-3-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Wed, 30 Mar 2016 21:12:31 +0530")
+Subject: Re: [PATCH] ath10k: remove MSI range support
+Date: Tue, 5 Apr 2016 12:51:52 +0000
+Message-ID: <87oa9ob4m0.fsf@kamboji.qca.qualcomm.com>
+References: <1459426522-25925-1-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1459426522-25925-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Thu, 31 Mar 2016 17:45:22 +0530")
 Content-Language: en-US
-Content-ID: <067895EA78C09A4B91F9310B9B345930@qualcomm.com>
+Content-ID: <D04CF63A63A8A242BEB5740E7DC445D9@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,37 +30,29 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar
 
 Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> Decrement num_mpdus_ready only when rx amsdu is processed successfully.
-> Not doing so, will result in leak and impact stabilty under low memory
-> cases.
+> MSI-X is never well-tested, might contain bugs and generally isn't
+> really all that useful to maintain. Also ath10k is mainly used with
+> shared/singly-MSI interrupt systems. Hence removing MSI range support.
+> This change will be useful for further cleanup in copy engine lock
+> and to add NAPI support.
 >
 > Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-> ---
->  drivers/net/wireless/ath/ath10k/htt_rx.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> index 96a7417..9696c2e 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> @@ -2412,14 +2412,12 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
->  	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
->  	struct ath10k *ar = htt->ar;
->  	struct htt_tx_done tx_done = {};
-> -	struct sk_buff_head rx_q;
->  	struct sk_buff_head rx_ind_q;
->  	struct sk_buff_head tx_ind_q;
->  	struct sk_buff *skb;
->  	unsigned long flags;
->  	int num_mpdus;
->  
-> -	__skb_queue_head_init(&rx_q);
->  	__skb_queue_head_init(&rx_ind_q);
->  	__skb_queue_head_init(&tx_ind_q);
 
-I guess you are removing the unused rx_q just as a cleanup? It's good
-practise to mention that in the commit log (or better yet in a separate
-patch).
+[...]
+
+> @@ -171,14 +168,10 @@ struct ath10k_pci {
+>  	void __iomem *mem;
+>  	size_t mem_len;
+>  
+> -	/*
+> -	 * Number of MSI interrupts granted, 0 --> using legacy PCI line
+> -	 * interrupts.
+> -	 */
+> -	int num_msi_intrs;
+> +	/* Operating interrupt mode */
+> +	u8 oper_irq_mode;
+
+Shouldn't this be enum ath10k_pci_irq_mode?
 
 -- 
 Kalle Valo
