@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anR6c-000569-VG
- for ath10k@lists.infradead.org; Tue, 05 Apr 2016 13:33:27 +0000
+ id 1anR9y-0000wH-Up
+ for ath10k@lists.infradead.org; Tue, 05 Apr 2016 13:36:49 +0000
 MIME-Version: 1.0
-Date: Tue, 05 Apr 2016 19:02:56 +0530
+Date: Tue, 05 Apr 2016 19:06:25 +0530
 From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: [PATCH 1/3] ath10k: fix calibration init sequence of qca99x0
-In-Reply-To: <871t6kcjoo.fsf@kamboji.qca.qualcomm.com>
-References: <1459352551-11773-1-git-send-email-rmanohar@qti.qualcomm.com>
- <871t6kcjoo.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <4d0be6a7b9bf219f751a2f64a18e8553@codeaurora.org>
+Subject: Re: [PATCH] ath10k: remove MSI range support
+In-Reply-To: <87oa9ob4m0.fsf@kamboji.qca.qualcomm.com>
+References: <1459426522-25925-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <87oa9ob4m0.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <be237b11cdc2472b67a1fd58e7860938@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +27,34 @@ To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, "Manoharan,
  Rajkumar" <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-On 2016-04-05 18:10, Valo, Kalle wrote:
+On 2016-04-05 18:21, Valo, Kalle wrote:
 > Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 > 
->> pre-calibration is meant for qca4019 which contains only caldata
->> whereas calibration file is used by ar9888 and qca99x0 that contains
->> both board data and caldata. So by definition both pre-cal-file and
->> cal-file can not coexist. Keeping them in shared memory (union), is
->> breaking boot sequence of qca99x0. Fix it by storing both binaries
->> in separate memories. This issue is reported in ipq8064 platform which
->> includes caldata in flash memory.
+>> MSI-X is never well-tested, might contain bugs and generally isn't
+>> really all that useful to maintain. Also ath10k is mainly used with
+>> shared/singly-MSI interrupt systems. Hence removing MSI range support.
+>> This change will be useful for further cleanup in copy engine lock
+>> and to add NAPI support.
 >> 
->> Reported-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 >> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 > 
-> I added the fixes line in the pending branch:
+> [...]
 > 
-> Fixes: 3d9195ea19e4 ("ath10k: incorporate qca4019 cal data download 
-> sequence")
+>> @@ -171,14 +168,10 @@ struct ath10k_pci {
+>>  	void __iomem *mem;
+>>  	size_t mem_len;
+>> 
+>> -	/*
+>> -	 * Number of MSI interrupts granted, 0 --> using legacy PCI line
+>> -	 * interrupts.
+>> -	 */
+>> -	int num_msi_intrs;
+>> +	/* Operating interrupt mode */
+>> +	u8 oper_irq_mode;
+> 
+> Shouldn't this be enum ath10k_pci_irq_mode?
 
-Thanks.
+Yes.. Then the enum should be moved to pci.h. will send next version
 
 -Rajkumar
 
