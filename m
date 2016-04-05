@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anDnU-0003hz-GR
- for ath10k@lists.infradead.org; Mon, 04 Apr 2016 23:20:40 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH 0/3]  ath10k: add a support of set_tsf on vdev interface
-Date: Mon, 4 Apr 2016 16:19:13 -0700
-Message-ID: <1459811956-26186-1-git-send-email-poh@qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1anNqg-0001oJ-IR
+ for ath10k@lists.infradead.org; Tue, 05 Apr 2016 10:04:39 +0000
+Message-ID: <1459850650.18188.42.camel@sipsolutions.net>
+Subject: Re: [PATCH v3] cfg80211/nl80211: Add support for
+ NL80211_STA_INFO_RX_DURATION
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Tue, 05 Apr 2016 12:04:10 +0200
+In-Reply-To: <1457529357-19077-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1457529357-19077-1-git-send-email-mohammed@qca.qualcomm.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +23,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+Cc: mohammed@codeaurora.org, kvalo@codeaurora.org, ath10k@lists.infradead.org
 
-10.2.4 and 10.4 firmware has introduced new function to
-set TSF via vdev parameter.
-set_tsf function can be used to shift TBTT that will help
-avoid its clockdrift which happens when beacons are collided.
+Hi,
 
-Peter Oh (3):
-  ath10k: add a support of set_tsf on vdev interface
-  ath10k: update 10.4 WMI vdev parameters
-  ath10k: enable set_tsf vdev command to WMI 10.4
+The implementation seems fine now, but I think the commit log needs some work.
 
- drivers/net/wireless/ath/ath10k/mac.c     | 27 +++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  1 +
- drivers/net/wireless/ath/ath10k/wmi.c     |  4 ++++
- drivers/net/wireless/ath/ath10k/wmi.h     |  8 ++++++++
- 4 files changed, 40 insertions(+)
+> Add support for new netlink attribute 'NL80211_STA_INFO_RX_DURATION'
 
--- 
-1.9.1
+I think it'd be worthwhile to describe the attribute a bit more,
+including why you're adding it.
 
+> This flag
+
+There's no flag.
+
+>  will be set when drivers can fill rx_duration (aggregate
+> PPDU duration(usecs) for all the frames from a peer) 
+
+You have the description here, but putting it with the attribute would
+be better.
+
+> via 'drv_sta_statistics' callback
+
+drv_sta_statistics is a mac80211 detail, that's not relevant at
+cfg80211 level; mentioning that is just confusing. This can well used
+by non-mac80211 drivers.
+
+> Also make sta_info flags 'filled' as 64 bit to accommodate for new
+> per station stats. 
+
+That sentence doesn't parse well.
+
+> Extend 'PUT_SINFO' for supporting rx_duration
+> field and any new per sta information in future
+
+That sentence I think should just be removed.
+
+johannes
 
 _______________________________________________
 ath10k mailing list
