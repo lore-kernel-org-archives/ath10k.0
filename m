@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anoih-0006xh-GE
- for ath10k@lists.infradead.org; Wed, 06 Apr 2016 14:46:18 +0000
-Subject: [PATCH 5/8] ath10k: move wmi_op_version to struct ath10k_fw_file
+ id 1anoj6-0007FY-GO
+ for ath10k@lists.infradead.org; Wed, 06 Apr 2016 14:46:43 +0000
+Subject: [PATCH 7/8] ath10k: switch testmode to use
+ ath10k_core_fetch_firmware_api_n()
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 6 Apr 2016 17:45:41 +0300
-Message-ID: <20160406144541.28399.11348.stgit@potku.adurom.net>
+Date: Wed, 6 Apr 2016 17:46:06 +0300
+Message-ID: <20160406144606.28399.65796.stgit@potku.adurom.net>
 In-Reply-To: <20160406144355.28399.23733.stgit@potku.adurom.net>
 References: <20160406144355.28399.23733.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -25,215 +26,187 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Preparation for testmode.c to use ath10k_core_fetch_board_data_api_n().
+Now that all firmware-N.bin related are within struct ath10k_fw_file we can
+switch to use ath10k_core_fetch_firmware_api_n() and delete almost identical
+ath10k_tm_fetch_utf_firmware_api_2().
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c     |   20 ++++++++++----------
- drivers/net/wireless/ath/ath10k/core.h     |    5 ++---
- drivers/net/wireless/ath/ath10k/debug.c    |    2 +-
- drivers/net/wireless/ath/ath10k/mac.c      |    2 +-
- drivers/net/wireless/ath/ath10k/testmode.c |   17 ++++++-----------
- drivers/net/wireless/ath/ath10k/wmi.c      |    4 ++--
- 6 files changed, 22 insertions(+), 28 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c     |    4 -
+ drivers/net/wireless/ath/ath10k/core.h     |    2 
+ drivers/net/wireless/ath/ath10k/testmode.c |  124 ----------------------------
+ 3 files changed, 6 insertions(+), 124 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index bb8c8b2f785b..6d995219a497 100644
+index 4b1fc4b99205..d0cecab5aaec 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1106,10 +1106,10 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
+@@ -976,8 +976,8 @@ success:
+ 	return 0;
+ }
  
- 			version = (__le32 *)data;
- 
--			ar->wmi.op_version = le32_to_cpup(version);
-+			fw_file->wmi_op_version = le32_to_cpup(version);
- 
- 			ath10k_dbg(ar, ATH10K_DBG_BOOT, "found fw ie wmi op version %d\n",
--				   ar->wmi.op_version);
-+				   fw_file->wmi_op_version);
- 			break;
- 		case ATH10K_FW_IE_HTT_OP_VERSION:
- 			if (ie_len != sizeof(u32))
-@@ -1438,9 +1438,9 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		return -EINVAL;
- 	}
- 
--	if (ar->wmi.op_version >= ATH10K_FW_WMI_OP_VERSION_MAX) {
-+	if (fw_file->wmi_op_version >= ATH10K_FW_WMI_OP_VERSION_MAX) {
- 		ath10k_err(ar, "unsupported WMI OP version (max %d): %d\n",
--			   ATH10K_FW_WMI_OP_VERSION_MAX, ar->wmi.op_version);
-+			   ATH10K_FW_WMI_OP_VERSION_MAX, fw_file->wmi_op_version);
- 		return -EINVAL;
- 	}
- 
-@@ -1496,19 +1496,19 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 	/* Backwards compatibility for firmwares without
- 	 * ATH10K_FW_IE_WMI_OP_VERSION.
- 	 */
--	if (ar->wmi.op_version == ATH10K_FW_WMI_OP_VERSION_UNSET) {
-+	if (fw_file->wmi_op_version == ATH10K_FW_WMI_OP_VERSION_UNSET) {
- 		if (test_bit(ATH10K_FW_FEATURE_WMI_10X, fw_file->fw_features)) {
- 			if (test_bit(ATH10K_FW_FEATURE_WMI_10_2,
- 				     fw_file->fw_features))
--				ar->wmi.op_version = ATH10K_FW_WMI_OP_VERSION_10_2;
-+				fw_file->wmi_op_version = ATH10K_FW_WMI_OP_VERSION_10_2;
- 			else
--				ar->wmi.op_version = ATH10K_FW_WMI_OP_VERSION_10_1;
-+				fw_file->wmi_op_version = ATH10K_FW_WMI_OP_VERSION_10_1;
- 		} else {
--			ar->wmi.op_version = ATH10K_FW_WMI_OP_VERSION_MAIN;
-+			fw_file->wmi_op_version = ATH10K_FW_WMI_OP_VERSION_MAIN;
- 		}
- 	}
- 
--	switch (ar->wmi.op_version) {
-+	switch (fw_file->wmi_op_version) {
- 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
- 		ar->max_num_peers = TARGET_NUM_PEERS;
- 		ar->max_num_stations = TARGET_NUM_STATIONS;
-@@ -1570,7 +1570,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 	 * ATH10K_FW_IE_HTT_OP_VERSION.
- 	 */
- 	if (ar->htt.op_version == ATH10K_FW_HTT_OP_VERSION_UNSET) {
--		switch (ar->wmi.op_version) {
-+		switch (fw_file->wmi_op_version) {
- 		case ATH10K_FW_WMI_OP_VERSION_MAIN:
- 			ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_MAIN;
- 			break;
+-static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
+-					    struct ath10k_fw_file *fw_file)
++int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
++				     struct ath10k_fw_file *fw_file)
+ {
+ 	size_t magic_len, len, ie_len;
+ 	int ie_id, i, index, bit, ret;
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 649fb940eb9f..640733d6d7cc 100644
+index b779e059a9c3..c18043fd0093 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -139,7 +139,6 @@ struct ath10k_mem_chunk {
- };
+@@ -932,6 +932,8 @@ void ath10k_core_destroy(struct ath10k *ar);
+ void ath10k_core_get_fw_features_str(struct ath10k *ar,
+ 				     char *buf,
+ 				     size_t max_len);
++int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
++				     struct ath10k_fw_file *fw_file);
  
- struct ath10k_wmi {
--	enum ath10k_fw_wmi_op_version op_version;
- 	enum ath10k_htc_ep_id eid;
- 	struct completion service_ready;
- 	struct completion unified_ready;
-@@ -634,6 +633,8 @@ struct ath10k_fw_file {
- 
- 	DECLARE_BITMAP(fw_features, ATH10K_FW_FEATURE_COUNT);
- 
-+	enum ath10k_fw_wmi_op_version wmi_op_version;
-+
- 	const void *firmware_data;
- 	size_t firmware_len;
- 
-@@ -894,8 +895,6 @@ struct ath10k {
- 	struct {
- 		/* protected by conf_mutex */
- 		struct ath10k_fw_components utf_mode_fw;
--		enum ath10k_fw_wmi_op_version orig_wmi_op_version;
--		enum ath10k_fw_wmi_op_version op_version;
- 
- 		/* protected by data_lock */
- 		bool utf_monitor;
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 07b15ffce220..f9e9a83eb7d0 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -178,7 +178,7 @@ void ath10k_debug_print_boot_info(struct ath10k *ar)
- 	ath10k_info(ar, "htt-ver %d.%d wmi-op %d htt-op %d cal %s max-sta %d raw %d hwcrypto %d\n",
- 		    ar->htt.target_version_major,
- 		    ar->htt.target_version_minor,
--		    ar->wmi.op_version,
-+		    ar->normal_mode_fw.fw_file.wmi_op_version,
- 		    ar->htt.op_version,
- 		    ath10k_cal_mode_str(ar->cal_mode),
- 		    ar->max_num_stations,
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5a78ab9624d7..8db397146eaf 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7760,7 +7760,7 @@ int ath10k_mac_register(struct ath10k *ar)
- 	 */
- 	ar->hw->offchannel_tx_hw_queue = IEEE80211_MAX_QUEUES - 1;
- 
--	switch (ar->wmi.op_version) {
-+	switch (ar->running_fw->fw_file.wmi_op_version) {
- 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
- 		ar->hw->wiphy->iface_combinations = ath10k_if_comb;
- 		ar->hw->wiphy->n_iface_combinations =
+ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 		      const struct ath10k_fw_components *fw_components);
 diff --git a/drivers/net/wireless/ath/ath10k/testmode.c b/drivers/net/wireless/ath/ath10k/testmode.c
-index c2173a6d5676..2fcc7105e247 100644
+index 2d9a3f56213f..81fe266f7990 100644
 --- a/drivers/net/wireless/ath/ath10k/testmode.c
 +++ b/drivers/net/wireless/ath/ath10k/testmode.c
-@@ -230,9 +230,9 @@ static int ath10k_tm_fetch_utf_firmware_api_2(struct ath10k *ar,
- 			if (ie_len != sizeof(u32))
- 				break;
- 			version = (__le32 *)data;
--			ar->testmode.op_version = le32_to_cpup(version);
-+			fw_file->wmi_op_version = le32_to_cpup(version);
- 			ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode found fw ie wmi op version %d\n",
--				   ar->testmode.op_version);
-+				   fw_file->wmi_op_version);
- 			break;
- 		default:
- 			ath10k_warn(ar, "Unknown testmode FW IE: %u\n",
-@@ -283,7 +283,7 @@ static int ath10k_tm_fetch_utf_firmware_api_1(struct ath10k *ar,
- 	 * correct WMI interface.
- 	 */
+@@ -139,127 +139,6 @@ static int ath10k_tm_cmd_get_version(struct ath10k *ar, struct nlattr *tb[])
+ 	return cfg80211_testmode_reply(skb);
+ }
  
--	ar->testmode.op_version = ATH10K_FW_WMI_OP_VERSION_10_1;
-+	fw_file->wmi_op_version = ATH10K_FW_WMI_OP_VERSION_10_1;
- 	fw_file->firmware_data = fw_file->firmware->data;
- 	fw_file->firmware_len = fw_file->firmware->size;
- 
-@@ -359,17 +359,14 @@ static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
- 	ar->testmode.utf_monitor = true;
- 	spin_unlock_bh(&ar->data_lock);
- 
--	ar->testmode.orig_wmi_op_version = ar->wmi.op_version;
--	ar->wmi.op_version = ar->testmode.op_version;
+-static int ath10k_tm_fetch_utf_firmware_api_2(struct ath10k *ar,
+-					      struct ath10k_fw_file *fw_file)
+-{
+-	size_t len, magic_len, ie_len;
+-	struct ath10k_fw_ie *hdr;
+-	char filename[100];
+-	__le32 *version;
+-	const u8 *data;
+-	int ie_id, ret;
 -
- 	ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode wmi version %d\n",
--		   ar->wmi.op_version);
-+		   ar->testmode.utf_mode_fw.fw_file.wmi_op_version);
- 
- 	ret = ath10k_hif_power_up(ar);
- 	if (ret) {
- 		ath10k_err(ar, "failed to power up hif (testmode): %d\n", ret);
- 		ar->state = ATH10K_STATE_OFF;
--		goto err_fw_features;
-+		goto err_release_utf_mode_fw;
- 	}
- 
- 	ret = ath10k_core_start(ar, ATH10K_FIRMWARE_MODE_UTF,
-@@ -396,9 +393,7 @@ static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
- err_power_down:
- 	ath10k_hif_power_down(ar);
- 
--err_fw_features:
--	ar->wmi.op_version = ar->testmode.orig_wmi_op_version;
+-	snprintf(filename, sizeof(filename), "%s/%s",
+-		 ar->hw_params.fw.dir, ATH10K_FW_UTF_API2_FILE);
 -
-+err_release_utf_mode_fw:
- 	release_firmware(ar->testmode.utf_mode_fw.fw_file.firmware);
- 	ar->testmode.utf_mode_fw.fw_file.firmware = NULL;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 786f0635de53..21229ecc3d1a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -7866,7 +7866,7 @@ static const struct wmi_ops wmi_10_4_ops = {
- 
- int ath10k_wmi_attach(struct ath10k *ar)
+-	/* load utf firmware image */
+-	ret = request_firmware(&fw_file->firmware, filename, ar->dev);
+-	if (ret) {
+-		ath10k_warn(ar, "failed to retrieve utf firmware '%s': %d\n",
+-			    filename, ret);
+-		return ret;
+-	}
+-
+-	data = fw_file->firmware->data;
+-	len = fw_file->firmware->size;
+-
+-	/* FIXME: call release_firmware() in error cases */
+-
+-	/* magic also includes the null byte, check that as well */
+-	magic_len = strlen(ATH10K_FIRMWARE_MAGIC) + 1;
+-
+-	if (len < magic_len) {
+-		ath10k_err(ar, "utf firmware file is too small to contain magic\n");
+-		ret = -EINVAL;
+-		goto err;
+-	}
+-
+-	if (memcmp(data, ATH10K_FIRMWARE_MAGIC, magic_len) != 0) {
+-		ath10k_err(ar, "invalid firmware magic\n");
+-		ret = -EINVAL;
+-		goto err;
+-	}
+-
+-	/* jump over the padding */
+-	magic_len = ALIGN(magic_len, 4);
+-
+-	len -= magic_len;
+-	data += magic_len;
+-
+-	/* loop elements */
+-	while (len > sizeof(struct ath10k_fw_ie)) {
+-		hdr = (struct ath10k_fw_ie *)data;
+-
+-		ie_id = le32_to_cpu(hdr->id);
+-		ie_len = le32_to_cpu(hdr->len);
+-
+-		len -= sizeof(*hdr);
+-		data += sizeof(*hdr);
+-
+-		if (len < ie_len) {
+-			ath10k_err(ar, "invalid length for FW IE %d (%zu < %zu)\n",
+-				   ie_id, len, ie_len);
+-			ret = -EINVAL;
+-			goto err;
+-		}
+-
+-		switch (ie_id) {
+-		case ATH10K_FW_IE_FW_VERSION:
+-			if (ie_len > sizeof(fw_file->fw_version) - 1)
+-				break;
+-
+-			memcpy(fw_file->fw_version, data, ie_len);
+-			fw_file->fw_version[ie_len] = '\0';
+-
+-			ath10k_dbg(ar, ATH10K_DBG_TESTMODE,
+-				   "testmode found fw utf version %s\n",
+-				   fw_file->fw_version);
+-			break;
+-		case ATH10K_FW_IE_TIMESTAMP:
+-			/* ignore timestamp, but don't warn about it either */
+-			break;
+-		case ATH10K_FW_IE_FW_IMAGE:
+-			ath10k_dbg(ar, ATH10K_DBG_TESTMODE,
+-				   "testmode found fw image ie (%zd B)\n",
+-				   ie_len);
+-
+-			fw_file->firmware_data = data;
+-			fw_file->firmware_len = ie_len;
+-			break;
+-		case ATH10K_FW_IE_WMI_OP_VERSION:
+-			if (ie_len != sizeof(u32))
+-				break;
+-			version = (__le32 *)data;
+-			fw_file->wmi_op_version = le32_to_cpup(version);
+-			ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode found fw ie wmi op version %d\n",
+-				   fw_file->wmi_op_version);
+-			break;
+-		default:
+-			ath10k_warn(ar, "Unknown testmode FW IE: %u\n",
+-				    le32_to_cpu(hdr->id));
+-			break;
+-		}
+-		/* jump over the padding */
+-		ie_len = ALIGN(ie_len, 4);
+-
+-		len -= ie_len;
+-		data += ie_len;
+-	}
+-
+-	if (!fw_file->firmware_data || !fw_file->firmware_len) {
+-		ath10k_err(ar, "No ATH10K_FW_IE_FW_IMAGE found\n");
+-		ret = -EINVAL;
+-		goto err;
+-	}
+-
+-	return 0;
+-
+-err:
+-	release_firmware(fw_file->firmware);
+-
+-	return ret;
+-}
+-
+ static int ath10k_tm_fetch_utf_firmware_api_1(struct ath10k *ar,
+ 					      struct ath10k_fw_file *fw_file)
  {
--	switch (ar->wmi.op_version) {
-+	switch (ar->running_fw->fw_file.wmi_op_version) {
- 	case ATH10K_FW_WMI_OP_VERSION_10_4:
- 		ar->wmi.ops = &wmi_10_4_ops;
- 		ar->wmi.cmd = &wmi_10_4_cmd_map;
-@@ -7908,7 +7908,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
- 	case ATH10K_FW_WMI_OP_VERSION_MAX:
- 		ath10k_err(ar, "unsupported WMI op version: %d\n",
--			   ar->wmi.op_version);
-+			   ar->running_fw->fw_file.wmi_op_version);
- 		return -EINVAL;
- 	}
+@@ -295,7 +174,8 @@ static int ath10k_tm_fetch_firmware(struct ath10k *ar)
+ {
+ 	int ret;
  
+-	ret = ath10k_tm_fetch_utf_firmware_api_2(ar, &ar->testmode.utf_mode_fw.fw_file);
++	ret = ath10k_core_fetch_firmware_api_n(ar, ATH10K_FW_UTF_API2_FILE,
++					       &ar->testmode.utf_mode_fw.fw_file);
+ 	if (ret == 0) {
+ 		ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode using fw utf api 2");
+ 		goto out;
 
 
 _______________________________________________
