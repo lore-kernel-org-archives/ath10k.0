@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anojK-0007RI-CP
- for ath10k@lists.infradead.org; Wed, 06 Apr 2016 14:46:54 +0000
-Subject: [PATCH 8/8] ath10k: remove enum ath10k_swap_code_seg_bin_type
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 6 Apr 2016 17:46:19 +0300
-Message-ID: <20160406144619.28399.18013.stgit@potku.adurom.net>
-In-Reply-To: <20160406144355.28399.23733.stgit@potku.adurom.net>
-References: <20160406144355.28399.23733.stgit@potku.adurom.net>
+ id 1anokP-0008Us-RR
+ for ath10k@lists.infradead.org; Wed, 06 Apr 2016 14:47:59 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 3/4] ath10k: prefer ether_addr_equal() or
+ ether_addr_equal_unaligned() over memcmp()
+Date: Wed, 6 Apr 2016 14:47:22 +0000
+Message-ID: <8737qyaj5z.fsf@kamboji.qca.qualcomm.com>
+References: <20160324142217.15808.22638.stgit@potku.adurom.net>
+ <20160324142352.15808.33417.stgit@potku.adurom.net>
+In-Reply-To: <20160324142352.15808.33417.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Thu, 24 Mar 2016 16:23:52 +0200")
+Content-Language: en-US
+Content-ID: <5BA6AE17717B1E47AB9FB19977E45379@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,99 +27,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-It's not needed for anything so just get rid of it.
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c |    3 +--
- drivers/net/wireless/ath/ath10k/swap.c |   22 ++++++----------------
- drivers/net/wireless/ath/ath10k/swap.h |    9 +--------
- 3 files changed, 8 insertions(+), 26 deletions(-)
+> Fixes checkpatch warnings:
+>
+> drivers/net/wireless/ath/ath10k/mac.c:452: Prefer ether_addr_equal() or ether_addr_equal_unaligned() over memcmp()
+> drivers/net/wireless/ath/ath10k/mac.c:455: Prefer ether_addr_equal() or ether_addr_equal_unaligned() over memcmp()
+> drivers/net/wireless/ath/ath10k/txrx.c:133: Prefer ether_addr_equal() or ether_addr_equal_unaligned() over memcmp()
+>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/mac.c  |    4 ++--
+>  drivers/net/wireless/ath/ath10k/txrx.c |    2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 74a0e25183d0..c89f711a796b 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -449,10 +449,10 @@ static int ath10k_mac_vif_update_wep_key(struct ath10k_vif *arvif,
+>  	lockdep_assert_held(&ar->conf_mutex);
+>  
+>  	list_for_each_entry(peer, &ar->peers, list) {
+> -		if (!memcmp(peer->addr, arvif->vif->addr, ETH_ALEN))
+> +		if (!ether_addr_equal(peer->addr, arvif->vif->addr))
+>  			continue;
+>  
+> -		if (!memcmp(peer->addr, arvif->bssid, ETH_ALEN))
+> +		if (!ether_addr_equal(peer->addr, arvif->bssid))
+>  			continue;
+>  
+>  		if (peer->keys[key->keyidx] == key)
+> diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+> index 31335c510f1e..17a493b3333e 100644
+> --- a/drivers/net/wireless/ath/ath10k/txrx.c
+> +++ b/drivers/net/wireless/ath/ath10k/txrx.c
+> @@ -130,7 +130,7 @@ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
+>  	list_for_each_entry(peer, &ar->peers, list) {
+>  		if (peer->vdev_id != vdev_id)
+>  			continue;
+> -		if (memcmp(peer->addr, addr, ETH_ALEN))
+> +		if (ether_addr_equal(peer->addr, addr))
+>  			continue;
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index d0cecab5aaec..55f3a80b2884 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -647,8 +647,7 @@ static int ath10k_download_fw(struct ath10k *ar)
- 	data = ar->running_fw->fw_file.firmware_data;
- 	data_len = ar->running_fw->fw_file.firmware_len;
- 
--	ret = ath10k_swap_code_seg_configure(ar,
--					     ATH10K_SWAP_CODE_SEG_BIN_TYPE_FW);
-+	ret = ath10k_swap_code_seg_configure(ar);
- 	if (ret) {
- 		ath10k_err(ar, "failed to configure fw code swap: %d\n",
- 			   ret);
-diff --git a/drivers/net/wireless/ath/ath10k/swap.c b/drivers/net/wireless/ath/ath10k/swap.c
-index 8d6dc86799f5..af447a60143b 100644
---- a/drivers/net/wireless/ath/ath10k/swap.c
-+++ b/drivers/net/wireless/ath/ath10k/swap.c
-@@ -134,27 +134,17 @@ ath10k_swap_code_seg_alloc(struct ath10k *ar, size_t swap_bin_len)
- 	return seg_info;
- }
- 
--int ath10k_swap_code_seg_configure(struct ath10k *ar,
--				   enum ath10k_swap_code_seg_bin_type type)
-+int ath10k_swap_code_seg_configure(struct ath10k *ar)
- {
- 	int ret;
- 	struct ath10k_swap_code_seg_info *seg_info = NULL;
- 
--	switch (type) {
--	case ATH10K_SWAP_CODE_SEG_BIN_TYPE_FW:
--		if (!ar->swap.firmware_swap_code_seg_info)
--			return 0;
--
--		ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot found firmware code swap binary\n");
--		seg_info = ar->swap.firmware_swap_code_seg_info;
--		break;
--	default:
--	case ATH10K_SWAP_CODE_SEG_BIN_TYPE_OTP:
--	case ATH10K_SWAP_CODE_SEG_BIN_TYPE_UTF:
--		ath10k_warn(ar, "ignoring unknown code swap binary type %d\n",
--			    type);
-+	if (!ar->swap.firmware_swap_code_seg_info)
- 		return 0;
--	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot found firmware code swap binary\n");
-+
-+	seg_info = ar->swap.firmware_swap_code_seg_info;
- 
- 	ret = ath10k_bmi_write_memory(ar, seg_info->target_addr,
- 				      &seg_info->seg_hw_info,
-diff --git a/drivers/net/wireless/ath/ath10k/swap.h b/drivers/net/wireless/ath/ath10k/swap.h
-index 5c89952dd20f..36991c7b07a0 100644
---- a/drivers/net/wireless/ath/ath10k/swap.h
-+++ b/drivers/net/wireless/ath/ath10k/swap.h
-@@ -39,12 +39,6 @@ union ath10k_swap_code_seg_item {
- 	struct ath10k_swap_code_seg_tail tail;
- } __packed;
- 
--enum ath10k_swap_code_seg_bin_type {
--	 ATH10K_SWAP_CODE_SEG_BIN_TYPE_OTP,
--	 ATH10K_SWAP_CODE_SEG_BIN_TYPE_FW,
--	 ATH10K_SWAP_CODE_SEG_BIN_TYPE_UTF,
--};
--
- struct ath10k_swap_code_seg_hw_info {
- 	/* Swap binary image size */
- 	__le32 swap_size;
-@@ -64,8 +58,7 @@ struct ath10k_swap_code_seg_info {
- 	dma_addr_t paddr[ATH10K_SWAP_CODE_SEG_NUM_SUPPORTED];
- };
- 
--int ath10k_swap_code_seg_configure(struct ath10k *ar,
--				   enum ath10k_swap_code_seg_bin_type type);
-+int ath10k_swap_code_seg_configure(struct ath10k *ar);
- void ath10k_swap_code_seg_release(struct ath10k *ar);
- int ath10k_swap_code_seg_init(struct ath10k *ar);
- 
+A brown paperbag bug, I got the tests reversed. Will send v2.
 
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
