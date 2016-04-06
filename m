@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ankRw-0007BB-Qd
- for ath10k@lists.infradead.org; Wed, 06 Apr 2016 10:12:37 +0000
-Date: Wed, 6 Apr 2016 15:41:58 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Fix return value for btcoex and peer stats debugfs
-Message-ID: <20160406101137.GA27525@atheros-ThinkPad-T61>
-References: <1459870106-2694-1-git-send-email-mohammed@qca.qualcomm.com>
- <1459877336.6715.6.camel@perches.com>
+ id 1anohf-0005Co-Sa
+ for ath10k@lists.infradead.org; Wed, 06 Apr 2016 14:45:08 +0000
+Subject: [PATCH 0/8] ath10k: refactor firmware components
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Wed, 6 Apr 2016 17:44:31 +0300
+Message-ID: <20160406144355.28399.23733.stgit@potku.adurom.net>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1459877336.6715.6.camel@perches.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,97 +16,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joe Perches <joe@perches.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>, Kalle Valo <kvalo@qca.qualcomm.com>, Yanbo Li <yanbol@qca.qualcomm.com>, kvalo@codeaurora.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Hello Joe,
+This series refactors various ath10k firmware components into struct
+ath10k_fw_components which contains everything firmware related (board
+files, meta data and so on). This makes it possible to kill
+ath10k_tm_fetch_utf_firmware_api_2() from testmode.c.
 
-On Tue, Apr 05, 2016 at 10:28:56AM -0700, Joe Perches wrote:
-> On Tue, 2016-04-05 at 20:58 +0530, Mohammed Shafi Shajakhan wrote:
-> > From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> > =
+Also REALLY old FW API 1 (firmware.bin and otp.bin) support is
+removed.
 
-> > Return value is incorrect for btcoex and peer stats debugfs
-> > 'write' entries if the user provides a value that matches with
-> > the already available debugfs entry, this results in the debugfs
-> > entry getting stuck and the operation has to be terminated manually.
-> > Fix this by returning the appropriate return 'count' as we do it for
-> > other debugfs entries like pktlog etc
-> =
+---
 
-> Not your code, but some of the xor uses are odd at best.
+Kalle Valo (8):
+      ath10k: remove deprecated firmware API 1 support
+      ath10k: refactor firmware images to struct ath10k_fw_components
+      ath10k: move fw_version inside struct ath10k_fw_file
+      ath10k: move fw_features to struct ath10k_fw_file
+      ath10k: move wmi_op_version to struct ath10k_fw_file
+      ath10k: move htt_op_version to struct ath10k_fw_file
+      ath10k: switch testmode to use ath10k_core_fetch_firmware_api_n()
+      ath10k: remove enum ath10k_swap_code_seg_bin_type
 
-[shafi] ok.
 
-> =
+ drivers/net/wireless/ath/ath10k/core.c     |  321 ++++++++++++----------------
+ drivers/net/wireless/ath/ath10k/core.h     |   64 +++---
+ drivers/net/wireless/ath/ath10k/debug.c    |   32 ++-
+ drivers/net/wireless/ath/ath10k/htt.c      |    2 
+ drivers/net/wireless/ath/ath10k/htt.h      |    1 
+ drivers/net/wireless/ath/ath10k/htt_rx.c   |    2 
+ drivers/net/wireless/ath/ath10k/htt_tx.c   |    9 +
+ drivers/net/wireless/ath/ath10k/hw.h       |    2 
+ drivers/net/wireless/ath/ath10k/mac.c      |   21 +-
+ drivers/net/wireless/ath/ath10k/pci.c      |    1 
+ drivers/net/wireless/ath/ath10k/swap.c     |   43 ++--
+ drivers/net/wireless/ath/ath10k/swap.h     |    9 -
+ drivers/net/wireless/ath/ath10k/testmode.c |  193 +++--------------
+ drivers/net/wireless/ath/ath10k/wmi.c      |   13 -
+ drivers/net/wireless/ath/ath10k/wow.c      |    7 -
+ 15 files changed, 276 insertions(+), 444 deletions(-)
 
-> > diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wire=
-less/ath/ath10k/debug.c
-> []
-> > @@ -2122,7 +2122,7 @@ static ssize_t ath10k_write_btcoex(struct file *f=
-ile,
-> > =A0	struct ath10k *ar =3D file->private_data;
-> > =A0	char buf[32];
-> > =A0	size_t buf_size;
-> > -	int ret =3D 0;
-> > +	int ret;
-> > =A0	bool val;
-> > =A0
-> > =A0	buf_size =3D min(count, (sizeof(buf) - 1));
-> > @@ -2142,8 +2142,10 @@ static ssize_t ath10k_write_btcoex(struct file *=
-file,
-> > =A0		goto exit;
-> > =A0	}
-> > =A0
-> > -	if (!(test_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags) ^ val))
-> > +	if (!(test_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags) ^ val)) {
-> =
-
-> xor on an int and a bool.
-
-[shafi] Should we change the 'val' to int, but this code seems to be working
-test_bit seems to do this :
-	return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
-
-	do we see a problem, it should work right  (because they are bitwise
-	'ANDING' with 1UL)
-
-> =
-
-> > @@ -2189,7 +2191,7 @@ static ssize_t ath10k_write_peer_stats(struct fil=
-e *file,
-> > =A0	struct ath10k *ar =3D file->private_data;
-> > =A0	char buf[32];
-> > =A0	size_t buf_size;
-> > -	int ret =3D 0;
-> > +	int ret;
-> > =A0	bool val;
-> > =A0
-> > =A0	buf_size =3D min(count, (sizeof(buf) - 1));
-> > @@ -2209,8 +2211,10 @@ static ssize_t ath10k_write_peer_stats(struct fi=
-le *file,
-> > =A0		goto exit;
-> > =A0	}
-> > =A0
-> > -	if (!(test_bit(ATH10K_FLAG_PEER_STATS, &ar->dev_flags) ^ val))
-> > +	if (!(test_bit(ATH10K_FLAG_PEER_STATS, &ar->dev_flags) ^ val)) {
-> =
-
-> here too
-
-[shafi] same thing here ? is there a better code , kindly suggest
-
-> =
-
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-wireless"=
- in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 _______________________________________________
 ath10k mailing list
