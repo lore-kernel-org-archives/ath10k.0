@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anokP-0008Us-RR
- for ath10k@lists.infradead.org; Wed, 06 Apr 2016 14:47:59 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 3/4] ath10k: prefer ether_addr_equal() or
- ether_addr_equal_unaligned() over memcmp()
-Date: Wed, 6 Apr 2016 14:47:22 +0000
-Message-ID: <8737qyaj5z.fsf@kamboji.qca.qualcomm.com>
-References: <20160324142217.15808.22638.stgit@potku.adurom.net>
- <20160324142352.15808.33417.stgit@potku.adurom.net>
-In-Reply-To: <20160324142352.15808.33417.stgit@potku.adurom.net> (Kalle Valo's
- message of "Thu, 24 Mar 2016 16:23:52 +0200")
-Content-Language: en-US
-Content-ID: <5BA6AE17717B1E47AB9FB19977E45379@qualcomm.com>
+ id 1ao3a8-0001ec-Bx
+ for ath10k@lists.infradead.org; Thu, 07 Apr 2016 06:38:20 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2 2/3] ath10k: remove unnecessary warning for probe response
+ drops
+Date: Thu, 7 Apr 2016 12:07:30 +0530
+Message-ID: <1460011051-8272-2-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1460011051-8272-1-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1460011051-8272-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,56 +23,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+qca99x0 and qca4019 solutions limit probe responses transmissions.
+Logging warning message for each probe response drop is flooding
+kernel log unnecessary with " failed to increase tx mgmt pending
+count: -16, dropping". Hence reducing log level to debug.
 
-> Fixes checkpatch warnings:
->
-> drivers/net/wireless/ath/ath10k/mac.c:452: Prefer ether_addr_equal() or ether_addr_equal_unaligned() over memcmp()
-> drivers/net/wireless/ath/ath10k/mac.c:455: Prefer ether_addr_equal() or ether_addr_equal_unaligned() over memcmp()
-> drivers/net/wireless/ath/ath10k/txrx.c:133: Prefer ether_addr_equal() or ether_addr_equal_unaligned() over memcmp()
->
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-> ---
->  drivers/net/wireless/ath/ath10k/mac.c  |    4 ++--
->  drivers/net/wireless/ath/ath10k/txrx.c |    2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index 74a0e25183d0..c89f711a796b 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -449,10 +449,10 @@ static int ath10k_mac_vif_update_wep_key(struct ath10k_vif *arvif,
->  	lockdep_assert_held(&ar->conf_mutex);
->  
->  	list_for_each_entry(peer, &ar->peers, list) {
-> -		if (!memcmp(peer->addr, arvif->vif->addr, ETH_ALEN))
-> +		if (!ether_addr_equal(peer->addr, arvif->vif->addr))
->  			continue;
->  
-> -		if (!memcmp(peer->addr, arvif->bssid, ETH_ALEN))
-> +		if (!ether_addr_equal(peer->addr, arvif->bssid))
->  			continue;
->  
->  		if (peer->keys[key->keyidx] == key)
-> diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-> index 31335c510f1e..17a493b3333e 100644
-> --- a/drivers/net/wireless/ath/ath10k/txrx.c
-> +++ b/drivers/net/wireless/ath/ath10k/txrx.c
-> @@ -130,7 +130,7 @@ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
->  	list_for_each_entry(peer, &ar->peers, list) {
->  		if (peer->vdev_id != vdev_id)
->  			continue;
-> -		if (memcmp(peer->addr, addr, ETH_ALEN))
-> +		if (ether_addr_equal(peer->addr, addr))
->  			continue;
+Reported-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-A brown paperbag bug, I got the tests reversed. Will send v2.
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 20d72e29dfa1..b0e613bc10a5 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3994,8 +3994,8 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+ 
+ 		ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt, is_presp);
+ 		if (ret) {
+-			ath10k_warn(ar, "failed to increase tx mgmt pending count: %d, dropping\n",
+-				    ret);
++			ath10k_dbg(ar, ATH10K_DBG_MAC, "failed to increase tx mgmt pending count: %d, dropping\n",
++				   ret);
+ 			ath10k_htt_tx_dec_pending(htt);
+ 			spin_unlock_bh(&ar->htt.tx_lock);
+ 			ieee80211_free_txskb(ar->hw, skb);
 -- 
-Kalle Valo
+2.7.4
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
