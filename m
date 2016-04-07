@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ao3eV-0003II-VY
- for ath10k@lists.infradead.org; Thu, 07 Apr 2016 06:42:52 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix rx_channel during hw reconfigure
-Date: Thu, 7 Apr 2016 12:11:54 +0530
-Message-ID: <1460011314-15978-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1aoCE7-00022V-HI
+ for ath10k@lists.infradead.org; Thu, 07 Apr 2016 15:52:12 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 1/3] ath10k: fix calibration init sequence of qca99x0
+Date: Thu, 7 Apr 2016 15:51:44 +0000
+Message-ID: <87oa9l76y8.fsf@kamboji.qca.qualcomm.com>
+References: <1460011051-8272-1-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1460011051-8272-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Thu, 7 Apr 2016 12:07:29 +0530")
+Content-Language: en-US
+Content-ID: <1F661D1910B45B4398B52E31FFC6C870@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,46 +25,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: stable@vger.kernel.org, linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
+To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Upon firmware assert, restart work will be triggered so that mac80211
-will reconfigure the driver. An issue is reported that after restart
-work, survey dump data do not contain in-use (SURVEY_INFO_IN_USE) info
-for operating channel. During reconfigure, since mac80211 already has
-valid channel context for given radio, channel context iteration return
-num_chanctx > 0. Hence rx_channel is always NULL. Fix this by assigning
-channel context to rx_channel when driver restart is in progress.
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> pre-calibration is meant for qca4019 which contains only caldata
+> whereas calibration file is used by ar9888 and qca99x0 that contains
+> both board data and caldata. So by definition both pre-cal-file and
+> cal-file can not coexist. Keeping them in shared memory (union), is
+> breaking boot sequence of qca99x0. Fix it by storing both binaries
+> in separate memories. This issue is reported in ipq8064 platform which
+> includes caldata in flash memory.
+>
+> Fixes: 3d9195ea19e4 ("ath10k: incorporate qca4019 cal data download sequence")
+> Reported-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index b0e613bc10a5..e31469dd58dd 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6867,7 +6867,13 @@ ath10k_mac_update_rx_channel(struct ath10k *ar,
- 			def = &vifs[0].new_ctx->def;
- 
- 		ar->rx_channel = def->chan;
--	} else if (ctx && ath10k_mac_num_chanctxs(ar) == 0) {
-+	} else if ((ctx && ath10k_mac_num_chanctxs(ar) == 0) ||
-+		   (ctx && (ar->state == ATH10K_STATE_RESTARTED))) {
-+		/* During driver restart due to firmware assert, since mac80211
-+		 * already has valid channel context for given radio, channel
-+		 * context iteration return num_chanctx > 0. So fix rx_channel
-+		 * when restart is in progress.
-+		 */
- 		ar->rx_channel = ctx->def.chan;
- 	} else {
- 		ar->rx_channel = NULL;
+All three applied, thanks. 
+
 -- 
-2.7.4
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
