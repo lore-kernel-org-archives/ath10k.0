@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ob0-x236.google.com ([2607:f8b0:4003:c01::236])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aoXee-0003tp-8Z
- for ath10k@lists.infradead.org; Fri, 08 Apr 2016 14:45:00 +0000
-Received: by mail-ob0-x236.google.com with SMTP id fp4so73834948obb.2
- for <ath10k@lists.infradead.org>; Fri, 08 Apr 2016 07:44:39 -0700 (PDT)
+ id 1aoYQb-0006Wj-BO
+ for ath10k@lists.infradead.org; Fri, 08 Apr 2016 15:34:34 +0000
+From: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Subject: Re: ath10k performance, master branch from 20160407
+Date: Fri, 8 Apr 2016 15:34:04 +0000
+Message-ID: <1460129643950.46282@qti.qualcomm.com>
+References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
+In-Reply-To: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Date: Fri, 8 Apr 2016 17:44:38 +0300
-Message-ID: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
-Subject: ath10k performance, master branch from 20160407
-From: Roman Yeryomin <leroi.lists@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,7 +23,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
+To: Roman Yeryomin <leroi.lists@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>
+
+Roman,
+
+Which backports version are you using? I don't see codel changes in ath.git/wireless-drivers.git.
+Hope you are using same firmware.
+
+-Rajkumar
+________________________________________
+From: ath10k <ath10k-bounces@lists.infradead.org> on behalf of Roman Yeryomin <leroi.lists@gmail.com>
+Sent: Friday, April 8, 2016 8:14 PM
 To: ath10k@lists.infradead.org
+Subject: ath10k performance, master branch from 20160407
 
 Hello!
 
@@ -76,6 +89,11 @@ would those help or not?
 
 Regards,
 Roman
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
