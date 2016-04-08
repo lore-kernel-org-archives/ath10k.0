@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x22d.google.com ([2607:f8b0:4003:c06::22d])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aoYqE-00021V-5a
- for ath10k@lists.infradead.org; Fri, 08 Apr 2016 16:01:02 +0000
-Received: by mail-oi0-x22d.google.com with SMTP id p188so140975761oih.2
- for <ath10k@lists.infradead.org>; Fri, 08 Apr 2016 09:00:41 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1460129643950.46282@qti.qualcomm.com>
+ id 1aoZTo-00020v-5s
+ for ath10k@lists.infradead.org; Fri, 08 Apr 2016 16:41:56 +0000
+From: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Subject: RE: ath10k performance, master branch from 20160407
+Date: Fri, 8 Apr 2016 16:41:27 +0000
+Message-ID: <ab762b501abc457aa1dbf965895eb113@aphydexm01b.ap.qualcomm.com>
 References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
- <1460129643950.46282@qti.qualcomm.com>
-Date: Fri, 8 Apr 2016 19:00:41 +0300
-Message-ID: <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
-Subject: Re: ath10k performance, master branch from 20160407
-From: Roman Yeryomin <leroi.lists@gmail.com>
+ <1460129643950.46282@qti.qualcomm.com>,
+ <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
+In-Reply-To: <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,8 +25,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+To: Roman Yeryomin <leroi.lists@gmail.com>
 Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+
+That should be fine. Is codel running only for latest backports? Are there any openwrt changes to configure codel? Can you plz try to reset master branch to older commit and validate?
+
+-Rajkumar
+________________________________________
+From: Roman Yeryomin [leroi.lists@gmail.com]
+Sent: Friday, April 8, 2016 9:30 PM
+To: Manoharan, Rajkumar
+Cc: ath10k@lists.infradead.org; Rajkumar Manoharan
+Subject: Re: ath10k performance, master branch from 20160407
 
 Rajkumar,
 
