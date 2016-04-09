@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x22e.google.com ([2607:f8b0:4003:c06::22e])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aoa49-00033q-CC
- for ath10k@lists.infradead.org; Fri, 08 Apr 2016 17:19:30 +0000
-Received: by mail-oi0-x22e.google.com with SMTP id y204so143617769oie.3
- for <ath10k@lists.infradead.org>; Fri, 08 Apr 2016 10:19:09 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <ab762b501abc457aa1dbf965895eb113@aphydexm01b.ap.qualcomm.com>
+ id 1aok6b-0005lT-KJ
+ for ath10k@lists.infradead.org; Sat, 09 Apr 2016 04:02:43 +0000
+From: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Subject: Re: ath10k performance, master branch from 20160407
+Date: Sat, 9 Apr 2016 04:02:06 +0000
+Message-ID: <1460174525702.66744@qti.qualcomm.com>
 References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
  <1460129643950.46282@qti.qualcomm.com>
  <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
- <ab762b501abc457aa1dbf965895eb113@aphydexm01b.ap.qualcomm.com>
-Date: Fri, 8 Apr 2016 20:19:08 +0300
-Message-ID: <CACiydbL3-QoC=muZf4aJOaUWZN-tpA3h1SwNfYU3+LnY_FHF+g@mail.gmail.com>
-Subject: Re: ath10k performance, master branch from 20160407
-From: Roman Yeryomin <leroi.lists@gmail.com>
+ <ab762b501abc457aa1dbf965895eb113@aphydexm01b.ap.qualcomm.com>,
+ <CACiydbL3-QoC=muZf4aJOaUWZN-tpA3h1SwNfYU3+LnY_FHF+g@mail.gmail.com>
+In-Reply-To: <CACiydbL3-QoC=muZf4aJOaUWZN-tpA3h1SwNfYU3+LnY_FHF+g@mail.gmail.com>
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,8 +27,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+To: Roman Yeryomin <leroi.lists@gmail.com>
 Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+
+Roman,
+
+Need your help to bisect regression point. Can you try w/o CPTCFG_NET_SCH_FQ_CODEL?
+If it does not help, try reverting below commits which are major changes in data path.
+Instead of generating backports, apply revert commit on top your backports.
+
+ath10k: combine txrx and replenish task 
+ath10k: reuse copy engine 5 (htt rx) descriptors        
+ath10k: cleanup copy engine receive next completion     
+ath10k: register ath10k_htt_htc_t2h_msg_handler 
+ath10k: speedup htt rx descriptor processing for rx_ind 
+ath10k: cleanup amsdu processing for rx indication      
+ath10k: remove unused fw_desc processing        
+ath10k: copy tx fetch indication message        
+ath10k: speedup htt rx descriptor processing for tx completion  
+ath10k: fix null deref if device crashes early  
+ath10k: fix pull-push tx threshold handling     
+ath10k: fix tx hang     
+ath10k: move mgmt descriptor limit handle under mgmt_tx 
+ath10k: change htt tx desc/qcache peer limit config     
+ath10k: fix HTT Tx CE ring size 
+ath10k: implement push-pull tx  
+ath10k: keep track of queue depth per txq       
+ath10k: store txq in skb_cb
+ath10k: implement updating shared htt txq state 
+ath10k: implement wake_tx_queue 
+ath10k: add new htt message generation/parsing logic    
+ath10k: add fast peer_map lookup        
+ath10k: maintain peer_id for each sta and vif   
+ath10k: refactor tx pending management  
+ath10k: unify txpath decision   
+ath10k: refactor tx code
+
+-Rajkumar
+________________________________________
+From: Roman Yeryomin <leroi.lists@gmail.com>
+Sent: Friday, April 8, 2016 10:49 PM
+To: Manoharan, Rajkumar
+Cc: ath10k@lists.infradead.org; Rajkumar Manoharan
+Subject: Re: ath10k performance, master branch from 20160407
 
 Latest backports (compat-wireless) released (20160110) has codel
 enabled (CPTCFG_NET_SCH_FQ_CODEL=y) and there are no openwrt patches
@@ -132,7 +173,6 @@ On 8 April 2016 at 19:41, Manoharan, Rajkumar <rmanohar@qti.qualcomm.com> wrote:
 >> ath10k mailing list
 >> ath10k@lists.infradead.org
 >> http://lists.infradead.org/mailman/listinfo/ath10k
-
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
