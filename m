@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from aserp1040.oracle.com ([141.146.126.69])
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1apW2a-0005MD-Nd
- for ath10k@lists.infradead.org; Mon, 11 Apr 2016 07:13:45 +0000
-Date: Mon, 11 Apr 2016 10:12:58 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: re: ath10k: implement updating shared htt txq state
-Message-ID: <20160411071258.GA10739@mwanda>
+ id 1apWMT-0008Ag-9Q
+ for ath10k@lists.infradead.org; Mon, 11 Apr 2016 07:34:18 +0000
+Received: by mail-wm0-x231.google.com with SMTP id l6so133512047wml.1
+ for <ath10k@lists.infradead.org>; Mon, 11 Apr 2016 00:33:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
+In-Reply-To: <20160411071258.GA10739@mwanda>
+References: <20160411071258.GA10739@mwanda>
+Date: Mon, 11 Apr 2016 09:33:43 +0200
+Message-ID: <CA+BoTQk=evy7fzNH1BPoXWi6AqhuVS7aVc0kJahBvDMMPAVuzg@mail.gmail.com>
+Subject: Re: ath10k: implement updating shared htt txq state
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,63 +20,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: michal.kazior@tieto.com
-Cc: ath10k@lists.infradead.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hello Michal Kazior,
-
-This is a semi-automatic email about new static checker warnings.
-
-The patch c1a43d9720d8: "ath10k: implement updating shared htt txq 
-state" from Mar 6, 2016, leads to the following Smatch complaint:
-
-drivers/net/wireless/ath/ath10k/htt_tx.c:70 __ath10k_htt_tx_txq_recalc()
-	 warn: variable dereferenced before check 'txq->sta' (see line 52)
-
-drivers/net/wireless/ath/ath10k/htt_tx.c
-    51		struct ath10k *ar = hw->priv;
-    52		struct ath10k_sta *arsta = (void *)txq->sta->drv_priv;
-                                                   ^^^^^^^^^^
-New dererence.
-
-    53		struct ath10k_vif *arvif = (void *)txq->vif->drv_priv;
-    54		unsigned long frame_cnt;
-    55		unsigned long byte_cnt;
-    56		int idx;
-    57		u32 bit;
-    58		u16 peer_id;
-    59		u8 tid;
-    60		u8 count;
-    61	
-    62		lockdep_assert_held(&ar->htt.tx_lock);
-    63	
-    64		if (!ar->htt.tx_q_state.enabled)
-    65			return;
-    66	
-    67		if (ar->htt.tx_q_state.mode != HTT_TX_MODE_SWITCH_PUSH_PULL)
-    68			return;
-    69	
-    70		if (txq->sta)
-                    ^^^^^^^^
-New check.
-
-    71			peer_id = arsta->peer_id;
-    72		else
-
-There are several new warnings.  See also:
-
-drivers/net/wireless/ath/ath10k/txrx.c:86 ath10k_txrx_tx_unref() warn: variable dereferenced before check 'txq' (see line 84)
-drivers/net/wireless/ath/ath10k/mac.c:3629 ath10k_mac_txq_init() warn: variable dereferenced before check 'txq' (see line 3627)
-drivers/net/wireless/ath/ath10k/mac.c:3642 ath10k_mac_txq_unref() warn: variable dereferenced before check 'txq' (see line 3637)
-
-regards,
-dan carpenter
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTEgQXByaWwgMjAxNiBhdCAwOToxMiwgRGFuIENhcnBlbnRlciA8ZGFuLmNhcnBlbnRlckBv
+cmFjbGUuY29tPiB3cm90ZToKPiBIZWxsbyBNaWNoYWwgS2F6aW9yLAo+Cj4gVGhpcyBpcyBhIHNl
+bWktYXV0b21hdGljIGVtYWlsIGFib3V0IG5ldyBzdGF0aWMgY2hlY2tlciB3YXJuaW5ncy4KPgo+
+IFRoZSBwYXRjaCBjMWE0M2Q5NzIwZDg6ICJhdGgxMGs6IGltcGxlbWVudCB1cGRhdGluZyBzaGFy
+ZWQgaHR0IHR4cQo+IHN0YXRlIiBmcm9tIE1hciA2LCAyMDE2LCBsZWFkcyB0byB0aGUgZm9sbG93
+aW5nIFNtYXRjaCBjb21wbGFpbnQ6Cj4KPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L2h0dF90eC5jOjcwIF9fYXRoMTBrX2h0dF90eF90eHFfcmVjYWxjKCkKPiAgICAgICAgICB3YXJu
+OiB2YXJpYWJsZSBkZXJlZmVyZW5jZWQgYmVmb3JlIGNoZWNrICd0eHEtPnN0YScgKHNlZSBsaW5l
+IDUyKQo+Cj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfdHguYwo+ICAgICA1
+MSAgICAgICAgICBzdHJ1Y3QgYXRoMTBrICphciA9IGh3LT5wcml2Owo+ICAgICA1MiAgICAgICAg
+ICBzdHJ1Y3QgYXRoMTBrX3N0YSAqYXJzdGEgPSAodm9pZCAqKXR4cS0+c3RhLT5kcnZfcHJpdjsK
+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeXl5e
+Xl5eXl5eCj4gTmV3IGRlcmVyZW5jZS4KPgo+ICAgICA1MyAgICAgICAgICBzdHJ1Y3QgYXRoMTBr
+X3ZpZiAqYXJ2aWYgPSAodm9pZCAqKXR4cS0+dmlmLT5kcnZfcHJpdjsKPiAgICAgNTQgICAgICAg
+ICAgdW5zaWduZWQgbG9uZyBmcmFtZV9jbnQ7Cj4gICAgIDU1ICAgICAgICAgIHVuc2lnbmVkIGxv
+bmcgYnl0ZV9jbnQ7Cj4gICAgIDU2ICAgICAgICAgIGludCBpZHg7Cj4gICAgIDU3ICAgICAgICAg
+IHUzMiBiaXQ7Cj4gICAgIDU4ICAgICAgICAgIHUxNiBwZWVyX2lkOwo+ICAgICA1OSAgICAgICAg
+ICB1OCB0aWQ7Cj4gICAgIDYwICAgICAgICAgIHU4IGNvdW50Owo+ICAgICA2MQo+ICAgICA2MiAg
+ICAgICAgICBsb2NrZGVwX2Fzc2VydF9oZWxkKCZhci0+aHR0LnR4X2xvY2spOwo+ICAgICA2Mwo+
+ICAgICA2NCAgICAgICAgICBpZiAoIWFyLT5odHQudHhfcV9zdGF0ZS5lbmFibGVkKQo+ICAgICA2
+NSAgICAgICAgICAgICAgICAgIHJldHVybjsKPiAgICAgNjYKPiAgICAgNjcgICAgICAgICAgaWYg
+KGFyLT5odHQudHhfcV9zdGF0ZS5tb2RlICE9IEhUVF9UWF9NT0RFX1NXSVRDSF9QVVNIX1BVTEwp
+Cj4gICAgIDY4ICAgICAgICAgICAgICAgICAgcmV0dXJuOwo+ICAgICA2OQo+ICAgICA3MCAgICAg
+ICAgICBpZiAodHhxLT5zdGEpCj4gICAgICAgICAgICAgICAgICAgICBeXl5eXl5eXgo+IE5ldyBj
+aGVjay4KPgo+ICAgICA3MSAgICAgICAgICAgICAgICAgIHBlZXJfaWQgPSBhcnN0YS0+cGVlcl9p
+ZDsKPiAgICAgNzIgICAgICAgICAgZWxzZQo+Cj4gVGhlcmUgYXJlIHNldmVyYWwgbmV3IHdhcm5p
+bmdzLiAgU2VlIGFsc286CgpUaGlzIGlzIGEgZmFsc2UgcG9zaXRpdmUuCgpUaGUgYHR4cS0+c3Rh
+LT5kcnZfcHJpdmAgaXMgYSBkeW5hbWljIGFycmF5IHdoaWNoIGlzIGJhc2ljYWxseSBlcXVhbAp0
+byBgKHZvaWQgKil0eHEtPnN0YSArIG9mZnNldG9mKHN0cnVjdCBpZWVlODAyMTFfc3RhLCBkcnZf
+cHJpdilgLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
