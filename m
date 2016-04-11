@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from userp1040.oracle.com ([156.151.31.81])
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1apWX2-00066e-3n
- for ath10k@lists.infradead.org; Mon, 11 Apr 2016 07:45:13 +0000
-Date: Mon, 11 Apr 2016 10:44:38 +0300
+ id 1apWZV-0008Tb-NN
+ for ath10k@lists.infradead.org; Mon, 11 Apr 2016 07:47:46 +0000
+Date: Mon, 11 Apr 2016 10:47:15 +0300
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ath10k: add some sanity checks
-Message-ID: <20160411074438.GA15227@mwanda>
+Subject: Re: ath10k: implement updating shared htt txq state
+Message-ID: <20160411074715.GB4247@mwanda>
+References: <20160411071258.GA10739@mwanda>
+ <CA+BoTQk=evy7fzNH1BPoXWi6AqhuVS7aVc0kJahBvDMMPAVuzg@mail.gmail.com>
+ <20160411074401.GA4247@mwanda>
 MIME-Version: 1.0
 Content-Disposition: inline
+In-Reply-To: <20160411074401.GA4247@mwanda>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,40 +25,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
-Cc: kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Smatch complains that since "ev->peer_id" comes from skb->data that
-means we can't trust it and have to do a bounds check on it to prevent
-an array overflow.
+On Mon, Apr 11, 2016 at 10:44:01AM +0300, Dan Carpenter wrote:
+> On Mon, Apr 11, 2016 at 09:33:43AM +0200, Michal Kazior wrote:
+> > > There are several new warnings.  See also:
+> > 
+> > This is a false positive.
+> > 
+> > The `txq->sta->drv_priv` is a dynamic array which is basically equal
+> > to `(void *)txq->sta + offsetof(struct ieee80211_sta, drv_priv)`.
+> 
+> Ah, yeah.  You're right.  The other warning should be fixed though.
 
-Fixes: 6942726f7f7b ('ath10k: add fast peer_map lookup')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Actually they're all false positives too.  Sorry about that.  Sort of
+ugly and avoidable though...
 
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 9369411..fd6ba69 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -190,6 +190,9 @@ void ath10k_peer_map_event(struct ath10k_htt *htt,
- 	struct ath10k *ar = htt->ar;
- 	struct ath10k_peer *peer;
- 
-+	if (ev->peer_id >= ATH10K_MAX_NUM_PEER_IDS)
-+		return;
-+
- 	spin_lock_bh(&ar->data_lock);
- 	peer = ath10k_peer_find(ar, ev->vdev_id, ev->addr);
- 	if (!peer) {
-@@ -218,6 +221,9 @@ void ath10k_peer_unmap_event(struct ath10k_htt *htt,
- 	struct ath10k *ar = htt->ar;
- 	struct ath10k_peer *peer;
- 
-+	if (ev->peer_id >= ATH10K_MAX_NUM_PEER_IDS)
-+		return;
-+
- 	spin_lock_bh(&ar->data_lock);
- 	peer = ath10k_peer_find_by_id(ar, ev->peer_id);
- 	if (!peer) {
+regards,
+dan carpenter
+
 
 _______________________________________________
 ath10k mailing list
