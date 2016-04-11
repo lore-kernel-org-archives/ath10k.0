@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
+Received: from userp1040.oracle.com ([156.151.31.81])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1apWMT-0008Ag-9Q
- for ath10k@lists.infradead.org; Mon, 11 Apr 2016 07:34:18 +0000
-Received: by mail-wm0-x231.google.com with SMTP id l6so133512047wml.1
- for <ath10k@lists.infradead.org>; Mon, 11 Apr 2016 00:33:44 -0700 (PDT)
+ id 1apWX2-00066e-3n
+ for ath10k@lists.infradead.org; Mon, 11 Apr 2016 07:45:13 +0000
+Date: Mon, 11 Apr 2016 10:44:38 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ath10k: add some sanity checks
+Message-ID: <20160411074438.GA15227@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <20160411071258.GA10739@mwanda>
-References: <20160411071258.GA10739@mwanda>
-Date: Mon, 11 Apr 2016 09:33:43 +0200
-Message-ID: <CA+BoTQk=evy7fzNH1BPoXWi6AqhuVS7aVc0kJahBvDMMPAVuzg@mail.gmail.com>
-Subject: Re: ath10k: implement updating shared htt txq state
-From: Michal Kazior <michal.kazior@tieto.com>
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +17,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
+Cc: kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMTEgQXByaWwgMjAxNiBhdCAwOToxMiwgRGFuIENhcnBlbnRlciA8ZGFuLmNhcnBlbnRlckBv
-cmFjbGUuY29tPiB3cm90ZToKPiBIZWxsbyBNaWNoYWwgS2F6aW9yLAo+Cj4gVGhpcyBpcyBhIHNl
-bWktYXV0b21hdGljIGVtYWlsIGFib3V0IG5ldyBzdGF0aWMgY2hlY2tlciB3YXJuaW5ncy4KPgo+
-IFRoZSBwYXRjaCBjMWE0M2Q5NzIwZDg6ICJhdGgxMGs6IGltcGxlbWVudCB1cGRhdGluZyBzaGFy
-ZWQgaHR0IHR4cQo+IHN0YXRlIiBmcm9tIE1hciA2LCAyMDE2LCBsZWFkcyB0byB0aGUgZm9sbG93
-aW5nIFNtYXRjaCBjb21wbGFpbnQ6Cj4KPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
-L2h0dF90eC5jOjcwIF9fYXRoMTBrX2h0dF90eF90eHFfcmVjYWxjKCkKPiAgICAgICAgICB3YXJu
-OiB2YXJpYWJsZSBkZXJlZmVyZW5jZWQgYmVmb3JlIGNoZWNrICd0eHEtPnN0YScgKHNlZSBsaW5l
-IDUyKQo+Cj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfdHguYwo+ICAgICA1
-MSAgICAgICAgICBzdHJ1Y3QgYXRoMTBrICphciA9IGh3LT5wcml2Owo+ICAgICA1MiAgICAgICAg
-ICBzdHJ1Y3QgYXRoMTBrX3N0YSAqYXJzdGEgPSAodm9pZCAqKXR4cS0+c3RhLT5kcnZfcHJpdjsK
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeXl5e
-Xl5eXl5eCj4gTmV3IGRlcmVyZW5jZS4KPgo+ICAgICA1MyAgICAgICAgICBzdHJ1Y3QgYXRoMTBr
-X3ZpZiAqYXJ2aWYgPSAodm9pZCAqKXR4cS0+dmlmLT5kcnZfcHJpdjsKPiAgICAgNTQgICAgICAg
-ICAgdW5zaWduZWQgbG9uZyBmcmFtZV9jbnQ7Cj4gICAgIDU1ICAgICAgICAgIHVuc2lnbmVkIGxv
-bmcgYnl0ZV9jbnQ7Cj4gICAgIDU2ICAgICAgICAgIGludCBpZHg7Cj4gICAgIDU3ICAgICAgICAg
-IHUzMiBiaXQ7Cj4gICAgIDU4ICAgICAgICAgIHUxNiBwZWVyX2lkOwo+ICAgICA1OSAgICAgICAg
-ICB1OCB0aWQ7Cj4gICAgIDYwICAgICAgICAgIHU4IGNvdW50Owo+ICAgICA2MQo+ICAgICA2MiAg
-ICAgICAgICBsb2NrZGVwX2Fzc2VydF9oZWxkKCZhci0+aHR0LnR4X2xvY2spOwo+ICAgICA2Mwo+
-ICAgICA2NCAgICAgICAgICBpZiAoIWFyLT5odHQudHhfcV9zdGF0ZS5lbmFibGVkKQo+ICAgICA2
-NSAgICAgICAgICAgICAgICAgIHJldHVybjsKPiAgICAgNjYKPiAgICAgNjcgICAgICAgICAgaWYg
-KGFyLT5odHQudHhfcV9zdGF0ZS5tb2RlICE9IEhUVF9UWF9NT0RFX1NXSVRDSF9QVVNIX1BVTEwp
-Cj4gICAgIDY4ICAgICAgICAgICAgICAgICAgcmV0dXJuOwo+ICAgICA2OQo+ICAgICA3MCAgICAg
-ICAgICBpZiAodHhxLT5zdGEpCj4gICAgICAgICAgICAgICAgICAgICBeXl5eXl5eXgo+IE5ldyBj
-aGVjay4KPgo+ICAgICA3MSAgICAgICAgICAgICAgICAgIHBlZXJfaWQgPSBhcnN0YS0+cGVlcl9p
-ZDsKPiAgICAgNzIgICAgICAgICAgZWxzZQo+Cj4gVGhlcmUgYXJlIHNldmVyYWwgbmV3IHdhcm5p
-bmdzLiAgU2VlIGFsc286CgpUaGlzIGlzIGEgZmFsc2UgcG9zaXRpdmUuCgpUaGUgYHR4cS0+c3Rh
-LT5kcnZfcHJpdmAgaXMgYSBkeW5hbWljIGFycmF5IHdoaWNoIGlzIGJhc2ljYWxseSBlcXVhbAp0
-byBgKHZvaWQgKil0eHEtPnN0YSArIG9mZnNldG9mKHN0cnVjdCBpZWVlODAyMTFfc3RhLCBkcnZf
-cHJpdilgLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Smatch complains that since "ev->peer_id" comes from skb->data that
+means we can't trust it and have to do a bounds check on it to prevent
+an array overflow.
+
+Fixes: 6942726f7f7b ('ath10k: add fast peer_map lookup')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 9369411..fd6ba69 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -190,6 +190,9 @@ void ath10k_peer_map_event(struct ath10k_htt *htt,
+ 	struct ath10k *ar = htt->ar;
+ 	struct ath10k_peer *peer;
+ 
++	if (ev->peer_id >= ATH10K_MAX_NUM_PEER_IDS)
++		return;
++
+ 	spin_lock_bh(&ar->data_lock);
+ 	peer = ath10k_peer_find(ar, ev->vdev_id, ev->addr);
+ 	if (!peer) {
+@@ -218,6 +221,9 @@ void ath10k_peer_unmap_event(struct ath10k_htt *htt,
+ 	struct ath10k *ar = htt->ar;
+ 	struct ath10k_peer *peer;
+ 
++	if (ev->peer_id >= ATH10K_MAX_NUM_PEER_IDS)
++		return;
++
+ 	spin_lock_bh(&ar->data_lock);
+ 	peer = ath10k_peer_find_by_id(ar, ev->peer_id);
+ 	if (!peer) {
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
