@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mout.kundenserver.de ([212.227.126.135])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1appjZ-0003PV-DE
- for ath10k@lists.infradead.org; Tue, 12 Apr 2016 04:15:26 +0000
-From: tamizhchelvam@codeaurora.org
-Subject: [PATCH v2] qcom: ipq4019: add wifi nodes to ipq4019 SoC device tree
-Date: Tue, 12 Apr 2016 09:48:06 +0530
-Message-Id: <1460434686-23010-1-git-send-email-tamizhchelvam@codeaurora.org>
+ id 1apvNW-0001IM-PI
+ for ath10k@lists.infradead.org; Tue, 12 Apr 2016 10:17:04 +0000
+Subject: Re: ath10k performance, master branch from 20160407
+References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
+ <1460129643950.46282@qti.qualcomm.com>
+ <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
+From: Xue Liu <xue.liu@dks-koeln.de>
+Message-ID: <20b024d0-9b33-39fd-c96a-189ed5bf2a4f@dks-koeln.de>
+Date: Tue, 12 Apr 2016 12:16:29 +0200
+MIME-Version: 1.0
+In-Reply-To: <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,142 +20,115 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: agross@codeaurora.org, devicetree@vger.kernel.org
-Cc: linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, c_traja@qti.qualcomm.com, Raja Mani <rmani@codeaurora.org>, Tamizh chelvam <tamizhchelvam@codeaurora.org>
+To: Roman Yeryomin <leroi.lists@gmail.com>, "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>
 
-From: Raja Mani <rmani@codeaurora.org>
+Hello Roman,
 
-Include dts support for two wifi block present on ipq4019 SoC.
-Corresponding dt binding documentation has been added in ath.git as below
-commit id a47aaa69 and the commit message is
-"dt: bindings: add new dt entry for pre calibration in qcom, ath10k.txt".
+I am also working on the 10k testing with armada 388 + QCA9880 and 
+OpenWRT trunk (compat-wireless 20160110).
 
-Signed-off-by: Raja Mani <rmani@codeaurora.org>
-Signed-off-by: Tamizh chelvam <tamizhchelvam@codeaurora.org>
----
-v2:
 
-  - Fixed Commit log
-  - Added new Signed off
+On 08/04/16 18:00, Roman Yeryomin wrote:
+> Rajkumar,
+>
+> I took backports from
+> git://git.kernel.org/pub/scm/linux/kernel/git/backports/backports.git,
+> took latest ath tree from
+> git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git, generated
+> backports-output based on ath master branch, refreshed openwrt
+> patches.
+Can you share how to refreshed openwrt patches to include latest patches 
+from ath10k. I have also get backports-output from ath10k kernel, but I 
+don't know how to use them. Thank you.
 
- arch/arm/boot/dts/qcom-ipq4019.dtsi |   98 +++++++++++++++++++++++++++++++++++
- 1 file changed, 98 insertions(+)
+Regards,
 
-diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-index b486859..80bbe02 100644
---- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
-+++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-@@ -379,5 +379,103 @@
- 			compatible = "qcom,pshold";
- 			reg = <0x4ab000 0x4>;
- 		};
-+
-+		wifi0: wifi@a000000 {
-+			compatible = "qcom,ipq4019-wifi";
-+			reg = <0xa000000 0x200000>;
-+			resets = <&gcc WIFI0_CPU_INIT_RESET>,
-+				 <&gcc WIFI0_RADIO_SRIF_RESET>,
-+				 <&gcc WIFI0_RADIO_WARM_RESET>,
-+				 <&gcc WIFI0_RADIO_COLD_RESET>,
-+				 <&gcc WIFI0_CORE_WARM_RESET>,
-+				 <&gcc WIFI0_CORE_COLD_RESET>;
-+			reset-names = "wifi_cpu_init",
-+				      "wifi_radio_srif",
-+				      "wifi_radio_warm",
-+				      "wifi_radio_cold",
-+				      "wifi_core_warm",
-+				      "wifi_core_cold";
-+			clocks = <&gcc GCC_WCSS2G_CLK>,
-+				 <&gcc GCC_WCSS2G_REF_CLK>,
-+				 <&gcc GCC_WCSS2G_RTC_CLK>;
-+			clock-names = "wifi_wcss_cmd",
-+				      "wifi_wcss_ref",
-+				      "wifi_wcss_rtc";
-+			interrupts = <0 0x20 0x1>,
-+				     <0 0x21 0x1>,
-+				     <0 0x22 0x1>,
-+				     <0 0x23 0x1>,
-+				     <0 0x24 0x1>,
-+				     <0 0x25 0x1>,
-+				     <0 0x26 0x1>,
-+				     <0 0x27 0x1>,
-+				     <0 0x28 0x1>,
-+				     <0 0x29 0x1>,
-+				     <0 0x2a 0x1>,
-+				     <0 0x2b 0x1>,
-+				     <0 0x2c 0x1>,
-+				     <0 0x2d 0x1>,
-+				     <0 0x2e 0x1>,
-+				     <0 0x2f 0x1>,
-+				     <0 0xa8 0x0>;
-+			interrupt-names = "msi0",  "msi1",  "msi2",  "msi3",
-+					  "msi4",  "msi5",  "msi6",  "msi7",
-+					  "msi8",  "msi9",  "msi10", "msi11",
-+					  "msi12", "msi13", "msi14", "msi15",
-+					  "legacy";
-+			status = "disabled";
-+			qcom,msi_addr = <0x0b006040>;
-+			qcom,msi_base = <0x40>;
-+			qcom,ath10k-pre-calibration-data = [00];
-+		};
-+
-+		wifi1: wifi@a800000 {
-+			compatible = "qcom,ipq4019-wifi";
-+			reg = <0xa800000 0x200000>;
-+			resets = <&gcc WIFI1_CPU_INIT_RESET>,
-+				 <&gcc WIFI1_RADIO_SRIF_RESET>,
-+				 <&gcc WIFI1_RADIO_WARM_RESET>,
-+				 <&gcc WIFI1_RADIO_COLD_RESET>,
-+				 <&gcc WIFI1_CORE_WARM_RESET>,
-+				 <&gcc WIFI1_CORE_COLD_RESET>;
-+			reset-names = "wifi_cpu_init",
-+				      "wifi_radio_srif",
-+				      "wifi_radio_warm",
-+				      "wifi_radio_cold",
-+				      "wifi_core_warm",
-+				      "wifi_core_cold";
-+			clocks = <&gcc GCC_WCSS5G_CLK>,
-+				 <&gcc GCC_WCSS5G_REF_CLK>,
-+				 <&gcc GCC_WCSS5G_RTC_CLK>;
-+			clock-names = "wifi_wcss_cmd",
-+				      "wifi_wcss_ref",
-+				      "wifi_wcss_rtc";
-+			interrupts = <0 0x30 0x1>,
-+				     <0 0x31 0x1>,
-+				     <0 0x32 0x1>,
-+				     <0 0x33 0x1>,
-+				     <0 0x34 0x1>,
-+				     <0 0x35 0x1>,
-+				     <0 0x36 0x1>,
-+				     <0 0x37 0x1>,
-+				     <0 0x38 0x1>,
-+				     <0 0x39 0x1>,
-+				     <0 0x3a 0x1>,
-+				     <0 0x3b 0x1>,
-+				     <0 0x3c 0x1>,
-+				     <0 0x3d 0x1>,
-+				     <0 0x3e 0x1>,
-+				     <0 0x3f 0x1>,
-+				     <0 0xa9 0x0>;
-+			interrupt-names = "msi0",  "msi1",  "msi2",  "msi3",
-+					  "msi4",  "msi5",  "msi6",  "msi7",
-+					  "msi8",  "msi9",  "msi10", "msi11",
-+					  "msi12", "msi13", "msi14", "msi15",
-+					  "legacy";
-+			status = "disabled";
-+			qcom,msi_addr = <0x0b006040>;
-+			qcom,msi_base = <0x50>;
-+			qcom,ath10k-pre-calibration-data = [00];
-+		};
- 	};
- };
--- 
-1.7.9.5
+Xue Liu
+> And saw big performance degradation. Am I doing something wrong?
+>
+> Regards,
+> Roman
+>
+> On 8 April 2016 at 18:34, Manoharan, Rajkumar <rmanohar@qti.qualcomm.com> wrote:
+>> Roman,
+>>
+>> Which backports version are you using? I don't see codel changes in ath.git/wireless-drivers.git.
+>> Hope you are using same firmware.
+>>
+>> -Rajkumar
+>> ________________________________________
+>> From: ath10k <ath10k-bounces@lists.infradead.org> on behalf of Roman Yeryomin <leroi.lists@gmail.com>
+>> Sent: Friday, April 8, 2016 8:14 PM
+>> To: ath10k@lists.infradead.org
+>> Subject: ath10k performance, master branch from 20160407
+>>
+>> Hello!
+>>
+>> I've seen performance patches were commited so I've decided to give it
+>> a try (using 4.1 kernel and backports).
+>> The results are quite disappointing: TCP download (client pov) dropped
+>> from 750Mbps to ~550 and UDP shows completely weird behavour - if
+>> generating 900Mbps it gives 30Mbps max, if generating 300Mbps it gives
+>> 250Mbps, before (latest official backports release from January) I was
+>> able to get 900Mbps.
+>> Hardware is basically ap152 + qca988x 3x3.
+>> When running perf top I see that fq_codel_drop eats a lot of cpu.
+>> Here is the output when running iperf3 UDP test:
+>>
+>>      45.78%  [kernel]       [k] fq_codel_drop
+>>       3.05%  [kernel]       [k] ag71xx_poll
+>>       2.18%  [kernel]       [k] skb_release_data
+>>       2.01%  [kernel]       [k] r4k_dma_cache_inv
+>>       1.73%  [kernel]       [k] eth_type_trans
+>>       1.24%  [kernel]       [k] build_skb
+>>       1.20%  [mac80211]     [k] ieee80211_tx_dequeue
+>>       1.03%  [kernel]       [k] __delay
+>>       0.98%  [kernel]       [k] fq_codel_enqueue
+>>       0.94%  [kernel]       [k] __netif_receive_skb_core
+>>       0.93%  [kernel]       [k] skb_release_head_state
+>>       0.88%  [ath10k_core]  [k] ath10k_htt_tx
+>>       0.87%  [kernel]       [k] __dev_queue_xmit
+>>       0.84%  [mac80211]     [k] ieee80211_tx_status
+>>       0.81%  [kernel]       [k] __build_skb
+>>       0.80%  [mac80211]     [k] __ieee80211_subif_start_xmit
+>>       0.77%  [kernel]       [k] br_handle_frame_finish
+>>       0.75%  [kernel]       [k] __qdisc_run
+>>       0.73%  [kernel]       [k] skb_recycler_consume
+>>       0.72%  [kernel]       [k] kfree_skb
+>>       0.72%  [kernel]       [k] get_page_from_freelist
+>>       0.69%  [kernel]       [k] br_fdb_update
+>>       0.69%  [kernel]       [k] br_handle_frame
+>>       0.67%  [kernel]       [k] __copy_user_common
+>>       0.66%  [kernel]       [k] __skb_flow_dissect
+>>       0.65%  [ath10k_core]  [k] ath10k_txrx_tx_unref
+>>       0.60%  [kernel]       [k] kmem_cache_alloc
+>>       0.60%  [mac80211]     [k] sta_addr_hash
+>>       0.56%  [kernel]       [k] fq_codel_dequeue
+>>       0.53%  [kernel]       [k] __local_bh_enable_ip
+>>       0.50%  [kernel]       [k] __br_fdb_get
+>>
+>> What could be the reason?
+>> I've seen there are some patches from Michal which touch fq_codel,
+>> would those help or not?
+>>
+>>
+>> Regards,
+>> Roman
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
 
 
 _______________________________________________
