@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.126.135])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1apvNW-0001IM-PI
- for ath10k@lists.infradead.org; Tue, 12 Apr 2016 10:17:04 +0000
-Subject: Re: ath10k performance, master branch from 20160407
-References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
- <1460129643950.46282@qti.qualcomm.com>
- <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
-From: Xue Liu <xue.liu@dks-koeln.de>
-Message-ID: <20b024d0-9b33-39fd-c96a-189ed5bf2a4f@dks-koeln.de>
-Date: Tue, 12 Apr 2016 12:16:29 +0200
+ id 1apzXB-0004QE-8A
+ for ath10k@lists.infradead.org; Tue, 12 Apr 2016 14:43:18 +0000
+From: <c_traja@qti.qualcomm.com>
+Subject: [PATCH] ath10k: add dynamic tx mode switch config support for qca4019
+Date: Tue, 12 Apr 2016 20:15:53 +0530
+Message-ID: <1460472353-4317-1-git-send-email-c_traja@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,115 +16,152 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Roman Yeryomin <leroi.lists@gmail.com>, "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-Hello Roman,
+From: Raja Mani <rmani@qti.qualcomm.com>
 
-I am also working on the 10k testing with armada 388 + QCA9880 and 
-OpenWRT trunk (compat-wireless 20160110).
+push-pull mode needs certain amount the host driver involvement for
+managing queues in the host memory and packet delivery to firmware.
+qca4019 wifi firmware has an option to stay in push mode for less
+number of active traffic flow and then switch to push-pull mode when
+the active traffic flow goes beyond the certain limit.
 
+The advantage of staying in push mode for less active traffic is, the
+host cpu consumption is reduced. qca4019 firmware supports this
+flexibility of the mode switch. It takes the host driver interest
+(LOW_PERF/HIGH_PERF) via WMI_EXT_RESOURCE_CFG_CMDID,
 
-On 08/04/16 18:00, Roman Yeryomin wrote:
-> Rajkumar,
->
-> I took backports from
-> git://git.kernel.org/pub/scm/linux/kernel/git/backports/backports.git,
-> took latest ath tree from
-> git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git, generated
-> backports-output based on ath master branch, refreshed openwrt
-> patches.
-Can you share how to refreshed openwrt patches to include latest patches 
-from ath10k. I have also get backports-output from ath10k kernel, but I 
-don't know how to use them. Thank you.
+ LOW_PERF  - fw would stay in push mode and switch to push-pull
+               based on demand.
+ HIGH_PERF - fw would stay in push-pull mode from the boot.
 
-Regards,
+To make this configuration generic, new WMI services
+WMI_SERVICE_TX_MODE_PUSH_ONLY, WMI_SERVICE_TX_MODE_PUSH_PULL,
+WMI_SERVICE_TX_MODE_DYNAMIC are introduced to take dynamic tx mode
+switch support availability in firmware.
+Based on WMI_SERVICE_TX_MODE_DYNAMIC, LOW_PERF or HIGHT_PERF is
+configured to the firmware.
 
-Xue Liu
-> And saw big performance degradation. Am I doing something wrong?
->
-> Regards,
-> Roman
->
-> On 8 April 2016 at 18:34, Manoharan, Rajkumar <rmanohar@qti.qualcomm.com> wrote:
->> Roman,
->>
->> Which backports version are you using? I don't see codel changes in ath.git/wireless-drivers.git.
->> Hope you are using same firmware.
->>
->> -Rajkumar
->> ________________________________________
->> From: ath10k <ath10k-bounces@lists.infradead.org> on behalf of Roman Yeryomin <leroi.lists@gmail.com>
->> Sent: Friday, April 8, 2016 8:14 PM
->> To: ath10k@lists.infradead.org
->> Subject: ath10k performance, master branch from 20160407
->>
->> Hello!
->>
->> I've seen performance patches were commited so I've decided to give it
->> a try (using 4.1 kernel and backports).
->> The results are quite disappointing: TCP download (client pov) dropped
->> from 750Mbps to ~550 and UDP shows completely weird behavour - if
->> generating 900Mbps it gives 30Mbps max, if generating 300Mbps it gives
->> 250Mbps, before (latest official backports release from January) I was
->> able to get 900Mbps.
->> Hardware is basically ap152 + qca988x 3x3.
->> When running perf top I see that fq_codel_drop eats a lot of cpu.
->> Here is the output when running iperf3 UDP test:
->>
->>      45.78%  [kernel]       [k] fq_codel_drop
->>       3.05%  [kernel]       [k] ag71xx_poll
->>       2.18%  [kernel]       [k] skb_release_data
->>       2.01%  [kernel]       [k] r4k_dma_cache_inv
->>       1.73%  [kernel]       [k] eth_type_trans
->>       1.24%  [kernel]       [k] build_skb
->>       1.20%  [mac80211]     [k] ieee80211_tx_dequeue
->>       1.03%  [kernel]       [k] __delay
->>       0.98%  [kernel]       [k] fq_codel_enqueue
->>       0.94%  [kernel]       [k] __netif_receive_skb_core
->>       0.93%  [kernel]       [k] skb_release_head_state
->>       0.88%  [ath10k_core]  [k] ath10k_htt_tx
->>       0.87%  [kernel]       [k] __dev_queue_xmit
->>       0.84%  [mac80211]     [k] ieee80211_tx_status
->>       0.81%  [kernel]       [k] __build_skb
->>       0.80%  [mac80211]     [k] __ieee80211_subif_start_xmit
->>       0.77%  [kernel]       [k] br_handle_frame_finish
->>       0.75%  [kernel]       [k] __qdisc_run
->>       0.73%  [kernel]       [k] skb_recycler_consume
->>       0.72%  [kernel]       [k] kfree_skb
->>       0.72%  [kernel]       [k] get_page_from_freelist
->>       0.69%  [kernel]       [k] br_fdb_update
->>       0.69%  [kernel]       [k] br_handle_frame
->>       0.67%  [kernel]       [k] __copy_user_common
->>       0.66%  [kernel]       [k] __skb_flow_dissect
->>       0.65%  [ath10k_core]  [k] ath10k_txrx_tx_unref
->>       0.60%  [kernel]       [k] kmem_cache_alloc
->>       0.60%  [mac80211]     [k] sta_addr_hash
->>       0.56%  [kernel]       [k] fq_codel_dequeue
->>       0.53%  [kernel]       [k] __local_bh_enable_ip
->>       0.50%  [kernel]       [k] __br_fdb_get
->>
->> What could be the reason?
->> I've seen there are some patches from Michal which touch fq_codel,
->> would those help or not?
->>
->>
->> Regards,
->> Roman
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
+Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c |  3 +--
+ drivers/net/wireless/ath/ath10k/mac.c  | 20 ++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/mac.h  |  1 +
+ drivers/net/wireless/ath/ath10k/wmi.h  | 15 +++++++++++++++
+ 4 files changed, 37 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index b2c7fe3..1c4106b 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1787,8 +1787,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
+ 		if (ath10k_peer_stats_enabled(ar))
+ 			val = WMI_10_4_PEER_STATS;
+ 
+-		status = ath10k_wmi_ext_resource_config(ar,
+-							WMI_HOST_PLATFORM_HIGH_PERF, val);
++		status = ath10k_mac_ext_resource_config(ar, val);
+ 		if (status) {
+ 			ath10k_err(ar,
+ 				   "failed to send ext resource cfg command : %d\n",
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index b0e613b..de6d1a8 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -157,6 +157,26 @@ ath10k_mac_max_vht_nss(const u16 vht_mcs_mask[NL80211_VHT_NSS_MAX])
+ 	return 1;
+ }
+ 
++int ath10k_mac_ext_resource_config(struct ath10k *ar, u32 val)
++{
++	enum wmi_host_platform_type platform_type;
++	int ret;
++
++	if (test_bit(WMI_SERVICE_TX_MODE_DYNAMIC, ar->wmi.svc_map))
++		platform_type = WMI_HOST_PLATFORM_LOW_PERF;
++	else
++		platform_type = WMI_HOST_PLATFORM_HIGH_PERF;
++
++	ret = ath10k_wmi_ext_resource_config(ar, platform_type, val);
++
++	if (ret && ret != -EOPNOTSUPP) {
++		ath10k_warn(ar, "failed to configure ext resource: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
+ /**********/
+ /* Crypto */
+ /**********/
+diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
+index 2c3327b..1bd29ec 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.h
++++ b/drivers/net/wireless/ath/ath10k/mac.h
+@@ -81,6 +81,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ struct ieee80211_txq *ath10k_mac_txq_lookup(struct ath10k *ar,
+ 					    u16 peer_id,
+ 					    u8 tid);
++int ath10k_mac_ext_resource_config(struct ath10k *ar, u32 val);
+ 
+ static inline struct ath10k_vif *ath10k_vif_to_arvif(struct ieee80211_vif *vif)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index feebd19..a3f1534 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -180,6 +180,9 @@ enum wmi_service {
+ 	WMI_SERVICE_MESH_NON_11S,
+ 	WMI_SERVICE_PEER_STATS,
+ 	WMI_SERVICE_RESTRT_CHNL_SUPPORT,
++	WMI_SERVICE_TX_MODE_PUSH_ONLY,
++	WMI_SERVICE_TX_MODE_PUSH_PULL,
++	WMI_SERVICE_TX_MODE_DYNAMIC,
+ 
+ 	/* keep last */
+ 	WMI_SERVICE_MAX,
+@@ -302,6 +305,9 @@ enum wmi_10_4_service {
+ 	WMI_10_4_SERVICE_RESTRT_CHNL_SUPPORT,
+ 	WMI_10_4_SERVICE_PEER_STATS,
+ 	WMI_10_4_SERVICE_MESH_11S,
++	WMI_10_4_SERVICE_TX_MODE_PUSH_ONLY,
++	WMI_10_4_SERVICE_TX_MODE_PUSH_PULL,
++	WMI_10_4_SERVICE_TX_MODE_DYNAMIC,
+ };
+ 
+ static inline char *wmi_service_name(int service_id)
+@@ -396,6 +402,9 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_MESH_NON_11S);
+ 	SVCSTR(WMI_SERVICE_PEER_STATS);
+ 	SVCSTR(WMI_SERVICE_RESTRT_CHNL_SUPPORT);
++	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_ONLY);
++	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_PULL);
++	SVCSTR(WMI_SERVICE_TX_MODE_DYNAMIC);
+ 	default:
+ 		return NULL;
+ 	}
+@@ -643,6 +652,12 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_PEER_STATS, len);
+ 	SVCMAP(WMI_10_4_SERVICE_MESH_11S,
+ 	       WMI_SERVICE_MESH_11S, len);
++	SVCMAP(WMI_10_4_SERVICE_TX_MODE_PUSH_ONLY,
++	       WMI_SERVICE_TX_MODE_PUSH_ONLY, len);
++	SVCMAP(WMI_10_4_SERVICE_TX_MODE_PUSH_PULL,
++	       WMI_SERVICE_TX_MODE_PUSH_PULL, len);
++	SVCMAP(WMI_10_4_SERVICE_TX_MODE_DYNAMIC,
++	       WMI_SERVICE_TX_MODE_DYNAMIC, len);
+ }
+ 
+ #undef SVCMAP
+-- 
+1.9.1
 
 
 _______________________________________________
