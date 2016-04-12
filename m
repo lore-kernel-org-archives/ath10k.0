@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from aserp1040.oracle.com ([141.146.126.69])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1apX0m-0002Io-VQ
- for ath10k@lists.infradead.org; Mon, 11 Apr 2016 08:15:58 +0000
-Date: Mon, 11 Apr 2016 11:15:20 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch v2] ath10k: add some sanity checks
-Message-ID: <20160411081520.GA17911@mwanda>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+BoTQmpYtGoYk4M-NaFduO8iX0KYgoLz6Mj_40i0um8MqDdww@mail.gmail.com>
+ id 1appTg-0006PC-04
+ for ath10k@lists.infradead.org; Tue, 12 Apr 2016 03:59:01 +0000
+From: tamizhchelvam@codeaurora.org
+Subject: [PATCH] qcom: ipq4019: add wifi nodes to ipq4019 SoC device tree
+Date: Tue, 12 Apr 2016 09:31:46 +0530
+Message-Id: <1460433706-21248-1-git-send-email-tamizhchelvam@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,56 +15,136 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
-Cc: kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: agross@codeaurora.org, devicetree@vger.kernel.org
+Cc: linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, c_traja@qti.qualcomm.com, Raja Mani <rmani@codeaurora.org>, Tamizh chelvam <tamizhchelvam@codeaurora.org>
 
-Smatch complains that since "ev->peer_id" comes from skb->data that
-means we can't trust it and have to do a bounds check on it to prevent
-an array overflow.
+From: Raja Mani <rmani@codeaurora.org>
 
-Fixes: 6942726f7f7b ('ath10k: add fast peer_map lookup')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Include dts support for two wifi block present on ipq4019 SoC.
+Corresponding dt binding documentation has been added in below commit id
+a47aaa69.
+
+Signed-off-by: Tamizh chelvam <tamizhchelvam@codeaurora.org>
 ---
-v2: Add a warning message.  There is a checkpatch.pl warning that
-the alignment should match the open parenthesis but I ignored it because
-we're going off the end of the 80 character limit and this way is fine.
+ arch/arm/boot/dts/qcom-ipq4019.dtsi |   98 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 98 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 9369411..0885fce 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -190,6 +190,13 @@ void ath10k_peer_map_event(struct ath10k_htt *htt,
- 	struct ath10k *ar = htt->ar;
- 	struct ath10k_peer *peer;
- 
-+	if (ev->peer_id >= ATH10K_MAX_NUM_PEER_IDS) {
-+		ath10k_warn(ar,
-+			"received htt peer map event with idx out of bounds: %hu\n",
-+			ev->peer_id);
-+		return;
-+	}
+diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+index b486859..80bbe02 100644
+--- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
++++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+@@ -379,5 +379,103 @@
+ 			compatible = "qcom,pshold";
+ 			reg = <0x4ab000 0x4>;
+ 		};
 +
- 	spin_lock_bh(&ar->data_lock);
- 	peer = ath10k_peer_find(ar, ev->vdev_id, ev->addr);
- 	if (!peer) {
-@@ -218,6 +225,13 @@ void ath10k_peer_unmap_event(struct ath10k_htt *htt,
- 	struct ath10k *ar = htt->ar;
- 	struct ath10k_peer *peer;
- 
-+	if (ev->peer_id >= ATH10K_MAX_NUM_PEER_IDS) {
-+		ath10k_warn(ar,
-+			"received htt peer unmap event with idx out of bounds: %hu\n",
-+			ev->peer_id);
-+		return;
-+	}
++		wifi0: wifi@a000000 {
++			compatible = "qcom,ipq4019-wifi";
++			reg = <0xa000000 0x200000>;
++			resets = <&gcc WIFI0_CPU_INIT_RESET>,
++				 <&gcc WIFI0_RADIO_SRIF_RESET>,
++				 <&gcc WIFI0_RADIO_WARM_RESET>,
++				 <&gcc WIFI0_RADIO_COLD_RESET>,
++				 <&gcc WIFI0_CORE_WARM_RESET>,
++				 <&gcc WIFI0_CORE_COLD_RESET>;
++			reset-names = "wifi_cpu_init",
++				      "wifi_radio_srif",
++				      "wifi_radio_warm",
++				      "wifi_radio_cold",
++				      "wifi_core_warm",
++				      "wifi_core_cold";
++			clocks = <&gcc GCC_WCSS2G_CLK>,
++				 <&gcc GCC_WCSS2G_REF_CLK>,
++				 <&gcc GCC_WCSS2G_RTC_CLK>;
++			clock-names = "wifi_wcss_cmd",
++				      "wifi_wcss_ref",
++				      "wifi_wcss_rtc";
++			interrupts = <0 0x20 0x1>,
++				     <0 0x21 0x1>,
++				     <0 0x22 0x1>,
++				     <0 0x23 0x1>,
++				     <0 0x24 0x1>,
++				     <0 0x25 0x1>,
++				     <0 0x26 0x1>,
++				     <0 0x27 0x1>,
++				     <0 0x28 0x1>,
++				     <0 0x29 0x1>,
++				     <0 0x2a 0x1>,
++				     <0 0x2b 0x1>,
++				     <0 0x2c 0x1>,
++				     <0 0x2d 0x1>,
++				     <0 0x2e 0x1>,
++				     <0 0x2f 0x1>,
++				     <0 0xa8 0x0>;
++			interrupt-names = "msi0",  "msi1",  "msi2",  "msi3",
++					  "msi4",  "msi5",  "msi6",  "msi7",
++					  "msi8",  "msi9",  "msi10", "msi11",
++					  "msi12", "msi13", "msi14", "msi15",
++					  "legacy";
++			status = "disabled";
++			qcom,msi_addr = <0x0b006040>;
++			qcom,msi_base = <0x40>;
++			qcom,ath10k-pre-calibration-data = [00];
++		};
 +
- 	spin_lock_bh(&ar->data_lock);
- 	peer = ath10k_peer_find_by_id(ar, ev->peer_id);
- 	if (!peer) {
++		wifi1: wifi@a800000 {
++			compatible = "qcom,ipq4019-wifi";
++			reg = <0xa800000 0x200000>;
++			resets = <&gcc WIFI1_CPU_INIT_RESET>,
++				 <&gcc WIFI1_RADIO_SRIF_RESET>,
++				 <&gcc WIFI1_RADIO_WARM_RESET>,
++				 <&gcc WIFI1_RADIO_COLD_RESET>,
++				 <&gcc WIFI1_CORE_WARM_RESET>,
++				 <&gcc WIFI1_CORE_COLD_RESET>;
++			reset-names = "wifi_cpu_init",
++				      "wifi_radio_srif",
++				      "wifi_radio_warm",
++				      "wifi_radio_cold",
++				      "wifi_core_warm",
++				      "wifi_core_cold";
++			clocks = <&gcc GCC_WCSS5G_CLK>,
++				 <&gcc GCC_WCSS5G_REF_CLK>,
++				 <&gcc GCC_WCSS5G_RTC_CLK>;
++			clock-names = "wifi_wcss_cmd",
++				      "wifi_wcss_ref",
++				      "wifi_wcss_rtc";
++			interrupts = <0 0x30 0x1>,
++				     <0 0x31 0x1>,
++				     <0 0x32 0x1>,
++				     <0 0x33 0x1>,
++				     <0 0x34 0x1>,
++				     <0 0x35 0x1>,
++				     <0 0x36 0x1>,
++				     <0 0x37 0x1>,
++				     <0 0x38 0x1>,
++				     <0 0x39 0x1>,
++				     <0 0x3a 0x1>,
++				     <0 0x3b 0x1>,
++				     <0 0x3c 0x1>,
++				     <0 0x3d 0x1>,
++				     <0 0x3e 0x1>,
++				     <0 0x3f 0x1>,
++				     <0 0xa9 0x0>;
++			interrupt-names = "msi0",  "msi1",  "msi2",  "msi3",
++					  "msi4",  "msi5",  "msi6",  "msi7",
++					  "msi8",  "msi9",  "msi10", "msi11",
++					  "msi12", "msi13", "msi14", "msi15",
++					  "legacy";
++			status = "disabled";
++			qcom,msi_addr = <0x0b006040>;
++			qcom,msi_base = <0x50>;
++			qcom,ath10k-pre-calibration-data = [00];
++		};
+ 	};
+ };
+-- 
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
