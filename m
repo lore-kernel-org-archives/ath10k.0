@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1appTg-0006PC-04
- for ath10k@lists.infradead.org; Tue, 12 Apr 2016 03:59:01 +0000
+ id 1appjZ-0003PV-DE
+ for ath10k@lists.infradead.org; Tue, 12 Apr 2016 04:15:26 +0000
 From: tamizhchelvam@codeaurora.org
-Subject: [PATCH] qcom: ipq4019: add wifi nodes to ipq4019 SoC device tree
-Date: Tue, 12 Apr 2016 09:31:46 +0530
-Message-Id: <1460433706-21248-1-git-send-email-tamizhchelvam@codeaurora.org>
+Subject: [PATCH v2] qcom: ipq4019: add wifi nodes to ipq4019 SoC device tree
+Date: Tue, 12 Apr 2016 09:48:06 +0530
+Message-Id: <1460434686-23010-1-git-send-email-tamizhchelvam@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,11 +26,18 @@ Cc: linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@
 From: Raja Mani <rmani@codeaurora.org>
 
 Include dts support for two wifi block present on ipq4019 SoC.
-Corresponding dt binding documentation has been added in below commit id
-a47aaa69.
+Corresponding dt binding documentation has been added in ath.git as below
+commit id a47aaa69 and the commit message is
+"dt: bindings: add new dt entry for pre calibration in qcom, ath10k.txt".
 
+Signed-off-by: Raja Mani <rmani@codeaurora.org>
 Signed-off-by: Tamizh chelvam <tamizhchelvam@codeaurora.org>
 ---
+v2:
+
+  - Fixed Commit log
+  - Added new Signed off
+
  arch/arm/boot/dts/qcom-ipq4019.dtsi |   98 +++++++++++++++++++++++++++++++++++
  1 file changed, 98 insertions(+)
 
