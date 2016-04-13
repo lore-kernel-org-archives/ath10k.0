@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqIk4-000633-OW
- for ath10k@lists.infradead.org; Wed, 13 Apr 2016 11:13:53 +0000
-Subject: [PATCH v2 0/5] ath10k: fix recent checkpatch warnings
+ id 1aqIkz-0006Ad-7j
+ for ath10k@lists.infradead.org; Wed, 13 Apr 2016 11:14:50 +0000
+Subject: [PATCH v2 4/5] ath10k: prefer ether_addr_copy() over memcpy()
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 13 Apr 2016 14:13:08 +0300
-Message-ID: <20160413111247.18823.15952.stgit@potku.adurom.net>
+Date: Wed, 13 Apr 2016 14:14:02 +0300
+Message-ID: <20160413111402.18823.24437.stgit@potku.adurom.net>
+In-Reply-To: <20160413111247.18823.15952.stgit@potku.adurom.net>
+References: <20160413111247.18823.15952.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,38 +25,31 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-I updated checkpatch and noticed that there are few new warnings.
+Fixes checkpatch warning:
 
-v2:
+drivers/net/wireless/ath/ath10k/wmi.c:5800: Prefer ether_addr_copy() over memcpy() if the Ethernet addresses are __aligned(2)
 
-* fix tests in patch 3
-* add patch 5 to fix a new warning in mac.c
-
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
+ drivers/net/wireless/ath/ath10k/wmi.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Kalle Valo (5):
-      ath10k: fix checkpatch warnings related to spaces
-      ath10k: prefer kernel type 'u64' over 'u_int64_t'
-      ath10k: prefer ether_addr_equal() or ether_addr_equal_unaligned() over memcmp()
-      ath10k: prefer ether_addr_copy() over memcpy()
-      ath10k: fix parenthesis alignment
-
-
- drivers/net/wireless/ath/ath10k/ce.c        |    6 +++---
- drivers/net/wireless/ath/ath10k/ce.h        |    2 +-
- drivers/net/wireless/ath/ath10k/core.h      |    6 +++---
- drivers/net/wireless/ath/ath10k/debug.h     |    2 +-
- drivers/net/wireless/ath/ath10k/htc.h       |    4 ++--
- drivers/net/wireless/ath/ath10k/htt.c       |    2 +-
- drivers/net/wireless/ath/ath10k/htt.h       |    4 ++--
- drivers/net/wireless/ath/ath10k/mac.c       |   14 +++++++-------
- drivers/net/wireless/ath/ath10k/targaddrs.h |    2 +-
- drivers/net/wireless/ath/ath10k/thermal.h   |    2 +-
- drivers/net/wireless/ath/ath10k/txrx.c      |    4 ++--
- drivers/net/wireless/ath/ath10k/wmi-tlv.h   |    4 ++--
- drivers/net/wireless/ath/ath10k/wmi.c       |    7 +++----
- drivers/net/wireless/ath/ath10k/wmi.h       |   18 +++++++++---------
- 14 files changed, 38 insertions(+), 39 deletions(-)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index e92ac26865ff..adb31e188ebd 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -5827,9 +5827,8 @@ ath10k_wmi_put_start_scan_tlvs(struct wmi_start_scan_tlvs *tlvs,
+ 		bssids->num_bssid = __cpu_to_le32(arg->n_bssids);
+ 
+ 		for (i = 0; i < arg->n_bssids; i++)
+-			memcpy(&bssids->bssid_list[i],
+-			       arg->bssids[i].bssid,
+-			       ETH_ALEN);
++			ether_addr_copy(bssids->bssid_list[i].addr,
++					arg->bssids[i].bssid);
+ 
+ 		ptr += sizeof(*bssids);
+ 		ptr += sizeof(struct wmi_mac_addr) * arg->n_bssids;
 
 
 _______________________________________________
