@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqGsR-0000FT-6s
- for ath10k@lists.infradead.org; Wed, 13 Apr 2016 09:14:23 +0000
+ id 1aqGrY-0008MC-Vh
+ for ath10k@lists.infradead.org; Wed, 13 Apr 2016 09:13:29 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/3]  ath10k: add a support of set_tsf on vdev interface
-Date: Wed, 13 Apr 2016 09:13:40 +0000
-Message-ID: <87ega9ub0c.fsf@kamboji.qca.qualcomm.com>
-References: <1459811956-26186-1-git-send-email-poh@qca.qualcomm.com>
-In-Reply-To: <1459811956-26186-1-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Mon, 4 Apr 2016 16:19:13 -0700")
+Subject: Re: [PATCH] ath10k: Document alloc_frag_desc_for_data_pkt config
+ option.
+Date: Wed, 13 Apr 2016 09:12:59 +0000
+Message-ID: <87inzlub1h.fsf@kamboji.qca.qualcomm.com>
+References: <1454713802-21244-1-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1454713802-21244-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Fri, 5 Feb 2016 15:10:02	-0800")
 Content-Language: en-US
-Content-ID: <951BAB8651FA864EAAA958313F73DBB6@qualcomm.com>
+Content-ID: <4B7F9B4149469C4BBF09B08BAD2F9E51@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,22 +26,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Oh, Peter" <poh@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "greearb@candelatech.com" <greearb@candelatech.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+greearb@candelatech.com writes:
 
-> 10.2.4 and 10.4 firmware has introduced new function to
-> set TSF via vdev parameter.
-> set_tsf function can be used to shift TBTT that will help
-> avoid its clockdrift which happens when beacons are collided.
+> From: Ben Greear <greearb@candelatech.com>
 >
-> Peter Oh (3):
->   ath10k: add a support of set_tsf on vdev interface
->   ath10k: update 10.4 WMI vdev parameters
->   ath10k: enable set_tsf vdev command to WMI 10.4
+> This will help anyone trying to use the ack-rssi reporting
+> feature with the host-specified TX-rate option in 10.4 firmware.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-Series applied, thanks.
+Applied, thanks.
 
 -- 
 Kalle Valo
