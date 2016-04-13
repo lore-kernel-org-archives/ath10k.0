@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqGtD-0000Ul-UD
- for ath10k@lists.infradead.org; Wed, 13 Apr 2016 09:15:13 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: remove MSI range support
-Date: Wed, 13 Apr 2016 09:14:17 +0000
-Message-ID: <87a8kxuaza.fsf@kamboji.qca.qualcomm.com>
-References: <1460011258-15893-1-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1460011258-15893-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Thu, 7 Apr 2016 12:10:58 +0530")
-Content-Language: en-US
-Content-ID: <4A6ABF69D54646418E6DDDE2B50A7B5D@qualcomm.com>
+ id 1aqIkX-000664-3B
+ for ath10k@lists.infradead.org; Wed, 13 Apr 2016 11:14:21 +0000
+Subject: [PATCH v2 3/5] ath10k: prefer ether_addr_equal() or
+ ether_addr_equal_unaligned() over memcmp()
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Wed, 13 Apr 2016 14:13:49 +0300
+Message-ID: <20160413111348.18823.57411.stgit@potku.adurom.net>
+In-Reply-To: <20160413111247.18823.15952.stgit@potku.adurom.net>
+References: <20160413111247.18823.15952.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,23 +23,53 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Fixes checkpatch warnings:
 
-> MSI-X is never well-tested, might contain bugs and generally isn't
-> really all that useful to maintain. Also ath10k is mainly used with
-> shared/singly-MSI interrupt systems. Hence removing MSI range support.
-> This change will be useful for further cleanup in copy engine lock
-> and to add NAPI support.
->
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+drivers/net/wireless/ath/ath10k/mac.c:452: Prefer ether_addr_equal() or ether_addr_equal_unaligned() over memcmp()
+drivers/net/wireless/ath/ath10k/mac.c:455: Prefer ether_addr_equal() or ether_addr_equal_unaligned() over memcmp()
+drivers/net/wireless/ath/ath10k/txrx.c:133: Prefer ether_addr_equal() or ether_addr_equal_unaligned() over memcmp()
 
-Applied, thanks.
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c  |    4 ++--
+ drivers/net/wireless/ath/ath10k/txrx.c |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
--- 
-Kalle Valo
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 045bfc7e0279..9c848eb09d2e 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -449,10 +449,10 @@ static int ath10k_mac_vif_update_wep_key(struct ath10k_vif *arvif,
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+ 	list_for_each_entry(peer, &ar->peers, list) {
+-		if (!memcmp(peer->addr, arvif->vif->addr, ETH_ALEN))
++		if (ether_addr_equal(peer->addr, arvif->vif->addr))
+ 			continue;
+ 
+-		if (!memcmp(peer->addr, arvif->bssid, ETH_ALEN))
++		if (ether_addr_equal(peer->addr, arvif->bssid))
+ 			continue;
+ 
+ 		if (peer->keys[key->keyidx] == key)
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index c503ff601a54..8c7086989a71 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -130,7 +130,7 @@ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
+ 	list_for_each_entry(peer, &ar->peers, list) {
+ 		if (peer->vdev_id != vdev_id)
+ 			continue;
+-		if (memcmp(peer->addr, addr, ETH_ALEN))
++		if (!ether_addr_equal(peer->addr, addr))
+ 			continue;
+ 
+ 		return peer;
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
