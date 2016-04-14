@@ -1,19 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqh3b-0005of-RL
- for ath10k@lists.infradead.org; Thu, 14 Apr 2016 13:11:40 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/8] ath10k: remove deprecated firmware API 1 support
-Date: Thu, 14 Apr 2016 13:11:12 +0000
-Message-ID: <874mb4s5cg.fsf@kamboji.qca.qualcomm.com>
-References: <20160406144355.28399.23733.stgit@potku.adurom.net>
- <20160406144445.28399.74306.stgit@potku.adurom.net>
-In-Reply-To: <20160406144445.28399.74306.stgit@potku.adurom.net> (Kalle Valo's
- message of "Wed, 6 Apr 2016 17:44:45 +0300")
-Content-Language: en-US
-Content-ID: <635AA65EDC07034AA6D77327F197BB24@qualcomm.com>
+ id 1aqi0T-0004K5-Hk
+ for ath10k@lists.infradead.org; Thu, 14 Apr 2016 14:12:35 +0000
+References: <87mvuj585b.fsf@kamboji.qca.qualcomm.com>
+ <1447826363-16818-1-git-send-email-michal.kazior@tieto.com>
+ <1447826363-16818-10-git-send-email-michal.kazior@tieto.com>
+ <564DE65C.9030407@dd-wrt.com> <564DEBBE.1040308@candelatech.com>
+ <564DEC25.1030401@dd-wrt.com> <564DF53C.50009@candelatech.com>
+ <564E02F1.3090306@dd-wrt.com> <564E130D.4080201@dd-wrt.com>
+ <570E6774.9000301@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <570FA549.7040808@dd-wrt.com>
+Date: Thu, 14 Apr 2016 16:12:25 +0200
 MIME-Version: 1.0
+In-Reply-To: <570E6774.9000301@candelatech.com>
+Subject: Re: QCA998X not working at all
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +25,97 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
-
-> This has ben deprecated years ago, I haven't heard anyone using it since and
-> most likely it won't even work anymore. So just remove all of it.
+Am 13.04.2016 um 17:36 schrieb Ben Greear:
+> On 11/19/2015 10:21 AM, Sebastian Gottschall wrote:
+>> simple solution.
+>>
+>> as for ath9k. otp must be ignored for various chipsets, since they 
+>> wont return valid results
+>>
+>> --- core.c (Revision 2702)
+>> +++ core.c (Arbeitskopie)
+>> @@ -1735,9 +1735,8 @@
+>>
+>>    ret = ath10k_core_get_board_id_from_otp(ar);
+>>    if (ret && ret != -EOPNOTSUPP) {
+>> -  ath10k_err(ar, "failed to get board id from otp for qca99x0: %d\n",
+>> +  ath10k_err(ar, "failed to get board id from otp for qca99x0: %d, 
+>> ignore\n",
+>>           ret);
+>> -  return ret;
+>>    }
+>>
+>>    ret = ath10k_core_fetch_board_file(ar);
 >
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> I received a report of the same problem reported below from someone 
+> using an i7 processor
+> on some random motherboard.
+>
+> Same NIC, kernel, and firmware works fine on my systems, so it appears 
+> to be platform
+> dependent somehow.
+>
+> Did you find a better solution other than just ignoring the OTP failure?
+nope. thats the only way and applies to all SOC devices using QCA998X 
+chipsets. (routers etc.)
+they dont have a otp, so the call fails. all data is stored in local 
+flash memory on this devices.
+i also have never seen this call working. no matter which card i used
+>
+> Thanks,
+> Ben
+>
+>>
+>>
+>>
+>> Am 19.11.2015 um 18:12 schrieb Sebastian Gottschall:
+>>> Am 19.11.2015 um 17:13 schrieb Ben Greear:
+>>>>
+>>>> git clone git://dmz2.candelatech.com/linux.ath
+>>> same effect with yours
+>>>
+>>>     6.201141] ath10k_pci 0000:01:00.0: enabling device (0140 -> 0142)
+>>> [    6.201593] ath10k_pci 0000:01:00.0: pci irq legacy interrupts 0 
+>>> irq_mode 0 reset_mode 0
+>>> [    8.578573] ath10k_pci 0000:01:00.0: unable to read from the device
+>>> [    8.578605] ath10k_pci 0000:01:00.0: could not execute otp for 
+>>> board id check: -110
+>>> [    8.583648] ath10k_pci 0000:01:00.0: failed to get board id from 
+>>> otp for qca99x0: -110
+>>> [    8.591338] ath10k_pci 0000:01:00.0: could not probe fw (-110)
+>>> [    8.600062] ath10k_pci 0001:01:00.0: enabling device (0140 -> 0142)
+>>> [    8.605600] ath10k_pci 0001:01:00.0: pci irq legacy interrupts 0 
+>>> irq_mode 0 reset_mode 0
+>>> [   10.798574] ath10k_pci 0001:01:00.0: unable to read from the device
+>>> [   10.798598] ath10k_pci 0001:01:00.0: could not execute otp for 
+>>> board id check: -110
+>>> [   10.803644] ath10k_pci 0001:01:00.0: failed to get board id from 
+>>> otp for qca99x0: -110
+>>> [   10.811346] ath10k_pci 0001:01:00.0: could not probe fw (-110)
+>>>
+>>>
+>>> _______________________________________________
+>>> ath10k mailing list
+>>> ath10k@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>>
+>>
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>
+>
+>
 
-[...]
 
-> --- a/drivers/net/wireless/ath/ath10k/hw.h
-> +++ b/drivers/net/wireless/ath/ath10k/hw.h
-> @@ -35,8 +35,6 @@
->  #define QCA988X_HW_2_0_VERSION		0x4100016c
->  #define QCA988X_HW_2_0_CHIP_ID_REV	0x2
->  #define QCA988X_HW_2_0_FW_DIR		ATH10K_FW_DIR "/QCA988X/hw2.0"
-> -#define QCA988X_HW_2_0_FW_FILE		"firmware.bin"
-> -#define QCA988X_HW_2_0_OTP_FILE		"otp.bin"
->  #define QCA988X_HW_2_0_BOARD_DATA_FILE	"board.bin"
->  #define QCA988X_HW_2_0_PATCH_LOAD_ADDR	0x1234
-
-I missed to remove all the other references to "firmware.bin" or
-"otp.bin", for example:
-
-#define QCA6174_HW_2_1_FW_FILE		"firmware.bin"
-#define QCA6174_HW_2_1_OTP_FILE		"otp.bin"
-
-Will send v2.
-
--- 
-Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
