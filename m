@@ -1,22 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x22f.google.com ([2607:f8b0:4003:c06::22f])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arj09-0007PC-Rw
- for ath10k@lists.infradead.org; Sun, 17 Apr 2016 09:28:22 +0000
-Received: by mail-oi0-x22f.google.com with SMTP id x201so1648174oif.3
- for <ath10k@lists.infradead.org>; Sun, 17 Apr 2016 02:28:01 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1460174525702.66744@qti.qualcomm.com>
+ id 1aroHd-0002Hn-JD
+ for ath10k@lists.infradead.org; Sun, 17 Apr 2016 15:06:46 +0000
+From: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Subject: Re: ath10k performance, master branch from 20160407
+Date: Sun, 17 Apr 2016 15:06:14 +0000
+Message-ID: <1460905574286.42282@qti.qualcomm.com>
 References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
  <1460129643950.46282@qti.qualcomm.com>
  <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
  <ab762b501abc457aa1dbf965895eb113@aphydexm01b.ap.qualcomm.com>
  <CACiydbL3-QoC=muZf4aJOaUWZN-tpA3h1SwNfYU3+LnY_FHF+g@mail.gmail.com>
- <1460174525702.66744@qti.qualcomm.com>
-Date: Sun, 17 Apr 2016 12:28:00 +0300
-Message-ID: <CACiydbLh+X540MrnvS5MGm8Bd3QnnWmdFyon8H5khJiFtGK85w@mail.gmail.com>
-Subject: Re: ath10k performance, master branch from 20160407
-From: Roman Yeryomin <leroi.lists@gmail.com>
+ <1460174525702.66744@qti.qualcomm.com>,
+ <CACiydbLh+X540MrnvS5MGm8Bd3QnnWmdFyon8H5khJiFtGK85w@mail.gmail.com>
+In-Reply-To: <CACiydbLh+X540MrnvS5MGm8Bd3QnnWmdFyon8H5khJiFtGK85w@mail.gmail.com>
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,8 +29,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+To: Roman Yeryomin <leroi.lists@gmail.com>
 Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+
+Roman,
+
+Hmm.. I just listed ath10k changes alone. So there might be some dependencies.
+In your earlier mail fq_codel_drop was consuming 45% cpu. Have you observed any
+improvement after switching off NET_SCH_FQ_CODEL? Had CPU usage gone down?
+
+Please try to revert the commit "ath10k: combine txrx and replenish task" alone. If you still
+see same behavior (lower numbers), reset master branch to till "ath10k: fix pull-push tx
+threshold handling" and generate backports.
+
+Please make sure that codel is switched off always until regression point is root caused.
+
+-Rajkumar
+
+________________________________________
+From: Roman Yeryomin <leroi.lists@gmail.com>
+Sent: Sunday, April 17, 2016 2:58 PM
+To: Manoharan, Rajkumar
+Cc: ath10k@lists.infradead.org; Rajkumar Manoharan
+Subject: Re: ath10k performance, master branch from 20160407
 
 Rajkumar,
 
@@ -193,7 +214,6 @@ On 9 April 2016 at 07:02, Manoharan, Rajkumar <rmanohar@qti.qualcomm.com> wrote:
 >>> ath10k mailing list
 >>> ath10k@lists.infradead.org
 >>> http://lists.infradead.org/mailman/listinfo/ath10k
-
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
