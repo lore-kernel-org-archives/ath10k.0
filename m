@@ -1,19 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-oi0-x22f.google.com ([2607:f8b0:4003:c06::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ar2AB-0002Mp-0f
- for ath10k@lists.infradead.org; Fri, 15 Apr 2016 11:43:52 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3 1/2] ath10k: Add support for ath10k_sta_statistics
- support
-Date: Fri, 15 Apr 2016 11:43:22 +0000
-Message-ID: <87r3e7qeqv.fsf@kamboji.qca.qualcomm.com>
-References: <1459241642-3730-1-git-send-email-mohammed@qca.qualcomm.com>
-In-Reply-To: <1459241642-3730-1-git-send-email-mohammed@qca.qualcomm.com>
- (Mohammed Shafi Shajakhan's message of "Tue, 29 Mar 2016 14:24:01	+0530")
-Content-Language: en-US
-Content-ID: <CE1191AB7B704F4F97AAFAC5E511B255@qualcomm.com>
+ id 1arj09-0007PC-Rw
+ for ath10k@lists.infradead.org; Sun, 17 Apr 2016 09:28:22 +0000
+Received: by mail-oi0-x22f.google.com with SMTP id x201so1648174oif.3
+ for <ath10k@lists.infradead.org>; Sun, 17 Apr 2016 02:28:01 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1460174525702.66744@qti.qualcomm.com>
+References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
+ <1460129643950.46282@qti.qualcomm.com>
+ <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
+ <ab762b501abc457aa1dbf965895eb113@aphydexm01b.ap.qualcomm.com>
+ <CACiydbL3-QoC=muZf4aJOaUWZN-tpA3h1SwNfYU3+LnY_FHF+g@mail.gmail.com>
+ <1460174525702.66744@qti.qualcomm.com>
+Date: Sun, 17 Apr 2016 12:28:00 +0300
+Message-ID: <CACiydbLh+X540MrnvS5MGm8Bd3QnnWmdFyon8H5khJiFtGK85w@mail.gmail.com>
+Subject: Re: ath10k performance, master branch from 20160407
+From: Roman Yeryomin <leroi.lists@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +29,171 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
+Rajkumar,
 
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Somehow unseting CPTCFG_NET_SCH_FQ_CODEL didn't change anything and
+the patches you listed didn't revert cleanly, I gave up on 3rd
+dependent patch somewhere in the middle and just reset master to
+89ef41bfaa46f24a14b776f1cd78c0e0b39e54ce, which is the last commit
+just before "ath10k: refactor tx code", and generated new backports.
+The result is that it has same performance as before. But I guess it
+is not a very good test as there were many changes to mac80211 too.
+
+So what do you want me to try next? Maybe you could provide a more
+precise list to revert?
+
+
+Regards,
+Roman
+
+On 9 April 2016 at 07:02, Manoharan, Rajkumar <rmanohar@qti.qualcomm.com> wrote:
+> Roman,
 >
-> Enable support for 'drv_sta_statistics' callback.
-> Export rx_duration support if available to cfg80211/nl80211
+> Need your help to bisect regression point. Can you try w/o CPTCFG_NET_SCH_FQ_CODEL?
+> If it does not help, try reverting below commits which are major changes in data path.
+> Instead of generating backports, apply revert commit on top your backports.
 >
-> This can also act as a placeholder for any new per STA stats support
+> ath10k: combine txrx and replenish task
+> ath10k: reuse copy engine 5 (htt rx) descriptors
+> ath10k: cleanup copy engine receive next completion
+> ath10k: register ath10k_htt_htc_t2h_msg_handler
+> ath10k: speedup htt rx descriptor processing for rx_ind
+> ath10k: cleanup amsdu processing for rx indication
+> ath10k: remove unused fw_desc processing
+> ath10k: copy tx fetch indication message
+> ath10k: speedup htt rx descriptor processing for tx completion
+> ath10k: fix null deref if device crashes early
+> ath10k: fix pull-push tx threshold handling
+> ath10k: fix tx hang
+> ath10k: move mgmt descriptor limit handle under mgmt_tx
+> ath10k: change htt tx desc/qcache peer limit config
+> ath10k: fix HTT Tx CE ring size
+> ath10k: implement push-pull tx
+> ath10k: keep track of queue depth per txq
+> ath10k: store txq in skb_cb
+> ath10k: implement updating shared htt txq state
+> ath10k: implement wake_tx_queue
+> ath10k: add new htt message generation/parsing logic
+> ath10k: add fast peer_map lookup
+> ath10k: maintain peer_id for each sta and vif
+> ath10k: refactor tx pending management
+> ath10k: unify txpath decision
+> ath10k: refactor tx code
 >
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> ---
-> [v3] removed conditions for ath10k state checks based on Michal's suggestion
+> -Rajkumar
+> ________________________________________
+> From: Roman Yeryomin <leroi.lists@gmail.com>
+> Sent: Friday, April 8, 2016 10:49 PM
+> To: Manoharan, Rajkumar
+> Cc: ath10k@lists.infradead.org; Rajkumar Manoharan
+> Subject: Re: ath10k performance, master branch from 20160407
 >
-> Dependencies:
+> Latest backports (compat-wireless) released (20160110) has codel
+> enabled (CPTCFG_NET_SCH_FQ_CODEL=y) and there are no openwrt patches
+> or special configuration for codel. And it runs ok.
+> How old commit do you want me to try?
 >
-> 1. cfg80211/nl80211: Add support for NL80211_STA_INFO_RX_DURATION (under review)
-> 2. iw: Add support for NL80211_STA_INFO_RX_DURATION netlink
->  attribute (under review)
-> 3. ath10k: Enable debugfs provision to enable Peer Stats feature (merged in pending branch)
+> Regards,
+> Roman
+>
+> On 8 April 2016 at 19:41, Manoharan, Rajkumar <rmanohar@qti.qualcomm.com> wrote:
+>> That should be fine. Is codel running only for latest backports? Are there any openwrt changes to configure codel? Can you plz try to reset master branch to older commit and validate?
+>>
+>> -Rajkumar
+>> ________________________________________
+>> From: Roman Yeryomin [leroi.lists@gmail.com]
+>> Sent: Friday, April 8, 2016 9:30 PM
+>> To: Manoharan, Rajkumar
+>> Cc: ath10k@lists.infradead.org; Rajkumar Manoharan
+>> Subject: Re: ath10k performance, master branch from 20160407
+>>
+>> Rajkumar,
+>>
+>> I took backports from
+>> git://git.kernel.org/pub/scm/linux/kernel/git/backports/backports.git,
+>> took latest ath tree from
+>> git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git, generated
+>> backports-output based on ath master branch, refreshed openwrt
+>> patches.
+>> And saw big performance degradation. Am I doing something wrong?
+>>
+>> Regards,
+>> Roman
+>>
+>> On 8 April 2016 at 18:34, Manoharan, Rajkumar <rmanohar@qti.qualcomm.com> wrote:
+>>> Roman,
+>>>
+>>> Which backports version are you using? I don't see codel changes in ath.git/wireless-drivers.git.
+>>> Hope you are using same firmware.
+>>>
+>>> -Rajkumar
+>>> ________________________________________
+>>> From: ath10k <ath10k-bounces@lists.infradead.org> on behalf of Roman Yeryomin <leroi.lists@gmail.com>
+>>> Sent: Friday, April 8, 2016 8:14 PM
+>>> To: ath10k@lists.infradead.org
+>>> Subject: ath10k performance, master branch from 20160407
+>>>
+>>> Hello!
+>>>
+>>> I've seen performance patches were commited so I've decided to give it
+>>> a try (using 4.1 kernel and backports).
+>>> The results are quite disappointing: TCP download (client pov) dropped
+>>> from 750Mbps to ~550 and UDP shows completely weird behavour - if
+>>> generating 900Mbps it gives 30Mbps max, if generating 300Mbps it gives
+>>> 250Mbps, before (latest official backports release from January) I was
+>>> able to get 900Mbps.
+>>> Hardware is basically ap152 + qca988x 3x3.
+>>> When running perf top I see that fq_codel_drop eats a lot of cpu.
+>>> Here is the output when running iperf3 UDP test:
+>>>
+>>>     45.78%  [kernel]       [k] fq_codel_drop
+>>>      3.05%  [kernel]       [k] ag71xx_poll
+>>>      2.18%  [kernel]       [k] skb_release_data
+>>>      2.01%  [kernel]       [k] r4k_dma_cache_inv
+>>>      1.73%  [kernel]       [k] eth_type_trans
+>>>      1.24%  [kernel]       [k] build_skb
+>>>      1.20%  [mac80211]     [k] ieee80211_tx_dequeue
+>>>      1.03%  [kernel]       [k] __delay
+>>>      0.98%  [kernel]       [k] fq_codel_enqueue
+>>>      0.94%  [kernel]       [k] __netif_receive_skb_core
+>>>      0.93%  [kernel]       [k] skb_release_head_state
+>>>      0.88%  [ath10k_core]  [k] ath10k_htt_tx
+>>>      0.87%  [kernel]       [k] __dev_queue_xmit
+>>>      0.84%  [mac80211]     [k] ieee80211_tx_status
+>>>      0.81%  [kernel]       [k] __build_skb
+>>>      0.80%  [mac80211]     [k] __ieee80211_subif_start_xmit
+>>>      0.77%  [kernel]       [k] br_handle_frame_finish
+>>>      0.75%  [kernel]       [k] __qdisc_run
+>>>      0.73%  [kernel]       [k] skb_recycler_consume
+>>>      0.72%  [kernel]       [k] kfree_skb
+>>>      0.72%  [kernel]       [k] get_page_from_freelist
+>>>      0.69%  [kernel]       [k] br_fdb_update
+>>>      0.69%  [kernel]       [k] br_handle_frame
+>>>      0.67%  [kernel]       [k] __copy_user_common
+>>>      0.66%  [kernel]       [k] __skb_flow_dissect
+>>>      0.65%  [ath10k_core]  [k] ath10k_txrx_tx_unref
+>>>      0.60%  [kernel]       [k] kmem_cache_alloc
+>>>      0.60%  [mac80211]     [k] sta_addr_hash
+>>>      0.56%  [kernel]       [k] fq_codel_dequeue
+>>>      0.53%  [kernel]       [k] __local_bh_enable_ip
+>>>      0.50%  [kernel]       [k] __br_fdb_get
+>>>
+>>> What could be the reason?
+>>> I've seen there are some patches from Michal which touch fq_codel,
+>>> would those help or not?
+>>>
+>>>
+>>> Regards,
+>>> Roman
+>>>
+>>> _______________________________________________
+>>> ath10k mailing list
+>>> ath10k@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/ath10k
 
-The dependency is in mac80211-next currently:
-
-49da43f94f5e cfg80211/nl80211: Add support for NL80211_STA_INFO_RX_DURATION
-
-(Sorry for the noise, I wish patchwork would have a feature to add
-notes)
-
--- 
-Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
