@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
+Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1as8ms-0000Hf-Qf
- for ath10k@lists.infradead.org; Mon, 18 Apr 2016 13:00:24 +0000
-Received: by mail-oi0-x244.google.com with SMTP id i2so4343994oib.3
- for <ath10k@lists.infradead.org>; Mon, 18 Apr 2016 06:00:02 -0700 (PDT)
+ id 1asODg-0004ZT-Mv
+ for ath10k@lists.infradead.org; Tue, 19 Apr 2016 05:29:06 +0000
+Received: by mail-wm0-x22f.google.com with SMTP id u206so9768580wme.1
+ for <ath10k@lists.infradead.org>; Mon, 18 Apr 2016 22:28:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACiydb+AaTc2wWzVeJNwPzA+PH9FcrqWzx3nW2RmKxaiaHwg-w@mail.gmail.com>
+In-Reply-To: <CACiydbKu8_1sO9K8uuY_SSL8ECvr3wZttt+72cNO9dc_7RRM2A@mail.gmail.com>
 References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
  <1460129643950.46282@qti.qualcomm.com>
  <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
@@ -16,10 +16,11 @@ References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
  <CACiydbLh+X540MrnvS5MGm8Bd3QnnWmdFyon8H5khJiFtGK85w@mail.gmail.com>
  <1460905574286.42282@qti.qualcomm.com>
  <CACiydb+AaTc2wWzVeJNwPzA+PH9FcrqWzx3nW2RmKxaiaHwg-w@mail.gmail.com>
-Date: Mon, 18 Apr 2016 16:00:01 +0300
-Message-ID: <CACiydbKu8_1sO9K8uuY_SSL8ECvr3wZttt+72cNO9dc_7RRM2A@mail.gmail.com>
+ <CACiydbKu8_1sO9K8uuY_SSL8ECvr3wZttt+72cNO9dc_7RRM2A@mail.gmail.com>
+Date: Tue, 19 Apr 2016 07:28:37 +0200
+Message-ID: <CA+BoTQndOpgYYZiZbenROV9+-WUHSbUugDDgCKGVe2fyA0efXQ@mail.gmail.com>
 Subject: Re: ath10k performance, master branch from 20160407
-From: Roman Yeryomin <leroi.lists@gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,255 +29,209 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, michal.kazior@tieto.com
+To: Roman Yeryomin <leroi.lists@gmail.com>
+Cc: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>
 
-So it looks like Michal's patch set "ath10k: implement push-pull tx
-model" introduced this regression - after restoring it from reverts
-fq_codel_drop is hungry again.
-Any ideas how to fix?
-
-Regards,
-Roman
-
-On 18 April 2016 at 02:03, Roman Yeryomin <leroi.lists@gmail.com> wrote:
-> Rajkumar,
->
-> ok, I've ended up resolving (seems to be trivial) conflicts in revert
-> list you provided (see comments inlined).
-> Performance restored and codel symbols are gone from perf top.
-> Will try reverting "ath10k: combine txrx and replenish task" alone and
-> then, if that doesn't help, resetting reverts by patch sets.
->
-> Regards,
-> Roman
->
-> On 17 April 2016 at 18:06, Manoharan, Rajkumar
-> <rmanohar@qti.qualcomm.com> wrote:
->> Roman,
->>
->> Hmm.. I just listed ath10k changes alone. So there might be some dependencies.
->
-> there were ath10k conflicts, please see below
->
->> In your earlier mail fq_codel_drop was consuming 45% cpu. Have you observed any
->> improvement after switching off NET_SCH_FQ_CODEL? Had CPU usage gone down?
->
-> CPU usage didn't go down after simply turning off
-> CPTCFG_NET_SCH_FQ_CODEL under compat wireless (and yes, I verified it
-> was off in the config after recompilation).
-> But still I'm not sure it's really off. Turning it off both in kernel
-> config and compat-wireless doesn't seem to have effect. I didn't dig
-> deeper into this but it looks I didn't find a correct way to turn it
-> off completely.
->
-> Not sure if I stated it correctly: after resetting to
-> 89ef41bfaa46f24a14b776f1cd78c0e0b39e54ce I got same (good enough)
-> performance as with latest compat-wireless release (20160110).
->
->> Please try to revert the commit "ath10k: combine txrx and replenish task" alone. If you still
->> see same behavior (lower numbers), reset master branch to till "ath10k: fix pull-push tx
->> threshold handling" and generate backports.
->>
->> Please make sure that codel is switched off always until regression point is root caused.
->>
->> -Rajkumar
->>
->> ________________________________________
->> From: Roman Yeryomin <leroi.lists@gmail.com>
->> Sent: Sunday, April 17, 2016 2:58 PM
->> To: Manoharan, Rajkumar
->> Cc: ath10k@lists.infradead.org; Rajkumar Manoharan
->> Subject: Re: ath10k performance, master branch from 20160407
->>
->> Rajkumar,
->>
->> Somehow unseting CPTCFG_NET_SCH_FQ_CODEL didn't change anything and
->> the patches you listed didn't revert cleanly, I gave up on 3rd
->> dependent patch somewhere in the middle and just reset master to
->> 89ef41bfaa46f24a14b776f1cd78c0e0b39e54ce, which is the last commit
->> just before "ath10k: refactor tx code", and generated new backports.
->> The result is that it has same performance as before. But I guess it
->> is not a very good test as there were many changes to mac80211 too.
->>
->> So what do you want me to try next? Maybe you could provide a more
->> precise list to revert?
->>
->>
->> Regards,
->> Roman
->>
->> On 9 April 2016 at 07:02, Manoharan, Rajkumar <rmanohar@qti.qualcomm.com> wrote:
->>> Roman,
->>>
->>> Need your help to bisect regression point. Can you try w/o CPTCFG_NET_SCH_FQ_CODEL?
->>> If it does not help, try reverting below commits which are major changes in data path.
->>> Instead of generating backports, apply revert commit on top your backports.
->>>
->>> ath10k: combine txrx and replenish task
->>> ath10k: reuse copy engine 5 (htt rx) descriptors
->>> ath10k: cleanup copy engine receive next completion
->>> ath10k: register ath10k_htt_htc_t2h_msg_handler
->>> ath10k: speedup htt rx descriptor processing for rx_ind
->
-> this depends on 689de38e37179c6f524dd003e1dae92042f8f5cd
->
->>> ath10k: cleanup amsdu processing for rx indication
->>> ath10k: remove unused fw_desc processing
->>> ath10k: copy tx fetch indication message
->>> ath10k: speedup htt rx descriptor processing for tx completion
->>> ath10k: fix null deref if device crashes early
->>> ath10k: fix pull-push tx threshold handling
->>> ath10k: fix tx hang
->>> ath10k: move mgmt descriptor limit handle under mgmt_tx
->
-> error: could not revert cac0855... ath10k: move mgmt descriptor limit
-> handle under mgmt_tx
-> Not even sure why it fails here, pretty trivial to resolve but still...
->
->>> ath10k: change htt tx desc/qcache peer limit config
->
-> error: could not revert 99ad1cb... ath10k: change htt tx desc/qcache
-> peer limit config
-> ook, resolved, hope correctly
->
->>> ath10k: fix HTT Tx CE ring size
->>> ath10k: implement push-pull tx
->>> ath10k: keep track of queue depth per txq
->>> ath10k: store txq in skb_cb
->>> ath10k: implement updating shared htt txq state
->>> ath10k: implement wake_tx_queue
->
-> depends on 9d71d47eed20f34620e54e29bcc90f959d5873b8 and
-> 750eeed89cf3c466df302e4707491b015531e26c
-> all three fail to revert cleanly
->
->>> ath10k: add new htt message generation/parsing logic
->
-> fails to revert cleanly
->
->>> ath10k: add fast peer_map lookup
->>> ath10k: maintain peer_id for each sta and vif
->>> ath10k: refactor tx pending management
->>> ath10k: unify txpath decision
->>> ath10k: refactor tx code
->>>
->>> -Rajkumar
->>> ________________________________________
->>> From: Roman Yeryomin <leroi.lists@gmail.com>
->>> Sent: Friday, April 8, 2016 10:49 PM
->>> To: Manoharan, Rajkumar
->>> Cc: ath10k@lists.infradead.org; Rajkumar Manoharan
->>> Subject: Re: ath10k performance, master branch from 20160407
->>>
->>> Latest backports (compat-wireless) released (20160110) has codel
->>> enabled (CPTCFG_NET_SCH_FQ_CODEL=y) and there are no openwrt patches
->>> or special configuration for codel. And it runs ok.
->>> How old commit do you want me to try?
->>>
->>> Regards,
->>> Roman
->>>
->>> On 8 April 2016 at 19:41, Manoharan, Rajkumar <rmanohar@qti.qualcomm.com> wrote:
->>>> That should be fine. Is codel running only for latest backports? Are there any openwrt changes to configure codel? Can you plz try to reset master branch to older commit and validate?
->>>>
->>>> -Rajkumar
->>>> ________________________________________
->>>> From: Roman Yeryomin [leroi.lists@gmail.com]
->>>> Sent: Friday, April 8, 2016 9:30 PM
->>>> To: Manoharan, Rajkumar
->>>> Cc: ath10k@lists.infradead.org; Rajkumar Manoharan
->>>> Subject: Re: ath10k performance, master branch from 20160407
->>>>
->>>> Rajkumar,
->>>>
->>>> I took backports from
->>>> git://git.kernel.org/pub/scm/linux/kernel/git/backports/backports.git,
->>>> took latest ath tree from
->>>> git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git, generated
->>>> backports-output based on ath master branch, refreshed openwrt
->>>> patches.
->>>> And saw big performance degradation. Am I doing something wrong?
->>>>
->>>> Regards,
->>>> Roman
->>>>
->>>> On 8 April 2016 at 18:34, Manoharan, Rajkumar <rmanohar@qti.qualcomm.com> wrote:
->>>>> Roman,
->>>>>
->>>>> Which backports version are you using? I don't see codel changes in ath.git/wireless-drivers.git.
->>>>> Hope you are using same firmware.
->>>>>
->>>>> -Rajkumar
->>>>> ________________________________________
->>>>> From: ath10k <ath10k-bounces@lists.infradead.org> on behalf of Roman Yeryomin <leroi.lists@gmail.com>
->>>>> Sent: Friday, April 8, 2016 8:14 PM
->>>>> To: ath10k@lists.infradead.org
->>>>> Subject: ath10k performance, master branch from 20160407
->>>>>
->>>>> Hello!
->>>>>
->>>>> I've seen performance patches were commited so I've decided to give it
->>>>> a try (using 4.1 kernel and backports).
->>>>> The results are quite disappointing: TCP download (client pov) dropped
->>>>> from 750Mbps to ~550 and UDP shows completely weird behavour - if
->>>>> generating 900Mbps it gives 30Mbps max, if generating 300Mbps it gives
->>>>> 250Mbps, before (latest official backports release from January) I was
->>>>> able to get 900Mbps.
->>>>> Hardware is basically ap152 + qca988x 3x3.
->>>>> When running perf top I see that fq_codel_drop eats a lot of cpu.
->>>>> Here is the output when running iperf3 UDP test:
->>>>>
->>>>>     45.78%  [kernel]       [k] fq_codel_drop
->>>>>      3.05%  [kernel]       [k] ag71xx_poll
->>>>>      2.18%  [kernel]       [k] skb_release_data
->>>>>      2.01%  [kernel]       [k] r4k_dma_cache_inv
->>>>>      1.73%  [kernel]       [k] eth_type_trans
->>>>>      1.24%  [kernel]       [k] build_skb
->>>>>      1.20%  [mac80211]     [k] ieee80211_tx_dequeue
->>>>>      1.03%  [kernel]       [k] __delay
->>>>>      0.98%  [kernel]       [k] fq_codel_enqueue
->>>>>      0.94%  [kernel]       [k] __netif_receive_skb_core
->>>>>      0.93%  [kernel]       [k] skb_release_head_state
->>>>>      0.88%  [ath10k_core]  [k] ath10k_htt_tx
->>>>>      0.87%  [kernel]       [k] __dev_queue_xmit
->>>>>      0.84%  [mac80211]     [k] ieee80211_tx_status
->>>>>      0.81%  [kernel]       [k] __build_skb
->>>>>      0.80%  [mac80211]     [k] __ieee80211_subif_start_xmit
->>>>>      0.77%  [kernel]       [k] br_handle_frame_finish
->>>>>      0.75%  [kernel]       [k] __qdisc_run
->>>>>      0.73%  [kernel]       [k] skb_recycler_consume
->>>>>      0.72%  [kernel]       [k] kfree_skb
->>>>>      0.72%  [kernel]       [k] get_page_from_freelist
->>>>>      0.69%  [kernel]       [k] br_fdb_update
->>>>>      0.69%  [kernel]       [k] br_handle_frame
->>>>>      0.67%  [kernel]       [k] __copy_user_common
->>>>>      0.66%  [kernel]       [k] __skb_flow_dissect
->>>>>      0.65%  [ath10k_core]  [k] ath10k_txrx_tx_unref
->>>>>      0.60%  [kernel]       [k] kmem_cache_alloc
->>>>>      0.60%  [mac80211]     [k] sta_addr_hash
->>>>>      0.56%  [kernel]       [k] fq_codel_dequeue
->>>>>      0.53%  [kernel]       [k] __local_bh_enable_ip
->>>>>      0.50%  [kernel]       [k] __br_fdb_get
->>>>>
->>>>> What could be the reason?
->>>>> I've seen there are some patches from Michal which touch fq_codel,
->>>>> would those help or not?
->>>>>
->>>>>
->>>>> Regards,
->>>>> Roman
->>>>>
->>>>> _______________________________________________
->>>>> ath10k mailing list
->>>>> ath10k@lists.infradead.org
->>>>> http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTggQXByaWwgMjAxNiBhdCAxNTowMCwgUm9tYW4gWWVyeW9taW4gPGxlcm9pLmxpc3RzQGdt
+YWlsLmNvbT4gd3JvdGU6Cj4gU28gaXQgbG9va3MgbGlrZSBNaWNoYWwncyBwYXRjaCBzZXQgImF0
+aDEwazogaW1wbGVtZW50IHB1c2gtcHVsbCB0eAo+IG1vZGVsIiBpbnRyb2R1Y2VkIHRoaXMgcmVn
+cmVzc2lvbiAtIGFmdGVyIHJlc3RvcmluZyBpdCBmcm9tIHJldmVydHMKPiBmcV9jb2RlbF9kcm9w
+IGlzIGh1bmdyeSBhZ2Fpbi4KPiBBbnkgaWRlYXMgaG93IHRvIGZpeD8KCklmIG15IGh1bmNoIGlz
+IHJpZ2h0IHRoZXJlJ3Mgbm8gZWFzeSAoYW5kIHByb3BlcikgZml4IGZvciB0aGF0IG5vdy4KCk9u
+ZSBvZiB0aGUgcGF0Y2hzZXQgcGF0Y2hlcyAoYXRoMTBrOiBpbXBsZW1lbnQgd2FrZV90eF9xdWV1
+ZSkgc3RhcnRzCnRvIHVzZSBtYWM4MDIxMSBzb2Z0d2FyZSBxdWV1aW5nLiBUaGlzIGludHJvZHVj
+ZXMgZXh0cmEgaW5kdWNlZApsYXRlbmN5IGFuZCBJJ20gZ3Vlc3NpbmcgaXQgcmVzdWx0cyBpbiBm
+aWxsLWluLXRoZW4tZHJhaW4gc2VxdWVuY2VzIGluCnNvbWUgY2FzZXMgd2hpY2ggZW5kIHVwIGJl
+aW5nIGxvbmcgZW5vdWdoIHRvIG1ha2UgZnFfY29kZWxfZHJvcCBtb3JlCndvcmsgdGhhbiBub3Jt
+YWwuCgpUaGlzIGlzIHJlcXVpcmVkIGZvciBvdGhlciBjaGFuZ2VzIGFuZCBNVS1NSU1PIHBlcmZv
+cm1hbmNlCmltcHJvdmVtZW50cyBzbyB0aGlzIHBhdGNoIGNhbid0IGJlIHJlbW92ZWQuCgpJIGd1
+ZXNzIHlvdSBjb3VsZCB0cnkgZm9yY2luZyBmcV9jb2RlbCB0byB1c2UgZGlmZmVyZW50IHRhcmdl
+dCB0aW1lLAplLmcuIDIwbXMgKGluc3RlYWQgb2YgdGhlIGRlZmF1bHQgNSkuIFlvdSBjYW4gZG8g
+dGhpcyB1c2luZyBgdGNgCmNvbW1hbmQgbGlrZSBzbzoKCiAgIHRjIHFkaXNjIHJlcGxhY2UgZGV2
+IHdsYW4wIHBhcmVudCA6MSBmcV9jb2RlbCBsaW1pdCAxMDI0IHRhcmdldCAyMG1zCiAgIHRjIHFk
+aXNjIHJlcGxhY2UgZGV2IHdsYW4wIHBhcmVudCA6MiBmcV9jb2RlbCBsaW1pdCAxMDI0IHRhcmdl
+dCAyMG1zCiAgIHRjIHFkaXNjIHJlcGxhY2UgZGV2IHdsYW4wIHBhcmVudCA6MyBmcV9jb2RlbCBs
+aW1pdCAxMDI0IHRhcmdldCAyMG1zCiAgIHRjIHFkaXNjIHJlcGxhY2UgZGV2IHdsYW4wIHBhcmVu
+dCA6NCBmcV9jb2RlbCBsaW1pdCAxMDI0IHRhcmdldCAyMG1zCgpZb3UgbWlnaHQgYWxzbyB3YW50
+IHRvIHRyeSBgcGZpZm9gIGluc3RlYWQgb2YgYGZxX2NvZGVsYCBmb3IgY29tcGFyaXNvbiBhcyB3
+ZWxsLgoKCk1pY2hhxYIKCgo+Cj4gUmVnYXJkcywKPiBSb21hbgo+Cj4gT24gMTggQXByaWwgMjAx
+NiBhdCAwMjowMywgUm9tYW4gWWVyeW9taW4gPGxlcm9pLmxpc3RzQGdtYWlsLmNvbT4gd3JvdGU6
+Cj4+IFJhamt1bWFyLAo+Pgo+PiBvaywgSSd2ZSBlbmRlZCB1cCByZXNvbHZpbmcgKHNlZW1zIHRv
+IGJlIHRyaXZpYWwpIGNvbmZsaWN0cyBpbiByZXZlcnQKPj4gbGlzdCB5b3UgcHJvdmlkZWQgKHNl
+ZSBjb21tZW50cyBpbmxpbmVkKS4KPj4gUGVyZm9ybWFuY2UgcmVzdG9yZWQgYW5kIGNvZGVsIHN5
+bWJvbHMgYXJlIGdvbmUgZnJvbSBwZXJmIHRvcC4KPj4gV2lsbCB0cnkgcmV2ZXJ0aW5nICJhdGgx
+MGs6IGNvbWJpbmUgdHhyeCBhbmQgcmVwbGVuaXNoIHRhc2siIGFsb25lIGFuZAo+PiB0aGVuLCBp
+ZiB0aGF0IGRvZXNuJ3QgaGVscCwgcmVzZXR0aW5nIHJldmVydHMgYnkgcGF0Y2ggc2V0cy4KPj4K
+Pj4gUmVnYXJkcywKPj4gUm9tYW4KPj4KPj4gT24gMTcgQXByaWwgMjAxNiBhdCAxODowNiwgTWFu
+b2hhcmFuLCBSYWprdW1hcgo+PiA8cm1hbm9oYXJAcXRpLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4+
+PiBSb21hbiwKPj4+Cj4+PiBIbW0uLiBJIGp1c3QgbGlzdGVkIGF0aDEwayBjaGFuZ2VzIGFsb25l
+LiBTbyB0aGVyZSBtaWdodCBiZSBzb21lIGRlcGVuZGVuY2llcy4KPj4KPj4gdGhlcmUgd2VyZSBh
+dGgxMGsgY29uZmxpY3RzLCBwbGVhc2Ugc2VlIGJlbG93Cj4+Cj4+PiBJbiB5b3VyIGVhcmxpZXIg
+bWFpbCBmcV9jb2RlbF9kcm9wIHdhcyBjb25zdW1pbmcgNDUlIGNwdS4gSGF2ZSB5b3Ugb2JzZXJ2
+ZWQgYW55Cj4+PiBpbXByb3ZlbWVudCBhZnRlciBzd2l0Y2hpbmcgb2ZmIE5FVF9TQ0hfRlFfQ09E
+RUw/IEhhZCBDUFUgdXNhZ2UgZ29uZSBkb3duPwo+Pgo+PiBDUFUgdXNhZ2UgZGlkbid0IGdvIGRv
+d24gYWZ0ZXIgc2ltcGx5IHR1cm5pbmcgb2ZmCj4+IENQVENGR19ORVRfU0NIX0ZRX0NPREVMIHVu
+ZGVyIGNvbXBhdCB3aXJlbGVzcyAoYW5kIHllcywgSSB2ZXJpZmllZCBpdAo+PiB3YXMgb2ZmIGlu
+IHRoZSBjb25maWcgYWZ0ZXIgcmVjb21waWxhdGlvbikuCj4+IEJ1dCBzdGlsbCBJJ20gbm90IHN1
+cmUgaXQncyByZWFsbHkgb2ZmLiBUdXJuaW5nIGl0IG9mZiBib3RoIGluIGtlcm5lbAo+PiBjb25m
+aWcgYW5kIGNvbXBhdC13aXJlbGVzcyBkb2Vzbid0IHNlZW0gdG8gaGF2ZSBlZmZlY3QuIEkgZGlk
+bid0IGRpZwo+PiBkZWVwZXIgaW50byB0aGlzIGJ1dCBpdCBsb29rcyBJIGRpZG4ndCBmaW5kIGEg
+Y29ycmVjdCB3YXkgdG8gdHVybiBpdAo+PiBvZmYgY29tcGxldGVseS4KPj4KPj4gTm90IHN1cmUg
+aWYgSSBzdGF0ZWQgaXQgY29ycmVjdGx5OiBhZnRlciByZXNldHRpbmcgdG8KPj4gODllZjQxYmZh
+YTQ2ZjI0YTE0Yjc3NmYxY2Q3OGMwZTBiMzllNTRjZSBJIGdvdCBzYW1lIChnb29kIGVub3VnaCkK
+Pj4gcGVyZm9ybWFuY2UgYXMgd2l0aCBsYXRlc3QgY29tcGF0LXdpcmVsZXNzIHJlbGVhc2UgKDIw
+MTYwMTEwKS4KPj4KPj4+IFBsZWFzZSB0cnkgdG8gcmV2ZXJ0IHRoZSBjb21taXQgImF0aDEwazog
+Y29tYmluZSB0eHJ4IGFuZCByZXBsZW5pc2ggdGFzayIgYWxvbmUuIElmIHlvdSBzdGlsbAo+Pj4g
+c2VlIHNhbWUgYmVoYXZpb3IgKGxvd2VyIG51bWJlcnMpLCByZXNldCBtYXN0ZXIgYnJhbmNoIHRv
+IHRpbGwgImF0aDEwazogZml4IHB1bGwtcHVzaCB0eAo+Pj4gdGhyZXNob2xkIGhhbmRsaW5nIiBh
+bmQgZ2VuZXJhdGUgYmFja3BvcnRzLgo+Pj4KPj4+IFBsZWFzZSBtYWtlIHN1cmUgdGhhdCBjb2Rl
+bCBpcyBzd2l0Y2hlZCBvZmYgYWx3YXlzIHVudGlsIHJlZ3Jlc3Npb24gcG9pbnQgaXMgcm9vdCBj
+YXVzZWQuCj4+Pgo+Pj4gLVJhamt1bWFyCj4+Pgo+Pj4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwo+Pj4gRnJvbTogUm9tYW4gWWVyeW9taW4gPGxlcm9pLmxpc3RzQGdt
+YWlsLmNvbT4KPj4+IFNlbnQ6IFN1bmRheSwgQXByaWwgMTcsIDIwMTYgMjo1OCBQTQo+Pj4gVG86
+IE1hbm9oYXJhbiwgUmFqa3VtYXIKPj4+IENjOiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZzsg
+UmFqa3VtYXIgTWFub2hhcmFuCj4+PiBTdWJqZWN0OiBSZTogYXRoMTBrIHBlcmZvcm1hbmNlLCBt
+YXN0ZXIgYnJhbmNoIGZyb20gMjAxNjA0MDcKPj4+Cj4+PiBSYWprdW1hciwKPj4+Cj4+PiBTb21l
+aG93IHVuc2V0aW5nIENQVENGR19ORVRfU0NIX0ZRX0NPREVMIGRpZG4ndCBjaGFuZ2UgYW55dGhp
+bmcgYW5kCj4+PiB0aGUgcGF0Y2hlcyB5b3UgbGlzdGVkIGRpZG4ndCByZXZlcnQgY2xlYW5seSwg
+SSBnYXZlIHVwIG9uIDNyZAo+Pj4gZGVwZW5kZW50IHBhdGNoIHNvbWV3aGVyZSBpbiB0aGUgbWlk
+ZGxlIGFuZCBqdXN0IHJlc2V0IG1hc3RlciB0bwo+Pj4gODllZjQxYmZhYTQ2ZjI0YTE0Yjc3NmYx
+Y2Q3OGMwZTBiMzllNTRjZSwgd2hpY2ggaXMgdGhlIGxhc3QgY29tbWl0Cj4+PiBqdXN0IGJlZm9y
+ZSAiYXRoMTBrOiByZWZhY3RvciB0eCBjb2RlIiwgYW5kIGdlbmVyYXRlZCBuZXcgYmFja3BvcnRz
+Lgo+Pj4gVGhlIHJlc3VsdCBpcyB0aGF0IGl0IGhhcyBzYW1lIHBlcmZvcm1hbmNlIGFzIGJlZm9y
+ZS4gQnV0IEkgZ3Vlc3MgaXQKPj4+IGlzIG5vdCBhIHZlcnkgZ29vZCB0ZXN0IGFzIHRoZXJlIHdl
+cmUgbWFueSBjaGFuZ2VzIHRvIG1hYzgwMjExIHRvby4KPj4+Cj4+PiBTbyB3aGF0IGRvIHlvdSB3
+YW50IG1lIHRvIHRyeSBuZXh0PyBNYXliZSB5b3UgY291bGQgcHJvdmlkZSBhIG1vcmUKPj4+IHBy
+ZWNpc2UgbGlzdCB0byByZXZlcnQ/Cj4+Pgo+Pj4KPj4+IFJlZ2FyZHMsCj4+PiBSb21hbgo+Pj4K
+Pj4+IE9uIDkgQXByaWwgMjAxNiBhdCAwNzowMiwgTWFub2hhcmFuLCBSYWprdW1hciA8cm1hbm9o
+YXJAcXRpLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4+Pj4gUm9tYW4sCj4+Pj4KPj4+PiBOZWVkIHlv
+dXIgaGVscCB0byBiaXNlY3QgcmVncmVzc2lvbiBwb2ludC4gQ2FuIHlvdSB0cnkgdy9vIENQVENG
+R19ORVRfU0NIX0ZRX0NPREVMPwo+Pj4+IElmIGl0IGRvZXMgbm90IGhlbHAsIHRyeSByZXZlcnRp
+bmcgYmVsb3cgY29tbWl0cyB3aGljaCBhcmUgbWFqb3IgY2hhbmdlcyBpbiBkYXRhIHBhdGguCj4+
+Pj4gSW5zdGVhZCBvZiBnZW5lcmF0aW5nIGJhY2twb3J0cywgYXBwbHkgcmV2ZXJ0IGNvbW1pdCBv
+biB0b3AgeW91ciBiYWNrcG9ydHMuCj4+Pj4KPj4+PiBhdGgxMGs6IGNvbWJpbmUgdHhyeCBhbmQg
+cmVwbGVuaXNoIHRhc2sKPj4+PiBhdGgxMGs6IHJldXNlIGNvcHkgZW5naW5lIDUgKGh0dCByeCkg
+ZGVzY3JpcHRvcnMKPj4+PiBhdGgxMGs6IGNsZWFudXAgY29weSBlbmdpbmUgcmVjZWl2ZSBuZXh0
+IGNvbXBsZXRpb24KPj4+PiBhdGgxMGs6IHJlZ2lzdGVyIGF0aDEwa19odHRfaHRjX3QyaF9tc2df
+aGFuZGxlcgo+Pj4+IGF0aDEwazogc3BlZWR1cCBodHQgcnggZGVzY3JpcHRvciBwcm9jZXNzaW5n
+IGZvciByeF9pbmQKPj4KPj4gdGhpcyBkZXBlbmRzIG9uIDY4OWRlMzhlMzcxNzljNmY1MjRkZDAw
+M2UxZGFlOTIwNDJmOGY1Y2QKPj4KPj4+PiBhdGgxMGs6IGNsZWFudXAgYW1zZHUgcHJvY2Vzc2lu
+ZyBmb3IgcnggaW5kaWNhdGlvbgo+Pj4+IGF0aDEwazogcmVtb3ZlIHVudXNlZCBmd19kZXNjIHBy
+b2Nlc3NpbmcKPj4+PiBhdGgxMGs6IGNvcHkgdHggZmV0Y2ggaW5kaWNhdGlvbiBtZXNzYWdlCj4+
+Pj4gYXRoMTBrOiBzcGVlZHVwIGh0dCByeCBkZXNjcmlwdG9yIHByb2Nlc3NpbmcgZm9yIHR4IGNv
+bXBsZXRpb24KPj4+PiBhdGgxMGs6IGZpeCBudWxsIGRlcmVmIGlmIGRldmljZSBjcmFzaGVzIGVh
+cmx5Cj4+Pj4gYXRoMTBrOiBmaXggcHVsbC1wdXNoIHR4IHRocmVzaG9sZCBoYW5kbGluZwo+Pj4+
+IGF0aDEwazogZml4IHR4IGhhbmcKPj4+PiBhdGgxMGs6IG1vdmUgbWdtdCBkZXNjcmlwdG9yIGxp
+bWl0IGhhbmRsZSB1bmRlciBtZ210X3R4Cj4+Cj4+IGVycm9yOiBjb3VsZCBub3QgcmV2ZXJ0IGNh
+YzA4NTUuLi4gYXRoMTBrOiBtb3ZlIG1nbXQgZGVzY3JpcHRvciBsaW1pdAo+PiBoYW5kbGUgdW5k
+ZXIgbWdtdF90eAo+PiBOb3QgZXZlbiBzdXJlIHdoeSBpdCBmYWlscyBoZXJlLCBwcmV0dHkgdHJp
+dmlhbCB0byByZXNvbHZlIGJ1dCBzdGlsbC4uLgo+Pgo+Pj4+IGF0aDEwazogY2hhbmdlIGh0dCB0
+eCBkZXNjL3FjYWNoZSBwZWVyIGxpbWl0IGNvbmZpZwo+Pgo+PiBlcnJvcjogY291bGQgbm90IHJl
+dmVydCA5OWFkMWNiLi4uIGF0aDEwazogY2hhbmdlIGh0dCB0eCBkZXNjL3FjYWNoZQo+PiBwZWVy
+IGxpbWl0IGNvbmZpZwo+PiBvb2ssIHJlc29sdmVkLCBob3BlIGNvcnJlY3RseQo+Pgo+Pj4+IGF0
+aDEwazogZml4IEhUVCBUeCBDRSByaW5nIHNpemUKPj4+PiBhdGgxMGs6IGltcGxlbWVudCBwdXNo
+LXB1bGwgdHgKPj4+PiBhdGgxMGs6IGtlZXAgdHJhY2sgb2YgcXVldWUgZGVwdGggcGVyIHR4cQo+
+Pj4+IGF0aDEwazogc3RvcmUgdHhxIGluIHNrYl9jYgo+Pj4+IGF0aDEwazogaW1wbGVtZW50IHVw
+ZGF0aW5nIHNoYXJlZCBodHQgdHhxIHN0YXRlCj4+Pj4gYXRoMTBrOiBpbXBsZW1lbnQgd2FrZV90
+eF9xdWV1ZQo+Pgo+PiBkZXBlbmRzIG9uIDlkNzFkNDdlZWQyMGYzNDYyMGU1NGUyOWJjYzkwZjk1
+OWQ1ODczYjggYW5kCj4+IDc1MGVlZWQ4OWNmM2M0NjZkZjMwMmU0NzA3NDkxYjAxNTUzMWUyNmMK
+Pj4gYWxsIHRocmVlIGZhaWwgdG8gcmV2ZXJ0IGNsZWFubHkKPj4KPj4+PiBhdGgxMGs6IGFkZCBu
+ZXcgaHR0IG1lc3NhZ2UgZ2VuZXJhdGlvbi9wYXJzaW5nIGxvZ2ljCj4+Cj4+IGZhaWxzIHRvIHJl
+dmVydCBjbGVhbmx5Cj4+Cj4+Pj4gYXRoMTBrOiBhZGQgZmFzdCBwZWVyX21hcCBsb29rdXAKPj4+
+PiBhdGgxMGs6IG1haW50YWluIHBlZXJfaWQgZm9yIGVhY2ggc3RhIGFuZCB2aWYKPj4+PiBhdGgx
+MGs6IHJlZmFjdG9yIHR4IHBlbmRpbmcgbWFuYWdlbWVudAo+Pj4+IGF0aDEwazogdW5pZnkgdHhw
+YXRoIGRlY2lzaW9uCj4+Pj4gYXRoMTBrOiByZWZhY3RvciB0eCBjb2RlCj4+Pj4KPj4+PiAtUmFq
+a3VtYXIKPj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+Pj4g
+RnJvbTogUm9tYW4gWWVyeW9taW4gPGxlcm9pLmxpc3RzQGdtYWlsLmNvbT4KPj4+PiBTZW50OiBG
+cmlkYXksIEFwcmlsIDgsIDIwMTYgMTA6NDkgUE0KPj4+PiBUbzogTWFub2hhcmFuLCBSYWprdW1h
+cgo+Pj4+IENjOiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZzsgUmFqa3VtYXIgTWFub2hhcmFu
+Cj4+Pj4gU3ViamVjdDogUmU6IGF0aDEwayBwZXJmb3JtYW5jZSwgbWFzdGVyIGJyYW5jaCBmcm9t
+IDIwMTYwNDA3Cj4+Pj4KPj4+PiBMYXRlc3QgYmFja3BvcnRzIChjb21wYXQtd2lyZWxlc3MpIHJl
+bGVhc2VkICgyMDE2MDExMCkgaGFzIGNvZGVsCj4+Pj4gZW5hYmxlZCAoQ1BUQ0ZHX05FVF9TQ0hf
+RlFfQ09ERUw9eSkgYW5kIHRoZXJlIGFyZSBubyBvcGVud3J0IHBhdGNoZXMKPj4+PiBvciBzcGVj
+aWFsIGNvbmZpZ3VyYXRpb24gZm9yIGNvZGVsLiBBbmQgaXQgcnVucyBvay4KPj4+PiBIb3cgb2xk
+IGNvbW1pdCBkbyB5b3Ugd2FudCBtZSB0byB0cnk/Cj4+Pj4KPj4+PiBSZWdhcmRzLAo+Pj4+IFJv
+bWFuCj4+Pj4KPj4+PiBPbiA4IEFwcmlsIDIwMTYgYXQgMTk6NDEsIE1hbm9oYXJhbiwgUmFqa3Vt
+YXIgPHJtYW5vaGFyQHF0aS5xdWFsY29tbS5jb20+IHdyb3RlOgo+Pj4+PiBUaGF0IHNob3VsZCBi
+ZSBmaW5lLiBJcyBjb2RlbCBydW5uaW5nIG9ubHkgZm9yIGxhdGVzdCBiYWNrcG9ydHM/IEFyZSB0
+aGVyZSBhbnkgb3BlbndydCBjaGFuZ2VzIHRvIGNvbmZpZ3VyZSBjb2RlbD8gQ2FuIHlvdSBwbHog
+dHJ5IHRvIHJlc2V0IG1hc3RlciBicmFuY2ggdG8gb2xkZXIgY29tbWl0IGFuZCB2YWxpZGF0ZT8K
+Pj4+Pj4KPj4+Pj4gLVJhamt1bWFyCj4+Pj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KPj4+Pj4gRnJvbTogUm9tYW4gWWVyeW9taW4gW2xlcm9pLmxpc3RzQGdtYWls
+LmNvbV0KPj4+Pj4gU2VudDogRnJpZGF5LCBBcHJpbCA4LCAyMDE2IDk6MzAgUE0KPj4+Pj4gVG86
+IE1hbm9oYXJhbiwgUmFqa3VtYXIKPj4+Pj4gQ2M6IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+OyBSYWprdW1hciBNYW5vaGFyYW4KPj4+Pj4gU3ViamVjdDogUmU6IGF0aDEwayBwZXJmb3JtYW5j
+ZSwgbWFzdGVyIGJyYW5jaCBmcm9tIDIwMTYwNDA3Cj4+Pj4+Cj4+Pj4+IFJhamt1bWFyLAo+Pj4+
+Pgo+Pj4+PiBJIHRvb2sgYmFja3BvcnRzIGZyb20KPj4+Pj4gZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcv
+cHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2JhY2twb3J0cy9iYWNrcG9ydHMuZ2l0LAo+Pj4+PiB0
+b29rIGxhdGVzdCBhdGggdHJlZSBmcm9tCj4+Pj4+IGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9z
+Y20vbGludXgva2VybmVsL2dpdC9rdmFsby9hdGguZ2l0LCBnZW5lcmF0ZWQKPj4+Pj4gYmFja3Bv
+cnRzLW91dHB1dCBiYXNlZCBvbiBhdGggbWFzdGVyIGJyYW5jaCwgcmVmcmVzaGVkIG9wZW53cnQK
+Pj4+Pj4gcGF0Y2hlcy4KPj4+Pj4gQW5kIHNhdyBiaWcgcGVyZm9ybWFuY2UgZGVncmFkYXRpb24u
+IEFtIEkgZG9pbmcgc29tZXRoaW5nIHdyb25nPwo+Pj4+Pgo+Pj4+PiBSZWdhcmRzLAo+Pj4+PiBS
+b21hbgo+Pj4+Pgo+Pj4+PiBPbiA4IEFwcmlsIDIwMTYgYXQgMTg6MzQsIE1hbm9oYXJhbiwgUmFq
+a3VtYXIgPHJtYW5vaGFyQHF0aS5xdWFsY29tbS5jb20+IHdyb3RlOgo+Pj4+Pj4gUm9tYW4sCj4+
+Pj4+Pgo+Pj4+Pj4gV2hpY2ggYmFja3BvcnRzIHZlcnNpb24gYXJlIHlvdSB1c2luZz8gSSBkb24n
+dCBzZWUgY29kZWwgY2hhbmdlcyBpbiBhdGguZ2l0L3dpcmVsZXNzLWRyaXZlcnMuZ2l0Lgo+Pj4+
+Pj4gSG9wZSB5b3UgYXJlIHVzaW5nIHNhbWUgZmlybXdhcmUuCj4+Pj4+Pgo+Pj4+Pj4gLVJhamt1
+bWFyCj4+Pj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+Pj4+
+PiBGcm9tOiBhdGgxMGsgPGF0aDEway1ib3VuY2VzQGxpc3RzLmluZnJhZGVhZC5vcmc+IG9uIGJl
+aGFsZiBvZiBSb21hbiBZZXJ5b21pbiA8bGVyb2kubGlzdHNAZ21haWwuY29tPgo+Pj4+Pj4gU2Vu
+dDogRnJpZGF5LCBBcHJpbCA4LCAyMDE2IDg6MTQgUE0KPj4+Pj4+IFRvOiBhdGgxMGtAbGlzdHMu
+aW5mcmFkZWFkLm9yZwo+Pj4+Pj4gU3ViamVjdDogYXRoMTBrIHBlcmZvcm1hbmNlLCBtYXN0ZXIg
+YnJhbmNoIGZyb20gMjAxNjA0MDcKPj4+Pj4+Cj4+Pj4+PiBIZWxsbyEKPj4+Pj4+Cj4+Pj4+PiBJ
+J3ZlIHNlZW4gcGVyZm9ybWFuY2UgcGF0Y2hlcyB3ZXJlIGNvbW1pdGVkIHNvIEkndmUgZGVjaWRl
+ZCB0byBnaXZlIGl0Cj4+Pj4+PiBhIHRyeSAodXNpbmcgNC4xIGtlcm5lbCBhbmQgYmFja3BvcnRz
+KS4KPj4+Pj4+IFRoZSByZXN1bHRzIGFyZSBxdWl0ZSBkaXNhcHBvaW50aW5nOiBUQ1AgZG93bmxv
+YWQgKGNsaWVudCBwb3YpIGRyb3BwZWQKPj4+Pj4+IGZyb20gNzUwTWJwcyB0byB+NTUwIGFuZCBV
+RFAgc2hvd3MgY29tcGxldGVseSB3ZWlyZCBiZWhhdm91ciAtIGlmCj4+Pj4+PiBnZW5lcmF0aW5n
+IDkwME1icHMgaXQgZ2l2ZXMgMzBNYnBzIG1heCwgaWYgZ2VuZXJhdGluZyAzMDBNYnBzIGl0IGdp
+dmVzCj4+Pj4+PiAyNTBNYnBzLCBiZWZvcmUgKGxhdGVzdCBvZmZpY2lhbCBiYWNrcG9ydHMgcmVs
+ZWFzZSBmcm9tIEphbnVhcnkpIEkgd2FzCj4+Pj4+PiBhYmxlIHRvIGdldCA5MDBNYnBzLgo+Pj4+
+Pj4gSGFyZHdhcmUgaXMgYmFzaWNhbGx5IGFwMTUyICsgcWNhOTg4eCAzeDMuCj4+Pj4+PiBXaGVu
+IHJ1bm5pbmcgcGVyZiB0b3AgSSBzZWUgdGhhdCBmcV9jb2RlbF9kcm9wIGVhdHMgYSBsb3Qgb2Yg
+Y3B1Lgo+Pj4+Pj4gSGVyZSBpcyB0aGUgb3V0cHV0IHdoZW4gcnVubmluZyBpcGVyZjMgVURQIHRl
+c3Q6Cj4+Pj4+Pgo+Pj4+Pj4gICAgIDQ1Ljc4JSAgW2tlcm5lbF0gICAgICAgW2tdIGZxX2NvZGVs
+X2Ryb3AKPj4+Pj4+ICAgICAgMy4wNSUgIFtrZXJuZWxdICAgICAgIFtrXSBhZzcxeHhfcG9sbAo+
+Pj4+Pj4gICAgICAyLjE4JSAgW2tlcm5lbF0gICAgICAgW2tdIHNrYl9yZWxlYXNlX2RhdGEKPj4+
+Pj4+ICAgICAgMi4wMSUgIFtrZXJuZWxdICAgICAgIFtrXSByNGtfZG1hX2NhY2hlX2ludgo+Pj4+
+Pj4gICAgICAxLjczJSAgW2tlcm5lbF0gICAgICAgW2tdIGV0aF90eXBlX3RyYW5zCj4+Pj4+PiAg
+ICAgIDEuMjQlICBba2VybmVsXSAgICAgICBba10gYnVpbGRfc2tiCj4+Pj4+PiAgICAgIDEuMjAl
+ICBbbWFjODAyMTFdICAgICBba10gaWVlZTgwMjExX3R4X2RlcXVldWUKPj4+Pj4+ICAgICAgMS4w
+MyUgIFtrZXJuZWxdICAgICAgIFtrXSBfX2RlbGF5Cj4+Pj4+PiAgICAgIDAuOTglICBba2VybmVs
+XSAgICAgICBba10gZnFfY29kZWxfZW5xdWV1ZQo+Pj4+Pj4gICAgICAwLjk0JSAgW2tlcm5lbF0g
+ICAgICAgW2tdIF9fbmV0aWZfcmVjZWl2ZV9za2JfY29yZQo+Pj4+Pj4gICAgICAwLjkzJSAgW2tl
+cm5lbF0gICAgICAgW2tdIHNrYl9yZWxlYXNlX2hlYWRfc3RhdGUKPj4+Pj4+ICAgICAgMC44OCUg
+IFthdGgxMGtfY29yZV0gIFtrXSBhdGgxMGtfaHR0X3R4Cj4+Pj4+PiAgICAgIDAuODclICBba2Vy
+bmVsXSAgICAgICBba10gX19kZXZfcXVldWVfeG1pdAo+Pj4+Pj4gICAgICAwLjg0JSAgW21hYzgw
+MjExXSAgICAgW2tdIGllZWU4MDIxMV90eF9zdGF0dXMKPj4+Pj4+ICAgICAgMC44MSUgIFtrZXJu
+ZWxdICAgICAgIFtrXSBfX2J1aWxkX3NrYgo+Pj4+Pj4gICAgICAwLjgwJSAgW21hYzgwMjExXSAg
+ICAgW2tdIF9faWVlZTgwMjExX3N1YmlmX3N0YXJ0X3htaXQKPj4+Pj4+ICAgICAgMC43NyUgIFtr
+ZXJuZWxdICAgICAgIFtrXSBicl9oYW5kbGVfZnJhbWVfZmluaXNoCj4+Pj4+PiAgICAgIDAuNzUl
+ICBba2VybmVsXSAgICAgICBba10gX19xZGlzY19ydW4KPj4+Pj4+ICAgICAgMC43MyUgIFtrZXJu
+ZWxdICAgICAgIFtrXSBza2JfcmVjeWNsZXJfY29uc3VtZQo+Pj4+Pj4gICAgICAwLjcyJSAgW2tl
+cm5lbF0gICAgICAgW2tdIGtmcmVlX3NrYgo+Pj4+Pj4gICAgICAwLjcyJSAgW2tlcm5lbF0gICAg
+ICAgW2tdIGdldF9wYWdlX2Zyb21fZnJlZWxpc3QKPj4+Pj4+ICAgICAgMC42OSUgIFtrZXJuZWxd
+ICAgICAgIFtrXSBicl9mZGJfdXBkYXRlCj4+Pj4+PiAgICAgIDAuNjklICBba2VybmVsXSAgICAg
+ICBba10gYnJfaGFuZGxlX2ZyYW1lCj4+Pj4+PiAgICAgIDAuNjclICBba2VybmVsXSAgICAgICBb
+a10gX19jb3B5X3VzZXJfY29tbW9uCj4+Pj4+PiAgICAgIDAuNjYlICBba2VybmVsXSAgICAgICBb
+a10gX19za2JfZmxvd19kaXNzZWN0Cj4+Pj4+PiAgICAgIDAuNjUlICBbYXRoMTBrX2NvcmVdICBb
+a10gYXRoMTBrX3R4cnhfdHhfdW5yZWYKPj4+Pj4+ICAgICAgMC42MCUgIFtrZXJuZWxdICAgICAg
+IFtrXSBrbWVtX2NhY2hlX2FsbG9jCj4+Pj4+PiAgICAgIDAuNjAlICBbbWFjODAyMTFdICAgICBb
+a10gc3RhX2FkZHJfaGFzaAo+Pj4+Pj4gICAgICAwLjU2JSAgW2tlcm5lbF0gICAgICAgW2tdIGZx
+X2NvZGVsX2RlcXVldWUKPj4+Pj4+ICAgICAgMC41MyUgIFtrZXJuZWxdICAgICAgIFtrXSBfX2xv
+Y2FsX2JoX2VuYWJsZV9pcAo+Pj4+Pj4gICAgICAwLjUwJSAgW2tlcm5lbF0gICAgICAgW2tdIF9f
+YnJfZmRiX2dldAo+Pj4+Pj4KPj4+Pj4+IFdoYXQgY291bGQgYmUgdGhlIHJlYXNvbj8KPj4+Pj4+
+IEkndmUgc2VlbiB0aGVyZSBhcmUgc29tZSBwYXRjaGVzIGZyb20gTWljaGFsIHdoaWNoIHRvdWNo
+IGZxX2NvZGVsLAo+Pj4+Pj4gd291bGQgdGhvc2UgaGVscCBvciBub3Q/Cj4+Pj4+Pgo+Pj4+Pj4K
+Pj4+Pj4+IFJlZ2FyZHMsCj4+Pj4+PiBSb21hbgo+Pj4+Pj4KPj4+Pj4+IF9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+Pj4+PiBhdGgxMGsgbWFpbGluZyBs
+aXN0Cj4+Pj4+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+Pj4+Pj4gaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
+QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hdGgxMGsK
