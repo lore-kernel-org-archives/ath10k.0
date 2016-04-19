@@ -1,29 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1asXgj-0001NG-JW
- for ath10k@lists.infradead.org; Tue, 19 Apr 2016 15:35:43 +0000
+ id 1asXpU-0006dL-HP
+ for ath10k@lists.infradead.org; Tue, 19 Apr 2016 15:44:44 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k performance, master branch from 20160407
-Date: Tue, 19 Apr 2016 15:35:16 +0000
-Message-ID: <87k2jtk3wt.fsf@kamboji.qca.qualcomm.com>
-References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
- <1460129643950.46282@qti.qualcomm.com>
- <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
- <ab762b501abc457aa1dbf965895eb113@aphydexm01b.ap.qualcomm.com>
- <CACiydbL3-QoC=muZf4aJOaUWZN-tpA3h1SwNfYU3+LnY_FHF+g@mail.gmail.com>
- <1460174525702.66744@qti.qualcomm.com>
- <CACiydbLh+X540MrnvS5MGm8Bd3QnnWmdFyon8H5khJiFtGK85w@mail.gmail.com>
- <1460905574286.42282@qti.qualcomm.com>
- <CACiydb+AaTc2wWzVeJNwPzA+PH9FcrqWzx3nW2RmKxaiaHwg-w@mail.gmail.com>
- <CACiydbKu8_1sO9K8uuY_SSL8ECvr3wZttt+72cNO9dc_7RRM2A@mail.gmail.com>
- <CA+BoTQndOpgYYZiZbenROV9+-WUHSbUugDDgCKGVe2fyA0efXQ@mail.gmail.com>
- <CACiydb+rPQW8_0bQE0maVt6cvbhxtH0ZuFeRNW2paupBaVT3vA@mail.gmail.com>
- <CA+BoTQmn_hS1X1BjC7=wmevnAGiPx7iit0NMUxnmmqjFZ_RnVA@mail.gmail.com>
-In-Reply-To: <CA+BoTQmn_hS1X1BjC7=wmevnAGiPx7iit0NMUxnmmqjFZ_RnVA@mail.gmail.com>	(Michal
- Kazior's message of "Tue, 19 Apr 2016 09:43:31 +0200")
+Subject: Re: [PATCH v2 0/5] ath10k: fix recent checkpatch warnings
+Date: Tue, 19 Apr 2016 15:44:21 +0000
+Message-ID: <87bn55k3ho.fsf@kamboji.qca.qualcomm.com>
+References: <20160413111247.18823.15952.stgit@potku.adurom.net>
+In-Reply-To: <20160413111247.18823.15952.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Wed, 13 Apr 2016 14:13:08 +0300")
 Content-Language: en-US
-Content-ID: <217694A695739F4A90C78049F6126C77@qualcomm.com>
+Content-ID: <D311724F8626D748AD55ACE3257E9921@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -37,41 +25,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
-Cc: Roman Yeryomin <leroi.lists@gmail.com>, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> On 19 April 2016 at 09:31, Roman Yeryomin <leroi.lists@gmail.com> wrote:
->> On 19 April 2016 at 08:28, Michal Kazior <michal.kazior@tieto.com> wrote:
->>
->>> If my hunch is right there's no easy (and proper) fix for that now.
->>>
->>> One of the patchset patches (ath10k: implement wake_tx_queue) starts
->>> to use mac80211 software queuing. This introduces extra induced
->>> latency and I'm guessing it results in fill-in-then-drain sequences in
->>> some cases which end up being long enough to make fq_codel_drop more
->>> work than normal.
->>>
->>> This is required for other changes and MU-MIMO performance
->>> improvements so this patch can't be removed.
->>
->> But qca988x doesn't support MU-MIMO, AFAIK.
+> I updated checkpatch and noticed that there are few new warnings.
 >
-> Correct.
+> v2:
 >
+> * fix tests in patch 3
+> * add patch 5 to fix a new warning in mac.c
 >
->> Can this be made chip dependent?
+> ---
 >
-> I guess it could but it'd arguably make the driver more complex and
-> harder to maintain. What we want is a long-term fix, not a short-term
-> one.
+> Kalle Valo (5):
+>       ath10k: fix checkpatch warnings related to spaces
+>       ath10k: prefer kernel type 'u64' over 'u_int64_t'
+>       ath10k: prefer ether_addr_equal() or ether_addr_equal_unaligned() over memcmp()
+>       ath10k: prefer ether_addr_copy() over memcpy()
+>       ath10k: fix parenthesis alignment
 
-But we should never go backwards and TCP dropping from 750 Mbps to ~550
-Mbps is a huge drop, so this is not ok. We have to do something to fix
-this, be it reverting the wake_tx_queue support, somehow disabling it by
-default or something.
+Applied.
 
 -- 
 Kalle Valo
