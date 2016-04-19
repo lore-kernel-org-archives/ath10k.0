@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1asXsu-0001oN-A0
- for ath10k@lists.infradead.org; Tue, 19 Apr 2016 15:48:17 +0000
+ id 1asXtQ-00024O-EB
+ for ath10k@lists.infradead.org; Tue, 19 Apr 2016 15:48:48 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [patch v2] ath10k: add some sanity checks
-Date: Tue, 19 Apr 2016 15:47:53 +0000
-Message-ID: <87vb3diore.fsf@kamboji.qca.qualcomm.com>
-References: <20160411081520.GA17911@mwanda>
-In-Reply-To: <20160411081520.GA17911@mwanda> (Dan Carpenter's message of "Mon, 
- 11 Apr 2016 11:15:20 +0300")
+Subject: Re: [PATCH] ath10k: add dynamic tx mode switch config support for
+ qca4019
+Date: Tue, 19 Apr 2016 15:48:24 +0000
+Message-ID: <87r3e1ioqg.fsf@kamboji.qca.qualcomm.com>
+References: <1460472353-4317-1-git-send-email-c_traja@qti.qualcomm.com>
+In-Reply-To: <1460472353-4317-1-git-send-email-c_traja@qti.qualcomm.com> (c.
+ traja's message of "Tue, 12 Apr 2016 20:15:53 +0530")
 Content-Language: en-US
-Content-ID: <A5B27DC942CED449AAF67B96FBBE4F76@qualcomm.com>
+Content-ID: <DAFCBF01405870419C69DC97AB5991BB@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,17 +26,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Raja Mani <rmani@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Dan Carpenter <dan.carpenter@oracle.com> writes:
+<c_traja@qti.qualcomm.com> writes:
 
-> Smatch complains that since "ev->peer_id" comes from skb->data that
-> means we can't trust it and have to do a bounds check on it to prevent
-> an array overflow.
+> From: Raja Mani <rmani@qti.qualcomm.com>
 >
-> Fixes: 6942726f7f7b ('ath10k: add fast peer_map lookup')
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> push-pull mode needs certain amount the host driver involvement for
+> managing queues in the host memory and packet delivery to firmware.
+> qca4019 wifi firmware has an option to stay in push mode for less
+> number of active traffic flow and then switch to push-pull mode when
+> the active traffic flow goes beyond the certain limit.
+>
+> The advantage of staying in push mode for less active traffic is, the
+> host cpu consumption is reduced. qca4019 firmware supports this
+> flexibility of the mode switch. It takes the host driver interest
+> (LOW_PERF/HIGH_PERF) via WMI_EXT_RESOURCE_CFG_CMDID,
+>
+>  LOW_PERF  - fw would stay in push mode and switch to push-pull
+>                based on demand.
+>  HIGH_PERF - fw would stay in push-pull mode from the boot.
+>
+> To make this configuration generic, new WMI services
+> WMI_SERVICE_TX_MODE_PUSH_ONLY, WMI_SERVICE_TX_MODE_PUSH_PULL,
+> WMI_SERVICE_TX_MODE_DYNAMIC are introduced to take dynamic tx mode
+> switch support availability in firmware.
+> Based on WMI_SERVICE_TX_MODE_DYNAMIC, LOW_PERF or HIGHT_PERF is
+> configured to the firmware.
+>
+> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
 Applied, thanks.
 
