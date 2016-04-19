@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1asXpU-0006dL-HP
- for ath10k@lists.infradead.org; Tue, 19 Apr 2016 15:44:44 +0000
+ id 1asXr6-0000lP-Ov
+ for ath10k@lists.infradead.org; Tue, 19 Apr 2016 15:46:26 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/5] ath10k: fix recent checkpatch warnings
-Date: Tue, 19 Apr 2016 15:44:21 +0000
-Message-ID: <87bn55k3ho.fsf@kamboji.qca.qualcomm.com>
-References: <20160413111247.18823.15952.stgit@potku.adurom.net>
-In-Reply-To: <20160413111247.18823.15952.stgit@potku.adurom.net> (Kalle Valo's
- message of "Wed, 13 Apr 2016 14:13:08 +0300")
+Subject: Re: [PATCH] ath10k: Fix return value for btcoex and peer stats debugfs
+Date: Tue, 19 Apr 2016 15:46:00 +0000
+Message-ID: <874maxk3f4.fsf@kamboji.qca.qualcomm.com>
+References: <1459870106-2694-1-git-send-email-mohammed@qca.qualcomm.com>
+In-Reply-To: <1459870106-2694-1-git-send-email-mohammed@qca.qualcomm.com>
+ (Mohammed Shafi Shajakhan's message of "Tue, 5 Apr 2016 20:58:26	+0530")
 Content-Language: en-US
-Content-ID: <D311724F8626D748AD55ACE3257E9921@qualcomm.com>
+Content-ID: <EFE97303BA8BC447B853AAB0B62F6117@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,28 +25,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
 
-> I updated checkpatch and noticed that there are few new warnings.
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 >
-> v2:
+> Return value is incorrect for btcoex and peer stats debugfs
+> 'write' entries if the user provides a value that matches with
+> the already available debugfs entry, this results in the debugfs
+> entry getting stuck and the operation has to be terminated manually.
+> Fix this by returning the appropriate return 'count' as we do it for
+> other debugfs entries like pktlog etc
 >
-> * fix tests in patch 3
-> * add patch 5 to fix a new warning in mac.c
->
-> ---
->
-> Kalle Valo (5):
->       ath10k: fix checkpatch warnings related to spaces
->       ath10k: prefer kernel type 'u64' over 'u_int64_t'
->       ath10k: prefer ether_addr_equal() or ether_addr_equal_unaligned() over memcmp()
->       ath10k: prefer ether_addr_copy() over memcpy()
->       ath10k: fix parenthesis alignment
+> Fixes: cc61a1bbbc0e ("ath10k: enable debugfs provision to enable
+> Peer Stats feature")
+> Fixes: c28e6f06ff40 ("ath10k: fix sanity check on enabling btcoex via
+> debugfs")
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Applied.
+Applied, thanks.
+
+I removed the line wrapping from "Fixes:" lines.
 
 -- 
 Kalle Valo
