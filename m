@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1asXsG-0001Rw-RO
- for ath10k@lists.infradead.org; Tue, 19 Apr 2016 15:47:37 +0000
+ id 1asXsu-0001oN-A0
+ for ath10k@lists.infradead.org; Tue, 19 Apr 2016 15:48:17 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix rx_channel during hw reconfigure
-Date: Tue, 19 Apr 2016 15:47:12 +0000
-Message-ID: <87zispiosq.fsf@kamboji.qca.qualcomm.com>
-References: <1460011314-15978-1-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1460011314-15978-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Thu, 7 Apr 2016 12:11:54 +0530")
+Subject: Re: [patch v2] ath10k: add some sanity checks
+Date: Tue, 19 Apr 2016 15:47:53 +0000
+Message-ID: <87vb3diore.fsf@kamboji.qca.qualcomm.com>
+References: <20160411081520.GA17911@mwanda>
+In-Reply-To: <20160411081520.GA17911@mwanda> (Dan Carpenter's message of "Mon, 
+ 11 Apr 2016 11:15:20 +0300")
 Content-Language: en-US
-Content-ID: <BA6E516EE728284BA6D3595F7472175F@qualcomm.com>
+Content-ID: <A5B27DC942CED449AAF67B96FBBE4F76@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,21 +25,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Dan Carpenter <dan.carpenter@oracle.com> writes:
 
-> Upon firmware assert, restart work will be triggered so that mac80211
-> will reconfigure the driver. An issue is reported that after restart
-> work, survey dump data do not contain in-use (SURVEY_INFO_IN_USE) info
-> for operating channel. During reconfigure, since mac80211 already has
-> valid channel context for given radio, channel context iteration return
-> num_chanctx > 0. Hence rx_channel is always NULL. Fix this by assigning
-> channel context to rx_channel when driver restart is in progress.
+> Smatch complains that since "ev->peer_id" comes from skb->data that
+> means we can't trust it and have to do a bounds check on it to prevent
+> an array overflow.
 >
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Fixes: 6942726f7f7b ('ath10k: add fast peer_map lookup')
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
 Applied, thanks.
 
