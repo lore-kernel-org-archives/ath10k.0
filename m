@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1astcm-0007VU-1r
- for ath10k@lists.infradead.org; Wed, 20 Apr 2016 15:01:05 +0000
+ id 1astcN-0007J7-1b
+ for ath10k@lists.infradead.org; Wed, 20 Apr 2016 15:00:42 +0000
 From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH 4/4] ath10k: Enable support for QCA9984
-Date: Wed, 20 Apr 2016 20:29:16 +0530
-Message-ID: <1461164356-9158-5-git-send-email-vthiagar@qti.qualcomm.com>
+Subject: [PATCH 1/4] ath10k: Move rx_location_info out of struct rx_pkt_end
+Date: Wed, 20 Apr 2016 20:29:13 +0530
+Message-ID: <1461164356-9158-2-git-send-email-vthiagar@qti.qualcomm.com>
 In-Reply-To: <1461164356-9158-1-git-send-email-vthiagar@qti.qualcomm.com>
 References: <1461164356-9158-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,168 +25,34 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-QCA9984 shares the same configuration with QCA99X0.
+Define rx_location_info in struct rx_ppdu_end_qca99x0 after
+rx_pkt_end. This is to prepare rx_ppdu_end for QCA9984 chip.
 
 Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 23 +++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   | 11 +++++++++++
- drivers/net/wireless/ath/ath10k/pci.c  | 14 ++++++++++++++
- 3 files changed, 48 insertions(+)
+ drivers/net/wireless/ath/ath10k/rx_desc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 1c4106b..f24ce1c 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -175,6 +175,28 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		},
- 	},
- 	{
-+		.id = QCA9984_HW_1_0_DEV_VERSION,
-+		.dev_id = QCA9984_1_0_DEVICE_ID,
-+		.name = "qca9984/qca9994 hw1.0",
-+		.patch_load_addr = QCA9984_HW_1_0_PATCH_LOAD_ADDR,
-+		.uart_pin = 7,
-+		.otp_exe_param = 0x00000700,
-+		.continuous_frag_desc = true,
-+		.channel_counters_freq_hz = 150000,
-+		.max_probe_resp_desc_thres = 24,
-+		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_BEFORE,
-+		.tx_chain_mask = 0xf,
-+		.rx_chain_mask = 0xf,
-+		.max_spatial_stream = 4,
-+		.cal_data_len = 12064,
-+		.fw = {
-+			.dir = QCA9984_HW_1_0_FW_DIR,
-+			.board = QCA9984_HW_1_0_BOARD_DATA_FILE,
-+			.board_size = QCA99X0_BOARD_DATA_SZ,
-+			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
-+		},
-+	},
-+	{
- 		.id = QCA9377_HW_1_0_DEV_VERSION,
- 		.dev_id = QCA9377_1_0_DEVICE_ID,
- 		.name = "qca9377 hw1.0",
-@@ -2119,6 +2141,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 		ar->hw_values = &qca6174_values;
- 		break;
- 	case ATH10K_HW_QCA99X0:
-+	case ATH10K_HW_QCA9984:
- 		ar->regs = &qca99x0_regs;
- 		ar->hw_values = &qca99x0_values;
- 		break;
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index c0179bc..59dcda6 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -26,6 +26,7 @@
- #define QCA6164_2_1_DEVICE_ID   (0x0041)
- #define QCA6174_2_1_DEVICE_ID   (0x003e)
- #define QCA99X0_2_0_DEVICE_ID   (0x0040)
-+#define QCA9984_1_0_DEVICE_ID	(0x0046)
- #define QCA9377_1_0_DEVICE_ID   (0x0042)
+diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
+index ca8d168..3e7dfaa 100644
+--- a/drivers/net/wireless/ath/ath10k/rx_desc.h
++++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
+@@ -994,7 +994,6 @@ struct rx_pkt_end {
+ 	__le32 info0; /* %RX_PKT_END_INFO0_ */
+ 	__le32 phy_timestamp_1;
+ 	__le32 phy_timestamp_2;
+-	__le32 rx_location_info; /* %RX_LOCATION_INFO_ */
+ } __packed;
  
- /* QCA988X 1.0 definitions (unsupported) */
-@@ -99,6 +100,14 @@ enum qca9377_chip_id_rev {
- #define QCA99X0_HW_2_0_BOARD_DATA_FILE "board.bin"
- #define QCA99X0_HW_2_0_PATCH_LOAD_ADDR	0x1234
+ enum rx_phy_ppdu_end_info0 {
+@@ -1067,6 +1066,7 @@ struct rx_phy_ppdu_end {
  
-+/* QCA9984 1.0 defines */
-+#define QCA9984_HW_1_0_DEV_VERSION	0x1000000
-+#define QCA9984_HW_DEV_TYPE		0xa
-+#define QCA9984_HW_1_0_CHIP_ID_REV	0x0
-+#define QCA9984_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA9984/hw1.0"
-+#define QCA9984_HW_1_0_BOARD_DATA_FILE "board.bin"
-+#define QCA9984_HW_1_0_PATCH_LOAD_ADDR	0x1234
-+
- /* QCA9377 1.0 definitions */
- #define QCA9377_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA9377/hw1.0"
- #define QCA9377_HW_1_0_FW_FILE         "firmware.bin"
-@@ -205,6 +214,7 @@ enum ath10k_hw_rev {
- 	ATH10K_HW_QCA988X,
- 	ATH10K_HW_QCA6174,
- 	ATH10K_HW_QCA99X0,
-+	ATH10K_HW_QCA9984,
- 	ATH10K_HW_QCA9377,
- 	ATH10K_HW_QCA4019,
- };
-@@ -261,6 +271,7 @@ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
- #define QCA_REV_988X(ar) ((ar)->hw_rev == ATH10K_HW_QCA988X)
- #define QCA_REV_6174(ar) ((ar)->hw_rev == ATH10K_HW_QCA6174)
- #define QCA_REV_99X0(ar) ((ar)->hw_rev == ATH10K_HW_QCA99X0)
-+#define QCA_REV_9984(ar) ((ar)->hw_rev == ATH10K_HW_QCA9984)
- #define QCA_REV_9377(ar) ((ar)->hw_rev == ATH10K_HW_QCA9377)
- #define QCA_REV_40XX(ar) ((ar)->hw_rev == ATH10K_HW_QCA4019)
- 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 6614fd7..4786974 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -56,6 +56,7 @@ static const struct pci_device_id ath10k_pci_id_table[] = {
- 	{ PCI_VDEVICE(ATHEROS, QCA6164_2_1_DEVICE_ID) }, /* PCI-E QCA6164 V2.1 */
- 	{ PCI_VDEVICE(ATHEROS, QCA6174_2_1_DEVICE_ID) }, /* PCI-E QCA6174 V2.1 */
- 	{ PCI_VDEVICE(ATHEROS, QCA99X0_2_0_DEVICE_ID) }, /* PCI-E QCA99X0 V2 */
-+	{ PCI_VDEVICE(ATHEROS, QCA9984_1_0_DEVICE_ID) }, /* PCI-E QCA9984 V1 */
- 	{ PCI_VDEVICE(ATHEROS, QCA9377_1_0_DEVICE_ID) }, /* PCI-E QCA9377 V1 */
- 	{0}
- };
-@@ -81,8 +82,11 @@ static const struct ath10k_pci_supp_chip ath10k_pci_supp_chips[] = {
- 
- 	{ QCA99X0_2_0_DEVICE_ID, QCA99X0_HW_2_0_CHIP_ID_REV },
- 
-+	{ QCA9984_1_0_DEVICE_ID, QCA9984_HW_1_0_CHIP_ID_REV },
-+
- 	{ QCA9377_1_0_DEVICE_ID, QCA9377_HW_1_0_CHIP_ID_REV },
- 	{ QCA9377_1_0_DEVICE_ID, QCA9377_HW_1_1_CHIP_ID_REV },
-+
- };
- 
- static void ath10k_pci_buffer_cleanup(struct ath10k *ar);
-@@ -844,6 +848,7 @@ static u32 ath10k_pci_targ_cpu_to_ce_addr(struct ath10k *ar, u32 addr)
- 		       0x7ff) << 21;
- 		break;
- 	case ATH10K_HW_QCA99X0:
-+	case ATH10K_HW_QCA9984:
- 	case ATH10K_HW_QCA4019:
- 		val = ath10k_pci_read32(ar, PCIE_BAR_REG_ADDRESS);
- 		break;
-@@ -1569,6 +1574,7 @@ static void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
- 				   CORE_CTRL_ADDRESS, val);
- 		break;
- 	case ATH10K_HW_QCA99X0:
-+	case ATH10K_HW_QCA9984:
- 	case ATH10K_HW_QCA4019:
- 		/* TODO: Find appropriate register configuration for QCA99X0
- 		 *  to mask irq/MSI.
-@@ -1592,6 +1598,7 @@ static void ath10k_pci_irq_msi_fw_unmask(struct ath10k *ar)
- 				   CORE_CTRL_ADDRESS, val);
- 		break;
- 	case ATH10K_HW_QCA99X0:
-+	case ATH10K_HW_QCA9984:
- 	case ATH10K_HW_QCA4019:
- 		/* TODO: Find appropriate register configuration for QCA99X0
- 		 *  to unmask irq/MSI.
-@@ -1932,6 +1939,7 @@ static int ath10k_pci_get_num_banks(struct ath10k *ar)
- 	switch (ar_pci->pdev->device) {
- 	case QCA988X_2_0_DEVICE_ID:
- 	case QCA99X0_2_0_DEVICE_ID:
-+	case QCA9984_1_0_DEVICE_ID:
- 		return 1;
- 	case QCA6164_2_1_DEVICE_ID:
- 	case QCA6174_2_1_DEVICE_ID:
-@@ -2999,6 +3007,12 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 		pci_soft_reset = ath10k_pci_qca99x0_soft_chip_reset;
- 		pci_hard_reset = ath10k_pci_qca99x0_chip_reset;
- 		break;
-+	case QCA9984_1_0_DEVICE_ID:
-+		hw_rev = ATH10K_HW_QCA9984;
-+		pci_ps = false;
-+		pci_soft_reset = ath10k_pci_qca99x0_soft_chip_reset;
-+		pci_hard_reset = ath10k_pci_qca99x0_chip_reset;
-+		break;
- 	case QCA9377_1_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA9377;
- 		pci_ps = true;
+ struct rx_ppdu_end_qca99x0 {
+ 	struct rx_pkt_end rx_pkt_end;
++	__le32 rx_location_info; /* %RX_LOCATION_INFO_ */
+ 	struct rx_phy_ppdu_end rx_phy_ppdu_end;
+ 	__le32 rx_timing_offset; /* %RX_PPDU_END_RX_TIMING_OFFSET_ */
+ 	__le32 rx_info; /* %RX_PPDU_END_RX_INFO_ */
 -- 
 1.9.1
 
