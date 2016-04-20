@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1astcS-0007M4-1g
- for ath10k@lists.infradead.org; Wed, 20 Apr 2016 15:00:44 +0000
+ id 1astcX-0007P7-1h
+ for ath10k@lists.infradead.org; Wed, 20 Apr 2016 15:00:50 +0000
 From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH 2/4] ath10k: Clean up growing hw checks during safe and full
- reset
-Date: Wed, 20 Apr 2016 20:29:14 +0530
-Message-ID: <1461164356-9158-3-git-send-email-vthiagar@qti.qualcomm.com>
+Subject: [PATCH 3/4] ath10k: Define rx_ppdu_end for QCA9984
+Date: Wed, 20 Apr 2016 20:29:15 +0530
+Message-ID: <1461164356-9158-4-git-send-email-vthiagar@qti.qualcomm.com>
 In-Reply-To: <1461164356-9158-1-git-send-email-vthiagar@qti.qualcomm.com>
 References: <1461164356-9158-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -26,136 +25,86 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-Store pci chip secific reset funtions in struct ath10k_pci
-as callbacks during early ath10k_pci_probe() and use the
-callback to perform chip specific resets. This patch essentially
-adds two callback in ath10k_pci, one for doing soft reset and
-the other for hard reset. By using callbacks we can get rid of
-those hw revision checks in ath10k_pci_safe_chip_reset() and
-ath10k_pci_chip_reset(). As such this patch does not fix
-any issue.
+QCA9984 Rx descriptor has two 32-bit words of location information
+when compared to one 32-bit word in QCA99X0. To handle this difference in
+rx descriptor ppdu_end, define a new ppdu_end for QCA9984 descriptor
+which has the new structure to represent rx_location_info.
 
 Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 44 ++++++++++++++++++++++-------------
- drivers/net/wireless/ath/ath10k/pci.h |  6 +++++
- 2 files changed, 34 insertions(+), 16 deletions(-)
+ drivers/net/wireless/ath/ath10k/rx_desc.h | 46 +++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index cdd8a30..6614fd7 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2293,16 +2293,20 @@ static int ath10k_pci_warm_reset(struct ath10k *ar)
- 	return 0;
- }
+diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
+index 3e7dfaa..9ceebea 100644
+--- a/drivers/net/wireless/ath/ath10k/rx_desc.h
++++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
+@@ -996,6 +996,41 @@ struct rx_pkt_end {
+ 	__le32 phy_timestamp_2;
+ } __packed;
  
-+static int ath10k_pci_qca99x0_soft_chip_reset(struct ath10k *ar)
-+{
-+	ath10k_pci_irq_disable(ar);
-+	return ath10k_pci_qca99x0_chip_reset(ar);
-+}
++#define RX_LOCATION_INFO0_RTT_FAC_LEGACY_MASK		0x00003fff
++#define RX_LOCATION_INFO0_RTT_FAC_LEGACY_LSB		0
++#define RX_LOCATION_INFO0_RTT_FAC_VHT_MASK		0x1fff8000
++#define RX_LOCATION_INFO0_RTT_FAC_VHT_LSB		15
++#define RX_LOCATION_INFO0_RTT_STRONGEST_CHAIN_MASK	0xc0000000
++#define RX_LOCATION_INFO0_RTT_STRONGEST_CHAIN_LSB	30
++#define RX_LOCATION_INFO0_RTT_FAC_LEGACY_STATUS		BIT(14)
++#define RX_LOCATION_INFO0_RTT_FAC_VHT_STATUS		BIT(29)
 +
- static int ath10k_pci_safe_chip_reset(struct ath10k *ar)
- {
--	if (QCA_REV_988X(ar) || QCA_REV_6174(ar)) {
--		return ath10k_pci_warm_reset(ar);
--	} else if (QCA_REV_99X0(ar)) {
--		ath10k_pci_irq_disable(ar);
--		return ath10k_pci_qca99x0_chip_reset(ar);
--	} else {
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++#define RX_LOCATION_INFO1_RTT_PREAMBLE_TYPE_MASK	0x0000000c
++#define RX_LOCATION_INFO1_RTT_PREAMBLE_TYPE_LSB		2
++#define RX_LOCATION_INFO1_PKT_BW_MASK			0x00000030
++#define RX_LOCATION_INFO1_PKT_BW_LSB			4
++#define RX_LOCATION_INFO1_SKIP_P_SKIP_BTCF_MASK		0x0000ff00
++#define RX_LOCATION_INFO1_SKIP_P_SKIP_BTCF_LSB		8
++#define RX_LOCATION_INFO1_RTT_MSC_RATE_MASK		0x000f0000
++#define RX_LOCATION_INFO1_RTT_MSC_RATE_LSB		16
++#define RX_LOCATION_INFO1_RTT_PBD_LEG_BW_MASK		0x00300000
++#define RX_LOCATION_INFO1_RTT_PBD_LEG_BW_LSB		20
++#define RX_LOCATION_INFO1_TIMING_BACKOFF_MASK		0x07c00000
++#define RX_LOCATION_INFO1_TIMING_BACKOFF_LSB		22
++#define RX_LOCATION_INFO1_RTT_TX_FRAME_PHASE_MASK	0x18000000
++#define RX_LOCATION_INFO1_RTT_TX_FRAME_PHASE_LSB	27
++#define RX_LOCATION_INFO1_RTT_CFR_STATUS		BIT(0)
++#define RX_LOCATION_INFO1_RTT_CIR_STATUS		BIT(1)
++#define RX_LOCATION_INFO1_RTT_GI_TYPE			BIT(7)
++#define RX_LOCATION_INFO1_RTT_MAC_PHY_PHASE		BIT(29)
++#define RX_LOCATION_INFO1_RTT_TX_DATA_START_X_PHASE	BIT(30)
++#define RX_LOCATION_INFO1_RX_LOCATION_VALID		BIT(31)
 +
-+	if (!ar_pci->pci_soft_reset)
- 		return -ENOTSUPP;
--	}
++struct rx_location_info {
++	__le32 rx_location_info0; /* %RX_LOCATION_INFO0_ */
++	__le32 rx_location_info1; /* %RX_LOCATION_INFO1_ */
++} __packed;
 +
-+	return ar_pci->pci_soft_reset(ar);
- }
+ enum rx_phy_ppdu_end_info0 {
+ 	RX_PHY_PPDU_END_INFO0_ERR_RADAR           = BIT(2),
+ 	RX_PHY_PPDU_END_INFO0_ERR_RX_ABORT        = BIT(3),
+@@ -1074,12 +1109,23 @@ struct rx_ppdu_end_qca99x0 {
+ 	__le16 info1; /* %RX_PPDU_END_INFO1_ */
+ } __packed;
  
- static int ath10k_pci_qca988x_chip_reset(struct ath10k *ar)
-@@ -2437,16 +2441,12 @@ static int ath10k_pci_qca99x0_chip_reset(struct ath10k *ar)
- 
- static int ath10k_pci_chip_reset(struct ath10k *ar)
- {
--	if (QCA_REV_988X(ar))
--		return ath10k_pci_qca988x_chip_reset(ar);
--	else if (QCA_REV_6174(ar))
--		return ath10k_pci_qca6174_chip_reset(ar);
--	else if (QCA_REV_9377(ar))
--		return ath10k_pci_qca6174_chip_reset(ar);
--	else if (QCA_REV_99X0(ar))
--		return ath10k_pci_qca99x0_chip_reset(ar);
--	else
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++struct rx_ppdu_end_qca9984 {
++	struct rx_pkt_end rx_pkt_end;
++	struct rx_location_info rx_location_info;
++	struct rx_phy_ppdu_end rx_phy_ppdu_end;
++	__le32 rx_timing_offset; /* %RX_PPDU_END_RX_TIMING_OFFSET_ */
++	__le32 rx_info; /* %RX_PPDU_END_RX_INFO_ */
++	__le16 bb_length;
++	__le16 info1; /* %RX_PPDU_END_INFO1_ */
++} __packed;
 +
-+	if (WARN_ON(!ar_pci->pci_hard_reset))
- 		return -ENOTSUPP;
-+
-+	return ar_pci->pci_hard_reset(ar);
- }
+ struct rx_ppdu_end {
+ 	struct rx_ppdu_end_common common;
+ 	union {
+ 		struct rx_ppdu_end_qca988x qca988x;
+ 		struct rx_ppdu_end_qca6174 qca6174;
+ 		struct rx_ppdu_end_qca99x0 qca99x0;
++		struct rx_ppdu_end_qca9984 qca9984;
+ 	} __packed;
+ } __packed;
  
- static int ath10k_pci_hif_power_up(struct ath10k *ar)
-@@ -2976,24 +2976,34 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	enum ath10k_hw_rev hw_rev;
- 	u32 chip_id;
- 	bool pci_ps;
-+	int (*pci_soft_reset)(struct ath10k *ar);
-+	int (*pci_hard_reset)(struct ath10k *ar);
- 
- 	switch (pci_dev->device) {
- 	case QCA988X_2_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA988X;
- 		pci_ps = false;
-+		pci_soft_reset = ath10k_pci_warm_reset;
-+		pci_hard_reset = ath10k_pci_qca988x_chip_reset;
- 		break;
- 	case QCA6164_2_1_DEVICE_ID:
- 	case QCA6174_2_1_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA6174;
- 		pci_ps = true;
-+		pci_soft_reset = ath10k_pci_warm_reset;
-+		pci_hard_reset = ath10k_pci_qca6174_chip_reset;
- 		break;
- 	case QCA99X0_2_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA99X0;
- 		pci_ps = false;
-+		pci_soft_reset = ath10k_pci_qca99x0_soft_chip_reset;
-+		pci_hard_reset = ath10k_pci_qca99x0_chip_reset;
- 		break;
- 	case QCA9377_1_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA9377;
- 		pci_ps = true;
-+		pci_soft_reset = NULL;
-+		pci_hard_reset = ath10k_pci_qca6174_chip_reset;
- 		break;
- 	default:
- 		WARN_ON(1);
-@@ -3018,6 +3028,8 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	ar->dev_id = pci_dev->device;
- 	ar_pci->pci_ps = pci_ps;
- 	ar_pci->bus_ops = &ath10k_pci_bus_ops;
-+	ar_pci->pci_soft_reset = pci_soft_reset;
-+	ar_pci->pci_hard_reset = pci_hard_reset;
- 
- 	ar->id.vendor = pdev->vendor;
- 	ar->id.device = pdev->device;
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index 959dc32..6eca1df 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -234,6 +234,12 @@ struct ath10k_pci {
- 
- 	const struct ath10k_bus_ops *bus_ops;
- 
-+	/* Chip specific pci reset routine used to do a safe reset */
-+	int (*pci_soft_reset)(struct ath10k *ar);
-+
-+	/* Chip specific pci full reset function */
-+	int (*pci_hard_reset)(struct ath10k *ar);
-+
- 	/* Keep this entry in the last, memory for struct ath10k_ahb is
- 	 * allocated (ahb support enabled case) in the continuation of
- 	 * this struct.
 -- 
 1.9.1
 
