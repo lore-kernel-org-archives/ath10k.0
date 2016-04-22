@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x22d.google.com ([2607:f8b0:4003:c06::22d])
+Received: from mail-ob0-x241.google.com ([2607:f8b0:4003:c01::241])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ateUM-00035j-KT
- for ath10k@lists.infradead.org; Fri, 22 Apr 2016 17:03:31 +0000
-Received: by mail-oi0-x22d.google.com with SMTP id x201so122563133oif.3
- for <ath10k@lists.infradead.org>; Fri, 22 Apr 2016 10:03:10 -0700 (PDT)
+ id 1ateWU-0004tO-Cz
+ for ath10k@lists.infradead.org; Fri, 22 Apr 2016 17:05:42 +0000
+Received: by mail-ob0-x241.google.com with SMTP id o7so1702547obl.2
+ for <ath10k@lists.infradead.org>; Fri, 22 Apr 2016 10:05:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQmn_hS1X1BjC7=wmevnAGiPx7iit0NMUxnmmqjFZ_RnVA@mail.gmail.com>
+In-Reply-To: <87k2jtk3wt.fsf@kamboji.qca.qualcomm.com>
 References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
  <1460129643950.46282@qti.qualcomm.com>
  <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
@@ -20,8 +20,9 @@ References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
  <CA+BoTQndOpgYYZiZbenROV9+-WUHSbUugDDgCKGVe2fyA0efXQ@mail.gmail.com>
  <CACiydb+rPQW8_0bQE0maVt6cvbhxtH0ZuFeRNW2paupBaVT3vA@mail.gmail.com>
  <CA+BoTQmn_hS1X1BjC7=wmevnAGiPx7iit0NMUxnmmqjFZ_RnVA@mail.gmail.com>
-Date: Fri, 22 Apr 2016 20:03:09 +0300
-Message-ID: <CACiydb+f8z_WCZaLFg8vgvbsYm96kGODuY8mebwvWz4BjqhiZA@mail.gmail.com>
+ <87k2jtk3wt.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 22 Apr 2016 20:05:21 +0300
+Message-ID: <CACiydbLD2F2Z-iEW_jNr2hoKZzbiA7Y2gCnP4eeKkZpotzkSzA@mail.gmail.com>
 Subject: Re: ath10k performance, master branch from 20160407
 From: Roman Yeryomin <leroi.lists@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -36,52 +37,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Manoharan,
+ Rajkumar" <rmanohar@qti.qualcomm.com>
 
-On 19 April 2016 at 10:43, Michal Kazior <michal.kazior@tieto.com> wrote:
-> On 19 April 2016 at 09:31, Roman Yeryomin <leroi.lists@gmail.com> wrote:
->> On 19 April 2016 at 08:28, Michal Kazior <michal.kazior@tieto.com> wrote:
->>> On 18 April 2016 at 15:00, Roman Yeryomin <leroi.lists@gmail.com> wrote:
->>>> So it looks like Michal's patch set "ath10k: implement push-pull tx
->>>> model" introduced this regression - after restoring it from reverts
->>>> fq_codel_drop is hungry again.
->>>> Any ideas how to fix?
+On 19 April 2016 at 18:35, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+> Michal Kazior <michal.kazior@tieto.com> writes:
+>
+>> On 19 April 2016 at 09:31, Roman Yeryomin <leroi.lists@gmail.com> wrote:
+>>> On 19 April 2016 at 08:28, Michal Kazior <michal.kazior@tieto.com> wrote:
 >>>
->>> If my hunch is right there's no easy (and proper) fix for that now.
+>>>> If my hunch is right there's no easy (and proper) fix for that now.
+>>>>
+>>>> One of the patchset patches (ath10k: implement wake_tx_queue) starts
+>>>> to use mac80211 software queuing. This introduces extra induced
+>>>> latency and I'm guessing it results in fill-in-then-drain sequences in
+>>>> some cases which end up being long enough to make fq_codel_drop more
+>>>> work than normal.
+>>>>
+>>>> This is required for other changes and MU-MIMO performance
+>>>> improvements so this patch can't be removed.
 >>>
->>> One of the patchset patches (ath10k: implement wake_tx_queue) starts
->>> to use mac80211 software queuing. This introduces extra induced
->>> latency and I'm guessing it results in fill-in-then-drain sequences in
->>> some cases which end up being long enough to make fq_codel_drop more
->>> work than normal.
->>>
->>> This is required for other changes and MU-MIMO performance
->>> improvements so this patch can't be removed.
+>>> But qca988x doesn't support MU-MIMO, AFAIK.
 >>
->> But qca988x doesn't support MU-MIMO, AFAIK.
+>> Correct.
+>>
+>>
+>>> Can this be made chip dependent?
+>>
+>> I guess it could but it'd arguably make the driver more complex and
+>> harder to maintain. What we want is a long-term fix, not a short-term
+>> one.
 >
-> Correct.
->
->
->> Can this be made chip dependent?
->
-> I guess it could but it'd arguably make the driver more complex and
-> harder to maintain. What we want is a long-term fix, not a short-term
-> one.
->
-> The long-term fix is a work-in-progress which aims at killing
-> bufferbloat in general [1][2]. This should, by proxy, improve
-> everything.
->
-> [1]: https://www.spinics.net/lists/linux-wireless/msg149776.html
-> [2]: https://www.spinics.net/lists/linux-wireless/msg148714.html
-> [3]: https://www.spinics.net/lists/linux-wireless/msg149039.html
->
-> You can try out patchset from [1] (and maybe [3] as well) to see if it
-> helps you (assuming you have spare time to play around).
+> But we should never go backwards and TCP dropping from 750 Mbps to ~550
+> Mbps is a huge drop, so this is not ok. We have to do something to fix
+> this, be it reverting the wake_tx_queue support, somehow disabling it by
+> default or something.
 
-Will try.
+I would agree with Kalle here. This looks like very serious regression.
+But I'm afraid I can only help with testing here.
 
 Regards,
 Roman
