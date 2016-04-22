@@ -1,12 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from torres.puc.rediris.es ([2001:720:418:ca00::22])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1atanU-0003SM-P2
- for ath10k@lists.infradead.org; Fri, 22 Apr 2016 13:07:01 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix a typo in ath10k_start()
-Date: Fri, 22 Apr 2016 18:36:13 +0530
-Message-ID: <1461330373-14847-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1atd5R-0006mQ-9L
+ for ath10k@lists.infradead.org; Fri, 22 Apr 2016 15:33:42 +0000
+Received: from [84.88.62.208] (helo=leo)
+ by torres.puc.rediris.es with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+ (Exim 4.80) (envelope-from <ipascual@cttc.cat>) id 1atd53-000238-Jk
+ for ath10k@lists.infradead.org; Fri, 22 Apr 2016 17:33:18 +0200
+Received: from [10.1.16.22] (pcipascual.cttc.es [10.1.16.22])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by leo (Postfix) with ESMTPSA id 24E141FF00
+ for <ath10k@lists.infradead.org>; Fri, 22 Apr 2016 17:32:43 +0200 (CEST)
+From: =?UTF-8?Q?I=c3=b1aki_Pascual?= <ipascual@cttc.cat>
+Subject: low TCP throughput with 80MHz channel width
+Message-ID: <571A441C.9040307@cttc.cat>
+Date: Fri, 22 Apr 2016 17:32:44 +0200
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,40 +25,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-
-fix a typo (spelling mistake) in 'ath10k_start'
-
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 02edeff..20bd317 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4324,7 +4324,7 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 
- 	/*
- 	 * This makes sense only when restarting hw. It is harmless to call
--	 * uncoditionally. This is necessary to make sure no HTT/WMI tx
-+	 * unconditionally. This is necessary to make sure no HTT/WMI tx
- 	 * commands will be submitted while restarting.
- 	 */
- 	ath10k_drain_tx(ar);
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgZXZlcnlvbmUsCgp3ZSBoYXZlIGNvbmZpZ3VyZWQgdHdvIGJveGVzIHdpdGggODAyLjExYWMg
+TklDcyB0byB3b3JrIGluIGNoYW5uZWwgNDggCig1MjQwIE1IeiksIGFkLWhvYyBtb2RlLCA4ME1I
+eiBjaGFubmVsIHdpZHRoLgpGb3IgVURQIHRyYWZmaWMgd2UgZ2V0IDMwMCBNYnBzIGJhbmR3aXRo
+IGJ1dCBmb3IgVENQIHdlIGFyZSBhcm91bmQgMzAgTWJwcy4KCldlIGhhdmUgdHJpZWQgb3RoZXIg
+Y2hhbm5lbHMgd2l0aCBzaW1pbGFyIHJlc3VsdHMuClRocm91Z2hwdXQgZm9yIDIwIGFuZCA0MCBN
+SHogY2hhbm5lbCB3aWR0aCBhcmUgb2sgKDIwTUh6OiBUQ1AgMjFNYnBzLCAKVURQIDI3TWJwcywg
+NDBNSHo6IFRDUCA4Mk1icHMsIFVEUCAxNDRNYnBzKS4KClRlc3Rpbmcgd2l0aCBpcGVyZiB3ZSBo
+YXZlIGFsc28gdHJpZWQgZGlmZmVyZW50IGNvbmdlc3Rpb24gd2luZG93cyB3aXRoIApubyBvciBs
+b3cgaW1wcm92ZW1lbnRzLgoKQmVsb3cgYXJlIGNvbmZpZyBkZXRhaWxzIGFuZCB0aGUgc2VxdWVu
+Y2Ugb2YgY29tbWFuZHMgd2UgYXJlIHVzaW5nIHRvIApjb25maWd1cmUgdGhlIGludGVyZmFjZS4K
+CkFueSBpZGVhcyBvbiB3aGF0IHdlIG1heSBiZSBkb2luZyB3cm9uZz8KCkJlc3RzLAoKScOxYWtp
+CgppdyBvdXRwdXRzOgoKcm9vdEBzYzIyNzovaG9tZS9tb25ldCMgaXcgd2xhbjIgaW5mbwpJbnRl
+cmZhY2Ugd2xhbjIKICAgICBpZmluZGV4IDYKICAgICB3ZGV2IDB4MjAwMDAwMDAxCiAgICAgYWRk
+ciAwNDpmMDoyMToxODoyNjphMgogICAgIHNzaWQgU0MyMjZTQzIyNwogICAgIHR5cGUgSUJTUwog
+ICAgIHdpcGh5IDIKICAgICBjaGFubmVsIDQ4ICg1MjQwIE1IeiksIHdpZHRoOiA4MCBNSHosIGNl
+bnRlcjE6IDUyMTAgTUh6Cgpyb290QHNjMjI3Oi9ob21lL21vbmV0IyBpdyB3bGFuMiBzdGF0aW9u
+IGR1bXAKU3RhdGlvbiAwNDpmMDoyMToxODoyNjphOCAob24gd2xhbjIpCiAgICAgaW5hY3RpdmUg
+dGltZTogICAgODYgbXMKICAgICByeCBieXRlczogICAgNDY3NzMyNTIxCiAgICAgcnggcGFja2V0
+czogICAgMzY0MjQ5CiAgICAgdHggYnl0ZXM6ICAgIDEzOTQ1NTgKICAgICB0eCBwYWNrZXRzOiAg
+ICAxNjIwMAogICAgIHR4IHJldHJpZXM6ICAgIDAKICAgICB0eCBmYWlsZWQ6ICAgIDAKICAgICBz
+aWduYWw6ICAgICAgLTUxIGRCbQogICAgIHNpZ25hbCBhdmc6ICAgIC01MSBkQm0KICAgICB0eCBi
+aXRyYXRlOiAgICAzNTEuMCBNQml0L3MgVkhULU1DUyA0IDgwTUh6IFZIVC1OU1MgMgogICAgIHJ4
+IGJpdHJhdGU6ICAgIDUyNi41IE1CaXQvcyBWSFQtTUNTIDQgODBNSHogVkhULU5TUyAzCiAgICAg
+YXV0aG9yaXplZDogICAgeWVzCiAgICAgYXV0aGVudGljYXRlZDogICAgeWVzCiAgICAgcHJlYW1i
+bGU6ICAgIGxvbmcKICAgICBXTU0vV01FOiAgICB5ZXMKICAgICBNRlA6ICAgICAgICBubwogICAg
+IFRETFMgcGVlcjogICAgbm8KICAgICBjb25uZWN0ZWQgdGltZTogICAgMzE2OSBzZWNvbmRzCgoK
+Y29uZmlnIGNvbW1hbmRzOgoKaWZjb25maWcgd2xhbjIgZG93bgppdyB3bGFuMiBzZXQgdHlwZSBp
+YnNzCmlmY29uZmlnIHdsYW4yIHVwCmlmY29uZmlnIHdsYW4yIDEwLjIuMS43IG5ldG1hc2sgMjU1
+LjI1NS4yNTUuMAppdyB3bGFuMiBpYnNzIGpvaW4gU0MyMjZTQzIyNyA1MjQwIDgwTUh6CgppcGVy
+ZjoKcm9vdEBzYzIyNzovaG9tZS9tb25ldCMgaXBlcmYgLWMgMTAuMi4xLjYKLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkNsaWVudCBj
+b25uZWN0aW5nIHRvIDEwLjIuMS42LCBUQ1AgcG9ydCA1MDAxClRDUCB3aW5kb3cgc2l6ZTogODUu
+MCBLQnl0ZSAoZGVmYXVsdCkKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tClsgIDNdIGxvY2FsIDEwLjIuMS43IHBvcnQgNDg1NDggY29u
+bmVjdGVkIHdpdGggMTAuMi4xLjYgcG9ydCA1MDAxClsgSURdIEludGVydmFsICAgICAgIFRyYW5z
+ZmVyICAgICBCYW5kd2lkdGgKWyAgM10gIDAuMC0xMC4wIHNlYyAgMzMuMSBNQnl0ZXMgIDI3Ljcg
+TWJpdHMvc2VjCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
