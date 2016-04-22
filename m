@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1atTwC-0005GR-O7
- for ath10k@lists.infradead.org; Fri, 22 Apr 2016 05:47:33 +0000
+ id 1atTvs-0005BW-N9
+ for ath10k@lists.infradead.org; Fri, 22 Apr 2016 05:47:13 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 3/4] ath10k: handle pdev_chan_info wmi event
-Date: Fri, 22 Apr 2016 11:16:31 +0530
-Message-ID: <1461303992-9913-3-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 2/4] ath10k: implement wmi_pdev_bss_chan_info_request
+Date: Fri, 22 Apr 2016 11:16:30 +0530
+Message-ID: <1461303992-9913-2-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1461303992-9913-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1461303992-9913-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,94 +25,132 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-Add handler to process bss channel information wmi event that
-will be received upon sending pdev_chan_info_request wmi command.
+Add WMI ops to send pdev_bss_chan_info_request command to target.
+This command will be used to retrieve updated cycle counters and noise
+floor value of current operating channel (bss channel).
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 32 ++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h | 11 +++++++++++
- 2 files changed, 43 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 21 +++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c     | 25 ++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi.h     | 10 ++++++++++
+ 3 files changed, 55 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index d6157d3587c5..0f6b8c73a562 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4796,6 +4796,32 @@ static int ath10k_wmi_event_temperature(struct ath10k *ar, struct sk_buff *skb)
- 	return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index 7fb00dcc03b8..64ebd304f907 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -191,6 +191,9 @@ struct wmi_ops {
+ 					       u32 fw_feature_bitmap);
+ 	int (*get_vdev_subtype)(struct ath10k *ar,
+ 				enum wmi_vdev_subtype subtype);
++	struct sk_buff *(*gen_pdev_bss_chan_info_req)
++					(struct ath10k *ar,
++					 enum wmi_bss_survey_req_type type);
+ };
+ 
+ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
+@@ -1361,4 +1364,22 @@ ath10k_wmi_get_vdev_subtype(struct ath10k *ar, enum wmi_vdev_subtype subtype)
+ 	return ar->wmi.ops->get_vdev_subtype(ar, subtype);
  }
  
-+static int ath10k_wmi_event_pdev_bss_chan_info(struct ath10k *ar,
-+					       struct sk_buff *skb)
++static inline int
++ath10k_wmi_pdev_bss_chan_info_request(struct ath10k *ar,
++				      enum wmi_bss_survey_req_type type)
 +{
-+	struct wmi_pdev_bss_chan_info_event *ev;
-+	u64 busy, total, tx, rx, rx_bss;
-+	u32 freq, noise_floor;
++	struct ath10k_wmi *wmi = &ar->wmi;
++	struct sk_buff *skb;
 +
-+	ev = (struct wmi_pdev_bss_chan_info_event *)skb->data;
-+	if (WARN_ON(skb->len < sizeof(*ev)))
-+		return -EPROTO;
++	if (!wmi->ops->gen_pdev_bss_chan_info_req)
++		return -EOPNOTSUPP;
 +
-+	freq        = __le32_to_cpu(ev->freq);
-+	noise_floor = __le32_to_cpu(ev->noise_floor);
-+	busy        = __le64_to_cpu(ev->cycle_busy);
-+	total       = __le64_to_cpu(ev->cycle_total);
-+	tx          = __le64_to_cpu(ev->cycle_tx);
-+	rx          = __le64_to_cpu(ev->cycle_rx);
-+	rx_bss      = __le64_to_cpu(ev->cycle_rx_bss);
++	skb = wmi->ops->gen_pdev_bss_chan_info_req(ar, type);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
 +
-+	ath10k_dbg(ar, ATH10K_DBG_WMI,
-+		   "wmi event pdev bss chan info:\n freq: %d noise: %d cycle: busy %llu total %llu tx %llu rx %llu rx_bss %llu\n",
-+		   freq, noise_floor, busy, total, tx, rx, rx_bss);
-+
-+	return 0;
++	return ath10k_wmi_cmd_send(ar, skb,
++				   wmi->cmd->pdev_bss_chan_info_request_cmdid);
 +}
 +
- static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_cmd_hdr *cmd_hdr;
-@@ -5139,6 +5165,9 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 	case WMI_10_2_PDEV_TEMPERATURE_EVENTID:
- 		ath10k_wmi_event_temperature(ar, skb);
- 		break;
-+	case WMI_10_2_PDEV_BSS_CHAN_INFO_EVENTID:
-+		ath10k_wmi_event_pdev_bss_chan_info(ar, skb);
-+		break;
- 	case WMI_10_2_RTT_KEEPALIVE_EVENTID:
- 	case WMI_10_2_GPIO_INPUT_EVENTID:
- 	case WMI_10_2_PEER_RATECODE_LIST_EVENTID:
-@@ -5225,6 +5254,9 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 	case WMI_10_4_PDEV_TEMPERATURE_EVENTID:
- 		ath10k_wmi_event_temperature(ar, skb);
- 		break;
-+	case WMI_10_4_PDEV_BSS_CHAN_INFO_EVENTID:
-+		ath10k_wmi_event_pdev_bss_chan_info(ar, skb);
-+		break;
- 	default:
- 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
- 		break;
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index adb31e188ebd..d6157d3587c5 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -521,7 +521,8 @@ static struct wmi_cmd_map wmi_10_2_4_cmd_map = {
+ 	.vdev_filter_neighbor_rx_packets_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.mu_cal_start_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.set_cca_params_cmdid = WMI_CMD_UNSUPPORTED,
+-	.pdev_bss_chan_info_request_cmdid = WMI_CMD_UNSUPPORTED,
++	.pdev_bss_chan_info_request_cmdid =
++		WMI_10_2_PDEV_BSS_CHAN_INFO_REQUEST_CMDID,
+ };
+ 
+ /* 10.4 WMI cmd track */
+@@ -6639,6 +6640,26 @@ ath10k_wmi_10_2_op_gen_pdev_get_temperature(struct ath10k *ar)
+ 	return skb;
+ }
+ 
++static struct sk_buff *
++ath10k_wmi_10_2_op_gen_pdev_bss_chan_info(struct ath10k *ar,
++					  enum wmi_bss_survey_req_type type)
++{
++	struct wmi_pdev_chan_info_req_cmd *cmd;
++	struct sk_buff *skb;
++
++	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	cmd = (struct wmi_pdev_chan_info_req_cmd *)skb->data;
++	cmd->type = __cpu_to_le32(type);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI,
++		   "wmi pdev bss info request type %d\n", type);
++
++	return skb;
++}
++
+ /* This function assumes the beacon is already DMA mapped */
+ static struct sk_buff *
+ ath10k_wmi_op_gen_beacon_dma(struct ath10k *ar, u32 vdev_id, const void *bcn,
+@@ -7738,6 +7759,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
+ 	.gen_init = ath10k_wmi_10_2_op_gen_init,
+ 	.gen_peer_assoc = ath10k_wmi_10_2_op_gen_peer_assoc,
+ 	.gen_pdev_get_temperature = ath10k_wmi_10_2_op_gen_pdev_get_temperature,
++	.gen_pdev_bss_chan_info_req = ath10k_wmi_10_2_op_gen_pdev_bss_chan_info,
+ 
+ 	/* shared with 10.1 */
+ 	.map_svc = wmi_10x_svc_map,
+@@ -7864,6 +7886,7 @@ static const struct wmi_ops wmi_10_4_ops = {
+ 	.gen_request_stats = ath10k_wmi_op_gen_request_stats,
+ 	.gen_pdev_get_temperature = ath10k_wmi_10_2_op_gen_pdev_get_temperature,
+ 	.get_vdev_subtype = ath10k_wmi_10_4_op_get_vdev_subtype,
++	.gen_pdev_bss_chan_info_req = ath10k_wmi_10_2_op_gen_pdev_bss_chan_info,
+ };
+ 
+ int ath10k_wmi_attach(struct ath10k *ar)
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 4cdf216ae999..e1043b81a6e6 100644
+index 40bd08d246af..4cdf216ae999 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6284,6 +6284,17 @@ struct wmi_pdev_temperature_event {
- 	__le32 temperature;
- } __packed;
+@@ -6487,6 +6487,16 @@ enum wmi_host_platform_type {
+ 	WMI_HOST_PLATFORM_LOW_PERF,
+ };
  
-+struct wmi_pdev_bss_chan_info_event {
-+	__le32 freq;
-+	__le32 noise_floor;
-+	__le64 cycle_busy;
-+	__le64 cycle_total;
-+	__le64 cycle_tx;
-+	__le64 cycle_rx;
-+	__le64 cycle_rx_bss;
++enum wmi_bss_survey_req_type {
++	WMI_BSS_SURVEY_REQ_TYPE_READ = 1,
++	WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR,
++};
++
++struct wmi_pdev_chan_info_req_cmd {
++	__le32 type;
 +	__le32 reserved;
 +} __packed;
 +
- /* WOW structures */
- enum wmi_wow_wakeup_event {
- 	WOW_BMISS_EVENT = 0,
+ struct ath10k;
+ struct ath10k_vif;
+ struct ath10k_fw_stats_pdev;
 -- 
 2.8.0
 
