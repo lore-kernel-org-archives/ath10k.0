@@ -1,18 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1ateOo-0004AM-D9
- for ath10k@lists.infradead.org; Fri, 22 Apr 2016 16:57:46 +0000
-Subject: Re: low TCP throughput with 80MHz channel width
-References: <571A441C.9040307@cttc.cat> <571A4603.9030802@candelatech.com>
- <571A4B17.10509@cttc.cat> <571A4C23.2020104@candelatech.com>
- <571A4D22.7060704@cttc.cat> <571A4E67.7090308@candelatech.com>
- <571A54E2.9020908@cttc.cat>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <571A57DC.9020101@candelatech.com>
-Date: Fri, 22 Apr 2016 09:57:00 -0700
+Received: from mail-ob0-x243.google.com ([2607:f8b0:4003:c01::243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ateTm-0002sS-Mc
+ for ath10k@lists.infradead.org; Fri, 22 Apr 2016 17:02:55 +0000
+Received: by mail-ob0-x243.google.com with SMTP id ds1so6525834obc.3
+ for <ath10k@lists.infradead.org>; Fri, 22 Apr 2016 10:02:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <571A54E2.9020908@cttc.cat>
+In-Reply-To: <CA+BoTQndOpgYYZiZbenROV9+-WUHSbUugDDgCKGVe2fyA0efXQ@mail.gmail.com>
+References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
+ <1460129643950.46282@qti.qualcomm.com>
+ <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
+ <ab762b501abc457aa1dbf965895eb113@aphydexm01b.ap.qualcomm.com>
+ <CACiydbL3-QoC=muZf4aJOaUWZN-tpA3h1SwNfYU3+LnY_FHF+g@mail.gmail.com>
+ <1460174525702.66744@qti.qualcomm.com>
+ <CACiydbLh+X540MrnvS5MGm8Bd3QnnWmdFyon8H5khJiFtGK85w@mail.gmail.com>
+ <1460905574286.42282@qti.qualcomm.com>
+ <CACiydb+AaTc2wWzVeJNwPzA+PH9FcrqWzx3nW2RmKxaiaHwg-w@mail.gmail.com>
+ <CACiydbKu8_1sO9K8uuY_SSL8ECvr3wZttt+72cNO9dc_7RRM2A@mail.gmail.com>
+ <CA+BoTQndOpgYYZiZbenROV9+-WUHSbUugDDgCKGVe2fyA0efXQ@mail.gmail.com>
+Date: Fri, 22 Apr 2016 20:02:33 +0300
+Message-ID: <CACiydbL6vxuvG2fzRGnmZOzE_cWV5FJbYJG4=XjPpT0rDxTSUg@mail.gmail.com>
+Subject: Re: ath10k performance, master branch from 20160407
+From: Roman Yeryomin <leroi.lists@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,103 +30,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?I=c3=b1aki_Pascual?= <ipascual@cttc.cat>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>
 
-T24gMDQvMjIvMjAxNiAwOTo0NCBBTSwgScOxYWtpIFBhc2N1YWwgd3JvdGU6Cj4gVGhhbmtzIGZv
-ciB5b3VyIGhlbHAgQmVuLgo+Cj4gSSB0aGluayB3ZSB3aWxsIGdvIGZvciBrZXJuZWwgNC40IGFu
-ZCB0aGUgbGF0ZXN0IGZpcm13YXJlIHJlbGFzZS4KPgo+IFJlZ2FyZGluZyB0aGUgZmlybXdhcmUs
-IHNob3VsZCB3ZSB0cnkgdGhlIENULTEwLjIgb3IgaXQgaXMgbm90IHN0YWJsZSBlbm91Z2g/CgpN
-eSAxMC4yIGhhcyBub3QgaGFkIG11Y2ggdGVzdGluZywgYW5kIGluIHJlY2VudCB0ZXN0aW5nLCBp
-dCBkb2VzIG5vdCBwZXJmb3JtIGFzIHdlbGwgYXMgbXkgMTAuMQpmaXJtd2FyZS4gIEJ1dCwgeW91
-IGNvdWxkIGdpdmUgaXQgYSB0cnkgdG8gc2VlIGhvdyB3ZWxsIGl0IHdvcmtzLi4uLgoKNC40IHNl
-ZW1zIHRvIGJlIHdvcmtpbmcgdGhpcyBtb3JuaW5nLCBidXQgd2FzIGJyb2tlbiB5ZXN0ZXJkYXk6
-IEl0IGlzIGluIGZhaXJseSBoZWF2eSBkZXZlbG9wbWVudCwgc28gcG9zc2libHkgeW91IHdpbGwK
-aGl0IHJlZ3Jlc3Npb25zIHRoZXJlLiAgTGV0IG1lIGtub3cgaWYgeW91IGRvLiAgSXQgYWxzbyBo
-YXMgYSBidW5jaCBvZiB1cHN0cmVhbSB0ZXN0aW5nIGF0aDEwayBwYXRjaGVzLCBhbmQgSSBzYXcg
-b3RoZXIgcmVwb3J0cwp0aGF0IFRDUCB0aHJvdWdocHV0IGlzIGxlc3Mgd2l0aCB0aGVtIGFwcGxp
-ZWQsIHRob3VnaCBwb3NzaWJseSB0aGlzIGlzIG9ubHkgdHJ1ZSBpZiB5b3UgYXJlIHVzaW5nIGNv
-ZGVsIHR4IHF1ZXVlaW5nLgoKVGhhbmtzLApCZW4KCj4KPiBCZXN0cywKPgo+IEnDsWFraQo+Cj4K
-Pgo+IE9uIDIyLzA0LzE2IDE4OjE2LCBCZW4gR3JlZWFyIHdyb3RlOgo+PiBPbiAwNC8yMi8yMDE2
-IDA5OjExIEFNLCBJw7Fha2kgUGFzY3VhbCB3cm90ZToKPj4+IFdlIGFyZSB1c2luZyBrZXJuZWwg
-NC4yIHdpdGggQ2FuZGVsYVRlY2ggZmlybXdhcmUgMTAuMS40NjctY3QtY29tLWZ1bGwtMDE0LTk2
-ZDU0Mwo+Pgo+PiBNYXliZSB0cnkgcmxzIDE1IG9yIGJldGEtMTYgQ1QgMTAuMSBmaXJtd2FyZT8K
-Pj4KPj4gQW5kLCB3ZSBmb3VuZCB0b28gbXVjaCBpbnN0YWJpbGl0eSBpbiA0LjIga2VybmVsLiAg
-V2Ugc3VnZ2VzdCA0LjAgb3IgNC40LAo+PiB0aG91Z2ggSSBhbSBub3QgYXdhcmUgb2YgYW55IHRo
-cm91Z2hwdXQgcmVsYXRlZCBidWdzIGFzaWRlIGZyb20gdGhlIENVQklDCj4+IGNvbmdlc3Rpb24g
-Y29udHJvbCBpc3N1ZS4KPj4KPj4gWW91IG1pZ2h0IGFsc28gdHJ5IG91ciAzLjE3IGtlcm5lbCBz
-aW5jZSBDVUJJQyB3b3JrZWQgaW4gdGhhdCBrZXJuZWwuLi4KPj4KPj4gVGhhbmtzLAo+PiBCZW4K
-Pj4KPj4KPj4+Cj4+PiBtb25ldEBzYzIyNzp+JCBldGh0b29sIC1pIHdsYW4yCj4+PiBkcml2ZXI6
-IGF0aDEwa19wY2kKPj4+IHZlcnNpb246IDQuMi4wKwo+Pj4gZmlybXdhcmUtdmVyc2lvbjogMTAu
-MS40NjctY3QtY29tLWZ1bGwtMDE0LTk2ZDU0Mwo+Pj4gYnVzLWluZm86IDAwMDA6MGI6MDAuMAo+
-Pj4gc3VwcG9ydHMtc3RhdGlzdGljczogeWVzCj4+PiBzdXBwb3J0cy10ZXN0OiBubwo+Pj4gc3Vw
-cG9ydHMtZWVwcm9tLWFjY2Vzczogbm8KPj4+IHN1cHBvcnRzLXJlZ2lzdGVyLWR1bXA6IG5vCj4+
-PiBzdXBwb3J0cy1wcml2LWZsYWdzOiBubwo+Pj4KPj4+IFRoYW5rcywKPj4+Cj4+PiBJw7Fha2kK
-Pj4+Cj4+PiBPbiAyMi8wNC8xNiAxODowNiwgQmVuIEdyZWVhciB3cm90ZToKPj4+PiBPbiAwNC8y
-Mi8yMDE2IDA5OjAyIEFNLCBJw7Fha2kgUGFzY3VhbCB3cm90ZToKPj4+Pgo+Pj4+PiBUaGFua3Mg
-Zm9yIHRoZSB0aXAgQmVuLiBXZSBoYXZlIG1vdmVkIHRvICdyZW5vJyBhbmQgdHJpZWQgc2V2ZXJh
-bCB3aW5kb3cgc2l6ZXMgYnV0IHdlIGFyZSBzdGlsbCBvbiBtYXguIDM1IE1icHMgd2hpY2ggaXMg
-dG9vIGxvdy4KPj4+Pj4KPj4+Pgo+Pj4+IFdoYXQgZmlybXdhcmUgYW5kIGtlcm5lbCBhcmUgeW91
-IHVzaW5nPwo+Pj4+Cj4+Pj4gVGhhbmtzLAo+Pj4+IEJlbgo+Pj4+Cj4+Pj4+IEJlc3RzLAo+Pj4+
-Pgo+Pj4+PiBJw7Fha2kKPj4+Pj4KPj4+Pj4gT24gMjIvMDQvMTYgMTc6NDAsIEJlbiBHcmVlYXIg
-d3JvdGU6Cj4+Pj4+PiBVc2UgJ3Jlbm8nIGluc3RlYWQgb2YgY3ViaWMgVENQIGNvbmdlc3Rpb24g
-Y29udHJvbCwgY3ViaWMgaXMgYnJva2VuIHdpdGggYXRoMTBrLgo+Pj4+Pj4KPj4+Pj4+IFRoYW5r
-cywKPj4+Pj4+IEJlbgo+Pj4+Pj4KPj4+Pj4+IE9uIDA0LzIyLzIwMTYgMDg6MzIgQU0sIEnDsWFr
-aSBQYXNjdWFsIHdyb3RlOgo+Pj4+Pj4+IEhpIGV2ZXJ5b25lLAo+Pj4+Pj4+Cj4+Pj4+Pj4gd2Ug
-aGF2ZSBjb25maWd1cmVkIHR3byBib3hlcyB3aXRoIDgwMi4xMWFjIE5JQ3MgdG8gd29yayBpbiBj
-aGFubmVsIDQ4ICg1MjQwIE1IeiksIGFkLWhvYyBtb2RlLCA4ME1IeiBjaGFubmVsIHdpZHRoLgo+
-Pj4+Pj4+IEZvciBVRFAgdHJhZmZpYyB3ZSBnZXQgMzAwIE1icHMgYmFuZHdpdGggYnV0IGZvciBU
-Q1Agd2UgYXJlIGFyb3VuZCAzMCBNYnBzLgo+Pj4+Pj4+Cj4+Pj4+Pj4gV2UgaGF2ZSB0cmllZCBv
-dGhlciBjaGFubmVscyB3aXRoIHNpbWlsYXIgcmVzdWx0cy4KPj4+Pj4+PiBUaHJvdWdocHV0IGZv
-ciAyMCBhbmQgNDAgTUh6IGNoYW5uZWwgd2lkdGggYXJlIG9rICgyME1IejogVENQIDIxTWJwcywg
-VURQIDI3TWJwcywgNDBNSHo6IFRDUCA4Mk1icHMsIFVEUCAxNDRNYnBzKS4KPj4+Pj4+Pgo+Pj4+
-Pj4+IFRlc3Rpbmcgd2l0aCBpcGVyZiB3ZSBoYXZlIGFsc28gdHJpZWQgZGlmZmVyZW50IGNvbmdl
-c3Rpb24gd2luZG93cyB3aXRoIG5vIG9yIGxvdyBpbXByb3ZlbWVudHMuCj4+Pj4+Pj4KPj4+Pj4+
-PiBCZWxvdyBhcmUgY29uZmlnIGRldGFpbHMgYW5kIHRoZSBzZXF1ZW5jZSBvZiBjb21tYW5kcyB3
-ZSBhcmUgdXNpbmcgdG8gY29uZmlndXJlIHRoZSBpbnRlcmZhY2UuCj4+Pj4+Pj4KPj4+Pj4+PiBB
-bnkgaWRlYXMgb24gd2hhdCB3ZSBtYXkgYmUgZG9pbmcgd3Jvbmc/Cj4+Pj4+Pj4KPj4+Pj4+PiBC
-ZXN0cywKPj4+Pj4+Pgo+Pj4+Pj4+IEnDsWFraQo+Pj4+Pj4+Cj4+Pj4+Pj4gaXcgb3V0cHV0czoK
-Pj4+Pj4+Pgo+Pj4+Pj4+IHJvb3RAc2MyMjc6L2hvbWUvbW9uZXQjIGl3IHdsYW4yIGluZm8KPj4+
-Pj4+PiBJbnRlcmZhY2Ugd2xhbjIKPj4+Pj4+PiAgICAgIGlmaW5kZXggNgo+Pj4+Pj4+ICAgICAg
-d2RldiAweDIwMDAwMDAwMQo+Pj4+Pj4+ICAgICAgYWRkciAwNDpmMDoyMToxODoyNjphMgo+Pj4+
-Pj4+ICAgICAgc3NpZCBTQzIyNlNDMjI3Cj4+Pj4+Pj4gICAgICB0eXBlIElCU1MKPj4+Pj4+PiAg
-ICAgIHdpcGh5IDIKPj4+Pj4+PiAgICAgIGNoYW5uZWwgNDggKDUyNDAgTUh6KSwgd2lkdGg6IDgw
-IE1IeiwgY2VudGVyMTogNTIxMCBNSHoKPj4+Pj4+Pgo+Pj4+Pj4+IHJvb3RAc2MyMjc6L2hvbWUv
-bW9uZXQjIGl3IHdsYW4yIHN0YXRpb24gZHVtcAo+Pj4+Pj4+IFN0YXRpb24gMDQ6ZjA6MjE6MTg6
-MjY6YTggKG9uIHdsYW4yKQo+Pj4+Pj4+ICAgICAgaW5hY3RpdmUgdGltZTogICAgODYgbXMKPj4+
-Pj4+PiAgICAgIHJ4IGJ5dGVzOiAgICA0Njc3MzI1MjEKPj4+Pj4+PiAgICAgIHJ4IHBhY2tldHM6
-ICAgIDM2NDI0OQo+Pj4+Pj4+ICAgICAgdHggYnl0ZXM6ICAgIDEzOTQ1NTgKPj4+Pj4+PiAgICAg
-IHR4IHBhY2tldHM6ICAgIDE2MjAwCj4+Pj4+Pj4gICAgICB0eCByZXRyaWVzOiAgICAwCj4+Pj4+
-Pj4gICAgICB0eCBmYWlsZWQ6ICAgIDAKPj4+Pj4+PiAgICAgIHNpZ25hbDogICAgICAtNTEgZEJt
-Cj4+Pj4+Pj4gICAgICBzaWduYWwgYXZnOiAgICAtNTEgZEJtCj4+Pj4+Pj4gICAgICB0eCBiaXRy
-YXRlOiAgICAzNTEuMCBNQml0L3MgVkhULU1DUyA0IDgwTUh6IFZIVC1OU1MgMgo+Pj4+Pj4+ICAg
-ICAgcnggYml0cmF0ZTogICAgNTI2LjUgTUJpdC9zIFZIVC1NQ1MgNCA4ME1IeiBWSFQtTlNTIDMK
-Pj4+Pj4+PiAgICAgIGF1dGhvcml6ZWQ6ICAgIHllcwo+Pj4+Pj4+ICAgICAgYXV0aGVudGljYXRl
-ZDogICAgeWVzCj4+Pj4+Pj4gICAgICBwcmVhbWJsZTogICAgbG9uZwo+Pj4+Pj4+ICAgICAgV01N
-L1dNRTogICAgeWVzCj4+Pj4+Pj4gICAgICBNRlA6ICAgICAgICBubwo+Pj4+Pj4+ICAgICAgVERM
-UyBwZWVyOiAgICBubwo+Pj4+Pj4+ICAgICAgY29ubmVjdGVkIHRpbWU6ICAgIDMxNjkgc2Vjb25k
-cwo+Pj4+Pj4+Cj4+Pj4+Pj4KPj4+Pj4+PiBjb25maWcgY29tbWFuZHM6Cj4+Pj4+Pj4KPj4+Pj4+
-PiBpZmNvbmZpZyB3bGFuMiBkb3duCj4+Pj4+Pj4gaXcgd2xhbjIgc2V0IHR5cGUgaWJzcwo+Pj4+
-Pj4+IGlmY29uZmlnIHdsYW4yIHVwCj4+Pj4+Pj4gaWZjb25maWcgd2xhbjIgMTAuMi4xLjcgbmV0
-bWFzayAyNTUuMjU1LjI1NS4wCj4+Pj4+Pj4gaXcgd2xhbjIgaWJzcyBqb2luIFNDMjI2U0MyMjcg
-NTI0MCA4ME1Iego+Pj4+Pj4+Cj4+Pj4+Pj4gaXBlcmY6Cj4+Pj4+Pj4gcm9vdEBzYzIyNzovaG9t
-ZS9tb25ldCMgaXBlcmYgLWMgMTAuMi4xLjYKPj4+Pj4+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4+Pj4+PiBDbGllbnQgY29u
-bmVjdGluZyB0byAxMC4yLjEuNiwgVENQIHBvcnQgNTAwMQo+Pj4+Pj4+IFRDUCB3aW5kb3cgc2l6
-ZTogODUuMCBLQnl0ZSAoZGVmYXVsdCkKPj4+Pj4+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4+Pj4+PiBbICAzXSBsb2NhbCAx
-MC4yLjEuNyBwb3J0IDQ4NTQ4IGNvbm5lY3RlZCB3aXRoIDEwLjIuMS42IHBvcnQgNTAwMQo+Pj4+
-Pj4+IFsgSURdIEludGVydmFsICAgICAgIFRyYW5zZmVyICAgICBCYW5kd2lkdGgKPj4+Pj4+PiBb
-ICAzXSAgMC4wLTEwLjAgc2VjICAzMy4xIE1CeXRlcyAgMjcuNyBNYml0cy9zZWMKPj4+Pj4+Pgo+
-Pj4+Pj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+
-Pj4+Pj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+Pj4+Pj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCj4+Pj4+Pj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsKPj4+Pj4+Cj4+Pj4+Pgo+Pj4+Pgo+Pj4+Cj4+Pj4KPj4+Cj4+Cj4+Cj4KCgotLSAKQmVu
-IEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIElu
-YyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
-bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-YXRoMTBrCg==
+On 19 April 2016 at 08:28, Michal Kazior <michal.kazior@tieto.com> wrote:
+> On 18 April 2016 at 15:00, Roman Yeryomin <leroi.lists@gmail.com> wrote:
+>> So it looks like Michal's patch set "ath10k: implement push-pull tx
+>> model" introduced this regression - after restoring it from reverts
+>> fq_codel_drop is hungry again.
+>> Any ideas how to fix?
+>
+> If my hunch is right there's no easy (and proper) fix for that now.
+>
+> One of the patchset patches (ath10k: implement wake_tx_queue) starts
+> to use mac80211 software queuing. This introduces extra induced
+> latency and I'm guessing it results in fill-in-then-drain sequences in
+> some cases which end up being long enough to make fq_codel_drop more
+> work than normal.
+>
+> This is required for other changes and MU-MIMO performance
+> improvements so this patch can't be removed.
+>
+> I guess you could try forcing fq_codel to use different target time,
+> e.g. 20ms (instead of the default 5). You can do this using `tc`
+> command like so:
+>
+>    tc qdisc replace dev wlan0 parent :1 fq_codel limit 1024 target 20ms
+>    tc qdisc replace dev wlan0 parent :2 fq_codel limit 1024 target 20ms
+>    tc qdisc replace dev wlan0 parent :3 fq_codel limit 1024 target 20ms
+>    tc qdisc replace dev wlan0 parent :4 fq_codel limit 1024 target 20ms
+
+this didn't change anything
+
+qdisc mq 0: dev wlan0 root
+qdisc fq_codel 8001: dev wlan0 parent :1 limit 1024p flows 1024
+quantum 1514 target 20.0ms interval 100.0ms ecn
+qdisc fq_codel 8002: dev wlan0 parent :2 limit 1024p flows 1024
+quantum 1514 target 20.0ms interval 100.0ms ecn
+qdisc fq_codel 8003: dev wlan0 parent :3 limit 1024p flows 1024
+quantum 1514 target 20.0ms interval 100.0ms ecn
+qdisc fq_codel 8004: dev wlan0 parent :4 limit 1024p flows 1024
+quantum 1514 target 20.0ms interval 100.0ms ecn
+
+> You might also want to try `pfifo` instead of `fq_codel` for comparison as well.
+
+and this did, but for UDP only: 450Mbps instead of 30, TCP remained on 550Mbps
+
+
+Regards,
+Roman
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
