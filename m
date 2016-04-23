@@ -1,30 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ob0-x241.google.com ([2607:f8b0:4003:c01::241])
+Received: from mail-ob0-x22c.google.com ([2607:f8b0:4003:c01::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ateWU-0004tO-Cz
- for ath10k@lists.infradead.org; Fri, 22 Apr 2016 17:05:42 +0000
-Received: by mail-ob0-x241.google.com with SMTP id o7so1702547obl.2
- for <ath10k@lists.infradead.org>; Fri, 22 Apr 2016 10:05:21 -0700 (PDT)
+ id 1atn08-0007Zx-It
+ for ath10k@lists.infradead.org; Sat, 23 Apr 2016 02:08:54 +0000
+Received: by mail-ob0-x22c.google.com with SMTP id n10so50594934obb.2
+ for <ath10k@lists.infradead.org>; Fri, 22 Apr 2016 19:08:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87k2jtk3wt.fsf@kamboji.qca.qualcomm.com>
-References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
- <1460129643950.46282@qti.qualcomm.com>
- <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
- <ab762b501abc457aa1dbf965895eb113@aphydexm01b.ap.qualcomm.com>
- <CACiydbL3-QoC=muZf4aJOaUWZN-tpA3h1SwNfYU3+LnY_FHF+g@mail.gmail.com>
- <1460174525702.66744@qti.qualcomm.com>
- <CACiydbLh+X540MrnvS5MGm8Bd3QnnWmdFyon8H5khJiFtGK85w@mail.gmail.com>
- <1460905574286.42282@qti.qualcomm.com>
- <CACiydb+AaTc2wWzVeJNwPzA+PH9FcrqWzx3nW2RmKxaiaHwg-w@mail.gmail.com>
- <CACiydbKu8_1sO9K8uuY_SSL8ECvr3wZttt+72cNO9dc_7RRM2A@mail.gmail.com>
- <CA+BoTQndOpgYYZiZbenROV9+-WUHSbUugDDgCKGVe2fyA0efXQ@mail.gmail.com>
- <CACiydb+rPQW8_0bQE0maVt6cvbhxtH0ZuFeRNW2paupBaVT3vA@mail.gmail.com>
- <CA+BoTQmn_hS1X1BjC7=wmevnAGiPx7iit0NMUxnmmqjFZ_RnVA@mail.gmail.com>
- <87k2jtk3wt.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 22 Apr 2016 20:05:21 +0300
-Message-ID: <CACiydbLD2F2Z-iEW_jNr2hoKZzbiA7Y2gCnP4eeKkZpotzkSzA@mail.gmail.com>
-Subject: Re: ath10k performance, master branch from 20160407
-From: Roman Yeryomin <leroi.lists@gmail.com>
+Date: Sat, 23 Apr 2016 04:08:30 +0200
+Message-ID: <CAFq9a5xSQ5TPjQASaUCN_-niGU-hRBye_N4mjK3Td3u24Ea-7w@mail.gmail.com>
+Subject: qca6174 hw3.2 / Killer 1535 interface not coming up, reporting
+ "failed to enable dynamic BW: -11"
+From: Leonhardt Wille <info@leonhardt-wille.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -37,48 +23,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>
+To: ath10k@lists.infradead.org
 
-On 19 April 2016 at 18:35, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
-> Michal Kazior <michal.kazior@tieto.com> writes:
->
->> On 19 April 2016 at 09:31, Roman Yeryomin <leroi.lists@gmail.com> wrote:
->>> On 19 April 2016 at 08:28, Michal Kazior <michal.kazior@tieto.com> wrote:
->>>
->>>> If my hunch is right there's no easy (and proper) fix for that now.
->>>>
->>>> One of the patchset patches (ath10k: implement wake_tx_queue) starts
->>>> to use mac80211 software queuing. This introduces extra induced
->>>> latency and I'm guessing it results in fill-in-then-drain sequences in
->>>> some cases which end up being long enough to make fq_codel_drop more
->>>> work than normal.
->>>>
->>>> This is required for other changes and MU-MIMO performance
->>>> improvements so this patch can't be removed.
->>>
->>> But qca988x doesn't support MU-MIMO, AFAIK.
->>
->> Correct.
->>
->>
->>> Can this be made chip dependent?
->>
->> I guess it could but it'd arguably make the driver more complex and
->> harder to maintain. What we want is a long-term fix, not a short-term
->> one.
->
-> But we should never go backwards and TCP dropping from 750 Mbps to ~550
-> Mbps is a huge drop, so this is not ok. We have to do something to fix
-> this, be it reverting the wake_tx_queue support, somehow disabling it by
-> default or something.
+I'm trying to get my new wifi card working for three days. Have been
+following all sorts of hints from all over the net and only got a
+partial success by dissecting the qca61x4_2_2.bin file from my
+notebook vendor's driver bundle and installing it to the QCA6174/hw3.0
+firmware directory.
+I say partial because the interface came right up after calling insmod
+and I could connect to my AP, but after a reboot it didn't work any
+more, but instead logs periodic warnings (see dmesg output below).
+`iwconfig` is unusually slow and `ifconfig wlp62s0 up` gives a
+`SIOCSIFFLAGS: Resource temporarily unavailable` after ~11 seconds.
 
-I would agree with Kalle here. This looks like very serious regression.
-But I'm afraid I can only help with testing here.
+Despite the invalid magics, this firmware is not crashing as the
+others (official linux-firmware, ath10k-firmware).
 
-Regards,
-Roman
+Does anyone on this list have a working configuration for the 1535
+(qca6173 hw3.2), or at least a clue what might be wrong?
+The firmware-5.bin obtained from the Windows driver bundle starts with `SGMT`.
+
+
+I'm happy about finding this mailing list, thanks for all the effort!
+
+Leonhardt
+
+
+
+# uname -a
+
+```
+Linux n8schnecke 4.4.0-21-generic #37-Ubuntu SMP Mon Apr 18 18:33:37
+UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+```
+
+# lspci | grep QCA
+```
+3e:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac Wireless
+Network Adapter (rev 32)
+```
+
+# dmesg
+
+```
+[ 3941.549532] ath10k_pci 0000:3e:00.0: pci irq msi-x interrupts 8
+irq_mode 0 reset_mode 0
+[ 3941.784491] ath10k_pci 0000:3e:00.0: invalid firmware magic
+[ 3941.846693] ath10k_pci 0000:3e:00.0: found invalid board magic
+[ 3943.964198] ath10k_pci 0000:3e:00.0: qca6174 hw3.2 (0x05030000,
+0x00340aff sub 1a56:1535) fw WLAN.RM.2.0-00180-QCARMSWPZ-1 fwapi 4
+bdapi 1 htt-ver 3.26 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0
+hwcrypto 1 features wowlan,ignore-otp,no-4addr-pad
+[ 3943.964201] ath10k_pci 0000:3e:00.0: debug 0 debugfs 1 tracing 1
+dfs 0 testmode 0
+[ 3946.966754] ath10k_pci 0000:3e:00.0: could not suspend target (-11)
+[ 3947.043554] ath: EEPROM regdomain: 0x6c
+[ 3947.043556] ath: EEPROM indicates we should expect a direct regpair map
+[ 3947.043557] ath: Country alpha2 being used: 00
+[ 3947.043558] ath: Regpair used: 0x6c
+[ 3947.045301] ath10k_pci 0000:3e:00.0 wlp62s0: renamed from wlan0
+[ 3947.067781] IPv6: ADDRCONF(NETDEV_UP): wlp62s0: link is not ready
+[ 3952.306968] ath10k_pci 0000:3e:00.0: failed to enable dynamic BW: -11
+...
+[ 4106.595895] ath10k_pci 0000:3e:00.0: failed to set tx-chainmask: -11, req 0x3
+[ 4109.595922] ath10k_pci 0000:3e:00.0: failed to set arp ac override
+parameter: -11
+...
+```
+
+# iwconfig wlp62s0
+
+```
+wlp62s0   IEEE 802.11abgn  ESSID:off/any
+          Mode:Managed  Access Point: Not-Associated   Tx-Power=0 dBm
+          Retry short limit:7   RTS thr:off   Fragment thr:off
+          Encryption key:off
+          Power Management:on
+```
 
 _______________________________________________
 ath10k mailing list
