@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ob0-x22c.google.com ([2607:f8b0:4003:c01::22c])
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1atn08-0007Zx-It
- for ath10k@lists.infradead.org; Sat, 23 Apr 2016 02:08:54 +0000
-Received: by mail-ob0-x22c.google.com with SMTP id n10so50594934obb.2
- for <ath10k@lists.infradead.org>; Fri, 22 Apr 2016 19:08:31 -0700 (PDT)
+ id 1auHb5-0002oW-Nu
+ for ath10k@lists.infradead.org; Sun, 24 Apr 2016 10:49:08 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id e201so58175868wme.0
+ for <ath10k@lists.infradead.org>; Sun, 24 Apr 2016 03:48:42 -0700 (PDT)
+From: Christian Lamparter <chunkeey@googlemail.com>
+Subject: Re: [OpenWrt-Devel] How to initialize multiple phy radios
+Date: Sun, 24 Apr 2016 12:48:39 +0200
+Message-ID: <2596438.Cv6xmiar05@debian64>
+In-Reply-To: <CA+i30h-Y_rB0kZfgWifk14Zw1CCkGZH5x5zf8+OH-GTwswXh3w@mail.gmail.com>
+References: <CA+i30h-5GCJ0h9REAJE8TCdxNQDe8Sa=Fs=gbxpHEW3fOY-hMw@mail.gmail.com>
+ <CA+i30h--nmpjeNK4S02a9o9qrQ-b3QR77WcRorxC5-Dame5hBw@mail.gmail.com>
+ <CA+i30h-Y_rB0kZfgWifk14Zw1CCkGZH5x5zf8+OH-GTwswXh3w@mail.gmail.com>
 MIME-Version: 1.0
-Date: Sat, 23 Apr 2016 04:08:30 +0200
-Message-ID: <CAFq9a5xSQ5TPjQASaUCN_-niGU-hRBye_N4mjK3Td3u24Ea-7w@mail.gmail.com>
-Subject: qca6174 hw3.2 / Killer 1535 interface not coming up, reporting
- "failed to enable dynamic BW: -11"
-From: Leonhardt Wille <info@leonhardt-wille.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,83 +26,64 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: David Hutchison <dhutchison@bluemesh.net>
+Cc: OpenWrt Development List <openwrt-devel@lists.openwrt.org>, ath10k@lists.infradead.org
 
-I'm trying to get my new wifi card working for three days. Have been
-following all sorts of hints from all over the net and only got a
-partial success by dissecting the qca61x4_2_2.bin file from my
-notebook vendor's driver bundle and installing it to the QCA6174/hw3.0
-firmware directory.
-I say partial because the interface came right up after calling insmod
-and I could connect to my AP, but after a reboot it didn't work any
-more, but instead logs periodic warnings (see dmesg output below).
-`iwconfig` is unusually slow and `ifconfig wlp62s0 up` gives a
-`SIOCSIFFLAGS: Resource temporarily unavailable` after ~11 seconds.
+On Sunday, April 24, 2016 01:16:11 AM David Hutchison wrote:
+> I spoke too soon:
+> https://pci-ids.ucw.cz/read/PC/168c/0050
+> 
+> It is the QCA9887, so it's definitely on the PCIe bus and is being seen.
+Does ath10k support the QCA9887? I see no entry for this pci-id (168c:0050)
+in ath10k's pci table [0] and there's no definition of it in the hardware
+header either [1]. The chip-id is also not present. I CC'ed ath10k, since
+this seems to be a new chip that might be easy to add.
+ 
+> On Sun, Apr 24, 2016 at 1:13 AM, David Hutchison
+> <dhutchison@bluemesh.net> wrote:
+> > Here is the PCI noise is in the kernel log from ath79_register_pci():
+> >
+> > [    0.510000] PCI host bridge to bus 0000:00
+> > [    0.510000] pci_bus 0000:00: root bus resource [mem 0x10000000-0x11ffffff]
+> > [    0.520000] pci_bus 0000:00: root bus resource [io  0x0000]
+> > [    0.520000] pci_bus 0000:00: No busn resource found for root bus,
+> > will use [bus 00-ff]
+> > [    0.530000] pci 0000:00:00.0: [168c:0050] type 00 class 0x028000
+> > [    0.530000] pci 0000:00:00.0: reg 10: [mem 0x10000000-0x101fffff 64bit]
+> > [    0.530000] pci 0000:00:00.0: reg 30: [mem 0x00000000-0x0000ffff pref]
+> > [    0.530000] pci 0000:00:00.0: supports D1
+> > [    0.530000] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
+> > [    0.530000] pci_bus 0000:00: busn_res: [bus 00-ff] end is updated to 00
+> > [    0.530000] pci 0000:00:00.0: BAR 0: assigned [mem
+> > 0x10000000-0x101fffff 64bit]
+> > [    0.530000] pci 0000:00:00.0: BAR 6: assigned [mem
+> > 0x10200000-0x1020ffff pref]
+> > [    0.540000] pci 0000:00:00.0: using irq 40 for pin 1
+> >
+> > I compiled lspci in and it reports:
+> > 00:00.0 Class 0280: 168c:0050
+> >
+> > As far as I know that's just a vendor/product ID, I tried looking it
+> > up to verify that it was indeed the atheros qca988x but couldn't find
+> > anything for certain.
+> >
+> > I verified ath10k is loaded:
+> > ath10k_pci             27629  0
+> > ath10k_core           247226  1 ath10k_pci
+> > ath                    18726  4 ath10k_core,ath9k,ath9k_common,ath9k_hw
+> > mac80211              389729  2 ath10k_core,ath9k
+> > cfg80211              217396  5 ath10k_core,ath9k,ath9k_common,ath,mac80211
+> > compat                 19304  7
+> > ath10k_pci,ath10k_core,ath9k,ath9k_common,ath9k_hw,mac80211,cfg80211
+> >
 
-Despite the invalid magics, this firmware is not crashing as the
-others (official linux-firmware, ath10k-firmware).
+Regards,
+Christian
 
-Does anyone on this list have a working configuration for the 1535
-(qca6173 hw3.2), or at least a clue what might be wrong?
-The firmware-5.bin obtained from the Windows driver bundle starts with `SGMT`.
+[0] <https://git.kernel.org/cgit/linux/kernel/git/wireless/wireless-testing.git/tree/drivers/net/wireless/ath/ath10k/pci.c#n60>
 
+[1] <https://git.kernel.org/cgit/linux/kernel/git/wireless/wireless-testing.git/tree/drivers/net/wireless/ath/ath10k/hw.h#n25>
 
-I'm happy about finding this mailing list, thanks for all the effort!
-
-Leonhardt
-
-
-
-# uname -a
-
-```
-Linux n8schnecke 4.4.0-21-generic #37-Ubuntu SMP Mon Apr 18 18:33:37
-UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
-```
-
-# lspci | grep QCA
-```
-3e:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac Wireless
-Network Adapter (rev 32)
-```
-
-# dmesg
-
-```
-[ 3941.549532] ath10k_pci 0000:3e:00.0: pci irq msi-x interrupts 8
-irq_mode 0 reset_mode 0
-[ 3941.784491] ath10k_pci 0000:3e:00.0: invalid firmware magic
-[ 3941.846693] ath10k_pci 0000:3e:00.0: found invalid board magic
-[ 3943.964198] ath10k_pci 0000:3e:00.0: qca6174 hw3.2 (0x05030000,
-0x00340aff sub 1a56:1535) fw WLAN.RM.2.0-00180-QCARMSWPZ-1 fwapi 4
-bdapi 1 htt-ver 3.26 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0
-hwcrypto 1 features wowlan,ignore-otp,no-4addr-pad
-[ 3943.964201] ath10k_pci 0000:3e:00.0: debug 0 debugfs 1 tracing 1
-dfs 0 testmode 0
-[ 3946.966754] ath10k_pci 0000:3e:00.0: could not suspend target (-11)
-[ 3947.043554] ath: EEPROM regdomain: 0x6c
-[ 3947.043556] ath: EEPROM indicates we should expect a direct regpair map
-[ 3947.043557] ath: Country alpha2 being used: 00
-[ 3947.043558] ath: Regpair used: 0x6c
-[ 3947.045301] ath10k_pci 0000:3e:00.0 wlp62s0: renamed from wlan0
-[ 3947.067781] IPv6: ADDRCONF(NETDEV_UP): wlp62s0: link is not ready
-[ 3952.306968] ath10k_pci 0000:3e:00.0: failed to enable dynamic BW: -11
-...
-[ 4106.595895] ath10k_pci 0000:3e:00.0: failed to set tx-chainmask: -11, req 0x3
-[ 4109.595922] ath10k_pci 0000:3e:00.0: failed to set arp ac override
-parameter: -11
-...
-```
-
-# iwconfig wlp62s0
-
-```
-wlp62s0   IEEE 802.11abgn  ESSID:off/any
-          Mode:Managed  Access Point: Not-Associated   Tx-Power=0 dBm
-          Retry short limit:7   RTS thr:off   Fragment thr:off
-          Encryption key:off
-          Power Management:on
-```
 
 _______________________________________________
 ath10k mailing list
