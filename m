@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1auHb5-0002oW-Nu
- for ath10k@lists.infradead.org; Sun, 24 Apr 2016 10:49:08 +0000
-Received: by mail-wm0-x22c.google.com with SMTP id e201so58175868wme.0
- for <ath10k@lists.infradead.org>; Sun, 24 Apr 2016 03:48:42 -0700 (PDT)
-From: Christian Lamparter <chunkeey@googlemail.com>
-Subject: Re: [OpenWrt-Devel] How to initialize multiple phy radios
-Date: Sun, 24 Apr 2016 12:48:39 +0200
-Message-ID: <2596438.Cv6xmiar05@debian64>
-In-Reply-To: <CA+i30h-Y_rB0kZfgWifk14Zw1CCkGZH5x5zf8+OH-GTwswXh3w@mail.gmail.com>
-References: <CA+i30h-5GCJ0h9REAJE8TCdxNQDe8Sa=Fs=gbxpHEW3fOY-hMw@mail.gmail.com>
- <CA+i30h--nmpjeNK4S02a9o9qrQ-b3QR77WcRorxC5-Dame5hBw@mail.gmail.com>
- <CA+i30h-Y_rB0kZfgWifk14Zw1CCkGZH5x5zf8+OH-GTwswXh3w@mail.gmail.com>
+ id 1auZ2D-0006XH-73
+ for ath10k@lists.infradead.org; Mon, 25 Apr 2016 05:26:14 +0000
+Received: by mail-wm0-x229.google.com with SMTP id v200so12438611wmv.1
+ for <ath10k@lists.infradead.org>; Sun, 24 Apr 2016 22:25:51 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAFq9a5xSQ5TPjQASaUCN_-niGU-hRBye_N4mjK3Td3u24Ea-7w@mail.gmail.com>
+References: <CAFq9a5xSQ5TPjQASaUCN_-niGU-hRBye_N4mjK3Td3u24Ea-7w@mail.gmail.com>
+Date: Mon, 25 Apr 2016 07:25:50 +0200
+Message-ID: <CA+BoTQnr9m_5D0y+LV0mLSgAjSiJbfd-9rP-Jrkeo6rUnpPYLQ@mail.gmail.com>
+Subject: Re: qca6174 hw3.2 / Killer 1535 interface not coming up, reporting
+ "failed to enable dynamic BW: -11"
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,70 +21,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: David Hutchison <dhutchison@bluemesh.net>
-Cc: OpenWrt Development List <openwrt-devel@lists.openwrt.org>, ath10k@lists.infradead.org
+To: Leonhardt Wille <info@leonhardt-wille.de>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Sunday, April 24, 2016 01:16:11 AM David Hutchison wrote:
-> I spoke too soon:
-> https://pci-ids.ucw.cz/read/PC/168c/0050
-> 
-> It is the QCA9887, so it's definitely on the PCIe bus and is being seen.
-Does ath10k support the QCA9887? I see no entry for this pci-id (168c:0050)
-in ath10k's pci table [0] and there's no definition of it in the hardware
-header either [1]. The chip-id is also not present. I CC'ed ath10k, since
-this seems to be a new chip that might be easy to add.
- 
-> On Sun, Apr 24, 2016 at 1:13 AM, David Hutchison
-> <dhutchison@bluemesh.net> wrote:
-> > Here is the PCI noise is in the kernel log from ath79_register_pci():
-> >
-> > [    0.510000] PCI host bridge to bus 0000:00
-> > [    0.510000] pci_bus 0000:00: root bus resource [mem 0x10000000-0x11ffffff]
-> > [    0.520000] pci_bus 0000:00: root bus resource [io  0x0000]
-> > [    0.520000] pci_bus 0000:00: No busn resource found for root bus,
-> > will use [bus 00-ff]
-> > [    0.530000] pci 0000:00:00.0: [168c:0050] type 00 class 0x028000
-> > [    0.530000] pci 0000:00:00.0: reg 10: [mem 0x10000000-0x101fffff 64bit]
-> > [    0.530000] pci 0000:00:00.0: reg 30: [mem 0x00000000-0x0000ffff pref]
-> > [    0.530000] pci 0000:00:00.0: supports D1
-> > [    0.530000] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
-> > [    0.530000] pci_bus 0000:00: busn_res: [bus 00-ff] end is updated to 00
-> > [    0.530000] pci 0000:00:00.0: BAR 0: assigned [mem
-> > 0x10000000-0x101fffff 64bit]
-> > [    0.530000] pci 0000:00:00.0: BAR 6: assigned [mem
-> > 0x10200000-0x1020ffff pref]
-> > [    0.540000] pci 0000:00:00.0: using irq 40 for pin 1
-> >
-> > I compiled lspci in and it reports:
-> > 00:00.0 Class 0280: 168c:0050
-> >
-> > As far as I know that's just a vendor/product ID, I tried looking it
-> > up to verify that it was indeed the atheros qca988x but couldn't find
-> > anything for certain.
-> >
-> > I verified ath10k is loaded:
-> > ath10k_pci             27629  0
-> > ath10k_core           247226  1 ath10k_pci
-> > ath                    18726  4 ath10k_core,ath9k,ath9k_common,ath9k_hw
-> > mac80211              389729  2 ath10k_core,ath9k
-> > cfg80211              217396  5 ath10k_core,ath9k,ath9k_common,ath,mac80211
-> > compat                 19304  7
-> > ath10k_pci,ath10k_core,ath9k,ath9k_common,ath9k_hw,mac80211,cfg80211
-> >
-
-Regards,
-Christian
-
-[0] <https://git.kernel.org/cgit/linux/kernel/git/wireless/wireless-testing.git/tree/drivers/net/wireless/ath/ath10k/pci.c#n60>
-
-[1] <https://git.kernel.org/cgit/linux/kernel/git/wireless/wireless-testing.git/tree/drivers/net/wireless/ath/ath10k/hw.h#n25>
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjMgQXByaWwgMjAxNiBhdCAwNDowOCwgTGVvbmhhcmR0IFdpbGxlIDxpbmZvQGxlb25oYXJk
+dC13aWxsZS5kZT4gd3JvdGU6Cj4gSSdtIHRyeWluZyB0byBnZXQgbXkgbmV3IHdpZmkgY2FyZCB3
+b3JraW5nIGZvciB0aHJlZSBkYXlzLiBIYXZlIGJlZW4KPiBmb2xsb3dpbmcgYWxsIHNvcnRzIG9m
+IGhpbnRzIGZyb20gYWxsIG92ZXIgdGhlIG5ldCBhbmQgb25seSBnb3QgYQo+IHBhcnRpYWwgc3Vj
+Y2VzcyBieSBkaXNzZWN0aW5nIHRoZSBxY2E2MXg0XzJfMi5iaW4gZmlsZSBmcm9tIG15Cj4gbm90
+ZWJvb2sgdmVuZG9yJ3MgZHJpdmVyIGJ1bmRsZSBhbmQgaW5zdGFsbGluZyBpdCB0byB0aGUgUUNB
+NjE3NC9odzMuMAo+IGZpcm13YXJlIGRpcmVjdG9yeS4KPiBJIHNheSBwYXJ0aWFsIGJlY2F1c2Ug
+dGhlIGludGVyZmFjZSBjYW1lIHJpZ2h0IHVwIGFmdGVyIGNhbGxpbmcgaW5zbW9kCj4gYW5kIEkg
+Y291bGQgY29ubmVjdCB0byBteSBBUCwgYnV0IGFmdGVyIGEgcmVib290IGl0IGRpZG4ndCB3b3Jr
+IGFueQo+IG1vcmUsIGJ1dCBpbnN0ZWFkIGxvZ3MgcGVyaW9kaWMgd2FybmluZ3MgKHNlZSBkbWVz
+ZyBvdXRwdXQgYmVsb3cpLgo+IGBpd2NvbmZpZ2AgaXMgdW51c3VhbGx5IHNsb3cgYW5kIGBpZmNv
+bmZpZyB3bHA2MnMwIHVwYCBnaXZlcyBhCj4gYFNJT0NTSUZGTEFHUzogUmVzb3VyY2UgdGVtcG9y
+YXJpbHkgdW5hdmFpbGFibGVgIGFmdGVyIH4xMSBzZWNvbmRzLgo+Cj4gRGVzcGl0ZSB0aGUgaW52
+YWxpZCBtYWdpY3MsIHRoaXMgZmlybXdhcmUgaXMgbm90IGNyYXNoaW5nIGFzIHRoZQo+IG90aGVy
+cyAob2ZmaWNpYWwgbGludXgtZmlybXdhcmUsIGF0aDEway1maXJtd2FyZSkuCj4KPiBEb2VzIGFu
+eW9uZSBvbiB0aGlzIGxpc3QgaGF2ZSBhIHdvcmtpbmcgY29uZmlndXJhdGlvbiBmb3IgdGhlIDE1
+MzUKPiAocWNhNjE3MyBodzMuMiksIG9yIGF0IGxlYXN0IGEgY2x1ZSB3aGF0IG1pZ2h0IGJlIHdy
+b25nPwo+IFRoZSBmaXJtd2FyZS01LmJpbiBvYnRhaW5lZCBmcm9tIHRoZSBXaW5kb3dzIGRyaXZl
+ciBidW5kbGUgc3RhcnRzIHdpdGggYFNHTVRgLgo+Cj4KPiBJJ20gaGFwcHkgYWJvdXQgZmluZGlu
+ZyB0aGlzIG1haWxpbmcgbGlzdCwgdGhhbmtzIGZvciBhbGwgdGhlIGVmZm9ydCEKPgo+IExlb25o
+YXJkdAo+Cj4KPgo+ICMgdW5hbWUgLWEKPgo+IGBgYAo+IExpbnV4IG44c2NobmVja2UgNC40LjAt
+MjEtZ2VuZXJpYyAjMzctVWJ1bnR1IFNNUCBNb24gQXByIDE4IDE4OjMzOjM3Cj4gVVRDIDIwMTYg
+eDg2XzY0IHg4Nl82NCB4ODZfNjQgR05VL0xpbnV4Cj4gYGBgCj4KPiAjIGxzcGNpIHwgZ3JlcCBR
+Q0EKPiBgYGAKPiAzZTowMC4wIE5ldHdvcmsgY29udHJvbGxlcjogUXVhbGNvbW0gQXRoZXJvcyBR
+Q0E2MTc0IDgwMi4xMWFjIFdpcmVsZXNzCj4gTmV0d29yayBBZGFwdGVyIChyZXYgMzIpCj4gYGBg
+Cj4KPiAjIGRtZXNnCj4KPiBgYGAKPiBbIDM5NDEuNTQ5NTMyXSBhdGgxMGtfcGNpIDAwMDA6M2U6
+MDAuMDogcGNpIGlycSBtc2kteCBpbnRlcnJ1cHRzIDgKPiBpcnFfbW9kZSAwIHJlc2V0X21vZGUg
+MAo+IFsgMzk0MS43ODQ0OTFdIGF0aDEwa19wY2kgMDAwMDozZTowMC4wOiBpbnZhbGlkIGZpcm13
+YXJlIG1hZ2ljCj4gWyAzOTQxLjg0NjY5M10gYXRoMTBrX3BjaSAwMDAwOjNlOjAwLjA6IGZvdW5k
+IGludmFsaWQgYm9hcmQgbWFnaWMKCllvdSBoYXZlIHlvdXIgZmlybXdhcmUgZmlsZXMgYmFkLiBQ
+bGVhc2UgZ2V0IHRoZW0gZnJvbToKICBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZp
+cm13YXJlL3RyZWUvbWFzdGVyL1FDQTYxNzQvaHczLjAKCkFuZCBuYW1lIHRoZW0gYXM6CiAgZmly
+bXdhcmUtNC5iaW4KICBib2FyZC0yLmJpbgoKKHRoZXkgb2J2aW91c2x5IG5lZWQgdG8gYmUgcHV0
+IGluIC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTYxNzQvaHczLjAvKQoKUmVtb3ZlIGZpcm13YXJl
+LTUuYmluLiBUaGVyZSdzIGEgcmVhc29uIHdoeSBmaXJtd2FyZSBmaWxlcyBoYXZlIG51bWJlcnMu
+CgoKPiBbIDM5NDMuOTY0MTk4XSBhdGgxMGtfcGNpIDAwMDA6M2U6MDAuMDogcWNhNjE3NCBodzMu
+MiAoMHgwNTAzMDAwMCwKPiAweDAwMzQwYWZmIHN1YiAxYTU2OjE1MzUpIGZ3IFdMQU4uUk0uMi4w
+LTAwMTgwLVFDQVJNU1dQWi0xIGZ3YXBpIDQKPiBiZGFwaSAxIGh0dC12ZXIgMy4yNiB3bWktb3Ag
+NCBodHQtb3AgMyBjYWwgb3RwIG1heC1zdGEgMzIgcmF3IDAKPiBod2NyeXB0byAxIGZlYXR1cmVz
+IHdvd2xhbixpZ25vcmUtb3RwLG5vLTRhZGRyLXBhZAo+IFsgMzk0My45NjQyMDFdIGF0aDEwa19w
+Y2kgMDAwMDozZTowMC4wOiBkZWJ1ZyAwIGRlYnVnZnMgMSB0cmFjaW5nIDEKPiBkZnMgMCB0ZXN0
+bW9kZSAwCj4gWyAzOTQ2Ljk2Njc1NF0gYXRoMTBrX3BjaSAwMDAwOjNlOjAwLjA6IGNvdWxkIG5v
+dCBzdXNwZW5kIHRhcmdldCAoLTExKQo+IFsgMzk0Ny4wNDM1NTRdIGF0aDogRUVQUk9NIHJlZ2Rv
+bWFpbjogMHg2Ywo+IFsgMzk0Ny4wNDM1NTZdIGF0aDogRUVQUk9NIGluZGljYXRlcyB3ZSBzaG91
+bGQgZXhwZWN0IGEgZGlyZWN0IHJlZ3BhaXIgbWFwCj4gWyAzOTQ3LjA0MzU1N10gYXRoOiBDb3Vu
+dHJ5IGFscGhhMiBiZWluZyB1c2VkOiAwMAo+IFsgMzk0Ny4wNDM1NThdIGF0aDogUmVncGFpciB1
+c2VkOiAweDZjCj4gWyAzOTQ3LjA0NTMwMV0gYXRoMTBrX3BjaSAwMDAwOjNlOjAwLjAgd2xwNjJz
+MDogcmVuYW1lZCBmcm9tIHdsYW4wCj4gWyAzOTQ3LjA2Nzc4MV0gSVB2NjogQUREUkNPTkYoTkVU
+REVWX1VQKTogd2xwNjJzMDogbGluayBpcyBub3QgcmVhZHkKPiBbIDM5NTIuMzA2OTY4XSBhdGgx
+MGtfcGNpIDAwMDA6M2U6MDAuMDogZmFpbGVkIHRvIGVuYWJsZSBkeW5hbWljIEJXOiAtMTEKClRo
+aXMgaXMgYSBwcm9ibGVtIHdpdGggYm9hcmQgZmlsZS4gWW91J3JlIHVzaW5nIGJvYXJkLmJpbiAo
+YmRhcGkgMSkKd2hpY2ggd2lsbCBub3Qgd29yayB3aXRoIGh3My4yLiBZb3UgbmVlZCB0byBnZXQg
+dGhlIGxhdGVzdCBib2FyZC0yLmJpbgpmcm9tIEthbGxlJ3MgYXRoMTBrLWZpcm13YXJlIHJlcG9z
+aXRvcnkgKApodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13YXJlL3RyZWUvbWFz
+dGVyL1FDQTYxNzQvaHczLjAgKS4KCgo+IC4uLgo+IFsgNDEwNi41OTU4OTVdIGF0aDEwa19wY2kg
+MDAwMDozZTowMC4wOiBmYWlsZWQgdG8gc2V0IHR4LWNoYWlubWFzazogLTExLCByZXEgMHgzCj4g
+WyA0MTA5LjU5NTkyMl0gYXRoMTBrX3BjaSAwMDAwOjNlOjAwLjA6IGZhaWxlZCB0byBzZXQgYXJw
+IGFjIG92ZXJyaWRlCj4gcGFyYW1ldGVyOiAtMTEKPiAuLi4KPiBgYGAKPgo+ICMgaXdjb25maWcg
+d2xwNjJzMAoKRG9uJ3QgdXNlIGl3Y29uZmlnLCBwbGVhc2UuIEl0J3MgZGVwcmVjYXRlZC4gVXNl
+IGBpd2AgdG9vbHMgaW5zdGVhZC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
+bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+YXRoMTBrCg==
