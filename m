@@ -1,27 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from torres.puc.rediris.es ([2001:720:418:ca00::22])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aubIG-00033u-5m
- for ath10k@lists.infradead.org; Mon, 25 Apr 2016 07:50:57 +0000
-Received: from [84.88.62.208] (helo=leo)
- by torres.puc.rediris.es with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
- (Exim 4.80) (envelope-from <ipascual@cttc.cat>) id 1aubFo-0006c6-BC
- for ath10k@lists.infradead.org; Mon, 25 Apr 2016 09:48:25 +0200
-Received: from [10.1.16.22] (pcipascual.cttc.es [10.1.16.22])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by leo (Postfix) with ESMTPSA id E2BFA1FE36
- for <ath10k@lists.infradead.org>; Mon, 25 Apr 2016 09:48:21 +0200 (CEST)
-Subject: Re: low TCP throughput with 80MHz channel width [SOLVED]
-References: <571A441C.9040307@cttc.cat> <571A4603.9030802@candelatech.com>
- <571A4B17.10509@cttc.cat> <571A4C23.2020104@candelatech.com>
- <571A4D22.7060704@cttc.cat> <571A4E67.7090308@candelatech.com>
- <571A54E2.9020908@cttc.cat> <571A57DC.9020101@candelatech.com>
-From: =?UTF-8?Q?I=c3=b1aki_Pascual?= <ipascual@cttc.cat>
-Message-ID: <571DCBC0.1010504@cttc.cat>
-Date: Mon, 25 Apr 2016 09:48:16 +0200
+ id 1auiKx-0005Fy-1r
+ for ath10k@lists.infradead.org; Mon, 25 Apr 2016 15:22:11 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [OpenWrt-Devel] How to initialize multiple phy radios
+Date: Mon, 25 Apr 2016 15:21:45 +0000
+Message-ID: <87potd3e9j.fsf@kamboji.qca.qualcomm.com>
+References: <CA+i30h-5GCJ0h9REAJE8TCdxNQDe8Sa=Fs=gbxpHEW3fOY-hMw@mail.gmail.com>
+ <CA+i30h--nmpjeNK4S02a9o9qrQ-b3QR77WcRorxC5-Dame5hBw@mail.gmail.com>
+ <CA+i30h-Y_rB0kZfgWifk14Zw1CCkGZH5x5zf8+OH-GTwswXh3w@mail.gmail.com>
+ <2596438.Cv6xmiar05@debian64>
+In-Reply-To: <2596438.Cv6xmiar05@debian64> (Christian Lamparter's message of
+ "Sun, 24 Apr 2016 12:48:39 +0200")
+Content-Language: en-US
+Content-ID: <F1F02FE92B5B9440BD3D3201C013C000@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <571A57DC.9020101@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,112 +24,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Christian Lamparter <chunkeey@googlemail.com>
+Cc: David Hutchison <dhutchison@bluemesh.net>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-VGhhbmtzIEJlbiwgTWljaGFsIGZvciB5b3VyIGhlbHAuCgpJdCB0dXJucyBvdXQgdGhhdCB0aGUg
-InJlbm8iIHRoaW5nIGZpeGVkIHRoZSBpc3N1ZS4KCldlIHN0aWxsIGRvIG5vdCBrbm93IHdoeSBp
-dCBkaWRuJ3Qgd29yayB0aGUgZmlyc3QgdGltZSBidXQgYWZ0ZXIgc29tZSAKZGViYnVnaW5nLCBi
-dXQgbm8gY29uZmlnIGNoYW5nZXMsIGl0IGp1c3Qgc3RhcnRlZCB3b3JraW5nLgoKV2UgYXJlIG5v
-dyBvbiAyMDAgTWJwcyBUQ1Agb24gODAgTUh6IHdoaWNoIG1ha2VzIHNlbnNlLgoKVGhhbmtzIGFn
-YWluLiBCZXN0cywKCknDsWFraQoKT24gMjIvMDQvMTYgMTg6NTcsIEJlbiBHcmVlYXIgd3JvdGU6
-Cj4gT24gMDQvMjIvMjAxNiAwOTo0NCBBTSwgScOxYWtpIFBhc2N1YWwgd3JvdGU6Cj4+IFRoYW5r
-cyBmb3IgeW91ciBoZWxwIEJlbi4KPj4KPj4gSSB0aGluayB3ZSB3aWxsIGdvIGZvciBrZXJuZWwg
-NC40IGFuZCB0aGUgbGF0ZXN0IGZpcm13YXJlIHJlbGFzZS4KPj4KPj4gUmVnYXJkaW5nIHRoZSBm
-aXJtd2FyZSwgc2hvdWxkIHdlIHRyeSB0aGUgQ1QtMTAuMiBvciBpdCBpcyBub3Qgc3RhYmxlIAo+
-PiBlbm91Z2g/Cj4KPiBNeSAxMC4yIGhhcyBub3QgaGFkIG11Y2ggdGVzdGluZywgYW5kIGluIHJl
-Y2VudCB0ZXN0aW5nLCBpdCBkb2VzIG5vdCAKPiBwZXJmb3JtIGFzIHdlbGwgYXMgbXkgMTAuMQo+
-IGZpcm13YXJlLiAgQnV0LCB5b3UgY291bGQgZ2l2ZSBpdCBhIHRyeSB0byBzZWUgaG93IHdlbGwg
-aXQgd29ya3MuLi4uCj4KPiA0LjQgc2VlbXMgdG8gYmUgd29ya2luZyB0aGlzIG1vcm5pbmcsIGJ1
-dCB3YXMgYnJva2VuIHllc3RlcmRheTogSXQgaXMgCj4gaW4gZmFpcmx5IGhlYXZ5IGRldmVsb3Bt
-ZW50LCBzbyBwb3NzaWJseSB5b3Ugd2lsbAo+IGhpdCByZWdyZXNzaW9ucyB0aGVyZS4gIExldCBt
-ZSBrbm93IGlmIHlvdSBkby4gIEl0IGFsc28gaGFzIGEgYnVuY2ggb2YgCj4gdXBzdHJlYW0gdGVz
-dGluZyBhdGgxMGsgcGF0Y2hlcywgYW5kIEkgc2F3IG90aGVyIHJlcG9ydHMKPiB0aGF0IFRDUCB0
-aHJvdWdocHV0IGlzIGxlc3Mgd2l0aCB0aGVtIGFwcGxpZWQsIHRob3VnaCBwb3NzaWJseSB0aGlz
-IGlzIAo+IG9ubHkgdHJ1ZSBpZiB5b3UgYXJlIHVzaW5nIGNvZGVsIHR4IHF1ZXVlaW5nLgo+Cj4g
-VGhhbmtzLAo+IEJlbgo+Cj4+Cj4+IEJlc3RzLAo+Pgo+PiBJw7Fha2kKPj4KPj4KPj4KPj4gT24g
-MjIvMDQvMTYgMTg6MTYsIEJlbiBHcmVlYXIgd3JvdGU6Cj4+PiBPbiAwNC8yMi8yMDE2IDA5OjEx
-IEFNLCBJw7Fha2kgUGFzY3VhbCB3cm90ZToKPj4+PiBXZSBhcmUgdXNpbmcga2VybmVsIDQuMiB3
-aXRoIENhbmRlbGFUZWNoIGZpcm13YXJlIAo+Pj4+IDEwLjEuNDY3LWN0LWNvbS1mdWxsLTAxNC05
-NmQ1NDMKPj4+Cj4+PiBNYXliZSB0cnkgcmxzIDE1IG9yIGJldGEtMTYgQ1QgMTAuMSBmaXJtd2Fy
-ZT8KPj4+Cj4+PiBBbmQsIHdlIGZvdW5kIHRvbyBtdWNoIGluc3RhYmlsaXR5IGluIDQuMiBrZXJu
-ZWwuICBXZSBzdWdnZXN0IDQuMCBvciAKPj4+IDQuNCwKPj4+IHRob3VnaCBJIGFtIG5vdCBhd2Fy
-ZSBvZiBhbnkgdGhyb3VnaHB1dCByZWxhdGVkIGJ1Z3MgYXNpZGUgZnJvbSB0aGUgCj4+PiBDVUJJ
-Qwo+Pj4gY29uZ2VzdGlvbiBjb250cm9sIGlzc3VlLgo+Pj4KPj4+IFlvdSBtaWdodCBhbHNvIHRy
-eSBvdXIgMy4xNyBrZXJuZWwgc2luY2UgQ1VCSUMgd29ya2VkIGluIHRoYXQga2VybmVsLi4uCj4+
-Pgo+Pj4gVGhhbmtzLAo+Pj4gQmVuCj4+Pgo+Pj4KPj4+Pgo+Pj4+IG1vbmV0QHNjMjI3On4kIGV0
-aHRvb2wgLWkgd2xhbjIKPj4+PiBkcml2ZXI6IGF0aDEwa19wY2kKPj4+PiB2ZXJzaW9uOiA0LjIu
-MCsKPj4+PiBmaXJtd2FyZS12ZXJzaW9uOiAxMC4xLjQ2Ny1jdC1jb20tZnVsbC0wMTQtOTZkNTQz
-Cj4+Pj4gYnVzLWluZm86IDAwMDA6MGI6MDAuMAo+Pj4+IHN1cHBvcnRzLXN0YXRpc3RpY3M6IHll
-cwo+Pj4+IHN1cHBvcnRzLXRlc3Q6IG5vCj4+Pj4gc3VwcG9ydHMtZWVwcm9tLWFjY2Vzczogbm8K
-Pj4+PiBzdXBwb3J0cy1yZWdpc3Rlci1kdW1wOiBubwo+Pj4+IHN1cHBvcnRzLXByaXYtZmxhZ3M6
-IG5vCj4+Pj4KPj4+PiBUaGFua3MsCj4+Pj4KPj4+PiBJw7Fha2kKPj4+Pgo+Pj4+IE9uIDIyLzA0
-LzE2IDE4OjA2LCBCZW4gR3JlZWFyIHdyb3RlOgo+Pj4+PiBPbiAwNC8yMi8yMDE2IDA5OjAyIEFN
-LCBJw7Fha2kgUGFzY3VhbCB3cm90ZToKPj4+Pj4KPj4+Pj4+IFRoYW5rcyBmb3IgdGhlIHRpcCBC
-ZW4uIFdlIGhhdmUgbW92ZWQgdG8gJ3Jlbm8nIGFuZCB0cmllZCBzZXZlcmFsIAo+Pj4+Pj4gd2lu
-ZG93IHNpemVzIGJ1dCB3ZSBhcmUgc3RpbGwgb24gbWF4LiAzNSBNYnBzIHdoaWNoIGlzIHRvbyBs
-b3cuCj4+Pj4+Pgo+Pj4+Pgo+Pj4+PiBXaGF0IGZpcm13YXJlIGFuZCBrZXJuZWwgYXJlIHlvdSB1
-c2luZz8KPj4+Pj4KPj4+Pj4gVGhhbmtzLAo+Pj4+PiBCZW4KPj4+Pj4KPj4+Pj4+IEJlc3RzLAo+
-Pj4+Pj4KPj4+Pj4+IEnDsWFraQo+Pj4+Pj4KPj4+Pj4+IE9uIDIyLzA0LzE2IDE3OjQwLCBCZW4g
-R3JlZWFyIHdyb3RlOgo+Pj4+Pj4+IFVzZSAncmVubycgaW5zdGVhZCBvZiBjdWJpYyBUQ1AgY29u
-Z2VzdGlvbiBjb250cm9sLCBjdWJpYyBpcyAKPj4+Pj4+PiBicm9rZW4gd2l0aCBhdGgxMGsuCj4+
-Pj4+Pj4KPj4+Pj4+PiBUaGFua3MsCj4+Pj4+Pj4gQmVuCj4+Pj4+Pj4KPj4+Pj4+PiBPbiAwNC8y
-Mi8yMDE2IDA4OjMyIEFNLCBJw7Fha2kgUGFzY3VhbCB3cm90ZToKPj4+Pj4+Pj4gSGkgZXZlcnlv
-bmUsCj4+Pj4+Pj4+Cj4+Pj4+Pj4+IHdlIGhhdmUgY29uZmlndXJlZCB0d28gYm94ZXMgd2l0aCA4
-MDIuMTFhYyBOSUNzIHRvIHdvcmsgaW4gCj4+Pj4+Pj4+IGNoYW5uZWwgNDggKDUyNDAgTUh6KSwg
-YWQtaG9jIG1vZGUsIDgwTUh6IGNoYW5uZWwgd2lkdGguCj4+Pj4+Pj4+IEZvciBVRFAgdHJhZmZp
-YyB3ZSBnZXQgMzAwIE1icHMgYmFuZHdpdGggYnV0IGZvciBUQ1Agd2UgYXJlIAo+Pj4+Pj4+PiBh
-cm91bmQgMzAgTWJwcy4KPj4+Pj4+Pj4KPj4+Pj4+Pj4gV2UgaGF2ZSB0cmllZCBvdGhlciBjaGFu
-bmVscyB3aXRoIHNpbWlsYXIgcmVzdWx0cy4KPj4+Pj4+Pj4gVGhyb3VnaHB1dCBmb3IgMjAgYW5k
-IDQwIE1IeiBjaGFubmVsIHdpZHRoIGFyZSBvayAoMjBNSHo6IFRDUCAKPj4+Pj4+Pj4gMjFNYnBz
-LCBVRFAgMjdNYnBzLCA0ME1IejogVENQIDgyTWJwcywgVURQIDE0NE1icHMpLgo+Pj4+Pj4+Pgo+
-Pj4+Pj4+PiBUZXN0aW5nIHdpdGggaXBlcmYgd2UgaGF2ZSBhbHNvIHRyaWVkIGRpZmZlcmVudCBj
-b25nZXN0aW9uIAo+Pj4+Pj4+PiB3aW5kb3dzIHdpdGggbm8gb3IgbG93IGltcHJvdmVtZW50cy4K
-Pj4+Pj4+Pj4KPj4+Pj4+Pj4gQmVsb3cgYXJlIGNvbmZpZyBkZXRhaWxzIGFuZCB0aGUgc2VxdWVu
-Y2Ugb2YgY29tbWFuZHMgd2UgYXJlIAo+Pj4+Pj4+PiB1c2luZyB0byBjb25maWd1cmUgdGhlIGlu
-dGVyZmFjZS4KPj4+Pj4+Pj4KPj4+Pj4+Pj4gQW55IGlkZWFzIG9uIHdoYXQgd2UgbWF5IGJlIGRv
-aW5nIHdyb25nPwo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBCZXN0cywKPj4+Pj4+Pj4KPj4+Pj4+Pj4gScOx
-YWtpCj4+Pj4+Pj4+Cj4+Pj4+Pj4+IGl3IG91dHB1dHM6Cj4+Pj4+Pj4+Cj4+Pj4+Pj4+IHJvb3RA
-c2MyMjc6L2hvbWUvbW9uZXQjIGl3IHdsYW4yIGluZm8KPj4+Pj4+Pj4gSW50ZXJmYWNlIHdsYW4y
-Cj4+Pj4+Pj4+ICAgICAgaWZpbmRleCA2Cj4+Pj4+Pj4+ICAgICAgd2RldiAweDIwMDAwMDAwMQo+
-Pj4+Pj4+PiAgICAgIGFkZHIgMDQ6ZjA6MjE6MTg6MjY6YTIKPj4+Pj4+Pj4gICAgICBzc2lkIFND
-MjI2U0MyMjcKPj4+Pj4+Pj4gICAgICB0eXBlIElCU1MKPj4+Pj4+Pj4gICAgICB3aXBoeSAyCj4+
-Pj4+Pj4+ICAgICAgY2hhbm5lbCA0OCAoNTI0MCBNSHopLCB3aWR0aDogODAgTUh6LCBjZW50ZXIx
-OiA1MjEwIE1Iego+Pj4+Pj4+Pgo+Pj4+Pj4+PiByb290QHNjMjI3Oi9ob21lL21vbmV0IyBpdyB3
-bGFuMiBzdGF0aW9uIGR1bXAKPj4+Pj4+Pj4gU3RhdGlvbiAwNDpmMDoyMToxODoyNjphOCAob24g
-d2xhbjIpCj4+Pj4+Pj4+ICAgICAgaW5hY3RpdmUgdGltZTogICAgODYgbXMKPj4+Pj4+Pj4gICAg
-ICByeCBieXRlczogICAgNDY3NzMyNTIxCj4+Pj4+Pj4+ICAgICAgcnggcGFja2V0czogICAgMzY0
-MjQ5Cj4+Pj4+Pj4+ICAgICAgdHggYnl0ZXM6ICAgIDEzOTQ1NTgKPj4+Pj4+Pj4gICAgICB0eCBw
-YWNrZXRzOiAgICAxNjIwMAo+Pj4+Pj4+PiAgICAgIHR4IHJldHJpZXM6ICAgIDAKPj4+Pj4+Pj4g
-ICAgICB0eCBmYWlsZWQ6ICAgIDAKPj4+Pj4+Pj4gICAgICBzaWduYWw6ICAgICAgLTUxIGRCbQo+
-Pj4+Pj4+PiAgICAgIHNpZ25hbCBhdmc6ICAgIC01MSBkQm0KPj4+Pj4+Pj4gICAgICB0eCBiaXRy
-YXRlOiAgICAzNTEuMCBNQml0L3MgVkhULU1DUyA0IDgwTUh6IFZIVC1OU1MgMgo+Pj4+Pj4+PiAg
-ICAgIHJ4IGJpdHJhdGU6ICAgIDUyNi41IE1CaXQvcyBWSFQtTUNTIDQgODBNSHogVkhULU5TUyAz
-Cj4+Pj4+Pj4+ICAgICAgYXV0aG9yaXplZDogICAgeWVzCj4+Pj4+Pj4+ICAgICAgYXV0aGVudGlj
-YXRlZDogICAgeWVzCj4+Pj4+Pj4+ICAgICAgcHJlYW1ibGU6ICAgIGxvbmcKPj4+Pj4+Pj4gICAg
-ICBXTU0vV01FOiAgICB5ZXMKPj4+Pj4+Pj4gICAgICBNRlA6ICAgICAgICBubwo+Pj4+Pj4+PiAg
-ICAgIFRETFMgcGVlcjogICAgbm8KPj4+Pj4+Pj4gICAgICBjb25uZWN0ZWQgdGltZTogICAgMzE2
-OSBzZWNvbmRzCj4+Pj4+Pj4+Cj4+Pj4+Pj4+Cj4+Pj4+Pj4+IGNvbmZpZyBjb21tYW5kczoKPj4+
-Pj4+Pj4KPj4+Pj4+Pj4gaWZjb25maWcgd2xhbjIgZG93bgo+Pj4+Pj4+PiBpdyB3bGFuMiBzZXQg
-dHlwZSBpYnNzCj4+Pj4+Pj4+IGlmY29uZmlnIHdsYW4yIHVwCj4+Pj4+Pj4+IGlmY29uZmlnIHds
-YW4yIDEwLjIuMS43IG5ldG1hc2sgMjU1LjI1NS4yNTUuMAo+Pj4+Pj4+PiBpdyB3bGFuMiBpYnNz
-IGpvaW4gU0MyMjZTQzIyNyA1MjQwIDgwTUh6Cj4+Pj4+Pj4+Cj4+Pj4+Pj4+IGlwZXJmOgo+Pj4+
-Pj4+PiByb290QHNjMjI3Oi9ob21lL21vbmV0IyBpcGVyZiAtYyAxMC4yLjEuNgo+Pj4+Pj4+PiAt
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KPj4+Pj4+Pj4gQ2xpZW50IGNvbm5lY3RpbmcgdG8gMTAuMi4xLjYsIFRDUCBwb3J0IDUwMDEK
-Pj4+Pj4+Pj4gVENQIHdpbmRvdyBzaXplOiA4NS4wIEtCeXRlIChkZWZhdWx0KQo+Pj4+Pj4+PiAt
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KPj4+Pj4+Pj4gWyAgM10gbG9jYWwgMTAuMi4xLjcgcG9ydCA0ODU0OCBjb25uZWN0ZWQgd2l0
-aCAxMC4yLjEuNiBwb3J0IDUwMDEKPj4+Pj4+Pj4gWyBJRF0gSW50ZXJ2YWwgICAgICAgVHJhbnNm
-ZXIgICAgIEJhbmR3aWR0aAo+Pj4+Pj4+PiBbICAzXSAgMC4wLTEwLjAgc2VjICAzMy4xIE1CeXRl
-cyAgMjcuNyBNYml0cy9zZWMKPj4+Pj4+Pj4KPj4+Pj4+Pj4gX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+Pj4+Pj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+
-Pj4+Pj4+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+Pj4+Pj4+PiBodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+Pj4+Pj4+Cj4+Pj4+Pj4KPj4+
-Pj4+Cj4+Pj4+Cj4+Pj4+Cj4+Pj4KPj4+Cj4+Pgo+Pgo+Cj4KCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+Christian Lamparter <chunkeey@googlemail.com> writes:
+
+> On Sunday, April 24, 2016 01:16:11 AM David Hutchison wrote:
+>> I spoke too soon:
+>> https://pci-ids.ucw.cz/read/PC/168c/0050
+>> 
+>> It is the QCA9887, so it's definitely on the PCIe bus and is being
+>> seen.
+>
+> Does ath10k support the QCA9887? I see no entry for this pci-id (168c:0050)
+> in ath10k's pci table [0] and there's no definition of it in the hardware
+> header either [1]. The chip-id is also not present. I CC'ed ath10k, since
+> this seems to be a new chip that might be easy to add.
+
+Currently ath10k does not support QCA9887.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
