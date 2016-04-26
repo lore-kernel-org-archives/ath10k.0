@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aux3O-0007uW-1Z
- for ath10k@lists.infradead.org; Tue, 26 Apr 2016 07:05:03 +0000
-Message-ID: <1461654272.16188.4.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] ath10k: remove VHT capabilities from 2.4GHz
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 26 Apr 2016 09:04:32 +0200
-In-Reply-To: <5718EE7A.4030503@candelatech.com>
- (sfid-20160421_171514_734039_B1F3CF8F)
-References: <1461244669-19871-1-git-send-email-kvalo@qca.qualcomm.com>
- <5718EE7A.4030503@candelatech.com> (sfid-20160421_171514_734039_B1F3CF8F)
-Mime-Version: 1.0
+ id 1auxIn-0008Nn-DA
+ for ath10k@lists.infradead.org; Tue, 26 Apr 2016 07:20:57 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [OpenWrt-Devel] How to initialize multiple phy radios
+Date: Tue, 26 Apr 2016 07:20:32 +0000
+Message-ID: <8760v425vl.fsf@kamboji.qca.qualcomm.com>
+References: <CA+i30h-5GCJ0h9REAJE8TCdxNQDe8Sa=Fs=gbxpHEW3fOY-hMw@mail.gmail.com>
+ <87potd3e9j.fsf@kamboji.qca.qualcomm.com>
+ <CA+i30h9cNRQkMWfCXXgTgv8GVVPny8NkbUUAK6e-roPfRHaNGg@mail.gmail.com>
+ <112436203.W4fT509tru@debian64>
+In-Reply-To: <112436203.W4fT509tru@debian64> (Christian Lamparter's message of
+ "Mon, 25 Apr 2016 21:01:04 +0200")
+Content-Language: en-US
+Content-ID: <6E8CDE377D469B4DAC0051C61D9AC87F@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +28,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Christian Lamparter <chunkeey@googlemail.com>
+Cc: David Hutchison <dhutchison@bluemesh.net>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Thu, 2016-04-21 at 08:15 -0700, Ben Greear wrote:
+Christian Lamparter <chunkeey@googlemail.com> writes:
 
-> The thing is, it actually works just fine with the patch I posted
-> to fix mac80211, and at any rate, even if the mac80211 patch isn't
-> applied, the ath10k driver works just fine in HT mode.
+> Hello,
+>
+> On Monday, April 25, 2016 10:53:41 AM David Hutchison wrote:
+>> So with some modifications to pci.c, hw.h and core.c I was able to get
+>> the radio initialized! :)
+>
+> Hey, that's nice! Can you make and post a patch for that? 
+> I'm sure if it's just a matter of adding the new pci and chip
+> ids to the tables. You could just go ahead and post it, so it
+> will be picked up.
 
-This patch has no implications on HT, and I wasn't planning on applying
-the mac80211 patch.
+But remember that the basic functionality should somewhat work before we
+add the ids to ath10k. The hardware support doesn't need to be perfect
+but we should not enable something which is brokend and would just waste
+users time.
 
-As I said, I have no objections to doing the (Broadcom) vendor specific
-IEs for "VHT" in 2.4 GHz band, but I don't think we should advertise
-the spec IEs when they're explicitly specified to be used only in the
-5.2 GHz band.
-
-johannes
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
