@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1av5SD-0002Kb-P8
- for ath10k@lists.infradead.org; Tue, 26 Apr 2016 16:03:14 +0000
-From: <akolli@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix kernel panic,
- move arvifs list head init before htt init
-Date: Tue, 26 Apr 2016 21:35:48 +0530
-Message-ID: <1461686748-862-1-git-send-email-akolli@qti.qualcomm.com>
+ id 1av6Dz-0001qI-Hn
+ for ath10k@lists.infradead.org; Tue, 26 Apr 2016 16:52:35 +0000
+Message-ID: <571F9C90.9040205@codeaurora.org>
+Date: Tue, 26 Apr 2016 09:51:28 -0700
+From: Peter Oh <poh@codeaurora.org>
 MIME-Version: 1.0
+Subject: Re: enable 802.11h and 802.11d in IBSS mode
+References: <571F60DE.2010705@cttc.cat>
+In-Reply-To: <571F60DE.2010705@cttc.cat>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,73 +18,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wireless@vger.kernel.org, stable@vger.kernel.org
+To: "Jose Nunez-Martinez (CTTC)" <jose.nunez@cttc.cat>, ath10k@lists.infradead.org
 
-From: Anilkumar Kolli <akolli@qti.qualcomm.com>
 
-It is observed that while loading and unloading ath10k modules
-in an infinite loop, before ath10k_core_start() completion HTT
-rx frames are received, while processing these frames,
-dereferencing the arvifs list code is getting hit before
-initilizing the arvifs list, causing a kernel panic.
+On 04/26/2016 05:36 AM, Jose Nunez-Martinez (CTTC) wrote:
+> Hi all,
+> I'm using ath10k in IBSS with 2 wireless cards based on qca988x.
+> How can I enable DFS (802.11h AND 802.11d) in IBSS mode (I mean 
+> there's not hostapd.conf file)?
+>
+As I understand, IBSS is using wpa_supplicant and wpa_supplicant does 
+not have DFS feature at this moment.
 
-This patch initilizes the arvifs list before initilizing htt.
-
-Fixes the below issue:
- [<bf88b058>] (ath10k_htt_rx_pktlog_completion_handler+0x278/0xd08 [ath10k_core])
- [<bf88b058>] (ath10k_htt_rx_pktlog_completion_handler [ath10k_core])
- [<bf88c0dc>] (ath10k_htt_txrx_compl_task+0x5f4/0xeb0 [ath10k_core])
- [<bf88c0dc>] (ath10k_htt_txrx_compl_task [ath10k_core])
- [<c0234100>] (tasklet_action+0x8c/0xec)
- [<c0234100>] (tasklet_action)
- [<c02337c0>] (__do_softirq+0xf8/0x228)
- [<c02337c0>] (__do_softirq)  [<c0233920>] (run_ksoftirqd+0x30/0x90)
- Code: e5954ad8 e2899008 e1540009 0a00000d (e5943008)
- ---[ end trace 71de5c2e011dbf56 ]---
- Kernel panic - not syncing: Fatal exception in interrupt
-
-Fixes: 500ff9f9389d ("ath10k: implement chanctx API")
-Cc: stable@vger.kernel.org
-
-Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index b2c7fe3d30a4..83e02f292828 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1822,6 +1822,10 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 		goto err_hif_stop;
- 	}
- 
-+	ar->free_vdev_map = (1LL << ar->max_num_vdevs) - 1;
-+
-+	INIT_LIST_HEAD(&ar->arvifs);
-+
- 	/* we don't care about HTT in UTF mode */
- 	if (mode == ATH10K_FIRMWARE_MODE_NORMAL) {
- 		status = ath10k_htt_setup(&ar->htt);
-@@ -1835,10 +1839,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 	if (status)
- 		goto err_hif_stop;
- 
--	ar->free_vdev_map = (1LL << ar->max_num_vdevs) - 1;
--
--	INIT_LIST_HEAD(&ar->arvifs);
--
- 	return 0;
- 
- err_hif_stop:
--- 
-1.7.9.5
-
+Thanks,
+Peter
 
 _______________________________________________
 ath10k mailing list
