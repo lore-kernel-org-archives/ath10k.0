@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1av1kg-0004OE-Ua
- for ath10k@lists.infradead.org; Tue, 26 Apr 2016 12:06:06 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: release pre_cal_file while unloading driver
-Date: Tue, 26 Apr 2016 12:05:26 +0000
-Message-ID: <87inz4y3qy.fsf@kamboji.qca.qualcomm.com>
-References: <1461660217-23046-1-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1461660217-23046-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Tue, 26 Apr 2016 14:13:37 +0530")
-Content-Language: en-US
-Content-ID: <2E96701BBEB29F4293219CAECF2C0DD6@qualcomm.com>
+ id 1av1zZ-0005Oq-8b
+ for ath10k@lists.infradead.org; Tue, 26 Apr 2016 12:21:26 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id u206so4589541wme.1
+ for <ath10k@lists.infradead.org>; Tue, 26 Apr 2016 05:21:04 -0700 (PDT)
+Date: Tue, 26 Apr 2016 05:21:01 -0700 (PDT)
+From: Christian Lamparter <chunkeey@googlemail.com>
+Subject: Re: [OpenWrt-Devel] How to initialize multiple phy radios
+Message-ID: <2910322.5mKxx5TJEB@debian64>
+In-Reply-To: <8760v425vl.fsf@kamboji.qca.qualcomm.com>
+References: <CA+i30h-5GCJ0h9REAJE8TCdxNQDe8Sa=Fs=gbxpHEW3fOY-hMw@mail.gmail.com>
+ <112436203.W4fT509tru@debian64> <8760v425vl.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,26 +25,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: David Hutchison <dhutchison@bluemesh.net>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+On Tuesday, April 26, 2016 07:20:32 AM Valo, Kalle wrote:
+> Christian Lamparter <chunkeey@googlemail.com> writes:
+> > On Monday, April 25, 2016 10:53:41 AM David Hutchison wrote:
+> >> So with some modifications to pci.c, hw.h and core.c I was able to get
+> >> the radio initialized! :)
+> >
+> > Hey, that's nice! Can you make and post a patch for that? 
+> > I'm sure if it's just a matter of adding the new pci and chip
+> > ids to the tables. You could just go ahead and post it, so it
+> > will be picked up.
+> > [...] Editing...
+> > Does the device work? Can you scan for networks, connect to networks
+> > and create networks? That would be good to know.
+        ^^^^
 
-> Failing to release pre_cal_file caldata on deinit causes memory leak.
->
-> Fixes: b131129d9657 ("ath10k: fix calibration init sequence of qca99x0")
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> But remember that the basic functionality should somewhat work before we
+> add the ids to ath10k. The hardware support doesn't need to be perfect
+> but we should not enable something which is brokend and would just waste
+> users time.
+Don't worry about that, I did include the highlighted sentence in the previous
+mail as well (seems like it was lost during editing - readded it). 
 
-Doesn't apply, please rebase.
+Anyway, I think David will figure out what's working and what isn't and will
+let ath10k-devel know about it. 
+it.
 
-Applying: ath10k: release pre_cal_file while unloading driver
-fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/core.c).
-Repository lacks necessary blobs to fall back on 3-way merge.
-Cannot fall back to three-way merge.
-Patch failed at 0001 ath10k: release pre_cal_file while unloading driver
+Regards,
+Christian
 
--- 
-Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
