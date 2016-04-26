@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1av1Zt-0003BM-LG
- for ath10k@lists.infradead.org; Tue, 26 Apr 2016 11:54:54 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1av1iG-0002SW-M7
+ for ath10k@lists.infradead.org; Tue, 26 Apr 2016 12:03:33 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 4/4] ath10k: update bss channel survey information
-Date: Tue, 26 Apr 2016 11:53:57 +0000
-Message-ID: <87r3dsy4a4.fsf@kamboji.qca.qualcomm.com>
-References: <1461303992-9913-1-git-send-email-rmanohar@qti.qualcomm.com>
- <1461303992-9913-4-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1461303992-9913-4-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Fri, 22 Apr 2016 11:16:32 +0530")
+Subject: Re: [PATCH v2] ath10k: remove VHT capabilities from 2.4GHz
+Date: Tue, 26 Apr 2016 12:03:03 +0000
+Message-ID: <87mvogy3ux.fsf@kamboji.qca.qualcomm.com>
+References: <1461244669-19871-1-git-send-email-kvalo@qca.qualcomm.com>
+ <5718EE7A.4030503@candelatech.com>
+ <1461654272.16188.4.camel@sipsolutions.net>
+In-Reply-To: <1461654272.16188.4.camel@sipsolutions.net> (Johannes Berg's
+ message of "Tue, 26 Apr 2016 09:04:32 +0200")
 Content-Language: en-US
-Content-ID: <4CC807872B29124CB8D22BB115E2E7DC@qualcomm.com>
+Content-ID: <7D9B0A4276272E4C96FC51F8ED0271A6@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,38 +27,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Johannes Berg <johannes@sipsolutions.net> writes:
 
-> During hw scan, firmware sends two channel information events (pre-
-> complete, complete) to host for each channel change. The snap shot of cycle
-> counters (rx_clear and total) between these two events are given for
-> survey dump. In order to get latest survey statistics of all channels, a
-> scan request has to be issued. In general, an AP DUT is brought up, it
-> won't leave BSS channel except few cases like overlapping bss or radar
-> detection. So survey statistics of bss channel is always referring to
-> older data that are collected before starting AP (either ACS/OBSS scan).
+> On Thu, 2016-04-21 at 08:15 -0700, Ben Greear wrote:
 >
-> To collect latest survey information from target, firmware provides WMI
-> interface to read cycle counters from hardware. For each survey dump
-> request, BSS channel cycle counters are read and cleared in hardware.
-> This makes sure that behavior is in align with ath9k survey report.
-> So survey dump always gives snap shot of cycle counters b/w two survey
-> requests.
+>> The thing is, it actually works just fine with the patch I posted
+>> to fix mac80211, and at any rate, even if the mac80211 patch isn't
+>> applied, the ath10k driver works just fine in HT mode.
 >
-> Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> This patch has no implications on HT, and I wasn't planning on applying
+> the mac80211 patch.
 
-This patch adds new sparse warnings:
+Yeah, makes sense. I'm planning to apply this soon.
 
-drivers/net/wireless/ath/ath10k/wmi.c:4824:33: warning: incorrect type in argument 2 (different base types)
-drivers/net/wireless/ath/ath10k/wmi.c:4824:33:    expected int [signed] freq
-drivers/net/wireless/ath/ath10k/wmi.c:4824:33:    got restricted __le32 [usertype] freq
-drivers/net/wireless/ath/ath10k/wmi.c:4833:27: warning: incorrect type in assignment (different base types)
-drivers/net/wireless/ath/ath10k/wmi.c:4833:27:    expected signed char [signed] [usertype] [explicitly-signed] noise
-drivers/net/wireless/ath/ath10k/wmi.c:4833:27:    got restricted __le32 [usertype] noise_floor
+> As I said, I have no objections to doing the (Broadcom) vendor specific
+> IEs for "VHT" in 2.4 GHz band, but I don't think we should advertise
+> the spec IEs when they're explicitly specified to be used only in the
+> 5.2 GHz band.
+
+But we really should have this, any volunteers? :) I think it shouldn't
+be too hard to do so this would be a good project for someone looking
+for a simple, but useful, task on wireless stack.
 
 -- 
 Kalle Valo
