@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1av467-0006Sz-50
- for ath10k@lists.infradead.org; Tue, 26 Apr 2016 14:36:20 +0000
-Message-ID: <571F7CB7.9090601@candelatech.com>
-Date: Tue, 26 Apr 2016 07:35:35 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1av4rc-0004XL-7h
+ for ath10k@lists.infradead.org; Tue, 26 Apr 2016 15:25:25 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Move spectral related structures under ath10k debugfs
+Date: Tue, 26 Apr 2016 20:54:36 +0530
+Message-ID: <1461684276-4042-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: QCA99XX with MU-MIMO and beamforming?
-References: <571E7E8F.1010404@candelatech.com>
- <CA+BoTQke1auNL1-oPN-N9=e9K5vit0w2iJSS9KuXEifR7hqm6Q@mail.gmail.com>
-In-Reply-To: <CA+BoTQke1auNL1-oPN-N9=e9K5vit0w2iJSS9KuXEifR7hqm6Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,64 +16,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, kvalo@codeaurora.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
+Spectral related structures are accessed / modified only if ath10k
+debugfs is enabled, so it makes more sense to move them under
+ATH10K_DEBUGFS
 
-On 04/25/2016 11:16 PM, Michal Kazior wrote:
-> On 25 April 2016 at 22:31, Ben Greear <greearb@candelatech.com> wrote:
->> Has anyone tried this?  Looks like hostapd has the ability to set the
->> feature flags, but I am not sure if it is really working in ath10k?
->
-> Yes, it works. You need a few vht_capabs. I have mine like this:
->
->   > vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][SU-BEAMFORMER][SU-BEAMFORMEE][MU-BEAMFORMER][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN][BF-ANTENNA-4][MAX-MPDU-11454][RX-STBC-1][MAX-A-MPDU-LEN-EXP7]
->
-> The SU-, MU- and BF- are the required part only I think.
->
->
->>
->> Do you actually need anything other than standard whip antenna to
->> allow this to function properly?
->
-> I don't think. FWIW Make sure the antennas are reasonably set
-> up/separated from each other. If you cram them too tight/randomly
-> beamforming won't work efficiently. I had problem with client antennas
-> being too close to each other and lying flat on a table (I than made a
-> foam-stand and put them a few cm apart) so the same thing must apply
-> to AP as well.
->
->
->>
->> What about station mode?
->
-> Works as well. Both on QCA99XX and QCA9377.
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+[compile tested disabling ATH10K_DEBUGFS]
 
-Thanks for the info.  How did you determine that it actually worked?
+ drivers/net/wireless/ath/ath10k/core.h |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-My understanding is that the QCA99XX should be able to simultaneously
-transmit a 2x2 frame to one peer and another 2x2 frame to a second peer,
-but seems that would be hard to verify.
-
-Maybe just look for full-ish 2x2 throughput two two different 2x2 peers?
-
-And, maybe there are some management frames to sniff for?
-
-And finally, could you let me know the model number of your QCA9377 device?  I'd like
-to get some for testing...
-
-Thanks,
-Ben
-
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index c23c373..48fffef 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -868,8 +868,6 @@ struct ath10k {
+ 
+ #ifdef CONFIG_ATH10K_DEBUGFS
+ 	struct ath10k_debug debug;
+-#endif
+-
+ 	struct {
+ 		/* relay(fs) channel for spectral scan */
+ 		struct rchan *rfs_chan_spec_scan;
+@@ -878,6 +876,7 @@ struct ath10k {
+ 		enum ath10k_spectral_mode mode;
+ 		struct ath10k_spec_scan config;
+ 	} spectral;
++#endif
+ 
+ 	struct {
+ 		/* protected by conf_mutex */
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
