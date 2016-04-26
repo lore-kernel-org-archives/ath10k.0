@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail1.g8.pair.com ([66.39.4.88])
+Received: from rudy.puc.rediris.es ([2001:720:418:ca01::132])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1av92k-0001ZK-AJ
- for ath10k@lists.infradead.org; Tue, 26 Apr 2016 19:53:11 +0000
-Mime-Version: 1.0 (Mac OS X Mail 9.2 \(3112\))
-Subject: Re: QCA6174 firmware crash
-From: Michael Ney <neym@vorklift.com>
-In-Reply-To: <CA+BoTQkfQPBnm3Nctn1hzkhorBdbCJhhp4GgH3hTYTRryOvuSg@mail.gmail.com>
-Date: Tue, 26 Apr 2016 15:52:48 -0400
-Message-Id: <8AB0F990-69B6-4E38-816D-03EADDEA71CA@vorklift.com>
-References: <FEB50C50-4C7B-441A-A9E4-90D7E02C9939@vorklift.com>
- <CA+BoTQkfQPBnm3Nctn1hzkhorBdbCJhhp4GgH3hTYTRryOvuSg@mail.gmail.com>
+ id 1av9Eq-0000wy-OJ
+ for ath10k@lists.infradead.org; Tue, 26 Apr 2016 20:05:41 +0000
+Subject: Re: enable 802.11h and 802.11d in IBSS mode
+References: <571F60DE.2010705@cttc.cat> <571F9C90.9040205@codeaurora.org>
+From: =?UTF-8?B?Sm9zZSBOw7rDsWV6LU1hcnTDrW5leiAoQ1RUQyk=?=
+ <jose.nunez@cttc.cat>
+Message-ID: <571FC9F8.9050209@cttc.cat>
+Date: Tue, 26 Apr 2016 22:05:12 +0200
+MIME-Version: 1.0
+In-Reply-To: <571F9C90.9040205@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,33 +19,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Peter Oh <poh@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-TWljaGFsLAoKSSdtIHVzaW5nIEJhY2twb3J0cyA0LjIuIEkgYWRkZWQgdGhhdCBwYXRjaCBhbmQg
-bm8gY2hhbmdlIHRvIHRoZSBjcmFzaC4gVGhhdCBwYXRjaCBjaGFuZ2VkIHRoZSBUWCBOU1MgY29u
-ZmlnLCBidXQgZGlkbid0IGRvIGFueXRoaW5nIHdpdGggdGhlIFJYLiBJIGNhbiB3YXRjaCBrZXJu
-ZWwgbG9nIGFuZCBzZWUgdGhhdCB0aGUgY3Jhc2ggaGFwcGVucyBpbW1lZGlhdGVseSB3aGVuIEkg
-c2VuZCB0aGUgTnVsbCBEYXRhIC8gUU9TIE51bGwgRGF0YSB3aXRoIGFueSBvZiB0aGUgQ0YgYXR0
-cmlidXRlcywgc28gaXQncyBkZWZpbml0ZWx5IG9uIFJYLiBBbGwgb3RoZXIgZnJhbWUgdHlwZXMg
-d29yayBmaW5lLgoKVGhhbmtzLAoKTWljaGFlbAoKCgo+IE9uIEFwciAyNiwgMjAxNiwgYXQgMjow
-OCBBTSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+IAo+
-IE9uIDI1IEFwcmlsIDIwMTYgYXQgMjI6MzUsIE1pY2hhZWwgTmV5IDxuZXltQHZvcmtsaWZ0LmNv
-bT4gd3JvdGU6Cj4+IEhlbGxvLAo+PiAKPj4gSSByYW4gaW50byBhIGNyYXNoIHdpdGggdGhlIFFD
-QTYxNzQgZmlybXdhcmUgYW5kIEkgd2FzIGhvcGluZyBzb21lb25lIGtuZXcgYSBzb2x1dGlvbiB0
-byBpdCBvciBjb3VsZCBwYXNzIGl0IG9uIHRvIFF1YWxjb21tIEF0aGVyb3MgdG8gYmUgcmVzb2x2
-ZWQuCj4+IAo+PiBUaGUgaGFyZHdhcmUgdmVyc2lvbiBpcyBRQ0E2MTc0IEhXIDIuMQo+PiAKPj4g
-VGhlIGZpcm13YXJlIHZlcnNpb24gSSBhbSB1c2luZyBpcyBTV19STS4xLjEuMS0wMDE1Ny1RQ0FS
-TVNXUFotMSAodGhlIHNhbWUgdmVyc2lvbiBhdmFpbGFibGUgZm9yIGRvd25sb2FkIGZyb20gS2Fs
-bGUgVmFsbydzIGdpdCBmb3IgUUNBNjE3NCBIVyAyLjEpLgo+PiAKPj4gVGhlIGNyYXNoIG9jY3Vy
-cyB3aGVuIHJlY2VpdmluZyBjZXJ0YWluIGZyYW1lIHR5cGVzLgo+IFsuLi5dCj4gCj4gV2hhdCBr
-ZXJuZWwgdmVyc2lvbiBhcmUgeW91IHVzaW5nPyBEbyB5b3UgaGF2ZSB0aGlzIHBhdGNoWzFdIGFw
-cGxpZWQ/Cj4gSWYgbm90LCBjYW4geW91IHRyeSBpdCwgcGxlYXNlPwo+IAo+IFsxXTogaHR0cHM6
-Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC84NDgxMjgxLwo+IAo+IAo+IAo+IE1pY2hhxYIK
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+I'm not using wpa_supplicant. I'm directly using "iw" commands to =
+
+configure the wireless cards.
+
+Regards,
+Jose
+
+On 04/26/2016 06:51 PM, Peter Oh wrote:
+>
+> On 04/26/2016 05:36 AM, Jose Nunez-Martinez (CTTC) wrote:
+>> Hi all,
+>> I'm using ath10k in IBSS with 2 wireless cards based on qca988x.
+>> How can I enable DFS (802.11h AND 802.11d) in IBSS mode (I mean =
+
+>> there's not hostapd.conf file)?
+>>
+> As I understand, IBSS is using wpa_supplicant and wpa_supplicant does =
+
+> not have DFS feature at this moment.
+>
+> Thanks,
+> Peter
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+-- =
+
+Jose N=FA=F1ez-Mart=EDnez, PhD
+Senior Researcher   email: jose.nunez@cttc.cat
+COMNET Division     Web: http://networks.cttc.cat
+
+Centre Tecnol=F2gic de Telecomunicacions de Catalunya (CTTC)
+Parc Mediterrani de la Tecnologia
+Av. Carl Friedrich Gauss, 7                Ph.:+34 936452927
+08860 Castelldefels - Barcelona            Fax: +34 936452901
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
