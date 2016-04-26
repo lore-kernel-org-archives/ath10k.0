@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1av8lF-0001rY-GV
- for ath10k@lists.infradead.org; Tue, 26 Apr 2016 19:35:05 +0000
-Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id AB34D40A339
- for <ath10k@lists.infradead.org>; Tue, 26 Apr 2016 12:34:22 -0700 (PDT)
-From: Ben Greear <greearb@candelatech.com>
-Subject: QCA99XX, IBSS, and no transmitted frames?
-Message-ID: <571FC2BD.6080602@candelatech.com>
-Date: Tue, 26 Apr 2016 12:34:21 -0700
-MIME-Version: 1.0
+Received: from mail1.g8.pair.com ([66.39.4.88])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1av92k-0001ZK-AJ
+ for ath10k@lists.infradead.org; Tue, 26 Apr 2016 19:53:11 +0000
+Mime-Version: 1.0 (Mac OS X Mail 9.2 \(3112\))
+Subject: Re: QCA6174 firmware crash
+From: Michael Ney <neym@vorklift.com>
+In-Reply-To: <CA+BoTQkfQPBnm3Nctn1hzkhorBdbCJhhp4GgH3hTYTRryOvuSg@mail.gmail.com>
+Date: Tue, 26 Apr 2016 15:52:48 -0400
+Message-Id: <8AB0F990-69B6-4E38-816D-03EADDEA71CA@vorklift.com>
+References: <FEB50C50-4C7B-441A-A9E4-90D7E02C9939@vorklift.com>
+ <CA+BoTQkfQPBnm3Nctn1hzkhorBdbCJhhp4GgH3hTYTRryOvuSg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +19,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Just curious if anyone has any ideas...I've been staring that this one
-for days without much luck...
-
-Test case is to bring up two 9990 NICs, using my kernel and firmware, and
-then run 56kbps UDP traffic bi-directional.
-
-It works for a bit, and then I see a case where one side cannot seem
-to answer ARP.  I still see beacons from it, and probe responses,
-and I see it receive ARP and try to respond at the netdev level.
-
-But, when sniffing the air, I do not see any ARP response on the air.
-I've tried verifying the rate-ctrl logic is right and all of that.
-
-Unless I'm really missing something, this is a firmware issue.
-
-Any suggestions for what might be the issue?  Anyone else see problems
-where 9990 NICs go selectively silent on transmit?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+TWljaGFsLAoKSSdtIHVzaW5nIEJhY2twb3J0cyA0LjIuIEkgYWRkZWQgdGhhdCBwYXRjaCBhbmQg
+bm8gY2hhbmdlIHRvIHRoZSBjcmFzaC4gVGhhdCBwYXRjaCBjaGFuZ2VkIHRoZSBUWCBOU1MgY29u
+ZmlnLCBidXQgZGlkbid0IGRvIGFueXRoaW5nIHdpdGggdGhlIFJYLiBJIGNhbiB3YXRjaCBrZXJu
+ZWwgbG9nIGFuZCBzZWUgdGhhdCB0aGUgY3Jhc2ggaGFwcGVucyBpbW1lZGlhdGVseSB3aGVuIEkg
+c2VuZCB0aGUgTnVsbCBEYXRhIC8gUU9TIE51bGwgRGF0YSB3aXRoIGFueSBvZiB0aGUgQ0YgYXR0
+cmlidXRlcywgc28gaXQncyBkZWZpbml0ZWx5IG9uIFJYLiBBbGwgb3RoZXIgZnJhbWUgdHlwZXMg
+d29yayBmaW5lLgoKVGhhbmtzLAoKTWljaGFlbAoKCgo+IE9uIEFwciAyNiwgMjAxNiwgYXQgMjow
+OCBBTSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+IAo+
+IE9uIDI1IEFwcmlsIDIwMTYgYXQgMjI6MzUsIE1pY2hhZWwgTmV5IDxuZXltQHZvcmtsaWZ0LmNv
+bT4gd3JvdGU6Cj4+IEhlbGxvLAo+PiAKPj4gSSByYW4gaW50byBhIGNyYXNoIHdpdGggdGhlIFFD
+QTYxNzQgZmlybXdhcmUgYW5kIEkgd2FzIGhvcGluZyBzb21lb25lIGtuZXcgYSBzb2x1dGlvbiB0
+byBpdCBvciBjb3VsZCBwYXNzIGl0IG9uIHRvIFF1YWxjb21tIEF0aGVyb3MgdG8gYmUgcmVzb2x2
+ZWQuCj4+IAo+PiBUaGUgaGFyZHdhcmUgdmVyc2lvbiBpcyBRQ0E2MTc0IEhXIDIuMQo+PiAKPj4g
+VGhlIGZpcm13YXJlIHZlcnNpb24gSSBhbSB1c2luZyBpcyBTV19STS4xLjEuMS0wMDE1Ny1RQ0FS
+TVNXUFotMSAodGhlIHNhbWUgdmVyc2lvbiBhdmFpbGFibGUgZm9yIGRvd25sb2FkIGZyb20gS2Fs
+bGUgVmFsbydzIGdpdCBmb3IgUUNBNjE3NCBIVyAyLjEpLgo+PiAKPj4gVGhlIGNyYXNoIG9jY3Vy
+cyB3aGVuIHJlY2VpdmluZyBjZXJ0YWluIGZyYW1lIHR5cGVzLgo+IFsuLi5dCj4gCj4gV2hhdCBr
+ZXJuZWwgdmVyc2lvbiBhcmUgeW91IHVzaW5nPyBEbyB5b3UgaGF2ZSB0aGlzIHBhdGNoWzFdIGFw
+cGxpZWQ/Cj4gSWYgbm90LCBjYW4geW91IHRyeSBpdCwgcGxlYXNlPwo+IAo+IFsxXTogaHR0cHM6
+Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC84NDgxMjgxLwo+IAo+IAo+IAo+IE1pY2hhxYIK
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
