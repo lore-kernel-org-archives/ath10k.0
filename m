@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from rudy.puc.rediris.es ([2001:720:418:ca01::132])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1av2FM-000576-Cd
- for ath10k@lists.infradead.org; Tue, 26 Apr 2016 12:37:45 +0000
-Received: from [2001:40b0:7c22:6020:f801:1ea7:5316:eb39] (helo=leo)
- by rudy.puc.rediris.es with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
- (Exim 4.80) (envelope-from <jose.nunez@cttc.cat>) id 1av2Ev-0007pw-SW
- for ath10k@lists.infradead.org; Tue, 26 Apr 2016 14:37:19 +0200
-Received: from [10.1.16.14] (pcjnunez.cttc.es [10.1.16.14])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by leo (Postfix) with ESMTPSA id 54EA71FE36
- for <ath10k@lists.infradead.org>; Tue, 26 Apr 2016 14:36:44 +0200 (CEST)
-From: =?UTF-8?B?Sm9zZSBOw7rDsWV6LU1hcnTDrW5leiAoQ1RUQyk=?=
- <jose.nunez@cttc.cat>
-Subject: enable 802.11h and 802.11d in IBSS mode
-Message-ID: <571F60DE.2010705@cttc.cat>
-Date: Tue, 26 Apr 2016 14:36:46 +0200
+Received: from msr14.hinet.net ([168.95.4.114])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1av2oQ-0003vA-GA
+ for ath10k@lists.infradead.org; Tue, 26 Apr 2016 13:13:59 +0000
+Received: from [192.168.3.101] (1-163-210-248.dynamic.hinet.net
+ [1.163.210.248])
+ by msr14.hinet.net (8.14.9/8.14.9) with ESMTP id u3QBI3SW020628
+ for <ath10k@lists.infradead.org>; Tue, 26 Apr 2016 19:18:05 +0800 (CST)
+From: horse <horse@gentrice.net>
+Subject: IBSS mode with DFS function
+Message-ID: <571F4E6A.2010504@gentrice.net>
+Date: Tue, 26 Apr 2016 19:18:02 +0800
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,18 +24,20 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-Hi all,
-I'm using ath10k in IBSS with 2 wireless cards based on qca988x.
-How can I enable DFS (802.11h AND 802.11d) in IBSS mode (I mean there's 
-not hostapd.conf file)?
+Hello,
 
-Kernel is 4.2.0+ from CT and firmware is 10.1.467-ct-com-full-014-96d543.
+Has anyone enable DFS function under IBSS mode?
+I tried 9880 with firmware 999.999.0.636.
+I can create ibss mode, however, i have no idea how to enable DFS at the 
+same time.
+Actually, it seems i can get into CAC time (no beacon send out), 
+however, after 60 seconds, beacon still not send out.
 
-Thanks,
-Jose
+Thanks
 
+Horse
 
 _______________________________________________
 ath10k mailing list
