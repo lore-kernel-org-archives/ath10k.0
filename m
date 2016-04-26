@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1auzXz-0000rU-AH
- for ath10k@lists.infradead.org; Tue, 26 Apr 2016 09:44:47 +0000
+ by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1av1Zt-0003BM-LG
+ for ath10k@lists.infradead.org; Tue, 26 Apr 2016 11:54:54 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: QCA99XX with MU-MIMO and beamforming?
-Date: Tue, 26 Apr 2016 09:44:03 +0000
-Message-ID: <878u00zov2.fsf@kamboji.qca.qualcomm.com>
-References: <571E7E8F.1010404@candelatech.com>
- <CA+BoTQke1auNL1-oPN-N9=e9K5vit0w2iJSS9KuXEifR7hqm6Q@mail.gmail.com>
-In-Reply-To: <CA+BoTQke1auNL1-oPN-N9=e9K5vit0w2iJSS9KuXEifR7hqm6Q@mail.gmail.com>	(Michal
- Kazior's message of "Tue, 26 Apr 2016 08:16:06 +0200")
+Subject: Re: [PATCH 4/4] ath10k: update bss channel survey information
+Date: Tue, 26 Apr 2016 11:53:57 +0000
+Message-ID: <87r3dsy4a4.fsf@kamboji.qca.qualcomm.com>
+References: <1461303992-9913-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <1461303992-9913-4-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1461303992-9913-4-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Fri, 22 Apr 2016 11:16:32 +0530")
 Content-Language: en-US
-Content-ID: <899F1F441A895245B45C85063E426A64@qualcomm.com>
+Content-ID: <4CC807872B29124CB8D22BB115E2E7DC@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,25 +26,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
+To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> On 25 April 2016 at 22:31, Ben Greear <greearb@candelatech.com> wrote:
->> Has anyone tried this?  Looks like hostapd has the ability to set the
->> feature flags, but I am not sure if it is really working in ath10k?
+> During hw scan, firmware sends two channel information events (pre-
+> complete, complete) to host for each channel change. The snap shot of cycle
+> counters (rx_clear and total) between these two events are given for
+> survey dump. In order to get latest survey statistics of all channels, a
+> scan request has to be issued. In general, an AP DUT is brought up, it
+> won't leave BSS channel except few cases like overlapping bss or radar
+> detection. So survey statistics of bss channel is always referring to
+> older data that are collected before starting AP (either ACS/OBSS scan).
 >
-> Yes, it works. You need a few vht_capabs. I have mine like this:
+> To collect latest survey information from target, firmware provides WMI
+> interface to read cycle counters from hardware. For each survey dump
+> request, BSS channel cycle counters are read and cleared in hardware.
+> This makes sure that behavior is in align with ath9k survey report.
+> So survey dump always gives snap shot of cycle counters b/w two survey
+> requests.
 >
->  > vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][SU-BEAMFORMER][SU-BEAMFORMEE][MU-BEAMFORMER][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN][BF-ANTENNA-4][MAX-MPDU-11454][RX-STBC-1][MAX-A-MPDU-LEN-EXP7]
->
-> The SU-, MU- and BF- are the required part only I think.
+> Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-If/when you have time, could you please mention something about this in
-the wiki:
+This patch adds new sparse warnings:
 
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/configuration#hostapd
+drivers/net/wireless/ath/ath10k/wmi.c:4824:33: warning: incorrect type in argument 2 (different base types)
+drivers/net/wireless/ath/ath10k/wmi.c:4824:33:    expected int [signed] freq
+drivers/net/wireless/ath/ath10k/wmi.c:4824:33:    got restricted __le32 [usertype] freq
+drivers/net/wireless/ath/ath10k/wmi.c:4833:27: warning: incorrect type in assignment (different base types)
+drivers/net/wireless/ath/ath10k/wmi.c:4833:27:    expected signed char [signed] [usertype] [explicitly-signed] noise
+drivers/net/wireless/ath/ath10k/wmi.c:4833:27:    got restricted __le32 [usertype] noise_floor
 
 -- 
 Kalle Valo
