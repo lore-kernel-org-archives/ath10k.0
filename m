@@ -1,23 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yw0-x244.google.com ([2607:f8b0:4002:c05::244])
+Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1avBek-0002WK-PJ
- for ath10k@lists.infradead.org; Tue, 26 Apr 2016 22:40:35 +0000
-Received: by mail-yw0-x244.google.com with SMTP id u62so5278722ywe.3
- for <ath10k@lists.infradead.org>; Tue, 26 Apr 2016 15:40:14 -0700 (PDT)
-Received: from darkstar.example.net ([161.0.247.253])
- by smtp.gmail.com with ESMTPSA id 35sm338909uax.16.2016.04.26.15.40.11
- for <ath10k@lists.infradead.org> (version=TLSv1/SSLv3 cipher=OTHER);
- Tue, 26 Apr 2016 15:40:12 -0700 (PDT)
-From: gloudon.jamie@gmail.com
-Date: Tue, 26 Apr 2016 18:40:03 -0400
-Subject: Missing QCA6174 card in board-2.bin
-Message-ID: <20160426224003.GA6906@darkstar.example.net>
-References: <CAE5PP10CJ=n8qghc4a1yi7TjdYU3b2C_-dxXFqyZWCLT8KmV0Q@mail.gmail.com>
- <CAE5PP11M+97YrMMW2uePi4caNZwiPN+QDdn9e1Nx9mNEBgNQ_w@mail.gmail.com>
+ id 1avHhb-0002y0-7X
+ for ath10k@lists.infradead.org; Wed, 27 Apr 2016 05:07:56 +0000
+Received: by mail-wm0-x22d.google.com with SMTP id e201so21873502wme.0
+ for <ath10k@lists.infradead.org>; Tue, 26 Apr 2016 22:07:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAE5PP11M+97YrMMW2uePi4caNZwiPN+QDdn9e1Nx9mNEBgNQ_w@mail.gmail.com>
+In-Reply-To: <571F4E6A.2010504@gentrice.net>
+References: <571F4E6A.2010504@gentrice.net>
+Date: Wed, 27 Apr 2016 07:07:31 +0200
+Message-ID: <CA+BoTQnLxHNscvJG0VCOojNW0eC0WAHMaV9x_HNToH=dkOnyfQ@mail.gmail.com>
+Subject: Re: IBSS mode with DFS function
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +20,21 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: horse <horse@gentrice.net>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hey,
-    The board-2.bin file is missing subsystem 168c:3344 for my qca6174
-hw ver 2.1. Does the kvalo's firmware repo requires an update?
- 
-Regards,
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjYgQXByaWwgMjAxNiBhdCAxMzoxOCwgaG9yc2UgPGhvcnNlQGdlbnRyaWNlLm5ldD4gd3Jv
+dGU6Cj4gSGVsbG8sCj4KPiBIYXMgYW55b25lIGVuYWJsZSBERlMgZnVuY3Rpb24gdW5kZXIgSUJT
+UyBtb2RlPwo+IEkgdHJpZWQgOTg4MCB3aXRoIGZpcm13YXJlIDk5OS45OTkuMC42MzYuCj4gSSBj
+YW4gY3JlYXRlIGlic3MgbW9kZSwgaG93ZXZlciwgaSBoYXZlIG5vIGlkZWEgaG93IHRvIGVuYWJs
+ZSBERlMgYXQgdGhlCj4gc2FtZSB0aW1lLgoKNjM2IGRvZXMgbm90IHN1cHBvcnQgREZTIGZyb20g
+SUlSQy4gT25seSAxMC54IGRvZXMgdGhhdCBidXQgb2ZmaWNpYWwKMTAueCBkb2Vzbid0IHN1cHBv
+cnQgSUJTUy4KCllvdSBwcm9iYWJseSB3YW50IHRvIGNoZWNrIEJlbidzIGZpcm13YXJlIGZvcms6
+CiAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20vYXRoMTBrLnBocAoKCk1pY2hhxYIKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
