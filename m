@@ -1,25 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1avM2I-0000CE-BJ
- for ath10k@lists.infradead.org; Wed, 27 Apr 2016 09:45:35 +0000
-Message-ID: <1461750305.3723.9.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] ath10k: remove VHT capabilities from 2.4GHz
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 27 Apr 2016 11:45:05 +0200
-In-Reply-To: <CABPxzYJz59wOXjK2fCK_Tp05g0g1FY+VWscFKz9fG+D1swZGBA@mail.gmail.com>
- (sfid-20160427_113746_741811_8AD5A5E1)
-References: <1461244669-19871-1-git-send-email-kvalo@qca.qualcomm.com>
- <5718EE7A.4030503@candelatech.com>
- <1461654272.16188.4.camel@sipsolutions.net>
- <87mvogy3ux.fsf@kamboji.qca.qualcomm.com>
- <CABPxzYL=sQg=HczxM3gdERHRD-3-KaOG455wsqjpZ6YZDkybmw@mail.gmail.com>
- <571FCB22.5000305@candelatech.com>
- <CABPxzY+UuCABUcFbV0EpdoRaSzpgGvMani_j7xvg2a=xh-Bw0g@mail.gmail.com>
- <20160427091653.GB4345@w1.fi>
- <CABPxzYJz59wOXjK2fCK_Tp05g0g1FY+VWscFKz9fG+D1swZGBA@mail.gmail.com>
- (sfid-20160427_113746_741811_8AD5A5E1)
-Mime-Version: 1.0
+ id 1avN6Z-0001OL-CY
+ for ath10k@lists.infradead.org; Wed, 27 Apr 2016 10:54:04 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2 1/4] ath10k: add pdev bss channel info wmi definitions
+Date: Wed, 27 Apr 2016 16:23:19 +0530
+Message-ID: <1461754402-7679-1-git-send-email-rmanohar@qti.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +16,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Krishna Chaitanya <chaitanya.mgit@gmail.com>, Jouni Malinen <j@w1.fi>
-Cc: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-T24gV2VkLCAyMDE2LTA0LTI3IGF0IDE1OjA3ICswNTMwLCBLcmlzaG5hIENoYWl0YW55YSB3cm90
-ZToKPsKgCj4gSWYgbWFueSB2ZW5kb3JzIG5lZWQgdGhpcyBzdXBwb3J0LCB0aGVuIG1hYzgwMjEx
-IGFwcHJhb2NoIHdvdWxkIGJlCj4gZ29vZC4gSWYgbm90LCB3ZSBzaG91bGQgc3RpY2sgdG8gZHJp
-dmVyIGFwcHJvYWNoLgoKVHJ5aW5nIHRvIGRvIHRoaXMgaW4gdGhlIGRyaXZlciBnZXRzIHByYWN0
-aWNhbGx5IGltcG9zc2libGUsIHNvIG5vLCBpdApyZWFsbHkgc2hvdWxkIGJlIGRvbmUgaW4gbWFj
-ODAyMTEgZWl0aGVyIHdheS4gRHJpdmVycyBoYXZlIHRvIG9wdCBpbiBieQpyZXBvcnRpbmcgVkhU
-IGNhcHMgZm9yIDIuNCBHSHosIGF0IHdoaWNoIHBvaW50IHdlIHNpbXBseSByZXZlcnQgdGhpcwpw
-YXRjaCwgYnV0IGdldCB0aGUgcmlnaHQgb3Zlci10aGUtYWlyIGJlaGF2aW91ci4KCmpvaGFubmVz
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Add WMI definitions for pdev bss channel information request and
+event.
+
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index db2553522d8b..40bd08d246af 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -1444,6 +1444,7 @@ enum wmi_10_2_cmd_id {
+ 	WMI_10_2_MU_CAL_START_CMDID,
+ 	WMI_10_2_SET_LTEU_CONFIG_CMDID,
+ 	WMI_10_2_SET_CCA_PARAMS,
++	WMI_10_2_PDEV_BSS_CHAN_INFO_REQUEST_CMDID,
+ 	WMI_10_2_PDEV_UTF_CMDID = WMI_10_2_END_CMDID - 1,
+ };
+ 
+@@ -1487,6 +1488,8 @@ enum wmi_10_2_event_id {
+ 	WMI_10_2_WDS_PEER_EVENTID,
+ 	WMI_10_2_PEER_STA_PS_STATECHG_EVENTID,
+ 	WMI_10_2_PDEV_TEMPERATURE_EVENTID,
++	WMI_10_2_MU_REPORT_EVENTID,
++	WMI_10_2_PDEV_BSS_CHAN_INFO_EVENTID,
+ 	WMI_10_2_PDEV_UTF_EVENTID = WMI_10_2_END_EVENTID - 1,
+ };
+ 
+@@ -2450,6 +2453,7 @@ enum wmi_10_2_feature_mask {
+ 	WMI_10_2_RX_BATCH_MODE = BIT(0),
+ 	WMI_10_2_ATF_CONFIG    = BIT(1),
+ 	WMI_10_2_COEX_GPIO     = BIT(3),
++	WMI_10_2_BSS_CHAN_INFO = BIT(6),
+ 	WMI_10_2_PEER_STATS    = BIT(7),
+ };
+ 
+-- 
+2.8.0
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
