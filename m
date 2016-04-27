@@ -1,13 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-yw0-x243.google.com ([2607:f8b0:4002:c05::243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1avN9T-0003bB-6f
- for ath10k@lists.infradead.org; Wed, 27 Apr 2016 10:57:03 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2] ath10k: release pre_cal_file while unloading driver
-Date: Wed, 27 Apr 2016 16:26:26 +0530
-Message-ID: <1461754586-7928-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1avNFM-0006kA-7f
+ for ath10k@lists.infradead.org; Wed, 27 Apr 2016 11:03:09 +0000
+Received: by mail-yw0-x243.google.com with SMTP id i22so9084911ywc.1
+ for <ath10k@lists.infradead.org>; Wed, 27 Apr 2016 04:02:46 -0700 (PDT)
+From: gloudon.jamie@gmail.com
+Date: Wed, 27 Apr 2016 07:02:35 -0400
+Subject: Re: Missing QCA6174 card in board-2.bin
+Message-ID: <20160427110235.GA1799@darkstar.example.net>
+References: <CAE5PP10CJ=n8qghc4a1yi7TjdYU3b2C_-dxXFqyZWCLT8KmV0Q@mail.gmail.com>
+ <CAE5PP11M+97YrMMW2uePi4caNZwiPN+QDdn9e1Nx9mNEBgNQ_w@mail.gmail.com>
+ <20160426224003.GA6906@darkstar.example.net>
+ <CA+BoTQnDraR4f8qA5eBsMh3nOAz6ZEHof=uBp+UsUM57hCkrZA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CA+BoTQnDraR4f8qA5eBsMh3nOAz6ZEHof=uBp+UsUM57hCkrZA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,44 +28,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Failing to release pre_cal_file caldata on deinit causes memory leak.
+On Wed, Apr 27, 2016 at 07:17:44AM +0200, Michal Kazior wrote:
+> On 27 April 2016 at 00:40,  <gloudon.jamie@gmail.com> wrote:
+> > Hey,
+> >     The board-2.bin file is missing subsystem 168c:3344 for my qca6174
+> > hw ver 2.1. Does the kvalo's firmware repo requires an update?
+> 
+> Hi,
+> 
+> Is it 6174 or 6164?
+> 
+> There is already a subsystem vendor entry matching this:
+> 
+> ; strings board-2.bin  | grep bus | grep 3344
+> bus=pci,vendor=168c,device=0041,subsystem-vendor=168c,subsystem-device=3344m
+> bus=pci,vendor=168c,device=003e,subsystem-vendor=17aa,subsystem-device=3344m
+> 
+> Can you specify what your device's vid/pid and susystem vid/pid are, please?
+> 
+> 
+> Michal
 
-Fixes: b131129d9657 ("ath10k: fix calibration init sequence of qca99x0")
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
-v2: rebased
+Here is both the device and subsystem's vid/pid below.
 
- drivers/net/wireless/ath/ath10k/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 3c38adafcc7a..dcc1c2ec14f7 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -686,6 +686,9 @@ static void ath10k_core_free_firmware_files(struct ath10k *ar)
- 	if (!IS_ERR(ar->cal_file))
- 		release_firmware(ar->cal_file);
- 
-+	if (!IS_ERR(ar->pre_cal_file))
-+		release_firmware(ar->pre_cal_file);
-+
- 	ath10k_swap_code_seg_release(ar);
- 
- 	ar->normal_mode_fw.fw_file.otp_data = NULL;
-@@ -696,6 +699,7 @@ static void ath10k_core_free_firmware_files(struct ath10k *ar)
- 	ar->normal_mode_fw.fw_file.firmware_len = 0;
- 
- 	ar->cal_file = NULL;
-+	ar->pre_cal_file = NULL;
- }
- 
- static int ath10k_fetch_cal_file(struct ath10k *ar)
--- 
-2.8.0
-
+Device [168c:003e] (rev 20), Subsystem: Device [168c:3344]
 
 _______________________________________________
 ath10k mailing list
