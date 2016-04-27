@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1avOxx-0004gY-Pn
- for ath10k@lists.infradead.org; Wed, 27 Apr 2016 12:53:18 +0000
+ id 1avOyR-0004vQ-LM
+ for ath10k@lists.infradead.org; Wed, 27 Apr 2016 12:53:48 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix a typo in ath10k_start()
-Date: Wed, 27 Apr 2016 12:52:45 +0000
-Message-ID: <87mvofw6w3.fsf@kamboji.qca.qualcomm.com>
-References: <1461330373-14847-1-git-send-email-mohammed@qca.qualcomm.com>
-In-Reply-To: <1461330373-14847-1-git-send-email-mohammed@qca.qualcomm.com>
- (Mohammed Shafi Shajakhan's message of "Fri, 22 Apr 2016 18:36:13	+0530")
+Subject: Re: [PATCH] ath10k: add max_tx_power for QCA6174 WLAN.RM.2.0 firmware
+Date: Wed, 27 Apr 2016 12:53:23 +0000
+Message-ID: <87inz3w6v1.fsf@kamboji.qca.qualcomm.com>
+References: <1461608670-15386-1-git-send-email-kvalo@qca.qualcomm.com>
+In-Reply-To: <1461608670-15386-1-git-send-email-kvalo@qca.qualcomm.com> (Kalle
+ Valo's message of "Mon, 25 Apr 2016 21:24:30 +0300")
 Content-Language: en-US
-Content-ID: <2C4AC1EA74CD3F478FE6BC5742E02778@qualcomm.com>
+Content-ID: <B5B5A1946A2D7F49886F0A52B0BA780D@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,16 +25,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "Liu, Alan" <alanliu@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> From: Alan Liu <alanliu@qca.qualcomm.com>
 >
-> fix a typo (spelling mistake) in 'ath10k_start'
+> QCA6174 WLAN.RM.2.0 firmware uses max_tx_power instead of using max_reg_power
+> to set transmission power. The tx power was about -50dbm, after applying this
+> change, it become -32dbm.
 >
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> Signed-off-by: Alan Liu <alanliu@qca.qualcomm.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
 Applied, thanks.
 
