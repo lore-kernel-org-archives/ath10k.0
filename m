@@ -1,21 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from rudy.puc.rediris.es ([2001:720:418:ca01::132])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1awByl-00034s-WF
- for ath10k@lists.infradead.org; Fri, 29 Apr 2016 17:13:24 +0000
-Received: from [84.88.62.208] (helo=leo)
- by rudy.puc.rediris.es with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
- (Exim 4.80) (envelope-from <ipascual@cttc.cat>) id 1awByM-000254-9N
- for ath10k@lists.infradead.org; Fri, 29 Apr 2016 19:12:58 +0200
-Received: from [10.1.16.22] (pcipascual.cttc.es [10.1.16.22])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by leo (Postfix) with ESMTPSA id 7187E1FE36
- for <ath10k@lists.infradead.org>; Fri, 29 Apr 2016 19:12:53 +0200 (CEST)
-From: =?UTF-8?Q?I=c3=b1aki_Pascual?= <ipascual@cttc.cat>
-Subject: high RTT in 40 MHz channel width
-Message-ID: <5723960B.9040404@cttc.cat>
-Date: Fri, 29 Apr 2016 19:12:43 +0200
+ id 1awCRp-00016I-D2
+ for ath10k@lists.infradead.org; Fri, 29 Apr 2016 17:43:26 +0000
+Subject: [PATCH 0/4] linux-firmware: ath10k: add QCA9377 and update QCA6174
+ images
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Fri, 29 Apr 2016 20:42:53 +0300
+Message-ID: <20160429173841.9072.66852.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,22 +17,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: linux-firmware@kernel.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-SGksCgpJIGFtIG1lYXN1cmluZyBUQ1AgYW5kIFVEUCBsYXRlbmN5IChhY3R1YWxseSBSVFQpIGFu
-ZCBJIGFtIGdldHRpbmcgdG9vIApoaWdoIHZhbHVlcyB3aGVuIHdvcmtpbmcgd2l0aCBjaGFubmVs
-cyB3aXRoIDQwTUh6IChhbHNvIHdpdGggODBNSHopIHdpZHRoLgoKSSBhbSB1c2luZyBocGluZzMg
-Zm9yIHRlc3RpbmcgYW5kIHRoZXNlIGFyZSB0aGUgUlRUIGF2ZyB2YWx1ZXM6CgpCVyAyMCBNSHo6
-IFRDUCAwLjkgVURQIDEuMQpCVyA0MCBNSHo6IFRDUCA3LjcgVURQIDEuMwpCVyA4MCBNSHo6IFRD
-UCAzLjUgVURQIDEuMwoKSSBoYXZlIHRyaWVkIGRpZmZlcmVudCBjaGFubmVscyB3aXRoIHNpbWls
-YXIgcmVzdWx0cy4gQWNjb3JkaW5nIGhwaW5nIAp0aGVyZSBhcmUgbm8gcGFja2V0IGxvc3MgYW5k
-IHdpdGggd2lyZXNoYXJrIEkgZG9uJ3Qgc2VlIGFueSByZXRyYW5zbWlzc2lvbi4KCkkgYW0gdXNp
-bmc6CmRyaXZlcjogYXRoMTBrX3BjaQp2ZXJzaW9uOiA0LjIuMCsKZmlybXdhcmUtdmVyc2lvbjog
-MTAuMS40NjctY3QtY29tLWZ1bGwtMDE0LTk2ZDU0MwoKQW55IGlkZWFzPwoKQmVzdHMsCgpJw7Fh
-a2kKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
-ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi,
+
+here are firmware images for the new QCA9377 chip and updates for QCA6174.
+
+Kalle
+
+---
+
+Kalle Valo (4):
+      ath10k: QCA6174 hw2.1: update firmware-5.bin to SW_RM.1.1.1-00157-QCARMSWPZ-1
+      ath10k: QCA6174 hw2.1: add board-2.bin
+      ath10k: QCA6174 hw3.0: add board-2.bin
+      ath10k: QCA9377 hw1.0: add firmware and board files
+
+
+ WHENCE                                            |    9 
+ ath10k/QCA6174/hw2.1/board-2.bin                  |  Bin
+ ath10k/QCA6174/hw2.1/firmware-5.bin               |  Bin
+ ath10k/QCA6174/hw3.0/board-2.bin                  |  Bin
+ ath10k/QCA9377/hw1.0/board-2.bin                  |  Bin
+ ath10k/QCA9377/hw1.0/board.bin                    |  Bin
+ ath10k/QCA9377/hw1.0/firmware-5.bin               |  Bin
+ ath10k/QCA9377/hw1.0/notice_ath10k_firmware-5.txt | 1128 +++++++++++++++++++++
+ 8 files changed, 1136 insertions(+), 1 deletion(-)
+ create mode 100644 ath10k/QCA6174/hw2.1/board-2.bin
+ create mode 100644 ath10k/QCA6174/hw3.0/board-2.bin
+ create mode 100644 ath10k/QCA9377/hw1.0/board-2.bin
+ create mode 100644 ath10k/QCA9377/hw1.0/board.bin
+ create mode 100644 ath10k/QCA9377/hw1.0/firmware-5.bin
+ create mode 100644 ath10k/QCA9377/hw1.0/notice_ath10k_firmware-5.txt
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
