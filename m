@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail1.g8.pair.com ([66.39.4.88])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1avYB3-00076e-SN
- for ath10k@lists.infradead.org; Wed, 27 Apr 2016 22:43:26 +0000
-Mime-Version: 1.0 (Mac OS X Mail 9.2 \(3112\))
-Subject: Re: QCA6174 firmware crash
-From: Michael Ney <neym@vorklift.com>
-In-Reply-To: <CA+BoTQ=0sY8bbgDDp-ZucmCdR++E+HVf775hshE-96AWGQke8w@mail.gmail.com>
-Date: Wed, 27 Apr 2016 18:43:04 -0400
-Message-Id: <712826D7-3E26-47B4-9EFF-E1331F0C0997@vorklift.com>
-References: <FEB50C50-4C7B-441A-A9E4-90D7E02C9939@vorklift.com>
- <CA+BoTQkfQPBnm3Nctn1hzkhorBdbCJhhp4GgH3hTYTRryOvuSg@mail.gmail.com>
- <8AB0F990-69B6-4E38-816D-03EADDEA71CA@vorklift.com>
- <CA+BoTQ=0sY8bbgDDp-ZucmCdR++E+HVf775hshE-96AWGQke8w@mail.gmail.com>
+ id 1aw2CE-0005Rk-Rb
+ for ath10k@lists.infradead.org; Fri, 29 Apr 2016 06:46:39 +0000
+From: "Hsu, Ryan" <ryanhsu@qca.qualcomm.com>
+Subject: Re: Missing QCA6174 card in board-2.bin
+Date: Fri, 29 Apr 2016 06:46:15 +0000
+Message-ID: <1461912375453.83193@qca.qualcomm.com>
+References: <CAE5PP10CJ=n8qghc4a1yi7TjdYU3b2C_-dxXFqyZWCLT8KmV0Q@mail.gmail.com>
+ <CAE5PP11M+97YrMMW2uePi4caNZwiPN+QDdn9e1Nx9mNEBgNQ_w@mail.gmail.com>
+ <20160426224003.GA6906@darkstar.example.net>
+ <CA+BoTQnDraR4f8qA5eBsMh3nOAz6ZEHof=uBp+UsUM57hCkrZA@mail.gmail.com>
+ <20160427110235.GA1799@darkstar.example.net>,
+ <CA+BoTQmGkQYZtcx=BonBsyq4z=L77N=82-fZkgg6dGjMS+RRpw@mail.gmail.com>
+In-Reply-To: <CA+BoTQmGkQYZtcx=BonBsyq4z=L77N=82-fZkgg6dGjMS+RRpw@mail.gmail.com>
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,50 +24,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "gloudon.jamie@gmail.com" <gloudon.jamie@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SSBkaWQgYSBmZXcgbW9yZSB0ZXN0cywgaW5jbHVkaW5nIHRyeWluZyBCYWNrcG9ydHMgNC40LjIt
-MSB3aXRoIG5vIGRpZmZlcmVuY2UuIEV2ZXJ5dGhpbmcncyBwb2ludGluZyB0byBhIGZpcm13YXJl
-IGlzc3VlIG5vdCByZWxhdGVkIHNwZWNpZmljYWxseSB0byB0aGUgbW9uaXRvciBWREVWLiBJdCBz
-ZWVtcyB0byBtZSB0aGF0IHRoZSBDb250ZW50aW9uIEZyZWUgbG9naWMgaW4gdGhlIGZpcm13YXJl
-IGRvZXNuJ3QgaGFuZGxlIENvbnRlbnRpb24gRnJlZSBudWxsIGZyYW1lcyBhZGRyZXNzZWQgdG8g
-b3RoZXIgTUFDIGFkZHJlc3NlcyBpbiBhbnkgbW9kZS4gQXMgc29vbiBhcyB0aGUgZmlybXdhcmUg
-aXMgc2V0IHRvIGhlYXIgZGF0YSBmcmFtZXMgbm90IGFkZHJlc3NlcyB0byB0aGUgaGFyZHdhcmUn
-cyBNQUMgdGhlIGZpcm13YXJlIHdpbGwgY3Jhc2ggb24gdGhlIGZpcnN0IE51bGwgRGF0YSBDRiBm
-cmFtZSByZWNlaXZlZC4KCkluIG9yZGVyIHRvIHNlZSBpZiB0aGlzIHdhcyByZWxhdGVkIHRvIHRo
-ZSBtb25pdG9yIFZERVYgb3Igc29tZXRoaW5nIGVsc2UsIEkgY29uZmlndXJlZCB0aGUgaGFyZHdh
-cmUgdG8gcnVuIGluIHByb21pc2N1b3VzIG1vZGUgd2l0aCB0aGUgbWFuYWdlZCBWREVWLiBUbyBk
-byB0aGlzIEkgY29uZmlndXJlZCB0aGUgUlggZmlsdGVyIChyZWdpc3RlciAweDE4MDNjKSBtYW51
-YWxseSwgdHVybmluZyBvbiB0aGUgcHJvbWlzY3VvdXMgYml0ICgweDIwKS4KCgpSZXByb2R1Y3Rp
-b246CgoxLiBTdGF5IGluIG1hbmFnZWQgbW9kZSAoZG9uJ3QgZW50ZXIgbW9uaXRvciBtb2RlKQoK
-Mi4gZWNobyAweDE4MDNjID4gL3N5cy9rZXJuL2RlYnVnL2llZWU4MDIxMS9waHkwL3JlZ19hZGRy
-CgozLiBjYXQgL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeTAvcmVnX3ZhbAoKNC4gQ2hh
-bmdlIGJpdCAweDIwIHRvIG9uIChlbmFibGUgcHJvbWlzY3VvdXMgbW9kZSkKCjUuIGVjaG8gKHJl
-c3VsdCBvZiBzdGVwIDQpID4gL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeTAvcmVnX3Zh
-bAoKNi4gQ29uZmlndXJlIGFub3RoZXIgY2FyZCAoYXRoOWssIGV0YykgdG8gYSB0YXJnZXQgZnJl
-cXVlbmN5IChJIHVzZWQgNTMwMCBzaW5jZSBpdCB3YXMgZmFpcmx5IHF1aWV0KS4gVHJhbnNtaXQg
-dHlwZSAweDIgc3VidHlwZSAweDUgKE51bGwgZGF0YSArIENGIEFDSykgb24gYSBsb29wLgoKNy4g
-aXcgd2xhbjAgc2NhbiBmcmVxIDUzMDAKCkltbWVkaWF0ZWx5IGNyYXNoZXMuCgoKSWYgSSBydW4g
-dGhlIHNjYW4gd2l0aG91dCBzZXR0aW5nIHRoZSByeF9maWx0ZXIgcmVnaXN0ZXIsIHRoZXJlIGlz
-IG5vIGNyYXNoLgoKSWYgSSBydW4gdGhlIHNjYW4gd2l0aG91dCBzZW5kaW5nIHRoZSBOdWxsIERh
-dGEgKyBDRiBBQ0sgZnJhbWVzIGZyb20gdGhlIG90aGVyIGNhcmQsIHRoZXJlIGlzIG5vIGNyYXNo
-LgoKCi0tCgpJIGFsc28gY29uZmlndXJlZCBhdGgxMGtfY29yZSB3aXRoIGRlYnVnIG1hc2sgMHg1
-RiAoUENJLCBXTUksIEhUQywgSFRULCBNQUMsIGFuZCBQQ0kgZHVtcCkuIFdoZW4gdGhlIGZpcm13
-YXJlIGNyYXNoZWQsIHRoZXJlIHdhcyBub3RoaW5nIHVuaGFuZGxlZCBub3IgdW51c3VhbCB0aGF0
-IGNhbWUgYWNyb3NzIHRoZSBQQ0kgYnVzLgoKLS0KCkZpbmFsbHksIGluIHRoZSBjcmFzaCdzIGZp
-cm13YXJlIHJlZ2lzdGVyIGR1bXAgaW4gbXkgb3JpZ2luYWwgZW1haWwsIEkgdHlwb2VkIHRoZSAy
-bmQgZW50cnkgb24gbGluZSAyMC4gaXQgc2hvdWxkIGJlIDB4MDA0MDE4RjAgbm90IDB4MDA0MDE5
-RjAuCgoKCj4gT24gQXByIDI3LCAyMDE2LCBhdCAyOjQyIEFNLCBNaWNoYWwgS2F6aW9yIDxtaWNo
-YWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4gCj4gT24gMjYgQXByaWwgMjAxNiBhdCAyMTo1
-MiwgTWljaGFlbCBOZXkgPG5leW1Adm9ya2xpZnQuY29tPiB3cm90ZToKPiAKPiBGaXJtd2FyZSBj
-YW4gZ2V0IGNvbmZ1c2VkIHNvbWV0aW1lcywgZXNwZWNpYWxseSB3aGVuIGl0IGNvbWVzIHRvIG1v
-bml0b3IgdmRldi4KPiAKPiBQZXJoYXBzIHlvdSBzaG91bGQgdHJ5IGxhdGVzdCBiYWNrcG9ydHMg
-b3IgZ2VuZXJhdGUgb25lIHlvdXJzZWxmIGZyb20KPiBLYWxsZSdzIGF0aC5naXQ/IFRoZSBwcm9i
-bGVtIG1heSBoYXZlIGJlZW4gYWxyZWFkeSBmaXhlZCBpbiB1cHN0cmVhbS4KPiAKPiAKPiBNaWNo
-YcWCCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+This seems to be like an typo, I'll fix and update.
+
+Ryan
+________________________________________
+From: ath10k <ath10k-bounces@lists.infradead.org> on behalf of Michal Kazio=
+r <michal.kazior@tieto.com>
+Sent: Wednesday, April 27, 2016 4:04 AM
+To: gloudon.jamie@gmail.com
+Cc: ath10k@lists.infradead.org
+Subject: Re: Missing QCA6174 card in board-2.bin
+
+On 27 April 2016 at 13:02,  <gloudon.jamie@gmail.com> wrote:
+> On Wed, Apr 27, 2016 at 07:17:44AM +0200, Michal Kazior wrote:
+>> On 27 April 2016 at 00:40,  <gloudon.jamie@gmail.com> wrote:
+>> > Hey,
+>> >     The board-2.bin file is missing subsystem 168c:3344 for my qca6174
+>> > hw ver 2.1. Does the kvalo's firmware repo requires an update?
+>>
+>> Hi,
+>>
+>> Is it 6174 or 6164?
+>>
+>> There is already a subsystem vendor entry matching this:
+>>
+>> ; strings board-2.bin  | grep bus | grep 3344
+>> bus=3Dpci,vendor=3D168c,device=3D0041,subsystem-vendor=3D168c,subsystem-=
+device=3D3344m
+>> bus=3Dpci,vendor=3D168c,device=3D003e,subsystem-vendor=3D17aa,subsystem-=
+device=3D3344m
+>>
+>> Can you specify what your device's vid/pid and susystem vid/pid are, ple=
+ase?
+>>
+>>
+>> Michal
+>
+> Here is both the device and subsystem's vid/pid below.
+>
+> Device [168c:003e] (rev 20), Subsystem: Device [168c:3344]
+
+Thanks for confirming!
+
+
+Micha=B3
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
