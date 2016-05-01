@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp127.iad3a.emailsrvr.com ([173.203.187.127])
+Received: from mail-qg0-x231.google.com ([2607:f8b0:400d:c04::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1awsew-0002j3-3V
- for ath10k@lists.infradead.org; Sun, 01 May 2016 14:47:47 +0000
-Date: Sun, 1 May 2016 10:47:23 -0400 (EDT)
-Subject: =?utf-8?Q?Re=3A_=5BMake-wifi-fast=5D_fq=5Fcodel=5Fdrop_vs_a_udp_flood?=
-From: dpreed@reed.com
-MIME-Version: 1.0
-In-Reply-To: <CAA93jw46O3CbURxyP7AENkOCnA71Bn6ddTJpdfzEjWcFKgnaAg@mail.gmail.com>
-References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com> 
- <57258F41.8040600@candelatech.com> 
- <CAA93jw46O3CbURxyP7AENkOCnA71Bn6ddTJpdfzEjWcFKgnaAg@mail.gmail.com>
-Message-ID: <1462114043.512818296@apps.rackspace.com>
+ id 1awvfE-00071m-Jy
+ for ath10k@lists.infradead.org; Sun, 01 May 2016 18:00:17 +0000
+Received: by mail-qg0-x231.google.com with SMTP id w36so7393029qge.3
+ for <ath10k@lists.infradead.org>; Sun, 01 May 2016 10:59:56 -0700 (PDT)
+Message-ID: <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
+Subject: Re: [Codel] fq_codel_drop vs a udp flood
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Date: Sun, 01 May 2016 10:59:52 -0700
+In-Reply-To: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
+References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,103 +20,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Dave Taht <dave.taht@gmail.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, Ben Greear <greearb@candelatech.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>
+Cc: make-wifi-fast@lists.bufferbloat.net, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>
 
-TWF5YmUgSSBtaXNzZWQgc29tZXRoaW5nLCBidXQgd2h5IGlzIGl0IGltcG9ydGFudCB0byBvcHRp
-bWl6ZSBmb3IgYSBVRFAgZmxvb2Q/CgpBIGdlbmVyYWwgb2JzZXJ2YXRpb24gb2YgY29udHJvbCB0
-aGVvcnkgaXMgdGhhdCB0aGVyZSBpcyBhbG1vc3QgYWx3YXlzIGFuIGFkdmVyc2FyaWFsIHN0cmF0
-ZWd5IHRoYXQgd2lsbCBkZXN0cm95IGFueSBjb250cm9sIHJlZ2ltZS4gU29tZXRpbWVzIG9uZSBo
-YXMgdG8gaW52b2tlIGFuICJvcmFjbGUiIHRoYXQga25vd3MgdGhlIHN0YXRlIG9mIHRoZSBjb250
-cm9sIHN5c3RlbSBhdCBhbGwgdGltZXMgdG8gZ2V0IHRoZXJlLgoKU28gYSBoYW5kd2F2ZSBpcyB0
-aGF0ICp0aGVyZSBpcyBhbHdheXMgYSBERG9TIHRoYXQgd2lsbCB3b3JrKiBubyBtYXR0ZXIgaG93
-IGNsZXZlciB5b3UgYXJlLgoKQW5kIHRoZSBjb3JvbGxhcnkgaXMgaWxsdXN0cmF0ZWQgYnkgdGhl
-IFRTQS4gSWYgeW91IGNhbid0IGFudGljaXBhdGUgYWxsIHBvc3NpYmxlIGF0dGFja3MsIGl0IGlz
-IG5vdCBjbGVhcmx5IGJldHRlciB0byBqdXN0IGNvbmdlc3QgdGhlIHdob2xlIHN5c3RlbSBhdCBh
-bGwgdGltZXMgd2l0aCBjb250cm9scyB0aGF0IGNhbid0IHBvc3NpYmx5IHNvbHZlIGFsbCBwb3Nz
-aWJsZSBhdHRhY2tzIC0gaS5lLiBTZWN1cml0eSBUaGVhdGVyLiBXZSBkb24ndCB3YW50ICJhbnRp
-LUREb1MgdGhlYXRlciIgSSBkb24ndCB0aGluay4KClRoZXJlIGlzIGFuIGFsdGVybmF0aXZlIG1l
-Y2hhbmlzbSB0aGF0IGhhcyBiZWVuIGVmZmVjdGl2ZSBhdCBkZWFsaW5nIHdpdGggRERvUyBpbiBn
-ZW5lcmFsIC0gdHJhY2sgdGhlIGRpc3J1cHRpb24gYmFjayB0byB0aGUgc291cmNlIGFuZCBraWxs
-IGl0LiAgKHRoaXMgaXMgd2hhdCB0aGUgZW5kLXRvLWVuZCBhcmd1bWVudCB3b3VsZCBiZTogZG9u
-J3QgdHJ5IHRvIHNvbHZlIGEgZnVuZGFtZW50YWxseSBlbmQtdG8tZW5kIHByb2JsZW0sIEREb1Ms
-IHNvbGVseSBpbiB0aGUgbmV0d29yayBbc3dpdGNoZXNdLCBzaW5jZSB5b3UgaGF2ZSB0byBzb2x2
-ZSBpdCBhdCB0aGUgZWRnZXMgYW55d2F5LiBKdXN0IGluY2x1ZGUgaW4gdGhlIG5ldHdvcmsgdGhp
-bmdzIHRoYXQgd2lsbCBoZWxwIHlvdSBzb2x2ZSBpdCBhdCB0aGUgZWRnZXMgLSB0cmFjZWJhY2sg
-dG9vbHMgdGhhdCB3b3JrIGZhc3QgYW5kIHRhcmdldGVkIHNodXRkb3duIG9mIHNvdXJjZXMpLgoK
-SSBkb24ndCBoYXBwZW4gdG8ga25vdyBvZiBhICJub3JtYWwiIGFwcGxpY2F0aW9uIHRoYXQgYmVu
-ZWZpdHMgZnJvbSBVRFAgZmxvb2RpbmcgLSBub3QgZXZlbiAiZ29zc2lwIHByb3RvY29scyIgZG8g
-dGhhdCEKCkluIGNvbnRleHQsIHRoZW4sIGxldCdzIG5vdCBmb2N1cyBvbiBVRFAgZmxvb2QgcGVy
-Zm9ybWFuY2UgKG9yIGFueSBvdGhlciAiZXh0cmVtZSBjYXNlIiB0aGF0IGp1c3Qgc2VlbXMgZnVu
-IHRvIHdvcmsgb24gaW4gYSByZXNlYXJjaCBwYXBlciBiZWNhdXNlIGl0IGlzIGVhc3kgdG8gc3Rh
-dGUgY29tcGFyZWQgdG8gdGhlIHJlYWwgd29ybGQpIHRvbyBtdWNoLgoKSSBrbm93IHRoYXQgdGhl
-IHJlYWN0aW9uIHRvIHRoaXMgcG9zdCB3aWxsIGJlIHRvIHJlYWQgaXQgYW5kIHByZXR0eSBtdWNo
-IGdvIG9uIGFzIHVzdWFsIGZvY3VzaW5nIG9uIFVEUCBmbG9vZHMuIEJ1dCBJIGhhdmUgdG8gdHJ5
-LiBUaGVyZSBhcmUgc28gbWFueSBtb3JlIGltcG9ydGFudCBpc3N1ZXMgKGxpa2UgdW5kZXJzdGFu
-ZGluZyBob3cgdG8gdXNlIGNvbmdlc3Rpb24gc2lnbmFsbGluZyBpbiBnb3NzaXAgcHJvdG9jb2xz
-LCBnYW1pbmcsIG9yIGxpdmUgQVYgY29uZmVyZW5jaW5nIGJldHRlciwgYXMgc29tZSByZWxhdGVk
-IGV4YW1wbGVzLCB3aGljaCBhcmUgZW5kLXRvLWVuZCBwcm9ibGVtcyBmb3Igd2hpY2ggcXVldWUg
-bWFuYWdlbWVudCBhbmQgY29uZ2VzdGlvbiBzaWduYWxsaW5nIGFyZSB0cnVseSBjcnVjaWFsKS4K
-CgoKT24gU3VuZGF5LCBNYXkgMSwgMjAxNiAxOjIzYW0sICJEYXZlIFRhaHQiIDxkYXZlLnRhaHRA
-Z21haWwuY29tPiBzYWlkOgoKPiBPbiBTYXQsIEFwciAzMCwgMjAxNiBhdCAxMDowOCBQTSwgQmVu
-IEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdyb3RlOgo+Pgo+Pgo+PiBPbiAwNC8z
-MC8yMDE2IDA4OjQxIFBNLCBEYXZlIFRhaHQgd3JvdGU6Cj4+Pgo+Pj4gVGhlcmUgd2VyZSBhIGZl
-dyB0aGluZ3Mgb24gdGhpcyB0aHJlYWQgdGhhdCB3ZW50IGJ5LCBhbmQgSSB3YXNuJ3Qgb24KPj4+
-IHRoZSBhdGgxMGsgbGlzdAo+Pj4KPj4+IChodHRwczovL3d3dy5tYWlsLWFyY2hpdmUuY29tL2F0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnL21zZzA0NDYxLmh0bWwpCj4+Pgo+Pj4gZmlyc3QgdXAs
-IHVkcCBmbG9vZC4uLgo+Pj4KPj4+Pj4+IEZyb206IGF0aDEwayA8YXRoMTBrLWJvdW4uLi5AbGlz
-dHMuaW5mcmFkZWFkLm9yZz4gb24gYmVoYWxmIG9mIFJvbWFuCj4+Pj4+PiBZZXJ5b21pbiA8bGVy
-b2kubGkuLi5AZ21haWwuY29tPgo+Pj4+Pj4gU2VudDogRnJpZGF5LCBBcHJpbCA4LCAyMDE2IDg6
-MTQgUE0KPj4+Pj4+IFRvOiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+Pj4+Pj4gU3ViamVj
-dDogYXRoMTBrIHBlcmZvcm1hbmNlLCBtYXN0ZXIgYnJhbmNoIGZyb20gMjAxNjA0MDcKPj4+Pj4+
-Cj4+Pj4+PiBIZWxsbyEKPj4+Pj4+Cj4+Pj4+PiBJJ3ZlIHNlZW4gcGVyZm9ybWFuY2UgcGF0Y2hl
-cyB3ZXJlIGNvbW1pdGVkIHNvIEkndmUgZGVjaWRlZCB0byBnaXZlIGl0Cj4+Pj4+PiBhIHRyeSAo
-dXNpbmcgNC4xIGtlcm5lbCBhbmQgYmFja3BvcnRzKS4KPj4+Pj4+IFRoZSByZXN1bHRzIGFyZSBx
-dWl0ZSBkaXNhcHBvaW50aW5nOiBUQ1AgZG93bmxvYWQgKGNsaWVudCBwb3YpIGRyb3BwZWQKPj4+
-Pj4+IGZyb20gNzUwTWJwcyB0byB+NTUwIGFuZCBVRFAgc2hvd3MgY29tcGxldGVseSB3ZWlyZCBi
-ZWhhdm91ciAtIGlmCj4+Pj4+PiBnZW5lcmF0aW5nIDkwME1icHMgaXQgZ2l2ZXMgMzBNYnBzIG1h
-eCwgaWYgZ2VuZXJhdGluZyAzMDBNYnBzIGl0IGdpdmVzCj4+Pj4+PiAyNTBNYnBzLCBiZWZvcmUg
-KGxhdGVzdCBvZmZpY2lhbCBiYWNrcG9ydHMgcmVsZWFzZSBmcm9tIEphbnVhcnkpIEkgd2FzCj4+
-Pj4+PiBhYmxlIHRvIGdldCA5MDBNYnBzLgo+Pj4+Pj4gSGFyZHdhcmUgaXMgYmFzaWNhbGx5IGFw
-MTUyICsgcWNhOTg4eCAzeDMuCj4+Pj4+PiBXaGVuIHJ1bm5pbmcgcGVyZiB0b3AgSSBzZWUgdGhh
-dCBmcV9jb2RlbF9kcm9wIGVhdHMgYSBsb3Qgb2YgY3B1Lgo+Pj4+Pj4gSGVyZSBpcyB0aGUgb3V0
-cHV0IHdoZW4gcnVubmluZyBpcGVyZjMgVURQIHRlc3Q6Cj4+Pj4+Pgo+Pj4+Pj4gICAgICA0NS43
-OCUgIFtrZXJuZWxdICAgICAgIFtrXSBmcV9jb2RlbF9kcm9wCj4+Pj4+PiAgICAgICAzLjA1JSAg
-W2tlcm5lbF0gICAgICAgW2tdIGFnNzF4eF9wb2xsCj4+Pj4+PiAgICAgICAyLjE4JSAgW2tlcm5l
-bF0gICAgICAgW2tdIHNrYl9yZWxlYXNlX2RhdGEKPj4+Pj4+ICAgICAgIDIuMDElICBba2VybmVs
-XSAgICAgICBba10gcjRrX2RtYV9jYWNoZV9pbnYKPj4+Cj4+Pgo+Pj4gVGhlIHVkcCBmbG9vZCBi
-ZWhhdmlvciBpcyBub3QgIndlaXJkIi4gIFRoZSB0ZXN0IGlzIHdyb25nLiBJdCBpcyBzbwo+Pj4g
-ZmlsbGluZwo+Pj4gdGhlIGxvY2FsIHF1ZXVlIGFzIHRvIGRyYW1hdGljYWxseSBleGNlZWQgdGhl
-IGJhbmR3aWR0aCBvbiB0aGUgbGluay4KPj4KPj4KPj4gSXQgd291bGQgYmUgbmljZSBpZiB5b3Ug
-Y291bGQgcHJvdmlkZSBiYWNrcHJlc3N1cmUgc28gdGhhdCB5b3UgY291bGQKPj4gc2ltcGx5IHNl
-bGVjdCBvbiB0aGUgdWRwIHNvY2tldCBhbmQgdXNlIHRoYXQgdG8ga25vdyB3aGVuIHlvdSBjYW4g
-c2VuZAo+PiBtb3JlIGZyYW1lcz8/Cj4gCj4gVGhlIHFkaXNjIHZlcnNpb24gcmV0dXJucyAgTkVU
-X1hNSVRfQ04gdG8gdGhlIHVwcGVyIGxheWVycyBvZiB0aGUKPiBzdGFjayBpbiB0aGUgY2FzZQo+
-IHdoZXJlIHRoZSBkcm9wcGVkIHBhY2tldCdzIGZsb3cgPSB0aGUgaW5ncmVzcyBwYWNrZXQncyBm
-bG93LCBidXQgdGhhdAo+IGlzIGFmdGVyIHRoZQo+IGV4aGF1c3RpdmUgc2VhcmNoLi4uCj4gCj4g
-SSBkb24ndCBrbm93IHdoYXQgZWZmZWN0IChpZiBhbnkpIHRoYXQgaGFkIG9uIHVkcCBzb2NrZXRz
-LiBIbW0uLi4gd2lsbAo+IGxvb2suIEVyaWMgd291bGQgImp1c3Qga25vdyIuCj4gCj4gVGhhdCBt
-aWdodCBwcm92aWRlIG1vcmUgYmFja3ByZXNzdXJlIGluIHRoZSBsb2NhbCBzY2VuYXJpby4gU09f
-U05EX0JVRgo+IHNob3VsZCBpbnRlcmFjdCB3aXRoIHRoaXMgc3R1ZmYgaW4gc29tZSBzYW5lIHdh
-eS4uLgo+IAo+IC4uLiBidXQgb3ZlciB0aGUgd2lyZSBmcm9tIGEgdGVzdCBkcml2ZXIgYm94IGVs
-c2V3aGVyZSwgdGhvLCBhc2lkZQo+IGZyb20gZXRoZXJuZXQgZmxvdyBjb250cm9sIGl0c2VsZiwg
-d2hlcmUgZW5hYmxlZCwgbm8uCj4gCj4gLi4uIGJ1dCBpbiB0aGF0IGNhc2UgeW91IGhhdmUgYSBt
-dWNoIGxvd2VyIGluYm91bmQvb3V0Ym91bmQKPiBwZXJmb3JtYW5jZSBkaXNwYXJpdHkgaW4gdGhl
-IGdlbmVyYWwgY2FzZSB0byBzdGFydCB3aXRoLi4uIHdoaWNoIGNhbgo+IHN0aWxsIGJlIHF1aXRl
-IGhpZ2guLi4KPiAKPj4KPj4gQW55IGlkZWEgaG93IHRoYXQgd29ya3Mgd2l0aCBjb2RlbD8KPiAK
-PiBCZWF1dGlmdWxseS4KPiAKPiBGb3IgcmVzcG9uc2l2ZSBUQ1AgZmxvd3MuIEl0IGltbWVkaWF0
-ZWx5IHJlZHVjZXMgdGhlIHdpbmRvdyB3aXRob3V0IGEgUlRULgo+IAo+PiBUaGFua3MsCj4+IEJl
-bgo+Pgo+PiAtLQo+PiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4gQ2Fu
-ZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQo+IAo+IAo+
-IAo+IC0tCj4gRGF2ZSBUw6RodAo+IExldCdzIGdvIG1ha2UgaG9tZSByb3V0ZXJzIGFuZCB3aWZp
-IGZhc3RlciEgV2l0aCBiZXR0ZXIgc29mdHdhcmUhCj4gaHR0cDovL2Jsb2cuY2Vyb3dydC5vcmcK
-PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IE1ha2Ut
-d2lmaS1mYXN0IG1haWxpbmcgbGlzdAo+IE1ha2Utd2lmaS1mYXN0QGxpc3RzLmJ1ZmZlcmJsb2F0
-Lm5ldAo+IGh0dHBzOi8vbGlzdHMuYnVmZmVyYmxvYXQubmV0L2xpc3RpbmZvL21ha2Utd2lmaS1m
-YXN0Cj4gCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Sat, 2016-04-30 at 20:41 -0700, Dave Taht wrote:
+> >>>
+> >>>     45.78%  [kernel]       [k] fq_codel_drop
+> >>>      3.05%  [kernel]       [k] ag71xx_poll
+> >>>      2.18%  [kernel]       [k] skb_release_data
+> >>>      2.01%  [kernel]       [k] r4k_dma_cache_inv
+> 
+> The udp flood behavior is not "weird".  The test is wrong. It is so filling
+> the local queue as to dramatically exceed the bandwidth on the link.
+
+Well, just _kill_ the offender, instead of trying to be gentle.
+
+fq_codel_drop() could drop _all_ packets of the fat flow, instead of a
+single one.
+
+It is too cpu intensive to be kind to the elephant, since under pressure
+fq_codel_drop() needs to be called for every enqueue.
+
+Really, we should not try to let inelastic flows hurt us.
+
+I can provide a patch.
+
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
