@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1awjiS-00054I-Cn
- for ath10k@lists.infradead.org; Sun, 01 May 2016 05:14:49 +0000
-Message-ID: <57258F41.8040600@candelatech.com>
-Date: Sat, 30 Apr 2016 22:08:17 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-oi0-x229.google.com ([2607:f8b0:4003:c06::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1awjrN-0004Bp-Um
+ for ath10k@lists.infradead.org; Sun, 01 May 2016 05:24:02 +0000
+Received: by mail-oi0-x229.google.com with SMTP id k142so159659134oib.1
+ for <ath10k@lists.infradead.org>; Sat, 30 Apr 2016 22:23:40 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: fq_codel_drop vs a udp flood
+In-Reply-To: <57258F41.8040600@candelatech.com>
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
-In-Reply-To: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
+ <57258F41.8040600@candelatech.com>
+Date: Sat, 30 Apr 2016 22:23:39 -0700
+Message-ID: <CAA93jw46O3CbURxyP7AENkOCnA71Bn6ddTJpdfzEjWcFKgnaAg@mail.gmail.com>
+Subject: Re: fq_codel_drop vs a udp flood
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,63 +21,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, make-wifi-fast@lists.bufferbloat.net
+To: Ben Greear <greearb@candelatech.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>
 
-
-
-On 04/30/2016 08:41 PM, Dave Taht wrote:
-> There were a few things on this thread that went by, and I wasn't on
-> the ath10k list
->
-> (https://www.mail-archive.com/ath10k@lists.infradead.org/msg04461.html)
->
-> first up, udp flood...
->
->>>> From: ath10k <ath10k-boun...@lists.infradead.org> on behalf of Roman
->>>> Yeryomin <leroi.li...@gmail.com>
->>>> Sent: Friday, April 8, 2016 8:14 PM
->>>> To: ath10k@lists.infradead.org
->>>> Subject: ath10k performance, master branch from 20160407
->>>>
->>>> Hello!
->>>>
->>>> I've seen performance patches were commited so I've decided to give it
->>>> a try (using 4.1 kernel and backports).
->>>> The results are quite disappointing: TCP download (client pov) dropped
->>>> from 750Mbps to ~550 and UDP shows completely weird behavour - if
->>>> generating 900Mbps it gives 30Mbps max, if generating 300Mbps it gives
->>>> 250Mbps, before (latest official backports release from January) I was
->>>> able to get 900Mbps.
->>>> Hardware is basically ap152 + qca988x 3x3.
->>>> When running perf top I see that fq_codel_drop eats a lot of cpu.
->>>> Here is the output when running iperf3 UDP test:
->>>>
->>>>      45.78%  [kernel]       [k] fq_codel_drop
->>>>       3.05%  [kernel]       [k] ag71xx_poll
->>>>       2.18%  [kernel]       [k] skb_release_data
->>>>       2.01%  [kernel]       [k] r4k_dma_cache_inv
->
-> The udp flood behavior is not "weird".  The test is wrong. It is so filling
-> the local queue as to dramatically exceed the bandwidth on the link.
-
-It would be nice if you could provide backpressure so that you could
-simply select on the udp socket and use that to know when you can send
-more frames??
-
-Any idea how that works with codel?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gU2F0LCBBcHIgMzAsIDIwMTYgYXQgMTA6MDggUE0sIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2Fu
+ZGVsYXRlY2guY29tPiB3cm90ZToKPgo+Cj4gT24gMDQvMzAvMjAxNiAwODo0MSBQTSwgRGF2ZSBU
+YWh0IHdyb3RlOgo+Pgo+PiBUaGVyZSB3ZXJlIGEgZmV3IHRoaW5ncyBvbiB0aGlzIHRocmVhZCB0
+aGF0IHdlbnQgYnksIGFuZCBJIHdhc24ndCBvbgo+PiB0aGUgYXRoMTBrIGxpc3QKPj4KPj4gKGh0
+dHBzOi8vd3d3Lm1haWwtYXJjaGl2ZS5jb20vYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcvbXNn
+MDQ0NjEuaHRtbCkKPj4KPj4gZmlyc3QgdXAsIHVkcCBmbG9vZC4uLgo+Pgo+Pj4+PiBGcm9tOiBh
+dGgxMGsgPGF0aDEway1ib3VuLi4uQGxpc3RzLmluZnJhZGVhZC5vcmc+IG9uIGJlaGFsZiBvZiBS
+b21hbgo+Pj4+PiBZZXJ5b21pbiA8bGVyb2kubGkuLi5AZ21haWwuY29tPgo+Pj4+PiBTZW50OiBG
+cmlkYXksIEFwcmlsIDgsIDIwMTYgODoxNCBQTQo+Pj4+PiBUbzogYXRoMTBrQGxpc3RzLmluZnJh
+ZGVhZC5vcmcKPj4+Pj4gU3ViamVjdDogYXRoMTBrIHBlcmZvcm1hbmNlLCBtYXN0ZXIgYnJhbmNo
+IGZyb20gMjAxNjA0MDcKPj4+Pj4KPj4+Pj4gSGVsbG8hCj4+Pj4+Cj4+Pj4+IEkndmUgc2VlbiBw
+ZXJmb3JtYW5jZSBwYXRjaGVzIHdlcmUgY29tbWl0ZWQgc28gSSd2ZSBkZWNpZGVkIHRvIGdpdmUg
+aXQKPj4+Pj4gYSB0cnkgKHVzaW5nIDQuMSBrZXJuZWwgYW5kIGJhY2twb3J0cykuCj4+Pj4+IFRo
+ZSByZXN1bHRzIGFyZSBxdWl0ZSBkaXNhcHBvaW50aW5nOiBUQ1AgZG93bmxvYWQgKGNsaWVudCBw
+b3YpIGRyb3BwZWQKPj4+Pj4gZnJvbSA3NTBNYnBzIHRvIH41NTAgYW5kIFVEUCBzaG93cyBjb21w
+bGV0ZWx5IHdlaXJkIGJlaGF2b3VyIC0gaWYKPj4+Pj4gZ2VuZXJhdGluZyA5MDBNYnBzIGl0IGdp
+dmVzIDMwTWJwcyBtYXgsIGlmIGdlbmVyYXRpbmcgMzAwTWJwcyBpdCBnaXZlcwo+Pj4+PiAyNTBN
+YnBzLCBiZWZvcmUgKGxhdGVzdCBvZmZpY2lhbCBiYWNrcG9ydHMgcmVsZWFzZSBmcm9tIEphbnVh
+cnkpIEkgd2FzCj4+Pj4+IGFibGUgdG8gZ2V0IDkwME1icHMuCj4+Pj4+IEhhcmR3YXJlIGlzIGJh
+c2ljYWxseSBhcDE1MiArIHFjYTk4OHggM3gzLgo+Pj4+PiBXaGVuIHJ1bm5pbmcgcGVyZiB0b3Ag
+SSBzZWUgdGhhdCBmcV9jb2RlbF9kcm9wIGVhdHMgYSBsb3Qgb2YgY3B1Lgo+Pj4+PiBIZXJlIGlz
+IHRoZSBvdXRwdXQgd2hlbiBydW5uaW5nIGlwZXJmMyBVRFAgdGVzdDoKPj4+Pj4KPj4+Pj4gICAg
+ICA0NS43OCUgIFtrZXJuZWxdICAgICAgIFtrXSBmcV9jb2RlbF9kcm9wCj4+Pj4+ICAgICAgIDMu
+MDUlICBba2VybmVsXSAgICAgICBba10gYWc3MXh4X3BvbGwKPj4+Pj4gICAgICAgMi4xOCUgIFtr
+ZXJuZWxdICAgICAgIFtrXSBza2JfcmVsZWFzZV9kYXRhCj4+Pj4+ICAgICAgIDIuMDElICBba2Vy
+bmVsXSAgICAgICBba10gcjRrX2RtYV9jYWNoZV9pbnYKPj4KPj4KPj4gVGhlIHVkcCBmbG9vZCBi
+ZWhhdmlvciBpcyBub3QgIndlaXJkIi4gIFRoZSB0ZXN0IGlzIHdyb25nLiBJdCBpcyBzbwo+PiBm
+aWxsaW5nCj4+IHRoZSBsb2NhbCBxdWV1ZSBhcyB0byBkcmFtYXRpY2FsbHkgZXhjZWVkIHRoZSBi
+YW5kd2lkdGggb24gdGhlIGxpbmsuCj4KPgo+IEl0IHdvdWxkIGJlIG5pY2UgaWYgeW91IGNvdWxk
+IHByb3ZpZGUgYmFja3ByZXNzdXJlIHNvIHRoYXQgeW91IGNvdWxkCj4gc2ltcGx5IHNlbGVjdCBv
+biB0aGUgdWRwIHNvY2tldCBhbmQgdXNlIHRoYXQgdG8ga25vdyB3aGVuIHlvdSBjYW4gc2VuZAo+
+IG1vcmUgZnJhbWVzPz8KClRoZSBxZGlzYyB2ZXJzaW9uIHJldHVybnMgIE5FVF9YTUlUX0NOIHRv
+IHRoZSB1cHBlciBsYXllcnMgb2YgdGhlCnN0YWNrIGluIHRoZSBjYXNlCndoZXJlIHRoZSBkcm9w
+cGVkIHBhY2tldCdzIGZsb3cgPSB0aGUgaW5ncmVzcyBwYWNrZXQncyBmbG93LCBidXQgdGhhdApp
+cyBhZnRlciB0aGUKZXhoYXVzdGl2ZSBzZWFyY2guLi4KCkkgZG9uJ3Qga25vdyB3aGF0IGVmZmVj
+dCAoaWYgYW55KSB0aGF0IGhhZCBvbiB1ZHAgc29ja2V0cy4gSG1tLi4uIHdpbGwKbG9vay4gRXJp
+YyB3b3VsZCAianVzdCBrbm93Ii4KClRoYXQgbWlnaHQgcHJvdmlkZSBtb3JlIGJhY2twcmVzc3Vy
+ZSBpbiB0aGUgbG9jYWwgc2NlbmFyaW8uIFNPX1NORF9CVUYKc2hvdWxkIGludGVyYWN0IHdpdGgg
+dGhpcyBzdHVmZiBpbiBzb21lIHNhbmUgd2F5Li4uCgouLi4gYnV0IG92ZXIgdGhlIHdpcmUgZnJv
+bSBhIHRlc3QgZHJpdmVyIGJveCBlbHNld2hlcmUsIHRobywgYXNpZGUKZnJvbSBldGhlcm5ldCBm
+bG93IGNvbnRyb2wgaXRzZWxmLCB3aGVyZSBlbmFibGVkLCBuby4KCi4uLiBidXQgaW4gdGhhdCBj
+YXNlIHlvdSBoYXZlIGEgbXVjaCBsb3dlciBpbmJvdW5kL291dGJvdW5kCnBlcmZvcm1hbmNlIGRp
+c3Bhcml0eSBpbiB0aGUgZ2VuZXJhbCBjYXNlIHRvIHN0YXJ0IHdpdGguLi4gd2hpY2ggY2FuCnN0
+aWxsIGJlIHF1aXRlIGhpZ2guLi4KCj4KPiBBbnkgaWRlYSBob3cgdGhhdCB3b3JrcyB3aXRoIGNv
+ZGVsPwoKQmVhdXRpZnVsbHkuCgpGb3IgcmVzcG9uc2l2ZSBUQ1AgZmxvd3MuIEl0IGltbWVkaWF0
+ZWx5IHJlZHVjZXMgdGhlIHdpbmRvdyB3aXRob3V0IGEgUlRULgoKPiBUaGFua3MsCj4gQmVuCj4K
+PiAtLQo+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+IENhbmRlbGEgVGVj
+aG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgoKLS0gCkRhdmUgVMOk
+aHQKTGV0J3MgZ28gbWFrZSBob21lIHJvdXRlcnMgYW5kIHdpZmkgZmFzdGVyISBXaXRoIGJldHRl
+ciBzb2Z0d2FyZSEKaHR0cDovL2Jsb2cuY2Vyb3dydC5vcmcKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hdGgxMGsK
