@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1awjIC-0001fX-7r
- for ath10k@lists.infradead.org; Sun, 01 May 2016 04:47:41 +0000
-Received: by mail-lf0-x22e.google.com with SMTP id j8so24948811lfd.2
- for <ath10k@lists.infradead.org>; Sat, 30 Apr 2016 21:47:19 -0700 (PDT)
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Subject: Re: [Make-wifi-fast] fq_codel_drop vs a udp flood
-From: Jonathan Morton <chromatix99@gmail.com>
-In-Reply-To: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
-Date: Sun, 1 May 2016 07:46:53 +0300
-Message-Id: <A918BB9D-ECEE-4882-AA56-200C2FF28D79@gmail.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1awjiS-00054I-Cn
+ for ath10k@lists.infradead.org; Sun, 01 May 2016 05:14:49 +0000
+Message-ID: <57258F41.8040600@candelatech.com>
+Date: Sat, 30 Apr 2016 22:08:17 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: fq_codel_drop vs a udp flood
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
+In-Reply-To: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +18,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>
+To: Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, make-wifi-fast@lists.bufferbloat.net
 
-Cj4gT24gMSBNYXksIDIwMTYsIGF0IDA2OjQxLCBEYXZlIFRhaHQgPGRhdmUudGFodEBnbWFpbC5j
-b20+IHdyb3RlOgo+IAo+IGZxX2NvZGVsX2Ryb3AgbG9va3MgdGhyb3VnaCAxMDI0IHF1ZXVlcyBp
-biB0aGUgbWFpbmxpbmUgdmVyc2lvbiBhbmQKPiA0MDk2IGluIHRoaXMuIFs0XSBUaGF0J3MgKmV4
-cGVuc2l2ZSouCgpDYWtlIG9yaWdpbmFsbHkgaW5oZXJpdGVkIHRoaXMgYmVoYXZpb3VyLgoKU29t
-ZSB0aW1lIGFnbywgSSBjaGFuZ2VkIGl0IHRvIHNlYXJjaCBvbmx5IHRoZSBxdWV1ZXMgaW4gdGhl
-IGFjdGl2ZSBsaXN0cy4gIEluIGEgc2ltcGxlIGNhc2UgbGlrZSB0aGlzLCB0aGF0IG1lYW5zIGl0
-IG9ubHkgaGFzIHRvIGNvbnNpZGVyIDEtMiBxdWV1ZXMgZWFjaCB0aW1lLCB3aGljaCBpcyBhIGh1
-Z2UgaW1wcm92ZW1lbnQgYW5kIHN1ZmZpY2llbnQgZm9yIGFueSBub3JtYWwgdHJhZmZpYyBzaXR1
-YXRpb24uCgpUaGUgdGhlb3JldGljYWwgd29yc3QtY2FzZSBwZXJmb3JtYW5jZSAoZWcuIHVuZGVy
-IGEgRERvUykgcmVtYWlucyBwb29yLiAgVG8gZml4IHRoYXQsIEkgdGhpbmsgd2Ugd291bGQgbmVl
-ZCB0byBtYWludGFpbiBhIG1heC1oZWFwIG9mIHF1ZXVlIGxlbmd0aHMgKHdoaWNoIGlzIGEgZ2Vu
-ZXJhbGlzYXRpb24gb2YgdGhlIOKAnGtlZXAgMyBsb25nZXN0IHF1ZXVlc+KAnSBpZGVhKS4gIE9u
-IHRoZSB1cHNpZGUsIHRoaXMgaGVhcCB3b3VsZCBvbmx5IG5lZWQgdG8gYmUgbWFpbnRhaW5lZCB3
-aGVuIGRyb3BzIGFjdHVhbGx5IG9jY3VyLCBhbmQgd291bGQgcmVtYWluIGZhc3QgaW4gc2ltcGxl
-IGNhc2VzIHdoZXJlIG9ubHkgb25lIG9yIHR3byBxdWV1ZXMgYXJlIGRpc3Byb3BvcnRpb25hdGVs
-eSBsb25nLgoKSXTigJlzIGp1c3QgYXMgZWFzeSB0byBoZWFkLWRyb3AgYXMgdGFpbC1kcm9wLCBv
-bmNlIHlvdSBkZWNpZGUgdG8gYmUgcXVldWUtZmFpciAod2hpY2ggKmlzKiBkZXNpcmFibGUgdG8g
-bWFrZSBEb1MgYXR0YWNrcyBoYXJkZXIpLiAgSXQgaXMgdGhlIHF1ZXVlLWZhaXJuZXNzIHdoaWNo
-IGlzIENQVSBpbnRlbnNpdmUgKGFuZCBjYW4gYmUgb3B0aW1pc2VkLCBzZWUgYWJvdmUpLiAgSGVh
-ZC1kcm9wIGlzIHRoZW9yZXRpY2FsbHkgc3VwZXJpb3IsIHNpbmNlIGl0IGdldHMgdGhlIGNvbmdl
-c3Rpb24gc2lnbmFsIHRvIHRoZSByZWNlaXZlciBmYXN0ZXIuICBBbiB1bnJlc3BvbnNpdmUgZmxv
-dyB3b27igJl0IGNhcmUgZWl0aGVyIHdheSwgYnV0IGEgcmVzcG9uc2l2ZSBvbmUgd2lsbC4KCiAt
-IEpvbmF0aGFuIE1vcnRvbgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+
+
+On 04/30/2016 08:41 PM, Dave Taht wrote:
+> There were a few things on this thread that went by, and I wasn't on
+> the ath10k list
+>
+> (https://www.mail-archive.com/ath10k@lists.infradead.org/msg04461.html)
+>
+> first up, udp flood...
+>
+>>>> From: ath10k <ath10k-boun...@lists.infradead.org> on behalf of Roman
+>>>> Yeryomin <leroi.li...@gmail.com>
+>>>> Sent: Friday, April 8, 2016 8:14 PM
+>>>> To: ath10k@lists.infradead.org
+>>>> Subject: ath10k performance, master branch from 20160407
+>>>>
+>>>> Hello!
+>>>>
+>>>> I've seen performance patches were commited so I've decided to give it
+>>>> a try (using 4.1 kernel and backports).
+>>>> The results are quite disappointing: TCP download (client pov) dropped
+>>>> from 750Mbps to ~550 and UDP shows completely weird behavour - if
+>>>> generating 900Mbps it gives 30Mbps max, if generating 300Mbps it gives
+>>>> 250Mbps, before (latest official backports release from January) I was
+>>>> able to get 900Mbps.
+>>>> Hardware is basically ap152 + qca988x 3x3.
+>>>> When running perf top I see that fq_codel_drop eats a lot of cpu.
+>>>> Here is the output when running iperf3 UDP test:
+>>>>
+>>>>      45.78%  [kernel]       [k] fq_codel_drop
+>>>>       3.05%  [kernel]       [k] ag71xx_poll
+>>>>       2.18%  [kernel]       [k] skb_release_data
+>>>>       2.01%  [kernel]       [k] r4k_dma_cache_inv
+>
+> The udp flood behavior is not "weird".  The test is wrong. It is so filling
+> the local queue as to dramatically exceed the bandwidth on the link.
+
+It would be nice if you could provide backpressure so that you could
+simply select on the udp socket and use that to know when you can send
+more frames??
+
+Any idea how that works with codel?
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
