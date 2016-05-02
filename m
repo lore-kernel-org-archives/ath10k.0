@@ -1,22 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+Received: from mail-oi0-x22c.google.com ([2607:f8b0:4003:c06::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axKi0-0006C9-Vg
- for ath10k@lists.infradead.org; Mon, 02 May 2016 20:44:49 +0000
-Received: by mail-wm0-x230.google.com with SMTP id a17so5723580wme.0
- for <ath10k@lists.infradead.org>; Mon, 02 May 2016 13:44:27 -0700 (PDT)
+ id 1axN7N-0006q5-9m
+ for ath10k@lists.infradead.org; Mon, 02 May 2016 23:19:11 +0000
+Received: by mail-oi0-x22c.google.com with SMTP id x201so4424662oif.3
+ for <ath10k@lists.infradead.org>; Mon, 02 May 2016 16:18:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQmx=RpAVfGg_0mkc3L0902uxtCns0mFkL2U6FrMBN4wTw@mail.gmail.com>
-References: <CAOt_L3-9Ok-yQZeWDkRGr4YR8UoaK2=+2297Ag=tiE_GBe_4mQ@mail.gmail.com>
- <CA+BoTQkfbTFxc75_NvzkJN1GiPv-kbBxNUsjZ+b8ZU+9JGoxbw@mail.gmail.com>
- <CAOt_L3-yPLXoniFtrhXD_JxE=w=9NwBno5E5DpskEdF2g1DiiQ@mail.gmail.com>
- <CA+BoTQnZr4fyZLzzxayGC=7og+aU7h_xqQaTDpcCAuUT5ug6oQ@mail.gmail.com>
- <CAOt_L39xO6dqmAW7CvuBZZv154QO2mP7Vdvz7a7ii1Pkq=oc8Q@mail.gmail.com>
- <CA+BoTQmx=RpAVfGg_0mkc3L0902uxtCns0mFkL2U6FrMBN4wTw@mail.gmail.com>
-Date: Mon, 2 May 2016 16:44:26 -0400
-Message-ID: <CAOt_L395MrkjBABxKtGL3Sz30CH9P8BxxPOZWeSDx5=wc+9X8A@mail.gmail.com>
-Subject: Re: Issues with latest kernel versions and Monitor mode
-From: Amato Carbonara <acarbonara13@gmail.com>
+Date: Mon, 2 May 2016 16:18:47 -0700
+Message-ID: <CAA93jw7uHvkKTUtXZqqWbDSWDxb=sZ+sfhdmMM1SZW3BsmZ1xA@mail.gmail.com>
+Subject: iperf3 udp flood behavior at higher rates
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +18,90 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
+To: Roman Yeryomin <leroi.lists@gmail.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>
 
-SSBoYXZlIGNhcHR1cmVkIHRoZSBsb2cgZmlsZSBhbmQgcGxhY2VkIHRoZW0gaW4gR29vZ2xlIGRy
-aXZlLiAgQmVsb3cKaXMgdGhlIHNoYXJhYmxlIGxpbms6CgpodHRwczovL2RyaXZlLmdvb2dsZS5j
-b20vb3Blbj9pZD0wQjgwZ0c5d1p2R0YwT1doa1pGWXRWMVp4VW1jCgpUaGVyZSBhcmUgMiBsb2dz
-CgpPbiBGcmksIEFwciAyOSwgMjAxNiBhdCAxOjEwIEFNLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwu
-a2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4gT24gMjggQXByaWwgMjAxNiBhdCAxNzoyMCwgQW1h
-dG8gQ2FyYm9uYXJhIDxhY2FyYm9uYXJhMTNAZ21haWwuY29tPiB3cm90ZToKPj4gSGkgTWljaGFs
-LAo+PiAgIFRoYW5rIHlvdSBmb3IgeW91ciBoZWxwLiAgSSB0aGluayB3ZSBhcmUgZ2V0dGluZyBj
-bG9zZXIuICBCdXQgSSBhbQo+PiB1bnN1cmUgd2hhdCBrZXJuZWwgbG9ncyBhcmUgbmVlZGVkLiAg
-SSBoYXZlIGJlZW4gcmVmZXJyaW5nIHRvIHRoZQo+PiBmb2xsb3dpbmcgbGluayBmb3IgbXkgaW5m
-b3JtYXRpb246Cj4+Cj4+IGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3VzZXJz
-L2RyaXZlcnMvYXRoMTBrL2RlYnVnCj4+Cj4+IE15IHByb2NlZHVyZToKPj4gMS4gU2V0IHRoZSBk
-ZWJ1ZyBtYXNrOgo+PiBlY2hvIDB4ZmZmZmZmM2YgPiAvc3lzL21vZHVsZS9hdGgxMGtfY29yZS9w
-YXJhbWV0ZXJzL2RlYnVnX21hc2sKPj4KPj4gMi4gVmVyaWZ5IGlmIHRoZSBkZWJ1ZyBtYXNrIHdh
-cyBzZXQ6Cj4+IGNhdCAvc3lzL21vZHVsZS9hdGgxMGtfY29yZS9wYXJhbWV0ZXJzL2RlYnVnX21h
-c2sKPj4KPj4gVmFsdWUgcmV0dXJuZWQgPSA0Mjk0OTY3MTAzCj4+Cj4+IFRoaXMgaXMgZXhwZWN0
-ZWQ6IDB4ZmZmZmZmM2YgaXMgNDI5NDk2NzEwMyBpbiBkZWNpbWFsCj4+Cj4+Cj4+IDMuIHRyYWNl
-IGFsbCBsb2cgbWVzc2FnZXMsIGluY2x1ZGluZyBkZWJ1ZyBsb2dzLCBpbnRvIHRyYWNlLmRhdCBm
-aWxlOgo+PiB0cmFjZS1jbWQgcmVjb3JkIC1lIGF0aDEwa19sb2cqCj4KPiBUaGlzIGlzIG1vcmUg
-Z2VuZXJpYzoKPgo+IHRyYWNlLWNtZCByZWNvcmQgLWUgYXRoMTBrCj4KPgo+Pgo+PiA0LiBUbyBy
-ZWFkIHRoZSB0cmFjZS5kYXQgZmlsZToKPj4gdHJhY2UtY21kIHJlcG9ydAo+Pgo+Pgo+PiBXaGVu
-IEkgZ28gdG8gc3lzL2xvZy9kZWJ1Zy90cmFjaW5nL2V2ZW50cy9hdGgxMGssIEkgc2VlIGEgbG90
-IG9mCj4+IGRpcmVjdG9yaWVzIGFuZCBmaWxlcy4KPj4KPj4gV2hpY2ggYXJlIG5lZWRlZCB0byBw
-cm92aWRlZCB0aGUgcmVxdWlyZWQgaW5mb3JtYXRpb24/Cj4KPiB0cmFjZS1jbWQgcmVwb3J0ID4g
-bG9nLnR4dAo+Cj4gQW5kIHRoZW4gdXBsb2FkIGxvZy50eHQgdG8gc29tZSB3ZWJzaXRlIChwYXN0
-ZWJpbiwgbWVnYS5ueiBvciB3aGF0ZXZlcgo+IHlvdSBmYW5jeSBhbmQgZG9lc24ndCByZXF1aXJl
-IHJlZ2lzdGVyaW5nKQo+Cj4gT2gsIGFuZCB0byBiZSBvbiB0aGUgc2FtZSBwYWdlOiB5b3Ugc2hv
-dWxkIHN0YXJ0IHRoZSB0cmFjZS1jbWQgcmVjb3JkCj4gY29tbWFuZCBhZnRlciBsb2FkaW5nIHRo
-ZSBkcml2ZXIgYnV0IGJlZm9yZSB5b3UgYXR0ZW1wdCB0byBleGVyY2lzZQo+IG1vbml0b3IgbW9k
-ZS4gT25jZSB0aGUgZHJpdmVyIHN0b3BzIHRvIHJlc3BvbmQgY29udHJvbC1jIHRoZSB0cmFjZS1j
-bWQKPiByZWNvcmQgYW5kIGRvIGEgcmVwb3J0Lgo+Cj4KPiBNaWNoYWwKPgo+Cj4gUFMuIFJlLWFk
-ZCB0aGUgbWFpbGluZyBsaXN0IG5leHQgdGltZSBhcm91bmQgeW91IHJlcGx5LCBwbGVhc2UuCj4K
-Pgo+Pgo+PiBPbiBUaHUsIEFwciAyOCwgMjAxNiBhdCAxMjo0MiBBTSwgTWljaGFsIEthemlvciA8
-bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+Pj4gT24gMjcgQXByaWwgMjAxNiBhdCAx
-NjoxMiwgQW1hdG8gQ2FyYm9uYXJhIDxhY2FyYm9uYXJhMTNAZ21haWwuY29tPiB3cm90ZToKPj4+
-PiBJIHRyaWVkIHNldHRpbmcgdGhlIGRlYnVnX21hc2ssIGJ1dCByZWNlaXZlZCB0aGUgZm9sbG93
-aW5nIGVycm9yOgo+Pj4+Cj4+Pj4gIyBtb2Rwcm9iZSBhdGgxMGtfY29yZS5rbyBkZWJ1Z19tYXNr
-PTB4ZmZmZmZmM2YKPj4+PiBtb2Rwcm9iZTogRkFUQUw6IE1vZHVsZSBhdGgxMGtfY29yZS5rbyBu
-b3QgZm91bmQuCj4+Pj4KPj4+PiBJIGRvIG5vdCBoYXZlIHRoZSBhdGgxMGtfY29yZS5rbyBpbnN0
-YWxsZWQuICBJcyB0aGVyZSBhIHdheSBJIGNhbgo+Pj4+IGluc3RhbGwgaXQgc28gSSBjYW4gc2V0
-IHRoZSBkZWJ1ZyBtb2RlPwo+Pj4KPj4+IFlvdSBoYXZlIHRvIGhhdmUgaXQgaW5zdGFsbGVkLiBP
-dGhlcndpc2UgeW91IHdvdWxkbid0IGJlIGFibGUgdG8gcnVuCj4+PiBhdGgxMGsgYW5kIEkgZG91
-YnQgeW91IGhhdmUgaXQgY29tcGlsZWQgaW4ta2VybmVsLgo+Pj4KPj4+IG1vZHByb2JlIGV4cGVj
-dHMgbW9kdWxlIG5hbWUgd2l0aG91dCB0aGUgLmtvLCBzbyB5b3Ugc2hvdWxkIHJ1bjoKPj4+Cj4+
-PiAgIG1vZHByb2JlIGF0aDEwa19jb3JlIGRlYnVnX21hc2s9MHhmZmZmZmYzZgo+Pj4KPj4+Cj4+
-PiBNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+to fork the fq_codel_drop discussion a bit...
+
+I have up and running two new boxes[1] that are my hope to be able to
+test ath10k/ath9k hardware with, for this test, using one in the
+middle as a router and a nuc i3 box as the server, all ports pure
+ethernet... there's a switch in the way, too.
+
+On tcp via netperf I get expected ~940 mbits.
+
+On udp via iperf3 (again, all pure ethernet) -  in neither case below
+am I seeing any drops in the qdisc itself anywhere on the path, yet am
+only achieving 500mbit.
+
+?
+
+1) Using the
+
+iperf3 -c 172.26.16.130 -u -b900M -R -l1472 -t600
+
+udp flood version, I get some loss on the initial burst, but none
+*reported* after that, and peak at about ~500Mbits.
+
+[ ID] Interval           Transfer     Bandwidth       Jitter
+Lost/Total Datagrams
+[  4]   0.00-1.00   sec  52.1 MBytes   437 Mbits/sec  0.037 ms
+1276/38379 (3.3%)
+[  4]   1.00-2.00   sec  54.3 MBytes   456 Mbits/sec  0.042 ms  0/38699 (0%)
+[  4]   2.00-3.00   sec  56.1 MBytes   470 Mbits/sec  0.030 ms  0/39933 (0%)
+
+2) Flipping the sense of the test by getting rid of -R (from the nuc)
+
+iperf3 -c 172.26.16.130 -u -b900M -l1472 -t600
+
+I get on the other side a steady state throughput of a little over
+520mbits (with 41% loss reported consistently)
+
+[  5]  37.00-38.00  sec  64.2 MBytes   539 Mbits/sec  0.026 ms
+31613/77355 (41%)
+[  5]  38.00-39.00  sec  62.8 MBytes   527 Mbits/sec  0.023 ms
+31517/76255 (41%)
+[  5]  39.00-40.00  sec  62.0 MBytes   520 Mbits/sec  0.033 ms
+31052/75201 (41%)
+
+On the other:
+
+[  4]  77.00-78.00  sec   111 MBytes   929 Mbits/sec  78915
+[  4]  78.00-79.00  sec   103 MBytes   864 Mbits/sec  73371
+[  4]  79.00-80.00  sec   108 MBytes   907 Mbits/sec  77034
+[  4]  80.00-81.00  sec   107 MBytes   900 Mbits/sec  76423
+[  4]  81.00-82.00  sec   104 MBytes   875 Mbits/sec  74277
+[  4]  82.00-83.00  sec   113 MBytes   950 Mbits/sec  80666
+
+
+Thinking that perhaps I was seeing loss in the rx ring, I used ethtool
+to increase that from the default 256 to 4096...
+
+only to hang things thoroughly... :( and I'm watching things reboot now.
+
+Netperf does not have a multi-hop capable udp flood test (rick jones
+can explain why... )
+
+As I recall on this thread iperf3 was being run on a mac box as a
+client, and I'll dig one up - but was it also osx on the other side of
+the test?
+
+And what other params would I tweak on linux to see a udp flood go faster?
+
+Topology looks like this:
+
+apu1 <-> apu2 <-> switch <-> nuc.
+
+I could put another switch in the way, I am always nervous about
+invoking hw flow control...
+
+[1] http://www.pcengines.ch/apu2c4.htm
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
