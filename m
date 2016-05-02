@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1axI8l-0008Ji-0e
- for ath10k@lists.infradead.org; Mon, 02 May 2016 18:00:15 +0000
-Subject: Re: QCA99XX with MU-MIMO and beamforming?
-References: <571E7E8F.1010404@candelatech.com>
- <CA+BoTQke1auNL1-oPN-N9=e9K5vit0w2iJSS9KuXEifR7hqm6Q@mail.gmail.com>
- <571F7CB7.9090601@candelatech.com>
- <CA+BoTQmd3dzoGMckJe+1YSONjtqqtUOKWiRj-CUF6hO42DExng@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <57279584.6040809@candelatech.com>
-Date: Mon, 2 May 2016 10:59:32 -0700
+Received: from mail-oi0-x22e.google.com ([2607:f8b0:4003:c06::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1axIla-0004o0-Dm
+ for ath10k@lists.infradead.org; Mon, 02 May 2016 18:40:23 +0000
+Received: by mail-oi0-x22e.google.com with SMTP id x19so201500504oix.2
+ for <ath10k@lists.infradead.org>; Mon, 02 May 2016 11:40:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQmd3dzoGMckJe+1YSONjtqqtUOKWiRj-CUF6hO42DExng@mail.gmail.com>
+In-Reply-To: <CACiydb+nNEWfO8XS63MnrW0LazORAGX+L+fF1xZ2_2sCLeRAsg@mail.gmail.com>
+References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
+ <57258F41.8040600@candelatech.com>
+ <CAA93jw46O3CbURxyP7AENkOCnA71Bn6ddTJpdfzEjWcFKgnaAg@mail.gmail.com>
+ <1462114043.512818296@apps.rackspace.com>
+ <CACiydb+nNEWfO8XS63MnrW0LazORAGX+L+fF1xZ2_2sCLeRAsg@mail.gmail.com>
+Date: Mon, 2 May 2016 11:40:00 -0700
+Message-ID: <CAA93jw4vLUM8XLORoExUuSidaJ8HqzJJJ-FPi=5bXZGxe52y3A@mail.gmail.com>
+Subject: Re: [Make-wifi-fast] fq_codel_drop vs a udp flood
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,175 +24,143 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Roman Yeryomin <leroi.lists@gmail.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, David Reed <dpreed@reed.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
 
-On 04/26/2016 11:37 PM, Michal Kazior wrote:
-> On 26 April 2016 at 16:35, Ben Greear <greearb@candelatech.com> wrote:
->>
->>
->> On 04/25/2016 11:16 PM, Michal Kazior wrote:
->>>
->>> On 25 April 2016 at 22:31, Ben Greear <greearb@candelatech.com> wrote:
->>>>
->>>> Has anyone tried this?  Looks like hostapd has the ability to set the
->>>> feature flags, but I am not sure if it is really working in ath10k?
->>>
->>>
->>> Yes, it works. You need a few vht_capabs. I have mine like this:
->>>
->>>    >
->>> vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][SU-BEAMFORMER][SU-BEAMFORMEE][MU-BEAMFORMER][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN][BF-ANTENNA-4][MAX-MPDU-11454][RX-STBC-1][MAX-A-MPDU-LEN-EXP7]
->>>
->>> The SU-, MU- and BF- are the required part only I think.
->>>
->>>
->>>>
->>>> Do you actually need anything other than standard whip antenna to
->>>> allow this to function properly?
->>>
->>>
->>> I don't think. FWIW Make sure the antennas are reasonably set
->>> up/separated from each other. If you cram them too tight/randomly
->>> beamforming won't work efficiently. I had problem with client antennas
->>> being too close to each other and lying flat on a table (I than made a
->>> foam-stand and put them a few cm apart) so the same thing must apply
->>> to AP as well.
->>>
->>>
->>>>
->>>> What about station mode?
->>>
->>>
->>> Works as well. Both on QCA99XX and QCA9377.
->>
->>
->> Thanks for the info.  How did you determine that it actually worked?
->
-> Empirically. If you get 600mbps UDP to two 1x1 clients it works :)
->
-> Also, the rx bitrate on the receiving ath10k end will be kind of wierd
-> (there's currently no way to decode MU ratesets on Rx because group
-> ids are managed in firmware).
-
-So, I configured 3 systems:  1 is AP, two are acting as stations.
-
-All are 9980, but the two station systems are forced to act like
-1x1.
-
-Single station download is about 270Mbps over-the-air.  But, when I
-add the second station, then total over-the-air stays at about 270Mbps.
-
-So, I guess mu-mimo is not actually working for me.
-
-My hostapd config looks like this (below).  Does it look right?  Do I need something
-special in wpa_supplicant config on the station side?
-
-interface=vap0
-driver=nl80211
-logger_syslog=-1
-logger_syslog_level=2
-logger_stdout=-1
-logger_stdout_level=2
-ctrl_interface=/var/run/hostapd
-ctrl_interface_group=0
-ssid=wave2-2-ssid
-bssid=04:f0:21:56:6d:20
-country_code=US
-ieee80211d=0
-ieee80211h=0
-ieee80211w=0
-hw_mode=a
-ieee80211n=1
-ieee80211ac=1
-beacon_int=240
-dtim_period=2
-max_num_sta=2007
-rts_threshold=2347
-preamble=0
-macaddr_acl=0
-auth_algs=1
-ignore_broadcast_ssid=0
-# Enable HT modes if you want 300Mbps+ throughput.
-#ht_capab=[HT20][HT40-][HT40+][GF][SHORT-GI-20][SHORT-GI-40]
-#         [TX-STBC][RX-STBC123][MAX-AMSDU-7935][DSSS_CCK-40][PSMP][LSIG-TXOP-PROT]
-ht_capab=[HT20][HT40+][SHORT-GI-40][SHORT-GI-20]
-vht_capab=[MAX-MPDU-11454][RXLDPC][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP0][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN][SU-BEAMFORMER][SU-BEAMFORMEE][MU-BEAMFORMER][SHORT-GI-80]
-wmm_enabled=1
-wmm_ac_bk_cwmin=4
-wmm_ac_bk_cwmax=10
-wmm_ac_bk_aifs=7
-wmm_ac_bk_txop_limit=0
-wmm_ac_bk_acm=0
-wmm_ac_be_aifs=3
-wmm_ac_be_cwmin=4
-wmm_ac_be_cwmax=10
-wmm_ac_be_txop_limit=0
-wmm_ac_be_acm=0
-wmm_ac_vi_aifs=2
-wmm_ac_vi_cwmin=3
-wmm_ac_vi_cwmax=4
-wmm_ac_vi_txop_limit=94
-wmm_ac_vi_acm=0
-wmm_ac_vo_aifs=2
-wmm_ac_vo_cwmin=2
-wmm_ac_vo_cwmax=3
-wmm_ac_vo_txop_limit=47
-wmm_ac_vo_acm=0
-### TX queue parameters
-tx_queue_data3_aifs=7
-tx_queue_data3_cwmin=15
-tx_queue_data3_cwmax=1023
-tx_queue_data3_burst=0
-tx_queue_data2_aifs=3
-tx_queue_data2_cwmin=15
-tx_queue_data2_cwmax=63
-tx_queue_data2_burst=0
-tx_queue_data1_aifs=1
-tx_queue_data1_cwmin=7
-tx_queue_data1_cwmax=15
-tx_queue_data1_burst=3.0
-tx_queue_data0_aifs=1
-tx_queue_data0_cwmin=3
-tx_queue_data0_cwmax=7
-tx_queue_data0_burst=1.5
-vht_oper_centr_freq_seg0_idx=155
-vht_oper_chwidth=1
-channel=149
-supported_rates=60 90 120 180 240 360 480 540
-ieee8021x=0
-eapol_key_index_workaround=0
-eap_server=0
-own_ip_addr=127.0.0.1
-wpa=2
-wpa_pairwise=TKIP CCMP
-wpa_passphrase=wave2-passwd
-wpa_key_mgmt=WPA-PSK WPA-PSK-SHA256
-
-# Error emulation settings.
-ignore_probe_probability=0.000000
-ignore_auth_probability=0.000000
-ignore_assoc_probability=0.000000
-ignore_reassoc_probability=0.000000
-corrupt_gtk_rekey_mic_probability=0.000000
-no_pri_sec_switch=1
-
-
-Thanks,
-Ben
-
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gTW9uLCBNYXkgMiwgMjAxNiBhdCA3OjAzIEFNLCBSb21hbiBZZXJ5b21pbiA8bGVyb2kubGlz
+dHNAZ21haWwuY29tPiB3cm90ZToKPiBPbiAxIE1heSAyMDE2IGF0IDE3OjQ3LCAgPGRwcmVlZEBy
+ZWVkLmNvbT4gd3JvdGU6Cj4+IE1heWJlIEkgbWlzc2VkIHNvbWV0aGluZywgYnV0IHdoeSBpcyBp
+dCBpbXBvcnRhbnQgdG8gb3B0aW1pemUgZm9yIGEgVURQIGZsb29kPwo+Cj4gV2UgZG9uJ3QgbmVl
+ZCB0byBvcHRpbWl6ZSBpdCB0byBVRFAgYnV0IFVEUCBpcyB1c2VkIGUuZy4gYnkgdG9ycmVudHMK
+PiB0byBhY2hpZXZlIGhpZ2hlciB0aHJvdWdocHV0IGFuZCB1c2VkIGEgbG90IGluIGdlbmVyYWwu
+CgpUb3JyZW50cyB1c2UgdVRQIGNvbmdlc3Rpb24gY29udHJvbCBhbmQgd29uJ3QgaGl0IHRoaXMg
+ZnVuY3Rpb24gYXQKYWxsLiBBbmQgZXJpYyBqdXN0IG1hZGUgZnFfY29kZWxfZHJvcCBtb3JlIGVm
+ZmljaWVudCBmb3IgdGVzdHMgdGhhdApkby4KClRoZXJlIGFyZSBwb3RlbnRpYWxseSB6aWxsaW9u
+cyBvZiBvdGhlciBpc3N1ZXMgd2l0aCBhbXBkdSdzLCB0eG9wCnVzYWdlLCBhZ2dyZWdhdGUgInBh
+Y2tpbmciLCBldGMgdGhhdCBjYW4gYWxzbyBhZmZlY3QgYW5kIG90aGVyCnByb3RvY29vbHMuCgo+
+IEFuZCwgYWdhaW4sIGluIHRoaXMgY2FzZSBUQ1AgaXMgYnJva2VuIHRvbyAoNzUwTWJwcyBkb3du
+IHRvIDU1MCksIHNvCj4gaXQncyBub3QgbGlrZSBEYXZlIGlzIHNheWluZyB0aGF0IFVEUCB0ZXN0
+IGlzIGJyb2tlbiwgZnFfY29kZWwgaXMganVzdAo+IHRvbyBodW5ncnkgZm9yIENQVQoKImZxX2Nv
+ZGVsX2Ryb3AiIHdhcyB0b28gaHVuZ3J5IGZvciBjcHUuIGZpeGVkLiB0aHggZXJpYy4gOikKCkkn
+dmUgbmV2ZXIgc2VlbiBhdGgxMGsgdGNwIHRocm91Z2hwdXQgaW4gdGhlIHJlYWwgd29ybGQgKGUu
+ZyBub3Qgd2lyZWQKdXAsIG92ZXIgdGhlIGFpcikgZXZlbiBjbG9zZSB0byA3NTAgdW5kZXIgdGVz
+dCBvbiB0aGUgYXRoMTBrIChJJ3ZlCnNlZW4gMzAwLCBhbmQgSSdtIGdldHRpbmcgc29tZSBiZXR0
+ZXIgZ2VhciB1cCB0aGlzIHdlZWspLi4uIGFuZApldmVyeWJvZHkgdGVzdHMgd2lmaSBkaWZmZXJl
+bnRseS4KCihmb3IgdGhlIHJlY29yZCwgd2hhdCB3YXMgeW91ciBpcGVyZiB0Y3AgdGVzdCBsaW5l
+PykuIE1vcmUgcGVvcGxlCnRlc3RpbmcgZGlmZmVyZW50bHkgPSBnb29kLgoKRGlkIGZxX2NvZGVs
+X2Ryb3Agc2hvdyB1cCBpbiB0aGUgcGVyZiB0cmFjZSBmb3IgdGhlIHRjcCB0ZXN0PwoKKE1vcmUg
+bGlrZWx5IHlvdSB3b3VsZCBoYXZlIHNlZW4gdGltZXN0YW1waW5nIHJpc2Ugc2lnbmlmaWNhbnRs
+eSBmb3IKdGhlIHRjcCB0ZXN0LCBhcyB3ZWxsIGFzIGVucXVldWUgdGltZSkKClRoYXQgc2FpZCwg
+bW9yZSBwZW9wbGUgdGVzdGluZyB0aGUgc2FtZSB3YXlzLCBnb29kIHRvby4KCkknZCBsb3ZlIGl0
+IGlmIHlvdSBjb3VsZCByZS1ydW4geW91ciB0ZXN0IHZpYSBmbGVudCwgcmF0aGVyIHRoYW4KaXBl
+cmYsIGFuZCBsb29rIGF0IHRoZSB0Y3Agc2F3dG9vdGggb3IgbGFjayB0aGVyZW9mLCBhbmQgdGhl
+IG92ZXJhbGwKY3VydmUgb2YgdGhlIHRocm91Z2hwdXQsIGJlZm9yZSBhbmQgYWZ0ZXIgdGhpcyBz
+ZXQgb2YgY29tbWl0cy4KCkZsZW50IGNhbiBiZSBtYWRlIHRvIHJ1biBvbiBvc3ggdmlhIG1hY3Bv
+cnRzIG9yIGJyZXcuIChtdWNoIGVhc2llciB0bwpnZXQgcnVubmluZyBvbiBsaW51eCkgQW5kIHRy
+eSB0byB0YWcgYWxvbmcgb24gb2JzZXJ2aW5nL2ZpeGluZyBsb3cKd2lmaSByYXRlIGJlaGF2aW9y
+PwoKVGhpcyB3YXMgdGhlIG1vcmUgcmVjZW50IGRxbCB2cyB3aWZpIHRlc3Q6CgpodHRwOi8vYmxv
+Zy5jZXJvd3J0Lm9yZy9wb3N0L2RxbF9vbl93aWZpXzIvCgphbmQgc2VyaWVzLgoKPj4gQSBnZW5l
+cmFsIG9ic2VydmF0aW9uIG9mIGNvbnRyb2wgdGhlb3J5IGlzIHRoYXQgdGhlcmUgaXMgYWxtb3N0
+IGFsd2F5cyBhbiBhZHZlcnNhcmlhbCBzdHJhdGVneSB0aGF0IHdpbGwgZGVzdHJveSBhbnkgY29u
+dHJvbCByZWdpbWUuIFNvbWV0aW1lcyBvbmUgaGFzIHRvIGludm9rZSBhbiAib3JhY2xlIiB0aGF0
+IGtub3dzIHRoZSBzdGF0ZSBvZiB0aGUgY29udHJvbCBzeXN0ZW0gYXQgYWxsIHRpbWVzIHRvIGdl
+dCB0aGVyZS4KPj4KPj4gU28gYSBoYW5kd2F2ZSBpcyB0aGF0ICp0aGVyZSBpcyBhbHdheXMgYSBE
+RG9TIHRoYXQgd2lsbCB3b3JrKiBubyBtYXR0ZXIgaG93IGNsZXZlciB5b3UgYXJlLgo+Pgo+PiBB
+bmQgdGhlIGNvcm9sbGFyeSBpcyBpbGx1c3RyYXRlZCBieSB0aGUgVFNBLiBJZiB5b3UgY2FuJ3Qg
+YW50aWNpcGF0ZSBhbGwgcG9zc2libGUgYXR0YWNrcywgaXQgaXMgbm90IGNsZWFybHkgYmV0dGVy
+IHRvIGp1c3QgY29uZ2VzdCB0aGUgd2hvbGUgc3lzdGVtIGF0IGFsbCB0aW1lcyB3aXRoIGNvbnRy
+b2xzIHRoYXQgY2FuJ3QgcG9zc2libHkgc29sdmUgYWxsIHBvc3NpYmxlIGF0dGFja3MgLSBpLmUu
+IFNlY3VyaXR5IFRoZWF0ZXIuIFdlIGRvbid0IHdhbnQgImFudGktRERvUyB0aGVhdGVyIiBJIGRv
+bid0IHRoaW5rLgo+Pgo+PiBUaGVyZSBpcyBhbiBhbHRlcm5hdGl2ZSBtZWNoYW5pc20gdGhhdCBo
+YXMgYmVlbiBlZmZlY3RpdmUgYXQgZGVhbGluZyB3aXRoIEREb1MgaW4gZ2VuZXJhbCAtIHRyYWNr
+IHRoZSBkaXNydXB0aW9uIGJhY2sgdG8gdGhlIHNvdXJjZSBhbmQga2lsbCBpdC4gICh0aGlzIGlz
+IHdoYXQgdGhlIGVuZC10by1lbmQgYXJndW1lbnQgd291bGQgYmU6IGRvbid0IHRyeSB0byBzb2x2
+ZSBhIGZ1bmRhbWVudGFsbHkgZW5kLXRvLWVuZCBwcm9ibGVtLCBERG9TLCBzb2xlbHkgaW4gdGhl
+IG5ldHdvcmsgW3N3aXRjaGVzXSwgc2luY2UgeW91IGhhdmUgdG8gc29sdmUgaXQgYXQgdGhlIGVk
+Z2VzIGFueXdheS4gSnVzdCBpbmNsdWRlIGluIHRoZSBuZXR3b3JrIHRoaW5ncyB0aGF0IHdpbGwg
+aGVscCB5b3Ugc29sdmUgaXQgYXQgdGhlIGVkZ2VzIC0gdHJhY2ViYWNrIHRvb2xzIHRoYXQgd29y
+ayBmYXN0IGFuZCB0YXJnZXRlZCBzaHV0ZG93biBvZiBzb3VyY2VzKS4KPj4KPj4gSSBkb24ndCBo
+YXBwZW4gdG8ga25vdyBvZiBhICJub3JtYWwiIGFwcGxpY2F0aW9uIHRoYXQgYmVuZWZpdHMgZnJv
+bSBVRFAgZmxvb2RpbmcgLSBub3QgZXZlbiAiZ29zc2lwIHByb3RvY29scyIgZG8gdGhhdCEKPj4K
+Pj4gSW4gY29udGV4dCwgdGhlbiwgbGV0J3Mgbm90IGZvY3VzIG9uIFVEUCBmbG9vZCBwZXJmb3Jt
+YW5jZSAob3IgYW55IG90aGVyICJleHRyZW1lIGNhc2UiIHRoYXQganVzdCBzZWVtcyBmdW4gdG8g
+d29yayBvbiBpbiBhIHJlc2VhcmNoIHBhcGVyIGJlY2F1c2UgaXQgaXMgZWFzeSB0byBzdGF0ZSBj
+b21wYXJlZCB0byB0aGUgcmVhbCB3b3JsZCkgdG9vIG11Y2guCj4+Cj4+IEkga25vdyB0aGF0IHRo
+ZSByZWFjdGlvbiB0byB0aGlzIHBvc3Qgd2lsbCBiZSB0byByZWFkIGl0IGFuZCBwcmV0dHkgbXVj
+aCBnbyBvbiBhcyB1c3VhbCBmb2N1c2luZyBvbiBVRFAgZmxvb2RzLiBCdXQgSSBoYXZlIHRvIHRy
+eS4gVGhlcmUgYXJlIHNvIG1hbnkgbW9yZSBpbXBvcnRhbnQgaXNzdWVzIChsaWtlIHVuZGVyc3Rh
+bmRpbmcgaG93IHRvIHVzZSBjb25nZXN0aW9uIHNpZ25hbGxpbmcgaW4gZ29zc2lwIHByb3RvY29s
+cywgZ2FtaW5nLCBvciBsaXZlIEFWIGNvbmZlcmVuY2luZyBiZXR0ZXIsIGFzIHNvbWUgcmVsYXRl
+ZCBleGFtcGxlcywgd2hpY2ggYXJlIGVuZC10by1lbmQgcHJvYmxlbXMgZm9yIHdoaWNoIHF1ZXVl
+IG1hbmFnZW1lbnQgYW5kIGNvbmdlc3Rpb24gc2lnbmFsbGluZyBhcmUgdHJ1bHkgY3J1Y2lhbCku
+Cj4+Cj4+Cj4+Cj4+IE9uIFN1bmRheSwgTWF5IDEsIDIwMTYgMToyM2FtLCAiRGF2ZSBUYWh0IiA8
+ZGF2ZS50YWh0QGdtYWlsLmNvbT4gc2FpZDoKPj4KPj4+IE9uIFNhdCwgQXByIDMwLCAyMDE2IGF0
+IDEwOjA4IFBNLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4+
+Pj4KPj4+Pgo+Pj4+IE9uIDA0LzMwLzIwMTYgMDg6NDEgUE0sIERhdmUgVGFodCB3cm90ZToKPj4+
+Pj4KPj4+Pj4gVGhlcmUgd2VyZSBhIGZldyB0aGluZ3Mgb24gdGhpcyB0aHJlYWQgdGhhdCB3ZW50
+IGJ5LCBhbmQgSSB3YXNuJ3Qgb24KPj4+Pj4gdGhlIGF0aDEwayBsaXN0Cj4+Pj4+Cj4+Pj4+ICho
+dHRwczovL3d3dy5tYWlsLWFyY2hpdmUuY29tL2F0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnL21z
+ZzA0NDYxLmh0bWwpCj4+Pj4+Cj4+Pj4+IGZpcnN0IHVwLCB1ZHAgZmxvb2QuLi4KPj4+Pj4KPj4+
+Pj4+Pj4gRnJvbTogYXRoMTBrIDxhdGgxMGstYm91bi4uLkBsaXN0cy5pbmZyYWRlYWQub3JnPiBv
+biBiZWhhbGYgb2YgUm9tYW4KPj4+Pj4+Pj4gWWVyeW9taW4gPGxlcm9pLmxpLi4uQGdtYWlsLmNv
+bT4KPj4+Pj4+Pj4gU2VudDogRnJpZGF5LCBBcHJpbCA4LCAyMDE2IDg6MTQgUE0KPj4+Pj4+Pj4g
+VG86IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+Pj4+Pj4+IFN1YmplY3Q6IGF0aDEwayBw
+ZXJmb3JtYW5jZSwgbWFzdGVyIGJyYW5jaCBmcm9tIDIwMTYwNDA3Cj4+Pj4+Pj4+Cj4+Pj4+Pj4+
+IEhlbGxvIQo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBJJ3ZlIHNlZW4gcGVyZm9ybWFuY2UgcGF0Y2hlcyB3
+ZXJlIGNvbW1pdGVkIHNvIEkndmUgZGVjaWRlZCB0byBnaXZlIGl0Cj4+Pj4+Pj4+IGEgdHJ5ICh1
+c2luZyA0LjEga2VybmVsIGFuZCBiYWNrcG9ydHMpLgo+Pj4+Pj4+PiBUaGUgcmVzdWx0cyBhcmUg
+cXVpdGUgZGlzYXBwb2ludGluZzogVENQIGRvd25sb2FkIChjbGllbnQgcG92KSBkcm9wcGVkCj4+
+Pj4+Pj4+IGZyb20gNzUwTWJwcyB0byB+NTUwIGFuZCBVRFAgc2hvd3MgY29tcGxldGVseSB3ZWly
+ZCBiZWhhdm91ciAtIGlmCj4+Pj4+Pj4+IGdlbmVyYXRpbmcgOTAwTWJwcyBpdCBnaXZlcyAzME1i
+cHMgbWF4LCBpZiBnZW5lcmF0aW5nIDMwME1icHMgaXQgZ2l2ZXMKPj4+Pj4+Pj4gMjUwTWJwcywg
+YmVmb3JlIChsYXRlc3Qgb2ZmaWNpYWwgYmFja3BvcnRzIHJlbGVhc2UgZnJvbSBKYW51YXJ5KSBJ
+IHdhcwo+Pj4+Pj4+PiBhYmxlIHRvIGdldCA5MDBNYnBzLgo+Pj4+Pj4+PiBIYXJkd2FyZSBpcyBi
+YXNpY2FsbHkgYXAxNTIgKyBxY2E5ODh4IDN4My4KPj4+Pj4+Pj4gV2hlbiBydW5uaW5nIHBlcmYg
+dG9wIEkgc2VlIHRoYXQgZnFfY29kZWxfZHJvcCBlYXRzIGEgbG90IG9mIGNwdS4KPj4+Pj4+Pj4g
+SGVyZSBpcyB0aGUgb3V0cHV0IHdoZW4gcnVubmluZyBpcGVyZjMgVURQIHRlc3Q6Cj4+Pj4+Pj4+
+Cj4+Pj4+Pj4+ICAgICAgNDUuNzglICBba2VybmVsXSAgICAgICBba10gZnFfY29kZWxfZHJvcAo+
+Pj4+Pj4+PiAgICAgICAzLjA1JSAgW2tlcm5lbF0gICAgICAgW2tdIGFnNzF4eF9wb2xsCj4+Pj4+
+Pj4+ICAgICAgIDIuMTglICBba2VybmVsXSAgICAgICBba10gc2tiX3JlbGVhc2VfZGF0YQo+Pj4+
+Pj4+PiAgICAgICAyLjAxJSAgW2tlcm5lbF0gICAgICAgW2tdIHI0a19kbWFfY2FjaGVfaW52Cj4+
+Pj4+Cj4+Pj4+Cj4+Pj4+IFRoZSB1ZHAgZmxvb2QgYmVoYXZpb3IgaXMgbm90ICJ3ZWlyZCIuICBU
+aGUgdGVzdCBpcyB3cm9uZy4gSXQgaXMgc28KPj4+Pj4gZmlsbGluZwo+Pj4+PiB0aGUgbG9jYWwg
+cXVldWUgYXMgdG8gZHJhbWF0aWNhbGx5IGV4Y2VlZCB0aGUgYmFuZHdpZHRoIG9uIHRoZSBsaW5r
+Lgo+Pj4+Cj4+Pj4KPj4+PiBJdCB3b3VsZCBiZSBuaWNlIGlmIHlvdSBjb3VsZCBwcm92aWRlIGJh
+Y2twcmVzc3VyZSBzbyB0aGF0IHlvdSBjb3VsZAo+Pj4+IHNpbXBseSBzZWxlY3Qgb24gdGhlIHVk
+cCBzb2NrZXQgYW5kIHVzZSB0aGF0IHRvIGtub3cgd2hlbiB5b3UgY2FuIHNlbmQKPj4+PiBtb3Jl
+IGZyYW1lcz8/Cj4+Pgo+Pj4gVGhlIHFkaXNjIHZlcnNpb24gcmV0dXJucyAgTkVUX1hNSVRfQ04g
+dG8gdGhlIHVwcGVyIGxheWVycyBvZiB0aGUKPj4+IHN0YWNrIGluIHRoZSBjYXNlCj4+PiB3aGVy
+ZSB0aGUgZHJvcHBlZCBwYWNrZXQncyBmbG93ID0gdGhlIGluZ3Jlc3MgcGFja2V0J3MgZmxvdywg
+YnV0IHRoYXQKPj4+IGlzIGFmdGVyIHRoZQo+Pj4gZXhoYXVzdGl2ZSBzZWFyY2guLi4KPj4+Cj4+
+PiBJIGRvbid0IGtub3cgd2hhdCBlZmZlY3QgKGlmIGFueSkgdGhhdCBoYWQgb24gdWRwIHNvY2tl
+dHMuIEhtbS4uLiB3aWxsCj4+PiBsb29rLiBFcmljIHdvdWxkICJqdXN0IGtub3ciLgo+Pj4KPj4+
+IFRoYXQgbWlnaHQgcHJvdmlkZSBtb3JlIGJhY2twcmVzc3VyZSBpbiB0aGUgbG9jYWwgc2NlbmFy
+aW8uIFNPX1NORF9CVUYKPj4+IHNob3VsZCBpbnRlcmFjdCB3aXRoIHRoaXMgc3R1ZmYgaW4gc29t
+ZSBzYW5lIHdheS4uLgo+Pj4KPj4+IC4uLiBidXQgb3ZlciB0aGUgd2lyZSBmcm9tIGEgdGVzdCBk
+cml2ZXIgYm94IGVsc2V3aGVyZSwgdGhvLCBhc2lkZQo+Pj4gZnJvbSBldGhlcm5ldCBmbG93IGNv
+bnRyb2wgaXRzZWxmLCB3aGVyZSBlbmFibGVkLCBuby4KPj4+Cj4+PiAuLi4gYnV0IGluIHRoYXQg
+Y2FzZSB5b3UgaGF2ZSBhIG11Y2ggbG93ZXIgaW5ib3VuZC9vdXRib3VuZAo+Pj4gcGVyZm9ybWFu
+Y2UgZGlzcGFyaXR5IGluIHRoZSBnZW5lcmFsIGNhc2UgdG8gc3RhcnQgd2l0aC4uLiB3aGljaCBj
+YW4KPj4+IHN0aWxsIGJlIHF1aXRlIGhpZ2guLi4KPj4+Cj4+Pj4KPj4+PiBBbnkgaWRlYSBob3cg
+dGhhdCB3b3JrcyB3aXRoIGNvZGVsPwo+Pj4KPj4+IEJlYXV0aWZ1bGx5Lgo+Pj4KPj4+IEZvciBy
+ZXNwb25zaXZlIFRDUCBmbG93cy4gSXQgaW1tZWRpYXRlbHkgcmVkdWNlcyB0aGUgd2luZG93IHdp
+dGhvdXQgYSBSVFQuCj4+Pgo+Pj4+IFRoYW5rcywKPj4+PiBCZW4KPj4+Pgo+Pj4+IC0tCj4+Pj4g
+QmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+Cj4+Pj4gQ2FuZGVsYSBUZWNobm9s
+b2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQo+Pj4KPj4+Cj4+Pgo+Pj4gLS0K
+Pj4+IERhdmUgVMOkaHQKPj4+IExldCdzIGdvIG1ha2UgaG9tZSByb3V0ZXJzIGFuZCB3aWZpIGZh
+c3RlciEgV2l0aCBiZXR0ZXIgc29mdHdhcmUhCj4+PiBodHRwOi8vYmxvZy5jZXJvd3J0Lm9yZwo+
+Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+IE1h
+a2Utd2lmaS1mYXN0IG1haWxpbmcgbGlzdAo+Pj4gTWFrZS13aWZpLWZhc3RAbGlzdHMuYnVmZmVy
+YmxvYXQubmV0Cj4+PiBodHRwczovL2xpc3RzLmJ1ZmZlcmJsb2F0Lm5ldC9saXN0aW5mby9tYWtl
+LXdpZmktZmFzdAo+Pj4KPj4KPj4KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KPj4gTWFrZS13aWZpLWZhc3QgbWFpbGluZyBsaXN0Cj4+IE1ha2Utd2lm
+aS1mYXN0QGxpc3RzLmJ1ZmZlcmJsb2F0Lm5ldAo+PiBodHRwczovL2xpc3RzLmJ1ZmZlcmJsb2F0
+Lm5ldC9saXN0aW5mby9tYWtlLXdpZmktZmFzdAoKCgotLSAKRGF2ZSBUw6RodApMZXQncyBnbyBt
+YWtlIGhvbWUgcm91dGVycyBhbmQgd2lmaSBmYXN0ZXIhIFdpdGggYmV0dGVyIHNvZnR3YXJlIQpo
+dHRwOi8vYmxvZy5jZXJvd3J0Lm9yZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
