@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-pf0-x229.google.com ([2607:f8b0:400e:c00::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axFMM-0003Ma-Ju
- for ath10k@lists.infradead.org; Mon, 02 May 2016 15:02:08 +0000
-Received: by mail-pa0-x229.google.com with SMTP id xk12so3838238pac.0
- for <ath10k@lists.infradead.org>; Mon, 02 May 2016 08:01:45 -0700 (PDT)
-Message-ID: <1462201302.5535.245.camel@edumazet-glaptop3.roam.corp.google.com>
-Subject: Re: [Make-wifi-fast] fq_codel_drop vs a udp flood
+ id 1axFOc-0004Sl-Tm
+ for ath10k@lists.infradead.org; Mon, 02 May 2016 15:04:27 +0000
+Received: by mail-pf0-x229.google.com with SMTP id 77so47154175pfv.2
+ for <ath10k@lists.infradead.org>; Mon, 02 May 2016 08:04:06 -0700 (PDT)
+Message-ID: <1462201445.5535.247.camel@edumazet-glaptop3.roam.corp.google.com>
+Subject: Re: [Codel] fq_codel_drop vs a udp flood
 From: Eric Dumazet <eric.dumazet@gmail.com>
-Date: Mon, 02 May 2016 08:01:42 -0700
-In-Reply-To: <CACiydbJStMOr0HKpw68zxDPgQRdwjR88aDis9fv12umzKAvWqw@mail.gmail.com>
+Date: Mon, 02 May 2016 08:04:05 -0700
+In-Reply-To: <CACiydbL0K2fQT4EXm4LjDaxDLC+AVj9szTpyHq2iUwuPVNNz+g@mail.gmail.com>
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
- <CACiydbJStMOr0HKpw68zxDPgQRdwjR88aDis9fv12umzKAvWqw@mail.gmail.com>
+ <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbL0K2fQT4EXm4LjDaxDLC+AVj9szTpyHq2iUwuPVNNz+g@mail.gmail.com>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,34 +29,17 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Roman Yeryomin <leroi.lists@gmail.com>
 Cc: make-wifi-fast@lists.bufferbloat.net, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>
 
-On Mon, 2016-05-02 at 16:47 +0300, Roman Yeryomin wrote:
+On Mon, 2016-05-02 at 17:09 +0300, Roman Yeryomin wrote:
 
-> So it looks to me that fq_codel is just broken if it needs half of my resources.
+> So if I run some UDP download you will just kill me? Sounds broken.
+> 
 
-Agreed.
+Seriously guys, I never suggesting kill a _task_ but the _flow_
 
-When I wrote fq_codel, I was not expecting that one UDP socket could
-fill fq_codel with packets, since we have standard backpressure.
+Meaning dropping packets. See ?
 
-SO_SNDBUF default on UDP does not allow to send more than 256 packets in
-a qdisc. So when sk_sndbuf limit is hit, sendmsg() either blocks or
-returns an error (if in non blocking mode)
-
-So it looks like someone really tries hard ;)
-
-To reproduce the issue I had to change (as root user)
-
-echo 1000000 >/proc/sys/net/core/wmem_default
-
-_and_ setup fq_codel with a much lower limit than the default 10240
-limit
-
-tc qdisc replace dev eth0 root fq_codel limit 300
-
-So please try this fix :
-
-https://patchwork.ozlabs.org/patch/617307/
-
+If you do not want to drop packets, do not use fq_codel and simply use
+bufferbloat pfifo_fast.
 
 
 
