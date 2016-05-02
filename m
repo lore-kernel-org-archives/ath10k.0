@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-oi0-x22e.google.com ([2607:f8b0:4003:c06::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axGUl-0000fE-Hi
- for ath10k@lists.infradead.org; Mon, 02 May 2016 16:14:52 +0000
-Received: by mail-pa0-x229.google.com with SMTP id xk12so4631823pac.0
- for <ath10k@lists.infradead.org>; Mon, 02 May 2016 09:14:31 -0700 (PDT)
-Message-ID: <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
-Subject: Re: [Codel] fq_codel_drop vs a udp flood
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Date: Mon, 02 May 2016 09:14:29 -0700
-In-Reply-To: <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
+ id 1axHKg-0007lM-P0
+ for ath10k@lists.infradead.org; Mon, 02 May 2016 17:08:31 +0000
+Received: by mail-oi0-x22e.google.com with SMTP id x19so197906286oix.2
+ for <ath10k@lists.infradead.org>; Mon, 02 May 2016 10:08:10 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
  <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
@@ -19,7 +16,11 @@ References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
  <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
  <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
-Mime-Version: 1.0
+ <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
+Date: Mon, 2 May 2016 10:08:09 -0700
+Message-ID: <CAA93jw6Wv0jcwN5Ct2ro65vWDXSdaLO_srwJrbJm7D_W5Z2+zw@mail.gmail.com>
+Subject: Re: [Codel] fq_codel_drop vs a udp flood
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,37 +29,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Roman Yeryomin <leroi.lists@gmail.com>
-Cc: Jonathan Morton <chromatix99@gmail.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, make-wifi-fast@lists.bufferbloat.net
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Michal Kazior <michal.kazior@tieto.com>, Jonathan Morton <chromatix99@gmail.com>, Roman Yeryomin <leroi.lists@gmail.com>
 
-On Mon, 2016-05-02 at 18:43 +0300, Roman Yeryomin wrote:
-> On 2 May 2016 at 18:07, Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> > On Mon, 2016-05-02 at 17:18 +0300, Roman Yeryomin wrote:
-> >
-> >> Imagine you are a video operator, have MacBook Pro, gigabit LAN and
-> >> NAS on ethernet side. You would want to get maximum speed. And
-> >> fq_codel just dropped it down to 550Mbps for TCP (instead of 750Mbps)
-> >> and to 30Mbps for UDP (instead of 900Mbps).
-> >> So, again, it looks broken to me.
-> >
-> > Can you show us your qdisc config ?
-> 
-> Which build do you want? Before it broke or after?
-> 
-
-
-I want to check your qdisc configuration, the one that you used and
-where you had fq_codel performance issues
-
-tc -s -d qdisc
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gTW9uLCBNYXkgMiwgMjAxNiBhdCA5OjE0IEFNLCBFcmljIER1bWF6ZXQgPGVyaWMuZHVtYXpl
+dEBnbWFpbC5jb20+IHdyb3RlOgo+IE9uIE1vbiwgMjAxNi0wNS0wMiBhdCAxODo0MyArMDMwMCwg
+Um9tYW4gWWVyeW9taW4gd3JvdGU6Cj4+IE9uIDIgTWF5IDIwMTYgYXQgMTg6MDcsIEVyaWMgRHVt
+YXpldCA8ZXJpYy5kdW1hemV0QGdtYWlsLmNvbT4gd3JvdGU6Cj4+ID4gT24gTW9uLCAyMDE2LTA1
+LTAyIGF0IDE3OjE4ICswMzAwLCBSb21hbiBZZXJ5b21pbiB3cm90ZToKPj4gPgo+PiA+PiBJbWFn
+aW5lIHlvdSBhcmUgYSB2aWRlbyBvcGVyYXRvciwgaGF2ZSBNYWNCb29rIFBybywgZ2lnYWJpdCBM
+QU4gYW5kCj4+ID4+IE5BUyBvbiBldGhlcm5ldCBzaWRlLiBZb3Ugd291bGQgd2FudCB0byBnZXQg
+bWF4aW11bSBzcGVlZC4gQW5kCj4+ID4+IGZxX2NvZGVsIGp1c3QgZHJvcHBlZCBpdCBkb3duIHRv
+IDU1ME1icHMgZm9yIFRDUCAoaW5zdGVhZCBvZiA3NTBNYnBzKQo+PiA+PiBhbmQgdG8gMzBNYnBz
+IGZvciBVRFAgKGluc3RlYWQgb2YgOTAwTWJwcykuCj4+ID4+IFNvLCBhZ2FpbiwgaXQgbG9va3Mg
+YnJva2VuIHRvIG1lLgoKVGhlIGJpZyByZWdyZXNzaW9uIHRyeWluZyB0byBiZSBhZGRyZXNzZWQg
+aGVyZSBpcyB0aGUgZGVjYWRlcyBsb25nCmluY3JlYXNlIGluIHdpZmkgb3ZlcmJ1ZmZlcmluZyBm
+b3Igc2xvdyBhbmQgbm9ybWFsIGNsaWVudHMuCgpUaGUgbnVtYmVyIHRoYXQgd2FzIG1ha2luZyBt
+ZSBoYXBweSB3YXMgc2VlaW5nIGxvdyBzcGVlZCBjbGllbnRzCmZpbmFsbHkgaGF2ZSBzYW5lIGJl
+aGF2aW9yOgpodHRwOi8vYmxvZy5jZXJvd3J0Lm9yZy9wb3N0L2ZxX2NvZGVsX29uX2F0aDEway8K
+Ckkgd2lsbCBhZGQgeW91ciBpcGVyZiBmbG9vZCB0ZXN0IHRvIHRoZSB0ZXN0YmVuY2guIENlcnRh
+aW5seSB3ZSBkb24ndAp3YW50IHRvIGh1cnQgcGVhayBzcGVlZHMgb3Zlcm11Y2guLi4gYnV0IHdl
+J2QgYWxzbyBsaWtlIHRvIHNlZSBwZW9wbGUKdHJ5aW5nIHRyYWZmaWMgYXQgbG93ZXIgc3BlZWRz
+LgoKSW5jaWRlbnRhbGx5IGlmIHlvdSBhcmUgZG9pbmcgb3BlbndydCBidWlsZHMgdGhhdCB3b3Vs
+ZCBiZSBvZiBncmVhdCBoZWxwLgoKPj4gPiBDYW4geW91IHNob3cgdXMgeW91ciBxZGlzYyBjb25m
+aWcgPwo+Pgo+PiBXaGljaCBidWlsZCBkbyB5b3Ugd2FudD8gQmVmb3JlIGl0IGJyb2tlIG9yIGFm
+dGVyPwoKQ29tbWl0IGhhc2hlcyBmb3IgZWFjaCB3b3VsZCBoZWxwLgoKPgo+Cj4gSSB3YW50IHRv
+IGNoZWNrIHlvdXIgcWRpc2MgY29uZmlndXJhdGlvbiwgdGhlIG9uZSB0aGF0IHlvdSB1c2VkIGFu
+ZAo+IHdoZXJlIHlvdSBoYWQgZnFfY29kZWwgcGVyZm9ybWFuY2UgaXNzdWVzCj4KPiB0YyAtcyAt
+ZCBxZGlzYwoKTm90IHN1cmUgaXQncyB0aGUgcWRpc2MgdmVyc2lvbiB1bmRlciB0ZXN0IGhlcmUu
+ID8gSWYgaXQgaXMsIEknZCBiZQpwZXJ2ZXJzZWx5IGhhcHB5IGFzIGZvciB0aGUgZmlyc3QgdGlt
+ZSBldmVyIHRoZSB3aWZpIGxheWVyIHN0YXJ0ZWQKZXhlcnRpbmcgc29tZSBiYWNrcHJlc3N1cmUg
+b24gdGhlIHVwcGVyIGxheWVycyBvZiB0aGUgc3RhY2suCgpJJ20gbm90IHN1cmUgd2hpY2ggcGFy
+dHMgb2Ygd2hpY2ggcGF0Y2hzZXQgYXJlIHVuZGVyIHRlc3QgaGVyZSwKZWl0aGVyLiBJIHNhdyBh
+IGZldyB0b28gbWFueSBwYXRjaGVzIGdvIGJ5IGFsbCBhcm91bmQsIGFuZCBJIGFtIG9ubHkKanVz
+dCB0aGlzIHdlZWsgYWJsZSB0byBhZGQgYXRoMTBrIHRvIG15IHRlc3QgbWF0cml4LiBDb21taXQ/
+CgpodHRwczovL2dpdGh1Yi5jb20va2F6aWtjei9saW51eC9jb21taXRzL2ZxbWFjLXYzLjUgaGFz
+IGEgdmVyc2lvbiBvZgpmcV9jb2RlbCBpbiBpdCAoYW5kIHRoZSB1bmRlcmx5aW5nIGRyaXZlciBj
+aGFuZ2VzKSAqYXQgdGhlIG1hYzgwMjExCmxheWVyKiwgbm90IHRoZSBxZGlzYyBsYXllci4gSXQg
+ZGlzYWJsZXMgdGhlIG92ZXJseWluZyBxZGlzYy4gSXQgd2lsbApuZWVkIHRoZSBlcXVpdmFsZW50
+IG5ldyBmcV9jb2RlbF9kcm9wIGxvZ2ljIGFkZGVkIHRvIGl0LCB0aGF0IGVyaWMKanVzdCBhZGRl
+ZCwgYWxzbywgdG8gZG8gYmV0dGVyIG9uIHRoZSB1ZHAgZmxvb2QgdGVzdC4KClRoZXJlIHdhcyBh
+IHByaW9yIGJyYW5jaCB0aGF0IGRpZCBwcmV0dHkgZGFybiB3ZWxsIGF0IGhpZ2ggc3BlZWRzLApy
+ZXN1bHRzIEkgcHV0IG9uIHRoYXQgYmxvZyBwb3N0IEkgbGlua2VkIHRvIGFib3ZlIC0gODIwTWJw
+cyBmb3IgdGNwLAphbiBhY3R1YWwgaW1wcm92ZW1lbnQgb24gdGhlIGJhc2VsaW5lIHRlc3QuIFRo
+ZSBjdXJyZW50IGJyYW5jaCBpcwpzaW1wbGVyIGFuZCBkaWQgbm90IGRvIGFzIHdlbGwgZHVlIGlu
+IHBhcnQgdG8gbm90IGJlaW5nIGludGVncmF0ZWQKd2l0aCByYXRlIGNvbnRyb2wgKEkgdGhpbmsp
+LgoKVGhlcmUgYXJlIHBpZWNlcyBkcm9wcGluZyBpbiBhbGwgb3ZlciwgdGhlcmUgd2FzIGEgYW1k
+c3UgcGF0Y2gsCmFub3RoZXIgcGF0Y2ggb24gcngvdHgsCgoKLS0gCkRhdmUgVMOkaHQKTGV0J3Mg
+Z28gbWFrZSBob21lIHJvdXRlcnMgYW5kIHdpZmkgZmFzdGVyISBXaXRoIGJldHRlciBzb2Z0d2Fy
+ZSEKaHR0cDovL2Jsb2cuY2Vyb3dydC5vcmcKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJh
+ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
+MGsK
