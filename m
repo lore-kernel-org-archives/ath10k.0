@@ -1,19 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from lang.hm ([66.167.227.134] helo=bifrost.lang.hm)
+Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axJoo-00018V-98
- for ath10k@lists.infradead.org; Mon, 02 May 2016 19:47:46 +0000
-Date: Mon, 2 May 2016 12:47:06 -0700 (PDT)
-From: David Lang <david@lang.hm>
-Subject: Re: [Make-wifi-fast] fq_codel_drop vs a udp flood
-In-Reply-To: <CACiydb+nNEWfO8XS63MnrW0LazORAGX+L+fF1xZ2_2sCLeRAsg@mail.gmail.com>
-Message-ID: <alpine.DEB.2.02.1605021246080.28791@nftneq.ynat.uz>
-References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
- <57258F41.8040600@candelatech.com>
- <CAA93jw46O3CbURxyP7AENkOCnA71Bn6ddTJpdfzEjWcFKgnaAg@mail.gmail.com>
- <1462114043.512818296@apps.rackspace.com>
- <CACiydb+nNEWfO8XS63MnrW0LazORAGX+L+fF1xZ2_2sCLeRAsg@mail.gmail.com>
+ id 1axKi0-0006C9-Vg
+ for ath10k@lists.infradead.org; Mon, 02 May 2016 20:44:49 +0000
+Received: by mail-wm0-x230.google.com with SMTP id a17so5723580wme.0
+ for <ath10k@lists.infradead.org>; Mon, 02 May 2016 13:44:27 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQmx=RpAVfGg_0mkc3L0902uxtCns0mFkL2U6FrMBN4wTw@mail.gmail.com>
+References: <CAOt_L3-9Ok-yQZeWDkRGr4YR8UoaK2=+2297Ag=tiE_GBe_4mQ@mail.gmail.com>
+ <CA+BoTQkfbTFxc75_NvzkJN1GiPv-kbBxNUsjZ+b8ZU+9JGoxbw@mail.gmail.com>
+ <CAOt_L3-yPLXoniFtrhXD_JxE=w=9NwBno5E5DpskEdF2g1DiiQ@mail.gmail.com>
+ <CA+BoTQnZr4fyZLzzxayGC=7og+aU7h_xqQaTDpcCAuUT5ug6oQ@mail.gmail.com>
+ <CAOt_L39xO6dqmAW7CvuBZZv154QO2mP7Vdvz7a7ii1Pkq=oc8Q@mail.gmail.com>
+ <CA+BoTQmx=RpAVfGg_0mkc3L0902uxtCns0mFkL2U6FrMBN4wTw@mail.gmail.com>
+Date: Mon, 2 May 2016 16:44:26 -0400
+Message-ID: <CAOt_L395MrkjBABxKtGL3Sz30CH9P8BxxPOZWeSDx5=wc+9X8A@mail.gmail.com>
+Subject: Re: Issues with latest kernel versions and Monitor mode
+From: Amato Carbonara <acarbonara13@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +25,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Roman Yeryomin <leroi.lists@gmail.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, dpreed@reed.com, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
 
-On Mon, 2 May 2016, Roman Yeryomin wrote:
-
-> On 1 May 2016 at 17:47,  <dpreed@reed.com> wrote:
->> Maybe I missed something, but why is it important to optimize for a UDP flood?
->
-> We don't need to optimize it to UDP but UDP is used e.g. by torrents
-> to achieve higher throughput and used a lot in general.
-> And, again, in this case TCP is broken too (750Mbps down to 550), so
-> it's not like Dave is saying that UDP test is broken, fq_codel is just
-> too hungry for CPU
-
-while I wouldn't do it via wifi, syslog to/from relay systems can result in a 
-lot of UDP traffic that could look like a flood.
-
-David Lang
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSBoYXZlIGNhcHR1cmVkIHRoZSBsb2cgZmlsZSBhbmQgcGxhY2VkIHRoZW0gaW4gR29vZ2xlIGRy
+aXZlLiAgQmVsb3cKaXMgdGhlIHNoYXJhYmxlIGxpbms6CgpodHRwczovL2RyaXZlLmdvb2dsZS5j
+b20vb3Blbj9pZD0wQjgwZ0c5d1p2R0YwT1doa1pGWXRWMVp4VW1jCgpUaGVyZSBhcmUgMiBsb2dz
+CgpPbiBGcmksIEFwciAyOSwgMjAxNiBhdCAxOjEwIEFNLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwu
+a2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4gT24gMjggQXByaWwgMjAxNiBhdCAxNzoyMCwgQW1h
+dG8gQ2FyYm9uYXJhIDxhY2FyYm9uYXJhMTNAZ21haWwuY29tPiB3cm90ZToKPj4gSGkgTWljaGFs
+LAo+PiAgIFRoYW5rIHlvdSBmb3IgeW91ciBoZWxwLiAgSSB0aGluayB3ZSBhcmUgZ2V0dGluZyBj
+bG9zZXIuICBCdXQgSSBhbQo+PiB1bnN1cmUgd2hhdCBrZXJuZWwgbG9ncyBhcmUgbmVlZGVkLiAg
+SSBoYXZlIGJlZW4gcmVmZXJyaW5nIHRvIHRoZQo+PiBmb2xsb3dpbmcgbGluayBmb3IgbXkgaW5m
+b3JtYXRpb246Cj4+Cj4+IGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3VzZXJz
+L2RyaXZlcnMvYXRoMTBrL2RlYnVnCj4+Cj4+IE15IHByb2NlZHVyZToKPj4gMS4gU2V0IHRoZSBk
+ZWJ1ZyBtYXNrOgo+PiBlY2hvIDB4ZmZmZmZmM2YgPiAvc3lzL21vZHVsZS9hdGgxMGtfY29yZS9w
+YXJhbWV0ZXJzL2RlYnVnX21hc2sKPj4KPj4gMi4gVmVyaWZ5IGlmIHRoZSBkZWJ1ZyBtYXNrIHdh
+cyBzZXQ6Cj4+IGNhdCAvc3lzL21vZHVsZS9hdGgxMGtfY29yZS9wYXJhbWV0ZXJzL2RlYnVnX21h
+c2sKPj4KPj4gVmFsdWUgcmV0dXJuZWQgPSA0Mjk0OTY3MTAzCj4+Cj4+IFRoaXMgaXMgZXhwZWN0
+ZWQ6IDB4ZmZmZmZmM2YgaXMgNDI5NDk2NzEwMyBpbiBkZWNpbWFsCj4+Cj4+Cj4+IDMuIHRyYWNl
+IGFsbCBsb2cgbWVzc2FnZXMsIGluY2x1ZGluZyBkZWJ1ZyBsb2dzLCBpbnRvIHRyYWNlLmRhdCBm
+aWxlOgo+PiB0cmFjZS1jbWQgcmVjb3JkIC1lIGF0aDEwa19sb2cqCj4KPiBUaGlzIGlzIG1vcmUg
+Z2VuZXJpYzoKPgo+IHRyYWNlLWNtZCByZWNvcmQgLWUgYXRoMTBrCj4KPgo+Pgo+PiA0LiBUbyBy
+ZWFkIHRoZSB0cmFjZS5kYXQgZmlsZToKPj4gdHJhY2UtY21kIHJlcG9ydAo+Pgo+Pgo+PiBXaGVu
+IEkgZ28gdG8gc3lzL2xvZy9kZWJ1Zy90cmFjaW5nL2V2ZW50cy9hdGgxMGssIEkgc2VlIGEgbG90
+IG9mCj4+IGRpcmVjdG9yaWVzIGFuZCBmaWxlcy4KPj4KPj4gV2hpY2ggYXJlIG5lZWRlZCB0byBw
+cm92aWRlZCB0aGUgcmVxdWlyZWQgaW5mb3JtYXRpb24/Cj4KPiB0cmFjZS1jbWQgcmVwb3J0ID4g
+bG9nLnR4dAo+Cj4gQW5kIHRoZW4gdXBsb2FkIGxvZy50eHQgdG8gc29tZSB3ZWJzaXRlIChwYXN0
+ZWJpbiwgbWVnYS5ueiBvciB3aGF0ZXZlcgo+IHlvdSBmYW5jeSBhbmQgZG9lc24ndCByZXF1aXJl
+IHJlZ2lzdGVyaW5nKQo+Cj4gT2gsIGFuZCB0byBiZSBvbiB0aGUgc2FtZSBwYWdlOiB5b3Ugc2hv
+dWxkIHN0YXJ0IHRoZSB0cmFjZS1jbWQgcmVjb3JkCj4gY29tbWFuZCBhZnRlciBsb2FkaW5nIHRo
+ZSBkcml2ZXIgYnV0IGJlZm9yZSB5b3UgYXR0ZW1wdCB0byBleGVyY2lzZQo+IG1vbml0b3IgbW9k
+ZS4gT25jZSB0aGUgZHJpdmVyIHN0b3BzIHRvIHJlc3BvbmQgY29udHJvbC1jIHRoZSB0cmFjZS1j
+bWQKPiByZWNvcmQgYW5kIGRvIGEgcmVwb3J0Lgo+Cj4KPiBNaWNoYWwKPgo+Cj4gUFMuIFJlLWFk
+ZCB0aGUgbWFpbGluZyBsaXN0IG5leHQgdGltZSBhcm91bmQgeW91IHJlcGx5LCBwbGVhc2UuCj4K
+Pgo+Pgo+PiBPbiBUaHUsIEFwciAyOCwgMjAxNiBhdCAxMjo0MiBBTSwgTWljaGFsIEthemlvciA8
+bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+Pj4gT24gMjcgQXByaWwgMjAxNiBhdCAx
+NjoxMiwgQW1hdG8gQ2FyYm9uYXJhIDxhY2FyYm9uYXJhMTNAZ21haWwuY29tPiB3cm90ZToKPj4+
+PiBJIHRyaWVkIHNldHRpbmcgdGhlIGRlYnVnX21hc2ssIGJ1dCByZWNlaXZlZCB0aGUgZm9sbG93
+aW5nIGVycm9yOgo+Pj4+Cj4+Pj4gIyBtb2Rwcm9iZSBhdGgxMGtfY29yZS5rbyBkZWJ1Z19tYXNr
+PTB4ZmZmZmZmM2YKPj4+PiBtb2Rwcm9iZTogRkFUQUw6IE1vZHVsZSBhdGgxMGtfY29yZS5rbyBu
+b3QgZm91bmQuCj4+Pj4KPj4+PiBJIGRvIG5vdCBoYXZlIHRoZSBhdGgxMGtfY29yZS5rbyBpbnN0
+YWxsZWQuICBJcyB0aGVyZSBhIHdheSBJIGNhbgo+Pj4+IGluc3RhbGwgaXQgc28gSSBjYW4gc2V0
+IHRoZSBkZWJ1ZyBtb2RlPwo+Pj4KPj4+IFlvdSBoYXZlIHRvIGhhdmUgaXQgaW5zdGFsbGVkLiBP
+dGhlcndpc2UgeW91IHdvdWxkbid0IGJlIGFibGUgdG8gcnVuCj4+PiBhdGgxMGsgYW5kIEkgZG91
+YnQgeW91IGhhdmUgaXQgY29tcGlsZWQgaW4ta2VybmVsLgo+Pj4KPj4+IG1vZHByb2JlIGV4cGVj
+dHMgbW9kdWxlIG5hbWUgd2l0aG91dCB0aGUgLmtvLCBzbyB5b3Ugc2hvdWxkIHJ1bjoKPj4+Cj4+
+PiAgIG1vZHByb2JlIGF0aDEwa19jb3JlIGRlYnVnX21hc2s9MHhmZmZmZmYzZgo+Pj4KPj4+Cj4+
+PiBNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
