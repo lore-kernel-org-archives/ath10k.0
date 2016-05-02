@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.redhat.com ([209.132.183.28])
+Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ax8a3-0000X7-Gg
- for ath10k@lists.infradead.org; Mon, 02 May 2016 07:47:48 +0000
-Date: Mon, 2 May 2016 09:47:18 +0200
-From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-Subject: Re: [Codel] fq_codel_drop vs a udp flood
-Message-ID: <20160502094718.56d8e7b0@redhat.com>
-In-Reply-To: <1462132553.5535.207.camel@edumazet-glaptop3.roam.corp.google.com>
-References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
- <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
- <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
- <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
- <1462132553.5535.207.camel@edumazet-glaptop3.roam.corp.google.com>
+ id 1axECg-0001mh-Dx
+ for ath10k@lists.infradead.org; Mon, 02 May 2016 13:48:03 +0000
+Received: by mail-oi0-x242.google.com with SMTP id d139so6328815oig.1
+ for <ath10k@lists.infradead.org>; Mon, 02 May 2016 06:47:41 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
+References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
+Date: Mon, 2 May 2016 16:47:40 +0300
+Message-ID: <CACiydbJStMOr0HKpw68zxDPgQRdwjR88aDis9fv12umzKAvWqw@mail.gmail.com>
+Subject: Re: [Make-wifi-fast] fq_codel_drop vs a udp flood
+From: Roman Yeryomin <leroi.lists@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,92 +24,91 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Jonathan Morton <chromatix99@gmail.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>, make-wifi-fast@lists.bufferbloat.net
+To: Dave Taht <dave.taht@gmail.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>
 
-On Sun, 01 May 2016 12:55:53 -0700
-Eric Dumazet <eric.dumazet@gmail.com> wrote:
+On 1 May 2016 at 06:41, Dave Taht <dave.taht@gmail.com> wrote:
+> There were a few things on this thread that went by, and I wasn't on
+> the ath10k list
+>
+> (https://www.mail-archive.com/ath10k@lists.infradead.org/msg04461.html)
+>
+> first up, udp flood...
+>
+>>>> From: ath10k <ath10k-boun...@lists.infradead.org> on behalf of Roman
+>>>> Yeryomin <leroi.li...@gmail.com>
+>>>> Sent: Friday, April 8, 2016 8:14 PM
+>>>> To: ath10k@lists.infradead.org
+>>>> Subject: ath10k performance, master branch from 20160407
+>>>>
+>>>> Hello!
+>>>>
+>>>> I've seen performance patches were commited so I've decided to give it
+>>>> a try (using 4.1 kernel and backports).
+>>>> The results are quite disappointing: TCP download (client pov) dropped
+>>>> from 750Mbps to ~550 and UDP shows completely weird behavour - if
+>>>> generating 900Mbps it gives 30Mbps max, if generating 300Mbps it gives
+>>>> 250Mbps, before (latest official backports release from January) I was
+>>>> able to get 900Mbps.
+>>>> Hardware is basically ap152 + qca988x 3x3.
+>>>> When running perf top I see that fq_codel_drop eats a lot of cpu.
+>>>> Here is the output when running iperf3 UDP test:
+>>>>
+>>>>     45.78%  [kernel]       [k] fq_codel_drop
+>>>>      3.05%  [kernel]       [k] ag71xx_poll
+>>>>      2.18%  [kernel]       [k] skb_release_data
+>>>>      2.01%  [kernel]       [k] r4k_dma_cache_inv
+>
+> The udp flood behavior is not "weird".  The test is wrong. It is so filling
+> the local queue as to dramatically exceed the bandwidth on the link.
 
-> On Sun, 2016-05-01 at 11:46 -0700, Eric Dumazet wrote:
-> 
-> > Just drop half backlog packets instead of 1, (maybe add a cap of 64
-> > packets to avoid too big burts of kfree_skb() which might add cpu
-> > spikes) and problem is gone.
-> >   
-> 
-> I used following patch and it indeed solved the issue in my tests.
-> 
-> (Not the DDOS case, but when few fat flows are really bad citizens)
-> 
-> diff --git a/net/sched/sch_fq_codel.c b/net/sched/sch_fq_codel.c
-> index a5e420b3d4ab..0cb8699624bc 100644
-> --- a/net/sched/sch_fq_codel.c
-> +++ b/net/sched/sch_fq_codel.c
-> @@ -135,11 +135,11 @@ static inline void flow_queue_add(struct fq_codel_flow *flow,
->  	skb->next = NULL;
->  }
->  
-> -static unsigned int fq_codel_drop(struct Qdisc *sch)
-> +static unsigned int fq_codel_drop(struct Qdisc *sch, unsigned int max)
->  {
->  	struct fq_codel_sched_data *q = qdisc_priv(sch);
->  	struct sk_buff *skb;
-> -	unsigned int maxbacklog = 0, idx = 0, i, len;
-> +	unsigned int maxbacklog = 0, idx = 0, i, len = 0;
->  	struct fq_codel_flow *flow;
->  
->  	/* Queue is full! Find the fat flow and drop packet from it.
-> @@ -153,15 +153,26 @@ static unsigned int fq_codel_drop(struct Qdisc *sch)
->  			idx = i;
->  		}
->  	}
-> +	/* As the search was painful, drop half bytes of this fat flow.
-> +	 * Limit to max packets to not inflict too big latencies,
-> +	 * as kfree_skb() might be quite expensive.
-> +	 */
-> +	maxbacklog >>= 1;
-> +
->  	flow = &q->flows[idx];
-> -	skb = dequeue_head(flow);
-> -	len = qdisc_pkt_len(skb);
-> +	for (i = 0; i < max;) {
-> +		skb = dequeue_head(flow);
-> +		len += qdisc_pkt_len(skb);
-> +		kfree_skb(skb);
-> +		i++;
-> +		if (len >= maxbacklog)
-> +			break;
-> +	}
+Are you trying to say that generating 250Mbps and having 250Mbps an
+generating, e.g. 700Mbps and having 30Mbps is normal and I should
+blame iperf3? Even if before I could get 900Mbps with the same
+tools/parameters/hw? Really?
 
-What about using bulk free of SKBs here?
+> The size of the local queue has exceeded anything rational, gentle
+> tcp-friendly methods have failed, we're out of configured queue space,
+>  and as a last ditch move, fq_codel_drop is attempting to reduce the
+> backlog via brute force.
 
-There is a very high probability that we are hitting SLUB slowpath,
-which involves a locked cmpxchg_double per packet.  Instead we can
-amortize this cost via kmem_cache_free_bulk().
+So it looks to me that fq_codel is just broken if it needs half of my resources.
 
-Maybe extend kfree_skb_list() to hide the slab/kmem_cache call?
+> Approaches:
+>
+> 0) Fix the test
+>
+> The udp flood test should seek an operating point roughly equal to
+> the bandwidth of the link, to where there is near zero queuing delay,
+> and nearly 100% utilization.
+>
+> There are several well known methods for an endpoint to seek
+> equilibrium, - filling the pipe and not the queue - notably the ones
+> outlined in this:
+>
+> http://ee.lbl.gov/papers/congavoid.pdf
+>
+> are a good starting point for further research. :)
+>
+> Now, a unicast flood test is useful for figuring out how many packets
+> can fit in a link (both large and small), and tweaking the cpu (or
+> running a box out of memory).
+>
+> However -
+>
+> I have seen a lot of udp flood tests that are constructed badly.
+>
+> Measuring time to *send* X packets without counting the queue length
+> in the test is one. This was iperf3 what options, exactly? Running
+> locally or via a test client connected via ethernet? (so at local cpu
+> speeds, rather than the network ingress speed?)
+
+iperf3 -c <server_ip> -u -b900M -l1472 -R -t600
+server_ip is on ethernet side, no NAT, minimal system, client is 3x3 MacBook Pro
 
 
-> +	sch->qstats.drops += i;
-> +	sch->qstats.backlog -= len;
->  	q->backlogs[idx] -= len;
-> -	sch->q.qlen--;
-> -	qdisc_qstats_drop(sch);
-> -	qdisc_qstats_backlog_dec(sch, skb);
-> -	kfree_skb(skb);
-> -	flow->dropped++;
-> +	sch->q.qlen -= i;
-> +	flow->dropped += i;
->  	return idx;
->  }
-
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  Author of http://www.iptv-analyzer.org
-  LinkedIn: http://www.linkedin.com/in/brouer
+Regards,
+Roman
 
 _______________________________________________
 ath10k mailing list
