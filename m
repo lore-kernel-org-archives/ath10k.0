@@ -1,23 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf0-x22d.google.com ([2607:f8b0:400e:c00::22d])
+Received: from mail-ob0-x244.google.com ([2607:f8b0:4003:c01::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axFRS-0006PA-MK
- for ath10k@lists.infradead.org; Mon, 02 May 2016 15:07:23 +0000
-Received: by mail-pf0-x22d.google.com with SMTP id 77so47188923pfv.2
- for <ath10k@lists.infradead.org>; Mon, 02 May 2016 08:07:02 -0700 (PDT)
-Message-ID: <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
-Subject: Re: [Codel] fq_codel_drop vs a udp flood
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Date: Mon, 02 May 2016 08:07:00 -0700
-In-Reply-To: <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
+ id 1axFzs-0000Km-VW
+ for ath10k@lists.infradead.org; Mon, 02 May 2016 15:42:57 +0000
+Received: by mail-ob0-x244.google.com with SMTP id ds10so4462230obb.3
+ for <ath10k@lists.infradead.org>; Mon, 02 May 2016 08:42:36 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1462201445.5535.247.camel@edumazet-glaptop3.roam.corp.google.com>
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
- <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
- <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
- <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
- <1462136140.5535.219.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
-Mime-Version: 1.0
+ <CACiydbL0K2fQT4EXm4LjDaxDLC+AVj9szTpyHq2iUwuPVNNz+g@mail.gmail.com>
+ <1462201445.5535.247.camel@edumazet-glaptop3.roam.corp.google.com>
+Date: Mon, 2 May 2016 18:42:35 +0300
+Message-ID: <CACiydbJC2mminbgh3pZ4-o-A=n=22uFE-3wTVVbjATvUMnZa7Q@mail.gmail.com>
+Subject: Re: [Codel] fq_codel_drop vs a udp flood
+From: Roman Yeryomin <leroi.lists@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,22 +27,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Roman Yeryomin <leroi.lists@gmail.com>
-Cc: Jonathan Morton <chromatix99@gmail.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, make-wifi-fast@lists.bufferbloat.net
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>
 
-On Mon, 2016-05-02 at 17:18 +0300, Roman Yeryomin wrote:
+On 2 May 2016 at 18:04, Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> On Mon, 2016-05-02 at 17:09 +0300, Roman Yeryomin wrote:
+>
+>> So if I run some UDP download you will just kill me? Sounds broken.
+>>
+>
+> Seriously guys, I never suggesting kill a _task_ but the _flow_
+>
+> Meaning dropping packets. See ?
+>
+> If you do not want to drop packets, do not use fq_codel and simply use
+> bufferbloat pfifo_fast.
+>
 
-> Imagine you are a video operator, have MacBook Pro, gigabit LAN and
-> NAS on ethernet side. You would want to get maximum speed. And
-> fq_codel just dropped it down to 550Mbps for TCP (instead of 750Mbps)
-> and to 30Mbps for UDP (instead of 900Mbps).
-> So, again, it looks broken to me.
+I understand what you mean but in case of a flow running through the
+AP it probably could be considered as "task"
 
-Can you show us your qdisc config ?
+I've tried pfifo before, it was better but didn't help much.
+How much faster pfifo_fast is?
 
-It looks broken to me.
-
-
+Regards,
+Roman
 
 _______________________________________________
 ath10k mailing list
