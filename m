@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from g4t3427.houston.hp.com ([15.201.208.55])
+Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axNFx-0002BV-Vd
- for ath10k@lists.infradead.org; Mon, 02 May 2016 23:28:02 +0000
-Subject: Re: [Codel] iperf3 udp flood behavior at higher rates
-References: <CAA93jw7uHvkKTUtXZqqWbDSWDxb=sZ+sfhdmMM1SZW3BsmZ1xA@mail.gmail.com>
-From: Rick Jones <rick.jones2@hpe.com>
-Message-ID: <5727E26B.3040201@hpe.com>
-Date: Mon, 2 May 2016 16:27:39 -0700
+ id 1axNsO-0001FG-Ge
+ for ath10k@lists.infradead.org; Tue, 03 May 2016 00:07:45 +0000
+Received: by mail-oi0-x22a.google.com with SMTP id x201so5528572oif.3
+ for <ath10k@lists.infradead.org>; Mon, 02 May 2016 17:07:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAA93jw7uHvkKTUtXZqqWbDSWDxb=sZ+sfhdmMM1SZW3BsmZ1xA@mail.gmail.com>
+In-Reply-To: <5727E26B.3040201@hpe.com>
+References: <CAA93jw7uHvkKTUtXZqqWbDSWDxb=sZ+sfhdmMM1SZW3BsmZ1xA@mail.gmail.com>
+ <5727E26B.3040201@hpe.com>
+Date: Mon, 2 May 2016 17:07:23 -0700
+Message-ID: <CAA93jw6QZtm2LaKHaY-uUc-KDRTq3TU59rUMujfDkdL+542fbQ@mail.gmail.com>
+Subject: Re: [Codel] iperf3 udp flood behavior at higher rates
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,33 +21,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>, Roman Yeryomin <leroi.lists@gmail.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>
+To: Rick Jones <rick.jones2@hpe.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, Roman Yeryomin <leroi.lists@gmail.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>
 
-On 05/02/2016 04:18 PM, Dave Taht wrote:
-> Netperf does not have a multi-hop capable udp flood test (rick jones
-> can explain why... )
-
-Well, with an intro like that, how could I refuse?-)
-
-In a nutshell, after repeated uses of the netperf UDP_STREAM test in 
-non-air-gapped test setups with link up/down testing and a default route 
-which pointed at the local "corporate/desktop/whathaveyou" network by QA 
-engineers who should have known better, taking-out things like security 
-camera video feeds, by default the data socket for a UDP_STREAM test is 
-set SO_DONTROUTE.  This can be overridden with a test-specific -R 1 option.
-
-This is not necessary if the test is UDP_RR or TCP_*.
-
-happy benchmarking,
-
-rick jones
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gTW9uLCBNYXkgMiwgMjAxNiBhdCA0OjI3IFBNLCBSaWNrIEpvbmVzIDxyaWNrLmpvbmVzMkBo
+cGUuY29tPiB3cm90ZToKPiBPbiAwNS8wMi8yMDE2IDA0OjE4IFBNLCBEYXZlIFRhaHQgd3JvdGU6
+Cj4+Cj4+IE5ldHBlcmYgZG9lcyBub3QgaGF2ZSBhIG11bHRpLWhvcCBjYXBhYmxlIHVkcCBmbG9v
+ZCB0ZXN0IChyaWNrIGpvbmVzCj4+IGNhbiBleHBsYWluIHdoeS4uLiApCj4KPgo+IFdlbGwsIHdp
+dGggYW4gaW50cm8gbGlrZSB0aGF0LCBob3cgY291bGQgSSByZWZ1c2U/LSkKPgo+IEluIGEgbnV0
+c2hlbGwsIGFmdGVyIHJlcGVhdGVkIHVzZXMgb2YgdGhlIG5ldHBlcmYgVURQX1NUUkVBTSB0ZXN0
+IGluCj4gbm9uLWFpci1nYXBwZWQgdGVzdCBzZXR1cHMgd2l0aCBsaW5rIHVwL2Rvd24gdGVzdGlu
+ZyBhbmQgYSBkZWZhdWx0IHJvdXRlCj4gd2hpY2ggcG9pbnRlZCBhdCB0aGUgbG9jYWwgImNvcnBv
+cmF0ZS9kZXNrdG9wL3doYXRoYXZleW91IiBuZXR3b3JrIGJ5IFFBCj4gZW5naW5lZXJzIHdobyBz
+aG91bGQgaGF2ZSBrbm93biBiZXR0ZXIsIHRha2luZy1vdXQgdGhpbmdzIGxpa2Ugc2VjdXJpdHkK
+PiBjYW1lcmEgdmlkZW8gZmVlZHMsIGJ5IGRlZmF1bHQgdGhlIGRhdGEgc29ja2V0IGZvciBhIFVE
+UF9TVFJFQU0gdGVzdCBpcyBzZXQKPiBTT19ET05UUk9VVEUuICBUaGlzIGNhbiBiZSBvdmVycmlk
+ZGVuIHdpdGggYSB0ZXN0LXNwZWNpZmljIC1SIDEgb3B0aW9uLgoKVGhhdCBpcyBzbyBtdWNoIG1v
+cmUgUEMgdGhhbiB3aGF0J3MgYWN0dWFsbHkgaW4gdGhlIHJlbGVhc2Ugbm90ZXMhIDopCldlbGws
+IGEgcXVpY2sgcmVjb21waWxlIGxhdGVyIGFuZCBhcHBseWluZyAtUiAxIHN0aWxsIGdldHMgcmVq
+ZWN0ZWQuLi4KcmVhZGluZyBuZXR0ZXN0X29tbmkuYyB3YXMgcXVpdGUgZW50ZXJ0YWluaW5nLCB0
+aG8uCgpJIGFjdHVhbGx5IGxpa2UgYSB3b3JsZCB3aGVyZSBpdCB0YWtlcyBtb3JlIGVmZm9ydCB0
+byBtZXNzIHVwIHRoZQpuZXR3b3JrIC0gd2hlcmUgcGluZyAtZiBpcyBub3QgYXZhaWxhYmxlIHRv
+IGFueW9uZSBidXQgcm9vdCwgZm9yCmV4YW1wbGUuIEl0J3MgYm90aGVyc29tZSwgaW4gZmxlbnQs
+IHRvIG5lZWQgcm9vdCB0byBnZXQgYSBwaW5nCi0tc3RlcC1zaXplIHJlc29sdXRpb24gb2YgPCAy
+MG1zLCBidXQgSSBjYW4gbGl2ZSB3aXRoIGl0LCBhbmQgSSdkIGxpa2UKYSB3b3JsZCB3aGVyZSBz
+Y3JpcHQga2lkZGllcyB3aXRoICJpb24gY2Fubm9ucyIgaGFkIHRoZWlyIGhhcmR3YXJlCmV4cGxv
+ZGUgb24gdGhlbSB3aGVuIG1pcy11c2VkLi4uCgpUaGVyZSBhcmUgc29tZSB0aGluZ3Mgb3JkaW5h
+cnkgbWFuIGRvZXMgbm90IG5lZWQgdG8ga25vdywgYW5kCmtub3dsZWRnZSBvZiB0aGUgbmV0cGVy
+ZiAtdCBVRFBfU1RSRUFNIC1SIDEgb3B0aW9uIGlzIG9uZSBvZiB0aGVtLgoKRXhjZXB0LCBtYXli
+ZSB0b2RheSwgd2hlbiBJJ20gdHJ5aW5nIHRvIGZpZ3VyZSBvdXQgd2h5IGlwZXJmMyBpcyBiZWlu
+ZyB3ZWlyZC4KCj4gVGhpcyBpcyBub3QgbmVjZXNzYXJ5IGlmIHRoZSB0ZXN0IGlzIFVEUF9SUiBv
+ciBUQ1BfKi4KPgo+IGhhcHB5IGJlbmNobWFya2luZywKPgo+IHJpY2sgam9uZXMKCgoKLS0gCkRh
+dmUgVMOkaHQKTGV0J3MgZ28gbWFrZSBob21lIHJvdXRlcnMgYW5kIHdpZmkgZmFzdGVyISBXaXRo
+IGJldHRlciBzb2Z0d2FyZSEKaHR0cDovL2Jsb2cuY2Vyb3dydC5vcmcKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
+MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsK
