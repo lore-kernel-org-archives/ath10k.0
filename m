@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ob0-x22f.google.com ([2607:f8b0:4003:c01::22f])
+Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axrw3-0000A5-Mb
- for ath10k@lists.infradead.org; Wed, 04 May 2016 08:13:32 +0000
-Received: by mail-ob0-x22f.google.com with SMTP id aq1so11460123obc.3
- for <ath10k@lists.infradead.org>; Wed, 04 May 2016 01:13:11 -0700 (PDT)
+ id 1axsEV-0002lQ-P2
+ for ath10k@lists.infradead.org; Wed, 04 May 2016 08:32:37 +0000
+Received: by mail-wm0-x232.google.com with SMTP id a17so80061313wme.0
+ for <ath10k@lists.infradead.org>; Wed, 04 May 2016 01:32:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACiydbJGpyak1jCm+eqG=xez4wP4AFciYf5DvQCu4-8E7A_Xyw@mail.gmail.com>
-References: <CAA93jw7uHvkKTUtXZqqWbDSWDxb=sZ+sfhdmMM1SZW3BsmZ1xA@mail.gmail.com>
- <CACiydbJGpyak1jCm+eqG=xez4wP4AFciYf5DvQCu4-8E7A_Xyw@mail.gmail.com>
-Date: Wed, 4 May 2016 11:13:10 +0300
-Message-ID: <CACiydbL6QaER-zrP5ZBRe-x5PLOoU7goAnquzGHVXTpt_g+STg@mail.gmail.com>
-Subject: Re: iperf3 udp flood behavior at higher rates
-From: Roman Yeryomin <leroi.lists@gmail.com>
+In-Reply-To: <57279584.6040809@candelatech.com>
+References: <571E7E8F.1010404@candelatech.com>
+ <CA+BoTQke1auNL1-oPN-N9=e9K5vit0w2iJSS9KuXEifR7hqm6Q@mail.gmail.com>
+ <571F7CB7.9090601@candelatech.com>
+ <CA+BoTQmd3dzoGMckJe+1YSONjtqqtUOKWiRj-CUF6hO42DExng@mail.gmail.com>
+ <57279584.6040809@candelatech.com>
+Date: Wed, 4 May 2016 10:32:10 +0200
+Message-ID: <CA+BoTQn7DS2W+W_cA46UJWFay3eNGiayYzj31fteD=EBZ6NRUg@mail.gmail.com>
+Subject: Re: QCA99XX with MU-MIMO and beamforming?
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,38 +24,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On 4 May 2016 at 11:02, Roman Yeryomin <leroi.lists@gmail.com> wrote:
-> On 3 May 2016 at 02:18, Dave Taht <dave.taht@gmail.com> wrote:
->> to fork the fq_codel_drop discussion a bit...
->>
->> I have up and running two new boxes[1] that are my hope to be able to
->> test ath10k/ath9k hardware with, for this test, using one in the
->> middle as a router and a nuc i3 box as the server, all ports pure
->> ethernet... there's a switch in the way, too.
->>
->> On tcp via netperf I get expected ~940 mbits.
->>
->> On udp via iperf3 (again, all pure ethernet) -  in neither case below
->> am I seeing any drops in the qdisc itself anywhere on the path, yet am
->> only achieving 500mbit.
->
-> That's interesting, I have no problems with UDP over ethernet.
-> What about TCP with iperf3?
->
-
-Also what version of iperf3 are you using?
-
-Regards,
-Roman
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMiBNYXkgMjAxNiBhdCAxOTo1OSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
+b20+IHdyb3RlOgo+IE9uIDA0LzI2LzIwMTYgMTE6MzcgUE0sIE1pY2hhbCBLYXppb3Igd3JvdGU6
+Cj4+Cj4+IE9uIDI2IEFwcmlsIDIwMTYgYXQgMTY6MzUsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2Fu
+ZGVsYXRlY2guY29tPiB3cm90ZToKPj4+Cj4+Pgo+Pj4KPj4+IE9uIDA0LzI1LzIwMTYgMTE6MTYg
+UE0sIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+Pj4KPj4+Pgo+Pj4+IE9uIDI1IEFwcmlsIDIwMTYg
+YXQgMjI6MzEsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToKPj4+
+Pj4KPj4+Pj4KPj4+Pj4gSGFzIGFueW9uZSB0cmllZCB0aGlzPyAgTG9va3MgbGlrZSBob3N0YXBk
+IGhhcyB0aGUgYWJpbGl0eSB0byBzZXQgdGhlCj4+Pj4+IGZlYXR1cmUgZmxhZ3MsIGJ1dCBJIGFt
+IG5vdCBzdXJlIGlmIGl0IGlzIHJlYWxseSB3b3JraW5nIGluIGF0aDEwaz8KPj4+Pgo+Pj4+Cj4+
+Pj4KPj4+PiBZZXMsIGl0IHdvcmtzLiBZb3UgbmVlZCBhIGZldyB2aHRfY2FwYWJzLiBJIGhhdmUg
+bWluZSBsaWtlIHRoaXM6Cj4+Pj4KPj4+PiAgICA+Cj4+Pj4KPj4+PiB2aHRfY2FwYWI9W1JYTERQ
+Q11bU0hPUlQtR0ktODBdW1RYLVNUQkMtMkJZMV1bU1UtQkVBTUZPUk1FUl1bU1UtQkVBTUZPUk1F
+RV1bTVUtQkVBTUZPUk1FUl1bUlgtQU5URU5OQS1QQVRURVJOXVtUWC1BTlRFTk5BLVBBVFRFUk5d
+W0JGLUFOVEVOTkEtNF1bTUFYLU1QRFUtMTE0NTRdW1JYLVNUQkMtMV1bTUFYLUEtTVBEVS1MRU4t
+RVhQN10KPj4+Pgo+Pj4+IFRoZSBTVS0sIE1VLSBhbmQgQkYtIGFyZSB0aGUgcmVxdWlyZWQgcGFy
+dCBvbmx5IEkgdGhpbmsuCj4+Pj4KPj4+Pgo+Pj4+Pgo+Pj4+PiBEbyB5b3UgYWN0dWFsbHkgbmVl
+ZCBhbnl0aGluZyBvdGhlciB0aGFuIHN0YW5kYXJkIHdoaXAgYW50ZW5uYSB0bwo+Pj4+PiBhbGxv
+dyB0aGlzIHRvIGZ1bmN0aW9uIHByb3Blcmx5Pwo+Pj4+Cj4+Pj4KPj4+Pgo+Pj4+IEkgZG9uJ3Qg
+dGhpbmsuIEZXSVcgTWFrZSBzdXJlIHRoZSBhbnRlbm5hcyBhcmUgcmVhc29uYWJseSBzZXQKPj4+
+PiB1cC9zZXBhcmF0ZWQgZnJvbSBlYWNoIG90aGVyLiBJZiB5b3UgY3JhbSB0aGVtIHRvbyB0aWdo
+dC9yYW5kb21seQo+Pj4+IGJlYW1mb3JtaW5nIHdvbid0IHdvcmsgZWZmaWNpZW50bHkuIEkgaGFk
+IHByb2JsZW0gd2l0aCBjbGllbnQgYW50ZW5uYXMKPj4+PiBiZWluZyB0b28gY2xvc2UgdG8gZWFj
+aCBvdGhlciBhbmQgbHlpbmcgZmxhdCBvbiBhIHRhYmxlIChJIHRoYW4gbWFkZSBhCj4+Pj4gZm9h
+bS1zdGFuZCBhbmQgcHV0IHRoZW0gYSBmZXcgY20gYXBhcnQpIHNvIHRoZSBzYW1lIHRoaW5nIG11
+c3QgYXBwbHkKPj4+PiB0byBBUCBhcyB3ZWxsLgo+Pj4+Cj4+Pj4KPj4+Pj4KPj4+Pj4gV2hhdCBh
+Ym91dCBzdGF0aW9uIG1vZGU/Cj4+Pj4KPj4+Pgo+Pj4+Cj4+Pj4gV29ya3MgYXMgd2VsbC4gQm90
+aCBvbiBRQ0E5OVhYIGFuZCBRQ0E5Mzc3Lgo+Pj4KPj4+Cj4+Pgo+Pj4gVGhhbmtzIGZvciB0aGUg
+aW5mby4gIEhvdyBkaWQgeW91IGRldGVybWluZSB0aGF0IGl0IGFjdHVhbGx5IHdvcmtlZD8KPj4K
+Pj4KPj4gRW1waXJpY2FsbHkuIElmIHlvdSBnZXQgNjAwbWJwcyBVRFAgdG8gdHdvIDF4MSBjbGll
+bnRzIGl0IHdvcmtzIDopCj4+Cj4+IEFsc28sIHRoZSByeCBiaXRyYXRlIG9uIHRoZSByZWNlaXZp
+bmcgYXRoMTBrIGVuZCB3aWxsIGJlIGtpbmQgb2Ygd2llcmQKPj4gKHRoZXJlJ3MgY3VycmVudGx5
+IG5vIHdheSB0byBkZWNvZGUgTVUgcmF0ZXNldHMgb24gUnggYmVjYXVzZSBncm91cAo+PiBpZHMg
+YXJlIG1hbmFnZWQgaW4gZmlybXdhcmUpLgo+Cj4KPiBTbywgSSBjb25maWd1cmVkIDMgc3lzdGVt
+czogIDEgaXMgQVAsIHR3byBhcmUgYWN0aW5nIGFzIHN0YXRpb25zLgo+Cj4gQWxsIGFyZSA5OTgw
+LCBidXQgdGhlIHR3byBzdGF0aW9uIHN5c3RlbXMgYXJlIGZvcmNlZCB0byBhY3QgbGlrZQo+IDF4
+MS4KPgo+IFNpbmdsZSBzdGF0aW9uIGRvd25sb2FkIGlzIGFib3V0IDI3ME1icHMgb3Zlci10aGUt
+YWlyLiAgQnV0LCB3aGVuIEkKPiBhZGQgdGhlIHNlY29uZCBzdGF0aW9uLCB0aGVuIHRvdGFsIG92
+ZXItdGhlLWFpciBzdGF5cyBhdCBhYm91dCAyNzBNYnBzLgo+Cj4gU28sIEkgZ3Vlc3MgbXUtbWlt
+byBpcyBub3QgYWN0dWFsbHkgd29ya2luZyBmb3IgbWUuCj4KPiBNeSBob3N0YXBkIGNvbmZpZyBs
+b29rcyBsaWtlIHRoaXMgKGJlbG93KS4gIERvZXMgaXQgbG9vayByaWdodD8gIERvIEkgbmVlZAo+
+IHNvbWV0aGluZwo+IHNwZWNpYWwgaW4gd3BhX3N1cHBsaWNhbnQgY29uZmlnIG9uIHRoZSBzdGF0
+aW9uIHNpZGU/CgpOb3BlLgoKClsuLi5dCj4gW1RYLVNUQkNdW1JYLVNUQkMxMjNdW01BWC1BTVNE
+VS03OTM1XVtEU1NTX0NDSy00MF1bUFNNUF1bTFNJRy1UWE9QLVBST1RdCj4gaHRfY2FwYWI9W0hU
+MjBdW0hUNDArXVtTSE9SVC1HSS00MF1bU0hPUlQtR0ktMjBdCj4gdmh0X2NhcGFiPVtNQVgtTVBE
+VS0xMTQ1NF1bUlhMRFBDXVtUWC1TVEJDLTJCWTFdW1JYLVNUQkMtMV1bTUFYLUEtTVBEVS1MRU4t
+RVhQMF1bUlgtQU5URU5OQS1QQVRURVJOXVtUWC1BTlRFTk5BLVBBVFRFUk5dW1NVLUJFQU1GT1JN
+RVJdW1NVLUJFQU1GT1JNRUVdW01VLUJFQU1GT1JNRVJdW1NIT1JULUdJLTgwXQoKQXJlIHlvdSBz
+dXJlIHlvdSB3YW50IHRvIHVzZSBFWFAwPyBUaGVyZSB3YXMgYSBidWcgaW4gaG9zdGFwZCBsb25n
+CnRpbWUgYWdvIHRoYXQgcmVxdWlyZWQgdGhhdCBJSVJDLi4geW91IHNob3VsZCBiZSBzZXR0aW5n
+IEVYUDcgbm93LCBubz8KCkZXSVcgeW91J3JlIG1pc3NpbmcgQkYtQU5URU5OQS00LiBOb3Qgc3Vy
+ZSBpZiB0aGlzIGlzIHJlYWxseSBuZWNlc3NhcnkuCgpPdGhlciB0aGFuIHRoYXQgSSBndWVzcyB5
+b3UgY2FuIGxvb2sgYXQgZGVidWdzL3RyYWNlcyAob3IgYWRkIHByaW50cykKdG8gc2VlIGlmIHZk
+ZXYgdHhiZiBwYXJhbSBpcyBzZXQgcHJvcGVybHkgb24gYm90aCBhcCBhbmQgY2xpZW50cyBhbmQK
+aWYgcGVlci1hc3NvYyB2aHRfY2FwcyBpbmNsdWRlIE1VLS4KCgpNaWNoYcWCCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
+CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
