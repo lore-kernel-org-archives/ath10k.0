@@ -1,23 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
+Received: from mail-oi0-x22f.google.com ([2607:f8b0:4003:c06::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayKhB-00009N-7I
- for ath10k@lists.infradead.org; Thu, 05 May 2016 14:56:05 +0000
-Received: by mail-oi0-x243.google.com with SMTP id f63so14260505oig.0
- for <ath10k@lists.infradead.org>; Thu, 05 May 2016 07:55:45 -0700 (PDT)
+ id 1ayLGa-0006a1-Mw
+ for ath10k@lists.infradead.org; Thu, 05 May 2016 15:32:41 +0000
+Received: by mail-oi0-x22f.google.com with SMTP id x19so106524195oix.2
+ for <ath10k@lists.infradead.org>; Thu, 05 May 2016 08:32:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACiydbJcBxXXqMfFYp5jbDV_o2C=ai5rMpCGrovbYOZcD7pmzw@mail.gmail.com>
+In-Reply-To: <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
- <57258F41.8040600@candelatech.com>
- <CAA93jw46O3CbURxyP7AENkOCnA71Bn6ddTJpdfzEjWcFKgnaAg@mail.gmail.com>
- <1462114043.512818296@apps.rackspace.com>
- <CACiydb+nNEWfO8XS63MnrW0LazORAGX+L+fF1xZ2_2sCLeRAsg@mail.gmail.com>
- <CAA93jw4vLUM8XLORoExUuSidaJ8HqzJJJ-FPi=5bXZGxe52y3A@mail.gmail.com>
- <CACiydbJcBxXXqMfFYp5jbDV_o2C=ai5rMpCGrovbYOZcD7pmzw@mail.gmail.com>
-Date: Thu, 5 May 2016 17:55:44 +0300
-Message-ID: <CACiydb+ZfROQ2p9ZJh_i9=c_54nwZxWA6HddbRVhBviGEHM1=Q@mail.gmail.com>
-Subject: Re: [Make-wifi-fast] fq_codel_drop vs a udp flood
-From: Roman Yeryomin <leroi.lists@gmail.com>
+ <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
+ <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
+ <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
+ <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
+ <1462136140.5535.219.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
+ <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
+ <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
+Date: Thu, 5 May 2016 08:32:15 -0700
+Message-ID: <CAA93jw5Y3DSzuOZo=S6_dsUqJvy_3ThNe6tMic2ZJ14kQPnFHg@mail.gmail.com>
+Subject: Re: [Codel] fq_codel_drop vs a udp flood
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +30,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, David Reed <dpreed@reed.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
+To: Roman Yeryomin <leroi.lists@gmail.com>
+Cc: Jonathan Morton <chromatix99@gmail.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>, Eric Dumazet <eric.dumazet@gmail.com>, make-wifi-fast@lists.bufferbloat.net
 
-On 5 May 2016 at 16:55, Roman Yeryomin <leroi.lists@gmail.com> wrote:
-> On 2 May 2016 at 21:40, Dave Taht <dave.taht@gmail.com> wrote:
->> On Mon, May 2, 2016 at 7:03 AM, Roman Yeryomin <leroi.lists@gmail.com> wrote:
->>> On 1 May 2016 at 17:47,  <dpreed@reed.com> wrote:
->>>> Maybe I missed something, but why is it important to optimize for a UDP flood?
->>>
->>> We don't need to optimize it to UDP but UDP is used e.g. by torrents
->>> to achieve higher throughput and used a lot in general.
->>
->> Torrents use uTP congestion control and won't hit this function at
->> all. And eric just made fq_codel_drop more efficient for tests that
->> do.
->>
->> There are potentially zillions of other issues with ampdu's, txop
->> usage, aggregate "packing", etc that can also affect and other
->> protocools.
->>
->>> And, again, in this case TCP is broken too (750Mbps down to 550), so
->>> it's not like Dave is saying that UDP test is broken, fq_codel is just
->>> too hungry for CPU
->>
->> "fq_codel_drop" was too hungry for cpu. fixed. thx eric. :)
->>
->> I've never seen ath10k tcp throughput in the real world (e.g not wired
->> up, over the air) even close to 750 under test on the ath10k (I've
->> seen 300, and I'm getting some better gear up this week)... and
->> everybody tests wifi differently.
->
-> perhaps you didn't have 3x3 client and AP?
->
->> (for the record, what was your iperf tcp test line?). More people
->> testing differently = good.
->
-> iperf3 -c <server_ip> -t600
-
-actually `iperf3 -c <server_ip> -t600 -R` for download, client POV
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gVGh1LCBNYXkgNSwgMjAxNiBhdCA3OjUzIEFNLCBSb21hbiBZZXJ5b21pbiA8bGVyb2kubGlz
+dHNAZ21haWwuY29tPiB3cm90ZToKPiBPbiAyIE1heSAyMDE2IGF0IDE5OjE0LCBFcmljIER1bWF6
+ZXQgPGVyaWMuZHVtYXpldEBnbWFpbC5jb20+IHdyb3RlOgo+PiBPbiBNb24sIDIwMTYtMDUtMDIg
+YXQgMTg6NDMgKzAzMDAsIFJvbWFuIFllcnlvbWluIHdyb3RlOgo+Pj4gT24gMiBNYXkgMjAxNiBh
+dCAxODowNywgRXJpYyBEdW1hemV0IDxlcmljLmR1bWF6ZXRAZ21haWwuY29tPiB3cm90ZToKPj4+
+ID4gT24gTW9uLCAyMDE2LTA1LTAyIGF0IDE3OjE4ICswMzAwLCBSb21hbiBZZXJ5b21pbiB3cm90
+ZToKPj4+ID4KPj4+ID4+IEltYWdpbmUgeW91IGFyZSBhIHZpZGVvIG9wZXJhdG9yLCBoYXZlIE1h
+Y0Jvb2sgUHJvLCBnaWdhYml0IExBTiBhbmQKPj4+ID4+IE5BUyBvbiBldGhlcm5ldCBzaWRlLiBZ
+b3Ugd291bGQgd2FudCB0byBnZXQgbWF4aW11bSBzcGVlZC4gQW5kCj4+PiA+PiBmcV9jb2RlbCBq
+dXN0IGRyb3BwZWQgaXQgZG93biB0byA1NTBNYnBzIGZvciBUQ1AgKGluc3RlYWQgb2YgNzUwTWJw
+cykKPj4+ID4+IGFuZCB0byAzME1icHMgZm9yIFVEUCAoaW5zdGVhZCBvZiA5MDBNYnBzKS4KPj4+
+ID4+IFNvLCBhZ2FpbiwgaXQgbG9va3MgYnJva2VuIHRvIG1lLgo+Pj4gPgo+Pj4gPiBDYW4geW91
+IHNob3cgdXMgeW91ciBxZGlzYyBjb25maWcgPwo+Pj4KPj4+IFdoaWNoIGJ1aWxkIGRvIHlvdSB3
+YW50PyBCZWZvcmUgaXQgYnJva2Ugb3IgYWZ0ZXI/Cj4+Pgo+Pgo+Pgo+PiBJIHdhbnQgdG8gY2hl
+Y2sgeW91ciBxZGlzYyBjb25maWd1cmF0aW9uLCB0aGUgb25lIHRoYXQgeW91IHVzZWQgYW5kCj4+
+IHdoZXJlIHlvdSBoYWQgZnFfY29kZWwgcGVyZm9ybWFuY2UgaXNzdWVzCj4+Cj4+IHRjIC1zIC1k
+IHFkaXNjCj4+Ckxvb2tzIGZpbmUuCgpJZiB5b3UgY291bGQgc2FtcGxlIHRoYXQgYSBmZXcgdGlt
+ZXMgZHVyaW5nIHlvdXIgdmFyaW91cyB0ZXN0cywKdGhhdCB3b3VsZCBiZSBnb29kLgoKPiBxZGlz
+YyBmcV9jb2RlbCAwOiBkZXYgZXRoMCByb290IHJlZmNudCAyIGxpbWl0IDEwMjRwIGZsb3dzIDEw
+MjQKPiBxdWFudHVtIDE1MTQgdGFyZ2V0IDUuMG1zIGludGVydmFsIDEwMC4wbXMgZWNuCj4gIFNl
+bnQgMTIzMDYgYnl0ZXMgMTI4IHBrdCAoZHJvcHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMg
+MCkKPiAgYmFja2xvZyAwYiAwcCByZXF1ZXVlcyAwCj4gICBtYXhwYWNrZXQgMCBkcm9wX292ZXJs
+aW1pdCAwIG5ld19mbG93X2NvdW50IDAgZWNuX21hcmsgMAo+ICAgbmV3X2Zsb3dzX2xlbiAwIG9s
+ZF9mbG93c19sZW4gMAo+IHFkaXNjIG1xIDA6IGRldiB3bGFuMCByb290Cj4gIFNlbnQgMjk3NzUg
+Ynl0ZXMgMjU0IHBrdCAoZHJvcHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKPiAgYmFj
+a2xvZyAwYiAwcCByZXF1ZXVlcyAwCj4gcWRpc2MgZnFfY29kZWwgMDogZGV2IHdsYW4wIHBhcmVu
+dCA6MSBsaW1pdCAxMDI0cCBmbG93cyAxMDI0IHF1YW50dW0KPiAxNTE0IHRhcmdldCA1LjBtcyBp
+bnRlcnZhbCAxMDAuMG1zIGVjbgo+ICBTZW50IDAgYnl0ZXMgMCBwa3QgKGRyb3BwZWQgMCwgb3Zl
+cmxpbWl0cyAwIHJlcXVldWVzIDApCj4gIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+ICAgbWF4
+cGFja2V0IDAgZHJvcF9vdmVybGltaXQgMCBuZXdfZmxvd19jb3VudCAwIGVjbl9tYXJrIDAKPiAg
+IG5ld19mbG93c19sZW4gMCBvbGRfZmxvd3NfbGVuIDAKPiBxZGlzYyBmcV9jb2RlbCAwOiBkZXYg
+d2xhbjAgcGFyZW50IDoyIGxpbWl0IDEwMjRwIGZsb3dzIDEwMjQgcXVhbnR1bQo+IDE1MTQgdGFy
+Z2V0IDUuMG1zIGludGVydmFsIDEwMC4wbXMgZWNuCj4gIFNlbnQgMCBieXRlcyAwIHBrdCAoZHJv
+cHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKPiAgYmFja2xvZyAwYiAwcCByZXF1ZXVl
+cyAwCj4gICBtYXhwYWNrZXQgMCBkcm9wX292ZXJsaW1pdCAwIG5ld19mbG93X2NvdW50IDAgZWNu
+X21hcmsgMAo+ICAgbmV3X2Zsb3dzX2xlbiAwIG9sZF9mbG93c19sZW4gMAo+IHFkaXNjIGZxX2Nv
+ZGVsIDA6IGRldiB3bGFuMCBwYXJlbnQgOjMgbGltaXQgMTAyNHAgZmxvd3MgMTAyNCBxdWFudHVt
+Cj4gMTUxNCB0YXJnZXQgNS4wbXMgaW50ZXJ2YWwgMTAwLjBtcyBlY24KPiAgU2VudCAyOTc3NSBi
+eXRlcyAyNTQgcGt0IChkcm9wcGVkIDAsIG92ZXJsaW1pdHMgMCByZXF1ZXVlcyAwKQo+ICBiYWNr
+bG9nIDBiIDBwIHJlcXVldWVzIDAKPiAgIG1heHBhY2tldCAwIGRyb3Bfb3ZlcmxpbWl0IDAgbmV3
+X2Zsb3dfY291bnQgMCBlY25fbWFyayAwCj4gICBuZXdfZmxvd3NfbGVuIDAgb2xkX2Zsb3dzX2xl
+biAwCj4gcWRpc2MgZnFfY29kZWwgMDogZGV2IHdsYW4wIHBhcmVudCA6NCBsaW1pdCAxMDI0cCBm
+bG93cyAxMDI0IHF1YW50dW0KPiAxNTE0IHRhcmdldCA1LjBtcyBpbnRlcnZhbCAxMDAuMG1zIGVj
+bgo+ICBTZW50IDAgYnl0ZXMgMCBwa3QgKGRyb3BwZWQgMCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVz
+IDApCj4gIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+ICAgbWF4cGFja2V0IDAgZHJvcF9vdmVy
+bGltaXQgMCBuZXdfZmxvd19jb3VudCAwIGVjbl9tYXJrIDAKPiAgIG5ld19mbG93c19sZW4gMCBv
+bGRfZmxvd3NfbGVuIDAKPgo+Cj4gV2lsbCB0cnkgeW91ciBwYXRjaCBub3cuCj4KPiBSZWdhcmRz
+LAo+IFJvbWFuCgoKCi0tIApEYXZlIFTDpGh0CkxldCdzIGdvIG1ha2UgaG9tZSByb3V0ZXJzIGFu
+ZCB3aWZpIGZhc3RlciEgV2l0aCBiZXR0ZXIgc29mdHdhcmUhCmh0dHA6Ly9ibG9nLmNlcm93cnQu
+b3JnCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
+MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
