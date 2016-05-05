@@ -1,15 +1,29 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yw0-x232.google.com ([2607:f8b0:4002:c05::232])
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayONJ-0000Sm-3w
- for ath10k@lists.infradead.org; Thu, 05 May 2016 18:51:49 +0000
-Received: by mail-yw0-x232.google.com with SMTP id t10so155624440ywa.0
- for <ath10k@lists.infradead.org>; Thu, 05 May 2016 11:51:28 -0700 (PDT)
-MIME-Version: 1.0
-Date: Thu, 5 May 2016 14:51:27 -0400
-Message-ID: <CAOiRWuXoY19XvXDo+KCTYXCAK8o2BufHLKEn408XthvnuCRYyQ@mail.gmail.com>
-Subject: 802.11s channel width settings?
-From: Zach Sherin <zach@netblazr.com>
+ id 1ayOsK-0005aR-JB
+ for ath10k@lists.infradead.org; Thu, 05 May 2016 19:23:53 +0000
+Received: by mail-pa0-x233.google.com with SMTP id bt5so38666983pac.3
+ for <ath10k@lists.infradead.org>; Thu, 05 May 2016 12:23:29 -0700 (PDT)
+Message-ID: <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
+Subject: Re: [Codel] fq_codel_drop vs a udp flood
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Date: Thu, 05 May 2016 12:23:27 -0700
+In-Reply-To: <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
+References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
+ <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
+ <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
+ <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
+ <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
+ <1462136140.5535.219.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
+ <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
+ <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
+ <1462464776.13075.18.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +36,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Roman Yeryomin <leroi.lists@gmail.com>
+Cc: Jonathan Morton <chromatix99@gmail.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, make-wifi-fast@lists.bufferbloat.net
 
-Hi all,
+On Thu, 2016-05-05 at 19:25 +0300, Roman Yeryomin wrote:
+> On 5 May 2016 at 19:12, Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> > On Thu, 2016-05-05 at 17:53 +0300, Roman Yeryomin wrote:
+> >
+> >>
+> >> qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
+> >> quantum 1514 target 5.0ms interval 100.0ms ecn
+> >>  Sent 12306 bytes 128 pkt (dropped 0, overlimits 0 requeues 0)
+> >>  backlog 0b 0p requeues 0
+> >>   maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+> >>   new_flows_len 0 old_flows_len 0
+> >
+> >
+> > Limit of 1024 packets and 1024 flows is not wise I think.
+> >
+> > (If all buckets are in use, each bucket has a virtual queue of 1 packet,
+> > which is almost the same than having no queue at all)
+> >
+> > I suggest to have at least 8 packets per bucket, to let Codel have a
+> > chance to trigger.
+> >
+> > So you could either reduce number of buckets to 128 (if memory is
+> > tight), or increase limit to 8192.
+> 
+> Will try, but what I've posted is default, I didn't change/configure that.
 
-I'm using 802.11s to do mesh networking with ath10k on an OpenWRT
-router. My throughput across the 802.11s connections is very low,
-around 22 Mbits/s maximum. When I search my device with iw[1], I am
-informed that the driver believes it is operating in 20MHz channels.
-When I run it in AP mode, I get much faster speeds and iw claims the
-interface is acting with an 80 MHz channel.
+fq_codel has a default of 10240 packets and 1024 buckets.
 
-Is there any way to increase channel widths in 802.11s? If this is an
-OpenWRT question and not ath10k I'll head over to the forums, but this
-seemed more a driver issue as my wireless config requests wide
-channels. Any chance there's a specific version of ath10k I should
-push to?
+http://lxr.free-electrons.com/source/net/sched/sch_fq_codel.c#L413
 
-Any information would be much appreciated, and I'll be happy to answer
-any questions.
+If someone changed that in the linux variant you use, he probably should
+explain the rationale.
 
-Thanks,
-Zach
 
-[1]iw dev mesh info
 
-Inteface mesh
-           ifindex 19
-           wdev 0x2
-           addr ec:08:6b:ae:51:ac
-           type mesh point
-           wiphy 0
-           channel 36 (5180 MHz), width: 20 MHz (no HT), center1: 5180 MHz
-           txpower 27 dBm
+
 
 _______________________________________________
 ath10k mailing list
