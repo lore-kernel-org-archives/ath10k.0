@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+Received: from mail-oi0-x235.google.com ([2607:f8b0:4003:c06::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayOsK-0005aR-JB
- for ath10k@lists.infradead.org; Thu, 05 May 2016 19:23:53 +0000
-Received: by mail-pa0-x233.google.com with SMTP id bt5so38666983pac.3
- for <ath10k@lists.infradead.org>; Thu, 05 May 2016 12:23:29 -0700 (PDT)
-Message-ID: <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
-Subject: Re: [Codel] fq_codel_drop vs a udp flood
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Date: Thu, 05 May 2016 12:23:27 -0700
-In-Reply-To: <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
+ id 1ayP9b-0007La-GU
+ for ath10k@lists.infradead.org; Thu, 05 May 2016 19:41:44 +0000
+Received: by mail-oi0-x235.google.com with SMTP id x201so114986199oif.3
+ for <ath10k@lists.infradead.org>; Thu, 05 May 2016 12:41:23 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
  <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
@@ -23,7 +20,11 @@ References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
  <1462464776.13075.18.camel@edumazet-glaptop3.roam.corp.google.com>
  <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
-Mime-Version: 1.0
+ <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
+Date: Thu, 5 May 2016 12:41:22 -0700
+Message-ID: <CAA93jw4XZ1+LLX1z6wQ6DHsp4vFCS5zmMz-uku_8SBNG_KuUxA@mail.gmail.com>
+Subject: Re: [Codel] fq_codel_drop vs a udp flood
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,51 +33,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Roman Yeryomin <leroi.lists@gmail.com>
-Cc: Jonathan Morton <chromatix99@gmail.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, make-wifi-fast@lists.bufferbloat.net
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Jonathan Morton <chromatix99@gmail.com>, Roman Yeryomin <leroi.lists@gmail.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>, make-wifi-fast@lists.bufferbloat.net
 
-On Thu, 2016-05-05 at 19:25 +0300, Roman Yeryomin wrote:
-> On 5 May 2016 at 19:12, Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> > On Thu, 2016-05-05 at 17:53 +0300, Roman Yeryomin wrote:
-> >
-> >>
-> >> qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
-> >> quantum 1514 target 5.0ms interval 100.0ms ecn
-> >>  Sent 12306 bytes 128 pkt (dropped 0, overlimits 0 requeues 0)
-> >>  backlog 0b 0p requeues 0
-> >>   maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
-> >>   new_flows_len 0 old_flows_len 0
-> >
-> >
-> > Limit of 1024 packets and 1024 flows is not wise I think.
-> >
-> > (If all buckets are in use, each bucket has a virtual queue of 1 packet,
-> > which is almost the same than having no queue at all)
-> >
-> > I suggest to have at least 8 packets per bucket, to let Codel have a
-> > chance to trigger.
-> >
-> > So you could either reduce number of buckets to 128 (if memory is
-> > tight), or increase limit to 8192.
-> 
-> Will try, but what I've posted is default, I didn't change/configure that.
-
-fq_codel has a default of 10240 packets and 1024 buckets.
-
-http://lxr.free-electrons.com/source/net/sched/sch_fq_codel.c#L413
-
-If someone changed that in the linux variant you use, he probably should
-explain the rationale.
-
-
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gVGh1LCBNYXkgNSwgMjAxNiBhdCAxMjoyMyBQTSwgRXJpYyBEdW1hemV0IDxlcmljLmR1bWF6
+ZXRAZ21haWwuY29tPiB3cm90ZToKPiBPbiBUaHUsIDIwMTYtMDUtMDUgYXQgMTk6MjUgKzAzMDAs
+IFJvbWFuIFllcnlvbWluIHdyb3RlOgo+PiBPbiA1IE1heSAyMDE2IGF0IDE5OjEyLCBFcmljIER1
+bWF6ZXQgPGVyaWMuZHVtYXpldEBnbWFpbC5jb20+IHdyb3RlOgo+PiA+IE9uIFRodSwgMjAxNi0w
+NS0wNSBhdCAxNzo1MyArMDMwMCwgUm9tYW4gWWVyeW9taW4gd3JvdGU6Cj4+ID4KPj4gPj4KPj4g
+Pj4gcWRpc2MgZnFfY29kZWwgMDogZGV2IGV0aDAgcm9vdCByZWZjbnQgMiBsaW1pdCAxMDI0cCBm
+bG93cyAxMDI0Cj4+ID4+IHF1YW50dW0gMTUxNCB0YXJnZXQgNS4wbXMgaW50ZXJ2YWwgMTAwLjBt
+cyBlY24KPj4gPj4gIFNlbnQgMTIzMDYgYnl0ZXMgMTI4IHBrdCAoZHJvcHBlZCAwLCBvdmVybGlt
+aXRzIDAgcmVxdWV1ZXMgMCkKPj4gPj4gIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+PiA+PiAg
+IG1heHBhY2tldCAwIGRyb3Bfb3ZlcmxpbWl0IDAgbmV3X2Zsb3dfY291bnQgMCBlY25fbWFyayAw
+Cj4+ID4+ICAgbmV3X2Zsb3dzX2xlbiAwIG9sZF9mbG93c19sZW4gMAo+PiA+Cj4+ID4KPj4gPiBM
+aW1pdCBvZiAxMDI0IHBhY2tldHMgYW5kIDEwMjQgZmxvd3MgaXMgbm90IHdpc2UgSSB0aGluay4K
+Pj4gPgo+PiA+IChJZiBhbGwgYnVja2V0cyBhcmUgaW4gdXNlLCBlYWNoIGJ1Y2tldCBoYXMgYSB2
+aXJ0dWFsIHF1ZXVlIG9mIDEgcGFja2V0LAo+PiA+IHdoaWNoIGlzIGFsbW9zdCB0aGUgc2FtZSB0
+aGFuIGhhdmluZyBubyBxdWV1ZSBhdCBhbGwpCj4+ID4KPj4gPiBJIHN1Z2dlc3QgdG8gaGF2ZSBh
+dCBsZWFzdCA4IHBhY2tldHMgcGVyIGJ1Y2tldCwgdG8gbGV0IENvZGVsIGhhdmUgYQo+PiA+IGNo
+YW5jZSB0byB0cmlnZ2VyLgo+PiA+Cj4+ID4gU28geW91IGNvdWxkIGVpdGhlciByZWR1Y2UgbnVt
+YmVyIG9mIGJ1Y2tldHMgdG8gMTI4IChpZiBtZW1vcnkgaXMKPj4gPiB0aWdodCksIG9yIGluY3Jl
+YXNlIGxpbWl0IHRvIDgxOTIuCj4+Cj4+IFdpbGwgdHJ5LCBidXQgd2hhdCBJJ3ZlIHBvc3RlZCBp
+cyBkZWZhdWx0LCBJIGRpZG4ndCBjaGFuZ2UvY29uZmlndXJlIHRoYXQuCj4KPiBmcV9jb2RlbCBo
+YXMgYSBkZWZhdWx0IG9mIDEwMjQwIHBhY2tldHMgYW5kIDEwMjQgYnVja2V0cy4KPgo+IGh0dHA6
+Ly9seHIuZnJlZS1lbGVjdHJvbnMuY29tL3NvdXJjZS9uZXQvc2NoZWQvc2NoX2ZxX2NvZGVsLmMj
+TDQxMwo+Cj4gSWYgc29tZW9uZSBjaGFuZ2VkIHRoYXQgaW4gdGhlIGxpbnV4IHZhcmlhbnQgeW91
+IHVzZSwgaGUgcHJvYmFibHkgc2hvdWxkCj4gZXhwbGFpbiB0aGUgcmF0aW9uYWxlLgoKSSBndWVz
+cyB0aGF0IHdvdWxkIGJlIG1lLgoKT3BlbndydCBoYXMgbG9uZyBzaGlwcGVkIHdpdGggdGhlIGZx
+X2NvZGVsIGRlZmF1bHQgb3V0ZXIgcXVldWUgbGltaXQKYmVpbmcgbG93ZXIgdGhhbiB0aGUgZGVm
+YXVsdCAoZS5nLiAxMDI0KS4gVGhpbms6IGl0dHkgYml0dHkgMzJNQgpyb3V0ZXJzLiAxMDI0MCBw
+YWNrZXRzIGNhbiA9IGJvb20sIHBhcnRpY3Vhcmx5IHdoaWxlIHRoZXJlIHdlcmUgNApmcV9jb2Rl
+bCBpbnN0YW5jZXMgcGVyIHdpZmkgaW50ZXJmYWNlIChhbmQgcGVvcGxlIGluIHRoZSBoYWJpdCBv
+ZgpjcmVhdGluZyAyIG9yIG1vcmUgd2lmaSBpbnRlcmZhY2VzKS4KCmJhY2sgdGhlbjogSSB2aWV3
+ZWQgdGhlIHByb2JhYmlsaXR5IG9mIGZsb29kaW5nIGFsbCAxMDI0IHF1ZXVlcyBhcyBsb3cKYW5k
+IHRodXMgdGhlIHF1ZXVlIGRlcHRoIHdvdWxkIGJlIHN1ZmZpY2llbnQgZm9yIGFueSBnaXZlbiBz
+ZXQgb2YKZmxvd3MgdG8gZG8gd2VsbC4gKGFuZCBsb25nIGFnbyB3ZSBnYXZlIGNvZGVsIGEgcHJv
+YmFiaWxpdHkgb2Ygd29ya2luZwpvbiBhbGwgcXVldWVzKS4gQW5kIGRpZCBub3QgZG8gZW5vdWdo
+IHVkcCBmbG9vZCB0ZXN0aW5nLiA6KAoKVG90YWxseSBub3QgdGhlIHJpZ2h0IGFuc3dlciwgSSBr
+bm93LiBBbmQgdGhlIHByb2JsZW0gaXMgZXZlbiB3b3JzZQpub3csIHdpdGggMTI4TUIgYXJtIGJv
+eGVzIGxpa2UgdGhlIGFybWFkYSAzODUgKGxpbmtzeXMgMTIwMGFjLCB0dXJyaXMKb21uaWEpIHVz
+aW5nIHNvZnR3YXJlIEdSTyB0byBiZSBidWxraW5nIHVwIDY0ayBwYWNrZXRzIGF0IGdpZ0UgYW5k
+CnRyeWluZyB0byBzaGlwIHRoZW0gdG8gYW4gaXNwIGF0IDVtYml0LCBvciBvdmVyIHdpZmkgYXQg
+c29tZSByYXRlCmxvd2VyIHRoYW4gdGhhdC4KCmNha2Ugc3dpdGNoZWQgdG8gYnl0ZSwgcmF0aGVy
+IHRoYW4gcGFja2V0LCBhY2NvdW50aW5nLCBmb3IgdGhlc2UKcmVhc29ucywgYW5kIHdlJ3JlIHN0
+aWxsIHRyeWluZyB2YXJpb3VzIG1ldGhvZHMgdG8gcGVlbCBhcGFydApzdXBlcnBhY2tldHMgYXQg
+c29tZSBsb2FkIGxldmVsIGVmZmljaWVudGx5LgoKIEFuZCByb3V0ZXJzIGFyZSB0ZW5kaW5nIHRv
+IHNoaXAgd2l0aCBhIGxvdCBtb3JlIG1lbW9yeSB0aGVzZSBkYXlzLApvdmVyYWxsLiBXZSBhcmUg
+ZGlzY3Vzc2luZyBjaGFuZ2luZyB0aGUgc3FtIHN5c3RlbSB0byBkeW5hbWljYWxseSBzaXplCnRo
+ZSBwYWNrZXQgbGltaXQgYnkgb3ZlcmFsbCBtZW1vcnkgbGltaXRzIGhlcmUsIGZvciBleGFtcGxl
+OgpodHRwczovL2dpdGh1Yi5jb20vdG9ob2pvL3NxbS1zY3JpcHRzL2lzc3Vlcy80MgoKQU5EOiBB
+cyBzb3J0YSBub3cgaW1wbGVtZW50ZWQgaW4gdGhlIG1hYzgwMjExIGZxX2NvZGVsIGNvZGUsIGl0
+J3MgcGVyCnJhZGlvLCByYXRoZXIgdGhhbiBwZXIgaW50ZXJmYWNlIChvciB3YXMsIHdoZW4gSSBs
+YXN0IHRob3VnaHQgYWJvdXQKaXQpLCB3aGljaCBpcyAqdmFzdGx5IHNhbmVyKiB0aGFuIGZvdXIg
+ZnFfY29kZWwgaW5zdGFuY2VzIGZvciBlYWNoClNTSUQuCgo+Cj4KPgoKCgotLSAKRGF2ZSBUw6Ro
+dApMZXQncyBnbyBtYWtlIGhvbWUgcm91dGVycyBhbmQgd2lmaSBmYXN0ZXIhIFdpdGggYmV0dGVy
+IHNvZnR3YXJlIQpodHRwOi8vYmxvZy5jZXJvd3J0Lm9yZwoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2F0aDEwawo=
