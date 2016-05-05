@@ -1,17 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yw0-x233.google.com ([2607:f8b0:4002:c05::233])
+Received: from omr2.cc.ipv6.vt.edu ([2607:b400:92:8400:0:33:fb76:806e]
+ helo=omr2.cc.vt.edu)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayQHq-0007Ws-IJ
- for ath10k@lists.infradead.org; Thu, 05 May 2016 20:54:19 +0000
-Received: by mail-yw0-x233.google.com with SMTP id o66so163296908ywc.3
- for <ath10k@lists.infradead.org>; Thu, 05 May 2016 13:53:56 -0700 (PDT)
+ id 1ayRYk-0004g9-Cz
+ for ath10k@lists.infradead.org; Thu, 05 May 2016 22:15:50 +0000
+Received: from mr6.cc.vt.edu (mr6.cc.ipv6.vt.edu
+ [IPv6:2001:468:c80:2105:0:250:3bcb:5b17])
+ by omr2.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u45MFTiB014239
+ for <ath10k@lists.infradead.org>; Thu, 5 May 2016 18:15:29 -0400
+Received: from mail-lf0-f71.google.com (mail-lf0-f71.google.com
+ [209.85.215.71])
+ by mr6.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u45MFONL012380
+ for <ath10k@lists.infradead.org>; Thu, 5 May 2016 18:15:29 -0400
+Received: by mail-lf0-f71.google.com with SMTP id y84so23163362lfc.3
+ for <ath10k@lists.infradead.org>; Thu, 05 May 2016 15:15:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAOiRWuXoY19XvXDo+KCTYXCAK8o2BufHLKEn408XthvnuCRYyQ@mail.gmail.com>
-References: <CAOiRWuXoY19XvXDo+KCTYXCAK8o2BufHLKEn408XthvnuCRYyQ@mail.gmail.com>
-Date: Thu, 5 May 2016 16:53:55 -0400
-Message-ID: <CAOiRWuUKUU8daVNN_2MrhHuqR3o3qwtx45wR_HHTfUdsdiuLtA@mail.gmail.com>
-Subject: Re: 802.11s channel width settings?
-From: Zach Sherin <zach@netblazr.com>
+Date: Thu, 5 May 2016 18:15:23 -0400
+Message-ID: <CAFc9h7vhnd9iRKF-YsgkH6_+szjjhM4LdkhQuBQ0dqwNB+UoLg@mail.gmail.com>
+Subject: Modifying the Interframe Spacing
+From: Gaurang Ramesh Naik <gaurang@vt.edu>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,49 +33,24 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
-Apologies for the spam, but for clarity I'm using an Archer C7 v2
-router, with the MiniPCIe QCA9880-BR4A (v2) 3x3 a/n/ac PCIe radio
-controlled by ath10k, trying to use 802.11ac with 5GHz. I can use the
-5GHz band as an AP and get much higher speeds (in the 100's or more)
-so I know the 22 Mbits/s is slower than the maximum, though I
-certainly could be wrong on the channel widths point (it could be the
-modulation scheme, maybe?).
+Hello,
 
-Thanks again!
-Zach
+I am working on a research project as a part of which I need to modify
+the interframe spacing value (specifically the difs) of all 802.11ac
+nodes (AP as well as STAs) in my test network. In one of the research
+papers, I read that by changing the AIFSN in ath5k drivers, the
+authors had changed the AIFS value. I have been trying to see where
+this has been implemented in the source code under the ath/ath10k/
+directory. Could someone please assist me with the following
+questions,
 
-On Thu, May 5, 2016 at 2:51 PM, Zach Sherin <zach@netblazr.com> wrote:
-> Hi all,
->
-> I'm using 802.11s to do mesh networking with ath10k on an OpenWRT
-> router. My throughput across the 802.11s connections is very low,
-> around 22 Mbits/s maximum. When I search my device with iw[1], I am
-> informed that the driver believes it is operating in 20MHz channels.
-> When I run it in AP mode, I get much faster speeds and iw claims the
-> interface is acting with an 80 MHz channel.
->
-> Is there any way to increase channel widths in 802.11s? If this is an
-> OpenWRT question and not ath10k I'll head over to the forums, but this
-> seemed more a driver issue as my wireless config requests wide
-> channels. Any chance there's a specific version of ath10k I should
-> push to?
->
-> Any information would be much appreciated, and I'll be happy to answer
-> any questions.
->
-> Thanks,
-> Zach
->
-> [1]iw dev mesh info
->
-> Inteface mesh
->            ifindex 19
->            wdev 0x2
->            addr ec:08:6b:ae:51:ac
->            type mesh point
->            wiphy 0
->            channel 36 (5180 MHz), width: 20 MHz (no HT), center1: 5180 MHz
->            txpower 27 dBm
+(i) Is such a thing even possible in ath10k?
+(ii) Am I looking in the right place (in the ath10k directory)?
+
+Any insights will be extremely valuable.
+
+Thanks,
+GN.
 
 _______________________________________________
 ath10k mailing list
