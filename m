@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ob0-x244.google.com ([2607:f8b0:4003:c01::244])
+Received: from mail-ob0-x241.google.com ([2607:f8b0:4003:c01::241])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayKKo-00057g-7j
- for ath10k@lists.infradead.org; Thu, 05 May 2016 14:32:59 +0000
-Received: by mail-ob0-x244.google.com with SMTP id o7so5090994obl.2
- for <ath10k@lists.infradead.org>; Thu, 05 May 2016 07:32:36 -0700 (PDT)
+ id 1ayKex-00077H-On
+ for ath10k@lists.infradead.org; Thu, 05 May 2016 14:53:48 +0000
+Received: by mail-ob0-x241.google.com with SMTP id aq1so4930543obc.0
+ for <ath10k@lists.infradead.org>; Thu, 05 May 2016 07:53:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAA93jw6Wv0jcwN5Ct2ro65vWDXSdaLO_srwJrbJm7D_W5Z2+zw@mail.gmail.com>
+In-Reply-To: <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
  <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
@@ -17,9 +17,8 @@ References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
  <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
  <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
- <CAA93jw6Wv0jcwN5Ct2ro65vWDXSdaLO_srwJrbJm7D_W5Z2+zw@mail.gmail.com>
-Date: Thu, 5 May 2016 17:32:34 +0300
-Message-ID: <CACiydbJzJK2QBRk1HMhTMO+Z4ssTbQvy6JZ=rW7BTRYUwAsT7g@mail.gmail.com>
+Date: Thu, 5 May 2016 17:53:26 +0300
+Message-ID: <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
 Subject: Re: [Codel] fq_codel_drop vs a udp flood
 From: Roman Yeryomin <leroi.lists@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -30,63 +29,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>, make-wifi-fast@lists.bufferbloat.net, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Michal Kazior <michal.kazior@tieto.com>, Jonathan Morton <chromatix99@gmail.com>
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Jonathan Morton <chromatix99@gmail.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, make-wifi-fast@lists.bufferbloat.net
 
-T24gMiBNYXkgMjAxNiBhdCAyMDowOCwgRGF2ZSBUYWh0IDxkYXZlLnRhaHRAZ21haWwuY29tPiB3
-cm90ZToKPiBPbiBNb24sIE1heSAyLCAyMDE2IGF0IDk6MTQgQU0sIEVyaWMgRHVtYXpldCA8ZXJp
-Yy5kdW1hemV0QGdtYWlsLmNvbT4gd3JvdGU6Cj4+IE9uIE1vbiwgMjAxNi0wNS0wMiBhdCAxODo0
-MyArMDMwMCwgUm9tYW4gWWVyeW9taW4gd3JvdGU6Cj4+PiBPbiAyIE1heSAyMDE2IGF0IDE4OjA3
-LCBFcmljIER1bWF6ZXQgPGVyaWMuZHVtYXpldEBnbWFpbC5jb20+IHdyb3RlOgo+Pj4gPiBPbiBN
-b24sIDIwMTYtMDUtMDIgYXQgMTc6MTggKzAzMDAsIFJvbWFuIFllcnlvbWluIHdyb3RlOgo+Pj4g
-Pgo+Pj4gPj4gSW1hZ2luZSB5b3UgYXJlIGEgdmlkZW8gb3BlcmF0b3IsIGhhdmUgTWFjQm9vayBQ
-cm8sIGdpZ2FiaXQgTEFOIGFuZAo+Pj4gPj4gTkFTIG9uIGV0aGVybmV0IHNpZGUuIFlvdSB3b3Vs
-ZCB3YW50IHRvIGdldCBtYXhpbXVtIHNwZWVkLiBBbmQKPj4+ID4+IGZxX2NvZGVsIGp1c3QgZHJv
-cHBlZCBpdCBkb3duIHRvIDU1ME1icHMgZm9yIFRDUCAoaW5zdGVhZCBvZiA3NTBNYnBzKQo+Pj4g
-Pj4gYW5kIHRvIDMwTWJwcyBmb3IgVURQIChpbnN0ZWFkIG9mIDkwME1icHMpLgo+Pj4gPj4gU28s
-IGFnYWluLCBpdCBsb29rcyBicm9rZW4gdG8gbWUuCj4KPiBUaGUgYmlnIHJlZ3Jlc3Npb24gdHJ5
-aW5nIHRvIGJlIGFkZHJlc3NlZCBoZXJlIGlzIHRoZSBkZWNhZGVzIGxvbmcKPiBpbmNyZWFzZSBp
-biB3aWZpIG92ZXJidWZmZXJpbmcgZm9yIHNsb3cgYW5kIG5vcm1hbCBjbGllbnRzLgo+Cj4gVGhl
-IG51bWJlciB0aGF0IHdhcyBtYWtpbmcgbWUgaGFwcHkgd2FzIHNlZWluZyBsb3cgc3BlZWQgY2xp
-ZW50cwo+IGZpbmFsbHkgaGF2ZSBzYW5lIGJlaGF2aW9yOgo+IGh0dHA6Ly9ibG9nLmNlcm93cnQu
-b3JnL3Bvc3QvZnFfY29kZWxfb25fYXRoMTBrLwo+Cj4gSSB3aWxsIGFkZCB5b3VyIGlwZXJmIGZs
-b29kIHRlc3QgdG8gdGhlIHRlc3RiZW5jaC4gQ2VydGFpbmx5IHdlIGRvbid0Cj4gd2FudCB0byBo
-dXJ0IHBlYWsgc3BlZWRzIG92ZXJtdWNoLi4uIGJ1dCB3ZSdkIGFsc28gbGlrZSB0byBzZWUgcGVv
-cGxlCj4gdHJ5aW5nIHRyYWZmaWMgYXQgbG93ZXIgc3BlZWRzLgo+Cj4gSW5jaWRlbnRhbGx5IGlm
-IHlvdSBhcmUgZG9pbmcgb3BlbndydCBidWlsZHMgdGhhdCB3b3VsZCBiZSBvZiBncmVhdCBoZWxw
-Lgo+Cj4+PiA+IENhbiB5b3Ugc2hvdyB1cyB5b3VyIHFkaXNjIGNvbmZpZyA/Cj4+Pgo+Pj4gV2hp
-Y2ggYnVpbGQgZG8geW91IHdhbnQ/IEJlZm9yZSBpdCBicm9rZSBvciBhZnRlcj8KPgo+IENvbW1p
-dCBoYXNoZXMgZm9yIGVhY2ggd291bGQgaGVscC4KCmNvbW1pdCBoYXNoZXMgd291bGRuJ3QgaGVs
-cCBtdWNoLCBJIHdhcyByZXZlcnRpbmcgcGF0Y2hlcyAoc2VlCnByZXZpb3VzIGVtYWlscyBpbiB0
-aGlzIHRocmVhZCkuCgo+Pgo+Pgo+PiBJIHdhbnQgdG8gY2hlY2sgeW91ciBxZGlzYyBjb25maWd1
-cmF0aW9uLCB0aGUgb25lIHRoYXQgeW91IHVzZWQgYW5kCj4+IHdoZXJlIHlvdSBoYWQgZnFfY29k
-ZWwgcGVyZm9ybWFuY2UgaXNzdWVzCj4+Cj4+IHRjIC1zIC1kIHFkaXNjCj4KPiBOb3Qgc3VyZSBp
-dCdzIHRoZSBxZGlzYyB2ZXJzaW9uIHVuZGVyIHRlc3QgaGVyZS4gPyBJZiBpdCBpcywgSSdkIGJl
-Cj4gcGVydmVyc2VseSBoYXBweSBhcyBmb3IgdGhlIGZpcnN0IHRpbWUgZXZlciB0aGUgd2lmaSBs
-YXllciBzdGFydGVkCj4gZXhlcnRpbmcgc29tZSBiYWNrcHJlc3N1cmUgb24gdGhlIHVwcGVyIGxh
-eWVycyBvZiB0aGUgc3RhY2suCj4KPiBJJ20gbm90IHN1cmUgd2hpY2ggcGFydHMgb2Ygd2hpY2gg
-cGF0Y2hzZXQgYXJlIHVuZGVyIHRlc3QgaGVyZSwKPiBlaXRoZXIuIEkgc2F3IGEgZmV3IHRvbyBt
-YW55IHBhdGNoZXMgZ28gYnkgYWxsIGFyb3VuZCwgYW5kIEkgYW0gb25seQo+IGp1c3QgdGhpcyB3
-ZWVrIGFibGUgdG8gYWRkIGF0aDEwayB0byBteSB0ZXN0IG1hdHJpeC4gQ29tbWl0Pwo+Cj4gaHR0
-cHM6Ly9naXRodWIuY29tL2themlrY3ovbGludXgvY29tbWl0cy9mcW1hYy12My41IGhhcyBhIHZl
-cnNpb24gb2YKPiBmcV9jb2RlbCBpbiBpdCAoYW5kIHRoZSB1bmRlcmx5aW5nIGRyaXZlciBjaGFu
-Z2VzKSAqYXQgdGhlIG1hYzgwMjExCj4gbGF5ZXIqLCBub3QgdGhlIHFkaXNjIGxheWVyLiBJdCBk
-aXNhYmxlcyB0aGUgb3Zlcmx5aW5nIHFkaXNjLiBJdCB3aWxsCj4gbmVlZCB0aGUgZXF1aXZhbGVu
-dCBuZXcgZnFfY29kZWxfZHJvcCBsb2dpYyBhZGRlZCB0byBpdCwgdGhhdCBlcmljCj4ganVzdCBh
-ZGRlZCwgYWxzbywgdG8gZG8gYmV0dGVyIG9uIHRoZSB1ZHAgZmxvb2QgdGVzdC4KPgo+IFRoZXJl
-IHdhcyBhIHByaW9yIGJyYW5jaCB0aGF0IGRpZCBwcmV0dHkgZGFybiB3ZWxsIGF0IGhpZ2ggc3Bl
-ZWRzLAo+IHJlc3VsdHMgSSBwdXQgb24gdGhhdCBibG9nIHBvc3QgSSBsaW5rZWQgdG8gYWJvdmUg
-LSA4MjBNYnBzIGZvciB0Y3AsCj4gYW4gYWN0dWFsIGltcHJvdmVtZW50IG9uIHRoZSBiYXNlbGlu
-ZSB0ZXN0LiBUaGUgY3VycmVudCBicmFuY2ggaXMKPiBzaW1wbGVyIGFuZCBkaWQgbm90IGRvIGFz
-IHdlbGwgZHVlIGluIHBhcnQgdG8gbm90IGJlaW5nIGludGVncmF0ZWQKPiB3aXRoIHJhdGUgY29u
-dHJvbCAoSSB0aGluaykuCj4KPiBUaGVyZSBhcmUgcGllY2VzIGRyb3BwaW5nIGluIGFsbCBvdmVy
-LCB0aGVyZSB3YXMgYSBhbWRzdSBwYXRjaCwKPiBhbm90aGVyIHBhdGNoIG9uIHJ4L3R4LAo+Cj4K
-PiAtLQo+IERhdmUgVMOkaHQKPiBMZXQncyBnbyBtYWtlIGhvbWUgcm91dGVycyBhbmQgd2lmaSBm
-YXN0ZXIhIFdpdGggYmV0dGVyIHNvZnR3YXJlIQo+IGh0dHA6Ly9ibG9nLmNlcm93cnQub3JnCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On 2 May 2016 at 19:14, Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> On Mon, 2016-05-02 at 18:43 +0300, Roman Yeryomin wrote:
+>> On 2 May 2016 at 18:07, Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>> > On Mon, 2016-05-02 at 17:18 +0300, Roman Yeryomin wrote:
+>> >
+>> >> Imagine you are a video operator, have MacBook Pro, gigabit LAN and
+>> >> NAS on ethernet side. You would want to get maximum speed. And
+>> >> fq_codel just dropped it down to 550Mbps for TCP (instead of 750Mbps)
+>> >> and to 30Mbps for UDP (instead of 900Mbps).
+>> >> So, again, it looks broken to me.
+>> >
+>> > Can you show us your qdisc config ?
+>>
+>> Which build do you want? Before it broke or after?
+>>
+>
+>
+> I want to check your qdisc configuration, the one that you used and
+> where you had fq_codel performance issues
+>
+> tc -s -d qdisc
+>
+
+qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
+quantum 1514 target 5.0ms interval 100.0ms ecn
+ Sent 12306 bytes 128 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc mq 0: dev wlan0 root
+ Sent 29775 bytes 254 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+qdisc fq_codel 0: dev wlan0 parent :1 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :2 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :3 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 29775 bytes 254 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :4 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+
+Will try your patch now.
+
+Regards,
+Roman
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
