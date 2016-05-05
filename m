@@ -1,30 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x229.google.com ([2607:f8b0:4003:c06::229])
+Received: from mail-yw0-x232.google.com ([2607:f8b0:4002:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayO5p-0004dT-LI
- for ath10k@lists.infradead.org; Thu, 05 May 2016 18:33:46 +0000
-Received: by mail-oi0-x229.google.com with SMTP id x19so112724744oix.2
- for <ath10k@lists.infradead.org>; Thu, 05 May 2016 11:33:24 -0700 (PDT)
+ id 1ayONJ-0000Sm-3w
+ for ath10k@lists.infradead.org; Thu, 05 May 2016 18:51:49 +0000
+Received: by mail-yw0-x232.google.com with SMTP id t10so155624440ywa.0
+ for <ath10k@lists.infradead.org>; Thu, 05 May 2016 11:51:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2D83E4F6-03DD-4421-AAE0-DD3C6A8AFCE0@gmail.com>
-References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
- <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
- <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
- <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
- <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
- <1462136140.5535.219.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
- <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
- <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
- <CAA93jw5Y3DSzuOZo=S6_dsUqJvy_3ThNe6tMic2ZJ14kQPnFHg@mail.gmail.com>
- <CACiydb+kOLNBwEn+gDU3fZrXEQxp5FMFLH_mDS1ZO5J8r9yiBA@mail.gmail.com>
- <2D83E4F6-03DD-4421-AAE0-DD3C6A8AFCE0@gmail.com>
-Date: Thu, 5 May 2016 11:33:23 -0700
-Message-ID: <CAA93jw6Aj3Rcsm=Q=KZVrW_TGThVwu6pRAN3nNQ4tvSODY_zUg@mail.gmail.com>
-Subject: Re: [Codel] fq_codel_drop vs a udp flood
-From: Dave Taht <dave.taht@gmail.com>
+Date: Thu, 5 May 2016 14:51:27 -0400
+Message-ID: <CAOiRWuXoY19XvXDo+KCTYXCAK8o2BufHLKEn408XthvnuCRYyQ@mail.gmail.com>
+Subject: 802.11s channel width settings?
+From: Zach Sherin <zach@netblazr.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,50 +18,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jonathan Morton <chromatix99@gmail.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, Roman Yeryomin <leroi.lists@gmail.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>, Eric Dumazet <eric.dumazet@gmail.com>
+To: ath10k@lists.infradead.org
 
-T24gVGh1LCBNYXkgNSwgMjAxNiBhdCA5OjU5IEFNLCBKb25hdGhhbiBNb3J0b24gPGNocm9tYXRp
-eDk5QGdtYWlsLmNvbT4gd3JvdGU6Cj4+IEhhdmluZyBzYW1lIChsb3cpIHNwZWVkcy4KPj4gU28g
-aXQgZGlkbid0IGhlbHAgYXQgYWxsIDooCj4KPiBBbHRob3VnaCB0aGUgbmV3IOKAnGVtZXJnZW5j
-eSBkcm9w4oCdIGNvZGUgaXMgbm93IGRyb3BwaW5nIGJhdGNoZXMgb2YgY29uc2VjdXRpdmUgcGFj
-a2V0cywgQ29kZWwgaXMgYWxzbyBzdGlsbCBkcm9wcGluZyBpbmRpdmlkdWFsIHBhY2tldHMgaW4g
-YmV0d2VlbiB0aGVzZSBiYXRjaGVzLCBwcm9iYWJseSBhdCBhIGhpZ2ggcmF0ZS4gIFNpbmNlIGFs
-bCBmcmFnbWVudHMgb2YgYW4gb3JpZ2luYWwgcGFja2V0IGFyZSByZXF1aXJlZCB0byByZWFzc2Vt
-YmxlIGl0LCBidXQgQ29kZWwgZG9lc27igJl0IGxpbmsgcmVsYXRlZCBmcmFnbWVudHMgd2hlbiBk
-ZWNpZGluZyB0byBkcm9wLCBlYWNoIGZyYWdtZW50IGxvc3QgaW4gdGhpcyB3YXkgcmVkdWNlcyB0
-aHJvdWdocHV0IGVmZmljaWVuY3kuICBPbmx5IGEgZnJhY3Rpb24gb2YgdGhlIG9yaWdpbmFsIHBh
-Y2tldHMgY2FuIGJlIHJlYXNzZW1ibGVkIGNvcnJlY3RseSwgYnV0IHRoZSBzdXJ2aXZpbmcgKHll
-dCB1c2VsZXNzKSBmcmFnbWVudHMgc3RpbGwgb2NjdXB5IGxpbmsgY2FwYWNpdHkuCgpJIGNvdWxk
-IHNlZSBhbiBBUU0gZHJvcHBlciB0ZXN0aW5nIHRvIHNlZSBpZiBpdCBpcyBkcm9wcGluZyBhIGZy
-YWcsCmFuZCB0aGVuIGRyb3BwaW5nIGFueSBmdXJ0aGVyIGZyYWdtZW50cywgYWxzby4gV2UncmUg
-bG9va2luZyBhdCB0aGUgSVAKaGVhZGVycyBhbnl3YXkgaW4gdGhhdCBzZWN0aW9uIG9mIHRoZSBj
-b2RlLCBhbmQgdGhlIGRlY2lzaW9uIHRvIGRyb3AKaXMgKHVzdWFsbHkpIHJhcmUsIGFuZCBmcmFn
-bWVudHMgYSBQSVRBLgoKPiBUaGlzIHBoZW5vbWVub24gaXMgbm90IENvZGVsIHNwZWNpZmljOyBJ
-IHdvdWxkIGFsc28gZXhwZWN0IHRvIHNlZSBpdCBvbiBtb3N0IG90aGVyIEFRTXMsIGFuZCBkZWZp
-bml0ZWx5IG9uIFJFRCB2YXJpYW50cywgaW5jbHVkaW5nIFBJRS4gIEZvcnR1bmF0ZWx5IGZvciBy
-ZWFsIHRyYWZmaWMsIGl0IG5vcm1hbGx5IGFyaXNlcyBvbmx5IG9uIGFydGlmaWNpYWwgdHJhZmZp
-YyBzdWNoIGFzIGlwZXJmIHJ1bnMgd2l0aCBsYXJnZSBVRFAgcGFja2V0cy4gIFVuZm9ydHVuYXRl
-bHkgZm9yIEFRTSBhZHZvY2F0ZXMsIGlwZXJmIHVzZXMgbGFyZ2UgVURQIHBhY2tldHMgYnkgZGVm
-YXVsdCwgYW5kIGl0IGlzIHZlcnkgZWFzeSB0byBtaXNpbnRlcnByZXQgdGhlIHJlc3VsdHMgdW5m
-YXZvdXJhYmx5IGZvciBBUU0gKGFzIG9wcG9zZWQgdG8gdW5mYXZvdXJhYmx5IGZvciBpcGVyZiku
-Cj4KPiBJZiB5b3UgcmUtcnVuIHRoZSB0ZXN0IHdpdGggaXBlcmYgc2V0IHRvIGEgcGFja2V0IHNp
-emUgY29tcGF0aWJsZSB3aXRoIHRoZSBwYXRoIE1UVSwgeW91IHNob3VsZCBzZWUgbXVjaCBiZXR0
-ZXIgdGhyb3VnaHB1dCBudW1iZXJzIGR1ZSB0byB0aGUgZWxpbWluYXRpb24gb2YgZnJhZ21lbnRl
-ZCBwYWNrZXRzLiAgQSBVRFAgcGF5bG9hZCBzaXplIG9mIDEyODAgYnl0ZXMgaXMgYSBzYWZlLCBj
-b25zZXJ2YXRpdmUgZmlndXJlIGZvciBhIG5vcm1hbCBNVFUgaW4gdGhlIHZpY2luaXR5IG9mIDE1
-MDAuCj4KPj4gTGltaXQgb2YgMTAyNCBwYWNrZXRzIGFuZCAxMDI0IGZsb3dzIGlzIG5vdCB3aXNl
-IEkgdGhpbmsuCj4+Cj4+IChJZiBhbGwgYnVja2V0cyBhcmUgaW4gdXNlLCBlYWNoIGJ1Y2tldCBo
-YXMgYSB2aXJ0dWFsIHF1ZXVlIG9mIDEgcGFja2V0LAo+PiB3aGljaCBpcyBhbG1vc3QgdGhlIHNh
-bWUgdGhhbiBoYXZpbmcgbm8gcXVldWUgYXQgYWxsKQo+Cj4gVGhpcywgd2hpbGUgdGhlb3JldGlj
-YWxseSBpbXBvcnRhbnQgaW4gZXh0cmVtZSBjYXNlcyB3aXRoIHZlcnkgbGFyZ2UgbnVtYmVycyBv
-ZiBmbG93cywgaXMgbm90IHJlbGV2YW50IHRvIHRoZSBzcGVjaWZpYyB0ZXN0IGluIHF1ZXN0aW9u
-Lgo+Cj4gIC0gSm9uYXRoYW4gTW9ydG9uCj4KCgoKLS0gCkRhdmUgVMOkaHQKTGV0J3MgZ28gbWFr
-ZSBob21lIHJvdXRlcnMgYW5kIHdpZmkgZmFzdGVyISBXaXRoIGJldHRlciBzb2Z0d2FyZSEKaHR0
-cDovL2Jsb2cuY2Vyb3dydC5vcmcKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
-cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi all,
+
+I'm using 802.11s to do mesh networking with ath10k on an OpenWRT
+router. My throughput across the 802.11s connections is very low,
+around 22 Mbits/s maximum. When I search my device with iw[1], I am
+informed that the driver believes it is operating in 20MHz channels.
+When I run it in AP mode, I get much faster speeds and iw claims the
+interface is acting with an 80 MHz channel.
+
+Is there any way to increase channel widths in 802.11s? If this is an
+OpenWRT question and not ath10k I'll head over to the forums, but this
+seemed more a driver issue as my wireless config requests wide
+channels. Any chance there's a specific version of ath10k I should
+push to?
+
+Any information would be much appreciated, and I'll be happy to answer
+any questions.
+
+Thanks,
+Zach
+
+[1]iw dev mesh info
+
+Inteface mesh
+           ifindex 19
+           wdev 0x2
+           addr ec:08:6b:ae:51:ac
+           type mesh point
+           wiphy 0
+           channel 36 (5180 MHz), width: 20 MHz (no HT), center1: 5180 MHz
+           txpower 27 dBm
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
