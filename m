@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x22f.google.com ([2607:f8b0:4003:c06::22f])
+Received: from mail-ob0-x244.google.com ([2607:f8b0:4003:c01::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayLGa-0006a1-Mw
- for ath10k@lists.infradead.org; Thu, 05 May 2016 15:32:41 +0000
-Received: by mail-oi0-x22f.google.com with SMTP id x19so106524195oix.2
- for <ath10k@lists.infradead.org>; Thu, 05 May 2016 08:32:16 -0700 (PDT)
+ id 1ayLoo-0001ke-Mh
+ for ath10k@lists.infradead.org; Thu, 05 May 2016 16:08:04 +0000
+Received: by mail-ob0-x244.google.com with SMTP id ds10so5266991obb.3
+ for <ath10k@lists.infradead.org>; Thu, 05 May 2016 09:07:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
+In-Reply-To: <CAA93jw5Y3DSzuOZo=S6_dsUqJvy_3ThNe6tMic2ZJ14kQPnFHg@mail.gmail.com>
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
  <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
@@ -18,10 +18,11 @@ References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
  <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
  <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
-Date: Thu, 5 May 2016 08:32:15 -0700
-Message-ID: <CAA93jw5Y3DSzuOZo=S6_dsUqJvy_3ThNe6tMic2ZJ14kQPnFHg@mail.gmail.com>
+ <CAA93jw5Y3DSzuOZo=S6_dsUqJvy_3ThNe6tMic2ZJ14kQPnFHg@mail.gmail.com>
+Date: Thu, 5 May 2016 19:07:41 +0300
+Message-ID: <CACiydb+kOLNBwEn+gDU3fZrXEQxp5FMFLH_mDS1ZO5J8r9yiBA@mail.gmail.com>
 Subject: Re: [Codel] fq_codel_drop vs a udp flood
-From: Dave Taht <dave.taht@gmail.com>
+From: Roman Yeryomin <leroi.lists@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,62 +31,268 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Roman Yeryomin <leroi.lists@gmail.com>
+To: Dave Taht <dave.taht@gmail.com>
 Cc: Jonathan Morton <chromatix99@gmail.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, ath10k <ath10k@lists.infradead.org>, Eric Dumazet <eric.dumazet@gmail.com>, make-wifi-fast@lists.bufferbloat.net
 
-T24gVGh1LCBNYXkgNSwgMjAxNiBhdCA3OjUzIEFNLCBSb21hbiBZZXJ5b21pbiA8bGVyb2kubGlz
-dHNAZ21haWwuY29tPiB3cm90ZToKPiBPbiAyIE1heSAyMDE2IGF0IDE5OjE0LCBFcmljIER1bWF6
-ZXQgPGVyaWMuZHVtYXpldEBnbWFpbC5jb20+IHdyb3RlOgo+PiBPbiBNb24sIDIwMTYtMDUtMDIg
-YXQgMTg6NDMgKzAzMDAsIFJvbWFuIFllcnlvbWluIHdyb3RlOgo+Pj4gT24gMiBNYXkgMjAxNiBh
-dCAxODowNywgRXJpYyBEdW1hemV0IDxlcmljLmR1bWF6ZXRAZ21haWwuY29tPiB3cm90ZToKPj4+
-ID4gT24gTW9uLCAyMDE2LTA1LTAyIGF0IDE3OjE4ICswMzAwLCBSb21hbiBZZXJ5b21pbiB3cm90
-ZToKPj4+ID4KPj4+ID4+IEltYWdpbmUgeW91IGFyZSBhIHZpZGVvIG9wZXJhdG9yLCBoYXZlIE1h
-Y0Jvb2sgUHJvLCBnaWdhYml0IExBTiBhbmQKPj4+ID4+IE5BUyBvbiBldGhlcm5ldCBzaWRlLiBZ
-b3Ugd291bGQgd2FudCB0byBnZXQgbWF4aW11bSBzcGVlZC4gQW5kCj4+PiA+PiBmcV9jb2RlbCBq
-dXN0IGRyb3BwZWQgaXQgZG93biB0byA1NTBNYnBzIGZvciBUQ1AgKGluc3RlYWQgb2YgNzUwTWJw
-cykKPj4+ID4+IGFuZCB0byAzME1icHMgZm9yIFVEUCAoaW5zdGVhZCBvZiA5MDBNYnBzKS4KPj4+
-ID4+IFNvLCBhZ2FpbiwgaXQgbG9va3MgYnJva2VuIHRvIG1lLgo+Pj4gPgo+Pj4gPiBDYW4geW91
-IHNob3cgdXMgeW91ciBxZGlzYyBjb25maWcgPwo+Pj4KPj4+IFdoaWNoIGJ1aWxkIGRvIHlvdSB3
-YW50PyBCZWZvcmUgaXQgYnJva2Ugb3IgYWZ0ZXI/Cj4+Pgo+Pgo+Pgo+PiBJIHdhbnQgdG8gY2hl
-Y2sgeW91ciBxZGlzYyBjb25maWd1cmF0aW9uLCB0aGUgb25lIHRoYXQgeW91IHVzZWQgYW5kCj4+
-IHdoZXJlIHlvdSBoYWQgZnFfY29kZWwgcGVyZm9ybWFuY2UgaXNzdWVzCj4+Cj4+IHRjIC1zIC1k
-IHFkaXNjCj4+Ckxvb2tzIGZpbmUuCgpJZiB5b3UgY291bGQgc2FtcGxlIHRoYXQgYSBmZXcgdGlt
-ZXMgZHVyaW5nIHlvdXIgdmFyaW91cyB0ZXN0cywKdGhhdCB3b3VsZCBiZSBnb29kLgoKPiBxZGlz
-YyBmcV9jb2RlbCAwOiBkZXYgZXRoMCByb290IHJlZmNudCAyIGxpbWl0IDEwMjRwIGZsb3dzIDEw
-MjQKPiBxdWFudHVtIDE1MTQgdGFyZ2V0IDUuMG1zIGludGVydmFsIDEwMC4wbXMgZWNuCj4gIFNl
-bnQgMTIzMDYgYnl0ZXMgMTI4IHBrdCAoZHJvcHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMg
-MCkKPiAgYmFja2xvZyAwYiAwcCByZXF1ZXVlcyAwCj4gICBtYXhwYWNrZXQgMCBkcm9wX292ZXJs
-aW1pdCAwIG5ld19mbG93X2NvdW50IDAgZWNuX21hcmsgMAo+ICAgbmV3X2Zsb3dzX2xlbiAwIG9s
-ZF9mbG93c19sZW4gMAo+IHFkaXNjIG1xIDA6IGRldiB3bGFuMCByb290Cj4gIFNlbnQgMjk3NzUg
-Ynl0ZXMgMjU0IHBrdCAoZHJvcHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKPiAgYmFj
-a2xvZyAwYiAwcCByZXF1ZXVlcyAwCj4gcWRpc2MgZnFfY29kZWwgMDogZGV2IHdsYW4wIHBhcmVu
-dCA6MSBsaW1pdCAxMDI0cCBmbG93cyAxMDI0IHF1YW50dW0KPiAxNTE0IHRhcmdldCA1LjBtcyBp
-bnRlcnZhbCAxMDAuMG1zIGVjbgo+ICBTZW50IDAgYnl0ZXMgMCBwa3QgKGRyb3BwZWQgMCwgb3Zl
-cmxpbWl0cyAwIHJlcXVldWVzIDApCj4gIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+ICAgbWF4
-cGFja2V0IDAgZHJvcF9vdmVybGltaXQgMCBuZXdfZmxvd19jb3VudCAwIGVjbl9tYXJrIDAKPiAg
-IG5ld19mbG93c19sZW4gMCBvbGRfZmxvd3NfbGVuIDAKPiBxZGlzYyBmcV9jb2RlbCAwOiBkZXYg
-d2xhbjAgcGFyZW50IDoyIGxpbWl0IDEwMjRwIGZsb3dzIDEwMjQgcXVhbnR1bQo+IDE1MTQgdGFy
-Z2V0IDUuMG1zIGludGVydmFsIDEwMC4wbXMgZWNuCj4gIFNlbnQgMCBieXRlcyAwIHBrdCAoZHJv
-cHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKPiAgYmFja2xvZyAwYiAwcCByZXF1ZXVl
-cyAwCj4gICBtYXhwYWNrZXQgMCBkcm9wX292ZXJsaW1pdCAwIG5ld19mbG93X2NvdW50IDAgZWNu
-X21hcmsgMAo+ICAgbmV3X2Zsb3dzX2xlbiAwIG9sZF9mbG93c19sZW4gMAo+IHFkaXNjIGZxX2Nv
-ZGVsIDA6IGRldiB3bGFuMCBwYXJlbnQgOjMgbGltaXQgMTAyNHAgZmxvd3MgMTAyNCBxdWFudHVt
-Cj4gMTUxNCB0YXJnZXQgNS4wbXMgaW50ZXJ2YWwgMTAwLjBtcyBlY24KPiAgU2VudCAyOTc3NSBi
-eXRlcyAyNTQgcGt0IChkcm9wcGVkIDAsIG92ZXJsaW1pdHMgMCByZXF1ZXVlcyAwKQo+ICBiYWNr
-bG9nIDBiIDBwIHJlcXVldWVzIDAKPiAgIG1heHBhY2tldCAwIGRyb3Bfb3ZlcmxpbWl0IDAgbmV3
-X2Zsb3dfY291bnQgMCBlY25fbWFyayAwCj4gICBuZXdfZmxvd3NfbGVuIDAgb2xkX2Zsb3dzX2xl
-biAwCj4gcWRpc2MgZnFfY29kZWwgMDogZGV2IHdsYW4wIHBhcmVudCA6NCBsaW1pdCAxMDI0cCBm
-bG93cyAxMDI0IHF1YW50dW0KPiAxNTE0IHRhcmdldCA1LjBtcyBpbnRlcnZhbCAxMDAuMG1zIGVj
-bgo+ICBTZW50IDAgYnl0ZXMgMCBwa3QgKGRyb3BwZWQgMCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVz
-IDApCj4gIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+ICAgbWF4cGFja2V0IDAgZHJvcF9vdmVy
-bGltaXQgMCBuZXdfZmxvd19jb3VudCAwIGVjbl9tYXJrIDAKPiAgIG5ld19mbG93c19sZW4gMCBv
-bGRfZmxvd3NfbGVuIDAKPgo+Cj4gV2lsbCB0cnkgeW91ciBwYXRjaCBub3cuCj4KPiBSZWdhcmRz
-LAo+IFJvbWFuCgoKCi0tIApEYXZlIFTDpGh0CkxldCdzIGdvIG1ha2UgaG9tZSByb3V0ZXJzIGFu
-ZCB3aWZpIGZhc3RlciEgV2l0aCBiZXR0ZXIgc29mdHdhcmUhCmh0dHA6Ly9ibG9nLmNlcm93cnQu
-b3JnCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On 5 May 2016 at 18:32, Dave Taht <dave.taht@gmail.com> wrote:
+> On Thu, May 5, 2016 at 7:53 AM, Roman Yeryomin <leroi.lists@gmail.com> wrote:
+>> On 2 May 2016 at 19:14, Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>>> On Mon, 2016-05-02 at 18:43 +0300, Roman Yeryomin wrote:
+>>>> On 2 May 2016 at 18:07, Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>>>> > On Mon, 2016-05-02 at 17:18 +0300, Roman Yeryomin wrote:
+>>>> >
+>>>> >> Imagine you are a video operator, have MacBook Pro, gigabit LAN and
+>>>> >> NAS on ethernet side. You would want to get maximum speed. And
+>>>> >> fq_codel just dropped it down to 550Mbps for TCP (instead of 750Mbps)
+>>>> >> and to 30Mbps for UDP (instead of 900Mbps).
+>>>> >> So, again, it looks broken to me.
+>>>> >
+>>>> > Can you show us your qdisc config ?
+>>>>
+>>>> Which build do you want? Before it broke or after?
+>>>>
+>>>
+>>>
+>>> I want to check your qdisc configuration, the one that you used and
+>>> where you had fq_codel performance issues
+>>>
+>>> tc -s -d qdisc
+>>>
+> Looks fine.
+>
+> If you could sample that a few times during your various tests,
+> that would be good.
+>
+
+UDP:
+
+just started:
+qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
+quantum 1514 target 5.0ms interval 100.0ms ecn
+ Sent 84919 bytes 460 pkt (dropped 0, overlimits 0 requeues 2)
+ backlog 0b 0p requeues 2
+  maxpacket 1374 drop_overlimit 0 new_flow_count 1 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc mq 0: dev wlan0 root
+ Sent 87417 bytes 400 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+qdisc fq_codel 0: dev wlan0 parent :1 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 1304 bytes 14 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :2 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :3 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 64155 bytes 309 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :4 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 21958 bytes 77 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+after 10s of test:
+qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
+quantum 1514 target 5.0ms interval 100.0ms ecn
+ Sent 87093 bytes 489 pkt (dropped 0, overlimits 0 requeues 2)
+ backlog 0b 0p requeues 2
+  maxpacket 1374 drop_overlimit 0 new_flow_count 1 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc mq 0: dev wlan0 root
+ Sent 35600270 bytes 23892 pkt (dropped 679412, overlimits 0 requeues 5)
+ backlog 1514Kb 1024p requeues 5
+qdisc fq_codel 0: dev wlan0 parent :1 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 1304 bytes 14 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :2 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :3 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 35891436 bytes 24003 pkt (dropped 685860, overlimits 0 requeues 5)
+ backlog 1514Kb 1024p requeues 5
+  maxpacket 1514 drop_overlimit 682059 new_flow_count 11 ecn_mark 0
+  new_flows_len 0 old_flows_len 1
+qdisc fq_codel 0: dev wlan0 parent :4 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 22442 bytes 83 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+after 20s of test:
+qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
+quantum 1514 target 5.0ms interval 100.0ms ecn
+ Sent 87591 bytes 498 pkt (dropped 0, overlimits 0 requeues 2)
+ backlog 0b 0p requeues 2
+  maxpacket 1374 drop_overlimit 0 new_flow_count 1 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc mq 0: dev wlan0 root
+ Sent 60034332 bytes 40042 pkt (dropped 1176284, overlimits 0 requeues 5)
+ backlog 1514Kb 1024p requeues 5
+qdisc fq_codel 0: dev wlan0 parent :1 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 1304 bytes 14 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :2 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :3 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 60398170 bytes 40201 pkt (dropped 1184220, overlimits 0 requeues 5)
+ backlog 1514Kb 1024p requeues 5
+  maxpacket 1514 drop_overlimit 1172942 new_flow_count 22 ecn_mark 0
+  new_flows_len 0 old_flows_len 1
+qdisc fq_codel 0: dev wlan0 parent :4 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 22442 bytes 83 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+
+TCP:
+
+just started:
+qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
+quantum 1514 target 5.0ms interval 100.0ms ecn
+ Sent 46784 bytes 299 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc mq 0: dev wlan0 root
+ Sent 52313 bytes 265 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+qdisc fq_codel 0: dev wlan0 parent :1 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 1304 bytes 14 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :2 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :3 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 33248 bytes 194 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :4 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 17761 bytes 57 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+after 10s of test:
+qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
+quantum 1514 target 5.0ms interval 100.0ms ecn
+ Sent 4274547 bytes 64354 pkt (dropped 0, overlimits 0 requeues 1)
+ backlog 0b 0p requeues 1
+  maxpacket 66 drop_overlimit 0 new_flow_count 1 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc mq 0: dev wlan0 root
+ Sent 766641277 bytes 507064 pkt (dropped 0, overlimits 0 requeues 482)
+ backlog 483032b 320p requeues 482
+qdisc fq_codel 0: dev wlan0 parent :1 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 1304 bytes 14 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :2 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :3 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 768001532 bytes 507905 pkt (dropped 0, overlimits 0 requeues 482)
+ backlog 529900b 350p requeues 482
+  maxpacket 1514 drop_overlimit 0 new_flow_count 37 ecn_mark 0
+  new_flows_len 0 old_flows_len 1
+qdisc fq_codel 0: dev wlan0 parent :4 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 17761 bytes 57 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+after 20s of test:
+qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
+quantum 1514 target 5.0ms interval 100.0ms ecn
+ Sent 9064993 bytes 136936 pkt (dropped 0, overlimits 0 requeues 1)
+ backlog 0b 0p requeues 1
+  maxpacket 66 drop_overlimit 0 new_flow_count 1 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc mq 0: dev wlan0 root
+ Sent 1638525871 bytes 1083456 pkt (dropped 0, overlimits 0 requeues 945)
+ backlog 0b 0p requeues 945
+qdisc fq_codel 0: dev wlan0 parent :1 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 1304 bytes 14 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :2 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+qdisc fq_codel 0: dev wlan0 parent :3 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 1638506477 bytes 1083381 pkt (dropped 0, overlimits 0 requeues 945)
+ backlog 0b 0p requeues 945
+  maxpacket 1514 drop_overlimit 0 new_flow_count 70 ecn_mark 0
+  new_flows_len 0 old_flows_len 1
+qdisc fq_codel 0: dev wlan0 parent :4 limit 1024p flows 1024 quantum
+1514 target 5.0ms interval 100.0ms ecn
+ Sent 18090 bytes 61 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+  maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+  new_flows_len 0 old_flows_len 0
+
+
+That's with https://git.kernel.org/cgit/linux/kernel/git/davem/net-next.git/commit/?id=9d18562a227874289fda8ca5d117d8f503f1dcca
+Having same (low) speeds.
+So it didn't help at all :(
+
+
+Regards,
+Roman
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
