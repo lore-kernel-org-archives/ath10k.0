@@ -1,24 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from omr2.cc.ipv6.vt.edu ([2607:b400:92:8400:0:33:fb76:806e]
- helo=omr2.cc.vt.edu)
+Received: from mail-io0-x236.google.com ([2607:f8b0:4001:c06::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayRYk-0004g9-Cz
- for ath10k@lists.infradead.org; Thu, 05 May 2016 22:15:50 +0000
-Received: from mr6.cc.vt.edu (mr6.cc.ipv6.vt.edu
- [IPv6:2001:468:c80:2105:0:250:3bcb:5b17])
- by omr2.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u45MFTiB014239
- for <ath10k@lists.infradead.org>; Thu, 5 May 2016 18:15:29 -0400
-Received: from mail-lf0-f71.google.com (mail-lf0-f71.google.com
- [209.85.215.71])
- by mr6.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u45MFONL012380
- for <ath10k@lists.infradead.org>; Thu, 5 May 2016 18:15:29 -0400
-Received: by mail-lf0-f71.google.com with SMTP id y84so23163362lfc.3
- for <ath10k@lists.infradead.org>; Thu, 05 May 2016 15:15:29 -0700 (PDT)
+ id 1ayUe5-0001ct-G9
+ for ath10k@lists.infradead.org; Fri, 06 May 2016 01:33:34 +0000
+Received: by mail-io0-x236.google.com with SMTP id u185so117190256iod.3
+ for <ath10k@lists.infradead.org>; Thu, 05 May 2016 18:33:10 -0700 (PDT)
+Date: Thu, 5 May 2016 21:32:52 -0400
+From: Bob Copeland <me@bobcopeland.com>
+Subject: Re: 802.11s channel width settings?
+Message-ID: <20160506013252.GB28948@localhost>
+References: <CAOiRWuXoY19XvXDo+KCTYXCAK8o2BufHLKEn408XthvnuCRYyQ@mail.gmail.com>
 MIME-Version: 1.0
-Date: Thu, 5 May 2016 18:15:23 -0400
-Message-ID: <CAFc9h7vhnd9iRKF-YsgkH6_+szjjhM4LdkhQuBQ0dqwNB+UoLg@mail.gmail.com>
-Subject: Modifying the Interframe Spacing
-From: Gaurang Ramesh Naik <gaurang@vt.edu>
+Content-Disposition: inline
+In-Reply-To: <CAOiRWuXoY19XvXDo+KCTYXCAK8o2BufHLKEn408XthvnuCRYyQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,26 +25,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Zach Sherin <zach@netblazr.com>
+Cc: ath10k@lists.infradead.org
 
-Hello,
+On Thu, May 05, 2016 at 02:51:27PM -0400, Zach Sherin wrote:
+> Is there any way to increase channel widths in 802.11s? If this is an
+> OpenWRT question and not ath10k I'll head over to the forums, but this
+> seemed more a driver issue as my wireless config requests wide
+> channels. Any chance there's a specific version of ath10k I should
+> push to?
 
-I am working on a research project as a part of which I need to modify
-the interframe spacing value (specifically the difs) of all 802.11ac
-nodes (AP as well as STAs) in my test network. In one of the research
-papers, I read that by changing the AIFSN in ath5k drivers, the
-authors had changed the AIFS value. I have been trying to see where
-this has been implemented in the source code under the ath/ath10k/
-directory. Could someone please assist me with the following
-questions,
+I'm not sure about OpenWRT's scripts but you can specify the channel width
+when setting the frequency (before joining the mesh).
 
-(i) Is such a thing even possible in ath10k?
-(ii) Am I looking in the right place (in the ath10k directory)?
+E.g.:
 
-Any insights will be extremely valuable.
+ip link set wlan0 up
+iw dev wlan0 set freq 5745 80 5775
+iw dev wlan0 mesh join my-vht-mesh
 
-Thanks,
-GN.
+-- 
+Bob Copeland %% http://bobcopeland.com/
 
 _______________________________________________
 ath10k mailing list
