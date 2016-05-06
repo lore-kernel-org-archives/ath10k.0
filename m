@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.redhat.com ([209.132.183.28])
+Received: from mout.gmx.net ([212.227.17.21])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aye0z-000345-OR
- for ath10k@lists.infradead.org; Fri, 06 May 2016 11:33:50 +0000
-Date: Fri, 6 May 2016 13:33:23 +0200
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+ id 1ayeDl-0001y2-87
+ for ath10k@lists.infradead.org; Fri, 06 May 2016 11:47:02 +0000
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
 Subject: Re: [Codel] fq_codel_drop vs a udp flood
-Message-ID: <20160506133323.0b190f47@redhat.com>
-In-Reply-To: <542135C7-D7CC-4E33-B35B-C2AD259FA5AB@gmx.de>
+From: moeller0 <moeller0@gmx.de>
+In-Reply-To: <20160506133323.0b190f47@redhat.com>
+Date: Fri, 6 May 2016 13:46:21 +0200
+Message-Id: <D29AB9B2-D514-4D14-9A16-CFB9ECD05B17@gmx.de>
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
  <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
@@ -23,7 +24,7 @@ References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
  <CAA93jw4XZ1+LLX1z6wQ6DHsp4vFCS5zmMz-uku_8SBNG_KuUxA@mail.gmail.com>
  <542135C7-D7CC-4E33-B35B-C2AD259FA5AB@gmx.de>
-MIME-Version: 1.0
+ <20160506133323.0b190f47@redhat.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,51 +33,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: moeller0 <moeller0@gmx.de>, Eric Dumazet <eric.dumazet@gmail.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, Dave =?UTF-8?B?VMOkaHQ=?= <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, brouer@redhat.com, Jonathan Morton <chromatix99@gmail.com>, Roman Yeryomin <leroi.lists@gmail.com>
+To: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>, make-wifi-fast@lists.bufferbloat.net, =?utf-8?Q?Dave_T=C3=A4ht?= <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Jonathan Morton <chromatix99@gmail.com>, Roman Yeryomin <leroi.lists@gmail.com>
 
-
-On Fri, 6 May 2016 10:41:53 +0200 moeller0 <moeller0@gmx.de> wrote:
-
-> 	Speaking out of total ignorance, I ask why not account
-> GRO/GSO packets by the number of their fragments against the packet
-> limit? Counting a 64kB packets as equivalent to a 64B packet probably
-> is the right thing if one tries to account for the work the OS needs
-> to perform to figure out what to do with the packet, but for limiting
-> the memory consumption it introduces an impressive/manly level of
-> uncertainty (2 orders of magnitude). 
-
-Looking at the drop code in fq_codel:
- https://github.com/torvalds/linux/blob/v4.6-rc6/net/sched/sch_fq_codel.c#L136
-
-It looks like we are finding the "fat" flow to drop from based on
-number of bytes queued.  And AFAIK skb->len also account for the total
-length of all GSO packets (Eric?)
-
-Even better, we are using qdisc_pkt_len(skb), which also account for
-the GSO headers in qdisc_pkt_len_init(). 
- https://github.com/torvalds/linux/blob/v4.6-rc6/net/core/dev.c#L2993
-
-If anything, the GSO packets get hit harder by the fq_codel_drop
-function, as we drop the entire GSO skb.
-
-
-Is the issue you are raising that the 1024 packet limit, would allow
-1024 x 64K bytes to be queued before the drop kicks in? (Resulting in
-using too much memory on your small device).
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  Author of http://www.iptv-analyzer.org
-  LinkedIn: http://www.linkedin.com/in/brouer
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgSmVzcGVyLAoKPiBPbiBNYXkgNiwgMjAxNiwgYXQgMTM6MzMgLCBKZXNwZXIgRGFuZ2FhcmQg
+QnJvdWVyIDxicm91ZXJAcmVkaGF0LmNvbT4gd3JvdGU6Cj4gCj4gCj4gT24gRnJpLCA2IE1heSAy
+MDE2IDEwOjQxOjUzICswMjAwIG1vZWxsZXIwIDxtb2VsbGVyMEBnbXguZGU+IHdyb3RlOgo+IAo+
+PiAJU3BlYWtpbmcgb3V0IG9mIHRvdGFsIGlnbm9yYW5jZSwgSSBhc2sgd2h5IG5vdCBhY2NvdW50
+Cj4+IEdSTy9HU08gcGFja2V0cyBieSB0aGUgbnVtYmVyIG9mIHRoZWlyIGZyYWdtZW50cyBhZ2Fp
+bnN0IHRoZSBwYWNrZXQKPj4gbGltaXQ/IENvdW50aW5nIGEgNjRrQiBwYWNrZXRzIGFzIGVxdWl2
+YWxlbnQgdG8gYSA2NEIgcGFja2V0IHByb2JhYmx5Cj4+IGlzIHRoZSByaWdodCB0aGluZyBpZiBv
+bmUgdHJpZXMgdG8gYWNjb3VudCBmb3IgdGhlIHdvcmsgdGhlIE9TIG5lZWRzCj4+IHRvIHBlcmZv
+cm0gdG8gZmlndXJlIG91dCB3aGF0IHRvIGRvIHdpdGggdGhlIHBhY2tldCwgYnV0IGZvciBsaW1p
+dGluZwo+PiB0aGUgbWVtb3J5IGNvbnN1bXB0aW9uIGl0IGludHJvZHVjZXMgYW4gaW1wcmVzc2l2
+ZS9tYW5seSBsZXZlbCBvZgo+PiB1bmNlcnRhaW50eSAoMiBvcmRlcnMgb2YgbWFnbml0dWRlKS4g
+Cj4gCj4gTG9va2luZyBhdCB0aGUgZHJvcCBjb2RlIGluIGZxX2NvZGVsOgo+IGh0dHBzOi8vZ2l0
+aHViLmNvbS90b3J2YWxkcy9saW51eC9ibG9iL3Y0LjYtcmM2L25ldC9zY2hlZC9zY2hfZnFfY29k
+ZWwuYyNMMTM2Cj4gCj4gSXQgbG9va3MgbGlrZSB3ZSBhcmUgZmluZGluZyB0aGUgImZhdCIgZmxv
+dyB0byBkcm9wIGZyb20gYmFzZWQgb24KPiBudW1iZXIgb2YgYnl0ZXMgcXVldWVkLiAgQW5kIEFG
+QUlLIHNrYi0+bGVuIGFsc28gYWNjb3VudCBmb3IgdGhlIHRvdGFsCj4gbGVuZ3RoIG9mIGFsbCBH
+U08gcGFja2V0cyAoRXJpYz8pCj4gCj4gRXZlbiBiZXR0ZXIsIHdlIGFyZSB1c2luZyBxZGlzY19w
+a3RfbGVuKHNrYiksIHdoaWNoIGFsc28gYWNjb3VudCBmb3IKPiB0aGUgR1NPIGhlYWRlcnMgaW4g
+cWRpc2NfcGt0X2xlbl9pbml0KCkuIAo+IGh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9saW51
+eC9ibG9iL3Y0LjYtcmM2L25ldC9jb3JlL2Rldi5jI0wyOTkzCj4gCj4gSWYgYW55dGhpbmcsIHRo
+ZSBHU08gcGFja2V0cyBnZXQgaGl0IGhhcmRlciBieSB0aGUgZnFfY29kZWxfZHJvcAo+IGZ1bmN0
+aW9uLCBhcyB3ZSBkcm9wIHRoZSBlbnRpcmUgR1NPIHNrYi4KCglUaGlzIHNvdW5kcyBhbGwgdmVy
+eSByZWFzc3VyaW5nIQoKPiAKPiAKPiBJcyB0aGUgaXNzdWUgeW91IGFyZSByYWlzaW5nIHRoYXQg
+dGhlIDEwMjQgcGFja2V0IGxpbWl0LCB3b3VsZCBhbGxvdwo+IDEwMjQgeCA2NEsgYnl0ZXMgdG8g
+YmUgcXVldWVkIGJlZm9yZSB0aGUgZHJvcCBraWNrcyBpbj8gKFJlc3VsdGluZyBpbgo+IHVzaW5n
+IHRvbyBtdWNoIG1lbW9yeSBvbiB5b3VyIHNtYWxsIGRldmljZSkuCgoJWWVzLCBJIGd1ZXNzIEkg
+bmVlZCB0byBleHBsYWluIGJldHRlci4gTXkgd25kcjM3MDB2NyBvbmx5IHNwb3J0cyBhIG1lYXNs
+eSA2NE1CIHJhbSB0b3RhbCwgc28gaW4gdGhlIHBhc3Qgd2l0aCB0aGUgZGVmYXVsdCAxMDI0MCBs
+aW1pdCBJIGNvdWxkIGZvcmNlIE9PTS1pbml0aWF0ZWQgcmVib290cy4gU28gbXkgYW5nbGUgb24g
+dGhpcyBpc3N1ZSBpcyBhbHdheXMsIEkgd2FudCBteSByb3V0ZXIgdG8gc3Vydml2ZSBldmVuIGlm
+IHRoZSB0aGUgbmV0d29yayBpcyBvdmVyLXNhdHVyYXRlZCAoSSBkbyBub3QgZXhwZWN0IHRoZSBy
+b3V0ZXIgdG8gd29yayB3ZWxsIHVuZGVyIHRob3NlIGNpcmN1bXN0YW5jZXMsIGJ1dCBJIHNvbWVo
+b3cgdGhpbmsgaXQgc2hvdWxkIGF0IGxlYXN0IG5vdCByZWJvb3QgZHVyaW5nIERPUyBjb25kaXRp
+b25z4oCmKS4gQ2FrZSBhbGxvd3MgdG8gc3BlY2lmeSBhIGhhcmQgbWVtb3J5IGxpbWl0IHRoYXQg
+bG9va3MgYSBza2ItdHJ1ZXNpemUgdG8gYWxsb3cgc3RyaWN0ZXIgbWVtb3J5IGNvbnRyb2wgZm9y
+IHBlb3BsZSBsaWtlIG1lLCBtYWtpbmcgdGhlIHdob2xlIEdSTy9HU08gaXNzdWUgZ28gYXdheSwg
+YXQgbGVhc3QgYXMgZmFyIGFzIE9PTSBpcyBjb25jZXJuZWQuIEFuZCBhcyBJIGJlZ2luIHRvIHVu
+ZGVyc3RhbmQgb25jZSBhIGxpbmsgcmVhY2hlcyBhIGNlcnRhaW4gYmFuZHdpZHRoIEdSTy9HU08g
+d2lsbCBiZWNvbWUgaGVscGZ1bCBhZ2FpbiwgZXNwZWNpYWxseSBvbiBzbWFsbCByb3V0ZXJzIGFz
+IHRoZXkgaGVscCByZWR1Y2UgdGhlIHdvcmsgdGhlIGtlcm5lbCBuZWVkcyB0byB0byBwZXIgYnl0
+ZeKApgoKQmVzdCBSZWdhcmRzICYgTWFueSBUaGFua3MKCVNlYmFzdGlhbgoKCj4gCj4gLS0gCj4g
+QmVzdCByZWdhcmRzLAo+ICBKZXNwZXIgRGFuZ2FhcmQgQnJvdWVyCj4gIE1TYy5DUywgUHJpbmNp
+cGFsIEtlcm5lbCBFbmdpbmVlciBhdCBSZWQgSGF0Cj4gIEF1dGhvciBvZiBodHRwOi8vd3d3Lmlw
+dHYtYW5hbHl6ZXIub3JnCj4gIExpbmtlZEluOiBodHRwOi8vd3d3LmxpbmtlZGluLmNvbS9pbi9i
+cm91ZXIKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
+dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
