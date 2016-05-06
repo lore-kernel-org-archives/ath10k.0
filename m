@@ -1,18 +1,33 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aykFC-0006rv-96
- for ath10k@lists.infradead.org; Fri, 06 May 2016 18:12:54 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: release pre_cal_file while unloading driver
-Date: Fri, 6 May 2016 18:12:24 +0000
-Message-ID: <871t5fnji0.fsf@kamboji.qca.qualcomm.com>
-References: <1461754586-7928-1-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1461754586-7928-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Wed, 27 Apr 2016 16:26:26 +0530")
-Content-Language: en-US
-Content-ID: <7E4295A59F97CF4B912FE90E52C4F5D8@qualcomm.com>
+ id 1aykjY-00040y-3V
+ for ath10k@lists.infradead.org; Fri, 06 May 2016 18:44:17 +0000
+Received: by mail-oi0-x241.google.com with SMTP id f63so19378496oig.0
+ for <ath10k@lists.infradead.org>; Fri, 06 May 2016 11:43:55 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20160506144740.210901f5@redhat.com>
+References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
+ <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
+ <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
+ <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
+ <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
+ <1462136140.5535.219.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
+ <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
+ <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
+ <1462464776.13075.18.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
+ <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
+ <20160506114243.4eb4f95e@redhat.com>
+ <20160506144740.210901f5@redhat.com>
+Date: Fri, 6 May 2016 21:43:54 +0300
+Message-ID: <CACiydbL3qZrvZ4a_OUXiN0dp7qdqOktaQdAUdfOpKkZ1OfEZbA@mail.gmail.com>
+Subject: Re: OpenWRT wrong adjustment of fq_codel defaults (Was: [Codel]
+ fq_codel_drop vs a udp flood)
+From: Roman Yeryomin <leroi.lists@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +40,114 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Jonathan Morton <chromatix99@gmail.com>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, Felix Fietkau <nbd@nbd.name>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
-
-> Failing to release pre_cal_file caldata on deinit causes memory leak.
+On 6 May 2016 at 15:47, Jesper Dangaard Brouer <brouer@redhat.com> wrote:
 >
-> Fixes: b131129d9657 ("ath10k: fix calibration init sequence of qca99x0")
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> I've created a OpenWRT ticket[1] on this issue, as it seems that someone[2]
+> closed Felix'es OpenWRT email account (bad choice! emails bouncing).
+> Sounds like OpenWRT and the LEDE https://www.lede-project.org/ project
+> is in some kind of conflict.
+>
+> OpenWRT ticket [1] https://dev.openwrt.org/ticket/22349
+>
+> [2] http://thread.gmane.org/gmane.comp.embedded.openwrt.devel/40298/focus=40335
 
-Applied, thanks.
+OK, so, after porting the patch to 4.1 openwrt kernel and playing a
+bit with fq_codel limits I was able to get 420Mbps UDP like this:
+tc qdisc replace dev wlan0 parent :1 fq_codel flows 16 limit 256
 
--- 
-Kalle Valo
+This is certainly better than 30Mbps but still more than two times
+less than before (900).
+TCP also improved a little (550 to ~590).
+
+Felix, others, do you want to see the ported patch, maybe I did something wrong?
+Doesn't look like it will save ath10k from performance regression.
+
+>
+> On Fri, 6 May 2016 11:42:43 +0200
+> Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+>
+>> Hi Felix,
+>>
+>> This is an important fix for OpenWRT, please read!
+>>
+>> OpenWRT changed the default fq_codel sch->limit from 10240 to 1024,
+>> without also adjusting q->flows_cnt.  Eric explains below that you must
+>> also adjust the buckets (q->flows_cnt) for this not to break. (Just
+>> adjust it to 128)
+>>
+>> Problematic OpenWRT commit in question:
+>>  http://git.openwrt.org/?p=openwrt.git;a=patch;h=12cd6578084e
+>>  12cd6578084e ("kernel: revert fq_codel quantum override to prevent it from causing too much cpu load with higher speed (#21326)")
+>>
+>>
+>> I also highly recommend you cherry-pick this very recent commit:
+>>  net-next: 9d18562a2278 ("fq_codel: add batch ability to fq_codel_drop()")
+>>  https://git.kernel.org/davem/net-next/c/9d18562a227
+>>
+>> This should fix very high CPU usage in-case fq_codel goes into drop mode.
+>> The problem is that drop mode was considered rare, and implementation
+>> wise it was chosen to be more expensive (to save cycles on normal mode).
+>> Unfortunately is it easy to trigger with an UDP flood. Drop mode is
+>> especially expensive for smaller devices, as it scans a 4K big array,
+>> thus 64 cache misses for small devices!
+>>
+>> The fix is to allow drop-mode to bulk-drop more packets when entering
+>> drop-mode (default 64 bulk drop).  That way we don't suddenly
+>> experience a significantly higher processing cost per packet, but
+>> instead can amortize this.
+>>
+>> To Eric, should we recommend OpenWRT to adjust default (max) 64 bulk
+>> drop, given we also recommend bucket size to be 128 ? (thus the amount
+>> of memory to scan is less, but their CPU is also much smaller).
+>>
+>> --Jesper
+>>
+>>
+>> On Thu, 05 May 2016 12:23:27 -0700 Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>>
+>> > On Thu, 2016-05-05 at 19:25 +0300, Roman Yeryomin wrote:
+>> > > On 5 May 2016 at 19:12, Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>> > > > On Thu, 2016-05-05 at 17:53 +0300, Roman Yeryomin wrote:
+>> > > >
+>> > > >>
+>> > > >> qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
+>> > > >> quantum 1514 target 5.0ms interval 100.0ms ecn
+>> > > >>  Sent 12306 bytes 128 pkt (dropped 0, overlimits 0 requeues 0)
+>> > > >>  backlog 0b 0p requeues 0
+>> > > >>   maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
+>> > > >>   new_flows_len 0 old_flows_len 0
+>> > > >
+>> > > >
+>> > > > Limit of 1024 packets and 1024 flows is not wise I think.
+>> > > >
+>> > > > (If all buckets are in use, each bucket has a virtual queue of 1 packet,
+>> > > > which is almost the same than having no queue at all)
+>> > > >
+>> > > > I suggest to have at least 8 packets per bucket, to let Codel have a
+>> > > > chance to trigger.
+>> > > >
+>> > > > So you could either reduce number of buckets to 128 (if memory is
+>> > > > tight), or increase limit to 8192.
+>> > >
+>> > > Will try, but what I've posted is default, I didn't change/configure that.
+>> >
+>> > fq_codel has a default of 10240 packets and 1024 buckets.
+>> >
+>> > http://lxr.free-electrons.com/source/net/sched/sch_fq_codel.c#L413
+>> >
+>> > If someone changed that in the linux variant you use, he probably should
+>> > explain the rationale.
+>
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   Author of http://www.iptv-analyzer.org
+>   LinkedIn: http://www.linkedin.com/in/brouer
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
