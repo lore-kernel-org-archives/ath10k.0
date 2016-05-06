@@ -1,18 +1,32 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yw0-x231.google.com ([2607:f8b0:4002:c05::231])
+Received: from mout.gmx.net ([212.227.17.21])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aygju-0005fD-Du
- for ath10k@lists.infradead.org; Fri, 06 May 2016 14:28:23 +0000
-Received: by mail-yw0-x231.google.com with SMTP id j74so184681022ywg.1
- for <ath10k@lists.infradead.org>; Fri, 06 May 2016 07:28:02 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20160506013252.GB28948@localhost>
-References: <CAOiRWuXoY19XvXDo+KCTYXCAK8o2BufHLKEn408XthvnuCRYyQ@mail.gmail.com>
- <20160506013252.GB28948@localhost>
-Date: Fri, 6 May 2016 10:28:01 -0400
-Message-ID: <CAOiRWuUYKDVOd8VSWqs19O6TkrntDQ8jDK09jmYT94Umy8RSag@mail.gmail.com>
-Subject: Re: 802.11s channel width settings?
-From: Zach Sherin <zach@netblazr.com>
+ id 1ayhe5-0004iK-Ds
+ for ath10k@lists.infradead.org; Fri, 06 May 2016 15:26:26 +0000
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+Subject: Re: [Codel] fq_codel_drop vs a udp flood
+From: moeller0 <moeller0@gmx.de>
+In-Reply-To: <1462541156.13075.34.camel@edumazet-glaptop3.roam.corp.google.com>
+Date: Fri, 6 May 2016 17:25:47 +0200
+Message-Id: <2BFC725A-F007-4D63-89BD-E1845F7E89BE@gmx.de>
+References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
+ <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
+ <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
+ <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
+ <1462136140.5535.219.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
+ <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
+ <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
+ <1462464776.13075.18.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
+ <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CAA93jw4XZ1+LLX1z6wQ6DHsp4vFCS5zmMz-uku_8SBNG_KuUxA@mail.gmail.com>
+ <542135C7-D7CC-4E33-B35B-C2AD259FA5AB@gmx.de>
+ <20160506133323.0b190f47@redhat.com>
+ <D29AB9B2-D514-4D14-9A16-CFB9ECD05B17@gmx.de>
+ <1462541156.13075.34.camel@edumazet-glaptop3.roam.corp.google.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +35,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bob Copeland <me@bobcopeland.com>
-Cc: ath10k@lists.infradead.org
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, =?utf-8?Q?Dave_T=C3=A4ht?= <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Jesper Dangaard Brouer <brouer@redhat.com>, Jonathan Morton <chromatix99@gmail.com>, Roman Yeryomin <leroi.lists@gmail.com>
 
-That is embarrassing that I trusted OpenWRT to have tried that. It
-would appear that I can set the frequency manually. Thank you!
-
-On a related note, is there any way to check the modulation that the
-radio is using?  I'd like to check all the parameters possible in
-order to understand my throughput numbers.
-
-Thanks again for the fix!
-Zach
-
-On Thu, May 5, 2016 at 9:32 PM, Bob Copeland <me@bobcopeland.com> wrote:
-> On Thu, May 05, 2016 at 02:51:27PM -0400, Zach Sherin wrote:
->> Is there any way to increase channel widths in 802.11s? If this is an
->> OpenWRT question and not ath10k I'll head over to the forums, but this
->> seemed more a driver issue as my wireless config requests wide
->> channels. Any chance there's a specific version of ath10k I should
->> push to?
->
-> I'm not sure about OpenWRT's scripts but you can specify the channel width
-> when setting the frequency (before joining the mesh).
->
-> E.g.:
->
-> ip link set wlan0 up
-> iw dev wlan0 set freq 5745 80 5775
-> iw dev wlan0 mesh join my-vht-mesh
->
-> --
-> Bob Copeland %% http://bobcopeland.com/
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgRXJpYywKCj4gT24gTWF5IDYsIDIwMTYsIGF0IDE1OjI1ICwgRXJpYyBEdW1hemV0IDxlcmlj
+LmR1bWF6ZXRAZ21haWwuY29tPiB3cm90ZToKPiAKPiBPbiBGcmksIDIwMTYtMDUtMDYgYXQgMTM6
+NDYgKzAyMDAsIG1vZWxsZXIwIHdyb3RlOgo+PiBIaSBKZXNwZXIsCj4+IAo+Pj4gT24gTWF5IDYs
+IDIwMTYsIGF0IDEzOjMzICwgSmVzcGVyIERhbmdhYXJkIEJyb3Vlcgo+PiA8YnJvdWVyQHJlZGhh
+dC5jb20+IHdyb3RlOgo+Pj4gCj4+PiAKPj4+IE9uIEZyaSwgNiBNYXkgMjAxNiAxMDo0MTo1MyAr
+MDIwMCBtb2VsbGVyMCA8bW9lbGxlcjBAZ214LmRlPiB3cm90ZToKPj4+IAo+Pj4+IAlTcGVha2lu
+ZyBvdXQgb2YgdG90YWwgaWdub3JhbmNlLCBJIGFzayB3aHkgbm90IGFjY291bnQKPj4+PiBHUk8v
+R1NPIHBhY2tldHMgYnkgdGhlIG51bWJlciBvZiB0aGVpciBmcmFnbWVudHMgYWdhaW5zdCB0aGUg
+cGFja2V0Cj4+Pj4gbGltaXQ/IENvdW50aW5nIGEgNjRrQiBwYWNrZXRzIGFzIGVxdWl2YWxlbnQg
+dG8gYSA2NEIgcGFja2V0Cj4+IHByb2JhYmx5Cj4+Pj4gaXMgdGhlIHJpZ2h0IHRoaW5nIGlmIG9u
+ZSB0cmllcyB0byBhY2NvdW50IGZvciB0aGUgd29yayB0aGUgT1MKPj4gbmVlZHMKPj4+PiB0byBw
+ZXJmb3JtIHRvIGZpZ3VyZSBvdXQgd2hhdCB0byBkbyB3aXRoIHRoZSBwYWNrZXQsIGJ1dCBmb3IK
+Pj4gbGltaXRpbmcKPj4+PiB0aGUgbWVtb3J5IGNvbnN1bXB0aW9uIGl0IGludHJvZHVjZXMgYW4g
+aW1wcmVzc2l2ZS9tYW5seSBsZXZlbCBvZgo+Pj4+IHVuY2VydGFpbnR5ICgyIG9yZGVycyBvZiBt
+YWduaXR1ZGUpLiAKPj4+IAo+Pj4gTG9va2luZyBhdCB0aGUgZHJvcCBjb2RlIGluIGZxX2NvZGVs
+Ogo+Pj4gCj4+IGh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9saW51eC9ibG9iL3Y0LjYtcmM2
+L25ldC9zY2hlZC9zY2hfZnFfY29kZWwuYyNMMTM2Cj4+PiAKPj4+IEl0IGxvb2tzIGxpa2Ugd2Ug
+YXJlIGZpbmRpbmcgdGhlICJmYXQiIGZsb3cgdG8gZHJvcCBmcm9tIGJhc2VkIG9uCj4+PiBudW1i
+ZXIgb2YgYnl0ZXMgcXVldWVkLiAgQW5kIEFGQUlLIHNrYi0+bGVuIGFsc28gYWNjb3VudCBmb3Ig
+dGhlCj4+IHRvdGFsCj4+PiBsZW5ndGggb2YgYWxsIEdTTyBwYWNrZXRzIChFcmljPykKPj4+IAo+
+Pj4gRXZlbiBiZXR0ZXIsIHdlIGFyZSB1c2luZyBxZGlzY19wa3RfbGVuKHNrYiksIHdoaWNoIGFs
+c28gYWNjb3VudCBmb3IKPj4+IHRoZSBHU08gaGVhZGVycyBpbiBxZGlzY19wa3RfbGVuX2luaXQo
+KS4gCj4+PiBodHRwczovL2dpdGh1Yi5jb20vdG9ydmFsZHMvbGludXgvYmxvYi92NC42LXJjNi9u
+ZXQvY29yZS9kZXYuYyNMMjk5Mwo+Pj4gCj4+PiBJZiBhbnl0aGluZywgdGhlIEdTTyBwYWNrZXRz
+IGdldCBoaXQgaGFyZGVyIGJ5IHRoZSBmcV9jb2RlbF9kcm9wCj4+PiBmdW5jdGlvbiwgYXMgd2Ug
+ZHJvcCB0aGUgZW50aXJlIEdTTyBza2IuCj4+IAo+PiAJVGhpcyBzb3VuZHMgYWxsIHZlcnkgcmVh
+c3N1cmluZyEKPj4gCj4+PiAKPj4+IAo+Pj4gSXMgdGhlIGlzc3VlIHlvdSBhcmUgcmFpc2luZyB0
+aGF0IHRoZSAxMDI0IHBhY2tldCBsaW1pdCwgd291bGQgYWxsb3cKPj4+IDEwMjQgeCA2NEsgYnl0
+ZXMgdG8gYmUgcXVldWVkIGJlZm9yZSB0aGUgZHJvcCBraWNrcyBpbj8gKFJlc3VsdGluZwo+PiBp
+bgo+Pj4gdXNpbmcgdG9vIG11Y2ggbWVtb3J5IG9uIHlvdXIgc21hbGwgZGV2aWNlKS4KPj4gCj4+
+IAlZZXMsIEkgZ3Vlc3MgSSBuZWVkIHRvIGV4cGxhaW4gYmV0dGVyLiBNeSB3bmRyMzcwMHY3IG9u
+bHkgc3BvcnRzIGEKPj4gbWVhc2x5IDY0TUIgcmFtIHRvdGFsLCBzbyBpbiB0aGUgcGFzdCB3aXRo
+IHRoZSBkZWZhdWx0IDEwMjQwIGxpbWl0IEkKPj4gY291bGQgZm9yY2UgT09NLWluaXRpYXRlZCBy
+ZWJvb3RzLiBTbyBteSBhbmdsZSBvbiB0aGlzIGlzc3VlIGlzCj4+IGFsd2F5cywgSSB3YW50IG15
+IHJvdXRlciB0byBzdXJ2aXZlIGV2ZW4gaWYgdGhlIHRoZSBuZXR3b3JrIGlzCj4+IG92ZXItc2F0
+dXJhdGVkIChJIGRvIG5vdCBleHBlY3QgdGhlIHJvdXRlciB0byB3b3JrIHdlbGwgdW5kZXIgdGhv
+c2UKPj4gY2lyY3Vtc3RhbmNlcywgYnV0IEkgc29tZWhvdyB0aGluayBpdCBzaG91bGQgYXQgbGVh
+c3Qgbm90IHJlYm9vdAo+PiBkdXJpbmcgRE9TIGNvbmRpdGlvbnPigKYpLiBDYWtlIGFsbG93cyB0
+byBzcGVjaWZ5IGEgaGFyZCBtZW1vcnkgbGltaXQKPj4gdGhhdCBsb29rcyBhIHNrYi10cnVlc2l6
+ZSB0byBhbGxvdyBzdHJpY3RlciBtZW1vcnkgY29udHJvbCBmb3IgcGVvcGxlCj4+IGxpa2UgbWUs
+IG1ha2luZyB0aGUgd2hvbGUgR1JPL0dTTyBpc3N1ZSBnbyBhd2F5LCBhdCBsZWFzdCBhcyBmYXIg
+YXMKPj4gT09NIGlzIGNvbmNlcm5lZC4gQW5kIGFzIEkgYmVnaW4gdG8gdW5kZXJzdGFuZCBvbmNl
+IGEgbGluayByZWFjaGVzIGEKPj4gY2VydGFpbiBiYW5kd2lkdGggR1JPL0dTTyB3aWxsIGJlY29t
+ZSBoZWxwZnVsIGFnYWluLCBlc3BlY2lhbGx5IG9uCj4+IHNtYWxsIHJvdXRlcnMgYXMgdGhleSBo
+ZWxwIHJlZHVjZSB0aGUgd29yayB0aGUga2VybmVsIG5lZWRzIHRvIHRvIHBlcgo+PiBieXRl4oCm
+Cj4gCj4gQW5nbGVzIG9mIGF0dGFjayA6Cj4gCj4gMSkgSSB3aWxsIHByb3ZpZGUgYSBwZXIgZGV2
+aWNlIC9zeXMvY2xhc3MvbmV0L2V0aDAvZ3JvX21heF9mcmFncyBzbyB0aGF0Cj4gd2UgY2FuIG1v
+cmUgZWFzaWx5IGNvbnRyb2wgYW1vdW50IG9mIHNlZ3MgcGVyIEdSTyBwYWNrZXRzLiBJdCBtYWtl
+cwo+IHNlbnNlIHRvIGhhdmUgR1JPLCBidXQgbm90IHNvIG11Y2ggYWxsb3dpbmcgaXQgdG8gY29v
+ayBiaWcgcGFja2V0cyB0aGF0Cj4gbWlnaHQgaHVydCBGUS4KCglUaGlzIHNvdW5kcyBncmVhdCwg
+c28gd2UgY2FuIHRlYWNoLCBzYXkgc3FtIHRvIHNldCB0aGlzIHRvIGEgcmVhc29uYWJsZSB2YWx1
+ZSBnaXZlbiB0aGUgKHNoYXBlZCkgYmFuZHdpZHRoIG9mIGEgZ2l2ZW4gaW50ZXJmYWNlLiBXb3Vs
+ZCBzb21ldGhpbmcgbGlrZSB0aGlzIGFsc28gbWFrZSBzZW5zZS9pcyBwb3NzaWJsZSBvbiB0aGUg
+c2VuZCBzaWRlIGZvciBHU08vVFNPPwoKPiAKPiAyKSBUcmFja2luZyBza2ItPnRydWVzaXplIGxv
+b2tzIG1hbmRhdG9yeSBmb3Igc21hbGwgZGV2aWNlcy4KPiBJIHdpbGwgYWRkIHRoaXMgdG8gZnFf
+Y29kZWwuCgoJVGhhbmtzLgoKPiAKPiAzKSBNYWtpbmcgc3VyZSBza2ItPnRydWVzaXplIGlzIGFj
+Y3VyYXRlIGlzIGEgbG9uZyB0ZXJtIGVmZm9ydCB3ZSB3YW50Cj4gdG8gY29uc3RhbnRseSBtb25p
+dG9yLCBzaW5jZSBzb21lIGRyaXZlcnMgYXJlIGRvaW5nIHVuZGVyIGVzdGltYXRpb25zLgoKCUlz
+IHRoZXJlIGFuIGVhc3kgd2F5IHRvIHRlc3QvbWVhc3VyZSB0aGlzPyBTYXkgaWYgMikgaXMgaW1w
+bGVtZW50ZWQgaG93IGNhbiBvbmUgZmlndXJlIG91dCBob3cgbXVjaCBtZW1vcnkgaXMgYWN0dWFs
+bHkgYWxsb2NhdGVkIGZvciBhIGdpdmVuIHF1ZXVlPwoKQmVzdCBSZWdhcmRzICYgTWVyY2kgYmVh
+dWNvdXAKCVNlYmFzdGlhbgoKPiAKPiBUaGFua3MuCj4gCj4gCj4gCj4gCj4gCgoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
+dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
