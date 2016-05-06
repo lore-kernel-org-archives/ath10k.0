@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aykD8-0006Uo-Bq
- for ath10k@lists.infradead.org; Fri, 06 May 2016 18:10:46 +0000
+ id 1aykCp-0005u6-Bi
+ for ath10k@lists.infradead.org; Fri, 06 May 2016 18:10:28 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/4] ath10k: add pdev bss channel info wmi definitions
-Date: Fri, 6 May 2016 18:10:19 +0000
-Message-ID: <8760urnjlg.fsf@kamboji.qca.qualcomm.com>
-References: <1461754402-7679-1-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1461754402-7679-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Wed, 27 Apr 2016 16:23:19 +0530")
+Subject: Re: [PATCH] ath10k: fix kernel panic, move arvifs list head init
+ before htt init
+Date: Fri, 6 May 2016 18:09:58 +0000
+Message-ID: <87a8k3njm2.fsf@kamboji.qca.qualcomm.com>
+References: <1461686748-862-1-git-send-email-akolli@qti.qualcomm.com>
+In-Reply-To: <1461686748-862-1-git-send-email-akolli@qti.qualcomm.com>
+ (akolli@qti.qualcomm.com's message of "Tue, 26 Apr 2016 21:35:48	+0530")
 Content-Language: en-US
-Content-ID: <01FCC54B610E0243AF9AB4ED9D78E575@qualcomm.com>
+Content-ID: <CF11977500E16D4D943A549361EE1044@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,15 +26,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Kolli, Anilkumar" <akolli@qti.qualcomm.com>
+Cc: "akolli@codeaurora.org" <akolli@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+<akolli@qti.qualcomm.com> writes:
 
-> Add WMI definitions for pdev bss channel information request and
-> event.
+> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
 >
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> It is observed that while loading and unloading ath10k modules
+> in an infinite loop, before ath10k_core_start() completion HTT
+> rx frames are received, while processing these frames,
+> dereferencing the arvifs list code is getting hit before
+> initilizing the arvifs list, causing a kernel panic.
+>
+> This patch initilizes the arvifs list before initilizing htt.
+>
+> Fixes the below issue:
+>  [<bf88b058>] (ath10k_htt_rx_pktlog_completion_handler+0x278/0xd08 [ath10k_core])
+>  [<bf88b058>] (ath10k_htt_rx_pktlog_completion_handler [ath10k_core])
+>  [<bf88c0dc>] (ath10k_htt_txrx_compl_task+0x5f4/0xeb0 [ath10k_core])
+>  [<bf88c0dc>] (ath10k_htt_txrx_compl_task [ath10k_core])
+>  [<c0234100>] (tasklet_action+0x8c/0xec)
+>  [<c0234100>] (tasklet_action)
+>  [<c02337c0>] (__do_softirq+0xf8/0x228)
+>  [<c02337c0>] (__do_softirq)  [<c0233920>] (run_ksoftirqd+0x30/0x90)
+>  Code: e5954ad8 e2899008 e1540009 0a00000d (e5943008)
+>  ---[ end trace 71de5c2e011dbf56 ]---
+>  Kernel panic - not syncing: Fatal exception in interrupt
+>
+> Fixes: 500ff9f9389d ("ath10k: implement chanctx API")
+> Cc: stable@vger.kernel.org
+>
+> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
 
 Applied, thanks.
 
