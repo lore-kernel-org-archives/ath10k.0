@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.redhat.com ([209.132.183.28])
+Received: from mail-pf0-x232.google.com ([2607:f8b0:400e:c00::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayfAt-00088g-Sq
- for ath10k@lists.infradead.org; Fri, 06 May 2016 12:48:08 +0000
-Date: Fri, 6 May 2016 14:47:40 +0200
-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: OpenWRT wrong adjustment of fq_codel defaults (Was: [Codel]
- fq_codel_drop vs a udp flood)
-Message-ID: <20160506144740.210901f5@redhat.com>
-In-Reply-To: <20160506114243.4eb4f95e@redhat.com>
+ id 1ayflr-0002ho-1Y
+ for ath10k@lists.infradead.org; Fri, 06 May 2016 13:26:20 +0000
+Received: by mail-pf0-x232.google.com with SMTP id 77so49796319pfv.2
+ for <ath10k@lists.infradead.org>; Fri, 06 May 2016 06:25:58 -0700 (PDT)
+Message-ID: <1462541156.13075.34.camel@edumazet-glaptop3.roam.corp.google.com>
+Subject: Re: [Codel] fq_codel_drop vs a udp flood
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Date: Fri, 06 May 2016 06:25:56 -0700
+In-Reply-To: <D29AB9B2-D514-4D14-9A16-CFB9ECD05B17@gmx.de>
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
- <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
  <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
  <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
  <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
@@ -23,8 +23,11 @@ References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <1462464776.13075.18.camel@edumazet-glaptop3.roam.corp.google.com>
  <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
  <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
- <20160506114243.4eb4f95e@redhat.com>
-MIME-Version: 1.0
+ <CAA93jw4XZ1+LLX1z6wQ6DHsp4vFCS5zmMz-uku_8SBNG_KuUxA@mail.gmail.com>
+ <542135C7-D7CC-4E33-B35B-C2AD259FA5AB@gmx.de>
+ <20160506133323.0b190f47@redhat.com>
+ <D29AB9B2-D514-4D14-9A16-CFB9ECD05B17@gmx.de>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,107 +36,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Felix Fietkau <nbd@nbd.name>, Dave Taht <dave.taht@gmail.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, zajec5@gmail.com, brouer@redhat.com, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Jonathan Morton <chromatix99@gmail.com>, Roman Yeryomin <leroi.lists@gmail.com>, openwrt-devel@lists.openwrt.org
+To: moeller0 <moeller0@gmx.de>
+Cc: make-wifi-fast@lists.bufferbloat.net, Dave =?ISO-8859-1?Q?T=E4ht?= <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Jesper Dangaard Brouer <brouer@redhat.com>, Jonathan Morton <chromatix99@gmail.com>, Roman Yeryomin <leroi.lists@gmail.com>
 
-
-I've created a OpenWRT ticket[1] on this issue, as it seems that someone[2]
-closed Felix'es OpenWRT email account (bad choice! emails bouncing).
-Sounds like OpenWRT and the LEDE https://www.lede-project.org/ project
-is in some kind of conflict.
-
-OpenWRT ticket [1] https://dev.openwrt.org/ticket/22349
-
-[2] http://thread.gmane.org/gmane.comp.embedded.openwrt.devel/40298/focus=40335
-
-
-On Fri, 6 May 2016 11:42:43 +0200
-Jesper Dangaard Brouer <brouer@redhat.com> wrote:
-
-> Hi Felix,
-> 
-> This is an important fix for OpenWRT, please read!
-> 
-> OpenWRT changed the default fq_codel sch->limit from 10240 to 1024,
-> without also adjusting q->flows_cnt.  Eric explains below that you must
-> also adjust the buckets (q->flows_cnt) for this not to break. (Just
-> adjust it to 128)
-> 
-> Problematic OpenWRT commit in question:
->  http://git.openwrt.org/?p=openwrt.git;a=patch;h=12cd6578084e
->  12cd6578084e ("kernel: revert fq_codel quantum override to prevent it from causing too much cpu load with higher speed (#21326)")
-> 
-> 
-> I also highly recommend you cherry-pick this very recent commit:
->  net-next: 9d18562a2278 ("fq_codel: add batch ability to fq_codel_drop()")
->  https://git.kernel.org/davem/net-next/c/9d18562a227
-> 
-> This should fix very high CPU usage in-case fq_codel goes into drop mode.
-> The problem is that drop mode was considered rare, and implementation
-> wise it was chosen to be more expensive (to save cycles on normal mode).
-> Unfortunately is it easy to trigger with an UDP flood. Drop mode is
-> especially expensive for smaller devices, as it scans a 4K big array,
-> thus 64 cache misses for small devices!
-> 
-> The fix is to allow drop-mode to bulk-drop more packets when entering
-> drop-mode (default 64 bulk drop).  That way we don't suddenly
-> experience a significantly higher processing cost per packet, but
-> instead can amortize this.
-> 
-> To Eric, should we recommend OpenWRT to adjust default (max) 64 bulk
-> drop, given we also recommend bucket size to be 128 ? (thus the amount
-> of memory to scan is less, but their CPU is also much smaller).
-> 
-> --Jesper
-> 
-> 
-> On Thu, 05 May 2016 12:23:27 -0700 Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> 
-> > On Thu, 2016-05-05 at 19:25 +0300, Roman Yeryomin wrote:  
-> > > On 5 May 2016 at 19:12, Eric Dumazet <eric.dumazet@gmail.com> wrote:    
-> > > > On Thu, 2016-05-05 at 17:53 +0300, Roman Yeryomin wrote:
-> > > >    
-> > > >>
-> > > >> qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
-> > > >> quantum 1514 target 5.0ms interval 100.0ms ecn
-> > > >>  Sent 12306 bytes 128 pkt (dropped 0, overlimits 0 requeues 0)
-> > > >>  backlog 0b 0p requeues 0
-> > > >>   maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
-> > > >>   new_flows_len 0 old_flows_len 0    
-> > > >
-> > > >
-> > > > Limit of 1024 packets and 1024 flows is not wise I think.
-> > > >
-> > > > (If all buckets are in use, each bucket has a virtual queue of 1 packet,
-> > > > which is almost the same than having no queue at all)
-> > > >
-> > > > I suggest to have at least 8 packets per bucket, to let Codel have a
-> > > > chance to trigger.
-> > > >
-> > > > So you could either reduce number of buckets to 128 (if memory is
-> > > > tight), or increase limit to 8192.    
-> > > 
-> > > Will try, but what I've posted is default, I didn't change/configure that.    
-> > 
-> > fq_codel has a default of 10240 packets and 1024 buckets.
-> > 
-> > http://lxr.free-electrons.com/source/net/sched/sch_fq_codel.c#L413
-> > 
-> > If someone changed that in the linux variant you use, he probably should
-> > explain the rationale.  
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  Author of http://www.iptv-analyzer.org
-  LinkedIn: http://www.linkedin.com/in/brouer
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gRnJpLCAyMDE2LTA1LTA2IGF0IDEzOjQ2ICswMjAwLCBtb2VsbGVyMCB3cm90ZToKPiBIaSBK
+ZXNwZXIsCj4gCj4gPiBPbiBNYXkgNiwgMjAxNiwgYXQgMTM6MzMgLCBKZXNwZXIgRGFuZ2FhcmQg
+QnJvdWVyCj4gPGJyb3VlckByZWRoYXQuY29tPiB3cm90ZToKPiA+IAo+ID4gCj4gPiBPbiBGcmks
+IDYgTWF5IDIwMTYgMTA6NDE6NTMgKzAyMDAgbW9lbGxlcjAgPG1vZWxsZXIwQGdteC5kZT4gd3Jv
+dGU6Cj4gPiAKPiA+PiAJU3BlYWtpbmcgb3V0IG9mIHRvdGFsIGlnbm9yYW5jZSwgSSBhc2sgd2h5
+IG5vdCBhY2NvdW50Cj4gPj4gR1JPL0dTTyBwYWNrZXRzIGJ5IHRoZSBudW1iZXIgb2YgdGhlaXIg
+ZnJhZ21lbnRzIGFnYWluc3QgdGhlIHBhY2tldAo+ID4+IGxpbWl0PyBDb3VudGluZyBhIDY0a0Ig
+cGFja2V0cyBhcyBlcXVpdmFsZW50IHRvIGEgNjRCIHBhY2tldAo+IHByb2JhYmx5Cj4gPj4gaXMg
+dGhlIHJpZ2h0IHRoaW5nIGlmIG9uZSB0cmllcyB0byBhY2NvdW50IGZvciB0aGUgd29yayB0aGUg
+T1MKPiBuZWVkcwo+ID4+IHRvIHBlcmZvcm0gdG8gZmlndXJlIG91dCB3aGF0IHRvIGRvIHdpdGgg
+dGhlIHBhY2tldCwgYnV0IGZvcgo+IGxpbWl0aW5nCj4gPj4gdGhlIG1lbW9yeSBjb25zdW1wdGlv
+biBpdCBpbnRyb2R1Y2VzIGFuIGltcHJlc3NpdmUvbWFubHkgbGV2ZWwgb2YKPiA+PiB1bmNlcnRh
+aW50eSAoMiBvcmRlcnMgb2YgbWFnbml0dWRlKS4gCj4gPiAKPiA+IExvb2tpbmcgYXQgdGhlIGRy
+b3AgY29kZSBpbiBmcV9jb2RlbDoKPiA+Cj4gaHR0cHM6Ly9naXRodWIuY29tL3RvcnZhbGRzL2xp
+bnV4L2Jsb2IvdjQuNi1yYzYvbmV0L3NjaGVkL3NjaF9mcV9jb2RlbC5jI0wxMzYKPiA+IAo+ID4g
+SXQgbG9va3MgbGlrZSB3ZSBhcmUgZmluZGluZyB0aGUgImZhdCIgZmxvdyB0byBkcm9wIGZyb20g
+YmFzZWQgb24KPiA+IG51bWJlciBvZiBieXRlcyBxdWV1ZWQuICBBbmQgQUZBSUsgc2tiLT5sZW4g
+YWxzbyBhY2NvdW50IGZvciB0aGUKPiB0b3RhbAo+ID4gbGVuZ3RoIG9mIGFsbCBHU08gcGFja2V0
+cyAoRXJpYz8pCj4gPiAKPiA+IEV2ZW4gYmV0dGVyLCB3ZSBhcmUgdXNpbmcgcWRpc2NfcGt0X2xl
+bihza2IpLCB3aGljaCBhbHNvIGFjY291bnQgZm9yCj4gPiB0aGUgR1NPIGhlYWRlcnMgaW4gcWRp
+c2NfcGt0X2xlbl9pbml0KCkuIAo+ID4gaHR0cHM6Ly9naXRodWIuY29tL3RvcnZhbGRzL2xpbnV4
+L2Jsb2IvdjQuNi1yYzYvbmV0L2NvcmUvZGV2LmMjTDI5OTMKPiA+IAo+ID4gSWYgYW55dGhpbmcs
+IHRoZSBHU08gcGFja2V0cyBnZXQgaGl0IGhhcmRlciBieSB0aGUgZnFfY29kZWxfZHJvcAo+ID4g
+ZnVuY3Rpb24sIGFzIHdlIGRyb3AgdGhlIGVudGlyZSBHU08gc2tiLgo+IAo+IAlUaGlzIHNvdW5k
+cyBhbGwgdmVyeSByZWFzc3VyaW5nIQo+IAo+ID4gCj4gPiAKPiA+IElzIHRoZSBpc3N1ZSB5b3Ug
+YXJlIHJhaXNpbmcgdGhhdCB0aGUgMTAyNCBwYWNrZXQgbGltaXQsIHdvdWxkIGFsbG93Cj4gPiAx
+MDI0IHggNjRLIGJ5dGVzIHRvIGJlIHF1ZXVlZCBiZWZvcmUgdGhlIGRyb3Aga2lja3MgaW4/IChS
+ZXN1bHRpbmcKPiBpbgo+ID4gdXNpbmcgdG9vIG11Y2ggbWVtb3J5IG9uIHlvdXIgc21hbGwgZGV2
+aWNlKS4KPiAKPiAJWWVzLCBJIGd1ZXNzIEkgbmVlZCB0byBleHBsYWluIGJldHRlci4gTXkgd25k
+cjM3MDB2NyBvbmx5IHNwb3J0cyBhCj4gbWVhc2x5IDY0TUIgcmFtIHRvdGFsLCBzbyBpbiB0aGUg
+cGFzdCB3aXRoIHRoZSBkZWZhdWx0IDEwMjQwIGxpbWl0IEkKPiBjb3VsZCBmb3JjZSBPT00taW5p
+dGlhdGVkIHJlYm9vdHMuIFNvIG15IGFuZ2xlIG9uIHRoaXMgaXNzdWUgaXMKPiBhbHdheXMsIEkg
+d2FudCBteSByb3V0ZXIgdG8gc3Vydml2ZSBldmVuIGlmIHRoZSB0aGUgbmV0d29yayBpcwo+IG92
+ZXItc2F0dXJhdGVkIChJIGRvIG5vdCBleHBlY3QgdGhlIHJvdXRlciB0byB3b3JrIHdlbGwgdW5k
+ZXIgdGhvc2UKPiBjaXJjdW1zdGFuY2VzLCBidXQgSSBzb21laG93IHRoaW5rIGl0IHNob3VsZCBh
+dCBsZWFzdCBub3QgcmVib290Cj4gZHVyaW5nIERPUyBjb25kaXRpb25z4oCmKS4gQ2FrZSBhbGxv
+d3MgdG8gc3BlY2lmeSBhIGhhcmQgbWVtb3J5IGxpbWl0Cj4gdGhhdCBsb29rcyBhIHNrYi10cnVl
+c2l6ZSB0byBhbGxvdyBzdHJpY3RlciBtZW1vcnkgY29udHJvbCBmb3IgcGVvcGxlCj4gbGlrZSBt
+ZSwgbWFraW5nIHRoZSB3aG9sZSBHUk8vR1NPIGlzc3VlIGdvIGF3YXksIGF0IGxlYXN0IGFzIGZh
+ciBhcwo+IE9PTSBpcyBjb25jZXJuZWQuIEFuZCBhcyBJIGJlZ2luIHRvIHVuZGVyc3RhbmQgb25j
+ZSBhIGxpbmsgcmVhY2hlcyBhCj4gY2VydGFpbiBiYW5kd2lkdGggR1JPL0dTTyB3aWxsIGJlY29t
+ZSBoZWxwZnVsIGFnYWluLCBlc3BlY2lhbGx5IG9uCj4gc21hbGwgcm91dGVycyBhcyB0aGV5IGhl
+bHAgcmVkdWNlIHRoZSB3b3JrIHRoZSBrZXJuZWwgbmVlZHMgdG8gdG8gcGVyCj4gYnl0ZeKApgoK
+QW5nbGVzIG9mIGF0dGFjayA6CgoxKSBJIHdpbGwgcHJvdmlkZSBhIHBlciBkZXZpY2UgL3N5cy9j
+bGFzcy9uZXQvZXRoMC9ncm9fbWF4X2ZyYWdzIHNvIHRoYXQKd2UgY2FuIG1vcmUgZWFzaWx5IGNv
+bnRyb2wgYW1vdW50IG9mIHNlZ3MgcGVyIEdSTyBwYWNrZXRzLiBJdCBtYWtlcwpzZW5zZSB0byBo
+YXZlIEdSTywgYnV0IG5vdCBzbyBtdWNoIGFsbG93aW5nIGl0IHRvIGNvb2sgYmlnIHBhY2tldHMg
+dGhhdAptaWdodCBodXJ0IEZRLgoKMikgVHJhY2tpbmcgc2tiLT50cnVlc2l6ZSBsb29rcyBtYW5k
+YXRvcnkgZm9yIHNtYWxsIGRldmljZXMuCkkgd2lsbCBhZGQgdGhpcyB0byBmcV9jb2RlbC4KCjMp
+IE1ha2luZyBzdXJlIHNrYi0+dHJ1ZXNpemUgaXMgYWNjdXJhdGUgaXMgYSBsb25nIHRlcm0gZWZm
+b3J0IHdlIHdhbnQKdG8gY29uc3RhbnRseSBtb25pdG9yLCBzaW5jZSBzb21lIGRyaXZlcnMgYXJl
+IGRvaW5nIHVuZGVyIGVzdGltYXRpb25zLgoKVGhhbmtzLgoKCgoKCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
+a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCg==
