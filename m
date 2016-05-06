@@ -1,33 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf0-x232.google.com ([2607:f8b0:400e:c00::232])
+Received: from mail-yw0-x231.google.com ([2607:f8b0:4002:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayflr-0002ho-1Y
- for ath10k@lists.infradead.org; Fri, 06 May 2016 13:26:20 +0000
-Received: by mail-pf0-x232.google.com with SMTP id 77so49796319pfv.2
- for <ath10k@lists.infradead.org>; Fri, 06 May 2016 06:25:58 -0700 (PDT)
-Message-ID: <1462541156.13075.34.camel@edumazet-glaptop3.roam.corp.google.com>
-Subject: Re: [Codel] fq_codel_drop vs a udp flood
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Date: Fri, 06 May 2016 06:25:56 -0700
-In-Reply-To: <D29AB9B2-D514-4D14-9A16-CFB9ECD05B17@gmx.de>
-References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
- <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
- <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
- <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
- <1462136140.5535.219.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
- <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
- <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
- <1462464776.13075.18.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
- <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
- <CAA93jw4XZ1+LLX1z6wQ6DHsp4vFCS5zmMz-uku_8SBNG_KuUxA@mail.gmail.com>
- <542135C7-D7CC-4E33-B35B-C2AD259FA5AB@gmx.de>
- <20160506133323.0b190f47@redhat.com>
- <D29AB9B2-D514-4D14-9A16-CFB9ECD05B17@gmx.de>
-Mime-Version: 1.0
+ id 1aygju-0005fD-Du
+ for ath10k@lists.infradead.org; Fri, 06 May 2016 14:28:23 +0000
+Received: by mail-yw0-x231.google.com with SMTP id j74so184681022ywg.1
+ for <ath10k@lists.infradead.org>; Fri, 06 May 2016 07:28:02 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20160506013252.GB28948@localhost>
+References: <CAOiRWuXoY19XvXDo+KCTYXCAK8o2BufHLKEn408XthvnuCRYyQ@mail.gmail.com>
+ <20160506013252.GB28948@localhost>
+Date: Fri, 6 May 2016 10:28:01 -0400
+Message-ID: <CAOiRWuUYKDVOd8VSWqs19O6TkrntDQ8jDK09jmYT94Umy8RSag@mail.gmail.com>
+Subject: Re: 802.11s channel width settings?
+From: Zach Sherin <zach@netblazr.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -36,65 +21,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: moeller0 <moeller0@gmx.de>
-Cc: make-wifi-fast@lists.bufferbloat.net, Dave =?ISO-8859-1?Q?T=E4ht?= <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Jesper Dangaard Brouer <brouer@redhat.com>, Jonathan Morton <chromatix99@gmail.com>, Roman Yeryomin <leroi.lists@gmail.com>
+To: Bob Copeland <me@bobcopeland.com>
+Cc: ath10k@lists.infradead.org
 
-T24gRnJpLCAyMDE2LTA1LTA2IGF0IDEzOjQ2ICswMjAwLCBtb2VsbGVyMCB3cm90ZToKPiBIaSBK
-ZXNwZXIsCj4gCj4gPiBPbiBNYXkgNiwgMjAxNiwgYXQgMTM6MzMgLCBKZXNwZXIgRGFuZ2FhcmQg
-QnJvdWVyCj4gPGJyb3VlckByZWRoYXQuY29tPiB3cm90ZToKPiA+IAo+ID4gCj4gPiBPbiBGcmks
-IDYgTWF5IDIwMTYgMTA6NDE6NTMgKzAyMDAgbW9lbGxlcjAgPG1vZWxsZXIwQGdteC5kZT4gd3Jv
-dGU6Cj4gPiAKPiA+PiAJU3BlYWtpbmcgb3V0IG9mIHRvdGFsIGlnbm9yYW5jZSwgSSBhc2sgd2h5
-IG5vdCBhY2NvdW50Cj4gPj4gR1JPL0dTTyBwYWNrZXRzIGJ5IHRoZSBudW1iZXIgb2YgdGhlaXIg
-ZnJhZ21lbnRzIGFnYWluc3QgdGhlIHBhY2tldAo+ID4+IGxpbWl0PyBDb3VudGluZyBhIDY0a0Ig
-cGFja2V0cyBhcyBlcXVpdmFsZW50IHRvIGEgNjRCIHBhY2tldAo+IHByb2JhYmx5Cj4gPj4gaXMg
-dGhlIHJpZ2h0IHRoaW5nIGlmIG9uZSB0cmllcyB0byBhY2NvdW50IGZvciB0aGUgd29yayB0aGUg
-T1MKPiBuZWVkcwo+ID4+IHRvIHBlcmZvcm0gdG8gZmlndXJlIG91dCB3aGF0IHRvIGRvIHdpdGgg
-dGhlIHBhY2tldCwgYnV0IGZvcgo+IGxpbWl0aW5nCj4gPj4gdGhlIG1lbW9yeSBjb25zdW1wdGlv
-biBpdCBpbnRyb2R1Y2VzIGFuIGltcHJlc3NpdmUvbWFubHkgbGV2ZWwgb2YKPiA+PiB1bmNlcnRh
-aW50eSAoMiBvcmRlcnMgb2YgbWFnbml0dWRlKS4gCj4gPiAKPiA+IExvb2tpbmcgYXQgdGhlIGRy
-b3AgY29kZSBpbiBmcV9jb2RlbDoKPiA+Cj4gaHR0cHM6Ly9naXRodWIuY29tL3RvcnZhbGRzL2xp
-bnV4L2Jsb2IvdjQuNi1yYzYvbmV0L3NjaGVkL3NjaF9mcV9jb2RlbC5jI0wxMzYKPiA+IAo+ID4g
-SXQgbG9va3MgbGlrZSB3ZSBhcmUgZmluZGluZyB0aGUgImZhdCIgZmxvdyB0byBkcm9wIGZyb20g
-YmFzZWQgb24KPiA+IG51bWJlciBvZiBieXRlcyBxdWV1ZWQuICBBbmQgQUZBSUsgc2tiLT5sZW4g
-YWxzbyBhY2NvdW50IGZvciB0aGUKPiB0b3RhbAo+ID4gbGVuZ3RoIG9mIGFsbCBHU08gcGFja2V0
-cyAoRXJpYz8pCj4gPiAKPiA+IEV2ZW4gYmV0dGVyLCB3ZSBhcmUgdXNpbmcgcWRpc2NfcGt0X2xl
-bihza2IpLCB3aGljaCBhbHNvIGFjY291bnQgZm9yCj4gPiB0aGUgR1NPIGhlYWRlcnMgaW4gcWRp
-c2NfcGt0X2xlbl9pbml0KCkuIAo+ID4gaHR0cHM6Ly9naXRodWIuY29tL3RvcnZhbGRzL2xpbnV4
-L2Jsb2IvdjQuNi1yYzYvbmV0L2NvcmUvZGV2LmMjTDI5OTMKPiA+IAo+ID4gSWYgYW55dGhpbmcs
-IHRoZSBHU08gcGFja2V0cyBnZXQgaGl0IGhhcmRlciBieSB0aGUgZnFfY29kZWxfZHJvcAo+ID4g
-ZnVuY3Rpb24sIGFzIHdlIGRyb3AgdGhlIGVudGlyZSBHU08gc2tiLgo+IAo+IAlUaGlzIHNvdW5k
-cyBhbGwgdmVyeSByZWFzc3VyaW5nIQo+IAo+ID4gCj4gPiAKPiA+IElzIHRoZSBpc3N1ZSB5b3Ug
-YXJlIHJhaXNpbmcgdGhhdCB0aGUgMTAyNCBwYWNrZXQgbGltaXQsIHdvdWxkIGFsbG93Cj4gPiAx
-MDI0IHggNjRLIGJ5dGVzIHRvIGJlIHF1ZXVlZCBiZWZvcmUgdGhlIGRyb3Aga2lja3MgaW4/IChS
-ZXN1bHRpbmcKPiBpbgo+ID4gdXNpbmcgdG9vIG11Y2ggbWVtb3J5IG9uIHlvdXIgc21hbGwgZGV2
-aWNlKS4KPiAKPiAJWWVzLCBJIGd1ZXNzIEkgbmVlZCB0byBleHBsYWluIGJldHRlci4gTXkgd25k
-cjM3MDB2NyBvbmx5IHNwb3J0cyBhCj4gbWVhc2x5IDY0TUIgcmFtIHRvdGFsLCBzbyBpbiB0aGUg
-cGFzdCB3aXRoIHRoZSBkZWZhdWx0IDEwMjQwIGxpbWl0IEkKPiBjb3VsZCBmb3JjZSBPT00taW5p
-dGlhdGVkIHJlYm9vdHMuIFNvIG15IGFuZ2xlIG9uIHRoaXMgaXNzdWUgaXMKPiBhbHdheXMsIEkg
-d2FudCBteSByb3V0ZXIgdG8gc3Vydml2ZSBldmVuIGlmIHRoZSB0aGUgbmV0d29yayBpcwo+IG92
-ZXItc2F0dXJhdGVkIChJIGRvIG5vdCBleHBlY3QgdGhlIHJvdXRlciB0byB3b3JrIHdlbGwgdW5k
-ZXIgdGhvc2UKPiBjaXJjdW1zdGFuY2VzLCBidXQgSSBzb21laG93IHRoaW5rIGl0IHNob3VsZCBh
-dCBsZWFzdCBub3QgcmVib290Cj4gZHVyaW5nIERPUyBjb25kaXRpb25z4oCmKS4gQ2FrZSBhbGxv
-d3MgdG8gc3BlY2lmeSBhIGhhcmQgbWVtb3J5IGxpbWl0Cj4gdGhhdCBsb29rcyBhIHNrYi10cnVl
-c2l6ZSB0byBhbGxvdyBzdHJpY3RlciBtZW1vcnkgY29udHJvbCBmb3IgcGVvcGxlCj4gbGlrZSBt
-ZSwgbWFraW5nIHRoZSB3aG9sZSBHUk8vR1NPIGlzc3VlIGdvIGF3YXksIGF0IGxlYXN0IGFzIGZh
-ciBhcwo+IE9PTSBpcyBjb25jZXJuZWQuIEFuZCBhcyBJIGJlZ2luIHRvIHVuZGVyc3RhbmQgb25j
-ZSBhIGxpbmsgcmVhY2hlcyBhCj4gY2VydGFpbiBiYW5kd2lkdGggR1JPL0dTTyB3aWxsIGJlY29t
-ZSBoZWxwZnVsIGFnYWluLCBlc3BlY2lhbGx5IG9uCj4gc21hbGwgcm91dGVycyBhcyB0aGV5IGhl
-bHAgcmVkdWNlIHRoZSB3b3JrIHRoZSBrZXJuZWwgbmVlZHMgdG8gdG8gcGVyCj4gYnl0ZeKApgoK
-QW5nbGVzIG9mIGF0dGFjayA6CgoxKSBJIHdpbGwgcHJvdmlkZSBhIHBlciBkZXZpY2UgL3N5cy9j
-bGFzcy9uZXQvZXRoMC9ncm9fbWF4X2ZyYWdzIHNvIHRoYXQKd2UgY2FuIG1vcmUgZWFzaWx5IGNv
-bnRyb2wgYW1vdW50IG9mIHNlZ3MgcGVyIEdSTyBwYWNrZXRzLiBJdCBtYWtlcwpzZW5zZSB0byBo
-YXZlIEdSTywgYnV0IG5vdCBzbyBtdWNoIGFsbG93aW5nIGl0IHRvIGNvb2sgYmlnIHBhY2tldHMg
-dGhhdAptaWdodCBodXJ0IEZRLgoKMikgVHJhY2tpbmcgc2tiLT50cnVlc2l6ZSBsb29rcyBtYW5k
-YXRvcnkgZm9yIHNtYWxsIGRldmljZXMuCkkgd2lsbCBhZGQgdGhpcyB0byBmcV9jb2RlbC4KCjMp
-IE1ha2luZyBzdXJlIHNrYi0+dHJ1ZXNpemUgaXMgYWNjdXJhdGUgaXMgYSBsb25nIHRlcm0gZWZm
-b3J0IHdlIHdhbnQKdG8gY29uc3RhbnRseSBtb25pdG9yLCBzaW5jZSBzb21lIGRyaXZlcnMgYXJl
-IGRvaW5nIHVuZGVyIGVzdGltYXRpb25zLgoKVGhhbmtzLgoKCgoKCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+That is embarrassing that I trusted OpenWRT to have tried that. It
+would appear that I can set the frequency manually. Thank you!
+
+On a related note, is there any way to check the modulation that the
+radio is using?  I'd like to check all the parameters possible in
+order to understand my throughput numbers.
+
+Thanks again for the fix!
+Zach
+
+On Thu, May 5, 2016 at 9:32 PM, Bob Copeland <me@bobcopeland.com> wrote:
+> On Thu, May 05, 2016 at 02:51:27PM -0400, Zach Sherin wrote:
+>> Is there any way to increase channel widths in 802.11s? If this is an
+>> OpenWRT question and not ath10k I'll head over to the forums, but this
+>> seemed more a driver issue as my wireless config requests wide
+>> channels. Any chance there's a specific version of ath10k I should
+>> push to?
+>
+> I'm not sure about OpenWRT's scripts but you can specify the channel width
+> when setting the frequency (before joining the mesh).
+>
+> E.g.:
+>
+> ip link set wlan0 up
+> iw dev wlan0 set freq 5745 80 5775
+> iw dev wlan0 mesh join my-vht-mesh
+>
+> --
+> Bob Copeland %% http://bobcopeland.com/
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
