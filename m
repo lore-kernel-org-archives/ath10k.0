@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
+Received: from mail-oi0-x22b.google.com ([2607:f8b0:4003:c06::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aykwB-0002PZ-EX
- for ath10k@lists.infradead.org; Fri, 06 May 2016 18:57:20 +0000
-Received: by mail-oi0-x243.google.com with SMTP id i2so19447614oib.3
- for <ath10k@lists.infradead.org>; Fri, 06 May 2016 11:56:59 -0700 (PDT)
+ id 1aylem-0005iV-J4
+ for ath10k@lists.infradead.org; Fri, 06 May 2016 19:43:26 +0000
+Received: by mail-oi0-x22b.google.com with SMTP id x201so150746829oif.3
+ for <ath10k@lists.infradead.org>; Fri, 06 May 2016 12:43:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACiydbL3qZrvZ4a_OUXiN0dp7qdqOktaQdAUdfOpKkZ1OfEZbA@mail.gmail.com>
+In-Reply-To: <CACiydb+A_vFNdp7tbw67Rnp+kHwt5GsLa+Su+pO8YmOZYp_KHg@mail.gmail.com>
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
  <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
@@ -24,11 +24,12 @@ References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <20160506114243.4eb4f95e@redhat.com>
  <20160506144740.210901f5@redhat.com>
  <CACiydbL3qZrvZ4a_OUXiN0dp7qdqOktaQdAUdfOpKkZ1OfEZbA@mail.gmail.com>
-Date: Fri, 6 May 2016 21:56:58 +0300
-Message-ID: <CACiydb+A_vFNdp7tbw67Rnp+kHwt5GsLa+Su+pO8YmOZYp_KHg@mail.gmail.com>
+ <CACiydb+A_vFNdp7tbw67Rnp+kHwt5GsLa+Su+pO8YmOZYp_KHg@mail.gmail.com>
+Date: Fri, 6 May 2016 12:43:03 -0700
+Message-ID: <CAA93jw4XeMSxiTLHWZ2b=F9ni7wz9RpkWDdhTh99gn4Mf1aWjA@mail.gmail.com>
 Subject: Re: OpenWRT wrong adjustment of fq_codel defaults (Was: [Codel]
  fq_codel_drop vs a udp flood)
-From: Roman Yeryomin <leroi.lists@gmail.com>
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -37,122 +38,147 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Jonathan Morton <chromatix99@gmail.com>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, Felix Fietkau <nbd@nbd.name>
+To: Roman Yeryomin <leroi.lists@gmail.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, ath10k <ath10k@lists.infradead.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Jesper Dangaard Brouer <brouer@redhat.com>, Jonathan Morton <chromatix99@gmail.com>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, Felix Fietkau <nbd@nbd.name>
 
-On 6 May 2016 at 21:43, Roman Yeryomin <leroi.lists@gmail.com> wrote:
-> On 6 May 2016 at 15:47, Jesper Dangaard Brouer <brouer@redhat.com> wrote:
->>
->> I've created a OpenWRT ticket[1] on this issue, as it seems that someone[2]
->> closed Felix'es OpenWRT email account (bad choice! emails bouncing).
->> Sounds like OpenWRT and the LEDE https://www.lede-project.org/ project
->> is in some kind of conflict.
->>
->> OpenWRT ticket [1] https://dev.openwrt.org/ticket/22349
->>
->> [2] http://thread.gmane.org/gmane.comp.embedded.openwrt.devel/40298/focus=40335
->
-> OK, so, after porting the patch to 4.1 openwrt kernel and playing a
-> bit with fq_codel limits I was able to get 420Mbps UDP like this:
-> tc qdisc replace dev wlan0 parent :1 fq_codel flows 16 limit 256
-
-Forgot to mention, I've reduced drop_batch_size down to 32
-
-> This is certainly better than 30Mbps but still more than two times
-> less than before (900).
-> TCP also improved a little (550 to ~590).
->
-> Felix, others, do you want to see the ported patch, maybe I did something wrong?
-> Doesn't look like it will save ath10k from performance regression.
->
->>
->> On Fri, 6 May 2016 11:42:43 +0200
->> Jesper Dangaard Brouer <brouer@redhat.com> wrote:
->>
->>> Hi Felix,
->>>
->>> This is an important fix for OpenWRT, please read!
->>>
->>> OpenWRT changed the default fq_codel sch->limit from 10240 to 1024,
->>> without also adjusting q->flows_cnt.  Eric explains below that you must
->>> also adjust the buckets (q->flows_cnt) for this not to break. (Just
->>> adjust it to 128)
->>>
->>> Problematic OpenWRT commit in question:
->>>  http://git.openwrt.org/?p=openwrt.git;a=patch;h=12cd6578084e
->>>  12cd6578084e ("kernel: revert fq_codel quantum override to prevent it from causing too much cpu load with higher speed (#21326)")
->>>
->>>
->>> I also highly recommend you cherry-pick this very recent commit:
->>>  net-next: 9d18562a2278 ("fq_codel: add batch ability to fq_codel_drop()")
->>>  https://git.kernel.org/davem/net-next/c/9d18562a227
->>>
->>> This should fix very high CPU usage in-case fq_codel goes into drop mode.
->>> The problem is that drop mode was considered rare, and implementation
->>> wise it was chosen to be more expensive (to save cycles on normal mode).
->>> Unfortunately is it easy to trigger with an UDP flood. Drop mode is
->>> especially expensive for smaller devices, as it scans a 4K big array,
->>> thus 64 cache misses for small devices!
->>>
->>> The fix is to allow drop-mode to bulk-drop more packets when entering
->>> drop-mode (default 64 bulk drop).  That way we don't suddenly
->>> experience a significantly higher processing cost per packet, but
->>> instead can amortize this.
->>>
->>> To Eric, should we recommend OpenWRT to adjust default (max) 64 bulk
->>> drop, given we also recommend bucket size to be 128 ? (thus the amount
->>> of memory to scan is less, but their CPU is also much smaller).
->>>
->>> --Jesper
->>>
->>>
->>> On Thu, 05 May 2016 12:23:27 -0700 Eric Dumazet <eric.dumazet@gmail.com> wrote:
->>>
->>> > On Thu, 2016-05-05 at 19:25 +0300, Roman Yeryomin wrote:
->>> > > On 5 May 2016 at 19:12, Eric Dumazet <eric.dumazet@gmail.com> wrote:
->>> > > > On Thu, 2016-05-05 at 17:53 +0300, Roman Yeryomin wrote:
->>> > > >
->>> > > >>
->>> > > >> qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
->>> > > >> quantum 1514 target 5.0ms interval 100.0ms ecn
->>> > > >>  Sent 12306 bytes 128 pkt (dropped 0, overlimits 0 requeues 0)
->>> > > >>  backlog 0b 0p requeues 0
->>> > > >>   maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
->>> > > >>   new_flows_len 0 old_flows_len 0
->>> > > >
->>> > > >
->>> > > > Limit of 1024 packets and 1024 flows is not wise I think.
->>> > > >
->>> > > > (If all buckets are in use, each bucket has a virtual queue of 1 packet,
->>> > > > which is almost the same than having no queue at all)
->>> > > >
->>> > > > I suggest to have at least 8 packets per bucket, to let Codel have a
->>> > > > chance to trigger.
->>> > > >
->>> > > > So you could either reduce number of buckets to 128 (if memory is
->>> > > > tight), or increase limit to 8192.
->>> > >
->>> > > Will try, but what I've posted is default, I didn't change/configure that.
->>> >
->>> > fq_codel has a default of 10240 packets and 1024 buckets.
->>> >
->>> > http://lxr.free-electrons.com/source/net/sched/sch_fq_codel.c#L413
->>> >
->>> > If someone changed that in the linux variant you use, he probably should
->>> > explain the rationale.
->>
->> --
->> Best regards,
->>   Jesper Dangaard Brouer
->>   MSc.CS, Principal Kernel Engineer at Red Hat
->>   Author of http://www.iptv-analyzer.org
->>   LinkedIn: http://www.linkedin.com/in/brouer
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gRnJpLCBNYXkgNiwgMjAxNiBhdCAxMTo1NiBBTSwgUm9tYW4gWWVyeW9taW4gPGxlcm9pLmxp
+c3RzQGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gNiBNYXkgMjAxNiBhdCAyMTo0MywgUm9tYW4gWWVy
+eW9taW4gPGxlcm9pLmxpc3RzQGdtYWlsLmNvbT4gd3JvdGU6Cj4+IE9uIDYgTWF5IDIwMTYgYXQg
+MTU6NDcsIEplc3BlciBEYW5nYWFyZCBCcm91ZXIgPGJyb3VlckByZWRoYXQuY29tPiB3cm90ZToK
+Pj4+Cj4+PiBJJ3ZlIGNyZWF0ZWQgYSBPcGVuV1JUIHRpY2tldFsxXSBvbiB0aGlzIGlzc3VlLCBh
+cyBpdCBzZWVtcyB0aGF0IHNvbWVvbmVbMl0KPj4+IGNsb3NlZCBGZWxpeCdlcyBPcGVuV1JUIGVt
+YWlsIGFjY291bnQgKGJhZCBjaG9pY2UhIGVtYWlscyBib3VuY2luZykuCj4+PiBTb3VuZHMgbGlr
+ZSBPcGVuV1JUIGFuZCB0aGUgTEVERSBodHRwczovL3d3dy5sZWRlLXByb2plY3Qub3JnLyBwcm9q
+ZWN0Cj4+PiBpcyBpbiBzb21lIGtpbmQgb2YgY29uZmxpY3QuCj4+Pgo+Pj4gT3BlbldSVCB0aWNr
+ZXQgWzFdIGh0dHBzOi8vZGV2Lm9wZW53cnQub3JnL3RpY2tldC8yMjM0OQo+Pj4KPj4+IFsyXSBo
+dHRwOi8vdGhyZWFkLmdtYW5lLm9yZy9nbWFuZS5jb21wLmVtYmVkZGVkLm9wZW53cnQuZGV2ZWwv
+NDAyOTgvZm9jdXM9NDAzMzUKPj4KPj4gT0ssIHNvLCBhZnRlciBwb3J0aW5nIHRoZSBwYXRjaCB0
+byA0LjEgb3BlbndydCBrZXJuZWwgYW5kIHBsYXlpbmcgYQo+PiBiaXQgd2l0aCBmcV9jb2RlbCBs
+aW1pdHMgSSB3YXMgYWJsZSB0byBnZXQgNDIwTWJwcyBVRFAgbGlrZSB0aGlzOgo+PiB0YyBxZGlz
+YyByZXBsYWNlIGRldiB3bGFuMCBwYXJlbnQgOjEgZnFfY29kZWwgZmxvd3MgMTYgbGltaXQgMjU2
+Cj4KPiBGb3Jnb3QgdG8gbWVudGlvbiwgSSd2ZSByZWR1Y2VkIGRyb3BfYmF0Y2hfc2l6ZSBkb3du
+IHRvIDMyCgowKSBOb3QgY2xlYXIgdG8gbWUgaWYgdGhhdCdzIHRoZSByaWdodCBsaW5lLCB0aGVy
+ZSBhcmUgNCB3aWZpIHF1ZXVlcywKYW5kIHRoZSB0aGlyZCBvbmUKaXMgdGhlIEJFIHF1ZXVlLiBU
+aGF0IGlzIHRvbyBsb3cgYSBsaW1pdCwgYWxzbywgZm9yIG5vcm1hbCB1c2UuIEFuZDoKZm9yIHRo
+ZSBwdXJwb3NlIG9mIHRoaXMgcGFydGljdWxhciBVRFAgdGVzdCwgZmxvd3MgMTYgaXMgb2ssIGJ1
+dCBub3QKaWRlYWwuCgoxKSBXaGF0J3MgdGhlIHRjcCBudW1iZXIgKHdpdGggYSBzaW11bHRhbmVv
+dXMgcGluZykgd2l0aCB0aGlzIGxhdGVzdCBwYXRjaHNldD8KKEkgY2FyZSBhYm91dCB0Y3AgcGVy
+Zm9ybWFuY2UgYSBsb3QgbW9yZSB0aGFuIHVkcCBmbG9vZHMgLSBzdXJ2aXZpbmcgYQp1ZHAgZmxv
+b2QgeWVzLCBwZXJmb3JtYW5jZSwgbm8pCgpiZWZvcmUvYWZ0ZXI/Cgp0YyAtcyBxZGlzYyBzaG93
+IGRldiB3bGFuMCBkdXJpbmcvYWZ0ZXIgcmVzdWx0cz8KCklGIHlvdSBhcmUgZG9pbmcgYnVpbGRz
+IGZvciB0aGUgYXJjaGVyIGM3djIsIEkgY2FuIGpvaW4gaW4gb24gdGhpcy4uLiAoPykKCkkgZGlk
+IGRvIGEgdGVzdCBvZiB0aGUgYXRoMTBrICJiZWZvcmUiLCBmcV9jb2RlbCAqbmV2ZXIgZW5nYWdl
+ZCosIGFuZAp0Y3AgaW5kdWNlZCBsYXRlbmNpZXMgdW5kZXIgbG9hZCwgZSBhdCAxMDBtYml0LCBj
+cmFja2VkIDYwMG1zLCB3aGlsZQpzdGF5aW5nIGZsYXQgKDIwbXMpIGF0IDEwMG1iaXQuIChub3Qg
+dGhlIHNhbWUgcGF0Y2hlcyB5b3UgYXJlIHRlc3RpbmcpCm9uIHg4Ni4gSSBoYXZlIGdvdCB0Y3Ag
+MzAwTWJpdCBvdXQgb2YgYW4gb3N4IGJveCwgc2ltaWxhciBsYXRlbmN5LApoYXZlIHlldCB0byBn
+ZXQgYW55dGhpbmcgbW9yZSBvbiBhbnl0aGluZyBJIGN1cnJlbnRseSBoYXZlCmJlZm9yZS9hZnRl
+ciBwYXRjaHNldHMuCgpJJ2xsIGdvIGFkZCBmbG9vZGluZyB0byB0aGUgdGVzdHMsIEkganVzdCBm
+aW5pc2hlZCBhIHNlcmllcyBjb21wYXJpbmcKdHdvIGRpZmZlcmVudCBzcGVlZCBzdGF0aW9ucyBh
+bmQgbGlmZSB3YXMgZ29vZCBvbiB0aGF0LgoKImJlZm9yZSIgLSBmcV9jb2RlbCBuZXZlciBlbmdh
+Z2VzLCB3ZSBzZWUgc2Vjb25kcyBvZiBsYXRlbmN5IHVuZGVyIGxvYWQuCgpyb290QGFwdTI6fiMg
+dGMgLXMgcWRpc2Mgc2hvdyBkZXYgd2xwNHMwCnFkaXNjIG1xIDA6IHJvb3QKIFNlbnQgODU3MDU2
+Mzg5MyBieXRlcyA2MzI2OTgzIHBrdCAoZHJvcHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMg
+MCkKIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMApxZGlzYyBmcV9jb2RlbCAwOiBwYXJlbnQgOjEg
+bGltaXQgMTAyNDBwIGZsb3dzIDEwMjQgcXVhbnR1bSAxNTE0CnRhcmdldCA1LjBtcyBpbnRlcnZh
+bCAxMDAuMG1zIGVjbgogU2VudCAyMjYyIGJ5dGVzIDE3IHBrdCAoZHJvcHBlZCAwLCBvdmVybGlt
+aXRzIDAgcmVxdWV1ZXMgMCkKIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAogIG1heHBhY2tldCAw
+IGRyb3Bfb3ZlcmxpbWl0IDAgbmV3X2Zsb3dfY291bnQgMCBlY25fbWFyayAwCiAgbmV3X2Zsb3dz
+X2xlbiAwIG9sZF9mbG93c19sZW4gMApxZGlzYyBmcV9jb2RlbCAwOiBwYXJlbnQgOjIgbGltaXQg
+MTAyNDBwIGZsb3dzIDEwMjQgcXVhbnR1bSAxNTE0CnRhcmdldCA1LjBtcyBpbnRlcnZhbCAxMDAu
+MG1zIGVjbgogU2VudCAyMjA0ODY1NjkgYnl0ZXMgMTUyMDU4IHBrdCAoZHJvcHBlZCAwLCBvdmVy
+bGltaXRzIDAgcmVxdWV1ZXMgMCkKIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAogIG1heHBhY2tl
+dCAxODE2OCBkcm9wX292ZXJsaW1pdCAwIG5ld19mbG93X2NvdW50IDEgZWNuX21hcmsgMAogIG5l
+d19mbG93c19sZW4gMCBvbGRfZmxvd3NfbGVuIDEKcWRpc2MgZnFfY29kZWwgMDogcGFyZW50IDoz
+IGxpbWl0IDEwMjQwcCBmbG93cyAxMDI0IHF1YW50dW0gMTUxNAp0YXJnZXQgNS4wbXMgaW50ZXJ2
+YWwgMTAwLjBtcyBlY24KIFNlbnQgODM0MDU0NjUwOSBieXRlcyA2MTYzNDMxIHBrdCAoZHJvcHBl
+ZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAog
+IG1heHBhY2tldCA2ODEzMCBkcm9wX292ZXJsaW1pdCAwIG5ld19mbG93X2NvdW50IDEyMDA1MCBl
+Y25fbWFyayAwCiAgbmV3X2Zsb3dzX2xlbiAxIG9sZF9mbG93c19sZW4gMwpxZGlzYyBmcV9jb2Rl
+bCAwOiBwYXJlbnQgOjQgbGltaXQgMTAyNDBwIGZsb3dzIDEwMjQgcXVhbnR1bSAxNTE0CnRhcmdl
+dCA1LjBtcyBpbnRlcnZhbCAxMDAuMG1zIGVjbgogU2VudCA5NTI4NTUzIGJ5dGVzIDExNDc3IHBr
+dCAoZHJvcHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKIGJhY2tsb2cgMGIgMHAgcmVx
+dWV1ZXMgMAogIG1heHBhY2tldCA2NiBkcm9wX292ZXJsaW1pdCAwIG5ld19mbG93X2NvdW50IDEg
+ZWNuX21hcmsgMAogIG5ld19mbG93c19sZW4gMSBvbGRfZmxvd3NfbGVuIDAKICBgYGAKCgo+PiBU
+aGlzIGlzIGNlcnRhaW5seSBiZXR0ZXIgdGhhbiAzME1icHMgYnV0IHN0aWxsIG1vcmUgdGhhbiB0
+d28gdGltZXMKPj4gbGVzcyB0aGFuIGJlZm9yZSAoOTAwKS4KClRoZSBudW1iZXIgdGhhdCBJIHN0
+aWxsIGFtIG5vdCBzdXJlIHdlIGdvdCBpcyB0aGF0IHlvdSB3ZXJlIHNlbmRpbmcKOTAwbWJpdCB1
+ZHAgYW5kIHJlY2lldmluZyA5MDBtYml0IG9uIHRoZSBwcmlvciB0ZXN0cz8KCj4+IFRDUCBhbHNv
+IGltcHJvdmVkIGEgbGl0dGxlICg1NTAgdG8gfjU5MCkuCgpUaGUgbGltaXQgaXMgcHJvYmFibHkg
+YSBiaXQgbG93LCBhbHNvLiAgWW91IG1pZ2h0IHdhbnQgdG8gdHJ5IHRhcmdldAoyMG1zIGFzIHdl
+bGwuCgo+Pgo+PiBGZWxpeCwgb3RoZXJzLCBkbyB5b3Ugd2FudCB0byBzZWUgdGhlIHBvcnRlZCBw
+YXRjaCwgbWF5YmUgSSBkaWQgc29tZXRoaW5nIHdyb25nPwo+PiBEb2Vzbid0IGxvb2sgbGlrZSBp
+dCB3aWxsIHNhdmUgYXRoMTBrIGZyb20gcGVyZm9ybWFuY2UgcmVncmVzc2lvbi4KCndoYXQgd2Fz
+IHRjcCAiYmVmb3JlIj8gKEknbSBzb3JyeSwgc3VjaCBhIGxvbmcgdGhyZWFkKQoKPj4KPj4+Cj4+
+PiBPbiBGcmksIDYgTWF5IDIwMTYgMTE6NDI6NDMgKzAyMDAKPj4+IEplc3BlciBEYW5nYWFyZCBC
+cm91ZXIgPGJyb3VlckByZWRoYXQuY29tPiB3cm90ZToKPj4+Cj4+Pj4gSGkgRmVsaXgsCj4+Pj4K
+Pj4+PiBUaGlzIGlzIGFuIGltcG9ydGFudCBmaXggZm9yIE9wZW5XUlQsIHBsZWFzZSByZWFkIQo+
+Pj4+Cj4+Pj4gT3BlbldSVCBjaGFuZ2VkIHRoZSBkZWZhdWx0IGZxX2NvZGVsIHNjaC0+bGltaXQg
+ZnJvbSAxMDI0MCB0byAxMDI0LAo+Pj4+IHdpdGhvdXQgYWxzbyBhZGp1c3RpbmcgcS0+Zmxvd3Nf
+Y250LiAgRXJpYyBleHBsYWlucyBiZWxvdyB0aGF0IHlvdSBtdXN0Cj4+Pj4gYWxzbyBhZGp1c3Qg
+dGhlIGJ1Y2tldHMgKHEtPmZsb3dzX2NudCkgZm9yIHRoaXMgbm90IHRvIGJyZWFrLiAoSnVzdAo+
+Pj4+IGFkanVzdCBpdCB0byAxMjgpCj4+Pj4KPj4+PiBQcm9ibGVtYXRpYyBPcGVuV1JUIGNvbW1p
+dCBpbiBxdWVzdGlvbjoKPj4+PiAgaHR0cDovL2dpdC5vcGVud3J0Lm9yZy8/cD1vcGVud3J0Lmdp
+dDthPXBhdGNoO2g9MTJjZDY1NzgwODRlCj4+Pj4gIDEyY2Q2NTc4MDg0ZSAoImtlcm5lbDogcmV2
+ZXJ0IGZxX2NvZGVsIHF1YW50dW0gb3ZlcnJpZGUgdG8gcHJldmVudCBpdCBmcm9tIGNhdXNpbmcg
+dG9vIG11Y2ggY3B1IGxvYWQgd2l0aCBoaWdoZXIgc3BlZWQgKCMyMTMyNikiKQo+Pj4+Cj4+Pj4K
+Pj4+PiBJIGFsc28gaGlnaGx5IHJlY29tbWVuZCB5b3UgY2hlcnJ5LXBpY2sgdGhpcyB2ZXJ5IHJl
+Y2VudCBjb21taXQ6Cj4+Pj4gIG5ldC1uZXh0OiA5ZDE4NTYyYTIyNzggKCJmcV9jb2RlbDogYWRk
+IGJhdGNoIGFiaWxpdHkgdG8gZnFfY29kZWxfZHJvcCgpIikKPj4+PiAgaHR0cHM6Ly9naXQua2Vy
+bmVsLm9yZy9kYXZlbS9uZXQtbmV4dC9jLzlkMTg1NjJhMjI3Cj4+Pj4KPj4+PiBUaGlzIHNob3Vs
+ZCBmaXggdmVyeSBoaWdoIENQVSB1c2FnZSBpbi1jYXNlIGZxX2NvZGVsIGdvZXMgaW50byBkcm9w
+IG1vZGUuCj4+Pj4gVGhlIHByb2JsZW0gaXMgdGhhdCBkcm9wIG1vZGUgd2FzIGNvbnNpZGVyZWQg
+cmFyZSwgYW5kIGltcGxlbWVudGF0aW9uCj4+Pj4gd2lzZSBpdCB3YXMgY2hvc2VuIHRvIGJlIG1v
+cmUgZXhwZW5zaXZlICh0byBzYXZlIGN5Y2xlcyBvbiBub3JtYWwgbW9kZSkuCj4+Pj4gVW5mb3J0
+dW5hdGVseSBpcyBpdCBlYXN5IHRvIHRyaWdnZXIgd2l0aCBhbiBVRFAgZmxvb2QuIERyb3AgbW9k
+ZSBpcwo+Pj4+IGVzcGVjaWFsbHkgZXhwZW5zaXZlIGZvciBzbWFsbGVyIGRldmljZXMsIGFzIGl0
+IHNjYW5zIGEgNEsgYmlnIGFycmF5LAo+Pj4+IHRodXMgNjQgY2FjaGUgbWlzc2VzIGZvciBzbWFs
+bCBkZXZpY2VzIQo+Pj4+Cj4+Pj4gVGhlIGZpeCBpcyB0byBhbGxvdyBkcm9wLW1vZGUgdG8gYnVs
+ay1kcm9wIG1vcmUgcGFja2V0cyB3aGVuIGVudGVyaW5nCj4+Pj4gZHJvcC1tb2RlIChkZWZhdWx0
+IDY0IGJ1bGsgZHJvcCkuICBUaGF0IHdheSB3ZSBkb24ndCBzdWRkZW5seQo+Pj4+IGV4cGVyaWVu
+Y2UgYSBzaWduaWZpY2FudGx5IGhpZ2hlciBwcm9jZXNzaW5nIGNvc3QgcGVyIHBhY2tldCwgYnV0
+Cj4+Pj4gaW5zdGVhZCBjYW4gYW1vcnRpemUgdGhpcy4KPj4+Pgo+Pj4+IFRvIEVyaWMsIHNob3Vs
+ZCB3ZSByZWNvbW1lbmQgT3BlbldSVCB0byBhZGp1c3QgZGVmYXVsdCAobWF4KSA2NCBidWxrCj4+
+Pj4gZHJvcCwgZ2l2ZW4gd2UgYWxzbyByZWNvbW1lbmQgYnVja2V0IHNpemUgdG8gYmUgMTI4ID8g
+KHRodXMgdGhlIGFtb3VudAo+Pj4+IG9mIG1lbW9yeSB0byBzY2FuIGlzIGxlc3MsIGJ1dCB0aGVp
+ciBDUFUgaXMgYWxzbyBtdWNoIHNtYWxsZXIpLgo+Pj4+Cj4+Pj4gLS1KZXNwZXIKPj4+Pgo+Pj4+
+Cj4+Pj4gT24gVGh1LCAwNSBNYXkgMjAxNiAxMjoyMzoyNyAtMDcwMCBFcmljIER1bWF6ZXQgPGVy
+aWMuZHVtYXpldEBnbWFpbC5jb20+IHdyb3RlOgo+Pj4+Cj4+Pj4gPiBPbiBUaHUsIDIwMTYtMDUt
+MDUgYXQgMTk6MjUgKzAzMDAsIFJvbWFuIFllcnlvbWluIHdyb3RlOgo+Pj4+ID4gPiBPbiA1IE1h
+eSAyMDE2IGF0IDE5OjEyLCBFcmljIER1bWF6ZXQgPGVyaWMuZHVtYXpldEBnbWFpbC5jb20+IHdy
+b3RlOgo+Pj4+ID4gPiA+IE9uIFRodSwgMjAxNi0wNS0wNSBhdCAxNzo1MyArMDMwMCwgUm9tYW4g
+WWVyeW9taW4gd3JvdGU6Cj4+Pj4gPiA+ID4KPj4+PiA+ID4gPj4KPj4+PiA+ID4gPj4gcWRpc2Mg
+ZnFfY29kZWwgMDogZGV2IGV0aDAgcm9vdCByZWZjbnQgMiBsaW1pdCAxMDI0cCBmbG93cyAxMDI0
+Cj4+Pj4gPiA+ID4+IHF1YW50dW0gMTUxNCB0YXJnZXQgNS4wbXMgaW50ZXJ2YWwgMTAwLjBtcyBl
+Y24KPj4+PiA+ID4gPj4gIFNlbnQgMTIzMDYgYnl0ZXMgMTI4IHBrdCAoZHJvcHBlZCAwLCBvdmVy
+bGltaXRzIDAgcmVxdWV1ZXMgMCkKPj4+PiA+ID4gPj4gIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMg
+MAo+Pj4+ID4gPiA+PiAgIG1heHBhY2tldCAwIGRyb3Bfb3ZlcmxpbWl0IDAgbmV3X2Zsb3dfY291
+bnQgMCBlY25fbWFyayAwCj4+Pj4gPiA+ID4+ICAgbmV3X2Zsb3dzX2xlbiAwIG9sZF9mbG93c19s
+ZW4gMAo+Pj4+ID4gPiA+Cj4+Pj4gPiA+ID4KPj4+PiA+ID4gPiBMaW1pdCBvZiAxMDI0IHBhY2tl
+dHMgYW5kIDEwMjQgZmxvd3MgaXMgbm90IHdpc2UgSSB0aGluay4KPj4+PiA+ID4gPgo+Pj4+ID4g
+PiA+IChJZiBhbGwgYnVja2V0cyBhcmUgaW4gdXNlLCBlYWNoIGJ1Y2tldCBoYXMgYSB2aXJ0dWFs
+IHF1ZXVlIG9mIDEgcGFja2V0LAo+Pj4+ID4gPiA+IHdoaWNoIGlzIGFsbW9zdCB0aGUgc2FtZSB0
+aGFuIGhhdmluZyBubyBxdWV1ZSBhdCBhbGwpCj4+Pj4gPiA+ID4KPj4+PiA+ID4gPiBJIHN1Z2dl
+c3QgdG8gaGF2ZSBhdCBsZWFzdCA4IHBhY2tldHMgcGVyIGJ1Y2tldCwgdG8gbGV0IENvZGVsIGhh
+dmUgYQo+Pj4+ID4gPiA+IGNoYW5jZSB0byB0cmlnZ2VyLgo+Pj4+ID4gPiA+Cj4+Pj4gPiA+ID4g
+U28geW91IGNvdWxkIGVpdGhlciByZWR1Y2UgbnVtYmVyIG9mIGJ1Y2tldHMgdG8gMTI4IChpZiBt
+ZW1vcnkgaXMKPj4+PiA+ID4gPiB0aWdodCksIG9yIGluY3JlYXNlIGxpbWl0IHRvIDgxOTIuCj4+
+Pj4gPiA+Cj4+Pj4gPiA+IFdpbGwgdHJ5LCBidXQgd2hhdCBJJ3ZlIHBvc3RlZCBpcyBkZWZhdWx0
+LCBJIGRpZG4ndCBjaGFuZ2UvY29uZmlndXJlIHRoYXQuCj4+Pj4gPgo+Pj4+ID4gZnFfY29kZWwg
+aGFzIGEgZGVmYXVsdCBvZiAxMDI0MCBwYWNrZXRzIGFuZCAxMDI0IGJ1Y2tldHMuCj4+Pj4gPgo+
+Pj4+ID4gaHR0cDovL2x4ci5mcmVlLWVsZWN0cm9ucy5jb20vc291cmNlL25ldC9zY2hlZC9zY2hf
+ZnFfY29kZWwuYyNMNDEzCj4+Pj4gPgo+Pj4+ID4gSWYgc29tZW9uZSBjaGFuZ2VkIHRoYXQgaW4g
+dGhlIGxpbnV4IHZhcmlhbnQgeW91IHVzZSwgaGUgcHJvYmFibHkgc2hvdWxkCj4+Pj4gPiBleHBs
+YWluIHRoZSByYXRpb25hbGUuCj4+Pgo+Pj4gLS0KPj4+IEJlc3QgcmVnYXJkcywKPj4+ICAgSmVz
+cGVyIERhbmdhYXJkIEJyb3Vlcgo+Pj4gICBNU2MuQ1MsIFByaW5jaXBhbCBLZXJuZWwgRW5naW5l
+ZXIgYXQgUmVkIEhhdAo+Pj4gICBBdXRob3Igb2YgaHR0cDovL3d3dy5pcHR2LWFuYWx5emVyLm9y
+Zwo+Pj4gICBMaW5rZWRJbjogaHR0cDovL3d3dy5saW5rZWRpbi5jb20vaW4vYnJvdWVyCgoKCi0t
+IApEYXZlIFTDpGh0CkxldCdzIGdvIG1ha2UgaG9tZSByb3V0ZXJzIGFuZCB3aWZpIGZhc3RlciEg
+V2l0aCBiZXR0ZXIgc29mdHdhcmUhCmh0dHA6Ly9ibG9nLmNlcm93cnQub3JnCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
+CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
