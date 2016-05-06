@@ -1,24 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x232.google.com ([2607:f8b0:400d:c09::232])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayis6-00069C-CY
- for ath10k@lists.infradead.org; Fri, 06 May 2016 16:44:58 +0000
-Received: by mail-qk0-x232.google.com with SMTP id n63so63154191qkf.0
- for <ath10k@lists.infradead.org>; Fri, 06 May 2016 09:44:37 -0700 (PDT)
+ id 1aykBw-00055J-1n
+ for ath10k@lists.infradead.org; Fri, 06 May 2016 18:09:32 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: remove VHT capabilities from 2.4GHz
+Date: Fri, 6 May 2016 18:08:51 +0000
+Message-ID: <87inyrnjnx.fsf@kamboji.qca.qualcomm.com>
+References: <1461244669-19871-1-git-send-email-kvalo@qca.qualcomm.com>
+In-Reply-To: <1461244669-19871-1-git-send-email-kvalo@qca.qualcomm.com> (Kalle
+ Valo's message of "Thu, 21 Apr 2016 16:17:49 +0300")
+Content-Language: en-US
+Content-ID: <88DB88BC1478864F977F9018E6C8E517@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87mvo3no44.fsf@kamboji.qca.qualcomm.com>
-References: <CAOiRWuXoY19XvXDo+KCTYXCAK8o2BufHLKEn408XthvnuCRYyQ@mail.gmail.com>
- <20160506013252.GB28948@localhost>
- <CAOiRWuUYKDVOd8VSWqs19O6TkrntDQ8jDK09jmYT94Umy8RSag@mail.gmail.com>
- <CAEFj986GBi+esFMUJVULfyVU8sGQ7ycqdVH9Esjkza0Ec+BtCw@mail.gmail.com>
- <CA+uUJGvb6gtFK9xHitL36VHK25BW1jcBVkv__GUid_K7sVraHw@mail.gmail.com>
- <CAEFj985MbGeVUdgw--y6HzR8da2qm=XJ1ggPvkNZZ46n5Mpxow@mail.gmail.com>
- <CAOiRWuXhVWGRvt1_4p0KVg=DmAey=trjK2Fx7GtXtFUrnS23GA@mail.gmail.com>
- <87mvo3no44.fsf@kamboji.qca.qualcomm.com>
-Date: Sat, 7 May 2016 00:44:37 +0800
-Message-ID: <CAEFj987fZ5he-vj_sTnpqMHyNkb07vp6RfqNm6SysLmLAs4=bg@mail.gmail.com>
-Subject: Re: 802.11s channel width settings?
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,32 +25,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: Zach Sherin <zach@netblazr.com>, Bob Copeland <me@bobcopeland.com>, Raj Joshi <rajjoshi@comp.nus.edu.sg>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Hi, Zach,
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-I have submitted a patch so that you can configure the VHT80 using
-/etc/config/wireless in openwrt, refer here:
-https://lists.openwrt.org/pipermail/openwrt-devel/2016-May/041350.html
-
----
-Chun-Yeow
-
-On Sat, May 7, 2016 at 12:32 AM, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
-> Zach Sherin <zach@netblazr.com> writes:
+> From: Johannes Berg <johannes.berg@intel.com>
 >
->> Thanks! I mostly am interested in knowing the modulation just to keep
->> track of my theoretical maximum throughput for monitoring. The Rx rate
->> was changing correctly now, which is great. I know the Tx rate is
->> totally unreported, but the Rx is all I need. Thanks again for all the
->> assistance, I think I have everything I need.
+> According to the spec, VHT doesn't exist in 2.4GHz.
 >
-> IIRC you should actually see the TX rate from fw_stats debugfs file.
+> There are vendor extensions to allow a subset of VHT to work
+> (notably 256-QAM), but since mac80211 doesn't support those
+> advertising VHT capability on 2.4GHz leads to the behaviour
+> of reporting VHT capabilities but not being able to use any
+> of them due to mac80211's code requiring 80 MHz support.
 >
-> --
-> Kalle Valo
+> Remove the VHT capabilities from 2.4GHz for now. If mac80211
+> gets extended to use the (likely Broadcom) vendor IEs for it
+> and handles the lack of 80 MHz support, it can be added back.
+>
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
+Applied, thanks.
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
