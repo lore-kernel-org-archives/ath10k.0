@@ -1,30 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.net ([212.227.17.21])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayeDl-0001y2-87
- for ath10k@lists.infradead.org; Fri, 06 May 2016 11:47:02 +0000
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Subject: Re: [Codel] fq_codel_drop vs a udp flood
-From: moeller0 <moeller0@gmx.de>
-In-Reply-To: <20160506133323.0b190f47@redhat.com>
-Date: Fri, 6 May 2016 13:46:21 +0200
-Message-Id: <D29AB9B2-D514-4D14-9A16-CFB9ECD05B17@gmx.de>
-References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
- <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
- <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
- <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
- <1462136140.5535.219.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
- <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
- <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
- <1462464776.13075.18.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
- <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
- <CAA93jw4XZ1+LLX1z6wQ6DHsp4vFCS5zmMz-uku_8SBNG_KuUxA@mail.gmail.com>
- <542135C7-D7CC-4E33-B35B-C2AD259FA5AB@gmx.de>
- <20160506133323.0b190f47@redhat.com>
+ id 1ayeYT-0004So-7P
+ for ath10k@lists.infradead.org; Fri, 06 May 2016 12:08:25 +0000
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Subject: [PATCH 1/2] ath10k: suppress warnings when getting wmi
+ peer_rate_code_list event
+Date: Fri, 6 May 2016 17:37:02 +0530
+Message-ID: <1462536423-9903-1-git-send-email-vthiagar@qti.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,57 +17,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>, make-wifi-fast@lists.bufferbloat.net, =?utf-8?Q?Dave_T=C3=A4ht?= <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Jonathan Morton <chromatix99@gmail.com>, Roman Yeryomin <leroi.lists@gmail.com>
+To: ath10k@lists.infradead.org
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-SGkgSmVzcGVyLAoKPiBPbiBNYXkgNiwgMjAxNiwgYXQgMTM6MzMgLCBKZXNwZXIgRGFuZ2FhcmQg
-QnJvdWVyIDxicm91ZXJAcmVkaGF0LmNvbT4gd3JvdGU6Cj4gCj4gCj4gT24gRnJpLCA2IE1heSAy
-MDE2IDEwOjQxOjUzICswMjAwIG1vZWxsZXIwIDxtb2VsbGVyMEBnbXguZGU+IHdyb3RlOgo+IAo+
-PiAJU3BlYWtpbmcgb3V0IG9mIHRvdGFsIGlnbm9yYW5jZSwgSSBhc2sgd2h5IG5vdCBhY2NvdW50
-Cj4+IEdSTy9HU08gcGFja2V0cyBieSB0aGUgbnVtYmVyIG9mIHRoZWlyIGZyYWdtZW50cyBhZ2Fp
-bnN0IHRoZSBwYWNrZXQKPj4gbGltaXQ/IENvdW50aW5nIGEgNjRrQiBwYWNrZXRzIGFzIGVxdWl2
-YWxlbnQgdG8gYSA2NEIgcGFja2V0IHByb2JhYmx5Cj4+IGlzIHRoZSByaWdodCB0aGluZyBpZiBv
-bmUgdHJpZXMgdG8gYWNjb3VudCBmb3IgdGhlIHdvcmsgdGhlIE9TIG5lZWRzCj4+IHRvIHBlcmZv
-cm0gdG8gZmlndXJlIG91dCB3aGF0IHRvIGRvIHdpdGggdGhlIHBhY2tldCwgYnV0IGZvciBsaW1p
-dGluZwo+PiB0aGUgbWVtb3J5IGNvbnN1bXB0aW9uIGl0IGludHJvZHVjZXMgYW4gaW1wcmVzc2l2
-ZS9tYW5seSBsZXZlbCBvZgo+PiB1bmNlcnRhaW50eSAoMiBvcmRlcnMgb2YgbWFnbml0dWRlKS4g
-Cj4gCj4gTG9va2luZyBhdCB0aGUgZHJvcCBjb2RlIGluIGZxX2NvZGVsOgo+IGh0dHBzOi8vZ2l0
-aHViLmNvbS90b3J2YWxkcy9saW51eC9ibG9iL3Y0LjYtcmM2L25ldC9zY2hlZC9zY2hfZnFfY29k
-ZWwuYyNMMTM2Cj4gCj4gSXQgbG9va3MgbGlrZSB3ZSBhcmUgZmluZGluZyB0aGUgImZhdCIgZmxv
-dyB0byBkcm9wIGZyb20gYmFzZWQgb24KPiBudW1iZXIgb2YgYnl0ZXMgcXVldWVkLiAgQW5kIEFG
-QUlLIHNrYi0+bGVuIGFsc28gYWNjb3VudCBmb3IgdGhlIHRvdGFsCj4gbGVuZ3RoIG9mIGFsbCBH
-U08gcGFja2V0cyAoRXJpYz8pCj4gCj4gRXZlbiBiZXR0ZXIsIHdlIGFyZSB1c2luZyBxZGlzY19w
-a3RfbGVuKHNrYiksIHdoaWNoIGFsc28gYWNjb3VudCBmb3IKPiB0aGUgR1NPIGhlYWRlcnMgaW4g
-cWRpc2NfcGt0X2xlbl9pbml0KCkuIAo+IGh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9saW51
-eC9ibG9iL3Y0LjYtcmM2L25ldC9jb3JlL2Rldi5jI0wyOTkzCj4gCj4gSWYgYW55dGhpbmcsIHRo
-ZSBHU08gcGFja2V0cyBnZXQgaGl0IGhhcmRlciBieSB0aGUgZnFfY29kZWxfZHJvcAo+IGZ1bmN0
-aW9uLCBhcyB3ZSBkcm9wIHRoZSBlbnRpcmUgR1NPIHNrYi4KCglUaGlzIHNvdW5kcyBhbGwgdmVy
-eSByZWFzc3VyaW5nIQoKPiAKPiAKPiBJcyB0aGUgaXNzdWUgeW91IGFyZSByYWlzaW5nIHRoYXQg
-dGhlIDEwMjQgcGFja2V0IGxpbWl0LCB3b3VsZCBhbGxvdwo+IDEwMjQgeCA2NEsgYnl0ZXMgdG8g
-YmUgcXVldWVkIGJlZm9yZSB0aGUgZHJvcCBraWNrcyBpbj8gKFJlc3VsdGluZyBpbgo+IHVzaW5n
-IHRvbyBtdWNoIG1lbW9yeSBvbiB5b3VyIHNtYWxsIGRldmljZSkuCgoJWWVzLCBJIGd1ZXNzIEkg
-bmVlZCB0byBleHBsYWluIGJldHRlci4gTXkgd25kcjM3MDB2NyBvbmx5IHNwb3J0cyBhIG1lYXNs
-eSA2NE1CIHJhbSB0b3RhbCwgc28gaW4gdGhlIHBhc3Qgd2l0aCB0aGUgZGVmYXVsdCAxMDI0MCBs
-aW1pdCBJIGNvdWxkIGZvcmNlIE9PTS1pbml0aWF0ZWQgcmVib290cy4gU28gbXkgYW5nbGUgb24g
-dGhpcyBpc3N1ZSBpcyBhbHdheXMsIEkgd2FudCBteSByb3V0ZXIgdG8gc3Vydml2ZSBldmVuIGlm
-IHRoZSB0aGUgbmV0d29yayBpcyBvdmVyLXNhdHVyYXRlZCAoSSBkbyBub3QgZXhwZWN0IHRoZSBy
-b3V0ZXIgdG8gd29yayB3ZWxsIHVuZGVyIHRob3NlIGNpcmN1bXN0YW5jZXMsIGJ1dCBJIHNvbWVo
-b3cgdGhpbmsgaXQgc2hvdWxkIGF0IGxlYXN0IG5vdCByZWJvb3QgZHVyaW5nIERPUyBjb25kaXRp
-b25z4oCmKS4gQ2FrZSBhbGxvd3MgdG8gc3BlY2lmeSBhIGhhcmQgbWVtb3J5IGxpbWl0IHRoYXQg
-bG9va3MgYSBza2ItdHJ1ZXNpemUgdG8gYWxsb3cgc3RyaWN0ZXIgbWVtb3J5IGNvbnRyb2wgZm9y
-IHBlb3BsZSBsaWtlIG1lLCBtYWtpbmcgdGhlIHdob2xlIEdSTy9HU08gaXNzdWUgZ28gYXdheSwg
-YXQgbGVhc3QgYXMgZmFyIGFzIE9PTSBpcyBjb25jZXJuZWQuIEFuZCBhcyBJIGJlZ2luIHRvIHVu
-ZGVyc3RhbmQgb25jZSBhIGxpbmsgcmVhY2hlcyBhIGNlcnRhaW4gYmFuZHdpZHRoIEdSTy9HU08g
-d2lsbCBiZWNvbWUgaGVscGZ1bCBhZ2FpbiwgZXNwZWNpYWxseSBvbiBzbWFsbCByb3V0ZXJzIGFz
-IHRoZXkgaGVscCByZWR1Y2UgdGhlIHdvcmsgdGhlIGtlcm5lbCBuZWVkcyB0byB0byBwZXIgYnl0
-ZeKApgoKQmVzdCBSZWdhcmRzICYgTWFueSBUaGFua3MKCVNlYmFzdGlhbgoKCj4gCj4gLS0gCj4g
-QmVzdCByZWdhcmRzLAo+ICBKZXNwZXIgRGFuZ2FhcmQgQnJvdWVyCj4gIE1TYy5DUywgUHJpbmNp
-cGFsIEtlcm5lbCBFbmdpbmVlciBhdCBSZWQgSGF0Cj4gIEF1dGhvciBvZiBodHRwOi8vd3d3Lmlw
-dHYtYW5hbHl6ZXIub3JnCj4gIExpbmtlZEluOiBodHRwOi8vd3d3LmxpbmtlZGluLmNvbS9pbi9i
-cm91ZXIKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
-dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+In 10.4, fw sends WMI PEER_RATECODE_LIST_EVENTID after successful
+peer_assoc cmd. As of now this event is not of much use and not
+implemented. Change the debug level and messsage as appropriate
+to suppress "Unknown eventid: 36898".
+
+Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 39a54a5..2a14b16 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -5213,6 +5213,7 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		ath10k_wmi_event_vdev_stopped(ar, skb);
+ 		break;
+ 	case WMI_10_4_WOW_WAKEUP_HOST_EVENTID:
++	case WMI_10_4_PEER_RATECODE_LIST_EVENTID:
+ 		ath10k_dbg(ar, ATH10K_DBG_WMI,
+ 			   "received event id %d not implemented\n", id);
+ 		break;
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
