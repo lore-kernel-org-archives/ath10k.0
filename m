@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aydPw-00019r-DP
- for ath10k@lists.infradead.org; Fri, 06 May 2016 10:56:16 +0000
-Received: by mail-oi0-x243.google.com with SMTP id w198so17719272oiw.2
- for <ath10k@lists.infradead.org>; Fri, 06 May 2016 03:55:11 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CACiydbJBMHGxeDj=BErL3h3RPetLhv3uz+s-trZSnz4Ee5FPyw@mail.gmail.com>
+ id 1aye0z-000345-OR
+ for ath10k@lists.infradead.org; Fri, 06 May 2016 11:33:50 +0000
+Date: Fri, 6 May 2016 13:33:23 +0200
+From: Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [Codel] fq_codel_drop vs a udp flood
+Message-ID: <20160506133323.0b190f47@redhat.com>
+In-Reply-To: <542135C7-D7CC-4E33-B35B-C2AD259FA5AB@gmx.de>
 References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
- <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
  <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
  <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
  <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
@@ -20,11 +20,10 @@ References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
  <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
  <1462464776.13075.18.camel@edumazet-glaptop3.roam.corp.google.com>
  <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
- <CACiydbJBMHGxeDj=BErL3h3RPetLhv3uz+s-trZSnz4Ee5FPyw@mail.gmail.com>
-Date: Fri, 6 May 2016 13:55:10 +0300
-Message-ID: <CACiydbLV9fHQk-7ovj3sYTaUrfju2Ryf5vvNCKm5H5A+q5VDPw@mail.gmail.com>
-Subject: Re: [Codel] fq_codel_drop vs a udp flood
-From: Roman Yeryomin <leroi.lists@gmail.com>
+ <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CAA93jw4XZ1+LLX1z6wQ6DHsp4vFCS5zmMz-uku_8SBNG_KuUxA@mail.gmail.com>
+ <542135C7-D7CC-4E33-B35B-C2AD259FA5AB@gmx.de>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -37,45 +36,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Jonathan Morton <chromatix99@gmail.com>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, make-wifi-fast@lists.bufferbloat.net
+To: moeller0 <moeller0@gmx.de>, Eric Dumazet <eric.dumazet@gmail.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, Dave =?UTF-8?B?VMOkaHQ=?= <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, brouer@redhat.com, Jonathan Morton <chromatix99@gmail.com>, Roman Yeryomin <leroi.lists@gmail.com>
 
-On 5 May 2016 at 19:42, Roman Yeryomin <leroi.lists@gmail.com> wrote:
-> On 5 May 2016 at 19:25, Roman Yeryomin <leroi.lists@gmail.com> wrote:
->> On 5 May 2016 at 19:12, Eric Dumazet <eric.dumazet@gmail.com> wrote:
->>> On Thu, 2016-05-05 at 17:53 +0300, Roman Yeryomin wrote:
->>>
->>>>
->>>> qdisc fq_codel 0: dev eth0 root refcnt 2 limit 1024p flows 1024
->>>> quantum 1514 target 5.0ms interval 100.0ms ecn
->>>>  Sent 12306 bytes 128 pkt (dropped 0, overlimits 0 requeues 0)
->>>>  backlog 0b 0p requeues 0
->>>>   maxpacket 0 drop_overlimit 0 new_flow_count 0 ecn_mark 0
->>>>   new_flows_len 0 old_flows_len 0
->>>
->>>
->>> Limit of 1024 packets and 1024 flows is not wise I think.
->>>
->>> (If all buckets are in use, each bucket has a virtual queue of 1 packet,
->>> which is almost the same than having no queue at all)
->>>
->>> I suggest to have at least 8 packets per bucket, to let Codel have a
->>> chance to trigger.
->>>
->>> So you could either reduce number of buckets to 128 (if memory is
->>> tight), or increase limit to 8192.
->>
->> Will try, but what I've posted is default, I didn't change/configure that.
->
-> So it didn't change anything :(
-> Do you want new stats?
 
-Just realized that the patch should be applied/ported to Linux kernel
-OpenWrt part, not compat-wireless.
-Will try to do that now.
+On Fri, 6 May 2016 10:41:53 +0200 moeller0 <moeller0@gmx.de> wrote:
 
-Regards,
-Roman
+> 	Speaking out of total ignorance, I ask why not account
+> GRO/GSO packets by the number of their fragments against the packet
+> limit? Counting a 64kB packets as equivalent to a 64B packet probably
+> is the right thing if one tries to account for the work the OS needs
+> to perform to figure out what to do with the packet, but for limiting
+> the memory consumption it introduces an impressive/manly level of
+> uncertainty (2 orders of magnitude). 
+
+Looking at the drop code in fq_codel:
+ https://github.com/torvalds/linux/blob/v4.6-rc6/net/sched/sch_fq_codel.c#L136
+
+It looks like we are finding the "fat" flow to drop from based on
+number of bytes queued.  And AFAIK skb->len also account for the total
+length of all GSO packets (Eric?)
+
+Even better, we are using qdisc_pkt_len(skb), which also account for
+the GSO headers in qdisc_pkt_len_init(). 
+ https://github.com/torvalds/linux/blob/v4.6-rc6/net/core/dev.c#L2993
+
+If anything, the GSO packets get hit harder by the fq_codel_drop
+function, as we drop the entire GSO skb.
+
+
+Is the issue you are raising that the 1024 packet limit, would allow
+1024 x 64K bytes to be queued before the drop kicks in? (Resulting in
+using too much memory on your small device).
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  Author of http://www.iptv-analyzer.org
+  LinkedIn: http://www.linkedin.com/in/brouer
 
 _______________________________________________
 ath10k mailing list
