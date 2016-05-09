@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aztOE-00053e-1j
- for ath10k@lists.infradead.org; Mon, 09 May 2016 22:10:58 +0000
-Received: by mail-ig0-x22e.google.com with SMTP id s8so103797376ign.0
- for <ath10k@lists.infradead.org>; Mon, 09 May 2016 15:10:37 -0700 (PDT)
-Date: Mon, 9 May 2016 18:10:34 -0400
-From: Bob Copeland <me@bobcopeland.com>
-Subject: Re: [ath6kl:master 1344/1352] net/ipv4/ip_gre.c:138:15: error:
- redefinition of 'gre_flags_to_tnl_flags'
-Message-ID: <20160509221034.GB2468@localhost>
-References: <201605100555.J4I0pjyS%fengguang.wu@intel.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201605100555.J4I0pjyS%fengguang.wu@intel.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1azuLO-0007S5-Uc
+ for ath10k@lists.infradead.org; Mon, 09 May 2016 23:12:07 +0000
+From: greearb@candelatech.com
+Subject: [PATCH 04/21] ath10k: rate-limit packet tx errors
+Date: Mon,  9 May 2016 16:10:58 -0700
+Message-Id: <1462835475-11079-5-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1462835475-11079-1-git-send-email-greearb@candelatech.com>
+References: <1462835475-11079-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +17,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: "Kalle Valo <kvalo@adurom.com> Kalle Valo" <kvalo@adurom.com>, kbuild-all@01.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
-On Tue, May 10, 2016 at 05:51:06AM +0800, kbuild test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git master
-> head:   140eb352c0398fd9c361e0fded58055c893db482
-> commit: 13e441e25c7c41683748ffc48a30a83fa2e4ea7b [1344/1352] Merge remote-tracking branch 'wireless-drivers-next/master'
-> config: x86_64-rhel (attached as .config)
-> compiler: gcc-4.9 (Debian 4.9.3-14) 4.9.3
-> reproduce:
->         git checkout 13e441e25c7c41683748ffc48a30a83fa2e4ea7b
->         # save the attached .config to linux build tree
->         make ARCH=x86_64 
-> 
-> Note: the ath6kl/master HEAD 140eb352c0398fd9c361e0fded58055c893db482 builds fine.
->       It only hurts bisectibility.
-> 
-> All errors (new ones prefixed by >>):
+From: Ben Greear <greearb@candelatech.com>
 
-This is just a bit of merge damage from a patch that went into
-both -rc7 and net-next.  I kept more than I should have from the
-rc7 version, causing the build warnings.
+When firmware crashes, stack can continue to send packets
+for a bit, and existing code was spamming logs.
 
+So, rate-limit the error message for tx failures.
+
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index cd3016d..42cac32 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3432,8 +3432,9 @@ static int ath10k_mac_tx_submit(struct ath10k *ar,
+ 	}
+ 
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to transmit packet, dropping: %d\n",
+-			    ret);
++		if (net_ratelimit())
++			ath10k_warn(ar, "failed to transmit packet, dropping: %d\n",
++				    ret);
+ 		ieee80211_free_txskb(ar->hw, skb);
+ 	}
+ 
 -- 
-Bob Copeland %% http://bobcopeland.com/
+2.4.3
+
 
 _______________________________________________
 ath10k mailing list
