@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1azuQw-0007UE-PB
- for ath10k@lists.infradead.org; Mon, 09 May 2016 23:17:51 +0000
+ id 1azuRc-0007Ul-Hh
+ for ath10k@lists.infradead.org; Mon, 09 May 2016 23:18:33 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 17/21] ath10k: Enable detecting failure to install key in
- firmware (CT).
-Date: Mon,  9 May 2016 16:11:11 -0700
-Message-Id: <1462835475-11079-18-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 10/21] ath10k: support logging ath10k_info as KERN_DEBUG
+Date: Mon,  9 May 2016 16:11:04 -0700
+Message-Id: <1462835475-11079-11-git-send-email-greearb@candelatech.com>
 In-Reply-To: <1462835475-11079-1-git-send-email-greearb@candelatech.com>
 References: <1462835475-11079-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -28,104 +27,55 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-CT firmware has been modified so that it will always return
-a response message when user requests to add a key, even if
-the key could not actually be added.  Upstream firmware may
-assert or just not respond in a failure case.
-
-This change should be compatible with non CT firmware.
+Helps keep messages off of (serial) console when
+that is desired.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h   |  1 +
- drivers/net/wireless/ath/ath10k/htt.h    |  7 +++++--
- drivers/net/wireless/ath/ath10k/htt_rx.c | 20 +++++++++++++++++---
- drivers/net/wireless/ath/ath10k/mac.c    |  3 ++-
- 4 files changed, 25 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath10k/debug.c | 5 ++++-
+ drivers/net/wireless/ath/ath10k/debug.h | 6 ++++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index dd38f34..dae453a 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -848,6 +848,7 @@ struct ath10k {
- 	unsigned int filter_flags;
- 	unsigned long dev_flags;
- 	bool dfs_block_radar_events;
-+	int install_key_rv; /* Store error code from key-install */
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index c38862b..7d9ad99 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -139,7 +139,10 @@ void ath10k_info(struct ath10k *ar, const char *fmt, ...)
  
- 	/* protected by conf_mutex */
- 	bool radar_enabled;
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 911c535..c50b343 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -702,8 +702,9 @@ enum htt_security_types {
- };
- 
- enum htt_security_flags {
--#define HTT_SECURITY_TYPE_MASK 0x7F
-+#define HTT_SECURITY_TYPE_MASK 0x3F
- #define HTT_SECURITY_TYPE_LSB  0
-+	HTT_SECURITY_IS_FAILURE = 1 << 6, /* CT firmware only */
- 	HTT_SECURITY_IS_UNICAST = 1 << 7
- };
- 
-@@ -712,7 +713,9 @@ struct htt_security_indication {
- 		/* dont use bitfields; undefined behaviour */
- 		u8 flags; /* %htt_security_flags */
- 		struct {
--			u8 security_type:7, /* %htt_security_types */
-+			u8 security_type:6, /* %htt_security_types */
-+			   is_failure:1, /* does this response indicate failure
-+					    (CT Firmware) */
- 			   is_unicast:1;
- 		} __packed;
- 	} __packed;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 47da904..02b5417 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2307,9 +2307,23 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 
- 		ath10k_dbg(ar, ATH10K_DBG_HTT,
- 			   "sec ind peer_id %d unicast %d type %d\n",
--			  __le16_to_cpu(ev->peer_id),
--			  !!(ev->flags & HTT_SECURITY_IS_UNICAST),
--			  MS(ev->flags, HTT_SECURITY_TYPE));
-+			   __le16_to_cpu(ev->peer_id),
-+			   !!(ev->flags & HTT_SECURITY_IS_UNICAST),
-+			   MS(ev->flags, HTT_SECURITY_TYPE));
-+
-+		/* CT firmware adds way to determine failure of key set, without
-+		 * just timing things out.  Indication of failure is determined
-+		 * by the 6th bit of the security-type being set.
-+		 */
-+		if (ev->flags & HTT_SECURITY_IS_FAILURE) {
-+			ath10k_warn(ar, "Firmware failed to set security key, peer_id: %d unicast %d type %d\n",
-+				    __le16_to_cpu(ev->peer_id),
-+				    !!(ev->flags & HTT_SECURITY_IS_UNICAST),
-+				    MS(ev->flags, HTT_SECURITY_TYPE));
-+			ar->install_key_rv = -EINVAL;
-+		} else {
-+			ar->install_key_rv = 0;
-+		}
- 		complete(&ar->install_key_done);
- 		break;
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 2169337..373f2ee 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -255,7 +255,8 @@ static int ath10k_install_key(struct ath10k_vif *arvif,
- 	if (time_left == 0)
- 		return -ETIMEDOUT;
- 
--	return 0;
-+	ret = ar->install_key_rv;
-+	return ret;
+ 	va_start(args, fmt);
+ 	vaf.va = &args;
+-	dev_info(ar->dev, "%pV", &vaf);
++	if (ath10k_debug_mask & ATH10K_DBG_INFO_AS_DBG)
++		dev_printk(KERN_DEBUG, ar->dev, "%pV", &vaf);
++	else
++		dev_info(ar->dev, "%pV", &vaf);
+ 	trace_ath10k_log_info(ar, &vaf);
+ 	va_end(args);
  }
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 6356dce..4f10685 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -21,6 +21,10 @@
+ #include <linux/types.h>
+ #include "trace.h"
  
- static int ath10k_install_peer_wep_keys(struct ath10k_vif *arvif,
++/**
++ * ATH10K_DBG_INFO_AS_DBG: use dev_dbg instead of dev_info
++ *       for ath10k_info messages
++ */
+ enum ath10k_debug_mask {
+ 	ATH10K_DBG_PCI		= 0x00000001,
+ 	ATH10K_DBG_WMI		= 0x00000002,
+@@ -38,6 +42,8 @@ enum ath10k_debug_mask {
+ 	ATH10K_DBG_WMI_PRINT	= 0x00002000,
+ 	ATH10K_DBG_PCI_PS	= 0x00004000,
+ 	ATH10K_DBG_AHB		= 0x00008000,
++
++	ATH10K_DBG_INFO_AS_DBG	= 0x40000000,
+ 	ATH10K_DBG_FW		= 0x80000000,
+ 	ATH10K_DBG_ANY		= 0xffffffff,
+ };
 -- 
 2.4.3
 
