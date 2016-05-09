@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1azuRf-0007Uk-PY
- for ath10k@lists.infradead.org; Mon, 09 May 2016 23:18:36 +0000
+ id 1azuRc-0007Uk-II
+ for ath10k@lists.infradead.org; Mon, 09 May 2016 23:18:33 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 03/21] ath10k: Support setting debug mask from driver code.
-Date: Mon,  9 May 2016 16:10:57 -0700
-Message-Id: <1462835475-11079-4-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 19/21] ath10k: Enable adhoc mode for CT firmware.
+Date: Mon,  9 May 2016 16:11:13 -0700
+Message-Id: <1462835475-11079-20-git-send-email-greearb@candelatech.com>
 In-Reply-To: <1462835475-11079-1-git-send-email-greearb@candelatech.com>
 References: <1462835475-11079-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,44 +27,36 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-Might want to turn off verbose debug as soon as you
-see a firmware crash, for instance.  Helps keep dmesg
-output from over-running the stuff you care about.
+CT firmware can support IBSS mode, so allow users to configure this.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/debug.c | 5 +++++
- drivers/net/wireless/ath/ath10k/debug.h | 1 +
- 2 files changed, 6 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index e251155..a689bf1 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -194,6 +194,11 @@ void ath10k_print_driver_info(struct ath10k *ar)
- }
- EXPORT_SYMBOL(ath10k_print_driver_info);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index f1bfb3a..3fc9006 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7482,6 +7482,10 @@ static const struct ieee80211_iface_limit ath10k_10x_ct_if_limits[] = {
+ 	.max	= 7,
+ 	.types	= BIT(NL80211_IFTYPE_AP)
+ 	},
++	{
++	.max	= 1,
++	.types	= BIT(NL80211_IFTYPE_ADHOC)
++	},
+ };
  
-+void ath10k_set_debug_mask(unsigned int v) {
-+	ath10k_debug_mask = v;
-+}
-+EXPORT_SYMBOL(ath10k_set_debug_mask);
-+
- void ath10k_err(struct ath10k *ar, const char *fmt, ...)
- {
- 	struct va_format vaf = {
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 75c89e3..a5c9aae 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -69,6 +69,7 @@ void ath10k_debug_print_hwfw_info(struct ath10k *ar);
- void ath10k_debug_print_board_info(struct ath10k *ar);
- void ath10k_debug_print_boot_info(struct ath10k *ar);
- void ath10k_print_driver_info(struct ath10k *ar);
-+void ath10k_set_debug_mask(unsigned int v);
- 
- #ifdef CONFIG_ATH10K_DEBUGFS
- int ath10k_debug_start(struct ath10k *ar);
+ static const struct ieee80211_iface_combination ath10k_if_comb[] = {
+@@ -7862,6 +7866,7 @@ int ath10k_mac_register(struct ath10k *ar)
+ 			ar->hw->wiphy->iface_combinations = ath10k_10x_ct_if_comb;
+ 			ar->hw->wiphy->n_iface_combinations =
+ 				ARRAY_SIZE(ath10k_10x_ct_if_comb);
++			ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
+ 		} else {
+ 			ar->hw->wiphy->iface_combinations = ath10k_10x_if_comb;
+ 			ar->hw->wiphy->n_iface_combinations =
 -- 
 2.4.3
 
