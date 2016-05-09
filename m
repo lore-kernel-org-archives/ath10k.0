@@ -1,29 +1,34 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.devolo.com ([89.1.14.71])
+Received: from mout2.freenet.de ([2001:748:100:40::2:4])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1azmS2-0003oK-Dg
- for ath10k@lists.infradead.org; Mon, 09 May 2016 14:46:27 +0000
-Received: from localhost (localhost [127.0.0.1])
- by smtp.devolo.com (Postfix) with ESMTP id E2FF4100489
- for <ath10k@lists.infradead.org>; Mon,  9 May 2016 16:46:03 +0200 (CEST)
-Received: from smtp.devolo.com ([127.0.0.1])
- by localhost (smtp.devolo.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 0miXdWX9BYIg for <ath10k@lists.infradead.org>;
- Mon,  9 May 2016 16:46:02 +0200 (CEST)
-Received: from mail.devolo.de (juno.devolo.intern [10.1.1.83])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by smtp.devolo.com (Postfix) with ESMTPS id E72FC100012
- for <ath10k@lists.infradead.org>; Mon,  9 May 2016 16:46:01 +0200 (CEST)
-From: Guenther Kelleter <Guenther.Kelleter@devolo.de>
-Subject: RE: Mail to list undeliverable
-Date: Mon, 9 May 2016 14:46:01 +0000
-Message-ID: <EF6DF72779EE294A8A2425E8DA3BC0CC5434F9D3@Pallas.devolo.intern>
+ id 1azmYV-0006no-H6
+ for ath10k@lists.infradead.org; Mon, 09 May 2016 14:53:08 +0000
+Received: from [195.4.92.140] (helo=mjail0.freenet.de)
+ by mout2.freenet.de with esmtpa (ID gnther.kelleter@freenet.de) (port 25)
+ (Exim 4.85 #1) id 1azmY7-0002Ty-EI
+ for ath10k@lists.infradead.org; Mon, 09 May 2016 16:52:43 +0200
+Received: from localhost ([::1]:43477 helo=mjail0.freenet.de)
+ by mjail0.freenet.de with esmtpa (ID gnther.kelleter@freenet.de) (Exim 4.85
+ #1) id 1azmY7-0002GS-9n
+ for ath10k@lists.infradead.org; Mon, 09 May 2016 16:52:43 +0200
+Received: from mx6.freenet.de ([195.4.92.16]:57736)
+ by mjail0.freenet.de with esmtpa (ID gnther.kelleter@freenet.de) (Exim 4.85
+ #1) id 1azmVL-0005DW-Ko
+ for ath10k@lists.infradead.org; Mon, 09 May 2016 16:49:51 +0200
+Received: from p54b451a9.dip0.t-ipconnect.de ([84.180.81.169]:61217
+ helo=[10.30.100.29])
+ by mx6.freenet.de with esmtpsa (ID gnther.kelleter@freenet.de)
+ (TLSv1.2:DHE-RSA-AES128-SHA:128) (port 587) (Exim 4.85 #1)
+ id 1azmVL-00007H-HC
+ for ath10k@lists.infradead.org; Mon, 09 May 2016 16:49:51 +0200
+Subject: Re: Mail to list undeliverable
 References: <2445211f-364b-1c39-5c94-d8f08f1d0833@freenet.de>
  <87zirzjo22.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87zirzjo22.fsf@kamboji.qca.qualcomm.com>
-Content-Language: de-DE
+From: =?UTF-8?Q?G=c3=bcnther_Kelleter?= <gkelleter@freenet.de>
+Message-ID: <c7b97a93-0c34-0f0e-0c0a-af8024401063@freenet.de>
+Date: Mon, 9 May 2016 16:49:51 +0200
 MIME-Version: 1.0
+In-Reply-To: <87zirzjo22.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -36,26 +41,18 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBhdGgxMGsgW21haWx0bzphdGgx
-MGstYm91bmNlc0BsaXN0cy5pbmZyYWRlYWQub3JnXSBPbiBCZWhhbGYgT2YgVmFsbywNCj4gS2Fs
-bGUNCj4gU2VudDogTW9uZGF5LCBNYXkgMDksIDIwMTYgNDozNyBQTQ0KPiBUbzogR8O8bnRoZXIg
-S2VsbGV0ZXINCj4gQ2M6IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnDQo+IFN1YmplY3Q6IFJl
-OiBNYWlsIHRvIGxpc3QgdW5kZWxpdmVyYWJsZQ0KPiANCj4gR8O8bnRoZXIgS2VsbGV0ZXIgPGdr
-ZWxsZXRlckBmcmVlbmV0LmRlPiB3cml0ZXM6DQo+IA0KPiA+IEp1c3Qgd2FudGVkIHRvIHBvc3Qg
-YSBidWcgcmVwb3J0IHRvIGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnLCBidXQgbWFpbA0KPiA+
-IGtlZXBzIGJvdW5jaW5nLiBXaGF04oCZcyB3cm9uZyB3aXRoIHRoaXMgbGlzdD8gSSBhbSBzdWJz
-Y3JpYmVkIGFuZCByZWNlaXZlDQo+ID4gbWFpbHMgZnJvbSB0aGlzIGxpc3Qgd2l0aG91dCBwcm9i
-bGVtLg0KPiANCj4gSSBoYXZlbid0IHNlZW4gYW55b25lIGVsc2UgcmVwb3J0aW5nIGFueSBwcm9i
-bGVtcyBzbyB3aGF0ZXZlciBpdCBpcyBpdA0KPiBkb2Vzbid0IHNlZW0gdG8gYmUgYSBjb21tb24g
-cHJvYmxlbS4gUHJvdmlkaW5nIHRoZSBmdWxsIGJvdW5jZSBtYWlsDQo+IChldmVuIGlmIGp1c3Qg
-cHJpdmF0ZWx5IHRvIG1lKSB3b3VsZCBoZWxwLCBvdGhlcndpc2Ugd2UgYXJlIGp1c3QNCj4gZ3Vl
-c3NpbmcuDQo+IA0KPiAtLQ0KPiBLYWxsZSBWYWxvDQo+IF9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fDQo+IGF0aDEwayBtYWlsaW5nIGxpc3QNCj4gYXRoMTBr
-QGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsNCg0KDQoNClByb2JsZW0gaXMgc29sdmVkLCBteSBvdXRsb29rIGF0
-IHdvcmsgZGlkIHNlbmQgaHRtbCBtYWlscyBhcyBSYWogY29ycmVjdGx5IGFzc3VtZWQuDQoNCkfD
-vG50aGVyDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
-dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+R8O8bnRoZXIgS2VsbGV0ZXIgPGdrZWxsZXRlckBmcmVlbmV0LmRlPiB3cml0ZXM6Cj4+IEp1c3Qg
+d2FudGVkIHRvIHBvc3QgYSBidWcgcmVwb3J0IHRvIGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+LCBidXQgbWFpbAo+PiBrZWVwcyBib3VuY2luZy4gV2hhdOKAmXMgd3Jvbmcgd2l0aCB0aGlzIGxp
+c3Q/IEkgYW0gc3Vic2NyaWJlZCBhbmQgcmVjZWl2ZQo+PiBtYWlscyBmcm9tIHRoaXMgbGlzdCB3
+aXRob3V0IHByb2JsZW0uCj4gSSBoYXZlbid0IHNlZW4gYW55b25lIGVsc2UgcmVwb3J0aW5nIGFu
+eSBwcm9ibGVtcyBzbyB3aGF0ZXZlciBpdCBpcyBpdAo+IGRvZXNuJ3Qgc2VlbSB0byBiZSBhIGNv
+bW1vbiBwcm9ibGVtLiBQcm92aWRpbmcgdGhlIGZ1bGwgYm91bmNlIG1haWwKPiAoZXZlbiBpZiBq
+dXN0IHByaXZhdGVseSB0byBtZSkgd291bGQgaGVscCwgb3RoZXJ3aXNlIHdlIGFyZSBqdXN0Cj4g
+Z3Vlc3NpbmcuCj4KClByb2JsZW0gaXMgc29sdmVkLCBteSBvdXRsb29rIGF0IHdvcmsgZGlkIHNl
+bmQgaHRtbCBtYWlscyBhcyBSYWoKY29ycmVjdGx5IGFzc3VtZWQuCgpHw7xudGhlcgoKCgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
+bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
