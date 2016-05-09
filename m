@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1azuRe-0007Uk-Dz
- for ath10k@lists.infradead.org; Mon, 09 May 2016 23:18:35 +0000
+ id 1azuSJ-0007Wz-55
+ for ath10k@lists.infradead.org; Mon, 09 May 2016 23:19:15 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 07/21] ath10k: save firmware RAM and ROM BSS sections on crash
-Date: Mon,  9 May 2016 16:11:01 -0700
-Message-Id: <1462835475-11079-8-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 16/21] ath10k: Support 32+ stations.
+Date: Mon,  9 May 2016 16:11:10 -0700
+Message-Id: <1462835475-11079-17-git-send-email-greearb@candelatech.com>
 In-Reply-To: <1462835475-11079-1-git-send-email-greearb@candelatech.com>
 References: <1462835475-11079-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -23,319 +23,160 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-This can be used to get a useful back trace out of a firmware
-crash that involves an interrupt handler.  For instance, a
-null-pointer-exception would be this kind of trace.  A user-space
-tool can read the debugfs file and decode things as wished.
-
-This requires a packaged firmware with a new IE to describe the
-BSS section starts and length.
+Support up to 32 stations when using CT firmware.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c  | 48 +++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/core.h  | 14 +++++++++
- drivers/net/wireless/ath/ath10k/debug.c | 40 +++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/hw.h    |  2 ++
- drivers/net/wireless/ath/ath10k/pci.c   | 54 +++++++++++++++++++++++++++++++++
- 5 files changed, 157 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.c | 14 +++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  6 +++++
+ drivers/net/wireless/ath/ath10k/mac.c  | 43 ++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c  | 16 ++++++++++---
+ 4 files changed, 76 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index b7318b8..3f1786c 100644
+index 49c85c3..3869edd 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -922,6 +922,13 @@ err:
- 	return ret;
- }
- 
-+struct ath10k_bss_rom_ie {
-+	__le32 ram_addr;
-+	__le32 ram_len;
-+	__le32 rom_addr;
-+	__le32 rom_len;
-+} __packed;
-+
- static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
- 					 size_t name_len)
- {
-@@ -983,6 +990,7 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
- 	struct ath10k_fw_ie *hdr;
- 	const u8 *data;
- 	__le32 *timestamp, *version;
-+	struct ath10k_bss_rom_ie *bss;
- 
- 	/* first fetch the firmware file (firmware-*.bin) */
- 	fw_file->firmware = ath10k_fetch_fw_file(ar, ar->hw_params.fw.dir,
-@@ -1100,6 +1108,12 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
- 
- 			break;
- 		case ATH10K_FW_IE_WMI_OP_VERSION:
-+			/* Upstream stole the ID CT firmware was using, so add
-+			 * hack-around to deal with backwards-compat. --Ben
-+			 */
-+			if (ie_len >= sizeof(*bss))
-+				goto fw_ie_bss_info_ct;
-+
- 			if (ie_len != sizeof(u32))
- 				break;
- 
-@@ -1128,6 +1142,40 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
- 			fw_file->codeswap_data = data;
- 			fw_file->codeswap_len = ie_len;
- 			break;
-+		case ATH10K_FW_IE_BSS_INFO_CT:
-+fw_ie_bss_info_ct:
-+			if (ie_len < sizeof(*bss)) {
-+				ath10k_warn(ar, "invalid ie len for bss-info (%zd)\n",
-+					    ie_len);
-+				break;
-+			}
-+			bss = (struct ath10k_bss_rom_ie *)(data);
-+
-+			fw_file->ram_bss_addr = le32_to_cpu(bss->ram_addr);
-+			fw_file->ram_bss_len = le32_to_cpu(bss->ram_len);
-+			ath10k_dbg(ar, ATH10K_DBG_BOOT,
-+				   "found RAM BSS addr 0x%x length %d\n",
-+				   fw_file->ram_bss_addr, fw_file->ram_bss_len);
-+
-+			if (fw_file->ram_bss_len > ATH10K_RAM_BSS_BUF_LEN) {
-+				ath10k_warn(ar, "too long firmware RAM BSS length: %d\n",
-+					    fw_file->ram_bss_len);
-+				fw_file->ram_bss_len = 0;
-+			}
-+
-+			fw_file->rom_bss_addr = le32_to_cpu(bss->rom_addr);
-+			fw_file->rom_bss_len = le32_to_cpu(bss->rom_len);
-+			ath10k_dbg(ar, ATH10K_DBG_BOOT,
-+				   "found ROM BSS addr 0x%x length %d\n",
-+				   fw_file->rom_bss_addr, fw_file->rom_bss_len);
-+
-+			if (fw_file->rom_bss_len > ATH10K_ROM_BSS_BUF_LEN) {
-+				ath10k_warn(ar, "too long firmware ROM BSS length: %d\n",
-+					    fw_file->rom_bss_len);
-+				fw_file->rom_bss_len = 0;
-+			}
-+
-+			break;
- 		default:
- 			ath10k_warn(ar, "Unknown FW IE: %u\n",
- 				    le32_to_cpu(hdr->id));
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 644d077..6aa7a14 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -420,6 +420,10 @@ struct ath10k_dbglog_entry_storage {
- #define DBGLOG_NUM_ARGS_MASK             0xFC000000 /* Bit 26-31 */
- #define DBGLOG_NUM_ARGS_MAX              5 /* firmware tool chain limit */
- 
-+/* estimated values, hopefully these are enough */
-+#define ATH10K_ROM_BSS_BUF_LEN 30000
-+#define ATH10K_RAM_BSS_BUF_LEN 10000
-+
- /* used for crash-dump storage, protected by data-lock */
- struct ath10k_fw_crash_data {
- 	bool crashed_since_read;
-@@ -431,6 +435,8 @@ struct ath10k_fw_crash_data {
- 	__le32 exc_stack_buf[ATH10K_FW_STACK_SIZE / sizeof(__le32)];
- 	__le32 stack_addr;
- 	__le32 exc_stack_addr;
-+	__le32 rom_bss_buf[ATH10K_ROM_BSS_BUF_LEN / sizeof(__le32)];
-+	__le32 ram_bss_buf[ATH10K_RAM_BSS_BUF_LEN / sizeof(__le32)];
- };
- 
- struct ath10k_debug {
-@@ -666,6 +672,14 @@ struct ath10k_fw_file {
- 
- 	const void *codeswap_data;
- 	size_t codeswap_len;
-+
-+	/* These are written to only during first firmware load from user
-+	 * space so no need for any locking.
-+	 */
-+	u32 ram_bss_addr;
-+	u32 ram_bss_len;
-+	u32 rom_bss_addr;
-+	u32 rom_bss_len;
- };
- 
- struct ath10k_fw_components {
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 7bc3053..28e0c05 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -38,12 +38,16 @@
-  * @ATH10K_FW_ERROR_DUMP_DBGLOG:  Recent firmware debug log entries
-  * @ATH10K_FW_CRASH_DUMP_STACK:   Stack memory contents.
-  * @ATH10K_FW_CRASH_DUMP_EXC_STACK:   Exception stack memory contents.
-+ * @ATH10K_FW_CRASH_DUMP_RAM_BSS:  BSS area for RAM code
-+ * @ATH10K_FW_CRASH_DUMP_ROM_BSS:  BSS area for ROM code
-  */
- enum ath10k_fw_crash_dump_type {
- 	ATH10K_FW_CRASH_DUMP_REGISTERS = 0,
- 	ATH10K_FW_CRASH_DUMP_DBGLOG = 1,
- 	ATH10K_FW_CRASH_DUMP_STACK = 2,
- 	ATH10K_FW_CRASH_DUMP_EXC_STACK = 3,
-+	ATH10K_FW_CRASH_DUMP_RAM_BSS = 4,
-+	ATH10K_FW_CRASH_DUMP_ROM_BSS = 5,
- 
- 	ATH10K_FW_CRASH_DUMP_MAX,
- };
-@@ -110,9 +114,11 @@ struct ath10k_dump_file_data {
- 
- 	__le32 stack_addr;
- 	__le32 exc_stack_addr;
-+	__le32 rom_bss_addr;
-+	__le32 ram_bss_addr;
- 
- 	/* room for growth w/out changing binary format */
--	u8 unused[120];
-+	u8 unused[112];
- 
- 	/* struct ath10k_tlv_dump_data + more */
- 	u8 data[0];
-@@ -808,6 +814,14 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
- 	len += sizeof(*dump_tlv) + sizeof(crash_data->stack_buf);
- 	len += sizeof(*dump_tlv) + sizeof(crash_data->exc_stack_buf);
- 
-+	if (ar->running_fw->fw_file.ram_bss_addr &&
-+	    ar->running_fw->fw_file.ram_bss_len)
-+		len += sizeof(*dump_tlv) + ar->running_fw->fw_file.ram_bss_len;
-+
-+	if (ar->running_fw->fw_file.rom_bss_addr &&
-+	    ar->running_fw->fw_file.rom_bss_len)
-+		len += sizeof(*dump_tlv) + ar->running_fw->fw_file.rom_bss_len;
-+
- 	sofar += hdr_len;
- 
- 	/* This is going to get big when we start dumping FW RAM and such,
-@@ -848,6 +862,10 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
- 	dump_data->num_rf_chains = cpu_to_le32(ar->num_rf_chains);
- 	dump_data->stack_addr = cpu_to_le32(crash_data->stack_addr);
- 	dump_data->exc_stack_addr = cpu_to_le32(crash_data->exc_stack_addr);
-+	dump_data->rom_bss_addr =
-+		cpu_to_le32(ar->running_fw->fw_file.rom_bss_addr);
-+	dump_data->ram_bss_addr =
-+		cpu_to_le32(ar->running_fw->fw_file.ram_bss_addr);
- 
- 	strlcpy(dump_data->fw_ver, ar->hw->wiphy->fw_version,
- 		sizeof(dump_data->fw_ver));
-@@ -898,6 +916,26 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
- 	memcpy(dump_tlv->tlv_data, crash_data->exc_stack_buf, tmp);
- 	sofar += sizeof(*dump_tlv) + tmp;
- 
-+	if (ar->running_fw->fw_file.ram_bss_addr &&
-+	    ar->running_fw->fw_file.ram_bss_len) {
-+		tmp = ar->running_fw->fw_file.ram_bss_len;
-+		dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
-+		dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_RAM_BSS);
-+		dump_tlv->tlv_len = cpu_to_le32(tmp);
-+		memcpy(dump_tlv->tlv_data, crash_data->ram_bss_buf, tmp);
-+		sofar += sizeof(*dump_tlv) + tmp;
-+	}
-+
-+	if (ar->running_fw->fw_file.rom_bss_addr &&
-+	    ar->running_fw->fw_file.rom_bss_len) {
-+		tmp = ar->running_fw->fw_file.rom_bss_len;
-+		dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
-+		dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_ROM_BSS);
-+		dump_tlv->tlv_len = cpu_to_le32(tmp);
-+		memcpy(dump_tlv->tlv_data, crash_data->rom_bss_buf, tmp);
-+		sofar += sizeof(*dump_tlv) + tmp;
-+	}
-+
- 	ar->debug.fw_crash_data->crashed_since_read = false;
- 
- 	WARN_ON(sofar != len);
+@@ -1567,6 +1567,20 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_1:
++		if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT,
++			     fw_file->fw_features)) {
++			ar->max_num_peers = TARGET_10X_NUM_PEERS_CT;
++			ar->max_num_stations = TARGET_10X_NUM_STATIONS;
++			ar->max_num_vdevs = TARGET_10X_NUM_VDEVS_CT;
++		} else {
++			ar->max_num_peers = TARGET_10X_NUM_PEERS;
++			ar->max_num_stations = TARGET_10X_NUM_STATIONS;
++			ar->max_num_vdevs = TARGET_10X_NUM_VDEVS;
++		}
++		ar->htt.max_num_pending_tx = TARGET_10X_NUM_MSDU_DESC;
++		ar->fw_stats_req_mask = WMI_STAT_PEER;
++		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
++		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2:
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
+ 		if (ath10k_peer_stats_enabled(ar)) {
 diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index e86ebf0..7b80e29 100644
+index 7b80e29..d3f37d5 100644
 --- a/drivers/net/wireless/ath/ath10k/hw.h
 +++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -149,6 +149,8 @@ enum ath10k_fw_ie_type {
- 
- 	/* Code swap image for firmware binary */
- 	ATH10K_FW_IE_FW_CODE_SWAP_IMAGE = 7,
+@@ -370,6 +370,12 @@ enum ath10k_hw_4addr_pad {
+ 						 (TARGET_10X_NUM_VDEVS))
+ #define TARGET_10X_TX_STATS_NUM_PEERS		((TARGET_10X_TX_STATS_NUM_STATIONS) + \
+ 						 (TARGET_10X_NUM_VDEVS))
 +
-+	ATH10K_FW_IE_BSS_INFO_CT = 30,
++/* Over-rides for Candela Technologies firmware */
++#define TARGET_10X_NUM_VDEVS_CT			32
++#define TARGET_10X_NUM_PEERS_CT			(32 + (TARGET_10X_NUM_VDEVS_CT))
++#define TARGET_10X_AST_SKID_LIMIT_CT		(TARGET_10X_NUM_PEERS_CT * TARGET_10X_NUM_PEER_AST)
++
+ #define TARGET_10X_NUM_OFFLOAD_PEERS		0
+ #define TARGET_10X_NUM_OFFLOAD_REORDER_BUFS	0
+ #define TARGET_10X_NUM_PEER_KEYS		2
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 42cac32..2169337 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7451,6 +7451,22 @@ static const struct ieee80211_iface_limit ath10k_10x_if_limits[] = {
+ 	},
  };
  
- enum ath10k_fw_wmi_op_version {
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 62dd167..e6315ec 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1424,6 +1424,58 @@ u16 ath10k_pci_hif_get_free_queue_number(struct ath10k *ar, u8 pipe)
- 	return ath10k_ce_num_free_src_entries(ar_pci->pipe_info[pipe].ce_hdl);
- }
++static const struct ieee80211_iface_limit ath10k_10x_ct_if_limits[] = {
++	{
++	.max	= TARGET_10X_NUM_VDEVS_CT,
++	.types	= BIT(NL80211_IFTYPE_STATION)
++		| BIT(NL80211_IFTYPE_P2P_CLIENT)
++	},
++	{
++	.max	= 3,
++	.types	= BIT(NL80211_IFTYPE_P2P_GO)
++	},
++	{
++	.max	= 7,
++	.types	= BIT(NL80211_IFTYPE_AP)
++	},
++};
++
+ static const struct ieee80211_iface_combination ath10k_if_comb[] = {
+ 	{
+ 		.limits = ath10k_if_limits,
+@@ -7531,6 +7547,22 @@ static const struct ieee80211_iface_limit ath10k_tlv_if_limit_ibss[] = {
+ 	},
+ };
  
-+static void ath10k_pci_dump_bss_ram(struct ath10k *ar,
-+				    struct ath10k_fw_crash_data *crash_data)
-+{
-+	int ret;
++static const struct ieee80211_iface_combination ath10k_10x_ct_if_comb[] = {
++	{
++		.limits = ath10k_10x_ct_if_limits,
++		.n_limits = ARRAY_SIZE(ath10k_10x_ct_if_limits),
++		.max_interfaces = TARGET_10X_NUM_VDEVS_CT,
++		.num_different_channels = 1,
++		.beacon_int_infra_match = true,
++#ifdef CONFIG_ATH10K_DFS_CERTIFIED
++		.radar_detect_widths =	BIT(NL80211_CHAN_WIDTH_20_NOHT) |
++					BIT(NL80211_CHAN_WIDTH_20) |
++					BIT(NL80211_CHAN_WIDTH_40) |
++					BIT(NL80211_CHAN_WIDTH_80),
++#endif
++	},
++};
 +
-+	if (!crash_data)
-+		return;
+ /* FIXME: This is not thouroughly tested. These combinations may over- or
+  * underestimate hw/fw capabilities.
+  */
+@@ -7808,6 +7840,17 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_1:
++		if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT,
++			     ar->normal_mode_fw.fw_file.fw_features)) {
++			ar->hw->wiphy->iface_combinations = ath10k_10x_ct_if_comb;
++			ar->hw->wiphy->n_iface_combinations =
++				ARRAY_SIZE(ath10k_10x_ct_if_comb);
++		} else {
++			ar->hw->wiphy->iface_combinations = ath10k_10x_if_comb;
++			ar->hw->wiphy->n_iface_combinations =
++				ARRAY_SIZE(ath10k_10x_if_comb);
++		}
++		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2:
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
+ 		ar->hw->wiphy->iface_combinations = ath10k_10x_if_comb;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 6cfba41..9ee2648 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -5497,12 +5497,22 @@ static struct sk_buff *ath10k_wmi_10_1_op_gen_init(struct ath10k *ar)
+ 	struct sk_buff *buf;
+ 	struct wmi_resource_config_10x config = {};
+ 	u32 len, val;
++	u32 skid_limit;
 +
-+	lockdep_assert_held(&ar->data_lock);
-+
-+	if (!ar->running_fw->fw_file.ram_bss_addr)
-+		return;
-+
-+	if (!ar->running_fw->fw_file.ram_bss_len)
-+		return;
-+
-+	ret = ath10k_pci_diag_read_mem(ar, ar->running_fw->fw_file.ram_bss_addr,
-+				       crash_data->ram_bss_buf,
-+				       ar->running_fw->fw_file.ram_bss_len);
-+	if (ret)
-+		ath10k_warn(ar,
-+			    "failed to read firmware RAM BSS memory from %d (%d B): %d\n",
-+			    ar->running_fw->fw_file.ram_bss_addr,
-+			    ar->running_fw->fw_file.ram_bss_len, ret);
-+}
-+
-+static void ath10k_pci_dump_bss_rom(struct ath10k *ar,
-+				    struct ath10k_fw_crash_data *crash_data)
-+{
-+	int ret;
-+
-+	if (!crash_data)
-+		return;
-+
-+	lockdep_assert_held(&ar->data_lock);
-+
-+	if (!ar->running_fw->fw_file.rom_bss_addr)
-+		return;
-+
-+	if (!ar->running_fw->fw_file.rom_bss_len)
-+		return;
-+
-+	ret = ath10k_pci_diag_read_mem(ar, ar->running_fw->fw_file.rom_bss_addr,
-+				       crash_data->rom_bss_buf,
-+				       ar->running_fw->fw_file.rom_bss_len);
-+	if (ret)
-+		ath10k_warn(ar,
-+			    "failed to read firmware ROM BSS memory from %d (%d B): %d\n",
-+			    ar->running_fw->fw_file.rom_bss_addr,
-+			    ar->running_fw->fw_file.rom_bss_len, ret);
-+}
-+
- /* Save the main firmware stack */
- static void ath10k_pci_dump_stack(struct ath10k *ar,
- 				  struct ath10k_fw_crash_data *crash_data)
-@@ -1607,6 +1659,8 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
- 	ath10k_pci_dump_dbglog(ar);
- 	ath10k_pci_dump_stack(ar, crash_data);
- 	ath10k_pci_dump_exc_stack(ar, crash_data);
-+	ath10k_pci_dump_bss_ram(ar, crash_data);
-+	ath10k_pci_dump_bss_rom(ar, crash_data);
- 	if (crash_data)
- 		crash_data->crashed_since_read = true;
++	if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT,
++		     ar->running_fw->fw_file.fw_features)) {
++		config.num_vdevs = __cpu_to_le32(TARGET_10X_NUM_VDEVS_CT);
++		config.num_peers = __cpu_to_le32(TARGET_10X_NUM_PEERS_CT);
++		skid_limit = TARGET_10X_AST_SKID_LIMIT_CT;
++	} else {
++		config.num_vdevs = __cpu_to_le32(TARGET_10X_NUM_VDEVS);
++		config.num_peers = __cpu_to_le32(TARGET_10X_NUM_PEERS);
++		skid_limit = TARGET_10X_AST_SKID_LIMIT;
++	}
++	config.ast_skid_limit = __cpu_to_le32(skid_limit);
  
+-	config.num_vdevs = __cpu_to_le32(TARGET_10X_NUM_VDEVS);
+-	config.num_peers = __cpu_to_le32(TARGET_10X_NUM_PEERS);
+ 	config.num_peer_keys = __cpu_to_le32(TARGET_10X_NUM_PEER_KEYS);
+ 	config.num_tids = __cpu_to_le32(TARGET_10X_NUM_TIDS);
+-	config.ast_skid_limit = __cpu_to_le32(TARGET_10X_AST_SKID_LIMIT);
+ 	config.tx_chain_mask = __cpu_to_le32(TARGET_10X_TX_CHAIN_MASK);
+ 	config.rx_chain_mask = __cpu_to_le32(TARGET_10X_RX_CHAIN_MASK);
+ 	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
 -- 
 2.4.3
 
