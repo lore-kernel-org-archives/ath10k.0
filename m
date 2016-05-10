@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b0BBO-0002Wp-2S
- for ath10k@lists.infradead.org; Tue, 10 May 2016 17:10:54 +0000
-Subject: Re: [PATCH] ath10k: Fix 10.4 extended peer stats update
-References: <1462897645-16219-1-git-send-email-mohammed@qca.qualcomm.com>
- <57320DAF.2040508@candelatech.com>
- <20160510164049.GC21638@atheros-ThinkPad-T61>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <573215F3.3050109@candelatech.com>
-Date: Tue, 10 May 2016 10:10:11 -0700
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b0Bk2-0006xG-9T
+ for ath10k@lists.infradead.org; Tue, 10 May 2016 17:46:43 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 4/4] ath10k: Enable support for QCA9984
+Date: Tue, 10 May 2016 17:46:12 +0000
+Message-ID: <878tzhg61o.fsf@kamboji.qca.qualcomm.com>
+References: <1461164356-9158-1-git-send-email-vthiagar@qti.qualcomm.com>
+ <1461164356-9158-5-git-send-email-vthiagar@qti.qualcomm.com>
+ <loom.20160509T113952-8@post.gmane.org>	<57306645.2060600@qti.qualcomm.com>
+ <CAHyQSvKPo2-Pc9PPVY-mHUK0TX93CzxnwMob125Aruqiem7J7Q@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <32E4DFB907D3F0499507B2F9C96409FC@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <20160510164049.GC21638@atheros-ThinkPad-T61>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,52 +22,23 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: Archisman Maitra <archisman001@gmail.com>
+Cc: "Thiagarajan, Vasanthakumar" <vthiagar@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 05/10/2016 09:40 AM, Mohammed Shafi Shajakhan wrote:
-> On Tue, May 10, 2016 at 09:34:55AM -0700, Ben Greear wrote:
->> On 05/10/2016 09:27 AM, Mohammed Shafi Shajakhan wrote:
->>> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
->>>
->>> 10.4 'extended peer stats' will be not be appended with normal peer stats
->>> data and they shall be coming in separate chunks. Fix this by maintaining
->>> a separate linked list 'extender peer stats' for 10.4 and update
->>> rx_duration for per station statistics. Also parse through beacon filter
->>> (if enabled), to make sure we parse the extended peer stats properly.
->>> This issue was exposed when more than one client is connected and
->>> extended peer stats for 10.4 is enabled
->>
->> In general, maybe more of these stats should be kept in the driver instead
->> of the firmware?  The firmware is very tight on RAM already, and if
->> we can pass the needed info back to the host, it could gather arbitrary
->> amounts of stats as needed.
->>
->
-> [shafi] agreed, probably thats why we are tracking u64 counters like rx_duration
-> etc in host while the firmware variable will wrap aroud in sometime
+Archisman Maitra <archisman001@gmail.com> writes:
 
-If firmware could be modified to return more per-frame info, then the driver
-could do virtually all of the stats gathering.  It would cost a bit of RAM
-to hold that descriptor information, but over-all, the firmware might be a lot
-simpler....
+> Can you provide me the binaries of QCA9984?
 
-On the TX side, it would also allow intelligent host-based rate-ctrl.  Especially
-considering the complexity of mu-mimo, it might be nice to get rate-ctrl into the
-kernel where more people can work on it in a more flexible manner.
+I pushed them to ath10k-firmware.git:
 
-Thanks,
-Ben
+https://github.com/kvalo/ath10k-firmware/tree/master/QCA9984/hw1.0
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
