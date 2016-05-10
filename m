@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b01y9-0003Bw-By
- for ath10k@lists.infradead.org; Tue, 10 May 2016 07:20:37 +0000
-Date: Tue, 10 May 2016 12:50:05 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH 15/21] ath10k: support CT firmware flag.
-Message-ID: <20160510072005.GE25626@atheros-ThinkPad-T61>
-References: <1462835475-11079-1-git-send-email-greearb@candelatech.com>
- <1462835475-11079-16-git-send-email-greearb@candelatech.com>
+Received: from universe.cdot.in ([49.128.111.121])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b05Nq-0007Tg-H9
+ for ath10k@lists.infradead.org; Tue, 10 May 2016 10:59:24 +0000
+From: "B R Manjula" <brm@cdot.in>
+Subject: HOSTAPD-2.5 issue with 802.1X
+Date: Tue, 10 May 2016 16:25:10 +0530
+Message-Id: <20160510104643.M32211@cdot.in>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1462835475-11079-16-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,69 +16,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: sridhark@cdot.in
 
-Hi Ben,
-
-On Mon, May 09, 2016 at 04:11:09PM -0700, greearb@candelatech.com wrote:
-> From: Ben Greear <greearb@candelatech.com>
-> 
-> Add placeholder so CT firmware can more easily co-exist with upstream
-> kernel.
-
-[shafi] nitpick: good to provide an expansion in commit log as well, so that
-if we can easily figure out in git log alone, rather than going through
-the change and suggesting that it supports more vif's etc
-
-> 
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> ---
->  drivers/net/wireless/ath/ath10k/core.c | 1 +
->  drivers/net/wireless/ath/ath10k/core.h | 3 +++
->  2 files changed, 4 insertions(+)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index fa71d57..49c85c3 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -235,6 +235,7 @@ static const char *const ath10k_core_fw_feature_str[] = {
->  	[ATH10K_FW_FEATURE_SUPPORTS_ADAPTIVE_CCA] = "adaptive-cca",
->  	[ATH10K_FW_FEATURE_MFP_SUPPORT] = "mfp",
->  	[ATH10K_FW_FEATURE_PEER_FLOW_CONTROL] = "peer-flow-ctrl",
-> +	[ATH10K_FW_FEATURE_WMI_10X_CT] = "wmi-10.x-CT",
->  };
->  
->  static unsigned int ath10k_core_get_fw_feature_str(char *buf,
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 1a75e2e..dd38f34 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -566,6 +566,9 @@ enum ath10k_fw_features {
->  	 */
->  	ATH10K_FW_FEATURE_PEER_FLOW_CONTROL = 13,
->  
-> +	/* Firmware from Candela Technologies, enables more VIFs, etc */
-> +	ATH10K_FW_FEATURE_WMI_10X_CT = 31,
-> +
->  	/* keep last */
->  	ATH10K_FW_FEATURE_COUNT,
->  };
->
-regards,
-shafi
-
-> 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGVsbG8sCgpXZSBhcmUgcnVubmluZyAgSE9TVEFQRCBvbiB0MTAyNC1mcmVzY2FsZSBib2FyZCB3
+aXRoIGtlcm5lbC0zLjEyOyBhdGgxMGsgZHJpdmVycyAKYmFja3BvcnRlZCBmcm9tIDQuMjtob3N0
+YXBkIDIuNSBmb3IgMTFBQyBzdXBwb3J0IGlzIHVzZWQuIGF0aGVyb3Mtd2xlOTAwdnggcmFkaW8g
+Y2FyZCBpcyAKdXNlZC4KCgpvcGVuIGF1dGhlbnRpY2F0aW9uIGFuZCBwYXNzLXBocmFzZSBhdXRo
+ZW50aWNhdGlvbiBpcyB3b3JraW5nIGZpbmUgd2l0aCBhYm92ZSAKY29uZmlndXJhdGlvbi4KCkJ1
+dCB3aGVuIHdlIGVuYWJsZSBJRUVFODAyLjFYLCB0aG91Z2ggQUFBIHNlcnZlciBpcyByZXNwb25k
+aW5nIHdpdGggQUNDRVNTLQpDSEFMTEVOR0UvU1VDQ0VTU0ZVTCBBVVRIRU5USUNBVElPTiBSRVNQ
+T05TRSwgb3VyIEFQIGlzIHJlcGVhdGVkbHkgc2VuZGluZyBJREVOVElUWS0KUkVRVUVTVCBjb250
+aW51b3VzbHkuIFVFIGlzIHVuYWJsZSB0byBhc3NvY2lhdGUuIAoKQ2FuIHdlIGtub3cgd2hhdCBj
+b3VsZCBiZSB0aGUgaXNzdWUuCgpyZWdhcmRzLAptYW5qdWxhCkRpc2NsYWltZXI6Ci0tLS0tLS0t
+LS0KVGhpcyBlbWFpbCBhbmQgYW55IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGggaXQgYXJlIGNvbmZp
+ZGVudGlhbCBhbmQgaW50ZW5kZWQgc29sZWx5IGZvciAKdGhlIHVzZSBvZiB0aGUgaW5kaXZpZHVh
+bCBvciBlbnRpdHkgdG8gd2hvbSB0aGV5IGFyZSBhZGRyZXNzZWQuwqAgSWYgeW91IGFyZSBub3Qg
+dGhlIAppbnRlbmRlZCByZWNpcGllbnQgeW91IGFyZSBub3RpZmllZCB0aGF0IGRpc2Nsb3Npbmcs
+IGNvcHlpbmcsIGRpc3RyaWJ1dGluZyBvciB0YWtpbmcgCmFueSBhY3Rpb24gaW4gcmVsaWFuY2Ug
+b24gdGhlIGNvbnRlbnRzIG9mIHRoaXMgaW5mb3JtYXRpb24gaXMgc3RyaWN0bHkgcHJvaGliaXRl
+ZC4gVGhlIApzZW5kZXIgZG9lcyBub3QgYWNjZXB0IGxpYWJpbGl0eSBmb3IgYW55IGVycm9ycyBv
+ciBvbWlzc2lvbnMgaW4gdGhlIGNvbnRlbnRzIG9mIHRoaXMgCm1lc3NhZ2UsIHdoaWNoIGFyaXNl
+IGFzIGEgcmVzdWx0IG9mIGUtbWFpbCB0CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
+awo=
