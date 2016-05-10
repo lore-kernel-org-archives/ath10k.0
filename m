@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b01qX-0006Yl-AT
- for ath10k@lists.infradead.org; Tue, 10 May 2016 07:12:45 +0000
-Date: Tue, 10 May 2016 12:42:14 +0530
+ id 1b01y9-0003Bw-By
+ for ath10k@lists.infradead.org; Tue, 10 May 2016 07:20:37 +0000
+Date: Tue, 10 May 2016 12:50:05 +0530
 From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH v2 3/5] ath10k: Add WARN_ON if we over-write peer-map
- pointer.
-Message-ID: <20160510071214.GD25626@atheros-ThinkPad-T61>
-References: <1459545132-11295-1-git-send-email-greearb@candelatech.com>
- <1459545132-11295-3-git-send-email-greearb@candelatech.com>
+Subject: Re: [PATCH 15/21] ath10k: support CT firmware flag.
+Message-ID: <20160510072005.GE25626@atheros-ThinkPad-T61>
+References: <1462835475-11079-1-git-send-email-greearb@candelatech.com>
+ <1462835475-11079-16-git-send-email-greearb@candelatech.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1459545132-11295-3-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1462835475-11079-16-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,40 +29,53 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Hi Ben,
 
-On Fri, Apr 01, 2016 at 02:12:10PM -0700, greearb@candelatech.com wrote:
+On Mon, May 09, 2016 at 04:11:09PM -0700, greearb@candelatech.com wrote:
 > From: Ben Greear <greearb@candelatech.com>
 > 
-> Not sure this can happen, but seems like a reasonable sanity
-> check.
+> Add placeholder so CT firmware can more easily co-exist with upstream
+> kernel.
 
-[shafi] possibly if the peer is removed and the bit is not cleared in the driver
-? when the new peer occupies the slot
+[shafi] nitpick: good to provide an expansion in commit log as well, so that
+if we can easily figure out in git log alone, rather than going through
+the change and suggesting that it supports more vif's etc
 
 > 
 > Signed-off-by: Ben Greear <greearb@candelatech.com>
 > ---
->  drivers/net/wireless/ath/ath10k/txrx.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/net/wireless/ath/ath10k/core.c | 1 +
+>  drivers/net/wireless/ath/ath10k/core.h | 3 +++
+>  2 files changed, 4 insertions(+)
 > 
-> diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-> index a779a4e..2edef8a 100644
-> --- a/drivers/net/wireless/ath/ath10k/txrx.c
-> +++ b/drivers/net/wireless/ath/ath10k/txrx.c
-> @@ -309,6 +309,7 @@ void ath10k_peer_map_event(struct ath10k_htt *htt,
->  	ath10k_warn(ar, /*ATH10K_DBG_HTT,*/ "htt peer map vdev %d peer %pM id %d\n",
->  		   ev->vdev_id, ev->addr, ev->peer_id);
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index fa71d57..49c85c3 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -235,6 +235,7 @@ static const char *const ath10k_core_fw_feature_str[] = {
+>  	[ATH10K_FW_FEATURE_SUPPORTS_ADAPTIVE_CCA] = "adaptive-cca",
+>  	[ATH10K_FW_FEATURE_MFP_SUPPORT] = "mfp",
+>  	[ATH10K_FW_FEATURE_PEER_FLOW_CONTROL] = "peer-flow-ctrl",
+> +	[ATH10K_FW_FEATURE_WMI_10X_CT] = "wmi-10.x-CT",
+>  };
 >  
-> +	WARN_ON(ar->peer_map[ev->peer_id] && (ar->peer_map[ev->peer_id] != peer));
->  	ar->peer_map[ev->peer_id] = peer;
->  	set_bit(ev->peer_id, peer->peer_ids);
->  exit:
-> -- 
-> 2.4.3
-
+>  static unsigned int ath10k_core_get_fw_feature_str(char *buf,
+> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+> index 1a75e2e..dd38f34 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.h
+> +++ b/drivers/net/wireless/ath/ath10k/core.h
+> @@ -566,6 +566,9 @@ enum ath10k_fw_features {
+>  	 */
+>  	ATH10K_FW_FEATURE_PEER_FLOW_CONTROL = 13,
+>  
+> +	/* Firmware from Candela Technologies, enables more VIFs, etc */
+> +	ATH10K_FW_FEATURE_WMI_10X_CT = 31,
+> +
+>  	/* keep last */
+>  	ATH10K_FW_FEATURE_COUNT,
+>  };
+>
 regards,
 shafi
 
-> 
 > 
 > _______________________________________________
 > ath10k mailing list
