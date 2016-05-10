@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b0AgS-0000Bc-4D
- for ath10k@lists.infradead.org; Tue, 10 May 2016 16:38:56 +0000
-Date: Tue, 10 May 2016 22:08:26 +0530
+ id 1b0Ail-0001ot-OW
+ for ath10k@lists.infradead.org; Tue, 10 May 2016 16:41:20 +0000
+Date: Tue, 10 May 2016 22:10:49 +0530
 From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH v2 3/5] ath10k: Add WARN_ON if we over-write peer-map
- pointer.
-Message-ID: <20160510163826.GB21638@atheros-ThinkPad-T61>
-References: <1459545132-11295-1-git-send-email-greearb@candelatech.com>
- <1459545132-11295-3-git-send-email-greearb@candelatech.com>
- <20160510071214.GD25626@atheros-ThinkPad-T61>
- <5731F328.30803@candelatech.com>
+Subject: Re: [PATCH] ath10k: Fix 10.4 extended peer stats update
+Message-ID: <20160510164049.GC21638@atheros-ThinkPad-T61>
+References: <1462897645-16219-1-git-send-email-mohammed@qca.qualcomm.com>
+ <57320DAF.2040508@candelatech.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5731F328.30803@candelatech.com>
+In-Reply-To: <57320DAF.2040508@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,77 +25,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-On Tue, May 10, 2016 at 07:41:44AM -0700, Ben Greear wrote:
-> 
-> 
-> On 05/10/2016 12:12 AM, Mohammed Shafi Shajakhan wrote:
-> >Hi Ben,
+On Tue, May 10, 2016 at 09:34:55AM -0700, Ben Greear wrote:
+> On 05/10/2016 09:27 AM, Mohammed Shafi Shajakhan wrote:
+> >From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > >
-> >On Fri, Apr 01, 2016 at 02:12:10PM -0700, greearb@candelatech.com wrote:
-> >>From: Ben Greear <greearb@candelatech.com>
-> >>
-> >>Not sure this can happen, but seems like a reasonable sanity
-> >>check.
-> >
-> >[shafi] possibly if the peer is removed and the bit is not cleared in the driver
-> >? when the new peer occupies the slot
+> >10.4 'extended peer stats' will be not be appended with normal peer stats
+> >data and they shall be coming in separate chunks. Fix this by maintaining
+> >a separate linked list 'extender peer stats' for 10.4 and update
+> >rx_duration for per station statistics. Also parse through beacon filter
+> >(if enabled), to make sure we parse the extended peer stats properly.
+> >This issue was exposed when more than one client is connected and
+> >extended peer stats for 10.4 is enabled
 > 
-> A firmware bug could cause this, but I never saw this WARN hit.  Still seems like
-> a good sanity check to me, though...it would be quite hard to debug this sort of bug
-> if it actually did happen.
+> In general, maybe more of these stats should be kept in the driver instead
+> of the firmware?  The firmware is very tight on RAM already, and if
+> we can pass the needed info back to the host, it could gather arbitrary
+> amounts of stats as needed.
+>
 
-[shafi] yeah its good to have, in one of the case i saw a duplicate event
-(though its harmless )
+[shafi] agreed, probably thats why we are tracking u64 counters like rx_duration
+etc in host while the firmware variable will wrap aroud in sometime
 
-> 
-> >
-> >>
-> >>Signed-off-by: Ben Greear <greearb@candelatech.com>
-> >>---
-> >>  drivers/net/wireless/ath/ath10k/txrx.c | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >>diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-> >>index a779a4e..2edef8a 100644
-> >>--- a/drivers/net/wireless/ath/ath10k/txrx.c
-> >>+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-> >>@@ -309,6 +309,7 @@ void ath10k_peer_map_event(struct ath10k_htt *htt,
-> >>  	ath10k_warn(ar, /*ATH10K_DBG_HTT,*/ "htt peer map vdev %d peer %pM id %d\n",
-> >>  		   ev->vdev_id, ev->addr, ev->peer_id);
-> >>
-> >>+	WARN_ON(ar->peer_map[ev->peer_id] && (ar->peer_map[ev->peer_id] != peer));
-> >>  	ar->peer_map[ev->peer_id] = peer;
-> >>  	set_bit(ev->peer_id, peer->peer_ids);
-> >>  exit:
-> >>--
-> >>2.4.3
-> >
-> >regards,
-> >shafi
-> >
-> >>
-> >>
-> >>_______________________________________________
-> >>ath10k mailing list
-> >>ath10k@lists.infradead.org
-> >>http://lists.infradead.org/mailman/listinfo/ath10k
-> >
-> >_______________________________________________
-> >ath10k mailing list
-> >ath10k@lists.infradead.org
-> >http://lists.infradead.org/mailman/listinfo/ath10k
-> >
-> 
+regards,
+shafi
 > -- 
 > Ben Greear <greearb@candelatech.com>
 > Candela Technologies Inc  http://www.candelatech.com
 > 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
