@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b08q3-0001mp-1h
- for ath10k@lists.infradead.org; Tue, 10 May 2016 14:40:43 +0000
-Message-ID: <5731F2BF.90305@candelatech.com>
-Date: Tue, 10 May 2016 07:39:59 -0700
+ id 1b08ri-0001nc-Up
+ for ath10k@lists.infradead.org; Tue, 10 May 2016 14:42:28 +0000
+Message-ID: <5731F328.30803@candelatech.com>
+Date: Tue, 10 May 2016 07:41:44 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/5] ath10k: Ensure txrx-compl-task is stopped when
- cleaning htt-tx.
+Subject: Re: [PATCH v2 3/5] ath10k: Add WARN_ON if we over-write peer-map
+ pointer.
 References: <1459545132-11295-1-git-send-email-greearb@candelatech.com>
- <20160510064800.GC25626@atheros-ThinkPad-T61>
-In-Reply-To: <20160510064800.GC25626@atheros-ThinkPad-T61>
+ <1459545132-11295-3-git-send-email-greearb@candelatech.com>
+ <20160510071214.GD25626@atheros-ThinkPad-T61>
+In-Reply-To: <20160510071214.GD25626@atheros-ThinkPad-T61>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,43 +30,44 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 
 
-On 05/09/2016 11:48 PM, Mohammed Shafi Shajakhan wrote:
+On 05/10/2016 12:12 AM, Mohammed Shafi Shajakhan wrote:
 > Hi Ben,
 >
-> On Fri, Apr 01, 2016 at 02:12:08PM -0700, greearb@candelatech.com wrote:
+> On Fri, Apr 01, 2016 at 02:12:10PM -0700, greearb@candelatech.com wrote:
 >> From: Ben Greear <greearb@candelatech.com>
 >>
->> Otherwise, the txrx-compl-task may access some bad memory?
+>> Not sure this can happen, but seems like a reasonable sanity
+>> check.
 >
-> good to mention when this happens, will be helpful ifsome one recreates
-> the issue and matches your call trace
+> [shafi] possibly if the peer is removed and the bit is not cleared in the driver
+> ? when the new peer occupies the slot
 
-The backtraces were all over the place because the driver was writing to
-memory after it was freed, so I am not sure they are worth while.  I'm sure I posted
-some to the mailing lists around the time where I was working on this, but since
-I was fighting several different problems, hard to know exactly what was what.
+A firmware bug could cause this, but I never saw this WARN hit.  Still seems like
+a good sanity check to me, though...it would be quite hard to debug this sort of bug
+if it actually did happen.
 
 Thanks,
 Ben
 
+>
+>>
 >> Signed-off-by: Ben Greear <greearb@candelatech.com>
 >> ---
->>   drivers/net/wireless/ath/ath10k/htt_tx.c | 2 ++
->>   1 file changed, 2 insertions(+)
+>>   drivers/net/wireless/ath/ath10k/txrx.c | 1 +
+>>   1 file changed, 1 insertion(+)
 >>
->> diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
->> index 07b960e..58e88d3 100644
->> --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
->> +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
->> @@ -376,6 +376,8 @@ void ath10k_htt_tx_free(struct ath10k_htt *htt)
->>   {
->>   	int size;
+>> diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+>> index a779a4e..2edef8a 100644
+>> --- a/drivers/net/wireless/ath/ath10k/txrx.c
+>> +++ b/drivers/net/wireless/ath/ath10k/txrx.c
+>> @@ -309,6 +309,7 @@ void ath10k_peer_map_event(struct ath10k_htt *htt,
+>>   	ath10k_warn(ar, /*ATH10K_DBG_HTT,*/ "htt peer map vdev %d peer %pM id %d\n",
+>>   		   ev->vdev_id, ev->addr, ev->peer_id);
 >>
->> +	tasklet_kill(&htt->txrx_compl_task);
->> +
->>   	idr_for_each(&htt->pending_tx, ath10k_htt_tx_clean_up_pending, htt->ar);
->>   	idr_destroy(&htt->pending_tx);
->>
+>> +	WARN_ON(ar->peer_map[ev->peer_id] && (ar->peer_map[ev->peer_id] != peer));
+>>   	ar->peer_map[ev->peer_id] = peer;
+>>   	set_bit(ev->peer_id, peer->peer_ids);
+>>   exit:
 >> --
 >> 2.4.3
 >
