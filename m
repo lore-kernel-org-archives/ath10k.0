@@ -1,22 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from champagne.comp.nus.edu.sg ([137.132.80.90])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b0NqY-0003aB-Ly
- for ath10k@lists.infradead.org; Wed, 11 May 2016 06:42:16 +0000
-Received: from mail-ig0-f199.google.com ([209.85.213.199])
- by champagne.comp.nus.edu.sg (Exim) with esmtps (TLSv1:RC4-SHA:128)
- id 1b0Nq5-0000uQ-SK
- for ath10k@lists.infradead.org; Wed, 11 May 2016 14:41:46 +0800
-Received: by mail-ig0-f199.google.com with SMTP id kj7so67459659igb.3
- for <ath10k@lists.infradead.org>; Tue, 10 May 2016 23:41:45 -0700 (PDT)
+ id 1b0OL7-0000Pd-PR
+ for ath10k@lists.infradead.org; Wed, 11 May 2016 07:13:50 +0000
+From: "Thiagarajan, Vasanthakumar" <vthiagar@qti.qualcomm.com>
+Subject: Re: [PATCH 4/4] ath10k: Enable support for QCA9984
+Date: Wed, 11 May 2016 07:13:21 +0000
+Message-ID: <5732DB82.1020007@qti.qualcomm.com>
+References: <1461164356-9158-1-git-send-email-vthiagar@qti.qualcomm.com>
+ <1461164356-9158-5-git-send-email-vthiagar@qti.qualcomm.com>
+ <loom.20160509T113952-8@post.gmane.org>	<57306645.2060600@qti.qualcomm.com>
+ <CAHyQSvKPo2-Pc9PPVY-mHUK0TX93CzxnwMob125Aruqiem7J7Q@mail.gmail.com>
+ <878tzhg61o.fsf@kamboji.qca.qualcomm.com>
+ <CAHyQSvLpqRNmTL4Tvb7SDtKptzwejfbB7DeQC3NNMb=qqn06GA@mail.gmail.com>
+In-Reply-To: <CAHyQSvLpqRNmTL4Tvb7SDtKptzwejfbB7DeQC3NNMb=qqn06GA@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <BD5CF709D8BE8049A4B4C2ECB152E0A5@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <57320C1A.3040604@candelatech.com>
-References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
- <57320C1A.3040604@candelatech.com>
-From: Raj Joshi <rajjoshi@comp.nus.edu.sg>
-Date: Wed, 11 May 2016 14:41:04 +0800
-Message-ID: <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
-Subject: Re: Setting per-frame tx rate for frames injected in raw tx mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,149 +29,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org
+To: Archisman Maitra <archisman001@gmail.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Thanks Ben for the info. Sorry about my ignorance; but I do not know
-the link to your kernel tree. Could you kindly share?
+On Wednesday 11 May 2016 12:23 PM, Archisman Maitra wrote:
+> Hi,
+>
+> Thank you for providing me the binaries.
+>
+> I have started working on the mac80211 driver and have some questions:-
+>
+> a) I am working with OpenWRT framework, which uses mac80211 driver dated 1-10-2016. I have noticed that the
+> patch that you have provided, uses a different mac80211 driver. Would that be a problem?
+>
+> Ex:-
+> ------------------------------------------------------------------------------------------------
+>          .id = QCA9984_HW_1_0_DEV_VERSION,
+>          .dev_id = QCA9984_1_0_DEVICE_ID,
+>          .name = "qca9984/qca9994 hw1.0",
+>          .patch_load_addr = QCA9984_HW_1_0_PATCH_LOAD_ADDR,
+>          .uart_pin = 7,
+>          .otp_exe_param = 0x00000700,
+>          .continuous_frag_desc = true,
+>          .channel_counters_freq_hz = 150000,
+>          .max_probe_resp_desc_thres = 24,
+>          .hw_4addr_pad = ATH10K_HW_4ADDR_PAD_BEFORE,
+>          /*
+>          .tx_chain_mask = 0xf,
+>          .rx_chain_mask = 0xf,
+>          .max_spatial_stream = 4,
+>          .cal_data_len = 12064, */
+>          .fw = {
+>              .dir = QCA9984_HW_1_0_FW_DIR,
+>              .fw = QCA9984_HW_1_0_FW_FILE,
+> -------------------------------------------------------------------------------------------------
+>   Here, the commented out members are not present in my driver source code.
+>
+> b)  "ath10k_pci 0001:01:00.0: unable to read from the device" This is encountered at runtime. Upon
+> investigating, it is seen that  ath10k_bmi_execute(ar, address, BMI_PARAM_GET_EEPROM_BOARD_ID, &result)
+> returns 0 in drivers/net/wireless/ath/ath10k/core.c when called from ath10k_core_get_board_id_from_otp
+>
+> On browsing the source of the error I have found the control to go from ath10k_bmi_execute ---->
+>   ath10k_pci_hif_exchange_bmi_msg in drivers/net/wireless/ath/ath10k/pci.c ------>  ath10k_pci_bmi_wait in
+> drivers/net/wireless/ath/ath10k/pci.c where it returns  -ETIMEDOUT
 
-Let me explain why I need this functionality in first place - I want
-to use a custom rate-adaptation (RA) scheme instead of the default.
-With ath9k, it was straight-ward to implement a custom RA scheme in
-user-space. My user-space daemon gets the packets from an IP
-interface, adds the radiotap header with rate information as per my
-custom RA scheme and then injects the frame into a monitor interface.
-By disabling minstrel-ht in mac80211, I ensure that the rate set in
-the radiotap header is what remains the final tx rate at which the
-frame is transmitted.
+Can you please move to the latest ath10k src (ath.git) and enable 0x420 (bmi and boot related debug) ath10k 
+debug mask?.
 
-Now things seem drastically different if I were to do the same with
-ath10k. Thus I would like to further know:
-1) Where exactly in the ath10k packet/frame flow does the RA algorithm
-come in picture? Where is it implemented and how can I tweak it to my
-liking? Also is there any documentation about the default RA scheme?
-2) Or if #1 is not possible, then what changes would be required to
-override the default RA on a per-packet basis at any easily accessible
-level - mac80211 or user-space. From what I discern from the
-description of this commit
-(https://github.com/kvalo/ath/commit/646e76bb5daf4ca38438c69ffb72cccb605f3466),
-it seems that with a different driver-firmware-chipset combination,
-such a thing is possible to do.
-
-Any help is deeply appreciated.
-
-Thanks,
-Raj Joshi
+You can enable the debug through modparam, insmod ath10k_core debug_mask=0x420.
 
 
-On Wed, May 11, 2016 at 12:28 AM, Ben Greear <greearb@candelatech.com> wrote:
-> On 05/09/2016 11:11 PM, Raj Joshi wrote:
->>
->> Hi all,
->>
->> For a research project, I need to inject frames in monitor mode and
->> have them sent out with rate settings as set in the radiotap header -
->> basically setting per-frame tx rate. I have tried doing so, but the
->> frame is transmitted at a basic rate with 802.11a instead of a VHT
->> rate as set in the radiotap. Following are the setup and methodology
->> details. Sorry about email length; but wanted to provide as much
->> relevant information.
->>
->> ---------------
->> Setup Info
->> ---------------
->> * x86-64 board running Ubuntu 12.04.5 LTS
->> * Chipset: QCA9880 hw2.0 with 3 x 3 antennas
->> * Kernel: 3.8.0-29-generic x86_64
->> * Firmware: Initially QCA's 10.2.4.70.42-2 obtained via
->> https://github.com/kvalo/ath10k-firmware. After experiencing crashes,
->> later changed to one from CT (10.2.4.70-31-ct-xtW-003-3b0444c) | Both
->> the firmwares support raw-mode.
->> * ath10k: https://github.com/kvalo/ath (snapshot of commit
->> 7de1931eec121045e4e35d0b519ce8bad9b10b51 | Wed Mar 23 14:27:35 2016
->> +0200)
->>   => backport generated using backports.git
->> (https://git.kernel.org/cgit/linux/kernel/git/backports/backports.git)
->> backports-20160122-0-ga91a3e6. Backporting was not clean; had to fix a
->> few compile errors due to missing files by manually copying those
->> files.
->>
->> -------------------
->> Methodology
->> -------------------
->> * Setup up a hostapd 802.11ac AP on one of the boards with 80 MHz
->> channel width and correctly specified center frequencies.
->> * Setup monitor mode on another board for sniffing traffic on the same
->> 80 MHz channel width.
->> * Connect an 802.11ac capable laptop (Windows/Ubuntu) and exchange
->> data frames with the AP | Capture them on the sniffer board (with all
->> the VHT info in radiotap) so that they could be used as reference to
->> construct injection frame.
->> * Now shutdown the AP and change the interface on the AP board to
->> monitor mode. Re-load ath10k_core with rawmode=1 and then ath10k_pci
->> as well. Inject one of the captured frame with radiotap VHT rate info
->> into the monitor interface and use the sniffer to check if it was
->> transmitted.
->> * The firmware (QCA 10.2.4.70.42-2) crashed in this case => couldn't
->> understand the firmware crash dump. Changed the firmware to CT
->> 10.2.4.70-31-ct-xtW-003-3b0444c.
->> * Now the frame is transmitted and detected by the sniffer. However,
->> the radio information via radiotap shows that it was sent with a basic
->> rate of 802.11a.
->> * Tried for both encrypted (WPA2) and non-encrypted frames. Result is the
->> same.
->>
->> --------------------------------
->> Other Considerations
->> --------------------------------
->> * The raw tx patch: As suggested on the CT firmware page, I looked
->> into the so called "out-of-tree" raw tx patch
->> (http://comments.gmane.org/gmane.linux.drivers.ath10k.devel/246) and
->> tried to reconcile it with the current ath10k source. Apparently other
->> than changes to cmd_tx.len,  the suggested changes in the patch are
->> either already in place by use of 'txmode' variable or they are no
->> more relevant with the new source code. For my non-encrypted frame, I
->> got my custom ASCII string inside the frame correctly transmitted and
->> so I 'believe' the changes to cmd_tx.len are no more required due to
->> correct msdu->len. Thus, it seems that this patch is no more necessary
->> and that this patch has nothing to do with correct tx rate setting.
->> * QoS versus non-QoS: Both of my sample injection frames are QoS data
->> with radiotap on top of it. I couldn't find a way to disable QoS and
->> it seems that it is not required either as there is no length issue
->> anymore as was discussed in the raw tx patch discussion; my frame is
->> transmitted whole and correct.
->> * VHT Parsing in Radiotap: I have double checked that my
->> net/mac80211/tx.c has the relevant updated code wrt parsing of VHT
->> rate information
->>
->> (https://github.com/kvalo/ath/commit/646e76bb5daf4ca38438c69ffb72cccb605f3466)
->> * Disabling A-MSDU: I didn't have to do this as I could resolve my
->> firmware crash by switching to the CT firmware.
->> * Using the ath10k master development branch: I also tried backporting
->> master of https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git,
->> but compilation of backported code failed due to lack of some methods
->> such as nla_put_net64, nla_put_be64, etc. in include/net/netlink.h of
->> my stock kernel headers (I believe). So I am not sure if things have
->> changed since the Mar 23 2016 snapshot of ath10k github repo and now
->> that rate is correctly set for VHT raw tx injection.
->
->
-> There is no way to specify the TX rate for individual frames with
-> CT firmware, nor with any other firmware that I am aware of.
->
-> This is probably something I could fix, but it would be a fair bit of
-> work, and would require even more changes to the ath10k driver, so
-> at best you would have to use my kernel tree...
->
->
-> Thanks,
-> Ben
->
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
+Vasanth
 
 _______________________________________________
 ath10k mailing list
