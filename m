@@ -1,22 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b0OL7-0000Pd-PR
- for ath10k@lists.infradead.org; Wed, 11 May 2016 07:13:50 +0000
-From: "Thiagarajan, Vasanthakumar" <vthiagar@qti.qualcomm.com>
-Subject: Re: [PATCH 4/4] ath10k: Enable support for QCA9984
-Date: Wed, 11 May 2016 07:13:21 +0000
-Message-ID: <5732DB82.1020007@qti.qualcomm.com>
-References: <1461164356-9158-1-git-send-email-vthiagar@qti.qualcomm.com>
- <1461164356-9158-5-git-send-email-vthiagar@qti.qualcomm.com>
- <loom.20160509T113952-8@post.gmane.org>	<57306645.2060600@qti.qualcomm.com>
- <CAHyQSvKPo2-Pc9PPVY-mHUK0TX93CzxnwMob125Aruqiem7J7Q@mail.gmail.com>
- <878tzhg61o.fsf@kamboji.qca.qualcomm.com>
- <CAHyQSvLpqRNmTL4Tvb7SDtKptzwejfbB7DeQC3NNMb=qqn06GA@mail.gmail.com>
-In-Reply-To: <CAHyQSvLpqRNmTL4Tvb7SDtKptzwejfbB7DeQC3NNMb=qqn06GA@mail.gmail.com>
-Content-Language: en-US
-Content-ID: <BD5CF709D8BE8049A4B4C2ECB152E0A5@qualcomm.com>
+ id 1b0RK2-00008p-9N
+ for ath10k@lists.infradead.org; Wed, 11 May 2016 10:24:55 +0000
+Received: by mail-wm0-x230.google.com with SMTP id n129so213185938wmn.1
+ for <ath10k@lists.infradead.org>; Wed, 11 May 2016 03:24:28 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1462835475-11079-14-git-send-email-greearb@candelatech.com>
+References: <1462835475-11079-1-git-send-email-greearb@candelatech.com>
+ <1462835475-11079-14-git-send-email-greearb@candelatech.com>
+Date: Wed, 11 May 2016 12:24:27 +0200
+Message-ID: <CA+BoTQmg8p6AtcZ9Q79kBVUoXw7Ge3NHpYuE9XptU+eNhP-XOA@mail.gmail.com>
+Subject: Re: [PATCH 13/21] ath10k: Document cycle count related counters.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +21,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Archisman Maitra <archisman001@gmail.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Wednesday 11 May 2016 12:23 PM, Archisman Maitra wrote:
-> Hi,
->
-> Thank you for providing me the binaries.
->
-> I have started working on the mac80211 driver and have some questions:-
->
-> a) I am working with OpenWRT framework, which uses mac80211 driver dated 1-10-2016. I have noticed that the
-> patch that you have provided, uses a different mac80211 driver. Would that be a problem?
->
-> Ex:-
-> ------------------------------------------------------------------------------------------------
->          .id = QCA9984_HW_1_0_DEV_VERSION,
->          .dev_id = QCA9984_1_0_DEVICE_ID,
->          .name = "qca9984/qca9994 hw1.0",
->          .patch_load_addr = QCA9984_HW_1_0_PATCH_LOAD_ADDR,
->          .uart_pin = 7,
->          .otp_exe_param = 0x00000700,
->          .continuous_frag_desc = true,
->          .channel_counters_freq_hz = 150000,
->          .max_probe_resp_desc_thres = 24,
->          .hw_4addr_pad = ATH10K_HW_4ADDR_PAD_BEFORE,
->          /*
->          .tx_chain_mask = 0xf,
->          .rx_chain_mask = 0xf,
->          .max_spatial_stream = 4,
->          .cal_data_len = 12064, */
->          .fw = {
->              .dir = QCA9984_HW_1_0_FW_DIR,
->              .fw = QCA9984_HW_1_0_FW_FILE,
-> -------------------------------------------------------------------------------------------------
->   Here, the commented out members are not present in my driver source code.
->
-> b)  "ath10k_pci 0001:01:00.0: unable to read from the device" This is encountered at runtime. Upon
-> investigating, it is seen that  ath10k_bmi_execute(ar, address, BMI_PARAM_GET_EEPROM_BOARD_ID, &result)
-> returns 0 in drivers/net/wireless/ath/ath10k/core.c when called from ath10k_core_get_board_id_from_otp
->
-> On browsing the source of the error I have found the control to go from ath10k_bmi_execute ---->
->   ath10k_pci_hif_exchange_bmi_msg in drivers/net/wireless/ath/ath10k/pci.c ------>  ath10k_pci_bmi_wait in
-> drivers/net/wireless/ath/ath10k/pci.c where it returns  -ETIMEDOUT
-
-Can you please move to the latest ath10k src (ath.git) and enable 0x420 (bmi and boot related debug) ath10k 
-debug mask?.
-
-You can enable the debug through modparam, insmod ath10k_core debug_mask=0x420.
-
-
-Vasanth
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTAgTWF5IDIwMTYgYXQgMDE6MTEsICA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdyb3Rl
+Ogo+IEZyb206IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+Cj4gVGhleSBh
+cmUgbm90IG5lY2Vzc2FyaWx5IG5hbWVkIGluIGFuIGludHVpdGl2ZSBtYW5uZXIsCj4gc28gYXQg
+bGVhc3QgYWRkIHNvbWUgY29tbWVudHMgdG8gaGVscCB0aGUgbmV4dCBwZXJzb24uCj4KPiBTaWdu
+ZWQtb2ZmLWJ5OiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPiAtLS0KPiAg
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmggfCA4ICsrKystLS0tCj4gIDEg
+ZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmggYi9kcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaAo+IGluZGV4IGU3YzIyOGEuLmM0ZjY0OWYgMTAw
+NjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmgKPiArKysg
+Yi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaAo+IEBAIC0xODksMTAgKzE4
+OSwxMCBAQCBzdHJ1Y3QgYXRoMTBrX2Z3X3N0YXRzX3BkZXYgewo+Cj4gICAgICAgICAvKiBQREVW
+IHN0YXRzICovCj4gICAgICAgICBzMzIgY2hfbm9pc2VfZmxvb3I7Cj4gLSAgICAgICB1MzIgdHhf
+ZnJhbWVfY291bnQ7Cj4gLSAgICAgICB1MzIgcnhfZnJhbWVfY291bnQ7Cj4gLSAgICAgICB1MzIg
+cnhfY2xlYXJfY291bnQ7Cj4gLSAgICAgICB1MzIgY3ljbGVfY291bnQ7Cj4gKyAgICAgICB1MzIg
+dHhfZnJhbWVfY291bnQ7IC8qIGN5Y2xlcyBzcGVudCB0cmFuc21pdHRpbmcgZnJhbWVzICovCj4g
+KyAgICAgICB1MzIgcnhfZnJhbWVfY291bnQ7IC8qIGN5Y2xlcyBzcGVudCByZWNlaXZpbmcgZnJh
+bWVzICovCj4gKyAgICAgICB1MzIgcnhfY2xlYXJfY291bnQ7IC8qIFRvdGFsIGNoYW5uZWwgYnVz
+eSB0aW1lLCBldmlkZW50bHkgKi8KPiArICAgICAgIHUzMiBjeWNsZV9jb3VudDsgLyogVG90YWwg
+b24tY2hhbm5lbCB0aW1lICovCgpIbW0sIHRoZXJlIGFyZSBhbHNvIG90aGVyIGluc3RhbmNlcyBv
+ZiB0aGVzZSB2YXJzIGluIHdtaS5oLiBBbHRob3VnaApyZWR1bmRhbnQgbWF5YmUgaXQncyB3b3J0
+aCB0byBjb21tZW50IHRoZW0gYXMgd2VsbCAob3IgZmlyc3QgYW5kCmZvcmVtb3N0IHRoZXkgc2hv
+dWxkIGJlIHRoZSBvbmVzIHRoYXQgbmVlZCBhIGNvbW1lbnQgYXMgdGhleSBhcmUgdGhlCiJzb3Vy
+Y2UiKS4gSnVzdCBhbiBpZGVhLgoKKG9oLCBhbmQgbXkgc2lsbHkgT0NEIGlzIGlycml0YXRlZCBh
+dCB0aGUgYmlnL3NtYWxsIGZpcnN0IGxldHRlcnMgaW4KdGhlIGNvbW1lbnRzIG5vdCBiZWluZyBj
+b25zaXN0ZW50KQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
+cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
