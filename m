@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b0YUv-0005q4-4o
- for ath10k@lists.infradead.org; Wed, 11 May 2016 18:04:37 +0000
-From: greearb@candelatech.com
-Subject: [PATCH v2 08/21] ath10k: make firmware text debug messages more
- verbose.
-Date: Wed, 11 May 2016 10:02:20 -0700
-Message-Id: <1462986153-16318-9-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
-References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b0aCw-0005Jq-Fc
+ for ath10k@lists.infradead.org; Wed, 11 May 2016 19:54:11 +0000
+MIME-Version: 1.0
+Subject: Re: [1/2] ath10k: suppress warnings when getting wmi
+ peer_rate_code_listevent
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1462536423-9903-1-git-send-email-vthiagar@qti.qualcomm.com>
+Message-ID: <542b7f110f0b4c74932b60e9276d8a6b@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 11 May 2016 21:53:43 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,40 +18,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
+To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Ben Greear <greearb@candelatech.com>
+Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> wrote:
+> In 10.4, fw sends WMI PEER_RATECODE_LIST_EVENTID after successful
+> peer_assoc cmd. As of now this event is not of much use and not
+> implemented. Change the debug level and messsage as appropriate
+> to suppress "Unknown eventid: 36898".
+> 
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 
-There are not many of these messages producted by the
-firmware, but they are generally fairly useful, so print
-them at info level.
+Thanks, 2 patches applied to ath.git:
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+36bd39bb0ae8 ath10k: suppress warnings when getting wmi peer_rate_code_list event
+ee9ca147c59c ath10k: Fix survey reporting with QCA4019
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 1758b4a..d9e4b77 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4050,7 +4050,7 @@ void ath10k_wmi_event_debug_print(struct ath10k *ar, struct sk_buff *skb)
- 	/* the last byte is always reserved for the null character */
- 	buf[i] = '\0';
- 
--	ath10k_dbg(ar, ATH10K_DBG_WMI_PRINT, "wmi print '%s'\n", buf);
-+	ath10k_info(ar, "wmi print '%s'\n", buf);
- }
- 
- void ath10k_wmi_event_pdev_qvit(struct ath10k *ar, struct sk_buff *skb)
 -- 
-2.4.3
+Sent by pwcli
+https://patchwork.kernel.org/patch/9032551/
 
 
 _______________________________________________
