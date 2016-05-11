@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b0Xk5-0005bw-Co
- for ath10k@lists.infradead.org; Wed, 11 May 2016 17:16:13 +0000
+ id 1b0XlQ-0005cr-Iu
+ for ath10k@lists.infradead.org; Wed, 11 May 2016 17:17:37 +0000
 From: greearb@candelatech.com
-Subject: [PATCH v2 20/21] ath10k: read firmware crash over ioread32 if CE
- fails.
-Date: Wed, 11 May 2016 10:02:32 -0700
-Message-Id: <1462986153-16318-21-git-send-email-greearb@candelatech.com>
+Subject: [PATCH v2 06/21] ath10k: save firmware stacks upon firmware crash
+Date: Wed, 11 May 2016 10:02:18 -0700
+Message-Id: <1462986153-16318-7-git-send-email-greearb@candelatech.com>
 In-Reply-To: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
 References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -24,119 +23,208 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, Kalle Valo <kvalo@qca.qualcomm.com>
 
 From: Ben Greear <greearb@candelatech.com>
 
-This might work around problem where sometimes host cannot
-access firmware crash over normal CE transport.
-
-Requires CT firmware with matching logic in it's assert
-handler (-13 and higher releases).
+Should help debug firmware crashes, and give users a way
+to provide some useful debug reports to firmware developers.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/hw.h  |  5 ++++
- drivers/net/wireless/ath/ath10k/pci.c | 56 ++++++++++++++++++++++++++++++++++-
- 2 files changed, 60 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.h  |  4 +++
+ drivers/net/wireless/ath/ath10k/debug.c | 29 +++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/hw.h    |  2 ++
+ drivers/net/wireless/ath/ath10k/pci.c   | 52 +++++++++++++++++++++++++++++++++
+ 4 files changed, 86 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 7f9f460..644d077 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -427,6 +427,10 @@ struct ath10k_fw_crash_data {
+ 	uuid_le uuid;
+ 	struct timespec timestamp;
+ 	__le32 registers[REG_DUMP_COUNT_QCA988X];
++	__le32 stack_buf[ATH10K_FW_STACK_SIZE / sizeof(__le32)];
++	__le32 exc_stack_buf[ATH10K_FW_STACK_SIZE / sizeof(__le32)];
++	__le32 stack_addr;
++	__le32 exc_stack_addr;
+ };
+ 
+ struct ath10k_debug {
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 1739687..ec6db04 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -36,10 +36,15 @@
+  * enum ath10k_fw_crash_dump_type - types of data in the dump file
+  * @ATH10K_FW_CRASH_DUMP_REGDUMP: Register crash dump in binary format
+  * @ATH10K_FW_ERROR_DUMP_DBGLOG:  Recent firmware debug log entries
++ * @ATH10K_FW_CRASH_DUMP_STACK:   Stack memory contents.
++ * @ATH10K_FW_CRASH_DUMP_EXC_STACK:   Exception stack memory contents.
+  */
+ enum ath10k_fw_crash_dump_type {
+ 	ATH10K_FW_CRASH_DUMP_REGISTERS = 0,
+ 	ATH10K_FW_CRASH_DUMP_DBGLOG = 1,
++	ATH10K_FW_CRASH_DUMP_STACK = 2,
++	ATH10K_FW_CRASH_DUMP_EXC_STACK = 3,
++
+ 	ATH10K_FW_CRASH_DUMP_MAX,
+ };
+ 
+@@ -103,8 +108,11 @@ struct ath10k_dump_file_data {
+ 	/* VERMAGIC_STRING */
+ 	char kernel_ver[64];
+ 
++	__le32 stack_addr;
++	__le32 exc_stack_addr;
++
+ 	/* room for growth w/out changing binary format */
+-	u8 unused[128];
++	u8 unused[120];
+ 
+ 	/* struct ath10k_tlv_dump_data + more */
+ 	u8 data[0];
+@@ -792,6 +800,8 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
+ 	len = hdr_len;
+ 	len += sizeof(*dump_tlv) + sizeof(crash_data->registers);
+ 	len += sizeof(*dump_tlv) + sizeof(ar->debug.dbglog_entry_data);
++	len += sizeof(*dump_tlv) + sizeof(crash_data->stack_buf);
++	len += sizeof(*dump_tlv) + sizeof(crash_data->exc_stack_buf);
+ 
+ 	sofar += hdr_len;
+ 
+@@ -831,6 +841,8 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
+ 	dump_data->ht_cap_info = cpu_to_le32(ar->ht_cap_info);
+ 	dump_data->vht_cap_info = cpu_to_le32(ar->vht_cap_info);
+ 	dump_data->num_rf_chains = cpu_to_le32(ar->num_rf_chains);
++	dump_data->stack_addr = cpu_to_le32(crash_data->stack_addr);
++	dump_data->exc_stack_addr = cpu_to_le32(crash_data->exc_stack_addr);
+ 
+ 	strlcpy(dump_data->fw_ver, ar->hw->wiphy->fw_version,
+ 		sizeof(dump_data->fw_ver));
+@@ -863,7 +875,22 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
+ 		cpu_to_le32(ar->debug.dbglog_entry_data.head_idx);
+ 	dbglog_storage->tail_idx =
+ 		cpu_to_le32(ar->debug.dbglog_entry_data.tail_idx);
++	sofar += sizeof(*dump_tlv) + tmp;
+ 
++	/* Gather firmware stack dump */
++	tmp = sizeof(crash_data->stack_buf);
++	dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
++	dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_STACK);
++	dump_tlv->tlv_len = cpu_to_le32(tmp);
++	memcpy(dump_tlv->tlv_data, crash_data->stack_buf, tmp);
++	sofar += sizeof(*dump_tlv) + tmp;
++
++	/* Gather firmware exception stack dump */
++	tmp = sizeof(crash_data->exc_stack_buf);
++	dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
++	dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_EXC_STACK);
++	dump_tlv->tlv_len = cpu_to_le32(tmp);
++	memcpy(dump_tlv->tlv_data, crash_data->exc_stack_buf, tmp);
+ 	sofar += sizeof(*dump_tlv) + tmp;
+ 
+ 	ar->debug.fw_crash_data->crashed_since_read = false;
 diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index d3f37d5..5ff1fac 100644
+index 5bbef4b..e86ebf0 100644
 --- a/drivers/net/wireless/ath/ath10k/hw.h
 +++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -603,6 +603,7 @@ enum ath10k_hw_4addr_pad {
- #define PCIE_INTR_ENABLE_ADDRESS		0x0008
- #define PCIE_INTR_CAUSE_ADDRESS			0x000c
- #define PCIE_INTR_CLR_ADDRESS			ar->regs->pcie_intr_clr_address
-+#define SCRATCH_2_ADDRESS                       0x002c
- #define SCRATCH_3_ADDRESS			ar->regs->scratch_3_address
- #define CPU_INTR_ADDRESS			0x0010
+@@ -122,6 +122,8 @@ enum qca9377_chip_id_rev {
  
-@@ -614,6 +615,10 @@ enum ath10k_hw_4addr_pad {
- #define FW_IND_INITIALIZED			2
- #define FW_IND_HOST_READY			0x80000000
+ #define REG_DUMP_COUNT_QCA988X 60
  
-+/* CT firmware only */
-+#define FW_IND_SCRATCH2_WR      (1<<14) /* scratch2 has data written to it */
-+#define FW_IND_SCRATCH2_RD      (1<<15) /* scratch2 has been read (by host) */
++#define ATH10K_FW_STACK_SIZE 4096
 +
- /* HOST_REG interrupt from firmware */
- #define PCIE_INTR_FIRMWARE_MASK			ar->regs->pcie_intr_fw_mask
- #define PCIE_INTR_CE_MASK_ALL			ar->regs->pcie_intr_ce_mask_all
+ struct ath10k_fw_ie {
+ 	__le32 id;
+ 	__le32 len;
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 2adc459..330c150 100644
+index 16e32d0..62dd167 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1507,6 +1507,54 @@ static void ath10k_pci_dump_exc_stack(struct ath10k *ar,
- 				     hi_err_stack);
+@@ -985,6 +985,22 @@ static int ath10k_pci_diag_read32(struct ath10k *ar, u32 address, u32 *value)
+ 	return ret;
  }
  
-+/* Only CT firmware can do this.  Attempt to read crash dump over pci
-+ * registers since normal CE transport is not working.
-+ */
-+static int ath10k_ct_fw_crash_regs_harder(struct ath10k *ar,
-+					  __le32 *reg_dump_values,
-+					  int len)
++static int __ath10k_pci_diag_read_hi_addr(struct ath10k *ar, __le32 *dest,
++					  u32 src)
 +{
-+	u32 val;
-+	int i;
-+	int q;
-+#define MAX_SPIN_TRIES 1000000
++	u32 host_addr;
++	int ret;
 +
-+	if (!test_bit(ATH10K_FW_FEATURE_WMI_10X_CT,
-+		      ar->running_fw->fw_file.fw_features)) {
-+		return -EINVAL;
++	host_addr = host_interest_item_address(src);
++
++	ret = ath10k_pci_diag_read32(ar, host_addr, dest);
++	if (ret != 0) {
++		ath10k_warn(ar, "failed to get memcpy hi address for firmware address %d: %d\n",
++			    src, ret);
 +	}
++	return ret;
++}
 +
-+	for (i = 0; i<MAX_SPIN_TRIES; i++) {
-+		val = ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS);
-+		if (val & FW_IND_SCRATCH2_WR)
-+			goto pingpong;
-+	}
-+	return -EBUSY;
+ static int __ath10k_pci_diag_read_hi(struct ath10k *ar, void *dest,
+ 				     u32 src, u32 len)
+ {
+@@ -1013,6 +1029,9 @@ static int __ath10k_pci_diag_read_hi(struct ath10k *ar, void *dest,
+ #define ath10k_pci_diag_read_hi(ar, dest, src, len)		\
+ 	__ath10k_pci_diag_read_hi(ar, dest, HI_ITEM(src), len)
+ 
++#define ath10k_pci_diag_read_hi_addr(ar, dest, src)		\
++	__ath10k_pci_diag_read_hi_addr(ar, dest, HI_ITEM(src))
 +
-+pingpong:
-+	ath10k_warn(ar, "Trying to read crash dump over pingpong registers.\n");
-+	/* Firmware is trying to send us info it seems. */
-+	for (q = 0; q<len; q++) {
-+		reg_dump_values[q] = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS + SCRATCH_2_ADDRESS);
-+		val = ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS);
-+		val |= FW_IND_SCRATCH2_RD; /* tell firmware we read it */
-+		val &= ~FW_IND_SCRATCH2_WR; /* clear firmware's write flag */
-+		ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS, val);
+ int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 			      const void *data, int nbytes)
+ {
+@@ -1405,6 +1424,37 @@ u16 ath10k_pci_hif_get_free_queue_number(struct ath10k *ar, u8 pipe)
+ 	return ath10k_ce_num_free_src_entries(ar_pci->pipe_info[pipe].ce_hdl);
+ }
+ 
++/* Save the main firmware stack */
++static void ath10k_pci_dump_stack(struct ath10k *ar,
++				  struct ath10k_fw_crash_data *crash_data)
++{
++	if (!crash_data)
++		return;
 +
-+		for (i = 0; i<MAX_SPIN_TRIES; i++) {
-+			val = ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS);
-+			if (val & FW_IND_SCRATCH2_WR)
-+				break;
-+		}
-+		if (!(val & FW_IND_SCRATCH2_WR)) {
-+			ath10k_err(ar, "failed to read reg %i via pingpong method.\n",
-+				   q);
-+			return 0; // partial read is better than nothing I guess
-+		}
-+	}
-+	return 0;
++	lockdep_assert_held(&ar->data_lock);
++	BUILD_BUG_ON(ATH10K_FW_STACK_SIZE % 4);
++
++	ath10k_pci_diag_read_hi(ar, crash_data->stack_buf,
++				hi_stack, ATH10K_FW_STACK_SIZE);
++	ath10k_pci_diag_read_hi_addr(ar, &crash_data->stack_addr, hi_stack);
++}
++
++/* Save the exception firmware stack */
++static void ath10k_pci_dump_exc_stack(struct ath10k *ar,
++				      struct ath10k_fw_crash_data *crash_data)
++{
++	if (!crash_data)
++		return;
++
++	lockdep_assert_held(&ar->data_lock);
++
++	ath10k_pci_diag_read_hi(ar, crash_data->exc_stack_buf,
++				hi_err_stack, ATH10K_FW_STACK_SIZE);
++
++	ath10k_pci_diag_read_hi_addr(ar, &crash_data->exc_stack_addr,
++				     hi_err_stack);
 +}
 +
  static void ath10k_pci_dump_registers(struct ath10k *ar,
  				      struct ath10k_fw_crash_data *crash_data)
  {
-@@ -1520,7 +1568,13 @@ static void ath10k_pci_dump_registers(struct ath10k *ar,
- 				      REG_DUMP_COUNT_QCA988X * sizeof(__le32));
- 	if (ret) {
- 		ath10k_err(ar, "failed to read firmware dump area: %d\n", ret);
--		return;
-+
-+		/* Try to read this directly over registers...only works on new
-+		 * CT firmware.
-+		 */
-+		ret = ath10k_ct_fw_crash_regs_harder(ar, reg_dump_values, REG_DUMP_COUNT_QCA988X);
-+		if (ret)
-+			return;
- 	}
+@@ -1555,6 +1605,8 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
+ 	ath10k_print_driver_info(ar);
+ 	ath10k_pci_dump_registers(ar, crash_data);
+ 	ath10k_pci_dump_dbglog(ar);
++	ath10k_pci_dump_stack(ar, crash_data);
++	ath10k_pci_dump_exc_stack(ar, crash_data);
+ 	if (crash_data)
+ 		crash_data->crashed_since_read = true;
  
- 	BUILD_BUG_ON(REG_DUMP_COUNT_QCA988X % 4);
 -- 
 2.4.3
 
