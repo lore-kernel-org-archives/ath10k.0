@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b0XdC-0005Vp-Ig
- for ath10k@lists.infradead.org; Wed, 11 May 2016 17:09:06 +0000
+ id 1b0Xds-0005Wv-9E
+ for ath10k@lists.infradead.org; Wed, 11 May 2016 17:09:48 +0000
 From: greearb@candelatech.com
-Subject: [PATCH v2 00/21] ath10k patches, generic and CT firmware related.
-Date: Wed, 11 May 2016 10:02:12 -0700
-Message-Id: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH v2 12/21] ath10k: Support up to 64 vdevs.
+Date: Wed, 11 May 2016 10:02:24 -0700
+Message-Id: <1462986153-16318-13-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
+References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,69 +27,34 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-These are against wireless-testing from a few days ago.
+The (1 << x) - 1 trick won't work when you
+are trying to fill up all 64 bits, so add special
+case for that.
 
-Here are a bunch of ath10k patches.  First one is a crash
-fix.  Next few are at least somewhat useful for generic
-firmware, and more useful for CT firmware.  Much of it is related
-to better debugging of firmware crashes.  If this can go in, then
-I can much better handle random bug reports from prople using
-stock kernels and CT firmware.  With some small tweaks to how they
-package firmware, QCA could benefit as well.
+And, move the limits to the per-nic structure instead
+of per-driver to allow better dynamic use of the limits.
 
-The last bit is some initial support for CT firmware.  I figure it
-is a long-shot, but it would surely be nice to get this (and more!)
-upstream.  If nothing else, these can be a basis for potential
-inclusion in openwrt or similar.
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-These patches are not overly dependent on each other for the most
-part, so even if a few are not acceptable, maybe others can be
-applied upstream.
-
-Changes from v1:
-
-Replace debug-mask patch to be one that allows changing mask using
-debugfs.
-Add some comments to the CT firmware placeholder patch as requested.
-Add and tweak comments related to cycle counters.
-
-Ben Greear (21):
-  ath10k:  Fix crash related to printing features.
-  ath10k: fix typo in logging message
-  ath10k:  Allow changing ath10k debug mask at runtime.
-  ath10k: rate-limit packet tx errors
-  ath10k: save firmware debug log messages.
-  ath10k: save firmware stacks upon firmware crash
-  ath10k: save firmware RAM and ROM BSS sections on crash
-  ath10k: make firmware text debug messages more verbose.
-  ath10k: print fw debug messages in hex.
-  ath10k: support logging ath10k_info as KERN_DEBUG
-  ath10k: add fw-powerup-fail to ethtool stats.
-  ath10k: Support up to 64 vdevs.
-  ath10k: Document cycle count related counters.
-  ath10k: Add tx/rx bytes, cycle counters to ethtool stats.
-  ath10k: support CT firmware flag.
-  ath10k: Support 32+ stations.
-  ath10k: Enable detecting failure to install key in firmware (CT).
-  ath10k: Note limitation on beaconing vdevs.
-  ath10k: Enable adhoc mode for CT firmware.
-  ath10k: read firmware crash over ioread32 if CE fails.
-  ath10k: Read dbglog buffers over register ping-pong.
-
- drivers/net/wireless/ath/ath10k/core.c   |  70 ++++++-
- drivers/net/wireless/ath/ath10k/core.h   |  52 ++++-
- drivers/net/wireless/ath/ath10k/debug.c  | 325 ++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/debug.h  |  17 ++
- drivers/net/wireless/ath/ath10k/htt.h    |   7 +-
- drivers/net/wireless/ath/ath10k/htt_rx.c |  23 ++-
- drivers/net/wireless/ath/ath10k/htt_tx.c |  22 ++-
- drivers/net/wireless/ath/ath10k/hw.h     |  36 ++++
- drivers/net/wireless/ath/ath10k/mac.c    |  74 ++++++-
- drivers/net/wireless/ath/ath10k/pci.c    | 310 ++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wmi.c    |  43 +++-
- drivers/net/wireless/ath/ath10k/wmi.h    |  14 +-
- 12 files changed, 956 insertions(+), 37 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 3f1786c..fa71d57 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1819,7 +1819,10 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 	if (status)
+ 		goto err_hif_stop;
+ 
+-	ar->free_vdev_map = (1LL << ar->max_num_vdevs) - 1;
++	if (ar->max_num_vdevs >= 64)
++		ar->free_vdev_map = 0xFFFFFFFFFFFFFFFFLL;
++	else
++		ar->free_vdev_map = (1LL << ar->max_num_vdevs) - 1;
+ 
+ 	INIT_LIST_HEAD(&ar->arvifs);
+ 
 -- 
 2.4.3
 
