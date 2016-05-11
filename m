@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b0XdC-0005Vr-JQ
- for ath10k@lists.infradead.org; Wed, 11 May 2016 17:09:07 +0000
+ id 1b0XdC-0005Vp-Ig
+ for ath10k@lists.infradead.org; Wed, 11 May 2016 17:09:06 +0000
 From: greearb@candelatech.com
-Subject: [PATCH v2 09/21] ath10k: print fw debug messages in hex.
-Date: Wed, 11 May 2016 10:02:21 -0700
-Message-Id: <1462986153-16318-10-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
-References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH v2 00/21] ath10k patches, generic and CT firmware related.
+Date: Wed, 11 May 2016 10:02:12 -0700
+Message-Id: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,155 +25,69 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-This allows user-space tools to decode debug-log
-messages by parsing dmesg or /var/log/messages.
+These are against wireless-testing from a few days ago.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/debug.c | 72 +++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/debug.h |  5 +++
- drivers/net/wireless/ath/ath10k/pci.c   |  3 ++
- drivers/net/wireless/ath/ath10k/wmi.c   | 12 ++++++
- 4 files changed, 92 insertions(+)
+Here are a bunch of ath10k patches.  First one is a crash
+fix.  Next few are at least somewhat useful for generic
+firmware, and more useful for CT firmware.  Much of it is related
+to better debugging of firmware crashes.  If this can go in, then
+I can much better handle random bug reports from prople using
+stock kernels and CT firmware.  With some small tweaks to how they
+package firmware, QCA could benefit as well.
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index c7bff1e..97de9f37 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2717,3 +2717,75 @@ void ath10k_dbg_dump(struct ath10k *ar,
- EXPORT_SYMBOL(ath10k_dbg_dump);
- 
- #endif /* CONFIG_ATH10K_DEBUG */
-+
-+void ath10k_dbg_print_fw_dbg_buffer(struct ath10k *ar, __le32 *ibuf, int len,
-+				    const char* lvl)
-+{
-+	/* Print out raw hex, external tools can decode if
-+	 * they care.
-+	 * TODO:  Add ar identifier to messages.
-+	 */
-+	int q = 0;
-+
-+	dev_printk(lvl, ar->dev, "ath10k_pci ATH10K_DBG_BUFFER:\n");
-+	while (q < len) {
-+		if (q + 8 <= len) {
-+			printk("%sath10k: [%04d]: %08X %08X %08X %08X %08X %08X %08X %08X\n",
-+			       lvl, q,
-+			       ibuf[q], ibuf[q+1], ibuf[q+2], ibuf[q+3],
-+			       ibuf[q+4], ibuf[q+5], ibuf[q+6], ibuf[q+7]);
-+			q += 8;
-+		}
-+		else if (q + 7 <= len) {
-+			printk("%sath10k: [%04d]: %08X %08X %08X %08X %08X %08X %08X\n",
-+			       lvl, q,
-+			       ibuf[q], ibuf[q+1], ibuf[q+2], ibuf[q+3],
-+			       ibuf[q+4], ibuf[q+5], ibuf[q+6]);
-+			q += 7;
-+		}
-+		else if (q + 6 <= len) {
-+			printk("%sath10k: [%04d]: %08X %08X %08X %08X %08X %08X\n",
-+			       lvl, q,
-+			       ibuf[q], ibuf[q+1], ibuf[q+2], ibuf[q+3],
-+			       ibuf[q+4], ibuf[q+5]);
-+			q += 6;
-+		}
-+		else if (q + 5 <= len) {
-+			printk("%sath10k: [%04d]: %08X %08X %08X %08X %08X\n",
-+			       lvl, q,
-+			       ibuf[q], ibuf[q+1], ibuf[q+2], ibuf[q+3],
-+			       ibuf[q+4]);
-+			q += 5;
-+		}
-+		else if (q + 4 <= len) {
-+			printk("%sath10k: [%04d]: %08X %08X %08X %08X\n",
-+			       lvl, q,
-+			       ibuf[q], ibuf[q+1], ibuf[q+2], ibuf[q+3]);
-+			q += 4;
-+		}
-+		else if (q + 3 <= len) {
-+			printk("%sath10k: [%04d]: %08X %08X %08X\n",
-+			       lvl, q,
-+			       ibuf[q], ibuf[q+1], ibuf[q+2]);
-+			q += 3;
-+		}
-+		else if (q + 2 <= len) {
-+			printk("%sath10k: [%04d]: %08X %08X\n",
-+			       lvl, q,
-+			       ibuf[q], ibuf[q+1]);
-+			q += 2;
-+		}
-+		else if (q + 1 <= len) {
-+			printk("%sath10k: [%04d]: %08X\n",
-+			       lvl, q,
-+			       ibuf[q]);
-+			q += 1;
-+		}
-+		else {
-+			break;
-+		}
-+	}/* while */
-+
-+	dev_printk(lvl, ar->dev, "ATH10K_END\n");
-+}
-+EXPORT_SYMBOL(ath10k_dbg_print_fw_dbg_buffer);
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 3062948..641fce1 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -38,6 +38,7 @@ enum ath10k_debug_mask {
- 	ATH10K_DBG_WMI_PRINT	= 0x00002000,
- 	ATH10K_DBG_PCI_PS	= 0x00004000,
- 	ATH10K_DBG_AHB		= 0x00008000,
-+	ATH10K_DBG_FW		= 0x80000000,
- 	ATH10K_DBG_ANY		= 0xffffffff,
- };
- 
-@@ -192,4 +193,8 @@ static inline void ath10k_dbg_dump(struct ath10k *ar,
- {
- }
- #endif /* CONFIG_ATH10K_DEBUG */
-+
-+void ath10k_dbg_print_fw_dbg_buffer(struct ath10k *ar, __le32 *buffer,
-+				    int len, const char* lvl);
-+
- #endif /* _DEBUG_H_ */
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index e6315ec..dbf0db8 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1623,6 +1623,9 @@ static void ath10k_pci_dump_dbglog(struct ath10k *ar)
- 		WARN_ON(len & 0x3);
- 
- 		ath10k_dbg_save_fw_dbg_buffer(ar, (__le32 *)(buffer), len >> 2);
-+		ath10k_dbg_print_fw_dbg_buffer(ar, (__le32 *)(buffer),
-+					       dbuf.length/sizeof(__le32),
-+					       KERN_ERR);
- 		kfree(buffer);
- 
- next:
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index d9e4b77..6cfba41 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2510,6 +2510,18 @@ int ath10k_wmi_event_debug_mesg(struct ath10k *ar, struct sk_buff *skb)
- 				      (skb->len - 4)/sizeof(__le32));
- 	spin_unlock_bh(&ar->data_lock);
- 
-+	if (ev->dropped_count)
-+		ath10k_warn(ar, "WARNING: Dropped dbglog buffers: %d\n", __le32_to_cpu(ev->dropped_count));
-+
-+	if (ath10k_debug_mask & ATH10K_DBG_FW)
-+		ath10k_dbg_print_fw_dbg_buffer(ar, ev->messages,
-+					       (skb->len - 4)/sizeof(__le32),
-+					       KERN_INFO);
-+	else
-+		ath10k_dbg_print_fw_dbg_buffer(ar, ev->messages,
-+					       (skb->len - 4)/sizeof(__le32),
-+					       KERN_DEBUG);
-+
- 	return 0;
- }
- 
+The last bit is some initial support for CT firmware.  I figure it
+is a long-shot, but it would surely be nice to get this (and more!)
+upstream.  If nothing else, these can be a basis for potential
+inclusion in openwrt or similar.
+
+These patches are not overly dependent on each other for the most
+part, so even if a few are not acceptable, maybe others can be
+applied upstream.
+
+Changes from v1:
+
+Replace debug-mask patch to be one that allows changing mask using
+debugfs.
+Add some comments to the CT firmware placeholder patch as requested.
+Add and tweak comments related to cycle counters.
+
+Ben Greear (21):
+  ath10k:  Fix crash related to printing features.
+  ath10k: fix typo in logging message
+  ath10k:  Allow changing ath10k debug mask at runtime.
+  ath10k: rate-limit packet tx errors
+  ath10k: save firmware debug log messages.
+  ath10k: save firmware stacks upon firmware crash
+  ath10k: save firmware RAM and ROM BSS sections on crash
+  ath10k: make firmware text debug messages more verbose.
+  ath10k: print fw debug messages in hex.
+  ath10k: support logging ath10k_info as KERN_DEBUG
+  ath10k: add fw-powerup-fail to ethtool stats.
+  ath10k: Support up to 64 vdevs.
+  ath10k: Document cycle count related counters.
+  ath10k: Add tx/rx bytes, cycle counters to ethtool stats.
+  ath10k: support CT firmware flag.
+  ath10k: Support 32+ stations.
+  ath10k: Enable detecting failure to install key in firmware (CT).
+  ath10k: Note limitation on beaconing vdevs.
+  ath10k: Enable adhoc mode for CT firmware.
+  ath10k: read firmware crash over ioread32 if CE fails.
+  ath10k: Read dbglog buffers over register ping-pong.
+
+ drivers/net/wireless/ath/ath10k/core.c   |  70 ++++++-
+ drivers/net/wireless/ath/ath10k/core.h   |  52 ++++-
+ drivers/net/wireless/ath/ath10k/debug.c  | 325 ++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/debug.h  |  17 ++
+ drivers/net/wireless/ath/ath10k/htt.h    |   7 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  23 ++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  22 ++-
+ drivers/net/wireless/ath/ath10k/hw.h     |  36 ++++
+ drivers/net/wireless/ath/ath10k/mac.c    |  74 ++++++-
+ drivers/net/wireless/ath/ath10k/pci.c    | 310 ++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi.c    |  43 +++-
+ drivers/net/wireless/ath/ath10k/wmi.h    |  14 +-
+ 12 files changed, 956 insertions(+), 37 deletions(-)
+
 -- 
 2.4.3
 
