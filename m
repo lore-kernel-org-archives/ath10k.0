@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b1Dl2-00034X-TY
- for ath10k@lists.infradead.org; Fri, 13 May 2016 14:08:01 +0000
+ id 1b1Emy-0002zY-Pd
+ for ath10k@lists.infradead.org; Fri, 13 May 2016 15:14:05 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 5/5] ath10k: Fix deadlock when peer cannot be created.
-Date: Fri, 13 May 2016 14:07:29 +0000
-Message-ID: <87k2iyaw67.fsf@kamboji.qca.qualcomm.com>
-References: <1459545132-11295-1-git-send-email-greearb@candelatech.com>
- <1459545132-11295-5-git-send-email-greearb@candelatech.com>
- <5730C697.206@candelatech.com>
-In-Reply-To: <5730C697.206@candelatech.com> (Ben Greear's message of "Mon, 9
- May 2016 10:19:19 -0700")
+Subject: Re: [PATCH v3 RESEND 1/2] ath10k: Add support for
+ ath10k_sta_statistics support
+Date: Fri, 13 May 2016 15:13:36 +0000
+Message-ID: <87ziru9ejj.fsf@kamboji.qca.qualcomm.com>
+References: <1462204347-31012-1-git-send-email-mohammed@qca.qualcomm.com>
+In-Reply-To: <1462204347-31012-1-git-send-email-mohammed@qca.qualcomm.com>
+ (Mohammed Shafi Shajakhan's message of "Mon, 2 May 2016 21:22:27	+0530")
 Content-Language: en-US
-Content-ID: <D0430D35F5CAD74DA98D8FFBEAF81597@qualcomm.com>
+Content-ID: <11DDFC7EBABECA4DB806D965C6842368@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,21 +26,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> writes:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
 
-> Kalle:  I notice these 5 patches are not in the latest wireless-testing.
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 >
-> Are they not acceptable, or???
+> Enable support for 'drv_sta_statistics' callback.
+> Export rx_duration support if available to cfg80211/nl80211
+>
+> This can also act as a placeholder for any new per STA stats support
+>
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> ---
+> [v3] removed conditions for ath10k state checks based on Michal's suggestion
 
-These five are in deferred state:
+It's nicer to ping than resend a patch. This patchset has been in
+"Awaiting Upstream" state while waiting for the dependencies trickle
+down to ath-next.
 
-https://patchwork.kernel.org/patch/8727841/
+> Dependencies:
+>
+> 1. cfg80211/nl80211: Add support for NL80211_STA_INFO_RX_DURATION (under review)
 
-The deferred state means that I postponed them for some reason (for thse
-I just can't remember right now why) and will take a look at them later.
+739960f128e5 cfg80211/nl80211: Add support for NL80211_STA_INFO_RX_DURATION
+
+Currently in net-next, should come to ath-next soon.
 
 -- 
 Kalle Valo
