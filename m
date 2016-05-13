@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b1Ask-0007lI-JE
- for ath10k@lists.infradead.org; Fri, 13 May 2016 11:03:47 +0000
+ id 1b1Dl2-00034X-TY
+ for ath10k@lists.infradead.org; Fri, 13 May 2016 14:08:01 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: ath.git tree moved to kernel.org
-Date: Fri, 13 May 2016 11:03:21 +0000
-Message-ID: <87wpmyb4p4.fsf@kamboji.qca.qualcomm.com>
-References: <87io6uad4s.fsf@kamboji.qca.qualcomm.com>
- <87a8nxyhye.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87a8nxyhye.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Fri, 22 Jan 2016 13:25:13 +0200")
+Subject: Re: [PATCH v2 5/5] ath10k: Fix deadlock when peer cannot be created.
+Date: Fri, 13 May 2016 14:07:29 +0000
+Message-ID: <87k2iyaw67.fsf@kamboji.qca.qualcomm.com>
+References: <1459545132-11295-1-git-send-email-greearb@candelatech.com>
+ <1459545132-11295-5-git-send-email-greearb@candelatech.com>
+ <5730C697.206@candelatech.com>
+In-Reply-To: <5730C697.206@candelatech.com> (Ben Greear's message of "Mon, 9
+ May 2016 10:19:19 -0700")
 Content-Language: en-US
-Content-ID: <231D5AB11E7EF64DB58CCF7EC6991CC3@qualcomm.com>
+Content-ID: <D0430D35F5CAD74DA98D8FFBEAF81597@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,30 +27,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Ben Greear <greearb@candelatech.com> writes:
 
-> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+> Kalle:  I notice these 5 patches are not in the latest wireless-testing.
 >
->> I moved my ath.git tree to kernel.org:
->>
->> git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
->>
->> cgit:
->>
->> https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/
->>
->> I'll try to manually update the old location for a while but sooner than
->> later I remove the old tree. I strongly recommend to switching to the
->> new location asap.
->
-> In case anyone still uses the old github tree, switch to kernel.org NOW.
-> I'll delete the tree on github any day now.
+> Are they not acceptable, or???
 
-Heh, "any day now" was five months :) But the ath.git tree from
-github.com is now gone.
+These five are in deferred state:
+
+https://patchwork.kernel.org/patch/8727841/
+
+The deferred state means that I postponed them for some reason (for thse
+I just can't remember right now why) and will take a look at them later.
 
 -- 
 Kalle Valo
