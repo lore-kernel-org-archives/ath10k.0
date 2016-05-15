@@ -1,20 +1,36 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b1zqS-0006HY-CE
- for ath10k@lists.infradead.org; Sun, 15 May 2016 17:28:49 +0000
-Message-ID: <5738AE96.8040800@candelatech.com>
-Date: Sun, 15 May 2016 10:15:02 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b24ck-0006RL-8L
+ for ath10k@lists.infradead.org; Sun, 15 May 2016 22:35:00 +0000
+Received: by mail-oi0-x242.google.com with SMTP id d139so26143399oig.1
+ for <ath10k@lists.infradead.org>; Sun, 15 May 2016 15:34:37 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Setting per-frame tx rate for frames injected in raw tx mode
-References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
- <57320C1A.3040604@candelatech.com>
- <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
- <57335A43.4050902@candelatech.com>
- <CA+uUJGsVi0OiwK4D6n-ANXRm6ptiTdjvKNboXobwn4FA0YfsRQ@mail.gmail.com>
- <573892F5.40706@candelatech.com>
-In-Reply-To: <573892F5.40706@candelatech.com>
+In-Reply-To: <CAA93jw4XeMSxiTLHWZ2b=F9ni7wz9RpkWDdhTh99gn4Mf1aWjA@mail.gmail.com>
+References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
+ <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
+ <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
+ <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
+ <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
+ <1462136140.5535.219.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
+ <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
+ <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
+ <1462464776.13075.18.camel@edumazet-glaptop3.roam.corp.google.com>
+ <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
+ <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
+ <20160506114243.4eb4f95e@redhat.com>
+ <20160506144740.210901f5@redhat.com>
+ <CACiydbL3qZrvZ4a_OUXiN0dp7qdqOktaQdAUdfOpKkZ1OfEZbA@mail.gmail.com>
+ <CACiydb+A_vFNdp7tbw67Rnp+kHwt5GsLa+Su+pO8YmOZYp_KHg@mail.gmail.com>
+ <CAA93jw4XeMSxiTLHWZ2b=F9ni7wz9RpkWDdhTh99gn4Mf1aWjA@mail.gmail.com>
+Date: Mon, 16 May 2016 01:34:36 +0300
+Message-ID: <CACiydbLcYe=2VLb3W9i-i2FGALwxJK=oO8RcZWjmj3YPGObK3Q@mail.gmail.com>
+Subject: Re: OpenWRT wrong adjustment of fq_codel defaults (Was: [Codel]
+ fq_codel_drop vs a udp flood)
+From: Roman Yeryomin <leroi.lists@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,272 +39,212 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Raj Joshi <rajjoshi@comp.nus.edu.sg>
-Cc: ath10k@lists.infradead.org
+To: Dave Taht <dave.taht@gmail.com>
+Cc: make-wifi-fast@lists.bufferbloat.net, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, ath10k <ath10k@lists.infradead.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Michal Kazior <michal.kazior@tieto.com>, Jesper Dangaard Brouer <brouer@redhat.com>, Jonathan Morton <chromatix99@gmail.com>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, Felix Fietkau <nbd@nbd.name>
 
-I guess another thought comes to mind.
-
-Maybe I could extend the pkt header when sending the frame to the firmware
-so that it *already* has the rateset specified.  And rip out the rate-ctrl logic
-from the firmware entirely.  I'm not sure this would work for mu-mimo, but might
-work for QCA9880 chips...
-
-Thanks,
-Ben
-
-On 05/15/2016 08:17 AM, Ben Greear wrote:
->
->
-> On 05/14/2016 07:40 PM, Raj Joshi wrote:
->> Thanks for such useful info. Setting of multiple rate codes for
->> channel width, GI, NSS and MCS is what my RA implementation for ath9k
->> does. It also relies on advanced tx-status reporting to know the
->> retries etc. I am not planning to account for MU-MIMO for the
->> beginning. But it helps to know that it would require work and the
->> support is not ready yet.
->>
->> For my understanding, I would like to know ath10k vis-a-vis ath9k from
->> the perspective of rate-adaptation (RA):
->> 1) Scheme/Algorithm: ath9k uses Minstrel-HT and an overview (basis of
->> the algorithm) is available online [1]. What is the scheme/algorithm
->> being used by ath10k? Any overview/documentation available?
->
-> No documentation is available, and the information would be proprietary since
-> it is in the closed-source firmware.
->
->> 2) Where implemented?: Minstrel-HT is implemented in mac80211. Where
->> is ath10k's RA implemented?
->
-> In the firmware itself.
->
->> 3) Where in pipeline is the rate set?: With Minstrel-HT rate is set in
->> mac80211 before passing the frame onto ath9k. With ath10k, where the
->> rate is set? Can anyone point me to the line(s) of code where the rate
->> is it (of course if that part is open-source). As far as I have
->> investigated, the rate set in mac80211 is not honored by
->> ath10k/firmware/hardware.
->
-> I am not sure the driver has even implemented the API.  But,the basic idea
-> is that the driver could set the rateset for a peer (and do so fairly often
-> as things change), and the firmware will apply that rateset to frames
-> in it's transmit logic.
->
-> Can you tell me the minimum information you need for tx-status to support
-> your API?
->
-> Thanks,
-> Ben
->
->>
->> [1] https://wireless.wiki.kernel.org/en/developers/documentation/mac80211/ratecontrol/minstrel
->>
->> Thanks,
->> Raj Joshi
->>
->>
->> On Thu, May 12, 2016 at 12:13 AM, Ben Greear <greearb@candelatech.com> wrote:
->>> On 05/10/2016 11:41 PM, Raj Joshi wrote:
->>>>
->>>> Thanks Ben for the info. Sorry about my ignorance; but I do not know
->>>> the link to your kernel tree. Could you kindly share?
->>>
->>>
->>> Scroll down this page a bit:
->>>
->>> http://www.candelatech.com/ath10k-10.1.php
->>>
->>>>
->>>> Let me explain why I need this functionality in first place - I want
->>>> to use a custom rate-adaptation (RA) scheme instead of the default.
->>>> With ath9k, it was straight-ward to implement a custom RA scheme in
->>>> user-space. My user-space daemon gets the packets from an IP
->>>> interface, adds the radiotap header with rate information as per my
->>>> custom RA scheme and then injects the frame into a monitor interface.
->>>> By disabling minstrel-ht in mac80211, I ensure that the rate set in
->>>> the radiotap header is what remains the final tx rate at which the
->>>> frame is transmitted.
->>>>
->>>> Now things seem drastically different if I were to do the same with
->>>> ath10k. Thus I would like to further know:
->>>> 1) Where exactly in the ath10k packet/frame flow does the RA algorithm
->>>> come in picture? Where is it implemented and how can I tweak it to my
->>>> liking? Also is there any documentation about the default RA scheme?
->>>> 2) Or if #1 is not possible, then what changes would be required to
->>>> override the default RA on a per-packet basis at any easily accessible
->>>> level - mac80211 or user-space. From what I discern from the
->>>> description of this commit
->>>>
->>>> (https://github.com/kvalo/ath/commit/646e76bb5daf4ca38438c69ffb72cccb605f3466),
->>>> it seems that with a different driver-firmware-chipset combination,
->>>> such a thing is possible to do.
->>>>
->>>> Any help is deeply appreciated.
->>>
->>>
->>> For per-packet rate-ctrl, you would need to be able to specify multiple
->>> rate codes, including rate for 80Mhz, 40Mhz, 20Mhz (and 160Mhz for newer
->>> chips, probably).  For mu-mimo, you need to also specify rates based on
->>> the NSS for a peer as well.
->>>
->>> You may also need to specify fall-back codes in case of retransmits.
->>>
->>> The firmware has at least partial support for configuring the ratesets
->>> on a per-peer basis.  That would let you do per-peer ratectrl, but not
->>> exactly per-packet rate-ctrl.  And, it would require some firmware
->>> patches or at least re-compilation to allow it to work.
->>>
->>> To make decisions on rate-ctrl on the host, you need to know advanced
->>> tx-status reporting.  My firmware can report the tx-rate, but I think
->>> you would also need to know retry count for the various rates to have
->>> a good picture of the RF connection to a specific peer.  This would
->>> require a good bit more work in the firmware.
->>>
->>> Thanks,
->>> Ben
->>>
->>>>
->>>> Thanks,
->>>> Raj Joshi
->>>>
->>>>
->>>> On Wed, May 11, 2016 at 12:28 AM, Ben Greear <greearb@candelatech.com>
->>>> wrote:
->>>>>
->>>>> On 05/09/2016 11:11 PM, Raj Joshi wrote:
->>>>>>
->>>>>>
->>>>>> Hi all,
->>>>>>
->>>>>> For a research project, I need to inject frames in monitor mode and
->>>>>> have them sent out with rate settings as set in the radiotap header -
->>>>>> basically setting per-frame tx rate. I have tried doing so, but the
->>>>>> frame is transmitted at a basic rate with 802.11a instead of a VHT
->>>>>> rate as set in the radiotap. Following are the setup and methodology
->>>>>> details. Sorry about email length; but wanted to provide as much
->>>>>> relevant information.
->>>>>>
->>>>>> ---------------
->>>>>> Setup Info
->>>>>> ---------------
->>>>>> * x86-64 board running Ubuntu 12.04.5 LTS
->>>>>> * Chipset: QCA9880 hw2.0 with 3 x 3 antennas
->>>>>> * Kernel: 3.8.0-29-generic x86_64
->>>>>> * Firmware: Initially QCA's 10.2.4.70.42-2 obtained via
->>>>>> https://github.com/kvalo/ath10k-firmware. After experiencing crashes,
->>>>>> later changed to one from CT (10.2.4.70-31-ct-xtW-003-3b0444c) | Both
->>>>>> the firmwares support raw-mode.
->>>>>> * ath10k: https://github.com/kvalo/ath (snapshot of commit
->>>>>> 7de1931eec121045e4e35d0b519ce8bad9b10b51 | Wed Mar 23 14:27:35 2016
->>>>>> +0200)
->>>>>>     => backport generated using backports.git
->>>>>> (https://git.kernel.org/cgit/linux/kernel/git/backports/backports.git)
->>>>>> backports-20160122-0-ga91a3e6. Backporting was not clean; had to fix a
->>>>>> few compile errors due to missing files by manually copying those
->>>>>> files.
->>>>>>
->>>>>> -------------------
->>>>>> Methodology
->>>>>> -------------------
->>>>>> * Setup up a hostapd 802.11ac AP on one of the boards with 80 MHz
->>>>>> channel width and correctly specified center frequencies.
->>>>>> * Setup monitor mode on another board for sniffing traffic on the same
->>>>>> 80 MHz channel width.
->>>>>> * Connect an 802.11ac capable laptop (Windows/Ubuntu) and exchange
->>>>>> data frames with the AP | Capture them on the sniffer board (with all
->>>>>> the VHT info in radiotap) so that they could be used as reference to
->>>>>> construct injection frame.
->>>>>> * Now shutdown the AP and change the interface on the AP board to
->>>>>> monitor mode. Re-load ath10k_core with rawmode=1 and then ath10k_pci
->>>>>> as well. Inject one of the captured frame with radiotap VHT rate info
->>>>>> into the monitor interface and use the sniffer to check if it was
->>>>>> transmitted.
->>>>>> * The firmware (QCA 10.2.4.70.42-2) crashed in this case => couldn't
->>>>>> understand the firmware crash dump. Changed the firmware to CT
->>>>>> 10.2.4.70-31-ct-xtW-003-3b0444c.
->>>>>> * Now the frame is transmitted and detected by the sniffer. However,
->>>>>> the radio information via radiotap shows that it was sent with a basic
->>>>>> rate of 802.11a.
->>>>>> * Tried for both encrypted (WPA2) and non-encrypted frames. Result is
->>>>>> the
->>>>>> same.
->>>>>>
->>>>>> --------------------------------
->>>>>> Other Considerations
->>>>>> --------------------------------
->>>>>> * The raw tx patch: As suggested on the CT firmware page, I looked
->>>>>> into the so called "out-of-tree" raw tx patch
->>>>>> (http://comments.gmane.org/gmane.linux.drivers.ath10k.devel/246) and
->>>>>> tried to reconcile it with the current ath10k source. Apparently other
->>>>>> than changes to cmd_tx.len,  the suggested changes in the patch are
->>>>>> either already in place by use of 'txmode' variable or they are no
->>>>>> more relevant with the new source code. For my non-encrypted frame, I
->>>>>> got my custom ASCII string inside the frame correctly transmitted and
->>>>>> so I 'believe' the changes to cmd_tx.len are no more required due to
->>>>>> correct msdu->len. Thus, it seems that this patch is no more necessary
->>>>>> and that this patch has nothing to do with correct tx rate setting.
->>>>>> * QoS versus non-QoS: Both of my sample injection frames are QoS data
->>>>>> with radiotap on top of it. I couldn't find a way to disable QoS and
->>>>>> it seems that it is not required either as there is no length issue
->>>>>> anymore as was discussed in the raw tx patch discussion; my frame is
->>>>>> transmitted whole and correct.
->>>>>> * VHT Parsing in Radiotap: I have double checked that my
->>>>>> net/mac80211/tx.c has the relevant updated code wrt parsing of VHT
->>>>>> rate information
->>>>>>
->>>>>>
->>>>>> (https://github.com/kvalo/ath/commit/646e76bb5daf4ca38438c69ffb72cccb605f3466)
->>>>>> * Disabling A-MSDU: I didn't have to do this as I could resolve my
->>>>>> firmware crash by switching to the CT firmware.
->>>>>> * Using the ath10k master development branch: I also tried backporting
->>>>>> master of https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git,
->>>>>> but compilation of backported code failed due to lack of some methods
->>>>>> such as nla_put_net64, nla_put_be64, etc. in include/net/netlink.h of
->>>>>> my stock kernel headers (I believe). So I am not sure if things have
->>>>>> changed since the Mar 23 2016 snapshot of ath10k github repo and now
->>>>>> that rate is correctly set for VHT raw tx injection.
->>>>>
->>>>>
->>>>>
->>>>> There is no way to specify the TX rate for individual frames with
->>>>> CT firmware, nor with any other firmware that I am aware of.
->>>>>
->>>>> This is probably something I could fix, but it would be a fair bit of
->>>>> work, and would require even more changes to the ath10k driver, so
->>>>> at best you would have to use my kernel tree...
->>>>>
->>>>>
->>>>> Thanks,
->>>>> Ben
->>>>>
->>>>>
->>>>> --
->>>>> Ben Greear <greearb@candelatech.com>
->>>>> Candela Technologies Inc  http://www.candelatech.com
->>>>>
->>>>
->>>> _______________________________________________
->>>> ath10k mailing list
->>>> ath10k@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>>
->>>
->>>
->>> --
->>> Ben Greear <greearb@candelatech.com>
->>> Candela Technologies Inc  http://www.candelatech.com
->>>
->>
->
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNiBNYXkgMjAxNiBhdCAyMjo0MywgRGF2ZSBUYWh0IDxkYXZlLnRhaHRAZ21haWwuY29tPiB3
+cm90ZToKPiBPbiBGcmksIE1heSA2LCAyMDE2IGF0IDExOjU2IEFNLCBSb21hbiBZZXJ5b21pbiA8
+bGVyb2kubGlzdHNAZ21haWwuY29tPiB3cm90ZToKPj4gT24gNiBNYXkgMjAxNiBhdCAyMTo0Mywg
+Um9tYW4gWWVyeW9taW4gPGxlcm9pLmxpc3RzQGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiBPbiA2IE1h
+eSAyMDE2IGF0IDE1OjQ3LCBKZXNwZXIgRGFuZ2FhcmQgQnJvdWVyIDxicm91ZXJAcmVkaGF0LmNv
+bT4gd3JvdGU6Cj4+Pj4KPj4+PiBJJ3ZlIGNyZWF0ZWQgYSBPcGVuV1JUIHRpY2tldFsxXSBvbiB0
+aGlzIGlzc3VlLCBhcyBpdCBzZWVtcyB0aGF0IHNvbWVvbmVbMl0KPj4+PiBjbG9zZWQgRmVsaXgn
+ZXMgT3BlbldSVCBlbWFpbCBhY2NvdW50IChiYWQgY2hvaWNlISBlbWFpbHMgYm91bmNpbmcpLgo+
+Pj4+IFNvdW5kcyBsaWtlIE9wZW5XUlQgYW5kIHRoZSBMRURFIGh0dHBzOi8vd3d3LmxlZGUtcHJv
+amVjdC5vcmcvIHByb2plY3QKPj4+PiBpcyBpbiBzb21lIGtpbmQgb2YgY29uZmxpY3QuCj4+Pj4K
+Pj4+PiBPcGVuV1JUIHRpY2tldCBbMV0gaHR0cHM6Ly9kZXYub3BlbndydC5vcmcvdGlja2V0LzIy
+MzQ5Cj4+Pj4KPj4+PiBbMl0gaHR0cDovL3RocmVhZC5nbWFuZS5vcmcvZ21hbmUuY29tcC5lbWJl
+ZGRlZC5vcGVud3J0LmRldmVsLzQwMjk4L2ZvY3VzPTQwMzM1Cj4+Pgo+Pj4gT0ssIHNvLCBhZnRl
+ciBwb3J0aW5nIHRoZSBwYXRjaCB0byA0LjEgb3BlbndydCBrZXJuZWwgYW5kIHBsYXlpbmcgYQo+
+Pj4gYml0IHdpdGggZnFfY29kZWwgbGltaXRzIEkgd2FzIGFibGUgdG8gZ2V0IDQyME1icHMgVURQ
+IGxpa2UgdGhpczoKPj4+IHRjIHFkaXNjIHJlcGxhY2UgZGV2IHdsYW4wIHBhcmVudCA6MSBmcV9j
+b2RlbCBmbG93cyAxNiBsaW1pdCAyNTYKPj4KPj4gRm9yZ290IHRvIG1lbnRpb24sIEkndmUgcmVk
+dWNlZCBkcm9wX2JhdGNoX3NpemUgZG93biB0byAzMgo+Cj4gMCkgTm90IGNsZWFyIHRvIG1lIGlm
+IHRoYXQncyB0aGUgcmlnaHQgbGluZSwgdGhlcmUgYXJlIDQgd2lmaSBxdWV1ZXMsCj4gYW5kIHRo
+ZSB0aGlyZCBvbmUKPiBpcyB0aGUgQkUgcXVldWUuCgpUaGF0IHdhcyBhbiBleGFtcGxlLCBzb3Jy
+eSwgc2hvdWxkIGhhdmUgc3RhdGVkIHRoYXQuIEkndmUgYXBwbGllZCBzYW1lCnNldHRpbmdzIHRv
+IGFsbCA0IHF1ZXVlcy4KCj4gVGhhdCBpcyB0b28gbG93IGEgbGltaXQsIGFsc28sIGZvciBub3Jt
+YWwgdXNlLiBBbmQ6Cj4gZm9yIHRoZSBwdXJwb3NlIG9mIHRoaXMgcGFydGljdWxhciBVRFAgdGVz
+dCwgZmxvd3MgMTYgaXMgb2ssIGJ1dCBub3QKPiBpZGVhbC4KCkkgcGxheWVkIHdpdGggZGlmZmVy
+ZW50IGNvbWJpbmF0aW9ucywgaXQgZG9lc24ndCBtYWtlIGFueQooc2lnbmlmaWNhbnQpIGRpZmZl
+cmVuY2U6IDIwLTMwTWJwcywgbm90IG1vcmUuCldoYXQgbnVtYmVycyB3b3VsZCB5b3UgcHJvcG9z
+ZT8KCj4gMSkgV2hhdCdzIHRoZSB0Y3AgbnVtYmVyICh3aXRoIGEgc2ltdWx0YW5lb3VzIHBpbmcp
+IHdpdGggdGhpcyBsYXRlc3QgcGF0Y2hzZXQ/Cj4gKEkgY2FyZSBhYm91dCB0Y3AgcGVyZm9ybWFu
+Y2UgYSBsb3QgbW9yZSB0aGFuIHVkcCBmbG9vZHMgLSBzdXJ2aXZpbmcgYQo+IHVkcCBmbG9vZCB5
+ZXMsIHBlcmZvcm1hbmNlLCBubykKCkR1cmluZyB0aGUgdGVzdCAoYm90aCBUQ1AgYW5kIFVEUCkg
+aXQncyByb3VnaGx5IDVtcyBpbiBhdmVyYWdlLCBub3QKcnVubmluZyB0ZXN0cyB+Mm1zLiBBY3R1
+YWxseSBJJ20gbm93IHdvbmRlcmluZyBpZiB0YXJnZXQgaXMgd29ya2luZyBhdAphbGwsIGJlY2F1
+c2UgSSBoYWQgc2FtZSByZXN1bHQgd2l0aCB0YXJnZXQgODBtcy4uClNvLCB5ZXMsIGxhdGVuY3kg
+aXMgZ29vZCwgYnV0IHBlcmZvcm1hbmNlIGlzIHBvb3IuCgo+IGJlZm9yZS9hZnRlcj8KPgo+IHRj
+IC1zIHFkaXNjIHNob3cgZGV2IHdsYW4wIGR1cmluZy9hZnRlciByZXN1bHRzPwoKZHVyaW5nIHRo
+ZSB0ZXN0OgoKcWRpc2MgbXEgMDogcm9vdAogU2VudCAxNjAwNDk2MDAwIGJ5dGVzIDEwNTcxOTQg
+cGt0IChkcm9wcGVkIDE0MjE1NjgsIG92ZXJsaW1pdHMgMCByZXF1ZXVlcyAxNykKIGJhY2tsb2cg
+MTU0NTc5NGIgMTAyMXAgcmVxdWV1ZXMgMTcKcWRpc2MgZnFfY29kZWwgODAwMTogcGFyZW50IDox
+IGxpbWl0IDEwMjRwIGZsb3dzIDE2IHF1YW50dW0gMTUxNAp0YXJnZXQgODAuMG1zIGNlX3RocmVz
+aG9sZCAzMnVzIGludGVydmFsIDEwMC4wbXMgZWNuCiBTZW50IDAgYnl0ZXMgMCBwa3QgKGRyb3Bw
+ZWQgMCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVzIDApCiBiYWNrbG9nIDBiIDBwIHJlcXVldWVzIDAK
+ICBtYXhwYWNrZXQgMCBkcm9wX292ZXJsaW1pdCAwIG5ld19mbG93X2NvdW50IDAgZWNuX21hcmsg
+MAogIG5ld19mbG93c19sZW4gMCBvbGRfZmxvd3NfbGVuIDAKcWRpc2MgZnFfY29kZWwgODAwMjog
+cGFyZW50IDoyIGxpbWl0IDEwMjRwIGZsb3dzIDE2IHF1YW50dW0gMTUxNAp0YXJnZXQgODAuMG1z
+IGNlX3RocmVzaG9sZCAzMnVzIGludGVydmFsIDEwMC4wbXMgZWNuCiBTZW50IDAgYnl0ZXMgMCBw
+a3QgKGRyb3BwZWQgMCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVzIDApCiBiYWNrbG9nIDBiIDBwIHJl
+cXVldWVzIDAKICBtYXhwYWNrZXQgMCBkcm9wX292ZXJsaW1pdCAwIG5ld19mbG93X2NvdW50IDAg
+ZWNuX21hcmsgMAogIG5ld19mbG93c19sZW4gMCBvbGRfZmxvd3NfbGVuIDAKcWRpc2MgZnFfY29k
+ZWwgODAwMzogcGFyZW50IDozIGxpbWl0IDEwMjRwIGZsb3dzIDE2IHF1YW50dW0gMTUxNAp0YXJn
+ZXQgODAuMG1zIGNlX3RocmVzaG9sZCAzMnVzIGludGVydmFsIDEwMC4wbXMgZWNuCiBTZW50IDE2
+MDEyNzExNjggYnl0ZXMgMTA1NzcwNiBwa3QgKGRyb3BwZWQgMTQyMjMwNCwgb3ZlcmxpbWl0cyAw
+IHJlcXVldWVzIDE3KQogYmFja2xvZyAxNTQxMjUyYiAxMDE4cCByZXF1ZXVlcyAxNwogIG1heHBh
+Y2tldCAxNTE0IGRyb3Bfb3ZlcmxpbWl0IDE0MjIzMDQgbmV3X2Zsb3dfY291bnQgMzUgZWNuX21h
+cmsgMAogIG5ld19mbG93c19sZW4gMCBvbGRfZmxvd3NfbGVuIDEKcWRpc2MgZnFfY29kZWwgODAw
+NDogcGFyZW50IDo0IGxpbWl0IDEwMjRwIGZsb3dzIDE2IHF1YW50dW0gMTUxNAp0YXJnZXQgODAu
+MG1zIGNlX3RocmVzaG9sZCAzMnVzIGludGVydmFsIDEwMC4wbXMgZWNuCiBTZW50IDAgYnl0ZXMg
+MCBwa3QgKGRyb3BwZWQgMCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVzIDApCiBiYWNrbG9nIDBiIDBw
+IHJlcXVldWVzIDAKICBtYXhwYWNrZXQgMCBkcm9wX292ZXJsaW1pdCAwIG5ld19mbG93X2NvdW50
+IDAgZWNuX21hcmsgMAogIG5ld19mbG93c19sZW4gMCBvbGRfZmxvd3NfbGVuIDAKCgphZnRlciB0
+aGUgdGVzdCAoNjBzZWMpOgoKcWRpc2MgbXEgMDogcm9vdAogU2VudCAzMDg0OTk2MDUyIGJ5dGVz
+IDIwMzc3NDQgcGt0IChkcm9wcGVkIDI3NzAxNzYsIG92ZXJsaW1pdHMgMCByZXF1ZXVlcyAyOCkK
+IGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMjgKcWRpc2MgZnFfY29kZWwgODAwMTogcGFyZW50IDox
+IGxpbWl0IDEwMjRwIGZsb3dzIDE2IHF1YW50dW0gMTUxNAp0YXJnZXQgODAuMG1zIGNlX3RocmVz
+aG9sZCAzMnVzIGludGVydmFsIDEwMC4wbXMgZWNuCiBTZW50IDAgYnl0ZXMgMCBwa3QgKGRyb3Bw
+ZWQgMCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVzIDApCiBiYWNrbG9nIDBiIDBwIHJlcXVldWVzIDAK
+ICBtYXhwYWNrZXQgMCBkcm9wX292ZXJsaW1pdCAwIG5ld19mbG93X2NvdW50IDAgZWNuX21hcmsg
+MAogIG5ld19mbG93c19sZW4gMCBvbGRfZmxvd3NfbGVuIDAKcWRpc2MgZnFfY29kZWwgODAwMjog
+cGFyZW50IDoyIGxpbWl0IDEwMjRwIGZsb3dzIDE2IHF1YW50dW0gMTUxNAp0YXJnZXQgODAuMG1z
+IGNlX3RocmVzaG9sZCAzMnVzIGludGVydmFsIDEwMC4wbXMgZWNuCiBTZW50IDAgYnl0ZXMgMCBw
+a3QgKGRyb3BwZWQgMCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVzIDApCiBiYWNrbG9nIDBiIDBwIHJl
+cXVldWVzIDAKICBtYXhwYWNrZXQgMCBkcm9wX292ZXJsaW1pdCAwIG5ld19mbG93X2NvdW50IDAg
+ZWNuX21hcmsgMAogIG5ld19mbG93c19sZW4gMCBvbGRfZmxvd3NfbGVuIDAKcWRpc2MgZnFfY29k
+ZWwgODAwMzogcGFyZW50IDozIGxpbWl0IDEwMjRwIGZsb3dzIDE2IHF1YW50dW0gMTUxNAp0YXJn
+ZXQgODAuMG1zIGNlX3RocmVzaG9sZCAzMnVzIGludGVydmFsIDEwMC4wbXMgZWNuCiBTZW50IDMw
+ODQ5OTYwNTIgYnl0ZXMgMjAzNzc0NCBwa3QgKGRyb3BwZWQgMjc3MDE3Niwgb3ZlcmxpbWl0cyAw
+IHJlcXVldWVzIDI4KQogYmFja2xvZyAwYiAwcCByZXF1ZXVlcyAyOAogIG1heHBhY2tldCAxNTE0
+IGRyb3Bfb3ZlcmxpbWl0IDI3NzAxNzYgbmV3X2Zsb3dfY291bnQgNjQgZWNuX21hcmsgMAogIG5l
+d19mbG93c19sZW4gMCBvbGRfZmxvd3NfbGVuIDEKcWRpc2MgZnFfY29kZWwgODAwNDogcGFyZW50
+IDo0IGxpbWl0IDEwMjRwIGZsb3dzIDE2IHF1YW50dW0gMTUxNAp0YXJnZXQgODAuMG1zIGNlX3Ro
+cmVzaG9sZCAzMnVzIGludGVydmFsIDEwMC4wbXMgZWNuCiBTZW50IDAgYnl0ZXMgMCBwa3QgKGRy
+b3BwZWQgMCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVzIDApCiBiYWNrbG9nIDBiIDBwIHJlcXVldWVz
+IDAKICBtYXhwYWNrZXQgMCBkcm9wX292ZXJsaW1pdCAwIG5ld19mbG93X2NvdW50IDAgZWNuX21h
+cmsgMAogIG5ld19mbG93c19sZW4gMCBvbGRfZmxvd3NfbGVuIDAKCgo+IElGIHlvdSBhcmUgZG9p
+bmcgYnVpbGRzIGZvciB0aGUgYXJjaGVyIGM3djIsIEkgY2FuIGpvaW4gaW4gb24gdGhpcy4uLiAo
+PykKCkknbSBub3QgYnV0IEkgaGF2ZSBjNyBzb21ld2hlcmUsIHNvIEkgY2FuIGRvIGEgYnVpbGQg
+Zm9yIGl0IGFuZCBhbHNvCnRlc3QsIHNvIHdlIGFyZSBvbiB0aGUgc2FtZSBwYWdlLgoKPiBJIGRp
+ZCBkbyBhIHRlc3Qgb2YgdGhlIGF0aDEwayAiYmVmb3JlIiwgZnFfY29kZWwgKm5ldmVyIGVuZ2Fn
+ZWQqLCBhbmQKPiB0Y3AgaW5kdWNlZCBsYXRlbmNpZXMgdW5kZXIgbG9hZCwgZSBhdCAxMDBtYml0
+LCBjcmFja2VkIDYwMG1zLCB3aGlsZQo+IHN0YXlpbmcgZmxhdCAoMjBtcykgYXQgMTAwbWJpdC4g
+KG5vdCB0aGUgc2FtZSBwYXRjaGVzIHlvdSBhcmUgdGVzdGluZykKPiBvbiB4ODYuIEkgaGF2ZSBn
+b3QgdGNwIDMwME1iaXQgb3V0IG9mIGFuIG9zeCBib3gsIHNpbWlsYXIgbGF0ZW5jeSwKPiBoYXZl
+IHlldCB0byBnZXQgYW55dGhpbmcgbW9yZSBvbiBhbnl0aGluZyBJIGN1cnJlbnRseSBoYXZlCj4g
+YmVmb3JlL2FmdGVyIHBhdGNoc2V0cy4KPgo+IEknbGwgZ28gYWRkIGZsb29kaW5nIHRvIHRoZSB0
+ZXN0cywgSSBqdXN0IGZpbmlzaGVkIGEgc2VyaWVzIGNvbXBhcmluZwo+IHR3byBkaWZmZXJlbnQg
+c3BlZWQgc3RhdGlvbnMgYW5kIGxpZmUgd2FzIGdvb2Qgb24gdGhhdC4KPgo+ICJiZWZvcmUiIC0g
+ZnFfY29kZWwgbmV2ZXIgZW5nYWdlcywgd2Ugc2VlIHNlY29uZHMgb2YgbGF0ZW5jeSB1bmRlciBs
+b2FkLgo+Cj4gcm9vdEBhcHUyOn4jIHRjIC1zIHFkaXNjIHNob3cgZGV2IHdscDRzMAo+IHFkaXNj
+IG1xIDA6IHJvb3QKPiAgU2VudCA4NTcwNTYzODkzIGJ5dGVzIDYzMjY5ODMgcGt0IChkcm9wcGVk
+IDAsIG92ZXJsaW1pdHMgMCByZXF1ZXVlcyAwKQo+ICBiYWNrbG9nIDBiIDBwIHJlcXVldWVzIDAK
+PiBxZGlzYyBmcV9jb2RlbCAwOiBwYXJlbnQgOjEgbGltaXQgMTAyNDBwIGZsb3dzIDEwMjQgcXVh
+bnR1bSAxNTE0Cj4gdGFyZ2V0IDUuMG1zIGludGVydmFsIDEwMC4wbXMgZWNuCj4gIFNlbnQgMjI2
+MiBieXRlcyAxNyBwa3QgKGRyb3BwZWQgMCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVzIDApCj4gIGJh
+Y2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+ICAgbWF4cGFja2V0IDAgZHJvcF9vdmVybGltaXQgMCBu
+ZXdfZmxvd19jb3VudCAwIGVjbl9tYXJrIDAKPiAgIG5ld19mbG93c19sZW4gMCBvbGRfZmxvd3Nf
+bGVuIDAKPiBxZGlzYyBmcV9jb2RlbCAwOiBwYXJlbnQgOjIgbGltaXQgMTAyNDBwIGZsb3dzIDEw
+MjQgcXVhbnR1bSAxNTE0Cj4gdGFyZ2V0IDUuMG1zIGludGVydmFsIDEwMC4wbXMgZWNuCj4gIFNl
+bnQgMjIwNDg2NTY5IGJ5dGVzIDE1MjA1OCBwa3QgKGRyb3BwZWQgMCwgb3ZlcmxpbWl0cyAwIHJl
+cXVldWVzIDApCj4gIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+ICAgbWF4cGFja2V0IDE4MTY4
+IGRyb3Bfb3ZlcmxpbWl0IDAgbmV3X2Zsb3dfY291bnQgMSBlY25fbWFyayAwCj4gICBuZXdfZmxv
+d3NfbGVuIDAgb2xkX2Zsb3dzX2xlbiAxCj4gcWRpc2MgZnFfY29kZWwgMDogcGFyZW50IDozIGxp
+bWl0IDEwMjQwcCBmbG93cyAxMDI0IHF1YW50dW0gMTUxNAo+IHRhcmdldCA1LjBtcyBpbnRlcnZh
+bCAxMDAuMG1zIGVjbgo+ICBTZW50IDgzNDA1NDY1MDkgYnl0ZXMgNjE2MzQzMSBwa3QgKGRyb3Bw
+ZWQgMCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVzIDApCj4gIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMg
+MAo+ICAgbWF4cGFja2V0IDY4MTMwIGRyb3Bfb3ZlcmxpbWl0IDAgbmV3X2Zsb3dfY291bnQgMTIw
+MDUwIGVjbl9tYXJrIDAKPiAgIG5ld19mbG93c19sZW4gMSBvbGRfZmxvd3NfbGVuIDMKPiBxZGlz
+YyBmcV9jb2RlbCAwOiBwYXJlbnQgOjQgbGltaXQgMTAyNDBwIGZsb3dzIDEwMjQgcXVhbnR1bSAx
+NTE0Cj4gdGFyZ2V0IDUuMG1zIGludGVydmFsIDEwMC4wbXMgZWNuCj4gIFNlbnQgOTUyODU1MyBi
+eXRlcyAxMTQ3NyBwa3QgKGRyb3BwZWQgMCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVzIDApCj4gIGJh
+Y2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+ICAgbWF4cGFja2V0IDY2IGRyb3Bfb3ZlcmxpbWl0IDAg
+bmV3X2Zsb3dfY291bnQgMSBlY25fbWFyayAwCj4gICBuZXdfZmxvd3NfbGVuIDEgb2xkX2Zsb3dz
+X2xlbiAwCj4gICBgYGAKPgo+Cj4+PiBUaGlzIGlzIGNlcnRhaW5seSBiZXR0ZXIgdGhhbiAzME1i
+cHMgYnV0IHN0aWxsIG1vcmUgdGhhbiB0d28gdGltZXMKPj4+IGxlc3MgdGhhbiBiZWZvcmUgKDkw
+MCkuCj4KPiBUaGUgbnVtYmVyIHRoYXQgSSBzdGlsbCBhbSBub3Qgc3VyZSB3ZSBnb3QgaXMgdGhh
+dCB5b3Ugd2VyZSBzZW5kaW5nCj4gOTAwbWJpdCB1ZHAgYW5kIHJlY2lldmluZyA5MDBtYml0IG9u
+IHRoZSBwcmlvciB0ZXN0cz8KCjkwMCB3YXMgc2VuZGluZywgQVAgUE9WICh3aWZpIGNsaWVudCBp
+cyBkb3dubG9hZGluZykKCj4+PiBUQ1AgYWxzbyBpbXByb3ZlZCBhIGxpdHRsZSAoNTUwIHRvIH41
+OTApLgo+Cj4gVGhlIGxpbWl0IGlzIHByb2JhYmx5IGEgYml0IGxvdywgYWxzby4gIFlvdSBtaWdo
+dCB3YW50IHRvIHRyeSB0YXJnZXQKPiAyMG1zIGFzIHdlbGwuCgpJJ3ZlIHRyaWVkIGxpbWl0IHVw
+IHRvIDEwMjQgYW5kIHRhcmdldCB1cCB0byA4MG1zCgo+Pj4KPj4+IEZlbGl4LCBvdGhlcnMsIGRv
+IHlvdSB3YW50IHRvIHNlZSB0aGUgcG9ydGVkIHBhdGNoLCBtYXliZSBJIGRpZCBzb21ldGhpbmcg
+d3Jvbmc/Cj4+PiBEb2Vzbid0IGxvb2sgbGlrZSBpdCB3aWxsIHNhdmUgYXRoMTBrIGZyb20gcGVy
+Zm9ybWFuY2UgcmVncmVzc2lvbi4KPgo+IHdoYXQgd2FzIHRjcCAiYmVmb3JlIj8gKEknbSBzb3Jy
+eSwgc3VjaCBhIGxvbmcgdGhyZWFkKQoKNzUwTWJwcwoKPj4+Cj4+Pj4KPj4+PiBPbiBGcmksIDYg
+TWF5IDIwMTYgMTE6NDI6NDMgKzAyMDAKPj4+PiBKZXNwZXIgRGFuZ2FhcmQgQnJvdWVyIDxicm91
+ZXJAcmVkaGF0LmNvbT4gd3JvdGU6Cj4+Pj4KPj4+Pj4gSGkgRmVsaXgsCj4+Pj4+Cj4+Pj4+IFRo
+aXMgaXMgYW4gaW1wb3J0YW50IGZpeCBmb3IgT3BlbldSVCwgcGxlYXNlIHJlYWQhCj4+Pj4+Cj4+
+Pj4+IE9wZW5XUlQgY2hhbmdlZCB0aGUgZGVmYXVsdCBmcV9jb2RlbCBzY2gtPmxpbWl0IGZyb20g
+MTAyNDAgdG8gMTAyNCwKPj4+Pj4gd2l0aG91dCBhbHNvIGFkanVzdGluZyBxLT5mbG93c19jbnQu
+ICBFcmljIGV4cGxhaW5zIGJlbG93IHRoYXQgeW91IG11c3QKPj4+Pj4gYWxzbyBhZGp1c3QgdGhl
+IGJ1Y2tldHMgKHEtPmZsb3dzX2NudCkgZm9yIHRoaXMgbm90IHRvIGJyZWFrLiAoSnVzdAo+Pj4+
+PiBhZGp1c3QgaXQgdG8gMTI4KQo+Pj4+Pgo+Pj4+PiBQcm9ibGVtYXRpYyBPcGVuV1JUIGNvbW1p
+dCBpbiBxdWVzdGlvbjoKPj4+Pj4gIGh0dHA6Ly9naXQub3BlbndydC5vcmcvP3A9b3BlbndydC5n
+aXQ7YT1wYXRjaDtoPTEyY2Q2NTc4MDg0ZQo+Pj4+PiAgMTJjZDY1NzgwODRlICgia2VybmVsOiBy
+ZXZlcnQgZnFfY29kZWwgcXVhbnR1bSBvdmVycmlkZSB0byBwcmV2ZW50IGl0IGZyb20gY2F1c2lu
+ZyB0b28gbXVjaCBjcHUgbG9hZCB3aXRoIGhpZ2hlciBzcGVlZCAoIzIxMzI2KSIpCj4+Pj4+Cj4+
+Pj4+Cj4+Pj4+IEkgYWxzbyBoaWdobHkgcmVjb21tZW5kIHlvdSBjaGVycnktcGljayB0aGlzIHZl
+cnkgcmVjZW50IGNvbW1pdDoKPj4+Pj4gIG5ldC1uZXh0OiA5ZDE4NTYyYTIyNzggKCJmcV9jb2Rl
+bDogYWRkIGJhdGNoIGFiaWxpdHkgdG8gZnFfY29kZWxfZHJvcCgpIikKPj4+Pj4gIGh0dHBzOi8v
+Z2l0Lmtlcm5lbC5vcmcvZGF2ZW0vbmV0LW5leHQvYy85ZDE4NTYyYTIyNwo+Pj4+Pgo+Pj4+PiBU
+aGlzIHNob3VsZCBmaXggdmVyeSBoaWdoIENQVSB1c2FnZSBpbi1jYXNlIGZxX2NvZGVsIGdvZXMg
+aW50byBkcm9wIG1vZGUuCj4+Pj4+IFRoZSBwcm9ibGVtIGlzIHRoYXQgZHJvcCBtb2RlIHdhcyBj
+b25zaWRlcmVkIHJhcmUsIGFuZCBpbXBsZW1lbnRhdGlvbgo+Pj4+PiB3aXNlIGl0IHdhcyBjaG9z
+ZW4gdG8gYmUgbW9yZSBleHBlbnNpdmUgKHRvIHNhdmUgY3ljbGVzIG9uIG5vcm1hbCBtb2RlKS4K
+Pj4+Pj4gVW5mb3J0dW5hdGVseSBpcyBpdCBlYXN5IHRvIHRyaWdnZXIgd2l0aCBhbiBVRFAgZmxv
+b2QuIERyb3AgbW9kZSBpcwo+Pj4+PiBlc3BlY2lhbGx5IGV4cGVuc2l2ZSBmb3Igc21hbGxlciBk
+ZXZpY2VzLCBhcyBpdCBzY2FucyBhIDRLIGJpZyBhcnJheSwKPj4+Pj4gdGh1cyA2NCBjYWNoZSBt
+aXNzZXMgZm9yIHNtYWxsIGRldmljZXMhCj4+Pj4+Cj4+Pj4+IFRoZSBmaXggaXMgdG8gYWxsb3cg
+ZHJvcC1tb2RlIHRvIGJ1bGstZHJvcCBtb3JlIHBhY2tldHMgd2hlbiBlbnRlcmluZwo+Pj4+PiBk
+cm9wLW1vZGUgKGRlZmF1bHQgNjQgYnVsayBkcm9wKS4gIFRoYXQgd2F5IHdlIGRvbid0IHN1ZGRl
+bmx5Cj4+Pj4+IGV4cGVyaWVuY2UgYSBzaWduaWZpY2FudGx5IGhpZ2hlciBwcm9jZXNzaW5nIGNv
+c3QgcGVyIHBhY2tldCwgYnV0Cj4+Pj4+IGluc3RlYWQgY2FuIGFtb3J0aXplIHRoaXMuCj4+Pj4+
+Cj4+Pj4+IFRvIEVyaWMsIHNob3VsZCB3ZSByZWNvbW1lbmQgT3BlbldSVCB0byBhZGp1c3QgZGVm
+YXVsdCAobWF4KSA2NCBidWxrCj4+Pj4+IGRyb3AsIGdpdmVuIHdlIGFsc28gcmVjb21tZW5kIGJ1
+Y2tldCBzaXplIHRvIGJlIDEyOCA/ICh0aHVzIHRoZSBhbW91bnQKPj4+Pj4gb2YgbWVtb3J5IHRv
+IHNjYW4gaXMgbGVzcywgYnV0IHRoZWlyIENQVSBpcyBhbHNvIG11Y2ggc21hbGxlcikuCj4+Pj4+
+Cj4+Pj4+IC0tSmVzcGVyCj4+Pj4+Cj4+Pj4+Cj4+Pj4+IE9uIFRodSwgMDUgTWF5IDIwMTYgMTI6
+MjM6MjcgLTA3MDAgRXJpYyBEdW1hemV0IDxlcmljLmR1bWF6ZXRAZ21haWwuY29tPiB3cm90ZToK
+Pj4+Pj4KPj4+Pj4gPiBPbiBUaHUsIDIwMTYtMDUtMDUgYXQgMTk6MjUgKzAzMDAsIFJvbWFuIFll
+cnlvbWluIHdyb3RlOgo+Pj4+PiA+ID4gT24gNSBNYXkgMjAxNiBhdCAxOToxMiwgRXJpYyBEdW1h
+emV0IDxlcmljLmR1bWF6ZXRAZ21haWwuY29tPiB3cm90ZToKPj4+Pj4gPiA+ID4gT24gVGh1LCAy
+MDE2LTA1LTA1IGF0IDE3OjUzICswMzAwLCBSb21hbiBZZXJ5b21pbiB3cm90ZToKPj4+Pj4gPiA+
+ID4KPj4+Pj4gPiA+ID4+Cj4+Pj4+ID4gPiA+PiBxZGlzYyBmcV9jb2RlbCAwOiBkZXYgZXRoMCBy
+b290IHJlZmNudCAyIGxpbWl0IDEwMjRwIGZsb3dzIDEwMjQKPj4+Pj4gPiA+ID4+IHF1YW50dW0g
+MTUxNCB0YXJnZXQgNS4wbXMgaW50ZXJ2YWwgMTAwLjBtcyBlY24KPj4+Pj4gPiA+ID4+ICBTZW50
+IDEyMzA2IGJ5dGVzIDEyOCBwa3QgKGRyb3BwZWQgMCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVzIDAp
+Cj4+Pj4+ID4gPiA+PiAgYmFja2xvZyAwYiAwcCByZXF1ZXVlcyAwCj4+Pj4+ID4gPiA+PiAgIG1h
+eHBhY2tldCAwIGRyb3Bfb3ZlcmxpbWl0IDAgbmV3X2Zsb3dfY291bnQgMCBlY25fbWFyayAwCj4+
+Pj4+ID4gPiA+PiAgIG5ld19mbG93c19sZW4gMCBvbGRfZmxvd3NfbGVuIDAKPj4+Pj4gPiA+ID4K
+Pj4+Pj4gPiA+ID4KPj4+Pj4gPiA+ID4gTGltaXQgb2YgMTAyNCBwYWNrZXRzIGFuZCAxMDI0IGZs
+b3dzIGlzIG5vdCB3aXNlIEkgdGhpbmsuCj4+Pj4+ID4gPiA+Cj4+Pj4+ID4gPiA+IChJZiBhbGwg
+YnVja2V0cyBhcmUgaW4gdXNlLCBlYWNoIGJ1Y2tldCBoYXMgYSB2aXJ0dWFsIHF1ZXVlIG9mIDEg
+cGFja2V0LAo+Pj4+PiA+ID4gPiB3aGljaCBpcyBhbG1vc3QgdGhlIHNhbWUgdGhhbiBoYXZpbmcg
+bm8gcXVldWUgYXQgYWxsKQo+Pj4+PiA+ID4gPgo+Pj4+PiA+ID4gPiBJIHN1Z2dlc3QgdG8gaGF2
+ZSBhdCBsZWFzdCA4IHBhY2tldHMgcGVyIGJ1Y2tldCwgdG8gbGV0IENvZGVsIGhhdmUgYQo+Pj4+
+PiA+ID4gPiBjaGFuY2UgdG8gdHJpZ2dlci4KPj4+Pj4gPiA+ID4KPj4+Pj4gPiA+ID4gU28geW91
+IGNvdWxkIGVpdGhlciByZWR1Y2UgbnVtYmVyIG9mIGJ1Y2tldHMgdG8gMTI4IChpZiBtZW1vcnkg
+aXMKPj4+Pj4gPiA+ID4gdGlnaHQpLCBvciBpbmNyZWFzZSBsaW1pdCB0byA4MTkyLgo+Pj4+PiA+
+ID4KPj4+Pj4gPiA+IFdpbGwgdHJ5LCBidXQgd2hhdCBJJ3ZlIHBvc3RlZCBpcyBkZWZhdWx0LCBJ
+IGRpZG4ndCBjaGFuZ2UvY29uZmlndXJlIHRoYXQuCj4+Pj4+ID4KPj4+Pj4gPiBmcV9jb2RlbCBo
+YXMgYSBkZWZhdWx0IG9mIDEwMjQwIHBhY2tldHMgYW5kIDEwMjQgYnVja2V0cy4KPj4+Pj4gPgo+
+Pj4+PiA+IGh0dHA6Ly9seHIuZnJlZS1lbGVjdHJvbnMuY29tL3NvdXJjZS9uZXQvc2NoZWQvc2No
+X2ZxX2NvZGVsLmMjTDQxMwo+Pj4+PiA+Cj4+Pj4+ID4gSWYgc29tZW9uZSBjaGFuZ2VkIHRoYXQg
+aW4gdGhlIGxpbnV4IHZhcmlhbnQgeW91IHVzZSwgaGUgcHJvYmFibHkgc2hvdWxkCj4+Pj4+ID4g
+ZXhwbGFpbiB0aGUgcmF0aW9uYWxlLgo+Pj4+Cj4+Pj4gLS0KPj4+PiBCZXN0IHJlZ2FyZHMsCj4+
+Pj4gICBKZXNwZXIgRGFuZ2FhcmQgQnJvdWVyCj4+Pj4gICBNU2MuQ1MsIFByaW5jaXBhbCBLZXJu
+ZWwgRW5naW5lZXIgYXQgUmVkIEhhdAo+Pj4+ICAgQXV0aG9yIG9mIGh0dHA6Ly93d3cuaXB0di1h
+bmFseXplci5vcmcKPj4+PiAgIExpbmtlZEluOiBodHRwOi8vd3d3LmxpbmtlZGluLmNvbS9pbi9i
+cm91ZXIKPgo+Cj4KPiAtLQo+IERhdmUgVMOkaHQKPiBMZXQncyBnbyBtYWtlIGhvbWUgcm91dGVy
+cyBhbmQgd2lmaSBmYXN0ZXIhIFdpdGggYmV0dGVyIHNvZnR3YXJlIQo+IGh0dHA6Ly9ibG9nLmNl
+cm93cnQub3JnCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
