@@ -1,38 +1,31 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b25Ra-0007m2-EQ
- for ath10k@lists.infradead.org; Sun, 15 May 2016 23:27:31 +0000
-Received: by mail-oi0-x22a.google.com with SMTP id v145so244966388oie.0
- for <ath10k@lists.infradead.org>; Sun, 15 May 2016 16:27:09 -0700 (PDT)
+ id 1b29fd-0007OR-Ip
+ for ath10k@lists.infradead.org; Mon, 16 May 2016 03:58:18 +0000
 MIME-Version: 1.0
-In-Reply-To: <1463353661.18194.50.camel@edumazet-glaptop3.roam.corp.google.com>
-References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
- <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
- <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
- <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
- <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
- <1462136140.5535.219.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
- <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
- <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
- <1462464776.13075.18.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
- <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
- <20160506114243.4eb4f95e@redhat.com>
- <20160506144740.210901f5@redhat.com>
- <CACiydbL3qZrvZ4a_OUXiN0dp7qdqOktaQdAUdfOpKkZ1OfEZbA@mail.gmail.com>
- <CACiydb+A_vFNdp7tbw67Rnp+kHwt5GsLa+Su+pO8YmOZYp_KHg@mail.gmail.com>
- <CAA93jw4XeMSxiTLHWZ2b=F9ni7wz9RpkWDdhTh99gn4Mf1aWjA@mail.gmail.com>
- <CACiydbLcYe=2VLb3W9i-i2FGALwxJK=oO8RcZWjmj3YPGObK3Q@mail.gmail.com>
- <1463353661.18194.50.camel@edumazet-glaptop3.roam.corp.google.com>
-Date: Mon, 16 May 2016 02:27:09 +0300
-Message-ID: <CACiydbLCOoX7QexKNw_H0rjdH26j-wxJUj7Z23cmzXteo-e-MQ@mail.gmail.com>
-Subject: Re: OpenWRT wrong adjustment of fq_codel defaults (Was: [Codel]
- fq_codel_drop vs a udp flood)
-From: Roman Yeryomin <leroi.lists@gmail.com>
+Date: Mon, 16 May 2016 09:27:54 +0530
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: Re: ath10k performance, master branch from 20160407
+In-Reply-To: <CACiydbLrM27V+Jzh-hJ4LhXaKEoiV9Hckw9B96OSXFKHT4Kctg@mail.gmail.com>
+References: <CACiydb+XMSfC262B6TzuZwx4W+LAbC7627uMKmiK9SjfuFpO4A@mail.gmail.com>
+ <1460129643950.46282@qti.qualcomm.com>
+ <CACiydbLHksfB68yOZq3SLuXEw-ucw5FnTDHq_un_Bpeah_5mZQ@mail.gmail.com>
+ <ab762b501abc457aa1dbf965895eb113@aphydexm01b.ap.qualcomm.com>
+ <CACiydbL3-QoC=muZf4aJOaUWZN-tpA3h1SwNfYU3+LnY_FHF+g@mail.gmail.com>
+ <1460174525702.66744@qti.qualcomm.com>
+ <CACiydbLh+X540MrnvS5MGm8Bd3QnnWmdFyon8H5khJiFtGK85w@mail.gmail.com>
+ <1460905574286.42282@qti.qualcomm.com>
+ <CACiydb+AaTc2wWzVeJNwPzA+PH9FcrqWzx3nW2RmKxaiaHwg-w@mail.gmail.com>
+ <CACiydbKu8_1sO9K8uuY_SSL8ECvr3wZttt+72cNO9dc_7RRM2A@mail.gmail.com>
+ <CA+BoTQndOpgYYZiZbenROV9+-WUHSbUugDDgCKGVe2fyA0efXQ@mail.gmail.com>
+ <CACiydb+rPQW8_0bQE0maVt6cvbhxtH0ZuFeRNW2paupBaVT3vA@mail.gmail.com>
+ <CA+BoTQmn_hS1X1BjC7=wmevnAGiPx7iit0NMUxnmmqjFZ_RnVA@mail.gmail.com>
+ <87k2jtk3wt.fsf@kamboji.qca.qualcomm.com>
+ <CACiydbLD2F2Z-iEW_jNr2hoKZzbiA7Y2gCnP4eeKkZpotzkSzA@mail.gmail.com>
+ <CA+BoTQkOLAB5KXo4taFEn_K_uEeLi81shEupVMU7E=97389cpQ@mail.gmail.com>
+ <CACiydbLrM27V+Jzh-hJ4LhXaKEoiV9Hckw9B96OSXFKHT4Kctg@mail.gmail.com>
+Message-ID: <64e989f9150dadda9f02e6c2e728552a@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -41,44 +34,102 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: make-wifi-fast@lists.bufferbloat.net, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Michal Kazior <michal.kazior@tieto.com>, Jesper Dangaard Brouer <brouer@redhat.com>, Jonathan Morton <chromatix99@gmail.com>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, Felix Fietkau <nbd@nbd.name>
+To: Roman Yeryomin <leroi.lists@gmail.com>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org, "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
 
-On 16 May 2016 at 02:07, Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> On Mon, 2016-05-16 at 01:34 +0300, Roman Yeryomin wrote:
->
->> qdisc fq_codel 8003: parent :3 limit 1024p flows 16 quantum 1514
->> target 80.0ms ce_threshold 32us interval 100.0ms ecn
->>  Sent 1601271168 bytes 1057706 pkt (dropped 1422304, overlimits 0 requeues 17)
->>  backlog 1541252b 1018p requeues 17
->>   maxpacket 1514 drop_overlimit 1422304 new_flow_count 35 ecn_mark 0
->>   new_flows_len 0 old_flows_len 1
->
-> Why do you have ce_threshold set ? You really should not (even if it
-> does not matter for the kind of traffic you have at this moment)
+On 2016-05-16 04:29, Roman Yeryomin wrote:
+> On 9 May 2016 at 15:26, Michal Kazior <michal.kazior@tieto.com> wrote:
+>> Hi Roman,
+>> 
+>> On 22 April 2016 at 19:05, Roman Yeryomin <leroi.lists@gmail.com> 
+>> wrote:
+>>> On 19 April 2016 at 18:35, Valo, Kalle <kvalo@qca.qualcomm.com> 
+>>> wrote:
+>>>> Michal Kazior <michal.kazior@tieto.com> writes:
+>>>> 
+>>>>> On 19 April 2016 at 09:31, Roman Yeryomin <leroi.lists@gmail.com> 
+>>>>> wrote:
+>>>>>> On 19 April 2016 at 08:28, Michal Kazior <michal.kazior@tieto.com> 
+>>>>>> wrote:
+>>>>>> 
+>>>>>>> If my hunch is right there's no easy (and proper) fix for that 
+>>>>>>> now.
+>>>>>>> 
+>>>>>>> One of the patchset patches (ath10k: implement wake_tx_queue) 
+>>>>>>> starts
+>>>>>>> to use mac80211 software queuing. This introduces extra induced
+>>>>>>> latency and I'm guessing it results in fill-in-then-drain 
+>>>>>>> sequences in
+>>>>>>> some cases which end up being long enough to make fq_codel_drop 
+>>>>>>> more
+>>>>>>> work than normal.
+>>>>>>> 
+>>>>>>> This is required for other changes and MU-MIMO performance
+>>>>>>> improvements so this patch can't be removed.
+>>>>>> 
+>>>>>> But qca988x doesn't support MU-MIMO, AFAIK.
+>>>>> 
+>>>>> Correct.
+>>>>> 
+>>>>> 
+>>>>>> Can this be made chip dependent?
+>>>>> 
+>>>>> I guess it could but it'd arguably make the driver more complex and
+>>>>> harder to maintain. What we want is a long-term fix, not a 
+>>>>> short-term
+>>>>> one.
+>>>> 
+>>>> But we should never go backwards and TCP dropping from 750 Mbps to 
+>>>> ~550
+>>>> Mbps is a huge drop, so this is not ok. We have to do something to 
+>>>> fix
+>>>> this, be it reverting the wake_tx_queue support, somehow disabling 
+>>>> it by
+>>>> default or something.
+>>> 
+>>> I would agree with Kalle here. This looks like very serious 
+>>> regression.
+>>> But I'm afraid I can only help with testing here.
+>> 
+>> Can you give the following patch a try, please? I didn't get to
+>> reproduce your problem on a real AP135/AP152 board and instead tried
+>> to simulate a slow uni-proc system via KVM and cooling_device in
+>> sysfs. The patch does improve things in this synthetic setup for me.
+>> 
+>>   http://lists.infradead.org/pipermail/ath10k/2016-May/007526.html
+>> 
+> 
+> Unfortunately doesn't seem to make any difference at all (really, if
+> there is, it's less than 10Mbps).
+> Please see this thread also:
+> https://lists.openwrt.org/pipermail/openwrt-devel/2016-May/041445.html
+> That is with your and Eric's patch applied.
+> 
+Roman,
 
-No idea, it was there always. How do I unset it? Setting it to 0 doesn't help.
+Can you please try without registering wake_tx_queue callback? software 
+queuing is needed for devices that supports peer-flow-control.
 
-> If your expected link speed is around 1Gbps, or 80,000 packets per
-> second, then you have to understand that 1024 packets limit is about 12
-> ms at most.
->
-> Even if the queue is full, max sojourn time of a packet would be 12 ms.
->
-> I really do not see how 'target 80 ms' could be hit.
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c 
+b/drivers/net/wireless/ath/ath10k/mac.c
+index 6829a08638b2..5df904169ded 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7313,7 +7313,6 @@ ath10k_mac_op_switch_vif_chanctx(struct 
+ieee80211_hw *hw,
 
-Well, as I said, I've tried different options. Neither target 20ms (as
-Dave proposed) not 12ms save the situation.
+  static const struct ieee80211_ops ath10k_ops = {
+         .tx                             = ath10k_mac_op_tx,
+-       .wake_tx_queue                  = ath10k_mac_op_wake_tx_queue,
+         .start                          = ath10k_start,
+         .stop                           = ath10k_stop,
+         .config                         = ath10k_config,
 
-> You basically have FQ, with no Codel effect, but with the associated
-> cost of Codel (having to take timestamps)
->
->
->
+-Rajkumar
 
 _______________________________________________
 ath10k mailing list
