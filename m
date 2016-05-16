@@ -1,37 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf0-x231.google.com ([2607:f8b0:400e:c00::231])
+Received: from mout.web.de ([212.227.17.11])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2JQd-00085l-D9
- for ath10k@lists.infradead.org; Mon, 16 May 2016 14:23:28 +0000
-Received: by mail-pf0-x231.google.com with SMTP id 206so68529150pfu.0
- for <ath10k@lists.infradead.org>; Mon, 16 May 2016 07:23:07 -0700 (PDT)
-Message-ID: <1463408582.18194.84.camel@edumazet-glaptop3.roam.corp.google.com>
-Subject: Re: [Make-wifi-fast] OpenWRT wrong adjustment of fq_codel defaults
- (Was: [Codel] fq_codel_drop vs a udp flood)
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Date: Mon, 16 May 2016 07:23:02 -0700
-In-Reply-To: <CACiydbJWY7xK1tj1Q-umdSNkTy9V+HYQ6SeOxihMASwr1zcApg@mail.gmail.com>
-References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
- <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
- <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
- <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
- <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
- <1462136140.5535.219.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
- <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
- <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
- <1462464776.13075.18.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
- <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
- <20160506114243.4eb4f95e@redhat.com> <20160506144740.210901f5@redhat.com>
- <CACiydbL3qZrvZ4a_OUXiN0dp7qdqOktaQdAUdfOpKkZ1OfEZbA@mail.gmail.com>
- <CACiydb+A_vFNdp7tbw67Rnp+kHwt5GsLa+Su+pO8YmOZYp_KHg@mail.gmail.com>
- <CAA93jw4XeMSxiTLHWZ2b=F9ni7wz9RpkWDdhTh99gn4Mf1aWjA@mail.gmail.com>
- <CACiydbLcYe=2VLb3W9i-i2FGALwxJK=oO8RcZWjmj3YPGObK3Q@mail.gmail.com>
- <CACiydbJWY7xK1tj1Q-umdSNkTy9V+HYQ6SeOxihMASwr1zcApg@mail.gmail.com>
-Mime-Version: 1.0
+ id 1b2JmN-0003FP-0f
+ for ath10k@lists.infradead.org; Mon, 16 May 2016 14:45:56 +0000
+Received: from [192.168.3.157] ([91.66.244.150]) by smtp.web.de (mrweb101)
+ with ESMTPSA (Nemesis) id 0Lj2QM-1baomF0nFe-00dGlf for
+ <ath10k@lists.infradead.org>; Mon, 16 May 2016 16:45:29 +0200
+From: Dirk Neukirchen <dirkneukirchen@web.de>
+Subject: ath10k oops on debug_mask
+Message-ID: <d37ac68f-97b4-4091-77ed-c07c312948b0@web.de>
+Date: Mon, 16 May 2016 16:41:58 +0200
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -44,46 +23,79 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Roman Yeryomin <leroi.lists@gmail.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, make-wifi-fast@lists.bufferbloat.net, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, ath10k <ath10k@lists.infradead.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Michal Kazior <michal.kazior@tieto.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, Felix Fietkau <nbd@nbd.name>
+To: ath10k@lists.infradead.org
 
-On Mon, 2016-05-16 at 11:14 +0300, Roman Yeryomin wrote:
+HW: Sitecom WLR-8100
 
-> So, very close to "as before": 900Mbps UDP, 750 TCP.
-> But still, I was expecting performance improvements from latest ath10k
-> code, not regressions.
-> I know that hw is capable of 800Mbps TCP, which I'm targeting.
+Trying to fix some issues that popped up recently on that device-
+in 55-ath10k in modules.d i have the lines
 
-One flow can reach 800Mbps.
+ath10k_core debug_mask=0x00000020
+ath10k_pci
 
-To get this, a simple pfifo is enough.
+to enable debug msg during firmware loading
 
-But _if_ you also want to get decent results with hundreds of flows
-under stress, you need something else, and I do not see how 'something'
-else would come for free.
+A recent trunk of LEDE w. 4.4.10 bootlog snippet is:
 
-You will see some 'regressions' because of additional cpu costs, unless
-you have enough cpu cycles and KB of memory to burn for free.
 
-If your goal is to get max throughput on a single TCP flow, in a clean
-env an cheap hardware, you absolutely should stick to pfifo. Nothing
-could beat pfifo (well, pfifo could be improved using lockless
-implementation, but that would matter if you have different cpus
-queueing and dequeueing packets)
+[   11.287977] procd: - init -
+Please press Enter to activate this console.
+[   12.725282] zram: Added device: zram0
+[   12.746688] tun: Universal TUN/TAP device driver, 1.6
+[   12.751819] tun: (C) 1999-2004 Max Krasnyansky <maxk@qualcomm.com>
+[   12.778617] sit: IPv6 over IPv4 tunneling driver
+[   12.804016] ip6_tables: (C) 2000-2006 Netfilter Core Team
+[   12.882570] Loading modules backported from Linux version wt-2016-05-12-0-g7a54796
+[   12.890295] Backport generated by backports.git backports-20160216-0-ge3c56e4
+[   12.990872] PCI: Enabling device 0000:01:00.0 (0000 -> 0002)
+[   12.996815] ath10k_pci 0000:01:00.0: pci irq legacy oper_irq_mode 1 irq_mode 0 reset_mode 0
+[   13.250480] ath10k_pci 0000:01:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:01:00.0.bin failed with error -2
+[   13.261372] ath10k_pci 0000:01:00.0: Falling back to user helper
+[   13.336990] firmware ath10k!pre-cal-pci-0000:01:00.0.bin: firmware_loading_store: map pages failed
+[   13.346353] ath10k_pci 0000:01:00.0: Direct firmware load for ath10k/cal-pci-0000:01:00.0.bin failed with error -2
+[   13.356885] ath10k_pci 0000:01:00.0: Falling back to user helper
+[   13.501649] firmware ath10k!cal-pci-0000:01:00.0.bin: firmware_loading_store: map pages failed
+[   13.828704] CPU 0 Unable to handle kernel paging request at virtual address 00000030, epc == 801b8c04, ra == 8738f594
+[   13.839497] Oops[#1]:
+[   13.841810] CPU: 0 PID: 6 Comm: kworker/u2:0 Not tainted 4.4.10 #1
+[   13.848118] Workqueue: ath10k_wq ath10k_core_stop [ath10k_core]
+[   13.854126] task: 87829900 ti: 8784a000 task.ti: 8784a000
+[   13.859596] $ 0   : 00000000 0000006e 00000002 00000000
+[   13.864929] $ 4   : 00000030 8784bc16 00000000 803bd9f8
+[   13.870262] $ 8   : 00000020 00000000 00000020 75726573
+[   13.875595] $12   : 00000000 00000100 00000000 302e303a
+[   13.880928] $16   : 00000001 00000000 8784bc16 00000004
+[   13.886260] $20   : 00000030 000000f6 00000030 00000004
+[   13.891593] $24   : 00000000 038e0fb2                  
+[   13.896925] $28   : 8784a000 8784bb90 873b0000 8738f594
+[   13.902259] Hi    : 00000000
+[   13.905181] Lo    : 00000010
+[   13.908106] epc   : 801b8c04 hex_dump_to_buffer+0x280/0x404
+[   13.913766] ra    : 8738f594 ath10k_dbg+0x2a8/0x308 [ath10k_core]
+[   13.919938] Status: 1100fc03	KERNEL EXL IE 
+[   13.924208] Cause : 00800008 (ExcCode 02)
+[   13.928272] BadVA : 00000030
+[   13.931185] PrId  : 00019750 (MIPS 74Kc)
+[   13.935161] Modules linked in: ath10k_pci(+) ath10k_core ath mac80211 cfg80211 compat ledtrig_usbdev ip6t_REJECT nf_reject_ipv6 nf_log_ipv6 nf_log_common ip6table_raw ip6table_mangle ip6table_filter ip6_tables x_tables ifb sit tunnel4 ip_tunnel tun vfat fat zram lzo_decompress lzo_compress lz4_decompress lz4_compress zsmalloc usb_storage xhci_plat_hcd xhci_pci xhci_hcd ehci_platform ehci_hcd sd_mod scsi_mod gpio_button_hotplug ext4 jbd2 mbcache usbcore nls_base usb_common crc16 crypto_hash
+[   13.979502] Process kworker/u2:0 (pid: 6, threadinfo=8784a000, task=87829900, tls=00000000)
+[   13.987961] Stack : 873b94b4 873b79f8 873b79f0 00000030 00000030 872193e0 873b0000 00000031
+	  00000001 8784bbac 0000000e 8738f33c 00000010 80400000 873b94b4 873b79f8
+	  873b79f0 00000030 00000030 872193e0 873b0000 8738f594 8710e300 803c0f98
+	  803c29fc 873b94b4 8784bc16 000000f6 00000001 4d3d7063 69004445 30303030
+	  30303030 3a200030 30303a30 313a3030 2e3000b4 803c348c c03d2000 0003c788
+	  ...
+[   14.024288] Call Trace:
+[   14.026767] [<801b8c04>] hex_dump_to_buffer+0x280/0x404
+[   14.032077] [<8738f594>] ath10k_dbg+0x2a8/0x308 [ath10k_core]
+[   14.037912] 
+[   14.039424] 
+Code: 02b1f023  1000001e  8fa20020 <90840000> 00044102  01074021  91080000  a0a80000  24680003 
+[   14.049577] ---[ end trace b882fdc84557912b ]---
+[   14.056266] Fatal exception: panic in 5 seconds
 
-But I guess your issues mostly come from a too small packet limits, or
-to big TCP windows.
-
-Basically, if you test a single TCP flow, fq_codel should behave like a
-pfifo, unless maybe your kernel has a very slow ktime_get_ns()
-implementation [1]
-
-If you set a limit of 1024 packets on pfifo, you'll have the same amount
-of drops and lower TCP throughput.
-
-[1] We probably should have a self-test to have an estimation of
-ktime_get_ns() cost
-
+a more complete serial boot log with crash, 
+normal fail (missing caldata/art extracted file) and skip_otp
+module param  is available at: https://github.com/plntyk/wlr8100
 
 
 
