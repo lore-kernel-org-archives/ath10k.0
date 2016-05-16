@@ -1,38 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
+Received: from mout.web.de ([212.227.17.11])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2L0J-0000J4-Ot
- for ath10k@lists.infradead.org; Mon, 16 May 2016 16:04:25 +0000
-Received: by mail-oi0-x234.google.com with SMTP id v145so274466348oie.0
- for <ath10k@lists.infradead.org>; Mon, 16 May 2016 09:04:03 -0700 (PDT)
+ id 1b2MAS-0005LV-0Q
+ for ath10k@lists.infradead.org; Mon, 16 May 2016 17:18:57 +0000
+Subject: Re: ath10k oops on debug_mask
+References: <d37ac68f-97b4-4091-77ed-c07c312948b0@web.de>
+ <5739DF08.9010305@candelatech.com>
+From: Dirk Neukirchen <dirkneukirchen@web.de>
+Message-ID: <89fd9adc-7c11-4934-0b9c-a5136683c28d@web.de>
+Date: Mon, 16 May 2016 19:14:41 +0200
 MIME-Version: 1.0
-In-Reply-To: <CACiydbJWY7xK1tj1Q-umdSNkTy9V+HYQ6SeOxihMASwr1zcApg@mail.gmail.com>
-References: <CAA93jw6QLyx9EaS+ntB0D3duoysu_Z-UYyQfHnRa=pfqPDfWOw@mail.gmail.com>
- <1462125592.5535.194.camel@edumazet-glaptop3.roam.corp.google.com>
- <865DA393-262D-40B6-A9D3-1B978CD5F6C6@gmail.com>
- <1462128385.5535.200.camel@edumazet-glaptop3.roam.corp.google.com>
- <C5D365DA-18EE-446E-9D25-41F48B1C583E@gmail.com>
- <1462136140.5535.219.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKUu11=zWitkDha0ddgk1-G_Z4-e1+=9ky776VktF5HHg@mail.gmail.com>
- <1462201620.5535.250.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbKeKUENncrc-NmYRcku-DGVeGqqzYMqsCqKdxPsR7yUOQ@mail.gmail.com>
- <1462205669.5535.254.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbL26Jj3EcEL4EmqaH=1Dm-Q0dpVwoWxqUSZ7ry10bRgeg@mail.gmail.com>
- <1462464776.13075.18.camel@edumazet-glaptop3.roam.corp.google.com>
- <CACiydbJYrFRMJvSHM6tJYWR8vmgV3xxnSUQsb-h5WcnLW=KXoQ@mail.gmail.com>
- <1462476207.13075.20.camel@edumazet-glaptop3.roam.corp.google.com>
- <20160506114243.4eb4f95e@redhat.com>
- <20160506144740.210901f5@redhat.com>
- <CACiydbL3qZrvZ4a_OUXiN0dp7qdqOktaQdAUdfOpKkZ1OfEZbA@mail.gmail.com>
- <CACiydb+A_vFNdp7tbw67Rnp+kHwt5GsLa+Su+pO8YmOZYp_KHg@mail.gmail.com>
- <CAA93jw4XeMSxiTLHWZ2b=F9ni7wz9RpkWDdhTh99gn4Mf1aWjA@mail.gmail.com>
- <CACiydbLcYe=2VLb3W9i-i2FGALwxJK=oO8RcZWjmj3YPGObK3Q@mail.gmail.com>
- <CACiydbJWY7xK1tj1Q-umdSNkTy9V+HYQ6SeOxihMASwr1zcApg@mail.gmail.com>
-Date: Mon, 16 May 2016 09:04:01 -0700
-Message-ID: <CAA93jw7=FRhj+oZ8LT0Oxn2Lb3YFL-u5yZr7mi8bc2HZWzLxvg@mail.gmail.com>
-Subject: Re: OpenWRT wrong adjustment of fq_codel defaults (Was: [Codel]
- fq_codel_drop vs a udp flood)
-From: Dave Taht <dave.taht@gmail.com>
+In-Reply-To: <5739DF08.9010305@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -41,173 +19,112 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Roman Yeryomin <leroi.lists@gmail.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, make-wifi-fast@lists.bufferbloat.net, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, ath10k <ath10k@lists.infradead.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "codel@lists.bufferbloat.net" <codel@lists.bufferbloat.net>, Michal Kazior <michal.kazior@tieto.com>, Jesper Dangaard Brouer <brouer@redhat.com>, Jonathan Morton <chromatix99@gmail.com>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, Felix Fietkau <nbd@nbd.name>
+To: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-T24gTW9uLCBNYXkgMTYsIDIwMTYgYXQgMToxNCBBTSwgUm9tYW4gWWVyeW9taW4gPGxlcm9pLmxp
-c3RzQGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gMTYgTWF5IDIwMTYgYXQgMDE6MzQsIFJvbWFuIFll
-cnlvbWluIDxsZXJvaS5saXN0c0BnbWFpbC5jb20+IHdyb3RlOgo+PiBPbiA2IE1heSAyMDE2IGF0
-IDIyOjQzLCBEYXZlIFRhaHQgPGRhdmUudGFodEBnbWFpbC5jb20+IHdyb3RlOgo+Pj4gT24gRnJp
-LCBNYXkgNiwgMjAxNiBhdCAxMTo1NiBBTSwgUm9tYW4gWWVyeW9taW4gPGxlcm9pLmxpc3RzQGdt
-YWlsLmNvbT4gd3JvdGU6Cj4+Pj4gT24gNiBNYXkgMjAxNiBhdCAyMTo0MywgUm9tYW4gWWVyeW9t
-aW4gPGxlcm9pLmxpc3RzQGdtYWlsLmNvbT4gd3JvdGU6Cj4+Pj4+IE9uIDYgTWF5IDIwMTYgYXQg
-MTU6NDcsIEplc3BlciBEYW5nYWFyZCBCcm91ZXIgPGJyb3VlckByZWRoYXQuY29tPiB3cm90ZToK
-Pj4+Pj4+Cj4+Pj4+PiBJJ3ZlIGNyZWF0ZWQgYSBPcGVuV1JUIHRpY2tldFsxXSBvbiB0aGlzIGlz
-c3VlLCBhcyBpdCBzZWVtcyB0aGF0IHNvbWVvbmVbMl0KPj4+Pj4+IGNsb3NlZCBGZWxpeCdlcyBP
-cGVuV1JUIGVtYWlsIGFjY291bnQgKGJhZCBjaG9pY2UhIGVtYWlscyBib3VuY2luZykuCj4+Pj4+
-PiBTb3VuZHMgbGlrZSBPcGVuV1JUIGFuZCB0aGUgTEVERSBodHRwczovL3d3dy5sZWRlLXByb2pl
-Y3Qub3JnLyBwcm9qZWN0Cj4+Pj4+PiBpcyBpbiBzb21lIGtpbmQgb2YgY29uZmxpY3QuCj4+Pj4+
-Pgo+Pj4+Pj4gT3BlbldSVCB0aWNrZXQgWzFdIGh0dHBzOi8vZGV2Lm9wZW53cnQub3JnL3RpY2tl
-dC8yMjM0OQo+Pj4+Pj4KPj4+Pj4+IFsyXSBodHRwOi8vdGhyZWFkLmdtYW5lLm9yZy9nbWFuZS5j
-b21wLmVtYmVkZGVkLm9wZW53cnQuZGV2ZWwvNDAyOTgvZm9jdXM9NDAzMzUKPj4+Pj4KPj4+Pj4g
-T0ssIHNvLCBhZnRlciBwb3J0aW5nIHRoZSBwYXRjaCB0byA0LjEgb3BlbndydCBrZXJuZWwgYW5k
-IHBsYXlpbmcgYQo+Pj4+PiBiaXQgd2l0aCBmcV9jb2RlbCBsaW1pdHMgSSB3YXMgYWJsZSB0byBn
-ZXQgNDIwTWJwcyBVRFAgbGlrZSB0aGlzOgo+Pj4+PiB0YyBxZGlzYyByZXBsYWNlIGRldiB3bGFu
-MCBwYXJlbnQgOjEgZnFfY29kZWwgZmxvd3MgMTYgbGltaXQgMjU2Cj4+Pj4KPj4+PiBGb3Jnb3Qg
-dG8gbWVudGlvbiwgSSd2ZSByZWR1Y2VkIGRyb3BfYmF0Y2hfc2l6ZSBkb3duIHRvIDMyCj4+Pgo+
-Pj4gMCkgTm90IGNsZWFyIHRvIG1lIGlmIHRoYXQncyB0aGUgcmlnaHQgbGluZSwgdGhlcmUgYXJl
-IDQgd2lmaSBxdWV1ZXMsCj4+PiBhbmQgdGhlIHRoaXJkIG9uZQo+Pj4gaXMgdGhlIEJFIHF1ZXVl
-Lgo+Pgo+PiBUaGF0IHdhcyBhbiBleGFtcGxlLCBzb3JyeSwgc2hvdWxkIGhhdmUgc3RhdGVkIHRo
-YXQuIEkndmUgYXBwbGllZCBzYW1lCj4+IHNldHRpbmdzIHRvIGFsbCA0IHF1ZXVlcy4KPj4KPj4+
-IFRoYXQgaXMgdG9vIGxvdyBhIGxpbWl0LCBhbHNvLCBmb3Igbm9ybWFsIHVzZS4gQW5kOgo+Pj4g
-Zm9yIHRoZSBwdXJwb3NlIG9mIHRoaXMgcGFydGljdWxhciBVRFAgdGVzdCwgZmxvd3MgMTYgaXMg
-b2ssIGJ1dCBub3QKPj4+IGlkZWFsLgo+Pgo+PiBJIHBsYXllZCB3aXRoIGRpZmZlcmVudCBjb21i
-aW5hdGlvbnMsIGl0IGRvZXNuJ3QgbWFrZSBhbnkKPj4gKHNpZ25pZmljYW50KSBkaWZmZXJlbmNl
-OiAyMC0zME1icHMsIG5vdCBtb3JlLgo+PiBXaGF0IG51bWJlcnMgd291bGQgeW91IHByb3Bvc2U/
-Cj4+Cj4+PiAxKSBXaGF0J3MgdGhlIHRjcCBudW1iZXIgKHdpdGggYSBzaW11bHRhbmVvdXMgcGlu
-Zykgd2l0aCB0aGlzIGxhdGVzdCBwYXRjaHNldD8KPj4+IChJIGNhcmUgYWJvdXQgdGNwIHBlcmZv
-cm1hbmNlIGEgbG90IG1vcmUgdGhhbiB1ZHAgZmxvb2RzIC0gc3Vydml2aW5nIGEKPj4+IHVkcCBm
-bG9vZCB5ZXMsIHBlcmZvcm1hbmNlLCBubykKPj4KPj4gRHVyaW5nIHRoZSB0ZXN0IChib3RoIFRD
-UCBhbmQgVURQKSBpdCdzIHJvdWdobHkgNW1zIGluIGF2ZXJhZ2UsIG5vdAo+PiBydW5uaW5nIHRl
-c3RzIH4ybXMuIEFjdHVhbGx5IEknbSBub3cgd29uZGVyaW5nIGlmIHRhcmdldCBpcyB3b3JraW5n
-IGF0Cj4+IGFsbCwgYmVjYXVzZSBJIGhhZCBzYW1lIHJlc3VsdCB3aXRoIHRhcmdldCA4MG1zLi4K
-Pj4gU28sIHllcywgbGF0ZW5jeSBpcyBnb29kLCBidXQgcGVyZm9ybWFuY2UgaXMgcG9vci4KPj4K
-Pj4+IGJlZm9yZS9hZnRlcj8KPj4+Cj4+PiB0YyAtcyBxZGlzYyBzaG93IGRldiB3bGFuMCBkdXJp
-bmcvYWZ0ZXIgcmVzdWx0cz8KPj4KPj4gZHVyaW5nIHRoZSB0ZXN0Ogo+Pgo+PiBxZGlzYyBtcSAw
-OiByb290Cj4+ICBTZW50IDE2MDA0OTYwMDAgYnl0ZXMgMTA1NzE5NCBwa3QgKGRyb3BwZWQgMTQy
-MTU2OCwgb3ZlcmxpbWl0cyAwIHJlcXVldWVzIDE3KQo+PiAgYmFja2xvZyAxNTQ1Nzk0YiAxMDIx
-cCByZXF1ZXVlcyAxNwo+PiBxZGlzYyBmcV9jb2RlbCA4MDAxOiBwYXJlbnQgOjEgbGltaXQgMTAy
-NHAgZmxvd3MgMTYgcXVhbnR1bSAxNTE0Cj4+IHRhcmdldCA4MC4wbXMgY2VfdGhyZXNob2xkIDMy
-dXMgaW50ZXJ2YWwgMTAwLjBtcyBlY24KPj4gIFNlbnQgMCBieXRlcyAwIHBrdCAoZHJvcHBlZCAw
-LCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKPj4gIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+
-PiAgIG1heHBhY2tldCAwIGRyb3Bfb3ZlcmxpbWl0IDAgbmV3X2Zsb3dfY291bnQgMCBlY25fbWFy
-ayAwCj4+ICAgbmV3X2Zsb3dzX2xlbiAwIG9sZF9mbG93c19sZW4gMAo+PiBxZGlzYyBmcV9jb2Rl
-bCA4MDAyOiBwYXJlbnQgOjIgbGltaXQgMTAyNHAgZmxvd3MgMTYgcXVhbnR1bSAxNTE0Cj4+IHRh
-cmdldCA4MC4wbXMgY2VfdGhyZXNob2xkIDMydXMgaW50ZXJ2YWwgMTAwLjBtcyBlY24KPj4gIFNl
-bnQgMCBieXRlcyAwIHBrdCAoZHJvcHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKPj4g
-IGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+PiAgIG1heHBhY2tldCAwIGRyb3Bfb3ZlcmxpbWl0
-IDAgbmV3X2Zsb3dfY291bnQgMCBlY25fbWFyayAwCj4+ICAgbmV3X2Zsb3dzX2xlbiAwIG9sZF9m
-bG93c19sZW4gMAo+PiBxZGlzYyBmcV9jb2RlbCA4MDAzOiBwYXJlbnQgOjMgbGltaXQgMTAyNHAg
-Zmxvd3MgMTYgcXVhbnR1bSAxNTE0Cj4+IHRhcmdldCA4MC4wbXMgY2VfdGhyZXNob2xkIDMydXMg
-aW50ZXJ2YWwgMTAwLjBtcyBlY24KPj4gIFNlbnQgMTYwMTI3MTE2OCBieXRlcyAxMDU3NzA2IHBr
-dCAoZHJvcHBlZCAxNDIyMzA0LCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMTcpCj4+ICBiYWNrbG9n
-IDE1NDEyNTJiIDEwMThwIHJlcXVldWVzIDE3Cj4+ICAgbWF4cGFja2V0IDE1MTQgZHJvcF9vdmVy
-bGltaXQgMTQyMjMwNCBuZXdfZmxvd19jb3VudCAzNSBlY25fbWFyayAwCj4+ICAgbmV3X2Zsb3dz
-X2xlbiAwIG9sZF9mbG93c19sZW4gMQo+PiBxZGlzYyBmcV9jb2RlbCA4MDA0OiBwYXJlbnQgOjQg
-bGltaXQgMTAyNHAgZmxvd3MgMTYgcXVhbnR1bSAxNTE0Cj4+IHRhcmdldCA4MC4wbXMgY2VfdGhy
-ZXNob2xkIDMydXMgaW50ZXJ2YWwgMTAwLjBtcyBlY24KPj4gIFNlbnQgMCBieXRlcyAwIHBrdCAo
-ZHJvcHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKPj4gIGJhY2tsb2cgMGIgMHAgcmVx
-dWV1ZXMgMAo+PiAgIG1heHBhY2tldCAwIGRyb3Bfb3ZlcmxpbWl0IDAgbmV3X2Zsb3dfY291bnQg
-MCBlY25fbWFyayAwCj4+ICAgbmV3X2Zsb3dzX2xlbiAwIG9sZF9mbG93c19sZW4gMAo+Pgo+Pgo+
-PiBhZnRlciB0aGUgdGVzdCAoNjBzZWMpOgo+Pgo+PiBxZGlzYyBtcSAwOiByb290Cj4+ICBTZW50
-IDMwODQ5OTYwNTIgYnl0ZXMgMjAzNzc0NCBwa3QgKGRyb3BwZWQgMjc3MDE3Niwgb3ZlcmxpbWl0
-cyAwIHJlcXVldWVzIDI4KQo+PiAgYmFja2xvZyAwYiAwcCByZXF1ZXVlcyAyOAo+PiBxZGlzYyBm
-cV9jb2RlbCA4MDAxOiBwYXJlbnQgOjEgbGltaXQgMTAyNHAgZmxvd3MgMTYgcXVhbnR1bSAxNTE0
-Cj4+IHRhcmdldCA4MC4wbXMgY2VfdGhyZXNob2xkIDMydXMgaW50ZXJ2YWwgMTAwLjBtcyBlY24K
-Pj4gIFNlbnQgMCBieXRlcyAwIHBrdCAoZHJvcHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMg
-MCkKPj4gIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+PiAgIG1heHBhY2tldCAwIGRyb3Bfb3Zl
-cmxpbWl0IDAgbmV3X2Zsb3dfY291bnQgMCBlY25fbWFyayAwCj4+ICAgbmV3X2Zsb3dzX2xlbiAw
-IG9sZF9mbG93c19sZW4gMAo+PiBxZGlzYyBmcV9jb2RlbCA4MDAyOiBwYXJlbnQgOjIgbGltaXQg
-MTAyNHAgZmxvd3MgMTYgcXVhbnR1bSAxNTE0Cj4+IHRhcmdldCA4MC4wbXMgY2VfdGhyZXNob2xk
-IDMydXMgaW50ZXJ2YWwgMTAwLjBtcyBlY24KPj4gIFNlbnQgMCBieXRlcyAwIHBrdCAoZHJvcHBl
-ZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKPj4gIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMg
-MAo+PiAgIG1heHBhY2tldCAwIGRyb3Bfb3ZlcmxpbWl0IDAgbmV3X2Zsb3dfY291bnQgMCBlY25f
-bWFyayAwCj4+ICAgbmV3X2Zsb3dzX2xlbiAwIG9sZF9mbG93c19sZW4gMAo+PiBxZGlzYyBmcV9j
-b2RlbCA4MDAzOiBwYXJlbnQgOjMgbGltaXQgMTAyNHAgZmxvd3MgMTYgcXVhbnR1bSAxNTE0Cj4+
-IHRhcmdldCA4MC4wbXMgY2VfdGhyZXNob2xkIDMydXMgaW50ZXJ2YWwgMTAwLjBtcyBlY24KPj4g
-IFNlbnQgMzA4NDk5NjA1MiBieXRlcyAyMDM3NzQ0IHBrdCAoZHJvcHBlZCAyNzcwMTc2LCBvdmVy
-bGltaXRzIDAgcmVxdWV1ZXMgMjgpCj4+ICBiYWNrbG9nIDBiIDBwIHJlcXVldWVzIDI4Cj4+ICAg
-bWF4cGFja2V0IDE1MTQgZHJvcF9vdmVybGltaXQgMjc3MDE3NiBuZXdfZmxvd19jb3VudCA2NCBl
-Y25fbWFyayAwCj4+ICAgbmV3X2Zsb3dzX2xlbiAwIG9sZF9mbG93c19sZW4gMQo+PiBxZGlzYyBm
-cV9jb2RlbCA4MDA0OiBwYXJlbnQgOjQgbGltaXQgMTAyNHAgZmxvd3MgMTYgcXVhbnR1bSAxNTE0
-Cj4+IHRhcmdldCA4MC4wbXMgY2VfdGhyZXNob2xkIDMydXMgaW50ZXJ2YWwgMTAwLjBtcyBlY24K
-Pj4gIFNlbnQgMCBieXRlcyAwIHBrdCAoZHJvcHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMg
-MCkKPj4gIGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+PiAgIG1heHBhY2tldCAwIGRyb3Bfb3Zl
-cmxpbWl0IDAgbmV3X2Zsb3dfY291bnQgMCBlY25fbWFyayAwCj4+ICAgbmV3X2Zsb3dzX2xlbiAw
-IG9sZF9mbG93c19sZW4gMAo+Pgo+Pgo+Pj4gSUYgeW91IGFyZSBkb2luZyBidWlsZHMgZm9yIHRo
-ZSBhcmNoZXIgYzd2MiwgSSBjYW4gam9pbiBpbiBvbiB0aGlzLi4uICg/KQo+Pgo+PiBJJ20gbm90
-IGJ1dCBJIGhhdmUgYzcgc29tZXdoZXJlLCBzbyBJIGNhbiBkbyBhIGJ1aWxkIGZvciBpdCBhbmQg
-YWxzbwo+PiB0ZXN0LCBzbyB3ZSBhcmUgb24gdGhlIHNhbWUgcGFnZS4KPj4KPj4+IEkgZGlkIGRv
-IGEgdGVzdCBvZiB0aGUgYXRoMTBrICJiZWZvcmUiLCBmcV9jb2RlbCAqbmV2ZXIgZW5nYWdlZCos
-IGFuZAo+Pj4gdGNwIGluZHVjZWQgbGF0ZW5jaWVzIHVuZGVyIGxvYWQsIGUgYXQgMTAwbWJpdCwg
-Y3JhY2tlZCA2MDBtcywgd2hpbGUKPj4+IHN0YXlpbmcgZmxhdCAoMjBtcykgYXQgMTAwbWJpdC4g
-KG5vdCB0aGUgc2FtZSBwYXRjaGVzIHlvdSBhcmUgdGVzdGluZykKPj4+IG9uIHg4Ni4gSSBoYXZl
-IGdvdCB0Y3AgMzAwTWJpdCBvdXQgb2YgYW4gb3N4IGJveCwgc2ltaWxhciBsYXRlbmN5LAo+Pj4g
-aGF2ZSB5ZXQgdG8gZ2V0IGFueXRoaW5nIG1vcmUgb24gYW55dGhpbmcgSSBjdXJyZW50bHkgaGF2
-ZQo+Pj4gYmVmb3JlL2FmdGVyIHBhdGNoc2V0cy4KPj4+Cj4+PiBJJ2xsIGdvIGFkZCBmbG9vZGlu
-ZyB0byB0aGUgdGVzdHMsIEkganVzdCBmaW5pc2hlZCBhIHNlcmllcyBjb21wYXJpbmcKPj4+IHR3
-byBkaWZmZXJlbnQgc3BlZWQgc3RhdGlvbnMgYW5kIGxpZmUgd2FzIGdvb2Qgb24gdGhhdC4KPj4+
-Cj4+PiAiYmVmb3JlIiAtIGZxX2NvZGVsIG5ldmVyIGVuZ2FnZXMsIHdlIHNlZSBzZWNvbmRzIG9m
-IGxhdGVuY3kgdW5kZXIgbG9hZC4KPj4+Cj4+PiByb290QGFwdTI6fiMgdGMgLXMgcWRpc2Mgc2hv
-dyBkZXYgd2xwNHMwCj4+PiBxZGlzYyBtcSAwOiByb290Cj4+PiAgU2VudCA4NTcwNTYzODkzIGJ5
-dGVzIDYzMjY5ODMgcGt0IChkcm9wcGVkIDAsIG92ZXJsaW1pdHMgMCByZXF1ZXVlcyAwKQo+Pj4g
-IGJhY2tsb2cgMGIgMHAgcmVxdWV1ZXMgMAo+Pj4gcWRpc2MgZnFfY29kZWwgMDogcGFyZW50IDox
-IGxpbWl0IDEwMjQwcCBmbG93cyAxMDI0IHF1YW50dW0gMTUxNAo+Pj4gdGFyZ2V0IDUuMG1zIGlu
-dGVydmFsIDEwMC4wbXMgZWNuCj4+PiAgU2VudCAyMjYyIGJ5dGVzIDE3IHBrdCAoZHJvcHBlZCAw
-LCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKPj4+ICBiYWNrbG9nIDBiIDBwIHJlcXVldWVzIDAK
-Pj4+ICAgbWF4cGFja2V0IDAgZHJvcF9vdmVybGltaXQgMCBuZXdfZmxvd19jb3VudCAwIGVjbl9t
-YXJrIDAKPj4+ICAgbmV3X2Zsb3dzX2xlbiAwIG9sZF9mbG93c19sZW4gMAo+Pj4gcWRpc2MgZnFf
-Y29kZWwgMDogcGFyZW50IDoyIGxpbWl0IDEwMjQwcCBmbG93cyAxMDI0IHF1YW50dW0gMTUxNAo+
-Pj4gdGFyZ2V0IDUuMG1zIGludGVydmFsIDEwMC4wbXMgZWNuCj4+PiAgU2VudCAyMjA0ODY1Njkg
-Ynl0ZXMgMTUyMDU4IHBrdCAoZHJvcHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKPj4+
-ICBiYWNrbG9nIDBiIDBwIHJlcXVldWVzIDAKPj4+ICAgbWF4cGFja2V0IDE4MTY4IGRyb3Bfb3Zl
-cmxpbWl0IDAgbmV3X2Zsb3dfY291bnQgMSBlY25fbWFyayAwCj4+PiAgIG5ld19mbG93c19sZW4g
-MCBvbGRfZmxvd3NfbGVuIDEKPj4+IHFkaXNjIGZxX2NvZGVsIDA6IHBhcmVudCA6MyBsaW1pdCAx
-MDI0MHAgZmxvd3MgMTAyNCBxdWFudHVtIDE1MTQKPj4+IHRhcmdldCA1LjBtcyBpbnRlcnZhbCAx
-MDAuMG1zIGVjbgo+Pj4gIFNlbnQgODM0MDU0NjUwOSBieXRlcyA2MTYzNDMxIHBrdCAoZHJvcHBl
-ZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1ZXMgMCkKPj4+ICBiYWNrbG9nIDBiIDBwIHJlcXVldWVz
-IDAKPj4+ICAgbWF4cGFja2V0IDY4MTMwIGRyb3Bfb3ZlcmxpbWl0IDAgbmV3X2Zsb3dfY291bnQg
-MTIwMDUwIGVjbl9tYXJrIDAKPj4+ICAgbmV3X2Zsb3dzX2xlbiAxIG9sZF9mbG93c19sZW4gMwo+
-Pj4gcWRpc2MgZnFfY29kZWwgMDogcGFyZW50IDo0IGxpbWl0IDEwMjQwcCBmbG93cyAxMDI0IHF1
-YW50dW0gMTUxNAo+Pj4gdGFyZ2V0IDUuMG1zIGludGVydmFsIDEwMC4wbXMgZWNuCj4+PiAgU2Vu
-dCA5NTI4NTUzIGJ5dGVzIDExNDc3IHBrdCAoZHJvcHBlZCAwLCBvdmVybGltaXRzIDAgcmVxdWV1
-ZXMgMCkKPj4+ICBiYWNrbG9nIDBiIDBwIHJlcXVldWVzIDAKPj4+ICAgbWF4cGFja2V0IDY2IGRy
-b3Bfb3ZlcmxpbWl0IDAgbmV3X2Zsb3dfY291bnQgMSBlY25fbWFyayAwCj4+PiAgIG5ld19mbG93
-c19sZW4gMSBvbGRfZmxvd3NfbGVuIDAKPj4+ICAgYGBgCj4+Pgo+Pj4KPj4+Pj4gVGhpcyBpcyBj
-ZXJ0YWlubHkgYmV0dGVyIHRoYW4gMzBNYnBzIGJ1dCBzdGlsbCBtb3JlIHRoYW4gdHdvIHRpbWVz
-Cj4+Pj4+IGxlc3MgdGhhbiBiZWZvcmUgKDkwMCkuCj4+Pgo+Pj4gVGhlIG51bWJlciB0aGF0IEkg
-c3RpbGwgYW0gbm90IHN1cmUgd2UgZ290IGlzIHRoYXQgeW91IHdlcmUgc2VuZGluZwo+Pj4gOTAw
-bWJpdCB1ZHAgYW5kIHJlY2lldmluZyA5MDBtYml0IG9uIHRoZSBwcmlvciB0ZXN0cz8KPj4KPj4g
-OTAwIHdhcyBzZW5kaW5nLCBBUCBQT1YgKHdpZmkgY2xpZW50IGlzIGRvd25sb2FkaW5nKQo+Pgo+
-Pj4+PiBUQ1AgYWxzbyBpbXByb3ZlZCBhIGxpdHRsZSAoNTUwIHRvIH41OTApLgo+Pj4KPj4+IFRo
-ZSBsaW1pdCBpcyBwcm9iYWJseSBhIGJpdCBsb3csIGFsc28uICBZb3UgbWlnaHQgd2FudCB0byB0
-cnkgdGFyZ2V0Cj4+PiAyMG1zIGFzIHdlbGwuCj4+Cj4+IEkndmUgdHJpZWQgbGltaXQgdXAgdG8g
-MTAyNCBhbmQgdGFyZ2V0IHVwIHRvIDgwbXMKPj4KPj4+Pj4KPj4+Pj4gRmVsaXgsIG90aGVycywg
-ZG8geW91IHdhbnQgdG8gc2VlIHRoZSBwb3J0ZWQgcGF0Y2gsIG1heWJlIEkgZGlkIHNvbWV0aGlu
-ZyB3cm9uZz8KPj4+Pj4gRG9lc24ndCBsb29rIGxpa2UgaXQgd2lsbCBzYXZlIGF0aDEwayBmcm9t
-IHBlcmZvcm1hbmNlIHJlZ3Jlc3Npb24uCj4+Pgo+Pj4gd2hhdCB3YXMgdGNwICJiZWZvcmUiPyAo
-SSdtIHNvcnJ5LCBzdWNoIGEgbG9uZyB0aHJlYWQpCj4+Cj4+IDc1ME1icHMKPgo+IE1pY2hhbCwg
-YWZ0ZXIgcmV0ZXN0aW5nIHdpdGggeW91ciBwYXRjaCAoc29ycnksIGl0IHdhcyBsYXRlIHllc3Rl
-cmRheSwKPiBjb25mdXNlZCBjb21wYXQtd2lyZWxlc3MgYXJjaGl2ZXMpIEkgc2F3IHRoZSBkaWZm
-ZXJlbmNlLgo+IFNvIHRoZSBwcm9ncmVzcyBsb29rcyBsaWtlIHRoaXMgKGFsbCB3aXRoIGZxX2Nv
-ZGVsIGZsb3dzIDE2IGxpbWl0IDEwMjQKPiB0YXJnZXQgMjBtcyk6Cj4gbm8gcGF0Y2hlczogMzgw
-TWJwcyBVRFAsIDU1MCBUQ1AKPiBFcmljJ3MgKGZxX2NvZGVsIGRyb3ApIHBhdGNoOiA0MjBNYnBz
-IFVEUCwgNTkwIFRDUCAoKzQwTWJwcyksIGxhdGVuY3kKPiA1LTZtcyBkdXJpbmcgdGVzdAo+IE1p
-Y2hhbCdzIChpbXByb3ZlIHR4IHNjaGVkdWxpbmcpIHBhdGNoOiA1ODBNYnBzIFVEUCwgNjYwIFRD
-UCwgbGF0ZW5jeQo+IHVwIHRvIDMwLTQwbXMgZHVyaW5nIHRlc3QKPiBhZnRlciBSYWprdW1hcidz
-IHByb3Bvc2FsIHRvICJ0cnkgd2l0aG91dCByZWdpc3RlcmluZyB3YWtlX3R4X3F1ZXVlCj4gY2Fs
-bGJhY2siOiA4MjBNYnBzIFVEUCwgNjkwIFRDUC4KCkFuZCB0aGUgc2ltdWx0YW5lb3VzIHBpbmcg
-b24gdGhlIGxhc3QgdGVzdCB3YXM/Cgo+IFNvLCB2ZXJ5IGNsb3NlIHRvICJhcyBiZWZvcmUiOiA5
-MDBNYnBzIFVEUCwgNzUwIFRDUC4KPiBCdXQgc3RpbGwsIEkgd2FzIGV4cGVjdGluZyBwZXJmb3Jt
-YW5jZSBpbXByb3ZlbWVudHMgZnJvbSBsYXRlc3QgYXRoMTBrCj4gY29kZSwgbm90IHJlZ3Jlc3Np
-b25zLgo+IEkga25vdyB0aGF0IGh3IGlzIGNhcGFibGUgb2YgODAwTWJwcyBUQ1AsIHdoaWNoIEkn
-bSB0YXJnZXRpbmcuCj4KPiBSZWdhcmRzLAo+IFJvbWFuCj4KPiBwLnMuIHNvcnJ5IGZvciBjb25m
-dXNpb24KCgoKLS0gCkRhdmUgVMOkaHQKTGV0J3MgZ28gbWFrZSBob21lIHJvdXRlcnMgYW5kIHdp
-ZmkgZmFzdGVyISBXaXRoIGJldHRlciBzb2Z0d2FyZSEKaHR0cDovL2Jsb2cuY2Vyb3dydC5vcmcK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
-YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On 16.05.2016 16:54, Ben Greear wrote:
+> On 05/16/2016 07:41 AM, Dirk Neukirchen wrote:
+>> HW: Sitecom WLR-8100
+>>
+>> Trying to fix some issues that popped up recently on that device-
+>> in 55-ath10k in modules.d i have the lines
+>>
+>> ath10k_core debug_mask=0x00000020
+>> ath10k_pci
+>>
+>> to enable debug msg during firmware loading
+>>
+>> A recent trunk of LEDE w. 4.4.10 bootlog snippet is:
+> 
+> You probably need this patch:
+> 
+> https://www.mail-archive.com/ath10k@lists.infradead.org/msg04742.html
+> 
+
+Thank you, the patch works 
+
+
+
+
+> Thanks,
+> Ben
+> 
+>>
+>>
+>> [   11.287977] procd: - init -
+>> Please press Enter to activate this console.
+>> [   12.725282] zram: Added device: zram0
+>> [   12.746688] tun: Universal TUN/TAP device driver, 1.6
+>> [   12.751819] tun: (C) 1999-2004 Max Krasnyansky <maxk@qualcomm.com>
+>> [   12.778617] sit: IPv6 over IPv4 tunneling driver
+>> [   12.804016] ip6_tables: (C) 2000-2006 Netfilter Core Team
+>> [   12.882570] Loading modules backported from Linux version wt-2016-05-12-0-g7a54796
+>> [   12.890295] Backport generated by backports.git backports-20160216-0-ge3c56e4
+>> [   12.990872] PCI: Enabling device 0000:01:00.0 (0000 -> 0002)
+>> [   12.996815] ath10k_pci 0000:01:00.0: pci irq legacy oper_irq_mode 1 irq_mode 0 reset_mode 0
+>> [   13.250480] ath10k_pci 0000:01:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:01:00.0.bin failed with error -2
+>> [   13.261372] ath10k_pci 0000:01:00.0: Falling back to user helper
+>> [   13.336990] firmware ath10k!pre-cal-pci-0000:01:00.0.bin: firmware_loading_store: map pages failed
+>> [   13.346353] ath10k_pci 0000:01:00.0: Direct firmware load for ath10k/cal-pci-0000:01:00.0.bin failed with error -2
+>> [   13.356885] ath10k_pci 0000:01:00.0: Falling back to user helper
+>> [   13.501649] firmware ath10k!cal-pci-0000:01:00.0.bin: firmware_loading_store: map pages failed
+>> [   13.828704] CPU 0 Unable to handle kernel paging request at virtual address 00000030, epc == 801b8c04, ra == 8738f594
+>> [   13.839497] Oops[#1]:
+>> [   13.841810] CPU: 0 PID: 6 Comm: kworker/u2:0 Not tainted 4.4.10 #1
+>> [   13.848118] Workqueue: ath10k_wq ath10k_core_stop [ath10k_core]
+>> [   13.854126] task: 87829900 ti: 8784a000 task.ti: 8784a000
+>> [   13.859596] $ 0   : 00000000 0000006e 00000002 00000000
+>> [   13.864929] $ 4   : 00000030 8784bc16 00000000 803bd9f8
+>> [   13.870262] $ 8   : 00000020 00000000 00000020 75726573
+>> [   13.875595] $12   : 00000000 00000100 00000000 302e303a
+>> [   13.880928] $16   : 00000001 00000000 8784bc16 00000004
+>> [   13.886260] $20   : 00000030 000000f6 00000030 00000004
+>> [   13.891593] $24   : 00000000 038e0fb2
+>> [   13.896925] $28   : 8784a000 8784bb90 873b0000 8738f594
+>> [   13.902259] Hi    : 00000000
+>> [   13.905181] Lo    : 00000010
+>> [   13.908106] epc   : 801b8c04 hex_dump_to_buffer+0x280/0x404
+>> [   13.913766] ra    : 8738f594 ath10k_dbg+0x2a8/0x308 [ath10k_core]
+>> [   13.919938] Status: 1100fc03    KERNEL EXL IE
+>> [   13.924208] Cause : 00800008 (ExcCode 02)
+>> [   13.928272] BadVA : 00000030
+>> [   13.931185] PrId  : 00019750 (MIPS 74Kc)
+>> [   13.935161] Modules linked in: ath10k_pci(+) ath10k_core ath mac80211 cfg80211 compat ledtrig_usbdev ip6t_REJECT nf_reject_ipv6 nf_log_ipv6 nf_log_common ip6table_raw ip6table_mangle ip6table_filter ip6_tables x_tables ifb sit tunnel4 ip_tunnel tun vfat fat zram lzo_decompress lzo_compress lz4_decompress lz4_compress zsmalloc usb_storage xhci_plat_hcd xhci_pci xhci_hcd ehci_platform ehci_hcd sd_mod scsi_mod gpio_button_hotplug ext4 jbd2 mbcache usbcore nls_base usb_common crc16 crypto_hash
+>> [   13.979502] Process kworker/u2:0 (pid: 6, threadinfo=8784a000, task=87829900, tls=00000000)
+>> [   13.987961] Stack : 873b94b4 873b79f8 873b79f0 00000030 00000030 872193e0 873b0000 00000031
+>>       00000001 8784bbac 0000000e 8738f33c 00000010 80400000 873b94b4 873b79f8
+>>       873b79f0 00000030 00000030 872193e0 873b0000 8738f594 8710e300 803c0f98
+>>       803c29fc 873b94b4 8784bc16 000000f6 00000001 4d3d7063 69004445 30303030
+>>       30303030 3a200030 30303a30 313a3030 2e3000b4 803c348c c03d2000 0003c788
+>>       ...
+>> [   14.024288] Call Trace:
+>> [   14.026767] [<801b8c04>] hex_dump_to_buffer+0x280/0x404
+>> [   14.032077] [<8738f594>] ath10k_dbg+0x2a8/0x308 [ath10k_core]
+>> [   14.037912]
+>> [   14.039424]
+>> Code: 02b1f023  1000001e  8fa20020 <90840000> 00044102  01074021  91080000  a0a80000  24680003
+>> [   14.049577] ---[ end trace b882fdc84557912b ]---
+>> [   14.056266] Fatal exception: panic in 5 seconds
+>>
+>> a more complete serial boot log with crash,
+>> normal fail (missing caldata/art extracted file) and skip_otp
+>> module param  is available at: https://github.com/plntyk/wlr8100
+>>
+>>
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>
+> 
+> 
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
