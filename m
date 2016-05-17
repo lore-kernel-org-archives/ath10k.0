@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
+Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2dg6-0003GU-5m
- for ath10k@lists.infradead.org; Tue, 17 May 2016 12:00:47 +0000
-Received: by mail-wm0-x22b.google.com with SMTP id g17so26723419wme.1
- for <ath10k@lists.infradead.org>; Tue, 17 May 2016 05:00:25 -0700 (PDT)
+ id 1b2dxP-0005gL-Cc
+ for ath10k@lists.infradead.org; Tue, 17 May 2016 12:18:40 +0000
+Received: by mail-wm0-x232.google.com with SMTP id a17so27650118wme.0
+ for <ath10k@lists.infradead.org>; Tue, 17 May 2016 05:18:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
+In-Reply-To: <4e407b2c-29f9-3c74-ea94-4206632441c3@dd-wrt.com>
 References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
  <57320C1A.3040604@candelatech.com>
  <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
@@ -16,8 +16,10 @@ References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
  <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
  <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
  <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
-Date: Tue, 17 May 2016 14:00:24 +0200
-Message-ID: <CA+BoTQkhrvS3Vz_CnDFGVdRwt=XJgrAF1oTRvyEz+96r48bjfQ@mail.gmail.com>
+ <CA+BoTQkhrvS3Vz_CnDFGVdRwt=XJgrAF1oTRvyEz+96r48bjfQ@mail.gmail.com>
+ <4e407b2c-29f9-3c74-ea94-4206632441c3@dd-wrt.com>
+Date: Tue, 17 May 2016 14:18:17 +0200
+Message-ID: <CA+BoTQnopmxAQaWCyNvy20uWB65F=pMcoQ9Pz4LNWo3VGBMpHg@mail.gmail.com>
 Subject: Re: QCA9984 VHT160 support
 From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -28,38 +30,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTcgTWF5IDIwMTYgYXQgMTM6NDMsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hh
-bGxAZGQtd3J0LmNvbT4gd3JvdGU6Cj4gQXR0YWNoZWQgeW91IHdpbGwgZmluZCBhIHRlc3Rpbmcg
-cGF0Y2ggZm9yIFZIVDE2MCBzdXBwb3J0LiBpIHRlc3RlZCBpdCB0b2RheQo+IG9uIGEgUUNBOTk4
-NCBkZXZpY2UgYW5kIGl0IHNlZW1zIHRvIHdvcmsuCj4gZmVlbCBmcmVlIHRvIG1ha2UgYW55IGNv
-cnJlY3Rpb25zCgpIaSwKClNlbmQgcGF0Y2hlcyBpbmxpbmUsIHBsZWFzZS4gUHJlZmVyYWJseSB2
-aWEgZ2l0IHNlbmQtZW1haWwuIEl0J3MgYSBsb3QKZWFzaWVyIHRvIHJldmlldyB0aGVtIHRoaXMg
-d2F5LgoKRnJvbSBhIHF1aWNrIGdsYW5jZSB2aHQgY2FwYWJpbGl0aWVzIHNldHVwIGxvb2tzIHdl
-aXJkOgoKPiBpZiAoYXItPnZodF9jYXBfaW5mbyAmICBJRUVFODAyMTFfVkhUX0NBUF9TSE9SVF9H
-SV8xNjApIHsKPiAgIHZodF9jYXAuY2FwIHw9IElFRUU4MDIxMV9WSFRfQ0FQX1NVUFBfQ0hBTl9X
-SURUSF8xNjBNSFo7Cj4gICB2aHRfY2FwLmNhcCB8PSBJRUVFODAyMTFfVkhUX0NBUF9TVVBQX0NI
-QU5fV0lEVEhfMTYwXzgwUExVUzgwTUhaOwo+IH0KCldoeT8gSXMgdGhpcyByZWFsbHkgbmVjZXNz
-YXJ5PwoKSSB3b3VsZCBleHBlY3QgSUVFRTgwMjExX1ZIVF9DQVBfU1VQUF9DSEFOX1dJRFRIXzE2
-ME1IWiBhbmQKSUVFRTgwMjExX1ZIVF9DQVBfU1VQUF9DSEFOX1dJRFRIXzE2MF84MFBMVVM4ME1I
-WiB0byBiZSBhbHJlYWR5IHNldCBpbgphci0+dmh0X2NhcF9pbmZvIGlmIHRoZSBjaGlwIHN1cHBv
-cnRzIDE2MCBvciA4MCs4MC4KCllvdSBhbHNvIGRvbid0IHNlZW0gdG8gaGFuZGxlIDgwKzgwIGJl
-Y2F1c2UgeW91IGp1c3QgYXMgcGh5bW9kZSB0byAxNjAKcmVnYXJkbGVzcyBvZiBjZW50ZXIgZnJl
-cXVlbmNpZXM6Cgo+ICFhdGgxMGtfcGVlcl9hc3NvY19oX3ZodF9tYXNrZWQodmh0X21jc19tYXNr
-KSkgewo+ICAgIGlmIChzdGEtPmJhbmR3aWR0aCA9PSBJRUVFODAyMTFfU1RBX1JYX0JXXzgwKQo+
-ICAgICAgcGh5bW9kZSA9IE1PREVfMTFBQ19WSFQ4MDsKPiAgICBlbHNlIGlmIChzdGEtPmJhbmR3
-aWR0aCA9PSBJRUVFODAyMTFfU1RBX1JYX0JXXzE2MCkKPiAgICAgIHBoeW1vZGUgPSBNT0RFXzEx
-QUNfVkhUMTYwOwo+ICAgIGVsc2UgaWYgKHN0YS0+YmFuZHdpZHRoID09IElFRUU4MDIxMV9TVEFf
-UlhfQldfNDApCj4gICAgICBwaHltb2RlID0gTU9ERV8xMUFDX1ZIVDQwOwo+ICAgIGVsc2UgaWYg
-KHN0YS0+YmFuZHdpZHRoID09IElFRUU4MDIxMV9TVEFfUlhfQldfMjApCgpZb3Ugc2hvdWxkIHBy
-b2JhYmx5IGxvb2sgYXQgc3RhLT52aHRfY2FwIGFuZCBhc3NvY2lhdGVkIGNoYW5jdHggdG8KY2hl
-Y2sgaWYgaXQgaXNuJ3QgODArODAuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2F0aDEwawo=
++ re-adding ath10k list
+
+
+On 17 May 2016 at 14:05, Sebastian Gottschall <s.gottschall@dd-wrt.com> wrote:
+>Am 17.05.2016 um 14:00 schrieb Michal Kazior:
+>> On 17 May 2016 at 13:43, Sebastian Gottschall <s.gottschall@dd-wrt.com> wrote:
+>>> Attached you will find a testing patch for VHT160 support. i tested it today
+>>> on a QCA9984 device and it seems to work.
+>>> feel free to make any corrections
+>> Hi,
+>>
+>> Send patches inline, please. Preferably via git send-email. It's a lot
+>> easier to review them this way.
+> unfortunaty i dont work with git right now and i wanted to send it to
+> the list first for getting comments.
+> since the patch is also very small, it should be that complicated
+>>
+>>  From a quick glance vht capabilities setup looks weird:
+>>
+>>> if (ar->vht_cap_info &  IEEE80211_VHT_CAP_SHORT_GI_160) {
+>>>    vht_cap.cap |= IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ;
+>>>    vht_cap.cap |= IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ;
+>>> }
+>> Why? Is this really necessary?
+> the firmware does not report correct flags. just SHORT_GI_160.
+> i reviewed the firmware sourcecodes and found out that this is maybe a
+> misstake of the QCA developers.
+> so we need to add the 160MHZ support flags locally using the
+> SHORT_GI_160 which is always set on QCA9984.
+> otherwise mac80211 will not be capable of running vht160.
+
+I'm not sure if SGI160 implies 80+80.
+
+
+>> I would expect IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ and
+>> IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ to be already set in
+>> ar->vht_cap_info if the chip supports 160 or 80+80.
+>me too. but it isnt :-)
+
+Sigh. A comment explaining that would be really nice.
+
+
+>> You also don't seem to handle 80+80 because you just as phymode to 160
+>> regardless of center frequencies:
+>>
+>>> !ath10k_peer_assoc_h_vht_masked(vht_mcs_mask)) {
+>>>     if (sta->bandwidth == IEEE80211_STA_RX_BW_80)
+>>>       phymode = MODE_11AC_VHT80;
+>>>     else if (sta->bandwidth == IEEE80211_STA_RX_BW_160)
+>>>       phymode = MODE_11AC_VHT160;
+>>>     else if (sta->bandwidth == IEEE80211_STA_RX_BW_40)
+>>>       phymode = MODE_11AC_VHT40;
+>>>     else if (sta->bandwidth == IEEE80211_STA_RX_BW_20)
+> there is no 80+80 STA_RX_BW flag. i dont know how to handle this. and
+> yes, just 160 mhz is tested right now. right now it looks like mac80211
+> is not 80+80 ready.
+
+Hmm.. I wouldn't advertise 80+80 support then. All the more since
+there's no way of telling whether hw/fw actually supports it in the
+first place.
+
+
+Michal
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
