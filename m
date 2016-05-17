@@ -1,9 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
- by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b2dVB-0003N6-BP
- for ath10k@lists.infradead.org; Tue, 17 May 2016 11:49:30 +0000
+Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b2dg6-0003GU-5m
+ for ath10k@lists.infradead.org; Tue, 17 May 2016 12:00:47 +0000
+Received: by mail-wm0-x22b.google.com with SMTP id g17so26723419wme.1
+ for <ath10k@lists.infradead.org>; Tue, 17 May 2016 05:00:25 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
 References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
  <57320C1A.3040604@candelatech.com>
  <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
@@ -12,13 +15,11 @@ References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
  <573892F5.40706@candelatech.com> <5738AE96.8040800@candelatech.com>
  <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
  <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
-Date: Tue, 17 May 2016 13:43:39 +0200
-MIME-Version: 1.0
-In-Reply-To: <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
-Content-Type: multipart/mixed; boundary="------------BB8CAFA845CE61CEDB86BCC9"
-Subject: QCA9984 VHT160 support
+ <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
+Date: Tue, 17 May 2016 14:00:24 +0200
+Message-ID: <CA+BoTQkhrvS3Vz_CnDFGVdRwt=XJgrAF1oTRvyEz+96r48bjfQ@mail.gmail.com>
+Subject: Re: QCA9984 VHT160 support
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,173 +28,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-This is a multi-part message in MIME format.
---------------BB8CAFA845CE61CEDB86BCC9
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
-
-Attached you will find a testing patch for VHT160 support. i tested it=20
-today on a QCA9984 device and it seems to work.
-feel free to make any corrections
-
-
---=20
-Mit freundlichen Gr=FCssen / Regards
-
-Sebastian Gottschall / CTO
-
-NewMedia-NET GmbH - DD-WRT
-Firmensitz:  Berliner Ring 101, 64625 Bensheim
-Registergericht: Amtsgericht Darmstadt, HRB 25473
-Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
-http://www.dd-wrt.com
-email: s.gottschall@dd-wrt.com
-Tel.: +496251-582650 / Fax: +496251-5826565
-
-
---------------BB8CAFA845CE61CEDB86BCC9
-Content-Type: text/plain; charset=UTF-8;
- name="vht160.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="vht160.patch"
-
-Index: drivers/net/wireless/ath/ath9k/gpio.c
-===================================================================
-Index: drivers/net/wireless/ath/ath10k/mac.c
-===================================================================
---- drivers/net/wireless/ath/ath10k/mac.c	(revision 2910)
-+++ drivers/net/wireless/ath/ath10k/mac.c	(working copy)
-@@ -539,10 +539,14 @@
- 		case NL80211_CHAN_WIDTH_80:
- 			phymode = MODE_11AC_VHT80;
- 			break;
-+		case NL80211_CHAN_WIDTH_160:
-+			phymode = MODE_11AC_VHT160;
-+			break;
-+		case NL80211_CHAN_WIDTH_80P80:
-+			phymode = MODE_11AC_VHT80_80;
-+			break;
- 		case NL80211_CHAN_WIDTH_5:
- 		case NL80211_CHAN_WIDTH_10:
--		case NL80211_CHAN_WIDTH_80P80:
--		case NL80211_CHAN_WIDTH_160:
- 			phymode = MODE_UNKNOWN;
- 			break;
- 		}
-@@ -2499,6 +2503,8 @@
- 		    !ath10k_peer_assoc_h_vht_masked(vht_mcs_mask)) {
- 			if (sta->bandwidth == IEEE80211_STA_RX_BW_80)
- 				phymode = MODE_11AC_VHT80;
-+			else if (sta->bandwidth == IEEE80211_STA_RX_BW_160)
-+				phymode = MODE_11AC_VHT160;
- 			else if (sta->bandwidth == IEEE80211_STA_RX_BW_40)
- 				phymode = MODE_11AC_VHT40;
- 			else if (sta->bandwidth == IEEE80211_STA_RX_BW_20)
-@@ -4185,6 +4191,10 @@
- 
- 		vht_cap.cap |= val;
- 	}
-+	if (ar->vht_cap_info &  IEEE80211_VHT_CAP_SHORT_GI_160) {
-+		vht_cap.cap |= IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ;
-+		vht_cap.cap |= IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ;
-+	}
- 
- 	mcs_map = 0;
- 	for (i = 0; i < 8; i++) {
-@@ -6798,6 +6808,9 @@
- 			bw = WMI_PEER_CHWIDTH_80MHZ;
- 			break;
- 		case IEEE80211_STA_RX_BW_160:
-+			bw = WMI_PEER_CHWIDTH_160MHZ;
-+			break;
-+		default:
- 			ath10k_warn(ar, "Invalid bandwidth %d in rc update for %pM\n",
- 				    sta->bandwidth, sta->addr);
- 			bw = WMI_PEER_CHWIDTH_20MHZ;
-Index: drivers/net/wireless/ath/ath10k/htt_rx.c
-===================================================================
---- drivers/net/wireless/ath/ath10k/htt_rx.c	(revision 2910)
-+++ drivers/net/wireless/ath/ath10k/htt_rx.c	(working copy)
-@@ -707,6 +707,10 @@
- 		/* 80MHZ */
- 		case 2:
- 			status->vht_flag |= RX_VHT_FLAG_80MHZ;
-+			break;
-+		case 3:
-+			status->vht_flag |= RX_VHT_FLAG_160MHZ;
-+			break;
- 		}
- 
- 		status->flag |= RX_FLAG_VHT;
-@@ -2193,6 +2197,8 @@
- 	case MODE_11AC_VHT20:
- 	case MODE_11AC_VHT40:
- 	case MODE_11AC_VHT80:
-+	case MODE_11AC_VHT160:
-+	case MODE_11AC_VHT80_80:
- 		band = NL80211_BAND_5GHZ;
- 		break;
- 	case MODE_11G:
-Index: drivers/net/wireless/ath/ath10k/wmi.h
-===================================================================
---- drivers/net/wireless/ath/ath10k/wmi.h	(revision 2910)
-+++ drivers/net/wireless/ath/ath10k/wmi.h	(working copy)
-@@ -1723,8 +1723,10 @@
- 	MODE_11AC_VHT20_2G = 11,
- 	MODE_11AC_VHT40_2G = 12,
- 	MODE_11AC_VHT80_2G = 13,
--	MODE_UNKNOWN    = 14,
--	MODE_MAX        = 14
-+	MODE_11AC_VHT80_80 = 14,
-+	MODE_11AC_VHT160 = 15,
-+	MODE_UNKNOWN    = 16,
-+	MODE_MAX        = 16
- };
- 
- static inline const char *ath10k_wmi_phymode_str(enum wmi_phy_mode mode)
-@@ -1752,6 +1754,10 @@
- 		return "11ac-vht40";
- 	case MODE_11AC_VHT80:
- 		return "11ac-vht80";
-+	case MODE_11AC_VHT160:
-+		return "11ac-vht160";
-+	case MODE_11AC_VHT80_80:
-+		return "11ac-vht80+80";
- 	case MODE_11AC_VHT20_2G:
- 		return "11ac-vht20-2g";
- 	case MODE_11AC_VHT40_2G:
-@@ -5748,6 +5754,7 @@
- 	WMI_PEER_CHWIDTH_20MHZ = 0,
- 	WMI_PEER_CHWIDTH_40MHZ = 1,
- 	WMI_PEER_CHWIDTH_80MHZ = 2,
-+	WMI_PEER_CHWIDTH_160MHZ = 3,
- };
- 
- enum wmi_peer_param {
-Index: compat/backport-4.5.c
-===================================================================
-\ No newline at end of file
-Index: backport-include/backport/leds-disabled.h
-===================================================================
-Index: backport-include/linux/leds.h
-===================================================================
-Index: net/wireless/db.txt
-===================================================================
-
---------------BB8CAFA845CE61CEDB86BCC9
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---------------BB8CAFA845CE61CEDB86BCC9--
+T24gMTcgTWF5IDIwMTYgYXQgMTM6NDMsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hh
+bGxAZGQtd3J0LmNvbT4gd3JvdGU6Cj4gQXR0YWNoZWQgeW91IHdpbGwgZmluZCBhIHRlc3Rpbmcg
+cGF0Y2ggZm9yIFZIVDE2MCBzdXBwb3J0LiBpIHRlc3RlZCBpdCB0b2RheQo+IG9uIGEgUUNBOTk4
+NCBkZXZpY2UgYW5kIGl0IHNlZW1zIHRvIHdvcmsuCj4gZmVlbCBmcmVlIHRvIG1ha2UgYW55IGNv
+cnJlY3Rpb25zCgpIaSwKClNlbmQgcGF0Y2hlcyBpbmxpbmUsIHBsZWFzZS4gUHJlZmVyYWJseSB2
+aWEgZ2l0IHNlbmQtZW1haWwuIEl0J3MgYSBsb3QKZWFzaWVyIHRvIHJldmlldyB0aGVtIHRoaXMg
+d2F5LgoKRnJvbSBhIHF1aWNrIGdsYW5jZSB2aHQgY2FwYWJpbGl0aWVzIHNldHVwIGxvb2tzIHdl
+aXJkOgoKPiBpZiAoYXItPnZodF9jYXBfaW5mbyAmICBJRUVFODAyMTFfVkhUX0NBUF9TSE9SVF9H
+SV8xNjApIHsKPiAgIHZodF9jYXAuY2FwIHw9IElFRUU4MDIxMV9WSFRfQ0FQX1NVUFBfQ0hBTl9X
+SURUSF8xNjBNSFo7Cj4gICB2aHRfY2FwLmNhcCB8PSBJRUVFODAyMTFfVkhUX0NBUF9TVVBQX0NI
+QU5fV0lEVEhfMTYwXzgwUExVUzgwTUhaOwo+IH0KCldoeT8gSXMgdGhpcyByZWFsbHkgbmVjZXNz
+YXJ5PwoKSSB3b3VsZCBleHBlY3QgSUVFRTgwMjExX1ZIVF9DQVBfU1VQUF9DSEFOX1dJRFRIXzE2
+ME1IWiBhbmQKSUVFRTgwMjExX1ZIVF9DQVBfU1VQUF9DSEFOX1dJRFRIXzE2MF84MFBMVVM4ME1I
+WiB0byBiZSBhbHJlYWR5IHNldCBpbgphci0+dmh0X2NhcF9pbmZvIGlmIHRoZSBjaGlwIHN1cHBv
+cnRzIDE2MCBvciA4MCs4MC4KCllvdSBhbHNvIGRvbid0IHNlZW0gdG8gaGFuZGxlIDgwKzgwIGJl
+Y2F1c2UgeW91IGp1c3QgYXMgcGh5bW9kZSB0byAxNjAKcmVnYXJkbGVzcyBvZiBjZW50ZXIgZnJl
+cXVlbmNpZXM6Cgo+ICFhdGgxMGtfcGVlcl9hc3NvY19oX3ZodF9tYXNrZWQodmh0X21jc19tYXNr
+KSkgewo+ICAgIGlmIChzdGEtPmJhbmR3aWR0aCA9PSBJRUVFODAyMTFfU1RBX1JYX0JXXzgwKQo+
+ICAgICAgcGh5bW9kZSA9IE1PREVfMTFBQ19WSFQ4MDsKPiAgICBlbHNlIGlmIChzdGEtPmJhbmR3
+aWR0aCA9PSBJRUVFODAyMTFfU1RBX1JYX0JXXzE2MCkKPiAgICAgIHBoeW1vZGUgPSBNT0RFXzEx
+QUNfVkhUMTYwOwo+ICAgIGVsc2UgaWYgKHN0YS0+YmFuZHdpZHRoID09IElFRUU4MDIxMV9TVEFf
+UlhfQldfNDApCj4gICAgICBwaHltb2RlID0gTU9ERV8xMUFDX1ZIVDQwOwo+ICAgIGVsc2UgaWYg
+KHN0YS0+YmFuZHdpZHRoID09IElFRUU4MDIxMV9TVEFfUlhfQldfMjApCgpZb3Ugc2hvdWxkIHBy
+b2JhYmx5IGxvb2sgYXQgc3RhLT52aHRfY2FwIGFuZCBhc3NvY2lhdGVkIGNoYW5jdHggdG8KY2hl
+Y2sgaWYgaXQgaXNuJ3QgODArODAuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawo=
