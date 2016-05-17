@@ -1,12 +1,9 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2dxP-0005gL-Cc
- for ath10k@lists.infradead.org; Tue, 17 May 2016 12:18:40 +0000
-Received: by mail-wm0-x232.google.com with SMTP id a17so27650118wme.0
- for <ath10k@lists.infradead.org>; Tue, 17 May 2016 05:18:18 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <4e407b2c-29f9-3c74-ea94-4206632441c3@dd-wrt.com>
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
+ by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1b2e7D-0006HR-IE
+ for ath10k@lists.infradead.org; Tue, 17 May 2016 12:28:48 +0000
 References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
  <57320C1A.3040604@candelatech.com>
  <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
@@ -18,10 +15,13 @@ References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
  <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
  <CA+BoTQkhrvS3Vz_CnDFGVdRwt=XJgrAF1oTRvyEz+96r48bjfQ@mail.gmail.com>
  <4e407b2c-29f9-3c74-ea94-4206632441c3@dd-wrt.com>
-Date: Tue, 17 May 2016 14:18:17 +0200
-Message-ID: <CA+BoTQnopmxAQaWCyNvy20uWB65F=pMcoQ9Pz4LNWo3VGBMpHg@mail.gmail.com>
+ <CA+BoTQnopmxAQaWCyNvy20uWB65F=pMcoQ9Pz4LNWo3VGBMpHg@mail.gmail.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <acfe08a2-31f6-e9e4-2785-9cad15d457b0@dd-wrt.com>
+Date: Tue, 17 May 2016 14:22:55 +0200
+MIME-Version: 1.0
+In-Reply-To: <CA+BoTQnopmxAQaWCyNvy20uWB65F=pMcoQ9Pz4LNWo3VGBMpHg@mail.gmail.com>
 Subject: Re: QCA9984 VHT160 support
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,77 +30,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-+ re-adding ath10k list
-
-
-On 17 May 2016 at 14:05, Sebastian Gottschall <s.gottschall@dd-wrt.com> wrote:
->Am 17.05.2016 um 14:00 schrieb Michal Kazior:
->> On 17 May 2016 at 13:43, Sebastian Gottschall <s.gottschall@dd-wrt.com> wrote:
->>> Attached you will find a testing patch for VHT160 support. i tested it today
->>> on a QCA9984 device and it seems to work.
->>> feel free to make any corrections
->> Hi,
->>
->> Send patches inline, please. Preferably via git send-email. It's a lot
->> easier to review them this way.
-> unfortunaty i dont work with git right now and i wanted to send it to
-> the list first for getting comments.
-> since the patch is also very small, it should be that complicated
->>
->>  From a quick glance vht capabilities setup looks weird:
->>
->>> if (ar->vht_cap_info &  IEEE80211_VHT_CAP_SHORT_GI_160) {
->>>    vht_cap.cap |= IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ;
->>>    vht_cap.cap |= IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ;
->>> }
->> Why? Is this really necessary?
-> the firmware does not report correct flags. just SHORT_GI_160.
-> i reviewed the firmware sourcecodes and found out that this is maybe a
-> misstake of the QCA developers.
-> so we need to add the 160MHZ support flags locally using the
-> SHORT_GI_160 which is always set on QCA9984.
-> otherwise mac80211 will not be capable of running vht160.
-
-I'm not sure if SGI160 implies 80+80.
-
-
->> I would expect IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ and
->> IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ to be already set in
->> ar->vht_cap_info if the chip supports 160 or 80+80.
->me too. but it isnt :-)
-
-Sigh. A comment explaining that would be really nice.
-
-
->> You also don't seem to handle 80+80 because you just as phymode to 160
->> regardless of center frequencies:
->>
->>> !ath10k_peer_assoc_h_vht_masked(vht_mcs_mask)) {
->>>     if (sta->bandwidth == IEEE80211_STA_RX_BW_80)
->>>       phymode = MODE_11AC_VHT80;
->>>     else if (sta->bandwidth == IEEE80211_STA_RX_BW_160)
->>>       phymode = MODE_11AC_VHT160;
->>>     else if (sta->bandwidth == IEEE80211_STA_RX_BW_40)
->>>       phymode = MODE_11AC_VHT40;
->>>     else if (sta->bandwidth == IEEE80211_STA_RX_BW_20)
-> there is no 80+80 STA_RX_BW flag. i dont know how to handle this. and
-> yes, just 160 mhz is tested right now. right now it looks like mac80211
-> is not 80+80 ready.
-
-Hmm.. I wouldn't advertise 80+80 support then. All the more since
-there's no way of telling whether hw/fw actually supports it in the
-first place.
-
-
-Michal
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMTcuMDUuMjAxNiB1bSAxNDoxOCBzY2hyaWViIE1pY2hhbCBLYXppb3I6Cj4gKyByZS1hZGRp
+bmcgYXRoMTBrIGxpc3QKPgo+Cj4gT24gMTcgTWF5IDIwMTYgYXQgMTQ6MDUsIFNlYmFzdGlhbiBH
+b3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4gd3JvdGU6Cj4+IEFtIDE3LjA1LjIw
+MTYgdW0gMTQ6MDAgc2NocmllYiBNaWNoYWwgS2F6aW9yOgo+Pj4gT24gMTcgTWF5IDIwMTYgYXQg
+MTM6NDMsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4gd3Jv
+dGU6Cj4+Pj4gQXR0YWNoZWQgeW91IHdpbGwgZmluZCBhIHRlc3RpbmcgcGF0Y2ggZm9yIFZIVDE2
+MCBzdXBwb3J0LiBpIHRlc3RlZCBpdCB0b2RheQo+Pj4+IG9uIGEgUUNBOTk4NCBkZXZpY2UgYW5k
+IGl0IHNlZW1zIHRvIHdvcmsuCj4+Pj4gZmVlbCBmcmVlIHRvIG1ha2UgYW55IGNvcnJlY3Rpb25z
+Cj4+PiBIaSwKPj4+Cj4+PiBTZW5kIHBhdGNoZXMgaW5saW5lLCBwbGVhc2UuIFByZWZlcmFibHkg
+dmlhIGdpdCBzZW5kLWVtYWlsLiBJdCdzIGEgbG90Cj4+PiBlYXNpZXIgdG8gcmV2aWV3IHRoZW0g
+dGhpcyB3YXkuCj4+IHVuZm9ydHVuYXR5IGkgZG9udCB3b3JrIHdpdGggZ2l0IHJpZ2h0IG5vdyBh
+bmQgaSB3YW50ZWQgdG8gc2VuZCBpdCB0bwo+PiB0aGUgbGlzdCBmaXJzdCBmb3IgZ2V0dGluZyBj
+b21tZW50cy4KPj4gc2luY2UgdGhlIHBhdGNoIGlzIGFsc28gdmVyeSBzbWFsbCwgaXQgc2hvdWxk
+IGJlIHRoYXQgY29tcGxpY2F0ZWQKPj4+ICAgRnJvbSBhIHF1aWNrIGdsYW5jZSB2aHQgY2FwYWJp
+bGl0aWVzIHNldHVwIGxvb2tzIHdlaXJkOgo+Pj4KPj4+PiBpZiAoYXItPnZodF9jYXBfaW5mbyAm
+ICBJRUVFODAyMTFfVkhUX0NBUF9TSE9SVF9HSV8xNjApIHsKPj4+PiAgICAgdmh0X2NhcC5jYXAg
+fD0gSUVFRTgwMjExX1ZIVF9DQVBfU1VQUF9DSEFOX1dJRFRIXzE2ME1IWjsKPj4+PiAgICAgdmh0
+X2NhcC5jYXAgfD0gSUVFRTgwMjExX1ZIVF9DQVBfU1VQUF9DSEFOX1dJRFRIXzE2MF84MFBMVVM4
+ME1IWjsKPj4+PiB9Cj4+PiBXaHk/IElzIHRoaXMgcmVhbGx5IG5lY2Vzc2FyeT8KPj4gdGhlIGZp
+cm13YXJlIGRvZXMgbm90IHJlcG9ydCBjb3JyZWN0IGZsYWdzLiBqdXN0IFNIT1JUX0dJXzE2MC4K
+Pj4gaSByZXZpZXdlZCB0aGUgZmlybXdhcmUgc291cmNlY29kZXMgYW5kIGZvdW5kIG91dCB0aGF0
+IHRoaXMgaXMgbWF5YmUgYQo+PiBtaXNzdGFrZSBvZiB0aGUgUUNBIGRldmVsb3BlcnMuCj4+IHNv
+IHdlIG5lZWQgdG8gYWRkIHRoZSAxNjBNSFogc3VwcG9ydCBmbGFncyBsb2NhbGx5IHVzaW5nIHRo
+ZQo+PiBTSE9SVF9HSV8xNjAgd2hpY2ggaXMgYWx3YXlzIHNldCBvbiBRQ0E5OTg0Lgo+PiBvdGhl
+cndpc2UgbWFjODAyMTEgd2lsbCBub3QgYmUgY2FwYWJsZSBvZiBydW5uaW5nIHZodDE2MC4KPiBJ
+J20gbm90IHN1cmUgaWYgU0dJMTYwIGltcGxpZXMgODArODAuCmFjY29yZGluZyB0byB0aGUgZmly
+bXdhcmUgc291cmNlY29kZSBvZiA5OTg0IGl0IHNlZW1zIHNvLiB0aGF0cyB0aGUgb25seSAKaW5m
+b3JtYXRpb24gc291cmNlIGkgaGF2ZQo+Cj4KPj4+IEkgd291bGQgZXhwZWN0IElFRUU4MDIxMV9W
+SFRfQ0FQX1NVUFBfQ0hBTl9XSURUSF8xNjBNSFogYW5kCj4+PiBJRUVFODAyMTFfVkhUX0NBUF9T
+VVBQX0NIQU5fV0lEVEhfMTYwXzgwUExVUzgwTUhaIHRvIGJlIGFscmVhZHkgc2V0IGluCj4+PiBh
+ci0+dmh0X2NhcF9pbmZvIGlmIHRoZSBjaGlwIHN1cHBvcnRzIDE2MCBvciA4MCs4MC4KPj4gbWUg
+dG9vLiBidXQgaXQgaXNudCA6LSkKPiBTaWdoLiBBIGNvbW1lbnQgZXhwbGFpbmluZyB0aGF0IHdv
+dWxkIGJlIHJlYWxseSBuaWNlLgp0aGVyZSBpcyBubyBjb21tZW50IGF2YWlsYWJsZS4gdGhlIG9u
+bHkgaW5mb3JtYXRpb24gc291cmNlIGlzIHRoZSAKZmlybXdhcmUgc291cmNlY29kZSBmb3IgdGhl
+IDk5ODQgd2hpY2ggaSByZXZpZXdlZC4KbGV0IG1lIGdpdmUgeW91IGEgc21hbGwgc25pcHBldAoj
+aWYgZGVmaW5lZChDT05GSUdfMTYwTUhaX1NVUFBPUlQpCiNkZWZpbmUgVkhUX0NBUF9XSVRIX1NU
+QkNfMVNTX1ZIVDE2MCAoKFZIVF9DQVBfV0lUSF9TVEJDXzFTUykgfCAKKFdNSV9WSFRfQ0FQX1NH
+SV8xNjBNSFopKQojZGVmaW5lIFZIVF9DQVBfV0lUSF9TVEJDXzJTU19WSFQxNjAgKChWSFRfQ0FQ
+X1dJVEhfU1RCQ18yU1MpIHwgCihXTUlfVkhUX0NBUF9TR0lfMTYwTUhaKSkKI2RlZmluZSBWSFRf
+Q0FQX1dJVEhfU1RCQ18zU1NfVkhUMTYwICgoVkhUX0NBUF9XSVRIX1NUQkNfM1NTKSB8IAooV01J
+X1ZIVF9DQVBfU0dJXzE2ME1IWikpCiNlbmRpZgojaWYgZGVmaW5lZChDT05GSUdfMTYwTUhaX1NV
+UFBPUlQpCiAgICAgZGV2X2luZm8tPnZodF9jYXBfaW5mbyAgPSBWSFRfQ0FQX1dJVEhfU1RCQ18x
+U1NfVkhUMTYwOwojZWxzZQogICAgIGRldl9pbmZvLT52aHRfY2FwX2luZm8gID0gVkhUX0NBUF9X
+SVRIX1NUQkNfMVNTX1ZIVDgwOwojZW5kaWYKCgpzbyB0aGUgZmlybXdhcmUgc2ltcGx5IGRvZXMg
+bm90IHNldCB0aGUgY29ycmVjdCBmbGFncy4gdGhhdHMgYWxsLgo+Cj4KPj4+IFlvdSBhbHNvIGRv
+bid0IHNlZW0gdG8gaGFuZGxlIDgwKzgwIGJlY2F1c2UgeW91IGp1c3QgYXMgcGh5bW9kZSB0byAx
+NjAKPj4+IHJlZ2FyZGxlc3Mgb2YgY2VudGVyIGZyZXF1ZW5jaWVzOgo+Pj4KPj4+PiAhYXRoMTBr
+X3BlZXJfYXNzb2NfaF92aHRfbWFza2VkKHZodF9tY3NfbWFzaykpIHsKPj4+PiAgICAgIGlmIChz
+dGEtPmJhbmR3aWR0aCA9PSBJRUVFODAyMTFfU1RBX1JYX0JXXzgwKQo+Pj4+ICAgICAgICBwaHlt
+b2RlID0gTU9ERV8xMUFDX1ZIVDgwOwo+Pj4+ICAgICAgZWxzZSBpZiAoc3RhLT5iYW5kd2lkdGgg
+PT0gSUVFRTgwMjExX1NUQV9SWF9CV18xNjApCj4+Pj4gICAgICAgIHBoeW1vZGUgPSBNT0RFXzEx
+QUNfVkhUMTYwOwo+Pj4+ICAgICAgZWxzZSBpZiAoc3RhLT5iYW5kd2lkdGggPT0gSUVFRTgwMjEx
+X1NUQV9SWF9CV180MCkKPj4+PiAgICAgICAgcGh5bW9kZSA9IE1PREVfMTFBQ19WSFQ0MDsKPj4+
+PiAgICAgIGVsc2UgaWYgKHN0YS0+YmFuZHdpZHRoID09IElFRUU4MDIxMV9TVEFfUlhfQldfMjAp
+Cj4+IHRoZXJlIGlzIG5vIDgwKzgwIFNUQV9SWF9CVyBmbGFnLiBpIGRvbnQga25vdyBob3cgdG8g
+aGFuZGxlIHRoaXMuIGFuZAo+PiB5ZXMsIGp1c3QgMTYwIG1oeiBpcyB0ZXN0ZWQgcmlnaHQgbm93
+LiByaWdodCBub3cgaXQgbG9va3MgbGlrZSBtYWM4MDIxMQo+PiBpcyBub3QgODArODAgcmVhZHku
+Cj4gSG1tLi4gSSB3b3VsZG4ndCBhZHZlcnRpc2UgODArODAgc3VwcG9ydCB0aGVuLiBBbGwgdGhl
+IG1vcmUgc2luY2UKPiB0aGVyZSdzIG5vIHdheSBvZiB0ZWxsaW5nIHdoZXRoZXIgaHcvZncgYWN0
+dWFsbHkgc3VwcG9ydHMgaXQgaW4gdGhlCj4gZmlyc3QgcGxhY2UuCndlIGNhbiBsZWF2ZSBpdCBv
+dXQgYXQgdGhlIGVuZCwgYnV0IHRoZSBmaXJtd2FyZSBzZWVtIHRvIHN1cHBvcnQgaXQuIHNvIApm
+YXIgaSBqdXN0IHRlc3RlZCAxNjAgaW4gYXAgbW9kZSB5ZXQsIGJ1dCBmb3VuZCBvdGhlcgp0aGlu
+Z3MgaW4gYXRoMTBrIHdoaWNoIG5lZWQgdG8gYmUgZml4ZWQuIGknbSBvbiBpdCByaWdodCBub3cK
+Pgo+Cj4gTWljaGFsCj4KCgotLSAKTWl0IGZyZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMK
+ClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RPCgpOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVApG
+aXJtZW5zaXR6OiAgQmVybGluZXIgUmluZyAxMDEsIDY0NjI1IEJlbnNoZWltClJlZ2lzdGVyZ2Vy
+aWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0NzMKR2VzY2jDpGZ0c2bDvGhyZXI6
+IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUKaHR0cDovL3d3dy5kZC13cnQu
+Y29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpUZWwuOiArNDk2MjUxLTU4MjY1MCAv
+IEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
