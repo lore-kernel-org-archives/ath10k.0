@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.net ([212.227.17.22])
+Received: from mail-yw0-x22b.google.com ([2607:f8b0:4002:c05::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2mAo-0006gw-RB
- for ath10k@lists.infradead.org; Tue, 17 May 2016 21:05:03 +0000
+ id 1b2o9j-0006Po-3p
+ for ath10k@lists.infradead.org; Tue, 17 May 2016 23:12:03 +0000
+Received: by mail-yw0-x22b.google.com with SMTP id g133so31557785ywb.2
+ for <ath10k@lists.infradead.org>; Tue, 17 May 2016 16:11:42 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <trinity-50a39f6d-5fed-40e5-9232-8426f29b33e3-1463519079223@3capp-gmx-bs70>
-From: "Lil Evil" <Lil_Evil@gmx.de>
-Subject: ath10k temperature issue with late2012 macbook pro
-Date: Tue, 17 May 2016 23:04:39 +0200
+Date: Tue, 17 May 2016 18:11:41 -0500
+Message-ID: <CAGBdaZmyyC4Eym=U3yEeZqz9jrW5zp_5kZcDQDyvenAVL=qHeA@mail.gmail.com>
+Subject: Compex QCA9880 Aarch64 ath10k firmware?
+From: Brad Pousland <bpousland@izuma.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,56 +18,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
-SGkgYWxsLAoKSSBhbSBydW5uaW5nIGFuIE1pa3JvVGlrIFIxMWUtNUhhY1QgLSBIaWdoLXBvd2Vy
-IHRyaXBsZS1jaGFpbiBtaW5pUENJLWUgQ2FyZCAocm91dGVyYm9hcmQuY29tL1IxMWUtNUhhY1Qp
-IGluIGFuIGFwdS4yYzQgKGh0dHA6Ly9wY2VuZ2luZXMuY2gvYXB1MmM0Lmh0bSkgLSBzbyBmYXIg
-c28gZ29vZC4KCkkgcmVjZW50bHkgY2FtZSB0byByZWFsaXNlIHRoYXQgdGhlIHRlbXBlcmF0dXJl
-IG9mIHRoZSBBQyBtb2R1bGUgZ29lcyB1cCB0byA5NcKwQyByZXBvcnRlZCBieSBzZW5zb3JzIGR1
-cmluZyBoZWF2eSB1c2UuIFJlYWRpbmdzIHNlZW1zIGxlZ2l0aW1hdGUgdmVyaWZ5aW5nIGJ5IHBo
-eXNpY2FsIHRvdWNoLgoKSSBwbGF5ZWQgd2l0aCB0cmFuc21pdCBwb3dlciBhbmQgcmVkdWNlZCBm
-cm9tIDMwZGIgdG8gMjFkYiB3aXRoIG1hcmdpbmFsIGRpZmZlcmVuY2Ugb2YgNcKwQy4KClRoZSBz
-cGVjcyBnaXZlIGEgbWF4IHRlbXAgb2YgNjXCsEMsIHNvIHRoYXQgZG9lc250IHNlZW0gdmVyeSBo
-ZWFsdGh5LgoKSSBoYXZlIHRyaWVkIHZhcmlvdXMgZmlybXdhcmUgYW5kIGtlcm5lbCB2ZXJzaW9u
-cyB3aXRob3V0IGFueSBkaWZmZXJlbmNlCgpUaGUgaXNzdWUgc2VlbXMgdG8gYmUgcmVsYXRlZCB0
-byBteSBNQUMgY2xpZW50OgoKV2luZG93cyBQQyA4MDIuMTFuIHRyYW5zZmVyaW5nIGF0IDI1TUIv
-c2VjIC0gV2lGaSBtb2R1bGUgYmV0d2VlbiA2N8KwQyAtIDcwwrBDCk1BQyAobmV4dCB0byBXaW5k
-b3dzIFBDKSA4MDIuMTFuIHRyYW5zZmVyaW5nIGF0IDE1TUIvc2VjIC0gV2lGaSBtb2R1bGUgcmVh
-Y2hlcyA4NcKwQyB3aXRoaW4gNjAgc2VjCklQQUQgODAyLjExYWMgdHJhbnNmZXJpbmcgYXQgMjBN
-Qi9zZWMgIC0gIFdpRmkgbW9kdWxlIGJldHdlZW4gNjfCsEMgLSA3MMKwQwogCgpBbnkgcG9pbnRl
-cnMgd2VsY29tZT8KCkNoZWVycwpsSWwKCgpEZWJ1ZyBpbmZvOgoKIApyb290QHhlbmlhbDp+IyB1
-bmFtZSAtYQoKTGludXggeGVuaWFsIDQuNi4wICMxIFNNUCBNb24gTWF5IDE2IDEzOjUzOjE0IENF
-U1QgMjAxNiB4ODZfNjQgeDg2XzY0IHg4Nl82NCBHTlUvTGludXgKCiAKCnNlbnNvcnM6CgphdGgx
-MGtfaHdtb24tcGNpLTA1MDAKCkFkYXB0ZXI6IFBDSSBhZGFwdGVyCgp0ZW1wMTogICAgICAgICs4
-NC4wwrBDCgogCgpsc3BjaSAtdjoKCjA1OjAwLjAgTmV0d29yayBjb250cm9sbGVyOiBRdWFsY29t
-bSBBdGhlcm9zIFFDQTk4NngvOTg4eCA4MDIuMTFhYyBXaXJlbGVzcyBOZXR3b3JrIEFkYXB0ZXIK
-CiAgICBTdWJzeXN0ZW06IERldmljZSAxOWI2OmQwM2MKCiAgICBGbGFnczogYnVzIG1hc3Rlciwg
-ZmFzdCBkZXZzZWwsIGxhdGVuY3kgMCwgSVJRIDU3CgogICAgTWVtb3J5IGF0IGZlMjAwMDAwICg2
-NC1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTJNXQoKICAgIEV4cGFuc2lvbiBST00gYXQg
-ZmU0MDAwMDAgW2Rpc2FibGVkXSBbc2l6ZT02NEtdCgogICAgQ2FwYWJpbGl0aWVzOiBbNDBdIFBv
-d2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAyCgogICAgQ2FwYWJpbGl0aWVzOiBbNTBdIE1TSTogRW5h
-YmxlKyBDb3VudD0xLzggTWFza2FibGUrIDY0Yml0LQoKICAgIENhcGFiaWxpdGllczogWzcwXSBF
-eHByZXNzIEVuZHBvaW50LCBNU0kgMDAKCiAgICBDYXBhYmlsaXRpZXM6IFsxMDBdIEFkdmFuY2Vk
-IEVycm9yIFJlcG9ydGluZwoKICAgIENhcGFiaWxpdGllczogWzE0MF0gVmlydHVhbCBDaGFubmVs
-CgogICAgQ2FwYWJpbGl0aWVzOiBbMTYwXSBEZXZpY2UgU2VyaWFsIE51bWJlciAwMC0wMC0wMC0w
-MC0wMC0wMC0wMC0wMAoKICAgIEtlcm5lbCBkcml2ZXIgaW4gdXNlOiBhdGgxMGtfcGNpCgogICAg
-S2VybmVsIG1vZHVsZXM6IGF0aDEwa19wY2kKCiAKCmZpcm13YXJlOgoKTWF5IDE3IDExOjI4OjI5
-IHhlbmlhbCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBVbmtub3duIEZXIElFOiAz
-MAoKTWF5IDE3IDExOjI4OjI5IHhlbmlhbCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNTowMC4w
-OiBxY2E5ODh4IGh3Mi4wIHRhcmdldCAweDQxMDAwMTZjIGNoaXBfaWQgMHgwNDMyMDJmZiBzdWIg
-MTliNjpkMDNjCgpNYXkgMTcgMTE6Mjg6MjkgeGVuaWFsIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAw
-OjA1OjAwLjA6IGtjb25maWcgZGVidWcgMCBkZWJ1Z2ZzIDEgdHJhY2luZyAwIGRmcyAxIHRlc3Rt
-b2RlIDAKCk1heSAxNyAxMToyODoyOSB4ZW5pYWwga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDU6
-MDAuMDogZmlybXdhcmUgdmVyIDEwLjIuNC45Ny0xLWN0LXN3Yy1ELTAwMi01NTU4ZTggYXBpIDUg
-ZmVhdHVyZXMgd21pLTEwLngsd21pLTEwLjIscmF3LW1vZGUsYWRhcHRpdmUtY2NhLG1mcCBjcmMz
-MiA1NjQ4OGI1YwoKIAoKTWFjYm9vayBjbGllbnQ6CgpJbnRlcmZhY2VzOgoKZW4wOgoKICBDYXJk
-IFR5cGU6ICAgIEFpclBvcnQgRXh0cmVtZSAgKDB4MTRFNCwgMHgxMEYpCgogIEZpcm13YXJlIFZl
-cnNpb246ICAgIEJyb2FkY29tIEJDTTQzeHggMS4wICg3LjIxLjk1LjE3NS4xYTYpCgogCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
-bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hello,
+
+I'm cross compiling backports-4.2.6-1 to Aarch64 for Linux 3.19.3+ and
+running the ath10k drivers against the Compex QCA9880 module.  I get
+some firmware load errors.
+
+[   47.824874] Loading modules backported from Linux version v4.2.6-0-g1c02865
+[   47.830525] Backport generated by backports.git v4.2.6-1-0-g90118c7
+[  209.931062] ath10k_pci 0000:01:00.0: pci irq msi-x interrupts 8
+irq_mode 0 reset_mode 0
+[  210.106576] ath10k_pci 0000:01:00.0: Direct firmware load for
+ath10k/cal-pci-0000:01:00.0.bin failed with error -2
+[  210.115638] ath10k_pci 0000:01:00.0: Direct firmware load for
+ath10k/QCA988X/hw2.0/board.bin failed with error -2
+[  210.124598] ath10k_pci 0000:01:00.0: failed to fetch generic board data: -2
+[  210.130245] ath10k_pci 0000:01:00.0: failed to fetch board file: -2
+[  210.135211] ath10k_pci 0000:01:00.0: could not fetch firmware files (-2)
+[  210.140598] ath10k_pci 0000:01:00.0: could not probe fw (-2)
+
+Firmware is:
+firmware-2.bin_10.1.467.3-1
+firmware-5.bin_10.2.4.70.42-2
+firmware-3.bin_10.2.2.39.6-1
+
+Why does it appear to be looking for board.bin?  I understood that was
+removed from the latest ath10k driver?
+
+Thanks,
+Brad Pousland
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
