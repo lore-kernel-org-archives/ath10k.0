@@ -1,14 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2eNf-0001iQ-OI
- for ath10k@lists.infradead.org; Tue, 17 May 2016 12:45:48 +0000
-Received: by mail-lb0-x230.google.com with SMTP id h1so5441800lbj.3
- for <ath10k@lists.infradead.org>; Tue, 17 May 2016 05:45:27 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFC/RFT] ath10k: disable wake_tx_queue for older devices
-Date: Tue, 17 May 2016 14:47:01 +0200
-Message-Id: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
+ id 1b2evn-0001Hi-PA
+ for ath10k@lists.infradead.org; Tue, 17 May 2016 13:21:04 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: QCA9984 VHT160 support
+Date: Tue, 17 May 2016 13:20:38 +0000
+Message-ID: <871t507rdm.fsf@kamboji.qca.qualcomm.com>
+References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
+ <57320C1A.3040604@candelatech.com>
+ <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
+ <57335A43.4050902@candelatech.com>
+ <CA+uUJGsVi0OiwK4D6n-ANXRm6ptiTdjvKNboXobwn4FA0YfsRQ@mail.gmail.com>
+ <573892F5.40706@candelatech.com> <5738AE96.8040800@candelatech.com>
+ <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
+ <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
+ <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
+ <CA+BoTQkhrvS3Vz_CnDFGVdRwt=XJgrAF1oTRvyEz+96r48bjfQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQkhrvS3Vz_CnDFGVdRwt=XJgrAF1oTRvyEz+96r48bjfQ@mail.gmail.com>	(Michal
+ Kazior's message of "Tue, 17 May 2016 14:00:24 +0200")
+Content-Language: en-US
+Content-ID: <5A588914704E70449DD10416D90C9376@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,100 +30,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, leroi.lists@gmail.com
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-Some setups suffer performance regressions with
-current wake_tx_queue implementation.
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
-Hi Roman,
+> On 17 May 2016 at 13:43, Sebastian Gottschall <s.gottschall@dd-wrt.com> wrote:
+>> Attached you will find a testing patch for VHT160 support. i tested it today
+>> on a QCA9984 device and it seems to work.
+>> feel free to make any corrections
+>
+> Send patches inline, please. Preferably via git send-email. It's a lot
+> easier to review them this way.
 
-Can you give this patch a try and see if it helps
-with your performance problems, please?
+Also remember to read Developer's Certificate of Origin from
+Documentation/SubmittingPatches and add Signed-off-by. Otherwise we
+cannot use the patch.
 
-
- drivers/net/wireless/ath/ath10k/core.h |  1 +
- drivers/net/wireless/ath/ath10k/mac.c  | 24 ++++++++++++++++++++++--
- 2 files changed, 23 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 1379054000f9..44e7c2cd2e9b 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -657,6 +657,7 @@ struct ath10k_fw_components {
- struct ath10k {
- 	struct ath_common ath_common;
- 	struct ieee80211_hw *hw;
-+	struct ieee80211_ops *ops;
- 	struct device *dev;
- 	u8 mac_addr[ETH_ALEN];
- 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0e24f9ee8bff..5fa3888afa41 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7396,21 +7396,32 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
- struct ath10k *ath10k_mac_create(size_t priv_size)
- {
- 	struct ieee80211_hw *hw;
-+	struct ieee80211_ops *ops;
- 	struct ath10k *ar;
- 
--	hw = ieee80211_alloc_hw(sizeof(struct ath10k) + priv_size, &ath10k_ops);
--	if (!hw)
-+	ops = kmemdup(&ath10k_ops, sizeof(ath10k_ops), GFP_KERNEL);
-+	if (!ops)
- 		return NULL;
- 
-+	hw = ieee80211_alloc_hw(sizeof(struct ath10k) + priv_size, ops);
-+	if (!hw) {
-+		kfree(ops);
-+		return NULL;
-+	}
-+
- 	ar = hw->priv;
- 	ar->hw = hw;
-+	ar->ops = ops;
- 
- 	return ar;
- }
- 
- void ath10k_mac_destroy(struct ath10k *ar)
- {
-+	struct ieee80211_ops *ops = ar->ops;
-+
- 	ieee80211_free_hw(ar->hw);
-+	kfree(ops);
- }
- 
- static const struct ieee80211_iface_limit ath10k_if_limits[] = {
-@@ -7838,6 +7849,15 @@ int ath10k_mac_register(struct ath10k *ar)
- 			ath10k_warn(ar, "failed to initialise DFS pattern detector\n");
- 	}
- 
-+	/* Current wake_tx_queue implementation imposes a significant
-+	 * performance penalty in some setups. The tx scheduling code needs
-+	 * more work anyway so disable the wake_tx_queue unless firmware
-+	 * supports the pull-push mechanism.
-+	 */
-+	if (!test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL,
-+		      ar->running_fw->fw_file.fw_features))
-+		ar->ops->wake_tx_queue = NULL;
-+
- 	ret = ath_regd_init(&ar->ath_common.regulatory, ar->hw->wiphy,
- 			    ath10k_reg_notifier);
- 	if (ret) {
 -- 
-2.1.4
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
