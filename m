@@ -1,23 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2Zfi-0006PH-Tw
- for ath10k@lists.infradead.org; Tue, 17 May 2016 07:44:07 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: Setting per-frame tx rate for frames injected in raw tx mode
-Date: Tue, 17 May 2016 07:43:41 +0000
-Message-ID: <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
-References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
- <57320C1A.3040604@candelatech.com>
- <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
- <57335A43.4050902@candelatech.com>
- <CA+uUJGsVi0OiwK4D6n-ANXRm6ptiTdjvKNboXobwn4FA0YfsRQ@mail.gmail.com>
- <573892F5.40706@candelatech.com> <5738AE96.8040800@candelatech.com>
- <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
-In-Reply-To: <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>	(Raj
- Joshi's message of "Tue, 17 May 2016 14:14:43 +0700")
-Content-Language: en-US
-Content-ID: <8C7BD1131EEDBB43A1A489280AB81595@qualcomm.com>
+ id 1b2aSe-0006HX-V6
+ for ath10k@lists.infradead.org; Tue, 17 May 2016 08:34:41 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Fix legacy rate packet debug messages
+Date: Tue, 17 May 2016 14:05:31 +0530
+Message-ID: <1463474131-26835-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,30 +20,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Raj Joshi <rajjoshi@comp.nus.edu.sg>
-Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Raj Joshi <rajjoshi@comp.nus.edu.sg> writes:
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-> But I believe there should be some way of fixing rate settings from
-> upper layers of the pipeline. iw lets us do manual bitrate
-> configuration [2] for ath10k which works as expected. But this only
-> helps in setting of rate per-session. I am still finding answers to
-> the following questions:
-> 1) What is it that iw does that it manages to get the manual bitrate
-> configuration?
-> 2) How does it ask the firmware to not do any RA and always honor the
-> set rate? Basically how does it override the default RA?
+Legacy rate packets may not necessarily be having a rx status
+flag of '0' always, for example management frame have flags
+like RX_FLAG_ONLY_MONITOR / RX_FLAG_MACTIME_END also set
 
-The firmware has separate WMI vdev parameters for setting a fixed rate,
-check ath10k_mac_op_set_bitrate_mask() for more info.
+Just check 'VHT' and 'HT' flags are not set , and simply clasify it as
+legacy rate packets
 
-> 3) Can we do the same on a per-packet basis?
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-The firmware currently doesn't support that.
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index cc979a4..0419a21 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -939,7 +939,8 @@ static void ath10k_process_rx(struct ath10k *ar,
+ 		   is_multicast_ether_addr(ieee80211_get_DA(hdr)) ?
+ 							"mcast" : "ucast",
+ 		   (__le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_SEQ) >> 4,
+-		   status->flag == 0 ? "legacy" : "",
++		   (status->flag & (RX_FLAG_HT | RX_FLAG_VHT)) == 0 ?
++							"legacy" : "",
+ 		   status->flag & RX_FLAG_HT ? "ht" : "",
+ 		   status->flag & RX_FLAG_VHT ? "vht" : "",
+ 		   status->flag & RX_FLAG_40MHZ ? "40" : "",
 -- 
-Kalle Valo
+1.7.9.5
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
