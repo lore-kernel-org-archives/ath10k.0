@@ -1,27 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mout.gmx.net ([212.227.17.22])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2evn-0001Hi-PA
- for ath10k@lists.infradead.org; Tue, 17 May 2016 13:21:04 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: QCA9984 VHT160 support
-Date: Tue, 17 May 2016 13:20:38 +0000
-Message-ID: <871t507rdm.fsf@kamboji.qca.qualcomm.com>
-References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
- <57320C1A.3040604@candelatech.com>
- <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
- <57335A43.4050902@candelatech.com>
- <CA+uUJGsVi0OiwK4D6n-ANXRm6ptiTdjvKNboXobwn4FA0YfsRQ@mail.gmail.com>
- <573892F5.40706@candelatech.com> <5738AE96.8040800@candelatech.com>
- <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
- <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
- <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
- <CA+BoTQkhrvS3Vz_CnDFGVdRwt=XJgrAF1oTRvyEz+96r48bjfQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQkhrvS3Vz_CnDFGVdRwt=XJgrAF1oTRvyEz+96r48bjfQ@mail.gmail.com>	(Michal
- Kazior's message of "Tue, 17 May 2016 14:00:24 +0200")
-Content-Language: en-US
-Content-ID: <5A588914704E70449DD10416D90C9376@qualcomm.com>
+ id 1b2mAo-0006gw-RB
+ for ath10k@lists.infradead.org; Tue, 17 May 2016 21:05:03 +0000
 MIME-Version: 1.0
+Message-ID: <trinity-50a39f6d-5fed-40e5-9232-8426f29b33e3-1463519079223@3capp-gmx-bs70>
+From: "Lil Evil" <Lil_Evil@gmx.de>
+Subject: ath10k temperature issue with late2012 macbook pro
+Date: Tue, 17 May 2016 23:04:39 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +16,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+To: ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 17 May 2016 at 13:43, Sebastian Gottschall <s.gottschall@dd-wrt.com> wrote:
->> Attached you will find a testing patch for VHT160 support. i tested it today
->> on a QCA9984 device and it seems to work.
->> feel free to make any corrections
->
-> Send patches inline, please. Preferably via git send-email. It's a lot
-> easier to review them this way.
-
-Also remember to read Developer's Certificate of Origin from
-Documentation/SubmittingPatches and add Signed-off-by. Otherwise we
-cannot use the patch.
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgYWxsLAoKSSBhbSBydW5uaW5nIGFuIE1pa3JvVGlrIFIxMWUtNUhhY1QgLSBIaWdoLXBvd2Vy
+IHRyaXBsZS1jaGFpbiBtaW5pUENJLWUgQ2FyZCAocm91dGVyYm9hcmQuY29tL1IxMWUtNUhhY1Qp
+IGluIGFuIGFwdS4yYzQgKGh0dHA6Ly9wY2VuZ2luZXMuY2gvYXB1MmM0Lmh0bSkgLSBzbyBmYXIg
+c28gZ29vZC4KCkkgcmVjZW50bHkgY2FtZSB0byByZWFsaXNlIHRoYXQgdGhlIHRlbXBlcmF0dXJl
+IG9mIHRoZSBBQyBtb2R1bGUgZ29lcyB1cCB0byA5NcKwQyByZXBvcnRlZCBieSBzZW5zb3JzIGR1
+cmluZyBoZWF2eSB1c2UuIFJlYWRpbmdzIHNlZW1zIGxlZ2l0aW1hdGUgdmVyaWZ5aW5nIGJ5IHBo
+eXNpY2FsIHRvdWNoLgoKSSBwbGF5ZWQgd2l0aCB0cmFuc21pdCBwb3dlciBhbmQgcmVkdWNlZCBm
+cm9tIDMwZGIgdG8gMjFkYiB3aXRoIG1hcmdpbmFsIGRpZmZlcmVuY2Ugb2YgNcKwQy4KClRoZSBz
+cGVjcyBnaXZlIGEgbWF4IHRlbXAgb2YgNjXCsEMsIHNvIHRoYXQgZG9lc250IHNlZW0gdmVyeSBo
+ZWFsdGh5LgoKSSBoYXZlIHRyaWVkIHZhcmlvdXMgZmlybXdhcmUgYW5kIGtlcm5lbCB2ZXJzaW9u
+cyB3aXRob3V0IGFueSBkaWZmZXJlbmNlCgpUaGUgaXNzdWUgc2VlbXMgdG8gYmUgcmVsYXRlZCB0
+byBteSBNQUMgY2xpZW50OgoKV2luZG93cyBQQyA4MDIuMTFuIHRyYW5zZmVyaW5nIGF0IDI1TUIv
+c2VjIC0gV2lGaSBtb2R1bGUgYmV0d2VlbiA2N8KwQyAtIDcwwrBDCk1BQyAobmV4dCB0byBXaW5k
+b3dzIFBDKSA4MDIuMTFuIHRyYW5zZmVyaW5nIGF0IDE1TUIvc2VjIC0gV2lGaSBtb2R1bGUgcmVh
+Y2hlcyA4NcKwQyB3aXRoaW4gNjAgc2VjCklQQUQgODAyLjExYWMgdHJhbnNmZXJpbmcgYXQgMjBN
+Qi9zZWMgIC0gIFdpRmkgbW9kdWxlIGJldHdlZW4gNjfCsEMgLSA3MMKwQwogCgpBbnkgcG9pbnRl
+cnMgd2VsY29tZT8KCkNoZWVycwpsSWwKCgpEZWJ1ZyBpbmZvOgoKIApyb290QHhlbmlhbDp+IyB1
+bmFtZSAtYQoKTGludXggeGVuaWFsIDQuNi4wICMxIFNNUCBNb24gTWF5IDE2IDEzOjUzOjE0IENF
+U1QgMjAxNiB4ODZfNjQgeDg2XzY0IHg4Nl82NCBHTlUvTGludXgKCiAKCnNlbnNvcnM6CgphdGgx
+MGtfaHdtb24tcGNpLTA1MDAKCkFkYXB0ZXI6IFBDSSBhZGFwdGVyCgp0ZW1wMTogICAgICAgICs4
+NC4wwrBDCgogCgpsc3BjaSAtdjoKCjA1OjAwLjAgTmV0d29yayBjb250cm9sbGVyOiBRdWFsY29t
+bSBBdGhlcm9zIFFDQTk4NngvOTg4eCA4MDIuMTFhYyBXaXJlbGVzcyBOZXR3b3JrIEFkYXB0ZXIK
+CiAgICBTdWJzeXN0ZW06IERldmljZSAxOWI2OmQwM2MKCiAgICBGbGFnczogYnVzIG1hc3Rlciwg
+ZmFzdCBkZXZzZWwsIGxhdGVuY3kgMCwgSVJRIDU3CgogICAgTWVtb3J5IGF0IGZlMjAwMDAwICg2
+NC1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTJNXQoKICAgIEV4cGFuc2lvbiBST00gYXQg
+ZmU0MDAwMDAgW2Rpc2FibGVkXSBbc2l6ZT02NEtdCgogICAgQ2FwYWJpbGl0aWVzOiBbNDBdIFBv
+d2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAyCgogICAgQ2FwYWJpbGl0aWVzOiBbNTBdIE1TSTogRW5h
+YmxlKyBDb3VudD0xLzggTWFza2FibGUrIDY0Yml0LQoKICAgIENhcGFiaWxpdGllczogWzcwXSBF
+eHByZXNzIEVuZHBvaW50LCBNU0kgMDAKCiAgICBDYXBhYmlsaXRpZXM6IFsxMDBdIEFkdmFuY2Vk
+IEVycm9yIFJlcG9ydGluZwoKICAgIENhcGFiaWxpdGllczogWzE0MF0gVmlydHVhbCBDaGFubmVs
+CgogICAgQ2FwYWJpbGl0aWVzOiBbMTYwXSBEZXZpY2UgU2VyaWFsIE51bWJlciAwMC0wMC0wMC0w
+MC0wMC0wMC0wMC0wMAoKICAgIEtlcm5lbCBkcml2ZXIgaW4gdXNlOiBhdGgxMGtfcGNpCgogICAg
+S2VybmVsIG1vZHVsZXM6IGF0aDEwa19wY2kKCiAKCmZpcm13YXJlOgoKTWF5IDE3IDExOjI4OjI5
+IHhlbmlhbCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBVbmtub3duIEZXIElFOiAz
+MAoKTWF5IDE3IDExOjI4OjI5IHhlbmlhbCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNTowMC4w
+OiBxY2E5ODh4IGh3Mi4wIHRhcmdldCAweDQxMDAwMTZjIGNoaXBfaWQgMHgwNDMyMDJmZiBzdWIg
+MTliNjpkMDNjCgpNYXkgMTcgMTE6Mjg6MjkgeGVuaWFsIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAw
+OjA1OjAwLjA6IGtjb25maWcgZGVidWcgMCBkZWJ1Z2ZzIDEgdHJhY2luZyAwIGRmcyAxIHRlc3Rt
+b2RlIDAKCk1heSAxNyAxMToyODoyOSB4ZW5pYWwga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDU6
+MDAuMDogZmlybXdhcmUgdmVyIDEwLjIuNC45Ny0xLWN0LXN3Yy1ELTAwMi01NTU4ZTggYXBpIDUg
+ZmVhdHVyZXMgd21pLTEwLngsd21pLTEwLjIscmF3LW1vZGUsYWRhcHRpdmUtY2NhLG1mcCBjcmMz
+MiA1NjQ4OGI1YwoKIAoKTWFjYm9vayBjbGllbnQ6CgpJbnRlcmZhY2VzOgoKZW4wOgoKICBDYXJk
+IFR5cGU6ICAgIEFpclBvcnQgRXh0cmVtZSAgKDB4MTRFNCwgMHgxMEYpCgogIEZpcm13YXJlIFZl
+cnNpb246ICAgIEJyb2FkY29tIEJDTTQzeHggMS4wICg3LjIxLjk1LjE3NS4xYTYpCgogCgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
+bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
