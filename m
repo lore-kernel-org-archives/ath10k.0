@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2ZZB-0003wh-KQ
- for ath10k@lists.infradead.org; Tue, 17 May 2016 07:37:23 +0000
-Received: by mail-wm0-x232.google.com with SMTP id g17so14907609wme.1
- for <ath10k@lists.infradead.org>; Tue, 17 May 2016 00:37:00 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
+ id 1b2Zfi-0006PH-Tw
+ for ath10k@lists.infradead.org; Tue, 17 May 2016 07:44:07 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: Setting per-frame tx rate for frames injected in raw tx mode
+Date: Tue, 17 May 2016 07:43:41 +0000
+Message-ID: <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
 References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
  <57320C1A.3040604@candelatech.com>
  <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
@@ -14,10 +14,11 @@ References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
  <CA+uUJGsVi0OiwK4D6n-ANXRm6ptiTdjvKNboXobwn4FA0YfsRQ@mail.gmail.com>
  <573892F5.40706@candelatech.com> <5738AE96.8040800@candelatech.com>
  <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
-Date: Tue, 17 May 2016 09:36:58 +0200
-Message-ID: <CA+BoTQm1k49mgm4HyFoqiAx78qpUb69FSGzwKaQUV5SU7dBSUw@mail.gmail.com>
-Subject: Re: Setting per-frame tx rate for frames injected in raw tx mode
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>	(Raj
+ Joshi's message of "Tue, 17 May 2016 14:14:43 +0700")
+Content-Language: en-US
+Content-ID: <8C7BD1131EEDBB43A1A489280AB81595@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +27,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Raj Joshi <rajjoshi@comp.nus.edu.sg>
 Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTcgTWF5IDIwMTYgYXQgMDk6MTQsIFJhaiBKb3NoaSA8cmFqam9zaGlAY29tcC5udXMuZWR1
-LnNnPiB3cm90ZToKPiBJIHNlZS4uIFNvIHRoZSBSQSBpcyBpbXBsZW1lbnRlZCBpbiBmaXJtd2Fy
-ZSBhbmQgaXMgY2xvc2VkIHNvdXJjZS4KPiBBbHNvIGl0IGlzIHVuY2xlYXIgaWYgdGhlIGRyaXZl
-ciAoYXRoMTBrKSBoYXMgaW1wbGVtZW50ZWQgYW4gQVBJIGZvcgo+IGl0Lgo+Cj4gWW91ciBpZGVh
-IHNvdW5kcyBzaW1pbGFyIHRvIGhvdyBpdCBpcyB3b3JraW5nIGZvciBtZSBpbiBhdGg5ayAtIGlu
-IHRoZQo+IGZpbGUgbmV0L21hYzgwMjExL3R4LmMsIHRoZSBIVCByYXRlIGluZm9ybWF0aW9uIGZy
-b20gdGhlIHJhZGlvdGFwCj4gaGVhZGVyIGlzIHBhcnNlZCBhbmQgc2V0IGluIHRoZSBzdHJ1Y3Qg
-aWVlZTgwMjExX3R4X2luZm8gKHNlZSB0aGUKPiBtZXRob2QgaWVlZTgwMjExX3BhcnNlX3R4X3Jh
-ZGlvdGFwKCkpLiBBIHJlY2VudCBjb21taXQgWzFdIGFsc28gYWRkZWQKPiBwYXJzaW5nIGZvciBW
-SFQgaW5mb3JtYXRpb24gZnJvbSByYWRpb3RhcC4gVGhpcyBzZWVtcyB0byBiZSBhIHN0YW5kYXJk
-Cj4gd2F5IG9mIGRvaW5nIGl0IGFuZCBpdCBzZWVtcyB0byB3b3JrIHdpdGggImQtbGluayBkaXIt
-ODYwbCByZXYgYjEKPiBydW5uaW5nIE9wZW5XcnQgdHJ1bmsgYW5kIG10NzYgZHJpdmVyIiBhcyB0
-aGUgY29tbWl0IGRlc2NyaXB0aW9uCj4gbWVudGlvbnMuIEhvd2V2ZXIgd2l0aCBhdGgxMGssIHRo
-ZSByYXRlIGZyb20gdGhpcyB0eF9pbmZvIHNlZW1zIHRvIGJlCj4gbm90IGhvbm9yZWQgOigKPgo+
-IEJ1dCBJIGJlbGlldmUgdGhlcmUgc2hvdWxkIGJlIHNvbWUgd2F5IG9mIGZpeGluZyByYXRlIHNl
-dHRpbmdzIGZyb20KPiB1cHBlciBsYXllcnMgb2YgdGhlIHBpcGVsaW5lLiBpdyBsZXRzIHVzIGRv
-IG1hbnVhbCBiaXRyYXRlCj4gY29uZmlndXJhdGlvbiBbMl0gZm9yIGF0aDEwayB3aGljaCB3b3Jr
-cyBhcyBleHBlY3RlZC4gQnV0IHRoaXMgb25seQo+IGhlbHBzIGluIHNldHRpbmcgb2YgcmF0ZSBw
-ZXItc2Vzc2lvbi4gSSBhbSBzdGlsbCBmaW5kaW5nIGFuc3dlcnMgdG8KPiB0aGUgZm9sbG93aW5n
-IHF1ZXN0aW9uczoKPiAxKSBXaGF0IGlzIGl0IHRoYXQgaXcgZG9lcyB0aGF0IGl0IG1hbmFnZXMg
-dG8gZ2V0IHRoZSBtYW51YWwgYml0cmF0ZQo+IGNvbmZpZ3VyYXRpb24/CgpJdCBlbmRzIHVwIGNh
-bGxpbmcgZHJpdmVyIHNwZWNpZmljIHNldF9iaXRyYXRlX21hc2ssIHdoaWNoIGlzCmF0aDEwa19t
-YWNfb3Bfc2V0X2JpdHJhdGVfbWFzaygpIGZvciBhdGgxMGsuIElmIHRoZSBiaXRyYXRlIG1hc2sg
-aXMgYQpzaW5nbGUgcmF0ZSAoaW5zdGVhZCBvZiBhbiBhY3R1YWwgbWFzay9zZXQpIGRyaXZlciBz
-ZW5kcyBhIHNldCBvZgpjb21tYW5kcyB0byBmaXJtd2FyZSB0byBmb3JjZSBmaXhlZC1yYXRlLgoK
-Cj4gMikgSG93IGRvZXMgaXQgYXNrIHRoZSBmaXJtd2FyZSB0byBub3QgZG8gYW55IFJBIGFuZCBh
-bHdheXMgaG9ub3IgdGhlCj4gc2V0IHJhdGU/IEJhc2ljYWxseSBob3cgZG9lcyBpdCBvdmVycmlk
-ZSB0aGUgZGVmYXVsdCBSQT8KCkl0IHNlbmRzIGEgZmV3IHBlci1pbnRlcmZhY2UgY29tbWFuZHMg
-dG8gZmlybXdhcmUsIHNlZQphdGgxMGtfbWFjX3NldF9maXhlZF9yYXRlX3BhcmFtcygpLgoKRG8g
-bm90ZSB0aGlzIHJlZmVycyB0byB1bmljYXN0LiBJIHRoaW5rIG11bHRpY2FzdCBuZWVkcyBhIGRp
-ZmZlcmVudCBrbm9iLgoKCj4gMykgQ2FuIHdlIGRvIHRoZSBzYW1lIG9uIGEgcGVyLXBhY2tldCBi
-YXNpcz8KCkFzIGl0IGlzIG5vdyB0aGVyZSdzIG5vIGVhc3kgd2F5IHRvIGRvIHRoaXMuCgpXTUkg
-Y29tbWFuZHMgcGVyIHNlIGRvbid0IGhhdmUgYW55IHN5bmNocm9uaXphdGlvbiB0byB0aGVtLiBB
-IGZldyBvZgp0aGVtIHByb2R1Y2UgZmVlZGJhY2sgZXZlbnRzICh2ZGV2X3N0YXJ0LCBwaW5nKSBz
-byB5b3UgY291bGQgcHJvYmFibHkKdXNlIHRoZW0gdG8gbWFrZSBzdXJlLCBlLmcuIGZpeGVkLXJh
-dGUgY29tbWFuZHMgd2VyZSBwcm9jZXNzZWQgYmVmb3JlCnlvdSBzdWJtaXQgVHguIFlvdSdkIGFs
-c28gbmVlZCB0byBmbHVzaCB0byBhdm9pZCBjaGFuZ2luZyByYXRlIGZvcgpmcmFtZXMgdGhhdCBh
-cmUgc3RpbGwgaW4gVHggcmluZy4gSSdtIG5vdCBzdXJlIGhvdyBmYXN0IHRoYXQnbGwgYmUuCgoK
-TWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Raj Joshi <rajjoshi@comp.nus.edu.sg> writes:
+
+> But I believe there should be some way of fixing rate settings from
+> upper layers of the pipeline. iw lets us do manual bitrate
+> configuration [2] for ath10k which works as expected. But this only
+> helps in setting of rate per-session. I am still finding answers to
+> the following questions:
+> 1) What is it that iw does that it manages to get the manual bitrate
+> configuration?
+> 2) How does it ask the firmware to not do any RA and always honor the
+> set rate? Basically how does it override the default RA?
+
+The firmware has separate WMI vdev parameters for setting a fixed rate,
+check ath10k_mac_op_set_bitrate_mask() for more info.
+
+> 3) Can we do the same on a per-packet basis?
+
+The firmware currently doesn't support that.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
