@@ -1,29 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2eE3-0006aY-0K
- for ath10k@lists.infradead.org; Tue, 17 May 2016 12:35:54 +0000
-References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
- <57320C1A.3040604@candelatech.com>
- <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
- <57335A43.4050902@candelatech.com>
- <CA+uUJGsVi0OiwK4D6n-ANXRm6ptiTdjvKNboXobwn4FA0YfsRQ@mail.gmail.com>
- <573892F5.40706@candelatech.com> <5738AE96.8040800@candelatech.com>
- <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
- <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
- <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
- <CA+BoTQkhrvS3Vz_CnDFGVdRwt=XJgrAF1oTRvyEz+96r48bjfQ@mail.gmail.com>
- <4e407b2c-29f9-3c74-ea94-4206632441c3@dd-wrt.com>
- <CA+BoTQnopmxAQaWCyNvy20uWB65F=pMcoQ9Pz4LNWo3VGBMpHg@mail.gmail.com>
- <acfe08a2-31f6-e9e4-2785-9cad15d457b0@dd-wrt.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <6d9fb31a-e5f7-3c26-3238-977fd5d72f4a@dd-wrt.com>
-Date: Tue, 17 May 2016 14:35:26 +0200
-MIME-Version: 1.0
-In-Reply-To: <acfe08a2-31f6-e9e4-2785-9cad15d457b0@dd-wrt.com>
-Content-Type: multipart/mixed; boundary="------------4D8A5288B274530AA3D95221"
-Subject: Re: QCA9984 VHT160 support
+ id 1b2eNf-0001iQ-OI
+ for ath10k@lists.infradead.org; Tue, 17 May 2016 12:45:48 +0000
+Received: by mail-lb0-x230.google.com with SMTP id h1so5441800lbj.3
+ for <ath10k@lists.infradead.org>; Tue, 17 May 2016 05:45:27 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [RFC/RFT] ath10k: disable wake_tx_queue for older devices
+Date: Tue, 17 May 2016 14:47:01 +0200
+Message-Id: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,178 +17,101 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, leroi.lists@gmail.com
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This is a multi-part message in MIME format.
---------------4D8A5288B274530AA3D95221
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: 8bit
+Some setups suffer performance regressions with
+current wake_tx_queue implementation.
 
-this is a updated patchset which adds further corrections.
-80p80 support is detected by sta flags right now.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+Hi Roman,
+
+Can you give this patch a try and see if it helps
+with your performance problems, please?
 
 
+ drivers/net/wireless/ath/ath10k/core.h |  1 +
+ drivers/net/wireless/ath/ath10k/mac.c  | 24 ++++++++++++++++++++++--
+ 2 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 1379054000f9..44e7c2cd2e9b 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -657,6 +657,7 @@ struct ath10k_fw_components {
+ struct ath10k {
+ 	struct ath_common ath_common;
+ 	struct ieee80211_hw *hw;
++	struct ieee80211_ops *ops;
+ 	struct device *dev;
+ 	u8 mac_addr[ETH_ALEN];
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 0e24f9ee8bff..5fa3888afa41 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7396,21 +7396,32 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
+ struct ath10k *ath10k_mac_create(size_t priv_size)
+ {
+ 	struct ieee80211_hw *hw;
++	struct ieee80211_ops *ops;
+ 	struct ath10k *ar;
+ 
+-	hw = ieee80211_alloc_hw(sizeof(struct ath10k) + priv_size, &ath10k_ops);
+-	if (!hw)
++	ops = kmemdup(&ath10k_ops, sizeof(ath10k_ops), GFP_KERNEL);
++	if (!ops)
+ 		return NULL;
+ 
++	hw = ieee80211_alloc_hw(sizeof(struct ath10k) + priv_size, ops);
++	if (!hw) {
++		kfree(ops);
++		return NULL;
++	}
++
+ 	ar = hw->priv;
+ 	ar->hw = hw;
++	ar->ops = ops;
+ 
+ 	return ar;
+ }
+ 
+ void ath10k_mac_destroy(struct ath10k *ar)
+ {
++	struct ieee80211_ops *ops = ar->ops;
++
+ 	ieee80211_free_hw(ar->hw);
++	kfree(ops);
+ }
+ 
+ static const struct ieee80211_iface_limit ath10k_if_limits[] = {
+@@ -7838,6 +7849,15 @@ int ath10k_mac_register(struct ath10k *ar)
+ 			ath10k_warn(ar, "failed to initialise DFS pattern detector\n");
+ 	}
+ 
++	/* Current wake_tx_queue implementation imposes a significant
++	 * performance penalty in some setups. The tx scheduling code needs
++	 * more work anyway so disable the wake_tx_queue unless firmware
++	 * supports the pull-push mechanism.
++	 */
++	if (!test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL,
++		      ar->running_fw->fw_file.fw_features))
++		ar->ops->wake_tx_queue = NULL;
++
+ 	ret = ath_regd_init(&ar->ath_common.regulatory, ar->hw->wiphy,
+ 			    ath10k_reg_notifier);
+ 	if (ret) {
 -- 
-Mit freundlichen Grüssen / Regards
+2.1.4
 
-Sebastian Gottschall / CTO
-
-NewMedia-NET GmbH - DD-WRT
-Firmensitz:  Berliner Ring 101, 64625 Bensheim
-Registergericht: Amtsgericht Darmstadt, HRB 25473
-Geschäftsführer: Peter Steinhäuser, Christian Scheele
-http://www.dd-wrt.com
-email: s.gottschall@dd-wrt.com
-Tel.: +496251-582650 / Fax: +496251-5826565
-
-
---------------4D8A5288B274530AA3D95221
-Content-Type: text/plain; charset=UTF-8;
- name="vht160_2.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="vht160_2.patch"
-
-SW5kZXg6IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PQotLS0gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYwkocmV2aXNp
-b24gMjkxMCkKKysrIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMJKHdv
-cmtpbmcgY29weSkKQEAgLTUzOSwxMCArNTM5LDE0IEBACiAJCWNhc2UgTkw4MDIxMV9DSEFO
-X1dJRFRIXzgwOgogCQkJcGh5bW9kZSA9IE1PREVfMTFBQ19WSFQ4MDsKIAkJCWJyZWFrOwor
-CQljYXNlIE5MODAyMTFfQ0hBTl9XSURUSF8xNjA6CisJCQlwaHltb2RlID0gTU9ERV8xMUFD
-X1ZIVDE2MDsKKwkJCWJyZWFrOworCQljYXNlIE5MODAyMTFfQ0hBTl9XSURUSF84MFA4MDoK
-KwkJCXBoeW1vZGUgPSBNT0RFXzExQUNfVkhUODBfODA7CisJCQlicmVhazsKIAkJY2FzZSBO
-TDgwMjExX0NIQU5fV0lEVEhfNToKIAkJY2FzZSBOTDgwMjExX0NIQU5fV0lEVEhfMTA6Ci0J
-CWNhc2UgTkw4MDIxMV9DSEFOX1dJRFRIXzgwUDgwOgotCQljYXNlIE5MODAyMTFfQ0hBTl9X
-SURUSF8xNjA6CiAJCQlwaHltb2RlID0gTU9ERV9VTktOT1dOOwogCQkJYnJlYWs7CiAJCX0K
-QEAgLTIzOTgsNiArMjQwMiw5IEBACiAJaWYgKHN0YS0+YmFuZHdpZHRoID09IElFRUU4MDIx
-MV9TVEFfUlhfQldfODApCiAJCWFyZy0+cGVlcl9mbGFncyB8PSBhci0+d21pLnBlZXJfZmxh
-Z3MtPmJ3ODA7CiAKKwlpZiAoc3RhLT5iYW5kd2lkdGggPT0gSUVFRTgwMjExX1NUQV9SWF9C
-V18xNjApCisJCWFyZy0+cGVlcl9mbGFncyB8PSBhci0+d21pLnBlZXJfZmxhZ3MtPmJ3MTYw
-OworCiAJYXJnLT5wZWVyX3ZodF9yYXRlcy5yeF9tYXhfcmF0ZSA9CiAJCV9fbGUxNl90b19j
-cHUodmh0X2NhcC0+dmh0X21jcy5yeF9oaWdoZXN0KTsKIAlhcmctPnBlZXJfdmh0X3JhdGVz
-LnJ4X21jc19zZXQgPQpAQCAtMjQ5OSw3ICsyNTA2LDEyIEBACiAJCSAgICAhYXRoMTBrX3Bl
-ZXJfYXNzb2NfaF92aHRfbWFza2VkKHZodF9tY3NfbWFzaykpIHsKIAkJCWlmIChzdGEtPmJh
-bmR3aWR0aCA9PSBJRUVFODAyMTFfU1RBX1JYX0JXXzgwKQogCQkJCXBoeW1vZGUgPSBNT0RF
-XzExQUNfVkhUODA7Ci0JCQllbHNlIGlmIChzdGEtPmJhbmR3aWR0aCA9PSBJRUVFODAyMTFf
-U1RBX1JYX0JXXzQwKQorCQkJZWxzZSBpZiAoc3RhLT5iYW5kd2lkdGggPT0gSUVFRTgwMjEx
-X1NUQV9SWF9CV18xNjApIHsKKwkJCQlpZiAoc3RhLT52aHRfY2FwLmNhcCAmIElFRUU4MDIx
-MV9WSFRfQ0FQX1NVUFBfQ0hBTl9XSURUSF8xNjBfODBQTFVTODBNSFopIAorCQkJCQlwaHlt
-b2RlID0gTU9ERV8xMUFDX1ZIVDgwXzgwOworCQkJCWVsc2UKKwkJCQkJcGh5bW9kZSA9IE1P
-REVfMTFBQ19WSFQxNjA7CisJCQl9IGVsc2UgaWYgKHN0YS0+YmFuZHdpZHRoID09IElFRUU4
-MDIxMV9TVEFfUlhfQldfNDApCiAJCQkJcGh5bW9kZSA9IE1PREVfMTFBQ19WSFQ0MDsKIAkJ
-CWVsc2UgaWYgKHN0YS0+YmFuZHdpZHRoID09IElFRUU4MDIxMV9TVEFfUlhfQldfMjApCiAJ
-CQkJcGh5bW9kZSA9IE1PREVfMTFBQ19WSFQyMDsKQEAgLTQxODUsNiArNDE5NywxMCBAQAog
-CiAJCXZodF9jYXAuY2FwIHw9IHZhbDsKIAl9CisJaWYgKGFyLT52aHRfY2FwX2luZm8gJiAg
-SUVFRTgwMjExX1ZIVF9DQVBfU0hPUlRfR0lfMTYwKSB7CisJCXZodF9jYXAuY2FwIHw9IElF
-RUU4MDIxMV9WSFRfQ0FQX1NVUFBfQ0hBTl9XSURUSF8xNjBNSFo7CisJCXZodF9jYXAuY2Fw
-IHw9IElFRUU4MDIxMV9WSFRfQ0FQX1NVUFBfQ0hBTl9XSURUSF8xNjBfODBQTFVTODBNSFo7
-CisJfQogCiAJbWNzX21hcCA9IDA7CiAJZm9yIChpID0gMDsgaSA8IDg7IGkrKykgewpAQCAt
-Njc5OCw2ICs2ODE0LDkgQEAKIAkJCWJ3ID0gV01JX1BFRVJfQ0hXSURUSF84ME1IWjsKIAkJ
-CWJyZWFrOwogCQljYXNlIElFRUU4MDIxMV9TVEFfUlhfQldfMTYwOgorCQkJYncgPSBXTUlf
-UEVFUl9DSFdJRFRIXzE2ME1IWjsKKwkJCWJyZWFrOworCQlkZWZhdWx0OgogCQkJYXRoMTBr
-X3dhcm4oYXIsICJJbnZhbGlkIGJhbmR3aWR0aCAlZCBpbiByYyB1cGRhdGUgZm9yICVwTVxu
-IiwKIAkJCQkgICAgc3RhLT5iYW5kd2lkdGgsIHN0YS0+YWRkcik7CiAJCQlidyA9IFdNSV9Q
-RUVSX0NIV0lEVEhfMjBNSFo7CkluZGV4OiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
-MTBrL2h0dF9yeC5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
-aC9hdGgxMGsvaHR0X3J4LmMJKHJldmlzaW9uIDI5MTApCisrKyBkcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jCSh3b3JraW5nIGNvcHkpCkBAIC03MDcsNiArNzA3
-LDEwIEBACiAJCS8qIDgwTUhaICovCiAJCWNhc2UgMjoKIAkJCXN0YXR1cy0+dmh0X2ZsYWcg
-fD0gUlhfVkhUX0ZMQUdfODBNSFo7CisJCQlicmVhazsKKwkJY2FzZSAzOgorCQkJc3RhdHVz
-LT52aHRfZmxhZyB8PSBSWF9WSFRfRkxBR18xNjBNSFo7CisJCQlicmVhazsKIAkJfQogCiAJ
-CXN0YXR1cy0+ZmxhZyB8PSBSWF9GTEFHX1ZIVDsKQEAgLTkzMSw3ICs5MzUsNyBAQAogCSpz
-dGF0dXMgPSAqcnhfc3RhdHVzOwogCiAJYXRoMTBrX2RiZyhhciwgQVRIMTBLX0RCR19EQVRB
-LAotCQkgICAicnggc2tiICVwIGxlbiAldSBwZWVyICVwTSAlcyAlcyBzbiAldSAlcyVzJXMl
-cyVzICVzcmF0ZV9pZHggJXUgdmh0X25zcyAldSBmcmVxICV1IGJhbmQgJXUgZmxhZyAweCVs
-bHggZmNzLWVyciAlaSBtaWMtZXJyICVpIGFtc2R1LW1vcmUgJWlcbiIsCisJCSAgICJyeCBz
-a2IgJXAgbGVuICV1IHBlZXIgJXBNICVzICVzIHNuICV1ICVzJXMlcyVzJXMlcyVzICVzcmF0
-ZV9pZHggJXUgdmh0X25zcyAldSBmcmVxICV1IGJhbmQgJXUgZmxhZyAweCVsbHggZmNzLWVy
-ciAlaSBtaWMtZXJyICVpIGFtc2R1LW1vcmUgJWlcbiIsCiAJCSAgIHNrYiwKIAkJICAgc2ti
-LT5sZW4sCiAJCSAgIGllZWU4MDIxMV9nZXRfU0EoaGRyKSwKQEAgLTk0NCw2ICs5NDgsNyBA
-QAogCQkgICBzdGF0dXMtPmZsYWcgJiBSWF9GTEFHX1ZIVCA/ICJ2aHQiIDogIiIsCiAJCSAg
-IHN0YXR1cy0+ZmxhZyAmIFJYX0ZMQUdfNDBNSFogPyAiNDAiIDogIiIsCiAJCSAgIHN0YXR1
-cy0+dmh0X2ZsYWcgJiBSWF9WSFRfRkxBR184ME1IWiA/ICI4MCIgOiAiIiwKKwkJICAgc3Rh
-dHVzLT52aHRfZmxhZyAmIFJYX1ZIVF9GTEFHXzE2ME1IWiA/ICIxNjAiIDogIiIsCiAJCSAg
-IHN0YXR1cy0+ZmxhZyAmIFJYX0ZMQUdfU0hPUlRfR0kgPyAic2dpICIgOiAiIiwKIAkJICAg
-c3RhdHVzLT5yYXRlX2lkeCwKIAkJICAgc3RhdHVzLT52aHRfbnNzLApAQCAtMjE5Myw2ICsy
-MTk4LDggQEAKIAljYXNlIE1PREVfMTFBQ19WSFQyMDoKIAljYXNlIE1PREVfMTFBQ19WSFQ0
-MDoKIAljYXNlIE1PREVfMTFBQ19WSFQ4MDoKKwljYXNlIE1PREVfMTFBQ19WSFQxNjA6CisJ
-Y2FzZSBNT0RFXzExQUNfVkhUODBfODA6CiAJCWJhbmQgPSBOTDgwMjExX0JBTkRfNUdIWjsK
-IAkJYnJlYWs7CiAJY2FzZSBNT0RFXzExRzoKSW5kZXg6IGRyaXZlcnMvbmV0L3dpcmVsZXNz
-L2F0aC9hdGgxMGsvd21pLXRsdi5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGRyaXZlcnMvbmV0L3dp
-cmVsZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5jCShyZXZpc2lvbiAyOTEwKQorKysgZHJpdmVy
-cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmMJKHdvcmtpbmcgY29weSkKQEAg
-LTM1MDMsNiArMzUwMyw3IEBACiAJLnZodCA9IFdNSV9UTFZfUEVFUl9WSFQsCiAJLmJ3ODAg
-PSBXTUlfVExWX1BFRVJfODBNSFosCiAJLnBtZiA9IFdNSV9UTFZfUEVFUl9QTUYsCisJLmJ3
-MTYwID0gV01JX1RMVl9QRUVSXzE2ME1IWiwKIH07CiAKIC8qKioqKioqKioqKiovCkluZGV4
-OiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10bHYuaAo9PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09Ci0tLSBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10bHYuaAkocmV2
-aXNpb24gMjkxMCkKKysrIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLXRs
-di5oCSh3b3JraW5nIGNvcHkpCkBAIC01NDMsNiArNTQzLDcgQEAKIAlXTUlfVExWX1BFRVJf
-VkhUID0gMHgwMjAwMDAwMCwKIAlXTUlfVExWX1BFRVJfODBNSFogPSAweDA0MDAwMDAwLAog
-CVdNSV9UTFZfUEVFUl9QTUYgPSAweDA4MDAwMDAwLAorICAgICAgICBXTUlfVExWX1BFRVJf
-MTYwTUhaID0gMHgyMDAwMDAwMCwKIH07CiAKIGVudW0gd21pX3Rsdl90YWcgewpJbmRleDog
-ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwo9PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0t
-LSBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCShyZXZpc2lvbiAyOTEw
-KQorKysgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwkod29ya2luZyBj
-b3B5KQpAQCAtMTU2OSw2ICsxNTY5LDcgQEAKIAkuYnc4MCA9IFdNSV9QRUVSXzgwTUhaLAog
-CS52aHRfMmcgPSBXTUlfUEVFUl9WSFRfMkcsCiAJLnBtZiA9IFdNSV9QRUVSX1BNRiwKKwku
-YncxNjAgPSBXTUlfUEVFUl8xNjBNSFosCiB9OwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IHdt
-aV9wZWVyX2ZsYWdzX21hcCB3bWlfMTB4X3BlZXJfZmxhZ3NfbWFwID0gewpAQCAtMTU4Niw2
-ICsxNTg3LDcgQEAKIAkuc3BhdGlhbF9tdXggPSBXTUlfMTBYX1BFRVJfU1BBVElBTF9NVVgs
-CiAJLnZodCA9IFdNSV8xMFhfUEVFUl9WSFQsCiAJLmJ3ODAgPSBXTUlfMTBYX1BFRVJfODBN
-SFosCisJLmJ3MTYwID0gV01JXzEwWF9QRUVSXzE2ME1IWiwKIH07CiAKIHN0YXRpYyBjb25z
-dCBzdHJ1Y3Qgd21pX3BlZXJfZmxhZ3NfbWFwIHdtaV8xMF8yX3BlZXJfZmxhZ3NfbWFwID0g
-ewpAQCAtMTYwNSw2ICsxNjA3LDcgQEAKIAkuYnc4MCA9IFdNSV8xMF8yX1BFRVJfODBNSFos
-CiAJLnZodF8yZyA9IFdNSV8xMF8yX1BFRVJfVkhUXzJHLAogCS5wbWYgPSBXTUlfMTBfMl9Q
-RUVSX1BNRiwKKwkuYncxNjAgPSBXTUlfMTBfMl9QRUVSXzE2ME1IWiwKIH07CiAKIHZvaWQg
-YXRoMTBrX3dtaV9wdXRfd21pX2NoYW5uZWwoc3RydWN0IHdtaV9jaGFubmVsICpjaCwKSW5k
-ZXg6IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmgKPT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PQotLS0gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaAkocmV2aXNpb24g
-MjkxMCkKKysrIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmgJKHdvcmtp
-bmcgY29weSkKQEAgLTE3MjMsOCArMTcyMywxMCBAQAogCU1PREVfMTFBQ19WSFQyMF8yRyA9
-IDExLAogCU1PREVfMTFBQ19WSFQ0MF8yRyA9IDEyLAogCU1PREVfMTFBQ19WSFQ4MF8yRyA9
-IDEzLAotCU1PREVfVU5LTk9XTiAgICA9IDE0LAotCU1PREVfTUFYICAgICAgICA9IDE0CisJ
-TU9ERV8xMUFDX1ZIVDgwXzgwID0gMTQsCisJTU9ERV8xMUFDX1ZIVDE2MCA9IDE1LAorCU1P
-REVfVU5LTk9XTiAgICA9IDE2LAorCU1PREVfTUFYICAgICAgICA9IDE2CiB9OwogCiBzdGF0
-aWMgaW5saW5lIGNvbnN0IGNoYXIgKmF0aDEwa193bWlfcGh5bW9kZV9zdHIoZW51bSB3bWlf
-cGh5X21vZGUgbW9kZSkKQEAgLTE3NTIsNiArMTc1NCwxMCBAQAogCQlyZXR1cm4gIjExYWMt
-dmh0NDAiOwogCWNhc2UgTU9ERV8xMUFDX1ZIVDgwOgogCQlyZXR1cm4gIjExYWMtdmh0ODAi
-OworCWNhc2UgTU9ERV8xMUFDX1ZIVDE2MDoKKwkJcmV0dXJuICIxMWFjLXZodDE2MCI7CisJ
-Y2FzZSBNT0RFXzExQUNfVkhUODBfODA6CisJCXJldHVybiAiMTFhYy12aHQ4MCs4MCI7CiAJ
-Y2FzZSBNT0RFXzExQUNfVkhUMjBfMkc6CiAJCXJldHVybiAiMTFhYy12aHQyMC0yZyI7CiAJ
-Y2FzZSBNT0RFXzExQUNfVkhUNDBfMkc6CkBAIC01NzQ4LDYgKzU3NTQsNyBAQAogCVdNSV9Q
-RUVSX0NIV0lEVEhfMjBNSFogPSAwLAogCVdNSV9QRUVSX0NIV0lEVEhfNDBNSFogPSAxLAog
-CVdNSV9QRUVSX0NIV0lEVEhfODBNSFogPSAyLAorCVdNSV9QRUVSX0NIV0lEVEhfMTYwTUha
-ID0gMywKIH07CiAKIGVudW0gd21pX3BlZXJfcGFyYW0gewpAQCAtNTgzOCw2ICs1ODQ1LDcg
-QEAKIAl1MzIgYnc4MDsKIAl1MzIgdmh0XzJnOwogCXUzMiBwbWY7CisJdTMyIGJ3MTYwOwog
-fTsKIAogZW51bSB3bWlfcGVlcl9mbGFncyB7CkBAIC01ODU3LDYgKzU4NjUsNyBAQAogCVdN
-SV9QRUVSXzgwTUhaID0gMHgwNDAwMDAwMCwKIAlXTUlfUEVFUl9WSFRfMkcgPSAweDA4MDAw
-MDAwLAogCVdNSV9QRUVSX1BNRiA9IDB4MTAwMDAwMDAsCisJV01JX1BFRVJfMTYwTUhaID0g
-MHgyMDAwMDAwMAogfTsKIAogZW51bSB3bWlfMTB4X3BlZXJfZmxhZ3MgewpAQCAtNTg3NCw2
-ICs1ODgzLDcgQEAKIAlXTUlfMTBYX1BFRVJfU1BBVElBTF9NVVggPSAweDAwMjAwMDAwLAog
-CVdNSV8xMFhfUEVFUl9WSFQgPSAweDAyMDAwMDAwLAogCVdNSV8xMFhfUEVFUl84ME1IWiA9
-IDB4MDQwMDAwMDAsCisJV01JXzEwWF9QRUVSXzE2ME1IWiA9IDB4MjAwMDAwMDAKIH07CiAK
-IGVudW0gd21pXzEwXzJfcGVlcl9mbGFncyB7CkBAIC01ODkzLDYgKzU5MDMsNyBAQAogCVdN
-SV8xMF8yX1BFRVJfODBNSFogPSAweDA0MDAwMDAwLAogCVdNSV8xMF8yX1BFRVJfVkhUXzJH
-ID0gMHgwODAwMDAwMCwKIAlXTUlfMTBfMl9QRUVSX1BNRiA9IDB4MTAwMDAwMDAsCisJV01J
-XzEwXzJfUEVFUl8xNjBNSFogPSAweDIwMDAwMDAwCiB9OwogCiAvKgo=
---------------4D8A5288B274530AA3D95221
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---------------4D8A5288B274530AA3D95221--
