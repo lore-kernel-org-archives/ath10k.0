@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2td2-000549-Vr
- for ath10k@lists.infradead.org; Wed, 18 May 2016 05:02:42 +0000
-Received: by mail-wm0-x22e.google.com with SMTP id r12so16358016wme.0
- for <ath10k@lists.infradead.org>; Tue, 17 May 2016 22:02:18 -0700 (PDT)
+ id 1b2wYm-0001Nf-CR
+ for ath10k@lists.infradead.org; Wed, 18 May 2016 08:10:29 +0000
+Date: Wed, 18 May 2016 13:38:37 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: ath10k temperature issue with late2012 macbook pro
+Message-ID: <20160518080837.GA22219@atheros-ThinkPad-T61>
+References: <trinity-50a39f6d-5fed-40e5-9232-8426f29b33e3-1463519079223@3capp-gmx-bs70>
 MIME-Version: 1.0
-In-Reply-To: <CAGBdaZmyyC4Eym=U3yEeZqz9jrW5zp_5kZcDQDyvenAVL=qHeA@mail.gmail.com>
-References: <CAGBdaZmyyC4Eym=U3yEeZqz9jrW5zp_5kZcDQDyvenAVL=qHeA@mail.gmail.com>
-Date: Wed, 18 May 2016 07:02:16 +0200
-Message-ID: <CA+BoTQmL5i1UkD8ENFW7e5yNzpOwf1cS2vWqeSxaHNvtRzjzXw@mail.gmail.com>
-Subject: Re: Compex QCA9880 Aarch64 ath10k firmware?
-From: Michal Kazior <michal.kazior@tieto.com>
+Content-Disposition: inline
+In-Reply-To: <trinity-50a39f6d-5fed-40e5-9232-8426f29b33e3-1463519079223@3capp-gmx-bs70>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,38 +19,195 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brad Pousland <bpousland@izuma.net>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Lil Evil <Lil_Evil@gmx.de>
+Cc: ath10k@lists.infradead.org
 
-T24gMTggTWF5IDIwMTYgYXQgMDE6MTEsIEJyYWQgUG91c2xhbmQgPGJwb3VzbGFuZEBpenVtYS5u
-ZXQ+IHdyb3RlOgo+IEhlbGxvLAo+Cj4gSSdtIGNyb3NzIGNvbXBpbGluZyBiYWNrcG9ydHMtNC4y
-LjYtMSB0byBBYXJjaDY0IGZvciBMaW51eCAzLjE5LjMrIGFuZAo+IHJ1bm5pbmcgdGhlIGF0aDEw
-ayBkcml2ZXJzIGFnYWluc3QgdGhlIENvbXBleCBRQ0E5ODgwIG1vZHVsZS4gIEkgZ2V0Cj4gc29t
-ZSBmaXJtd2FyZSBsb2FkIGVycm9ycy4KPgo+IFsgICA0Ny44MjQ4NzRdIExvYWRpbmcgbW9kdWxl
-cyBiYWNrcG9ydGVkIGZyb20gTGludXggdmVyc2lvbiB2NC4yLjYtMC1nMWMwMjg2NQo+IFsgICA0
-Ny44MzA1MjVdIEJhY2twb3J0IGdlbmVyYXRlZCBieSBiYWNrcG9ydHMuZ2l0IHY0LjIuNi0xLTAt
-ZzkwMTE4YzcKPiBbICAyMDkuOTMxMDYyXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogcGNpIGly
-cSBtc2kteCBpbnRlcnJ1cHRzIDgKPiBpcnFfbW9kZSAwIHJlc2V0X21vZGUgMAo+IFsgIDIxMC4x
-MDY1NzZdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IK
-PiBhdGgxMGsvY2FsLXBjaS0wMDAwOjAxOjAwLjAuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4g
-WyAgMjEwLjExNTYzOF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBs
-b2FkIGZvcgo+IGF0aDEway9RQ0E5ODhYL2h3Mi4wL2JvYXJkLmJpbiBmYWlsZWQgd2l0aCBlcnJv
-ciAtMgo+IFsgIDIxMC4xMjQ1OThdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmYWlsZWQgdG8g
-ZmV0Y2ggZ2VuZXJpYyBib2FyZCBkYXRhOiAtMgo+IFsgIDIxMC4xMzAyNDVdIGF0aDEwa19wY2kg
-MDAwMDowMTowMC4wOiBmYWlsZWQgdG8gZmV0Y2ggYm9hcmQgZmlsZTogLTIKPiBbICAyMTAuMTM1
-MjExXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogY291bGQgbm90IGZldGNoIGZpcm13YXJlIGZp
-bGVzICgtMikKPiBbICAyMTAuMTQwNTk4XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogY291bGQg
-bm90IHByb2JlIGZ3ICgtMikKPgo+IEZpcm13YXJlIGlzOgo+IGZpcm13YXJlLTIuYmluXzEwLjEu
-NDY3LjMtMQo+IGZpcm13YXJlLTUuYmluXzEwLjIuNC43MC40Mi0yCj4gZmlybXdhcmUtMy5iaW5f
-MTAuMi4yLjM5LjYtMQo+Cj4gV2h5IGRvZXMgaXQgYXBwZWFyIHRvIGJlIGxvb2tpbmcgZm9yIGJv
-YXJkLmJpbj8gIEkgdW5kZXJzdG9vZCB0aGF0IHdhcwo+IHJlbW92ZWQgZnJvbSB0aGUgbGF0ZXN0
-IGF0aDEwayBkcml2ZXI/CgpZb3UncmUgcHJvYmFibHkgcmVmZXJyaW5nIHRvIHRoZSByZW1vdmFs
-IG9mIEZXIEFQSSAxLiBUaGlzIGRpZG4ndApjb25jZXJuIGJvYXJkIGZpbGVzLiBZb3Ugc3RpbGwg
-bmVlZCBib2FyZC5iaW4gb3IgYm9hcmQtMi5iaW4uCgoKTWljaGHFggoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2F0aDEwawo=
+Hi,
+
+On Tue, May 17, 2016 at 11:04:39PM +0200, Lil Evil wrote:
+> Hi all,
+> =
+
+> I am running an MikroTik R11e-5HacT - High-power triple-chain miniPCI-e C=
+ard (routerboard.com/R11e-5HacT) in an apu.2c4 (http://pcengines.ch/apu2c4.=
+htm) - so far so good.
+> =
+
+> I recently came to realise that the temperature of the AC module goes up =
+to 95=B0C reported by sensors during heavy use. Readings seems legitimate v=
+erifying by physical touch.
+> =
+
+> I played with transmit power and reduced from 30db to 21db with marginal =
+difference of 5=B0C.
+> =
+
+> The specs give a max temp of 65=B0C, so that doesnt seem very healthy.
+> =
+
+> I have tried various firmware and kernel versions without any difference
+> =
+
+> The issue seems to be related to my MAC client:
+> =
+
+> Windows PC 802.11n transfering at 25MB/sec - WiFi module between 67=B0C -=
+ 70=B0C
+> MAC (next to Windows PC) 802.11n transfering at 15MB/sec - WiFi module re=
+aches 85=B0C within 60 sec
+> IPAD 802.11ac transfering at 20MB/sec  -  WiFi module between 67=B0C - 70=
+=B0C
+>  =
+
+> =
+
+> Any pointers welcome?
+
+[shafi] May be you can check this
+http://www.spinics.net/lists/linux-wireless/msg130753.html
+and get more information
+
+> =
+
+> Cheers
+> lIl
+> =
+
+> =
+
+> Debug info:
+> =
+
+>  =
+
+> root@xenial:~# uname -a
+> =
+
+> Linux xenial 4.6.0 #1 SMP Mon May 16 13:53:14 CEST 2016 x86_64 x86_64 x86=
+_64 GNU/Linux
+> =
+
+>  =
+
+> =
+
+> sensors:
+> =
+
+> ath10k_hwmon-pci-0500
+> =
+
+> Adapter: PCI adapter
+> =
+
+> temp1:        +84.0=B0C
+> =
+
+>  =
+
+> =
+
+> lspci -v:
+> =
+
+> 05:00.0 Network controller: Qualcomm Atheros QCA986x/988x 802.11ac Wirele=
+ss Network Adapter
+> =
+
+>     Subsystem: Device 19b6:d03c
+> =
+
+>     Flags: bus master, fast devsel, latency 0, IRQ 57
+> =
+
+>     Memory at fe200000 (64-bit, non-prefetchable) [size=3D2M]
+> =
+
+>     Expansion ROM at fe400000 [disabled] [size=3D64K]
+> =
+
+>     Capabilities: [40] Power Management version 2
+> =
+
+>     Capabilities: [50] MSI: Enable+ Count=3D1/8 Maskable+ 64bit-
+> =
+
+>     Capabilities: [70] Express Endpoint, MSI 00
+> =
+
+>     Capabilities: [100] Advanced Error Reporting
+> =
+
+>     Capabilities: [140] Virtual Channel
+> =
+
+>     Capabilities: [160] Device Serial Number 00-00-00-00-00-00-00-00
+> =
+
+>     Kernel driver in use: ath10k_pci
+> =
+
+>     Kernel modules: ath10k_pci
+> =
+
+>  =
+
+> =
+
+> firmware:
+> =
+
+> May 17 11:28:29 xenial kernel: ath10k_pci 0000:05:00.0: Unknown FW IE: 30
+> =
+
+> May 17 11:28:29 xenial kernel: ath10k_pci 0000:05:00.0: qca988x hw2.0 tar=
+get 0x4100016c chip_id 0x043202ff sub 19b6:d03c
+> =
+
+> May 17 11:28:29 xenial kernel: ath10k_pci 0000:05:00.0: kconfig debug 0 d=
+ebugfs 1 tracing 0 dfs 1 testmode 0
+> =
+
+> May 17 11:28:29 xenial kernel: ath10k_pci 0000:05:00.0: firmware ver 10.2=
+.4.97-1-ct-swc-D-002-5558e8 api 5 features wmi-10.x,wmi-10.2,raw-mode,adapt=
+ive-cca,mfp crc32 56488b5c
+> =
+
+>  =
+
+> =
+
+> Macbook client:
+> =
+
+> Interfaces:
+> =
+
+> en0:
+> =
+
+>   Card Type:    AirPort Extreme  (0x14E4, 0x10F)
+> =
+
+>   Firmware Version:    Broadcom BCM43xx 1.0 (7.21.95.175.1a6)
+> =
+
+>  =
+
+> =
+
+> =
+
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
