@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b31DB-0004lE-N7
- for ath10k@lists.infradead.org; Wed, 18 May 2016 13:08:31 +0000
-Date: Wed, 18 May 2016 18:37:56 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+ id 1b31GY-0007nH-8w
+ for ath10k@lists.infradead.org; Wed, 18 May 2016 13:11:59 +0000
+From: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
 Subject: Re: Compex QCA9880 Aarch64 ath10k firmware?
-Message-ID: <20160518130756.GA2065@atheros-ThinkPad-T61>
+Date: Wed, 18 May 2016 13:11:30 +0000
+Message-ID: <1463577090597.59592@qti.qualcomm.com>
 References: <CAGBdaZmyyC4Eym=U3yEeZqz9jrW5zp_5kZcDQDyvenAVL=qHeA@mail.gmail.com>
- <CA+BoTQmL5i1UkD8ENFW7e5yNzpOwf1cS2vWqeSxaHNvtRzjzXw@mail.gmail.com>
+ <CA+BoTQmL5i1UkD8ENFW7e5yNzpOwf1cS2vWqeSxaHNvtRzjzXw@mail.gmail.com>,
  <CAGBdaZnYrA_wFVAnD1fsp9Wu2xbcbhhrJaSedGc8rRThnep5Bg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
 In-Reply-To: <CAGBdaZnYrA_wFVAnD1fsp9Wu2xbcbhhrJaSedGc8rRThnep5Bg@mail.gmail.com>
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,69 +21,104 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brad Pousland <bpousland@izuma.net>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Brad Pousland <bpousland@izuma.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGksCgpPbiBXZWQsIE1heSAxOCwgMjAxNiBhdCAwODowMTozMEFNIC0wNTAwLCBCcmFkIFBvdXNs
-YW5kIHdyb3RlOgo+IElzIGFueW9uZSBhd2FyZSBvZiB0aGUgYXRoMTBrIGRyaXZlciB3b3JraW5n
-IHdpdGggYXJtNjQgYmFja3BvcnRlZCB0bwo+IDMuMTk/ICBJJ20gcnVubmluZyBpbnRvIGEgZmly
-bXdhcmUgY3Jhc2guCj4gCj4gWyAgMTk0LjQ2MDY4N10gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6
-IHBjaSBpcnEgbXNpLXggaW50ZXJydXB0cyA4Cj4gaXJxX21vZGUgMCByZXNldF9tb2RlIDAKPiBb
-ICAxOTQuNjM4OTc5XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxv
-YWQgZm9yCj4gYXRoMTBrL2NhbC1wY2ktMDAwMDowMTowMC4wLmJpbiBmYWlsZWQgd2l0aCBlcnJv
-ciAtMgo+IFsgIDE5NS43ODg0ODJdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiByZWNlaXZlZCB1
-bnNvbGljaXRlZCBmdyBjcmFzaCBpbnRlcnJ1cHQKPiBbICAxOTUuNzk0MjM3XSBhdGgxMGtfcGNp
-IDAwMDA6MDE6MDAuMDogcmVjZWl2ZWQgdW5zb2xpY2l0ZWQgZncgY3Jhc2ggaW50ZXJydXB0Cgpb
-c2hhZmldIEFyZSB5b3UgdXNpbmcgdGhlIGxhdGVzdCBiYWNrcG9ydHMsIHlvdSBjYW4gdHJ5IHRv
-IGNyZWF0ZSB5b3VyIG93bmEKaHR0cDovL2xpbnV4d2lyZWxlc3Mub3JnL2VuL3VzZXJzL0RyaXZl
-cnMvYXRoMTBrL2JhY2twb3J0cy8KCgo+IFsgIDE5Ni43OTM5NjVdIGF0aDEwa19wY2kgMDAwMDow
-MTowMC4wOiBmYWlsZWQgdG8gcmVjZWl2ZSBjb250cm9sCj4gcmVzcG9uc2UgY29tcGxldGlvbiwg
-cG9sbGluZy4uCj4gWyAgMTk2LjgwMTI0Ml0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHJlY2Vp
-dmVkIHVuc29saWNpdGVkIGZ3IGNyYXNoIGludGVycnVwdAo+IFsgIDE5Ni44MDY5OTFdIGF0aDEw
-a19wY2kgMDAwMDowMTowMC4wOiByZWNlaXZlZCB1bnNvbGljaXRlZCBmdyBjcmFzaCBpbnRlcnJ1
-cHQKPiBbICAxOTcuNzkzOTYyXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogU2VydmljZSBjb25u
-ZWN0IHRpbWVvdXQKPiBbICAxOTcuNzk4MzA4XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmFp
-bGVkIHRvIGNvbm5lY3QgaHR0ICgtMTEwKQo+IFsgIDE5Ny44NzQ4MDZdIGF0aDEwa19wY2kgMDAw
-MDowMTowMC4wOiBjb3VsZCBub3QgaW5pdCBjb3JlICgtMTEwKQo+IFsgIDE5Ny44Nzk0MzRdIGF0
-aDEwa19wY2kgMDAwMDowMTowMC4wOiBjb3VsZCBub3QgcHJvYmUgZncgKC0xMTApCgpodHRwczov
-L2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13YXJlCnBsZWFzZSBjaGVjayB5b3UgaGF2ZSB0
-aGUgbGF0ZXN0IGZpcm13YXJlIGFzIHdlbGwKCj4gCj4gQnJhZAo+IAo+IAo+IEJyYWQgUG91c2xh
-bmQKPiBQcmluY2lwbGUgU29mdHdhcmUgRW5naW5lZXIKPiBXaWdXYWcsIEluYy4KPiBjIC0gNTEy
-LTk2My0yNDQ2Cj4gd3d3LndpZ3dhZy5jb20KPiAKPiAKPiAKPiBPbiBXZWQsIE1heSAxOCwgMjAx
-NiBhdCAxMjowMiBBTSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdy
-b3RlOgo+ID4gT24gMTggTWF5IDIwMTYgYXQgMDE6MTEsIEJyYWQgUG91c2xhbmQgPGJwb3VzbGFu
-ZEBpenVtYS5uZXQ+IHdyb3RlOgo+ID4+IEhlbGxvLAo+ID4+Cj4gPj4gSSdtIGNyb3NzIGNvbXBp
-bGluZyBiYWNrcG9ydHMtNC4yLjYtMSB0byBBYXJjaDY0IGZvciBMaW51eCAzLjE5LjMrIGFuZAo+
-ID4+IHJ1bm5pbmcgdGhlIGF0aDEwayBkcml2ZXJzIGFnYWluc3QgdGhlIENvbXBleCBRQ0E5ODgw
-IG1vZHVsZS4gIEkgZ2V0Cj4gPj4gc29tZSBmaXJtd2FyZSBsb2FkIGVycm9ycy4KPiA+Pgo+ID4+
-IFsgICA0Ny44MjQ4NzRdIExvYWRpbmcgbW9kdWxlcyBiYWNrcG9ydGVkIGZyb20gTGludXggdmVy
-c2lvbiB2NC4yLjYtMC1nMWMwMjg2NQo+ID4+IFsgICA0Ny44MzA1MjVdIEJhY2twb3J0IGdlbmVy
-YXRlZCBieSBiYWNrcG9ydHMuZ2l0IHY0LjIuNi0xLTAtZzkwMTE4YzcKPiA+PiBbICAyMDkuOTMx
-MDYyXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogcGNpIGlycSBtc2kteCBpbnRlcnJ1cHRzIDgK
-PiA+PiBpcnFfbW9kZSAwIHJlc2V0X21vZGUgMAo+ID4+IFsgIDIxMC4xMDY1NzZdIGF0aDEwa19w
-Y2kgMDAwMDowMTowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPiA+PiBhdGgxMGsvY2Fs
-LXBjaS0wMDAwOjAxOjAwLjAuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4gPj4gWyAgMjEwLjEx
-NTYzOF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvcgo+
-ID4+IGF0aDEway9RQ0E5ODhYL2h3Mi4wL2JvYXJkLmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMgo+
-ID4+IFsgIDIxMC4xMjQ1OThdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmYWlsZWQgdG8gZmV0
-Y2ggZ2VuZXJpYyBib2FyZCBkYXRhOiAtMgo+ID4+IFsgIDIxMC4xMzAyNDVdIGF0aDEwa19wY2kg
-MDAwMDowMTowMC4wOiBmYWlsZWQgdG8gZmV0Y2ggYm9hcmQgZmlsZTogLTIKPiA+PiBbICAyMTAu
-MTM1MjExXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogY291bGQgbm90IGZldGNoIGZpcm13YXJl
-IGZpbGVzICgtMikKPiA+PiBbICAyMTAuMTQwNTk4XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDog
-Y291bGQgbm90IHByb2JlIGZ3ICgtMikKPiA+Pgo+ID4+IEZpcm13YXJlIGlzOgo+ID4+IGZpcm13
-YXJlLTIuYmluXzEwLjEuNDY3LjMtMQo+ID4+IGZpcm13YXJlLTUuYmluXzEwLjIuNC43MC40Mi0y
-Cj4gPj4gZmlybXdhcmUtMy5iaW5fMTAuMi4yLjM5LjYtMQo+ID4+Cj4gPj4gV2h5IGRvZXMgaXQg
-YXBwZWFyIHRvIGJlIGxvb2tpbmcgZm9yIGJvYXJkLmJpbj8gIEkgdW5kZXJzdG9vZCB0aGF0IHdh
-cwo+ID4+IHJlbW92ZWQgZnJvbSB0aGUgbGF0ZXN0IGF0aDEwayBkcml2ZXI/Cj4gPgo+ID4gWW91
-J3JlIHByb2JhYmx5IHJlZmVycmluZyB0byB0aGUgcmVtb3ZhbCBvZiBGVyBBUEkgMS4gVGhpcyBk
-aWRuJ3QKPiA+IGNvbmNlcm4gYm9hcmQgZmlsZXMuIFlvdSBzdGlsbCBuZWVkIGJvYXJkLmJpbiBv
-ciBib2FyZC0yLmJpbi4KPiA+Cj4gPgo+ID4gTWljaGHFggo+IAo+IF9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hdGgxMGsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
-cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+This could be due to MSI-x and this support is removed recently as it is no=
+t well tested.
+
+Please apply this patch and give a try
+
+https://www.mail-archive.com/linux-wireless@vger.kernel.org/msg21822.html
+
+-Rajkumar
+________________________________________
+From: ath10k <ath10k-bounces@lists.infradead.org> on behalf of Brad Pouslan=
+d <bpousland@izuma.net>
+Sent: Wednesday, May 18, 2016 6:31 PM
+To: ath10k@lists.infradead.org
+Subject: Re: Compex QCA9880 Aarch64 ath10k firmware?
+
+Is anyone aware of the ath10k driver working with arm64 backported to
+3.19?  I'm running into a firmware crash.
+
+[  194.460687] ath10k_pci 0000:01:00.0: pci irq msi-x interrupts 8
+irq_mode 0 reset_mode 0
+[  194.638979] ath10k_pci 0000:01:00.0: Direct firmware load for
+ath10k/cal-pci-0000:01:00.0.bin failed with error -2
+[  195.788482] ath10k_pci 0000:01:00.0: received unsolicited fw crash inter=
+rupt
+[  195.794237] ath10k_pci 0000:01:00.0: received unsolicited fw crash inter=
+rupt
+[  196.793965] ath10k_pci 0000:01:00.0: failed to receive control
+response completion, polling..
+[  196.801242] ath10k_pci 0000:01:00.0: received unsolicited fw crash inter=
+rupt
+[  196.806991] ath10k_pci 0000:01:00.0: received unsolicited fw crash inter=
+rupt
+[  197.793962] ath10k_pci 0000:01:00.0: Service connect timeout
+[  197.798308] ath10k_pci 0000:01:00.0: failed to connect htt (-110)
+[  197.874806] ath10k_pci 0000:01:00.0: could not init core (-110)
+[  197.879434] ath10k_pci 0000:01:00.0: could not probe fw (-110)
+
+Brad
+
+
+Brad Pousland
+Principle Software Engineer
+WigWag, Inc.
+c - 512-963-2446
+www.wigwag.com
+
+
+
+On Wed, May 18, 2016 at 12:02 AM, Michal Kazior <michal.kazior@tieto.com> w=
+rote:
+> On 18 May 2016 at 01:11, Brad Pousland <bpousland@izuma.net> wrote:
+>> Hello,
+>>
+>> I'm cross compiling backports-4.2.6-1 to Aarch64 for Linux 3.19.3+ and
+>> running the ath10k drivers against the Compex QCA9880 module.  I get
+>> some firmware load errors.
+>>
+>> [   47.824874] Loading modules backported from Linux version v4.2.6-0-g1=
+c02865
+>> [   47.830525] Backport generated by backports.git v4.2.6-1-0-g90118c7
+>> [  209.931062] ath10k_pci 0000:01:00.0: pci irq msi-x interrupts 8
+>> irq_mode 0 reset_mode 0
+>> [  210.106576] ath10k_pci 0000:01:00.0: Direct firmware load for
+>> ath10k/cal-pci-0000:01:00.0.bin failed with error -2
+>> [  210.115638] ath10k_pci 0000:01:00.0: Direct firmware load for
+>> ath10k/QCA988X/hw2.0/board.bin failed with error -2
+>> [  210.124598] ath10k_pci 0000:01:00.0: failed to fetch generic board da=
+ta: -2
+>> [  210.130245] ath10k_pci 0000:01:00.0: failed to fetch board file: -2
+>> [  210.135211] ath10k_pci 0000:01:00.0: could not fetch firmware files (=
+-2)
+>> [  210.140598] ath10k_pci 0000:01:00.0: could not probe fw (-2)
+>>
+>> Firmware is:
+>> firmware-2.bin_10.1.467.3-1
+>> firmware-5.bin_10.2.4.70.42-2
+>> firmware-3.bin_10.2.2.39.6-1
+>>
+>> Why does it appear to be looking for board.bin?  I understood that was
+>> removed from the latest ath10k driver?
+>
+> You're probably referring to the removal of FW API 1. This didn't
+> concern board files. You still need board.bin or board-2.bin.
+>
+>
+> Micha=B3
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
