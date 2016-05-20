@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b3lcY-0005Ud-HO
- for ath10k@lists.infradead.org; Fri, 20 May 2016 14:41:47 +0000
-Received: by mail-wm0-x230.google.com with SMTP id a17so176332295wme.0
- for <ath10k@lists.infradead.org>; Fri, 20 May 2016 07:41:25 -0700 (PDT)
+ id 1b3lcc-0005fG-TR
+ for ath10k@lists.infradead.org; Fri, 20 May 2016 14:41:52 +0000
+Received: by mail-wm0-x231.google.com with SMTP id a17so176335270wme.0
+ for <ath10k@lists.infradead.org>; Fri, 20 May 2016 07:41:30 -0700 (PDT)
 From: Sven Eckelmann <sven.eckelmann@open-mesh.com>
-Subject: [PATCH 1/2] ath10k: add QCA9887 chipset support
-Date: Fri, 20 May 2016 16:41:11 +0200
-Message-Id: <1463755272-12912-1-git-send-email-sven.eckelmann@open-mesh.com>
+Subject: [PATCH 2/2] ath10k: Add board data download from target
+Date: Fri, 20 May 2016 16:41:12 +0200
+Message-Id: <1463755272-12912-2-git-send-email-sven.eckelmann@open-mesh.com>
 In-Reply-To: <1568876.Six5hABE57@bentobox>
 References: <1568876.Six5hABE57@bentobox>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,208 +27,357 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Sven Eckelmann <sven.eckelmann@open-mesh.com>, linux-wireless@vger.kernel.org
 
-Add the hardware name, revision, firmware names and update the pci_id
-table.
-
-QA9887 HW1.0 is supposed to be similar to QCA988X HW2.0 . Details about
-he firmware interface are currently unknown.
+The QCA9887 stores its calibration data (board.bin) inside the EEPROM of
+the target. This has to be downloaded manually to allow the device to
+initialize correctly.
 
 Signed-off-by: Sven Eckelmann <sven.eckelmann@open-mesh.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c      | 20 ++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h        | 10 ++++++++++
- drivers/net/wireless/ath/ath10k/pci.c       | 20 ++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/targaddrs.h |  3 +++
- 4 files changed, 51 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c |  41 +++++++++-
+ drivers/net/wireless/ath/ath10k/core.h |   3 +
+ drivers/net/wireless/ath/ath10k/hif.h  |  14 ++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  22 ++++++
+ drivers/net/wireless/ath/ath10k/pci.c  | 139 +++++++++++++++++++++++++++++++++
+ 5 files changed, 218 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 49af624..0f4a4f6 100644
+index 0f4a4f6..a70759a 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -69,6 +69,25 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		},
- 	},
- 	{
-+		.id = QCA9887_HW_1_0_VERSION,
-+		.dev_id = QCA9887_1_0_DEVICE_ID,
-+		.name = "qca9887 hw1.0",
-+		.patch_load_addr = QCA9887_HW_1_0_PATCH_LOAD_ADDR,
-+		.uart_pin = 7,
-+		.has_shifted_cc_wraparound = true,
-+		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
-+		.max_probe_resp_desc_thres = 0,
-+		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
-+		.cal_data_len = 2116,
-+		.fw = {
-+			.dir = QCA9887_HW_1_0_FW_DIR,
-+			.board = QCA9887_HW_1_0_BOARD_DATA_FILE,
-+			.board_size = QCA9887_BOARD_DATA_SZ,
-+			.board_ext_size = QCA9887_BOARD_EXT_DATA_SZ,
-+		},
-+	},
-+	{
- 		.id = QCA6174_HW_2_1_VERSION,
- 		.dev_id = QCA6164_2_1_DEVICE_ID,
- 		.name = "qca6164 hw2.1",
-@@ -2062,6 +2081,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+@@ -18,6 +18,7 @@
+ #include <linux/module.h>
+ #include <linux/firmware.h>
+ #include <linux/of.h>
++#include <asm/byteorder.h>
  
- 	switch (hw_rev) {
- 	case ATH10K_HW_QCA988X:
-+	case ATH10K_HW_QCA9887:
- 		ar->regs = &qca988x_regs;
- 		ar->hw_values = &qca988x_values;
- 		break;
+ #include "core.h"
+ #include "mac.h"
+@@ -550,6 +551,34 @@ out:
+ 	return ret;
+ }
+ 
++static int ath10k_download_cal_eeprom(struct ath10k *ar)
++{
++	size_t data_len;
++	void *data = NULL;
++	int ret;
++
++	ret = ath10k_hif_fetch_target_board_data(ar, &data, &data_len);
++	if (ret) {
++		ath10k_warn(ar, "failed to read calibration data from EEPROM: %d\n",
++			    ret);
++		goto out_free;
++	}
++
++	ret = ath10k_download_board_data(ar, data, data_len);
++	if (ret) {
++		ath10k_warn(ar, "failed to download calibration data from EEPROM: %d\n",
++			    ret);
++		goto out_free;
++	}
++
++	ret = 0;
++
++out_free:
++	kfree(data);
++
++	return ret;
++}
++
+ static int ath10k_core_get_board_id_from_otp(struct ath10k *ar)
+ {
+ 	u32 result, address;
+@@ -1312,7 +1341,17 @@ static int ath10k_download_cal_data(struct ath10k *ar)
+ 	}
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
+-		   "boot did not find DT entry, try OTP next: %d\n",
++		   "boot did not find DT entry, try target EEPROM next: %d\n",
++		   ret);
++
++	ret = ath10k_download_cal_eeprom(ar);
++	if (ret == 0) {
++		ar->cal_mode = ATH10K_CAL_MODE_EEPROM;
++		goto done;
++	}
++
++	ath10k_dbg(ar, ATH10K_DBG_BOOT,
++		   "boot did not find target EEPROM entry, try OTP next: %d\n",
+ 		   ret);
+ 
+ 	ret = ath10k_download_and_run_otp(ar);
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 1852e0e..86d7642 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -571,6 +571,7 @@ enum ath10k_cal_mode {
+ 	ATH10K_CAL_MODE_DT,
+ 	ATH10K_PRE_CAL_MODE_FILE,
+ 	ATH10K_PRE_CAL_MODE_DT,
++	ATH10K_CAL_MODE_EEPROM,
+ };
+ 
+ enum ath10k_crypt_mode {
+@@ -593,6 +594,8 @@ static inline const char *ath10k_cal_mode_str(enum ath10k_cal_mode mode)
+ 		return "pre-cal-file";
+ 	case ATH10K_PRE_CAL_MODE_DT:
+ 		return "pre-cal-dt";
++	case ATH10K_CAL_MODE_EEPROM:
++		return "eeprom";
+ 	}
+ 
+ 	return "unknown";
+diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
+index 89e7076..c18b8c8 100644
+--- a/drivers/net/wireless/ath/ath10k/hif.h
++++ b/drivers/net/wireless/ath/ath10k/hif.h
+@@ -87,6 +87,10 @@ struct ath10k_hif_ops {
+ 
+ 	int (*suspend)(struct ath10k *ar);
+ 	int (*resume)(struct ath10k *ar);
++
++	/* fetch board data from target eeprom */
++	int (*fetch_target_board_data)(struct ath10k *ar, void **data,
++				       size_t *data_len);
+ };
+ 
+ static inline int ath10k_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+@@ -202,4 +206,14 @@ static inline void ath10k_hif_write32(struct ath10k *ar,
+ 	ar->hif.ops->write32(ar, address, data);
+ }
+ 
++static inline int ath10k_hif_fetch_target_board_data(struct ath10k *ar,
++						     void **data,
++						     size_t *data_len)
++{
++	if (!ar->hif.ops->fetch_target_board_data)
++		return -EOPNOTSUPP;
++
++	return ar->hif.ops->fetch_target_board_data(ar, data, data_len);
++}
++
+ #endif /* _HIF_H_ */
 diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index aedd898..9108831 100644
+index 9108831..53ca40e 100644
 --- a/drivers/net/wireless/ath/ath10k/hw.h
 +++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -27,6 +27,7 @@
- #define QCA6174_2_1_DEVICE_ID   (0x003e)
- #define QCA99X0_2_0_DEVICE_ID   (0x0040)
- #define QCA9377_1_0_DEVICE_ID   (0x0042)
-+#define QCA9887_1_0_DEVICE_ID   (0x0050)
+@@ -557,7 +557,10 @@ enum ath10k_hw_4addr_pad {
+ #define WLAN_SYSTEM_SLEEP_DISABLE_MASK		0x00000001
  
- /* QCA988X 1.0 definitions (unsupported) */
- #define QCA988X_HW_1_0_CHIP_ID_REV	0x0
-@@ -38,6 +39,13 @@
- #define QCA988X_HW_2_0_BOARD_DATA_FILE	"board.bin"
- #define QCA988X_HW_2_0_PATCH_LOAD_ADDR	0x1234
+ #define WLAN_GPIO_PIN0_ADDRESS			0x00000028
++#define WLAN_GPIO_PIN0_CONFIG_LSB		11
+ #define WLAN_GPIO_PIN0_CONFIG_MASK		0x00007800
++#define WLAN_GPIO_PIN0_PAD_PULL_LSB		5
++#define WLAN_GPIO_PIN0_PAD_PULL_MASK		0x00000060
+ #define WLAN_GPIO_PIN1_ADDRESS			0x0000002c
+ #define WLAN_GPIO_PIN1_CONFIG_MASK		0x00007800
+ #define WLAN_GPIO_PIN10_ADDRESS			0x00000050
+@@ -570,6 +573,8 @@ enum ath10k_hw_4addr_pad {
+ #define CLOCK_GPIO_BT_CLK_OUT_EN_MASK		0
  
-+/* QCA9887 1.0 definitions */
-+#define QCA9887_HW_1_0_VERSION		0x4100016d
-+#define QCA9887_HW_1_0_CHIP_ID_REV	0
-+#define QCA9887_HW_1_0_FW_DIR		ATH10K_FW_DIR "/QCA9887/hw1.0"
-+#define QCA9887_HW_1_0_BOARD_DATA_FILE	"board.bin"
-+#define QCA9887_HW_1_0_PATCH_LOAD_ADDR	0x1234
+ #define SI_CONFIG_OFFSET			0x00000000
++#define SI_CONFIG_ERR_INT_LSB			19
++#define SI_CONFIG_ERR_INT_MASK			0x00080000
+ #define SI_CONFIG_BIDIR_OD_DATA_LSB		18
+ #define SI_CONFIG_BIDIR_OD_DATA_MASK		0x00040000
+ #define SI_CONFIG_I2C_LSB			16
+@@ -583,7 +588,9 @@ enum ath10k_hw_4addr_pad {
+ #define SI_CONFIG_DIVIDER_LSB			0
+ #define SI_CONFIG_DIVIDER_MASK			0x0000000f
+ #define SI_CS_OFFSET				0x00000004
++#define SI_CS_DONE_ERR_LSB			10
+ #define SI_CS_DONE_ERR_MASK			0x00000400
++#define SI_CS_DONE_INT_LSB			9
+ #define SI_CS_DONE_INT_MASK			0x00000200
+ #define SI_CS_START_LSB				8
+ #define SI_CS_START_MASK			0x00000100
+@@ -634,7 +641,10 @@ enum ath10k_hw_4addr_pad {
+ #define GPIO_BASE_ADDRESS			WLAN_GPIO_BASE_ADDRESS
+ #define GPIO_PIN0_OFFSET			WLAN_GPIO_PIN0_ADDRESS
+ #define GPIO_PIN1_OFFSET			WLAN_GPIO_PIN1_ADDRESS
++#define GPIO_PIN0_CONFIG_LSB			WLAN_GPIO_PIN0_CONFIG_LSB
+ #define GPIO_PIN0_CONFIG_MASK			WLAN_GPIO_PIN0_CONFIG_MASK
++#define GPIO_PIN0_PAD_PULL_LSB			WLAN_GPIO_PIN0_PAD_PULL_LSB
++#define GPIO_PIN0_PAD_PULL_MASK			WLAN_GPIO_PIN0_PAD_PULL_MASK
+ #define GPIO_PIN1_CONFIG_MASK			WLAN_GPIO_PIN1_CONFIG_MASK
+ #define SI_BASE_ADDRESS				WLAN_SI_BASE_ADDRESS
+ #define SCRATCH_BASE_ADDRESS			SOC_CORE_BASE_ADDRESS
+@@ -689,6 +699,18 @@ enum ath10k_hw_4addr_pad {
+ #define WINDOW_READ_ADDR_ADDRESS		MISSING
+ #define WINDOW_WRITE_ADDR_ADDRESS		MISSING
+ 
++#define QCA9887_1_0_I2C_SDA_GPIO_PIN		5
++#define QCA9887_1_0_I2C_SDA_PIN_CONFIG		3
++#define QCA9887_1_0_SI_CLK_GPIO_PIN		17
++#define QCA9887_1_0_SI_CLK_PIN_CONFIG		3
++#define QCA9887_1_0_GPIO_ENABLE_W1TS_LOW_ADDRESS 0x00000010
 +
- /* QCA6174 target BMI version signatures */
- #define QCA6174_HW_1_0_VERSION		0x05000000
- #define QCA6174_HW_1_1_VERSION		0x05000001
-@@ -195,6 +203,7 @@ enum ath10k_hw_rev {
- 	ATH10K_HW_QCA99X0,
- 	ATH10K_HW_QCA9377,
- 	ATH10K_HW_QCA4019,
-+	ATH10K_HW_QCA9887,
- };
++#define QCA9887_EEPROM_SELECT_READ		0xa10000a0
++#define QCA9887_EEPROM_ADDR_HI_MASK		0x0000ff00
++#define QCA9887_EEPROM_ADDR_HI_LSB		8
++#define QCA9887_EEPROM_ADDR_LO_MASK		0x00ff0000
++#define QCA9887_EEPROM_ADDR_LO_LSB		16
++
+ #define RTC_STATE_V_GET(x) (((x) & RTC_STATE_V_MASK) >> RTC_STATE_V_LSB)
  
- struct ath10k_hw_regs {
-@@ -247,6 +256,7 @@ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
- 				u32 cc, u32 rcc, u32 cc_prev, u32 rcc_prev);
- 
- #define QCA_REV_988X(ar) ((ar)->hw_rev == ATH10K_HW_QCA988X)
-+#define QCA_REV_9887(ar) ((ar)->hw_rev == ATH10K_HW_QCA9887)
- #define QCA_REV_6174(ar) ((ar)->hw_rev == ATH10K_HW_QCA6174)
- #define QCA_REV_99X0(ar) ((ar)->hw_rev == ATH10K_HW_QCA99X0)
- #define QCA_REV_9377(ar) ((ar)->hw_rev == ATH10K_HW_QCA9377)
+ #endif /* _HW_H_ */
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 8133d7b..b799f46 100644
+index b799f46..c156705 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -57,6 +57,7 @@ static const struct pci_device_id ath10k_pci_id_table[] = {
- 	{ PCI_VDEVICE(ATHEROS, QCA6174_2_1_DEVICE_ID) }, /* PCI-E QCA6174 V2.1 */
- 	{ PCI_VDEVICE(ATHEROS, QCA99X0_2_0_DEVICE_ID) }, /* PCI-E QCA99X0 V2 */
- 	{ PCI_VDEVICE(ATHEROS, QCA9377_1_0_DEVICE_ID) }, /* PCI-E QCA9377 V1 */
-+	{ PCI_VDEVICE(ATHEROS, QCA9887_1_0_DEVICE_ID) }, /* PCI-E QCA9887 */
- 	{0}
+@@ -2566,6 +2566,144 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
+ }
+ #endif
+ 
++static bool ath10k_pci_validate_cal(void *data, size_t size)
++{
++	__le16 *cal_words = data;
++	u16 checksum = 0;
++	size_t i;
++
++	if (size % 2 != 0)
++		return false;
++
++	for (i = 0; i < size / 2; i++)
++		checksum ^= le16_to_cpu(cal_words[i]);
++
++	return checksum == 0xffff;
++}
++
++static void ath10k_pci_enable_eeprom(struct ath10k *ar)
++{
++	/* Enable SI clock */
++	ath10k_pci_soc_write32(ar, CLOCK_CONTROL_OFFSET, 0x0);
++
++	/* Configure GPIOs for I2C operation */
++	ath10k_pci_write32(ar,
++			   GPIO_BASE_ADDRESS + GPIO_PIN0_OFFSET +
++			   4 * QCA9887_1_0_I2C_SDA_GPIO_PIN,
++			   SM(QCA9887_1_0_I2C_SDA_PIN_CONFIG,
++			      GPIO_PIN0_CONFIG) |
++			   SM(1, GPIO_PIN0_PAD_PULL));
++
++	ath10k_pci_write32(ar,
++			   GPIO_BASE_ADDRESS + GPIO_PIN0_OFFSET +
++			   4 * QCA9887_1_0_SI_CLK_GPIO_PIN,
++			   SM(QCA9887_1_0_SI_CLK_PIN_CONFIG, GPIO_PIN0_CONFIG) |
++			   SM(1, GPIO_PIN0_PAD_PULL));
++
++	ath10k_pci_write32(ar,
++			   GPIO_BASE_ADDRESS +
++			   QCA9887_1_0_GPIO_ENABLE_W1TS_LOW_ADDRESS,
++			   1u << QCA9887_1_0_SI_CLK_GPIO_PIN);
++
++	/* In Swift ASIC - EEPROM clock will be (110MHz/512) = 214KHz */
++	ath10k_pci_write32(ar,
++			   SI_BASE_ADDRESS + SI_CONFIG_OFFSET,
++			   SM(1, SI_CONFIG_ERR_INT) |
++			   SM(1, SI_CONFIG_BIDIR_OD_DATA) |
++			   SM(1, SI_CONFIG_I2C) |
++			   SM(1, SI_CONFIG_POS_SAMPLE) |
++			   SM(1, SI_CONFIG_INACTIVE_DATA) |
++			   SM(1, SI_CONFIG_INACTIVE_CLK) |
++			   SM(8, SI_CONFIG_DIVIDER));
++}
++
++static int ath10k_pci_read_eeprom(struct ath10k *ar, u16 addr, u8 *out)
++{
++	u32 reg;
++	int wait_limit;
++
++	/* set device select byte and for the read operation */
++	reg = QCA9887_EEPROM_SELECT_READ |
++	      SM(addr, QCA9887_EEPROM_ADDR_LO) |
++	      SM(addr >> 8, QCA9887_EEPROM_ADDR_HI);
++	ath10k_pci_write32(ar, SI_BASE_ADDRESS + SI_TX_DATA0_OFFSET, reg);
++
++	/* write transmit data, transfer length, and START bit */
++	ath10k_pci_write32(ar, SI_BASE_ADDRESS + SI_CS_OFFSET,
++			   SM(1, SI_CS_START) | SM(1, SI_CS_RX_CNT) |
++			   SM(4, SI_CS_TX_CNT));
++
++	/* wait max 1 sec */
++	wait_limit = 100000;
++
++	/* wait for SI_CS_DONE_INT */
++	do {
++		reg = ath10k_pci_read32(ar, SI_BASE_ADDRESS + SI_CS_OFFSET);
++		if (MS(reg, SI_CS_DONE_INT))
++			break;
++
++		wait_limit--;
++		udelay(10);
++	} while (wait_limit > 0);
++
++	if (!MS(reg, SI_CS_DONE_INT)) {
++		ath10k_err(ar, "timeout while reading device EEPROM at %04x\n",
++			   addr);
++		return -ETIMEDOUT;
++	}
++
++	/* clear SI_CS_DONE_INT */
++	ath10k_pci_write32(ar, SI_BASE_ADDRESS + SI_CS_OFFSET, reg);
++
++	if (MS(reg, SI_CS_DONE_ERR)) {
++		ath10k_err(ar, "failed to read device EEPROM at %04x\n", addr);
++		return -EIO;
++	}
++
++	/* extract receive data */
++	reg = ath10k_pci_read32(ar, SI_BASE_ADDRESS + SI_RX_DATA0_OFFSET);
++	*out = reg;
++
++	return 0;
++}
++
++static int ath10k_pci_fetch_target_board_data(struct ath10k *ar, void **data,
++					      size_t *data_len)
++{
++	u8 *caldata = NULL;
++	size_t calsize, i;
++	int ret;
++
++	if (!QCA_REV_9887(ar))
++		return -EOPNOTSUPP;
++
++	calsize = ar->hw_params.cal_data_len;
++	caldata = kmalloc(calsize, GFP_KERNEL);
++	if (!caldata)
++		return -ENOMEM;
++
++	ath10k_pci_enable_eeprom(ar);
++
++	for (i = 0; i < calsize; i++) {
++		ret = ath10k_pci_read_eeprom(ar, i, &caldata[i]);
++		if (ret)
++			goto err_free;
++	}
++
++	if (!ath10k_pci_validate_cal(caldata, calsize))
++		goto err_free;
++
++	*data = caldata;
++	*data_len = calsize;
++
++	return 0;
++
++err_free:
++	kfree(data);
++
++	return -EINVAL;
++}
++
+ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
+ 	.tx_sg			= ath10k_pci_hif_tx_sg,
+ 	.diag_read		= ath10k_pci_hif_diag_read,
+@@ -2585,6 +2723,7 @@ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
+ 	.suspend		= ath10k_pci_hif_suspend,
+ 	.resume			= ath10k_pci_hif_resume,
+ #endif
++	.fetch_target_board_data = ath10k_pci_fetch_target_board_data,
  };
  
-@@ -83,6 +84,8 @@ static const struct ath10k_pci_supp_chip ath10k_pci_supp_chips[] = {
- 
- 	{ QCA9377_1_0_DEVICE_ID, QCA9377_HW_1_0_CHIP_ID_REV },
- 	{ QCA9377_1_0_DEVICE_ID, QCA9377_HW_1_1_CHIP_ID_REV },
-+
-+	{ QCA9887_1_0_DEVICE_ID, QCA9887_HW_1_0_CHIP_ID_REV },
- };
- 
- static void ath10k_pci_buffer_cleanup(struct ath10k *ar);
-@@ -837,6 +840,7 @@ static u32 ath10k_pci_targ_cpu_to_ce_addr(struct ath10k *ar, u32 addr)
- 
- 	switch (ar->hw_rev) {
- 	case ATH10K_HW_QCA988X:
-+	case ATH10K_HW_QCA9887:
- 	case ATH10K_HW_QCA6174:
- 	case ATH10K_HW_QCA9377:
- 		val = (ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
-@@ -1560,6 +1564,7 @@ static void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
- 
- 	switch (ar->hw_rev) {
- 	case ATH10K_HW_QCA988X:
-+	case ATH10K_HW_QCA9887:
- 	case ATH10K_HW_QCA6174:
- 	case ATH10K_HW_QCA9377:
- 		val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
-@@ -1583,6 +1588,7 @@ static void ath10k_pci_irq_msi_fw_unmask(struct ath10k *ar)
- 
- 	switch (ar->hw_rev) {
- 	case ATH10K_HW_QCA988X:
-+	case ATH10K_HW_QCA9887:
- 	case ATH10K_HW_QCA6174:
- 	case ATH10K_HW_QCA9377:
- 		val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
-@@ -1932,6 +1938,7 @@ static int ath10k_pci_get_num_banks(struct ath10k *ar)
- 	switch (ar_pci->pdev->device) {
- 	case QCA988X_2_0_DEVICE_ID:
- 	case QCA99X0_2_0_DEVICE_ID:
-+	case QCA9887_1_0_DEVICE_ID:
- 		return 1;
- 	case QCA6164_2_1_DEVICE_ID:
- 	case QCA6174_2_1_DEVICE_ID:
-@@ -2295,7 +2302,7 @@ static int ath10k_pci_warm_reset(struct ath10k *ar)
- 
- static int ath10k_pci_safe_chip_reset(struct ath10k *ar)
- {
--	if (QCA_REV_988X(ar) || QCA_REV_6174(ar)) {
-+	if (QCA_REV_988X(ar) || QCA_REV_9887(ar) || QCA_REV_6174(ar)) {
- 		return ath10k_pci_warm_reset(ar);
- 	} else if (QCA_REV_99X0(ar)) {
- 		ath10k_pci_irq_disable(ar);
-@@ -2437,7 +2444,7 @@ static int ath10k_pci_qca99x0_chip_reset(struct ath10k *ar)
- 
- static int ath10k_pci_chip_reset(struct ath10k *ar)
- {
--	if (QCA_REV_988X(ar))
-+	if (QCA_REV_988X(ar) || QCA_REV_9887(ar))
- 		return ath10k_pci_qca988x_chip_reset(ar);
- 	else if (QCA_REV_6174(ar))
- 		return ath10k_pci_qca6174_chip_reset(ar);
-@@ -2982,6 +2989,10 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 		hw_rev = ATH10K_HW_QCA988X;
- 		pci_ps = false;
- 		break;
-+	case QCA9887_1_0_DEVICE_ID:
-+		hw_rev = ATH10K_HW_QCA9887;
-+		pci_ps = false;
-+		break;
- 	case QCA6164_2_1_DEVICE_ID:
- 	case QCA6174_2_1_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA6174;
-@@ -3180,6 +3191,11 @@ MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API5_FILE);
- MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_BOARD_DATA_FILE);
- MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_BOARD_API2_FILE);
- 
-+/* QCA9887 1.0 firmware files */
-+MODULE_FIRMWARE(QCA9887_HW_1_0_FW_DIR "/" ATH10K_FW_API5_FILE);
-+MODULE_FIRMWARE(QCA9887_HW_1_0_FW_DIR "/" QCA9887_HW_1_0_BOARD_DATA_FILE);
-+MODULE_FIRMWARE(QCA9887_HW_1_0_FW_DIR "/" ATH10K_BOARD_API2_FILE);
-+
- /* QCA6174 2.1 firmware files */
- MODULE_FIRMWARE(QCA6174_HW_2_1_FW_DIR "/" ATH10K_FW_API4_FILE);
- MODULE_FIRMWARE(QCA6174_HW_2_1_FW_DIR "/" ATH10K_FW_API5_FILE);
-diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
-index 8e24099..aaf53a8 100644
---- a/drivers/net/wireless/ath/ath10k/targaddrs.h
-+++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
-@@ -447,6 +447,9 @@ Fw Mode/SubMode Mask
- #define QCA988X_BOARD_DATA_SZ     7168
- #define QCA988X_BOARD_EXT_DATA_SZ 0
- 
-+#define QCA9887_BOARD_DATA_SZ     7168
-+#define QCA9887_BOARD_EXT_DATA_SZ 0
-+
- #define QCA6174_BOARD_DATA_SZ     8192
- #define QCA6174_BOARD_EXT_DATA_SZ 0
- 
+ /*
 -- 
 2.8.1
 
