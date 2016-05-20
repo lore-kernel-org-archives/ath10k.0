@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b3lc5-0005S4-CI
- for ath10k@lists.infradead.org; Fri, 20 May 2016 14:41:18 +0000
-Received: by mail-wm0-x22c.google.com with SMTP id a17so8492980wme.0
- for <ath10k@lists.infradead.org>; Fri, 20 May 2016 07:40:56 -0700 (PDT)
+ id 1b3lcY-0005Ud-HO
+ for ath10k@lists.infradead.org; Fri, 20 May 2016 14:41:47 +0000
+Received: by mail-wm0-x230.google.com with SMTP id a17so176332295wme.0
+ for <ath10k@lists.infradead.org>; Fri, 20 May 2016 07:41:25 -0700 (PDT)
 From: Sven Eckelmann <sven.eckelmann@open-mesh.com>
-Subject: [PATCH 0/2] ath10k: Add support for QCA9887
-Date: Fri, 20 May 2016 16:40:46 +0200
-Message-ID: <1568876.Six5hABE57@bentobox>
-MIME-Version: 1.0
+Subject: [PATCH 1/2] ath10k: add QCA9887 chipset support
+Date: Fri, 20 May 2016 16:41:11 +0200
+Message-Id: <1463755272-12912-1-git-send-email-sven.eckelmann@open-mesh.com>
+In-Reply-To: <1568876.Six5hABE57@bentobox>
+References: <1568876.Six5hABE57@bentobox>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,85 +19,221 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1531937719351217557=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: Sven Eckelmann <sven.eckelmann@open-mesh.com>, linux-wireless@vger.kernel.org
 
---===============1531937719351217557==
-Content-Type: multipart/signed; boundary="nextPart2051463.9KyNamfX2f"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Add the hardware name, revision, firmware names and update the pci_id
+table.
 
---nextPart2051463.9KyNamfX2f
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+QA9887 HW1.0 is supposed to be similar to QCA988X HW2.0 . Details about
+he firmware interface are currently unknown.
 
-Hi,
+Signed-off-by: Sven Eckelmann <sven.eckelmann@open-mesh.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c      | 20 ++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h        | 10 ++++++++++
+ drivers/net/wireless/ath/ath10k/pci.c       | 20 ++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/targaddrs.h |  3 +++
+ 4 files changed, 51 insertions(+), 2 deletions(-)
 
-the QCA9887 chip is similar to the QCA988x chips. But it requires a special
-firmware and uses a different calibration data source. Unfortunately, no
-working firmware currently exists. But it is possible to create a semi working
-one by binary patching the current version.
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 49af624..0f4a4f6 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -69,6 +69,25 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		},
+ 	},
+ 	{
++		.id = QCA9887_HW_1_0_VERSION,
++		.dev_id = QCA9887_1_0_DEVICE_ID,
++		.name = "qca9887 hw1.0",
++		.patch_load_addr = QCA9887_HW_1_0_PATCH_LOAD_ADDR,
++		.uart_pin = 7,
++		.has_shifted_cc_wraparound = true,
++		.otp_exe_param = 0,
++		.channel_counters_freq_hz = 88000,
++		.max_probe_resp_desc_thres = 0,
++		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
++		.cal_data_len = 2116,
++		.fw = {
++			.dir = QCA9887_HW_1_0_FW_DIR,
++			.board = QCA9887_HW_1_0_BOARD_DATA_FILE,
++			.board_size = QCA9887_BOARD_DATA_SZ,
++			.board_ext_size = QCA9887_BOARD_EXT_DATA_SZ,
++		},
++	},
++	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+ 		.dev_id = QCA6164_2_1_DEVICE_ID,
+ 		.name = "qca6164 hw2.1",
+@@ -2062,6 +2081,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 
+ 	switch (hw_rev) {
+ 	case ATH10K_HW_QCA988X:
++	case ATH10K_HW_QCA9887:
+ 		ar->regs = &qca988x_regs;
+ 		ar->hw_values = &qca988x_values;
+ 		break;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index aedd898..9108831 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -27,6 +27,7 @@
+ #define QCA6174_2_1_DEVICE_ID   (0x003e)
+ #define QCA99X0_2_0_DEVICE_ID   (0x0040)
+ #define QCA9377_1_0_DEVICE_ID   (0x0042)
++#define QCA9887_1_0_DEVICE_ID   (0x0050)
+ 
+ /* QCA988X 1.0 definitions (unsupported) */
+ #define QCA988X_HW_1_0_CHIP_ID_REV	0x0
+@@ -38,6 +39,13 @@
+ #define QCA988X_HW_2_0_BOARD_DATA_FILE	"board.bin"
+ #define QCA988X_HW_2_0_PATCH_LOAD_ADDR	0x1234
+ 
++/* QCA9887 1.0 definitions */
++#define QCA9887_HW_1_0_VERSION		0x4100016d
++#define QCA9887_HW_1_0_CHIP_ID_REV	0
++#define QCA9887_HW_1_0_FW_DIR		ATH10K_FW_DIR "/QCA9887/hw1.0"
++#define QCA9887_HW_1_0_BOARD_DATA_FILE	"board.bin"
++#define QCA9887_HW_1_0_PATCH_LOAD_ADDR	0x1234
++
+ /* QCA6174 target BMI version signatures */
+ #define QCA6174_HW_1_0_VERSION		0x05000000
+ #define QCA6174_HW_1_1_VERSION		0x05000001
+@@ -195,6 +203,7 @@ enum ath10k_hw_rev {
+ 	ATH10K_HW_QCA99X0,
+ 	ATH10K_HW_QCA9377,
+ 	ATH10K_HW_QCA4019,
++	ATH10K_HW_QCA9887,
+ };
+ 
+ struct ath10k_hw_regs {
+@@ -247,6 +256,7 @@ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
+ 				u32 cc, u32 rcc, u32 cc_prev, u32 rcc_prev);
+ 
+ #define QCA_REV_988X(ar) ((ar)->hw_rev == ATH10K_HW_QCA988X)
++#define QCA_REV_9887(ar) ((ar)->hw_rev == ATH10K_HW_QCA9887)
+ #define QCA_REV_6174(ar) ((ar)->hw_rev == ATH10K_HW_QCA6174)
+ #define QCA_REV_99X0(ar) ((ar)->hw_rev == ATH10K_HW_QCA99X0)
+ #define QCA_REV_9377(ar) ((ar)->hw_rev == ATH10K_HW_QCA9377)
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 8133d7b..b799f46 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -57,6 +57,7 @@ static const struct pci_device_id ath10k_pci_id_table[] = {
+ 	{ PCI_VDEVICE(ATHEROS, QCA6174_2_1_DEVICE_ID) }, /* PCI-E QCA6174 V2.1 */
+ 	{ PCI_VDEVICE(ATHEROS, QCA99X0_2_0_DEVICE_ID) }, /* PCI-E QCA99X0 V2 */
+ 	{ PCI_VDEVICE(ATHEROS, QCA9377_1_0_DEVICE_ID) }, /* PCI-E QCA9377 V1 */
++	{ PCI_VDEVICE(ATHEROS, QCA9887_1_0_DEVICE_ID) }, /* PCI-E QCA9887 */
+ 	{0}
+ };
+ 
+@@ -83,6 +84,8 @@ static const struct ath10k_pci_supp_chip ath10k_pci_supp_chips[] = {
+ 
+ 	{ QCA9377_1_0_DEVICE_ID, QCA9377_HW_1_0_CHIP_ID_REV },
+ 	{ QCA9377_1_0_DEVICE_ID, QCA9377_HW_1_1_CHIP_ID_REV },
++
++	{ QCA9887_1_0_DEVICE_ID, QCA9887_HW_1_0_CHIP_ID_REV },
+ };
+ 
+ static void ath10k_pci_buffer_cleanup(struct ath10k *ar);
+@@ -837,6 +840,7 @@ static u32 ath10k_pci_targ_cpu_to_ce_addr(struct ath10k *ar, u32 addr)
+ 
+ 	switch (ar->hw_rev) {
+ 	case ATH10K_HW_QCA988X:
++	case ATH10K_HW_QCA9887:
+ 	case ATH10K_HW_QCA6174:
+ 	case ATH10K_HW_QCA9377:
+ 		val = (ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+@@ -1560,6 +1564,7 @@ static void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
+ 
+ 	switch (ar->hw_rev) {
+ 	case ATH10K_HW_QCA988X:
++	case ATH10K_HW_QCA9887:
+ 	case ATH10K_HW_QCA6174:
+ 	case ATH10K_HW_QCA9377:
+ 		val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+@@ -1583,6 +1588,7 @@ static void ath10k_pci_irq_msi_fw_unmask(struct ath10k *ar)
+ 
+ 	switch (ar->hw_rev) {
+ 	case ATH10K_HW_QCA988X:
++	case ATH10K_HW_QCA9887:
+ 	case ATH10K_HW_QCA6174:
+ 	case ATH10K_HW_QCA9377:
+ 		val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+@@ -1932,6 +1938,7 @@ static int ath10k_pci_get_num_banks(struct ath10k *ar)
+ 	switch (ar_pci->pdev->device) {
+ 	case QCA988X_2_0_DEVICE_ID:
+ 	case QCA99X0_2_0_DEVICE_ID:
++	case QCA9887_1_0_DEVICE_ID:
+ 		return 1;
+ 	case QCA6164_2_1_DEVICE_ID:
+ 	case QCA6174_2_1_DEVICE_ID:
+@@ -2295,7 +2302,7 @@ static int ath10k_pci_warm_reset(struct ath10k *ar)
+ 
+ static int ath10k_pci_safe_chip_reset(struct ath10k *ar)
+ {
+-	if (QCA_REV_988X(ar) || QCA_REV_6174(ar)) {
++	if (QCA_REV_988X(ar) || QCA_REV_9887(ar) || QCA_REV_6174(ar)) {
+ 		return ath10k_pci_warm_reset(ar);
+ 	} else if (QCA_REV_99X0(ar)) {
+ 		ath10k_pci_irq_disable(ar);
+@@ -2437,7 +2444,7 @@ static int ath10k_pci_qca99x0_chip_reset(struct ath10k *ar)
+ 
+ static int ath10k_pci_chip_reset(struct ath10k *ar)
+ {
+-	if (QCA_REV_988X(ar))
++	if (QCA_REV_988X(ar) || QCA_REV_9887(ar))
+ 		return ath10k_pci_qca988x_chip_reset(ar);
+ 	else if (QCA_REV_6174(ar))
+ 		return ath10k_pci_qca6174_chip_reset(ar);
+@@ -2982,6 +2989,10 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		hw_rev = ATH10K_HW_QCA988X;
+ 		pci_ps = false;
+ 		break;
++	case QCA9887_1_0_DEVICE_ID:
++		hw_rev = ATH10K_HW_QCA9887;
++		pci_ps = false;
++		break;
+ 	case QCA6164_2_1_DEVICE_ID:
+ 	case QCA6174_2_1_DEVICE_ID:
+ 		hw_rev = ATH10K_HW_QCA6174;
+@@ -3180,6 +3191,11 @@ MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API5_FILE);
+ MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_BOARD_DATA_FILE);
+ MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_BOARD_API2_FILE);
+ 
++/* QCA9887 1.0 firmware files */
++MODULE_FIRMWARE(QCA9887_HW_1_0_FW_DIR "/" ATH10K_FW_API5_FILE);
++MODULE_FIRMWARE(QCA9887_HW_1_0_FW_DIR "/" QCA9887_HW_1_0_BOARD_DATA_FILE);
++MODULE_FIRMWARE(QCA9887_HW_1_0_FW_DIR "/" ATH10K_BOARD_API2_FILE);
++
+ /* QCA6174 2.1 firmware files */
+ MODULE_FIRMWARE(QCA6174_HW_2_1_FW_DIR "/" ATH10K_FW_API4_FILE);
+ MODULE_FIRMWARE(QCA6174_HW_2_1_FW_DIR "/" ATH10K_FW_API5_FILE);
+diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
+index 8e24099..aaf53a8 100644
+--- a/drivers/net/wireless/ath/ath10k/targaddrs.h
++++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
+@@ -447,6 +447,9 @@ Fw Mode/SubMode Mask
+ #define QCA988X_BOARD_DATA_SZ     7168
+ #define QCA988X_BOARD_EXT_DATA_SZ 0
+ 
++#define QCA9887_BOARD_DATA_SZ     7168
++#define QCA9887_BOARD_EXT_DATA_SZ 0
++
+ #define QCA6174_BOARD_DATA_SZ     8192
+ #define QCA6174_BOARD_EXT_DATA_SZ 0
+ 
+-- 
+2.8.1
 
-    # download new fw + set ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX+ATH10K_FW_FEATURE_NO_P2P
-    curl -o firmware-5.bin https://raw.githubusercontent.com/kvalo/ath10k-firmware/master/QCA9887/firmware-5.bin_10.2.3.31.7-1
-    echo -en '\x0c'|dd conv=notrunc bs=1 seek=231112 of=firmware-5.bin
-    mkdir -p /lib/firmware/ath10k/QCA9887/hw1.0/
-    mv firmware-5.bin /lib/firmware/ath10k/QCA9887/hw1.0/firmware-5.bin
-
-I am also guessing that ATH10K_FW_FEATURE_SUPPORTS_SKIP_CLOCK_INIT should
-also be set but this would require a ie_len of 2.
-
-
-The QCA9887 support should be considered really experimental because we don't
-have any information how the interface to firmware actually looks like. The
-workarounds mentioned above were just implemented because we saw the firmware
-crashing and then guessed the most plausible reason for it.
-
-We are also guessing that there is no HTT_10X_T2H_MSG_TYPE_MGMT_TX_COMPL_IND in
-this firmware and WMI_10X_VDEV_PARAM_RTS_FIXED_RATE maybe is also not existing
-(which would reduce the value of every entry in wmi_10x_vdev_param after that
-by one). But this is just a wild guess and we don't have any real information
-about that.
-
-Kind regards,
-	Sven
---nextPart2051463.9KyNamfX2f
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAABCgAGBQJXPyHuAAoJEF2HCgfBJntGuHkP/3nLEOD6QqS/MVry6HOasLmN
-fSinlkboFK0dVbMPhxmt2ZHlSfHVQynVAyhqh+XFIvabUxqmKrId+LBgPYd8BqT9
-1JFhFoYWkD9YAs6SkNht7ENpyTEBaOuKLnIfXpz7uC3t8RBg8dmeKW2XlbgbbhVK
-IvleKM98n2WsfINviEVrFoOeYwNi5l8Rmw9AVkVlGmTBBM7spIx2GykIansXWqCK
-vHKaIkWWocfD2h6xO0jXPeVa6L8ieBgK+PfegHdGrOlyFGeOH23H/VHvcZxzqelH
-2SGJ5cBIs/cQ29eyaKBXO0F17o8lOXGwl0nQRLR8dh9R9Jt0BJWi6iXEmIa6jqAD
-EQuZ+ay/aF1EhmSoxXwVj1NJtyfox9ba53C+jfoN5lSyuLE1EDGZ1DsrJPLwE/CM
-k8pt+9cm4Vfc3WdWuTjI2PB02sQzs86VKLKUV6KsIPG5D4BhxdUp89+bCcB1n5jN
-KJcLGkjvqKONUNVV62saTHa8nssuYI39gSlZRZ5cL7tHMG/eiY/PjMy7WGmWh2hs
-CaQ9mMrJ3tCfdYOFYG1e/qbM0/0mMlBbkJktRn4nWzdEGzvloWHJT89MC+TwkQhZ
-dK/Vit03Tr9nDUVsPjWasvi6qbd1Lx9zfvt6k9HsjK7RiAqPg9qb8yv7zQyJ/Ydg
-hkUrY4bpRkRWtmIi6AsW
-=9d9O
------END PGP SIGNATURE-----
-
---nextPart2051463.9KyNamfX2f--
-
-
-
---===============1531937719351217557==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============1531937719351217557==--
