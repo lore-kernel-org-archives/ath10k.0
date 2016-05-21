@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
+Received: from out2-smtp.messagingengine.com ([66.111.4.26])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b3lcc-0005fG-TR
- for ath10k@lists.infradead.org; Fri, 20 May 2016 14:41:52 +0000
-Received: by mail-wm0-x231.google.com with SMTP id a17so176335270wme.0
- for <ath10k@lists.infradead.org>; Fri, 20 May 2016 07:41:30 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@open-mesh.com>
-Subject: [PATCH 2/2] ath10k: Add board data download from target
-Date: Fri, 20 May 2016 16:41:12 +0200
-Message-Id: <1463755272-12912-2-git-send-email-sven.eckelmann@open-mesh.com>
-In-Reply-To: <1568876.Six5hABE57@bentobox>
-References: <1568876.Six5hABE57@bentobox>
+ id 1b47kl-00056Y-87
+ for ath10k@lists.infradead.org; Sat, 21 May 2016 14:19:43 +0000
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+ by mailout.nyi.internal (Postfix) with ESMTP id 7E20E20899
+ for <ath10k@lists.infradead.org>; Sat, 21 May 2016 10:19:22 -0400 (EDT)
+Received: from [127.0.0.1] (p5b37e9a1.dip0.t-ipconnect.de [91.55.233.161])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 18ABB68014B
+ for <ath10k@lists.infradead.org>; Sat, 21 May 2016 10:19:21 -0400 (EDT)
+From: The Dark Avenger <darkavenger@fastmail.fm>
+Subject: DFS fails with QCA6174 and QCA9377
+Message-ID: <57406E68.6010906@fastmail.fm>
+Date: Sat, 21 May 2016 16:19:20 +0200
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,368 +22,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Sven Eckelmann <sven.eckelmann@open-mesh.com>, linux-wireless@vger.kernel.org
 
-The QCA9887 stores its calibration data (board.bin) inside the EEPROM of
-the target. This has to be downloaded manually to allow the device to
-initialize correctly.
+Hello,
 
-Signed-off-by: Sven Eckelmann <sven.eckelmann@open-mesh.com>
----
- drivers/net/wireless/ath/ath10k/core.c |  41 +++++++++-
- drivers/net/wireless/ath/ath10k/core.h |   3 +
- drivers/net/wireless/ath/ath10k/hif.h  |  14 ++++
- drivers/net/wireless/ath/ath10k/hw.h   |  22 ++++++
- drivers/net/wireless/ath/ath10k/pci.c  | 139 +++++++++++++++++++++++++++++++++
- 5 files changed, 218 insertions(+), 1 deletion(-)
+I'm currently trying to set-up an AP in the 5 GHz band. I have a QCA6174 
+(Killer 1525) and a QCA9377 adapter at hand.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 0f4a4f6..a70759a 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -18,6 +18,7 @@
- #include <linux/module.h>
- #include <linux/firmware.h>
- #include <linux/of.h>
-+#include <asm/byteorder.h>
- 
- #include "core.h"
- #include "mac.h"
-@@ -550,6 +551,34 @@ out:
- 	return ret;
- }
- 
-+static int ath10k_download_cal_eeprom(struct ath10k *ar)
-+{
-+	size_t data_len;
-+	void *data = NULL;
-+	int ret;
-+
-+	ret = ath10k_hif_fetch_target_board_data(ar, &data, &data_len);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to read calibration data from EEPROM: %d\n",
-+			    ret);
-+		goto out_free;
-+	}
-+
-+	ret = ath10k_download_board_data(ar, data, data_len);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to download calibration data from EEPROM: %d\n",
-+			    ret);
-+		goto out_free;
-+	}
-+
-+	ret = 0;
-+
-+out_free:
-+	kfree(data);
-+
-+	return ret;
-+}
-+
- static int ath10k_core_get_board_id_from_otp(struct ath10k *ar)
- {
- 	u32 result, address;
-@@ -1312,7 +1341,17 @@ static int ath10k_download_cal_data(struct ath10k *ar)
- 	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
--		   "boot did not find DT entry, try OTP next: %d\n",
-+		   "boot did not find DT entry, try target EEPROM next: %d\n",
-+		   ret);
-+
-+	ret = ath10k_download_cal_eeprom(ar);
-+	if (ret == 0) {
-+		ar->cal_mode = ATH10K_CAL_MODE_EEPROM;
-+		goto done;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT,
-+		   "boot did not find target EEPROM entry, try OTP next: %d\n",
- 		   ret);
- 
- 	ret = ath10k_download_and_run_otp(ar);
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 1852e0e..86d7642 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -571,6 +571,7 @@ enum ath10k_cal_mode {
- 	ATH10K_CAL_MODE_DT,
- 	ATH10K_PRE_CAL_MODE_FILE,
- 	ATH10K_PRE_CAL_MODE_DT,
-+	ATH10K_CAL_MODE_EEPROM,
- };
- 
- enum ath10k_crypt_mode {
-@@ -593,6 +594,8 @@ static inline const char *ath10k_cal_mode_str(enum ath10k_cal_mode mode)
- 		return "pre-cal-file";
- 	case ATH10K_PRE_CAL_MODE_DT:
- 		return "pre-cal-dt";
-+	case ATH10K_CAL_MODE_EEPROM:
-+		return "eeprom";
- 	}
- 
- 	return "unknown";
-diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
-index 89e7076..c18b8c8 100644
---- a/drivers/net/wireless/ath/ath10k/hif.h
-+++ b/drivers/net/wireless/ath/ath10k/hif.h
-@@ -87,6 +87,10 @@ struct ath10k_hif_ops {
- 
- 	int (*suspend)(struct ath10k *ar);
- 	int (*resume)(struct ath10k *ar);
-+
-+	/* fetch board data from target eeprom */
-+	int (*fetch_target_board_data)(struct ath10k *ar, void **data,
-+				       size_t *data_len);
- };
- 
- static inline int ath10k_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
-@@ -202,4 +206,14 @@ static inline void ath10k_hif_write32(struct ath10k *ar,
- 	ar->hif.ops->write32(ar, address, data);
- }
- 
-+static inline int ath10k_hif_fetch_target_board_data(struct ath10k *ar,
-+						     void **data,
-+						     size_t *data_len)
-+{
-+	if (!ar->hif.ops->fetch_target_board_data)
-+		return -EOPNOTSUPP;
-+
-+	return ar->hif.ops->fetch_target_board_data(ar, data, data_len);
-+}
-+
- #endif /* _HIF_H_ */
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 9108831..53ca40e 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -557,7 +557,10 @@ enum ath10k_hw_4addr_pad {
- #define WLAN_SYSTEM_SLEEP_DISABLE_MASK		0x00000001
- 
- #define WLAN_GPIO_PIN0_ADDRESS			0x00000028
-+#define WLAN_GPIO_PIN0_CONFIG_LSB		11
- #define WLAN_GPIO_PIN0_CONFIG_MASK		0x00007800
-+#define WLAN_GPIO_PIN0_PAD_PULL_LSB		5
-+#define WLAN_GPIO_PIN0_PAD_PULL_MASK		0x00000060
- #define WLAN_GPIO_PIN1_ADDRESS			0x0000002c
- #define WLAN_GPIO_PIN1_CONFIG_MASK		0x00007800
- #define WLAN_GPIO_PIN10_ADDRESS			0x00000050
-@@ -570,6 +573,8 @@ enum ath10k_hw_4addr_pad {
- #define CLOCK_GPIO_BT_CLK_OUT_EN_MASK		0
- 
- #define SI_CONFIG_OFFSET			0x00000000
-+#define SI_CONFIG_ERR_INT_LSB			19
-+#define SI_CONFIG_ERR_INT_MASK			0x00080000
- #define SI_CONFIG_BIDIR_OD_DATA_LSB		18
- #define SI_CONFIG_BIDIR_OD_DATA_MASK		0x00040000
- #define SI_CONFIG_I2C_LSB			16
-@@ -583,7 +588,9 @@ enum ath10k_hw_4addr_pad {
- #define SI_CONFIG_DIVIDER_LSB			0
- #define SI_CONFIG_DIVIDER_MASK			0x0000000f
- #define SI_CS_OFFSET				0x00000004
-+#define SI_CS_DONE_ERR_LSB			10
- #define SI_CS_DONE_ERR_MASK			0x00000400
-+#define SI_CS_DONE_INT_LSB			9
- #define SI_CS_DONE_INT_MASK			0x00000200
- #define SI_CS_START_LSB				8
- #define SI_CS_START_MASK			0x00000100
-@@ -634,7 +641,10 @@ enum ath10k_hw_4addr_pad {
- #define GPIO_BASE_ADDRESS			WLAN_GPIO_BASE_ADDRESS
- #define GPIO_PIN0_OFFSET			WLAN_GPIO_PIN0_ADDRESS
- #define GPIO_PIN1_OFFSET			WLAN_GPIO_PIN1_ADDRESS
-+#define GPIO_PIN0_CONFIG_LSB			WLAN_GPIO_PIN0_CONFIG_LSB
- #define GPIO_PIN0_CONFIG_MASK			WLAN_GPIO_PIN0_CONFIG_MASK
-+#define GPIO_PIN0_PAD_PULL_LSB			WLAN_GPIO_PIN0_PAD_PULL_LSB
-+#define GPIO_PIN0_PAD_PULL_MASK			WLAN_GPIO_PIN0_PAD_PULL_MASK
- #define GPIO_PIN1_CONFIG_MASK			WLAN_GPIO_PIN1_CONFIG_MASK
- #define SI_BASE_ADDRESS				WLAN_SI_BASE_ADDRESS
- #define SCRATCH_BASE_ADDRESS			SOC_CORE_BASE_ADDRESS
-@@ -689,6 +699,18 @@ enum ath10k_hw_4addr_pad {
- #define WINDOW_READ_ADDR_ADDRESS		MISSING
- #define WINDOW_WRITE_ADDR_ADDRESS		MISSING
- 
-+#define QCA9887_1_0_I2C_SDA_GPIO_PIN		5
-+#define QCA9887_1_0_I2C_SDA_PIN_CONFIG		3
-+#define QCA9887_1_0_SI_CLK_GPIO_PIN		17
-+#define QCA9887_1_0_SI_CLK_PIN_CONFIG		3
-+#define QCA9887_1_0_GPIO_ENABLE_W1TS_LOW_ADDRESS 0x00000010
-+
-+#define QCA9887_EEPROM_SELECT_READ		0xa10000a0
-+#define QCA9887_EEPROM_ADDR_HI_MASK		0x0000ff00
-+#define QCA9887_EEPROM_ADDR_HI_LSB		8
-+#define QCA9887_EEPROM_ADDR_LO_MASK		0x00ff0000
-+#define QCA9887_EEPROM_ADDR_LO_LSB		16
-+
- #define RTC_STATE_V_GET(x) (((x) & RTC_STATE_V_MASK) >> RTC_STATE_V_LSB)
- 
- #endif /* _HW_H_ */
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index b799f46..c156705 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2566,6 +2566,144 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
- }
- #endif
- 
-+static bool ath10k_pci_validate_cal(void *data, size_t size)
-+{
-+	__le16 *cal_words = data;
-+	u16 checksum = 0;
-+	size_t i;
-+
-+	if (size % 2 != 0)
-+		return false;
-+
-+	for (i = 0; i < size / 2; i++)
-+		checksum ^= le16_to_cpu(cal_words[i]);
-+
-+	return checksum == 0xffff;
-+}
-+
-+static void ath10k_pci_enable_eeprom(struct ath10k *ar)
-+{
-+	/* Enable SI clock */
-+	ath10k_pci_soc_write32(ar, CLOCK_CONTROL_OFFSET, 0x0);
-+
-+	/* Configure GPIOs for I2C operation */
-+	ath10k_pci_write32(ar,
-+			   GPIO_BASE_ADDRESS + GPIO_PIN0_OFFSET +
-+			   4 * QCA9887_1_0_I2C_SDA_GPIO_PIN,
-+			   SM(QCA9887_1_0_I2C_SDA_PIN_CONFIG,
-+			      GPIO_PIN0_CONFIG) |
-+			   SM(1, GPIO_PIN0_PAD_PULL));
-+
-+	ath10k_pci_write32(ar,
-+			   GPIO_BASE_ADDRESS + GPIO_PIN0_OFFSET +
-+			   4 * QCA9887_1_0_SI_CLK_GPIO_PIN,
-+			   SM(QCA9887_1_0_SI_CLK_PIN_CONFIG, GPIO_PIN0_CONFIG) |
-+			   SM(1, GPIO_PIN0_PAD_PULL));
-+
-+	ath10k_pci_write32(ar,
-+			   GPIO_BASE_ADDRESS +
-+			   QCA9887_1_0_GPIO_ENABLE_W1TS_LOW_ADDRESS,
-+			   1u << QCA9887_1_0_SI_CLK_GPIO_PIN);
-+
-+	/* In Swift ASIC - EEPROM clock will be (110MHz/512) = 214KHz */
-+	ath10k_pci_write32(ar,
-+			   SI_BASE_ADDRESS + SI_CONFIG_OFFSET,
-+			   SM(1, SI_CONFIG_ERR_INT) |
-+			   SM(1, SI_CONFIG_BIDIR_OD_DATA) |
-+			   SM(1, SI_CONFIG_I2C) |
-+			   SM(1, SI_CONFIG_POS_SAMPLE) |
-+			   SM(1, SI_CONFIG_INACTIVE_DATA) |
-+			   SM(1, SI_CONFIG_INACTIVE_CLK) |
-+			   SM(8, SI_CONFIG_DIVIDER));
-+}
-+
-+static int ath10k_pci_read_eeprom(struct ath10k *ar, u16 addr, u8 *out)
-+{
-+	u32 reg;
-+	int wait_limit;
-+
-+	/* set device select byte and for the read operation */
-+	reg = QCA9887_EEPROM_SELECT_READ |
-+	      SM(addr, QCA9887_EEPROM_ADDR_LO) |
-+	      SM(addr >> 8, QCA9887_EEPROM_ADDR_HI);
-+	ath10k_pci_write32(ar, SI_BASE_ADDRESS + SI_TX_DATA0_OFFSET, reg);
-+
-+	/* write transmit data, transfer length, and START bit */
-+	ath10k_pci_write32(ar, SI_BASE_ADDRESS + SI_CS_OFFSET,
-+			   SM(1, SI_CS_START) | SM(1, SI_CS_RX_CNT) |
-+			   SM(4, SI_CS_TX_CNT));
-+
-+	/* wait max 1 sec */
-+	wait_limit = 100000;
-+
-+	/* wait for SI_CS_DONE_INT */
-+	do {
-+		reg = ath10k_pci_read32(ar, SI_BASE_ADDRESS + SI_CS_OFFSET);
-+		if (MS(reg, SI_CS_DONE_INT))
-+			break;
-+
-+		wait_limit--;
-+		udelay(10);
-+	} while (wait_limit > 0);
-+
-+	if (!MS(reg, SI_CS_DONE_INT)) {
-+		ath10k_err(ar, "timeout while reading device EEPROM at %04x\n",
-+			   addr);
-+		return -ETIMEDOUT;
-+	}
-+
-+	/* clear SI_CS_DONE_INT */
-+	ath10k_pci_write32(ar, SI_BASE_ADDRESS + SI_CS_OFFSET, reg);
-+
-+	if (MS(reg, SI_CS_DONE_ERR)) {
-+		ath10k_err(ar, "failed to read device EEPROM at %04x\n", addr);
-+		return -EIO;
-+	}
-+
-+	/* extract receive data */
-+	reg = ath10k_pci_read32(ar, SI_BASE_ADDRESS + SI_RX_DATA0_OFFSET);
-+	*out = reg;
-+
-+	return 0;
-+}
-+
-+static int ath10k_pci_fetch_target_board_data(struct ath10k *ar, void **data,
-+					      size_t *data_len)
-+{
-+	u8 *caldata = NULL;
-+	size_t calsize, i;
-+	int ret;
-+
-+	if (!QCA_REV_9887(ar))
-+		return -EOPNOTSUPP;
-+
-+	calsize = ar->hw_params.cal_data_len;
-+	caldata = kmalloc(calsize, GFP_KERNEL);
-+	if (!caldata)
-+		return -ENOMEM;
-+
-+	ath10k_pci_enable_eeprom(ar);
-+
-+	for (i = 0; i < calsize; i++) {
-+		ret = ath10k_pci_read_eeprom(ar, i, &caldata[i]);
-+		if (ret)
-+			goto err_free;
-+	}
-+
-+	if (!ath10k_pci_validate_cal(caldata, calsize))
-+		goto err_free;
-+
-+	*data = caldata;
-+	*data_len = calsize;
-+
-+	return 0;
-+
-+err_free:
-+	kfree(data);
-+
-+	return -EINVAL;
-+}
-+
- static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
- 	.tx_sg			= ath10k_pci_hif_tx_sg,
- 	.diag_read		= ath10k_pci_hif_diag_read,
-@@ -2585,6 +2723,7 @@ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
- 	.suspend		= ath10k_pci_hif_suspend,
- 	.resume			= ath10k_pci_hif_resume,
- #endif
-+	.fetch_target_board_data = ath10k_pci_fetch_target_board_data,
- };
- 
- /*
--- 
-2.8.1
+Unfortunately, while both cards work otherwise well, e.g. I can create 
+an AP in the 2.4 GHz range, ACS works,  anything requiring DFS fails:
+ >hostapd v. 2.5:
+-----
+wlp4s0: DFS-CAC-START freq=5580 chan=116 sec_chan=1, width=1, seg0=122, 
+seg1=0, cac_time=60s
+nl80211: Start radar detection (CAC) 5580 MHz (ht_enabled=1, 
+vht_enabled=1, bandwidth=80 MHz, cf1=5610 MHz, cf2=0 MHz)
+nl80211: Failed to start radar detection: -16 (Device or resource busy)
+DFS start_dfs_cac() failed, -1
+-----
+Needless to say that the same thing happens on other channel, too, and 
+that there're no channels requiring no DFS.
+iw list
+-----
+...
+* 5240 MHz [48] (20.0 dBm) (no IR)
+* 5260 MHz [52] (20.0 dBm) (no IR, radar detection)
+                           DFS state: usable (for 607 sec)
+                           DFS CAC time: 60000 ms
+                       ...
+* 5700 MHz [140] (26.0 dBm) (no IR, radar detection)
+                           DFS state: usable (for 607 sec)
+                           DFS CAC time: 60000 ms
+* 5720 MHz [144] (disabled)
+...
+------
+I compiled kernel 4.5.3 with DFS support, as seems to be confirmed by 
+dmesg (see dfs 1):
+-----
+[    6.020482] ath10k_pci 0000:04:00.0: firmware: direct-loading 
+firmware ath10k/QCA6174/hw2.1/firmware-5.bin
+[    6.020500] ath10k_pci 0000:04:00.0: qca6174 hw2.1 target 0x05010000 
+chip_id 0x003405ff sub 1a56:1525
+[    6.020505] ath10k_pci 0000:04:00.0: kconfig debug 0 debugfs 0 
+tracing 0 dfs 1 testmode 0
+[    6.021159] ath10k_pci 0000:04:00.0: firmware ver 
+SW_RM.1.1.1-00157-QCARMSWPZ-1 api 5 features ignore-otp,no-4addr-pad 
+crc32 10bf8e08
+[    6.128659] ath10k_pci 0000:04:00.0: firmware: direct-loading 
+firmware ath10k/QCA6174/hw2.1/board-2.bin
+[    6.129021] ath10k_pci 0000:04:00.0: board_file api 2 bmi_id N/A 
+crc32 ae2e275a
+[    7.331373] ath10k_pci 0000:04:00.0: htt-ver 3.1 wmi-op 4 htt-op 3 
+cal otp max-sta 32 raw 0 hwcrypto 1
+-----
+For completeness iw get reg
+-----
+country DE: DFS-ETSI
+         (2400 - 2483 @ 40), (N/A, 20), (N/A)
+         (5150 - 5250 @ 80), (N/A, 20), (N/A), NO-OUTDOOR
+         (5250 - 5350 @ 80), (N/A, 20), (0 ms), NO-OUTDOOR, DFS
+         (5470 - 5725 @ 160), (N/A, 26), (0 ms), DFS
+         (57000 - 66000 @ 2160), (N/A, 40), (N/A)
+-----
+The only thing that worries me is that "iw list" does not report any 
+"radar detect widths".|.
+|So, I am somewhat clueless where the problem lies.  Is it driver, 
+firmware, or something else?
 
+Thanks
+
+Roland
 
 _______________________________________________
 ath10k mailing list
