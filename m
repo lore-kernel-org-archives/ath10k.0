@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b5GQN-00037s-So
- for ath10k@lists.infradead.org; Tue, 24 May 2016 17:47:24 +0000
+ id 1b5GWD-0004dG-Sd
+ for ath10k@lists.infradead.org; Tue, 24 May 2016 17:53:26 +0000
 MIME-Version: 1.0
-Subject: Re: [1/4] ath10k: Move rx_location_info out of struct rx_pkt_end
+Subject: Re: ath10k: improve tx scheduling
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1461164356-9158-2-git-send-email-vthiagar@qti.qualcomm.com>
-Message-ID: <4f3064b4687744e7bf09e4c8941d117c@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 24 May 2016 19:46:31 +0200
+In-Reply-To: <1462796708-13880-1-git-send-email-michal.kazior@tieto.com>
+Message-ID: <58d94fea017e4e04aa287f9cc45d7a6c@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 24 May 2016 19:52:55 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +21,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> wrote:
-> Define rx_location_info in struct rx_ppdu_end_qca99x0 after
-> rx_pkt_end. This is to prepare rx_ppdu_end for QCA9984 chip.
+Michal Kazior <michal.kazior@tieto.com> wrote:
+> Recent changes revolving around implementing
+> wake_tx_queue support introduced a significant
+> performance regressions on some (slower, uni-proc)
+> systems.
 > 
-> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, 4 patches applied to ath.git:
+Thanks, 1 patch applied to ath.git:
 
-8f09588b2cdc ath10k: move rx_location_info out of struct rx_pkt_end
-0fc7e270523b ath10k: clean up growing hw checks during safe and full reset
-acc6b5593eee ath10k: define rx_ppdu_end for QCA9984
-651b4cdcf97e ath10k: enable support for QCA9984
+7a0adc83f34d ath10k: improve tx scheduling
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/8890931/
+https://patchwork.kernel.org/patch/9045961/
 
 
 _______________________________________________
