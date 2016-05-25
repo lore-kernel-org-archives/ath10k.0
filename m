@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b5GYJ-0005zx-Sy
- for ath10k@lists.infradead.org; Tue, 24 May 2016 17:55:36 +0000
-MIME-Version: 1.0
-Subject: Re: ath10k: Fix legacy rate packet debug messages
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1463474131-26835-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <98b2e947a9ec454cb16e0c26dde6f618@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 24 May 2016 19:55:08 +0200
+ id 1b5ZRx-0001B5-OH
+ for ath10k@lists.infradead.org; Wed, 25 May 2016 14:06:18 +0000
+From: tamizhchelvam@codeaurora.org
+Subject: [PATCH v3] qcom: ipq4019: add wifi nodes to ipq4019 SoC device tree
+Date: Wed, 25 May 2016 19:40:22 +0530
+Message-Id: <1464185422-10760-1-git-send-email-tamizhchelvam@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,32 +15,142 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: agross@codeaurora.org, devicetree@vger.kernel.org
+Cc: linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, c_traja@qti.qualcomm.com, Raja Mani <rmani@codeaurora.org>, Tamizh chelvam <tamizhchelvam@codeaurora.org>, linux-soc@vger.kernel.org
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> 
-> Legacy rate packets may not necessarily be having a rx status
-> flag of '0' always, for example management frame have flags
-> like RX_FLAG_ONLY_MONITOR / RX_FLAG_MACTIME_END also set
-> 
-> Just check 'VHT' and 'HT' flags are not set , and simply clasify it as
-> legacy rate packets
-> 
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+From: Raja Mani <rmani@codeaurora.org>
 
-Thanks, 1 patch applied to ath.git:
+Include dts support for two wifi block present on ipq4019 SoC.
+Corresponding dt binding documentation has been added in ath.git as below
+commit id a47aaa69 and the commit message is
+"dt: bindings: add new dt entry for pre calibration in qcom, ath10k.txt".
 
-026441c9d4ff ath10k: fix legacy rate packet debug messages
+Signed-off-by: Raja Mani <rmani@codeaurora.org>
+Signed-off-by: Tamizh chelvam <tamizhchelvam@codeaurora.org>
+---
+v3:
 
+ - Removed msi properties(qcom,msi_addr, qcom,msi_base)
+
+v2:
+
+ - Fixed Commit log
+ - Added new Signed off
+
+ arch/arm/boot/dts/qcom-ipq4019.dtsi |   94 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
+
+diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+index bfc0b57..ea7a787 100644
+--- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
++++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+@@ -393,5 +393,99 @@
+ 			clock-names = "core", "iface";
+ 			status = "disabled";
+ 		};
++
++		wifi0: wifi@a000000 {
++			compatible = "qcom,ipq4019-wifi";
++			reg = <0xa000000 0x200000>;
++			resets = <&gcc WIFI0_CPU_INIT_RESET>,
++				 <&gcc WIFI0_RADIO_SRIF_RESET>,
++				 <&gcc WIFI0_RADIO_WARM_RESET>,
++				 <&gcc WIFI0_RADIO_COLD_RESET>,
++				 <&gcc WIFI0_CORE_WARM_RESET>,
++				 <&gcc WIFI0_CORE_COLD_RESET>;
++			reset-names = "wifi_cpu_init",
++				      "wifi_radio_srif",
++				      "wifi_radio_warm",
++				      "wifi_radio_cold",
++				      "wifi_core_warm",
++				      "wifi_core_cold";
++			clocks = <&gcc GCC_WCSS2G_CLK>,
++				 <&gcc GCC_WCSS2G_REF_CLK>,
++				 <&gcc GCC_WCSS2G_RTC_CLK>;
++			clock-names = "wifi_wcss_cmd",
++				      "wifi_wcss_ref",
++				      "wifi_wcss_rtc";
++			interrupts = <0 0x20 0x1>,
++				     <0 0x21 0x1>,
++				     <0 0x22 0x1>,
++				     <0 0x23 0x1>,
++				     <0 0x24 0x1>,
++				     <0 0x25 0x1>,
++				     <0 0x26 0x1>,
++				     <0 0x27 0x1>,
++				     <0 0x28 0x1>,
++				     <0 0x29 0x1>,
++				     <0 0x2a 0x1>,
++				     <0 0x2b 0x1>,
++				     <0 0x2c 0x1>,
++				     <0 0x2d 0x1>,
++				     <0 0x2e 0x1>,
++				     <0 0x2f 0x1>,
++				     <0 0xa8 0x0>;
++			interrupt-names = "msi0",  "msi1",  "msi2",  "msi3",
++					  "msi4",  "msi5",  "msi6",  "msi7",
++					  "msi8",  "msi9",  "msi10", "msi11",
++					  "msi12", "msi13", "msi14", "msi15",
++					  "legacy";
++			status = "disabled";
++			qcom,ath10k-pre-calibration-data = [00];
++		};
++
++		wifi1: wifi@a800000 {
++			compatible = "qcom,ipq4019-wifi";
++			reg = <0xa800000 0x200000>;
++			resets = <&gcc WIFI1_CPU_INIT_RESET>,
++				 <&gcc WIFI1_RADIO_SRIF_RESET>,
++				 <&gcc WIFI1_RADIO_WARM_RESET>,
++				 <&gcc WIFI1_RADIO_COLD_RESET>,
++				 <&gcc WIFI1_CORE_WARM_RESET>,
++				 <&gcc WIFI1_CORE_COLD_RESET>;
++			reset-names = "wifi_cpu_init",
++				      "wifi_radio_srif",
++				      "wifi_radio_warm",
++				      "wifi_radio_cold",
++				      "wifi_core_warm",
++				      "wifi_core_cold";
++			clocks = <&gcc GCC_WCSS5G_CLK>,
++				 <&gcc GCC_WCSS5G_REF_CLK>,
++				 <&gcc GCC_WCSS5G_RTC_CLK>;
++			clock-names = "wifi_wcss_cmd",
++				      "wifi_wcss_ref",
++				      "wifi_wcss_rtc";
++			interrupts = <0 0x30 0x1>,
++				     <0 0x31 0x1>,
++				     <0 0x32 0x1>,
++				     <0 0x33 0x1>,
++				     <0 0x34 0x1>,
++				     <0 0x35 0x1>,
++				     <0 0x36 0x1>,
++				     <0 0x37 0x1>,
++				     <0 0x38 0x1>,
++				     <0 0x39 0x1>,
++				     <0 0x3a 0x1>,
++				     <0 0x3b 0x1>,
++				     <0 0x3c 0x1>,
++				     <0 0x3d 0x1>,
++				     <0 0x3e 0x1>,
++				     <0 0x3f 0x1>,
++				     <0 0xa9 0x1>;
++			interrupt-names = "msi0",  "msi1",  "msi2",  "msi3",
++					  "msi4",  "msi5",  "msi6",  "msi7",
++					  "msi8",  "msi9",  "msi10", "msi11",
++					  "msi12", "msi13", "msi14", "msi15",
++					  "legacy";
++			status = "disabled";
++			qcom,ath10k-pre-calibration-data = [00];
++		};
+ 	};
+ };
 -- 
-Sent by pwcli
-https://patchwork.kernel.org/patch/9110621/
+1.7.9.5
 
 
 _______________________________________________
