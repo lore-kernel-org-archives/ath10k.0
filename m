@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b5ZRx-0001B5-OH
- for ath10k@lists.infradead.org; Wed, 25 May 2016 14:06:18 +0000
-From: tamizhchelvam@codeaurora.org
-Subject: [PATCH v3] qcom: ipq4019: add wifi nodes to ipq4019 SoC device tree
-Date: Wed, 25 May 2016 19:40:22 +0530
-Message-Id: <1464185422-10760-1-git-send-email-tamizhchelvam@codeaurora.org>
+ id 1b5ZzY-000116-R2
+ for ath10k@lists.infradead.org; Wed, 25 May 2016 14:41:01 +0000
+From: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix diag_read to collect data for larger memory
+Date: Wed, 25 May 2016 20:09:14 +0530
+Message-ID: <1464187154-26687-1-git-send-email-arnagara@qti.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,142 +16,100 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: agross@codeaurora.org, devicetree@vger.kernel.org
-Cc: linux-arm-msm@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, c_traja@qti.qualcomm.com, Raja Mani <rmani@codeaurora.org>, Tamizh chelvam <tamizhchelvam@codeaurora.org>, linux-soc@vger.kernel.org
+To: ath10k@lists.infradead.org
+Cc: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, arnagara@codeaurora.org, linux-wireless@vger.kernel.org
 
-From: Raja Mani <rmani@codeaurora.org>
+diag_read uses dma_alloc_coherent to allocate memory requested by the
+caller. If this memory requested is larger, more than DIAG_TRANSFER_LIMIT
+(2K), then it is likely that we may not get the requested memory and we
+would fail.
 
-Include dts support for two wifi block present on ipq4019 SoC.
-Corresponding dt binding documentation has been added in ath.git as below
-commit id a47aaa69 and the commit message is
-"dt: bindings: add new dt entry for pre calibration in qcom, ath10k.txt".
+To solve this, request dma_alloc_coherent for only DIAG_TRANSFER_LIMIT, and
+reuse this buffer multiple times as needed to copy the data requested in
+smaller chunks of size not more than DIAG_TRANSFER_LIMIT. Previously we
+were reading into the caller's only after getting the complete requested
+data.
 
-Signed-off-by: Raja Mani <rmani@codeaurora.org>
-Signed-off-by: Tamizh chelvam <tamizhchelvam@codeaurora.org>
+Fixes: 68c03249f388 ('ath10k: convert pci_alloc_consistent() to dma_alloc_coherent()')
+Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
 ---
-v3:
+ drivers/net/wireless/ath/ath10k/pci.c | 28 ++++++++++++++++------------
+ 1 file changed, 16 insertions(+), 12 deletions(-)
 
- - Removed msi properties(qcom,msi_addr, qcom,msi_base)
-
-v2:
-
- - Fixed Commit log
- - Added new Signed off
-
- arch/arm/boot/dts/qcom-ipq4019.dtsi |   94 +++++++++++++++++++++++++++++++++++
- 1 file changed, 94 insertions(+)
-
-diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-index bfc0b57..ea7a787 100644
---- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
-+++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-@@ -393,5 +393,99 @@
- 			clock-names = "core", "iface";
- 			status = "disabled";
- 		};
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 8133d7b..8663a3b 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -864,7 +864,7 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int ret = 0;
+ 	u32 *buf;
+-	unsigned int completed_nbytes, orig_nbytes, remaining_bytes;
++	unsigned int completed_nbytes, alloc_nbytes, remaining_bytes;
+ 	struct ath10k_ce_pipe *ce_diag;
+ 	/* Host buffer address in CE space */
+ 	u32 ce_data;
+@@ -882,9 +882,10 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 	 *   1) 4-byte alignment
+ 	 *   2) Buffer in DMA-able space
+ 	 */
+-	orig_nbytes = nbytes;
++	alloc_nbytes = min_t(unsigned int, nbytes, DIAG_TRANSFER_LIMIT);
 +
-+		wifi0: wifi@a000000 {
-+			compatible = "qcom,ipq4019-wifi";
-+			reg = <0xa000000 0x200000>;
-+			resets = <&gcc WIFI0_CPU_INIT_RESET>,
-+				 <&gcc WIFI0_RADIO_SRIF_RESET>,
-+				 <&gcc WIFI0_RADIO_WARM_RESET>,
-+				 <&gcc WIFI0_RADIO_COLD_RESET>,
-+				 <&gcc WIFI0_CORE_WARM_RESET>,
-+				 <&gcc WIFI0_CORE_COLD_RESET>;
-+			reset-names = "wifi_cpu_init",
-+				      "wifi_radio_srif",
-+				      "wifi_radio_warm",
-+				      "wifi_radio_cold",
-+				      "wifi_core_warm",
-+				      "wifi_core_cold";
-+			clocks = <&gcc GCC_WCSS2G_CLK>,
-+				 <&gcc GCC_WCSS2G_REF_CLK>,
-+				 <&gcc GCC_WCSS2G_RTC_CLK>;
-+			clock-names = "wifi_wcss_cmd",
-+				      "wifi_wcss_ref",
-+				      "wifi_wcss_rtc";
-+			interrupts = <0 0x20 0x1>,
-+				     <0 0x21 0x1>,
-+				     <0 0x22 0x1>,
-+				     <0 0x23 0x1>,
-+				     <0 0x24 0x1>,
-+				     <0 0x25 0x1>,
-+				     <0 0x26 0x1>,
-+				     <0 0x27 0x1>,
-+				     <0 0x28 0x1>,
-+				     <0 0x29 0x1>,
-+				     <0 0x2a 0x1>,
-+				     <0 0x2b 0x1>,
-+				     <0 0x2c 0x1>,
-+				     <0 0x2d 0x1>,
-+				     <0 0x2e 0x1>,
-+				     <0 0x2f 0x1>,
-+				     <0 0xa8 0x0>;
-+			interrupt-names = "msi0",  "msi1",  "msi2",  "msi3",
-+					  "msi4",  "msi5",  "msi6",  "msi7",
-+					  "msi8",  "msi9",  "msi10", "msi11",
-+					  "msi12", "msi13", "msi14", "msi15",
-+					  "legacy";
-+			status = "disabled";
-+			qcom,ath10k-pre-calibration-data = [00];
-+		};
+ 	data_buf = (unsigned char *)dma_alloc_coherent(ar->dev,
+-						       orig_nbytes,
++						       alloc_nbytes,
+ 						       &ce_data_base,
+ 						       GFP_ATOMIC);
+ 
+@@ -892,9 +893,9 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 		ret = -ENOMEM;
+ 		goto done;
+ 	}
+-	memset(data_buf, 0, orig_nbytes);
++	memset(data_buf, 0, alloc_nbytes);
+ 
+-	remaining_bytes = orig_nbytes;
++	remaining_bytes = nbytes;
+ 	ce_data = ce_data_base;
+ 	while (remaining_bytes) {
+ 		nbytes = min_t(unsigned int, remaining_bytes,
+@@ -954,19 +955,22 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 		}
+ 
+ 		remaining_bytes -= nbytes;
 +
-+		wifi1: wifi@a800000 {
-+			compatible = "qcom,ipq4019-wifi";
-+			reg = <0xa800000 0x200000>;
-+			resets = <&gcc WIFI1_CPU_INIT_RESET>,
-+				 <&gcc WIFI1_RADIO_SRIF_RESET>,
-+				 <&gcc WIFI1_RADIO_WARM_RESET>,
-+				 <&gcc WIFI1_RADIO_COLD_RESET>,
-+				 <&gcc WIFI1_CORE_WARM_RESET>,
-+				 <&gcc WIFI1_CORE_COLD_RESET>;
-+			reset-names = "wifi_cpu_init",
-+				      "wifi_radio_srif",
-+				      "wifi_radio_warm",
-+				      "wifi_radio_cold",
-+				      "wifi_core_warm",
-+				      "wifi_core_cold";
-+			clocks = <&gcc GCC_WCSS5G_CLK>,
-+				 <&gcc GCC_WCSS5G_REF_CLK>,
-+				 <&gcc GCC_WCSS5G_RTC_CLK>;
-+			clock-names = "wifi_wcss_cmd",
-+				      "wifi_wcss_ref",
-+				      "wifi_wcss_rtc";
-+			interrupts = <0 0x30 0x1>,
-+				     <0 0x31 0x1>,
-+				     <0 0x32 0x1>,
-+				     <0 0x33 0x1>,
-+				     <0 0x34 0x1>,
-+				     <0 0x35 0x1>,
-+				     <0 0x36 0x1>,
-+				     <0 0x37 0x1>,
-+				     <0 0x38 0x1>,
-+				     <0 0x39 0x1>,
-+				     <0 0x3a 0x1>,
-+				     <0 0x3b 0x1>,
-+				     <0 0x3c 0x1>,
-+				     <0 0x3d 0x1>,
-+				     <0 0x3e 0x1>,
-+				     <0 0x3f 0x1>,
-+				     <0 0xa9 0x1>;
-+			interrupt-names = "msi0",  "msi1",  "msi2",  "msi3",
-+					  "msi4",  "msi5",  "msi6",  "msi7",
-+					  "msi8",  "msi9",  "msi10", "msi11",
-+					  "msi12", "msi13", "msi14", "msi15",
-+					  "legacy";
-+			status = "disabled";
-+			qcom,ath10k-pre-calibration-data = [00];
-+		};
- 	};
- };
++		if (ret) {
++			ath10k_warn(ar, "failed to read diag value at 0x%x: %d\n",
++				    address, ret);
++			break;
++		}
++		memcpy(data, data_buf, nbytes);
++
+ 		address += nbytes;
+-		ce_data += nbytes;
++		data += nbytes;
+ 	}
+ 
+ done:
+-	if (ret == 0)
+-		memcpy(data, data_buf, orig_nbytes);
+-	else
+-		ath10k_warn(ar, "failed to read diag value at 0x%x: %d\n",
+-			    address, ret);
+ 
+ 	if (data_buf)
+-		dma_free_coherent(ar->dev, orig_nbytes, data_buf,
++		dma_free_coherent(ar->dev, alloc_nbytes, data_buf,
+ 				  ce_data_base);
+ 
+ 	spin_unlock_bh(&ar_pci->ce_lock);
 -- 
-1.7.9.5
+1.9.1
 
 
 _______________________________________________
