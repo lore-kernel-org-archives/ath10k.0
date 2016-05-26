@@ -1,13 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from omr1.cc.ipv6.vt.edu ([2607:b400:92:8300:0:c6:2117:b0e]
+ helo=omr1.cc.vt.edu)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b5ZzY-000116-R2
- for ath10k@lists.infradead.org; Wed, 25 May 2016 14:41:01 +0000
-From: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix diag_read to collect data for larger memory
-Date: Wed, 25 May 2016 20:09:14 +0530
-Message-ID: <1464187154-26687-1-git-send-email-arnagara@qti.qualcomm.com>
+ id 1b5klr-0003mC-N5
+ for ath10k@lists.infradead.org; Thu, 26 May 2016 02:11:36 +0000
+Received: from mr5.cc.vt.edu (mr5.cc.ipv6.vt.edu
+ [IPv6:2001:468:c80:2105:0:2b8:b328:9234])
+ by omr1.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u4Q2B7Kw014354
+ for <ath10k@lists.infradead.org>; Wed, 25 May 2016 22:11:07 -0400
+Received: from mail-lf0-f69.google.com (mail-lf0-f69.google.com
+ [209.85.215.69])
+ by mr5.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u4Q2B2wH014572
+ for <ath10k@lists.infradead.org>; Wed, 25 May 2016 22:11:07 -0400
+Received: by mail-lf0-f69.google.com with SMTP id w16so23228861lfd.0
+ for <ath10k@lists.infradead.org>; Wed, 25 May 2016 19:11:07 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQ=9W+rTucp_tGZo_MvQtDdAqzEmNC9mTcDsST7FbFrmcQ@mail.gmail.com>
+References: <CAFc9h7vhnd9iRKF-YsgkH6_+szjjhM4LdkhQuBQ0dqwNB+UoLg@mail.gmail.com>
+ <CA+BoTQ=9W+rTucp_tGZo_MvQtDdAqzEmNC9mTcDsST7FbFrmcQ@mail.gmail.com>
+Date: Wed, 25 May 2016 22:11:01 -0400
+Message-ID: <CAFc9h7uCcrsQKgsfpKmLi8CcHhOq3ZppEmA6iw87GutVaqOiSQ@mail.gmail.com>
+Subject: Re: Modifying the Interframe Spacing
+From: Gaurang Ramesh Naik <gaurang@vt.edu>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,103 +30,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, arnagara@codeaurora.org, linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-diag_read uses dma_alloc_coherent to allocate memory requested by the
-caller. If this memory requested is larger, more than DIAG_TRANSFER_LIMIT
-(2K), then it is likely that we may not get the requested memory and we
-would fail.
-
-To solve this, request dma_alloc_coherent for only DIAG_TRANSFER_LIMIT, and
-reuse this buffer multiple times as needed to copy the data requested in
-smaller chunks of size not more than DIAG_TRANSFER_LIMIT. Previously we
-were reading into the caller's only after getting the complete requested
-data.
-
-Fixes: 68c03249f388 ('ath10k: convert pci_alloc_consistent() to dma_alloc_coherent()')
-Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 28 ++++++++++++++++------------
- 1 file changed, 16 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 8133d7b..8663a3b 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -864,7 +864,7 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int ret = 0;
- 	u32 *buf;
--	unsigned int completed_nbytes, orig_nbytes, remaining_bytes;
-+	unsigned int completed_nbytes, alloc_nbytes, remaining_bytes;
- 	struct ath10k_ce_pipe *ce_diag;
- 	/* Host buffer address in CE space */
- 	u32 ce_data;
-@@ -882,9 +882,10 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- 	 *   1) 4-byte alignment
- 	 *   2) Buffer in DMA-able space
- 	 */
--	orig_nbytes = nbytes;
-+	alloc_nbytes = min_t(unsigned int, nbytes, DIAG_TRANSFER_LIMIT);
-+
- 	data_buf = (unsigned char *)dma_alloc_coherent(ar->dev,
--						       orig_nbytes,
-+						       alloc_nbytes,
- 						       &ce_data_base,
- 						       GFP_ATOMIC);
- 
-@@ -892,9 +893,9 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- 		ret = -ENOMEM;
- 		goto done;
- 	}
--	memset(data_buf, 0, orig_nbytes);
-+	memset(data_buf, 0, alloc_nbytes);
- 
--	remaining_bytes = orig_nbytes;
-+	remaining_bytes = nbytes;
- 	ce_data = ce_data_base;
- 	while (remaining_bytes) {
- 		nbytes = min_t(unsigned int, remaining_bytes,
-@@ -954,19 +955,22 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- 		}
- 
- 		remaining_bytes -= nbytes;
-+
-+		if (ret) {
-+			ath10k_warn(ar, "failed to read diag value at 0x%x: %d\n",
-+				    address, ret);
-+			break;
-+		}
-+		memcpy(data, data_buf, nbytes);
-+
- 		address += nbytes;
--		ce_data += nbytes;
-+		data += nbytes;
- 	}
- 
- done:
--	if (ret == 0)
--		memcpy(data, data_buf, orig_nbytes);
--	else
--		ath10k_warn(ar, "failed to read diag value at 0x%x: %d\n",
--			    address, ret);
- 
- 	if (data_buf)
--		dma_free_coherent(ar->dev, orig_nbytes, data_buf,
-+		dma_free_coherent(ar->dev, alloc_nbytes, data_buf,
- 				  ce_data_base);
- 
- 	spin_unlock_bh(&ar_pci->ce_lock);
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGVsbG8gTWljaGFsLAoKSSBoYXZlIGJlZW4gdHJ5aW5nIHdoYXQgeW91IHN1Z2dlc3RlZC4gRmly
+c3QsIEkgbWFudWFsbHkgcHJvZ3JhbW1lZAp0aGUgdmFsdWUgb2YgQUlGUyBpbiB0aGUgbWFjLmMg
+ZmlsZS4gVGhlbiBJIGFkanVzdGVkIHRoZSBhaWZzIHZhbHVlcwppbiB0aGUgaG9zdGFwZC5jb25m
+IGZpbGUgYXQgdGhlIEFQLiBJIGZvcmdvdCB0byBtZW50aW9uIGluIG15IGxhc3QKcG9zdCAobm90
+IHN1cmUgaWYgaXQgaXMgcmVsZXZhbnQgdGhvdWdoKS0gSSBhbSB1c2luZyBPcGVud3J0IGF0IHRo
+ZSBBUAphcyB3ZWxsIGFzIGNsaWVudC4KCk5vdyBmb3IgdGhlIHRlc3RpbmcgcGFydDogSWYgSSBz
+ZXQgdGhlIGFpZnNuIGZvciBzb21lIEFDIHRvIGEgbGFyZ2UKdmFsdWUgKHNheSAyMDApLCB0aGUg
+YWlmcyBtdXN0IGJlIGV4dHJlbWVseSBsYXJnZSAob3JkZXIgb2YgMS0yCm1pbGxpc2Vjb25kcyku
+IFRoaXMgaXMgd2hhdCBJIGV4cGVjdCwgYnV0IG5vdCB3aGF0IEkgYW0gb2JzZXJ2aW5nLiBJCnRy
+aWVkIHVzaW5nIHBpbmcgd2l0aCB0aGUgZGlmZmVyZW50IHRvcyB2YWx1ZXMuIEhvd2V2ZXIsIGZv
+ciBkaWZmZXJlbnQKdG9zIEkgZ2V0IHNpbWlsYXIgcGluZyB2YWx1ZXMuIEFtIEkgbWlzc2luZyBz
+b21ldGhpbmcgb2J2aW91cyBoZXJlPyBJcwpwaW5nIGEgY29ycmVjdCB3YXkgdG8gZXZlbiBjaGVj
+ayB0aGlzPwoKT25lIG1vcmUgdGhpbmcgLSBJIHdhcyByZWFkaW5nIHRoZSBob3N0YXBkIGNvbmZp
+ZyBmaWxlLiBXaGVuIHlvdSBzYWlkCkkgY2FuIGFkanVzdCBhaWZzIGZyb20gdGhlIGNvbmZpZyBm
+aWxlLCBJIGFzc3VtZSB5b3UgbWVhbnQgY2hhbmdpbmcKdGhlICJ0eF9xdWV1ZV9kYXRhM19haWZz
+IiBwYXJhbWV0ZXIsIGFuZCB0aGF0IGlzIHdoYXQgSSBjaGFuZ2VkLiBOb3csCnRoZXJlIGlzIGFs
+c28gdGhpcyBwYXJhbWV0ZXIgIndtbV9hY19ia19haWZzIiB3aGljaCwgYXMgcGVyIHRoZSBjb25m
+aWcKZmlsZSwgaXMgc3VwcG9zZWQgdG8gYmUgIlRoZXNlIHBhcmFtZXRlcnMgYXJlIHNlbnQgdG8g
+V01NIGNsaWVudHMgd2hlbgp0aGV5IGFzc29jaWF0ZS4gVGhlIHBhcmFtZXRlcnMgd2lsbCBiZSB1
+c2VkIGJ5IFdNTSBjbGllbnRzIGZvciBmcmFtZXMKdHJhbnNtaXR0ZWQgdG8gdGhlIGFjY2VzcyBw
+b2ludCIuIERvZXMgdGhpcyBtZWFuIHRoZSBhaWZzIHZhbHVlIHNldAp1c2luZyBtYWMuYyBpcyBv
+dmVycmlkZGVuIGJ5IHRoaXMgaG9zdGFwZCBwYXJhbWV0ZXI/IE9yIGFtIEkKdW5kZXJzdGFuZGlu
+ZyB0aGlzIGluY29ycmVjdGx5PyBJIHRyaWVkIHNldHRpbmcgdGhpcyB2YWx1ZSB0byAyMDAgYXMK
+d2VsbC4gQnV0IGFnYWluLCBwaW5nIHZhbHVlcyBmb3IgZGlmZmVyZW50IHRvcyB3ZXJlIHNpbWls
+YXIuCgpUaGFua3MgZm9yIHlvdXIgcHJldmlvdXMgcmVzcG9uc2UuIEFsdGhvdWdoIEkgZGlkIG5v
+dCBnZXQgdGhlIGVmZmVjdCBJCndhbnRlZCwgYnV0IEkgZ290IHRvIHRyeSBtYW55IG5ldyB0aGlu
+Z3MuIEFueSBuZXcgc3VnZ2VzdGlvbnMgYXJlCmFwcHJlY2lhdGVkLgoKUmVnYXJkcywKR04uCgpP
+biBGcmksIE1heSA2LCAyMDE2IGF0IDM6MDkgQU0sIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXpp
+b3JAdGlldG8uY29tPiB3cm90ZToKPiBPbiA2IE1heSAyMDE2IGF0IDAwOjE1LCBHYXVyYW5nIFJh
+bWVzaCBOYWlrIDxnYXVyYW5nQHZ0LmVkdT4gd3JvdGU6Cj4+IEhlbGxvLAo+Pgo+PiBJIGFtIHdv
+cmtpbmcgb24gYSByZXNlYXJjaCBwcm9qZWN0IGFzIGEgcGFydCBvZiB3aGljaCBJIG5lZWQgdG8g
+bW9kaWZ5Cj4+IHRoZSBpbnRlcmZyYW1lIHNwYWNpbmcgdmFsdWUgKHNwZWNpZmljYWxseSB0aGUg
+ZGlmcykgb2YgYWxsIDgwMi4xMWFjCj4+IG5vZGVzIChBUCBhcyB3ZWxsIGFzIFNUQXMpIGluIG15
+IHRlc3QgbmV0d29yay4gSW4gb25lIG9mIHRoZSByZXNlYXJjaAo+PiBwYXBlcnMsIEkgcmVhZCB0
+aGF0IGJ5IGNoYW5naW5nIHRoZSBBSUZTTiBpbiBhdGg1ayBkcml2ZXJzLCB0aGUKPj4gYXV0aG9y
+cyBoYWQgY2hhbmdlZCB0aGUgQUlGUyB2YWx1ZS4gSSBoYXZlIGJlZW4gdHJ5aW5nIHRvIHNlZSB3
+aGVyZQo+PiB0aGlzIGhhcyBiZWVuIGltcGxlbWVudGVkIGluIHRoZSBzb3VyY2UgY29kZSB1bmRl
+ciB0aGUgYXRoL2F0aDEway8KPj4gZGlyZWN0b3J5LiBDb3VsZCBzb21lb25lIHBsZWFzZSBhc3Np
+c3QgbWUgd2l0aCB0aGUgZm9sbG93aW5nCj4+IHF1ZXN0aW9ucywKPj4KPj4gKGkpIElzIHN1Y2gg
+YSB0aGluZyBldmVuIHBvc3NpYmxlIGluIGF0aDEwaz8KPj4gKGlpKSBBbSBJIGxvb2tpbmcgaW4g
+dGhlIHJpZ2h0IHBsYWNlIChpbiB0aGUgYXRoMTBrIGRpcmVjdG9yeSk/Cj4KPiBGV0lXIFlvdSBj
+YW4gaW5mbHVlbmNlIEFJRlMgdmlhIFdNTSBwYXJhbWV0ZXJzLCBhdCBsZWFzdCBvbiBBUCB0aGlz
+Cj4gc2hvdWxkIGJlIGNvbmZpZ3VyYWJsZSB2aWEgaG9zdGFwZCBjb25mIGZpbGUuIEZvciBjbGll
+bnQgbW9kZSB5b3UnbGwKPiBoYXZlIHRvIG92ZXJyaWRlIHRoZSB2YWx1ZSBwcm9ncmFtbWVkIGlu
+IGF0aDEwa19jb25mX3R4KCkgaW4gbWFjLmMKPgo+IE5vdCBzdXJlIGlmIGl0J2xsIGRvIHdoYXQg
+eW91IGV4cGVjdCBpdCB0byB0aG91Z2guIENvdWxkIGJlIHdvcnRoIGNoZWNraW5nIG91dC4KPgo+
+Cj4gTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
