@@ -1,27 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from omr1.cc.ipv6.vt.edu ([2607:b400:92:8300:0:c6:2117:b0e]
- helo=omr1.cc.vt.edu)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b5klr-0003mC-N5
- for ath10k@lists.infradead.org; Thu, 26 May 2016 02:11:36 +0000
-Received: from mr5.cc.vt.edu (mr5.cc.ipv6.vt.edu
- [IPv6:2001:468:c80:2105:0:2b8:b328:9234])
- by omr1.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u4Q2B7Kw014354
- for <ath10k@lists.infradead.org>; Wed, 25 May 2016 22:11:07 -0400
-Received: from mail-lf0-f69.google.com (mail-lf0-f69.google.com
- [209.85.215.69])
- by mr5.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u4Q2B2wH014572
- for <ath10k@lists.infradead.org>; Wed, 25 May 2016 22:11:07 -0400
-Received: by mail-lf0-f69.google.com with SMTP id w16so23228861lfd.0
- for <ath10k@lists.infradead.org>; Wed, 25 May 2016 19:11:07 -0700 (PDT)
+ id 1b5qdl-0005Y0-Fb
+ for ath10k@lists.infradead.org; Thu, 26 May 2016 08:27:38 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Fix error while writing 'simulate_fw_crash' debugfs
+Date: Thu, 26 May 2016 13:57:42 +0530
+Message-ID: <1464251262-4889-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQ=9W+rTucp_tGZo_MvQtDdAqzEmNC9mTcDsST7FbFrmcQ@mail.gmail.com>
-References: <CAFc9h7vhnd9iRKF-YsgkH6_+szjjhM4LdkhQuBQ0dqwNB+UoLg@mail.gmail.com>
- <CA+BoTQ=9W+rTucp_tGZo_MvQtDdAqzEmNC9mTcDsST7FbFrmcQ@mail.gmail.com>
-Date: Wed, 25 May 2016 22:11:01 -0400
-Message-ID: <CAFc9h7uCcrsQKgsfpKmLi8CcHhOq3ZppEmA6iw87GutVaqOiSQ@mail.gmail.com>
-Subject: Re: Modifying the Interframe Spacing
-From: Gaurang Ramesh Naik <gaurang@vt.edu>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,59 +16,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-SGVsbG8gTWljaGFsLAoKSSBoYXZlIGJlZW4gdHJ5aW5nIHdoYXQgeW91IHN1Z2dlc3RlZC4gRmly
-c3QsIEkgbWFudWFsbHkgcHJvZ3JhbW1lZAp0aGUgdmFsdWUgb2YgQUlGUyBpbiB0aGUgbWFjLmMg
-ZmlsZS4gVGhlbiBJIGFkanVzdGVkIHRoZSBhaWZzIHZhbHVlcwppbiB0aGUgaG9zdGFwZC5jb25m
-IGZpbGUgYXQgdGhlIEFQLiBJIGZvcmdvdCB0byBtZW50aW9uIGluIG15IGxhc3QKcG9zdCAobm90
-IHN1cmUgaWYgaXQgaXMgcmVsZXZhbnQgdGhvdWdoKS0gSSBhbSB1c2luZyBPcGVud3J0IGF0IHRo
-ZSBBUAphcyB3ZWxsIGFzIGNsaWVudC4KCk5vdyBmb3IgdGhlIHRlc3RpbmcgcGFydDogSWYgSSBz
-ZXQgdGhlIGFpZnNuIGZvciBzb21lIEFDIHRvIGEgbGFyZ2UKdmFsdWUgKHNheSAyMDApLCB0aGUg
-YWlmcyBtdXN0IGJlIGV4dHJlbWVseSBsYXJnZSAob3JkZXIgb2YgMS0yCm1pbGxpc2Vjb25kcyku
-IFRoaXMgaXMgd2hhdCBJIGV4cGVjdCwgYnV0IG5vdCB3aGF0IEkgYW0gb2JzZXJ2aW5nLiBJCnRy
-aWVkIHVzaW5nIHBpbmcgd2l0aCB0aGUgZGlmZmVyZW50IHRvcyB2YWx1ZXMuIEhvd2V2ZXIsIGZv
-ciBkaWZmZXJlbnQKdG9zIEkgZ2V0IHNpbWlsYXIgcGluZyB2YWx1ZXMuIEFtIEkgbWlzc2luZyBz
-b21ldGhpbmcgb2J2aW91cyBoZXJlPyBJcwpwaW5nIGEgY29ycmVjdCB3YXkgdG8gZXZlbiBjaGVj
-ayB0aGlzPwoKT25lIG1vcmUgdGhpbmcgLSBJIHdhcyByZWFkaW5nIHRoZSBob3N0YXBkIGNvbmZp
-ZyBmaWxlLiBXaGVuIHlvdSBzYWlkCkkgY2FuIGFkanVzdCBhaWZzIGZyb20gdGhlIGNvbmZpZyBm
-aWxlLCBJIGFzc3VtZSB5b3UgbWVhbnQgY2hhbmdpbmcKdGhlICJ0eF9xdWV1ZV9kYXRhM19haWZz
-IiBwYXJhbWV0ZXIsIGFuZCB0aGF0IGlzIHdoYXQgSSBjaGFuZ2VkLiBOb3csCnRoZXJlIGlzIGFs
-c28gdGhpcyBwYXJhbWV0ZXIgIndtbV9hY19ia19haWZzIiB3aGljaCwgYXMgcGVyIHRoZSBjb25m
-aWcKZmlsZSwgaXMgc3VwcG9zZWQgdG8gYmUgIlRoZXNlIHBhcmFtZXRlcnMgYXJlIHNlbnQgdG8g
-V01NIGNsaWVudHMgd2hlbgp0aGV5IGFzc29jaWF0ZS4gVGhlIHBhcmFtZXRlcnMgd2lsbCBiZSB1
-c2VkIGJ5IFdNTSBjbGllbnRzIGZvciBmcmFtZXMKdHJhbnNtaXR0ZWQgdG8gdGhlIGFjY2VzcyBw
-b2ludCIuIERvZXMgdGhpcyBtZWFuIHRoZSBhaWZzIHZhbHVlIHNldAp1c2luZyBtYWMuYyBpcyBv
-dmVycmlkZGVuIGJ5IHRoaXMgaG9zdGFwZCBwYXJhbWV0ZXI/IE9yIGFtIEkKdW5kZXJzdGFuZGlu
-ZyB0aGlzIGluY29ycmVjdGx5PyBJIHRyaWVkIHNldHRpbmcgdGhpcyB2YWx1ZSB0byAyMDAgYXMK
-d2VsbC4gQnV0IGFnYWluLCBwaW5nIHZhbHVlcyBmb3IgZGlmZmVyZW50IHRvcyB3ZXJlIHNpbWls
-YXIuCgpUaGFua3MgZm9yIHlvdXIgcHJldmlvdXMgcmVzcG9uc2UuIEFsdGhvdWdoIEkgZGlkIG5v
-dCBnZXQgdGhlIGVmZmVjdCBJCndhbnRlZCwgYnV0IEkgZ290IHRvIHRyeSBtYW55IG5ldyB0aGlu
-Z3MuIEFueSBuZXcgc3VnZ2VzdGlvbnMgYXJlCmFwcHJlY2lhdGVkLgoKUmVnYXJkcywKR04uCgpP
-biBGcmksIE1heSA2LCAyMDE2IGF0IDM6MDkgQU0sIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXpp
-b3JAdGlldG8uY29tPiB3cm90ZToKPiBPbiA2IE1heSAyMDE2IGF0IDAwOjE1LCBHYXVyYW5nIFJh
-bWVzaCBOYWlrIDxnYXVyYW5nQHZ0LmVkdT4gd3JvdGU6Cj4+IEhlbGxvLAo+Pgo+PiBJIGFtIHdv
-cmtpbmcgb24gYSByZXNlYXJjaCBwcm9qZWN0IGFzIGEgcGFydCBvZiB3aGljaCBJIG5lZWQgdG8g
-bW9kaWZ5Cj4+IHRoZSBpbnRlcmZyYW1lIHNwYWNpbmcgdmFsdWUgKHNwZWNpZmljYWxseSB0aGUg
-ZGlmcykgb2YgYWxsIDgwMi4xMWFjCj4+IG5vZGVzIChBUCBhcyB3ZWxsIGFzIFNUQXMpIGluIG15
-IHRlc3QgbmV0d29yay4gSW4gb25lIG9mIHRoZSByZXNlYXJjaAo+PiBwYXBlcnMsIEkgcmVhZCB0
-aGF0IGJ5IGNoYW5naW5nIHRoZSBBSUZTTiBpbiBhdGg1ayBkcml2ZXJzLCB0aGUKPj4gYXV0aG9y
-cyBoYWQgY2hhbmdlZCB0aGUgQUlGUyB2YWx1ZS4gSSBoYXZlIGJlZW4gdHJ5aW5nIHRvIHNlZSB3
-aGVyZQo+PiB0aGlzIGhhcyBiZWVuIGltcGxlbWVudGVkIGluIHRoZSBzb3VyY2UgY29kZSB1bmRl
-ciB0aGUgYXRoL2F0aDEway8KPj4gZGlyZWN0b3J5LiBDb3VsZCBzb21lb25lIHBsZWFzZSBhc3Np
-c3QgbWUgd2l0aCB0aGUgZm9sbG93aW5nCj4+IHF1ZXN0aW9ucywKPj4KPj4gKGkpIElzIHN1Y2gg
-YSB0aGluZyBldmVuIHBvc3NpYmxlIGluIGF0aDEwaz8KPj4gKGlpKSBBbSBJIGxvb2tpbmcgaW4g
-dGhlIHJpZ2h0IHBsYWNlIChpbiB0aGUgYXRoMTBrIGRpcmVjdG9yeSk/Cj4KPiBGV0lXIFlvdSBj
-YW4gaW5mbHVlbmNlIEFJRlMgdmlhIFdNTSBwYXJhbWV0ZXJzLCBhdCBsZWFzdCBvbiBBUCB0aGlz
-Cj4gc2hvdWxkIGJlIGNvbmZpZ3VyYWJsZSB2aWEgaG9zdGFwZCBjb25mIGZpbGUuIEZvciBjbGll
-bnQgbW9kZSB5b3UnbGwKPiBoYXZlIHRvIG92ZXJyaWRlIHRoZSB2YWx1ZSBwcm9ncmFtbWVkIGlu
-IGF0aDEwa19jb25mX3R4KCkgaW4gbWFjLmMKPgo+IE5vdCBzdXJlIGlmIGl0J2xsIGRvIHdoYXQg
-eW91IGV4cGVjdCBpdCB0byB0aG91Z2guIENvdWxkIGJlIHdvcnRoIGNoZWNraW5nIG91dC4KPgo+
-Cj4gTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+
+Fix invalid argument error while writing 'simulate_fw_crash',
+though the funcionality is working fine we get an error 'invalid
+argument' because 'count' value is not returned properly
+(no reason to reduce the count value for removing the newline)
+
+Fixes the below write error:
+
+/sys/kernel/debug/ieee80211/phy0/ath10k# echo hw-restart >
+simulate_fw_crash
+-bash: echo: write error: Invalid argument
+
+Also move the 'conf_mutex' as it is really not required for
+fetching the userspace buffer.
+
+Reported-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Signed-off-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/debug.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index e251155..54cb629 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -609,25 +609,23 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
+ 	char buf[32];
+ 	int ret;
+ 
+-	mutex_lock(&ar->conf_mutex);
+-
+ 	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
+ 
+ 	/* make sure that buf is null terminated */
+ 	buf[sizeof(buf) - 1] = 0;
+ 
++	/* drop the possible '\n' from the end */
++	if (buf[count - 1] == '\n')
++		buf[count - 1] = 0;
++
++	mutex_lock(&ar->conf_mutex);
++
+ 	if (ar->state != ATH10K_STATE_ON &&
+ 	    ar->state != ATH10K_STATE_RESTARTED) {
+ 		ret = -ENETDOWN;
+ 		goto exit;
+ 	}
+ 
+-	/* drop the possible '\n' from the end */
+-	if (buf[count - 1] == '\n') {
+-		buf[count - 1] = 0;
+-		count--;
+-	}
+-
+ 	if (!strcmp(buf, "soft")) {
+ 		ath10k_info(ar, "simulating soft firmware crash\n");
+ 		ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
