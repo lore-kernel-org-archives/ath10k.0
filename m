@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b6J2a-00059e-MZ
- for ath10k@lists.infradead.org; Fri, 27 May 2016 14:47:09 +0000
+ id 1b6J2i-0005HY-Dx
+ for ath10k@lists.infradead.org; Fri, 27 May 2016 14:47:17 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 3/5] ath10k: update module description
-Date: Fri, 27 May 2016 20:15:57 +0530
-Message-ID: <20160527144559.4053-3-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 4/5] ath10k: add new ATH10K_FW_FEATURE_BTCOEX_PARAM
+Date: Fri, 27 May 2016 20:15:58 +0530
+Message-ID: <20160527144559.4053-4-rmanohar@qti.qualcomm.com>
 In-Reply-To: <20160527144559.4053-1-rmanohar@qti.qualcomm.com>
 References: <20160527144559.4053-1-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,38 +25,48 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-Update module description to advertise all supported QCA 802.11ac devices.
+This feature flag will be used for firmware to support BT-Coex feature
+without reloading firmware via WMI pdev param. To support Bluetooth
+coexistence pdev param, WMI_COEX_GPIO_SUPPORT of extended resource
+config should be enabled always. This firmware IE is used to configure
+WMI_COEX_GPIO_SUPPORT.
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 2 +-
- drivers/net/wireless/ath/ath10k/pci.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 1 +
+ drivers/net/wireless/ath/ath10k/core.h | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index a003980d8972..21b8c8c2a08e 100644
+index 21b8c8c2a08e..88b51225a52a 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2182,5 +2182,5 @@ void ath10k_core_destroy(struct ath10k *ar)
- EXPORT_SYMBOL(ath10k_core_destroy);
+@@ -258,6 +258,7 @@ static const char *const ath10k_core_fw_feature_str[] = {
+ 	[ATH10K_FW_FEATURE_SUPPORTS_ADAPTIVE_CCA] = "adaptive-cca",
+ 	[ATH10K_FW_FEATURE_MFP_SUPPORT] = "mfp",
+ 	[ATH10K_FW_FEATURE_PEER_FLOW_CONTROL] = "peer-flow-ctrl",
++	[ATH10K_FW_FEATURE_BTCOEX_PARAM] = "btcoex-param",
+ };
  
- MODULE_AUTHOR("Qualcomm Atheros");
--MODULE_DESCRIPTION("Core module for QCA988X PCIe devices.");
-+MODULE_DESCRIPTION("Core module for Qualcomm Atheros 802.11ac wireless LAN cards.");
- MODULE_LICENSE("Dual BSD/GPL");
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 8e8e1eb4dd0a..7b101a93e619 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3195,7 +3195,7 @@ static void __exit ath10k_pci_exit(void)
- module_exit(ath10k_pci_exit);
+ static unsigned int ath10k_core_get_fw_feature_str(char *buf,
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 1852e0ee3fa1..4462c3f81c05 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -535,6 +535,13 @@ enum ath10k_fw_features {
+ 	 */
+ 	ATH10K_FW_FEATURE_PEER_FLOW_CONTROL = 13,
  
- MODULE_AUTHOR("Qualcomm Atheros");
--MODULE_DESCRIPTION("Driver support for Atheros QCA988X PCIe devices");
-+MODULE_DESCRIPTION("Driver support for Qualcomm Atheros 802.11ac WLAN PCIe/AHB devices");
- MODULE_LICENSE("Dual BSD/GPL");
- 
- /* QCA988x 2.0 firmware files */
++	/* Firmware supports BT-Coex without reloading firmware via pdev param.
++	 * To support Bluetooth coexistence pdev param, WMI_COEX_GPIO_SUPPORT of
++	 * extended resource config should be enabled always. This firmware IE
++	 * is used to configure WMI_COEX_GPIO_SUPPORT.
++	 */
++	ATH10K_FW_FEATURE_BTCOEX_PARAM = 14,
++
+ 	/* keep last */
+ 	ATH10K_FW_FEATURE_COUNT,
+ };
 -- 
 2.8.3
 
