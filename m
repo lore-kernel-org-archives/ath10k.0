@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b6J2e-0005CY-Gx
- for ath10k@lists.infradead.org; Fri, 27 May 2016 14:47:13 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 5/5] ath10k: add pdev param support to enable/disable btcoex
-Date: Fri, 27 May 2016 20:15:59 +0530
-Message-ID: <20160527144559.4053-5-rmanohar@qti.qualcomm.com>
-In-Reply-To: <20160527144559.4053-1-rmanohar@qti.qualcomm.com>
-References: <20160527144559.4053-1-rmanohar@qti.qualcomm.com>
+ id 1b7L7r-0000D9-Hn
+ for ath10k@lists.infradead.org; Mon, 30 May 2016 11:12:52 +0000
+Received: by mail-wm0-x233.google.com with SMTP id s131so15417172wme.0
+ for <ath10k@lists.infradead.org>; Mon, 30 May 2016 04:12:30 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@open-mesh.com>
+Subject: Re: [PATCH 0/2] ath10k: Add support for QCA9887
+Date: Mon, 30 May 2016 13:12:27 +0200
+Message-ID: <2262792.6VVL0Htyzj@bentobox>
+In-Reply-To: <87wpmf4qm5.fsf@kamboji.qca.qualcomm.com>
+References: <1568876.Six5hABE57@bentobox> <1505571.v1gM3hzMhG@bentobox>
+ <87wpmf4qm5.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -18,175 +21,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7341081721146294455=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-10.4 firmware has support to enable or disable btcoex functionality
-without reloading firmware via wmi pdev param. Add provision to send
-pdev param command via existing btcoex knob.
+--===============7341081721146294455==
+Content-Type: multipart/signed; boundary="nextPart1861235.2O6iHXHWdx"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c  | 10 ++++++++++
- drivers/net/wireless/ath/ath10k/debug.c | 18 +++++++++++++++---
- drivers/net/wireless/ath/ath10k/mac.c   | 13 +++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c   |  4 ++++
- drivers/net/wireless/ath/ath10k/wmi.h   |  4 ++++
- 5 files changed, 46 insertions(+), 3 deletions(-)
+--nextPart1861235.2O6iHXHWdx
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 88b51225a52a..cedf127df168 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1756,6 +1756,16 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		if (test_bit(WMI_SERVICE_BSS_CHANNEL_INFO_64, ar->wmi.svc_map))
- 			val |= WMI_10_4_BSS_CHANNEL_INFO_64;
- 
-+		/* 10.4 firmware supports BT-Coex without reloading firmware
-+		 * via pdev param. To support Bluetooth coexistence pdev param,
-+		 * WMI_COEX_GPIO_SUPPORT of extended resource config should be
-+		 * enabled always.
-+		 */
-+		if (test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map) &&
-+		    test_bit(ATH10K_FW_FEATURE_BTCOEX_PARAM,
-+			     ar->running_fw->fw_file.fw_features))
-+			val |= WMI_10_4_COEX_GPIO_SUPPORT;
-+
- 		status = ath10k_mac_ext_resource_config(ar, val);
- 		if (status) {
- 			ath10k_err(ar,
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index e2511550fbb8..775547fde956 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2127,6 +2127,7 @@ static ssize_t ath10k_write_btcoex(struct file *file,
- 	size_t buf_size;
- 	int ret;
- 	bool val;
-+	u32 pdev_param;
- 
- 	buf_size = min(count, (sizeof(buf) - 1));
- 	if (copy_from_user(buf, ubuf, buf_size))
-@@ -2150,14 +2151,25 @@ static ssize_t ath10k_write_btcoex(struct file *file,
- 		goto exit;
- 	}
- 
-+	pdev_param = ar->wmi.pdev_param->enable_btcoex;
-+	if (test_bit(ATH10K_FW_FEATURE_BTCOEX_PARAM,
-+		     ar->running_fw->fw_file.fw_features)) {
-+		ret = ath10k_wmi_pdev_set_param(ar, pdev_param, val);
-+		if (ret) {
-+			ath10k_warn(ar, "failed to enable btcoex: %d\n", ret);
-+			ret = count;
-+			goto exit;
-+		}
-+	} else {
-+		ath10k_info(ar, "restarting firmware due to btcoex change");
-+		queue_work(ar->workqueue, &ar->restart_work);
-+	}
-+
- 	if (val)
- 		set_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags);
- 	else
- 		clear_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags);
- 
--	ath10k_info(ar, "restarting firmware due to btcoex change");
--
--	queue_work(ar->workqueue, &ar->restart_work);
- 	ret = count;
- 
- exit:
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 6829a08638b2..19eb77859eb4 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4468,6 +4468,19 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 		}
- 	}
- 
-+	param = ar->wmi.pdev_param->enable_btcoex;
-+	if (test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map) &&
-+	    test_bit(ATH10K_FW_FEATURE_BTCOEX_PARAM,
-+		     ar->running_fw->fw_file.fw_features)) {
-+		ret = ath10k_wmi_pdev_set_param(ar, param, 0);
-+		if (ret) {
-+			ath10k_warn(ar,
-+				    "failed to set btcoex param: %d\n", ret);
-+			goto err_core_stop;
-+		}
-+		clear_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags);
-+	}
-+
- 	ar->num_started_vdevs = 0;
- 	ath10k_regd_update(ar);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 2c300329ebc3..6279ab4a760e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1104,6 +1104,7 @@ static struct wmi_pdev_param_map wmi_pdev_param_map = {
- 	.wapi_mbssid_offset = WMI_PDEV_PARAM_UNSUPPORTED,
- 	.arp_srcaddr = WMI_PDEV_PARAM_UNSUPPORTED,
- 	.arp_dstaddr = WMI_PDEV_PARAM_UNSUPPORTED,
-+	.enable_btcoex = WMI_PDEV_PARAM_UNSUPPORTED,
- };
- 
- static struct wmi_pdev_param_map wmi_10x_pdev_param_map = {
-@@ -1199,6 +1200,7 @@ static struct wmi_pdev_param_map wmi_10x_pdev_param_map = {
- 	.wapi_mbssid_offset = WMI_PDEV_PARAM_UNSUPPORTED,
- 	.arp_srcaddr = WMI_PDEV_PARAM_UNSUPPORTED,
- 	.arp_dstaddr = WMI_PDEV_PARAM_UNSUPPORTED,
-+	.enable_btcoex = WMI_PDEV_PARAM_UNSUPPORTED,
- };
- 
- static struct wmi_pdev_param_map wmi_10_2_4_pdev_param_map = {
-@@ -1294,6 +1296,7 @@ static struct wmi_pdev_param_map wmi_10_2_4_pdev_param_map = {
- 	.wapi_mbssid_offset = WMI_PDEV_PARAM_UNSUPPORTED,
- 	.arp_srcaddr = WMI_PDEV_PARAM_UNSUPPORTED,
- 	.arp_dstaddr = WMI_PDEV_PARAM_UNSUPPORTED,
-+	.enable_btcoex = WMI_PDEV_PARAM_UNSUPPORTED,
- };
- 
- /* firmware 10.2 specific mappings */
-@@ -1550,6 +1553,7 @@ static struct wmi_pdev_param_map wmi_10_4_pdev_param_map = {
- 	.wapi_mbssid_offset = WMI_10_4_PDEV_PARAM_WAPI_MBSSID_OFFSET,
- 	.arp_srcaddr = WMI_10_4_PDEV_PARAM_ARP_SRCADDR,
- 	.arp_dstaddr = WMI_10_4_PDEV_PARAM_ARP_DSTADDR,
-+	.enable_btcoex = WMI_10_4_PDEV_PARAM_ENABLE_BTCOEX,
- };
- 
- static const struct wmi_peer_flags_map wmi_peer_flags_map = {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 9fdf47ea27d0..90f594e89f94 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3447,6 +3447,7 @@ struct wmi_pdev_param_map {
- 	u32 wapi_mbssid_offset;
- 	u32 arp_srcaddr;
- 	u32 arp_dstaddr;
-+	u32 enable_btcoex;
- };
- 
- #define WMI_PDEV_PARAM_UNSUPPORTED 0
-@@ -3760,6 +3761,9 @@ enum wmi_10_4_pdev_param {
- 	WMI_10_4_PDEV_PARAM_ATF_OBSS_NOISE_SCH,
- 	WMI_10_4_PDEV_PARAM_ATF_OBSS_NOISE_SCALING_FACTOR,
- 	WMI_10_4_PDEV_PARAM_CUST_TXPOWER_SCALE,
-+	WMI_10_4_PDEV_PARAM_ATF_DYNAMIC_ENABLE,
-+	WMI_10_4_PDEV_PARAM_ATF_SSID_GROUP_POLICY,
-+	WMI_10_4_PDEV_PARAM_ENABLE_BTCOEX,
- };
- 
- struct wmi_pdev_set_param_cmd {
--- 
-2.8.3
+On Friday 27 May 2016 12:44:52 Valo, Kalle wrote:
+[...]
+> > But maybe I should add that the results with the original AP147 firmware also
+> > wasn't better.
+> 
+> That doesn't sound good. Maybe a calibration issue?
 
+Maybe but I don't have a different card to compare it to.
+
+[...]
+> I pushed a new firmware image firmware-5.bin_10.2.3.31.7-2 with those
+> enabled:
+> 
+> https://github.com/kvalo/ath10k-firmware/tree/master/QCA9887
+
+Thanks for the updated firmware file. I have done some basic tests and seems
+to work fine. Bindiff also looks fine
+
+Kind regards,
+	Sven
+--nextPart1861235.2O6iHXHWdx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAABCgAGBQJXTCAbAAoJEF2HCgfBJntGa2cQAIo6Tri8GRwsBJY4wBNuFFdC
+0q4Fi28nxINMPJpTnJ7m3d7YyOmfPlyQ84L+taj3Gf56HQu8NnvFRFPSYKWrOuJ6
+DTeu0YH8OeZBOIDLrDJFT1jaMOZJ0RYdJ3NCrJeLfNDf9duFravc8xwqsZWWmA3B
+Qp8lEDFCt9ObGq7fVAhUdioJ+g7zoVX7RJ/s4F69A+t61pqC4ok/tEhUnxhgNxVz
+oUj5j+ml9QMXe3sbrpnnoyJC/0vqEG8uoEZjrwpLxHrsZk5S4V/AxD6VAUhvEgLh
+bRiR0Kq07LDOtzwlphAjVALlpHve3kYigLSj8WZEAGKfIpG4XuaNT0MjQcFWN9DL
+1uEiAlK3BEB5+VJPaeOiZ3wEpUOR22brg4HlKFETv3982PGegn7JdliEK1pUFFii
+rmvCe+Sj0+THz9Dm78WBst5Rs2/8F52zY4aGS06Uy2gpLmBhWFKdKBBsKg2yUFXD
+8BI4wmonQn/Gt48bwK4FtcKpCQkvP7SCYsPWEVcpocEjaxRL85ZvrNSN4MexLMQx
+mtliLiyNPCtfDRR3zRhZCSMFarwQiPpAKw7cYaNALblQwim7dZRVeevwB7YUcrWF
+oJTJ16sYpHqRbfK+7UexcygXCArfyl9pE9lqALcY5ZVHgo8728Rtd9NVOjb4KYTx
+cg5sRXRj7NU/HVlH+I3e
+=BUQl
+-----END PGP SIGNATURE-----
+
+--nextPart1861235.2O6iHXHWdx--
+
+
+
+--===============7341081721146294455==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============7341081721146294455==--
