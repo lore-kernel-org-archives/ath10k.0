@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b7jC9-000600-O9
- for ath10k@lists.infradead.org; Tue, 31 May 2016 12:54:54 +0000
-Date: Tue, 31 May 2016 18:23:55 +0530
+ id 1b7jrM-0000pe-T0
+ for ath10k@lists.infradead.org; Tue, 31 May 2016 13:37:30 +0000
+Date: Tue, 31 May 2016 19:07:00 +0530
 From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH v1] ath10k: Fix 10.4 extended peer stats update
-Message-ID: <20160531125355.GA2911@atheros-ThinkPad-T61>
-References: <1462947870-17196-1-git-send-email-mohammed@qca.qualcomm.com>
- <6103547.auMgQrn60O@bentobox>
- <20160527090649.GA14846@atheros-ThinkPad-T61>
- <1464676666571.16234@qti.qualcomm.com>
- <87fusyeb6d.fsf@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: Fix 10.4 extended peer stats update
+Message-ID: <20160531133700.GB3146@atheros-ThinkPad-T61>
+References: <1464339926-12136-1-git-send-email-mohammed@qca.qualcomm.com>
+ <87vb1ucten.fsf@qca.qualcomm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <87fusyeb6d.fsf@qca.qualcomm.com>
+In-Reply-To: <87vb1ucten.fsf@qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +25,73 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: Sven Eckelmann <sven.eckelmann@open-mesh.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
  Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
 
 Hi Kalle,
 
-On Tue, May 31, 2016 at 11:09:38AM +0000, Valo, Kalle wrote:
-> "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-> writes:
-> > seems the change got merged in pending branch
-> > https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=master-pending&id=2a872321e07506e339fc1b3ca81aa3e88628cd6e
-> >
-> > Request if you can send the patch to address this(incase the patch cannot be dropped)
-> > and the v2 version cannot be picked
+thanks for the review
+
+
+On Tue, May 31, 2016 at 12:18:49PM +0000, Valo, Kalle wrote:
+> Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
 > 
-> The pending branches (pending and pending-master) are just for build and
-> runtime testing, they can be freely modified or dropped. v2 is now in
-> pending branch and I'm looking at the patch right now.
->
+> > From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> >
+> > 10.4 'extended peer stats' will be not be appended with normal peer stats
+> > data and they shall be coming in separate chunks. Fix this by maintaining
+> > a separate linked list 'extender peer stats' for 10.4 and update
+> > rx_duration for per station statistics. Also parse through beacon filter
+> > (if enabled), to make sure we parse the extended peer stats properly.
+> > This issue was exposed when more than one client is connected and
+> > extended peer stats for 10.4 is enabled
+> >
+> > The order for the stats is as below
+> > S - standard peer stats, E- extended peer stats, B - beacon filter stats
+> >
+> > {S1, S2, S3..} -> {B1, B2, B3..}(if available) -> {E1, E2, E3..}
+> >
+> > Fixes: f9575793d44c ("ath10k: enable parsing per station rx duration for 10.4")
+> > Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> 
+> [...]
+> 
+> > +void ath10k_sta_update_rx_duration(struct ath10k *ar,
+> > +				   struct ath10k_fw_stats *stats)
+> > +{
+> > +	struct ath10k_fw_file *fw_file = &ar->normal_mode_fw.fw_file;
+> > +
+> > +	if (fw_file->wmi_op_version < ATH10K_FW_WMI_OP_VERSION_10_4)
+> > +		ath10k_sta_update_stats_rx_duration(ar, &stats->peers);
+> > +	else
+> > +		ath10k_sta_update_extd_stats_rx_duration(ar,
+> > +							 &stats->peers_extd);
+> > +}
+> 
+> _Ideally_ wmi_op_version should be used only in ath10k_wmi_attach() and
+> nowhere else. Isn't there any other way to detect this scenario? For
+> example, what if you store stats_id to struct ath10k_fw_stats and do
+> something like this:
+> 
+> if (stats->stats_id & WMI_10_4_STAT_PEER_EXTD)
+> 	ath10k_sta_update_extd_stats_rx_duration(ar,
+> 						 &stats->peers_extd);
+> else
+> 	ath10k_sta_update_stats_rx_duration(ar, &stats->peers);
+> 
+> Would that work?
 
-[shafi] sure thanks for the clarification !
+[shafi] I am also thinking to re-use (ar->fw_stats_req_mask & WMI_10_4_STAT_PEER_EXTD)
+it might work, but will it conflict vdev stats WMI_STAT_VDEV (though its not currently
+supported for 10.2 ) let me know your thoughts about this, seems extended stats
+was implemented for 10.4 wmi version so i made it explicit
 
-regards,
-shafi
+> 
+> -- 
+> Kalle Valo--
+> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 _______________________________________________
 ath10k mailing list
