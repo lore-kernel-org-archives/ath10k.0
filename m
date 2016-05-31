@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b7hG5-0001jd-IE
- for ath10k@lists.infradead.org; Tue, 31 May 2016 10:50:51 +0000
-Received: by mail-wm0-x22c.google.com with SMTP id n129so124730815wmn.1
- for <ath10k@lists.infradead.org>; Tue, 31 May 2016 03:50:25 -0700 (PDT)
+ id 1b7hYk-0004HR-RC
+ for ath10k@lists.infradead.org; Tue, 31 May 2016 11:10:07 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v1] ath10k: Fix 10.4 extended peer stats update
+Date: Tue, 31 May 2016 11:09:38 +0000
+Message-ID: <87fusyeb6d.fsf@qca.qualcomm.com>
+References: <1462947870-17196-1-git-send-email-mohammed@qca.qualcomm.com>
+ <6103547.auMgQrn60O@bentobox>	<20160527090649.GA14846@atheros-ThinkPad-T61>
+ <1464676666571.16234@qti.qualcomm.com>
+In-Reply-To: <1464676666571.16234@qti.qualcomm.com> (Mohammed Shafi
+ Shajakhan's message of "Tue, 31 May 2016 06:36:48 +0000")
+Content-Language: en-US
+Content-ID: <0363296BF708CB448F99D6DC96404AEC@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <loom.20160531T102350-834@post.gmane.org>
-References: <loom.20160531T102350-834@post.gmane.org>
-Date: Tue, 31 May 2016 12:50:24 +0200
-Message-ID: <CA+BoTQ=NjABLfzMjc-5+wKEvesKsyMJDheZRu8_eR=XD8zic7Q@mail.gmail.com>
-Subject: Re: Please don't puke: Modifying Frame Version, Beacon and
- Probe-Response values
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +23,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: jpo <pommnitz@yahoo.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+Cc: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>, Sven Eckelmann <sven.eckelmann@open-mesh.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMzEgTWF5IDIwMTYgYXQgMTA6NDQsIGpwbyA8cG9tbW5pdHpAeWFob28uY29tPiB3cm90ZToK
-PiBIZWxsbyBhbGwsCj4gdG8gaW1wbGVtZW50IGEgIlN0ZWFsdGggZmVhdHVyZSIsIGUuZy4gdGhl
-IFdMQU4gbmV0d29yayBkb2VzIG5vdCBzaG93IHVwIGluCj4gbm9ybWFsIFNjYW5zLCB3ZSBtb2Rp
-ZmllZCB0aGUgRnJhbWUgdmVyc2lvbiwgQmVhY29uIGFuZCBQcm9iZS1SZXNwb25zZQo+IHZhbHVl
-cyBmb3IgYW4gb2xkIEFUSDVLIGNhcmQgcnVubmluZyBvbiB0aGUgbm93IGRvcm1hbnQgTWFkd2lm
-aSBkcml2ZXIuCj4gUXVlc3Rpb246IElzIHRoZSBzYW1lIHRoaW5nIGV2ZW4gUE9TU0lCTEUgd2l0
-aCBhdGgxMGs/IE15IG1haW4gY29uY2VybiBpcywKPiB0aGF0IHRoZSBmaXJtd2FyZSBqdXN0IHdv
-bid0IGhhbmRsZSBub24tc3RhbmRhcmQgdmFsdWVzLgo+Cj4gQ2FuIHNvbWVib2R5IHdobyB1bmRl
-cnN0YW5kcyB0aGUgZGl2aXNpb24gb2YgbGFib3IgYmV0d2VlbiBtYWM4MDIxMSwgYXRoMTBrLAo+
-IHRoZSBmaXJtd2FyZSBhbmQgdGhlIGhhcmR3YXJlIHN1cHByZXNzIGhpcyBvciBoZXIgZ2FnIHJl
-ZmxleCBsb25nIGVub3VnaCB0bwo+IHRoaW5rIGFib3V0IHRoaXM/CgpGaXJzdCBhbmQgZm9yZW1v
-c3QgeW91J2xsIG5lZWQgdG8gdXNlIGZpcm13YXJlIHdpdGggInJhdy1tb2RlIiBzdXBwb3J0Ci0g
-b3RoZXJ3aXNlIGZpcm13YXJlIGp1c3QgY3JhcHMgb3ZlciBmcmFtZSBoZWFkZXJzLiBTb21lIDEw
-LjIuNApzdXBwb3J0IGl0IC0geW91IGNhbiBsb29rIGludG8gdGhlIG1haWxpbmcgbGlzdCBhcmNo
-aXZlIGZvciBzb21lCmRpc2N1c3Npb25zLgoKTm90IHN1cmUgaWYgUnggd2lsbCB3b3JrIHRob3Vn
-aCBhcyBmaXJtd2FyZS1jb250cm9sbGVkIFJ4IGZpbHRlcnMgbWF5CnByZXZlbnQgeW91IGZyb20g
-cmVjZWl2aW5nIGZyYW1lcyB3aXRoIGNyYXp5IGZyYW1lX2NvbnRyb2wgdmFsdWVzLgpZb3UnbGwg
-bmVlZCB0byBjaGVjayB0aGlzIG91dCB5b3Vyc2VsZi4gU29tZSBmaXJtd2FyZSByZXZpc2lvbnMg
-bWlnaHQKaGF2ZSBSWF9GSUxURVIgd21pIGNvbW1hbmQgc3VwcG9ydCBidXQgdGhpcyBpc24ndCB1
-c2VkL2RvY3VtZW50ZWQKYW55d2hlcmUgYW5kIGl0J3MgcXVlc3Rpb25hYmxlIGhvdyBtdWNoIGl0
-IGFsbG93cyB5b3UgdG8gb3ZlcnJpZGUuCgpXaGF0ZXZlciB5b3UgZmluZCBpdCdkIGJlIG5pY2Ug
-aWYgeW91IHBvc3Qgd2hhdGV2ZXIgeW91IGZpbmQgb3V0IChmb3IKcG9zdGVyaXR5IDopCgoKTWlj
-aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+"Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+writes:
+> seems the change got merged in pending branch
+> https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=master-pending&id=2a872321e07506e339fc1b3ca81aa3e88628cd6e
+>
+> Request if you can send the patch to address this(incase the patch cannot be dropped)
+> and the v2 version cannot be picked
+
+The pending branches (pending and pending-master) are just for build and
+runtime testing, they can be freely modified or dropped. v2 is now in
+pending branch and I'm looking at the patch right now.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
