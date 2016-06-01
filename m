@@ -1,21 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-it0-x22d.google.com ([2607:f8b0:4001:c0b::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b87pW-0003My-9e
- for ath10k@lists.infradead.org; Wed, 01 Jun 2016 15:13:10 +0000
-Date: Wed, 1 Jun 2016 20:42:38 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: Fix 10.4 extended peer stats update
-Message-ID: <20160601151238.GA9766@atheros-ThinkPad-T61>
-References: <1464339926-12136-1-git-send-email-mohammed@qca.qualcomm.com>
- <87vb1ucten.fsf@qca.qualcomm.com>
- <20160531133700.GB3146@atheros-ThinkPad-T61>
- <87r3cicaxi.fsf@qca.qualcomm.com>
- <20160601090805.GA7773@atheros-ThinkPad-T61>
- <877fe92he0.fsf@kamboji.qca.qualcomm.com>
+ id 1b8BfO-0001Jo-DP
+ for ath10k@lists.infradead.org; Wed, 01 Jun 2016 19:18:59 +0000
+Received: by mail-it0-x22d.google.com with SMTP id z123so30505160itg.0
+ for <ath10k@lists.infradead.org>; Wed, 01 Jun 2016 12:18:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <877fe92he0.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <855019245.2902911.1464780850322.JavaMail.yahoo@mail.yahoo.com>
+References: <loom.20160531T102350-834@post.gmane.org>
+ <CA+BoTQ=NjABLfzMjc-5+wKEvesKsyMJDheZRu8_eR=XD8zic7Q@mail.gmail.com>
+ <CAJ-VmokXt-V9JGL4E4jcL+u+gfvVJ-rFGP5H1bzTFkUr39mhtQ@mail.gmail.com>
+ <855019245.2902911.1464780850322.JavaMail.yahoo@mail.yahoo.com>
+Date: Wed, 1 Jun 2016 12:18:37 -0700
+Message-ID: <CAJ-VmokmAduSkLar6vhL58CPU9BkbQGVeqiqneJRMgSNtuJSMw@mail.gmail.com>
+Subject: Re: Please don't puke: Modifying Frame Version, Beacon and
+ Probe-Response values
+From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,62 +24,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
- Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+To: Joerg Pommnitz <pommnitz@yahoo.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Wed, Jun 01, 2016 at 01:00:40PM +0000, Valo, Kalle wrote:
-> Mohammed Shafi Shajakhan <mohammed@codeaurora.org> writes:
-> 
-> > Hello,
-> >
-> > On Tue, May 31, 2016 at 06:57:52PM +0000, Valo, Kalle wrote:
-> >> Mohammed Shafi Shajakhan <mohammed@codeaurora.org> writes:
-> >> 
-> >> >> > +void ath10k_sta_update_rx_duration(struct ath10k *ar,
-> >> >> > +				   struct ath10k_fw_stats *stats)
-> >> >> > +{
-> >> >> > +	struct ath10k_fw_file *fw_file = &ar->normal_mode_fw.fw_file;
-> >> >> > +
-> >> >> > +	if (fw_file->wmi_op_version < ATH10K_FW_WMI_OP_VERSION_10_4)
-> >> >> > +		ath10k_sta_update_stats_rx_duration(ar, &stats->peers);
-> >> >> > +	else
-> >> >> > +		ath10k_sta_update_extd_stats_rx_duration(ar,
-> >> >> > +							 &stats->peers_extd);
-> >> >> > +}
-> >> >> 
-> >> >> _Ideally_ wmi_op_version should be used only in ath10k_wmi_attach() and
-> >> >> nowhere else. Isn't there any other way to detect this scenario? For
-> >> >> example, what if you store stats_id to struct ath10k_fw_stats and do
-> >> >> something like this:
-> >> >> 
-> >> >> if (stats->stats_id & WMI_10_4_STAT_PEER_EXTD)
-> >> >> 	ath10k_sta_update_extd_stats_rx_duration(ar,
-> >> >> 						 &stats->peers_extd);
-> >> >> else
-> >> >> 	ath10k_sta_update_stats_rx_duration(ar, &stats->peers);
-> >> >> 
-> >> >> Would that work?
-> >> >
-> >> > [shafi] I am also thinking to re-use (ar->fw_stats_req_mask & WMI_10_4_STAT_PEER_EXTD)
-> >> > it might work, but will it conflict vdev stats WMI_STAT_VDEV (though its not currently
-> >> > supported for 10.2 )
-> >> 
-> >> Can you describe more how they conflict?
-> >
-> > [shafi] 'WMI_STAT_VDEV' and 'WMI_10_4_STAT_PEER_EXTD' are having the same value
-> > BIT(3), though as of now we are only 'WMI_10_4_STAT_PEER_EXTD' for 10.4
-> 
-> Ah. But that's easy to solve, for example you could use a bool instead.
->
-[shafi] sure thanks will do the same, i had a similar change in my mind as well
-!
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCgpMaWtlbHkgYSBtaXggb2YgYm90aC4gRWcsIHRoZSBSWCBmaWx0ZXIgc3R1ZmYgYXMgbWVu
+dGlvbmVkIGFib3ZlIG1heQptZWFuIHRoYXQgeW91IG5lZWQgdG8gbGlzdGVuIHRvIC9hbGwvIGZy
+YW1lcyBmb3IgYSBCU1MsIHJhdGhlciB0aGFuCmp1c3Qgc2F5IGRhdGEgYW5kIGJlYWNvbiBmcmFt
+ZXMuIElmIHRoZSBiZWFjb24gZnJhbWUgbWF0Y2hpbmcgbG9naWMKY2hlY2tzIHRoZSBmcmFtZSB2
+ZXJzaW9uLCB5b3UgbmVlZCB0byBsaXN0ZW4gdG8gL2FsbC8gb2YgdGhlIGZyYW1lcy4KCkZvciBw
+b3dlciBtYW5hZ2VtZW50IHRoaW5ncywgaXQncyBsaWtlbHkgbm9uZSBvZiB0aGF0IHdpbGwgd29y
+aywgc28KeW91IGNhbid0IHVzZSB0aGluZ3MgbGlrZSBhdXRvLXNsZWVwIGJhc2VkIG9uIGJlYWNv
+biB0cmFmZmljIC8gdGltZXJzCi8gVElNIGJpdG1hcCAtIHlvdSdkIGhhdmUgdG8ga2VlcCB0aGUg
+TklDIGF3YWtlIGFsbCB0aGUgdGltZS4KCgoKLWFkcmlhbgoKCk9uIDEgSnVuZSAyMDE2IGF0IDA0
+OjM0LCBKb2VyZyBQb21tbml0eiA8cG9tbW5pdHpAeWFob28uY29tPiB3cm90ZToKPiBIaSBBZHJp
+YW4sCj4gZG9lcyAiaGFyZHdhcmUgYXNzaXN0Li4ud2lsbCBsaWtlbHkgbm90IHdvcmsiIG1lYW4g
+ImZvcmdldCBpdCwgd29uJ3Qgd29yayIKPiBvciAic28gaXQgd291bGQgaGF2ZSB0byBiZSBpbXBs
+ZW1lbnRlZCBpbiBzb2Z0d2FyZSBpbnN0ZWFkIj8KPgo+Cj4gIC0tIFJlZ2FyZHMgICAgICAgSm9l
+cmcKPgo+Cj4KPj4gQWRyaWFuIENoYWRkIDxhZHJpYW5AZnJlZWJzZC5vcmc+IHNjaHJpZWIgYW0g
+MTc6NTMgRGllbnN0YWcsIDMxLk1haSAyMDE2Ogo+PiA+IEhpLAo+Pgo+PiBUaGUgb3RoZXIgdGhp
+bmcgdG8ga2VlcCBpbiBtaW5kIGlzIHRoZSBoYXJkd2FyZSBhc3Npc3QgZm9yIHRoaW5ncyBsaWtl
+Cj4+IFRJTSBwYXJzaW5nLCB3YWtldXAsIGV0YyB3aWxsIGxpa2VseSBub3Qgd29yay4gOikKPj4K
+Pj4KPj4KPj4gLWEKPj4KPj4KPj4KPj4gT24gMzEgTWF5IDIwMTYgYXQgMDM6NTAsIE1pY2hhbCBL
+YXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPj4+ICBPbiAzMSBNYXkgMjAx
+NiBhdCAxMDo0NCwganBvIDxwb21tbml0ekB5YWhvby5jb20+IHdyb3RlOgo+Pj4+ICBIZWxsbyBh
+bGwsCj4+Pj4gIHRvIGltcGxlbWVudCBhICJTdGVhbHRoIGZlYXR1cmUiLCBlLmcuIHRoZSBXTEFO
+IG5ldHdvcmsgZG9lcwo+PiBub3Qgc2hvdyB1cCBpbgo+Pj4+ICBub3JtYWwgU2NhbnMsIHdlIG1v
+ZGlmaWVkIHRoZSBGcmFtZSB2ZXJzaW9uLCBCZWFjb24gYW5kIFByb2JlLVJlc3BvbnNlCj4+Pj4g
+IHZhbHVlcyBmb3IgYW4gb2xkIEFUSDVLIGNhcmQgcnVubmluZyBvbiB0aGUgbm93IGRvcm1hbnQg
+TWFkd2lmaSBkcml2ZXIuCj4+Pj4gIFF1ZXN0aW9uOiBJcyB0aGUgc2FtZSB0aGluZyBldmVuIFBP
+U1NJQkxFIHdpdGggYXRoMTBrPyBNeSBtYWluIGNvbmNlcm4KPj4gaXMsCj4+Pj4gIHRoYXQgdGhl
+IGZpcm13YXJlIGp1c3Qgd29uJ3QgaGFuZGxlIG5vbi1zdGFuZGFyZCB2YWx1ZXMuCj4+Pj4KPj4+
+PiAgQ2FuIHNvbWVib2R5IHdobyB1bmRlcnN0YW5kcyB0aGUgZGl2aXNpb24gb2YgbGFib3IgYmV0
+d2VlbiBtYWM4MDIxMSwKPj4gYXRoMTBrLAo+Pj4+ICB0aGUgZmlybXdhcmUgYW5kIHRoZSBoYXJk
+d2FyZSBzdXBwcmVzcyBoaXMgb3IgaGVyIGdhZyByZWZsZXggbG9uZwo+PiBlbm91Z2ggdG8KPj4+
+PiAgdGhpbmsgYWJvdXQgdGhpcz8KPj4+Cj4+PiAgRmlyc3QgYW5kIGZvcmVtb3N0IHlvdSdsbCBu
+ZWVkIHRvIHVzZSBmaXJtd2FyZSB3aXRoCj4+ICJyYXctbW9kZSIgc3VwcG9ydAo+Pj4gIC0gb3Ro
+ZXJ3aXNlIGZpcm13YXJlIGp1c3QgY3JhcHMgb3ZlciBmcmFtZSBoZWFkZXJzLiBTb21lIDEwLjIu
+NAo+Pj4gIHN1cHBvcnQgaXQgLSB5b3UgY2FuIGxvb2sgaW50byB0aGUgbWFpbGluZyBsaXN0IGFy
+Y2hpdmUgZm9yIHNvbWUKPj4+ICBkaXNjdXNzaW9ucy4KPj4+Cj4+PiAgTm90IHN1cmUgaWYgUngg
+d2lsbCB3b3JrIHRob3VnaCBhcyBmaXJtd2FyZS1jb250cm9sbGVkIFJ4IGZpbHRlcnMgbWF5Cj4+
+PiAgcHJldmVudCB5b3UgZnJvbSByZWNlaXZpbmcgZnJhbWVzIHdpdGggY3JhenkgZnJhbWVfY29u
+dHJvbCB2YWx1ZXMuCj4+PiAgWW91J2xsIG5lZWQgdG8gY2hlY2sgdGhpcyBvdXQgeW91cnNlbGYu
+IFNvbWUgZmlybXdhcmUgcmV2aXNpb25zIG1pZ2h0Cj4+PiAgaGF2ZSBSWF9GSUxURVIgd21pIGNv
+bW1hbmQgc3VwcG9ydCBidXQgdGhpcyBpc24ndCB1c2VkL2RvY3VtZW50ZWQKPj4+ICBhbnl3aGVy
+ZSBhbmQgaXQncyBxdWVzdGlvbmFibGUgaG93IG11Y2ggaXQgYWxsb3dzIHlvdSB0byBvdmVycmlk
+ZS4KPj4+Cj4+PiAgV2hhdGV2ZXIgeW91IGZpbmQgaXQnZCBiZSBuaWNlIGlmIHlvdSBwb3N0IHdo
+YXRldmVyIHlvdSBmaW5kIG91dCAoZm9yCj4+PiAgcG9zdGVyaXR5IDopCj4+Pgo+Pj4KPj4+ICBN
+aWNoYcWCCj4+Pgo+Pj4gIF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCj4+PiAgYXRoMTBrIG1haWxpbmcgbGlzdAo+Pj4gIGF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnCj4+PiAgaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsKPj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
