@@ -1,20 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b8BqG-0005XH-D2
- for ath10k@lists.infradead.org; Wed, 01 Jun 2016 19:30:12 +0000
-Subject: Re: Please don't puke: Modifying Frame Version, Beacon and
- Probe-Response values
+Received: from mail-it0-x234.google.com ([2607:f8b0:4001:c0b::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b8Bto-0008Gn-Jb
+ for ath10k@lists.infradead.org; Wed, 01 Jun 2016 19:33:53 +0000
+Received: by mail-it0-x234.google.com with SMTP id z123so31146341itg.0
+ for <ath10k@lists.infradead.org>; Wed, 01 Jun 2016 12:33:32 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <574F379E.7050704@candelatech.com>
 References: <loom.20160531T102350-834@post.gmane.org>
  <CA+BoTQ=NjABLfzMjc-5+wKEvesKsyMJDheZRu8_eR=XD8zic7Q@mail.gmail.com>
  <CAJ-VmokXt-V9JGL4E4jcL+u+gfvVJ-rFGP5H1bzTFkUr39mhtQ@mail.gmail.com>
  <855019245.2902911.1464780850322.JavaMail.yahoo@mail.yahoo.com>
  <CAJ-VmokmAduSkLar6vhL58CPU9BkbQGVeqiqneJRMgSNtuJSMw@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <574F379E.7050704@candelatech.com>
-Date: Wed, 1 Jun 2016 12:29:34 -0700
-MIME-Version: 1.0
-In-Reply-To: <CAJ-VmokmAduSkLar6vhL58CPU9BkbQGVeqiqneJRMgSNtuJSMw@mail.gmail.com>
+ <574F379E.7050704@candelatech.com>
+Date: Wed, 1 Jun 2016 12:33:31 -0700
+Message-ID: <CAJ-Vmon5N9FtRR-B-DYYXaVweR8G1cycDX6KtQV_bFhT0H2bQw@mail.gmail.com>
+Subject: Re: Please don't puke: Modifying Frame Version, Beacon and
+ Probe-Response values
+From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,70 +26,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>, Joerg Pommnitz <pommnitz@yahoo.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Joerg Pommnitz <pommnitz@yahoo.com>
 
-T24gMDYvMDEvMjAxNiAxMjoxOCBQTSwgQWRyaWFuIENoYWRkIHdyb3RlOgo+IEhpLAo+Cj4gTGlr
-ZWx5IGEgbWl4IG9mIGJvdGguIEVnLCB0aGUgUlggZmlsdGVyIHN0dWZmIGFzIG1lbnRpb25lZCBh
-Ym92ZSBtYXkKPiBtZWFuIHRoYXQgeW91IG5lZWQgdG8gbGlzdGVuIHRvIC9hbGwvIGZyYW1lcyBm
-b3IgYSBCU1MsIHJhdGhlciB0aGFuCj4ganVzdCBzYXkgZGF0YSBhbmQgYmVhY29uIGZyYW1lcy4g
-SWYgdGhlIGJlYWNvbiBmcmFtZSBtYXRjaGluZyBsb2dpYwo+IGNoZWNrcyB0aGUgZnJhbWUgdmVy
-c2lvbiwgeW91IG5lZWQgdG8gbGlzdGVuIHRvIC9hbGwvIG9mIHRoZSBmcmFtZXMuCj4KPiBGb3Ig
-cG93ZXIgbWFuYWdlbWVudCB0aGluZ3MsIGl0J3MgbGlrZWx5IG5vbmUgb2YgdGhhdCB3aWxsIHdv
-cmssIHNvCj4geW91IGNhbid0IHVzZSB0aGluZ3MgbGlrZSBhdXRvLXNsZWVwIGJhc2VkIG9uIGJl
-YWNvbiB0cmFmZmljIC8gdGltZXJzCj4gLyBUSU0gYml0bWFwIC0geW91J2QgaGF2ZSB0byBrZWVw
-IHRoZSBOSUMgYXdha2UgYWxsIHRoZSB0aW1lLgoKSSdtIGd1ZXNzaW5nIGxpdHRsZSBvZiB0aGlz
-IGlzIGluIGhhcmR3YXJlLCBhc2lkZSBmcm9tIHJ4IGZpbHRlcnMsCnNvIHByb2JhYmx5IGEgZmV3
-IHR3ZWFrcyB0byB0aGUgZmlybXdhcmUgd291bGQgaGFuZGxlIG11Y2ggb2YgdGhpcy4uLgoKQW5k
-LCBpZiBmb3IgQVAgbW9kZSwgdGhlbiB0aGUgTklDIGlzIGFsd2F5cyBhd2FrZSBhbnl3YXksIHJp
-Z2h0PwoKVGhhbmtzLApCZW4KCj4KPgo+Cj4gLWFkcmlhbgo+Cj4KPiBPbiAxIEp1bmUgMjAxNiBh
-dCAwNDozNCwgSm9lcmcgUG9tbW5pdHogPHBvbW1uaXR6QHlhaG9vLmNvbT4gd3JvdGU6Cj4+IEhp
-IEFkcmlhbiwKPj4gZG9lcyAiaGFyZHdhcmUgYXNzaXN0Li4ud2lsbCBsaWtlbHkgbm90IHdvcmsi
-IG1lYW4gImZvcmdldCBpdCwgd29uJ3Qgd29yayIKPj4gb3IgInNvIGl0IHdvdWxkIGhhdmUgdG8g
-YmUgaW1wbGVtZW50ZWQgaW4gc29mdHdhcmUgaW5zdGVhZCI/Cj4+Cj4+Cj4+ICAgLS0gUmVnYXJk
-cyAgICAgICBKb2VyZwo+Pgo+Pgo+Pgo+Pj4gQWRyaWFuIENoYWRkIDxhZHJpYW5AZnJlZWJzZC5v
-cmc+IHNjaHJpZWIgYW0gMTc6NTMgRGllbnN0YWcsIDMxLk1haSAyMDE2Ogo+Pj4+IEhpLAo+Pj4K
-Pj4+IFRoZSBvdGhlciB0aGluZyB0byBrZWVwIGluIG1pbmQgaXMgdGhlIGhhcmR3YXJlIGFzc2lz
-dCBmb3IgdGhpbmdzIGxpa2UKPj4+IFRJTSBwYXJzaW5nLCB3YWtldXAsIGV0YyB3aWxsIGxpa2Vs
-eSBub3Qgd29yay4gOikKPj4+Cj4+Pgo+Pj4KPj4+IC1hCj4+Pgo+Pj4KPj4+Cj4+PiBPbiAzMSBN
-YXkgMjAxNiBhdCAwMzo1MCwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+
-IHdyb3RlOgo+Pj4+ICAgT24gMzEgTWF5IDIwMTYgYXQgMTA6NDQsIGpwbyA8cG9tbW5pdHpAeWFo
-b28uY29tPiB3cm90ZToKPj4+Pj4gICBIZWxsbyBhbGwsCj4+Pj4+ICAgdG8gaW1wbGVtZW50IGEg
-IlN0ZWFsdGggZmVhdHVyZSIsIGUuZy4gdGhlIFdMQU4gbmV0d29yayBkb2VzCj4+PiBub3Qgc2hv
-dyB1cCBpbgo+Pj4+PiAgIG5vcm1hbCBTY2Fucywgd2UgbW9kaWZpZWQgdGhlIEZyYW1lIHZlcnNp
-b24sIEJlYWNvbiBhbmQgUHJvYmUtUmVzcG9uc2UKPj4+Pj4gICB2YWx1ZXMgZm9yIGFuIG9sZCBB
-VEg1SyBjYXJkIHJ1bm5pbmcgb24gdGhlIG5vdyBkb3JtYW50IE1hZHdpZmkgZHJpdmVyLgo+Pj4+
-PiAgIFF1ZXN0aW9uOiBJcyB0aGUgc2FtZSB0aGluZyBldmVuIFBPU1NJQkxFIHdpdGggYXRoMTBr
-PyBNeSBtYWluIGNvbmNlcm4KPj4+IGlzLAo+Pj4+PiAgIHRoYXQgdGhlIGZpcm13YXJlIGp1c3Qg
-d29uJ3QgaGFuZGxlIG5vbi1zdGFuZGFyZCB2YWx1ZXMuCj4+Pj4+Cj4+Pj4+ICAgQ2FuIHNvbWVi
-b2R5IHdobyB1bmRlcnN0YW5kcyB0aGUgZGl2aXNpb24gb2YgbGFib3IgYmV0d2VlbiBtYWM4MDIx
-MSwKPj4+IGF0aDEwaywKPj4+Pj4gICB0aGUgZmlybXdhcmUgYW5kIHRoZSBoYXJkd2FyZSBzdXBw
-cmVzcyBoaXMgb3IgaGVyIGdhZyByZWZsZXggbG9uZwo+Pj4gZW5vdWdoIHRvCj4+Pj4+ICAgdGhp
-bmsgYWJvdXQgdGhpcz8KPj4+Pgo+Pj4+ICAgRmlyc3QgYW5kIGZvcmVtb3N0IHlvdSdsbCBuZWVk
-IHRvIHVzZSBmaXJtd2FyZSB3aXRoCj4+PiAicmF3LW1vZGUiIHN1cHBvcnQKPj4+PiAgIC0gb3Ro
-ZXJ3aXNlIGZpcm13YXJlIGp1c3QgY3JhcHMgb3ZlciBmcmFtZSBoZWFkZXJzLiBTb21lIDEwLjIu
-NAo+Pj4+ICAgc3VwcG9ydCBpdCAtIHlvdSBjYW4gbG9vayBpbnRvIHRoZSBtYWlsaW5nIGxpc3Qg
-YXJjaGl2ZSBmb3Igc29tZQo+Pj4+ICAgZGlzY3Vzc2lvbnMuCj4+Pj4KPj4+PiAgIE5vdCBzdXJl
-IGlmIFJ4IHdpbGwgd29yayB0aG91Z2ggYXMgZmlybXdhcmUtY29udHJvbGxlZCBSeCBmaWx0ZXJz
-IG1heQo+Pj4+ICAgcHJldmVudCB5b3UgZnJvbSByZWNlaXZpbmcgZnJhbWVzIHdpdGggY3Jhenkg
-ZnJhbWVfY29udHJvbCB2YWx1ZXMuCj4+Pj4gICBZb3UnbGwgbmVlZCB0byBjaGVjayB0aGlzIG91
-dCB5b3Vyc2VsZi4gU29tZSBmaXJtd2FyZSByZXZpc2lvbnMgbWlnaHQKPj4+PiAgIGhhdmUgUlhf
-RklMVEVSIHdtaSBjb21tYW5kIHN1cHBvcnQgYnV0IHRoaXMgaXNuJ3QgdXNlZC9kb2N1bWVudGVk
-Cj4+Pj4gICBhbnl3aGVyZSBhbmQgaXQncyBxdWVzdGlvbmFibGUgaG93IG11Y2ggaXQgYWxsb3dz
-IHlvdSB0byBvdmVycmlkZS4KPj4+Pgo+Pj4+ICAgV2hhdGV2ZXIgeW91IGZpbmQgaXQnZCBiZSBu
-aWNlIGlmIHlvdSBwb3N0IHdoYXRldmVyIHlvdSBmaW5kIG91dCAoZm9yCj4+Pj4gICBwb3N0ZXJp
-dHkgOikKPj4+Pgo+Pj4+Cj4+Pj4gICBNaWNoYcWCCj4+Pj4KPj4+PiAgIF9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+Pj4gICBhdGgxMGsgbWFpbGluZyBs
-aXN0Cj4+Pj4gICBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+Pj4+ICAgaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPj4+Cj4KPiBfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxp
-c3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBj
-YW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5k
-ZWxhdGVjaC5jb20KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On 1 June 2016 at 12:29, Ben Greear <greearb@candelatech.com> wrote:
+> On 06/01/2016 12:18 PM, Adrian Chadd wrote:
+>>
+>> Hi,
+>>
+>> Likely a mix of both. Eg, the RX filter stuff as mentioned above may
+>> mean that you need to listen to /all/ frames for a BSS, rather than
+>> just say data and beacon frames. If the beacon frame matching logic
+>> checks the frame version, you need to listen to /all/ of the frames.
+>>
+>> For power management things, it's likely none of that will work, so
+>> you can't use things like auto-sleep based on beacon traffic / timers
+>> / TIM bitmap - you'd have to keep the NIC awake all the time.
+>
+>
+> I'm guessing little of this is in hardware, aside from rx filters,
+> so probably a few tweaks to the firmware would handle much of this...
+
+Right.
+
+> And, if for AP mode, then the NIC is always awake anyway, right?
+
+Right. But say, P2P/STA mode and no AP mode? Different story. (I'm
+assuming he has clients AND APs..)
+
+Also, for ath10k chips, maybe it'll all need to be in raw mode? I
+don't know what the hardware encap/decap engines will do if you try
+passing it intentionally different frames like this.
+
+
+
+-adrian
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
