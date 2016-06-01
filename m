@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm24-vm0.bullet.mail.bf1.yahoo.com ([98.139.213.161])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b84QD-0007ey-O0
- for ath10k@lists.infradead.org; Wed, 01 Jun 2016 11:34:50 +0000
-Date: Wed, 1 Jun 2016 11:34:10 +0000 (UTC)
-From: Joerg Pommnitz <pommnitz@yahoo.com>
-Message-ID: <855019245.2902911.1464780850322.JavaMail.yahoo@mail.yahoo.com>
-In-Reply-To: <CAJ-VmokXt-V9JGL4E4jcL+u+gfvVJ-rFGP5H1bzTFkUr39mhtQ@mail.gmail.com>
-References: <loom.20160531T102350-834@post.gmane.org>
- <CA+BoTQ=NjABLfzMjc-5+wKEvesKsyMJDheZRu8_eR=XD8zic7Q@mail.gmail.com>
- <CAJ-VmokXt-V9JGL4E4jcL+u+gfvVJ-rFGP5H1bzTFkUr39mhtQ@mail.gmail.com>
-Subject: Re: Please don't puke: Modifying Frame Version, Beacon and
- Probe-Response values
+ id 1b85lu-00086d-B0
+ for ath10k@lists.infradead.org; Wed, 01 Jun 2016 13:01:18 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: Fix 10.4 extended peer stats update
+Date: Wed, 1 Jun 2016 13:00:40 +0000
+Message-ID: <877fe92he0.fsf@kamboji.qca.qualcomm.com>
+References: <1464339926-12136-1-git-send-email-mohammed@qca.qualcomm.com>
+ <87vb1ucten.fsf@qca.qualcomm.com>
+ <20160531133700.GB3146@atheros-ThinkPad-T61>
+ <87r3cicaxi.fsf@qca.qualcomm.com>
+ <20160601090805.GA7773@atheros-ThinkPad-T61>
+In-Reply-To: <20160601090805.GA7773@atheros-ThinkPad-T61> (Mohammed Shafi
+ Shajakhan's message of "Wed, 1 Jun 2016 14:38:05 +0530")
+Content-Language: en-US
+Content-ID: <D8DE7DDB49D58444881E8DC5A7728C62@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,50 +25,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: Joerg Pommnitz <pommnitz@yahoo.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>, Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
+ Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
 
-SGkgQWRyaWFuLApkb2VzICJoYXJkd2FyZSBhc3Npc3QuLi53aWxsIGxpa2VseSBub3Qgd29yayIg
-bWVhbiAiZm9yZ2V0IGl0LCB3b24ndCB3b3JrIgpvciAic28gaXQgd291bGQgaGF2ZSB0byBiZSBp
-bXBsZW1lbnRlZCBpbiBzb2Z0d2FyZSBpbnN0ZWFkIj8KCgogLS0gUmVnYXJkcyAgICAgICBKb2Vy
-ZwoKCgo+IEFkcmlhbiBDaGFkZCA8YWRyaWFuQGZyZWVic2Qub3JnPiBzY2hyaWViIGFtIDE3OjUz
-IERpZW5zdGFnLCAzMS5NYWkgMjAxNjoKPiA+IEhpLAo+IAo+IFRoZSBvdGhlciB0aGluZyB0byBr
-ZWVwIGluIG1pbmQgaXMgdGhlIGhhcmR3YXJlIGFzc2lzdCBmb3IgdGhpbmdzIGxpa2UKPiBUSU0g
-cGFyc2luZywgd2FrZXVwLCBldGMgd2lsbCBsaWtlbHkgbm90IHdvcmsuIDopCj4gCj4gCj4gCj4g
-LWEKPiAKPiAKPiAKPiBPbiAzMSBNYXkgMjAxNiBhdCAwMzo1MCwgTWljaGFsIEthemlvciA8bWlj
-aGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+PiAgT24gMzEgTWF5IDIwMTYgYXQgMTA6NDQs
-IGpwbyA8cG9tbW5pdHpAeWFob28uY29tPiB3cm90ZToKPj4+ICBIZWxsbyBhbGwsCj4+PiAgdG8g
-aW1wbGVtZW50IGEgIlN0ZWFsdGggZmVhdHVyZSIsIGUuZy4gdGhlIFdMQU4gbmV0d29yayBkb2Vz
-IAo+IG5vdCBzaG93IHVwIGluCj4+PiAgbm9ybWFsIFNjYW5zLCB3ZSBtb2RpZmllZCB0aGUgRnJh
-bWUgdmVyc2lvbiwgQmVhY29uIGFuZCBQcm9iZS1SZXNwb25zZQo+Pj4gIHZhbHVlcyBmb3IgYW4g
-b2xkIEFUSDVLIGNhcmQgcnVubmluZyBvbiB0aGUgbm93IGRvcm1hbnQgTWFkd2lmaSBkcml2ZXIu
-Cj4+PiAgUXVlc3Rpb246IElzIHRoZSBzYW1lIHRoaW5nIGV2ZW4gUE9TU0lCTEUgd2l0aCBhdGgx
-MGs/IE15IG1haW4gY29uY2VybiAKPiBpcywKPj4+ICB0aGF0IHRoZSBmaXJtd2FyZSBqdXN0IHdv
-bid0IGhhbmRsZSBub24tc3RhbmRhcmQgdmFsdWVzLgo+Pj4gCj4+PiAgQ2FuIHNvbWVib2R5IHdo
-byB1bmRlcnN0YW5kcyB0aGUgZGl2aXNpb24gb2YgbGFib3IgYmV0d2VlbiBtYWM4MDIxMSwgCj4g
-YXRoMTBrLAo+Pj4gIHRoZSBmaXJtd2FyZSBhbmQgdGhlIGhhcmR3YXJlIHN1cHByZXNzIGhpcyBv
-ciBoZXIgZ2FnIHJlZmxleCBsb25nIAo+IGVub3VnaCB0bwo+Pj4gIHRoaW5rIGFib3V0IHRoaXM/
-Cj4+IAo+PiAgRmlyc3QgYW5kIGZvcmVtb3N0IHlvdSdsbCBuZWVkIHRvIHVzZSBmaXJtd2FyZSB3
-aXRoIAo+ICJyYXctbW9kZSIgc3VwcG9ydAo+PiAgLSBvdGhlcndpc2UgZmlybXdhcmUganVzdCBj
-cmFwcyBvdmVyIGZyYW1lIGhlYWRlcnMuIFNvbWUgMTAuMi40Cj4+ICBzdXBwb3J0IGl0IC0geW91
-IGNhbiBsb29rIGludG8gdGhlIG1haWxpbmcgbGlzdCBhcmNoaXZlIGZvciBzb21lCj4+ICBkaXNj
-dXNzaW9ucy4KPj4gCj4+ICBOb3Qgc3VyZSBpZiBSeCB3aWxsIHdvcmsgdGhvdWdoIGFzIGZpcm13
-YXJlLWNvbnRyb2xsZWQgUnggZmlsdGVycyBtYXkKPj4gIHByZXZlbnQgeW91IGZyb20gcmVjZWl2
-aW5nIGZyYW1lcyB3aXRoIGNyYXp5IGZyYW1lX2NvbnRyb2wgdmFsdWVzLgo+PiAgWW91J2xsIG5l
-ZWQgdG8gY2hlY2sgdGhpcyBvdXQgeW91cnNlbGYuIFNvbWUgZmlybXdhcmUgcmV2aXNpb25zIG1p
-Z2h0Cj4+ICBoYXZlIFJYX0ZJTFRFUiB3bWkgY29tbWFuZCBzdXBwb3J0IGJ1dCB0aGlzIGlzbid0
-IHVzZWQvZG9jdW1lbnRlZAo+PiAgYW55d2hlcmUgYW5kIGl0J3MgcXVlc3Rpb25hYmxlIGhvdyBt
-dWNoIGl0IGFsbG93cyB5b3UgdG8gb3ZlcnJpZGUuCj4+IAo+PiAgV2hhdGV2ZXIgeW91IGZpbmQg
-aXQnZCBiZSBuaWNlIGlmIHlvdSBwb3N0IHdoYXRldmVyIHlvdSBmaW5kIG91dCAoZm9yCj4+ICBw
-b3N0ZXJpdHkgOikKPj4gCj4+IAo+PiAgTWljaGHFggo+PiAKPj4gIF9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+ICBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+
-ICBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+PiAgaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
-aDEwawo=
+Mohammed Shafi Shajakhan <mohammed@codeaurora.org> writes:
+
+> Hello,
+>
+> On Tue, May 31, 2016 at 06:57:52PM +0000, Valo, Kalle wrote:
+>> Mohammed Shafi Shajakhan <mohammed@codeaurora.org> writes:
+>> 
+>> >> > +void ath10k_sta_update_rx_duration(struct ath10k *ar,
+>> >> > +				   struct ath10k_fw_stats *stats)
+>> >> > +{
+>> >> > +	struct ath10k_fw_file *fw_file = &ar->normal_mode_fw.fw_file;
+>> >> > +
+>> >> > +	if (fw_file->wmi_op_version < ATH10K_FW_WMI_OP_VERSION_10_4)
+>> >> > +		ath10k_sta_update_stats_rx_duration(ar, &stats->peers);
+>> >> > +	else
+>> >> > +		ath10k_sta_update_extd_stats_rx_duration(ar,
+>> >> > +							 &stats->peers_extd);
+>> >> > +}
+>> >> 
+>> >> _Ideally_ wmi_op_version should be used only in ath10k_wmi_attach() and
+>> >> nowhere else. Isn't there any other way to detect this scenario? For
+>> >> example, what if you store stats_id to struct ath10k_fw_stats and do
+>> >> something like this:
+>> >> 
+>> >> if (stats->stats_id & WMI_10_4_STAT_PEER_EXTD)
+>> >> 	ath10k_sta_update_extd_stats_rx_duration(ar,
+>> >> 						 &stats->peers_extd);
+>> >> else
+>> >> 	ath10k_sta_update_stats_rx_duration(ar, &stats->peers);
+>> >> 
+>> >> Would that work?
+>> >
+>> > [shafi] I am also thinking to re-use (ar->fw_stats_req_mask & WMI_10_4_STAT_PEER_EXTD)
+>> > it might work, but will it conflict vdev stats WMI_STAT_VDEV (though its not currently
+>> > supported for 10.2 )
+>> 
+>> Can you describe more how they conflict?
+>
+> [shafi] 'WMI_STAT_VDEV' and 'WMI_10_4_STAT_PEER_EXTD' are having the same value
+> BIT(3), though as of now we are only 'WMI_10_4_STAT_PEER_EXTD' for 10.4
+
+Ah. But that's easy to solve, for example you could use a bool instead.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
