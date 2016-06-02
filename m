@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8WdQ-0001xe-7P
- for ath10k@lists.infradead.org; Thu, 02 Jun 2016 17:42:20 +0000
+ id 1b8Whg-0003nS-70
+ for ath10k@lists.infradead.org; Thu, 02 Jun 2016 17:46:45 +0000
 MIME-Version: 1.0
-Date: Thu, 02 Jun 2016 23:11:57 +0530
+Date: Thu, 02 Jun 2016 23:16:21 +0530
 From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: Bug 119151 - [regression] ath10k no longer authenitcates and
- freezes system
-In-Reply-To: <57506BA1.2090303@candelatech.com>
-References: <8760trzoiw.fsf@kamboji.qca.qualcomm.com>
- <871t4fzn1x.fsf@kamboji.qca.qualcomm.com> <57504F05.3040200@candelatech.com>
- <1464887026467.72937@qti.qualcomm.com> <57506BA1.2090303@candelatech.com>
-Message-ID: <6c6f208f9abc81cb262d763f6f6d684d@codeaurora.org>
+Subject: Re: Regression in qca99x0 on x86 platform (kernel: 4.7.0-rc1-wt-ath
+In-Reply-To: <57506C7A.7070109@candelatech.com>
+References: <f495d218d54a4c4c859849a85f38ab0c@aphydexm01b.ap.qualcomm.com>
+ <57506C7A.7070109@candelatech.com>
+Message-ID: <c3facd0acc1c2f49f4a4638bf0c2a591@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,84 +24,70 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: mike@fireburn.co.uk, "Valo, Kalle" <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
+Cc: nbd@openwrt.org, ath10k@lists.infradead.org, "Manoharan,
+ Rajkumar" <rmanohar@qti.qualcomm.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
 
-On 2016-06-02 22:53, Ben Greear wrote:
-> On 06/02/2016 10:03 AM, Manoharan, Rajkumar wrote:
->> On Thursday, June 2, 2016 8:51 PM, Ben Greear 
->> <greearb@candelatech.com> wrote:
->>> On 06/02/2016 07:24 AM, Valo, Kalle wrote:
->>>> Kalle Valo <kvalo@qca.qualcomm.com> writes:
->>>> 
->>>>> there's a regression in ath10k:
->>>>> 
->>>>> https://bugzilla.kernel.org/show_bug.cgi?id=119151
->>>>> 
->>>>> Reporter bisected it to this:
->>>>> 
->>>>> 5c86d97bcc1d42ce7f75685a61be4dad34ee8183 is the first bad commit
->>>>> commit 5c86d97bcc1d42ce7f75685a61be4dad34ee8183
->>>>> Author: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
->>>>> Date:   Tue Mar 22 17:22:19 2016 +0530
->>>>> 
->>>>> ath10k: combine txrx and replenish task
->>>>> 
-[...]
-
->>> I found a lot of problems with this code as well, and the 5 patches
->>> starting from the URL below fixed the issues for me.
->>> 
->> Ben,
+On 2016-06-02 22:57, Ben Greear wrote:
+> On 06/02/2016 10:20 AM, Manoharan, Rajkumar wrote:
+>> Found a regression in ath.git TOT that system hangs while probing 
+>> qca99x0 device on x86_64 platform.
+>> It seems the system hangs while DMA mapping of bigger memory chunks. 
+>> Below are the list of memory
+>> chucks requested by target for qca99x0 during service ready event. 
+>> This issue is seen only on x86 platform.
+>> No issues are observed on ARM platform (AP148). After reverting below 
+>> commit able to bring up device on x86.
 >> 
->> Can you please explain the sort of issues you have observed with this 
->> change?
+>> Jun  2 17:24:37 rmanohar-arch kernel: idx 0 pool_size 689816 num_units 
+>> 529 unit_len 1304
+>> Jun  2 17:24:37 rmanohar-arch kernel: idx 1 pool_size 17152 num_units 
+>> 67 unit_len 256
+>> Jun  2 17:24:37 rmanohar-arch kernel: idx 2 pool_size 68608 num_units 
+>> 67 unit_len 1024
+>> Jun  2 17:24:37 rmanohar-arch kernel: idx 3 pool_size 274432 num_units 
+>> 67 unit_len 4096
+>> Jun  2 17:24:37 rmanohar-arch kernel: idx 4 pool_size 107520 num_units 
+>> 35 unit_len 3072
+>> Jun  2 17:24:37 rmanohar-arch kernel: idx 5 pool_size 6144 num_units 1 
+>> unit_len 6144
+>> Jun  2 17:24:37 rmanohar-arch kernel: idx 6 pool_size 865444 num_units 
+>> 529 unit_len 1636
 > 
-> I imported a bunch of upstream patches at once, so not sure exactly 
-> what commit
-> caused it.  And, this was about 2 months ago...  Upon review, I'm not
-> sure I even have
-> the patch this particular bug was bisected to, so maybe that is some
-> other issue.
+> We have seen similar.  But, if we enable VT-d in our BIOS, then it
+> works, at least in
+> our scenarios.  I have not tried putting more than one 99x0 NIC in a
+> system to date, so possibly
+> more than one would cause more issues, and I guess systems without VT-d 
+> might
+> fail too...
 > 
-Please keep track of buggy commit and report them asap.
+Yeah.. But the code should work even on non-VT-d systems. ins't it?
+> 
+> 
+>> 
+>> commit b057886524be060021e3cfad0ba8458c850330cd
+>> Author: Felix Fietkau <nbd@openwrt.org>
+>> Date:   Mon Nov 30 19:32:01 2015 +0100
+>> 
+>>      ath10k: do not use coherent memory for allocated device memory 
+>> chunks
+>> 
+>>      Coherent memory is more expensive to allocate (and constrained on 
+>> some
+>>      architectures where it has to be pre-allocated). It is also 
+>> completely
+>>      unnecessary, since the host has no reason to even access these 
+>> allocated
+>>      memory spaces
+>> 
+>>      Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+>>      Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+>> 
+>> 
+Ben,
 
-> But, the problems I saw were deadlocks and memory corruption.  A lot of 
-> it was
-> because I was debugging new firmware at the time and so peer creation
-> was failing
-> sometimes, and things like that.  The error handling in ath10k for this 
-> was
-> faulty and racy and such.  We have not seen any performance 
-> regressions,
-> but we mostly run on very powerful CPUs.
-> 
-> Please take a look at those 5 patches.  A good review would be much 
-> appreciated,
-> and by reading them you will better be able to see the problems I was 
-> hitting
-> and trying to fix.
-> 
-Below two patches are critical and I already shared my feedback.
-
-https://patchwork.kernel.org/patch/8727841/
-https://patchwork.kernel.org/patch/9073471/
-
-Others are LGTM.
-
-> In case you want to look at the full context of those patches, you can 
-> find
-> them here (around 24 patches down from the top...)
-> 
-Quite a big list :)
-
-> http://dmz2.candelatech.com/?p=linux-4.4.dev.y/.git;a=summary
-> 
-> For now, I am sticking with 4.4 + what I pulled in, but will rebase
-> against upstream someday
-> soon-ish and then we can start testing it all over again :)
-> 
-Will go through the list. Better to post them to public if not.
+Can you help to confirm this issue by disabling VT-d and bring up 
+qca99x0? If it freezes, try reverting the patch.
 
 -Rajkumar
 
