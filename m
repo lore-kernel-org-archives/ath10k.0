@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8TY5-0007eI-S0
- for ath10k@lists.infradead.org; Thu, 02 Jun 2016 14:24:38 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: Bug 119151 - [regression] ath10k no longer authenitcates and
- freezes system
-Date: Thu, 2 Jun 2016 14:24:11 +0000
-Message-ID: <871t4fzn1x.fsf@kamboji.qca.qualcomm.com>
-References: <8760trzoiw.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <8760trzoiw.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Thu, 02 Jun 2016 16:52:23 +0300")
-Content-Language: en-US
-Content-ID: <841398B41DB7B341B194BF8AE87DD722@qualcomm.com>
+ id 1b8Ty0-0007pv-3R
+ for ath10k@lists.infradead.org; Thu, 02 Jun 2016 14:51:25 +0000
 MIME-Version: 1.0
+Subject: Re: ath10k: fix diag_read to collect data for larger memory
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1464187154-26687-1-git-send-email-arnagara@qti.qualcomm.com>
+Message-ID: <8d461713b1d345ebb4e04fb5f6ba44be@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 2 Jun 2016 16:50:56 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +21,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "mike@fireburn.co.uk" <mike@fireburn.co.uk>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>
+To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, arnagara@codeaurora.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Ashok Raj Nagarajan <arnagara@qti.qualcomm.com> wrote:
+> diag_read uses dma_alloc_coherent to allocate memory requested by the
+> caller. If this memory requested is larger, more than DIAG_TRANSFER_LIMIT
+> (2K), then it is likely that we may not get the requested memory and we
+> would fail.
+> 
+> To solve this, request dma_alloc_coherent for only DIAG_TRANSFER_LIMIT, and
+> reuse this buffer multiple times as needed to copy the data requested in
+> smaller chunks of size not more than DIAG_TRANSFER_LIMIT. Previously we
+> were reading into the caller's only after getting the complete requested
+> data.
+> 
+> Fixes: 68c03249f388 ('ath10k: convert pci_alloc_consistent() to dma_alloc_coherent()')
+> Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
 
-> there's a regression in ath10k:
->
-> https://bugzilla.kernel.org/show_bug.cgi?id=119151
->
-> Reporter bisected it to this:
->
-> 5c86d97bcc1d42ce7f75685a61be4dad34ee8183 is the first bad commit
-> commit 5c86d97bcc1d42ce7f75685a61be4dad34ee8183
-> Author: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-> Date:   Tue Mar 22 17:22:19 2016 +0530
->
-> ath10k: combine txrx and replenish task
->
-> Since tx completion and rx indication processing are moved out
-> of txrx tasklet and rx ring lock contention also removed from txrx
-> for rx_ind messages, it would be efficient to combine both replenish
-> and txrx tasks. Refill threshold is adjusted for both AP135 and AP148
-> (low and high end systems). With this adjustment in AP135, TCP DL is
-> improved from 603 Mbps to 620 Mbps and UDP DL is improved from 758 Mbps
-> to 803 Mbps. Also no watchdog are observed on UDP BiDi.
->
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+Thanks, 1 patch applied to ath.git:
 
-Adding Mike, the bug reporter.
+1e56d5127d5c ath10k: fix diag_read to collect data for larger memory
 
 -- 
-Kalle Valo
+Sent by pwcli
+https://patchwork.kernel.org/patch/9135561/
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
