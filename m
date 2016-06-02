@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8Ty0-0007pv-3R
- for ath10k@lists.infradead.org; Thu, 02 Jun 2016 14:51:25 +0000
+ id 1b8Tyv-0008KS-8X
+ for ath10k@lists.infradead.org; Thu, 02 Jun 2016 14:52:21 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: fix diag_read to collect data for larger memory
+Subject: Re: ath10k: Fix error while writing 'simulate_fw_crash' debugfs
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1464187154-26687-1-git-send-email-arnagara@qti.qualcomm.com>
-Message-ID: <8d461713b1d345ebb4e04fb5f6ba44be@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 2 Jun 2016 16:50:56 +0200
+In-Reply-To: <1464251262-4889-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <413fd4df25784a74af69dc37eceeefe0@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 2 Jun 2016 16:51:53 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +21,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, arnagara@codeaurora.org, ath10k@lists.infradead.org
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
 
-Ashok Raj Nagarajan <arnagara@qti.qualcomm.com> wrote:
-> diag_read uses dma_alloc_coherent to allocate memory requested by the
-> caller. If this memory requested is larger, more than DIAG_TRANSFER_LIMIT
-> (2K), then it is likely that we may not get the requested memory and we
-> would fail.
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > 
-> To solve this, request dma_alloc_coherent for only DIAG_TRANSFER_LIMIT, and
-> reuse this buffer multiple times as needed to copy the data requested in
-> smaller chunks of size not more than DIAG_TRANSFER_LIMIT. Previously we
-> were reading into the caller's only after getting the complete requested
-> data.
+> Fix invalid argument error while writing 'simulate_fw_crash',
+> though the funcionality is working fine we get an error 'invalid
+> argument' because 'count' value is not returned properly
+> (no reason to reduce the count value for removing the newline)
 > 
-> Fixes: 68c03249f388 ('ath10k: convert pci_alloc_consistent() to dma_alloc_coherent()')
-> Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+> Fixes the below write error:
+> 
+> /sys/kernel/debug/ieee80211/phy0/ath10k# echo hw-restart >
+> simulate_fw_crash
+> -bash: echo: write error: Invalid argument
+> 
+> Also move the 'conf_mutex' as it is really not required for
+> fetching the userspace buffer.
+> 
+> Reported-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> Signed-off-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
 
 Thanks, 1 patch applied to ath.git:
 
-1e56d5127d5c ath10k: fix diag_read to collect data for larger memory
+f5e307515b2b ath10k: fix error while writing 'simulate_fw_crash' debugfs
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9135561/
+https://patchwork.kernel.org/patch/9136787/
 
 
 _______________________________________________
