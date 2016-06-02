@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8U3i-0002CL-KD
- for ath10k@lists.infradead.org; Thu, 02 Jun 2016 14:57:19 +0000
+ id 1b8U5G-0002Rh-1Y
+ for ath10k@lists.infradead.org; Thu, 02 Jun 2016 14:58:54 +0000
 MIME-Version: 1.0
-Subject: Re: [1/5] ath10k: fix operating irq mode for ahb device
+Subject: Re: ath10k: enable ipq4019 device probe in ahb module
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20160527144559.4053-1-rmanohar@qti.qualcomm.com>
-Message-ID: <cb83c96b3c154a438b0c7e90372d2984@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 2 Jun 2016 16:56:51 +0200
+In-Reply-To: <1464613883-24036-1-git-send-email-c_traja@qti.qualcomm.com>
+Message-ID: <1d9f58c8d04842c19383fc5c9d84a442@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 2 Jun 2016 16:58:26 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +21,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rmanohar@codeaurora.org
+To: c_traja@qti.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
-> Earlier when operating irq mode is legacy, interrupts are disabled
-> and re-enabled based on num_msi_intrs. commit cfe9011a05a8 ("ath10k:
-> remove MSI range support") replaced num_msi_intrs by oper_irq_mode.
-> Since oper_irq_mode is not initialized for ahb devices (i.e qca4019),
-> device boot up is failed during probe.
+c_traja@qti.qualcomm.com wrote:
+> From: Raja Mani <rmani@qti.qualcomm.com>
 > 
-> Fixes: cfe9011a05a8 ("ath10k: remove MSI range support")
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> All the necessary patches to make wifi running (over AHB)
+> on ipq4019 SoC are ready now. It's good to enable
+> ipq4019 wifi device probing in ahb module and
+> remove work in progress debug print.
+> 
+> Device tree change is there in the public review by
+> below commit message
+> "qcom: ipq4019: add wifi nodes to ipq4019 SoC device tree"
+> 
+> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 
-Thanks, 5 patches applied to ath.git:
+Thanks, 1 patch applied to ath.git:
 
-2e550b6d277b ath10k: fix operating irq mode for ahb device
-10f8ec64a2a6 ath10k: remove unused phy_mode_to_band
-b855de0f5792 ath10k: update module description
-64e001f41676 ath10k: add new ATH10K_FW_FEATURE_BTCOEX_PARAM
-39136248cf8d ath10k: add pdev param support to enable/disable btcoex
+280e762e9c72 ath10k: enable ipq4019 device probe in ahb module
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9138581/
+https://patchwork.kernel.org/patch/9141355/
 
 
 _______________________________________________
