@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8SSb-0005i6-A3
- for ath10k@lists.infradead.org; Thu, 02 Jun 2016 13:14:53 +0000
+ id 1b8SwQ-000441-Os
+ for ath10k@lists.infradead.org; Thu, 02 Jun 2016 13:45:43 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC/RFT] ath10k: disable wake_tx_queue for older devices
-Date: Thu, 2 Jun 2016 13:14:27 +0000
-Message-ID: <87inxrzqa5.fsf@kamboji.qca.qualcomm.com>
-References: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 17 May 2016 14:47:01 +0200")
+Subject: Re: [PATCH v2 1/2] ath10k: remove duplicate and unused rx rate flags
+Date: Thu, 2 Jun 2016 13:45:15 +0000
+Message-ID: <87a8j3zout.fsf@kamboji.qca.qualcomm.com>
+References: <1464852235-13110-1-git-send-email-mohammed@qca.qualcomm.com>
+In-Reply-To: <1464852235-13110-1-git-send-email-mohammed@qca.qualcomm.com>
+ (Mohammed Shafi Shajakhan's message of "Thu, 2 Jun 2016 12:53:54	+0530")
 Content-Language: en-US
-Content-ID: <26B6B867F3107349B12F5FCA77104AC7@qualcomm.com>
+Content-ID: <0006ACB928314F4BA8E213438A48279D@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,27 +25,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
-Cc: "leroi.lists@gmail.com" <leroi.lists@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
 
-> Some setups suffer performance regressions with
-> current wake_tx_queue implementation.
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> ---
-> Hi Roman,
+> All these flags are not used and their use is completely
+> covered by 'ath10k_hw_rate_ofdm', 'ath10k_hw_rate_cck',
+> and RX_PPDU_START_RATE_FLAG
 >
-> Can you give this patch a try and see if it helps
-> with your performance problems, please?
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> Patchwork-Id: 9129361
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Did anyone seeing the performance regression manage to test this? It
-would be good to get feedback, good or bad, before I push this to 4.7.
-
-Full patch here:
-
-https://patchwork.kernel.org/patch/9111981/
+I guess you took this patch from the pending branch? :) The Patchwork-Id
+line is something which my script adds for patches in the pending
+branch, and removes them before applying them to ath-next, but this line
+should not be visible when submitting patches.
 
 -- 
 Kalle Valo
