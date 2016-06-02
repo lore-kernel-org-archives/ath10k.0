@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b8Wo7-0003kt-VD
- for ath10k@lists.infradead.org; Thu, 02 Jun 2016 17:53:25 +0000
-Subject: Re: Regression in qca99x0 on x86 platform (kernel: 4.7.0-rc1-wt-ath
-References: <f495d218d54a4c4c859849a85f38ab0c@aphydexm01b.ap.qualcomm.com>
- <57506C7A.7070109@candelatech.com>
- <c3facd0acc1c2f49f4a4638bf0c2a591@codeaurora.org>
+ id 1b8XON-0003tN-Vw
+ for ath10k@lists.infradead.org; Thu, 02 Jun 2016 18:30:53 +0000
+Subject: Re: Bug 119151 - [regression] ath10k no longer authenitcates and
+ freezes system
+References: <8760trzoiw.fsf@kamboji.qca.qualcomm.com>
+ <871t4fzn1x.fsf@kamboji.qca.qualcomm.com> <57504F05.3040200@candelatech.com>
+ <1464887026467.72937@qti.qualcomm.com> <57506BA1.2090303@candelatech.com>
+ <6c6f208f9abc81cb262d763f6f6d684d@codeaurora.org>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <57507269.1060108@candelatech.com>
-Date: Thu, 2 Jun 2016 10:52:41 -0700
+Message-ID: <575074C7.50009@candelatech.com>
+Date: Thu, 2 Jun 2016 11:02:47 -0700
 MIME-Version: 1.0
-In-Reply-To: <c3facd0acc1c2f49f4a4638bf0c2a591@codeaurora.org>
+In-Reply-To: <6c6f208f9abc81cb262d763f6f6d684d@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,62 +27,100 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Cc: nbd@openwrt.org, ath10k@lists.infradead.org, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: mike@fireburn.co.uk, "Valo, Kalle" <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, "Manoharan,
+ Rajkumar" <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-On 06/02/2016 10:46 AM, Rajkumar Manoharan wrote:
-> On 2016-06-02 22:57, Ben Greear wrote:
->> On 06/02/2016 10:20 AM, Manoharan, Rajkumar wrote:
->>> Found a regression in ath.git TOT that system hangs while probing qca99x0 device on x86_64 platform.
->>> It seems the system hangs while DMA mapping of bigger memory chunks. Below are the list of memory
->>> chucks requested by target for qca99x0 during service ready event. This issue is seen only on x86 platform.
->>> No issues are observed on ARM platform (AP148). After reverting below commit able to bring up device on x86.
->>>
->>> Jun  2 17:24:37 rmanohar-arch kernel: idx 0 pool_size 689816 num_units 529 unit_len 1304
->>> Jun  2 17:24:37 rmanohar-arch kernel: idx 1 pool_size 17152 num_units 67 unit_len 256
->>> Jun  2 17:24:37 rmanohar-arch kernel: idx 2 pool_size 68608 num_units 67 unit_len 1024
->>> Jun  2 17:24:37 rmanohar-arch kernel: idx 3 pool_size 274432 num_units 67 unit_len 4096
->>> Jun  2 17:24:37 rmanohar-arch kernel: idx 4 pool_size 107520 num_units 35 unit_len 3072
->>> Jun  2 17:24:37 rmanohar-arch kernel: idx 5 pool_size 6144 num_units 1 unit_len 6144
->>> Jun  2 17:24:37 rmanohar-arch kernel: idx 6 pool_size 865444 num_units 529 unit_len 1636
->>
->> We have seen similar.  But, if we enable VT-d in our BIOS, then it
->> works, at least in
->> our scenarios.  I have not tried putting more than one 99x0 NIC in a
->> system to date, so possibly
->> more than one would cause more issues, and I guess systems without VT-d might
->> fail too...
->>
-> Yeah.. But the code should work even on non-VT-d systems. ins't it?
-
-It would be great if it did.
-
->>> commit b057886524be060021e3cfad0ba8458c850330cd
->>> Author: Felix Fietkau <nbd@openwrt.org>
->>> Date:   Mon Nov 30 19:32:01 2015 +0100
->>>
->>>      ath10k: do not use coherent memory for allocated device memory chunks
->>>
->>>      Coherent memory is more expensive to allocate (and constrained on some
->>>      architectures where it has to be pre-allocated). It is also completely
->>>      unnecessary, since the host has no reason to even access these allocated
->>>      memory spaces
->>>
->>>      Signed-off-by: Felix Fietkau <nbd@openwrt.org>
->>>      Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
->>>
->>>
-> Ben,
+On 06/02/2016 10:41 AM, Rajkumar Manoharan wrote:
+> On 2016-06-02 22:53, Ben Greear wrote:
+>> On 06/02/2016 10:03 AM, Manoharan, Rajkumar wrote:
+>>> On Thursday, June 2, 2016 8:51 PM, Ben Greear <greearb@candelatech.com> wrote:
+>>>> On 06/02/2016 07:24 AM, Valo, Kalle wrote:
+>>>>> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+>>>>>
+>>>>>> there's a regression in ath10k:
+>>>>>>
+>>>>>> https://bugzilla.kernel.org/show_bug.cgi?id=119151
+>>>>>>
+>>>>>> Reporter bisected it to this:
+>>>>>>
+>>>>>> 5c86d97bcc1d42ce7f75685a61be4dad34ee8183 is the first bad commit
+>>>>>> commit 5c86d97bcc1d42ce7f75685a61be4dad34ee8183
+>>>>>> Author: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+>>>>>> Date:   Tue Mar 22 17:22:19 2016 +0530
+>>>>>>
+>>>>>> ath10k: combine txrx and replenish task
+>>>>>>
+> [...]
 >
-> Can you help to confirm this issue by disabling VT-d and bring up qca99x0? If it freezes, try reverting the patch.
+>>>> I found a lot of problems with this code as well, and the 5 patches
+>>>> starting from the URL below fixed the issues for me.
+>>>>
+>>> Ben,
+>>>
+>>> Can you please explain the sort of issues you have observed with this change?
+>>
+>> I imported a bunch of upstream patches at once, so not sure exactly what commit
+>> caused it.  And, this was about 2 months ago...  Upon review, I'm not
+>> sure I even have
+>> the patch this particular bug was bisected to, so maybe that is some
+>> other issue.
+>>
+> Please keep track of buggy commit and report them asap.
 
-At the time, I bisected to this commit as well, but I decided to just live with it
-since it seemed it fixed some other bug and we had a work-around.  My understanding
-is that without the patch above, some ARM systems failed to work.
+I posted to the list at the time.  When I was debugging this, there
+were so many conflicting issues that it was hard to find a single
+regression point.
+
+>> But, the problems I saw were deadlocks and memory corruption.  A lot of it was
+>> because I was debugging new firmware at the time and so peer creation
+>> was failing
+>> sometimes, and things like that.  The error handling in ath10k for this was
+>> faulty and racy and such.  We have not seen any performance regressions,
+>> but we mostly run on very powerful CPUs.
+>>
+>> Please take a look at those 5 patches.  A good review would be much appreciated,
+>> and by reading them you will better be able to see the problems I was hitting
+>> and trying to fix.
+>>
+> Below two patches are critical and I already shared my feedback.
+>
+> https://patchwork.kernel.org/patch/8727841/
+> https://patchwork.kernel.org/patch/9073471/
+>
+> Others are LGTM.
+
+Not sure what LGTM means.
+
+This one fixes memory corruption:
+http://dmz2.candelatech.com/?p=linux-4.4.dev.y/.git;a=blobdiff;f=drivers/net/wireless/ath/ath10k/htt_tx.c;h=58e88d392fb56a65304db17d11a9eaf0b0397dc7;hp=07b960e9704f509b3dddf1e45730e76a4c39e51e;hb=fddb6661a0f5772853fbb9feb7232f325d5f74c5;hpb=ed1757f8345064181664e4a62e2b917e694a665e
+
+This one fixes use-after-free memory bugs:
+http://dmz2.candelatech.com/?p=linux-4.4.dev.y/.git;a=blobdiff;f=drivers/net/wireless/ath/ath10k/mac.c;h=5e5cc9c6c1d82524b9b77a7c6d2c1341c5268732;hp=8783119b9ba84e0ddb292d521e6513bf7d68a40b;hb=5ae13cea64004afc673ecc22cd70ac51179168c6;hpb=fddb6661a0f5772853fbb9feb7232f325d5f74c5
+
+As does this one:
+http://dmz2.candelatech.com/?p=linux-4.4.dev.y/.git;a=blobdiff;f=drivers/net/wireless/ath/ath10k/mac.c;h=020dd25752224d9786da37a6dfd10a69e646b138;hp=5e5cc9c6c1d82524b9b77a7c6d2c1341c5268732;hb=c4b9566416a5e7b8d4c446d1bad34aabcbeff9f5;hpb=9bd9c11c1a2e61261c268ac2b6d791d4f6b6fe26
+
+>
+>> In case you want to look at the full context of those patches, you can find
+>> them here (around 24 patches down from the top...)
+>>
+> Quite a big list :)
+>
+>> http://dmz2.candelatech.com/?p=linux-4.4.dev.y/.git;a=summary
+>>
+>> For now, I am sticking with 4.4 + what I pulled in, but will rebase
+>> against upstream someday
+>> soon-ish and then we can start testing it all over again :)
+>>
+> Will go through the list. Better to post them to public if not.
+
+Many of these patches are related to features only in my firmware.  The ~20
+patch patch-bomb was a start at adding some of the hopefully less controversial
+support.  If I can ever get that upstream, then I will pick off another
+set of patches and try to get them ready for upstream.
 
 Thanks,
 Ben
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
