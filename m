@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail2.student.tuwien.ac.at ([193.170.74.22])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8Myg-0005Y8-Uh
- for ath10k@lists.infradead.org; Thu, 02 Jun 2016 07:23:39 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH v2 2/2] ath10k: fix CCK h/w rates for QCA99X0 and newer
- chipsets
-Date: Thu, 2 Jun 2016 12:53:55 +0530
-Message-ID: <1464852235-13110-2-git-send-email-mohammed@qca.qualcomm.com>
-In-Reply-To: <1464852235-13110-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1464852235-13110-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1b8N4T-0007Ko-E6
+ for ath10k@lists.infradead.org; Thu, 02 Jun 2016 07:29:38 +0000
+Received: from [192.168.0.203] ([212.69.186.40]) (authenticated bits=0)
+ by mail2.student.tuwien.ac.at (8.13.8/8.13.8) with ESMTP id u527R5jp028958
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-SHA bits=128 verify=NO)
+ for <ath10k@lists.infradead.org>; Thu, 2 Jun 2016 09:27:05 +0200
+From: Stefan Feirer <e0926020@student.tuwien.ac.at>
+Subject: Support of 802.11k
+Message-ID: <574FDFC9.1070801@student.tuwien.ac.at>
+Date: Thu, 2 Jun 2016 09:27:05 +0200
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,176 +20,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Hello,
 
-CCK hardware table mapping from QCA99X0 onwards got revised.
-The CCK hardware rate values are in a proper order wrt. to
-rate and preamble as below
+I'm currently working on my master thesis at vienna university of 
+technology.
+Topic of my work is building a prototype to measure wifi roaming 
+performance with 802.11k (Radio Resouce Management) and 802.11r protocol 
+amendments.
+My hardware setup uses the PCIe Wifi Card Compex WLE600VX with QCA9882 
+Chipset and ath10k_pci kernel module.
+Operating System is Ubuntu 15.10 with Kernel Version 4.2.
 
-ATH10K_HW_RATE_REV2_CCK_LP_1M = 1,
-ATH10K_HW_RATE_REV2_CCK_LP_2M = 2,
-ATH10K_HW_RATE_REV2_CCK_LP_5_5M = 3,
-ATH10K_HW_RATE_REV2_CCK_LP_11M = 4,
-ATH10K_HW_RATE_REV2_CCK_SP_2M = 5,
-ATH10K_HW_RATE_REV2_CCK_SP_5_5M = 6,
-ATH10K_HW_RATE_REV2_CCK_SP_11M = 7,
+With my setup 802.11r is working well with wpa_supplicant but I'm not 
+able to get 802.11k working.
+As I already mentioned I'm using the ath10k kernel module with firmware 
+version 10.2.4.45.
 
-This results in reporting of rx frames (with CCK rates)
-totally wrong for QCA99X0, QCA4019. Fix this by having
-separate CCK rate table for these chipsets with rev2 suffix
-and registering the correct rate mapping to mac80211 based on
-the new hw_param (introduced) 'cck_rate_map_rev2' which shall
-be true for any newchipsets from QCA99X0 onwards
+I suppose 802.11k (RRM) is not working because it is not supported by 
+the firmware.
+The reason of my guess is the following:
+When I looked through the ath10k source code for RRM support I found out 
+that in the file wmi.c there are the structs
+  - wmi_cmd_map
+  - wmi_10x_cmd_map
+  - wmi_10_2_4_cmd_map
 
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
-[v2: Enabled the fix for QCA9984 - thanks Kalle]
+In the last two the function bcn_tmpl_cmdid and prb_tmpl_cmdid both are 
+not supported (and I use firmware version 10.2.4) and these use the 
+struct wmi_bcn_prb_info (wmi.h) which includes the rrm info.
 
- drivers/net/wireless/ath/ath10k/core.c |    3 +++
- drivers/net/wireless/ath/ath10k/core.h |    6 +++++
- drivers/net/wireless/ath/ath10k/hw.h   |   10 ++++++++
- drivers/net/wireless/ath/ath10k/mac.c  |   39 ++++++++++++++++++++++++++++++--
- 4 files changed, 56 insertions(+), 2 deletions(-)
+This leads me to two questions:
+- Am I right, that the firmware does not support 802.11k or should 
+802.11k be supported by the QCA9882 Chipset and the atheros firmware and 
+kernel modules?
+- Are there any atheros wifi modules which were successfully tested with 
+802.11k?
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index a003980..2692243 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -148,6 +148,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.uart_pin = 7,
- 		.otp_exe_param = 0x00000700,
- 		.continuous_frag_desc = true,
-+		.cck_rate_map_rev2 = true,
- 		.channel_counters_freq_hz = 150000,
- 		.max_probe_resp_desc_thres = 24,
- 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_BEFORE,
-@@ -170,6 +171,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.uart_pin = 7,
- 		.otp_exe_param = 0x00000700,
- 		.continuous_frag_desc = true,
-+		.cck_rate_map_rev2 = true,
- 		.channel_counters_freq_hz = 150000,
- 		.max_probe_resp_desc_thres = 24,
- 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_BEFORE,
-@@ -227,6 +229,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.has_shifted_cc_wraparound = true,
- 		.otp_exe_param = 0x0010000,
- 		.continuous_frag_desc = true,
-+		.cck_rate_map_rev2 = true,
- 		.channel_counters_freq_hz = 125000,
- 		.max_probe_resp_desc_thres = 24,
- 		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_BEFORE,
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 1852e0e..04cea23 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -716,6 +716,12 @@ struct ath10k {
- 		 */
- 		bool continuous_frag_desc;
- 
-+		/* CCK hardware rate table mapping for the newer chipsets
-+		 * like QCA99X0, QCA4019 got revised. The CCK h/w rate values
-+		 * are in a proper order with respect to the rate/preamble
-+		 */
-+		bool cck_rate_map_rev2;
-+
- 		u32 channel_counters_freq_hz;
- 
- 		/* Mgmt tx descriptors threshold for limiting probe response
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index f41c91c..4ed5be9 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -326,6 +326,16 @@ enum ath10k_hw_rate_cck {
- 	ATH10K_HW_RATE_CCK_SP_2M,
- };
- 
-+enum ath10k_hw_rate_rev2_cck {
-+	ATH10K_HW_RATE_REV2_CCK_LP_1M = 1,
-+	ATH10K_HW_RATE_REV2_CCK_LP_2M,
-+	ATH10K_HW_RATE_REV2_CCK_LP_5_5M,
-+	ATH10K_HW_RATE_REV2_CCK_LP_11M,
-+	ATH10K_HW_RATE_REV2_CCK_SP_2M,
-+	ATH10K_HW_RATE_REV2_CCK_SP_5_5M,
-+	ATH10K_HW_RATE_REV2_CCK_SP_11M,
-+};
-+
- enum ath10k_hw_4addr_pad {
- 	ATH10K_HW_4ADDR_PAD_AFTER,
- 	ATH10K_HW_4ADDR_PAD_BEFORE,
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 1dd415d..e7162db 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -62,6 +62,32 @@ static struct ieee80211_rate ath10k_rates[] = {
- 	{ .bitrate = 540, .hw_value = ATH10K_HW_RATE_OFDM_54M },
- };
- 
-+static struct ieee80211_rate ath10k_rates_rev2[] = {
-+	{ .bitrate = 10,
-+	  .hw_value = ATH10K_HW_RATE_REV2_CCK_LP_1M },
-+	{ .bitrate = 20,
-+	  .hw_value = ATH10K_HW_RATE_REV2_CCK_LP_2M,
-+	  .hw_value_short = ATH10K_HW_RATE_REV2_CCK_SP_2M,
-+	  .flags = IEEE80211_RATE_SHORT_PREAMBLE },
-+	{ .bitrate = 55,
-+	  .hw_value = ATH10K_HW_RATE_REV2_CCK_LP_5_5M,
-+	  .hw_value_short = ATH10K_HW_RATE_REV2_CCK_SP_5_5M,
-+	  .flags = IEEE80211_RATE_SHORT_PREAMBLE },
-+	{ .bitrate = 110,
-+	  .hw_value = ATH10K_HW_RATE_REV2_CCK_LP_11M,
-+	  .hw_value_short = ATH10K_HW_RATE_REV2_CCK_SP_11M,
-+	  .flags = IEEE80211_RATE_SHORT_PREAMBLE },
-+
-+	{ .bitrate = 60, .hw_value = ATH10K_HW_RATE_OFDM_6M },
-+	{ .bitrate = 90, .hw_value = ATH10K_HW_RATE_OFDM_9M },
-+	{ .bitrate = 120, .hw_value = ATH10K_HW_RATE_OFDM_12M },
-+	{ .bitrate = 180, .hw_value = ATH10K_HW_RATE_OFDM_18M },
-+	{ .bitrate = 240, .hw_value = ATH10K_HW_RATE_OFDM_24M },
-+	{ .bitrate = 360, .hw_value = ATH10K_HW_RATE_OFDM_36M },
-+	{ .bitrate = 480, .hw_value = ATH10K_HW_RATE_OFDM_48M },
-+	{ .bitrate = 540, .hw_value = ATH10K_HW_RATE_OFDM_54M },
-+};
-+
- #define ATH10K_MAC_FIRST_OFDM_RATE_IDX 4
- 
- #define ath10k_a_rates (ath10k_rates + ATH10K_MAC_FIRST_OFDM_RATE_IDX)
-@@ -70,6 +96,9 @@ static struct ieee80211_rate ath10k_rates[] = {
- #define ath10k_g_rates (ath10k_rates + 0)
- #define ath10k_g_rates_size (ARRAY_SIZE(ath10k_rates))
- 
-+#define ath10k_g_rates_rev2 (ath10k_rates_rev2 + 0)
-+#define ath10k_g_rates_rev2_size (ARRAY_SIZE(ath10k_rates_rev2))
-+
- static bool ath10k_mac_bitrate_is_cck(int bitrate)
- {
- 	switch (bitrate) {
-@@ -7696,8 +7725,14 @@ int ath10k_mac_register(struct ath10k *ar)
- 		band = &ar->mac.sbands[NL80211_BAND_2GHZ];
- 		band->n_channels = ARRAY_SIZE(ath10k_2ghz_channels);
- 		band->channels = channels;
--		band->n_bitrates = ath10k_g_rates_size;
--		band->bitrates = ath10k_g_rates;
-+
-+		if (ar->hw_params.cck_rate_map_rev2) {
-+			band->n_bitrates = ath10k_g_rates_rev2_size;
-+			band->bitrates = ath10k_g_rates_rev2;
-+		} else {
-+			band->n_bitrates = ath10k_g_rates_size;
-+			band->bitrates = ath10k_g_rates;
-+		}
- 
- 		ar->hw->wiphy->bands[NL80211_BAND_2GHZ] = band;
- 	}
--- 
-1.7.9.5
+Hopefully someone can help me with this!
+Thanks
+Stefan Feirer
 
 
 _______________________________________________
