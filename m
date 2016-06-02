@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8T3M-0006pG-Sx
- for ath10k@lists.infradead.org; Thu, 02 Jun 2016 13:52:53 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Bug 119151 - [regression] ath10k no longer authenitcates and freezes
- system
-Date: Thu, 2 Jun 2016 13:52:24 +0000
-Message-ID: <8760trzoiw.fsf@kamboji.qca.qualcomm.com>
-Content-Language: en-US
-Content-ID: <62D739F568493F4BB55C5554EB50DCA0@qualcomm.com>
+ id 1b8TXh-0007Po-0v
+ for ath10k@lists.infradead.org; Thu, 02 Jun 2016 14:24:13 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH v3 1/2] ath10k: remove duplicate and unused rx rate flags
+Date: Thu, 2 Jun 2016 19:54:41 +0530
+Message-ID: <1464877482-14620-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,38 +20,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Hi,
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-there's a regression in ath10k:
+All these flags are not used and their use is completely
+covered by 'ath10k_hw_rate_ofdm', 'ath10k_hw_rate_cck',
+and RX_PPDU_START_RATE_FLAG
 
-https://bugzilla.kernel.org/show_bug.cgi?id=119151
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/rx_desc.h |   39 -----------------------------
+ 1 file changed, 39 deletions(-)
 
-Reporter bisected it to this:
+[v3: removing patch id]
 
-5c86d97bcc1d42ce7f75685a61be4dad34ee8183 is the first bad commit
-commit 5c86d97bcc1d42ce7f75685a61be4dad34ee8183
-Author: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Date:   Tue Mar 22 17:22:19 2016 +0530
-
-ath10k: combine txrx and replenish task
-
-Since tx completion and rx indication processing are moved out
-of txrx tasklet and rx ring lock contention also removed from txrx
-for rx_ind messages, it would be efficient to combine both replenish
-and txrx tasks. Refill threshold is adjusted for both AP135 and AP148
-(low and high end systems). With this adjustment in AP135, TCP DL is
-improved from 603 Mbps to 620 Mbps and UDP DL is improved from 758 Mbps
-to 803 Mbps. Also no watchdog are observed on UDP BiDi.
-
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
+diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
+index 9ceebea..034e7a5 100644
+--- a/drivers/net/wireless/ath/ath10k/rx_desc.h
++++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
+@@ -656,26 +656,6 @@ struct rx_msdu_end {
+  *		Reserved: HW should fill with zero.  FW should ignore.
+  */
+ 
+-#define RX_PPDU_START_SIG_RATE_SELECT_OFDM 0
+-#define RX_PPDU_START_SIG_RATE_SELECT_CCK  1
+-
+-#define RX_PPDU_START_SIG_RATE_OFDM_48 0
+-#define RX_PPDU_START_SIG_RATE_OFDM_24 1
+-#define RX_PPDU_START_SIG_RATE_OFDM_12 2
+-#define RX_PPDU_START_SIG_RATE_OFDM_6  3
+-#define RX_PPDU_START_SIG_RATE_OFDM_54 4
+-#define RX_PPDU_START_SIG_RATE_OFDM_36 5
+-#define RX_PPDU_START_SIG_RATE_OFDM_18 6
+-#define RX_PPDU_START_SIG_RATE_OFDM_9  7
+-
+-#define RX_PPDU_START_SIG_RATE_CCK_LP_11  0
+-#define RX_PPDU_START_SIG_RATE_CCK_LP_5_5 1
+-#define RX_PPDU_START_SIG_RATE_CCK_LP_2   2
+-#define RX_PPDU_START_SIG_RATE_CCK_LP_1   3
+-#define RX_PPDU_START_SIG_RATE_CCK_SP_11  4
+-#define RX_PPDU_START_SIG_RATE_CCK_SP_5_5 5
+-#define RX_PPDU_START_SIG_RATE_CCK_SP_2   6
+-
+ #define HTT_RX_PPDU_START_PREAMBLE_LEGACY        0x04
+ #define HTT_RX_PPDU_START_PREAMBLE_HT            0x08
+ #define HTT_RX_PPDU_START_PREAMBLE_HT_WITH_TXBF  0x09
+@@ -711,25 +691,6 @@ struct rx_msdu_end {
+ /* No idea what this flag means. It seems to be always set in rate. */
+ #define RX_PPDU_START_RATE_FLAG BIT(3)
+ 
+-enum rx_ppdu_start_rate {
+-	RX_PPDU_START_RATE_OFDM_48M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_48M,
+-	RX_PPDU_START_RATE_OFDM_24M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_24M,
+-	RX_PPDU_START_RATE_OFDM_12M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_12M,
+-	RX_PPDU_START_RATE_OFDM_6M  = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_6M,
+-	RX_PPDU_START_RATE_OFDM_54M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_54M,
+-	RX_PPDU_START_RATE_OFDM_36M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_36M,
+-	RX_PPDU_START_RATE_OFDM_18M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_18M,
+-	RX_PPDU_START_RATE_OFDM_9M  = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_9M,
+-
+-	RX_PPDU_START_RATE_CCK_LP_11M  = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_LP_11M,
+-	RX_PPDU_START_RATE_CCK_LP_5_5M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_LP_5_5M,
+-	RX_PPDU_START_RATE_CCK_LP_2M   = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_LP_2M,
+-	RX_PPDU_START_RATE_CCK_LP_1M   = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_LP_1M,
+-	RX_PPDU_START_RATE_CCK_SP_11M  = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_SP_11M,
+-	RX_PPDU_START_RATE_CCK_SP_5_5M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_SP_5_5M,
+-	RX_PPDU_START_RATE_CCK_SP_2M   = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_SP_2M,
+-};
+-
+ struct rx_ppdu_start {
+ 	struct {
+ 		u8 pri20_mhz;
 -- 
-Kalle Valo
+1.7.9.5
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
