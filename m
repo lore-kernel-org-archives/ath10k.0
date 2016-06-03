@@ -1,13 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8rGN-0004Lu-Rx
- for ath10k@lists.infradead.org; Fri, 03 Jun 2016 15:43:56 +0000
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH 1/2] ath10k: Define an enum to enable cycle counter wraparound
- logic
-Date: Fri, 3 Jun 2016 21:13:15 +0530
-Message-ID: <1464968596-19834-1-git-send-email-vthiagar@qti.qualcomm.com>
+ id 1b8rOj-0001ht-Mc
+ for ath10k@lists.infradead.org; Fri, 03 Jun 2016 15:52:34 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: Bug 119151 - [regression] ath10k no longer authenitcates and
+ freezes system
+Date: Fri, 3 Jun 2016 15:52:03 +0000
+Message-ID: <871t4ew9r1.fsf@kamboji.qca.qualcomm.com>
+References: <8760trzoiw.fsf@kamboji.qca.qualcomm.com>
+ <871t4fzn1x.fsf@kamboji.qca.qualcomm.com>	<57504F05.3040200@candelatech.com>
+ <87k2i7y5m2.fsf@kamboji.qca.qualcomm.com>	<57505179.8090509@candelatech.com>
+In-Reply-To: <57505179.8090509@candelatech.com> (Ben Greear's message of "Thu, 
+ 2 Jun 2016 08:32:09 -0700")
+Content-Language: en-US
+Content-ID: <3C12A978ED31A04699F1A96B115F1728@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,113 +28,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: "mike@fireburn.co.uk" <mike@fireburn.co.uk>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "Manoharan,
+ Rajkumar" <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-QCA988X hw implements a different cycle counter wraparound
-behaviour when compared to QCA4019. To properly handle different
-wraparound logic for these chipsets replace already available
-bool hw_params member, has_shifted_cc_wraparound, with an
-enum which could be extended to handle different wraparound
-behaviour. This patch keeps the existing logic functionally
-same and a prepares cycle counter wraparound handling to
-extend for other chips.
+Ben Greear <greearb@candelatech.com> writes:
 
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c |  4 ++--
- drivers/net/wireless/ath/ath10k/core.h |  8 +++-----
- drivers/net/wireless/ath/ath10k/hw.c   |  4 +++-
- drivers/net/wireless/ath/ath10k/hw.h   | 11 +++++++++++
- 4 files changed, 19 insertions(+), 8 deletions(-)
+> On 06/02/2016 08:26 AM, Valo, Kalle wrote:
+>> Ben Greear <greearb@candelatech.com> writes:
+>>
+>>> I found a lot of problems with this code as well, and the 5 patches
+>>> starting from the URL below fixed the issues for me.
+>>>
+>>> They are stuck as 'NA' in patchwork, but I don't know why.
+>>>
+>>> http://lists.infradead.org/pipermail/ath10k/2016-April/007218.html
+>>
+>> ath10k has a separate patchwork instance, did you look at the correct
+>> one? I have quite a lot of patches from you in deferred state because of
+>> the patch bomb, but I'm hoping to go through them soon.
+>>
+>> https://patchwork.kernel.org/project/ath10k/list/?state=10&delegate=25621&order=date
+>
+> Ok, they are deferred then.
+>
+> The series of 5 is likely quite useful and fixes some nasty bugs,
+> and the first patch of the big bomb is also a trivial crash fix
+> for a regression you added (as best as I can tell).
+>
+> The rest of the patch bomb is less critical, but making some progress on
+> that would make me feel good about working on ath10k patches again.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index cedf127..8f66653 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -55,7 +55,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.name = "qca988x hw2.0",
- 		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
--		.has_shifted_cc_wraparound = true,
-+		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
- 		.otp_exe_param = 0,
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
-@@ -224,7 +224,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.name = "qca4019 hw1.0",
- 		.patch_load_addr = QCA4019_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
--		.has_shifted_cc_wraparound = true,
-+		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
- 		.otp_exe_param = 0x0010000,
- 		.continuous_frag_desc = true,
- 		.channel_counters_freq_hz = 125000,
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 4462c3f..b42b21f 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -710,12 +710,10 @@ struct ath10k {
- 		int uart_pin;
- 		u32 otp_exe_param;
- 
--		/* This is true if given HW chip has a quirky Cycle Counter
--		 * wraparound which resets to 0x7fffffff instead of 0. All
--		 * other CC related counters (e.g. Rx Clear Count) are divided
--		 * by 2 so they never wraparound themselves.
-+		/* Type of hw cycle counter wraparound logic, for more info
-+		 * refer enum ath10k_hw_cc_wraparound_type.
- 		 */
--		bool has_shifted_cc_wraparound;
-+		enum ath10k_hw_cc_wraparound_type cc_wraparound_type;
- 
- 		/* Some of chip expects fragment descriptor to be continuous
- 		 * memory for any TX operation. Set continuous_frag_desc flag
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index f544d48..31ec164 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -179,11 +179,13 @@ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
- 				u32 cc, u32 rcc, u32 cc_prev, u32 rcc_prev)
- {
- 	u32 cc_fix = 0;
-+	enum ath10k_hw_cc_wraparound_type wraparound_type;
- 
- 	survey->filled |= SURVEY_INFO_TIME |
- 			  SURVEY_INFO_TIME_BUSY;
- 
--	if (ar->hw_params.has_shifted_cc_wraparound && cc < cc_prev) {
-+	wraparound_type = ar->hw_params.cc_wraparound_type;
-+	if (wraparound_type == ATH10K_HW_CC_WRAP_SHIFTED_ALL && cc < cc_prev) {
- 		cc_fix = 0x7fffffff;
- 		survey->filled &= ~SURVEY_INFO_TIME_BUSY;
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index f41c91c..64e45b2 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -331,6 +331,17 @@ enum ath10k_hw_4addr_pad {
- 	ATH10K_HW_4ADDR_PAD_BEFORE,
- };
- 
-+enum ath10k_hw_cc_wraparound_type {
-+	ATH10K_HW_CC_WRAP_DISABLED = 0,
-+
-+	/* This type is when the HW chip has a quirky Cycle Counter
-+	 * wraparound which resets to 0x7fffffff instead of 0. All
-+	 * other CC related counters (e.g. Rx Clear Count) are divided
-+	 * by 2 so they never wraparound themselves.
-+	 */
-+	ATH10K_HW_CC_WRAP_SHIFTED_ALL = 1,
-+};
-+
- /* Target specific defines for MAIN firmware */
- #define TARGET_NUM_VDEVS			8
- #define TARGET_NUM_PEER_AST			2
+If I get a big patchset like 25 patches it immediately goes to the
+bottom of the queue. Organising them a bit better takes like 15 minutes
+of your time and makes it a lot easier to review. For example, you could
+have split the patches into three sets: important bug fixes, firmware
+debugging and the rest. That helps everyone and saves time.
+
 -- 
-1.9.1
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
