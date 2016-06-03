@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b8rdq-0007eh-7r
- for ath10k@lists.infradead.org; Fri, 03 Jun 2016 16:08:10 +0000
-Subject: Re: [PATCH 2/2] ath10k: remove 10.1 firmware support
-References: <20160603153328.11947-1-rmanohar@qti.qualcomm.com>
- <20160603153328.11947-2-rmanohar@qti.qualcomm.com>
- <5751A6D5.7080901@candelatech.com>
- <743182bcbd1efbdb576bcc51b0215300@codeaurora.org>
+ id 1b8rok-0007nS-AP
+ for ath10k@lists.infradead.org; Fri, 03 Jun 2016 16:19:27 +0000
+Subject: Re: Bug 119151 - [regression] ath10k no longer authenitcates and
+ freezes system
+References: <8760trzoiw.fsf@kamboji.qca.qualcomm.com>
+ <871t4fzn1x.fsf@kamboji.qca.qualcomm.com> <57504F05.3040200@candelatech.com>
+ <87k2i7y5m2.fsf@kamboji.qca.qualcomm.com> <57505179.8090509@candelatech.com>
+ <871t4ew9r1.fsf@kamboji.qca.qualcomm.com>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <5751AB3F.2070604@candelatech.com>
-Date: Fri, 3 Jun 2016 09:07:27 -0700
+Message-ID: <5751AC89.6050607@candelatech.com>
+Date: Fri, 3 Jun 2016 09:12:57 -0700
 MIME-Version: 1.0
-In-Reply-To: <743182bcbd1efbdb576bcc51b0215300@codeaurora.org>
+In-Reply-To: <871t4ew9r1.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +26,58 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "mike@fireburn.co.uk" <mike@fireburn.co.uk>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "Manoharan,
+ Rajkumar" <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 06/03/2016 08:55 AM, Rajkumar Manoharan wrote:
-> On 2016-06-03 21:18, Ben Greear wrote:
->> On 06/03/2016 08:33 AM, Rajkumar Manoharan wrote:
->>> Earlier qca9888 device was brought up using 10.1 firmware and then
->>> later all firmware fixes and new features are migrated to 10.2/10.2.x
->>> firmware branch. As all of 10.1 funtionalities are supported in 10.2
->>> based firmware, removing 10.1 firmware support for qca9888 device.
+On 06/03/2016 08:52 AM, Valo, Kalle wrote:
+> Ben Greear <greearb@candelatech.com> writes:
+>
+>> On 06/02/2016 08:26 AM, Valo, Kalle wrote:
+>>> Ben Greear <greearb@candelatech.com> writes:
+>>>
+>>>> I found a lot of problems with this code as well, and the 5 patches
+>>>> starting from the URL below fixed the issues for me.
+>>>>
+>>>> They are stuck as 'NA' in patchwork, but I don't know why.
+>>>>
+>>>> http://lists.infradead.org/pipermail/ath10k/2016-April/007218.html
+>>>
+>>> ath10k has a separate patchwork instance, did you look at the correct
+>>> one? I have quite a lot of patches from you in deferred state because of
+>>> the patch bomb, but I'm hoping to go through them soon.
+>>>
+>>> https://patchwork.kernel.org/project/ath10k/list/?state=10&delegate=25621&order=date
 >>
->> Oh please do not do this.  My 10.1 firmware works very nicely,
->> and out-performs 10.2 in my testing.  Lots of people use my firmware
->> when they need IBSS support or other features not found in
->> official firmware, so it is not just me that will have
->> problems if you remove this support.
+>> Ok, they are deferred then.
 >>
-> Aah.. I thought CT firmware is 10.2 based. Since most of firmware bug fixes and enhancements are integrated into 10.2 based firmware, we thought of get rid of
-> 10.1 firmware to reduce code size. Moreover existing 10.1 official firmware has known issues. Is it possible to upgrade CT firmware to 10.2 WMI/HTT interfaces?
+>> The series of 5 is likely quite useful and fixes some nasty bugs,
+>> and the first patch of the big bomb is also a trivial crash fix
+>> for a regression you added (as best as I can tell).
+>>
+>> The rest of the patch bomb is less critical, but making some progress on
+>> that would make me feel good about working on ath10k patches again.
+>
+> If I get a big patchset like 25 patches it immediately goes to the
+> bottom of the queue. Organising them a bit better takes like 15 minutes
+> of your time and makes it a lot easier to review. For example, you could
+> have split the patches into three sets: important bug fixes, firmware
+> debugging and the rest. That helps everyone and saves time.
 
-I have a 10.2 firmware too, but it is less stable, performs worse,
-uses more RAM on the NIC (so I can do fewer virtual stations),
-and I am not sure I can squeeze enough RAM out of it to port some
-of the more interesting rate-ctrl fixes from 10.1 to 10.2.
-I have recently started backporting a lot of 10.2.4 changes
-into 10.1, which will aid any users on pre 4.0 kernels since they cannot
-run 10.2.4 firmware w/out backporting.
+The first 5 were posted a month earlier than the 25 patchset, and are
+bug fixes.  Whatever reason you ignored them, it wasn't because
+there were 25 patches from me on the list at the time.
 
-I might could make my 10.1 work with a 10.2 driver API, but it would take quite a bit of
-effort, way more than what removing 10.1 from the driver saves in my opinion.
-The driver already separates firmware specific logic pretty well, so I don't think
-it should be a huge maintenance effort to keep 10.1 support in the driver.
+The second big series has the first patch as bug-fix, and clearly noted
+in the 0000 description.  Grab it, and save the rest for later.
 
-Maybe you could delete the 10.2 (not 10.2.4) firmware support and gain some space that way?  I
-doubt anyone is using that productively....
+I'll be happy to re-work the big patch-set, but there is a lot of churn in
+ath10k, and waiting months before applying patches means they rot and makes
+more work for everyone.  Let's get these 6 bug-fixes in, and then I'll rebase,
+test, and post a smaller patch-set for consideration.
 
 Thanks,
 Ben
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
