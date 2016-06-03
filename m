@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8rRS-0002cs-FK
- for ath10k@lists.infradead.org; Fri, 03 Jun 2016 15:55:23 +0000
+ id 1b8rYq-000664-30
+ for ath10k@lists.infradead.org; Fri, 03 Jun 2016 16:03:00 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: Regression in qca99x0 on x86 platform (kernel: 4.7.0-rc1-wt-ath
+Date: Fri, 3 Jun 2016 16:02:28 +0000
+Message-ID: <87wpm6uup8.fsf@kamboji.qca.qualcomm.com>
+References: <f495d218d54a4c4c859849a85f38ab0c@aphydexm01b.ap.qualcomm.com>
+In-Reply-To: <f495d218d54a4c4c859849a85f38ab0c@aphydexm01b.ap.qualcomm.com>
+ (Rajkumar Manoharan's message of "Thu, 2 Jun 2016 17:20:06 +0000")
+Content-Language: en-US
+Content-ID: <054114B330EFB24EBD0A5292DCF458FA@qualcomm.com>
 MIME-Version: 1.0
-Date: Fri, 03 Jun 2016 21:25:00 +0530
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: [PATCH 2/2] ath10k: remove 10.1 firmware support
-In-Reply-To: <5751A6D5.7080901@candelatech.com>
-References: <20160603153328.11947-1-rmanohar@qti.qualcomm.com>
- <20160603153328.11947-2-rmanohar@qti.qualcomm.com>
- <5751A6D5.7080901@candelatech.com>
-Message-ID: <743182bcbd1efbdb576bcc51b0215300@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +21,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>, "nbd@nbd.name" <nbd@nbd.name>
 
-On 2016-06-03 21:18, Ben Greear wrote:
-> On 06/03/2016 08:33 AM, Rajkumar Manoharan wrote:
->> Earlier qca9888 device was brought up using 10.1 firmware and then
->> later all firmware fixes and new features are migrated to 10.2/10.2.x
->> firmware branch. As all of 10.1 funtionalities are supported in 10.2
->> based firmware, removing 10.1 firmware support for qca9888 device.
-> 
-> Oh please do not do this.  My 10.1 firmware works very nicely,
-> and out-performs 10.2 in my testing.  Lots of people use my firmware
-> when they need IBSS support or other features not found in
-> official firmware, so it is not just me that will have
-> problems if you remove this support.
-> 
-Aah.. I thought CT firmware is 10.2 based. Since most of firmware bug 
-fixes and enhancements are integrated into 10.2 based firmware, we 
-thought of get rid of 10.1 firmware to reduce code size. Moreover 
-existing 10.1 official firmware has known issues. Is it possible to 
-upgrade CT firmware to 10.2 WMI/HTT interfaces?
+(Fixing Felix' address to nbd@nbd.name)
 
--Rajkumar
+"Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com> writes:
 
+> Found a regression in ath.git TOT that system hangs while probing qca99x0 device on x86_64 platform.
+> It seems the system hangs while DMA mapping of bigger memory chunks. Below are the list of memory
+> chucks requested by target for qca99x0 during service ready event. This issue is seen only on x86 platform.
+> No issues are observed on ARM platform (AP148). After reverting below commit able to bring up device on x86.
+>
+> Jun  2 17:24:37 rmanohar-arch kernel: idx 0 pool_size 689816 num_units 529 unit_len 1304
+> Jun  2 17:24:37 rmanohar-arch kernel: idx 1 pool_size 17152 num_units 67 unit_len 256
+> Jun  2 17:24:37 rmanohar-arch kernel: idx 2 pool_size 68608 num_units 67 unit_len 1024
+> Jun  2 17:24:37 rmanohar-arch kernel: idx 3 pool_size 274432 num_units 67 unit_len 4096
+> Jun  2 17:24:37 rmanohar-arch kernel: idx 4 pool_size 107520 num_units 35 unit_len 3072
+> Jun  2 17:24:37 rmanohar-arch kernel: idx 5 pool_size 6144 num_units 1 unit_len 6144
+> Jun  2 17:24:37 rmanohar-arch kernel: idx 6 pool_size 865444 num_units 529 unit_len 1636
+
+Did you enable kernel debugging features, like deplock, memory
+poisoning, DMA-API debug etc? They might give more hints why it's
+failing. We should get bottom of this.
+
+Felix, in case you missed because of the old email address the commit
+is:
+
+commit b057886524be060021e3cfad0ba8458c850330cd
+Author: Felix Fietkau <nbd@openwrt.org>
+Date:   Mon Nov 30 19:32:01 2015 +0100
+
+    ath10k: do not use coherent memory for allocated device memory chunks
+    
+    Coherent memory is more expensive to allocate (and constrained on some
+    architectures where it has to be pre-allocated). It is also completely
+    unnecessary, since the host has no reason to even access these allocated
+    memory spaces
+    
+    Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
