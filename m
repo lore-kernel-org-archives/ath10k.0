@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b8XON-0003tN-Vw
- for ath10k@lists.infradead.org; Thu, 02 Jun 2016 18:30:53 +0000
-Subject: Re: Bug 119151 - [regression] ath10k no longer authenitcates and
- freezes system
-References: <8760trzoiw.fsf@kamboji.qca.qualcomm.com>
- <871t4fzn1x.fsf@kamboji.qca.qualcomm.com> <57504F05.3040200@candelatech.com>
- <1464887026467.72937@qti.qualcomm.com> <57506BA1.2090303@candelatech.com>
- <6c6f208f9abc81cb262d763f6f6d684d@codeaurora.org>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <575074C7.50009@candelatech.com>
-Date: Thu, 2 Jun 2016 11:02:47 -0700
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b8r6z-0006SG-Mq
+ for ath10k@lists.infradead.org; Fri, 03 Jun 2016 15:34:14 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH 1/2] ath10k: handle testmode events for 10.2 based firmware
+Date: Fri, 3 Jun 2016 21:03:27 +0530
+Message-ID: <20160603153328.11947-1-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <6c6f208f9abc81cb262d763f6f6d684d@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,109 +16,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Cc: mike@fireburn.co.uk, "Valo, Kalle" <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-On 06/02/2016 10:41 AM, Rajkumar Manoharan wrote:
-> On 2016-06-02 22:53, Ben Greear wrote:
->> On 06/02/2016 10:03 AM, Manoharan, Rajkumar wrote:
->>> On Thursday, June 2, 2016 8:51 PM, Ben Greear <greearb@candelatech.com> wrote:
->>>> On 06/02/2016 07:24 AM, Valo, Kalle wrote:
->>>>> Kalle Valo <kvalo@qca.qualcomm.com> writes:
->>>>>
->>>>>> there's a regression in ath10k:
->>>>>>
->>>>>> https://bugzilla.kernel.org/show_bug.cgi?id=119151
->>>>>>
->>>>>> Reporter bisected it to this:
->>>>>>
->>>>>> 5c86d97bcc1d42ce7f75685a61be4dad34ee8183 is the first bad commit
->>>>>> commit 5c86d97bcc1d42ce7f75685a61be4dad34ee8183
->>>>>> Author: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
->>>>>> Date:   Tue Mar 22 17:22:19 2016 +0530
->>>>>>
->>>>>> ath10k: combine txrx and replenish task
->>>>>>
-> [...]
->
->>>> I found a lot of problems with this code as well, and the 5 patches
->>>> starting from the URL below fixed the issues for me.
->>>>
->>> Ben,
->>>
->>> Can you please explain the sort of issues you have observed with this change?
->>
->> I imported a bunch of upstream patches at once, so not sure exactly what commit
->> caused it.  And, this was about 2 months ago...  Upon review, I'm not
->> sure I even have
->> the patch this particular bug was bisected to, so maybe that is some
->> other issue.
->>
-> Please keep track of buggy commit and report them asap.
+Currently testmode events for 10.x firmware are processed from
+10.1 wmi event processing. In order to remove 10.1 firmware support,
+testmode events should be handled from 10.2 event processing.
 
-I posted to the list at the time.  When I was debugging this, there
-were so many conflicting issues that it was hard to find a single
-regression point.
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
->> But, the problems I saw were deadlocks and memory corruption.  A lot of it was
->> because I was debugging new firmware at the time and so peer creation
->> was failing
->> sometimes, and things like that.  The error handling in ath10k for this was
->> faulty and racy and such.  We have not seen any performance regressions,
->> but we mostly run on very powerful CPUs.
->>
->> Please take a look at those 5 patches.  A good review would be much appreciated,
->> and by reading them you will better be able to see the problems I was hitting
->> and trying to fix.
->>
-> Below two patches are critical and I already shared my feedback.
->
-> https://patchwork.kernel.org/patch/8727841/
-> https://patchwork.kernel.org/patch/9073471/
->
-> Others are LGTM.
-
-Not sure what LGTM means.
-
-This one fixes memory corruption:
-http://dmz2.candelatech.com/?p=linux-4.4.dev.y/.git;a=blobdiff;f=drivers/net/wireless/ath/ath10k/htt_tx.c;h=58e88d392fb56a65304db17d11a9eaf0b0397dc7;hp=07b960e9704f509b3dddf1e45730e76a4c39e51e;hb=fddb6661a0f5772853fbb9feb7232f325d5f74c5;hpb=ed1757f8345064181664e4a62e2b917e694a665e
-
-This one fixes use-after-free memory bugs:
-http://dmz2.candelatech.com/?p=linux-4.4.dev.y/.git;a=blobdiff;f=drivers/net/wireless/ath/ath10k/mac.c;h=5e5cc9c6c1d82524b9b77a7c6d2c1341c5268732;hp=8783119b9ba84e0ddb292d521e6513bf7d68a40b;hb=5ae13cea64004afc673ecc22cd70ac51179168c6;hpb=fddb6661a0f5772853fbb9feb7232f325d5f74c5
-
-As does this one:
-http://dmz2.candelatech.com/?p=linux-4.4.dev.y/.git;a=blobdiff;f=drivers/net/wireless/ath/ath10k/mac.c;h=020dd25752224d9786da37a6dfd10a69e646b138;hp=5e5cc9c6c1d82524b9b77a7c6d2c1341c5268732;hb=c4b9566416a5e7b8d4c446d1bad34aabcbeff9f5;hpb=9bd9c11c1a2e61261c268ac2b6d791d4f6b6fe26
-
->
->> In case you want to look at the full context of those patches, you can find
->> them here (around 24 patches down from the top...)
->>
-> Quite a big list :)
->
->> http://dmz2.candelatech.com/?p=linux-4.4.dev.y/.git;a=summary
->>
->> For now, I am sticking with 4.4 + what I pulled in, but will rebase
->> against upstream someday
->> soon-ish and then we can start testing it all over again :)
->>
-> Will go through the list. Better to post them to public if not.
-
-Many of these patches are related to features only in my firmware.  The ~20
-patch patch-bomb was a start at adding some of the hopefully less controversial
-support.  If I can ever get that upstream, then I will pick off another
-set of patches and try to get them ready for upstream.
-
-Thanks,
-Ben
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 6279ab4a760e..b7fb0d76c433 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -5095,6 +5095,7 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_cmd_hdr *cmd_hdr;
+ 	enum wmi_10_2_event_id id;
++	bool consumed;
+ 
+ 	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
+ 	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
+@@ -5104,6 +5105,17 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 
+ 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
+ 
++	consumed = ath10k_tm_event_wmi(ar, id, skb);
++	/* Ready event must be handled normally also in UTF mode so that we
++	 * know the UTF firmware has booted, others we are just bypass WMI
++	 * events to testmode.
++	 */
++	if (consumed && id != WMI_10_2_READY_EVENTID) {
++		ath10k_dbg(ar, ATH10K_DBG_WMI,
++			   "wmi testmode consumed 0x%x\n", id);
++		goto out;
++	}
++
+ 	switch (id) {
+ 	case WMI_10_2_MGMT_RX_EVENTID:
+ 		ath10k_wmi_event_mgmt_rx(ar, skb);
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+2.8.3
 
 
 _______________________________________________
