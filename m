@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b9BW6-00080h-02
- for ath10k@lists.infradead.org; Sat, 04 Jun 2016 13:21:30 +0000
+ id 1b9BbV-0001YS-9v
+ for ath10k@lists.infradead.org; Sat, 04 Jun 2016 13:27:08 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: add QCA9887 chipset support
-Date: Sat, 4 Jun 2016 13:21:01 +0000
-Message-ID: <87twh9t7ib.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 2/2] ath10k: Add board data download from target
+Date: Sat, 4 Jun 2016 13:26:39 +0000
+Message-ID: <87porxt78w.fsf@kamboji.qca.qualcomm.com>
 References: <1568876.Six5hABE57@bentobox>
- <1463755272-12912-1-git-send-email-sven.eckelmann@open-mesh.com>
-In-Reply-To: <1463755272-12912-1-git-send-email-sven.eckelmann@open-mesh.com>
- (Sven Eckelmann's message of "Fri, 20 May 2016 16:41:11 +0200")
+ <1463755272-12912-2-git-send-email-sven.eckelmann@open-mesh.com>
+In-Reply-To: <1463755272-12912-2-git-send-email-sven.eckelmann@open-mesh.com>
+ (Sven Eckelmann's message of "Fri, 20 May 2016 16:41:12 +0200")
 Content-Language: en-US
-Content-ID: <51FDEE47C22DA641ABD8C4E030B45143@qualcomm.com>
+Content-ID: <A6B88EA49CBE7F4C9BCA922BA5A9BE15@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,32 +31,133 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@l
 
 Sven Eckelmann <sven.eckelmann@open-mesh.com> writes:
 
-> Add the hardware name, revision, firmware names and update the pci_id
-> table.
->
-> QA9887 HW1.0 is supposed to be similar to QCA988X HW2.0 . Details about
-> he firmware interface are currently unknown.
+> The QCA9887 stores its calibration data (board.bin) inside the EEPROM of
+> the target. This has to be downloaded manually to allow the device to
+> initialize correctly.
 >
 > Signed-off-by: Sven Eckelmann <sven.eckelmann@open-mesh.com>
 
-I added the warning we talked about, diff below. Full patch in the
-pending branch:
+[...]
 
-https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=ed730faad11df99f2aba3b8d78ac5587c3403e69
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/module.h>
+>  #include <linux/firmware.h>
+>  #include <linux/of.h>
+> +#include <asm/byteorder.h>
+>  
+>  #include "core.h"
+>  #include "mac.h"
+> @@ -550,6 +551,34 @@ out:
+>  	return ret;
+>  }
+>  
+> +static int ath10k_download_cal_eeprom(struct ath10k *ar)
+> +{
+> +	size_t data_len;
+> +	void *data = NULL;
+> +	int ret;
+> +
+> +	ret = ath10k_hif_fetch_target_board_data(ar, &data, &data_len);
+> +	if (ret) {
+> +		ath10k_warn(ar, "failed to read calibration data from EEPROM: %d\n",
+> +			    ret);
+> +		goto out_free;
+> +	}
 
+Looking at this again I noticed that we issue this warning even if
+EEPROM is not supported, which I think is wrong. I fixed this in the
+pending branch, the diff is below.
+
+I also renamed target_board_data to cal_eeprom because, at least to my
+understanding, the eeprom actually contains the real calibration data,
+not the board data file.
+
+Please review so that I didn't break anything.
+
+https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=4f79bdf2db7bcfa9c7c093fd423af801b9797c63
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 10a1b620a68b..1e88251ca6d0 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -580,10 +580,11 @@ static int ath10k_download_cal_eeprom(struct ath10k *ar)
+ 	void *data = NULL;
+ 	int ret;
+ 
+-	ret = ath10k_hif_fetch_target_board_data(ar, &data, &data_len);
++	ret = ath10k_hif_fetch_cal_eeprom(ar, &data, &data_len);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to read calibration data from EEPROM: %d\n",
+-			    ret);
++		if (ret != -EOPNOTSUPP)
++			ath10k_warn(ar, "failed to read calibration data from EEPROM: %d\n",
++				    ret);
+ 		goto out_free;
+ 	}
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
+index c18b8c81bde4..b2566b06e1e1 100644
+--- a/drivers/net/wireless/ath/ath10k/hif.h
++++ b/drivers/net/wireless/ath/ath10k/hif.h
+@@ -88,9 +88,9 @@ struct ath10k_hif_ops {
+ 	int (*suspend)(struct ath10k *ar);
+ 	int (*resume)(struct ath10k *ar);
+ 
+-	/* fetch board data from target eeprom */
+-	int (*fetch_target_board_data)(struct ath10k *ar, void **data,
+-				       size_t *data_len);
++	/* fetch calibration data from target eeprom */
++	int (*fetch_cal_eeprom)(struct ath10k *ar, void **data,
++				size_t *data_len);
+ };
+ 
+ static inline int ath10k_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+@@ -206,14 +206,14 @@ static inline void ath10k_hif_write32(struct ath10k *ar,
+ 	ar->hif.ops->write32(ar, address, data);
+ }
+ 
+-static inline int ath10k_hif_fetch_target_board_data(struct ath10k *ar,
+-						     void **data,
+-						     size_t *data_len)
++static inline int ath10k_hif_fetch_cal_eeprom(struct ath10k *ar,
++					      void **data,
++					      size_t *data_len)
+ {
+-	if (!ar->hif.ops->fetch_target_board_data)
++	if (!ar->hif.ops->fetch_cal_eeprom)
+ 		return -EOPNOTSUPP;
+ 
+-	return ar->hif.ops->fetch_target_board_data(ar, data, data_len);
++	return ar->hif.ops->fetch_cal_eeprom(ar, data, data_len);
+ }
+ 
+ #endif /* _HIF_H_ */
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index d34c32a075ac..3e8e7ed6faa1 100644
+index fb53f8846efd..f06dd3941bac 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3005,6 +3005,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 		pci_hard_reset = ath10k_pci_qca988x_chip_reset;
- 		break;
- 	case QCA9887_1_0_DEVICE_ID:
-+		dev_warn(&pdev->dev, "QCA9887 support is still experimental, there are likely bugs. You have been warned.\n");
- 		hw_rev = ATH10K_HW_QCA9887;
- 		pci_ps = false;
- 		pci_soft_reset = ath10k_pci_warm_reset;
-
+@@ -2678,8 +2678,8 @@ static int ath10k_pci_read_eeprom(struct ath10k *ar, u16 addr, u8 *out)
+ 	return 0;
+ }
+ 
+-static int ath10k_pci_fetch_target_board_data(struct ath10k *ar, void **data,
+-					      size_t *data_len)
++static int ath10k_pci_hif_fetch_cal_eeprom(struct ath10k *ar, void **data,
++					   size_t *data_len)
+ {
+ 	u8 *caldata = NULL;
+ 	size_t calsize, i;
+@@ -2734,7 +2734,7 @@ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
+ 	.suspend		= ath10k_pci_hif_suspend,
+ 	.resume			= ath10k_pci_hif_resume,
+ #endif
+-	.fetch_target_board_data = ath10k_pci_fetch_target_board_data,
++	.fetch_cal_eeprom	= ath10k_pci_hif_fetch_cal_eeprom,
+ };
+ 
+ /*
 
 -- 
 Kalle Valo
