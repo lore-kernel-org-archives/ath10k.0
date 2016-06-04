@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1b8sSa-0008CP-1A
- for ath10k@lists.infradead.org; Fri, 03 Jun 2016 17:00:37 +0000
-Subject: Re: [PATCH 2/2] ath10k: remove 10.1 firmware support
-References: <20160603153328.11947-1-rmanohar@qti.qualcomm.com>
- <20160603153328.11947-2-rmanohar@qti.qualcomm.com>
- <5751A6D5.7080901@candelatech.com>
- <743182bcbd1efbdb576bcc51b0215300@codeaurora.org>
- <87shwuuuct.fsf@kamboji.qca.qualcomm.com> <5751AE44.8050607@candelatech.com>
- <87oa7iut9x.fsf@kamboji.qca.qualcomm.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <5751B480.2060106@candelatech.com>
-Date: Fri, 3 Jun 2016 09:46:56 -0700
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b9BW6-00080h-02
+ for ath10k@lists.infradead.org; Sat, 04 Jun 2016 13:21:30 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: add QCA9887 chipset support
+Date: Sat, 4 Jun 2016 13:21:01 +0000
+Message-ID: <87twh9t7ib.fsf@kamboji.qca.qualcomm.com>
+References: <1568876.Six5hABE57@bentobox>
+ <1463755272-12912-1-git-send-email-sven.eckelmann@open-mesh.com>
+In-Reply-To: <1463755272-12912-1-git-send-email-sven.eckelmann@open-mesh.com>
+ (Sven Eckelmann's message of "Fri, 20 May 2016 16:41:11 +0200")
+Content-Language: en-US
+Content-ID: <51FDEE47C22DA641ABD8C4E030B45143@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87oa7iut9x.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +22,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>, Rajkumar Manoharan <rmanohar@codeaurora.org>
+To: Sven Eckelmann <sven.eckelmann@open-mesh.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 06/03/2016 09:33 AM, Valo, Kalle wrote:
-> Ben Greear <greearb@candelatech.com> writes:
+Sven Eckelmann <sven.eckelmann@open-mesh.com> writes:
+
+> Add the hardware name, revision, firmware names and update the pci_id
+> table.
 >
->>>> Is it possible to upgrade CT firmware to 10.2 WMI/HTT interfaces?
->>>
->>> That's a good idea. That shouldn't be too hard, right? I don't think HTT needs
->>> any changes, but for WMI few commands and ids need to be changed.
->>
->> I was thinking the 10.2 mgt-over-htt API would be trouble-some to make work on
->> 10.1 firmware.
+> QA9887 HW1.0 is supposed to be similar to QCA988X HW2.0 . Details about
+> he firmware interface are currently unknown.
 >
-> Yeah, that would be harder. But I don't see Rajkumar removing support
-> for that (yet) or am I missing something?
+> Signed-off-by: Sven Eckelmann <sven.eckelmann@open-mesh.com>
 
-What I mean is that to just make my 10.1 firmware act like 10.2 would require
-my 10.1 to suddenly support 10.2's mgt-over-htt.  I think that will be difficult,
-and there is plenty of risk that some subtle WMI change would cause hard-to-detect
-bugs.
+I added the warning we talked about, diff below. Full patch in the
+pending branch:
 
-I have done an initial port of my 10.1 changes to 10.2, it is just that the
-result is poor, and so I quit messing with 10.2 and re-focussed on 10.1
-for the time being.
+https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=ed730faad11df99f2aba3b8d78ac5587c3403e69
 
-Another way to help with this problem in general is to quit adding so many
-new firmware API.  It is a lot easier to make a new firmware backwards compat
-than it is to make an old firmware forwards compat.  When you are designing your
-WMI changes in new firmware, do it with care, and then you can reuse the vast bulk
-of your driver.  I managed to add quite a few new features to my 10.1 in this
-manner, and the driver patches (mostly keyed off of feature flags) are not that
-invasive.
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index d34c32a075ac..3e8e7ed6faa1 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3005,6 +3005,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		pci_hard_reset = ath10k_pci_qca988x_chip_reset;
+ 		break;
+ 	case QCA9887_1_0_DEVICE_ID:
++		dev_warn(&pdev->dev, "QCA9887 support is still experimental, there are likely bugs. You have been warned.\n");
+ 		hw_rev = ATH10K_HW_QCA9887;
+ 		pci_ps = false;
+ 		pci_soft_reset = ath10k_pci_warm_reset;
 
-Thanks,
-Ben
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
