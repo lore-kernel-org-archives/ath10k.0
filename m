@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b9BbV-0001YS-9v
- for ath10k@lists.infradead.org; Sat, 04 Jun 2016 13:27:08 +0000
+ id 1b9Cy4-00069h-1J
+ for ath10k@lists.infradead.org; Sat, 04 Jun 2016 14:54:28 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/2] ath10k: Add board data download from target
-Date: Sat, 4 Jun 2016 13:26:39 +0000
-Message-ID: <87porxt78w.fsf@kamboji.qca.qualcomm.com>
-References: <1568876.Six5hABE57@bentobox>
- <1463755272-12912-2-git-send-email-sven.eckelmann@open-mesh.com>
-In-Reply-To: <1463755272-12912-2-git-send-email-sven.eckelmann@open-mesh.com>
- (Sven Eckelmann's message of "Fri, 20 May 2016 16:41:12 +0200")
+Subject: Re: [PATCH 1/2] ath10k: Define an enum to enable cycle counter
+ wraparound logic
+Date: Sat, 4 Jun 2016 14:53:54 +0000
+Message-ID: <8760tpt37i.fsf@kamboji.qca.qualcomm.com>
+References: <1464968596-19834-1-git-send-email-vthiagar@qti.qualcomm.com>
 Content-Language: en-US
-Content-ID: <A6B88EA49CBE7F4C9BCA922BA5A9BE15@qualcomm.com>
+Content-ID: <5FDEEDAC2C40BF42916713F9D1B42542@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,138 +24,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@open-mesh.com>
+To: "Thiagarajan, Vasanthakumar" <vthiagar@qti.qualcomm.com>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Sven Eckelmann <sven.eckelmann@open-mesh.com> writes:
+Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
 
-> The QCA9887 stores its calibration data (board.bin) inside the EEPROM of
-> the target. This has to be downloaded manually to allow the device to
-> initialize correctly.
+> QCA988X hw implements a different cycle counter wraparound
+> behaviour when compared to QCA4019. To properly handle different
+> wraparound logic for these chipsets replace already available
+> bool hw_params member, has_shifted_cc_wraparound, with an
+> enum which could be extended to handle different wraparound
+> behaviour. This patch keeps the existing logic functionally
+> same and a prepares cycle counter wraparound handling to
+> extend for other chips.
 >
-> Signed-off-by: Sven Eckelmann <sven.eckelmann@open-mesh.com>
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 
 [...]
 
 > --- a/drivers/net/wireless/ath/ath10k/core.c
 > +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -18,6 +18,7 @@
->  #include <linux/module.h>
->  #include <linux/firmware.h>
->  #include <linux/of.h>
-> +#include <asm/byteorder.h>
->  
->  #include "core.h"
->  #include "mac.h"
-> @@ -550,6 +551,34 @@ out:
->  	return ret;
->  }
->  
-> +static int ath10k_download_cal_eeprom(struct ath10k *ar)
-> +{
-> +	size_t data_len;
-> +	void *data = NULL;
-> +	int ret;
-> +
-> +	ret = ath10k_hif_fetch_target_board_data(ar, &data, &data_len);
-> +	if (ret) {
-> +		ath10k_warn(ar, "failed to read calibration data from EEPROM: %d\n",
-> +			    ret);
-> +		goto out_free;
-> +	}
+> @@ -55,7 +55,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+>  		.name = "qca988x hw2.0",
+>  		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
+>  		.uart_pin = 7,
+> -		.has_shifted_cc_wraparound = true,
+> +		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
+>  		.otp_exe_param = 0,
+>  		.channel_counters_freq_hz = 88000,
+>  		.max_probe_resp_desc_thres = 0,
+> @@ -224,7 +224,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+>  		.name = "qca4019 hw1.0",
+>  		.patch_load_addr = QCA4019_HW_1_0_PATCH_LOAD_ADDR,
+>  		.uart_pin = 7,
+> -		.has_shifted_cc_wraparound = true,
+> +		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
+>  		.otp_exe_param = 0x0010000,
+>  		.continuous_frag_desc = true,
+>  		.channel_counters_freq_hz = 125000,
 
-Looking at this again I noticed that we issue this warning even if
-EEPROM is not supported, which I think is wrong. I fixed this in the
-pending branch, the diff is below.
+As the pending branch has the QCA9887 patch I added
+ATH10K_HW_CC_WRAP_SHIFTED_ALL also for QCA9887. Please review my changes
+in the pending branch:
 
-I also renamed target_board_data to cal_eeprom because, at least to my
-understanding, the eeprom actually contains the real calibration data,
-not the board data file.
-
-Please review so that I didn't break anything.
-
-https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=4f79bdf2db7bcfa9c7c093fd423af801b9797c63
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 10a1b620a68b..1e88251ca6d0 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -580,10 +580,11 @@ static int ath10k_download_cal_eeprom(struct ath10k *ar)
- 	void *data = NULL;
- 	int ret;
- 
--	ret = ath10k_hif_fetch_target_board_data(ar, &data, &data_len);
-+	ret = ath10k_hif_fetch_cal_eeprom(ar, &data, &data_len);
- 	if (ret) {
--		ath10k_warn(ar, "failed to read calibration data from EEPROM: %d\n",
--			    ret);
-+		if (ret != -EOPNOTSUPP)
-+			ath10k_warn(ar, "failed to read calibration data from EEPROM: %d\n",
-+				    ret);
- 		goto out_free;
- 	}
- 
-diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
-index c18b8c81bde4..b2566b06e1e1 100644
---- a/drivers/net/wireless/ath/ath10k/hif.h
-+++ b/drivers/net/wireless/ath/ath10k/hif.h
-@@ -88,9 +88,9 @@ struct ath10k_hif_ops {
- 	int (*suspend)(struct ath10k *ar);
- 	int (*resume)(struct ath10k *ar);
- 
--	/* fetch board data from target eeprom */
--	int (*fetch_target_board_data)(struct ath10k *ar, void **data,
--				       size_t *data_len);
-+	/* fetch calibration data from target eeprom */
-+	int (*fetch_cal_eeprom)(struct ath10k *ar, void **data,
-+				size_t *data_len);
- };
- 
- static inline int ath10k_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
-@@ -206,14 +206,14 @@ static inline void ath10k_hif_write32(struct ath10k *ar,
- 	ar->hif.ops->write32(ar, address, data);
- }
- 
--static inline int ath10k_hif_fetch_target_board_data(struct ath10k *ar,
--						     void **data,
--						     size_t *data_len)
-+static inline int ath10k_hif_fetch_cal_eeprom(struct ath10k *ar,
-+					      void **data,
-+					      size_t *data_len)
- {
--	if (!ar->hif.ops->fetch_target_board_data)
-+	if (!ar->hif.ops->fetch_cal_eeprom)
- 		return -EOPNOTSUPP;
- 
--	return ar->hif.ops->fetch_target_board_data(ar, data, data_len);
-+	return ar->hif.ops->fetch_cal_eeprom(ar, data, data_len);
- }
- 
- #endif /* _HIF_H_ */
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index fb53f8846efd..f06dd3941bac 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2678,8 +2678,8 @@ static int ath10k_pci_read_eeprom(struct ath10k *ar, u16 addr, u8 *out)
- 	return 0;
- }
- 
--static int ath10k_pci_fetch_target_board_data(struct ath10k *ar, void **data,
--					      size_t *data_len)
-+static int ath10k_pci_hif_fetch_cal_eeprom(struct ath10k *ar, void **data,
-+					   size_t *data_len)
- {
- 	u8 *caldata = NULL;
- 	size_t calsize, i;
-@@ -2734,7 +2734,7 @@ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
- 	.suspend		= ath10k_pci_hif_suspend,
- 	.resume			= ath10k_pci_hif_resume,
- #endif
--	.fetch_target_board_data = ath10k_pci_fetch_target_board_data,
-+	.fetch_cal_eeprom	= ath10k_pci_hif_fetch_cal_eeprom,
- };
- 
- /*
+https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=2fa32dbd9f26e8b2f323ca30ad116ea486840aba
 
 -- 
 Kalle Valo
