@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-vk0-x22f.google.com ([2607:f8b0:400c:c05::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b9yH2-0006TK-Ak
- for ath10k@lists.infradead.org; Mon, 06 Jun 2016 17:25:13 +0000
+ id 1b9yH7-0006VA-FU
+ for ath10k@lists.infradead.org; Mon, 06 Jun 2016 17:25:18 +0000
+Received: by mail-vk0-x22f.google.com with SMTP id e4so72308813vkb.1
+ for <ath10k@lists.infradead.org>; Mon, 06 Jun 2016 10:24:56 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [v2,5/5] ath10k: Fix deadlock when peer cannot be created.
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1459545132-11295-5-git-send-email-greearb@candelatech.com>
-Message-ID: <f7160429961449fc8729576118118606@euamsexm01a.eu.qualcomm.com>
-Date: Mon, 6 Jun 2016 19:24:43 +0200
+In-Reply-To: <5755B0FF.9010900@candelatech.com>
+References: <CAOiRWuVxbGDoVtxahwRxyH9NaBB9LmaEBZ5bzgSPEf=Eu1g=ug@mail.gmail.com>
+ <5755B0FF.9010900@candelatech.com>
+Date: Mon, 6 Jun 2016 13:24:55 -0400
+Message-ID: <CAOiRWuUFvZU1b4Pn8nDVs5O5sNK-g0PPbckriP=RmBnB5f-5Gw@mail.gmail.com>
+Subject: Re: Any tips on where per-packet antenna selection could be pushed?
+From: Zach Sherin <zach@netblazr.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,100 +26,73 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: ath10k@lists.infradead.org
 
-Ben Greear <greearb@candelatech.com> wrote:
-> From: Ben Greear <greearb@candelatech.com>
-> 
-> We must not attempt to send WMI packets while holding the data-lock,
-> as it may deadlock:
-> 
-> BUG: sleeping function called from invalid context at drivers/net/wireless/ath/ath10k/wmi.c:1824
-> in_atomic(): 1, irqs_disabled(): 0, pid: 2878, name: wpa_supplicant
-> 
-> =============================================
-> [ INFO: possible recursive locking detected ]
-> 4.4.6+ #21 Tainted: G        W  O
-> ---------------------------------------------
-> wpa_supplicant/2878 is trying to acquire lock:
->  (&(&ar->data_lock)->rlock){+.-...}, at: [<ffffffffa0721511>] ath10k_wmi_tx_beacons_iter+0x26/0x11a [ath10k_core]
-> 
-> but task is already holding lock:
->  (&(&ar->data_lock)->rlock){+.-...}, at: [<ffffffffa070251b>] ath10k_peer_create+0x122/0x1ae [ath10k_core]
-> 
-> other info that might help us debug this:
->  Possible unsafe locking scenario:
-> 
->        CPU0
->        ----
->   lock(&(&ar->data_lock)->rlock);
->   lock(&(&ar->data_lock)->rlock);
-> 
->  *** DEADLOCK ***
-> 
->  May be due to missing lock nesting notation
-> 
-> 4 locks held by wpa_supplicant/2878:
->  #0:  (rtnl_mutex){+.+.+.}, at: [<ffffffff816493ca>] rtnl_lock+0x12/0x14
->  #1:  (&ar->conf_mutex){+.+.+.}, at: [<ffffffffa0706932>] ath10k_add_interface+0x3b/0xbda [ath10k_core]
->  #2:  (&(&ar->data_lock)->rlock){+.-...}, at: [<ffffffffa070251b>] ath10k_peer_create+0x122/0x1ae [ath10k_core]
->  #3:  (rcu_read_lock){......}, at: [<ffffffffa062f304>] rcu_read_lock+0x0/0x66 [mac80211]
-> 
-> stack backtrace:
-> CPU: 3 PID: 2878 Comm: wpa_supplicant Tainted: G        W  O    4.4.6+ #21
-> Hardware name: To be filled by O.E.M. To be filled by O.E.M./ChiefRiver, BIOS 4.6.5 06/07/2013
->  0000000000000000 ffff8801fcadf8f0 ffffffff8137086d ffffffff82681720
->  ffffffff82681720 ffff8801fcadf9b0 ffffffff8112e3be ffff8801fcadf920
->  0000000100000000 ffffffff82681720 ffffffffa0721500 ffff8801fcb8d348
-> Call Trace:
->  [<ffffffff8137086d>] dump_stack+0x81/0xb6
->  [<ffffffff8112e3be>] __lock_acquire+0xc5b/0xde7
->  [<ffffffffa0721500>] ? ath10k_wmi_tx_beacons_iter+0x15/0x11a [ath10k_core]
->  [<ffffffff8112d0d0>] ? mark_lock+0x24/0x201
->  [<ffffffff8112e908>] lock_acquire+0x132/0x1cb
->  [<ffffffff8112e908>] ? lock_acquire+0x132/0x1cb
->  [<ffffffffa0721511>] ? ath10k_wmi_tx_beacons_iter+0x26/0x11a [ath10k_core]
->  [<ffffffffa07214eb>] ? ath10k_wmi_cmd_send_nowait+0x1ce/0x1ce [ath10k_core]
->  [<ffffffff816f9e2b>] _raw_spin_lock_bh+0x31/0x40
->  [<ffffffffa0721511>] ? ath10k_wmi_tx_beacons_iter+0x26/0x11a [ath10k_core]
->  [<ffffffffa0721511>] ath10k_wmi_tx_beacons_iter+0x26/0x11a [ath10k_core]
->  [<ffffffffa07214eb>] ? ath10k_wmi_cmd_send_nowait+0x1ce/0x1ce [ath10k_core]
->  [<ffffffffa062eb18>] __iterate_interfaces+0x9d/0x13d [mac80211]
->  [<ffffffffa062f609>] ieee80211_iterate_active_interfaces_atomic+0x32/0x3e [mac80211]
->  [<ffffffffa07214eb>] ? ath10k_wmi_cmd_send_nowait+0x1ce/0x1ce [ath10k_core]
->  [<ffffffffa071fa9f>] ath10k_wmi_tx_beacons_nowait.isra.13+0x14/0x16 [ath10k_core]
->  [<ffffffffa0721676>] ath10k_wmi_cmd_send+0x71/0x242 [ath10k_core]
->  [<ffffffffa07023f6>] ath10k_wmi_peer_delete+0x3f/0x42 [ath10k_core]
->  [<ffffffffa0702557>] ath10k_peer_create+0x15e/0x1ae [ath10k_core]
->  [<ffffffffa0707004>] ath10k_add_interface+0x70d/0xbda [ath10k_core]
->  [<ffffffffa05fffcc>] drv_add_interface+0x123/0x1a5 [mac80211]
->  [<ffffffffa061554b>] ieee80211_do_open+0x351/0x667 [mac80211]
->  [<ffffffffa06158aa>] ieee80211_open+0x49/0x4c [mac80211]
->  [<ffffffff8163ecf9>] __dev_open+0x88/0xde
->  [<ffffffff8163ef6e>] __dev_change_flags+0xa4/0x13a
->  [<ffffffff8163f023>] dev_change_flags+0x1f/0x54
->  [<ffffffff816a5532>] devinet_ioctl+0x2b9/0x5c9
->  [<ffffffff816514dd>] ? copy_to_user+0x32/0x38
->  [<ffffffff816a6115>] inet_ioctl+0x81/0x9d
->  [<ffffffff816a6115>] ? inet_ioctl+0x81/0x9d
->  [<ffffffff81621cf8>] sock_do_ioctl+0x20/0x3d
->  [<ffffffff816223c4>] sock_ioctl+0x222/0x22e
->  [<ffffffff8121cf95>] do_vfs_ioctl+0x453/0x4d7
->  [<ffffffff81625603>] ? __sys_recvmsg+0x4c/0x5b
->  [<ffffffff81225af1>] ? __fget_light+0x48/0x6c
->  [<ffffffff8121d06b>] SyS_ioctl+0x52/0x74
->  [<ffffffff816fa736>] entry_SYSCALL_64_fastpath+0x16/0x7a
-> 
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
+I'm not sure I know exactly what you mean by per-peer. Do you mean
+that the antenna switches only when we're delivering to a new
+next-hop? I would absolutely be fine with that, by per-packet I do
+actually mean selection based on destination/next hop so aggregating
+deliveries for a single peer would be even better.
 
-Thanks, 1 patch applied to ath-current branch of ath.git:
+Also, I forgot to mention that this is intended for static mesh
+networks, so I'm not worried about moment-to-moment changes in peer
+location.
 
-fee48cf83745 ath10k: fix deadlock when peer cannot be created
+Thanks,
+Zach
 
--- 
-Sent by pwcli
-https://patchwork.kernel.org/patch/8727841/
-
+On Mon, Jun 6, 2016 at 1:21 PM, Ben Greear <greearb@candelatech.com> wrote:
+> On 06/06/2016 10:12 AM, Zach Sherin wrote:
+>>
+>> Hi all,
+>>
+>> I'm working on a device with antenna selection, similar to the ideas
+>> behind Ruckus or Google's Onhub router. I've been looking into a
+>> solution for per-packet antenna selection (based on destination/next
+>> hop). I was hoping this list might be able to suggest where I should
+>> investigate adding that switching code. My switches are currently USB
+>> RF switches, but I'm going to be using some serial protocol for the
+>> final version (we don't have much to switch, and it should be a single
+>> byte per packet).
+>>
+>> The last suggestion I received was to emulate Netsed [1] by routing
+>> all packets through a specific socket, running antenna selection, and
+>> then pushing them to their final destinations.
+>>
+>> I assumed that the best place to do antenna selection would be within
+>> ath10k itself (my devices all run on ath10k) so that I could introduce
+>> the minimum possible latency with antenna selection. Should I be
+>> looking at a different part of the networking stack?
+>>
+>> Does anyone have any suggestions, or perhaps an open-source project
+>> out there already trying to do antenna selection?
+>
+>
+> Would per-peer antenna selection work?  That is probably more easily
+> hacked into the firmware (I don't think stock firmware supports this
+> feature, but I could be wrong.)
+>
+> Thanks,
+> Ben
+>
+>>
+>> Thanks,
+>> Zach
+>>
+>>
+>> [1] http://silicone.homelinux.org/projects/netsed/
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>
+>
+>
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+>
 
 _______________________________________________
 ath10k mailing list
