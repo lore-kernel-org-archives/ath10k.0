@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+Received: from mail-vk0-x22b.google.com ([2607:f8b0:400c:c05::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b9rUY-0003I1-N7
- for ath10k@lists.infradead.org; Mon, 06 Jun 2016 10:10:43 +0000
-Received: by mail-wm0-x232.google.com with SMTP id k204so19923262wmk.0
- for <ath10k@lists.infradead.org>; Mon, 06 Jun 2016 03:10:20 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@open-mesh.com>
-Subject: Re: [PATCH 2/2] ath10k: Add board data download from target
-Date: Mon, 06 Jun 2016 12:10:17 +0200
-Message-ID: <3343488.td5VS5T2AQ@bentobox>
-In-Reply-To: <87porxt78w.fsf@kamboji.qca.qualcomm.com>
-References: <1568876.Six5hABE57@bentobox>
- <1463755272-12912-2-git-send-email-sven.eckelmann@open-mesh.com>
- <87porxt78w.fsf@kamboji.qca.qualcomm.com>
+ id 1b9y5N-0001pN-Ua
+ for ath10k@lists.infradead.org; Mon, 06 Jun 2016 17:13:30 +0000
+Received: by mail-vk0-x22b.google.com with SMTP id d127so208391079vkh.2
+ for <ath10k@lists.infradead.org>; Mon, 06 Jun 2016 10:12:48 -0700 (PDT)
 MIME-Version: 1.0
+Date: Mon, 6 Jun 2016 13:12:46 -0400
+Message-ID: <CAOiRWuVxbGDoVtxahwRxyH9NaBB9LmaEBZ5bzgSPEf=Eu1g=ug@mail.gmail.com>
+Subject: Any tips on where per-packet antenna selection could be pushed?
+From: Zach Sherin <zach@netblazr.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,71 +18,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8160014861777481089=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
---===============8160014861777481089==
-Content-Type: multipart/signed; boundary="nextPart2361524.rvb1iTLHtp"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Hi all,
 
---nextPart2361524.rvb1iTLHtp
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+I'm working on a device with antenna selection, similar to the ideas
+behind Ruckus or Google's Onhub router. I've been looking into a
+solution for per-packet antenna selection (based on destination/next
+hop). I was hoping this list might be able to suggest where I should
+investigate adding that switching code. My switches are currently USB
+RF switches, but I'm going to be using some serial protocol for the
+final version (we don't have much to switch, and it should be a single
+byte per packet).
 
-On Saturday 04 June 2016 13:26:39 you wrote:
-[...]
-> Looking at this again I noticed that we issue this warning even if
-> EEPROM is not supported, which I think is wrong. I fixed this in the
-> pending branch, the diff is below.
-> 
-> I also renamed target_board_data to cal_eeprom because, at least to my
-> understanding, the eeprom actually contains the real calibration data,
-> not the board data file.
-> 
-> Please review so that I didn't break anything.
+The last suggestion I received was to emulate Netsed [1] by routing
+all packets through a specific socket, running antenna selection, and
+then pushing them to their final destinations.
 
-Thanks for the changes. Looks good to me.
+I assumed that the best place to do antenna selection would be within
+ath10k itself (my devices all run on ath10k) so that I could introduce
+the minimum possible latency with antenna selection. Should I be
+looking at a different part of the networking stack?
 
-Kind regards,
-	Sven
---nextPart2361524.rvb1iTLHtp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Does anyone have any suggestions, or perhaps an open-source project
+out there already trying to do antenna selection?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAABCgAGBQJXVUwJAAoJEF2HCgfBJntGSygP/R1wwTnPf9TzX0Xf6X3X04Sv
-xfRCfNwwyMZUV9ahGW8EN1QtcahUJhr2NGfrwsJ6XcEK+AMcoxq3HsUlPfZ4xQrN
-+yy5R1SXXUINtKgJjh3yuGBmQ+IbXc2TjzAn/R6nB7yDCaMM2A9lmUQkgvHRZrwK
-0SnaxM1j6F793WJ3qZ/+Xcq7gbjK0mENwzOtL+47X15gvYU5XEuC+TbI9RiMuD8t
-5DSqdUjOUHXU3vM2h8WK7m4z6kSIjKD1tx1YL5MJLNnmPUkpbjA5DA103fVc433G
-G0s3CjeQzRSMvi3hQI3JkaxH48n28B1V2IFhdPw3hTKczwBzSOYX6i8bxdva2gT+
-wz0Kk+jH5jBQQQoUgbzaBsfaE8POd3LF9W1q0TJi8PgphtR+HyogsmkvxdU78WjQ
-5uuCifta2QEOEO/PvLXiUAUpk2fEL8ziDwG5XUs8LxrgpkE79tLfBpvQyoudg9GR
-yfektx72fbntw4S9iRyXRjEORNiW6/2DA4cps9eVPO1Ts+lA/Xpph7TqVbErRjbs
-wtuwKAvuEtPFDnniZ+M38sJ7cxxnogGcMwG84ZynUoQixX98dQn7BAc6udqpLUGO
-Y1h1mDZJili1Mn7u2PBqBUWMzVwiGkIBKCICxi2m1jVZ/MkkjDafm3H4DqbrFhaY
-gREg9y4rrPZB3YFlK8dB
-=0vYh
------END PGP SIGNATURE-----
-
---nextPart2361524.rvb1iTLHtp--
+Thanks,
+Zach
 
 
-
---===============8160014861777481089==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+[1] http://silicone.homelinux.org/projects/netsed/
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============8160014861777481089==--
