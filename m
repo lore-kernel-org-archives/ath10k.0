@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAFCr-0001d5-Iu
- for ath10k@lists.infradead.org; Tue, 07 Jun 2016 11:30:02 +0000
+ id 1bAFLc-0006Vi-MH
+ for ath10k@lists.infradead.org; Tue, 07 Jun 2016 11:39:05 +0000
 MIME-Version: 1.0
-Subject: Re: [1/2] ath10k: add QCA9887 chipset support
+Subject: Re: [v2,01/21] ath10k: Fix crash related to printing features.
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1463755272-12912-1-git-send-email-sven.eckelmann@open-mesh.com>
-Message-ID: <d77ac566725940fa90cd014198ffb030@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 7 Jun 2016 13:29:19 +0200
+In-Reply-To: <1462986153-16318-2-git-send-email-greearb@candelatech.com>
+Message-ID: <e2a4492749b54436ae1476c36adbcd20@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 7 Jun 2016 13:38:37 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +21,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@open-mesh.com>
+To: Ben Greear <greearb@candelatech.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Sven Eckelmann <sven.eckelmann@open-mesh.com> wrote:
-> Add the hardware name, revision, firmware names and update the pci_id
-> table.
+Ben Greear <greearb@candelatech.com> wrote:
+> From: Ben Greear <greearb@candelatech.com>
 > 
-> QA9887 HW1.0 is supposed to be similar to QCA988X HW2.0 . Details about
-> he firmware interface are currently unknown.
+> This looks like a regression from
+> c4cdf753 (move fw_features to struct ath10k_fw_file)
 > 
-> Signed-off-by: Sven Eckelmann <sven.eckelmann@open-mesh.com>
+> Signed-off-by:  Ben Greear <greearb@candelatech.com>
 
-Thanks, 2 patches applied to ath-next branch of ath.git:
+Thanks, 1 patch applied to ath-current branch of ath.git:
 
-6fd3dd716091 ath10k: add QCA9887 chipset support
-6847f9673391 ath10k: add board data download from target
+8d0a0710ea0d ath10k: fix crash related to printing features
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9129717/
+https://patchwork.kernel.org/patch/9073471/
 
 
 _______________________________________________
