@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bAHLk-0000x5-Ce
- for ath10k@lists.infradead.org; Tue, 07 Jun 2016 13:47:21 +0000
-Message-ID: <5756C9D6.6030306@candelatech.com>
-Date: Tue, 07 Jun 2016 06:19:18 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bAIKt-0000Ce-Vv
+ for ath10k@lists.infradead.org; Tue, 07 Jun 2016 14:50:32 +0000
+Date: Tue, 7 Jun 2016 20:20:02 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH 0/2] ath10k: Add support for QCA9887
+Message-ID: <20160607145002.GB11250@atheros-ThinkPad-T61>
+References: <1568876.Six5hABE57@bentobox> <1505571.v1gM3hzMhG@bentobox>
+ <87wpmf4qm5.fsf@kamboji.qca.qualcomm.com>
+ <2262792.6VVL0Htyzj@bentobox>
 MIME-Version: 1.0
-Subject: Re: Question on "ath10k: document ofdm/5ghz rate offset with a macro"
-References: <5755EA60.7070504@candelatech.com>
- <CA+BoTQ=sGYcoHcBcPKqzqqFekbV9g23ZZ556N9+9kmtZKV=kEg@mail.gmail.com>
- <5756C4BC.3040402@candelatech.com>
- <CA+BoTQmhwPyGP4OXw4=3LE+UvTm0DCxUFKBbXhKXc_N1NiS1xw@mail.gmail.com>
-In-Reply-To: <CA+BoTQmhwPyGP4OXw4=3LE+UvTm0DCxUFKBbXhKXc_N1NiS1xw@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <2262792.6VVL0Htyzj@bentobox>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +21,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Sven Eckelmann <sven.eckelmann@open-mesh.com>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+Hi Sven,
 
-
-On 06/07/2016 06:16 AM, Michal Kazior wrote:
-> On 7 June 2016 at 14:57, Ben Greear <greearb@candelatech.com> wrote:
->> On 06/06/2016 11:23 PM, Michal Kazior wrote:
->>> On 6 June 2016 at 23:25, Ben Greear <greearb@candelatech.com> wrote:
->>>>
->>>> While porting some patches forward, I notice the change below
->>>> that renamed the method to "ath10k_mac_sta_has_ofdm_only".  But,
->>>> that is not really what that is checking, since it just throws
->>>> away the CCK rates (and they might have been there).
->>>>
->>>> Maybe it should just be "ath10k_mac_sta_has_ofdm()" ?
->>>
->>> Yes, this seems like an unfortunate name pick on my side. The MODE_11G
->>> phymode is for mixed b/g.
->>
->> I think the actual code behaviour is right.  I have some patches to
->> support G-only mode and such, and will change the name of your method
->> in those patches to be more clear.
->>
->> Lots of other pending patches of mine before I will get to trying to push
->> that one upstream though.
+On Mon, May 30, 2016 at 01:12:27PM +0200, Sven Eckelmann wrote:
+> On Friday 27 May 2016 12:44:52 Valo, Kalle wrote:
+> [...]
+> > > But maybe I should add that the results with the original AP147 firmware also
+> > > wasn't better.
+> > 
+> > That doesn't sound good. Maybe a calibration issue?
+> 
+> Maybe but I don't have a different card to compare it to.
+> 
+> [...]
+> > I pushed a new firmware image firmware-5.bin_10.2.3.31.7-2 with those
+> > enabled:
+> > 
+> > https://github.com/kvalo/ath10k-firmware/tree/master/QCA9887
+> 
+> Thanks for the updated firmware file. I have done some basic tests and seems
+> to work fine. Bindiff also looks fine
 >
-> Hmm.. I do recall 11G_ONLY phymode didn't play out well with 11B
-> coexistance in AP mode. I can't remember the details though..
+[shafi] it would be helpful if you can share your basic test results (if its
+possible to share). Have you tried to bring up the card in 5ghz (or) 2ghz.
+Or both of them were tried ?
 
-If you remember a test case for this, let me know.
-
-Thanks,
-Ben
+regards
+shafi
 
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
