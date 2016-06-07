@@ -1,13 +1,11 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAt5B-0001hQ-HC
- for ath10k@lists.infradead.org; Thu, 09 Jun 2016 06:04:46 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix deadlock while processing rx_in_ord_ind
-Date: Thu, 9 Jun 2016 11:33:55 +0530
-Message-ID: <20160609060355.16219-1-rmanohar@qti.qualcomm.com>
-MIME-Version: 1.0
+Date: Tue, 7 Jun 2016 15:29:30 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] tree-wide: replace config_enabled() with IS_ENABLED()
+Message-Id: <20160607152930.71273719bdaea322814213d0@linux-foundation.org>
+In-Reply-To: <1465215656-20569-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1465215656-20569-1-git-send-email-yamada.masahiro@socionext.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,69 +18,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mips@linux-mips.org, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, David Daney <david.daney@cavium.com>, Peter Zijlstra <peterz@infradead.org>, linux-pci@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, Alexei Starovoitov <ast@kernel.org>, dri-devel@lists.freedesktop.org, "Dmitry V. Levin" <ldv@altlinux.org>, Paul Gortmaker <paul.gortmaker@windriver.com>, Kalle Valo <kvalo@qca.qualcomm.com>, QCA ath9k Development <ath9k-devel@qca.qualcomm.com>, Viresh Kumar <viresh.kumar@linaro.org>, "H. Peter Anvin" <hpa@zytor.com>, Huacai Chen <chenhc@lemote.com>, Andrea Gelmini <andrea.gelmini@gelma.net>, Hidehiro Kawai <hidehiro.kawai.ez@hitachi.com>, Sumit Semwal <sumit.semwal@linaro.org>, ath9k-devel@venema.h4ckr.net, Jason Cooper <jason@lakedaemon.net>, "Maciej W. Rozycki" <macro@imgtec.com>, Huaitong Han <huaitong.han@intel.com>, Denys Vlasenko <dvlasenk@redhat.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Tony Wu <tung7970@gmail.com>, x86@kernel.org, ath10k@lists.infradead.org, Alex Smith <alex.smith@imgtec.com>, Ingo Molnar <mingo@redhat.com>, linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>, Nikolay Martynov <mar.kolya@gmail.com>, Borislav Petkov <bp@suse.de>, Stas Sergeev <stsp@list.ru>, linux-media@vger.kernel.org, yu-cheng yu <yu-cheng.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Mikko Rapeli <mikko.rapeli@iki.fi>, Kees Cook <keescook@chromium.org>, Roland McGrath <roland@hack.frob.com>, Marc Zyngier <marc.zyngier@arm.com>, Brian Gerst <brgerst@gmail.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, linaro-mm-sig@lists.linaro.org, Al Viro <viro@zeniv.linux.org.uk>, Oleg Nesterov <oleg@redhat.com>, Bjorn Helgaas <bhelgaas@google.com>, Thomas Gleixner <tglx@linutronix.de>, Adam Buchbinder <adam.buchbinder@gmail.com>, Juergen Gross <jgross@suse.com>, Brian Norris <computersforpeace@gmail.com>, Will Drewry <wad@chromium.org>, Paul Burton <paul.burton@imgtec.com>, "Luis R. Rodriguez" <mcgrof@do-not-panic.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Qais Yousef <qais.yousef@imgtec.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Andy Lutomirski <luto@amacapital.net>, Rabin Vincent <rabin@rab.in>, Markos Chandras <markos.chandras@imgtec.com>, netdev@vger.kernel.org, linux-mtd@lists.infradead.org, Johannes Berg <johannes@sipsolutions.net>, Matt Redfearn <matt.redfearn@imgtec.com>, David Woodhouse <dwmw2@infradead.org>, Jiang Liu <jiang.liu@linux.intel.com>, Joshua Kinard <kumba@gentoo.org>, James Cowgill <James.Cowgill@imgtec.com>
 
-commit 5c86d97bcc1d ("ath10k: combine txrx and replenish task")
-introduced deadlock while processing rx in order indication message
-for qca6174 based devices. While merging replenish and txrx tasklets,
-replenish task should be called out of htt rx ring locking since it
-is also try to acquire the same lock.
+On Mon,  6 Jun 2016 21:20:56 +0900 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-Unfortunately this issue is not exposed by other solutions (qca988x,
-qca99x0 & qca4019), as rx_in_ord_ind message is specific to qca6174
-based devices. This patch fixes
+> The use of config_enabled() against config options is ambiguous.
+> In practical terms, config_enabled() is equivalent to IS_BUILTIN(),
+> but the author might have used it for the meaning of IS_ENABLED().
+> Using IS_ENABLED(), IS_BUILTIN(), IS_MODULE() etc. makes the
+> intention clearer.
+> 
+> This commit replaces config_enabled() with IS_ENABLED() where
+> possible.  This commit is only touching bool config options.
+> 
+> I noticed two cases where config_enabled() is used against a tristate
+> option:
+> 
+>  - config_enabled(CONFIG_HWMON)
+>   [ drivers/net/wireless/ath/ath10k/thermal.c ]
+> 
+>  - config_enabled(CONFIG_BACKLIGHT_CLASS_DEVICE)
+>   [ drivers/gpu/drm/gma500/opregion.c ]
+> 
+> I did not touch them because they should be converted to IS_BUILTIN()
+> in order to keep the logic, but I was not sure it was the authors'
+> intention.
 
-=============================================
-[ INFO: possible recursive locking detected ]
-4.7.0-rc2-wt-ath+ #1353 Tainted: G            E
----------------------------------------------
-swapper/3/0 is trying to acquire lock:
- (&(&htt->rx_ring.lock)->rlock){+.-...}, at: [<f8d7ef19>]
-ath10k_htt_rx_msdu_buff_replenish+0x29/0x90 [ath10k_core]
+Well, we do want to be able to remove config_enabled() altogether if
+we're going to do this.  So please later send along a patch which makes
+a best-effort fix of the unclear usages and let's zap the thing.
 
-but task is already holding lock:
- (&(&htt->rx_ring.lock)->rlock){+.-...}, at: [<f8d82cab>]
-ath10k_htt_txrx_compl_task+0x21b/0x250 [ath10k_core]
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&(&htt->rx_ring.lock)->rlock);
-  lock(&(&htt->rx_ring.lock)->rlock);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-1 lock held by swapper/3/0:
- #0:  (&(&htt->rx_ring.lock)->rlock){+.-...}, at: [<f8d82cab>]
-ath10k_htt_txrx_compl_task+0x21b/0x250 [ath10k_core]
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=119151
-Fixes: 5c86d97bcc1d ("ath10k: combine txrx and replenish task")
-Reported-by: Mike Lothian <mike@fireburn.co.uk>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 3b35c7ab5680..80e645302b54 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1905,7 +1905,6 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
- 			return;
- 		}
- 	}
--	ath10k_htt_rx_msdu_buff_replenish(htt);
- }
- 
- static void ath10k_htt_rx_tx_fetch_resp_id_confirm(struct ath10k *ar,
--- 
-2.8.3
+If those fixes weren't quite correct then there will be a build error
+(drivers/net/wireless/ath/ath10k/thermal.c) or no change in behaviour
+(drivers/gpu/drm/gma500/opregion.c).
 
 
 _______________________________________________
