@@ -1,27 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from omr2.cc.ipv6.vt.edu ([2607:b400:92:8400:0:33:fb76:806e]
- helo=omr2.cc.vt.edu)
- by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bAZmy-0000aY-1L
- for ath10k@lists.infradead.org; Wed, 08 Jun 2016 09:28:41 +0000
-Received: from mr4.cc.vt.edu (mr4.cc.ipv6.vt.edu
- [IPv6:2001:468:c80:2105:0:232:8670:19fe])
- by omr2.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u589SAXg023992
- for <ath10k@lists.infradead.org>; Wed, 8 Jun 2016 05:28:10 -0400
-Received: from mail-lb0-f199.google.com (mail-lb0-f199.google.com
- [209.85.217.199])
- by mr4.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u589S5DW023269
- for <ath10k@lists.infradead.org>; Wed, 8 Jun 2016 05:28:10 -0400
-Received: by mail-lb0-f199.google.com with SMTP id na2so1224734lbb.1
- for <ath10k@lists.infradead.org>; Wed, 08 Jun 2016 02:28:10 -0700 (PDT)
+Received: from mail-vk0-x236.google.com ([2607:f8b0:400c:c05::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bAbpV-0004pA-Fl
+ for ath10k@lists.infradead.org; Wed, 08 Jun 2016 11:39:26 +0000
+Received: by mail-vk0-x236.google.com with SMTP id d64so7018978vkb.0
+ for <ath10k@lists.infradead.org>; Wed, 08 Jun 2016 04:39:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnF-WgxhBDm=t0QvHTSqsf1Y5mUTwKTu+Wso-hkM+3=xA@mail.gmail.com>
-References: <CAFc9h7synwZ1mt0PyRNN1Q6DOwtbL2im=PnxXhtrvZAFa2Yjcg@mail.gmail.com>
- <CA+BoTQnF-WgxhBDm=t0QvHTSqsf1Y5mUTwKTu+Wso-hkM+3=xA@mail.gmail.com>
-From: Gaurang Ramesh Naik <gaurang@vt.edu>
-Date: Wed, 8 Jun 2016 05:28:03 -0400
-Message-ID: <CAFc9h7v=WH7+irh8=vTN4qQBXRfy4uj=PYs4iboE4piwufbPZQ@mail.gmail.com>
-Subject: Re: Number of Transmission retries
+In-Reply-To: <87inxrzqa5.fsf@kamboji.qca.qualcomm.com>
+References: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
+ <87inxrzqa5.fsf@kamboji.qca.qualcomm.com>
+From: Roman Yeryomin <leroi.lists@gmail.com>
+Date: Wed, 8 Jun 2016 14:39:03 +0300
+Message-ID: <CACiydbLvke0UxJbg2sn0q-=FwXpmX+FKUV7wwEMT=qUYekJrJA@mail.gmail.com>
+Subject: Re: [RFC/RFT] ath10k: disable wake_tx_queue for older devices
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,32 +21,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGkgTWljaGFsLAoKVGhhdCBkb2VzIGhlbHAuIFRoYW5rIHlvdSBzbyBtdWNoLgoKR04uCgpPbiBX
-ZWQsIEp1biA4LCAyMDE2IGF0IDU6MTQgQU0sIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JA
-dGlldG8uY29tPiB3cm90ZToKPiBPbiA4IEp1bmUgMjAxNiBhdCAxMTowMSwgR2F1cmFuZyBSYW1l
-c2ggTmFpayA8Z2F1cmFuZ0B2dC5lZHU+IHdyb3RlOgo+PiBIaSwKPj4KPj4gSSBrbm93IHRoZXJl
-IGlzIGFuIGl3IGNvbW1hbmQgdG8gc2V0IHRoZSBudW1iZXIgb2YgdHJhbnNtaXNzaW9uCj4+IHJl
-dHJpZXMgdXNpbmcgIml3IHBoeSBwaHl4IHNldCByZXRyeSBzaG9ydCAneScgbG9uZyAneiciLiBX
-aGVuIEkgdXNlZAo+PiB0aGlzIGNvbW1hbmQgdGhvdWdoLCBJIGRpZCBub3Qgb2JzZXJ2ZSBhbnkg
-Y2hhbmdlIGluIHRoZSBwZXJmb3JtYW5jZQo+PiBvZiB0aGUgbGluayB0aHJvdWdocHV0LiBEb2Vz
-IGF0aDEwayBob25vciB0aGlzIGNvbW1hbmQ/IEFsc28sIGlmIGl0Cj4+IGRvZXMsIGlzIGl0IGlt
-cGxlbWVudGVkIGluIHRoZSBmaXJtd2FyZSwgb3Igb3Blbi1zb3VyY2U/Cj4KPiBhdGgxMGsgZG9l
-cyBub3QgaG9ub3VyIGl0Lgo+Cj4gQXMgZmFyIGFzIEkgdW5kZXJzdGFuZCB5b3Ugd2FudCB0byBh
-bHRlciBudW1iZXIgb2YgcmV0cmllcyB3aXRoIHJlZ2FyZAo+IHRvIFJUUy9DVFMgYmVpbmcgdXNl
-ZCBvciBub3QuIElmIHNvIEknbSBub3QgYXdhcmUgb2YgYW55IG1lY2hhbmlzbSB0bwo+IHRlbGwg
-dGhhdCB0byBmaXJtd2FyZSAodGhpcyBpcyByYXRlLWNvbnRyb2wgcmVsYXRlZCBhbmQgcmF0ZS1j
-b250cm9sCj4gaXMgb2ZmbG9hZGVkIGJ5IGZpcm13YXJlIGVudGlyZWx5KS4KPgo+IFRvIG15IGtu
-b3dsZWRnZSB3aGF0IHlvdSBjYW4gZG8gaXMgY2hhbmdlIG51bWJlciBvZiBzb2Z0d2FyZSByZXRy
-aWVzCj4gZm9yIGFnZ3JlZ2F0ZWQgYW5kIG5vbi1hZ2dyZWdhdGVkIHRyYWZmaWMgdmlhIE5PTl9B
-R0dfU1dfUkVUUllfVEggYW5kCj4gQUdHX1NXX1JFVFJZX1RIIFdNSSdzIHBkZXYgcGFyYW1ldGVy
-cy4gUGVyaGFwcyB5b3UnbGwgZmluZCB0aGlzCj4gdXNlZnVsLgo+Cj4KPiBNaWNoYcWCCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
-ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On 2 June 2016 at 16:14, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+> Michal Kazior <michal.kazior@tieto.com> writes:
+>
+>> Some setups suffer performance regressions with
+>> current wake_tx_queue implementation.
+>>
+>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>> ---
+>> Hi Roman,
+>>
+>> Can you give this patch a try and see if it helps
+>> with your performance problems, please?
+>
+> Did anyone seeing the performance regression manage to test this? It
+> would be good to get feedback, good or bad, before I push this to 4.7.
+>
+> Full patch here:
+>
+> https://patchwork.kernel.org/patch/9111981/
+
+Sorry, didn't try yet, bad timing for me :(
+Will try to test by the end of the week
+
+Regards,
+Roman
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
