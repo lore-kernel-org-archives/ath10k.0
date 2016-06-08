@@ -1,19 +1,30 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAcpe-0005Yx-3s
- for ath10k@lists.infradead.org; Wed, 08 Jun 2016 12:43:38 +0000
-Date: Wed, 8 Jun 2016 18:13:08 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH 0/2] ath10k: Add support for QCA9887
-Message-ID: <20160608124308.GB29340@atheros-ThinkPad-T61>
-References: <1568876.Six5hABE57@bentobox> <2262792.6VVL0Htyzj@bentobox>
- <20160607145002.GB11250@atheros-ThinkPad-T61>
- <2104766.hdzL6bzVNd@bentobox>
- <20160607171110.GA13293@atheros-ThinkPad-T61>
+ id 1bAdvu-0005hO-IE
+ for ath10k@lists.infradead.org; Wed, 08 Jun 2016 13:54:11 +0000
+Received: by mail-wm0-x230.google.com with SMTP id v199so65169659wmv.0
+ for <ath10k@lists.infradead.org>; Wed, 08 Jun 2016 06:53:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20160607171110.GA13293@atheros-ThinkPad-T61>
+In-Reply-To: <CAJ-VmomAkMBV7fWzWpmxUp5px+xiFCjBz3iWt6K7UXemuRFRiA@mail.gmail.com>
+References: <CAOiRWuVxbGDoVtxahwRxyH9NaBB9LmaEBZ5bzgSPEf=Eu1g=ug@mail.gmail.com>
+ <5755B0FF.9010900@candelatech.com>
+ <CAOiRWuUFvZU1b4Pn8nDVs5O5sNK-g0PPbckriP=RmBnB5f-5Gw@mail.gmail.com>
+ <5755B2D9.7080207@candelatech.com>
+ <CAOiRWuUjugeDtRTQUWBzoCq58L8XfW7aYQTHa=Mnf4smx6AR2g@mail.gmail.com>
+ <5755BABA.1030006@candelatech.com>
+ <CAJ-VmomKzRAkJNQr2Sg=j57uPfptPiRs1Q026dPeuQv0jMx-Og@mail.gmail.com>
+ <CAOiRWuUL9RC61pdieiEh3ZtWFGLomHzPxqbbVE3Oe_3043Zv2g@mail.gmail.com>
+ <5755C7AF.6020203@candelatech.com>
+ <CAOiRWuX4mwQEmY0pNvAvufHrfte_94JzyMw41i1SDMNHj=KtCQ@mail.gmail.com>
+ <CALhHN=pkwmRJKq1_RQ+3dryu8XcgbhwR-9T288ugoSJAHKM5AA@mail.gmail.com>
+ <CAJ-VmontFzXCqOhyEENTeWFnyeb0r=1d9jdX8SVRc9WeuX5vag@mail.gmail.com>
+ <CA+BoTQn_jR26JJrnGS_1Ays1yjAUKTFrLsWnofuHGZQv9NTHMg@mail.gmail.com>
+ <CAJ-VmomAkMBV7fWzWpmxUp5px+xiFCjBz3iWt6K7UXemuRFRiA@mail.gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Wed, 8 Jun 2016 15:53:44 +0200
+Message-ID: <CA+BoTQ=DJ3R0Myz3BA3ajiqK51-hW80g_2wZMFVASDJycGTbuA@mail.gmail.com>
+Subject: Re: Any tips on where per-packet antenna selection could be pushed?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,63 +33,17 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@open-mesh.com>
-Cc: marek.lindner@open-mesh.com, "Valo, Kalle" <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Adrian Chadd <adrian.chadd@gmail.com>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Zach Sherin <zach@netblazr.com>, Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tue, Jun 07, 2016 at 10:41:48PM +0530, Mohammed Shafi Shajakhan wrote:
-> Hi Sven,
-> 
-> On Tue, Jun 07, 2016 at 06:54:54PM +0200, Sven Eckelmann wrote:
-> > On Tuesday 07 June 2016 20:20:02 Mohammed Shafi Shajakhan wrote:
-> > [...]
-> > > [shafi] it would be helpful if you can share your basic test results (if its
-> > > possible to share). Have you tried to bring up the card in 5ghz (or) 2ghz.
-> > > Or both of them were tried ?
-> > 
-> > * 5GHz-only (I have no 2.4GHz capable card)
-> > * card is able to scan
-> > * card is able to create an AP
-> > * data can be transferred via AP and client (bidirectional connection)
-> > * performance was more like 15 Mibit/s for 1x1 HT20 11n devices instead of
-> >   something like 35-40 Mibit/s
-> 
-> [shafi] sure thanks a lot, this is a good start, i will keep you posted
-> with my findings and results.
-
-[shafi] request if you can disable TX-STBC for both HT and VHT, it helped
-me though. Will keep you posted with more updates.
-
-> 
-> > 
-> > I cannot give you any more detailed, current performance test results because
-> > they were done months ago and are most likely not relevant to describe the
-> > current state. Please ask Kalle if you want to know why the old tests were
-> > done many, many months ago.
-> 
-> [shafi] sure, hopefully we can get this sorted out. Thank you for the patches
-> and support.
-> 
-> > 
-> > Please ask Marek when you want to have tests done with the current
-> > mac8011+ath10k.
-> 
-> [shafi] thanks
-> 
-> > 
-> > Kind regards,
-> > 	Sven
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNyBKdW5lIDIwMTYgYXQgMTg6MzAsIEFkcmlhbiBDaGFkZCA8YWRyaWFuLmNoYWRkQGdtYWls
+LmNvbT4gd3JvdGU6Cj4gRG8gd2Uga25vdyB3aGljaCBoYXJkd2FyZSBwbGF0Zm9ybXMgdXNlIGl0
+PyAoSWUsIHdoaWNoIGFscmVhZHkgaGF2ZQo+IHNvbWUgYW50ZW5uYXMgd2l0aCB0aGUgcmlnaHQg
+c3dpdGNoaW5nIGhhcmR3YXJlPykKClVuZm9ydHVuYXRlbHkgSSBkbyBub3QuCgoKTWljaGHFggoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
+aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
