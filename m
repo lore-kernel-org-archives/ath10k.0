@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from omr1.cc.ipv6.vt.edu ([2607:b400:92:8300:0:c6:2117:b0e]
+ helo=omr1.cc.vt.edu)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAKY8-0003fW-R1
- for ath10k@lists.infradead.org; Tue, 07 Jun 2016 17:12:21 +0000
-Date: Tue, 7 Jun 2016 22:41:48 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH 0/2] ath10k: Add support for QCA9887
-Message-ID: <20160607171110.GA13293@atheros-ThinkPad-T61>
-References: <1568876.Six5hABE57@bentobox> <2262792.6VVL0Htyzj@bentobox>
- <20160607145002.GB11250@atheros-ThinkPad-T61>
- <2104766.hdzL6bzVNd@bentobox>
+ id 1bAZN8-0002ZG-Ku
+ for ath10k@lists.infradead.org; Wed, 08 Jun 2016 09:01:59 +0000
+Received: from mr3.cc.vt.edu (mr3.cc.ipv6.vt.edu
+ [IPv6:2001:468:c80:2105:0:2b9:e1ff:8be3])
+ by omr1.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u5891bnp019642
+ for <ath10k@lists.infradead.org>; Wed, 8 Jun 2016 05:01:37 -0400
+Received: from mail-wm0-f69.google.com (mail-wm0-f69.google.com [74.125.82.69])
+ by mr3.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u5891Vx8024039
+ for <ath10k@lists.infradead.org>; Wed, 8 Jun 2016 05:01:37 -0400
+Received: by mail-wm0-f69.google.com with SMTP id k184so2668148wme.3
+ for <ath10k@lists.infradead.org>; Wed, 08 Jun 2016 02:01:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <2104766.hdzL6bzVNd@bentobox>
+From: Gaurang Ramesh Naik <gaurang@vt.edu>
+Date: Wed, 8 Jun 2016 05:01:30 -0400
+Message-ID: <CAFc9h7synwZ1mt0PyRNN1Q6DOwtbL2im=PnxXhtrvZAFa2Yjcg@mail.gmail.com>
+Subject: Number of Transmission retries
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +30,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@open-mesh.com>
-Cc: marek.lindner@open-mesh.com, "Valo, Kalle" <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-Hi Sven,
+Hi,
 
-On Tue, Jun 07, 2016 at 06:54:54PM +0200, Sven Eckelmann wrote:
-> On Tuesday 07 June 2016 20:20:02 Mohammed Shafi Shajakhan wrote:
-> [...]
-> > [shafi] it would be helpful if you can share your basic test results (if its
-> > possible to share). Have you tried to bring up the card in 5ghz (or) 2ghz.
-> > Or both of them were tried ?
-> 
-> * 5GHz-only (I have no 2.4GHz capable card)
-> * card is able to scan
-> * card is able to create an AP
-> * data can be transferred via AP and client (bidirectional connection)
-> * performance was more like 15 Mibit/s for 1x1 HT20 11n devices instead of
->   something like 35-40 Mibit/s
+I know there is an iw command to set the number of transmission
+retries using "iw phy phyx set retry short 'y' long 'z'". When I used
+this command though, I did not observe any change in the performance
+of the link throughput. Does ath10k honor this command? Also, if it
+does, is it implemented in the firmware, or open-source?
 
-[shafi] sure thanks a lot, this is a good start, i will keep you posted
-with my findings and results.
-
-> 
-> I cannot give you any more detailed, current performance test results because
-> they were done months ago and are most likely not relevant to describe the
-> current state. Please ask Kalle if you want to know why the old tests were
-> done many, many months ago.
-
-[shafi] sure, hopefully we can get this sorted out. Thank you for the patches
-and support.
-
-> 
-> Please ask Marek when you want to have tests done with the current
-> mac8011+ath10k.
-
-[shafi] thanks
-
-> 
-> Kind regards,
-> 	Sven
-
-
+Thanks,
+GN.
 
 _______________________________________________
 ath10k mailing list
