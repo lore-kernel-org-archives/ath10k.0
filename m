@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vk0-x236.google.com ([2607:f8b0:400c:c05::236])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAbpV-0004pA-Fl
- for ath10k@lists.infradead.org; Wed, 08 Jun 2016 11:39:26 +0000
-Received: by mail-vk0-x236.google.com with SMTP id d64so7018978vkb.0
- for <ath10k@lists.infradead.org>; Wed, 08 Jun 2016 04:39:04 -0700 (PDT)
+ id 1bAcpe-0005Yx-3s
+ for ath10k@lists.infradead.org; Wed, 08 Jun 2016 12:43:38 +0000
+Date: Wed, 8 Jun 2016 18:13:08 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH 0/2] ath10k: Add support for QCA9887
+Message-ID: <20160608124308.GB29340@atheros-ThinkPad-T61>
+References: <1568876.Six5hABE57@bentobox> <2262792.6VVL0Htyzj@bentobox>
+ <20160607145002.GB11250@atheros-ThinkPad-T61>
+ <2104766.hdzL6bzVNd@bentobox>
+ <20160607171110.GA13293@atheros-ThinkPad-T61>
 MIME-Version: 1.0
-In-Reply-To: <87inxrzqa5.fsf@kamboji.qca.qualcomm.com>
-References: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
- <87inxrzqa5.fsf@kamboji.qca.qualcomm.com>
-From: Roman Yeryomin <leroi.lists@gmail.com>
-Date: Wed, 8 Jun 2016 14:39:03 +0300
-Message-ID: <CACiydbLvke0UxJbg2sn0q-=FwXpmX+FKUV7wwEMT=qUYekJrJA@mail.gmail.com>
-Subject: Re: [RFC/RFT] ath10k: disable wake_tx_queue for older devices
+Content-Disposition: inline
+In-Reply-To: <20160607171110.GA13293@atheros-ThinkPad-T61>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +26,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Sven Eckelmann <sven.eckelmann@open-mesh.com>
+Cc: marek.lindner@open-mesh.com, "Valo, Kalle" <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 2 June 2016 at 16:14, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
-> Michal Kazior <michal.kazior@tieto.com> writes:
->
->> Some setups suffer performance regressions with
->> current wake_tx_queue implementation.
->>
->> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
->> ---
->> Hi Roman,
->>
->> Can you give this patch a try and see if it helps
->> with your performance problems, please?
->
-> Did anyone seeing the performance regression manage to test this? It
-> would be good to get feedback, good or bad, before I push this to 4.7.
->
-> Full patch here:
->
-> https://patchwork.kernel.org/patch/9111981/
+On Tue, Jun 07, 2016 at 10:41:48PM +0530, Mohammed Shafi Shajakhan wrote:
+> Hi Sven,
+> 
+> On Tue, Jun 07, 2016 at 06:54:54PM +0200, Sven Eckelmann wrote:
+> > On Tuesday 07 June 2016 20:20:02 Mohammed Shafi Shajakhan wrote:
+> > [...]
+> > > [shafi] it would be helpful if you can share your basic test results (if its
+> > > possible to share). Have you tried to bring up the card in 5ghz (or) 2ghz.
+> > > Or both of them were tried ?
+> > 
+> > * 5GHz-only (I have no 2.4GHz capable card)
+> > * card is able to scan
+> > * card is able to create an AP
+> > * data can be transferred via AP and client (bidirectional connection)
+> > * performance was more like 15 Mibit/s for 1x1 HT20 11n devices instead of
+> >   something like 35-40 Mibit/s
+> 
+> [shafi] sure thanks a lot, this is a good start, i will keep you posted
+> with my findings and results.
 
-Sorry, didn't try yet, bad timing for me :(
-Will try to test by the end of the week
+[shafi] request if you can disable TX-STBC for both HT and VHT, it helped
+me though. Will keep you posted with more updates.
 
-Regards,
-Roman
+> 
+> > 
+> > I cannot give you any more detailed, current performance test results because
+> > they were done months ago and are most likely not relevant to describe the
+> > current state. Please ask Kalle if you want to know why the old tests were
+> > done many, many months ago.
+> 
+> [shafi] sure, hopefully we can get this sorted out. Thank you for the patches
+> and support.
+> 
+> > 
+> > Please ask Marek when you want to have tests done with the current
+> > mac8011+ath10k.
+> 
+> [shafi] thanks
+> 
+> > 
+> > Kind regards,
+> > 	Sven
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 _______________________________________________
 ath10k mailing list
