@@ -1,30 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAdvu-0005hO-IE
- for ath10k@lists.infradead.org; Wed, 08 Jun 2016 13:54:11 +0000
-Received: by mail-wm0-x230.google.com with SMTP id v199so65169659wmv.0
- for <ath10k@lists.infradead.org>; Wed, 08 Jun 2016 06:53:46 -0700 (PDT)
+ id 1bAfn9-0005On-SL
+ for ath10k@lists.infradead.org; Wed, 08 Jun 2016 15:53:18 +0000
 MIME-Version: 1.0
-In-Reply-To: <CAJ-VmomAkMBV7fWzWpmxUp5px+xiFCjBz3iWt6K7UXemuRFRiA@mail.gmail.com>
-References: <CAOiRWuVxbGDoVtxahwRxyH9NaBB9LmaEBZ5bzgSPEf=Eu1g=ug@mail.gmail.com>
- <5755B0FF.9010900@candelatech.com>
- <CAOiRWuUFvZU1b4Pn8nDVs5O5sNK-g0PPbckriP=RmBnB5f-5Gw@mail.gmail.com>
- <5755B2D9.7080207@candelatech.com>
- <CAOiRWuUjugeDtRTQUWBzoCq58L8XfW7aYQTHa=Mnf4smx6AR2g@mail.gmail.com>
- <5755BABA.1030006@candelatech.com>
- <CAJ-VmomKzRAkJNQr2Sg=j57uPfptPiRs1Q026dPeuQv0jMx-Og@mail.gmail.com>
- <CAOiRWuUL9RC61pdieiEh3ZtWFGLomHzPxqbbVE3Oe_3043Zv2g@mail.gmail.com>
- <5755C7AF.6020203@candelatech.com>
- <CAOiRWuX4mwQEmY0pNvAvufHrfte_94JzyMw41i1SDMNHj=KtCQ@mail.gmail.com>
- <CALhHN=pkwmRJKq1_RQ+3dryu8XcgbhwR-9T288ugoSJAHKM5AA@mail.gmail.com>
- <CAJ-VmontFzXCqOhyEENTeWFnyeb0r=1d9jdX8SVRc9WeuX5vag@mail.gmail.com>
- <CA+BoTQn_jR26JJrnGS_1Ays1yjAUKTFrLsWnofuHGZQv9NTHMg@mail.gmail.com>
- <CAJ-VmomAkMBV7fWzWpmxUp5px+xiFCjBz3iWt6K7UXemuRFRiA@mail.gmail.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Wed, 8 Jun 2016 15:53:44 +0200
-Message-ID: <CA+BoTQ=DJ3R0Myz3BA3ajiqK51-hW80g_2wZMFVASDJycGTbuA@mail.gmail.com>
-Subject: Re: Any tips on where per-packet antenna selection could be pushed?
+Date: Wed, 08 Jun 2016 21:22:55 +0530
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: Re: Bug 119151 - [regression] ath10k no longer authenitcates and
+ freezes system
+In-Reply-To: <CAHbf0-GT0y1pEs-ToxbPAf+aRo7TNAyV_Emies_rjL27R1fk2A@mail.gmail.com>
+References: <8760trzoiw.fsf@kamboji.qca.qualcomm.com>
+ <871t4fzn1x.fsf@kamboji.qca.qualcomm.com> <57504F05.3040200@candelatech.com>
+ <1464887026467.72937@qti.qualcomm.com> <57506BA1.2090303@candelatech.com>
+ <CAHbf0-GT0y1pEs-ToxbPAf+aRo7TNAyV_Emies_rjL27R1fk2A@mail.gmail.com>
+Message-ID: <c36f442934605c492525af72fa04ada9@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,17 +22,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian.chadd@gmail.com>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Zach Sherin <zach@netblazr.com>, Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Mike Lothian <mike@fireburn.co.uk>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, "Manoharan,
+ Rajkumar" <rmanohar@qti.qualcomm.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
 
-T24gNyBKdW5lIDIwMTYgYXQgMTg6MzAsIEFkcmlhbiBDaGFkZCA8YWRyaWFuLmNoYWRkQGdtYWls
-LmNvbT4gd3JvdGU6Cj4gRG8gd2Uga25vdyB3aGljaCBoYXJkd2FyZSBwbGF0Zm9ybXMgdXNlIGl0
-PyAoSWUsIHdoaWNoIGFscmVhZHkgaGF2ZQo+IHNvbWUgYW50ZW5uYXMgd2l0aCB0aGUgcmlnaHQg
-c3dpdGNoaW5nIGhhcmR3YXJlPykKClVuZm9ydHVuYXRlbHkgSSBkbyBub3QuCgoKTWljaGHFggoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
-aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On 2016-06-02 23:03, Mike Lothian wrote:
+> I've just tried those two changes, the machine now locks up before X
+> has even started
+> 
+Mike,
+
+Sorry for the delay. Found root cause for dead lock. Can you please give 
+a try with below change?
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c 
+b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 3b35c7ab5680..80e645302b54 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1905,7 +1905,6 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k 
+*ar, struct sk_buff *skb)
+                         return;
+                 }
+         }
+-       ath10k_htt_rx_msdu_buff_replenish(htt);
+  }
+
+
+-Rajkumar
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
