@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from smtp.kau.se ([193.10.220.39] helo=nasse.dc.kau.se)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAfn9-0005On-SL
- for ath10k@lists.infradead.org; Wed, 08 Jun 2016 15:53:18 +0000
+ id 1bAfnl-0005gX-Dp
+ for ath10k@lists.infradead.org; Wed, 08 Jun 2016 15:53:54 +0000
+From: Andreas Kassler <andreas.kassler@kau.se>
+Subject: Channel Switch Time
+Message-ID: <8817589a-13bf-5c59-a3f2-c5bdadf2906b@kau.se>
+Date: Wed, 8 Jun 2016 17:53:23 +0200
 MIME-Version: 1.0
-Date: Wed, 08 Jun 2016 21:22:55 +0530
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: Bug 119151 - [regression] ath10k no longer authenitcates and
- freezes system
-In-Reply-To: <CAHbf0-GT0y1pEs-ToxbPAf+aRo7TNAyV_Emies_rjL27R1fk2A@mail.gmail.com>
-References: <8760trzoiw.fsf@kamboji.qca.qualcomm.com>
- <871t4fzn1x.fsf@kamboji.qca.qualcomm.com> <57504F05.3040200@candelatech.com>
- <1464887026467.72937@qti.qualcomm.com> <57506BA1.2090303@candelatech.com>
- <CAHbf0-GT0y1pEs-ToxbPAf+aRo7TNAyV_Emies_rjL27R1fk2A@mail.gmail.com>
-Message-ID: <c36f442934605c492525af72fa04ada9@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +16,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Reply-To: andreas.kassler@kau.se
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mike Lothian <mike@fireburn.co.uk>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
+To: ath10k@lists.infradead.org
 
-On 2016-06-02 23:03, Mike Lothian wrote:
-> I've just tried those two changes, the machine now locks up before X
-> has even started
-> 
-Mike,
+Hi,
+we want to implement fast channel switching on ATH10K for IBSS mode. Any 
+pointer on firmware modifications that allow to do that fast would be 
+appreciated. Currently, we observe a latency of 2.5 sec under traffic. 
+Also, 802.11h support for CSA would be nice to have in IBSS mode. How 
+can we trigger this? I mean what interface do we have from outside to 
+trigger a fast channel switch that then issues a 802.11h CSA so that all 
+peers would also switch the channel, ideally in millisecond time?
 
-Sorry for the delay. Found root cause for dead lock. Can you please give 
-a try with below change?
+Andreas
+-- 
+Andreas Kassler
+==================================
+Prof. Dr. Andreas J. Kassler
+Computer Science Department - Telematics
+Universitetsgatan 2
+SE-65188 Karlstad
+Sweden
+Tel.: ++46 (0)54 700-2168
+Fax: ++46 (0)54 700-1828
+eMail: kassler@ieee.org
+skype: andreaskassler
+MSN: andreaskassler@hotmail.com
+Web: www.cs.kau.se/~andreask
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c 
-b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 3b35c7ab5680..80e645302b54 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1905,7 +1905,6 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k 
-*ar, struct sk_buff *skb)
-                         return;
-                 }
-         }
--       ath10k_htt_rx_msdu_buff_replenish(htt);
-  }
-
-
--Rajkumar
 
 _______________________________________________
 ath10k mailing list
