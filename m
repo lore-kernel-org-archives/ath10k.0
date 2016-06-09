@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bB003-0004IH-BR
- for ath10k@lists.infradead.org; Thu, 09 Jun 2016 13:27:56 +0000
+ id 1bB01B-0004rT-BB
+ for ath10k@lists.infradead.org; Thu, 09 Jun 2016 13:29:05 +0000
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH v2] ath10k: Fix crash during card removal
-Date: Thu, 9 Jun 2016 18:58:47 +0530
-Message-ID: <1465478927-21401-1-git-send-email-mohammed@qca.qualcomm.com>
+Subject: [PATCH] ath10k: Remove unneccessary WARN_ON_ONCE in rx during ACS
+Date: Thu, 9 Jun 2016 18:59:51 +0530
+Message-ID: <1465478991-21449-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,90 +21,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Usually when the firmware crashes we check for the value
-'FW_IND_EVENT_PENDING' in 'FW_INDICATOR_ADDRESS' and proceed with
-disabling the irq and dumping firmware 'crash dump'. Now
-when the PCI card is unplugged from the device the PCI controller
-seems to generate a spurious interrupt after some time which
-was as treated a firmware crash and resulting in the below race
-condition (and eventually crashing the system)
+The below warning message seems to hit occasionally with the following
+combination (IPQ4019 + ACS scan) where we receive packets as a self peer
+when hostapd does ACS when we bring up AP mode . ath10k has the below
+fall back mechanism to fetch current operating channel in rx (it will
+check for the next channel tracking variable if the current one is NULL)
 
-	ath10k_core_unregister -> ath10k_core_free_board_files
+	[scan channel] --> [rx channel] --> [peer channel] -->
+	[vdev channel] -->  [any vdev channel] --> [target oper channel]
 
-	...... device unplug spurious interrupt .........
+'scan channel' and 'target operating channel' are directly fetched from
+firmware events. All the others should be updated by mac80211.
 
-	ath10k_pci_taklet -> ath10k_pci_fw_crashed_dump  ...etc
+During ACS scan we wouldn't have a valid channel context
+assigned from mac80211 ('ar->rx_channel'), and also relying on
+('ar->scan_channel') is not helpful (it becomes NULL when it goes to
+BSS channel and also when the scan event is completed). In short we
+cannot always rely on these two channel tracking variables.
 
-Clearly even after the firmware board files related data structure
-is freed up we are getting a spurious interrupt from PCI with 0xfffffff
-in the 'FW_INDICATOR_ADDRESS' resulting in scheduling of the pci tasklet
-and doing a crash dump, printing f/w board related info resulting in the
-below crash. Fix this by detecting this spurious interrupt in ath10k PCI
-irq handler itself and return IRQ_NONE. Thanks to Michal Kazior for
-helping us conclude the most appropriate fix.
+'Target Operating Channel' (ar->tgt_oper_chan) seems to keep track of
+the current operating even while we are doing ACS scan and etc. Hence
+remove this un-necessary warning message and continue with
+target_operating channel. At the worst case scenario when the target
+operating channel is invalid (NULL) we already have an ath10k warning
+message to notify we really don't have a proper channel configured in
+rx to update the rx status("no channel configured; ignoring frame(s)!")
 
-Call trace:
+    WARNING: CPU: 0 PID: 0 at ath/ath10k/htt_rx.c:803
+    [<c0318838>] (warn_slowpath_null) from [<bf4a0104>]
+    (ath10k_htt_rx_h_channel+0xe0/0x1b8 [ath10k_core])
+    [<bf4a0104>] (ath10k_htt_rx_h_channel [ath10k_core]) from
+    [<bf4a025c>] (ath10k_htt_rx_h_ppdu+0x80/0x288 [ath10k_core])
+    [<bf4a025c>] (ath10k_htt_rx_h_ppdu [ath10k_core]) from
+    [<bf4a1a9c>] (ath10k_htt_txrx_compl_task+0x724/0x9d4 [ath10k_core])
+    [<bf4a1a9c>] (ath10k_htt_txrx_compl_task [ath10k_core])
 
- EIP is at ath10k_debug_print_board_info+0x39/0xb0
-[ath10k_core]
-EAX: 00000000 EBX: d4de15a0 ECX: 00000000 EDX: 00000064
-ESI: f615ddd0 EDI: f8530000 EBP: f615de3c ESP: f615ddbc
- DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068
-CR0: 80050033 CR2: 00000004 CR3: 01c0a000 CR4: 000006f0
-Stack:
- f615ddd0 00000064 f8b4ecdd 00000000 00000000 00412f4e
-00000000 00000000
-00000000 00000000 00000000 00000000 00000000 00000000
-00000000 00000000
- 00000000 00000000 00000000 00000000 00000000 00000000
-00000000 00000000
-Call Trace:
-  [<f8b1f517>] ath10k_print_driver_info+0x17/0x30
-[ath10k_core]
-[<f875463a>] ath10k_pci_fw_crashed_dump+0x7a/0xe0
-[ath10k_pci]
-[<f87549d0>] ath10k_pci_tasklet+0x70/0x90 [ath10k_pci]
-[<c106151e>] tasklet_action+0x9e/0xb0
-
-Cc: Michal Kazior <michal.kazior@tieto.com>
+Fixes:3b0499e9ce42 ("ath10k: reduce warning messages during rx without proper channel context")
 Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 8133d7b..ce6269f 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2198,6 +2198,14 @@ static void ath10k_pci_fw_crashed_clear(struct ath10k *ar)
- 	ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS, val);
- }
+[updated commit log - Michal Kazior]
+
+ drivers/net/wireless/ath/ath10k/htt_rx.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 7bf1909..aa44c09 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -748,7 +748,7 @@ ath10k_htt_rx_h_peer_channel(struct ath10k *ar, struct htt_rx_desc *rxd)
+ 	if (WARN_ON_ONCE(!arvif))
+ 		return NULL;
  
-+static bool ath10k_pci_has_device_gone(struct ath10k *ar)
-+{
-+	u32 val;
-+
-+	val = ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS);
-+	return (val == 0xffffffff);
-+}
-+
- /* this function effectively clears target memory controller assert line */
- static void ath10k_pci_warm_reset_si0(struct ath10k *ar)
- {
-@@ -2591,6 +2599,9 @@ static irqreturn_t ath10k_pci_interrupt_handler(int irq, void *arg)
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int ret;
+-	if (WARN_ON_ONCE(ath10k_mac_vif_chan(arvif->vif, &def)))
++	if (ath10k_mac_vif_chan(arvif->vif, &def))
+ 		return NULL;
  
-+	if (ath10k_pci_has_device_gone(ar))
-+		return IRQ_NONE;
-+
- 	ret = ath10k_pci_force_wake(ar);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to wake device up on irq: %d\n", ret);
+ 	return def.chan;
 -- 
 1.7.9.5
 
