@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCKbm-0004fy-BV
- for ath10k@lists.infradead.org; Mon, 13 Jun 2016 05:40:23 +0000
-Received: by mail-wm0-x22e.google.com with SMTP id v199so62015281wmv.0
- for <ath10k@lists.infradead.org>; Sun, 12 Jun 2016 22:39:58 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1465563164-783-1-git-send-email-me@bobcopeland.com>
-References: <1465563164-783-1-git-send-email-me@bobcopeland.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Mon, 13 Jun 2016 07:39:56 +0200
-Message-ID: <CA+BoTQkg+uea_YzUgrVBPhA8uRxNpd29Kd1y1tvt0a-JyOSLQw@mail.gmail.com>
+ id 1bCNs5-0001BZ-L5
+ for ath10k@lists.infradead.org; Mon, 13 Jun 2016 09:09:26 +0000
+Message-ID: <1465808939.2434.1.camel@sipsolutions.net>
 Subject: Re: [PATCH] ath10k: fix potential null dereference bugs
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 13 Jun 2016 11:08:59 +0200
+In-Reply-To: <CA+BoTQkg+uea_YzUgrVBPhA8uRxNpd29Kd1y1tvt0a-JyOSLQw@mail.gmail.com>
+ (sfid-20160613_074004_402825_22006851)
+References: <1465563164-783-1-git-send-email-me@bobcopeland.com>
+ <CA+BoTQkg+uea_YzUgrVBPhA8uRxNpd29Kd1y1tvt0a-JyOSLQw@mail.gmail.com>
+ (sfid-20160613_074004_402825_22006851)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +25,19 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bob Copeland <me@bobcopeland.com>
+To: Michal Kazior <michal.kazior@tieto.com>, Bob Copeland <me@bobcopeland.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTAgSnVuZSAyMDE2IGF0IDE0OjUyLCBCb2IgQ29wZWxhbmQgPG1lQGJvYmNvcGVsYW5kLmNv
-bT4gd3JvdGU6Cj4gU21hdGNoIHdhcm5zIGFib3V0IGEgbnVtYmVyIG9mIGNhc2VzIGluIGF0aDEw
-ayB3aGVyZSBhIHBvaW50ZXIgaXMKPiBudWxsLWNoZWNrZWQgYWZ0ZXIgaXQgaGFzIGFscmVhZHkg
-YmVlbiBkZXJlZmVyZW5jZWQsIGluIGNvZGUgaW52b2x2aW5nCj4gYXRoMTBrIHByaXZhdGUgdmly
-dHVhbCBpbnRlcmZhY2UgcG9pbnRlcnMuCj4KPiBGaXggdGhlc2UgYnkgbWFraW5nIHRoZSBkZXJl
-ZmVyZW5jZSBoYXBwZW4gbGF0ZXIuCj4KPiBBZGRyZXNzZXMgdGhlIGZvbGxvd2luZyBzbWF0Y2gg
-d2FybmluZ3M6Cj4KPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jOjM2NTEg
-YXRoMTBrX21hY190eHFfaW5pdCgpIHdhcm46IHZhcmlhYmxlIGRlcmVmZXJlbmNlZCBiZWZvcmUg
-Y2hlY2sgJ3R4cScgKHNlZSBsaW5lIDM2NDkpCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway9tYWMuYzozNjY0IGF0aDEwa19tYWNfdHhxX3VucmVmKCkgd2FybjogdmFyaWFibGUgZGVy
-ZWZlcmVuY2VkIGJlZm9yZSBjaGVjayAndHhxJyAoc2VlIGxpbmUgMzY1OSkKPiBkcml2ZXJzL25l
-dC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF90eC5jOjcwIF9fYXRoMTBrX2h0dF90eF90eHFfcmVj
-YWxjKCkgd2FybjogdmFyaWFibGUgZGVyZWZlcmVuY2VkIGJlZm9yZSBjaGVjayAndHhxLT5zdGEn
-IChzZWUgbGluZSA1MikKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF90eC5j
-Ojc0MCBhdGgxMGtfaHR0X3R4X2dldF92ZGV2X2lkKCkgd2FybjogdmFyaWFibGUgZGVyZWZlcmVu
-Y2VkIGJlZm9yZSBjaGVjayAnY2ItPnZpZicgKHNlZSBsaW5lIDczNikKPiBkcml2ZXJzL25ldC93
-aXJlbGVzcy9hdGgvYXRoMTBrL3R4cnguYzo4NiBhdGgxMGtfdHhyeF90eF91bnJlZigpIHdhcm46
-IHZhcmlhYmxlIGRlcmVmZXJlbmNlZCBiZWZvcmUgY2hlY2sgJ3R4cScgKHNlZSBsaW5lIDg0KQo+
-IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmM6MTgzNyBhdGgxMGtfd21pX29w
-X2dlbl9tZ210X3R4KCkgd2FybjogdmFyaWFibGUgZGVyZWZlcmVuY2VkIGJlZm9yZSBjaGVjayAn
-Y2ItPnZpZicgKHNlZSBsaW5lIDE4MjUpCgpGV0lXIGFsbCBvZiB0aGVzZSBhcmUgZmFsc2UgcG9z
-aXRpdmVzLiBJIHRoaW5rIHRoaXMgd2FzIGFscmVhZHkKcG9pbnRlZCBvdXQgc29tZSB0aW1lIGFn
-by4gVGhlIGRydl9wcml2IHN0dWZmIGlzIG1lcmVseSBhbiBvZmZzZXQgKHNlZQpob3cgaWVlZTgw
-MjExX3ZpZiBhbmQgaWVlZTgwMjExX3N0YSBhcmUgZGVmaW5lZCkgYW5kIHRoZSBhY2NvcmRpbmcK
-c3RydWN0dXJlIGlzIGFsd2F5cyBjaGVja2VkIGJlZm9yZWhhbmQuCgoKTWljaGHFggoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+T24gTW9uLCAyMDE2LTA2LTEzIGF0IDA3OjM5ICswMjAwLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+
+wqAKPiBGV0lXIGFsbCBvZiB0aGVzZSBhcmUgZmFsc2UgcG9zaXRpdmVzLiBJIHRoaW5rIHRoaXMg
+d2FzIGFscmVhZHkKPiBwb2ludGVkIG91dCBzb21lIHRpbWUgYWdvLiBUaGUgZHJ2X3ByaXYgc3R1
+ZmYgaXMgbWVyZWx5IGFuIG9mZnNldAo+IChzZWUgaG93IGllZWU4MDIxMV92aWYgYW5kIGllZWU4
+MDIxMV9zdGEgYXJlIGRlZmluZWQpIGFuZCB0aGUKPiBhY2NvcmRpbmcgc3RydWN0dXJlIGlzIGFs
+d2F5cyBjaGVja2VkIGJlZm9yZWhhbmQuCj4gCgpJSVJDLCBkb2luZyBzb21ldGhpbmcgbGlrZSB0
+aGF0IGNhbiAoc29tZXRpbWVzPykgc3RpbGwgZ2V0IHlvdSBpbnRvCnVuZGVmaW5lZCBiZWhhdmlv
+dXIgdGVycml0b3J5LCBzbyB0aGUgY29tcGlsZXIgY291bGQgcG90ZW50aWFsbHkKIm9wdGltaXpl
+IiBhd2F5IHRoZSBsYXRlciBOVUxMIGNoZWNrLgoKT3IgYW0gSSBjb25mdXNpbmcgc29tZXRoaW5n
+PyBTZWVtcyBlbnRpcmVseSBwb3NzaWJsZSA6KQoKam9oYW5uZXMKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
+QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hdGgxMGsK
