@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCmy3-0000RS-6Q
- for ath10k@lists.infradead.org; Tue, 14 Jun 2016 11:57:15 +0000
+ id 1bCn0b-0000ix-PO
+ for ath10k@lists.infradead.org; Tue, 14 Jun 2016 11:59:54 +0000
 MIME-Version: 1.0
-Subject: Re: [v3,1/2] ath10k: remove duplicate and unused rx rate flags
+Subject: Re: [1/2] ath10k: Define an enum to enable cycle counter wraparound
+ logic
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1464877482-14620-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <8c7494314722406d9af8328fdc51b1ba@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 14 Jun 2016 13:56:44 +0200
+In-Reply-To: <1464968596-19834-1-git-send-email-vthiagar@qti.qualcomm.com>
+Message-ID: <751c58687e0842228c179608fd4018ce@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 14 Jun 2016 13:59:27 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +22,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> wrote:
+> QCA988X hw implements a different cycle counter wraparound
+> behaviour when compared to QCA4019. To properly handle different
+> wraparound logic for these chipsets replace already available
+> bool hw_params member, has_shifted_cc_wraparound, with an
+> enum which could be extended to handle different wraparound
+> behaviour. This patch keeps the existing logic functionally
+> same and a prepares cycle counter wraparound handling to
+> extend for other chips.
 > 
-> All these flags are not used and their use is completely
-> covered by 'ath10k_hw_rate_ofdm', 'ath10k_hw_rate_cck',
-> and RX_PPDU_START_RATE_FLAG
-> 
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 
 Thanks, 2 patches applied to ath-next branch of ath.git:
 
-9cd24451859a ath10k: remove duplicate and unused rx rate flags
-5269c65900d9 ath10k: fix CCK h/w rates for QCA99X0 and newer chipsets
+26c197600b43 ath10k: define an enum to enable cycle counter wraparound logic
+8e100354a985 ath10k: fix cycle counter wraparound handling for QCA4019
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9150143/
+https://patchwork.kernel.org/patch/9153403/
 
 
 _______________________________________________
