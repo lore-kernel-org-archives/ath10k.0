@@ -1,14 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCn7W-0004UP-Mu
- for ath10k@lists.infradead.org; Tue, 14 Jun 2016 12:07:03 +0000
+ id 1bCokv-0000gh-IX
+ for ath10k@lists.infradead.org; Tue, 14 Jun 2016 13:51:50 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix potential null dereference bugs
+Date: Tue, 14 Jun 2016 13:51:24 +0000
+Message-ID: <87shwf3mlh.fsf@kamboji.qca.qualcomm.com>
+References: <1465563164-783-1-git-send-email-me@bobcopeland.com>
+ <CA+BoTQkg+uea_YzUgrVBPhA8uRxNpd29Kd1y1tvt0a-JyOSLQw@mail.gmail.com>
+ <1465808939.2434.1.camel@sipsolutions.net>	<20160613130507.GA11074@localhost>
+ <1465823880.10050.3.camel@sipsolutions.net>
+In-Reply-To: <1465823880.10050.3.camel@sipsolutions.net> (Johannes Berg's
+ message of "Mon, 13 Jun 2016 15:18:00 +0200")
+Content-Language: en-US
+Content-ID: <23D56D4EC61DF54CA85F6AC481111F3E@qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: ath10k: fix deadlock while processing rx_in_ord_ind
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20160609060355.16219-1-rmanohar@qti.qualcomm.com>
-Message-ID: <acc80c66985d43dfbc9d5a6a17fcc85e@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 14 Jun 2016 14:06:35 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,67 +24,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rmanohar@codeaurora.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Bob Copeland <me@bobcopeland.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
-> commit 5c86d97bcc1d ("ath10k: combine txrx and replenish task")
-> introduced deadlock while processing rx in order indication message
-> for qca6174 based devices. While merging replenish and txrx tasklets,
-> replenish task should be called out of htt rx ring locking since it
-> is also try to acquire the same lock.
-> 
-> Unfortunately this issue is not exposed by other solutions (qca988x,
-> qca99x0 & qca4019), as rx_in_ord_ind message is specific to qca6174
-> based devices. This patch fixes
-> 
-> =============================================
-> [ INFO: possible recursive locking detected ]
-> 4.7.0-rc2-wt-ath+ #1353 Tainted: G            E
-> ---------------------------------------------
-> swapper/3/0 is trying to acquire lock:
->  (&(&htt->rx_ring.lock)->rlock){+.-...}, at: [<f8d7ef19>]
-> ath10k_htt_rx_msdu_buff_replenish+0x29/0x90 [ath10k_core]
-> 
-> but task is already holding lock:
->  (&(&htt->rx_ring.lock)->rlock){+.-...}, at: [<f8d82cab>]
-> ath10k_htt_txrx_compl_task+0x21b/0x250 [ath10k_core]
-> 
-> other info that might help us debug this:
->  Possible unsafe locking scenario:
-> 
->        CPU0
->        ----
->   lock(&(&htt->rx_ring.lock)->rlock);
->   lock(&(&htt->rx_ring.lock)->rlock);
-> 
->  *** DEADLOCK ***
-> 
->  May be due to missing lock nesting notation
-> 
-> 1 lock held by swapper/3/0:
->  #0:  (&(&htt->rx_ring.lock)->rlock){+.-...}, at: [<f8d82cab>]
-> ath10k_htt_txrx_compl_task+0x21b/0x250 [ath10k_core]
-> 
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=119151
-> Fixes: 5c86d97bcc1d ("ath10k: combine txrx and replenish task")
-> Reported-by: Mike Lothian <mike@fireburn.co.uk>
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-
-Thanks, 1 patch applied to ath-current branch of ath.git:
-
-e50525bef593 ath10k: fix deadlock while processing rx_in_ord_ind
-
--- 
-Sent by pwcli
-https://patchwork.kernel.org/patch/9166323/
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Sm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldD4gd3JpdGVzOg0KDQo+IE9u
+IE1vbiwgMjAxNi0wNi0xMyBhdCAwOTowNSAtMDQwMCwgQm9iIENvcGVsYW5kIHdyb3RlOg0KPj7C
+oA0KPj4gU28gSSBkaWQganVzdCBnbyBhbmQgY2hlY2sgdGhlIGdlbmVyYXRlZCBjb2RlIGZvciBl
+YWNoIG9mIHRoZXNlIGNhc2VzDQo+PiBhbmQgZ2NjIGRpZG4ndCBlbGlkZSB0aGUgc3Vic2VxdWVu
+dCBpZi10ZXN0LCBhdCBsZWFzdCBvbiB4ODYtNjQgYW5kDQo+PiBteSBjb21waWxlciAvIGJ1aWxk
+IGNvbmZpZy7CoMKgR2l2ZW4gaHR0cDovL2x3bi5uZXQvQXJ0aWNsZXMvMzQyMzMwLCBpdA0KPj4g
+c2VlbXMgcG9zc2libGUsIHRob3VnaC4NCj4NCj4gSXQncyBub3QgY2xlYXIgdGhhdCdzIHRoZSBz
+YW1lIHNpdHVhdGlvbiwgc2luY2UgdHVuLT5zayBpcyB2ZXJ5IGxpa2VseQ0KPiB0byBoYXZlIGJl
+ZW4gYW4gYWN0dWFsIHBvaW50ZXIsIG5vdCBhbiBlbWJlZGRlZCB0aGluZyBsaWtlIGRydl9wcml2
+Lg0KPg0KPiBIb3dldmVyLCB3aXRoIGFsbCB0aGlzLCBJIHRoaW5rIEknZCBzaW1wbHkgbm90IHRh
+a2UgYW55IGNoYW5jZXMgLSB0aGUNCj4gcGF0Y2ggaXNuJ3QgZXhhY3RseSBpbnZhc2l2ZSBhbmQg
+aW4gc29tZSBjYXNlcyAoZm9yIGV4YW1wbGUgdGhlIGZpcnN0DQo+IGh1bmsgb2YgdGhlIHBhdGNo
+KSB3aWxsIGV2ZW4gaW1wcm92ZSB0aGUgY29kZSB0byB0aGUgcG9pbnQgd2hlcmUgdGhlDQo+IGNv
+bXBpbGVyIGNvdWxkIHdhcm4gYWJvdXQgdW5pbml0aWFsaXplZCB1c2FnZSBvZiB0aGUgcG9pbnRl
+ciB3aGVuIHRoZQ0KPiBjb2RlIGdldHMgbW9kaWZpZWQgdG8gdXNlIGl0IGluIGNhc2Ugb2YgIXR4
+cS0+c3RhLg0KPg0KPiBJJ2QgdGFrZSBpdCwgYnV0IEkgZ3Vlc3MgaXQncyBLYWxsZSdzIGRlY2lz
+aW9uIDopDQoNClllYWgsIEknbSBsZWFuaW5nIHRvd2FyZHMgSm9oYW5uZXMuIFRoZXNlIGFyZSBu
+b3QgcmVhbGx5IGludmFzaXZlLg0KDQotLSANCkthbGxlIFZhbG8KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
