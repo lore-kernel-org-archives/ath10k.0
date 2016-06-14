@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCjA2-00050b-3X
- for ath10k@lists.infradead.org; Tue, 14 Jun 2016 07:53:22 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH v4 1/2] ath10k: Add support for ath10k_sta_statistics support
-Date: Tue, 14 Jun 2016 13:24:25 +0530
-Message-ID: <1465890866-2390-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1bCmvF-0007D3-2i
+ for ath10k@lists.infradead.org; Tue, 14 Jun 2016 11:54:21 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Fix some of the macro definitions of HTT_RX_IND
+ message
+Date: Tue, 14 Jun 2016 11:53:53 +0000
+Message-ID: <87wpls2dgv.fsf@kamboji.qca.qualcomm.com>
+References: <1464870025-4557-1-git-send-email-vthiagar@qti.qualcomm.com>
+In-Reply-To: <1464870025-4557-1-git-send-email-vthiagar@qti.qualcomm.com>
+ (Vasanthakumar Thiagarajan's message of "Thu, 2 Jun 2016 17:50:25	+0530")
+Content-Language: en-US
+Content-ID: <16B087AE1C71BE45ADC6122A481D3DCE@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,88 +26,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: "Thiagarajan, Vasanthakumar" <vthiagar@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
 
-Enable support for 'drv_sta_statistics' callback.
-Export rx_duration support if available to cfg80211/nl80211
+> Only five bits are defined to pass tid information in HTT_RX_IND
+> message, so the mask which can be used to extract tid should be 0x1f
+> instead of the current 0x3f. Also, macros which can be used to extract
+> flush_valid and release_valid bits have to be left shifted one bit less
+> because these information follow the tid right after. This patch does
+> not really fix anything functionally because these macros are not used
+> currently.
+>
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 
-This can also act as a placeholder for any new per STA stats support
+Applied to ath.git, thanks.
 
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
-
-[v4] rebased over 'pending' branch
-[v3] removed conditions for ath10k state checks based on Michal's suggestion
-
-Both the dependent changes are merged now in master tree
-
-1. cfg80211/nl80211: Add support for NL80211_STA_INFO_RX_DURATION
-2. iw: Add support for NL80211_STA_INFO_RX_DURATION netlink
- attribute
----
- drivers/net/wireless/ath/ath10k/debug.h       |  3 +++
- drivers/net/wireless/ath/ath10k/debugfs_sta.c | 14 ++++++++++++++
- drivers/net/wireless/ath/ath10k/mac.c         |  1 +
- 3 files changed, 18 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index dc549c4..c458fa9 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -156,6 +156,9 @@ void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			    struct ieee80211_sta *sta, struct dentry *dir);
- void ath10k_sta_update_rx_duration(struct ath10k *ar,
- 				   struct ath10k_fw_stats *stats);
-+void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
-+			   struct ieee80211_sta *sta,
-+			   struct station_info *sinfo);
- #else
- static inline
- void ath10k_sta_update_rx_duration(struct ath10k *ar,
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index 0da8a57..60e5da0 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -65,6 +65,20 @@ void ath10k_sta_update_rx_duration(struct ath10k *ar,
- 		ath10k_sta_update_stats_rx_duration(ar, stats);
- }
- 
-+void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
-+			   struct ieee80211_sta *sta,
-+			   struct station_info *sinfo)
-+{
-+	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	struct ath10k *ar = arsta->arvif->ar;
-+
-+	if (!ath10k_peer_stats_enabled(ar))
-+		return;
-+
-+	sinfo->rx_duration = arsta->rx_duration;
-+	sinfo->filled |= 1ULL << NL80211_STA_INFO_RX_DURATION;
-+}
-+
- static ssize_t ath10k_dbg_sta_read_aggr_mode(struct file *file,
- 					     char __user *user_buf,
- 					     size_t count, loff_t *ppos)
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3a170b1..1fe33c36 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7402,6 +7402,7 @@ static const struct ieee80211_ops ath10k_ops = {
- #endif
- #ifdef CONFIG_MAC80211_DEBUGFS
- 	.sta_add_debugfs		= ath10k_sta_add_debugfs,
-+	.sta_statistics			= ath10k_sta_statistics,
- #endif
- };
- 
 -- 
-1.9.1
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
