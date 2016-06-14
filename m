@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bComl-0000sH-M7
- for ath10k@lists.infradead.org; Tue, 14 Jun 2016 13:53:44 +0000
+ id 1bCorn-0002tf-26
+ for ath10k@lists.infradead.org; Tue, 14 Jun 2016 13:58:55 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix potential null dereference bugs
-Date: Tue, 14 Jun 2016 13:53:12 +0000
-Message-ID: <87oa733mig.fsf@kamboji.qca.qualcomm.com>
-References: <1465563164-783-1-git-send-email-me@bobcopeland.com>
-In-Reply-To: <1465563164-783-1-git-send-email-me@bobcopeland.com> (Bob
- Copeland's message of "Fri, 10 Jun 2016 08:52:44 -0400")
+Subject: Re: [PATCH v4 1/2] ath10k: Add support for ath10k_sta_statistics
+ support
+Date: Tue, 14 Jun 2016 13:58:25 +0000
+Message-ID: <87k2hr3m9r.fsf@kamboji.qca.qualcomm.com>
+References: <1465890866-2390-1-git-send-email-mohammed@qca.qualcomm.com>
+In-Reply-To: <1465890866-2390-1-git-send-email-mohammed@qca.qualcomm.com>
+ (Mohammed Shafi Shajakhan's message of "Tue, 14 Jun 2016 13:24:25	+0530")
 Content-Language: en-US
-Content-ID: <48195DDA6E122F4CBB892782BD2984CE@qualcomm.com>
+Content-ID: <F681231BBFFFD44AAB744B4ECBC4C273@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,60 +26,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bob Copeland <me@bobcopeland.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Bob Copeland <me@bobcopeland.com> writes:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
 
-> Smatch warns about a number of cases in ath10k where a pointer is
-> null-checked after it has already been dereferenced, in code involving
-> ath10k private virtual interface pointers.
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 >
-> Fix these by making the dereference happen later.
+> Enable support for 'drv_sta_statistics' callback.
+> Export rx_duration support if available to cfg80211/nl80211
 >
-> Addresses the following smatch warnings:
+> This can also act as a placeholder for any new per STA stats support
 >
-> drivers/net/wireless/ath/ath10k/mac.c:3651 ath10k_mac_txq_init() warn: variable dereferenced before check 'txq' (see line 3649)
-> drivers/net/wireless/ath/ath10k/mac.c:3664 ath10k_mac_txq_unref() warn: variable dereferenced before check 'txq' (see line 3659)
-> drivers/net/wireless/ath/ath10k/htt_tx.c:70 __ath10k_htt_tx_txq_recalc() warn: variable dereferenced before check 'txq->sta' (see line 52)
-> drivers/net/wireless/ath/ath10k/htt_tx.c:740 ath10k_htt_tx_get_vdev_id() warn: variable dereferenced before check 'cb->vif' (see line 736)
-> drivers/net/wireless/ath/ath10k/txrx.c:86 ath10k_txrx_tx_unref() warn: variable dereferenced before check 'txq' (see line 84)
-> drivers/net/wireless/ath/ath10k/wmi.c:1837 ath10k_wmi_op_gen_mgmt_tx() warn: variable dereferenced before check 'cb->vif' (see line 1825)
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> ---
 >
-> Signed-off-by: Bob Copeland <me@bobcopeland.com>
+> [v4] rebased over 'pending' branch
+> [v3] removed conditions for ath10k state checks based on Michal's suggestion
+>
+> Both the dependent changes are merged now in master tree
+>
+> 1. cfg80211/nl80211: Add support for NL80211_STA_INFO_RX_DURATION
+> 2. iw: Add support for NL80211_STA_INFO_RX_DURATION netlink
+>  attribute
 
-There was a new checkpatch warning:
+But these are not in ath-next branch yet, so I can't take these until I
+have updated ath-next.
 
-drivers/net/wireless/ath/ath10k/htt_tx.c:740: braces {} should be used on all arms of this statement
+Also please ping instead of resending patches. These are already waiting
+in patchwork:
 
-I "fixed" it like this, which is folded to the patch in pending branch
-(pushed soon):
+https://patchwork.kernel.org/patch/8993601/
+https://patchwork.kernel.org/patch/8993621/
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index dfcc43d80808..ae5b33fe5ba8 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -737,15 +737,16 @@ static u8 ath10k_htt_tx_get_vdev_id(struct ath10k *ar, struct sk_buff *skb)
- 	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(skb);
- 	struct ath10k_vif *arvif;
- 
--	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN)
-+	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
- 		return ar->scan.vdev_id;
--	else if (cb->vif) {
-+	} else if (cb->vif) {
- 		arvif = (void *)cb->vif->drv_priv;
- 		return arvif->vdev_id;
--	} else if (ar->monitor_started)
-+	} else if (ar->monitor_started) {
- 		return ar->monitor_vdev_id;
--	else
-+	} else {
- 		return 0;
-+	}
- }
- 
- static u8 ath10k_htt_tx_get_tid(struct sk_buff *skb, bool is_eth)
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
