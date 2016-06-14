@@ -1,28 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from omr1.cc.ipv6.vt.edu ([2607:b400:92:8300:0:c6:2117:b0e]
- helo=omr1.cc.vt.edu)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCrHz-0004db-Ul
- for ath10k@lists.infradead.org; Tue, 14 Jun 2016 16:34:09 +0000
-Received: from mr2.cc.vt.edu (mr2.cc.ipv6.vt.edu
- [IPv6:2001:468:c80:2105:0:212:7ed0:359e])
- by omr1.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u5EGXkCH021857
- for <ath10k@lists.infradead.org>; Tue, 14 Jun 2016 12:33:46 -0400
-Received: from mail-lb0-f199.google.com (mail-lb0-f199.google.com
- [209.85.217.199])
- by mr2.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u5EGXeYO028542
- for <ath10k@lists.infradead.org>; Tue, 14 Jun 2016 12:33:45 -0400
-Received: by mail-lb0-f199.google.com with SMTP id js8so34324350lbc.2
- for <ath10k@lists.infradead.org>; Tue, 14 Jun 2016 09:33:45 -0700 (PDT)
+ id 1bCsJH-0007Hx-Dz
+ for ath10k@lists.infradead.org; Tue, 14 Jun 2016 17:39:32 +0000
+From: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Subject: [PATCH] ath10k: add support for controlling tx power to a station
+Date: Tue, 14 Jun 2016 23:08:31 +0530
+Message-ID: <1465925914-6404-1-git-send-email-arnagara@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <20160614053011.GB2800@atheros-ThinkPad-T61>
-References: <CAFc9h7vk6e-BntP+GMv8s2jaNSOkA=37rChTjss2-7mgupAv7Q@mail.gmail.com>
- <CAFc9h7uABMUJ349bgNJLcZDNL5hyp96CrYoc8PD9VDLv_-8rqw@mail.gmail.com>
- <20160614053011.GB2800@atheros-ThinkPad-T61>
-From: Gaurang Ramesh Naik <gaurang@vt.edu>
-Date: Tue, 14 Jun 2016 12:33:38 -0400
-Message-ID: <CAFc9h7u4yTesQR3D++D3sKZ9Lv9tek_=JMtwzs=1jTNnXjVvBw@mail.gmail.com>
-Subject: Re: Problem with spectral scan in VHT80 mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,57 +20,103 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, arnagara@codeaurora.org, linux-wireless@vger.kernel.org
 
-Hi Shafi,
+This patch will add the support to control the transmit power for traffic
+to a station associated with the AP. Userspace provide the transmit power
+value in mBm units and the allowed range is from 0 to 70. Underlying FW
+will enforce that the maximum tx power will be based on the regulatory
+requirements. If the user given transmit power is greater than the allowed
+tx power in the given channel, then the FW will use the maximum tx power
+in the same channel.
 
-I am using QCA9882 (I'm using RB911G-5HPacD). This is what I observed
-http://postimg.org/image/vha3pmvhz/
+When 0 is sent to the FW as tx power, it will revert to the automatic tx
+power for the station.
 
-I have one AP-Client running iperf over HT40 and I'm using another AP
-for the scan.
+Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/debug.h |  3 +++
+ drivers/net/wireless/ath/ath10k/mac.c   | 29 +++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h   |  1 +
+ 3 files changed, 33 insertions(+)
 
-Thanks,
-Gaurang.
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 75c89e3..340950b 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -59,6 +59,9 @@ enum ath10k_dbg_aggr_mode {
+ /* FIXME: How to calculate the buffer size sanely? */
+ #define ATH10K_FW_STATS_BUF_SIZE (1024 * 1024)
+ 
++#define ATH10K_TX_POWER_MAX_VAL 70
++#define ATH10K_TX_POWER_MIN_VAL 0
++
+ extern unsigned int ath10k_debug_mask;
+ 
+ __printf(2, 3) void ath10k_info(struct ath10k *ar, const char *fmt, ...);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index d4b7a16..79aaf6c 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5824,6 +5824,34 @@ static int ath10k_mac_tdls_vifs_count(struct ieee80211_hw *hw)
+ 	return num_tdls_vifs;
+ }
+ 
++static int ath10k_sta_set_txpwr(struct ieee80211_hw *hw,
++				struct ieee80211_vif *vif,
++				struct ieee80211_sta *sta)
++{
++	struct ath10k *ar = hw->priv;
++	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
++	int ret = 0;
++	u8 txpwr;
++
++	txpwr = sta->txpwr;
++	if (txpwr > ATH10K_TX_POWER_MAX_VAL || txpwr < ATH10K_TX_POWER_MIN_VAL)
++		return -EINVAL;
++
++	mutex_lock(&ar->conf_mutex);
++
++	ret = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
++					WMI_PEER_USE_FIXED_PWR, txpwr);
++	if (ret) {
++		ath10k_warn(ar, "failed to set tx power for station ret: %d\n",
++			    ret);
++		goto out;
++	}
++
++out:
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
+ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 			    struct ieee80211_vif *vif,
+ 			    struct ieee80211_sta *sta,
+@@ -7368,6 +7396,7 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.set_key			= ath10k_set_key,
+ 	.set_default_unicast_key        = ath10k_set_default_unicast_key,
+ 	.sta_state			= ath10k_sta_state,
++	.sta_set_txpwr			= ath10k_sta_set_txpwr,
+ 	.conf_tx			= ath10k_conf_tx,
+ 	.remain_on_channel		= ath10k_remain_on_channel,
+ 	.cancel_remain_on_channel	= ath10k_cancel_remain_on_channel,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 90f594e..f4d4e6e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -5761,6 +5761,7 @@ enum wmi_peer_param {
+ 	WMI_PEER_CHAN_WIDTH = 0x4,
+ 	WMI_PEER_NSS        = 0x5,
+ 	WMI_PEER_USE_4ADDR  = 0x6,
++	WMI_PEER_USE_FIXED_PWR = 0x8,
+ 	WMI_PEER_DUMMY_VAR  = 0xff, /* dummy parameter for STA PS workaround */
+ };
+ 
+-- 
+1.9.1
 
-On Tue, Jun 14, 2016 at 1:30 AM, Mohammed Shafi Shajakhan
-<mohammed@codeaurora.org> wrote:
-> Hi Gaurang,
->
-> On Tue, Jun 14, 2016 at 01:08:29AM -0400, Gaurang Ramesh Naik wrote:
->> Apologies for my previous e-mail. I had read the whole page once, but
->> somehow I missed the point about 64 bins for VHT80. It's working now.
->
-> [shafi] may i know the chipset you are testing, also if its feasible
-> you can share the graph plots of the spectral scan .
->
->>
->> On Tue, Jun 14, 2016 at 12:37 AM, Gaurang Ramesh Naik <gaurang@vt.edu> wrote:
->> > Hello,
->> >
->> > I was trying the ath10k's spectral scan. I used the following commands
->> > given on the link
->> > https://wireless.wiki.kernel.org/en/users/drivers/ath10k/spectral
->> >
->> > echo 8 > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_count
->> > echo manual > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
->> > echo trigger > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
->> > cat /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan0 >> /tmp/fft.dump
->> >
->> > I am using OpenWrt Bleeding edge. In the HT20 and HT40 mode, I
->> > correctly get 8 samples. However, in the VHT80 mode, the /tmp/fft.dump
->> > file generated is empty.
->> >
->> > In the open issues on the above link, it said that the HT40 and HT20
->> > modes ignore the count parameter. That isn't the case for me. I seem
->> > to get correct # of samples (I view the dump file using
->> > https://github.com/simonwunderlich/FFT_eval). However, in the VHT80
->> > mode, there seems to be no output. Am I doing something wrong here?
->> >
->
-> regards,
-> shafi
 
 _______________________________________________
 ath10k mailing list
