@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCqAD-0007s7-GW
- for ath10k@lists.infradead.org; Tue, 14 Jun 2016 15:22:02 +0000
-Date: Tue, 14 Jun 2016 20:51:31 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH v4 1/2] ath10k: Add support for ath10k_sta_statistics
- support
-Message-ID: <20160614152131.GA3941@atheros-ThinkPad-T61>
-References: <1465890866-2390-1-git-send-email-mohammed@qca.qualcomm.com>
- <87k2hr3m9r.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bCqRI-0005Vf-Ev
+ for ath10k@lists.infradead.org; Tue, 14 Jun 2016 15:39:41 +0000
+Message-ID: <57600A3C.9000104@candelatech.com>
+Date: Tue, 14 Jun 2016 06:44:28 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87k2hr3m9r.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Regression in qca99x0 on x86 platform (kernel: 4.7.0-rc1-wt-ath
+References: <f495d218d54a4c4c859849a85f38ab0c@aphydexm01b.ap.qualcomm.com>
+ <57506C7A.7070109@candelatech.com>
+ <c3facd0acc1c2f49f4a4638bf0c2a591@codeaurora.org>
+ <57507269.1060108@candelatech.com>
+ <ac15f3e10cedc20199051bab88b36eba@codeaurora.org>
+In-Reply-To: <ac15f3e10cedc20199051bab88b36eba@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +22,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
- Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+To: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Cc: nbd@openwrt.org, ath10k@lists.infradead.org, "Manoharan,
+ Rajkumar" <rmanohar@qti.qualcomm.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>, nbd@nbd.name
 
-Hi Kalle,
 
-On Tue, Jun 14, 2016 at 01:58:25PM +0000, Valo, Kalle wrote:
-> Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
-> 
-> > From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> >
-> > Enable support for 'drv_sta_statistics' callback.
-> > Export rx_duration support if available to cfg80211/nl80211
-> >
-> > This can also act as a placeholder for any new per STA stats support
-> >
-> > Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> > ---
-> >
-> > [v4] rebased over 'pending' branch
-> > [v3] removed conditions for ath10k state checks based on Michal's suggestion
-> >
-> > Both the dependent changes are merged now in master tree
-> >
-> > 1. cfg80211/nl80211: Add support for NL80211_STA_INFO_RX_DURATION
-> > 2. iw: Add support for NL80211_STA_INFO_RX_DURATION netlink
-> >  attribute
-> 
-> But these are not in ath-next branch yet, so I can't take these until I
-> have updated ath-next.
 
-[shafi] oops ! sorry i thought they are finally in
+On 06/13/2016 11:21 PM, Rajkumar Manoharan wrote:
+> On 2016-06-02 23:22, Ben Greear wrote:
 
-> 
-> Also please ping instead of resending patches. These are already waiting
-> in patchwork:
-> 
-> https://patchwork.kernel.org/patch/8993601/
-> https://patchwork.kernel.org/patch/8993621/
+>> At the time, I bisected to this commit as well, but I decided to just
+>> live with it
+>> since it seemed it fixed some other bug and we had a work-around.  My
+>> understanding
+>> is that without the patch above, some ARM systems failed to work.
+>>
+> Ben,
 >
+> I posted a fix for the freeze issue (https://patchwork.kernel.org/patch/9175029/). Can you please give a try with VT-d disabled?
+>
+> -Rajkumar
 
-[shafi] oh ok thanks, sorry i thought this required a rebased over pending
-branch next time i will do this
+Yes, but it might be a bit.  I just ported my patches to 4.7, and will add yours
+there.  We are mainly focussed on getting a stable 4.4+ out the door currently though.
 
-a) ping you first
-b) if required send a rebased version
+Were you able to test on the ARM platform that originally had the problem that
+Felix's patch was supposed to fix?
 
-regards,
-shafi
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
