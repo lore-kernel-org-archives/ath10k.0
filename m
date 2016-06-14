@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCgvt-0008T9-EV
- for ath10k@lists.infradead.org; Tue, 14 Jun 2016 05:30:37 +0000
-Date: Tue, 14 Jun 2016 11:00:11 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: Problem with spectral scan in VHT80 mode
-Message-ID: <20160614053011.GB2800@atheros-ThinkPad-T61>
-References: <CAFc9h7vk6e-BntP+GMv8s2jaNSOkA=37rChTjss2-7mgupAv7Q@mail.gmail.com>
- <CAFc9h7uABMUJ349bgNJLcZDNL5hyp96CrYoc8PD9VDLv_-8rqw@mail.gmail.com>
+ id 1bCgy3-0000ka-Gj
+ for ath10k@lists.infradead.org; Tue, 14 Jun 2016 05:32:51 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Fix a typo in spectral code commments
+Date: Tue, 14 Jun 2016 11:03:54 +0530
+Message-ID: <1465882434-594-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAFc9h7uABMUJ349bgNJLcZDNL5hyp96CrYoc8PD9VDLv_-8rqw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +20,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Gaurang Ramesh Naik <gaurang@vt.edu>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Hi Gaurang,
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-On Tue, Jun 14, 2016 at 01:08:29AM -0400, Gaurang Ramesh Naik wrote:
-> Apologies for my previous e-mail. I had read the whole page once, but
-> somehow I missed the point about 64 bins for VHT80. It's working now.
+Found this obvious typo while going through the spectral
+code design in ath10k
 
-[shafi] may i know the chipset you are testing, also if its feasible
-you can share the graph plots of the spectral scan .
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/spectral.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> On Tue, Jun 14, 2016 at 12:37 AM, Gaurang Ramesh Naik <gaurang@vt.edu> wrote:
-> > Hello,
-> >
-> > I was trying the ath10k's spectral scan. I used the following commands
-> > given on the link
-> > https://wireless.wiki.kernel.org/en/users/drivers/ath10k/spectral
-> >
-> > echo 8 > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_count
-> > echo manual > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
-> > echo trigger > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
-> > cat /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan0 >> /tmp/fft.dump
-> >
-> > I am using OpenWrt Bleeding edge. In the HT20 and HT40 mode, I
-> > correctly get 8 samples. However, in the VHT80 mode, the /tmp/fft.dump
-> > file generated is empty.
-> >
-> > In the open issues on the above link, it said that the HT40 and HT20
-> > modes ignore the count parameter. That isn't the case for me. I seem
-> > to get correct # of samples (I view the dump file using
-> > https://github.com/simonwunderlich/FFT_eval). However, in the VHT80
-> > mode, there seems to be no output. Am I doing something wrong here?
-> >
+diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
+index 4671cfb..4510906 100644
+--- a/drivers/net/wireless/ath/ath10k/spectral.c
++++ b/drivers/net/wireless/ath/ath10k/spectral.c
+@@ -101,7 +101,7 @@ int ath10k_spectral_process_fft(struct ath10k *ar,
+ 		break;
+ 	case 80:
+ 		/* TODO: As experiments with an analogue sender and various
+-		 * configuaritions (fft-sizes of 64/128/256 and 20/40/80 Mhz)
++		 * configurations (fft-sizes of 64/128/256 and 20/40/80 Mhz)
+ 		 * show, the particular configuration of 80 MHz/64 bins does
+ 		 * not match with the other smaples at all. Until the reason
+ 		 * for that is found, don't report these samples.
+-- 
+1.7.9.5
 
-regards,
-shafi
 
 _______________________________________________
 ath10k mailing list
