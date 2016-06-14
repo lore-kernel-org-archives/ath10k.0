@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCmvF-0007D3-2i
- for ath10k@lists.infradead.org; Tue, 14 Jun 2016 11:54:21 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Fix some of the macro definitions of HTT_RX_IND
- message
-Date: Tue, 14 Jun 2016 11:53:53 +0000
-Message-ID: <87wpls2dgv.fsf@kamboji.qca.qualcomm.com>
-References: <1464870025-4557-1-git-send-email-vthiagar@qti.qualcomm.com>
-In-Reply-To: <1464870025-4557-1-git-send-email-vthiagar@qti.qualcomm.com>
- (Vasanthakumar Thiagarajan's message of "Thu, 2 Jun 2016 17:50:25	+0530")
-Content-Language: en-US
-Content-ID: <16B087AE1C71BE45ADC6122A481D3DCE@qualcomm.com>
+ id 1bCmy3-0000RS-6Q
+ for ath10k@lists.infradead.org; Tue, 14 Jun 2016 11:57:15 +0000
 MIME-Version: 1.0
+Subject: Re: [v3,1/2] ath10k: remove duplicate and unused rx rate flags
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1464877482-14620-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <8c7494314722406d9af8328fdc51b1ba@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 14 Jun 2016 13:56:44 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +21,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Thiagarajan, Vasanthakumar" <vthiagar@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> 
+> All these flags are not used and their use is completely
+> covered by 'ath10k_hw_rate_ofdm', 'ath10k_hw_rate_cck',
+> and RX_PPDU_START_RATE_FLAG
+> 
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-> Only five bits are defined to pass tid information in HTT_RX_IND
-> message, so the mask which can be used to extract tid should be 0x1f
-> instead of the current 0x3f. Also, macros which can be used to extract
-> flush_valid and release_valid bits have to be left shifted one bit less
-> because these information follow the tid right after. This patch does
-> not really fix anything functionally because these macros are not used
-> currently.
->
-> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Thanks, 2 patches applied to ath-next branch of ath.git:
 
-Applied to ath.git, thanks.
+9cd24451859a ath10k: remove duplicate and unused rx rate flags
+5269c65900d9 ath10k: fix CCK h/w rates for QCA99X0 and newer chipsets
 
 -- 
-Kalle Valo
+Sent by pwcli
+https://patchwork.kernel.org/patch/9150143/
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
