@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bD0zj-00043o-VB
- for ath10k@lists.infradead.org; Wed, 15 Jun 2016 02:55:56 +0000
+ id 1bD48x-00016M-1x
+ for ath10k@lists.infradead.org; Wed, 15 Jun 2016 06:17:39 +0000
+Date: Wed, 15 Jun 2016 11:46:53 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: Problem with spectral scan in VHT80 mode
+Message-ID: <20160615061653.GA4593@atheros-ThinkPad-T61>
+References: <CAFc9h7vk6e-BntP+GMv8s2jaNSOkA=37rChTjss2-7mgupAv7Q@mail.gmail.com>
+ <CAFc9h7uABMUJ349bgNJLcZDNL5hyp96CrYoc8PD9VDLv_-8rqw@mail.gmail.com>
+ <20160614053011.GB2800@atheros-ThinkPad-T61>
+ <CAFc9h7u4yTesQR3D++D3sKZ9Lv9tek_=JMtwzs=1jTNnXjVvBw@mail.gmail.com>
 MIME-Version: 1.0
-Date: Wed, 15 Jun 2016 08:25:34 +0530
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: Regression in qca99x0 on x86 platform (kernel: 4.7.0-rc1-wt-ath
-In-Reply-To: <57600A3C.9000104@candelatech.com>
-References: <f495d218d54a4c4c859849a85f38ab0c@aphydexm01b.ap.qualcomm.com>
- <57506C7A.7070109@candelatech.com>
- <c3facd0acc1c2f49f4a4638bf0c2a591@codeaurora.org>
- <57507269.1060108@candelatech.com>
- <ac15f3e10cedc20199051bab88b36eba@codeaurora.org>
- <57600A3C.9000104@candelatech.com>
-Message-ID: <f91f033b77e415fc14f94d5890115e09@codeaurora.org>
+Content-Disposition: inline
+In-Reply-To: <CAFc9h7u4yTesQR3D++D3sKZ9Lv9tek_=JMtwzs=1jTNnXjVvBw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +22,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: nbd@openwrt.org, ath10k@lists.infradead.org, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>, nbd@nbd.name
+To: Gaurang Ramesh Naik <gaurang@vt.edu>
+Cc: ath10k@lists.infradead.org
 
-On 2016-06-14 19:14, Ben Greear wrote:
-> On 06/13/2016 11:21 PM, Rajkumar Manoharan wrote:
->> On 2016-06-02 23:22, Ben Greear wrote:
-> 
->>> At the time, I bisected to this commit as well, but I decided to just
->>> live with it
->>> since it seemed it fixed some other bug and we had a work-around.  My
->>> understanding
->>> is that without the patch above, some ARM systems failed to work.
->>> 
->> Ben,
->> 
->> I posted a fix for the freeze issue 
->> (https://patchwork.kernel.org/patch/9175029/). Can you please give a 
->> try with VT-d disabled?
->> 
->> -Rajkumar
-> 
-> Yes, but it might be a bit.  I just ported my patches to 4.7, and will 
-> add yours
-> there.  We are mainly focussed on getting a stable 4.4+ out the door
-> currently though.
-> 
-Thanks..
+Hi Gaurang,
 
-> Were you able to test on the ARM platform that originally had the 
-> problem that
-> Felix's patch was supposed to fix?
-> 
-I tested this patch on ARM platform. Unfortunately I did not observe 
-original dma_alloc_coherent failures. Felix replaced dma_alloc_coherent 
-by kmalloc + dma_map_single. I retained the logic as it is. Thee change 
-is that host memory chuck size for target is limited by 256 KiB.
+thanks a lot will check the spectral scan results.
 
--Rajkumar
+regards,
+shafi
+
+On Tue, Jun 14, 2016 at 12:33:38PM -0400, Gaurang Ramesh Naik wrote:
+> Hi Shafi,
+> 
+> I am using QCA9882 (I'm using RB911G-5HPacD). This is what I observed
+> http://postimg.org/image/vha3pmvhz/
+> 
+> I have one AP-Client running iperf over HT40 and I'm using another AP
+> for the scan.
+> 
+> Thanks,
+> Gaurang.
+> 
+> On Tue, Jun 14, 2016 at 1:30 AM, Mohammed Shafi Shajakhan
+> <mohammed@codeaurora.org> wrote:
+> > Hi Gaurang,
+> >
+> > On Tue, Jun 14, 2016 at 01:08:29AM -0400, Gaurang Ramesh Naik wrote:
+> >> Apologies for my previous e-mail. I had read the whole page once, but
+> >> somehow I missed the point about 64 bins for VHT80. It's working now.
+> >
+> > [shafi] may i know the chipset you are testing, also if its feasible
+> > you can share the graph plots of the spectral scan .
+> >
+> >>
+> >> On Tue, Jun 14, 2016 at 12:37 AM, Gaurang Ramesh Naik <gaurang@vt.edu> wrote:
+> >> > Hello,
+> >> >
+> >> > I was trying the ath10k's spectral scan. I used the following commands
+> >> > given on the link
+> >> > https://wireless.wiki.kernel.org/en/users/drivers/ath10k/spectral
+> >> >
+> >> > echo 8 > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_count
+> >> > echo manual > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
+> >> > echo trigger > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
+> >> > cat /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan0 >> /tmp/fft.dump
+> >> >
+> >> > I am using OpenWrt Bleeding edge. In the HT20 and HT40 mode, I
+> >> > correctly get 8 samples. However, in the VHT80 mode, the /tmp/fft.dump
+> >> > file generated is empty.
+> >> >
+> >> > In the open issues on the above link, it said that the HT40 and HT20
+> >> > modes ignore the count parameter. That isn't the case for me. I seem
+> >> > to get correct # of samples (I view the dump file using
+> >> > https://github.com/simonwunderlich/FFT_eval). However, in the VHT80
+> >> > mode, there seems to be no output. Am I doing something wrong here?
+> >> >
+> >
+> > regards,
+> > shafi
+> 
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
