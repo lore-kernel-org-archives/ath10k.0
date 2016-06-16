@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bDXoA-0007NP-Th
- for ath10k@lists.infradead.org; Thu, 16 Jun 2016 13:58:11 +0000
+ id 1bDXyK-0006Hs-AP
+ for ath10k@lists.infradead.org; Thu, 16 Jun 2016 14:08:40 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k:  Fix mgmt tx status for 10.4.3 firmware.
-Date: Thu, 16 Jun 2016 13:57:43 +0000
-Message-ID: <87shwdw815.fsf@kamboji.qca.qualcomm.com>
-References: <1456782654-24723-1-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1456782654-24723-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Mon, 29 Feb 2016 13:50:54	-0800")
+Subject: Re: [PATCH] ath10k: add support for controlling tx power to a station
+Date: Thu, 16 Jun 2016 14:08:13 +0000
+Message-ID: <87fusdw7jn.fsf@kamboji.qca.qualcomm.com>
+References: <201606150220.30TL93eZ%fengguang.wu@intel.com>
+In-Reply-To: <201606150220.30TL93eZ%fengguang.wu@intel.com> (kbuild test
+ robot's message of "Wed, 15 Jun 2016 02:29:54 +0800")
 Content-Language: en-US
-Content-ID: <C5B36E9484E0B64088D1183998027540@qualcomm.com>
+Content-ID: <805EA70182FCF34BA9E348E5EE9D854E@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,37 +25,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "greearb@candelatech.com" <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: kbuild test robot <lkp@intel.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "arnagara@codeaurora.org" <arnagara@codeaurora.org>, "Nagarajan,
+ Ashok Raj" <arnagara@qti.qualcomm.com>, "kbuild-all@01.org" <kbuild-all@01.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-greearb@candelatech.com writes:
+kbuild test robot <lkp@intel.com> writes:
 
-> From: Ben Greear <greearb@candelatech.com>
+> [auto build test ERROR on ath6kl/ath-next]
+> [also build test ERROR on v4.7-rc3 next-20160614]
+> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
 >
-> When testing a 10.4.3 firmware in station mode, I notice that
-> when the AP is powered down, the ath10k does not notice AP is gone
-> because mgt frames get tx status of 3, which is not handled.
+> url:    https://github.com/0day-ci/linux/commits/Ashok-Raj-Nagarajan/ath10k-add-support-for-controlling-tx-power-to-a-station/20160615-014225
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
+> config: x86_64-allmodconfig (attached as .config)
+> compiler: gcc-6 (Debian 6.1.1-1) 6.1.1 20160430
+> reproduce:
+>         # save the attached .config to linux build tree
+>         make ARCH=x86_64 
 >
-> It appears that status 3 means something similar to failed-retry.
+> All errors (new ones prefixed by >>):
 >
-> Treating it thus lets the station disconnect properly.
->
-> Tested against a non-stock 10.4.3 firmware, but likely upstream
-> firmware acts similarly in this case.
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> ---
->
-> This patch is against a heavily patched tree based on 4.4, hopefully
-> it can be applied to upstream code w/out too much trouble.
->
-> Someone should verify this on stock 10.4-ish firmware before applying.
+>    drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_sta_set_txpwr':
+>>> drivers/net/wireless/ath/ath10k/mac.c:5836:13: error: 'struct ieee80211_sta' has no member named 'txpwr'
+>      txpwr = sta->txpwr;
+>                 ^~
+>    drivers/net/wireless/ath/ath10k/mac.c: At top level:
+>>> drivers/net/wireless/ath/ath10k/mac.c:7399:2: error: unknown field 'sta_set_txpwr' specified in initializer
+>      .sta_set_txpwr   = ath10k_sta_set_txpwr,
+>      ^
+>>> drivers/net/wireless/ath/ath10k/mac.c:7399:21: error: initialization from incompatible pointer type [-Werror=incompatible-pointer-types]
+>      .sta_set_txpwr   = ath10k_sta_set_txpwr,
+>                         ^~~~~~~~~~~~~~~~~~~~
+>    drivers/net/wireless/ath/ath10k/mac.c:7399:21: note: (near initialization for 'ath10k_ops.sta_pre_rcu_remove')
+>    cc1: some warnings being treated as errors
 
-Has anyone tested this with stock driver and stock firmware?
-
-Full patch here:
-
-https://patchwork.kernel.org/patch/8460831/
+These errors are expected as this depends on a mac80211 patch which is
+not yet applied.
 
 -- 
 Kalle Valo
