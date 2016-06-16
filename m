@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bDWo0-00050I-RG
- for ath10k@lists.infradead.org; Thu, 16 Jun 2016 12:53:57 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Disable TX_STBC for tx chainmask of 1
-Date: Thu, 16 Jun 2016 18:25:13 +0530
-Message-ID: <1466081713-8122-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1bDXoA-0007NP-Th
+ for ath10k@lists.infradead.org; Thu, 16 Jun 2016 13:58:11 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k:  Fix mgmt tx status for 10.4.3 firmware.
+Date: Thu, 16 Jun 2016 13:57:43 +0000
+Message-ID: <87shwdw815.fsf@kamboji.qca.qualcomm.com>
+References: <1456782654-24723-1-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1456782654-24723-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Mon, 29 Feb 2016 13:50:54	-0800")
+Content-Language: en-US
+Content-ID: <C5B36E9484E0B64088D1183998027540@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,47 +25,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: "greearb@candelatech.com" <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+greearb@candelatech.com writes:
 
-Disable TX_STBC for both HT and VHT if the devices tx chainmask is '1'
-TX_STBC is required only for devices with tx_chainmask > 1. This fixes
-a ping failure for QCA9887 (1x1) in HT/VHT mode
+> From: Ben Greear <greearb@candelatech.com>
+>
+> When testing a 10.4.3 firmware in station mode, I notice that
+> when the AP is powered down, the ath10k does not notice AP is gone
+> because mgt frames get tx status of 3, which is not handled.
+>
+> It appears that status 3 means something similar to failed-retry.
+>
+> Treating it thus lets the station disconnect properly.
+>
+> Tested against a non-stock 10.4.3 firmware, but likely upstream
+> firmware acts similarly in this case.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> ---
+>
+> This patch is against a heavily patched tree based on 4.4, hopefully
+> it can be applied to upstream code w/out too much trouble.
+>
+> Someone should verify this on stock 10.4-ish firmware before applying.
 
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Has anyone tested this with stock driver and stock firmware?
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 1fe33c36..5e40922 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4224,6 +4224,9 @@ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
- 			mcs_map |= IEEE80211_VHT_MCS_NOT_SUPPORTED << (i * 2);
- 	}
- 
-+	if (ar->cfg_tx_chainmask <= 1)
-+		vht_cap.cap &= ~IEEE80211_VHT_CAP_TXSTBC;
-+
- 	vht_cap.vht_mcs.rx_mcs_map = cpu_to_le16(mcs_map);
- 	vht_cap.vht_mcs.tx_mcs_map = cpu_to_le16(mcs_map);
- 
-@@ -4261,7 +4264,7 @@ static struct ieee80211_sta_ht_cap ath10k_get_ht_cap(struct ath10k *ar)
- 		ht_cap.cap |= smps;
- 	}
- 
--	if (ar->ht_cap_info & WMI_HT_CAP_TX_STBC)
-+	if (ar->ht_cap_info & WMI_HT_CAP_TX_STBC && (ar->cfg_tx_chainmask > 1))
- 		ht_cap.cap |= IEEE80211_HT_CAP_TX_STBC;
- 
- 	if (ar->ht_cap_info & WMI_HT_CAP_RX_STBC) {
+Full patch here:
+
+https://patchwork.kernel.org/patch/8460831/
+
 -- 
-1.9.1
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
