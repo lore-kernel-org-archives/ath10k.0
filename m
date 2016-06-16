@@ -1,26 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from omr1.cc.ipv6.vt.edu ([2607:b400:92:8300:0:c6:2117:b0e]
- helo=omr1.cc.vt.edu)
+Received: from mail-oi0-x22b.google.com ([2607:f8b0:4003:c06::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bDdQv-0004wm-SM
- for ath10k@lists.infradead.org; Thu, 16 Jun 2016 19:58:34 +0000
-Received: from mr5.cc.vt.edu (mr5.cc.ipv6.vt.edu
- [IPv6:2001:468:c80:2105:0:2b8:b328:9234])
- by omr1.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u5GJw53E009522
- for <ath10k@lists.infradead.org>; Thu, 16 Jun 2016 15:58:05 -0400
-Received: from mail-lf0-f69.google.com (mail-lf0-f69.google.com
- [209.85.215.69])
- by mr5.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u5GJvxbK010036
- for <ath10k@lists.infradead.org>; Thu, 16 Jun 2016 15:58:04 -0400
-Received: by mail-lf0-f69.google.com with SMTP id g18so31201095lfg.2
- for <ath10k@lists.infradead.org>; Thu, 16 Jun 2016 12:58:04 -0700 (PDT)
+ id 1bDdYz-0002R8-HZ
+ for ath10k@lists.infradead.org; Thu, 16 Jun 2016 20:06:54 +0000
+Received: by mail-oi0-x22b.google.com with SMTP id w5so86678370oib.2
+ for <ath10k@lists.infradead.org>; Thu, 16 Jun 2016 13:06:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5758FD6B.40409@candelatech.com>
+In-Reply-To: <CAFc9h7s69rVpMNUx553zsHfLf2uLcqx0jhKqma-+SxA6EkybMA@mail.gmail.com>
 References: <CAFc9h7uxTOUxONvW-gvgkFLUNR9OBn09kfetF9gqAtcNqN3SLg@mail.gmail.com>
  <5758FD6B.40409@candelatech.com>
-From: Gaurang Ramesh Naik <gaurang@vt.edu>
-Date: Thu, 16 Jun 2016 15:57:57 -0400
-Message-ID: <CAFc9h7s69rVpMNUx553zsHfLf2uLcqx0jhKqma-+SxA6EkybMA@mail.gmail.com>
+ <CAFc9h7s69rVpMNUx553zsHfLf2uLcqx0jhKqma-+SxA6EkybMA@mail.gmail.com>
+From: Dave Taht <dave.taht@gmail.com>
+Date: Thu, 16 Jun 2016 13:06:31 -0700
+Message-ID: <CAA93jw51DHMCsP1gn4NKvZ87t53LtNhqkX=SoJ_Jd8FUYBNP5A@mail.gmail.com>
 Subject: Re: Dynamic Bandwidth in hw rate control
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,82 +22,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org
+To: Gaurang Ramesh Naik <gaurang@vt.edu>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
 
-Hi Ben,
-
-Thanks for your reply.
-
-I wanted to know if the dynamic bandwidth option implemented in ath10k
-is the same as that mentioned in the standard, or does it deviate? I
-tried to look for any documentation on ath10k dynamic bandwidth, but
-could not find any.
-
-If I am not wrong, on the secondary channel, the sender senses the
-channel for PIFS interval of time immediately preceding the start of
-the TXOP (9.19.2.8 in the standard). In the static mode, if the
-secondary channel is sensed busy, the sender waits until all channels
-become idle; but in the dynamic mode, the sender sends on the primary
-and (adjacent) secondary channel that are not busy.
-
-However, the documentation for dynamic bandwidth in ath10k/mac.c seems
-to suggest that the transmission retries are carried over narrower
-bandwidth in dynamic mode. Does this mean the same as what is given in
-the standard? Or is the dynamic mode implemented differently? Any help
-is appreciated.
-
-Thanks,
-Gaurang.
-
-On Thu, Jun 9, 2016 at 1:23 AM, Ben Greear <greearb@candelatech.com> wrote:
->
->
-> On 06/08/2016 08:10 PM, Gaurang Ramesh Naik wrote:
->>
->> Hi,
->>
->> I needed a small clarification related to dynamic bandwidth setup. The
->> documentation in wmi.h says " When enabled HW rate control tries
->> different bandwidths when retransmitting frames."
->>
->> Does this mean that each packet is first always tried over VHT80 and
->> if that fails it goes to HT40 and then to HT20? I tried this with one
->> AP-Sta operating in VHT80 and one AP operating in its first secondary
->> channel. When I check the rx rate info using "iw dev wlanx station
->> dump", the bandwidth seems to sometimes alternate between 20 and 80,
->> but sometimes it stays fixed at 20. Hence, I was wondering what really
->> happens.
->
->
-> For one thing, if the hardware detects interference on secondary channels,
-> then it may decide to transmit a 20Mhz encoding.
->
-> The rate-ctrl algs in the firmware differ from release to release, but
-> the general goal is to transmit with the fastest encoding rate.
->
-> Thanks,
-> Ben
->
->>
->> Thanks,
->> Gaurang.
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
->>
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gVGh1LCBKdW4gMTYsIDIwMTYgYXQgMTI6NTcgUE0sIEdhdXJhbmcgUmFtZXNoIE5haWsgPGdh
+dXJhbmdAdnQuZWR1PiB3cm90ZToKPiBIaSBCZW4sCj4KPiBUaGFua3MgZm9yIHlvdXIgcmVwbHku
+Cj4KPiBJIHdhbnRlZCB0byBrbm93IGlmIHRoZSBkeW5hbWljIGJhbmR3aWR0aCBvcHRpb24gaW1w
+bGVtZW50ZWQgaW4gYXRoMTBrCj4gaXMgdGhlIHNhbWUgYXMgdGhhdCBtZW50aW9uZWQgaW4gdGhl
+IHN0YW5kYXJkLCBvciBkb2VzIGl0IGRldmlhdGU/IEkKPiB0cmllZCB0byBsb29rIGZvciBhbnkg
+ZG9jdW1lbnRhdGlvbiBvbiBhdGgxMGsgZHluYW1pYyBiYW5kd2lkdGgsIGJ1dAo+IGNvdWxkIG5v
+dCBmaW5kIGFueS4KClNvIGZhciBhcyBJIGtub3cgInJhdGUgY29udHJvbCIgaXMgb25lIG9mIHRo
+ZSBtYWpvciBoYW5kd2F2ZXMgaW4gdGhlCnN0YW5kYXJkIGFuZCBkaWZmZXJzIGZyb20gdmVuZG9y
+IHRvIHZlbmRvciBhbmQgODAyLjExIHN0YW5kYXJkIHRvCmFub3RoZXIuCgpUaGUgcGllY2VzIG9m
+IGhvdyA4MDIuMTFhYyBzaG91bGQgZmFsbCBiYWNrIHRvIG5hcnJvd2VyIGNoYW5uZWxzLCAgSQp0
+aGluayB5b3UndmUgY29ycmVjdGx5IGlkZW50aWZpZWQgYmVsb3cgKGFzIGZvciB3aWR0aCkuLi4K
+CmJ1dCBhY3R1YWxseSBjaG9vc2luZyBhIE1DUyByYXRlLCBudW1iZXIgb2YgcmV0cmllcywgZm9y
+bWF0dGluZyBhbgphZ2dyZWdhdGUuLi4gYW5kIG90aGVyIGZhY3RvcnMsIGFyZS4uLiBkaWZmZXJl
+bnQuCgpJJ3ZlIHRyaWVkIHRvIHBvaW50IGF0IHRoZSBmaXJzdCBhbmQgYmVzdCBwYXBlciB0aGF0
+IHNob3dzIGhvdwptaW5zdHJlbCB3b3JrcyBoZXJlOgoKaHR0cDovL2Jsb2cuY2Vyb3dydC5vcmcv
+cG9zdC9taW5zdHJlbC8KCihhbmQgbWluc3RyZWwncyBrbm93biBwcm9ibGVtcykgYnV0IHRoYXQn
+cyBub3Qgd2hhdCBhdGgxMGsgdXNlcy4KCkkgd291bGQgKndlbGNvbWUqIGZ1bGwgZG9jdW1lbnRh
+dGlvbiAob3IgY29kZSEpIG9uIGhvdyBhdGgxMGsgY2hvc2VzCml0cyByYXRlcy4gT3IgYW55IG90
+aGVyIHdpZmkgY2hpcHNldCdzIGJsb2IsIGZyYW5rbHkuCgo+IElmIEkgYW0gbm90IHdyb25nLCBv
+biB0aGUgc2Vjb25kYXJ5IGNoYW5uZWwsIHRoZSBzZW5kZXIgc2Vuc2VzIHRoZQo+IGNoYW5uZWwg
+Zm9yIFBJRlMgaW50ZXJ2YWwgb2YgdGltZSBpbW1lZGlhdGVseSBwcmVjZWRpbmcgdGhlIHN0YXJ0
+IG9mCj4gdGhlIFRYT1AgKDkuMTkuMi44IGluIHRoZSBzdGFuZGFyZCkuIEluIHRoZSBzdGF0aWMg
+bW9kZSwgaWYgdGhlCj4gc2Vjb25kYXJ5IGNoYW5uZWwgaXMgc2Vuc2VkIGJ1c3ksIHRoZSBzZW5k
+ZXIgd2FpdHMgdW50aWwgYWxsIGNoYW5uZWxzCj4gYmVjb21lIGlkbGU7IGJ1dCBpbiB0aGUgZHlu
+YW1pYyBtb2RlLCB0aGUgc2VuZGVyIHNlbmRzIG9uIHRoZSBwcmltYXJ5Cj4gYW5kIChhZGphY2Vu
+dCkgc2Vjb25kYXJ5IGNoYW5uZWwgdGhhdCBhcmUgbm90IGJ1c3kuCj4KPiBIb3dldmVyLCB0aGUg
+ZG9jdW1lbnRhdGlvbiBmb3IgZHluYW1pYyBiYW5kd2lkdGggaW4gYXRoMTBrL21hYy5jIHNlZW1z
+Cj4gdG8gc3VnZ2VzdCB0aGF0IHRoZSB0cmFuc21pc3Npb24gcmV0cmllcyBhcmUgY2FycmllZCBv
+dmVyIG5hcnJvd2VyCj4gYmFuZHdpZHRoIGluIGR5bmFtaWMgbW9kZS4gRG9lcyB0aGlzIG1lYW4g
+dGhlIHNhbWUgYXMgd2hhdCBpcyBnaXZlbiBpbgo+IHRoZSBzdGFuZGFyZD8gT3IgaXMgdGhlIGR5
+bmFtaWMgbW9kZSBpbXBsZW1lbnRlZCBkaWZmZXJlbnRseT8gQW55IGhlbHAKPiBpcyBhcHByZWNp
+YXRlZC4KPgo+IFRoYW5rcywKPiBHYXVyYW5nLgo+Cj4gT24gVGh1LCBKdW4gOSwgMjAxNiBhdCAx
+OjIzIEFNLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4+Cj4+
+Cj4+IE9uIDA2LzA4LzIwMTYgMDg6MTAgUE0sIEdhdXJhbmcgUmFtZXNoIE5haWsgd3JvdGU6Cj4+
+Pgo+Pj4gSGksCj4+Pgo+Pj4gSSBuZWVkZWQgYSBzbWFsbCBjbGFyaWZpY2F0aW9uIHJlbGF0ZWQg
+dG8gZHluYW1pYyBiYW5kd2lkdGggc2V0dXAuIFRoZQo+Pj4gZG9jdW1lbnRhdGlvbiBpbiB3bWku
+aCBzYXlzICIgV2hlbiBlbmFibGVkIEhXIHJhdGUgY29udHJvbCB0cmllcwo+Pj4gZGlmZmVyZW50
+IGJhbmR3aWR0aHMgd2hlbiByZXRyYW5zbWl0dGluZyBmcmFtZXMuIgo+Pj4KPj4+IERvZXMgdGhp
+cyBtZWFuIHRoYXQgZWFjaCBwYWNrZXQgaXMgZmlyc3QgYWx3YXlzIHRyaWVkIG92ZXIgVkhUODAg
+YW5kCj4+PiBpZiB0aGF0IGZhaWxzIGl0IGdvZXMgdG8gSFQ0MCBhbmQgdGhlbiB0byBIVDIwPyBJ
+IHRyaWVkIHRoaXMgd2l0aCBvbmUKPj4+IEFQLVN0YSBvcGVyYXRpbmcgaW4gVkhUODAgYW5kIG9u
+ZSBBUCBvcGVyYXRpbmcgaW4gaXRzIGZpcnN0IHNlY29uZGFyeQo+Pj4gY2hhbm5lbC4gV2hlbiBJ
+IGNoZWNrIHRoZSByeCByYXRlIGluZm8gdXNpbmcgIml3IGRldiB3bGFueCBzdGF0aW9uCj4+PiBk
+dW1wIiwgdGhlIGJhbmR3aWR0aCBzZWVtcyB0byBzb21ldGltZXMgYWx0ZXJuYXRlIGJldHdlZW4g
+MjAgYW5kIDgwLAo+Pj4gYnV0IHNvbWV0aW1lcyBpdCBzdGF5cyBmaXhlZCBhdCAyMC4gSGVuY2Us
+IEkgd2FzIHdvbmRlcmluZyB3aGF0IHJlYWxseQo+Pj4gaGFwcGVucy4KPj4KPj4KPj4gRm9yIG9u
+ZSB0aGluZywgaWYgdGhlIGhhcmR3YXJlIGRldGVjdHMgaW50ZXJmZXJlbmNlIG9uIHNlY29uZGFy
+eSBjaGFubmVscywKPj4gdGhlbiBpdCBtYXkgZGVjaWRlIHRvIHRyYW5zbWl0IGEgMjBNaHogZW5j
+b2RpbmcuCj4+Cj4+IFRoZSByYXRlLWN0cmwgYWxncyBpbiB0aGUgZmlybXdhcmUgZGlmZmVyIGZy
+b20gcmVsZWFzZSB0byByZWxlYXNlLCBidXQKPj4gdGhlIGdlbmVyYWwgZ29hbCBpcyB0byB0cmFu
+c21pdCB3aXRoIHRoZSBmYXN0ZXN0IGVuY29kaW5nIHJhdGUuCj4+Cj4+IFRoYW5rcywKPj4gQmVu
+Cj4+Cj4+Pgo+Pj4gVGhhbmtzLAo+Pj4gR2F1cmFuZy4KPj4+Cj4+PiBfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+Pj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+
+Pj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4+Pgo+Pgo+PiAtLQo+PiBCZW4gR3JlZWFyIDxn
+cmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4gQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRw
+Oi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawoKCgotLSAKRGF2ZSBUw6RodApMZXQncyBnbyBtYWtlIGhvbWUgcm91dGVycyBhbmQg
+d2lmaSBmYXN0ZXIhIFdpdGggYmV0dGVyIHNvZnR3YXJlIQpodHRwOi8vYmxvZy5jZXJvd3J0Lm9y
+ZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
+IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
