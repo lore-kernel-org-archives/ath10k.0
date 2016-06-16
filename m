@@ -1,20 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bDV99-0008VT-Qx
- for ath10k@lists.infradead.org; Thu, 16 Jun 2016 11:07:40 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v4 1/2] ath10k: Add support for ath10k_sta_statistics
- support
-Date: Thu, 16 Jun 2016 11:07:09 +0000
-Message-ID: <874m8tqtnp.fsf@qca.qualcomm.com>
-References: <1465890866-2390-1-git-send-email-mohammed@qca.qualcomm.com>
- <87k2hr3m9r.fsf@kamboji.qca.qualcomm.com>
- <20160614152131.GA3941@atheros-ThinkPad-T61>
-In-Reply-To: <20160614152131.GA3941@atheros-ThinkPad-T61> (Mohammed Shafi
- Shajakhan's message of "Tue, 14 Jun 2016 20:51:31 +0530")
-Content-Language: en-US
-Content-ID: <7D5E187134AFAB4DA4903170AA5A5AB0@qualcomm.com>
+ id 1bDWna-0004ws-FC
+ for ath10k@lists.infradead.org; Thu, 16 Jun 2016 12:53:30 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Enable beacon loss detection support for 10.4
+Date: Thu, 16 Jun 2016 18:24:44 +0530
+Message-ID: <1466081684-8074-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,28 +20,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
- Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Mohammed Shafi Shajakhan <mohammed@codeaurora.org> writes:
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
->> Also please ping instead of resending patches. These are already waiting
->> in patchwork:
->> 
->> https://patchwork.kernel.org/patch/8993601/
->> https://patchwork.kernel.org/patch/8993621/
->
-> [shafi] oh ok thanks, sorry i thought this required a rebased over pending
-> branch next time i will do this
->
-> a) ping you first
-> b) if required send a rebased version
+Enable beacon loss detection support for 10.4 by handling
+roam event. With this change QCA99X0 station is able to
+detect beacon loss when the AP is powered off
 
-Thanks, this way I have less patches to worry about :)
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 6279ab4..4dd35f1 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -5257,6 +5257,9 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	case WMI_10_4_PEER_STA_KICKOUT_EVENTID:
+ 		ath10k_wmi_event_peer_sta_kickout(ar, skb);
+ 		break;
++	case WMI_10_4_ROAM_EVENTID:
++		ath10k_wmi_event_roam(ar, skb);
++		break;
+ 	case WMI_10_4_HOST_SWBA_EVENTID:
+ 		ath10k_wmi_event_host_swba(ar, skb);
+ 		break;
+@@ -7903,6 +7906,7 @@ static const struct wmi_ops wmi_10_4_ops = {
+ 	.pull_phyerr = ath10k_wmi_10_4_op_pull_phyerr_ev,
+ 	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
+ 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
++	.pull_roam_ev = ath10k_wmi_op_pull_roam_ev,
+ 	.get_txbf_conf_scheme = ath10k_wmi_10_4_txbf_conf_scheme,
+ 
+ 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
 -- 
-Kalle Valo
+1.9.1
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
