@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bDhOR-0006E8-CC
- for ath10k@lists.infradead.org; Fri, 17 Jun 2016 00:12:16 +0000
-Subject: Re: Dynamic Bandwidth in hw rate control
-References: <CAFc9h7uxTOUxONvW-gvgkFLUNR9OBn09kfetF9gqAtcNqN3SLg@mail.gmail.com>
- <5758FD6B.40409@candelatech.com>
- <CAFc9h7s69rVpMNUx553zsHfLf2uLcqx0jhKqma-+SxA6EkybMA@mail.gmail.com>
- <5763120E.4040902@candelatech.com>
- <CAFc9h7uBnGK_paWPCzb_R=kFmcGKenSY6-Ab1c--pfhKn9cAWw@mail.gmail.com>
+ id 1bF6MQ-0002YU-Qt
+ for ath10k@lists.infradead.org; Mon, 20 Jun 2016 21:03:59 +0000
+Subject: Re: [PATCH v2 01/21] ath10k: Fix crash related to printing features.
+References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
+ <1462986153-16318-2-git-send-email-greearb@candelatech.com>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <57634035.20101@candelatech.com>
-Date: Thu, 16 Jun 2016 17:11:33 -0700
+Message-ID: <576856E6.2030003@candelatech.com>
+Date: Mon, 20 Jun 2016 13:49:42 -0700
 MIME-Version: 1.0
-In-Reply-To: <CAFc9h7uBnGK_paWPCzb_R=kFmcGKenSY6-Ab1c--pfhKn9cAWw@mail.gmail.com>
+In-Reply-To: <1462986153-16318-2-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,162 +23,40 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Gaurang Ramesh Naik <gaurang@vt.edu>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On 06/16/2016 03:44 PM, Gaurang Ramesh Naik wrote:
-> Thanks Ben and Dave for your replies. So what I understand is that
-> dynamic bandwidth management is a part of the rate control algorithm
-> (which is implemented in firmware) and hence I have not much control
-> over how that works.
+On 05/11/2016 10:02 AM, greearb@candelatech.com wrote:
+> From: Ben Greear <greearb@candelatech.com>
+>
+> This looks like a regression from
+> c4cdf753 (move fw_features to struct ath10k_fw_file)
 
-With stock firmware you have very little control, though newer stock
-firmware has some tweaks to rate-ctrl that the driver does not yet
-support.
-
-With my firmware and driver, you can at least disable any particular rate.
-So, you could disable all 40Mhz rates, for instance.  I'm not sure how
-useful that would be...
-
-> I am assuming your firmware is the one that can be downloaded from
-> http://www.candelatech.com/ath10k.php Is your kernel a modified one
-> too? When you say I can see the tx rate for each frame, is it through
-> some logs? I could try to get some info by using that. Thanks again.
-
-Please read that page, it has links to kernel source.
-
-tx-rate will be reported up the stack in a normal manner (ie, somewhat like
-ath9k does it).  You could instrument the kernel to save a histogram of
-tx-rates or something similar, perhaps.  'iw dev wlan0 station dump' and
-similar will now show expected tx rate, but that is an average or maybe
-the last tx rate reported, so it does not give a detailed view of
-what is happening.
-
-You can also sniff the air and see the rates in that manner (on any
-firmware, including stock).
-
-> Slightly unrelated, but is there a way I can play around with PIFS
-> value? I could not locate it in the ath10k source, so I am assuming it
-> is implemented in the firmware. I am trying to study some fairness
-> issues when legacy devices operate in the secondary channels.
-
-I don't have time to dig into this right now, but if you don't
-see anything in the driver related to this, then probably it requires
-firmware changes.
+Just FYI, this patch does not appear to be in 4.7-rc4 as of today, and so kernel crashes on
+startup when loading ath10k, at least when DBG_BOOT logging is enabled....
 
 Thanks,
 Ben
 
-
 >
-> On Thu, Jun 16, 2016 at 4:54 PM, Ben Greear <greearb@candelatech.com> wrote:
->> On 06/16/2016 12:57 PM, Gaurang Ramesh Naik wrote:
->>>
->>> Hi Ben,
->>>
->>> Thanks for your reply.
->>>
->>> I wanted to know if the dynamic bandwidth option implemented in ath10k
->>> is the same as that mentioned in the standard, or does it deviate? I
->>> tried to look for any documentation on ath10k dynamic bandwidth, but
->>> could not find any.
->>>
->>> If I am not wrong, on the secondary channel, the sender senses the
->>> channel for PIFS interval of time immediately preceding the start of
->>> the TXOP (9.19.2.8 in the standard). In the static mode, if the
->>> secondary channel is sensed busy, the sender waits until all channels
->>> become idle; but in the dynamic mode, the sender sends on the primary
->>> and (adjacent) secondary channel that are not busy.
->>>
->>> However, the documentation for dynamic bandwidth in ath10k/mac.c seems
->>> to suggest that the transmission retries are carried over narrower
->>> bandwidth in dynamic mode. Does this mean the same as what is given in
->>> the standard? Or is the dynamic mode implemented differently? Any help
->>> is appreciated.
->>
->>
->> I don't know exactly how this works.  At least the sensing and stuff is
->> probably
->> baked into the hardware.  What I notice is that the firmware passes a series
->> of rates to the hardware to use for each packet, and it includes different
->> bandwidth rates.
->>
->> If you used my firmware and my kernel, you can see the (successful) transmit
->> rate for each frame.  Perhaps you could discover some info about how it
->> works
->> in that manner if you could reliably add noise on an adjacent channel.
->>
->> Upstream firmware can see tx rates using pktlog I think, but I have
->> never tried that.
->>
->> Thanks,
->> Ben
->>
->>
->>>
->>> Thanks,
->>> Gaurang.
->>>
->>> On Thu, Jun 9, 2016 at 1:23 AM, Ben Greear <greearb@candelatech.com>
->>> wrote:
->>>>
->>>>
->>>>
->>>> On 06/08/2016 08:10 PM, Gaurang Ramesh Naik wrote:
->>>>>
->>>>>
->>>>> Hi,
->>>>>
->>>>> I needed a small clarification related to dynamic bandwidth setup. The
->>>>> documentation in wmi.h says " When enabled HW rate control tries
->>>>> different bandwidths when retransmitting frames."
->>>>>
->>>>> Does this mean that each packet is first always tried over VHT80 and
->>>>> if that fails it goes to HT40 and then to HT20? I tried this with one
->>>>> AP-Sta operating in VHT80 and one AP operating in its first secondary
->>>>> channel. When I check the rx rate info using "iw dev wlanx station
->>>>> dump", the bandwidth seems to sometimes alternate between 20 and 80,
->>>>> but sometimes it stays fixed at 20. Hence, I was wondering what really
->>>>> happens.
->>>>
->>>>
->>>>
->>>> For one thing, if the hardware detects interference on secondary
->>>> channels,
->>>> then it may decide to transmit a 20Mhz encoding.
->>>>
->>>> The rate-ctrl algs in the firmware differ from release to release, but
->>>> the general goal is to transmit with the fastest encoding rate.
->>>>
->>>> Thanks,
->>>> Ben
->>>>
->>>>>
->>>>> Thanks,
->>>>> Gaurang.
->>>>>
->>>>> _______________________________________________
->>>>> ath10k mailing list
->>>>> ath10k@lists.infradead.org
->>>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>>>
->>>>
->>>> --
->>>> Ben Greear <greearb@candelatech.com>
->>>> Candela Technologies Inc  http://www.candelatech.com
->>>
->>>
->>> _______________________________________________
->>> ath10k mailing list
->>> ath10k@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>
->>
->>
->> --
->> Ben Greear <greearb@candelatech.com>
->> Candela Technologies Inc  http://www.candelatech.com
->>
+> Signed-off-by:  Ben Greear <greearb@candelatech.com>
+> ---
+>   drivers/net/wireless/ath/ath10k/core.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index e94cb87..b7318b8 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -1078,7 +1078,7 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
+>   			}
+>
+>   			ath10k_dbg_dump(ar, ATH10K_DBG_BOOT, "features", "",
+> -					ar->running_fw->fw_file.fw_features,
+> +					fw_file->fw_features,
+>   					sizeof(fw_file->fw_features));
+>   			break;
+>   		case ATH10K_FW_IE_FW_IMAGE:
 >
 
 
