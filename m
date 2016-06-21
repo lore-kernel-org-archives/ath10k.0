@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFE5W-0006ql-OQ
- for ath10k@lists.infradead.org; Tue, 21 Jun 2016 05:19:03 +0000
-Date: Tue, 21 Jun 2016 10:48:30 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: Bug with: ath10k: enable parsing per station rx duration for 10.4?
-Message-ID: <20160621051829.GA20604@atheros-ThinkPad-T61>
-References: <5768770C.5050305@candelatech.com>
+ id 1bFET6-0000gd-Rn
+ for ath10k@lists.infradead.org; Tue, 21 Jun 2016 05:43:26 +0000
+From: <akolli@qti.qualcomm.com>
+Subject: [PATCH 1/2] ath10k: remove unused member in ath10k_hw_regs
+Date: Tue, 21 Jun 2016 11:18:07 +0530
+Message-ID: <1466488088-20961-1-git-send-email-akolli@qti.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5768770C.5050305@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,89 +20,71 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: ath10k@lists.infradead.org
+Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wireless@vger.kernel.org
 
-Hi Ben,
+From: Anilkumar Kolli <akolli@qti.qualcomm.com>
 
-thanks for reporting ...
+rtc_state_cold_reset_mask is unused in ath10k_hw_regs.
+instead fixed delays are used.
 
-On Mon, Jun 20, 2016 at 04:06:52PM -0700, Ben Greear wrote:
-> I'm working on bringing up my hacked up version of 4.7 ath10k and 10.4 firmware, and I think
-> I may have found a regression.
+Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/hw.c |    3 ---
+ drivers/net/wireless/ath/ath10k/hw.h |    2 --
+ 2 files changed, 5 deletions(-)
 
-[shafi] let me know what is the issue.. some steps to recreate the issue.
-> 
-> My 10.4.3-ish firmware source has a bunch of:
-> 
-> if (stats_id == WMI_REQUEST_PEER_STAT)
-> logic in it.  In other words, it is not using that id as a bitfield.
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index f544d48518c3..433e064c7718 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -19,7 +19,6 @@
+ #include "hw.h"
+ 
+ const struct ath10k_hw_regs qca988x_regs = {
+-	.rtc_state_cold_reset_mask	= 0x00000400,
+ 	.rtc_soc_base_address		= 0x00004000,
+ 	.rtc_wmac_base_address		= 0x00005000,
+ 	.soc_core_base_address		= 0x00009000,
+@@ -46,7 +45,6 @@ const struct ath10k_hw_regs qca988x_regs = {
+ };
+ 
+ const struct ath10k_hw_regs qca6174_regs = {
+-	.rtc_state_cold_reset_mask		= 0x00002000,
+ 	.rtc_soc_base_address			= 0x00000800,
+ 	.rtc_wmac_base_address			= 0x00001000,
+ 	.soc_core_base_address			= 0x0003a000,
+@@ -73,7 +71,6 @@ const struct ath10k_hw_regs qca6174_regs = {
+ };
+ 
+ const struct ath10k_hw_regs qca99x0_regs = {
+-	.rtc_state_cold_reset_mask		= 0x00000400,
+ 	.rtc_soc_base_address			= 0x00080000,
+ 	.rtc_wmac_base_address			= 0x00000000,
+ 	.soc_core_base_address			= 0x00082000,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index f41c91ccb56a..549f99bdfb86 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -208,7 +208,6 @@ enum ath10k_hw_rev {
+ };
+ 
+ struct ath10k_hw_regs {
+-	u32 rtc_state_cold_reset_mask;
+ 	u32 rtc_soc_base_address;
+ 	u32 rtc_wmac_base_address;
+ 	u32 soc_core_base_address;
+@@ -495,7 +494,6 @@ enum ath10k_hw_4addr_pad {
+ /* as of IP3.7.1 */
+ #define RTC_STATE_V_ON				ar->hw_values->rtc_state_val_on
+ 
+-#define RTC_STATE_COLD_RESET_MASK		ar->regs->rtc_state_cold_reset_mask
+ #define RTC_STATE_V_LSB				0
+ #define RTC_STATE_V_MASK			0x00000007
+ #define RTC_STATE_ADDRESS			0x0000
+-- 
+1.7.9.5
 
-[shafi] will check this.
-
-> 
-> Now, I can fix the firmware, but I am guessing that at least some stock
-> 10.4 firmware has this same issue, and of course any older firmware
-> that does not have this change will still be broken.
-> 
-> So, do you want to back out this patch below, at least the part where it sends
-> in 0x9 as the stats_id?
-
-[shafi] request if you can check this please, there was some misunderstanding
-in the design when this feature got enabled in 10.4, we fixed it in
-https://patchwork.kernel.org/patch/9149357/
-
-> 
-> Or, is all available upstream 10.4 firmware OK with this and I should just fix mine?
-> 
-> Or possibly, this is all my fault and I somehow screwed up when rebasing....
-
-[shafi] i will check this and get back to you by end of day.
-
-regards,
-shafi
-> 
-> 
-> Author: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>  2016-03-16 05:43:34
-> Committer: Kalle Valo <kvalo@qca.qualcomm.com>  2016-04-04 07:02:47
-> Parent: 47771902a9beb23859805721f1d98d03dee5da7c (ath10k: introduce Extended Resource Config support for 10.4)
-> Child:  59465fe46ef1c2caf2c1beca828c4f29d28b98ca (ath10k: speedup htt rx descriptor processing for tx completion)
-> Branches: master, master.stgit, remotes/origin/master, remotes/origin/master.stgit
-> Follows: v4.5-rc5
-> Precedes: v4.7-rc1
-> 
->     ath10k: enable parsing per station rx duration for 10.4
-> 
->     Rx duration support for per station is part of extended peer
->     stats, enable provision to parse the same and provide backward
->     compatibility based on the 'stats_id' event
-> 
->     Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
->     Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-> 
-> ....
-> 
-> @@ -1615,7 +1615,8 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
->  		ar->num_active_peers = TARGET_10_4_ACTIVE_PEERS;
->  		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
->  		ar->num_tids = TARGET_10_4_TGT_NUM_TIDS;
-> -		ar->fw_stats_req_mask = WMI_STAT_PEER;
-> +		ar->fw_stats_req_mask = WMI_10_4_STAT_PEER |
-> +					WMI_10_4_STAT_PEER_EXTD;
->  		ar->max_spatial_stream = ar->hw_params.max_spatial_stream;
-> 
->  		if (test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL,
-> 
-> 
-> -- 
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
-> 
-> 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
