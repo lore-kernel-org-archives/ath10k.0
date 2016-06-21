@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x231.google.com ([2a00:1450:4010:c07::231])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFM0Z-0002n5-7e
- for ath10k@lists.infradead.org; Tue, 21 Jun 2016 13:46:27 +0000
-Received: by mail-lf0-x231.google.com with SMTP id h129so24789411lfh.1
- for <ath10k@lists.infradead.org>; Tue, 21 Jun 2016 06:46:06 -0700 (PDT)
-Subject: Re: [PATCH 1/2] ath10k: remove unused <linux/semaphore.h>
-References: <20160621114539.15313-1-chaehyun.lim@gmail.com>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <bf7b2008-b333-2d79-a952-fda895da8479@cogentembedded.com>
-Date: Tue, 21 Jun 2016 16:46:00 +0300
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bFMOW-0008Ab-Vw
+ for ath10k@lists.infradead.org; Tue, 21 Jun 2016 14:11:14 +0000
+Message-ID: <57694AD4.3020101@candelatech.com>
+Date: Tue, 21 Jun 2016 07:10:28 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <20160621114539.15313-1-chaehyun.lim@gmail.com>
+Subject: Re: Bug with: ath10k: enable parsing per station rx duration for 10.4?
+References: <5768770C.5050305@candelatech.com>
+ <20160621051829.GA20604@atheros-ThinkPad-T61>
+In-Reply-To: <20160621051829.GA20604@atheros-ThinkPad-T61>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +23,62 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Chaehyun Lim <chaehyun.lim@gmail.com>, kvalo@qca.qualcomm.com
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Hello.
 
-On 6/21/2016 2:45 PM, Chaehyun Lim wrote:
 
-> <linux/semaphore.h> is not used anymore, so just remove it.
-
-    s/it/#include/?
-
-> Signed-off-by: Chaehyun Lim <chaehyun.lim@gmail.com>
-[...]
-
-> diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-> index cc82718..0c55cd9 100644
-> --- a/drivers/net/wireless/ath/ath10k/htc.h
-> +++ b/drivers/net/wireless/ath/ath10k/htc.h
-> @@ -22,7 +22,6 @@
->  #include <linux/list.h>
->  #include <linux/bug.h>
->  #include <linux/skbuff.h>
-> -#include <linux/semaphore.h>
->  #include <linux/timer.h>
+On 06/20/2016 10:18 PM, Mohammed Shafi Shajakhan wrote:
+> Hi Ben,
 >
->  struct ath10k;
+> thanks for reporting ...
+>
+> On Mon, Jun 20, 2016 at 04:06:52PM -0700, Ben Greear wrote:
+>> I'm working on bringing up my hacked up version of 4.7 ath10k and 10.4 firmware, and I think
+>> I may have found a regression.
+>
+> [shafi] let me know what is the issue.. some steps to recreate the issue.
 
-MBR, Sergei
+ethtool -S wlan0
+or similar should reproduce it.
 
+You would see stats timeout messages in dmesg, and with a bit more debugging,
+you notice that the driver is basically busy-spinning trying to get stats over
+WMI and/or it is giving errors because skb pull fails because there actually is
+not extd stats struct.
+
+>>
+>> My 10.4.3-ish firmware source has a bunch of:
+>>
+>> if (stats_id == WMI_REQUEST_PEER_STAT)
+>> logic in it.  In other words, it is not using that id as a bitfield.
+>
+> [shafi] will check this.
+
+I fixed my firmware to treat it as a bitfield, and to specifically un-set the EXTD stats
+bit, and now it works with my 4.7.  Firmware fix should be backwards compatible.
+
+
+>> Now, I can fix the firmware, but I am guessing that at least some stock
+>> 10.4 firmware has this same issue, and of course any older firmware
+>> that does not have this change will still be broken.
+>>
+>> So, do you want to back out this patch below, at least the part where it sends
+>> in 0x9 as the stats_id?
+>
+> [shafi] request if you can check this please, there was some misunderstanding
+> in the design when this feature got enabled in 10.4, we fixed it in
+> https://patchwork.kernel.org/patch/9149357/
+
+That might have fixed it, but it is not in 4.7, so I didn't have it
+in my tree when testing yesterday.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
