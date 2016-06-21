@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bF8UK-0002yP-Cj
- for ath10k@lists.infradead.org; Mon, 20 Jun 2016 23:20:16 +0000
-Subject: Re: Stand-alone ath10k-ct driver.
-References: <57686587.9050607@candelatech.com>
- <1c702fd0-677c-82e3-ddbe-ab4335a4a1a6@dd-wrt.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <57687A05.3080400@candelatech.com>
-Date: Mon, 20 Jun 2016 16:19:33 -0700
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bFE5W-0006ql-OQ
+ for ath10k@lists.infradead.org; Tue, 21 Jun 2016 05:19:03 +0000
+Date: Tue, 21 Jun 2016 10:48:30 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: Bug with: ath10k: enable parsing per station rx duration for 10.4?
+Message-ID: <20160621051829.GA20604@atheros-ThinkPad-T61>
+References: <5768770C.5050305@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <1c702fd0-677c-82e3-ddbe-ab4335a4a1a6@dd-wrt.com>
+Content-Disposition: inline
+In-Reply-To: <5768770C.5050305@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,51 +19,93 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-On 06/20/2016 04:11 PM, Sebastian Gottschall wrote:
-> Am 20.06.2016 um 23:52 schrieb Ben Greear:
->> Hello!
->>
->> I have made an attempt to provide a stand-alone ath10k driver that should compile
->> and work against stock 4.7 kernels.  This should provide better support for CT ath10k
->> firmware without having to apply large numbers of patches.  My 4.7 kernel has only been very lightly tested
->> to date, and the stand-alone driver is only compile tested.  I will update the
->> ath-ct repo often as testing progresses on 4.7.
->>
->> If there are brave souls that want to try it out, I'd appreciate any feedback.
->>
->> https://github.com/greearb/ath-ct
->>
->> See the README.txt for some details.  This will require at least some familiarity
->> with building kernels since I do not have any nice automation to compile against
->> the current running kernel yet, for instance.
->>
-> why dont you use compat-wireless / backports as base?
-> so you can use your driver in any kernel version
+Hi Ben,
 
-Just no time to deal with backports, and if I have just a stand-alone driver,
-then it is easier for folks to use it in whatever kernel they already happen
-to be using.  Hopefully some project that is already using a 4.7-ish backport
-can compile my driver against that and have it just work, for instance.
+thanks for reporting ...
 
-Since I'm finding so many regressions when I rebase, and rebasing makes it almost
-impossible to bisect between kernels, then maybe it would just be better if
-I maintained a parallel drivers/net/wireless/ath/ath10k-ct/, and just applied
-patches from ../ath10k/ manually on top of my own stuff.  At least that way
-I could bisect regressions....
+On Mon, Jun 20, 2016 at 04:06:52PM -0700, Ben Greear wrote:
+> I'm working on bringing up my hacked up version of 4.7 ath10k and 10.4 firmware, and I think
+> I may have found a regression.
 
-Thanks,
-Ben
+[shafi] let me know what is the issue.. some steps to recreate the issue.
+> 
+> My 10.4.3-ish firmware source has a bunch of:
+> 
+> if (stats_id == WMI_REQUEST_PEER_STAT)
+> logic in it.  In other words, it is not using that id as a bitfield.
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+[shafi] will check this.
 
+> 
+> Now, I can fix the firmware, but I am guessing that at least some stock
+> 10.4 firmware has this same issue, and of course any older firmware
+> that does not have this change will still be broken.
+> 
+> So, do you want to back out this patch below, at least the part where it sends
+> in 0x9 as the stats_id?
+
+[shafi] request if you can check this please, there was some misunderstanding
+in the design when this feature got enabled in 10.4, we fixed it in
+https://patchwork.kernel.org/patch/9149357/
+
+> 
+> Or, is all available upstream 10.4 firmware OK with this and I should just fix mine?
+> 
+> Or possibly, this is all my fault and I somehow screwed up when rebasing....
+
+[shafi] i will check this and get back to you by end of day.
+
+regards,
+shafi
+> 
+> 
+> Author: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>  2016-03-16 05:43:34
+> Committer: Kalle Valo <kvalo@qca.qualcomm.com>  2016-04-04 07:02:47
+> Parent: 47771902a9beb23859805721f1d98d03dee5da7c (ath10k: introduce Extended Resource Config support for 10.4)
+> Child:  59465fe46ef1c2caf2c1beca828c4f29d28b98ca (ath10k: speedup htt rx descriptor processing for tx completion)
+> Branches: master, master.stgit, remotes/origin/master, remotes/origin/master.stgit
+> Follows: v4.5-rc5
+> Precedes: v4.7-rc1
+> 
+>     ath10k: enable parsing per station rx duration for 10.4
+> 
+>     Rx duration support for per station is part of extended peer
+>     stats, enable provision to parse the same and provide backward
+>     compatibility based on the 'stats_id' event
+> 
+>     Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+>     Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> 
+> ....
+> 
+> @@ -1615,7 +1615,8 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+>  		ar->num_active_peers = TARGET_10_4_ACTIVE_PEERS;
+>  		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
+>  		ar->num_tids = TARGET_10_4_TGT_NUM_TIDS;
+> -		ar->fw_stats_req_mask = WMI_STAT_PEER;
+> +		ar->fw_stats_req_mask = WMI_10_4_STAT_PEER |
+> +					WMI_10_4_STAT_PEER_EXTD;
+>  		ar->max_spatial_stream = ar->hw_params.max_spatial_stream;
+> 
+>  		if (test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL,
+> 
+> 
+> -- 
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+> 
+> 
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
