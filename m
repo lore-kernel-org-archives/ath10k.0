@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x22f.google.com ([2607:f8b0:4001:c06::22f])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFhvu-0000jM-4V
- for ath10k@lists.infradead.org; Wed, 22 Jun 2016 13:11:06 +0000
-Received: by mail-io0-x22f.google.com with SMTP id s63so39387894ioi.3
- for <ath10k@lists.infradead.org>; Wed, 22 Jun 2016 06:10:45 -0700 (PDT)
-From: Tom Marble <tmarble@info9.net>
-Subject: Re: Cannot initialize Compex WLE600VX for 802.11ac?
-In-Reply-To: <87y45xiuts.fsf@kamboji.qca.qualcomm.com>
-References: <57dtwgmmwmr.fsf@cerise.info9.net>
- <87y45xiuts.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 22 Jun 2016 08:10:34 -0500
-Message-ID: <57dd1n9mks5.fsf@cerise.info9.net>
+Received: from smtp1.riverbed.com ([208.70.196.45])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bFiIs-0003vu-Lc
+ for ath10k@lists.infradead.org; Wed, 22 Jun 2016 13:34:52 +0000
+From: Eduardo Abinader <eduardo.abinader@riverbed.com>
+Subject: [PATCH] ath10k: remove extra space on ath10k_update_channel_list
+Message-ID: <576A93E2.9050901@riverbed.com>
+Date: Wed, 22 Jun 2016 15:34:26 +0200
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,37 +20,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: Tom Marble <tmarble@info9.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: kvalo@qca.qualcomm.com
 
-"Valo, Kalle" <kvalo@qca.qualcomm.com> writes:
-> Do you have CONFIG_ATH10K_DFS_CERTIFIED enabled?
+just to comply to coding style.
 
-No.. the option isn't even commented out in my .config??
-Is there are tree other than...
-  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+Signed-off-by: Eduardo Abinader <eduardo.abinader@riverbed.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Also check that that
-> regulatory is correct with 'iw reg get' and 'iw phy0 info', especially
-> that 80 MHz channels are supported.
-
-root@six:/# iw reg get
-country US: DFS-FCC
-        (2402 - 2472 @ 40), (N/A, 30), (N/A)
-        (5170 - 5250 @ 80), (N/A, 17), (N/A)
-        (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS
-        (5735 - 5835 @ 80), (N/A, 30), (N/A)
-        (57240 - 63720 @ 2160), (N/A, 40), (N/A)
-root@six:/#
-
-(I cannot run 'iw phy0 info' at the moment as I'm away from the lab)
-
-> Also I would try first without DFS on channel 36 just to make it easier
-> to pinpoint the problem.
-
-Okay, thanks!
-
---Tom
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index d4b7a16..d5f8e95 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2939,7 +2939,7 @@ static int ath10k_update_channel_list(struct ath10k *ar)
+ 			if (channel->flags & IEEE80211_CHAN_DISABLED)
+ 				continue;
+ 
+-			ch->allow_ht   = true;
++			ch->allow_ht = true;
+ 
+ 			/* FIXME: when should we really allow VHT? */
+ 			ch->allow_vht = true;
+-- 
+2.5.0
 
 _______________________________________________
 ath10k mailing list
