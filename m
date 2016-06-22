@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from bay004-omc2s13.hotmail.com ([65.54.190.88])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFNrU-0006Cz-4U
- for ath10k@lists.infradead.org; Tue, 21 Jun 2016 15:45:12 +0000
-Date: Tue, 21 Jun 2016 21:11:08 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: Bug with: ath10k: enable parsing per station rx duration for 10.4?
-Message-ID: <20160621154107.GA21954@atheros-ThinkPad-T61>
-References: <5768770C.5050305@candelatech.com>
- <20160621051829.GA20604@atheros-ThinkPad-T61>
- <57694AD4.3020101@candelatech.com>
+ id 1bFbPv-0007RH-9a
+ for ath10k@lists.infradead.org; Wed, 22 Jun 2016 06:13:39 +0000
+Message-ID: <BAY172-W4820DFFAF81043D5407B3EE02C0@phx.gbl>
+From: sunder Kumaresan <sunder_k@hotmail.com>
+Subject: ath10k  firmware version - 10.4
+Date: Wed, 22 Jun 2016 06:13:17 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <57694AD4.3020101@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,70 +16,82 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tue, Jun 21, 2016 at 07:10:28AM -0700, Ben Greear wrote:
-> 
-> 
-> On 06/20/2016 10:18 PM, Mohammed Shafi Shajakhan wrote:
-> >Hi Ben,
-> >
-> >thanks for reporting ...
-> >
-> >On Mon, Jun 20, 2016 at 04:06:52PM -0700, Ben Greear wrote:
-> >>I'm working on bringing up my hacked up version of 4.7 ath10k and 10.4 firmware, and I think
-> >>I may have found a regression.
-> >
-> >[shafi] let me know what is the issue.. some steps to recreate the issue.
-> 
-> ethtool -S wlan0
-> or similar should reproduce it.
-> 
-> You would see stats timeout messages in dmesg, and with a bit more debugging,
-> you notice that the driver is basically busy-spinning trying to get stats over
-> WMI and/or it is giving errors because skb pull fails because there actually is
-> not extd stats struct.
+Hello all,
 
-https://patchwork.kernel.org/patch/9149357/
- should help (Kalle had a cleaned up version in his pending branch
-> 
-> >>
-> >>My 10.4.3-ish firmware source has a bunch of:
-> >>
-> >>if (stats_id == WMI_REQUEST_PEER_STAT)
-> >>logic in it.  In other words, it is not using that id as a bitfield.
-> >
-> >[shafi] will check this.
-> 
-> I fixed my firmware to treat it as a bitfield, and to specifically un-set the EXTD stats
-> bit, and now it works with my 4.7.  Firmware fix should be backwards compatible.
-> 
-> 
-> >>Now, I can fix the firmware, but I am guessing that at least some stock
-> >>10.4 firmware has this same issue, and of course any older firmware
-> >>that does not have this change will still be broken.
-> >>
-> >>So, do you want to back out this patch below, at least the part where it sends
-> >>in 0x9 as the stats_id?
-> >
-> >[shafi] request if you can check this please, there was some misunderstanding
-> >in the design when this feature got enabled in 10.4, we fixed it in
-> >https://patchwork.kernel.org/patch/9149357/
-> 
-> That might have fixed it, but it is not in 4.7, so I didn't have it
-> in my tree when testing yesterday.
-> 
-> Thanks,
-> Ben
-> 
-> -- 
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
+
+Trying to use  QCA9980 hardware with ath10k version using 10.4 version firm=
+ware.  The recommended kernel version is 4.2 from the link https://wireless=
+.wiki.kernel.org/en/users/drivers/ath10k/firmware.
+
+
+ From the link ,=93git://git.kernel.org/pub/scm/linux/kernel/git/agruen/lin=
+ux.git" kernel version 4.2.0(rc7).
+
+
+
+In the file, drivers/net/wireless/ath/ath10k/pci.c supports for the followi=
+ng devices. =
+
+
+
+
+static const struct pci_device_id ath10k_pci_id_table[] =3D {
+
+        { PCI_VDEVICE(ATHEROS, QCA988X_2_0_DEVICE_ID) }, /* PCI-E QCA988X V=
+2 */
+
+        { PCI_VDEVICE(ATHEROS, QCA6174_2_1_DEVICE_ID) }, /* PCI-E QCA6174 V=
+2.1 */
+
+        {0}
+
+};
+
+ =
+
+
+It does not show up for QCA9980.
+
+
+
+The kernel version beyond  4.4 provides support for QCA99X0. =
+
+
+
+
+The kernel version 4.7 ath10k driver has been back-ported to 4.1 has been u=
+sed  using yocto SDK 2.0 version .  The interface comes up.  =
+
+
+
+
+But, When boardData_AR900B_CUS239_5G_v2_001.bin  and boardData_AR900B_CUS26=
+0_2G_v2_002.bin  have been renamed as board xxx. bin files.  It shows up as=
+ mismatch in the magic number.
+
+
+
+Want to know correct   version of Linux kernel  and its location. =
+
+
+ =
+
+
+
+ =
+
+
+
+
+Best Regards,
+
+k.sunder  		 	   		  =
 
 _______________________________________________
 ath10k mailing list
