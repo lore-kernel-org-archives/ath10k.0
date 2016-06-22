@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-io0-x22f.google.com ([2607:f8b0:4001:c06::22f])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFfn3-0002MF-ML
- for ath10k@lists.infradead.org; Wed, 22 Jun 2016 10:53:50 +0000
-From: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
-Subject: [PATCH] ath10k: simplify pktlog htt event processing
-Date: Wed, 22 Jun 2016 16:22:41 +0530
-Message-ID: <1466592761-6659-1-git-send-email-arnagara@qti.qualcomm.com>
+ id 1bFhvu-0000jM-4V
+ for ath10k@lists.infradead.org; Wed, 22 Jun 2016 13:11:06 +0000
+Received: by mail-io0-x22f.google.com with SMTP id s63so39387894ioi.3
+ for <ath10k@lists.infradead.org>; Wed, 22 Jun 2016 06:10:45 -0700 (PDT)
+From: Tom Marble <tmarble@info9.net>
+Subject: Re: Cannot initialize Compex WLE600VX for 802.11ac?
+In-Reply-To: <87y45xiuts.fsf@kamboji.qca.qualcomm.com>
+References: <57dtwgmmwmr.fsf@cerise.info9.net>
+ <87y45xiuts.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 22 Jun 2016 08:10:34 -0500
+Message-ID: <57dd1n9mks5.fsf@cerise.info9.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,83 +25,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, arnagara@codeaurora.org, linux-wireless@vger.kernel.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: Tom Marble <tmarble@info9.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-It is expected that all pktlog events for 10.4 firmware based solutions
-should come through CE8 where as in case of 10.2 firmware based solutions,
-it should come through one of the HTT events (HTT_T2H_MSG_TYPE_PKTLOG).
+"Valo, Kalle" <kvalo@qca.qualcomm.com> writes:
+> Do you have CONFIG_ATH10K_DFS_CERTIFIED enabled?
 
-But from experiments with 10.4 based solutions, it is observed that pktlog
-event for ATH_PKTLOG_TYPE_TX_MSDU_ID is coming through HTT pktlog event.
-Currently, we always parse with 10.2 pktlog header which will lead to
-pktlog decoding issues (payload length mismatch exceptions)
+No.. the option isn't even commented out in my .config??
+Is there are tree other than...
+  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
 
-For trace points, it is required to provide only the payload size. So
-fixing this by simplifying the payload size calculation without the use of
-ath10k pktlog headers.
+> Also check that that
+> regulatory is correct with 'iw reg get' and 'iw phy0 info', especially
+> that 80 MHz channels are supported.
 
-While there, remove the unused ath10k pktlog headers.
+root@six:/# iw reg get
+country US: DFS-FCC
+        (2402 - 2472 @ 40), (N/A, 30), (N/A)
+        (5170 - 5250 @ 80), (N/A, 17), (N/A)
+        (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS
+        (5735 - 5835 @ 80), (N/A, 30), (N/A)
+        (57240 - 63720 @ 2160), (N/A, 40), (N/A)
+root@six:/#
 
-Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c |  8 +++-----
- drivers/net/wireless/ath/ath10k/hw.h     | 19 -------------------
- 2 files changed, 3 insertions(+), 24 deletions(-)
+(I cannot run 'iw phy0 info' at the moment as I'm away from the lab)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 80e6453..b2a9c4c 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2307,12 +2307,10 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		ath10k_htt_rx_delba(ar, resp);
- 		break;
- 	case HTT_T2H_MSG_TYPE_PKTLOG: {
--		struct ath10k_pktlog_hdr *hdr =
--			(struct ath10k_pktlog_hdr *)resp->pktlog_msg.payload;
--
- 		trace_ath10k_htt_pktlog(ar, resp->pktlog_msg.payload,
--					sizeof(*hdr) +
--					__le16_to_cpu(hdr->size));
-+					skb->len -
-+					offsetof(struct htt_resp,
-+						 pktlog_msg.payload));
- 		break;
- 	}
- 	case HTT_T2H_MSG_TYPE_RX_FLUSH: {
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index f31d3ce..427b720 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -296,25 +296,6 @@ enum ath10k_mcast2ucast_mode {
- 	ATH10K_MCAST2UCAST_ENABLED = 1,
- };
- 
--struct ath10k_pktlog_hdr {
--	__le16 flags;
--	__le16 missed_cnt;
--	__le16 log_type;
--	__le16 size;
--	__le32 timestamp;
--	u8 payload[0];
--} __packed;
--
--struct ath10k_pktlog_10_4_hdr {
--	__le16 flags;
--	__le16 missed_cnt;
--	__le16 log_type;
--	__le16 size;
--	__le32 timestamp;
--	__le32 type_specific_data;
--	u8 payload[0];
--} __packed;
--
- enum ath10k_hw_rate_ofdm {
- 	ATH10K_HW_RATE_OFDM_48M = 0,
- 	ATH10K_HW_RATE_OFDM_24M,
--- 
-1.9.1
+> Also I would try first without DFS on channel 36 just to make it easier
+> to pinpoint the problem.
 
+Okay, thanks!
+
+--Tom
 
 _______________________________________________
 ath10k mailing list
