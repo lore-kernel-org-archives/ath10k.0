@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-it0-x22e.google.com ([2607:f8b0:4001:c0b::22e])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFiq6-0005lv-1b
- for ath10k@lists.infradead.org; Wed, 22 Jun 2016 14:09:11 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: Cannot initialize Compex WLE600VX for 802.11ac?
-Date: Wed, 22 Jun 2016 14:08:40 +0000
-Message-ID: <87r3bpfh94.fsf@kamboji.qca.qualcomm.com>
-References: <57dtwgmmwmr.fsf@cerise.info9.net>
- <87y45xiuts.fsf@kamboji.qca.qualcomm.com>	<57dd1n9mks5.fsf@cerise.info9.net>
-In-Reply-To: <57dd1n9mks5.fsf@cerise.info9.net> (Tom Marble's message of "Wed, 
- 22 Jun 2016 08:10:34 -0500")
-Content-Language: en-US
-Content-ID: <EB5426184BC1774EA7AD844A474C0010@qualcomm.com>
+ id 1bFtP7-0003LO-0C
+ for ath10k@lists.infradead.org; Thu, 23 Jun 2016 01:26:01 +0000
+Received: by mail-it0-x22e.google.com with SMTP id f6so52490817ith.0
+ for <ath10k@lists.infradead.org>; Wed, 22 Jun 2016 18:25:39 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <576A93E2.9050901@riverbed.com>
+References: <576A93E2.9050901@riverbed.com>
+From: Julian Calaby <julian.calaby@gmail.com>
+Date: Thu, 23 Jun 2016 11:25:19 +1000
+Message-ID: <CAGRGNgU01=zHXTOMNLQKepJMWvEOW_3pFysG_kkQEwvhW6skBw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: remove extra space on ath10k_update_channel_list
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +24,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tom Marble <tmarble@info9.net>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Eduardo Abinader <eduardo.abinader@riverbed.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Tom Marble <tmarble@info9.net> writes:
+Hi All,
 
-> "Valo, Kalle" <kvalo@qca.qualcomm.com> writes:
->> Do you have CONFIG_ATH10K_DFS_CERTIFIED enabled?
+On Wed, Jun 22, 2016 at 11:34 PM, Eduardo Abinader
+<eduardo.abinader@riverbed.com> wrote:
+> just to comply to coding style.
 >
-> No.. the option isn't even commented out in my .config??
+> Signed-off-by: Eduardo Abinader <eduardo.abinader@riverbed.com>
 
-It depends on CFG80211_CERTIFICATION_ONUS so you need to enable that
-first.
+Looks right to me.
 
-> Is there are tree other than...
->   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+Reviewed-by: Julian Calaby <julian.calaby@gmail.com>
 
-That tree contains the latest ath10k code, so that's ok.
+Thanks,
 
 -- 
-Kalle Valo
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
