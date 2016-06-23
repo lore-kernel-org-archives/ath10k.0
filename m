@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-it0-x22e.google.com ([2607:f8b0:4001:c0b::22e])
+Received: from mail-qk0-x231.google.com ([2607:f8b0:400d:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bFtP7-0003LO-0C
- for ath10k@lists.infradead.org; Thu, 23 Jun 2016 01:26:01 +0000
-Received: by mail-it0-x22e.google.com with SMTP id f6so52490817ith.0
- for <ath10k@lists.infradead.org>; Wed, 22 Jun 2016 18:25:39 -0700 (PDT)
+ id 1bG4FR-0000Lt-Vq
+ for ath10k@lists.infradead.org; Thu, 23 Jun 2016 13:00:48 +0000
+Received: by mail-qk0-x231.google.com with SMTP id a186so105440977qkf.0
+ for <ath10k@lists.infradead.org>; Thu, 23 Jun 2016 06:00:25 -0700 (PDT)
+From: Tom Marble <tmarble@info9.net>
+Subject: Re: Cannot initialize Compex WLE600VX for 802.11ac?
+In-Reply-To: <87r3bpfh94.fsf@kamboji.qca.qualcomm.com>
+References: <57dtwgmmwmr.fsf@cerise.info9.net>
+ <87y45xiuts.fsf@kamboji.qca.qualcomm.com> <57dd1n9mks5.fsf@cerise.info9.net>
+ <87r3bpfh94.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 23 Jun 2016 08:00:21 -0500
+Message-ID: <57doa6skql6.fsf@cerise.info9.net>
 MIME-Version: 1.0
-In-Reply-To: <576A93E2.9050901@riverbed.com>
-References: <576A93E2.9050901@riverbed.com>
-From: Julian Calaby <julian.calaby@gmail.com>
-Date: Thu, 23 Jun 2016 11:25:19 +1000
-Message-ID: <CAGRGNgU01=zHXTOMNLQKepJMWvEOW_3pFysG_kkQEwvhW6skBw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: remove extra space on ath10k_update_channel_list
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +26,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Eduardo Abinader <eduardo.abinader@riverbed.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: Tom Marble <tmarble@info9.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi All,
-
-On Wed, Jun 22, 2016 at 11:34 PM, Eduardo Abinader
-<eduardo.abinader@riverbed.com> wrote:
-> just to comply to coding style.
+"Valo, Kalle" <kvalo@qca.qualcomm.com> writes:
+> Tom Marble <tmarble@info9.net> writes:
+>> "Valo, Kalle" <kvalo@qca.qualcomm.com> writes:
+>>> Do you have CONFIG_ATH10K_DFS_CERTIFIED enabled?
+>>
+>> No.. the option isn't even commented out in my .config??
 >
-> Signed-off-by: Eduardo Abinader <eduardo.abinader@riverbed.com>
+> It depends on CFG80211_CERTIFICATION_ONUS so you need to enable that
+> first.
 
-Looks right to me.
+Okay, I've rebuild the kernel with that option. Here's the latest info:
 
-Reviewed-by: Julian Calaby <julian.calaby@gmail.com>
+root@six:/# uname -a
+Linux six 4.7.0-rc3-wt-ath-tm2 #4 SMP Wed Jun 22 11:47:12 CDT 2016 x86_64 GNU/Linux
+root@six:/# iw reg get
+country US: DFS-FCC
+        (2402 - 2472 @ 40), (N/A, 30), (N/A)
+        (5170 - 5250 @ 80), (N/A, 17), (N/A)
+        (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS
+        (5735 - 5835 @ 80), (N/A, 30), (N/A)
+        (57240 - 63720 @ 2160), (N/A, 40), (N/A)
+root@six:/# iw phy0 info
+  SEE http://paste.debian.net/747986/ 
 
-Thanks,
+Setting channel=0 to enable scanning results still fails
+# hostapd -dd /etc/hostapd/wlan0.conf | tee /tmp/wlan0.log 
+  SEE http://paste.debian.net/747988/
 
--- 
-Julian Calaby
+  nl80211: Failed to set fragmentation threshold 2346: -95 (Operation not supported)
+  Could not set fragmentation threshold for kernel driver
+  Interface initialization failed
 
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+Seems to have made it a little further... What should I try now?
+
+--Tom
+
 
 _______________________________________________
 ath10k mailing list
