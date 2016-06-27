@@ -1,22 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-it0-x22e.google.com ([2607:f8b0:4001:c0b::22e])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHVsb-0001IE-7C
- for ath10k@lists.infradead.org; Mon, 27 Jun 2016 12:43:10 +0000
-Received: by mail-it0-x22e.google.com with SMTP id a5so64361541ita.1
- for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 05:42:47 -0700 (PDT)
-From: Tom Marble <tmarble@info9.net>
-Subject: Re: Cannot initialize Compex WLE600VX for 802.11ac?
-In-Reply-To: <CA+BoTQnevnhYg2aXWJWRESADJ_dkDHNg3KGjpP=0-aAjmjKcDg@mail.gmail.com>
-References: <57dtwgmmwmr.fsf@cerise.info9.net>
- <87y45xiuts.fsf@kamboji.qca.qualcomm.com> <57dd1n9mks5.fsf@cerise.info9.net>
- <87r3bpfh94.fsf@kamboji.qca.qualcomm.com> <57doa6skql6.fsf@cerise.info9.net>
- <CABkMH_rZNhxHtfaD3pz0ymSjvEKGxDycjDcwxKBZFKj8j2P_Jg@mail.gmail.com>
- <57dfus3l10n.fsf@cerise.info9.net>
- <CA+BoTQnevnhYg2aXWJWRESADJ_dkDHNg3KGjpP=0-aAjmjKcDg@mail.gmail.com>
-Date: Mon, 27 Jun 2016 07:42:44 -0500
-Message-ID: <57da8i6sszf.fsf@cerise.info9.net>
+ id 1bHWen-0007kZ-Fv
+ for ath10k@lists.infradead.org; Mon, 27 Jun 2016 13:32:58 +0000
+Received: by mail-wm0-x243.google.com with SMTP id r201so24654013wme.0
+ for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 06:32:36 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQ=-x_xApaiYcYF6FeoVcboc+BV61gA2JfOSdA9SitcuUw@mail.gmail.com>
+References: <CAFc9h7vWsEyU7V4X0ehzjsmgw=a_hym0SVrF4Gay=5jJTL2VFA@mail.gmail.com>
+ <CA+BoTQ=-x_xApaiYcYF6FeoVcboc+BV61gA2JfOSdA9SitcuUw@mail.gmail.com>
+From: Kamran Nishat <kamran.nishat@gmail.com>
+Date: Mon, 27 Jun 2016 18:32:34 +0500
+Message-ID: <CADxDmp6yZLuHwW_MGQ2VTqUx2EhCR2BRTkOPuZTorPvkwL9rUA@mail.gmail.com>
+Subject: Re: Set the primary channel in HT40 mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,73 +21,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: tmarble@info9.net, "Valo, Kalle" <kvalo@qca.qualcomm.com>, Tomasz Skapski <tomasz.skapski@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Gaurang Ramesh Naik <gaurang@vt.edu>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-> On 24 June 2016 at 05:27, Tom Marble <tmarble@info9.net> wrote:
->> The solution here was just removing avahi-daemon (and mDNS services).
->>
->> Then the interface wasn't happy about IPv6
->>   IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not read
->
-> This is normal. Try down/up your ethernet interface and you'll see the
-> same thing.
-
-Ok.
-
->> Even with setting (in /etc/hostapd/wlan0.conf ) this problem still occurred.
->>   ipaddr_type_availability=32
->>
->> The solution was disabling IPv6 (at least for now.. I do want IPv6
->> eventually), in /etc/sysctl.conf
->> # NO IPV6                                                                        net.ipv6.conf.all.disable_ipv6 = 1
->> net.ipv6.conf.default.disable_ipv6 = 1
->> net.ipv6.conf.lo.disable_ipv6 = 1
->> net.ipv6.conf.eth0.disable_ipv6 = 1
->> net.ipv6.conf.wan0.disable_ipv6 = 1
->
-> Do you really need to disable ipv6?
-
-No.. I *want* IPv6! I'm going to try adding it back in now
-to see if I can get it to work.
-
->> Certain clients seemed to get "kicked off" the network which has
->> been mitigated by setting:
->>   ap_max_inactivity=600
->>   disassoc_low_ack=0
->
-> Try using disassoc_low_ack=1 which enables station inactivity
-> detection up to firmware/driver (there are some bugs with sending
-> nullfunc frames depending on fw/hw/driver combo).
-
-I'll try that!
-
->> One strange thing I've noticed is that if I configure the wlan0 (5 GHz)
->> channel=52 on boot up it doesn't work... However if I have once
->> done channel=0 then on subsequent bounces of the interface I can have
->> it come up on a specific channel.
->
-> (haven't followed the entire thread, so sorry if I re-iterate something).
->
-> Channel availability can get messy and quirky (unless that has changed
-> in recent kernels?) with multiple wireless cards on the same system.
-> So there's that.
-
-I realize this can be tricky. My current thought is to bring
-up wlan0 (5 GHz) first and then bring up wlan1 (2.4 GHz).
-
-I'll report my findings after my next round of tests.
-
-Thanks!
-
---Tom
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+RGVhciBNaWNoYWwsCllvdSBjYW4gY2hhbmdlIGluIGhvc3RhcGQgY29kZSB0byBzdG9wIE9CU1Mu
+IENoYW5nZSBmdW5jdGlvbgpob3N0YXBkXzIwNDBfY29leF9hY3Rpb24gdG8gYXZvaWQgcHJpbWFy
+eSBjaGFuZ2UgaW4gY2FzZSBvZiBPQlNTLgoKS2FtcmFuCgpPbiBNb24sIEp1biAyNywgMjAxNiBh
+dCA0OjU3IFBNLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6
+Cj4gT24gMjcgSnVuZSAyMDE2IGF0IDEwOjU4LCBHYXVyYW5nIFJhbWVzaCBOYWlrIDxnYXVyYW5n
+QHZ0LmVkdT4gd3JvdGU6Cj4+IEhpIEFsbCwKPj4KPj4gSSBoYXZlIHNvbWUgZGlmZmljdWx0eSBp
+biB1bmRlcnN0YW5kaW5nIGhvdyBIVDQwLCBIVDQwLSBhbmQgSFQ0MCsKPj4gbW9kZXMgd29yay4g
+TXkgb2JqZWN0aXZlIGlzIHRvIHNldCBhIHBhcnRpY3VsYXIgMjAgTUh6IGNoYW5uZWwgYXMgdGhl
+Cj4+IHByaW1hcnkgY2hhbm5lbCB3aGVuIGNoYW5uZWwgYm9uZGluZyBpcyBlbmFibGVkLiBGcm9t
+IHdoYXQgSQo+PiB1bmRlcnN0YW5kLCBIVDQwLSBtZWFucyBzZWNvbmRhcnkgY2hhbm5lbCBpcyBi
+ZWxvdyB0aGUgcHJpbWFyeSwgd2hpbGUKPj4gSFQ0MCsgbWVhbnMgc2Vjb25kYXJ5IGNoYW5uZWwg
+aXMgYWJvdmUgdGhlIHByaW1hcnkgY2hhbm5lbC4gSSBhbQo+PiBwYXJ0aWN1bGFybHkgZGVhbGlu
+ZyB3aXRoIGNoYW5uZWxzIDE0OSwgMTUzLCAxNTcgYW5kIDE2MS4KPgo+IGh0dHA6Ly9zZWN1cml0
+eXVuY29ya2VkLmNvbS93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTMvMTEvZ3JhcGhp
+Yy04MDIxMS1hY0NoYW5uZWxzLWFsbC5wbmcKPgo+Cj4+IFdoZW4gSSBzZXQgdGhlIGNoYW5uZWwg
+dG8gc2F5IDE1Nywgd2hldGhlciBJIHVzZSBIVDQwKyBvciBIVDQwLSwgdGhlCj4+IHByaW1hcnkg
+Y2hhbm5lbCBpcyBhbHdheXMgc2V0IHRvIGNoYW5uZWwgMTYxLiBJIGFtIGluZmVycmluZyB0aGlz
+Cj4+IGJlY2F1c2Ugd2hlbiBJIHNjYW4gdXNpbmcgaXdsaXN0IHNjYW4sIG15IFNTSUQgc2hvd3Mg
+b24gQ2hhbm5lbCAxNjEuCj4+IERvZXMgYXRoMTBrIG5vdCBzZXQgdGhlIHByaW1hcnkgYW5kIHNl
+Y29uZGFyeSBjaGFubmVsIGluIHRoaXMgbWFubmVyPwo+Cj4gYXRoMTBrIGRvZXNuJ3QgY2FyZS4g
+aG9zdGFwZCBjYW4gZG8gYSBjaGFubmVsIHN3YXAgaWYgaXQgZGV0ZWN0cyBPQlNTLgo+IE5vdCBz
+dXJlIGhvdyBtdWNoIE9wZW5XUlQgc2NyaXB0cyBtaW5nbGUgaW4gKEknbSBndWVzc2luZyB5b3Un
+cmUgdXNpbmcKPiBgdWNpYCwgaGVuY2UgdGhlIG1lbnRpb24pLgo+Cj4KPj4gSWYgbm90LCBpcyB0
+aGVyZSBhIG1lY2hhbmlzbSBieSB3aGljaCBJIGNhbiBleHBsaWNpdGx5IG1lbnRpb24gd2hpY2gK
+Pj4gY2hhbm5lbCBtdXN0IGJlIHByaW1hcnksIGFuZCB3aGljaCBtdXN0IGJlIHNlY29uZGFyeT8K
+Pgo+IFlvdSBjYW4ndC4gT0JTUyBjYW4gc3RpbGwgZW5kIHVwIHN3YXBwaW5nIHlvdXIgcHJpbWFy
+eSBhbmQgZXh0ZW5zaW9uIGNoYW5uZWxzLgo+Cj4KPj4gQWxzbywgaG93IGlzIHRoZQo+PiBwcmlt
+YXJ5IGNoYW5uZWwgZGVjaWRlZCBmb3IgVkhUODAgbW9kZT8KPgo+IFZIVDgwIGlzIGJhY2t3YXJk
+IGNvbXBhdCBmb3IgSFQ0MCBhbmQgSFQyMCBjbGllbnRzLiBTZWUgdGhlIGNoYW5uZWwKPiBhbGxv
+Y2F0aW9uIGxpbmsgYWJvdmUuCj4KPgo+IE1pY2hhxYIKPgo+IF9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEw
+a0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
