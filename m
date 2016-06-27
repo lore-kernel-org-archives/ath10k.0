@@ -1,24 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from omr1.cc.ipv6.vt.edu ([2607:b400:92:8300:0:c6:2117:b0e]
- helo=omr1.cc.vt.edu)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHSNs-00067P-IM
- for ath10k@lists.infradead.org; Mon, 27 Jun 2016 08:59:13 +0000
-Received: from mr2.cc.vt.edu (mr2.cc.ipv6.vt.edu
- [IPv6:2001:468:c80:2105:0:212:7ed0:359e])
- by omr1.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u5R8wiYS024424
- for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 04:58:45 -0400
-Received: from mail-lf0-f72.google.com (mail-lf0-f72.google.com
- [209.85.215.72])
- by mr2.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u5R8wdtE021343
- for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 04:58:44 -0400
-Received: by mail-lf0-f72.google.com with SMTP id a2so114320438lfe.0
- for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 01:58:44 -0700 (PDT)
+ id 1bHSQ0-0007Vf-Gc
+ for ath10k@lists.infradead.org; Mon, 27 Jun 2016 09:01:25 +0000
+From: <c_traja@qti.qualcomm.com>
+Subject: [PATCHV2 1/3] ath10k: move firmware_swap_code_seg_info to
+ ath10k_fw_file
+Date: Mon, 27 Jun 2016 14:36:44 +0530
+Message-ID: <1467018404-24460-1-git-send-email-c_traja@qti.qualcomm.com>
 MIME-Version: 1.0
-From: Gaurang Ramesh Naik <gaurang@vt.edu>
-Date: Mon, 27 Jun 2016 04:58:38 -0400
-Message-ID: <CAFc9h7vWsEyU7V4X0ehzjsmgw=a_hym0SVrF4Gay=5jJTL2VFA@mail.gmail.com>
-Subject: Set the primary channel in HT40 mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,30 +22,180 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
+Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-Hi All,
+From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
-I have some difficulty in understanding how HT40, HT40- and HT40+
-modes work. My objective is to set a particular 20 MHz channel as the
-primary channel when channel bonding is enabled. From what I
-understand, HT40- means secondary channel is below the primary, while
-HT40+ means secondary channel is above the primary channel. I am
-particularly dealing with channels 149, 153, 157 and 161.
+Preparation to make use of firmware_swap_code_seg_info for
+UTF binary.
 
-When I set the channel to say 157, whether I use HT40+ or HT40-, the
-primary channel is always set to channel 161. I am inferring this
-because when I scan using iwlist scan, my SSID shows on Channel 161.
-Does ath10k not set the primary and secondary channel in this manner?
+Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c |    6 +++---
+ drivers/net/wireless/ath/ath10k/core.h |    6 ++----
+ drivers/net/wireless/ath/ath10k/swap.c |   26 ++++++++++++++------------
+ drivers/net/wireless/ath/ath10k/swap.h |   11 ++++++++---
+ 4 files changed, 27 insertions(+), 22 deletions(-)
 
-If not, is there a mechanism by which I can explicitly mention which
-channel must be primary, and which must be secondary? Also, how is the
-primary channel decided for VHT80 mode?
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index dfb3db0..0a1946b 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -723,7 +723,7 @@ static int ath10k_download_fw(struct ath10k *ar)
+ 	data = ar->running_fw->fw_file.firmware_data;
+ 	data_len = ar->running_fw->fw_file.firmware_len;
+ 
+-	ret = ath10k_swap_code_seg_configure(ar);
++	ret = ath10k_swap_code_seg_configure(ar, &ar->running_fw->fw_file);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to configure fw code swap: %d\n",
+ 			   ret);
+@@ -765,7 +765,7 @@ static void ath10k_core_free_firmware_files(struct ath10k *ar)
+ 	if (!IS_ERR(ar->pre_cal_file))
+ 		release_firmware(ar->pre_cal_file);
+ 
+-	ath10k_swap_code_seg_release(ar);
++	ath10k_swap_code_seg_release(ar, &ar->normal_mode_fw.fw_file);
+ 
+ 	ar->normal_mode_fw.fw_file.otp_data = NULL;
+ 	ar->normal_mode_fw.fw_file.otp_len = 0;
+@@ -2009,7 +2009,7 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 		goto err_free_firmware_files;
+ 	}
+ 
+-	ret = ath10k_swap_code_seg_init(ar);
++	ret = ath10k_swap_code_seg_init(ar, &ar->normal_mode_fw.fw_file);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to initialize code swap segment: %d\n",
+ 			   ret);
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 3da18c9..e69e7e7 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -654,6 +654,8 @@ struct ath10k_fw_file {
+ 
+ 	const void *codeswap_data;
+ 	size_t codeswap_len;
++	/* FIXME: add a comment */
++	struct ath10k_swap_code_seg_info *firmware_swap_code_seg_info;
+ };
+ 
+ struct ath10k_fw_components {
+@@ -765,10 +767,6 @@ struct ath10k {
+ 	const struct firmware *cal_file;
+ 
+ 	struct {
+-		struct ath10k_swap_code_seg_info *firmware_swap_code_seg_info;
+-	} swap;
+-
+-	struct {
+ 		u32 vendor;
+ 		u32 device;
+ 		u32 subsystem_vendor;
+diff --git a/drivers/net/wireless/ath/ath10k/swap.c b/drivers/net/wireless/ath/ath10k/swap.c
+index 0c5f586..c904a41 100644
+--- a/drivers/net/wireless/ath/ath10k/swap.c
++++ b/drivers/net/wireless/ath/ath10k/swap.c
+@@ -134,17 +134,18 @@ ath10k_swap_code_seg_alloc(struct ath10k *ar, size_t swap_bin_len)
+ 	return seg_info;
+ }
+ 
+-int ath10k_swap_code_seg_configure(struct ath10k *ar)
++int ath10k_swap_code_seg_configure(struct ath10k *ar,
++				   const struct ath10k_fw_file *fw_file)
+ {
+ 	int ret;
+ 	struct ath10k_swap_code_seg_info *seg_info = NULL;
+ 
+-	if (!ar->swap.firmware_swap_code_seg_info)
++	if (fw_file->firmware_swap_code_seg_info)
+ 		return 0;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot found firmware code swap binary\n");
+ 
+-	seg_info = ar->swap.firmware_swap_code_seg_info;
++	seg_info = fw_file->firmware_swap_code_seg_info;
+ 
+ 	ret = ath10k_bmi_write_memory(ar, seg_info->target_addr,
+ 				      &seg_info->seg_hw_info,
+@@ -158,28 +159,29 @@ int ath10k_swap_code_seg_configure(struct ath10k *ar)
+ 	return 0;
+ }
+ 
+-void ath10k_swap_code_seg_release(struct ath10k *ar)
++void ath10k_swap_code_seg_release(struct ath10k *ar,
++				  struct ath10k_fw_file *fw_file)
+ {
+-	ath10k_swap_code_seg_free(ar, ar->swap.firmware_swap_code_seg_info);
++	ath10k_swap_code_seg_free(ar, fw_file->firmware_swap_code_seg_info);
+ 
+ 	/* FIXME: these two assignments look to bein wrong place! Shouldn't
+ 	 * they be in ath10k_core_free_firmware_files() like the rest?
+ 	 */
+-	ar->normal_mode_fw.fw_file.codeswap_data = NULL;
+-	ar->normal_mode_fw.fw_file.codeswap_len = 0;
++	fw_file->codeswap_data = NULL;
++	fw_file->codeswap_len = 0;
+ 
+-	ar->swap.firmware_swap_code_seg_info = NULL;
++	fw_file->firmware_swap_code_seg_info = NULL;
+ }
+ 
+-int ath10k_swap_code_seg_init(struct ath10k *ar)
++int ath10k_swap_code_seg_init(struct ath10k *ar, struct ath10k_fw_file *fw_file)
+ {
+ 	int ret;
+ 	struct ath10k_swap_code_seg_info *seg_info;
+ 	const void *codeswap_data;
+ 	size_t codeswap_len;
+ 
+-	codeswap_data = ar->normal_mode_fw.fw_file.codeswap_data;
+-	codeswap_len = ar->normal_mode_fw.fw_file.codeswap_len;
++	codeswap_data = fw_file->codeswap_data;
++	codeswap_len = fw_file->codeswap_len;
+ 
+ 	if (!codeswap_len || !codeswap_data)
+ 		return 0;
+@@ -200,7 +202,7 @@ int ath10k_swap_code_seg_init(struct ath10k *ar)
+ 		return ret;
+ 	}
+ 
+-	ar->swap.firmware_swap_code_seg_info = seg_info;
++	fw_file->firmware_swap_code_seg_info = seg_info;
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/swap.h b/drivers/net/wireless/ath/ath10k/swap.h
+index 36991c7..f5dc047 100644
+--- a/drivers/net/wireless/ath/ath10k/swap.h
++++ b/drivers/net/wireless/ath/ath10k/swap.h
+@@ -23,6 +23,8 @@
+ /* Currently only one swap segment is supported */
+ #define ATH10K_SWAP_CODE_SEG_NUM_SUPPORTED	1
+ 
++struct ath10k_fw_file;
++
+ struct ath10k_swap_code_seg_tlv {
+ 	__le32 address;
+ 	__le32 length;
+@@ -58,8 +60,11 @@ struct ath10k_swap_code_seg_info {
+ 	dma_addr_t paddr[ATH10K_SWAP_CODE_SEG_NUM_SUPPORTED];
+ };
+ 
+-int ath10k_swap_code_seg_configure(struct ath10k *ar);
+-void ath10k_swap_code_seg_release(struct ath10k *ar);
+-int ath10k_swap_code_seg_init(struct ath10k *ar);
++int ath10k_swap_code_seg_configure(struct ath10k *ar,
++				   const struct ath10k_fw_file *fw_file);
++void ath10k_swap_code_seg_release(struct ath10k *ar,
++				  struct ath10k_fw_file *fw_file);
++int ath10k_swap_code_seg_init(struct ath10k *ar,
++			      struct ath10k_fw_file *fw_file);
+ 
+ #endif
+-- 
+1.7.9.5
 
-Note: I am using OpenWrt in my AP. So I set the htmode as an option in
-the /etc/config/wireless file.
-
-Thanks,
-Gaurang.
 
 _______________________________________________
 ath10k mailing list
