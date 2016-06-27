@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bGxvf-0001wE-9u
- for ath10k@lists.infradead.org; Sun, 26 Jun 2016 00:28:04 +0000
-Message-ID: <576F2165.3010109@candelatech.com>
-Date: Sat, 25 Jun 2016 17:27:17 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bHPSq-0006Qf-HG
+ for ath10k@lists.infradead.org; Mon, 27 Jun 2016 05:52:10 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: implement NAPI support
+Date: Mon, 27 Jun 2016 11:21:28 +0530
+Message-ID: <20160627055128.7005-1-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
- QCA99X0 and later
-References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
- <1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>
- <576C1861.7020402@candelatech.com>
- <20160625185350.GA25330@atheros-ThinkPad-T61>
-In-Reply-To: <20160625185350.GA25330@atheros-ThinkPad-T61>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,93 +16,645 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-On 06/25/2016 11:53 AM, Mohammed Shafi Shajakhan wrote:
-> Hello Ben,
->
-> On Thu, Jun 23, 2016 at 10:12:01AM -0700, Ben Greear wrote:
->> On 06/23/2016 09:40 AM, Mohammed Shafi Shajakhan wrote:
->>> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
->>>
->>> For chipsets like QCA99X0, IPQ4019 and later we are not getting proper
->>> NULL func status (always acked/successs !!) when hostapd does a
->>> PROBE_CLIENT via nullfunc frames when the station is powered off
->>> abruptly (inactive timer probes client via null func after the inactive
->>> time reaches beyond the threshold). Fix this by disabling the workaround
->>> (getting the ACK status of NULL func frames by sending via HTT mgmt-tx
->>>   path) introduced by the change ("ath10k: fix beacon loss handling ")
->>> for QCA99X0 and later chipsets. The normal tx path provides the proper
->>> ACK status for NULL data frames. As of now disable this workaround for
->>> chipsets QCA99X0 and later, once the 10.1 firmware is obselete we can
->>> completely get rid of this workaround for all the chipsets
->>
->> Did you see my fix for the tx-status that Kalle posted about recently?
->> That fixed my problem with 9980, but I normally test status with tx over
->> the htt mgt path instead of wmi path, so possibly that makes a difference.
->
-> [shafi] Yes Kalle suggested to try your change (BTW we were not aware that you
-> already discovered this problem !!), https://patchwork.kernel.org/patch/8460831/
-> but ..
+Add NAPI support for rx and tx completion. NAPI poll is scheduled
+from interrupt handler. The design is as below
 
-Is there a better way than posting to the ath10k mailing list?  There are quite
-a few more of my patches that are stuck in pending or ignored state.  If you
-could review some of them and add them to your testing trees then it might help
-them go upstream.
+ - on interrupt
+     - schedule napi and mask interrupts
+ - on poll
+   - process all pipes (no actual Tx/Rx)
+   - process Rx within budget
+   - if quota exceeds budget reschedule napi poll by returning budget
+   - process Tx completions and update budget if necessary
+   - process Tx fetch indications (pull-push)
+   - push any other pending Tx (if possible)
+   - before resched or napi completion replenish htt rx ring buffer
+   - if work done < budget, complete napi poll and unmask interrupts
 
-Maybe someone else with more time and resources could take over maintainer-ship of ath10k
-and let Kalle focus on the drivers in general?
+This change also get rid of two tasklets (intr_tq and txrx_compl_task).
 
-> "[ 747.803652] ath10k_pci 0000:01:00.0: htt tx completion msdu_id 0 discard 0
-> no_ack 0 success 1"
->
-> "[ 747.803843] ath10k_pci 0001:01:00.0: htt tx completion msdu_id 0 discard 0
-> no_ack 0 success 1"
->
-> to be more precise looks like we hit this path for MSG type 0xE,( management Tx
-> completion indication) path(status ok ??) for null func frame without ACK
->
-> case HTT_MGMT_TX_STATUS_OK:
-> 	tx_done.status = HTT_TX_COMPL_STATE_ACK;
-> 	break;
->
->
-> a) The success bit being 'set' without the fix so the change you had mentioned may not help
-> for the upstreamed f/w, should we  give a shot with your change as well to
-> confirm it ?
+Measured peak throughput with NAPI on IPQ4019 platform in controlled
+environment. No noticeable reduction in throughput is seen and also
+observed improvements in CPU usage. Approx. 15% CPU usage got reduced
+in UDP uplink case.
 
-I have no good way to know what exact source creates the upstream firmware.  But, grep
-around for FILTERED and you will probably see your firmware using that tx code.
+DL: AP DUT Tx
+UL: AP DUT Rx
 
-It could easily be that both of our patches are correct and needed.
+IPQ4019 (avg. cpu usage %)
+========
+                TOT              +NAPI
+              ===========      =============
+TCP DL       644 Mbps (42%)    645 Mbps (36%)
+TCP UL       673 Mbps (30%)    675 Mbps (26%)
+UDP DL       682 Mbps (49%)    680 Mbps (49%)
+UDP UL       720 Mbps (28%)    717 Mbps (11%)
 
-> b) and also the workaround is for older firmware which got fixed in
-> 10.2.4 and 10.4, if you can help us that 10.1 also reports NULL func frame
-> status properly via normal data path, we can probably get rid of this workaround
-> once and for all ? thoughts ?
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/ahb.c    |   4 +-
+ drivers/net/wireless/ath/ath10k/core.c   |   2 +
+ drivers/net/wireless/ath/ath10k/core.h   |   8 ++
+ drivers/net/wireless/ath/ath10k/htt.h    |   2 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 154 +++++++++++++++++++------------
+ drivers/net/wireless/ath/ath10k/pci.c    |  67 +++++++++-----
+ drivers/net/wireless/ath/ath10k/pci.h    |   5 +-
+ 7 files changed, 149 insertions(+), 93 deletions(-)
 
-I can fix my 10.1 if it is not already fixed.  If you are ready to have my
-10.1 be the only supported 10.1, then we can do the tests.  If that is the
-case, then you should add a feature flag for my firmware and fail to load any
-other 10.1 firmware since it would then be guaranteed to fail since you are removing
-workarounds for it...
-
-I would rather focus on getting some of the debug patches upstream so that
-I can actually make progress on firmware bugs found on stock kernels.  Without
-them, I have to ask people to run patched drivers in order to get debug info,
-and that is painful for all involved.
-
-Thanks,
-Ben
-
+diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+index acec16b9cf49..9d4d5022be18 100644
+--- a/drivers/net/wireless/ath/ath10k/ahb.c
++++ b/drivers/net/wireless/ath/ath10k/ahb.c
+@@ -462,13 +462,11 @@ static void ath10k_ahb_halt_chip(struct ath10k *ar)
+ static irqreturn_t ath10k_ahb_interrupt_handler(int irq, void *arg)
+ {
+ 	struct ath10k *ar = arg;
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 
+ 	if (!ath10k_pci_irq_pending(ar))
+ 		return IRQ_NONE;
+ 
+ 	ath10k_pci_disable_and_clear_legacy_irq(ar);
+-	tasklet_schedule(&ar_pci->intr_tq);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -831,7 +829,7 @@ static int ath10k_ahb_probe(struct platform_device *pdev)
+ 		goto err_resource_deinit;
+ 	}
+ 
+-	ath10k_pci_init_irq_tasklets(ar);
++	ath10k_pci_init_napi(ar);
+ 
+ 	ret = ath10k_ahb_request_irq_legacy(ar);
+ 	if (ret)
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index dfb3db0ee5d1..2639e7e0836b 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2223,6 +2223,8 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 	INIT_WORK(&ar->register_work, ath10k_core_register_work);
+ 	INIT_WORK(&ar->restart_work, ath10k_core_restart);
+ 
++	init_dummy_netdev(&ar->napi_dev);
++
+ 	ret = ath10k_debug_create(ar);
+ 	if (ret)
+ 		goto err_free_aux_wq;
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 3da18c9dbd7a..10878926b629 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -65,6 +65,10 @@
+ #define ATH10K_KEEPALIVE_MAX_IDLE 3895
+ #define ATH10K_KEEPALIVE_MAX_UNRESPONSIVE 3900
+ 
++/* NAPI poll budget */
++#define ATH10K_NAPI_BUDGET      64
++#define ATH10K_NAPI_QUOTA_LIMIT 60
++
+ struct ath10k;
+ 
+ enum ath10k_bus {
+@@ -926,6 +930,10 @@ struct ath10k {
+ 	struct ath10k_thermal thermal;
+ 	struct ath10k_wow wow;
+ 
++	/* NAPI */
++	struct net_device napi_dev;
++	struct napi_struct napi;
++
+ 	/* must be last */
+ 	u8 drv_priv[0] __aligned(sizeof(void *));
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 430a83e142aa..98c14247021b 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1665,7 +1665,6 @@ struct ath10k_htt {
+ 
+ 	/* This is used to group tx/rx completions separately and process them
+ 	 * in batches to reduce cache stalls */
+-	struct tasklet_struct txrx_compl_task;
+ 	struct sk_buff_head rx_compl_q;
+ 	struct sk_buff_head rx_in_ord_compl_q;
+ 	struct sk_buff_head tx_fetch_ind_q;
+@@ -1798,5 +1797,6 @@ int ath10k_htt_tx(struct ath10k_htt *htt,
+ 		  struct sk_buff *msdu);
+ void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
+ 					     struct sk_buff *skb);
++int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget);
+ 
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 80e645302b54..c68b39bfc7bb 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -34,7 +34,6 @@
+ #define HTT_RX_RING_REFILL_RESCHED_MS 5
+ 
+ static int ath10k_htt_rx_get_csum_state(struct sk_buff *skb);
+-static void ath10k_htt_txrx_compl_task(unsigned long ptr);
+ 
+ static struct sk_buff *
+ ath10k_htt_rx_find_skb_paddr(struct ath10k *ar, u32 paddr)
+@@ -226,7 +225,6 @@ int ath10k_htt_rx_ring_refill(struct ath10k *ar)
+ void ath10k_htt_rx_free(struct ath10k_htt *htt)
+ {
+ 	del_timer_sync(&htt->rx_ring.refill_retry_timer);
+-	tasklet_kill(&htt->txrx_compl_task);
+ 
+ 	skb_queue_purge(&htt->rx_compl_q);
+ 	skb_queue_purge(&htt->rx_in_ord_compl_q);
+@@ -520,9 +518,6 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 	skb_queue_head_init(&htt->tx_fetch_ind_q);
+ 	atomic_set(&htt->num_mpdus_ready, 0);
+ 
+-	tasklet_init(&htt->txrx_compl_task, ath10k_htt_txrx_compl_task,
+-		     (unsigned long)htt);
+-
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "htt rx ring size %d fill_level %d\n",
+ 		   htt->rx_ring.size, htt->rx_ring.fill_level);
+ 	return 0;
+@@ -958,7 +953,7 @@ static void ath10k_process_rx(struct ath10k *ar,
+ 	trace_ath10k_rx_hdr(ar, skb->data, skb->len);
+ 	trace_ath10k_rx_payload(ar, skb->data, skb->len);
+ 
+-	ieee80211_rx(ar->hw, skb);
++	ieee80211_rx_napi(ar->hw, NULL, skb, &ar->napi);
+ }
+ 
+ static int ath10k_htt_rx_nwifi_hdrlen(struct ath10k *ar,
+@@ -1527,7 +1522,7 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
+ 	struct ath10k *ar = htt->ar;
+ 	static struct ieee80211_rx_status rx_status;
+ 	struct sk_buff_head amsdu;
+-	int ret;
++	int ret, num_msdus;
+ 
+ 	__skb_queue_head_init(&amsdu);
+ 
+@@ -1549,13 +1544,14 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
+ 		return ret;
+ 	}
+ 
++	num_msdus = skb_queue_len(&amsdu);
+ 	ath10k_htt_rx_h_ppdu(ar, &amsdu, &rx_status, 0xffff);
+ 	ath10k_htt_rx_h_unchain(ar, &amsdu, ret > 0);
+ 	ath10k_htt_rx_h_filter(ar, &amsdu, &rx_status);
+ 	ath10k_htt_rx_h_mpdu(ar, &amsdu, &rx_status);
+ 	ath10k_htt_rx_h_deliver(ar, &amsdu, &rx_status);
+ 
+-	return 0;
++	return num_msdus;
+ }
+ 
+ static void ath10k_htt_rx_proc_rx_ind(struct ath10k_htt *htt,
+@@ -1579,15 +1575,6 @@ static void ath10k_htt_rx_proc_rx_ind(struct ath10k_htt *htt,
+ 		mpdu_count += mpdu_ranges[i].mpdu_count;
+ 
+ 	atomic_add(mpdu_count, &htt->num_mpdus_ready);
+-
+-	tasklet_schedule(&htt->txrx_compl_task);
+-}
+-
+-static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt)
+-{
+-	atomic_inc(&htt->num_mpdus_ready);
+-
+-	tasklet_schedule(&htt->txrx_compl_task);
+ }
+ 
+ static void ath10k_htt_rx_tx_compl_ind(struct ath10k *ar,
+@@ -1772,14 +1759,15 @@ static void ath10k_htt_rx_h_rx_offload_prot(struct ieee80211_rx_status *status,
+ 			RX_FLAG_MMIC_STRIPPED;
+ }
+ 
+-static void ath10k_htt_rx_h_rx_offload(struct ath10k *ar,
+-				       struct sk_buff_head *list)
++static int ath10k_htt_rx_h_rx_offload(struct ath10k *ar,
++				      struct sk_buff_head *list)
+ {
+ 	struct ath10k_htt *htt = &ar->htt;
+ 	struct ieee80211_rx_status *status = &htt->rx_status;
+ 	struct htt_rx_offload_msdu *rx;
+ 	struct sk_buff *msdu;
+ 	size_t offset;
++	int num_msdu = 0;
+ 
+ 	while ((msdu = __skb_dequeue(list))) {
+ 		/* Offloaded frames don't have Rx descriptor. Instead they have
+@@ -1819,10 +1807,12 @@ static void ath10k_htt_rx_h_rx_offload(struct ath10k *ar,
+ 		ath10k_htt_rx_h_rx_offload_prot(status, msdu);
+ 		ath10k_htt_rx_h_channel(ar, status, NULL, rx->vdev_id);
+ 		ath10k_process_rx(ar, status, msdu);
++		num_msdu++;
+ 	}
++	return num_msdu;
+ }
+ 
+-static void ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
++static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct ath10k_htt *htt = &ar->htt;
+ 	struct htt_resp *resp = (void *)skb->data;
+@@ -1835,12 +1825,12 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 	u8 tid;
+ 	bool offload;
+ 	bool frag;
+-	int ret;
++	int ret, num_msdus = 0;
+ 
+ 	lockdep_assert_held(&htt->rx_ring.lock);
+ 
+ 	if (htt->rx_confused)
+-		return;
++		return -EIO;
+ 
+ 	skb_pull(skb, sizeof(resp->hdr));
+ 	skb_pull(skb, sizeof(resp->rx_in_ord_ind));
+@@ -1859,7 +1849,7 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 
+ 	if (skb->len < msdu_count * sizeof(*resp->rx_in_ord_ind.msdu_descs)) {
+ 		ath10k_warn(ar, "dropping invalid in order rx indication\n");
+-		return;
++		return -EINVAL;
+ 	}
+ 
+ 	/* The event can deliver more than 1 A-MSDU. Each A-MSDU is later
+@@ -1870,14 +1860,14 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 	if (ret < 0) {
+ 		ath10k_warn(ar, "failed to pop paddr list: %d\n", ret);
+ 		htt->rx_confused = true;
+-		return;
++		return -EIO;
+ 	}
+ 
+ 	/* Offloaded frames are very different and need to be handled
+ 	 * separately.
+ 	 */
+ 	if (offload)
+-		ath10k_htt_rx_h_rx_offload(ar, &list);
++		num_msdus = ath10k_htt_rx_h_rx_offload(ar, &list);
+ 
+ 	while (!skb_queue_empty(&list)) {
+ 		__skb_queue_head_init(&amsdu);
+@@ -1890,6 +1880,7 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 			 * better to report something than nothing though. This
+ 			 * should still give an idea about rx rate to the user.
+ 			 */
++			num_msdus += skb_queue_len(&amsdu);
+ 			ath10k_htt_rx_h_ppdu(ar, &amsdu, status, vdev_id);
+ 			ath10k_htt_rx_h_filter(ar, &amsdu, status);
+ 			ath10k_htt_rx_h_mpdu(ar, &amsdu, status);
+@@ -1902,9 +1893,10 @@ static void ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 			ath10k_warn(ar, "failed to extract amsdu: %d\n", ret);
+ 			htt->rx_confused = true;
+ 			__skb_queue_purge(&list);
+-			return;
++			return -EIO;
+ 		}
+ 	}
++	return num_msdus;
+ }
+ 
+ static void ath10k_htt_rx_tx_fetch_resp_id_confirm(struct ath10k *ar,
+@@ -2267,7 +2259,6 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 	}
+ 	case HTT_T2H_MSG_TYPE_TX_COMPL_IND:
+ 		ath10k_htt_rx_tx_compl_ind(htt->ar, skb);
+-		tasklet_schedule(&htt->txrx_compl_task);
+ 		break;
+ 	case HTT_T2H_MSG_TYPE_SEC_IND: {
+ 		struct ath10k *ar = htt->ar;
+@@ -2284,7 +2275,7 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 	case HTT_T2H_MSG_TYPE_RX_FRAG_IND: {
+ 		ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt event: ",
+ 				skb->data, skb->len);
+-		ath10k_htt_rx_frag_handler(htt);
++		atomic_inc(&htt->num_mpdus_ready);
+ 		break;
+ 	}
+ 	case HTT_T2H_MSG_TYPE_TEST:
+@@ -2322,8 +2313,7 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	}
+ 	case HTT_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND: {
+-		skb_queue_tail(&htt->rx_in_ord_compl_q, skb);
+-		tasklet_schedule(&htt->txrx_compl_task);
++		__skb_queue_tail(&htt->rx_in_ord_compl_q, skb);
+ 		return false;
+ 	}
+ 	case HTT_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND:
+@@ -2349,7 +2339,6 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 			break;
+ 		}
+ 		skb_queue_tail(&htt->tx_fetch_ind_q, tx_fetch_ind);
+-		tasklet_schedule(&htt->txrx_compl_task);
+ 		break;
+ 	}
+ 	case HTT_T2H_MSG_TYPE_TX_FETCH_CONFIRM:
+@@ -2378,27 +2367,77 @@ void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
+ }
+ EXPORT_SYMBOL(ath10k_htt_rx_pktlog_completion_handler);
+ 
+-static void ath10k_htt_txrx_compl_task(unsigned long ptr)
++int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget)
+ {
+-	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
+-	struct ath10k *ar = htt->ar;
++	struct ath10k_htt *htt = &ar->htt;
+ 	struct htt_tx_done tx_done = {};
+-	struct sk_buff_head rx_ind_q;
+ 	struct sk_buff_head tx_ind_q;
+ 	struct sk_buff *skb;
+ 	unsigned long flags;
+-	int num_mpdus;
++	int quota = 0, done, num_rx_msdus;
++	bool resched_napi = false;
+ 
+-	__skb_queue_head_init(&rx_ind_q);
+ 	__skb_queue_head_init(&tx_ind_q);
+ 
+-	spin_lock_irqsave(&htt->rx_in_ord_compl_q.lock, flags);
+-	skb_queue_splice_init(&htt->rx_in_ord_compl_q, &rx_ind_q);
+-	spin_unlock_irqrestore(&htt->rx_in_ord_compl_q.lock, flags);
++	/* Since in-ord-ind can deliver more than 1 A-MSDU in single event,
++	 * process it first to utilize full available quota.
++	 */
++	while (quota < budget) {
++		if (skb_queue_empty(&htt->rx_in_ord_compl_q))
++			break;
+ 
+-	spin_lock_irqsave(&htt->tx_fetch_ind_q.lock, flags);
+-	skb_queue_splice_init(&htt->tx_fetch_ind_q, &tx_ind_q);
+-	spin_unlock_irqrestore(&htt->tx_fetch_ind_q.lock, flags);
++		skb = __skb_dequeue(&htt->rx_in_ord_compl_q);
++		if (!skb) {
++			resched_napi = true;
++			goto exit;
++		}
++
++		spin_lock_bh(&htt->rx_ring.lock);
++		num_rx_msdus = ath10k_htt_rx_in_ord_ind(ar, skb);
++		spin_unlock_bh(&htt->rx_ring.lock);
++		if (num_rx_msdus < 0) {
++			resched_napi = true;
++			goto exit;
++		}
++
++		dev_kfree_skb_any(skb);
++		if (num_rx_msdus > 0)
++			quota += num_rx_msdus;
++
++		if ((quota > ATH10K_NAPI_QUOTA_LIMIT) &&
++		    !skb_queue_empty(&htt->rx_in_ord_compl_q)) {
++			resched_napi = true;
++			goto exit;
++		}
++	}
++
++	while (quota < budget) {
++		/* no more data to receive */
++		if (!atomic_read(&htt->num_mpdus_ready))
++			break;
++
++		num_rx_msdus = ath10k_htt_rx_handle_amsdu(htt);
++		if (num_rx_msdus < 0) {
++			resched_napi = true;
++			goto exit;
++		}
++
++		quota += num_rx_msdus;
++		atomic_dec(&htt->num_mpdus_ready);
++		if ((quota > ATH10K_NAPI_QUOTA_LIMIT) &&
++		    atomic_read(&htt->num_mpdus_ready)) {
++			resched_napi = true;
++			goto exit;
++		}
++	}
++
++	/* From NAPI documentation:
++	 *  The napi poll() function may also process TX completions, in which
++	 *  case if it processes the entire TX ring then it should count that
++	 *  work as the rest of the budget.
++	 */
++	if ((quota < budget) && !kfifo_is_empty(&htt->txdone_fifo))
++		quota = budget;
+ 
+ 	/* kfifo_get: called only within txrx_tasklet so it's neatly serialized.
+ 	 * From kfifo_get() documentation:
+@@ -2408,27 +2447,22 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+ 	while (kfifo_get(&htt->txdone_fifo, &tx_done))
+ 		ath10k_txrx_tx_unref(htt, &tx_done);
+ 
++	spin_lock_irqsave(&htt->tx_fetch_ind_q.lock, flags);
++	skb_queue_splice_init(&htt->tx_fetch_ind_q, &tx_ind_q);
++	spin_unlock_irqrestore(&htt->tx_fetch_ind_q.lock, flags);
++
+ 	while ((skb = __skb_dequeue(&tx_ind_q))) {
+ 		ath10k_htt_rx_tx_fetch_ind(ar, skb);
+ 		dev_kfree_skb_any(skb);
+ 	}
+ 
+-	num_mpdus = atomic_read(&htt->num_mpdus_ready);
+-
+-	while (num_mpdus) {
+-		if (ath10k_htt_rx_handle_amsdu(htt))
+-			break;
+-
+-		num_mpdus--;
+-		atomic_dec(&htt->num_mpdus_ready);
+-	}
+-
+-	while ((skb = __skb_dequeue(&rx_ind_q))) {
+-		spin_lock_bh(&htt->rx_ring.lock);
+-		ath10k_htt_rx_in_ord_ind(ar, skb);
+-		spin_unlock_bh(&htt->rx_ring.lock);
+-		dev_kfree_skb_any(skb);
+-	}
+-
++exit:
+ 	ath10k_htt_rx_msdu_buff_replenish(htt);
++	/* In case of rx failure or more data to read, report budget
++	 * to reschedule NAPI poll
++	 */
++	done = resched_napi ? budget : quota;
++
++	return done;
+ }
++EXPORT_SYMBOL(ath10k_htt_txrx_compl_task);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index f06dd3941bac..9169ab92a16a 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1502,12 +1502,10 @@ void ath10k_pci_hif_send_complete_check(struct ath10k *ar, u8 pipe,
+ 	ath10k_ce_per_engine_service(ar, pipe);
+ }
+ 
+-void ath10k_pci_kill_tasklet(struct ath10k *ar)
++static void ath10k_pci_rx_retry_sync(struct ath10k *ar)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 
+-	tasklet_kill(&ar_pci->intr_tq);
+-
+ 	del_timer_sync(&ar_pci->rx_post_retry);
+ }
+ 
+@@ -1747,7 +1745,7 @@ void ath10k_pci_ce_deinit(struct ath10k *ar)
+ 
+ void ath10k_pci_flush(struct ath10k *ar)
+ {
+-	ath10k_pci_kill_tasklet(ar);
++	ath10k_pci_rx_retry_sync(ar);
+ 	ath10k_pci_buffer_cleanup(ar);
+ }
+ 
+@@ -2754,35 +2752,53 @@ static irqreturn_t ath10k_pci_interrupt_handler(int irq, void *arg)
+ 		return IRQ_NONE;
+ 	}
+ 
+-	if (ar_pci->oper_irq_mode == ATH10K_PCI_IRQ_LEGACY) {
+-		if (!ath10k_pci_irq_pending(ar))
+-			return IRQ_NONE;
+-
+-		ath10k_pci_disable_and_clear_legacy_irq(ar);
+-	}
++	if ((ar_pci->oper_irq_mode == ATH10K_PCI_IRQ_LEGACY) &&
++	    !ath10k_pci_irq_pending(ar))
++		return IRQ_NONE;
+ 
+-	tasklet_schedule(&ar_pci->intr_tq);
++	ath10k_pci_disable_and_clear_legacy_irq(ar);
++	ath10k_pci_irq_msi_fw_mask(ar);
++	napi_schedule(&ar->napi);
+ 
+ 	return IRQ_HANDLED;
+ }
+ 
+-static void ath10k_pci_tasklet(unsigned long data)
++static int ath10k_pci_napi_poll(struct napi_struct *ctx, int budget)
+ {
+-	struct ath10k *ar = (struct ath10k *)data;
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	struct ath10k *ar = container_of(ctx, struct ath10k, napi);
++	int done = 0;
+ 
+ 	if (ath10k_pci_has_fw_crashed(ar)) {
+-		ath10k_pci_irq_disable(ar);
+ 		ath10k_pci_fw_crashed_clear(ar);
+ 		ath10k_pci_fw_crashed_dump(ar);
+-		return;
++		napi_complete(ctx);
++		return done;
+ 	}
+ 
+ 	ath10k_ce_per_engine_service_any(ar);
+ 
+-	/* Re-enable legacy irq that was disabled in the irq handler */
+-	if (ar_pci->oper_irq_mode == ATH10K_PCI_IRQ_LEGACY)
++	done = ath10k_htt_txrx_compl_task(ar, budget);
++
++	if (done < budget) {
++		napi_complete(ctx);
++		/* In case of MSI, it is possible that interrupts are received
++		 * while NAPI poll is inprogress. So pending interrupts that are
++		 * received after processing all copy engine pipes by NAPI poll
++		 * will not be handled again. This is causing failure to
++		 * complete boot sequence in x86 platform. So before enabling
++		 * interrupts safer to check for pending interrupts for
++		 * immediate servicing.
++		 */
++		if (CE_INTERRUPT_SUMMARY(ar)) {
++			napi_reschedule(&ar->napi);
++			goto out;
++		}
+ 		ath10k_pci_enable_legacy_irq(ar);
++		ath10k_pci_irq_msi_fw_unmask(ar);
++	}
++
++out:
++	return done;
+ }
+ 
+ static int ath10k_pci_request_irq_msi(struct ath10k *ar)
+@@ -2840,11 +2856,11 @@ static void ath10k_pci_free_irq(struct ath10k *ar)
+ 	free_irq(ar_pci->pdev->irq, ar);
+ }
+ 
+-void ath10k_pci_init_irq_tasklets(struct ath10k *ar)
++void ath10k_pci_init_napi(struct ath10k *ar)
+ {
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-
+-	tasklet_init(&ar_pci->intr_tq, ath10k_pci_tasklet, (unsigned long)ar);
++	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_pci_napi_poll,
++		       ATH10K_NAPI_BUDGET);
++	napi_enable(&ar->napi);
+ }
+ 
+ static int ath10k_pci_init_irq(struct ath10k *ar)
+@@ -2852,7 +2868,7 @@ static int ath10k_pci_init_irq(struct ath10k *ar)
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int ret;
+ 
+-	ath10k_pci_init_irq_tasklets(ar);
++	ath10k_pci_init_napi(ar);
+ 
+ 	if (ath10k_pci_irq_mode != ATH10K_PCI_IRQ_AUTO)
+ 		ath10k_info(ar, "limiting irq mode to: %d\n",
+@@ -3113,7 +3129,8 @@ int ath10k_pci_setup_resource(struct ath10k *ar)
+ 
+ void ath10k_pci_release_resource(struct ath10k *ar)
+ {
+-	ath10k_pci_kill_tasklet(ar);
++	ath10k_pci_rx_retry_sync(ar);
++	netif_napi_del(&ar->napi);
+ 	ath10k_pci_ce_deinit(ar);
+ 	ath10k_pci_free_pipes(ar);
+ }
+@@ -3274,7 +3291,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 
+ err_free_irq:
+ 	ath10k_pci_free_irq(ar);
+-	ath10k_pci_kill_tasklet(ar);
++	ath10k_pci_rx_retry_sync(ar);
+ 
+ err_deinit_irq:
+ 	ath10k_pci_deinit_irq(ar);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index 6eca1df2ce60..974e463e8b95 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -177,8 +177,6 @@ struct ath10k_pci {
+ 	/* Operating interrupt mode */
+ 	enum ath10k_pci_irq_mode oper_irq_mode;
+ 
+-	struct tasklet_struct intr_tq;
+-
+ 	struct ath10k_pci_pipe pipe_info[CE_COUNT_MAX];
+ 
+ 	/* Copy Engine used for Diagnostic Accesses */
+@@ -294,8 +292,7 @@ void ath10k_pci_free_pipes(struct ath10k *ar);
+ void ath10k_pci_free_pipes(struct ath10k *ar);
+ void ath10k_pci_rx_replenish_retry(unsigned long ptr);
+ void ath10k_pci_ce_deinit(struct ath10k *ar);
+-void ath10k_pci_init_irq_tasklets(struct ath10k *ar);
+-void ath10k_pci_kill_tasklet(struct ath10k *ar);
++void ath10k_pci_init_napi(struct ath10k *ar);
+ int ath10k_pci_init_pipes(struct ath10k *ar);
+ int ath10k_pci_init_config(struct ath10k *ar);
+ void ath10k_pci_rx_post(struct ath10k *ar);
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+2.9.0
 
 
 _______________________________________________
