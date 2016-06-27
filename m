@@ -1,13 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHSR7-0008Id-KM
- for ath10k@lists.infradead.org; Mon, 27 Jun 2016 09:02:34 +0000
-From: <c_traja@qti.qualcomm.com>
-Subject: [PATCHV2 3/3] ath10k: add testmode support for 10.4 firmware
-Date: Mon, 27 Jun 2016 14:37:34 +0530
-Message-ID: <1467018454-24530-1-git-send-email-c_traja@qti.qualcomm.com>
+ id 1bHSpb-0001BG-4U
+ for ath10k@lists.infradead.org; Mon, 27 Jun 2016 09:27:52 +0000
+Received: by mail-wm0-x236.google.com with SMTP id a66so106049380wme.0
+ for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 02:27:29 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>
+References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
+ <1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Mon, 27 Jun 2016 11:27:27 +0200
+Message-ID: <CA+BoTQnUvF2Zy7_WuEi0V+KjByRghVmoeR6yrs6hu6ag=KmBqQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
+ QCA99X0 and later
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,83 +22,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>, Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Tamizh chelvam <c_traja@qti.qualcomm.com>
-
-This patch adds testmode support for QCA99X0 chipsets which uses
-10.4 firmware and added code swap support for UTF binary.
-
-Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/testmode.c |   23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/testmode.c b/drivers/net/wireless/ath/ath10k/testmode.c
-index 120f423..2c10c0e 100644
---- a/drivers/net/wireless/ath/ath10k/testmode.c
-+++ b/drivers/net/wireless/ath/ath10k/testmode.c
-@@ -23,6 +23,7 @@
- #include "wmi.h"
- #include "hif.h"
- #include "hw.h"
-+#include "core.h"
- 
- #include "testmode_i.h"
- 
-@@ -240,6 +241,18 @@ static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
- 		goto err;
- 	}
- 
-+	if (ar->testmode.utf_mode_fw.fw_file.codeswap_data &&
-+	    ar->testmode.utf_mode_fw.fw_file.codeswap_len) {
-+		ret = ath10k_swap_code_seg_init(ar,
-+					&ar->testmode.utf_mode_fw.fw_file);
-+		if (ret) {
-+			ath10k_warn(ar,
-+				"failed to init utf code swap segment: %d\n",
-+				ret);
-+			goto err_release_utf_mode_fw;
-+		}
-+	}
-+
- 	spin_lock_bh(&ar->data_lock);
- 	ar->testmode.utf_monitor = true;
- 	spin_unlock_bh(&ar->data_lock);
-@@ -279,6 +292,11 @@ err_power_down:
- 	ath10k_hif_power_down(ar);
- 
- err_release_utf_mode_fw:
-+	if (ar->testmode.utf_mode_fw.fw_file.codeswap_data &&
-+	    ar->testmode.utf_mode_fw.fw_file.codeswap_len)
-+		ath10k_swap_code_seg_release(ar,
-+					&ar->testmode.utf_mode_fw.fw_file);
-+
- 	release_firmware(ar->testmode.utf_mode_fw.fw_file.firmware);
- 	ar->testmode.utf_mode_fw.fw_file.firmware = NULL;
- 
-@@ -301,6 +319,11 @@ static void __ath10k_tm_cmd_utf_stop(struct ath10k *ar)
- 
- 	spin_unlock_bh(&ar->data_lock);
- 
-+	if (ar->testmode.utf_mode_fw.fw_file.codeswap_data &&
-+	    ar->testmode.utf_mode_fw.fw_file.codeswap_len)
-+		ath10k_swap_code_seg_release(ar,
-+					&ar->testmode.utf_mode_fw.fw_file);
-+
- 	release_firmware(ar->testmode.utf_mode_fw.fw_file.firmware);
- 	ar->testmode.utf_mode_fw.fw_file.firmware = NULL;
- 
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjMgSnVuZSAyMDE2IGF0IDE4OjQwLCBNb2hhbW1lZCBTaGFmaSBTaGFqYWtoYW4KPG1vaGFt
+bWVkQHF0aS5xdWFsY29tbS5jb20+IHdyb3RlOgo+IEZyb206IE1vaGFtbWVkIFNoYWZpIFNoYWph
+a2hhbiA8bW9oYW1tZWRAcXRpLnF1YWxjb21tLmNvbT4KPgo+IEZvciBjaGlwc2V0cyBsaWtlIFFD
+QTk5WDAsIElQUTQwMTkgYW5kIGxhdGVyIHdlIGFyZSBub3QgZ2V0dGluZyBwcm9wZXIKPiBOVUxM
+IGZ1bmMgc3RhdHVzIChhbHdheXMgYWNrZWQvc3VjY2Vzc3MgISEpIHdoZW4gaG9zdGFwZCBkb2Vz
+IGEKPiBQUk9CRV9DTElFTlQgdmlhIG51bGxmdW5jIGZyYW1lcyB3aGVuIHRoZSBzdGF0aW9uIGlz
+IHBvd2VyZWQgb2ZmCj4gYWJydXB0bHkgKGluYWN0aXZlIHRpbWVyIHByb2JlcyBjbGllbnQgdmlh
+IG51bGwgZnVuYyBhZnRlciB0aGUgaW5hY3RpdmUKPiB0aW1lIHJlYWNoZXMgYmV5b25kIHRoZSB0
+aHJlc2hvbGQpLiBGaXggdGhpcyBieSBkaXNhYmxpbmcgdGhlIHdvcmthcm91bmQKPiAoZ2V0dGlu
+ZyB0aGUgQUNLIHN0YXR1cyBvZiBOVUxMIGZ1bmMgZnJhbWVzIGJ5IHNlbmRpbmcgdmlhIEhUVCBt
+Z210LXR4Cj4gIHBhdGgpIGludHJvZHVjZWQgYnkgdGhlIGNoYW5nZSAoImF0aDEwazogZml4IGJl
+YWNvbiBsb3NzIGhhbmRsaW5nICIpCj4gZm9yIFFDQTk5WDAgYW5kIGxhdGVyIGNoaXBzZXRzLiBU
+aGUgbm9ybWFsIHR4IHBhdGggcHJvdmlkZXMgdGhlIHByb3Blcgo+IEFDSyBzdGF0dXMgZm9yIE5V
+TEwgZGF0YSBmcmFtZXMuIEFzIG9mIG5vdyBkaXNhYmxlIHRoaXMgd29ya2Fyb3VuZCBmb3IKPiBj
+aGlwc2V0cyBRQ0E5OVgwIGFuZCBsYXRlciwgb25jZSB0aGUgMTAuMSBmaXJtd2FyZSBpcyBvYnNl
+bGV0ZSB3ZSBjYW4KPiBjb21wbGV0ZWx5IGdldCByaWQgb2YgdGhpcyB3b3JrYXJvdW5kIGZvciBh
+bGwgdGhlIGNoaXBzZXRzCj4KPiBTaWduZWQtb2ZmLWJ5OiBUYW1pemggY2hlbHZhbSA8Y190cmFq
+YUBxdGkucXVhbGNvbW0uY29tPgo+IFNpZ25lZC1vZmYtYnk6IE1vaGFtbWVkIFNoYWZpIFNoYWph
+a2hhbiA8bW9oYW1tZWRAcXRpLnF1YWxjb21tLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway9jb3JlLmMgfCAzICsrKwo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL2NvcmUuaCB8IDYgKysrKysrCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
+dGgxMGsvbWFjLmMgIHwgMSArCj4gIDMgZmlsZXMgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKQo+
+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jIGIv
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiBpbmRleCA2ODlkNmNlLi45
+OTc4ZTRhIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29y
+ZS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiBAQCAt
+MTgxLDYgKzE4MSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyBhdGgx
+MGtfaHdfcGFyYW1zX2xpc3RbXSA9IHsKPiAgICAgICAgICAgICAgICAgICAgICAgICAuYm9hcmQg
+PSBRQ0E5OVgwX0hXXzJfMF9CT0FSRF9EQVRBX0ZJTEUsCj4gICAgICAgICAgICAgICAgICAgICAg
+ICAgLmJvYXJkX3NpemUgPSBRQ0E5OVgwX0JPQVJEX0RBVEFfU1osCj4gICAgICAgICAgICAgICAg
+ICAgICAgICAgLmJvYXJkX2V4dF9zaXplID0gUUNBOTlYMF9CT0FSRF9FWFRfREFUQV9TWiwKPiAr
+ICAgICAgICAgICAgICAgICAgICAgICAuZGlzYWJsZV9udWxsX2Z1bmNfd29ya2Fyb3VuZCA9IHRy
+dWUsCgpUeCBjb21wbGV0aW9uIChidWdzKSBhcmUgZmlybXdhcmUgc3BlY2lmaWMsIG5vdCBoYXJk
+d2FyZS4gVGhpcyBzaG91bGQKYmUgZXhwcmVzc2VkIHZpYSBmZWF0dXJlcyBiaXRzIGluIGF0aDEw
+ayBGVyBBUEksIG5vPwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
