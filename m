@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHRN0-0004Dp-Rl
- for ath10k@lists.infradead.org; Mon, 27 Jun 2016 07:54:15 +0000
+ id 1bHS9q-0007vq-77
+ for ath10k@lists.infradead.org; Mon, 27 Jun 2016 08:44:43 +0000
 From: <c_traja@qti.qualcomm.com>
 Subject: [PATCH 0/3] Add testmode support for 10.4
-Date: Mon, 27 Jun 2016 13:29:11 +0530
-Message-ID: <1467014351-30894-1-git-send-email-c_traja@qti.qualcomm.com>
+Date: Mon, 27 Jun 2016 14:19:37 +0530
+Message-ID: <1467017377-25145-1-git-send-email-c_traja@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
