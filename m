@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHSQn-00086Q-H2
- for ath10k@lists.infradead.org; Mon, 27 Jun 2016 09:02:14 +0000
+ id 1bHSR7-0008Id-KM
+ for ath10k@lists.infradead.org; Mon, 27 Jun 2016 09:02:34 +0000
 From: <c_traja@qti.qualcomm.com>
-Subject: [PATCHV2 2/3] ath10k: handle testmode events for 10.2 and 10.4 based
- firmware
-Date: Mon, 27 Jun 2016 14:37:07 +0530
-Message-ID: <1467018427-24495-1-git-send-email-c_traja@qti.qualcomm.com>
+Subject: [PATCHV2 3/3] ath10k: add testmode support for 10.4 firmware
+Date: Mon, 27 Jun 2016 14:37:34 +0530
+Message-ID: <1467018454-24530-1-git-send-email-c_traja@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,73 +25,69 @@ Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
 From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
-Currently testmode events for 10.x firmware are processed from
-10.1 wmi event processing. This patch is used to handle testmode
-events in 10.2 and 10.4 based firmware.
+This patch adds testmode support for QCA99X0 chipsets which uses
+10.4 firmware and added code swap support for UTF binary.
 
 Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c |   26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/net/wireless/ath/ath10k/testmode.c |   23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 6279ab4..72b5483 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -5095,6 +5095,7 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_cmd_hdr *cmd_hdr;
- 	enum wmi_10_2_event_id id;
-+	bool consumed;
+diff --git a/drivers/net/wireless/ath/ath10k/testmode.c b/drivers/net/wireless/ath/ath10k/testmode.c
+index 120f423..2c10c0e 100644
+--- a/drivers/net/wireless/ath/ath10k/testmode.c
++++ b/drivers/net/wireless/ath/ath10k/testmode.c
+@@ -23,6 +23,7 @@
+ #include "wmi.h"
+ #include "hif.h"
+ #include "hw.h"
++#include "core.h"
  
- 	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
- 	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
-@@ -5104,6 +5105,18 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ #include "testmode_i.h"
  
- 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
+@@ -240,6 +241,18 @@ static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
+ 		goto err;
+ 	}
  
-+	consumed = ath10k_tm_event_wmi(ar, id, skb);
-+
-+	/* Ready event must be handled normally also in UTF mode so that we
-+	 * know the UTF firmware has booted, others we are just bypass WMI
-+	 * events to testmode.
-+	 */
-+	if (consumed && id != WMI_10_2_READY_EVENTID) {
-+		ath10k_dbg(ar, ATH10K_DBG_WMI,
-+			   "wmi testmode consumed 0x%x\n", id);
-+		goto out;
++	if (ar->testmode.utf_mode_fw.fw_file.codeswap_data &&
++	    ar->testmode.utf_mode_fw.fw_file.codeswap_len) {
++		ret = ath10k_swap_code_seg_init(ar,
++					&ar->testmode.utf_mode_fw.fw_file);
++		if (ret) {
++			ath10k_warn(ar,
++				"failed to init utf code swap segment: %d\n",
++				ret);
++			goto err_release_utf_mode_fw;
++		}
 +	}
 +
- 	switch (id) {
- 	case WMI_10_2_MGMT_RX_EVENTID:
- 		ath10k_wmi_event_mgmt_rx(ar, skb);
-@@ -5219,6 +5232,7 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_cmd_hdr *cmd_hdr;
- 	enum wmi_10_4_event_id id;
-+	bool consumed;
+ 	spin_lock_bh(&ar->data_lock);
+ 	ar->testmode.utf_monitor = true;
+ 	spin_unlock_bh(&ar->data_lock);
+@@ -279,6 +292,11 @@ err_power_down:
+ 	ath10k_hif_power_down(ar);
  
- 	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
- 	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
-@@ -5228,6 +5242,18 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 
- 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
- 
-+	consumed = ath10k_tm_event_wmi(ar, id, skb);
+ err_release_utf_mode_fw:
++	if (ar->testmode.utf_mode_fw.fw_file.codeswap_data &&
++	    ar->testmode.utf_mode_fw.fw_file.codeswap_len)
++		ath10k_swap_code_seg_release(ar,
++					&ar->testmode.utf_mode_fw.fw_file);
 +
-+	/* Ready event must be handled normally also in UTF mode so that we
-+	 * know the UTF firmware has booted, others we are just bypass WMI
-+	 * events to testmode.
-+	 */
-+	if (consumed && id != WMI_10_4_READY_EVENTID) {
-+		ath10k_dbg(ar, ATH10K_DBG_WMI,
-+			   "wmi testmode consumed 0x%x\n", id);
-+		goto out;
-+	}
+ 	release_firmware(ar->testmode.utf_mode_fw.fw_file.firmware);
+ 	ar->testmode.utf_mode_fw.fw_file.firmware = NULL;
+ 
+@@ -301,6 +319,11 @@ static void __ath10k_tm_cmd_utf_stop(struct ath10k *ar)
+ 
+ 	spin_unlock_bh(&ar->data_lock);
+ 
++	if (ar->testmode.utf_mode_fw.fw_file.codeswap_data &&
++	    ar->testmode.utf_mode_fw.fw_file.codeswap_len)
++		ath10k_swap_code_seg_release(ar,
++					&ar->testmode.utf_mode_fw.fw_file);
 +
- 	switch (id) {
- 	case WMI_10_4_MGMT_RX_EVENTID:
- 		ath10k_wmi_event_mgmt_rx(ar, skb);
+ 	release_firmware(ar->testmode.utf_mode_fw.fw_file.firmware);
+ 	ar->testmode.utf_mode_fw.fw_file.firmware = NULL;
+ 
 -- 
 1.7.9.5
 
