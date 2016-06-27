@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHSpb-0001BG-4U
- for ath10k@lists.infradead.org; Mon, 27 Jun 2016 09:27:52 +0000
-Received: by mail-wm0-x236.google.com with SMTP id a66so106049380wme.0
- for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 02:27:29 -0700 (PDT)
+ id 1bHUPE-0002e0-NS
+ for ath10k@lists.infradead.org; Mon, 27 Jun 2016 11:08:45 +0000
+Received: by mail-wm0-x231.google.com with SMTP id a66so109935843wme.0
+ for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 04:08:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>
-References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
- <1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>
+In-Reply-To: <BAY172-W4820DFFAF81043D5407B3EE02C0@phx.gbl>
+References: <BAY172-W4820DFFAF81043D5407B3EE02C0@phx.gbl>
 From: Michal Kazior <michal.kazior@tieto.com>
-Date: Mon, 27 Jun 2016 11:27:27 +0200
-Message-ID: <CA+BoTQnUvF2Zy7_WuEi0V+KjByRghVmoeR6yrs6hu6ag=KmBqQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
- QCA99X0 and later
+Date: Mon, 27 Jun 2016 13:08:22 +0200
+Message-ID: <CA+BoTQnyx7bFjoSBn3MFzCB+RNQ4oh1OOes+jFTsKDDG8DWMKw@mail.gmail.com>
+Subject: Re: ath10k firmware version - 10.4
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +24,21 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>, Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: sunder Kumaresan <sunder_k@hotmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjMgSnVuZSAyMDE2IGF0IDE4OjQwLCBNb2hhbW1lZCBTaGFmaSBTaGFqYWtoYW4KPG1vaGFt
-bWVkQHF0aS5xdWFsY29tbS5jb20+IHdyb3RlOgo+IEZyb206IE1vaGFtbWVkIFNoYWZpIFNoYWph
-a2hhbiA8bW9oYW1tZWRAcXRpLnF1YWxjb21tLmNvbT4KPgo+IEZvciBjaGlwc2V0cyBsaWtlIFFD
-QTk5WDAsIElQUTQwMTkgYW5kIGxhdGVyIHdlIGFyZSBub3QgZ2V0dGluZyBwcm9wZXIKPiBOVUxM
-IGZ1bmMgc3RhdHVzIChhbHdheXMgYWNrZWQvc3VjY2Vzc3MgISEpIHdoZW4gaG9zdGFwZCBkb2Vz
-IGEKPiBQUk9CRV9DTElFTlQgdmlhIG51bGxmdW5jIGZyYW1lcyB3aGVuIHRoZSBzdGF0aW9uIGlz
-IHBvd2VyZWQgb2ZmCj4gYWJydXB0bHkgKGluYWN0aXZlIHRpbWVyIHByb2JlcyBjbGllbnQgdmlh
-IG51bGwgZnVuYyBhZnRlciB0aGUgaW5hY3RpdmUKPiB0aW1lIHJlYWNoZXMgYmV5b25kIHRoZSB0
-aHJlc2hvbGQpLiBGaXggdGhpcyBieSBkaXNhYmxpbmcgdGhlIHdvcmthcm91bmQKPiAoZ2V0dGlu
-ZyB0aGUgQUNLIHN0YXR1cyBvZiBOVUxMIGZ1bmMgZnJhbWVzIGJ5IHNlbmRpbmcgdmlhIEhUVCBt
-Z210LXR4Cj4gIHBhdGgpIGludHJvZHVjZWQgYnkgdGhlIGNoYW5nZSAoImF0aDEwazogZml4IGJl
-YWNvbiBsb3NzIGhhbmRsaW5nICIpCj4gZm9yIFFDQTk5WDAgYW5kIGxhdGVyIGNoaXBzZXRzLiBU
-aGUgbm9ybWFsIHR4IHBhdGggcHJvdmlkZXMgdGhlIHByb3Blcgo+IEFDSyBzdGF0dXMgZm9yIE5V
-TEwgZGF0YSBmcmFtZXMuIEFzIG9mIG5vdyBkaXNhYmxlIHRoaXMgd29ya2Fyb3VuZCBmb3IKPiBj
-aGlwc2V0cyBRQ0E5OVgwIGFuZCBsYXRlciwgb25jZSB0aGUgMTAuMSBmaXJtd2FyZSBpcyBvYnNl
-bGV0ZSB3ZSBjYW4KPiBjb21wbGV0ZWx5IGdldCByaWQgb2YgdGhpcyB3b3JrYXJvdW5kIGZvciBh
-bGwgdGhlIGNoaXBzZXRzCj4KPiBTaWduZWQtb2ZmLWJ5OiBUYW1pemggY2hlbHZhbSA8Y190cmFq
-YUBxdGkucXVhbGNvbW0uY29tPgo+IFNpZ25lZC1vZmYtYnk6IE1vaGFtbWVkIFNoYWZpIFNoYWph
-a2hhbiA8bW9oYW1tZWRAcXRpLnF1YWxjb21tLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9uZXQvd2ly
-ZWxlc3MvYXRoL2F0aDEway9jb3JlLmMgfCAzICsrKwo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9h
-dGgvYXRoMTBrL2NvcmUuaCB8IDYgKysrKysrCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvbWFjLmMgIHwgMSArCj4gIDMgZmlsZXMgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKQo+
-Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jIGIv
-ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiBpbmRleCA2ODlkNmNlLi45
-OTc4ZTRhIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29y
-ZS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiBAQCAt
-MTgxLDYgKzE4MSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyBhdGgx
-MGtfaHdfcGFyYW1zX2xpc3RbXSA9IHsKPiAgICAgICAgICAgICAgICAgICAgICAgICAuYm9hcmQg
-PSBRQ0E5OVgwX0hXXzJfMF9CT0FSRF9EQVRBX0ZJTEUsCj4gICAgICAgICAgICAgICAgICAgICAg
-ICAgLmJvYXJkX3NpemUgPSBRQ0E5OVgwX0JPQVJEX0RBVEFfU1osCj4gICAgICAgICAgICAgICAg
-ICAgICAgICAgLmJvYXJkX2V4dF9zaXplID0gUUNBOTlYMF9CT0FSRF9FWFRfREFUQV9TWiwKPiAr
-ICAgICAgICAgICAgICAgICAgICAgICAuZGlzYWJsZV9udWxsX2Z1bmNfd29ya2Fyb3VuZCA9IHRy
-dWUsCgpUeCBjb21wbGV0aW9uIChidWdzKSBhcmUgZmlybXdhcmUgc3BlY2lmaWMsIG5vdCBoYXJk
-d2FyZS4gVGhpcyBzaG91bGQKYmUgZXhwcmVzc2VkIHZpYSBmZWF0dXJlcyBiaXRzIGluIGF0aDEw
-ayBGVyBBUEksIG5vPwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+T24gMjIgSnVuZSAyMDE2IGF0IDA4OjEzLCBzdW5kZXIgS3VtYXJlc2FuIDxzdW5kZXJfa0Bob3Rt
+YWlsLmNvbT4gd3JvdGU6Cj4gSGVsbG8gYWxsLApbLi4uXQo+IEJ1dCwgV2hlbiBib2FyZERhdGFf
+QVI5MDBCX0NVUzIzOV81R192Ml8wMDEuYmluICBhbmQgYm9hcmREYXRhX0FSOTAwQl9DVVMyNjBf
+MkdfdjJfMDAyLmJpbiAgaGF2ZSBiZWVuIHJlbmFtZWQgYXMgYm9hcmQgeHh4LiBiaW4gZmlsZXMu
+ICBJdCBzaG93cyB1cCBhcyBtaXNtYXRjaCBpbiB0aGUgbWFnaWMgbnVtYmVyLgoKSSdtICpndWVz
+c2luZyogeW91J3ZlIHJlbmFtZWQgdGhlc2UgZmlsZXMgdG8gYm9hcmQtMi5iaW4uIFRoaXMgd2ls
+bApub3Qgd29yayBiZWN1YXNlIGJvYXJkLTIuYmluIGlzIGEgVExWIHdyYXBwZXIuCgpJIGRvbid0
+IHNlZSBib2FyZC0yLmJpbiBmb3IgcWNhOTl4MCBpbiBLYWxsZSdzIGZpcm13YXJlIGdpdGh1YiBy
+ZXBvLgpZb3UgY2FuIHRyeSB1c2luZyBvbmUgZnJvbQpodHRwczovL3NvdXJjZS5jb2RlYXVyb3Jh
+Lm9yZy9xdWljL3FzZGsvb3NzL2Zpcm13YXJlL2F0aDEway1maXJtd2FyZS90cmVlL2F0aDEway9R
+Q0E5OVgwL2h3Mi4wCgoKTWljaGHFggoKUFMuIFBsZWFzZSBmaXggeW91ciBlbWFpbCBjbGllbnQu
+IEl0IGluc2VydHMgYSBsb3Qgb2YgZW1wdHkgbmV3bGluZXMKbWFraW5nIGl0IHJlYWxseSBkaWZm
+aWN1bHQgdG8gcmVhZC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
