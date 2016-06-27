@@ -1,17 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
+Received: from mail-it0-x22e.google.com ([2607:f8b0:4001:c0b::22e])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHVB4-0006eX-Hq
- for ath10k@lists.infradead.org; Mon, 27 Jun 2016 11:58:11 +0000
-Received: by mail-wm0-x236.google.com with SMTP id r201so111685031wme.1
- for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 04:57:49 -0700 (PDT)
+ id 1bHVsb-0001IE-7C
+ for ath10k@lists.infradead.org; Mon, 27 Jun 2016 12:43:10 +0000
+Received: by mail-it0-x22e.google.com with SMTP id a5so64361541ita.1
+ for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 05:42:47 -0700 (PDT)
+From: Tom Marble <tmarble@info9.net>
+Subject: Re: Cannot initialize Compex WLE600VX for 802.11ac?
+In-Reply-To: <CA+BoTQnevnhYg2aXWJWRESADJ_dkDHNg3KGjpP=0-aAjmjKcDg@mail.gmail.com>
+References: <57dtwgmmwmr.fsf@cerise.info9.net>
+ <87y45xiuts.fsf@kamboji.qca.qualcomm.com> <57dd1n9mks5.fsf@cerise.info9.net>
+ <87r3bpfh94.fsf@kamboji.qca.qualcomm.com> <57doa6skql6.fsf@cerise.info9.net>
+ <CABkMH_rZNhxHtfaD3pz0ymSjvEKGxDycjDcwxKBZFKj8j2P_Jg@mail.gmail.com>
+ <57dfus3l10n.fsf@cerise.info9.net>
+ <CA+BoTQnevnhYg2aXWJWRESADJ_dkDHNg3KGjpP=0-aAjmjKcDg@mail.gmail.com>
+Date: Mon, 27 Jun 2016 07:42:44 -0500
+Message-ID: <57da8i6sszf.fsf@cerise.info9.net>
 MIME-Version: 1.0
-In-Reply-To: <CAFc9h7vWsEyU7V4X0ehzjsmgw=a_hym0SVrF4Gay=5jJTL2VFA@mail.gmail.com>
-References: <CAFc9h7vWsEyU7V4X0ehzjsmgw=a_hym0SVrF4Gay=5jJTL2VFA@mail.gmail.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Mon, 27 Jun 2016 13:57:48 +0200
-Message-ID: <CA+BoTQ=-x_xApaiYcYF6FeoVcboc+BV61gA2JfOSdA9SitcuUw@mail.gmail.com>
-Subject: Re: Set the primary channel in HT40 mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,38 +25,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Gaurang Ramesh Naik <gaurang@vt.edu>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: tmarble@info9.net, "Valo, Kalle" <kvalo@qca.qualcomm.com>, Tomasz Skapski <tomasz.skapski@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjcgSnVuZSAyMDE2IGF0IDEwOjU4LCBHYXVyYW5nIFJhbWVzaCBOYWlrIDxnYXVyYW5nQHZ0
-LmVkdT4gd3JvdGU6Cj4gSGkgQWxsLAo+Cj4gSSBoYXZlIHNvbWUgZGlmZmljdWx0eSBpbiB1bmRl
-cnN0YW5kaW5nIGhvdyBIVDQwLCBIVDQwLSBhbmQgSFQ0MCsKPiBtb2RlcyB3b3JrLiBNeSBvYmpl
-Y3RpdmUgaXMgdG8gc2V0IGEgcGFydGljdWxhciAyMCBNSHogY2hhbm5lbCBhcyB0aGUKPiBwcmlt
-YXJ5IGNoYW5uZWwgd2hlbiBjaGFubmVsIGJvbmRpbmcgaXMgZW5hYmxlZC4gRnJvbSB3aGF0IEkK
-PiB1bmRlcnN0YW5kLCBIVDQwLSBtZWFucyBzZWNvbmRhcnkgY2hhbm5lbCBpcyBiZWxvdyB0aGUg
-cHJpbWFyeSwgd2hpbGUKPiBIVDQwKyBtZWFucyBzZWNvbmRhcnkgY2hhbm5lbCBpcyBhYm92ZSB0
-aGUgcHJpbWFyeSBjaGFubmVsLiBJIGFtCj4gcGFydGljdWxhcmx5IGRlYWxpbmcgd2l0aCBjaGFu
-bmVscyAxNDksIDE1MywgMTU3IGFuZCAxNjEuCgpodHRwOi8vc2VjdXJpdHl1bmNvcmtlZC5jb20v
-d29yZHByZXNzL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDEzLzExL2dyYXBoaWMtODAyMTEtYWNDaGFu
-bmVscy1hbGwucG5nCgoKPiBXaGVuIEkgc2V0IHRoZSBjaGFubmVsIHRvIHNheSAxNTcsIHdoZXRo
-ZXIgSSB1c2UgSFQ0MCsgb3IgSFQ0MC0sIHRoZQo+IHByaW1hcnkgY2hhbm5lbCBpcyBhbHdheXMg
-c2V0IHRvIGNoYW5uZWwgMTYxLiBJIGFtIGluZmVycmluZyB0aGlzCj4gYmVjYXVzZSB3aGVuIEkg
-c2NhbiB1c2luZyBpd2xpc3Qgc2NhbiwgbXkgU1NJRCBzaG93cyBvbiBDaGFubmVsIDE2MS4KPiBE
-b2VzIGF0aDEwayBub3Qgc2V0IHRoZSBwcmltYXJ5IGFuZCBzZWNvbmRhcnkgY2hhbm5lbCBpbiB0
-aGlzIG1hbm5lcj8KCmF0aDEwayBkb2Vzbid0IGNhcmUuIGhvc3RhcGQgY2FuIGRvIGEgY2hhbm5l
-bCBzd2FwIGlmIGl0IGRldGVjdHMgT0JTUy4KTm90IHN1cmUgaG93IG11Y2ggT3BlbldSVCBzY3Jp
-cHRzIG1pbmdsZSBpbiAoSSdtIGd1ZXNzaW5nIHlvdSdyZSB1c2luZwpgdWNpYCwgaGVuY2UgdGhl
-IG1lbnRpb24pLgoKCj4gSWYgbm90LCBpcyB0aGVyZSBhIG1lY2hhbmlzbSBieSB3aGljaCBJIGNh
-biBleHBsaWNpdGx5IG1lbnRpb24gd2hpY2gKPiBjaGFubmVsIG11c3QgYmUgcHJpbWFyeSwgYW5k
-IHdoaWNoIG11c3QgYmUgc2Vjb25kYXJ5PwoKWW91IGNhbid0LiBPQlNTIGNhbiBzdGlsbCBlbmQg
-dXAgc3dhcHBpbmcgeW91ciBwcmltYXJ5IGFuZCBleHRlbnNpb24gY2hhbm5lbHMuCgoKPiBBbHNv
-LCBob3cgaXMgdGhlCj4gcHJpbWFyeSBjaGFubmVsIGRlY2lkZWQgZm9yIFZIVDgwIG1vZGU/CgpW
-SFQ4MCBpcyBiYWNrd2FyZCBjb21wYXQgZm9yIEhUNDAgYW5kIEhUMjAgY2xpZW50cy4gU2VlIHRo
-ZSBjaGFubmVsCmFsbG9jYXRpb24gbGluayBhYm92ZS4KCgpNaWNoYcWCCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+> On 24 June 2016 at 05:27, Tom Marble <tmarble@info9.net> wrote:
+>> The solution here was just removing avahi-daemon (and mDNS services).
+>>
+>> Then the interface wasn't happy about IPv6
+>>   IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not read
+>
+> This is normal. Try down/up your ethernet interface and you'll see the
+> same thing.
+
+Ok.
+
+>> Even with setting (in /etc/hostapd/wlan0.conf ) this problem still occurred.
+>>   ipaddr_type_availability=32
+>>
+>> The solution was disabling IPv6 (at least for now.. I do want IPv6
+>> eventually), in /etc/sysctl.conf
+>> # NO IPV6                                                                        net.ipv6.conf.all.disable_ipv6 = 1
+>> net.ipv6.conf.default.disable_ipv6 = 1
+>> net.ipv6.conf.lo.disable_ipv6 = 1
+>> net.ipv6.conf.eth0.disable_ipv6 = 1
+>> net.ipv6.conf.wan0.disable_ipv6 = 1
+>
+> Do you really need to disable ipv6?
+
+No.. I *want* IPv6! I'm going to try adding it back in now
+to see if I can get it to work.
+
+>> Certain clients seemed to get "kicked off" the network which has
+>> been mitigated by setting:
+>>   ap_max_inactivity=600
+>>   disassoc_low_ack=0
+>
+> Try using disassoc_low_ack=1 which enables station inactivity
+> detection up to firmware/driver (there are some bugs with sending
+> nullfunc frames depending on fw/hw/driver combo).
+
+I'll try that!
+
+>> One strange thing I've noticed is that if I configure the wlan0 (5 GHz)
+>> channel=52 on boot up it doesn't work... However if I have once
+>> done channel=0 then on subsequent bounces of the interface I can have
+>> it come up on a specific channel.
+>
+> (haven't followed the entire thread, so sorry if I re-iterate something).
+>
+> Channel availability can get messy and quirky (unless that has changed
+> in recent kernels?) with multiple wireless cards on the same system.
+> So there's that.
+
+I realize this can be tricky. My current thought is to bring
+up wlan0 (5 GHz) first and then bring up wlan1 (2.4 GHz).
+
+I'll report my findings after my next round of tests.
+
+Thanks!
+
+--Tom
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
