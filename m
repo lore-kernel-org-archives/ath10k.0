@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHWen-0007kZ-Fv
- for ath10k@lists.infradead.org; Mon, 27 Jun 2016 13:32:58 +0000
-Received: by mail-wm0-x243.google.com with SMTP id r201so24654013wme.0
- for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 06:32:36 -0700 (PDT)
+ id 1bHXed-0007lC-FQ
+ for ath10k@lists.infradead.org; Mon, 27 Jun 2016 14:36:52 +0000
+Date: Mon, 27 Jun 2016 20:06:00 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
+ QCA99X0 and later
+Message-ID: <20160627143600.GA5292@atheros-ThinkPad-T61>
+References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
+ <1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>
+ <CA+BoTQnUvF2Zy7_WuEi0V+KjByRghVmoeR6yrs6hu6ag=KmBqQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQ=-x_xApaiYcYF6FeoVcboc+BV61gA2JfOSdA9SitcuUw@mail.gmail.com>
-References: <CAFc9h7vWsEyU7V4X0ehzjsmgw=a_hym0SVrF4Gay=5jJTL2VFA@mail.gmail.com>
- <CA+BoTQ=-x_xApaiYcYF6FeoVcboc+BV61gA2JfOSdA9SitcuUw@mail.gmail.com>
-From: Kamran Nishat <kamran.nishat@gmail.com>
-Date: Mon, 27 Jun 2016 18:32:34 +0500
-Message-ID: <CADxDmp6yZLuHwW_MGQ2VTqUx2EhCR2BRTkOPuZTorPvkwL9rUA@mail.gmail.com>
-Subject: Re: Set the primary channel in HT40 mode
+Content-Disposition: inline
+In-Reply-To: <CA+BoTQnUvF2Zy7_WuEi0V+KjByRghVmoeR6yrs6hu6ag=KmBqQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,45 +22,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Gaurang Ramesh Naik <gaurang@vt.edu>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-RGVhciBNaWNoYWwsCllvdSBjYW4gY2hhbmdlIGluIGhvc3RhcGQgY29kZSB0byBzdG9wIE9CU1Mu
-IENoYW5nZSBmdW5jdGlvbgpob3N0YXBkXzIwNDBfY29leF9hY3Rpb24gdG8gYXZvaWQgcHJpbWFy
-eSBjaGFuZ2UgaW4gY2FzZSBvZiBPQlNTLgoKS2FtcmFuCgpPbiBNb24sIEp1biAyNywgMjAxNiBh
-dCA0OjU3IFBNLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6
-Cj4gT24gMjcgSnVuZSAyMDE2IGF0IDEwOjU4LCBHYXVyYW5nIFJhbWVzaCBOYWlrIDxnYXVyYW5n
-QHZ0LmVkdT4gd3JvdGU6Cj4+IEhpIEFsbCwKPj4KPj4gSSBoYXZlIHNvbWUgZGlmZmljdWx0eSBp
-biB1bmRlcnN0YW5kaW5nIGhvdyBIVDQwLCBIVDQwLSBhbmQgSFQ0MCsKPj4gbW9kZXMgd29yay4g
-TXkgb2JqZWN0aXZlIGlzIHRvIHNldCBhIHBhcnRpY3VsYXIgMjAgTUh6IGNoYW5uZWwgYXMgdGhl
-Cj4+IHByaW1hcnkgY2hhbm5lbCB3aGVuIGNoYW5uZWwgYm9uZGluZyBpcyBlbmFibGVkLiBGcm9t
-IHdoYXQgSQo+PiB1bmRlcnN0YW5kLCBIVDQwLSBtZWFucyBzZWNvbmRhcnkgY2hhbm5lbCBpcyBi
-ZWxvdyB0aGUgcHJpbWFyeSwgd2hpbGUKPj4gSFQ0MCsgbWVhbnMgc2Vjb25kYXJ5IGNoYW5uZWwg
-aXMgYWJvdmUgdGhlIHByaW1hcnkgY2hhbm5lbC4gSSBhbQo+PiBwYXJ0aWN1bGFybHkgZGVhbGlu
-ZyB3aXRoIGNoYW5uZWxzIDE0OSwgMTUzLCAxNTcgYW5kIDE2MS4KPgo+IGh0dHA6Ly9zZWN1cml0
-eXVuY29ya2VkLmNvbS93b3JkcHJlc3Mvd3AtY29udGVudC91cGxvYWRzLzIwMTMvMTEvZ3JhcGhp
-Yy04MDIxMS1hY0NoYW5uZWxzLWFsbC5wbmcKPgo+Cj4+IFdoZW4gSSBzZXQgdGhlIGNoYW5uZWwg
-dG8gc2F5IDE1Nywgd2hldGhlciBJIHVzZSBIVDQwKyBvciBIVDQwLSwgdGhlCj4+IHByaW1hcnkg
-Y2hhbm5lbCBpcyBhbHdheXMgc2V0IHRvIGNoYW5uZWwgMTYxLiBJIGFtIGluZmVycmluZyB0aGlz
-Cj4+IGJlY2F1c2Ugd2hlbiBJIHNjYW4gdXNpbmcgaXdsaXN0IHNjYW4sIG15IFNTSUQgc2hvd3Mg
-b24gQ2hhbm5lbCAxNjEuCj4+IERvZXMgYXRoMTBrIG5vdCBzZXQgdGhlIHByaW1hcnkgYW5kIHNl
-Y29uZGFyeSBjaGFubmVsIGluIHRoaXMgbWFubmVyPwo+Cj4gYXRoMTBrIGRvZXNuJ3QgY2FyZS4g
-aG9zdGFwZCBjYW4gZG8gYSBjaGFubmVsIHN3YXAgaWYgaXQgZGV0ZWN0cyBPQlNTLgo+IE5vdCBz
-dXJlIGhvdyBtdWNoIE9wZW5XUlQgc2NyaXB0cyBtaW5nbGUgaW4gKEknbSBndWVzc2luZyB5b3Un
-cmUgdXNpbmcKPiBgdWNpYCwgaGVuY2UgdGhlIG1lbnRpb24pLgo+Cj4KPj4gSWYgbm90LCBpcyB0
-aGVyZSBhIG1lY2hhbmlzbSBieSB3aGljaCBJIGNhbiBleHBsaWNpdGx5IG1lbnRpb24gd2hpY2gK
-Pj4gY2hhbm5lbCBtdXN0IGJlIHByaW1hcnksIGFuZCB3aGljaCBtdXN0IGJlIHNlY29uZGFyeT8K
-Pgo+IFlvdSBjYW4ndC4gT0JTUyBjYW4gc3RpbGwgZW5kIHVwIHN3YXBwaW5nIHlvdXIgcHJpbWFy
-eSBhbmQgZXh0ZW5zaW9uIGNoYW5uZWxzLgo+Cj4KPj4gQWxzbywgaG93IGlzIHRoZQo+PiBwcmlt
-YXJ5IGNoYW5uZWwgZGVjaWRlZCBmb3IgVkhUODAgbW9kZT8KPgo+IFZIVDgwIGlzIGJhY2t3YXJk
-IGNvbXBhdCBmb3IgSFQ0MCBhbmQgSFQyMCBjbGllbnRzLiBTZWUgdGhlIGNoYW5uZWwKPiBhbGxv
-Y2F0aW9uIGxpbmsgYWJvdmUuCj4KPgo+IE1pY2hhxYIKPgo+IF9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi Michal,
+
+thanks for the review ..
+
+On Mon, Jun 27, 2016 at 11:27:27AM +0200, Michal Kazior wrote:
+> On 23 June 2016 at 18:40, Mohammed Shafi Shajakhan
+> <mohammed@qti.qualcomm.com> wrote:
+> > From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> >
+> > For chipsets like QCA99X0, IPQ4019 and later we are not getting proper
+> > NULL func status (always acked/successs !!) when hostapd does a
+> > PROBE_CLIENT via nullfunc frames when the station is powered off
+> > abruptly (inactive timer probes client via null func after the inactive
+> > time reaches beyond the threshold). Fix this by disabling the workaround
+> > (getting the ACK status of NULL func frames by sending via HTT mgmt-tx
+> >  path) introduced by the change ("ath10k: fix beacon loss handling ")
+> > for QCA99X0 and later chipsets. The normal tx path provides the proper
+> > ACK status for NULL data frames. As of now disable this workaround for
+> > chipsets QCA99X0 and later, once the 10.1 firmware is obselete we can
+> > completely get rid of this workaround for all the chipsets
+> >
+> > Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+> > Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> > ---
+> >  drivers/net/wireless/ath/ath10k/core.c | 3 +++
+> >  drivers/net/wireless/ath/ath10k/core.h | 6 ++++++
+> >  drivers/net/wireless/ath/ath10k/mac.c  | 1 +
+> >  3 files changed, 10 insertions(+)
+> >
+> > diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> > index 689d6ce..9978e4a 100644
+> > --- a/drivers/net/wireless/ath/ath10k/core.c
+> > +++ b/drivers/net/wireless/ath/ath10k/core.c
+> > @@ -181,6 +181,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+> >                         .board = QCA99X0_HW_2_0_BOARD_DATA_FILE,
+> >                         .board_size = QCA99X0_BOARD_DATA_SZ,
+> >                         .board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+> > +                       .disable_null_func_workaround = true,
+> 
+> Tx completion (bugs) are firmware specific, not hardware. This should
+> be expressed via features bits in ath10k FW API, no?
+> 
+>
+[shafi] Are you suggesting me to introduce something like
+"ATH10K_FW_FEATURE_SUPPORTS_SKIP_CLOCK_INIT" ? Kalle any suggestions ?
+
+Also how about getting this workaround completely if Ben had fixed this in his tree,
+will this affect older 10.2.4 ?
+
+regards,
+shafi
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
