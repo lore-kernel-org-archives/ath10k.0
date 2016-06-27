@@ -1,14 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from omr1.cc.ipv6.vt.edu ([2607:b400:92:8300:0:c6:2117:b0e]
+ helo=omr1.cc.vt.edu)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHSBK-0001Dx-Dh
- for ath10k@lists.infradead.org; Mon, 27 Jun 2016 08:46:14 +0000
-From: <c_traja@qti.qualcomm.com>
-Subject: [PATCH 2/3] ath10k: handle testmode events for 10.2 and 10.4 based
- firmware
-Date: Mon, 27 Jun 2016 14:20:50 +0530
-Message-ID: <1467017450-7552-1-git-send-email-c_traja@qti.qualcomm.com>
+ id 1bHSNs-00067P-IM
+ for ath10k@lists.infradead.org; Mon, 27 Jun 2016 08:59:13 +0000
+Received: from mr2.cc.vt.edu (mr2.cc.ipv6.vt.edu
+ [IPv6:2001:468:c80:2105:0:212:7ed0:359e])
+ by omr1.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u5R8wiYS024424
+ for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 04:58:45 -0400
+Received: from mail-lf0-f72.google.com (mail-lf0-f72.google.com
+ [209.85.215.72])
+ by mr2.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u5R8wdtE021343
+ for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 04:58:44 -0400
+Received: by mail-lf0-f72.google.com with SMTP id a2so114320438lfe.0
+ for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 01:58:44 -0700 (PDT)
 MIME-Version: 1.0
+From: Gaurang Ramesh Naik <gaurang@vt.edu>
+Date: Mon, 27 Jun 2016 04:58:38 -0400
+Message-ID: <CAFc9h7vWsEyU7V4X0ehzjsmgw=a_hym0SVrF4Gay=5jJTL2VFA@mail.gmail.com>
+Subject: Set the primary channel in HT40 mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,80 +32,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-From: Tamizh chelvam <c_traja@qti.qualcomm.com>
+Hi All,
 
-Currently testmode events for 10.x firmware are processed from
-10.1 wmi event processing. This patch is used to handle testmode
-events in 10.2 and 10.4 based firmware.
+I have some difficulty in understanding how HT40, HT40- and HT40+
+modes work. My objective is to set a particular 20 MHz channel as the
+primary channel when channel bonding is enabled. From what I
+understand, HT40- means secondary channel is below the primary, while
+HT40+ means secondary channel is above the primary channel. I am
+particularly dealing with channels 149, 153, 157 and 161.
 
-Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/wmi.c |   26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+When I set the channel to say 157, whether I use HT40+ or HT40-, the
+primary channel is always set to channel 161. I am inferring this
+because when I scan using iwlist scan, my SSID shows on Channel 161.
+Does ath10k not set the primary and secondary channel in this manner?
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 6279ab4..72b5483 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -5095,6 +5095,7 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_cmd_hdr *cmd_hdr;
- 	enum wmi_10_2_event_id id;
-+	bool consumed;
- 
- 	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
- 	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
-@@ -5104,6 +5105,18 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 
- 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
- 
-+	consumed = ath10k_tm_event_wmi(ar, id, skb);
-+
-+	/* Ready event must be handled normally also in UTF mode so that we
-+	 * know the UTF firmware has booted, others we are just bypass WMI
-+	 * events to testmode.
-+	 */
-+	if (consumed && id != WMI_10_2_READY_EVENTID) {
-+		ath10k_dbg(ar, ATH10K_DBG_WMI,
-+			   "wmi testmode consumed 0x%x\n", id);
-+		goto out;
-+	}
-+
- 	switch (id) {
- 	case WMI_10_2_MGMT_RX_EVENTID:
- 		ath10k_wmi_event_mgmt_rx(ar, skb);
-@@ -5219,6 +5232,7 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_cmd_hdr *cmd_hdr;
- 	enum wmi_10_4_event_id id;
-+	bool consumed;
- 
- 	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
- 	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
-@@ -5228,6 +5242,18 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 
- 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
- 
-+	consumed = ath10k_tm_event_wmi(ar, id, skb);
-+
-+	/* Ready event must be handled normally also in UTF mode so that we
-+	 * know the UTF firmware has booted, others we are just bypass WMI
-+	 * events to testmode.
-+	 */
-+	if (consumed && id != WMI_10_4_READY_EVENTID) {
-+		ath10k_dbg(ar, ATH10K_DBG_WMI,
-+			   "wmi testmode consumed 0x%x\n", id);
-+		goto out;
-+	}
-+
- 	switch (id) {
- 	case WMI_10_4_MGMT_RX_EVENTID:
- 		ath10k_wmi_event_mgmt_rx(ar, skb);
--- 
-1.7.9.5
+If not, is there a mechanism by which I can explicitly mention which
+channel must be primary, and which must be secondary? Also, how is the
+primary channel decided for VHT80 mode?
 
+Note: I am using OpenWrt in my AP. So I set the htmode as an option in
+the /etc/config/wireless file.
+
+Thanks,
+Gaurang.
 
 _______________________________________________
 ath10k mailing list
