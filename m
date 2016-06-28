@@ -1,21 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bHmpT-0003q5-LI
- for ath10k@lists.infradead.org; Tue, 28 Jun 2016 06:49:05 +0000
-Received: by mail-wm0-x236.google.com with SMTP id 187so25222882wmz.1
- for <ath10k@lists.infradead.org>; Mon, 27 Jun 2016 23:48:40 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20160627143600.GA5292@atheros-ThinkPad-T61>
-References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
- <1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>
- <CA+BoTQnUvF2Zy7_WuEi0V+KjByRghVmoeR6yrs6hu6ag=KmBqQ@mail.gmail.com>
- <20160627143600.GA5292@atheros-ThinkPad-T61>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Tue, 28 Jun 2016 08:48:38 +0200
-Message-ID: <CA+BoTQn+HeishCMf4hjpWjLBmvFG2r0gosBv77RTyk7+uOAvPA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
- QCA99X0 and later
+ id 1bHqZp-0003ed-6b
+ for ath10k@lists.infradead.org; Tue, 28 Jun 2016 10:49:12 +0000
+Message-ID: <1467110918.2493.9.camel@sipsolutions.net>
+Subject: Re: [PATCH 1/2] cfg80211: Add support to set tx power for a station
+ associated
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Tue, 28 Jun 2016 12:48:38 +0200
+In-Reply-To: <1465926256-6463-1-git-send-email-arnagara@qti.qualcomm.com>
+References: <1465926256-6463-1-git-send-email-arnagara@qti.qualcomm.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,66 +19,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+Cc: arnagara@codeaurora.org, ath10k@lists.infradead.org
 
-T24gMjcgSnVuZSAyMDE2IGF0IDE2OjM2LCBNb2hhbW1lZCBTaGFmaSBTaGFqYWtoYW4KPG1vaGFt
-bWVkQGNvZGVhdXJvcmEub3JnPiB3cm90ZToKPiBIaSBNaWNoYWwsCj4KPiB0aGFua3MgZm9yIHRo
-ZSByZXZpZXcgLi4KPgo+IE9uIE1vbiwgSnVuIDI3LCAyMDE2IGF0IDExOjI3OjI3QU0gKzAyMDAs
-IE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+IE9uIDIzIEp1bmUgMjAxNiBhdCAxODo0MCwgTW9oYW1t
-ZWQgU2hhZmkgU2hhamFraGFuCj4+IDxtb2hhbW1lZEBxdGkucXVhbGNvbW0uY29tPiB3cm90ZToK
-Pj4gPiBGcm9tOiBNb2hhbW1lZCBTaGFmaSBTaGFqYWtoYW4gPG1vaGFtbWVkQHF0aS5xdWFsY29t
-bS5jb20+Cj4+ID4KPj4gPiBGb3IgY2hpcHNldHMgbGlrZSBRQ0E5OVgwLCBJUFE0MDE5IGFuZCBs
-YXRlciB3ZSBhcmUgbm90IGdldHRpbmcgcHJvcGVyCj4+ID4gTlVMTCBmdW5jIHN0YXR1cyAoYWx3
-YXlzIGFja2VkL3N1Y2Nlc3NzICEhKSB3aGVuIGhvc3RhcGQgZG9lcyBhCj4+ID4gUFJPQkVfQ0xJ
-RU5UIHZpYSBudWxsZnVuYyBmcmFtZXMgd2hlbiB0aGUgc3RhdGlvbiBpcyBwb3dlcmVkIG9mZgo+
-PiA+IGFicnVwdGx5IChpbmFjdGl2ZSB0aW1lciBwcm9iZXMgY2xpZW50IHZpYSBudWxsIGZ1bmMg
-YWZ0ZXIgdGhlIGluYWN0aXZlCj4+ID4gdGltZSByZWFjaGVzIGJleW9uZCB0aGUgdGhyZXNob2xk
-KS4gRml4IHRoaXMgYnkgZGlzYWJsaW5nIHRoZSB3b3JrYXJvdW5kCj4+ID4gKGdldHRpbmcgdGhl
-IEFDSyBzdGF0dXMgb2YgTlVMTCBmdW5jIGZyYW1lcyBieSBzZW5kaW5nIHZpYSBIVFQgbWdtdC10
-eAo+PiA+ICBwYXRoKSBpbnRyb2R1Y2VkIGJ5IHRoZSBjaGFuZ2UgKCJhdGgxMGs6IGZpeCBiZWFj
-b24gbG9zcyBoYW5kbGluZyAiKQo+PiA+IGZvciBRQ0E5OVgwIGFuZCBsYXRlciBjaGlwc2V0cy4g
-VGhlIG5vcm1hbCB0eCBwYXRoIHByb3ZpZGVzIHRoZSBwcm9wZXIKPj4gPiBBQ0sgc3RhdHVzIGZv
-ciBOVUxMIGRhdGEgZnJhbWVzLiBBcyBvZiBub3cgZGlzYWJsZSB0aGlzIHdvcmthcm91bmQgZm9y
-Cj4+ID4gY2hpcHNldHMgUUNBOTlYMCBhbmQgbGF0ZXIsIG9uY2UgdGhlIDEwLjEgZmlybXdhcmUg
-aXMgb2JzZWxldGUgd2UgY2FuCj4+ID4gY29tcGxldGVseSBnZXQgcmlkIG9mIHRoaXMgd29ya2Fy
-b3VuZCBmb3IgYWxsIHRoZSBjaGlwc2V0cwo+PiA+Cj4+ID4gU2lnbmVkLW9mZi1ieTogVGFtaXpo
-IGNoZWx2YW0gPGNfdHJhamFAcXRpLnF1YWxjb21tLmNvbT4KPj4gPiBTaWduZWQtb2ZmLWJ5OiBN
-b2hhbW1lZCBTaGFmaSBTaGFqYWtoYW4gPG1vaGFtbWVkQHF0aS5xdWFsY29tbS5jb20+Cj4+ID4g
-LS0tCj4+ID4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jIHwgMyArKysK
-Pj4gPiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmggfCA2ICsrKysrKwo+
-PiA+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jICB8IDEgKwo+PiA+ICAz
-IGZpbGVzIGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKykKPj4gPgo+PiA+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYyBiL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4+ID4gaW5kZXggNjg5ZDZjZS4uOTk3OGU0YSAxMDA2NDQK
-Pj4gPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYwo+PiA+ICsr
-KyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4+ID4gQEAgLTE4MSw2
-ICsxODEsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRoMTBrX2h3
-X3BhcmFtc19saXN0W10gPSB7Cj4+ID4gICAgICAgICAgICAgICAgICAgICAgICAgLmJvYXJkID0g
-UUNBOTlYMF9IV18yXzBfQk9BUkRfREFUQV9GSUxFLAo+PiA+ICAgICAgICAgICAgICAgICAgICAg
-ICAgIC5ib2FyZF9zaXplID0gUUNBOTlYMF9CT0FSRF9EQVRBX1NaLAo+PiA+ICAgICAgICAgICAg
-ICAgICAgICAgICAgIC5ib2FyZF9leHRfc2l6ZSA9IFFDQTk5WDBfQk9BUkRfRVhUX0RBVEFfU1os
-Cj4+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgLmRpc2FibGVfbnVsbF9mdW5jX3dvcmthcm91
-bmQgPSB0cnVlLAo+Pgo+PiBUeCBjb21wbGV0aW9uIChidWdzKSBhcmUgZmlybXdhcmUgc3BlY2lm
-aWMsIG5vdCBoYXJkd2FyZS4gVGhpcyBzaG91bGQKPj4gYmUgZXhwcmVzc2VkIHZpYSBmZWF0dXJl
-cyBiaXRzIGluIGF0aDEwayBGVyBBUEksIG5vPwo+Pgo+Pgo+IFtzaGFmaV0gQXJlIHlvdSBzdWdn
-ZXN0aW5nIG1lIHRvIGludHJvZHVjZSBzb21ldGhpbmcgbGlrZQo+ICJBVEgxMEtfRldfRkVBVFVS
-RV9TVVBQT1JUU19TS0lQX0NMT0NLX0lOSVQiID8gS2FsbGUgYW55IHN1Z2dlc3Rpb25zID8KPgo+
-IEFsc28gaG93IGFib3V0IGdldHRpbmcgdGhpcyB3b3JrYXJvdW5kIGNvbXBsZXRlbHkgaWYgQmVu
-IGhhZCBmaXhlZCB0aGlzIGluIGhpcyB0cmVlLAo+IHdpbGwgdGhpcyBhZmZlY3Qgb2xkZXIgMTAu
-Mi40ID8KClRoZXJlJ3Mgc3RpbGwgNjM2LgoKV2UgY291bGQgcHJvYmFibHkgZ2V0IHJpZCBvZiB0
-aGlzIGFzIGxvbmcgYXM6CiAtIGF0aDEwayBjYW4gZXhwcmVzcyB0aGUgbmVlZCB0byB1c2UgUHJv
-YmUgUmVxdWVzdHMgZm9yIEFQIHByb2JpbmcKKGluIGNsaWVudCBtb2RlKSBhbmQgYmVhY29uIGxv
-c3MgaGFuZGxpbmcgcHVycG9zZXMgaW5zdGVhZCBvZiBOdWxsRnVuYwp0byBtYWM4MDIxMQogLSBl
-dmVyeW9uZSB1c2VzIGhvc3RhcGQgd2l0aCBkaXNhc3NvY19sb3dfYWNrPTEgd2l0aCBhZmZlY3Rl
-ZApmaXJtd2FyZSByZXZpc2lvbnMKIC0gc3VwcGxpY2FudCB1c2VzIGRpc2Fzc29jX2xvd19hY2s9
-MSBmb3IgcDJwIGdvCiAtIEkgaGF2ZSBubyBpZGVhIGFib3V0IG1lc2gvaWJzcyBidXQgdGhleSBt
-aWdodCByZXF1aXJlIHNvbWUgd29yayBhcyB3ZWxsCgpPdGhlcndpc2UgeW91J2xsIGludHJvZHVj
-ZSByZWdyZXNzaW9ucy4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+On Tue, 2016-06-14 at 23:14 +0530, Ashok Raj Nagarajan wrote:
+> This patch adds support to set transmit power setting type and
+> transmit power level attributes to NL80211_CMD_SET_STATION in order
+> to facilitate adjusting the transmit power level of a station
+> associated to the AP.
+
+Why would you ever need to do that manually? Please give more
+explanation in the commit message.
+
+We have minstrel-blues (which never made it into the code, but that's
+just because the submitter went away) doing power adjustments, so you
+need to explain why this should be necessary.
+
+johannes
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
