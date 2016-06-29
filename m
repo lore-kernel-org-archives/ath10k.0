@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22c.google.com ([2a00:1450:4010:c07::22c])
+Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIE1P-0007pZ-E7
- for ath10k@lists.infradead.org; Wed, 29 Jun 2016 11:51:12 +0000
-Received: by mail-lf0-x22c.google.com with SMTP id f6so31648590lfg.0
- for <ath10k@lists.infradead.org>; Wed, 29 Jun 2016 04:50:47 -0700 (PDT)
+ id 1bIE98-00023e-5t
+ for ath10k@lists.infradead.org; Wed, 29 Jun 2016 11:59:10 +0000
+Received: by mail-lf0-x233.google.com with SMTP id l188so31744637lfe.2
+ for <ath10k@lists.infradead.org>; Wed, 29 Jun 2016 04:58:49 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: disable wake_tx_queue for older devices
-Date: Wed, 29 Jun 2016 13:52:26 +0200
-Message-Id: <1467201146-6844-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
-References: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] mac80211: fix fq lockdep warnings
+Date: Wed, 29 Jun 2016 14:00:34 +0200
+Message-Id: <1467201634-11060-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1467026569-19329-1-git-send-email-michal.kazior@tieto.com>
+References: <1467026569-19329-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,98 +24,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: johannes@sipsolutions.net
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-Ideally wake_tx_queue should be used regardless as
-it is a requirement for reducing bufferbloat and
-implementing airtime fairness in the future.
+Some lockdep assertions were not fulfilled and
+resulted in a kernel warning/call trace if driver
+used intermediate software queues (e.g. ath10k).
 
-However some setups (typically low-end platforms
-hosting QCA988X) suffer performance regressions
-with the current wake_tx_queue implementation.
-Therefore disable it unless it is really
-beneficial with current codebase (which is when
-firmware supports smart pull-push tx scheduling).
+Existing code sequences should've guranteed safety
+but it's always good to be extra careful.
 
+The call trace could look like this:
+
+ [ 237.335805] ------------[ cut here ]------------
+ [ 237.335852] WARNING: CPU: 3 PID: 1921 at include/net/fq_impl.h:22 fq_flow_dequeue+0xed/0x140 [mac80211]
+ [ 237.335855] Modules linked in: ath10k_pci(E-) ath10k_core(E) ath(E) mac80211(E) cfg80211(E)
+ [ 237.335913] CPU: 3 PID: 1921 Comm: rmmod Tainted: G        W   E   4.7.0-rc4-wt-ath+ #1377
+ [ 237.335916] Hardware name: Hewlett-Packard HP ProBook 6540b/1722, BIOS 68CDD Ver. F.04 01/27/2010
+ [ 237.335918]  00200286 00200286 eff85dac c14151e2 f901574e 00000000 eff85de0 c1081075
+ [ 237.335928]  c1ab91f0 00000003 00000781 f901574e 00000016 f8fbabad f8fbabad 00000016
+ [ 237.335938]  eb24ff60 00000000 ef3886c0 eff85df4 c10810ba 00000009 00000000 00000000
+ [ 237.335948] Call Trace:
+ [ 237.335953]  [<c14151e2>] dump_stack+0x76/0xb4
+ [ 237.335957]  [<c1081075>] __warn+0xe5/0x100
+ [ 237.336002]  [<f8fbabad>] ? fq_flow_dequeue+0xed/0x140 [mac80211]
+ [ 237.336046]  [<f8fbabad>] ? fq_flow_dequeue+0xed/0x140 [mac80211]
+ [ 237.336053]  [<c10810ba>] warn_slowpath_null+0x2a/0x30
+ [ 237.336095]  [<f8fbabad>] fq_flow_dequeue+0xed/0x140 [mac80211]
+ [ 237.336137]  [<f8fbc67a>] fq_flow_reset.constprop.56+0x2a/0x90 [mac80211]
+ [ 237.336180]  [<f8fbc79a>] fq_reset.constprop.59+0x2a/0x50 [mac80211]
+ [ 237.336222]  [<f8fc04e8>] ieee80211_txq_teardown_flows+0x38/0x40 [mac80211]
+ [ 237.336258]  [<f8f7c1a4>] ieee80211_unregister_hw+0xe4/0x120 [mac80211]
+ [ 237.336275]  [<f933f536>] ath10k_mac_unregister+0x16/0x50 [ath10k_core]
+ [ 237.336292]  [<f934592d>] ath10k_core_unregister+0x3d/0x90 [ath10k_core]
+ [ 237.336301]  [<f85f8836>] ath10k_pci_remove+0x36/0xa0 [ath10k_pci]
+ [ 237.336307]  [<c1470388>] pci_device_remove+0x38/0xb0
+ ...
+
+Fixes: 5caa328e3811 ("mac80211: implement codel on fair queuing flows")
+Fixes: fa962b92120b ("mac80211: implement fair queueing per txq")
+Tested-by: Kalle Valo <kvalo@qca.qualcomm.com>
+Reported-by: Kalle Valo <kvalo@qca.qualcomm.com>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
 
 Notes:
     v1:
+     - added Tested-by [Kalle]
+     - swapped first/last name in Reported-by to match Tested-by
      - improve commit log
 
- drivers/net/wireless/ath/ath10k/core.h |  1 +
- drivers/net/wireless/ath/ath10k/mac.c  | 24 ++++++++++++++++++++++--
- 2 files changed, 23 insertions(+), 2 deletions(-)
+ net/mac80211/tx.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 3da18c9dbd7a..de580af2e5ef 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -667,6 +667,7 @@ struct ath10k_fw_components {
- struct ath10k {
- 	struct ath_common ath_common;
- 	struct ieee80211_hw *hw;
-+	struct ieee80211_ops *ops;
- 	struct device *dev;
- 	u8 mac_addr[ETH_ALEN];
- 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index d4b7a168f7c0..958bc6c91aac 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7471,21 +7471,32 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
- struct ath10k *ath10k_mac_create(size_t priv_size)
- {
- 	struct ieee80211_hw *hw;
-+	struct ieee80211_ops *ops;
- 	struct ath10k *ar;
- 
--	hw = ieee80211_alloc_hw(sizeof(struct ath10k) + priv_size, &ath10k_ops);
--	if (!hw)
-+	ops = kmemdup(&ath10k_ops, sizeof(ath10k_ops), GFP_KERNEL);
-+	if (!ops)
- 		return NULL;
- 
-+	hw = ieee80211_alloc_hw(sizeof(struct ath10k) + priv_size, ops);
-+	if (!hw) {
-+		kfree(ops);
-+		return NULL;
-+	}
-+
- 	ar = hw->priv;
- 	ar->hw = hw;
-+	ar->ops = ops;
- 
- 	return ar;
- }
- 
- void ath10k_mac_destroy(struct ath10k *ar)
- {
-+	struct ieee80211_ops *ops = ar->ops;
-+
- 	ieee80211_free_hw(ar->hw);
-+	kfree(ops);
- }
- 
- static const struct ieee80211_iface_limit ath10k_if_limits[] = {
-@@ -7919,6 +7930,15 @@ int ath10k_mac_register(struct ath10k *ar)
- 			ath10k_warn(ar, "failed to initialise DFS pattern detector\n");
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index fa8d38eb9236..91461c415525 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -1449,7 +1449,9 @@ int ieee80211_txq_setup_flows(struct ieee80211_local *local)
+ 	local->cvars = kcalloc(fq->flows_cnt, sizeof(local->cvars[0]),
+ 			       GFP_KERNEL);
+ 	if (!local->cvars) {
++		spin_lock_bh(&fq->lock);
+ 		fq_reset(fq, fq_skb_free_func);
++		spin_unlock_bh(&fq->lock);
+ 		return -ENOMEM;
  	}
  
-+	/* Current wake_tx_queue implementation imposes a significant
-+	 * performance penalty in some setups. The tx scheduling code needs
-+	 * more work anyway so disable the wake_tx_queue unless firmware
-+	 * supports the pull-push mechanism.
-+	 */
-+	if (!test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL,
-+		      ar->running_fw->fw_file.fw_features))
-+		ar->ops->wake_tx_queue = NULL;
-+
- 	ret = ath_regd_init(&ar->ath_common.regulatory, ar->hw->wiphy,
- 			    ath10k_reg_notifier);
- 	if (ret) {
+@@ -1469,7 +1471,9 @@ void ieee80211_txq_teardown_flows(struct ieee80211_local *local)
+ 	kfree(local->cvars);
+ 	local->cvars = NULL;
+ 
++	spin_lock_bh(&fq->lock);
+ 	fq_reset(fq, fq_skb_free_func);
++	spin_unlock_bh(&fq->lock);
+ }
+ 
+ struct sk_buff *ieee80211_tx_dequeue(struct ieee80211_hw *hw,
 -- 
 2.1.4
 
