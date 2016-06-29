@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIE98-00023e-5t
- for ath10k@lists.infradead.org; Wed, 29 Jun 2016 11:59:10 +0000
-Received: by mail-lf0-x233.google.com with SMTP id l188so31744637lfe.2
- for <ath10k@lists.infradead.org>; Wed, 29 Jun 2016 04:58:49 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] mac80211: fix fq lockdep warnings
-Date: Wed, 29 Jun 2016 14:00:34 +0200
-Message-Id: <1467201634-11060-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1467026569-19329-1-git-send-email-michal.kazior@tieto.com>
-References: <1467026569-19329-1-git-send-email-michal.kazior@tieto.com>
+ id 1bIG74-000298-3f
+ for ath10k@lists.infradead.org; Wed, 29 Jun 2016 14:05:13 +0000
+References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <e05dcb58-1cb1-a33a-31bb-b8ba1edf1363@dd-wrt.com>
+Date: Wed, 29 Jun 2016 16:04:43 +0200
+MIME-Version: 1.0
+In-Reply-To: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix system hang at qca99x0 probe on x86 platform
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,90 +19,167 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: johannes@sipsolutions.net
-Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, rmanohar@qti.qualcomm.com, Felix Fietkau <nbd@nbd.name>, Kalle Valo <kvalo@qca.qualcomm.com>
 
-Some lockdep assertions were not fulfilled and
-resulted in a kernel warning/call trace if driver
-used intermediate software queues (e.g. ath10k).
+this fix will crash QCA9980 on QCA IPQ8064 cpu based systems.
+so please rework it, or leave it out.
+note:
+maybe the limit of 256kb is too low for that card
 
-Existing code sequences should've guranteed safety
-but it's always good to be extra careful.
 
-The call trace could look like this:
+    10.102047] ath10k_pci 0000:01:00.0: unable to read from the device
+[   10.102075] ath10k_pci 0000:01:00.0: could not execute otp for board =
 
- [ 237.335805] ------------[ cut here ]------------
- [ 237.335852] WARNING: CPU: 3 PID: 1921 at include/net/fq_impl.h:22 fq_flow_dequeue+0xed/0x140 [mac80211]
- [ 237.335855] Modules linked in: ath10k_pci(E-) ath10k_core(E) ath(E) mac80211(E) cfg80211(E)
- [ 237.335913] CPU: 3 PID: 1921 Comm: rmmod Tainted: G        W   E   4.7.0-rc4-wt-ath+ #1377
- [ 237.335916] Hardware name: Hewlett-Packard HP ProBook 6540b/1722, BIOS 68CDD Ver. F.04 01/27/2010
- [ 237.335918]  00200286 00200286 eff85dac c14151e2 f901574e 00000000 eff85de0 c1081075
- [ 237.335928]  c1ab91f0 00000003 00000781 f901574e 00000016 f8fbabad f8fbabad 00000016
- [ 237.335938]  eb24ff60 00000000 ef3886c0 eff85df4 c10810ba 00000009 00000000 00000000
- [ 237.335948] Call Trace:
- [ 237.335953]  [<c14151e2>] dump_stack+0x76/0xb4
- [ 237.335957]  [<c1081075>] __warn+0xe5/0x100
- [ 237.336002]  [<f8fbabad>] ? fq_flow_dequeue+0xed/0x140 [mac80211]
- [ 237.336046]  [<f8fbabad>] ? fq_flow_dequeue+0xed/0x140 [mac80211]
- [ 237.336053]  [<c10810ba>] warn_slowpath_null+0x2a/0x30
- [ 237.336095]  [<f8fbabad>] fq_flow_dequeue+0xed/0x140 [mac80211]
- [ 237.336137]  [<f8fbc67a>] fq_flow_reset.constprop.56+0x2a/0x90 [mac80211]
- [ 237.336180]  [<f8fbc79a>] fq_reset.constprop.59+0x2a/0x50 [mac80211]
- [ 237.336222]  [<f8fc04e8>] ieee80211_txq_teardown_flows+0x38/0x40 [mac80211]
- [ 237.336258]  [<f8f7c1a4>] ieee80211_unregister_hw+0xe4/0x120 [mac80211]
- [ 237.336275]  [<f933f536>] ath10k_mac_unregister+0x16/0x50 [ath10k_core]
- [ 237.336292]  [<f934592d>] ath10k_core_unregister+0x3d/0x90 [ath10k_core]
- [ 237.336301]  [<f85f8836>] ath10k_pci_remove+0x36/0xa0 [ath10k_pci]
- [ 237.336307]  [<c1470388>] pci_device_remove+0x38/0xb0
- ...
+id check: -110
+[   10.107116] ath10k_pci 0000:01:00.0: failed to get board id from otp: =
 
-Fixes: 5caa328e3811 ("mac80211: implement codel on fair queuing flows")
-Fixes: fa962b92120b ("mac80211: implement fair queueing per txq")
-Tested-by: Kalle Valo <kvalo@qca.qualcomm.com>
-Reported-by: Kalle Valo <kvalo@qca.qualcomm.com>
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
+-110
+[   10.126517] ath10k_pci 0000:01:00.0: failed to fetch board data for =
 
-Notes:
-    v1:
-     - added Tested-by [Kalle]
-     - swapped first/last name in Reported-by to match Tested-by
-     - improve commit log
+bus=3Dpci,vendor=3D168c,device=3D0040,subsystem-vendor=3D168c,subsystem-dev=
+ice=3D0002 =
 
- net/mac80211/tx.c | 4 ++++
- 1 file changed, 4 insertions(+)
+from ath10k/QCA99X0/hw2.0/board-2.bin
+[   10.126697] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A =
 
-diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
-index fa8d38eb9236..91461c415525 100644
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -1449,7 +1449,9 @@ int ieee80211_txq_setup_flows(struct ieee80211_local *local)
- 	local->cvars = kcalloc(fq->flows_cnt, sizeof(local->cvars[0]),
- 			       GFP_KERNEL);
- 	if (!local->cvars) {
-+		spin_lock_bh(&fq->lock);
- 		fq_reset(fq, fq_skb_free_func);
-+		spin_unlock_bh(&fq->lock);
- 		return -ENOMEM;
- 	}
- 
-@@ -1469,7 +1471,9 @@ void ieee80211_txq_teardown_flows(struct ieee80211_local *local)
- 	kfree(local->cvars);
- 	local->cvars = NULL;
- 
-+	spin_lock_bh(&fq->lock);
- 	fq_reset(fq, fq_skb_free_func);
-+	spin_unlock_bh(&fq->lock);
- }
- 
- struct sk_buff *ieee80211_tx_dequeue(struct ieee80211_hw *hw,
--- 
-2.1.4
+crc32 62700264
+[   11.518268] ath10k_pci 0000:01:00.0: firmware crashed! (uuid =
+
+7173fc19-f807-4345-906a-9f3d17fb751b)
+[   11.518307] ath10k_pci 0000:01:00.0: qca99x0 hw2.0 target 0x01000000 =
+
+chip_id 0x003b01ff sub 168c:0002
+[   11.526123] ath10k_pci 0000:01:00.0: kconfig debug 1 debugfs 1 =
+
+tracing 0 dfs 0 testmode 0
+[   11.536976] ath10k_pci 0000:01:00.0: firmware ver 10.4.1.00030-1 api =
+
+5 features no-p2p crc32 d2901e01
+[   11.543610] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A =
+
+crc32 62700264
+[   11.552770] ath10k_pci 0000:01:00.0: htt-ver 0.0 wmi-op 6 htt-op 4 =
+
+cal file max-sta 512 raw 0 hwcrypto 1
+[   11.561910] ath10k_pci 0000:01:00.0: firmware register dump:
+[   11.569606] ath10k_pci 0000:01:00.0: [00]: 0x01000000 0x000015B3 =
+
+0x000D89A5 0x00955B31
+[   11.575252] ath10k_pci 0000:01:00.0: [04]: 0x000D89A5 0x00060730 =
+
+0x0000000C 0x00000000
+[   11.582978] ath10k_pci 0000:01:00.0: [08]: 0x00000010 0x0000000D =
+
+0x000E8A64 0xFFFFC000
+[   11.590876] ath10k_pci 0000:01:00.0: [12]: 0x00000009 0x00000000 =
+
+0x000D89BC 0x000D8A03
+[   11.598846] ath10k_pci 0000:01:00.0: [16]: 0x00953438 0x000D89BE =
+
+0x00000000 0x00000000
+[   11.606676] ath10k_pci 0000:01:00.0: [20]: 0x400D89A5 0x0040655C =
+
+0x00413A84 0x00000005
+[   11.614574] ath10k_pci 0000:01:00.0: [24]: 0x809CDC6E 0x004065BC =
+
+0x00417450 0xC00D89A5
+[   11.622473] ath10k_pci 0000:01:00.0: [28]: 0x8098011C 0x0040660C =
+
+0x004179D8 0x0000000D
+[   11.630372] ath10k_pci 0000:01:00.0: [32]: 0x809CDE70 0x0040662C =
+
+0x004179D8 0x0000000D
+[   11.638272] ath10k_pci 0000:01:00.0: [36]: 0x80981786 0x0040665C =
+
+0x004179D8 0x00000020
+[   11.646171] ath10k_pci 0000:01:00.0: [40]: 0x809CE0F7 0x0040667C =
+
+0x00000000 0x0000A000
+[   11.654070] ath10k_pci 0000:01:00.0: [44]: 0x809B307A 0x004066AC =
+
+0x00981768 0x0042028C
+[   11.661970] ath10k_pci 0000:01:00.0: [48]: 0x809AF3DA 0x004066FC =
+
+0x00000002 0x0042028C
+[   11.669869] ath10k_pci 0000:01:00.0: [52]: 0x809AEB02 0x0040672C =
+
+0x00406750 0x0041847C
+[   11.677768] ath10k_pci 0000:01:00.0: [56]: 0x8094EAAA 0x0040674C =
+
+0x000E89AC 0x00000001
+
+Sebastian
+
+
+Am 14.06.2016 um 08:17 schrieb Rajkumar Manoharan:
+> commit b057886524be ("ath10k: do not use coherent memory for allocated
+> device memory chunks") replaced coherent memory allocation for memory
+> chunks to fix low memory platforms. Unfortunately this is causing system
+> freeze on x86 platform while bringing up qca99x0 device. The system
+> hangs while DMA mapping bigger memory chunks (689816/865444 bytes). Fix
+> this by limiting maximum memory chunk size to 256 KiB per request.
+>
+> Cc: Felix Fietkau <nbd@nbd.name>
+> Fixes: b057886524be ("ath10k: do not use coherent memory for allocated =
+
+> device memory chunks")
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> ---
+>   drivers/net/wireless/ath/ath10k/wmi.c | 6 ++++++
+>   drivers/net/wireless/ath/ath10k/wmi.h | 1 +
+>   2 files changed, 7 insertions(+)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c =
+
+> b/drivers/net/wireless/ath/ath10k/wmi.c
+> index 6279ab4a760e..7c15f65fe5ed 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -4411,6 +4411,12 @@ static int ath10k_wmi_alloc_chunk(struct ath10k =
+
+> *ar, u32 req_id,
+>           if (!pool_size)
+>               return -EINVAL;
+>   +        if (pool_size > WMI_MAX_MEM_CHUNK_SIZE) {
+> +            num_units =3D WMI_MAX_MEM_CHUNK_SIZE /
+> +                    round_up(unit_len, 4);
+> +            pool_size =3D num_units * round_up(unit_len, 4);
+> +        }
+> +
+>           vaddr =3D kzalloc(pool_size, GFP_KERNEL | __GFP_NOWARN);
+>           if (!vaddr)
+>               num_units /=3D 2;
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h =
+
+> b/drivers/net/wireless/ath/ath10k/wmi.h
+> index 90f594e89f94..dea1f235a54d 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.h
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
+> @@ -6184,6 +6184,7 @@ struct wmi_roam_ev {
+>   #define ATH10K_DEFAULT_ATIM 0
+>     #define WMI_MAX_MEM_REQS 16
+> +#define WMI_MAX_MEM_CHUNK_SIZE (256 * 1024) /* 256 KB */
+>     struct wmi_scan_ev_arg {
+>       __le32 event_type; /* %WMI_SCAN_EVENT_ */
+
+
+-- =
+
+Mit freundlichen Gr=FCssen / Regards
+
+Sebastian Gottschall / CTO
+
+NewMedia-NET GmbH - DD-WRT
+Firmensitz:  Berliner Ring 101, 64625 Bensheim
+Registergericht: Amtsgericht Darmstadt, HRB 25473
+Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
+http://www.dd-wrt.com
+email: s.gottschall@dd-wrt.com
+Tel.: +496251-582650 / Fax: +496251-5826565
 
 
 _______________________________________________
