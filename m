@@ -1,21 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lf0-x22c.google.com ([2a00:1450:4010:c07::22c])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIC6e-0007Op-Fy
- for ath10k@lists.infradead.org; Wed, 29 Jun 2016 09:48:29 +0000
-Date: Wed, 29 Jun 2016 15:17:54 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
- QCA99X0 and later
-Message-ID: <20160629094754.GA8867@atheros-ThinkPad-T61>
-References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
- <1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>
- <CA+BoTQnUvF2Zy7_WuEi0V+KjByRghVmoeR6yrs6hu6ag=KmBqQ@mail.gmail.com>
- <20160627143600.GA5292@atheros-ThinkPad-T61>
- <CA+BoTQn+HeishCMf4hjpWjLBmvFG2r0gosBv77RTyk7+uOAvPA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+BoTQn+HeishCMf4hjpWjLBmvFG2r0gosBv77RTyk7+uOAvPA@mail.gmail.com>
+ id 1bIE1P-0007pZ-E7
+ for ath10k@lists.infradead.org; Wed, 29 Jun 2016 11:51:12 +0000
+Received: by mail-lf0-x22c.google.com with SMTP id f6so31648590lfg.0
+ for <ath10k@lists.infradead.org>; Wed, 29 Jun 2016 04:50:47 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: disable wake_tx_queue for older devices
+Date: Wed, 29 Jun 2016 13:52:26 +0200
+Message-Id: <1467201146-6844-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
+References: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,96 +19,105 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: kvalo@qca.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-Hello Michal/ Kalle,
+Ideally wake_tx_queue should be used regardless as
+it is a requirement for reducing bufferbloat and
+implementing airtime fairness in the future.
 
-On Tue, Jun 28, 2016 at 08:48:38AM +0200, Michal Kazior wrote:
-> On 27 June 2016 at 16:36, Mohammed Shafi Shajakhan
-> <mohammed@codeaurora.org> wrote:
-> > Hi Michal,
-> >
-> > thanks for the review ..
-> >
-> > On Mon, Jun 27, 2016 at 11:27:27AM +0200, Michal Kazior wrote:
-> >> On 23 June 2016 at 18:40, Mohammed Shafi Shajakhan
-> >> <mohammed@qti.qualcomm.com> wrote:
-> >> > From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> >> >
-> >> > For chipsets like QCA99X0, IPQ4019 and later we are not getting proper
-> >> > NULL func status (always acked/successs !!) when hostapd does a
-> >> > PROBE_CLIENT via nullfunc frames when the station is powered off
-> >> > abruptly (inactive timer probes client via null func after the inactive
-> >> > time reaches beyond the threshold). Fix this by disabling the workaround
-> >> > (getting the ACK status of NULL func frames by sending via HTT mgmt-tx
-> >> >  path) introduced by the change ("ath10k: fix beacon loss handling ")
-> >> > for QCA99X0 and later chipsets. The normal tx path provides the proper
-> >> > ACK status for NULL data frames. As of now disable this workaround for
-> >> > chipsets QCA99X0 and later, once the 10.1 firmware is obselete we can
-> >> > completely get rid of this workaround for all the chipsets
-> >> >
-> >> > Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
-> >> > Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> >> > ---
-> >> >  drivers/net/wireless/ath/ath10k/core.c | 3 +++
-> >> >  drivers/net/wireless/ath/ath10k/core.h | 6 ++++++
-> >> >  drivers/net/wireless/ath/ath10k/mac.c  | 1 +
-> >> >  3 files changed, 10 insertions(+)
-> >> >
-> >> > diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> >> > index 689d6ce..9978e4a 100644
-> >> > --- a/drivers/net/wireless/ath/ath10k/core.c
-> >> > +++ b/drivers/net/wireless/ath/ath10k/core.c
-> >> > @@ -181,6 +181,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
-> >> >                         .board = QCA99X0_HW_2_0_BOARD_DATA_FILE,
-> >> >                         .board_size = QCA99X0_BOARD_DATA_SZ,
-> >> >                         .board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
-> >> > +                       .disable_null_func_workaround = true,
-> >>
-> >> Tx completion (bugs) are firmware specific, not hardware. This should
-> >> be expressed via features bits in ath10k FW API, no?
-> >>
-> >>
-> > [shafi] Are you suggesting me to introduce something like
-> > "ATH10K_FW_FEATURE_SUPPORTS_SKIP_CLOCK_INIT" ? Kalle any suggestions ?
-> >
-> > Also how about getting this workaround completely if Ben had fixed this in his tree,
-> > will this affect older 10.2.4 ?
-> 
-> There's still 636.
-> 
-> We could probably get rid of this as long as:
->  - ath10k can express the need to use Probe Requests for AP probing
-> (in client mode) and beacon loss handling purposes instead of NullFunc
-> to mac80211
->  - everyone uses hostapd with disassoc_low_ack=1 with affected
-> firmware revisions
->  - supplicant uses disassoc_low_ack=1 for p2p go
->  - I have no idea about mesh/ibss but they might require some work as well
-> 
-> Otherwise you'll introduce regressions.
->
+However some setups (typically low-end platforms
+hosting QCA988X) suffer performance regressions
+with the current wake_tx_queue implementation.
+Therefore disable it unless it is really
+beneficial with current codebase (which is when
+firmware supports smart pull-push tx scheduling).
 
-[shafi] sure then we will disable this for 10.4 (QCA99X0 and later)
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
 
-*firmware feature requires a new firmware updated this feature, so the bug
-will be present for all the older firmware, please correct me if my
-understanding is wrong
+Notes:
+    v1:
+     - improve commit log
 
-*We discussed wmi_op_version is not the way to go (in the sense just disable it
-for 10.4 alone)
+ drivers/net/wireless/ath/ath10k/core.h |  1 +
+ drivers/net/wireless/ath/ath10k/mac.c  | 24 ++++++++++++++++++++++--
+ 2 files changed, 23 insertions(+), 2 deletions(-)
 
-Let me know if there is any other suggestion (the existing change though bit
-cleanly is very explicit regarding the chipsets that this workaround is not
-needed), thank you !
-
-regards,
-shafi
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 3da18c9dbd7a..de580af2e5ef 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -667,6 +667,7 @@ struct ath10k_fw_components {
+ struct ath10k {
+ 	struct ath_common ath_common;
+ 	struct ieee80211_hw *hw;
++	struct ieee80211_ops *ops;
+ 	struct device *dev;
+ 	u8 mac_addr[ETH_ALEN];
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index d4b7a168f7c0..958bc6c91aac 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7471,21 +7471,32 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
+ struct ath10k *ath10k_mac_create(size_t priv_size)
+ {
+ 	struct ieee80211_hw *hw;
++	struct ieee80211_ops *ops;
+ 	struct ath10k *ar;
+ 
+-	hw = ieee80211_alloc_hw(sizeof(struct ath10k) + priv_size, &ath10k_ops);
+-	if (!hw)
++	ops = kmemdup(&ath10k_ops, sizeof(ath10k_ops), GFP_KERNEL);
++	if (!ops)
+ 		return NULL;
+ 
++	hw = ieee80211_alloc_hw(sizeof(struct ath10k) + priv_size, ops);
++	if (!hw) {
++		kfree(ops);
++		return NULL;
++	}
++
+ 	ar = hw->priv;
+ 	ar->hw = hw;
++	ar->ops = ops;
+ 
+ 	return ar;
+ }
+ 
+ void ath10k_mac_destroy(struct ath10k *ar)
+ {
++	struct ieee80211_ops *ops = ar->ops;
++
+ 	ieee80211_free_hw(ar->hw);
++	kfree(ops);
+ }
+ 
+ static const struct ieee80211_iface_limit ath10k_if_limits[] = {
+@@ -7919,6 +7930,15 @@ int ath10k_mac_register(struct ath10k *ar)
+ 			ath10k_warn(ar, "failed to initialise DFS pattern detector\n");
+ 	}
+ 
++	/* Current wake_tx_queue implementation imposes a significant
++	 * performance penalty in some setups. The tx scheduling code needs
++	 * more work anyway so disable the wake_tx_queue unless firmware
++	 * supports the pull-push mechanism.
++	 */
++	if (!test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL,
++		      ar->running_fw->fw_file.fw_features))
++		ar->ops->wake_tx_queue = NULL;
++
+ 	ret = ath_regd_init(&ar->ath_common.regulatory, ar->hw->wiphy,
+ 			    ath10k_reg_notifier);
+ 	if (ret) {
+-- 
+2.1.4
 
 
 _______________________________________________
