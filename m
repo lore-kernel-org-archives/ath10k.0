@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.distech-controls.com ([207.253.3.3])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIcit-0003MR-Ux
- for ath10k@lists.infradead.org; Thu, 30 Jun 2016 14:13:44 +0000
-From: Francois Gervais <FGervais@distech-controls.com>
-Subject: RE: ath10k usb support
-Date: Thu, 30 Jun 2016 14:13:20 +0000
-Message-ID: <FA4BBBD0B3C45046B0665ADDC31528510FE7AAFB@DC-A-EXCH2010.DistechControls.local>
-References: <FA4BBBD0B3C45046B0665ADDC31528510FE798A2@DC-A-EXCH2010.DistechControls.local>
- <CA+BoTQm24e9U5reTRzYr2R9Gp5O2bXz6BEqTRO_0YFmv82HFKw@mail.gmail.com>
-In-Reply-To: <CA+BoTQm24e9U5reTRzYr2R9Gp5O2bXz6BEqTRO_0YFmv82HFKw@mail.gmail.com>
-Content-Language: en-US
+ id 1bIhyg-0005hq-Is
+ for ath10k@lists.infradead.org; Thu, 30 Jun 2016 19:50:22 +0000
+Date: Fri, 1 Jul 2016 01:19:49 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH v3] ath10k: Fix 10.4 extended peer stats update
+Message-ID: <20160630194949.GA13923@atheros-ThinkPad-T61>
+References: <1464851602-12969-1-git-send-email-mohammed@qca.qualcomm.com>
+ <87vb0r5529.fsf@kamboji.qca.qualcomm.com>
+ <87r3bf54v6.fsf@kamboji.qca.qualcomm.com>
+ <20160630105951.GA10001@atheros-ThinkPad-T61>
+ <87mvm353x1.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87mvm353x1.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +23,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
+ Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
 
-SXMgdGhlcmUgYW55IHBsYW5zIGZvciB0aGlzIGltcGxlbWVudGF0aW9uPyBXZSB3b3VsZCBiZSB3
-aWxsaW5nIHRvIG9mZmVyIHJlc291cmNlcyB0byBoZWxwIHRoaXMgZGV2ZWxvcG1lbnQgaWYgcG9z
-c2libGUuDQoNCkZyYW7Dp29pcyBHZXJ2YWlzIA0KRmlybXdhcmUgUHJvZ3JhbW1lciAvIFByb2dy
-YW1tZXVyIG1pY3JvbG9naWNpZWwNCkRpc3RlY2ggQ29udHJvbHMsIEluYy4NClRlbCAgOiArMSAo
-NDUwKSA0NDQtOTg5OCB4IDI2Mw0KRmF4IDogKzEgKDQ1MCkgNDQ0LTA3NzANCg0KSW5ub3ZhdGl2
-ZSBTb2x1dGlvbnMgZm9yIEdyZWVuZXIgQnVpbGRpbmdz4oSiDQp3d3cuZGlzdGVjaC1jb250cm9s
-cy5jb20NCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IE1pY2hhbCBLYXppb3Ig
-W21haWx0bzptaWNoYWwua2F6aW9yQHRpZXRvLmNvbV0gDQpTZW50OiBKdW5lIDMwLCAyMDE2IDM6
-MTYgQU0NClRvOiBGcmFuY29pcyBHZXJ2YWlzDQpDYzogYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
-cmcNClN1YmplY3Q6IFJlOiBhdGgxMGsgdXNiIHN1cHBvcnQNCg0KT24gMjkgSnVuZSAyMDE2IGF0
-IDIwOjEwLCBGcmFuY29pcyBHZXJ2YWlzIDxGR2VydmFpc0BkaXN0ZWNoLWNvbnRyb2xzLmNvbT4g
-d3JvdGU6DQo+IEhpLA0KPg0KPiBXZSBhcmUgZXZhbHVhdGluZyB0aGUgbmV3IFdVU0I2MTAwTSB3
-aXJlbGVzcyBhZGFwdGVyIGZvciB1c2Ugd2l0aCBvdXIgZW1iZWRkZWQgcGxhdGZvcm0uIFRoaXMg
-aXMgYSB3aXJlbGVzcyB1c2IgZG9uZ2xlIGJhc2VkIG9uIHRoZSBRQ0E5Mzc3IGNoaXBzZXQuDQo+
-DQo+IEF0IGZpcnN0IGdsYW5jZSBpdCBzZWVtcyB0aGF0IHRoZSBjdXJyZW50IGF0aDEwayBkcml2
-ZXIgZG9lcyBub3Qgc3VwcG9ydCB0aGlzIGFkYXB0ZXIuDQoNCkNvcnJlY3QuIGF0aDEwayBzdXBw
-b3J0cyBQQ0kgYW5kIEFIQiBidXNlcyBvbmx5Lg0KDQoNCj4gV2UnZCBsaWtlIHRvIGtub3cgaG93
-IGZhciBpcyB0aGUgY3VycmVudCBkcml2ZXIgZnJvbSBzdXBwb3J0aW5nIHRoaXMgdXNiIGFkYXB0
-ZXI/DQoNClByb2JhYmx5IHF1aXRlIHNvbWUgd29yayAtIGV4dHJhIEhUVCBhYnN0cmFjdGlvbiwg
-bmV3IFVTQiBoaWYvYnVzIGltcGxlbWVudGF0aW9uLCBzb21lIEhUQyBjaGFuZ2VzIGFuZCBwcm9i
-YWJseSBzb21lIHR4L3J4IHBhdGggcmVhZGp1c3RtZW50cy4NCg0KDQpNaWNoYcWCDQpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
-aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On Thu, Jun 30, 2016 at 11:09:31AM +0000, Valo, Kalle wrote:
+> Mohammed Shafi Shajakhan <mohammed@codeaurora.org> writes:
+> 
+> > Hi Kalle,
+> >
+> > On Thu, Jun 30, 2016 at 10:49:02AM +0000, Valo, Kalle wrote:
+> >> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+> >> 
+> >> >> @@ -261,6 +263,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+> >> >>  			.board = QCA4019_HW_1_0_BOARD_DATA_FILE,
+> >> >>  			.board_size = QCA4019_BOARD_DATA_SZ,
+> >> >>  			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
+> >> >> +			.extd_peer_stats = true,
+> >> >>  		},
+> >> >>  	},
+> >> >>  };
+> >> >
+> >> > This is not a hardware feature so hw_params is not really the right
+> >> > place to handle this. In the pending branch I tried to solve this a bit
+> >> > differently:
+> >> >
+> >> > https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=ecf4daadc7677518ec7185dbddab959ac6e2db96
+> >> >
+> >> > I added a bool "extended" to struct ath10k_fw_stats which is used to
+> >> > detect if extended stats are used. Would that work? Please note that I
+> >> > have only compile tested the patch.
+> >
+> > [shafi] thanks for taking time to do this, the change looks fine to me !
+> > since 'ath10k_sta_update_rx_duration' is called right after 'ath10k_wmi_pull_fw_stats'
+> > this should properly update the rx_duration based on the current data
+> 
+> Could you also run some tests to make sure? I don't trust my own code :)
+>
+[shafi] sure no problem, will do that, thanks for fixing this properly
+
+regards,
+shafi
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
