@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIa7y-0001aY-Hn
- for ath10k@lists.infradead.org; Thu, 30 Jun 2016 11:27:27 +0000
+ id 1bIaH9-0006eF-2B
+ for ath10k@lists.infradead.org; Thu, 30 Jun 2016 11:36:55 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: remove unused <linux/semaphore.h>
-Date: Thu, 30 Jun 2016 11:26:22 +0000
-Message-ID: <87inwq6hpe.fsf@kamboji.qca.qualcomm.com>
-References: <20160621114539.15313-1-chaehyun.lim@gmail.com>
- <bf7b2008-b333-2d79-a952-fda895da8479@cogentembedded.com>
-In-Reply-To: <bf7b2008-b333-2d79-a952-fda895da8479@cogentembedded.com> (Sergei
- Shtylyov's message of "Tue, 21 Jun 2016 16:46:00 +0300")
+Subject: Re: [PATCHV2 3/3] ath10k: add testmode support for 10.4 firmware
+Date: Thu, 30 Jun 2016 11:36:26 +0000
+Message-ID: <87eg7e6h8n.fsf@kamboji.qca.qualcomm.com>
+References: <1467018454-24530-1-git-send-email-c_traja@qti.qualcomm.com>
+In-Reply-To: <1467018454-24530-1-git-send-email-c_traja@qti.qualcomm.com> (c.
+ traja's message of "Mon, 27 Jun 2016 14:37:34 +0530")
 Content-Language: en-US
-Content-ID: <3C0A1E261BB4E84384DEB906A6BC60C2@qualcomm.com>
+Content-ID: <722E9A9BCF188542BB058710C9EEAC03@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,18 +25,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Chaehyun Lim <chaehyun.lim@gmail.com>
+To: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Sergei Shtylyov <sergei.shtylyov@cogentembedded.com> writes:
+<c_traja@qti.qualcomm.com> writes:
 
-> On 6/21/2016 2:45 PM, Chaehyun Lim wrote:
+> From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 >
->> <linux/semaphore.h> is not used anymore, so just remove it.
+> This patch adds testmode support for QCA99X0 chipsets which uses
+> 10.4 firmware and added code swap support for UTF binary.
 >
->    s/it/#include/?
+> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
-Fixed that in the pending branch.
+There were few checkpatch warnings, I fixed them in the pending branch:
+
+$ ath10k-check 
+drivers/net/wireless/ath/ath10k/testmode.c:247: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/testmode.c:250: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/testmode.c:298: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/testmode.c:325: Alignment should match open parenthesis
 
 -- 
 Kalle Valo
