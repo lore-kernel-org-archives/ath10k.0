@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIZXH-0004p7-54
- for ath10k@lists.infradead.org; Thu, 30 Jun 2016 10:49:32 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: Fix 10.4 extended peer stats update
-Date: Thu, 30 Jun 2016 10:49:02 +0000
-Message-ID: <87r3bf54v6.fsf@kamboji.qca.qualcomm.com>
-References: <1464851602-12969-1-git-send-email-mohammed@qca.qualcomm.com>
- <87vb0r5529.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87vb0r5529.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Thu, 30 Jun 2016 13:44:46 +0300")
-Content-Language: en-US
-Content-ID: <B4365857DF9EEB4E96D30DF8818EF074@qualcomm.com>
+ id 1bIZZW-0006BV-2L
+ for ath10k@lists.infradead.org; Thu, 30 Jun 2016 10:51:50 +0000
 MIME-Version: 1.0
+Subject: Re: [v2] ath10k: Fix crash during card removal
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1465478927-21401-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <d95e54d0554c4c55aae695d5be61d9ed@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 30 Jun 2016 12:51:13 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,164 +21,69 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> 
+> Usually when the firmware crashes we check for the value
+> 'FW_IND_EVENT_PENDING' in 'FW_INDICATOR_ADDRESS' and proceed with
+> disabling the irq and dumping firmware 'crash dump'. Now
+> when the PCI card is unplugged from the device the PCI controller
+> seems to generate a spurious interrupt after some time which
+> was as treated a firmware crash and resulting in the below race
+> condition (and eventually crashing the system)
+> 
+> 	ath10k_core_unregister -> ath10k_core_free_board_files
+> 
+> 	...... device unplug spurious interrupt .........
+> 
+> 	ath10k_pci_taklet -> ath10k_pci_fw_crashed_dump  ...etc
+> 
+> Clearly even after the firmware board files related data structure
+> is freed up we are getting a spurious interrupt from PCI with 0xfffffff
+> in the 'FW_INDICATOR_ADDRESS' resulting in scheduling of the pci tasklet
+> and doing a crash dump, printing f/w board related info resulting in the
+> below crash. Fix this by detecting this spurious interrupt in ath10k PCI
+> irq handler itself and return IRQ_NONE. Thanks to Michal Kazior for
+> helping us conclude the most appropriate fix.
+> 
+> Call trace:
+> 
+>  EIP is at ath10k_debug_print_board_info+0x39/0xb0
+> [ath10k_core]
+> EAX: 00000000 EBX: d4de15a0 ECX: 00000000 EDX: 00000064
+> ESI: f615ddd0 EDI: f8530000 EBP: f615de3c ESP: f615ddbc
+>  DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068
+> CR0: 80050033 CR2: 00000004 CR3: 01c0a000 CR4: 000006f0
+> Stack:
+>  f615ddd0 00000064 f8b4ecdd 00000000 00000000 00412f4e
+> 00000000 00000000
+> 00000000 00000000 00000000 00000000 00000000 00000000
+> 00000000 00000000
+>  00000000 00000000 00000000 00000000 00000000 00000000
+> 00000000 00000000
+> Call Trace:
+>   [<f8b1f517>] ath10k_print_driver_info+0x17/0x30
+> [ath10k_core]
+> [<f875463a>] ath10k_pci_fw_crashed_dump+0x7a/0xe0
+> [ath10k_pci]
+> [<f87549d0>] ath10k_pci_tasklet+0x70/0x90 [ath10k_pci]
+> [<c106151e>] tasklet_action+0x9e/0xb0
+> 
+> Cc: Michal Kazior <michal.kazior@tieto.com>
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
->> @@ -261,6 +263,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->>  			.board = QCA4019_HW_1_0_BOARD_DATA_FILE,
->>  			.board_size = QCA4019_BOARD_DATA_SZ,
->>  			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
->> +			.extd_peer_stats = true,
->>  		},
->>  	},
->>  };
->
-> This is not a hardware feature so hw_params is not really the right
-> place to handle this. In the pending branch I tried to solve this a bit
-> differently:
->
-> https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=ecf4daadc7677518ec7185dbddab959ac6e2db96
->
-> I added a bool "extended" to struct ath10k_fw_stats which is used to
-> detect if extended stats are used. Would that work? Please note that I
-> have only compile tested the patch.
+Thanks, 1 patch applied to ath-next branch of ath.git:
 
-Here's a diff of what I did:
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 58932c09efc5..b734345ab598 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -180,7 +180,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board = QCA99X0_HW_2_0_BOARD_DATA_FILE,
- 			.board_size = QCA99X0_BOARD_DATA_SZ,
- 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
--			.extd_peer_stats = true,
- 		},
- 	},
- 	{
-@@ -203,7 +202,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board = QCA9984_HW_1_0_BOARD_DATA_FILE,
- 			.board_size = QCA99X0_BOARD_DATA_SZ,
- 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
--			.extd_peer_stats = true,
- 		},
- 	},
- 	{
-@@ -261,7 +259,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board = QCA4019_HW_1_0_BOARD_DATA_FILE,
- 			.board_size = QCA4019_BOARD_DATA_SZ,
- 			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
--			.extd_peer_stats = true,
- 		},
- 	},
- };
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 73a0b1ae1559..3707d8a707a2 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -263,6 +263,7 @@ struct ath10k_fw_stats_pdev {
- };
- 
- struct ath10k_fw_stats {
-+	bool extended;
- 	struct list_head pdevs;
- 	struct list_head vdevs;
- 	struct list_head peers;
-@@ -754,7 +755,6 @@ struct ath10k {
- 			const char *board;
- 			size_t board_size;
- 			size_t board_ext_size;
--			bool extd_peer_stats;
- 		} fw;
- 	} hw_params;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 001c0a144614..355e1ae665f9 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -327,6 +327,7 @@ static void ath10k_debug_fw_stats_reset(struct ath10k *ar)
- {
- 	spin_lock_bh(&ar->data_lock);
- 	ar->debug.fw_stats_done = false;
-+	ar->debug.fw_stats.extended = false;
- 	ath10k_fw_stats_pdevs_free(&ar->debug.fw_stats.pdevs);
- 	ath10k_fw_stats_vdevs_free(&ar->debug.fw_stats.vdevs);
- 	ath10k_fw_stats_peers_free(&ar->debug.fw_stats.peers);
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index af3d49af9eab..0da8a57e0ba7 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -19,14 +19,14 @@
- #include "debug.h"
- 
- static void ath10k_sta_update_extd_stats_rx_duration(struct ath10k *ar,
--						     struct list_head *head)
-+						     struct ath10k_fw_stats *stats)
- {
--	struct ieee80211_sta *sta;
- 	struct ath10k_fw_extd_stats_peer *peer;
-+	struct ieee80211_sta *sta;
- 	struct ath10k_sta *arsta;
- 
- 	rcu_read_lock();
--	list_for_each_entry(peer, head, list) {
-+	list_for_each_entry(peer, &stats->peers_extd, list) {
- 		sta = ieee80211_find_sta_by_ifaddr(ar->hw, peer->peer_macaddr,
- 						   NULL);
- 		if (!sta)
-@@ -38,13 +38,14 @@ static void ath10k_sta_update_extd_stats_rx_duration(struct ath10k *ar,
- }
- 
- static void ath10k_sta_update_stats_rx_duration(struct ath10k *ar,
--						struct list_head *head)
--{	struct ieee80211_sta *sta;
-+						struct ath10k_fw_stats *stats)
-+{
- 	struct ath10k_fw_stats_peer *peer;
-+	struct ieee80211_sta *sta;
- 	struct ath10k_sta *arsta;
- 
- 	rcu_read_lock();
--	list_for_each_entry(peer, head, list) {
-+	list_for_each_entry(peer, &stats->peers, list) {
- 		sta = ieee80211_find_sta_by_ifaddr(ar->hw, peer->peer_macaddr,
- 						   NULL);
- 		if (!sta)
-@@ -58,11 +59,10 @@ static void ath10k_sta_update_stats_rx_duration(struct ath10k *ar,
- void ath10k_sta_update_rx_duration(struct ath10k *ar,
- 				   struct ath10k_fw_stats *stats)
- {
--	if (ar->hw_params.fw.extd_peer_stats)
--		ath10k_sta_update_stats_rx_duration(ar, &stats->peers);
-+	if (stats->extended)
-+		ath10k_sta_update_extd_stats_rx_duration(ar, stats);
- 	else
--		ath10k_sta_update_extd_stats_rx_duration(ar,
--							 &stats->peers_extd);
-+		ath10k_sta_update_stats_rx_duration(ar, stats);
- }
- 
- static ssize_t ath10k_dbg_sta_read_aggr_mode(struct file *file,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 5f2d423b1c33..16bd79716a6c 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3008,6 +3008,8 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
- 	if ((stats_id & WMI_10_4_STAT_PEER_EXTD) == 0)
- 		return 0;
- 
-+	stats->extended = true;
-+
- 	for (i = 0; i < num_peer_stats; i++) {
- 		const struct wmi_10_4_peer_extd_stats *src;
- 		struct ath10k_fw_extd_stats_peer *dst;
-
+fb7caababc02 ath10k: fix crash during card removal
 
 -- 
-Kalle Valo
+Sent by pwcli
+https://patchwork.kernel.org/patch/9167045/
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
