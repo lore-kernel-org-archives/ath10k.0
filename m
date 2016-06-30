@@ -1,14 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIZn2-0005DI-R5
- for ath10k@lists.infradead.org; Thu, 30 Jun 2016 11:05:49 +0000
+ id 1bIZr7-0006Lc-BD
+ for ath10k@lists.infradead.org; Thu, 30 Jun 2016 11:10:01 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v3] ath10k: Fix 10.4 extended peer stats update
+Date: Thu, 30 Jun 2016 11:09:31 +0000
+Message-ID: <87mvm353x1.fsf@kamboji.qca.qualcomm.com>
+References: <1464851602-12969-1-git-send-email-mohammed@qca.qualcomm.com>
+ <87vb0r5529.fsf@kamboji.qca.qualcomm.com>
+ <87r3bf54v6.fsf@kamboji.qca.qualcomm.com>
+ <20160630105951.GA10001@atheros-ThinkPad-T61>
+In-Reply-To: <20160630105951.GA10001@atheros-ThinkPad-T61> (Mohammed Shafi
+ Shajakhan's message of "Thu, 30 Jun 2016 16:29:51 +0530")
+Content-Language: en-US
+Content-ID: <DA4FCF12D3550648B030D0AB2877815C@qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [v2] ath10k: Fix some typo in spectral code commments
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1466093628-10653-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <0ec846ef6718438d8d5a73f34b87f572@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 30 Jun 2016 13:05:12 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +28,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
+ Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> 
-> Found this obvious typo while going through the spectral
-> code design in ath10k
-> 
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Mohammed Shafi Shajakhan <mohammed@codeaurora.org> writes:
 
-Thanks, 1 patch applied to ath-next branch of ath.git:
+> Hi Kalle,
+>
+> On Thu, Jun 30, 2016 at 10:49:02AM +0000, Valo, Kalle wrote:
+>> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+>> 
+>> >> @@ -261,6 +263,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+>> >>  			.board = QCA4019_HW_1_0_BOARD_DATA_FILE,
+>> >>  			.board_size = QCA4019_BOARD_DATA_SZ,
+>> >>  			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
+>> >> +			.extd_peer_stats = true,
+>> >>  		},
+>> >>  	},
+>> >>  };
+>> >
+>> > This is not a hardware feature so hw_params is not really the right
+>> > place to handle this. In the pending branch I tried to solve this a bit
+>> > differently:
+>> >
+>> > https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=ecf4daadc7677518ec7185dbddab959ac6e2db96
+>> >
+>> > I added a bool "extended" to struct ath10k_fw_stats which is used to
+>> > detect if extended stats are used. Would that work? Please note that I
+>> > have only compile tested the patch.
+>
+> [shafi] thanks for taking time to do this, the change looks fine to me !
+> since 'ath10k_sta_update_rx_duration' is called right after 'ath10k_wmi_pull_fw_stats'
+> this should properly update the rx_duration based on the current data
 
-3fa35bacc16a ath10k: fix some typo in spectral code commments
+Could you also run some tests to make sure? I don't trust my own code :)
 
 -- 
-Sent by pwcli
-https://patchwork.kernel.org/patch/9181333/
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
