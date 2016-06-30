@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIZT8-0002Ck-Gj
- for ath10k@lists.infradead.org; Thu, 30 Jun 2016 10:45:15 +0000
+ id 1bIZXH-0004p7-54
+ for ath10k@lists.infradead.org; Thu, 30 Jun 2016 10:49:32 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH v3] ath10k: Fix 10.4 extended peer stats update
-Date: Thu, 30 Jun 2016 10:44:47 +0000
-Message-ID: <87vb0r5529.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 30 Jun 2016 10:49:02 +0000
+Message-ID: <87r3bf54v6.fsf@kamboji.qca.qualcomm.com>
 References: <1464851602-12969-1-git-send-email-mohammed@qca.qualcomm.com>
-In-Reply-To: <1464851602-12969-1-git-send-email-mohammed@qca.qualcomm.com>
- (Mohammed Shafi Shajakhan's message of "Thu, 2 Jun 2016 12:43:22	+0530")
+ <87vb0r5529.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87vb0r5529.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Thu, 30 Jun 2016 13:44:46 +0300")
 Content-Language: en-US
-Content-ID: <55A91B5CC46F73468E8BE43CCF1F91EC@qualcomm.com>
+Content-ID: <B4365857DF9EEB4E96D30DF8818EF074@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,69 +29,158 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
 Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+>> @@ -261,6 +263,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+>>  			.board = QCA4019_HW_1_0_BOARD_DATA_FILE,
+>>  			.board_size = QCA4019_BOARD_DATA_SZ,
+>>  			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
+>> +			.extd_peer_stats = true,
+>>  		},
+>>  	},
+>>  };
 >
-> 10.4 'extended peer stats' will be not be appended with normal peer stats
-> data and they shall be coming in separate chunks. Fix this by maintaining
-> a separate linked list 'extender peer stats' for 10.4 and update
-> rx_duration for per station statistics. Also parse through beacon filter
-> (if enabled), to make sure we parse the extended peer stats properly.
-> This issue was exposed when more than one client is connected and
-> extended peer stats for 10.4 is enabled
+> This is not a hardware feature so hw_params is not really the right
+> place to handle this. In the pending branch I tried to solve this a bit
+> differently:
 >
-> The order for the stats is as below
-> S - standard peer stats, E- extended peer stats, B - beacon filter stats
+> https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=ecf4daadc7677518ec7185dbddab959ac6e2db96
 >
-> {S1, S2, S3..} -> {B1, B2, B3..}(if available) -> {E1, E2, E3..}
->
-> Fixes: f9575793d44c ("ath10k: enable parsing per station rx duration for 10.4")
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> ---
-> [v1: addressed line wrap around comment from Kalle]
-> [v2: fixed ; in dummy inline function definition - thanks Sven Eckelmann]
-> [v3: removed wmi-op-version suggested by Kalle, introduced fw specifi hw param for extd_stats]
+> I added a bool "extended" to struct ath10k_fw_stats which is used to
+> detect if extended stats are used. Would that work? Please note that I
+> have only compile tested the patch.
 
-I was sure I replied to this, but I can't find my reply anywhere. So I
-guess I didn't, sorry about that.
+Here's a diff of what I did:
 
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -181,6 +181,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->  			.board = QCA99X0_HW_2_0_BOARD_DATA_FILE,
->  			.board_size = QCA99X0_BOARD_DATA_SZ,
->  			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
-> +			.extd_peer_stats = true,
->  		},
->  	},
->  	{
-> @@ -203,6 +204,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->  			.board = QCA9984_HW_1_0_BOARD_DATA_FILE,
->  			.board_size = QCA99X0_BOARD_DATA_SZ,
->  			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
-> +			.extd_peer_stats = true,
->  		},
->  	},
->  	{
-> @@ -261,6 +263,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->  			.board = QCA4019_HW_1_0_BOARD_DATA_FILE,
->  			.board_size = QCA4019_BOARD_DATA_SZ,
->  			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
-> +			.extd_peer_stats = true,
->  		},
->  	},
->  };
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 58932c09efc5..b734345ab598 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -180,7 +180,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board = QCA99X0_HW_2_0_BOARD_DATA_FILE,
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+-			.extd_peer_stats = true,
+ 		},
+ 	},
+ 	{
+@@ -203,7 +202,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board = QCA9984_HW_1_0_BOARD_DATA_FILE,
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+-			.extd_peer_stats = true,
+ 		},
+ 	},
+ 	{
+@@ -261,7 +259,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board = QCA4019_HW_1_0_BOARD_DATA_FILE,
+ 			.board_size = QCA4019_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
+-			.extd_peer_stats = true,
+ 		},
+ 	},
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 73a0b1ae1559..3707d8a707a2 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -263,6 +263,7 @@ struct ath10k_fw_stats_pdev {
+ };
+ 
+ struct ath10k_fw_stats {
++	bool extended;
+ 	struct list_head pdevs;
+ 	struct list_head vdevs;
+ 	struct list_head peers;
+@@ -754,7 +755,6 @@ struct ath10k {
+ 			const char *board;
+ 			size_t board_size;
+ 			size_t board_ext_size;
+-			bool extd_peer_stats;
+ 		} fw;
+ 	} hw_params;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 001c0a144614..355e1ae665f9 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -327,6 +327,7 @@ static void ath10k_debug_fw_stats_reset(struct ath10k *ar)
+ {
+ 	spin_lock_bh(&ar->data_lock);
+ 	ar->debug.fw_stats_done = false;
++	ar->debug.fw_stats.extended = false;
+ 	ath10k_fw_stats_pdevs_free(&ar->debug.fw_stats.pdevs);
+ 	ath10k_fw_stats_vdevs_free(&ar->debug.fw_stats.vdevs);
+ 	ath10k_fw_stats_peers_free(&ar->debug.fw_stats.peers);
+diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+index af3d49af9eab..0da8a57e0ba7 100644
+--- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
++++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+@@ -19,14 +19,14 @@
+ #include "debug.h"
+ 
+ static void ath10k_sta_update_extd_stats_rx_duration(struct ath10k *ar,
+-						     struct list_head *head)
++						     struct ath10k_fw_stats *stats)
+ {
+-	struct ieee80211_sta *sta;
+ 	struct ath10k_fw_extd_stats_peer *peer;
++	struct ieee80211_sta *sta;
+ 	struct ath10k_sta *arsta;
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry(peer, head, list) {
++	list_for_each_entry(peer, &stats->peers_extd, list) {
+ 		sta = ieee80211_find_sta_by_ifaddr(ar->hw, peer->peer_macaddr,
+ 						   NULL);
+ 		if (!sta)
+@@ -38,13 +38,14 @@ static void ath10k_sta_update_extd_stats_rx_duration(struct ath10k *ar,
+ }
+ 
+ static void ath10k_sta_update_stats_rx_duration(struct ath10k *ar,
+-						struct list_head *head)
+-{	struct ieee80211_sta *sta;
++						struct ath10k_fw_stats *stats)
++{
+ 	struct ath10k_fw_stats_peer *peer;
++	struct ieee80211_sta *sta;
+ 	struct ath10k_sta *arsta;
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry(peer, head, list) {
++	list_for_each_entry(peer, &stats->peers, list) {
+ 		sta = ieee80211_find_sta_by_ifaddr(ar->hw, peer->peer_macaddr,
+ 						   NULL);
+ 		if (!sta)
+@@ -58,11 +59,10 @@ static void ath10k_sta_update_stats_rx_duration(struct ath10k *ar,
+ void ath10k_sta_update_rx_duration(struct ath10k *ar,
+ 				   struct ath10k_fw_stats *stats)
+ {
+-	if (ar->hw_params.fw.extd_peer_stats)
+-		ath10k_sta_update_stats_rx_duration(ar, &stats->peers);
++	if (stats->extended)
++		ath10k_sta_update_extd_stats_rx_duration(ar, stats);
+ 	else
+-		ath10k_sta_update_extd_stats_rx_duration(ar,
+-							 &stats->peers_extd);
++		ath10k_sta_update_stats_rx_duration(ar, stats);
+ }
+ 
+ static ssize_t ath10k_dbg_sta_read_aggr_mode(struct file *file,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 5f2d423b1c33..16bd79716a6c 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3008,6 +3008,8 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
+ 	if ((stats_id & WMI_10_4_STAT_PEER_EXTD) == 0)
+ 		return 0;
+ 
++	stats->extended = true;
++
+ 	for (i = 0; i < num_peer_stats; i++) {
+ 		const struct wmi_10_4_peer_extd_stats *src;
+ 		struct ath10k_fw_extd_stats_peer *dst;
 
-This is not a hardware feature so hw_params is not really the right
-place to handle this. In the pending branch I tried to solve this a bit
-differently:
-
-https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=ecf4daadc7677518ec7185dbddab959ac6e2db96
-
-I added a bool "extended" to struct ath10k_fw_stats which is used to
-detect if extended stats are used. Would that work? Please note that I
-have only compile tested the patch.
 
 -- 
 Kalle Valo
