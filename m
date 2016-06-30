@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIYtD-0005mL-Hf
- for ath10k@lists.infradead.org; Thu, 30 Jun 2016 10:08:08 +0000
-Message-ID: <1467281260.2499.4.camel@sipsolutions.net>
-Subject: Re: [PATCH] mac80211: fix fq lockdep warnings
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 30 Jun 2016 12:07:40 +0200
-In-Reply-To: <1467201634-11060-1-git-send-email-michal.kazior@tieto.com>
- (sfid-20160629_135849_174305_00E9FE0A)
-References: <1467026569-19329-1-git-send-email-michal.kazior@tieto.com>
- <1467201634-11060-1-git-send-email-michal.kazior@tieto.com>
- (sfid-20160629_135849_174305_00E9FE0A)
-Mime-Version: 1.0
+ id 1bIZAG-00011b-5v
+ for ath10k@lists.infradead.org; Thu, 30 Jun 2016 10:25:44 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
+ QCA99X0 and later
+Date: Thu, 30 Jun 2016 10:25:16 +0000
+Message-ID: <8760sr6kj8.fsf@kamboji.qca.qualcomm.com>
+References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
+ <1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>
+ <576C1861.7020402@candelatech.com>
+ <20160625185350.GA25330@atheros-ThinkPad-T61>
+ <576F2165.3010109@candelatech.com>
+In-Reply-To: <576F2165.3010109@candelatech.com> (Ben Greear's message of "Sat, 
+ 25 Jun 2016 17:27:17 -0700")
+Content-Language: en-US
+Content-ID: <E10BC72A9C89A44C8B3ED9E92F6BA128@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +30,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>, "Raja,
+ Tamizh Chelvam" <c_traja@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
+ Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
 
-On Wed, 2016-06-29 at 14:00 +0200, Michal Kazior wrote:
-> Some lockdep assertions were not fulfilled and
-> resulted in a kernel warning/call trace if driver
-> used intermediate software queues (e.g. ath10k).
-> 
-> Existing code sequences should've guranteed safety
-> but it's always good to be extra careful.
-> 
-Applied.
+Ben Greear <greearb@candelatech.com> writes:
 
-johannes
+> Is there a better way than posting to the ath10k mailing list?  There are quite
+> a few more of my patches that are stuck in pending or ignored state.  If you
+> could review some of them and add them to your testing trees then it might help
+> them go upstream.
 
+Yes, as you seem to test with your custom ath10k and custom firmware
+review and testing feedback from others is more than welcome. That way I
+can have more confidence that the patch really works with the mainline
+version.
+
+The problem with your patches is that you dump more responsibility on
+me. I have no idea if they work with the mainline kernel, or if they
+break something, so I need to personally test the patch and that takes
+time. Basically I have a rule if that I need to use more than two
+minutes on a patch it goes to the Deferred queue and I'll go through
+that less often than the normal patch queue.
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
