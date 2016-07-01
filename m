@@ -1,20 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIhyg-0005hq-Is
- for ath10k@lists.infradead.org; Thu, 30 Jun 2016 19:50:22 +0000
-Date: Fri, 1 Jul 2016 01:19:49 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH v3] ath10k: Fix 10.4 extended peer stats update
-Message-ID: <20160630194949.GA13923@atheros-ThinkPad-T61>
-References: <1464851602-12969-1-git-send-email-mohammed@qca.qualcomm.com>
- <87vb0r5529.fsf@kamboji.qca.qualcomm.com>
- <87r3bf54v6.fsf@kamboji.qca.qualcomm.com>
- <20160630105951.GA10001@atheros-ThinkPad-T61>
- <87mvm353x1.fsf@kamboji.qca.qualcomm.com>
+ id 1bIsR7-0005Ve-Je
+ for ath10k@lists.infradead.org; Fri, 01 Jul 2016 07:00:26 +0000
+From: <c_traja@qti.qualcomm.com>
+Subject: [PATCHv3 0/3]ath10k: Add testmode support for 10.4 
+Date: Fri, 1 Jul 2016 12:35:09 +0530
+Message-ID: <1467356709-31555-1-git-send-email-c_traja@qti.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87mvm353x1.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +20,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
- Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+To: ath10k@lists.infradead.org
+Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, tamizhchelvam@codeaurora.org, linux-wireless@vger.kernel.org
 
-On Thu, Jun 30, 2016 at 11:09:31AM +0000, Valo, Kalle wrote:
-> Mohammed Shafi Shajakhan <mohammed@codeaurora.org> writes:
-> 
-> > Hi Kalle,
-> >
-> > On Thu, Jun 30, 2016 at 10:49:02AM +0000, Valo, Kalle wrote:
-> >> Kalle Valo <kvalo@qca.qualcomm.com> writes:
-> >> 
-> >> >> @@ -261,6 +263,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
-> >> >>  			.board = QCA4019_HW_1_0_BOARD_DATA_FILE,
-> >> >>  			.board_size = QCA4019_BOARD_DATA_SZ,
-> >> >>  			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
-> >> >> +			.extd_peer_stats = true,
-> >> >>  		},
-> >> >>  	},
-> >> >>  };
-> >> >
-> >> > This is not a hardware feature so hw_params is not really the right
-> >> > place to handle this. In the pending branch I tried to solve this a bit
-> >> > differently:
-> >> >
-> >> > https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=ecf4daadc7677518ec7185dbddab959ac6e2db96
-> >> >
-> >> > I added a bool "extended" to struct ath10k_fw_stats which is used to
-> >> > detect if extended stats are used. Would that work? Please note that I
-> >> > have only compile tested the patch.
-> >
-> > [shafi] thanks for taking time to do this, the change looks fine to me !
-> > since 'ath10k_sta_update_rx_duration' is called right after 'ath10k_wmi_pull_fw_stats'
-> > this should properly update the rx_duration based on the current data
-> 
-> Could you also run some tests to make sure? I don't trust my own code :)
->
-[shafi] sure no problem, will do that, thanks for fixing this properly
+From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
-regards,
-shafi
+* The below patches add testmode support for 10.4.
+
+* Some of the codeswap related code in ath10k for example code which 
+  initializes the code swap segment works only on normal fw, below patches 
+  make such code generic so that it can be used for utf binary as well.
+
+Tamizh chelvam (3):
+  ath10k: move firmware_swap_code_seg_info to ath10k_fw_file
+  ath10k: handle testmode events for 10.2 and 10.4 based firmware
+  ath10k: add testmode support for 10.4 firmware
+
+v3:
+  * Fixed crash reported by Kalle.
+
+v2:
+  * changed author and signed off mail id.
+
+ drivers/net/wireless/ath/ath10k/core.c     |    6 +++---
+ drivers/net/wireless/ath/ath10k/core.h     |    6 ++----
+ drivers/net/wireless/ath/ath10k/swap.c     |   26 ++++++++++++++------------
+ drivers/net/wireless/ath/ath10k/swap.h     |   11 ++++++++---
+ drivers/net/wireless/ath/ath10k/testmode.c |   23 +++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c      |   26 ++++++++++++++++++++++++++
+ 6 files changed, 76 insertions(+), 22 deletions(-)
+
+-- 
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
