@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bIv2G-0001Dd-S5
- for ath10k@lists.infradead.org; Fri, 01 Jul 2016 09:46:57 +0000
-From: <c_traja@qti.qualcomm.com>
-Subject: [PATCHv3] dts: Add btcoex_support flag in device tree
-Date: Fri, 1 Jul 2016 15:22:04 +0530
-Message-ID: <1467366724-32484-1-git-send-email-c_traja@qti.qualcomm.com>
+ id 1bIv3q-0001kx-1A
+ for ath10k@lists.infradead.org; Fri, 01 Jul 2016 09:48:34 +0000
+From: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>
+Subject: RE: [PATCHv3] dts: Add btcoex_support flag in device tree
+Date: Fri, 1 Jul 2016 09:48:04 +0000
+Message-ID: <dc118e27958944b9be621f6e8d997ecc@aphydexm01f.ap.qualcomm.com>
+References: <1467366724-32484-1-git-send-email-c_traja@qti.qualcomm.com>
+In-Reply-To: <1467366724-32484-1-git-send-email-c_traja@qti.qualcomm.com>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,15 +23,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
+To: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Tamizh chelvam <tamizhchelvam@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+
+Ignore this patch. Sorry for the noise.
+
+-----Original Message-----
+From: linux-wireless-owner@vger.kernel.org [mailto:linux-wireless-owner@vger.kernel.org] On Behalf Of c_traja@qti.qualcomm.com
+Sent: Friday, July 01, 2016 3:22 PM
 To: ath10k@lists.infradead.org
-Cc: Tamizh chelvam <tamizhchelvam@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org; Tamizh chelvam <tamizhchelvam@codeaurora.org>
+Subject: [PATCHv3] dts: Add btcoex_support flag in device tree
 
 From: Tamizh chelvam <tamizhchelvam@codeaurora.org>
 
 BTCOEX feature is not available in all qca40xx chipsets.
-To expose the btcoex support, this patch add btcoex_support
-flag in device tree. If this value is 1 then the hardware
-supports btcoex and 0 for not support.
+To expose the btcoex support, this patch add btcoex_support flag in device tree. If this value is 1 then the hardware supports btcoex and 0 for not support.
 
 Signed-off-by: Tamizh chelvam <tamizhchelvam@codeaurora.org>
 ---
@@ -60,9 +70,11 @@ index b9457dd..f2a2345 100644
  		serial@78af000 {
  			pinctrl-0 = <&serial_pins>;
  			pinctrl-names = "default";
--- 
+--
 1.7.9.5
 
+--
+To unsubscribe from this list: send the line "unsubscribe linux-wireless" in the body of a message to majordomo@vger.kernel.org More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 _______________________________________________
 ath10k mailing list
