@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bKPWI-0003Y8-4z
- for ath10k@lists.infradead.org; Tue, 05 Jul 2016 12:32:06 +0000
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bKSNB-0003Vs-61
+ for ath10k@lists.infradead.org; Tue, 05 Jul 2016 15:34:54 +0000
+Message-ID: <577BD05D.6000607@candelatech.com>
+Date: Tue, 05 Jul 2016 08:21:01 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Date: Tue, 05 Jul 2016 18:01:45 +0530
-From: Ashok Raj Nagarajan <arnagara@codeaurora.org>
-Subject: Re: [PATCH 1/2] cfg80211: Add support to set tx power for a station
- associated
-In-Reply-To: <1467110918.2493.9.camel@sipsolutions.net>
-References: <1465926256-6463-1-git-send-email-arnagara@qti.qualcomm.com>
- <1467110918.2493.9.camel@sipsolutions.net>
-Message-ID: <1cb3e2cc49b433fe5ed834a33adf64b6@codeaurora.org>
+Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
+ QCA99X0 and later
+References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>	<1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>	<576C1861.7020402@candelatech.com>	<20160625185350.GA25330@atheros-ThinkPad-T61>	<576F2165.3010109@candelatech.com>
+ <8760sr6kj8.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <8760sr6kj8.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,66 +24,52 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-wireless@vger.kernel.org, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>, "Raja,
+ Tamizh Chelvam" <c_traja@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
+ Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
 
-On 2016-06-28 16:18, Johannes Berg wrote:
-> On Tue, 2016-06-14 at 23:14 +0530, Ashok Raj Nagarajan wrote:
->> This patch adds support to set transmit power setting type and
->> transmit power level attributes to NL80211_CMD_SET_STATION in order
->> to facilitate adjusting the transmit power level of a station
->> associated to the AP.
-> 
-> Why would you ever need to do that manually? Please give more
-> explanation in the commit message.
-> 
-> We have minstrel-blues (which never made it into the code, but that's
-> just because the submitter went away) doing power adjustments, so you
-> need to explain why this should be necessary.
-> 
+On 06/30/2016 03:25 AM, Valo, Kalle wrote:
+> Ben Greear <greearb@candelatech.com> writes:
+>
+>> Is there a better way than posting to the ath10k mailing list?  There are quite
+>> a few more of my patches that are stuck in pending or ignored state.  If you
+>> could review some of them and add them to your testing trees then it might help
+>> them go upstream.
+>
+> Yes, as you seem to test with your custom ath10k and custom firmware
+> review and testing feedback from others is more than welcome. That way I
+> can have more confidence that the patch really works with the mainline
+> version.
+>
+> The problem with your patches is that you dump more responsibility on
+> me. I have no idea if they work with the mainline kernel, or if they
+> break something, so I need to personally test the patch and that takes
+> time. Basically I have a rule if that I need to use more than two
+> minutes on a patch it goes to the Deferred queue and I'll go through
+> that less often than the normal patch queue.
 
-Hi Johannes,
+I can do some testing with stock firmware, but stock firmware is often quite limited
+so I cannot do the more interesting test cases that we use internally.
+Some of my patches are for fixing edge cases that cannot be easily reproduced,
+and that code really needs to be reviewed for correctness more by looking at
+the code than by trying to run some exhaustive test case.
 
-Sure.. First use case will be to help with the problem of legacy client 
-devices that
-roam across multiple APs. It is a classic enterprise Wi-Fi AP problem, 
-often
-managed by a "network controller" unit that is connected to all the APs. 
-The
-problem is how to handle seamless handoff of clients between multiple 
-APs while
-maximizing the client throughput and minimizing disruption of IP 
-application
-services like VoIP calls and video streaming. A legacy client will often 
-hold
-onto an AP association, even down to 1 Mbps as it roams away. Instead, 
-if the
-AP can recognise that the client RSSI (and therefore throughput) is 
-poor, it
-can "drop" the Tx power significantly (just to that client) such that it 
-forces
-the client to look for a better, closer, and therefore higher-throughput
-association. It would "give it a kick" without blacklisting it. It just 
-needs
-to hold the power low for the small amount of time it takes to convince 
-it to
-go away.
-
-Other use cases may be
-         - Support a form of QoS per STA since a higher MCS rate might be
-           achievable, and CW delays might be reduced
-         - The optimal power can be negotiated (closed loop) or observed 
-(open
-           loop) for a given STA, reducing needless congestion on the 
-overall channel
-         - Reduce power to a STA that does not support certain radio 
-features
-           (e.g.  11b clients)
+I think if there were a specific maintainer for ath10k that could take a more
+active role, especially with regard to keeping a fairly wide variety of test rigs
+around to run regression tests, then it would help all involved.  I think this person
+needs access to firmware source so that they can more easily verify the driver
+matches the firmware:  Many of the regressions and bug fixes, for instance with
+stats, would be much easier to clean up if you look at firmware while developing
+the driver bits.
 
 Thanks,
-Ashok
+Ben
 
-> johannes
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
