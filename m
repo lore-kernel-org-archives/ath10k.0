@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bJs5s-0004u9-7r
- for ath10k@lists.infradead.org; Mon, 04 Jul 2016 00:50:36 +0000
-Received: by mail-it0-x241.google.com with SMTP id h190so7440542ith.3
- for <ath10k@lists.infradead.org>; Sun, 03 Jul 2016 17:50:15 -0700 (PDT)
+ id 1bKPWI-0003Y8-4z
+ for ath10k@lists.infradead.org; Tue, 05 Jul 2016 12:32:06 +0000
 MIME-Version: 1.0
-In-Reply-To: <1467356767-31646-1-git-send-email-c_traja@qti.qualcomm.com>
-References: <1467356767-31646-1-git-send-email-c_traja@qti.qualcomm.com>
-From: Julian Calaby <julian.calaby@gmail.com>
-Date: Mon, 4 Jul 2016 10:49:55 +1000
-Message-ID: <CAGRGNgWd-5ef5bxOkthpfH1hjqO4HJuWuBA=jNRAr=geQDH1zA@mail.gmail.com>
-Subject: Re: [PATCHv3 1/3] ath10k: move firmware_swap_code_seg_info to
- ath10k_fw_file
+Date: Tue, 05 Jul 2016 18:01:45 +0530
+From: Ashok Raj Nagarajan <arnagara@codeaurora.org>
+Subject: Re: [PATCH 1/2] cfg80211: Add support to set tx power for a station
+ associated
+In-Reply-To: <1467110918.2493.9.camel@sipsolutions.net>
+References: <1465926256-6463-1-git-send-email-arnagara@qti.qualcomm.com>
+ <1467110918.2493.9.camel@sipsolutions.net>
+Message-ID: <1cb3e2cc49b433fe5ed834a33adf64b6@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,48 +20,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_traja@qti.qualcomm.com
-Cc: tamizhchelvam@codeaurora.org, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-wireless@vger.kernel.org, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-Hi Tamizh,
+On 2016-06-28 16:18, Johannes Berg wrote:
+> On Tue, 2016-06-14 at 23:14 +0530, Ashok Raj Nagarajan wrote:
+>> This patch adds support to set transmit power setting type and
+>> transmit power level attributes to NL80211_CMD_SET_STATION in order
+>> to facilitate adjusting the transmit power level of a station
+>> associated to the AP.
+> 
+> Why would you ever need to do that manually? Please give more
+> explanation in the commit message.
+> 
+> We have minstrel-blues (which never made it into the code, but that's
+> just because the submitter went away) doing power adjustments, so you
+> need to explain why this should be necessary.
+> 
 
-On Fri, Jul 1, 2016 at 5:06 PM,  <c_traja@qti.qualcomm.com> wrote:
-> From: Tamizh chelvam <c_traja@qti.qualcomm.com>
->
-> Preparation to make use of firmware_swap_code_seg_info for UTF binary.
->
-> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
-> ---
->  drivers/net/wireless/ath/ath10k/core.c |    6 +++---
->  drivers/net/wireless/ath/ath10k/core.h |    6 ++----
->  drivers/net/wireless/ath/ath10k/swap.c |   26 ++++++++++++++------------
->  drivers/net/wireless/ath/ath10k/swap.h |   11 ++++++++---
->  4 files changed, 27 insertions(+), 22 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 3da18c9..e69e7e7 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -654,6 +654,8 @@ struct ath10k_fw_file {
->
->         const void *codeswap_data;
->         size_t codeswap_len;
-> +       /* FIXME: add a comment */
-> +       struct ath10k_swap_code_seg_info *firmware_swap_code_seg_info;
+Hi Johannes,
 
-Why not just add a comment? Adding FIXMEs makes the patch look incomplete to me.
+Sure.. First use case will be to help with the problem of legacy client 
+devices that
+roam across multiple APs. It is a classic enterprise Wi-Fi AP problem, 
+often
+managed by a "network controller" unit that is connected to all the APs. 
+The
+problem is how to handle seamless handoff of clients between multiple 
+APs while
+maximizing the client throughput and minimizing disruption of IP 
+application
+services like VoIP calls and video streaming. A legacy client will often 
+hold
+onto an AP association, even down to 1 Mbps as it roams away. Instead, 
+if the
+AP can recognise that the client RSSI (and therefore throughput) is 
+poor, it
+can "drop" the Tx power significantly (just to that client) such that it 
+forces
+the client to look for a better, closer, and therefore higher-throughput
+association. It would "give it a kick" without blacklisting it. It just 
+needs
+to hold the power low for the small amount of time it takes to convince 
+it to
+go away.
+
+Other use cases may be
+         - Support a form of QoS per STA since a higher MCS rate might be
+           achievable, and CW delays might be reduced
+         - The optimal power can be negotiated (closed loop) or observed 
+(open
+           loop) for a given STA, reducing needless congestion on the 
+overall channel
+         - Reduce power to a STA that does not support certain radio 
+features
+           (e.g.  11b clients)
 
 Thanks,
+Ashok
 
--- 
-Julian Calaby
-
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+> johannes
 
 _______________________________________________
 ath10k mailing list
