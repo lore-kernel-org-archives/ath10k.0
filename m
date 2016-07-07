@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bKSNB-0003Vs-61
- for ath10k@lists.infradead.org; Tue, 05 Jul 2016 15:34:54 +0000
-Message-ID: <577BD05D.6000607@candelatech.com>
-Date: Tue, 05 Jul 2016 08:21:01 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bLCDp-0003sL-Nz
+ for ath10k@lists.infradead.org; Thu, 07 Jul 2016 16:32:18 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: disable wake_tx_queue for older devices
+Date: Thu, 7 Jul 2016 16:30:48 +0000
+Message-ID: <87zipt1kco.fsf@kamboji.qca.qualcomm.com>
+References: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
+ <1467201146-6844-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1467201146-6844-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 29 Jun 2016 13:52:26 +0200")
+Content-Language: en-US
+Content-ID: <9B39C75CDB21274F9EE644DA0A13422E@qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
- QCA99X0 and later
-References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>	<1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>	<576C1861.7020402@candelatech.com>	<20160625185350.GA25330@atheros-ThinkPad-T61>	<576F2165.3010109@candelatech.com>
- <8760sr6kj8.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <8760sr6kj8.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,57 +22,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>, "Raja,
- Tamizh Chelvam" <c_traja@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
- Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 06/30/2016 03:25 AM, Valo, Kalle wrote:
-> Ben Greear <greearb@candelatech.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> Ideally wake_tx_queue should be used regardless as
+> it is a requirement for reducing bufferbloat and
+> implementing airtime fairness in the future.
 >
->> Is there a better way than posting to the ath10k mailing list?  There are quite
->> a few more of my patches that are stuck in pending or ignored state.  If you
->> could review some of them and add them to your testing trees then it might help
->> them go upstream.
+> However some setups (typically low-end platforms
+> hosting QCA988X) suffer performance regressions
+> with the current wake_tx_queue implementation.
+> Therefore disable it unless it is really
+> beneficial with current codebase (which is when
+> firmware supports smart pull-push tx scheduling).
 >
-> Yes, as you seem to test with your custom ath10k and custom firmware
-> review and testing feedback from others is more than welcome. That way I
-> can have more confidence that the patch really works with the mainline
-> version.
->
-> The problem with your patches is that you dump more responsibility on
-> me. I have no idea if they work with the mainline kernel, or if they
-> break something, so I need to personally test the patch and that takes
-> time. Basically I have a rule if that I need to use more than two
-> minutes on a patch it goes to the Deferred queue and I'll go through
-> that less often than the normal patch queue.
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-I can do some testing with stock firmware, but stock firmware is often quite limited
-so I cannot do the more interesting test cases that we use internally.
-Some of my patches are for fixing edge cases that cannot be easily reproduced,
-and that code really needs to be reviewed for correctness more by looking at
-the code than by trying to run some exhaustive test case.
-
-I think if there were a specific maintainer for ath10k that could take a more
-active role, especially with regard to keeping a fairly wide variety of test rigs
-around to run regression tests, then it would help all involved.  I think this person
-needs access to firmware source so that they can more easily verify the driver
-matches the firmware:  Many of the regressions and bug fixes, for instance with
-stats, would be much easier to clean up if you look at firmware while developing
-the driver bits.
-
-Thanks,
-Ben
+I think it's too late to send this to 4.7 anymore (and this due to my
+vacation). So I'm planning to queue this to 4.8, but if the feedback is
+positive we can always send this to a 4.7 stable release.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
