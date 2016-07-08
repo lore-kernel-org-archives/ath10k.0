@@ -1,23 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-yw0-x242.google.com ([2607:f8b0:4002:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLTXG-0005AO-R9
- for ath10k@lists.infradead.org; Fri, 08 Jul 2016 11:01:31 +0000
-Date: Fri, 8 Jul 2016 16:30:53 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
- QCA99X0 and later
-Message-ID: <20160708110053.GA19841@atheros-ThinkPad-T61>
-References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
- <1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>
- <576C1861.7020402@candelatech.com>
- <20160625185350.GA25330@atheros-ThinkPad-T61>
- <576F2165.3010109@candelatech.com>
- <8760sr6kj8.fsf@kamboji.qca.qualcomm.com>
- <577BD05D.6000607@candelatech.com>
+ id 1bLUOt-0001m5-P7
+ for ath10k@lists.infradead.org; Fri, 08 Jul 2016 11:56:56 +0000
+Received: by mail-yw0-x242.google.com with SMTP id l125so6795953ywb.1
+ for <ath10k@lists.infradead.org>; Fri, 08 Jul 2016 04:56:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <577BD05D.6000607@candelatech.com>
+In-Reply-To: <1467972560885.99812@qti.qualcomm.com>
+References: <CABPxzYLwye1t1Ycjr3nO5C18vc7OqS9dbbQ1yJ7B-YN+Bkx_PA@mail.gmail.com>
+ <CABPxzYL5DHU7ZE1X1AibygBUz0TJEnNLLTp5_hDivmBBkjnVtg@mail.gmail.com>
+ <1467972560885.99812@qti.qualcomm.com>
+From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
+Date: Fri, 8 Jul 2016 17:26:15 +0530
+Message-ID: <CABPxzY+8Y-FHUFALGueN1hQwgjJHNpeyy_BRkrM4osguxJZS0Q@mail.gmail.com>
+Subject: Re: ath10k + iw set bitrates is causing FW crash
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,57 +26,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
- Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-Hi Michal / Kalle / Ben,
-
-is this patch is good to go (or) should i re-work  ?
-I had replied to Michal's comment of introducing a new firmware
-feature flag will not address the issue in older firmware / code.
-Let me know if i had missed something very obvious.
-
-
-On Tue, Jul 05, 2016 at 08:21:01AM -0700, Ben Greear wrote:
-> On 06/30/2016 03:25 AM, Valo, Kalle wrote:
-> >Ben Greear <greearb@candelatech.com> writes:
-> >
-> >>Is there a better way than posting to the ath10k mailing list?  There are quite
-> >>a few more of my patches that are stuck in pending or ignored state.  If you
-> >>could review some of them and add them to your testing trees then it might help
-> >>them go upstream.
-> >
-> >Yes, as you seem to test with your custom ath10k and custom firmware
-> >review and testing feedback from others is more than welcome. That way I
-> >can have more confidence that the patch really works with the mainline
-> >version.
-> >
-> >The problem with your patches is that you dump more responsibility on
-> >me. I have no idea if they work with the mainline kernel, or if they
-> >break something, so I need to personally test the patch and that takes
-> >time. Basically I have a rule if that I need to use more than two
-> >minutes on a patch it goes to the Deferred queue and I'll go through
-> >that less often than the normal patch queue.
-> 
-> I can do some testing with stock firmware, but stock firmware is often quite limited
-> so I cannot do the more interesting test cases that we use internally.
-> Some of my patches are for fixing edge cases that cannot be easily reproduced,
-> and that code really needs to be reviewed for correctness more by looking at
-> the code than by trying to run some exhaustive test case.
-> 
-> I think if there were a specific maintainer for ath10k that could take a more
-> active role, especially with regard to keeping a fairly wide variety of test rigs
-> around to run regression tests, then it would help all involved.  I think this person
-> needs access to firmware source so that they can more easily verify the driver
-> matches the firmware:  Many of the regressions and bug fixes, for instance with
-> stats, would be much easier to clean up if you look at firmware while developing
-> the driver bits.
+On Fri, Jul 8, 2016 at 3:39 PM, Manoharan, Rajkumar
+<rmanohar@qti.qualcomm.com> wrote:
+>>> I am using ath10k driver with qca988x hw2.0 and trying to limit it to use
+>>> VHT MCS0-7 (iw set bitrates vht-mcs-5 2:0-7).
+>>>
+>>> But the command it causing a FW crash, if it disable HW_HAS_RATE_CONTROL
+>>> no crash is observed but it still uses MCS9.
+>>>
+>>> tree: wireless-drivers-next: commit#535633a5ba4ea2504fa6c33176633becf0e59339
+>>>
+>>> 1) If i disable HW_RATE_CONTROL, will ath10k honor
+>>> the mac80211 rates?
+>>>
+>>
+> Thanks for reporting the issue. Could you please try with below change?
 >
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 5e1cc8f4c43c..cfa7e01a6103 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -2812,6 +2812,9 @@ static int ath10k_station_assoc(struct ath10k *ar,
+>                 return ret;
+>         }
+>
+> +       if (vif->type != NL80211_IFTYPE_ADHOC)
+> +               peer_arg.peer_reassoc = reassoc;
+> +
+>         ret = ath10k_wmi_peer_assoc(ar, &peer_arg);
+>         if (ret) {
+>                 ath10k_warn(ar, "failed to run peer assoc for STA %pM vdev %i: %d\n",
 
-regards,
-shafi
+Thanks Raj, with this fix the rates are 0-7, if i disable then i am
+seeing 0-9, so its
+working.
+
+But i am seeing a weird issues, the moment i give bitrates command,
+ath10k no longer does encryption, link is a WPA2-PSK: AES. Even after
+interface up/down
+it doesn't work.
 
 _______________________________________________
 ath10k mailing list
