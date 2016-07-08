@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLPT7-0003vl-8x
- for ath10k@lists.infradead.org; Fri, 08 Jul 2016 06:40:57 +0000
+ id 1bLPVb-00047p-JB
+ for ath10k@lists.infradead.org; Fri, 08 Jul 2016 06:43:31 +0000
 MIME-Version: 1.0
-Subject: Re: [v4,1/2] ath10k: Add support for ath10k_sta_statistics support
+Subject: Re: [v2,
+ 1/5] ath10k: Ensure txrx-compl-task is stopped when cleaning htt-tx.
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1465890866-2390-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <8a33ff29139b4261936f5d7a5c0d9865@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 8 Jul 2016 08:40:29 +0200
+In-Reply-To: <1459545132-11295-1-git-send-email-greearb@candelatech.com>
+Message-ID: <6274be639a7342a7940d391ae0dac4a5@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 8 Jul 2016 08:43:03 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Ben Greear <greearb@candelatech.com> wrote:
+> From: Ben Greear <greearb@candelatech.com>
 > 
-> Enable support for 'drv_sta_statistics' callback.
-> Export rx_duration support if available to cfg80211/nl80211
+> Otherwise, the txrx-compl-task may access some bad memory?
 > 
-> This can also act as a placeholder for any new per STA stats support
-> 
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
 Thanks, 2 patches applied to ath-next branch of ath.git:
 
-120a1f02a5c4 ath10k: add support for ath10k_sta_statistics support
-2ba1f3709452 ath10k: remove debugfs support for Per STA total rx duration
+de0170beaa88 ath10k: ensure txrx-compl-task is stopped when cleaning htt-tx
+6d68f7900d25 ath10k: ensure peer_map references are cleaned up
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9175135/
+https://patchwork.kernel.org/patch/8727831/
 
 
 _______________________________________________
