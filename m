@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yw0-x242.google.com ([2607:f8b0:4002:c05::242])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLUOt-0001m5-P7
- for ath10k@lists.infradead.org; Fri, 08 Jul 2016 11:56:56 +0000
-Received: by mail-yw0-x242.google.com with SMTP id l125so6795953ywb.1
- for <ath10k@lists.infradead.org>; Fri, 08 Jul 2016 04:56:35 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1467972560885.99812@qti.qualcomm.com>
+ id 1bLVNq-0006et-W4
+ for ath10k@lists.infradead.org; Fri, 08 Jul 2016 12:59:55 +0000
+From: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Subject: Re: ath10k + iw set bitrates is causing FW crash
+Date: Fri, 8 Jul 2016 12:59:26 +0000
+Message-ID: <1467982766213.21223@qti.qualcomm.com>
 References: <CABPxzYLwye1t1Ycjr3nO5C18vc7OqS9dbbQ1yJ7B-YN+Bkx_PA@mail.gmail.com>
  <CABPxzYL5DHU7ZE1X1AibygBUz0TJEnNLLTp5_hDivmBBkjnVtg@mail.gmail.com>
- <1467972560885.99812@qti.qualcomm.com>
-From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
-Date: Fri, 8 Jul 2016 17:26:15 +0530
-Message-ID: <CABPxzY+8Y-FHUFALGueN1hQwgjJHNpeyy_BRkrM4osguxJZS0Q@mail.gmail.com>
-Subject: Re: ath10k + iw set bitrates is causing FW crash
+ <1467972560885.99812@qti.qualcomm.com>,
+ <CABPxzY+8Y-FHUFALGueN1hQwgjJHNpeyy_BRkrM4osguxJZS0Q@mail.gmail.com>
+In-Reply-To: <CABPxzY+8Y-FHUFALGueN1hQwgjJHNpeyy_BRkrM4osguxJZS0Q@mail.gmail.com>
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,8 +26,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+To: Krishna Chaitanya <chaitanya.mgit@gmail.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+
+I think security failures are due to peer unmap & map upon reassoc. Can you please try below change?
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5e1cc8f4c43c..f7f04bb46fc8 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5745,8 +5745,9 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
+                                    sta->addr, smps, err);
+        }
+
+-       if (changed & IEEE80211_RC_SUPP_RATES_CHANGED ||
+-           changed & IEEE80211_RC_NSS_CHANGED) {
++       if ((changed & IEEE80211_RC_SUPP_RATES_CHANGED ||
++           changed & IEEE80211_RC_NSS_CHANGED) &&
++           (arvif->vif->type == NL80211_IFTYPE_ADHOC)) {
+                ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM supp rates/nss\n",
+                           sta->addr);
+
+-Rajkumar
+________________________________________
+From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
+Sent: Friday, July 8, 2016 5:26 PM
+To: Manoharan, Rajkumar
+Cc: linux-wireless; ath10k
+Subject: Re: ath10k + iw set bitrates is causing FW crash
 
 On Fri, Jul 8, 2016 at 3:39 PM, Manoharan, Rajkumar
 <rmanohar@qti.qualcomm.com> wrote:
