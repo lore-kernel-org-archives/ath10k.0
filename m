@@ -1,24 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLYCt-0005u5-Uc
- for ath10k@lists.infradead.org; Fri, 08 Jul 2016 16:00:48 +0000
-Subject: Re: ath10k + iw set bitrates is causing FW crash
-References: <CABPxzYLwye1t1Ycjr3nO5C18vc7OqS9dbbQ1yJ7B-YN+Bkx_PA@mail.gmail.com>
- <CABPxzYL5DHU7ZE1X1AibygBUz0TJEnNLLTp5_hDivmBBkjnVtg@mail.gmail.com>
- <1467972560885.99812@qti.qualcomm.com>
- <CABPxzY+8Y-FHUFALGueN1hQwgjJHNpeyy_BRkrM4osguxJZS0Q@mail.gmail.com>
- <1467982766213.21223@qti.qualcomm.com>
- <CABPxzYLO8rzvOJ_1iqng89kYFS-xqC3qstbgETVRJHDpO4rikQ@mail.gmail.com>
- <CABPxzYJPi4CqO+KUFA7=r=zpq_c2vFtrgBQ+nF_nThO-cYrteg@mail.gmail.com>
- <CABPxzYKOqBmrjRwAyZV9daV8adEhUV71XEAsfrLhtTnKwWzuaw@mail.gmail.com>
- <577FC9D0.2010809@candelatech.com>
- <CABPxzYLdS-QicOj9AdcubT8uxgw0cqXpzerpuwGcwkSQ7PCiOA@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <577FCB04.4030905@candelatech.com>
-Date: Fri, 8 Jul 2016 08:47:16 -0700
+Received: from mail-qk0-x229.google.com ([2607:f8b0:400d:c09::229])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bLZNG-0000zU-Nk
+ for ath10k@lists.infradead.org; Fri, 08 Jul 2016 17:15:35 +0000
+Received: by mail-qk0-x229.google.com with SMTP id s63so6884624qkb.2
+ for <ath10k@lists.infradead.org>; Fri, 08 Jul 2016 10:15:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CABPxzYLdS-QicOj9AdcubT8uxgw0cqXpzerpuwGcwkSQ7PCiOA@mail.gmail.com>
+In-Reply-To: <CAGJdtRASjA_+HPh1zFkoF4V=ttWcidxEwDAOU+ehbc7YhSxw7A@mail.gmail.com>
+References: <CAGJdtRASjA_+HPh1zFkoF4V=ttWcidxEwDAOU+ehbc7YhSxw7A@mail.gmail.com>
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Date: Sat, 9 Jul 2016 01:15:11 +0800
+Message-ID: <CAEFj984kqhY5zM_S=CLfDdujbpmwsrKqzZx=xm1AyCPQcmWWKg@mail.gmail.com>
+Subject: Re: Does 99x0 support mesh mode?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +20,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Krishna Chaitanya <chaitanya.mgit@gmail.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>, ath10k <ath10k@lists.infradead.org>
+To: Yu-Chieh <jay0607@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 07/08/2016 08:44 AM, Krishna Chaitanya wrote:
-> On Fri, Jul 8, 2016 at 9:12 PM, Ben Greear <greearb@candelatech.com> wrote:
->> On 07/08/2016 08:39 AM, Krishna Chaitanya wrote:
->>
->>> Also can you please tell me how to make ath10k use minstrel rc, its needed
->>> for comparative purposes? Is disable HW_RATE_CONTROL enough or does
->>> it need more changes?
->>
->>
->> It cannot be done.  You have to use whatever rate-ctrl is baked into the
->> firmware.
-> Ok, its a good feature to have.
+Make sure the firmware has the raw mode feature bit enabled to support mesh.
+
+---
+Chun-Yeow
+
+On Fri, Jul 8, 2016 at 12:52 PM, Yu-Chieh <jay0607@gmail.com> wrote:
+> Hi,
 >
-
-It is unlikely to happen anytime soon.  It requires significant firmware
-modification (and driver too), and probably you would have to add MU-MIMO
-support to minstrel if you wanted to support latest ath10k NICs.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+> Does anyone know if current firmware support mesh mode(802.11s) on 99x0?
+>
+> Best regards,
+>
+> Jay
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
