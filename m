@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLQcG-0001Jl-Pm
- for ath10k@lists.infradead.org; Fri, 08 Jul 2016 07:54:29 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCHv3 3/3] ath10k: add testmode support for 10.4 firmware
-Date: Fri, 8 Jul 2016 07:54:00 +0000
-Message-ID: <87r3b41s6f.fsf@kamboji.qca.qualcomm.com>
-References: <1467356835-31836-1-git-send-email-c_traja@qti.qualcomm.com>
-In-Reply-To: <1467356835-31836-1-git-send-email-c_traja@qti.qualcomm.com> (c.
- traja's message of "Fri, 1 Jul 2016 12:37:15 +0530")
+ id 1bLSjH-0002pm-HZ
+ for ath10k@lists.infradead.org; Fri, 08 Jul 2016 10:09:51 +0000
+From: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Subject: Re: ath10k + iw set bitrates is causing FW crash
+Date: Fri, 8 Jul 2016 10:09:21 +0000
+Message-ID: <1467972560885.99812@qti.qualcomm.com>
+References: <CABPxzYLwye1t1Ycjr3nO5C18vc7OqS9dbbQ1yJ7B-YN+Bkx_PA@mail.gmail.com>,
+ <CABPxzYL5DHU7ZE1X1AibygBUz0TJEnNLLTp5_hDivmBBkjnVtg@mail.gmail.com>
+In-Reply-To: <CABPxzYL5DHU7ZE1X1AibygBUz0TJEnNLLTp5_hDivmBBkjnVtg@mail.gmail.com>
 Content-Language: en-US
-Content-ID: <A5FEB93442F53245B026F9AF6356C6EE@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,27 +24,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "tamizhchelvam@codeaurora.org" <tamizhchelvam@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Krishna Chaitanya <chaitanya.mgit@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-<c_traja@qti.qualcomm.com> writes:
-
-> From: Tamizh chelvam <c_traja@qti.qualcomm.com>
+>> I am using ath10k driver with qca988x hw2.0 and trying to limit it to use
+>> VHT MCS0-7 (iw set bitrates vht-mcs-5 2:0-7).
+>>
+>> But the command it causing a FW crash, if it disable HW_HAS_RATE_CONTROL
+>> no crash is observed but it still uses MCS9.
+>>
+>> tree: wireless-drivers-next: commit#535633a5ba4ea2504fa6c33176633becf0e59339
+>>
+>> 1) If i disable HW_RATE_CONTROL, will ath10k honor
+>> the mac80211 rates?
+>>
 >
-> This patch adds testmode support for 10.4 based chipsets
-> and added code swap support for UTF binary.
->
-> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+Thanks for reporting the issue. Could you please try with below change?
 
-This patch introduced new checkpatch warnings:
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5e1cc8f4c43c..cfa7e01a6103 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2812,6 +2812,9 @@ static int ath10k_station_assoc(struct ath10k *ar,
+                return ret;
+        }
 
-drivers/net/wireless/ath/ath10k/testmode.c:247: Alignment should match open parenthesis
-drivers/net/wireless/ath/ath10k/testmode.c:250: Alignment should match open parenthesis
++       if (vif->type != NL80211_IFTYPE_ADHOC)
++               peer_arg.peer_reassoc = reassoc;
++
+        ret = ath10k_wmi_peer_assoc(ar, &peer_arg);
+        if (ret) {
+                ath10k_warn(ar, "failed to run peer assoc for STA %pM vdev %i: %d\n",
 
-I fixed these in the pending branch.
-
--- 
-Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
