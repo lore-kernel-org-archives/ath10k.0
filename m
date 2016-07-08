@@ -1,15 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-ob0-x241.google.com ([2607:f8b0:4003:c01::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLWxA-0004qr-4w
- for ath10k@lists.infradead.org; Fri, 08 Jul 2016 14:40:28 +0000
-Received: by mail-lf0-x242.google.com with SMTP id a10so5733158lfb.1
- for <ath10k@lists.infradead.org>; Fri, 08 Jul 2016 07:40:07 -0700 (PDT)
-From: Matthew Keeler <mjkeeler7@gmail.com>
+ id 1bLXhE-0001TD-0E
+ for ath10k@lists.infradead.org; Fri, 08 Jul 2016 15:28:14 +0000
+Received: by mail-ob0-x241.google.com with SMTP id qw9so2726059obb.3
+ for <ath10k@lists.infradead.org>; Fri, 08 Jul 2016 08:27:43 -0700 (PDT)
 MIME-Version: 1.0
-Date: Fri, 8 Jul 2016 07:40:04 -0700
-Message-ID: <CAC643aaa38i7o-RANc=h-_=4Q+EZYSvtv6fBynu1HYkn-xfY3A@mail.gmail.com>
-Subject: Wireless card no 5GHz IR
+In-Reply-To: <1467982766213.21223@qti.qualcomm.com>
+References: <CABPxzYLwye1t1Ycjr3nO5C18vc7OqS9dbbQ1yJ7B-YN+Bkx_PA@mail.gmail.com>
+ <CABPxzYL5DHU7ZE1X1AibygBUz0TJEnNLLTp5_hDivmBBkjnVtg@mail.gmail.com>
+ <1467972560885.99812@qti.qualcomm.com>
+ <CABPxzY+8Y-FHUFALGueN1hQwgjJHNpeyy_BRkrM4osguxJZS0Q@mail.gmail.com>
+ <1467982766213.21223@qti.qualcomm.com>
+From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
+Date: Fri, 8 Jul 2016 20:57:23 +0530
+Message-ID: <CABPxzYLO8rzvOJ_1iqng89kYFS-xqC3qstbgETVRJHDpO4rikQ@mail.gmail.com>
+Subject: Re: ath10k + iw set bitrates is causing FW crash
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,87 +24,87 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-SSBhbSBoYXZpbmcgYSBiaXQgb2YgdHJvdWJsZSB3aXRoIGEgUUNBOTg4MCBiYXNlZCBuaWMgdGhh
-dCB3YXMKcHJldmlvdXNseSB3b3JraW5nLiBBdCBzb21lIHBvaW50IEkgZGlkIHVwZGF0ZXMgdG8g
-bXkgc3lzdGVtIGFuZCA1IEdIegpubyBsb25nZXIgd29ya3MgKGFsdGhvdWdoIGl0IGRpZCBmb3Ig
-YSB3ZWVrIG9yIHNvIGFmdGVyIHRoZSB1cGRhdGVzKS4KCml3IHJlZyBnZXQgb3V0cHV0IHNob3dz
-IGNvcnJlY3QgcmVndWxhdG9yeSBpbmZvcm1hdGlvbjoKCmdsb2JhbApjb3VudHJ5IFVTOiBERlMt
-RkNDCigyNDAyIC0gMjQ3MiBAIDQwKSwgKE4vQSwgMzApLCAoTi9BKQooNTE3MCAtIDUyNTAgQCA4
-MCksIChOL0EsIDE3KSwgKE4vQSksIEFVVE8tQlcKKDUyNTAgLSA1MzMwIEAgODApLCAoTi9BLCAy
-MyksICgwIG1zKSwgREZTLCBBVVRPLUJXCig1NDkwIC0gNTczMCBAIDE2MCksIChOL0EsIDIzKSwg
-KDAgbXMpLCBERlMKKDU3MzUgLSA1ODM1IEAgODApLCAoTi9BLCAzMCksIChOL0EpCig1NzI0MCAt
-IDYzNzIwIEAgMjE2MCksIChOL0EsIDQwKSwgKE4vQSkKCnBoeSMwCmNvdW50cnkgVVM6IERGUy1G
-Q0MKKDI0MDIgLSAyNDcyIEAgNDApLCAoTi9BLCAzMCksIChOL0EpCig1MTcwIC0gNTI1MCBAIDgw
-KSwgKE4vQSwgMTcpLCAoTi9BKSwgQVVUTy1CVwooNTI1MCAtIDUzMzAgQCA4MCksIChOL0EsIDIz
-KSwgKDAgbXMpLCBERlMsIEFVVE8tQlcKKDU0OTAgLSA1NzMwIEAgMTYwKSwgKE4vQSwgMjMpLCAo
-MCBtcyksIERGUwooNTczNSAtIDU4MzUgQCA4MCksIChOL0EsIDMwKSwgKE4vQSkKKDU3MjQwIC0g
-NjM3MjAgQCAyMTYwKSwgKE4vQSwgNDApLCAoTi9BKQoKCmRtZXNnIG91dHB1dCB3aGlsZSB0aGUg
-ZGV2aWNlIGlzIGNvbWluZyB1cCBsb29rcyBub3JtYWwgdG9vICh3aXRoCkVFUFJPTSBnZXR0aW5n
-IHRoZSBjb3JyZWN0IGNvdW50cnkgY29kZSk6CgpbIMKgIMKgNS40ODc1MDZdIGF0aDEwa19wY2kg
-MDAwMDowMjowMC4wOiBwY2kgaXJxIG1zaSBpbnRlcnJ1cHRzIDEKaXJxX21vZGUgMCByZXNldF9t
-b2RlIDAKWyDCoCDCoDUuODU2MTMzXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogRGlyZWN0IGZp
-cm13YXJlIGxvYWQgZm9yCmF0aDEway9jYWwtcGNpLTAwMDA6MDI6MDAuMC5iaW4gZmFpbGVkIHdp
-dGggZXJyb3IgLTIKWyDCoCDCoDUuODY3ODI5XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogcWNh
-OTg4eCBodzIuMCB0YXJnZXQKMHg0MTAwMDE2YyBjaGlwX2lkIDB4MDQzMjAyZmYgc3ViIDAwMDA6
-MDAwMApbIMKgIMKgNS44Njc4MzhdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBrY29uZmlnIGRl
-YnVnIDAgZGVidWdmcyAxCnRyYWNpbmcgMCBkZnMgMCB0ZXN0bW9kZSAwClsgwqAgwqA1Ljg2ODE3
-N10gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGZpcm13YXJlIHZlciAxMC4yLjQuNzAuOS0yIGFw
-aQo1IGZlYXR1cmVzIG5vLXAycCxyYXctbW9kZSBjcmMzMiBiOGQ1MGFmNQpbIMKgIMKgNS45MDgz
-MDVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKYXRo
-MTBrL1FDQTk4OFgvaHcyLjAvYm9hcmQtMi5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKWyDCoCDC
-oDUuOTA4NDA2XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9hcmRfZmlsZSBhcGkgMSBibWlf
-aWQgTi9BCmNyYzMyIGJlYmM3YzA4ClsgwqAgwqA3LjA2ODAwOF0gYXRoMTBrX3BjaSAwMDAwOjAy
-OjAwLjA6IGh0dC12ZXIgMi4xIHdtaS1vcCA1IGh0dC1vcCAyCmNhbCBvdHAgbWF4LXN0YSAxMjgg
-cmF3IDAgaHdjcnlwdG8gMQpbIMKgIMKgNy4xMjk2MDddIGF0aDogRUVQUk9NIHJlZ2RvbWFpbjog
-MHgwClsgwqAgwqA3LjEyOTYxNF0gYXRoOiBFRVBST00gaW5kaWNhdGVzIGRlZmF1bHQgY291bnRy
-eSBjb2RlIHNob3VsZCBiZSB1c2VkClsgwqAgwqA3LjEyOTYxN10gYXRoOiBkb2luZyBFRVBST00g
-Y291bnRyeS0+cmVnZG1uIG1hcCBzZWFyY2gKWyDCoCDCoDcuMTI5NjIwXSBhdGg6IGNvdW50cnkg
-bWFwcyB0byByZWdkbW4gY29kZTogMHgzYQpbIMKgIMKgNy4xMjk2MjNdIGF0aDogQ291bnRyeSBh
-bHBoYTIgYmVpbmcgdXNlZDogVVMKWyDCoCDCoDcuMTI5NjI1XSBhdGg6IFJlZ3BhaXIgdXNlZDog
-MHgzYQpbIMKgIMKgNy4xNDExOTddIGF0aDEwa19wY2kgMDAwMDowMjowMC4wIHdsYW4yOiByZW5h
-bWVkIGZyb20gd2xhbjAKCkhvd2V2ZXIgYWZ0ZXIgdGhpcyBpdyBwaHkgcGgwIGluZm8gc2hvdyB0
-aGlzIGZvciB0aGUgNSBHSHogZnJlcXVlbmNpZXM6CgpGcmVxdWVuY2llczoKCSogNTE4MCBNSHog
-WzM2XSAoMTcuMCBkQm0pIChubyBJUikKCSogNTIwMCBNSHogWzQwXSAoMTcuMCBkQm0pIChubyBJ
-UikKCSogNTIyMCBNSHogWzQ0XSAoMTcuMCBkQm0pIChubyBJUikKCSogNTI0MCBNSHogWzQ4XSAo
-MTcuMCBkQm0pIChubyBJUikKCSogNTI2MCBNSHogWzUyXSAoMjMuMCBkQm0pIChubyBJUiwgcmFk
-YXIgZGV0ZWN0aW9uKQoJIMKgREZTIHN0YXRlOiB1c2FibGUgKGZvciAyODk4IHNlYykKCSDCoERG
-UyBDQUMgdGltZTogNjAwMDAgbXMKCSogNTI4MCBNSHogWzU2XSAoMjMuMCBkQm0pIChubyBJUiwg
-cmFkYXIgZGV0ZWN0aW9uKQoJIMKgREZTIHN0YXRlOiB1c2FibGUgKGZvciAyODk4IHNlYykKCSDC
-oERGUyBDQUMgdGltZTogNjAwMDAgbXMKCSogNTMwMCBNSHogWzYwXSAoMjMuMCBkQm0pIChubyBJ
-UiwgcmFkYXIgZGV0ZWN0aW9uKQoJIMKgREZTIHN0YXRlOiB1c2FibGUgKGZvciAyODk4IHNlYykK
-CSDCoERGUyBDQUMgdGltZTogNjAwMDAgbXMKCSogNTMyMCBNSHogWzY0XSAoMjMuMCBkQm0pIChu
-byBJUiwgcmFkYXIgZGV0ZWN0aW9uKQoJIMKgREZTIHN0YXRlOiB1c2FibGUgKGZvciAyODk4IHNl
-YykKCSDCoERGUyBDQUMgdGltZTogNjAwMDAgbXMKCSogNTUwMCBNSHogWzEwMF0gKGRpc2FibGVk
-KQoJKiA1NTIwIE1IeiBbMTA0XSAoZGlzYWJsZWQpCgkqIDU1NDAgTUh6IFsxMDhdIChkaXNhYmxl
-ZCkKCSogNTU2MCBNSHogWzExMl0gKGRpc2FibGVkKQoJKiA1NTgwIE1IeiBbMTE2XSAoZGlzYWJs
-ZWQpCgkqIDU2MDAgTUh6IFsxMjBdIChkaXNhYmxlZCkKCSogNTYyMCBNSHogWzEyNF0gKGRpc2Fi
-bGVkKQoJKiA1NjQwIE1IeiBbMTI4XSAoZGlzYWJsZWQpCgkqIDU2NjAgTUh6IFsxMzJdIChkaXNh
-YmxlZCkKCSogNTY4MCBNSHogWzEzNl0gKGRpc2FibGVkKQoJKiA1NzAwIE1IeiBbMTQwXSAoZGlz
-YWJsZWQpCgkqIDU3MjAgTUh6IFsxNDRdICgyMy4wIGRCbSkgKG5vIElSLCByYWRhciBkZXRlY3Rp
-b24pCgkgwqBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDI4OTggc2VjKQoJIMKgREZTIENBQyB0aW1l
-OiA2MDAwMCBtcwoJKiA1NzQ1IE1IeiBbMTQ5XSAoMzAuMCBkQm0pIChubyBJUikKCSogNTc2NSBN
-SHogWzE1M10gKDMwLjAgZEJtKSAobm8gSVIpCgkqIDU3ODUgTUh6IFsxNTddICgzMC4wIGRCbSkg
-KG5vIElSKQoJKiA1ODA1IE1IeiBbMTYxXSAoMzAuMCBkQm0pIChubyBJUikKCSogNTgyNSBNSHog
-WzE2NV0gKDMwLjAgZEJtKSAobm8gSVIpCgpBbmQgaWYgSSB0cnkgdG8gcnVuIGhvc3RhcGQgdXNp
-bmcgYW55IDVHSHogY2hhbm5lbCBpdCBmYWlscy4KClRoaXMgdXNlZCB0byB3b3JrLiBIYXMgYW55
-b25lIGVsc2UgZXhwZXJpZW5jZWQgc29tZXRoaW5nIHNpbWlsYXIgb3IKY291bGQgdGhlcmUgYmUg
-YSBtaXNtYXRjaCBiZXR3ZWVuIGZpcm13YXJlIHZlcnNpb25zIGFuZCBrZXJuZWwKdmVyc2lvbnM/
-IEkgZGlkIHRyeSB1c2luZyB0aGUgbGFzdGVzdCBmaXJtd2FyZSAxMC4yLjQuNzAuNTIgYnV0IHRo
-aXMKb25lIGNvbXBsYWluZWQgb2YgcGNpZSBlcnJvcnMgb3IgQUVSIGRyaXZlciBzdXBwb3J0IHBy
-b2JsZW1zIGFuZCBzaHV0CnRoZSBjYXJkIGRvd24gZHVyaW5nIGJvb3Qgc28gSSByZXZlcnRlZCBi
-YWNrIHRvIHRoZSBzeXN0ZW0gZGVmYXVsdC4KClJlbGV2YW50IHN5c3RlbSBpbmZvcm1hdGlvbjoK
-wqAgwqAgRGlzdHJvOiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBBcmNoIExpbnV4CsKgIMKg
-IGtlcm5lbCB2ZXJzaW9uOiDCoCDCoCDCoCDCoCDCoCA0LjYuMy0xCsKgIMKgIGZpcm13YXJlIHBh
-Y2thZ2UgdmVyc2lvbjrCoDIwMTYwNTE2LjgwZDQ2M2ItMQrCoCDCoCBhdGgxMGsgZmlybXdhcmUg
-dmVyc2lvbjogwqAxMC4yLjQuNzAuOS0yCsKgIMKgIGl3IHZlcnNpb246IMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIDQuNy4xCsKgIMKgIGNyZGEgdmVyc2lvbjogwqAgwqAgwqAgwqAgwqAgwqAgMy4xOC0x
-CsKgIMKgIGhvc3RhcGQgdmVyc2lvbjogwqAgwqAgwqAgwqAgwqAyLjUtMgoKCuKAlApNYXR0IEtl
-ZWxlcgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Fri, Jul 8, 2016 at 6:29 PM, Manoharan, Rajkumar
+<rmanohar@qti.qualcomm.com> wrote:
+> I think security failures are due to peer unmap & map upon reassoc. Can you please try below change?
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 5e1cc8f4c43c..f7f04bb46fc8 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -5745,8 +5745,9 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
+>                                     sta->addr, smps, err);
+>         }
+>
+> -       if (changed & IEEE80211_RC_SUPP_RATES_CHANGED ||
+> -           changed & IEEE80211_RC_NSS_CHANGED) {
+> +       if ((changed & IEEE80211_RC_SUPP_RATES_CHANGED ||
+> +           changed & IEEE80211_RC_NSS_CHANGED) &&
+> +           (arvif->vif->type == NL80211_IFTYPE_ADHOC)) {
+>                 ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM supp rates/nss\n",
+>                            sta->addr);
+
+Bottom posting please. I have tried your change i still see the same issue.
+Right after connecting i see that packets are encrypted but once it
+unset/set "bitrates" plain packets are seen in sniffer.
+
+BTW, i am not rebooting for each driver update, just re-inserting the module,
+do i need to do a reboot for each driver change?
+ ________________________________________
+> From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
+> Sent: Friday, July 8, 2016 5:26 PM
+> To: Manoharan, Rajkumar
+> Cc: linux-wireless; ath10k
+> Subject: Re: ath10k + iw set bitrates is causing FW crash
+>
+> On Fri, Jul 8, 2016 at 3:39 PM, Manoharan, Rajkumar
+> <rmanohar@qti.qualcomm.com> wrote:
+>>>> I am using ath10k driver with qca988x hw2.0 and trying to limit it to use
+>>>> VHT MCS0-7 (iw set bitrates vht-mcs-5 2:0-7).
+>>>>
+>>>> But the command it causing a FW crash, if it disable HW_HAS_RATE_CONTROL
+>>>> no crash is observed but it still uses MCS9.
+>>>>
+>>>> tree: wireless-drivers-next: commit#535633a5ba4ea2504fa6c33176633becf0e59339
+>>>>
+>>>> 1) If i disable HW_RATE_CONTROL, will ath10k honor
+>>>> the mac80211 rates?
+>>>>
+>>>
+>> Thanks for reporting the issue. Could you please try with below change?
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+>> index 5e1cc8f4c43c..cfa7e01a6103 100644
+>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>> @@ -2812,6 +2812,9 @@ static int ath10k_station_assoc(struct ath10k *ar,
+>>                 return ret;
+>>         }
+>>
+>> +       if (vif->type != NL80211_IFTYPE_ADHOC)
+>> +               peer_arg.peer_reassoc = reassoc;
+>> +
+>>         ret = ath10k_wmi_peer_assoc(ar, &peer_arg);
+>>         if (ret) {
+>>                 ath10k_warn(ar, "failed to run peer assoc for STA %pM vdev %i: %d\n",
+>
+> Thanks Raj, with this fix the rates are 0-7, if i disable then i am
+> seeing 0-9, so its
+> working.
+>
+> But i am seeing a weird issues, the moment i give bitrates command,
+> ath10k no longer does encryption, link is a WPA2-PSK: AES. Even after
+> interface up/down
+> it doesn't work.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
