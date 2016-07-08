@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLPgD-0000NQ-Hz
- for ath10k@lists.infradead.org; Fri, 08 Jul 2016 06:54:29 +0000
+ id 1bLQcG-0001Jl-Pm
+ for ath10k@lists.infradead.org; Fri, 08 Jul 2016 07:54:29 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCHv3 3/3] ath10k: add testmode support for 10.4 firmware
+Date: Fri, 8 Jul 2016 07:54:00 +0000
+Message-ID: <87r3b41s6f.fsf@kamboji.qca.qualcomm.com>
+References: <1467356835-31836-1-git-send-email-c_traja@qti.qualcomm.com>
+In-Reply-To: <1467356835-31836-1-git-send-email-c_traja@qti.qualcomm.com> (c.
+ traja's message of "Fri, 1 Jul 2016 12:37:15 +0530")
+Content-Language: en-US
+Content-ID: <A5FEB93442F53245B026F9AF6356C6EE@qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [1/2] ath10k: Replace warning with an error message if HTT op
- version is unset
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <f38889b09514441d82aef5559b645dc2@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 8 Jul 2016 08:54:02 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +25,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "tamizhchelvam@codeaurora.org" <tamizhchelvam@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> 
-> Print an ath10k error message rather a call trace when HTT op version is
-> not found from firmware META data (IE). This should be sufficient to figure
-> out what went wrong.
-> 
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+<c_traja@qti.qualcomm.com> writes:
 
-Thanks, 1 patch applied to ath-next branch of ath.git:
+> From: Tamizh chelvam <c_traja@qti.qualcomm.com>
+>
+> This patch adds testmode support for 10.4 based chipsets
+> and added code swap support for UTF binary.
+>
+> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
-ce30c4fe1a22 ath10k: replace warning with an error message if HTT op version is unset
+This patch introduced new checkpatch warnings:
+
+drivers/net/wireless/ath/ath10k/testmode.c:247: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/testmode.c:250: Alignment should match open parenthesis
+
+I fixed these in the pending branch.
 
 -- 
-Sent by pwcli
-https://patchwork.kernel.org/patch/9195581/
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
