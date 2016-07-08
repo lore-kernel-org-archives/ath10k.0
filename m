@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLPQA-0002Ox-BL
- for ath10k@lists.infradead.org; Fri, 08 Jul 2016 06:37:54 +0000
+ id 1bLPT7-0003vl-8x
+ for ath10k@lists.infradead.org; Fri, 08 Jul 2016 06:40:57 +0000
 MIME-Version: 1.0
-Subject: Re: [v3] ath10k: Fix 10.4 extended peer stats update
+Subject: Re: [v4,1/2] ath10k: Add support for ath10k_sta_statistics support
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1464851602-12969-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <d69d17f6b281447d8a26994a0a1a2772@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 8 Jul 2016 08:37:25 +0200
+In-Reply-To: <1465890866-2390-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <8a33ff29139b4261936f5d7a5c0d9865@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 8 Jul 2016 08:40:29 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +27,21 @@ Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infrad
 Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
 > From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > 
-> 10.4 'extended peer stats' will be not be appended with normal peer stats
-> data and they shall be coming in separate chunks. Fix this by maintaining
-> a separate linked list 'extender peer stats' for 10.4 and update
-> rx_duration for per station statistics. Also parse through beacon filter
-> (if enabled), to make sure we parse the extended peer stats properly.
-> This issue was exposed when more than one client is connected and
-> extended peer stats for 10.4 is enabled
+> Enable support for 'drv_sta_statistics' callback.
+> Export rx_duration support if available to cfg80211/nl80211
 > 
-> The order for the stats is as below
-> S - standard peer stats, E- extended peer stats, B - beacon filter stats
+> This can also act as a placeholder for any new per STA stats support
 > 
-> {S1, S2, S3..} -> {B1, B2, B3..}(if available) -> {E1, E2, E3..}
-> 
-> Fixes: f9575793d44c ("ath10k: enable parsing per station rx duration for 10.4")
 > Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Thanks, 1 patch applied to ath-next branch of ath.git:
+Thanks, 2 patches applied to ath-next branch of ath.git:
 
-4a49ae94a448 ath10k: fix 10.4 extended peer stats update
+120a1f02a5c4 ath10k: add support for ath10k_sta_statistics support
+2ba1f3709452 ath10k: remove debugfs support for Per STA total rx duration
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9149357/
+https://patchwork.kernel.org/patch/9175135/
 
 
 _______________________________________________
