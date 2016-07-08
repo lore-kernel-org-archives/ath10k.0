@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLWnN-0004Up-7T
- for ath10k@lists.infradead.org; Fri, 08 Jul 2016 14:30:21 +0000
+ id 1bLWxA-0004qr-4w
+ for ath10k@lists.infradead.org; Fri, 08 Jul 2016 14:40:28 +0000
+Received: by mail-lf0-x242.google.com with SMTP id a10so5733158lfb.1
+ for <ath10k@lists.infradead.org>; Fri, 08 Jul 2016 07:40:07 -0700 (PDT)
+From: Matthew Keeler <mjkeeler7@gmail.com>
 MIME-Version: 1.0
-Subject: Re: ath10k: implement NAPI support
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20160627055128.7005-1-rmanohar@qti.qualcomm.com>
-Message-ID: <6169ec35e7d9438180c60909a96390ae@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 8 Jul 2016 16:29:53 +0200
+Date: Fri, 8 Jul 2016 07:40:04 -0700
+Message-ID: <CAC643aaa38i7o-RANc=h-_=4Q+EZYSvtv6fBynu1HYkn-xfY3A@mail.gmail.com>
+Subject: Wireless card no 5GHz IR
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,60 +18,87 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rmanohar@codeaurora.org
+To: ath10k <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
-> Add NAPI support for rx and tx completion. NAPI poll is scheduled
-> from interrupt handler. The design is as below
-> 
->  - on interrupt
->      - schedule napi and mask interrupts
->  - on poll
->    - process all pipes (no actual Tx/Rx)
->    - process Rx within budget
->    - if quota exceeds budget reschedule napi poll by returning budget
->    - process Tx completions and update budget if necessary
->    - process Tx fetch indications (pull-push)
->    - push any other pending Tx (if possible)
->    - before resched or napi completion replenish htt rx ring buffer
->    - if work done < budget, complete napi poll and unmask interrupts
-> 
-> This change also get rid of two tasklets (intr_tq and txrx_compl_task).
-> 
-> Measured peak throughput with NAPI on IPQ4019 platform in controlled
-> environment. No noticeable reduction in throughput is seen and also
-> observed improvements in CPU usage. Approx. 15% CPU usage got reduced
-> in UDP uplink case.
-> 
-> DL: AP DUT Tx
-> UL: AP DUT Rx
-> 
-> IPQ4019 (avg. cpu usage %)
-> 
-> ========
->                 TOT              +NAPI
->               ===========      =============
-> TCP DL       644 Mbps (42%)    645 Mbps (36%)
-> TCP UL       673 Mbps (30%)    675 Mbps (26%)
-> UDP DL       682 Mbps (49%)    680 Mbps (49%)
-> UDP UL       720 Mbps (28%)    717 Mbps (11%)
-> 
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-
-This is quite big change and I'm planning to queue this for 4.9. So I'm not
-applying this quite yet.
-
--- 
-Sent by pwcli
-https://patchwork.kernel.org/patch/9199911/
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSBhbSBoYXZpbmcgYSBiaXQgb2YgdHJvdWJsZSB3aXRoIGEgUUNBOTg4MCBiYXNlZCBuaWMgdGhh
+dCB3YXMKcHJldmlvdXNseSB3b3JraW5nLiBBdCBzb21lIHBvaW50IEkgZGlkIHVwZGF0ZXMgdG8g
+bXkgc3lzdGVtIGFuZCA1IEdIegpubyBsb25nZXIgd29ya3MgKGFsdGhvdWdoIGl0IGRpZCBmb3Ig
+YSB3ZWVrIG9yIHNvIGFmdGVyIHRoZSB1cGRhdGVzKS4KCml3IHJlZyBnZXQgb3V0cHV0IHNob3dz
+IGNvcnJlY3QgcmVndWxhdG9yeSBpbmZvcm1hdGlvbjoKCmdsb2JhbApjb3VudHJ5IFVTOiBERlMt
+RkNDCigyNDAyIC0gMjQ3MiBAIDQwKSwgKE4vQSwgMzApLCAoTi9BKQooNTE3MCAtIDUyNTAgQCA4
+MCksIChOL0EsIDE3KSwgKE4vQSksIEFVVE8tQlcKKDUyNTAgLSA1MzMwIEAgODApLCAoTi9BLCAy
+MyksICgwIG1zKSwgREZTLCBBVVRPLUJXCig1NDkwIC0gNTczMCBAIDE2MCksIChOL0EsIDIzKSwg
+KDAgbXMpLCBERlMKKDU3MzUgLSA1ODM1IEAgODApLCAoTi9BLCAzMCksIChOL0EpCig1NzI0MCAt
+IDYzNzIwIEAgMjE2MCksIChOL0EsIDQwKSwgKE4vQSkKCnBoeSMwCmNvdW50cnkgVVM6IERGUy1G
+Q0MKKDI0MDIgLSAyNDcyIEAgNDApLCAoTi9BLCAzMCksIChOL0EpCig1MTcwIC0gNTI1MCBAIDgw
+KSwgKE4vQSwgMTcpLCAoTi9BKSwgQVVUTy1CVwooNTI1MCAtIDUzMzAgQCA4MCksIChOL0EsIDIz
+KSwgKDAgbXMpLCBERlMsIEFVVE8tQlcKKDU0OTAgLSA1NzMwIEAgMTYwKSwgKE4vQSwgMjMpLCAo
+MCBtcyksIERGUwooNTczNSAtIDU4MzUgQCA4MCksIChOL0EsIDMwKSwgKE4vQSkKKDU3MjQwIC0g
+NjM3MjAgQCAyMTYwKSwgKE4vQSwgNDApLCAoTi9BKQoKCmRtZXNnIG91dHB1dCB3aGlsZSB0aGUg
+ZGV2aWNlIGlzIGNvbWluZyB1cCBsb29rcyBub3JtYWwgdG9vICh3aXRoCkVFUFJPTSBnZXR0aW5n
+IHRoZSBjb3JyZWN0IGNvdW50cnkgY29kZSk6CgpbIMKgIMKgNS40ODc1MDZdIGF0aDEwa19wY2kg
+MDAwMDowMjowMC4wOiBwY2kgaXJxIG1zaSBpbnRlcnJ1cHRzIDEKaXJxX21vZGUgMCByZXNldF9t
+b2RlIDAKWyDCoCDCoDUuODU2MTMzXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogRGlyZWN0IGZp
+cm13YXJlIGxvYWQgZm9yCmF0aDEway9jYWwtcGNpLTAwMDA6MDI6MDAuMC5iaW4gZmFpbGVkIHdp
+dGggZXJyb3IgLTIKWyDCoCDCoDUuODY3ODI5XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogcWNh
+OTg4eCBodzIuMCB0YXJnZXQKMHg0MTAwMDE2YyBjaGlwX2lkIDB4MDQzMjAyZmYgc3ViIDAwMDA6
+MDAwMApbIMKgIMKgNS44Njc4MzhdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBrY29uZmlnIGRl
+YnVnIDAgZGVidWdmcyAxCnRyYWNpbmcgMCBkZnMgMCB0ZXN0bW9kZSAwClsgwqAgwqA1Ljg2ODE3
+N10gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGZpcm13YXJlIHZlciAxMC4yLjQuNzAuOS0yIGFw
+aQo1IGZlYXR1cmVzIG5vLXAycCxyYXctbW9kZSBjcmMzMiBiOGQ1MGFmNQpbIMKgIMKgNS45MDgz
+MDVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKYXRo
+MTBrL1FDQTk4OFgvaHcyLjAvYm9hcmQtMi5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKWyDCoCDC
+oDUuOTA4NDA2XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9hcmRfZmlsZSBhcGkgMSBibWlf
+aWQgTi9BCmNyYzMyIGJlYmM3YzA4ClsgwqAgwqA3LjA2ODAwOF0gYXRoMTBrX3BjaSAwMDAwOjAy
+OjAwLjA6IGh0dC12ZXIgMi4xIHdtaS1vcCA1IGh0dC1vcCAyCmNhbCBvdHAgbWF4LXN0YSAxMjgg
+cmF3IDAgaHdjcnlwdG8gMQpbIMKgIMKgNy4xMjk2MDddIGF0aDogRUVQUk9NIHJlZ2RvbWFpbjog
+MHgwClsgwqAgwqA3LjEyOTYxNF0gYXRoOiBFRVBST00gaW5kaWNhdGVzIGRlZmF1bHQgY291bnRy
+eSBjb2RlIHNob3VsZCBiZSB1c2VkClsgwqAgwqA3LjEyOTYxN10gYXRoOiBkb2luZyBFRVBST00g
+Y291bnRyeS0+cmVnZG1uIG1hcCBzZWFyY2gKWyDCoCDCoDcuMTI5NjIwXSBhdGg6IGNvdW50cnkg
+bWFwcyB0byByZWdkbW4gY29kZTogMHgzYQpbIMKgIMKgNy4xMjk2MjNdIGF0aDogQ291bnRyeSBh
+bHBoYTIgYmVpbmcgdXNlZDogVVMKWyDCoCDCoDcuMTI5NjI1XSBhdGg6IFJlZ3BhaXIgdXNlZDog
+MHgzYQpbIMKgIMKgNy4xNDExOTddIGF0aDEwa19wY2kgMDAwMDowMjowMC4wIHdsYW4yOiByZW5h
+bWVkIGZyb20gd2xhbjAKCkhvd2V2ZXIgYWZ0ZXIgdGhpcyBpdyBwaHkgcGgwIGluZm8gc2hvdyB0
+aGlzIGZvciB0aGUgNSBHSHogZnJlcXVlbmNpZXM6CgpGcmVxdWVuY2llczoKCSogNTE4MCBNSHog
+WzM2XSAoMTcuMCBkQm0pIChubyBJUikKCSogNTIwMCBNSHogWzQwXSAoMTcuMCBkQm0pIChubyBJ
+UikKCSogNTIyMCBNSHogWzQ0XSAoMTcuMCBkQm0pIChubyBJUikKCSogNTI0MCBNSHogWzQ4XSAo
+MTcuMCBkQm0pIChubyBJUikKCSogNTI2MCBNSHogWzUyXSAoMjMuMCBkQm0pIChubyBJUiwgcmFk
+YXIgZGV0ZWN0aW9uKQoJIMKgREZTIHN0YXRlOiB1c2FibGUgKGZvciAyODk4IHNlYykKCSDCoERG
+UyBDQUMgdGltZTogNjAwMDAgbXMKCSogNTI4MCBNSHogWzU2XSAoMjMuMCBkQm0pIChubyBJUiwg
+cmFkYXIgZGV0ZWN0aW9uKQoJIMKgREZTIHN0YXRlOiB1c2FibGUgKGZvciAyODk4IHNlYykKCSDC
+oERGUyBDQUMgdGltZTogNjAwMDAgbXMKCSogNTMwMCBNSHogWzYwXSAoMjMuMCBkQm0pIChubyBJ
+UiwgcmFkYXIgZGV0ZWN0aW9uKQoJIMKgREZTIHN0YXRlOiB1c2FibGUgKGZvciAyODk4IHNlYykK
+CSDCoERGUyBDQUMgdGltZTogNjAwMDAgbXMKCSogNTMyMCBNSHogWzY0XSAoMjMuMCBkQm0pIChu
+byBJUiwgcmFkYXIgZGV0ZWN0aW9uKQoJIMKgREZTIHN0YXRlOiB1c2FibGUgKGZvciAyODk4IHNl
+YykKCSDCoERGUyBDQUMgdGltZTogNjAwMDAgbXMKCSogNTUwMCBNSHogWzEwMF0gKGRpc2FibGVk
+KQoJKiA1NTIwIE1IeiBbMTA0XSAoZGlzYWJsZWQpCgkqIDU1NDAgTUh6IFsxMDhdIChkaXNhYmxl
+ZCkKCSogNTU2MCBNSHogWzExMl0gKGRpc2FibGVkKQoJKiA1NTgwIE1IeiBbMTE2XSAoZGlzYWJs
+ZWQpCgkqIDU2MDAgTUh6IFsxMjBdIChkaXNhYmxlZCkKCSogNTYyMCBNSHogWzEyNF0gKGRpc2Fi
+bGVkKQoJKiA1NjQwIE1IeiBbMTI4XSAoZGlzYWJsZWQpCgkqIDU2NjAgTUh6IFsxMzJdIChkaXNh
+YmxlZCkKCSogNTY4MCBNSHogWzEzNl0gKGRpc2FibGVkKQoJKiA1NzAwIE1IeiBbMTQwXSAoZGlz
+YWJsZWQpCgkqIDU3MjAgTUh6IFsxNDRdICgyMy4wIGRCbSkgKG5vIElSLCByYWRhciBkZXRlY3Rp
+b24pCgkgwqBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDI4OTggc2VjKQoJIMKgREZTIENBQyB0aW1l
+OiA2MDAwMCBtcwoJKiA1NzQ1IE1IeiBbMTQ5XSAoMzAuMCBkQm0pIChubyBJUikKCSogNTc2NSBN
+SHogWzE1M10gKDMwLjAgZEJtKSAobm8gSVIpCgkqIDU3ODUgTUh6IFsxNTddICgzMC4wIGRCbSkg
+KG5vIElSKQoJKiA1ODA1IE1IeiBbMTYxXSAoMzAuMCBkQm0pIChubyBJUikKCSogNTgyNSBNSHog
+WzE2NV0gKDMwLjAgZEJtKSAobm8gSVIpCgpBbmQgaWYgSSB0cnkgdG8gcnVuIGhvc3RhcGQgdXNp
+bmcgYW55IDVHSHogY2hhbm5lbCBpdCBmYWlscy4KClRoaXMgdXNlZCB0byB3b3JrLiBIYXMgYW55
+b25lIGVsc2UgZXhwZXJpZW5jZWQgc29tZXRoaW5nIHNpbWlsYXIgb3IKY291bGQgdGhlcmUgYmUg
+YSBtaXNtYXRjaCBiZXR3ZWVuIGZpcm13YXJlIHZlcnNpb25zIGFuZCBrZXJuZWwKdmVyc2lvbnM/
+IEkgZGlkIHRyeSB1c2luZyB0aGUgbGFzdGVzdCBmaXJtd2FyZSAxMC4yLjQuNzAuNTIgYnV0IHRo
+aXMKb25lIGNvbXBsYWluZWQgb2YgcGNpZSBlcnJvcnMgb3IgQUVSIGRyaXZlciBzdXBwb3J0IHBy
+b2JsZW1zIGFuZCBzaHV0CnRoZSBjYXJkIGRvd24gZHVyaW5nIGJvb3Qgc28gSSByZXZlcnRlZCBi
+YWNrIHRvIHRoZSBzeXN0ZW0gZGVmYXVsdC4KClJlbGV2YW50IHN5c3RlbSBpbmZvcm1hdGlvbjoK
+wqAgwqAgRGlzdHJvOiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBBcmNoIExpbnV4CsKgIMKg
+IGtlcm5lbCB2ZXJzaW9uOiDCoCDCoCDCoCDCoCDCoCA0LjYuMy0xCsKgIMKgIGZpcm13YXJlIHBh
+Y2thZ2UgdmVyc2lvbjrCoDIwMTYwNTE2LjgwZDQ2M2ItMQrCoCDCoCBhdGgxMGsgZmlybXdhcmUg
+dmVyc2lvbjogwqAxMC4yLjQuNzAuOS0yCsKgIMKgIGl3IHZlcnNpb246IMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIDQuNy4xCsKgIMKgIGNyZGEgdmVyc2lvbjogwqAgwqAgwqAgwqAgwqAgwqAgMy4xOC0x
+CsKgIMKgIGhvc3RhcGQgdmVyc2lvbjogwqAgwqAgwqAgwqAgwqAyLjUtMgoKCuKAlApNYXR0IEtl
+ZWxlcgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
