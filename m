@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bLPdR-0008DE-9x
- for ath10k@lists.infradead.org; Fri, 08 Jul 2016 06:51:37 +0000
+ id 1bLPgD-0000NQ-Hz
+ for ath10k@lists.infradead.org; Fri, 08 Jul 2016 06:54:29 +0000
 MIME-Version: 1.0
-Subject: Re: [1/2] ath10k: remove unused member in ath10k_hw_regs
+Subject: Re: [1/2] ath10k: Replace warning with an error message if HTT op
+ version is unset
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1466488088-20961-1-git-send-email-akolli@qti.qualcomm.com>
-Message-ID: <d4ea57a3ffc1429f9e1a2df3220f54ec@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 8 Jul 2016 08:51:10 +0200
+In-Reply-To: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <f38889b09514441d82aef5559b645dc2@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 8 Jul 2016 08:54:02 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +22,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: akolli@qti.qualcomm.com
-Cc: akolli@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-akolli@qti.qualcomm.com wrote:
-> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > 
-> rtc_state_cold_reset_mask is unused in ath10k_hw_regs.
-> instead fixed delays are used.
+> Print an ath10k error message rather a call trace when HTT op version is
+> not found from firmware META data (IE). This should be sufficient to figure
+> out what went wrong.
 > 
-> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Thanks, 2 patches applied to ath-next branch of ath.git:
+Thanks, 1 patch applied to ath-next branch of ath.git:
 
-2225378d840c ath10k: remove unused member in ath10k_hw_regs
-e565c3125e03 ath10k: enable support for QCA9888
+ce30c4fe1a22 ath10k: replace warning with an error message if HTT op version is unset
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9189535/
+https://patchwork.kernel.org/patch/9195581/
 
 
 _______________________________________________
