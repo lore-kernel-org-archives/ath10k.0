@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x230.google.com ([2607:f8b0:400d:c09::230])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bNim4-00072C-4R
- for ath10k@lists.infradead.org; Thu, 14 Jul 2016 15:42:05 +0000
-Received: by mail-qk0-x230.google.com with SMTP id o67so75892463qke.1
- for <ath10k@lists.infradead.org>; Thu, 14 Jul 2016 08:41:43 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <578661D7.9050804@candelatech.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bNiuL-0007xA-Of
+ for ath10k@lists.infradead.org; Thu, 14 Jul 2016 15:50:38 +0000
+Subject: Re: How to obtain Link Quality information
 References: <57864BEA.4090202@cttc.cat> <578652F6.5030909@candelatech.com>
  <57866026.20504@cttc.cat> <578661D7.9050804@candelatech.com>
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Date: Thu, 14 Jul 2016 23:41:42 +0800
-Message-ID: <CAEFj98473uC94zuU-Y4pMjeEy7ZDDMysN2H7SBUctseEhP9G=w@mail.gmail.com>
-Subject: Re: How to obtain Link Quality information
+ <CAEFj98473uC94zuU-Y4pMjeEy7ZDDMysN2H7SBUctseEhP9G=w@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <5787B348.6040205@candelatech.com>
+Date: Thu, 14 Jul 2016 08:44:08 -0700
+MIME-Version: 1.0
+In-Reply-To: <CAEFj98473uC94zuU-Y4pMjeEy7ZDDMysN2H7SBUctseEhP9G=w@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +20,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: =?UTF-8?Q?I=C3=B1aki_Pascual?= <ipascual@cttc.cat>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: =?UTF-8?Q?I=c3=b1aki_Pascual?= <ipascual@cttc.cat>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-dHggcmF0ZSByZXBvcnRpbmcgZm9yIENhbmRlbGEgZmlybXdhcmUgaXMgd29ya2luZz8gQW55IGNo
-YW5nZXMgZ28gaW50bwp0aGUgUUNBIHJlbGVhc2VkIGZpcm13YXJlPwoKLS0tCkNodW4tWWVvdwoK
-T24gV2VkLCBKdWwgMTMsIDIwMTYgYXQgMTE6NDQgUE0sIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2Fu
-ZGVsYXRlY2guY29tPiB3cm90ZToKPiBPbiAwNy8xMy8yMDE2IDA4OjM3IEFNLCBJw7Fha2kgUGFz
-Y3VhbCB3cm90ZToKPj4KPj4gSGkgQmVuLAo+Pgo+PiB5ZXMsIEkgdHJpZWQsIGl0IHNob3dzIHNp
-Z25hbCB2YWx1ZSBidXQgbm90IGxpbmsgcXVhbGl0eSA6KAo+Cj4KPiBMaW5rICdxdWFsaXR5JyBp
-cyBtb3N0bHkganVzdCBhIG1hZGUtdXAgbnVtYmVyIGFueXdheS4gU2lnbmFsIHF1YWxpdHkKPiBp
-cyBwcm9iYWJseSB0aGUgbW9zdCBzaW1pbGFyIHZhbHVlLCBidXQgdHggYW5kIHJ4IGJpdHJhdGVz
-IGdpdmUgeW91IHRoZQo+IGJlc3QgaWRlYSBvZiBob3cgUkYgaXMgcGVyZm9ybWluZyBpbiBteSBv
-cGluaW9uLiAgVGhvc2UgcmF0ZXMgYXJlIG9ubHkKPiBhY2N1cmF0ZSB3aGVuIHNlbmRpbmcgYXQg
-bGVhc3QgbW9kZXN0IGFtb3VudHMgb2YgcGFja2V0cyB0aG91Z2guCj4KPiBUaGFua3MsCj4gQmVu
-Cj4KPgo+Cj4+Cj4+IG9uZXRAc2MyMjk6fiQgaXcgZGV2IHdsYW4yIHN0YXRpb24gZHVtcAo+PiBT
-dGF0aW9uIDA0OmYwOjIxOjE4OjI2OmFmIChvbiB3bGFuMikKPj4gICAgICBpbmFjdGl2ZSB0aW1l
-OiAgICA2NSBtcwo+PiAgICAgIHJ4IGJ5dGVzOiAgICAzMTAyODk2Cj4+ICAgICAgcnggcGFja2V0
-czogICAgODc0MDMKPj4gICAgICB0eCBieXRlczogICAgMAo+PiAgICAgIHR4IHBhY2tldHM6ICAg
-IDAKPj4gICAgICB0eCByZXRyaWVzOiAgICAwCj4+ICAgICAgdHggZmFpbGVkOiAgICAwCj4+ICAg
-ICAgc2lnbmFsOiAgICAgIC02MyBkQm0KPj4gICAgICBzaWduYWwgYXZnOiAgICAtNjIgZEJtCj4+
-ICAgICAgdHggYml0cmF0ZTogICAgNi4wIE1CaXQvcwo+PiAgICAgIHJ4IGJpdHJhdGU6ICAgIDYu
-MCBNQml0L3MKPj4gICAgICBhdXRob3JpemVkOiAgICB5ZXMKPj4gICAgICBhdXRoZW50aWNhdGVk
-OiAgICB5ZXMKPj4gICAgICBwcmVhbWJsZTogICAgbG9uZwo+PiAgICAgIFdNTS9XTUU6ICAgIHll
-cwo+PiAgICAgIE1GUDogICAgICAgIG5vCj4+ICAgICAgVERMUyBwZWVyOiAgICBubwo+PiAgICAg
-IGNvbm5lY3RlZCB0aW1lOiAgICA0NDc2IHNlY29uZHMKPj4gbW9uZXRAc2MyMjk6fiQKPj4KPj4g
-VGhhbmtzLAo+Pgo+PiBJw7Fha2kKPj4KPj4gT24gMTMvMDcvMTYgMTY6NDAsIEJlbiBHcmVlYXIg
-d3JvdGU6Cj4+Pgo+Pj4gT24gMDcvMTMvMjAxNiAwNzoxMCBBTSwgScOxYWtpIFBhc2N1YWwgd3Jv
-dGU6Cj4+Pj4KPj4+PiBIaSBldmVyeW9uZSwKPj4+Pgo+Pj4+IEkgYW0gdHJ5aW5nIHRvIGdldCBs
-aW5rIHF1YWxpdHkgaW5mb3JtYXRpb24gZnJvbSBhbiA4MDIuMTFhYyBpbnRlcmZhY2UKPj4+PiBh
-bmQgaXQgbG9va3MgbGlrZSB0aGUgb25seSB3YXkgaXMgdG8gdXNlICJpdyB3bGFuMiBzY2FuIi4g
-SSBkb24ndCBsaWtlIHRoaXMKPj4+PiBzb2x1dGlvbiBhcwo+Pj4+IGl0IHNjYW5zIGFsbCBjaGFu
-bmVscyBhbmQgdGFrZXMgYSB3aGlsZS4KPj4+Pgo+Pj4+IElmIEkgdHJ5ICJjYXQgL3Byb2MvbmV0
-L3dpcmVsZXNzIiAodGhpcyB3b3VsZCBiZSBteSBwcmVmZXJyZWQgb3B0aW9uKQo+Pj4+IHRoZSBv
-dXRwdXQgaXMgZW1wdHkgYW5kIEkgYW0gbm90IGFibGUgdG8gZ2V0IHRoaXMgaW5mb3JtYXRpb24g
-d2l0aCBhbnkgb3RoZXIKPj4+PiB0b29sLiBCZWxvdwo+Pj4+IGlzIHRoZSBvdXRwdXQgZm9yIHNv
-bWUgY29tbWFuZHMgSSB0cmllZC4KPj4+Pgo+Pj4+IEkgYW0gdXNpbmcga2VybmVsIDQuMiB3aXRo
-IGF0aDEwayBhbmQgQ2FuZGVsYSBmaXJtd2FyZSAxMC4xIG9uIGEKPj4+PiBRdWFsY29tbSBBdGhl
-cm9zIFFDQTk4OHgKPj4+Pgo+Pj4+IEFueSBpZGVhcyBvbiBob3cgY2FuIEkgZ2V0IHRoZSBsaW5r
-IHF1YWxpdHkgaW5mb3JtYXRpb24/Cj4+Pgo+Pj4KPj4+IERpZCB5b3UgdHJ5Ogo+Pj4KPj4+IGl3
-IGRldiB3bGFuMCBzdGF0aW9uIGR1bXAKPj4+Cj4+PiBJZiB5b3Ugd2FudCB0eCByYXRlIHJlcG9y
-dGluZywgeW91IG5lZWQgdG8gcnVuIG15IGRyaXZlciBwYXRjaGVzIGFzIHdlbGwKPj4+IGFzIG15
-IGZpcm13YXJlLCBidXQgcngtcmF0ZSBzaG91bGQgYmUgcmVwb3J0ZWQgd2l0aCBzdG9jayBkcml2
-ZXIKPj4+IChhbmQgc3RvY2sgZmlybXdhcmUsIGZvciB0aGF0IG1hdHRlcikuLi4KPj4+Cj4+PiBU
-aGFua3MsCj4+PiBCZW4KPj4+Cj4+Cj4+Cj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCj4+IGF0aDEwayBtYWlsaW5nIGxpc3QKPj4gYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKPj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hdGgxMGsKPj4KPgo+Cj4gLS0KPiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNo
-LmNvbT4KPiBDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2gu
-Y29tCj4KPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Cj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
-c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On 07/14/2016 08:41 AM, Yeoh Chun-Yeow wrote:
+> tx rate reporting for Candela firmware is working? Any changes go into
+> the QCA released firmware?
+
+It is working in CT firmware (when using my patched ath10k driver to
+support the feature), and I have no way to get changes into
+upstream QCA firmware.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
