@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPYMf-0001ka-9i
- for ath10k@lists.infradead.org; Tue, 19 Jul 2016 16:59:25 +0000
-Message-ID: <578E5AFA.4000908@candelatech.com>
-Date: Tue, 19 Jul 2016 09:53:14 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-it0-x229.google.com ([2607:f8b0:4001:c0b::229])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bPYNl-0003v7-HY
+ for ath10k@lists.infradead.org; Tue, 19 Jul 2016 17:00:34 +0000
+Received: by mail-it0-x229.google.com with SMTP id f6so19984367ith.0
+ for <ath10k@lists.infradead.org>; Tue, 19 Jul 2016 10:00:13 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: fix system hang at qca99x0 probe on x86 platform
+In-Reply-To: <578E5AFA.4000908@candelatech.com>
 References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
  <e05dcb58-1cb1-a33a-31bb-b8ba1edf1363@dd-wrt.com>
  <fa3eab06-28f0-e5d4-2e92-770134b49dfa@dd-wrt.com>
@@ -15,7 +14,11 @@ References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
  <CA+BoTQkepLz55Vdr7OuMnPQPLKq_+vjZi=m2Y9rHLRgBZPsWOw@mail.gmail.com>
  <1468941948774.87860@qti.qualcomm.com>
  <CAJ-Vmon1duBNcWhjaNdANYFfd3hwQUYYHrmx7LRZvT-Ec2x1Cg@mail.gmail.com>
-In-Reply-To: <CAJ-Vmon1duBNcWhjaNdANYFfd3hwQUYYHrmx7LRZvT-Ec2x1Cg@mail.gmail.com>
+ <578E5AFA.4000908@candelatech.com>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Tue, 19 Jul 2016 10:00:11 -0700
+Message-ID: <CAJ-VmokHgMVn530PfJS_KEwnUiYBvebOAkP72k319b4BUkYRUg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix system hang at qca99x0 probe on x86 platform
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,75 +27,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>, "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "nbd@nbd.name" <nbd@nbd.name>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "Manoharan,
+ Rajkumar" <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Valo,
+ Kalle" <kvalo@qca.qualcomm.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, "nbd@nbd.name" <nbd@nbd.name>
 
-T24gMDcvMTkvMjAxNiAwOToxMyBBTSwgQWRyaWFuIENoYWRkIHdyb3RlOgo+IE9uIDE5IEp1bHkg
-MjAxNiBhdCAwODoyNSwgTWFub2hhcmFuLCBSYWprdW1hciA8cm1hbm9oYXJAcXRpLnF1YWxjb21t
-LmNvbT4gd3JvdGU6Cj4+IE9uIEp1bmUgMzAsIDIwMTYgMTI6MzkgUE0sIE1pY2hhbCBLYXppb3Ig
-PG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPj4+IE9uIDI5IEp1bmUgMjAxNiBhdCAx
-ODozNSwgTWFub2hhcmFuLCBSYWprdW1hciA8cm1hbm9oYXJAcXRpLnF1YWxjb21tLmNvbT4gd3Jv
-dGU6Cj4+Pj4+PiBBbSAyOS4wNi4yMDE2IHVtIDE2OjA0IHNjaHJpZWIgU2ViYXN0aWFuIEdvdHRz
-Y2hhbGw6Cj4+Pj4+PiB0aGlzIGZpeCB3aWxsIGNyYXNoIFFDQTk5ODAgb24gUUNBIElQUTgwNjQg
-Y3B1IGJhc2VkIHN5c3RlbXMuCj4+Pj4+PiBzbyBwbGVhc2UgcmV3b3JrIGl0LCBvciBsZWF2ZSBp
-dCBvdXQuCj4+Pj4+PiBub3RlOgo+Pj4+Pj4gbWF5YmUgdGhlIGxpbWl0IG9mIDI1NmtiIGlzIHRv
-byBsb3cgZm9yIHRoYXQgY2FyZAo+Pj4+Pj4KPj4+Pj4gYnkgdGhlIHdheS4gNTEyIHdvcmtzCj4+
-Pgo+Pj4gSSB0aGluayB0aGlzIHN1Z2dlc3RzIHRoZSBwcm9ibGVtIGlzbid0IGFib3V0IG1lbW9y
-eSBjaHVuayBzaXplIGxpbWl0Cj4+PiBwZXIgc2UgYnV0IHNvbWUga2luZCBvZiBidWcgaW4gYWRk
-cmVzcy9vZmZzZXQgbG9naWMgaW4gZncgb3IgaHcuCj4+Pgo+Pj4gRE1BIGNvaGVyZW50IGFuZCBz
-aW5nbGUtbWFwIGFkZHJlc3NlcyB1c2UgY29tcGxldGVseSBkaWZmZXJlbnQgcmFuZ2VzCj4+PiBp
-biBtYW55IGNhc2VzLiBQZXJoYXBzIHNvbWUgTVNCcyBhcmUgbm90IHByb3Blcmx5IGhhbmRsZWQg
-aW4gZncgb3IgaHcuCj4+PiBJIHJlY2FsbCB0aGVyZSBpcyBhIG1hZ2ljIG1hY3JvIHRocm91Z2gg
-d2hpY2ggdGFyZ2V0IGRldmljZSBhY2Nlc3Nlcwo+Pj4gaG9zdCBtZW1vcnkgc28gbWF5YmUgdGhh
-dCdzIGEgZ29vZCBwbGFjZSB0byBsb29rIHRvIGJldHRlciB1bmRlcnN0YW5kCj4+PiB0aGUgcHJv
-YmxlbT8KPj4+Cj4+IE1pY2hhxYIsCj4+Cj4+IENvdWxkIHlvdSBwbGVhc2Ugc2hlZCBzb21lIGxp
-Z2h0IG9uIHRoaXMgaXNzdWU/IEl0IHNlZW1zIHRoaXMgaXNzdWUgaXMgcG9wcGluZyB1cAo+PiBt
-b3JlIGZyZXF1ZW50bHkgYW5kIHRoZXJlIGFyZSBtdWx0aXBsZSB0aHJlYWRzIGZvciB0aGlzIGlz
-c3VlLgo+Pgo+PiAiQW55b25lIGJyb3VnaHQgdXAgOTk4NCBOSUMgb24geDg2LTY0PyIKPj4gIkFS
-OTg4MiBJT01NVSBmYXVsdHMiCj4+Cj4+PiBJIHJlY2FsbCBCZW4gbWVudGlvbmVkIGhlIHdvcmtl
-ZCBhcm91bmQgdGhlIHByb2JsZW0gYnkgZW5hYmxpbmcKPj4+IElPTU1VL1ZULWQgb24gaGlzIHN5
-c3RlbS4gVGhpcyBjb3VsZCBlaXRoZXIgcHJldmVudCB0aGUgZGV2aWNlIGZyb20KPj4+IGRvaW5n
-IGJhZCB0aGluZ3Mgb3IgbWF5YmUgY2hhbmdlZCBETUEgYWRkcmVzcyByYW5nZXMgdGhhdCBhcmUg
-aGFuZGVkCj4+PiBvdXQgdG8gdGhlIGRyaXZlciBlZmZlY3RpdmVseSBvciBjaGFuZ2VkIFBDSSBj
-b250cm9sbGVyIGJlaGF2aW9yIGluCj4+PiBzb21lIHdheS4KPj4+Cj4+Pj4gVGhhbmtzIGEgbG90
-IFNlYmFzdGlhbi4gTGV0IG1lIGNvbmZpcm0gdGhlIHNhbWUgb24geDg2IGFuZCB3aWxsIHVwZGF0
-ZSB0aGUgY2hhbmdlLgo+Pj4KPj4+IEp1c3QgY2hhbmdpbmcgdGhlIG1lbW9yeSBjaHVuayBzaXpl
-IGxpbWl0IGJsaW5kbHkgaXMgYmFkIGFuZAo+Pj4gU2ViYXN0aWFuJ3MgY3Jhc2ggaGFzIHByb3Zl
-biBpdC4gNTEyIG1heSBzZWVtIHRvIHdvcmsgbm93IGJ1dCBpdCBtYXkKPj4+IGZhaWwgd2l0aCBh
-IG90aGVyIDEwLjQgZmlybXdhcmUgcmV2aXNpb25zIG9yIG1ha2UgeDg2IGhhbmcgaW4gb3RoZXIK
-Pj4+IGNhc2VzLgo+Pj4KPj4gRXZlbiB3aXRoIGN1cnJlbnQgbG9naWMsIElmIHRoZSBtZW1vcnkg
-Y2h1bmsgYWxsb2NhdGlvbiBmYWlscyBmb3IgYmlnZ2VyIHNpemUsIHRoZW4gaXQgdHJpZXMKPj4g
-dG8gYWxsb2NhdGUgc21hbGxlciBjaHVua3MuIFNvIElmIHNtYWxsZXIgY2h1bmtzIGNhdXNlcyB1
-bmV4cGVjdGVkIGJlaGF2aW91ciwgaXQgaXMgZXZlbgo+PiBhcHBsaWNhYmxlIHRvIGV4aXN0aW5n
-IGxvZ2ljLiBubz8KPgo+IFRyeSBhbGxvY2F0aW5nIFdNSSBtZW1vcnkgd2l0aCBHRlBfRE1BMzIu
-IFRoZSB3YXkgaXQgY3VycmVudGx5IGlzCj4gd29ya2luZyBpbiBsaW51eCBpcyB0aGF0IGNhbGlu
-ZyBkbWEgbWFwIGVuZHMgdXAgYWxsb2NhdGluZyBpb21tdSBzbG90cwo+IHRvIG1hcCB0aGF0IDY0
-IGJpdCBtZW1vcnkgYmFjayBpbnRvIDMyIGJpdCBzcGFjZSwgL29yLyBpdCB3aWxsIGVuZCB1cAo+
-IGFsbG9jYXRpbmcgYm91bmNlIGJ1ZmZlcnMuCj4KPiBUaGUgV01JIG1lbW9yeSBhbGxvYyByb3V0
-aW5lIGlzIGJlaW5nIHVzZWQgZm9yIHRoZSBzd2FwIHNwYWNlIHRvbywKPiB3aGljaCBlbmRzIHVw
-IHdpdGggNzAwa2J5dGUgb3IgbW9yZSBhbGxvY2F0ZWQgdHdpY2UgLSBvbmNlIGZvciB0aGUKPiBp
-bml0aWFsIGFsbG9jLCBhbmQgYW5vdGhlciBmb3IgdGhlIGRtYSBtYXAgY2FsbC4KPgo+IFlvdSBz
-aG91bGQgdHJ5IEdGUF9ETUEzMiBhbmQgc2VlIGlmIHRoYXQgZml4ZXMgaXQuIFlvdSBuZWVkIGNv
-bnRpZywgPAo+IDMyIGJpdCBwaHlzaWNhbCBtZW1vcnkgYWxsb2NhdGVkLCBhbmQgYm91bmNlIGJ1
-ZmZlcnMgYXJlIHJlYWxseQo+IHN1cHBvc2VkIHRvIGJlIGVwaGVtZXJhbC4KCkkgYnJpZWZseSB0
-ZXN0ZWQgd2l0aCB0aGUgR0ZQX0RNQTMyIGFuZCBpdCB3b3JrZWQgb24gbXkgOTk4NCB0ZXN0IHJp
-Zy4KCkkgYWxzbyBmb3VuZCBmaXJtd2FyZSBidWdzIGluIG15IDEwLjQuMyAoMy4zLTI1KSBiYXNl
-ZCBmaXJtd2FyZSB3aGVuIHNtYWxsZXIKY2h1bmsgc2l6ZXMgYXJlIHVzZWQuICBQb3NzaWJseSB0
-aGlzIGlzIGZpeGVkIGluIFFDQSBmaXJtd2FyZSBpbWFnZXMsIGJ1dCBsaWtlbHkKaWYgeW91IHNl
-bGVjdCBtb3JlIGFjdGl2ZSBwZWVycyB0aGFuIHdpbGwgZml0IGluIG9uZSAyNTZrIGNodW5rIHlv
-dXIgZmlybXdhcmUKd2lsbCBjcmFzaC4gIEkgdGVzdGVkIHdpdGggNzIgYWN0aXZlIHBlZXJzLiAg
-SSBoYXZlIGZpeGVkIHRoaXMgYnVnIGluIG15IDk5ODQgZmlybXdhcmUKYXMgZmFyIGFzIEkgY2Fu
-IHRlbGwsIGJ1dCBJIGhhdmUgbm90IHJ1biBzdHJlc3MgdGVzdHMgb24gaXQgeWV0LgoKVGhhbmtz
-LApCZW4KCj4KPgo+Cj4gLWFkcmlhbgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2F0aDEwawo+CgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5k
-ZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Some more test hardware arrived on Friday, so I'll whack a peregrine
+v2 NIC in this afternoon and test out my changes.
+
+I'll send a pull request with the DMA32 changes today or tomorrow.
+
+(If someone would like to send me some beeliner/cascade hardware or
+arrange something to be picked up in San Jose then I can test on that,
+otherwise it'll have to wait; I don't have easy access to anything
+else besides dakota and that is being used for other bring-up
+activities atm.)
+
+
+
+-adrian
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
