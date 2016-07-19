@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPPIQ-0002mH-Aj
- for ath10k@lists.infradead.org; Tue, 19 Jul 2016 07:18:27 +0000
-Received: by mail-wm0-x231.google.com with SMTP id i5so14687572wmg.0
- for <ath10k@lists.infradead.org>; Tue, 19 Jul 2016 00:18:03 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20160719070932.GA2751@redhat.com>
-References: <20160719070932.GA2751@redhat.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Tue, 19 Jul 2016 09:18:01 +0200
-Message-ID: <CA+BoTQn98UFuGT0NntdE1HgG9UmmwzS=JsGkLmeGoMHSFGyDRg@mail.gmail.com>
+ id 1bPPSG-00077I-69
+ for ath10k@lists.infradead.org; Tue, 19 Jul 2016 07:28:37 +0000
+Date: Tue, 19 Jul 2016 09:27:55 +0200
+From: Stanislaw Gruszka <sgruszka@redhat.com>
 Subject: Re: ath10k fail to load firmware
+Message-ID: <20160719072754.GB2751@redhat.com>
+References: <20160719070932.GA2751@redhat.com>
+ <CA+BoTQn98UFuGT0NntdE1HgG9UmmwzS=JsGkLmeGoMHSFGyDRg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CA+BoTQn98UFuGT0NntdE1HgG9UmmwzS=JsGkLmeGoMHSFGyDRg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +20,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Stanislaw Gruszka <sgruszka@redhat.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: Kalle Valo <kvalo@qca.qualcomm.com>, perry_yuan@dell.com, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTkgSnVseSAyMDE2IGF0IDA5OjA5LCBTdGFuaXNsYXcgR3J1c3prYSA8c2dydXN6a2FAcmVk
-aGF0LmNvbT4gd3JvdGU6Cj4gUGVycnkgZnJvbSBEZWxsIGhhcyBhdGgxMGsgZGV2aWNlLCB3aGlj
-aCBkbyBub3Qgd29yayB3aXRoIGN1cnJlbnQKPiBsaW51eC1maXJtd2FyZS4gSXQncyBvbiBSSEVM
-IGtlcm5lbCwgaG93ZXZlciB3aXJlbHNzIHN0YWNrIGFuZCBkcml2ZXJzCj4gYXJlIGZyb20gNC43
-LXJjMSAoSSBkaWQgbm90IHVwZGF0ZSB0byA0LjcgZmluYWwgeWV0LCBzaW5jZSBJIGRvIG5vdCBz
-ZWUKPiBhdGgxMGsgZml4LCB3aGljaCBjb3VsZCBwb3NzaWJseSBoZWxwIGhlcmUpLiBQYXJ0aWFs
-IGRtZXNnIGlzIGluCj4gdGhlIGF0dGFjaG1lbnQuCgpody4zIHFjYTYxNzQgY2hpcHMgdGVuZCB0
-byByZXF1aXJlIHZlcnkgc3BlY2lmaWMgYm9hcmQgZGF0YSBmb3IgcHJvcGVyCmNhbGlicmF0aW9u
-LgoKICBbIDM4MzguNjAxODg0XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmFpbGVkIHRvIGZl
-dGNoIGJvYXJkIGRhdGEKZm9yIGJ1cz1wY2ksdmVuZG9yPTE2OGMsZGV2aWNlPTAwM2Usc3Vic3lz
-dGVtLXZlbmRvcj0xMDI4LHN1YnN5c3RlbS1kZXZpY2U9MDMxMApmcm9tIGF0aDEway9RQ0E2MTc0
-L2h3My4wL2JvYXJkLTIuYmluCiAgWyAzODM4LjYwMTkyMF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAw
-LjA6IGJvYXJkX2ZpbGUgYXBpIDEgYm1pX2lkIE4vQQpjcmMzMiBlZDVmODQ5YQoKWW91ciBib2Fy
-ZC0yLmJpbiBkb2Vzbid0IGNvbnRhaW4gdGhlIG1hdGNoaW5nIGJvYXJkIGRhdGEgYW5kIHRoZQpk
-cml2ZXIgdGhlbiBmYWxscyBiYWNrIHRvIHRoZSBvbGRlciBib2FyZCBBUEkxIHdoaWNoIGlzIHBy
-ZXR0eSBtdWNoCmRvb21lZCB0byBmYWlsIG9uIHFjYTYxNzQgaHcuMy4KCkBLYWxsZTogUGVyaGFw
-cyBhdGgxMGsgbmVlZHMgdG8gZmFpbCBlYXJseSB3aXRoIGFuIGFkZXF1YXRlIG1lc3NhZ2UKZm9y
-IHFjYTYxNzQgaHcuMyBpZiBib2FyZCBBUEkyIGxvb2t1cCBmYWlscyAoZS5nLiBod19wYXJhbXMg
-ZmxhZwpiZWNhdXNlIHRoaXMgc2VlbXMgdG8gYmUgcXVpdGUgY2xvc2VseSBjb3VwbGVkIHdpdGgg
-aGFyZHdhcmUgaXRzZWxmKS4KCkBTdGFuaXNsYXc6IFlvdSBlaXRoZXIgbmVlZCB0byBncmFiIGEg
-bW9yZSByZWNlbnQgYm9hcmQtMi5iaW4KKGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgxMGst
-ZmlybXdhcmUvdHJlZS9tYXN0ZXIvUUNBNjE3NC9odzMuMCksCmFzayBLYWxsZSAmIHdhaXQsIG9y
-IGNvb2sgdXAgeW91ciBvd24gKGlmIHlvdSByZWFsbHkgbmVlZCBpdCB3b3JraW5nCipub3cqKSBi
-eSBnZXR0aW5nIFdpbmRvd3MgZHJpdmVyIGFuZCBkaXNzZWN0aW5nIGl0ICh0aGUgLmluZiBmaWxl
-CmNvbnRhaW5zIGVub3VnaCBpbmZvcm1hdGlvbiBmb3IgeW91IHRvIG1hcCBib2FyZCBkYXRhIGFs
-c28gcmVmZXJyZWQgdG8KYXMgZWVwcm9tLXNvbWV0aGluZyBpbiB0aGUgV2luZG93cyBibG9iKS4K
-CgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On Tue, Jul 19, 2016 at 09:18:01AM +0200, Michal Kazior wrote:
+> On 19 July 2016 at 09:09, Stanislaw Gruszka <sgruszka@redhat.com> wrote:
+> > Perry from Dell has ath10k device, which do not work with current
+> > linux-firmware. It's on RHEL kernel, however wirelss stack and drivers
+> > are from 4.7-rc1 (I did not update to 4.7 final yet, since I do not see
+> > ath10k fix, which could possibly help here). Partial dmesg is in
+> > the attachment.
+> 
+> hw.3 qca6174 chips tend to require very specific board data for proper
+> calibration.
+> 
+>   [ 3838.601884] ath10k_pci 0000:01:00.0: failed to fetch board data
+> for bus=pci,vendor=168c,device=003e,subsystem-vendor=1028,subsystem-device=0310
+> from ath10k/QCA6174/hw3.0/board-2.bin
+>   [ 3838.601920] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A
+> crc32 ed5f849a
+> 
+> Your board-2.bin doesn't contain the matching board data and the
+> driver then falls back to the older board API1 which is pretty much
+> doomed to fail on qca6174 hw.3.
+> 
+> @Kalle: Perhaps ath10k needs to fail early with an adequate message
+> for qca6174 hw.3 if board API2 lookup fails (e.g. hw_params flag
+> because this seems to be quite closely coupled with hardware itself).
+> 
+> @Stanislaw: You either need to grab a more recent board-2.bin
+> (https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0),
+
+@Perry, could you replace board-2.bin from above link on
+/lib/firmware/ath10k/QCA6174/hw3.0/ and check if that work ?
+
+> ask Kalle & wait, or cook up your own (if you really need it working
+> *now*) by getting Windows driver and dissecting it (the .inf file
+> contains enough information for you to map board data also referred to
+> as eeprom-something in the Windows blob).
+
+I think we can wait till firmware will be updated upstream, however
+Dell would like to know if what we provide in new RHEL7 release
+will work on their hardware.
+
+Thanks
+Stanislaw
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
