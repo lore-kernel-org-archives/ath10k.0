@@ -1,20 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-it0-x22b.google.com ([2607:f8b0:4001:c0b::22b])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPWuj-00073O-8U
- for ath10k@lists.infradead.org; Tue, 19 Jul 2016 15:26:29 +0000
-From: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix system hang at qca99x0 probe on x86 platform
-Date: Tue, 19 Jul 2016 15:25:49 +0000
-Message-ID: <1468941948774.87860@qti.qualcomm.com>
+ id 1bPXeH-0001Y8-38
+ for ath10k@lists.infradead.org; Tue, 19 Jul 2016 16:13:34 +0000
+Received: by mail-it0-x22b.google.com with SMTP id f6so95138174ith.1
+ for <ath10k@lists.infradead.org>; Tue, 19 Jul 2016 09:13:11 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1468941948774.87860@qti.qualcomm.com>
 References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
  <e05dcb58-1cb1-a33a-31bb-b8ba1edf1363@dd-wrt.com>
  <fa3eab06-28f0-e5d4-2e92-770134b49dfa@dd-wrt.com>
- <1467218124941.40575@qti.qualcomm.com>,
+ <1467218124941.40575@qti.qualcomm.com>
  <CA+BoTQkepLz55Vdr7OuMnPQPLKq_+vjZi=m2Y9rHLRgBZPsWOw@mail.gmail.com>
-In-Reply-To: <CA+BoTQkepLz55Vdr7OuMnPQPLKq_+vjZi=m2Y9rHLRgBZPsWOw@mail.gmail.com>
-Content-Language: en-US
-MIME-Version: 1.0
+ <1468941948774.87860@qti.qualcomm.com>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Tue, 19 Jul 2016 09:13:08 -0700
+Message-ID: <CAJ-Vmon1duBNcWhjaNdANYFfd3hwQUYYHrmx7LRZvT-Ec2x1Cg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix system hang at qca99x0 probe on x86 platform
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,68 +25,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>, Rajkumar Manoharan <rmanohar@codeaurora.org>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, "nbd@nbd.name" <nbd@nbd.name>
+To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, "Valo,
+ Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "nbd@nbd.name" <nbd@nbd.name>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>
 
-On June 30, 2016 12:39 PM, Michal Kazior <michal.kazior@tieto.com> wrote:
-> On 29 June 2016 at 18:35, Manoharan, Rajkumar <rmanohar@qti.qualcomm.com>=
- wrote:
->>>> Am 29.06.2016 um 16:04 schrieb Sebastian Gottschall:
->>>> this fix will crash QCA9980 on QCA IPQ8064 cpu based systems.
->>>> so please rework it, or leave it out.
->>>> note:
->>>> maybe the limit of 256kb is too low for that card
->>>>
->>> by the way. 512 works
->
-> I think this suggests the problem isn't about memory chunk size limit
-> per se but some kind of bug in address/offset logic in fw or hw.
-> =
-
-> DMA coherent and single-map addresses use completely different ranges
-> in many cases. Perhaps some MSBs are not properly handled in fw or hw.
-> I recall there is a magic macro through which target device accesses
-> host memory so maybe that's a good place to look to better understand
-> the problem?
-> =
-
-Micha=B3,
-
-Could you please shed some light on this issue? It seems this issue is popp=
-ing up
-more frequently and there are multiple threads for this issue.
-
-"Anyone brought up 9984 NIC on x86-64?"
-"AR9882 IOMMU faults"
-
-> I recall Ben mentioned he worked around the problem by enabling
-> IOMMU/VT-d on his system. This could either prevent the device from
-> doing bad things or maybe changed DMA address ranges that are handed
-> out to the driver effectively or changed PCI controller behavior in
-> some way.
->
->> Thanks a lot Sebastian. Let me confirm the same on x86 and will update t=
-he change.
-> =
-
-> Just changing the memory chunk size limit blindly is bad and
-> Sebastian's crash has proven it. 512 may seem to work now but it may
-> fail with a other 10.4 firmware revisions or make x86 hang in other
-> cases.
-> =
-
-Even with current logic, If the memory chunk allocation fails for bigger si=
-ze, then it tries
-to allocate smaller chunks. So If smaller chunks causes unexpected behaviou=
-r, it is even
-applicable to existing logic. no?
-
--Rajkumar
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTkgSnVseSAyMDE2IGF0IDA4OjI1LCBNYW5vaGFyYW4sIFJhamt1bWFyIDxybWFub2hhckBx
+dGkucXVhbGNvbW0uY29tPiB3cm90ZToKPiBPbiBKdW5lIDMwLCAyMDE2IDEyOjM5IFBNLCBNaWNo
+YWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4+IE9uIDI5IEp1bmUg
+MjAxNiBhdCAxODozNSwgTWFub2hhcmFuLCBSYWprdW1hciA8cm1hbm9oYXJAcXRpLnF1YWxjb21t
+LmNvbT4gd3JvdGU6Cj4+Pj4+IEFtIDI5LjA2LjIwMTYgdW0gMTY6MDQgc2NocmllYiBTZWJhc3Rp
+YW4gR290dHNjaGFsbDoKPj4+Pj4gdGhpcyBmaXggd2lsbCBjcmFzaCBRQ0E5OTgwIG9uIFFDQSBJ
+UFE4MDY0IGNwdSBiYXNlZCBzeXN0ZW1zLgo+Pj4+PiBzbyBwbGVhc2UgcmV3b3JrIGl0LCBvciBs
+ZWF2ZSBpdCBvdXQuCj4+Pj4+IG5vdGU6Cj4+Pj4+IG1heWJlIHRoZSBsaW1pdCBvZiAyNTZrYiBp
+cyB0b28gbG93IGZvciB0aGF0IGNhcmQKPj4+Pj4KPj4+PiBieSB0aGUgd2F5LiA1MTIgd29ya3MK
+Pj4KPj4gSSB0aGluayB0aGlzIHN1Z2dlc3RzIHRoZSBwcm9ibGVtIGlzbid0IGFib3V0IG1lbW9y
+eSBjaHVuayBzaXplIGxpbWl0Cj4+IHBlciBzZSBidXQgc29tZSBraW5kIG9mIGJ1ZyBpbiBhZGRy
+ZXNzL29mZnNldCBsb2dpYyBpbiBmdyBvciBody4KPj4KPj4gRE1BIGNvaGVyZW50IGFuZCBzaW5n
+bGUtbWFwIGFkZHJlc3NlcyB1c2UgY29tcGxldGVseSBkaWZmZXJlbnQgcmFuZ2VzCj4+IGluIG1h
+bnkgY2FzZXMuIFBlcmhhcHMgc29tZSBNU0JzIGFyZSBub3QgcHJvcGVybHkgaGFuZGxlZCBpbiBm
+dyBvciBody4KPj4gSSByZWNhbGwgdGhlcmUgaXMgYSBtYWdpYyBtYWNybyB0aHJvdWdoIHdoaWNo
+IHRhcmdldCBkZXZpY2UgYWNjZXNzZXMKPj4gaG9zdCBtZW1vcnkgc28gbWF5YmUgdGhhdCdzIGEg
+Z29vZCBwbGFjZSB0byBsb29rIHRvIGJldHRlciB1bmRlcnN0YW5kCj4+IHRoZSBwcm9ibGVtPwo+
+Pgo+IE1pY2hhxYIsCj4KPiBDb3VsZCB5b3UgcGxlYXNlIHNoZWQgc29tZSBsaWdodCBvbiB0aGlz
+IGlzc3VlPyBJdCBzZWVtcyB0aGlzIGlzc3VlIGlzIHBvcHBpbmcgdXAKPiBtb3JlIGZyZXF1ZW50
+bHkgYW5kIHRoZXJlIGFyZSBtdWx0aXBsZSB0aHJlYWRzIGZvciB0aGlzIGlzc3VlLgo+Cj4gIkFu
+eW9uZSBicm91Z2h0IHVwIDk5ODQgTklDIG9uIHg4Ni02ND8iCj4gIkFSOTg4MiBJT01NVSBmYXVs
+dHMiCj4KPj4gSSByZWNhbGwgQmVuIG1lbnRpb25lZCBoZSB3b3JrZWQgYXJvdW5kIHRoZSBwcm9i
+bGVtIGJ5IGVuYWJsaW5nCj4+IElPTU1VL1ZULWQgb24gaGlzIHN5c3RlbS4gVGhpcyBjb3VsZCBl
+aXRoZXIgcHJldmVudCB0aGUgZGV2aWNlIGZyb20KPj4gZG9pbmcgYmFkIHRoaW5ncyBvciBtYXli
+ZSBjaGFuZ2VkIERNQSBhZGRyZXNzIHJhbmdlcyB0aGF0IGFyZSBoYW5kZWQKPj4gb3V0IHRvIHRo
+ZSBkcml2ZXIgZWZmZWN0aXZlbHkgb3IgY2hhbmdlZCBQQ0kgY29udHJvbGxlciBiZWhhdmlvciBp
+bgo+PiBzb21lIHdheS4KPj4KPj4+IFRoYW5rcyBhIGxvdCBTZWJhc3RpYW4uIExldCBtZSBjb25m
+aXJtIHRoZSBzYW1lIG9uIHg4NiBhbmQgd2lsbCB1cGRhdGUgdGhlIGNoYW5nZS4KPj4KPj4gSnVz
+dCBjaGFuZ2luZyB0aGUgbWVtb3J5IGNodW5rIHNpemUgbGltaXQgYmxpbmRseSBpcyBiYWQgYW5k
+Cj4+IFNlYmFzdGlhbidzIGNyYXNoIGhhcyBwcm92ZW4gaXQuIDUxMiBtYXkgc2VlbSB0byB3b3Jr
+IG5vdyBidXQgaXQgbWF5Cj4+IGZhaWwgd2l0aCBhIG90aGVyIDEwLjQgZmlybXdhcmUgcmV2aXNp
+b25zIG9yIG1ha2UgeDg2IGhhbmcgaW4gb3RoZXIKPj4gY2FzZXMuCj4+Cj4gRXZlbiB3aXRoIGN1
+cnJlbnQgbG9naWMsIElmIHRoZSBtZW1vcnkgY2h1bmsgYWxsb2NhdGlvbiBmYWlscyBmb3IgYmln
+Z2VyIHNpemUsIHRoZW4gaXQgdHJpZXMKPiB0byBhbGxvY2F0ZSBzbWFsbGVyIGNodW5rcy4gU28g
+SWYgc21hbGxlciBjaHVua3MgY2F1c2VzIHVuZXhwZWN0ZWQgYmVoYXZpb3VyLCBpdCBpcyBldmVu
+Cj4gYXBwbGljYWJsZSB0byBleGlzdGluZyBsb2dpYy4gbm8/CgpUcnkgYWxsb2NhdGluZyBXTUkg
+bWVtb3J5IHdpdGggR0ZQX0RNQTMyLiBUaGUgd2F5IGl0IGN1cnJlbnRseSBpcwp3b3JraW5nIGlu
+IGxpbnV4IGlzIHRoYXQgY2FsaW5nIGRtYSBtYXAgZW5kcyB1cCBhbGxvY2F0aW5nIGlvbW11IHNs
+b3RzCnRvIG1hcCB0aGF0IDY0IGJpdCBtZW1vcnkgYmFjayBpbnRvIDMyIGJpdCBzcGFjZSwgL29y
+LyBpdCB3aWxsIGVuZCB1cAphbGxvY2F0aW5nIGJvdW5jZSBidWZmZXJzLgoKVGhlIFdNSSBtZW1v
+cnkgYWxsb2Mgcm91dGluZSBpcyBiZWluZyB1c2VkIGZvciB0aGUgc3dhcCBzcGFjZSB0b28sCndo
+aWNoIGVuZHMgdXAgd2l0aCA3MDBrYnl0ZSBvciBtb3JlIGFsbG9jYXRlZCB0d2ljZSAtIG9uY2Ug
+Zm9yIHRoZQppbml0aWFsIGFsbG9jLCBhbmQgYW5vdGhlciBmb3IgdGhlIGRtYSBtYXAgY2FsbC4K
+CllvdSBzaG91bGQgdHJ5IEdGUF9ETUEzMiBhbmQgc2VlIGlmIHRoYXQgZml4ZXMgaXQuIFlvdSBu
+ZWVkIGNvbnRpZywgPAozMiBiaXQgcGh5c2ljYWwgbWVtb3J5IGFsbG9jYXRlZCwgYW5kIGJvdW5j
+ZSBidWZmZXJzIGFyZSByZWFsbHkKc3VwcG9zZWQgdG8gYmUgZXBoZW1lcmFsLgoKCgotYWRyaWFu
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
