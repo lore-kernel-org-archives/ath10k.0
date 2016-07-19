@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x234.google.com ([2a00:1450:4010:c07::234])
+Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPSKc-0004Uc-2z
- for ath10k@lists.infradead.org; Tue, 19 Jul 2016 10:32:55 +0000
-Received: by mail-lf0-x234.google.com with SMTP id g62so10054015lfe.3
- for <ath10k@lists.infradead.org>; Tue, 19 Jul 2016 03:32:31 -0700 (PDT)
+ id 1bPUcD-0004Fq-1Y
+ for ath10k@lists.infradead.org; Tue, 19 Jul 2016 12:59:23 +0000
+Received: by mail-lf0-x22e.google.com with SMTP id l69so13517536lfg.1
+ for <ath10k@lists.infradead.org>; Tue, 19 Jul 2016 05:58:50 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 0/4] ath10k: fix spurious tx/rx during boot
-Date: Tue, 19 Jul 2016 12:34:08 +0200
-Message-Id: <1468924452-23877-1-git-send-email-michal.kazior@tieto.com>
+Subject: [RFC] ath10k: silence firmware file probing warnings
+Date: Tue, 19 Jul 2016 15:00:37 +0200
+Message-Id: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +23,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com
-Cc: marek.puzyniak@tieto.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-Hi,
+Firmware files are versioned to prevent older
+driver instances to load unsupported firmware
+blobs. This is reflected with a fallback logic
+which attempts to load several firmware files.
 
-Recently Marek discovered the device transmits
-"stuff" during device/driver boot.
+This however produced a lot of unnecessary
+warnings sometimes confusing users and leading
+them to rename firmware files making things even
+more confusing.
 
-The problem is related with the long known "no
-channel" warning and it's a consequence of the
-same bug - rx filters not being programmed
-properly by firmware.
+Hence use request_firmware_direct() which does not
+produce extra warnings. This shouldn't really
+break anything because most modern systems don't
+rely on udev/hotplug helpers to load firmware
+files anymore.
 
-See last patch for more details.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c     | 11 +++++------
+ drivers/net/wireless/ath/ath10k/testmode.c |  5 ++++-
+ 2 files changed, 9 insertions(+), 7 deletions(-)
 
-I didn't do extensive testing but I can confirm
-that I am no longer able to reroduce "no channel"
-warnings and Marek tells me he no longer sees any
-signal bumps on oscilloscope with his QCA9882.
-
-
-
-Michal Kazior (4):
-  ath10k: implement wmi echo command
-  ath10k: implement wmi echo event
-  ath10k: add wmi command barrier utility
-  ath10k: fix spurious tx/rx during boot
-
- drivers/net/wireless/ath/ath10k/core.c    | 68 +++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/core.h    |  1 +
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 29 +++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 57 +++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c     | 83 ++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wmi.h     |  5 ++
- 6 files changed, 242 insertions(+), 1 deletion(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index e88982921aa3..81bfb71fe876 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -431,7 +431,10 @@ static const struct firmware *ath10k_fetch_fw_file(struct ath10k *ar,
+ 		dir = ".";
+ 
+ 	snprintf(filename, sizeof(filename), "%s/%s", dir, file);
+-	ret = request_firmware(&fw, filename, ar->dev);
++	ret = request_firmware_direct(&fw, filename, ar->dev);
++	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot fw request '%s': %d\n",
++		   filename, ret);
++
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
+@@ -1089,12 +1092,8 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
+ 	/* first fetch the firmware file (firmware-*.bin) */
+ 	fw_file->firmware = ath10k_fetch_fw_file(ar, ar->hw_params.fw.dir,
+ 						 name);
+-	if (IS_ERR(fw_file->firmware)) {
+-		ath10k_err(ar, "could not fetch firmware file '%s/%s': %ld\n",
+-			   ar->hw_params.fw.dir, name,
+-			   PTR_ERR(fw_file->firmware));
++	if (IS_ERR(fw_file->firmware))
+ 		return PTR_ERR(fw_file->firmware);
+-	}
+ 
+ 	data = fw_file->firmware->data;
+ 	len = fw_file->firmware->size;
+diff --git a/drivers/net/wireless/ath/ath10k/testmode.c b/drivers/net/wireless/ath/ath10k/testmode.c
+index 120f4234d3b0..fe49e7a83d00 100644
+--- a/drivers/net/wireless/ath/ath10k/testmode.c
++++ b/drivers/net/wireless/ath/ath10k/testmode.c
+@@ -149,7 +149,10 @@ static int ath10k_tm_fetch_utf_firmware_api_1(struct ath10k *ar,
+ 		 ar->hw_params.fw.dir, ATH10K_FW_UTF_FILE);
+ 
+ 	/* load utf firmware image */
+-	ret = request_firmware(&fw_file->firmware, filename, ar->dev);
++	ret = request_firmware_direct(&fw_file->firmware, filename, ar->dev);
++	ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode fw request '%s': %d\n",
++		   filename, ret);
++
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to retrieve utf firmware '%s': %d\n",
+ 			    filename, ret);
 -- 
 2.1.4
 
