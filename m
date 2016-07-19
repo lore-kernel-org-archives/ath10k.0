@@ -1,23 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from esa1.dell-outbound.iphmx.com ([68.232.153.90])
+Received: from mail-lf0-x22a.google.com ([2a00:1450:4010:c07::22a])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPRZs-0008Ld-Ni
- for ath10k@lists.infradead.org; Tue, 19 Jul 2016 09:44:37 +0000
-From: <Perry_Yuan@Dell.com>
-Date: Tue, 19 Jul 2016 17:41:41 +0800
-Subject: RE: ath10k fail to load firmware
-Message-ID: <A3D794F1192BBF449DF2EC3D7EE263F44A5402F143@SHAX7MCDC101.APAC.DELL.COM>
-References: <20160719070932.GA2751@redhat.com>
- <CA+BoTQn98UFuGT0NntdE1HgG9UmmwzS=JsGkLmeGoMHSFGyDRg@mail.gmail.com>
- <20160719072754.GB2751@redhat.com>
- <A3D794F1192BBF449DF2EC3D7EE263F44A5402F0C8@SHAX7MCDC101.APAC.DELL.COM>
- <CA+BoTQn4T+4zMrJEbLBfu92w=mVqWBZZkZaYaW__V2_-VLkCyQ@mail.gmail.com>
- <A3D794F1192BBF449DF2EC3D7EE263F44A5402F107@SHAX7MCDC101.APAC.DELL.COM>
- <CA+BoTQk7QKaO2yxMq5JEhrBhn4WtpmWTcOxfiXcvYxrFvaxdgw@mail.gmail.com>
- <20160719092727.GD2751@redhat.com>
-In-Reply-To: <20160719092727.GD2751@redhat.com>
-Content-Language: en-US
-MIME-Version: 1.0
+ id 1bPSKd-0004VJ-VC
+ for ath10k@lists.infradead.org; Tue, 19 Jul 2016 10:32:59 +0000
+Received: by mail-lf0-x22a.google.com with SMTP id f93so10085503lfi.2
+ for <ath10k@lists.infradead.org>; Tue, 19 Jul 2016 03:32:35 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 3/4] ath10k: add wmi command barrier utility
+Date: Tue, 19 Jul 2016 12:34:11 +0200
+Message-Id: <1468924452-23877-4-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1468924452-23877-1-git-send-email-michal.kazior@tieto.com>
+References: <1468924452-23877-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,76 +19,114 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: sgruszka@redhat.com, michal.kazior@tieto.com
-Cc: kvalo@qca.qualcomm.com, Yijun_Shen@Dell.com, ath10k@lists.infradead.org
+To: kvalo@qca.qualcomm.com
+Cc: marek.puzyniak@tieto.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-Dell - Internal Use - Confidential =
+This allows placing command barriers for explicit
+serializing and synchronizing state.
 
+Useful for future driver development.
 
-Yeah , I  provide the logs from two system .  but I don't   notice the  wir=
-eless card system ID is different .
-In my opinion . even the subsystem ID is not same . at least one wireless c=
-ar should work well . =
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h |  1 +
+ drivers/net/wireless/ath/ath10k/wmi.c  | 31 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h  |  1 +
+ 3 files changed, 33 insertions(+)
 
-The two cards all not working with current firmware .
-
-So  could you tell me how to make it available  ?
-
-
-keep up the good work
-Perry=A0 Yuan
-Dell | Client Software Group | Platform Sftwr Senior Engineer
-office +86 21 22030689, mobile +86 18521512823
-perry_yuan@dell.com
-Please consider the environment before printing this email.
-
-
------Original Message-----
-From: Stanislaw Gruszka [mailto:sgruszka@redhat.com] =
-
-Sent: Tuesday, July 19, 2016 5:27 PM
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Yuan, Perry <Perry_Yuan@Dell.com>; Kalle Valo <kvalo@qca.qualcomm.com>;=
- ath10k@lists.infradead.org; Shen, Yijun <Yijun_Shen@Dell.com>
-Subject: Re: ath10k fail to load firmware
-
-On Tue, Jul 19, 2016 at 11:17:03AM +0200, Michal Kazior wrote:
-> On 19 July 2016 at 11:02,  <Perry_Yuan@dell.com> wrote:
-> > Dell - Internal Use - Confidential
-> >
-> > I rename the bin file  . and capture new full logs from booting to firm=
-ware error .
-> > The error still happened. Please help to check it .
-> > I want to know whether the new firmware bin are updated  the right one =
- in this git ?
-> > If the firmware is good , the errors should be gone .
-
-Please use reply-to-all, so I could see messages. You can drop ML eventuall=
-y if you thing your data is confidential.
-
-> Thanks for checking!
-> =
-
-> Apparently the available board-2.bin doesn't contain any subsystem
-> vendor=3D1028 board data (just checked).
-> =
-
-> Also, you guys (i.e. Perry & Stanislaw) seem to be using 2 slightly =
-
-> different devices. One reports its subsystem ids as 1028:0310 (in the =
-
-> original log Stanislaw provided) and 1028:0410 (found in logs attached =
-
-> by Perry).
-
-I provided dmesg, which I get from Perry, hence seems that Perry tests on 2=
- different devices :-)
-
-Stanislaw =
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 9374bcde3d35..bf385052b168 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -142,6 +142,7 @@ struct ath10k_wmi {
+ 	enum ath10k_htc_ep_id eid;
+ 	struct completion service_ready;
+ 	struct completion unified_ready;
++	struct completion barrier;
+ 	wait_queue_head_t tx_credits_wq;
+ 	DECLARE_BITMAP(svc_map, WMI_SERVICE_MAX);
+ 	struct wmi_cmd_map *cmd;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 8ca76ecd7e9b..2bd9f2d0f186 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -29,6 +29,9 @@
+ #include "p2p.h"
+ #include "hw.h"
+ 
++#define ATH10K_WMI_BARRIER_ECHO_ID 0xBA991E9
++#define ATH10K_WMI_BARRIER_TIMEOUT_HZ (3 * HZ)
++
+ /* MAIN WMI cmd track */
+ static struct wmi_cmd_map wmi_cmd_map = {
+ 	.init_cmdid = WMI_INIT_CMDID,
+@@ -2507,6 +2510,9 @@ void ath10k_wmi_event_echo(struct ath10k *ar, struct sk_buff *skb)
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI,
+ 		   "wmi event echo value 0x%08x\n",
+ 		   le32_to_cpu(arg.value));
++
++	if (le32_to_cpu(arg.value) == ATH10K_WMI_BARRIER_ECHO_ID)
++		complete(&ar->wmi.barrier);
+ }
+ 
+ int ath10k_wmi_event_debug_mesg(struct ath10k *ar, struct sk_buff *skb)
+@@ -7689,6 +7695,30 @@ ath10k_wmi_op_gen_echo(struct ath10k *ar, u32 value)
+ 	return skb;
+ }
+ 
++int
++ath10k_wmi_barrier(struct ath10k *ar)
++{
++	int ret;
++	int time_left;
++
++	spin_lock_bh(&ar->data_lock);
++	reinit_completion(&ar->wmi.barrier);
++	spin_unlock_bh(&ar->data_lock);
++
++	ret = ath10k_wmi_echo(ar, ATH10K_WMI_BARRIER_ECHO_ID);
++	if (ret) {
++		ath10k_warn(ar, "failed to submit wmi echo: %d\n", ret);
++		return ret;
++	}
++
++	time_left = wait_for_completion_timeout(&ar->wmi.barrier,
++						ATH10K_WMI_BARRIER_TIMEOUT_HZ);
++	if (!time_left)
++		return -ETIMEDOUT;
++
++	return 0;
++}
++
+ static const struct wmi_ops wmi_ops = {
+ 	.rx = ath10k_wmi_op_rx,
+ 	.map_svc = wmi_main_svc_map,
+@@ -8086,6 +8116,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
+ 
+ 	init_completion(&ar->wmi.service_ready);
+ 	init_completion(&ar->wmi.unified_ready);
++	init_completion(&ar->wmi.barrier);
+ 
+ 	INIT_WORK(&ar->svc_rdy_work, ath10k_wmi_event_service_ready_work);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 086d78807d2f..89adfa90ee8d 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6628,5 +6628,6 @@ void ath10k_wmi_10_4_op_fw_stats_fill(struct ath10k *ar,
+ 				      char *buf);
+ int ath10k_wmi_op_get_vdev_subtype(struct ath10k *ar,
+ 				   enum wmi_vdev_subtype subtype);
++int ath10k_wmi_barrier(struct ath10k *ar);
+ 
+ #endif /* _WMI_H_ */
+-- 
+2.1.4
 
 
 _______________________________________________
