@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from esa5.dell-outbound.iphmx.com ([68.232.153.95])
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPQKx-0001sU-58
- for ath10k@lists.infradead.org; Tue, 19 Jul 2016 08:25:08 +0000
-From: <Perry_Yuan@Dell.com>
-Date: Tue, 19 Jul 2016 16:24:41 +0800
-Subject: RE: ath10k fail to load firmware
-Message-ID: <A3D794F1192BBF449DF2EC3D7EE263F44A5402F0C8@SHAX7MCDC101.APAC.DELL.COM>
+ id 1bPQSw-0006V7-6I
+ for ath10k@lists.infradead.org; Tue, 19 Jul 2016 08:33:23 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id r190so24932736wmr.0
+ for <ath10k@lists.infradead.org>; Tue, 19 Jul 2016 01:33:01 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <A3D794F1192BBF449DF2EC3D7EE263F44A5402F0C8@SHAX7MCDC101.APAC.DELL.COM>
 References: <20160719070932.GA2751@redhat.com>
  <CA+BoTQn98UFuGT0NntdE1HgG9UmmwzS=JsGkLmeGoMHSFGyDRg@mail.gmail.com>
  <20160719072754.GB2751@redhat.com>
-In-Reply-To: <20160719072754.GB2751@redhat.com>
-Content-Language: en-US
-Content-Type: multipart/mixed;
- boundary="_002_A3D794F1192BBF449DF2EC3D7EE263F44A5402F0C8SHAX7MCDC101A_"
-MIME-Version: 1.0
+ <A3D794F1192BBF449DF2EC3D7EE263F44A5402F0C8@SHAX7MCDC101.APAC.DELL.COM>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Tue, 19 Jul 2016 10:32:59 +0200
+Message-ID: <CA+BoTQn4T+4zMrJEbLBfu92w=mVqWBZZkZaYaW__V2_-VLkCyQ@mail.gmail.com>
+Subject: Re: ath10k fail to load firmware
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,240 +23,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: sgruszka@redhat.com, michal.kazior@tieto.com
-Cc: kvalo@qca.qualcomm.com, ath10k@lists.infradead.org
+To: Perry_Yuan@dell.com
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, Stanislaw Gruszka <sgruszka@redhat.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
---_002_A3D794F1192BBF449DF2EC3D7EE263F44A5402F0C8SHAX7MCDC101A_
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-Dell - Internal Use - Confidential=20
-
-HI  All:
-I have replaced the new firmware files to old one. And I build new ath10k_p=
-ci.ko ,ath10k_core.ko to get some=20
-debug info.
-
-The new firmware is still not loaded by ath10k driver .=20
-And I compare the driver codes with 4.7 -rc7 , the codes are almost same.=20
-So the issue should be in  firmware scope. =20
-
-[  590.486970] ath10k_pci 0000:02:00.0: Hardware name qca6174 hw3.2 version=
- 0x5030000
-[  590.487158] ath10k_pci 0000:02:00.0: Direct firmware load failed with er=
-ror -2
-[  590.487159] ath10k_pci 0000:02:00.0: Falling back to user helper
-
-
-
-keep up the good work
-Perry=A0 Yuan
-Dell | Client Software Group | Platform Sftwr Senior Engineer
-office +86 21 22030689, mobile +86 18521512823
-perry_yuan@dell.com
-Please consider the environment before printing this email.
-
-
------Original Message-----
-From: Stanislaw Gruszka [mailto:sgruszka@redhat.com]=20
-Sent: Tuesday, July 19, 2016 3:28 PM
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>; ath10k@lists.infradead.org; Yuan, =
-Perry <Perry_Yuan@Dell.com>
-Subject: Re: ath10k fail to load firmware
-
-On Tue, Jul 19, 2016 at 09:18:01AM +0200, Michal Kazior wrote:
-> On 19 July 2016 at 09:09, Stanislaw Gruszka <sgruszka@redhat.com> wrote:
-> > Perry from Dell has ath10k device, which do not work with current=20
-> > linux-firmware. It's on RHEL kernel, however wirelss stack and=20
-> > drivers are from 4.7-rc1 (I did not update to 4.7 final yet, since I=20
-> > do not see ath10k fix, which could possibly help here). Partial=20
-> > dmesg is in the attachment.
->=20
-> hw.3 qca6174 chips tend to require very specific board data for proper=20
-> calibration.
->=20
->   [ 3838.601884] ath10k_pci 0000:01:00.0: failed to fetch board data=20
-> for=20
-> bus=3Dpci,vendor=3D168c,device=3D003e,subsystem-vendor=3D1028,subsystem-d=
-evice
-> =3D0310
-> from ath10k/QCA6174/hw3.0/board-2.bin
->   [ 3838.601920] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A
-> crc32 ed5f849a
->=20
-> Your board-2.bin doesn't contain the matching board data and the=20
-> driver then falls back to the older board API1 which is pretty much=20
-> doomed to fail on qca6174 hw.3.
->=20
-> @Kalle: Perhaps ath10k needs to fail early with an adequate message=20
-> for qca6174 hw.3 if board API2 lookup fails (e.g. hw_params flag=20
-> because this seems to be quite closely coupled with hardware itself).
->=20
-> @Stanislaw: You either need to grab a more recent board-2.bin=20
-> (https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0),
-
-@Perry, could you replace board-2.bin from above link on /lib/firmware/ath1=
-0k/QCA6174/hw3.0/ and check if that work ?
-
-> ask Kalle & wait, or cook up your own (if you really need it working
-> *now*) by getting Windows driver and dissecting it (the .inf file=20
-> contains enough information for you to map board data also referred to=20
-> as eeprom-something in the Windows blob).
-
-I think we can wait till firmware will be updated upstream, however Dell wo=
-uld like to know if what we provide in new RHEL7 release will work on their=
- hardware.
-
-Thanks
-Stanislaw
-
---_002_A3D794F1192BBF449DF2EC3D7EE263F44A5402F0C8SHAX7MCDC101A_
-Content-Type: text/plain; name="ath10k_log_new_fw_1.txt"
-Content-Description: ath10k_log_new_fw_1.txt
-Content-Disposition: attachment; filename="ath10k_log_new_fw_1.txt";
-	size=7129; creation-date="Tue, 19 Jul 2016 00:16:46 GMT";
-	modification-date="Tue, 19 Jul 2016 00:16:46 GMT"
-Content-Transfer-Encoding: base64
-
-WyAgNTkwLjI2OTI5MF0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IHBjaSBwcm9iZSAxNjhjOjAw
-M2UgMTAyODowNDEwClsgIDU5MC4yNzA0MTJdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290
-IHBjaV9tZW0gMHhmZmZmYzkwMDA0YzAwMDAwClsgIDU5MC4yNzg5NjhdIGF0aDEwa19wY2kgMDAw
-MDowMjowMC4wOiBpcnEgMTM0IGZvciBNU0kvTVNJLVgKWyAgNTkwLjI3OTIwN10gYXRoMTBrX3Bj
-aSAwMDAwOjAyOjAwLjA6IHBjaSBpcnEgbXNpIG9wZXJfaXJxX21vZGUgMiBpcnFfbW9kZSAwIHJl
-c2V0X21vZGUgMApbICA1OTAuMjc5MjE5XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCBx
-Y2E2MTc0IGNoaXAgcmVzZXQKWyAgNTkwLjI3OTIyMF0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6
-IGJvb3QgY29sZCByZXNldApbICA1OTAuMzIwNDQ0XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDog
-Ym9vdCBjb2xkIHJlc2V0IGNvbXBsZXRlClsgIDU5MC4zMjA0NDZdIGF0aDEwa19wY2kgMDAwMDow
-MjowMC4wOiBib290IHdhaXRpbmcgdGFyZ2V0IHRvIGluaXRpYWxpc2UKWyAgNTkwLjMyMDYwN10g
-YXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGJvb3QgdGFyZ2V0IGluZGljYXRvciAyClsgIDU5MC4z
-MjA3NTNdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290IHRhcmdldCBpbml0aWFsaXNlZApb
-ICA1OTAuMzIwNzUzXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCB3YXJtIHJlc2V0Clsg
-IDU5MC4zNDM0NzVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290IGluaXQgY2Ugc3JjIHJp
-bmcgaWQgMCBlbnRyaWVzIDE2IGJhc2VfYWRkciBmZmZmODgwMDM5YzIwMDAwClsgIDU5MC4zNDQw
-NDZdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290IGNlIGRlc3QgcmluZyBpZCAxIGVudHJp
-ZXMgNTEyIGJhc2VfYWRkciBmZmZmODgwMDM5YzQ4MDAwClsgIDU5MC4zNDQxNjBdIGF0aDEwa19w
-Y2kgMDAwMDowMjowMC4wOiBib290IGNlIGRlc3QgcmluZyBpZCAyIGVudHJpZXMgMTI4IGJhc2Vf
-YWRkciBmZmZmODgwMDFlZGQ5MDAwClsgIDU5MC4zNDQyNzFdIGF0aDEwa19wY2kgMDAwMDowMjow
-MC4wOiBib290IGluaXQgY2Ugc3JjIHJpbmcgaWQgMyBlbnRyaWVzIDMyIGJhc2VfYWRkciBmZmZm
-ODgwMDFlZmRiMDAwClsgIDU5MC4zNDQzOTBdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290
-IGluaXQgY2Ugc3JjIHJpbmcgaWQgNCBlbnRyaWVzIDgxOTIgYmFzZV9hZGRyIGZmZmY4ODAwMzlj
-YTAwMDAKWyAgNTkwLjM0NDUwNF0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGJvb3QgaW5pdCBj
-ZSBzcmMgcmluZyBpZCA3IGVudHJpZXMgMiBiYXNlX2FkZHIgZmZmZjg4MDAxZWY5NzAwMApbICA1
-OTAuMzQ1MDQxXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCBjZSBkZXN0IHJpbmcgaWQg
-NyBlbnRyaWVzIDIgYmFzZV9hZGRyIGZmZmY4ODAwMzljN2YwMDAKWyAgNTkwLjM0NTA0MV0gYXRo
-MTBrX3BjaSAwMDAwOjAyOjAwLjA6IGJvb3Qgd2FpdGluZyB0YXJnZXQgdG8gaW5pdGlhbGlzZQpb
-ICA1OTAuMzQ1MDQ0XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCB0YXJnZXQgaW5kaWNh
-dG9yIDAKWyAgNTkwLjM1NTIxNV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGJvb3QgdGFyZ2V0
-IGluZGljYXRvciAyClsgIDU5MC4zNTUyMjFdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290
-IHRhcmdldCBpbml0aWFsaXNlZApbICA1OTAuMzY3MDg5XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAu
-MDogYm9vdCBpbml0IGNlIHNyYyByaW5nIGlkIDAgZW50cmllcyAxNiBiYXNlX2FkZHIgZmZmZjg4
-MDAzOWMyMDAwMApbICA1OTAuMzY3MjAzXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCBj
-ZSBkZXN0IHJpbmcgaWQgMSBlbnRyaWVzIDUxMiBiYXNlX2FkZHIgZmZmZjg4MDAzOWM0ODAwMApb
-ICA1OTAuMzY3MzE4XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCBjZSBkZXN0IHJpbmcg
-aWQgMiBlbnRyaWVzIDEyOCBiYXNlX2FkZHIgZmZmZjg4MDAxZWRkOTAwMApbICA1OTAuMzY3NzEy
-XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCBpbml0IGNlIHNyYyByaW5nIGlkIDMgZW50
-cmllcyAzMiBiYXNlX2FkZHIgZmZmZjg4MDAxZWZkYjAwMApbICA1OTAuMzY4NTMwXSBhdGgxMGtf
-cGNpIDAwMDA6MDI6MDAuMDogYm9vdCBpbml0IGNlIHNyYyByaW5nIGlkIDQgZW50cmllcyA4MTky
-IGJhc2VfYWRkciBmZmZmODgwMDM5Y2EwMDAwClsgIDU5MC4zNjkzOTJdIGF0aDEwa19wY2kgMDAw
-MDowMjowMC4wOiBib290IGluaXQgY2Ugc3JjIHJpbmcgaWQgNyBlbnRyaWVzIDIgYmFzZV9hZGRy
-IGZmZmY4ODAwMWVmOTcwMDAKWyAgNTkwLjM3MDE0M10gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6
-IGJvb3QgY2UgZGVzdCByaW5nIGlkIDcgZW50cmllcyAyIGJhc2VfYWRkciBmZmZmODgwMDM5Yzdm
-MDAwClsgIDU5MC4zNzAxNDNdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290IHdhaXRpbmcg
-dGFyZ2V0IHRvIGluaXRpYWxpc2UKWyAgNTkwLjM3MDMwMF0gYXRoMTBrX3BjaSAwMDAwOjAyOjAw
-LjA6IGJvb3QgdGFyZ2V0IGluZGljYXRvciAwClsgIDU5MC4zODA0NjNdIGF0aDEwa19wY2kgMDAw
-MDowMjowMC4wOiBib290IHRhcmdldCBpbmRpY2F0b3IgMgpbICA1OTAuMzgwNzYxXSBhdGgxMGtf
-cGNpIDAwMDA6MDI6MDAuMDogYm9vdCB0YXJnZXQgaW5pdGlhbGlzZWQKWyAgNTkwLjM4MDc2Ml0g
-YXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGJvb3Qgd2FybSByZXNldCBjb21wbGV0ZQpbICA1OTAu
-MzgwNzYzXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCBxY2E2MTc0IGNoaXAgcmVzZXQg
-Y29tcGxldGUgKGNvbGQpClsgIDU5MC4zODA4MjddIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBi
-b290IGhpZiBwb3dlciB1cApbICA1OTAuMzgxMTY0XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDog
-Ym9vdCBxY2E2MTc0IGNoaXAgcmVzZXQKWyAgNTkwLjM4MTE2NV0gYXRoMTBrX3BjaSAwMDAwOjAy
-OjAwLjA6IGJvb3QgY29sZCByZXNldApbICA1OTAuNDIyNTA2XSBhdGgxMGtfcGNpIDAwMDA6MDI6
-MDAuMDogYm9vdCBjb2xkIHJlc2V0IGNvbXBsZXRlClsgIDU5MC40MjI1MTBdIGF0aDEwa19wY2kg
-MDAwMDowMjowMC4wOiBib290IHdhaXRpbmcgdGFyZ2V0IHRvIGluaXRpYWxpc2UKWyAgNTkwLjQy
-MjUxM10gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGJvb3QgdGFyZ2V0IGluZGljYXRvciAyClsg
-IDU5MC40MjI1MThdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290IHRhcmdldCBpbml0aWFs
-aXNlZApbICA1OTAuNDIyNTE5XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCB3YXJtIHJl
-c2V0ClsgIDU5MC40NDQ0NTddIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290IGluaXQgY2Ug
-c3JjIHJpbmcgaWQgMCBlbnRyaWVzIDE2IGJhc2VfYWRkciBmZmZmODgwMDM5YzIwMDAwClsgIDU5
-MC40NDQ0NjhdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290IGNlIGRlc3QgcmluZyBpZCAx
-IGVudHJpZXMgNTEyIGJhc2VfYWRkciBmZmZmODgwMDM5YzQ4MDAwClsgIDU5MC40NDQ0OTJdIGF0
-aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290IGNlIGRlc3QgcmluZyBpZCAyIGVudHJpZXMgMTI4
-IGJhc2VfYWRkciBmZmZmODgwMDFlZGQ5MDAwClsgIDU5MC40NDQ1MDRdIGF0aDEwa19wY2kgMDAw
-MDowMjowMC4wOiBib290IGluaXQgY2Ugc3JjIHJpbmcgaWQgMyBlbnRyaWVzIDMyIGJhc2VfYWRk
-ciBmZmZmODgwMDFlZmRiMDAwClsgIDU5MC40NDQ1MTddIGF0aDEwa19wY2kgMDAwMDowMjowMC4w
-OiBib290IGluaXQgY2Ugc3JjIHJpbmcgaWQgNCBlbnRyaWVzIDgxOTIgYmFzZV9hZGRyIGZmZmY4
-ODAwMzljYTAwMDAKWyAgNTkwLjQ0NDUyOV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGJvb3Qg
-aW5pdCBjZSBzcmMgcmluZyBpZCA3IGVudHJpZXMgMiBiYXNlX2FkZHIgZmZmZjg4MDAxZWY5NzAw
-MApbICA1OTAuNDQ0NTM5XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCBjZSBkZXN0IHJp
-bmcgaWQgNyBlbnRyaWVzIDIgYmFzZV9hZGRyIGZmZmY4ODAwMzljN2YwMDAKWyAgNTkwLjQ0NDU0
-MF0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGJvb3Qgd2FpdGluZyB0YXJnZXQgdG8gaW5pdGlh
-bGlzZQpbICA1OTAuNDQ0NTQyXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCB0YXJnZXQg
-aW5kaWNhdG9yIDAKWyAgNTkwLjQ1NDU2Nl0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGJvb3Qg
-dGFyZ2V0IGluZGljYXRvciAyClsgIDU5MC40NTQ1NzFdIGF0aDEwa19wY2kgMDAwMDowMjowMC4w
-OiBib290IHRhcmdldCBpbml0aWFsaXNlZApbICA1OTAuNDY1NDc4XSBhdGgxMGtfcGNpIDAwMDA6
-MDI6MDAuMDogYm9vdCBpbml0IGNlIHNyYyByaW5nIGlkIDAgZW50cmllcyAxNiBiYXNlX2FkZHIg
-ZmZmZjg4MDAzOWMyMDAwMApbICA1OTAuNDY1NDg5XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDog
-Ym9vdCBjZSBkZXN0IHJpbmcgaWQgMSBlbnRyaWVzIDUxMiBiYXNlX2FkZHIgZmZmZjg4MDAzOWM0
-ODAwMApbICA1OTAuNDY1NDk5XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCBjZSBkZXN0
-IHJpbmcgaWQgMiBlbnRyaWVzIDEyOCBiYXNlX2FkZHIgZmZmZjg4MDAxZWRkOTAwMApbICA1OTAu
-NDY1NTExXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCBpbml0IGNlIHNyYyByaW5nIGlk
-IDMgZW50cmllcyAzMiBiYXNlX2FkZHIgZmZmZjg4MDAxZWZkYjAwMApbICA1OTAuNDY1NTI1XSBh
-dGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCBpbml0IGNlIHNyYyByaW5nIGlkIDQgZW50cmll
-cyA4MTkyIGJhc2VfYWRkciBmZmZmODgwMDM5Y2EwMDAwClsgIDU5MC40NjU1MzddIGF0aDEwa19w
-Y2kgMDAwMDowMjowMC4wOiBib290IGluaXQgY2Ugc3JjIHJpbmcgaWQgNyBlbnRyaWVzIDIgYmFz
-ZV9hZGRyIGZmZmY4ODAwMWVmOTcwMDAKWyAgNTkwLjQ2NTU0Nl0gYXRoMTBrX3BjaSAwMDAwOjAy
-OjAwLjA6IGJvb3QgY2UgZGVzdCByaW5nIGlkIDcgZW50cmllcyAyIGJhc2VfYWRkciBmZmZmODgw
-MDM5YzdmMDAwClsgIDU5MC40NjU1NDddIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290IHdh
-aXRpbmcgdGFyZ2V0IHRvIGluaXRpYWxpc2UKWyAgNTkwLjQ2NTU1MF0gYXRoMTBrX3BjaSAwMDAw
-OjAyOjAwLjA6IGJvb3QgdGFyZ2V0IGluZGljYXRvciAwClsgIDU5MC40NzU1NTNdIGF0aDEwa19w
-Y2kgMDAwMDowMjowMC4wOiBib290IHRhcmdldCBpbmRpY2F0b3IgMgpbICA1OTAuNDc1NTU4XSBh
-dGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCB0YXJnZXQgaW5pdGlhbGlzZWQKWyAgNTkwLjQ3
-NTU1OV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGJvb3Qgd2FybSByZXNldCBjb21wbGV0ZQpb
-ICA1OTAuNDc1NTYwXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCBxY2E2MTc0IGNoaXAg
-cmVzZXQgY29tcGxldGUgKGNvbGQpClsgIDU5MC40NzU1NzJdIGF0aDEwa19wY2kgMDAwMDowMjow
-MC4wOiBib290IGluaXQgY2Ugc3JjIHJpbmcgaWQgMCBlbnRyaWVzIDE2IGJhc2VfYWRkciBmZmZm
-ODgwMDM5YzIwMDAwClsgIDU5MC40NzU1ODJdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290
-IGNlIGRlc3QgcmluZyBpZCAxIGVudHJpZXMgNTEyIGJhc2VfYWRkciBmZmZmODgwMDM5YzQ4MDAw
-ClsgIDU5MC40NzU1OTFdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290IGNlIGRlc3Qgcmlu
-ZyBpZCAyIGVudHJpZXMgMTI4IGJhc2VfYWRkciBmZmZmODgwMDFlZGQ5MDAwClsgIDU5MC40NzU2
-MDNdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBib290IGluaXQgY2Ugc3JjIHJpbmcgaWQgMyBl
-bnRyaWVzIDMyIGJhc2VfYWRkciBmZmZmODgwMDFlZmRiMDAwClsgIDU5MC40NzU2MTZdIGF0aDEw
-a19wY2kgMDAwMDowMjowMC4wOiBib290IGluaXQgY2Ugc3JjIHJpbmcgaWQgNCBlbnRyaWVzIDgx
-OTIgYmFzZV9hZGRyIGZmZmY4ODAwMzljYTAwMDAKWyAgNTkwLjQ3NTYyOF0gYXRoMTBrX3BjaSAw
-MDAwOjAyOjAwLjA6IGJvb3QgaW5pdCBjZSBzcmMgcmluZyBpZCA3IGVudHJpZXMgMiBiYXNlX2Fk
-ZHIgZmZmZjg4MDAxZWY5NzAwMApbICA1OTAuNDc1NjM3XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAu
-MDogYm9vdCBjZSBkZXN0IHJpbmcgaWQgNyBlbnRyaWVzIDIgYmFzZV9hZGRyIGZmZmY4ODAwMzlj
-N2YwMDAKWyAgNTkwLjQ4Njk3MF0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IEhhcmR3YXJlIG5h
-bWUgcWNhNjE3NCBodzMuMiB2ZXJzaW9uIDB4NTAzMDAwMApbICA1OTAuNDg3MTU4XSBhdGgxMGtf
-cGNpIDAwMDA6MDI6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZmFpbGVkIHdpdGggZXJyb3Ig
-LTIKWyAgNTkwLjQ4NzE1OV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IEZhbGxpbmcgYmFjayB0
-byB1c2VyIGhlbHBlcgpbICA2NTAuNDk1NDI1XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogRGly
-ZWN0IGZpcm13YXJlIGxvYWQgZmFpbGVkIHdpdGggZXJyb3IgLTIKWyAgNjUwLjQ5NTQyOF0gYXRo
-MTBrX3BjaSAwMDAwOjAyOjAwLjA6IEZhbGxpbmcgYmFjayB0byB1c2VyIGhlbHBlcgpbICA3MTAu
-NjU2Mzk4XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogdHJ5aW5nIGZ3IGFwaSA1ClsgIDcxMC42
-NTY3MzldIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmYWls
-ZWQgd2l0aCBlcnJvciAtMgpbICA3MTAuNjU2NzQwXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDog
-RmFsbGluZyBiYWNrIHRvIHVzZXIgaGVscGVyClsgIDc3MC44MTc5MTJdIGF0aDEwa19wY2kgMDAw
-MDowMjowMC4wOiBjb3VsZCBub3QgZmV0Y2ggZmlybXdhcmUgZmlsZSAnYXRoMTBrL1FDQTYxNzQv
-aHczLjAvZmlybXdhcmUtNS5iaW4nOiAtMgpbICA3NzAuODE3OTMzXSBhdGgxMGtfcGNpIDAwMDA6
-MDI6MDAuMDogdHJ5aW5nIGZ3IGFwaSA0ClsgIDc3MC44MTgyNzNdIGF0aDEwa19wY2kgMDAwMDow
-MjowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmYWlsZWQgd2l0aCBlcnJvciAtMgpbICA3NzAu
-ODE4Mjc0XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogRmFsbGluZyBiYWNrIHRvIHVzZXIgaGVs
-cGVyCg==
-
---_002_A3D794F1192BBF449DF2EC3D7EE263F44A5402F0C8SHAX7MCDC101A_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---_002_A3D794F1192BBF449DF2EC3D7EE263F44A5402F0C8SHAX7MCDC101A_--
+T24gMTkgSnVseSAyMDE2IGF0IDEwOjI0LCAgPFBlcnJ5X1l1YW5AZGVsbC5jb20+IHdyb3RlOgo+
+IERlbGwgLSBJbnRlcm5hbCBVc2UgLSBDb25maWRlbnRpYWwKPgo+IEhJICBBbGw6Cj4gSSBoYXZl
+IHJlcGxhY2VkIHRoZSBuZXcgZmlybXdhcmUgZmlsZXMgdG8gb2xkIG9uZS4gQW5kIEkgYnVpbGQg
+bmV3IGF0aDEwa19wY2kua28gLGF0aDEwa19jb3JlLmtvIHRvIGdldCBzb21lCj4gZGVidWcgaW5m
+by4KPgo+IFRoZSBuZXcgZmlybXdhcmUgaXMgc3RpbGwgbm90IGxvYWRlZCBieSBhdGgxMGsgZHJp
+dmVyIC4KPiBBbmQgSSBjb21wYXJlIHRoZSBkcml2ZXIgY29kZXMgd2l0aCA0LjcgLXJjNyAsIHRo
+ZSBjb2RlcyBhcmUgYWxtb3N0IHNhbWUuCj4gU28gdGhlIGlzc3VlIHNob3VsZCBiZSBpbiAgZmly
+bXdhcmUgc2NvcGUuCj4KPiBbIDU5MC40ODY5NzBdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBI
+YXJkd2FyZSBuYW1lIHFjYTYxNzQgaHczLjIgdmVyc2lvbiAweDUwMzAwMDAKPiBbICA1OTAuNDg3
+MTU4XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZmFpbGVk
+IHdpdGggZXJyb3IgLTIKPiBbICA1OTAuNDg3MTU5XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDog
+RmFsbGluZyBiYWNrIHRvIHVzZXIgaGVscGVyCgpZb3UgZGlkbid0IGF0dGFjaCBhIGNvbXBsZXRl
+IGxvZyBzbyBpdCdzIGhhcmQgdG8gdGVsbC4gYXRoMTBrIHRlbmRzIHRvCnByaW50IGEgZmV3IG1l
+c3NhZ2VzIHRoYXQgbWF5IGxvb2sgbGlrZSBhbiBlcnJvciBidXQgYXJlbid0ICh0aGVyZSdzIGEK
+ZmFsbGJhY2sgbWVjaGFuaXNtIGZvciBmaW5kaW5nIGZpcm13YXJlIGZpbGVzIHdoaWNoIGlzIG92
+ZXJseQp2ZXJib3NlKS4KCkBQZXJyeTogWW91IG5lZWQgdG8gcmVuYW1lIHRoZQpmaXJtd2FyZS00
+LmJpbl9XTEFOLlJNLjIuMC0wMDE4MC1RQ0FSTVNXUFotMSB0byBmaXJtd2FyZS00LmJpbiBpbiBj
+YXNlCnlvdSBtZXJlbHkgbWlycm9yZWQgdGhlIGdpdGh1YiByZXBvLgoKQEthbGxlOiBJIHRoaW5r
+IGl0J2QgYmUgdmVyeSB1c2VmdWwgdG8gbWFpbnRhaW4gYXRoMTBrLWZpcm13YXJlIGluIGEKd2F5
+IHNvIHRoYXQgaXQgaXMgZWFzaWVyIHRvIHRoZSB1bmluaXRpYXRlZCB0byBgZ2l0IGNsb25lYCBp
+dCBpbnRvCi9saWIvZmlybXdhcmUsIGUuZy4gbWFpbnRhaW4gZmlybXdhcmUtWC5iaW4gc3ltbGlu
+a3MgaW4gZWFjaApRQ0F4eHgvaHcueS8gdG8gdGhlIGxhdGVzdCBvbmUuIFRob3VnaHRzPwoKCk1p
+Y2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
