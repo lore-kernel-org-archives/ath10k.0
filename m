@@ -1,25 +1,31 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPuMD-0006jY-Ec
- for ath10k@lists.infradead.org; Wed, 20 Jul 2016 16:28:27 +0000
-Date: Wed, 20 Jul 2016 21:57:51 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
- QCA99X0 and later
-Message-ID: <20160720162751.GA17599@atheros-ThinkPad-T61>
-References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
- <1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>
- <CA+BoTQnUvF2Zy7_WuEi0V+KjByRghVmoeR6yrs6hu6ag=KmBqQ@mail.gmail.com>
- <20160627143600.GA5292@atheros-ThinkPad-T61>
- <CA+BoTQn+HeishCMf4hjpWjLBmvFG2r0gosBv77RTyk7+uOAvPA@mail.gmail.com>
- <20160629094754.GA8867@atheros-ThinkPad-T61>
- <CAD2nsn3TOSaOCmm5YT6_D+aaoH9=pagQamDDz2VT+nKrFH0K8g@mail.gmail.com>
- <900ae7541c5a4194a2f73479e1dd8bb2@aphydexm01b.ap.qualcomm.com>
- <CA+BoTQmHW=uYompSLXUv2d+-Nr=11KYuA=VrmUz6X2T+D=-=Ag@mail.gmail.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bPub2-0002fD-GA
+ for ath10k@lists.infradead.org; Wed, 20 Jul 2016 16:43:45 +0000
+Message-ID: <578FAA12.4020509@candelatech.com>
+Date: Wed, 20 Jul 2016 09:42:58 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+BoTQmHW=uYompSLXUv2d+-Nr=11KYuA=VrmUz6X2T+D=-=Ag@mail.gmail.com>
+Subject: Re: rx rate issue
+References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
+ <fa3eab06-28f0-e5d4-2e92-770134b49dfa@dd-wrt.com>
+ <1467218124941.40575@qti.qualcomm.com>
+ <CA+BoTQkepLz55Vdr7OuMnPQPLKq_+vjZi=m2Y9rHLRgBZPsWOw@mail.gmail.com>
+ <1468941948774.87860@qti.qualcomm.com>
+ <CAJ-Vmon1duBNcWhjaNdANYFfd3hwQUYYHrmx7LRZvT-Ec2x1Cg@mail.gmail.com>
+ <578E5AFA.4000908@candelatech.com>
+ <CA+BoTQ=QMPUtY64ELCToZLcSrCPQdG=2Eg4FrsULeeDg9sFPYA@mail.gmail.com>
+ <CAJ-Vmok95tiLzmnfiBnnOLQK9hXW2DfjPPVGy9yqucq32PBwJw@mail.gmail.com>
+ <CA+BoTQ=ehuXpcJUOeSscLKzX9T=hZyp5i2G9GoxTVX=LAg_4hA@mail.gmail.com>
+ <CAJ-Vmo=d=PgUu_AYT1C82AJcnUxKUo_VYMn_b1QF8M_T+5KpkA@mail.gmail.com>
+ <CA+BoTQnN1EVGBu0J5Y7-z2=uqsG8rXS0Lvs7VAoeawv9MGuFyQ@mail.gmail.com>
+ <b1cdb5c3-6ddb-8a69-d0f7-79d8e6ba23d0@dd-wrt.com>
+ <CA+BoTQmrk_U8oVXxk-5hBz60=R-xR4H=2_x2pj9BVDYXPOoCGg@mail.gmail.com>
+ <6487f1d3-339e-a6dd-d866-b11b37b4ddff@dd-wrt.com>
+ <CA+BoTQ=yC7kN7ayWqZ9Y3SBL0jQZRkKMU2=T9Z21Vwxjp2m7uw@mail.gmail.com>
+ <b08002e3-8f45-d6c2-607e-344fbddbd957@dd-wrt. com>
+In-Reply-To: <b08002e3-8f45-d6c2-607e-344fbddbd957@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,62 +34,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>, Mohammed Shafi <shafi.wireless@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
- Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Michal Kazior <michal.kazior@tieto.com>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "nbd@nbd.name" <nbd@nbd.name>
 
-On Wed, Jul 20, 2016 at 02:22:29PM +0200, Michal Kazior wrote:
-> On 20 July 2016 at 13:43, Shajakhan, Mohammed Shafi (Mohammed Shafi)
-> <mohammed@qti.qualcomm.com> wrote:
-> > Michal,
-> >
-> > Can you please let me know if this change is fine or not ?
-> > I am waiting infinitely for  your reply long time
-> 
-> Sorry. I was absent for a while and this email slipped by.
 
-[shafi] ah ok, i thought you had blacklisted this change :)
 
-> 
-> Quoting your other email:
-> 
-> > is this patch is good to go (or) should i re-work  ?
-> > I had replied to Michal's comment of introducing a new firmware
-> > feature flag will not address the issue in older firmware / code.
-> > Let me know if i had missed something very obvious.
-> 
-> I couldn't really find any conclusion to this thread in my inbox.
-> 
-> The hw_params approach is definitely wrong. The ACK problem is
-> firmware-specific, not hardware-specific.
+On 07/20/2016 04:12 AM, Sebastian Gottschall wrote:
+> Am 20.07.2016 um 13:03 schrieb Michal Kazior:
 
-[shafi] sure let me see if i can figure out an alternative way that shall be
-accepted by you and Kalle
+>>>>> WDS AP:
+>>>>>                Peer MAC address 40:a5:ef:85:4d:6f
+>>>>>                        Peer RSSI 12
+>>>>>                     Peer TX rate 175500
+>>>>>                     Peer RX rate 175500
+>>>>>                 Peer RX duration 0
+>>>>>
+>>>>>
+>>>>> WDS STA:
+>>>>>               Peer MAC address 40:a5:ef:51:49:db
+>>>>>                        Peer RSSI 13
+>>>>>                     Peer TX rate 175500
+>>>>>                     Peer RX rate 351000
+>>>>>                 Peer RX duration 0
+>> [...]
 
-> 
-> I'm fine with removing the workaround completely if 636 is guaranteed
-> to not be broken, including AP and P2P GO operation. The client
-> operation will probably work since wmi-roam event is used for HW
-> connection monitoring.
+One thing, if your signal is really this hot (-12, -13), then you are likely over-saturating
+the RF logic.  You normally get best results at around -40 signal level...
 
-[shafi] sorry i am not sure how to validate that, so i will keep this workaround
+Thanks,
+Ben
 
-> 
-> Nullfunc tx-status ack/noack reports could be probably fixed up using
-> sta kickout events (with short timeouts) as a fallback. This would
-> make it easier for users because otherwise they'd need to enable
-> disassoc_low_ack in hostapd (which is probably impossible with
-> wpa_supplicant for p2p, no?).
-> 
->
-[shafi] let me check this, i think we usually don't enable disassoc_low_ack to
-avoid kicking out stations frequently.
-
-shafi
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
