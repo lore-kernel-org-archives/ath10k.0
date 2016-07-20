@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPqWa-00012i-15
- for ath10k@lists.infradead.org; Wed, 20 Jul 2016 12:22:52 +0000
-Received: by mail-wm0-x22f.google.com with SMTP id p129so535019wmp.0
- for <ath10k@lists.infradead.org>; Wed, 20 Jul 2016 05:22:31 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <900ae7541c5a4194a2f73479e1dd8bb2@aphydexm01b.ap.qualcomm.com>
+ id 1bPuMD-0006jY-Ec
+ for ath10k@lists.infradead.org; Wed, 20 Jul 2016 16:28:27 +0000
+Date: Wed, 20 Jul 2016 21:57:51 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
+ QCA99X0 and later
+Message-ID: <20160720162751.GA17599@atheros-ThinkPad-T61>
 References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
  <1466700001-4883-2-git-send-email-mohammed@qca.qualcomm.com>
  <CA+BoTQnUvF2Zy7_WuEi0V+KjByRghVmoeR6yrs6hu6ag=KmBqQ@mail.gmail.com>
@@ -15,11 +16,10 @@ References: <1466700001-4883-1-git-send-email-mohammed@qca.qualcomm.com>
  <20160629094754.GA8867@atheros-ThinkPad-T61>
  <CAD2nsn3TOSaOCmm5YT6_D+aaoH9=pagQamDDz2VT+nKrFH0K8g@mail.gmail.com>
  <900ae7541c5a4194a2f73479e1dd8bb2@aphydexm01b.ap.qualcomm.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Wed, 20 Jul 2016 14:22:29 +0200
-Message-ID: <CA+BoTQmHW=uYompSLXUv2d+-Nr=11KYuA=VrmUz6X2T+D=-=Ag@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: Fix sending NULL/ Qos NULL data frames for
- QCA99X0 and later
+ <CA+BoTQmHW=uYompSLXUv2d+-Nr=11KYuA=VrmUz6X2T+D=-=Ag@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CA+BoTQmHW=uYompSLXUv2d+-Nr=11KYuA=VrmUz6X2T+D=-=Ag@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,36 +28,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-Cc: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>, "Raja,
- Tamizh Chelvam" <c_traja@qti.qualcomm.com>, Mohammed Shafi <shafi.wireless@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>, Mohammed Shafi <shafi.wireless@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
+ Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
 
-T24gMjAgSnVseSAyMDE2IGF0IDEzOjQzLCBTaGFqYWtoYW4sIE1vaGFtbWVkIFNoYWZpIChNb2hh
-bW1lZCBTaGFmaSkKPG1vaGFtbWVkQHF0aS5xdWFsY29tbS5jb20+IHdyb3RlOgo+IE1pY2hhbCwK
-Pgo+IENhbiB5b3UgcGxlYXNlIGxldCBtZSBrbm93IGlmIHRoaXMgY2hhbmdlIGlzIGZpbmUgb3Ig
-bm90ID8KPiBJIGFtIHdhaXRpbmcgaW5maW5pdGVseSBmb3IgIHlvdXIgcmVwbHkgbG9uZyB0aW1l
-CgpTb3JyeS4gSSB3YXMgYWJzZW50IGZvciBhIHdoaWxlIGFuZCB0aGlzIGVtYWlsIHNsaXBwZWQg
-YnkuCgpRdW90aW5nIHlvdXIgb3RoZXIgZW1haWw6Cgo+IGlzIHRoaXMgcGF0Y2ggaXMgZ29vZCB0
-byBnbyAob3IpIHNob3VsZCBpIHJlLXdvcmsgID8KPiBJIGhhZCByZXBsaWVkIHRvIE1pY2hhbCdz
-IGNvbW1lbnQgb2YgaW50cm9kdWNpbmcgYSBuZXcgZmlybXdhcmUKPiBmZWF0dXJlIGZsYWcgd2ls
-bCBub3QgYWRkcmVzcyB0aGUgaXNzdWUgaW4gb2xkZXIgZmlybXdhcmUgLyBjb2RlLgo+IExldCBt
-ZSBrbm93IGlmIGkgaGFkIG1pc3NlZCBzb21ldGhpbmcgdmVyeSBvYnZpb3VzLgoKSSBjb3VsZG4n
-dCByZWFsbHkgZmluZCBhbnkgY29uY2x1c2lvbiB0byB0aGlzIHRocmVhZCBpbiBteSBpbmJveC4K
-ClRoZSBod19wYXJhbXMgYXBwcm9hY2ggaXMgZGVmaW5pdGVseSB3cm9uZy4gVGhlIEFDSyBwcm9i
-bGVtIGlzCmZpcm13YXJlLXNwZWNpZmljLCBub3QgaGFyZHdhcmUtc3BlY2lmaWMuCgpJJ20gZmlu
-ZSB3aXRoIHJlbW92aW5nIHRoZSB3b3JrYXJvdW5kIGNvbXBsZXRlbHkgaWYgNjM2IGlzIGd1YXJh
-bnRlZWQKdG8gbm90IGJlIGJyb2tlbiwgaW5jbHVkaW5nIEFQIGFuZCBQMlAgR08gb3BlcmF0aW9u
-LiBUaGUgY2xpZW50Cm9wZXJhdGlvbiB3aWxsIHByb2JhYmx5IHdvcmsgc2luY2Ugd21pLXJvYW0g
-ZXZlbnQgaXMgdXNlZCBmb3IgSFcKY29ubmVjdGlvbiBtb25pdG9yaW5nLgoKTnVsbGZ1bmMgdHgt
-c3RhdHVzIGFjay9ub2FjayByZXBvcnRzIGNvdWxkIGJlIHByb2JhYmx5IGZpeGVkIHVwIHVzaW5n
-CnN0YSBraWNrb3V0IGV2ZW50cyAod2l0aCBzaG9ydCB0aW1lb3V0cykgYXMgYSBmYWxsYmFjay4g
-VGhpcyB3b3VsZAptYWtlIGl0IGVhc2llciBmb3IgdXNlcnMgYmVjYXVzZSBvdGhlcndpc2UgdGhl
-eSdkIG5lZWQgdG8gZW5hYmxlCmRpc2Fzc29jX2xvd19hY2sgaW4gaG9zdGFwZCAod2hpY2ggaXMg
-cHJvYmFibHkgaW1wb3NzaWJsZSB3aXRoCndwYV9zdXBwbGljYW50IGZvciBwMnAsIG5vPykuCgoK
-TWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Wed, Jul 20, 2016 at 02:22:29PM +0200, Michal Kazior wrote:
+> On 20 July 2016 at 13:43, Shajakhan, Mohammed Shafi (Mohammed Shafi)
+> <mohammed@qti.qualcomm.com> wrote:
+> > Michal,
+> >
+> > Can you please let me know if this change is fine or not ?
+> > I am waiting infinitely for  your reply long time
+> 
+> Sorry. I was absent for a while and this email slipped by.
+
+[shafi] ah ok, i thought you had blacklisted this change :)
+
+> 
+> Quoting your other email:
+> 
+> > is this patch is good to go (or) should i re-work  ?
+> > I had replied to Michal's comment of introducing a new firmware
+> > feature flag will not address the issue in older firmware / code.
+> > Let me know if i had missed something very obvious.
+> 
+> I couldn't really find any conclusion to this thread in my inbox.
+> 
+> The hw_params approach is definitely wrong. The ACK problem is
+> firmware-specific, not hardware-specific.
+
+[shafi] sure let me see if i can figure out an alternative way that shall be
+accepted by you and Kalle
+
+> 
+> I'm fine with removing the workaround completely if 636 is guaranteed
+> to not be broken, including AP and P2P GO operation. The client
+> operation will probably work since wmi-roam event is used for HW
+> connection monitoring.
+
+[shafi] sorry i am not sure how to validate that, so i will keep this workaround
+
+> 
+> Nullfunc tx-status ack/noack reports could be probably fixed up using
+> sta kickout events (with short timeouts) as a fallback. This would
+> make it easier for users because otherwise they'd need to enable
+> disassoc_low_ack in hostapd (which is probably impossible with
+> wpa_supplicant for p2p, no?).
+> 
+>
+[shafi] let me check this, i think we usually don't enable disassoc_low_ack to
+avoid kicking out stations frequently.
+
+shafi
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
