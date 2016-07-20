@@ -1,31 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPub2-0002fD-GA
- for ath10k@lists.infradead.org; Wed, 20 Jul 2016 16:43:45 +0000
-Message-ID: <578FAA12.4020509@candelatech.com>
-Date: Wed, 20 Jul 2016 09:42:58 -0700
+ id 1bPukD-0002ip-92
+ for ath10k@lists.infradead.org; Wed, 20 Jul 2016 16:53:14 +0000
+Message-ID: <578FAC4E.2010706@candelatech.com>
+Date: Wed, 20 Jul 2016 09:52:30 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: rx rate issue
+Subject: Re: [PATCH] ath10k: fix system hang at qca99x0 probe on x86 platform
 References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
+ <e05dcb58-1cb1-a33a-31bb-b8ba1edf1363@dd-wrt.com>
  <fa3eab06-28f0-e5d4-2e92-770134b49dfa@dd-wrt.com>
  <1467218124941.40575@qti.qualcomm.com>
  <CA+BoTQkepLz55Vdr7OuMnPQPLKq_+vjZi=m2Y9rHLRgBZPsWOw@mail.gmail.com>
  <1468941948774.87860@qti.qualcomm.com>
- <CAJ-Vmon1duBNcWhjaNdANYFfd3hwQUYYHrmx7LRZvT-Ec2x1Cg@mail.gmail.com>
- <578E5AFA.4000908@candelatech.com>
- <CA+BoTQ=QMPUtY64ELCToZLcSrCPQdG=2Eg4FrsULeeDg9sFPYA@mail.gmail.com>
- <CAJ-Vmok95tiLzmnfiBnnOLQK9hXW2DfjPPVGy9yqucq32PBwJw@mail.gmail.com>
- <CA+BoTQ=ehuXpcJUOeSscLKzX9T=hZyp5i2G9GoxTVX=LAg_4hA@mail.gmail.com>
- <CAJ-Vmo=d=PgUu_AYT1C82AJcnUxKUo_VYMn_b1QF8M_T+5KpkA@mail.gmail.com>
- <CA+BoTQnN1EVGBu0J5Y7-z2=uqsG8rXS0Lvs7VAoeawv9MGuFyQ@mail.gmail.com>
- <b1cdb5c3-6ddb-8a69-d0f7-79d8e6ba23d0@dd-wrt.com>
- <CA+BoTQmrk_U8oVXxk-5hBz60=R-xR4H=2_x2pj9BVDYXPOoCGg@mail.gmail.com>
- <6487f1d3-339e-a6dd-d866-b11b37b4ddff@dd-wrt.com>
- <CA+BoTQ=yC7kN7ayWqZ9Y3SBL0jQZRkKMU2=T9Z21Vwxjp2m7uw@mail.gmail.com>
- <b08002e3-8f45-d6c2-607e-344fbddbd957@dd-wrt. com>
-In-Reply-To: <b08002e3-8f45-d6c2-607e-344fbddbd957@dd-wrt.com>
+ <CA+BoTQmRL=LO_U0DDkNbrwLv0-1JB50cD8QyY7WnpqzMF+VMFQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQmRL=LO_U0DDkNbrwLv0-1JB50cD8QyY7WnpqzMF+VMFQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,45 +24,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Michal Kazior <michal.kazior@tieto.com>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "nbd@nbd.name" <nbd@nbd.name>
+To: Michal Kazior <michal.kazior@tieto.com>, "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "nbd@nbd.name" <nbd@nbd.name>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>
 
-
-
-On 07/20/2016 04:12 AM, Sebastian Gottschall wrote:
-> Am 20.07.2016 um 13:03 schrieb Michal Kazior:
-
->>>>> WDS AP:
->>>>>                Peer MAC address 40:a5:ef:85:4d:6f
->>>>>                        Peer RSSI 12
->>>>>                     Peer TX rate 175500
->>>>>                     Peer RX rate 175500
->>>>>                 Peer RX duration 0
->>>>>
->>>>>
->>>>> WDS STA:
->>>>>               Peer MAC address 40:a5:ef:51:49:db
->>>>>                        Peer RSSI 13
->>>>>                     Peer TX rate 175500
->>>>>                     Peer RX rate 351000
->>>>>                 Peer RX duration 0
->> [...]
-
-One thing, if your signal is really this hot (-12, -13), then you are likely over-saturating
-the RF logic.  You normally get best results at around -40 signal level...
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CgpPbiAwNy8xOS8yMDE2IDEwOjM2IFBNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDE5IEp1
+bHkgMjAxNiBhdCAxNzoyNSwgTWFub2hhcmFuLCBSYWprdW1hciA8cm1hbm9oYXJAcXRpLnF1YWxj
+b21tLmNvbT4gd3JvdGU6Cj4+IE9uIEp1bmUgMzAsIDIwMTYgMTI6MzkgUE0sIE1pY2hhbCBLYXpp
+b3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPj4+IE9uIDI5IEp1bmUgMjAxNiBh
+dCAxODozNSwgTWFub2hhcmFuLCBSYWprdW1hciA8cm1hbm9oYXJAcXRpLnF1YWxjb21tLmNvbT4g
+d3JvdGU6Cj4+Pj4+PiBBbSAyOS4wNi4yMDE2IHVtIDE2OjA0IHNjaHJpZWIgU2ViYXN0aWFuIEdv
+dHRzY2hhbGw6Cj4+Pj4+PiB0aGlzIGZpeCB3aWxsIGNyYXNoIFFDQTk5ODAgb24gUUNBIElQUTgw
+NjQgY3B1IGJhc2VkIHN5c3RlbXMuCj4+Pj4+PiBzbyBwbGVhc2UgcmV3b3JrIGl0LCBvciBsZWF2
+ZSBpdCBvdXQuCj4+Pj4+PiBub3RlOgo+Pj4+Pj4gbWF5YmUgdGhlIGxpbWl0IG9mIDI1NmtiIGlz
+IHRvbyBsb3cgZm9yIHRoYXQgY2FyZAo+Pj4+Pj4KPj4+Pj4gYnkgdGhlIHdheS4gNTEyIHdvcmtz
+Cj4+Pgo+Pj4gSSB0aGluayB0aGlzIHN1Z2dlc3RzIHRoZSBwcm9ibGVtIGlzbid0IGFib3V0IG1l
+bW9yeSBjaHVuayBzaXplIGxpbWl0Cj4+PiBwZXIgc2UgYnV0IHNvbWUga2luZCBvZiBidWcgaW4g
+YWRkcmVzcy9vZmZzZXQgbG9naWMgaW4gZncgb3IgaHcuCj4+Pgo+Pj4gRE1BIGNvaGVyZW50IGFu
+ZCBzaW5nbGUtbWFwIGFkZHJlc3NlcyB1c2UgY29tcGxldGVseSBkaWZmZXJlbnQgcmFuZ2VzCj4+
+PiBpbiBtYW55IGNhc2VzLiBQZXJoYXBzIHNvbWUgTVNCcyBhcmUgbm90IHByb3Blcmx5IGhhbmRs
+ZWQgaW4gZncgb3IgaHcuCj4+PiBJIHJlY2FsbCB0aGVyZSBpcyBhIG1hZ2ljIG1hY3JvIHRocm91
+Z2ggd2hpY2ggdGFyZ2V0IGRldmljZSBhY2Nlc3Nlcwo+Pj4gaG9zdCBtZW1vcnkgc28gbWF5YmUg
+dGhhdCdzIGEgZ29vZCBwbGFjZSB0byBsb29rIHRvIGJldHRlciB1bmRlcnN0YW5kCj4+PiB0aGUg
+cHJvYmxlbT8KPj4+Cj4+IE1pY2hhxYIsCj4+Cj4+IENvdWxkIHlvdSBwbGVhc2Ugc2hlZCBzb21l
+IGxpZ2h0IG9uIHRoaXMgaXNzdWU/IEl0IHNlZW1zIHRoaXMgaXNzdWUgaXMgcG9wcGluZyB1cAo+
+PiBtb3JlIGZyZXF1ZW50bHkgYW5kIHRoZXJlIGFyZSBtdWx0aXBsZSB0aHJlYWRzIGZvciB0aGlz
+IGlzc3VlLgo+Pgo+PiAiQW55b25lIGJyb3VnaHQgdXAgOTk4NCBOSUMgb24geDg2LTY0PyIKPj4g
+IkFSOTg4MiBJT01NVSBmYXVsdHMiCj4KPiBJIHRoaW5rIElPTU1VIGZhdWx0cyB3ZXJlIHNvbHZl
+ZCBieSB1c2luZyBETUFfQklESVJFQ1RJT05BTCwgbm8/CgpZZXMsIHRoYXQgcmVzb2x2ZXMgdGhl
+IGZhdWx0cywgb3IgYXQgbGVhc3QgdGhlIHZhc3QgbWFqb3JpdHkgb2YgdGhlbS4KClJlbWFpbmlu
+ZyBzcHVyaW91cyBmYXVsdHMgYXJlIGxpa2VseSBmaXJtd2FyZSBidWdzIGFjY2Vzc2luZyBiYWQg
+bWVtb3J5LCBJIGd1ZXNzLgpZb3UgcHJvYmFibHkgZG9uJ3Qgbm90aWNlIHRoaXMgYXQgYWxsIG9u
+IEFSTSBhbmQgb3RoZXIgc3lzdGVtcyB3L291dCBoYXJkd2FyZSBJT01NVT8KCj4+IEV2ZW4gd2l0
+aCBjdXJyZW50IGxvZ2ljLCBJZiB0aGUgbWVtb3J5IGNodW5rIGFsbG9jYXRpb24gZmFpbHMgZm9y
+IGJpZ2dlciBzaXplLCB0aGVuIGl0IHRyaWVzCj4+IHRvIGFsbG9jYXRlIHNtYWxsZXIgY2h1bmtz
+LiBTbyBJZiBzbWFsbGVyIGNodW5rcyBjYXVzZXMgdW5leHBlY3RlZCBiZWhhdmlvdXIsIGl0IGlz
+IGV2ZW4KPj4gYXBwbGljYWJsZSB0byBleGlzdGluZyBsb2dpYy4gbm8/Cj4KPiBXZSBzdGlsbCBk
+b24ndCBrbm93ICp3aHkqIHVzaW5nIG5vbi1jb2hlcmVudCBtZW1vcnkgY2F1c2VzIHByb2JsZW1z
+Lgo+IENoYW5naW5nIGNodW5rIHNpemUgbGltaXQgc2VlbXMgdG8gYWx0ZXIgdGhlIGJlaGF2aW9y
+IGluIHNvbWUKPiB1bnByZWRpY3RhYmxlIHdheXMsIHllcywgYnV0IGl0J3MgcmVhbGx5IGhhcmQg
+dG8gdGVsbCBpZiB0aGUgInRyeQo+IHNtYWxsZXIgY2h1bmsgc2l6ZXMiICppdHNlbGYqIGludHJv
+ZHVjZXMgYW55IHByb2JsZW1zLgoKSWYgaXQgaXMgY3Jhc2hpbmcgZmlybXdhcmUgc29tZWhvdywg
+YW5kIHlvdSBjYW4gZ2V0IGEgYmFja3RyYWNlLCB0aGVuIGxpa2VseQppdCBjYW4gYmUgZGVidWdn
+ZWQuICBJbiBteSBjYXNlLCBjaGFuZ2luZyB0aGUgc2l6ZSBjYXVzZWQgZmlybXdhcmUgdG8gY3Jh
+c2ggZHVlIHRvCmxhbWUgbG9naWMgYnVnIGluIHRoZSBmaXJtd2FyZSwgZm9yIGluc3RhbmNlLiAg
+UG9zc2libHkgb3RoZXIgY3Jhc2hlcyBhcmUgYXMKbXVuZGFuZSBhcyB0aGF0LgoKVGhhbmtzLApC
+ZW4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVj
+aG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
+MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsK
