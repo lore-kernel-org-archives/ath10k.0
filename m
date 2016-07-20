@@ -2,8 +2,8 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from nm.newmedia-net.de ([217.113.179.122]
  helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPnCK-0006aK-EU
- for ath10k@lists.infradead.org; Wed, 20 Jul 2016 08:49:47 +0000
+ id 1bPnE1-00086d-53
+ for ath10k@lists.infradead.org; Wed, 20 Jul 2016 08:51:30 +0000
 References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
  <e05dcb58-1cb1-a33a-31bb-b8ba1edf1363@dd-wrt.com>
  <fa3eab06-28f0-e5d4-2e92-770134b49dfa@dd-wrt.com>
@@ -18,11 +18,11 @@ References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
  <CAJ-Vmo=d=PgUu_AYT1C82AJcnUxKUo_VYMn_b1QF8M_T+5KpkA@mail.gmail.com>
  <CA+BoTQnN1EVGBu0J5Y7-z2=uqsG8rXS0Lvs7VAoeawv9MGuFyQ@mail.gmail.com>
 From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <00174431-61c3-0f5d-4adc-2fdcfe8e3171@dd-wrt.com>
-Date: Wed, 20 Jul 2016 10:49:10 +0200
+Message-ID: <b1cdb5c3-6ddb-8a69-d0f7-79d8e6ba23d0@dd-wrt.com>
+Date: Wed, 20 Jul 2016 10:51:04 +0200
 MIME-Version: 1.0
 In-Reply-To: <CA+BoTQnN1EVGBu0J5Y7-z2=uqsG8rXS0Lvs7VAoeawv9MGuFyQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: fix system hang at qca99x0 probe on x86 platform
+Subject: rx rate issue
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -36,8 +36,7 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>, Rajkumar Manoharan <rmanohar@codeaurora.org>, "nbd@nbd.name" <nbd@nbd.name>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "nbd@nbd.name" <nbd@nbd.name>
 
 Hello
 
