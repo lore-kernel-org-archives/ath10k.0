@@ -1,34 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPpjq-0005IN-Az
- for ath10k@lists.infradead.org; Wed, 20 Jul 2016 11:32:33 +0000
-Received: by mail-wm0-x231.google.com with SMTP id q128so52367870wma.1
- for <ath10k@lists.infradead.org>; Wed, 20 Jul 2016 04:32:09 -0700 (PDT)
+ id 1bPqI3-00038d-7v
+ for ath10k@lists.infradead.org; Wed, 20 Jul 2016 12:07:51 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [RESEND PATCH v4] ath10k: Fix sending NULL/ Qos NULL data frames for
+ QCA99X0 and later
+Date: Wed, 20 Jul 2016 17:40:59 +0530
+Message-ID: <1469016659-1887-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <f1129e1d-a30c-69a0-c973-2953c3786f61@dd-wrt.com>
-References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
- <e05dcb58-1cb1-a33a-31bb-b8ba1edf1363@dd-wrt.com>
- <fa3eab06-28f0-e5d4-2e92-770134b49dfa@dd-wrt.com>
- <1467218124941.40575@qti.qualcomm.com>
- <CA+BoTQkepLz55Vdr7OuMnPQPLKq_+vjZi=m2Y9rHLRgBZPsWOw@mail.gmail.com>
- <1468941948774.87860@qti.qualcomm.com>
- <CAJ-Vmon1duBNcWhjaNdANYFfd3hwQUYYHrmx7LRZvT-Ec2x1Cg@mail.gmail.com>
- <578E5AFA.4000908@candelatech.com>
- <CA+BoTQ=QMPUtY64ELCToZLcSrCPQdG=2Eg4FrsULeeDg9sFPYA@mail.gmail.com>
- <CAJ-Vmok95tiLzmnfiBnnOLQK9hXW2DfjPPVGy9yqucq32PBwJw@mail.gmail.com>
- <CA+BoTQ=ehuXpcJUOeSscLKzX9T=hZyp5i2G9GoxTVX=LAg_4hA@mail.gmail.com>
- <CAJ-Vmo=d=PgUu_AYT1C82AJcnUxKUo_VYMn_b1QF8M_T+5KpkA@mail.gmail.com>
- <CA+BoTQnN1EVGBu0J5Y7-z2=uqsG8rXS0Lvs7VAoeawv9MGuFyQ@mail.gmail.com>
- <b1cdb5c3-6ddb-8a69-d0f7-79d8e6ba23d0@dd-wrt.com>
- <CA+BoTQmrk_U8oVXxk-5hBz60=R-xR4H=2_x2pj9BVDYXPOoCGg@mail.gmail.com>
- <6487f1d3-339e-a6dd-d866-b11b37b4ddff@dd-wrt.com>
- <CA+BoTQ=yC7kN7ayWqZ9Y3SBL0jQZRkKMU2=T9Z21Vwxjp2m7uw@mail.gmail.com>
- <f1129e1d-a30c-69a0-c973-2953c3786f61@dd-wrt.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Wed, 20 Jul 2016 13:32:07 +0200
-Message-ID: <CA+BoTQk6Uzb02h0oDDOm7stct9=3YVw--yQJWyCYwN5G7f6sPQ@mail.gmail.com>
-Subject: Re: rx rate issue
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -37,78 +17,91 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "nbd@nbd.name" <nbd@nbd.name>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-T24gMjAgSnVseSAyMDE2IGF0IDEzOjEwLCBTZWJhc3RpYW4gR290dHNjaGFsbCA8cy5nb3R0c2No
-YWxsQGRkLXdydC5jb20+IHdyb3RlOgo+IEFtIDIwLjA3LjIwMTYgdW0gMTM6MDMgc2NocmllYiBN
-aWNoYWwgS2F6aW9yOgo+Pgo+PiBPbiAyMCBKdWx5IDIwMTYgYXQgMTI6NTAsIFNlYmFzdGlhbiBH
-b3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4KPj4gd3JvdGU6Cj4+Pgo+Pj4gQW0g
-MjAuMDcuMjAxNiB1bSAxMjoyMyBzY2hyaWViIE1pY2hhbCBLYXppb3I6Cj4+Pj4KPj4+PiBPbiAy
-MCBKdWx5IDIwMTYgYXQgMTA6NTEsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxA
-ZGQtd3J0LmNvbT4KPj4+PiB3cm90ZToKPj4+Pj4KPj4+Pj4gSGVsbG8KPj4+Pj4KPj4+Pj4gd2hp
-bGUgaHVudGluZyBhIGxpbmsgc3RhYmlsaXR5IChwYWNrZXQgdHJhbnNtaXNzaW9uIHN0b3ApIGlz
-c3VlIGkKPj4+Pj4gZGlzY292ZXJlZAo+Pj4+PiBhIG1heWJlIGNvc21ldGljLCBidXQgbWF5YmUg
-YWxzIHNlcmlvdXMgaXNzdWUuCj4+Pj4+IEFQIGlzIGEgUUNBOTg4MCAzeDMgY2FyZCBjb25maWd1
-cmVkIGFzIFdEUyBBUAo+Pj4+PiBTdGF0aW9uIGlzIGEgUUNBOTg4MCAyeDIgY2FyZCBjb25maWd1
-cmVkIGFzIFdEUyBTVEEKPj4+Pj4KPj4+Pj4gdGhlIFRYIHJhdGUgb2YgdGhlIHN0YXRpb24gbWF0
-Y2hlcyB0byB0aGUgcnggcmF0ZSBvZiB0aGUgQVAuCj4+Pj4+IGJ1dCB0aGUgUlggcmF0ZSBvZiB0
-aGUgc3RhdGlvbiBpcyB3cm9uZyBhcyBpdCBzZWVtcyB3aGljaCBtYXkgYmUgYQo+Pj4+PiBjYXVz
-ZQo+Pj4+PiBvZgo+Pj4+PiB0aGUgaXNzdWUuCj4+Pj4+IGNvdWxkIHRoaXMgYmUgYSBmaXJtd2Fy
-ZSBidWcgb24gUUNBOTg4MD8KPj4+Pj4KPj4+Pj4gb3V0cHV0IG9mIGZ3X3N0YXRzCj4+Pj4+Cj4+
-Pj4+IFdEUyBBUDoKPj4+Pj4gICAgICAgICAgICAgICAgUGVlciBNQUMgYWRkcmVzcyA0MDphNTpl
-Zjo4NTo0ZDo2Zgo+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgIFBlZXIgUlNTSSAxMgo+Pj4+
-PiAgICAgICAgICAgICAgICAgICAgIFBlZXIgVFggcmF0ZSAxNzU1MDAKPj4+Pj4gICAgICAgICAg
-ICAgICAgICAgICBQZWVyIFJYIHJhdGUgMTc1NTAwCj4+Pj4+ICAgICAgICAgICAgICAgICBQZWVy
-IFJYIGR1cmF0aW9uIDAKPj4+Pj4KPj4+Pj4KPj4+Pj4gV0RTIFNUQToKPj4+Pj4gICAgICAgICAg
-ICAgICBQZWVyIE1BQyBhZGRyZXNzIDQwOmE1OmVmOjUxOjQ5OmRiCj4+Pj4+ICAgICAgICAgICAg
-ICAgICAgICAgICAgUGVlciBSU1NJIDEzCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgUGVlciBU
-WCByYXRlIDE3NTUwMAo+Pj4+PiAgICAgICAgICAgICAgICAgICAgIFBlZXIgUlggcmF0ZSAzNTEw
-MDAKPj4+Pj4gICAgICAgICAgICAgICAgIFBlZXIgUlggZHVyYXRpb24gMAo+Pgo+PiBbLi4uXQo+
-Pj4+Cj4+Pj4gSXMgdGhpcyByZXByb2R1Y2libGU/IENhbiB5b3UgdHJ5IHNldHRpbmcgYSBmaXhl
-ZCB0eCBiaXRyYXRlIChgaXcKPj4+PiB3bGFuWCBzZXQgYml0cmF0ZXMgbGVnYWN5LTUgaHQtbWNz
-IHZodC1tY3MgMTo0YCB0byBmb3JjZSB2aHQgbWNzPTQsCj4+Pj4gbnNzPTEpIHRvIHNlZSBpZiBp
-dCBtYWtlcyBhbnkgZGlmZmVyZW5jZT8gUGVyaGFwcyByYXRlLWNvbnRyb2wgYW5kIHR4Cj4+Pj4g
-dHJ5LWxpc3Qvc3RhdHVzIGFyZSBub3QgcGFyc2VkIHByb3Blcmx5IChmb3Igc3RhdGlzdGljYWwg
-cHVycG9zZXMpIGluCj4+Pj4gZmlybXdhcmUgd2hpY2ggZW5kcyB1cCB3aXRoIGludmFsaWQgcGVl
-ci10eC1yYXRlIG9uIFdEUyBBUC4KPj4+Cj4+PiBsZXRzIHRyeS4gY2FuIHlvdSBjb3JyZWN0IHRo
-ZSBzeW50YXg/IHRoZSBmb2xsb3dpbmcgaXMgbm90IGNvcnJlY3QKPj4+IGl3IGRldiBhdGgxIHNl
-dCBiaXRyYXRlcyBsZWdhY3ktNSBodC1tY3Mgdmh0LW1jcyAxOjQKPj4+Cj4+PiBVc2FnZTogIGl3
-IFtvcHRpb25zXSBkZXYgPGRldm5hbWU+IHNldCBiaXRyYXRlcyBbbGVnYWN5LTwyLjR8NT4gPGxl
-Z2FjeQo+Pj4gcmF0ZQo+Pj4gaW4gTWJwcz4qXSBbaHQtbWNzLTwyLjR8NT4gPE1DUyBpbmRleD4q
-XSBbdgo+Pj4gaHQtbWNzLTwyLjR8NT4gPE5TUzpNQ1N4LE1DU3kuLi4gfCBOU1M6TUNTeC1NQ1N5
-PipdIFtzZ2ktMi40fGxnaS0yLjRdCj4+PiBbc2dpLTV8bGdpLTVdCj4+Pgo+Pj4gU2V0cyB1cCB0
-aGUgc3BlY2lmaWVkIHJhdGUgbWFza3MuCj4+PiBOb3QgcGFzc2luZyBhbnkgYXJndW1lbnRzIHdv
-dWxkIGNsZWFyIHRoZSBleGlzdGluZyBtYXNrIChpZiBhbnkpLgo+Pgo+PiBBaCwgc29ycnksIG15
-IGJhZC4KPj4KPj4gICAgaXcgZGV2IGF0aDEgc2V0IGJpdHJhdGVzIGxlZ2FjeS01IGh0LW1jcy01
-IHZodC1tY3MtNSAxOjQKPj4KPj4gKGh0LW1jcyBhbmQgdmh0LW1jcyB3ZXJlIG1pc3NpbmcgIi01
-IiBzdWZmaXgpCj4+Cj4+IEFzIGEgc2lkZW5vdGU6IFRoZSBsb2dpYyBoZXJlIGlzIHRoYXQgeW91
-IG5lZWQgdG8gZXhwbGljaXRseSB0ZWxsIHRoYXQKPj4geW91IHdhbnQgZW1wdHkgc2V0IG9mIGxl
-Z2FjeSByYXRlcyBhbmQgZW1wdHkgc2V0IG9mIEhUIHJhdGVzIGFuZCBvbmx5Cj4+IGEgc2luZ2xl
-IFZIVCByYXRlIHRvIGJlIHNldCAoYWxsIGV4cGxpY2l0bHkgZm9yIDVnaHogYmFuZCkuIFRoaXMg
-bWFrZXMKPj4gc3VyZSB0aGF0IEZXIHJhdGUgY29udHJvbCBpcyBpZ25vcmVkIGFuZCBhIGZpeGVk
-IHJhdGUgaXMgdXNlZCBmb3IgYWxsCj4+IGRhdGEgdHJhbnNtaXNzaW9ucyAoYW5kIHRoaXMgc2hv
-dWxkIGFsc28gYnVpbGQgdHggdHJ5LWxpc3RzIHdpdGhvdXQKPj4gYW55IGZhbmN5IHJldHJpZXMv
-ZmFsbGJhY2tzIHRvIGRpZmZlcmVudCByYXRlcykuCj4KPiBhZnRlciBzZXR0aW5nIHRoaXMgc2V0
-dGluZyBvbiBhcC4gaSBnZXQgdGhlIGZvbGxvd2luZyByZXN1bHRzOgo+Cj4gc3RhOgo+IHJ4IGJp
-dHJhdGU6ICAgICAxNzUuNSBNQml0L3MgVkhULU1DUyA0IDgwTUh6IFZIVC1OU1MgMQo+ICAgICAg
-ICAgICAgICAgICAgUGVlciBUWCByYXRlIDIzNDAwMAo+ICAgICAgICAgICAgICAgICAgIFBlZXIg
-UlggcmF0ZSAxNzU1MDAKPgo+Cj4gQVA6Cj4gICAgICAgICByeCBiaXRyYXRlOiAgICAgMTc1LjUg
-TUJpdC9zIFZIVC1NQ1MgNCA4ME1IeiBWSFQtTlNTIDEKPiAgICAgICAgICAgICAgICAgICBQZWVy
-IFRYIHJhdGUgMjYzMzAwCj4gICAgICAgICAgICAgICAgICAgUGVlciBSWCByYXRlIDE3NTUwMAo+
-Cj4gdGhpcyBsb29rcyBldmVuIG1vcmUgY3VyaW91cwoKVGhhbmtzIGZvciBjaGVja2luZy4KCkxv
-b2tzIGxpa2UgZmlybXdhcmUgcmVwb3J0cyBnYXJiYWdlIGZvciBwZWVyLXR4LXJhdGUuLiAyMzRt
-YnBzIGFuZAoyNjMuM21icHMgd2VyZSBwcm9iYWJseSB2YWx1ZXMgdGhhdCByYXRlIGNvbnRyb2wg
-dHJpZWQgYmVmb3JlIGFuZApzaW5jZSBmaXJtd2FyZSByZXVzZXMgbWVtb3J5IGh1bmtzIGZvciB0
-eCBkZXNjcmlwdG9ycyBpdCBwcm9iYWJseSBlbmRzCnVwIHJlYWRpbmcgc3RhbGUgZGF0YSBhbmQg
-cmVwb3J0cyBpdCBhcyBwZWVyLXR4LXJhdGUuCgpJIGRpZCBhIHF1aWNrIGxvb2sgYXQgZmlybXdh
-cmUgY29kZSB0aGF0IGNvbGxlY3RzIHBlZXItdHgtcmF0ZS4gSXQKZG9lcyBzZWVtIHRvIGhhdmUg
-c29tZSBsb2dpYyBmbGF3cyBidXQgSSBjb3VsZG4ndCBpbWFnaW5lIGhvdyBpdCBjYW4KcmVwb3J0
-IHRoZSB2YWx1ZXMgeW91J3JlIHNlZWluZy4KCk9uIHRoZSBwbHVzIHNpZGUgaXQncyBwcm9iYWJs
-eSBoYXJtbGVzcy4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+
+For chipsets like QCA99X0, IPQ4019 and later we are not getting proper
+NULL func status (always acked/successs !!) when hostapd does a
+PROBE_CLIENT via nullfunc frames when the station is powered off
+abruptly (inactive timer probes client via null func after the inactive
+time reaches beyond the threshold). Fix this by disabling the workaround
+introduced by the change ("ath10k: fix beacon loss handling ") for
+QCA99X0 and later chipsets. The normal tx path provides the proper
+status for NULL data frames. As of now disable this workaround for
+chipsets QCA99X0 and later, once the 10.1 firmware is obselete we can
+completely get rid of this workaround for all the chipsets
+
+Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 3 +++
+ drivers/net/wireless/ath/ath10k/core.h | 1 +
+ drivers/net/wireless/ath/ath10k/mac.c  | 1 +
+ 3 files changed, 5 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index dcc76b6..8687aaa 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -181,6 +181,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board = QCA99X0_HW_2_0_BOARD_DATA_FILE,
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
++			.disable_null_func_workaround = true,
+ 		},
+ 	},
+ 	{
+@@ -204,6 +205,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board = QCA9984_HW_1_0_BOARD_DATA_FILE,
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
++			.disable_null_func_workaround = true,
+ 		},
+ 	},
+ 	{
+@@ -262,6 +264,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board = QCA4019_HW_1_0_BOARD_DATA_FILE,
+ 			.board_size = QCA4019_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
++			.disable_null_func_workaround = true,
+ 		},
+ 	},
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 3da18c9..d3dfda0 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -750,6 +750,7 @@ struct ath10k {
+ 			const char *board;
+ 			size_t board_size;
+ 			size_t board_ext_size;
++			bool disable_null_func_workaround;
+ 		} fw;
+ 	} hw_params;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index d4b7a16..f1e9672 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3236,6 +3236,7 @@ ath10k_mac_tx_h_get_txmode(struct ath10k *ar,
+ 	 * mode though because AP don't sleep.
+ 	 */
+ 	if (ar->htt.target_version_major < 3 &&
++	    !ar->hw_params.fw.disable_null_func_workaround &&
+ 	    (ieee80211_is_nullfunc(fc) || ieee80211_is_qos_nullfunc(fc)) &&
+ 	    !test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
+ 		      ar->running_fw->fw_file.fw_features))
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
