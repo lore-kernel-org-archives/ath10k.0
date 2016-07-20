@@ -1,10 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPukD-0002ip-92
- for ath10k@lists.infradead.org; Wed, 20 Jul 2016 16:53:14 +0000
-Message-ID: <578FAC4E.2010706@candelatech.com>
-Date: Wed, 20 Jul 2016 09:52:30 -0700
+ id 1bPulm-0002lS-Qg
+ for ath10k@lists.infradead.org; Wed, 20 Jul 2016 16:54:51 +0000
+Message-ID: <578FAB56.1030606@candelatech.com>
+Date: Wed, 20 Jul 2016 09:48:22 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
 Subject: Re: [PATCH] ath10k: fix system hang at qca99x0 probe on x86 platform
@@ -14,8 +14,12 @@ References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
  <1467218124941.40575@qti.qualcomm.com>
  <CA+BoTQkepLz55Vdr7OuMnPQPLKq_+vjZi=m2Y9rHLRgBZPsWOw@mail.gmail.com>
  <1468941948774.87860@qti.qualcomm.com>
- <CA+BoTQmRL=LO_U0DDkNbrwLv0-1JB50cD8QyY7WnpqzMF+VMFQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQmRL=LO_U0DDkNbrwLv0-1JB50cD8QyY7WnpqzMF+VMFQ@mail.gmail.com>
+ <CAJ-Vmon1duBNcWhjaNdANYFfd3hwQUYYHrmx7LRZvT-Ec2x1Cg@mail.gmail.com>
+ <578E5AFA.4000908@candelatech.com>
+ <CA+BoTQ=QMPUtY64ELCToZLcSrCPQdG=2Eg4FrsULeeDg9sFPYA@mail.gmail.com>
+ <CAJ-Vmok95tiLzmnfiBnnOLQK9hXW2DfjPPVGy9yqucq32PBwJw@mail.gmail.com>
+ <CA+BoTQ=ehuXpcJUOeSscLKzX9T=hZyp5i2G9GoxTVX=LAg_4hA@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=ehuXpcJUOeSscLKzX9T=hZyp5i2G9GoxTVX=LAg_4hA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,56 +28,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "nbd@nbd.name" <nbd@nbd.name>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>
+To: Michal Kazior <michal.kazior@tieto.com>, Adrian Chadd <adrian@freebsd.org>
+Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, "Manoharan,
+ Rajkumar" <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Valo,
+ Kalle" <kvalo@qca.qualcomm.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, "nbd@nbd.name" <nbd@nbd.name>
 
-CgpPbiAwNy8xOS8yMDE2IDEwOjM2IFBNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDE5IEp1
-bHkgMjAxNiBhdCAxNzoyNSwgTWFub2hhcmFuLCBSYWprdW1hciA8cm1hbm9oYXJAcXRpLnF1YWxj
-b21tLmNvbT4gd3JvdGU6Cj4+IE9uIEp1bmUgMzAsIDIwMTYgMTI6MzkgUE0sIE1pY2hhbCBLYXpp
-b3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPj4+IE9uIDI5IEp1bmUgMjAxNiBh
-dCAxODozNSwgTWFub2hhcmFuLCBSYWprdW1hciA8cm1hbm9oYXJAcXRpLnF1YWxjb21tLmNvbT4g
-d3JvdGU6Cj4+Pj4+PiBBbSAyOS4wNi4yMDE2IHVtIDE2OjA0IHNjaHJpZWIgU2ViYXN0aWFuIEdv
-dHRzY2hhbGw6Cj4+Pj4+PiB0aGlzIGZpeCB3aWxsIGNyYXNoIFFDQTk5ODAgb24gUUNBIElQUTgw
-NjQgY3B1IGJhc2VkIHN5c3RlbXMuCj4+Pj4+PiBzbyBwbGVhc2UgcmV3b3JrIGl0LCBvciBsZWF2
-ZSBpdCBvdXQuCj4+Pj4+PiBub3RlOgo+Pj4+Pj4gbWF5YmUgdGhlIGxpbWl0IG9mIDI1NmtiIGlz
-IHRvbyBsb3cgZm9yIHRoYXQgY2FyZAo+Pj4+Pj4KPj4+Pj4gYnkgdGhlIHdheS4gNTEyIHdvcmtz
-Cj4+Pgo+Pj4gSSB0aGluayB0aGlzIHN1Z2dlc3RzIHRoZSBwcm9ibGVtIGlzbid0IGFib3V0IG1l
-bW9yeSBjaHVuayBzaXplIGxpbWl0Cj4+PiBwZXIgc2UgYnV0IHNvbWUga2luZCBvZiBidWcgaW4g
-YWRkcmVzcy9vZmZzZXQgbG9naWMgaW4gZncgb3IgaHcuCj4+Pgo+Pj4gRE1BIGNvaGVyZW50IGFu
-ZCBzaW5nbGUtbWFwIGFkZHJlc3NlcyB1c2UgY29tcGxldGVseSBkaWZmZXJlbnQgcmFuZ2VzCj4+
-PiBpbiBtYW55IGNhc2VzLiBQZXJoYXBzIHNvbWUgTVNCcyBhcmUgbm90IHByb3Blcmx5IGhhbmRs
-ZWQgaW4gZncgb3IgaHcuCj4+PiBJIHJlY2FsbCB0aGVyZSBpcyBhIG1hZ2ljIG1hY3JvIHRocm91
-Z2ggd2hpY2ggdGFyZ2V0IGRldmljZSBhY2Nlc3Nlcwo+Pj4gaG9zdCBtZW1vcnkgc28gbWF5YmUg
-dGhhdCdzIGEgZ29vZCBwbGFjZSB0byBsb29rIHRvIGJldHRlciB1bmRlcnN0YW5kCj4+PiB0aGUg
-cHJvYmxlbT8KPj4+Cj4+IE1pY2hhxYIsCj4+Cj4+IENvdWxkIHlvdSBwbGVhc2Ugc2hlZCBzb21l
-IGxpZ2h0IG9uIHRoaXMgaXNzdWU/IEl0IHNlZW1zIHRoaXMgaXNzdWUgaXMgcG9wcGluZyB1cAo+
-PiBtb3JlIGZyZXF1ZW50bHkgYW5kIHRoZXJlIGFyZSBtdWx0aXBsZSB0aHJlYWRzIGZvciB0aGlz
-IGlzc3VlLgo+Pgo+PiAiQW55b25lIGJyb3VnaHQgdXAgOTk4NCBOSUMgb24geDg2LTY0PyIKPj4g
-IkFSOTg4MiBJT01NVSBmYXVsdHMiCj4KPiBJIHRoaW5rIElPTU1VIGZhdWx0cyB3ZXJlIHNvbHZl
-ZCBieSB1c2luZyBETUFfQklESVJFQ1RJT05BTCwgbm8/CgpZZXMsIHRoYXQgcmVzb2x2ZXMgdGhl
-IGZhdWx0cywgb3IgYXQgbGVhc3QgdGhlIHZhc3QgbWFqb3JpdHkgb2YgdGhlbS4KClJlbWFpbmlu
-ZyBzcHVyaW91cyBmYXVsdHMgYXJlIGxpa2VseSBmaXJtd2FyZSBidWdzIGFjY2Vzc2luZyBiYWQg
-bWVtb3J5LCBJIGd1ZXNzLgpZb3UgcHJvYmFibHkgZG9uJ3Qgbm90aWNlIHRoaXMgYXQgYWxsIG9u
-IEFSTSBhbmQgb3RoZXIgc3lzdGVtcyB3L291dCBoYXJkd2FyZSBJT01NVT8KCj4+IEV2ZW4gd2l0
-aCBjdXJyZW50IGxvZ2ljLCBJZiB0aGUgbWVtb3J5IGNodW5rIGFsbG9jYXRpb24gZmFpbHMgZm9y
-IGJpZ2dlciBzaXplLCB0aGVuIGl0IHRyaWVzCj4+IHRvIGFsbG9jYXRlIHNtYWxsZXIgY2h1bmtz
-LiBTbyBJZiBzbWFsbGVyIGNodW5rcyBjYXVzZXMgdW5leHBlY3RlZCBiZWhhdmlvdXIsIGl0IGlz
-IGV2ZW4KPj4gYXBwbGljYWJsZSB0byBleGlzdGluZyBsb2dpYy4gbm8/Cj4KPiBXZSBzdGlsbCBk
-b24ndCBrbm93ICp3aHkqIHVzaW5nIG5vbi1jb2hlcmVudCBtZW1vcnkgY2F1c2VzIHByb2JsZW1z
-Lgo+IENoYW5naW5nIGNodW5rIHNpemUgbGltaXQgc2VlbXMgdG8gYWx0ZXIgdGhlIGJlaGF2aW9y
-IGluIHNvbWUKPiB1bnByZWRpY3RhYmxlIHdheXMsIHllcywgYnV0IGl0J3MgcmVhbGx5IGhhcmQg
-dG8gdGVsbCBpZiB0aGUgInRyeQo+IHNtYWxsZXIgY2h1bmsgc2l6ZXMiICppdHNlbGYqIGludHJv
-ZHVjZXMgYW55IHByb2JsZW1zLgoKSWYgaXQgaXMgY3Jhc2hpbmcgZmlybXdhcmUgc29tZWhvdywg
-YW5kIHlvdSBjYW4gZ2V0IGEgYmFja3RyYWNlLCB0aGVuIGxpa2VseQppdCBjYW4gYmUgZGVidWdn
-ZWQuICBJbiBteSBjYXNlLCBjaGFuZ2luZyB0aGUgc2l6ZSBjYXVzZWQgZmlybXdhcmUgdG8gY3Jh
-c2ggZHVlIHRvCmxhbWUgbG9naWMgYnVnIGluIHRoZSBmaXJtd2FyZSwgZm9yIGluc3RhbmNlLiAg
-UG9zc2libHkgb3RoZXIgY3Jhc2hlcyBhcmUgYXMKbXVuZGFuZSBhcyB0aGF0LgoKVGhhbmtzLApC
-ZW4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVj
-aG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsK
+
+
+On 07/19/2016 11:05 PM, Michal Kazior wrote:
+> On 20 July 2016 at 07:44, Adrian Chadd <adrian@freebsd.org> wrote:
+>> Hi,
+>>
+>> dma coherent doesn't /have/ to mean "low 32 bits". It's just supposed
+>> to mean "try really hard to use uncached memory on platforms that
+>> support it."
+>
+> Good point. Maybe it does on x86, or at least some machines.
+>
+> @Ben: Can you verify if that's the case for you? Can you see what
+> address ranges hostmem chunks get with and without the GFP_DMA32 (and
+> maybe compare it against a revert to compare to dma-coherent as well)?
+
+You just want a printk("%p", foo); for the chunks returned with and without
+this flag?
+
+>
+>
+>> The ath10k hardware (at least what I've played with thus far) is all
+>> 32 bit DMA hardware, not 64 bit, so it can't be handed 64 bit memory -
+>> contiguous or otherwise.
+>>
+>> So, if dma coherent on linux means 32 bit only physmem, great.
+>>
+>> Now, it also turns out that various platforms that say they do
+>> coherent memory these days do "mostly coherent", and you still need
+>> some flush/sync ops..
+>
+> Yeah, but since the device has it's own CPU and RAM it has to have a
+> way to distinguish local and host memory in some way using these 32
+> bits, no? (think about firmware generating local 802.11 frames vs
+> pushing frames coming from host driver)
+
+Host memory cannot be accessed directly I think, at least not by normal
+code.  Firmware uses some low level 'ce' type logic to handle that I think?
+
+In 10.4 firmware, check out the code-swap code, for instance, or the
+rate-ctrl swap logic in 10.1 or higher?
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
