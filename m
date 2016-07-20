@@ -1,16 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bPulm-0002lS-Qg
- for ath10k@lists.infradead.org; Wed, 20 Jul 2016 16:54:51 +0000
-Message-ID: <578FAB56.1030606@candelatech.com>
-Date: Wed, 20 Jul 2016 09:48:22 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: fix system hang at qca99x0 probe on x86 platform
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
+ by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bPunJ-0005LA-W6
+ for ath10k@lists.infradead.org; Wed, 20 Jul 2016 16:56:26 +0000
 References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
- <e05dcb58-1cb1-a33a-31bb-b8ba1edf1363@dd-wrt.com>
- <fa3eab06-28f0-e5d4-2e92-770134b49dfa@dd-wrt.com>
  <1467218124941.40575@qti.qualcomm.com>
  <CA+BoTQkepLz55Vdr7OuMnPQPLKq_+vjZi=m2Y9rHLRgBZPsWOw@mail.gmail.com>
  <1468941948774.87860@qti.qualcomm.com>
@@ -19,7 +13,20 @@ References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
  <CA+BoTQ=QMPUtY64ELCToZLcSrCPQdG=2Eg4FrsULeeDg9sFPYA@mail.gmail.com>
  <CAJ-Vmok95tiLzmnfiBnnOLQK9hXW2DfjPPVGy9yqucq32PBwJw@mail.gmail.com>
  <CA+BoTQ=ehuXpcJUOeSscLKzX9T=hZyp5i2G9GoxTVX=LAg_4hA@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=ehuXpcJUOeSscLKzX9T=hZyp5i2G9GoxTVX=LAg_4hA@mail.gmail.com>
+ <CAJ-Vmo=d=PgUu_AYT1C82AJcnUxKUo_VYMn_b1QF8M_T+5KpkA@mail.gmail.com>
+ <CA+BoTQnN1EVGBu0J5Y7-z2=uqsG8rXS0Lvs7VAoeawv9MGuFyQ@mail.gmail.com>
+ <b1cdb5c3-6ddb-8a69-d0f7-79d8e6ba23d0@dd-wrt.com>
+ <CA+BoTQmrk_U8oVXxk-5hBz60=R-xR4H=2_x2pj9BVDYXPOoCGg@mail.gmail.com>
+ <6487f1d3-339e-a6dd-d866-b11b37b4ddff@dd-wrt.com>
+ <CA+BoTQ=yC7kN7ayWqZ9Y3SBL0jQZRkKMU2=T9Z21Vwxjp2m7uw@mail.gmail.com>
+ <b08002e3-8f45-d6c2-607e-344fbddbd957@dd-wrt. com>
+ <578FAA12.4020509@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <5511d94c-3f25-a7e2-6724-2540d8cfa7f6@dd-wrt.com>
+Date: Wed, 20 Jul 2016 18:50:45 +0200
+MIME-Version: 1.0
+In-Reply-To: <578FAA12.4020509@candelatech.com>
+Subject: Re: rx rate issue
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,65 +35,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, Adrian Chadd <adrian@freebsd.org>
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, "nbd@nbd.name" <nbd@nbd.name>
+To: Ben Greear <greearb@candelatech.com>, Michal Kazior <michal.kazior@tieto.com>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "nbd@nbd.name" <nbd@nbd.name>
 
-
-
-On 07/19/2016 11:05 PM, Michal Kazior wrote:
-> On 20 July 2016 at 07:44, Adrian Chadd <adrian@freebsd.org> wrote:
->> Hi,
->>
->> dma coherent doesn't /have/ to mean "low 32 bits". It's just supposed
->> to mean "try really hard to use uncached memory on platforms that
->> support it."
->
-> Good point. Maybe it does on x86, or at least some machines.
->
-> @Ben: Can you verify if that's the case for you? Can you see what
-> address ranges hostmem chunks get with and without the GFP_DMA32 (and
-> maybe compare it against a revert to compare to dma-coherent as well)?
-
-You just want a printk("%p", foo); for the chunks returned with and without
-this flag?
-
->
->
->> The ath10k hardware (at least what I've played with thus far) is all
->> 32 bit DMA hardware, not 64 bit, so it can't be handed 64 bit memory -
->> contiguous or otherwise.
->>
->> So, if dma coherent on linux means 32 bit only physmem, great.
->>
->> Now, it also turns out that various platforms that say they do
->> coherent memory these days do "mostly coherent", and you still need
->> some flush/sync ops..
->
-> Yeah, but since the device has it's own CPU and RAM it has to have a
-> way to distinguish local and host memory in some way using these 32
-> bits, no? (think about firmware generating local 802.11 frames vs
-> pushing frames coming from host driver)
-
-Host memory cannot be accessed directly I think, at least not by normal
-code.  Firmware uses some low level 'ce' type logic to handle that I think?
-
-In 10.4 firmware, check out the code-swap code, for instance, or the
-rate-ctrl swap logic in 10.1 or higher?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMjAuMDcuMjAxNiB1bSAxODo0MiBzY2hyaWViIEJlbiBHcmVlYXI6Cj4KPgo+IE9uIDA3LzIw
+LzIwMTYgMDQ6MTIgQU0sIFNlYmFzdGlhbiBHb3R0c2NoYWxsIHdyb3RlOgo+PiBBbSAyMC4wNy4y
+MDE2IHVtIDEzOjAzIHNjaHJpZWIgTWljaGFsIEthemlvcjoKPgo+Pj4+Pj4gV0RTIEFQOgo+Pj4+
+Pj4gICAgICAgICAgICAgICAgUGVlciBNQUMgYWRkcmVzcyA0MDphNTplZjo4NTo0ZDo2Zgo+Pj4+
+Pj4gICAgICAgICAgICAgICAgICAgICAgICBQZWVyIFJTU0kgMTIKPj4+Pj4+ICAgICAgICAgICAg
+ICAgICAgICAgUGVlciBUWCByYXRlIDE3NTUwMAo+Pj4+Pj4gICAgICAgICAgICAgICAgICAgICBQ
+ZWVyIFJYIHJhdGUgMTc1NTAwCj4+Pj4+PiAgICAgICAgICAgICAgICAgUGVlciBSWCBkdXJhdGlv
+biAwCj4+Pj4+Pgo+Pj4+Pj4KPj4+Pj4+IFdEUyBTVEE6Cj4+Pj4+PiAgICAgICAgICAgICAgIFBl
+ZXIgTUFDIGFkZHJlc3MgNDA6YTU6ZWY6NTE6NDk6ZGIKPj4+Pj4+ICAgICAgICAgICAgICAgICAg
+ICAgICAgUGVlciBSU1NJIDEzCj4+Pj4+PiAgICAgICAgICAgICAgICAgICAgIFBlZXIgVFggcmF0
+ZSAxNzU1MDAKPj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgUGVlciBSWCByYXRlIDM1MTAwMAo+
+Pj4+Pj4gICAgICAgICAgICAgICAgIFBlZXIgUlggZHVyYXRpb24gMAo+Pj4gWy4uLl0KPgo+IE9u
+ZSB0aGluZywgaWYgeW91ciBzaWduYWwgaXMgcmVhbGx5IHRoaXMgaG90ICgtMTIsIC0xMyksIHRo
+ZW4geW91IGFyZSAKPiBsaWtlbHkgb3Zlci1zYXR1cmF0aW5nCj4gdGhlIFJGIGxvZ2ljLiAgWW91
+IG5vcm1hbGx5IGdldCBiZXN0IHJlc3VsdHMgYXQgYXJvdW5kIC00MCBzaWduYWwgCj4gbGV2ZWwu
+Li4KdGhlIHBlZXIgc3NpZCBpcyBub3QgZGIuIGl0cyBtb3JlIGxpa2VsbHkgdGhlIHNuci4gYm90
+aCBkZXZpY2VzIGhhdmUgMjAgCm1ldGVyIGRpc3RhbmNlIHdpdGggYSBicmljayB3YWxsIGluIGJl
+dHdlZW4Kc28gaXRzIG5vdCBvdmVyIHNhdHVyYXRpbmcuIG1hYzgwMjExIHNob3dzIGFib3V0IC04
+MSByc3NpIGFuZCAtOTUgbm9pc2UgCnJpZ2h0IG5vdyB3aXRoIGhlYXZ5IGZsdWN0dWF0aW9ucyB1
+cCB0byAtNzAKPgo+IFRoYW5rcywKPiBCZW4KPgoKCi0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xz
+c2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBH
+bWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBCZXJsaW5lciBSaW5nIDEwMSwgNjQ2MjUgQmVuc2hl
+aW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3MwpHZXNj
+aMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQpodHRw
+Oi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tClRlbC46ICs0
+OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCg==
