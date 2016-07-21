@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.redhat.com ([209.132.183.28])
+Received: from champagne.comp.nus.edu.sg ([137.132.80.90])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bQCfW-0002se-Lh
- for ath10k@lists.infradead.org; Thu, 21 Jul 2016 12:01:35 +0000
-Message-ID: <5790B988.3080600@redhat.com>
-Date: Thu, 21 Jul 2016 08:01:12 -0400
-From: Prarit Bhargava <prarit@redhat.com>
+ id 1bQEm2-0000xm-Mm
+ for ath10k@lists.infradead.org; Thu, 21 Jul 2016 14:16:33 +0000
+Received: from mail-io0-f199.google.com ([209.85.223.199])
+ by champagne.comp.nus.edu.sg (Exim) with esmtps (TLSv1:DES-CBC3-SHA:168)
+ id 1bQElP-0006AN-MO
+ for ath10k@lists.infradead.org; Thu, 21 Jul 2016 22:15:48 +0800
+Received: by mail-io0-f199.google.com with SMTP id u25so162519923ioi.1
+ for <ath10k@lists.infradead.org>; Thu, 21 Jul 2016 07:15:47 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [RFC] ath10k: silence firmware file probing warnings
-References: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
- <20160721070938.GA2658@redhat.com>
- <CANUX_P3ADxi+RHkH=d8Ypcqy9WVKSu4JYH7K3HtTNCuWg3wCeQ@mail.gmail.com>
- <20160721080541.GB2658@redhat.com> <5790A28F.8030102@redhat.com>
- <20160721115122.GA31869@redhat.com>
-In-Reply-To: <20160721115122.GA31869@redhat.com>
+From: Raj Joshi <rajjoshi@comp.nus.edu.sg>
+Date: Thu, 21 Jul 2016 21:15:06 +0700
+Message-ID: <CA+uUJGu6qSmxupEkaqPmLBQf53wQtjyXidFCf+4X9vMxL4WmoA@mail.gmail.com>
+Subject: Completely disabling RTS/CTS
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,69 +26,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Stanislaw Gruszka <sgruszka@redhat.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ming Lei <ming.lei@canonical.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>, Arend van Spriel <arend@broadcom.com>, Emmanuel Grumbach <egrumbach@gmail.com>
+To: ath10k@lists.infradead.org
 
+Hi all,
 
+I am trying to "completely" disable RTS/CTS.
 
-On 07/21/2016 07:51 AM, Stanislaw Gruszka wrote:
-> (cc: firmware and brcmfmac maintainers)
+* Case 1: Using iw/iwconfig when I set the sender's RTS threshold to a
+very high value (RTS thr=10000 B), I expect that no RTS should be
+sent. However, it seems that this threshold is not being honored and I
+can sniff large number of RTS/CTS frames. I verified that no A-MSDU is
+exceeding 10000 B.
+* Case 2: Interestingly, when I set the sender's RTS threshold to off
+(RTS thr:off), compared to case #1 much less number of RTS/CTS frames
+are seen and throughput is seen to improve. But I can still see
+RTS/CTS frames being sent.
+* Since the channel is clear and much isolated, and there is just one
+AP and one STA, there is negligible chance of other factors playing
+any role.
+* There is one change though that I have disabled dynamic bandwidth
+i.e. ar->wmi.pdev_param->dynamic_bw set zero in mac.c. I believe this
+is likely not an issue as similar RTS/CTS behavior is seen even with
+dynamic_bw set to 1 (there are no heterogeneous channel widths in the
+network in any case).
+* Another thing I noticed is that the RTS/CTS protection mode if set,
+it is set to CTS-to-self, rather than "RTS/CTS" i.e.
+ar->wmi.vdev_param->protection_mode in mac.c is either set to 1 or 0
+(depending upon use_cts_prot), but not 2. This probably seems not
+helpful in hidden node scenarios as the CTS frame is unicasted instead
+broadcasting.
 
-<snip>
+I would appreciate any pointers on completely disabling RTS/CTS as
+well as the ability to choose between complete RTS/CTS versus
+CTS-to-self whenever RTS/CTS is enabled.
 
->>>
->>> I'm not sure if replacing to request_firmware_direct() is a good
->>> fix though. For example I can see this problem also on brcmfmac, which
->>> use request_firmware_nowait(). I think I would rather prefer special
->>> helper for firmware drivers that needs user helper and have
->>> request_firmware() be direct as default.
->>>
->>
->> The difference between request_firmware_direct() and request_firmware() is that
->> the _direct() version does not wait the 60 seconds for udev interaction.  The
->> only userspace check performed is to see if the file is there, and if the file
->> does exist it is provided to the driver to be applied to the hardware.
->>
->> So the real question to ask here is whether or not the ath10k, brcmfmac, and
->> iwlwifi require udev to do anything beyond checking for the existence and
->> loading the firmware image.  If they don't, then it is better to use
->> request_firmware_direct().
-> 
-> They don't need that, like 99% of the drivers I think, hence changing the
-> default seems to be more reasonable. However changing 3 drivers would work
+Thanks,
+Raj Joshi
 
-I think I argued for that a while back and changing the default was rejected.
-I can't remember why it was rejected :(.  It may have had something to do with
-the complexity of getting a large number of driver maintainers to ack the change.
-
-> for me as well, and that change do not introduce risk of broking drivers
-> that require udev fw download.
-
-In my experience, there are very few drivers that actually require userspace
-interaction beyond verifying the image location.  (The one that comes to mind is
-the dell_rbu driver which attempts to download FW images)
-
-> 
-> iwlwifi and ath10k are trivial, bcrmfmac is a bit more complex as it
-> use request_firmware_nowait(), so it first need to be converted to
-> ordinary request_firmware(), but this should be doable and I can do
-> that.
-> 
-> However I wonder if changing that will not broke the case when
-> driver is build-in in the kernel and f/w is not yet available when
-> driver start to initialize. 
-
-As you say below ...
-
-Or maybe nowadays this is not the case
-> any longer, i.e. the MODULE_FIRMWARE macros assure proper f/w 
-> images are build-in in the kernel or copied to initramfs?
-
-This is correct AFAIU.  If MODULE_FIRMWARE=y then the firmware should be loaded
-into the kernel image temp fs and/or initramfs.  This of course assumes that the
-person building the image is smart enough to have installed the FW on their system.
-
-P.
+--------------------------
+More info on setup
+--------------------------
+- QCA9880 (Compex wle900vx)
+- Ubuntu 16.04 x64 running kernel 4.7.0-rc4-wt-ath-201606202115 from ath.git
+- firmware-version: 10.2.4.70.9-2
 
 _______________________________________________
 ath10k mailing list
