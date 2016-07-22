@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bQSpP-0001hS-KZ
- for ath10k@lists.infradead.org; Fri, 22 Jul 2016 05:16:52 +0000
-Message-ID: <57919126.7000601@candelatech.com>
-Date: Thu, 21 Jul 2016 20:21:10 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-pf0-x232.google.com ([2607:f8b0:400e:c00::232])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bQVyx-0000so-KP
+ for ath10k@lists.infradead.org; Fri, 22 Jul 2016 08:38:58 +0000
+Received: by mail-pf0-x232.google.com with SMTP id y134so39473511pfg.0
+ for <ath10k@lists.infradead.org>; Fri, 22 Jul 2016 01:38:34 -0700 (PDT)
+Subject: Re: [RFC] ath10k: silence firmware file probing warnings
+References: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
+ <20160721070938.GA2658@redhat.com>
+ <CANUX_P3ADxi+RHkH=d8Ypcqy9WVKSu4JYH7K3HtTNCuWg3wCeQ@mail.gmail.com>
+ <20160721080541.GB2658@redhat.com> <5790A28F.8030102@redhat.com>
+ <20160721115122.GA31869@redhat.com>
+From: Arend Van Spriel <arend.vanspriel@broadcom.com>
+Message-ID: <a264e995-fc46-7fcd-69f9-80992385b6b1@broadcom.com>
+Date: Fri, 22 Jul 2016 10:38:24 +0200
 MIME-Version: 1.0
-Subject: Re: Completely disabling RTS/CTS
-References: <CA+uUJGu6qSmxupEkaqPmLBQf53wQtjyXidFCf+4X9vMxL4WmoA@mail.gmail.com>
- <CABPxzY+KHVGAUKjU2kWdKiEPZFV3=sOnWe-qBMDOPffw_vJ0+g@mail.gmail.com>
- <5790FBF0.2060800@candelatech.com>
- <CA+uUJGv4qD=-su8792tWEHCJQg5soXfQ6trzb5mwxteXDD_ZRA@mail.gmail.com>
-In-Reply-To: <CA+uUJGv4qD=-su8792tWEHCJQg5soXfQ6trzb5mwxteXDD_ZRA@mail.gmail.com>
+In-Reply-To: <20160721115122.GA31869@redhat.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,111 +24,132 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Raj Joshi <rajjoshi@comp.nus.edu.sg>
-Cc: Krishna Chaitanya <chaitanya.mgit@gmail.com>, ath10k <ath10k@lists.infradead.org>
+To: Stanislaw Gruszka <sgruszka@redhat.com>, Prarit Bhargava <prarit@redhat.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ming Lei <ming.lei@canonical.com>, linux-wireless <linux-wireless@vger.kernel.org>, "Luis R. Rodriguez" <mcgrof@kernel.org>, ath10k <ath10k@lists.infradead.org>, Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>, Arend van Spriel <arend@broadcom.com>, Emmanuel Grumbach <egrumbach@gmail.com>
 
++ Luis
 
-
-On 07/21/2016 07:54 PM, Raj Joshi wrote:
-> I am operating VHT (802.11ac) in AP-client configuration and thus
-> aggregation is inevitable (as per the standard) as well as desirable
-> (I suppose). I am receiving all A-MSDUs and not A-MPDUs. Now since
-> losses are expensive to recover in case of A-MSDUs than A-MPDUs, is
-> that the reason that there are intermittent RTS/CTS frames by rate
-> control?
->
-> If the culprit is firmware rate-control, I can try setting the bitrate
-> mask and check again. Also how can I force the use of A-MPDUs rather
-> than A-MSDUs? If this is outside the purview of firmware rate control,
-> then I can try this one as well.
-
-AMPDU and AMSDU should work fine in STA and AP mode.  If you are using IBSS,
-then firmware must disable AMSDU since there seems to be some hardware bug with
-IBSS and AMSDU.
-
-I don't think you can affect RTS/CTS from the host.  I think it would require
-a firmware code change to disable RTS/CTS rate-code entries.
-
-I think there is a way to set the AMSDU size, and you could make it small
-enough to effectively disable AMSDU.
-
-Thanks,
-Ben
-
->
-> Thanks,
-> Raj Joshi
->
->
-> On Fri, Jul 22, 2016 at 12:44 AM, Ben Greear <greearb@candelatech.com> wrote:
->> On 07/21/2016 07:29 AM, Krishna Chaitanya wrote:
+On 21-7-2016 13:51, Stanislaw Gruszka wrote:
+> (cc: firmware and brcmfmac maintainers)
+> 
+> On Thu, Jul 21, 2016 at 06:23:11AM -0400, Prarit Bhargava wrote:
+>>
+>>
+>> On 07/21/2016 04:05 AM, Stanislaw Gruszka wrote:
+>>> On Thu, Jul 21, 2016 at 10:36:42AM +0300, Emmanuel Grumbach wrote:
+>>>> On Thu, Jul 21, 2016 at 10:09 AM, Stanislaw Gruszka <sgruszka@redhat.com> wrote:
+>>>>> On Tue, Jul 19, 2016 at 03:00:37PM +0200, Michal Kazior wrote:
+>>>>>> Firmware files are versioned to prevent older
+>>>>>> driver instances to load unsupported firmware
+>>>>>> blobs. This is reflected with a fallback logic
+>>>>>> which attempts to load several firmware files.
+>>>>>>
+>>>>>> This however produced a lot of unnecessary
+>>>>>> warnings sometimes confusing users and leading
+>>>>>> them to rename firmware files making things even
+>>>>>> more confusing.
+>>>>>
+>>>>> This happens on kernels configured with
+>>>>> CONFIG_FW_LOADER_USER_HELPER_FALLBACK and cause not only ugly warnings,
+>>>>> but also 60 seconds delay before loading next firmware version.
+>>>>> For some reason RHEL kernel needs above config option, so this
+>>>>> patch is very welcome from my perspective.
+>>>>>
+>>>>
+>>>> Sorry for my ignorance but how does the firmware loading work if not
+>>>> with udev's help?
 >>>
->>> On Thu, Jul 21, 2016 at 7:45 PM, Raj Joshi <rajjoshi@comp.nus.edu.sg>
->>> wrote:
->>>>
->>>> Hi all,
->>>>
->>>> I am trying to "completely" disable RTS/CTS.
->>>>
->>>> * Case 1: Using iw/iwconfig when I set the sender's RTS threshold to a
->>>> very high value (RTS thr=10000 B), I expect that no RTS should be
->>>> sent. However, it seems that this threshold is not being honored and I
->>>> can sniff large number of RTS/CTS frames. I verified that no A-MSDU is
->>>> exceeding 10000 B.
->>>> * Case 2: Interestingly, when I set the sender's RTS threshold to off
->>>> (RTS thr:off), compared to case #1 much less number of RTS/CTS frames
->>>> are seen and throughput is seen to improve. But I can still see
->>>> RTS/CTS frames being sent.
->>>> * Since the channel is clear and much isolated, and there is just one
->>>> AP and one STA, there is negligible chance of other factors playing
->>>> any role.
->>>> * There is one change though that I have disabled dynamic bandwidth
->>>> i.e. ar->wmi.pdev_param->dynamic_bw set zero in mac.c. I believe this
->>>> is likely not an issue as similar RTS/CTS behavior is seen even with
->>>> dynamic_bw set to 1 (there are no heterogeneous channel widths in the
->>>> network in any case).
->>>> * Another thing I noticed is that the RTS/CTS protection mode if set,
->>>> it is set to CTS-to-self, rather than "RTS/CTS" i.e.
->>>> ar->wmi.vdev_param->protection_mode in mac.c is either set to 1 or 0
->>>> (depending upon use_cts_prot), but not 2. This probably seems not
->>>> helpful in hidden node scenarios as the CTS frame is unicasted instead
->>>> broadcasting.
->>>>
->>>> I would appreciate any pointers on completely disabling RTS/CTS as
->>>> well as the ability to choose between complete RTS/CTS versus
->>>> CTS-to-self whenever RTS/CTS is enabled.
->>>
->>> Which mode is this? For aggregated frames (AMPDU) RTS Threshold is
->>> not checked, so it can still be enabled
+>>> I'm not sure exactly, but I think kernel VFS layer is capable to copy
+>>> file data directly from mounted filesystem without user space helper.
 >>
+>> Here's the situation: request_firmware() waits 60 seconds for udev to do its
+>> loading magic via a "usermode helper".  This delay is there to allow, for
+>> example, userspace to unpack or download a new firmware image or verify the
+>> firmware image *in userspace* before providing it to the driver to apply to the HW.
 >>
->> Probably would require firmware changes to fully disable RTS/CTS
->> from what I recall when I was reading the rate-ctrl code...
->>
->> Thanks,
->> Ben
+>> Why 60 seconds?  It is arbitrary and there is no way for udev & the kernel to
+>> handshake on completion.
 >>
 >>>
->>> _______________________________________________
->>> ath10k mailing list
->>> ath10k@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>>> As you can imagine, iwlwifi is suffering from the
+>>>> same problem and I would be interested in applying the same change,
+>>>> but I'd love to understand a bit more :)
+>>>
+>>> Yes, iwlwifi (and some other drivers) suffer from this. However this
+>>> happen when the newest firmware version is not installed on the system
+>>> and CONFIG_FW_LOADER_USER_HELPER_FALLBACK is enabled. What I suppose
+>>> it's not common.
+>>
+>> request_firmware_direct() was introduced at my request because (as you've
+>> noticed) when CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y drivers may stall for long
+>> periods of time when starting.  The bug that this introduced was a 60 second
+>> delay per logical cpu when starting a system.  On a 64 cpu system that meant the
+>> boot would complete in a little over one hour.
+>>
+>>>
+>>> I started to see this currently, because that option was enabled on 
+>>> RHEL kernel. BTW: I think Prarit iwlwifi thermal_zone problem was
+>>> happened because of that, i.e. thermal device was not functional
+>>> because f/w wasn't loaded due to big delay.
+>>>
+>>> I'm not sure if replacing to request_firmware_direct() is a good
+>>> fix though. For example I can see this problem also on brcmfmac, which
+>>> use request_firmware_nowait(). I think I would rather prefer special
+>>> helper for firmware drivers that needs user helper and have
+>>> request_firmware() be direct as default.
 >>>
 >>
+>> The difference between request_firmware_direct() and request_firmware() is that
+>> the _direct() version does not wait the 60 seconds for udev interaction.  The
+>> only userspace check performed is to see if the file is there, and if the file
+>> does exist it is provided to the driver to be applied to the hardware.
 >>
->> --
->> Ben Greear <greearb@candelatech.com>
->> Candela Technologies Inc  http://www.candelatech.com
->>
->
+>> So the real question to ask here is whether or not the ath10k, brcmfmac, and
+>> iwlwifi require udev to do anything beyond checking for the existence and
+>> loading the firmware image.  If they don't, then it is better to use
+>> request_firmware_direct().
+> 
+> They don't need that, like 99% of the drivers I think, hence changing the
+> default seems to be more reasonable. However changing 3 drivers would work
+> for me as well, and that change do not introduce risk of broking drivers
+> that require udev fw download.
+> 
+> iwlwifi and ath10k are trivial, bcrmfmac is a bit more complex as it
+> use request_firmware_nowait(), so it first need to be converted to
+> ordinary request_firmware(), but this should be doable and I can do
+> that.
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+I am going bonkers here. This is the Nth time a discussion pops up on
+firmware API usage. I stopped counting N :-( So the first issue was that
+the INIT was taking to long as we were requesting firmware during probe
+which was executed in the INIT context. So we added a worker and
+register the driver from there. There was probably a reason for
+switching to _no_wait() as well, but I do not recall the details. The
+things is I don't know if I need user-space or not. I just need firmware
+to get the device up and running. We have changed our driver a couple of
+times now to accommodate something that in my opinion should have been
+abstracted behind the firmware API in the first place and now here is
+another proposal to change the drivers. Come on!
+
+> However I wonder if changing that will not broke the case when
+> driver is build-in in the kernel and f/w is not yet available when
+> driver start to initialize. Or maybe nowadays this is not the case
+> any longer, i.e. the MODULE_FIRMWARE macros assure proper f/w 
+> images are build-in in the kernel or copied to initramfs?
+
+That is a nice idea, but I have not seen any change in that area. Could
+have missed it.
+
+Regards,
+Arend
+
+> Thanks
+> Stanislaw
+> 
 
 _______________________________________________
 ath10k mailing list
