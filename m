@@ -1,24 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx2.suse.de ([195.135.220.15])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bQinP-0007e5-Hx
- for ath10k@lists.infradead.org; Fri, 22 Jul 2016 22:19:52 +0000
-Date: Sat, 23 Jul 2016 00:19:29 +0200
-From: "Luis R. Rodriguez" <mcgrof@kernel.org>
-Subject: Re: [RFC] ath10k: silence firmware file probing warnings
-Message-ID: <20160722221929.GN5537@wotan.suse.de>
-References: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
- <20160721070938.GA2658@redhat.com>
- <CANUX_P3ADxi+RHkH=d8Ypcqy9WVKSu4JYH7K3HtTNCuWg3wCeQ@mail.gmail.com>
- <20160721080541.GB2658@redhat.com> <5790A28F.8030102@redhat.com>
- <20160721115122.GA31869@redhat.com>
- <a264e995-fc46-7fcd-69f9-80992385b6b1@broadcom.com>
- <20160722102559.GA2662@redhat.com>
- <84a2cfbe-3d58-a5ec-e028-166dce4c9304@broadcom.com>
- <579216D8.2010401@redhat.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bQjAs-0004By-Qu
+ for ath10k@lists.infradead.org; Fri, 22 Jul 2016 22:44:09 +0000
+Subject: Re: [PATCH] ath10k: fix system hang at qca99x0 probe on x86 platform
+References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <5792A189.5050807@candelatech.com>
+Date: Fri, 22 Jul 2016 15:43:21 -0700
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <579216D8.2010401@redhat.com>
+In-Reply-To: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,82 +18,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Prarit Bhargava <prarit@redhat.com>
-Cc: Arend Van Spriel <arend.vanspriel@broadcom.com>, Stanislaw Gruszka <sgruszka@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ming Lei <ming.lei@canonical.com>, linux-wireless <linux-wireless@vger.kernel.org>, "Luis R. Rodriguez" <mcgrof@kernel.org>, ath10k <ath10k@lists.infradead.org>, Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>, Arend van Spriel <arend@broadcom.com>, Emmanuel Grumbach <egrumbach@gmail.com>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, rmanohar@codeaurora.org, Felix Fietkau <nbd@nbd.name>
 
-On Fri, Jul 22, 2016 at 08:51:36AM -0400, Prarit Bhargava wrote:
-> On 07/22/2016 08:21 AM, Arend Van Spriel wrote:
-> >> Another option to solve to problem would be stop requesting not
-> >> available publicly firmware. However, I assume some drivers would
-> >> like to preserve that option.
-> > 
-> > Actually, this is not the case with brcmfmac. We do need a firmware
-> > file, ie. brcm/brcmfmac4356-pcie.bin, and also request for a nvram file,
-> > ie. brcm/brcmfmac4356-pcie.txt. The latter is optional and the device
-> > works fine without it.
-> > 
-> > What is still unclear to me is when request_firmware_direct() would fail
-> > and in what circumstances the udev helper is a valid callback. Can you
-> > explain such a scenario. Another question I have is what the reasons are
-> > behind the 60 seconds timeout.
-> 
-> request_firmware_direct() will fail when the specified FW file is not present.
-> This is different from request_firmware() which implements a usermode helper to
-> potentially download firmware, or unpack a firmware image.
-> 
-> Re: 60 second timeout ... The 60 second timeout with request_firmware() is
-> completely arbitrary.  There is no way for udev to signal back to the kernel
-> that userspace helper has not completed its actions, so the kernel has a 60 dead
-> man timer-ish delay.
+On 06/13/2016 11:17 PM, Rajkumar Manoharan wrote:
+> commit b057886524be ("ath10k: do not use coherent memory for allocated
+> device memory chunks") replaced coherent memory allocation for memory
+> chunks to fix low memory platforms. Unfortunately this is causing system
+> freeze on x86 platform while bringing up qca99x0 device. The system
+> hangs while DMA mapping bigger memory chunks (689816/865444 bytes). Fix
+> this by limiting maximum memory chunk size to 256 KiB per request.
+>
+> Cc: Felix Fietkau <nbd@nbd.name>
+> Fixes: b057886524be ("ath10k: do not use coherent memory for allocated device memory chunks")
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> ---
+>   drivers/net/wireless/ath/ath10k/wmi.c | 6 ++++++
+>   drivers/net/wireless/ath/ath10k/wmi.h | 1 +
+>   2 files changed, 7 insertions(+)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index 6279ab4a760e..7c15f65fe5ed 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -4411,6 +4411,12 @@ static int ath10k_wmi_alloc_chunk(struct ath10k *ar, u32 req_id,
+>   		if (!pool_size)
+>   			return -EINVAL;
+>
+> +		if (pool_size > WMI_MAX_MEM_CHUNK_SIZE) {
+> +			num_units = WMI_MAX_MEM_CHUNK_SIZE /
+> +					round_up(unit_len, 4);
+> +			pool_size = num_units * round_up(unit_len, 4);
+> +		}
 
-Lets call it what it was: the 60 second timeout thing was simply a mistake.
-Its no longer 60 seconds anyway, and in fact its accepted a dreaded issue.
-What *we* should be doing is thinking about proper long term architecture now.
-Async probe was one solution to some issues, a new flexible firmware API
-that avoids the usermode helper 100% is another.
+I started testing my 9980 x86-64 system with VT/d enabled today.
+With this patch in my tree, it crashes on bootup (with my firmware).
+Works fine without this patch.
 
-Distros stuck with the fallback option should review their strategies,
-either disabling the fallback option, upgrade systemd, or use alternative
-solutions (opensuse has a good one).
+I don't see the exact place it is crashing in the firmware, though I could
+probably narrow it down with some effort.  It is in the early startup code,
+at least, which makes debugging more difficult.
 
-> >>>> However I wonder if changing that will not broke the case when
-> >>>> driver is build-in in the kernel and f/w is not yet available when
-> >>>> driver start to initialize. Or maybe nowadays this is not the case
-> >>>> any longer, i.e. the MODULE_FIRMWARE macros assure proper f/w 
-> >>>> images are build-in in the kernel or copied to initramfs?
-> >>>
-> >>> That is a nice idea, but I have not seen any change in that area. Could
-> >>> have missed it.
-> >>
-> >> I believe this is how the things are already done, IOW switching to
-> >> request_firmware_direct() in the driver should be no harm.
-> > 
-> > Ok. What are the consequences when:
-> > - driver is built-in.
-> > - driver+firmware present on initramfs.
-> > - driver on initramfs, firmware only present on rootfs.
-> > - driver+firmware only on rootfs.
-> > 
-> > I assume the third one would be considered a configuration issue.
-> 
-> I think your question here can be answered by reading drivers/base/Kconfig:88,
-> and reading about those 4 config options.
+This patch works fine with a slightly newer firmware compiled for 9984.  That
+same firmware compiled for 9980 crashes, but I am not certain it is the same issue
+as the older 9980.  It appears similar, at least.
 
-No, this documentation is terrible, I've posted some patches to help with this
-mess.
+Looks to me like there are lots of variances in how firmware and chip revisions
+deal with this particular code, so we are going to have to test on lots of chips
+and platforms to know if a 'fix' is really a fix or not.
 
-> I could paraphrase it butI think the
-> Kconfig notes are better than I could explain it.  Note that this is how things
-> currently work with request_firmware_nowait().  IIRC request_firmware_nowait()
-> is just an asynchronous version of request_firmware().
+Thanks,
+Ben
 
-... its a mess.
 
-  Luis
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
