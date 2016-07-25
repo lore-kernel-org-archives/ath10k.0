@@ -1,9 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from mail-io0-x22c.google.com ([2607:f8b0:4001:c06::22c])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bRinG-0005ei-JU
- for ath10k@lists.infradead.org; Mon, 25 Jul 2016 16:31:51 +0000
+ id 1bRjaD-0001WS-GD
+ for ath10k@lists.infradead.org; Mon, 25 Jul 2016 17:22:25 +0000
+Received: by mail-io0-x22c.google.com with SMTP id b62so167550639iod.3
+ for <ath10k@lists.infradead.org>; Mon, 25 Jul 2016 10:22:05 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <d5410503-fd51-5076-8236-c296346f5d7f@dd-wrt.com>
 References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
  <CA+BoTQkepLz55Vdr7OuMnPQPLKq_+vjZi=m2Y9rHLRgBZPsWOw@mail.gmail.com>
  <1468941948774.87860@qti.qualcomm.com>
@@ -21,11 +24,10 @@ References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
  <579625AC.107@candelatech.com>
  <6234373a-8ad9-1aec-032e-6e07b1510ef4@dd-wrt.com>
  <CAJ-Vmomr7DSCEA0-i3p=tc=Kh0xCQ-gK20_c7L_=WSTQ4PLRVw@mail.gmail.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <d5410503-fd51-5076-8236-c296346f5d7f@dd-wrt.com>
-Date: Mon, 25 Jul 2016 18:31:28 +0200
-MIME-Version: 1.0
-In-Reply-To: <CAJ-Vmomr7DSCEA0-i3p=tc=Kh0xCQ-gK20_c7L_=WSTQ4PLRVw@mail.gmail.com>
+ <d5410503-fd51-5076-8236-c296346f5d7f@dd-wrt.com>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Mon, 25 Jul 2016 10:22:03 -0700
+Message-ID: <CAJ-VmokA_yNM-n+CsJgy+hVEAKCv8Kbn2EKvrKrUmabXs8=xCw@mail.gmail.com>
 Subject: Re: 9984 issues
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -35,61 +37,23 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 Cc: Ben Greear <greearb@candelatech.com>, Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-QW0gMjUuMDcuMjAxNiB1bSAxODowMyBzY2hyaWViIEFkcmlhbiBDaGFkZDoKPiBoZWgsIGFkZGlu
-ZyAid2RzYXAiIGFuZCAid2Rzc3RhIiBpcyBhIHByZXR0eSBiaWcgcGllY2Ugb2YgaW5mb3JtYXRp
-b24sCj4gdmVyc3VzIFNUQS9BUC4KPgo+IGp1c3Qgc2F5aW5nIQpkb2VzbnQgbWF0dGVyLiB3ZHNh
-cC93ZHNzdGEgaXMganVzdCA0YWRkciBzdXBwb3J0LiBidXQgYXAtPnN0YSBjcmFzaGVzIHRvbwo+
-Cj4KPgo+IC1hCj4KPgo+IE9uIDI1IEp1bHkgMjAxNiBhdCAwODowOSwgU2ViYXN0aWFuIEdvdHRz
-Y2hhbGwgPHMuZ290dHNjaGFsbEBkZC13cnQuY29tPiB3cm90ZToKPj4gQW0gMjUuMDcuMjAxNiB1
-bSAxNjo0MyBzY2hyaWViIEJlbiBHcmVlYXI6Cj4+PiBPbiAwNy8yNS8yMDE2IDA3OjM3IEFNLCBT
-ZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4+PiBIZWxsbwo+Pj4+Cj4+Pj4gZmluYWxseSBp
-IHJlY2VpdmVkIDk5ODQgZGV2aWNlcyB0byBmb2xsb3cgdXAgd2l0aCBteSB3b3JrIG9uIHZodDE2
-MC4KPj4+PiBidXQgdGhlIGJpZyBpc3N1ZSBpcy4gdGhlIDk5ODQgd29ya3MgaW4gYXAgbW9kZSB3
-aXRoIGN1cnJlbnQgZmlybXdhcmUuCj4+Pj4gYnV0IGluIHN0YSBtb2RlIGl0IGNyYXNoZXMgYWZ0
-ZXIgc2Vjb25kcywgbm8gbWF0dGVyIHdoaWNoIG9wZXJhdGlvbiBtb2RlIGlzCj4+Pj4gdXNlZC4K
-Pj4+PiBiZW4ncyBjdCBmaXJtd2FyZSBjcmFzaGVzIGluIGFwIGFuZCBzdGEgbW9kZSwgc28gaSBw
-cmVmZXIgdG8gcnVuIHVzaW5nCj4+Pj4gdGhlIG9mZmljYWwgdmFyaWFudC4gY2FuIHNvbWVvbmUg
-aGVscCBoZXJlPwo+Pj4KPj4+IERvZXMgaXQgY3Jhc2ggaWYgeW91IGNvbm5lY3QgdG8gYW4gQVAg
-d2l0aCA5OTgwIG9yIDk4ODA/ICBJIGFtIGN1cmlvdXMgaWYKPj4+IGl0IGlzIG9ubHkgd2l0aAo+
-Pj4gOTk4NCBBUCB0aGF0IGNyYXNoZXMuICBJIGhhdmUgb25seSBvbmUgOTk4NCByYWRpbyByaWdo
-dCBub3csIGJ1dCBTVEEgbW9kZQo+Pj4gd2FzIHdvcmtpbmcgZm9yIG1lIGFnYWluc3QKPj4+IDk5
-ODAgQVAuCj4+Pgo+PiBub3BlCj4+IGN0IGZpcm13YXJlIDk5ODQgd2RzYXAgLT4gd2Rzc3RhIDk5
-ODAgLT4gYXAgY3Jhc2gsIHN0YSBvawo+PiBxY2EgZmlybXdhcmUgOTk4NCB3ZHNhcCAtPiB3ZHNz
-dGEgOTk4MCAtPiBhcCBubyBjcmFzaCwgc3RhIG9rCj4+IGN0IGZpcm13YXJlIDk5ODQgd2RzYXAg
-LT4gd2Rzc3RhIG9yIHN0YSA5OTg0IC0+IHN0YSBjcmFzaCAsIGFwIGNyYXNoCj4+IHFjYSBmaXJt
-d2FyZSA5OTg0IHdkc2FwIC0+IHdkc3N0YSBvciBzdGEgOTk4NCAtPiBzdGEgY3Jhc2gsIGFwIG9r
-IChpIHRlc3RlZAo+PiBib3RoIHN0YSBhbmQgd2Rzc3RhKQo+Pgo+Pj4gSSBhbSBqdXN0IGdldHRp
-bmcgc3RhcnRlZCBvbiB0aGlzLCBzbyBob3BlZnVsbHkgaXQgd2lsbCBnZXQgbW9yZSBzdGFibGUK
-Pj4+IHNvb24uLi4KPj4+Cj4+PiBBbmQgZm9yIHRoZSBRQ0EgZmlybXdhcmUsIG1pZ2h0IGJlIHdv
-cnRoIHBvc3RpbmcgYSBzdGFjayBkdW1wIGZyb20gdGhlCj4+PiBmaXJtd2FyZSwKPj4+IG1heWJl
-IHNvbWVvbmUgdGhlcmUgY2FuIGRlY29kZSBpdC4gIFVuZm9ydHVuYXRlbHksIEkgY291bGQgbm90
-IGdldCBhCj4+PiB1c2VmdWwgZGVjb2RlCj4+PiBmcm9tIHRoZSBvbmUgeW91IHNlbnQgbWUgb2Yg
-bXkgZmlybXdhcmUuLi4KPj4gaSBqdXN0IHNlbmRlZCB5b3UgeW91cnMuIHNlZW0gdG8gYmUgbW9y
-ZSB1c2VmdWxsIHNpbmNlIHlvdSBjYW4gZGVjb2RlIGl0Cj4+IHdpdGggeW91ciB0b29scwo+Pj4K
-Pj4+IFRoYW5rcywKPj4+IEJlbgo+Pj4KPj4+PiBTZWJhc3RpYW4KPj4+Pgo+Pj4KPj4KPj4gLS0K
-Pj4gTWl0IGZyZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKPj4KPj4gU2ViYXN0aWFuIEdv
-dHRzY2hhbGwgLyBDVE8KPj4KPj4gTmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQKPj4gRmlybWVu
-c2l0ejogIEJlcmxpbmVyIFJpbmcgMTAxLCA2NDYyNSBCZW5zaGVpbQo+PiBSZWdpc3Rlcmdlcmlj
-aHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCj4+IEdlc2Now6RmdHNmw7xocmVy
-OiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCj4+IGh0dHA6Ly93d3cuZGQt
-d3J0LmNvbQo+PiBlbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KPj4gVGVsLjogKzQ5NjI1
-MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQo+Pgo+Pgo+Pgo+PiBfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBhdGgxMGsgbWFpbGluZyBsaXN0
-Cj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNz
-ZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdt
-YkggLSBERC1XUlQKRmlybWVuc2l0ejogIEJlcmxpbmVyIFJpbmcgMTAxLCA2NDYyNSBCZW5zaGVp
-bQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2No
-w6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6
-Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5
-NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hdGgxMGsK
+Hi,
+
+Yeah, but WDS/4-addr support likely does something different
+internally to the firmware.
+(I finally hve source to look, fwiw...)
+
+
+-a
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
