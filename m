@@ -1,27 +1,31 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bRd4h-0003ED-SP
- for ath10k@lists.infradead.org; Mon, 25 Jul 2016 10:25:28 +0000
-Received: by mail-wm0-x22d.google.com with SMTP id q128so128990917wma.1
- for <ath10k@lists.infradead.org>; Mon, 25 Jul 2016 03:25:03 -0700 (PDT)
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
+ by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bRh6J-00022F-Kx
+ for ath10k@lists.infradead.org; Mon, 25 Jul 2016 14:43:24 +0000
+References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
+ <e05dcb58-1cb1-a33a-31bb-b8ba1edf1363@dd-wrt.com>
+ <fa3eab06-28f0-e5d4-2e92-770134b49dfa@dd-wrt.com>
+ <1467218124941.40575@qti.qualcomm.com>
+ <CA+BoTQkepLz55Vdr7OuMnPQPLKq_+vjZi=m2Y9rHLRgBZPsWOw@mail.gmail.com>
+ <1468941948774.87860@qti.qualcomm.com>
+ <CAJ-Vmon1duBNcWhjaNdANYFfd3hwQUYYHrmx7LRZvT-Ec2x1Cg@mail.gmail.com>
+ <578E5AFA.4000908@candelatech.com>
+ <CA+BoTQ=QMPUtY64ELCToZLcSrCPQdG=2Eg4FrsULeeDg9sFPYA@mail.gmail.com>
+ <CAJ-Vmok95tiLzmnfiBnnOLQK9hXW2DfjPPVGy9yqucq32PBwJw@mail.gmail.com>
+ <CA+BoTQ=ehuXpcJUOeSscLKzX9T=hZyp5i2G9GoxTVX=LAg_4hA@mail.gmail.com>
+ <CAJ-Vmo=d=PgUu_AYT1C82AJcnUxKUo_VYMn_b1QF8M_T+5KpkA@mail.gmail.com>
+ <CA+BoTQnN1EVGBu0J5Y7-z2=uqsG8rXS0Lvs7VAoeawv9MGuFyQ@mail.gmail.com>
+ <b1cdb5c3-6ddb-8a69-d0f7-79d8e6ba23d0@dd-wrt.com>
+ <CA+BoTQmrk_U8oVXxk-5hBz60=R-xR4H=2_x2pj9BVDYXPOoCGg@mail.gmail.com>
+ <6487f1d3-339e-a6dd-d866-b11b37b4ddff@dd-wrt.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <73ce025f-c583-a747-ee9a-91bbfba56ff4@dd-wrt.com>
+Date: Mon, 25 Jul 2016 16:37:29 +0200
 MIME-Version: 1.0
-In-Reply-To: <A3D794F1192BBF449DF2EC3D7EE263F44A5402F40A@SHAX7MCDC101.APAC.DELL.COM>
-References: <20160719070932.GA2751@redhat.com>
- <CA+BoTQn98UFuGT0NntdE1HgG9UmmwzS=JsGkLmeGoMHSFGyDRg@mail.gmail.com>
- <20160719072754.GB2751@redhat.com>
- <A3D794F1192BBF449DF2EC3D7EE263F44A5402F0C8@SHAX7MCDC101.APAC.DELL.COM>
- <CA+BoTQn4T+4zMrJEbLBfu92w=mVqWBZZkZaYaW__V2_-VLkCyQ@mail.gmail.com>
- <A3D794F1192BBF449DF2EC3D7EE263F44A5402F107@SHAX7MCDC101.APAC.DELL.COM>
- <CA+BoTQk7QKaO2yxMq5JEhrBhn4WtpmWTcOxfiXcvYxrFvaxdgw@mail.gmail.com>
- <20160719092727.GD2751@redhat.com>
- <A3D794F1192BBF449DF2EC3D7EE263F44A5402F23C@SHAX7MCDC101.APAC.DELL.COM>
- <CA+BoTQk_R9sv4-wXGLOt-JzP+3PqSHeyMEweGEXAv84HjJPp3Q@mail.gmail.com>
- <A3D794F1192BBF449DF2EC3D7EE263F44A5402F40A@SHAX7MCDC101.APAC.DELL.COM>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Mon, 25 Jul 2016 12:25:02 +0200
-Message-ID: <CA+BoTQ=VR7PbYdidJAZQBD2ufXq_wQfesONCJSrEr11Yg78+sw@mail.gmail.com>
-Subject: Re: ath10k fail to load firmware
+In-Reply-To: <6487f1d3-339e-a6dd-d866-b11b37b4ddff@dd-wrt.com>
+Subject: 9984 issues
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,24 +34,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Perry_Yuan@dell.com
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, Yijun_Shen@dell.com, Stanislaw Gruszka <sgruszka@redhat.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Jared_Dominguez@dell.com
+To: ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, Ben Greear <greearb@candelatech.com>
 
-T24gMjEgSnVseSAyMDE2IGF0IDAzOjI0LCAgPFBlcnJ5X1l1YW5AZGVsbC5jb20+IHdyb3RlOgo+
-IEhJIEFsbDoKPgo+IEkgZ290IHR3byBib2FyZCBmaWxlcyBmb3Igc3Vic3lzdGVtIGlkIDAzMTAg
-Lgo+Cj4gZWVwcm9tX2FyNjMyMF8zcDBfTkZBMzQ0QV9wb3dlcjEyMTNfREVfNTQ1OS5iaW4KPiBl
-ZXByb21fYXI2MzIwXzNwMF9ORkEzNDRBX3Bvd2VyMTIxMy5iaW4KPgo+IEJ1dCAgSSBhbSBub3Qg
-c3VyZSB3aGljaCBmaWxlcyBzaG91bGQgYmUgdXNlZCAsIGFuZCBJICB3YW50IGtub3cgd2hpY2gg
-Ym9hcmQKPiBmaWxlIHNob3VsZCBiZSByZXBsYWNlZC4KPgo+IEluIHRoZSAvbGliL2Zpcm13YXJl
-L2F0aDEway9RQ0E2MTc0L2h3My4wLyAgZGlyZWN0b3J5ICwgIEkgZm91bmQgdHdvIGZpbGUKPiBu
-YW1lZCDigJwgYm9hcmQuYmlu4oCdIGFuZCDigJ0gYm9hcmQtMi5iaW4g4oCcCgpSZW1vdmUgYm9h
-cmQtMi5iaW4gYW5kIGNvcHkgZWVwcm9tX2FyNjMyMF8zcDBfTkZBMzQ0QV9wb3dlcjEyMTMuYmlu
-IGFzCmJvYXJkLmJpbi4gSWYgaXQgZG9lc24ndCB3b3JrIHRyeQplZXByb21fYXI2MzIwXzNwMF9O
-RkEzNDRBX3Bvd2VyMTIxM19ERV81NDU5LmJpbiBhcyBib2FyZC5iaW4uCgoKTWljaGHFggoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
-bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hello
+
+finally i received 9984 devices to follow up with my work on vht160.
+but the big issue is. the 9984 works in ap mode with current firmware. 
+but in sta mode it crashes after seconds, no matter which operation mode 
+is used.
+ben's ct firmware crashes in ap and sta mode, so i prefer to run using 
+the offical variant. can someone help here?
+
+Sebastian
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
