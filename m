@@ -1,15 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bRs55-0005F9-Qq
- for ath10k@lists.infradead.org; Tue, 26 Jul 2016 02:26:52 +0000
-Message-ID: <5796CA3D.7010506@candelatech.com>
-Date: Mon, 25 Jul 2016 19:26:05 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: 9984 issues
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bRsIL-0002aP-OF
+ for ath10k@lists.infradead.org; Tue, 26 Jul 2016 02:40:34 +0000
 References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
- <578E5AFA.4000908@candelatech.com>
  <CA+BoTQ=QMPUtY64ELCToZLcSrCPQdG=2Eg4FrsULeeDg9sFPYA@mail.gmail.com>
  <CAJ-Vmok95tiLzmnfiBnnOLQK9hXW2DfjPPVGy9yqucq32PBwJw@mail.gmail.com>
  <CA+BoTQ=ehuXpcJUOeSscLKzX9T=hZyp5i2G9GoxTVX=LAg_4hA@mail.gmail.com>
@@ -25,7 +20,13 @@ References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
  <d5410503-fd51-5076-8236-c296346f5d7f@dd-wrt.com>
  <CAJ-VmokA_yNM-n+CsJgy+hVEAKCv8Kbn2EKvrKrUmabXs8=xCw@mail.gmail.com>
  <033c694a-b93e-d5fd-9930-8b69281d8b3d@dd-wrt.com>
-In-Reply-To: <033c694a-b93e-d5fd-9930-8b69281d8b3d@dd-wrt.com>
+ <5796CA3D.7010506@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <a73e7629-323e-95ae-c38d-3fd0564a6d8c@dd-wrt.com>
+Date: Tue, 26 Jul 2016 04:40:11 +0200
+MIME-Version: 1.0
+In-Reply-To: <5796CA3D.7010506@candelatech.com>
+Subject: Re: 9984 issues
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,35 +35,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Adrian Chadd <adrian@freebsd.org>
+To: Ben Greear <greearb@candelatech.com>, Adrian Chadd <adrian@freebsd.org>
 Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
-
-On 07/25/2016 06:11 PM, Sebastian Gottschall wrote:
-> Am 25.07.2016 um 19:22 schrieb Adrian Chadd:
->> Hi,
->>
->> Yeah, but WDS/4-addr support likely does something different
->> internally to the firmware.
->> (I finally hve source to look, fwiw...
-> ignore it. it does crash in any sta operation mode. STA without WDS too
-
-Just my firmware, or QCA firmware too?
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMjYuMDcuMjAxNiB1bSAwNDoyNiBzY2hyaWViIEJlbiBHcmVlYXI6Cj4KPgo+IE9uIDA3LzI1
+LzIwMTYgMDY6MTEgUE0sIFNlYmFzdGlhbiBHb3R0c2NoYWxsIHdyb3RlOgo+PiBBbSAyNS4wNy4y
+MDE2IHVtIDE5OjIyIHNjaHJpZWIgQWRyaWFuIENoYWRkOgo+Pj4gSGksCj4+Pgo+Pj4gWWVhaCwg
+YnV0IFdEUy80LWFkZHIgc3VwcG9ydCBsaWtlbHkgZG9lcyBzb21ldGhpbmcgZGlmZmVyZW50Cj4+
+PiBpbnRlcm5hbGx5IHRvIHRoZSBmaXJtd2FyZS4KPj4+IChJIGZpbmFsbHkgaHZlIHNvdXJjZSB0
+byBsb29rLCBmd2l3Li4uCj4+IGlnbm9yZSBpdC4gaXQgZG9lcyBjcmFzaCBpbiBhbnkgc3RhIG9w
+ZXJhdGlvbiBtb2RlLiBTVEEgd2l0aG91dCBXRFMgdG9vCj4KPiBKdXN0IG15IGZpcm13YXJlLCBv
+ciBRQ0EgZmlybXdhcmUgdG9vPwp5b3VycyBpcyBjcmFzaGluZyBpbiBhcCBhbmQgc3RhIG1vZGUu
+IHFjYSBpcyBvbmx5IGNyYXNoaW5nIGluIHN0YSBtb2RlLgpzZWUgbXkgcHJldmlvdXMgbGlzdCB3
+aGljaCBzaG93cyBhbGwgdGVzdCBzY2VuYXJpb3MuIGkgd3JvdGUgdGhpcyBhbHJlYWR5CgoKLS0t
+LS0+CmN0IGZpcm13YXJlIDk5ODQgd2RzYXAgLT4gd2Rzc3RhIDk5ODAgLT4gYXAgY3Jhc2gsIHN0
+YSBvawpxY2EgZmlybXdhcmUgOTk4NCB3ZHNhcCAtPiB3ZHNzdGEgOTk4MCAtPiBhcCBubyBjcmFz
+aCwgc3RhIG9rCmN0IGZpcm13YXJlIDk5ODQgd2RzYXAgLT4gd2Rzc3RhIG9yIHN0YSA5OTg0IC0+
+IHN0YSBjcmFzaCAsIGFwIGNyYXNoCnFjYSBmaXJtd2FyZSA5OTg0IHdkc2FwIC0+IHdkc3N0YSBv
+ciBzdGEgOTk4NCAtPiBzdGEgY3Jhc2gsIGFwIG9rIChpIAp0ZXN0ZWQgYm90aCBzdGEgYW5kIHdk
+c3N0YSkKPgo+IFRoYW5rcywKPiBCZW4KPgo+CgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNz
+ZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdt
+YkggLSBERC1XUlQKRmlybWVuc2l0ejogIEJlcmxpbmVyIFJpbmcgMTAxLCA2NDYyNSBCZW5zaGVp
+bQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2No
+w6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6
+Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5
+NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hdGgxMGsK
