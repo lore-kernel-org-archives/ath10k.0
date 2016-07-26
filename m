@@ -1,33 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from bay004-omc4s7.hotmail.com ([65.54.190.209])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bS0vm-0000qV-LH
- for ath10k@lists.infradead.org; Tue, 26 Jul 2016 11:53:51 +0000
-Message-ID: <BAY176-W43827D0BC3AF9D12C5E82DB90E0@phx.gbl>
-From: sudheer thota <sdhrtht@outlook.com>
-Subject: RE: Not able to capture qos data packets - QCA988x
-Date: Tue, 26 Jul 2016 17:23:29 +0530
-In-Reply-To: <CA+BoTQktJXJ+_oODypMfo7fhuA4+RSo1A5DoOYvWGBN=5HB9eQ@mail.gmail.com>
-References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>,
- <CA+BoTQkepLz55Vdr7OuMnPQPLKq_+vjZi=m2Y9rHLRgBZPsWOw@mail.gmail.com>,
- <1468941948774.87860@qti.qualcomm.com>,
- <CAJ-Vmon1duBNcWhjaNdANYFfd3hwQUYYHrmx7LRZvT-Ec2x1Cg@mail.gmail.com>,
- <578E5AFA.4000908@candelatech.com>,
- <CA+BoTQ=QMPUtY64ELCToZLcSrCPQdG=2Eg4FrsULeeDg9sFPYA@mail.gmail.com>,
- <CAJ-Vmok95tiLzmnfiBnnOLQK9hXW2DfjPPVGy9yqucq32PBwJw@mail.gmail.com>,
- <CA+BoTQ=ehuXpcJUOeSscLKzX9T=hZyp5i2G9GoxTVX=LAg_4hA@mail.gmail.com>,
- <CAJ-Vmo=d=PgUu_AYT1C82AJcnUxKUo_VYMn_b1QF8M_T+5KpkA@mail.gmail.com>,
- <CA+BoTQnN1EVGBu0J5Y7-z2=uqsG8rXS0Lvs7VAoeawv9MGuFyQ@mail.gmail.com>,
- <b1cdb5c3-6ddb-8a69-d0f7-79d8e6ba23d0@dd-wrt.com>,
- <CA+BoTQmrk_U8oVXxk-5hBz60=R-xR4H=2_x2pj9BVDYXPOoCGg@mail.gmail.com>,
- <6487f1d3-339e-a6dd-d866-b11b37b4ddff@dd-wrt.com>,
- <73ce025f-c583-a747-ee9a-91bbfba56ff4@dd-wrt.com>,
- <579625AC.107@candelatech.com>,
- <6234373a-8ad9-1aec-032e-6e07b1510ef4@dd-wrt.com>,
- <CAJ-Vmomr7DSCEA0-i3p=tc=Kh0xCQ-gK20_c7L_=WSTQ4PLRVw@mail.gmail.com>,
- <BAY176-W27264163A549F
- 6C69777EFB60D0@phx.gbl>, <BAY176-W46EDDEDEC0C0573E68A47DB90E0@phx.gbl>,
- <CA+BoTQktJXJ+_oODypMfo7fhuA4+RSo1A5DoOYvWGBN=5HB9eQ@mail.gmail.com>
+ id 1bS5VS-0005Ea-M7
+ for ath10k@lists.infradead.org; Tue, 26 Jul 2016 16:46:59 +0000
+From: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix get rx_status from htt context
+Date: Tue, 26 Jul 2016 22:15:52 +0530
+Message-ID: <1469551552-845-1-git-send-email-arnagara@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -37,66 +16,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, arnagara@codeaurora.org, linux-wireless@vger.kernel.org
 
-ath10k is a standalone sniffer configured to monitor data transfer rates be=
-tween AP and STA. its not the AP.
+On handling amsdu on rx path, get the rx_status from htt context. Without this
+fix, we are seeing warnings when running DBDC traffic like this.
 
-details of the configuration:
-AP: Netgear WNDR3400V3 : WMM enabled, Ch 153, upto 300mbps.
-STA1: Roku Streaming Stick: only 20MHz Capable - LGI (verified from data-ra=
-tes and MCS index)
+WARNING: CPU: 0 PID: 0 at net/mac80211/rx.c:4105 ieee80211_rx_napi+0x88/0x7d8 [mac80211]()
 
-Monitor: Ath10k
+[ 1715.878248] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G W 3.18.21 #1
+[ 1715.878273] [<c001d3f4>] (unwind_backtrace) from [<c001a4b0>] (show_stack+0x10/0x14)
+[ 1715.878293] [<c001a4b0>] (show_stack) from [<c01bee64>] (dump_stack+0x70/0xbc)
+[ 1715.878315] [<c01bee64>] (dump_stack) from [<c002a61c>] (warn_slowpath_common+0x64/0x88)
+[ 1715.878339] [<c002a61c>] (warn_slowpath_common) from [<c002a6d0>] (warn_slowpath_null+0x18/0x20)
+[ 1715.878395] [<c002a6d0>] (warn_slowpath_null) from [<bf4caa98>] (ieee80211_rx_napi+0x88/0x7d8 [mac80211])
+[ 1715.878474] [<bf4caa98>] (ieee80211_rx_napi [mac80211]) from [<bf568658>] (ath10k_htt_t2h_msg_handler+0xb48/0xbfc [ath10k_core])
+[ 1715.878535] [<bf568658>] (ath10k_htt_t2h_msg_handler [ath10k_core]) from [<bf568708>] (ath10k_htt_t2h_msg_handler+0xbf8/0xbfc [ath10k_core])
+[ 1715.878597] [<bf568708>] (ath10k_htt_t2h_msg_handler [ath10k_core]) from [<bf569160>] (ath10k_htt_txrx_compl_task+0xa54/0x1170 [ath10k_core])
+[ 1715.878639] [<bf569160>] (ath10k_htt_txrx_compl_task [ath10k_core]) from [<c002db14>] (tasklet_action+0xb4/0x130)
+[ 1715.878659] [<c002db14>] (tasklet_action) from [<c002d110>] (__do_softirq+0xe0/0x210)
+[ 1715.878678] [<c002d110>] (__do_softirq) from [<c002d4b4>] (irq_exit+0x84/0xe0)
+[ 1715.878700] [<c002d4b4>] (irq_exit) from [<c005a544>] (__handle_domain_irq+0x98/0xd0)
+[ 1715.878722] [<c005a544>] (__handle_domain_irq) from [<c00085f4>] (gic_handle_irq+0x38/0x5c)
+[ 1715.878741] [<c00085f4>] (gic_handle_irq) from [<c0009680>] (__irq_svc+0x40/0x74)
+[ 1715.878753] Exception stack(0xc05f9f50 to 0xc05f9f98)
+[ 1715.878767] 9f40: ffffffed 00000000 00399e1e c000a220
+[ 1715.878786] 9f60: 00000000 c05f6780 c05f8000 00000000 c05f5db8 ffffffed c05f8000 c04d1980
+[ 1715.878802] 9f80: 00000000 c05f9f98 c0018110 c0018114 60000013 ffffffff
+[ 1715.878822] [<c0009680>] (__irq_svc) from [<c0018114>] (arch_cpu_idle+0x2c/0x50)
+[ 1715.878844] [<c0018114>] (arch_cpu_idle) from [<c00530d4>] (cpu_startup_entry+0x108/0x234)
+[ 1715.878866] [<c00530d4>] (cpu_startup_entry) from [<c05c7be0>] (start_kernel+0x33c/0x3b8)
+[ 1715.878879] ---[ end trace 6d5e1cc0fef8ed6a ]---
+[ 1715.878899] ------------[ cut here ]------------
 
-Seems to be combination of RIFS (enabled), Operating mode (0x02) and Greenf=
-ield Capable, causing the issues to miss QOS data packet.
+Fixes: 18235664e7f9 ("ath10k: cleanup amsdu processing for rx indication")
+Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Confirmed from connecting different devices(STA2 - Samsung Tablet) which tu=
-rns into=A0=A0RIFS (enabled), Operating mode (0x03) and Greenfield not Capa=
-ble.
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 78db5d6..24c8d65 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1525,7 +1525,7 @@ static void ath10k_htt_rx_h_filter(struct ath10k *ar,
+ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
+ {
+ 	struct ath10k *ar = htt->ar;
+-	static struct ieee80211_rx_status rx_status;
++	struct ieee80211_rx_status *rx_status = &htt->rx_status;
+ 	struct sk_buff_head amsdu;
+ 	int ret;
+ 
+@@ -1549,11 +1549,11 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
+ 		return ret;
+ 	}
+ 
+-	ath10k_htt_rx_h_ppdu(ar, &amsdu, &rx_status, 0xffff);
++	ath10k_htt_rx_h_ppdu(ar, &amsdu, rx_status, 0xffff);
+ 	ath10k_htt_rx_h_unchain(ar, &amsdu, ret > 0);
+-	ath10k_htt_rx_h_filter(ar, &amsdu, &rx_status);
+-	ath10k_htt_rx_h_mpdu(ar, &amsdu, &rx_status);
+-	ath10k_htt_rx_h_deliver(ar, &amsdu, &rx_status);
++	ath10k_htt_rx_h_filter(ar, &amsdu, rx_status);
++	ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status);
++	ath10k_htt_rx_h_deliver(ar, &amsdu, rx_status);
+ 
+ 	return 0;
+ }
+-- 
+1.9.1
 
-
-----------------------------------------
-> From: michal.kazior@tieto.com
-> Date: Tue, 26 Jul 2016 08:21:41 +0200
-> Subject: Re: Not able to capture qos data packets - QCA988x
-> To: sdhrtht@outlook.com
-> CC: ath10k@lists.infradead.org
->
-> On 26 July 2016 at 05:06, sudheer thota <sdhrtht@outlook.com> wrote:
->> wireless interface(ath10k) monitor failing to capture data packets when
->> WMM enabled on AP.
->>
->> AP Status reflects in following state: (when no QOS data Packets. MGMT a=
-nd CTRL Packets are able to captured)
->> 1) 0x03 (3) - Secondary channel is below Primary
->> 2) 1 - any Channel width in secondary channel width
->> 3) 1 - Use of RIFS permitted
->> 4) 0x02 - Only HT STAs in the BSS, however there exists at least on 20Mh=
-z STA
->> 5) 0 - all Associated HT STAs are greenfield capable
->
-> You didn't really explain your topology. Are you using ath10k to sniff
-> only or to run AP *and* sniff at the same time?
->
-> FWIW It's kind of a problem to sniff your own transmission with QoS
-> because of NWifi vs 802.11 headers problem so regular packet
-> dissection won't recognize them properly.
->
->
-> Micha=B3
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
- 		 	   		  =
 
 _______________________________________________
 ath10k mailing list
