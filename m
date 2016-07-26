@@ -1,15 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x22c.google.com ([2607:f8b0:4001:c06::22c])
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bRjaD-0001WS-GD
- for ath10k@lists.infradead.org; Mon, 25 Jul 2016 17:22:25 +0000
-Received: by mail-io0-x22c.google.com with SMTP id b62so167550639iod.3
- for <ath10k@lists.infradead.org>; Mon, 25 Jul 2016 10:22:05 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <d5410503-fd51-5076-8236-c296346f5d7f@dd-wrt.com>
+ id 1bRqu3-0000uP-Fr
+ for ath10k@lists.infradead.org; Tue, 26 Jul 2016 01:11:24 +0000
 References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
- <CA+BoTQkepLz55Vdr7OuMnPQPLKq_+vjZi=m2Y9rHLRgBZPsWOw@mail.gmail.com>
- <1468941948774.87860@qti.qualcomm.com>
  <CAJ-Vmon1duBNcWhjaNdANYFfd3hwQUYYHrmx7LRZvT-Ec2x1Cg@mail.gmail.com>
  <578E5AFA.4000908@candelatech.com>
  <CA+BoTQ=QMPUtY64ELCToZLcSrCPQdG=2Eg4FrsULeeDg9sFPYA@mail.gmail.com>
@@ -25,9 +20,12 @@ References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
  <6234373a-8ad9-1aec-032e-6e07b1510ef4@dd-wrt.com>
  <CAJ-Vmomr7DSCEA0-i3p=tc=Kh0xCQ-gK20_c7L_=WSTQ4PLRVw@mail.gmail.com>
  <d5410503-fd51-5076-8236-c296346f5d7f@dd-wrt.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Mon, 25 Jul 2016 10:22:03 -0700
-Message-ID: <CAJ-VmokA_yNM-n+CsJgy+hVEAKCv8Kbn2EKvrKrUmabXs8=xCw@mail.gmail.com>
+ <CAJ-VmokA_yNM-n+CsJgy+hVEAKCv8Kbn2EKvrKrUmabXs8=xCw@mail.gmail.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <033c694a-b93e-d5fd-9930-8b69281d8b3d@dd-wrt.com>
+Date: Tue, 26 Jul 2016 03:11:02 +0200
+MIME-Version: 1.0
+In-Reply-To: <CAJ-VmokA_yNM-n+CsJgy+hVEAKCv8Kbn2EKvrKrUmabXs8=xCw@mail.gmail.com>
 Subject: Re: 9984 issues
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -37,23 +35,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+To: Adrian Chadd <adrian@freebsd.org>
 Cc: Ben Greear <greearb@candelatech.com>, Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi,
-
-Yeah, but WDS/4-addr support likely does something different
-internally to the firmware.
-(I finally hve source to look, fwiw...)
-
-
--a
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMjUuMDcuMjAxNiB1bSAxOToyMiBzY2hyaWViIEFkcmlhbiBDaGFkZDoKPiBIaSwKPgo+IFll
+YWgsIGJ1dCBXRFMvNC1hZGRyIHN1cHBvcnQgbGlrZWx5IGRvZXMgc29tZXRoaW5nIGRpZmZlcmVu
+dAo+IGludGVybmFsbHkgdG8gdGhlIGZpcm13YXJlLgo+IChJIGZpbmFsbHkgaHZlIHNvdXJjZSB0
+byBsb29rLCBmd2l3Li4uCmlnbm9yZSBpdC4gaXQgZG9lcyBjcmFzaCBpbiBhbnkgc3RhIG9wZXJh
+dGlvbiBtb2RlLiBTVEEgd2l0aG91dCBXRFMgdG9vCgo+Cj4KPiAtYQo+CgoKLS0gCk1pdCBmcmV1
+bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoK
+TmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQKRmlybWVuc2l0ejogIEJlcmxpbmVyIFJpbmcgMTAx
+LCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwg
+SFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlh
+biBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdy
+dC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
