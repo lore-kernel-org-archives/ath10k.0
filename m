@@ -1,22 +1,31 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from champagne.comp.nus.edu.sg ([137.132.80.90])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bRrnh-0007k5-Rc
- for ath10k@lists.infradead.org; Tue, 26 Jul 2016 02:08:56 +0000
-Received: from mail-it0-f71.google.com ([209.85.214.71])
- by champagne.comp.nus.edu.sg (Exim) with esmtps (TLSv1:DES-CBC3-SHA:168)
- id 1bRrnH-0001sO-9v
- for ath10k@lists.infradead.org; Tue, 26 Jul 2016 10:08:27 +0800
-Received: by mail-it0-f71.google.com with SMTP id j124so229848464ith.1
- for <ath10k@lists.infradead.org>; Mon, 25 Jul 2016 19:08:27 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bRs55-0005F9-Qq
+ for ath10k@lists.infradead.org; Tue, 26 Jul 2016 02:26:52 +0000
+Message-ID: <5796CA3D.7010506@candelatech.com>
+Date: Mon, 25 Jul 2016 19:26:05 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <loom.20160726T034139-557@post.gmane.org>
-References: <loom.20160726T034139-557@post.gmane.org>
-From: Raj Joshi <rajjoshi@comp.nus.edu.sg>
-Date: Tue, 26 Jul 2016 10:07:45 +0800
-Message-ID: <CA+uUJGudfwyqTjzwK2WVbMrd1czVPT4pM1J50ageGtRtBe644A@mail.gmail.com>
-Subject: =?UTF-8?Q?Re=3A_Fail_to_Capture_QOS_data_packets_in_Monitoring_m?=
- =?UTF-8?Q?ode_=2D_QCA988x=E2=80=8F=E2=80=8F?=
+Subject: Re: 9984 issues
+References: <20160614061728.570-1-rmanohar@qti.qualcomm.com>
+ <578E5AFA.4000908@candelatech.com>
+ <CA+BoTQ=QMPUtY64ELCToZLcSrCPQdG=2Eg4FrsULeeDg9sFPYA@mail.gmail.com>
+ <CAJ-Vmok95tiLzmnfiBnnOLQK9hXW2DfjPPVGy9yqucq32PBwJw@mail.gmail.com>
+ <CA+BoTQ=ehuXpcJUOeSscLKzX9T=hZyp5i2G9GoxTVX=LAg_4hA@mail.gmail.com>
+ <CAJ-Vmo=d=PgUu_AYT1C82AJcnUxKUo_VYMn_b1QF8M_T+5KpkA@mail.gmail.com>
+ <CA+BoTQnN1EVGBu0J5Y7-z2=uqsG8rXS0Lvs7VAoeawv9MGuFyQ@mail.gmail.com>
+ <b1cdb5c3-6ddb-8a69-d0f7-79d8e6ba23d0@dd-wrt.com>
+ <CA+BoTQmrk_U8oVXxk-5hBz60=R-xR4H=2_x2pj9BVDYXPOoCGg@mail.gmail.com>
+ <6487f1d3-339e-a6dd-d866-b11b37b4ddff@dd-wrt.com>
+ <73ce025f-c583-a747-ee9a-91bbfba56ff4@dd-wrt.com>
+ <579625AC.107@candelatech.com>
+ <6234373a-8ad9-1aec-032e-6e07b1510ef4@dd-wrt.com>
+ <CAJ-Vmomr7DSCEA0-i3p=tc=Kh0xCQ-gK20_c7L_=WSTQ4PLRVw@mail.gmail.com>
+ <d5410503-fd51-5076-8236-c296346f5d7f@dd-wrt.com>
+ <CAJ-VmokA_yNM-n+CsJgy+hVEAKCv8Kbn2EKvrKrUmabXs8=xCw@mail.gmail.com>
+ <033c694a-b93e-d5fd-9930-8b69281d8b3d@dd-wrt.com>
+In-Reply-To: <033c694a-b93e-d5fd-9930-8b69281d8b3d@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +34,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: sdhrtht <sdhrtht@outlook.com>
-Cc: ath10k <ath10k@lists.infradead.org>
-
-Hi,
-
-The following may not necessarily be your case. But since you
-mentioned MGMT and CTRL packets are captured and not QoS data packets,
-I observed a similar behavior when my configuration was as below:
-* Sender: Operating 80Mhz dynamic channel width (secondary channel
-either above or below primary channel, doesn't matter)
-* Sniffer: Operating on 80MHz width. However, the sniffer's primary
-channel doesn't overlap with the sender's primary channel; basically
-they have different primary channels.
-
-It is necessary that the primary channels of the sender and the
-sniffer match. Otherwise, the sniffer is able to only see the non-HT
-duplicate frames sent by the sender. This is because those frames are
-sent on all the four 20MHz channels, one of which is your sniffer's
-primary channel.
-
-I am not sure if the greenfield configuration could be a culprit here.
-But you might want to check the above first :)
-
-Cheers,
-Raj Joshi
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Adrian Chadd <adrian@freebsd.org>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 
-On Tue, Jul 26, 2016 at 9:43 AM, sdhrtht <sdhrtht@outlook.com> wrote:
-> ath10k monitor failing to capture data packets with WMM enabled on AP.
->
-> AP Status: (when no QOS data Packets. MGMT and CTRL Packets are able to
-> captured)
-> 1) 0x03 (3) - Secondary channel is below Primary
-> 2) 1 - any Channel width in secondary channel width
-> 3) 1 - Use of RIFS permitted
-> 4) 0x02 - Only HT STAs in the BSS, however there exists at least on 20Mhz
-> STA
-> 5) 0 - all Associated HT STAs are greenfield capable
->
-> Tested with latest CT and non-CT firmware's.
->
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+
+On 07/25/2016 06:11 PM, Sebastian Gottschall wrote:
+> Am 25.07.2016 um 19:22 schrieb Adrian Chadd:
+>> Hi,
+>>
+>> Yeah, but WDS/4-addr support likely does something different
+>> internally to the firmware.
+>> (I finally hve source to look, fwiw...
+> ignore it. it does crash in any sta operation mode. STA without WDS too
+
+Just my firmware, or QCA firmware too?
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
