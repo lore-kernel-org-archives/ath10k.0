@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bSOBR-0004ry-U0
- for ath10k@lists.infradead.org; Wed, 27 Jul 2016 12:43:35 +0000
-Received: by mail-wm0-x231.google.com with SMTP id q128so30873967wma.1
- for <ath10k@lists.infradead.org>; Wed, 27 Jul 2016 05:43:11 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1469623006-13178-3-git-send-email-vthiagar@qti.qualcomm.com>
+ id 1bSORb-0002Js-Mt
+ for ath10k@lists.infradead.org; Wed, 27 Jul 2016 13:00:17 +0000
+From: "Thiagarajan, Vasanthakumar" <vthiagar@qti.qualcomm.com>
+Subject: Re: [PATCH 2/4] ath10k: Add provision for Rx descriptor abstraction
+Date: Wed, 27 Jul 2016 12:59:47 +0000
+Message-ID: <5798B042.4070604@qti.qualcomm.com>
 References: <1469623006-13178-1-git-send-email-vthiagar@qti.qualcomm.com>
  <1469623006-13178-3-git-send-email-vthiagar@qti.qualcomm.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Wed, 27 Jul 2016 14:43:09 +0200
-Message-ID: <CA+BoTQ=kUP-Qtw1EWKKfM_aGtJS_4oQdz4tqD5tiJkF_k3-vOA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] ath10k: Add provision for Rx descriptor abstraction
+ <CA+BoTQ=kUP-Qtw1EWKKfM_aGtJS_4oQdz4tqD5tiJkF_k3-vOA@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=kUP-Qtw1EWKKfM_aGtJS_4oQdz4tqD5tiJkF_k3-vOA@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <4D51314E6B60294AA37BD50549F0421D@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +22,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjcgSnVseSAyMDE2IGF0IDE0OjM2LCBWYXNhbnRoYWt1bWFyIFRoaWFnYXJhamFuCjx2dGhp
-YWdhckBxdGkucXVhbGNvbW0uY29tPiB3cm90ZToKPiBUaGVyZSBhcmUgc2xpZ2h0IGRpZmZlcmVu
-Y2VzIGluIFJ4IGh3IGRlc2NyaXB0b3IgaW5mb3JtYXRpb24KPiBhbW9uZyBkaWZmZXJlbnQgY2hp
-cHMuIFNvIGZhciBkcml2ZXIgZG9lcyBub3QgdXNlIHRob3NlIG5ldwo+IGluZm9ybWF0aW9uIGZv
-ciBhbnkgZnVuY3Rpb25hbGl0aWVzLCBidXQgdGhlcmUgaXMgb25lIGltcG9ydGFudAo+IGluZm9y
-bWF0aW9uIHdoaWNoIGlzIGF2YWlsYWJsZSBmcm9tIFFDQTk5WDAgb253YXJkcyB0byBpbmRpY2F0
-ZQo+IHRoZSBudW1iZXIgb2YgYnl0ZXMgdGhhdCBodyBwYWRkZWQgYXQgdGhlIGJlZ2luaW5nIG9m
-IHRoZSByeAo+IHBheWxvYWQgYW5kIHRoaXMgaW5mb3JtYXRpb24gaXMgbmVlZGVkIHRvIHVuZGVj
-YXAgdGhlIHJ4Cj4gcGFja2V0LiBBZGQgYW4gYWJzdHJhY3Rpb24gZm9yIFJ4IGRlc2MgdG8gbWFr
-ZSB1c2Ugb2YgdGhlCj4gbmV3IGRlc2MgaW5mb3JtYXRpb24gYXZhaWxhYmxlLiBUaGUgY2FsbGJh
-Y2sgdGhhdCB0aGlzIHBhdGNoCj4gZGVmaW5lcyB0byByZXRyaWV2ZSB0aGUgcGFkZGluZyBieXRl
-cyB3aWxsIGJlIHVzZWQgaW4gZm9sbG93LXVwCj4gcGF0Y2guCj4KPiBTaWduZWQtb2ZmLWJ5OiBW
-YXNhbnRoYWt1bWFyIFRoaWFnYXJhamFuIDx2dGhpYWdhckBxdGkucXVhbGNvbW0uY29tPgo+IC0t
-LQo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYyB8IDEyICsrKysrKysr
-KysrKwo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h3LmMgICB8IDEzICsrKysr
-KysrKysrKysKPiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ody5oICAgfCAxMiAr
-KysrKysrKysrKysKPiAgMyBmaWxlcyBjaGFuZ2VkLCAzNyBpbnNlcnRpb25zKCspCj4KPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMgYi9kcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYwo+IGluZGV4IGU4ODk4MjkuLjljNWU5M2Ig
-MTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiAr
-KysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYwo+IEBAIC02OCw2ICs2
-OCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyBhdGgxMGtfaHdfcGFy
-YW1zX2xpc3RbXSA9IHsKPiAgICAgICAgICAgICAgICAgICAgICAgICAuYm9hcmRfc2l6ZSA9IFFD
-QTk4OFhfQk9BUkRfREFUQV9TWiwKPiAgICAgICAgICAgICAgICAgICAgICAgICAuYm9hcmRfZXh0
-X3NpemUgPSBRQ0E5ODhYX0JPQVJEX0VYVF9EQVRBX1NaLAo+ICAgICAgICAgICAgICAgICB9LAo+
-ICsgICAgICAgICAgICAgICAuaHdfcnhfZGVzY19vcHMgPSAmcWNhOTg4eF9yeF9kZXNjX29wcywK
-Wy4uLl0KPiArc3RydWN0IGF0aDEwa19od19yeF9kZXNjX29wcyB7Cj4gKyAgICAgICBpbnQgKCpy
-eF9kZXNjX2dldF9sM19wYWRfYnl0ZXMpKHN0cnVjdCBodHRfcnhfZGVzYyAqcnhkKTsKPiArfTsK
-CkJlbmphbWluIGlzIHRyeWluZyB0byBpbXBsZW1lbnQgY292ZXJhZ2UgY2xhc3MgYnkgcG9raW5n
-IGh3IHJlZ2lzdGVycwpvdmVyIGZpcm13YXJlJ3MgaGVhZCBbMV0uIEknbSB0aGlua2luZyB0aGUg
-aHdfcnhfZGVzY19vcHMgY291bGQgYmUKZ2VuZXJhbGl6ZWQgdG8gaHdfb3BzIHNvIGl0IGNhbiBi
-ZSB1c2VkIGZvciBkb2luZyBody1zcGVjaWZpYyBoYWNrcyBhcwp3ZWxsLiBXaGF0IGRvIHlvdSB0
-aGluaz8KClsxXTogaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8y
-MDE2LUp1bHkvMDA4MTA3Lmh0bWwKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
-bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-YXRoMTBrCg==
+On Wednesday 27 July 2016 06:13 PM, Michal Kazior wrote:
+> On 27 July 2016 at 14:36, Vasanthakumar Thiagarajan
+> <vthiagar@qti.qualcomm.com> wrote:
+>> There are slight differences in Rx hw descriptor information
+>> among different chips. So far driver does not use those new
+>> information for any functionalities, but there is one important
+>> information which is available from QCA99X0 onwards to indicate
+>> the number of bytes that hw padded at the begining of the rx
+>> payload and this information is needed to undecap the rx
+>> packet. Add an abstraction for Rx desc to make use of the
+>> new desc information available. The callback that this patch
+>> defines to retrieve the padding bytes will be used in follow-up
+>> patch.
+>>
+>> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+>> ---
+>>   drivers/net/wireless/ath/ath10k/core.c | 12 ++++++++++++
+>>   drivers/net/wireless/ath/ath10k/hw.c   | 13 +++++++++++++
+>>   drivers/net/wireless/ath/ath10k/hw.h   | 12 ++++++++++++
+>>   3 files changed, 37 insertions(+)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+>> index e889829..9c5e93b 100644
+>> --- a/drivers/net/wireless/ath/ath10k/core.c
+>> +++ b/drivers/net/wireless/ath/ath10k/core.c
+>> @@ -68,6 +68,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+>>                          .board_size = QCA988X_BOARD_DATA_SZ,
+>>                          .board_ext_size = QCA988X_BOARD_EXT_DATA_SZ,
+>>                  },
+>> +               .hw_rx_desc_ops = &qca988x_rx_desc_ops,
+> [...]
+>> +struct ath10k_hw_rx_desc_ops {
+>> +       int (*rx_desc_get_l3_pad_bytes)(struct htt_rx_desc *rxd);
+>> +};
+>
+> Benjamin is trying to implement coverage class by poking hw registers
+> over firmware's head [1]. I'm thinking the hw_rx_desc_ops could be
+> generalized to hw_ops so it can be used for doing hw-specific hacks as
+> well. What do you think?
+
+Sure. Instead of reworking this patch set, can this be done in a separate patch?.
+
+Vasanth
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
