@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bSO5j-0002by-BQ
- for ath10k@lists.infradead.org; Wed, 27 Jul 2016 12:37:40 +0000
+ id 1bSO6D-0002t2-8W
+ for ath10k@lists.infradead.org; Wed, 27 Jul 2016 12:38:10 +0000
 From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH 1/4] ath10k: Move ath10k_hw_params definition to hw.h
-Date: Wed, 27 Jul 2016 18:06:43 +0530
-Message-ID: <1469623006-13178-2-git-send-email-vthiagar@qti.qualcomm.com>
+Subject: [PATCH 3/4] ath10k: Properly remove padding from the start of rx
+ payload
+Date: Wed, 27 Jul 2016 18:06:45 +0530
+Message-ID: <1469623006-13178-4-git-send-email-vthiagar@qti.qualcomm.com>
 In-Reply-To: <1469623006-13178-1-git-send-email-vthiagar@qti.qualcomm.com>
 References: <1469623006-13178-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,131 +26,122 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-This is to prepare for rx descriptor abstraction where we'll
-be dereferencing ath10k_hw_params member in hw.h. Moreover
-hw.h looks more suitable to house ath10k_hw_params definition
-than core.h
+In QCA99X0 (QCA99X0, QCA9984, QCA9888 and QCA4019) family chips,
+hw adds padding at the begining of the rx payload to make L3
+header 4-byte aligned. In the chips doing this type of padding,
+the number of bytes padded will be indicated through msdu_end:info1.
+Define a hw_rx_desc_ops wrapper to retrieve the number of padded
+bytes and use this while doing undecap. This should fix padding
+related issues with ethernt decap format with QCA99X0, QCA9984,
+QCA9888 and QCA4019 hw.
 
 Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h | 48 +---------------------------------
- drivers/net/wireless/ath/ath10k/hw.h   | 48 ++++++++++++++++++++++++++++++++++
- 2 files changed, 49 insertions(+), 47 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 36 +++++++++++++++++++-------------
+ drivers/net/wireless/ath/ath10k/hw.h     |  9 ++++++++
+ 2 files changed, 31 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 30ae5bf..5ace413 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -715,53 +715,7 @@ struct ath10k {
- 	struct ath10k_htc htc;
- 	struct ath10k_htt htt;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 78db5d6..36c4809 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1056,9 +1056,11 @@ static void ath10k_htt_rx_h_undecap_nwifi(struct ath10k *ar,
+ 					  const u8 first_hdr[64])
+ {
+ 	struct ieee80211_hdr *hdr;
++	struct htt_rx_desc *rxd;
+ 	size_t hdr_len;
+ 	u8 da[ETH_ALEN];
+ 	u8 sa[ETH_ALEN];
++	int l3_pad_bytes;
  
--	struct ath10k_hw_params {
--		u32 id;
--		u16 dev_id;
--		const char *name;
--		u32 patch_load_addr;
--		int uart_pin;
--		u32 otp_exe_param;
--
--		/* Type of hw cycle counter wraparound logic, for more info
--		 * refer enum ath10k_hw_cc_wraparound_type.
--		 */
--		enum ath10k_hw_cc_wraparound_type cc_wraparound_type;
--
--		/* Some of chip expects fragment descriptor to be continuous
--		 * memory for any TX operation. Set continuous_frag_desc flag
--		 * for the hardware which have such requirement.
--		 */
--		bool continuous_frag_desc;
--
--		/* CCK hardware rate table mapping for the newer chipsets
--		 * like QCA99X0, QCA4019 got revised. The CCK h/w rate values
--		 * are in a proper order with respect to the rate/preamble
--		 */
--		bool cck_rate_map_rev2;
--
--		u32 channel_counters_freq_hz;
--
--		/* Mgmt tx descriptors threshold for limiting probe response
--		 * frames.
--		 */
--		u32 max_probe_resp_desc_thres;
--
--		/* The padding bytes's location is different on various chips */
--		enum ath10k_hw_4addr_pad hw_4addr_pad;
--
--		u32 tx_chain_mask;
--		u32 rx_chain_mask;
--		u32 max_spatial_stream;
--		u32 cal_data_len;
--
--		struct ath10k_hw_params_fw {
--			const char *dir;
--			const char *board;
--			size_t board_size;
--			size_t board_ext_size;
--		} fw;
--	} hw_params;
-+	struct ath10k_hw_params hw_params;
+ 	/* Delivered decapped frame:
+ 	 * [nwifi 802.11 header] <-- replaced with 802.11 hdr
+@@ -1072,19 +1074,12 @@ static void ath10k_htt_rx_h_undecap_nwifi(struct ath10k *ar,
+ 	 */
  
- 	/* contains the firmware images used with ATH10K_FIRMWARE_MODE_NORMAL */
- 	struct ath10k_fw_components normal_mode_fw;
+ 	/* pull decapped header and copy SA & DA */
+-	if ((ar->hw_params.hw_4addr_pad == ATH10K_HW_4ADDR_PAD_BEFORE) &&
+-	    ieee80211_has_a4(((struct ieee80211_hdr *)first_hdr)->frame_control)) {
+-		/* The QCA99X0 4 address mode pad 2 bytes at the
+-		 * beginning of MSDU
+-		 */
+-		hdr = (struct ieee80211_hdr *)(msdu->data + 2);
+-		/* The skb length need be extended 2 as the 2 bytes at the tail
+-		 * be excluded due to the padding
+-		 */
+-		skb_put(msdu, 2);
+-	} else {
+-		hdr = (struct ieee80211_hdr *)(msdu->data);
+-	}
++	rxd = (void *)msdu->data - sizeof(*rxd);
++
++	l3_pad_bytes = ath10k_rx_desc_get_l3_pad_bytes(&ar->hw_params, rxd);
++	skb_put(msdu, l3_pad_bytes);
++
++	hdr = (struct ieee80211_hdr *)(msdu->data + l3_pad_bytes);
+ 
+ 	hdr_len = ath10k_htt_rx_nwifi_hdrlen(ar, hdr);
+ 	ether_addr_copy(da, ieee80211_get_DA(hdr));
+@@ -1151,6 +1146,8 @@ static void ath10k_htt_rx_h_undecap_eth(struct ath10k *ar,
+ 	void *rfc1042;
+ 	u8 da[ETH_ALEN];
+ 	u8 sa[ETH_ALEN];
++	int l3_pad_bytes;
++	struct htt_rx_desc *rxd;
+ 
+ 	/* Delivered decapped frame:
+ 	 * [eth header] <-- replaced with 802.11 hdr & rfc1042/llc
+@@ -1161,6 +1158,11 @@ static void ath10k_htt_rx_h_undecap_eth(struct ath10k *ar,
+ 	if (WARN_ON_ONCE(!rfc1042))
+ 		return;
+ 
++	rxd = (void *)msdu->data - sizeof(*rxd);
++	l3_pad_bytes = ath10k_rx_desc_get_l3_pad_bytes(&ar->hw_params, rxd);
++	skb_put(msdu, l3_pad_bytes);
++	skb_pull(msdu, l3_pad_bytes);
++
+ 	/* pull decapped header and copy SA & DA */
+ 	eth = (struct ethhdr *)msdu->data;
+ 	ether_addr_copy(da, eth->h_dest);
+@@ -1191,6 +1193,8 @@ static void ath10k_htt_rx_h_undecap_snap(struct ath10k *ar,
+ {
+ 	struct ieee80211_hdr *hdr;
+ 	size_t hdr_len;
++	int l3_pad_bytes;
++	struct htt_rx_desc *rxd;
+ 
+ 	/* Delivered decapped frame:
+ 	 * [amsdu header] <-- replaced with 802.11 hdr
+@@ -1198,7 +1202,11 @@ static void ath10k_htt_rx_h_undecap_snap(struct ath10k *ar,
+ 	 * [payload]
+ 	 */
+ 
+-	skb_pull(msdu, sizeof(struct amsdu_subframe_hdr));
++	rxd = (void *)msdu->data - sizeof(*rxd);
++	l3_pad_bytes = ath10k_rx_desc_get_l3_pad_bytes(&ar->hw_params, rxd);
++
++	skb_put(msdu, l3_pad_bytes);
++	skb_pull(msdu, sizeof(struct amsdu_subframe_hdr) + l3_pad_bytes);
+ 
+ 	hdr = (struct ieee80211_hdr *)first_hdr;
+ 	hdr_len = ieee80211_hdrlen(hdr->frame_control);
 diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index e014cd7..1315557 100644
+index a281544..cdd2ce4 100644
 --- a/drivers/net/wireless/ath/ath10k/hw.h
 +++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -363,6 +363,54 @@ enum ath10k_hw_cc_wraparound_type {
- 	ATH10K_HW_CC_WRAP_SHIFTED_EACH = 2,
- };
+@@ -423,6 +423,15 @@ struct ath10k_hw_rx_desc_ops {
+ extern const struct ath10k_hw_rx_desc_ops qca988x_rx_desc_ops;
+ extern const struct ath10k_hw_rx_desc_ops qca99x0_rx_desc_ops;
  
-+struct ath10k_hw_params {
-+	u32 id;
-+	u16 dev_id;
-+	const char *name;
-+	u32 patch_load_addr;
-+	int uart_pin;
-+	u32 otp_exe_param;
-+
-+	/* Type of hw cycle counter wraparound logic, for more info
-+	 * refer enum ath10k_hw_cc_wraparound_type.
-+	 */
-+	enum ath10k_hw_cc_wraparound_type cc_wraparound_type;
-+
-+	/* Some of chip expects fragment descriptor to be continuous
-+	 * memory for any TX operation. Set continuous_frag_desc flag
-+	 * for the hardware which have such requirement.
-+	 */
-+	bool continuous_frag_desc;
-+
-+	/* CCK hardware rate table mapping for the newer chipsets
-+	 * like QCA99X0, QCA4019 got revised. The CCK h/w rate values
-+	 * are in a proper order with respect to the rate/preamble
-+	 */
-+	bool cck_rate_map_rev2;
-+
-+	u32 channel_counters_freq_hz;
-+
-+	/* Mgmt tx descriptors threshold for limiting probe response
-+	 * frames.
-+	 */
-+	u32 max_probe_resp_desc_thres;
-+
-+	/* The padding bytes's location is different on various chips */
-+	enum ath10k_hw_4addr_pad hw_4addr_pad;
-+
-+	u32 tx_chain_mask;
-+	u32 rx_chain_mask;
-+	u32 max_spatial_stream;
-+	u32 cal_data_len;
-+
-+	struct ath10k_hw_params_fw {
-+		const char *dir;
-+		const char *board;
-+		size_t board_size;
-+		size_t board_ext_size;
-+	} fw;
-+};
++static inline int
++ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
++				struct htt_rx_desc *rxd)
++{
++	if (hw->hw_rx_desc_ops->rx_desc_get_l3_pad_bytes)
++		return hw->hw_rx_desc_ops->rx_desc_get_l3_pad_bytes(rxd);
++	return 0;
++}
 +
  /* Target specific defines for MAIN firmware */
  #define TARGET_NUM_VDEVS			8
