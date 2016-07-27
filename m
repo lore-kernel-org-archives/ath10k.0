@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bSO6R-0002wD-3m
- for ath10k@lists.infradead.org; Wed, 27 Jul 2016 12:38:23 +0000
+ id 1bSO5g-0002VS-0L
+ for ath10k@lists.infradead.org; Wed, 27 Jul 2016 12:37:36 +0000
 From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH 4/4] ath10k: Remove 4-addr padding related hw_param
- configuration
-Date: Wed, 27 Jul 2016 18:06:46 +0530
-Message-ID: <1469623006-13178-5-git-send-email-vthiagar@qti.qualcomm.com>
+Subject: [PATCH 2/4] ath10k: Add provision for Rx descriptor abstraction
+Date: Wed, 27 Jul 2016 18:06:44 +0530
+Message-ID: <1469623006-13178-3-git-send-email-vthiagar@qti.qualcomm.com>
 In-Reply-To: <1469623006-13178-1-git-send-email-vthiagar@qti.qualcomm.com>
 References: <1469623006-13178-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -26,121 +25,170 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-hw_4addr_pad was added to handle different types of padding
-in 4-address rx frame. But this padding is not very specific
-to 4-address, it can happen even with three address + ethernet
-decap mode. Since the  padding information can be obtained
-through Rx desc for QCA99X0 and newer chips, this hw_param
-is not needed any more.
+There are slight differences in Rx hw descriptor information
+among different chips. So far driver does not use those new
+information for any functionalities, but there is one important
+information which is available from QCA99X0 onwards to indicate
+the number of bytes that hw padded at the begining of the rx
+payload and this information is needed to undecap the rx
+packet. Add an abstraction for Rx desc to make use of the
+new desc information available. The callback that this patch
+defines to retrieve the padding bytes will be used in follow-up
+patch.
 
 Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 9 ---------
- drivers/net/wireless/ath/ath10k/hw.h   | 8 --------
- 2 files changed, 17 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 12 ++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.c   | 13 +++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   | 12 ++++++++++++
+ 3 files changed, 37 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 9c5e93b..74d0ace 100644
+index e889829..9c5e93b 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -60,7 +60,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.otp_exe_param = 0,
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
--		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
- 		.cal_data_len = 2116,
- 		.fw = {
- 			.dir = QCA988X_HW_2_0_FW_DIR,
-@@ -80,7 +79,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.otp_exe_param = 0,
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
--		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
- 		.cal_data_len = 2116,
- 		.fw = {
- 			.dir = QCA9887_HW_1_0_FW_DIR,
-@@ -117,7 +115,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.otp_exe_param = 0,
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
--		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
- 		.cal_data_len = 8124,
- 		.fw = {
- 			.dir = QCA6174_HW_2_1_FW_DIR,
-@@ -136,7 +133,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.otp_exe_param = 0,
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
--		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
- 		.cal_data_len = 8124,
- 		.fw = {
- 			.dir = QCA6174_HW_3_0_FW_DIR,
-@@ -155,7 +151,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.otp_exe_param = 0,
- 		.channel_counters_freq_hz = 88000,
- 		.max_probe_resp_desc_thres = 0,
--		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_AFTER,
- 		.cal_data_len = 8124,
- 		.fw = {
- 			/* uses same binaries as hw3.0 */
-@@ -177,7 +172,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.cck_rate_map_rev2 = true,
- 		.channel_counters_freq_hz = 150000,
- 		.max_probe_resp_desc_thres = 24,
--		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_BEFORE,
- 		.tx_chain_mask = 0xf,
- 		.rx_chain_mask = 0xf,
- 		.max_spatial_stream = 4,
-@@ -201,7 +195,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.cck_rate_map_rev2 = true,
- 		.channel_counters_freq_hz = 150000,
- 		.max_probe_resp_desc_thres = 24,
--		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_BEFORE,
- 		.tx_chain_mask = 0xf,
- 		.rx_chain_mask = 0xf,
- 		.max_spatial_stream = 4,
-@@ -224,7 +217,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.continuous_frag_desc = true,
- 		.channel_counters_freq_hz = 150000,
- 		.max_probe_resp_desc_thres = 24,
--		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_BEFORE,
- 		.tx_chain_mask = 3,
- 		.rx_chain_mask = 3,
- 		.max_spatial_stream = 2,
-@@ -285,7 +277,6 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.cck_rate_map_rev2 = true,
- 		.channel_counters_freq_hz = 125000,
- 		.max_probe_resp_desc_thres = 24,
--		.hw_4addr_pad = ATH10K_HW_4ADDR_PAD_BEFORE,
- 		.tx_chain_mask = 0x3,
- 		.rx_chain_mask = 0x3,
- 		.max_spatial_stream = 2,
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index cdd2ce4..1620e76 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -338,11 +338,6 @@ enum ath10k_hw_rate_rev2_cck {
- 	ATH10K_HW_RATE_REV2_CCK_SP_11M,
+@@ -68,6 +68,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA988X_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA988X_BOARD_EXT_DATA_SZ,
+ 		},
++		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
+ 	},
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+@@ -87,6 +88,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA9887_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA9887_BOARD_EXT_DATA_SZ,
+ 		},
++		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -104,6 +106,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
++		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -122,6 +125,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
++		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -140,6 +144,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
++		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -159,6 +164,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
++		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
+ 	},
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+@@ -182,6 +188,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+ 		},
++		.hw_rx_desc_ops = &qca99x0_rx_desc_ops,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -205,6 +212,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+ 		},
++		.hw_rx_desc_ops = &qca99x0_rx_desc_ops,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -227,6 +235,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+ 		},
++		.hw_rx_desc_ops = &qca99x0_rx_desc_ops,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -244,6 +253,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA9377_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
+ 		},
++		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -261,6 +271,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA9377_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
+ 		},
++		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
+ 	},
+ 	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+@@ -285,6 +296,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA4019_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
+ 		},
++		.hw_rx_desc_ops = &qca99x0_rx_desc_ops,
+ 	},
  };
  
--enum ath10k_hw_4addr_pad {
--	ATH10K_HW_4ADDR_PAD_AFTER,
--	ATH10K_HW_4ADDR_PAD_BEFORE,
--};
--
- enum ath10k_hw_cc_wraparound_type {
- 	ATH10K_HW_CC_WRAP_DISABLED = 0,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index f903d46..6149aa9 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -219,3 +219,16 @@ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
+ 	survey->time = CCNT_TO_MSEC(ar, cc);
+ 	survey->time_busy = CCNT_TO_MSEC(ar, rcc);
+ }
++
++const struct ath10k_hw_rx_desc_ops qca988x_rx_desc_ops = {
++};
++
++static int ath10k_qca99x0_rx_desc_get_l3_pad_bytes(struct htt_rx_desc *rxd)
++{
++	return MS(__le32_to_cpu(rxd->msdu_end.qca99x0.info1),
++		  RX_MSDU_END_INFO1_L3_HDR_PAD);
++}
++
++const struct ath10k_hw_rx_desc_ops qca99x0_rx_desc_ops = {
++	.rx_desc_get_l3_pad_bytes = ath10k_qca99x0_rx_desc_get_l3_pad_bytes,
++};
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 1315557..a281544 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -409,8 +409,20 @@ struct ath10k_hw_params {
+ 		size_t board_size;
+ 		size_t board_ext_size;
+ 	} fw;
++
++	const struct ath10k_hw_rx_desc_ops *hw_rx_desc_ops;
+ };
  
-@@ -395,9 +390,6 @@ struct ath10k_hw_params {
- 	 */
- 	u32 max_probe_resp_desc_thres;
- 
--	/* The padding bytes's location is different on various chips */
--	enum ath10k_hw_4addr_pad hw_4addr_pad;
--
- 	u32 tx_chain_mask;
- 	u32 rx_chain_mask;
- 	u32 max_spatial_stream;
++struct htt_rx_desc;
++
++/* Defines needed for Rx descriptor abstraction */
++struct ath10k_hw_rx_desc_ops {
++	int (*rx_desc_get_l3_pad_bytes)(struct htt_rx_desc *rxd);
++};
++
++extern const struct ath10k_hw_rx_desc_ops qca988x_rx_desc_ops;
++extern const struct ath10k_hw_rx_desc_ops qca99x0_rx_desc_ops;
++
+ /* Target specific defines for MAIN firmware */
+ #define TARGET_NUM_VDEVS			8
+ #define TARGET_NUM_PEER_AST			2
 -- 
 1.9.1
 
