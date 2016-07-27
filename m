@@ -1,16 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bSSqt-0005Sx-VJ
- for ath10k@lists.infradead.org; Wed, 27 Jul 2016 17:42:40 +0000
-Subject: Re: Coverage class on ath10k
-References: <mailman.34731.1463383905.1639.ath10k@lists.infradead.org>
- <5798173A.50001@solectek.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <5798F265.2010106@candelatech.com>
-Date: Wed, 27 Jul 2016 10:41:57 -0700
+Received: from omr2.cc.ipv6.vt.edu ([2607:b400:92:8400:0:33:fb76:806e]
+ helo=omr2.cc.vt.edu)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bSXXT-0000W9-0v
+ for ath10k@lists.infradead.org; Wed, 27 Jul 2016 22:42:55 +0000
+Received: from mr5.cc.vt.edu (smtp.ipv6.vt.edu
+ [IPv6:2607:b400:92:9:0:9d:8fcb:4116])
+ by omr2.cc.vt.edu (8.14.4/8.14.4) with ESMTP id u6RMgQ3j018026
+ for <ath10k@lists.infradead.org>; Wed, 27 Jul 2016 18:42:27 -0400
+Received: from mail-lf0-f71.google.com (mail-lf0-f71.google.com
+ [209.85.215.71])
+ by mr5.cc.vt.edu (8.14.7/8.14.7) with ESMTP id u6RMgLdW013715
+ for <ath10k@lists.infradead.org>; Wed, 27 Jul 2016 18:42:26 -0400
+Received: by mail-lf0-f71.google.com with SMTP id k135so5052621lfb.2
+ for <ath10k@lists.infradead.org>; Wed, 27 Jul 2016 15:42:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5798173A.50001@solectek.com>
+From: Gaurang Ramesh Naik <gaurang@vt.edu>
+Date: Wed, 27 Jul 2016 18:42:19 -0400
+Message-ID: <CAFc9h7vkdFcns6zaeO0mAVPGAqcY62t5D2gNY5d6GkW=pwjVTA@mail.gmail.com>
+Subject: Use Channel Switch Announcement (CSA) without DFS
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,51 +27,19 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Petar Vutov <pvutov@solectek.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-On 07/26/2016 07:06 PM, Petar Vutov wrote:
-> Hi All,
->
-> Does anyone know how I can modify coverage class for ath10k?
->
-> It looks like that command  'iw phy0 set distance <meters>' doesn't get to the firmware on QCA98XX due to missing function set_coverage_class.
->
-> Is there any other way to manipulate ack timeout and slot time on the firmware?
+Hi All,
 
-It requires some small tweaks to the firmware, or something like the huge hack
-that was just posted to the ath10k mailing list.
+Is it possible to use CSA when the AP operates on channel that do not
+require DFS? Can I trigget CSA from the AP in some way?
 
 Thanks,
-Ben
-
->
-> Thanks,
->
-> Petar Vutov
-> Director of Software Engineering
-> Solectek Corp.
-> 8969 Kenamar Drive, Suite 113
-> San Diego, CA 92121
-> 1-858-450-1220 Ext 3008
-> www.solectek.com
->
->
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+GN.
 
 _______________________________________________
 ath10k mailing list
