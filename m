@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bSO6l-00032Q-Hf
- for ath10k@lists.infradead.org; Wed, 27 Jul 2016 12:38:44 +0000
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Fix rfc1042 header retrieval in QCA4019 with eth
- decap mode
-Date: Wed, 27 Jul 2016 18:08:05 +0530
-Message-ID: <1469623085-13942-1-git-send-email-vthiagar@qti.qualcomm.com>
+ id 1bSOBR-0004ry-U0
+ for ath10k@lists.infradead.org; Wed, 27 Jul 2016 12:43:35 +0000
+Received: by mail-wm0-x231.google.com with SMTP id q128so30873967wma.1
+ for <ath10k@lists.infradead.org>; Wed, 27 Jul 2016 05:43:11 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1469623006-13178-3-git-send-email-vthiagar@qti.qualcomm.com>
+References: <1469623006-13178-1-git-send-email-vthiagar@qti.qualcomm.com>
+ <1469623006-13178-3-git-send-email-vthiagar@qti.qualcomm.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Wed, 27 Jul 2016 14:43:09 +0200
+Message-ID: <CA+BoTQ=kUP-Qtw1EWKKfM_aGtJS_4oQdz4tqD5tiJkF_k3-vOA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] ath10k: Add provision for Rx descriptor abstraction
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,170 +21,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Chipset from QCA99X0 onwards (QCA99X0, QCA9984, QCA4019 & future)
-rx_hdr_status is not padded to align in 4-byte boundary. Define a
-new hw_params field to handle different alignment behaviour between
-different hw. This patch fixes improper retrieval of rfc1042 header
-with QCA4019. This patch along with "ath10k: Properly remove padding
-from the start of rx payload" will fix traffic failure in ethernet
-decap mode for QCA4019.
-
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c   | 12 ++++++++++++
- drivers/net/wireless/ath/ath10k/htt_rx.c |  5 +++--
- drivers/net/wireless/ath/ath10k/hw.h     |  3 +++
- 3 files changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 74d0ace..ea6a8f4 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -68,6 +68,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board_ext_size = QCA988X_BOARD_EXT_DATA_SZ,
- 		},
- 		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
-+		.decap_align_bytes = 4,
- 	},
- 	{
- 		.id = QCA9887_HW_1_0_VERSION,
-@@ -87,6 +88,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board_ext_size = QCA9887_BOARD_EXT_DATA_SZ,
- 		},
- 		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
-+		.decap_align_bytes = 4,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -105,6 +107,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
- 		},
- 		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
-+		.decap_align_bytes = 4,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -123,6 +126,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
- 		},
- 		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
-+		.decap_align_bytes = 4,
- 	},
- 	{
- 		.id = QCA6174_HW_3_0_VERSION,
-@@ -141,6 +145,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
- 		},
- 		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
-+		.decap_align_bytes = 4,
- 	},
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
-@@ -160,6 +165,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
- 		},
- 		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
-+		.decap_align_bytes = 4,
- 	},
- 	{
- 		.id = QCA99X0_HW_2_0_DEV_VERSION,
-@@ -183,6 +189,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
- 		},
- 		.hw_rx_desc_ops = &qca99x0_rx_desc_ops,
-+		.decap_align_bytes = 1,
- 	},
- 	{
- 		.id = QCA9984_HW_1_0_DEV_VERSION,
-@@ -206,6 +213,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
- 		},
- 		.hw_rx_desc_ops = &qca99x0_rx_desc_ops,
-+		.decap_align_bytes = 1,
- 	},
- 	{
- 		.id = QCA9888_HW_2_0_DEV_VERSION,
-@@ -228,6 +236,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
- 		},
- 		.hw_rx_desc_ops = &qca99x0_rx_desc_ops,
-+		.decap_align_bytes = 1,
- 	},
- 	{
- 		.id = QCA9377_HW_1_0_DEV_VERSION,
-@@ -246,6 +255,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
- 		},
- 		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
-+		.decap_align_bytes = 4,
- 	},
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
-@@ -264,6 +274,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
- 		},
- 		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
-+		.decap_align_bytes = 4,
- 	},
- 	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
-@@ -288,6 +299,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
- 		},
- 		.hw_rx_desc_ops = &qca99x0_rx_desc_ops,
-+		.decap_align_bytes = 1,
- 	},
- };
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 36c4809..97d5b07 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1108,6 +1108,7 @@ static void *ath10k_htt_rx_h_find_rfc1042(struct ath10k *ar,
- 	size_t hdr_len, crypto_len;
- 	void *rfc1042;
- 	bool is_first, is_last, is_amsdu;
-+	int bytes_aligned = ar->hw_params.decap_align_bytes;
- 
- 	rxd = (void *)msdu->data - sizeof(*rxd);
- 	hdr = (void *)rxd->rx_hdr_status;
-@@ -1124,8 +1125,8 @@ static void *ath10k_htt_rx_h_find_rfc1042(struct ath10k *ar,
- 		hdr_len = ieee80211_hdrlen(hdr->frame_control);
- 		crypto_len = ath10k_htt_rx_crypto_param_len(ar, enctype);
- 
--		rfc1042 += round_up(hdr_len, 4) +
--			   round_up(crypto_len, 4);
-+		rfc1042 += round_up(hdr_len, bytes_aligned) +
-+			   round_up(crypto_len, bytes_aligned);
- 	}
- 
- 	if (is_amsdu)
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 1620e76..1961e67 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -403,6 +403,9 @@ struct ath10k_hw_params {
- 	} fw;
- 
- 	const struct ath10k_hw_rx_desc_ops *hw_rx_desc_ops;
-+
-+	/* Number of bytes used for alignment in rx_hdr_status of rx desc. */
-+	int decap_align_bytes;
- };
- 
- struct htt_rx_desc;
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjcgSnVseSAyMDE2IGF0IDE0OjM2LCBWYXNhbnRoYWt1bWFyIFRoaWFnYXJhamFuCjx2dGhp
+YWdhckBxdGkucXVhbGNvbW0uY29tPiB3cm90ZToKPiBUaGVyZSBhcmUgc2xpZ2h0IGRpZmZlcmVu
+Y2VzIGluIFJ4IGh3IGRlc2NyaXB0b3IgaW5mb3JtYXRpb24KPiBhbW9uZyBkaWZmZXJlbnQgY2hp
+cHMuIFNvIGZhciBkcml2ZXIgZG9lcyBub3QgdXNlIHRob3NlIG5ldwo+IGluZm9ybWF0aW9uIGZv
+ciBhbnkgZnVuY3Rpb25hbGl0aWVzLCBidXQgdGhlcmUgaXMgb25lIGltcG9ydGFudAo+IGluZm9y
+bWF0aW9uIHdoaWNoIGlzIGF2YWlsYWJsZSBmcm9tIFFDQTk5WDAgb253YXJkcyB0byBpbmRpY2F0
+ZQo+IHRoZSBudW1iZXIgb2YgYnl0ZXMgdGhhdCBodyBwYWRkZWQgYXQgdGhlIGJlZ2luaW5nIG9m
+IHRoZSByeAo+IHBheWxvYWQgYW5kIHRoaXMgaW5mb3JtYXRpb24gaXMgbmVlZGVkIHRvIHVuZGVj
+YXAgdGhlIHJ4Cj4gcGFja2V0LiBBZGQgYW4gYWJzdHJhY3Rpb24gZm9yIFJ4IGRlc2MgdG8gbWFr
+ZSB1c2Ugb2YgdGhlCj4gbmV3IGRlc2MgaW5mb3JtYXRpb24gYXZhaWxhYmxlLiBUaGUgY2FsbGJh
+Y2sgdGhhdCB0aGlzIHBhdGNoCj4gZGVmaW5lcyB0byByZXRyaWV2ZSB0aGUgcGFkZGluZyBieXRl
+cyB3aWxsIGJlIHVzZWQgaW4gZm9sbG93LXVwCj4gcGF0Y2guCj4KPiBTaWduZWQtb2ZmLWJ5OiBW
+YXNhbnRoYWt1bWFyIFRoaWFnYXJhamFuIDx2dGhpYWdhckBxdGkucXVhbGNvbW0uY29tPgo+IC0t
+LQo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYyB8IDEyICsrKysrKysr
+KysrKwo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h3LmMgICB8IDEzICsrKysr
+KysrKysrKysKPiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ody5oICAgfCAxMiAr
+KysrKysrKysrKysKPiAgMyBmaWxlcyBjaGFuZ2VkLCAzNyBpbnNlcnRpb25zKCspCj4KPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMgYi9kcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYwo+IGluZGV4IGU4ODk4MjkuLjljNWU5M2Ig
+MTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiAr
+KysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYwo+IEBAIC02OCw2ICs2
+OCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtcyBhdGgxMGtfaHdfcGFy
+YW1zX2xpc3RbXSA9IHsKPiAgICAgICAgICAgICAgICAgICAgICAgICAuYm9hcmRfc2l6ZSA9IFFD
+QTk4OFhfQk9BUkRfREFUQV9TWiwKPiAgICAgICAgICAgICAgICAgICAgICAgICAuYm9hcmRfZXh0
+X3NpemUgPSBRQ0E5ODhYX0JPQVJEX0VYVF9EQVRBX1NaLAo+ICAgICAgICAgICAgICAgICB9LAo+
+ICsgICAgICAgICAgICAgICAuaHdfcnhfZGVzY19vcHMgPSAmcWNhOTg4eF9yeF9kZXNjX29wcywK
+Wy4uLl0KPiArc3RydWN0IGF0aDEwa19od19yeF9kZXNjX29wcyB7Cj4gKyAgICAgICBpbnQgKCpy
+eF9kZXNjX2dldF9sM19wYWRfYnl0ZXMpKHN0cnVjdCBodHRfcnhfZGVzYyAqcnhkKTsKPiArfTsK
+CkJlbmphbWluIGlzIHRyeWluZyB0byBpbXBsZW1lbnQgY292ZXJhZ2UgY2xhc3MgYnkgcG9raW5n
+IGh3IHJlZ2lzdGVycwpvdmVyIGZpcm13YXJlJ3MgaGVhZCBbMV0uIEknbSB0aGlua2luZyB0aGUg
+aHdfcnhfZGVzY19vcHMgY291bGQgYmUKZ2VuZXJhbGl6ZWQgdG8gaHdfb3BzIHNvIGl0IGNhbiBi
+ZSB1c2VkIGZvciBkb2luZyBody1zcGVjaWZpYyBoYWNrcyBhcwp3ZWxsLiBXaGF0IGRvIHlvdSB0
+aGluaz8KClsxXTogaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8y
+MDE2LUp1bHkvMDA4MTA3Lmh0bWwKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
+bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+YXRoMTBrCg==
