@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bSdTE-0004VG-1w
- for ath10k@lists.infradead.org; Thu, 28 Jul 2016 05:02:57 +0000
-Received: by mail-wm0-x22a.google.com with SMTP id q128so236204770wma.1
- for <ath10k@lists.infradead.org>; Wed, 27 Jul 2016 22:02:32 -0700 (PDT)
+ id 1bSiwO-0004Dw-Mg
+ for ath10k@lists.infradead.org; Thu, 28 Jul 2016 10:53:25 +0000
 MIME-Version: 1.0
-In-Reply-To: <CAFc9h7vkdFcns6zaeO0mAVPGAqcY62t5D2gNY5d6GkW=pwjVTA@mail.gmail.com>
-References: <CAFc9h7vkdFcns6zaeO0mAVPGAqcY62t5D2gNY5d6GkW=pwjVTA@mail.gmail.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Thu, 28 Jul 2016 07:02:30 +0200
-Message-ID: <CA+BoTQkw29PvZXqvX5oe2-cyvNURMY3G-SKsv6FqxD7BN2yyHw@mail.gmail.com>
-Subject: Re: Use Channel Switch Announcement (CSA) without DFS
+Subject: Re: ath10k: fix get rx_status from htt context
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1469551552-845-1-git-send-email-arnagara@qti.qualcomm.com>
+Message-ID: <23fc0be38ebd49c8a320182cf2d9d7e0@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 28 Jul 2016 12:52:56 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,21 +17,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Gaurang Ramesh Naik <gaurang@vt.edu>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, arnagara@codeaurora.org, ath10k@lists.infradead.org
 
-T24gMjggSnVseSAyMDE2IGF0IDAwOjQyLCBHYXVyYW5nIFJhbWVzaCBOYWlrIDxnYXVyYW5nQHZ0
-LmVkdT4gd3JvdGU6Cj4gSGkgQWxsLAo+Cj4gSXMgaXQgcG9zc2libGUgdG8gdXNlIENTQSB3aGVu
-IHRoZSBBUCBvcGVyYXRlcyBvbiBjaGFubmVsIHRoYXQgZG8gbm90Cj4gcmVxdWlyZSBERlM/IENh
-biBJIHRyaWdnZXQgQ1NBIGZyb20gdGhlIEFQIGluIHNvbWUgd2F5PwoKWW91IGNhbiBhc2sgaG9z
-dGFwZCB2aWEgaG9zdGFwZF9jbGkgdG86CgogY2hhbl9zd2l0Y2ggNSA1MTgwCgpUaGlzIHdpbGwg
-c3RhcnQgQ1NBIHdpdGggQ1MgY291bnQ9NSB0byBmcmVxdWVuY3kgNTE4MC4gSWYgeW91IHR5cGUK
-Y2hhbl9zd2l0Y2ggd2l0aG91dCBhcmd1bWVudCBJIGJlbGlldmUgeW91IHNob3VsZCBnZXQgaGVs
-cC91c2FnZSBvbgp0aGUgY29tbWFuZC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+Ashok Raj Nagarajan <arnagara@qti.qualcomm.com> wrote:
+> On handling amsdu on rx path, get the rx_status from htt context. Without this
+> fix, we are seeing warnings when running DBDC traffic like this.
+> 
+> WARNING: CPU: 0 PID: 0 at net/mac80211/rx.c:4105 ieee80211_rx_napi+0x88/0x7d8 [mac80211]()
+> 
+> [ 1715.878248] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G W 3.18.21 #1
+> [ 1715.878273] [<c001d3f4>] (unwind_backtrace) from [<c001a4b0>] (show_stack+0x10/0x14)
+> [ 1715.878293] [<c001a4b0>] (show_stack) from [<c01bee64>] (dump_stack+0x70/0xbc)
+> [ 1715.878315] [<c01bee64>] (dump_stack) from [<c002a61c>] (warn_slowpath_common+0x64/0x88)
+> [ 1715.878339] [<c002a61c>] (warn_slowpath_common) from [<c002a6d0>] (warn_slowpath_null+0x18/0x20)
+> [ 1715.878395] [<c002a6d0>] (warn_slowpath_null) from [<bf4caa98>] (ieee80211_rx_napi+0x88/0x7d8 [mac80211])
+> [ 1715.878474] [<bf4caa98>] (ieee80211_rx_napi [mac80211]) from [<bf568658>] (ath10k_htt_t2h_msg_handler+0xb48/0xbfc [ath10k_core])
+> [ 1715.878535] [<bf568658>] (ath10k_htt_t2h_msg_handler [ath10k_core]) from [<bf568708>] (ath10k_htt_t2h_msg_handler+0xbf8/0xbfc [ath10k_core])
+> [ 1715.878597] [<bf568708>] (ath10k_htt_t2h_msg_handler [ath10k_core]) from [<bf569160>] (ath10k_htt_txrx_compl_task+0xa54/0x1170 [ath10k_core])
+> [ 1715.878639] [<bf569160>] (ath10k_htt_txrx_compl_task [ath10k_core]) from [<c002db14>] (tasklet_action+0xb4/0x130)
+> [ 1715.878659] [<c002db14>] (tasklet_action) from [<c002d110>] (__do_softirq+0xe0/0x210)
+> [ 1715.878678] [<c002d110>] (__do_softirq) from [<c002d4b4>] (irq_exit+0x84/0xe0)
+> [ 1715.878700] [<c002d4b4>] (irq_exit) from [<c005a544>] (__handle_domain_irq+0x98/0xd0)
+> [ 1715.878722] [<c005a544>] (__handle_domain_irq) from [<c00085f4>] (gic_handle_irq+0x38/0x5c)
+> [ 1715.878741] [<c00085f4>] (gic_handle_irq) from [<c0009680>] (__irq_svc+0x40/0x74)
+> [ 1715.878753] Exception stack(0xc05f9f50 to 0xc05f9f98)
+> [ 1715.878767] 9f40: ffffffed 00000000 00399e1e c000a220
+> [ 1715.878786] 9f60: 00000000 c05f6780 c05f8000 00000000 c05f5db8 ffffffed c05f8000 c04d1980
+> [ 1715.878802] 9f80: 00000000 c05f9f98 c0018110 c0018114 60000013 ffffffff
+> [ 1715.878822] [<c0009680>] (__irq_svc) from [<c0018114>] (arch_cpu_idle+0x2c/0x50)
+> [ 1715.878844] [<c0018114>] (arch_cpu_idle) from [<c00530d4>] (cpu_startup_entry+0x108/0x234)
+> [ 1715.878866] [<c00530d4>] (cpu_startup_entry) from [<c05c7be0>] (start_kernel+0x33c/0x3b8)
+> [ 1715.878879] ---[ end trace 6d5e1cc0fef8ed6a ]---
+> [ 1715.878899] ------------[ cut here ]------------
+> 
+> Fixes: 18235664e7f9 ("ath10k: cleanup amsdu processing for rx indication")
+> Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+
+I'm planning to push this to 4.8 if no objections.
+
+-- 
+Sent by pwcli
+https://patchwork.kernel.org/patch/9248457/
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
