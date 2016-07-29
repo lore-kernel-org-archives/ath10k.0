@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bT9Qq-00084X-MB
- for ath10k@lists.infradead.org; Fri, 29 Jul 2016 15:10:37 +0000
-Subject: Re: [PATCH] ath10k: Allow setting coverage class
-References: <1469608424-11370-1-git-send-email-benjamin@sipsolutions.net>
- <5798EEC3.5040008@candelatech.com>
- <1469803947.7306.139.camel@sipsolutions.net>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <579B71B4.7080206@candelatech.com>
-Date: Fri, 29 Jul 2016 08:09:40 -0700
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bTAtl-0006Ng-Ec
+ for ath10k@lists.infradead.org; Fri, 29 Jul 2016 16:44:34 +0000
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <5f28dce8-9212-5c58-4e8c-664c6379a222@dd-wrt.com>
+Date: Fri, 29 Jul 2016 18:44:09 +0200
 MIME-Version: 1.0
-In-Reply-To: <1469803947.7306.139.camel@sipsolutions.net>
+Subject: 9984 (and maybe others) rekeying issue
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,70 +17,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Benjamin Berg <benjamin@sipsolutions.net>, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org
-Cc: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, ath10k@lists.infradead.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>, Simon Wunderlich <sw@simonwunderlich.de>
+To: ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
 
-On 07/29/2016 07:52 AM, Benjamin Berg wrote:
-> On Mi, 2016-07-27 at 10:26 -0700, Ben Greear wrote:
->> On 07/27/2016 01:33 AM, Benjamin Berg wrote:
->>>
->>> Unfortunately ath10k does not generally allow modifying the coverage class
->>> with the stock firmware and Qualcomm has so far refused to implement this
->>> feature so that it can be properly supported in ath10k. If we however know
->>> the registers that need to be modified for proper operation with a higher
->>> coverage class, then we can do these modifications from the driver.
->>>
->>> This patch implements this hack for first generation cards which are based
->>> on a core that is similar to ath9k. The registers are modified in place and
->>> need to be re-written every time the firmware sets them. To achieve this
->>> the register status is verified after any event from the firmware.
->>>
->>> The coverage class may not be modified temporarily right after the card
->>> re-initializes the registers. This is for example the case during scanning.
->>>
->>> A warning will be generated if the hack is not supported on the card or
->>> unexpected values are hit. There is no error reporting for userspace
->>> applications though (this is a limitation in the mac80211 driver
->>> interface).
->>>
->>>>> Thanks to Sebastian Gottschall <s.gottschall@dd-wrt.com> for initially
->>> working on a userspace support for this. This patch wouldn't have been
->>> possible without this documentation.
->>
->> I would be concerned about the various resets firmware does to work around
->> hardware hangs as well.  I don't think any events are generated for these, unless
->> you count the dbglog messages?
->
-> Yeah, I am aware of the fact that the firmware may do internal resets
-> from time to time. The interesting question (and one for which I do not
-> know the answer) is whether we get a wmi or other event under all
-> conditions where the register may be rewritten due to a reset.
->
-> The current code will re-set the register value after any wmi event
-> including debug messages. If this is not enough, then the only solution
-> might be to periodically poll the register values instead of relying on
-> a received event.
-
-You will get a dbglog event at least most of the time, so maybe that
-will be good enough.
-
-Someone with src code and that cared could audit the code I guess, but then
-that person could also just implement the feature properly in the firmware
-to begin with...
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+aSBoYXZlIHNpbXBsZSBjb25maWd1cmF0aW9uIG9uIGEgOTk4NCB3aXRoIHdkcyBhcAoKbXkgbGFw
+dG9wIGlzIGNvbm5lY3RlZCAoYnJvYWRjb20gODAyLjExbiBjaGlwc2V0KQoKYW5kIDIgd2RzIHN0
+YXRpb25zIGFyZSBjb25uZWN0ZWQgKG9uZSBpcyBxY2E5OTg0IGFuZCB0aGUgb3RoZXIgaXMgOTg4
+MCkKCmJvdGggc3RhdGlvbnMgYnV0IG5vdCBteSBsYXB0b3AgZGlzY29ubmVjdHMgZXZlcnkgNjAg
+bWludXRlcyB3aGljaCBzZWVtcyAKdG8gYmUgcmVsYXRlZCB0byB3cGEgcmVrZXlpbmcKCihhbGwg
+aW50ZXJmYWNlcyBhcmUgcnVubmluZyB3cGEgMiBwZXJzb25hbCkKCmFueSBoaW50PwoKClNlYmFz
+dGlhbgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4g
+R290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQKRmlybWVuc2l0ejog
+IEJlcmxpbmVyIFJpbmcgMTAxLCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNn
+ZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVp
+bmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDog
+cy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYy
+NTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
