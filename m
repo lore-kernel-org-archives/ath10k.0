@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from esa1.dell-outbound.iphmx.com ([68.232.153.90])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bSujR-0008Ct-9a
- for ath10k@lists.infradead.org; Thu, 28 Jul 2016 23:28:50 +0000
-Date: Fri, 29 Jul 2016 01:28:21 +0200
-From: "Luis R. Rodriguez" <mcgrof@kernel.org>
-Subject: Re: [RFC] ath10k: silence firmware file probing warnings
-Message-ID: <20160728232821.GB3296@wotan.suse.de>
-References: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
- <20160721070938.GA2658@redhat.com>
- <CANUX_P3ADxi+RHkH=d8Ypcqy9WVKSu4JYH7K3HtTNCuWg3wCeQ@mail.gmail.com>
- <20160721080541.GB2658@redhat.com> <5790A28F.8030102@redhat.com>
- <20160721115122.GA31869@redhat.com>
- <a264e995-fc46-7fcd-69f9-80992385b6b1@broadcom.com>
- <20160722220526.GL5537@wotan.suse.de>
- <c3bbb2f3-f551-41bf-ba29-c75f78b5b9ed@broadcom.com>
+ id 1bT2UY-0000WS-DF
+ for ath10k@lists.infradead.org; Fri, 29 Jul 2016 07:45:59 +0000
+From: <Perry_Yuan@Dell.com>
+Date: Fri, 29 Jul 2016 15:45:12 +0800
+Subject: RE: ath10k fail to load firmware
+Message-ID: <A3D794F1192BBF449DF2EC3D7EE263F44A544E3A5C@SHAX7MCDC101.APAC.DELL.COM>
+References: <20160719070932.GA2751@redhat.com>
+ <CA+BoTQn98UFuGT0NntdE1HgG9UmmwzS=JsGkLmeGoMHSFGyDRg@mail.gmail.com>
+ <20160719072754.GB2751@redhat.com>
+In-Reply-To: <20160719072754.GB2751@redhat.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <c3bbb2f3-f551-41bf-ba29-c75f78b5b9ed@broadcom.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,113 +25,77 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arend van Spriel <arend.vanspriel@broadcom.com>, Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Stanislaw Gruszka <sgruszka@redhat.com>, Takashi Iwai <tiwai@suse.de>, Ming Lei <ming.lei@canonical.com>, Kay Sievers <kay@vrfy.org>, Jej B <James.Bottomley@hansenpartnership.com>, Kalle Valo <kvalo@qca.qualcomm.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Prarit Bhargava <prarit@redhat.com>, "rafael.j.wysocki" <rafael.j.wysocki@intel.com>, ath10k <ath10k@lists.infradead.org>, Arend van Spriel <arend@broadcom.com>, Mimi Zohar <zohar@linux.vnet.ibm.com>, Emmanuel Grumbach <egrumbach@gmail.com>, Kees Cook <keescook@chromium.org>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Rusty Russell <rusty@rustcorp.com.au>, Julia Lawall <julia.lawall@lip6.fr>, mmarek@suse.com, Hannes Reinecke <hare@suse.de>, Tom Gundersen <teg@jklm.no>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Luis R. Rodriguez" <mcgrof@kernel.org>, Michal Kazior <michal.kazior@tieto.com>, Fengguang Wu <fengguang.wu@intel.com>, David Woodhouse <dwmw2@infradead.org>
+To: sgruszka@redhat.com, michal.kazior@tieto.com
+Cc: David_D_Wang@dell.com, karl@redhat.com, kvalo@qca.qualcomm.com, Yijun_Shen@Dell.com, ath10k@lists.infradead.org
 
-On Thu, Jul 28, 2016 at 09:23:35PM +0200, Arend van Spriel wrote:
-> On 23-07-16 00:05, Luis R. Rodriguez wrote:
-> > The firmware API is a mess and I've been trying to correct that
-> > with a more flexible API.
+Dell - No Restrictions - Confidential
 
-<-- snip -->
+HI Stanislaw:
+Now we have got the available firmware for DW1820 wireless card ,but we  found  one new problem .
+I built   upstream  4.6.4  and 4.7  kernel  code  and install the kernel images , the wireless driver can work , which means I  can get  IP address and  ping  external network successfully .
 
-> > Extensions to the fw API are IMHO best done through a newer flexible
-> > API, feel free to refer to this development tree if you'd like to
-> > contribute:
-> > 
-> > https://git.kernel.org/cgit/linux/kernel/git/mcgrof/linux-next.git/log/?h=20160616-sysdata-v2
-> 
-> So I had a look and noticed commit c8df68e83392 ("firmware: annotate
-> thou shalt not request fw on init or probe"). Now this conflicts with
-> our wireless driver. The original suggestion a long, long time ago was
-> to use IFF_UP as trigger to go and request firmware. However, for that
-> we would need to register a netdevice during probe, and consequently we
-> should also have a wiphy instance registered. However, that has all kind
-> of feature flags for which we need firmware running on the device to
-> query what is supported and what not. I can make a fair bet that
-> brcmfmac is not the only driver with such a requirement. So how can we
-> crack that nut.
+But it cannot  work with  RHEL 7.3 test kernel   kernel-3.10.0-473.el7.x86_64.rpm . This kernel will  occur panic  frequently .
+Even  system can get IP address from AP . but it cannot ping external  network .
+So I would think the backport driver have some issue .
+I have found some differences  with upstream 4.7 kernel code  where you  do backport   . I will  provide the kernel panic log later .
 
-Glad you asked.
 
-Despite my latest set of updates on documentation for the firmware_class [0] (not
-yet merged), and it being based on the latest discussed and agreed upon we
-really have nothing well ironed out for what you describe, so let's try
-to figure that out now.
 
-To be clear, folks had originally said using the firmware API on *init* was
-dumb, and some of this came up because of the infamous systemd udev timeout.
-For completeness, I've documented some of the history of this issue
-in great detail [1], mostly because I had to deal with a bug at SUSE about
-this, and find a proper solution. Avoiding re-iterating *exactly why* the
-timeout for kmod was ill-founded, and assuming you all now buy that,
-the summary of facts of the *why* it turns out to be a bad idea to use the
-firmware API on init *or* probe:
+keep up the good work
+Perry  Yuan
+Dell | Client Software Group | Platform Sftwr Senior Engineer
+office +86 21 22030689, mobile +86 18521512823
+perry_yuan@dell.com
+Please consider the environment before printing this email.
 
-  a) by default the driver model actually calls both init and probe serially and
-     synchronously
-  b) we have no deterministic way of being certain we have whatever filesystem
-     the driver needed as ready, the firmware may live in initramfs, or may only
-     be available later on the real filesystem, and even after that the system
-     may be designed to pivot_root.
+-----Original Message-----
+From: Stanislaw Gruszka [mailto:sgruszka@redhat.com]
+Sent: Tuesday, July 19, 2016 3:28 PM
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>; ath10k@lists.infradead.org; Yuan, Perry <Perry_Yuan@Dell.com>
+Subject: Re: ath10k fail to load firmware
 
-In terms of solutions, lets discuss, here are a few options I can think of:
+On Tue, Jul 19, 2016 at 09:18:01AM +0200, Michal Kazior wrote:
+> On 19 July 2016 at 09:09, Stanislaw Gruszka <sgruszka@redhat.com> wrote:
+> > Perry from Dell has ath10k device, which do not work with current
+> > linux-firmware. It's on RHEL kernel, however wirelss stack and
+> > drivers are from 4.7-rc1 (I did not update to 4.7 final yet, since I
+> > do not see ath10k fix, which could possibly help here). Partial
+> > dmesg is in the attachment.
+>
+> hw.3 qca6174 chips tend to require very specific board data for proper
+> calibration.
+>
+>   [ 3838.601884] ath10k_pci 0000:01:00.0: failed to fetch board data
+> for
+> bus=pci,vendor=168c,device=003e,subsystem-vendor=1028,subsystem-device
+> =0310
+> from ath10k/QCA6174/hw3.0/board-2.bin
+>   [ 3838.601920] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A
+> crc32 ed5f849a
+>
+> Your board-2.bin doesn't contain the matching board data and the
+> driver then falls back to the older board API1 which is pretty much
+> doomed to fail on qca6174 hw.3.
+>
+> @Kalle: Perhaps ath10k needs to fail early with an adequate message
+> for qca6174 hw.3 if board API2 lookup fails (e.g. hw_params flag
+> because this seems to be quite closely coupled with hardware itself).
+>
+> @Stanislaw: You either need to grab a more recent board-2.bin
+> (https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0),
 
-  1) Because of b) if you know you are going to use the firmware API you should
-     just stuff firmware that is needed on init or probe as built-in
-     (CONFIG_EXTRA_FIRMWARE) or stuff it into initramfs. This approach is generally
-     accepted, however there is no systematic approach to ensure this is done. Now
-     that we have coccinelle grammar to find these drivers it should be relatively
-     easy to identify them and require the firmware as part of the distribution's
-     initramfs or peg them as part of CONFIG_EXTRA_FIRMWARE if a distro prefers that.
+@Perry, could you replace board-2.bin from above link on /lib/firmware/ath10k/QCA6174/hw3.0/ and check if that work ?
 
-     The only issue with this approach is its left up to the distribution to resolve.
+> ask Kalle & wait, or cook up your own (if you really need it working
+> *now*) by getting Windows driver and dissecting it (the .inf file
+> contains enough information for you to map board data also referred to
+> as eeprom-something in the Windows blob).
 
-  2) If the driver *knows* that probe may take a while it can request the driver core
-     to probe the driver asynchronously, it can do so by using:
+I think we can wait till firmware will be updated upstream, however Dell would like to know if what we provide in new RHEL7 release will work on their hardware.
 
-static struct pci_driver foo_pci_driver = {
-      ...
-      .driver.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-};
-
-    This would not really resolve the deterministic issues listed in b) and for
-    this reason this is not really a firmware-API-on-probe solution -- its an
-    annotation to help avoid delays boot due to knowing probe may take a while.
-
-  3) Userspace that loads modules can / should pass the async probe generic
-     module parameter "async_probe" (for instance 'modprobe ath10k async_probe')
-     when loading all modules. This should already be relatively
-     safe when using on modules. This is what systemd long ago assumed was
-     being done anyway. Again, also this is not really a firmware-API-on-probe solution,
-     it can however be used by systemd for instance to help avoid delays on
-     boot due to module lengthy probe calls
-
-As it stands we have no resolution for the deterministic existential issues of
-the firmware but in practice 1-3 should help. 2-3 should probably be done
-regardless. I've been meaning to send patches for 3) but haven't had time.
-
-As far as the deterministic existential firmware issue... Since we're just
-reading files from the filesystem now (there are exceptions to this, but my
-goal is to corner-case this code with the sysdata API), if we really wanted
-something rock solid for these drivers I suppose we could consider implementing
-an event driven probe if a driver requests for async probe. For instance, if
-async probe was requested and the driver has MODULE_FIRMWARE(firmware_name)
-we could add a notifier to probe the driver once the firmware is accessible.
-
-For all intents and purposes though -- although I know the real issue here
-the deterministic way of knowing when firmware is available, in practice
-annotating your driver with PROBE_PREFER_ASYNCHRONOUS should solve most
-races. This would not be a resolution, but rather an annotation to the fact
-your driver probe does take a while -- and should make most folks happy until
-we have a proper deterministic firmware solution, I think.
-
-I welcome other ideas.
-
-[0] https://lkml.kernel.org/r/1466117661-22075-1-git-send-email-mcgrof@kernel.org
-[1] http://www.do-not-panic.com/2015/12/linux-asynchronous-probe.html
-
-  Luis
+Thanks
+Stanislaw
 
 _______________________________________________
 ath10k mailing list
