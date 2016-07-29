@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from esa2.dell-outbound.iphmx.com ([68.232.149.220])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bT3mP-0002Oq-Ai
- for ath10k@lists.infradead.org; Fri, 29 Jul 2016 09:08:49 +0000
-From: <Perry_Yuan@Dell.com>
-Date: Fri, 29 Jul 2016 17:07:46 +0800
-Subject: RE: ath10k fail to load firmware
-Message-ID: <A3D794F1192BBF449DF2EC3D7EE263F44A544E3AB0@SHAX7MCDC101.APAC.DELL.COM>
-References: <20160719070932.GA2751@redhat.com>
- <CA+BoTQn98UFuGT0NntdE1HgG9UmmwzS=JsGkLmeGoMHSFGyDRg@mail.gmail.com>
- <20160719072754.GB2751@redhat.com> 
-Content-Language: en-US
-MIME-Version: 1.0
+ id 1bT99q-0007re-6b
+ for ath10k@lists.infradead.org; Fri, 29 Jul 2016 14:53:03 +0000
+Message-ID: <1469803947.7306.139.camel@sipsolutions.net>
+Subject: Re: [PATCH] ath10k: Allow setting coverage class
+From: Benjamin Berg <benjamin@sipsolutions.net>
+Date: Fri, 29 Jul 2016 16:52:27 +0200
+In-Reply-To: <5798EEC3.5040008@candelatech.com>
+ (sfid-20160727_192629_507046_B6A4A1EA)
+References: <1469608424-11370-1-git-send-email-benjamin@sipsolutions.net>
+ <5798EEC3.5040008@candelatech.com> (sfid-20160727_192629_507046_B6A4A1EA)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,153 +20,110 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6802620865121481735=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: sgruszka@redhat.com, michal.kazior@tieto.com
-Cc: David_D_Wang@dell.com, karl@redhat.com, kvalo@qca.qualcomm.com, Yijun_Shen@Dell.com, ath10k@lists.infradead.org
-
-Hi Stanislaw:
-
-We got the right firmware but the kernel kernel-3.10.0-473.el7.x86_64.rpm i=
-s still not working at all .
-In order to fix the issue for DW1820 .  I am afraid  that you have to merge=
- the below patches for RHEL7.3 kernel. I have verified those patches . DW18=
-20 card driver is working well  on  -473  kernel  now .
-
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=
-=3De50525bef593c3dd0564df676c567d77f7c20322
-
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=
-=3D8d0a0710ea0d22881fdb40eb79d346a98cc64ae6
-
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=
-=3Dfee48cf8374569a3888fd8c8536283e6067f0cfb
-
-Thanks .
-
-keep up the good work
-Perry=A0 Yuan
-Dell | Client Software Group | Platform Sftwr Senior Engineer
-office +86 21 22030689, mobile +86 18521512823
-perry_yuan@dell.com
-Please consider the environment before printing this email.
+To: Ben Greear <greearb@candelatech.com>, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org
+Cc: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, ath10k@lists.infradead.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>, Simon Wunderlich <sw@simonwunderlich.de>
 
 
------Original Message-----
-From: Yuan, Perry =
-
-Sent: Friday, July 29, 2016 3:45 PM
-To: 'Stanislaw Gruszka' <sgruszka@redhat.com>; Michal Kazior <michal.kazior=
-@tieto.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>; ath10k@lists.infradead.org; Shen, =
-Yijun <Yijun_Shen@Dell.com>; David D Wang (David_D_Wang@dell.com) <David_D_=
-Wang@dell.com>; Karl Hastings <karl@redhat.com>
-Subject: RE: ath10k fail to load firmware
-
-Dell - No Restrictions - Confidential =
+--===============6802620865121481735==
+Content-Type: multipart/signed; micalg="pgp-sha256";
+	protocol="application/pgp-signature"; boundary="=-w58xpH9yTbwuM6VYYdjN"
 
 
-HI Stanislaw:
-Now we have got the available firmware for DW1820 wireless card ,but we  fo=
-und  one new problem .
-I built   upstream  4.6.4  and 4.7  kernel  code  and install the kernel im=
-ages , the wireless driver can work , which means I  can get  IP address an=
-d  ping  external network successfully .
+--=-w58xpH9yTbwuM6VYYdjN
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-But it cannot  work with  RHEL 7.3 test kernel   kernel-3.10.0-473.el7.x86_=
-64.rpm . This kernel will  occur panic  frequently .
-Even  system can get IP address from AP . but it cannot ping external  netw=
-ork . =
+On Mi, 2016-07-27 at 10:26 -0700, Ben Greear wrote:
+> On 07/27/2016 01:33 AM, Benjamin Berg wrote:
+> >=20
+> > Unfortunately ath10k does not generally allow modifying the coverage cl=
+ass
+> > with the stock firmware and Qualcomm has so far refused to implement th=
+is
+> > feature so that it can be properly supported in ath10k. If we however k=
+now
+> > the registers that need to be modified for proper operation with a high=
+er
+> > coverage class, then we can do these modifications from the driver.
+> >=20
+> > This patch implements this hack for first generation cards which are ba=
+sed
+> > on a core that is similar to ath9k. The registers are modified in place=
+ and
+> > need to be re-written every time the firmware sets them. To achieve thi=
+s
+> > the register status is verified after any event from the firmware.
+> >=20
+> > The coverage class may not be modified temporarily right after the card
+> > re-initializes the registers. This is for example the case during scann=
+ing.
+> >=20
+> > A warning will be generated if the hack is not supported on the card or
+> > unexpected values are hit. There is no error reporting for userspace
+> > applications though (this is a limitation in the mac80211 driver
+> > interface).
+> >=20
+> > > > Thanks to Sebastian Gottschall <s.gottschall@dd-wrt.com> for initia=
+lly
+> > working on a userspace support for this. This patch wouldn't have been
+> > possible without this documentation.
+>=20
+> I would be concerned about the various resets firmware does to work aroun=
+d
+> hardware hangs as well.=C2=A0=C2=A0I don't think any events are generated=
+ for these, unless
+> you count the dbglog messages?
 
-So I would think the backport driver have some issue . =
+Yeah, I am aware of the fact that the firmware may do internal resets
+from time to time. The interesting question (and one for which I do not
+know the answer) is whether we get a wmi or other event under all
+conditions where the register may be rewritten due to a reset.
 
-I have found some differences  with upstream 4.7 kernel code  where you  do=
- backport   . I will  provide the kernel panic log later .
+The current code will re-set the register value after any wmi event
+including debug messages. If this is not enough, then the only solution
+might be to periodically poll the register values instead of relying on
+a received event.
+
+Benjamin
+--=-w58xpH9yTbwuM6VYYdjN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAABCAAGBQJXm22rAAoJENEjaKZhhWwgykkP/RFD4Q1H6ijTfQhrYer1UDrT
+rVQoq6iTW+MY3uwD8Yc9fyi++pIga+v3ZO0OtYlZNHQl6Yd1mZQHceESS7gxlLGD
+SICh5D8xY2xTjW8oGOrV3BHVxXwxj60TCg9Duxp4E2CRgpO2h11ys9MeOkog72Ue
+ocO106ugNb+/QI1D9/pwNs7edhvQMLBG//rkPDHlWQG/0sPQ2TD9gkQ0D/DztBb5
+yfOigLHF+iZJim5x7pGggkGjOLFtREk2kmrCHGkz38lFAkLhucSmJOM9nCW8mBBz
+K3e6p+96YOL9MNDVMn9isAqn9/pEnoR8cTQihiXCgffBsG2lER23IuMMaPeZ2Ceg
+T745bSOTyQTIeKAMr64fWMGo0Bc/T5or0Vz5w3kEU79PNkqU3HURUqYdYBMCZfOz
+gWJlXc5ytXtE24qvibsjk/XQsN6rndr2v97JiCJTH8eh25Jjj5FU2I2U0o0Kk+hw
++3tK4VO9dhE9JJ+dS5SYnjHurGhv8wuld2SmQzOByam6crkp+fcBiYDPeMqbAsaq
+0BrSMhJqsHYS/6UimczTIOAs4Ry4QBxN8svnr668QBAHl7ZoxVC2kOf3pegyLf0Y
+2h7xtwBAOXNTXZuo8wCUMn+msvlXiJak+haMraM7kp5sRQjbisTLeJbaLcl1Y+Q4
+wD+Zg4EdhQrw8LoD+6Hf
+=0/Oc
+-----END PGP SIGNATURE-----
+
+--=-w58xpH9yTbwuM6VYYdjN--
 
 
 
-keep up the good work
-Perry=A0 Yuan
-Dell | Client Software Group | Platform Sftwr Senior Engineer office +86 21=
- 22030689, mobile +86 18521512823 perry_yuan@dell.com Please consider the e=
-nvironment before printing this email.
-
------Original Message-----
-From: Stanislaw Gruszka [mailto:sgruszka@redhat.com]
-Sent: Tuesday, July 19, 2016 3:28 PM
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>; ath10k@lists.infradead.org; Yuan, =
-Perry <Perry_Yuan@Dell.com>
-Subject: Re: ath10k fail to load firmware
-
-On Tue, Jul 19, 2016 at 09:18:01AM +0200, Michal Kazior wrote:
-> On 19 July 2016 at 09:09, Stanislaw Gruszka <sgruszka@redhat.com> wrote:
-> > Perry from Dell has ath10k device, which do not work with current =
-
-> > linux-firmware. It's on RHEL kernel, however wirelss stack and =
-
-> > drivers are from 4.7-rc1 (I did not update to 4.7 final yet, since I =
-
-> > do not see ath10k fix, which could possibly help here). Partial =
-
-> > dmesg is in the attachment.
-> =
-
-> hw.3 qca6174 chips tend to require very specific board data for proper =
-
-> calibration.
-> =
-
->   [ 3838.601884] ath10k_pci 0000:01:00.0: failed to fetch board data =
-
-> for =
-
-> bus=3Dpci,vendor=3D168c,device=3D003e,subsystem-vendor=3D1028,subsystem-d=
-evice
-> =3D0310
-> from ath10k/QCA6174/hw3.0/board-2.bin
->   [ 3838.601920] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A
-> crc32 ed5f849a
-> =
-
-> Your board-2.bin doesn't contain the matching board data and the =
-
-> driver then falls back to the older board API1 which is pretty much =
-
-> doomed to fail on qca6174 hw.3.
-> =
-
-> @Kalle: Perhaps ath10k needs to fail early with an adequate message =
-
-> for qca6174 hw.3 if board API2 lookup fails (e.g. hw_params flag =
-
-> because this seems to be quite closely coupled with hardware itself).
-> =
-
-> @Stanislaw: You either need to grab a more recent board-2.bin =
-
-> (https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0),
-
-@Perry, could you replace board-2.bin from above link on /lib/firmware/ath1=
-0k/QCA6174/hw3.0/ and check if that work ?
-
-> ask Kalle & wait, or cook up your own (if you really need it working
-> *now*) by getting Windows driver and dissecting it (the .inf file =
-
-> contains enough information for you to map board data also referred to =
-
-> as eeprom-something in the Windows blob).
-
-I think we can wait till firmware will be updated upstream, however Dell wo=
-uld like to know if what we provide in new RHEL7 release will work on their=
- hardware.
-
-Thanks
-Stanislaw
+--===============6802620865121481735==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============6802620865121481735==--
