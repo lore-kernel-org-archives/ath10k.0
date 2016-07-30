@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
- by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bTAwh-0008Lx-QR
- for ath10k@lists.infradead.org; Fri, 29 Jul 2016 16:47:36 +0000
-References: <1469608424-11370-1-git-send-email-benjamin@sipsolutions.net>
- <5798EEC3.5040008@candelatech.com>
- <1469803947.7306.139.camel@sipsolutions.net>
- <579B71B4.7080206@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <6ab675fa-4ba8-6272-9ffe-2f08c46daff1@dd-wrt.com>
-Date: Fri, 29 Jul 2016 18:38:26 +0200
+Received: from champagne.comp.nus.edu.sg ([137.132.80.90])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bTegX-0005GT-DD
+ for ath10k@lists.infradead.org; Sun, 31 Jul 2016 00:32:55 +0000
+Received: from [209.85.218.70] (helo=mail-oi0-f70.google.com)
+ by champagne.comp.nus.edu.sg (Exim) with esmtps (TLSv1:DES-CBC3-SHA:168)
+ id 1bTPcX-0006ud-Vn
+ for ath10k@lists.infradead.org; Sat, 30 Jul 2016 16:27:46 +0800
+Received: by mail-oi0-f70.google.com with SMTP id u142so173393886oia.2
+ for <ath10k@lists.infradead.org>; Sat, 30 Jul 2016 01:27:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <579B71B4.7080206@candelatech.com>
-Subject: Re: [PATCH] ath10k: Allow setting coverage class
+From: Raj Joshi <rajjoshi@comp.nus.edu.sg>
+Date: Sat, 30 Jul 2016 15:26:44 +0700
+Message-ID: <CA+uUJGsgkx8MDr=7DjtBS++YcwCqdAfMjJ9f-RcDAaQ=SOi=ZQ@mail.gmail.com>
+Subject: Broadcasting packets using ath10k
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,69 +22,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Benjamin Berg <benjamin@sipsolutions.net>, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org
-Cc: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, ath10k@lists.infradead.org, Simon Wunderlich <sw@simonwunderlich.de>
+To: ath10k <ath10k@lists.infradead.org>
 
-aWYgdGhlc2Ugc291cmNlY29kZXMgd291bGQgYmUganVzdCB1cCB0byBkYXRlIHdpdGggdGhlIGJp
-bmFyaWVzIHByb3ZpZGVkIApieSBxY2EuIGJ1dCBxY2EgZG9lc250IHNlZW0gdG8gY2FyZSB0aGF0
-IG11Y2ggYWJvdXQgaXQuCnRoaXMgaXMgbWFpbmx5IGFsc28gdGhlIHJlYXNvbiB3aHkgdGhlcmUg
-YXJlIHNvbyBtYW55IGxvbmcgdGVybSAKc3RhYmlsaXR5IGlzc3VlcyB3aXRoIG5vIHJlc29sdXRp
-b24KCgpBbSAyOS4wNy4yMDE2IHVtIDE3OjA5IHNjaHJpZWIgQmVuIEdyZWVhcjoKPiBPbiAwNy8y
-OS8yMDE2IDA3OjUyIEFNLCBCZW5qYW1pbiBCZXJnIHdyb3RlOgo+PiBPbiBNaSwgMjAxNi0wNy0y
-NyBhdCAxMDoyNiAtMDcwMCwgQmVuIEdyZWVhciB3cm90ZToKPj4+IE9uIDA3LzI3LzIwMTYgMDE6
-MzMgQU0sIEJlbmphbWluIEJlcmcgd3JvdGU6Cj4+Pj4KPj4+PiBVbmZvcnR1bmF0ZWx5IGF0aDEw
-ayBkb2VzIG5vdCBnZW5lcmFsbHkgYWxsb3cgbW9kaWZ5aW5nIHRoZSAKPj4+PiBjb3ZlcmFnZSBj
-bGFzcwo+Pj4+IHdpdGggdGhlIHN0b2NrIGZpcm13YXJlIGFuZCBRdWFsY29tbSBoYXMgc28gZmFy
-IHJlZnVzZWQgdG8gCj4+Pj4gaW1wbGVtZW50IHRoaXMKPj4+PiBmZWF0dXJlIHNvIHRoYXQgaXQg
-Y2FuIGJlIHByb3Blcmx5IHN1cHBvcnRlZCBpbiBhdGgxMGsuIElmIHdlIAo+Pj4+IGhvd2V2ZXIg
-a25vdwo+Pj4+IHRoZSByZWdpc3RlcnMgdGhhdCBuZWVkIHRvIGJlIG1vZGlmaWVkIGZvciBwcm9w
-ZXIgb3BlcmF0aW9uIHdpdGggYSAKPj4+PiBoaWdoZXIKPj4+PiBjb3ZlcmFnZSBjbGFzcywgdGhl
-biB3ZSBjYW4gZG8gdGhlc2UgbW9kaWZpY2F0aW9ucyBmcm9tIHRoZSBkcml2ZXIuCj4+Pj4KPj4+
-PiBUaGlzIHBhdGNoIGltcGxlbWVudHMgdGhpcyBoYWNrIGZvciBmaXJzdCBnZW5lcmF0aW9uIGNh
-cmRzIHdoaWNoIAo+Pj4+IGFyZSBiYXNlZAo+Pj4+IG9uIGEgY29yZSB0aGF0IGlzIHNpbWlsYXIg
-dG8gYXRoOWsuIFRoZSByZWdpc3RlcnMgYXJlIG1vZGlmaWVkIGluIAo+Pj4+IHBsYWNlIGFuZAo+
-Pj4+IG5lZWQgdG8gYmUgcmUtd3JpdHRlbiBldmVyeSB0aW1lIHRoZSBmaXJtd2FyZSBzZXRzIHRo
-ZW0uIFRvIGFjaGlldmUgCj4+Pj4gdGhpcwo+Pj4+IHRoZSByZWdpc3RlciBzdGF0dXMgaXMgdmVy
-aWZpZWQgYWZ0ZXIgYW55IGV2ZW50IGZyb20gdGhlIGZpcm13YXJlLgo+Pj4+Cj4+Pj4gVGhlIGNv
-dmVyYWdlIGNsYXNzIG1heSBub3QgYmUgbW9kaWZpZWQgdGVtcG9yYXJpbHkgcmlnaHQgYWZ0ZXIg
-dGhlIAo+Pj4+IGNhcmQKPj4+PiByZS1pbml0aWFsaXplcyB0aGUgcmVnaXN0ZXJzLiBUaGlzIGlz
-IGZvciBleGFtcGxlIHRoZSBjYXNlIGR1cmluZyAKPj4+PiBzY2FubmluZy4KPj4+Pgo+Pj4+IEEg
-d2FybmluZyB3aWxsIGJlIGdlbmVyYXRlZCBpZiB0aGUgaGFjayBpcyBub3Qgc3VwcG9ydGVkIG9u
-IHRoZSAKPj4+PiBjYXJkIG9yCj4+Pj4gdW5leHBlY3RlZCB2YWx1ZXMgYXJlIGhpdC4gVGhlcmUg
-aXMgbm8gZXJyb3IgcmVwb3J0aW5nIGZvciB1c2Vyc3BhY2UKPj4+PiBhcHBsaWNhdGlvbnMgdGhv
-dWdoICh0aGlzIGlzIGEgbGltaXRhdGlvbiBpbiB0aGUgbWFjODAyMTEgZHJpdmVyCj4+Pj4gaW50
-ZXJmYWNlKS4KPj4+Pgo+Pj4+Pj4gVGhhbmtzIHRvIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdv
-dHRzY2hhbGxAZGQtd3J0LmNvbT4gZm9yIAo+Pj4+Pj4gaW5pdGlhbGx5Cj4+Pj4gd29ya2luZyBv
-biBhIHVzZXJzcGFjZSBzdXBwb3J0IGZvciB0aGlzLiBUaGlzIHBhdGNoIHdvdWxkbid0IGhhdmUg
-YmVlbgo+Pj4+IHBvc3NpYmxlIHdpdGhvdXQgdGhpcyBkb2N1bWVudGF0aW9uLgo+Pj4KPj4+IEkg
-d291bGQgYmUgY29uY2VybmVkIGFib3V0IHRoZSB2YXJpb3VzIHJlc2V0cyBmaXJtd2FyZSBkb2Vz
-IHRvIHdvcmsgCj4+PiBhcm91bmQKPj4+IGhhcmR3YXJlIGhhbmdzIGFzIHdlbGwuICBJIGRvbid0
-IHRoaW5rIGFueSBldmVudHMgYXJlIGdlbmVyYXRlZCBmb3IgCj4+PiB0aGVzZSwgdW5sZXNzCj4+
-PiB5b3UgY291bnQgdGhlIGRiZ2xvZyBtZXNzYWdlcz8KPj4KPj4gWWVhaCwgSSBhbSBhd2FyZSBv
-ZiB0aGUgZmFjdCB0aGF0IHRoZSBmaXJtd2FyZSBtYXkgZG8gaW50ZXJuYWwgcmVzZXRzCj4+IGZy
-b20gdGltZSB0byB0aW1lLiBUaGUgaW50ZXJlc3RpbmcgcXVlc3Rpb24gKGFuZCBvbmUgZm9yIHdo
-aWNoIEkgZG8gbm90Cj4+IGtub3cgdGhlIGFuc3dlcikgaXMgd2hldGhlciB3ZSBnZXQgYSB3bWkg
-b3Igb3RoZXIgZXZlbnQgdW5kZXIgYWxsCj4+IGNvbmRpdGlvbnMgd2hlcmUgdGhlIHJlZ2lzdGVy
-IG1heSBiZSByZXdyaXR0ZW4gZHVlIHRvIGEgcmVzZXQuCj4+Cj4+IFRoZSBjdXJyZW50IGNvZGUg
-d2lsbCByZS1zZXQgdGhlIHJlZ2lzdGVyIHZhbHVlIGFmdGVyIGFueSB3bWkgZXZlbnQKPj4gaW5j
-bHVkaW5nIGRlYnVnIG1lc3NhZ2VzLiBJZiB0aGlzIGlzIG5vdCBlbm91Z2gsIHRoZW4gdGhlIG9u
-bHkgc29sdXRpb24KPj4gbWlnaHQgYmUgdG8gcGVyaW9kaWNhbGx5IHBvbGwgdGhlIHJlZ2lzdGVy
-IHZhbHVlcyBpbnN0ZWFkIG9mIHJlbHlpbmcgb24KPj4gYSByZWNlaXZlZCBldmVudC4KPgo+IFlv
-dSB3aWxsIGdldCBhIGRiZ2xvZyBldmVudCBhdCBsZWFzdCBtb3N0IG9mIHRoZSB0aW1lLCBzbyBt
-YXliZSB0aGF0Cj4gd2lsbCBiZSBnb29kIGVub3VnaC4KPgo+IFNvbWVvbmUgd2l0aCBzcmMgY29k
-ZSBhbmQgdGhhdCBjYXJlZCBjb3VsZCBhdWRpdCB0aGUgY29kZSBJIGd1ZXNzLCBidXQgCj4gdGhl
-bgo+IHRoYXQgcGVyc29uIGNvdWxkIGFsc28ganVzdCBpbXBsZW1lbnQgdGhlIGZlYXR1cmUgcHJv
-cGVybHkgaW4gdGhlIAo+IGZpcm13YXJlCj4gdG8gYmVnaW4gd2l0aC4uLgo+Cj4gVGhhbmtzLAo+
-IEJlbgo+CgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCgpTZWJhc3Rp
-YW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQKRmlybWVuc2l0
-ejogIEJlcmxpbmVyIFJpbmcgMTAxLCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFt
-dHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBT
-dGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFp
-bDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0
-OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi all,
+
+For some research experiments, I need to broadcast packets (at
+different fixed rates using the bitrates mask). Think of it as a
+standalone rudimentary 802.11ac wireless traffic generator.
+
+Simply using iperf for a broadcast address is not allowed (in managed
+mode at least) and so I have tried the multicast option. The multicast
+option has the following issues:
+1) The STA or the AP cannot be standalone: if STA is to be a
+multicaster it needs to be associated with an AP and if the AP is to
+be a multicaster it needs at least one STA to be associated with it.
+2) Traffic direction: When the STA sends a packet to a multicast
+address, the packet is first unicasted to the AP at the rate set by
+the bitrates mask. The AP then acknowledges it with a blockACK and
+further retransmits (multicasts) it with a basic rate (802.11a 6
+Mbps). So there is no pure traffic generation. I even tried setting
+TTL (number of hops) to zero, but no avail.
+3) Cannot fix the rates: On the other hand, when the AP multicasts,
+the traffic pattern is as expected - simple outgoing packets with no
+blockACKs or other redirection. However, the AP doesn't honor the
+bitrates masks and multicast traffic is sent using the basic rate. For
+other traffic such as a regular UDP/TCP flow, the AP does honor the
+bitrates mask.
+
+Anyone has better ideas on putting together a rudimentary 802.11ac
+traffic generator? It would be great to know :)
+
+Thanks,
+Raj Joshi
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
