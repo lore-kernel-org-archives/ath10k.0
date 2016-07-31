@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from champagne.comp.nus.edu.sg ([137.132.80.90])
+Received: from mail-vk0-x241.google.com ([2607:f8b0:400c:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bTegX-0005GT-DD
- for ath10k@lists.infradead.org; Sun, 31 Jul 2016 00:32:55 +0000
-Received: from [209.85.218.70] (helo=mail-oi0-f70.google.com)
- by champagne.comp.nus.edu.sg (Exim) with esmtps (TLSv1:DES-CBC3-SHA:168)
- id 1bTPcX-0006ud-Vn
- for ath10k@lists.infradead.org; Sat, 30 Jul 2016 16:27:46 +0800
-Received: by mail-oi0-f70.google.com with SMTP id u142so173393886oia.2
- for <ath10k@lists.infradead.org>; Sat, 30 Jul 2016 01:27:45 -0700 (PDT)
+ id 1bU0H0-00056w-DW
+ for ath10k@lists.infradead.org; Sun, 31 Jul 2016 23:35:59 +0000
+Received: by mail-vk0-x241.google.com with SMTP id w127so5147999vkh.1
+ for <ath10k@lists.infradead.org>; Sun, 31 Jul 2016 16:35:37 -0700 (PDT)
 MIME-Version: 1.0
-From: Raj Joshi <rajjoshi@comp.nus.edu.sg>
-Date: Sat, 30 Jul 2016 15:26:44 +0700
-Message-ID: <CA+uUJGsgkx8MDr=7DjtBS++YcwCqdAfMjJ9f-RcDAaQ=SOi=ZQ@mail.gmail.com>
-Subject: Broadcasting packets using ath10k
+In-Reply-To: <87zipt1kco.fsf@kamboji.qca.qualcomm.com>
+References: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
+ <1467201146-6844-1-git-send-email-michal.kazior@tieto.com>
+ <87zipt1kco.fsf@kamboji.qca.qualcomm.com>
+From: Roman Yeryomin <leroi.lists@gmail.com>
+Date: Mon, 1 Aug 2016 02:35:36 +0300
+Message-ID: <CACiydb+yNc-UKVRFR-UxTq-YFBDpEDsa1qWNBGCHpe=_zv8o7g@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: disable wake_tx_queue for older devices
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +26,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi all,
+On 7 July 2016 at 19:30, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+> Michal Kazior <michal.kazior@tieto.com> writes:
+>
+>> Ideally wake_tx_queue should be used regardless as
+>> it is a requirement for reducing bufferbloat and
+>> implementing airtime fairness in the future.
+>>
+>> However some setups (typically low-end platforms
+>> hosting QCA988X) suffer performance regressions
+>> with the current wake_tx_queue implementation.
+>> Therefore disable it unless it is really
+>> beneficial with current codebase (which is when
+>> firmware supports smart pull-push tx scheduling).
+>>
+>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>
+> I think it's too late to send this to 4.7 anymore (and this due to my
+> vacation). So I'm planning to queue this to 4.8, but if the feedback is
+> positive we can always send this to a 4.7 stable release.
+>
 
-For some research experiments, I need to broadcast packets (at
-different fixed rates using the bitrates mask). Think of it as a
-standalone rudimentary 802.11ac wireless traffic generator.
+Sorry guys, drowned.
+So, yes, applying this patch does the job. That is gets me to the
+results similar to
+https://lists.openwrt.org/pipermail/openwrt-devel/2016-May/041448.html
 
-Simply using iperf for a broadcast address is not allowed (in managed
-mode at least) and so I have tried the multicast option. The multicast
-option has the following issues:
-1) The STA or the AP cannot be standalone: if STA is to be a
-multicaster it needs to be associated with an AP and if the AP is to
-be a multicaster it needs at least one STA to be associated with it.
-2) Traffic direction: When the STA sends a packet to a multicast
-address, the packet is first unicasted to the AP at the rate set by
-the bitrates mask. The AP then acknowledges it with a blockACK and
-further retransmits (multicasts) it with a basic rate (802.11a 6
-Mbps). So there is no pure traffic generation. I even tried setting
-TTL (number of hops) to zero, but no avail.
-3) Cannot fix the rates: On the other hand, when the AP multicasts,
-the traffic pattern is as expected - simple outgoing packets with no
-blockACKs or other redirection. However, the AP doesn't honor the
-bitrates masks and multicast traffic is sent using the basic rate. For
-other traffic such as a regular UDP/TCP flow, the AP does honor the
-bitrates mask.
+Going to try latest code on same system...
 
-Anyone has better ideas on putting together a rudimentary 802.11ac
-traffic generator? It would be great to know :)
-
-Thanks,
-Raj Joshi
+Regards,
+Roman
 
 _______________________________________________
 ath10k mailing list
