@@ -1,12 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUX4Q-0003uM-Oz
- for ath10k@lists.infradead.org; Tue, 02 Aug 2016 10:37:12 +0000
-From: <c_traja@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Add WMI_SERVICE_PERIODIC_CHAN_STAT_SUPPORT wmi service
-Date: Tue, 2 Aug 2016 16:13:14 +0530
-Message-ID: <1470134594-10427-1-git-send-email-c_traja@qti.qualcomm.com>
+ id 1bUXaz-0007PC-2m
+ for ath10k@lists.infradead.org; Tue, 02 Aug 2016 11:10:50 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC] ath10k: silence firmware file probing warnings
+Date: Tue, 2 Aug 2016 11:10:22 +0000
+Message-ID: <874m738m02.fsf@kamboji.qca.qualcomm.com>
+References: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
+ <20160721070938.GA2658@redhat.com>
+ <CANUX_P3ADxi+RHkH=d8Ypcqy9WVKSu4JYH7K3HtTNCuWg3wCeQ@mail.gmail.com>
+ <20160721080541.GB2658@redhat.com> <5790A28F.8030102@redhat.com>
+ <20160721115122.GA31869@redhat.com>
+ <a264e995-fc46-7fcd-69f9-80992385b6b1@broadcom.com>
+ <20160722102559.GA2662@redhat.com>	<20160722221523.GM5537@wotan.suse.de>
+In-Reply-To: <20160722221523.GM5537@wotan.suse.de> (Luis R. Rodriguez's
+ message of "Sat, 23 Jul 2016 00:15:23 +0200")
+Content-Language: en-US
+Content-ID: <CD4ACF740DAFA747B47366387453E392@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,63 +31,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+To: "Luis R. Rodriguez" <mcgrof@kernel.org>
+Cc: Prarit Bhargava <prarit@redhat.com>, Arend Van Spriel <arend.vanspriel@broadcom.com>, Stanislaw Gruszka <sgruszka@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ming Lei <ming.lei@canonical.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, "mmarek@suse.com" <mmarek@suse.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, Arend van Spriel <arend@broadcom.com>, Emmanuel Grumbach <egrumbach@gmail.com>
 
-From: Tamizh chelvam <c_traja@qti.qualcomm.com>
+"Luis R. Rodriguez" <mcgrof@kernel.org> writes:
 
-WMI_SERVICE_PERIODIC_CHAN_STAT_SUPPORT service has missed in
-the commit 7e247a9e88dc ("ath10k: add dynamic tx mode switch
-config support for qca4019"). This patch adds the service to
-avoid mismatch between host and target.
+> I was considering this as a future extension to the firmware API
+> through the new extensible firmware API, the sysdata API.
 
-Fixes:7e247a9e88dc ("ath10k: add dynamic tx mode switch config support for qca4019")
-Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/wmi.h |    5 +++++
- 1 file changed, 5 insertions(+)
+I think Linus mentioned this already, but I want to reiterate anyway.
+The name "sysdata" is horrible, I didn't have any idea what it means
+until I read your description. Please continue to use the term
+"firmware", anyone already know what it means.
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 3ef4688..f67cc19 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -180,6 +180,7 @@ enum wmi_service {
- 	WMI_SERVICE_MESH_NON_11S,
- 	WMI_SERVICE_PEER_STATS,
- 	WMI_SERVICE_RESTRT_CHNL_SUPPORT,
-+	WMI_SERVICE_PERIODIC_CHAN_STAT_SUPPORT,
- 	WMI_SERVICE_TX_MODE_PUSH_ONLY,
- 	WMI_SERVICE_TX_MODE_PUSH_PULL,
- 	WMI_SERVICE_TX_MODE_DYNAMIC,
-@@ -305,6 +306,7 @@ enum wmi_10_4_service {
- 	WMI_10_4_SERVICE_RESTRT_CHNL_SUPPORT,
- 	WMI_10_4_SERVICE_PEER_STATS,
- 	WMI_10_4_SERVICE_MESH_11S,
-+	WMI_10_4_SERVICE_PERIODIC_CHAN_STAT_SUPPORT,
- 	WMI_10_4_SERVICE_TX_MODE_PUSH_ONLY,
- 	WMI_10_4_SERVICE_TX_MODE_PUSH_PULL,
- 	WMI_10_4_SERVICE_TX_MODE_DYNAMIC,
-@@ -402,6 +404,7 @@ static inline char *wmi_service_name(int service_id)
- 	SVCSTR(WMI_SERVICE_MESH_NON_11S);
- 	SVCSTR(WMI_SERVICE_PEER_STATS);
- 	SVCSTR(WMI_SERVICE_RESTRT_CHNL_SUPPORT);
-+	SVCSTR(WMI_SERVICE_PERIODIC_CHAN_STAT_SUPPORT);
- 	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_ONLY);
- 	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_PULL);
- 	SVCSTR(WMI_SERVICE_TX_MODE_DYNAMIC);
-@@ -652,6 +655,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
- 	       WMI_SERVICE_PEER_STATS, len);
- 	SVCMAP(WMI_10_4_SERVICE_MESH_11S,
- 	       WMI_SERVICE_MESH_11S, len);
-+	SVCMAP(WMI_10_4_SERVICE_PERIODIC_CHAN_STAT_SUPPORT,
-+	       WMI_SERVICE_PERIODIC_CHAN_STAT_SUPPORT, len);
- 	SVCMAP(WMI_10_4_SERVICE_TX_MODE_PUSH_ONLY,
- 	       WMI_SERVICE_TX_MODE_PUSH_ONLY, len);
- 	SVCMAP(WMI_10_4_SERVICE_TX_MODE_PUSH_PULL,
 -- 
-1.7.9.5
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
