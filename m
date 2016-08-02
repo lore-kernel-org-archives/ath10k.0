@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUDdi-0000l5-NU
- for ath10k@lists.infradead.org; Mon, 01 Aug 2016 13:52:23 +0000
-Message-ID: <579F4E4E.80103@candelatech.com>
-Date: Mon, 01 Aug 2016 06:27:42 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bUX4Q-0003uM-Oz
+ for ath10k@lists.infradead.org; Tue, 02 Aug 2016 10:37:12 +0000
+From: <c_traja@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Add WMI_SERVICE_PERIODIC_CHAN_STAT_SUPPORT wmi service
+Date: Tue, 2 Aug 2016 16:13:14 +0530
+Message-ID: <1470134594-10427-1-git-send-email-c_traja@qti.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] cfg80211: Add support to set tx power for a station
- associated
-References: <1465926256-6463-1-git-send-email-arnagara@qti.qualcomm.com>
- <1467110918.2493.9.camel@sipsolutions.net>	
- <1cb3e2cc49b433fe5ed834a33adf64b6@codeaurora.org>
- <1470043740.3389.10.camel@sipsolutions.net>
-In-Reply-To: <1470043740.3389.10.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,57 +16,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, Ashok Raj Nagarajan <arnagara@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
+From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
+WMI_SERVICE_PERIODIC_CHAN_STAT_SUPPORT service has missed in
+the commit 7e247a9e88dc ("ath10k: add dynamic tx mode switch
+config support for qca4019"). This patch adds the service to
+avoid mismatch between host and target.
 
-On 08/01/2016 02:29 AM, Johannes Berg wrote:
->
->> Sure.. First use case will be to help with the problem of legacy
->> client devices that roam across multiple APs. It is a classic
->> enterprise Wi-Fi AP problem,  often managed by a "network controller"
->> unit that is connected to all the APs.
->> The problem is how to handle seamless handoff of clients between
->> multiple  APs while maximizing the client throughput and minimizing
->> disruption of IP application services like VoIP calls and video
->> streaming. A legacy client will often  hold onto an AP association,
->> even down to 1 Mbps as it roams away. Instead,  if the AP can
->> recognise that the client RSSI (and therefore throughput) is poor, it
->> can "drop" the Tx power significantly (just to that client) such that
->> it forcesthe client to look for a better, closer, and therefore
->> higher-throughputassociation. It would "give it a kick" without
->> blacklisting it. It just needsto hold the power low for the small
->> amount of time it takes to convince it to go away.
->
-> Not sure that *works* since implementations may just compare beacon
-> signal strength and hold on to the AP based on that, but it does seem
-> like a reasonable use case.
+Fixes:7e247a9e88dc ("ath10k: add dynamic tx mode switch config support for qca4019")
+Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-How is that better than just kicking the station deliberately and/or
-refusing to send frames to it at all?
-
-Thanks,
-Ben
-
->
-> How would this interact with automatic adjustment though?
->
-> johannes
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 3ef4688..f67cc19 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -180,6 +180,7 @@ enum wmi_service {
+ 	WMI_SERVICE_MESH_NON_11S,
+ 	WMI_SERVICE_PEER_STATS,
+ 	WMI_SERVICE_RESTRT_CHNL_SUPPORT,
++	WMI_SERVICE_PERIODIC_CHAN_STAT_SUPPORT,
+ 	WMI_SERVICE_TX_MODE_PUSH_ONLY,
+ 	WMI_SERVICE_TX_MODE_PUSH_PULL,
+ 	WMI_SERVICE_TX_MODE_DYNAMIC,
+@@ -305,6 +306,7 @@ enum wmi_10_4_service {
+ 	WMI_10_4_SERVICE_RESTRT_CHNL_SUPPORT,
+ 	WMI_10_4_SERVICE_PEER_STATS,
+ 	WMI_10_4_SERVICE_MESH_11S,
++	WMI_10_4_SERVICE_PERIODIC_CHAN_STAT_SUPPORT,
+ 	WMI_10_4_SERVICE_TX_MODE_PUSH_ONLY,
+ 	WMI_10_4_SERVICE_TX_MODE_PUSH_PULL,
+ 	WMI_10_4_SERVICE_TX_MODE_DYNAMIC,
+@@ -402,6 +404,7 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_MESH_NON_11S);
+ 	SVCSTR(WMI_SERVICE_PEER_STATS);
+ 	SVCSTR(WMI_SERVICE_RESTRT_CHNL_SUPPORT);
++	SVCSTR(WMI_SERVICE_PERIODIC_CHAN_STAT_SUPPORT);
+ 	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_ONLY);
+ 	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_PULL);
+ 	SVCSTR(WMI_SERVICE_TX_MODE_DYNAMIC);
+@@ -652,6 +655,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_PEER_STATS, len);
+ 	SVCMAP(WMI_10_4_SERVICE_MESH_11S,
+ 	       WMI_SERVICE_MESH_11S, len);
++	SVCMAP(WMI_10_4_SERVICE_PERIODIC_CHAN_STAT_SUPPORT,
++	       WMI_SERVICE_PERIODIC_CHAN_STAT_SUPPORT, len);
+ 	SVCMAP(WMI_10_4_SERVICE_TX_MODE_PUSH_ONLY,
+ 	       WMI_SERVICE_TX_MODE_PUSH_ONLY, len);
+ 	SVCMAP(WMI_10_4_SERVICE_TX_MODE_PUSH_PULL,
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
