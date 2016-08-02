@@ -1,12 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga03.intel.com ([134.134.136.65])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUYht-0007Ph-IN
- for ath10k@lists.infradead.org; Tue, 02 Aug 2016 12:22:08 +0000
-From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 0763/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 19:43:57 +0800
-Message-Id: <20160802114357.529-1-baolex.ni@intel.com>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bUYfn-000562-F5
+ for ath10k@lists.infradead.org; Tue, 02 Aug 2016 12:19:58 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: ath10k fail to load firmware
+Date: Tue, 2 Aug 2016 12:19:19 +0000
+Message-ID: <87a8gv748q.fsf@kamboji.qca.qualcomm.com>
+References: <20160719070932.GA2751@redhat.com>
+ <CA+BoTQn98UFuGT0NntdE1HgG9UmmwzS=JsGkLmeGoMHSFGyDRg@mail.gmail.com>
+ <20160719072754.GB2751@redhat.com>
+ <A3D794F1192BBF449DF2EC3D7EE263F44A5402F0C8@SHAX7MCDC101.APAC.DELL.COM>
+ <CA+BoTQn4T+4zMrJEbLBfu92w=mVqWBZZkZaYaW__V2_-VLkCyQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQn4T+4zMrJEbLBfu92w=mVqWBZZkZaYaW__V2_-VLkCyQ@mail.gmail.com>	(Michal
+ Kazior's message of "Tue, 19 Jul 2016 10:32:59 +0200")
+Content-Language: en-US
+Content-ID: <43D2CC143FEA554D8BA26BC02D68A834@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,51 +25,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, linux-wimax@intel.com, bkenward@solarflare.com, linux-driver@qlogic.com, computersforpeace@gmail.com, m.chehab@samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
-Cc: pabeni@redhat.com, daniel@iogearbox.net, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, baolex.ni@intel.com, chuansheng.liu@intel.com
+To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
+Cc: Stanislaw Gruszka <sgruszka@redhat.com>, "Perry_Yuan@dell.com" <Perry_Yuan@dell.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I find that the developers often just specified the numeric value
-when calling a macro which is defined with a parameter for access permission.
-As we know, these numeric value for access permission have had the corresponding macro,
-and that using macro can improve the robustness and readability of the code,
-thus, I suggest replacing the numeric parameter with the macro.
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
-Signed-off-by: Baole Ni <baolex.ni@intel.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+> On 19 July 2016 at 10:24,  <Perry_Yuan@dell.com> wrote:
+>> Dell - Internal Use - Confidential
+>>
+>> HI  All:
+>> I have replaced the new firmware files to old one. And I build new ath10k_pci.ko ,ath10k_core.ko to get some
+>> debug info.
+>>
+>> The new firmware is still not loaded by ath10k driver .
+>> And I compare the driver codes with 4.7 -rc7 , the codes are almost same.
+>> So the issue should be in  firmware scope.
+>>
+>> [ 590.486970] ath10k_pci 0000:02:00.0: Hardware name qca6174 hw3.2 version 0x5030000
+>> [  590.487158] ath10k_pci 0000:02:00.0: Direct firmware load failed with error -2
+>> [  590.487159] ath10k_pci 0000:02:00.0: Falling back to user helper
+>
+> You didn't attach a complete log so it's hard to tell. ath10k tends to
+> print a few messages that may look like an error but aren't (there's a
+> fallback mechanism for finding firmware files which is overly
+> verbose).
+>
+> @Perry: You need to rename the
+> firmware-4.bin_WLAN.RM.2.0-00180-QCARMSWPZ-1 to firmware-4.bin in case
+> you merely mirrored the github repo.
+>
+> @Kalle: I think it'd be very useful to maintain ath10k-firmware in a
+> way so that it is easier to the uninitiated to `git clone` it into
+> /lib/firmware, e.g. maintain firmware-X.bin symlinks in each
+> QCAxxx/hw.y/ to the latest one. Thoughts?
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 49af624..9e42274 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -36,11 +36,11 @@ static bool uart_print;
- static bool skip_otp;
- static bool rawmode;
- 
--module_param_named(debug_mask, ath10k_debug_mask, uint, 0644);
--module_param_named(cryptmode, ath10k_cryptmode_param, uint, 0644);
--module_param(uart_print, bool, 0644);
--module_param(skip_otp, bool, 0644);
--module_param(rawmode, bool, 0644);
-+module_param_named(debug_mask, ath10k_debug_mask, uint, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-+module_param_named(cryptmode, ath10k_cryptmode_param, uint, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-+module_param(uart_print, bool, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-+module_param(skip_otp, bool, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-+module_param(rawmode, bool, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
- 
- MODULE_PARM_DESC(debug_mask, "Debugging mask");
- MODULE_PARM_DESC(uart_print, "Uart target debugging");
+Yeah, something like that would be really nice. It would also make it
+easier for me to update linux-firmware.git.
+
+What about if we had a script which installs the latest ath10k firmware
+files from ath10k-firmware.git? Something along lines of:
+
+$ cd ~/git/ath10k-firmware
+$ git pull
+$ sudo ath10k-fw-install /lib/firmware/ath10k
+
+I could also add a simple menu to select older firmware versions. But
+this is just a wild idea.
+
 -- 
-2.9.2
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
