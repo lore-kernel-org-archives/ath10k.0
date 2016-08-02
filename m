@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUYhN-0007Ax-9j
- for ath10k@lists.infradead.org; Tue, 02 Aug 2016 12:21:32 +0000
-Received: by mail-lf0-x22e.google.com with SMTP id g62so136906417lfe.3
- for <ath10k@lists.infradead.org>; Tue, 02 Aug 2016 05:21:07 -0700 (PDT)
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH 1/2] ath: export alpha2 helper
-Date: Tue,  2 Aug 2016 14:20:53 +0200
-Message-Id: <1470140454-3899-2-git-send-email-bartosz.markowski@tieto.com>
-In-Reply-To: <1470140454-3899-1-git-send-email-bartosz.markowski@tieto.com>
-References: <1470140454-3899-1-git-send-email-bartosz.markowski@tieto.com>
+Received: from mga03.intel.com ([134.134.136.65])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bUYht-0007RS-IN
+ for ath10k@lists.infradead.org; Tue, 02 Aug 2016 12:22:06 +0000
+From: Baole Ni <baolex.ni@intel.com>
+Subject: [PATCH 0764/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 19:44:02 +0800
+Message-Id: <20160802114402.595-1-baolex.ni@intel.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,56 +20,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: kvalo@qca.qualcomm.com, linux-wimax@intel.com, bkenward@solarflare.com, linux-driver@qlogic.com, computersforpeace@gmail.com, m.chehab@samsung.com, pawel@osciak.com, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
+Cc: pabeni@redhat.com, daniel@iogearbox.net, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, baolex.ni@intel.com, chuansheng.liu@intel.com
 
-From: Michal Kazior <michal.kazior@tieto.com>
+I find that the developers often just specified the numeric value
+when calling a macro which is defined with a parameter for access permission.
+As we know, these numeric value for access permission have had the corresponding macro,
+and that using macro can improve the robustness and readability of the code,
+thus, I suggest replacing the numeric parameter with the macro.
 
-This will be helpful for drivers that can acquire
-alpha2 regulatory codes.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
+Signed-off-by: Baole Ni <baolex.ni@intel.com>
 ---
- drivers/net/wireless/ath/regd.c | 3 ++-
- drivers/net/wireless/ath/regd.h | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/regd.c b/drivers/net/wireless/ath/regd.c
-index 7e15ed9ed31f..820bf880ada3 100644
---- a/drivers/net/wireless/ath/regd.c
-+++ b/drivers/net/wireless/ath/regd.c
-@@ -449,7 +449,7 @@ static void ath_reg_apply_world_flags(struct wiphy *wiphy,
- 	}
- }
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 8133d7b..0961a4e 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -41,10 +41,10 @@ enum ath10k_pci_reset_mode {
+ static unsigned int ath10k_pci_irq_mode = ATH10K_PCI_IRQ_AUTO;
+ static unsigned int ath10k_pci_reset_mode = ATH10K_PCI_RESET_AUTO;
  
--static u16 ath_regd_find_country_by_name(char *alpha2)
-+u16 ath_regd_find_country_by_name(char *alpha2)
- {
- 	unsigned int i;
+-module_param_named(irq_mode, ath10k_pci_irq_mode, uint, 0644);
++module_param_named(irq_mode, ath10k_pci_irq_mode, uint, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(irq_mode, "0: auto, 1: legacy, 2: msi (default: 0)");
  
-@@ -460,6 +460,7 @@ static u16 ath_regd_find_country_by_name(char *alpha2)
+-module_param_named(reset_mode, ath10k_pci_reset_mode, uint, 0644);
++module_param_named(reset_mode, ath10k_pci_reset_mode, uint, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(reset_mode, "0: auto, 1: warm only (default: 0)");
  
- 	return -1;
- }
-+EXPORT_SYMBOL(ath_regd_find_country_by_name);
- 
- static int __ath_reg_dyn_country(struct wiphy *wiphy,
- 				 struct ath_regulatory *reg,
-diff --git a/drivers/net/wireless/ath/regd.h b/drivers/net/wireless/ath/regd.h
-index 565d3075f06e..5d80be213fac 100644
---- a/drivers/net/wireless/ath/regd.h
-+++ b/drivers/net/wireless/ath/regd.h
-@@ -251,6 +251,7 @@ enum CountryCode {
- 
- bool ath_is_world_regd(struct ath_regulatory *reg);
- bool ath_is_49ghz_allowed(u16 redomain);
-+u16 ath_regd_find_country_by_name(char *alpha2);
- int ath_regd_init(struct ath_regulatory *reg, struct wiphy *wiphy,
- 		  void (*reg_notifier)(struct wiphy *wiphy,
- 				       struct regulatory_request *request));
+ /* how long wait to wait for target to initialise, in ms */
 -- 
-2.1.2
+2.9.2
 
 
 _______________________________________________
