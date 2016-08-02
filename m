@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nbd.name ([2a01:4f8:131:30e2::2])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUXoj-0002Ri-Ce
- for ath10k@lists.infradead.org; Tue, 02 Aug 2016 11:25:03 +0000
-Subject: Re: [RFC] ath10k: silence firmware file probing warnings
-References: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
- <87ziov772h.fsf@kamboji.qca.qualcomm.com>
-From: Felix Fietkau <nbd@nbd.name>
-Message-ID: <a549f589-8678-d721-9c35-5695fa87359c@nbd.name>
-Date: Tue, 2 Aug 2016 13:24:36 +0200
+ id 1bUYXP-0000yq-Rw
+ for ath10k@lists.infradead.org; Tue, 02 Aug 2016 12:11:13 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: ath10k fail to load firmware
+Date: Tue, 2 Aug 2016 12:10:46 +0000
+Message-ID: <87eg6774my.fsf@kamboji.qca.qualcomm.com>
+References: <20160719070932.GA2751@redhat.com>
+ <CA+BoTQn98UFuGT0NntdE1HgG9UmmwzS=JsGkLmeGoMHSFGyDRg@mail.gmail.com>
+In-Reply-To: <CA+BoTQn98UFuGT0NntdE1HgG9UmmwzS=JsGkLmeGoMHSFGyDRg@mail.gmail.com>	(Michal
+ Kazior's message of "Tue, 19 Jul 2016 09:18:01 +0200")
+Content-Language: en-US
+Content-ID: <D6A64D898EED7748AA0775632087F3D5@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87ziov772h.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +26,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
+Cc: Stanislaw Gruszka <sgruszka@redhat.com>, "perry_yuan@dell.com" <perry_yuan@dell.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 2016-08-02 13:18, Valo, Kalle wrote:
-> Michal Kazior <michal.kazior@tieto.com> writes:
-> 
->> Firmware files are versioned to prevent older
->> driver instances to load unsupported firmware
->> blobs. This is reflected with a fallback logic
->> which attempts to load several firmware files.
->>
->> This however produced a lot of unnecessary
->> warnings sometimes confusing users and leading
->> them to rename firmware files making things even
->> more confusing.
->>
->> Hence use request_firmware_direct() which does not
->> produce extra warnings. This shouldn't really
->> break anything because most modern systems don't
->> rely on udev/hotplug helpers to load firmware
->> files anymore.
->>
->> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> 
-> Nice. These "firmware not found" messages have been confusing ath10k
-> users for ages and should be properly fixed. I hope we find a solution.
-> 
-> But I talked with Felix about this and he made a good point about board
-> and calibration files. Calibration files might be created runtime, for
-> example retrieved from NAND etc, and this might break the use case when
-> ath10k is statically linked to kernel. Is the combination used in real
-> life and should we care, that I do not know, but I'm worried of possible
-> regressions. I guess LEDE/openwrt always loads ath10k as a module and
-> after the calibration file is created?
-ath10k is always loaded as a module, and the calibration file is created
-by a script that's triggered by the firmware uevent.
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-- Felix
+> On 19 July 2016 at 09:09, Stanislaw Gruszka <sgruszka@redhat.com> wrote:
+>> Perry from Dell has ath10k device, which do not work with current
+>> linux-firmware. It's on RHEL kernel, however wirelss stack and drivers
+>> are from 4.7-rc1 (I did not update to 4.7 final yet, since I do not see
+>> ath10k fix, which could possibly help here). Partial dmesg is in
+>> the attachment.
+>
+> hw.3 qca6174 chips tend to require very specific board data for proper
+> calibration.
+>
+>   [ 3838.601884] ath10k_pci 0000:01:00.0: failed to fetch board data
+> for bus=pci,vendor=168c,device=003e,subsystem-vendor=1028,subsystem-device=0310
+> from ath10k/QCA6174/hw3.0/board-2.bin
+>   [ 3838.601920] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A
+> crc32 ed5f849a
+>
+> Your board-2.bin doesn't contain the matching board data and the
+> driver then falls back to the older board API1 which is pretty much
+> doomed to fail on qca6174 hw.3.
+>
+> @Kalle: Perhaps ath10k needs to fail early with an adequate message
+> for qca6174 hw.3 if board API2 lookup fails (e.g. hw_params flag
+> because this seems to be quite closely coupled with hardware itself).
 
+Sounds like a good idea. Or maybe we should always fail when using
+board-2.bin (no matter what hw version is used)? Dunno.
+
+> @Stanislaw: You either need to grab a more recent board-2.bin
+> (https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0),
+> ask Kalle & wait, or cook up your own (if you really need it working
+> *now*) by getting Windows driver and dissecting it (the .inf file
+> contains enough information for you to map board data also referred to
+> as eeprom-something in the Windows blob).
+
+I pushed a new board-2.bin:
+
+https://github.com/kvalo/ath10k-firmware/commit/7c0411643b195b246d3871f409f9219f528b39c1
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
