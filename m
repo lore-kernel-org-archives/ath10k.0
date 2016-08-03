@@ -1,18 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUyF1-0004IX-MJ
- for ath10k@lists.infradead.org; Wed, 03 Aug 2016 15:38:01 +0000
-References: <1470046905-17449-1-git-send-email-benjamin@sipsolutions.net>
- <1470046905-17449-3-git-send-email-benjamin@sipsolutions.net>
- <CA+BoTQ=cwMMQXWOd8TocVcUeV5+_0-HNFO=9a5KNr=q2vWDfgA@mail.gmail.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <29736815-4728-181c-6656-527eb85c8fb3@dd-wrt.com>
-Date: Wed, 3 Aug 2016 17:37:25 +0200
+ id 1bUzhC-0004C8-Hw
+ for ath10k@lists.infradead.org; Wed, 03 Aug 2016 17:11:07 +0000
+Date: Wed, 3 Aug 2016 19:10:44 +0200
+From: "Luis R. Rodriguez" <mcgrof@kernel.org>
+Subject: Re: [RFC] ath10k: silence firmware file probing warnings
+Message-ID: <20160803171044.GP3296@wotan.suse.de>
+References: <5790A28F.8030102@redhat.com> <20160721115122.GA31869@redhat.com>
+ <a264e995-fc46-7fcd-69f9-80992385b6b1@broadcom.com>
+ <20160722102559.GA2662@redhat.com>
+ <20160722221523.GM5537@wotan.suse.de>
+ <874m738m02.fsf@kamboji.qca.qualcomm.com>
+ <20160802141610.GJ3296@wotan.suse.de>
+ <ae734397-6179-d0ba-3d8a-0cffc63a0fd8@broadcom.com>
+ <20160803142119.GL3296@wotan.suse.de>
+ <87ziot51x9.fsf@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQ=cwMMQXWOd8TocVcUeV5+_0-HNFO=9a5KNr=q2vWDfgA@mail.gmail.com>
-Subject: Re: [PATCHv2 2/2] ath10k: Allow setting coverage class
+Content-Disposition: inline
+In-Reply-To: <87ziot51x9.fsf@qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,38 +27,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, Benjamin Berg <benjamin@sipsolutions.net>
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Simon Wunderlich <sw@simonwunderlich.de>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: Prarit Bhargava <prarit@redhat.com>, Arend van Spriel <arend.vanspriel@broadcom.com>, Stanislaw Gruszka <sgruszka@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ming Lei <ming.lei@canonical.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, "Luis R. Rodriguez" <mcgrof@kernel.org>, "mmarek@suse.com" <mmarek@suse.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, Arend van Spriel <arend@broadcom.com>, Emmanuel Grumbach <egrumbach@gmail.com>
 
-Cj4+ICsgICAgICAgaWYgKHZhbHVlIDwgMCkKPj4gKyAgICAgICAgICAgICAgIHZhbHVlID0gYXIt
-PmZ3X2NvdmVyYWdlLmNvdmVyYWdlX2NsYXNzOwo+PiArCj4+ICsgICAgICAgLyogQnJlYWsgb3V0
-IGlmIHRoZSBjb3ZlcmFnZSBjbGFzcyBhbmQgcmVnaXN0ZXJzIGhhdmUgdGhlIGV4cGVjdGVkCj4+
-ICsgICAgICAgICogdmFsdWUuCj4+ICsgICAgICAgICovCj4+ICsgICAgICAgaWYgKHZhbHVlID09
-IGFyLT5md19jb3ZlcmFnZS5jb3ZlcmFnZV9jbGFzcyAmJgo+PiArICAgICAgICAgICBzbG90dGlt
-ZV9yZWcgPT0gYXItPmZ3X2NvdmVyYWdlLnJlZ19zbG90dGltZV9jb25mICYmCj4+ICsgICAgICAg
-ICAgIHRpbWVvdXRfcmVnID09IGFyLT5md19jb3ZlcmFnZS5yZWdfYWNrX2N0c190aW1lb3V0X2Nv
-bmYpCj4+ICsgICAgICAgICAgICAgICBnb3RvIHVubG9jazsKPiBJIHdvdWxkIG1vdmUgdGhpcyBw
-YXJ0IHRvIHRoZSBjYWxsZXIgYW5kIGtlZXAgdGhlIGhhcmR3YXJlLXNwZWNpZmljCj4gZnVuY3Rp
-b24ganVzdCBjb21wdXRlIGFuZCBzZXQgcmVnaXN0ZXJzLCBlLmcuIGhhdmUKPiBhdGgxMGtfbWFj
-X3NldF9jb3ZlcmFnZV9jbGFzcyAoYXMgb3Bwb3NlZCB0bwo+IGF0aDEwa19tYWNfb3Bfc2V0X2Nv
-dmVyYWdlX2NsYXNzKS4gSXQgc2hvdWxkIGFsc28gcmVkdWNlIHNvbWUgY29kZQo+IGR1cGxpY2F0
-aW9uLgpkb2VzbnQgbWFrZSBzZW5zZS4gaSBhbHJlYWR5IGVuaGFuY2VkIHRoaXMgY29kZSB0byBz
-dXBwb3J0IGJlZWxpbmVyIAooOTl4eCkgYW5kIG5ld2Vycy4KdGhlIGNvZGUgaXMgdGhhdCBtdWNo
-IGRpZmZlcmVudCB0aGF0IHRoaXMgY2hlY2sgbmVlZCB0byBiZSB0cmVhZGVkIGluIGEgCmluZGl2
-dWR1YWwgd2F5CnJlZ19zbG90dGltZV9jb25mIGlzIGhhcmR3YXJlIGRlZmFjdG8gc3BlY2lmaWMg
-c2luY2UgdGhlIHZhbHVlIGlzIHRha2VuIApmcm9tIGEgaGFyZHdhcmUgc3BlY2lmaWMgcmVnaXN0
-ZXIuCnlvdSBjYW5ub3QgaGFuZGxlIHRoaXMgb3V0c2lkZSB0aGlzIGZ1bmN0aW9uIHNpbmNlIG90
-aGVyIGNoaXBzIGhhdmUgCmRpZmZlcmVudCByZWdpc3RlcnMuCgoKCi0tIApNaXQgZnJldW5kbGlj
-aGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01l
-ZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBCZXJsaW5lciBSaW5nIDEwMSwgNjQ2
-MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAy
-NTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2No
-ZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29t
-ClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
-CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On Wed, Aug 03, 2016 at 03:04:39PM +0000, Valo, Kalle wrote:
+> "Luis R. Rodriguez" <mcgrof@kernel.org> writes:
+> 
+> > On Wed, Aug 03, 2016 at 01:33:31PM +0200, Arend van Spriel wrote:
+> >> On 02-08-16 16:16, Luis R. Rodriguez wrote:
+> >> > On Tue, Aug 02, 2016 at 11:10:22AM +0000, Valo, Kalle wrote:
+> >> >> "Luis R. Rodriguez" <mcgrof@kernel.org> writes:
+> >> >>
+> >> >>> I was considering this as a future extension to the firmware API
+> >> >>> through the new extensible firmware API, the sysdata API.
+> >> >>
+> >> >> I think Linus mentioned this already, but I want to reiterate anyway.
+> >> >> The name "sysdata" is horrible, I didn't have any idea what it means
+> >> >> until I read your description. Please continue to use the term
+> >> >> "firmware", anyone already know what it means.
+> >> > 
+> >> > We've gone well past using the firmware API for firmware though, if
+> >> > we use it for 802.11 to replace CRDA for instance its really odd to
+> >> > be calling it firmware. But sure... I will rebrand again to firmware...
+> >> 
+> >> I tend to agree. Although some people even call an OpenWrt image
+> >> firmware. Guess it is just in the eye of the beholder.
+> >
+> > Sure...
+> >
+> > Come to think of it I'll still go with "sysdata", this is a very minor
+> > detail, do let me know if there is anything technical rather than
+> > the color of the bikeshed [0] over the patches.
+> 
+> Well, you don't seem to care but I prefer that the terminology is clear
+> and I don't want to waste people's time browsing the source to find out
+> what something means.
+
+Its not that I don't care, its this is a super trivial matter, like the
+color of a bikeshed, and I'd much prefer to put energy and review on
+technical matters.
+
+> Even "driverdata" would be more descriptive for me
+> than "sysdata".
+> 
+> Actually, what does the "sys" refer here, system? And what system is
+> that exactly?
+
+Yes system, so as in system data file. "driver_data" is just as good.
+Although who knows, others may want to paint the bikeshed a different
+color.
+
+The core reason why the name change is to make emphasis of the fact that
+we've gone way past the point where the APIs are used for non-firmware
+and I expect this use will only grow.
+
+  Luis
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
