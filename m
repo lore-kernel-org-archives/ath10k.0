@@ -1,24 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bUaUl-0007gt-7z
- for ath10k@lists.infradead.org; Tue, 02 Aug 2016 14:16:38 +0000
-Date: Tue, 2 Aug 2016 16:16:10 +0200
-From: "Luis R. Rodriguez" <mcgrof@kernel.org>
-Subject: Re: [RFC] ath10k: silence firmware file probing warnings
-Message-ID: <20160802141610.GJ3296@wotan.suse.de>
-References: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
- <20160721070938.GA2658@redhat.com>
- <CANUX_P3ADxi+RHkH=d8Ypcqy9WVKSu4JYH7K3HtTNCuWg3wCeQ@mail.gmail.com>
- <20160721080541.GB2658@redhat.com> <5790A28F.8030102@redhat.com>
- <20160721115122.GA31869@redhat.com>
- <a264e995-fc46-7fcd-69f9-80992385b6b1@broadcom.com>
- <20160722102559.GA2662@redhat.com>
- <20160722221523.GM5537@wotan.suse.de>
- <874m738m02.fsf@kamboji.qca.qualcomm.com>
+ id 1bUqAe-0002vW-BU
+ for ath10k@lists.infradead.org; Wed, 03 Aug 2016 07:00:53 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id o80so321208202wme.1
+ for <ath10k@lists.infradead.org>; Wed, 03 Aug 2016 00:00:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <874m738m02.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87eg6774my.fsf@kamboji.qca.qualcomm.com>
+References: <20160719070932.GA2751@redhat.com>
+ <CA+BoTQn98UFuGT0NntdE1HgG9UmmwzS=JsGkLmeGoMHSFGyDRg@mail.gmail.com>
+ <87eg6774my.fsf@kamboji.qca.qualcomm.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Wed, 3 Aug 2016 09:00:26 +0200
+Message-ID: <CA+BoTQnrcbdx0EyOkhY7FefoibCyT6eOqm8cKTDeY1rGN4WTdA@mail.gmail.com>
+Subject: Re: ath10k fail to load firmware
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +22,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: Prarit Bhargava <prarit@redhat.com>, Arend Van Spriel <arend.vanspriel@broadcom.com>, Stanislaw Gruszka <sgruszka@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ming Lei <ming.lei@canonical.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, "Luis R. Rodriguez" <mcgrof@kernel.org>, "mmarek@suse.com" <mmarek@suse.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, Arend van Spriel <arend@broadcom.com>, Emmanuel Grumbach <egrumbach@gmail.com>
+Cc: Stanislaw Gruszka <sgruszka@redhat.com>, "perry_yuan@dell.com" <perry_yuan@dell.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tue, Aug 02, 2016 at 11:10:22AM +0000, Valo, Kalle wrote:
-> "Luis R. Rodriguez" <mcgrof@kernel.org> writes:
-> 
-> > I was considering this as a future extension to the firmware API
-> > through the new extensible firmware API, the sysdata API.
-> 
-> I think Linus mentioned this already, but I want to reiterate anyway.
-> The name "sysdata" is horrible, I didn't have any idea what it means
-> until I read your description. Please continue to use the term
-> "firmware", anyone already know what it means.
-
-We've gone well past using the firmware API for firmware though, if
-we use it for 802.11 to replace CRDA for instance its really odd to
-be calling it firmware. But sure... I will rebrand again to firmware...
-
-  Luis
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMiBBdWd1c3QgMjAxNiBhdCAxNDoxMCwgVmFsbywgS2FsbGUgPGt2YWxvQHFjYS5xdWFsY29t
+bS5jb20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3
+cml0ZXM6Cj4KPj4gT24gMTkgSnVseSAyMDE2IGF0IDA5OjA5LCBTdGFuaXNsYXcgR3J1c3prYSA8
+c2dydXN6a2FAcmVkaGF0LmNvbT4gd3JvdGU6Cj4+PiBQZXJyeSBmcm9tIERlbGwgaGFzIGF0aDEw
+ayBkZXZpY2UsIHdoaWNoIGRvIG5vdCB3b3JrIHdpdGggY3VycmVudAo+Pj4gbGludXgtZmlybXdh
+cmUuIEl0J3Mgb24gUkhFTCBrZXJuZWwsIGhvd2V2ZXIgd2lyZWxzcyBzdGFjayBhbmQgZHJpdmVy
+cwo+Pj4gYXJlIGZyb20gNC43LXJjMSAoSSBkaWQgbm90IHVwZGF0ZSB0byA0LjcgZmluYWwgeWV0
+LCBzaW5jZSBJIGRvIG5vdCBzZWUKPj4+IGF0aDEwayBmaXgsIHdoaWNoIGNvdWxkIHBvc3NpYmx5
+IGhlbHAgaGVyZSkuIFBhcnRpYWwgZG1lc2cgaXMgaW4KPj4+IHRoZSBhdHRhY2htZW50Lgo+Pgo+
+PiBody4zIHFjYTYxNzQgY2hpcHMgdGVuZCB0byByZXF1aXJlIHZlcnkgc3BlY2lmaWMgYm9hcmQg
+ZGF0YSBmb3IgcHJvcGVyCj4+IGNhbGlicmF0aW9uLgo+Pgo+PiAgIFsgMzgzOC42MDE4ODRdIGF0
+aDEwa19wY2kgMDAwMDowMTowMC4wOiBmYWlsZWQgdG8gZmV0Y2ggYm9hcmQgZGF0YQo+PiBmb3Ig
+YnVzPXBjaSx2ZW5kb3I9MTY4YyxkZXZpY2U9MDAzZSxzdWJzeXN0ZW0tdmVuZG9yPTEwMjgsc3Vi
+c3lzdGVtLWRldmljZT0wMzEwCj4+IGZyb20gYXRoMTBrL1FDQTYxNzQvaHczLjAvYm9hcmQtMi5i
+aW4KPj4gICBbIDM4MzguNjAxOTIwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogYm9hcmRfZmls
+ZSBhcGkgMSBibWlfaWQgTi9BCj4+IGNyYzMyIGVkNWY4NDlhCj4+Cj4+IFlvdXIgYm9hcmQtMi5i
+aW4gZG9lc24ndCBjb250YWluIHRoZSBtYXRjaGluZyBib2FyZCBkYXRhIGFuZCB0aGUKPj4gZHJp
+dmVyIHRoZW4gZmFsbHMgYmFjayB0byB0aGUgb2xkZXIgYm9hcmQgQVBJMSB3aGljaCBpcyBwcmV0
+dHkgbXVjaAo+PiBkb29tZWQgdG8gZmFpbCBvbiBxY2E2MTc0IGh3LjMuCj4+Cj4+IEBLYWxsZTog
+UGVyaGFwcyBhdGgxMGsgbmVlZHMgdG8gZmFpbCBlYXJseSB3aXRoIGFuIGFkZXF1YXRlIG1lc3Nh
+Z2UKPj4gZm9yIHFjYTYxNzQgaHcuMyBpZiBib2FyZCBBUEkyIGxvb2t1cCBmYWlscyAoZS5nLiBo
+d19wYXJhbXMgZmxhZwo+PiBiZWNhdXNlIHRoaXMgc2VlbXMgdG8gYmUgcXVpdGUgY2xvc2VseSBj
+b3VwbGVkIHdpdGggaGFyZHdhcmUgaXRzZWxmKS4KPgo+IFNvdW5kcyBsaWtlIGEgZ29vZCBpZGVh
+LiBPciBtYXliZSB3ZSBzaG91bGQgYWx3YXlzIGZhaWwgd2hlbiB1c2luZwo+IGJvYXJkLTIuYmlu
+IChubyBtYXR0ZXIgd2hhdCBodyB2ZXJzaW9uIGlzIHVzZWQpPyBEdW5uby4KCkhtbSwgZmFpbGlu
+ZyBpZiBubyBtYXRjaGluZyBlbnRyeSBpcyBmb3VuZCBpbiBib2FyZC0yLmJpbiBzb3VuZHMgZ29v
+ZApidXQgZG9lc24ndCBjb3ZlciB0aGUgY2FzZSB3aGVuIHVzZXIgZG9lc24ndCBldmVuIGhhdmUg
+Ym9hcmQtMi5iaW4gaW4KdGhlIGZpcnN0IHBsYWNlLgoKVGhlIGRvd25zaWRlIG9mIGZvcmNpbmcg
+Ym9hcmQtMi5iaW4gZm9yIHFjYTYxNzQgaHczLjIrIHdvdWxkIGJlIG1vcmUKZGlmZmljdWx0IG9u
+ZS1zaG90IHRlc3RpbmcgdmlhIGJvYXJkLmJpbiAoaXQncyBlYXNpZXIgdG8gY29weSBlZXByb20q
+CmZpbGUgZnJvbSB3aW5kb3dzIGRyaXZlciBhcyBib2FyZC5iaW4gdGhhbiB0byByZS1nZW5lcmF0
+ZSBib2FyZC0yLmJpbikKLSBidXQgbWF5YmUgdGhpcyBpc24ndCByZWFsbHkgc29tZXRoaW5nIHdl
+IHNob3VsZCBjYXJlIGFib3V0IHNvIG11Y2gKdG8gYWxsb3cgYm9hcmQuYmluIGZvciBodyB0aGF0
+IG5vcm1hbGx5IGNhbid0IHdvcmsgd2l0aCBpdC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
+a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCg==
