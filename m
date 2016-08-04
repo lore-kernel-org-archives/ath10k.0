@@ -1,24 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bV1hb-0004p6-HI
- for ath10k@lists.infradead.org; Wed, 03 Aug 2016 19:19:40 +0000
-Received: by mail-wm0-x230.google.com with SMTP id i5so350339230wmg.0
- for <ath10k@lists.infradead.org>; Wed, 03 Aug 2016 12:19:18 -0700 (PDT)
-Subject: Re: [RFC] ath10k: silence firmware file probing warnings
-References: <5790A28F.8030102@redhat.com> <20160721115122.GA31869@redhat.com>
- <a264e995-fc46-7fcd-69f9-80992385b6b1@broadcom.com>
- <20160722102559.GA2662@redhat.com> <20160722221523.GM5537@wotan.suse.de>
- <874m738m02.fsf@kamboji.qca.qualcomm.com>
- <20160802141610.GJ3296@wotan.suse.de>
- <ae734397-6179-d0ba-3d8a-0cffc63a0fd8@broadcom.com>
- <20160803142119.GL3296@wotan.suse.de> <87ziot51x9.fsf@qca.qualcomm.com>
- <20160803171044.GP3296@wotan.suse.de>
-From: Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <6fb6f394-83fe-87e6-ef49-9fa854899721@broadcom.com>
-Date: Wed, 3 Aug 2016 21:19:14 +0200
+ id 1bVBCt-0001Pp-E3
+ for ath10k@lists.infradead.org; Thu, 04 Aug 2016 05:28:36 +0000
+Received: by mail-wm0-x236.google.com with SMTP id q128so471570827wma.1
+ for <ath10k@lists.infradead.org>; Wed, 03 Aug 2016 22:28:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20160803171044.GP3296@wotan.suse.de>
+In-Reply-To: <29736815-4728-181c-6656-527eb85c8fb3@dd-wrt.com>
+References: <1470046905-17449-1-git-send-email-benjamin@sipsolutions.net>
+ <1470046905-17449-3-git-send-email-benjamin@sipsolutions.net>
+ <CA+BoTQ=cwMMQXWOd8TocVcUeV5+_0-HNFO=9a5KNr=q2vWDfgA@mail.gmail.com>
+ <29736815-4728-181c-6656-527eb85c8fb3@dd-wrt.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Thu, 4 Aug 2016 07:28:08 +0200
+Message-ID: <CA+BoTQn30T9w1E63Ch51oYRJYuRBNLORy4=xAeEGzDo2yZqPbQ@mail.gmail.com>
+Subject: Re: [PATCHv2 2/2] ath10k: Allow setting coverage class
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,79 +23,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Luis R. Rodriguez" <mcgrof@kernel.org>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: Prarit Bhargava <prarit@redhat.com>, Stanislaw Gruszka <sgruszka@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ming Lei <ming.lei@canonical.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, "mmarek@suse.com" <mmarek@suse.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, Arend van Spriel <arend@broadcom.com>, Emmanuel Grumbach <egrumbach@gmail.com>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Benjamin Berg <benjamin@sipsolutions.net>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Simon Wunderlich <sw@simonwunderlich.de>
 
-
-
-On 03-08-16 19:10, Luis R. Rodriguez wrote:
-> On Wed, Aug 03, 2016 at 03:04:39PM +0000, Valo, Kalle wrote:
->> "Luis R. Rodriguez" <mcgrof@kernel.org> writes:
->>
->>> On Wed, Aug 03, 2016 at 01:33:31PM +0200, Arend van Spriel wrote:
->>>> On 02-08-16 16:16, Luis R. Rodriguez wrote:
->>>>> On Tue, Aug 02, 2016 at 11:10:22AM +0000, Valo, Kalle wrote:
->>>>>> "Luis R. Rodriguez" <mcgrof@kernel.org> writes:
->>>>>>
->>>>>>> I was considering this as a future extension to the firmware API
->>>>>>> through the new extensible firmware API, the sysdata API.
->>>>>>
->>>>>> I think Linus mentioned this already, but I want to reiterate anyway.
->>>>>> The name "sysdata" is horrible, I didn't have any idea what it means
->>>>>> until I read your description. Please continue to use the term
->>>>>> "firmware", anyone already know what it means.
->>>>>
->>>>> We've gone well past using the firmware API for firmware though, if
->>>>> we use it for 802.11 to replace CRDA for instance its really odd to
->>>>> be calling it firmware. But sure... I will rebrand again to firmware...
->>>>
->>>> I tend to agree. Although some people even call an OpenWrt image
->>>> firmware. Guess it is just in the eye of the beholder.
->>>
->>> Sure...
->>>
->>> Come to think of it I'll still go with "sysdata", this is a very minor
->>> detail, do let me know if there is anything technical rather than
->>> the color of the bikeshed [0] over the patches.
->>
->> Well, you don't seem to care but I prefer that the terminology is clear
->> and I don't want to waste people's time browsing the source to find out
->> what something means.
-> 
-> Its not that I don't care, its this is a super trivial matter, like the
-> color of a bikeshed, and I'd much prefer to put energy and review on
-> technical matters.
-> 
->> Even "driverdata" would be more descriptive for me
->> than "sysdata".
->>
->> Actually, what does the "sys" refer here, system? And what system is
->> that exactly?
-> 
-> Yes system, so as in system data file. "driver_data" is just as good.
-> Although who knows, others may want to paint the bikeshed a different
-> color.
-> 
-> The core reason why the name change is to make emphasis of the fact that
-> we've gone way past the point where the APIs are used for non-firmware
-> and I expect this use will only grow.
-
-Here some colors to add to the palet with "color code" in brackets:
-- device specific data (dsd): although if CRDA stuff is loaded it is no
-	longer tied to a device.
-- eXtensible firmware API (xfw): the ever popular x factor :-p
-- binary blob loader (bbl): just popped up in me head.
-
-Need more beer to go on.
-
-Regards,
-Arend
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMyBBdWd1c3QgMjAxNiBhdCAxNzozNywgU2ViYXN0aWFuIEdvdHRzY2hhbGwgPHMuZ290dHNj
+aGFsbEBkZC13cnQuY29tPiB3cm90ZToKPgo+Pj4gKyAgICAgICBpZiAodmFsdWUgPCAwKQo+Pj4g
+KyAgICAgICAgICAgICAgIHZhbHVlID0gYXItPmZ3X2NvdmVyYWdlLmNvdmVyYWdlX2NsYXNzOwo+
+Pj4gKwo+Pj4gKyAgICAgICAvKiBCcmVhayBvdXQgaWYgdGhlIGNvdmVyYWdlIGNsYXNzIGFuZCBy
+ZWdpc3RlcnMgaGF2ZSB0aGUKPj4+IGV4cGVjdGVkCj4+PiArICAgICAgICAqIHZhbHVlLgo+Pj4g
+KyAgICAgICAgKi8KPj4+ICsgICAgICAgaWYgKHZhbHVlID09IGFyLT5md19jb3ZlcmFnZS5jb3Zl
+cmFnZV9jbGFzcyAmJgo+Pj4gKyAgICAgICAgICAgc2xvdHRpbWVfcmVnID09IGFyLT5md19jb3Zl
+cmFnZS5yZWdfc2xvdHRpbWVfY29uZiAmJgo+Pj4gKyAgICAgICAgICAgdGltZW91dF9yZWcgPT0g
+YXItPmZ3X2NvdmVyYWdlLnJlZ19hY2tfY3RzX3RpbWVvdXRfY29uZikKPj4+ICsgICAgICAgICAg
+ICAgICBnb3RvIHVubG9jazsKPj4KPj4gSSB3b3VsZCBtb3ZlIHRoaXMgcGFydCB0byB0aGUgY2Fs
+bGVyIGFuZCBrZWVwIHRoZSBoYXJkd2FyZS1zcGVjaWZpYwo+PiBmdW5jdGlvbiBqdXN0IGNvbXB1
+dGUgYW5kIHNldCByZWdpc3RlcnMsIGUuZy4gaGF2ZQo+PiBhdGgxMGtfbWFjX3NldF9jb3ZlcmFn
+ZV9jbGFzcyAoYXMgb3Bwb3NlZCB0bwo+PiBhdGgxMGtfbWFjX29wX3NldF9jb3ZlcmFnZV9jbGFz
+cykuIEl0IHNob3VsZCBhbHNvIHJlZHVjZSBzb21lIGNvZGUKPj4gZHVwbGljYXRpb24uCj4KPiBk
+b2VzbnQgbWFrZSBzZW5zZS4gaSBhbHJlYWR5IGVuaGFuY2VkIHRoaXMgY29kZSB0byBzdXBwb3J0
+IGJlZWxpbmVyICg5OXh4KQo+IGFuZCBuZXdlcnMuCj4gdGhlIGNvZGUgaXMgdGhhdCBtdWNoIGRp
+ZmZlcmVudCB0aGF0IHRoaXMgY2hlY2sgbmVlZCB0byBiZSB0cmVhZGVkIGluIGEKPiBpbmRpdnVk
+dWFsIHdheQo+IHJlZ19zbG90dGltZV9jb25mIGlzIGhhcmR3YXJlIGRlZmFjdG8gc3BlY2lmaWMg
+c2luY2UgdGhlIHZhbHVlIGlzIHRha2VuIGZyb20KPiBhIGhhcmR3YXJlIHNwZWNpZmljIHJlZ2lz
+dGVyLgo+IHlvdSBjYW5ub3QgaGFuZGxlIHRoaXMgb3V0c2lkZSB0aGlzIGZ1bmN0aW9uIHNpbmNl
+IG90aGVyIGNoaXBzIGhhdmUKPiBkaWZmZXJlbnQgcmVnaXN0ZXJzLgoKQWgsIHlvdSdyZSByaWdo
+dCwgbXkgYmFkIDopCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
