@@ -1,20 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
+Received: from mail-ua0-x241.google.com ([2607:f8b0:400c:c08::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bVBCt-0001Pp-E3
- for ath10k@lists.infradead.org; Thu, 04 Aug 2016 05:28:36 +0000
-Received: by mail-wm0-x236.google.com with SMTP id q128so471570827wma.1
- for <ath10k@lists.infradead.org>; Wed, 03 Aug 2016 22:28:10 -0700 (PDT)
+ id 1bVFYh-0005DX-Ir
+ for ath10k@lists.infradead.org; Thu, 04 Aug 2016 10:07:24 +0000
+Received: by mail-ua0-x241.google.com with SMTP id 74so2173155uau.3
+ for <ath10k@lists.infradead.org>; Thu, 04 Aug 2016 03:07:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <29736815-4728-181c-6656-527eb85c8fb3@dd-wrt.com>
-References: <1470046905-17449-1-git-send-email-benjamin@sipsolutions.net>
- <1470046905-17449-3-git-send-email-benjamin@sipsolutions.net>
- <CA+BoTQ=cwMMQXWOd8TocVcUeV5+_0-HNFO=9a5KNr=q2vWDfgA@mail.gmail.com>
- <29736815-4728-181c-6656-527eb85c8fb3@dd-wrt.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Thu, 4 Aug 2016 07:28:08 +0200
-Message-ID: <CA+BoTQn30T9w1E63Ch51oYRJYuRBNLORy4=xAeEGzDo2yZqPbQ@mail.gmail.com>
-Subject: Re: [PATCHv2 2/2] ath10k: Allow setting coverage class
+In-Reply-To: <CAA93jw6j0pBKnm3Fs=D7V1CUsBnhZKKymbk4=UQuFWKuEAs-+Q@mail.gmail.com>
+References: <1463489221-24989-1-git-send-email-michal.kazior@tieto.com>
+ <1467201146-6844-1-git-send-email-michal.kazior@tieto.com>
+ <87zipt1kco.fsf@kamboji.qca.qualcomm.com>
+ <CACiydb+yNc-UKVRFR-UxTq-YFBDpEDsa1qWNBGCHpe=_zv8o7g@mail.gmail.com>
+ <CAA93jw6j0pBKnm3Fs=D7V1CUsBnhZKKymbk4=UQuFWKuEAs-+Q@mail.gmail.com>
+From: Roman Yeryomin <leroi.lists@gmail.com>
+Date: Thu, 4 Aug 2016 13:07:00 +0300
+Message-ID: <CACiydb+PfbS+Hc79My2HFqdacFtik7_H8d3kFsrST6m1GnSAgA@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: disable wake_tx_queue for older devices
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +24,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Benjamin Berg <benjamin@sipsolutions.net>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Simon Wunderlich <sw@simonwunderlich.de>
+To: Dave Taht <dave.taht@gmail.com>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMyBBdWd1c3QgMjAxNiBhdCAxNzozNywgU2ViYXN0aWFuIEdvdHRzY2hhbGwgPHMuZ290dHNj
-aGFsbEBkZC13cnQuY29tPiB3cm90ZToKPgo+Pj4gKyAgICAgICBpZiAodmFsdWUgPCAwKQo+Pj4g
-KyAgICAgICAgICAgICAgIHZhbHVlID0gYXItPmZ3X2NvdmVyYWdlLmNvdmVyYWdlX2NsYXNzOwo+
-Pj4gKwo+Pj4gKyAgICAgICAvKiBCcmVhayBvdXQgaWYgdGhlIGNvdmVyYWdlIGNsYXNzIGFuZCBy
-ZWdpc3RlcnMgaGF2ZSB0aGUKPj4+IGV4cGVjdGVkCj4+PiArICAgICAgICAqIHZhbHVlLgo+Pj4g
-KyAgICAgICAgKi8KPj4+ICsgICAgICAgaWYgKHZhbHVlID09IGFyLT5md19jb3ZlcmFnZS5jb3Zl
-cmFnZV9jbGFzcyAmJgo+Pj4gKyAgICAgICAgICAgc2xvdHRpbWVfcmVnID09IGFyLT5md19jb3Zl
-cmFnZS5yZWdfc2xvdHRpbWVfY29uZiAmJgo+Pj4gKyAgICAgICAgICAgdGltZW91dF9yZWcgPT0g
-YXItPmZ3X2NvdmVyYWdlLnJlZ19hY2tfY3RzX3RpbWVvdXRfY29uZikKPj4+ICsgICAgICAgICAg
-ICAgICBnb3RvIHVubG9jazsKPj4KPj4gSSB3b3VsZCBtb3ZlIHRoaXMgcGFydCB0byB0aGUgY2Fs
-bGVyIGFuZCBrZWVwIHRoZSBoYXJkd2FyZS1zcGVjaWZpYwo+PiBmdW5jdGlvbiBqdXN0IGNvbXB1
-dGUgYW5kIHNldCByZWdpc3RlcnMsIGUuZy4gaGF2ZQo+PiBhdGgxMGtfbWFjX3NldF9jb3ZlcmFn
-ZV9jbGFzcyAoYXMgb3Bwb3NlZCB0bwo+PiBhdGgxMGtfbWFjX29wX3NldF9jb3ZlcmFnZV9jbGFz
-cykuIEl0IHNob3VsZCBhbHNvIHJlZHVjZSBzb21lIGNvZGUKPj4gZHVwbGljYXRpb24uCj4KPiBk
-b2VzbnQgbWFrZSBzZW5zZS4gaSBhbHJlYWR5IGVuaGFuY2VkIHRoaXMgY29kZSB0byBzdXBwb3J0
-IGJlZWxpbmVyICg5OXh4KQo+IGFuZCBuZXdlcnMuCj4gdGhlIGNvZGUgaXMgdGhhdCBtdWNoIGRp
-ZmZlcmVudCB0aGF0IHRoaXMgY2hlY2sgbmVlZCB0byBiZSB0cmVhZGVkIGluIGEKPiBpbmRpdnVk
-dWFsIHdheQo+IHJlZ19zbG90dGltZV9jb25mIGlzIGhhcmR3YXJlIGRlZmFjdG8gc3BlY2lmaWMg
-c2luY2UgdGhlIHZhbHVlIGlzIHRha2VuIGZyb20KPiBhIGhhcmR3YXJlIHNwZWNpZmljIHJlZ2lz
-dGVyLgo+IHlvdSBjYW5ub3QgaGFuZGxlIHRoaXMgb3V0c2lkZSB0aGlzIGZ1bmN0aW9uIHNpbmNl
-IG90aGVyIGNoaXBzIGhhdmUKPiBkaWZmZXJlbnQgcmVnaXN0ZXJzLgoKQWgsIHlvdSdyZSByaWdo
-dCwgbXkgYmFkIDopCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On 1 August 2016 at 12:04, Dave Taht <dave.taht@gmail.com> wrote:
+> On Mon, Aug 1, 2016 at 1:35 AM, Roman Yeryomin <leroi.lists@gmail.com> wrote:
+>> On 7 July 2016 at 19:30, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+>>> Michal Kazior <michal.kazior@tieto.com> writes:
+>>>
+>>>> Ideally wake_tx_queue should be used regardless as
+>>>> it is a requirement for reducing bufferbloat and
+>>>> implementing airtime fairness in the future.
+>>>>
+>>>> However some setups (typically low-end platforms
+>>>> hosting QCA988X) suffer performance regressions
+>>>> with the current wake_tx_queue implementation.
+>>>> Therefore disable it unless it is really
+>>>> beneficial with current codebase (which is when
+>>>> firmware supports smart pull-push tx scheduling).
+>>>>
+>>>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>>>
+>>> I think it's too late to send this to 4.7 anymore (and this due to my
+>>> vacation). So I'm planning to queue this to 4.8, but if the feedback is
+>>> positive we can always send this to a 4.7 stable release.
+>>>
+>>
+>> Sorry guys, drowned.
+>> So, yes, applying this patch does the job. That is gets me to the
+>> results similar to
+>> https://lists.openwrt.org/pipermail/openwrt-devel/2016-May/041448.html
+>>
+>> Going to try latest code on same system...
+>
+> Can you try increasing the quantum to 1514, and reducing the codel
+> target to 5ms? (without this patch?)
+>
+
+So it was 1514 already...
+
+Regards,
+Roman
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
