@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0116.hostedemail.com ([216.40.44.116]
- helo=smtprelay.hostedemail.com)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bVjNp-0005Xf-Ft
- for ath10k@lists.infradead.org; Fri, 05 Aug 2016 17:58:10 +0000
-Message-ID: <1470419862.28648.11.camel@perches.com>
-Subject: Re: [PATCH] ath10k: hide kernel addresses from logs using %pK
- format specifier
-From: Joe Perches <joe@perches.com>
-Date: Fri, 05 Aug 2016 10:57:42 -0700
-In-Reply-To: <1470318711-28986-1-git-send-email-c_mkenna@qti.qualcomm.com>
-References: <1470318711-28986-1-git-send-email-c_mkenna@qti.qualcomm.com>
-Mime-Version: 1.0
+ id 1bVt5s-0000lO-JZ
+ for ath10k@lists.infradead.org; Sat, 06 Aug 2016 04:20:17 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix group privacy action frame decryption for qca4019
+Date: Sat, 6 Aug 2016 09:49:36 +0530
+Message-ID: <20160806041936.26924-1-rmanohar@qti.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +20,124 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_mkenna@qti.qualcomm.com, ath10k@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>
-Cc: mkenna@codeaurora.org, linux-wireless@vger.kernel.org, Kees Cook <keescook@chromium.org>, LKML <linux-kernel@vger.kernel.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-On Thu, 2016-08-04 at 19:21 +0530, c_mkenna@qti.qualcomm.com wrote:
-> From: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
-> 
-> With the %pK format specifier we hide the kernel addresses
-> with the help of kptr_restrict sysctl.
-> In this patch, %p is changed to %pK in the driver code.
-> 
-> The sysctl is documented in Documentation/sysctl/kernel.txt.
+Recent commit 'mac80211: Encrypt "Group addressed privacy" action frames'
+encrypts group privacy action frames. But qca99x0 family chipset delivers
+broadcast/multicast management frames as encrypted and it should be
+decrypted by mac80211. Setting RX_FLAG_DECRYPTED stats for those frames
+is breaking mesh connection establishment.
 
-Maybe %p should follow %pK and only show kernel .text addresses
-by default and any other address as 0 unless the sysctl is set.
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c |  4 ++++
+ drivers/net/wireless/ath/ath10k/core.h |  5 +++++
+ drivers/net/wireless/ath/ath10k/wmi.c  | 30 +++++++++++++++++++++++++-----
+ 3 files changed, 34 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 0ca58cf0ffea..c4d1a5ba216e 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -182,6 +182,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+ 		},
++		.sw_decrypt_mcast_mgmt = true,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -205,6 +206,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+ 		},
++		.sw_decrypt_mcast_mgmt = true,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -227,6 +229,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+ 		},
++		.sw_decrypt_mcast_mgmt = true,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -285,6 +288,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA4019_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
+ 		},
++		.sw_decrypt_mcast_mgmt = true,
+ 	},
+ };
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index f36c2b274ee5..7254bd3e7c82 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -765,6 +765,11 @@ struct ath10k {
+ 			size_t board_size;
+ 			size_t board_ext_size;
+ 		} fw;
++
++		/* qca99x0 family chips deliver broadcast/multicast management
++		 * frames encrypted and expect software do decryption.
++		 */
++		bool sw_decrypt_mcast_mgmt;
+ 	} hw_params;
+ 
+ 	/* contains the firmware images used with ATH10K_FIRMWARE_MODE_NORMAL */
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 169cd2e783eb..bced8ac7ed94 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2240,6 +2240,30 @@ static int ath10k_wmi_10_4_op_pull_mgmt_rx_ev(struct ath10k *ar,
+ 	return 0;
+ }
+ 
++static bool ath10k_wmi_rx_is_decrypted(struct ath10k *ar,
++				       struct ieee80211_hdr *hdr)
++{
++	if (!ieee80211_has_protected(hdr->frame_control))
++		return false;
++
++	/* FW delivers WEP Shared Auth frame with Protected Bit set and
++	 * encrypted payload. However in case of PMF it delivers decrypted
++	 * frames with Protected Bit set.
++	 */
++	if (ieee80211_is_auth(hdr->frame_control))
++		return false;
++
++	/* qca99x0 based FW delivers broadcast or multicast management frames
++	 * (ex: group privacy action frames in mesh) as encrypted payload.
++	 */
++	if ((is_broadcast_ether_addr(ieee80211_get_DA(hdr)) ||
++	     is_multicast_ether_addr(ieee80211_get_DA(hdr))) &&
++	    ar->hw_params.sw_decrypt_mcast_mgmt)
++		return false;
++
++	return true;
++}
++
+ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_mgmt_rx_ev_arg arg = {};
+@@ -2326,11 +2350,7 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 
+ 	ath10k_wmi_handle_wep_reauth(ar, skb, status);
+ 
+-	/* FW delivers WEP Shared Auth frame with Protected Bit set and
+-	 * encrypted payload. However in case of PMF it delivers decrypted
+-	 * frames with Protected Bit set. */
+-	if (ieee80211_has_protected(hdr->frame_control) &&
+-	    !ieee80211_is_auth(hdr->frame_control)) {
++	if (ath10k_wmi_rx_is_decrypted(ar, hdr)) {
+ 		status->flag |= RX_FLAG_DECRYPTED;
+ 
+ 		if (!ieee80211_is_action(hdr->frame_control) &&
+-- 
+2.9.2
 
 
 _______________________________________________
