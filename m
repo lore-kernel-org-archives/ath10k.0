@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bVt5s-0000lO-JZ
- for ath10k@lists.infradead.org; Sat, 06 Aug 2016 04:20:17 +0000
+ id 1bX0aU-0002ug-P4
+ for ath10k@lists.infradead.org; Tue, 09 Aug 2016 06:32:32 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix group privacy action frame decryption for qca4019
-Date: Sat, 6 Aug 2016 09:49:36 +0530
-Message-ID: <20160806041936.26924-1-rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2] ath10k: fix group privacy action frame decryption for
+ qca4019
+Date: Tue, 9 Aug 2016 12:01:51 +0530
+Message-ID: <20160809063151.25993-1-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,10 +32,12 @@ is breaking mesh connection establishment.
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
+v2: is_broadcast_ether_addr check not needed
+
  drivers/net/wireless/ath/ath10k/core.c |  4 ++++
  drivers/net/wireless/ath/ath10k/core.h |  5 +++++
- drivers/net/wireless/ath/ath10k/wmi.c  | 30 +++++++++++++++++++++++++-----
- 3 files changed, 34 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c  | 29 ++++++++++++++++++++++++-----
+ 3 files changed, 33 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
 index 0ca58cf0ffea..c4d1a5ba216e 100644
@@ -89,10 +92,10 @@ index f36c2b274ee5..7254bd3e7c82 100644
  
  	/* contains the firmware images used with ATH10K_FIRMWARE_MODE_NORMAL */
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 169cd2e783eb..bced8ac7ed94 100644
+index 169cd2e783eb..29b7eca071fc 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2240,6 +2240,30 @@ static int ath10k_wmi_10_4_op_pull_mgmt_rx_ev(struct ath10k *ar,
+@@ -2240,6 +2240,29 @@ static int ath10k_wmi_10_4_op_pull_mgmt_rx_ev(struct ath10k *ar,
  	return 0;
  }
  
@@ -112,8 +115,7 @@ index 169cd2e783eb..bced8ac7ed94 100644
 +	/* qca99x0 based FW delivers broadcast or multicast management frames
 +	 * (ex: group privacy action frames in mesh) as encrypted payload.
 +	 */
-+	if ((is_broadcast_ether_addr(ieee80211_get_DA(hdr)) ||
-+	     is_multicast_ether_addr(ieee80211_get_DA(hdr))) &&
++	if (is_multicast_ether_addr(ieee80211_get_DA(hdr)) &&
 +	    ar->hw_params.sw_decrypt_mcast_mgmt)
 +		return false;
 +
@@ -123,7 +125,7 @@ index 169cd2e783eb..bced8ac7ed94 100644
  int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
  {
  	struct wmi_mgmt_rx_ev_arg arg = {};
-@@ -2326,11 +2350,7 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+@@ -2326,11 +2349,7 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
  
  	ath10k_wmi_handle_wep_reauth(ar, skb, status);
  
