@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x22c.google.com ([2607:f8b0:400d:c09::22c])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bYurT-0002tC-OS
- for ath10k@lists.infradead.org; Sun, 14 Aug 2016 12:49:56 +0000
-Received: by mail-qk0-x22c.google.com with SMTP id v123so24167536qkh.2
- for <ath10k@lists.infradead.org>; Sun, 14 Aug 2016 05:49:34 -0700 (PDT)
-Received: from [216.169.139.20]
- (20.139.169.216.client.dyn.strong-dc27.as62651.net. [216.169.139.20])
- by smtp.googlemail.com with ESMTPSA id b142sm8461597qkc.43.2016.08.14.05.49.32
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sun, 14 Aug 2016 05:49:33 -0700 (PDT)
-Message-ID: <57B068DA.1080804@gmail.com>
-Date: Sun, 14 Aug 2016 20:49:30 +0800
-From: Xuebing Wang <xbing6@gmail.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bYwgO-0003Uc-Bu
+ for ath10k@lists.infradead.org; Sun, 14 Aug 2016 14:46:36 +0000
+Message-ID: <57B0841F.4050008@candelatech.com>
+Date: Sun, 14 Aug 2016 07:45:51 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: ath10k: Are there any PCI based WLAN cards to be plugged into desktop
- PC?
+Subject: Re: ath10k: Are there any PCI based WLAN cards to be plugged into
+ desktop PC?
+References: <57B068DA.1080804@gmail.com>
+In-Reply-To: <57B068DA.1080804@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,23 +23,27 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Xuebing Wang <xbing6@gmail.com>, ath10k@lists.infradead.org
 
-Hi Community,
+You can get pcie <-> mini-pcie adapters easily enough, and then put one of the standard
+mini-pcie NICs in it.  We use WLE900VX successfully like this.
 
-I'd like to study ath10k driver and buy an ath10k WLAN card to plug into 
-my Ubuntu PC. I googled and checked ath10k wiki, it seems most ath10k 
-cards are PCIe based modules or to be used in APs. Are there any ath10k 
-WLAN cards to be plugged into desktop PC?
+Thanks,
+Ben
 
-Also, I googled and can not find ath10k datasheet (e.g. qca9880 or 
-qca6174 with any firmware versions), any suggestions on the 
-specifications or datasheets?
-
-Thanks.
+On 08/14/2016 05:49 AM, Xuebing Wang wrote:
+> Hi Community,
+>
+> I'd like to study ath10k driver and buy an ath10k WLAN card to plug into my Ubuntu PC. I googled and checked ath10k wiki, it seems most ath10k cards are PCIe based modules or to be used in APs. Are there any ath10k WLAN cards to be plugged into desktop PC?
+>
+> Also, I googled and can not find ath10k datasheet (e.g. qca9880 or qca6174 with any firmware versions), any suggestions on the specifications or datasheets?
+>
+> Thanks.
+>
 
 -- 
-Xuebing
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
