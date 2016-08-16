@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from champagne.comp.nus.edu.sg ([137.132.80.90])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZfHv-00041J-Kk
- for ath10k@lists.infradead.org; Tue, 16 Aug 2016 14:24:20 +0000
-Received: from mail-it0-f69.google.com ([209.85.214.69])
- by champagne.comp.nus.edu.sg (Exim) with esmtps (TLSv1:DES-CBC3-SHA:168)
- id 1bZfHY-0006cZ-Mr
- for ath10k@lists.infradead.org; Tue, 16 Aug 2016 22:23:57 +0800
-Received: by mail-it0-f69.google.com with SMTP id d65so252333625ith.0
- for <ath10k@lists.infradead.org>; Tue, 16 Aug 2016 07:23:56 -0700 (PDT)
+ id 1bZjcn-0001Zb-2a
+ for ath10k@lists.infradead.org; Tue, 16 Aug 2016 19:02:10 +0000
+From: "Pedersen, Thomas" <twp@qca.qualcomm.com>
+Subject: Re: Issue with ATH10K driver while bringing up mesh interface
+Date: Tue, 16 Aug 2016 19:01:44 +0000
+Message-ID: <1471374073.3432.8.camel@qca.qualcomm.com>
+References: <20160816035841.M15556@universe.cdotb.ernet.in>
+ <6fe9261b-c662-3b89-b78b-d492e013648a@gentrice.net>
+ <20160816044306.M74655@cdot.in>
+ <8ec31d40-4a01-ed24-ed2e-3be351aab5d5@gentrice.net>
+ <20160816091707.M1726@cdot.in>
+In-Reply-To: <20160816091707.M1726@cdot.in>
+Content-Language: en-US
+Content-ID: <5E5A69C64E4C86498B252ADC6D074C63@qualcomm.com>
 MIME-Version: 1.0
-From: Raj Joshi <rajjoshi@comp.nus.edu.sg>
-Date: Tue, 16 Aug 2016 22:23:14 +0800
-Message-ID: <CA+uUJGs7HGamb3duZ_9PYfx++43F3UWE2nO4C3AN9Saen=iMrA@mail.gmail.com>
-Subject: DFS radar pattern detection in different regions
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,48 +24,137 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>, wireless-regdb@lists.infradead.org
+To: Sridhar Konabathini <sridhark@cdot.in>
+Cc: Raj Joshi <rajjoshi@comp.nus.edu.sg>, Horse <horse@gentrice.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>
 
-Hi,
-
-I am aware that DFS scan and pattern detection is possible in ath10k
-or to be precise it is implemented in the ath kernel module. From the
-source code (dfs_pattern_detector.c), I can see that there are
-patterns specific to ETSI, FCC and JP regulatory regions.
-
-I got some conceptual questions regarding the pattern detection and regulations:
-
-Q.1 For a given country, the wireless-regdb [1] specifies one of these
-3 regions for DFS. For example, "country AE: DFS-FCC" or "country AF:
-DFS-ETSI". What does this mean? Does it mean that country AE follows
-DFS rules of FCC and that country AF follows those of ETSI?
-
-Q.2 If the above is the case, then can I run ath10k "correctly" as
-well as "legally" in country AE, given that pattern detection is
-implemented for FCC? When I say "correctly", I mean that pattern
-detection will not have any false negatives. And when I say "legally",
-I mean that my ath10k device would comply with the local regulations
-of country AE, given that my device is FCC DFS compliant.
-
-It is little hard to believe that all the world's radar patterns could
-be covered by 3 regulatory standards (FCC, ETSI and JP). Also if that
-was the case, then ath10k already does a very good job with DFS
-channels and the new swanky 802.11ac devices such as [2] are simply
-not worth their price!
-
-I would appreciate if someone can provide a clarification around this.
-
-Thanks,
-Raj
-
-[1] http://git.kernel.org/cgit/linux/kernel/git/sforshee/wireless-regdb.git/tree/db.txt
-[2] https://www.kickstarter.com/projects/portalwifi/portal-turbocharged-wifi/description
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gVHVlLCAyMDE2LTA4LTE2IGF0IDE0OjUzICswNTMwLCBTcmlkaGFyIEtvbmFiYXRoaW5pIHdy
+b3RlOg0KPiBIaSwNCj4gICAgVGhhbmtzIGZvciB5b3VyIHN1cHBvcnQsIG5vdyB3ZSBhcmUgYWJs
+ZSB0byBicmluZyB1cCBtZXNoIGludGVyZmFjZS4NCj4gDQo+IEJ1dCB3aGVuIHdlIGFyZSB0cnlp
+bmcgdG8gY3JlYXRlIGEgbWVzaCBwb2ludCB1c2luZyB3cGFfc3VwcGxpY2FudCwgdGhlbiB3ZSBh
+cmUgDQo+IGdldHRpbmcgZXJyb3IgYXMgdG9vIGxhcmdlIG1vZGUgKHZhbHVlPTUgbWF4X3ZhbHVl
+PTQpDQo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KDQpZb3UgcHJvYmFibHkgbmVlZCB0byBj
+b21waWxlIGluIG1lc2ggc3VwcG9ydCB0aGVuLg0KDQpDT05GSUdfTUVTSD15DQpDT05GSUdfU0FF
+PXkNCg0KDQo+IHQxMDI0cmRiIyB3cGFfc3VwcGxpY2FudCAtRG5sODAyMTEgLWltZXNoMCAtYyAv
+ZGV2L3NobS93cGFfbWVzaDAuY29uZg0KPiANCj4gd2UgYXJlIGdldHRpbmcgYmVsb3cgZXJyb3IN
+Cj4gDQo+IFN1Y2Nlc3NmdWxseSBpbml0aWFsaXplZCB3cGFfc3VwcGxpY2FudA0KPiBMaW5lIDQ6
+IHRvbyBsYXJnZSBtb2RlICh2YWx1ZT01IG1heF92YWx1ZT00KQ0KPiBMaW5lIDQ6IGZhaWxlZCB0
+byBwYXJzZSBtb2RlICc1Jy4NCj4gTGluZSA2OiBpbnZhbGlkIGtleV9tZ210ICdTQUUnDQo+IExp
+bmUgNjogbm8ga2V5X21nbXQgdmFsdWVzIGNvbmZpZ3VyZWQuDQo+IExpbmUgNjogZmFpbGVkIHRv
+IHBhcnNlIGtleV9tZ210ICdTQUUnLg0KPiBMaW5lIDg6IGZhaWxlZCB0byBwYXJzZSBuZXR3b3Jr
+IGJsb2NrLg0KPiBGYWlsZWQgdG8gcmVhZCBvciBwYXJzZSBjb25maWd1cmF0aW9uICcvZGV2L3No
+bS93cGFfbWVzaDAuY29uZicuDQo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiANCj4gdDEw
+MjRyZGIjIHZpIG1lc2gwLmNvbmYNCj4gDQo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiAj
+IHNlY3VyZSAoU0FFICsgQU1QRSkgbmV0d29yaw0KPiBuZXR3b3JrPXsNCj4gICAgICAgICBzc2lk
+PSJIQVAtTUVTSCINCj4gICAgICAgICBtb2RlPTUNCj4gICAgICAgICBmcmVxdWVuY3k9MjQzMg0K
+PiAgICAgICAgIGtleV9tZ210PVNBRQ0KPiAgICAgICAgIHBzaz0iY2RvdDEyMzQiDQo+IH0NCj4g
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IA0KPiBIb3cgdG8gcmVzb2x2ZSB0aGlzIGlzc3Vl
+LCBjYW4geW91IHBsZWFzZSBoZWxwIG9uIHRoaXMNCj4gDQo+IFJlZ2FyZHMsDQo+IHNyaWRoYXIN
+Cj4gDQo+IA0KPiANCj4gDQo+IE9uIFR1ZSwgMTYgQXVnIDIwMTYgMTM6MzM6MDYgKzA4MDAsIEhv
+cnNlIHdyb3RlDQo+ID4gSGkNCj4gPiANCj4gPiBQbGVhc2UgdHJ5ICAiaW5zbW9kIGF0aDEwa19j
+b3JlLmtvIHJhd21vZGU9MSINCj4gPiANCj4gPiBUaGFua3MNCj4gPiANCj4gPiBTcmlkaGFyIEtv
+bmFiYXRoaW5pIOaWvCAyMDE2LzgvMTYg5LiL5Y2IIDEyOjUyIOWvq+mBkzoNCj4gPiA+IEhpLA0K
+PiA+ID4gICAgIFdlIGFyZSB1c2luZyBmaXJtd2FyZSAtIGZ3IDEwLjIuNC43MC45LTIuIHdoaWxl
+IGluc2VydGluZyBhdGgxMGtfY29yZS5rbywNCj4gPiA+IGF0aDEwa19wY2kua28sIHdlIGFyZSBn
+ZXR0aW5nIGJlbG93IGluZm8uDQo+ID4gPg0KPiA+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0N
+Cj4gLS0NCj4gPiA+DQo+ID4gPiByb290QHQxMDI0cmRiOi9kZXYvc2htIyBpbnNtb2QgYXRoMTBr
+X2NvcmUua28NCj4gPiA+IHJvb3RAdDEwMjRyZGI6L2Rldi9zaG0jIGluc21vZCBhdGgxMGtfcGNp
+LmtvDQo+ID4gPiBbIDg1NjguMjcyMDU0XSBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogcGNpIGly
+cSBtc2kgaW50ZXJydXB0cyAxIGlycV9tb2RlIDANCj4gPiA+IHJlc2V0X21vZGUgMA0KPiA+ID4g
+cm9vdEB0MTAyNHJkYjovZGV2L3NobSMgWyA4NTY5LjY3NTgwNF0gYXRoMTBrX3BjaSAwMDAxOjAz
+OjAwLjA6IHFjYTk4OHggaHcyLjANCj4gPiA+ICgweDQxMDAwMTZjLCAweDA0MzIwMmZmIHN1YiAw
+MDAwOjAwMDApIGZ3IDEwLjIuNC43MC45LTIgZndhcGkgNSBiZGFwaSAxIGh0dC12ZXIgDQo+IDIu
+MQ0KPiA+ID4gd21pLW9wIDUgaHR0LW9wIDIgY2FsIG90cCBtYXgtc3RhIDEyOCByYXcgMCBod2Ny
+eXB0byAxIGZlYXR1cmVzIG5vLXAycCxyYXctbW9kZQ0KPiA+ID4gWyA4NTY5LjY5NDk3NF0gYXRo
+MTBrX3BjaSAwMDAxOjAzOjAwLjA6IGRlYnVnIDAgZGVidWdmcyAwIHRyYWNpbmcgMCBkZnMgMSAN
+Cj4gdGVzdG1vZGUgMA0KPiA+ID4NCj4gPiA+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IC0t
+DQo+ID4gPg0KPiA+ID4gSG93IHRvIHNldCByYXdtb2RlPTEgd2hpbGUgaW5zZXJ0aW5nIHRoZSBh
+dGgxMGsgbW9kdWxlLiBDYW4geW91IHBsZWFzZSBoZWxwIG9uIA0KPiB0aGlzLg0KPiA+ID4NCj4g
+PiA+DQo+ID4gPiBSZWdhcmRzLA0KPiA+ID4NCj4gPiA+IFNyaWRoYXINCj4gPiA+DQo+ID4gPg0K
+PiA+ID4gT24gVHVlLCAxNiBBdWcgMjAxNiAxMjoyMTo0OCArMDgwMCwgSG9yc2Ugd3JvdGUNCj4g
+PiA+PiBIaQ0KPiA+ID4+IFdoaWNoIGZpcm13YXJlIHZlcnNpb24gYXJlIHlvdSB1c2luZyBub3c/
+DQo+ID4gPj4gSSB0aGluayAiUkFXIiBtb2RlIGlzIGRpc2FibGVkIGFmdGVyIGZpcm13YXJlIDEw
+LjQgbm8gbWF0dGVyIENUIGZpcm13YXJlDQo+ID4gPj4gb3Igb2ZmaWNpYWwgZmlybXdhcmUuDQo+
+ID4gPj4gaWYgeW91IGFyZSB1c2luZyBmaXJtd2FyZSAxMC4yLCB5b3UgbWlnaHQgbmVlZCB0byBh
+ZGQgcmF3bW9kZT0xIHdoaWxlDQo+ID4gPj4gaW5zbW9kIGF0aDEwa19jb3JlLmtvDQo+ID4gPj4N
+Cj4gPiA+PiBUaGFua3MNCj4gPiA+Pg0KPiA+ID4+IFNyaWRoYXIgS29uZGFiYXRoaW5pIOaWvCAy
+MDE2LzgvMTYg5LiL5Y2IIDEyOjA2IOWvq+mBkzoNCj4gPiA+Pj4gSGksDQo+ID4gPj4+ICAgICAg
+V2hlbiB3ZSBhcmUgdHJ5aW5nIHRvIGJyaW5nIHVwIEFQIHRvIGFkZCBtZXNoIGludGVyZmFjZXMg
+b24gVDEwMjQgYm9hcmQgDQo+IHdpdGgNCj4gPiA+Pj4ga2VybmVsLTMuMTI7IGF0aDEwayBkcml2
+ZXJzIGJhY2twb3J0ZWQgZnJvbSA0LjQ7aG9zdGFwZCAyLjUgZm9yIDExQUMgc3VwcG9ydCANCj4g
+aXMNCj4gPiA+Pj4gdXNlZCwgdGhlbiB3ZSBhcmUgZ2V0dGluZyBiZWxvdyBlcnJvciAtDQo+ID4g
+Pj4+DQo+ID4gPj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiAtLQ0KPiA+ID4gLS0NCj4gPiA+
+Pj4gVDEwMjQjIGlmY29uZmlnIG1lc2gwDQo+ID4gPj4+DQo+ID4gPj4+IG1lc2gwICAgICBMaW5r
+IGVuY2FwOkV0aGVybmV0ICBIV2FkZHIgMDQ6ZjA6MjE6MWI6N2Q6YjYNCj4gPiA+Pj4gICAgICAg
+ICAgICAgQlJPQURDQVNUIE1VTFRJQ0FTVCAgTVRVOjE1MDAgIE1ldHJpYzoxDQo+ID4gPj4+ICAg
+ICAgICAgICAgIFJYIHBhY2tldHM6MCBlcnJvcnM6MCBkcm9wcGVkOjAgb3ZlcnJ1bnM6MCBmcmFt
+ZTowDQo+ID4gPj4+ICAgICAgICAgICAgIFRYIHBhY2tldHM6MCBlcnJvcnM6MCBkcm9wcGVkOjAg
+b3ZlcnJ1bnM6MCBjYXJyaWVyOjANCj4gPiA+Pj4gICAgICAgICAgICAgY29sbGlzaW9uczowIHR4
+cXVldWVsZW46MTAwMA0KPiA+ID4+PiAgICAgICAgICAgICBSWCBieXRlczowICgwLjAgQikgIFRY
+IGJ5dGVzOjAgKDAuMCBCKQ0KPiA+ID4+Pg0KPiA+ID4+PiBUMTAyNCMgaWZjb25maWcgbWVzaDAg
+MC4wLjAuMCB1cA0KPiA+ID4+Pg0KPiA+ID4+PiBbIDg2OTQuMzg1NTU0XSBhdGgxMGtfcGNpIDAw
+MDE6MDM6MDAuMDogbXVzdCBsb2FkIGRyaXZlciB3aXRoIHJhd21vZGU9MSB0byBhZGQNCj4gPiA+
+IG1lc2gNCj4gPiA+Pj4gaW50ZXJmYWNlcw0KPiA+ID4+Pg0KPiA+ID4+Pg0KPiA+ID4+PiAtLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0NCj4gLS0NCj4gPiA+IC0tDQo+ID4gPj4+IEhvdyB0byByZXNvbHZl
+IHRoaXMgaXNzdWUsIGNhbiB5b3UgcGxlYXNlIGhlbHAgb24gdGhpcy4NCj4gPiA+Pj4NCj4gPiA+
+Pj4NCj4gPiA+Pj4gUmVnYXJkcywNCj4gPiA+Pj4NCj4gPiA+Pj4gU3JpZGhhciBLb25kYWJhdGhp
+bmksDQo+ID4gPj4+IFJlc2VhcmNoIGVuZ2luZWVyLA0KPiA+ID4+PiBQU0cgbGFiLA0KPiA+ID4+
+PiBDZW50ZXIgZm9yIERldmVsb3BtZW50IE9mIFRlbGVtYXRpY3MNCj4gPiA+Pj4gOTQ4MDQ4NDgy
+MS4NCj4gPiA+Pj4NCj4gPiA+Pj4NCj4gPiA+Pj4NCj4gPiA+Pj4NCj4gPiA+Pj4gRGlzY2xhaW1l
+cjoNCj4gPiA+Pj4gLS0tLS0tLS0tLQ0KPiA+ID4+PiBUaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMg
+dHJhbnNtaXR0ZWQgd2l0aCBpdCBhcmUgY29uZmlkZW50aWFsIGFuZCBpbnRlbmRlZA0KPiA+ID4g
+c29sZWx5DQo+ID4gPj4+IGZvcg0KPiA+ID4+PiB0aGUgdXNlIG9mIHRoZSBpbmRpdmlkdWFsIG9y
+IGVudGl0eSB0byB3aG9tIHRoZXkgYXJlIGFkZHJlc3NlZC4gIElmIHlvdSBhcmUgDQo+IG5vdA0K
+PiA+ID4gdGhlDQo+ID4gPj4+IGludGVuZGVkIHJlY2lwaWVudCB5b3UgYXJlIG5vdGlmaWVkIHRo
+YXQgZGlzY2xvc2luZywgY29weWluZywgZGlzdHJpYnV0aW5nIG9yDQo+ID4gPiB0YWtpbmcNCj4g
+PiA+Pj4gYW55DQo+ID4gPj4+IGFjdGlvbiBpbiByZWxpYW5jZSBvbiB0aGUgY29udGVudHMgb2Yg
+dGhpcyBpbmZvcm1hdGlvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLg0KPiA+ID4gVGhlDQo+ID4g
+Pj4+IHNlbmRlciBkb2VzIG5vdCBhDQo+ID4gPj4+DQo+ID4gPj4+DQo+ID4gPj4+IF9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+ID4gPj4+IGF0aDEwayBt
+YWlsaW5nIGxpc3QNCj4gPiA+Pj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gPiA+Pj4g
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsNCj4gPiA+
+DQo+ID4gPiBSZWdhcmRzLA0KPiA+ID4NCj4gPiA+IFNyaWRoYXIgS29uZGFiYXRoaW5pLA0KPiA+
+ID4gUmVzZWFyY2ggZW5naW5lZXIsDQo+ID4gPiBQU0cgbGFiLA0KPiA+ID4gQ2VudGVyIGZvciBE
+ZXZlbG9wbWVudCBPZiBUZWxlbWF0aWNzDQo+ID4gPiA5NDgwNDg0ODIxLg0KPiA+ID4NCj4gPiA+
+DQo+ID4gPg0KPiA+ID4NCj4gPiA+IERpc2NsYWltZXI6DQo+ID4gPiAtLS0tLS0tLS0tDQo+ID4g
+PiBUaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQgd2l0aCBpdCBhcmUgY29uZmlk
+ZW50aWFsIGFuZCBpbnRlbmRlZCANCj4gc29sZWx5DQo+ID4gPiBmb3INCj4gPiA+IHRoZSB1c2Ug
+b2YgdGhlIGluZGl2aWR1YWwgb3IgZW50aXR5IHRvIHdob20gdGhleSBhcmUgYWRkcmVzc2VkLiAg
+SWYgeW91IGFyZSBub3QgDQo+IHRoZQ0KPiA+ID4gaW50ZW5kZWQgcmVjaXBpZW50IHlvdSBhcmUg
+bm90aWZpZWQgdGhhdCBkaXNjbG9zaW5nLCBjb3B5aW5nLCBkaXN0cmlidXRpbmcgb3IgDQo+IHRh
+a2luZw0KPiA+ID4gYW55DQo+ID4gPiBhY3Rpb24gaW4gcmVsaWFuY2Ugb24gdGhlIGNvbnRlbnRz
+IG9mIHRoaXMgaW5mb3JtYXRpb24gaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gDQo+IFRoZQ0KPiA+
+ID4gc2VuZGVyIGRvZXMgbm90IGENCj4gPiA+DQo+ID4gPg0KPiA+ID4gX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gPiA+IGF0aDEwayBtYWlsaW5nIGxp
+c3QNCj4gPiA+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnDQo+ID4gPiBodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwaw0KPiA+IA0KPiA+IF9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+ID4gYXRoMTBrIG1haWxp
+bmcgbGlzdA0KPiA+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnDQo+ID4gaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsNCj4gDQo+IA0KPiBSZWdhcmRz
+LA0KPiANCj4gU3JpZGhhciBLb25kYWJhdGhpbmksDQo+IFJlc2VhcmNoIGVuZ2luZWVyLA0KPiBQ
+U0cgbGFiLA0KPiBDZW50ZXIgZm9yIERldmVsb3BtZW50IE9mIFRlbGVtYXRpY3MNCj4gOTQ4MDQ4
+NDgyMS4NCj4gDQo+IA0KPiANCj4gDQo+IERpc2NsYWltZXI6DQo+IC0tLS0tLS0tLS0NCj4gVGhp
+cyBlbWFpbCBhbmQgYW55IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGggaXQgYXJlIGNvbmZpZGVudGlh
+bCBhbmQgaW50ZW5kZWQgc29sZWx5IA0KPiBmb3IgDQo+IHRoZSB1c2Ugb2YgdGhlIGluZGl2aWR1
+YWwgb3IgZW50aXR5IHRvIHdob20gdGhleSBhcmUgYWRkcmVzc2VkLiAgSWYgeW91IGFyZSBub3Qg
+dGhlIA0KPiBpbnRlbmRlZCByZWNpcGllbnQgeW91IGFyZSBub3RpZmllZCB0aGF0IGRpc2Nsb3Np
+bmcsIGNvcHlpbmcsIGRpc3RyaWJ1dGluZyBvciB0YWtpbmcgDQo+IGFueSANCj4gYWN0aW9uIGlu
+IHJlbGlhbmNlIG9uIHRoZSBjb250ZW50cyBvZiB0aGlzIGluZm9ybWF0aW9uIGlzIHN0cmljdGx5
+IHByb2hpYml0ZWQuIFRoZSANCj4gc2VuZGVyIGRvZXMgbm90IGENCj4gDQo+IA0KPiBfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiBhdGgxMGsgbWFpbGlu
+ZyBsaXN0DQo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnDQo+IGh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrDQoNCg0KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
