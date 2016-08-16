@@ -1,21 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from champagne.comp.nus.edu.sg ([137.132.80.90])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZWDq-0006C1-7i
- for ath10k@lists.infradead.org; Tue, 16 Aug 2016 04:43:32 +0000
-Received: from mail-io0-f198.google.com ([209.85.223.198])
- by champagne.comp.nus.edu.sg (Exim) with esmtps (TLSv1:DES-CBC3-SHA:168)
- id 1bZWDP-00036S-Un
- for ath10k@lists.infradead.org; Tue, 16 Aug 2016 12:43:04 +0800
-Received: by mail-io0-f198.google.com with SMTP id f14so203528315ioj.2
- for <ath10k@lists.infradead.org>; Mon, 15 Aug 2016 21:43:03 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20160816035841.M15556@universe.cdotb.ernet.in>
-References: <20160816035841.M15556@universe.cdotb.ernet.in>
-From: Raj Joshi <rajjoshi@comp.nus.edu.sg>
-Date: Tue, 16 Aug 2016 12:42:21 +0800
-Message-ID: <CA+uUJGuJ6jn22NRakSk1jsDv8wHkT7rG-cQmZ7ASTcscgNrsgQ@mail.gmail.com>
+Received: from universe.cdot.in ([49.128.111.121])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bZWQ3-0003HY-FJ
+ for ath10k@lists.infradead.org; Tue, 16 Aug 2016 04:56:08 +0000
+From: "Sridhar Konabathini" <sridhark@cdot.in>
 Subject: Re: Issue with ATH10K driver while bringing up mesh interface
+Date: Tue, 16 Aug 2016 10:22:16 +0530
+Message-Id: <20160816044306.M74655@cdot.in>
+In-Reply-To: <6fe9261b-c662-3b89-b78b-d492e013648a@gentrice.net>
+References: <20160816035841.M15556@universe.cdotb.ernet.in>
+ <6fe9261b-c662-3b89-b78b-d492e013648a@gentrice.net>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,90 +19,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sridhar Kondabathini <sridhark@cdot.in>
-Cc: Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
+To: Horse <horse@gentrice.net>, ath10k@lists.infradead.org, michal.kazior@tieto.com
 
-Hi Sridhar,
-
-Looking at only the error, I can say that you need to load the ath10k
-driver with rawmode=1 parameter. Try the following commands in
-sequence:
-(text following # are comments)
-
-sudo modprobe -r ath10k_pci   # unloads ath10k_pci
-sudo modprobe -r ath10k_core # unloads ath10k_core
-sudo modprobe ath10k_core rawmode=1 # loads back ath10k_core with rawmode=1
-sudo modprobe ath10k_pci # loads back ath10k_pci
-
-I am writing sudo assuming you are a sudoer and not root. You could
-also do it in an auto manner following [1]
-
-Cheers,
-Raj Joshi
-
-[1] https://wiki.archlinux.org/index.php/kernel_modules#Using_files_in_.2Fetc.2Fmodprobe.d.2F
-
-On Tue, Aug 16, 2016 at 12:06 PM, Sridhar Kondabathini <sridhark@cdot.in> wrote:
->
-> Hi,
->    When we are trying to bring up AP to add mesh interfaces on T1024 board with
-> kernel-3.12; ath10k drivers backported from 4.4;hostapd 2.5 for 11AC support is
-> used, then we are getting below error -
->
-> ----------------------------------------------------------------------------------
->
-> T1024# ifconfig mesh0
->
-> mesh0     Link encap:Ethernet  HWaddr 04:f0:21:1b:7d:b6
->           BROADCAST MULTICAST  MTU:1500  Metric:1
->           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
->           TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
->           collisions:0 txqueuelen:1000
->           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
->
-> T1024# ifconfig mesh0 0.0.0.0 up
->
-> [ 8694.385554] ath10k_pci 0001:03:00.0: must load driver with rawmode=1 to add mesh
-> interfaces
->
->
-> ----------------------------------------------------------------------------------
->
-> How to resolve this issue, can you please help on this.
->
->
-> Regards,
->
-> Sridhar Kondabathini,
-> Research engineer,
-> PSG lab,
-> Center for Development Of Telematics
-> 9480484821.
->
->
->
->
-> Disclaimer:
-> ----------
-> This email and any files transmitted with it are confidential and intended solely
-> for
-> the use of the individual or entity to whom they are addressed.  If you are not the
-> intended recipient you are notified that disclosing, copying, distributing or taking
-> any
-> action in reliance on the contents of this information is strictly prohibited. The
-> sender does not a
->
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCiAgIFdlIGFyZSB1c2luZyBmaXJtd2FyZSAtIGZ3IDEwLjIuNC43MC45LTIuIHdoaWxlIGlu
+c2VydGluZyBhdGgxMGtfY29yZS5rbywgCmF0aDEwa19wY2kua28sIHdlIGFyZSBnZXR0aW5nIGJl
+bG93IGluZm8uCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpyb290QHQxMDI0cmRiOi9kZXYv
+c2htIyBpbnNtb2QgYXRoMTBrX2NvcmUua28Kcm9vdEB0MTAyNHJkYjovZGV2L3NobSMgaW5zbW9k
+IGF0aDEwa19wY2kua28KWyA4NTY4LjI3MjA1NF0gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IHBj
+aSBpcnEgbXNpIGludGVycnVwdHMgMSBpcnFfbW9kZSAwIApyZXNldF9tb2RlIDAKcm9vdEB0MTAy
+NHJkYjovZGV2L3NobSMgWyA4NTY5LjY3NTgwNF0gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IHFj
+YTk4OHggaHcyLjAgCigweDQxMDAwMTZjLCAweDA0MzIwMmZmIHN1YiAwMDAwOjAwMDApIGZ3IDEw
+LjIuNC43MC45LTIgZndhcGkgNSBiZGFwaSAxIGh0dC12ZXIgMi4xIAp3bWktb3AgNSBodHQtb3Ag
+MiBjYWwgb3RwIG1heC1zdGEgMTI4IHJhdyAwIGh3Y3J5cHRvIDEgZmVhdHVyZXMgbm8tcDJwLHJh
+dy1tb2RlClsgODU2OS42OTQ5NzRdIGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBkZWJ1ZyAwIGRl
+YnVnZnMgMCB0cmFjaW5nIDAgZGZzIDEgdGVzdG1vZGUgMAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQoKSG93IHRvIHNldCByYXdtb2RlPTEgd2hpbGUgaW5zZXJ0aW5nIHRoZSBhdGgxMGsgbW9k
+dWxlLiBDYW4geW91IHBsZWFzZSBoZWxwIG9uIHRoaXMuCgoKUmVnYXJkcywKClNyaWRoYXIKCgpP
+biBUdWUsIDE2IEF1ZyAyMDE2IDEyOjIxOjQ4ICswODAwLCBIb3JzZSB3cm90ZQo+IEhpCj4gV2hp
+Y2ggZmlybXdhcmUgdmVyc2lvbiBhcmUgeW91IHVzaW5nIG5vdz8KPiBJIHRoaW5rICJSQVciIG1v
+ZGUgaXMgZGlzYWJsZWQgYWZ0ZXIgZmlybXdhcmUgMTAuNCBubyBtYXR0ZXIgQ1QgZmlybXdhcmUg
+Cj4gb3Igb2ZmaWNpYWwgZmlybXdhcmUuCj4gaWYgeW91IGFyZSB1c2luZyBmaXJtd2FyZSAxMC4y
+LCB5b3UgbWlnaHQgbmVlZCB0byBhZGQgcmF3bW9kZT0xIHdoaWxlIAo+IGluc21vZCBhdGgxMGtf
+Y29yZS5rbwo+IAo+IFRoYW5rcwo+IAo+IFNyaWRoYXIgS29uZGFiYXRoaW5pIOaWvCAyMDE2Lzgv
+MTYg5LiL5Y2IIDEyOjA2IOWvq+mBkzoKPiA+IEhpLAo+ID4gICAgIFdoZW4gd2UgYXJlIHRyeWlu
+ZyB0byBicmluZyB1cCBBUCB0byBhZGQgbWVzaCBpbnRlcmZhY2VzIG9uIFQxMDI0IGJvYXJkIHdp
+dGgKPiA+IGtlcm5lbC0zLjEyOyBhdGgxMGsgZHJpdmVycyBiYWNrcG9ydGVkIGZyb20gNC40O2hv
+c3RhcGQgMi41IGZvciAxMUFDIHN1cHBvcnQgaXMKPiA+IHVzZWQsIHRoZW4gd2UgYXJlIGdldHRp
+bmcgYmVsb3cgZXJyb3IgLQo+ID4KPiA+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCi0tCj4gPgo+
+ID4gVDEwMjQjIGlmY29uZmlnIG1lc2gwCj4gPgo+ID4gbWVzaDAgICAgIExpbmsgZW5jYXA6RXRo
+ZXJuZXQgIEhXYWRkciAwNDpmMDoyMToxYjo3ZDpiNgo+ID4gICAgICAgICAgICBCUk9BRENBU1Qg
+TVVMVElDQVNUICBNVFU6MTUwMCAgTWV0cmljOjEKPiA+ICAgICAgICAgICAgUlggcGFja2V0czow
+IGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVuczowIGZyYW1lOjAKPiA+ICAgICAgICAgICAgVFgg
+cGFja2V0czowIGVycm9yczowIGRyb3BwZWQ6MCBvdmVycnVuczowIGNhcnJpZXI6MAo+ID4gICAg
+ICAgICAgICBjb2xsaXNpb25zOjAgdHhxdWV1ZWxlbjoxMDAwCj4gPiAgICAgICAgICAgIFJYIGJ5
+dGVzOjAgKDAuMCBCKSAgVFggYnl0ZXM6MCAoMC4wIEIpCj4gPgo+ID4gVDEwMjQjIGlmY29uZmln
+IG1lc2gwIDAuMC4wLjAgdXAKPiA+Cj4gPiBbIDg2OTQuMzg1NTU0XSBhdGgxMGtfcGNpIDAwMDE6
+MDM6MDAuMDogbXVzdCBsb2FkIGRyaXZlciB3aXRoIHJhd21vZGU9MSB0byBhZGQgCm1lc2gKPiA+
+IGludGVyZmFjZXMKPiA+Cj4gPgo+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KLS0KPiA+Cj4g
+PiBIb3cgdG8gcmVzb2x2ZSB0aGlzIGlzc3VlLCBjYW4geW91IHBsZWFzZSBoZWxwIG9uIHRoaXMu
+Cj4gPgo+ID4KPiA+IFJlZ2FyZHMsCj4gPgo+ID4gU3JpZGhhciBLb25kYWJhdGhpbmksCj4gPiBS
+ZXNlYXJjaCBlbmdpbmVlciwKPiA+IFBTRyBsYWIsCj4gPiBDZW50ZXIgZm9yIERldmVsb3BtZW50
+IE9mIFRlbGVtYXRpY3MKPiA+IDk0ODA0ODQ4MjEuCj4gPgo+ID4KPiA+Cj4gPgo+ID4gRGlzY2xh
+aW1lcjoKPiA+IC0tLS0tLS0tLS0KPiA+IFRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFuc21p
+dHRlZCB3aXRoIGl0IGFyZSBjb25maWRlbnRpYWwgYW5kIGludGVuZGVkIApzb2xlbHkKPiA+IGZv
+cgo+ID4gdGhlIHVzZSBvZiB0aGUgaW5kaXZpZHVhbCBvciBlbnRpdHkgdG8gd2hvbSB0aGV5IGFy
+ZSBhZGRyZXNzZWQuICBJZiB5b3UgYXJlIG5vdCAKdGhlCj4gPiBpbnRlbmRlZCByZWNpcGllbnQg
+eW91IGFyZSBub3RpZmllZCB0aGF0IGRpc2Nsb3NpbmcsIGNvcHlpbmcsIGRpc3RyaWJ1dGluZyBv
+ciAKdGFraW5nCj4gPiBhbnkKPiA+IGFjdGlvbiBpbiByZWxpYW5jZSBvbiB0aGUgY29udGVudHMg
+b2YgdGhpcyBpbmZvcm1hdGlvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiAKVGhlCj4gPiBzZW5k
+ZXIgZG9lcyBub3QgYQo+ID4KPiA+Cj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwo+ID4gYXRoMTBrIG1haWxpbmcgbGlzdAo+ID4gYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKPiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCgoKUmVnYXJkcywKClNyaWRoYXIgS29uZGFiYXRoaW5pLApSZXNlYXJjaCBl
+bmdpbmVlciwKUFNHIGxhYiwKQ2VudGVyIGZvciBEZXZlbG9wbWVudCBPZiBUZWxlbWF0aWNzCjk0
+ODA0ODQ4MjEuCgoKCgpEaXNjbGFpbWVyOgotLS0tLS0tLS0tClRoaXMgZW1haWwgYW5kIGFueSBm
+aWxlcyB0cmFuc21pdHRlZCB3aXRoIGl0IGFyZSBjb25maWRlbnRpYWwgYW5kIGludGVuZGVkIHNv
+bGVseSAKZm9yIAp0aGUgdXNlIG9mIHRoZSBpbmRpdmlkdWFsIG9yIGVudGl0eSB0byB3aG9tIHRo
+ZXkgYXJlIGFkZHJlc3NlZC7CoCBJZiB5b3UgYXJlIG5vdCB0aGUgCmludGVuZGVkIHJlY2lwaWVu
+dCB5b3UgYXJlIG5vdGlmaWVkIHRoYXQgZGlzY2xvc2luZywgY29weWluZywgZGlzdHJpYnV0aW5n
+IG9yIHRha2luZyAKYW55IAphY3Rpb24gaW4gcmVsaWFuY2Ugb24gdGhlIGNvbnRlbnRzIG9mIHRo
+aXMgaW5mb3JtYXRpb24gaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gVGhlIApzZW5kZXIgZG9lcyBu
+b3QgYQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
