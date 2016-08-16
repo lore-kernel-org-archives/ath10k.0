@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZaea-0007e8-Uu
- for ath10k@lists.infradead.org; Tue, 16 Aug 2016 09:27:27 +0000
-From: "Sridhar Konabathini" <sridhark@cdot.in>
-Subject: Re: Issue with ATH10K driver while bringing up mesh interface
-Date: Tue, 16 Aug 2016 14:53:09 +0530
-Message-Id: <20160816091707.M1726@cdot.in>
-In-Reply-To: <8ec31d40-4a01-ed24-ed2e-3be351aab5d5@gentrice.net>
-References: <20160816035841.M15556@universe.cdotb.ernet.in>
- <6fe9261b-c662-3b89-b78b-d492e013648a@gentrice.net>
- <20160816044306.M74655@cdot.in>
- <8ec31d40-4a01-ed24-ed2e-3be351aab5d5@gentrice.net>
+Received: from champagne.comp.nus.edu.sg ([137.132.80.90])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bZfHv-00041J-Kk
+ for ath10k@lists.infradead.org; Tue, 16 Aug 2016 14:24:20 +0000
+Received: from mail-it0-f69.google.com ([209.85.214.69])
+ by champagne.comp.nus.edu.sg (Exim) with esmtps (TLSv1:DES-CBC3-SHA:168)
+ id 1bZfHY-0006cZ-Mr
+ for ath10k@lists.infradead.org; Tue, 16 Aug 2016 22:23:57 +0800
+Received: by mail-it0-f69.google.com with SMTP id d65so252333625ith.0
+ for <ath10k@lists.infradead.org>; Tue, 16 Aug 2016 07:23:56 -0700 (PDT)
 MIME-Version: 1.0
+From: Raj Joshi <rajjoshi@comp.nus.edu.sg>
+Date: Tue, 16 Aug 2016 22:23:14 +0800
+Message-ID: <CA+uUJGs7HGamb3duZ_9PYfx++43F3UWE2nO4C3AN9Saen=iMrA@mail.gmail.com>
+Subject: DFS radar pattern detection in different regions
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,119 +22,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Horse <horse@gentrice.net>, ath10k@lists.infradead.org, michal.kazior@tieto.com, Raj Joshi <rajjoshi@comp.nus.edu.sg>
+To: ath10k <ath10k@lists.infradead.org>, wireless-regdb@lists.infradead.org
 
-SGksCiAgIFRoYW5rcyBmb3IgeW91ciBzdXBwb3J0LCBub3cgd2UgYXJlIGFibGUgdG8gYnJpbmcg
-dXAgbWVzaCBpbnRlcmZhY2UuCgpCdXQgd2hlbiB3ZSBhcmUgdHJ5aW5nIHRvIGNyZWF0ZSBhIG1l
-c2ggcG9pbnQgdXNpbmcgd3BhX3N1cHBsaWNhbnQsIHRoZW4gd2UgYXJlIApnZXR0aW5nIGVycm9y
-IGFzIHRvbyBsYXJnZSBtb2RlICh2YWx1ZT01IG1heF92YWx1ZT00KQotLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0KCnQxMDI0cmRiIyB3cGFfc3VwcGxpY2FudCAtRG5sODAyMTEgLWltZXNoMCAtYyAv
-ZGV2L3NobS93cGFfbWVzaDAuY29uZgoKd2UgYXJlIGdldHRpbmcgYmVsb3cgZXJyb3IKClN1Y2Nl
-c3NmdWxseSBpbml0aWFsaXplZCB3cGFfc3VwcGxpY2FudApMaW5lIDQ6IHRvbyBsYXJnZSBtb2Rl
-ICh2YWx1ZT01IG1heF92YWx1ZT00KQpMaW5lIDQ6IGZhaWxlZCB0byBwYXJzZSBtb2RlICc1Jy4K
-TGluZSA2OiBpbnZhbGlkIGtleV9tZ210ICdTQUUnCkxpbmUgNjogbm8ga2V5X21nbXQgdmFsdWVz
-IGNvbmZpZ3VyZWQuCkxpbmUgNjogZmFpbGVkIHRvIHBhcnNlIGtleV9tZ210ICdTQUUnLgpMaW5l
-IDg6IGZhaWxlZCB0byBwYXJzZSBuZXR3b3JrIGJsb2NrLgpGYWlsZWQgdG8gcmVhZCBvciBwYXJz
-ZSBjb25maWd1cmF0aW9uICcvZGV2L3NobS93cGFfbWVzaDAuY29uZicuCi0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQoKdDEwMjRyZGIjIHZpIG1lc2gwLmNvbmYKCi0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQojIHNlY3VyZSAoU0FFICsgQU1QRSkgbmV0d29yawpuZXR3b3JrPXsKICAgICAgICBzc2lk
-PSJIQVAtTUVTSCIKICAgICAgICBtb2RlPTUKICAgICAgICBmcmVxdWVuY3k9MjQzMgogICAgICAg
-IGtleV9tZ210PVNBRQogICAgICAgIHBzaz0iY2RvdDEyMzQiCn0KLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCgpIb3cgdG8gcmVzb2x2ZSB0aGlzIGlzc3VlLCBjYW4geW91IHBsZWFzZSBoZWxwIG9u
-IHRoaXMKClJlZ2FyZHMsCnNyaWRoYXIKCgoKCk9uIFR1ZSwgMTYgQXVnIDIwMTYgMTM6MzM6MDYg
-KzA4MDAsIEhvcnNlIHdyb3RlCj4gSGkKPiAKPiBQbGVhc2UgdHJ5ICAiaW5zbW9kIGF0aDEwa19j
-b3JlLmtvIHJhd21vZGU9MSIKPiAKPiBUaGFua3MKPiAKPiBTcmlkaGFyIEtvbmFiYXRoaW5pIOaW
-vCAyMDE2LzgvMTYg5LiL5Y2IIDEyOjUyIOWvq+mBkzoKPiA+IEhpLAo+ID4gICAgIFdlIGFyZSB1
-c2luZyBmaXJtd2FyZSAtIGZ3IDEwLjIuNC43MC45LTIuIHdoaWxlIGluc2VydGluZyBhdGgxMGtf
-Y29yZS5rbywKPiA+IGF0aDEwa19wY2kua28sIHdlIGFyZSBnZXR0aW5nIGJlbG93IGluZm8uCj4g
-Pgo+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KLS0KPiA+Cj4gPiByb290QHQxMDI0cmRiOi9k
-ZXYvc2htIyBpbnNtb2QgYXRoMTBrX2NvcmUua28KPiA+IHJvb3RAdDEwMjRyZGI6L2Rldi9zaG0j
-IGluc21vZCBhdGgxMGtfcGNpLmtvCj4gPiBbIDg1NjguMjcyMDU0XSBhdGgxMGtfcGNpIDAwMDE6
-MDM6MDAuMDogcGNpIGlycSBtc2kgaW50ZXJydXB0cyAxIGlycV9tb2RlIDAKPiA+IHJlc2V0X21v
-ZGUgMAo+ID4gcm9vdEB0MTAyNHJkYjovZGV2L3NobSMgWyA4NTY5LjY3NTgwNF0gYXRoMTBrX3Bj
-aSAwMDAxOjAzOjAwLjA6IHFjYTk4OHggaHcyLjAKPiA+ICgweDQxMDAwMTZjLCAweDA0MzIwMmZm
-IHN1YiAwMDAwOjAwMDApIGZ3IDEwLjIuNC43MC45LTIgZndhcGkgNSBiZGFwaSAxIGh0dC12ZXIg
-CjIuMQo+ID4gd21pLW9wIDUgaHR0LW9wIDIgY2FsIG90cCBtYXgtc3RhIDEyOCByYXcgMCBod2Ny
-eXB0byAxIGZlYXR1cmVzIG5vLXAycCxyYXctbW9kZQo+ID4gWyA4NTY5LjY5NDk3NF0gYXRoMTBr
-X3BjaSAwMDAxOjAzOjAwLjA6IGRlYnVnIDAgZGVidWdmcyAwIHRyYWNpbmcgMCBkZnMgMSAKdGVz
-dG1vZGUgMAo+ID4KPiA+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCi0tCj4gPgo+ID4gSG93IHRv
-IHNldCByYXdtb2RlPTEgd2hpbGUgaW5zZXJ0aW5nIHRoZSBhdGgxMGsgbW9kdWxlLiBDYW4geW91
-IHBsZWFzZSBoZWxwIG9uIAp0aGlzLgo+ID4KPiA+Cj4gPiBSZWdhcmRzLAo+ID4KPiA+IFNyaWRo
-YXIKPiA+Cj4gPgo+ID4gT24gVHVlLCAxNiBBdWcgMjAxNiAxMjoyMTo0OCArMDgwMCwgSG9yc2Ug
-d3JvdGUKPiA+PiBIaQo+ID4+IFdoaWNoIGZpcm13YXJlIHZlcnNpb24gYXJlIHlvdSB1c2luZyBu
-b3c/Cj4gPj4gSSB0aGluayAiUkFXIiBtb2RlIGlzIGRpc2FibGVkIGFmdGVyIGZpcm13YXJlIDEw
-LjQgbm8gbWF0dGVyIENUIGZpcm13YXJlCj4gPj4gb3Igb2ZmaWNpYWwgZmlybXdhcmUuCj4gPj4g
-aWYgeW91IGFyZSB1c2luZyBmaXJtd2FyZSAxMC4yLCB5b3UgbWlnaHQgbmVlZCB0byBhZGQgcmF3
-bW9kZT0xIHdoaWxlCj4gPj4gaW5zbW9kIGF0aDEwa19jb3JlLmtvCj4gPj4KPiA+PiBUaGFua3MK
-PiA+Pgo+ID4+IFNyaWRoYXIgS29uZGFiYXRoaW5pIOaWvCAyMDE2LzgvMTYg5LiL5Y2IIDEyOjA2
-IOWvq+mBkzoKPiA+Pj4gSGksCj4gPj4+ICAgICAgV2hlbiB3ZSBhcmUgdHJ5aW5nIHRvIGJyaW5n
-IHVwIEFQIHRvIGFkZCBtZXNoIGludGVyZmFjZXMgb24gVDEwMjQgYm9hcmQgCndpdGgKPiA+Pj4g
-a2VybmVsLTMuMTI7IGF0aDEwayBkcml2ZXJzIGJhY2twb3J0ZWQgZnJvbSA0LjQ7aG9zdGFwZCAy
-LjUgZm9yIDExQUMgc3VwcG9ydCAKaXMKPiA+Pj4gdXNlZCwgdGhlbiB3ZSBhcmUgZ2V0dGluZyBi
-ZWxvdyBlcnJvciAtCj4gPj4+Cj4gPj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQotLQo+ID4gLS0K
-PiA+Pj4gVDEwMjQjIGlmY29uZmlnIG1lc2gwCj4gPj4+Cj4gPj4+IG1lc2gwICAgICBMaW5rIGVu
-Y2FwOkV0aGVybmV0ICBIV2FkZHIgMDQ6ZjA6MjE6MWI6N2Q6YjYKPiA+Pj4gICAgICAgICAgICAg
-QlJPQURDQVNUIE1VTFRJQ0FTVCAgTVRVOjE1MDAgIE1ldHJpYzoxCj4gPj4+ICAgICAgICAgICAg
-IFJYIHBhY2tldHM6MCBlcnJvcnM6MCBkcm9wcGVkOjAgb3ZlcnJ1bnM6MCBmcmFtZTowCj4gPj4+
-ICAgICAgICAgICAgIFRYIHBhY2tldHM6MCBlcnJvcnM6MCBkcm9wcGVkOjAgb3ZlcnJ1bnM6MCBj
-YXJyaWVyOjAKPiA+Pj4gICAgICAgICAgICAgY29sbGlzaW9uczowIHR4cXVldWVsZW46MTAwMAo+
-ID4+PiAgICAgICAgICAgICBSWCBieXRlczowICgwLjAgQikgIFRYIGJ5dGVzOjAgKDAuMCBCKQo+
-ID4+Pgo+ID4+PiBUMTAyNCMgaWZjb25maWcgbWVzaDAgMC4wLjAuMCB1cAo+ID4+Pgo+ID4+PiBb
-IDg2OTQuMzg1NTU0XSBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogbXVzdCBsb2FkIGRyaXZlciB3
-aXRoIHJhd21vZGU9MSB0byBhZGQKPiA+IG1lc2gKPiA+Pj4gaW50ZXJmYWNlcwo+ID4+Pgo+ID4+
-Pgo+ID4+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KLS0KPiA+IC0tCj4gPj4+IEhvdyB0byByZXNv
-bHZlIHRoaXMgaXNzdWUsIGNhbiB5b3UgcGxlYXNlIGhlbHAgb24gdGhpcy4KPiA+Pj4KPiA+Pj4K
-PiA+Pj4gUmVnYXJkcywKPiA+Pj4KPiA+Pj4gU3JpZGhhciBLb25kYWJhdGhpbmksCj4gPj4+IFJl
-c2VhcmNoIGVuZ2luZWVyLAo+ID4+PiBQU0cgbGFiLAo+ID4+PiBDZW50ZXIgZm9yIERldmVsb3Bt
-ZW50IE9mIFRlbGVtYXRpY3MKPiA+Pj4gOTQ4MDQ4NDgyMS4KPiA+Pj4KPiA+Pj4KPiA+Pj4KPiA+
-Pj4KPiA+Pj4gRGlzY2xhaW1lcjoKPiA+Pj4gLS0tLS0tLS0tLQo+ID4+PiBUaGlzIGVtYWlsIGFu
-ZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQgd2l0aCBpdCBhcmUgY29uZmlkZW50aWFsIGFuZCBpbnRl
-bmRlZAo+ID4gc29sZWx5Cj4gPj4+IGZvcgo+ID4+PiB0aGUgdXNlIG9mIHRoZSBpbmRpdmlkdWFs
-IG9yIGVudGl0eSB0byB3aG9tIHRoZXkgYXJlIGFkZHJlc3NlZC4gIElmIHlvdSBhcmUgCm5vdAo+
-ID4gdGhlCj4gPj4+IGludGVuZGVkIHJlY2lwaWVudCB5b3UgYXJlIG5vdGlmaWVkIHRoYXQgZGlz
-Y2xvc2luZywgY29weWluZywgZGlzdHJpYnV0aW5nIG9yCj4gPiB0YWtpbmcKPiA+Pj4gYW55Cj4g
-Pj4+IGFjdGlvbiBpbiByZWxpYW5jZSBvbiB0aGUgY29udGVudHMgb2YgdGhpcyBpbmZvcm1hdGlv
-biBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLgo+ID4gVGhlCj4gPj4+IHNlbmRlciBkb2VzIG5vdCBh
-Cj4gPj4+Cj4gPj4+Cj4gPj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCj4gPj4+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiA+Pj4gYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKPiA+Pj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hdGgxMGsKPiA+Cj4gPiBSZWdhcmRzLAo+ID4KPiA+IFNyaWRoYXIgS29uZGFiYXRoaW5p
-LAo+ID4gUmVzZWFyY2ggZW5naW5lZXIsCj4gPiBQU0cgbGFiLAo+ID4gQ2VudGVyIGZvciBEZXZl
-bG9wbWVudCBPZiBUZWxlbWF0aWNzCj4gPiA5NDgwNDg0ODIxLgo+ID4KPiA+Cj4gPgo+ID4KPiA+
-IERpc2NsYWltZXI6Cj4gPiAtLS0tLS0tLS0tCj4gPiBUaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMg
-dHJhbnNtaXR0ZWQgd2l0aCBpdCBhcmUgY29uZmlkZW50aWFsIGFuZCBpbnRlbmRlZCAKc29sZWx5
-Cj4gPiBmb3IKPiA+IHRoZSB1c2Ugb2YgdGhlIGluZGl2aWR1YWwgb3IgZW50aXR5IHRvIHdob20g
-dGhleSBhcmUgYWRkcmVzc2VkLiAgSWYgeW91IGFyZSBub3QgCnRoZQo+ID4gaW50ZW5kZWQgcmVj
-aXBpZW50IHlvdSBhcmUgbm90aWZpZWQgdGhhdCBkaXNjbG9zaW5nLCBjb3B5aW5nLCBkaXN0cmli
-dXRpbmcgb3IgCnRha2luZwo+ID4gYW55Cj4gPiBhY3Rpb24gaW4gcmVsaWFuY2Ugb24gdGhlIGNv
-bnRlbnRzIG9mIHRoaXMgaW5mb3JtYXRpb24gaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gClRoZQo+
-ID4gc2VuZGVyIGRvZXMgbm90IGEKPiA+Cj4gPgo+ID4gX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KPiA+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiA+IGF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2F0aDEwawo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsKCgpSZWdhcmRzLAoKU3JpZGhhciBLb25kYWJhdGhpbmksClJlc2VhcmNoIGVuZ2luZWVy
-LApQU0cgbGFiLApDZW50ZXIgZm9yIERldmVsb3BtZW50IE9mIFRlbGVtYXRpY3MKOTQ4MDQ4NDgy
-MS4KCgoKCkRpc2NsYWltZXI6Ci0tLS0tLS0tLS0KVGhpcyBlbWFpbCBhbmQgYW55IGZpbGVzIHRy
-YW5zbWl0dGVkIHdpdGggaXQgYXJlIGNvbmZpZGVudGlhbCBhbmQgaW50ZW5kZWQgc29sZWx5IApm
-b3IgCnRoZSB1c2Ugb2YgdGhlIGluZGl2aWR1YWwgb3IgZW50aXR5IHRvIHdob20gdGhleSBhcmUg
-YWRkcmVzc2VkLsKgIElmIHlvdSBhcmUgbm90IHRoZSAKaW50ZW5kZWQgcmVjaXBpZW50IHlvdSBh
-cmUgbm90aWZpZWQgdGhhdCBkaXNjbG9zaW5nLCBjb3B5aW5nLCBkaXN0cmlidXRpbmcgb3IgdGFr
-aW5nIAphbnkgCmFjdGlvbiBpbiByZWxpYW5jZSBvbiB0aGUgY29udGVudHMgb2YgdGhpcyBpbmZv
-cm1hdGlvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBUaGUgCnNlbmRlciBkb2VzIG5vdCBhCgoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
-aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hi,
+
+I am aware that DFS scan and pattern detection is possible in ath10k
+or to be precise it is implemented in the ath kernel module. From the
+source code (dfs_pattern_detector.c), I can see that there are
+patterns specific to ETSI, FCC and JP regulatory regions.
+
+I got some conceptual questions regarding the pattern detection and regulations:
+
+Q.1 For a given country, the wireless-regdb [1] specifies one of these
+3 regions for DFS. For example, "country AE: DFS-FCC" or "country AF:
+DFS-ETSI". What does this mean? Does it mean that country AE follows
+DFS rules of FCC and that country AF follows those of ETSI?
+
+Q.2 If the above is the case, then can I run ath10k "correctly" as
+well as "legally" in country AE, given that pattern detection is
+implemented for FCC? When I say "correctly", I mean that pattern
+detection will not have any false negatives. And when I say "legally",
+I mean that my ath10k device would comply with the local regulations
+of country AE, given that my device is FCC DFS compliant.
+
+It is little hard to believe that all the world's radar patterns could
+be covered by 3 regulatory standards (FCC, ETSI and JP). Also if that
+was the case, then ath10k already does a very good job with DFS
+channels and the new swanky 802.11ac devices such as [2] are simply
+not worth their price!
+
+I would appreciate if someone can provide a clarification around this.
+
+Thanks,
+Raj
+
+[1] http://git.kernel.org/cgit/linux/kernel/git/sforshee/wireless-regdb.git/tree/db.txt
+[2] https://www.kickstarter.com/projects/portalwifi/portal-turbocharged-wifi/description
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
