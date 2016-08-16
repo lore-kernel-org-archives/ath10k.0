@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from youngberry.canonical.com ([91.189.89.112])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZIF4-0002uB-6i
- for ath10k@lists.infradead.org; Mon, 15 Aug 2016 13:47:50 +0000
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ath10k: fix memory leak on caldata on error exit path
-Date: Mon, 15 Aug 2016 14:46:25 +0100
-Message-Id: <1471268785-11576-1-git-send-email-colin.king@canonical.com>
+Received: from universe.cdot.in ([49.128.111.121])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bZVjo-0002xZ-5s
+ for ath10k@lists.infradead.org; Tue, 16 Aug 2016 04:12:30 +0000
+From: "Sridhar Kondabathini" <sridhark@cdot.in>
+Subject: Issue with ATH10K driver while bringing up mesh interface
+Date: Tue, 16 Aug 2016 09:36:35 +0530
+Message-Id: <20160816035841.M15556@universe.cdotb.ernet.in>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,41 +16,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+To: ath10k@lists.infradead.org, michal.kazior@tieto.com
 
-From: Colin Ian King <colin.king@canonical.com>
-
-caldata is not being free'd on the error exit path, causing
-a memory leak. kfree it to fix the leak.
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 9a22c47..886337c 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2725,6 +2725,7 @@ static int ath10k_pci_hif_fetch_cal_eeprom(struct ath10k *ar, void **data,
- 	return 0;
- 
- err_free:
-+	kfree(caldata);
- 	kfree(data);
- 
- 	return -EINVAL;
--- 
-2.8.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksIAogICBXaGVuIHdlIGFyZSB0cnlpbmcgdG8gYnJpbmcgdXAgQVAgdG8gYWRkIG1lc2ggaW50
+ZXJmYWNlcyBvbiBUMTAyNCBib2FyZCB3aXRoIAprZXJuZWwtMy4xMjsgYXRoMTBrIGRyaXZlcnMg
+YmFja3BvcnRlZCBmcm9tIDQuNDtob3N0YXBkIDIuNSBmb3IgMTFBQyBzdXBwb3J0IGlzIAp1c2Vk
+LCB0aGVuIHdlIGFyZSBnZXR0aW5nIGJlbG93IGVycm9yIC0gCgotLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCgpUMTAyNCMgaWZjb25maWcgbWVzaDAKCm1lc2gwICAgICBMaW5rIGVuY2FwOkV0aGVy
+bmV0ICBIV2FkZHIgMDQ6ZjA6MjE6MWI6N2Q6YjYKICAgICAgICAgIEJST0FEQ0FTVCBNVUxUSUNB
+U1QgIE1UVToxNTAwICBNZXRyaWM6MQogICAgICAgICAgUlggcGFja2V0czowIGVycm9yczowIGRy
+b3BwZWQ6MCBvdmVycnVuczowIGZyYW1lOjAKICAgICAgICAgIFRYIHBhY2tldHM6MCBlcnJvcnM6
+MCBkcm9wcGVkOjAgb3ZlcnJ1bnM6MCBjYXJyaWVyOjAKICAgICAgICAgIGNvbGxpc2lvbnM6MCB0
+eHF1ZXVlbGVuOjEwMDAKICAgICAgICAgIFJYIGJ5dGVzOjAgKDAuMCBCKSAgVFggYnl0ZXM6MCAo
+MC4wIEIpCgpUMTAyNCMgaWZjb25maWcgbWVzaDAgMC4wLjAuMCB1cAoKWyA4Njk0LjM4NTU1NF0g
+YXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IG11c3QgbG9hZCBkcml2ZXIgd2l0aCByYXdtb2RlPTEg
+dG8gYWRkIG1lc2ggCmludGVyZmFjZXMKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpIb3cg
+dG8gcmVzb2x2ZSB0aGlzIGlzc3VlLCBjYW4geW91IHBsZWFzZSBoZWxwIG9uIHRoaXMuIAoKClJl
+Z2FyZHMsCgpTcmlkaGFyIEtvbmRhYmF0aGluaSwKUmVzZWFyY2ggZW5naW5lZXIsClBTRyBsYWIs
+CkNlbnRlciBmb3IgRGV2ZWxvcG1lbnQgT2YgVGVsZW1hdGljcwo5NDgwNDg0ODIxLgoKCgoKRGlz
+Y2xhaW1lcjoKLS0tLS0tLS0tLQpUaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQg
+d2l0aCBpdCBhcmUgY29uZmlkZW50aWFsIGFuZCBpbnRlbmRlZCBzb2xlbHkgCmZvciAKdGhlIHVz
+ZSBvZiB0aGUgaW5kaXZpZHVhbCBvciBlbnRpdHkgdG8gd2hvbSB0aGV5IGFyZSBhZGRyZXNzZWQu
+wqAgSWYgeW91IGFyZSBub3QgdGhlIAppbnRlbmRlZCByZWNpcGllbnQgeW91IGFyZSBub3RpZmll
+ZCB0aGF0IGRpc2Nsb3NpbmcsIGNvcHlpbmcsIGRpc3RyaWJ1dGluZyBvciB0YWtpbmcgCmFueSAK
+YWN0aW9uIGluIHJlbGlhbmNlIG9uIHRoZSBjb250ZW50cyBvZiB0aGlzIGluZm9ybWF0aW9uIGlz
+IHN0cmljdGx5IHByb2hpYml0ZWQuIFRoZSAKc2VuZGVyIGRvZXMgbm90IGEKCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
+CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
