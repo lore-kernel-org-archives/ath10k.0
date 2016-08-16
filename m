@@ -1,13 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZVjo-0002xZ-5s
- for ath10k@lists.infradead.org; Tue, 16 Aug 2016 04:12:30 +0000
-From: "Sridhar Kondabathini" <sridhark@cdot.in>
-Subject: Issue with ATH10K driver while bringing up mesh interface
-Date: Tue, 16 Aug 2016 09:36:35 +0530
-Message-Id: <20160816035841.M15556@universe.cdotb.ernet.in>
+Received: from champagne.comp.nus.edu.sg ([137.132.80.90])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bZWDq-0006C1-7i
+ for ath10k@lists.infradead.org; Tue, 16 Aug 2016 04:43:32 +0000
+Received: from mail-io0-f198.google.com ([209.85.223.198])
+ by champagne.comp.nus.edu.sg (Exim) with esmtps (TLSv1:DES-CBC3-SHA:168)
+ id 1bZWDP-00036S-Un
+ for ath10k@lists.infradead.org; Tue, 16 Aug 2016 12:43:04 +0800
+Received: by mail-io0-f198.google.com with SMTP id f14so203528315ioj.2
+ for <ath10k@lists.infradead.org>; Mon, 15 Aug 2016 21:43:03 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20160816035841.M15556@universe.cdotb.ernet.in>
+References: <20160816035841.M15556@universe.cdotb.ernet.in>
+From: Raj Joshi <rajjoshi@comp.nus.edu.sg>
+Date: Tue, 16 Aug 2016 12:42:21 +0800
+Message-ID: <CA+uUJGuJ6jn22NRakSk1jsDv8wHkT7rG-cQmZ7ASTcscgNrsgQ@mail.gmail.com>
+Subject: Re: Issue with ATH10K driver while bringing up mesh interface
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,37 +24,90 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, michal.kazior@tieto.com
+To: Sridhar Kondabathini <sridhark@cdot.in>
+Cc: Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
 
-SGksIAogICBXaGVuIHdlIGFyZSB0cnlpbmcgdG8gYnJpbmcgdXAgQVAgdG8gYWRkIG1lc2ggaW50
-ZXJmYWNlcyBvbiBUMTAyNCBib2FyZCB3aXRoIAprZXJuZWwtMy4xMjsgYXRoMTBrIGRyaXZlcnMg
-YmFja3BvcnRlZCBmcm9tIDQuNDtob3N0YXBkIDIuNSBmb3IgMTFBQyBzdXBwb3J0IGlzIAp1c2Vk
-LCB0aGVuIHdlIGFyZSBnZXR0aW5nIGJlbG93IGVycm9yIC0gCgotLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCgpUMTAyNCMgaWZjb25maWcgbWVzaDAKCm1lc2gwICAgICBMaW5rIGVuY2FwOkV0aGVy
-bmV0ICBIV2FkZHIgMDQ6ZjA6MjE6MWI6N2Q6YjYKICAgICAgICAgIEJST0FEQ0FTVCBNVUxUSUNB
-U1QgIE1UVToxNTAwICBNZXRyaWM6MQogICAgICAgICAgUlggcGFja2V0czowIGVycm9yczowIGRy
-b3BwZWQ6MCBvdmVycnVuczowIGZyYW1lOjAKICAgICAgICAgIFRYIHBhY2tldHM6MCBlcnJvcnM6
-MCBkcm9wcGVkOjAgb3ZlcnJ1bnM6MCBjYXJyaWVyOjAKICAgICAgICAgIGNvbGxpc2lvbnM6MCB0
-eHF1ZXVlbGVuOjEwMDAKICAgICAgICAgIFJYIGJ5dGVzOjAgKDAuMCBCKSAgVFggYnl0ZXM6MCAo
-MC4wIEIpCgpUMTAyNCMgaWZjb25maWcgbWVzaDAgMC4wLjAuMCB1cAoKWyA4Njk0LjM4NTU1NF0g
-YXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IG11c3QgbG9hZCBkcml2ZXIgd2l0aCByYXdtb2RlPTEg
-dG8gYWRkIG1lc2ggCmludGVyZmFjZXMKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpIb3cg
-dG8gcmVzb2x2ZSB0aGlzIGlzc3VlLCBjYW4geW91IHBsZWFzZSBoZWxwIG9uIHRoaXMuIAoKClJl
-Z2FyZHMsCgpTcmlkaGFyIEtvbmRhYmF0aGluaSwKUmVzZWFyY2ggZW5naW5lZXIsClBTRyBsYWIs
-CkNlbnRlciBmb3IgRGV2ZWxvcG1lbnQgT2YgVGVsZW1hdGljcwo5NDgwNDg0ODIxLgoKCgoKRGlz
-Y2xhaW1lcjoKLS0tLS0tLS0tLQpUaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQg
-d2l0aCBpdCBhcmUgY29uZmlkZW50aWFsIGFuZCBpbnRlbmRlZCBzb2xlbHkgCmZvciAKdGhlIHVz
-ZSBvZiB0aGUgaW5kaXZpZHVhbCBvciBlbnRpdHkgdG8gd2hvbSB0aGV5IGFyZSBhZGRyZXNzZWQu
-wqAgSWYgeW91IGFyZSBub3QgdGhlIAppbnRlbmRlZCByZWNpcGllbnQgeW91IGFyZSBub3RpZmll
-ZCB0aGF0IGRpc2Nsb3NpbmcsIGNvcHlpbmcsIGRpc3RyaWJ1dGluZyBvciB0YWtpbmcgCmFueSAK
-YWN0aW9uIGluIHJlbGlhbmNlIG9uIHRoZSBjb250ZW50cyBvZiB0aGlzIGluZm9ybWF0aW9uIGlz
-IHN0cmljdGx5IHByb2hpYml0ZWQuIFRoZSAKc2VuZGVyIGRvZXMgbm90IGEKCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
-CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hi Sridhar,
+
+Looking at only the error, I can say that you need to load the ath10k
+driver with rawmode=1 parameter. Try the following commands in
+sequence:
+(text following # are comments)
+
+sudo modprobe -r ath10k_pci   # unloads ath10k_pci
+sudo modprobe -r ath10k_core # unloads ath10k_core
+sudo modprobe ath10k_core rawmode=1 # loads back ath10k_core with rawmode=1
+sudo modprobe ath10k_pci # loads back ath10k_pci
+
+I am writing sudo assuming you are a sudoer and not root. You could
+also do it in an auto manner following [1]
+
+Cheers,
+Raj Joshi
+
+[1] https://wiki.archlinux.org/index.php/kernel_modules#Using_files_in_.2Fetc.2Fmodprobe.d.2F
+
+On Tue, Aug 16, 2016 at 12:06 PM, Sridhar Kondabathini <sridhark@cdot.in> wrote:
+>
+> Hi,
+>    When we are trying to bring up AP to add mesh interfaces on T1024 board with
+> kernel-3.12; ath10k drivers backported from 4.4;hostapd 2.5 for 11AC support is
+> used, then we are getting below error -
+>
+> ----------------------------------------------------------------------------------
+>
+> T1024# ifconfig mesh0
+>
+> mesh0     Link encap:Ethernet  HWaddr 04:f0:21:1b:7d:b6
+>           BROADCAST MULTICAST  MTU:1500  Metric:1
+>           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+>           TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+>           collisions:0 txqueuelen:1000
+>           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+>
+> T1024# ifconfig mesh0 0.0.0.0 up
+>
+> [ 8694.385554] ath10k_pci 0001:03:00.0: must load driver with rawmode=1 to add mesh
+> interfaces
+>
+>
+> ----------------------------------------------------------------------------------
+>
+> How to resolve this issue, can you please help on this.
+>
+>
+> Regards,
+>
+> Sridhar Kondabathini,
+> Research engineer,
+> PSG lab,
+> Center for Development Of Telematics
+> 9480484821.
+>
+>
+>
+>
+> Disclaimer:
+> ----------
+> This email and any files transmitted with it are confidential and intended solely
+> for
+> the use of the individual or entity to whom they are addressed.  If you are not the
+> intended recipient you are notified that disclosing, copying, distributing or taking
+> any
+> action in reliance on the contents of this information is strictly prohibited. The
+> sender does not a
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
