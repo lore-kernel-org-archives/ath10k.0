@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bZz1T-00040b-8l
- for ath10k@lists.infradead.org; Wed, 17 Aug 2016 11:28:40 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] ath10k: suppress warnings when getting wmi WDS peer event id
-Date: Wed, 17 Aug 2016 16:58:00 +0530
-Message-ID: <1471433280-15237-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1ba2qU-0007Vc-0D
+ for ath10k@lists.infradead.org; Wed, 17 Aug 2016 15:33:35 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: improve wake_tx_queue ops performance
+Date: Wed, 17 Aug 2016 21:02:53 +0530
+Message-ID: <20160817153253.6615-1-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,34 +21,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+txqs_lock is interfering with wake_tx_queue submitting more frames.
+so queues don't get filled in and don't keep firmware/hardware busy
+enough. This change helps to reduce the txqs_lock contention and
+wake_tx_queue() blockage to being possible in txrx_unref().
 
-'WMI_10_4_WDS_PEER_EVENTID' is not yet handled/implemented for WDS mode,
-as of nowsuppress the warning message "Unknown eventid: 36903"
+To reduce turn around time of wake_tx_queue ops and to maintain fairness
+among all txqs, the callback is updated to push first txq alone from
+pending list for every wake_tx_queue call. Remaining txqs will be
+processed later upon tx completion.
 
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Below improvements are observed in push-only mode and validated on
+IPQ4019 platform. With this change, in AP mode ~10Mbps increase is
+observed in downlink (AP -> STA) traffic and approx. 5-10% of CPU
+usage is reduced.
+
+Major improvement is observed in 1-hop Mesh mode topology in 11ACVHT80.
+Compared to Infra mode, CPU overhead is higher in Mesh mode due to path
+lookup and no fast-xmit support. So reducing spin lock contention is
+helping in Mesh.
+
+             TOT       +change
+           --------    --------
+TCP DL     545 Mbps    595 Mbps
+TCP UL     555 Mbps    585 Mbps
+
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
-found this issue while running ath10k WDS AP -> ath10k WDS STA UDP traffic
+ drivers/net/wireless/ath/ath10k/mac.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
- drivers/net/wireless/ath/ath10k/wmi.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 6279ab4..a380616 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -5274,6 +5274,7 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_4_WOW_WAKEUP_HOST_EVENTID:
- 	case WMI_10_4_PEER_RATECODE_LIST_EVENTID:
-+	case WMI_10_4_WDS_PEER_EVENTID:
- 		ath10k_dbg(ar, ATH10K_DBG_WMI,
- 			   "received event id %d not implemented\n", id);
- 		break;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index c7c7ceb9be73..93465ffec2eb 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4106,13 +4106,29 @@ static void ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
+ {
+ 	struct ath10k *ar = hw->priv;
+ 	struct ath10k_txq *artxq = (void *)txq->drv_priv;
++	struct ieee80211_txq *f_txq;
++	struct ath10k_txq *f_artxq;
++	int ret = 0;
++	int max = 16;
+ 
+ 	spin_lock_bh(&ar->txqs_lock);
+ 	if (list_empty(&artxq->list))
+ 		list_add_tail(&artxq->list, &ar->txqs);
++
++	f_artxq = list_first_entry(&ar->txqs, struct ath10k_txq, list);
++	f_txq = container_of((void *)f_artxq, struct ieee80211_txq, drv_priv);
++	list_del_init(&f_artxq->list);
++
++	while (ath10k_mac_tx_can_push(hw, f_txq) && max--) {
++		ret = ath10k_mac_tx_push_txq(hw, f_txq);
++		if (ret)
++			break;
++	}
++	if (ret != -ENOENT)
++		list_add_tail(&f_artxq->list, &ar->txqs);
+ 	spin_unlock_bh(&ar->txqs_lock);
+ 
+-	ath10k_mac_tx_push_pending(ar);
++	ath10k_htt_tx_txq_update(hw, f_txq);
+ 	ath10k_htt_tx_txq_update(hw, txq);
+ }
+ 
 -- 
-1.9.1
+2.9.2
 
 
 _______________________________________________
