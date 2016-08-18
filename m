@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1ba2qU-0007Vc-0D
- for ath10k@lists.infradead.org; Wed, 17 Aug 2016 15:33:35 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: improve wake_tx_queue ops performance
-Date: Wed, 17 Aug 2016 21:02:53 +0530
-Message-ID: <20160817153253.6615-1-rmanohar@qti.qualcomm.com>
+ id 1baK84-0000cX-NJ
+ for ath10k@lists.infradead.org; Thu, 18 Aug 2016 10:00:54 +0000
+From: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix sending frame in management path in push txq logic
+Date: Thu, 18 Aug 2016 15:30:04 +0530
+Message-ID: <1471514404-24098-1-git-send-email-arnagara@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,75 +21,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
+Cc: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, arnagara@codeaurora.org, linux-wireless@vger.kernel.org
 
-txqs_lock is interfering with wake_tx_queue submitting more frames.
-so queues don't get filled in and don't keep firmware/hardware busy
-enough. This change helps to reduce the txqs_lock contention and
-wake_tx_queue() blockage to being possible in txrx_unref().
+In the wake tx queue path, we are not checking if the frame to be sent
+takes management path or not. For eg. QOS null func frame coming here will
+take the management path. Since we are not incrementing the descriptor
+counter (num_pending_mgmt_tx) w.r.t tx management, on tx completion it is
+possible to see negative values.
 
-To reduce turn around time of wake_tx_queue ops and to maintain fairness
-among all txqs, the callback is updated to push first txq alone from
-pending list for every wake_tx_queue call. Remaining txqs will be
-processed later upon tx completion.
+When the above counter reaches a negative value, we will not be sending a
+probe response out.
 
-Below improvements are observed in push-only mode and validated on
-IPQ4019 platform. With this change, in AP mode ~10Mbps increase is
-observed in downlink (AP -> STA) traffic and approx. 5-10% of CPU
-usage is reduced.
+    if (is_presp &&
+	ar->hw_params.max_probe_resp_desc_thres < htt->num_pending_mgmt_tx)
 
-Major improvement is observed in 1-hop Mesh mode topology in 11ACVHT80.
-Compared to Infra mode, CPU overhead is higher in Mesh mode due to path
-lookup and no fast-xmit support. So reducing spin lock contention is
-helping in Mesh.
+For IPQ4019, max_probe_resp_desc_thres (u32) is 24 is compared against
+num_pending_mgmt_tx (int) and the above condtions comes true if the counter
+is negative and we drop the probe response.
 
-             TOT       +change
-           --------    --------
-TCP DL     545 Mbps    595 Mbps
-TCP UL     555 Mbps    585 Mbps
+To avoid this, check on the wake tx queue path as well for the tx path of
+the frame and increment the appropriate counters
 
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Fixes: cac085524cf1 "ath10k: move mgmt descriptor limit handle under mgmt_tx"
+Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index c7c7ceb9be73..93465ffec2eb 100644
+index fb8e38d..0d6afe2 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4106,13 +4106,29 @@ static void ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
- {
- 	struct ath10k *ar = hw->priv;
- 	struct ath10k_txq *artxq = (void *)txq->drv_priv;
-+	struct ieee80211_txq *f_txq;
-+	struct ath10k_txq *f_artxq;
-+	int ret = 0;
-+	int max = 16;
+@@ -3777,7 +3777,9 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 	enum ath10k_hw_txrx_mode txmode;
+ 	enum ath10k_mac_tx_path txpath;
+ 	struct sk_buff *skb;
++	struct ieee80211_hdr *hdr;
+ 	size_t skb_len;
++	bool is_mgmt, is_presp;
+ 	int ret;
  
- 	spin_lock_bh(&ar->txqs_lock);
- 	if (list_empty(&artxq->list))
- 		list_add_tail(&artxq->list, &ar->txqs);
+ 	spin_lock_bh(&ar->htt.tx_lock);
+@@ -3801,6 +3803,22 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 	skb_len = skb->len;
+ 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
+ 	txpath = ath10k_mac_tx_h_get_txpath(ar, skb, txmode);
++	is_mgmt = (txpath == ATH10K_MAC_TX_HTT_MGMT);
 +
-+	f_artxq = list_first_entry(&ar->txqs, struct ath10k_txq, list);
-+	f_txq = container_of((void *)f_artxq, struct ieee80211_txq, drv_priv);
-+	list_del_init(&f_artxq->list);
++	if (is_mgmt) {
++		hdr = (struct ieee80211_hdr *)skb->data;
++		is_presp = ieee80211_is_probe_resp(hdr->frame_control);
 +
-+	while (ath10k_mac_tx_can_push(hw, f_txq) && max--) {
-+		ret = ath10k_mac_tx_push_txq(hw, f_txq);
-+		if (ret)
-+			break;
++		spin_lock_bh(&ar->htt.tx_lock);
++		ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt, is_presp);
++
++		if (ret) {
++			ath10k_htt_tx_dec_pending(htt);
++			spin_unlock_bh(&ar->htt.tx_lock);
++			return ret;
++		}
++		spin_unlock_bh(&ar->htt.tx_lock);
 +	}
-+	if (ret != -ENOENT)
-+		list_add_tail(&f_artxq->list, &ar->txqs);
- 	spin_unlock_bh(&ar->txqs_lock);
  
--	ath10k_mac_tx_push_pending(ar);
-+	ath10k_htt_tx_txq_update(hw, f_txq);
- 	ath10k_htt_tx_txq_update(hw, txq);
- }
+ 	ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb);
+ 	if (unlikely(ret)) {
+@@ -3808,6 +3826,8 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
  
+ 		spin_lock_bh(&ar->htt.tx_lock);
+ 		ath10k_htt_tx_dec_pending(htt);
++		if (is_mgmt)
++			ath10k_htt_tx_mgmt_dec_pending(htt);
+ 		spin_unlock_bh(&ar->htt.tx_lock);
+ 
+ 		return ret;
 -- 
-2.9.2
+1.9.1
 
 
 _______________________________________________
