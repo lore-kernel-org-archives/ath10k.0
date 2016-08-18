@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1baK84-0000cX-NJ
- for ath10k@lists.infradead.org; Thu, 18 Aug 2016 10:00:54 +0000
-From: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix sending frame in management path in push txq logic
-Date: Thu, 18 Aug 2016 15:30:04 +0530
-Message-ID: <1471514404-24098-1-git-send-email-arnagara@qti.qualcomm.com>
-MIME-Version: 1.0
+Received: from atlantic540.startdedicated.de ([188.138.9.77])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1baN7l-0005MX-U3
+ for ath10k@lists.infradead.org; Thu, 18 Aug 2016 13:13:13 +0000
+From: Daniel Wagner <wagi@monom.org>
+Subject: [PATCH 1/2] carl9170: Fix wrong completion usage
+Date: Thu, 18 Aug 2016 15:12:05 +0200
+Message-Id: <1471525926-20384-2-git-send-email-wagi@monom.org>
+In-Reply-To: <1471525926-20384-1-git-send-email-wagi@monom.org>
+References: <1471525926-20384-1-git-send-email-wagi@monom.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,87 +17,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, arnagara@codeaurora.org, linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Daniel Wagner <daniel.wagner@bmw-carit.de>, "Luis R . Rodriguez" <mcgrof@kernel.org>, Christian Lamparter <chunkeey@googlemail.com>
 
-In the wake tx queue path, we are not checking if the frame to be sent
-takes management path or not. For eg. QOS null func frame coming here will
-take the management path. Since we are not incrementing the descriptor
-counter (num_pending_mgmt_tx) w.r.t tx management, on tx completion it is
-possible to see negative values.
+From: Daniel Wagner <daniel.wagner@bmw-carit.de>
 
-When the above counter reaches a negative value, we will not be sending a
-probe response out.
+carl9170_usb_stop() is used from several places to flush and cleanup any
+pending work. The normal pattern is to send a request and wait for the
+irq handler to call complete(). The completion is not reinitialized
+during normal operation and as the old comment indicates it is important
+to keep calls to wait_for_completion_timeout() and complete() balanced.
 
-    if (is_presp &&
-	ar->hw_params.max_probe_resp_desc_thres < htt->num_pending_mgmt_tx)
+Calling complete_all() brings this equilibirum out of balance and needs
+to be fixed by a reinit_completion(). But that opens a small race
+window. It is possible that the sequence of complete_all(),
+reinit_completion() is faster than the wait_for_completion_timeout() can
+do its work. The wake up is not lost but the done counter test is after
+reinit_completion() has been executed. The only reason we don't see
+carl9170_exec_cmd() hang forever is we use the timeout version of
+wait_for_copletion().
 
-For IPQ4019, max_probe_resp_desc_thres (u32) is 24 is compared against
-num_pending_mgmt_tx (int) and the above condtions comes true if the counter
-is negative and we drop the probe response.
+Let's fix this by reinitializing the completion (that is just setting
+done counter to 0) just before we send out an request. Now,
+carl9170_usb_stop() can be sure a complete() call is enough to make
+progess since there is only one waiter at max. This is a common pattern
+also seen in various drivers which use completion.
 
-To avoid this, check on the wake tx queue path as well for the tx path of
-the frame and increment the appropriate counters
-
-Fixes: cac085524cf1 "ath10k: move mgmt descriptor limit handle under mgmt_tx"
-Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Signed-off-by: Daniel Wagner <daniel.wagner@bmw-carit.de>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/net/wireless/ath/carl9170/usb.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index fb8e38d..0d6afe2 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3777,7 +3777,9 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
- 	enum ath10k_hw_txrx_mode txmode;
- 	enum ath10k_mac_tx_path txpath;
- 	struct sk_buff *skb;
-+	struct ieee80211_hdr *hdr;
- 	size_t skb_len;
-+	bool is_mgmt, is_presp;
- 	int ret;
+diff --git a/drivers/net/wireless/ath/carl9170/usb.c b/drivers/net/wireless/ath/carl9170/usb.c
+index 76842e6..99ab203 100644
+--- a/drivers/net/wireless/ath/carl9170/usb.c
++++ b/drivers/net/wireless/ath/carl9170/usb.c
+@@ -670,6 +670,7 @@ int carl9170_exec_cmd(struct ar9170 *ar, const enum carl9170_cmd_oids cmd,
+ 	ar->readlen = outlen;
+ 	spin_unlock_bh(&ar->cmd_lock);
  
- 	spin_lock_bh(&ar->htt.tx_lock);
-@@ -3801,6 +3803,22 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
- 	skb_len = skb->len;
- 	txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
- 	txpath = ath10k_mac_tx_h_get_txpath(ar, skb, txmode);
-+	is_mgmt = (txpath == ATH10K_MAC_TX_HTT_MGMT);
-+
-+	if (is_mgmt) {
-+		hdr = (struct ieee80211_hdr *)skb->data;
-+		is_presp = ieee80211_is_probe_resp(hdr->frame_control);
-+
-+		spin_lock_bh(&ar->htt.tx_lock);
-+		ret = ath10k_htt_tx_mgmt_inc_pending(htt, is_mgmt, is_presp);
-+
-+		if (ret) {
-+			ath10k_htt_tx_dec_pending(htt);
-+			spin_unlock_bh(&ar->htt.tx_lock);
-+			return ret;
-+		}
-+		spin_unlock_bh(&ar->htt.tx_lock);
-+	}
++	reinit_completion(&ar->cmd_wait);
+ 	err = __carl9170_exec_cmd(ar, &ar->cmd, false);
  
- 	ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb);
- 	if (unlikely(ret)) {
-@@ -3808,6 +3826,8 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 	if (!(cmd & CARL9170_CMD_ASYNC_FLAG)) {
+@@ -778,10 +779,7 @@ void carl9170_usb_stop(struct ar9170 *ar)
+ 	spin_lock_bh(&ar->cmd_lock);
+ 	ar->readlen = 0;
+ 	spin_unlock_bh(&ar->cmd_lock);
+-	complete_all(&ar->cmd_wait);
+-
+-	/* This is required to prevent an early completion on _start */
+-	reinit_completion(&ar->cmd_wait);
++	complete(&ar->cmd_wait);
  
- 		spin_lock_bh(&ar->htt.tx_lock);
- 		ath10k_htt_tx_dec_pending(htt);
-+		if (is_mgmt)
-+			ath10k_htt_tx_mgmt_dec_pending(htt);
- 		spin_unlock_bh(&ar->htt.tx_lock);
- 
- 		return ret;
+ 	/*
+ 	 * Note:
 -- 
-1.9.1
-
+2.7.4
 
 _______________________________________________
 ath10k mailing list
