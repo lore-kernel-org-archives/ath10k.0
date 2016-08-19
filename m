@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1badmI-0004H9-2A
- for ath10k@lists.infradead.org; Fri, 19 Aug 2016 06:59:43 +0000
-Received: by mail-wm0-x233.google.com with SMTP id q128so7073796wma.1
- for <ath10k@lists.infradead.org>; Thu, 18 Aug 2016 23:59:18 -0700 (PDT)
+ id 1baiLK-0004dZ-W4
+ for ath10k@lists.infradead.org; Fri, 19 Aug 2016 11:52:12 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: master-pending: ODEBUG: free active (active state 0) object type:
+ timer_list hint: ath10k_htt_rx_ring_refill_retry+0x0/0x10
+ [ath10k_core]
+Date: Fri, 19 Aug 2016 11:51:45 +0000
+Message-ID: <878tvtyo1b.fsf@kamboji.qca.qualcomm.com>
+References: <874m6i15ct.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <874m6i15ct.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Thu, 18 Aug 2016 15:09:24 +0000")
+Content-Language: en-US
+Content-ID: <278F569FF03E8D419A694B09774508AF@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
-References: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Fri, 19 Aug 2016 08:59:17 +0200
-Message-ID: <CA+BoTQn0d1bEB662r-Yivmdk_21LhjCQjJP_GoPaj-WT2wA=1g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ath10k: Ensure there are no stale ar->txqs entries.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +23,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTkgQXVndXN0IDIwMTYgYXQgMDM6MjYsICA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdy
-b3RlOgo+IEZyb206IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+Cj4gSSB3
-YXMgc2VlaW5nIGtlcm5lbCBjcmFzaGVzIGR1ZSB0byBhY2Nlc3NpbmcgZnJlZWQgbWVtb3J5Cj4g
-d2hpbGUgZGVidWdnaW5nIGEgOTk4NCBmaXJtd2FyZSB0aGF0IHdhcyBjcmFzaGluZyBvZnRlbi4K
-Pgo+IFRoaXMgcGF0Y2ggZml4ZXMgdGhlIGNyYXNoZXMuICBJIGFtIG5vdCBjZXJ0YWluIGlmIHRo
-ZXJlCj4gaXMgYSBiZXR0ZXIgd2F5IG9yIG5vdC4KPgo+IFNpZ25lZC1vZmYtYnk6IEJlbiBHcmVl
-YXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+IC0tLQo+ICBkcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL21hYy5jIHwgMTAgKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgMTAg
-aW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvbWFjLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4gaW5k
-ZXggNTY1OWVmMS4uOTE2MTE5YyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9h
-dGgvYXRoMTBrL21hYy5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9t
-YWMuYwo+IEBAIC00MTcyLDggKzQxNzIsMTAgQEAgc3RhdGljIHZvaWQgYXRoMTBrX21hY190eHFf
-aW5pdChzdHJ1Y3QgaWVlZTgwMjExX3R4cSAqdHhxKQo+ICBzdGF0aWMgdm9pZCBhdGgxMGtfbWFj
-X3R4cV91bnJlZihzdHJ1Y3QgYXRoMTBrICphciwgc3RydWN0IGllZWU4MDIxMV90eHEgKnR4cSkK
-PiAgewo+ICAgICAgICAgc3RydWN0IGF0aDEwa190eHEgKmFydHhxID0gKHZvaWQgKil0eHEtPmRy
-dl9wcml2Owo+ICsgICAgICAgc3RydWN0IGF0aDEwa190eHEgKnRtcCwgKndhbGtlcjsKPiAgICAg
-ICAgIHN0cnVjdCBhdGgxMGtfc2tiX2NiICpjYjsKPiAgICAgICAgIHN0cnVjdCBza19idWZmICpt
-c2R1Owo+ICsgICAgICAgc3RydWN0IGllZWU4MDIxMV90eHEgKnR4cV90bXA7Cj4gICAgICAgICBp
-bnQgbXNkdV9pZDsKPgo+ICAgICAgICAgaWYgKCF0eHEpCj4gQEAgLTQxODIsNiArNDE4NCwxNCBA
-QCBzdGF0aWMgdm9pZCBhdGgxMGtfbWFjX3R4cV91bnJlZihzdHJ1Y3QgYXRoMTBrICphciwgc3Ry
-dWN0IGllZWU4MDIxMV90eHEgKnR4cSkKPiAgICAgICAgIHNwaW5fbG9ja19iaCgmYXItPnR4cXNf
-bG9jayk7Cj4gICAgICAgICBpZiAoIWxpc3RfZW1wdHkoJmFydHhxLT5saXN0KSkKPiAgICAgICAg
-ICAgICAgICAgbGlzdF9kZWxfaW5pdCgmYXJ0eHEtPmxpc3QpOwo+ICsKPiArICAgICAgIC8qIFJl
-bW92ZSBmcm9tIGFyLT50eHFzIGluIGNhc2UgaXQgc3RpbGwgZXhpc3RzIHRoZXJlLiAqLwo+ICsg
-ICAgICAgbGlzdF9mb3JfZWFjaF9lbnRyeV9zYWZlKHdhbGtlciwgdG1wLCAmYXItPnR4cXMsIGxp
-c3QpIHsKPiArICAgICAgICAgICAgICAgdHhxX3RtcCA9IGNvbnRhaW5lcl9vZigodm9pZCAqKXdh
-bGtlciwgc3RydWN0IGllZWU4MDIxMV90eHEsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgZHJ2X3ByaXYpOwo+ICsgICAgICAgICAgICAgICBpZiAodHhxX3RtcCA9PSB0
-eHEpCj4gKyAgICAgICAgICAgICAgICAgICAgICAgbGlzdF9kZWwoJndhbGtlci0+bGlzdCk7Cj4g
-KyAgICAgICB9CgpIb3cgY291bGQgdGhpcyBldmVuIGhhcHBlbj8gQWxsIGFydHhxLT5saXN0IGFj
-Y2Vzc2VzIChhZGQvZGVsKSBhcmUKcHJvdGVjdGVkIGJ5IHR4cXNfbG9jayBzbyB0aGlzIHNob3Vs
-ZG4ndCBoYXBwZW4sIG5vPwoKRG8geW91IHBlcmhhcHMgaGF2ZSB0aGUgbG9naWMgYXJvdW5kIHR4
-cXMgcmV3b3JrZWQgaW4geW91ciB0cmVlPwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hdGgxMGsK
+"Valo, Kalle" <kvalo@qca.qualcomm.com> writes:
+
+> I was testing master-pending branch and saw these warnings when I was
+> reloading ath10k. I have seen this two times out of two tests so seems
+> to be easy to reproduce. I don't have time to investigate this more at
+> this time but I'll post this anyway.
+>
+> [  256.946615] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+> [  257.135392] ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000
+> [  257.135397] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 0 testmode 1
+> [  257.135665] ath10k_pci 0000:02:00.0: firmware ver 10.2.4.70.54 api 5 features no-p2p,raw-mode,mfp crc32 9d340dd9
+> [  257.193219] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
+> [  258.458099] ath10k_pci 0000:02:00.0: htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-sta 128 raw 0 hwcrypto 1
+> [  258.602274] ath: EEPROM regdomain: 0x0
+> [  258.602279] ath: EEPROM indicates default country code should be used
+> [  258.602280] ath: doing EEPROM country->regdmn map search
+> [  258.602283] ath: country maps to regdmn code: 0x3a
+> [  258.602285] ath: Country alpha2 being used: US
+> [  258.602287] ath: Regpair used: 0x3a
+>
+> [...]
+>
+> [  277.244673] ------------[ cut here ]------------
+> [  277.244685] WARNING: CPU: 2 PID: 2162 at lib/debugobjects.c:263 debug_print_object+0x85/0xa0
+> [  277.244707] ODEBUG: free active (active state 0) object type: timer_list hint: ath10k_htt_rx_ring_refill_retry+0x0/0x10 [ath10k_core]
+
+I bisected this to:
+
+[v2] ath10k: implement NAPI support
+
+https://patchwork.kernel.org/patch/9240975/
+
+I'll reply to that patch for more info.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
