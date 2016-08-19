@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1badP3-0004Fe-Tt
- for ath10k@lists.infradead.org; Fri, 19 Aug 2016 06:35:42 +0000
-Date: Fri, 19 Aug 2016 12:05:11 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH 3/3] ath10k:  Improve logging message.
-Message-ID: <20160819063511.GA16230@atheros-ThinkPad-T61>
-References: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
- <1471569995-10028-3-git-send-email-greearb@candelatech.com>
+ id 1badmI-0004H9-2A
+ for ath10k@lists.infradead.org; Fri, 19 Aug 2016 06:59:43 +0000
+Received: by mail-wm0-x233.google.com with SMTP id q128so7073796wma.1
+ for <ath10k@lists.infradead.org>; Thu, 18 Aug 2016 23:59:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1471569995-10028-3-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
+References: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Fri, 19 Aug 2016 08:59:17 +0200
+Message-ID: <CA+BoTQn0d1bEB662r-Yivmdk_21LhjCQjJP_GoPaj-WT2wA=1g@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ath10k: Ensure there are no stale ar->txqs entries.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,54 +20,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi Ben,
-
-On Thu, Aug 18, 2016 at 06:26:35PM -0700, greearb@candelatech.com wrote:
-> From: Ben Greear <greearb@candelatech.com>
-> 
-> Helps to know the sta pointer.
-> 
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> ---
->  drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index d96c06e..82bc0da 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -6491,8 +6491,8 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
->  		 * Existing station deletion.
->  		 */
->  		ath10k_dbg(ar, ATH10K_DBG_MAC,
-> -			   "mac vdev %d peer delete %pM (sta gone)\n",
-> -			   arvif->vdev_id, sta->addr);
-> +			   "mac vdev %d peer delete %pM (sta gone) sta: %p\n",
-> +			   arvif->vdev_id, sta->addr, sta);
-
-good to rebase over Maharaja's change (%p to %pK) 
-https://patchwork.kernel.org/patch/9263691/
-
->  
->  		ret = ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
->  		if (ret)
-> -- 
-> 2.4.11
-> 
-> 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTkgQXVndXN0IDIwMTYgYXQgMDM6MjYsICA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdy
+b3RlOgo+IEZyb206IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+Cj4gSSB3
+YXMgc2VlaW5nIGtlcm5lbCBjcmFzaGVzIGR1ZSB0byBhY2Nlc3NpbmcgZnJlZWQgbWVtb3J5Cj4g
+d2hpbGUgZGVidWdnaW5nIGEgOTk4NCBmaXJtd2FyZSB0aGF0IHdhcyBjcmFzaGluZyBvZnRlbi4K
+Pgo+IFRoaXMgcGF0Y2ggZml4ZXMgdGhlIGNyYXNoZXMuICBJIGFtIG5vdCBjZXJ0YWluIGlmIHRo
+ZXJlCj4gaXMgYSBiZXR0ZXIgd2F5IG9yIG5vdC4KPgo+IFNpZ25lZC1vZmYtYnk6IEJlbiBHcmVl
+YXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+IC0tLQo+ICBkcml2ZXJzL25ldC93aXJlbGVz
+cy9hdGgvYXRoMTBrL21hYy5jIHwgMTAgKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgMTAg
+aW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
+dGgxMGsvbWFjLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4gaW5k
+ZXggNTY1OWVmMS4uOTE2MTE5YyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL21hYy5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9t
+YWMuYwo+IEBAIC00MTcyLDggKzQxNzIsMTAgQEAgc3RhdGljIHZvaWQgYXRoMTBrX21hY190eHFf
+aW5pdChzdHJ1Y3QgaWVlZTgwMjExX3R4cSAqdHhxKQo+ICBzdGF0aWMgdm9pZCBhdGgxMGtfbWFj
+X3R4cV91bnJlZihzdHJ1Y3QgYXRoMTBrICphciwgc3RydWN0IGllZWU4MDIxMV90eHEgKnR4cSkK
+PiAgewo+ICAgICAgICAgc3RydWN0IGF0aDEwa190eHEgKmFydHhxID0gKHZvaWQgKil0eHEtPmRy
+dl9wcml2Owo+ICsgICAgICAgc3RydWN0IGF0aDEwa190eHEgKnRtcCwgKndhbGtlcjsKPiAgICAg
+ICAgIHN0cnVjdCBhdGgxMGtfc2tiX2NiICpjYjsKPiAgICAgICAgIHN0cnVjdCBza19idWZmICpt
+c2R1Owo+ICsgICAgICAgc3RydWN0IGllZWU4MDIxMV90eHEgKnR4cV90bXA7Cj4gICAgICAgICBp
+bnQgbXNkdV9pZDsKPgo+ICAgICAgICAgaWYgKCF0eHEpCj4gQEAgLTQxODIsNiArNDE4NCwxNCBA
+QCBzdGF0aWMgdm9pZCBhdGgxMGtfbWFjX3R4cV91bnJlZihzdHJ1Y3QgYXRoMTBrICphciwgc3Ry
+dWN0IGllZWU4MDIxMV90eHEgKnR4cSkKPiAgICAgICAgIHNwaW5fbG9ja19iaCgmYXItPnR4cXNf
+bG9jayk7Cj4gICAgICAgICBpZiAoIWxpc3RfZW1wdHkoJmFydHhxLT5saXN0KSkKPiAgICAgICAg
+ICAgICAgICAgbGlzdF9kZWxfaW5pdCgmYXJ0eHEtPmxpc3QpOwo+ICsKPiArICAgICAgIC8qIFJl
+bW92ZSBmcm9tIGFyLT50eHFzIGluIGNhc2UgaXQgc3RpbGwgZXhpc3RzIHRoZXJlLiAqLwo+ICsg
+ICAgICAgbGlzdF9mb3JfZWFjaF9lbnRyeV9zYWZlKHdhbGtlciwgdG1wLCAmYXItPnR4cXMsIGxp
+c3QpIHsKPiArICAgICAgICAgICAgICAgdHhxX3RtcCA9IGNvbnRhaW5lcl9vZigodm9pZCAqKXdh
+bGtlciwgc3RydWN0IGllZWU4MDIxMV90eHEsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgZHJ2X3ByaXYpOwo+ICsgICAgICAgICAgICAgICBpZiAodHhxX3RtcCA9PSB0
+eHEpCj4gKyAgICAgICAgICAgICAgICAgICAgICAgbGlzdF9kZWwoJndhbGtlci0+bGlzdCk7Cj4g
+KyAgICAgICB9CgpIb3cgY291bGQgdGhpcyBldmVuIGhhcHBlbj8gQWxsIGFydHhxLT5saXN0IGFj
+Y2Vzc2VzIChhZGQvZGVsKSBhcmUKcHJvdGVjdGVkIGJ5IHR4cXNfbG9jayBzbyB0aGlzIHNob3Vs
+ZG4ndCBoYXBwZW4sIG5vPwoKRG8geW91IHBlcmhhcHMgaGF2ZSB0aGUgbG9naWMgYXJvdW5kIHR4
+cXMgcmV3b3JrZWQgaW4geW91ciB0cmVlPwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hdGgxMGsK
