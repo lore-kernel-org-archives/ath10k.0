@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1baaUX-00051v-VE
- for ath10k@lists.infradead.org; Fri, 19 Aug 2016 03:29:10 +0000
-Message-ID: <57B67CD8.5040009@candelatech.com>
-Date: Thu, 18 Aug 2016 20:28:24 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1badP3-0004Fe-Tt
+ for ath10k@lists.infradead.org; Fri, 19 Aug 2016 06:35:42 +0000
+Date: Fri, 19 Aug 2016 12:05:11 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH 3/3] ath10k:  Improve logging message.
+Message-ID: <20160819063511.GA16230@atheros-ThinkPad-T61>
+References: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
+ <1471569995-10028-3-git-send-email-greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/3] ath10k: Grab rcu_read_lock before the txqs spinlock.
-References: <1471569995-10028-1-git-send-email-greearb@candelatech.com>,
- <1471569995-10028-2-git-send-email-greearb@candelatech.com>
- <1471575674214.65791@qti.qualcomm.com>
-In-Reply-To: <1471575674214.65791@qti.qualcomm.com>
+Content-Disposition: inline
+In-Reply-To: <1471569995-10028-3-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,59 +20,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
+Hi Ben,
 
+On Thu, Aug 18, 2016 at 06:26:35PM -0700, greearb@candelatech.com wrote:
+> From: Ben Greear <greearb@candelatech.com>
+> 
+> Helps to know the sta pointer.
+> 
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index d96c06e..82bc0da 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -6491,8 +6491,8 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+>  		 * Existing station deletion.
+>  		 */
+>  		ath10k_dbg(ar, ATH10K_DBG_MAC,
+> -			   "mac vdev %d peer delete %pM (sta gone)\n",
+> -			   arvif->vdev_id, sta->addr);
+> +			   "mac vdev %d peer delete %pM (sta gone) sta: %p\n",
+> +			   arvif->vdev_id, sta->addr, sta);
 
-On 08/18/2016 08:01 PM, Manoharan, Rajkumar wrote:
->> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
->> index 916119c..d96c06e 100644
->> --- a/drivers/net/wireless/ath/ath10k/mac.c
->> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->> @@ -4307,8 +4307,8 @@ void ath10k_mac_tx_push_pending(struct ath10k *ar)
->>          int max;
->>          int loop_max = 2000;
->>
->> -       spin_lock_bh(&ar->txqs_lock);
->>          rcu_read_lock();
->> +       spin_lock_bh(&ar->txqs_lock);
->>
-> Ben,
->
-> It is quite possible that push_pending can be preempted after acquiring rcu_lock which
-> may lead to deadlock. no? I assume to prevent that spin_lock is taken first.
->
-> Could you please explain how this reordering is fixing dead lock?
+good to rebase over Maharaja's change (%p to %pK) 
+https://patchwork.kernel.org/patch/9263691/
 
-It did not obviously fix the spin lock issue, but the issue went away.  Maybe it
-was because I fixed the stale memory access issues at around the same time.
-
-But, I don't think you can deadlock by taking rcu lock first and then the spinlock.
-
-I checked all places where the spinlock is held, and I do not see any way for any of
-them to block forever (In my kernel, I have a 2000 time limit on spinning in the push pending
-method, which can help make sure we don't spin forever).
-
-http://dmz2.candelatech.com/?p=linux-4.7.dev.y/.git;a=commitdiff;h=5d192657269d8e20fce733f894bb1b68df71db00
-
-I was also worried that some calls from mac80211 might be holding rcu_read_lock while calling into
-ath10k code that would grab the spinlock.  If that is the case (and I didn't verify it was), then
-you could have a lock inversion by taking spinlock before rcu read lock in the push-pending method.
-
-Anyway, someone that understands locking subtleties better might have more clue about this code
-than I do.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+>  
+>  		ret = ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
+>  		if (ret)
+> -- 
+> 2.4.11
+> 
+> 
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
