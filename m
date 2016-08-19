@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx2.suse.de ([195.135.220.15])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1baSnp-00062N-QF
- for ath10k@lists.infradead.org; Thu, 18 Aug 2016 19:16:34 +0000
-Date: Thu, 18 Aug 2016 21:16:08 +0200
-From: "Luis R. Rodriguez" <mcgrof@kernel.org>
-Subject: Re: [PATCH 0/2] wireless: Use complete() instead complete_all()
-Message-ID: <20160818191608.GM3296@wotan.suse.de>
-References: <1471525926-20384-1-git-send-email-wagi@monom.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1471525926-20384-1-git-send-email-wagi@monom.org>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1baYae-0004H8-LB
+ for ath10k@lists.infradead.org; Fri, 19 Aug 2016 01:27:20 +0000
+From: greearb@candelatech.com
+Subject: [PATCH 2/3] ath10k:  Grab rcu_read_lock before the txqs spinlock.
+Date: Thu, 18 Aug 2016 18:26:34 -0700
+Message-Id: <1471569995-10028-2-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
+References: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,22 +17,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Daniel Wagner <wagi@monom.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Daniel Wagner <daniel.wagner@bmw-carit.de>, "Luis R . Rodriguez" <mcgrof@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christian Lamparter <chunkeey@googlemail.com>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
-On Thu, Aug 18, 2016 at 03:12:04PM +0200, Daniel Wagner wrote:
-> This series ignores all complete_all() usages in the firmware loading
-> path. They will be hopefully address by Luis' sysdata patches [0].
-> That leaves a couple of complete_all() calls.
+From: Ben Greear <greearb@candelatech.com>
 
-I had not considered this as a gain, but glad to know the sysdata series
-could help with RT as well, thanks for the clarification.
+I was seeing some spin-lock hangs in this area of the code,
+and it seems more proper to do the rcu-read-lock outside of
+the spin lock.  I am not sure how much this matters, however.
 
- Luis
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 916119c..d96c06e 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4307,8 +4307,8 @@ void ath10k_mac_tx_push_pending(struct ath10k *ar)
+ 	int max;
+ 	int loop_max = 2000;
+ 
+-	spin_lock_bh(&ar->txqs_lock);
+ 	rcu_read_lock();
++	spin_lock_bh(&ar->txqs_lock);
+ 
+ 	last = list_last_entry(&ar->txqs, struct ath10k_txq, list);
+ 	while (!list_empty(&ar->txqs)) {
+@@ -4342,8 +4342,8 @@ void ath10k_mac_tx_push_pending(struct ath10k *ar)
+ 			break;
+ 	}
+ 
+-	rcu_read_unlock();
+ 	spin_unlock_bh(&ar->txqs_lock);
++	rcu_read_unlock();
+ }
+ 
+ /************/
+-- 
+2.4.11
+
 
 _______________________________________________
 ath10k mailing list
