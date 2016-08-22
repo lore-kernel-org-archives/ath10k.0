@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bbqBJ-0003zu-FQ
- for ath10k@lists.infradead.org; Mon, 22 Aug 2016 14:26:30 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: master-pending: ODEBUG: free active (active state 0) object type:
- timer_list hint: ath10k_htt_rx_ring_refill_retry+0x0/0x10
- [ath10k_core]
-Date: Mon, 22 Aug 2016 14:25:14 +0000
-Message-ID: <8760qsx4mv.fsf@kamboji.qca.qualcomm.com>
-References: <874m6i15ct.fsf@kamboji.qca.qualcomm.com>
- <daf51642-2979-5376-d3e4-8a5e22c5504c@candelatech.com>
-In-Reply-To: <daf51642-2979-5376-d3e4-8a5e22c5504c@candelatech.com> (Ben
- Greear's message of "Thu, 18 Aug 2016 08:18:59 -0700")
+From: Peter Oh <ebmajor@live.com>
+Subject: Re: DFS radar pattern detection in different regions
+Date: Mon, 22 Aug 2016 16:42:38 +0000
+Message-ID: <221398f0d39e4869bec507f12c5fe230700ab28c645e429c96253f60b17f9f9528663b9fd8c1489ba855dc8546949494BY2PR20MB02484FF3083D9915E53E396BDFE80@BY2PR20MB0248.namprd20.prod.outlook.com>
+References: <CA+uUJGs7HGamb3duZ_9PYfx++43F3UWE2nO4C3AN9Saen=iMrA@mail.gmail.com>
+ <CA+uUJGvb6sUXywTvtnyigrkrGSeVEp-2KbndQ_5k5_RxdKgV-Q@mail.gmail.com>
+ <CAJ-Vmo=xh3ij6n1UHH=jC8W1mdsn+kWg9SroSKdm_F6tLMKsDA@mail.gmail.com>,
+ <CA+uUJGs=aZQ+oRJeHJO92UTg94vhvyYVVn5pKD+=N37bfY_evA@mail.gmail.com>
+In-Reply-To: <CA+uUJGs=aZQ+oRJeHJO92UTg94vhvyYVVn5pKD+=N37bfY_evA@mail.gmail.com>
 Content-Language: en-US
-Content-ID: <1AF953F742192342A903B78469B67B3D@qualcomm.com>
+Content-ID: <03C8A46EC0845D4F838E8F3C2F13BC0F@namprd20.prod.outlook.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,33 +19,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Raj Joshi <rajjoshi@comp.nus.edu.sg>, Adrian Chadd <adrian@freebsd.org>
+Cc: "wireless-regdb@lists.infradead.org" <wireless-regdb@lists.infradead.org>, ath10k <ath10k@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> writes:
+re-send in plain text mode.
 
-> On 08/18/2016 08:09 AM, Valo, Kalle wrote:
->> Hi,
->>
->> I was testing master-pending branch and saw these warnings when I was
->> reloading ath10k. I have seen this two times out of two tests so seems
->> to be easy to reproduce. I don't have time to investigate this more at
->> this time but I'll post this anyway.
->
-> I'm not sure I am seeing the same issue, but this patch below helps
-> keep me from crashing when firmware dies. I'm not sure the spinlock
-> change matters, but the txq_unref fixes the crash....
+>=A0I am just confused by the output of "iw reg get", which outputs lines
 
-This didn't apply for me but I see that you submitted them as proper
-patches later. I'll test those when I start debugging this NAPI issue
-more.
 
--- 
-Kalle Valo
+
+>=A0from the db.txt of wireless-regdb [1]. For example,  the first lines of
+>=A0the output for some countries read like the following:
+>=A0country AE: DFS-FCC
+>=A0country AF: DFS-ETSI
+>=A0country BD: DFS-JP
+>=A0
+>=A0What is that supposed to mean? These lines seem to allow using DFS
+>=A0channels in these countries as long as DFS is enabled in kernel
+>=A0config, although this won't be "right" ?!
+FCC, ETSI, and JP are DFS regulatory domains which have their own radar pat=
+tern definitions and requirements, so that=A0many countries are adapting an=
+d following.
+If countries do not fall into one of=A0the 3 regulatory domains, ath10k DFS=
+ detector could not detect DFS radar since the DFS pattern detectors are de=
+signed for those 3.
+If you want to support the countries that do not follow those 3 domains, th=
+en you need to add new pattern detector and use the phy error data reported=
+ from firmware.
+
+
+Peter     =
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
