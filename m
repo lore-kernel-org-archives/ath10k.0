@@ -1,15 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
+Received: from snt004-omc2s10.hotmail.com ([65.55.90.85])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bbsJO-0004AD-Ld
+ for ath10k@lists.infradead.org; Mon, 22 Aug 2016 16:43:00 +0000
 From: Peter Oh <ebmajor@live.com>
-Subject: Re: DFS radar pattern detection in different regions
-Date: Mon, 22 Aug 2016 16:42:38 +0000
-Message-ID: <221398f0d39e4869bec507f12c5fe230700ab28c645e429c96253f60b17f9f9528663b9fd8c1489ba855dc8546949494BY2PR20MB02484FF3083D9915E53E396BDFE80@BY2PR20MB0248.namprd20.prod.outlook.com>
-References: <CA+uUJGs7HGamb3duZ_9PYfx++43F3UWE2nO4C3AN9Saen=iMrA@mail.gmail.com>
- <CA+uUJGvb6sUXywTvtnyigrkrGSeVEp-2KbndQ_5k5_RxdKgV-Q@mail.gmail.com>
- <CAJ-Vmo=xh3ij6n1UHH=jC8W1mdsn+kWg9SroSKdm_F6tLMKsDA@mail.gmail.com>,
- <CA+uUJGs=aZQ+oRJeHJO92UTg94vhvyYVVn5pKD+=N37bfY_evA@mail.gmail.com>
-In-Reply-To: <CA+uUJGs=aZQ+oRJeHJO92UTg94vhvyYVVn5pKD+=N37bfY_evA@mail.gmail.com>
+Subject: Re: Issue with ATH10K driver while bringing up mesh interface
+Date: Mon, 22 Aug 2016 16:42:20 +0000
+Message-ID: <09b6c230448b4e8b80a47f09c8f5a7ccf0f4fe819eb74a49b049076a3f10086020984c91a40b481a97dc2a26d81e6b3fBY2PR20MB0248FA35E3C1CF41FEF78CEBDFE80@BY2PR20MB0248.namprd20.prod.outlook.com>
+References: <20160816035841.M15556@universe.cdotb.ernet.in>
+ <6fe9261b-c662-3b89-b78b-d492e013648a@gentrice.net>
+ <20160816044306.M74655@cdot.in>
+ <8ec31d40-4a01-ed24-ed2e-3be351aab5d5@gentrice.net>
+ <20160816091707.M1726@cdot.in>,<1471374073.3432.8.camel@qca.qualcomm.com>
+In-Reply-To: <1471374073.3432.8.camel@qca.qualcomm.com>
 Content-Language: en-US
-Content-ID: <03C8A46EC0845D4F838E8F3C2F13BC0F@namprd20.prod.outlook.com>
+Content-ID: <69429DE539E9BC42B6FF430E4C715C4A@namprd20.prod.outlook.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,36 +28,27 @@ Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Raj Joshi <rajjoshi@comp.nus.edu.sg>, Adrian Chadd <adrian@freebsd.org>
-Cc: "wireless-regdb@lists.infradead.org" <wireless-regdb@lists.infradead.org>, ath10k <ath10k@lists.infradead.org>
+To: "Pedersen, Thomas" <twp@qca.qualcomm.com>, Sridhar Konabathini <sridhark@cdot.in>
+Cc: "michal.kazior@tieto.com" <michal.kazior@tieto.com>, Raj Joshi <rajjoshi@comp.nus.edu.sg>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Horse <horse@gentrice.net>
 
 re-send in plain text mode.
-
->=A0I am just confused by the output of "iw reg get", which outputs lines
-
+> >=A0
 
 
->=A0from the db.txt of wireless-regdb [1]. For example,  the first lines of
->=A0the output for some countries read like the following:
->=A0country AE: DFS-FCC
->=A0country AF: DFS-ETSI
->=A0country BD: DFS-JP
->=A0
->=A0What is that supposed to mean? These lines seem to allow using DFS
->=A0channels in these countries as long as DFS is enabled in kernel
->=A0config, although this won't be "right" ?!
-FCC, ETSI, and JP are DFS regulatory domains which have their own radar pat=
-tern definitions and requirements, so that=A0many countries are adapting an=
-d following.
-If countries do not fall into one of=A0the 3 regulatory domains, ath10k DFS=
- detector could not detect DFS radar since the DFS pattern detectors are de=
-signed for those 3.
-If you want to support the countries that do not follow those 3 domains, th=
-en you need to add new pattern detector and use the phy error data reported=
- from firmware.
+
+> > Please try=A0 "insmod ath10k_core.ko rawmode=3D1"
+> > =
+
+I recommend you to use =A0FW version=A010.2.4.70.12-2 or higher, so that yo=
+u don't have to use raw mode. Main downside using raw mode is throughput th=
+rottled.
+You can get the ath10k firmware from=A0https://github.com/kvalo/ath10k-firm=
+ware.
 
 
-Peter     =
+Peter
+
+     =
 
 _______________________________________________
 ath10k mailing list
