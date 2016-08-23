@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bcWRK-0004s6-Mn
- for ath10k@lists.infradead.org; Wed, 24 Aug 2016 11:35:51 +0000
-Subject: [PATCH v2 3/6] ath10k: QCA9888 hw2.0: add firmware and board files
+ id 1bcGl1-0007hx-OJ
+ for ath10k@lists.infradead.org; Tue, 23 Aug 2016 18:51:08 +0000
+Subject: [PATCH 3/6] ath10k: QCA9888 hw2.0: add firmware and board files
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 24 Aug 2016 14:33:06 +0300
-Message-ID: <20160824113306.5625.33041.stgit@potku.adurom.net>
-In-Reply-To: <20160824113134.5625.35574.stgit@potku.adurom.net>
-References: <20160824113134.5625.35574.stgit@potku.adurom.net>
+Date: Tue, 23 Aug 2016 21:48:22 +0300
+Message-ID: <20160823184822.21587.89924.stgit@potku.adurom.net>
+In-Reply-To: <20160823184644.21587.95655.stgit@potku.adurom.net>
+References: <20160823184644.21587.95655.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
