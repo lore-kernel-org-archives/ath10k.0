@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bc8am-00085L-6f
- for ath10k@lists.infradead.org; Tue, 23 Aug 2016 10:06:07 +0000
-From: <c_mkenna@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Added support for extended dbglog module id for 10.4
-Date: Tue, 23 Aug 2016 15:35:36 +0530
-Message-ID: <1471946736-28214-1-git-send-email-c_mkenna@qti.qualcomm.com>
+Received: from msr13.hinet.net ([168.95.4.113])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bc9GC-0003vI-HY
+ for ath10k@lists.infradead.org; Tue, 23 Aug 2016 10:48:49 +0000
+Received: from [192.168.3.100] (36-226-84-187.dynamic-ip.hinet.net
+ [36.226.84.187])
+ by msr13.hinet.net (8.14.9/8.14.9) with ESMTP id u7NAmKV7015787
+ for <ath10k@lists.infradead.org>; Tue, 23 Aug 2016 18:48:22 +0800 (CST)
+From: Horse <horse@gentrice.net>
+Subject: MTU size of Ath10k
+Message-ID: <fb2334f0-4fb4-9b31-c858-a4bbdebc4627@gentrice.net>
+Date: Tue, 23 Aug 2016 18:48:19 +0800
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,209 +20,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mkenna@codeaurora.org, linux-wireless@vger.kernel.org, Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+Hi
 
-For 10.4 fw versions, dbglog module id has been extended from u32
-to u64, hence this patch fixes the same in the ath10k driver side.
+Any one knows the max mtu size of ath10k?
 
-This patch doesn't break the older 10.4 releases. The FW change
-is already present in the older FWs.
+I am using 9980 with CT firmware.
 
-Signed-off-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.h    |    2 +-
- drivers/net/wireless/ath/ath10k/debug.c   |   11 ++++----
- drivers/net/wireless/ath/ath10k/wmi-ops.h |    4 +--
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |    2 +-
- drivers/net/wireless/ath/ath10k/wmi.c     |   42 +++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/wmi.h     |   14 ++++++++++
- 6 files changed, 64 insertions(+), 11 deletions(-)
+it seems only support up to 1595.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 30ae5bf..b7670f4 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -440,7 +440,7 @@ struct ath10k_debug {
- 	struct completion tpc_complete;
- 
- 	/* protected by conf_mutex */
--	u32 fw_dbglog_mask;
-+	u64 fw_dbglog_mask;
- 	u32 fw_dbglog_level;
- 	u32 pktlog_filter;
- 	u32 reg_addr;
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 8f0fd41..832da6e 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1228,9 +1228,9 @@ static ssize_t ath10k_read_fw_dbglog(struct file *file,
- {
- 	struct ath10k *ar = file->private_data;
- 	unsigned int len;
--	char buf[64];
-+	char buf[96];
- 
--	len = scnprintf(buf, sizeof(buf), "0x%08x %u\n",
-+	len = scnprintf(buf, sizeof(buf), "0x%16llx %u\n",
- 			ar->debug.fw_dbglog_mask, ar->debug.fw_dbglog_level);
- 
- 	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-@@ -1242,15 +1242,16 @@ static ssize_t ath10k_write_fw_dbglog(struct file *file,
- {
- 	struct ath10k *ar = file->private_data;
- 	int ret;
--	char buf[64];
--	unsigned int log_level, mask;
-+	char buf[96];
-+	unsigned int log_level;
-+	u64 mask;
- 
- 	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
- 
- 	/* make sure that buf is null terminated */
- 	buf[sizeof(buf) - 1] = 0;
- 
--	ret = sscanf(buf, "%x %u", &mask, &log_level);
-+	ret = sscanf(buf, "%llx %u", &mask, &log_level);
- 
- 	if (!ret)
- 		return -EINVAL;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 64ebd30..e53a61a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -123,7 +123,7 @@ struct wmi_ops {
- 					     enum wmi_force_fw_hang_type type,
- 					     u32 delay_ms);
- 	struct sk_buff *(*gen_mgmt_tx)(struct ath10k *ar, struct sk_buff *skb);
--	struct sk_buff *(*gen_dbglog_cfg)(struct ath10k *ar, u32 module_enable,
-+	struct sk_buff *(*gen_dbglog_cfg)(struct ath10k *ar, u64 module_enable,
- 					  u32 log_level);
- 	struct sk_buff *(*gen_pktlog_enable)(struct ath10k *ar, u32 filter);
- 	struct sk_buff *(*gen_pktlog_disable)(struct ath10k *ar);
-@@ -932,7 +932,7 @@ ath10k_wmi_force_fw_hang(struct ath10k *ar,
- }
- 
- static inline int
--ath10k_wmi_dbglog_cfg(struct ath10k *ar, u32 module_enable, u32 log_level)
-+ath10k_wmi_dbglog_cfg(struct ath10k *ar, u64 module_enable, u32 log_level)
- {
- 	struct sk_buff *skb;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index e09337e..fbeac30 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2441,7 +2441,7 @@ ath10k_wmi_tlv_op_gen_force_fw_hang(struct ath10k *ar,
- }
- 
- static struct sk_buff *
--ath10k_wmi_tlv_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable,
-+ath10k_wmi_tlv_op_gen_dbglog_cfg(struct ath10k *ar, u64 module_enable,
- 				 u32 log_level) {
- 	struct wmi_tlv_dbglog_cmd *cmd;
- 	struct wmi_tlv *tlv;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index d246288..f54fe963 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -6863,7 +6863,7 @@ ath10k_wmi_op_gen_force_fw_hang(struct ath10k *ar,
- }
- 
- static struct sk_buff *
--ath10k_wmi_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable,
-+ath10k_wmi_op_gen_dbglog_cfg(struct ath10k *ar, u64 module_enable,
- 			     u32 log_level)
- {
- 	struct wmi_dbglog_cfg_cmd *cmd;
-@@ -6901,6 +6901,44 @@ ath10k_wmi_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable,
- }
- 
- static struct sk_buff *
-+ath10k_wmi_10_4_op_gen_dbglog_cfg(struct ath10k *ar, u64 module_enable,
-+				  u32 log_level)
-+{
-+	struct wmi_10_4_dbglog_cfg_cmd *cmd;
-+	struct sk_buff *skb;
-+	u32 cfg;
-+
-+	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	cmd = (struct wmi_10_4_dbglog_cfg_cmd *)skb->data;
-+
-+	if (module_enable) {
-+		cfg = SM(log_level,
-+			 ATH10K_DBGLOG_CFG_LOG_LVL);
-+	} else {
-+		/* set back defaults, all modules with WARN level */
-+		cfg = SM(ATH10K_DBGLOG_LEVEL_WARN,
-+			 ATH10K_DBGLOG_CFG_LOG_LVL);
-+		module_enable = ~0;
-+	}
-+
-+	cmd->module_enable = __cpu_to_le64(module_enable);
-+	cmd->module_valid = __cpu_to_le64(~0);
-+	cmd->config_enable = __cpu_to_le32(cfg);
-+	cmd->config_valid = __cpu_to_le32(ATH10K_DBGLOG_CFG_LOG_LVL_MASK);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI,
-+		   "wmi dbglog cfg modules 0x%016llx 0x%016llx config %08x %08x\n",
-+		   __le64_to_cpu(cmd->module_enable),
-+		   __le64_to_cpu(cmd->module_valid),
-+		   __le32_to_cpu(cmd->config_enable),
-+		   __le32_to_cpu(cmd->config_valid));
-+	return skb;
-+}
-+
-+static struct sk_buff *
- ath10k_wmi_op_gen_pktlog_enable(struct ath10k *ar, u32 ev_bitmap)
- {
- 	struct wmi_pdev_pktlog_enable_cmd *cmd;
-@@ -7968,7 +8006,7 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	.gen_pdev_set_wmm = ath10k_wmi_op_gen_pdev_set_wmm,
- 	.gen_force_fw_hang = ath10k_wmi_op_gen_force_fw_hang,
- 	.gen_mgmt_tx = ath10k_wmi_op_gen_mgmt_tx,
--	.gen_dbglog_cfg = ath10k_wmi_op_gen_dbglog_cfg,
-+	.gen_dbglog_cfg = ath10k_wmi_10_4_op_gen_dbglog_cfg,
- 	.gen_pktlog_enable = ath10k_wmi_op_gen_pktlog_enable,
- 	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
- 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 3ef4688..b0460a4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6169,6 +6169,20 @@ struct wmi_dbglog_cfg_cmd {
- 	__le32 config_valid;
- } __packed;
- 
-+struct wmi_10_4_dbglog_cfg_cmd {
-+	/* bitmask to hold mod id config*/
-+	__le64 module_enable;
-+
-+	/* see ATH10K_DBGLOG_CFG_ */
-+	__le32 config_enable;
-+
-+	/* mask of module id bits to be changed */
-+	__le64 module_valid;
-+
-+	/* mask of config bits to be changed, see ATH10K_DBGLOG_CFG_ */
-+	__le32 config_valid;
-+} __packed;
-+
- enum wmi_roam_reason {
- 	WMI_ROAM_REASON_BETTER_AP = 1,
- 	WMI_ROAM_REASON_BEACON_MISS = 2,
--- 
-1.7.9.5
+Does is limit by firmware or ath10k driver?
+
+
+Thanks
 
 
 _______________________________________________
