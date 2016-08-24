@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bcGlY-0007q0-6d
- for ath10k@lists.infradead.org; Tue, 23 Aug 2016 18:51:41 +0000
-Subject: [PATCH 4/6] ath10k: QCA9984 hw1.0: add firmware and board files
+ id 1bcWRm-0004w2-1X
+ for ath10k@lists.infradead.org; Wed, 24 Aug 2016 11:36:18 +0000
+Subject: [PATCH v2 4/6] ath10k: QCA9984 hw1.0: add firmware and board files
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Tue, 23 Aug 2016 21:48:47 +0300
-Message-ID: <20160823184847.21587.65336.stgit@potku.adurom.net>
-In-Reply-To: <20160823184644.21587.95655.stgit@potku.adurom.net>
-References: <20160823184644.21587.95655.stgit@potku.adurom.net>
+Date: Wed, 24 Aug 2016 14:33:30 +0300
+Message-ID: <20160824113330.5625.97428.stgit@potku.adurom.net>
+In-Reply-To: <20160824113134.5625.35574.stgit@potku.adurom.net>
+References: <20160824113134.5625.35574.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,7 +25,7 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-firmware@kernel.org
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-QCA9884 is a new chip supported by ath10k. Firmware version is 10.4-3.2-00072.
+QCA9984 is a new chip supported by ath10k. Firmware version is 10.4-3.2-00072.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
