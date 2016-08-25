@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bcvjB-0004YU-FH
- for ath10k@lists.infradead.org; Thu, 25 Aug 2016 14:33:58 +0000
-Message-ID: <1472135606.16921.74.camel@sipsolutions.net>
-Subject: Re: [PATCHv3 2/2] ath10k: Allow setting coverage class
-From: Benjamin Berg <benjamin@sipsolutions.net>
-Date: Thu, 25 Aug 2016 16:33:26 +0200
-In-Reply-To: <57BF009B.4030008@candelatech.com>
+ id 1bcwIm-0000ex-CV
+ for ath10k@lists.infradead.org; Thu, 25 Aug 2016 15:10:45 +0000
 References: <20160825132522.30994-1-benjamin@sipsolutions.net>
  <20160825132522.30994-3-benjamin@sipsolutions.net>
  <57BF009B.4030008@candelatech.com>
-Mime-Version: 1.0
+ <1472135606.16921.74.camel@sipsolutions.net>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <a4a7c28b-97e2-7a34-3f2c-c0081356cb22@dd-wrt.com>
+Date: Thu, 25 Aug 2016 17:10:09 +0200
+MIME-Version: 1.0
+In-Reply-To: <1472135606.16921.74.camel@sipsolutions.net>
+Subject: Re: [PATCHv3 2/2] ath10k: Allow setting coverage class
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,123 +22,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3017594595294300864=="
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, Michal Kazior <michal.kazior@tieto.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, Simon Wunderlich <sw@simonwunderlich.de>
+To: Benjamin Berg <benjamin@sipsolutions.net>, Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, Michal Kazior <michal.kazior@tieto.com>, Simon Wunderlich <sw@simonwunderlich.de>
 
-
---===============3017594595294300864==
-Content-Type: multipart/signed; micalg="pgp-sha256";
-	protocol="application/pgp-signature"; boundary="=-IddRDNqpZX6prtz1SO8w"
-
-
---=-IddRDNqpZX6prtz1SO8w
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Do, 2016-08-25 at 07:28 -0700, Ben Greear wrote:
->=20
-> On 08/25/2016 06:25 AM, Benjamin Berg wrote:
-> >=20
-> > Unfortunately ath10k does not generally allow modifying the
-> > coverage class
-> > with the stock firmware and Qualcomm has so far refused to
-> > implement this
-> > feature so that it can be properly supported in ath10k. If we
-> > however know
-> > the registers that need to be modified for proper operation with a
-> > higher
-> > coverage class, then we can do these modifications from the driver.
-> >=20
-> > This patch implements this hack for first generation cards which
-> > are based
-> > on a core that is similar to ath9k. The registers are modified in
-> > place and
-> > need to be re-written every time the firmware sets them. To achieve
-> > this
-> > the register status is verified after certain WMI events from the
-> > firmware.
-> >=20
-> > The coverage class may not be modified temporarily right after the
-> > card
-> > re-initializes the registers. This is for example the case during
-> > scanning.
-> >=20
-> > Thanks to Sebastian Gottschall <s.gottschall@dd-wrt.com> for
-> > initially
-> > working on a userspace support for this. This patch wouldn't have
-> > been
-> > possible without this documentation.
->=20
->=20
->=20
-> >=20
-> > diff --git a/drivers/net/wireless/ath/ath10k/wmi.c
-> > b/drivers/net/wireless/ath/ath10k/wmi.c
-> > index d246288..8ccc8cf 100644
-> > --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> > +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> > @@ -4879,6 +4879,12 @@ exit:
-> > =C2=A0=C2=A0	return 0;
-> > =C2=A0 }
-> >=20
-> > +static inline void ath10k_wmi_queue_set_coverage_class_work(struct
-> > ath10k *ar)
-> > +{
-> > +	if (ar->hw_params.hw_ops->set_coverage_class)
-> > +		queue_work(ar->workqueue, &ar-
-> > >set_coverage_class_work);
-> > +}
->=20
-> Maybe this should first check to see if the user has specified a
-> coverage class
-> before it attempts to do any work at all?
->=20
-> That way, if user does not set anything, then the behaviour does not
-> change
-> in any significant way?
-
-Hm, yes, adding a check there looks simple and I don't see any reason
-why it wouldn't work.
-
-Benjamin
---=-IddRDNqpZX6prtz1SO8w
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAABCAAGBQJXvwG3AAoJENEjaKZhhWwg/uAP/2h+q4++nUP4VgWedMDvF5/m
-2ruBb0W9Qtd2R1ifSKFvk75VItnayNbKn/2+3/fh1fQy692EMaBUoq7n+Rb7yb+p
-mE/UTjEoZlyN1psK+44XTbhi/qhoMxj4TfoUHpMMridXO3FEO/VYIoUxvgP+7vK4
-mC5zESVRklZAIdS/6x3+xG/emLOJknawofGPGwD6+fLwMde2g1jprUItfIv/cWV5
-Wk0SgXxTSWIDL+kRl32UahsJa+C+x3zkUeIeVfmAhFVVsEdMHKocUAadyR9P2aCJ
-5id36eqvbGfmpnbY7XO0tdB72swmZ2eTzS92Ts7Tv2HHO3QkW7owS1sPfuz4ubR1
-C23jfUiF4S07dKC7nzUPK7U0fQMuBDnA5oTAKjm8R0ScI6sWerdNrlfYJP+7LG5e
-wea+21yVjRy1wKIMrQCcSCuhePQukkKh+NfnaFDP7oHdK8HzLr76OfNCG5Nsf6+W
-pVTDOxE0beI+NWN4O9uzWkwheIR03T3X6GDaupg0QWcbNn6GO/vOw1udWLLq/C1N
-8t11Mi4iZDaK1/hkt0gG4s+THEAIFzRy7ezAinJUyueyvYbjap7SUZdV7rbuVK7Z
-Hnpq0yBoV60/za7LYXNEiGrf8uaxj428h1mCVz0qEsliCpy6fZzYt/C3LG3rlua0
-CDukd7VBzPUeQaSDAt/K
-=yJ5l
------END PGP SIGNATURE-----
-
---=-IddRDNqpZX6prtz1SO8w--
-
-
-
---===============3017594595294300864==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============3017594595294300864==--
+QW0gMjUuMDguMjAxNiB1bSAxNjozMyBzY2hyaWViIEJlbmphbWluIEJlcmc6Cj4gT24gRG8sIDIw
+MTYtMDgtMjUgYXQgMDc6MjggLTA3MDAsIEJlbiBHcmVlYXIgd3JvdGU6Cj4+IE9uIDA4LzI1LzIw
+MTYgMDY6MjUgQU0sIEJlbmphbWluIEJlcmcgd3JvdGU6Cj4+PiBVbmZvcnR1bmF0ZWx5IGF0aDEw
+ayBkb2VzIG5vdCBnZW5lcmFsbHkgYWxsb3cgbW9kaWZ5aW5nIHRoZQo+Pj4gY292ZXJhZ2UgY2xh
+c3MKPj4+IHdpdGggdGhlIHN0b2NrIGZpcm13YXJlIGFuZCBRdWFsY29tbSBoYXMgc28gZmFyIHJl
+ZnVzZWQgdG8KPj4+IGltcGxlbWVudCB0aGlzCj4+PiBmZWF0dXJlIHNvIHRoYXQgaXQgY2FuIGJl
+IHByb3Blcmx5IHN1cHBvcnRlZCBpbiBhdGgxMGsuIElmIHdlCj4+PiBob3dldmVyIGtub3cKPj4+
+IHRoZSByZWdpc3RlcnMgdGhhdCBuZWVkIHRvIGJlIG1vZGlmaWVkIGZvciBwcm9wZXIgb3BlcmF0
+aW9uIHdpdGggYQo+Pj4gaGlnaGVyCj4+PiBjb3ZlcmFnZSBjbGFzcywgdGhlbiB3ZSBjYW4gZG8g
+dGhlc2UgbW9kaWZpY2F0aW9ucyBmcm9tIHRoZSBkcml2ZXIuCj4+Pgo+Pj4gVGhpcyBwYXRjaCBp
+bXBsZW1lbnRzIHRoaXMgaGFjayBmb3IgZmlyc3QgZ2VuZXJhdGlvbiBjYXJkcyB3aGljaAo+Pj4g
+YXJlIGJhc2VkCj4+PiBvbiBhIGNvcmUgdGhhdCBpcyBzaW1pbGFyIHRvIGF0aDlrLiBUaGUgcmVn
+aXN0ZXJzIGFyZSBtb2RpZmllZCBpbgo+Pj4gcGxhY2UgYW5kCj4+PiBuZWVkIHRvIGJlIHJlLXdy
+aXR0ZW4gZXZlcnkgdGltZSB0aGUgZmlybXdhcmUgc2V0cyB0aGVtLiBUbyBhY2hpZXZlCj4+PiB0
+aGlzCj4+PiB0aGUgcmVnaXN0ZXIgc3RhdHVzIGlzIHZlcmlmaWVkIGFmdGVyIGNlcnRhaW4gV01J
+IGV2ZW50cyBmcm9tIHRoZQo+Pj4gZmlybXdhcmUuCj4+Pgo+Pj4gVGhlIGNvdmVyYWdlIGNsYXNz
+IG1heSBub3QgYmUgbW9kaWZpZWQgdGVtcG9yYXJpbHkgcmlnaHQgYWZ0ZXIgdGhlCj4+PiBjYXJk
+Cj4+PiByZS1pbml0aWFsaXplcyB0aGUgcmVnaXN0ZXJzLiBUaGlzIGlzIGZvciBleGFtcGxlIHRo
+ZSBjYXNlIGR1cmluZwo+Pj4gc2Nhbm5pbmcuCj4+Pgo+Pj4gVGhhbmtzIHRvIFNlYmFzdGlhbiBH
+b3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4gZm9yCj4+PiBpbml0aWFsbHkKPj4+
+IHdvcmtpbmcgb24gYSB1c2Vyc3BhY2Ugc3VwcG9ydCBmb3IgdGhpcy4gVGhpcyBwYXRjaCB3b3Vs
+ZG4ndCBoYXZlCj4+PiBiZWVuCj4+PiBwb3NzaWJsZSB3aXRob3V0IHRoaXMgZG9jdW1lbnRhdGlv
+bi4KPj4KPj4KPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L3dtaS5jCj4+PiBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKPj4+IGlu
+ZGV4IGQyNDYyODguLjhjY2M4Y2YgMTAwNjQ0Cj4+PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVz
+cy9hdGgvYXRoMTBrL3dtaS5jCj4+PiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL3dtaS5jCj4+PiBAQCAtNDg3OSw2ICs0ODc5LDEyIEBAIGV4aXQ6Cj4+PiAgICAJcmV0dXJu
+IDA7Cj4+PiAgICB9Cj4+Pgo+Pj4gK3N0YXRpYyBpbmxpbmUgdm9pZCBhdGgxMGtfd21pX3F1ZXVl
+X3NldF9jb3ZlcmFnZV9jbGFzc193b3JrKHN0cnVjdAo+Pj4gYXRoMTBrICphcikKPj4+ICt7Cj4+
+PiArCWlmIChhci0+aHdfcGFyYW1zLmh3X29wcy0+c2V0X2NvdmVyYWdlX2NsYXNzKQo+Pj4gKwkJ
+cXVldWVfd29yayhhci0+d29ya3F1ZXVlLCAmYXItCj4+Pj4gc2V0X2NvdmVyYWdlX2NsYXNzX3dv
+cmspOwo+Pj4gK30KPj4gTWF5YmUgdGhpcyBzaG91bGQgZmlyc3QgY2hlY2sgdG8gc2VlIGlmIHRo
+ZSB1c2VyIGhhcyBzcGVjaWZpZWQgYQo+PiBjb3ZlcmFnZSBjbGFzcwo+PiBiZWZvcmUgaXQgYXR0
+ZW1wdHMgdG8gZG8gYW55IHdvcmsgYXQgYWxsPwo+Pgo+PiBUaGF0IHdheSwgaWYgdXNlciBkb2Vz
+IG5vdCBzZXQgYW55dGhpbmcsIHRoZW4gdGhlIGJlaGF2aW91ciBkb2VzIG5vdAo+PiBjaGFuZ2UK
+Pj4gaW4gYW55IHNpZ25pZmljYW50IHdheT8KPiBIbSwgeWVzLCBhZGRpbmcgYSBjaGVjayB0aGVy
+ZSBsb29rcyBzaW1wbGUgYW5kIEkgZG9uJ3Qgc2VlIGFueSByZWFzb24KPiB3aHkgaXQgd291bGRu
+J3Qgd29yay4KY29uc2lkZXIgdGhhdCBpIGFscmVhZHkgaW1wbGVtZW50ZWQgdGhpcyBpbiBteSB2
+ZXJzaW9uIG9mIHRoZSBwYXRjaCBpIApzdXBwbGllZCB0byB5b3UuIGhvd2V2ZXIuIG1pbmUgZG9l
+c250IHVzZSBxdWV1ZSBoYW5kbGluZyBidXQganVzdCBjaGVja3MgCmlmIHRoZSBodyBpcyByZWFk
+eSBiZWZvcmUgc2V0dGluZyBhbnl0aGluZwo+Cj4gQmVuamFtaW4KCgotLSAKTWl0IGZyZXVuZGxp
+Y2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RPCgpOZXdN
+ZWRpYS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgQmVybGluZXIgUmluZyAxMDEsIDY0
+NjI1IEJlbnNoZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIg
+MjU0NzMKR2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNj
+aGVlbGUKaHR0cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNv
+bQpUZWwuOiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
+dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
