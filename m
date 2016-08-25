@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bctHQ-0003du-6t
- for ath10k@lists.infradead.org; Thu, 25 Aug 2016 11:57:09 +0000
-Received: by mail-qk0-x242.google.com with SMTP id r128so3420232qkc.1
- for <ath10k@lists.infradead.org>; Thu, 25 Aug 2016 04:56:46 -0700 (PDT)
-Message-ID: <57BEDCF4.8050105@gmail.com>
-Date: Thu, 25 Aug 2016 19:56:36 +0800
-From: Xuebing Wang <xbing6@gmail.com>
-MIME-Version: 1.0
-Subject: ath10k: is there hw3.0 firmware for qca6164 (one spatial stream)
+ id 1bcufT-00044k-4J
+ for ath10k@lists.infradead.org; Thu, 25 Aug 2016 13:26:06 +0000
+From: Benjamin Berg <benjamin@sipsolutions.net>
+Subject: [PATCHv3 1/2] ath10k: Rename hw_rx_desc_ops to hw_ops to use it for
+ other purposes
+Date: Thu, 25 Aug 2016 15:25:21 +0200
+Message-Id: <20160825132522.30994-2-benjamin@sipsolutions.net>
+In-Reply-To: <20160825132522.30994-1-benjamin@sipsolutions.net>
+References: <20160825132522.30994-1-benjamin@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,54 +18,187 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
-Cc: alanliu@qca.qualcomm.com
+To: ath10k@lists.infradead.org
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Benjamin Berg <benjamin@sipsolutions.net>, Michal Kazior <michal.kazior@tieto.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-Hi Michal,
+The structure contains hardware specific operations. Rename the struct so
+that it is appropriate to be used for other operations.
 
-First of all, thank you very much for your help.
-
-1) As you are the author of adding qca6164 (one spatial stream) to 
-ath10k, are you aware if there is qca6164 chip with hw3.x which requires 
-hw3.x firmware?
-
-1.1) What qca6164 wlan card did you use while you authored the support 
-of qca6164?
-
-2) From the source code in core.c, there is only hw2.1 (.id = 
-QCA6174_HW_2_1_VERSION) for qca6164.
+Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
 ---
-static const struct ath10k_hw_params ath10k_hw_params_list[] = {
-     {
-         .id = QCA6174_HW_2_1_VERSION,
-         .dev_id = QCA6164_2_1_DEVICE_ID,
-         .name = "qca6164 hw2.1",
-....
-     };
----
+ drivers/net/wireless/ath/ath10k/core.c | 24 ++++++++++++------------
+ drivers/net/wireless/ath/ath10k/hw.c   |  4 ++--
+ drivers/net/wireless/ath/ath10k/hw.h   |  8 ++++----
+ 3 files changed, 18 insertions(+), 18 deletions(-)
 
-3) I checked Kalle's ath10k-firmware repository at github, there is no 
-such QCA6164/ folder (one spatial stream). Does 6164 use the same 
-firmware as 6174?
-
-4) As in your commit message as below, would you please advise where can 
-I get this special board.bin file?
----
-     The QCA6164 needs a dedicated board.bin file which
-     is different than the one used for QCA6174. If the
-     board.bin is wrong the device will crash early
-     while trying to boot firmware. The register dump
-     will look like this:
----
-
-Thanks again.
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 9c5e93b..6dd42d3 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -68,7 +68,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA988X_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA988X_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
++		.hw_ops = &qca988x_ops,
+ 	},
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+@@ -88,7 +88,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA9887_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA9887_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
++		.hw_ops = &qca988x_ops,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -106,7 +106,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
++		.hw_ops = &qca988x_ops,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -125,7 +125,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
++		.hw_ops = &qca988x_ops,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -144,7 +144,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
++		.hw_ops = &qca988x_ops,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -164,7 +164,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA6174_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
++		.hw_ops = &qca988x_ops,
+ 	},
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+@@ -188,7 +188,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_rx_desc_ops = &qca99x0_rx_desc_ops,
++		.hw_ops = &qca99x0_ops,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -212,7 +212,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_rx_desc_ops = &qca99x0_rx_desc_ops,
++		.hw_ops = &qca99x0_ops,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -235,7 +235,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA99X0_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_rx_desc_ops = &qca99x0_rx_desc_ops,
++		.hw_ops = &qca99x0_ops,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -253,7 +253,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA9377_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
++		.hw_ops = &qca988x_ops,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -271,7 +271,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA9377_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_rx_desc_ops = &qca988x_rx_desc_ops,
++		.hw_ops = &qca988x_ops,
+ 	},
+ 	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+@@ -296,7 +296,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_size = QCA4019_BOARD_DATA_SZ,
+ 			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
+ 		},
+-		.hw_rx_desc_ops = &qca99x0_rx_desc_ops,
++		.hw_ops = &qca99x0_ops,
+ 	},
+ };
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index 6149aa9..c2ecb9b 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -220,7 +220,7 @@ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
+ 	survey->time_busy = CCNT_TO_MSEC(ar, rcc);
+ }
+ 
+-const struct ath10k_hw_rx_desc_ops qca988x_rx_desc_ops = {
++const struct ath10k_hw_ops qca988x_ops = {
+ };
+ 
+ static int ath10k_qca99x0_rx_desc_get_l3_pad_bytes(struct htt_rx_desc *rxd)
+@@ -229,6 +229,6 @@ static int ath10k_qca99x0_rx_desc_get_l3_pad_bytes(struct htt_rx_desc *rxd)
+ 		  RX_MSDU_END_INFO1_L3_HDR_PAD);
+ }
+ 
+-const struct ath10k_hw_rx_desc_ops qca99x0_rx_desc_ops = {
++const struct ath10k_hw_ops qca99x0_ops = {
+ 	.rx_desc_get_l3_pad_bytes = ath10k_qca99x0_rx_desc_get_l3_pad_bytes,
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index a281544..1ef7dc6 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -410,18 +410,18 @@ struct ath10k_hw_params {
+ 		size_t board_ext_size;
+ 	} fw;
+ 
+-	const struct ath10k_hw_rx_desc_ops *hw_rx_desc_ops;
++	const struct ath10k_hw_ops *hw_ops;
+ };
+ 
+ struct htt_rx_desc;
+ 
+ /* Defines needed for Rx descriptor abstraction */
+-struct ath10k_hw_rx_desc_ops {
++struct ath10k_hw_ops {
+ 	int (*rx_desc_get_l3_pad_bytes)(struct htt_rx_desc *rxd);
+ };
+ 
+-extern const struct ath10k_hw_rx_desc_ops qca988x_rx_desc_ops;
+-extern const struct ath10k_hw_rx_desc_ops qca99x0_rx_desc_ops;
++extern const struct ath10k_hw_ops qca988x_ops;
++extern const struct ath10k_hw_ops qca99x0_ops;
+ 
+ /* Target specific defines for MAIN firmware */
+ #define TARGET_NUM_VDEVS			8
 -- 
-Xuebing
+2.9.3
+
 
 _______________________________________________
 ath10k mailing list
