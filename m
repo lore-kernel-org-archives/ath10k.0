@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from kaus.uberspace.de ([185.26.156.16])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bcwIm-0000ex-CV
- for ath10k@lists.infradead.org; Thu, 25 Aug 2016 15:10:45 +0000
-References: <20160825132522.30994-1-benjamin@sipsolutions.net>
- <20160825132522.30994-3-benjamin@sipsolutions.net>
- <57BF009B.4030008@candelatech.com>
- <1472135606.16921.74.camel@sipsolutions.net>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <a4a7c28b-97e2-7a34-3f2c-c0081356cb22@dd-wrt.com>
-Date: Thu, 25 Aug 2016 17:10:09 +0200
+ id 1bcxKw-0000zz-0L
+ for ath10k@lists.infradead.org; Thu, 25 Aug 2016 16:17:02 +0000
+From: David Rabel <David.Rabel@NoreSoft.com>
+Subject: Free Software replacement for ath10k chipsets' firmware
+Message-ID: <e9dac213-8b07-f2f9-796b-0ec4e50d7c32@NoreSoft.com>
+Date: Thu, 25 Aug 2016 18:16:33 +0200
 MIME-Version: 1.0
-In-Reply-To: <1472135606.16921.74.camel@sipsolutions.net>
-Subject: Re: [PATCHv3 2/2] ath10k: Allow setting coverage class
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,60 +16,83 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============3754263553304066076=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Benjamin Berg <benjamin@sipsolutions.net>, Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, Michal Kazior <michal.kazior@tieto.com>, Simon Wunderlich <sw@simonwunderlich.de>
+To: ath10k@lists.infradead.org
 
-QW0gMjUuMDguMjAxNiB1bSAxNjozMyBzY2hyaWViIEJlbmphbWluIEJlcmc6Cj4gT24gRG8sIDIw
-MTYtMDgtMjUgYXQgMDc6MjggLTA3MDAsIEJlbiBHcmVlYXIgd3JvdGU6Cj4+IE9uIDA4LzI1LzIw
-MTYgMDY6MjUgQU0sIEJlbmphbWluIEJlcmcgd3JvdGU6Cj4+PiBVbmZvcnR1bmF0ZWx5IGF0aDEw
-ayBkb2VzIG5vdCBnZW5lcmFsbHkgYWxsb3cgbW9kaWZ5aW5nIHRoZQo+Pj4gY292ZXJhZ2UgY2xh
-c3MKPj4+IHdpdGggdGhlIHN0b2NrIGZpcm13YXJlIGFuZCBRdWFsY29tbSBoYXMgc28gZmFyIHJl
-ZnVzZWQgdG8KPj4+IGltcGxlbWVudCB0aGlzCj4+PiBmZWF0dXJlIHNvIHRoYXQgaXQgY2FuIGJl
-IHByb3Blcmx5IHN1cHBvcnRlZCBpbiBhdGgxMGsuIElmIHdlCj4+PiBob3dldmVyIGtub3cKPj4+
-IHRoZSByZWdpc3RlcnMgdGhhdCBuZWVkIHRvIGJlIG1vZGlmaWVkIGZvciBwcm9wZXIgb3BlcmF0
-aW9uIHdpdGggYQo+Pj4gaGlnaGVyCj4+PiBjb3ZlcmFnZSBjbGFzcywgdGhlbiB3ZSBjYW4gZG8g
-dGhlc2UgbW9kaWZpY2F0aW9ucyBmcm9tIHRoZSBkcml2ZXIuCj4+Pgo+Pj4gVGhpcyBwYXRjaCBp
-bXBsZW1lbnRzIHRoaXMgaGFjayBmb3IgZmlyc3QgZ2VuZXJhdGlvbiBjYXJkcyB3aGljaAo+Pj4g
-YXJlIGJhc2VkCj4+PiBvbiBhIGNvcmUgdGhhdCBpcyBzaW1pbGFyIHRvIGF0aDlrLiBUaGUgcmVn
-aXN0ZXJzIGFyZSBtb2RpZmllZCBpbgo+Pj4gcGxhY2UgYW5kCj4+PiBuZWVkIHRvIGJlIHJlLXdy
-aXR0ZW4gZXZlcnkgdGltZSB0aGUgZmlybXdhcmUgc2V0cyB0aGVtLiBUbyBhY2hpZXZlCj4+PiB0
-aGlzCj4+PiB0aGUgcmVnaXN0ZXIgc3RhdHVzIGlzIHZlcmlmaWVkIGFmdGVyIGNlcnRhaW4gV01J
-IGV2ZW50cyBmcm9tIHRoZQo+Pj4gZmlybXdhcmUuCj4+Pgo+Pj4gVGhlIGNvdmVyYWdlIGNsYXNz
-IG1heSBub3QgYmUgbW9kaWZpZWQgdGVtcG9yYXJpbHkgcmlnaHQgYWZ0ZXIgdGhlCj4+PiBjYXJk
-Cj4+PiByZS1pbml0aWFsaXplcyB0aGUgcmVnaXN0ZXJzLiBUaGlzIGlzIGZvciBleGFtcGxlIHRo
-ZSBjYXNlIGR1cmluZwo+Pj4gc2Nhbm5pbmcuCj4+Pgo+Pj4gVGhhbmtzIHRvIFNlYmFzdGlhbiBH
-b3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4gZm9yCj4+PiBpbml0aWFsbHkKPj4+
-IHdvcmtpbmcgb24gYSB1c2Vyc3BhY2Ugc3VwcG9ydCBmb3IgdGhpcy4gVGhpcyBwYXRjaCB3b3Vs
-ZG4ndCBoYXZlCj4+PiBiZWVuCj4+PiBwb3NzaWJsZSB3aXRob3V0IHRoaXMgZG9jdW1lbnRhdGlv
-bi4KPj4KPj4KPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
-L3dtaS5jCj4+PiBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKPj4+IGlu
-ZGV4IGQyNDYyODguLjhjY2M4Y2YgMTAwNjQ0Cj4+PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL3dtaS5jCj4+PiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
-MTBrL3dtaS5jCj4+PiBAQCAtNDg3OSw2ICs0ODc5LDEyIEBAIGV4aXQ6Cj4+PiAgICAJcmV0dXJu
-IDA7Cj4+PiAgICB9Cj4+Pgo+Pj4gK3N0YXRpYyBpbmxpbmUgdm9pZCBhdGgxMGtfd21pX3F1ZXVl
-X3NldF9jb3ZlcmFnZV9jbGFzc193b3JrKHN0cnVjdAo+Pj4gYXRoMTBrICphcikKPj4+ICt7Cj4+
-PiArCWlmIChhci0+aHdfcGFyYW1zLmh3X29wcy0+c2V0X2NvdmVyYWdlX2NsYXNzKQo+Pj4gKwkJ
-cXVldWVfd29yayhhci0+d29ya3F1ZXVlLCAmYXItCj4+Pj4gc2V0X2NvdmVyYWdlX2NsYXNzX3dv
-cmspOwo+Pj4gK30KPj4gTWF5YmUgdGhpcyBzaG91bGQgZmlyc3QgY2hlY2sgdG8gc2VlIGlmIHRo
-ZSB1c2VyIGhhcyBzcGVjaWZpZWQgYQo+PiBjb3ZlcmFnZSBjbGFzcwo+PiBiZWZvcmUgaXQgYXR0
-ZW1wdHMgdG8gZG8gYW55IHdvcmsgYXQgYWxsPwo+Pgo+PiBUaGF0IHdheSwgaWYgdXNlciBkb2Vz
-IG5vdCBzZXQgYW55dGhpbmcsIHRoZW4gdGhlIGJlaGF2aW91ciBkb2VzIG5vdAo+PiBjaGFuZ2UK
-Pj4gaW4gYW55IHNpZ25pZmljYW50IHdheT8KPiBIbSwgeWVzLCBhZGRpbmcgYSBjaGVjayB0aGVy
-ZSBsb29rcyBzaW1wbGUgYW5kIEkgZG9uJ3Qgc2VlIGFueSByZWFzb24KPiB3aHkgaXQgd291bGRu
-J3Qgd29yay4KY29uc2lkZXIgdGhhdCBpIGFscmVhZHkgaW1wbGVtZW50ZWQgdGhpcyBpbiBteSB2
-ZXJzaW9uIG9mIHRoZSBwYXRjaCBpIApzdXBwbGllZCB0byB5b3UuIGhvd2V2ZXIuIG1pbmUgZG9l
-c250IHVzZSBxdWV1ZSBoYW5kbGluZyBidXQganVzdCBjaGVja3MgCmlmIHRoZSBodyBpcyByZWFk
-eSBiZWZvcmUgc2V0dGluZyBhbnl0aGluZwo+Cj4gQmVuamFtaW4KCgotLSAKTWl0IGZyZXVuZGxp
-Y2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RPCgpOZXdN
-ZWRpYS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgQmVybGluZXIgUmluZyAxMDEsIDY0
-NjI1IEJlbnNoZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIg
-MjU0NzMKR2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNj
-aGVlbGUKaHR0cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNv
-bQpUZWwuOiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============3754263553304066076==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="EWj9sU9TrBGpHVCkhpewU1lAtjm26nKxd"
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--EWj9sU9TrBGpHVCkhpewU1lAtjm26nKxd
+Content-Type: multipart/mixed; boundary="m84KDr9WLgNXcQjdBTssaVOOv932jPFqT"
+From: David Rabel <David.Rabel@NoreSoft.com>
+To: ath10k@lists.infradead.org
+Message-ID: <e9dac213-8b07-f2f9-796b-0ec4e50d7c32@NoreSoft.com>
+Subject: Free Software replacement for ath10k chipsets' firmware
+
+--m84KDr9WLgNXcQjdBTssaVOOv932jPFqT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi together,
+
+is anyone here working on or interested in writing a Free Software
+replacement for any of the ath10k chipset's firmware?
+
+I want to work on this, but unfortunately it is very hard to find any
+information on this topic on the Internet. Actually it is very hard to
+find information about the chipsets in general.
+
+So if anyone is interested in working on this or wants to contribute
+some knowledge, please let me know.
+
+Yours
+  David
+
+
+
+--m84KDr9WLgNXcQjdBTssaVOOv932jPFqT--
+
+--EWj9sU9TrBGpHVCkhpewU1lAtjm26nKxd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJXvxnhAAoJEPUFaR44Z/uEpJwP/2LKhKtdbm4ZUsJ+90NIlcUH
+bi8LRyh1Dv3DgUIK2F4uVJv8yMMsE9i0h0h5BuiX6sOW4U8LY6k7c6VhfPu08K2b
+cUDUEb2kmtQIzu9Dz4qh788LKcsw4bGuJ21KK5cnWuaaTkgLAE5n1ZpHJh7TqcLJ
+KteQt9Yxjgt5Ms8UsWRsGPFigoAGMUPdoeRyGV8Ii/pJe74HERa11d9C3tLnn+oJ
+h5ku2NiKHTYfvqS/BJtEQFyIT1ViJC4h36uuZkn9S5CZptXOSPBXQUVF74wodZ/x
+vxc2IvZUfZ2ZBAIjtvKsBJJL8F0byvZWqI3/YkX+7B96SRwY6f3HJCOUavG7KgAJ
+Bvc34xKpuWQPinVvC0NPGOrAh2r6hXMybiMJb/bp2mVYz7+emxU+AaQ5Uv/HXByi
+P0sPiU0zSdWO1Ng1lSTNtXAj8WdZ9oXy4R3sJDeo5S4COvbZE0/07OPGFZtB/zZs
+t1oLLkwfE0p+uIayr5Intt3BjWYqrL5D33Y89RImDUG10g3aD+QG+nB2h4XKAh6r
+zW4nhA+R5A0lZysnmqjWJi2Eoi8+GuZkNPvs6p/IuH22fuxrb2/tLGtWOpSgxqnv
+XXoesEpHpmLS+AINzA022yKc/EaBkUnRub4WMSDFt986r6d3Zk0zSGMvBaGef5vp
+aYDV6YkshpNTZLiFFxSZ
+=R7CA
+-----END PGP SIGNATURE-----
+
+--EWj9sU9TrBGpHVCkhpewU1lAtjm26nKxd--
+
+
+--===============3754263553304066076==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============3754263553304066076==--
