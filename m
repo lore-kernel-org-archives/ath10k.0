@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bco0E-0000Ge-4z
- for ath10k@lists.infradead.org; Thu, 25 Aug 2016 06:19:04 +0000
-Received: by mail-wm0-x22c.google.com with SMTP id q128so224909542wma.1
- for <ath10k@lists.infradead.org>; Wed, 24 Aug 2016 23:18:37 -0700 (PDT)
+ id 1bctHQ-0003du-6t
+ for ath10k@lists.infradead.org; Thu, 25 Aug 2016 11:57:09 +0000
+Received: by mail-qk0-x242.google.com with SMTP id r128so3420232qkc.1
+ for <ath10k@lists.infradead.org>; Thu, 25 Aug 2016 04:56:46 -0700 (PDT)
+Message-ID: <57BEDCF4.8050105@gmail.com>
+Date: Thu, 25 Aug 2016 19:56:36 +0800
+From: Xuebing Wang <xbing6@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <a9bf9a29-f020-7118-79ee-b6c1aaa95ffe@candelatech.com>
-References: <1468924452-23877-1-git-send-email-michal.kazior@tieto.com>
- <1468924452-23877-5-git-send-email-michal.kazior@tieto.com>
- <a9bf9a29-f020-7118-79ee-b6c1aaa95ffe@candelatech.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Thu, 25 Aug 2016 08:18:35 +0200
-Message-ID: <CA+BoTQk5GPFnC7tT5qoG6aiN0hSNbiDAVNv7O7j2SXgCvUUjBA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] ath10k: fix spurious tx/rx during boot
+Subject: ath10k: is there hw3.0 firmware for qca6164 (one spatial stream)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,64 +18,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+Cc: alanliu@qca.qualcomm.com
 
-T24gMjQgQXVndXN0IDIwMTYgYXQgMTk6MjAsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
-Y2guY29tPiB3cm90ZToKPiBPbiAwNy8xOS8yMDE2IDAzOjM0IEFNLCBNaWNoYWwgS2F6aW9yIHdy
-b3RlOgo+Pgo+PiBIVyBSeCBmaWx0ZXJzIGFuZCBtYXNrcyBhcmUgbm90IGNvbmZpZ3VyZWQKPj4g
-cHJvcGVybHkgYnkgZmlybXdhcmUgZHVyaW5nIGJvb3Qgc2VxdWVuY2VzLiBUaGUKPj4gTUFDX1BD
-VV9BRERSMSBpcyBzZXQgdG8gMHMgaW5zdGVhZCBvZiAxcyB3aGljaAo+PiBhbGxvd3MgdGhlIEhX
-IHRvIEFDSyBhbnkgZnJhbWUgdGhhdCBwYXNzZXMgdGhyb3VnaAo+PiBNQUNfUENVX1JYX0ZJTFRF
-Ui4gVGhlIE1BQ19QQ1VfUlhfRklMVEVSIGl0c2VsZgo+PiBpcyBtaXNjb25maWd1cmVkIG9uIGJv
-b3QgYXMgd2VsbC4KPj4KPj4gVGhlIGNvbWJpbmF0aW9uIG9mIHRoZXNlIGJ1Z3MgZW5kZWQgdXAg
-d2l0aCB0aGUKPj4gZm9sbG93aW5nIG1hbmlmZXN0YXRpb25zOgo+PiAgLSAibm8gY2hhbm5lbCBj
-b25maWd1cmVkOyBpZ25vcmluZyBmcmFtZShzKSEiCj4+ICAgIHdhcm5pbmdzIGluIHRoZSBkcml2
-ZXIKPj4gIC0gc3B1cmlvdXMgQUNLcyAodHJhbnNtaXNzaW9uKSBvbiB0aGUgYWlyIGR1cmluZwo+
-PiAgICBmaXJtd2FyZSBib290dXAgc2VxdWVuY2VzCj4+Cj4+IFRoZSBmb3JtZXIgd2FzIGEgbG9u
-ZyBzdGFuZGluZyBhbmQga25vd24gYnVnCj4+IG9yaWdpbmFsbHkgdGhvdWdoIG1vc3RseSBoYXJt
-bGVzcy4KPj4KPj4gSG93ZXZlciBNYXJlayByZWNlbnRseSBkaXNjb3ZlcmVkIHRoYXQgdGhpcwo+
-PiBwcm9ibGVtIGFsc28gaW52b2x2ZXMgQUNLaW5nICphbGwqIGZyYW1lcyB0aGUgSFcKPj4gcmVj
-ZWl2ZXMgKGluY2x1ZGluZyBiZWFjb25zIDspLiBTdWNoIGZyYW1lcwo+PiBhcmUgZGVsaXZlcmVk
-IHRvIGhvc3QgYW5kIGdlbmVyYXRlIHRoZSBmb3JtZXIKPj4gd2FybmluZyBhcyB3ZWxsLgo+Pgo+
-PiBUaGlzIGNvdWxkIGJlIGEgcHJvYmxlbSB3aXRoIHJlZ3VsYXRvcnkgY29tcGxpYW5jZQo+PiBp
-biBzb21lIHJhcmUgY2FzZXMgKGUuZy4gVGFpd2FuIHdoaWNoIGZvcmJpZHMKPj4gdHJhbnNtaXNz
-aW9ucyBvbiBjaGFubmVsIDM2IHdoaWNoIGlzIHRoZSBkZWZhdWx0Cj4+IGJvb3R1cCBjaGFubmVs
-IG9uIDVHaHogYmFuZCBjYXJkcykuIFRoZSBnb29kIG5ld3MKPj4gaXMgdGhhdCBpdCdkIHJlcXVp
-cmUgc29tZW9uZSBlbHNlIHRvIHZpb2xhdGUKPj4gcmVndWxhdG9yeSBmaXJzdCB0byBjb2VyY2Ug
-b3VyIGRldmljZSB0byBnZW5lcmF0ZQo+PiBhbmQgdHJhbnNtaXQgYW4gQUNLLgo+Pgo+PiBUaGUg
-cHJvYmxlbSBjb3VsZCBiZSByZXByb2R1Y2VkIGluIGEgcmF0aGVyIGJ1c3kKPj4gZW52aXJvbm1l
-bnQgdGhhdCBoYXMgYSBsb3Qgb2YgQVBzLiBUaGUgbGlrZWxpaG9vZAo+PiBjb3VsZCBiZSBpbmNy
-ZWFzZWQgYnkgaW5qZWN0aW5nIGFuIG1zbGVlcCgpIG9mCj4+IDUwMDAgb3IgbG9uZ2VyIGltbWVk
-aWF0ZWx5IGFmdGVyCj4+IGF0aDEwa19odHRfc2V0dXAoKSBpbiBhdGgxMGtfY29yZV9zdGFydCgp
-Lgo+Pgo+PiBUaGUgcmVhc29uIHdoeSB0aGUgZm9ybWVyIHdhcm5pbmdzIHdlcmUgb25seQo+PiBz
-aG93aW5nIHVwIHNlbGRvbSBpcyBiZWNhdXNlIHRoZSBkZXZpY2Ugd2FzIGVpdGhlcgo+PiBxdWlj
-a2x5IHJlc2V0IGFnYWluIChpLmUuIGR1cmluZyBmaXJtd2FyZSBwcm9iaW5nKQo+PiBvciB3bWkg
-dmRldiB3YXMgY3JlYXRlZCAod2hpY2ggZml4ZXMgaHcgYW5kIGZ3Cj4+IHN0YXRlcykuCj4+Cj4+
-IEl0IGlzIHRlY2huaWNhbGx5IHBvc3NpYmxlIGZvciBob3N0IGRyaXZlciB0bwo+PiBvdmVycmlk
-ZSBhZGVxdWF0ZSBodyByZWdpc3RlcnMgaG93ZXZlciB0aGlzIGNhbid0Cj4+IHdvcmsgcmVsaWFi
-bHkgYmVjYXVzZSB0aGUgYnVnIHJvb3QgY2F1c2UgbGllcyBpbgo+PiBpbmNvcnJlY3QgZmlybXdh
-cmUgc3RhdGUgb24gYm9vdCAoaW50ZXJuYWwKPj4gc3RydWN0dXJlIHVzZWQgdG8gcHJvZ3JhbSBN
-QUNfUENVX0FERFIxIGlzIG5vdAo+PiBwcm9wZXJseSBpbml0aWFsaXplZCkgYW5kIG9ubHkgdmRl
-diBjcmVhdGUvZGVsZXRlCj4+IGV2ZW50cyBjYW4gZml4IGl0LiBUaGlzIGlzIHdoeSB0aGUgcGF0
-Y2ggdGFrZXMKPj4gZHVtbXkgdmRldiBhcHByb2FjaC4KPj4KPj4gVGhpcyBjb3VsZCBiZSBmaXhl
-ZCBpbiBmaXJtd2FyZSBhcyB3ZWxsIGJ1dCBoYXZpbmcKPj4gdGhpcyBmaXhlZCBpbiBkcml2ZXIg
-aXMgbW9yZSByb2J1c3QsIG1vc3Qgbm90YWJseQo+PiB3aGVuIHRoaW5raW5nIG9mIHVzZXJzIG9m
-IG9sZGVyIGZpcm13YXJlIHN1Y2ggYXMKPj4gOTk5Ljk5OS4wLjYzNi4KPj4KPj4gUmVwb3J0ZWQt
-Ynk6IE1hcmVrIFB1enluaWFrIDxtYXJlay5wdXp5bmlha0B0aWV0by5jb20+Cj4+IFNpZ25lZC1v
-ZmYtYnk6IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPgo+Cj4KPiBJIHdh
-cyBsb29raW5nIGF0IGZpcm13YXJlIHRvIG1ha2Ugc3VyZSB0aGF0IEkgZml4ZWQgd2hhdCBJIGNv
-dWxkIHRoZXJlLi4uLgo+Cj4gRnJvbSB3aGF0IEkgY2FuIHRlbGwsIDEwLjQgc2hvdWxkIG5vdCBo
-YXZlIHRoaXMgYnVnLiAgRGlkIHlvdSBzZWUgdGhpcyBvbmx5Cj4gb24gMTAuMS8xMC4yIGZpcm13
-YXJlPyAgSXQgaXMgb2YgY291cnNlIHBvc3NpYmxlIHRoYXQgSSBhbSBtaXMtdW5kZXJzdGFuZGlu
-Zwo+IDEwLjQuLi4uCgpJIGRpZCBzZWUgaXQgb24gMTAuMSBhbmQgMTAuMi4gRG9uJ3QgcmVjYWxs
-IHNlZWluZyBpdCBvbiAxMC40IHRob3VnaC4KSWYgeW91IGRpZG4ndCBzZWUgd2FybmluZ3Mgb24g
-MTAuNCBldmVuIGFmdGVyIGFkZGluZyBtc2xlZXAoKSBhcyBwZXIKY29tbWl0IGxvZyB0aGVuIEkg
-Z3Vlc3MgaXQgZG9lc24ndCBzdWZmZXIgZnJvbSB0aGUgYnVnLgoKCk1pY2hhxYIKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
-c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi Michal,
+
+First of all, thank you very much for your help.
+
+1) As you are the author of adding qca6164 (one spatial stream) to 
+ath10k, are you aware if there is qca6164 chip with hw3.x which requires 
+hw3.x firmware?
+
+1.1) What qca6164 wlan card did you use while you authored the support 
+of qca6164?
+
+2) From the source code in core.c, there is only hw2.1 (.id = 
+QCA6174_HW_2_1_VERSION) for qca6164.
+---
+static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+     {
+         .id = QCA6174_HW_2_1_VERSION,
+         .dev_id = QCA6164_2_1_DEVICE_ID,
+         .name = "qca6164 hw2.1",
+....
+     };
+---
+
+3) I checked Kalle's ath10k-firmware repository at github, there is no 
+such QCA6164/ folder (one spatial stream). Does 6164 use the same 
+firmware as 6174?
+
+4) As in your commit message as below, would you please advise where can 
+I get this special board.bin file?
+---
+     The QCA6164 needs a dedicated board.bin file which
+     is different than the one used for QCA6174. If the
+     board.bin is wrong the device will crash early
+     while trying to boot firmware. The register dump
+     will look like this:
+---
+
+Thanks again.
+
+-- 
+Xuebing
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
