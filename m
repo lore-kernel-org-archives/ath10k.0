@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from kaus.uberspace.de ([185.26.156.16])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bcxKw-0000zz-0L
- for ath10k@lists.infradead.org; Thu, 25 Aug 2016 16:17:02 +0000
-From: David Rabel <David.Rabel@NoreSoft.com>
-Subject: Free Software replacement for ath10k chipsets' firmware
-Message-ID: <e9dac213-8b07-f2f9-796b-0ec4e50d7c32@NoreSoft.com>
-Date: Thu, 25 Aug 2016 18:16:33 +0200
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bd0PC-000058-NS
+ for ath10k@lists.infradead.org; Thu, 25 Aug 2016 19:33:39 +0000
+Subject: Re: [PATCH 4/4] ath10k: fix spurious tx/rx during boot
+References: <1468924452-23877-1-git-send-email-michal.kazior@tieto.com>
+ <1468924452-23877-5-git-send-email-michal.kazior@tieto.com>
+ <a9bf9a29-f020-7118-79ee-b6c1aaa95ffe@candelatech.com>
+ <CA+BoTQk5GPFnC7tT5qoG6aiN0hSNbiDAVNv7O7j2SXgCvUUjBA@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <f48178bc-0775-5b60-1c9a-cead97005fbb@candelatech.com>
+Date: Thu, 25 Aug 2016 12:19:13 -0700
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQk5GPFnC7tT5qoG6aiN0hSNbiDAVNv7O7j2SXgCvUUjBA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,83 +21,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3754263553304066076=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============3754263553304066076==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="EWj9sU9TrBGpHVCkhpewU1lAtjm26nKxd"
+On 08/24/2016 11:18 PM, Michal Kazior wrote:
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---EWj9sU9TrBGpHVCkhpewU1lAtjm26nKxd
-Content-Type: multipart/mixed; boundary="m84KDr9WLgNXcQjdBTssaVOOv932jPFqT"
-From: David Rabel <David.Rabel@NoreSoft.com>
-To: ath10k@lists.infradead.org
-Message-ID: <e9dac213-8b07-f2f9-796b-0ec4e50d7c32@NoreSoft.com>
-Subject: Free Software replacement for ath10k chipsets' firmware
+>> I was looking at firmware to make sure that I fixed what I could there....
+>>
+>> From what I can tell, 10.4 should not have this bug.  Did you see this only
+>> on 10.1/10.2 firmware?  It is of course possible that I am mis-understanding
+>> 10.4....
+>
+> I did see it on 10.1 and 10.2. Don't recall seeing it on 10.4 though.
+> If you didn't see warnings on 10.4 even after adding msleep() as per
+> commit log then I guess it doesn't suffer from the bug.
 
---m84KDr9WLgNXcQjdBTssaVOOv932jPFqT
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+I can still occasionally see that message with a 15000 ms sleep.
 
-Hi together,
+Based on debugging, it seems my firmware is now setting the mac-mask properly.
 
-is anyone here working on or interested in writing a Free Software
-replacement for any of the ath10k chipset's firmware?
+But, as you mention, the rxfilter is enabled very early.  So, probably
+it is still possible to see packets early if they are multicast, bcast, etc.
 
-I want to work on this, but unfortunately it is very hard to find any
-information on this topic on the Internet. Actually it is very hard to
-find information about the chipsets in general.
+I don't think it is worth re-working the entire rx-filter calc in
+the concurrency logic properly for 10.1 firmware, so I'm going to figure
+my fix is good enough as is as long as it sets the mac-mask properly.
 
-So if anyone is interested in working on this or wants to contribute
-some knowledge, please let me know.
+Thanks,
+Ben
 
-Yours
-  David
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
-
-
---m84KDr9WLgNXcQjdBTssaVOOv932jPFqT--
-
---EWj9sU9TrBGpHVCkhpewU1lAtjm26nKxd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJXvxnhAAoJEPUFaR44Z/uEpJwP/2LKhKtdbm4ZUsJ+90NIlcUH
-bi8LRyh1Dv3DgUIK2F4uVJv8yMMsE9i0h0h5BuiX6sOW4U8LY6k7c6VhfPu08K2b
-cUDUEb2kmtQIzu9Dz4qh788LKcsw4bGuJ21KK5cnWuaaTkgLAE5n1ZpHJh7TqcLJ
-KteQt9Yxjgt5Ms8UsWRsGPFigoAGMUPdoeRyGV8Ii/pJe74HERa11d9C3tLnn+oJ
-h5ku2NiKHTYfvqS/BJtEQFyIT1ViJC4h36uuZkn9S5CZptXOSPBXQUVF74wodZ/x
-vxc2IvZUfZ2ZBAIjtvKsBJJL8F0byvZWqI3/YkX+7B96SRwY6f3HJCOUavG7KgAJ
-Bvc34xKpuWQPinVvC0NPGOrAh2r6hXMybiMJb/bp2mVYz7+emxU+AaQ5Uv/HXByi
-P0sPiU0zSdWO1Ng1lSTNtXAj8WdZ9oXy4R3sJDeo5S4COvbZE0/07OPGFZtB/zZs
-t1oLLkwfE0p+uIayr5Intt3BjWYqrL5D33Y89RImDUG10g3aD+QG+nB2h4XKAh6r
-zW4nhA+R5A0lZysnmqjWJi2Eoi8+GuZkNPvs6p/IuH22fuxrb2/tLGtWOpSgxqnv
-XXoesEpHpmLS+AINzA022yKc/EaBkUnRub4WMSDFt986r6d3Zk0zSGMvBaGef5vp
-aYDV6YkshpNTZLiFFxSZ
-=R7CA
------END PGP SIGNATURE-----
-
---EWj9sU9TrBGpHVCkhpewU1lAtjm26nKxd--
-
-
---===============3754263553304066076==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============3754263553304066076==--
