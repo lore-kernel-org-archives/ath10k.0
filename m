@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-ua0-x22d.google.com ([2607:f8b0:400c:c08::22d])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bdCFH-0004wL-Bc
- for ath10k@lists.infradead.org; Fri, 26 Aug 2016 08:12:12 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH v5] ath10k: Fix broken NULL func data frame status for 10.4
-Date: Fri, 26 Aug 2016 13:42:20 +0530
-Message-ID: <1472199140-8404-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1bdD0b-0000Jt-Pe
+ for ath10k@lists.infradead.org; Fri, 26 Aug 2016 09:01:06 +0000
+Received: by mail-ua0-x22d.google.com with SMTP id n59so127254613uan.2
+ for <ath10k@lists.infradead.org>; Fri, 26 Aug 2016 02:00:44 -0700 (PDT)
 MIME-Version: 1.0
+From: Changmok Yang <cmyang@mwnl.snu.ac.kr>
+Date: Fri, 26 Aug 2016 18:00:43 +0900
+Message-ID: <CABYpaOcSNF_bwO8VUYRhrct0KD1w4SB3KfYtFXtiu4sdMquNhg@mail.gmail.com>
+Subject: Questions for ath10k rate control, bandwidth, and channel sensing
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,73 +23,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Hi.
+We are trying to change transmission bandwidth and data rate.
 
-Older firmware with HTT delivers incorrect tx status for null func
-frames to driver, but this fixed in 10.2 and 10.4 firmware versions.
-Also this workaround results in reporting of incorrect null func status
-for 10.4. Fix this is by introducing a firmware feature flag for 10.4
-so that this workaround is skipped and proper tx status for null func
-frames are reported
+1. We found that we can only control per-station channel width, and
+rate control, like Minstrel, is not controlled by ath10k and in
+firmware. Then, can ath10k select the transmission data rate manually?
+If so, how? We cannot find the part the data rate is determined.
 
-Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
-[v5 based on the review comments from Michal]
+2. Is it possible to change operating bandwidth per station while
+maintaining association?
 
- drivers/net/wireless/ath/ath10k/core.c |    1 +
- drivers/net/wireless/ath/ath10k/core.h |    7 +++++++
- drivers/net/wireless/ath/ath10k/mac.c  |    2 ++
- 3 files changed, 10 insertions(+)
+3. We also want to use parameters related to channel sensing. Although
+we found that CCA related parameters are in firmware, we alternatively
+want to use parameters related to Ethtool in survey_info structure (in
+include/net/cfg80211.h, the structure below). However, when we read
+this variable in the log after Ethtrool running, the value does not
+seem to reflect channel sensing. Where and how can we use channel
+sensing parameters in ath10k? Is it possible?
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index e889829..798b3f8 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -304,6 +304,7 @@ static const char *const ath10k_core_fw_feature_str[] = {
- 	[ATH10K_FW_FEATURE_MFP_SUPPORT] = "mfp",
- 	[ATH10K_FW_FEATURE_PEER_FLOW_CONTROL] = "peer-flow-ctrl",
- 	[ATH10K_FW_FEATURE_BTCOEX_PARAM] = "btcoex-param",
-+	[ATH10K_FW_FEATURE_SKIP_NULL_FUNC_WAR] = "skip-null-func-war",
- };
- 
- static unsigned int ath10k_core_get_fw_feature_str(char *buf,
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 30ae5bf..54e40f3 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -551,6 +551,13 @@ enum ath10k_fw_features {
- 	 */
- 	ATH10K_FW_FEATURE_BTCOEX_PARAM = 14,
- 
-+	/* Older firmware with HTT delivers incorrect tx status for null func
-+	 * frames to driver, but this fixed in 10.2 and 10.4 firmware versions.
-+	 * Also this workaround results in reporting of incorrect null func
-+	 * status for 10.4. This flag is used to skip the workaround.
-+	 */
-+	ATH10K_FW_FEATURE_SKIP_NULL_FUNC_WAR = 15,
-+
- 	/* keep last */
- 	ATH10K_FW_FEATURE_COUNT,
- };
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index fb8e38d..7508ef8 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3255,6 +3255,8 @@ ath10k_mac_tx_h_get_txmode(struct ath10k *ar,
- 	if (ar->htt.target_version_major < 3 &&
- 	    (ieee80211_is_nullfunc(fc) || ieee80211_is_qos_nullfunc(fc)) &&
- 	    !test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
-+		      ar->running_fw->fw_file.fw_features) &&
-+	    !test_bit(ATH10K_FW_FEATURE_SKIP_NULL_FUNC_WAR,
- 		      ar->running_fw->fw_file.fw_features))
- 		return ATH10K_HW_TXRX_MGMT;
- 
--- 
-1.7.9.5
+struct survey_info {
+struct ieee80211_channel *channel;
+u64 time;
+u64 time_busy;
+u64 time_ext_busy;
+u64 time_rx;
+u64 time_tx;
+u64 time_scan;
+u32 filled;
+s8 noise;
+};
 
+Thank you.
+Sincerely yours,
+Changmok Yang.
 
 _______________________________________________
 ath10k mailing list
