@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bdJVE-0001EH-9T
- for ath10k@lists.infradead.org; Fri, 26 Aug 2016 15:57:08 +0000
-Message-ID: <57C066B0.1000408@candelatech.com>
-Date: Fri, 26 Aug 2016 08:56:32 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bdJff-000789-Ej
+ for ath10k@lists.infradead.org; Fri, 26 Aug 2016 16:07:56 +0000
 MIME-Version: 1.0
-Subject: Re: Free Software replacement for ath10k chipsets' firmware
-References: <e9dac213-8b07-f2f9-796b-0ec4e50d7c32@NoreSoft.com>
- <CA+uUJGsbq6wsgJVHY1g7nK=Ka4iRc46kj0PSxVvqVG-Cn4WCuA@mail.gmail.com>
-In-Reply-To: <CA+uUJGsbq6wsgJVHY1g7nK=Ka4iRc46kj0PSxVvqVG-Cn4WCuA@mail.gmail.com>
+Date: Fri, 26 Aug 2016 21:37:32 +0530
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: Re: [PATCH v3] ath10k: implement NAPI support
+In-Reply-To: <CAA93jw5mEMbUVs-i-Bpjkv6tX-umsO=9ZKPEnFcEj=22yjWX1g@mail.gmail.com>
+References: <20160826102250.24174-1-rmanohar@qti.qualcomm.com>
+ <CAA93jw7vHWROH9Ymq1UoOKA5kw+fDbCM=vJehs8J=QP2PVs_RA@mail.gmail.com>
+ <1472209920.390.34.camel@sipsolutions.net>
+ <CAA93jw5mEMbUVs-i-Bpjkv6tX-umsO=9ZKPEnFcEj=22yjWX1g@mail.gmail.com>
+Message-ID: <ca7f8cbdeeb259f5550e17a8f2a22e4f@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,67 +25,84 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Raj Joshi <rajjoshi@comp.nus.edu.sg>, David Rabel <David.Rabel@noresoft.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Dave Taht <dave.taht@gmail.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>, linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k <ath10k@lists.infradead.org>
 
-I consider it virtually impossible.  Most folks that could help you are
-under NDA, and regardless it would be a huge task.
+On 2016-08-26 17:19, Dave Taht wrote:
+> On Fri, Aug 26, 2016 at 4:12 AM, Johannes Berg
+> <johannes@sipsolutions.net> wrote:
+>> On Fri, 2016-08-26 at 03:48 -0700, Dave Taht wrote:
+>>> I'm always rather big on people testing latency under load, and napi
+>>> tends to add some.
+>> 
+>> That's a completely useless comment.
+>> 
+>> Obviously, everybody uses NAPI; it's necessary for system load and 
+>> thus
+>> performance, and lets drivers take advantage of TCP merging to reduce
+>> ACKs, which is tremendously helpful (over wifi in particular.)
+>> 
+>> Please stop making such drive-by comments that focus only on the 
+>> single
+>> thing you find important above all; not all people can care only about
+>> that single thing, and unconstructively reiterating it over and over
+>> doesn't help.
+> 
+> Well, I apologize for being testy. It is  I spent a lot of time
+> testing michal's patchset for the ath10k back in may, and I *will* go
+> and retest ath10k, when these patches land. My principal concern with
+> using napi is at lower rates than the maxes typically reported in a
+> patchset.
+> 
 
-Better to hope that someday QCA gets tired of fixing and refixing
-(and ignoring) the bugs themselves and opens the firmware.
+You are always welcome to validate this change and share your feedback.
 
-Thank,
-Ben
+>  But it would be nice if people always did test for latency under load
+> when making improvements, before getting to me, and despite having
+> helped make a very comprehensive test suite available (flent) that
+> tests all sorts of things for wifi, getting people to actually use it
+> to see real problems, (in addition to latency under load!) while their
+> fingers are still hot in the codebase, and track/plot their results,
+> remains an ongoing issue across the entire industry.
+> 
+> http://blog.cerowrt.org/post/fq_codel_on_ath10k/
+> 
+As you know, NAPI is designed to improve performance of high speed n/w 
+devices. From LWN: "NAPI is a proven 
+(www.cyberus.ca/~hadi/usenix-paper.tgz) technique to improve network 
+performance on Linux." Even most of Gig-speed network drivers were 
+already migrated to NAPI. Tasklets are heavy CPU consumers and it will 
+impact performance of other low priority tasks. The article[1] explains 
+the problems of tasklet.
 
-On 08/26/2016 12:12 AM, Raj Joshi wrote:
-> Hi David,
->
-> Thanks for bringing this up. It would be immensely useful to (re)gain
-> control over all the PHY-MAC of QCA chips :)
->
-> However, I am as clueless as you about getting started and about the
-> quantum of effort required. It would be great to receive some
-> pointers, if anyone has any clue.
->
-> Thanks,
-> Raj
->
-> On Fri, Aug 26, 2016 at 12:16 AM, David Rabel <David.Rabel@noresoft.com> wrote:
->>
->> Hi together,
->>
->> is anyone here working on or interested in writing a Free Software
->> replacement for any of the ath10k chipset's firmware?
->>
->> I want to work on this, but unfortunately it is very hard to find any
->> information on this topic on the Internet. Actually it is very hard to
->> find information about the chipsets in general.
->>
->> So if anyone is interested in working on this or wants to contribute
->> some knowledge, please let me know.
->>
->> Yours
->>    David
->>
->>
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
->>
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
+ From my observations, average CPU usage got reduced by 10% under heavy 
+data traffic against same peak throughput. I validated this change on 
+both IPQ4019 platform (Quad-Core ARM Cortex A7 processor) and AP135 
+platform (uni-core MIPS 720 MHz processor). I did not observe any 
+regression.
 
+> There are many other problems in wifi, of course, that could use
+> engineering mental internalization, like airtime fairness, and the
+> mis-behavior of the hardware queues,
+> 
+> http://blog.cerowrt.org/post/cs5_lockout/
+> 
+> wifi channel scans
+> 
+> http://blog.cerowrt.org/post/disabling_channel_scans/
+> 
+> and so on.
+> 
+> I have a ton more datasets and blog entries left to write up from the
+> ath9k work thus far which point to some other issues (minstrel,
+> aggregation, retries)
+> 
+your data are really impressive. Once again, feel free to validate this 
+change and share your inputs.
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+[1] http://lwn.net/Articles/239633/
 
+-Rajkumar
 
 _______________________________________________
 ath10k mailing list
