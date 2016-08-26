@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-it0-x22a.google.com ([2607:f8b0:4001:c0b::22a])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bdFeL-00060t-Rq
- for ath10k@lists.infradead.org; Fri, 26 Aug 2016 11:50:18 +0000
-Received: by mail-it0-x22a.google.com with SMTP id x131so326218052ite.0
- for <ath10k@lists.infradead.org>; Fri, 26 Aug 2016 04:49:57 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bdJVE-0001EH-9T
+ for ath10k@lists.infradead.org; Fri, 26 Aug 2016 15:57:08 +0000
+Message-ID: <57C066B0.1000408@candelatech.com>
+Date: Fri, 26 Aug 2016 08:56:32 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <1472209920.390.34.camel@sipsolutions.net>
-References: <20160826102250.24174-1-rmanohar@qti.qualcomm.com>
- <CAA93jw7vHWROH9Ymq1UoOKA5kw+fDbCM=vJehs8J=QP2PVs_RA@mail.gmail.com>
- <1472209920.390.34.camel@sipsolutions.net>
-From: Dave Taht <dave.taht@gmail.com>
-Date: Fri, 26 Aug 2016 04:49:56 -0700
-Message-ID: <CAA93jw5mEMbUVs-i-Bpjkv6tX-umsO=9ZKPEnFcEj=22yjWX1g@mail.gmail.com>
-Subject: Re: [PATCH v3] ath10k: implement NAPI support
+Subject: Re: Free Software replacement for ath10k chipsets' firmware
+References: <e9dac213-8b07-f2f9-796b-0ec4e50d7c32@NoreSoft.com>
+ <CA+uUJGsbq6wsgJVHY1g7nK=Ka4iRc46kj0PSxVvqVG-Cn4WCuA@mail.gmail.com>
+In-Reply-To: <CA+uUJGsbq6wsgJVHY1g7nK=Ka4iRc46kj0PSxVvqVG-Cn4WCuA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +19,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k <ath10k@lists.infradead.org>, Rajkumar Manoharan <rmanohar@codeaurora.org>
+To: Raj Joshi <rajjoshi@comp.nus.edu.sg>, David Rabel <David.Rabel@noresoft.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-T24gRnJpLCBBdWcgMjYsIDIwMTYgYXQgNDoxMiBBTSwgSm9oYW5uZXMgQmVyZwo8am9oYW5uZXNA
-c2lwc29sdXRpb25zLm5ldD4gd3JvdGU6Cj4gT24gRnJpLCAyMDE2LTA4LTI2IGF0IDAzOjQ4IC0w
-NzAwLCBEYXZlIFRhaHQgd3JvdGU6Cj4+IEknbSBhbHdheXMgcmF0aGVyIGJpZyBvbiBwZW9wbGUg
-dGVzdGluZyBsYXRlbmN5IHVuZGVyIGxvYWQsIGFuZCBuYXBpCj4+IHRlbmRzIHRvIGFkZCBzb21l
-Lgo+Cj4gVGhhdCdzIGEgY29tcGxldGVseSB1c2VsZXNzIGNvbW1lbnQuCj4KPiBPYnZpb3VzbHks
-IGV2ZXJ5Ym9keSB1c2VzIE5BUEk7IGl0J3MgbmVjZXNzYXJ5IGZvciBzeXN0ZW0gbG9hZCBhbmQg
-dGh1cwo+IHBlcmZvcm1hbmNlLCBhbmQgbGV0cyBkcml2ZXJzIHRha2UgYWR2YW50YWdlIG9mIFRD
-UCBtZXJnaW5nIHRvIHJlZHVjZQo+IEFDS3MsIHdoaWNoIGlzIHRyZW1lbmRvdXNseSBoZWxwZnVs
-IChvdmVyIHdpZmkgaW4gcGFydGljdWxhci4pCj4KPiBQbGVhc2Ugc3RvcCBtYWtpbmcgc3VjaCBk
-cml2ZS1ieSBjb21tZW50cyB0aGF0IGZvY3VzIG9ubHkgb24gdGhlIHNpbmdsZQo+IHRoaW5nIHlv
-dSBmaW5kIGltcG9ydGFudCBhYm92ZSBhbGw7IG5vdCBhbGwgcGVvcGxlIGNhbiBjYXJlIG9ubHkg
-YWJvdXQKPiB0aGF0IHNpbmdsZSB0aGluZywgYW5kIHVuY29uc3RydWN0aXZlbHkgcmVpdGVyYXRp
-bmcgaXQgb3ZlciBhbmQgb3Zlcgo+IGRvZXNuJ3QgaGVscC4KCldlbGwsIEkgYXBvbG9naXplIGZv
-ciBiZWluZyB0ZXN0eS4gSXQgaXMgIEkgc3BlbnQgYSBsb3Qgb2YgdGltZQp0ZXN0aW5nIG1pY2hh
-bCdzIHBhdGNoc2V0IGZvciB0aGUgYXRoMTBrIGJhY2sgaW4gbWF5LCBhbmQgSSAqd2lsbCogZ28K
-YW5kIHJldGVzdCBhdGgxMGssIHdoZW4gdGhlc2UgcGF0Y2hlcyBsYW5kLiBNeSBwcmluY2lwYWwg
-Y29uY2VybiB3aXRoCnVzaW5nIG5hcGkgaXMgYXQgbG93ZXIgcmF0ZXMgdGhhbiB0aGUgbWF4ZXMg
-dHlwaWNhbGx5IHJlcG9ydGVkIGluIGEKcGF0Y2hzZXQuCgogQnV0IGl0IHdvdWxkIGJlIG5pY2Ug
-aWYgcGVvcGxlIGFsd2F5cyBkaWQgdGVzdCBmb3IgbGF0ZW5jeSB1bmRlciBsb2FkCndoZW4gbWFr
-aW5nIGltcHJvdmVtZW50cywgYmVmb3JlIGdldHRpbmcgdG8gbWUsIGFuZCBkZXNwaXRlIGhhdmlu
-ZwpoZWxwZWQgbWFrZSBhIHZlcnkgY29tcHJlaGVuc2l2ZSB0ZXN0IHN1aXRlIGF2YWlsYWJsZSAo
-ZmxlbnQpIHRoYXQKdGVzdHMgYWxsIHNvcnRzIG9mIHRoaW5ncyBmb3Igd2lmaSwgZ2V0dGluZyBw
-ZW9wbGUgdG8gYWN0dWFsbHkgdXNlIGl0CnRvIHNlZSByZWFsIHByb2JsZW1zLCAoaW4gYWRkaXRp
-b24gdG8gbGF0ZW5jeSB1bmRlciBsb2FkISkgd2hpbGUgdGhlaXIKZmluZ2VycyBhcmUgc3RpbGwg
-aG90IGluIHRoZSBjb2RlYmFzZSwgYW5kIHRyYWNrL3Bsb3QgdGhlaXIgcmVzdWx0cywKcmVtYWlu
-cyBhbiBvbmdvaW5nIGlzc3VlIGFjcm9zcyB0aGUgZW50aXJlIGluZHVzdHJ5LgoKaHR0cDovL2Js
-b2cuY2Vyb3dydC5vcmcvcG9zdC9mcV9jb2RlbF9vbl9hdGgxMGsvCgpUaGVyZSBhcmUgbWFueSBv
-dGhlciBwcm9ibGVtcyBpbiB3aWZpLCBvZiBjb3Vyc2UsIHRoYXQgY291bGQgdXNlCmVuZ2luZWVy
-aW5nIG1lbnRhbCBpbnRlcm5hbGl6YXRpb24sIGxpa2UgYWlydGltZSBmYWlybmVzcywgYW5kIHRo
-ZQptaXMtYmVoYXZpb3Igb2YgdGhlIGhhcmR3YXJlIHF1ZXVlcywKCmh0dHA6Ly9ibG9nLmNlcm93
-cnQub3JnL3Bvc3QvY3M1X2xvY2tvdXQvCgp3aWZpIGNoYW5uZWwgc2NhbnMKCmh0dHA6Ly9ibG9n
-LmNlcm93cnQub3JnL3Bvc3QvZGlzYWJsaW5nX2NoYW5uZWxfc2NhbnMvCgphbmQgc28gb24uCgpJ
-IGhhdmUgYSB0b24gbW9yZSBkYXRhc2V0cyBhbmQgYmxvZyBlbnRyaWVzIGxlZnQgdG8gd3JpdGUg
-dXAgZnJvbSB0aGUKYXRoOWsgd29yayB0aHVzIGZhciB3aGljaCBwb2ludCB0byBzb21lIG90aGVy
-IGlzc3VlcyAobWluc3RyZWwsCmFnZ3JlZ2F0aW9uLCByZXRyaWVzKQoKPiBUaGFua3MsCj4gam9o
-YW5uZXMKCgoKLS0gCkRhdmUgVMOkaHQKTGV0J3MgZ28gbWFrZSBob21lIHJvdXRlcnMgYW5kIHdp
-ZmkgZmFzdGVyISBXaXRoIGJldHRlciBzb2Z0d2FyZSEKaHR0cDovL2Jsb2cuY2Vyb3dydC5vcmcK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
-YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+I consider it virtually impossible.  Most folks that could help you are
+under NDA, and regardless it would be a huge task.
+
+Better to hope that someday QCA gets tired of fixing and refixing
+(and ignoring) the bugs themselves and opens the firmware.
+
+Thank,
+Ben
+
+On 08/26/2016 12:12 AM, Raj Joshi wrote:
+> Hi David,
+>
+> Thanks for bringing this up. It would be immensely useful to (re)gain
+> control over all the PHY-MAC of QCA chips :)
+>
+> However, I am as clueless as you about getting started and about the
+> quantum of effort required. It would be great to receive some
+> pointers, if anyone has any clue.
+>
+> Thanks,
+> Raj
+>
+> On Fri, Aug 26, 2016 at 12:16 AM, David Rabel <David.Rabel@noresoft.com> wrote:
+>>
+>> Hi together,
+>>
+>> is anyone here working on or interested in writing a Free Software
+>> replacement for any of the ath10k chipset's firmware?
+>>
+>> I want to work on this, but unfortunately it is very hard to find any
+>> information on this topic on the Internet. Actually it is very hard to
+>> find information about the chipsets in general.
+>>
+>> So if anyone is interested in working on this or wants to contribute
+>> some knowledge, please let me know.
+>>
+>> Yours
+>>    David
+>>
+>>
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
