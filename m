@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from mail-it0-x22c.google.com ([2607:f8b0:4001:c0b::22c])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bdLaH-0004rC-KT
- for ath10k@lists.infradead.org; Fri, 26 Aug 2016 18:10:30 +0000
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ath10k: fix spelling mistake "montior" -> "monitor"
-Date: Fri, 26 Aug 2016 19:08:52 +0100
-Message-Id: <20160826180852.32248-1-colin.king@canonical.com>
+ id 1bddTr-00008B-Gt
+ for ath10k@lists.infradead.org; Sat, 27 Aug 2016 13:17:04 +0000
+Received: by mail-it0-x22c.google.com with SMTP id d65so34824851ith.0
+ for <ath10k@lists.infradead.org>; Sat, 27 Aug 2016 06:16:42 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20160826180852.32248-1-colin.king@canonical.com>
+References: <20160826180852.32248-1-colin.king@canonical.com>
+From: Julian Calaby <julian.calaby@gmail.com>
+Date: Sat, 27 Aug 2016 23:16:21 +1000
+Message-ID: <CAGRGNgUY+E4Kv-ynH1Rh5M0JsU52tsBFKniK5u9_DmJ5kVc23w@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix spelling mistake "montior" -> "monitor"
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,39 +20,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+To: Colin King <colin.king@canonical.com>
+Cc: netdev <netdev@vger.kernel.org>, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi All,
 
-Trivial fix to spelling mistake in ath10k_warn message.
+On Sat, Aug 27, 2016 at 4:08 AM, Colin King <colin.king@canonical.com> wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> Trivial fix to spelling mistake in ath10k_warn message.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Julian Calaby <julian.calaby@gmail.com>
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0bbd0a0..841f288 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5186,7 +5186,7 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
- 
- 	ret = ath10k_monitor_recalc(ar);
- 	if (ret)
--		ath10k_warn(ar, "failed to recalc montior: %d\n", ret);
-+		ath10k_warn(ar, "failed to recalc monitor: %d\n", ret);
- 
- 	mutex_unlock(&ar->conf_mutex);
- }
+Thanks,
+
 -- 
-2.9.3
+Julian Calaby
 
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
 
 _______________________________________________
 ath10k mailing list
