@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from smtprelay0115.hostedemail.com ([216.40.44.115]
+ helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1beNpl-000194-G8
- for ath10k@lists.infradead.org; Mon, 29 Aug 2016 14:47:04 +0000
-From: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCHv3 5/5] ath10k: Allow setting coverage class
-Date: Mon, 29 Aug 2016 16:45:57 +0200
-Message-Id: <20160829144557.11678-6-benjamin@sipsolutions.net>
-In-Reply-To: <20160829144557.11678-1-benjamin@sipsolutions.net>
-References: <20160829144557.11678-1-benjamin@sipsolutions.net>
+ id 1beQ0r-0002VD-Pd
+ for ath10k@lists.infradead.org; Mon, 29 Aug 2016 17:06:23 +0000
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH] ath10k: Spelling and miscellaneous neatening
+Date: Mon, 29 Aug 2016 10:05:51 -0700
+Message-Id: <95a6b65277914d88178ed2b15e182455067cca60.1472490319.git.joe@perches.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,625 +21,232 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Simon Wunderlich <sw@simonwunderlich.de>, Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Benjamin Berg <benjamin@sipsolutions.net>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, Michal Kazior <michal.kazior@tieto.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Unfortunately ath10k does not generally allow modifying the coverage class
-with the stock firmware and Qualcomm has so far refused to implement this
-feature so that it can be properly supported in ath10k. If we however know
-the registers that need to be modified for proper operation with a higher
-coverage class, then we can do these modifications from the driver.
+Correct some trivial comment typos.
+Remove unnecessary parentheses in a long line.
+Convert a return; before the end of a void function definition to just ;
 
-This patch implements this hack for first generation cards which are based
-on a core that is similar to ath9k. The registers are modified in place and
-need to be re-written every time the firmware sets them. To achieve this
-the register status is verified after certain WMI events from the firmware.
-
-The coverage class may not be modified temporarily right after the card
-re-initializes the registers. This is for example the case during scanning.
-
-Thanks to Sebastian Gottschall <s.gottschall@dd-wrt.com> for initially
-working on a userspace support for this. This patch wouldn't have been
-possible without this documentation.
-
-Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |  11 +++
- drivers/net/wireless/ath/ath10k/core.h |  13 +++
- drivers/net/wireless/ath/ath10k/hw.c   | 141 +++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  28 ++++++-
- drivers/net/wireless/ath/ath10k/mac.c  |  19 +++++
- drivers/net/wireless/ath/ath10k/wmi.c  |  48 +++++++++++
- 6 files changed, 259 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/ce.c        |  2 +-
+ drivers/net/wireless/ath/ath10k/core.c      |  2 +-
+ drivers/net/wireless/ath/ath10k/htt.h       |  8 ++++----
+ drivers/net/wireless/ath/ath10k/hw.c        |  2 +-
+ drivers/net/wireless/ath/ath10k/hw.h        |  2 +-
+ drivers/net/wireless/ath/ath10k/targaddrs.h |  2 +-
+ drivers/net/wireless/ath/ath10k/wmi.h       | 24 ++++++++++++------------
+ 7 files changed, 21 insertions(+), 21 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 9fb8d74..cea9684 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -39,7 +39,7 @@
+  * chooses what to send (buffer address, length). The destination
+  * side keeps a supply of "anonymous receive buffers" available and
+  * it handles incoming data as it arrives (when the destination
+- * recieves an interrupt).
++ * receives an interrupt).
+  *
+  * The sender may send a simple buffer (address/length) or it may
+  * send a small list of buffers.  When a small list is sent, hardware
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 29c795f..fa3347d 100644
+index e889829..1e8147a 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1543,6 +1543,15 @@ static void ath10k_core_restart(struct work_struct *work)
- 	mutex_unlock(&ar->conf_mutex);
+@@ -2118,7 +2118,7 @@ err:
+ 	/* TODO: It's probably a good idea to release device from the driver
+ 	 * but calling device_release_driver() here will cause a deadlock.
+ 	 */
+-	return;
++	;
  }
  
-+static void ath10k_core_set_coverage_class_work(struct work_struct *work)
-+{
-+	struct ath10k *ar = container_of(work, struct ath10k,
-+					 set_coverage_class_work);
-+
-+	if (ar->hw_params.hw_ops->set_coverage_class)
-+		ar->hw_params.hw_ops->set_coverage_class(ar, -1);
-+}
-+
- static int ath10k_core_init_firmware_features(struct ath10k *ar)
- {
- 	struct ath10k_fw_file *fw_file = &ar->normal_mode_fw.fw_file;
-@@ -2251,6 +2260,8 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ int ath10k_core_register(struct ath10k *ar, u32 chip_id)
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 430a83e..cedb4e8 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -595,7 +595,7 @@ enum htt_rx_mpdu_status {
+ 	/* only accept EAPOL frames */
+ 	HTT_RX_IND_MPDU_STATUS_UNAUTH_PEER,
+ 	HTT_RX_IND_MPDU_STATUS_OUT_OF_SYNC,
+-	/* Non-data in promiscous mode */
++	/* Non-data in promiscuous mode */
+ 	HTT_RX_IND_MPDU_STATUS_MGMT_CTRL,
+ 	HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR,
+ 	HTT_RX_IND_MPDU_STATUS_DECRYPT_ERR,
+@@ -900,7 +900,7 @@ struct htt_rx_in_ord_ind {
+  *     Purpose: indicate how many 32-bit integers follow the message header
+  *   - NUM_CHARS
+  *     Bits 31:16
+- *     Purpose: indicate how many 8-bit charaters follow the series of integers
++ *     Purpose: indicate how many 8-bit characters follow the series of integers
+  */
+ struct htt_rx_test {
+ 	u8 num_ints;
+@@ -1042,10 +1042,10 @@ struct htt_dbg_stats_wal_tx_stats {
+ 	/* illegal rate phy errors  */
+ 	__le32 illgl_rate_phy_err;
  
- 	INIT_WORK(&ar->register_work, ath10k_core_register_work);
- 	INIT_WORK(&ar->restart_work, ath10k_core_restart);
-+	INIT_WORK(&ar->set_coverage_class_work,
-+		  ath10k_core_set_coverage_class_work);
+-	/* wal pdev continous xretry */
++	/* wal pdev continuous xretry */
+ 	__le32 pdev_cont_xretry;
  
- 	ret = ath10k_debug_create(ar);
- 	if (ret)
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 5ace413..dcd2807 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -890,6 +890,19 @@ struct ath10k {
- 	struct ath10k_thermal thermal;
- 	struct ath10k_wow wow;
+-	/* wal pdev continous xretry */
++	/* wal pdev continuous xretry */
+ 	__le32 pdev_tx_timeout;
  
-+	struct work_struct set_coverage_class_work;
-+	/* protected by conf_mutex */
-+	struct {
-+		/* protected by data_lock */
-+		s16 coverage_class;
-+
-+		u32 reg_phyclk;
-+		u32 reg_slottime_conf;
-+		u32 reg_slottime_orig;
-+		u32 reg_ack_cts_timeout_conf;
-+		u32 reg_ack_cts_timeout_orig;
-+	} fw_coverage;
-+
- 	/* must be last */
- 	u8 drv_priv[0] __aligned(sizeof(void *));
- };
+ 	/* wal pdev resets  */
 diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index c2ecb9b..d20e538e 100644
+index f903d46..ed917cb 100644
 --- a/drivers/net/wireless/ath/ath10k/hw.c
 +++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -17,11 +17,14 @@
- #include <linux/types.h>
- #include "core.h"
- #include "hw.h"
-+#include "hif.h"
-+#include "wmi-ops.h"
- 
- const struct ath10k_hw_regs qca988x_regs = {
- 	.rtc_soc_base_address		= 0x00004000,
- 	.rtc_wmac_base_address		= 0x00005000,
- 	.soc_core_base_address		= 0x00009000,
-+	.wlan_mac_base_address		= 0x00020000,
- 	.ce_wrapper_base_address	= 0x00057000,
- 	.ce0_base_address		= 0x00057400,
- 	.ce1_base_address		= 0x00057800,
-@@ -48,6 +51,7 @@ const struct ath10k_hw_regs qca6174_regs = {
- 	.rtc_soc_base_address			= 0x00000800,
- 	.rtc_wmac_base_address			= 0x00001000,
- 	.soc_core_base_address			= 0x0003a000,
-+	.wlan_mac_base_address			= 0x00020000,
- 	.ce_wrapper_base_address		= 0x00034000,
- 	.ce0_base_address			= 0x00034400,
- 	.ce1_base_address			= 0x00034800,
-@@ -74,6 +78,7 @@ const struct ath10k_hw_regs qca99x0_regs = {
- 	.rtc_soc_base_address			= 0x00080000,
- 	.rtc_wmac_base_address			= 0x00000000,
- 	.soc_core_base_address			= 0x00082000,
-+	.wlan_mac_base_address			= 0x00030000,
- 	.ce_wrapper_base_address		= 0x0004d000,
- 	.ce0_base_address			= 0x0004a000,
- 	.ce1_base_address			= 0x0004a400,
-@@ -109,6 +114,7 @@ const struct ath10k_hw_regs qca99x0_regs = {
- const struct ath10k_hw_regs qca4019_regs = {
- 	.rtc_soc_base_address                   = 0x00080000,
- 	.soc_core_base_address                  = 0x00082000,
-+	.wlan_mac_base_address                  = 0x00030000,
- 	.ce_wrapper_base_address                = 0x0004d000,
- 	.ce0_base_address                       = 0x0004a000,
- 	.ce1_base_address                       = 0x0004a400,
-@@ -220,7 +226,142 @@ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
- 	survey->time_busy = CCNT_TO_MSEC(ar, rcc);
- }
- 
-+/* The firmware does not support setting the coverage class. Instead this
-+ * function monitors and modifies the corresponding MAC registers.
-+ */
-+static void ath10k_hw_qca988x_set_coverage_class(struct ath10k *ar,
-+						 s16 value)
-+{
-+	u32 slottime_reg;
-+	u32 slottime;
-+	u32 timeout_reg;
-+	u32 ack_timeout;
-+	u32 cts_timeout;
-+	u32 phyclk_reg;
-+	u32 phyclk;
-+	u64 fw_dbglog_mask;
-+	u32 fw_dbglog_level;
-+
-+	mutex_lock(&ar->conf_mutex);
-+	spin_lock_bh(&ar->data_lock);
-+
-+	/* Only modify registers if the core is started. */
-+	if ((ar->state != ATH10K_STATE_ON) &&
-+	    (ar->state != ATH10K_STATE_RESTARTED))
-+		goto unlock;
-+
-+	/* Retrieve the current values of the two registers that need to be
-+	 * adjusted.
-+	 */
-+	slottime_reg = ath10k_hif_read32(ar, WLAN_MAC_BASE_ADDRESS +
-+					     WAVE1_PCU_GBL_IFS_SLOT);
-+	timeout_reg = ath10k_hif_read32(ar, WLAN_MAC_BASE_ADDRESS +
-+					    WAVE1_PCU_ACK_CTS_TIMEOUT);
-+	phyclk_reg = ath10k_hif_read32(ar, WLAN_MAC_BASE_ADDRESS +
-+					   WAVE1_PHYCLK);
-+	phyclk = MS(phyclk_reg, WAVE1_PHYCLK_USEC) + 1;
-+
-+	if (value < 0)
-+		value = ar->fw_coverage.coverage_class;
-+
-+	/* Break out if the coverage class and registers have the expected
-+	 * value.
-+	 */
-+	if (value == ar->fw_coverage.coverage_class &&
-+	    slottime_reg == ar->fw_coverage.reg_slottime_conf &&
-+	    timeout_reg == ar->fw_coverage.reg_ack_cts_timeout_conf &&
-+	    phyclk_reg == ar->fw_coverage.reg_phyclk)
-+		goto unlock;
-+
-+	/* Store new initial register values from the firmware. */
-+	if (slottime_reg != ar->fw_coverage.reg_slottime_conf)
-+		ar->fw_coverage.reg_slottime_orig = slottime_reg;
-+	if (timeout_reg != ar->fw_coverage.reg_ack_cts_timeout_conf)
-+		ar->fw_coverage.reg_ack_cts_timeout_orig = timeout_reg;
-+	ar->fw_coverage.reg_phyclk = phyclk_reg;
-+
-+	/* Calculat new value based on the (original) firmware calculation. */
-+	slottime_reg = ar->fw_coverage.reg_slottime_orig;
-+	timeout_reg = ar->fw_coverage.reg_ack_cts_timeout_orig;
-+
-+	/* Do some sanity checks on the slottime register. */
-+	if (unlikely(slottime_reg % phyclk)) {
-+		ath10k_warn(ar,
-+			    "failed to set coverage class: expected integer microsecond value in register\n");
-+
-+		goto store_regs;
-+	}
-+
-+	slottime = MS(slottime_reg, WAVE1_PCU_GBL_IFS_SLOT);
-+	slottime = slottime / phyclk;
-+	if (unlikely(slottime != 9 && slottime != 20)) {
-+		ath10k_warn(ar,
-+			    "failed to set coverage class: expected slot time of 9 or 20us in HW register. It is %uus.\n",
-+			    slottime);
-+
-+		goto store_regs;
-+	}
-+
-+	/* Recalculate the register values by adding the additional propagation
-+	 * delay (3us per coverage class).
-+	 */
-+
-+	slottime = MS(slottime_reg, WAVE1_PCU_GBL_IFS_SLOT);
-+	slottime += value * 3 * phyclk;
-+	slottime = min_t(u32, slottime, WAVE1_PCU_GBL_IFS_SLOT_MAX);
-+	slottime = SM(slottime, WAVE1_PCU_GBL_IFS_SLOT);
-+	slottime_reg = (slottime_reg & ~WAVE1_PCU_GBL_IFS_SLOT_MASK) | slottime;
-+
-+	/* Update ack timeout (lower halfword). */
-+	ack_timeout = MS(timeout_reg, WAVE1_PCU_ACK_CTS_TIMEOUT_ACK);
-+	ack_timeout += 3 * value * phyclk;
-+	ack_timeout = min_t(u32, ack_timeout, WAVE1_PCU_ACK_CTS_TIMEOUT_MAX);
-+	ack_timeout = SM(ack_timeout, WAVE1_PCU_ACK_CTS_TIMEOUT_ACK);
-+
-+	/* Update cts timeout (upper halfword). */
-+	cts_timeout = MS(timeout_reg, WAVE1_PCU_ACK_CTS_TIMEOUT_CTS);
-+	cts_timeout += 3 * value * phyclk;
-+	cts_timeout = min_t(u32, cts_timeout, WAVE1_PCU_ACK_CTS_TIMEOUT_MAX);
-+	cts_timeout = SM(cts_timeout, WAVE1_PCU_ACK_CTS_TIMEOUT_CTS);
-+
-+	timeout_reg = ack_timeout | cts_timeout;
-+
-+	ath10k_hif_write32(ar,
-+			   WLAN_MAC_BASE_ADDRESS + WAVE1_PCU_GBL_IFS_SLOT,
-+			   slottime_reg);
-+	ath10k_hif_write32(ar,
-+			   WLAN_MAC_BASE_ADDRESS + WAVE1_PCU_ACK_CTS_TIMEOUT,
-+			   timeout_reg);
-+
-+	/* Ensure we have a debug level of WARN set for the case that the
-+	 * coverage class is larger than 0. This is important as we need to
-+	 * set the registers again if the firmware does an internal reset and
-+	 * this way we will be notified of the event.
-+	 */
-+	fw_dbglog_mask = ar->debug.fw_dbglog_mask;
-+	fw_dbglog_level = ar->debug.fw_dbglog_level;
-+
-+	if (value > 0) {
-+		if (fw_dbglog_level > ATH10K_DBGLOG_LEVEL_WARN)
-+			fw_dbglog_level = ATH10K_DBGLOG_LEVEL_WARN;
-+		fw_dbglog_mask = ~0;
-+	}
-+
-+	ath10k_wmi_dbglog_cfg(ar, fw_dbglog_mask, fw_dbglog_level);
-+
-+store_regs:
-+	/* After an error we will not retry setting the coverage class. */
-+	ar->fw_coverage.coverage_class = value;
-+	ar->fw_coverage.reg_slottime_conf = slottime_reg;
-+	ar->fw_coverage.reg_ack_cts_timeout_conf = timeout_reg;
-+
-+unlock:
-+	spin_unlock_bh(&ar->data_lock);
-+	mutex_unlock(&ar->conf_mutex);
-+}
-+
- const struct ath10k_hw_ops qca988x_ops = {
-+	.set_coverage_class = ath10k_hw_qca988x_set_coverage_class,
- };
- 
- static int ath10k_qca99x0_rx_desc_get_l3_pad_bytes(struct htt_rx_desc *rxd)
+@@ -85,7 +85,7 @@ const struct ath10k_hw_regs qca99x0_regs = {
+ 	.ce7_base_address			= 0x0004bc00,
+ 	/* Note: qca99x0 supports upto 12 Copy Engines. Other than address of
+ 	 * CE0 and CE1 no other copy engine is directly referred in the code.
+-	 * It is not really neccessary to assign address for newly supported
++	 * It is not really necessary to assign address for newly supported
+ 	 * CEs in this address table.
+ 	 *	Copy Engine		Address
+ 	 *	CE8			0x0004c000
 diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 5e7c2c9..cda316d 100644
+index e014cd7..93ca128 100644
 --- a/drivers/net/wireless/ath/ath10k/hw.h
 +++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -230,6 +230,7 @@ struct ath10k_hw_regs {
- 	u32 rtc_soc_base_address;
- 	u32 rtc_wmac_base_address;
- 	u32 soc_core_base_address;
-+	u32 wlan_mac_base_address;
- 	u32 ce_wrapper_base_address;
- 	u32 ce0_base_address;
- 	u32 ce1_base_address;
-@@ -410,6 +411,7 @@ struct htt_rx_desc;
- /* Defines needed for Rx descriptor abstraction */
- struct ath10k_hw_ops {
- 	int (*rx_desc_get_l3_pad_bytes)(struct htt_rx_desc *rxd);
-+	void (*set_coverage_class)(struct ath10k *ar, s16 value);
- };
+@@ -284,7 +284,7 @@ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
+ #define QCA_REV_9377(ar) ((ar)->hw_rev == ATH10K_HW_QCA9377)
+ #define QCA_REV_40XX(ar) ((ar)->hw_rev == ATH10K_HW_QCA4019)
  
- extern const struct ath10k_hw_ops qca988x_ops;
-@@ -606,7 +608,7 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
- #define WLAN_SI_BASE_ADDRESS			0x00010000
- #define WLAN_GPIO_BASE_ADDRESS			0x00014000
- #define WLAN_ANALOG_INTF_BASE_ADDRESS		0x0001c000
--#define WLAN_MAC_BASE_ADDRESS			0x00020000
-+#define WLAN_MAC_BASE_ADDRESS			ar->regs->wlan_mac_base_address
- #define EFUSE_BASE_ADDRESS			0x00030000
- #define FPGA_REG_BASE_ADDRESS			0x00039000
- #define WLAN_UART2_BASE_ADDRESS			0x00054c00
-@@ -806,4 +808,28 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
+-/* Known pecularities:
++/* Known peculiarities:
+  *  - raw appears in nwifi decap, raw and nwifi appear in ethernet decap
+  *  - raw have FCS, nwifi doesn't
+  *  - ethernet frames have 802.11 header decapped and parts (base hdr, cipher
+diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
+index aaf53a8..a47cab4 100644
+--- a/drivers/net/wireless/ath/ath10k/targaddrs.h
++++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
+@@ -405,7 +405,7 @@ Fw Mode/SubMode Mask
+  * 1. target firmware would check magic number and if it's a match, firmware
+  *    would consider the bits[0:15] are valid and base on that to calculate
+  *    the end of DRAM. Early allocation would be located at that area and
+- *    may be reclaimed when necesary
++ *    may be reclaimed when necessary
+  * 2. if no magic number is found, early allocation would happen at "_end"
+  *    symbol of ROM which is located before the app-data and might NOT be
+  *    re-claimable. If this is adopted, link script should keep this in
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 3ef4688..452790e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -55,7 +55,7 @@
+  *    type.
+  *
+  * 6. Comment each parameter part of the WMI command/event structure by
+- *    using the 2 stars at the begining of C comment instead of one star to
++ *    using the 2 stars at the beginning of C comment instead of one star to
+  *    enable HTML document generation using Doxygen.
+  *
+  */
+@@ -2082,7 +2082,7 @@ struct wmi_resource_config {
+ 	 * In offload mode target supports features like WOW, chatter and
+ 	 * other protocol offloads. In order to support them some
+ 	 * functionalities like reorder buffering, PN checking need to be
+-	 * done in target. This determines maximum number of peers suported
++	 * done in target. This determines maximum number of peers supported
+ 	 * by target in offload mode
+ 	 */
+ 	__le32 num_offload_peers;
+@@ -2263,7 +2263,7 @@ struct wmi_resource_config {
+ 	 * Max. number of Tx fragments per MSDU
+ 	 *  This parameter controls the max number of Tx fragments per MSDU.
+ 	 *  This is sent by the target as part of the WMI_SERVICE_READY event
+-	 *  and is overriden by the OS shim as required.
++	 *  and is overridden by the OS shim as required.
+ 	 */
+ 	__le32 max_frag_entries;
+ } __packed;
+@@ -2445,7 +2445,7 @@ struct wmi_resource_config_10x {
+ 	 * Max. number of Tx fragments per MSDU
+ 	 *  This parameter controls the max number of Tx fragments per MSDU.
+ 	 *  This is sent by the target as part of the WMI_SERVICE_READY event
+-	 *  and is overriden by the OS shim as required.
++	 *  and is overridden by the OS shim as required.
+ 	 */
+ 	__le32 max_frag_entries;
+ } __packed;
+@@ -2739,7 +2739,7 @@ struct wmi_init_cmd {
+ 	struct wmi_host_mem_chunks mem_chunks;
+ } __packed;
  
- #define RTC_STATE_V_GET(x) (((x) & RTC_STATE_V_MASK) >> RTC_STATE_V_LSB)
+-/* _10x stucture is from 10.X FW API */
++/* _10x structure is from 10.X FW API */
+ struct wmi_init_cmd_10x {
+ 	struct wmi_resource_config_10x resource_config;
+ 	struct wmi_host_mem_chunks mem_chunks;
+@@ -3962,7 +3962,7 @@ struct wmi_pdev_stats_tx {
+ 	/* illegal rate phy errors  */
+ 	__le32 illgl_rate_phy_err;
  
-+/* Register definitions for first generation ath10k cards. These cards include
-+ * a mac thich has a register allocation similar to ath9k and at least some
-+ * registers including the ones relevant for modifying the coverage class are
-+ * identical to the ath9k definitions.
-+ * These registers are usually managed by the ath10k firmware. However by
-+ * overriding them it is possible to support coverage class modifications.
-+ */
-+#define WAVE1_PCU_ACK_CTS_TIMEOUT		0x8014
-+#define WAVE1_PCU_ACK_CTS_TIMEOUT_MAX		0x00003FFF
-+#define WAVE1_PCU_ACK_CTS_TIMEOUT_ACK_MASK	0x00003FFF
-+#define WAVE1_PCU_ACK_CTS_TIMEOUT_ACK_LSB	0
-+#define WAVE1_PCU_ACK_CTS_TIMEOUT_CTS_MASK	0x3FFF0000
-+#define WAVE1_PCU_ACK_CTS_TIMEOUT_CTS_LSB	16
-+
-+#define WAVE1_PCU_GBL_IFS_SLOT			0x1070
-+#define WAVE1_PCU_GBL_IFS_SLOT_MASK		0x0000FFFF
-+#define WAVE1_PCU_GBL_IFS_SLOT_MAX		0x0000FFFF
-+#define WAVE1_PCU_GBL_IFS_SLOT_LSB		0
-+#define WAVE1_PCU_GBL_IFS_SLOT_RESV0		0xFFFF0000
-+
-+#define WAVE1_PHYCLK				0x801C
-+#define WAVE1_PHYCLK_USEC_MASK			0x0000007F
-+#define WAVE1_PHYCLK_USEC_LSB			0
-+
- #endif /* _HW_H_ */
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0bbd0a0..70121f0 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5372,6 +5372,20 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 	mutex_unlock(&ar->conf_mutex);
- }
+-	/* wal pdev continous xretry */
++	/* wal pdev continuous xretry */
+ 	__le32 pdev_cont_xretry;
  
-+static void ath10k_mac_op_set_coverage_class(struct ieee80211_hw *hw, s16 value)
-+{
-+	struct ath10k *ar = hw->priv;
-+
-+	/* This function should never be called if setting the coverage class
-+	 * is not supported on this hardware.
-+	 */
-+	if (!ar->hw_params.hw_ops->set_coverage_class) {
-+		WARN_ON_ONCE(1);
-+		return;
-+	}
-+	ar->hw_params.hw_ops->set_coverage_class(ar, value);
-+}
-+
- static int ath10k_hw_scan(struct ieee80211_hw *hw,
- 			  struct ieee80211_vif *vif,
- 			  struct ieee80211_scan_request *hw_req)
-@@ -7397,6 +7411,7 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.remove_interface		= ath10k_remove_interface,
- 	.configure_filter		= ath10k_configure_filter,
- 	.bss_info_changed		= ath10k_bss_info_changed,
-+	.set_coverage_class		= ath10k_mac_op_set_coverage_class,
- 	.hw_scan			= ath10k_hw_scan,
- 	.cancel_hw_scan			= ath10k_cancel_hw_scan,
- 	.set_key			= ath10k_set_key,
-@@ -7974,6 +7989,10 @@ int ath10k_mac_register(struct ath10k *ar)
- 		      ar->running_fw->fw_file.fw_features))
- 		ar->ops->wake_tx_queue = NULL;
+ 	/* wal pdev continous xretry */
+@@ -4456,9 +4456,9 @@ struct wmi_vdev_start_request_cmd {
+ 	__le32 flags;
+ 	/* ssid field. Only valid for AP/GO/IBSS/BTAmp VDEV type. */
+ 	struct wmi_ssid ssid;
+-	/* beacon/probe reponse xmit rate. Applicable for SoftAP. */
++	/* beacon/probe response xmit rate. Applicable for SoftAP. */
+ 	__le32 bcn_tx_rate;
+-	/* beacon/probe reponse xmit power. Applicable for SoftAP. */
++	/* beacon/probe response xmit power. Applicable for SoftAP. */
+ 	__le32 bcn_tx_power;
+ 	/* number of p2p NOA descriptor(s) from scan entry */
+ 	__le32 num_noa_descriptors;
+@@ -4686,7 +4686,7 @@ enum wmi_vdev_param {
+ 	WMI_VDEV_PARAM_BEACON_INTERVAL,
+ 	/* Listen interval in TUs */
+ 	WMI_VDEV_PARAM_LISTEN_INTERVAL,
+-	/* muticast rate in Mbps */
++	/* multicast rate in Mbps */
+ 	WMI_VDEV_PARAM_MULTICAST_RATE,
+ 	/* management frame rate in Mbps */
+ 	WMI_VDEV_PARAM_MGMT_TX_RATE,
+@@ -4817,7 +4817,7 @@ enum wmi_10x_vdev_param {
+ 	WMI_10X_VDEV_PARAM_BEACON_INTERVAL,
+ 	/* Listen interval in TUs */
+ 	WMI_10X_VDEV_PARAM_LISTEN_INTERVAL,
+-	/* muticast rate in Mbps */
++	/* multicast rate in Mbps */
+ 	WMI_10X_VDEV_PARAM_MULTICAST_RATE,
+ 	/* management frame rate in Mbps */
+ 	WMI_10X_VDEV_PARAM_MGMT_TX_RATE,
+@@ -5062,7 +5062,7 @@ struct wmi_vdev_simple_event {
+ } __packed;
  
-+	/* Disable set_coverage_class for chipsets that do not support it. */
-+	if (!ar->hw_params.hw_ops->set_coverage_class)
-+		ar->ops->set_coverage_class = NULL;
-+
- 	ret = ath_regd_init(&ar->ath_common.regulatory, ar->hw->wiphy,
- 			    ath10k_reg_notifier);
- 	if (ret) {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index d246288..170ae48 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4879,6 +4879,23 @@ exit:
- 	return 0;
- }
+ /* VDEV start response status codes */
+-/* VDEV succesfully started */
++/* VDEV successfully started */
+ #define WMI_INIFIED_VDEV_START_RESPONSE_STATUS_SUCCESS	0x0
  
-+static inline void ath10k_wmi_queue_set_coverage_class_work(struct ath10k *ar)
-+{
-+	if (ar->hw_params.hw_ops->set_coverage_class) {
-+		spin_lock_bh(&ar->data_lock);
-+
-+		/* This call only ensures that the modified coverage class
-+		 * persists in case the firmware sets the registers back to
-+		 * their default value. So calling it is only necessary if the
-+		 * coverage class has a non-zero value.
-+		 */
-+		if (ar->fw_coverage.coverage_class)
-+			queue_work(ar->workqueue, &ar->set_coverage_class_work);
-+
-+		spin_unlock_bh(&ar->data_lock);
-+	}
-+}
-+
- static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_cmd_hdr *cmd_hdr;
-@@ -4899,6 +4916,7 @@ static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	case WMI_SCAN_EVENTID:
- 		ath10k_wmi_event_scan(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_CHAN_INFO_EVENTID:
- 		ath10k_wmi_event_chan_info(ar, skb);
-@@ -4908,15 +4926,18 @@ static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_DEBUG_MESG_EVENTID:
- 		ath10k_wmi_event_debug_mesg(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_UPDATE_STATS_EVENTID:
- 		ath10k_wmi_event_update_stats(ar, skb);
- 		break;
- 	case WMI_VDEV_START_RESP_EVENTID:
- 		ath10k_wmi_event_vdev_start_resp(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_VDEV_STOPPED_EVENTID:
- 		ath10k_wmi_event_vdev_stopped(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_PEER_STA_KICKOUT_EVENTID:
- 		ath10k_wmi_event_peer_sta_kickout(ar, skb);
-@@ -4932,12 +4953,14 @@ static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_ROAM_EVENTID:
- 		ath10k_wmi_event_roam(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_PROFILE_MATCH:
- 		ath10k_wmi_event_profile_match(ar, skb);
- 		break;
- 	case WMI_DEBUG_PRINT_EVENTID:
- 		ath10k_wmi_event_debug_print(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_PDEV_QVIT_EVENTID:
- 		ath10k_wmi_event_pdev_qvit(ar, skb);
-@@ -4986,6 +5009,7 @@ static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	case WMI_READY_EVENTID:
- 		ath10k_wmi_event_ready(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	default:
- 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
-@@ -5029,6 +5053,7 @@ static void ath10k_wmi_10_1_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	case WMI_10X_SCAN_EVENTID:
- 		ath10k_wmi_event_scan(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_CHAN_INFO_EVENTID:
- 		ath10k_wmi_event_chan_info(ar, skb);
-@@ -5038,15 +5063,18 @@ static void ath10k_wmi_10_1_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10X_DEBUG_MESG_EVENTID:
- 		ath10k_wmi_event_debug_mesg(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_UPDATE_STATS_EVENTID:
- 		ath10k_wmi_event_update_stats(ar, skb);
- 		break;
- 	case WMI_10X_VDEV_START_RESP_EVENTID:
- 		ath10k_wmi_event_vdev_start_resp(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_VDEV_STOPPED_EVENTID:
- 		ath10k_wmi_event_vdev_stopped(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_PEER_STA_KICKOUT_EVENTID:
- 		ath10k_wmi_event_peer_sta_kickout(ar, skb);
-@@ -5062,12 +5090,14 @@ static void ath10k_wmi_10_1_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10X_ROAM_EVENTID:
- 		ath10k_wmi_event_roam(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_PROFILE_MATCH:
- 		ath10k_wmi_event_profile_match(ar, skb);
- 		break;
- 	case WMI_10X_DEBUG_PRINT_EVENTID:
- 		ath10k_wmi_event_debug_print(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_PDEV_QVIT_EVENTID:
- 		ath10k_wmi_event_pdev_qvit(ar, skb);
-@@ -5107,6 +5137,7 @@ static void ath10k_wmi_10_1_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	case WMI_10X_READY_EVENTID:
- 		ath10k_wmi_event_ready(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_PDEV_UTF_EVENTID:
- 		/* ignore utf events */
-@@ -5140,6 +5171,7 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	case WMI_10_2_SCAN_EVENTID:
- 		ath10k_wmi_event_scan(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_CHAN_INFO_EVENTID:
- 		ath10k_wmi_event_chan_info(ar, skb);
-@@ -5149,15 +5181,18 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_2_DEBUG_MESG_EVENTID:
- 		ath10k_wmi_event_debug_mesg(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_UPDATE_STATS_EVENTID:
- 		ath10k_wmi_event_update_stats(ar, skb);
- 		break;
- 	case WMI_10_2_VDEV_START_RESP_EVENTID:
- 		ath10k_wmi_event_vdev_start_resp(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_VDEV_STOPPED_EVENTID:
- 		ath10k_wmi_event_vdev_stopped(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_PEER_STA_KICKOUT_EVENTID:
- 		ath10k_wmi_event_peer_sta_kickout(ar, skb);
-@@ -5173,12 +5208,14 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_2_ROAM_EVENTID:
- 		ath10k_wmi_event_roam(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_PROFILE_MATCH:
- 		ath10k_wmi_event_profile_match(ar, skb);
- 		break;
- 	case WMI_10_2_DEBUG_PRINT_EVENTID:
- 		ath10k_wmi_event_debug_print(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_PDEV_QVIT_EVENTID:
- 		ath10k_wmi_event_pdev_qvit(ar, skb);
-@@ -5209,15 +5246,18 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_2_VDEV_STANDBY_REQ_EVENTID:
- 		ath10k_wmi_event_vdev_standby_req(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_VDEV_RESUME_REQ_EVENTID:
- 		ath10k_wmi_event_vdev_resume_req(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_SERVICE_READY_EVENTID:
- 		ath10k_wmi_event_service_ready(ar, skb);
- 		return;
- 	case WMI_10_2_READY_EVENTID:
- 		ath10k_wmi_event_ready(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_PDEV_TEMPERATURE_EVENTID:
- 		ath10k_wmi_event_temperature(ar, skb);
-@@ -5267,12 +5307,14 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_4_DEBUG_MESG_EVENTID:
- 		ath10k_wmi_event_debug_mesg(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_SERVICE_READY_EVENTID:
- 		ath10k_wmi_event_service_ready(ar, skb);
- 		return;
- 	case WMI_10_4_SCAN_EVENTID:
- 		ath10k_wmi_event_scan(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_CHAN_INFO_EVENTID:
- 		ath10k_wmi_event_chan_info(ar, skb);
-@@ -5282,12 +5324,14 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_4_READY_EVENTID:
- 		ath10k_wmi_event_ready(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_PEER_STA_KICKOUT_EVENTID:
- 		ath10k_wmi_event_peer_sta_kickout(ar, skb);
- 		break;
- 	case WMI_10_4_ROAM_EVENTID:
- 		ath10k_wmi_event_roam(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_HOST_SWBA_EVENTID:
- 		ath10k_wmi_event_host_swba(ar, skb);
-@@ -5297,12 +5341,15 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_4_DEBUG_PRINT_EVENTID:
- 		ath10k_wmi_event_debug_print(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_VDEV_START_RESP_EVENTID:
- 		ath10k_wmi_event_vdev_start_resp(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_VDEV_STOPPED_EVENTID:
- 		ath10k_wmi_event_vdev_stopped(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_WOW_WAKEUP_HOST_EVENTID:
- 	case WMI_10_4_PEER_RATECODE_LIST_EVENTID:
-@@ -6017,6 +6064,7 @@ void ath10k_wmi_start_scan_init(struct ath10k *ar,
- 		| WMI_SCAN_EVENT_COMPLETED
- 		| WMI_SCAN_EVENT_BSS_CHANNEL
- 		| WMI_SCAN_EVENT_FOREIGN_CHANNEL
-+		| WMI_SCAN_EVENT_FOREIGN_CHANNEL_EXIT
- 		| WMI_SCAN_EVENT_DEQUEUED;
- 	arg->scan_ctrl_flags |= WMI_SCAN_CHAN_STAT_EVENT;
- 	arg->n_bssids = 1;
+ /* requested VDEV not found */
+@@ -5378,7 +5378,7 @@ enum wmi_sta_ps_param_pspoll_count {
+ #define WMI_UAPSD_AC_TYPE_TRIG 1
+ 
+ #define WMI_UAPSD_AC_BIT_MASK(ac, type) \
+-	((type ==  WMI_UAPSD_AC_TYPE_DELI) ? (1 << (ac << 1)) : (1 << ((ac << 1) + 1)))
++	(type == WMI_UAPSD_AC_TYPE_DELI ? 1 << (ac << 1) : 1 << ((ac << 1) + 1))
+ 
+ enum wmi_sta_ps_param_uapsd {
+ 	WMI_STA_PS_UAPSD_AC0_DELIVERY_EN = (1 << 0),
 -- 
-2.9.3
+2.8.0.rc4.16.g56331f8
 
 
 _______________________________________________
