@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-it0-x22c.google.com ([2607:f8b0:4001:c0b::22c])
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bddTr-00008B-Gt
- for ath10k@lists.infradead.org; Sat, 27 Aug 2016 13:17:04 +0000
-Received: by mail-it0-x22c.google.com with SMTP id d65so34824851ith.0
- for <ath10k@lists.infradead.org>; Sat, 27 Aug 2016 06:16:42 -0700 (PDT)
+ id 1beGNc-0006ou-SJ
+ for ath10k@lists.infradead.org; Mon, 29 Aug 2016 06:49:14 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id f65so64886389wmi.0
+ for <ath10k@lists.infradead.org>; Sun, 28 Aug 2016 23:48:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20160826180852.32248-1-colin.king@canonical.com>
-References: <20160826180852.32248-1-colin.king@canonical.com>
-From: Julian Calaby <julian.calaby@gmail.com>
-Date: Sat, 27 Aug 2016 23:16:21 +1000
-Message-ID: <CAGRGNgUY+E4Kv-ynH1Rh5M0JsU52tsBFKniK5u9_DmJ5kVc23w@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: fix spelling mistake "montior" -> "monitor"
+In-Reply-To: <CABYpaOcSNF_bwO8VUYRhrct0KD1w4SB3KfYtFXtiu4sdMquNhg@mail.gmail.com>
+References: <CABYpaOcSNF_bwO8VUYRhrct0KD1w4SB3KfYtFXtiu4sdMquNhg@mail.gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Mon, 29 Aug 2016 08:48:46 +0200
+Message-ID: <CA+BoTQkPb_ZOH9d5PSFO5woa5xQX4zAwGasmtOE+1Y2OXewd5A@mail.gmail.com>
+Subject: Re: Questions for ath10k rate control, bandwidth, and channel sensing
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +20,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Colin King <colin.king@canonical.com>
-Cc: netdev <netdev@vger.kernel.org>, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
+To: Changmok Yang <cmyang@mwnl.snu.ac.kr>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi All,
-
-On Sat, Aug 27, 2016 at 4:08 AM, Colin King <colin.king@canonical.com> wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Trivial fix to spelling mistake in ath10k_warn message.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-
-Reviewed-by: Julian Calaby <julian.calaby@gmail.com>
-
-Thanks,
-
--- 
-Julian Calaby
-
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjYgQXVndXN0IDIwMTYgYXQgMTE6MDAsIENoYW5nbW9rIFlhbmcgPGNteWFuZ0Btd25sLnNu
+dS5hYy5rcj4gd3JvdGU6Cj4gSGkuCj4gV2UgYXJlIHRyeWluZyB0byBjaGFuZ2UgdHJhbnNtaXNz
+aW9uIGJhbmR3aWR0aCBhbmQgZGF0YSByYXRlLgo+Cj4gMS4gV2UgZm91bmQgdGhhdCB3ZSBjYW4g
+b25seSBjb250cm9sIHBlci1zdGF0aW9uIGNoYW5uZWwgd2lkdGgsIGFuZAo+IHJhdGUgY29udHJv
+bCwgbGlrZSBNaW5zdHJlbCwgaXMgbm90IGNvbnRyb2xsZWQgYnkgYXRoMTBrIGFuZCBpbgo+IGZp
+cm13YXJlLiBUaGVuLCBjYW4gYXRoMTBrIHNlbGVjdCB0aGUgdHJhbnNtaXNzaW9uIGRhdGEgcmF0
+ZSBtYW51YWxseT8KPiBJZiBzbywgaG93PyBXZSBjYW5ub3QgZmluZCB0aGUgcGFydCB0aGUgZGF0
+YSByYXRlIGlzIGRldGVybWluZWQuCgpJdCdzIHBvc3NpYmxlIHRvIHJlLXByb2dyYW0gZ2l2ZW4g
+c3RhdGlvbidzIHJhdGVtYXNrIG9yIHlvdSBjYW4gZm9yY2UKYSBnbG9iYWwgdHggcmF0ZS4gU2Vl
+IHNldF9iaXRyYXRlX21hc2sgaW1wbGVtZW50YXRpb24gaW4gYXRoMTBrIGZvcgpkZXRhaWxzLgoK
+Cj4gMi4gSXMgaXQgcG9zc2libGUgdG8gY2hhbmdlIG9wZXJhdGluZyBiYW5kd2lkdGggcGVyIHN0
+YXRpb24gd2hpbGUKPiBtYWludGFpbmluZyBhc3NvY2lhdGlvbj8KClllcywgZWl0aGVyIHZpYSB3
+bWlfcGVlcl9hc3NvYyBjb21tYW5kIG9yIHZpYSBzZXRfcGVlcl9wYXJhbSBjb21tYW5kCmFuZCBv
+bmUgb2YgcGVlcl9wYXJhbSBhdHRyaWJ1dGVzIChjaHdpZHRoKS4gVGhpcyBzdHVmZiBpcyBtb3N0
+bHkKdXBwZXItY2FzZWQgYXMgZmFyIGFzIG5hbWluZyBpcyBjb25jZXJuZWQuCgoKPiAzLiBXZSBh
+bHNvIHdhbnQgdG8gdXNlIHBhcmFtZXRlcnMgcmVsYXRlZCB0byBjaGFubmVsIHNlbnNpbmcuIEFs
+dGhvdWdoCj4gd2UgZm91bmQgdGhhdCBDQ0EgcmVsYXRlZCBwYXJhbWV0ZXJzIGFyZSBpbiBmaXJt
+d2FyZSwgd2UgYWx0ZXJuYXRpdmVseQo+IHdhbnQgdG8gdXNlIHBhcmFtZXRlcnMgcmVsYXRlZCB0
+byBFdGh0b29sIGluIHN1cnZleV9pbmZvIHN0cnVjdHVyZSAoaW4KPiBpbmNsdWRlL25ldC9jZmc4
+MDIxMS5oLCB0aGUgc3RydWN0dXJlIGJlbG93KS4gSG93ZXZlciwgd2hlbiB3ZSByZWFkCj4gdGhp
+cyB2YXJpYWJsZSBpbiB0aGUgbG9nIGFmdGVyIEV0aHRyb29sIHJ1bm5pbmcsIHRoZSB2YWx1ZSBk
+b2VzIG5vdAo+IHNlZW0gdG8gcmVmbGVjdCBjaGFubmVsIHNlbnNpbmcuIFdoZXJlIGFuZCBob3cg
+Y2FuIHdlIHVzZSBjaGFubmVsCj4gc2Vuc2luZyBwYXJhbWV0ZXJzIGluIGF0aDEwaz8gSXMgaXQg
+cG9zc2libGU/CgpDQ0EgdGhyZXNob2xkcyB3b3VsZCBuZWVkIHRvIGJlIG92ZXJ3cml0dGVuIGJ5
+IGF0aDEwayBhZnRlciBlYWNoIGh3CnJlc2V0IC8gY2hhbm5lbCBjaGFuZ2UgSSB0aGluay4gWW91
+IGNvdWxkIHByb2JhYmx5IGxvb2sgYXQgdGhlCmNvdmVyYWdlX2NsYXNzIHdvcmsgQmVuamFtaW4g
+YW5kIFNlYmFzdGlhbiBoYXZlIGJlZW4gZG9pbmcgcmVjZW50bHkgYXMKeW91J2QgbmVlZCB0byBk
+byBzb21ldGhpbmcgc2ltaWxhci4KCkFzIGZvciBzdXJ2ZXk6IHNvbWUgcmVjZW50IGZpcm13YXJl
+IGJ1aWxkcyBzdXBwb3NlZGx5IGhhdmUgYSBvbi1ic3MKNjQtYml0IHN1cnZleSBldmVudHMuIE5v
+dCBzdXJlIGFib3V0IHRoZSBkZXRhaWxzIHRob3VnaC4KCkFjdHVhbCBjeWNsZSBjb3VudGVycyB1
+c2VkIHRvIGdlbmVyYXRlL21haW50YWluIHN1cnZleSBkYXRhIGNhbiBiZQpmb3VuZCBhdCB3bGFu
+X21hY19iYXNlICgweDIwMDAwKSArIHNhbWUgb2Zmc2V0cyBhcyBhdGg5ay4gRldJVyBZb3UgY2Fu
+CmV2ZW4gcmVhZCB0aGVtIGZyb20gdXNlcnNwYWNlIHZpYSAvZGV2L21lbSArIG1tYXAoKSAoaXQn
+bGwgYmUgYSBiaXQKcmFjeSB0aG91Z2g7IGZyZWV6aW5nIG1pYiBjb3VudGVycyBpcyBub3QgYSBn
+b29kIGlkZWEgd2l0aCBmaXJtd2FyZQpydW5uaW5nIGNvbmN1cnJlbnRseSkuCgoKTWljaGHFggoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
+aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
