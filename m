@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1beGVn-00025R-8M
- for ath10k@lists.infradead.org; Mon, 29 Aug 2016 06:57:40 +0000
-Received: by mail-wm0-x235.google.com with SMTP id q128so65177900wma.1
- for <ath10k@lists.infradead.org>; Sun, 28 Aug 2016 23:57:18 -0700 (PDT)
+ id 1beHkS-00045H-9A
+ for ath10k@lists.infradead.org; Mon, 29 Aug 2016 08:16:53 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix throughput regression in multi client mode
+Date: Mon, 29 Aug 2016 13:46:13 +0530
+Message-ID: <20160829081613.1474-1-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <57BEDCF4.8050105@gmail.com>
-References: <57BEDCF4.8050105@gmail.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Mon, 29 Aug 2016 08:57:16 +0200
-Message-ID: <CA+BoTQm2CpmA1mqTfjgf1w-qVqpFi_kqpsMKcPzXM47HZjzrjg@mail.gmail.com>
-Subject: Re: ath10k: is there hw3.0 firmware for qca6164 (one spatial stream)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +16,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Xuebing Wang <xbing6@gmail.com>
-Cc: alanqcom liu <alanliu@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-T24gMjUgQXVndXN0IDIwMTYgYXQgMTM6NTYsIFh1ZWJpbmcgV2FuZyA8eGJpbmc2QGdtYWlsLmNv
-bT4gd3JvdGU6Cj4gSGkgTWljaGFsLAo+Cj4gRmlyc3Qgb2YgYWxsLCB0aGFuayB5b3UgdmVyeSBt
-dWNoIGZvciB5b3VyIGhlbHAuCj4KPiAxKSBBcyB5b3UgYXJlIHRoZSBhdXRob3Igb2YgYWRkaW5n
-IHFjYTYxNjQgKG9uZSBzcGF0aWFsIHN0cmVhbSkgdG8gYXRoMTBrLAo+IGFyZSB5b3UgYXdhcmUg
-aWYgdGhlcmUgaXMgcWNhNjE2NCBjaGlwIHdpdGggaHczLnggd2hpY2ggcmVxdWlyZXMgaHczLngK
-PiBmaXJtd2FyZT8KCkkgZG9uJ3QgcmVjYWxsIHNlZWluZyBodzMgcWNhNjE2NC4gVGhhdCBkb2Vz
-bid0IG1lYW4gdGhlcmUgaXNuJ3Qgb25lIHRob3VnaC4KCgo+IDEuMSkgV2hhdCBxY2E2MTY0IHds
-YW4gY2FyZCBkaWQgeW91IHVzZSB3aGlsZSB5b3UgYXV0aG9yZWQgdGhlIHN1cHBvcnQgb2YKPiBx
-Y2E2MTY0PwoKSSBkaWRuJ3QgcmVhbGx5IGhhdmUgb25lLiBJIHdvcmtlZCB3aXRoIHFjYTYxNjQg
-b3duZXJzIGFuZCB0aGV5IGRpZAp0aGUgdmVyaWZpY2F0aW9uLiBDYW4ndCByZW1lbWJlciB3aGF0
-IGV4YWN0IGNhcmRzIHRoZXkgaGFkLiBNeSBtZW1vcnkKdGVsbHMgbWUgc29tZSBMZW5vdm8gWW9n
-YSB0YWJsZXQgaGFkIG9uZS4KCgo+IDIpIEZyb20gdGhlIHNvdXJjZSBjb2RlIGluIGNvcmUuYywg
-dGhlcmUgaXMgb25seSBodzIuMSAoLmlkID0KPiBRQ0E2MTc0X0hXXzJfMV9WRVJTSU9OKSBmb3Ig
-cWNhNjE2NC4KPiAtLS0KPiBzdGF0aWMgY29uc3Qgc3RydWN0IGF0aDEwa19od19wYXJhbXMgYXRo
-MTBrX2h3X3BhcmFtc19saXN0W10gPSB7Cj4gICAgIHsKPiAgICAgICAgIC5pZCA9IFFDQTYxNzRf
-SFdfMl8xX1ZFUlNJT04sCj4gICAgICAgICAuZGV2X2lkID0gUUNBNjE2NF8yXzFfREVWSUNFX0lE
-LAo+ICAgICAgICAgLm5hbWUgPSAicWNhNjE2NCBodzIuMSIsCj4gLi4uLgo+ICAgICB9Owo+IC0t
-LQoKWWVwLiBJIGhhdmVuJ3Qgc2VlbiBodzMgZm9yIHFjYTYxNjQgYW5kIG9uIG9uZSBoYXMgcmVw
-b3J0ZWQgcHJvYmxlbXMKd2l0aCBvbmUgeWV0LgoKCj4gMykgSSBjaGVja2VkIEthbGxlJ3MgYXRo
-MTBrLWZpcm13YXJlIHJlcG9zaXRvcnkgYXQgZ2l0aHViLCB0aGVyZSBpcyBubyBzdWNoCj4gUUNB
-NjE2NC8gZm9sZGVyIChvbmUgc3BhdGlhbCBzdHJlYW0pLiBEb2VzIDYxNjQgdXNlIHRoZSBzYW1l
-IGZpcm13YXJlIGFzCj4gNjE3ND8KClllcywgaXQgdXNlcyB0aGUgc2FtZSBmaXJtd2FyZSBhcyBx
-Y2E2MTc0LiBBdCBvbmUgcG9pbnQgdGhlcmUgd2FzIGFuCmlkZWEgdG8gc3RhcnQgY2FsbGluZyB0
-aGUgY2hpcCBxY2E2MXg0LgoKCj4gNCkgQXMgaW4geW91ciBjb21taXQgbWVzc2FnZSBhcyBiZWxv
-dywgd291bGQgeW91IHBsZWFzZSBhZHZpc2Ugd2hlcmUgY2FuIEkKPiBnZXQgdGhpcyBzcGVjaWFs
-IGJvYXJkLmJpbiBmaWxlPwo+IC0tLQo+ICAgICBUaGUgUUNBNjE2NCBuZWVkcyBhIGRlZGljYXRl
-ZCBib2FyZC5iaW4gZmlsZSB3aGljaAo+ICAgICBpcyBkaWZmZXJlbnQgdGhhbiB0aGUgb25lIHVz
-ZWQgZm9yIFFDQTYxNzQuIElmIHRoZQo+ICAgICBib2FyZC5iaW4gaXMgd3JvbmcgdGhlIGRldmlj
-ZSB3aWxsIGNyYXNoIGVhcmx5Cj4gICAgIHdoaWxlIHRyeWluZyB0byBib290IGZpcm13YXJlLiBU
-aGUgcmVnaXN0ZXIgZHVtcAo+ICAgICB3aWxsIGxvb2sgbGlrZSB0aGlzOgo+IC0tLQoKVGhpcyBj
-b21tZW50IHdhcyBtYWRlIGJlZm9yZSBib2FyZCBBUEkyIHdhcyBpbnRyb2R1Y2VkLiBCZWZvcmUg
-dGhhdAp0aGVyZSB3YXMgb25seSBhIHNpbmdsZSBib2FyZCBibG9iIGluIGJvYXJkLmJpbiBwZXIg
-aHcgY2hpcCwgaGVuY2UgdGhlCndhcm5pbmcuCgpOb3cgdGhlcmUncyBib2FyZC0yLmJpbiB3aGlj
-aCBjb250YWlucyBhIHNldCBvZiBib2FyZCBibG9icyBwZXIKdmVuZG9yL3Byb2R1Y3Qvc3Vic3lz
-IHZlbmRvci9wcm9kdWN0IGlkcyBhbmQgdGhlIGRyaXZlciBjYW4gcGljayB1cAp0aGUgY29ycmVj
-dCBvbmUuIFRoZSBsYXRlc3Qgb25lWzFdIHNlZW1zIHRvIGhhdmUgc29tZSBxY2E2MTY0IGJvYXJk
-CmJsb2JzLiBJZiB5b3UgZW5kIHVwIGdldHRpbmcgb25lIHRoYXQgZG9lc24ndCB3b3JrIHlvdSBj
-YW4gcmVwb3J0IGl0LgpJdCBzaG91bGRuJ3QgYmUgdGVycmlibHkgaGFyZCB0byBnZXQgaXQgZml4
-ZWQuCgoKWzFdOiBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13YXJlL2Jsb2Iv
-bWFzdGVyL1FDQTYxNzQvaHcyLjEvYm9hcmQtMi5iaW4KCgpNaWNoYcWCCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCg==
+commit 7a0adc83f34d ("ath10k: improve tx scheduling") is causing
+severe throughput drop in multi client mode. This issue is originally
+reported in veriwave setup with 50 clients with TCP downlink traffic.
+While increasing number of clients, the average throughput drops
+gradually. With 50 clients, the combined peak throughput is decreased
+to 98 Mbps whereas reverting given commit restored it to 550 Mbps.
+
+Processing txqs for every tx completion is causing overhead. Ideally for
+management frame tx completion, pending txqs processing can be avoided.
+The change partly reverts the commit "ath10k: improve tx scheduling".
+Processing pending txqs after all skbs tx completion will yeild enough
+room to burst tx frames.
+
+Fixes: 7a0adc83f34d ("ath10k: improve tx scheduling")
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 2 ++
+ drivers/net/wireless/ath/ath10k/txrx.c   | 2 --
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index d3f8baf532d4..2d62921bcd4e 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2445,6 +2445,8 @@ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget)
+ 	while (kfifo_get(&htt->txdone_fifo, &tx_done))
+ 		ath10k_txrx_tx_unref(htt, &tx_done);
+ 
++	ath10k_mac_tx_push_pending(ar);
++
+ 	spin_lock_irqsave(&htt->tx_fetch_ind_q.lock, flags);
+ 	skb_queue_splice_init(&htt->tx_fetch_ind_q, &tx_ind_q);
+ 	spin_unlock_irqrestore(&htt->tx_fetch_ind_q.lock, flags);
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 98f3bb47414c..5d645f989ce2 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -125,8 +125,6 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 	ieee80211_tx_status(htt->ar->hw, msdu);
+ 	/* we do not own the msdu anymore */
+ 
+-	ath10k_mac_tx_push_pending(ar);
+-
+ 	return 0;
+ }
+ 
+-- 
+2.9.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
