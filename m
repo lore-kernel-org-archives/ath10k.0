@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezaD-0008DF-KE
- for ath10k@lists.infradead.org; Wed, 31 Aug 2016 07:05:14 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCHv3 1/3] ath10k: move firmware_swap_code_seg_info to
- ath10k_fw_file
-Date: Wed, 31 Aug 2016 07:04:42 +0000
-Message-ID: <87poop4dx2.fsf@kamboji.qca.qualcomm.com>
-References: <1467356767-31646-1-git-send-email-c_traja@qti.qualcomm.com>
- <CAGRGNgWd-5ef5bxOkthpfH1hjqO4HJuWuBA=jNRAr=geQDH1zA@mail.gmail.com>
-In-Reply-To: <CAGRGNgWd-5ef5bxOkthpfH1hjqO4HJuWuBA=jNRAr=geQDH1zA@mail.gmail.com>	(Julian
- Calaby's message of "Mon, 4 Jul 2016 10:49:55 +1000")
-Content-Language: en-US
-Content-ID: <7C404886E6E015418BA390AA4BD06BA7@qualcomm.com>
+ id 1bezic-0004UA-7B
+ for ath10k@lists.infradead.org; Wed, 31 Aug 2016 07:13:55 +0000
 MIME-Version: 1.0
+Subject: Re: ath10k: fix get rx_status from htt context
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1469551552-845-1-git-send-email-arnagara@qti.qualcomm.com>
+Message-ID: <98cf69114589412c8e562abf7f16de22@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 31 Aug 2016 09:13:26 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,62 +21,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Julian Calaby <julian.calaby@gmail.com>
-Cc: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "tamizhchelvam@codeaurora.org" <tamizhchelvam@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, arnagara@codeaurora.org, ath10k@lists.infradead.org
 
-Julian Calaby <julian.calaby@gmail.com> writes:
+Ashok Raj Nagarajan <arnagara@qti.qualcomm.com> wrote:
+> On handling amsdu on rx path, get the rx_status from htt context. Without this
+> fix, we are seeing warnings when running DBDC traffic like this.
+> 
+> WARNING: CPU: 0 PID: 0 at net/mac80211/rx.c:4105 ieee80211_rx_napi+0x88/0x7d8 [mac80211]()
+> 
+> [ 1715.878248] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G W 3.18.21 #1
+> [ 1715.878273] [<c001d3f4>] (unwind_backtrace) from [<c001a4b0>] (show_stack+0x10/0x14)
+> [ 1715.878293] [<c001a4b0>] (show_stack) from [<c01bee64>] (dump_stack+0x70/0xbc)
+> [ 1715.878315] [<c01bee64>] (dump_stack) from [<c002a61c>] (warn_slowpath_common+0x64/0x88)
+> [ 1715.878339] [<c002a61c>] (warn_slowpath_common) from [<c002a6d0>] (warn_slowpath_null+0x18/0x20)
+> [ 1715.878395] [<c002a6d0>] (warn_slowpath_null) from [<bf4caa98>] (ieee80211_rx_napi+0x88/0x7d8 [mac80211])
+> [ 1715.878474] [<bf4caa98>] (ieee80211_rx_napi [mac80211]) from [<bf568658>] (ath10k_htt_t2h_msg_handler+0xb48/0xbfc [ath10k_core])
+> [ 1715.878535] [<bf568658>] (ath10k_htt_t2h_msg_handler [ath10k_core]) from [<bf568708>] (ath10k_htt_t2h_msg_handler+0xbf8/0xbfc [ath10k_core])
+> [ 1715.878597] [<bf568708>] (ath10k_htt_t2h_msg_handler [ath10k_core]) from [<bf569160>] (ath10k_htt_txrx_compl_task+0xa54/0x1170 [ath10k_core])
+> [ 1715.878639] [<bf569160>] (ath10k_htt_txrx_compl_task [ath10k_core]) from [<c002db14>] (tasklet_action+0xb4/0x130)
+> [ 1715.878659] [<c002db14>] (tasklet_action) from [<c002d110>] (__do_softirq+0xe0/0x210)
+> [ 1715.878678] [<c002d110>] (__do_softirq) from [<c002d4b4>] (irq_exit+0x84/0xe0)
+> [ 1715.878700] [<c002d4b4>] (irq_exit) from [<c005a544>] (__handle_domain_irq+0x98/0xd0)
+> [ 1715.878722] [<c005a544>] (__handle_domain_irq) from [<c00085f4>] (gic_handle_irq+0x38/0x5c)
+> [ 1715.878741] [<c00085f4>] (gic_handle_irq) from [<c0009680>] (__irq_svc+0x40/0x74)
+> [ 1715.878753] Exception stack(0xc05f9f50 to 0xc05f9f98)
+> [ 1715.878767] 9f40: ffffffed 00000000 00399e1e c000a220
+> [ 1715.878786] 9f60: 00000000 c05f6780 c05f8000 00000000 c05f5db8 ffffffed c05f8000 c04d1980
+> [ 1715.878802] 9f80: 00000000 c05f9f98 c0018110 c0018114 60000013 ffffffff
+> [ 1715.878822] [<c0009680>] (__irq_svc) from [<c0018114>] (arch_cpu_idle+0x2c/0x50)
+> [ 1715.878844] [<c0018114>] (arch_cpu_idle) from [<c00530d4>] (cpu_startup_entry+0x108/0x234)
+> [ 1715.878866] [<c00530d4>] (cpu_startup_entry) from [<c05c7be0>] (start_kernel+0x33c/0x3b8)
+> [ 1715.878879] ---[ end trace 6d5e1cc0fef8ed6a ]---
+> [ 1715.878899] ------------[ cut here ]------------
+> 
+> Fixes: 18235664e7f9 ("ath10k: cleanup amsdu processing for rx indication")
+> Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
 
-> Hi Tamizh,
->
-> On Fri, Jul 1, 2016 at 5:06 PM,  <c_traja@qti.qualcomm.com> wrote:
->> From: Tamizh chelvam <c_traja@qti.qualcomm.com>
->>
->> Preparation to make use of firmware_swap_code_seg_info for UTF binary.
->>
->> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
->> ---
->>  drivers/net/wireless/ath/ath10k/core.c |    6 +++---
->>  drivers/net/wireless/ath/ath10k/core.h |    6 ++----
->>  drivers/net/wireless/ath/ath10k/swap.c |   26 ++++++++++++++------------
->>  drivers/net/wireless/ath/ath10k/swap.h |   11 ++++++++---
->>  4 files changed, 27 insertions(+), 22 deletions(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
->> index 3da18c9..e69e7e7 100644
->> --- a/drivers/net/wireless/ath/ath10k/core.h
->> +++ b/drivers/net/wireless/ath/ath10k/core.h
->> @@ -654,6 +654,8 @@ struct ath10k_fw_file {
->>
->>         const void *codeswap_data;
->>         size_t codeswap_len;
->> +       /* FIXME: add a comment */
->> +       struct ath10k_swap_code_seg_info *firmware_swap_code_seg_info;
->
-> Why not just add a comment? Adding FIXMEs makes the patch look incomplete to me.
+Thanks, 1 patch applied to ath-current branch of ath.git:
 
-Actually I'm here to blame, I asked Tamizh to add the fixme so I can add
-a proper comment. I did it now:
-
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -663,7 +663,14 @@ struct ath10k_fw_file {
- 
-        const void *codeswap_data;
-        size_t codeswap_len;
--       /* FIXME: add a comment */
-+
-+       /* The original idea of struct ath10k_fw_file was that it only
-+        * contains struct firmware and pointers to various parts (actual
-+        * firmware binary, otp, metadata etc) of the file. This seg_info
-+        * is actually created separate but as this is used similarly as
-+        * the other firmware components it's more convenient to have it
-+        * here.
-+        */
-        struct ath10k_swap_code_seg_info *firmware_swap_code_seg_info;
- };
+237e15dfd5d6 ath10k: fix get rx_status from htt context
 
 -- 
-Kalle Valo
+Sent by pwcli
+https://patchwork.kernel.org/patch/9248457/
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
