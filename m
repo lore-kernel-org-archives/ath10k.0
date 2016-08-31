@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bf0Qd-0004am-9n
- for ath10k@lists.infradead.org; Wed, 31 Aug 2016 07:59:23 +0000
+ id 1bf0pB-0006H1-Jf
+ for ath10k@lists.infradead.org; Wed, 31 Aug 2016 08:24:50 +0000
 MIME-Version: 1.0
-Subject: Re: [RESEND,
- v4] ath10k: Fix sending NULL/ Qos NULL data frames for QCA99X0 and
- later
+Subject: Re: ath10k: fix throughput regression in multi client mode
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1469016659-1887-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <e8de2c3a1b534b4d9b6a9b60d0946111@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 31 Aug 2016 09:58:56 +0200
+In-Reply-To: <20160829081613.1474-1-rmanohar@qti.qualcomm.com>
+Message-ID: <425ad8d804bf46feada839a8e0d0c77e@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 31 Aug 2016 10:24:15 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +21,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rmanohar@codeaurora.org
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
+> commit 7a0adc83f34d ("ath10k: improve tx scheduling") is causing
+> severe throughput drop in multi client mode. This issue is originally
+> reported in veriwave setup with 50 clients with TCP downlink traffic.
+> While increasing number of clients, the average throughput drops
+> gradually. With 50 clients, the combined peak throughput is decreased
+> to 98 Mbps whereas reverting given commit restored it to 550 Mbps.
 > 
-> For chipsets like QCA99X0, IPQ4019 and later we are not getting proper
-> NULL func status (always acked/successs !!) when hostapd does a
-> PROBE_CLIENT via nullfunc frames when the station is powered off
-> abruptly (inactive timer probes client via null func after the inactive
-> time reaches beyond the threshold). Fix this by disabling the workaround
-> introduced by the change ("ath10k: fix beacon loss handling ") for
-> QCA99X0 and later chipsets. The normal tx path provides the proper
-> status for NULL data frames. As of now disable this workaround for
-> chipsets QCA99X0 and later, once the 10.1 firmware is obselete we can
-> completely get rid of this workaround for all the chipsets
+> Processing txqs for every tx completion is causing overhead. Ideally for
+> management frame tx completion, pending txqs processing can be avoided.
+> The change partly reverts the commit "ath10k: improve tx scheduling".
+> Processing pending txqs after all skbs tx completion will yeild enough
+> room to burst tx frames.
 > 
-> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> Fixes: 7a0adc83f34d ("ath10k: improve tx scheduling")
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Superseded by:
-
-[v5] ath10k: Fix broken NULL func data frame status for 10.4
-
-https://patchwork.kernel.org/patch/9300961/
+I'm planning to queue this to 4.8 if no objections.
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9239481/
+https://patchwork.kernel.org/patch/9303279/
 
 
 _______________________________________________
