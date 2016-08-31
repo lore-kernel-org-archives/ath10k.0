@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bezoV-0007w0-Qs
- for ath10k@lists.infradead.org; Wed, 31 Aug 2016 07:20:02 +0000
+ id 1bezwx-0004Br-CZ
+ for ath10k@lists.infradead.org; Wed, 31 Aug 2016 07:28:44 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCHv3,
- 1/3] ath10k: move firmware_swap_code_seg_info to ath10k_fw_file
+Subject: Re: [1/4] ath10k: implement wmi echo command
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1467356767-31646-1-git-send-email-c_traja@qti.qualcomm.com>
-Message-ID: <4b5f565d8e124aca9debc00ee47efb2e@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 31 Aug 2016 09:19:31 +0200
+In-Reply-To: <1468924452-23877-2-git-send-email-michal.kazior@tieto.com>
+Message-ID: <9a7befb7bfad4d409c3a7cd3ab59bd91@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 31 Aug 2016 09:28:12 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +21,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_traja@qti.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, tamizhchelvam@codeaurora.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: marek.puzyniak@tieto.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-c_traja@qti.qualcomm.com wrote:
-> From: Tamizh chelvam <c_traja@qti.qualcomm.com>
+Michal Kazior <michal.kazior@tieto.com> wrote:
+> Will be useful for implementing command barriers.
 > 
-> Preparation to make use of firmware_swap_code_seg_info for UTF binary.
-> 
-> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, 3 patches applied to ath-next branch of ath.git:
+Thanks, 4 patches applied to ath-next branch of ath.git:
 
-5459c5d47608 ath10k: move firmware_swap_code_seg_info to ath10k_fw_file
-d912fc094bc4 ath10k: handle testmode events for 10.2 and 10.4 based firmware
-ebce1a5e3a0e ath10k: add testmode support for 10.4 firmware
+e25854f2404c ath10k: implement wmi echo command
+84d4911b7184 ath10k: implement wmi echo event
+20ddca21dcf8 ath10k: add wmi command barrier utility
+47b1848d9fde ath10k: fix spurious tx/rx during boot
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9209331/
+https://patchwork.kernel.org/patch/9236705/
 
 
 _______________________________________________
