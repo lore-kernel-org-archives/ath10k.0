@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bf0pB-0006H1-Jf
- for ath10k@lists.infradead.org; Wed, 31 Aug 2016 08:24:50 +0000
+ id 1bfUbv-0003kP-FR
+ for ath10k@lists.infradead.org; Thu, 01 Sep 2016 16:13:05 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Remove unnecessary error code assignment
+Date: Thu, 1 Sep 2016 21:43:36 +0530
+Message-ID: <1472746416-23869-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: ath10k: fix throughput regression in multi client mode
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20160829081613.1474-1-rmanohar@qti.qualcomm.com>
-Message-ID: <425ad8d804bf46feada839a8e0d0c77e@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 31 Aug 2016 10:24:15 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +20,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rmanohar@codeaurora.org
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
-> commit 7a0adc83f34d ("ath10k: improve tx scheduling") is causing
-> severe throughput drop in multi client mode. This issue is originally
-> reported in veriwave setup with 50 clients with TCP downlink traffic.
-> While increasing number of clients, the average throughput drops
-> gradually. With 50 clients, the combined peak throughput is decreased
-> to 98 Mbps whereas reverting given commit restored it to 550 Mbps.
-> 
-> Processing txqs for every tx completion is causing overhead. Ideally for
-> management frame tx completion, pending txqs processing can be avoided.
-> The change partly reverts the commit "ath10k: improve tx scheduling".
-> Processing pending txqs after all skbs tx completion will yeild enough
-> room to burst tx frames.
-> 
-> Fixes: 7a0adc83f34d ("ath10k: improve tx scheduling")
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-I'm planning to queue this to 4.8 if no objections.
+The error assigned does not seems to be used anywhere,
+fixes nothing just a small cleanup
 
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index eb2831c..3117a71 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3544,7 +3544,6 @@ void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
+ 				ath10k_warn(ar, "failed to map beacon: %d\n",
+ 					    ret);
+ 				dev_kfree_skb_any(bcn);
+-				ret = -EIO;
+ 				goto skip;
+ 			}
+ 
 -- 
-Sent by pwcli
-https://patchwork.kernel.org/patch/9303279/
+1.9.1
 
 
 _______________________________________________
