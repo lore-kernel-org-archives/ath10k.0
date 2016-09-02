@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bfqnG-0005ZY-BF
- for ath10k@lists.infradead.org; Fri, 02 Sep 2016 15:54:15 +0000
+ id 1bfqon-0007PQ-Ul
+ for ath10k@lists.infradead.org; Fri, 02 Sep 2016 15:55:51 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: fix sending frame in management path in push txq logic
+Subject: Re: [2/2] ath10k: use complete() instead complete_all()
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1471514404-24098-1-git-send-email-arnagara@qti.qualcomm.com>
-Message-ID: <d88420cfb8264f28ac04cce477ed5cf1@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 2 Sep 2016 17:53:46 +0200
+In-Reply-To: <1471525926-20384-3-git-send-email-wagi@monom.org>
+Message-ID: <cf7ac1577bed46af9e664cb1134c6643@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 2 Sep 2016 17:55:20 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +21,130 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, arnagara@codeaurora.org, ath10k@lists.infradead.org
+To: Daniel Wagner <wagi@monom.org>
+Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, Daniel Wagner <daniel.wagner@bmw-carit.de>, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "Luis R . Rodriguez" <mcgrof@kernel.org>, Christian Lamparter <chunkeey@googlemail.com>, Kalle Valo <kvalo@codeaurora.org>
 
-Ashok Raj Nagarajan <arnagara@qti.qualcomm.com> wrote:
-> In the wake tx queue path, we are not checking if the frame to be sent
-> takes management path or not. For eg. QOS null func frame coming here will
-> take the management path. Since we are not incrementing the descriptor
-> counter (num_pending_mgmt_tx) w.r.t tx management, on tx completion it is
-> possible to see negative values.
+Daniel Wagner <wagi@monom.org> wrote:
+> From: Daniel Wagner <daniel.wagner@bmw-carit.de>
 > 
-> When the above counter reaches a negative value, we will not be sending a
-> probe response out.
+> There is only one waiter for the completion, therefore there
+> is no need to use complete_all(). Let's make that clear by
+> using complete() instead of complete_all().
 > 
->     if (is_presp &&
-> 	ar->hw_params.max_probe_resp_desc_thres < htt->num_pending_mgmt_tx)
+> The usage pattern of the completion is:
 > 
-> For IPQ4019, max_probe_resp_desc_thres (u32) is 24 is compared against
-> num_pending_mgmt_tx (int) and the above condtions comes true if the counter
-> is negative and we drop the probe response.
+> waiter context                          waker context
 > 
-> To avoid this, check on the wake tx queue path as well for the tx path of
-> the frame and increment the appropriate counters
+> scan.started
+> ------------
 > 
-> Fixes: cac085524cf1 "ath10k: move mgmt descriptor limit handle under mgmt_tx"
-> Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+> ath10k_start_scan()
+>   lockdep_assert_held(conf_mutex)
+>   auth10k_wmi_start_scan()
+>   wait_for_completion_timeout(scan.started)
+> 
+> 					ath10k_wmi_event_scan_start_failed()
+> 					  complete(scan.started)
+> 
+> 					ath10k_wmi_event_scan_started()
+> 					  complete(scan.started)
+> 
+> scan.completed
+> --------------
+> 
+> ath10k_scan_stop()
+>   lockdep_assert_held(conf_mutex)
+>   ath10k_wmi_stop_scan()
+>   wait_for_completion_timeout(scan.completed)
+> 
+> 					__ath10k_scan_finish()
+> 					  complete(scan.completed)
+> 
+> scan.on_channel
+> ---------------
+> 
+> ath10k_remain_on_channel()
+>   mutex_lock(conf_mutex)
+>   ath10k_start_scan()
+>   wait_for_completion_timeout(scan.on_channel)
+> 
+> 					ath10k_wmi_event_scan_foreign_chan()
+> 					  complete(scan.on_channel)
+> 
+> offchan_tx_completed
+> --------------------
+> 
+> ath10k_offchan_tx_work()
+>   mutex_lock(conf_mutex)
+>   reinit_completion(offchan_tx_completed)
+>   wait_for_completion_timeout(offchan_tx_completed)
+> 
+> 					ath10k_report_offchain_tx()
+> 					  complete(offchan_tx_completed)
+> 
+> install_key_done
+> ----------------
+> ath10k_install_key()
+>   lockep_assert_held(conf_mutex)
+>   reinit_completion(install_key_done)
+>   wait_for_completion_timeout(install_key_done)
+> 
+> 				        ath10k_htt_t2h_msg_handler()
+> 					  complete(install_key_done)
+> 
+> vdev_setup_done
+> ---------------
+> 
+> ath10k_monitor_vdev_start()
+>   lockdep_assert_held(conf_mutex)
+>    reinit_completion(vdev_setup_done)
+>   ath10k_vdev_setup_sync()
+>     wait_for_completion_timeout(vdev_setup_done)
+> 
+> 					ath10k_wmi_event_vdev_start_resp()
+> 					  complete(vdev_setup_done)
+> 
+> ath10k_monitor_vdev_stop()
+>   lockdep_assert_held(conf_mutex)
+>   reinit_completion(vdev_setup_done()
+>   ath10k_vdev_setup_sync()
+>     wait_for_completion_timeout(vdev_setup_done)
+> 
+> 					ath10k_wmi_event_vdev_stopped()
+> 					 complete(vdev_setup_done)
+> 
+> thermal.wmi_sync
+> ----------------
+> ath10k_thermal_show_temp()
+>   mutex_lock(conf_mutex)
+>   reinit_completion(thermal.wmi_sync)
+>   wait_for_completion_timeout(thermal.wmi_sync)
+> 
+> 					ath10k_thermal_event_temperature()
+> 					  complete(thermal.wmi_sync)
+> 
+> bss_survey_done
+> ---------------
+> ath10k_mac_update_bss_chan_survey
+>   lockdep_assert_held(conf_mutex)
+>   reinit_completion(bss_survey_done)
+>   wait_for_completion_timeout(bss_survey_done)
+> 
+> 					ath10k_wmi_event_pdev_bss_chan_info()
+> 					  complete(bss_survey_done)
+> 
+> All complete() calls happen while the conf_mutex is taken. That means
+> at max one waiter is possible.
+> 
+> Signed-off-by: Daniel Wagner <daniel.wagner@bmw-carit.de>
 
 Thanks, 1 patch applied to ath-next branch of ath.git:
 
-e4fd726f21cd ath10k: fix sending frame in management path in push txq logic
+881ed54ecc13 ath10k: use complete() instead complete_all()
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9287191/
+https://patchwork.kernel.org/patch/9287731/
 
 
 _______________________________________________
