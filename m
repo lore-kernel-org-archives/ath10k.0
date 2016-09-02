@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bfrMk-00009n-9X
- for ath10k@lists.infradead.org; Fri, 02 Sep 2016 16:30:55 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k: fix throughput regression in multi client mode
-Date: Fri, 2 Sep 2016 16:30:26 +0000
-Message-ID: <87inuez2lb.fsf@kamboji.qca.qualcomm.com>
-References: <425ad8d804bf46feada839a8e0d0c77e@euamsexm01a.eu.qualcomm.com>
-In-Reply-To: <425ad8d804bf46feada839a8e0d0c77e@euamsexm01a.eu.qualcomm.com>
- (Kalle Valo's message of "Wed, 31 Aug 2016 10:24:15 +0200")
-Content-Language: en-US
-Content-ID: <5674ED6CB30D664CB1B9E025CC842A0A@qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bfsv3-0006IG-P0
+ for ath10k@lists.infradead.org; Fri, 02 Sep 2016 18:10:27 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 0EA5040A339
+ for <ath10k@lists.infradead.org>; Fri,  2 Sep 2016 11:09:42 -0700 (PDT)
+From: Ben Greear <greearb@candelatech.com>
+Subject: Why do we only set station-kickout for AP vdevs?
+Message-ID: <52ae65ec-d1c1-3301-77a0-ddd5a9298ee6@candelatech.com>
+Date: Fri, 2 Sep 2016 11:09:41 -0700
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,39 +21,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Manoharan, Rajkumar" <rmanohar@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "rmanohar@codeaurora.org" <rmanohar@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+At least the sta_xretry_kickout_thresh is a per radio thing and applies to
+ibss interfaces, for instance.
 
-> Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
->> commit 7a0adc83f34d ("ath10k: improve tx scheduling") is causing
->> severe throughput drop in multi client mode. This issue is originally
->> reported in veriwave setup with 50 clients with TCP downlink traffic.
->> While increasing number of clients, the average throughput drops
->> gradually. With 50 clients, the combined peak throughput is decreased
->> to 98 Mbps whereas reverting given commit restored it to 550 Mbps.
->> 
->> Processing txqs for every tx completion is causing overhead. Ideally for
->> management frame tx completion, pending txqs processing can be avoided.
->> The change partly reverts the commit "ath10k: improve tx scheduling".
->> Processing pending txqs after all skbs tx completion will yeild enough
->> room to burst tx frames.
->> 
->> Fixes: 7a0adc83f34d ("ath10k: improve tx scheduling")
->> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
->
-> I'm planning to queue this to 4.8 if no objections.
+	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+		ret = ath10k_mac_set_kickout(arvif);
+		if (ret) {
+			ath10k_warn(ar, "failed to set vdev %i kickout parameters: %d\n",
+				    arvif->vdev_id, ret);
+			goto err_peer_delete;
+		}
+	}
 
-Actually the patch doesn't apply to ath-current branch so I'll apply to
-ath-next instead.
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
