@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bfqon-0007PQ-Ul
- for ath10k@lists.infradead.org; Fri, 02 Sep 2016 15:55:51 +0000
+ id 1bfqpk-0007wi-Ud
+ for ath10k@lists.infradead.org; Fri, 02 Sep 2016 15:56:49 +0000
 MIME-Version: 1.0
-Subject: Re: [2/2] ath10k: use complete() instead complete_all()
+Subject: Re: ath10k: Added support for extended dbglog module id for 10.4
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1471525926-20384-3-git-send-email-wagi@monom.org>
-Message-ID: <cf7ac1577bed46af9e664cb1134c6643@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 2 Sep 2016 17:55:20 +0200
+In-Reply-To: <1471946736-28214-1-git-send-email-c_mkenna@qti.qualcomm.com>
+Message-ID: <7b55a733bcc0414f93030e89e0fb5cbe@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 2 Sep 2016 17:56:21 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,130 +21,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Daniel Wagner <wagi@monom.org>
-Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, Daniel Wagner <daniel.wagner@bmw-carit.de>, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "Luis R . Rodriguez" <mcgrof@kernel.org>, Christian Lamparter <chunkeey@googlemail.com>, Kalle Valo <kvalo@codeaurora.org>
+To: c_mkenna@qti.qualcomm.com
+Cc: mkenna@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Daniel Wagner <wagi@monom.org> wrote:
-> From: Daniel Wagner <daniel.wagner@bmw-carit.de>
+c_mkenna@qti.qualcomm.com wrote:
+> From: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
 > 
-> There is only one waiter for the completion, therefore there
-> is no need to use complete_all(). Let's make that clear by
-> using complete() instead of complete_all().
+> For 10.4 fw versions, dbglog module id has been extended from u32
+> to u64, hence this patch fixes the same in the ath10k driver side.
 > 
-> The usage pattern of the completion is:
+> This patch doesn't break the older 10.4 releases. The FW change
+> is already present in the older FWs.
 > 
-> waiter context                          waker context
-> 
-> scan.started
-> ------------
-> 
-> ath10k_start_scan()
->   lockdep_assert_held(conf_mutex)
->   auth10k_wmi_start_scan()
->   wait_for_completion_timeout(scan.started)
-> 
-> 					ath10k_wmi_event_scan_start_failed()
-> 					  complete(scan.started)
-> 
-> 					ath10k_wmi_event_scan_started()
-> 					  complete(scan.started)
-> 
-> scan.completed
-> --------------
-> 
-> ath10k_scan_stop()
->   lockdep_assert_held(conf_mutex)
->   ath10k_wmi_stop_scan()
->   wait_for_completion_timeout(scan.completed)
-> 
-> 					__ath10k_scan_finish()
-> 					  complete(scan.completed)
-> 
-> scan.on_channel
-> ---------------
-> 
-> ath10k_remain_on_channel()
->   mutex_lock(conf_mutex)
->   ath10k_start_scan()
->   wait_for_completion_timeout(scan.on_channel)
-> 
-> 					ath10k_wmi_event_scan_foreign_chan()
-> 					  complete(scan.on_channel)
-> 
-> offchan_tx_completed
-> --------------------
-> 
-> ath10k_offchan_tx_work()
->   mutex_lock(conf_mutex)
->   reinit_completion(offchan_tx_completed)
->   wait_for_completion_timeout(offchan_tx_completed)
-> 
-> 					ath10k_report_offchain_tx()
-> 					  complete(offchan_tx_completed)
-> 
-> install_key_done
-> ----------------
-> ath10k_install_key()
->   lockep_assert_held(conf_mutex)
->   reinit_completion(install_key_done)
->   wait_for_completion_timeout(install_key_done)
-> 
-> 				        ath10k_htt_t2h_msg_handler()
-> 					  complete(install_key_done)
-> 
-> vdev_setup_done
-> ---------------
-> 
-> ath10k_monitor_vdev_start()
->   lockdep_assert_held(conf_mutex)
->    reinit_completion(vdev_setup_done)
->   ath10k_vdev_setup_sync()
->     wait_for_completion_timeout(vdev_setup_done)
-> 
-> 					ath10k_wmi_event_vdev_start_resp()
-> 					  complete(vdev_setup_done)
-> 
-> ath10k_monitor_vdev_stop()
->   lockdep_assert_held(conf_mutex)
->   reinit_completion(vdev_setup_done()
->   ath10k_vdev_setup_sync()
->     wait_for_completion_timeout(vdev_setup_done)
-> 
-> 					ath10k_wmi_event_vdev_stopped()
-> 					 complete(vdev_setup_done)
-> 
-> thermal.wmi_sync
-> ----------------
-> ath10k_thermal_show_temp()
->   mutex_lock(conf_mutex)
->   reinit_completion(thermal.wmi_sync)
->   wait_for_completion_timeout(thermal.wmi_sync)
-> 
-> 					ath10k_thermal_event_temperature()
-> 					  complete(thermal.wmi_sync)
-> 
-> bss_survey_done
-> ---------------
-> ath10k_mac_update_bss_chan_survey
->   lockdep_assert_held(conf_mutex)
->   reinit_completion(bss_survey_done)
->   wait_for_completion_timeout(bss_survey_done)
-> 
-> 					ath10k_wmi_event_pdev_bss_chan_info()
-> 					  complete(bss_survey_done)
-> 
-> All complete() calls happen while the conf_mutex is taken. That means
-> at max one waiter is possible.
-> 
-> Signed-off-by: Daniel Wagner <daniel.wagner@bmw-carit.de>
+> Signed-off-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
 
 Thanks, 1 patch applied to ath-next branch of ath.git:
 
-881ed54ecc13 ath10k: use complete() instead complete_all()
+afcbc82cea52 ath10k: Added support for extended dbglog module id for 10.4
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9287731/
+https://patchwork.kernel.org/patch/9295361/
 
 
 _______________________________________________
