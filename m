@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bfqtu-00021k-Uu
- for ath10k@lists.infradead.org; Fri, 02 Sep 2016 16:01:10 +0000
+ id 1bfqxB-00030D-7p
+ for ath10k@lists.infradead.org; Fri, 02 Sep 2016 16:04:29 +0000
 MIME-Version: 1.0
-Subject: Re: [v5] ath10k: Fix broken NULL func data frame status for 10.4
+Subject: Re: ath10k: fix spelling mistake "montior" -> "monitor"
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1472199140-8404-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <48c9092d7f6c468092ef093779624a36@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 2 Sep 2016 18:00:33 +0200
+In-Reply-To: <20160826180852.32248-1-colin.king@canonical.com>
+Message-ID: <d7e303bcda534cb0b62f22f99ace0590@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 2 Sep 2016 18:03:58 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +21,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Colin Ian King <colin.king@canonical.com> wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Older firmware with HTT delivers incorrect tx status for null func
-> frames to driver, but this fixed in 10.2 and 10.4 firmware versions.
-> Also this workaround results in reporting of incorrect null func status
-> for 10.4. Fix this is by introducing a firmware feature flag for 10.4
-> so that this workaround is skipped and proper tx status for null func
-> frames are reported
+> Trivial fix to spelling mistake in ath10k_warn message.
 > 
-> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Reviewed-by: Julian Calaby <julian.calaby@gmail.com>
 
 Thanks, 1 patch applied to ath-next branch of ath.git:
 
-2cdce425aa33 ath10k: Fix broken NULL func data frame status for 10.4
+7f03d3069381 ath10k: fix spelling mistake "montior" -> "monitor"
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9300961/
+https://patchwork.kernel.org/patch/9301869/
 
 
 _______________________________________________
