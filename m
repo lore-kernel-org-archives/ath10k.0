@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bfqpk-0007wi-Ud
- for ath10k@lists.infradead.org; Fri, 02 Sep 2016 15:56:49 +0000
+ id 1bfqqt-0008ER-GA
+ for ath10k@lists.infradead.org; Fri, 02 Sep 2016 15:57:59 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: Added support for extended dbglog module id for 10.4
+Subject: Re: ath10k: replace config_enabled() with IS_REACHABLE()
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1471946736-28214-1-git-send-email-c_mkenna@qti.qualcomm.com>
-Message-ID: <7b55a733bcc0414f93030e89e0fb5cbe@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 2 Sep 2016 17:56:21 +0200
+In-Reply-To: <1471969646-13119-1-git-send-email-yamada.masahiro@socionext.com>
+Message-ID: <388c99a317f2431596e43d0feee204c9@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 2 Sep 2016 17:57:30 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +21,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_mkenna@qti.qualcomm.com
-Cc: mkenna@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>
 
-c_mkenna@qti.qualcomm.com wrote:
-> From: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> Commit 97f2645f358b ("tree-wide: replace config_enabled() with
+> IS_ENABLED()") mostly did away with config_enabled().
 > 
-> For 10.4 fw versions, dbglog module id has been extended from u32
-> to u64, hence this patch fixes the same in the ath10k driver side.
+> This is one of the postponed TODO items as config_enabled() is used
+> for a tristate option here.  Theoretically, config_enabled() is
+> equivalent to IS_BUILTIN(), but I guess IS_REACHABLE() is the best
+> fit for this case because both CONFIG_HWMON and CONFIG_ATH10K are
+> tristate.
 > 
-> This patch doesn't break the older 10.4 releases. The FW change
-> is already present in the older FWs.
-> 
-> Signed-off-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
 Thanks, 1 patch applied to ath-next branch of ath.git:
 
-afcbc82cea52 ath10k: Added support for extended dbglog module id for 10.4
+749bc03ae2cd ath10k: replace config_enabled() with IS_REACHABLE()
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9295361/
+https://patchwork.kernel.org/patch/9295945/
 
 
 _______________________________________________
