@@ -1,21 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bfnIC-0002KY-Rc
- for ath10k@lists.infradead.org; Fri, 02 Sep 2016 12:09:58 +0000
-Received: by mail-wm0-x233.google.com with SMTP id c133so26611339wmd.1
- for <ath10k@lists.infradead.org>; Fri, 02 Sep 2016 05:09:34 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bfoYh-0004bU-Nz
+ for ath10k@lists.infradead.org; Fri, 02 Sep 2016 13:31:04 +0000
+Message-ID: <57C97EE8.7080600@candelatech.com>
+Date: Fri, 02 Sep 2016 06:30:16 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <79ab7dfa-f485-ffcd-963c-b91f7d5a8386@candelatech.com>
+Subject: Re: Ath10k probe response error related to mac80211 commit.
 References: <cf9852df-6d14-baf6-af0a-9cc78c448fde@candelatech.com>
  <1472752911.9608.11.camel@sipsolutions.net>
  <c7eb32b4-84c5-41ae-1fe6-89df7cbbe7d4@candelatech.com>
  <1472756034.9608.15.camel@sipsolutions.net>
  <79ab7dfa-f485-ffcd-963c-b91f7d5a8386@candelatech.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Fri, 2 Sep 2016 14:09:32 +0200
-Message-ID: <CA+BoTQmehZSR71LzJtzy+N+ANZJ8N=c7tg+XX9_NUQjL4R-phQ@mail.gmail.com>
-Subject: Re: Ath10k probe response error related to mac80211 commit.
+ <CA+BoTQmehZSR71LzJtzy+N+ANZJ8N=c7tg+XX9_NUQjL4R-phQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQmehZSR71LzJtzy+N+ANZJ8N=c7tg+XX9_NUQjL4R-phQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +23,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: Johannes Berg <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-T24gMSBTZXB0ZW1iZXIgMjAxNiBhdCAyMjo1MiwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxh
-dGVjaC5jb20+IHdyb3RlOgo+IE9uIDA5LzAxLzIwMTYgMTE6NTMgQU0sIEpvaGFubmVzIEJlcmcg
-d3JvdGU6Cj4+IE9uIFRodSwgMjAxNi0wOS0wMSBhdCAxMToyMyAtMDcwMCwgQmVuIEdyZWVhciB3
-cm90ZToKPj4+Cj4+PiBDb3VsZCBlYXNpbHkgYmUgdGhhdCBvdGhlcnMgYXJlIGNvcnJ1cHRlZCB0
-b28sIGJ1dCBzaW5jZSBwcm9iZSByZXNwCj4+PiBpcyBiYWQsIHRoZSBhc3NvY2lhdGlvbiB3aWxs
-IG5vdCBwcm9jZWVkLgo+Pgo+PiBtYWtlcyBzZW5zZS4KPj4KPj4+IEhlaCwgSSBzcGVudCA0IGRh
-eXMgdHJhY2tpbmcgdGhpcyBkb3duLCBzbyBJIHdhbnRlZCB0byBiZSBwcmVjaXNlIGluCj4+PiBt
-eSBidWcgcmVwb3J0IDopCj4+Cj4+IEFocmcsIG91Y2guIFNvcnJ5IGFib3V0IHRoYXQuIEkgcmVh
-bGx5IGRpZG4ndCB0aGluayB0aGUgZmxhZyB3b3VsZAo+PiBjYXVzZSBhbnkgaXNzdWVzIGZvciBh
-bnlvbmUuCj4+Cj4+PiBUaGUgcmVzdWx0IEkgc2VlIGlzIHRoYXQgdGhlcmUgaXMgYW4gZXh0cmEg
-MTAgYnl0ZXMgYXQgdGhlIGVuZCBvZiB0aGUKPj4+IGZyYW1lIG9uIGFpci4gIEJ1dCwgaXQgbG9v
-a3MgbGlrZSB0aGUgZXhhY3Qgc2FtZSBwa3QgaXMgc2VudCB0byB0aGUKPj4+IGZpcm13YXJlIGJv
-dGggd2l0aCBhbmQgd2l0aG91dCB0aGlzIHBhdGNoLiAgTWF5YmUgdGhlIGZpcm13YXJlIGlzCj4+
-PiB1c2luZyB0aGUgd3JvbmcgdGlkIG9yIHNvbWV0aGluZyBsaWtlIHRoYXQgZHVlIHRvIGhvdyB0
-aGUgc3RhdGlvbiBpcwo+Pj4gY3JlYXRlZCBkaWZmZXJlbnRseSB3aXRoIHRoaXMgcGF0Y2guCj4+
-Cj4+IFRoYXQgbWFrZXMgbm8gc2Vuc2UgdGhvdWdoLCB1bmxlc3MgdGhpcyBvbmx5IGhhcHBlbnMg
-b24gc2F5IHRoZSBzZWNvbmQKPj4gc3RhdGlvbiB0aGF0IGNvbm5lY3RzPyBVbnRpbCB0aGUgZmly
-c3Qgc3RhdGlvbiBzZW5kcyBhbiBhdXRoZW50aWNhdGlvbgo+PiBmcmFtZSwgdGhhdCBwYXRjaCBy
-ZWFsbHkgc2hvdWxkIGhhdmUgbm8gaW1wYWN0IHdoYXRzb2V2ZXIuCj4KPiBPaywgSSBmb3VuZCB0
-aGUgcHJvYmxlbS4KPgo+IEluIHRoZSAxMC4xIGZpcm13YXJlIChhdCBsZWFzdCksIGl0IHdpbGwg
-Zm9yY2UgdGhlIFRJRCB0byBiZSBOT04tUU9TLVRJRAo+IGlmIHRoZSBwZWVyIG9iamVjdCBkb2Vz
-IG5vdCBoYXZlIHRoZSBxb3NfZW5hYmxlZCBmbGFnIHNldC4gIFRoaXMgaXMgcHJvYmFibHkKPiBh
-IHdvcmstYXJvdW5kIGZvciBzb21lIG90aGVyIHRoaW5nIGxvc3QgaW4gYW50aXF1aXR5Lgo+Cj4g
-V2hlbiB1c2luZyBteSBmaXJtd2FyZSB0aGF0IHB1dHMgbWd0IGZyYW1lcyBvdmVyIEhUVCwgdGhl
-IFRJRCBmb3IgbWd0Cj4gZnJhbWVzIHdhcyBiZWluZyBvdmVyLXJpZGRlbiBhbmQgc2V0IHRvIG5v
-bi1xb3MgVElELiAgRHVlIHRvIG90aGVyCj4gaGFja2VyeSBhbmQgd29yay1hcm91bmRzLCBtZ3Qg
-ZnJhbWVzIGNhbm5vdCBiZSBzZW50IG9uIHRoZSBub24tcW9zCj4gVElEIGJlY2F1c2UgdGhleSB3
-aWxsIGJlIHB1dCBvbi1haXIgMTAgYnl0ZXMgdG9vIGxvbmcuICBUaGV5IG11c3QgYmUKPiBzZW50
-IG9uIHRoZSBtZ3QtdGlkIG9yIG5vbi1wYXVzZSB0aWQuCgpTb3VuZHMgbGlrZSA4MDIuMTEgaGVh
-ZGVyIHZzIDgwMi4zIGhlYWRlciBsZW5ndGggcHJvYmxlbSAoMjQgLSAxNCA9CjEwKS4gWW91IGNh
-biBoaXQgdGhpcyBpZiB5b3Ugc3RhcnQgcGxheWluZyBhcm91bmQgdHggZW5jYXAgbW9kZSBhcwp3
-ZWxsLgoKWW91IGNvdWxkIHRyeSBmb29saW5nIGZpcm13YXJlIGludG8gdGhpbmtpbmcgdGhlIGZy
-YW1lIGhhcyBhIGRpZmZlcmVudApsZW5ndGggZWl0aGVyIGluIGh0dCBUWF9GUk0gb3IgdHggZnJh
-Z21lbnQgbGlzdCAob3IgYm90aCkgYnV0IHNpbmNlCnRoaXMgc2VlbXMgdG8gYmUgcmVsYXRlZCB0
-byBSQS9EQSBwZWVyIHN0YXRlIGF0IHhtaXQgdGltZSBpdCdzCnByb2JhYmx5IG5vdCBnb2luZyB0
-byBiZSByZWxpYWJsZSB1bmxlc3MgeW91IGludHJvZHVjZSBleHRyYSB0eApmbHVzaGluZyBiYXJy
-aWVycyBpbiB0aGUgZHJpdmVyLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsK
+
+
+On 09/02/2016 05:09 AM, Michal Kazior wrote:
+> On 1 September 2016 at 22:52, Ben Greear <greearb@candelatech.com> wrote:
+>> On 09/01/2016 11:53 AM, Johannes Berg wrote:
+>>> On Thu, 2016-09-01 at 11:23 -0700, Ben Greear wrote:
+>>>>
+>>>> Could easily be that others are corrupted too, but since probe resp
+>>>> is bad, the association will not proceed.
+>>>
+>>> makes sense.
+>>>
+>>>> Heh, I spent 4 days tracking this down, so I wanted to be precise in
+>>>> my bug report :)
+>>>
+>>> Ahrg, ouch. Sorry about that. I really didn't think the flag would
+>>> cause any issues for anyone.
+>>>
+>>>> The result I see is that there is an extra 10 bytes at the end of the
+>>>> frame on air.  But, it looks like the exact same pkt is sent to the
+>>>> firmware both with and without this patch.  Maybe the firmware is
+>>>> using the wrong tid or something like that due to how the station is
+>>>> created differently with this patch.
+>>>
+>>> That makes no sense though, unless this only happens on say the second
+>>> station that connects? Until the first station sends an authentication
+>>> frame, that patch really should have no impact whatsoever.
+>>
+>> Ok, I found the problem.
+>>
+>> In the 10.1 firmware (at least), it will force the TID to be NON-QOS-TID
+>> if the peer object does not have the qos_enabled flag set.  This is probably
+>> a work-around for some other thing lost in antiquity.
+>>
+>> When using my firmware that puts mgt frames over HTT, the TID for mgt
+>> frames was being over-ridden and set to non-qos TID.  Due to other
+>> hackery and work-arounds, mgt frames cannot be sent on the non-qos
+>> TID because they will be put on-air 10 bytes too long.  They must be
+>> sent on the mgt-tid or non-pause tid.
+>
+> Sounds like 802.11 header vs 802.3 header length problem (24 - 14 =
+> 10). You can hit this if you start playing around tx encap mode as
+> well.
+>
+> You could try fooling firmware into thinking the frame has a different
+> length either in htt TX_FRM or tx fragment list (or both) but since
+> this seems to be related to RA/DA peer state at xmit time it's
+> probably not going to be reliable unless you introduce extra tx
+> flushing barriers in the driver.
+
+The problem is that the OS sent the packet on the mgt-tid, but the firmware
+over-rode this and put it on non-qos TID instead.  mgt and non-pause TIDs
+are 'raw', and do not need that -10 adjustment, and my logic to handle mgt frames on
+the normal htt path depends on that distinction.
+
+Probably I could fix up htt tx path to do that -10 stuff depending on eventual
+TID instead of making assumptions, but if I do this, it will probably be in 10.4
+as I am hoping to keep 10.1 mostly just stable fixes and the htt tx path is one
+tricky beast.
+
+Search firmware for "The tidno that DE finds needs to be overridden for non-QOS"
+and you can see where this happens.  I just fixed that firmware code to not override
+TID if it were already >= non-qos-tid.
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
