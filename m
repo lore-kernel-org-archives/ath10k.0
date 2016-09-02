@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bfZ4Q-0006k9-IC
- for ath10k@lists.infradead.org; Thu, 01 Sep 2016 20:58:47 +0000
-Subject: Re: Ath10k probe response error related to mac80211 commit.
-References: <cf9852df-6d14-baf6-af0a-9cc78c448fde@candelatech.com>
- <1472752911.9608.11.camel@sipsolutions.net>
- <c7eb32b4-84c5-41ae-1fe6-89df7cbbe7d4@candelatech.com>
- <1472756034.9608.15.camel@sipsolutions.net>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <79ab7dfa-f485-ffcd-963c-b91f7d5a8386@candelatech.com>
-Date: Thu, 1 Sep 2016 13:52:15 -0700
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bfh3o-0003F2-71
+ for ath10k@lists.infradead.org; Fri, 02 Sep 2016 05:30:40 +0000
+From: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix reporting channel survey data
+Date: Fri, 2 Sep 2016 10:59:53 +0530
+Message-ID: <1472794193-20774-1-git-send-email-arnagara@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1472756034.9608.15.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,65 +16,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, arnagara@codeaurora.org, linux-wireless@vger.kernel.org
 
-On 09/01/2016 11:53 AM, Johannes Berg wrote:
-> On Thu, 2016-09-01 at 11:23 -0700, Ben Greear wrote:
->>
->> Could easily be that others are corrupted too, but since probe resp
->> is bad, the association will not proceed.
->
-> makes sense.
->
->> Heh, I spent 4 days tracking this down, so I wanted to be precise in
->> my bug report :)
->
-> Ahrg, ouch. Sorry about that. I really didn't think the flag would
-> cause any issues for anyone.
->
->> The result I see is that there is an extra 10 bytes at the end of the
->> frame on air.  But, it looks like the exact same pkt is sent to the
->> firmware both with and without this patch.  Maybe the firmware is
->> using the wrong tid or something like that due to how the station is
->> created differently with this patch.
->
-> That makes no sense though, unless this only happens on say the second
-> station that connects? Until the first station sends an authentication
-> frame, that patch really should have no impact whatsoever.
+When user requests for survey dump data, driver is providing wrong survey
+information. This information we sent is the survey data that we have
+collected during previous user request.
 
-Ok, I found the problem.
+This issue occurs because we request survey dump for wrong channel. With
+this change, we correctly display the correct and current survey
+information to userspace.
 
-In the 10.1 firmware (at least), it will force the TID to be NON-QOS-TID
-if the peer object does not have the qos_enabled flag set.  This is probably
-a work-around for some other thing lost in antiquity.
+Fixes: fa7937e3d5c2 ("ath10k: update bss channel survey information")
+Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-When using my firmware that puts mgt frames over HTT, the TID for mgt
-frames was being over-ridden and set to non-qos TID.  Due to other
-hackery and work-arounds, mgt frames cannot be sent on the non-qos
-TID because they will be put on-air 10 bytes too long.  They must be
-sent on the mgt-tid or non-pause tid.
-
-I am guessing that somehow this mac80211 change creates a peer early
-that does not have the qos logic enabled, and so that is why I suddenly
-started hitting this bug.
-
-Probably stock firmware is OK since it uses a second tx path for management,
-and I guess that by whatever time it starts sending non-mgt frames the
-qos-enabled logic is set properly.
-
-I can fix this in my firmware by making it not over-ride the TID in
-this case.
-
-Thanks,
-Ben
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 0bbd0a0..1fa3c17 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6538,7 +6538,7 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
+ 		goto exit;
+ 	}
+ 
+-	ath10k_mac_update_bss_chan_survey(ar, survey->channel);
++	ath10k_mac_update_bss_chan_survey(ar, &sband->channels[idx]);
+ 
+ 	spin_lock_bh(&ar->data_lock);
+ 	memcpy(survey, ar_survey, sizeof(*survey));
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.9.1
 
 
 _______________________________________________
