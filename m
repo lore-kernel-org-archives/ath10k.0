@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bfxXT-0007Qo-Jg
- for ath10k@lists.infradead.org; Fri, 02 Sep 2016 23:06:24 +0000
-Subject: Re: Throughput weirdness on 9984
-References: <CAAnMG+NUtOyxrzyXc4TyzPR8nuz2RcG80+GBwEZdfBFDknL2eQ@mail.gmail.com>
- <35fa0be2-6ac6-0f7f-cb4e-e8bfced4199c@candelatech.com>
- <CAAnMG+ORJDToFPnn0hB4h33F4zKbmT7QyNKDM26Jao_sT24APA@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <ae4d1a0d-1e41-df60-48c9-1cd66430c1d0@candelatech.com>
-Date: Fri, 2 Sep 2016 15:52:46 -0700
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bgDun-0002cn-QF
+ for ath10k@lists.infradead.org; Sat, 03 Sep 2016 16:35:34 +0000
+Subject: Re: [PATCH] ath10k: fix memory leak on caldata on error exit path
+References: <1471268785-11576-1-git-send-email-colin.king@canonical.com>
+ <87r392z4ox.fsf@kamboji.qca.qualcomm.com>
+From: Colin Ian King <colin.king@canonical.com>
+Message-ID: <4e586d21-51cf-768c-4aee-9b0a147f1183@canonical.com>
+Date: Sat, 3 Sep 2016 17:33:40 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAAnMG+ORJDToFPnn0hB4h33F4zKbmT7QyNKDM26Jao_sT24APA@mail.gmail.com>
+In-Reply-To: <87r392z4ox.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +19,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alexis Green <agreen@cococorp.com>
-Cc: ath10k@lists.infradead.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/02/2016 03:14 PM, Alexis Green wrote:
-> I just ran run AP + STA mode and it appears to behave the same way.
-> Also, as far as reported rates, it appears that the rates are similar.
+On 02/09/16 16:45, Valo, Kalle wrote:
+> Colin King <colin.king@canonical.com> writes:
+> 
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> caldata is not being free'd on the error exit path, causing
+>> a memory leak. kfree it to fix the leak.
+>>
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/pci.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+>> index 9a22c47..886337c 100644
+>> --- a/drivers/net/wireless/ath/ath10k/pci.c
+>> +++ b/drivers/net/wireless/ath/ath10k/pci.c
+>> @@ -2725,6 +2725,7 @@ static int ath10k_pci_hif_fetch_cal_eeprom(struct ath10k *ar, void **data,
+>>  	return 0;
+>>  
+>>  err_free:
+>> +	kfree(caldata);
+>>  	kfree(data);
+>>  
+>>  	return -EINVAL;
+> 
+> I don't think we should free data at all:
+> 
+> static int ath10k_download_cal_eeprom(struct ath10k *ar)
+> {
+> 	size_t data_len;
+> 	void *data = NULL;
+> 	int ret;
+> 
+> 	ret = ath10k_hif_fetch_cal_eeprom(ar, &data, &data_len);
+> 
+> Instead we should free only caldata, right?
+> 
+Yep, good catch, I'll send V2 later.
 
-I just ran a quick test with 9984 as STA and a 9880 3x3 AP, over-the-air, UDP
-
-Download about 550Mbps, Upload about 350Mbps.
-
-I'm using a different compile than what is in LEDE, will send it to you
-directly.
-
-Could also be that for whatever reason connecting to a non 9984 AP 'fixes' things.
-
-I don't have two functional 9984 systems to test against at this point, but should
-have something soon.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Colin
 
 _______________________________________________
 ath10k mailing list
