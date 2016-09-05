@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-it0-x22d.google.com ([2607:f8b0:4001:c0b::22d])
+Received: from mail-qt0-x22a.google.com ([2607:f8b0:400d:c0d::22a])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bgNvG-0004Vu-4c
- for ath10k@lists.infradead.org; Sun, 04 Sep 2016 03:16:42 +0000
-Received: by mail-it0-x22d.google.com with SMTP id e124so100865432ith.0
- for <ath10k@lists.infradead.org>; Sat, 03 Sep 2016 20:16:21 -0700 (PDT)
+ id 1bgk66-0007Lt-Pv
+ for ath10k@lists.infradead.org; Mon, 05 Sep 2016 02:57:23 +0000
+Received: by mail-qt0-x22a.google.com with SMTP id 38so47485749qte.1
+ for <ath10k@lists.infradead.org>; Sun, 04 Sep 2016 19:57:02 -0700 (PDT)
+Subject: Re: ath10k: qca6174 firmware: difference between hw2.1/firmware-5 and
+ hw3.0/firmware-4
+References: <57BD1B3D.3050104@gmail.com>
+ <CA+BoTQnurvJv32Uszq-SngfJ5NDhjPMORDtbQGvK59LVqdxjVg@mail.gmail.com>
+From: Xuebing Wang <xbing6@gmail.com>
+Message-ID: <466d504e-b100-9121-d290-0fe89a0ce4dd@gmail.com>
+Date: Mon, 5 Sep 2016 10:56:57 +0800
 MIME-Version: 1.0
-In-Reply-To: <95a6b65277914d88178ed2b15e182455067cca60.1472490319.git.joe@perches.com>
-References: <95a6b65277914d88178ed2b15e182455067cca60.1472490319.git.joe@perches.com>
-From: Julian Calaby <julian.calaby@gmail.com>
-Date: Sun, 4 Sep 2016 13:16:00 +1000
-Message-ID: <CAGRGNgXWM8PiqBb5Tk=RQyqbs099J+mLK34Nq15mYrEgBq6FLg@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Spelling and miscellaneous neatening
+In-Reply-To: <CA+BoTQnurvJv32Uszq-SngfJ5NDhjPMORDtbQGvK59LVqdxjVg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +22,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joe Perches <joe@perches.com>
-Cc: netdev <netdev@vger.kernel.org>, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi All,
-
-On Tue, Aug 30, 2016 at 3:05 AM, Joe Perches <joe@perches.com> wrote:
-> Correct some trivial comment typos.
-> Remove unnecessary parentheses in a long line.
-> Convert a return; before the end of a void function definition to just ;
->
-> Signed-off-by: Joe Perches <joe@perches.com>
-
-This all looks correct to me. I wish you'd put the code changes in a
-separate patch, however it's all noted in the commit log, so...
-
-Reviewed-by: Julian Calaby <julian.calaby@gmail.com>
-
-Thanks,
-
--- 
-Julian Calaby
-
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDgvMjQvMjAxNiAwMjoxMyBQTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAyNCBBdWd1
+c3QgMjAxNiBhdCAwNTo1NywgWHVlYmluZyBXYW5nIDx4YmluZzZAZ21haWwuY29tPiB3cm90ZToK
+Pj4gSGkgS2FsbGUsCj4+Cj4+IEkgY2xvbmVkIHlvdXIgYXRoMTBrLWZpcm13YXJlIGZyb20geW91
+ciBnaXRodWIuIFdvdWxkIHlvdSBwbGVhc2UgYWR2aXNlIHdoYXQKPj4gYXJlIHRoZSBkaWZmZXJl
+bmNlcyBvZiBodzIuMS9maXJtd2FyZS01IGFuZCBodzMuMC9maXJtd2FyZS00IGZvciBxY2E2MTc0
+Pwo+PiBEb2VzIGh3My4wL2Zpcm13YXJlLTQgc3VwcG9ydCBNb25pdG9yIE1vZGU/Cj4+Cj4+IEkg
+aGF2ZSBhIHdsYW4gY2FyZCB3aXRoIEJNSSB2ZXJzaW9uIChRQ0E2MTc0X0hXXzJfMV9WRVJTSU9O
+IDB4MDUwMTAwMDApIGFuZAo+PiBNb25pdG9yIE1vZGUgd29ya3Mgbm8gcHJvYmxlbSB3aXRoIGxh
+dGVzdCBrZXJuZWwgdjQuOC1yYzIuCj4+Cj4+IEkgaGF2ZSBhbm90aGVyIHdsYW4gY2FyZCB3aXRo
+IChRQ0E2MTc0X0hXXzNfMl9WRVJTSU9OIDB4MDUwMzAwMDApLiBJIGFtCj4+IHRyeWluZyB0byBi
+YWNrLXBvcnQgYXRoMTBrIGZyb20gdjQuOC1yYzIgdG8gMy4xMC43MyBmb3IgdGhpcyBIV18zXzIg
+UUNBNjE3NAo+PiB3bGFuIGNhcmQuIFZpcnR1YWwgaW50ZXJmYWNlIChtb24wKSBjYW4gYmUgYWRk
+ZWQgYW5kIGJyb3VnaHQtdXAsIGJ1dCB0Y3BkdW1wCj4+IGNhbiBub3QgY2FwdHVyZSBhbnkgcGFj
+a2V0cy4gSSBhbSB3b25kZXJpbmcgaWYgaXQgY291bGQgYmUgcmVsYXRlZCB0bwo+PiAoaHcyLjEv
+ZmlybXdhcmUtNSB2cyBodzMuMC9maXJtd2FyZS00KT8KPiBPZmZpY2lhbCBodzMueCdzIGZpcm13
+YXJlIHN1cHBvcnRzIGZ1bGwgcnggb2ZmbG9hZC4gUnggZXZlbnQgdXNlZCB0bwo+IGRlbGl2ZXIg
+ZnJhbWVzIGlzIHZlcnkgc3BlY2lhbGl6ZWQgZWZmZWN0aXZlbHkgcHJldmVudGluZyBzbmlmZmlu
+ZyAvCj4gbW9uaXRvciBvcGVyYXRpb24uCj4KPiBJIGRvbid0IGtub3cgaWYgdGhlcmUncyBhbnkg
+d2F5IGFyb3VuZCBpdCB3aXRob3V0IGdldHRpbmcgeW91ciBoYW5kcwo+IG9uIGZpcm13YXJlIGJ1
+aWxkIHRoYXQgZG9lc24ndCBoYXZlIHRoZSBmdWxsIHJ4IG9mZmxvYWQgY29tcGlsZWQgaW4KPiAo
+YXNzdW1pbmcgc3VjaCBhIGJ1aWxkIGV2ZW4gZXhpc3RzKS4KPgo+Cj4gTWljaGHFggoKSGkgTWlj
+aGFsLAoKSSBjb25maXJtIGh3My4wIGZpcm13YXJlIGRvZXMgbm90IHN1cHBvcnQgbW9uaXRvciBt
+b2RlLCBvbiBrZXJuZWwgNC44LjAtcmMyLgoKSSBnb3Qgb25lIEtpbGxlciAxNTM1IHdsYW4gY2Fy
+ZCAod2l0aCBxY2E2MTc0IGh3My4yKSwgbW9uaXRvciBtb2RlIGRvZXMgCm5vdCB3b3JrLiBJIGRv
+IHVzZSBtb25pdG9yIG1vZGUgb24gaHcyLjEgcWNhNjE3NCBhbmQgYXRoOWsgbWFueSB0aW1lcy4K
+CmRtZXNnIHNob3dzOgotLS0tLS0KcWNhNjE3NCBodzMuMiB0YXJnZXQgMHgwNTAzMDAwMCBjaGlw
+X2lkIDB4MDAzNDBhZmYgc3ViIDFhNTY6MTUzNQprY29uZmlnIGRlYnVnIDAgZGVidWdmcyAxIHRy
+YWNpbmcgMSBkZnMgMCB0ZXN0bW9kZSAwCmZpcm13YXJlIHZlciBXTEFOLlJNLjIuMC0wMDE4MC1R
+Q0FSTVNXUFotMSBhcGkgNCBmZWF0dXJlcyAKd293bGFuLGlnbm9yZS1vdHAsbm8tNGFkZHItcGFk
+IGNyYzMyIDc1ZGVlNmM1CmJvYXJkX2ZpbGUgYXBpIDIgYm1pX2lkIE4vQSBjcmMzMiA0NmI1NzI0
+NwotLS0tLS0KCkFsc28sIEkgY2FuIG5vdCBzZXQgaHczLnggZmlybXdhcmUgbW9uaXRvciBtb2Rl
+IHRvIGEgc3BlY2lmaWMgZnJlcSBhcyAKYmVsb3cuIEkgYW0gdXNpbmcgVWJ1bnR1IDE2LjA0LjEg
+d2l0aCBrZXJuZWwgNC44LjAtcmMyLgotLS0tLS0KJCBzdWRvIGl3IGRldiBtb24wIHNldCBmcmVx
+IDI0NjIKJCBpd2NvbmZpZyBtb24wCm1vbjAgICAgICBJRUVFIDgwMi4xMSAgTW9kZTpNb25pdG9y
+ICBUeC1Qb3dlcj0wIGRCbQogICAgICAgICAgIFJldHJ5IHNob3J0IGxpbWl0OjcgICBSVFMgdGhy
+Om9mZiAgIEZyYWdtZW50IHRocjpvZmYKICAgICAgICAgICBQb3dlciBNYW5hZ2VtZW50Om9uCi0t
+LS0tLQoKCkhJIEthbGxlLAoKRG8geW91IGNvbnNpZGVyIHRoaXMgaHczLjAgZmlybXdhcmUgZG9l
+cyBub3Qgc3VwcG9ydCBtb25pdG9yIG1vZGUgYSAKZmlybXdhcmUgYnVnPwoKVGhhbmtzLgoKLS0g
+Clh1ZWJpbmcKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
