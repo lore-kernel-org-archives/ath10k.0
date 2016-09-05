@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x22a.google.com ([2607:f8b0:400d:c0d::22a])
+Received: from mail-pa0-x243.google.com ([2607:f8b0:400e:c03::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bgk66-0007Lt-Pv
- for ath10k@lists.infradead.org; Mon, 05 Sep 2016 02:57:23 +0000
-Received: by mail-qt0-x22a.google.com with SMTP id 38so47485749qte.1
- for <ath10k@lists.infradead.org>; Sun, 04 Sep 2016 19:57:02 -0700 (PDT)
-Subject: Re: ath10k: qca6174 firmware: difference between hw2.1/firmware-5 and
- hw3.0/firmware-4
-References: <57BD1B3D.3050104@gmail.com>
- <CA+BoTQnurvJv32Uszq-SngfJ5NDhjPMORDtbQGvK59LVqdxjVg@mail.gmail.com>
-From: Xuebing Wang <xbing6@gmail.com>
-Message-ID: <466d504e-b100-9121-d290-0fe89a0ce4dd@gmail.com>
-Date: Mon, 5 Sep 2016 10:56:57 +0800
-MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnurvJv32Uszq-SngfJ5NDhjPMORDtbQGvK59LVqdxjVg@mail.gmail.com>
+ id 1bgu7I-0002vh-Da
+ for ath10k@lists.infradead.org; Mon, 05 Sep 2016 13:39:17 +0000
+Received: by mail-pa0-x243.google.com with SMTP id hm5so4912082pac.1
+ for <ath10k@lists.infradead.org>; Mon, 05 Sep 2016 06:38:55 -0700 (PDT)
+From: Chaehyun Lim <chaehyun.lim@gmail.com>
+Subject: [PATCH] ath10k: remove unused variable ar_pci
+Date: Mon,  5 Sep 2016 22:38:02 +0900
+Message-Id: <20160905133802.18755-1-chaehyun.lim@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +17,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: kvalo@qca.qualcomm.com
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Chaehyun Lim <chaehyun.lim@gmail.com>, ath10k@lists.infradead.org
 
-T24gMDgvMjQvMjAxNiAwMjoxMyBQTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAyNCBBdWd1
-c3QgMjAxNiBhdCAwNTo1NywgWHVlYmluZyBXYW5nIDx4YmluZzZAZ21haWwuY29tPiB3cm90ZToK
-Pj4gSGkgS2FsbGUsCj4+Cj4+IEkgY2xvbmVkIHlvdXIgYXRoMTBrLWZpcm13YXJlIGZyb20geW91
-ciBnaXRodWIuIFdvdWxkIHlvdSBwbGVhc2UgYWR2aXNlIHdoYXQKPj4gYXJlIHRoZSBkaWZmZXJl
-bmNlcyBvZiBodzIuMS9maXJtd2FyZS01IGFuZCBodzMuMC9maXJtd2FyZS00IGZvciBxY2E2MTc0
-Pwo+PiBEb2VzIGh3My4wL2Zpcm13YXJlLTQgc3VwcG9ydCBNb25pdG9yIE1vZGU/Cj4+Cj4+IEkg
-aGF2ZSBhIHdsYW4gY2FyZCB3aXRoIEJNSSB2ZXJzaW9uIChRQ0E2MTc0X0hXXzJfMV9WRVJTSU9O
-IDB4MDUwMTAwMDApIGFuZAo+PiBNb25pdG9yIE1vZGUgd29ya3Mgbm8gcHJvYmxlbSB3aXRoIGxh
-dGVzdCBrZXJuZWwgdjQuOC1yYzIuCj4+Cj4+IEkgaGF2ZSBhbm90aGVyIHdsYW4gY2FyZCB3aXRo
-IChRQ0E2MTc0X0hXXzNfMl9WRVJTSU9OIDB4MDUwMzAwMDApLiBJIGFtCj4+IHRyeWluZyB0byBi
-YWNrLXBvcnQgYXRoMTBrIGZyb20gdjQuOC1yYzIgdG8gMy4xMC43MyBmb3IgdGhpcyBIV18zXzIg
-UUNBNjE3NAo+PiB3bGFuIGNhcmQuIFZpcnR1YWwgaW50ZXJmYWNlIChtb24wKSBjYW4gYmUgYWRk
-ZWQgYW5kIGJyb3VnaHQtdXAsIGJ1dCB0Y3BkdW1wCj4+IGNhbiBub3QgY2FwdHVyZSBhbnkgcGFj
-a2V0cy4gSSBhbSB3b25kZXJpbmcgaWYgaXQgY291bGQgYmUgcmVsYXRlZCB0bwo+PiAoaHcyLjEv
-ZmlybXdhcmUtNSB2cyBodzMuMC9maXJtd2FyZS00KT8KPiBPZmZpY2lhbCBodzMueCdzIGZpcm13
-YXJlIHN1cHBvcnRzIGZ1bGwgcnggb2ZmbG9hZC4gUnggZXZlbnQgdXNlZCB0bwo+IGRlbGl2ZXIg
-ZnJhbWVzIGlzIHZlcnkgc3BlY2lhbGl6ZWQgZWZmZWN0aXZlbHkgcHJldmVudGluZyBzbmlmZmlu
-ZyAvCj4gbW9uaXRvciBvcGVyYXRpb24uCj4KPiBJIGRvbid0IGtub3cgaWYgdGhlcmUncyBhbnkg
-d2F5IGFyb3VuZCBpdCB3aXRob3V0IGdldHRpbmcgeW91ciBoYW5kcwo+IG9uIGZpcm13YXJlIGJ1
-aWxkIHRoYXQgZG9lc24ndCBoYXZlIHRoZSBmdWxsIHJ4IG9mZmxvYWQgY29tcGlsZWQgaW4KPiAo
-YXNzdW1pbmcgc3VjaCBhIGJ1aWxkIGV2ZW4gZXhpc3RzKS4KPgo+Cj4gTWljaGHFggoKSGkgTWlj
-aGFsLAoKSSBjb25maXJtIGh3My4wIGZpcm13YXJlIGRvZXMgbm90IHN1cHBvcnQgbW9uaXRvciBt
-b2RlLCBvbiBrZXJuZWwgNC44LjAtcmMyLgoKSSBnb3Qgb25lIEtpbGxlciAxNTM1IHdsYW4gY2Fy
-ZCAod2l0aCBxY2E2MTc0IGh3My4yKSwgbW9uaXRvciBtb2RlIGRvZXMgCm5vdCB3b3JrLiBJIGRv
-IHVzZSBtb25pdG9yIG1vZGUgb24gaHcyLjEgcWNhNjE3NCBhbmQgYXRoOWsgbWFueSB0aW1lcy4K
-CmRtZXNnIHNob3dzOgotLS0tLS0KcWNhNjE3NCBodzMuMiB0YXJnZXQgMHgwNTAzMDAwMCBjaGlw
-X2lkIDB4MDAzNDBhZmYgc3ViIDFhNTY6MTUzNQprY29uZmlnIGRlYnVnIDAgZGVidWdmcyAxIHRy
-YWNpbmcgMSBkZnMgMCB0ZXN0bW9kZSAwCmZpcm13YXJlIHZlciBXTEFOLlJNLjIuMC0wMDE4MC1R
-Q0FSTVNXUFotMSBhcGkgNCBmZWF0dXJlcyAKd293bGFuLGlnbm9yZS1vdHAsbm8tNGFkZHItcGFk
-IGNyYzMyIDc1ZGVlNmM1CmJvYXJkX2ZpbGUgYXBpIDIgYm1pX2lkIE4vQSBjcmMzMiA0NmI1NzI0
-NwotLS0tLS0KCkFsc28sIEkgY2FuIG5vdCBzZXQgaHczLnggZmlybXdhcmUgbW9uaXRvciBtb2Rl
-IHRvIGEgc3BlY2lmaWMgZnJlcSBhcyAKYmVsb3cuIEkgYW0gdXNpbmcgVWJ1bnR1IDE2LjA0LjEg
-d2l0aCBrZXJuZWwgNC44LjAtcmMyLgotLS0tLS0KJCBzdWRvIGl3IGRldiBtb24wIHNldCBmcmVx
-IDI0NjIKJCBpd2NvbmZpZyBtb24wCm1vbjAgICAgICBJRUVFIDgwMi4xMSAgTW9kZTpNb25pdG9y
-ICBUeC1Qb3dlcj0wIGRCbQogICAgICAgICAgIFJldHJ5IHNob3J0IGxpbWl0OjcgICBSVFMgdGhy
-Om9mZiAgIEZyYWdtZW50IHRocjpvZmYKICAgICAgICAgICBQb3dlciBNYW5hZ2VtZW50Om9uCi0t
-LS0tLQoKCkhJIEthbGxlLAoKRG8geW91IGNvbnNpZGVyIHRoaXMgaHczLjAgZmlybXdhcmUgZG9l
-cyBub3Qgc3VwcG9ydCBtb25pdG9yIG1vZGUgYSAKZmlybXdhcmUgYnVnPwoKVGhhbmtzLgoKLS0g
-Clh1ZWJpbmcKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Trival fix to remove unused variable ar_pci in ath10k_pci_tx_pipe_cleanup
+when building with W=1:
+drivers/net/wireless/ath/ath10k/pci.c:1696:21: warning: variable
+'ar_pci' set but not used [-Wunused-but-set-variable]
+
+Signed-off-by: Chaehyun Lim <chaehyun.lim@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 1b841ad..afd5ef7 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1693,14 +1693,12 @@ static void ath10k_pci_rx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
+ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
+ {
+ 	struct ath10k *ar;
+-	struct ath10k_pci *ar_pci;
+ 	struct ath10k_ce_pipe *ce_pipe;
+ 	struct ath10k_ce_ring *ce_ring;
+ 	struct sk_buff *skb;
+ 	int i;
+ 
+ 	ar = pci_pipe->hif_ce_state;
+-	ar_pci = ath10k_pci_priv(ar);
+ 	ce_pipe = pci_pipe->ce_hdl;
+ 	ce_ring = ce_pipe->src_ring;
+ 
+-- 
+2.9.2
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
