@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from conuserg-12.nifty.com ([210.131.2.79])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bhBtA-0007iU-Mo
- for ath10k@lists.infradead.org; Tue, 06 Sep 2016 08:37:53 +0000
-From: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-Subject: Re: [v5] ath10k: Fix broken NULL func data frame status for 10.4
-Date: Tue, 6 Sep 2016 08:37:22 +0000
-Message-ID: <1473151041373.34060@qti.qualcomm.com>
-References: <1472199140-8404-1-git-send-email-mohammed@qca.qualcomm.com>,
- <48c9092d7f6c468092ef093779624a36@euamsexm01a.eu.qualcomm.com>
-In-Reply-To: <48c9092d7f6c468092ef093779624a36@euamsexm01a.eu.qualcomm.com>
-Content-Language: en-IN
-MIME-Version: 1.0
+ id 1bhFee-0001Jd-7o
+ for ath10k@lists.infradead.org; Tue, 06 Sep 2016 12:39:09 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 2/3] ath10k: use devm_reset_control_get() instead of
+ reset_control_get()
+Date: Tue,  6 Sep 2016 21:39:57 +0900
+Message-Id: <1473165598-28683-3-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1473165598-28683-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1473165598-28683-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,51 +18,132 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "Raja,
- Tamizh Chelvam" <c_traja@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: linux-wireless@vger.kernel.org
+Cc: "Luis R. Rodriguez" <mcgrof@do-not-panic.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Kalle Valo <kvalo@qca.qualcomm.com>, Johannes Berg <johannes@sipsolutions.net>
 
-Hi Kalle,
+Use the managed variant of reset_control_get() to simplify the
+failure path and the .remove callback.
 
-please revert this patch, Raj suggested this patch introduced a regression in sending NULL func frames :(
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-We will fix the wrong tx status report for NULL func frames appropriately
-(if needed in ath10k firmware)
-Sorry for the regression, kindly revert it until a proper fix is figured out.
+ drivers/net/wireless/ath/ath10k/ahb.c | 56 +++++++----------------------------
+ 1 file changed, 10 insertions(+), 46 deletions(-)
 
-regards,
-shafi
-________________________________________
-From: Valo, Kalle
-Sent: 02 September 2016 21:30
-To: Shajakhan, Mohammed Shafi (Mohammed Shafi)
-Cc: ath10k@lists.infradead.org; mohammed@codeaurora.org; Raja, Tamizh Chelvam; linux-wireless@vger.kernel.org; Shajakhan, Mohammed Shafi (Mohammed Shafi)
-Subject: Re: [v5] ath10k: Fix broken NULL func data frame status for 10.4
-
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
->
-> Older firmware with HTT delivers incorrect tx status for null func
-> frames to driver, but this fixed in 10.2 and 10.4 firmware versions.
-> Also this workaround results in reporting of incorrect null func status
-> for 10.4. Fix this is by introducing a firmware feature flag for 10.4
-> so that this workaround is skipped and proper tx status for null func
-> frames are reported
->
-> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-
-Thanks, 1 patch applied to ath-next branch of ath.git:
-
-2cdce425aa33 ath10k: Fix broken NULL func data frame status for 10.4
-
---
-Sent by pwcli
-https://patchwork.kernel.org/patch/9300961/
+diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+index 8a55c0c..6b355ee 100644
+--- a/drivers/net/wireless/ath/ath10k/ahb.c
++++ b/drivers/net/wireless/ath/ath10k/ahb.c
+@@ -191,92 +191,56 @@ static int ath10k_ahb_rst_ctrl_init(struct ath10k *ar)
+ {
+ 	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
+ 	struct device *dev;
+-	int ret;
+ 
+ 	dev = &ar_ahb->pdev->dev;
+ 
+-	ar_ahb->core_cold_rst = reset_control_get(dev, "wifi_core_cold");
++	ar_ahb->core_cold_rst = devm_reset_control_get(dev, "wifi_core_cold");
+ 	if (IS_ERR_OR_NULL(ar_ahb->core_cold_rst)) {
+ 		ath10k_err(ar, "failed to get core cold rst ctrl: %ld\n",
+ 			   PTR_ERR(ar_ahb->core_cold_rst));
+-		ret = ar_ahb->core_cold_rst ?
++		return ar_ahb->core_cold_rst ?
+ 			PTR_ERR(ar_ahb->core_cold_rst) : -ENODEV;
+-		goto out;
+ 	}
+ 
+-	ar_ahb->radio_cold_rst = reset_control_get(dev, "wifi_radio_cold");
++	ar_ahb->radio_cold_rst = devm_reset_control_get(dev, "wifi_radio_cold");
+ 	if (IS_ERR_OR_NULL(ar_ahb->radio_cold_rst)) {
+ 		ath10k_err(ar, "failed to get radio cold rst ctrl: %ld\n",
+ 			   PTR_ERR(ar_ahb->radio_cold_rst));
+-		ret = ar_ahb->radio_cold_rst ?
++		return ar_ahb->radio_cold_rst ?
+ 			PTR_ERR(ar_ahb->radio_cold_rst) : -ENODEV;
+-		goto err_core_cold_rst_put;
+ 	}
+ 
+-	ar_ahb->radio_warm_rst = reset_control_get(dev, "wifi_radio_warm");
++	ar_ahb->radio_warm_rst = devm_reset_control_get(dev, "wifi_radio_warm");
+ 	if (IS_ERR_OR_NULL(ar_ahb->radio_warm_rst)) {
+ 		ath10k_err(ar, "failed to get radio warm rst ctrl: %ld\n",
+ 			   PTR_ERR(ar_ahb->radio_warm_rst));
+-		ret = ar_ahb->radio_warm_rst ?
++		return ar_ahb->radio_warm_rst ?
+ 			PTR_ERR(ar_ahb->radio_warm_rst) : -ENODEV;
+-		goto err_radio_cold_rst_put;
+ 	}
+ 
+-	ar_ahb->radio_srif_rst = reset_control_get(dev, "wifi_radio_srif");
++	ar_ahb->radio_srif_rst = devm_reset_control_get(dev, "wifi_radio_srif");
+ 	if (IS_ERR_OR_NULL(ar_ahb->radio_srif_rst)) {
+ 		ath10k_err(ar, "failed to get radio srif rst ctrl: %ld\n",
+ 			   PTR_ERR(ar_ahb->radio_srif_rst));
+-		ret = ar_ahb->radio_srif_rst ?
++		return ar_ahb->radio_srif_rst ?
+ 			PTR_ERR(ar_ahb->radio_srif_rst) : -ENODEV;
+-		goto err_radio_warm_rst_put;
+ 	}
+ 
+-	ar_ahb->cpu_init_rst = reset_control_get(dev, "wifi_cpu_init");
++	ar_ahb->cpu_init_rst = devm_reset_control_get(dev, "wifi_cpu_init");
+ 	if (IS_ERR_OR_NULL(ar_ahb->cpu_init_rst)) {
+ 		ath10k_err(ar, "failed to get cpu init rst ctrl: %ld\n",
+ 			   PTR_ERR(ar_ahb->cpu_init_rst));
+-		ret = ar_ahb->cpu_init_rst ?
++		return ar_ahb->cpu_init_rst ?
+ 			PTR_ERR(ar_ahb->cpu_init_rst) : -ENODEV;
+-		goto err_radio_srif_rst_put;
+ 	}
+ 
+ 	return 0;
+-
+-err_radio_srif_rst_put:
+-	reset_control_put(ar_ahb->radio_srif_rst);
+-
+-err_radio_warm_rst_put:
+-	reset_control_put(ar_ahb->radio_warm_rst);
+-
+-err_radio_cold_rst_put:
+-	reset_control_put(ar_ahb->radio_cold_rst);
+-
+-err_core_cold_rst_put:
+-	reset_control_put(ar_ahb->core_cold_rst);
+-
+-out:
+-	return ret;
+ }
+ 
+ static void ath10k_ahb_rst_ctrl_deinit(struct ath10k *ar)
+ {
+ 	struct ath10k_ahb *ar_ahb = ath10k_ahb_priv(ar);
+ 
+-	if (!IS_ERR_OR_NULL(ar_ahb->core_cold_rst))
+-		reset_control_put(ar_ahb->core_cold_rst);
+-
+-	if (!IS_ERR_OR_NULL(ar_ahb->radio_cold_rst))
+-		reset_control_put(ar_ahb->radio_cold_rst);
+-
+-	if (!IS_ERR_OR_NULL(ar_ahb->radio_warm_rst))
+-		reset_control_put(ar_ahb->radio_warm_rst);
+-
+-	if (!IS_ERR_OR_NULL(ar_ahb->radio_srif_rst))
+-		reset_control_put(ar_ahb->radio_srif_rst);
+-
+-	if (!IS_ERR_OR_NULL(ar_ahb->cpu_init_rst))
+-		reset_control_put(ar_ahb->cpu_init_rst);
+-
+ 	ar_ahb->core_cold_rst = NULL;
+ 	ar_ahb->radio_cold_rst = NULL;
+ 	ar_ahb->radio_warm_rst = NULL;
+-- 
+1.9.1
 
 
 _______________________________________________
