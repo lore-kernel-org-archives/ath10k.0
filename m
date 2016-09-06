@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bhJzZ-0002ag-Gi
- for ath10k@lists.infradead.org; Tue, 06 Sep 2016 17:17:02 +0000
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bhLi2-0006yE-KR
+ for ath10k@lists.infradead.org; Tue, 06 Sep 2016 19:07:04 +0000
+From: Thomas Pedersen <twp@qca.qualcomm.com>
+Subject: [PATCH] ath10k: enable peer stats by default
+Date: Tue, 6 Sep 2016 12:05:28 -0700
+Message-ID: <1473188728-14995-1-git-send-email-twp@qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Tue, 06 Sep 2016 22:46:38 +0530
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: Re: [PATCH] ath10k:  ensure pdev sta kickout threshold is set.
-In-Reply-To: <57CEC0A4.8020808@candelatech.com>
-References: <1472843202-12428-1-git-send-email-greearb@candelatech.com>
- <1473147582638.99419@qti.qualcomm.com> <57CEC0A4.8020808@candelatech.com>
-Message-ID: <258eb1b46e360aeae1cddfa9185ab1ce@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,76 +16,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, "Manoharan,
- Rajkumar" <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
+Cc: Thomas Pedersen <twp@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>
 
-On 2016-09-06 18:42, Ben Greear wrote:
-> On 09/06/2016 12:39 AM, Manoharan, Rajkumar wrote:
->> [...]
->> 
->>> +int ath10k_mac_set_pdev_kickout(struct ath10k *ar)
->>> +{
->>> +       u32 param = ar->wmi.pdev_param->sta_kickout_th;
->>> +       int rv;
->>> +
->>> +       rv = ath10k_wmi_pdev_set_param(ar, param,
->>> +                                      
->>> ar->sta_xretry_kickout_thresh);
->>> +       if (rv) {
->>> +               ath10k_warn(ar, "failed to set sta kickout threshold 
->>> to %d: %d\n",
->>> +                           ar->sta_xretry_kickout_thresh, rv);
->>> +       }
->>> +       return rv;
->>> +}
->>> 
->> Ben,
->> 
->> I plan to get rid of setting station kickout threshold from host. Each 
->> firmware revision (i.e qca988x, qca99x0, ipq4019)  follows different 
->> logic based on hw capability for station kickout and follows different 
->> default paramters. So configuring common threshold will affect 
->> firmware logic. Better to get rid of these configuration from host 
->> driver and let firmware to work with default parameters.
->> 
->> Also I could not find out sta_xretry_kickout_thresh definition in 
->> upstream driver. Have you posted any changes for the same?
-> 
-> Hmm, maybe that last bit is something I added in another patch.  
-> Probably my
-> patch to enable firmware config on a per radio basis (fwcfg in my
-> tree).  Those patches are
-> larger and probably will never make it upstream.
-> 
-> I need a way to configure this kickout, since firmware is kicking out
-> stations when it should
-> not.
-> 
+IFTYPE_MESH_POINT need to rely on these for accurate path
+selection metrics. Other modes will probably also find
+them useful. Enabling peer stats has the side effect of
+reducing max number of STAs from 128 to 118. There should
+be negligible performance impact.
 
-Could you please explain the scenario?
+If users really need 128 STAs and don't mind losing out on
+peer stats, they can still disable them:
 
-> Instead of removing the capability, you should instead make it 
-> configurable
-> through debugfs or something like my fwcfg patches, and/or disable the
-> kickout entirely.
-> Since mac80211 can deal with kicking out stations already, the stuff
-> in the firmware just makes
-> things less stable in poor RF environments and/or with stations with
-> flaky power-save and
-> off-channel roaming.
-> 
-I plan to get rid of hardcoded value and fix this through proper netlink 
-interface instead of debugfs. While ago, I posted a change for 
-configuring low ack threshold. It is still pending in my TODO list.
+echo 0 > debugfs/ieee80211/phyn/ath10k/peer_stats
 
-http://comments.gmane.org/gmane.linux.kernel.wireless.general/137645
+Signed-off-by: Thomas Pedersen <twp@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
--Rajkumar
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index c9d163e..c0ab4f4 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2145,6 +2145,9 @@ static void ath10k_core_register_work(struct work_struct *work)
+ 	struct ath10k *ar = container_of(work, struct ath10k, register_work);
+ 	int status;
+ 
++	/* peer stats are enabled by default */
++	set_bit(ATH10K_FLAG_PEER_STATS, &ar->dev_flags);
++
+ 	status = ath10k_core_probe_fw(ar);
+ 	if (status) {
+ 		ath10k_err(ar, "could not probe fw (%d)\n", status);
+-- 
+2.1.4
+
 
 _______________________________________________
 ath10k mailing list
