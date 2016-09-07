@@ -1,13 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bhLi2-0006yE-KR
- for ath10k@lists.infradead.org; Tue, 06 Sep 2016 19:07:04 +0000
-From: Thomas Pedersen <twp@qca.qualcomm.com>
-Subject: [PATCH] ath10k: enable peer stats by default
-Date: Tue, 6 Sep 2016 12:05:28 -0700
-Message-ID: <1473188728-14995-1-git-send-email-twp@qca.qualcomm.com>
+Received: from mail-qk0-x232.google.com ([2607:f8b0:400d:c09::232])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bhmEY-0007Mz-5H
+ for ath10k@lists.infradead.org; Wed, 07 Sep 2016 23:26:23 +0000
+Received: by mail-qk0-x232.google.com with SMTP id z190so15953402qkc.3
+ for <ath10k@lists.infradead.org>; Wed, 07 Sep 2016 16:26:01 -0700 (PDT)
+Subject: Re: ath10k: qca6174 firmware: difference between hw2.1/firmware-5 and
+ hw3.0/firmware-4
+References: <57BD1B3D.3050104@gmail.com>
+ <CA+BoTQnurvJv32Uszq-SngfJ5NDhjPMORDtbQGvK59LVqdxjVg@mail.gmail.com>
+ <466d504e-b100-9121-d290-0fe89a0ce4dd@gmail.com>
+From: Xuebing Wang <xbing6@gmail.com>
+Message-ID: <8e4afd35-9216-acf7-adb7-404976a5cc12@gmail.com>
+Date: Thu, 8 Sep 2016 07:25:57 +0800
 MIME-Version: 1.0
+In-Reply-To: <466d504e-b100-9121-d290-0fe89a0ce4dd@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,48 +23,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
-Cc: Thomas Pedersen <twp@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-IFTYPE_MESH_POINT need to rely on these for accurate path
-selection metrics. Other modes will probably also find
-them useful. Enabling peer stats has the side effect of
-reducing max number of STAs from 128 to 118. There should
-be negligible performance impact.
-
-If users really need 128 STAs and don't mind losing out on
-peer stats, they can still disable them:
-
-echo 0 > debugfs/ieee80211/phyn/ath10k/peer_stats
-
-Signed-off-by: Thomas Pedersen <twp@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index c9d163e..c0ab4f4 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2145,6 +2145,9 @@ static void ath10k_core_register_work(struct work_struct *work)
- 	struct ath10k *ar = container_of(work, struct ath10k, register_work);
- 	int status;
- 
-+	/* peer stats are enabled by default */
-+	set_bit(ATH10K_FLAG_PEER_STATS, &ar->dev_flags);
-+
- 	status = ath10k_core_probe_fw(ar);
- 	if (status) {
- 		ath10k_err(ar, "could not probe fw (%d)\n", status);
--- 
-2.1.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Ck9uIDA5LzA1LzIwMTYgMTA6NTYgQU0sIFh1ZWJpbmcgV2FuZyB3cm90ZToKPiBPbiAwOC8yNC8y
+MDE2IDAyOjEzIFBNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+PiBPbiAyNCBBdWd1c3QgMjAxNiBh
+dCAwNTo1NywgWHVlYmluZyBXYW5nIDx4YmluZzZAZ21haWwuY29tPiB3cm90ZToKPj4+IEhpIEth
+bGxlLAo+Pj4KPj4+IEkgY2xvbmVkIHlvdXIgYXRoMTBrLWZpcm13YXJlIGZyb20geW91ciBnaXRo
+dWIuIFdvdWxkIHlvdSBwbGVhc2UgCj4+PiBhZHZpc2Ugd2hhdAo+Pj4gYXJlIHRoZSBkaWZmZXJl
+bmNlcyBvZiBodzIuMS9maXJtd2FyZS01IGFuZCBodzMuMC9maXJtd2FyZS00IGZvciAKPj4+IHFj
+YTYxNzQ/Cj4+PiBEb2VzIGh3My4wL2Zpcm13YXJlLTQgc3VwcG9ydCBNb25pdG9yIE1vZGU/Cj4+
+Pgo+Pj4gSSBoYXZlIGEgd2xhbiBjYXJkIHdpdGggQk1JIHZlcnNpb24gKFFDQTYxNzRfSFdfMl8x
+X1ZFUlNJT04gCj4+PiAweDA1MDEwMDAwKSBhbmQKPj4+IE1vbml0b3IgTW9kZSB3b3JrcyBubyBw
+cm9ibGVtIHdpdGggbGF0ZXN0IGtlcm5lbCB2NC44LXJjMi4KPj4+Cj4+PiBJIGhhdmUgYW5vdGhl
+ciB3bGFuIGNhcmQgd2l0aCAoUUNBNjE3NF9IV18zXzJfVkVSU0lPTiAweDA1MDMwMDAwKS4gSSBh
+bQo+Pj4gdHJ5aW5nIHRvIGJhY2stcG9ydCBhdGgxMGsgZnJvbSB2NC44LXJjMiB0byAzLjEwLjcz
+IGZvciB0aGlzIEhXXzNfMiAKPj4+IFFDQTYxNzQKPj4+IHdsYW4gY2FyZC4gVmlydHVhbCBpbnRl
+cmZhY2UgKG1vbjApIGNhbiBiZSBhZGRlZCBhbmQgYnJvdWdodC11cCwgYnV0IAo+Pj4gdGNwZHVt
+cAo+Pj4gY2FuIG5vdCBjYXB0dXJlIGFueSBwYWNrZXRzLiBJIGFtIHdvbmRlcmluZyBpZiBpdCBj
+b3VsZCBiZSByZWxhdGVkIHRvCj4+PiAoaHcyLjEvZmlybXdhcmUtNSB2cyBodzMuMC9maXJtd2Fy
+ZS00KT8KPj4gT2ZmaWNpYWwgaHczLngncyBmaXJtd2FyZSBzdXBwb3J0cyBmdWxsIHJ4IG9mZmxv
+YWQuIFJ4IGV2ZW50IHVzZWQgdG8KPj4gZGVsaXZlciBmcmFtZXMgaXMgdmVyeSBzcGVjaWFsaXpl
+ZCBlZmZlY3RpdmVseSBwcmV2ZW50aW5nIHNuaWZmaW5nIC8KPj4gbW9uaXRvciBvcGVyYXRpb24u
+Cj4+Cj4+IEkgZG9uJ3Qga25vdyBpZiB0aGVyZSdzIGFueSB3YXkgYXJvdW5kIGl0IHdpdGhvdXQg
+Z2V0dGluZyB5b3VyIGhhbmRzCj4+IG9uIGZpcm13YXJlIGJ1aWxkIHRoYXQgZG9lc24ndCBoYXZl
+IHRoZSBmdWxsIHJ4IG9mZmxvYWQgY29tcGlsZWQgaW4KPj4gKGFzc3VtaW5nIHN1Y2ggYSBidWls
+ZCBldmVuIGV4aXN0cykuCj4+Cj4+Cj4+IE1pY2hhxYIKPgo+IEhpIE1pY2hhbCwKPgo+IEkgY29u
+ZmlybSBodzMuMCBmaXJtd2FyZSBkb2VzIG5vdCBzdXBwb3J0IG1vbml0b3IgbW9kZSwgb24ga2Vy
+bmVsIAo+IDQuOC4wLXJjMi4KPgo+IEkgZ290IG9uZSBLaWxsZXIgMTUzNSB3bGFuIGNhcmQgKHdp
+dGggcWNhNjE3NCBodzMuMiksIG1vbml0b3IgbW9kZSAKPiBkb2VzIG5vdCB3b3JrLiBJIGRvIHVz
+ZSBtb25pdG9yIG1vZGUgb24gaHcyLjEgcWNhNjE3NCBhbmQgYXRoOWsgbWFueSAKPiB0aW1lcy4K
+Pgo+IGRtZXNnIHNob3dzOgo+IC0tLS0tLQo+IHFjYTYxNzQgaHczLjIgdGFyZ2V0IDB4MDUwMzAw
+MDAgY2hpcF9pZCAweDAwMzQwYWZmIHN1YiAxYTU2OjE1MzUKPiBrY29uZmlnIGRlYnVnIDAgZGVi
+dWdmcyAxIHRyYWNpbmcgMSBkZnMgMCB0ZXN0bW9kZSAwCj4gZmlybXdhcmUgdmVyIFdMQU4uUk0u
+Mi4wLTAwMTgwLVFDQVJNU1dQWi0xIGFwaSA0IGZlYXR1cmVzIAo+IHdvd2xhbixpZ25vcmUtb3Rw
+LG5vLTRhZGRyLXBhZCBjcmMzMiA3NWRlZTZjNQo+IGJvYXJkX2ZpbGUgYXBpIDIgYm1pX2lkIE4v
+QSBjcmMzMiA0NmI1NzI0Nwo+IC0tLS0tLQo+Cj4gQWxzbywgSSBjYW4gbm90IHNldCBodzMueCBm
+aXJtd2FyZSBtb25pdG9yIG1vZGUgdG8gYSBzcGVjaWZpYyBmcmVxIGFzIAo+IGJlbG93LiBJIGFt
+IHVzaW5nIFVidW50dSAxNi4wNC4xIHdpdGgga2VybmVsIDQuOC4wLXJjMi4KPiAtLS0tLS0KPiAk
+IHN1ZG8gaXcgZGV2IG1vbjAgc2V0IGZyZXEgMjQ2Mgo+ICQgaXdjb25maWcgbW9uMAo+IG1vbjAg
+ICAgICBJRUVFIDgwMi4xMSAgTW9kZTpNb25pdG9yICBUeC1Qb3dlcj0wIGRCbQo+ICAgICAgICAg
+ICBSZXRyeSBzaG9ydCBsaW1pdDo3ICAgUlRTIHRocjpvZmYgICBGcmFnbWVudCB0aHI6b2ZmCj4g
+ICAgICAgICAgIFBvd2VyIE1hbmFnZW1lbnQ6b24KPiAtLS0tLS0KPgo+Cj4gSEkgS2FsbGUsCj4K
+PiBEbyB5b3UgY29uc2lkZXIgdGhpcyBodzMuMCBmaXJtd2FyZSBkb2VzIG5vdCBzdXBwb3J0IG1v
+bml0b3IgbW9kZSBhIAo+IGZpcm13YXJlIGJ1Zz8KPgo+IFRoYW5rcy4KCkhpIEthbGxlLAoKRm9y
+IHVua25vd24gcmVhc29ucywgcHJldmlvdXMgZW1haWwgYm91bmNlZCBiYWNrLiBJdCBkaWQgc3Vj
+Y2Vzc2Z1bGx5IAp3ZW50IHRvIGF0aDEwayBtYWlsaW5nIGxpc3QuCgpEbyB5b3UgY29uc2lkZXIg
+dGhpcyBodzMuMCBmaXJtd2FyZSBkb2VzIG5vdCBzdXBwb3J0IG1vbml0b3IgbW9kZSBhIApmaXJt
+d2FyZSBidWcsIG9yIGRvIHlvdSBzZWUgYW55IGNoYW5jZSB0byBhZGQgYSB3YXkgdG8gY29uZmln
+dXJlIApmaXJtd2FyZSB0byBlbmFibGUgTW9uaXRvciBNb2RlPyBUaGFua3MuCgotLSAKWHVlYmlu
+ZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
+IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
