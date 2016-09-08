@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bhrad-0000eF-LX
- for ath10k@lists.infradead.org; Thu, 08 Sep 2016 05:09:36 +0000
+ id 1bhreY-0004nT-4D
+ for ath10k@lists.infradead.org; Thu, 08 Sep 2016 05:13:37 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [v5] ath10k: Fix broken NULL func data frame status for 10.4
-Date: Thu, 8 Sep 2016 05:09:03 +0000
-Message-ID: <87bmzzugep.fsf@kamboji.qca.qualcomm.com>
-References: <1472199140-8404-1-git-send-email-mohammed@qca.qualcomm.com>
- <48c9092d7f6c468092ef093779624a36@euamsexm01a.eu.qualcomm.com>
- <1473151041373.34060@qti.qualcomm.com>
-In-Reply-To: <1473151041373.34060@qti.qualcomm.com> (Mohammed Shafi
- Shajakhan's message of "Tue, 6 Sep 2016 08:37:22 +0000")
+Subject: Re: ath10k: qca6174 firmware: difference between hw2.1/firmware-5 and
+ hw3.0/firmware-4
+Date: Thu, 8 Sep 2016 05:13:08 +0000
+Message-ID: <877fanug7w.fsf@kamboji.qca.qualcomm.com>
+References: <57BD1B3D.3050104@gmail.com>
+ <CA+BoTQnurvJv32Uszq-SngfJ5NDhjPMORDtbQGvK59LVqdxjVg@mail.gmail.com>
+ <466d504e-b100-9121-d290-0fe89a0ce4dd@gmail.com>
+ <8e4afd35-9216-acf7-adb7-404976a5cc12@gmail.com>
+In-Reply-To: <8e4afd35-9216-acf7-adb7-404976a5cc12@gmail.com> (Xuebing Wang's
+ message of "Thu, 8 Sep 2016 07:25:57 +0800")
 Content-Language: en-US
-Content-ID: <E12B1B67B4F7DC4C8CB59EF2A46300D9@qualcomm.com>
+Content-ID: <128421B454B5B0469803C8D59085E20E@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,21 +29,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "Raja,
- Tamizh Chelvam" <c_traja@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Xuebing Wang <xbing6@gmail.com>
+Cc: "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-"Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-writes:
-> please revert this patch, Raj suggested this patch introduced a
-> regression in sending NULL func frames :(
+Xuebing Wang <xbing6@gmail.com> writes:
+
+>> Do you consider this hw3.0 firmware does not support monitor mode a
+>> firmware bug?
+>>
+>> Thanks.
 >
-> We will fix the wrong tx status report for NULL func frames
-> appropriately (if needed in ath10k firmware) Sorry for the regression,
-> kindly revert it until a proper fix is figured out.
+> For unknown reasons, previous email bounced back. It did successfully
+> went to ath10k mailing list.
 
-Like we discussed privately, it is better that you send the revert (or a
-fix if you find one) yourself. Then we have a proper commit log etc.
+I did get it, I just didn't have a chance to reply yet.
+
+> Do you consider this hw3.0 firmware does not support monitor mode a
+> firmware bug, or do you see any chance to add a way to configure
+> firmware to enable Monitor Mode? Thanks.
+
+Not a bug but more like QCA6174 firmware is missing a very useful
+feature. But my opinion doesn't really matter here as I'm not part of
+the firmware team, I just deliver their releases. The firmware team
+makes the decisions what features include to their releases.
 
 -- 
 Kalle Valo
