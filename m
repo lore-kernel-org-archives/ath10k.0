@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vk0-x234.google.com ([2607:f8b0:400c:c05::234])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1biCe3-0002yi-IG
- for ath10k@lists.infradead.org; Fri, 09 Sep 2016 03:38:29 +0000
-Received: by mail-vk0-x234.google.com with SMTP id m62so4259082vkd.3
- for <ath10k@lists.infradead.org>; Thu, 08 Sep 2016 20:38:03 -0700 (PDT)
+ id 1biKZU-0001Em-Re
+ for ath10k@lists.infradead.org; Fri, 09 Sep 2016 12:06:21 +0000
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQkPb_ZOH9d5PSFO5woa5xQX4zAwGasmtOE+1Y2OXewd5A@mail.gmail.com>
-References: <CABYpaOcSNF_bwO8VUYRhrct0KD1w4SB3KfYtFXtiu4sdMquNhg@mail.gmail.com>
- <CA+BoTQkPb_ZOH9d5PSFO5woa5xQX4zAwGasmtOE+1Y2OXewd5A@mail.gmail.com>
-From: Changmok Yang <cmyang@mwnl.snu.ac.kr>
-Date: Fri, 9 Sep 2016 12:38:02 +0900
-Message-ID: <CABYpaOfp-x86h7EA5Aynsq9AqJ3TC07ox0Js1=20rJPdFkacJg@mail.gmail.com>
-Subject: Re: Questions for ath10k rate control, bandwidth, and channel sensing
+Subject: Re: [v3] ath10k: implement NAPI support
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <20160826102250.24174-1-rmanohar@qti.qualcomm.com>
+Message-ID: <5b16e9c1bb354beb9650733e0f7a84b0@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 9 Sep 2016 14:05:48 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,58 +17,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rmanohar@codeaurora.org
 
-SGkuIFRoYW5rcyBmb3IgYW5zd2Vycy4KV2UgaGF2ZSBhbm90aGVyIHF1ZXN0aW9uIGZvciBhdGgx
-MGsuCgpTaW5jZSBpdCBsb29rcyBkaWZmaWN1bHQgdG8gZ2V0IGNoYW5uZWwgc2Vuc2luZyBwYXJh
-bWV0ZXJzIGluIGF0aDEwaywKd2UgYWx0ZXJuYXRpdmVseSB3YW50IHRvIHVzZSBBLU1QRFUgbG9z
-cyBwYXR0ZXJuLgpGb3IgdGhhdCwgaXMgaXQgcG9zc2libGUgdG8gZ2V0IEJsb2NrQWNrIGluZm9y
-bWF0aW9uIChvciBvdGhlcgppbmZvcm1hdGlvbiByZWxhdGVkIHRvIHNlbmRpbmcgQS1NUERVKSBp
-biBhdGgxMGsgYXQgZGV2aWNlIGRyaXZlcgpsZXZlbD8KV2Uga25vdyBpdCBpcyBwb3NzaWJsZSBp
-biBhdGg5aywgYnV0IHdlIGhhdmUgbm8gc3VyZSBmb3IgYXRoMTBrLgoKVGhhbmsgeW91LgpTaW5j
-ZXJlbHkgeW91cnMsCkNoYW5nbW9rIFlhbmcuCgoyMDE2LTA4LTI5IDE1OjQ4IEdNVCswOTowMCBN
-aWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT46Cj4gT24gMjYgQXVndXN0IDIw
-MTYgYXQgMTE6MDAsIENoYW5nbW9rIFlhbmcgPGNteWFuZ0Btd25sLnNudS5hYy5rcj4gd3JvdGU6
-Cj4+IEhpLgo+PiBXZSBhcmUgdHJ5aW5nIHRvIGNoYW5nZSB0cmFuc21pc3Npb24gYmFuZHdpZHRo
-IGFuZCBkYXRhIHJhdGUuCj4+Cj4+IDEuIFdlIGZvdW5kIHRoYXQgd2UgY2FuIG9ubHkgY29udHJv
-bCBwZXItc3RhdGlvbiBjaGFubmVsIHdpZHRoLCBhbmQKPj4gcmF0ZSBjb250cm9sLCBsaWtlIE1p
-bnN0cmVsLCBpcyBub3QgY29udHJvbGxlZCBieSBhdGgxMGsgYW5kIGluCj4+IGZpcm13YXJlLiBU
-aGVuLCBjYW4gYXRoMTBrIHNlbGVjdCB0aGUgdHJhbnNtaXNzaW9uIGRhdGEgcmF0ZSBtYW51YWxs
-eT8KPj4gSWYgc28sIGhvdz8gV2UgY2Fubm90IGZpbmQgdGhlIHBhcnQgdGhlIGRhdGEgcmF0ZSBp
-cyBkZXRlcm1pbmVkLgo+Cj4gSXQncyBwb3NzaWJsZSB0byByZS1wcm9ncmFtIGdpdmVuIHN0YXRp
-b24ncyByYXRlbWFzayBvciB5b3UgY2FuIGZvcmNlCj4gYSBnbG9iYWwgdHggcmF0ZS4gU2VlIHNl
-dF9iaXRyYXRlX21hc2sgaW1wbGVtZW50YXRpb24gaW4gYXRoMTBrIGZvcgo+IGRldGFpbHMuCj4K
-Pgo+PiAyLiBJcyBpdCBwb3NzaWJsZSB0byBjaGFuZ2Ugb3BlcmF0aW5nIGJhbmR3aWR0aCBwZXIg
-c3RhdGlvbiB3aGlsZQo+PiBtYWludGFpbmluZyBhc3NvY2lhdGlvbj8KPgo+IFllcywgZWl0aGVy
-IHZpYSB3bWlfcGVlcl9hc3NvYyBjb21tYW5kIG9yIHZpYSBzZXRfcGVlcl9wYXJhbSBjb21tYW5k
-Cj4gYW5kIG9uZSBvZiBwZWVyX3BhcmFtIGF0dHJpYnV0ZXMgKGNod2lkdGgpLiBUaGlzIHN0dWZm
-IGlzIG1vc3RseQo+IHVwcGVyLWNhc2VkIGFzIGZhciBhcyBuYW1pbmcgaXMgY29uY2VybmVkLgo+
-Cj4KPj4gMy4gV2UgYWxzbyB3YW50IHRvIHVzZSBwYXJhbWV0ZXJzIHJlbGF0ZWQgdG8gY2hhbm5l
-bCBzZW5zaW5nLiBBbHRob3VnaAo+PiB3ZSBmb3VuZCB0aGF0IENDQSByZWxhdGVkIHBhcmFtZXRl
-cnMgYXJlIGluIGZpcm13YXJlLCB3ZSBhbHRlcm5hdGl2ZWx5Cj4+IHdhbnQgdG8gdXNlIHBhcmFt
-ZXRlcnMgcmVsYXRlZCB0byBFdGh0b29sIGluIHN1cnZleV9pbmZvIHN0cnVjdHVyZSAoaW4KPj4g
-aW5jbHVkZS9uZXQvY2ZnODAyMTEuaCwgdGhlIHN0cnVjdHVyZSBiZWxvdykuIEhvd2V2ZXIsIHdo
-ZW4gd2UgcmVhZAo+PiB0aGlzIHZhcmlhYmxlIGluIHRoZSBsb2cgYWZ0ZXIgRXRodHJvb2wgcnVu
-bmluZywgdGhlIHZhbHVlIGRvZXMgbm90Cj4+IHNlZW0gdG8gcmVmbGVjdCBjaGFubmVsIHNlbnNp
-bmcuIFdoZXJlIGFuZCBob3cgY2FuIHdlIHVzZSBjaGFubmVsCj4+IHNlbnNpbmcgcGFyYW1ldGVy
-cyBpbiBhdGgxMGs/IElzIGl0IHBvc3NpYmxlPwo+Cj4gQ0NBIHRocmVzaG9sZHMgd291bGQgbmVl
-ZCB0byBiZSBvdmVyd3JpdHRlbiBieSBhdGgxMGsgYWZ0ZXIgZWFjaCBodwo+IHJlc2V0IC8gY2hh
-bm5lbCBjaGFuZ2UgSSB0aGluay4gWW91IGNvdWxkIHByb2JhYmx5IGxvb2sgYXQgdGhlCj4gY292
-ZXJhZ2VfY2xhc3Mgd29yayBCZW5qYW1pbiBhbmQgU2ViYXN0aWFuIGhhdmUgYmVlbiBkb2luZyBy
-ZWNlbnRseSBhcwo+IHlvdSdkIG5lZWQgdG8gZG8gc29tZXRoaW5nIHNpbWlsYXIuCj4KPiBBcyBm
-b3Igc3VydmV5OiBzb21lIHJlY2VudCBmaXJtd2FyZSBidWlsZHMgc3VwcG9zZWRseSBoYXZlIGEg
-b24tYnNzCj4gNjQtYml0IHN1cnZleSBldmVudHMuIE5vdCBzdXJlIGFib3V0IHRoZSBkZXRhaWxz
-IHRob3VnaC4KPgo+IEFjdHVhbCBjeWNsZSBjb3VudGVycyB1c2VkIHRvIGdlbmVyYXRlL21haW50
-YWluIHN1cnZleSBkYXRhIGNhbiBiZQo+IGZvdW5kIGF0IHdsYW5fbWFjX2Jhc2UgKDB4MjAwMDAp
-ICsgc2FtZSBvZmZzZXRzIGFzIGF0aDlrLiBGV0lXIFlvdSBjYW4KPiBldmVuIHJlYWQgdGhlbSBm
-cm9tIHVzZXJzcGFjZSB2aWEgL2Rldi9tZW0gKyBtbWFwKCkgKGl0J2xsIGJlIGEgYml0Cj4gcmFj
-eSB0aG91Z2g7IGZyZWV6aW5nIG1pYiBjb3VudGVycyBpcyBub3QgYSBnb29kIGlkZWEgd2l0aCBm
-aXJtd2FyZQo+IHJ1bm5pbmcgY29uY3VycmVudGx5KS4KPgo+Cj4gTWljaGHFggoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
+> Add NAPI support for rx and tx completion. NAPI poll is scheduled
+> from interrupt handler. The design is as below
+> 
+>  - on interrupt
+>      - schedule napi and mask interrupts
+>  - on poll
+>    - process all pipes (no actual Tx/Rx)
+>    - process Rx within budget
+>    - if quota exceeds budget reschedule napi poll by returning budget
+>    - process Tx completions and update budget if necessary
+>    - process Tx fetch indications (pull-push)
+>    - push any other pending Tx (if possible)
+>    - before resched or napi completion replenish htt rx ring buffer
+>    - if work done < budget, complete napi poll and unmask interrupts
+> 
+> This change also get rid of two tasklets (intr_tq and txrx_compl_task).
+> 
+> Measured peak throughput with NAPI on IPQ4019 platform in controlled
+> environment. No noticeable reduction in throughput is seen and also
+> observed improvements in CPU usage. Approx. 15% CPU usage got reduced
+> in UDP uplink case.
+> 
+> DL: AP DUT Tx
+> UL: AP DUT Rx
+> 
+> IPQ4019 (avg. cpu usage %)
+> 
+> ========
+>                 TOT              +NAPI
+>               ===========      =============
+> TCP DL       644 Mbps (42%)    645 Mbps (36%)
+> TCP UL       673 Mbps (30%)    675 Mbps (26%)
+> UDP DL       682 Mbps (49%)    680 Mbps (49%)
+> UDP UL       720 Mbps (28%)    717 Mbps (11%)
+> 
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+
+Thanks, 1 patch applied to ath-next branch of ath.git:
+
+3c97f5de1f28 ath10k: implement NAPI support
+
+-- 
+Sent by pwcli
+https://patchwork.kernel.org/patch/9301091/
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
