@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from nbd.name ([2a01:4f8:131:30e2::2])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1biNHL-00030O-1H
- for ath10k@lists.infradead.org; Fri, 09 Sep 2016 14:59:44 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCHv3 0/5] ath10k: Allow setting coverage class and rx cleanups
-Date: Fri, 9 Sep 2016 14:59:08 +0000
-Message-ID: <871t0tp1ad.fsf@kamboji.qca.qualcomm.com>
-References: <20160829144557.11678-1-benjamin@sipsolutions.net>
-In-Reply-To: <20160829144557.11678-1-benjamin@sipsolutions.net> (Benjamin
- Berg's message of "Mon, 29 Aug 2016 16:45:52 +0200")
-Content-Language: en-US
-Content-ID: <40062189EC885747BA62B296A6DAC0D3@qualcomm.com>
+ id 1biPZ9-0007mQ-1r
+ for ath10k@lists.infradead.org; Fri, 09 Sep 2016 17:26:16 +0000
+Subject: Re: [PATCH 1/3] ath10k: Ensure there are no stale ar->txqs entries.
+References: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
+From: Felix Fietkau <nbd@nbd.name>
+Message-ID: <a9add01b-4d5a-0e1c-d856-64dcf71bdb1c@nbd.name>
+Date: Fri, 9 Sep 2016 19:25:44 +0200
 MIME-Version: 1.0
+In-Reply-To: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,117 +22,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Benjamin Berg <benjamin@sipsolutions.net>
-Cc: Simon Wunderlich <sw@simonwunderlich.de>, "Thiagarajan,
- Vasanthakumar" <vthiagar@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+To: greearb@candelatech.com, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Benjamin Berg <benjamin@sipsolutions.net> writes:
+On 2016-08-19 03:26, greearb@candelatech.com wrote:
+> From: Ben Greear <greearb@candelatech.com>
+> 
+> I was seeing kernel crashes due to accessing freed memory
+> while debugging a 9984 firmware that was crashing often.
+> 
+> This patch fixes the crashes.  I am not certain if there
+> is a better way or not.
+> 
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/mac.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 5659ef1..916119c 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -4172,8 +4172,10 @@ static void ath10k_mac_txq_init(struct ieee80211_txq *txq)
+>  static void ath10k_mac_txq_unref(struct ath10k *ar, struct ieee80211_txq *txq)
+>  {
+>  	struct ath10k_txq *artxq = (void *)txq->drv_priv;
+> +	struct ath10k_txq *tmp, *walker;
+>  	struct ath10k_skb_cb *cb;
+>  	struct sk_buff *msdu;
+> +	struct ieee80211_txq *txq_tmp;
+>  	int msdu_id;
+>  
+>  	if (!txq)
+> @@ -4182,6 +4184,14 @@ static void ath10k_mac_txq_unref(struct ath10k *ar, struct ieee80211_txq *txq)
+>  	spin_lock_bh(&ar->txqs_lock);
+>  	if (!list_empty(&artxq->list))
+>  		list_del_init(&artxq->list);
+> +
+> +	/* Remove from ar->txqs in case it still exists there. */
+> +	list_for_each_entry_safe(walker, tmp, &ar->txqs, list) {
+> +		txq_tmp = container_of((void *)walker, struct ieee80211_txq,
+> +				       drv_priv);
+> +		if (txq_tmp == txq)
+> +			list_del(&walker->list);
+> +	}
+This makes no sense at all. From txq_tmp == txq we can deduce that
+walker == artxq. In the context above, it already does a
+list_del_init(&artxq->list).
 
-> OK, another revision adding the fast path as suggested by Ben Greear. Only
-> other change is that I am submitting it together with Vasanthakumar's cleanup
-> patches to allow merging both into ath-next in one go.
->
-> Changes in v4:
->  * Only queue register setting work if coverage class is non-zero
->  * Add cleanup patches from Vasanthakumar into series
->
-> Changes in v3:
->  * Only update register values if hardware is initialized
->  * Use the SM/MS macros instead of manual bitshifts and masks
->  * Use the hardware phyclk register instead of assuming a clock speed
->  * Force dbglog_mask of ~0 and dbglog_level of at least WARN if active
->  * Only call code for selected WMI events
->
-> The last two items are a bit of a guess for me. In particular it looks like
-> the default log level is already WARN, but I suppose that this should be good
-> enough to get reports for internal chip resets. I have no way of verifying
-> this myself though.
->
->
-> Benjamin Berg (1):
->   ath10k: Allow setting coverage class
->
-> Vasanthakumar Thiagarajan (4):
->   ath10k: Move ath10k_hw_params definition to hw.h
->   ath10k: Add provision for Rx descriptor abstraction
->   ath10k: Properly remove padding from the start of rx payload
->   ath10k: Remove 4-addr padding related hw_param configuration
+- Felix
 
-There were few conflicts, though easy. Please double check the pending
-branch that I didn't make any mistakes, I didn't test these yet.
-
-https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/log/?h=pending
-
-Also please CC linux-wireless when submitting ath10k patches, we get
-wider review that way. Added it to CC now.
-
-My log of the conflicts:
-
-Applying: ath10k: Move ath10k_hw_params definition to hw.h
-Using index info to reconstruct a base tree...
-Falling back to patching base and 3-way merge...
-Auto-merging drivers/net/wireless/ath/ath10k/core.h
-CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/core.h
-Failed to merge in the changes.
-Patch failed at 0001 ath10k: Move ath10k_hw_params definition to hw.h
-
-moved: bool sw_decrypt_mcast_mgmt;
-
-Applying: ath10k: Add provision for Rx descriptor abstraction
-Using index info to reconstruct a base tree...
-Falling back to patching base and 3-way merge...
-Auto-merging drivers/net/wireless/ath/ath10k/hw.h
-CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/hw.h
-Auto-merging drivers/net/wireless/ath/ath10k/core.c
-CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/core.c
-Failed to merge in the changes.
-Patch failed at 0002 ath10k: Add provision for Rx descriptor abstraction
-
-Applying: ath10k: Allow setting coverage class
-fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/core.c).
-Repository lacks necessary blobs to fall back on 3-way merge.
-Cannot fall back to three-way merge.
-Patch failed at 0001 ath10k: Allow setting coverage class
-
-  CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/mac.c
-
-
-
-patching file drivers/net/wireless/ath/ath10k/core.c
-Hunk #1 succeeded at 1548 (offset 5 lines).
-Hunk #2 succeeded at 2333 with fuzz 2 (offset 73 lines).
-patching file drivers/net/wireless/ath/ath10k/core.h
-Hunk #1 succeeded at 911 with fuzz 2 (offset 21 lines).
-patching file drivers/net/wireless/ath/ath10k/hw.c
-patching file drivers/net/wireless/ath/ath10k/hw.h
-Hunk #2 succeeded at 416 (offset 5 lines).
-Hunk #3 succeeded at 613 (offset 5 lines).
-Hunk #4 succeeded at 813 (offset 5 lines).
-patching file drivers/net/wireless/ath/ath10k/mac.c
-Hunk #1 succeeded at 5410 (offset 38 lines).
-Hunk #2 succeeded at 7449 (offset 38 lines).
-Hunk #3 succeeded at 8027 (offset 38 lines).
-patching file drivers/net/wireless/ath/ath10k/wmi.c
-Hunk #1 succeeded at 4925 (offset 46 lines).
-Hunk #2 succeeded at 4962 (offset 46 lines).
-Hunk #3 succeeded at 4972 (offset 46 lines).
-Hunk #4 succeeded at 4999 (offset 46 lines).
-Hunk #5 succeeded at 5055 (offset 46 lines).
-Hunk #6 succeeded at 5099 (offset 46 lines).
-Hunk #7 succeeded at 5109 (offset 46 lines).
-Hunk #8 succeeded at 5136 (offset 46 lines).
-Hunk #9 succeeded at 5183 (offset 46 lines).
-Hunk #10 succeeded at 5230 (offset 59 lines).
-Hunk #11 succeeded at 5240 (offset 59 lines).
-Hunk #12 succeeded at 5267 (offset 59 lines).
-Hunk #13 succeeded at 5305 (offset 59 lines).
-Hunk #14 succeeded at 5379 (offset 72 lines).
-Hunk #15 succeeded at 5396 (offset 72 lines).
-Hunk #16 succeeded at 5413 (offset 72 lines).
-Hunk #17 succeeded at 6137 (offset 73 lines).
-
--- 
-Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
