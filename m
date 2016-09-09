@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1biKbE-0002Hg-G3
- for ath10k@lists.infradead.org; Fri, 09 Sep 2016 12:08:32 +0000
+ id 1biKej-0006Nu-F0
+ for ath10k@lists.infradead.org; Fri, 09 Sep 2016 12:12:39 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: fix throughput regression in multi client mode
+Subject: Re: ath10k: fix reporting channel survey data
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20160829081613.1474-1-rmanohar@qti.qualcomm.com>
-Message-ID: <00fa6b69d3a645b19d85f2f3c83748b5@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 9 Sep 2016 14:07:34 +0200
+In-Reply-To: <1472794193-20774-1-git-send-email-arnagara@qti.qualcomm.com>
+Message-ID: <8d2a1b7efdc64924ac340344d036227a@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 9 Sep 2016 14:11:12 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +21,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rmanohar@codeaurora.org
+To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, arnagara@codeaurora.org, ath10k@lists.infradead.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
-> commit 7a0adc83f34d ("ath10k: improve tx scheduling") is causing
-> severe throughput drop in multi client mode. This issue is originally
-> reported in veriwave setup with 50 clients with TCP downlink traffic.
-> While increasing number of clients, the average throughput drops
-> gradually. With 50 clients, the combined peak throughput is decreased
-> to 98 Mbps whereas reverting given commit restored it to 550 Mbps.
+Ashok Raj Nagarajan <arnagara@qti.qualcomm.com> wrote:
+> When user requests for survey dump data, driver is providing wrong survey
+> information. This information we sent is the survey data that we have
+> collected during previous user request.
 > 
-> Processing txqs for every tx completion is causing overhead. Ideally for
-> management frame tx completion, pending txqs processing can be avoided.
-> The change partly reverts the commit "ath10k: improve tx scheduling".
-> Processing pending txqs after all skbs tx completion will yeild enough
-> room to burst tx frames.
+> This issue occurs because we request survey dump for wrong channel. With
+> this change, we correctly display the correct and current survey
+> information to userspace.
 > 
-> Fixes: 7a0adc83f34d ("ath10k: improve tx scheduling")
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Fixes: fa7937e3d5c2 ("ath10k: update bss channel survey information")
+> Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
 
 Thanks, 1 patch applied to ath-next branch of ath.git:
 
-18f53fe0f303 ath10k: fix throughput regression in multi client mode
+77eb3d693182 ath10k: fix reporting channel survey data
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9303279/
+https://patchwork.kernel.org/patch/9310467/
 
 
 _______________________________________________
