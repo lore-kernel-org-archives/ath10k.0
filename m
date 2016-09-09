@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1biLzJ-0005yn-Rk
- for ath10k@lists.infradead.org; Fri, 09 Sep 2016 13:37:02 +0000
+ id 1biMoR-0001Om-RL
+ for ath10k@lists.infradead.org; Fri, 09 Sep 2016 14:29:59 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/3] ath10k: Grab rcu_read_lock before the txqs spinlock.
-Date: Fri, 9 Sep 2016 13:36:33 +0000
-Message-ID: <87k2elp53z.fsf@kamboji.qca.qualcomm.com>
-References: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
- <1471569995-10028-2-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1471569995-10028-2-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Thu, 18 Aug 2016 18:26:34	-0700")
+Subject: Re: [PATCH 0/4] ath10k: Padding related clean ups in rx
+Date: Fri, 9 Sep 2016 14:29:23 +0000
+Message-ID: <87a8fhp2nx.fsf@kamboji.qca.qualcomm.com>
+References: <1469623006-13178-1-git-send-email-vthiagar@qti.qualcomm.com>
+In-Reply-To: <1469623006-13178-1-git-send-email-vthiagar@qti.qualcomm.com>
+ (Vasanthakumar Thiagarajan's message of "Wed, 27 Jul 2016 18:06:42	+0530")
 Content-Language: en-US
-Content-ID: <76A7257AC0529E4381414B8CCD775BFD@qualcomm.com>
+Content-ID: <C040271798FF3F46A481197648569547@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,46 +25,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "greearb@candelatech.com" <greearb@candelatech.com>
+To: "Thiagarajan, Vasanthakumar" <vthiagar@qti.qualcomm.com>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-greearb@candelatech.com writes:
+Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
 
-> From: Ben Greear <greearb@candelatech.com>
+> This patch set adds abstraction for rx_hw_desc processing so that
+> we can make use of newer desc fields notifying padding information
+> which is done on rx payload. "ath10k: Properly remove padding from
+> the start of rx payload" fixes padding related bug in ethernet decap
+> mode for QCA99X0, QCA9984 qnd QCA4019 but even fixing this bug will
+> not make ethernet decap mode work, there needs to be some more fix
+> wich would follow this patch series.
 >
-> I was seeing some spin-lock hangs in this area of the code,
-> and it seems more proper to do the rcu-read-lock outside of
-> the spin lock.  I am not sure how much this matters, however.
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> ---
->  drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index 916119c..d96c06e 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -4307,8 +4307,8 @@ void ath10k_mac_tx_push_pending(struct ath10k *ar)
->  	int max;
->  	int loop_max = 2000;
->  
-> -	spin_lock_bh(&ar->txqs_lock);
->  	rcu_read_lock();
-> +	spin_lock_bh(&ar->txqs_lock);
->  
->  	last = list_last_entry(&ar->txqs, struct ath10k_txq, list);
->  	while (!list_empty(&ar->txqs)) {
-> @@ -4342,8 +4342,8 @@ void ath10k_mac_tx_push_pending(struct ath10k *ar)
->  			break;
->  	}
->  
-> -	rcu_read_unlock();
->  	spin_unlock_bh(&ar->txqs_lock);
-> +	rcu_read_unlock();
+> Vasanthakumar Thiagarajan (4):
+>   ath10k: Move ath10k_hw_params definition to hw.h
+>   ath10k: Add provision for Rx descriptor abstraction
+>   ath10k: Properly remove padding from the start of rx payload
+>   ath10k: Remove 4-addr padding related hw_param configuration
 
-I'm no RCU expert but this isn't making any sense. Maybe it changes
-timings on your kernel so that it hides the real problem?
+As Benjamin has these patches on his own set I'm dropping this one.
 
 -- 
 Kalle Valo
