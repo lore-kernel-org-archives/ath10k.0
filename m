@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1biLtN-0003rp-RZ
- for ath10k@lists.infradead.org; Fri, 09 Sep 2016 13:30:55 +0000
+ id 1biLzJ-0005yn-Rk
+ for ath10k@lists.infradead.org; Fri, 09 Sep 2016 13:37:02 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 3/3] ath10k:  Improve logging message.
-Date: Fri, 9 Sep 2016 13:30:21 +0000
-Message-ID: <87oa3xp5ea.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 2/3] ath10k: Grab rcu_read_lock before the txqs spinlock.
+Date: Fri, 9 Sep 2016 13:36:33 +0000
+Message-ID: <87k2elp53z.fsf@kamboji.qca.qualcomm.com>
 References: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
- <1471569995-10028-3-git-send-email-greearb@candelatech.com>
- <20160819063511.GA16230@atheros-ThinkPad-T61>
-In-Reply-To: <20160819063511.GA16230@atheros-ThinkPad-T61> (Mohammed Shafi
- Shajakhan's message of "Fri, 19 Aug 2016 12:05:11 +0530")
+ <1471569995-10028-2-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1471569995-10028-2-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Thu, 18 Aug 2016 18:26:34	-0700")
 Content-Language: en-US
-Content-ID: <D0A35002A6F1A24F990EF99CB94CDC71@qualcomm.com>
+Content-ID: <76A7257AC0529E4381414B8CCD775BFD@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,40 +26,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Cc: "greearb@candelatech.com" <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "greearb@candelatech.com" <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Mohammed Shafi Shajakhan <mohammed@codeaurora.org> writes:
+greearb@candelatech.com writes:
 
-> Hi Ben,
+> From: Ben Greear <greearb@candelatech.com>
 >
-> On Thu, Aug 18, 2016 at 06:26:35PM -0700, greearb@candelatech.com wrote:
->> From: Ben Greear <greearb@candelatech.com>
->> 
->> Helps to know the sta pointer.
->> 
->> Signed-off-by: Ben Greear <greearb@candelatech.com>
->> ---
->>  drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
->> index d96c06e..82bc0da 100644
->> --- a/drivers/net/wireless/ath/ath10k/mac.c
->> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->> @@ -6491,8 +6491,8 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
->>  		 * Existing station deletion.
->>  		 */
->>  		ath10k_dbg(ar, ATH10K_DBG_MAC,
->> -			   "mac vdev %d peer delete %pM (sta gone)\n",
->> -			   arvif->vdev_id, sta->addr);
->> +			   "mac vdev %d peer delete %pM (sta gone) sta: %p\n",
->> +			   arvif->vdev_id, sta->addr, sta);
+> I was seeing some spin-lock hangs in this area of the code,
+> and it seems more proper to do the rcu-read-lock outside of
+> the spin lock.  I am not sure how much this matters, however.
 >
-> good to rebase over Maharaja's change (%p to %pK) 
-> https://patchwork.kernel.org/patch/9263691/
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 916119c..d96c06e 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -4307,8 +4307,8 @@ void ath10k_mac_tx_push_pending(struct ath10k *ar)
+>  	int max;
+>  	int loop_max = 2000;
+>  
+> -	spin_lock_bh(&ar->txqs_lock);
+>  	rcu_read_lock();
+> +	spin_lock_bh(&ar->txqs_lock);
+>  
+>  	last = list_last_entry(&ar->txqs, struct ath10k_txq, list);
+>  	while (!list_empty(&ar->txqs)) {
+> @@ -4342,8 +4342,8 @@ void ath10k_mac_tx_push_pending(struct ath10k *ar)
+>  			break;
+>  	}
+>  
+> -	rcu_read_unlock();
+>  	spin_unlock_bh(&ar->txqs_lock);
+> +	rcu_read_unlock();
 
-I added that to the patch in the pending branch.
+I'm no RCU expert but this isn't making any sense. Maybe it changes
+timings on your kernel so that it hides the real problem?
 
 -- 
 Kalle Valo
