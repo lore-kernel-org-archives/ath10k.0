@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bjRxQ-0001Ir-8Y
- for ath10k@lists.infradead.org; Mon, 12 Sep 2016 14:11:41 +0000
-From: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH] ath10k: Add missing CONFIG_ATH10K_DEBUGFS check
-Date: Mon, 12 Sep 2016 16:11:05 +0200
-Message-Id: <20160912141105.24085-1-benjamin@sipsolutions.net>
-In-Reply-To: <871t0tp1ad.fsf@kamboji.qca.qualcomm.com>
-References: <871t0tp1ad.fsf@kamboji.qca.qualcomm.com>
+ id 1bjTDH-0000QG-Ld
+ for ath10k@lists.infradead.org; Mon, 12 Sep 2016 15:32:07 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Fix rfc1042 header retrieval in QCA4019 with eth
+ decap mode
+Date: Mon, 12 Sep 2016 15:31:35 +0000
+Message-ID: <87fup5m8x5.fsf@kamboji.qca.qualcomm.com>
+References: <1469623085-13942-1-git-send-email-vthiagar@qti.qualcomm.com>
+In-Reply-To: <1469623085-13942-1-git-send-email-vthiagar@qti.qualcomm.com>
+ (Vasanthakumar Thiagarajan's message of "Wed, 27 Jul 2016 18:08:05	+0530")
+Content-Language: en-US
+Content-ID: <CBAE74287DD35847AF076792D39969E2@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,55 +22,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: Simon Wunderlich <sw@simonwunderlich.de>, "Thiagarajan,
- Vasanthakumar" <vthiagar@qti.qualcomm.com>, Benjamin Berg <benjamin@sipsolutions.net>, linux-wireless@vger.kernel.org, Sebastian Gottschall <s.gottschall@dd-wrt.com>, "ath10k @ lists . infradead . org" <ath10k@lists.infradead.org>, michal.kazior@tieto.com, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+To: "Thiagarajan, Vasanthakumar" <vthiagar@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-The patch "ath10k: allow setting coverage class" was missing a check for
-CONFIG_ATH10K_DEBUGFS so it would try to use non-existing struct elements
-in some configurations. Fix this by adding the appropriate ifdef.
+Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
 
-Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
----
+> Chipset from QCA99X0 onwards (QCA99X0, QCA9984, QCA4019 & future)
+> rx_hdr_status is not padded to align in 4-byte boundary. Define a
+> new hw_params field to handle different alignment behaviour between
+> different hw. This patch fixes improper retrieval of rfc1042 header
+> with QCA4019. This patch along with "ath10k: Properly remove padding
+> from the start of rx payload" will fix traffic failure in ethernet
+> decap mode for QCA4019.
+>
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 
-Sorry, so turns out the kbuild test robot is correct and I forgot the ifdef
-to check for CONFIG_ATH10K_DEBUGFS, so here a fixup commit for it.
+There were some conflicts, I fixed them in the pending branch. Please
+check my changes:
 
-Other than that everything looks good to me in the pending branch.
+https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=d0d9e40216e1a8edd2f3b387b96aad62c3a49add
 
-Benjamin
-
-
- drivers/net/wireless/ath/ath10k/hw.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index c52b5f4..e182f09 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -338,8 +338,13 @@ static void ath10k_hw_qca988x_set_coverage_class(struct ath10k *ar,
- 	 * set the registers again if the firmware does an internal reset and
- 	 * this way we will be notified of the event.
- 	 */
-+#ifdef CONFIG_ATH10K_DEBUGFS
- 	fw_dbglog_mask = ar->debug.fw_dbglog_mask;
- 	fw_dbglog_level = ar->debug.fw_dbglog_level;
-+#else
-+	fw_dbglog_mask = 0;
-+	fw_dbglog_level = 0;
-+#endif
- 
- 	if (value > 0) {
- 		if (fw_dbglog_level > ATH10K_DBGLOG_LEVEL_WARN)
 -- 
-2.9.3
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
