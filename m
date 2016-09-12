@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bjUFf-0005Zr-E6
- for ath10k@lists.infradead.org; Mon, 12 Sep 2016 16:38:35 +0000
-Subject: Re: [PATCH 2/3] ath10k: Grab rcu_read_lock before the txqs spinlock.
-References: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
- <1471569995-10028-2-git-send-email-greearb@candelatech.com>
- <87k2elp53z.fsf@kamboji.qca.qualcomm.com> <57D2CB92.3020407@candelatech.com>
- <1473662509.4201.0.camel@sipsolutions.net>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <d182bdea-089a-7b44-302c-cedcda1aa1ec@candelatech.com>
-Date: Mon, 12 Sep 2016 09:37:46 -0700
+Received: from mail-oi0-x231.google.com ([2607:f8b0:4003:c06::231])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bjXDJ-00022H-TG
+ for ath10k@lists.infradead.org; Mon, 12 Sep 2016 19:48:23 +0000
+Received: by mail-oi0-x231.google.com with SMTP id m11so331827333oif.1
+ for <ath10k@lists.infradead.org>; Mon, 12 Sep 2016 12:48:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1473662509.4201.0.camel@sipsolutions.net>
+In-Reply-To: <CA+BoTQn5L58sPyE=u79GACoMEXSrdfmJi-OGv3K3kEX46k6sxA@mail.gmail.com>
+References: <CAOiWkA-VhhARncY-E9XnKXm=XmUraCgjDsM+eDLJW2Wx7Jn4Qw@mail.gmail.com>
+ <CAJ-VmonT9SNipiMQdmgN4__4QMxgGKYg_-SwH4bieWKwfwdX5A@mail.gmail.com>
+ <CAOiWkA8NSv1VskZi4AnTgjt6p-NsRoTMzHqyAPwCsMKU-c9ujg@mail.gmail.com>
+ <CA+BoTQn5L58sPyE=u79GACoMEXSrdfmJi-OGv3K3kEX46k6sxA@mail.gmail.com>
+From: Marty Faltesek <mfaltesek@google.com>
+Date: Mon, 12 Sep 2016 15:47:59 -0400
+Message-ID: <CAOiWkA8P-qR6HHyMFNszmc7CcypuN1+RLSXPrmH6Q6EeYCa4aw@mail.gmail.com>
+Subject: Re: accessing ath10k calibration data
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +23,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/11/2016 11:41 PM, Johannes Berg wrote:
->
->>>> -	rcu_read_unlock();
->>>>   	spin_unlock_bh(&ar->txqs_lock);
->>>> +	rcu_read_unlock();
->>>
->>> I'm no RCU expert but this isn't making any sense. Maybe it changes
->>> timings on your kernel so that it hides the real problem?
->>
->> I'm not sure this fixed anything or not, it just seemed weird so I
->> changed it.
->>
->> I was hoping someone that understood rcu locking would comment...
->>
->
-> RCU is no "locking". The sooner you get over that notion, the better.
->
-> This therefore make no sense whatsoever.
->
-> In fact, you want to keep the RCU protected section *small*, so having
-> the spinlock inside hurts overall system performance.
-
-Ok, thanks for the review.  I'll drop this patch from my tree.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gTW9uLCBTZXAgMTIsIDIwMTYgYXQgNDo1MCBBTSwgTWljaGFsIEthemlvciA8bWljaGFsLmth
+emlvckB0aWV0by5jb20+IHdyb3RlOgo+IE9uIDkgU2VwdGVtYmVyIDIwMTYgYXQgMTk6NDIsIE1h
+cnR5IEZhbHRlc2VrIDxtZmFsdGVzZWtAZ29vZ2xlLmNvbT4gd3JvdGU6Cj4+IEl0J3MgYmxvY2tl
+ZCBieSB0aGUgY29kZSBiZWxvdyB3aGljaCBJIHRyaWVkIHRvIGlmZGVmIG91dCwgYnV0IHRoZW4g
+aXQKPj4gcmV0dXJucyBhbGwgMCdzLgo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jCj4+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway9kZWJ1Zy5jCj4+IGluZGV4IDhiMDFlM2UuLmJiOGI3ZWMgMTAwNjQ0Cj4+IC0tLSBhL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYwo+PiArKysgYi9kcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL2RlYnVnLmMKPj4gQEAgLTE0MzMsMTIgKzE0MzMsMTMgQEAg
+c3RhdGljIGludCBhdGgxMGtfZGVidWdfY2FsX2RhdGFfb3BlbihzdHJ1Y3QKPj4gaW5vZGUgKmlu
+b2RlLCBzdHJ1Y3QgZmlsZSAqZmlsZSkKPj4gICAgICAgICBpbnQgcmV0Owo+Pgo+PiAgICAgICAg
+IG11dGV4X2xvY2soJmFyLT5jb25mX211dGV4KTsKPj4gLQo+PiArI2lmIDAKPj4gICAgICAgICBp
+ZiAoYXItPnN0YXRlICE9IEFUSDEwS19TVEFURV9PTiAmJgo+PiAgICAgICAgICAgICBhci0+c3Rh
+dGUgIT0gQVRIMTBLX1NUQVRFX1VURikgewo+PiAgICAgICAgICAgICAgICAgcmV0ID0gLUVORVRE
+T1dOOwo+PiAgICAgICAgICAgICAgICAgZ290byBlcnI7Cj4+ICAgICAgICAgfQo+PiArI2VuZGlm
+Cj4KPiBUaGlzIHdvbid0IHdvcmsuIFRoZSBkcml2ZXIgbmVlZHMgdG8gZ28gdGhyb3VnaCBhdGgx
+MGtfc3RhcnQoKSwgaS5lLgo+IGZpcm13YXJlIG11c3QgYmUgbG9hZGVkLiBDYWwgZGF0YSBpcyBj
+b29rZWQgYXMgcGFydCBvZiB0aGF0Lgo+Cj4gWW91IGNvdWxkIGdldCBhd2F5IHdpdGgganVzdCBg
+aWZjb25maWcgd2xhbjAgdXBgLiBZb3UgZG9uJ3QgbmVlZCB0bwo+IGNvbm5lY3Qgb3IgYW55dGhp
+bmcuCgpUaGlzIGRvZXMgbm90IHdvcms6CgpoZXhkdW1wOiAuL2tlcm5lbC9kZWJ1Zy9pZWVlODAy
+MTEvcGh5MS9hdGgxMGsvY2FsX2RhdGE6IE5ldHdvcmsgaXMgZG93bgoKQnV0IGl0IHdvcmtzIGFm
+dGVyIHN0YXJ0aW5nIHRoZSBBUC4gQXJlIHlvdSBzdXJlIGFib3V0IHdoYXQgeW91IHNhaWQ/CgoK
+Pgo+IEkgZ3Vlc3MgdGhlIGRyaXZlciAqY291bGQqIGNhY2hlIHRoZSBlbmQgcmVzdWx0aW5nIGNh
+bCBkYXRhIHdoZW4gdGhlCj4gZGV2aWNlIGlzIHByb2JlZCBhbmQgcmUtdXNlIGl0IGluIHN1YnNl
+cXVlbnQgZmlybXdhcmUgYm9vdC11cCBhdHRlbXB0cwo+IChpbnN0ZWFkIG9mIHJlLWNvbXB1dGlu
+ZyBpdCkgbWFraW5nIGl0IGF2YWlsYWJsZSB3aGVuIHRoZSBkZXZpY2UgaXMKPiBzdG9wcGVkIGFz
+IHdlbGwuIEFueSB2b2x1bnRlZXJzIHRvIHRyeSAqYW5kKiB0ZXN0IGlmIGl0IGRvZXNuJ3QgYnJl
+YWsKPiBhbnl0aGluZz8gOikKClRoaXMgbWlnaHQgYnJlYWsgd2hhdCB3ZSBhcmUgdHJ5aW5nIHRv
+IGFjY29tcGxpc2gsIHdoaWNoIGlzIHJlYWQgdGhlCmNhbGlicmF0aW9uIGRhdGEKYW5kIHNlYXJj
+aCBmb3IgbWlzLWNhbGlicmF0ZWQgaGFyZHdhcmUsIGFuZCBpZiBmb3VuZCwgYXBwbHkgYSBmaXgu
+Cgo+Cj4KPj4gT24gRnJpLCBTZXAgOSwgMjAxNiBhdCAxOjM5IFBNLCBBZHJpYW4gQ2hhZGQgPGFk
+cmlhbkBmcmVlYnNkLm9yZz4gd3JvdGU6Cj4+PiBIaSwKPj4+Cj4+PiBJdCdzIGp1c3QgaW4gT1RQ
+PyBZb3Ugc2hvdWxkIGJlIGFibGUgdG8gcmVhZCB0aGUgT1RQIGRhdGEgd2l0aG91dAo+Pj4gbmVl
+ZGluZyBhIFNUQS9BUCB1cD8KPgo+IEkgd291bGQgYXJndWUgd2l0aCB0aGUgImp1c3QgT1RQIiBh
+dCBsZWFzdCBmcm9tIHRoZSBkcml2ZXItZGV2aWNlCj4gcHJvdG9jb2wgcG9pbnQgb2Ygdmlldy4K
+Pgo+Cj4gTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
