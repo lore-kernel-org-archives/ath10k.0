@@ -1,10 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-oi0-x231.google.com ([2607:f8b0:4003:c06::231])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bjXDJ-00022H-TG
- for ath10k@lists.infradead.org; Mon, 12 Sep 2016 19:48:23 +0000
-Received: by mail-oi0-x231.google.com with SMTP id m11so331827333oif.1
- for <ath10k@lists.infradead.org>; Mon, 12 Sep 2016 12:48:01 -0700 (PDT)
+ id 1bjZaz-0005CD-Iu
+ for ath10k@lists.infradead.org; Mon, 12 Sep 2016 22:20:58 +0000
+Received: by mail-oi0-x231.google.com with SMTP id y2so340289806oie.0
+ for <ath10k@lists.infradead.org>; Mon, 12 Sep 2016 15:20:37 -0700 (PDT)
 MIME-Version: 1.0
 In-Reply-To: <CA+BoTQn5L58sPyE=u79GACoMEXSrdfmJi-OGv3K3kEX46k6sxA@mail.gmail.com>
 References: <CAOiWkA-VhhARncY-E9XnKXm=XmUraCgjDsM+eDLJW2Wx7Jn4Qw@mail.gmail.com>
@@ -12,8 +12,8 @@ References: <CAOiWkA-VhhARncY-E9XnKXm=XmUraCgjDsM+eDLJW2Wx7Jn4Qw@mail.gmail.com>
  <CAOiWkA8NSv1VskZi4AnTgjt6p-NsRoTMzHqyAPwCsMKU-c9ujg@mail.gmail.com>
  <CA+BoTQn5L58sPyE=u79GACoMEXSrdfmJi-OGv3K3kEX46k6sxA@mail.gmail.com>
 From: Marty Faltesek <mfaltesek@google.com>
-Date: Mon, 12 Sep 2016 15:47:59 -0400
-Message-ID: <CAOiWkA8P-qR6HHyMFNszmc7CcypuN1+RLSXPrmH6Q6EeYCa4aw@mail.gmail.com>
+Date: Mon, 12 Sep 2016 18:20:35 -0400
+Message-ID: <CAOiWkA9V2h45Ziju=gtE2EeHEGPVykG+VV=Y-vnEs9ktmdwogQ@mail.gmail.com>
 Subject: Re: accessing ath10k calibration data
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,48 +23,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gTW9uLCBTZXAgMTIsIDIwMTYgYXQgNDo1MCBBTSwgTWljaGFsIEthemlvciA8bWljaGFsLmth
-emlvckB0aWV0by5jb20+IHdyb3RlOgo+IE9uIDkgU2VwdGVtYmVyIDIwMTYgYXQgMTk6NDIsIE1h
-cnR5IEZhbHRlc2VrIDxtZmFsdGVzZWtAZ29vZ2xlLmNvbT4gd3JvdGU6Cj4+IEl0J3MgYmxvY2tl
-ZCBieSB0aGUgY29kZSBiZWxvdyB3aGljaCBJIHRyaWVkIHRvIGlmZGVmIG91dCwgYnV0IHRoZW4g
-aXQKPj4gcmV0dXJucyBhbGwgMCdzLgo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2ly
-ZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jCj4+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway9kZWJ1Zy5jCj4+IGluZGV4IDhiMDFlM2UuLmJiOGI3ZWMgMTAwNjQ0Cj4+IC0tLSBhL2Ry
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYwo+PiArKysgYi9kcml2ZXJzL25l
-dC93aXJlbGVzcy9hdGgvYXRoMTBrL2RlYnVnLmMKPj4gQEAgLTE0MzMsMTIgKzE0MzMsMTMgQEAg
-c3RhdGljIGludCBhdGgxMGtfZGVidWdfY2FsX2RhdGFfb3BlbihzdHJ1Y3QKPj4gaW5vZGUgKmlu
-b2RlLCBzdHJ1Y3QgZmlsZSAqZmlsZSkKPj4gICAgICAgICBpbnQgcmV0Owo+Pgo+PiAgICAgICAg
-IG11dGV4X2xvY2soJmFyLT5jb25mX211dGV4KTsKPj4gLQo+PiArI2lmIDAKPj4gICAgICAgICBp
-ZiAoYXItPnN0YXRlICE9IEFUSDEwS19TVEFURV9PTiAmJgo+PiAgICAgICAgICAgICBhci0+c3Rh
-dGUgIT0gQVRIMTBLX1NUQVRFX1VURikgewo+PiAgICAgICAgICAgICAgICAgcmV0ID0gLUVORVRE
-T1dOOwo+PiAgICAgICAgICAgICAgICAgZ290byBlcnI7Cj4+ICAgICAgICAgfQo+PiArI2VuZGlm
-Cj4KPiBUaGlzIHdvbid0IHdvcmsuIFRoZSBkcml2ZXIgbmVlZHMgdG8gZ28gdGhyb3VnaCBhdGgx
-MGtfc3RhcnQoKSwgaS5lLgo+IGZpcm13YXJlIG11c3QgYmUgbG9hZGVkLiBDYWwgZGF0YSBpcyBj
-b29rZWQgYXMgcGFydCBvZiB0aGF0Lgo+Cj4gWW91IGNvdWxkIGdldCBhd2F5IHdpdGgganVzdCBg
-aWZjb25maWcgd2xhbjAgdXBgLiBZb3UgZG9uJ3QgbmVlZCB0bwo+IGNvbm5lY3Qgb3IgYW55dGhp
-bmcuCgpUaGlzIGRvZXMgbm90IHdvcms6CgpoZXhkdW1wOiAuL2tlcm5lbC9kZWJ1Zy9pZWVlODAy
-MTEvcGh5MS9hdGgxMGsvY2FsX2RhdGE6IE5ldHdvcmsgaXMgZG93bgoKQnV0IGl0IHdvcmtzIGFm
-dGVyIHN0YXJ0aW5nIHRoZSBBUC4gQXJlIHlvdSBzdXJlIGFib3V0IHdoYXQgeW91IHNhaWQ/CgoK
-Pgo+IEkgZ3Vlc3MgdGhlIGRyaXZlciAqY291bGQqIGNhY2hlIHRoZSBlbmQgcmVzdWx0aW5nIGNh
-bCBkYXRhIHdoZW4gdGhlCj4gZGV2aWNlIGlzIHByb2JlZCBhbmQgcmUtdXNlIGl0IGluIHN1YnNl
-cXVlbnQgZmlybXdhcmUgYm9vdC11cCBhdHRlbXB0cwo+IChpbnN0ZWFkIG9mIHJlLWNvbXB1dGlu
-ZyBpdCkgbWFraW5nIGl0IGF2YWlsYWJsZSB3aGVuIHRoZSBkZXZpY2UgaXMKPiBzdG9wcGVkIGFz
-IHdlbGwuIEFueSB2b2x1bnRlZXJzIHRvIHRyeSAqYW5kKiB0ZXN0IGlmIGl0IGRvZXNuJ3QgYnJl
-YWsKPiBhbnl0aGluZz8gOikKClRoaXMgbWlnaHQgYnJlYWsgd2hhdCB3ZSBhcmUgdHJ5aW5nIHRv
-IGFjY29tcGxpc2gsIHdoaWNoIGlzIHJlYWQgdGhlCmNhbGlicmF0aW9uIGRhdGEKYW5kIHNlYXJj
-aCBmb3IgbWlzLWNhbGlicmF0ZWQgaGFyZHdhcmUsIGFuZCBpZiBmb3VuZCwgYXBwbHkgYSBmaXgu
-Cgo+Cj4KPj4gT24gRnJpLCBTZXAgOSwgMjAxNiBhdCAxOjM5IFBNLCBBZHJpYW4gQ2hhZGQgPGFk
-cmlhbkBmcmVlYnNkLm9yZz4gd3JvdGU6Cj4+PiBIaSwKPj4+Cj4+PiBJdCdzIGp1c3QgaW4gT1RQ
-PyBZb3Ugc2hvdWxkIGJlIGFibGUgdG8gcmVhZCB0aGUgT1RQIGRhdGEgd2l0aG91dAo+Pj4gbmVl
-ZGluZyBhIFNUQS9BUCB1cD8KPgo+IEkgd291bGQgYXJndWUgd2l0aCB0aGUgImp1c3QgT1RQIiBh
-dCBsZWFzdCBmcm9tIHRoZSBkcml2ZXItZGV2aWNlCj4gcHJvdG9jb2wgcG9pbnQgb2Ygdmlldy4K
-Pgo+Cj4gTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Mon, Sep 12, 2016 at 4:50 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+> On 9 September 2016 at 19:42, Marty Faltesek <mfaltesek@google.com> wrote:
+>> It's blocked by the code below which I tried to ifdef out, but then it
+>> returns all 0's.
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/debug.c
+>> b/drivers/net/wireless/ath/ath10k/debug.c
+>> index 8b01e3e..bb8b7ec 100644
+>> --- a/drivers/net/wireless/ath/ath10k/debug.c
+>> +++ b/drivers/net/wireless/ath/ath10k/debug.c
+>> @@ -1433,12 +1433,13 @@ static int ath10k_debug_cal_data_open(struct
+>> inode *inode, struct file *file)
+>>         int ret;
+>>
+>>         mutex_lock(&ar->conf_mutex);
+>> -
+>> +#if 0
+>>         if (ar->state != ATH10K_STATE_ON &&
+>>             ar->state != ATH10K_STATE_UTF) {
+>>                 ret = -ENETDOWN;
+>>                 goto err;
+>>         }
+>> +#endif
+>
+> This won't work. The driver needs to go through ath10k_start(), i.e.
+> firmware must be loaded. Cal data is cooked as part of that.
+>
+> You could get away with just `ifconfig wlan0 up`. You don't need to
+> connect or anything.
+>
+> I guess the driver *could* cache the end resulting cal data when the
+> device is probed and re-use it in subsequent firmware boot-up attempts
+> (instead of re-computing it) making it available when the device is
+> stopped as well. Any volunteers to try *and* test if it doesn't break
+> anything? :)
+>
+
+I see what you mean now. This might actually work for us. I'll give it a shot
+and see.
+
+thanks,
+
+Marty
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
