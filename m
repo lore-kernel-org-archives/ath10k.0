@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bjmmE-0008JU-HW
- for ath10k@lists.infradead.org; Tue, 13 Sep 2016 12:25:27 +0000
+ id 1bjmmj-00010e-3f
+ for ath10k@lists.infradead.org; Tue, 13 Sep 2016 12:25:57 +0000
 MIME-Version: 1.0
-Subject: Re: [V2] ath10k: fix memory leak on caldata on error exit path
+Subject: Re: ath10k: remove unused variable ar_pci
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20160903163819.13115-1-colin.king@canonical.com>
-Message-ID: <c603113a967a45c18ddce5deff55b753@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 13 Sep 2016 14:24:40 +0200
+In-Reply-To: <20160905133802.18755-1-chaehyun.lim@gmail.com>
+Message-ID: <ab838c70bd944270ac482115c9194223@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 13 Sep 2016 14:25:28 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +21,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Chaehyun Lim <chaehyun.lim@gmail.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Colin Ian King <colin.king@canonical.com> wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+Chaehyun Lim <chaehyun.lim@gmail.com> wrote:
+> Trival fix to remove unused variable ar_pci in ath10k_pci_tx_pipe_cleanup
+> when building with W=1:
+> drivers/net/wireless/ath/ath10k/pci.c:1696:21: warning: variable
+> 'ar_pci' set but not used [-Wunused-but-set-variable]
 > 
-> caldata is not being free'd on the error exit path, causing
-> a memory leak and data definitely should not be freed. Free
-> caldata instead of data.
-> 
-> Thanks to Kalle Valo for spotting that data should not be
-> free'd.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Chaehyun Lim <chaehyun.lim@gmail.com>
 
 Thanks, 1 patch applied to ath-next branch of ath.git:
 
-5f4761dda2ba ath10k: fix memory leak on caldata on error exit path
+214d55394481 ath10k: remove unused variable ar_pci
 
 -- 
 Sent by pwcli
-https://patchwork.kernel.org/patch/9312163/
+https://patchwork.kernel.org/patch/9313963/
 
 
 _______________________________________________
