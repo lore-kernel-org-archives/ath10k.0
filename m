@@ -1,19 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
+Received: from mail-oi0-x235.google.com ([2607:f8b0:4003:c06::235])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bjsrG-00033d-L6
- for ath10k@lists.infradead.org; Tue, 13 Sep 2016 18:55:03 +0000
-Received: by mail-wm0-x234.google.com with SMTP id l68so589513wml.1
- for <ath10k@lists.infradead.org>; Tue, 13 Sep 2016 11:54:41 -0700 (PDT)
+ id 1bjueU-00069a-9X
+ for ath10k@lists.infradead.org; Tue, 13 Sep 2016 20:49:59 +0000
+Received: by mail-oi0-x235.google.com with SMTP id w11so30525948oia.2
+ for <ath10k@lists.infradead.org>; Tue, 13 Sep 2016 13:49:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <15353347.MUgkgiNHdu@prime>
-References: <2661831.slnB0LOeVt@prime>
- <87h99kjca5.fsf@kamboji.qca.qualcomm.com>
- <15353347.MUgkgiNHdu@prime>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Tue, 13 Sep 2016 20:54:20 +0200
-Message-ID: <CAFBinCAXz3WiwiGO63NSn9jW5h8D_92=F_ZpEgjXxJr_cSnKeQ@mail.gmail.com>
-Subject: Re: ath10k mesh + ap + encryption?
+In-Reply-To: <87lgywjcwi.fsf@kamboji.qca.qualcomm.com>
+References: <CAOiWkA-VhhARncY-E9XnKXm=XmUraCgjDsM+eDLJW2Wx7Jn4Qw@mail.gmail.com>
+ <CAJ-VmonT9SNipiMQdmgN4__4QMxgGKYg_-SwH4bieWKwfwdX5A@mail.gmail.com>
+ <CAOiWkA8NSv1VskZi4AnTgjt6p-NsRoTMzHqyAPwCsMKU-c9ujg@mail.gmail.com>
+ <CA+BoTQn5L58sPyE=u79GACoMEXSrdfmJi-OGv3K3kEX46k6sxA@mail.gmail.com>
+ <CAOiWkA8P-qR6HHyMFNszmc7CcypuN1+RLSXPrmH6Q6EeYCa4aw@mail.gmail.com>
+ <87lgywjcwi.fsf@kamboji.qca.qualcomm.com>
+From: Marty Faltesek <mfaltesek@google.com>
+Date: Tue, 13 Sep 2016 16:49:36 -0400
+Message-ID: <CAOiWkA_Xm3pXGzHEWnCO9JKhahJkKQ6yEVt8DXaHi1cFvoFzew@mail.gmail.com>
+Subject: Re: accessing ath10k calibration data
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,75 +29,81 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Simon Wunderlich <sw@simonwunderlich.de>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "openwrt-devel@lists.openwrt.org" <openwrt-devel@lists.openwrt.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi Simon,
+Hey Kalle
 
-On Tue, Sep 13, 2016 at 1:13 PM, Simon Wunderlich <sw@simonwunderlich.de> wrote:
-> On Tuesday, September 13, 2016 10:59:31 AM CEST Valo, Kalle wrote:
->> Simon Wunderlich <sw@simonwunderlich.de> writes:
->> > we have done some experiments last week on ath10k, trying to run mesh
->> > (802.11s) and access point at the same time, both encrypted.
->> >
->> > We have tested a recent LEDE (reboot-1519-g42f559e) but with
->> > firmware-5.bin_10.2.4.70.42-2 and the included wpa_supplicant, which gave
->> > us a working encrypted 802.11s network. However, starting an AP at the
->> > same time didn't work (AP doesn't beacon). This wasn't a problem when
->> > 802.11s was running unencrypted.
->> >
->> > We also tested version 10.2.4.97 (from codeaurora), which is now default
->> > in
->> > LEDE. However, this version apparently doesn't support 11s mesh at all
->> > (WMI_SERVICE_MESH_11S is disabled in the service map, but cfg/mac80211
->> > advertises support).
->> >
->> > So here are my questions:
->> >  * Did anyone succesfully run AP and mesh, both encrypted at the same
->> >  time?
->> >  * Do you have any pointers how we could fix this? Could it be fixable in
->> >  the>
->> > driver (i.e. not in firmware)?
->> >
->> >  * Does anyone have an idea if 11s will be supported in future versions? I
->> >
->> > didn't find any changelogs, but having 11s mode no longer in the service
->> > map does not make me optimistic.
+OK this does work for me after all. Thanks.
+
+I wrote a patch to cache cal_data only while the core is off. I don't
+need it now, but wondering if there is any benefit
+to submitting it?
+
+thanks,
+
+Marty
+
+
+
+
+
+On Tue, Sep 13, 2016 at 6:46 AM, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+> Marty Faltesek <mfaltesek@google.com> writes:
+>
+>> On Mon, Sep 12, 2016 at 4:50 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+>>> On 9 September 2016 at 19:42, Marty Faltesek <mfaltesek@google.com> wrote:
+>>>> It's blocked by the code below which I tried to ifdef out, but then it
+>>>> returns all 0's.
+>>>>
+>>>> diff --git a/drivers/net/wireless/ath/ath10k/debug.c
+>>>> b/drivers/net/wireless/ath/ath10k/debug.c
+>>>> index 8b01e3e..bb8b7ec 100644
+>>>> --- a/drivers/net/wireless/ath/ath10k/debug.c
+>>>> +++ b/drivers/net/wireless/ath/ath10k/debug.c
+>>>> @@ -1433,12 +1433,13 @@ static int ath10k_debug_cal_data_open(struct
+>>>> inode *inode, struct file *file)
+>>>>         int ret;
+>>>>
+>>>>         mutex_lock(&ar->conf_mutex);
+>>>> -
+>>>> +#if 0
+>>>>         if (ar->state != ATH10K_STATE_ON &&
+>>>>             ar->state != ATH10K_STATE_UTF) {
+>>>>                 ret = -ENETDOWN;
+>>>>                 goto err;
+>>>>         }
+>>>> +#endif
+>>>
+>>> This won't work. The driver needs to go through ath10k_start(), i.e.
+>>> firmware must be loaded. Cal data is cooked as part of that.
+>>>
+>>> You could get away with just `ifconfig wlan0 up`. You don't need to
+>>> connect or anything.
 >>
->> Why is LEDE using 10.2.4.97? It seems to be a quite old release and I
->> have no knowledge if anyone even tests that firmware branch with ath10k.
->> I recommend to only use firmware releases from ath10k-firmware.git as we
->> use those internally with ath10k. In any case, don't make any
->> assumptions about future from that firmware branch as it's so old.
-Thanks for clarifying this.
-
-> This was introduced in December 25th, 2015 after some firmware-related
-> problems. I'm CC'ing Martin Blumenstingl who suggested this change.
+>> This does not work:
+>>
+>> hexdump: ./kernel/debug/ieee80211/phy1/ath10k/cal_data: Network is down
+>>
+>> But it works after starting the AP. Are you sure about what you said?
 >
-> Since then, ath10k is pulling firmware from here (unless ct firmware is used):
+> It should work:
 >
-> https://source.codeaurora.org/quic/qsdk/oss/firmware/ath10k-firmware/plain/
-> 10.2.4/firmware-5.bin_10.2.4.97-1
-I initially updated to version 10.2.4.70.13-2, but we decided to
-update to the "latest" firmware back then (see the thread at [0])
-With the explanation from Kalle it makes sense to only use the
-firmware binaries distributed in his repo (to ensure that the firmware
-is tested by QCA's internal team).
-
-> However, I don't understand the numbering? 10.2.4.97 > 10.2.4.70, but you say
-> 10.2.4.70.42-2 is more recent? I would have assumed otherwise from the
-> numbers.
-That looks strange to me as well
-
-as a side-note: I am currently preparing and testing a patch to update
-the ath10k-firmware in LEDE to 10.2.4.70.52
-
-
-Regards,
-Martin
-
-
-[0] https://www.mail-archive.com/openwrt-devel@lists.openwrt.org/msg35623.html
+> # ip link show wlan0
+> 5: wlan0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>     link/ether 00:03:7f:48:d6:05 brd ff:ff:ff:ff:ff:ff
+> # ip link set wlan0 up
+> # hexdump /sys/kernel/debug/ieee80211/phy0/ath10k/cal_data
+> # ip link set wlan0 down
+> # hexdump /sys/kernel/debug/ieee80211/phy0/ath10k/cal_data
+> hexdump: /sys/kernel/debug/ieee80211/phy0/ath10k/cal_data: Network is down
+> #
+>
+> What's odd is that I got a file with zero bytes, but no time to
+> investigate it now.
+>
+> --
+> Kalle Valo
 
 _______________________________________________
 ath10k mailing list
