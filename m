@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vk0-x22c.google.com ([2607:f8b0:400c:c05::22c])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bjoDX-0003uz-Qz
- for ath10k@lists.infradead.org; Tue, 13 Sep 2016 13:57:48 +0000
-Received: by mail-vk0-x22c.google.com with SMTP id 16so159186511vko.2
- for <ath10k@lists.infradead.org>; Tue, 13 Sep 2016 06:57:19 -0700 (PDT)
+ id 1bjrvE-0003lW-0p
+ for ath10k@lists.infradead.org; Tue, 13 Sep 2016 17:55:06 +0000
+From: "Pedersen, Thomas" <twp@qca.qualcomm.com>
+Subject: Re: ath10k mesh + ap + encryption?
+Date: Tue, 13 Sep 2016 17:54:38 +0000
+Message-ID: <1473789271.27738.4.camel@qca.qualcomm.com>
+References: <2661831.slnB0LOeVt@prime> <15353347.MUgkgiNHdu@prime>
+ <87d1k8jb34.fsf@kamboji.qca.qualcomm.com> <3247815.ey5ZWkP5uX@prime>
+In-Reply-To: <3247815.ey5ZWkP5uX@prime>
+Content-Language: en-US
+Content-ID: <1D99E93412BF2E4AA9453C76C0568F15@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87bmztm8qm.fsf@kamboji.qca.qualcomm.com>
-References: <1470140454-3899-1-git-send-email-bartosz.markowski@tieto.com>
- <1470140454-3899-3-git-send-email-bartosz.markowski@tieto.com>
- <87bmztm8qm.fsf@kamboji.qca.qualcomm.com>
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Date: Tue, 13 Sep 2016 15:57:17 +0200
-Message-ID: <CACKGw+FAwPb2NLW5G8CnGH4X2eCCjUkuJwLoqW9w9rKpDuQJDw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: add platform regulatory domain support
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +21,92 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Simon Wunderlich <sw@simonwunderlich.de>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>, "openwrt-devel@lists.openwrt.org" <openwrt-devel@lists.openwrt.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 12 September 2016 at 17:35, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
-
-[...]
-
-> > +#ifdef CONFIG_ACPI
-> > +#define WRD_METHOD "WRDD"
-> > +#define WRDD_WIFI  (0x07)
-> > +
-> > +static u32 ath10k_mac_wrdd_get_mcc(struct ath10k *ar, union acpi_object *wrdd)
-> > +{
->
-> I don't think the ifdef is really necessary, acpi.h should handle that
-> (hopefully). Also I changed the error handling to use standard error
-> values and changed the info messages to dbg, they are too spammy in my
-> opinion. Please check carefully my changes in the pending branch:
->
-> https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=fe91745381ec3999d8de6dedb07b396c82539717
-
-I'm OK with the changes, I have not tried that though, except of
-reviewing and compiling it (do not have access to the chromebook for
-next few days). If you want to wait with it until I test it, it's fine
-too.
-
-Bartosz
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gVHVlLCAyMDE2LTA5LTEzIGF0IDE0OjMwICswMjAwLCBTaW1vbiBXdW5kZXJsaWNoIHdyb3Rl
+Og0KPiBPbiBUdWVzZGF5LCBTZXB0ZW1iZXIgMTMsIDIwMTYgMTE6MjU6MjEgQU0gQ0VTVCBWYWxv
+LCBLYWxsZSB3cm90ZToNCj4gPiANCj4gPiBTaW1vbiBXdW5kZXJsaWNoIDxzd0BzaW1vbnd1bmRl
+cmxpY2guZGU+IHdyaXRlczoNCj4gPiA+IA0KPiA+ID4gT24gVHVlc2RheSwgU2VwdGVtYmVyIDEz
+LCAyMDE2IDEwOjU5OjMxIEFNIENFU1QgVmFsbywgS2FsbGUNCj4gPiA+IHdyb3RlOg0KPiA+ID4g
+PiANCj4gPiA+ID4gU2ltb24gV3VuZGVybGljaCA8c3dAc2ltb253dW5kZXJsaWNoLmRlPiB3cml0
+ZXM6DQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gd2UgaGF2ZSBkb25lIHNvbWUgZXhwZXJpbWVudHMg
+bGFzdCB3ZWVrIG9uIGF0aDEwaywgdHJ5aW5nIHRvDQo+ID4gPiA+ID4gcnVuIG1lc2gNCj4gPiA+
+ID4gPiAoODAyLjExcykgYW5kIGFjY2VzcyBwb2ludCBhdCB0aGUgc2FtZSB0aW1lLCBib3RoIGVu
+Y3J5cHRlZC4NCj4gPiA+ID4gPiANCj4gPiA+ID4gPiBXZSBoYXZlIHRlc3RlZCBhIHJlY2VudCBM
+RURFIChyZWJvb3QtMTUxOS1nNDJmNTU5ZSkgYnV0IHdpdGgNCj4gPiA+ID4gPiBmaXJtd2FyZS01
+LmJpbl8xMC4yLjQuNzAuNDItMiBhbmQgdGhlIGluY2x1ZGVkDQo+ID4gPiA+ID4gd3BhX3N1cHBs
+aWNhbnQsIHdoaWNoDQo+ID4gPiA+ID4gZ2F2ZQ0KPiA+ID4gPiA+IHVzIGEgd29ya2luZyBlbmNy
+eXB0ZWQgODAyLjExcyBuZXR3b3JrLiBIb3dldmVyLCBzdGFydGluZyBhbg0KPiA+ID4gPiA+IEFQ
+IGF0IHRoZQ0KPiA+ID4gPiA+IHNhbWUgdGltZSBkaWRuJ3Qgd29yayAoQVAgZG9lc24ndCBiZWFj
+b24pLiBUaGlzIHdhc24ndCBhDQo+ID4gPiA+ID4gcHJvYmxlbSB3aGVuDQo+ID4gPiA+ID4gODAy
+LjExcyB3YXMgcnVubmluZyB1bmVuY3J5cHRlZC4NCj4gPiA+ID4gPiANCj4gPiA+ID4gPiBXZSBh
+bHNvIHRlc3RlZCB2ZXJzaW9uIDEwLjIuNC45NyAoZnJvbSBjb2RlYXVyb3JhKSwgd2hpY2ggaXMN
+Cj4gPiA+ID4gPiBub3cNCj4gPiA+ID4gPiBkZWZhdWx0DQo+ID4gPiA+ID4gaW4NCj4gPiA+ID4g
+PiBMRURFLiBIb3dldmVyLCB0aGlzIHZlcnNpb24gYXBwYXJlbnRseSBkb2Vzbid0IHN1cHBvcnQg
+MTFzDQo+ID4gPiA+ID4gbWVzaCBhdCBhbGwNCj4gPiA+ID4gPiAoV01JX1NFUlZJQ0VfTUVTSF8x
+MVMgaXMgZGlzYWJsZWQgaW4gdGhlIHNlcnZpY2UgbWFwLCBidXQNCj4gPiA+ID4gPiBjZmcvbWFj
+ODAyMTENCj4gPiA+ID4gPiBhZHZlcnRpc2VzIHN1cHBvcnQpLg0KPiA+ID4gPiA+IA0KPiA+ID4g
+PiA+IFNvIGhlcmUgYXJlIG15IHF1ZXN0aW9uczoNCj4gPiA+ID4gPiDCoCogRGlkIGFueW9uZSBz
+dWNjZXNmdWxseSBydW4gQVAgYW5kIG1lc2gsIGJvdGggZW5jcnlwdGVkIGF0DQo+ID4gPiA+ID4g
+dGhlIHNhbWUNCj4gPiA+ID4gPiDCoHRpbWU/DQo+ID4gPiA+ID4gwqAqIERvIHlvdSBoYXZlIGFu
+eSBwb2ludGVycyBob3cgd2UgY291bGQgZml4IHRoaXM/IENvdWxkIGl0DQo+ID4gPiA+ID4gYmUg
+Zml4YWJsZQ0KPiA+ID4gPiA+IMKgaW4NCj4gPiA+ID4gPiDCoHRoZT4NCj4gPiA+ID4gPiANCj4g
+PiA+ID4gPiBkcml2ZXIgKGkuZS4gbm90IGluIGZpcm13YXJlKT8NCj4gPiA+ID4gPiANCj4gPiA+
+ID4gPiDCoCogRG9lcyBhbnlvbmUgaGF2ZSBhbiBpZGVhIGlmIDExcyB3aWxsIGJlIHN1cHBvcnRl
+ZCBpbg0KPiA+ID4gPiA+IGZ1dHVyZQ0KPiA+ID4gPiA+IMKgdmVyc2lvbnM/IEkNCj4gPiA+ID4g
+PiANCj4gPiA+ID4gPiBkaWRuJ3QgZmluZCBhbnkgY2hhbmdlbG9ncywgYnV0IGhhdmluZyAxMXMg
+bW9kZSBubyBsb25nZXIgaW4NCj4gPiA+ID4gPiB0aGUNCj4gPiA+ID4gPiBzZXJ2aWNlDQo+ID4g
+PiA+ID4gbWFwIGRvZXMgbm90IG1ha2UgbWUgb3B0aW1pc3RpYy4NCj4gPiA+ID4gDQo+ID4gPiA+
+IFdoeSBpcyBMRURFIHVzaW5nIDEwLjIuNC45Nz8gSXQgc2VlbXMgdG8gYmUgYSBxdWl0ZSBvbGQg
+cmVsZWFzZQ0KPiA+ID4gPiBhbmQgSQ0KPiA+ID4gPiBoYXZlIG5vIGtub3dsZWRnZSBpZiBhbnlv
+bmUgZXZlbiB0ZXN0cyB0aGF0IGZpcm13YXJlIGJyYW5jaA0KPiA+ID4gPiB3aXRoIGF0aDEway4N
+Cj4gPiA+ID4gSSByZWNvbW1lbmQgdG8gb25seSB1c2UgZmlybXdhcmUgcmVsZWFzZXMgZnJvbSBh
+dGgxMGstDQo+ID4gPiA+IGZpcm13YXJlLmdpdCBhcyB3ZQ0KPiA+ID4gPiB1c2UgdGhvc2UgaW50
+ZXJuYWxseSB3aXRoIGF0aDEway4gSW4gYW55IGNhc2UsIGRvbid0IG1ha2UgYW55DQo+ID4gPiA+
+IGFzc3VtcHRpb25zIGFib3V0IGZ1dHVyZSBmcm9tIHRoYXQgZmlybXdhcmUgYnJhbmNoIGFzIGl0
+J3Mgc28NCj4gPiA+ID4gb2xkLg0KPiA+ID4gDQo+ID4gPiBUaGlzIHdhcyBpbnRyb2R1Y2VkIGlu
+IERlY2VtYmVyIDI1dGgsIDIwMTUgYWZ0ZXIgc29tZSBmaXJtd2FyZS0NCj4gPiA+IHJlbGF0ZWQN
+Cj4gPiA+IHByb2JsZW1zLiBJJ20gQ0MnaW5nIE1hcnRpbiBCbHVtZW5zdGluZ2wgd2hvIHN1Z2dl
+c3RlZCB0aGlzDQo+ID4gPiBjaGFuZ2UuDQo+ID4gPiANCj4gPiA+IFNpbmNlIHRoZW4sIGF0aDEw
+ayBpcyBwdWxsaW5nIGZpcm13YXJlIGZyb20gaGVyZSAodW5sZXNzIGN0DQo+ID4gPiBmaXJtd2Fy
+ZSBpcw0KPiA+ID4gdXNlZCk6DQo+ID4gPiANCj4gPiA+IGh0dHBzOi8vc291cmNlLmNvZGVhdXJv
+cmEub3JnL3F1aWMvcXNkay9vc3MvZmlybXdhcmUvYXRoMTBrLWZpcm13DQo+ID4gPiBhcmUvcGxh
+aW4NCj4gPiA+IC8NCj4gPiA+IDEwLjIuNC9maXJtd2FyZS01LmJpbl8xMC4yLjQuOTctMQ0KPiA+
+ID4gDQo+ID4gPiBIb3dldmVyLCBJIGRvbid0IHVuZGVyc3RhbmQgdGhlIG51bWJlcmluZz8gMTAu
+Mi40Ljk3ID4gMTAuMi40LjcwLA0KPiA+ID4gYnV0IHlvdQ0KPiA+ID4gc2F5IDEwLjIuNC43MC40
+Mi0yIGlzIG1vcmUgcmVjZW50PyBJIHdvdWxkIGhhdmUgYXNzdW1lZCBvdGhlcndpc2UNCj4gPiA+
+IGZyb20NCj4gPiA+IHRoZSBudW1iZXJzLiBIb3dldmVyLCAxMC4yLjQuNzAgaGFzIG11Y2ggbW9y
+ZSBzdWItcmV2aXNpb25zLg0KPiA+IA0KPiA+IEFzIEkgc2FpZCBiZWZvcmUsIEkganVzdCBkZWxp
+dmVyIHRoZSBmaXJtd2FyZSBmaWxlcyB0byB0aGUNCj4gPiBjb21tdW5pdHkgYW5kDQo+ID4gdGhl
+IGZpcm13YXJlIHRlYW0gY3JlYXRlcyB0aGUgYWN0dWFsIHJlbGVhc2VzLiBCdXQgbXkgdW5kZXJz
+dGFuZGluZw0KPiA+IGlzDQo+ID4gdGhhdCB0aGVzZSBhcmUgZnJvbSBkaWZmZXJlbnQgYnJhbmNo
+ZXMgd2hpY2ggYXJlIGJ1aWx0DQo+ID4gaW5kZXBlbmRlbnRseQ0KPiA+IChhbmQgbWlnaHQgaGF2
+ZSBkaWZmZXJlbnQgZmVhdHVyZXMsIGxpa2UgaW4gdGhpcyBjYXNlIHRoZSBtZXNoDQo+ID4gc3Vw
+cG9ydCkNCj4gPiBzbyBJIHdvdWxkIG5vdCBtYWtlIGFueSBjb25jbHVzaW9ucyBpZiBhbnkgZmly
+bXdhcmUgaXMgImJldHRlciINCj4gPiBqdXN0DQo+ID4gZnJvbSB0aGUgbnVtYmVycyBhbG9uZS4N
+Cj4gDQo+IHlvdSBhcmUgcmlnaHQgLi4uIHRob3NlIG51bWJlcnMgYXJlIG5vdCBhIGdvb2QgcG9p
+bnRlci4gSSBmb3VuZCB0aGlzDQo+IHJlcG8sIGFuZMKgDQo+IGZyb20gdGhlIGNoZWNraW4gZGF0
+ZXMgaXQgbG9va3MgbGlrZSAxMC4yLjQuOTcgaXMgaW5kZWVkIHdheSBvbGRlcg0KPiAoZnJvbcKg
+DQo+IFNlcHRlbWJlciAyMDE1KSB0aGFuIDEwLjIuNC43MC40MiAoQXByaWwgMjAxNik6DQo+IA0K
+PiBodHRwczovL3NvdXJjZS5jb2RlYXVyb3JhLm9yZy9xdWljL3FzZGsvb3NzL2Zpcm13YXJlL2F0
+aDEway1maXJtd2FyZS8NCj4gbG9nLzEwLjIuNA0KPiANCj4gSSB3b3VsZCBhZ3JlZSB0aGF0IENo
+YW5nZWxvZ3Mgd291bGQgYmUgaGVscGZ1bC4NCj4gDQo+IFRoYW5rcyBmb3IgdGhlIGNsYXJpZmlj
+YXRpb24uIFdlIHdpbGwgdGhlbiBzdGljayB0byB0aGUgNzAncyBicmFuY2gNCj4gdGhlbi4NCj4g
+DQo+IERvZXMgYW55b25lIGhhdmUgcG9pbnRlcnMgZm9yIHRoZSBvdGhlciBxdWVzdGlvbnM/IDop
+IEkgd291bGQgYmVsaWV2ZQ0KPiBoYXQgbWFuecKgDQo+IHBlb3BsZSB3b3VsZCBiZSBpbnRlcmVz
+dGVkIGluIHJ1bm5pbmcgQVAgKyBNZXNoIGVuY3J5cHRlZCBhdCB0aGUgc2FtZQ0KPiB0aW1lIChh
+dMKgDQo+IGxlYXN0IGluIHRoZSBvcGVuIHNvdXJjZSBjb21tdW5pdHkgLi4uKS4NCg0KV2UncmUg
+dGVzdGluZyBlbmNyeXB0ZWQgQVAgKyBNZXNoIHF1aXRlIHN1Y2Nlc3NmdWxseSByaWdodCBub3cg
+d2l0aA0KdGhpcyBmaXJtd2FyZTrCoGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgxMGstZmly
+bXdhcmUvY29tbWl0LzMwN2NiNDZiDQowNjY2MWViZDMxODY3MjNiNTAwMmRlNzY5YzdhZGQ4Mywg
+b2YgY291cnNlIHRoYXQgaXMgZm9yIGEgUUNBNDAxOSBjaGlwLg0KV2hpY2ggY2hpcCBhcmUgeW91
+IHVzaW5nPyBJIGNhbiBwb2tlIHRoZSBmaXJtd2FyZSBndXlzIGZvciBwb3NzaWJpbGl0eQ0Kb2Yg
+Z2V0dGluZyBhIDEwLjQuMy4yIGZpcm13YXJlIGJ1aWxkIGZvciBpdC4NCg0KdGhvbWFzCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
