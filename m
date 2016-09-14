@@ -1,27 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkBR3-0006iR-0W
- for ath10k@lists.infradead.org; Wed, 14 Sep 2016 14:45:14 +0000
+ id 1bkBgr-0008Vw-32
+ for ath10k@lists.infradead.org; Wed, 14 Sep 2016 15:01:35 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: QCA9984 VHT160 support
-Date: Wed, 14 Sep 2016 14:44:42 +0000
-Message-ID: <8737l2ee1y.fsf@kamboji.qca.qualcomm.com>
-References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
- <57320C1A.3040604@candelatech.com>
- <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
- <57335A43.4050902@candelatech.com>
- <CA+uUJGsVi0OiwK4D6n-ANXRm6ptiTdjvKNboXobwn4FA0YfsRQ@mail.gmail.com>
- <573892F5.40706@candelatech.com> <5738AE96.8040800@candelatech.com>
- <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
- <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
- <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
- <87lgyug42q.fsf@kamboji.qca.qualcomm.com>
- <bd2ae01e-6cf5-837e-5573-1d62bbfdbe1b@dd-wrt.com>
-In-Reply-To: <bd2ae01e-6cf5-837e-5573-1d62bbfdbe1b@dd-wrt.com> (Sebastian
- Gottschall's message of "Wed, 14 Sep 2016 16:38:39 +0200")
+Subject: Re: [PATCH v2 12/21] ath10k: Support up to 64 vdevs.
+Date: Wed, 14 Sep 2016 15:01:07 +0000
+Message-ID: <87y42ucyq6.fsf@kamboji.qca.qualcomm.com>
+References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
+ <1462986153-16318-13-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1462986153-16318-13-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Wed, 11 May 2016 10:02:24	-0700")
 Content-Language: en-US
-Content-ID: <374B978C33659A4F953D352AC1C6F6A4@qualcomm.com>
+Content-ID: <0AF6A5340F619944BB3C01E6E755169E@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -35,34 +26,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "greearb@candelatech.com" <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+greearb@candelatech.com writes:
 
-> Am 14.09.2016 um 12:37 schrieb Valo, Kalle:
->> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
->>
->>> Attached you will find a testing patch for VHT160 support. i tested it
->>> today on a QCA9984 device and it seems to work.
->>> feel free to make any corrections
->> Signed-off-by is missing so I can't take this. Can you resend, please
+> From: Ben Greear <greearb@candelatech.com>
 >
-> i can send you a updated version. it tested with vht160 so far.
+> The (1 << x) - 1 trick won't work when you
+> are trying to fill up all 64 bits, so add special
+> case for that.
+>
+> And, move the limits to the per-nic structure instead
+> of per-driver to allow better dynamic use of the limits.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/core.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index 3f1786c..fa71d57 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -1819,7 +1819,10 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+>  	if (status)
+>  		goto err_hif_stop;
+>  
+> -	ar->free_vdev_map = (1LL << ar->max_num_vdevs) - 1;
+> +	if (ar->max_num_vdevs >= 64)
+> +		ar->free_vdev_map = 0xFFFFFFFFFFFFFFFFLL;
+> +	else
+> +		ar->free_vdev_map = (1LL << ar->max_num_vdevs) - 1;
 
-Great, thanks.
-
-> however. on codeaurore there is a newer firmware for 9984 which
-> provides the correct vht flags straight from the firmware but its
-> crashing in vht160 mode. can you ask the firmware team to provide a
-> bugfixed version for the official ath10k? with 80p80 and vht160
-> support? 80p80 works somewhat bug has wrong vht flags per station,
-> vht160 works with my quirks so far which are all related to the buggy
-> firmware
-
-I can ask but I need more info. What's the exact location of the newer
-firmware image? Is there any detailed description about the wrong vht
-flags bug?
+The last sentence in the commit log doesn't match the code, I removed
+that in the pending branch.
 
 -- 
 Kalle Valo
