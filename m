@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkBmT-0007IU-UI
- for ath10k@lists.infradead.org; Wed, 14 Sep 2016 15:07:25 +0000
-Message-ID: <57D9677E.5030704@candelatech.com>
-Date: Wed, 14 Sep 2016 08:06:38 -0700
+ id 1bkBsw-0007Jf-VT
+ for ath10k@lists.infradead.org; Wed, 14 Sep 2016 15:14:03 +0000
+Message-ID: <57D96910.2010608@candelatech.com>
+Date: Wed, 14 Sep 2016 08:13:20 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 08/21] ath10k: make firmware text debug messages more
- verbose.
+Subject: Re: [PATCH v2 09/21] ath10k: print fw debug messages in hex.
 References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
- <1462986153-16318-9-git-send-email-greearb@candelatech.com>
- <87sht2efiu.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87sht2efiu.fsf@kamboji.qca.qualcomm.com>
+ <1462986153-16318-10-git-send-email-greearb@candelatech.com>
+ <87oa3qefac.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87oa3qefac.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,49 +29,109 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@l
 
 
 
-On 09/14/2016 07:12 AM, Valo, Kalle wrote:
+On 09/14/2016 07:18 AM, Valo, Kalle wrote:
 > greearb@candelatech.com writes:
 >
 >> From: Ben Greear <greearb@candelatech.com>
 >>
->> There are not many of these messages producted by the
->> firmware, but they are generally fairly useful, so print
->> them at info level.
+>> This allows user-space tools to decode debug-log
+>> messages by parsing dmesg or /var/log/messages.
 >>
 >> Signed-off-by: Ben Greear <greearb@candelatech.com>
->> ---
->>   drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
->> index 1758b4a..d9e4b77 100644
->> --- a/drivers/net/wireless/ath/ath10k/wmi.c
->> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
->> @@ -4050,7 +4050,7 @@ void ath10k_wmi_event_debug_print(struct ath10k *ar, struct sk_buff *skb)
->>   	/* the last byte is always reserved for the null character */
->>   	buf[i] = '\0';
->>
->> -	ath10k_dbg(ar, ATH10K_DBG_WMI_PRINT, "wmi print '%s'\n", buf);
->> +	ath10k_info(ar, "wmi print '%s'\n", buf);
 >
-> Useful to whom and how? I understand that for firmware developers this
-> is very valuable information and that's why we have a special debug
-> level for it. But I suspect that for normal users these are just
-> confusing and unnecessarily spam the log.
+> Don't tracing points already provide the same information?
 
-CT firmare will print out some memory usage info on firmware boot, and that can
-allow a discerning individual to tune their vdev, peer, rate-ctrl, and other
-object usage in order to make best use of resources in the firmware.
+Tracing tools are difficult to set up and may not be available on
+random embedded devices.  And if we are dealing with bug reports from
+the field, most users will not be able to set it up regardless.
 
-These few lines can greatly aid debugging certain types of crashes and performance
-loss in the firmware, so having them readily available in 'dmesg' or similar
-for bug reports from the field helps me.
+There are similar ways to print out hex, but the logic below creates
+specific and parseable logs in the 'dmesg' output and similar.
 
-Stock firmware will also print out some resource usage info.  It is just
-a few lines on firmware boot, but it is quite useful in my experience.
+I have written a tool that can decode these messages into useful human-readable
+text so that I can debug firmware issues both locally and from field reports.
 
-Thank,
+Stock firmware generates similar logs and QCA could write their own decode logic
+for their firmware versions.
+
+Thanks,
 Ben
+
+
+>
+>> +void ath10k_dbg_print_fw_dbg_buffer(struct ath10k *ar, __le32 *ibuf, int len,
+>> +				    const char* lvl)
+>> +{
+>> +	/* Print out raw hex, external tools can decode if
+>> +	 * they care.
+>> +	 * TODO:  Add ar identifier to messages.
+>> +	 */
+>> +	int q = 0;
+>> +
+>> +	dev_printk(lvl, ar->dev, "ath10k_pci ATH10K_DBG_BUFFER:\n");
+>> +	while (q < len) {
+>> +		if (q + 8 <= len) {
+>> +			printk("%sath10k: [%04d]: %08X %08X %08X %08X %08X %08X %08X %08X\n",
+>> +			       lvl, q,
+>> +			       ibuf[q], ibuf[q+1], ibuf[q+2], ibuf[q+3],
+>> +			       ibuf[q+4], ibuf[q+5], ibuf[q+6], ibuf[q+7]);
+>> +			q += 8;
+>> +		}
+>> +		else if (q + 7 <= len) {
+>> +			printk("%sath10k: [%04d]: %08X %08X %08X %08X %08X %08X %08X\n",
+>> +			       lvl, q,
+>> +			       ibuf[q], ibuf[q+1], ibuf[q+2], ibuf[q+3],
+>> +			       ibuf[q+4], ibuf[q+5], ibuf[q+6]);
+>> +			q += 7;
+>> +		}
+>> +		else if (q + 6 <= len) {
+>> +			printk("%sath10k: [%04d]: %08X %08X %08X %08X %08X %08X\n",
+>> +			       lvl, q,
+>> +			       ibuf[q], ibuf[q+1], ibuf[q+2], ibuf[q+3],
+>> +			       ibuf[q+4], ibuf[q+5]);
+>> +			q += 6;
+>> +		}
+>> +		else if (q + 5 <= len) {
+>> +			printk("%sath10k: [%04d]: %08X %08X %08X %08X %08X\n",
+>> +			       lvl, q,
+>> +			       ibuf[q], ibuf[q+1], ibuf[q+2], ibuf[q+3],
+>> +			       ibuf[q+4]);
+>> +			q += 5;
+>> +		}
+>> +		else if (q + 4 <= len) {
+>> +			printk("%sath10k: [%04d]: %08X %08X %08X %08X\n",
+>> +			       lvl, q,
+>> +			       ibuf[q], ibuf[q+1], ibuf[q+2], ibuf[q+3]);
+>> +			q += 4;
+>> +		}
+>> +		else if (q + 3 <= len) {
+>> +			printk("%sath10k: [%04d]: %08X %08X %08X\n",
+>> +			       lvl, q,
+>> +			       ibuf[q], ibuf[q+1], ibuf[q+2]);
+>> +			q += 3;
+>> +		}
+>> +		else if (q + 2 <= len) {
+>> +			printk("%sath10k: [%04d]: %08X %08X\n",
+>> +			       lvl, q,
+>> +			       ibuf[q], ibuf[q+1]);
+>> +			q += 2;
+>> +		}
+>> +		else if (q + 1 <= len) {
+>> +			printk("%sath10k: [%04d]: %08X\n",
+>> +			       lvl, q,
+>> +			       ibuf[q]);
+>> +			q += 1;
+>> +		}
+>> +		else {
+>> +			break;
+>> +		}
+>> +	}/* while */
+>> +
+>> +	dev_printk(lvl, ar->dev, "ATH10K_END\n");
+>> +}
+>
+> Isn't this almost the same as what ath10k_dbg_dump() does?
+>
 
 -- 
 Ben Greear <greearb@candelatech.com>
