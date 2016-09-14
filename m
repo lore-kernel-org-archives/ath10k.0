@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bk9Jj-0000K2-EV
- for ath10k@lists.infradead.org; Wed, 14 Sep 2016 12:29:32 +0000
+ id 1bkApn-0006Nj-Lu
+ for ath10k@lists.infradead.org; Wed, 14 Sep 2016 14:06:45 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Add missing CONFIG_ATH10K_DEBUGFS check
-Date: Wed, 14 Sep 2016 12:29:03 +0000
-Message-ID: <87a8fafywg.fsf@kamboji.qca.qualcomm.com>
-References: <871t0tp1ad.fsf@kamboji.qca.qualcomm.com>
- <20160912141105.24085-1-benjamin@sipsolutions.net>
-In-Reply-To: <20160912141105.24085-1-benjamin@sipsolutions.net> (Benjamin
- Berg's message of "Mon, 12 Sep 2016 16:11:05 +0200")
+Subject: Re: [PATCH v2 03/21] ath10k: Allow changing ath10k debug mask at
+ runtime.
+Date: Wed, 14 Sep 2016 14:06:13 +0000
+Message-ID: <871t0mfuej.fsf@kamboji.qca.qualcomm.com>
+References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
+ <1462986153-16318-4-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1462986153-16318-4-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Wed, 11 May 2016 10:02:15	-0700")
 Content-Language: en-US
-Content-ID: <3EEC5E22C67007478C90FD1BDE925F8F@qualcomm.com>
+Content-ID: <ADCAF8FA51BDAB4092F44DB481B540F0@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,25 +27,84 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Benjamin Berg <benjamin@sipsolutions.net>
-Cc: Simon Wunderlich <sw@simonwunderlich.de>, "Thiagarajan,
- Vasanthakumar" <vthiagar@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k @ lists . infradead . org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+To: "greearb@candelatech.com" <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Benjamin Berg <benjamin@sipsolutions.net> writes:
+greearb@candelatech.com writes:
 
-> The patch "ath10k: allow setting coverage class" was missing a check for
-> CONFIG_ATH10K_DEBUGFS so it would try to use non-existing struct elements
-> in some configurations. Fix this by adding the appropriate ifdef.
+> From: Ben Greear <greearb@candelatech.com>
 >
-> Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+> Using debugfs.  More convenient than module options
+> in some cases.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 > ---
+>  drivers/net/wireless/ath/ath10k/debug.c | 62 +++++++++++++++++++++++++++++++++
+>  1 file changed, 62 insertions(+)
 >
-> Sorry, so turns out the kbuild test robot is correct and I forgot the ifdef
-> to check for CONFIG_ATH10K_DEBUGFS, so here a fixup commit for it.
->
-> Other than that everything looks good to me in the pending branch.
+> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+> index e251155..d552a4a 100644
+> --- a/drivers/net/wireless/ath/ath10k/debug.c
+> +++ b/drivers/net/wireless/ath/ath10k/debug.c
+> @@ -870,6 +870,65 @@ static const struct file_operations fops_reg_addr = {
+>  	.llseek = default_llseek,
+>  };
+>  
+> +static ssize_t ath10k_read_debug_level(struct file *file,
+> +				       char __user *user_buf,
+> +				       size_t count, loff_t *ppos)
+> +{
+> +	int sz;
+> +	const char buf[] =
+> +		"To change debug level, set value adding up desired flags:\n"
+> +		"PCI:                0x1\n"
+> +		"WMI:                0x2\n"
+> +		"HTC:                0x4\n"
+> +		"HTT:                0x8\n"
+> +		"MAC:               0x10\n"
+> +		"BOOT:              0x20\n"
+> +		"PCI-DUMP:          0x40\n"
+> +		"HTT-DUMP:          0x80\n"
+> +		"MGMT:             0x100\n"
+> +		"DATA:             0x200\n"
+> +		"BMI:              0x400\n"
+> +		"REGULATORY:       0x800\n"
+> +		"TESTMODE:        0x1000\n"
+> +		"INFO-AS-DBG: 0x40000000\n"
+> +		"FW:          0x80000000\n"
+> +		"ALL:         0xFFFFFFFF\n";
+> +	char wbuf[sizeof(buf) + 60];
+> +	sz = snprintf(wbuf, sizeof(wbuf), "Current debug level: 0x%x\n\n%s",
+> +		      ath10k_debug_mask, buf);
+> +	wbuf[sizeof(wbuf) - 1] = 0;
+> +
+> +	return simple_read_from_buffer(user_buf, count, ppos, wbuf, sz);
+> +}
+> +
+> +/* Set logging level.
+> + */
+> +static ssize_t ath10k_write_debug_level(struct file *file,
+> +					const char __user *user_buf,
+> +					size_t count, loff_t *ppos)
+> +{
+> +	struct ath10k *ar = file->private_data;
+> +	int ret;
+> +	unsigned long mask;
+> +
+> +	ret = kstrtoul_from_user(user_buf, count, 0, &mask);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ath10k_warn(ar, "Setting debug-mask to: 0x%lx  old: 0x%x\n",
+> +		    mask, ath10k_debug_mask);
+> +	ath10k_debug_mask = mask;
+> +	return count;
+> +}
 
-Thanks, I folded this to the original patch in the pending branch.
+There are already sysfs files for module parameters which seems to work
+just fine for this case:
+
+# echo 0xffffffff > /sys/module/ath10k_core/parameters/debug_mask
 
 -- 
 Kalle Valo
