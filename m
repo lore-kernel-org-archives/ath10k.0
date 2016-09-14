@@ -1,23 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bk2KY-0003G8-Bp
- for ath10k@lists.infradead.org; Wed, 14 Sep 2016 05:01:55 +0000
+ id 1bk4IE-0008Ah-Dk
+ for ath10k@lists.infradead.org; Wed, 14 Sep 2016 07:07:39 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: accessing ath10k calibration data
-Date: Wed, 14 Sep 2016 05:01:13 +0000
-Message-ID: <87mvjbhy7b.fsf@kamboji.qca.qualcomm.com>
-References: <CAOiWkA-VhhARncY-E9XnKXm=XmUraCgjDsM+eDLJW2Wx7Jn4Qw@mail.gmail.com>
- <CAJ-VmonT9SNipiMQdmgN4__4QMxgGKYg_-SwH4bieWKwfwdX5A@mail.gmail.com>
- <CAOiWkA8NSv1VskZi4AnTgjt6p-NsRoTMzHqyAPwCsMKU-c9ujg@mail.gmail.com>
- <CA+BoTQn5L58sPyE=u79GACoMEXSrdfmJi-OGv3K3kEX46k6sxA@mail.gmail.com>
- <CAOiWkA8P-qR6HHyMFNszmc7CcypuN1+RLSXPrmH6Q6EeYCa4aw@mail.gmail.com>
- <87lgywjcwi.fsf@kamboji.qca.qualcomm.com>
- <CAOiWkA_Xm3pXGzHEWnCO9JKhahJkKQ6yEVt8DXaHi1cFvoFzew@mail.gmail.com>
-In-Reply-To: <CAOiWkA_Xm3pXGzHEWnCO9JKhahJkKQ6yEVt8DXaHi1cFvoFzew@mail.gmail.com>	(Marty
- Faltesek's message of "Tue, 13 Sep 2016 16:49:36 -0400")
+Subject: Re: [PATCH 2/2] ath10k: add platform regulatory domain support
+Date: Wed, 14 Sep 2016 07:06:54 +0000
+Message-ID: <871t0nhsdu.fsf@kamboji.qca.qualcomm.com>
+References: <1470140454-3899-1-git-send-email-bartosz.markowski@tieto.com>
+ <1470140454-3899-3-git-send-email-bartosz.markowski@tieto.com>
+ <87bmztm8qm.fsf@kamboji.qca.qualcomm.com>
+ <CACKGw+FAwPb2NLW5G8CnGH4X2eCCjUkuJwLoqW9w9rKpDuQJDw@mail.gmail.com>
+In-Reply-To: <CACKGw+FAwPb2NLW5G8CnGH4X2eCCjUkuJwLoqW9w9rKpDuQJDw@mail.gmail.com>	(Bartosz
+ Markowski's message of "Tue, 13 Sep 2016 15:57:17 +0200")
 Content-Language: en-US
-Content-ID: <D0A5A10C4D27EF4090FDC1E63BDAB826@qualcomm.com>
+Content-ID: <D619C25A8925404996BC985860F25799@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,21 +28,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marty Faltesek <mfaltesek@google.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "bartosz.markowski@tieto.com" <bartosz.markowski@tieto.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Marty Faltesek <mfaltesek@google.com> writes:
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> OK this does work for me after all. Thanks.
+> On 12 September 2016 at 17:35, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+>
+>> > +#ifdef CONFIG_ACPI
+>> > +#define WRD_METHOD "WRDD"
+>> > +#define WRDD_WIFI  (0x07)
+>> > +
+>> > +static u32 ath10k_mac_wrdd_get_mcc(struct ath10k *ar, union acpi_object *wrdd)
+>> > +{
+>>
+>> I don't think the ifdef is really necessary, acpi.h should handle that
+>> (hopefully). Also I changed the error handling to use standard error
+>> values and changed the info messages to dbg, they are too spammy in my
+>> opinion. Please check carefully my changes in the pending branch:
+>>
+>> https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=fe91745381ec3999d8de6dedb07b396c82539717
+>
+> I'm OK with the changes, I have not tried that though, except of
+> reviewing and compiling it (do not have access to the chromebook for
+> next few days). If you want to wait with it until I test it, it's fine
+> too.
 
-Great.
-
-> I wrote a patch to cache cal_data only while the core is off. I don't
-> need it now, but wondering if there is any benefit
-> to submitting it?
-
-I guess Adrian already answered that :) So please do submit and let's
-take a look at it.
+Ok, I'll wait for few days in case you have time to test it.
 
 -- 
 Kalle Valo
