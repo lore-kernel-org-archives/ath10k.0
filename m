@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkB8J-0007XR-Uj
- for ath10k@lists.infradead.org; Wed, 14 Sep 2016 14:26:05 +0000
+ by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bkBDg-00075V-4J
+ for ath10k@lists.infradead.org; Wed, 14 Sep 2016 14:31:28 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 11/21] ath10k: add fw-powerup-fail to ethtool stats.
-Date: Wed, 14 Sep 2016 14:25:26 +0000
-Message-ID: <87fup2eey2.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 15/21] ath10k: support CT firmware flag.
+Date: Wed, 14 Sep 2016 14:30:55 +0000
+Message-ID: <87bmzqeeox.fsf@kamboji.qca.qualcomm.com>
 References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
- <1462986153-16318-12-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1462986153-16318-12-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Wed, 11 May 2016 10:02:23	-0700")
+ <1462986153-16318-16-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1462986153-16318-16-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Wed, 11 May 2016 10:02:27	-0700")
 Content-Language: en-US
-Content-ID: <3A468AC6E4E5DE49A25F1CDD7B9F3346@qualcomm.com>
+Content-ID: <73AAD6EB11EB8B43BEA788FB0E10FFFE@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -33,74 +33,45 @@ greearb@candelatech.com writes:
 
 > From: Ben Greear <greearb@candelatech.com>
 >
-> This gives user-space a normal-ish way to detect that
-> firmware has failed to start and that a reboot is
-> probably required.
+> Add placeholder so CT firmware can more easily co-exist with upstream
+> kernel.  CT firmware should be backwards compatible with existing kernels,
+> but it also has many new features.  Subsequent patches, if acceptable for
+> upstream, can enable and further describe those features.
 >
 > Signed-off-by: Ben Greear <greearb@candelatech.com>
 > ---
->  drivers/net/wireless/ath/ath10k/core.h  | 1 +
->  drivers/net/wireless/ath/ath10k/debug.c | 2 ++
->  drivers/net/wireless/ath/ath10k/pci.c   | 2 ++
->  3 files changed, 5 insertions(+)
+>  drivers/net/wireless/ath/ath10k/core.c | 1 +
+>  drivers/net/wireless/ath/ath10k/core.h | 3 +++
+>  2 files changed, 4 insertions(+)
 >
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 6aa7a14..e7c228a 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -698,6 +698,7 @@ struct ath10k {
->  
->  	enum ath10k_hw_rev hw_rev;
->  	u16 dev_id;
-> +	bool fw_powerup_failed; /* If true, might take reboot to recover. */
->  	u32 chip_id;
->  	u32 target_version;
->  	u8 fw_version_major;
-> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-> index 76b5163..05b5ea4 100644
-> --- a/drivers/net/wireless/ath/ath10k/debug.c
-> +++ b/drivers/net/wireless/ath/ath10k/debug.c
-> @@ -1541,6 +1541,7 @@ static const char ath10k_gstrings_stats[][ETH_GSTRING_LEN] = {
->  	"d_fw_crash_count",
->  	"d_fw_warm_reset_count",
->  	"d_fw_cold_reset_count",
-> +	"d_fw_powerup_failed", /* boolean */
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index fa71d57..49c85c3 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -235,6 +235,7 @@ static const char *const ath10k_core_fw_feature_str[] = {
+>  	[ATH10K_FW_FEATURE_SUPPORTS_ADAPTIVE_CCA] = "adaptive-cca",
+>  	[ATH10K_FW_FEATURE_MFP_SUPPORT] = "mfp",
+>  	[ATH10K_FW_FEATURE_PEER_FLOW_CONTROL] = "peer-flow-ctrl",
+> +	[ATH10K_FW_FEATURE_WMI_10X_CT] = "wmi-10.x-CT",
 >  };
 >  
->  #define ATH10K_SSTATS_LEN ARRAY_SIZE(ath10k_gstrings_stats)
-> @@ -1640,6 +1641,7 @@ void ath10k_debug_get_et_stats(struct ieee80211_hw *hw,
->  	data[i++] = ar->stats.fw_crash_counter;
->  	data[i++] = ar->stats.fw_warm_reset_counter;
->  	data[i++] = ar->stats.fw_cold_reset_counter;
-> +	data[i++] = ar->fw_powerup_failed;
+>  static unsigned int ath10k_core_get_fw_feature_str(char *buf,
+> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+> index cb6aa8c..f9e3b20 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.h
+> +++ b/drivers/net/wireless/ath/ath10k/core.h
+> @@ -566,6 +566,9 @@ enum ath10k_fw_features {
+>  	 */
+>  	ATH10K_FW_FEATURE_PEER_FLOW_CONTROL = 13,
 >  
->  	spin_unlock_bh(&ar->data_lock);
->  
-> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-> index dbf0db8..2adc459 100644
-> --- a/drivers/net/wireless/ath/ath10k/pci.c
-> +++ b/drivers/net/wireless/ath/ath10k/pci.c
-> @@ -2709,10 +2709,12 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
->  		goto err_ce;
->  	}
->  
-> +	ar->fw_powerup_failed = false;
->  	return 0;
->  
->  err_ce:
->  	ath10k_pci_ce_deinit(ar);
-> +	ar->fw_powerup_failed = true;
->  
->  err_sleep:
->  	return ret;
+> +	/* Firmware from Candela Technologies, enables more VIFs, etc */
+> +	ATH10K_FW_FEATURE_WMI_10X_CT = 31,
 
-I didn't test myself, but if the firmware boot fails during module load
-we should return an error and the module would fail to load (and hence
-no network interface available). And if the firmware boot fails during
-the interface up call (mac80211 calling ath10k_start()) we should return
-an error and the interface would stay down. IMHO that's enough of
-indications to the user space, I don't see how providing this boolean
-via ethtool stats is really needed.
+The idea of firmware feature flags to enable (or disable) one particular
+feature, not a group of features. This way it's easy to enable certain
+features on different firmware branches. It also makes the maintenance
+easier as you don't need to remember all the different features one flag
+enables.
 
 -- 
 Kalle Valo
