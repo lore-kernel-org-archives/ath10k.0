@@ -1,26 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bk7Zb-0001G1-Cc
- for ath10k@lists.infradead.org; Wed, 14 Sep 2016 10:37:48 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: QCA9984 VHT160 support
-Date: Wed, 14 Sep 2016 10:37:18 +0000
-Message-ID: <87lgyug42q.fsf@kamboji.qca.qualcomm.com>
-References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
- <57320C1A.3040604@candelatech.com>
- <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
- <57335A43.4050902@candelatech.com>
- <CA+uUJGsVi0OiwK4D6n-ANXRm6ptiTdjvKNboXobwn4FA0YfsRQ@mail.gmail.com>
- <573892F5.40706@candelatech.com> <5738AE96.8040800@candelatech.com>
- <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
- <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
- <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
-In-Reply-To: <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com> (Sebastian
- Gottschall's message of "Tue, 17 May 2016 13:43:39 +0200")
-Content-Language: en-US
-Content-ID: <35348A302CD5E5499DE30C51CBEBD0CB@qualcomm.com>
+ id 1bk9FT-00073a-27
+ for ath10k@lists.infradead.org; Wed, 14 Sep 2016 12:25:07 +0000
 MIME-Version: 1.0
+Subject: Re: [1/2] ath10k: handle testmode events for 10.2 based firmware
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <20160603153328.11947-1-rmanohar@qti.qualcomm.com>
+Message-ID: <20496dae439740198669bc2de651ca50@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 14 Sep 2016 14:24:39 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,21 +21,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rmanohar@codeaurora.org
 
-Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
+> Currently testmode events for 10.x firmware are processed from
+> 10.1 wmi event processing. In order to remove 10.1 firmware support,
+> testmode events should be handled from 10.2 event processing.
+> 
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-> Attached you will find a testing patch for VHT160 support. i tested it
-> today on a QCA9984 device and it seems to work.
-> feel free to make any corrections
-
-Signed-off-by is missing so I can't take this. Can you resend, please?
-
-Also remember to CC linux-wireless.
+This is an old patch, but we already have this functionality in
+ath10k_wmi_10_2_op_rx(). So I'll drop this patch.
 
 -- 
-Kalle Valo
+Sent by pwcli
+https://patchwork.kernel.org/patch/9153395/
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
