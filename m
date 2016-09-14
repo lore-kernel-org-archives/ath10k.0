@@ -1,19 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkBKM-0001N2-Ft
- for ath10k@lists.infradead.org; Wed, 14 Sep 2016 14:38:19 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 19/21] ath10k: Enable adhoc mode for CT firmware.
-Date: Wed, 14 Sep 2016 14:37:42 +0000
-Message-ID: <877faeeedm.fsf@kamboji.qca.qualcomm.com>
-References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
- <1462986153-16318-20-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1462986153-16318-20-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Wed, 11 May 2016 10:02:31	-0700")
-Content-Language: en-US
-Content-ID: <91C08870E15CBB4AAF021D0B90B4AD54@qualcomm.com>
+ id 1bkBL7-0001nA-DE
+ for ath10k@lists.infradead.org; Wed, 14 Sep 2016 14:39:11 +0000
+References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
+ <57320C1A.3040604@candelatech.com>
+ <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
+ <57335A43.4050902@candelatech.com>
+ <CA+uUJGsVi0OiwK4D6n-ANXRm6ptiTdjvKNboXobwn4FA0YfsRQ@mail.gmail.com>
+ <573892F5.40706@candelatech.com> <5738AE96.8040800@candelatech.com>
+ <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
+ <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
+ <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
+ <87lgyug42q.fsf@kamboji.qca.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <bd2ae01e-6cf5-837e-5573-1d62bbfdbe1b@dd-wrt.com>
+Date: Wed, 14 Sep 2016 16:38:39 +0200
 MIME-Version: 1.0
+In-Reply-To: <87lgyug42q.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: QCA9984 VHT160 support
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +28,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "greearb@candelatech.com" <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-greearb@candelatech.com writes:
-
-> From: Ben Greear <greearb@candelatech.com>
+Am 14.09.2016 um 12:37 schrieb Valo, Kalle:
+> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
 >
-> CT firmware can support IBSS mode, so allow users to configure this.
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> ---
->  drivers/net/wireless/ath/ath10k/mac.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index f1bfb3a..3fc9006 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -7482,6 +7482,10 @@ static const struct ieee80211_iface_limit ath10k_10x_ct_if_limits[] = {
->  	.max	= 7,
->  	.types	= BIT(NL80211_IFTYPE_AP)
->  	},
-> +	{
-> +	.max	= 1,
-> +	.types	= BIT(NL80211_IFTYPE_ADHOC)
-> +	},
->  };
->  
->  static const struct ieee80211_iface_combination ath10k_if_comb[] = {
-> @@ -7862,6 +7866,7 @@ int ath10k_mac_register(struct ath10k *ar)
->  			ar->hw->wiphy->iface_combinations = ath10k_10x_ct_if_comb;
->  			ar->hw->wiphy->n_iface_combinations =
->  				ARRAY_SIZE(ath10k_10x_ct_if_comb);
-> +			ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
->  		} else {
->  			ar->hw->wiphy->iface_combinations = ath10k_10x_if_comb;
->  			ar->hw->wiphy->n_iface_combinations =
+>> Attached you will find a testing patch for VHT160 support. i tested it
+>> today on a QCA9984 device and it seems to work.
+>> feel free to make any corrections
+> Signed-off-by is missing so I can't take this. Can you resend, please
+i can send you a updated version. it tested with vht160 so far. however. =
 
-There should a feature flag ATH10K_FW_FEATURE_SUPPORTS_ADHOC and we use
-that flag as an indication to enable the mode. I wish we had done that
-from the beginning, using wmi_op_version to guess that just creates
-problems :(
+on codeaurore there is a newer firmware for 9984 which provides the =
 
--- 
-Kalle Valo
+correct vht flags straight from the firmware
+but its crashing in vht160 mode. can you ask the firmware team to =
+
+provide a bugfixed version for the official ath10k? with 80p80 and =
+
+vht160 support?
+80p80 works somewhat bug has wrong vht flags per station, vht160 works =
+
+with my quirks so far which are all related to the buggy firmware
+>
+> Also remember to CC linux-wireless.
+>
+
+
+-- =
+
+Mit freundlichen Gr=FCssen / Regards
+
+Sebastian Gottschall / CTO
+
+NewMedia-NET GmbH - DD-WRT
+Firmensitz:  Berliner Ring 101, 64625 Bensheim
+Registergericht: Amtsgericht Darmstadt, HRB 25473
+Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
+http://www.dd-wrt.com
+email: s.gottschall@dd-wrt.com
+Tel.: +496251-582650 / Fax: +496251-5826565
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
