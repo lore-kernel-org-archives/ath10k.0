@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkXJp-00053c-Hm
- for ath10k@lists.infradead.org; Thu, 15 Sep 2016 14:07:17 +0000
+ id 1bkXPe-0007MI-9i
+ for ath10k@lists.infradead.org; Thu, 15 Sep 2016 14:13:19 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 09/21] ath10k: print fw debug messages in hex.
-Date: Thu, 15 Sep 2016 14:06:48 +0000
-Message-ID: <87k2edb6kp.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 10/21] ath10k: support logging ath10k_info as KERN_DEBUG
+Date: Thu, 15 Sep 2016 14:12:48 +0000
+Message-ID: <87fup1b6ao.fsf@kamboji.qca.qualcomm.com>
 References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
- <1462986153-16318-10-git-send-email-greearb@candelatech.com>
- <87oa3qefac.fsf@kamboji.qca.qualcomm.com>	<57D96910.2010608@candelatech.com>
-In-Reply-To: <57D96910.2010608@candelatech.com> (Ben Greear's message of "Wed, 
- 14 Sep 2016 08:13:20 -0700")
+ <1462986153-16318-11-git-send-email-greearb@candelatech.com>
+ <87k2eeef79.fsf@kamboji.qca.qualcomm.com>	<57D9696B.10103@candelatech.com>
+In-Reply-To: <57D9696B.10103@candelatech.com> (Ben Greear's message of "Wed,
+ 14 Sep 2016 08:14:51 -0700")
 Content-Language: en-US
-Content-ID: <0320A61C48859E4F9B88F2CBEDF79F93@qualcomm.com>
+Content-ID: <686E2C3AFD0FC044BBE193766892E29A@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,38 +28,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: "emmanuel.grumbach@intel.com" <emmanuel.grumbach@intel.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Ben Greear <greearb@candelatech.com> writes:
 
-> On 09/14/2016 07:18 AM, Valo, Kalle wrote:
+> On 09/14/2016 07:19 AM, Valo, Kalle wrote:
 >> greearb@candelatech.com writes:
 >>
 >>> From: Ben Greear <greearb@candelatech.com>
 >>>
->>> This allows user-space tools to decode debug-log
->>> messages by parsing dmesg or /var/log/messages.
+>>> Helps keep messages off of (serial) console when
+>>> that is desired.
 >>>
 >>> Signed-off-by: Ben Greear <greearb@candelatech.com>
 >>
->> Don't tracing points already provide the same information?
+>> Isn't /proc/sys/kernel/print exactly for this purpose? At least I recall
+>> using it.
 >
-> Tracing tools are difficult to set up and may not be available on
-> random embedded devices.  And if we are dealing with bug reports from
-> the field, most users will not be able to set it up regardless.
->
-> There are similar ways to print out hex, but the logic below creates
-> specific and parseable logs in the 'dmesg' output and similar.
->
-> I have written a tool that can decode these messages into useful human-readable
-> text so that I can debug firmware issues both locally and from field reports.
->
-> Stock firmware generates similar logs and QCA could write their own decode logic
-> for their firmware versions.
+> I just wanted to hide some ath10k logs from the console, not all
+> system logs. I don't think that /proc/sys/kernel/print has any
+> granularity?
 
-Reinventing the wheel by using printk as the delivery mechanism doesn't
-sound like a good idea. IIRC Emmanuel talked about some kind of firmware
-debugging framework, he might have some ideas.
+It should be based on KERN_ log levels. I don't know what your kernel
+does, but ath10k should be printing only very few messages with level
+KERN_INFO or above, all of of the debug messages. So you should be
+easily able to filter out all ath10k debug messages as they are sent
+with KERN_DEBUG.
 
 -- 
 Kalle Valo
