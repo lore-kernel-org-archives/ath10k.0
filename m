@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.net ([212.227.15.19])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkWjy-0001Yd-Rz
- for ath10k@lists.infradead.org; Thu, 15 Sep 2016 13:30:17 +0000
-Received: from [192.168.2.106] ([93.204.160.61]) by mail.gmx.com (mrgmx003)
- with ESMTPSA (Nemesis) id 0LvVYZ-1b29QO22GB-010aBv for
- <ath10k@lists.infradead.org>; Thu, 15 Sep 2016 15:29:47 +0200
-From: Daniel Holz <daniel.holz91@gmx.de>
-Subject: QCA6174 Performance
-Message-ID: <3683ea4d-10ce-80a1-2e11-4b873f4129b8@gmx.de>
-Date: Thu, 15 Sep 2016 15:29:47 +0200
+ id 1bkXD5-00011t-7A
+ for ath10k@lists.infradead.org; Thu, 15 Sep 2016 14:00:19 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 04/21] ath10k: rate-limit packet tx errors
+Date: Thu, 15 Sep 2016 13:59:48 +0000
+Message-ID: <87sht1b6wc.fsf@kamboji.qca.qualcomm.com>
+References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
+ <1462986153-16318-5-git-send-email-greearb@candelatech.com>
+ <87wpieefr9.fsf@kamboji.qca.qualcomm.com>	<57D96669.20209@candelatech.com>
+In-Reply-To: <57D96669.20209@candelatech.com> (Ben Greear's message of "Wed,
+ 14 Sep 2016 08:02:01 -0700")
+Content-Language: en-US
+Content-ID: <571942CE57C08940933F53F9A3705739@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,30 +23,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hello,
+Ben Greear <greearb@candelatech.com> writes:
 
-the network performance of the Qualcom QCA6174 in my Lenovo Yoga 3 11 is 
-only around 7-8 Mbyte/s in tests with iperf when using a wireless ac 
-connection. Disabling power management resulted in 10 MByte/s. Under the 
-same conditions my Android phone achieved 384 MByte/s.
+> On 09/14/2016 07:07 AM, Valo, Kalle wrote:
+>> greearb@candelatech.com writes:
+>>
+>>> From: Ben Greear <greearb@candelatech.com>
+>>>
+>>> When firmware crashes, stack can continue to send packets
+>>> for a bit, and existing code was spamming logs.
+>>>
+>>> So, rate-limit the error message for tx failures.
+>>>
+>>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>>> ---
+>>>   drivers/net/wireless/ath/ath10k/mac.c | 5 +++--
+>>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+>>> index cd3016d..42cac32 100644
+>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>>> @@ -3432,8 +3432,9 @@ static int ath10k_mac_tx_submit(struct ath10k *ar,
+>>>   	}
+>>>
+>>>   	if (ret) {
+>>> -		ath10k_warn(ar, "failed to transmit packet, dropping: %d\n",
+>>> -			    ret);
+>>> +		if (net_ratelimit())
+>>> +			ath10k_warn(ar, "failed to transmit packet, dropping: %d\n",
+>>> +				    ret);
+>>>   		ieee80211_free_txskb(ar->hw, skb);
+>>>   	}
+>>
+>> ath10k_warn() is already rate limited. If there's something wrong then
+>> that function should be fixed, not the callers.
+>>
+>> void ath10k_warn(struct ath10k *ar, const char *fmt, ...)
+>> {
+>> 	struct va_format vaf = {
+>> 		.fmt = fmt,
+>> 	};
+>> 	va_list args;
+>>
+>> 	va_start(args, fmt);
+>> 	vaf.va = &args;
+>> 	dev_warn_ratelimited(ar->dev, "%pV", &vaf);
+>> 	trace_ath10k_log_warn(ar, &vaf);
+>>
+>> 	va_end(args);
+>> }
+>
+> The problem with having the ratelimit here is that you may miss
+> rare warnings due to a flood of common warnings.
+>
+> That is why it is still useful to ratelimit potential floods
+> of warnings.
 
-Currently I'm using Ubuntu 16.04 on my Yoga 3 11 with the most recent 
-hw2.1 firmware and kernel 4.4. I already tried kernel 4.8 which boosted 
-the speed to 15 MByte/s, but this is still way too slow for such a 
-connection.
+I think this is a common problem in kernel, not specific to ath10k. For
+starters you could configure the limits dev_warn_ratelimited() has, not
+trying to workaround it in the driver.
 
+> I would like to remove the ratelimit from ath10k_warn eventually.
 
-Thanks
+I think that's not a good idea, it might cause unnecessary host reboots
+in problem cases. Rate limitting the messages is much better option.
 
-Daniel Holz
-
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
