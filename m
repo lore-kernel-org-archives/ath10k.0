@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkYGT-0003Fk-As
- for ath10k@lists.infradead.org; Thu, 15 Sep 2016 15:07:54 +0000
-Subject: Re: [PATCH v2 03/21] ath10k: Allow changing ath10k debug mask at
- runtime.
+ id 1bkYO2-0003I7-3A
+ for ath10k@lists.infradead.org; Thu, 15 Sep 2016 15:15:41 +0000
+Subject: Re: [PATCH v2 09/21] ath10k: print fw debug messages in hex.
 References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
- <1462986153-16318-4-git-send-email-greearb@candelatech.com>
- <871t0mfuej.fsf@kamboji.qca.qualcomm.com> <57D96DB1.5040003@candelatech.com>
- <874m5hb5zn.fsf@kamboji.qca.qualcomm.com>
+ <1462986153-16318-10-git-send-email-greearb@candelatech.com>
+ <87oa3qefac.fsf@kamboji.qca.qualcomm.com> <57D96910.2010608@candelatech.com>
+ <87k2edb6kp.fsf@kamboji.qca.qualcomm.com>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <ff47bbbb-56da-7eed-91a0-c5acdb03179d@candelatech.com>
-Date: Thu, 15 Sep 2016 08:07:06 -0700
+Message-ID: <a26dfea0-9a18-69fc-e23c-cb223490822d@candelatech.com>
+Date: Thu, 15 Sep 2016 08:14:55 -0700
 MIME-Version: 1.0
-In-Reply-To: <874m5hb5zn.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87k2edb6kp.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,109 +26,53 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "emmanuel.grumbach@intel.com" <emmanuel.grumbach@intel.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/15/2016 07:19 AM, Valo, Kalle wrote:
+On 09/15/2016 07:06 AM, Valo, Kalle wrote:
 > Ben Greear <greearb@candelatech.com> writes:
 >
->> On 09/14/2016 07:06 AM, Valo, Kalle wrote:
+>> On 09/14/2016 07:18 AM, Valo, Kalle wrote:
 >>> greearb@candelatech.com writes:
 >>>
 >>>> From: Ben Greear <greearb@candelatech.com>
 >>>>
->>>> Using debugfs.  More convenient than module options
->>>> in some cases.
+>>>> This allows user-space tools to decode debug-log
+>>>> messages by parsing dmesg or /var/log/messages.
 >>>>
 >>>> Signed-off-by: Ben Greear <greearb@candelatech.com>
->>>> ---
->>>>   drivers/net/wireless/ath/ath10k/debug.c | 62 +++++++++++++++++++++++++++++++++
->>>>   1 file changed, 62 insertions(+)
->>>>
->>>> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
->>>> index e251155..d552a4a 100644
->>>> --- a/drivers/net/wireless/ath/ath10k/debug.c
->>>> +++ b/drivers/net/wireless/ath/ath10k/debug.c
->>>> @@ -870,6 +870,65 @@ static const struct file_operations fops_reg_addr = {
->>>>   	.llseek = default_llseek,
->>>>   };
->>>>
->>>> +static ssize_t ath10k_read_debug_level(struct file *file,
->>>> +				       char __user *user_buf,
->>>> +				       size_t count, loff_t *ppos)
->>>> +{
->>>> +	int sz;
->>>> +	const char buf[] =
->>>> +		"To change debug level, set value adding up desired flags:\n"
->>>> +		"PCI:                0x1\n"
->>>> +		"WMI:                0x2\n"
->>>> +		"HTC:                0x4\n"
->>>> +		"HTT:                0x8\n"
->>>> +		"MAC:               0x10\n"
->>>> +		"BOOT:              0x20\n"
->>>> +		"PCI-DUMP:          0x40\n"
->>>> +		"HTT-DUMP:          0x80\n"
->>>> +		"MGMT:             0x100\n"
->>>> +		"DATA:             0x200\n"
->>>> +		"BMI:              0x400\n"
->>>> +		"REGULATORY:       0x800\n"
->>>> +		"TESTMODE:        0x1000\n"
->>>> +		"INFO-AS-DBG: 0x40000000\n"
->>>> +		"FW:          0x80000000\n"
->>>> +		"ALL:         0xFFFFFFFF\n";
->>>> +	char wbuf[sizeof(buf) + 60];
->>>> +	sz = snprintf(wbuf, sizeof(wbuf), "Current debug level: 0x%x\n\n%s",
->>>> +		      ath10k_debug_mask, buf);
->>>> +	wbuf[sizeof(wbuf) - 1] = 0;
->>>> +
->>>> +	return simple_read_from_buffer(user_buf, count, ppos, wbuf, sz);
->>>> +}
->>>> +
->>>> +/* Set logging level.
->>>> + */
->>>> +static ssize_t ath10k_write_debug_level(struct file *file,
->>>> +					const char __user *user_buf,
->>>> +					size_t count, loff_t *ppos)
->>>> +{
->>>> +	struct ath10k *ar = file->private_data;
->>>> +	int ret;
->>>> +	unsigned long mask;
->>>> +
->>>> +	ret = kstrtoul_from_user(user_buf, count, 0, &mask);
->>>> +	if (ret)
->>>> +		return ret;
->>>> +
->>>> +	ath10k_warn(ar, "Setting debug-mask to: 0x%lx  old: 0x%x\n",
->>>> +		    mask, ath10k_debug_mask);
->>>> +	ath10k_debug_mask = mask;
->>>> +	return count;
->>>> +}
 >>>
->>> There are already sysfs files for module parameters which seems to work
->>> just fine for this case:
->>>
->>> # echo 0xffffffff > /sys/module/ath10k_core/parameters/debug_mask
+>>> Don't tracing points already provide the same information?
 >>
+>> Tracing tools are difficult to set up and may not be available on
+>> random embedded devices.  And if we are dealing with bug reports from
+>> the field, most users will not be able to set it up regardless.
 >>
->> Ok, but it is still nice to have the printout info of what log levels
->> means.  Otherwise, you have to go look at firmware source to even know how
->> to enable the proper flags.  And as these flags are internal and might change,
->> we could change the printout text to match the specific kernel that is running.
+>> There are similar ways to print out hex, but the logic below creates
+>> specific and parseable logs in the 'dmesg' output and similar.
+>>
+>> I have written a tool that can decode these messages into useful human-readable
+>> text so that I can debug firmware issues both locally and from field reports.
+>>
+>> Stock firmware generates similar logs and QCA could write their own decode logic
+>> for their firmware versions.
 >
-> The debug log levels are documented in the wiki:
->
-> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/debug#debug_log_messages
->
-> And they are not supposed to change, there should be only additions.
+> Reinventing the wheel by using printk as the delivery mechanism doesn't
+> sound like a good idea. IIRC Emmanuel talked about some kind of firmware
+> debugging framework, he might have some ideas.
 
+Waiting for magical frameworks to fix problems is even worse.
 
-Ahh, I remember the best part of this patch.  It pre-positions for another patch
-that makes the debug-mask per NIC instance instead of per driver.
+It has been years since ath10k has been in the kernel.  There is basically
+still no way to debug what the firmware is doing.
 
-This can be quite useful for testing with multiple radios, maybe only one of
-which you want to see logging for.
+My patch gives you something that can work right now, with the standard 'dmesg'
+framework found in virtually all kernels new and old, and it has been proven
+to be useful in the field.  The messages are also nicely interleaved with the
+rest of the mac80211 stack messages and any other driver messages, so you have
+context.
 
-And regardless of what is in a wiki somewhere, having a debugfs file to cat out is
-more user friendly.
+If someone wants to add support for a framework later, then by all means, post
+the patches when it is ready.
 
 Thanks,
 Ben
