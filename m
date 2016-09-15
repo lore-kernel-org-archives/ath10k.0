@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkYO2-0003I7-3A
- for ath10k@lists.infradead.org; Thu, 15 Sep 2016 15:15:41 +0000
-Subject: Re: [PATCH v2 09/21] ath10k: print fw debug messages in hex.
+ id 1bkYWK-0003LJ-Jc
+ for ath10k@lists.infradead.org; Thu, 15 Sep 2016 15:24:17 +0000
+Subject: Re: [PATCH v2 08/21] ath10k: make firmware text debug messages more
+ verbose.
 References: <1462986153-16318-1-git-send-email-greearb@candelatech.com>
- <1462986153-16318-10-git-send-email-greearb@candelatech.com>
- <87oa3qefac.fsf@kamboji.qca.qualcomm.com> <57D96910.2010608@candelatech.com>
- <87k2edb6kp.fsf@kamboji.qca.qualcomm.com>
+ <1462986153-16318-9-git-send-email-greearb@candelatech.com>
+ <87sht2efiu.fsf@kamboji.qca.qualcomm.com> <57D9677E.5030704@candelatech.com>
+ <87oa3pb6rd.fsf@kamboji.qca.qualcomm.com>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <a26dfea0-9a18-69fc-e23c-cb223490822d@candelatech.com>
-Date: Thu, 15 Sep 2016 08:14:55 -0700
+Message-ID: <7da59ba9-e048-7211-99b3-f288863a66ac@candelatech.com>
+Date: Thu, 15 Sep 2016 08:17:48 -0700
 MIME-Version: 1.0
-In-Reply-To: <87k2edb6kp.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87oa3pb6rd.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,53 +27,65 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "emmanuel.grumbach@intel.com" <emmanuel.grumbach@intel.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/15/2016 07:06 AM, Valo, Kalle wrote:
+On 09/15/2016 07:02 AM, Valo, Kalle wrote:
 > Ben Greear <greearb@candelatech.com> writes:
 >
->> On 09/14/2016 07:18 AM, Valo, Kalle wrote:
+>> On 09/14/2016 07:12 AM, Valo, Kalle wrote:
 >>> greearb@candelatech.com writes:
 >>>
 >>>> From: Ben Greear <greearb@candelatech.com>
 >>>>
->>>> This allows user-space tools to decode debug-log
->>>> messages by parsing dmesg or /var/log/messages.
+>>>> There are not many of these messages producted by the
+>>>> firmware, but they are generally fairly useful, so print
+>>>> them at info level.
 >>>>
 >>>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>>>> ---
+>>>>   drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
+>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+>>>> index 1758b4a..d9e4b77 100644
+>>>> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+>>>> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+>>>> @@ -4050,7 +4050,7 @@ void ath10k_wmi_event_debug_print(struct ath10k *ar, struct sk_buff *skb)
+>>>>   	/* the last byte is always reserved for the null character */
+>>>>   	buf[i] = '\0';
+>>>>
+>>>> -	ath10k_dbg(ar, ATH10K_DBG_WMI_PRINT, "wmi print '%s'\n", buf);
+>>>> +	ath10k_info(ar, "wmi print '%s'\n", buf);
 >>>
->>> Don't tracing points already provide the same information?
+>>> Useful to whom and how? I understand that for firmware developers this
+>>> is very valuable information and that's why we have a special debug
+>>> level for it. But I suspect that for normal users these are just
+>>> confusing and unnecessarily spam the log.
 >>
->> Tracing tools are difficult to set up and may not be available on
->> random embedded devices.  And if we are dealing with bug reports from
->> the field, most users will not be able to set it up regardless.
+>> CT firmare will print out some memory usage info on firmware boot, and that can
+>> allow a discerning individual to tune their vdev, peer, rate-ctrl, and other
+>> object usage in order to make best use of resources in the firmware.
 >>
->> There are similar ways to print out hex, but the logic below creates
->> specific and parseable logs in the 'dmesg' output and similar.
+>> These few lines can greatly aid debugging certain types of crashes and performance
+>> loss in the firmware, so having them readily available in 'dmesg' or similar
+>> for bug reports from the field helps me.
 >>
->> I have written a tool that can decode these messages into useful human-readable
->> text so that I can debug firmware issues both locally and from field reports.
->>
->> Stock firmware generates similar logs and QCA could write their own decode logic
->> for their firmware versions.
+>> Stock firmware will also print out some resource usage info.  It is just
+>> a few lines on firmware boot, but it is quite useful in my experience.
 >
-> Reinventing the wheel by using printk as the delivery mechanism doesn't
-> sound like a good idea. IIRC Emmanuel talked about some kind of firmware
-> debugging framework, he might have some ideas.
+> I'm sure it's useful for you, but we have quite a few firmware versions
+> to support. We do not know what kind of messages they print.
 
-Waiting for magical frameworks to fix problems is even worse.
+And how does that matter?  You think you can break something by printing
+a string the logs?
 
-It has been years since ath10k has been in the kernel.  There is basically
-still no way to debug what the firmware is doing.
+Even if you do see problems, you can hide the logging messages again.
 
-My patch gives you something that can work right now, with the standard 'dmesg'
-framework found in virtually all kernels new and old, and it has been proven
-to be useful in the field.  The messages are also nicely interleaved with the
-rest of the mac80211 stack messages and any other driver messages, so you have
-context.
+It's not like it is even 'secret', it is trivial for someone to print out
+this info with a patch like mine.
 
-If someone wants to add support for a framework later, then by all means, post
-the patches when it is ready.
+I have tested this on 10.1, 10.2, 10.4.3 firmware.  Mine are similar to those
+usptreams with regard to what they print out in this manner.
 
 Thanks,
 Ben
