@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.net ([212.227.17.20])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkrfP-0007n0-Av
- for ath10k@lists.infradead.org; Fri, 16 Sep 2016 11:50:52 +0000
-Received: from [192.168.2.106] ([93.204.160.61]) by mail.gmx.com (mrgmx101)
- with ESMTPSA (Nemesis) id 0Metpl-1bMIXK3u6T-00OTOB for
- <ath10k@lists.infradead.org>; Fri, 16 Sep 2016 13:50:27 +0200
-From: Daniel Holz <daniel.holz91@gmx.de>
-Subject: Re: QCA6174 Performance
-Message-ID: <b2cce290-ab6b-fdcb-56b0-92cff4da78df@gmx.de>
-Date: Fri, 16 Sep 2016 13:50:27 +0200
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
+ by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bksBS-0002NP-T5
+ for ath10k@lists.infradead.org; Fri, 16 Sep 2016 12:23:59 +0000
+Received: by mail-wm0-x231.google.com with SMTP id k186so38366868wmd.0
+ for <ath10k@lists.infradead.org>; Fri, 16 Sep 2016 05:23:36 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <b2cce290-ab6b-fdcb-56b0-92cff4da78df@gmx.de>
+References: <b2cce290-ab6b-fdcb-56b0-92cff4da78df@gmx.de>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Fri, 16 Sep 2016 14:23:34 +0200
+Message-ID: <CA+BoTQmxVn_iv4u7KGGDmmeKsJx4cf_qqD=Z2Qv8c_JioNHSjA@mail.gmail.com>
+Subject: Re: QCA6174 Performance
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,47 +20,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Daniel Holz <daniel.holz91@gmx.de>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-The md5sum matches.
-
-
-I installed Kernel 4.8 from Ubuntu's mainline ppa to get the recent 
-version of ath10k which increased the performance, but it's still pretty 
-low.
-
-Here is the output of dmesg with kernel 4.8:
-
-dmesg | grep -i ath10k
-[    9.264413] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 
-irq_mode 0 reset_mode 0
-[    9.544276] ath10k_pci 0000:02:00.0: Direct firmware load for 
-ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
-[    9.544292] ath10k_pci 0000:02:00.0: Direct firmware load for 
-ath10k/cal-pci-0000:02:00.0.bin failed with error -2
-[    9.546101] ath10k_pci 0000:02:00.0: qca6174 hw2.1 target 0x05010000 
-chip_id 0x003405ff sub 17aa:3044
-[    9.546105] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 0 
-tracing 0 dfs 0 testmode 0
-[    9.547303] ath10k_pci 0000:02:00.0: firmware ver 
-SW_RM.1.1.1-00157-QCARMSWPZ-1 api 5 features ignore-otp,no-4addr-pad 
-crc32 10bf8e08
-[    9.613313] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A 
-crc32 ae2e275a
-[   10.813664] ath10k_pci 0000:02:00.0: htt-ver 3.1 wmi-op 4 htt-op 3 
-cal otp max-sta 32 raw 0 hwcrypto 1
-[   10.902302] ath10k_pci 0000:02:00.0 wlp2s0: renamed from wlan0
-[   26.617451] ath10k_pci 0000:02:00.0: no channel configured; ignoring 
-frame(s)!
-
-
-Daniel Holz
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTYgU2VwdGVtYmVyIDIwMTYgYXQgMTM6NTAsIERhbmllbCBIb2x6IDxkYW5pZWwuaG9sejkx
+QGdteC5kZT4gd3JvdGU6Cj4gVGhlIG1kNXN1bSBtYXRjaGVzLgo+Cj4KPiBJIGluc3RhbGxlZCBL
+ZXJuZWwgNC44IGZyb20gVWJ1bnR1J3MgbWFpbmxpbmUgcHBhIHRvIGdldCB0aGUgcmVjZW50IHZl
+cnNpb24KPiBvZiBhdGgxMGsgd2hpY2ggaW5jcmVhc2VkIHRoZSBwZXJmb3JtYW5jZSwgYnV0IGl0
+J3Mgc3RpbGwgcHJldHR5IGxvdy4KPgo+IEhlcmUgaXMgdGhlIG91dHB1dCBvZiBkbWVzZyB3aXRo
+IGtlcm5lbCA0Ljg6CgpZb3UgY2FuIGNoZWNrIGl0IHdpdGggYSByZWNlbnQgZW5vdWdoIGl3Ogog
+IGl3IHdscDJzMCBpbmZvCgpJdCBzaG91bGQgdGVsbCB5b3UgY2hhbm5lbCBiYW5kd2lkdGggeW91
+IGFyZSB1c2luZy4KCk1heWJlIGF0aDEwayBvciB5b3VyIEFQIGhhcyBhIGJ1ZyB0aGF0IGNhdXNl
+cyB3cm9uZyBjYXBhYmlsaXRpZXMgdG8gYmUKbmVnb3RpYXRlZCBkdXJpbmcgYXNzb2NpYXRpb24u
+CgpZb3UgY291bGQgdHJ5IHJlLWNvbmZpZ3VyaW5nIHlvdXIgQVAgKHRvIHNsb3dlciBzcGVlZHMp
+IG9yIGZvcmNlCndwYV9zdXBwbGljYW50L2F0aDEwayB0byBub3QgdXNlIHZodCBvciBodCBtb2Rl
+cyBhdCBhbGwgYW5kIHJlLXRlc3RpbmcKaWYgaXQgaGVscHMuCgoKTWljaGHFggoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
+dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
