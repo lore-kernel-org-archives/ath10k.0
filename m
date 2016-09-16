@@ -1,28 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
- by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bko1X-000138-Al
- for ath10k@lists.infradead.org; Fri, 16 Sep 2016 07:57:28 +0000
-References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
- <57320C1A.3040604@candelatech.com>
- <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
- <57335A43.4050902@candelatech.com>
- <CA+uUJGsVi0OiwK4D6n-ANXRm6ptiTdjvKNboXobwn4FA0YfsRQ@mail.gmail.com>
- <573892F5.40706@candelatech.com> <5738AE96.8040800@candelatech.com>
- <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
- <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
- <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
- <87lgyug42q.fsf@kamboji.qca.qualcomm.com>
- <bd2ae01e-6cf5-837e-5573-1d62bbfdbe1b@dd-wrt.com>
- <8737l2ee1y.fsf@kamboji.qca.qualcomm.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <5c915231-db74-a147-f904-21c09d8a1ff0@dd-wrt.com>
-Date: Fri, 16 Sep 2016 09:51:31 +0200
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bkqdu-0005sL-TG
+ for ath10k@lists.infradead.org; Fri, 16 Sep 2016 10:45:17 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: QCA6174 Performance
+Date: Fri, 16 Sep 2016 10:44:48 +0000
+Message-ID: <87intw9l9c.fsf@kamboji.qca.qualcomm.com>
+References: <3683ea4d-10ce-80a1-2e11-4b873f4129b8@gmx.de>
+ <1474018906.3370.0@smtp.gmail.com>
+In-Reply-To: <1474018906.3370.0@smtp.gmail.com> (Daniel Holz's message of
+ "Fri, 16 Sep 2016 11:41:46 +0200")
+Content-Language: en-US
+Content-ID: <6D87D436444A3C44AE4FA24DA6FF29CD@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <8737l2ee1y.fsf@kamboji.qca.qualcomm.com>
-Content-Type: multipart/mixed; boundary="------------00FEB78F9765EEE38A666784"
-Subject: [PATCH] QCA9984 VHT160 support
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,349 +22,84 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+To: Daniel Holz <daniel.holz91@gmail.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-This is a multi-part message in MIME format.
---------------00FEB78F9765EEE38A666784
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi,
 
-This patch adds full VHT160 support for QCA9984 chipsets
-Tested on Netgear R7800. 80+80 is possible, but disabled so far since it 
-seems to contain glitches like missing vht station flags (this may be 
-firmware or mac80211 related)
+please don't email me privately, I'm adding the mailing list back so
+that everyone can participate.
 
+Daniel Holz <daniel.holz91@gmail.com> writes:
 
+> Do you mean by board file board.bin? I downloaded all files related to the
+> QCA6174 from your Github repository.
 
---------------00FEB78F9765EEE38A666784
-Content-Type: text/plain; charset=UTF-8;
- name="vht160.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="vht160.patch"
+I meant board-2.bin actually:
 
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+$ md5sum QCA6174/hw2.1/board-2.bin 
+11920f7c30a1b1dd009928baef1021dc  QCA6174/hw2.1/board-2.bin
 
-Adds VHT160 support for 9984 Chipsets
+This file should support your board with subsystem id 17aa:3044.
 
-Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index a3785a9..eb7b150 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -702,6 +702,10 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 		/* 80MHZ */
- 		case 2:
- 			status->vht_flag |= RX_VHT_FLAG_80MHZ;
-+			break;
-+		case 3:
-+			status->vht_flag |= RX_VHT_FLAG_160MHZ;
-+			break;
- 		}
- 
- 		status->flag |= RX_FLAG_VHT;
-@@ -926,7 +930,7 @@ static void ath10k_process_rx(struct ath10k *ar,
- 	*status = *rx_status;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_DATA,
--		   "rx skb %pK len %u peer %pM %s %s sn %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%llx fcs-err %i mic-err %i amsdu-more %i\n",
-+		   "rx skb %p len %u peer %pM %s %s sn %u %s%s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%llx fcs-err %i mic-err %i amsdu-more %i\n",
- 		   skb,
- 		   skb->len,
- 		   ieee80211_get_SA(hdr),
-@@ -940,6 +944,7 @@ static void ath10k_process_rx(struct ath10k *ar,
- 		   status->flag & RX_FLAG_VHT ? "vht" : "",
- 		   status->flag & RX_FLAG_40MHZ ? "40" : "",
- 		   status->vht_flag & RX_VHT_FLAG_80MHZ ? "80" : "",
-+		   status->vht_flag & RX_VHT_FLAG_160MHZ ? "160" : "",
- 		   status->flag & RX_FLAG_SHORT_GI ? "sgi " : "",
- 		   status->rate_idx,
- 		   status->vht_nss,
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0a44dab..0b47d6d 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -568,10 +568,14 @@ chan_to_phymode(const struct cfg80211_chan_def *chandef)
- 		case NL80211_CHAN_WIDTH_80:
- 			phymode = MODE_11AC_VHT80;
- 			break;
-+		case NL80211_CHAN_WIDTH_160:
-+			phymode = MODE_11AC_VHT160;
-+			break;
-+		case NL80211_CHAN_WIDTH_80P80:
-+			phymode = MODE_11AC_VHT80_80;
-+			break;
- 		case NL80211_CHAN_WIDTH_5:
- 		case NL80211_CHAN_WIDTH_10:
--		case NL80211_CHAN_WIDTH_80P80:
--		case NL80211_CHAN_WIDTH_160:
- 			phymode = MODE_UNKNOWN;
- 			break;
- 		}
-@@ -970,6 +974,7 @@ static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
- 	arg.vdev_id = vdev_id;
- 	arg.channel.freq = channel->center_freq;
- 	arg.channel.band_center_freq1 = chandef->center_freq1;
-+	arg.channel.band_center_freq2 = chandef->center_freq2;
- 
- 	/* TODO setup this dynamically, what in case we
- 	   don't have any vifs? */
-@@ -1381,6 +1386,7 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif,
- 
- 	arg.channel.freq = chandef->chan->center_freq;
- 	arg.channel.band_center_freq1 = chandef->center_freq1;
-+	arg.channel.band_center_freq2 = chandef->center_freq2;
- 	arg.channel.mode = chan_to_phymode(chandef);
- 
- 	arg.channel.min_power = 0;
-@@ -2444,6 +2450,9 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
- 	if (sta->bandwidth == IEEE80211_STA_RX_BW_80)
- 		arg->peer_flags |= ar->wmi.peer_flags->bw80;
- 
-+	if (sta->bandwidth == IEEE80211_STA_RX_BW_160)
-+		arg->peer_flags |= ar->wmi.peer_flags->bw160;
-+
- 	arg->peer_vht_rates.rx_max_rate =
- 		__le16_to_cpu(vht_cap->vht_mcs.rx_highest);
- 	arg->peer_vht_rates.rx_mcs_set =
-@@ -2545,7 +2554,17 @@ static void ath10k_peer_assoc_h_phymode(struct ath10k *ar,
- 		    !ath10k_peer_assoc_h_vht_masked(vht_mcs_mask)) {
- 			if (sta->bandwidth == IEEE80211_STA_RX_BW_80)
- 				phymode = MODE_11AC_VHT80;
--			else if (sta->bandwidth == IEEE80211_STA_RX_BW_40)
-+			else if (sta->bandwidth == IEEE80211_STA_RX_BW_160) {
-+				phymode = MODE_11AC_VHT160;
-+				switch (sta->vht_cap.cap & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_MASK) {
-+				case IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ:
-+					phymode = MODE_11AC_VHT160;
-+				break;
-+				case IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ:
-+					phymode = MODE_11AC_VHT80_80;
-+				break;
-+				}
-+			} else if (sta->bandwidth == IEEE80211_STA_RX_BW_40)
- 				phymode = MODE_11AC_VHT40;
- 			else if (sta->bandwidth == IEEE80211_STA_RX_BW_20)
- 				phymode = MODE_11AC_VHT20;
-@@ -4277,6 +4296,10 @@ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
- 		vht_cap.cap |= val;
- 	}
- 
-+	if ((ar->vht_cap_info & IEEE80211_VHT_CAP_SHORT_GI_160) && !(ar->vht_cap_info & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ)) {
-+		vht_cap.cap |= IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ;
-+	}
-+
- 	mcs_map = 0;
- 	for (i = 0; i < 8; i++) {
- 		if ((i < ar->num_rf_chains) && (ar->cfg_tx_chainmask & BIT(i)))
-@@ -6913,6 +6936,9 @@ static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
- 			bw = WMI_PEER_CHWIDTH_80MHZ;
- 			break;
- 		case IEEE80211_STA_RX_BW_160:
-+			bw = WMI_PEER_CHWIDTH_160MHZ;
-+			break;
-+		default:
- 			ath10k_warn(ar, "Invalid bandwidth %d in rc update for %pM\n",
- 				    sta->bandwidth, sta->addr);
- 			bw = WMI_PEER_CHWIDTH_20MHZ;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index e64f593..fb4c2cb 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2468,7 +2468,7 @@ ath10k_wmi_tlv_op_gen_force_fw_hang(struct ath10k *ar,
- }
- 
- static struct sk_buff *
--ath10k_wmi_tlv_op_gen_dbglog_cfg(struct ath10k *ar, u64 module_enable,
-+ath10k_wmi_tlv_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable,
- 				 u32 log_level) {
- 	struct wmi_tlv_dbglog_cmd *cmd;
- 	struct wmi_tlv *tlv;
-@@ -3560,6 +3560,7 @@ static const struct wmi_peer_flags_map wmi_tlv_peer_flags_map = {
- 	.vht = WMI_TLV_PEER_VHT,
- 	.bw80 = WMI_TLV_PEER_80MHZ,
- 	.pmf = WMI_TLV_PEER_PMF,
-+	.bw160 = WMI_TLV_PEER_160MHZ,
- };
- 
- /************/
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index b8aa600..d0a6b92 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -543,6 +543,7 @@ enum wmi_tlv_peer_flags {
- 	WMI_TLV_PEER_VHT = 0x02000000,
- 	WMI_TLV_PEER_80MHZ = 0x04000000,
- 	WMI_TLV_PEER_PMF = 0x08000000,
-+        WMI_TLV_PEER_160MHZ = 0x20000000,
- };
- 
- enum wmi_tlv_tag {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 38993d7..899f4cb 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -28,6 +28,7 @@
- #include "wmi-ops.h"
- #include "p2p.h"
- #include "hw.h"
-+#include "hif.h"
- 
- #define ATH10K_WMI_BARRIER_ECHO_ID 0xBA991E9
- #define ATH10K_WMI_BARRIER_TIMEOUT_HZ (3 * HZ)
-@@ -1576,6 +1577,7 @@ static const struct wmi_peer_flags_map wmi_peer_flags_map = {
- 	.bw80 = WMI_PEER_80MHZ,
- 	.vht_2g = WMI_PEER_VHT_2G,
- 	.pmf = WMI_PEER_PMF,
-+	.bw160 = WMI_PEER_160MHZ,
- };
- 
- static const struct wmi_peer_flags_map wmi_10x_peer_flags_map = {
-@@ -1593,6 +1595,7 @@ static const struct wmi_peer_flags_map wmi_10x_peer_flags_map = {
- 	.spatial_mux = WMI_10X_PEER_SPATIAL_MUX,
- 	.vht = WMI_10X_PEER_VHT,
- 	.bw80 = WMI_10X_PEER_80MHZ,
-+	.bw160 = WMI_10X_PEER_160MHZ,
- };
- 
- static const struct wmi_peer_flags_map wmi_10_2_peer_flags_map = {
-@@ -1612,6 +1615,7 @@ static const struct wmi_peer_flags_map wmi_10_2_peer_flags_map = {
- 	.bw80 = WMI_10_2_PEER_80MHZ,
- 	.vht_2g = WMI_10_2_PEER_VHT_2G,
- 	.pmf = WMI_10_2_PEER_PMF,
-+	.bw160 = WMI_10_2_PEER_160MHZ,
- };
- 
- void ath10k_wmi_put_wmi_channel(struct wmi_channel *ch,
-@@ -1636,7 +1640,10 @@ void ath10k_wmi_put_wmi_channel(struct wmi_channel *ch,
- 
- 	ch->mhz = __cpu_to_le32(arg->freq);
- 	ch->band_center_freq1 = __cpu_to_le32(arg->band_center_freq1);
--	ch->band_center_freq2 = 0;
-+	if (arg->mode == MODE_11AC_VHT80_80)
-+		ch->band_center_freq2 = __cpu_to_le32(arg->band_center_freq2);
-+	else
-+		ch->band_center_freq2 = 0;
- 	ch->min_power = arg->min_power;
- 	ch->max_power = arg->max_power;
- 	ch->reg_power = arg->max_reg_power;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 48e04b9..aa90c67 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1728,8 +1728,10 @@ enum wmi_phy_mode {
- 	MODE_11AC_VHT20_2G = 11,
- 	MODE_11AC_VHT40_2G = 12,
- 	MODE_11AC_VHT80_2G = 13,
--	MODE_UNKNOWN    = 14,
--	MODE_MAX        = 14
-+	MODE_11AC_VHT80_80 = 14,
-+	MODE_11AC_VHT160 = 15,
-+	MODE_UNKNOWN    = 16,
-+	MODE_MAX        = 16
- };
- 
- static inline const char *ath10k_wmi_phymode_str(enum wmi_phy_mode mode)
-@@ -1757,6 +1759,10 @@ static inline const char *ath10k_wmi_phymode_str(enum wmi_phy_mode mode)
- 		return "11ac-vht40";
- 	case MODE_11AC_VHT80:
- 		return "11ac-vht80";
-+	case MODE_11AC_VHT160:
-+		return "11ac-vht160";
-+	case MODE_11AC_VHT80_80:
-+		return "11ac-vht80+80";
- 	case MODE_11AC_VHT20_2G:
- 		return "11ac-vht20-2g";
- 	case MODE_11AC_VHT40_2G:
-@@ -1811,6 +1817,7 @@ struct wmi_channel {
- struct wmi_channel_arg {
- 	u32 freq;
- 	u32 band_center_freq1;
-+	u32 band_center_freq2;
- 	bool passive;
- 	bool allow_ibss;
- 	bool allow_ht;
-@@ -1875,9 +1882,18 @@ enum wmi_channel_change_cause {
- #define WMI_VHT_CAP_MAX_MPDU_LEN_MASK            0x00000003
- #define WMI_VHT_CAP_RX_LDPC                      0x00000010
- #define WMI_VHT_CAP_SGI_80MHZ                    0x00000020
-+#define WMI_VHT_CAP_SGI_160MHZ                   0x00000040
- #define WMI_VHT_CAP_TX_STBC                      0x00000080
- #define WMI_VHT_CAP_RX_STBC_MASK                 0x00000300
- #define WMI_VHT_CAP_RX_STBC_MASK_SHIFT           8
-+#define WMI_VHT_CAP_SU_BFER                      0x00000800
-+#define WMI_VHT_CAP_SU_BFEE                      0x00001000
-+#define WMI_VHT_CAP_MAX_CS_ANT_MASK              0x0000E000
-+#define WMI_VHT_CAP_MAX_CS_ANT_MASK_SHIFT        13
-+#define WMI_VHT_CAP_MAX_SND_DIM_MASK             0x00070000
-+#define WMI_VHT_CAP_MAX_SND_DIM_MASK_SHIFT       16
-+#define WMI_VHT_CAP_MU_BFER                      0x00080000
-+#define WMI_VHT_CAP_MU_BFEE                      0x00100000
- #define WMI_VHT_CAP_MAX_AMPDU_LEN_EXP            0x03800000
- #define WMI_VHT_CAP_MAX_AMPDU_LEN_EXP_SHIFT      23
- #define WMI_VHT_CAP_RX_FIXED_ANT                 0x10000000
-@@ -1926,6 +1942,8 @@ enum {
- 	REGDMN_MODE_11AC_VHT40PLUS   = 0x40000, /* 5Ghz, VHT40 + channels */
- 	REGDMN_MODE_11AC_VHT40MINUS  = 0x80000, /* 5Ghz  VHT40 - channels */
- 	REGDMN_MODE_11AC_VHT80       = 0x100000, /* 5Ghz, VHT80 channels */
-+	REGDMN_MODE_11AC_VHT160      = 0x200000,     /* 5Ghz, VHT160 channels */
-+	REGDMN_MODE_11AC_VHT80_80    = 0x400000,     /* 5Ghz, VHT80+80 channels */
- 	REGDMN_MODE_ALL              = 0xffffffff
- };
- 
-@@ -5769,6 +5787,7 @@ enum wmi_peer_chwidth {
- 	WMI_PEER_CHWIDTH_20MHZ = 0,
- 	WMI_PEER_CHWIDTH_40MHZ = 1,
- 	WMI_PEER_CHWIDTH_80MHZ = 2,
-+	WMI_PEER_CHWIDTH_160MHZ = 3,
- };
- 
- enum wmi_peer_param {
-@@ -5859,6 +5878,7 @@ struct wmi_peer_flags_map {
- 	u32 bw80;
- 	u32 vht_2g;
- 	u32 pmf;
-+	u32 bw160;
- };
- 
- enum wmi_peer_flags {
-@@ -5878,6 +5898,7 @@ enum wmi_peer_flags {
- 	WMI_PEER_80MHZ = 0x04000000,
- 	WMI_PEER_VHT_2G = 0x08000000,
- 	WMI_PEER_PMF = 0x10000000,
-+	WMI_PEER_160MHZ = 0x20000000
- };
- 
- enum wmi_10x_peer_flags {
-@@ -5895,6 +5916,7 @@ enum wmi_10x_peer_flags {
- 	WMI_10X_PEER_SPATIAL_MUX = 0x00200000,
- 	WMI_10X_PEER_VHT = 0x02000000,
- 	WMI_10X_PEER_80MHZ = 0x04000000,
-+	WMI_10X_PEER_160MHZ = 0x20000000
- };
- 
- enum wmi_10_2_peer_flags {
-@@ -5914,6 +5936,7 @@ enum wmi_10_2_peer_flags {
- 	WMI_10_2_PEER_80MHZ = 0x04000000,
- 	WMI_10_2_PEER_VHT_2G = 0x08000000,
- 	WMI_10_2_PEER_PMF = 0x10000000,
-+	WMI_10_2_PEER_160MHZ = 0x20000000
- };
- 
- /*
+> Here is the output of lspci:
+>
+> 02:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac Wireless
+> Network Adapter [168c:003e] (rev 20)
+> Subsystem: Lenovo QCA6174 802.11ac Wireless Network Adapter [17aa:3044]
+> Flags: bus master, fast devsel, latency 0, IRQ 49
+> Memory at c1000000 (64-bit, non-prefetchable) [size=2M]
+> Capabilities: [40] Power Management version 3
+> Capabilities: [50] MSI: Enable+ Count=8/8 Maskable+ 64bit-
+> Capabilities: [70] Express Endpoint, MSI 00
+> Capabilities: [100] Advanced Error Reporting
+> Capabilities: [148] Virtual Channel
+> Capabilities: [168] Device Serial Number 00-00-00-00-00-00-00-00
+> Capabilities: [178] Latency Tolerance Reporting
+> Capabilities: [180] L1 PM Substates
+> Kernel driver in use: ath10k_pci
+> Kernel modules: ath10k_pci
+>
+> And of dmesg | grep -i ath10k:
+>
+> [    3.717494] ath10k_pci 0000:02:00.0: pci irq msi-x interrupts 8 irq_mode 0
+> reset_mode 0
+> [    3.953007] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/
+> cal-pci-0000:02:00.0.bin failed with error -2
+> [    5.232572] ath10k_pci 0000:02:00.0: qca6174 hw2.1 (0x05010000, 0x003405ff
+> sub 17aa:3044) fw SW_RM.1.1.1-00157-QCARMSWPZ-1 fwapi 5 bdapi 2 htt-ver 3.1
+> wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1 features
+> ignore-otp,no-4addr-pad
+> [    5.232578] ath10k_pci 0000:02:00.0: debug 0 debugfs 1 tracing 1 dfs 0
+> testmode 0
+> [    5.318496] ath10k_pci 0000:02:00.0 wlp2s0: renamed from wlan0
+> [    6.879214] ath10k_pci 0000:02:00.0: no channel configured; ignoring frame
+> (s)!
 
---------------00FEB78F9765EEE38A666784
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+From the logs I can't immeaditely see anything wrong, but you version of
+ath10k is so old that it doesn't print the crc32 for the board file so I
+can't be 100% sure. So I recommend to check the md5sum above matches
+with your file.
 
+From a quick look I can't immediately come up what else would cause low
+throughput, it would involve more detailed analysis with wireless
+sniffer etc. It's a wild shot but you could always try latest ath10k
+using kernel-backports:
+
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/backports
+
+Do note that backports project hasn't had stable updates for a long time
+so use the daily releases instead:
+
+https://www.kernel.org/pub/linux/kernel/projects/backports/2016/03/24/
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---------------00FEB78F9765EEE38A666784--
