@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mout.gmx.net ([212.227.17.20])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bkraf-0005rg-0z
- for ath10k@lists.infradead.org; Fri, 16 Sep 2016 11:45:57 +0000
-From: <akolli@qti.qualcomm.com>
-Subject: [PATCH] ath10k: add cc_wraparound type for QCA9888 and QCA9884
-Date: Fri, 16 Sep 2016 17:15:27 +0530
-Message-ID: <1474026327-7065-1-git-send-email-akolli@qti.qualcomm.com>
+ id 1bkrfP-0007n0-Av
+ for ath10k@lists.infradead.org; Fri, 16 Sep 2016 11:50:52 +0000
+Received: from [192.168.2.106] ([93.204.160.61]) by mail.gmx.com (mrgmx101)
+ with ESMTPSA (Nemesis) id 0Metpl-1bMIXK3u6T-00OTOB for
+ <ath10k@lists.infradead.org>; Fri, 16 Sep 2016 13:50:27 +0200
+From: Daniel Holz <daniel.holz91@gmx.de>
+Subject: Re: QCA6174 Performance
+Message-ID: <b2cce290-ab6b-fdcb-56b0-92cff4da78df@gmx.de>
+Date: Fri, 16 Sep 2016 13:50:27 +0200
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,47 +19,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wireless@vger.kernel.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+The md5sum matches.
 
-During offchannel scan, iw survey dump shows wrong values.
-Fix this by assigning cycle counter wranarround type for
-QCA9888 and QCA9884, they share same config with QCA4019.
 
-Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c |    2 ++
- 1 file changed, 2 insertions(+)
+I installed Kernel 4.8 from Ubuntu's mainline ppa to get the recent 
+version of ath10k which increased the performance, but it's still pretty 
+low.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 3a8984ba9f74..93168d9f8902 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -191,6 +191,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.name = "qca9984/qca9994 hw1.0",
- 		.patch_load_addr = QCA9984_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-+		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_EACH,
- 		.otp_exe_param = 0x00000700,
- 		.continuous_frag_desc = true,
- 		.cck_rate_map_rev2 = true,
-@@ -215,6 +216,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.name = "qca9888 hw2.0",
- 		.patch_load_addr = QCA9888_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-+		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_EACH,
- 		.otp_exe_param = 0x00000700,
- 		.continuous_frag_desc = true,
- 		.channel_counters_freq_hz = 150000,
--- 
-1.7.9.5
+Here is the output of dmesg with kernel 4.8:
 
+dmesg | grep -i ath10k
+[    9.264413] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 
+irq_mode 0 reset_mode 0
+[    9.544276] ath10k_pci 0000:02:00.0: Direct firmware load for 
+ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
+[    9.544292] ath10k_pci 0000:02:00.0: Direct firmware load for 
+ath10k/cal-pci-0000:02:00.0.bin failed with error -2
+[    9.546101] ath10k_pci 0000:02:00.0: qca6174 hw2.1 target 0x05010000 
+chip_id 0x003405ff sub 17aa:3044
+[    9.546105] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 0 
+tracing 0 dfs 0 testmode 0
+[    9.547303] ath10k_pci 0000:02:00.0: firmware ver 
+SW_RM.1.1.1-00157-QCARMSWPZ-1 api 5 features ignore-otp,no-4addr-pad 
+crc32 10bf8e08
+[    9.613313] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A 
+crc32 ae2e275a
+[   10.813664] ath10k_pci 0000:02:00.0: htt-ver 3.1 wmi-op 4 htt-op 3 
+cal otp max-sta 32 raw 0 hwcrypto 1
+[   10.902302] ath10k_pci 0000:02:00.0 wlp2s0: renamed from wlan0
+[   26.617451] ath10k_pci 0000:02:00.0: no channel configured; ignoring 
+frame(s)!
+
+
+Daniel Holz
 
 _______________________________________________
 ath10k mailing list
