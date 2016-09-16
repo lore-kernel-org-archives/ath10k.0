@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
- by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bksBS-0002NP-T5
- for ath10k@lists.infradead.org; Fri, 16 Sep 2016 12:23:59 +0000
-Received: by mail-wm0-x231.google.com with SMTP id k186so38366868wmd.0
- for <ath10k@lists.infradead.org>; Fri, 16 Sep 2016 05:23:36 -0700 (PDT)
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bksqD-0003KF-N2
+ for ath10k@lists.infradead.org; Fri, 16 Sep 2016 13:06:10 +0000
+Received: by mail-pf0-x242.google.com with SMTP id q2so972815pfj.0
+ for <ath10k@lists.infradead.org>; Fri, 16 Sep 2016 06:05:45 -0700 (PDT)
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: [PATCH -next] ath10k: fix error return code in ahb
+Date: Fri, 16 Sep 2016 13:05:35 +0000
+Message-Id: <1474031135-6963-1-git-send-email-weiyj.lk@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <b2cce290-ab6b-fdcb-56b0-92cff4da78df@gmx.de>
-References: <b2cce290-ab6b-fdcb-56b0-92cff4da78df@gmx.de>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Fri, 16 Sep 2016 14:23:34 +0200
-Message-ID: <CA+BoTQmxVn_iv4u7KGGDmmeKsJx4cf_qqD=Z2Qv8c_JioNHSjA@mail.gmail.com>
-Subject: Re: QCA6174 Performance
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,25 +18,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Daniel Holz <daniel.holz91@gmx.de>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, Raja Mani <rmani@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>, ath10k@lists.infradead.org
 
-T24gMTYgU2VwdGVtYmVyIDIwMTYgYXQgMTM6NTAsIERhbmllbCBIb2x6IDxkYW5pZWwuaG9sejkx
-QGdteC5kZT4gd3JvdGU6Cj4gVGhlIG1kNXN1bSBtYXRjaGVzLgo+Cj4KPiBJIGluc3RhbGxlZCBL
-ZXJuZWwgNC44IGZyb20gVWJ1bnR1J3MgbWFpbmxpbmUgcHBhIHRvIGdldCB0aGUgcmVjZW50IHZl
-cnNpb24KPiBvZiBhdGgxMGsgd2hpY2ggaW5jcmVhc2VkIHRoZSBwZXJmb3JtYW5jZSwgYnV0IGl0
-J3Mgc3RpbGwgcHJldHR5IGxvdy4KPgo+IEhlcmUgaXMgdGhlIG91dHB1dCBvZiBkbWVzZyB3aXRo
-IGtlcm5lbCA0Ljg6CgpZb3UgY2FuIGNoZWNrIGl0IHdpdGggYSByZWNlbnQgZW5vdWdoIGl3Ogog
-IGl3IHdscDJzMCBpbmZvCgpJdCBzaG91bGQgdGVsbCB5b3UgY2hhbm5lbCBiYW5kd2lkdGggeW91
-IGFyZSB1c2luZy4KCk1heWJlIGF0aDEwayBvciB5b3VyIEFQIGhhcyBhIGJ1ZyB0aGF0IGNhdXNl
-cyB3cm9uZyBjYXBhYmlsaXRpZXMgdG8gYmUKbmVnb3RpYXRlZCBkdXJpbmcgYXNzb2NpYXRpb24u
-CgpZb3UgY291bGQgdHJ5IHJlLWNvbmZpZ3VyaW5nIHlvdXIgQVAgKHRvIHNsb3dlciBzcGVlZHMp
-IG9yIGZvcmNlCndwYV9zdXBwbGljYW50L2F0aDEwayB0byBub3QgdXNlIHZodCBvciBodCBtb2Rl
-cyBhdCBhbGwgYW5kIHJlLXRlc3RpbmcKaWYgaXQgaGVscHMuCgoKTWljaGHFggoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+From: Wei Yongjun <weiyongjun1@huawei.com>
+
+Fix to return a negative error code from the error handling case
+instead of 0, as done elsewhere in function ath10k_ahb_probe() or
+ath10k_ahb_resource_init().
+
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/net/wireless/ath/ath10k/ahb.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+index b99ad5d..6dc1c60 100644
+--- a/drivers/net/wireless/ath/ath10k/ahb.c
++++ b/drivers/net/wireless/ath/ath10k/ahb.c
+@@ -572,6 +572,7 @@ static int ath10k_ahb_resource_init(struct ath10k *ar)
+ 	ar_ahb->irq = platform_get_irq_byname(pdev, "legacy");
+ 	if (ar_ahb->irq < 0) {
+ 		ath10k_err(ar, "failed to get irq number: %d\n", ar_ahb->irq);
++		ret = ar_ahb->irq;
+ 		goto err_clock_deinit;
+ 	}
+ 
+@@ -850,6 +851,7 @@ static int ath10k_ahb_probe(struct platform_device *pdev)
+ 	chip_id = ath10k_ahb_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
+ 	if (chip_id == 0xffffffff) {
+ 		ath10k_err(ar, "failed to get chip id\n");
++		ret = -ENODEV;
+ 		goto err_halt_device;
+ 	}
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
