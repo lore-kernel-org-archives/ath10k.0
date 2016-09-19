@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x22d.google.com ([2607:f8b0:4001:c06::22d])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1blpoi-00025C-5G
- for ath10k@lists.infradead.org; Mon, 19 Sep 2016 04:04:28 +0000
-Received: by mail-io0-x22d.google.com with SMTP id m79so80446206ioo.3
- for <ath10k@lists.infradead.org>; Sun, 18 Sep 2016 21:04:07 -0700 (PDT)
+Received: from universe.cdot.in ([49.128.111.121])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1blqHF-00047J-It
+ for ath10k@lists.infradead.org; Mon, 19 Sep 2016 04:33:59 +0000
+From: "Sridhar Kondabathini" <sridhark@cdot.in>
+Subject: Issue with ATH10K driver with 802.11 a/g mode datarates
+Date: Mon, 19 Sep 2016 09:56:57 +0530
+Message-Id: <20160919041857.M30046@universe.cdotb.ernet.in>
 MIME-Version: 1.0
-From: Nikolay Martynov <mar.kolya@gmail.com>
-Date: Mon, 19 Sep 2016 00:04:06 -0400
-Message-ID: <CALGY4fsT80wV8esgRzknqCt1md_AoC1Dogc4p759-mOL1NF2qA@mail.gmail.com>
-Subject: QCA988X rate control question
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,39 +16,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Horse <horse@gentrice.net>, ath10k@lists.infradead.org, michal.kazior@tieto.com, Raj Joshi <rajjoshi@comp.nus.edu.sg>
 
-Hi.
-
-  I've got Archer C7 v2 router (QCA988X), running latest openwrt and
-intel 6300 client.
-  I'm observing strange behavior on how ath10k sets tx rate:
-
-              Peer MAC address xx:xx:xx:xx:xx:xx
-                     Peer RSSI 28
-                  Peer TX rate 72200
-                  Peer RX rate 243000
-              Peer RX duration 0
-
-  (I'm getting similar numbers in iw station dump on client side)
-
-   It looks like intel is able to transmit at much higher rate than ath10k.
-   As the consequence speed to client is slower that speed from client.
-
-  Is this expected or is this some short of known problem? Is there
-any way to debug this?
-
-Thanks!
-
--- 
-Martynov Nikolay.
-Email: mar.kolya@gmail.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCgogICAgV2hlbiB3ZSBhcmUgdGVzdGluZyA4MDIuMTEgYS9nIG1vZGUgdGhyb3VnaHB1dCBt
+ZWFzdXJlbWVudHMgb24gVDEwMjRSREIgKCB3ZSB1c2VkIAprZXJuZWwtMy4xMjsgYXRoMTBrIGRy
+aXZlcnMgYmFja3BvcnRlZCBmcm9tIDQuNDtob3N0YXBkIDIuNSBmb3IgMTFBQyBzdXBwb3J0KSwg
+dGhlbiB3ZQphcmUgZ2V0dGluZyAyNi0yNyBNYnBzICwgd2hpY2ggaXMgbm90IG1lZXRpbmcgdGhl
+IHJlcXVpcmVkIFRFQyBzcGVjaWZpY2F0aW9uICh3aGljaCBpcwp+MjggTWJwcykuIEhvdyBjYW4g
+d2UgaW5jcmVhc2UgdGhlIHRocm91Z2hwdXQgaW4gdGhlc2UgbW9kZXMuCgogICAgIENhbiB5b3Ug
+cGxlYXNlIGhlbHAgb24gdGhpcy4KCiAKClJlZ2FyZHMsCgpTcmlkaGFyIEtvbmRhYmF0aGluaSwK
+UmVzZWFyY2ggZW5naW5lZXIsClBTRyBsYWIsCkNlbnRlciBmb3IgRGV2ZWxvcG1lbnQgT2YgVGVs
+ZW1hdGljcwo5NDgwNDg0ODIxLgoKCgoKRGlzY2xhaW1lcjoKLS0tLS0tLS0tLQpUaGlzIGVtYWls
+IGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQgd2l0aCBpdCBhcmUgY29uZmlkZW50aWFsIGFuZCBp
+bnRlbmRlZCBzb2xlbHkgCmZvciAKdGhlIHVzZSBvZiB0aGUgaW5kaXZpZHVhbCBvciBlbnRpdHkg
+dG8gd2hvbSB0aGV5IGFyZSBhZGRyZXNzZWQuwqAgSWYgeW91IGFyZSBub3QgdGhlIAppbnRlbmRl
+ZCByZWNpcGllbnQgeW91IGFyZSBub3RpZmllZCB0aGF0IGRpc2Nsb3NpbmcsIGNvcHlpbmcsIGRp
+c3RyaWJ1dGluZyBvciB0YWtpbmcgCmFueSAKYWN0aW9uIGluIHJlbGlhbmNlIG9uIHRoZSBjb250
+ZW50cyBvZiB0aGlzIGluZm9ybWF0aW9uIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuIFRoZSAKc2Vu
+ZGVyIGRvZXMgbm90IGEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
