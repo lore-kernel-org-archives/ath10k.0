@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
- helo=mail.mail.packetmixer.de)
+Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1blsJW-0003RG-Lk
- for ath10k@lists.infradead.org; Mon, 19 Sep 2016 06:44:28 +0000
-From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Re: ath10k mesh + ap + encryption?
-Date: Mon, 19 Sep 2016 08:43:56 +0200
-Message-ID: <5898628.mmcCycDigQ@prime>
-In-Reply-To: <1473789271.27738.4.camel@qca.qualcomm.com>
-References: <2661831.slnB0LOeVt@prime> <3247815.ey5ZWkP5uX@prime>
- <1473789271.27738.4.camel@qca.qualcomm.com>
+ id 1blumq-00068g-44
+ for ath10k@lists.infradead.org; Mon, 19 Sep 2016 09:22:55 +0000
+Received: by mail-wm0-x234.google.com with SMTP id l132so140409296wmf.0
+ for <ath10k@lists.infradead.org>; Mon, 19 Sep 2016 02:22:27 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <57DC735D.8020307@qca.qualcomm.com>
+References: <1468924452-23877-1-git-send-email-michal.kazior@tieto.com>
+ <1468924452-23877-5-git-send-email-michal.kazior@tieto.com>
+ <57DC735D.8020307@qca.qualcomm.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Mon, 19 Sep 2016 11:22:25 +0200
+Message-ID: <CA+BoTQ=mfYYQ8RfygF-QpWX3Tz7b1e2d0vVFzi_P4_BYd8EcAA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] ath10k: fix spurious tx/rx during boot
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,88 +22,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0314729071708321516=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>, "Pedersen,
- Thomas" <twp@qca.qualcomm.com>, "openwrt-devel@lists.openwrt.org" <openwrt-devel@lists.openwrt.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>
+To: "Hsu, Ryan" <ryanhsu@qca.qualcomm.com>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "marek.puzyniak@tieto.com" <marek.puzyniak@tieto.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
---===============0314729071708321516==
-Content-Type: multipart/signed; boundary="nextPart2820425.r2kv2YZJnq"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+On 17 September 2016 at 00:37, Hsu, Ryan <ryanhsu@qca.qualcomm.com> wrote:
+[...]
+>> +     /* WMI and HTT may use separate HIF pipes and are not guaranteed to be
+>> +      * serialized properly implicitly.
+>> +      *
+>> +      * Moreover (most) WMI commands have no explicit acknowledges. It is
+>> +      * possible to infer it implicitly by poking firmware with echo
+>> +      * command - getting a reply means all preceding comments have been
+>> +      * (mostly) processed.
+>> +      *
+>> +      * In case of vdev create/delete this is sufficient.
+>> +      *
+>> +      * Without this it's possible to end up with a race when HTT Rx ring is
+>> +      * started before vdev create/delete hack is complete allowing a short
+>> +      * window of opportunity to receive (and Tx ACK) a bunch of frames.
+>> +      */
+>> +     ret = ath10k_wmi_barrier(ar);
+> QCA6174 UTF firmware seems doesn't support the WMI_ECHO command.
+>
+> [16460.274822] ath10k_pci 0000:04:00.0: wmi tlv echo value 0x0ba991e9
+> ...
+> [16463.461970] ath10k_pci 0000:04:00.0: failed to ping firmware: -110
+> [16463.461975] ath10k_pci 0000:04:00.0: failed to reset rx filter: -110
+>
+> Has anyone verified any AP solution to see if UTF mode is still working
+> with after this patch?
+>
+> Anyway, I would like to exclude the workaround from all solution's UTF mode.
+>
+> Michal any concerns? (or maybe just for QCA61x4 if any...)
 
---nextPart2820425.r2kv2YZJnq
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+I didn't expect UTF wouldn't support echo.. Sorry!
 
-On Tuesday, September 13, 2016 5:54:38 PM CEST Pedersen, Thomas wrote:
-> On Tue, 2016-09-13 at 14:30 +0200, Simon Wunderlich wrote:
-> 
-> > [...]
-> >
-> > Thanks for the clarification. We will then stick to the 70's branch
-> > then.
-> > 
-> > Does anyone have pointers for the other questions? :) I would believe
-> > hat many 
-> > people would be interested in running AP + Mesh encrypted at the same
-> > time (at 
-> > least in the open source community ...).
-> 
-> 
-> We're testing encrypted AP + Mesh quite successfully right now with
-> this firmware: https://github.com/kvalo/ath10k-firmware/commit/307cb46b
-> 06661ebd3186723b5002de769c7add83, of course that is for a QCA4019 chip.
-> Which chip are you using? I can poke the firmware guys for possibility
-> of getting a 10.4.3.2 firmware build for it.
-
-Hi Thomas,
-
-thanks for the hint! We are using an older QCA9882. I assume your firmware will 
-not work for this one? If you can poke the firmware guys, that would be great. 
-:)
-
-We also want to test the 70.52 firmware version next, maybe there were some 
-changes since the .42 we used.
-
-Thanks,
-     Simon
---nextPart2820425.r2kv2YZJnq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAABCgAGBQJX34ksAAoJEKEr45hCkp6hHp4QAIEaCR9yk5w6O7jhSA+kxwPT
-8AgwXibVWWvDb4oURxey5SxuvDY2AJ3L35Yk1tvm4FOprrUZaHP+9+yOJrBO7RXw
-XCl+oeANjFPugoFHtkxQgzdmgqfYhb4RROCzUH8DEShgr44PK+EZyR8FkVBstVHr
-90iooQ6qCQBVlxD3TfZlX4kMlz7jAl+COXkrEYWiCcnB5fH6mMttMoSdWhkNmMaH
-S2VbuU/6NDPoSX0YLjEBhuFAvBaS8NUQU3fSGZKuypZqXz9uG5wJ+FC6ky5AEmX2
-MlL/MS9jgeHflSvnB3O6l2ST4Gt7e8S4Ftq0G0GkOGYXjjVhK+5rRjbshRimhxNn
-gf3qttQXLO3fC50QIxZlVztRhiZoi+JgO3HiQpKTH7gcRCkQJllhUI0aEO+qZHrd
-VqV7ExRpX6QBNVmhdpeKiVtW5BUbEg8fwrczdYxGvzhnN9r89RPZyo7pik0x8EId
-3eQiKBUssZztAgA+KYp/NSAus3w48B+dvUsIkWboonRcYaebWLOvZWkqQmnN+Vme
-/1VEVFNa3sIImYIoS0jRAw+m0n4gilM9GXFK2XPW9SS8DnDc6ffoIrDQieeIG4Xp
-VXT59AadhL8566Fjyg8udZGXRXVKnAKJOHZ66BTpL+9G5jLe7+NxtkQ+xkEXAKpP
-WtBHyQwElTEjzjLGBm2N
-=9jHP
------END PGP SIGNATURE-----
-
---nextPart2820425.r2kv2YZJnq--
+If you skip this workaround for UTF I guess the device will (again) be
+able to generate some bogus traffic on boot for UTF case. Not sure how
+much of a problem that is (assuming it is at all).
 
 
-
---===============0314729071708321516==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Michal
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============0314729071708321516==--
