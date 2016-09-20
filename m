@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmC5R-0007l0-94
- for ath10k@lists.infradead.org; Tue, 20 Sep 2016 03:51:15 +0000
-From: "Sridhar Konabathini" <sridhark@cdot.in>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bmCxD-0003JS-U9
+ for ath10k@lists.infradead.org; Tue, 20 Sep 2016 04:46:48 +0000
+Message-ID: <57E0BBFF.4070206@candelatech.com>
+Date: Mon, 19 Sep 2016 21:33:03 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
 Subject: Re: Issue with ATH10K driver with 802.11 a/g mode datarates
-Date: Tue, 20 Sep 2016 09:16:07 +0530
-Message-Id: <20160920033049.M23541@cdot.in>
-In-Reply-To: <CAJ-Vmo=NfyiFLj8oDkSEHaGbeS8WEdc0RNDZYigw8LtQtnNYmA@mail.gmail.com>
 References: <20160919041857.M30046@universe.cdotb.ernet.in>
  <57E01220.3060302@candelatech.com>
  <CAJ-Vmo=NfyiFLj8oDkSEHaGbeS8WEdc0RNDZYigw8LtQtnNYmA@mail.gmail.com>
-MIME-Version: 1.0
+ <20160920033049.M23541@cdot.in>
+In-Reply-To: <20160920033049.M23541@cdot.in>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,71 +21,164 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>, Ben Greear <greearb@candelatech.com>
+To: Sridhar Konabathini <sridhark@cdot.in>, Adrian Chadd <adrian@freebsd.org>
 Cc: Horse <horse@gentrice.net>, Raj Joshi <rajjoshi@comp.nus.edu.sg>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Michal Kazior <michal.kazior@tieto.com>
 
-SGksCiAgICBJIGRpZG50IHRyeSB3aXRoIGF0aDlrIGRyaXZlcnMgb24gdGhlIHNhbWUgc2V0dXAu
-IAoKICAgIHdlIGFyZSB1c2luZyAgV2lGaSBjYXBhY2l0eSB0ZXN0IHRvb2wgb24gTGFuZm9yZ2Ug
-dG8gdGVzdCB0aGUgcGVyZm9ybWFuY2UsIHRoaXMgd2lsbApnZW5lcmF0ZSB0aGUgdHJhZmZpYy4g
-d2UgYXJlIHNlbGVjdGluZyB0aGUgVURQIHByb3RvY29sIChwYWNrZXQgLSAxNDcyIEJ5dGVzKS4K
-CiAgICBBcyBwZXIgVEVDIHNwZWMuIHJlcXVpcmVkIGRhdGEgcmF0ZXMgYXJlIGdpdmVuIGJlbG93
-LgoKICAgIE1vZGUgICAgICAgICBBc3NvLiByYXRlICAgICAgICAgVGhyb3VnaHB1dAoKODAyLjEx
-YSAgICAgICAgICAgIDU0IE1icHMgICAgICAgICAgICAgMjggTWJwcwoKODAyLjExZyAgICAgICAg
-ICAgIDU0IE1icHMgICAgICAgICAgICAgMjggTWJwcwoKICAgIEJ1dCB3ZSBhcmUgZ2V0dGluZyBv
-bmx5IDI2LTI3TWJwcywgaG93IHRvIGltcHJvdmUgdGhpcyB0aHJvdWdocHV0ID8KCiAgICBbVEVD
-KFRlbGVjb21tdW5pY2F0aW9uIEVuZ2luZWVyaW5nIENlbnRyZSwgR292dC4gSW5kaWEpIGlzIGEg
-dGVjaG5pY2FsIGJvZHksCnByZXBhcmVzIHNwZWNpZmljYXRpb24gb2YgY29tbW9uIFRlbGVjb20g
-c3RhbmRhcmRzLl0KClJlZ2FyZHMsClNyaWRoYXIKCgpPbiBNb24sIDE5IFNlcCAyMDE2IDEwOjIy
-OjI2IC0wNzAwLCBBZHJpYW4gQ2hhZGQgd3JvdGUKPiAuLi4uIGFuZCB3aGF0J3MgIlRFQyBzcGVj
-aWZpY2F0aW9uIiA/Cj4gCj4gLQo+IGEKPiAKPiBPbiAxOSBTZXB0ZW1iZXIgMjAxNiBhdCAwOToy
-OCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdyb3RlOgo+ID4gT3V0IG9m
-IGN1cmlvc2l0eSwgZG9lcyBhdGg5ayBwZXJmb3JtIGF0IHRoZSByZXF1aXJlZCByYXRlcyBpbiBh
-IHNpbWlsYXIKPiA+IHNldHVwPwo+ID4KPiA+IFNlbmRpbmcgdGNwLCB1ZHAsIG9yIHNvbWUgb3Ro
-ZXIgcHJvdG9jb2w/ICBIb3cgYXJlIHlvdSBnZW5lcmF0aW5nIHRoZQo+ID4gdHJhZmZpYz8KPiA+
-Cj4gPiBUaGFua3MsCj4gPiBCZW4KPiA+Cj4gPgo+ID4gT24gMDkvMTgvMjAxNiAwOToyNiBQTSwg
-U3JpZGhhciBLb25kYWJhdGhpbmkgd3JvdGU6Cj4gPj4KPiA+PiBIaSwKPiA+Pgo+ID4+ICAgICAg
-V2hlbiB3ZSBhcmUgdGVzdGluZyA4MDIuMTEgYS9nIG1vZGUgdGhyb3VnaHB1dCBtZWFzdXJlbWVu
-dHMgb24KPiA+PiBUMTAyNFJEQiAoIHdlIHVzZWQKPiA+PiBrZXJuZWwtMy4xMjsgYXRoMTBrIGRy
-aXZlcnMgYmFja3BvcnRlZCBmcm9tIDQuNDtob3N0YXBkIDIuNSBmb3IgMTFBQwo+ID4+IHN1cHBv
-cnQpLCB0aGVuIHdlCj4gPj4gYXJlIGdldHRpbmcgMjYtMjcgTWJwcyAsIHdoaWNoIGlzIG5vdCBt
-ZWV0aW5nIHRoZSByZXF1aXJlZCBURUMKPiA+PiBzcGVjaWZpY2F0aW9uICh3aGljaCBpcwo+ID4+
-IH4yOCBNYnBzKS4gSG93IGNhbiB3ZSBpbmNyZWFzZSB0aGUgdGhyb3VnaHB1dCBpbiB0aGVzZSBt
-b2Rlcy4KPiA+Pgo+ID4+ICAgICAgIENhbiB5b3UgcGxlYXNlIGhlbHAgb24gdGhpcy4KPiA+Pgo+
-ID4+Cj4gPj4KPiA+PiBSZWdhcmRzLAo+ID4+Cj4gPj4gU3JpZGhhciBLb25kYWJhdGhpbmksCj4g
-Pj4gUmVzZWFyY2ggZW5naW5lZXIsCj4gPj4gUFNHIGxhYiwKPiA+PiBDZW50ZXIgZm9yIERldmVs
-b3BtZW50IE9mIFRlbGVtYXRpY3MKPiA+PiA5NDgwNDg0ODIxLgo+ID4+Cj4gPj4KPiA+Pgo+ID4+
-Cj4gPj4gRGlzY2xhaW1lcjoKPiA+PiAtLS0tLS0tLS0tCj4gPj4gVGhpcyBlbWFpbCBhbmQgYW55
-IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGggaXQgYXJlIGNvbmZpZGVudGlhbCBhbmQgaW50ZW5kZWQK
-PiA+PiBzb2xlbHkKPiA+PiBmb3IKPiA+PiB0aGUgdXNlIG9mIHRoZSBpbmRpdmlkdWFsIG9yIGVu
-dGl0eSB0byB3aG9tIHRoZXkgYXJlIGFkZHJlc3NlZC4gIElmIHlvdQo+ID4+IGFyZSBub3QgdGhl
-Cj4gPj4gaW50ZW5kZWQgcmVjaXBpZW50IHlvdSBhcmUgbm90aWZpZWQgdGhhdCBkaXNjbG9zaW5n
-LCBjb3B5aW5nLCBkaXN0cmlidXRpbmcKPiA+PiBvciB0YWtpbmcKPiA+PiBhbnkKPiA+PiBhY3Rp
-b24gaW4gcmVsaWFuY2Ugb24gdGhlIGNvbnRlbnRzIG9mIHRoaXMgaW5mb3JtYXRpb24gaXMgc3Ry
-aWN0bHkKPiA+PiBwcm9oaWJpdGVkLiBUaGUKPiA+PiBzZW5kZXIgZG9lcyBub3QgYQo+ID4+Cj4g
-Pj4KPiA+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
-ID4+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiA+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+
-ID4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4g
-Pj4KPiA+Cj4gPgo+ID4gLS0KPiA+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29t
-Pgo+ID4gQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNv
-bQo+ID4KPiA+Cj4gPgo+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KPiA+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiA+IGF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
-aDEwawo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Cj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCgpSZWdhcmRz
-LAoKU3JpZGhhciBLb25kYWJhdGhpbmksClJlc2VhcmNoIGVuZ2luZWVyLApQU0cgbGFiLApDZW50
-ZXIgZm9yIERldmVsb3BtZW50IE9mIFRlbGVtYXRpY3MKOTQ4MDQ4NDgyMS4KCgoKCkRpc2NsYWlt
-ZXI6Ci0tLS0tLS0tLS0KVGhpcyBlbWFpbCBhbmQgYW55IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGgg
-aXQgYXJlIGNvbmZpZGVudGlhbCBhbmQgaW50ZW5kZWQgc29sZWx5IApmb3IgCnRoZSB1c2Ugb2Yg
-dGhlIGluZGl2aWR1YWwgb3IgZW50aXR5IHRvIHdob20gdGhleSBhcmUgYWRkcmVzc2VkLsKgIElm
-IHlvdSBhcmUgbm90IHRoZSAKaW50ZW5kZWQgcmVjaXBpZW50IHlvdSBhcmUgbm90aWZpZWQgdGhh
-dCBkaXNjbG9zaW5nLCBjb3B5aW5nLCBkaXN0cmlidXRpbmcgb3IgdGFraW5nIAphbnkgCmFjdGlv
-biBpbiByZWxpYW5jZSBvbiB0aGUgY29udGVudHMgb2YgdGhpcyBpbmZvcm1hdGlvbiBpcyBzdHJp
-Y3RseSBwcm9oaWJpdGVkLiBUaGUgCnNlbmRlciBkb2VzIG5vdCBhCgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2F0aDEwawo=
+LANforge is going to be running a modified driver and firmware, though likely
+it is no worse at performance in this case than stock code.
+
+What is the device under test?
+
+And, are you in an isolation chamber, using SMA cables, attenuation, etc?
+
+There are lots of things that can impact wifi throughput so you have to provide
+lots more details in order for anyone to understand why the throughput might be
+less than expected.
+
+And if it is specific to LANforge, please send email to support@candelatech.com
+
+Thanks,
+Ben
+
+
+On 09/19/2016 08:46 PM, Sridhar Konabathini wrote:
+> Hi,
+>      I didnt try with ath9k drivers on the same setup.
+>
+>      we are using  WiFi capacity test tool on Lanforge to test the performance, this will
+> generate the traffic. we are selecting the UDP protocol (packet - 1472 Bytes).
+>
+>      As per TEC spec. required data rates are given below.
+>
+>      Mode         Asso. rate         Throughput
+>
+> 802.11a            54 Mbps             28 Mbps
+>
+> 802.11g            54 Mbps             28 Mbps
+>
+>      But we are getting only 26-27Mbps, how to improve this throughput ?
+>
+>      [TEC(Telecommunication Engineering Centre, Govt. India) is a technical body,
+> prepares specification of common Telecom standards.]
+>
+> Regards,
+> Sridhar
+>
+>
+> On Mon, 19 Sep 2016 10:22:26 -0700, Adrian Chadd wrote
+>> .... and what's "TEC specification" ?
+>>
+>> -
+>> a
+>>
+>> On 19 September 2016 at 09:28, Ben Greear <greearb@candelatech.com> wrote:
+>>> Out of curiosity, does ath9k perform at the required rates in a similar
+>>> setup?
+>>>
+>>> Sending tcp, udp, or some other protocol?  How are you generating the
+>>> traffic?
+>>>
+>>> Thanks,
+>>> Ben
+>>>
+>>>
+>>> On 09/18/2016 09:26 PM, Sridhar Kondabathini wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>>       When we are testing 802.11 a/g mode throughput measurements on
+>>>> T1024RDB ( we used
+>>>> kernel-3.12; ath10k drivers backported from 4.4;hostapd 2.5 for 11AC
+>>>> support), then we
+>>>> are getting 26-27 Mbps , which is not meeting the required TEC
+>>>> specification (which is
+>>>> ~28 Mbps). How can we increase the throughput in these modes.
+>>>>
+>>>>        Can you please help on this.
+>>>>
+>>>>
+>>>>
+>>>> Regards,
+>>>>
+>>>> Sridhar Kondabathini,
+>>>> Research engineer,
+>>>> PSG lab,
+>>>> Center for Development Of Telematics
+>>>> 9480484821.
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> Disclaimer:
+>>>> ----------
+>>>> This email and any files transmitted with it are confidential and intended
+>>>> solely
+>>>> for
+>>>> the use of the individual or entity to whom they are addressed.  If you
+>>>> are not the
+>>>> intended recipient you are notified that disclosing, copying, distributing
+>>>> or taking
+>>>> any
+>>>> action in reliance on the contents of this information is strictly
+>>>> prohibited. The
+>>>> sender does not a
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> ath10k mailing list
+>>>> ath10k@lists.infradead.org
+>>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>>>
+>>>
+>>>
+>>> --
+>>> Ben Greear <greearb@candelatech.com>
+>>> Candela Technologies Inc  http://www.candelatech.com
+>>>
+>>>
+>>>
+>>> _______________________________________________
+>>> ath10k mailing list
+>>> ath10k@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
+>
+>
+> Regards,
+>
+> Sridhar Kondabathini,
+> Research engineer,
+> PSG lab,
+> Center for Development Of Telematics
+> 9480484821.
+>
+>
+>
+>
+> Disclaimer:
+> ----------
+> This email and any files transmitted with it are confidential and intended solely
+> for
+> the use of the individual or entity to whom they are addressed.  If you are not the
+> intended recipient you are notified that disclosing, copying, distributing or taking
+> any
+> action in reliance on the contents of this information is strictly prohibited. The
+> sender does not a
+>
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
