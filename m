@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmBjv-0003eR-Mk
- for ath10k@lists.infradead.org; Tue, 20 Sep 2016 03:29:00 +0000
-Received: by mail-io0-x244.google.com with SMTP id y139so472558ioy.1
- for <ath10k@lists.infradead.org>; Mon, 19 Sep 2016 20:28:39 -0700 (PDT)
-From: Nikolay Martynov <mar.kolya@gmail.com>
-Subject: [PATCH] ath10k: fix debug cal data file
-Date: Mon, 19 Sep 2016 23:26:24 -0400
-Message-Id: <1474341984-19220-1-git-send-email-mar.kolya@gmail.com>
+Received: from universe.cdot.in ([49.128.111.121])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bmC5R-0007l0-94
+ for ath10k@lists.infradead.org; Tue, 20 Sep 2016 03:51:15 +0000
+From: "Sridhar Konabathini" <sridhark@cdot.in>
+Subject: Re: Issue with ATH10K driver with 802.11 a/g mode datarates
+Date: Tue, 20 Sep 2016 09:16:07 +0530
+Message-Id: <20160920033049.M23541@cdot.in>
+In-Reply-To: <CAJ-Vmo=NfyiFLj8oDkSEHaGbeS8WEdc0RNDZYigw8LtQtnNYmA@mail.gmail.com>
+References: <20160919041857.M30046@universe.cdotb.ernet.in>
+ <57E01220.3060302@candelatech.com>
+ <CAJ-Vmo=NfyiFLj8oDkSEHaGbeS8WEdc0RNDZYigw8LtQtnNYmA@mail.gmail.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,109 +20,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: Nikolay Martynov <mar.kolya@gmail.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Adrian Chadd <adrian@freebsd.org>, Ben Greear <greearb@candelatech.com>
+Cc: Horse <horse@gentrice.net>, Raj Joshi <rajjoshi@comp.nus.edu.sg>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Michal Kazior <michal.kazior@tieto.com>
 
-It got broken by 0b8e3c4ca29fe2c0efd3d41a76e34a657b9f17a4
-
-Signed-off-by: Nikolay Martynov <mar.kolya@gmail.com>
----
- drivers/net/wireless/ath/ath10k/debug.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 8f0fd41..7e82947 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -109,6 +109,11 @@ struct ath10k_dump_file_data {
- 	u8 data[0];
- } __packed;
- 
-+struct ath10k_debug_cal_data {
-+	u32 len;
-+	u8 buf[0];
-+};
-+
- void ath10k_info(struct ath10k *ar, const char *fmt, ...)
- {
- 	struct va_format vaf = {
-@@ -1453,7 +1458,8 @@ static const struct file_operations fops_fw_dbglog = {
- static int ath10k_debug_cal_data_open(struct inode *inode, struct file *file)
- {
- 	struct ath10k *ar = inode->i_private;
--	void *buf;
-+	struct ath10k_debug_cal_data *data;
-+	u32 len;
- 	u32 hi_addr;
- 	__le32 addr;
- 	int ret;
-@@ -1466,12 +1472,15 @@ static int ath10k_debug_cal_data_open(struct inode *inode, struct file *file)
- 		goto err;
- 	}
- 
--	buf = vmalloc(ar->hw_params.cal_data_len);
--	if (!buf) {
-+	len = ar->hw_params.cal_data_len;
-+	data = vmalloc(sizeof(struct ath10k_debug_cal_data) + len);
-+	if (!data) {
- 		ret = -ENOMEM;
- 		goto err;
- 	}
- 
-+	data->len = len;
-+
- 	hi_addr = host_interest_item_address(HI_ITEM(hi_board_data));
- 
- 	ret = ath10k_hif_diag_read(ar, hi_addr, &addr, sizeof(addr));
-@@ -1480,21 +1489,20 @@ static int ath10k_debug_cal_data_open(struct inode *inode, struct file *file)
- 		goto err_vfree;
- 	}
- 
--	ret = ath10k_hif_diag_read(ar, le32_to_cpu(addr), buf,
--				   ar->hw_params.cal_data_len);
-+	ret = ath10k_hif_diag_read(ar, le32_to_cpu(addr), data->buf, len);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to read calibration data: %d\n", ret);
- 		goto err_vfree;
- 	}
- 
--	file->private_data = buf;
-+	file->private_data = data;
- 
- 	mutex_unlock(&ar->conf_mutex);
- 
- 	return 0;
- 
- err_vfree:
--	vfree(buf);
-+	vfree(data);
- 
- err:
- 	mutex_unlock(&ar->conf_mutex);
-@@ -1506,11 +1514,10 @@ static ssize_t ath10k_debug_cal_data_read(struct file *file,
- 					  char __user *user_buf,
- 					  size_t count, loff_t *ppos)
- {
--	struct ath10k *ar = file->private_data;
--	void *buf = file->private_data;
-+	struct ath10k_debug_cal_data *data = file->private_data;
- 
- 	return simple_read_from_buffer(user_buf, count, ppos,
--				       buf, ar->hw_params.cal_data_len);
-+				       data->buf, data->len);
- }
- 
- static int ath10k_debug_cal_data_release(struct inode *inode,
--- 
-2.7.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCiAgICBJIGRpZG50IHRyeSB3aXRoIGF0aDlrIGRyaXZlcnMgb24gdGhlIHNhbWUgc2V0dXAu
+IAoKICAgIHdlIGFyZSB1c2luZyAgV2lGaSBjYXBhY2l0eSB0ZXN0IHRvb2wgb24gTGFuZm9yZ2Ug
+dG8gdGVzdCB0aGUgcGVyZm9ybWFuY2UsIHRoaXMgd2lsbApnZW5lcmF0ZSB0aGUgdHJhZmZpYy4g
+d2UgYXJlIHNlbGVjdGluZyB0aGUgVURQIHByb3RvY29sIChwYWNrZXQgLSAxNDcyIEJ5dGVzKS4K
+CiAgICBBcyBwZXIgVEVDIHNwZWMuIHJlcXVpcmVkIGRhdGEgcmF0ZXMgYXJlIGdpdmVuIGJlbG93
+LgoKICAgIE1vZGUgICAgICAgICBBc3NvLiByYXRlICAgICAgICAgVGhyb3VnaHB1dAoKODAyLjEx
+YSAgICAgICAgICAgIDU0IE1icHMgICAgICAgICAgICAgMjggTWJwcwoKODAyLjExZyAgICAgICAg
+ICAgIDU0IE1icHMgICAgICAgICAgICAgMjggTWJwcwoKICAgIEJ1dCB3ZSBhcmUgZ2V0dGluZyBv
+bmx5IDI2LTI3TWJwcywgaG93IHRvIGltcHJvdmUgdGhpcyB0aHJvdWdocHV0ID8KCiAgICBbVEVD
+KFRlbGVjb21tdW5pY2F0aW9uIEVuZ2luZWVyaW5nIENlbnRyZSwgR292dC4gSW5kaWEpIGlzIGEg
+dGVjaG5pY2FsIGJvZHksCnByZXBhcmVzIHNwZWNpZmljYXRpb24gb2YgY29tbW9uIFRlbGVjb20g
+c3RhbmRhcmRzLl0KClJlZ2FyZHMsClNyaWRoYXIKCgpPbiBNb24sIDE5IFNlcCAyMDE2IDEwOjIy
+OjI2IC0wNzAwLCBBZHJpYW4gQ2hhZGQgd3JvdGUKPiAuLi4uIGFuZCB3aGF0J3MgIlRFQyBzcGVj
+aWZpY2F0aW9uIiA/Cj4gCj4gLQo+IGEKPiAKPiBPbiAxOSBTZXB0ZW1iZXIgMjAxNiBhdCAwOToy
+OCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdyb3RlOgo+ID4gT3V0IG9m
+IGN1cmlvc2l0eSwgZG9lcyBhdGg5ayBwZXJmb3JtIGF0IHRoZSByZXF1aXJlZCByYXRlcyBpbiBh
+IHNpbWlsYXIKPiA+IHNldHVwPwo+ID4KPiA+IFNlbmRpbmcgdGNwLCB1ZHAsIG9yIHNvbWUgb3Ro
+ZXIgcHJvdG9jb2w/ICBIb3cgYXJlIHlvdSBnZW5lcmF0aW5nIHRoZQo+ID4gdHJhZmZpYz8KPiA+
+Cj4gPiBUaGFua3MsCj4gPiBCZW4KPiA+Cj4gPgo+ID4gT24gMDkvMTgvMjAxNiAwOToyNiBQTSwg
+U3JpZGhhciBLb25kYWJhdGhpbmkgd3JvdGU6Cj4gPj4KPiA+PiBIaSwKPiA+Pgo+ID4+ICAgICAg
+V2hlbiB3ZSBhcmUgdGVzdGluZyA4MDIuMTEgYS9nIG1vZGUgdGhyb3VnaHB1dCBtZWFzdXJlbWVu
+dHMgb24KPiA+PiBUMTAyNFJEQiAoIHdlIHVzZWQKPiA+PiBrZXJuZWwtMy4xMjsgYXRoMTBrIGRy
+aXZlcnMgYmFja3BvcnRlZCBmcm9tIDQuNDtob3N0YXBkIDIuNSBmb3IgMTFBQwo+ID4+IHN1cHBv
+cnQpLCB0aGVuIHdlCj4gPj4gYXJlIGdldHRpbmcgMjYtMjcgTWJwcyAsIHdoaWNoIGlzIG5vdCBt
+ZWV0aW5nIHRoZSByZXF1aXJlZCBURUMKPiA+PiBzcGVjaWZpY2F0aW9uICh3aGljaCBpcwo+ID4+
+IH4yOCBNYnBzKS4gSG93IGNhbiB3ZSBpbmNyZWFzZSB0aGUgdGhyb3VnaHB1dCBpbiB0aGVzZSBt
+b2Rlcy4KPiA+Pgo+ID4+ICAgICAgIENhbiB5b3UgcGxlYXNlIGhlbHAgb24gdGhpcy4KPiA+Pgo+
+ID4+Cj4gPj4KPiA+PiBSZWdhcmRzLAo+ID4+Cj4gPj4gU3JpZGhhciBLb25kYWJhdGhpbmksCj4g
+Pj4gUmVzZWFyY2ggZW5naW5lZXIsCj4gPj4gUFNHIGxhYiwKPiA+PiBDZW50ZXIgZm9yIERldmVs
+b3BtZW50IE9mIFRlbGVtYXRpY3MKPiA+PiA5NDgwNDg0ODIxLgo+ID4+Cj4gPj4KPiA+Pgo+ID4+
+Cj4gPj4gRGlzY2xhaW1lcjoKPiA+PiAtLS0tLS0tLS0tCj4gPj4gVGhpcyBlbWFpbCBhbmQgYW55
+IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGggaXQgYXJlIGNvbmZpZGVudGlhbCBhbmQgaW50ZW5kZWQK
+PiA+PiBzb2xlbHkKPiA+PiBmb3IKPiA+PiB0aGUgdXNlIG9mIHRoZSBpbmRpdmlkdWFsIG9yIGVu
+dGl0eSB0byB3aG9tIHRoZXkgYXJlIGFkZHJlc3NlZC4gIElmIHlvdQo+ID4+IGFyZSBub3QgdGhl
+Cj4gPj4gaW50ZW5kZWQgcmVjaXBpZW50IHlvdSBhcmUgbm90aWZpZWQgdGhhdCBkaXNjbG9zaW5n
+LCBjb3B5aW5nLCBkaXN0cmlidXRpbmcKPiA+PiBvciB0YWtpbmcKPiA+PiBhbnkKPiA+PiBhY3Rp
+b24gaW4gcmVsaWFuY2Ugb24gdGhlIGNvbnRlbnRzIG9mIHRoaXMgaW5mb3JtYXRpb24gaXMgc3Ry
+aWN0bHkKPiA+PiBwcm9oaWJpdGVkLiBUaGUKPiA+PiBzZW5kZXIgZG9lcyBub3QgYQo+ID4+Cj4g
+Pj4KPiA+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
+ID4+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiA+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+
+ID4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4g
+Pj4KPiA+Cj4gPgo+ID4gLS0KPiA+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29t
+Pgo+ID4gQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNv
+bQo+ID4KPiA+Cj4gPgo+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPiA+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiA+IGF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
+aDEwawo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Cj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCgpSZWdhcmRz
+LAoKU3JpZGhhciBLb25kYWJhdGhpbmksClJlc2VhcmNoIGVuZ2luZWVyLApQU0cgbGFiLApDZW50
+ZXIgZm9yIERldmVsb3BtZW50IE9mIFRlbGVtYXRpY3MKOTQ4MDQ4NDgyMS4KCgoKCkRpc2NsYWlt
+ZXI6Ci0tLS0tLS0tLS0KVGhpcyBlbWFpbCBhbmQgYW55IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGgg
+aXQgYXJlIGNvbmZpZGVudGlhbCBhbmQgaW50ZW5kZWQgc29sZWx5IApmb3IgCnRoZSB1c2Ugb2Yg
+dGhlIGluZGl2aWR1YWwgb3IgZW50aXR5IHRvIHdob20gdGhleSBhcmUgYWRkcmVzc2VkLsKgIElm
+IHlvdSBhcmUgbm90IHRoZSAKaW50ZW5kZWQgcmVjaXBpZW50IHlvdSBhcmUgbm90aWZpZWQgdGhh
+dCBkaXNjbG9zaW5nLCBjb3B5aW5nLCBkaXN0cmlidXRpbmcgb3IgdGFraW5nIAphbnkgCmFjdGlv
+biBpbiByZWxpYW5jZSBvbiB0aGUgY29udGVudHMgb2YgdGhpcyBpbmZvcm1hdGlvbiBpcyBzdHJp
+Y3RseSBwcm9oaWJpdGVkLiBUaGUgCnNlbmRlciBkb2VzIG5vdCBhCgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
+MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2F0aDEwawo=
