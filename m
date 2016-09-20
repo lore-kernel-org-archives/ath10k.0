@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmCxD-0003JS-U9
- for ath10k@lists.infradead.org; Tue, 20 Sep 2016 04:46:48 +0000
-Message-ID: <57E0BBFF.4070206@candelatech.com>
-Date: Mon, 19 Sep 2016 21:33:03 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
+Received: from universe.cdot.in ([49.128.111.121])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bmG7V-0006pJ-VI
+ for ath10k@lists.infradead.org; Tue, 20 Sep 2016 08:09:40 +0000
+From: "Sridhar Konabathini" <sridhark@cdot.in>
 Subject: Re: Issue with ATH10K driver with 802.11 a/g mode datarates
+Date: Tue, 20 Sep 2016 13:34:38 +0530
+Message-Id: <20160920070228.M20774@cdot.in>
+In-Reply-To: <57E0BBFF.4070206@candelatech.com>
 References: <20160919041857.M30046@universe.cdotb.ernet.in>
  <57E01220.3060302@candelatech.com>
  <CAJ-Vmo=NfyiFLj8oDkSEHaGbeS8WEdc0RNDZYigw8LtQtnNYmA@mail.gmail.com>
- <20160920033049.M23541@cdot.in>
-In-Reply-To: <20160920033049.M23541@cdot.in>
+ <20160920033049.M23541@cdot.in> <57E0BBFF.4070206@candelatech.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,164 +21,107 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sridhar Konabathini <sridhark@cdot.in>, Adrian Chadd <adrian@freebsd.org>
-Cc: Horse <horse@gentrice.net>, Raj Joshi <rajjoshi@comp.nus.edu.sg>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Michal Kazior <michal.kazior@tieto.com>
+To: Ben Greear <greearb@candelatech.com>, Adrian Chadd <adrian@freebsd.org>
+Cc: Michal Kazior <michal.kazior@tieto.com>, Horse <horse@gentrice.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Raj Joshi <rajjoshi@comp.nus.edu.sg>
 
-LANforge is going to be running a modified driver and firmware, though likely
-it is no worse at performance in this case than stock code.
-
-What is the device under test?
-
-And, are you in an isolation chamber, using SMA cables, attenuation, etc?
-
-There are lots of things that can impact wifi throughput so you have to provide
-lots more details in order for anyone to understand why the throughput might be
-less than expected.
-
-And if it is specific to LANforge, please send email to support@candelatech.com
-
-Thanks,
-Ben
-
-
-On 09/19/2016 08:46 PM, Sridhar Konabathini wrote:
-> Hi,
->      I didnt try with ath9k drivers on the same setup.
->
->      we are using  WiFi capacity test tool on Lanforge to test the performance, this will
-> generate the traffic. we are selecting the UDP protocol (packet - 1472 Bytes).
->
->      As per TEC spec. required data rates are given below.
->
->      Mode         Asso. rate         Throughput
->
-> 802.11a            54 Mbps             28 Mbps
->
-> 802.11g            54 Mbps             28 Mbps
->
->      But we are getting only 26-27Mbps, how to improve this throughput ?
->
->      [TEC(Telecommunication Engineering Centre, Govt. India) is a technical body,
-> prepares specification of common Telecom standards.]
->
-> Regards,
-> Sridhar
->
->
-> On Mon, 19 Sep 2016 10:22:26 -0700, Adrian Chadd wrote
->> .... and what's "TEC specification" ?
->>
->> -
->> a
->>
->> On 19 September 2016 at 09:28, Ben Greear <greearb@candelatech.com> wrote:
->>> Out of curiosity, does ath9k perform at the required rates in a similar
->>> setup?
->>>
->>> Sending tcp, udp, or some other protocol?  How are you generating the
->>> traffic?
->>>
->>> Thanks,
->>> Ben
->>>
->>>
->>> On 09/18/2016 09:26 PM, Sridhar Kondabathini wrote:
->>>>
->>>> Hi,
->>>>
->>>>       When we are testing 802.11 a/g mode throughput measurements on
->>>> T1024RDB ( we used
->>>> kernel-3.12; ath10k drivers backported from 4.4;hostapd 2.5 for 11AC
->>>> support), then we
->>>> are getting 26-27 Mbps , which is not meeting the required TEC
->>>> specification (which is
->>>> ~28 Mbps). How can we increase the throughput in these modes.
->>>>
->>>>        Can you please help on this.
->>>>
->>>>
->>>>
->>>> Regards,
->>>>
->>>> Sridhar Kondabathini,
->>>> Research engineer,
->>>> PSG lab,
->>>> Center for Development Of Telematics
->>>> 9480484821.
->>>>
->>>>
->>>>
->>>>
->>>> Disclaimer:
->>>> ----------
->>>> This email and any files transmitted with it are confidential and intended
->>>> solely
->>>> for
->>>> the use of the individual or entity to whom they are addressed.  If you
->>>> are not the
->>>> intended recipient you are notified that disclosing, copying, distributing
->>>> or taking
->>>> any
->>>> action in reliance on the contents of this information is strictly
->>>> prohibited. The
->>>> sender does not a
->>>>
->>>>
->>>> _______________________________________________
->>>> ath10k mailing list
->>>> ath10k@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>>
->>>
->>>
->>> --
->>> Ben Greear <greearb@candelatech.com>
->>> Candela Technologies Inc  http://www.candelatech.com
->>>
->>>
->>>
->>> _______________________________________________
->>> ath10k mailing list
->>> ath10k@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/ath10k
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
->
->
-> Regards,
->
-> Sridhar Kondabathini,
-> Research engineer,
-> PSG lab,
-> Center for Development Of Telematics
-> 9480484821.
->
->
->
->
-> Disclaimer:
-> ----------
-> This email and any files transmitted with it are confidential and intended solely
-> for
-> the use of the individual or entity to whom they are addressed.  If you are not the
-> intended recipient you are notified that disclosing, copying, distributing or taking
-> any
-> action in reliance on the contents of this information is strictly prohibited. The
-> sender does not a
->
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCiAgIFllcywgd2UgYXJlIGRvaW5nIHRoZSB0ZXN0aW5nIGluIGFuIGlzb2xhdGlvbiBjaGFt
+YmVyIChubyBhdHRlbnVhdG9ycyB1c2VkKSwgYW50ZW5uYXMKYXJlIGNvbm5lY3RlZCB0byBSRiBj
+YXJkIHZpYSBTTUEgY2FibGUuIFR4IHBvd2VyIGlzIDVkQm0uIHdlIGFyZSBub3Qgc3VzcGVjdGlu
+ZyBMYW5mb3JnZQphcyBpdCBnaXZlcyByZXF1aXJlZCB0aHJvdWdocHV0IGluIGRpZmZlcmVudCBX
+aUZpIHNldHVwLgogIGhlcmUgRGV2aWNlIFVuZGVyIHRlc3QgaXMgVDIwMTQgYmFzZWQgY2FyZC4K
+ClJlZ2FyZHMsClNyaWRoYXIKCk9uIE1vbiwgMTkgU2VwIDIwMTYgMjE6MzM6MDMgLTA3MDAsIEJl
+biBHcmVlYXIgd3JvdGUKPiBMQU5mb3JnZSBpcyBnb2luZyB0byBiZSBydW5uaW5nIGEgbW9kaWZp
+ZWQgZHJpdmVyIGFuZCBmaXJtd2FyZSwgdGhvdWdoIGxpa2VseQo+IGl0IGlzIG5vIHdvcnNlIGF0
+IHBlcmZvcm1hbmNlIGluIHRoaXMgY2FzZSB0aGFuIHN0b2NrIGNvZGUuCj4gCj4gV2hhdCBpcyB0
+aGUgZGV2aWNlIHVuZGVyIHRlc3Q/Cj4gCj4gQW5kLCBhcmUgeW91IGluIGFuIGlzb2xhdGlvbiBj
+aGFtYmVyLCB1c2luZyBTTUEgY2FibGVzLCBhdHRlbnVhdGlvbiwgZXRjPwo+IAo+IFRoZXJlIGFy
+ZSBsb3RzIG9mIHRoaW5ncyB0aGF0IGNhbiBpbXBhY3Qgd2lmaSB0aHJvdWdocHV0IHNvIHlvdSBo
+YXZlIHRvIHByb3ZpZGUKPiBsb3RzIG1vcmUgZGV0YWlscyBpbiBvcmRlciBmb3IgYW55b25lIHRv
+IHVuZGVyc3RhbmQgd2h5IHRoZSB0aHJvdWdocHV0IG1pZ2h0IGJlCj4gbGVzcyB0aGFuIGV4cGVj
+dGVkLgo+IAo+IEFuZCBpZiBpdCBpcyBzcGVjaWZpYyB0byBMQU5mb3JnZSwgcGxlYXNlIHNlbmQg
+ZW1haWwgdG8gc3VwcG9ydEBjYW5kZWxhdGVjaC5jb20KPiAKPiBUaGFua3MsCj4gQmVuCj4gCj4g
+T24gMDkvMTkvMjAxNiAwODo0NiBQTSwgU3JpZGhhciBLb25hYmF0aGluaSB3cm90ZToKPiA+IEhp
+LAo+ID4gICAgICBJIGRpZG50IHRyeSB3aXRoIGF0aDlrIGRyaXZlcnMgb24gdGhlIHNhbWUgc2V0
+dXAuCj4gPgo+ID4gICAgICB3ZSBhcmUgdXNpbmcgIFdpRmkgY2FwYWNpdHkgdGVzdCB0b29sIG9u
+IExhbmZvcmdlIHRvIHRlc3QgdGhlIHBlcmZvcm1hbmNlLCB0aGlzCndpbGwKPiA+IGdlbmVyYXRl
+IHRoZSB0cmFmZmljLiB3ZSBhcmUgc2VsZWN0aW5nIHRoZSBVRFAgcHJvdG9jb2wgKHBhY2tldCAt
+IDE0NzIgQnl0ZXMpLgo+ID4KPiA+ICAgICAgQXMgcGVyIFRFQyBzcGVjLiByZXF1aXJlZCBkYXRh
+IHJhdGVzIGFyZSBnaXZlbiBiZWxvdy4KPiA+Cj4gPiAgICAgIE1vZGUgICAgICAgICBBc3NvLiBy
+YXRlICAgICAgICAgVGhyb3VnaHB1dAo+ID4KPiA+IDgwMi4xMWEgICAgICAgICAgICA1NCBNYnBz
+ICAgICAgICAgICAgIDI4IE1icHMKPiA+Cj4gPiA4MDIuMTFnICAgICAgICAgICAgNTQgTWJwcyAg
+ICAgICAgICAgICAyOCBNYnBzCj4gPgo+ID4gICAgICBCdXQgd2UgYXJlIGdldHRpbmcgb25seSAy
+Ni0yN01icHMsIGhvdyB0byBpbXByb3ZlIHRoaXMgdGhyb3VnaHB1dCA/Cj4gPgo+ID4gICAgICBb
+VEVDKFRlbGVjb21tdW5pY2F0aW9uIEVuZ2luZWVyaW5nIENlbnRyZSwgR292dC4gSW5kaWEpIGlz
+IGEgdGVjaG5pY2FsIGJvZHksCj4gPiBwcmVwYXJlcyBzcGVjaWZpY2F0aW9uIG9mIGNvbW1vbiBU
+ZWxlY29tIHN0YW5kYXJkcy5dCj4gPgo+ID4gUmVnYXJkcywKPiA+IFNyaWRoYXIKPiA+Cj4gPgo+
+ID4gT24gTW9uLCAxOSBTZXAgMjAxNiAxMDoyMjoyNiAtMDcwMCwgQWRyaWFuIENoYWRkIHdyb3Rl
+Cj4gPj4gLi4uLiBhbmQgd2hhdCdzICJURUMgc3BlY2lmaWNhdGlvbiIgPwo+ID4+Cj4gPj4gLQo+
+ID4+IGEKPiA+Pgo+ID4+IE9uIDE5IFNlcHRlbWJlciAyMDE2IGF0IDA5OjI4LCBCZW4gR3JlZWFy
+IDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4gPj4+IE91dCBvZiBjdXJpb3NpdHks
+IGRvZXMgYXRoOWsgcGVyZm9ybSBhdCB0aGUgcmVxdWlyZWQgcmF0ZXMgaW4gYSBzaW1pbGFyCj4g
+Pj4+IHNldHVwPwo+ID4+Pgo+ID4+PiBTZW5kaW5nIHRjcCwgdWRwLCBvciBzb21lIG90aGVyIHBy
+b3RvY29sPyAgSG93IGFyZSB5b3UgZ2VuZXJhdGluZyB0aGUKPiA+Pj4gdHJhZmZpYz8KPiA+Pj4K
+PiA+Pj4gVGhhbmtzLAo+ID4+PiBCZW4KPiA+Pj4KPiA+Pj4KPiA+Pj4gT24gMDkvMTgvMjAxNiAw
+OToyNiBQTSwgU3JpZGhhciBLb25kYWJhdGhpbmkgd3JvdGU6Cj4gPj4+Pgo+ID4+Pj4gSGksCj4g
+Pj4+Pgo+ID4+Pj4gICAgICAgV2hlbiB3ZSBhcmUgdGVzdGluZyA4MDIuMTEgYS9nIG1vZGUgdGhy
+b3VnaHB1dCBtZWFzdXJlbWVudHMgb24KPiA+Pj4+IFQxMDI0UkRCICggd2UgdXNlZAo+ID4+Pj4g
+a2VybmVsLTMuMTI7IGF0aDEwayBkcml2ZXJzIGJhY2twb3J0ZWQgZnJvbSA0LjQ7aG9zdGFwZCAy
+LjUgZm9yIDExQUMKPiA+Pj4+IHN1cHBvcnQpLCB0aGVuIHdlCj4gPj4+PiBhcmUgZ2V0dGluZyAy
+Ni0yNyBNYnBzICwgd2hpY2ggaXMgbm90IG1lZXRpbmcgdGhlIHJlcXVpcmVkIFRFQwo+ID4+Pj4g
+c3BlY2lmaWNhdGlvbiAod2hpY2ggaXMKPiA+Pj4+IH4yOCBNYnBzKS4gSG93IGNhbiB3ZSBpbmNy
+ZWFzZSB0aGUgdGhyb3VnaHB1dCBpbiB0aGVzZSBtb2Rlcy4KPiA+Pj4+Cj4gPj4+PiAgICAgICAg
+Q2FuIHlvdSBwbGVhc2UgaGVscCBvbiB0aGlzLgo+ID4+Pj4KPiA+Pj4+Cj4gPj4+Pgo+ID4+Pj4g
+UmVnYXJkcywKPiA+Pj4+Cj4gPj4+PiBTcmlkaGFyIEtvbmRhYmF0aGluaSwKPiA+Pj4+IFJlc2Vh
+cmNoIGVuZ2luZWVyLAo+ID4+Pj4gUFNHIGxhYiwKPiA+Pj4+IENlbnRlciBmb3IgRGV2ZWxvcG1l
+bnQgT2YgVGVsZW1hdGljcwo+ID4+Pj4gOTQ4MDQ4NDgyMS4KPiA+Pj4+Cj4gPj4+Pgo+ID4+Pj4K
+PiA+Pj4+Cj4gPj4+PiBEaXNjbGFpbWVyOgo+ID4+Pj4gLS0tLS0tLS0tLQo+ID4+Pj4gVGhpcyBl
+bWFpbCBhbmQgYW55IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGggaXQgYXJlIGNvbmZpZGVudGlhbCBh
+bmQgaW50ZW5kZWQKPiA+Pj4+IHNvbGVseQo+ID4+Pj4gZm9yCj4gPj4+PiB0aGUgdXNlIG9mIHRo
+ZSBpbmRpdmlkdWFsIG9yIGVudGl0eSB0byB3aG9tIHRoZXkgYXJlIGFkZHJlc3NlZC4gIElmIHlv
+dQo+ID4+Pj4gYXJlIG5vdCB0aGUKPiA+Pj4+IGludGVuZGVkIHJlY2lwaWVudCB5b3UgYXJlIG5v
+dGlmaWVkIHRoYXQgZGlzY2xvc2luZywgY29weWluZywgZGlzdHJpYnV0aW5nCj4gPj4+PiBvciB0
+YWtpbmcKPiA+Pj4+IGFueQo+ID4+Pj4gYWN0aW9uIGluIHJlbGlhbmNlIG9uIHRoZSBjb250ZW50
+cyBvZiB0aGlzIGluZm9ybWF0aW9uIGlzIHN0cmljdGx5Cj4gPj4+PiBwcm9oaWJpdGVkLiBUaGUK
+PiA+Pj4+IHNlbmRlciBkb2VzIG5vdCBhCj4gPj4+Pgo+ID4+Pj4KPiA+Pj4+IF9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPj4+PiBhdGgxMGsgbWFpbGlu
+ZyBsaXN0Cj4gPj4+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+ID4+Pj4gaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPiA+Pj4+Cj4gPj4+Cj4g
+Pj4+Cj4gPj4+IC0tCj4gPj4+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+
+ID4+PiBDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29t
+Cj4gPj4+Cj4gPj4+Cj4gPj4+Cj4gPj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCj4gPj4+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiA+Pj4gYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKPiA+Pj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsKPiA+Pgo+ID4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCj4gPj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+ID4+IGF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCj4gPj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsKPiA+Cj4gPgo+ID4gUmVnYXJkcywKPiA+Cj4gPiBTcmlkaGFyIEtv
+bmRhYmF0aGluaSwKPiA+IFJlc2VhcmNoIGVuZ2luZWVyLAo+ID4gUFNHIGxhYiwKPiA+IENlbnRl
+ciBmb3IgRGV2ZWxvcG1lbnQgT2YgVGVsZW1hdGljcwo+ID4gOTQ4MDQ4NDgyMS4KPiA+Cj4gPgo+
+ID4KPiA+Cj4gPiBEaXNjbGFpbWVyOgo+ID4gLS0tLS0tLS0tLQo+ID4gVGhpcyBlbWFpbCBhbmQg
+YW55IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGggaXQgYXJlIGNvbmZpZGVudGlhbCBhbmQgaW50ZW5k
+ZWQgc29sZWx5Cj4gPiBmb3IKPiA+IHRoZSB1c2Ugb2YgdGhlIGluZGl2aWR1YWwgb3IgZW50aXR5
+IHRvIHdob20gdGhleSBhcmUgYWRkcmVzc2VkLiAgSWYgeW91IGFyZSBub3QgdGhlCj4gPiBpbnRl
+bmRlZCByZWNpcGllbnQgeW91IGFyZSBub3RpZmllZCB0aGF0IGRpc2Nsb3NpbmcsIGNvcHlpbmcs
+IGRpc3RyaWJ1dGluZyBvciB0YWtpbmcKPiA+IGFueQo+ID4gYWN0aW9uIGluIHJlbGlhbmNlIG9u
+IHRoZSBjb250ZW50cyBvZiB0aGlzIGluZm9ybWF0aW9uIGlzIHN0cmljdGx5IHByb2hpYml0ZWQu
+IFRoZQo+ID4gc2VuZGVyIGRvZXMgbm90IGEKPiA+Cj4gCj4gLS0gCj4gQmVuIEdyZWVhciA8Z3Jl
+ZWFyYkBjYW5kZWxhdGVjaC5jb20+Cj4gQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8v
+d3d3LmNhbmRlbGF0ZWNoLmNvbQo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsKCgpSZWdhcmRzLAoKU3JpZGhhciBLb25kYWJhdGhpbmksClJlc2VhcmNoIGVuZ2luZWVy
+LApQU0cgbGFiLApDZW50ZXIgZm9yIERldmVsb3BtZW50IE9mIFRlbGVtYXRpY3MKOTQ4MDQ4NDgy
+MS4KCgoKCkRpc2NsYWltZXI6Ci0tLS0tLS0tLS0KVGhpcyBlbWFpbCBhbmQgYW55IGZpbGVzIHRy
+YW5zbWl0dGVkIHdpdGggaXQgYXJlIGNvbmZpZGVudGlhbCBhbmQgaW50ZW5kZWQgc29sZWx5IApm
+b3IgCnRoZSB1c2Ugb2YgdGhlIGluZGl2aWR1YWwgb3IgZW50aXR5IHRvIHdob20gdGhleSBhcmUg
+YWRkcmVzc2VkLsKgIElmIHlvdSBhcmUgbm90IHRoZSAKaW50ZW5kZWQgcmVjaXBpZW50IHlvdSBh
+cmUgbm90aWZpZWQgdGhhdCBkaXNjbG9zaW5nLCBjb3B5aW5nLCBkaXN0cmlidXRpbmcgb3IgdGFr
+aW5nIAphbnkgCmFjdGlvbiBpbiByZWxpYW5jZSBvbiB0aGUgY29udGVudHMgb2YgdGhpcyBpbmZv
+cm1hdGlvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBUaGUgCnNlbmRlciBkb2VzIG5vdCBhCgoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
+aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
