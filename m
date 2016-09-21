@@ -1,13 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from pv41p47im-tydg07083201.me.com ([17.133.165.181])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmfEq-0006yY-Vn
- for ath10k@lists.infradead.org; Wed, 21 Sep 2016 10:58:54 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix copy engine 5 destination ring stuck
-Date: Wed, 21 Sep 2016 16:28:06 +0530
-Message-ID: <20160921105806.23980-1-rmanohar@qti.qualcomm.com>
-MIME-Version: 1.0
+ id 1bmm6y-00071y-Eh
+ for ath10k@lists.infradead.org; Wed, 21 Sep 2016 18:19:17 +0000
+Received: from process-dkim-sign-daemon.pv41p47im-tydg07083201.me.com by
+ pv41p47im-tydg07083201.me.com
+ (Oracle Communications Messaging Server 7.0.5.38.0 64bit (built Feb 26 2016))
+ id <0ODV00D009FLAZ00@pv41p47im-tydg07083201.me.com> for
+ ath10k@lists.infradead.org; Wed, 21 Sep 2016 18:18:49 +0000 (GMT)
+Received: from [10.160.88.43] (localhost [113.185.40.144])
+ by pv41p47im-tydg07083201.me.com
+ (Oracle Communications Messaging Server 7.0.5.38.0 64bit (built Feb 26 2016))
+ with ESMTPSA id <0ODV003LF9J6MM20@pv41p47im-tydg07083201.me.com> for
+ ath10k@lists.infradead.org; Wed, 21 Sep 2016 18:18:48 +0000 (GMT)
+From: Nguyen The <thetamkhoa@icloud.com>
+MIME-version: 1.0 (1.0)
+Date: Thu, 22 Sep 2016 01:18:39 +0700
+Subject: HHG
+Message-id: <3E790729-CA6A-4FFB-AB8C-30E9C30CE759@icloud.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,60 +26,13 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: stable@vger.kernel.org, linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-Firmware is running watchdog timer for tracking copy engine ring index
-and write index. Whenever both indices are stuck at same location for
-given duration, watchdog will be trigger to assert target. While
-updating copy engine destination ring write index, driver ensures that
-write index will not be same as read index by finding delta between these
-two indices (CE_RING_DELTA).
-
-HTT target to host copy engine (CE5) is special case where ring buffers
-will be reused and delta check is not applied while updating write index.
-In rare scenario, whenever CE5 ring is full, both indices will be referring
-same location and this is causing CE ring stuck issue as explained
-above. This issue is originally reported on IPQ4019 during long hour stress
-testing and during veriwave max clients testsuites. The same issue is
-also observed in other chips as well. Fix this by ensuring that write
-index is one less than read index which means that full ring is
-available for receiving data.
-
-Cc: stable@vger.kernel.org
-Tested-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/ce.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index 65d8d714e917..00d3f93058db 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -433,6 +433,13 @@ void ath10k_ce_rx_update_write_idx(struct ath10k_ce_pipe *pipe, u32 nentries)
- 	unsigned int nentries_mask = dest_ring->nentries_mask;
- 	unsigned int write_index = dest_ring->write_index;
- 	u32 ctrl_addr = pipe->ctrl_addr;
-+	u32 cur_write_idx = ath10k_ce_dest_ring_write_index_get(ar, ctrl_addr);
-+
-+	/* Prevent CE ring stuck issue that will occur when ring is full.
-+	 * Make sure that write index is 1 less than read index.
-+	 */
-+	if ((cur_write_idx + nentries)  == dest_ring->sw_index)
-+		nentries -= 1;
- 
- 	write_index = CE_RING_IDX_ADD(nentries_mask, write_index, nentries);
- 	ath10k_ce_dest_ring_write_index_set(ar, ctrl_addr, write_index);
--- 
-2.10.0
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CgrEkMOjIGfhu61pIHThu6sgaVBob25lIGPhu6dhIHTDtGkKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2F0aDEwawo=
