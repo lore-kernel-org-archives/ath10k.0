@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bmKpo-00056e-U1
- for ath10k@lists.infradead.org; Tue, 20 Sep 2016 13:11:44 +0000
-Message-ID: <57E13407.9040705@candelatech.com>
-Date: Tue, 20 Sep 2016 06:05:11 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bmfEq-0006yY-Vn
+ for ath10k@lists.infradead.org; Wed, 21 Sep 2016 10:58:54 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix copy engine 5 destination ring stuck
+Date: Wed, 21 Sep 2016 16:28:06 +0530
+Message-ID: <20160921105806.23980-1-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: Issue with ATH10K driver with 802.11 a/g mode datarates
-References: <20160919041857.M30046@universe.cdotb.ernet.in>
- <57E01220.3060302@candelatech.com>
- <CAJ-Vmo=NfyiFLj8oDkSEHaGbeS8WEdc0RNDZYigw8LtQtnNYmA@mail.gmail.com>
- <20160920033049.M23541@cdot.in> <57E0BBFF.4070206@candelatech.com>
- <20160920070228.M20774@cdot.in>
-In-Reply-To: <20160920070228.M20774@cdot.in>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,215 +16,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sridhar Konabathini <sridhark@cdot.in>, Adrian Chadd <adrian@freebsd.org>
-Cc: Michal Kazior <michal.kazior@tieto.com>, Horse <horse@gentrice.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Raj Joshi <rajjoshi@comp.nus.edu.sg>
+To: ath10k@lists.infradead.org
+Cc: stable@vger.kernel.org, linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-You normally need to add 30-60 db of attenuation to get best throughput
-when directly cabling with SMA cables.  Please try adding more attenuation.
+Firmware is running watchdog timer for tracking copy engine ring index
+and write index. Whenever both indices are stuck at same location for
+given duration, watchdog will be trigger to assert target. While
+updating copy engine destination ring write index, driver ensures that
+write index will not be same as read index by finding delta between these
+two indices (CE_RING_DELTA).
 
-What firmware are you using on the T1024RDB?  Maybe also try using a different
-firmware version to see if that helps.
+HTT target to host copy engine (CE5) is special case where ring buffers
+will be reused and delta check is not applied while updating write index.
+In rare scenario, whenever CE5 ring is full, both indices will be referring
+same location and this is causing CE ring stuck issue as explained
+above. This issue is originally reported on IPQ4019 during long hour stress
+testing and during veriwave max clients testsuites. The same issue is
+also observed in other chips as well. Fix this by ensuring that write
+index is one less than read index which means that full ring is
+available for receiving data.
 
-Thanks,
-Ben
+Cc: stable@vger.kernel.org
+Tested-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/ce.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-
-On 09/20/2016 01:04 AM, Sridhar Konabathini wrote:
-> Hi,
->     Yes, we are doing the testing in an isolation chamber (no attenuators used), antennas
-> are connected to RF card via SMA cable. Tx power is 5dBm. we are not suspecting Lanforge
-> as it gives required throughput in different WiFi setup.
->    here Device Under test is T2014 based card.
->
-> Regards,
-> Sridhar
->
-> On Mon, 19 Sep 2016 21:33:03 -0700, Ben Greear wrote
->> LANforge is going to be running a modified driver and firmware, though likely
->> it is no worse at performance in this case than stock code.
->>
->> What is the device under test?
->>
->> And, are you in an isolation chamber, using SMA cables, attenuation, etc?
->>
->> There are lots of things that can impact wifi throughput so you have to provide
->> lots more details in order for anyone to understand why the throughput might be
->> less than expected.
->>
->> And if it is specific to LANforge, please send email to support@candelatech.com
->>
->> Thanks,
->> Ben
->>
->> On 09/19/2016 08:46 PM, Sridhar Konabathini wrote:
->>> Hi,
->>>       I didnt try with ath9k drivers on the same setup.
->>>
->>>       we are using  WiFi capacity test tool on Lanforge to test the performance, this
-> will
->>> generate the traffic. we are selecting the UDP protocol (packet - 1472 Bytes).
->>>
->>>       As per TEC spec. required data rates are given below.
->>>
->>>       Mode         Asso. rate         Throughput
->>>
->>> 802.11a            54 Mbps             28 Mbps
->>>
->>> 802.11g            54 Mbps             28 Mbps
->>>
->>>       But we are getting only 26-27Mbps, how to improve this throughput ?
->>>
->>>       [TEC(Telecommunication Engineering Centre, Govt. India) is a technical body,
->>> prepares specification of common Telecom standards.]
->>>
->>> Regards,
->>> Sridhar
->>>
->>>
->>> On Mon, 19 Sep 2016 10:22:26 -0700, Adrian Chadd wrote
->>>> .... and what's "TEC specification" ?
->>>>
->>>> -
->>>> a
->>>>
->>>> On 19 September 2016 at 09:28, Ben Greear <greearb@candelatech.com> wrote:
->>>>> Out of curiosity, does ath9k perform at the required rates in a similar
->>>>> setup?
->>>>>
->>>>> Sending tcp, udp, or some other protocol?  How are you generating the
->>>>> traffic?
->>>>>
->>>>> Thanks,
->>>>> Ben
->>>>>
->>>>>
->>>>> On 09/18/2016 09:26 PM, Sridhar Kondabathini wrote:
->>>>>>
->>>>>> Hi,
->>>>>>
->>>>>>        When we are testing 802.11 a/g mode throughput measurements on
->>>>>> T1024RDB ( we used
->>>>>> kernel-3.12; ath10k drivers backported from 4.4;hostapd 2.5 for 11AC
->>>>>> support), then we
->>>>>> are getting 26-27 Mbps , which is not meeting the required TEC
->>>>>> specification (which is
->>>>>> ~28 Mbps). How can we increase the throughput in these modes.
->>>>>>
->>>>>>         Can you please help on this.
->>>>>>
->>>>>>
->>>>>>
->>>>>> Regards,
->>>>>>
->>>>>> Sridhar Kondabathini,
->>>>>> Research engineer,
->>>>>> PSG lab,
->>>>>> Center for Development Of Telematics
->>>>>> 9480484821.
->>>>>>
->>>>>>
->>>>>>
->>>>>>
->>>>>> Disclaimer:
->>>>>> ----------
->>>>>> This email and any files transmitted with it are confidential and intended
->>>>>> solely
->>>>>> for
->>>>>> the use of the individual or entity to whom they are addressed.  If you
->>>>>> are not the
->>>>>> intended recipient you are notified that disclosing, copying, distributing
->>>>>> or taking
->>>>>> any
->>>>>> action in reliance on the contents of this information is strictly
->>>>>> prohibited. The
->>>>>> sender does not a
->>>>>>
->>>>>>
->>>>>> _______________________________________________
->>>>>> ath10k mailing list
->>>>>> ath10k@lists.infradead.org
->>>>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>>>>
->>>>>
->>>>>
->>>>> --
->>>>> Ben Greear <greearb@candelatech.com>
->>>>> Candela Technologies Inc  http://www.candelatech.com
->>>>>
->>>>>
->>>>>
->>>>> _______________________________________________
->>>>> ath10k mailing list
->>>>> ath10k@lists.infradead.org
->>>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>>
->>>> _______________________________________________
->>>> ath10k mailing list
->>>> ath10k@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>
->>>
->>> Regards,
->>>
->>> Sridhar Kondabathini,
->>> Research engineer,
->>> PSG lab,
->>> Center for Development Of Telematics
->>> 9480484821.
->>>
->>>
->>>
->>>
->>> Disclaimer:
->>> ----------
->>> This email and any files transmitted with it are confidential and intended solely
->>> for
->>> the use of the individual or entity to whom they are addressed.  If you are not the
->>> intended recipient you are notified that disclosing, copying, distributing or taking
->>> any
->>> action in reliance on the contents of this information is strictly prohibited. The
->>> sender does not a
->>>
->>
->> --
->> Ben Greear <greearb@candelatech.com>
->> Candela Technologies Inc  http://www.candelatech.com
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
->
->
-> Regards,
->
-> Sridhar Kondabathini,
-> Research engineer,
-> PSG lab,
-> Center for Development Of Telematics
-> 9480484821.
->
->
->
->
-> Disclaimer:
-> ----------
-> This email and any files transmitted with it are confidential and intended solely
-> for
-> the use of the individual or entity to whom they are addressed.  If you are not the
-> intended recipient you are notified that disclosing, copying, distributing or taking
-> any
-> action in reliance on the contents of this information is strictly prohibited. The
-> sender does not a
->
-
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 65d8d714e917..00d3f93058db 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -433,6 +433,13 @@ void ath10k_ce_rx_update_write_idx(struct ath10k_ce_pipe *pipe, u32 nentries)
+ 	unsigned int nentries_mask = dest_ring->nentries_mask;
+ 	unsigned int write_index = dest_ring->write_index;
+ 	u32 ctrl_addr = pipe->ctrl_addr;
++	u32 cur_write_idx = ath10k_ce_dest_ring_write_index_get(ar, ctrl_addr);
++
++	/* Prevent CE ring stuck issue that will occur when ring is full.
++	 * Make sure that write index is 1 less than read index.
++	 */
++	if ((cur_write_idx + nentries)  == dest_ring->sw_index)
++		nentries -= 1;
+ 
+ 	write_index = CE_RING_IDX_ADD(nentries_mask, write_index, nentries);
+ 	ath10k_ce_dest_ring_write_index_set(ar, ctrl_addr, write_index);
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+2.10.0
+
 
 _______________________________________________
 ath10k mailing list
