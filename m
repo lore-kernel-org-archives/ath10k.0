@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
+Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
+ helo=mail.mail.packetmixer.de)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bnw6Z-0005Mg-9c
- for ath10k@lists.infradead.org; Sat, 24 Sep 2016 23:11:37 +0000
-Received: by mail-wm0-x236.google.com with SMTP id l132so88403801wmf.1
- for <ath10k@lists.infradead.org>; Sat, 24 Sep 2016 16:11:08 -0700 (PDT)
+ id 1boFrL-0006c8-3s
+ for ath10k@lists.infradead.org; Sun, 25 Sep 2016 20:17:12 +0000
+From: Simon Wunderlich <sw@simonwunderlich.de>
+Subject: Re: ath10k mesh + ap + encryption?
+Date: Sun, 25 Sep 2016 22:16:43 +0200
+Message-ID: <3338244.IC8yTOzn2x@prime>
+In-Reply-To: <1474669037.16013.9.camel@qca.qualcomm.com>
+References: <2661831.slnB0LOeVt@prime> <5898628.mmcCycDigQ@prime>
+ <1474669037.16013.9.camel@qca.qualcomm.com>
 MIME-Version: 1.0
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Sun, 25 Sep 2016 01:10:46 +0200
-Message-ID: <CAFBinCARUhOx2QmMejtxV0-t5rRsmjABTS60PrN+BF4oX8BBsQ@mail.gmail.com>
-Subject: device stops working ("failed to install key for vdev" error in
- kernel log)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,90 +20,108 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9205676130141157621=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+To: "Pedersen, Thomas" <twp@qca.qualcomm.com>
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>, "Valo,
+ Kalle" <kvalo@qca.qualcomm.com>, "openwrt-devel@lists.openwrt.org" <openwrt-devel@lists.openwrt.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hello,
+--===============9205676130141157621==
+Content-Type: multipart/signed; boundary="nextPart6861210.EaRmynagmX"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-sometimes my AP simply stops working.
-Typical situation:
-- (me coming home from work)
-- client (Nexus 5, Xperia Z3 Compact or another ath10k device) can see
-my ath10k AP for a brief moment
-- AP is gone, errors from below show up in the kernel log
-- reboot of my AP is required to fix this
+--nextPart6861210.EaRmynagmX
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-[54064.293597] ath10k_pci 0000:02:00.0: failed to install key for vdev
-0 peer [AP MAC addr]: -145
-[54064.301234] wlan0: failed to remove key (1, ff:ff:ff:ff:ff:ff) from
-hardware (-145)
-[54067.305703] ath10k_pci 0000:02:00.0: failed to install key for vdev
-0 peer [AP MAC addr]: -145
-[54067.313307] wlan0: failed to set key (1, ff:ff:ff:ff:ff:ff) to
-hardware (-145)
+On Friday, September 23, 2016 10:18:49 PM CEST Pedersen, Thomas wrote:
+> On Mon, 2016-09-19 at 08:43 +0200, Simon Wunderlich wrote:
+> 
+> > On Tuesday, September 13, 2016 5:54:38 PM CEST Pedersen, Thomas wrote:
+> > 
+> > > On Tue, 2016-09-13 at 14:30 +0200, Simon Wunderlich wrote:
+> > > 
+> > > 
+> > > > [...]
+> > > >
+> > > >
+> > > >
+> > > > Thanks for the clarification. We will then stick to the 70's branch
+> > > > then.
+> > > > 
+> > > > Does anyone have pointers for the other questions? :) I would believe
+> > > > hat many 
+> > > > people would be interested in running AP + Mesh encrypted at the same
+> > > > time (at 
+> > > > least in the open source community ...).
+> > > 
+> > > 
+> > > 
+> > > We're testing encrypted AP + Mesh quite successfully right now with
+> > > this firmware: https://github.com/kvalo/ath10k-firmware/commit/307cb46b
+> > > 06661ebd3186723b5002de769c7add83, of course that is for a QCA4019 chip.
+> > > Which chip are you using? I can poke the firmware guys for possibility
+> > > of getting a 10.4.3.2 firmware build for it.
+> > 
+> > 
+> > Hi Thomas,
+> > 
+> > thanks for the hint! We are using an older QCA9882. I assume your firmware
+> > will 
+ not work for this one? If you can poke the firmware guys, that
+> > would be great.> 
+> > :)
+> 
+> 
+> Hi Simon,
+> 
+> According to firmware guys the latest code can actually compile down to
+> any chipset, so it should simply be a matter of getting builds released.
 
-Some OpenWrt and LEDE users are reporting the same problem: [1]
+Hi Thomas,
 
-my AP is a (Lantiq VRX268) MIPS based device running a recent version
-of LEDE and I am using ath10k firmware version 10.2.4.70.54. I
-attached a part of my boot log at the end of this email in case more
-details are needed.
+thats great news, thanks for the heads up!
 
-What should I (or any other user who experiences this) do whenever
-this happens to help you track down the issue?
-Also please let us know if there is anything else you need to know
-about the affected systems.
+How are we going to get those builds released? Who can I ask, or do you want 
+to take care of that?
+
+Thanks,
+     Simon
+--nextPart6861210.EaRmynagmX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAABCgAGBQJX6DCrAAoJEKEr45hCkp6hA1sQALmhd+u6Wepu0P5TDiZ67b3p
+GKe6IYuPKuvnb2B6eZEyvSjm/s6xLEnGkddb/jMJd9lppfDlmtGR+vj7J/CBAkKo
+QHKvXZHtSmTdibf2flGowRt+OdESf+f/ijyyCLU2dcxlPZW1t1Ons64BrA+RYeZI
+8RdNG/3Me3lH14Uw7LpcY8gndKIHPiiRbIAyf7mE+f2QCSxc0pYv8tpccsyDW2fA
+6HNvzVgzjLis+tqzKqxo1WVGFis/EJELXYUqqvLKZ4La9aPLwQrg/dnMZD9u/eQ6
+5QyCPYIN8zGCa2dv8Ddu2cVm4Wy6G8pd3gQLk5PCbkDh8PU9+U/BBhF4sz5aA+PK
+7ljemnlNMZPUh5DNSnkYBDU0hNFT2qe0NljDBH/nvkr0q7d3+uZZ6qmZKXA3j7cN
+kOSlX5xPCXmRBTx0d2BuxdWITeKfBpK79RQ+A8kffEyWtY4U93rPKXBcMrKtf1Oz
+sIlezZnP3cKI/99gMX+P0bsKgK4vDgYYdYGT4ZZ7AcbQt+rgIpT0UcUsMfssBAYG
+/EAIlEnCOuVxdUciNYjD64JzIn2W/EOdyz/RAJuy7XpOehyM/7qe9wbV+YkmcuJZ
+AINofdY5FZc6oUbL7pfhS+jLzb57fx1e41ytN9ySIrrrT0/3w6trHRM1B8zbzbe1
+60rMjhGSNM1HTJdnCbFY
+=5SPc
+-----END PGP SIGNATURE-----
+
+--nextPart6861210.EaRmynagmX--
 
 
-Regards,
-Martin
 
-
-[0] http://www.spinics.net/lists/linux-wireless/msg143735.html
-[1] https://dev.openwrt.org/ticket/20854
-
-
-[   10.782614] Loading modules backported from Linux version
-wt-2016-06-20-0-gbc17424
-[   10.788815] Backport generated by backports.git backports-20160216-7-g5735958
-[   11.567576] PCI: Enabling device 0000:01:00.0 (0000 -> 0002)
-[   11.571941] PCI: Enabling device 0000:02:00.0 (0000 -> 0002)
-[   11.577741] ath10k_pci 0000:02:00.0: pci irq legacy oper_irq_mode 1
-irq_mode 0 reset_mode 0
-[   11.760931] ath10k_pci 0000:02:00.0: Direct firmware load for
-ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
-[   11.770298] ath10k_pci 0000:02:00.0: Falling back to user helper
-[   11.830735] firmware ath10k!pre-cal-pci-0000:02:00.0.bin:
-firmware_loading_store: map pages failed
-[   11.838906] ath10k_pci 0000:02:00.0: Direct firmware load for
-ath10k/cal-pci-0000:02:00.0.bin failed with error -2
-[   11.848692] ath10k_pci 0000:02:00.0: Falling back to user helper
-[   12.395640] ath10k_pci 0000:02:00.0: qca988x hw2.0 target
-0x4100016c chip_id 0x043202ff sub 0000:0000
-[   12.403552] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1
-tracing 0 dfs 1 testmode 1
-[   12.419020] ath10k_pci 0000:02:00.0: firmware ver 10.2.4.70.54 api
-5 features no-p2p,raw-mode,mfp crc32 9d340dd9
-[   12.428018] ath10k_pci 0000:02:00.0: Direct firmware load for
-ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
-[   12.438265] ath10k_pci 0000:02:00.0: Falling back to user helper
-[   12.496901] firmware ath10k!QCA988X!hw2.0!board-2.bin:
-firmware_loading_store: map pages failed
-[   12.507714] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A
-crc32 bebc7c08
-[   13.562650] ath10k_pci 0000:02:00.0: htt-ver 2.1 wmi-op 5 htt-op 2
-cal file max-sta 128 raw 0 hwcrypto 1
-[   13.648696] ath: EEPROM regdomain: 0x833a
-[   13.648721] ath: EEPROM indicates we should expect a country code
-[   13.648742] ath: doing EEPROM country->regdmn map search
-[   13.648758] ath: country maps to regdmn code: 0x37
-[   13.648772] ath: Country alpha2 being used: GB
-[   13.648784] ath: Regpair used: 0x37
+--===============9205676130141157621==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============9205676130141157621==--
