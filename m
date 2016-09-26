@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
- helo=mail.mail.packetmixer.de)
+Received: from cmailsendnw03.nm.naver.com ([125.209.223.203])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1boFrL-0006c8-3s
- for ath10k@lists.infradead.org; Sun, 25 Sep 2016 20:17:12 +0000
-From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Re: ath10k mesh + ap + encryption?
-Date: Sun, 25 Sep 2016 22:16:43 +0200
-Message-ID: <3338244.IC8yTOzn2x@prime>
-In-Reply-To: <1474669037.16013.9.camel@qca.qualcomm.com>
-References: <2661831.slnB0LOeVt@prime> <5898628.mmcCycDigQ@prime>
- <1474669037.16013.9.camel@qca.qualcomm.com>
+ id 1boNls-0001X9-8b
+ for ath10k@lists.infradead.org; Mon, 26 Sep 2016 04:44:05 +0000
+Date: Mon, 26 Sep 2016 13:43:37 +0900 (KST)
+From: KwangMin Kim <gwondori@nimbus.kr>
+Message-ID: <fc16a0311aac3b91f9147e8188c17d@cweb21.nm.nhnsystem.com>
+Subject: =?UTF-8?B?YWJvdXQgYXRoMTBrIHN1cHBvcnQgODAyMTFyLCA4MDIxMXc=?=
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,100 +16,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9205676130141157621=="
+Reply-To: KwangMin Kim <gwondori@nimbus.kr>
+Content-Type: multipart/mixed; boundary="===============3250130261733158997=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Pedersen, Thomas" <twp@qca.qualcomm.com>
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, "openwrt-devel@lists.openwrt.org" <openwrt-devel@lists.openwrt.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-
---===============9205676130141157621==
-Content-Type: multipart/signed; boundary="nextPart6861210.EaRmynagmX"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-
---nextPart6861210.EaRmynagmX
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-On Friday, September 23, 2016 10:18:49 PM CEST Pedersen, Thomas wrote:
-> On Mon, 2016-09-19 at 08:43 +0200, Simon Wunderlich wrote:
-> 
-> > On Tuesday, September 13, 2016 5:54:38 PM CEST Pedersen, Thomas wrote:
-> > 
-> > > On Tue, 2016-09-13 at 14:30 +0200, Simon Wunderlich wrote:
-> > > 
-> > > 
-> > > > [...]
-> > > >
-> > > >
-> > > >
-> > > > Thanks for the clarification. We will then stick to the 70's branch
-> > > > then.
-> > > > 
-> > > > Does anyone have pointers for the other questions? :) I would believe
-> > > > hat many 
-> > > > people would be interested in running AP + Mesh encrypted at the same
-> > > > time (at 
-> > > > least in the open source community ...).
-> > > 
-> > > 
-> > > 
-> > > We're testing encrypted AP + Mesh quite successfully right now with
-> > > this firmware: https://github.com/kvalo/ath10k-firmware/commit/307cb46b
-> > > 06661ebd3186723b5002de769c7add83, of course that is for a QCA4019 chip.
-> > > Which chip are you using? I can poke the firmware guys for possibility
-> > > of getting a 10.4.3.2 firmware build for it.
-> > 
-> > 
-> > Hi Thomas,
-> > 
-> > thanks for the hint! We are using an older QCA9882. I assume your firmware
-> > will 
- not work for this one? If you can poke the firmware guys, that
-> > would be great.> 
-> > :)
-> 
-> 
-> Hi Simon,
-> 
-> According to firmware guys the latest code can actually compile down to
-> any chipset, so it should simply be a matter of getting builds released.
-
-Hi Thomas,
-
-thats great news, thanks for the heads up!
-
-How are we going to get those builds released? Who can I ask, or do you want 
-to take care of that?
-
-Thanks,
-     Simon
---nextPart6861210.EaRmynagmX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAABCgAGBQJX6DCrAAoJEKEr45hCkp6hA1sQALmhd+u6Wepu0P5TDiZ67b3p
-GKe6IYuPKuvnb2B6eZEyvSjm/s6xLEnGkddb/jMJd9lppfDlmtGR+vj7J/CBAkKo
-QHKvXZHtSmTdibf2flGowRt+OdESf+f/ijyyCLU2dcxlPZW1t1Ons64BrA+RYeZI
-8RdNG/3Me3lH14Uw7LpcY8gndKIHPiiRbIAyf7mE+f2QCSxc0pYv8tpccsyDW2fA
-6HNvzVgzjLis+tqzKqxo1WVGFis/EJELXYUqqvLKZ4La9aPLwQrg/dnMZD9u/eQ6
-5QyCPYIN8zGCa2dv8Ddu2cVm4Wy6G8pd3gQLk5PCbkDh8PU9+U/BBhF4sz5aA+PK
-7ljemnlNMZPUh5DNSnkYBDU0hNFT2qe0NljDBH/nvkr0q7d3+uZZ6qmZKXA3j7cN
-kOSlX5xPCXmRBTx0d2BuxdWITeKfBpK79RQ+A8kffEyWtY4U93rPKXBcMrKtf1Oz
-sIlezZnP3cKI/99gMX+P0bsKgK4vDgYYdYGT4ZZ7AcbQt+rgIpT0UcUsMfssBAYG
-/EAIlEnCOuVxdUciNYjD64JzIn2W/EOdyz/RAJuy7XpOehyM/7qe9wbV+YkmcuJZ
-AINofdY5FZc6oUbL7pfhS+jLzb57fx1e41ytN9ySIrrrT0/3w6trHRM1B8zbzbe1
-60rMjhGSNM1HTJdnCbFY
-=5SPc
------END PGP SIGNATURE-----
-
---nextPart6861210.EaRmynagmX--
+To: ath10k@lists.infradead.org
+Cc: =?UTF-8?B?6rCV6rK97JmE?= <bigskang@nimbus.kr>
 
 
+--===============3250130261733158997==
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_1171682_1094031063.1474865017197"
 
---===============9205676130141157621==
+
+------=_Part_1171682_1094031063.1474865017197
+Content-Type: text/plain;
+	charset=UTF-8
+Content-Transfer-Encoding: base64
+
+SGkuIEknbSB1c2luZyBDT01QRVggV0xFOTAwVlgtN0FBKFFDQTk4ODApLgoKQW5kIHVzaW5nIGtl
+cm5lbCB2ZXJzaW9uIDMuMi44MCwgYmFja3BvcnQgdmVyc2lvbiA0LjQuMi4KCk15IFF1ZXN0aW9u
+LgoKMS4gQ2FuIEkgdXNlICJpZWVlODAyMTFyIiBhbmQgImllZWU4MDIxMXciIGluIG15IGVudmly
+b25tZW50PwoKMi4gSGF2ZSB5b3UgZXZlciB0cmllZCB0byBzZWFtbGVzcyB0ZXN0PyBJZiB5b3Ug
+ZG9uZSB0ZXN0LCBob3cgc2VhbWxlc3M/
+------=_Part_1171682_1094031063.1474865017197--
+
+
+--===============3250130261733158997==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -124,4 +53,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---===============9205676130141157621==--
+--===============3250130261733158997==--
