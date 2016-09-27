@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bos1H-0007Pt-6E
- for ath10k@lists.infradead.org; Tue, 27 Sep 2016 13:02:03 +0000
+ id 1bos3R-0007kP-T1
+ for ath10k@lists.infradead.org; Tue, 27 Sep 2016 13:04:15 +0000
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH v4] ath10k: Cleanup calling ath10k_htt_rx_h_unchain
-Date: Tue, 27 Sep 2016 18:31:40 +0530
-Message-ID: <1474981300-15945-1-git-send-email-mohammed@qca.qualcomm.com>
+Subject: [PATCH] ath10k: Cleanup calling ath10k_htt_rx_h_unchain
+Date: Tue, 27 Sep 2016 18:31:54 +0530
+Message-ID: <1474981314-15987-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
