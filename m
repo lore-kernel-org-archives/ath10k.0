@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bos4M-0007ua-W8
- for ath10k@lists.infradead.org; Tue, 27 Sep 2016 13:05:14 +0000
-From: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-Subject: Re: [PATCH v4] ath10k: Cleanup calling ath10k_htt_rx_h_unchain
-Date: Tue, 27 Sep 2016 13:04:44 +0000
-Message-ID: <1474981503694.62077@qti.qualcomm.com>
-References: <1474981300-15945-1-git-send-email-mohammed@qca.qualcomm.com>
-In-Reply-To: <1474981300-15945-1-git-send-email-mohammed@qca.qualcomm.com>
-Content-Language: en-IN
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bp7v1-0002gT-0O
+ for ath10k@lists.infradead.org; Wed, 28 Sep 2016 06:00:35 +0000
+Subject: Re: about ath10k support 80211r, 80211w
+References: <fc16a0311aac3b91f9147e8188c17d@cweb21.nm.nhnsystem.com>
+ <57E93401.9070505@candelatech.com> <000401d21868$4b8b6e20$e2a24a60$@com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <9e2226c6-e11e-01f3-5ede-fca9ad59a08b@candelatech.com>
+Date: Tue, 27 Sep 2016 10:57:29 -0700
 MIME-Version: 1.0
+In-Reply-To: <000401d21868$4b8b6e20$e2a24a60$@com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,82 +19,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: KwangMin Kim <kim25444@naver.com>, ath10k@lists.infradead.org
+Cc: bigskang@nimbus.kr
 
-apologies please ignore this , wrong patch due to confusing v4 tag
- 
-please review,
-
-[PATCH] ath10k: Cleanup calling ath10k_htt_rx_h_unchain
-
-________________________________________
-From: Shajakhan, Mohammed Shafi (Mohammed Shafi)
-Sent: 27 September 2016 18:31
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org; linux-wireless@vger.kernel.org; Shajakhan, Mohammed Shafi (Mohammed Shafi)
-Subject: [PATCH v4] ath10k: Cleanup calling ath10k_htt_rx_h_unchain
-
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-
-'ath10k_htt_rx_h_unchain' is need to be called only if the return
-value from 'ath10k_htt_rx_amsdu_pop' is 1('chained msdu's'), this
-change makes it more explicit and avoids doing a skb_peek, fetching
-rx descriptor pointer, checking rx msdu decap format for the case of
-ret = 0 (unchained msdus). Found this change during code walk through,
-not sure if this addresses any issue.
-
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 7ae9349..e51dace 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1459,8 +1459,7 @@ static int ath10k_unchain_msdu(struct sk_buff_head *amsdu)
- }
-
- static void ath10k_htt_rx_h_unchain(struct ath10k *ar,
--                                   struct sk_buff_head *amsdu,
--                                   bool chained)
-+                                   struct sk_buff_head *amsdu)
- {
-        struct sk_buff *first;
-        struct htt_rx_desc *rxd;
-@@ -1471,9 +1470,6 @@ static void ath10k_htt_rx_h_unchain(struct ath10k *ar,
-        decap = MS(__le32_to_cpu(rxd->msdu_start.common.info1),
-                   RX_MSDU_START_INFO1_DECAP_FORMAT);
-
--       if (!chained)
--               return;
--
-        /* FIXME: Current unchaining logic can only handle simple case of raw
-         * msdu chaining. If decapping is other than raw the chaining may be
-         * more complex and this isn't handled by the current code. Don't even
-@@ -1550,7 +1546,11 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
-        }
-
-        ath10k_htt_rx_h_ppdu(ar, &amsdu, rx_status, 0xffff);
--       ath10k_htt_rx_h_unchain(ar, &amsdu, ret > 0);
-+
-+       /* only for ret = 1 indicates chained msdus */
-+       if (ret > 0)
-+               ath10k_htt_rx_h_unchain(ar, &amsdu);
-+
-        ath10k_htt_rx_h_filter(ar, &amsdu, rx_status);
-        ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status);
-        ath10k_htt_rx_h_deliver(ar, &amsdu, rx_status);
---
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDkvMjYvMjAxNiAwNzozOCBQTSwgS3dhbmdNaW4gS2ltIHdyb3RlOgo+IFRoYW5rcyByZXBs
+eSBCZW4uCj4KPiBCdXQgSSB3YW50IHRvIGtub3cgZXhhY3RseSB3aGF0IHdlcmUgcmVmZXJyZWQg
+dG8gdGhlICdtb2RpZmllZCcgZmlybXdhcmUuCj4KPiBNeSBRdWVzdGlvbgo+IDEuIElzIG1lYW4g
+b2YgbW9kaWZpZWQgZmlybXdhcmUgYSBjYW50ZWxhdGVjaCBmaXJtd2FyZSBvciBhIGZpcm13YXJl
+IGluIG9wZW5XUlQ/CgpDVCBmaXJtd2FyZSBjYW4gZG8gLjExci4gIEl0IGlzIG5vdCBieSBkZWZh
+dWx0IGluIE9wZW5XUlQsIGJ1dCBpdCBpcyBhbiBvcHRpb24KaW4gTEVERSBub3cuCgo+Cj4gMi4g
+QW5kIFdoZW4gY2FuIEkgc2VlIHRoZSBuZXcgZmlybXdhcmU/CgpodHRwOi8vd3d3LmNhbmRlbGF0
+ZWNoLmNvbS9hdGgxMGsucGhwCgo+Cj4gMy4gTXkgZ29hbCBpcyB0aGF0IC4xMXIgd29ya3MgZmlu
+ZSBpbiBjdXJyZW50IGVudmlyb25tZW50KGtlcm5lbC0zLjIuODAsIGJhY2twb3J0cy00LjQuMiwg
+V0xFOTAwVlgtN0FBKFFDQTk4ODApKS4KPiAgICAgSWYgLjExciB3b3JrIGZpbmUgaW4gb3BlbldS
+VCwgV2hhdCBJIGdldCBmcm9tIG9wZW5XUlQ/CgpUcnkgcHV0dGluZyB0aGUgJ2NvbW11bml0eScg
+dmVyc2lvbiBvZiBDVCBmaXJtd2FyZSBvbiB5b3VyIE9wZW5XUlQuICBJIHRyaWVkIHRvIG1ha2Ug
+dGhhdCBmaXJtd2FyZQp2YXJpYW50IHdvcmsgb24gc3RvY2sgZHJpdmVycy4KCklmIHlvdSBjYW4g
+dXNlIExFREUgdGhlbiBpdCBpcyBlYXNpZXIuLi4uCgpUaGFua3MsCkJlbgoKPgo+IFRoYW5rcy4K
+Pgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogQmVuIEdyZWVhciBbbWFpbHRv
+OmdyZWVhcmJAY2FuZGVsYXRlY2guY29tXQo+IFNlbnQ6IE1vbmRheSwgU2VwdGVtYmVyIDI2LCAy
+MDE2IDExOjQzIFBNCj4gVG86IEt3YW5nTWluIEtpbTsgYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
+cmcKPiBDYzog6rCV6rK97JmECj4gU3ViamVjdDogUmU6IGFib3V0IGF0aDEwayBzdXBwb3J0IDgw
+MjExciwgODAyMTF3Cj4KPiBJIGRvbid0IHRoaW5rIC4xMXIgd29ya3MgaW4gc3RvY2sgZmlybXdh
+cmUsIGF0IGxlYXN0IGluIHN0YXRpb24gbW9kZS4KPgo+IFdpdGggbW9kaWZpZWQgZmlybXdhcmUs
+IGl0IGNhbiB3b3JrIGZpbmUuICBBbmQgcG9zc2libHkgbmV3ZXIgdXBzdHJlYW0KPiBmaXJtd2Fy
+ZSBmaXhlcyB0aGlzIGlzc3VlLgo+Cj4gVGhhbmtzLAo+IEJlbgo+Cj4gT24gMDkvMjUvMjAxNiAw
+OTo0MyBQTSwgS3dhbmdNaW4gS2ltIHdyb3RlOgo+PiBIaS4gSSdtIHVzaW5nIENPTVBFWCBXTEU5
+MDBWWC03QUEoUUNBOTg4MCkuCj4+Cj4+IEFuZCB1c2luZyBrZXJuZWwgdmVyc2lvbiAzLjIuODAs
+IGJhY2twb3J0IHZlcnNpb24gNC40LjIuCj4+Cj4+IE15IFF1ZXN0aW9uLgo+Pgo+PiAxLiBDYW4g
+SSB1c2UgImllZWU4MDIxMXIiIGFuZCAiaWVlZTgwMjExdyIgaW4gbXkgZW52aXJvbm1lbnQ/Cj4+
+Cj4+IDIuIEhhdmUgeW91IGV2ZXIgdHJpZWQgdG8gc2VhbWxlc3MgdGVzdD8gSWYgeW91IGRvbmUg
+dGVzdCwgaG93IHNlYW1sZXNzPwo+Pgo+Pgo+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwo+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+IGF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCj4+Cj4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
+aC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5j
+b20KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
+MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
