@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1borMI-0006aX-Tq
- for ath10k@lists.infradead.org; Tue, 27 Sep 2016 12:19:39 +0000
+ id 1bos1H-0007Pt-6E
+ for ath10k@lists.infradead.org; Tue, 27 Sep 2016 13:02:03 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH v4] ath10k: Cleanup calling ath10k_htt_rx_h_unchain
+Date: Tue, 27 Sep 2016 18:31:40 +0530
+Message-ID: <1474981300-15945-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [v2,02/21] ath10k: fix typo in logging message
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1462986153-16318-3-git-send-email-greearb@candelatech.com>
-References: <1462986153-16318-3-git-send-email-greearb@candelatech.com>
-Message-ID: <766261d93e434dcba67a48aabfe4a8b5@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 27 Sep 2016 14:19:11 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +20,62 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Ben Greear <greearb@candelatech.com> wrote:
-> From: Ben Greear <greearb@candelatech.com>
-> 
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-3 patches applied to ath-next branch of ath.git, thanks.
+'ath10k_htt_rx_h_unchain' is need to be called only if the return
+value from 'ath10k_htt_rx_amsdu_pop' is 1('chained msdu's'), this
+change makes it more explicit and avoids doing a skb_peek, fetching
+rx descriptor pointer, checking rx msdu decap format for the case of
+ret = 0 (unchained msdus). Found this change during code walk through,
+not sure if this addresses any issue.
 
-aa66ba0c31c6 ath10k: fix typo in logging message
-15138fdf327d ath10k: document cycle count related counters
-30d2049b3277 ath10k: support up to 64 vdevs
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 7ae9349..e51dace 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1459,8 +1459,7 @@ static int ath10k_unchain_msdu(struct sk_buff_head *amsdu)
+ }
+ 
+ static void ath10k_htt_rx_h_unchain(struct ath10k *ar,
+-				    struct sk_buff_head *amsdu,
+-				    bool chained)
++				    struct sk_buff_head *amsdu)
+ {
+ 	struct sk_buff *first;
+ 	struct htt_rx_desc *rxd;
+@@ -1471,9 +1470,6 @@ static void ath10k_htt_rx_h_unchain(struct ath10k *ar,
+ 	decap = MS(__le32_to_cpu(rxd->msdu_start.common.info1),
+ 		   RX_MSDU_START_INFO1_DECAP_FORMAT);
+ 
+-	if (!chained)
+-		return;
+-
+ 	/* FIXME: Current unchaining logic can only handle simple case of raw
+ 	 * msdu chaining. If decapping is other than raw the chaining may be
+ 	 * more complex and this isn't handled by the current code. Don't even
+@@ -1550,7 +1546,11 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
+ 	}
+ 
+ 	ath10k_htt_rx_h_ppdu(ar, &amsdu, rx_status, 0xffff);
+-	ath10k_htt_rx_h_unchain(ar, &amsdu, ret > 0);
++
++	/* only for ret = 1 indicates chained msdus */
++	if (ret > 0)
++		ath10k_htt_rx_h_unchain(ar, &amsdu);
++
+ 	ath10k_htt_rx_h_filter(ar, &amsdu, rx_status);
+ 	ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status);
+ 	ath10k_htt_rx_h_deliver(ar, &amsdu, rx_status);
 -- 
-https://patchwork.kernel.org/patch/9073591/
-
-Documentation about submitting wireless patches and checking status
-from patchwork:
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+1.9.1
 
 
 _______________________________________________
