@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpMPq-0003GO-Jv
- for ath10k@lists.infradead.org; Wed, 28 Sep 2016 21:29:23 +0000
-Received: by mail-lf0-x22e.google.com with SMTP id g62so64612580lfe.3
- for <ath10k@lists.infradead.org>; Wed, 28 Sep 2016 14:29:01 -0700 (PDT)
+ id 1bpOkV-0006aI-W1
+ for ath10k@lists.infradead.org; Wed, 28 Sep 2016 23:58:52 +0000
+From: Thomas Pedersen <twp@qca.qualcomm.com>
+Subject: [PATCH 0/4] ath10k: fix mesh sync operation
+Date: Wed, 28 Sep 2016 16:56:27 -0700
+Message-ID: <20160928235631.9197-1-twp@qca.qualcomm.com>
 MIME-Version: 1.0
-From: conder000@gmail.com
-Date: Wed, 28 Sep 2016 23:28:59 +0200
-Message-ID: <CAJiSGjS4eGdYOb6=jA++brrkiTZKa2A1_qPkXw9HDr1xS9Tacw@mail.gmail.com>
-Subject: Packet injection
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,10 +20,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
+Cc: Thomas Pedersen <twp@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>
 
-Hello, is packet injection on ath10k in development? If so, whats the
-status of it please? Thanks for reply.
+This patchset introduces a new ieee80211_op offset_tsf(), which gives
+the driver a s64 TSF offset for TSF adjustment. This is more accurate
+than programming absolute TSF since programming delay is avoided.
+
+ath10k can't get the current TSF or program an absolute TSF, so we
+remove those ops to not mislead the stack and hopefully avoid future
+bugs.
+
+Tested on QCA4019 with firmware 10.4-3.2.1-0033. After this change
+Toffset remains stable to within 5us.
+
+Thomas Pedersen (4):
+  mac80211: add offset_tsf driver op
+  ath10k: implement offset_tsf ieee80211_op
+  ath10k: remove set/get_tsf ieee80211_ops
+  mac80211: mesh: decrease max drift
+
+ drivers/net/wireless/ath/ath10k/mac.c     | 45 +++++++++++--------------------
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  1 -
+ drivers/net/wireless/ath/ath10k/wmi.c     |  6 ++---
+ drivers/net/wireless/ath/ath10k/wmi.h     |  8 +++++-
+ include/net/mac80211.h                    |  8 ++++++
+ net/mac80211/debugfs_netdev.c             | 12 ++++++---
+ net/mac80211/driver-ops.c                 | 15 +++++++++++
+ net/mac80211/driver-ops.h                 |  3 +++
+ net/mac80211/mesh_sync.c                  | 12 ++++++---
+ net/mac80211/trace.h                      | 26 ++++++++++++++++++
+ 10 files changed, 94 insertions(+), 42 deletions(-)
+
+-- 
+2.10.0.297.gf6727b0
+
 
 _______________________________________________
 ath10k mailing list
