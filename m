@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpBPx-0003hl-JW
- for ath10k@lists.infradead.org; Wed, 28 Sep 2016 09:44:49 +0000
+ id 1bpBTb-00057P-BJ
+ for ath10k@lists.infradead.org; Wed, 28 Sep 2016 09:48:32 +0000
 MIME-Version: 1.0
-Subject: Re: [-next] ath10k: fix error return code in ahb
+Subject: Re: ath10k: Ignore SWBA event for a vif if its marked for no beacon
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1474031135-6963-1-git-send-email-weiyj.lk@gmail.com>
-References: <1474031135-6963-1-git-send-email-weiyj.lk@gmail.com>
-Message-ID: <65bd7c68b413408cbb37dd2ff152d423@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 28 Sep 2016 11:44:16 +0200
+In-Reply-To: <1474359727-6854-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1474359727-6854-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <a4c2bf6fd09a4659bc0901e4f00e3af8@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 28 Sep 2016 11:48:03 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +22,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: Wei Yongjun <weiyongjun1@huawei.com>, linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Wei Yongjun <weiyj.lk@gmail.com> wrote:
-> From: Wei Yongjun <weiyongjun1@huawei.com>
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > 
-> Fix to return a negative error code from the error handling case
-> instead of 0, as done elsewhere in function ath10k_ahb_probe() or
-> ath10k_ahb_resource_init().
+> Ignore processing further in SWBA event scheduled for a vif, if mac80211
+> has marked the particular vif for stop beaconing and brought the vdev
+> down in 'ath10k_control_beaconing'. This should potentially avoid ath10k
+> warning/error messages while running continuous wifi down/up with max
+> number of vaps configured. Found this change during code walk through
+> and going through other beacon configuration related functions in ath10k
 > 
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-931eb6b7fee3 ath10k: fix error return code in ahb
+b63b33ecafa5 ath10k: Ignore SWBA event for a vif if its marked for no beacon
 
 -- 
-https://patchwork.kernel.org/patch/9335759/
+https://patchwork.kernel.org/patch/9341147/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
