@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpBUU-0005Bu-Cj
- for ath10k@lists.infradead.org; Wed, 28 Sep 2016 09:49:26 +0000
+ id 1bpBqD-0006bb-23
+ for ath10k@lists.infradead.org; Wed, 28 Sep 2016 10:11:54 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: fix copy engine 5 destination ring stuck
+Subject: Re: ath10k: advertize hardware packet loss mechanism
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20160921105806.23980-1-rmanohar@qti.qualcomm.com>
-References: <20160921105806.23980-1-rmanohar@qti.qualcomm.com>
-Message-ID: <69a6e1629c9048da8db94c38bd911466@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 28 Sep 2016 11:48:58 +0200
+In-Reply-To: <20160906070841.4266-1-rmanohar@qti.qualcomm.com>
+References: <20160906070841.4266-1-rmanohar@qti.qualcomm.com>
+Message-ID: <20c1f4c0afb24f31b27787fd7c958def@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 28 Sep 2016 12:11:25 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +23,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: rmanohar@codeaurora.org, linux-wireless@vger.kernel.org, stable@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rmanohar@codeaurora.org
 
 Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
-> Firmware is running watchdog timer for tracking copy engine ring index
-> and write index. Whenever both indices are stuck at same location for
-> given duration, watchdog will be trigger to assert target. While
-> updating copy engine destination ring write index, driver ensures that
-> write index will not be same as read index by finding delta between these
-> two indices (CE_RING_DELTA).
+> Indicate hardware (or firmware) supports that CQM packet-loss report
+> will be generated based on station kickout algorithm. As of now mac80211
+> tracks connection loss by missing msdu counts (50) whereas ath10k
+> firmware tracks them by missing ppdus (+ BAR tries). While firmware is
+> trying to adapt its rate table, mac80211 might send out low_ack event to
+> hostapd. This is causing frequent connect and disconnect iteration under
+> noisy environment or when station is roaming around.
 > 
-> HTT target to host copy engine (CE5) is special case where ring buffers
-> will be reused and delta check is not applied while updating write index.
-> In rare scenario, whenever CE5 ring is full, both indices will be referring
-> same location and this is causing CE ring stuck issue as explained
-> above. This issue is originally reported on IPQ4019 during long hour stress
-> testing and during veriwave max clients testsuites. The same issue is
-> also observed in other chips as well. Fix this by ensuring that write
-> index is one less than read index which means that full ring is
-> available for receiving data.
-> 
-> Cc: stable@vger.kernel.org
-> Tested-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
 > Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Patch applied to ath-next branch of ath.git, thanks.
+(Note to myself in patchwork)
 
-0628467f97b5 ath10k: fix copy engine 5 destination ring stuck
+Depends on:
+
+e8a24cd4b872 mac80211: allow driver to handle packet-loss mechanism
+
+Is in net-next currently.
 
 -- 
-https://patchwork.kernel.org/patch/9343317/
+https://patchwork.kernel.org/patch/9315811/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
