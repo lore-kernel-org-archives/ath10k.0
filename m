@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpOkI-0006WI-MQ
- for ath10k@lists.infradead.org; Wed, 28 Sep 2016 23:58:39 +0000
+ id 1bpOka-0006cg-La
+ for ath10k@lists.infradead.org; Wed, 28 Sep 2016 23:58:57 +0000
 From: Thomas Pedersen <twp@qca.qualcomm.com>
-Subject: [PATCH 2/4] ath10k: implement offset_tsf ieee80211_op
-Date: Wed, 28 Sep 2016 16:56:29 -0700
-Message-ID: <20160928235631.9197-3-twp@qca.qualcomm.com>
+Subject: [PATCH 4/4] mac80211: mesh: decrease max drift
+Date: Wed, 28 Sep 2016 16:56:31 -0700
+Message-ID: <20160928235631.9197-5-twp@qca.qualcomm.com>
 In-Reply-To: <20160928235631.9197-1-twp@qca.qualcomm.com>
 References: <20160928235631.9197-1-twp@qca.qualcomm.com>
 MIME-Version: 1.0
@@ -25,106 +25,35 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k <ath10k@lists.infradead.org>
 Cc: Thomas Pedersen <twp@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>
 
-Current set_tsf is implemented in terms of TSF_INCREMENT
-only. Instead support new WMI command TSF_DECREMENT and
-export these through offset_tsf. Advantage is we get
-more accurate TSF adjustments, and don't calculate wrong
-offset in case absolute TSF was calculated from rx_mactime
-(actual TSF).
+The old value was 30ms, which means mesh sync will treat
+any value below as merely TSF drift. This isn't really
+reasonable (typical drift is < 10us/s) since people
+probably want to adjust TSF in smaller increments (for ie.
+beacon collision avoidance) without mesh sync fighting
+back.
 
-The new WMI command is available in firmware
-10.4-3.2.1-00033 for QCA4019 chips. Old drivers on new
-firmware or vice versa shouldn't  be a problem since
-get/set tsf logic was already broken.
+Change max drift adjustment to 0.8ms, so manual TSF
+adjustments can be made in 1ms increments, with some
+margin.
 
 Signed-off-by: Thomas Pedersen <twp@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 25 +++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c |  2 ++
- drivers/net/wireless/ath/ath10k/wmi.h |  7 +++++++
- 3 files changed, 34 insertions(+)
+ net/mac80211/mesh_sync.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 76297d6..06bd027 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6992,6 +6992,30 @@ static void ath10k_set_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 		ath10k_warn(ar, "failed to set tsf offset: %d\n", ret);
- }
+diff --git a/net/mac80211/mesh_sync.c b/net/mac80211/mesh_sync.c
+index 22ca43c..faca22c 100644
+--- a/net/mac80211/mesh_sync.c
++++ b/net/mac80211/mesh_sync.c
+@@ -28,7 +28,7 @@
+  * could be, for instance, in case a neighbor is restarted and its TSF counter
+  * reset.
+  */
+-#define TOFFSET_MAXIMUM_ADJUSTMENT 30000		/* 30 ms */
++#define TOFFSET_MAXIMUM_ADJUSTMENT 800		/* 0.8 ms */
  
-+static void ath10k_offset_tsf(struct ieee80211_hw *hw,
-+			      struct ieee80211_vif *vif, s64 tsf_offset)
-+{
-+	struct ath10k *ar = hw->priv;
-+	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
-+	u32 offset, vdev_param;
-+	int ret;
-+
-+	if (tsf_offset < 0) {
-+		vdev_param = ar->wmi.vdev_param->dec_tsf;
-+		offset = -tsf_offset;
-+	} else {
-+		vdev_param = ar->wmi.vdev_param->inc_tsf;
-+		offset = tsf_offset;
-+	}
-+
-+	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
-+					vdev_param, offset);
-+
-+	if (ret && ret != -EOPNOTSUPP)
-+		ath10k_warn(ar, "failed to set tsf offset %d cmd %d: %d\n",
-+			    offset, vdev_param, ret);
-+}
-+
- static int ath10k_ampdu_action(struct ieee80211_hw *hw,
- 			       struct ieee80211_vif *vif,
- 			       struct ieee80211_ampdu_params *params)
-@@ -7455,6 +7479,7 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.sta_rc_update			= ath10k_sta_rc_update,
- 	.get_tsf			= ath10k_get_tsf,
- 	.set_tsf			= ath10k_set_tsf,
-+	.offset_tsf			= ath10k_offset_tsf,
- 	.ampdu_action			= ath10k_ampdu_action,
- 	.get_et_sset_count		= ath10k_debug_get_et_sset_count,
- 	.get_et_stats			= ath10k_debug_get_et_stats,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 38993d7..430074b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1013,6 +1013,8 @@ static struct wmi_vdev_param_map wmi_10_4_vdev_param_map = {
- 	.rx_decap_type = WMI_10_4_VDEV_PARAM_RX_DECAP_TYPE,
- 	.bw_nss_ratemask = WMI_10_4_VDEV_PARAM_BW_NSS_RATEMASK,
- 	.set_tsf = WMI_10_4_VDEV_PARAM_TSF_INCREMENT,
-+	.inc_tsf = WMI_10_4_VDEV_PARAM_TSF_INCREMENT,
-+	.dec_tsf = WMI_10_4_VDEV_PARAM_TSF_DECREMENT,
- };
- 
- static struct wmi_pdev_param_map wmi_pdev_param_map = {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 1b243c8..9d13c6f 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4677,6 +4677,8 @@ struct wmi_vdev_param_map {
- 	u32 rx_decap_type;
- 	u32 bw_nss_ratemask;
- 	u32 set_tsf;
-+	u32 inc_tsf;
-+	u32 dec_tsf;
- };
- 
- #define WMI_VDEV_PARAM_UNSUPPORTED 0
-@@ -5009,6 +5011,11 @@ enum wmi_10_4_vdev_param {
- 	WMI_10_4_VDEV_PARAM_STA_KICKOUT,
- 	WMI_10_4_VDEV_PARAM_CAPABILITIES,
- 	WMI_10_4_VDEV_PARAM_TSF_INCREMENT,
-+	WMI_10_4_VDEV_PARAM_RX_FILTER,
-+	WMI_10_4_VDEV_PARAM_MGMT_TX_POWER,
-+	WMI_10_4_VDEV_PARAM_ATF_SSID_SCHED_POLICY,
-+	WMI_10_4_VDEV_PARAM_DISABLE_DYN_BW_RTS,
-+	WMI_10_4_VDEV_PARAM_TSF_DECREMENT,
- };
- 
- #define WMI_VDEV_PARAM_TXBF_SU_TX_BFEE BIT(0)
+ struct sync_method {
+ 	u8 method;
 -- 
 2.10.0.297.gf6727b0
 
