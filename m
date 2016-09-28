@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bp7v1-0002gT-0O
- for ath10k@lists.infradead.org; Wed, 28 Sep 2016 06:00:35 +0000
-Subject: Re: about ath10k support 80211r, 80211w
-References: <fc16a0311aac3b91f9147e8188c17d@cweb21.nm.nhnsystem.com>
- <57E93401.9070505@candelatech.com> <000401d21868$4b8b6e20$e2a24a60$@com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <9e2226c6-e11e-01f3-5ede-fca9ad59a08b@candelatech.com>
-Date: Tue, 27 Sep 2016 10:57:29 -0700
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bpBPx-0003hl-JW
+ for ath10k@lists.infradead.org; Wed, 28 Sep 2016 09:44:49 +0000
 MIME-Version: 1.0
-In-Reply-To: <000401d21868$4b8b6e20$e2a24a60$@com>
+Subject: Re: [-next] ath10k: fix error return code in ahb
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1474031135-6963-1-git-send-email-weiyj.lk@gmail.com>
+References: <1474031135-6963-1-git-send-email-weiyj.lk@gmail.com>
+Message-ID: <65bd7c68b413408cbb37dd2ff152d423@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 28 Sep 2016 11:44:16 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,45 +18,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: KwangMin Kim <kim25444@naver.com>, ath10k@lists.infradead.org
-Cc: bigskang@nimbus.kr
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: Wei Yongjun <weiyongjun1@huawei.com>, linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-T24gMDkvMjYvMjAxNiAwNzozOCBQTSwgS3dhbmdNaW4gS2ltIHdyb3RlOgo+IFRoYW5rcyByZXBs
-eSBCZW4uCj4KPiBCdXQgSSB3YW50IHRvIGtub3cgZXhhY3RseSB3aGF0IHdlcmUgcmVmZXJyZWQg
-dG8gdGhlICdtb2RpZmllZCcgZmlybXdhcmUuCj4KPiBNeSBRdWVzdGlvbgo+IDEuIElzIG1lYW4g
-b2YgbW9kaWZpZWQgZmlybXdhcmUgYSBjYW50ZWxhdGVjaCBmaXJtd2FyZSBvciBhIGZpcm13YXJl
-IGluIG9wZW5XUlQ/CgpDVCBmaXJtd2FyZSBjYW4gZG8gLjExci4gIEl0IGlzIG5vdCBieSBkZWZh
-dWx0IGluIE9wZW5XUlQsIGJ1dCBpdCBpcyBhbiBvcHRpb24KaW4gTEVERSBub3cuCgo+Cj4gMi4g
-QW5kIFdoZW4gY2FuIEkgc2VlIHRoZSBuZXcgZmlybXdhcmU/CgpodHRwOi8vd3d3LmNhbmRlbGF0
-ZWNoLmNvbS9hdGgxMGsucGhwCgo+Cj4gMy4gTXkgZ29hbCBpcyB0aGF0IC4xMXIgd29ya3MgZmlu
-ZSBpbiBjdXJyZW50IGVudmlyb25tZW50KGtlcm5lbC0zLjIuODAsIGJhY2twb3J0cy00LjQuMiwg
-V0xFOTAwVlgtN0FBKFFDQTk4ODApKS4KPiAgICAgSWYgLjExciB3b3JrIGZpbmUgaW4gb3BlbldS
-VCwgV2hhdCBJIGdldCBmcm9tIG9wZW5XUlQ/CgpUcnkgcHV0dGluZyB0aGUgJ2NvbW11bml0eScg
-dmVyc2lvbiBvZiBDVCBmaXJtd2FyZSBvbiB5b3VyIE9wZW5XUlQuICBJIHRyaWVkIHRvIG1ha2Ug
-dGhhdCBmaXJtd2FyZQp2YXJpYW50IHdvcmsgb24gc3RvY2sgZHJpdmVycy4KCklmIHlvdSBjYW4g
-dXNlIExFREUgdGhlbiBpdCBpcyBlYXNpZXIuLi4uCgpUaGFua3MsCkJlbgoKPgo+IFRoYW5rcy4K
-Pgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogQmVuIEdyZWVhciBbbWFpbHRv
-OmdyZWVhcmJAY2FuZGVsYXRlY2guY29tXQo+IFNlbnQ6IE1vbmRheSwgU2VwdGVtYmVyIDI2LCAy
-MDE2IDExOjQzIFBNCj4gVG86IEt3YW5nTWluIEtpbTsgYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
-cmcKPiBDYzog6rCV6rK97JmECj4gU3ViamVjdDogUmU6IGFib3V0IGF0aDEwayBzdXBwb3J0IDgw
-MjExciwgODAyMTF3Cj4KPiBJIGRvbid0IHRoaW5rIC4xMXIgd29ya3MgaW4gc3RvY2sgZmlybXdh
-cmUsIGF0IGxlYXN0IGluIHN0YXRpb24gbW9kZS4KPgo+IFdpdGggbW9kaWZpZWQgZmlybXdhcmUs
-IGl0IGNhbiB3b3JrIGZpbmUuICBBbmQgcG9zc2libHkgbmV3ZXIgdXBzdHJlYW0KPiBmaXJtd2Fy
-ZSBmaXhlcyB0aGlzIGlzc3VlLgo+Cj4gVGhhbmtzLAo+IEJlbgo+Cj4gT24gMDkvMjUvMjAxNiAw
-OTo0MyBQTSwgS3dhbmdNaW4gS2ltIHdyb3RlOgo+PiBIaS4gSSdtIHVzaW5nIENPTVBFWCBXTEU5
-MDBWWC03QUEoUUNBOTg4MCkuCj4+Cj4+IEFuZCB1c2luZyBrZXJuZWwgdmVyc2lvbiAzLjIuODAs
-IGJhY2twb3J0IHZlcnNpb24gNC40LjIuCj4+Cj4+IE15IFF1ZXN0aW9uLgo+Pgo+PiAxLiBDYW4g
-SSB1c2UgImllZWU4MDIxMXIiIGFuZCAiaWVlZTgwMjExdyIgaW4gbXkgZW52aXJvbm1lbnQ/Cj4+
-Cj4+IDIuIEhhdmUgeW91IGV2ZXIgdHJpZWQgdG8gc2VhbWxlc3MgdGVzdD8gSWYgeW91IGRvbmUg
-dGVzdCwgaG93IHNlYW1sZXNzPwo+Pgo+Pgo+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwo+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+IGF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCj4+Cj4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
-aC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5j
-b20KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Wei Yongjun <weiyj.lk@gmail.com> wrote:
+> From: Wei Yongjun <weiyongjun1@huawei.com>
+> 
+> Fix to return a negative error code from the error handling case
+> instead of 0, as done elsewhere in function ath10k_ahb_probe() or
+> ath10k_ahb_resource_init().
+> 
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+
+Patch applied to ath-next branch of ath.git, thanks.
+
+931eb6b7fee3 ath10k: fix error return code in ahb
+
+-- 
+https://patchwork.kernel.org/patch/9335759/
+
+Documentation about submitting wireless patches and checking status
+from patchwork:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
