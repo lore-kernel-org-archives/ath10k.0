@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpBTb-00057P-BJ
- for ath10k@lists.infradead.org; Wed, 28 Sep 2016 09:48:32 +0000
+ id 1bpBUU-0005Bu-Cj
+ for ath10k@lists.infradead.org; Wed, 28 Sep 2016 09:49:26 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: Ignore SWBA event for a vif if its marked for no beacon
+Subject: Re: ath10k: fix copy engine 5 destination ring stuck
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1474359727-6854-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1474359727-6854-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <a4c2bf6fd09a4659bc0901e4f00e3af8@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 28 Sep 2016 11:48:03 +0200
+In-Reply-To: <20160921105806.23980-1-rmanohar@qti.qualcomm.com>
+References: <20160921105806.23980-1-rmanohar@qti.qualcomm.com>
+Message-ID: <69a6e1629c9048da8db94c38bd911466@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 28 Sep 2016 11:48:58 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +22,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: rmanohar@codeaurora.org, linux-wireless@vger.kernel.org, stable@vger.kernel.org, ath10k@lists.infradead.org
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
+> Firmware is running watchdog timer for tracking copy engine ring index
+> and write index. Whenever both indices are stuck at same location for
+> given duration, watchdog will be trigger to assert target. While
+> updating copy engine destination ring write index, driver ensures that
+> write index will not be same as read index by finding delta between these
+> two indices (CE_RING_DELTA).
 > 
-> Ignore processing further in SWBA event scheduled for a vif, if mac80211
-> has marked the particular vif for stop beaconing and brought the vdev
-> down in 'ath10k_control_beaconing'. This should potentially avoid ath10k
-> warning/error messages while running continuous wifi down/up with max
-> number of vaps configured. Found this change during code walk through
-> and going through other beacon configuration related functions in ath10k
+> HTT target to host copy engine (CE5) is special case where ring buffers
+> will be reused and delta check is not applied while updating write index.
+> In rare scenario, whenever CE5 ring is full, both indices will be referring
+> same location and this is causing CE ring stuck issue as explained
+> above. This issue is originally reported on IPQ4019 during long hour stress
+> testing and during veriwave max clients testsuites. The same issue is
+> also observed in other chips as well. Fix this by ensuring that write
+> index is one less than read index which means that full ring is
+> available for receiving data.
 > 
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> Cc: stable@vger.kernel.org
+> Tested-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-b63b33ecafa5 ath10k: Ignore SWBA event for a vif if its marked for no beacon
+0628467f97b5 ath10k: fix copy engine 5 destination ring stuck
 
 -- 
-https://patchwork.kernel.org/patch/9341147/
+https://patchwork.kernel.org/patch/9343317/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
