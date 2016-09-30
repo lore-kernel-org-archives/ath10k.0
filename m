@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bpy2B-0006O7-TA
- for ath10k@lists.infradead.org; Fri, 30 Sep 2016 13:39:30 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: [PATCH v2] ath10k: allow setting coverage class
-Date: Fri, 30 Sep 2016 16:38:47 +0300
-Message-ID: <1475242727-23063-1-git-send-email-kvalo@qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bpyxZ-0002Ni-BC
+ for ath10k@lists.infradead.org; Fri, 30 Sep 2016 14:38:47 +0000
+Message-ID: <57EE790A.9050201@candelatech.com>
+Date: Fri, 30 Sep 2016 07:39:06 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: How to configure hostapd + ath10k CT on DFS channel ?
+References: <B2F635C3-CC46-4886-8582-B236CD2E8E67@picocela.com>
+ <A551F671-15FC-4BA4-917E-CA0C630779F9@picocela.com>
+ <57E3DC9E.7080507@candelatech.com>
+ <35D17592-C7B3-43AD-94EB-077C3A1619C8@picocela.com>
+In-Reply-To: <35D17592-C7B3-43AD-94EB-077C3A1619C8@picocela.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,694 +21,245 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Benjamin Berg <benjamin@sipsolutions.net>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, linux-wireless@vger.kernel.org, Simon Wunderlich <sw@simonwunderlich.de>
+To: Jean-Luc Kalmus <jean-luc@picocela.com>
+Cc: ath10k@lists.infradead.org
 
-From: Benjamin Berg <benjamin@sipsolutions.net>
-
-Unfortunately ath10k does not generally allow modifying the coverage class
-with the stock firmware and Qualcomm has so far refused to implement this
-feature so that it can be properly supported in ath10k. If we however know
-the registers that need to be modified for proper operation with a higher
-coverage class, then we can do these modifications from the driver.
-
-This is a hack and might cause subtle problems but as it's not enabled by
-default (only when user space changes the coverage class explicitly) it should
-not cause new problems for existing setups. But still this should be considered
-as an experimental feature and used with caution.
-
-This patch implements the support for first generation cards (QCA9880, QCA9887
-and so on) which are based on a core that is similar to ath9k. The registers
-are modified in place and need to be re-written every time the firmware sets
-them. To achieve this the register status is verified after certain WMI events
-from the firmware.
-
-The coverage class may not be modified temporarily right after the card
-re-initializes the registers. This is for example the case during scanning.
-
-Thanks to Sebastian Gottschall <s.gottschall@dd-wrt.com> for initially
-working on a userspace support for this. This patch wouldn't have been
-possible without this documentation.
-
-Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
-
-v2:
-
-* cc linux-wireless
-* fold "ath10k: Fix spinlock use in coverage class hack" into this one (Benjamin)
-* emphasise more on the commit log that this is a hack
-* remove unnecessary use of unlikely(), this is not in hotpath
-* workaround ifdef CONFIG_ATH10K_DEBUGFS with adding
-  ath10k_debug_get_fw_dbglog_[mask|level]()
-
- drivers/net/wireless/ath/ath10k/core.c  |   11 +++
- drivers/net/wireless/ath/ath10k/core.h  |   13 +++
- drivers/net/wireless/ath/ath10k/debug.h |   22 +++++
- drivers/net/wireless/ath/ath10k/hw.c    |  142 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h    |   28 +++++-
- drivers/net/wireless/ath/ath10k/mac.c   |   19 +++++
- drivers/net/wireless/ath/ath10k/wmi.c   |   48 +++++++++++
- 7 files changed, 282 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 867a8403b15b..7005e2a98726 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1562,6 +1562,15 @@ static void ath10k_core_restart(struct work_struct *work)
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-+static void ath10k_core_set_coverage_class_work(struct work_struct *work)
-+{
-+	struct ath10k *ar = container_of(work, struct ath10k,
-+					 set_coverage_class_work);
-+
-+	if (ar->hw_params.hw_ops->set_coverage_class)
-+		ar->hw_params.hw_ops->set_coverage_class(ar, -1);
-+}
-+
- static int ath10k_core_init_firmware_features(struct ath10k *ar)
- {
- 	struct ath10k_fw_file *fw_file = &ar->normal_mode_fw.fw_file;
-@@ -2344,6 +2353,8 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 
- 	INIT_WORK(&ar->register_work, ath10k_core_register_work);
- 	INIT_WORK(&ar->restart_work, ath10k_core_restart);
-+	INIT_WORK(&ar->set_coverage_class_work,
-+		  ath10k_core_set_coverage_class_work);
- 
- 	init_dummy_netdev(&ar->napi_dev);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index c091306bca33..6e5aa2d09699 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -912,6 +912,19 @@ struct ath10k {
- 	struct net_device napi_dev;
- 	struct napi_struct napi;
- 
-+	struct work_struct set_coverage_class_work;
-+	/* protected by conf_mutex */
-+	struct {
-+		/* writing also protected by data_lock */
-+		s16 coverage_class;
-+
-+		u32 reg_phyclk;
-+		u32 reg_slottime_conf;
-+		u32 reg_slottime_orig;
-+		u32 reg_ack_cts_timeout_conf;
-+		u32 reg_ack_cts_timeout_orig;
-+	} fw_coverage;
-+
- 	/* must be last */
- 	u8 drv_priv[0] __aligned(sizeof(void *));
- };
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index c458fa96a6d4..335512b11ca2 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -94,7 +94,19 @@ int ath10k_debug_get_et_sset_count(struct ieee80211_hw *hw,
- void ath10k_debug_get_et_stats(struct ieee80211_hw *hw,
- 			       struct ieee80211_vif *vif,
- 			       struct ethtool_stats *stats, u64 *data);
-+
-+static inline u64 ath10k_debug_get_fw_dbglog_mask(struct ath10k *ar)
-+{
-+	return ar->debug.fw_dbglog_mask;
-+}
-+
-+static inline u32 ath10k_debug_get_fw_dbglog_level(struct ath10k *ar)
-+{
-+	return ar->debug.fw_dbglog_level;
-+}
-+
- #else
-+
- static inline int ath10k_debug_start(struct ath10k *ar)
- {
- 	return 0;
-@@ -144,6 +156,16 @@ ath10k_debug_get_new_fw_crash_data(struct ath10k *ar)
- 	return NULL;
- }
- 
-+static inline u64 ath10k_debug_get_fw_dbglog_mask(struct ath10k *ar)
-+{
-+	return 0;
-+}
-+
-+static inline u32 ath10k_debug_get_fw_dbglog_level(struct ath10k *ar)
-+{
-+	return 0;
-+}
-+
- #define ATH10K_DFS_STAT_INC(ar, c) do { } while (0)
- 
- #define ath10k_debug_get_et_strings NULL
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index 675e75d66db2..33fb26833cd0 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -17,11 +17,14 @@
- #include <linux/types.h>
- #include "core.h"
- #include "hw.h"
-+#include "hif.h"
-+#include "wmi-ops.h"
- 
- const struct ath10k_hw_regs qca988x_regs = {
- 	.rtc_soc_base_address		= 0x00004000,
- 	.rtc_wmac_base_address		= 0x00005000,
- 	.soc_core_base_address		= 0x00009000,
-+	.wlan_mac_base_address		= 0x00020000,
- 	.ce_wrapper_base_address	= 0x00057000,
- 	.ce0_base_address		= 0x00057400,
- 	.ce1_base_address		= 0x00057800,
-@@ -48,6 +51,7 @@ const struct ath10k_hw_regs qca6174_regs = {
- 	.rtc_soc_base_address			= 0x00000800,
- 	.rtc_wmac_base_address			= 0x00001000,
- 	.soc_core_base_address			= 0x0003a000,
-+	.wlan_mac_base_address			= 0x00020000,
- 	.ce_wrapper_base_address		= 0x00034000,
- 	.ce0_base_address			= 0x00034400,
- 	.ce1_base_address			= 0x00034800,
-@@ -74,6 +78,7 @@ const struct ath10k_hw_regs qca99x0_regs = {
- 	.rtc_soc_base_address			= 0x00080000,
- 	.rtc_wmac_base_address			= 0x00000000,
- 	.soc_core_base_address			= 0x00082000,
-+	.wlan_mac_base_address			= 0x00030000,
- 	.ce_wrapper_base_address		= 0x0004d000,
- 	.ce0_base_address			= 0x0004a000,
- 	.ce1_base_address			= 0x0004a400,
-@@ -109,6 +114,7 @@ const struct ath10k_hw_regs qca99x0_regs = {
- const struct ath10k_hw_regs qca4019_regs = {
- 	.rtc_soc_base_address                   = 0x00080000,
- 	.soc_core_base_address                  = 0x00082000,
-+	.wlan_mac_base_address                  = 0x00030000,
- 	.ce_wrapper_base_address                = 0x0004d000,
- 	.ce0_base_address                       = 0x0004a000,
- 	.ce1_base_address                       = 0x0004a400,
-@@ -220,7 +226,143 @@ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
- 	survey->time_busy = CCNT_TO_MSEC(ar, rcc);
- }
- 
-+/* The firmware does not support setting the coverage class. Instead this
-+ * function monitors and modifies the corresponding MAC registers.
-+ */
-+static void ath10k_hw_qca988x_set_coverage_class(struct ath10k *ar,
-+						 s16 value)
-+{
-+	u32 slottime_reg;
-+	u32 slottime;
-+	u32 timeout_reg;
-+	u32 ack_timeout;
-+	u32 cts_timeout;
-+	u32 phyclk_reg;
-+	u32 phyclk;
-+	u64 fw_dbglog_mask;
-+	u32 fw_dbglog_level;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	/* Only modify registers if the core is started. */
-+	if ((ar->state != ATH10K_STATE_ON) &&
-+	    (ar->state != ATH10K_STATE_RESTARTED))
-+		goto unlock;
-+
-+	/* Retrieve the current values of the two registers that need to be
-+	 * adjusted.
-+	 */
-+	slottime_reg = ath10k_hif_read32(ar, WLAN_MAC_BASE_ADDRESS +
-+					     WAVE1_PCU_GBL_IFS_SLOT);
-+	timeout_reg = ath10k_hif_read32(ar, WLAN_MAC_BASE_ADDRESS +
-+					    WAVE1_PCU_ACK_CTS_TIMEOUT);
-+	phyclk_reg = ath10k_hif_read32(ar, WLAN_MAC_BASE_ADDRESS +
-+					   WAVE1_PHYCLK);
-+	phyclk = MS(phyclk_reg, WAVE1_PHYCLK_USEC) + 1;
-+
-+	if (value < 0)
-+		value = ar->fw_coverage.coverage_class;
-+
-+	/* Break out if the coverage class and registers have the expected
-+	 * value.
-+	 */
-+	if (value == ar->fw_coverage.coverage_class &&
-+	    slottime_reg == ar->fw_coverage.reg_slottime_conf &&
-+	    timeout_reg == ar->fw_coverage.reg_ack_cts_timeout_conf &&
-+	    phyclk_reg == ar->fw_coverage.reg_phyclk)
-+		goto unlock;
-+
-+	/* Store new initial register values from the firmware. */
-+	if (slottime_reg != ar->fw_coverage.reg_slottime_conf)
-+		ar->fw_coverage.reg_slottime_orig = slottime_reg;
-+	if (timeout_reg != ar->fw_coverage.reg_ack_cts_timeout_conf)
-+		ar->fw_coverage.reg_ack_cts_timeout_orig = timeout_reg;
-+	ar->fw_coverage.reg_phyclk = phyclk_reg;
-+
-+	/* Calculat new value based on the (original) firmware calculation. */
-+	slottime_reg = ar->fw_coverage.reg_slottime_orig;
-+	timeout_reg = ar->fw_coverage.reg_ack_cts_timeout_orig;
-+
-+	/* Do some sanity checks on the slottime register. */
-+	if (slottime_reg % phyclk) {
-+		ath10k_warn(ar,
-+			    "failed to set coverage class: expected integer microsecond value in register\n");
-+
-+		goto store_regs;
-+	}
-+
-+	slottime = MS(slottime_reg, WAVE1_PCU_GBL_IFS_SLOT);
-+	slottime = slottime / phyclk;
-+	if (slottime != 9 && slottime != 20) {
-+		ath10k_warn(ar,
-+			    "failed to set coverage class: expected slot time of 9 or 20us in HW register. It is %uus.\n",
-+			    slottime);
-+
-+		goto store_regs;
-+	}
-+
-+	/* Recalculate the register values by adding the additional propagation
-+	 * delay (3us per coverage class).
-+	 */
-+
-+	slottime = MS(slottime_reg, WAVE1_PCU_GBL_IFS_SLOT);
-+	slottime += value * 3 * phyclk;
-+	slottime = min_t(u32, slottime, WAVE1_PCU_GBL_IFS_SLOT_MAX);
-+	slottime = SM(slottime, WAVE1_PCU_GBL_IFS_SLOT);
-+	slottime_reg = (slottime_reg & ~WAVE1_PCU_GBL_IFS_SLOT_MASK) | slottime;
-+
-+	/* Update ack timeout (lower halfword). */
-+	ack_timeout = MS(timeout_reg, WAVE1_PCU_ACK_CTS_TIMEOUT_ACK);
-+	ack_timeout += 3 * value * phyclk;
-+	ack_timeout = min_t(u32, ack_timeout, WAVE1_PCU_ACK_CTS_TIMEOUT_MAX);
-+	ack_timeout = SM(ack_timeout, WAVE1_PCU_ACK_CTS_TIMEOUT_ACK);
-+
-+	/* Update cts timeout (upper halfword). */
-+	cts_timeout = MS(timeout_reg, WAVE1_PCU_ACK_CTS_TIMEOUT_CTS);
-+	cts_timeout += 3 * value * phyclk;
-+	cts_timeout = min_t(u32, cts_timeout, WAVE1_PCU_ACK_CTS_TIMEOUT_MAX);
-+	cts_timeout = SM(cts_timeout, WAVE1_PCU_ACK_CTS_TIMEOUT_CTS);
-+
-+	timeout_reg = ack_timeout | cts_timeout;
-+
-+	ath10k_hif_write32(ar,
-+			   WLAN_MAC_BASE_ADDRESS + WAVE1_PCU_GBL_IFS_SLOT,
-+			   slottime_reg);
-+	ath10k_hif_write32(ar,
-+			   WLAN_MAC_BASE_ADDRESS + WAVE1_PCU_ACK_CTS_TIMEOUT,
-+			   timeout_reg);
-+
-+	/* Ensure we have a debug level of WARN set for the case that the
-+	 * coverage class is larger than 0. This is important as we need to
-+	 * set the registers again if the firmware does an internal reset and
-+	 * this way we will be notified of the event.
-+	 */
-+	fw_dbglog_mask = ath10k_debug_get_fw_dbglog_mask(ar);
-+	fw_dbglog_level = ath10k_debug_get_fw_dbglog_level(ar);
-+
-+	if (value > 0) {
-+		if (fw_dbglog_level > ATH10K_DBGLOG_LEVEL_WARN)
-+			fw_dbglog_level = ATH10K_DBGLOG_LEVEL_WARN;
-+		fw_dbglog_mask = ~0;
-+	}
-+
-+	ath10k_wmi_dbglog_cfg(ar, fw_dbglog_mask, fw_dbglog_level);
-+
-+store_regs:
-+	/* After an error we will not retry setting the coverage class. */
-+	spin_lock_bh(&ar->data_lock);
-+	ar->fw_coverage.coverage_class = value;
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	ar->fw_coverage.reg_slottime_conf = slottime_reg;
-+	ar->fw_coverage.reg_ack_cts_timeout_conf = timeout_reg;
-+
-+unlock:
-+	mutex_unlock(&ar->conf_mutex);
-+}
-+
- const struct ath10k_hw_ops qca988x_ops = {
-+	.set_coverage_class = ath10k_hw_qca988x_set_coverage_class,
- };
- 
- static int ath10k_qca99x0_rx_desc_get_l3_pad_bytes(struct htt_rx_desc *rxd)
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 6038b7486f1d..883547f3347c 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -230,6 +230,7 @@ struct ath10k_hw_regs {
- 	u32 rtc_soc_base_address;
- 	u32 rtc_wmac_base_address;
- 	u32 soc_core_base_address;
-+	u32 wlan_mac_base_address;
- 	u32 ce_wrapper_base_address;
- 	u32 ce0_base_address;
- 	u32 ce1_base_address;
-@@ -418,6 +419,7 @@ struct htt_rx_desc;
- /* Defines needed for Rx descriptor abstraction */
- struct ath10k_hw_ops {
- 	int (*rx_desc_get_l3_pad_bytes)(struct htt_rx_desc *rxd);
-+	void (*set_coverage_class)(struct ath10k *ar, s16 value);
- };
- 
- extern const struct ath10k_hw_ops qca988x_ops;
-@@ -614,7 +616,7 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
- #define WLAN_SI_BASE_ADDRESS			0x00010000
- #define WLAN_GPIO_BASE_ADDRESS			0x00014000
- #define WLAN_ANALOG_INTF_BASE_ADDRESS		0x0001c000
--#define WLAN_MAC_BASE_ADDRESS			0x00020000
-+#define WLAN_MAC_BASE_ADDRESS			ar->regs->wlan_mac_base_address
- #define EFUSE_BASE_ADDRESS			0x00030000
- #define FPGA_REG_BASE_ADDRESS			0x00039000
- #define WLAN_UART2_BASE_ADDRESS			0x00054c00
-@@ -814,4 +816,28 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
- 
- #define RTC_STATE_V_GET(x) (((x) & RTC_STATE_V_MASK) >> RTC_STATE_V_LSB)
- 
-+/* Register definitions for first generation ath10k cards. These cards include
-+ * a mac thich has a register allocation similar to ath9k and at least some
-+ * registers including the ones relevant for modifying the coverage class are
-+ * identical to the ath9k definitions.
-+ * These registers are usually managed by the ath10k firmware. However by
-+ * overriding them it is possible to support coverage class modifications.
-+ */
-+#define WAVE1_PCU_ACK_CTS_TIMEOUT		0x8014
-+#define WAVE1_PCU_ACK_CTS_TIMEOUT_MAX		0x00003FFF
-+#define WAVE1_PCU_ACK_CTS_TIMEOUT_ACK_MASK	0x00003FFF
-+#define WAVE1_PCU_ACK_CTS_TIMEOUT_ACK_LSB	0
-+#define WAVE1_PCU_ACK_CTS_TIMEOUT_CTS_MASK	0x3FFF0000
-+#define WAVE1_PCU_ACK_CTS_TIMEOUT_CTS_LSB	16
-+
-+#define WAVE1_PCU_GBL_IFS_SLOT			0x1070
-+#define WAVE1_PCU_GBL_IFS_SLOT_MASK		0x0000FFFF
-+#define WAVE1_PCU_GBL_IFS_SLOT_MAX		0x0000FFFF
-+#define WAVE1_PCU_GBL_IFS_SLOT_LSB		0
-+#define WAVE1_PCU_GBL_IFS_SLOT_RESV0		0xFFFF0000
-+
-+#define WAVE1_PHYCLK				0x801C
-+#define WAVE1_PHYCLK_USEC_MASK			0x0000007F
-+#define WAVE1_PHYCLK_USEC_LSB			0
-+
- #endif /* _HW_H_ */
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 837384e4422b..0f3d4cf7dc00 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5411,6 +5411,20 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-+static void ath10k_mac_op_set_coverage_class(struct ieee80211_hw *hw, s16 value)
-+{
-+	struct ath10k *ar = hw->priv;
-+
-+	/* This function should never be called if setting the coverage class
-+	 * is not supported on this hardware.
-+	 */
-+	if (!ar->hw_params.hw_ops->set_coverage_class) {
-+		WARN_ON_ONCE(1);
-+		return;
-+	}
-+	ar->hw_params.hw_ops->set_coverage_class(ar, value);
-+}
-+
- static int ath10k_hw_scan(struct ieee80211_hw *hw,
- 			  struct ieee80211_vif *vif,
- 			  struct ieee80211_scan_request *hw_req)
-@@ -7436,6 +7450,7 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.remove_interface		= ath10k_remove_interface,
- 	.configure_filter		= ath10k_configure_filter,
- 	.bss_info_changed		= ath10k_bss_info_changed,
-+	.set_coverage_class		= ath10k_mac_op_set_coverage_class,
- 	.hw_scan			= ath10k_hw_scan,
- 	.cancel_hw_scan			= ath10k_cancel_hw_scan,
- 	.set_key			= ath10k_set_key,
-@@ -8120,6 +8135,10 @@ int ath10k_mac_register(struct ath10k *ar)
- 		goto err_dfs_detector_exit;
- 	}
- 
-+	/* Disable set_coverage_class for chipsets that do not support it. */
-+	if (!ar->hw_params.hw_ops->set_coverage_class)
-+		ar->ops->set_coverage_class = NULL;
-+
- 	ret = ath_regd_init(&ar->ath_common.regulatory, ar->hw->wiphy,
- 			    ath10k_reg_notifier);
- 	if (ret) {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index b4cfaf9aa0ac..387c4eede388 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4931,6 +4931,23 @@ exit:
- 	return 0;
- }
- 
-+static inline void ath10k_wmi_queue_set_coverage_class_work(struct ath10k *ar)
-+{
-+	if (ar->hw_params.hw_ops->set_coverage_class) {
-+		spin_lock_bh(&ar->data_lock);
-+
-+		/* This call only ensures that the modified coverage class
-+		 * persists in case the firmware sets the registers back to
-+		 * their default value. So calling it is only necessary if the
-+		 * coverage class has a non-zero value.
-+		 */
-+		if (ar->fw_coverage.coverage_class)
-+			queue_work(ar->workqueue, &ar->set_coverage_class_work);
-+
-+		spin_unlock_bh(&ar->data_lock);
-+	}
-+}
-+
- static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_cmd_hdr *cmd_hdr;
-@@ -4951,6 +4968,7 @@ static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	case WMI_SCAN_EVENTID:
- 		ath10k_wmi_event_scan(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_CHAN_INFO_EVENTID:
- 		ath10k_wmi_event_chan_info(ar, skb);
-@@ -4960,15 +4978,18 @@ static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_DEBUG_MESG_EVENTID:
- 		ath10k_wmi_event_debug_mesg(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_UPDATE_STATS_EVENTID:
- 		ath10k_wmi_event_update_stats(ar, skb);
- 		break;
- 	case WMI_VDEV_START_RESP_EVENTID:
- 		ath10k_wmi_event_vdev_start_resp(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_VDEV_STOPPED_EVENTID:
- 		ath10k_wmi_event_vdev_stopped(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_PEER_STA_KICKOUT_EVENTID:
- 		ath10k_wmi_event_peer_sta_kickout(ar, skb);
-@@ -4984,12 +5005,14 @@ static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_ROAM_EVENTID:
- 		ath10k_wmi_event_roam(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_PROFILE_MATCH:
- 		ath10k_wmi_event_profile_match(ar, skb);
- 		break;
- 	case WMI_DEBUG_PRINT_EVENTID:
- 		ath10k_wmi_event_debug_print(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_PDEV_QVIT_EVENTID:
- 		ath10k_wmi_event_pdev_qvit(ar, skb);
-@@ -5038,6 +5061,7 @@ static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	case WMI_READY_EVENTID:
- 		ath10k_wmi_event_ready(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	default:
- 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
-@@ -5081,6 +5105,7 @@ static void ath10k_wmi_10_1_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	case WMI_10X_SCAN_EVENTID:
- 		ath10k_wmi_event_scan(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_CHAN_INFO_EVENTID:
- 		ath10k_wmi_event_chan_info(ar, skb);
-@@ -5090,15 +5115,18 @@ static void ath10k_wmi_10_1_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10X_DEBUG_MESG_EVENTID:
- 		ath10k_wmi_event_debug_mesg(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_UPDATE_STATS_EVENTID:
- 		ath10k_wmi_event_update_stats(ar, skb);
- 		break;
- 	case WMI_10X_VDEV_START_RESP_EVENTID:
- 		ath10k_wmi_event_vdev_start_resp(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_VDEV_STOPPED_EVENTID:
- 		ath10k_wmi_event_vdev_stopped(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_PEER_STA_KICKOUT_EVENTID:
- 		ath10k_wmi_event_peer_sta_kickout(ar, skb);
-@@ -5114,12 +5142,14 @@ static void ath10k_wmi_10_1_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10X_ROAM_EVENTID:
- 		ath10k_wmi_event_roam(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_PROFILE_MATCH:
- 		ath10k_wmi_event_profile_match(ar, skb);
- 		break;
- 	case WMI_10X_DEBUG_PRINT_EVENTID:
- 		ath10k_wmi_event_debug_print(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_PDEV_QVIT_EVENTID:
- 		ath10k_wmi_event_pdev_qvit(ar, skb);
-@@ -5159,6 +5189,7 @@ static void ath10k_wmi_10_1_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	case WMI_10X_READY_EVENTID:
- 		ath10k_wmi_event_ready(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10X_PDEV_UTF_EVENTID:
- 		/* ignore utf events */
-@@ -5205,6 +5236,7 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	case WMI_10_2_SCAN_EVENTID:
- 		ath10k_wmi_event_scan(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_CHAN_INFO_EVENTID:
- 		ath10k_wmi_event_chan_info(ar, skb);
-@@ -5214,15 +5246,18 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_2_DEBUG_MESG_EVENTID:
- 		ath10k_wmi_event_debug_mesg(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_UPDATE_STATS_EVENTID:
- 		ath10k_wmi_event_update_stats(ar, skb);
- 		break;
- 	case WMI_10_2_VDEV_START_RESP_EVENTID:
- 		ath10k_wmi_event_vdev_start_resp(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_VDEV_STOPPED_EVENTID:
- 		ath10k_wmi_event_vdev_stopped(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_PEER_STA_KICKOUT_EVENTID:
- 		ath10k_wmi_event_peer_sta_kickout(ar, skb);
-@@ -5238,12 +5273,14 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_2_ROAM_EVENTID:
- 		ath10k_wmi_event_roam(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_PROFILE_MATCH:
- 		ath10k_wmi_event_profile_match(ar, skb);
- 		break;
- 	case WMI_10_2_DEBUG_PRINT_EVENTID:
- 		ath10k_wmi_event_debug_print(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_PDEV_QVIT_EVENTID:
- 		ath10k_wmi_event_pdev_qvit(ar, skb);
-@@ -5274,15 +5311,18 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_2_VDEV_STANDBY_REQ_EVENTID:
- 		ath10k_wmi_event_vdev_standby_req(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_VDEV_RESUME_REQ_EVENTID:
- 		ath10k_wmi_event_vdev_resume_req(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_SERVICE_READY_EVENTID:
- 		ath10k_wmi_event_service_ready(ar, skb);
- 		return;
- 	case WMI_10_2_READY_EVENTID:
- 		ath10k_wmi_event_ready(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_2_PDEV_TEMPERATURE_EVENTID:
- 		ath10k_wmi_event_temperature(ar, skb);
-@@ -5345,12 +5385,14 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_4_DEBUG_MESG_EVENTID:
- 		ath10k_wmi_event_debug_mesg(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_SERVICE_READY_EVENTID:
- 		ath10k_wmi_event_service_ready(ar, skb);
- 		return;
- 	case WMI_10_4_SCAN_EVENTID:
- 		ath10k_wmi_event_scan(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_CHAN_INFO_EVENTID:
- 		ath10k_wmi_event_chan_info(ar, skb);
-@@ -5360,12 +5402,14 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_4_READY_EVENTID:
- 		ath10k_wmi_event_ready(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_PEER_STA_KICKOUT_EVENTID:
- 		ath10k_wmi_event_peer_sta_kickout(ar, skb);
- 		break;
- 	case WMI_10_4_ROAM_EVENTID:
- 		ath10k_wmi_event_roam(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_HOST_SWBA_EVENTID:
- 		ath10k_wmi_event_host_swba(ar, skb);
-@@ -5375,12 +5419,15 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_10_4_DEBUG_PRINT_EVENTID:
- 		ath10k_wmi_event_debug_print(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_VDEV_START_RESP_EVENTID:
- 		ath10k_wmi_event_vdev_start_resp(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_VDEV_STOPPED_EVENTID:
- 		ath10k_wmi_event_vdev_stopped(ar, skb);
-+		ath10k_wmi_queue_set_coverage_class_work(ar);
- 		break;
- 	case WMI_10_4_WOW_WAKEUP_HOST_EVENTID:
- 	case WMI_10_4_PEER_RATECODE_LIST_EVENTID:
-@@ -6099,6 +6146,7 @@ void ath10k_wmi_start_scan_init(struct ath10k *ar,
- 		| WMI_SCAN_EVENT_COMPLETED
- 		| WMI_SCAN_EVENT_BSS_CHANNEL
- 		| WMI_SCAN_EVENT_FOREIGN_CHANNEL
-+		| WMI_SCAN_EVENT_FOREIGN_CHANNEL_EXIT
- 		| WMI_SCAN_EVENT_DEQUEUED;
- 	arg->scan_ctrl_flags |= WMI_SCAN_CHAN_STAT_EVENT;
- 	arg->n_bssids = 1;
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDkvMzAvMjAxNiAwNTowNSBBTSwgSmVhbi1MdWMgS2FsbXVzIHdyb3RlOgo+IEkgdGVzdGVk
+IGF0aDEwayBhbmQgYXRoMTBrLWN0IG9uIG15IGVudmlyb25tZW50IHdpdGggdGhlIGV4YWN0IHNh
+bWUgY29uZmlndXJhdGlvbnMgb2YgaG9zdGFwZCAoYm90aCBvcHRpb25zIC0gLjExZCBhbmQgLjEx
+aCBhcmUgZW5hYmxlZCkuCj4gSW4gY2FzZSBvZiB0aGUgc3RhbmRhcmQgYXRoMTBrLCBJIGNvdWxk
+IGVzdGFibGlzaCBhIGNvbm5lY3Rpb24gYmV0d2VlbiB0d28gbm9kZXMgb24gYSBERlMgY2hhbm5l
+bCAoNTIpLiBUaGUgREZTIHN0YXRlIGNoYW5nZWQgdG8g4oCcYXZhaWxhYmxl4oCdIGluICJpdyBs
+aXN0Igo+IE9uIHRoZSBvdGhlciBoYW5kLCBJIGNvdWxkbuKAmXQgY29ubmVjdCB0aGUgbm9kZXMg
+d2l0aCB0aGUgYXRoMTBrLWN0LiBUaGUgREZTIHN0YXRlIHdhcyBkaXNwbGF5ZWQgYXMg4oCcdXNh
+Ymxl4oCdLgo+Cj4gI05vdGU6IHRvIHRlc3QgYm90aCBkcml2ZXJzIEkgYnVpbHQgYSBMRURFIGZp
+cm13YXJlIHVzaW5nIHRoZSBmb2xsb3dpbmcgb3B0aW9uczoKPiBhdGgxMGs6Cj4gPCo+IGF0aDEw
+ay1maXJtd2FyZS1xY2E5ODh4Li4uLi4uLi4uLi4uLi4gYXRoMTBrIGZpcm13YXJlIGZvciBRQ0E5
+ODh4IGRldmljZXMKPiAgIDwqPiBrbW9kLWF0aDEway4uLi4uLi4uLi4uLi4uLi4uLi4uLi4gQXRo
+ZXJvcyA4MDIuMTFhYyB3aXJlbGVzcyBjYXJkcyBzdXBwb3J0Cj4KPiBhdGgxMGstY3Q6Cj4gPCo+
+IGF0aDEway1maXJtd2FyZS1xY2E5ODh4LWN0Li4uIGF0aDEwayBDVCAxMC4xIGZpcm13YXJlIGZv
+ciBRQ0E5ODh4IGRldmljZXMKPiAgIDwqPiBrbW9kLWF0aDEway1jdC4uLi4uLi4uLiBhdGgxMGst
+Y3QgZHJpdmVyIG9wdGltaXplZCBmb3IgQ1QgYXRoMTBrIGZpcm13YXJlCgpJIGRvbid0IGhhdmUg
+dGltZSB0byB3b3JrIG9uIHRoaXMgcmlnaHQgbm93LCBidXQgaWYgeW91IHdhbnQgdG8gaW52ZXN0
+aWdhdGUgZnVydGhlciwKcGxlYXNlIHRyeSBDVCBmaXJtd2FyZSB3aXRoIHRoZSBzdG9jayBkcml2
+ZXIsIGFuZCBzdG9jayBmaXJtd2FyZSB3aXRoIHRoZQpjdCBkcml2ZXIuICBUaGlzIHNob3VsZCBk
+ZXRlcm1pbmUgaWYgdGhlIGlzc3VlIGlzIHdpdGggdGhlIGRyaXZlciBvciB0aGUKZmlybXdhcmUu
+CgpUaGFua3MsCkJlbgoKPgo+IFRoYW5rcywKPiBKTAo+Cj4+IE9uIDIyIFNlcCAyMDE2LCBhdCAx
+NToyOSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdyb3RlOgo+Pgo+PiBX
+ZSBoYXZlIERGUyB3b3JraW5nIG9uIEZlZG9yYSB3aXRoIENUIGZpcm13YXJlIGFuZCBkcml2ZXIu
+Cj4+Cj4+IE9uZSB0aGluZywgeW91IGhhdmUgdG8gZW5hYmxlIC4xMWQgYW5kIC4xMWggZmVhdHVy
+ZXMgZm9yIERGUyB0byBiZSBlbmFibGVkLgo+Pgo+PiBBbHNvLCB3ZSBvdmVyLXJpZGUgdGhlIGF0
+aDEwayBmaXJtd2FyZSBjb3VudHJ5LWNvZGUgdXNpbmcgdGhlIG1vZHVsZS1wYXJhbQo+PiBzbyB0
+aGF0IHRoZSBlbnRpcmUgc3lzdGVtIGhhcyB0aGUgc2FtZSBjb3VudHJ5LWNvZGU6Cj4+Cj4+ICMg
+WW91IGRvIG5vdCBuZWVkIG1vc3Qgb2YgdGhpcyBiZWxvdywgYW5kIHBvc3NpYmx5IG5vbmUgb2Yg
+aXQuLi5JJ20gbm90Cj4+ICMgaG93IG11Y2ggdGhlIGNvdW50cnktY29kZSBmb3IgdGhlIE5JQyBt
+YXR0ZXJzLgo+Pgo+PiBbcm9vdEBiZW4tb3RhLTEgfl0jIGNhdCAvZXRjL21vZHByb2JlLmQvYXRo
+MTBrLmNvbmYKPj4gIyBMRUFWRS1NRS1CRQo+PiAjIE1BQywgV01JLCBIVEMKPj4gI29wdGlvbnMg
+YXRoMTBrX2NvcmUgZGVidWdfbWFzaz0weGMwMDAwMDM2Cj4+ICMgTUFDCj4+IG9wdGlvbnMgYXRo
+MTBrX2NvcmUgZGVidWdfbWFzaz0weGMwMDAwMDMwCj4+ICMgaHR0IHR4IGR1bXAKPj4gIyBvcHRp
+b25zIGF0aDEwa19jb3JlIGRlYnVnX21hc2s9MHhjMDAwMDBiMAo+PiAjIFF1aWV0Cj4+ICNvcHRp
+b25zIGF0aDEwa19jb3JlIGRlYnVnX21hc2s9MHhjMDAwMDAwMAo+PiBvcHRpb25zIGF0aDEwa19j
+b3JlIG5vaHdjcnlwdD0xCj4+IG9wdGlvbnMgYXRoMTBrX2NvcmUgbnVtX3ZkZXZzX2N0PTY0Cj4+
+IG9wdGlvbnMgYXRoMTBrX2NvcmUgbnVtX3BlZXJzX2N0PTEyOAo+PiBvcHRpb25zIGF0aDEwa19j
+b3JlIG51bV9tc2R1X2Rlc2NfY3Q9NjgwCj4+ICNvcHRpb25zIGF0aDEwa19jb3JlIG51bV9yYXRl
+X2N0cmxfb2Jqc19jdD0yMAo+PiBvcHRpb25zIGF0aDEwa19jb3JlIG92ZXJyaWRlX2VlcHJvbV9y
+ZWdkb21haW49ODQwCj4+Cj4+Cj4+IEFuZCwgZG9lcyB0aGlzIHdvcmsgdy9vdXQgQ1QgZmlybXdh
+cmUgYW5kIGRyaXZlcj8gIElmIHNvLCBtaWdodCBiZSBzb21lIGlzc3VlCj4+IHdpdGggbXkgY29k
+ZSwgYnV0IGFnYWluLCBpdCBzZWVtcyB0byB3b3JrIGZvciB1cy4KPj4KPj4gVGhhbmtzLAo+PiBC
+ZW4KPj4KPj4KPj4gT24gMDkvMjIvMjAxNiAwMjoxNiBBTSwgSmVhbi1MdWMgS2FsbXVzIHdyb3Rl
+Ogo+Pj4KPj4+IEkgYW0gdHJ5aW5nIHRvIHB1dCBhbiBBUCBvbiBhIERGUyBjaGFubmVsICg1Miku
+Cj4+PiBJIGFtIHVzaW5nIGEgVFAtTGluayBBcmNoZXIgQzcgdjIgd2l0aCBMRURFIFJlYm9vdCBy
+MTQ2MiAvIEx1Q0kgTWFzdGVyIChnaXQtMTYuMjM3Ljc4MzQxLWQ1ZjhjOWIpIGFuZCB0aGUgYXRo
+MTBrIENUIGZpcm13YXJlL2RyaXZlci4KPj4+Cj4+PiBIb3N0YXBkIHdpbGwgbm90IHN0YXJ0IHRo
+ZSBBUCBiZWNhdXNlIG9mIHNvbWUgcHJvYmxlbSB3aXRoIERGUy4KPj4+Cj4+PiBEb2VzIGFueW9u
+ZSBoYXZlIHRoaXMgd29ya2luZyA/Cj4+Pgo+Pj4g4oCU4oCU4oCU4oCU4oCU4oCU4oCU4oCU4oCU
+Cj4+PiAvZXRjL2NvbmZpZy93aXJlbGVzcwo+Pj4KPj4+IGNvbmZpZyB3aWZpLWRldmljZSAnMTFB
+QycKPj4+ICAgICAgICAgIG9wdGlvbiB0eXBlICdtYWM4MDIxMScKPj4+ICAgICAgICAgIG9wdGlv
+biBod21vZGUgJzExYScKPj4+ICAgICAgICAgIG9wdGlvbiBwYXRoICdwY2kwMDAwOjAxLzAwMDA6
+MDE6MDAuMCcKPj4+ICAgICAgICAgIG9wdGlvbiBodG1vZGUgJ1ZIVDgwJwo+Pj4gICAgICAgICAg
+b3B0aW9uIHR4cG93ZXIgJzIwJwo+Pj4gICAgICAgICAgb3B0aW9uIGNvdW50cnkgJ1BMJwo+Pj4g
+ICAgICAgICAgb3B0aW9uIGNoYW5uZWwgJzUyJwo+Pj4KPj4+IGNvbmZpZyB3aWZpLWlmYWNlCj4+
+PiAgICAgICAgICBvcHRpb24gZGV2aWNlICcxMUFDJwo+Pj4gICAgICAgICAgb3B0aW9uIG1vZGUg
+J2FwJwo+Pj4gICAgICAgICAgb3B0aW9uIGVuY3J5cHRpb24gJ25vbmUnCj4+PiAgICAgICAgICBv
+cHRpb24gc3NpZCAnMScKPj4+ICAgICAgICAgIG9wdGlvbiBuZXR3b3JrIOKAmGFwMCcKPj4+Cj4+
+PiDigJTigJTigJTigJTigJTigJTigJTigJTigJQKPj4+IGdlbmVyYXRlZCBob3N0YXBkIGNvbmZp
+Z3VyYXRpb246Cj4+PiBkcml2ZXI9bmw4MDIxMQo+Pj4gbG9nZ2VyX3N5c2xvZz0xMjcKPj4+IGxv
+Z2dlcl9zeXNsb2dfbGV2ZWw9Mgo+Pj4gbG9nZ2VyX3N0ZG91dD0xMjcKPj4+IGxvZ2dlcl9zdGRv
+dXRfbGV2ZWw9Mgo+Pj4gY291bnRyeV9jb2RlPVBMCj4+PiBpZWVlODAyMTFkPTEKPj4+IGllZWU4
+MDIxMWg9MQo+Pj4gaHdfbW9kZT1hCj4+PiBjaGFubmVsPTUyCj4+Pgo+Pj4KPj4+IGllZWU4MDIx
+MW49MQo+Pj4gaHRfY29leD0wCj4+PiBodF9jYXBhYj1bSFQ0MCtdW0xEUENdW1NIT1JULUdJLTIw
+XVtTSE9SVC1HSS00MF1bVFgtU1RCQ11bUlgtU1RCQzFdW01BWC1BTVNEVS03OTM1XVtEU1NTX0ND
+Sy00MF0KPj4+IHZodF9vcGVyX2Nod2lkdGg9MQo+Pj4gdmh0X29wZXJfY2VudHJfZnJlcV9zZWcw
+X2lkeD01OAo+Pj4gaWVlZTgwMjExYWM9MQo+Pj4gdmh0X2NhcGFiPVtSWExEUENdW1NIT1JULUdJ
+LTgwXVtUWC1TVEJDLTJCWTFdW1JYLUFOVEVOTkEtUEFUVEVSTl1bVFgtQU5URU5OQS1QQVRURVJO
+XVtSWC1TVEJDLTFdW01BWC1NUERVLTExNDU0XVtNQVgtQS1NUERVLUxFTi1FWFA3XQo+Pj4KPj4+
+IGludGVyZmFjZT13bGFuMAo+Pj4gY3RybF9pbnRlcmZhY2U9L3Zhci9ydW4vaG9zdGFwZAo+Pj4g
+ZGlzYXNzb2NfbG93X2Fjaz0xCj4+PiBwcmVhbWJsZT0xCj4+PiB3bW1fZW5hYmxlZD0xCj4+PiBp
+Z25vcmVfYnJvYWRjYXN0X3NzaWQ9MAo+Pj4gdWFwc2RfYWR2ZXJ0aXNlbWVudF9lbmFibGVkPTEK
+Pj4+IGF1dGhfYWxncz0xCj4+PiB3cGE9MAo+Pj4gc3NpZD0xCj4+PiBic3NpZD1hNDoyYjpiMDpk
+ZToxZDoxMgo+Pj4KPj4+IOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlAo+Pj4gbG9ncmVhZDoK
+Pj4+Cj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQyIDIwMTYga2Vybi53YXJuIGtlcm5lbDogWzc1MzQ0
+LjIzMjI1M10gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHJlbW92aW5nIHBlZXIsIGh0dCBwZWVy
+IHVubWFwIHZkZXYgMCBwZWVyIGE0OjJiOmIwOmRlOjFkOjEyIGlkIDMwCj4+PiBUaHUgU2VwIDIy
+IDA3OjQ2OjQyIDIwMTYga2Vybi53YXJuIGtlcm5lbDogWzc1MzQ0LjI0MTc0Ml0gYXRoMTBrX3Bj
+aSAwMDAwOjAxOjAwLjA6IHJlbW92aW5nIHBlZXIsIGh0dCBwZWVyIHVubWFwIHZkZXYgMCBwZWVy
+IGE0OjJiOmIwOmRlOjFkOjEyIGlkIDE0Cj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQyIDIwMTYgZGFl
+bW9uLm5vdGljZSBuZXRpZmQ6IDExQUMgKDE3MTc5KTogY29tbWFuZCBmYWlsZWQ6IE5vdCBzdXBw
+b3J0ZWQgKC0xMjIpCj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQyIDIwMTYgZGFlbW9uLm5vdGljZSBu
+ZXRpZmQ6IDExQUMgKDE3MTc5KTogQ29uZmlndXJhdGlvbiBmaWxlOiAvdmFyL3J1bi9ob3N0YXBk
+LXBoeTAuY29uZgo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0MyAyMDE2IGtlcm4uaW5mbyBrZXJuZWw6
+IFs3NTM0NS42NTA5NTZdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiB3bWkgcHJpbnQgJ1AgMTI4
+IFYgOCBUIDQxMCcKPj4+IFRodSBTZXAgMjIgMDc6NDY6NDMgMjAxNiBrZXJuLmluZm8ga2VybmVs
+OiBbNzUzNDUuNjU3MTI5XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogd21pIHByaW50ICdtc2R1
+LWRlc2M6IDE0MjQgIHN3LWNyeXB0OiAwJwo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0MyAyMDE2IGtl
+cm4uaW5mbyBrZXJuZWw6IFs3NTM0NS42NjQzOThdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiB3
+bWkgcHJpbnQgJ2FsbG9jIHJlbTogMjQ0NDggaXJhbTogMjg2MTInCj4+PiBUaHUgU2VwIDIyIDA3
+OjQ2OjQzIDIwMTYga2Vybi53YXJuIGtlcm5lbDogWzc1MzQ1Ljc0NDI5N10gYXRoMTBrX3BjaSAw
+MDAwOjAxOjAwLjA6IGh0dCBwZWVyIG1hcCB2ZGV2IDAgcGVlciBhNDoyYjpiMDpkZToxZDoxMiBp
+ZCAzMAo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0MyAyMDE2IGtlcm4ud2FybiBrZXJuZWw6IFs3NTM0
+NS43NTIyNzRdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBodHQgcGVlciBtYXAgdmRldiAwIHBl
+ZXIgYTQ6MmI6YjA6ZGU6MWQ6MTIgaWQgMTQKPj4+IFRodSBTZXAgMjIgMDc6NDY6NDMgMjAxNiBr
+ZXJuLmluZm8ga2VybmVsOiBbNzUzNDUuNzYxMDM4XSBJUHY2OiBBRERSQ09ORihORVRERVZfVVAp
+OiB3bGFuMDogbGluayBpcyBub3QgcmVhZHkKPj4+IFRodSBTZXAgMjIgMDc6NDY6NDMgMjAxNiBk
+YWVtb24ubm90aWNlIG5ldGlmZDogMTFBQyAoMTcxNzkpOiB3bGFuMDogaW50ZXJmYWNlIHN0YXRl
+IFVOSU5JVElBTElaRUQtPkNPVU5UUllfVVBEQVRFCj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQzIDIw
+MTYgZGFlbW9uLm5vdGljZSBuZXRpZmQ6IDExQUMgKDE3MTc5KTogd2xhbjA6IGludGVyZmFjZSBz
+dGF0ZSBDT1VOVFJZX1VQREFURS0+SFRfU0NBTgo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0NCAyMDE2
+IGRhZW1vbi5ub3RpY2UgbmV0aWZkOiAxMUFDICgxNzE3OSk6IHdsYW4wOiBpbnRlcmZhY2Ugc3Rh
+dGUgSFRfU0NBTi0+REZTCj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQ0IDIwMTYgZGFlbW9uLm5vdGlj
+ZSBuZXRpZmQ6IDExQUMgKDE3MTc5KTogd2xhbjA6IERGUy1DQUMtU1RBUlQgZnJlcT01MjYwIGNo
+YW49NTIgc2VjX2NoYW49MSwgd2lkdGg9MSwgc2VnMD01OCwgc2VnMT0wLCBjYWNfdGltZT02MHMK
+Pj4+IFRodSBTZXAgMjIgMDc6NDY6NDQgMjAxNiBkYWVtb24ubm90aWNlIG5ldGlmZDogMTFBQyAo
+MTcxNzkpOiBERlMgc3RhcnRfZGZzX2NhYygpIGZhaWxlZCwgLTEKPj4+IFRodSBTZXAgMjIgMDc6
+NDY6NDQgMjAxNiBkYWVtb24ubm90aWNlIG5ldGlmZDogMTFBQyAoMTcxNzkpOiBJbnRlcmZhY2Ug
+aW5pdGlhbGl6YXRpb24gZmFpbGVkCj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQ0IDIwMTYgZGFlbW9u
+Lm5vdGljZSBuZXRpZmQ6IDExQUMgKDE3MTc5KTogd2xhbjA6IGludGVyZmFjZSBzdGF0ZSBERlMt
+PkRJU0FCTEVECj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQ0IDIwMTYgZGFlbW9uLm5vdGljZSBuZXRp
+ZmQ6IDExQUMgKDE3MTc5KTogd2xhbjA6IEFQLURJU0FCTEVECj4+PiBUaHUgU2VwIDIyIDA3OjQ2
+OjQ0IDIwMTYgZGFlbW9uLm5vdGljZSBuZXRpZmQ6IDExQUMgKDE3MTc5KTogd2xhbjA6IGludGVy
+ZmFjZSBzdGF0ZSBESVNBQkxFRC0+RElTQUJMRUQKPj4+IFRodSBTZXAgMjIgMDc6NDY6NDQgMjAx
+NiBkYWVtb24ubm90aWNlIG5ldGlmZDogMTFBQyAoMTcxNzkpOiB3bGFuMDogQVAtRElTQUJMRUQK
+Pj4+IFRodSBTZXAgMjIgMDc6NDY6NDQgMjAxNiBkYWVtb24ubm90aWNlIG5ldGlmZDogMTFBQyAo
+MTcxNzkpOiBob3N0YXBkX2ZyZWVfaGFwZF9kYXRhOiBJbnRlcmZhY2Ugd2xhbjAgd2Fzbid0IHN0
+YXJ0ZWQKPj4+IFRodSBTZXAgMjIgMDc6NDY6NDQgMjAxNiBkYWVtb24ubm90aWNlIG5ldGlmZDog
+MTFBQyAoMTcxNzkpOiBubDgwMjExOiBkZWluaXQgaWZuYW1lPXdsYW4wIGRpc2FibGVkXzExYl9y
+YXRlcz0wCj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQ0IDIwMTYga2Vybi53YXJuIGtlcm5lbDogWzc1
+MzQ1Ljg3ODA1OF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHJlbW92aW5nIHBlZXIsIGh0dCBw
+ZWVyIHVubWFwIHZkZXYgMCBwZWVyIGE0OjJiOmIwOmRlOjFkOjEyIGlkIDMwCj4+PiBUaHUgU2Vw
+IDIyIDA3OjQ2OjQ0IDIwMTYga2Vybi53YXJuIGtlcm5lbDogWzc1MzQ1Ljg4NzYwMF0gYXRoMTBr
+X3BjaSAwMDAwOjAxOjAwLjA6IHJlbW92aW5nIHBlZXIsIGh0dCBwZWVyIHVubWFwIHZkZXYgMCBw
+ZWVyIGE0OjJiOmIwOmRlOjFkOjEyIGlkIDE0Cj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQ0IDIwMTYg
+ZGFlbW9uLm5vdGljZSBuZXRpZmQ6IDExQUMgKDE3MTc5KTogRUxPT1A6IHJlbWFpbmluZyBzb2Nr
+ZXQ6IHNvY2s9MTggZWxvb3BfZGF0YT0weDc3NzRiOWMwIHVzZXJfZGF0YT0wIGhhbmRsZXI9MHg0
+MWExY2QKPj4+IFRodSBTZXAgMjIgMDc6NDY6NDUgMjAxNiBrZXJuLmluZm8ga2VybmVsOiBbNzUz
+NDcuMDI1MzY3XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogd21pIHByaW50ICdQIDEyOCBWIDgg
+VCA0MTAnCj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQ1IDIwMTYga2Vybi5pbmZvIGtlcm5lbDogWzc1
+MzQ3LjAzMTUwOV0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHdtaSBwcmludCAnbXNkdS1kZXNj
+OiAxNDI0ICBzdy1jcnlwdDogMCcKPj4+IFRodSBTZXAgMjIgMDc6NDY6NDUgMjAxNiBrZXJuLmlu
+Zm8ga2VybmVsOiBbNzUzNDcuMDM4NzcwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogd21pIHBy
+aW50ICdhbGxvYyByZW06IDI0NDQ4IGlyYW06IDI4NjEyJwo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0
+NSAyMDE2IGtlcm4ud2FybiBrZXJuZWw6IFs3NTM0Ny4xMTg2MDJdIGF0aDEwa19wY2kgMDAwMDow
+MTowMC4wOiBodHQgcGVlciBtYXAgdmRldiAwIHBlZXIgYTQ6MmI6YjA6ZGU6MWQ6MTIgaWQgMzAK
+Pj4+IFRodSBTZXAgMjIgMDc6NDY6NDUgMjAxNiBrZXJuLndhcm4ga2VybmVsOiBbNzUzNDcuMTI2
+NTgwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogaHR0IHBlZXIgbWFwIHZkZXYgMCBwZWVyIGE0
+OjJiOmIwOmRlOjFkOjEyIGlkIDE0Cj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQ1IDIwMTYga2Vybi5p
+bmZvIGtlcm5lbDogWzc1MzQ3LjEzNTU3Nl0gSVB2NjogQUREUkNPTkYoTkVUREVWX1VQKTogd2xh
+bjA6IGxpbmsgaXMgbm90IHJlYWR5Cj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQ2IDIwMTYga2Vybi5k
+ZWJ1ZyBrZXJuZWw6IFs3NTM0OC4wMDk3NjhdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBhdGgx
+MGtfcGNpIEFUSDEwS19EQkdfQlVGRkVSOgo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0NiAyMDE2IGtl
+cm4uZGVidWcga2VybmVsOiBbNzUzNDguMDA5Nzk3XSBhdGgxMGs6IFswMDAwXTogMUU2MTk5MDQg
+MDUwMEZDMTcgNzAyMDEwMzEgMDgwMDAwMDAgODAwMDAwMDAgQjhGNzQwMDAgMDEwMDA2MDAgMjk2
+MTk5MDQKPj4+IFRodSBTZXAgMjIgMDc6NDY6NDYgMjAxNiBrZXJuLmRlYnVnIGtlcm5lbDogWzc1
+MzQ4LjAwOTgxNV0gYXRoMTBrOiBbMDAwOF06IDA4NUNGQzBGIDhDNkI0NDAwIDA4MDAwMDAwIDgw
+MDAwMDAwIDI5NjE5OTA0IDA2NUNGQzBGIEI4Rjc0MDAwIDg0Nzc0NDAwCj4+PiBUaHUgU2VwIDIy
+IDA3OjQ2OjQ2IDIwMTYga2Vybi5kZWJ1ZyBrZXJuZWw6IFs3NTM0OC4wMDk4MzJdIGF0aDEwazog
+WzAwMTZdOiAxOTAwMDAwMCAyQTYxOTkwNCAwNjVDRkMwRiAwOTAwMDAwMCA4NDc3NDQwMCA4NDdE
+OUMwMCA0MDYxOTkwNCAxMzBDRkMwMwo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0NiAyMDE2IGtlcm4u
+ZGVidWcga2VybmVsOiBbNzUzNDguMDA5ODQ4XSBhdGgxMGs6IFswMDI0XTogNDg2MTk5MDQgMjM0
+Q0ZDMEYgMDEwMDAwMDAgMDEwMDAwMDAgMDEwMDAwMDAgNTA2MTk5MDQgMjM0Q0ZDMEYgMDEwMDAw
+MDAKPj4+IFRodSBTZXAgMjIgMDc6NDY6NDYgMjAxNiBrZXJuLmRlYnVnIGtlcm5lbDogWzc1MzQ4
+LjAwOTg2NV0gYXRoMTBrOiBbMDAzMl06IDAxMDAwMDAwIDAxMDAwMDAwIDU4NjE5OTA0IDIzNENG
+QzBGIDAxMDAwMDAwIDAxMDAwMDAwIDAxMDAwMDAwIDYwNjE5OTA0Cj4+PiBUaHUgU2VwIDIyIDA3
+OjQ2OjQ2IDIwMTYga2Vybi5kZWJ1ZyBrZXJuZWw6IFs3NTM0OC4wMDk4ODFdIGF0aDEwazogWzAw
+NDBdOiAyMzRDRkMwRiAwMTAwMDAwMCAwMTAwMDAwMCAwMTAwMDAwMCA2ODYxOTkwNCAyMzRDRkMw
+RiAwMTAwMDAwMCAwMTAwMDAwMAo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0NiAyMDE2IGtlcm4uZGVi
+dWcga2VybmVsOiBbNzUzNDguMDA5ODk4XSBhdGgxMGs6IFswMDQ4XTogMDEwMDAwMDAgNzA2MTk5
+MDQgMjM0Q0ZDMEYgMDEwMDAwMDAgMDEwMDAwMDAgMDEwMDAwMDAgNzg2MTk5MDQgMjM0Q0ZDMEYK
+Pj4+IFRodSBTZXAgMjIgMDc6NDY6NDYgMjAxNiBrZXJuLmRlYnVnIGtlcm5lbDogWzc1MzQ4LjAw
+OTkxNF0gYXRoMTBrOiBbMDA1Nl06IDAxMDAwMDAwIDAxMDAwMDAwIDAxMDAwMDAwIDgwNjE5OTA0
+IDIzNENGQzBGIDAxMDAwMDAwIDAxMDAwMDAwIDAxMDAwMDAwCj4+PiBUaHUgU2VwIDIyIDA3OjQ2
+OjQ2IDIwMTYga2Vybi5kZWJ1ZyBrZXJuZWw6IFs3NTM0OC4wMDk5MzBdIGF0aDEwazogWzAwNjRd
+OiA4MDYxOTkwNCAwQzY0RkMwNyAwMTAwMDAwMCA4ODYxOTkwNCAyMzRDRkMwRiAwMTAwMDAwMCAw
+MTAwMDAwMCAwMTAwMDAwMAo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0NiAyMDE2IGtlcm4uZGVidWcg
+a2VybmVsOiBbNzUzNDguMDA5OTQ3XSBhdGgxMGs6IFswMDcyXTogODg2MTk5MDQgMDkyMDAwMEMg
+MzRGODQzMDAgMDIwMDAwMDAgMDAwMDAwMDAgODg2MTk5MDQgMDY1QzAwMEMgMDgwMDAwMDAKPj4+
+IFRodSBTZXAgMjIgMDc6NDY6NDYgMjAxNiBrZXJuLmRlYnVnIGtlcm5lbDogWzc1MzQ4LjAwOTk2
+M10gYXRoMTBrOiBbMDA4MF06IDg0Nzc0NDAwIDhDN0Q5QzAwIDg4NjE5OTA0IDA5MjgwMDBDIDYx
+NjYxMDcxIDM0Rjg0MzAwIDlDRkU0MzAwIDg4NjE5OTA0Cj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQ2
+IDIwMTYga2Vybi5kZWJ1ZyBrZXJuZWw6IFs3NTM0OC4wMDk5ODBdIGF0aDEwazogWzAwODhdOiAw
+OTI4MDAwQyA2MDY2MTA3MSAzNEY4NDMwMCA5Q0ZFNDMwMCA4ODYxOTkwNCAwODVDMDAwOCAzNEY4
+NDMwMCBCNDZCNDQwMAo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0NiAyMDE2IGtlcm4uZGVidWcga2Vy
+bmVsOiBbNzUzNDguMDA5OTk2XSBhdGgxMGs6IFswMDk2XTogODg2MTk5MDQgMDY1QzAwMEMgMTEw
+MDAwMDAgODQ3NzQ0MDAgOTQ3RDlDMDAgODg2MTk5MDQgMDQ1QzAwMEMgMDMwMDEwODEKPj4+IFRo
+dSBTZXAgMjIgMDc6NDY6NDYgMjAxNiBrZXJuLmRlYnVnIGtlcm5lbDogWzc1MzQ4LjAxMDAxM10g
+YXRoMTBrOiBbMDEwNF06IDM0Rjg0MzAwIDAwMDAwMDAwIDg4NjE5OTA0IDAyMjgwMDA4IDAzMDAw
+MDAwIDAzMDAwMDAwIDg4NjE5OTA0IDAyMjgwMDA0Cj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQ2IDIw
+MTYga2Vybi5kZWJ1ZyBrZXJuZWw6IFs3NTM0OC4wMTAwMjldIGF0aDEwazogWzAxMTJdOiAwMzAw
+MDAwMCA4ODYxOTkwNCAyRjRDMDAxNCAxRTAwMDAwMCA1NEVFNDEwMCA5ODhDNDMwMCAwMDAwMDAw
+MCAwMDAwMDAwMAo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0NiAyMDE2IGtlcm4uZGVidWcga2VybmVs
+OiBbNzUzNDguMDEwMDQ1XSBhdGgxMGs6IFswMTIwXTogODg2MTk5MDQgMkY0QzAwMTQgMEUwMDAw
+MDAgOENFRTQxMDAgOTg4QzQzMDAgMDAwMDAwMDAgMDEwMDAwMDAgODg2MTk5MDQKPj4+IFRodSBT
+ZXAgMjIgMDc6NDY6NDYgMjAxNiBrZXJuLmRlYnVnIGtlcm5lbDogWzc1MzQ4LjAxMDA2Ml0gYXRo
+MTBrOiBbMDEyOF06IDM2NEMwMDE0IDk4OEM0MzAwIDg0QjA5QjAwIDExMDAwMDAwIDAwMDAwMDAw
+IDIwM0QwMDAwIDg4NjE5OTA0IDM2NEMwMDE0Cj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQ2IDIwMTYg
+a2Vybi5kZWJ1ZyBrZXJuZWw6IFs3NTM0OC4wMTAwNzhdIGF0aDEwazogWzAxMzZdOiA5ODhDNDMw
+MCBDQ0IwOUIwMCAxMjAwMDAwMCAwMDAwMDAwMCAyMDJEMDAwMCA4ODYxOTkwNCAzNjRDMDAxNCA5
+ODhDNDMwMAo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0NiAyMDE2IGtlcm4uZGVidWcga2VybmVsOiBb
+NzUzNDguMDEwMDk1XSBhdGgxMGs6IFswMTQ0XTogMTRCMTlCMDAgMTAwMDAwMDAgMEEwMDAwMDAg
+NDAzRDAwMDAgODg2MTk5MDQgMzY0QzAwMTQgOTg4QzQzMDAgNUNCMTlCMDAKPj4+IFRodSBTZXAg
+MjIgMDc6NDY6NDYgMjAxNiBrZXJuLmRlYnVnIGtlcm5lbDogWzc1MzQ4LjAxMDExMV0gYXRoMTBr
+OiBbMDE1Ml06IDEzMDAwMDAwIDAwMDAwMDAwIDIwM0QwMDAwIDg4NjE5OTA0IDAzNUMwMDE0IDAx
+MDAwMDAwIEE0MkJCMERFIDFEMTIwMDAwCj4+PiBUaHUgU2VwIDIyIDA3OjQ2OjQ2IDIwMTYga2Vy
+bi5kZWJ1ZyBrZXJuZWw6IFs3NTM0OC4wMTAxMjNdIGF0aDEwazogWzAxNjBdOiAxNDhBOUIwMCA5
+ODhDNDMwMAo+Pj4gVGh1IFNlcCAyMiAwNzo0Njo0NiAyMDE2IGtlcm4uZGVidWcga2VybmVsOiBb
+NzUzNDguMDEwMTM2XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogQVRIMTBLX0VORAo+Pj4KPj4+
+IOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlAo+Pj4gJCBpdyByZWcgZ2V0Cj4+PiBnbG9iYWwK
+Pj4+IGNvdW50cnkgUEw6IERGUy1FVFNJCj4+PiAJKDI0MDIgLSAyNDgyIEAgNDApLCAoTi9BLCAy
+MCksIChOL0EpCj4+PiAJKDUxNzAgLSA1MjUwIEAgODApLCAoTi9BLCAyMCksIChOL0EpLCBBVVRP
+LUJXCj4+PiAJKDUyNTAgLSA1MzMwIEAgODApLCAoTi9BLCAyMCksICgwIG1zKSwgREZTLCBBVVRP
+LUJXCj4+PiAJKDU0OTAgLSA1NzEwIEAgMTYwKSwgKE4vQSwgMjcpLCAoMCBtcyksIERGUwo+Pj4g
+CSg1NzAwMCAtIDY2MDAwIEAgMjE2MCksIChOL0EsIDQwKSwgKE4vQSkKPj4+Cj4+PiBwaHkjMQo+
+Pj4gY291bnRyeSBVUzogREZTLUZDQwo+Pj4gCSgyNDAyIC0gMjQ3MiBAIDQwKSwgKE4vQSwgMzAp
+LCAoTi9BKQo+Pj4gCSg1MTcwIC0gNTI1MCBAIDgwKSwgKE4vQSwgMjMpLCAoTi9BKSwgQVVUTy1C
+Vwo+Pj4gCSg1MjUwIC0gNTMzMCBAIDgwKSwgKE4vQSwgMjMpLCAoMCBtcyksIERGUywgQVVUTy1C
+Vwo+Pj4gCSg1NDkwIC0gNTczMCBAIDE2MCksIChOL0EsIDIzKSwgKDAgbXMpLCBERlMKPj4+IAko
+NTczNSAtIDU4MzUgQCA4MCksIChOL0EsIDMwKSwgKE4vQSkKPj4+IAkoNTcyNDAgLSA2MzcyMCBA
+IDIxNjApLCAoTi9BLCA0MCksIChOL0EpCj4+Pgo+Pj4gcGh5IzAKPj4+IGNvdW50cnkgVVM6IERG
+Uy1GQ0MKPj4+IAkoMjQwMiAtIDI0NzIgQCA0MCksIChOL0EsIDMwKSwgKE4vQSkKPj4+IAkoNTE3
+MCAtIDUyNTAgQCA4MCksIChOL0EsIDIzKSwgKE4vQSksIEFVVE8tQlcKPj4+IAkoNTI1MCAtIDUz
+MzAgQCA4MCksIChOL0EsIDIzKSwgKDAgbXMpLCBERlMsIEFVVE8tQlcKPj4+IAkoNTQ5MCAtIDU3
+MzAgQCAxNjApLCAoTi9BLCAyMyksICgwIG1zKSwgREZTCj4+PiAJKDU3MzUgLSA1ODM1IEAgODAp
+LCAoTi9BLCAzMCksIChOL0EpCj4+PiAJKDU3MjQwIC0gNjM3MjAgQCAyMTYwKSwgKE4vQSwgNDAp
+LCAoTi9BKQo+Pj4KPj4+IGdsb2JhbAo+Pj4gY291bnRyeSBQTDogREZTLUVUU0kKPj4+IAkoMjQw
+MiAtIDI0ODIgQCA0MCksIChOL0EsIDIwKSwgKE4vQSkKPj4+IAkoNTE3MCAtIDUyNTAgQCA4MCks
+IChOL0EsIDIwKSwgKE4vQSksIEFVVE8tQlcKPj4+IAkoNTI1MCAtIDUzMzAgQCA4MCksIChOL0Es
+IDIwKSwgKDAgbXMpLCBERlMsIEFVVE8tQlcKPj4+IAkoNTQ5MCAtIDU3MTAgQCAxNjApLCAoTi9B
+LCAyNyksICgwIG1zKSwgREZTCj4+PiAJKDU3MDAwIC0gNjYwMDAgQCAyMTYwKSwgKE4vQSwgNDAp
+LCAoTi9BKQo+Pj4KPj4+IOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlAo+Pj4gJGl3IGxpc3QK
+Pj4+IC4uLgo+Pj4gCSogNTI2MCBNSHogWzUyXSAoMjAuMCBkQm0pIChyYWRhciBkZXRlY3Rpb24p
+Cj4+PiAJCQkgIERGUyBzdGF0ZTogdXNhYmxlIChmb3IgMTgyNCBzZWMpCj4+PiAJCQkgIERGUyBD
+QUMgdGltZTogNjAwMDAgbXMKPj4+IOKApgo+Pj4KPj4+IOKAlAo+Pj4gSmVhbi1MdWMKPj4+Cj4+
+Pgo+Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+
+IGF0aDEwayBtYWlsaW5nIGxpc3QKPj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+PiBo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+Pj4KPj4K
+Pj4gLS0KPj4gQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+Cj4+IENhbmRlbGEg
+VGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KPgoKCi0tIApCZW4g
+R3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5j
+ICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsK
