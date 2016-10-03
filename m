@@ -1,21 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vk0-x233.google.com ([2607:f8b0:400c:c05::233])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bqxud-0004Ib-0z
- for ath10k@lists.infradead.org; Mon, 03 Oct 2016 07:43:48 +0000
-Received: by mail-vk0-x233.google.com with SMTP id b186so17804380vkb.1
- for <ath10k@lists.infradead.org>; Mon, 03 Oct 2016 00:43:18 -0700 (PDT)
+ id 1bqxy7-0005hZ-EV
+ for ath10k@lists.infradead.org; Mon, 03 Oct 2016 07:47:23 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: cache calibration data when the core is stopped.
+Date: Mon, 3 Oct 2016 07:46:54 +0000
+Message-ID: <87fuodswlu.fsf@kamboji.qca.qualcomm.com>
+References: <1473801118-103112-1-git-send-email-mfaltesek@google.com>
+In-Reply-To: <1473801118-103112-1-git-send-email-mfaltesek@google.com> (Marty
+ Faltesek's message of "Tue, 13 Sep 2016 17:11:58 -0400")
+Content-Language: en-US
+Content-ID: <E59F89E19B75314F8A1E6A300B9ED172@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <871t0nhsdu.fsf@kamboji.qca.qualcomm.com>
-References: <1470140454-3899-1-git-send-email-bartosz.markowski@tieto.com>
- <1470140454-3899-3-git-send-email-bartosz.markowski@tieto.com>
- <87bmztm8qm.fsf@kamboji.qca.qualcomm.com>
- <CACKGw+FAwPb2NLW5G8CnGH4X2eCCjUkuJwLoqW9w9rKpDuQJDw@mail.gmail.com>
- <871t0nhsdu.fsf@kamboji.qca.qualcomm.com>
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Date: Mon, 3 Oct 2016 09:43:17 +0200
-Message-ID: <CACKGw+GDbiCLsE7VVas7ATDE0aBZOkbBperXQP0c7XASJgXQ=Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: add platform regulatory domain support
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +25,100 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+To: Marty Faltesek <mfaltesek@google.com>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 14 September 2016 at 09:06, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+Marty Faltesek <mfaltesek@google.com> writes:
+
+> Caching calibration data allows it to be accessed when the
+> device is not active.
 >
-> Bartosz Markowski <bartosz.markowski@tieto.com> writes:
->
-> > On 12 September 2016 at 17:35, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
-> >
-> >> > +#ifdef CONFIG_ACPI
-> >> > +#define WRD_METHOD "WRDD"
-> >> > +#define WRDD_WIFI  (0x07)
-> >> > +
-> >> > +static u32 ath10k_mac_wrdd_get_mcc(struct ath10k *ar, union acpi_object *wrdd)
-> >> > +{
-> >>
-> >> I don't think the ifdef is really necessary, acpi.h should handle that
-> >> (hopefully). Also I changed the error handling to use standard error
-> >> values and changed the info messages to dbg, they are too spammy in my
-> >> opinion. Please check carefully my changes in the pending branch:
-> >>
-> >> https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=fe91745381ec3999d8de6dedb07b396c82539717
-> >
-> > I'm OK with the changes, I have not tried that though, except of
-> > reviewing and compiling it (do not have access to the chromebook for
-> > next few days). If you want to wait with it until I test it, it's fine
-> > too.
->
-> Ok, I'll wait for few days in case you have time to test it.
+> Signed-off-by: Marty Faltesek <mfaltesek@google.com>
 
+No comma in the title, please.
 
-Sorry, it took so long. I've final check this and can confirm the patch.
+What tree did you use as the baseline? This doesn't seem to apply to
+ath.git:
 
-Bartosz
+Applying: ath10k: cache calibration data when the core is stopped.
+fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/core.c).
+Repository lacks necessary blobs to fall back on 3-way merge.
+Cannot fall back to three-way merge.
+Patch failed at 0001 ath10k: cache calibration data when the core is stopped.
 
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -1227,6 +1227,42 @@ success:
+>  	return 0;
+>  }
+>  
+> +int
+> +ath10k_cal_data_alloc(struct ath10k *ar, void **buf)
+> +{
+> +	u32 hi_addr;
+> +	__le32 addr;
+> +	int ret;
+
+I think this function should be in debug.c. That way the code is not
+wasting memory if DEBUGFS is disabled. 
+
+> +	vfree(*buf);
+> +	*buf = vmalloc(QCA988X_CAL_DATA_LEN);
+> +	if (!*buf) {
+> +		return -EAGAIN;
+> +	}
+
+Is it really necessary to allocate memory every time? What if allocate
+it only once when module is loaded, just like with
+ar->debug.fw_crash_data?
+
+Also please note that this patch (which I'm queuing to 4.9) touches the
+same area:
+
+ath10k: fix debug cal data file
+
+https://patchwork.kernel.org/patch/9340953/
+
+> +	hi_addr = host_interest_item_address(HI_ITEM(hi_board_data));
+> +
+> +	ret = ath10k_hif_diag_read(ar, hi_addr, &addr, sizeof(addr));
+> +
+> +	if (ret) {
+> +		ath10k_warn(ar, "failed to read hi_board_data address: %d\n", ret);
+> +	} else {
+> +		ret = ath10k_hif_diag_read(ar, le32_to_cpu(addr), *buf,
+> +					   QCA988X_CAL_DATA_LEN);
+> +		if (ret) {
+> +			ath10k_warn(ar, "failed to read calibration data: %d\n", ret);
+> +		}
+> +	}
+
+We try to avoid using else branches so that only error handling is
+indented and the main code flow is not.
+
+> +	/*
+> +	 * We are up now, so no need to cache calibration data.
+> +	 */
+> +	vfree(ar->cal_data);
+> +        ar->cal_data = NULL;
+
+Indentation looks wrongs here.
+
+> @@ -1757,6 +1799,11 @@ void ath10k_core_stop(struct ath10k *ar)
+>  	lockdep_assert_held(&ar->conf_mutex);
+>  	ath10k_debug_stop(ar);
+>  
+> +	/*
+> +	 * Cache caclibration data while stopped.
+> +	 */
+> +	ath10k_cal_data_alloc(ar, &ar->cal_data);
+
+I like the idea that the calibration data is copied during stop(), but
+can you do this from debug.c? For example, add ath10k_debug_stop() and
+call it from there? I don't think any of this should be in core.c.
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
