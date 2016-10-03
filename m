@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x235.google.com ([2607:f8b0:400d:c0d::235])
+Received: from mail-vk0-x233.google.com ([2607:f8b0:400c:c05::233])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bqjFI-0003Hd-Ss
- for ath10k@lists.infradead.org; Sun, 02 Oct 2016 16:04:09 +0000
-Received: by mail-qt0-x235.google.com with SMTP id s49so1252519qta.0
- for <ath10k@lists.infradead.org>; Sun, 02 Oct 2016 09:03:47 -0700 (PDT)
+ id 1bqxud-0004Ib-0z
+ for ath10k@lists.infradead.org; Mon, 03 Oct 2016 07:43:48 +0000
+Received: by mail-vk0-x233.google.com with SMTP id b186so17804380vkb.1
+ for <ath10k@lists.infradead.org>; Mon, 03 Oct 2016 00:43:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1473188728-14995-1-git-send-email-twp@qca.qualcomm.com>
-References: <1473188728-14995-1-git-send-email-twp@qca.qualcomm.com>
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Date: Mon, 3 Oct 2016 00:03:45 +0800
-Message-ID: <CAEFj986nVFxhMv6hWuvfdOODGsOO-+Zv2=S0BZa6XrL=-W+NUA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: enable peer stats by default
+In-Reply-To: <871t0nhsdu.fsf@kamboji.qca.qualcomm.com>
+References: <1470140454-3899-1-git-send-email-bartosz.markowski@tieto.com>
+ <1470140454-3899-3-git-send-email-bartosz.markowski@tieto.com>
+ <87bmztm8qm.fsf@kamboji.qca.qualcomm.com>
+ <CACKGw+FAwPb2NLW5G8CnGH4X2eCCjUkuJwLoqW9w9rKpDuQJDw@mail.gmail.com>
+ <871t0nhsdu.fsf@kamboji.qca.qualcomm.com>
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Date: Mon, 3 Oct 2016 09:43:17 +0200
+Message-ID: <CACKGw+GDbiCLsE7VVas7ATDE0aBZOkbBperXQP0c7XASJgXQ=Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ath10k: add platform regulatory domain support
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +28,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Thomas Pedersen <twp@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi, Thomas
+On 14 September 2016 at 09:06, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+>
+> Bartosz Markowski <bartosz.markowski@tieto.com> writes:
+>
+> > On 12 September 2016 at 17:35, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+> >
+> >> > +#ifdef CONFIG_ACPI
+> >> > +#define WRD_METHOD "WRDD"
+> >> > +#define WRDD_WIFI  (0x07)
+> >> > +
+> >> > +static u32 ath10k_mac_wrdd_get_mcc(struct ath10k *ar, union acpi_object *wrdd)
+> >> > +{
+> >>
+> >> I don't think the ifdef is really necessary, acpi.h should handle that
+> >> (hopefully). Also I changed the error handling to use standard error
+> >> values and changed the info messages to dbg, they are too spammy in my
+> >> opinion. Please check carefully my changes in the pending branch:
+> >>
+> >> https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=fe91745381ec3999d8de6dedb07b396c82539717
+> >
+> > I'm OK with the changes, I have not tried that though, except of
+> > reviewing and compiling it (do not have access to the chromebook for
+> > next few days). If you want to wait with it until I test it, it's fine
+> > too.
+>
+> Ok, I'll wait for few days in case you have time to test it.
 
-On Wed, Sep 7, 2016 at 3:05 AM, Thomas Pedersen <twp@qca.qualcomm.com> wrote:
-> IFTYPE_MESH_POINT need to rely on these for accurate path
-> selection metrics. Other modes will probably also find
 
-Both get expected throughput or get txrate are not available to
-mac80211. So, is this useful by enabling it?
+Sorry, it took so long. I've final check this and can confirm the patch.
 
-----
-Chun-Yeow
+Bartosz
 
 _______________________________________________
 ath10k mailing list
