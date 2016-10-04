@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1brRFH-0007W9-DX
- for ath10k@lists.infradead.org; Tue, 04 Oct 2016 15:03:07 +0000
+ id 1brRGv-0008D2-Mj
+ for ath10k@lists.infradead.org; Tue, 04 Oct 2016 15:04:49 +0000
 MIME-Version: 1.0
-Subject: Re: [1/2] ath: export alpha2 helper
+Subject: Re: [PATCHv3,5/5] ath10k: Allow setting coverage class
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1470140454-3899-2-git-send-email-bartosz.markowski@tieto.com>
-References: <1470140454-3899-2-git-send-email-bartosz.markowski@tieto.com>
-Message-ID: <7569987251e5403ebe0c30061dd7db5c@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 4 Oct 2016 17:02:36 +0200
+In-Reply-To: <20160829144557.11678-6-benjamin@sipsolutions.net>
+References: <20160829144557.11678-6-benjamin@sipsolutions.net>
+Message-ID: <677867cb33294558b78135cfb11d5c4a@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 4 Oct 2016 17:04:17 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +22,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: Benjamin Berg <benjamin@sipsolutions.net>
+Cc: Simon Wunderlich <sw@simonwunderlich.de>, Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
 
-Bartosz Markowski <bartosz.markowski@tieto.com> wrote:
-> From: Michal Kazior <michal.kazior@tieto.com>
+Benjamin Berg <benjamin@sipsolutions.net> wrote:
+> Unfortunately ath10k does not generally allow modifying the coverage class
+> with the stock firmware and Qualcomm has so far refused to implement this
+> feature so that it can be properly supported in ath10k. If we however know
+> the registers that need to be modified for proper operation with a higher
+> coverage class, then we can do these modifications from the driver.
 > 
-> This will be helpful for drivers that can acquire
-> alpha2 regulatory codes.
+> This patch implements this hack for first generation cards which are based
+> on a core that is similar to ath9k. The registers are modified in place and
+> need to be re-written every time the firmware sets them. To achieve this
+> the register status is verified after certain WMI events from the firmware.
 > 
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+> The coverage class may not be modified temporarily right after the card
+> re-initializes the registers. This is for example the case during scanning.
+> 
+> Thanks to Sebastian Gottschall <s.gottschall@dd-wrt.com> for initially
+> working on a userspace support for this. This patch wouldn't have been
+> possible without this documentation.
+> 
+> Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+> Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+> Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
 
-2 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-d291d8e0592a ath: export alpha2 helper
-209b2a68de76 ath10k: add platform regulatory domain support
+ebee76f7fa46 ath10k: allow setting coverage class
 
 -- 
-https://patchwork.kernel.org/patch/9256535/
+https://patchwork.kernel.org/patch/9304067/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
