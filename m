@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1brRjr-0003QC-Ge
- for ath10k@lists.infradead.org; Tue, 04 Oct 2016 15:34:40 +0000
+ id 1brRpa-0007Xq-77
+ for ath10k@lists.infradead.org; Tue, 04 Oct 2016 15:40:35 +0000
+Date: Tue, 4 Oct 2016 21:09:24 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: ath10k: Cleanup calling ath10k_htt_rx_h_unchain
+Message-ID: <20161004153924.GA4203@atheros-ThinkPad-T61>
+References: <1474981314-15987-1-git-send-email-mohammed@qca.qualcomm.com>
+ <2cb38dba80294e6da1005ac0927d01eb@euamsexm01a.eu.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [2/4] ath10k: implement offset_tsf ieee80211_op
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20160928235631.9197-3-twp@qca.qualcomm.com>
-References: <20160928235631.9197-3-twp@qca.qualcomm.com>
-Message-ID: <ab600f17c1044dce96d9e58f26ebeb63@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 4 Oct 2016 17:34:12 +0200
+Content-Disposition: inline
+In-Reply-To: <2cb38dba80294e6da1005ac0927d01eb@euamsexm01a.eu.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +24,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Pedersen, Thomas" <twp@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-"Pedersen, Thomas" <twp@qca.qualcomm.com> wrote:
-> Current set_tsf is implemented in terms of TSF_INCREMENT
-> only. Instead support new WMI command TSF_DECREMENT and
-> export these through offset_tsf. Advantage is we get
-> more accurate TSF adjustments, and don't calculate wrong
-> offset in case absolute TSF was calculated from rx_mactime
-> (actual TSF).
+On Tue, Oct 04, 2016 at 05:30:17PM +0200, Kalle Valo wrote:
+> Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
+> > From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> > 
+> > 'ath10k_htt_rx_h_unchain' is need to be called only if the return
+> > value from 'ath10k_htt_rx_amsdu_pop' is 1('chained msdu's'), this
+> > change makes it more explicit and avoids doing a skb_peek, fetching
+> > rx descriptor pointer, checking rx msdu decap format for the case of
+> > ret = 0 (unchained msdus). Found this change during code walk through,
+> > not sure if this addresses any issue.
+> > 
+> > Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > 
-> The new WMI command is available in firmware
-> 10.4-3.2.1-00033 for QCA4019 chips. Old drivers on new
-> firmware or vice versa shouldn't  be a problem since
-> get/set tsf logic was already broken.
+> Failed to apply to pending branch
 > 
-> Signed-off-by: Thomas Pedersen <twp@qca.qualcomm.com>
+> error: patch failed: drivers/net/wireless/ath/ath10k/htt_rx.c:1550
+> error: drivers/net/wireless/ath/ath10k/htt_rx.c: patch does not apply
+> stg import: Diff does not apply cleanly
 
-Depends on:
-
-3a53731df7e2 mac80211: mesh: decrease max drift
-354d381baf11 mac80211: add offset_tsf driver op and use it for mesh
-
-2 patches set to Awaiting Upstream.
-
-9355377 [2/4] ath10k: implement offset_tsf ieee80211_op
-9355375 [3/4] ath10k: remove set/get_tsf ieee80211_ops
-
--- 
-https://patchwork.kernel.org/patch/9355377/
-
-Documentation about submitting wireless patches and checking status
-from patchwork:
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+[shafi] thanks, will rebase/fix this and send a v2
+> 
+> Patch set to Changes Requested.
+> 
+> -- 
+> https://patchwork.kernel.org/patch/9351833/
+> 
+> Documentation about submitting wireless patches and checking status
+> from patchwork:
+> 
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> 
 
 _______________________________________________
 ath10k mailing list
