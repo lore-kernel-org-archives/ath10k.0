@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1brR5x-0003Ps-DU
- for ath10k@lists.infradead.org; Tue, 04 Oct 2016 14:53:29 +0000
+ id 1brRBv-0005Iu-25
+ for ath10k@lists.infradead.org; Tue, 04 Oct 2016 14:59:36 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: Provide provision to get Transmit Power Control stats for
- 10.4
+Subject: Re: ath10k: add cc_wraparound type for QCA9888 and QCA9884
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1473949819-29154-1-git-send-email-c_mkenna@qti.qualcomm.com>
-References: <1473949819-29154-1-git-send-email-c_mkenna@qti.qualcomm.com>
-Message-ID: <00b2bf31f47e4a4cb115db3be51570a1@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 4 Oct 2016 16:52:56 +0200
+In-Reply-To: <1474026327-7065-1-git-send-email-akolli@qti.qualcomm.com>
+References: <1474026327-7065-1-git-send-email-akolli@qti.qualcomm.com>
+Message-ID: <6ec942c23a6144d9a15af4fa8f1238fd@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 4 Oct 2016 16:58:43 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_mkenna@qti.qualcomm.com
-Cc: mkenna@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: akolli@qti.qualcomm.com
+Cc: akolli@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-c_mkenna@qti.qualcomm.com wrote:
-> From: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+akolli@qti.qualcomm.com wrote:
+> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
 > 
-> This patch helps to get the TPC stats for 10.4 fw variants.
+> During offchannel scan, iw survey dump shows wrong values.
+> Fix this by assigning cycle counter wranarround type for
+> QCA9888 and QCA9884, they share same config with QCA4019.
 > 
-> Signed-off-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-ac86aa5755db ath10k: provide provision to get Transmit Power Control stats for 10.4
+bafe492610d5 ath10k: add cc_wraparound type for QCA9888 and QCA9884
 
 -- 
-https://patchwork.kernel.org/patch/9333777/
+https://patchwork.kernel.org/patch/9335581/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
