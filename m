@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1brRGv-0008D2-Mj
- for ath10k@lists.infradead.org; Tue, 04 Oct 2016 15:04:49 +0000
+ id 1brRgI-0002Eg-Tg
+ for ath10k@lists.infradead.org; Tue, 04 Oct 2016 15:30:59 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCHv3,5/5] ath10k: Allow setting coverage class
+Subject: Re: ath10k: Cleanup calling ath10k_htt_rx_h_unchain
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20160829144557.11678-6-benjamin@sipsolutions.net>
-References: <20160829144557.11678-6-benjamin@sipsolutions.net>
-Message-ID: <677867cb33294558b78135cfb11d5c4a@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 4 Oct 2016 17:04:17 +0200
+In-Reply-To: <1474981314-15987-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1474981314-15987-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <2cb38dba80294e6da1005ac0927d01eb@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 4 Oct 2016 17:30:17 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +22,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Benjamin Berg <benjamin@sipsolutions.net>
-Cc: Simon Wunderlich <sw@simonwunderlich.de>, Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Benjamin Berg <benjamin@sipsolutions.net> wrote:
-> Unfortunately ath10k does not generally allow modifying the coverage class
-> with the stock firmware and Qualcomm has so far refused to implement this
-> feature so that it can be properly supported in ath10k. If we however know
-> the registers that need to be modified for proper operation with a higher
-> coverage class, then we can do these modifications from the driver.
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > 
-> This patch implements this hack for first generation cards which are based
-> on a core that is similar to ath9k. The registers are modified in place and
-> need to be re-written every time the firmware sets them. To achieve this
-> the register status is verified after certain WMI events from the firmware.
+> 'ath10k_htt_rx_h_unchain' is need to be called only if the return
+> value from 'ath10k_htt_rx_amsdu_pop' is 1('chained msdu's'), this
+> change makes it more explicit and avoids doing a skb_peek, fetching
+> rx descriptor pointer, checking rx msdu decap format for the case of
+> ret = 0 (unchained msdus). Found this change during code walk through,
+> not sure if this addresses any issue.
 > 
-> The coverage class may not be modified temporarily right after the card
-> re-initializes the registers. This is for example the case during scanning.
-> 
-> Thanks to Sebastian Gottschall <s.gottschall@dd-wrt.com> for initially
-> working on a userspace support for this. This patch wouldn't have been
-> possible without this documentation.
-> 
-> Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
-> Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-> Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Patch applied to ath-next branch of ath.git, thanks.
+Failed to apply to pending branch
 
-ebee76f7fa46 ath10k: allow setting coverage class
+error: patch failed: drivers/net/wireless/ath/ath10k/htt_rx.c:1550
+error: drivers/net/wireless/ath/ath10k/htt_rx.c: patch does not apply
+stg import: Diff does not apply cleanly
+
+Patch set to Changes Requested.
 
 -- 
-https://patchwork.kernel.org/patch/9304067/
+https://patchwork.kernel.org/patch/9351833/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
