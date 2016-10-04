@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1brP1J-0002Lu-Ir
- for ath10k@lists.infradead.org; Tue, 04 Oct 2016 12:40:30 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH 2/2] ath10k: Remove extraneous error message in tx alloc
-Date: Tue, 4 Oct 2016 18:09:32 +0530
-Message-ID: <1475584772-4091-3-git-send-email-mohammed@qca.qualcomm.com>
-In-Reply-To: <1475584772-4091-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1475584772-4091-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1brR5x-0003Ps-DU
+ for ath10k@lists.infradead.org; Tue, 04 Oct 2016 14:53:29 +0000
 MIME-Version: 1.0
+Subject: Re: ath10k: Provide provision to get Transmit Power Control stats for
+ 10.4
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1473949819-29154-1-git-send-email-c_mkenna@qti.qualcomm.com>
+References: <1473949819-29154-1-git-send-email-c_mkenna@qti.qualcomm.com>
+Message-ID: <00b2bf31f47e4a4cb115db3be51570a1@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 4 Oct 2016 16:52:56 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +23,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: c_mkenna@qti.qualcomm.com
+Cc: mkenna@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+c_mkenna@qti.qualcomm.com wrote:
+> From: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+> 
+> This patch helps to get the TPC stats for 10.4 fw variants.
+> 
+> Signed-off-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
 
-Remove extraneous error message in 'ath10k_htt_tx_alloc_cont_frag_desc'
-as the caller 'ath10k_htt_tx_alloc' already dumps a proper error
-message
+Patch applied to ath-next branch of ath.git, thanks.
 
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/htt_tx.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ac86aa5755db ath10k: provide provision to get Transmit Power Control stats for 10.4
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 786fbd7..4255c1a 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -283,10 +283,8 @@ static int ath10k_htt_tx_alloc_cont_frag_desc(struct ath10k_htt *htt)
- 	htt->frag_desc.vaddr = dma_alloc_coherent(ar->dev, size,
- 						  &htt->frag_desc.paddr,
- 						  GFP_KERNEL);
--	if (!htt->frag_desc.vaddr) {
--		ath10k_err(ar, "failed to alloc fragment desc memory\n");
-+	if (!htt->frag_desc.vaddr)
- 		return -ENOMEM;
--	}
- 
- 	return 0;
- }
 -- 
-1.9.1
+https://patchwork.kernel.org/patch/9333777/
+
+Documentation about submitting wireless patches and checking status
+from patchwork:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
