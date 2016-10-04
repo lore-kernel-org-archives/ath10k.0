@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1brP1A-0001C5-0o
- for ath10k@lists.infradead.org; Tue, 04 Oct 2016 12:40:24 +0000
+ id 1brP1J-0002Lu-Ir
+ for ath10k@lists.infradead.org; Tue, 04 Oct 2016 12:40:30 +0000
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH 1/2] ath10k: clean up HTT tx buffer allocation and free
-Date: Tue, 4 Oct 2016 18:09:31 +0530
-Message-ID: <1475584772-4091-2-git-send-email-mohammed@qca.qualcomm.com>
+Subject: [PATCH 2/2] ath10k: Remove extraneous error message in tx alloc
+Date: Tue, 4 Oct 2016 18:09:32 +0530
+Message-ID: <1475584772-4091-3-git-send-email-mohammed@qca.qualcomm.com>
 In-Reply-To: <1475584772-4091-1-git-send-email-mohammed@qca.qualcomm.com>
 References: <1475584772-4091-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
@@ -27,147 +27,31 @@ Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shaj
 
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-cleanup 'ath10k_htt_tx_alloc' by introducing the API's
-'ath10k_htt_tx_alloc/free_{cont_txbuf, txdone_fifo} and
-re-use them whereever needed
+Remove extraneous error message in 'ath10k_htt_tx_alloc_cont_frag_desc'
+as the caller 'ath10k_htt_tx_alloc' already dumps a proper error
+message
 
 Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_tx.c | 76 +++++++++++++++++++++-----------
- 1 file changed, 51 insertions(+), 25 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 7c072b6..786fbd7 100644
+index 786fbd7..4255c1a 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -229,6 +229,33 @@ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id)
- 	idr_remove(&htt->pending_tx, msdu_id);
- }
+@@ -283,10 +283,8 @@ static int ath10k_htt_tx_alloc_cont_frag_desc(struct ath10k_htt *htt)
+ 	htt->frag_desc.vaddr = dma_alloc_coherent(ar->dev, size,
+ 						  &htt->frag_desc.paddr,
+ 						  GFP_KERNEL);
+-	if (!htt->frag_desc.vaddr) {
+-		ath10k_err(ar, "failed to alloc fragment desc memory\n");
++	if (!htt->frag_desc.vaddr)
+ 		return -ENOMEM;
+-	}
  
-+static void ath10k_htt_tx_free_cont_txbuf(struct ath10k_htt *htt)
-+{
-+	size_t size;
-+
-+	if (!htt->txbuf.vaddr)
-+		return;
-+
-+	size = htt->max_num_pending_tx * sizeof(struct ath10k_htt_txbuf);
-+	dma_free_coherent(htt->ar->dev, size, htt->txbuf.vaddr,
-+			  htt->txbuf.paddr);
-+}
-+
-+static int ath10k_htt_tx_alloc_cont_txbuf(struct ath10k_htt *htt)
-+{
-+	struct ath10k *ar = htt->ar;
-+	size_t size;
-+
-+	size = htt->max_num_pending_tx * sizeof(struct ath10k_htt_txbuf);
-+	htt->txbuf.vaddr = dma_alloc_coherent(ar->dev, size,
-+					      &htt->txbuf.paddr,
-+					      GFP_KERNEL);
-+	if (!htt->txbuf.vaddr)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
- static void ath10k_htt_tx_free_cont_frag_desc(struct ath10k_htt *htt)
- {
- 	size_t size;
-@@ -310,10 +337,26 @@ static int ath10k_htt_tx_alloc_txq(struct ath10k_htt *htt)
  	return 0;
  }
- 
-+static void ath10k_htt_tx_free_txdone_fifo(struct ath10k_htt *htt)
-+{
-+	WARN_ON(!kfifo_is_empty(&htt->txdone_fifo));
-+	kfifo_free(&htt->txdone_fifo);
-+}
-+
-+static int ath10k_htt_tx_alloc_txdone_fifo(struct ath10k_htt *htt)
-+{
-+	int ret;
-+	size_t size;
-+
-+	size = roundup_pow_of_two(htt->max_num_pending_tx);
-+	ret = kfifo_alloc(&htt->txdone_fifo, size, GFP_KERNEL);
-+	return ret;
-+}
-+
- int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
- {
- 	struct ath10k *ar = htt->ar;
--	int ret, size;
-+	int ret;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "htt tx max num pending tx %d\n",
- 		   htt->max_num_pending_tx);
-@@ -321,13 +364,9 @@ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
- 	spin_lock_init(&htt->tx_lock);
- 	idr_init(&htt->pending_tx);
- 
--	size = htt->max_num_pending_tx * sizeof(struct ath10k_htt_txbuf);
--	htt->txbuf.vaddr = dma_alloc_coherent(ar->dev, size,
--						  &htt->txbuf.paddr,
--						  GFP_KERNEL);
--	if (!htt->txbuf.vaddr) {
--		ath10k_err(ar, "failed to alloc tx buffer\n");
--		ret = -ENOMEM;
-+	ret = ath10k_htt_tx_alloc_cont_txbuf(htt);
-+	if (ret) {
-+		ath10k_err(ar, "failed to alloc cont tx buffer: %d\n", ret);
- 		goto free_idr_pending_tx;
- 	}
- 
-@@ -343,8 +382,7 @@ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
- 		goto free_frag_desc;
- 	}
- 
--	size = roundup_pow_of_two(htt->max_num_pending_tx);
--	ret = kfifo_alloc(&htt->txdone_fifo, size, GFP_KERNEL);
-+	ret = ath10k_htt_tx_alloc_txdone_fifo(htt);
- 	if (ret) {
- 		ath10k_err(ar, "failed to alloc txdone fifo: %d\n", ret);
- 		goto free_txq;
-@@ -359,10 +397,7 @@ free_frag_desc:
- 	ath10k_htt_tx_free_cont_frag_desc(htt);
- 
- free_txbuf:
--	size = htt->max_num_pending_tx *
--			  sizeof(struct ath10k_htt_txbuf);
--	dma_free_coherent(htt->ar->dev, size, htt->txbuf.vaddr,
--			  htt->txbuf.paddr);
-+	ath10k_htt_tx_free_cont_txbuf(htt);
- 
- free_idr_pending_tx:
- 	idr_destroy(&htt->pending_tx);
-@@ -388,24 +423,15 @@ static int ath10k_htt_tx_clean_up_pending(int msdu_id, void *skb, void *ctx)
- 
- void ath10k_htt_tx_free(struct ath10k_htt *htt)
- {
--	int size;
--
- 	tasklet_kill(&htt->txrx_compl_task);
- 
- 	idr_for_each(&htt->pending_tx, ath10k_htt_tx_clean_up_pending, htt->ar);
- 	idr_destroy(&htt->pending_tx);
- 
--	if (htt->txbuf.vaddr) {
--		size = htt->max_num_pending_tx *
--				  sizeof(struct ath10k_htt_txbuf);
--		dma_free_coherent(htt->ar->dev, size, htt->txbuf.vaddr,
--				  htt->txbuf.paddr);
--	}
--
-+	ath10k_htt_tx_free_cont_txbuf(htt);
- 	ath10k_htt_tx_free_txq(htt);
- 	ath10k_htt_tx_free_cont_frag_desc(htt);
--	WARN_ON(!kfifo_is_empty(&htt->txdone_fifo));
--	kfifo_free(&htt->txdone_fifo);
-+	ath10k_htt_tx_free_txdone_fifo(htt);
- }
- 
- void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
 -- 
 1.9.1
 
