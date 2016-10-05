@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-sn1nam01on0096.outbound.protection.outlook.com
+ ([104.47.32.96] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1brRzG-0004q9-9y
- for ath10k@lists.infradead.org; Tue, 04 Oct 2016 15:50:35 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH v2] ath10k: Cleanup calling ath10k_htt_rx_h_unchain
-Date: Tue, 4 Oct 2016 21:19:59 +0530
-Message-ID: <1475596199-4563-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1brpDo-0006N5-Pk
+ for ath10k@lists.infradead.org; Wed, 05 Oct 2016 16:39:09 +0000
+From: "Bonev, George" <George.Bonev@spirent.com>
+Subject: Latest stable ath10k driver
+Date: Wed, 5 Oct 2016 16:38:46 +0000
+Message-ID: <BN6PR10MB187530D8C562B6878B2C2C6491C40@BN6PR10MB1875.namprd10.prod.outlook.com>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,65 +22,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Hi,
+I am looking for the latest stable version of the ath10k driver.
 
-'ath10k_htt_rx_h_unchain' needs to be called only if the return
-value from 'ath10k_htt_rx_amsdu_pop' is 1('chained msdu's'), this
-change makes it more explicit and avoids doing a skb_peek, fetching
-rx descriptor pointer, checking rx msdu decap format for the case of
-ret = 0 (unchained msdus). Found this change during code walk through,
-not sure if this addresses any issue.
+Right now I am using v4.4.2 I downloaded from here:
+https://www.kernel.org/pub/linux/kernel/projects/backports/stable/v4.4.2/
+I am rebuilding ath10k driver against my old kernel.
 
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
-[v2 rebased over top of master tree]
+Is there a TAG that represents a stable version in git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ?
 
- drivers/net/wireless/ath/ath10k/htt_rx.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 0b4c156..285b235 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1463,8 +1463,7 @@ static int ath10k_unchain_msdu(struct sk_buff_head *amsdu)
- }
- 
- static void ath10k_htt_rx_h_unchain(struct ath10k *ar,
--				    struct sk_buff_head *amsdu,
--				    bool chained)
-+				    struct sk_buff_head *amsdu)
- {
- 	struct sk_buff *first;
- 	struct htt_rx_desc *rxd;
-@@ -1475,9 +1474,6 @@ static void ath10k_htt_rx_h_unchain(struct ath10k *ar,
- 	decap = MS(__le32_to_cpu(rxd->msdu_start.common.info1),
- 		   RX_MSDU_START_INFO1_DECAP_FORMAT);
- 
--	if (!chained)
--		return;
--
- 	/* FIXME: Current unchaining logic can only handle simple case of raw
- 	 * msdu chaining. If decapping is other than raw the chaining may be
- 	 * more complex and this isn't handled by the current code. Don't even
-@@ -1555,7 +1551,11 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
- 
- 	num_msdus = skb_queue_len(&amsdu);
- 	ath10k_htt_rx_h_ppdu(ar, &amsdu, rx_status, 0xffff);
--	ath10k_htt_rx_h_unchain(ar, &amsdu, ret > 0);
-+
-+	/* only for ret = 1 indicates chained msdus */
-+	if (ret > 0)
-+		ath10k_htt_rx_h_unchain(ar, &amsdu);
-+
- 	ath10k_htt_rx_h_filter(ar, &amsdu, rx_status);
- 	ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status);
- 	ath10k_htt_rx_h_deliver(ar, &amsdu, rx_status);
--- 
-1.7.9.5
+Thank you in advance.
 
+
+George Bonev
+
+
+
+
+Spirent Communications e-mail confidentiality.
+------------------------------------------------------------------------
+This e-mail contains confidential and / or privileged information belonging to Spirent Communications plc, its affiliates and / or subsidiaries. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution and / or the taking of any action based upon reliance on the contents of this transmission is strictly forbidden. If you have received this message in error please notify the sender by return e-mail and delete it from your system.
+
+Spirent Communications plc
+Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
+Tel No. +44 (0) 1293 767676
+Fax No. +44 (0) 1293 767677
+
+Registered in England Number 470893
+Registered at Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
+
+Or if within the US,
+
+Spirent Communications,
+27349 Agoura Road, Calabasas, CA, 91301, USA.
+Tel No. 1-818-676- 2300
 
 _______________________________________________
 ath10k mailing list
