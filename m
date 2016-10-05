@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1brrh8-0002ZI-52
- for ath10k@lists.infradead.org; Wed, 05 Oct 2016 19:17:34 +0000
-Subject: Re: ath10k: device stops working ("failed to install key for vdev"
- error in kernel log)
-References: <CAFBinCAuCfTeWw3SMVLbeARkUs_66YT6MJVbsd9QH_CqW9SCtg@mail.gmail.com>
- <bdd2b4f1-114b-f114-c908-fc0f57b08ce8@candelatech.com>
- <CAFBinCAv9PDYQ7J+0LtQg7vKnqp2HVpotqwjALrAUQf57YM4tg@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <eac2478e-b05c-01b0-c91f-08257beacc07@candelatech.com>
-Date: Wed, 5 Oct 2016 12:11:03 -0700
-MIME-Version: 1.0
-In-Reply-To: <CAFBinCAv9PDYQ7J+0LtQg7vKnqp2HVpotqwjALrAUQf57YM4tg@mail.gmail.com>
+Received: from mail-qk0-x229.google.com ([2607:f8b0:400d:c09::229])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1brsk6-00032K-Cu
+ for ath10k@lists.infradead.org; Wed, 05 Oct 2016 20:24:43 +0000
+Received: by mail-qk0-x229.google.com with SMTP id j129so221345195qkd.1
+ for <ath10k@lists.infradead.org>; Wed, 05 Oct 2016 13:24:21 -0700 (PDT)
+From: Marty Faltesek <mfaltesek@google.com>
+Subject: [PATCH v2] ath10k: cache calibration data when the core is stopped
+Date: Wed,  5 Oct 2016 16:23:57 -0400
+Message-Id: <1475699037-136212-1-git-send-email-mfaltesek@google.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,111 +17,177 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Marty Faltesek <mfaltesek@google.com>
 
-On 10/05/2016 12:06 PM, Martin Blumenstingl wrote:
-> On Wed, Oct 5, 2016 at 8:58 PM, Ben Greear <greearb@candelatech.com> wrote:
->> On 10/05/2016 11:51 AM, Martin Blumenstingl wrote:
->>>>
->>>> [54064.293597] ath10k_pci 0000:02:00.0: failed to install key for vdev
->>>> 0 peer [AP MAC addr]: -145
->>>> [54064.301234] wlan0: failed to remove key (1, ff:ff:ff:ff:ff:ff) from
->>>> hardware (-145)
->>>> [54067.305703] ath10k_pci 0000:02:00.0: failed to install key for vdev
->>>> 0 peer [AP MAC addr]: -145
->>>> [54067.313307] wlan0: failed to set key (1, ff:ff:ff:ff:ff:ff) to
->>>> hardware (-145)
->>>
->>> it just happened again:
->>> ...
->>> [130266.948005] ath10k_pci 0000:02:00.0: failed to install key for
->>> vdev 0 peer [AP MAC address]: -145
->>> [130266.955697] wlan0: failed to remove key (2, ff:ff:ff:ff:ff:ff)
->>> from hardware (-145)
->>> [130269.964069] ath10k_pci 0000:02:00.0: failed to install key for
->>> vdev 0 peer [AP MAC address]: -145
->>> [130269.971775] wlan0: failed to set key (2, ff:ff:ff:ff:ff:ff) to
->>> hardware (-145)
->>> [172198.889700] ath10k_pci 0000:02:00.0: failed to send pdev bss chan
->>> info request
->>> [172201.897770] ath10k_pci 0000:02:00.0: failed to send pdev bss chan
->>> info request
->>>
->>> I tried to get more information from the firmware by looking at the
->>> fw_* debugfs files:
->>> # cat /sys/kernel/debug/ieee80211/phy0/ath10k/fw_reset_stats
->>> fw_crash_counter                0
->>> fw_warm_reset_counter           4
->>> fw_cold_reset_counter           0
->>> # cat /sys/kernel/debug/ieee80211/phy0/ath10k/fw_stats
->>> cat: can't open '/sys/kernel/debug/ieee80211/phy0/ath10k/fw_stats':
->>> Resource temporarily unavailable
->>> # cat /sys/kernel/debug/ieee80211/phy0/ath10k/fw_crash_dump
->>> cat: can't open
->>> '/sys/kernel/debug/ieee80211/phy0/ath10k/fw_crash_dump': No data
->>> available
->>> # cat /sys/kernel/debug/ieee80211/phy0/ath10k/fw_dbglog
->>> 0x00000000 0
->>> # cat /sys/kernel/debug/ieee80211/phy0/ath10k/fw_checksums
->>> firmware-N.bin          9d340dd9
->>> athwlan                 8d25deed
->>> otp                     f3efeb4f
->>> codeswap                00000000
->>> board-N.bin             bebc7c08
->>> board                   bebc7c08
->>>
->>> This is still with firmware 10.2.4.70.54.
->>> Please let me know if you need further information.
->>
->>
->> Not sure about your firmware exactly, but the timeout might happen because
->> firmware has leaked and/or run-out of resources, fails to insert the key,
->> and then it just doesn't respond instead of sending an event.  So, driver
->> gets the timeout message and who knows what state your system is in.
->>
->> I hit this when doing capacity tests, and I modified my firmware to always
->> send an event, and driver to deal with it.  I also fixed some resource leaks
->> and tuned firmware objects to make sure I do not hit the key exhaustion
->> state.
-> That sounds bad.
-> Especially as I would not describe my current setup as "high capacity" network.
-> The worst-case I have is 5 devices:
-> - Nexus 5
-> - Sony Xperia Z3 Compact
-> - Notebook with Intel AC 7260
-> - QCA9880-2R4E in station (client) mode
-> - BCM4330 based device
->
->> What is your test scenario in this case?
-> with this specific crash it was pretty easy:
-> - AP did not have any connections while I was at work
-> - when I came back home two devices (Nexus 5 and Sony Xperia Z3
-> Compact) tried to connect to the AP
-> - device went into error state
->
-> I already had days where only one phone was turned on and I was still
-> able to reproduce it.
+Caching calibration data allows it to be accessed when the
+device is not active.
 
-Firmware sometimes sends dbglog messages when it detects errors.  You can hack your driver with patches
-I have posted to enable printing this out, and then maybe QCA firmware guys could debug this issue
-for you.
+---
+ drivers/net/wireless/ath/ath10k/core.h  |  1 +
+ drivers/net/wireless/ath/ath10k/debug.c | 72 ++++++++++++++-------------------
+ 2 files changed, 31 insertions(+), 42 deletions(-)
 
-Or, if you can reproduce this with my firmware and kernel (which enables the dbglog print
-by default), email dmesg or similar output to me and maybe I will have a clue as to what
-is going on.
-
-Thanks,
-Ben
-
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 6e5aa2d..7274ebe 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -452,6 +452,7 @@ struct ath10k_debug {
+ 	u32 nf_cal_period;
+ 
+ 	struct ath10k_fw_crash_data *fw_crash_data;
++	void *cal_data;
+ };
+ 
+ enum ath10k_state {
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 832da6e..668074c 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1451,75 +1451,58 @@ static const struct file_operations fops_fw_dbglog = {
+ 	.llseek = default_llseek,
+ };
+ 
+-static int ath10k_debug_cal_data_open(struct inode *inode, struct file *file)
++static int ath10k_debug_cal_data_fetch(struct ath10k *ar)
+ {
+-	struct ath10k *ar = inode->i_private;
+-	void *buf;
+ 	u32 hi_addr;
+ 	__le32 addr;
+ 	int ret;
+ 
+-	mutex_lock(&ar->conf_mutex);
+-
+-	if (ar->state != ATH10K_STATE_ON &&
+-	    ar->state != ATH10K_STATE_UTF) {
+-		ret = -ENETDOWN;
+-		goto err;
+-	}
+-
+-	buf = vmalloc(ar->hw_params.cal_data_len);
+-	if (!buf) {
+-		ret = -ENOMEM;
+-		goto err;
+-	}
+-
+ 	hi_addr = host_interest_item_address(HI_ITEM(hi_board_data));
+ 
+ 	ret = ath10k_hif_diag_read(ar, hi_addr, &addr, sizeof(addr));
++
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to read hi_board_data address: %d\n", ret);
+-		goto err_vfree;
++		ath10k_warn(ar, "failed to read hi_board_data address: %d\n",
++		            ret);
++		return ret;
+ 	}
+ 
+-	ret = ath10k_hif_diag_read(ar, le32_to_cpu(addr), buf,
++	ret = ath10k_hif_diag_read(ar, le32_to_cpu(addr), ar->debug.cal_data,
+ 				   ar->hw_params.cal_data_len);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to read calibration data: %d\n", ret);
+-		goto err_vfree;
++		return ret;
+ 	}
+ 
+-	file->private_data = buf;
++	return 0;
++}
+ 
+-	mutex_unlock(&ar->conf_mutex);
++static int ath10k_debug_cal_data_open(struct inode *inode, struct file *file)
++{
++	struct ath10k *ar = inode->i_private;
+ 
+-	return 0;
++	mutex_lock(&ar->conf_mutex);
+ 
+-err_vfree:
+-	vfree(buf);
++	if (ar->state == ATH10K_STATE_ON ||
++	    ar->state == ATH10K_STATE_UTF) {
++		ath10k_debug_cal_data_fetch(ar);
++	}
+ 
+-err:
++	file->private_data = ar;
+ 	mutex_unlock(&ar->conf_mutex);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static ssize_t ath10k_debug_cal_data_read(struct file *file,
+-					  char __user *user_buf,
+-					  size_t count, loff_t *ppos)
++                                          char __user *user_buf,
++                                          size_t count, loff_t *ppos)
+ {
+ 	struct ath10k *ar = file->private_data;
+-	void *buf = file->private_data;
+ 
+ 	return simple_read_from_buffer(user_buf, count, ppos,
+-				       buf, ar->hw_params.cal_data_len);
+-}
+-
+-static int ath10k_debug_cal_data_release(struct inode *inode,
+-					 struct file *file)
+-{
+-	vfree(file->private_data);
+-
+-	return 0;
++				       ar->debug.cal_data,
++				       ar->hw_params.cal_data_len);
+ }
+ 
+ static ssize_t ath10k_write_ani_enable(struct file *file,
+@@ -1580,7 +1563,6 @@ static const struct file_operations fops_ani_enable = {
+ static const struct file_operations fops_cal_data = {
+ 	.open = ath10k_debug_cal_data_open,
+ 	.read = ath10k_debug_cal_data_read,
+-	.release = ath10k_debug_cal_data_release,
+ 	.owner = THIS_MODULE,
+ 	.llseek = default_llseek,
+ };
+@@ -1932,6 +1914,8 @@ void ath10k_debug_stop(struct ath10k *ar)
+ {
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
++	ath10k_debug_cal_data_fetch(ar);
++
+ 	/* Must not use _sync to avoid deadlock, we do that in
+ 	 * ath10k_debug_destroy(). The check for htt_stats_mask is to avoid
+ 	 * warning from del_timer(). */
+@@ -2343,7 +2327,9 @@ int ath10k_debug_create(struct ath10k *ar)
+ 	ar->debug.fw_crash_data = vzalloc(sizeof(*ar->debug.fw_crash_data));
+ 	if (!ar->debug.fw_crash_data)
+ 		return -ENOMEM;
+-
++	ar->debug.cal_data = vzalloc(ar->hw_params.cal_data_len);
++	if (!ar->debug.cal_data)
++		return -ENOMEM;
+ 	INIT_LIST_HEAD(&ar->debug.fw_stats.pdevs);
+ 	INIT_LIST_HEAD(&ar->debug.fw_stats.vdevs);
+ 	INIT_LIST_HEAD(&ar->debug.fw_stats.peers);
+@@ -2355,7 +2341,9 @@ int ath10k_debug_create(struct ath10k *ar)
+ void ath10k_debug_destroy(struct ath10k *ar)
+ {
+ 	vfree(ar->debug.fw_crash_data);
++	vfree(ar->debug.cal_data);
+ 	ar->debug.fw_crash_data = NULL;
++	ar->debug.cal_data = NULL;
+ 
+ 	ath10k_debug_fw_stats_reset(ar);
+ 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+2.8.0.rc3.226.g39d4020
 
 
 _______________________________________________
