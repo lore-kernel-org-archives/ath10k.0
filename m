@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x232.google.com ([2607:f8b0:4003:c06::232])
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1brpFq-0007m9-4G
- for ath10k@lists.infradead.org; Wed, 05 Oct 2016 16:41:14 +0000
-Received: by mail-oi0-x232.google.com with SMTP id r126so279555281oib.0
- for <ath10k@lists.infradead.org>; Wed, 05 Oct 2016 09:40:53 -0700 (PDT)
+ id 1brrIU-0002Xy-73
+ for ath10k@lists.infradead.org; Wed, 05 Oct 2016 18:52:07 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id b201so342166wmb.0
+ for <ath10k@lists.infradead.org>; Wed, 05 Oct 2016 11:51:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQkwSX954pPEh3oYzL62H9y4Y6UuPVLSxxxCkM5AznY7NA@mail.gmail.com>
-References: <1473801118-103112-1-git-send-email-mfaltesek@google.com>
- <CA+BoTQkwSX954pPEh3oYzL62H9y4Y6UuPVLSxxxCkM5AznY7NA@mail.gmail.com>
-From: Marty Faltesek <mfaltesek@google.com>
-Date: Wed, 5 Oct 2016 12:40:52 -0400
-Message-ID: <CAOiWkA9W6JSfPScK0PwffUnWuv4ZXQD4AF1s2FbMq0MmmasLrg@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: cache calibration data when the core is stopped.
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Wed, 5 Oct 2016 20:51:23 +0200
+Message-ID: <CAFBinCAuCfTeWw3SMVLbeARkUs_66YT6MJVbsd9QH_CqW9SCtg@mail.gmail.com>
+Subject: Re: ath10k: device stops working ("failed to install key for vdev"
+ error in kernel log)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +19,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
 
-T24gTW9uLCBPY3QgMywgMjAxNiBhdCA0OjAyIEFNLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6
-aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4gT24gMTMgU2VwdGVtYmVyIDIwMTYgYXQgMjM6MTEsIE1h
-cnR5IEZhbHRlc2VrIDxtZmFsdGVzZWtAZ29vZ2xlLmNvbT4gd3JvdGU6Cj4gWy4uLl0KPj4gK2lu
-dAo+PiArYXRoMTBrX2NhbF9kYXRhX2FsbG9jKHN0cnVjdCBhdGgxMGsgKmFyLCB2b2lkICoqYnVm
-KQo+PiArewo+PiArICAgICAgIHUzMiBoaV9hZGRyOwo+PiArICAgICAgIF9fbGUzMiBhZGRyOwo+
-PiArICAgICAgIGludCByZXQ7Cj4+ICsKPj4gKyAgICAgICB2ZnJlZSgqYnVmKTsKPj4gKyAgICAg
-ICAqYnVmID0gdm1hbGxvYyhRQ0E5ODhYX0NBTF9EQVRBX0xFTik7Cj4KPiBTaG91bGRuJ3QgeW91
-IHVzZSBhci0+aHdfcGFyYW1zIHRvIGdldCBody1zcGVjaWZpYyBjYWxkYXRhIGxlbmd0aD8KCnl1
-cCwgaXQgd2FzIGJlY2F1c2Ugd2Ugd2VyZSBiYXNlZCBvbiBiYWNrcG9ydHMgZnJvbSBlYXJsaWVy
-IHRoaXMgeWVhci4KCj4KPgo+IFsuLi5dCj4+IEBAIC0xNzE0LDYgKzE3NTAsMTIgQEAgaW50IGF0
-aDEwa19jb3JlX3N0YXJ0KHN0cnVjdCBhdGgxMGsgKmFyLCBlbnVtIGF0aDEwa19maXJtd2FyZV9t
-b2RlIG1vZGUpCj4+Cj4+ICAgICAgICAgSU5JVF9MSVNUX0hFQUQoJmFyLT5hcnZpZnMpOwo+Pgo+
-PiArICAgICAgIC8qCj4+ICsgICAgICAgICogV2UgYXJlIHVwIG5vdywgc28gbm8gbmVlZCB0byBj
-YWNoZSBjYWxpYnJhdGlvbiBkYXRhLgo+PiArICAgICAgICAqLwo+Cj4gVGhlIGNvbW1lbnQgc3R5
-bGUgaXM6Cj4KPiAgLyogY29tbWVudCAqLwo+Cj4gSWYgaXQncyBtdWx0aS1saW5lIGl0IHNob3Vs
-ZCBiZToKPgo+ICAvKiBjb21tZW50Cj4gICAqIGNvbW1lbnQKPiAgICovCj4KPiBEaXR0byBmb3Ig
-b3RoZXIgaW5zdGFuY2VzLgoKZml4ZWQsIHRoYW5rcy4KCj4KPgo+IFsuLi5dCj4+IEBAIC0xNzU3
-LDYgKzE3OTksMTEgQEAgdm9pZCBhdGgxMGtfY29yZV9zdG9wKHN0cnVjdCBhdGgxMGsgKmFyKQo+
-PiAgICAgICAgIGxvY2tkZXBfYXNzZXJ0X2hlbGQoJmFyLT5jb25mX211dGV4KTsKPj4gICAgICAg
-ICBhdGgxMGtfZGVidWdfc3RvcChhcik7Cj4+Cj4+ICsgICAgICAgLyoKPj4gKyAgICAgICAgKiBD
-YWNoZSBjYWNsaWJyYXRpb24gZGF0YSB3aGlsZSBzdG9wcGVkLgo+Cj4gdHlwby4gImNhbGlicmF0
-aW9uIgo+Cj4KPiBNaWNoYcWCCgpmaXhlZCB0aGFua3MuCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+> [54064.293597] ath10k_pci 0000:02:00.0: failed to install key for vdev
+> 0 peer [AP MAC addr]: -145
+> [54064.301234] wlan0: failed to remove key (1, ff:ff:ff:ff:ff:ff) from
+> hardware (-145)
+> [54067.305703] ath10k_pci 0000:02:00.0: failed to install key for vdev
+> 0 peer [AP MAC addr]: -145
+> [54067.313307] wlan0: failed to set key (1, ff:ff:ff:ff:ff:ff) to
+> hardware (-145)
+it just happened again:
+...
+[130266.948005] ath10k_pci 0000:02:00.0: failed to install key for
+vdev 0 peer [AP MAC address]: -145
+[130266.955697] wlan0: failed to remove key (2, ff:ff:ff:ff:ff:ff)
+from hardware (-145)
+[130269.964069] ath10k_pci 0000:02:00.0: failed to install key for
+vdev 0 peer [AP MAC address]: -145
+[130269.971775] wlan0: failed to set key (2, ff:ff:ff:ff:ff:ff) to
+hardware (-145)
+[172198.889700] ath10k_pci 0000:02:00.0: failed to send pdev bss chan
+info request
+[172201.897770] ath10k_pci 0000:02:00.0: failed to send pdev bss chan
+info request
+
+I tried to get more information from the firmware by looking at the
+fw_* debugfs files:
+# cat /sys/kernel/debug/ieee80211/phy0/ath10k/fw_reset_stats
+fw_crash_counter                0
+fw_warm_reset_counter           4
+fw_cold_reset_counter           0
+# cat /sys/kernel/debug/ieee80211/phy0/ath10k/fw_stats
+cat: can't open '/sys/kernel/debug/ieee80211/phy0/ath10k/fw_stats':
+Resource temporarily unavailable
+# cat /sys/kernel/debug/ieee80211/phy0/ath10k/fw_crash_dump
+cat: can't open
+'/sys/kernel/debug/ieee80211/phy0/ath10k/fw_crash_dump': No data
+available
+# cat /sys/kernel/debug/ieee80211/phy0/ath10k/fw_dbglog
+0x00000000 0
+# cat /sys/kernel/debug/ieee80211/phy0/ath10k/fw_checksums
+firmware-N.bin          9d340dd9
+athwlan                 8d25deed
+otp                     f3efeb4f
+codeswap                00000000
+board-N.bin             bebc7c08
+board                   bebc7c08
+
+This is still with firmware 10.2.4.70.54.
+Please let me know if you need further information.
+
+
+Regards,
+Martin
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
