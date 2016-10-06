@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bs3In-00082k-6j
- for ath10k@lists.infradead.org; Thu, 06 Oct 2016 07:41:15 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: cache calibration data when the core is stopped.
-Date: Thu, 6 Oct 2016 07:40:48 +0000
-Message-ID: <87r37ukjr5.fsf@kamboji.qca.qualcomm.com>
-References: <1473801118-103112-1-git-send-email-mfaltesek@google.com>
- <87fuodswlu.fsf@kamboji.qca.qualcomm.com>
- <CAOiWkA_fuhzPeF7qPP0hLN3KTZUOi6_te5Zc3+vxKQ9GRj0VBw@mail.gmail.com>
-In-Reply-To: <CAOiWkA_fuhzPeF7qPP0hLN3KTZUOi6_te5Zc3+vxKQ9GRj0VBw@mail.gmail.com>	(Marty
- Faltesek's message of "Wed, 5 Oct 2016 12:39:48 -0400")
-Content-Language: en-US
-Content-ID: <B111AE2FD9C2EB41A9516E6D3321FA52@qualcomm.com>
+ id 1bs4Dz-0000sa-3B
+ for ath10k@lists.infradead.org; Thu, 06 Oct 2016 08:40:20 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH v2 1/2] ath10k: clean up HTT tx buffer allocation and free
+Date: Thu, 6 Oct 2016 14:09:47 +0530
+Message-ID: <1475743188-12007-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,47 +20,157 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marty Faltesek <mfaltesek@google.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Marty Faltesek <mfaltesek@google.com> writes:
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-> On Mon, Oct 3, 2016 at 3:46 AM, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
->> Marty Faltesek <mfaltesek@google.com> writes:
->>
->>> Caching calibration data allows it to be accessed when the
->>> device is not active.
->>>
->>> Signed-off-by: Marty Faltesek <mfaltesek@google.com>
->>
->> No comma in the title, please.
->>
->> What tree did you use as the baseline? This doesn't seem to apply to
->> ath.git:
->
-> We use backports 20160122 which has not been updated since earlier this year.
-> I can forward port it to your tree, and make sure
-> it builds but won't be able to test it. Will that be OK?
+cleanup 'ath10k_htt_tx_alloc' by introducing the API's
+'ath10k_htt_tx_alloc/free_{cont_txbuf, txdone_fifo} and
+re-use them whereever needed
 
-Sure, I can test it.
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+[v2 rebased over top of tree]
 
->> Also please note that this patch (which I'm queuing to 4.9) touches the
->> same area:
->>
->> ath10k: fix debug cal data file
->>
->> https://patchwork.kernel.org/patch/9340953/
->
-> I've modified this too, and this won't be necessary, so can you drop
-> it? If not, let me know and I'll pull it in and make sure I'm based
-> off it too.
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 76 ++++++++++++++++++++++----------
+ 1 file changed, 52 insertions(+), 24 deletions(-)
 
-Actually I was first planning to push 9340953 to 4.9 and take your patch
-to 4.10. But your patch is a cleaner approach to this and maybe I should
-push that to 4.9 instead? Need to think a bit more.
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index ae5b33f..786fbd7 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -229,6 +229,33 @@ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id)
+ 	idr_remove(&htt->pending_tx, msdu_id);
+ }
+ 
++static void ath10k_htt_tx_free_cont_txbuf(struct ath10k_htt *htt)
++{
++	size_t size;
++
++	if (!htt->txbuf.vaddr)
++		return;
++
++	size = htt->max_num_pending_tx * sizeof(struct ath10k_htt_txbuf);
++	dma_free_coherent(htt->ar->dev, size, htt->txbuf.vaddr,
++			  htt->txbuf.paddr);
++}
++
++static int ath10k_htt_tx_alloc_cont_txbuf(struct ath10k_htt *htt)
++{
++	struct ath10k *ar = htt->ar;
++	size_t size;
++
++	size = htt->max_num_pending_tx * sizeof(struct ath10k_htt_txbuf);
++	htt->txbuf.vaddr = dma_alloc_coherent(ar->dev, size,
++					      &htt->txbuf.paddr,
++					      GFP_KERNEL);
++	if (!htt->txbuf.vaddr)
++		return -ENOMEM;
++
++	return 0;
++}
++
+ static void ath10k_htt_tx_free_cont_frag_desc(struct ath10k_htt *htt)
+ {
+ 	size_t size;
+@@ -310,10 +337,26 @@ static int ath10k_htt_tx_alloc_txq(struct ath10k_htt *htt)
+ 	return 0;
+ }
+ 
++static void ath10k_htt_tx_free_txdone_fifo(struct ath10k_htt *htt)
++{
++	WARN_ON(!kfifo_is_empty(&htt->txdone_fifo));
++	kfifo_free(&htt->txdone_fifo);
++}
++
++static int ath10k_htt_tx_alloc_txdone_fifo(struct ath10k_htt *htt)
++{
++	int ret;
++	size_t size;
++
++	size = roundup_pow_of_two(htt->max_num_pending_tx);
++	ret = kfifo_alloc(&htt->txdone_fifo, size, GFP_KERNEL);
++	return ret;
++}
++
+ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
+ {
+ 	struct ath10k *ar = htt->ar;
+-	int ret, size;
++	int ret;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "htt tx max num pending tx %d\n",
+ 		   htt->max_num_pending_tx);
+@@ -321,13 +364,9 @@ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
+ 	spin_lock_init(&htt->tx_lock);
+ 	idr_init(&htt->pending_tx);
+ 
+-	size = htt->max_num_pending_tx * sizeof(struct ath10k_htt_txbuf);
+-	htt->txbuf.vaddr = dma_alloc_coherent(ar->dev, size,
+-						  &htt->txbuf.paddr,
+-						  GFP_KERNEL);
+-	if (!htt->txbuf.vaddr) {
+-		ath10k_err(ar, "failed to alloc tx buffer\n");
+-		ret = -ENOMEM;
++	ret = ath10k_htt_tx_alloc_cont_txbuf(htt);
++	if (ret) {
++		ath10k_err(ar, "failed to alloc cont tx buffer: %d\n", ret);
+ 		goto free_idr_pending_tx;
+ 	}
+ 
+@@ -343,8 +382,7 @@ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
+ 		goto free_frag_desc;
+ 	}
+ 
+-	size = roundup_pow_of_two(htt->max_num_pending_tx);
+-	ret = kfifo_alloc(&htt->txdone_fifo, size, GFP_KERNEL);
++	ret = ath10k_htt_tx_alloc_txdone_fifo(htt);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to alloc txdone fifo: %d\n", ret);
+ 		goto free_txq;
+@@ -359,10 +397,7 @@ free_frag_desc:
+ 	ath10k_htt_tx_free_cont_frag_desc(htt);
+ 
+ free_txbuf:
+-	size = htt->max_num_pending_tx *
+-			  sizeof(struct ath10k_htt_txbuf);
+-	dma_free_coherent(htt->ar->dev, size, htt->txbuf.vaddr,
+-			  htt->txbuf.paddr);
++	ath10k_htt_tx_free_cont_txbuf(htt);
+ 
+ free_idr_pending_tx:
+ 	idr_destroy(&htt->pending_tx);
+@@ -388,22 +423,15 @@ static int ath10k_htt_tx_clean_up_pending(int msdu_id, void *skb, void *ctx)
+ 
+ void ath10k_htt_tx_free(struct ath10k_htt *htt)
+ {
+-	int size;
++	tasklet_kill(&htt->txrx_compl_task);
+ 
+ 	idr_for_each(&htt->pending_tx, ath10k_htt_tx_clean_up_pending, htt->ar);
+ 	idr_destroy(&htt->pending_tx);
+ 
+-	if (htt->txbuf.vaddr) {
+-		size = htt->max_num_pending_tx *
+-				  sizeof(struct ath10k_htt_txbuf);
+-		dma_free_coherent(htt->ar->dev, size, htt->txbuf.vaddr,
+-				  htt->txbuf.paddr);
+-	}
+-
++	ath10k_htt_tx_free_cont_txbuf(htt);
+ 	ath10k_htt_tx_free_txq(htt);
+ 	ath10k_htt_tx_free_cont_frag_desc(htt);
+-	WARN_ON(!kfifo_is_empty(&htt->txdone_fifo));
+-	kfifo_free(&htt->txdone_fifo);
++	ath10k_htt_tx_free_txdone_fifo(htt);
+ }
+ 
+ void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
 -- 
-Kalle Valo
+1.9.1
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
