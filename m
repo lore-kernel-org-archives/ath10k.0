@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bs3Fj-00065O-Qp
- for ath10k@lists.infradead.org; Thu, 06 Oct 2016 07:38:04 +0000
-Date: Thu, 6 Oct 2016 13:07:30 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [1/2] ath10k: clean up HTT tx buffer allocation and free
-Message-ID: <20161006073730.GA6601@atheros-ThinkPad-T61>
-References: <1475584772-4091-2-git-send-email-mohammed@qca.qualcomm.com>
- <dc6b3afe60574d7bb60e1913da3f1ad4@euamsexm01a.eu.qualcomm.com>
+ id 1bs3In-00082k-6j
+ for ath10k@lists.infradead.org; Thu, 06 Oct 2016 07:41:15 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: cache calibration data when the core is stopped.
+Date: Thu, 6 Oct 2016 07:40:48 +0000
+Message-ID: <87r37ukjr5.fsf@kamboji.qca.qualcomm.com>
+References: <1473801118-103112-1-git-send-email-mfaltesek@google.com>
+ <87fuodswlu.fsf@kamboji.qca.qualcomm.com>
+ <CAOiWkA_fuhzPeF7qPP0hLN3KTZUOi6_te5Zc3+vxKQ9GRj0VBw@mail.gmail.com>
+In-Reply-To: <CAOiWkA_fuhzPeF7qPP0hLN3KTZUOi6_te5Zc3+vxKQ9GRj0VBw@mail.gmail.com>	(Marty
+ Faltesek's message of "Wed, 5 Oct 2016 12:39:48 -0400")
+Content-Language: en-US
+Content-ID: <B111AE2FD9C2EB41A9516E6D3321FA52@qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <dc6b3afe60574d7bb60e1913da3f1ad4@euamsexm01a.eu.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +27,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: Marty Faltesek <mfaltesek@google.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Thu, Oct 06, 2016 at 09:31:41AM +0200, Kalle Valo wrote:
-> Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> > From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> > 
-> > cleanup 'ath10k_htt_tx_alloc' by introducing the API's
-> > 'ath10k_htt_tx_alloc/free_{cont_txbuf, txdone_fifo} and
-> > re-use them whereever needed
-> > 
-> > Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> 
-> Patch 1 doesn't apply and the conflict was not trivial
+Marty Faltesek <mfaltesek@google.com> writes:
 
-[shafi] oops will rebase it, not sure how i missed it :-(
+> On Mon, Oct 3, 2016 at 3:46 AM, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+>> Marty Faltesek <mfaltesek@google.com> writes:
+>>
+>>> Caching calibration data allows it to be accessed when the
+>>> device is not active.
+>>>
+>>> Signed-off-by: Marty Faltesek <mfaltesek@google.com>
+>>
+>> No comma in the title, please.
+>>
+>> What tree did you use as the baseline? This doesn't seem to apply to
+>> ath.git:
+>
+> We use backports 20160122 which has not been updated since earlier this year.
+> I can forward port it to your tree, and make sure
+> it builds but won't be able to test it. Will that be OK?
 
-> 
-> error: patch failed: drivers/net/wireless/ath/ath10k/htt_tx.c:388
-> error: drivers/net/wireless/ath/ath10k/htt_tx.c: patch does not apply
-> stg import: Diff does not apply cleanly
-> error: patch failed: drivers/net/wireless/ath/ath10k/htt_tx.c:283
-> error: drivers/net/wireless/ath/ath10k/htt_tx.c: patch does not apply
-> stg import: Diff does not apply cleanly
-> 
-> 2 patches set to Changes Requested.
-> 
-> 9361741 [1/2] ath10k: clean up HTT tx buffer allocation and free
-> 9361743 [2/2] ath10k: Remove extraneous error message in tx alloc
-> 
-> -- 
-> https://patchwork.kernel.org/patch/9361741/
-> 
-> Documentation about submitting wireless patches and checking status
-> from patchwork:
-> 
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-> 
+Sure, I can test it.
 
+>> Also please note that this patch (which I'm queuing to 4.9) touches the
+>> same area:
+>>
+>> ath10k: fix debug cal data file
+>>
+>> https://patchwork.kernel.org/patch/9340953/
+>
+> I've modified this too, and this won't be necessary, so can you drop
+> it? If not, let me know and I'll pull it in and make sure I'm based
+> off it too.
+
+Actually I was first planning to push 9340953 to 4.9 and take your patch
+to 4.10. But your patch is a cleaner approach to this and maybe I should
+push that to 4.9 instead? Need to think a bit more.
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
