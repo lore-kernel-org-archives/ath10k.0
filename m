@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-vk0-x242.google.com ([2607:f8b0:400c:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bsWcm-0002QD-8Y
- for ath10k@lists.infradead.org; Fri, 07 Oct 2016 14:59:49 +0000
-From: <akolli@qti.qualcomm.com>
-Subject: [PATCH 2/2] ath10k: add support for per sta tx bitrate
-Date: Fri, 7 Oct 2016 20:28:52 +0530
-Message-ID: <1475852332-18217-3-git-send-email-akolli@qti.qualcomm.com>
-In-Reply-To: <1475852332-18217-1-git-send-email-akolli@qti.qualcomm.com>
-References: <1475852332-18217-1-git-send-email-akolli@qti.qualcomm.com>
+ id 1bscuQ-0007EN-S8
+ for ath10k@lists.infradead.org; Fri, 07 Oct 2016 21:42:27 +0000
+Received: by mail-vk0-x242.google.com with SMTP id 2so2348997vkb.1
+ for <ath10k@lists.infradead.org>; Fri, 07 Oct 2016 14:42:06 -0700 (PDT)
+From: bunkertor <wradams@gmail.com>
+Date: Sat, 8 Oct 2016 00:42:00 +0300
+Subject: =?utf-8?B?UmU6IG5ldyBleHBlcmllbmNl?=
 MIME-Version: 1.0
+Message-ID: <0000e762c9a4$688b1c4f$3a181ef5$@tiscali.it>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,45 +22,14 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wireless@vger.kernel.org
+To: avviso <avviso@intesasanpaolo.it>, blue phoenix <bluephoenix71@yahoo.com>, ath10k <ath10k@lists.infradead.org>, bibin c <bibinc17@gmail.com>
 
-From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+Greetings! 
 
-Per STA tx bitrate info is filled from peer stats.
-Export per sta txrate info to cfg80211/nl80211
 
-Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/debugfs_sta.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+I've recently had  absolutely  new experience,  you've got to see that! Just take a look here  <http://nkidobynde.fantasyfoto.biz/oikqwy>
 
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index 9955fea0802a..7daf9927a1ef 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -77,6 +77,19 @@ void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 
- 	sinfo->rx_duration = arsta->rx_duration;
- 	sinfo->filled |= 1ULL << NL80211_STA_INFO_RX_DURATION;
-+
-+	if (!arsta->txrate.legacy && !arsta->txrate.nss)
-+		return;
-+
-+	if(arsta->txrate.legacy) {
-+		sinfo->txrate.legacy = arsta->txrate.legacy;
-+	} else {
-+		sinfo->txrate.mcs = arsta->txrate.mcs;
-+		sinfo->txrate.nss = arsta->txrate.nss;
-+		sinfo->txrate.bw = arsta->txrate.bw;
-+	}
-+	sinfo->txrate.flags = arsta->txrate.flags;
-+	sinfo->filled |= 1ULL << NL80211_STA_INFO_TX_BITRATE;
- }
- 
- static ssize_t ath10k_dbg_sta_read_aggr_mode(struct file *file,
--- 
-1.7.9.5
+bunkertor
 
 
 _______________________________________________
