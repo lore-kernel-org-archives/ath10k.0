@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x235.google.com ([2607:f8b0:400d:c0d::235])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bssQu-0003Rp-1b
- for ath10k@lists.infradead.org; Sat, 08 Oct 2016 14:17:01 +0000
-Received: by mail-qt0-x235.google.com with SMTP id s49so32370013qta.0
- for <ath10k@lists.infradead.org>; Sat, 08 Oct 2016 07:16:38 -0700 (PDT)
+ id 1btbSq-0008KI-KP
+ for ath10k@lists.infradead.org; Mon, 10 Oct 2016 14:22:01 +0000
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Fix kernel panic due to race in accessing arvif list
+Date: Mon, 10 Oct 2016 19:51:18 +0530
+Message-ID: <1476109278-7957-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1475852332-18217-2-git-send-email-akolli@qti.qualcomm.com>
-References: <1475852332-18217-1-git-send-email-akolli@qti.qualcomm.com>
- <1475852332-18217-2-git-send-email-akolli@qti.qualcomm.com>
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Date: Sat, 8 Oct 2016 22:16:37 +0800
-Message-ID: <CAEFj985tCc_4Q_zfwRtoT0fjfZv0u_c5E8SRSQVz=V4tiHh+GA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ath10k: add per peer htt tx stats support for 10.4
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +20,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: akolli@qti.qualcomm.com
-Cc: akolli@codeaurora.org, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-On Fri, Oct 7, 2016 at 10:58 PM,  <akolli@qti.qualcomm.com> wrote:
-> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
->
-> Per peer tx stats are part of 'HTT_10_4_T2H_MSG_TYPE_PEER_STATS'
-> event, Firmware sends one HTT event for every four PPDUs.
-> HTT payload has success pkts/bytes, failed pkts/bytes, retry
-> pkts/bytes and rate info per ppdu.
-> Peer stats are enabled through 'WMI_SERVICE_PEER_STATS',
-> which are nowadays enabled by default.
->
-> Parse peer stats and update the tx rate information per STA.
->
-> tx rate, Peer stats are tested on QCA4019 with Firmware version
-> 10.4-3.2.1-00028.
->
+arvifs list is traversed within data_lock spin_lock in tasklet
+context to fill channel information from the corresponding vif.
+This means any access to arvifs list for add/del operations
+should also be protected with the same spin_lock to avoid the
+race. Fix this by performing list add/del on arvfis within the
+data_lock. This could fix kernel panic something like the below.
 
-Is QCA988X supported? I have tried to test with
-firmware-5.bin_10.2.4.70.56 but not working.
+ LR is at ath10k_htt_rx_pktlog_completion_handler+0x100/0xb6c [ath10k_core]
+ PC is at ath10k_htt_rx_pktlog_completion_handler+0x1c0/0xb6c [ath10k_core]
+ Internal error: Oops: 17 [#1] PREEMPT SMP ARM
+ [<bf4857f4>] (ath10k_htt_rx_pktlog_completion_handler+0x2f4/0xb6c [ath10k_core])
+ [<bf487540>] (ath10k_htt_txrx_compl_task+0x8b4/0x1188 [ath10k_core])
+ [<c00312d4>] (tasklet_action+0x8c/0xec)
+ [<c00309a8>] (__do_softirq+0xdc/0x208)
+ [<c0030d6c>] (irq_exit+0x84/0xe0)
+ [<c005db04>] (__handle_domain_irq+0x80/0xa0)
+ [<c00085c4>] (gic_handle_irq+0x38/0x5c)
+ [<c0009640>] (__irq_svc+0x40/0x74)
 
+(gdb) list *(ath10k_htt_rx_pktlog_completion_handler+0x1c0)
+0x136c0 is in ath10k_htt_rx_h_channel (drivers/net/wireless/ath/ath10k/htt_rx.c:769)
+764		struct cfg80211_chan_def def;
+765
+766		lockdep_assert_held(&ar->data_lock);
+767
+768		list_for_each_entry(arvif, &ar->arvifs, list) {
+769			if (arvif->vdev_id == vdev_id &&
+770			    ath10k_mac_vif_chan(arvif->vif, &def) == 0)
+771				return def.chan;
+772		}
+773
+
+Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
-Chun-Yeow
+ drivers/net/wireless/ath/ath10k/mac.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 2e5d2ca..691b7b5 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4931,7 +4931,9 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	}
+ 
+ 	ar->free_vdev_map &= ~(1LL << arvif->vdev_id);
++	spin_lock_bh(&ar->data_lock);
+ 	list_add(&arvif->list, &ar->arvifs);
++	spin_unlock_bh(&ar->data_lock);
+ 
+ 	/* It makes no sense to have firmware do keepalives. mac80211 already
+ 	 * takes care of this with idle connection polling.
+@@ -5082,7 +5084,9 @@ err_peer_delete:
+ err_vdev_delete:
+ 	ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
+ 	ar->free_vdev_map |= 1LL << arvif->vdev_id;
++	spin_lock_bh(&ar->data_lock);
+ 	list_del(&arvif->list);
++	spin_unlock_bh(&ar->data_lock);
+ 
+ err:
+ 	if (arvif->beacon_buf) {
+@@ -5128,7 +5132,9 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+ 			    arvif->vdev_id, ret);
+ 
+ 	ar->free_vdev_map |= 1LL << arvif->vdev_id;
++	spin_lock_bh(&ar->data_lock);
+ 	list_del(&arvif->list);
++	spin_unlock_bh(&ar->data_lock);
+ 
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP ||
+ 	    arvif->vdev_type == WMI_VDEV_TYPE_IBSS) {
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
