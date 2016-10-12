@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1buBeh-0004VZ-Fl
- for ath10k@lists.infradead.org; Wed, 12 Oct 2016 05:00:40 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: add per peer htt tx stats support for 10.4
-Date: Wed, 12 Oct 2016 04:59:49 +0000
-Message-ID: <87r37mgo1n.fsf@kamboji.qca.qualcomm.com>
-References: <1475852332-18217-1-git-send-email-akolli@qti.qualcomm.com>
- <1475852332-18217-2-git-send-email-akolli@qti.qualcomm.com>
- <CAEFj985tCc_4Q_zfwRtoT0fjfZv0u_c5E8SRSQVz=V4tiHh+GA@mail.gmail.com>
-In-Reply-To: <CAEFj985tCc_4Q_zfwRtoT0fjfZv0u_c5E8SRSQVz=V4tiHh+GA@mail.gmail.com>	(Yeoh
- Chun-Yeow's message of "Sat, 8 Oct 2016 22:16:37 +0800")
-Content-Language: en-US
-Content-ID: <7E32D9F5E240354A9741D51A532F4FE2@qualcomm.com>
+ id 1buBjY-0006uy-AJ
+ for ath10k@lists.infradead.org; Wed, 12 Oct 2016 05:05:41 +0000
 MIME-Version: 1.0
+Subject: Re: [v3] ath10k: cache calibration data when the core is stopped
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1476115204-7385-1-git-send-email-kvalo@qca.qualcomm.com>
+References: <1476115204-7385-1-git-send-email-kvalo@qca.qualcomm.com>
+Message-ID: <56268b973ebe4cfa9f80592b2110999b@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 12 Oct 2016 07:05:00 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +22,59 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: "Kolli, Anilkumar" <akolli@qti.qualcomm.com>, "akolli@codeaurora.org" <akolli@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, Marty Faltesek <mfaltesek@google.com>, ath10k@lists.infradead.org
 
-Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> From: Marty Faltesek <mfaltesek@google.com>
+> 
+> Commit 0b8e3c4ca29f ("ath10k: move cal data len to hw_params") broke retrieving
+> the calibration data from cal_data debugfs file. The length of file was always
+> zero. The reason is:
+> 
+>     static ssize_t ath10k_debug_cal_data_read(struct file *file,
+>                                           char __user *user_buf,
+>                                           size_t count, loff_t *ppos)
+>     {
+>         struct ath10k *ar = file->private_data;
+>         void *buf = file->private_data;
+> 
+> 
+> This is obviously bogus, private_data cannot contain both struct ath10k and the
+> buffer. Fix it by caching calibration data to ar->debug.cal_data. This also
+> allows it to be accessed when the device is not active (interface is down).
+> 
+> The cal_data buffer is fixed size because during the first firmware probe we
+> don't yet know what will be the lenght of the calibration data. It was simplest
+> just to use a fixed length. There's a WARN_ON() in
+> ath10k_debug_cal_data_fetch() if the buffer is too small.
+> 
+> Tested with qca988x and firmware 10.2.4.70.56.
+> 
+> Reported-by: Nikolay Martynov <mar.kolya@gmail.com>
+> Fixes: 0b8e3c4ca29f ("ath10k: move cal data len to hw_params")
+> Cc: stable@vger.kernel.org # 4.7+
+> Signed-off-by: Marty Faltesek <mfaltesek@google.com>
+> [kvalo@qca.qualcomm.com: improve commit log and minor other changes]
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-> On Fri, Oct 7, 2016 at 10:58 PM,  <akolli@qti.qualcomm.com> wrote:
->> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
->>
->> Per peer tx stats are part of 'HTT_10_4_T2H_MSG_TYPE_PEER_STATS'
->> event, Firmware sends one HTT event for every four PPDUs.
->> HTT payload has success pkts/bytes, failed pkts/bytes, retry
->> pkts/bytes and rate info per ppdu.
->> Peer stats are enabled through 'WMI_SERVICE_PEER_STATS',
->> which are nowadays enabled by default.
->>
->> Parse peer stats and update the tx rate information per STA.
->>
->> tx rate, Peer stats are tested on QCA4019 with Firmware version
->> 10.4-3.2.1-00028.
->>
->
-> Is QCA988X supported? I have tried to test with
-> firmware-5.bin_10.2.4.70.56 but not working.
+There were few checkpatch warnings, I fixed those in the pending branch.
 
-My understanding is that 10.2 branch does not have this feature,
-unfortunately.
+drivers/net/wireless/ath/ath10k/debug.c:1472: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/debug.c:1504: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/debug.c:1504: please, no spaces at the start of a line
+drivers/net/wireless/ath/ath10k/debug.c:1505: code indent should use tabs where possible
+drivers/net/wireless/ath/ath10k/debug.c:1505: please, no spaces at the start of a line
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/9369685/
+
+Documentation about submitting wireless patches and checking status
+from patchwork:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
