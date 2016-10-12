@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1buJwT-0007pw-UA
- for ath10k@lists.infradead.org; Wed, 12 Oct 2016 13:51:35 +0000
+ id 1buJzv-0000Le-8x
+ for ath10k@lists.infradead.org; Wed, 12 Oct 2016 13:55:08 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: QCA9887 Firmware Memory Usage
-Date: Wed, 12 Oct 2016 13:51:08 +0000
-Message-ID: <8760oxfzg4.fsf@kamboji.qca.qualcomm.com>
-References: <CA+i30h8YsG7mce5FMwGw2fRNAn3USYV6K==QMjMQVeSGB0dj=w@mail.gmail.com>
-In-Reply-To: <CA+i30h8YsG7mce5FMwGw2fRNAn3USYV6K==QMjMQVeSGB0dj=w@mail.gmail.com>	(David
- Hutchison's message of "Thu, 6 Oct 2016 15:59:40 -0600")
+Subject: Re: Very low throughput on QCA9880 ath10k module
+Date: Wed, 12 Oct 2016 13:54:42 +0000
+Message-ID: <871szlfza6.fsf@kamboji.qca.qualcomm.com>
+References: <CANfwihOywsOteLXGa_zHMep-V+6axkUTGbMZjf--0u9ecavdCQ@mail.gmail.com>
+In-Reply-To: <CANfwihOywsOteLXGa_zHMep-V+6axkUTGbMZjf--0u9ecavdCQ@mail.gmail.com>	(Vijay
+ Kumar R. Patel's message of "Thu, 6 Oct 2016 09:27:11 +0530")
 Content-Language: en-US
-Content-ID: <D30CD3859F4F5847ACE2AD3659B3DC4E@qualcomm.com>
+Content-ID: <9883E221DF48A040AFAACA9BB90726CF@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,41 +25,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: David Hutchison <dhutchison@bluemesh.net>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vijay Kumar R Patel <vijay@lukup.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-David Hutchison <dhutchison@bluemesh.net> writes:
+Vijay Kumar R Patel <vijay@lukup.com> writes:
 
-> I am using a Mikrotik hAP AC Lite which has a QCA9887 radio. It
-> appears to be working; however ath10k ( or the qca9887 firmware ) is
-> utilizing 15 - 20mb of memory. I applied the kfree(caldata) patch, to
-> insure there is no memory leak.
+> HI all,
+> we are testing throughput on our QCA9880 module using iperf command,
+> we are getting 10Mbps throughput, tried with all iperf options like
+> TCP window size,length but not getting more than 10Mbps.
 >
-> It doesn't appear to be leaking, and it will run Ok with the high
-> memory footprint. However the Mikrotik hAP AC Lite is only a 64mb
-> platform; so when I initialize the 2nd radio with ath9k I get OOMs.
->
-> It just doesn't seem right that when ath10k + qca9887 is in AP mode
-> that it's utilizing as much memory as it is. I don't think the issue
-> is with ath10k, I think it's the qca9887 firmware (
-> firmware-5.bin_10.2.4-1.0-00013 ).
->
-> Is there a newer build available that may potentially fix these memory
-> issues? The latest one available on
-> https://github.com/kvalo/ath10k-firmware/blob/master/QCA9887/hw1.0/firmware-5.bin_10.2.4-1.0-00013
-> is 2 months old. Perhaps there is a newer build to test that may have
-> the fix?
->
-> Any thoughts as to what it could be? I can provide more information if needed.
+> Test procedure and system info
+> iperf b/w AP <----> STA
+> QCA9880 module on both ap and sta, with backported(backports-3.14-1)
+> ath10k driver running on Linux kernel version 2.6.32 with
+> firmware-2.bin_10.1.467.3-1
 
-64MB of RAM nowadays is not much and ath10k is not really tested in such
-setups AFAIK. I guess you could try if reducing TARGET_10X_NUM_MSDU_DESC
-helps with the memory consumption, but no idea if that would even work
-without further modifications to ath10k.
+From ath10k point of view backports-3.14-1 is ancient. Try upgrading to
+something recent, preferably 4.8.
 
-Also if you have fq-codel&co enabled that might increase memory
-consumption. Adding linux-wireless as people there might have better
-ideas.
+The problem is that backports doesn't have had new releases for some
+time so you have to build the backports package yourself. There are
+instructions on the wiki but I'm not sure if they work anymore, I
+haven't tried myself for a long time:
+
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/backports
 
 -- 
 Kalle Valo
