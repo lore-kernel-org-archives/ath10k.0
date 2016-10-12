@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1buDfg-0002Se-Au
- for ath10k@lists.infradead.org; Wed, 12 Oct 2016 07:09:49 +0000
-Date: Wed, 12 Oct 2016 12:39:18 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [v2,1/2] ath10k: clean up HTT tx buffer allocation and free
-Message-ID: <20161012070918.GA2993@atheros-ThinkPad-T61>
-References: <1475743188-12007-1-git-send-email-mohammed@qca.qualcomm.com>
- <c617b703956d4a038349494b87f65d0a@euamsexm01a.eu.qualcomm.com>
+ id 1buDyu-0002lJ-RM
+ for ath10k@lists.infradead.org; Wed, 12 Oct 2016 07:29:41 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Fix failure to send NULL func frame for 10.4
+Date: Wed, 12 Oct 2016 12:59:02 +0530
+Message-ID: <1476257342-3241-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <c617b703956d4a038349494b87f65d0a@euamsexm01a.eu.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +16,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-SGkgS2FsbGUsCgpPbiBUdWUsIE9jdCAxMSwgMjAxNiBhdCAwMTozNjoyMlBNICswMjAwLCBLYWxs
-ZSBWYWxvIHdyb3RlOgo+IE1vaGFtbWVkIFNoYWZpIFNoYWpha2hhbiA8bW9oYW1tZWRAcXRpLnF1
-YWxjb21tLmNvbT4gd3JvdGU6Cj4gPiBGcm9tOiBNb2hhbW1lZCBTaGFmaSBTaGFqYWtoYW4gPG1v
-aGFtbWVkQHF0aS5xdWFsY29tbS5jb20+Cj4gPiAKPiA+IGNsZWFudXAgJ2F0aDEwa19odHRfdHhf
-YWxsb2MnIGJ5IGludHJvZHVjaW5nIHRoZSBBUEkncwo+ID4gJ2F0aDEwa19odHRfdHhfYWxsb2Mv
-ZnJlZV97Y29udF90eGJ1ZiwgdHhkb25lX2ZpZm99IGFuZAo+ID4gcmUtdXNlIHRoZW0gd2hlcmVl
-dmVyIG5lZWRlZAo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBNb2hhbW1lZCBTaGFmaSBTaGFqYWto
-YW4gPG1vaGFtbWVkQHF0aS5xdWFsY29tbS5jb20+Cj4gCj4gQXBwbGllcyBidXQgZmFpbHMgdG8g
-YnVpbGQ6Cgpbc2hhZmldIHNvcnJ5IGZvciB0aGUgdHJvdWJsZSBhZ2FpbiwgSSBqdXN0IGZpZ3Vy
-ZWQgb3V0IEkgaGFkIGEgcHJpdmF0ZSBwYXRjaCBieQptaXN0YWtlICBhbmQgaXQgd29ya2VkIGZv
-ciBtZSwgSSB3aWxsIG1ha2Ugc3VyZSB0aGF0IHYzIGlzIHByb3Blcmx5IHJlYmFzZWQKd2l0aG91
-dCBhbnkgZXJyb3JzLgoKPiAKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF90
-eC5jOiBJbiBmdW5jdGlvbiDigJhhdGgxMGtfaHR0X3R4X2ZyZWXigJk6Cj4gZHJpdmVycy9uZXQv
-d2lyZWxlc3MvYXRoL2F0aDEway9odHRfdHguYzo0MjQ6MTk6IGVycm9yOiDigJhzdHJ1Y3QgYXRo
-MTBrX2h0dOKAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmHR4cnhfY29tcGxfdGFza+KAmQo+IG1h
-a2VbNV06ICoqKiBbZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfdHgub10gRXJy
-b3IgMQo+IG1ha2VbNF06ICoqKiBbZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEwa10gRXJy
-b3IgMgo+IG1ha2VbM106ICoqKiBbZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoXSBFcnJvciAyCj4g
-bWFrZVsyXTogKioqIFtkcml2ZXJzL25ldC93aXJlbGVzc10gRXJyb3IgMgo+IG1ha2VbMV06ICoq
-KiBbZHJpdmVycy9uZXRdIEVycm9yIDIKPiBtYWtlWzFdOiAqKiogV2FpdGluZyBmb3IgdW5maW5p
-c2hlZCBqb2JzLi4uLgo+IG1ha2U6ICoqKiBbZHJpdmVyc10gRXJyb3IgMgo+IAo+IDIgcGF0Y2hl
-cyBzZXQgdG8gQ2hhbmdlcyBSZXF1ZXN0ZWQuCj4gCj4gOTM2Mzg2MyBbdjIsMS8yXSBhdGgxMGs6
-IGNsZWFuIHVwIEhUVCB0eCBidWZmZXIgYWxsb2NhdGlvbiBhbmQgZnJlZQo+IDkzNjM4NjEgW3Yy
-LDIvMl0gYXRoMTBrOiBSZW1vdmUgZXh0cmFuZW91cyBlcnJvciBtZXNzYWdlIGluIHR4IGFsbG9j
-Cj4gCj4gLS0gCj4gaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC85MzYzODYzLwo+
-IAo+IERvY3VtZW50YXRpb24gYWJvdXQgc3VibWl0dGluZyB3aXJlbGVzcyBwYXRjaGVzIGFuZCBj
-aGVja2luZyBzdGF0dXMKPiBmcm9tIHBhdGNod29yazoKPiAKPiBodHRwczovL3dpcmVsZXNzLndp
-a2kua2VybmVsLm9yZy9lbi9kZXZlbG9wZXJzL2RvY3VtZW50YXRpb24vc3VibWl0dGluZ3BhdGNo
-ZXMKPiAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
-aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+
+This partially reverts 'commit 2cdce425aa33
+("ath10k: Fix broken NULL func data frame status for 10.4")'
+Unfortunately this breaks sending NULL func and the existing
+issue of obtaining proper tx status for NULL function will be
+fixed. Also update the comments for feature flag added to be
+useless and not working
+
+Fixes: 2cdce425aa33 "ath10k: Fix broken NULL func data frame status for
+10.4"
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h | 6 ++----
+ drivers/net/wireless/ath/ath10k/mac.c  | 2 --
+ 2 files changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index b367e9c..42c3f1b 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -552,10 +552,8 @@ enum ath10k_fw_features {
+ 	 */
+ 	ATH10K_FW_FEATURE_BTCOEX_PARAM = 14,
+ 
+-	/* Older firmware with HTT delivers incorrect tx status for null func
+-	 * frames to driver, but this fixed in 10.2 and 10.4 firmware versions.
+-	 * Also this workaround results in reporting of incorrect null func
+-	 * status for 10.4. This flag is used to skip the workaround.
++	/* Unused flag and proven to be not working, enable this if you want
++	 * to experiment sending NULL func data frames in HTT TX
+ 	 */
+ 	ATH10K_FW_FEATURE_SKIP_NULL_FUNC_WAR = 15,
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 4565321..86a6610 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3255,8 +3255,6 @@ ath10k_mac_tx_h_get_txmode(struct ath10k *ar,
+ 	if (ar->htt.target_version_major < 3 &&
+ 	    (ieee80211_is_nullfunc(fc) || ieee80211_is_qos_nullfunc(fc)) &&
+ 	    !test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
+-		      ar->running_fw->fw_file.fw_features) &&
+-	    !test_bit(ATH10K_FW_FEATURE_SKIP_NULL_FUNC_WAR,
+ 		      ar->running_fw->fw_file.fw_features))
+ 		return ATH10K_HW_TXRX_MGMT;
+ 
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
