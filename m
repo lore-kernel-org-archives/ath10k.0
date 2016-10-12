@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1btwY5-0007le-Ac
- for ath10k@lists.infradead.org; Tue, 11 Oct 2016 12:52:54 +0000
-References: <BY2PR0201MB1512C4FEBE06285A49AAEAE4EADA0@BY2PR0201MB1512.namprd02.prod.outlook.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <78c6ac09-88f6-027c-e312-b28e693c863d@dd-wrt.com>
-Date: Tue, 11 Oct 2016 14:52:22 +0200
+ id 1buBdh-0003fJ-D1
+ for ath10k@lists.infradead.org; Wed, 12 Oct 2016 04:59:37 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: add per peer htt tx stats support for 10.4
+Date: Wed, 12 Oct 2016 04:59:07 +0000
+Message-ID: <87vawygo2w.fsf@kamboji.qca.qualcomm.com>
+References: <1475852332-18217-1-git-send-email-akolli@qti.qualcomm.com>
+ <1475852332-18217-2-git-send-email-akolli@qti.qualcomm.com>
+In-Reply-To: <1475852332-18217-2-git-send-email-akolli@qti.qualcomm.com>
+ (akolli@qti.qualcomm.com's message of "Fri, 7 Oct 2016 20:28:51	+0530")
+Content-Language: en-US
+Content-ID: <EDEAC00C13803A449B92CE368C49DAFD@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <BY2PR0201MB1512C4FEBE06285A49AAEAE4EADA0@BY2PR0201MB1512.namprd02.prod.outlook.com>
-Subject: Re: how to configure MIMO
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,54 +22,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Gyselinck Luc <Luc.Gyselinck@technicolor.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Kolli, Anilkumar" <akolli@qti.qualcomm.com>
+Cc: "akolli@codeaurora.org" <akolli@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Am 11.10.2016 um 12:11 schrieb Gyselinck Luc:
-> Hi,
-> I am using ath10k firmware for a couple of chipsets : QCA9984 (having 4x4=
- MIMO capabilities) and QCA9880 (with 3x3 MIMO capabilities).
-> Is there a way to configure these chipsets only use a reduced MIMO capabi=
-lity ? E.g. Can I apply a configuration so that the QCA9984 is using only 3=
-x3 MIMO?
-basicly you're able to configure the used tx and rx antenna chains. so =
+<akolli@qti.qualcomm.com> writes:
 
-you can run it with 3x3 and for sure you can also configure the ht / vht =
-
-capabilities in hostapd to run it with reduced capabilities
-
-Sebastian
-> If yes can you tell me how to do so?
+> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
 >
-> Thanks and best regards
-> Luc
+> Per peer tx stats are part of 'HTT_10_4_T2H_MSG_TYPE_PEER_STATS'
+> event, Firmware sends one HTT event for every four PPDUs.
+> HTT payload has success pkts/bytes, failed pkts/bytes, retry
+> pkts/bytes and rate info per ppdu.
+> Peer stats are enabled through 'WMI_SERVICE_PEER_STATS',
+> which are nowadays enabled by default.
 >
+> Parse peer stats and update the tx rate information per STA.
 >
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+> tx rate, Peer stats are tested on QCA4019 with Firmware version
+> 10.4-3.2.1-00028.
 >
+> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
 
+This and patch 2 add few new warnings:
 
--- =
+drivers/net/wireless/ath/ath10k/htt_rx.c: In function 'ath10k_htt_fetch_peer_stats':
+drivers/net/wireless/ath/ath10k/htt_rx.c:2279:3: warning: too many arguments for format [-Wformat-extra-args]
+drivers/net/wireless/ath/ath10k/htt_rx.c:2285:17: warning: incorrect type in assignment (different base types)
+drivers/net/wireless/ath/ath10k/htt_rx.c:2285:17:    expected unsigned int [unsigned] [usertype] peer_id
+drivers/net/wireless/ath/ath10k/htt_rx.c:2285:17:    got restricted __le16 [usertype] peer_id
+drivers/net/wireless/ath/ath10k/debugfs_sta.c:84: space required before the open parenthesis '('
 
-Mit freundlichen Gr=FCssen / Regards
-
-Sebastian Gottschall / CTO
-
-NewMedia-NET GmbH - DD-WRT
-Firmensitz:  Berliner Ring 101, 64625 Bensheim
-Registergericht: Amtsgericht Darmstadt, HRB 25473
-Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
-http://www.dd-wrt.com
-email: s.gottschall@dd-wrt.com
-Tel.: +496251-582650 / Fax: +496251-5826565
-
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
