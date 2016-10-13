@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from router.aksignal.cz ([188.175.113.102])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bugI1-0004aZ-HG
- for ath10k@lists.infradead.org; Thu, 13 Oct 2016 13:43:18 +0000
+ id 1buge1-0006X2-DZ
+ for ath10k@lists.infradead.org; Thu, 13 Oct 2016 14:06:05 +0000
+Subject: Re: qca6174 missing firmware or subsystem id?
+References: <a63ba654-aaa5-3a8c-08ac-c5fd761a5b8d@aksignal.cz>
+ <87r37kcskr.fsf@kamboji.qca.qualcomm.com>
+From: =?UTF-8?B?SmnFmcOtIFByY2hhbA==?= <jiri.prchal@aksignal.cz>
+Message-ID: <cff59721-5291-a274-3c19-4d513e6ea598@aksignal.cz>
+Date: Thu, 13 Oct 2016 16:05:35 +0200
 MIME-Version: 1.0
-Subject: Re: ath10k: fix debug cal data file
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1474341984-19220-1-git-send-email-mar.kolya@gmail.com>
-References: <1474341984-19220-1-git-send-email-mar.kolya@gmail.com>
-Message-ID: <21deaa8b2e7a4765bead3b77da17de49@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 13 Oct 2016 15:42:32 +0200
+In-Reply-To: <87r37kcskr.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,33 +19,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: jiri.prchal@aksignal.cz
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nikolay Martynov <mar.kolya@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Nikolay Martynov <mar.kolya@gmail.com> wrote:
-> It got broken by 0b8e3c4ca29fe2c0efd3d41a76e34a657b9f17a4
-> 
-> Signed-off-by: Nikolay Martynov <mar.kolya@gmail.com>
-
-Actually Marty's patch fixed this in a better way so I actually took that
-instead:
-
-f67b107d4ced ath10k: cache calibration data when the core is stopped
-
--- 
-https://patchwork.kernel.org/patch/9340953/
-
-Documentation about submitting wireless patches and checking status
-from patchwork:
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CgpPbiAxMy4xMC4yMDE2IDE1OjAwLCBWYWxvLCBLYWxsZSB3cm90ZToKPiBKacWZw60gUHJjaGFs
+IDxqaXJpLnByY2hhbEBha3NpZ25hbC5jej4gd3JpdGVzOgo+Cj4+IEhpLAo+PiBJJ3ZlIGdvdCB0
+aGlzIG1pbmlQQ0llIHdpZmkgbW9kdWxlIHdoaWNoIGNvbWVzIHdpdGggQXN1cyBtb3RoZXJib2Fy
+ZDoKPj4KPj4gJGxzcGNpIC12bm4KPj4gMDI6MDAuMCBOZXR3b3JrIGNvbnRyb2xsZXIgWzAyODBd
+OiBRdWFsY29tbSBBdGhlcm9zIFFDQTYxNzQgODAyLjExYWMgV2lyZWxlc3MgTmV0d29yayBBZGFw
+dGVyIFsxNjhjOjAwM2VdIChyZXYgMzIpCj4+IAlTdWJzeXN0ZW06IEFTVVNUZUsgQ29tcHV0ZXIg
+SW5jLiBRQ0E2MTc0IDgwMi4xMWFjIFdpcmVsZXNzIE5ldHdvcmsgQWRhcHRlciBbMTA0Mzo4NmNk
+XQo+PiAJRmxhZ3M6IGJ1cyBtYXN0ZXIsIGZhc3QgZGV2c2VsLCBsYXRlbmN5IDAsIElSUSAxMjUK
+Pj4gCU1lbW9yeSBhdCBmNzAwMDAwMCAoNjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0y
+TV0KPj4gCUNhcGFiaWxpdGllczogPGFjY2VzcyBkZW5pZWQ+Cj4+IAlLZXJuZWwgZHJpdmVyIGlu
+IHVzZTogYXRoMTBrX3BjaQo+PiAJS2VybmVsIG1vZHVsZXM6IGF0aDEwa19wY2kKPj4KPj4gQnV0
+IEkgaGF2ZSBwcm9ibGVtIHRvIGdldCBpdCB3b3JraW5nLiBJdCBsb29rIHRoYXQgd2xhbiBpcyB0
+aGVyZSwgYnV0IGRvZXNuJ3QgcmVjZWl2ZSBhbnkgU1NJRC4KPj4KPj4gJGlwIGEKPj4gNDogd2xw
+MnMwOiA8Tk8tQ0FSUklFUixCUk9BRENBU1QsTVVMVElDQVNULFVQPiBtdHUgMTUwMCBxZGlzYyBt
+cSBzdGF0ZSBET1dOIGdyb3VwIGRlZmF1bHQgcWxlbiAxMDAwCj4+ICAgICBsaW5rL2V0aGVyIGM4
+OmZmOjI4OjBlOjVlOmUxIGJyZCBmZjpmZjpmZjpmZjpmZjpmZgo+Pgo+PiAkaXcgZGV2IHdscDJz
+MCBzY2FuCj4+ICByZXR1cm5zIG5vdGhpbmcuCj4+Cj4+IEkgaGF2ZSBVYnVudHUgMTYuMDQgd2l0
+aCB0aGlzIGtlcm5lbDoKPj4gJHVuYW1lIC1hCj4+IExpbnV4IGRvbGUgNC40LjAtNDItZ2VuZXJp
+YyAjNjItVWJ1bnR1IFNNUCBGcmkgT2N0IDcgMjM6MTE6NDUgVVRDIDIwMTYgeDg2XzY0IHg4Nl82
+NCB4ODZfNjQgR05VL0xpbnV4Cj4+Cj4+IEkndmUgdHJpZWQgYm90aCBkaXN0cm8gYW5kIGdpdCBG
+VyAocHJvYmFibHkgdGhlIHNhbWUpLCBidXQgaXQgc3RpbGwKPj4gY29tcGxpZXMgYWJvdXQgZmly
+bXdhcmUtNS5iaW4uIEkgdGhpbmcgdGhlcmUgaXMgbWlzc2luZyBzdWJzeXN0ZW0gSUQKPj4gaW4g
+Ym9hcmQtMi5iaW4gYXMgSSBtZW50aW9uZWQgdGhlcmUgd2FzIGFkZGVkIHNvbWUgb3RoZXIgc3Vi
+SUQgMgo+PiBtb250aHMgYWdvLgo+Pgo+PiAkZG1lc2cgfCBncmVwIGF0aAo+PiBbICAgIDEuOTk3
+MjQ2XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogcGNpIGlycSBtc2kgaW50ZXJydXB0cyAxIGly
+cV9tb2RlIDAgcmVzZXRfbW9kZSAwCj4+IFsgICAgMi4yNTI4NDBdIGF0aDEwa19wY2kgMDAwMDow
+MjowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IgYXRoMTBrL2NhbC1wY2ktMDAwMDowMjow
+MC4wLmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMgo+PiBbICAgIDIuMjYwODEzXSBhdGgxMGtfcGNp
+IDAwMDA6MDI6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yIGF0aDEway9RQ0E2MTc0L2h3
+My4wL2Zpcm13YXJlLTUuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4+IFsgICAgMi4yNjA4MTZd
+IGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBjb3VsZCBub3QgZmV0Y2ggZmlybXdhcmUgZmlsZSAn
+YXRoMTBrL1FDQTYxNzQvaHczLjAvZmlybXdhcmUtNS5iaW4nOiAtMgo+Cj4gU28gaWdub3JlIHRo
+aXMgZmlybXdhcmUtNS5iaW4gd2FybmluZywgYXRoMTBrIHdpbGwgYXV0b21hdGljYWxseSBmYWxs
+Cj4gYmFjayB0byB1c2luZyBmaXJtd2FyZS00LmJpbi4gSSBrbm93IGl0J3MgY29uZnVzaW5nLCB3
+ZSBqdXN0IGhhdmVuJ3QKPiBmb3VuZCBhIGdvb2QgZW5vdWdoIHdheSB0byBzaWxlbmNlIHRoaXMg
+d2FybmluZyB5ZXQuCgpPSy4gTWF5YmUgdGVtcG9yYXJ5IGZpeDogd3JpdGUgaW5mbyBtZXNzYWdl
+IHdoYXQgZmlybXdhcmUgaXMgZmluYWxseSBsb2FkZWQ/Cgo+Cj4+IFsgICAgNC40NjE0MjldIGF0
+aDEwa19wY2kgMDAwMDowMjowMC4wOiBxY2E2MTc0IGh3My4yICgweDA1MDMwMDAwLAo+PiAweDAw
+MzQwYWZmIHN1YiAxMDQzOjg2Y2QpIGZ3IFdMQU4uUk0uMi4wLTAwMTgwLVFDQVJNU1dQWi0xIGZ3
+YXBpIDQKPj4gYmRhcGkgMiBodHQtdmVyIDMuMjYgd21pLW9wIDQgaHR0LW9wIDMgY2FsIG90cCBt
+YXgtc3RhIDMyIHJhdyAwCj4+IGh3Y3J5cHRvIDEgZmVhdHVyZXMgd293bGFuLGlnbm9yZS1vdHAs
+bm8tNGFkZHItcGFkCj4KPiBZb3VyIGF0aDEwayBpcyB0b28gb2xkIHNvIHRoYXQgaXQgZG9lc24n
+dCBwcmludCB0aGUgY3JjMzIgY2hlY2tzdW0gb2YKPiB0aGUgYm9hcmQgZmlsZSB5b3UgaGF2ZSBz
+byBJIGRvbid0IGtub3cgd2hhdCB2ZXJzaW9uIG9mIHRoZSBib2FyZCBmaWxlCj4geW91IGV4YWN0
+bHkgaGF2ZS4gQnV0IEkganVzdCBjaGVja2VkLCB0aGUgbGF0ZXN0IG9uZSBmcm9tCj4gYXRoMTBr
+LWZpcm13YXJlLmdpdCBzaG91bGQgc3VwcG9ydCB5b3VyIGJvYXJkIHdpdGggc3Vic3lzdGVtIGlk
+Cj4gMTA0Mzo4NmNkOgoKU2hvdWxkIEkgdHJ5IHRoZSBuZXdlc3Qga2VybmVsPwoKPgo+ICQgc3Ry
+aW5ncyBRQ0E2MTc0L2h3My4wL2JvYXJkLTIuYmluIHwgZ3JlcCA4NmNkCj4gYnVzPXBjaSx2ZW5k
+b3I9MTY4YyxkZXZpY2U9MDAzZSxzdWJzeXN0ZW0tdmVuZG9yPTEwNDMsc3Vic3lzdGVtLWRldmlj
+ZT04NmNkbQo+Cj4gVGhlIGNoZWNrc3VtcyBvZiB0aGUgbGF0ZXN0IGJvYXJkIGZpbGUgYXJlOgo+
+Cj4gRmlsZUNSQzMyOiA2ZmM4OGZlNwo+IEZpbGVNRDU6IDQ4MDc5MDNjOTU2ZGJkOGI4N2Y1ZDgz
+YzU1OWMyMjExCj4KPiBZb3UgY2FuIGNoZWNrIHdoYXQgeW91IGFyZSB1c2luZyBsaWtlIHRoaXM6
+Cj4KPiBtZDVzdW0gL2xpYi9maXJtd2FyZS9hdGgxMGsvUUNBNjE3NC9odzMuMC9ib2FyZC0yLmJp
+bgoKWWVzLCBJIGhhdmUgdGhlIG5ld2VzdDogNDgwNzkwM2M5NTZkYmQ4Yjg3ZjVkODNjNTU5YzIy
+MTEuCgo+Cj4gKFVubGVzcyBJIG1hZGUgYSB0eXBvIGluIHRoZSBwYXRoLCBidXQgeW91IHNob3Vs
+ZCBiZSBhYmxlIHRvIGZpbmQgaXQKPiBlYXNpbHkuKQo+CgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCg==
