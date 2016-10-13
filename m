@@ -1,21 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bugs2-0003qk-8P
- for ath10k@lists.infradead.org; Thu, 13 Oct 2016 14:20:31 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: qca6174 missing firmware or subsystem id?
-Date: Thu, 13 Oct 2016 14:20:05 +0000
-Message-ID: <8737k0covg.fsf@kamboji.qca.qualcomm.com>
-References: <a63ba654-aaa5-3a8c-08ac-c5fd761a5b8d@aksignal.cz>
- <87r37kcskr.fsf@kamboji.qca.qualcomm.com>
- <cff59721-5291-a274-3c19-4d513e6ea598@aksignal.cz>
-In-Reply-To: <cff59721-5291-a274-3c19-4d513e6ea598@aksignal.cz>
- (=?utf-8?B?IkppxZnDrQ==?=	Prchal"'s message of "Thu, 13 Oct 2016 16:05:35
- +0200")
-Content-Language: en-US
-Content-ID: <2E30F1DDA03A9B45B205A93366779594@qualcomm.com>
+ id 1bugti-0004Ft-Fr
+ for ath10k@lists.infradead.org; Thu, 13 Oct 2016 14:22:16 +0000
 MIME-Version: 1.0
+Subject: Re: ath10k: Fix kernel panic due to race in accessing arvif list
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1476109278-7957-1-git-send-email-vthiagar@qti.qualcomm.com>
+References: <1476109278-7957-1-git-send-email-vthiagar@qti.qualcomm.com>
+Message-ID: <030f922c81064fa9aa26523b2e7f318d@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 13 Oct 2016 16:21:47 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,69 +18,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "jiri.prchal@aksignal.cz" <jiri.prchal@aksignal.cz>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-SmnFmcOtIFByY2hhbCA8amlyaS5wcmNoYWxAYWtzaWduYWwuY3o+IHdyaXRlczoNCg0KPiBPbiAx
-My4xMC4yMDE2IDE1OjAwLCBWYWxvLCBLYWxsZSB3cm90ZToNCj4+IEppxZnDrSBQcmNoYWwgPGpp
-cmkucHJjaGFsQGFrc2lnbmFsLmN6PiB3cml0ZXM6DQo+Pg0KPj4+ICRkbWVzZyB8IGdyZXAgYXRo
-DQo+Pj4gWyAgICAxLjk5NzI0Nl0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IHBjaSBpcnEgbXNp
-IGludGVycnVwdHMgMSBpcnFfbW9kZSAwIHJlc2V0X21vZGUgMA0KPj4+IFsgICAgMi4yNTI4NDBd
-IGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IgYXRoMTBr
-L2NhbC1wY2ktMDAwMDowMjowMC4wLmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMg0KPj4+IFsgICAg
-Mi4yNjA4MTNdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBm
-b3IgYXRoMTBrL1FDQTYxNzQvaHczLjAvZmlybXdhcmUtNS5iaW4gZmFpbGVkIHdpdGggZXJyb3Ig
-LTINCj4+PiBbICAgIDIuMjYwODE2XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogY291bGQgbm90
-IGZldGNoIGZpcm13YXJlIGZpbGUgJ2F0aDEway9RQ0E2MTc0L2h3My4wL2Zpcm13YXJlLTUuYmlu
-JzogLTINCj4+DQo+PiBTbyBpZ25vcmUgdGhpcyBmaXJtd2FyZS01LmJpbiB3YXJuaW5nLCBhdGgx
-MGsgd2lsbCBhdXRvbWF0aWNhbGx5IGZhbGwNCj4+IGJhY2sgdG8gdXNpbmcgZmlybXdhcmUtNC5i
-aW4uIEkga25vdyBpdCdzIGNvbmZ1c2luZywgd2UganVzdCBoYXZlbid0DQo+PiBmb3VuZCBhIGdv
-b2QgZW5vdWdoIHdheSB0byBzaWxlbmNlIHRoaXMgd2FybmluZyB5ZXQuDQo+DQo+IE9LLiBNYXli
-ZSB0ZW1wb3JhcnkgZml4OiB3cml0ZSBpbmZvIG1lc3NhZ2Ugd2hhdCBmaXJtd2FyZSBpcyBmaW5h
-bGx5DQo+IGxvYWRlZD8NCg0KVGhhdCdzIGEgZ29vZCBpZGVhLiBEZXZlbG9wZXJzIGNhbiBhbHJl
-YWR5IHNlZSB0aGF0IGZyb20gdGhlICJmd2FwaSA0Ig0KcHJpbnQgYnV0IHNvbWVraW5kIG9mIGV4
-cGxhbmF0aW9uIGluIGVuZ2xpc2ggc2hvdWxkIHJlZHVjZSB0aGUgY29uZnVzaW9uDQp3aXRoIG5v
-cm1hbCB1c2Vycy4NCg0KPj4+IFsgICAgNC40NjE0MjldIGF0aDEwa19wY2kgMDAwMDowMjowMC4w
-OiBxY2E2MTc0IGh3My4yICgweDA1MDMwMDAwLA0KPj4+IDB4MDAzNDBhZmYgc3ViIDEwNDM6ODZj
-ZCkgZncgV0xBTi5STS4yLjAtMDAxODAtUUNBUk1TV1BaLTEgZndhcGkgNA0KPj4+IGJkYXBpIDIg
-aHR0LXZlciAzLjI2IHdtaS1vcCA0IGh0dC1vcCAzIGNhbCBvdHAgbWF4LXN0YSAzMiByYXcgMA0K
-Pj4+IGh3Y3J5cHRvIDEgZmVhdHVyZXMgd293bGFuLGlnbm9yZS1vdHAsbm8tNGFkZHItcGFkDQo+
-Pg0KPj4gWW91ciBhdGgxMGsgaXMgdG9vIG9sZCBzbyB0aGF0IGl0IGRvZXNuJ3QgcHJpbnQgdGhl
-IGNyYzMyIGNoZWNrc3VtIG9mDQo+PiB0aGUgYm9hcmQgZmlsZSB5b3UgaGF2ZSBzbyBJIGRvbid0
-IGtub3cgd2hhdCB2ZXJzaW9uIG9mIHRoZSBib2FyZCBmaWxlDQo+PiB5b3UgZXhhY3RseSBoYXZl
-LiBCdXQgSSBqdXN0IGNoZWNrZWQsIHRoZSBsYXRlc3Qgb25lIGZyb20NCj4+IGF0aDEway1maXJt
-d2FyZS5naXQgc2hvdWxkIHN1cHBvcnQgeW91ciBib2FyZCB3aXRoIHN1YnN5c3RlbSBpZA0KPj4g
-MTA0Mzo4NmNkOg0KPg0KPiBTaG91bGQgSSB0cnkgdGhlIG5ld2VzdCBrZXJuZWw/DQoNClRoYXQn
-cyBhbHdheXMgYSBnb29kIGlkZWEsIGZvciBleGFtcGxlIHlvdSBjb3VsZCB0cnkganVzdCByZWxl
-YXNlZCB2NC44Lg0KRG9lcyB1YnVudHUgc3RpbGwgcHJvdmlkZSAuZGVicyBmb3IgdXBzdHJlYW0g
-a2VybmVscz8NCg0KT3IgeW91IGNhbiB0cnkgYmFja3BvcnRzOg0KDQpodHRwczovL3dpcmVsZXNz
-Lndpa2kua2VybmVsLm9yZy9lbi91c2Vycy9kcml2ZXJzL2F0aDEway9iYWNrcG9ydHMNCg0KPj4g
-JCBzdHJpbmdzIFFDQTYxNzQvaHczLjAvYm9hcmQtMi5iaW4gfCBncmVwIDg2Y2QNCj4+IGJ1cz1w
-Y2ksdmVuZG9yPTE2OGMsZGV2aWNlPTAwM2Usc3Vic3lzdGVtLXZlbmRvcj0xMDQzLHN1YnN5c3Rl
-bS1kZXZpY2U9ODZjZG0NCj4+DQo+PiBUaGUgY2hlY2tzdW1zIG9mIHRoZSBsYXRlc3QgYm9hcmQg
-ZmlsZSBhcmU6DQo+Pg0KPj4gRmlsZUNSQzMyOiA2ZmM4OGZlNw0KPj4gRmlsZU1ENTogNDgwNzkw
-M2M5NTZkYmQ4Yjg3ZjVkODNjNTU5YzIyMTENCj4+DQo+PiBZb3UgY2FuIGNoZWNrIHdoYXQgeW91
-IGFyZSB1c2luZyBsaWtlIHRoaXM6DQo+Pg0KPj4gbWQ1c3VtIC9saWIvZmlybXdhcmUvYXRoMTBr
-L1FDQTYxNzQvaHczLjAvYm9hcmQtMi5iaW4NCj4NCj4gWWVzLCBJIGhhdmUgdGhlIG5ld2VzdDog
-NDgwNzkwM2M5NTZkYmQ4Yjg3ZjVkODNjNTU5YzIyMTEuDQoNClRoZW4gSSBzdXNwZWN0IHRoaXMg
-aXMgc29tZXRoaW5nIGVsc2UgdGhhbiBib2FyZCBmaWxlIHJlbGF0ZWQsIGJ1dCBvZg0KY291cnNl
-IEkgY2FuJ3QgYmUgMTAwJSBzdXJlLiBZb3UgY291bGQgYWxzbyB0cnkgZW5hYmxpbmcgZGVidWcg
-bWVzc2FnZXMNCmFuZCBzZWUgaWYgdGhleSByZXZlYWwgYW55dGhpbmcsIGZvciBleGFtcGxlIGRl
-YnVnX21hc2s9MHgwMDAwMDQzMiBpcyBhDQpnb29kIHN0YXJ0Og0KDQpodHRwczovL3dpcmVsZXNz
-Lndpa2kua2VybmVsLm9yZy9lbi91c2Vycy9kcml2ZXJzL2F0aDEway9kZWJ1Zw0KDQpIYXZlIHlv
-dSB2ZXJpZmllZCB0aGF0IHRoaXMgaXMgbm90IGEgaGFyZHdhcmUgcHJvYmxlbT8gRm9yIGV4YW1w
-bGUsIGRvZXMNCnRoZSBib2FyZCB3b3JrIG9uIFdpbmRvd3M/DQoNCkFsc28gbWFrZSBzdXJlIHRo
-YXQgeW91IGhhdmUga2lsbGVkIHdwYXN1cHBsaWNhbnQsIG5ldHdvcmstbWFuYWdlciBvcg0KYW55
-IG90aGVyIGVudGl0eSB3aGljaCBtaWdodCBjb250cm9sIHRoZSB3aXJlbGVzcyBkZXZpY2UgKHZl
-cnkgdW5saWtlbHkNCnRoYXQgd291bGQgY2F1c2UgdGhpcyBidXQgYmV0dGVyIHRvIGJlIHN1cmUp
-Lg0KDQpXaGF0IGNoYW5uZWwgaXMgeW91ciBBUCBpbj8gQXJlIHRoZXJlIG11bHRpcGxlIEFQcyBp
-biB0aGUgYXJlYT8gVGhpcw0KY291bGQgYmUgYWxzbyBhIGNoYW5uZWwgcHJvYmxlbSwgJ2l3IGxp
-c3QnIGhlbHBzIHRvIGludmVzdGlnYXRlIHRoYXQgKG9yDQpjaGFuZ2luZyB0aGUgY2hhbm5lbCBv
-biBBUCkuDQoNCi0tIA0KS2FsbGUgVmFsbwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> wrote:
+> arvifs list is traversed within data_lock spin_lock in tasklet
+> context to fill channel information from the corresponding vif.
+> This means any access to arvifs list for add/del operations
+> should also be protected with the same spin_lock to avoid the
+> race. Fix this by performing list add/del on arvfis within the
+> data_lock. This could fix kernel panic something like the below.
+> 
+>  LR is at ath10k_htt_rx_pktlog_completion_handler+0x100/0xb6c [ath10k_core]
+>  PC is at ath10k_htt_rx_pktlog_completion_handler+0x1c0/0xb6c [ath10k_core]
+>  Internal error: Oops: 17 [#1] PREEMPT SMP ARM
+>  [<bf4857f4>] (ath10k_htt_rx_pktlog_completion_handler+0x2f4/0xb6c [ath10k_core])
+>  [<bf487540>] (ath10k_htt_txrx_compl_task+0x8b4/0x1188 [ath10k_core])
+>  [<c00312d4>] (tasklet_action+0x8c/0xec)
+>  [<c00309a8>] (__do_softirq+0xdc/0x208)
+>  [<c0030d6c>] (irq_exit+0x84/0xe0)
+>  [<c005db04>] (__handle_domain_irq+0x80/0xa0)
+>  [<c00085c4>] (gic_handle_irq+0x38/0x5c)
+>  [<c0009640>] (__irq_svc+0x40/0x74)
+> 
+> (gdb) list *(ath10k_htt_rx_pktlog_completion_handler+0x1c0)
+> 0x136c0 is in ath10k_htt_rx_h_channel (drivers/net/wireless/ath/ath10k/htt_rx.c:769)
+> 764		struct cfg80211_chan_def def;
+> 765
+> 766		lockdep_assert_held(&ar->data_lock);
+> 767
+> 768		list_for_each_entry(arvif, &ar->arvifs, list) {
+> 769			if (arvif->vdev_id == vdev_id &&
+> 770			    ath10k_mac_vif_chan(arvif->vif, &def) == 0)
+> 771				return def.chan;
+> 772		}
+> 773
+> 
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+
+Patch applied to ath-next branch of ath.git, thanks.
+
+ebaa4b1620bf ath10k: fix kernel panic due to race in accessing arvif list
+
+-- 
+https://patchwork.kernel.org/patch/9369573/
+
+Documentation about submitting wireless patches and checking status
+from patchwork:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
