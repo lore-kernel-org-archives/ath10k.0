@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bufch-0008Tw-TF
- for ath10k@lists.infradead.org; Thu, 13 Oct 2016 13:00:38 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: qca6174 missing firmware or subsystem id?
-Date: Thu, 13 Oct 2016 13:00:06 +0000
-Message-ID: <87r37kcskr.fsf@kamboji.qca.qualcomm.com>
-References: <a63ba654-aaa5-3a8c-08ac-c5fd761a5b8d@aksignal.cz>
-In-Reply-To: <a63ba654-aaa5-3a8c-08ac-c5fd761a5b8d@aksignal.cz>
- (=?utf-8?B?IkppxZnDrQ==?=	Prchal"'s message of "Thu, 13 Oct 2016 13:40:04
- +0200")
-Content-Language: en-US
-Content-ID: <682B78902AB8AC4D896760966076E085@qualcomm.com>
+ id 1bugI1-0004aZ-HG
+ for ath10k@lists.infradead.org; Thu, 13 Oct 2016 13:43:18 +0000
 MIME-Version: 1.0
+Subject: Re: ath10k: fix debug cal data file
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1474341984-19220-1-git-send-email-mar.kolya@gmail.com>
+References: <1474341984-19220-1-git-send-email-mar.kolya@gmail.com>
+Message-ID: <21deaa8b2e7a4765bead3b77da17de49@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 13 Oct 2016 15:42:32 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +18,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "jiri.prchal@aksignal.cz" <jiri.prchal@aksignal.cz>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Nikolay Martynov <mar.kolya@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-SmnFmcOtIFByY2hhbCA8amlyaS5wcmNoYWxAYWtzaWduYWwuY3o+IHdyaXRlczoNCg0KPiBIaSwN
-Cj4gSSd2ZSBnb3QgdGhpcyBtaW5pUENJZSB3aWZpIG1vZHVsZSB3aGljaCBjb21lcyB3aXRoIEFz
-dXMgbW90aGVyYm9hcmQ6DQo+DQo+ICRsc3BjaSAtdm5uDQo+IDAyOjAwLjAgTmV0d29yayBjb250
-cm9sbGVyIFswMjgwXTogUXVhbGNvbW0gQXRoZXJvcyBRQ0E2MTc0IDgwMi4xMWFjIFdpcmVsZXNz
-IE5ldHdvcmsgQWRhcHRlciBbMTY4YzowMDNlXSAocmV2IDMyKQ0KPiAJU3Vic3lzdGVtOiBBU1VT
-VGVLIENvbXB1dGVyIEluYy4gUUNBNjE3NCA4MDIuMTFhYyBXaXJlbGVzcyBOZXR3b3JrIEFkYXB0
-ZXIgWzEwNDM6ODZjZF0NCj4gCUZsYWdzOiBidXMgbWFzdGVyLCBmYXN0IGRldnNlbCwgbGF0ZW5j
-eSAwLCBJUlEgMTI1DQo+IAlNZW1vcnkgYXQgZjcwMDAwMDAgKDY0LWJpdCwgbm9uLXByZWZldGNo
-YWJsZSkgW3NpemU9Mk1dDQo+IAlDYXBhYmlsaXRpZXM6IDxhY2Nlc3MgZGVuaWVkPg0KPiAJS2Vy
-bmVsIGRyaXZlciBpbiB1c2U6IGF0aDEwa19wY2kNCj4gCUtlcm5lbCBtb2R1bGVzOiBhdGgxMGtf
-cGNpDQo+DQo+IEJ1dCBJIGhhdmUgcHJvYmxlbSB0byBnZXQgaXQgd29ya2luZy4gSXQgbG9vayB0
-aGF0IHdsYW4gaXMgdGhlcmUsIGJ1dCBkb2Vzbid0IHJlY2VpdmUgYW55IFNTSUQuDQo+DQo+ICRp
-cCBhDQo+IDQ6IHdscDJzMDogPE5PLUNBUlJJRVIsQlJPQURDQVNULE1VTFRJQ0FTVCxVUD4gbXR1
-IDE1MDAgcWRpc2MgbXEgc3RhdGUgRE9XTiBncm91cCBkZWZhdWx0IHFsZW4gMTAwMA0KPiAgICAg
-bGluay9ldGhlciBjODpmZjoyODowZTo1ZTplMSBicmQgZmY6ZmY6ZmY6ZmY6ZmY6ZmYNCj4NCj4g
-JGl3IGRldiB3bHAyczAgc2Nhbg0KPiAgcmV0dXJucyBub3RoaW5nLg0KPg0KPiBJIGhhdmUgVWJ1
-bnR1IDE2LjA0IHdpdGggdGhpcyBrZXJuZWw6DQo+ICR1bmFtZSAtYQ0KPiBMaW51eCBkb2xlIDQu
-NC4wLTQyLWdlbmVyaWMgIzYyLVVidW50dSBTTVAgRnJpIE9jdCA3IDIzOjExOjQ1IFVUQyAyMDE2
-IHg4Nl82NCB4ODZfNjQgeDg2XzY0IEdOVS9MaW51eA0KPg0KPiBJJ3ZlIHRyaWVkIGJvdGggZGlz
-dHJvIGFuZCBnaXQgRlcgKHByb2JhYmx5IHRoZSBzYW1lKSwgYnV0IGl0IHN0aWxsDQo+IGNvbXBs
-aWVzIGFib3V0IGZpcm13YXJlLTUuYmluLiBJIHRoaW5nIHRoZXJlIGlzIG1pc3Npbmcgc3Vic3lz
-dGVtIElEDQo+IGluIGJvYXJkLTIuYmluIGFzIEkgbWVudGlvbmVkIHRoZXJlIHdhcyBhZGRlZCBz
-b21lIG90aGVyIHN1YklEIDINCj4gbW9udGhzIGFnby4NCj4NCj4gJGRtZXNnIHwgZ3JlcCBhdGgN
-Cj4gWyAgICAxLjk5NzI0Nl0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IHBjaSBpcnEgbXNpIGlu
-dGVycnVwdHMgMSBpcnFfbW9kZSAwIHJlc2V0X21vZGUgMA0KPiBbICAgIDIuMjUyODQwXSBhdGgx
-MGtfcGNpIDAwMDA6MDI6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yIGF0aDEway9jYWwt
-cGNpLTAwMDA6MDI6MDAuMC5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTINCj4gWyAgICAyLjI2MDgx
-M10gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvciBhdGgx
-MGsvUUNBNjE3NC9odzMuMC9maXJtd2FyZS01LmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMg0KPiBb
-ICAgIDIuMjYwODE2XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogY291bGQgbm90IGZldGNoIGZp
-cm13YXJlIGZpbGUgJ2F0aDEway9RQ0E2MTc0L2h3My4wL2Zpcm13YXJlLTUuYmluJzogLTINCg0K
-U28gaWdub3JlIHRoaXMgZmlybXdhcmUtNS5iaW4gd2FybmluZywgYXRoMTBrIHdpbGwgYXV0b21h
-dGljYWxseSBmYWxsDQpiYWNrIHRvIHVzaW5nIGZpcm13YXJlLTQuYmluLiBJIGtub3cgaXQncyBj
-b25mdXNpbmcsIHdlIGp1c3QgaGF2ZW4ndA0KZm91bmQgYSBnb29kIGVub3VnaCB3YXkgdG8gc2ls
-ZW5jZSB0aGlzIHdhcm5pbmcgeWV0Lg0KDQo+IFsgICAgNC40NjE0MjldIGF0aDEwa19wY2kgMDAw
-MDowMjowMC4wOiBxY2E2MTc0IGh3My4yICgweDA1MDMwMDAwLA0KPiAweDAwMzQwYWZmIHN1YiAx
-MDQzOjg2Y2QpIGZ3IFdMQU4uUk0uMi4wLTAwMTgwLVFDQVJNU1dQWi0xIGZ3YXBpIDQNCj4gYmRh
-cGkgMiBodHQtdmVyIDMuMjYgd21pLW9wIDQgaHR0LW9wIDMgY2FsIG90cCBtYXgtc3RhIDMyIHJh
-dyAwDQo+IGh3Y3J5cHRvIDEgZmVhdHVyZXMgd293bGFuLGlnbm9yZS1vdHAsbm8tNGFkZHItcGFk
-DQoNCllvdXIgYXRoMTBrIGlzIHRvbyBvbGQgc28gdGhhdCBpdCBkb2Vzbid0IHByaW50IHRoZSBj
-cmMzMiBjaGVja3N1bSBvZg0KdGhlIGJvYXJkIGZpbGUgeW91IGhhdmUgc28gSSBkb24ndCBrbm93
-IHdoYXQgdmVyc2lvbiBvZiB0aGUgYm9hcmQgZmlsZQ0KeW91IGV4YWN0bHkgaGF2ZS4gQnV0IEkg
-anVzdCBjaGVja2VkLCB0aGUgbGF0ZXN0IG9uZSBmcm9tDQphdGgxMGstZmlybXdhcmUuZ2l0IHNo
-b3VsZCBzdXBwb3J0IHlvdXIgYm9hcmQgd2l0aCBzdWJzeXN0ZW0gaWQNCjEwNDM6ODZjZDoNCg0K
-JCBzdHJpbmdzIFFDQTYxNzQvaHczLjAvYm9hcmQtMi5iaW4gfCBncmVwIDg2Y2QNCmJ1cz1wY2ks
-dmVuZG9yPTE2OGMsZGV2aWNlPTAwM2Usc3Vic3lzdGVtLXZlbmRvcj0xMDQzLHN1YnN5c3RlbS1k
-ZXZpY2U9ODZjZG0NCg0KVGhlIGNoZWNrc3VtcyBvZiB0aGUgbGF0ZXN0IGJvYXJkIGZpbGUgYXJl
-Og0KDQpGaWxlQ1JDMzI6IDZmYzg4ZmU3DQpGaWxlTUQ1OiA0ODA3OTAzYzk1NmRiZDhiODdmNWQ4
-M2M1NTljMjIxMQ0KDQpZb3UgY2FuIGNoZWNrIHdoYXQgeW91IGFyZSB1c2luZyBsaWtlIHRoaXM6
-DQoNCm1kNXN1bSAvbGliL2Zpcm13YXJlL2F0aDEway9RQ0E2MTc0L2h3My4wL2JvYXJkLTIuYmlu
-DQoNCihVbmxlc3MgSSBtYWRlIGEgdHlwbyBpbiB0aGUgcGF0aCwgYnV0IHlvdSBzaG91bGQgYmUg
-YWJsZSB0byBmaW5kIGl0DQplYXNpbHkuKQ0KDQotLSANCkthbGxlIFZhbG8KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2F0aDEwawo=
+Nikolay Martynov <mar.kolya@gmail.com> wrote:
+> It got broken by 0b8e3c4ca29fe2c0efd3d41a76e34a657b9f17a4
+> 
+> Signed-off-by: Nikolay Martynov <mar.kolya@gmail.com>
+
+Actually Marty's patch fixed this in a better way so I actually took that
+instead:
+
+f67b107d4ced ath10k: cache calibration data when the core is stopped
+
+-- 
+https://patchwork.kernel.org/patch/9340953/
+
+Documentation about submitting wireless patches and checking status
+from patchwork:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
