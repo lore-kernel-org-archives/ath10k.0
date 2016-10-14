@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from router.aksignal.cz ([188.175.113.102])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bugti-0004Ft-Fr
- for ath10k@lists.infradead.org; Thu, 13 Oct 2016 14:22:16 +0000
+ id 1buxUo-00017X-IU
+ for ath10k@lists.infradead.org; Fri, 14 Oct 2016 08:05:40 +0000
+Subject: Re: qca6174 missing firmware or subsystem id?
+References: <a63ba654-aaa5-3a8c-08ac-c5fd761a5b8d@aksignal.cz>
+ <87r37kcskr.fsf@kamboji.qca.qualcomm.com>
+ <cff59721-5291-a274-3c19-4d513e6ea598@aksignal.cz>
+ <8737k0covg.fsf@kamboji.qca.qualcomm.com>
+From: =?UTF-8?B?SmnFmcOtIFByY2hhbA==?= <jiri.prchal@aksignal.cz>
+Message-ID: <33082fe7-75dd-dd05-d06e-fdde57d2621d@aksignal.cz>
+Date: Fri, 14 Oct 2016 10:05:12 +0200
 MIME-Version: 1.0
-Subject: Re: ath10k: Fix kernel panic due to race in accessing arvif list
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1476109278-7957-1-git-send-email-vthiagar@qti.qualcomm.com>
-References: <1476109278-7957-1-git-send-email-vthiagar@qti.qualcomm.com>
-Message-ID: <030f922c81064fa9aa26523b2e7f318d@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 13 Oct 2016 16:21:47 +0200
+In-Reply-To: <8737k0covg.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,62 +21,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: jiri.prchal@aksignal.cz
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> wrote:
-> arvifs list is traversed within data_lock spin_lock in tasklet
-> context to fill channel information from the corresponding vif.
-> This means any access to arvifs list for add/del operations
-> should also be protected with the same spin_lock to avoid the
-> race. Fix this by performing list add/del on arvfis within the
-> data_lock. This could fix kernel panic something like the below.
-> 
->  LR is at ath10k_htt_rx_pktlog_completion_handler+0x100/0xb6c [ath10k_core]
->  PC is at ath10k_htt_rx_pktlog_completion_handler+0x1c0/0xb6c [ath10k_core]
->  Internal error: Oops: 17 [#1] PREEMPT SMP ARM
->  [<bf4857f4>] (ath10k_htt_rx_pktlog_completion_handler+0x2f4/0xb6c [ath10k_core])
->  [<bf487540>] (ath10k_htt_txrx_compl_task+0x8b4/0x1188 [ath10k_core])
->  [<c00312d4>] (tasklet_action+0x8c/0xec)
->  [<c00309a8>] (__do_softirq+0xdc/0x208)
->  [<c0030d6c>] (irq_exit+0x84/0xe0)
->  [<c005db04>] (__handle_domain_irq+0x80/0xa0)
->  [<c00085c4>] (gic_handle_irq+0x38/0x5c)
->  [<c0009640>] (__irq_svc+0x40/0x74)
-> 
-> (gdb) list *(ath10k_htt_rx_pktlog_completion_handler+0x1c0)
-> 0x136c0 is in ath10k_htt_rx_h_channel (drivers/net/wireless/ath/ath10k/htt_rx.c:769)
-> 764		struct cfg80211_chan_def def;
-> 765
-> 766		lockdep_assert_held(&ar->data_lock);
-> 767
-> 768		list_for_each_entry(arvif, &ar->arvifs, list) {
-> 769			if (arvif->vdev_id == vdev_id &&
-> 770			    ath10k_mac_vif_chan(arvif->vif, &def) == 0)
-> 771				return def.chan;
-> 772		}
-> 773
-> 
-> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-ebaa4b1620bf ath10k: fix kernel panic due to race in accessing arvif list
-
--- 
-https://patchwork.kernel.org/patch/9369573/
-
-Documentation about submitting wireless patches and checking status
-from patchwork:
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CgpPbiAxMy4xMC4yMDE2IDE2OjIwLCBWYWxvLCBLYWxsZSB3cm90ZToKPiBKacWZw60gUHJjaGFs
+IDxqaXJpLnByY2hhbEBha3NpZ25hbC5jej4gd3JpdGVzOgo+Cj4+IE9uIDEzLjEwLjIwMTYgMTU6
+MDAsIFZhbG8sIEthbGxlIHdyb3RlOgo+Pj4gSmnFmcOtIFByY2hhbCA8amlyaS5wcmNoYWxAYWtz
+aWduYWwuY3o+IHdyaXRlczoKPj4+Cj4+Pj4gJGRtZXNnIHwgZ3JlcCBhdGgKPj4+PiBbICAgIDEu
+OTk3MjQ2XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogcGNpIGlycSBtc2kgaW50ZXJydXB0cyAx
+IGlycV9tb2RlIDAgcmVzZXRfbW9kZSAwCj4+Pj4gWyAgICAyLjI1Mjg0MF0gYXRoMTBrX3BjaSAw
+MDAwOjAyOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvciBhdGgxMGsvY2FsLXBjaS0wMDAw
+OjAyOjAwLjAuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4+Pj4gWyAgICAyLjI2MDgxM10gYXRo
+MTBrX3BjaSAwMDAwOjAyOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvciBhdGgxMGsvUUNB
+NjE3NC9odzMuMC9maXJtd2FyZS01LmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMgo+Pj4+IFsgICAg
+Mi4yNjA4MTZdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBjb3VsZCBub3QgZmV0Y2ggZmlybXdh
+cmUgZmlsZSAnYXRoMTBrL1FDQTYxNzQvaHczLjAvZmlybXdhcmUtNS5iaW4nOiAtMgo+Pj4KPj4+
+IFNvIGlnbm9yZSB0aGlzIGZpcm13YXJlLTUuYmluIHdhcm5pbmcsIGF0aDEwayB3aWxsIGF1dG9t
+YXRpY2FsbHkgZmFsbAo+Pj4gYmFjayB0byB1c2luZyBmaXJtd2FyZS00LmJpbi4gSSBrbm93IGl0
+J3MgY29uZnVzaW5nLCB3ZSBqdXN0IGhhdmVuJ3QKPj4+IGZvdW5kIGEgZ29vZCBlbm91Z2ggd2F5
+IHRvIHNpbGVuY2UgdGhpcyB3YXJuaW5nIHlldC4KPj4KPj4gT0suIE1heWJlIHRlbXBvcmFyeSBm
+aXg6IHdyaXRlIGluZm8gbWVzc2FnZSB3aGF0IGZpcm13YXJlIGlzIGZpbmFsbHkKPj4gbG9hZGVk
+Pwo+Cj4gVGhhdCdzIGEgZ29vZCBpZGVhLiBEZXZlbG9wZXJzIGNhbiBhbHJlYWR5IHNlZSB0aGF0
+IGZyb20gdGhlICJmd2FwaSA0Igo+IHByaW50IGJ1dCBzb21la2luZCBvZiBleHBsYW5hdGlvbiBp
+biBlbmdsaXNoIHNob3VsZCByZWR1Y2UgdGhlIGNvbmZ1c2lvbgo+IHdpdGggbm9ybWFsIHVzZXJz
+Lgo+Cj4+Pj4gWyAgICA0LjQ2MTQyOV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IHFjYTYxNzQg
+aHczLjIgKDB4MDUwMzAwMDAsCj4+Pj4gMHgwMDM0MGFmZiBzdWIgMTA0Mzo4NmNkKSBmdyBXTEFO
+LlJNLjIuMC0wMDE4MC1RQ0FSTVNXUFotMSBmd2FwaSA0Cj4+Pj4gYmRhcGkgMiBodHQtdmVyIDMu
+MjYgd21pLW9wIDQgaHR0LW9wIDMgY2FsIG90cCBtYXgtc3RhIDMyIHJhdyAwCj4+Pj4gaHdjcnlw
+dG8gMSBmZWF0dXJlcyB3b3dsYW4saWdub3JlLW90cCxuby00YWRkci1wYWQKPj4+Cj4+PiBZb3Vy
+IGF0aDEwayBpcyB0b28gb2xkIHNvIHRoYXQgaXQgZG9lc24ndCBwcmludCB0aGUgY3JjMzIgY2hl
+Y2tzdW0gb2YKPj4+IHRoZSBib2FyZCBmaWxlIHlvdSBoYXZlIHNvIEkgZG9uJ3Qga25vdyB3aGF0
+IHZlcnNpb24gb2YgdGhlIGJvYXJkIGZpbGUKPj4+IHlvdSBleGFjdGx5IGhhdmUuIEJ1dCBJIGp1
+c3QgY2hlY2tlZCwgdGhlIGxhdGVzdCBvbmUgZnJvbQo+Pj4gYXRoMTBrLWZpcm13YXJlLmdpdCBz
+aG91bGQgc3VwcG9ydCB5b3VyIGJvYXJkIHdpdGggc3Vic3lzdGVtIGlkCj4+PiAxMDQzOjg2Y2Q6
+Cj4+Cj4+IFNob3VsZCBJIHRyeSB0aGUgbmV3ZXN0IGtlcm5lbD8KPgo+IFRoYXQncyBhbHdheXMg
+YSBnb29kIGlkZWEsIGZvciBleGFtcGxlIHlvdSBjb3VsZCB0cnkganVzdCByZWxlYXNlZCB2NC44
+Lgo+IERvZXMgdWJ1bnR1IHN0aWxsIHByb3ZpZGUgLmRlYnMgZm9yIHVwc3RyZWFtIGtlcm5lbHM/
+CgpJIHRyaWVkIDQuOC4xIGFuZCBpdCB3b3JrcyBub3csIGJ1dCBwcm9iYWJseSBpdCB3b3JrZWQg
+YmVmb3JlLCBiZWNhdXNlIEkgc2V0IEFQIHRvIGNoYW5uZWwgMTMgYW5kIGl0IHdhcyB0aGUgcHJv
+YmxlbS4KCj4KPiBPciB5b3UgY2FuIHRyeSBiYWNrcG9ydHM6Cj4KPiBodHRwczovL3dpcmVsZXNz
+Lndpa2kua2VybmVsLm9yZy9lbi91c2Vycy9kcml2ZXJzL2F0aDEway9iYWNrcG9ydHMKCkJhY2tw
+b3J0cyBhcmUgdXAgdG8gNC4yLgoKPgo+Pj4gJCBzdHJpbmdzIFFDQTYxNzQvaHczLjAvYm9hcmQt
+Mi5iaW4gfCBncmVwIDg2Y2QKPj4+IGJ1cz1wY2ksdmVuZG9yPTE2OGMsZGV2aWNlPTAwM2Usc3Vi
+c3lzdGVtLXZlbmRvcj0xMDQzLHN1YnN5c3RlbS1kZXZpY2U9ODZjZG0KPj4+Cj4+PiBUaGUgY2hl
+Y2tzdW1zIG9mIHRoZSBsYXRlc3QgYm9hcmQgZmlsZSBhcmU6Cj4+Pgo+Pj4gRmlsZUNSQzMyOiA2
+ZmM4OGZlNwo+Pj4gRmlsZU1ENTogNDgwNzkwM2M5NTZkYmQ4Yjg3ZjVkODNjNTU5YzIyMTEKPj4+
+Cj4+PiBZb3UgY2FuIGNoZWNrIHdoYXQgeW91IGFyZSB1c2luZyBsaWtlIHRoaXM6Cj4+Pgo+Pj4g
+bWQ1c3VtIC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTYxNzQvaHczLjAvYm9hcmQtMi5iaW4KPj4K
+Pj4gWWVzLCBJIGhhdmUgdGhlIG5ld2VzdDogNDgwNzkwM2M5NTZkYmQ4Yjg3ZjVkODNjNTU5YzIy
+MTEuCj4KPiBUaGVuIEkgc3VzcGVjdCB0aGlzIGlzIHNvbWV0aGluZyBlbHNlIHRoYW4gYm9hcmQg
+ZmlsZSByZWxhdGVkLCBidXQgb2YKPiBjb3Vyc2UgSSBjYW4ndCBiZSAxMDAlIHN1cmUuIFlvdSBj
+b3VsZCBhbHNvIHRyeSBlbmFibGluZyBkZWJ1ZyBtZXNzYWdlcwo+IGFuZCBzZWUgaWYgdGhleSBy
+ZXZlYWwgYW55dGhpbmcsIGZvciBleGFtcGxlIGRlYnVnX21hc2s9MHgwMDAwMDQzMiBpcyBhCj4g
+Z29vZCBzdGFydDoKPgo+IGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3VzZXJz
+L2RyaXZlcnMvYXRoMTBrL2RlYnVnCj4KPiBIYXZlIHlvdSB2ZXJpZmllZCB0aGF0IHRoaXMgaXMg
+bm90IGEgaGFyZHdhcmUgcHJvYmxlbT8gRm9yIGV4YW1wbGUsIGRvZXMKPiB0aGUgYm9hcmQgd29y
+ayBvbiBXaW5kb3dzPwo+Cj4gQWxzbyBtYWtlIHN1cmUgdGhhdCB5b3UgaGF2ZSBraWxsZWQgd3Bh
+c3VwcGxpY2FudCwgbmV0d29yay1tYW5hZ2VyIG9yCj4gYW55IG90aGVyIGVudGl0eSB3aGljaCBt
+aWdodCBjb250cm9sIHRoZSB3aXJlbGVzcyBkZXZpY2UgKHZlcnkgdW5saWtlbHkKPiB0aGF0IHdv
+dWxkIGNhdXNlIHRoaXMgYnV0IGJldHRlciB0byBiZSBzdXJlKS4KPgo+IFdoYXQgY2hhbm5lbCBp
+cyB5b3VyIEFQIGluPyBBcmUgdGhlcmUgbXVsdGlwbGUgQVBzIGluIHRoZSBhcmVhPyBUaGlzCj4g
+Y291bGQgYmUgYWxzbyBhIGNoYW5uZWwgcHJvYmxlbSwgJ2l3IGxpc3QnIGhlbHBzIHRvIGludmVz
+dGlnYXRlIHRoYXQgKG9yCj4gY2hhbmdpbmcgdGhlIGNoYW5uZWwgb24gQVApLgo+CgpBcyBJIHdy
+b3RlIHRoZSBwcm9ibGVtIHdhcyBjaGFubmVsLiBIb3dldmVyIGl0IHNob3VsZCB3b3JrIGNhdXNl
+IEkgc2V0IGNvdW50cnkgdG8gQ1ouCk1heSBiZSBJIHNob3VsZCBvcGVuIG5ldyB0aHJlYWQ/Cgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
+bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
