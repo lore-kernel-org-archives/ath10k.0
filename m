@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1buzNu-0000XP-Hw
- for ath10k@lists.infradead.org; Fri, 14 Oct 2016 10:06:39 +0000
+ id 1buzWC-0002eS-Rw
+ for ath10k@lists.infradead.org; Fri, 14 Oct 2016 10:15:13 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH] QCA9984 VHT160 support
-Date: Fri, 14 Oct 2016 10:06:12 +0000
-Message-ID: <87zim79re4.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 14 Oct 2016 10:14:45 +0000
+Message-ID: <87vawv9qzv.fsf@kamboji.qca.qualcomm.com>
 References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
  <57320C1A.3040604@candelatech.com>
  <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
@@ -20,13 +20,10 @@ References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
  <bd2ae01e-6cf5-837e-5573-1d62bbfdbe1b@dd-wrt.com>
  <8737l2ee1y.fsf@kamboji.qca.qualcomm.com>
  <5c915231-db74-a147-f904-21c09d8a1ff0@dd-wrt.com>
- <87wphgi41c.fsf@kamboji.qca.qualcomm.com>
- <87shs4i3yi.fsf@kamboji.qca.qualcomm.com>
- <938e11ff-5989-2412-b647-25ea3977ae35@dd-wrt.com>
-In-Reply-To: <938e11ff-5989-2412-b647-25ea3977ae35@dd-wrt.com> (Sebastian
- Gottschall's message of "Tue, 11 Oct 2016 03:30:50 +0200")
+In-Reply-To: <5c915231-db74-a147-f904-21c09d8a1ff0@dd-wrt.com> (Sebastian
+ Gottschall's message of "Fri, 16 Sep 2016 09:51:31 +0200")
 Content-Language: en-US
-Content-ID: <3365FC835B5788469F0771E280EAD564@qualcomm.com>
+Content-ID: <DED46D287E02B542A01CFC0776FB526E@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -45,36 +42,14 @@ Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
 
-> Am 10.10.2016 um 18:06 schrieb Valo, Kalle:
->> Kalle Valo <kvalo@qca.qualcomm.com> writes:
->>
->>> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
->>>
->>>> This patch adds full VHT160 support for QCA9984 chipsets
->>>> Tested on Netgear R7800. 80+80 is possible, but disabled so far since
->>>> it seems to contain glitches like missing vht station flags (this may
->>>> be firmware or mac80211 related)
->>> There are some compilation and checkpatch warnings. Also you forgot to
->>> CC linux-wireless and sent the patch as an attachment. I'll send v2 to
->>> fix those.
->
-> gen_dbglog_cfg? i did not touch anything on this struct in my patch.
-> this warning doesnt seem to belong to my patch
+> This patch adds full VHT160 support for QCA9984 chipsets
+> Tested on Netgear R7800. 80+80 is possible, but disabled so far since
+> it seems to contain glitches like missing vht station flags (this may
+> be firmware or mac80211 related)
 
-According to patchwork you did, see below. Most likely just merge damage
-from rebasing, I fixed it in v2.
-
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2468,7 +2468,7 @@  ath10k_wmi_tlv_op_gen_force_fw_hang(struct ath10k *ar,
- }
- 
- static struct sk_buff *
--ath10k_wmi_tlv_op_gen_dbglog_cfg(struct ath10k *ar, u64 module_enable,
-+ath10k_wmi_tlv_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable,
- 				 u32 log_level) {
- 	struct wmi_tlv_dbglog_cmd *cmd;
- 	struct wmi_tlv *tlv;
+So how did you disable 80+80 exactly? I can't find it and I would like
+to add a comment to the code so that it's easy to enable it later (once
+it's working).
 
 -- 
 Kalle Valo
