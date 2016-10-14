@@ -1,20 +1,33 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from router.aksignal.cz ([188.175.113.102])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1buyXy-0004JW-91
- for ath10k@lists.infradead.org; Fri, 14 Oct 2016 09:12:59 +0000
-Subject: Re: qca6174 missing firmware or subsystem id?
-References: <a63ba654-aaa5-3a8c-08ac-c5fd761a5b8d@aksignal.cz>
- <87r37kcskr.fsf@kamboji.qca.qualcomm.com>
- <cff59721-5291-a274-3c19-4d513e6ea598@aksignal.cz>
- <8737k0covg.fsf@kamboji.qca.qualcomm.com>
- <33082fe7-75dd-dd05-d06e-fdde57d2621d@aksignal.cz>
- <CA+BoTQkRk9oJSXwsNvFxHOpvVg3A3TdX3fk_ESTqfWSJLDxe2g@mail.gmail.com>
-From: =?UTF-8?B?SmnFmcOtIFByY2hhbA==?= <jiri.prchal@aksignal.cz>
-Message-ID: <c7709def-6582-f974-f784-344ddbf6cff5@aksignal.cz>
-Date: Fri, 14 Oct 2016 11:12:33 +0200
+ id 1buzNu-0000XP-Hw
+ for ath10k@lists.infradead.org; Fri, 14 Oct 2016 10:06:39 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] QCA9984 VHT160 support
+Date: Fri, 14 Oct 2016 10:06:12 +0000
+Message-ID: <87zim79re4.fsf@kamboji.qca.qualcomm.com>
+References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
+ <57320C1A.3040604@candelatech.com>
+ <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
+ <57335A43.4050902@candelatech.com>
+ <CA+uUJGsVi0OiwK4D6n-ANXRm6ptiTdjvKNboXobwn4FA0YfsRQ@mail.gmail.com>
+ <573892F5.40706@candelatech.com> <5738AE96.8040800@candelatech.com>
+ <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
+ <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
+ <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
+ <87lgyug42q.fsf@kamboji.qca.qualcomm.com>
+ <bd2ae01e-6cf5-837e-5573-1d62bbfdbe1b@dd-wrt.com>
+ <8737l2ee1y.fsf@kamboji.qca.qualcomm.com>
+ <5c915231-db74-a147-f904-21c09d8a1ff0@dd-wrt.com>
+ <87wphgi41c.fsf@kamboji.qca.qualcomm.com>
+ <87shs4i3yi.fsf@kamboji.qca.qualcomm.com>
+ <938e11ff-5989-2412-b647-25ea3977ae35@dd-wrt.com>
+In-Reply-To: <938e11ff-5989-2412-b647-25ea3977ae35@dd-wrt.com> (Sebastian
+ Gottschall's message of "Tue, 11 Oct 2016 03:30:50 +0200")
+Content-Language: en-US
+Content-ID: <3365FC835B5788469F0771E280EAD564@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQkRk9oJSXwsNvFxHOpvVg3A3TdX3fk_ESTqfWSJLDxe2g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +36,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: jiri.prchal@aksignal.cz
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-CgpPbiAxNC4xMC4yMDE2IDEwOjI1LCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDE0IE9jdG9i
-ZXIgMjAxNiBhdCAxMDowNSwgSmnFmcOtIFByY2hhbCA8amlyaS5wcmNoYWxAYWtzaWduYWwuY3o+
-IHdyb3RlOgo+IFsuLi5dCj4+PiBXaGF0IGNoYW5uZWwgaXMgeW91ciBBUCBpbj8gQXJlIHRoZXJl
-IG11bHRpcGxlIEFQcyBpbiB0aGUgYXJlYT8gVGhpcwo+Pj4gY291bGQgYmUgYWxzbyBhIGNoYW5u
-ZWwgcHJvYmxlbSwgJ2l3IGxpc3QnIGhlbHBzIHRvIGludmVzdGlnYXRlIHRoYXQgKG9yCj4+PiBj
-aGFuZ2luZyB0aGUgY2hhbm5lbCBvbiBBUCkuCj4+Pgo+Pgo+PiBBcyBJIHdyb3RlIHRoZSBwcm9i
-bGVtIHdhcyBjaGFubmVsLiBIb3dldmVyIGl0IHNob3VsZCB3b3JrIGNhdXNlIEkgc2V0Cj4+IGNv
-dW50cnkgdG8gQ1ouCj4+IE1heSBiZSBJIHNob3VsZCBvcGVuIG5ldyB0aHJlYWQ/Cj4KPiBZb3Ug
-dHlwaWNhbGx5IG5lZWQgdG8gZG8gYW4gaW50ZXJzZWN0aW9uIGJldHdlZW4gMiByZWd1bGF0b3J5
-IGRvbWFpbnM6Cj4gdGhlIG9uZSB0aGF0IHRoZSBjaGlwIHdhcyBjZXJ0aWZpZWQvY2FsaWJyYXRl
-ZCAoYmFrZWQgaW50byBlZXByb20pCj4gYWdhaW5zdCBhbmQgdGhlIG9uZSBvZiB5b3VyIHN5c3Rl
-bSAod2hpY2ggaXMgc3VwcG9zZWQgdG8gYmUgdGllZCB0bwo+IHlvdXIgY3VycmVudCBnZW9sb2Nh
-dGlvbikuCj4KPiBJZiB0aGUgY2hpcCdzIGVlcHJvbSBpbXBsaWVzIHlvdSBjYW4ndCB1c2UgY2gx
-MyBhbmQgeW91ciBzeXN0ZW0gc2F5cwo+IHlvdSBjYW4gdGhlbiB5b3Ugc3RpbGwgY2FuJ3QgdXNl
-IGNoMTMuCj4KPiBgaXcgbGlzdGAgd2lsbCBvdXRwdXQgbGlzdCBvZiBjaGFubmVscyB0aGF0IGFy
-ZSBhdmFpbGFibGUgYW5kIHRoZWlyCj4gZmxhZ3MgKGUuZy4gImRpc2FibGVkIiwgb3IgIm5vLWly
-IikuCj4KCgkJCSogMjQ2NyBNSHogWzEyXSAoMjAuMCBkQm0pIChubyBJUikKCQkJKiAyNDcyIE1I
-eiBbMTNdICgyMC4wIGRCbSkgKG5vIElSKQpJIGZpbmQgb3V0ICJubyBJUiIgbWVhbnMgbm8gQVAg
-bW9kZSwgYW5kIEkgbGlrZSB0byB1c2UgaXQgYXMgQVAuIFNvIEknbSBub3QgaGFwcHkgY2F1c2Ug
-dGhlIG9ubHkgZnJlZSBjaGFubmVsIGluIG15IApsb2NhdGlvbiBpcyAxMy4gVGhlIHByb2JhYmx5
-IHNvbGQgbWUgbm9uIEVVIGRpc3RyaWJ1dGlvbi4gSXMgdGhlcmUgYW55IHdheSB0byBiYWtlIHRv
-IGVlcHJvbSByaWdodCByZWdpb24/Cgo+Cj4gTWljaGHFggo+CgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+
+> Am 10.10.2016 um 18:06 schrieb Valo, Kalle:
+>> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+>>
+>>> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+>>>
+>>>> This patch adds full VHT160 support for QCA9984 chipsets
+>>>> Tested on Netgear R7800. 80+80 is possible, but disabled so far since
+>>>> it seems to contain glitches like missing vht station flags (this may
+>>>> be firmware or mac80211 related)
+>>> There are some compilation and checkpatch warnings. Also you forgot to
+>>> CC linux-wireless and sent the patch as an attachment. I'll send v2 to
+>>> fix those.
+>
+> gen_dbglog_cfg? i did not touch anything on this struct in my patch.
+> this warning doesnt seem to belong to my patch
+
+According to patchwork you did, see below. Most likely just merge damage
+from rebasing, I fixed it in v2.
+
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -2468,7 +2468,7 @@  ath10k_wmi_tlv_op_gen_force_fw_hang(struct ath10k *ar,
+ }
+ 
+ static struct sk_buff *
+-ath10k_wmi_tlv_op_gen_dbglog_cfg(struct ath10k *ar, u64 module_enable,
++ath10k_wmi_tlv_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable,
+ 				 u32 log_level) {
+ 	struct wmi_tlv_dbglog_cmd *cmd;
+ 	struct wmi_tlv *tlv;
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
