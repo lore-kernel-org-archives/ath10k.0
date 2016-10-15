@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bvHTG-0008On-DK
- for ath10k@lists.infradead.org; Sat, 15 Oct 2016 05:25:23 +0000
+ id 1bvHXv-0001Rm-Ch
+ for ath10k@lists.infradead.org; Sat, 15 Oct 2016 05:30:12 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
 Subject: Re: [RFC 0/5] ath6kl: non WMI data service support
-Date: Sat, 15 Oct 2016 05:24:42 +0000
-Message-ID: <87funy9obq.fsf@kamboji.qca.qualcomm.com>
+Date: Sat, 15 Oct 2016 05:29:45 +0000
+Message-ID: <87bmym9o3a.fsf@kamboji.qca.qualcomm.com>
 References: <1476376769-4708-1-git-send-email-erik.stromdahl@gmail.com>
- <CALupW3CrY5sZYBcx5Bd3E_M_Kx2sx8_N9h_uexvg_DSO0c-tJA@mail.gmail.com>
- <87y41rbleo.fsf@kamboji.qca.qualcomm.com>
- <656f8674-64b9-0440-f8ae-28177c300b1c@gmail.com>
-In-Reply-To: <656f8674-64b9-0440-f8ae-28177c300b1c@gmail.com> (Erik
- Stromdahl's message of "Fri, 14 Oct 2016 17:38:35 +0200")
+ <87k2dbbczu.fsf@kamboji.qca.qualcomm.com>
+ <ce941451-4d1c-4931-0f26-da52f5334f08@gmail.com>
+In-Reply-To: <ce941451-4d1c-4931-0f26-da52f5334f08@gmail.com> (Erik
+ Stromdahl's message of "Fri, 14 Oct 2016 17:54:27 +0200")
 Content-Language: en-US
-Content-ID: <03764ACAC93C7E42A1ECD24EBEDC76D0@qualcomm.com>
+Content-ID: <18E3A8F36F30054DAB76B3B88FCD6B1F@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,71 +28,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: Steve deRosier <derosier@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-(Adding ath10k list to CC)
+(Adding ath10k list)
 
 Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
->> Exactly what I was thinking. When I saw terms like "HTT" and "unified
->> WMI" my first thought was that is this actually an ath10k based design?
->> The product numbers really don't give any indication what driver
->> supports, the division goes something like this:
+> On 10/14/2016 09:34 AM, Valo, Kalle wrote:
+>> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 >> 
->> * ath9k: "non-mobile" 11n chips
->> * ath6k: mobile 11n chips
->> * ath10k: mobile and "non-mobile" 11ac chips
+>>> This patch series is intended to prepare the ath6kl driver
+>>> for newer chipsets that doesn't use the current WMI data
+>>> endpoints for data traffic.
+>>>
+>>> The chipset I have been working with (and used for testing)
+>>> is QCA6584. It is SDIO based (at least the variant I have
+>>> been using) with 802.11p WAVE DSRC capabilities.
+>>>
+>>> This chipset is different from the AR600X family in that
+>>> it does not use the WMI data services (service id's 0x101
+>>> to 0x104 ) for data traffic.
+>>> Instead it uses the HTT data service for data and wmi unified
+>>> for control messages.
+>>> It is also different when it comes to mailbox addresses
+>>> and HTC header format as well, but these differences are not
+>>> part of this patch series.
 >> 
->> For example QCA6174 is an 11ac mobile chip supported by ath10k. ath10k
->> only supports PCI bus at the moment, but I'm hoping someone would add
->> USB and SDIO support. Patches are very welcome.
->> 
->> I'm starting to suspect that QCA6584 is actually based on the same
->> design as QCA6174. If that's the case when we should also think if
->> instead we should add SDIO support to ath10k, maybe by taking relevant
->> parts from ath6kl?
->> 
->> I'll investigate more what this QCA6584 is, I haven't heard about it
->> before.
+>> Do you have more patches implemented, like something already working or
+>> have just started?
 >> 
 >
-> The reason I have patched to ath6kl driver was that it is the
-> only driver with sdio/mbox support.
+> I have an implementation with all features I need so far, but the other
+> patches will require cleanup before I can submit anything.
 >
-> I was actually thinking of writing a new driver from scratch, but I
-> thought that it was less work to modify the existing ath6kl driver.
+> I have been using the qcacld driver as a basis for the work and some of
+> the stuff in that driver is not really compliant with the kernel coding
+> style (to say the least).
+>
+> I have so far mainly been focused on getting all features up and running
+> and that has (unfortunately) resulted in some copy-pasting from
+> qcacld.
 
-Ok.
+Can you share the current code you have somewhere so that I could take a
+quick look? I don't care how ugly it is, I would just like to understand
+what kind of changes are needed.
 
-> I just haven't considered the option to add sdio/mbox support to ath10k.
-> This is definitely something I will have a look at.
->
-> I should mention that I have been using the qcacld2.0 driver as
-> "documentation" of the chipset.
->
-> The qcacld driver identifies the chipset as AR6320
->
-> From the qcacld2.0 driver bmi_msg.h:
->
-> #define TARGET_TYPE_AR6320    8
->
-> Perhaps this can shed some light on what kind of chip this is?
+> I will start having a look at ath10k and see how much work it would be
+> to add sdio support to it...
 
-I'm pretty sure that this is QCA6174 based design which is already
-supported by ath10k. So my suggestion is to first look at adding SDIO
-support to ath10k and see if that's feasible. We already have PCI code
-split from the core code (ath10k_core.ko and ath10k_pci.ko) just because
-I was expecting that we would add SDIO and USB support later. That has
-just never happened due to lack of time, hopefully you can fix that now
-;)
-
-I haven't studied SDIO support at all yet but hopefully WMI, core.c and
-mac.c won't need that much modifications. HTT and HTC most likely need
-bigger changes. And then you would need to add sdio.c, similarly like we
-have pci.c now. Keep in mind that later we might want to add USB support
-also so if there's something which both SDIO and USB need to that would
-need to be easily sharable. Actually after adding SDIO I hope USB would
-be easier to add.
+Thanks, let me know how it goes or if I can help somehow. My time is
+limited but if nothing else I can give some tips.
 
 -- 
 Kalle Valo
