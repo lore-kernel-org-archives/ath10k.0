@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwQfy-00005E-An
- for ath10k@lists.infradead.org; Tue, 18 Oct 2016 09:27:15 +0000
+ id 1bwQit-0000oW-P3
+ for ath10k@lists.infradead.org; Tue, 18 Oct 2016 09:30:17 +0000
 From: <akolli@qti.qualcomm.com>
 Subject: [PATCHv2 0/2] ath10k: add support for tx bitrate
-Date: Tue, 18 Oct 2016 14:56:13 +0530
-Message-ID: <1476782775-10635-1-git-send-email-akolli@qti.qualcomm.com>
+Date: Tue, 18 Oct 2016 14:59:40 +0530
+Message-ID: <1476782982-10683-1-git-send-email-akolli@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
