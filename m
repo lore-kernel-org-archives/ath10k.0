@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bvHXv-0001Rm-Ch
- for ath10k@lists.infradead.org; Sat, 15 Oct 2016 05:30:12 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC 0/5] ath6kl: non WMI data service support
-Date: Sat, 15 Oct 2016 05:29:45 +0000
-Message-ID: <87bmym9o3a.fsf@kamboji.qca.qualcomm.com>
-References: <1476376769-4708-1-git-send-email-erik.stromdahl@gmail.com>
- <87k2dbbczu.fsf@kamboji.qca.qualcomm.com>
- <ce941451-4d1c-4931-0f26-da52f5334f08@gmail.com>
-In-Reply-To: <ce941451-4d1c-4931-0f26-da52f5334f08@gmail.com> (Erik
- Stromdahl's message of "Fri, 14 Oct 2016 17:54:27 +0200")
-Content-Language: en-US
-Content-ID: <18E3A8F36F30054DAB76B3B88FCD6B1F@qualcomm.com>
+ id 1bwN7P-00083i-L3
+ for ath10k@lists.infradead.org; Tue, 18 Oct 2016 05:39:20 +0000
 MIME-Version: 1.0
+Date: Tue, 18 Oct 2016 11:08:58 +0530
+From: akolli@codeaurora.org
+Subject: Re: [PATCH 1/2] ath10k: add per peer htt tx stats support for 10.4
+In-Reply-To: <87vawygo2w.fsf@kamboji.qca.qualcomm.com>
+References: <1475852332-18217-1-git-send-email-akolli@qti.qualcomm.com>
+ <1475852332-18217-2-git-send-email-akolli@qti.qualcomm.com>
+ <87vawygo2w.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <dde8d02e9ebf2eb9f37bb36c528548c2@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +20,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "Kolli, Anilkumar" <akolli@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-(Adding ath10k list)
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
-
-> On 10/14/2016 09:34 AM, Valo, Kalle wrote:
->> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+On 2016-10-12 10:29, Valo, Kalle wrote:
+> <akolli@qti.qualcomm.com> writes:
+> 
+>> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
 >> 
->>> This patch series is intended to prepare the ath6kl driver
->>> for newer chipsets that doesn't use the current WMI data
->>> endpoints for data traffic.
->>>
->>> The chipset I have been working with (and used for testing)
->>> is QCA6584. It is SDIO based (at least the variant I have
->>> been using) with 802.11p WAVE DSRC capabilities.
->>>
->>> This chipset is different from the AR600X family in that
->>> it does not use the WMI data services (service id's 0x101
->>> to 0x104 ) for data traffic.
->>> Instead it uses the HTT data service for data and wmi unified
->>> for control messages.
->>> It is also different when it comes to mailbox addresses
->>> and HTC header format as well, but these differences are not
->>> part of this patch series.
+>> Per peer tx stats are part of 'HTT_10_4_T2H_MSG_TYPE_PEER_STATS'
+>> event, Firmware sends one HTT event for every four PPDUs.
+>> HTT payload has success pkts/bytes, failed pkts/bytes, retry
+>> pkts/bytes and rate info per ppdu.
+>> Peer stats are enabled through 'WMI_SERVICE_PEER_STATS',
+>> which are nowadays enabled by default.
 >> 
->> Do you have more patches implemented, like something already working or
->> have just started?
+>> Parse peer stats and update the tx rate information per STA.
 >> 
->
-> I have an implementation with all features I need so far, but the other
-> patches will require cleanup before I can submit anything.
->
-> I have been using the qcacld driver as a basis for the work and some of
-> the stuff in that driver is not really compliant with the kernel coding
-> style (to say the least).
->
-> I have so far mainly been focused on getting all features up and running
-> and that has (unfortunately) resulted in some copy-pasting from
-> qcacld.
+>> tx rate, Peer stats are tested on QCA4019 with Firmware version
+>> 10.4-3.2.1-00028.
+>> 
+>> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
+> 
+> This and patch 2 add few new warnings:
+> 
+> drivers/net/wireless/ath/ath10k/htt_rx.c: In function
+> 'ath10k_htt_fetch_peer_stats':
+> drivers/net/wireless/ath/ath10k/htt_rx.c:2279:3: warning: too many
+> arguments for format [-Wformat-extra-args]
+> drivers/net/wireless/ath/ath10k/htt_rx.c:2285:17: warning: incorrect
+> type in assignment (different base types)
+> drivers/net/wireless/ath/ath10k/htt_rx.c:2285:17:    expected unsigned
+> int [unsigned] [usertype] peer_id
+> drivers/net/wireless/ath/ath10k/htt_rx.c:2285:17:    got restricted
+> __le16 [usertype] peer_id
+> drivers/net/wireless/ath/ath10k/debugfs_sta.c:84: space required
+> before the open parenthesis '('
 
-Can you share the current code you have somewhere so that I could take a
-quick look? I don't care how ugly it is, I would just like to understand
-what kind of changes are needed.
+I will fix and send V2.
 
-> I will start having a look at ath10k and see how much work it would be
-> to add sdio support to it...
+Thanks,
+Anil.
 
-Thanks, let me know how it goes or if I can help somehow. My time is
-limited but if nothing else I can give some tips.
-
--- 
-Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
