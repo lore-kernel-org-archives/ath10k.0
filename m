@@ -1,30 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
- by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwQbq-0004Mx-P1
- for ath10k@lists.infradead.org; Tue, 18 Oct 2016 09:23:00 +0000
-References: <CA+uUJGtXNAe=FRgYTVDNf6aNVE78CMSs+gLj-bQgA_=hFZibaA@mail.gmail.com>
- <57320C1A.3040604@candelatech.com>
- <CA+uUJGukss2Z7i=k0OvERWvkzMGwBFTaY6R_TL5sGo4yXKQFsA@mail.gmail.com>
- <57335A43.4050902@candelatech.com>
- <CA+uUJGsVi0OiwK4D6n-ANXRm6ptiTdjvKNboXobwn4FA0YfsRQ@mail.gmail.com>
- <573892F5.40706@candelatech.com> <5738AE96.8040800@candelatech.com>
- <CA+uUJGuMrDoXat3rD2AeHTLZUCUDPHXhHVy==62mGLN01O8Vdw@mail.gmail.com>
- <87mvnp6ser.fsf@kamboji.qca.qualcomm.com>
- <572a14ee-d1b5-7b85-d292-51f583f34f17@dd-wrt.com>
- <87lgyug42q.fsf@kamboji.qca.qualcomm.com>
- <bd2ae01e-6cf5-837e-5573-1d62bbfdbe1b@dd-wrt.com>
- <8737l2ee1y.fsf@kamboji.qca.qualcomm.com>
- <5c915231-db74-a147-f904-21c09d8a1ff0@dd-wrt.com>
- <87vawv9qzv.fsf@kamboji.qca.qualcomm.com>
- <1be11c35-2a7d-4f08-4e1c-23548d6f8efc@dd-wrt.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <615775b0-0a78-e573-fff5-77a0001f5553@dd-wrt.com>
-Date: Tue, 18 Oct 2016 11:16:49 +0200
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bwQfy-00005E-An
+ for ath10k@lists.infradead.org; Tue, 18 Oct 2016 09:27:15 +0000
+From: <akolli@qti.qualcomm.com>
+Subject: [PATCHv2 0/2] ath10k: add support for tx bitrate
+Date: Tue, 18 Oct 2016 14:56:13 +0530
+Message-ID: <1476782775-10635-1-git-send-email-akolli@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1be11c35-2a7d-4f08-4e1c-23548d6f8efc@dd-wrt.com>
-Subject: Re: [PATCH] QCA9984 VHT160 support
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,77 +16,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: akolli@codeaurora.org, linux-wireless@vger.kernel.org
 
-i've seen you added a new firmware for 9984. is there anything you can =
+From: Anilkumar Kolli <akolli@codeaurora.org>
 
-tell about already?
+This patch series adds support for tx bitrate using 
+.sta_statistics callback.
 
-Am 18.10.2016 um 10:20 schrieb Sebastian Gottschall:
-> Am 14.10.2016 um 12:14 schrieb Valo, Kalle:
->> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
->>
->>> This patch adds full VHT160 support for QCA9984 chipsets
->>> Tested on Netgear R7800. 80+80 is possible, but disabled so far since
->>> it seems to contain glitches like missing vht station flags (this may
->>> be firmware or mac80211 related)
->> So how did you disable 80+80 exactly? I can't find it and I would like
->> to add a comment to the code so that it's easy to enable it later (once
->> it's working).
->
->
-> IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ  =3Dvht160 only
-> IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ =3D vht160 and 80+80 =
+tx bitrate tested on QCA4019 using iw.
 
-> support
->
-> +    if ((ar->vht_cap_info & IEEE80211_VHT_CAP_SHORT_GI_160) &&
-> +        !(ar->vht_cap_info & =
+Anilkumar Kolli (2):
+  ath10k: add per peer htt tx stats support for 10.4
+  ath10k: add support for per sta tx bitrate
 
-> IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ))
-> +        vht_cap.cap |=3D IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ;
-> +
->
-> so if the firmware itself doesnt contain the correct vht flags but =
+ drivers/net/wireless/ath/ath10k/core.h        |   17 ++++
+ drivers/net/wireless/ath/ath10k/debugfs_sta.c |   13 +++
+ drivers/net/wireless/ath/ath10k/htt.c         |    2 +
+ drivers/net/wireless/ath/ath10k/htt.h         |   25 +++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c      |  125 +++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h         |   10 +-
+ 6 files changed, 191 insertions(+), 1 deletion(-)
 
-> just short_gi_160 flag. i assume it supports vht160 and set the vht160 =
-
-> only flag.
-> newer firmwares on codeaurora contain the correct flags. so this code =
-
-> here gets avoided. unfortunatly the newer i found is also not stable =
-
-> and crashes often.
-> you can also enable 80+80 support with the current firmware.but all =
-
-> station ht and vht flags seem to be empty then in vht160 mode too. so =
-
-> it might be a firmware issue still with 80+80 or mac80211.
-> i did not debug that much. but vht160 works. i also tested it now with =
-
-> a 88w6964 marvell client in vht160 which worked too
->
->
-
-
--- =
-
-Mit freundlichen Gr=FCssen / Regards
-
-Sebastian Gottschall / CTO
-
-NewMedia-NET GmbH - DD-WRT
-Firmensitz:  Berliner Ring 101, 64625 Bensheim
-Registergericht: Amtsgericht Darmstadt, HRB 25473
-Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
-http://www.dd-wrt.com
-email: s.gottschall@dd-wrt.com
-Tel.: +496251-582650 / Fax: +496251-5826565
+-- 
+1.7.9.5
 
 
 _______________________________________________
