@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from smtp43.i.mail.ru ([94.100.177.103])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bwQl1-0002TN-PT
- for ath10k@lists.infradead.org; Tue, 18 Oct 2016 09:32:28 +0000
-From: <akolli@qti.qualcomm.com>
-Subject: [PATCHv2 2/2] ath10k: add support for per sta tx bitrate
-Date: Tue, 18 Oct 2016 15:01:25 +0530
-Message-ID: <1476783085-10724-3-git-send-email-akolli@qti.qualcomm.com>
-In-Reply-To: <1476783085-10724-1-git-send-email-akolli@qti.qualcomm.com>
-References: <1476783085-10724-1-git-send-email-akolli@qti.qualcomm.com>
+ id 1bwpuR-0001Jc-Tv
+ for ath10k@lists.infradead.org; Wed, 19 Oct 2016 12:23:53 +0000
+Received: from dsl-trebrasgw1-58c1fd-219.dhcp.inet.fi ([88.193.253.219]:53346
+ helo=[192.168.42.118])
+ by smtp43.i.mail.ru with esmtpa (envelope-from <tux-86@mail.ru>)
+ id 1bwpu3-00015T-Qz
+ for ath10k@lists.infradead.org; Wed, 19 Oct 2016 15:23:28 +0300
+Date: Wed, 19 Oct 2016 15:23:22 +0300
+From: Markus =?iso-8859-1?b?TeRsa/ZuZW4=?= <tux-86@mail.ru>
+Subject: Connection to WPA-PSK/WPA2-PSK networks doesn't work with QCA9733
+ rev 30
+Message-Id: <1476879802.3482.0@smtp.mail.ru>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -18,55 +22,17 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wireless@vger.kernel.org
 
-From: Anilkumar Kolli <akolli@qti.qualcomm.com>
-
-Per STA tx bitrate info is filled from peer stats.
-Export per sta txrate info to cfg80211/nl80211
-
-Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
----
-v2:
- * addressed kalle's comments
-
- drivers/net/wireless/ath/ath10k/debugfs_sta.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index 9955fea0802a..fce6f8137d33 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -77,6 +77,19 @@ void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 
- 	sinfo->rx_duration = arsta->rx_duration;
- 	sinfo->filled |= 1ULL << NL80211_STA_INFO_RX_DURATION;
-+
-+	if (!arsta->txrate.legacy && !arsta->txrate.nss)
-+		return;
-+
-+	if (arsta->txrate.legacy) {
-+		sinfo->txrate.legacy = arsta->txrate.legacy;
-+	} else {
-+		sinfo->txrate.mcs = arsta->txrate.mcs;
-+		sinfo->txrate.nss = arsta->txrate.nss;
-+		sinfo->txrate.bw = arsta->txrate.bw;
-+	}
-+	sinfo->txrate.flags = arsta->txrate.flags;
-+	sinfo->filled |= 1ULL << NL80211_STA_INFO_TX_BITRATE;
- }
- 
- static ssize_t ath10k_dbg_sta_read_aggr_mode(struct file *file,
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCgpJdCBzZWVtcyB0aGF0IEkgY2FuJ3QgY29ubmVjdCB0byBhbnkgV1BBLVBTSy9XUEEyLVBT
+SyBuZXR3b3JrIHdpdGggdGhpcyAKbmV0d29yayBhZGFwdGVyLiBCdXQgdW5zZWN1cmVkIGNvbm5l
+Y3Rpb25zIHdpdGhvdXQgYW55IFdQQSBvciBXRVAgd29ya3MgCm5vcm1hbGx5LgoKMDI6MDAuMCBO
+ZXR3b3JrIGNvbnRyb2xsZXIgWzAyODBdOiBRdWFsY29tbSBBdGhlcm9zIFFDQTkzNzcgODAyLjEx
+YWMgCldpcmVsZXNzIE5ldHdvcmsgQWRhcHRlciBbMTY4YzowMDQyXSAocmV2IDMwKQoKLS0KTWFy
+a3VzIE3DpGxrw7ZuZW4KCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
