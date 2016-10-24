@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bymRj-0008E0-56
- for ath10k@lists.infradead.org; Mon, 24 Oct 2016 21:06:15 +0000
+Received: from smtp87.iad3a.emailsrvr.com ([173.203.187.87])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1byoZY-0005ax-EG
+ for ath10k@lists.infradead.org; Mon, 24 Oct 2016 23:22:29 +0000
+Date: Mon, 24 Oct 2016 19:22:06 -0400 (EDT)
 Subject: Re: Direct firmware load failed with error 2
-References: <1477338959.93584918@apps.rackspace.com>
- <8642a7dd-3612-ce8b-8c08-f4bd8f746764@candelatech.com>
- <1477342762.945417468@apps.rackspace.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <1d445cc5-1180-9d6f-9a52-d999096a8932@candelatech.com>
-Date: Mon, 24 Oct 2016 14:05:32 -0700
+From: cmckay@abineau.com
 MIME-Version: 1.0
-In-Reply-To: <1477342762.945417468@apps.rackspace.com>
+In-Reply-To: <1d445cc5-1180-9d6f-9a52-d999096a8932@candelatech.com>
+References: <1477338959.93584918@apps.rackspace.com> 
+ <8642a7dd-3612-ce8b-8c08-f4bd8f746764@candelatech.com> 
+ <1477342762.945417468@apps.rackspace.com> 
+ <1d445cc5-1180-9d6f-9a52-d999096a8932@candelatech.com>
+Message-ID: <1477351326.570412506@apps.rackspace.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,12 +21,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
+
+Great, thanks Ben, 
+
+That cleared up the firmware load error but I now have:
+
+[    6.997553] ath10k_pci 0000:01:00.0: BAR 0: assigned [mem 0x01000000-0x011ff]
+[    7.075559] ath10k: pci irq MSI                                              
+[    9.753487] ath10k: ctl_resp never came in (-110)                            
+[    9.758281] ath10k: failed to connect to HTC: -110                           
+[    9.803633] ath10k: could not init core (-110)                               
+[    9.843495] ath10k: could not probe fw (-110)                                
+[    9.843499] ath10k: failed to register driver core: -110                     
+[    9.843681] ath10k_pci: probe of 0000:01:00.0 failed with error -110 
+
+Any ideas? Let me know if I should post this new.
+
+Thanks a bunch
+Colin
+
+
+-----Original Message-----
+From: "Ben Greear" <greearb@candelatech.com>
+Sent: Monday, October 24, 2016 5:05pm
 To: cmckay@abineau.com
 Cc: ath10k@lists.infradead.org
+Subject: Re: Direct firmware load failed with error 2
 
 You need board.bin too.  Something like this if you want to
 use my firmware, or firmware-5.bin for upstream 10.2 firmware:
@@ -106,6 +133,13 @@ On 10/24/2016 01:59 PM, cmckay@abineau.com wrote:
 -- 
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
 
 
 _______________________________________________
