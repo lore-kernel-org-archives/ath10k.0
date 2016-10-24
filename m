@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bylgm-00081Y-9a
- for ath10k@lists.infradead.org; Mon, 24 Oct 2016 20:17:45 +0000
+Received: from smtp79.iad3a.emailsrvr.com ([173.203.187.79])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1bymLR-00078B-6g
+ for ath10k@lists.infradead.org; Mon, 24 Oct 2016 20:59:46 +0000
+Date: Mon, 24 Oct 2016 16:59:22 -0400 (EDT)
 Subject: Re: Direct firmware load failed with error 2
-References: <1477338959.93584918@apps.rackspace.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <8642a7dd-3612-ce8b-8c08-f4bd8f746764@candelatech.com>
-Date: Mon, 24 Oct 2016 13:11:14 -0700
+From: cmckay@abineau.com
 MIME-Version: 1.0
-In-Reply-To: <1477338959.93584918@apps.rackspace.com>
+In-Reply-To: <8642a7dd-3612-ce8b-8c08-f4bd8f746764@candelatech.com>
+References: <1477338959.93584918@apps.rackspace.com> 
+ <8642a7dd-3612-ce8b-8c08-f4bd8f746764@candelatech.com>
+Message-ID: <1477342762.945417468@apps.rackspace.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,11 +19,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
+
+Thanks Ben, 
+
+Got the location from the website:
+root@apalis-imx6:/lib/firmware/ath10k/QCA988X/hw2.0# ls                         
+firmware-2.bin         firmware-5.bin  
+
+I'll figure out how to do some printk's (I'm a newbie).
+
+Thanks,
+Colin
+
+
+-----Original Message-----
+From: "Ben Greear" <greearb@candelatech.com>
+Sent: Monday, October 24, 2016 4:11pm
 To: cmckay@abineau.com, ath10k@lists.infradead.org
+Subject: Re: Direct firmware load failed with error 2
 
 Maybe add some printks in your driver to see exactly what it is trying to load?
 
@@ -70,6 +90,13 @@ On 10/24/2016 12:55 PM, cmckay@abineau.com wrote:
 -- 
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
 
 
 _______________________________________________
