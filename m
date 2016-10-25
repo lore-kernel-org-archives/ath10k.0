@@ -1,20 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp111.iad3a.emailsrvr.com ([173.203.187.111])
+Received: from smtp79.iad3a.emailsrvr.com ([173.203.187.79])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byrxX-0002FT-MW
- for ath10k@lists.infradead.org; Tue, 25 Oct 2016 02:59:29 +0000
-Date: Mon, 24 Oct 2016 22:59:06 -0400 (EDT)
+ id 1bysA0-0000MR-6y
+ for ath10k@lists.infradead.org; Tue, 25 Oct 2016 03:12:21 +0000
+Date: Mon, 24 Oct 2016 23:11:57 -0400 (EDT)
 Subject: Re: Direct firmware load failed with error 2
 From: cmckay@abineau.com
 MIME-Version: 1.0
-In-Reply-To: <580EBC1F.7020305@candelatech.com>
-References: <1477338959.93584918@apps.rackspace.com> 
- <8642a7dd-3612-ce8b-8c08-f4bd8f746764@candelatech.com> 
- <1477342762.945417468@apps.rackspace.com> 
- <1d445cc5-1180-9d6f-9a52-d999096a8932@candelatech.com> 
- <1477351326.570412506@apps.rackspace.com> 
- <580EBC1F.7020305@candelatech.com>
-Message-ID: <1477364346.09835062@apps.rackspace.com>
+In-Reply-To: <1477364346.09835062@apps.rackspace.com>
+References: <1477338959.93584918@apps.rackspace.com>  
+ <8642a7dd-3612-ce8b-8c08-f4bd8f746764@candelatech.com>  
+ <1477342762.945417468@apps.rackspace.com>  
+ <1d445cc5-1180-9d6f-9a52-d999096a8932@candelatech.com>  
+ <1477351326.570412506@apps.rackspace.com>  
+ <580EBC1F.7020305@candelatech.com> 
+ <1477364346.09835062@apps.rackspace.com>
+Message-ID: <1477365117.52679760@apps.rackspace.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,8 +28,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+Cc: cmckay@abineau.com
+
+Hi Ben,
+
+Forgot to mention. Our hardware is not supported by OpenWRT, so going to LEDE at this point may be too tough. I'm an RF guy, so this is a steep hill.
+
+Colin
+
+-----Original Message-----
+From: cmckay@abineau.com
+Sent: Monday, October 24, 2016 10:59pm
+To: "Ben Greear" <greearb@candelatech.com>
 Cc: ath10k@lists.infradead.org
+Subject: Re: Direct firmware load failed with error 2
 
 Hi Ben
 
@@ -234,6 +248,13 @@ On 10/24/2016 04:22 PM, cmckay@abineau.com wrote:
 -- 
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+
 
 _______________________________________________
 ath10k mailing list
