@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1byr0d-0001LQ-T1
- for ath10k@lists.infradead.org; Tue, 25 Oct 2016 01:58:37 +0000
-Message-ID: <580EBC1F.7020305@candelatech.com>
-Date: Mon, 24 Oct 2016 18:57:51 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
+Received: from smtp111.iad3a.emailsrvr.com ([173.203.187.111])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1byrxX-0002FT-MW
+ for ath10k@lists.infradead.org; Tue, 25 Oct 2016 02:59:29 +0000
+Date: Mon, 24 Oct 2016 22:59:06 -0400 (EDT)
 Subject: Re: Direct firmware load failed with error 2
-References: <1477338959.93584918@apps.rackspace.com>
- <8642a7dd-3612-ce8b-8c08-f4bd8f746764@candelatech.com>
- <1477342762.945417468@apps.rackspace.com>
- <1d445cc5-1180-9d6f-9a52-d999096a8932@candelatech.com>
- <1477351326.570412506@apps.rackspace.com>
-In-Reply-To: <1477351326.570412506@apps.rackspace.com>
+From: cmckay@abineau.com
+MIME-Version: 1.0
+In-Reply-To: <580EBC1F.7020305@candelatech.com>
+References: <1477338959.93584918@apps.rackspace.com> 
+ <8642a7dd-3612-ce8b-8c08-f4bd8f746764@candelatech.com> 
+ <1477342762.945417468@apps.rackspace.com> 
+ <1d445cc5-1180-9d6f-9a52-d999096a8932@candelatech.com> 
+ <1477351326.570412506@apps.rackspace.com> 
+ <580EBC1F.7020305@candelatech.com>
+Message-ID: <1477364346.09835062@apps.rackspace.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,12 +23,101 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
+
+Hi Ben
+
+root@apalis-imx6:~# lspci -v                                                                                    
+00:00.0 PCI bridge: Synopsys, Inc. Device abcd (rev 01) (prog-if 00 [Normal decode])                            
+        Flags: bus master, fast devsel, latency 0, IRQ 388                                                      
+        Memory at 01200000 (32-bit, non-prefetchable) [size=1M]                                                 
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0                                            
+        Memory behind bridge: 01000000-011fffff                                                                 
+        Prefetchable memory behind bridge: 01300000-013fffff                                                    
+        [virtual] Expansion ROM at 01400000 [disabled] [size=64K]                                               
+        Capabilities: [40] Power Management version 3                                                           
+        Capabilities: [50] MSI: Enable+ Count=1/1 Maskable+ 64bit+                                              
+        Capabilities: [70] Express Root Port (Slot-), MSI 00                                                    
+        Capabilities: [100] Advanced Error Reporting                                                            
+        Capabilities: [140] Virtual Channel                                                                     
+        Kernel driver in use: pcieport                                                                          
+                                                                                                                
+01:00.0 Network controller: Qualcomm Atheros QCA986x/988x 802.11ac Wireless Network Adapter                     
+        Flags: fast devsel, IRQ 155                                                                             
+        Memory at 01000000 (64-bit, non-prefetchable) [size=2M]                                                 
+        [virtual] Expansion ROM at 01300000 [disabled] [size=64K]                                               
+        Capabilities: [40] Power Management version 3                                                           
+        Capabilities: [50] MSI: Enable- Count=8/8 Maskable+ 64bit-                                              
+        Capabilities: [70] Express Endpoint, MSI 00                                                             
+        Capabilities: [100] Advanced Error Reporting                                                            
+        Capabilities: [140] Virtual Channel                                                                     
+        Capabilities: [160] Device Serial Number 00-00-00-00-00-00-00-00                                        
+        Kernel modules: ath10k_pci    
+----------
+
+Angstrom v2015.12 - Kernel 3.14.52-v2.6b2+g7c83cef                                                              
+                                                                                                                
+Apalis_iMX6_LinuxImageV2.6_20160929
+
+This is Toradex's standard build for their Apalis iMX6 on a Ixora carrier. I think they are due for a new major release very soon. I can check if you think it's worth it. 
+
+The current firmware is yours (firmware-2-ct-full-community.bin), fresh off your site today. I downloaded board.bin today too. 
+---------------
+root@apalis-imx6:~# lsmod                                                                                       
+Module                  Size  Used by                                                                           
+usb_f_rndis            11441  2                                                                                 
+u_ether                 9135  1 usb_f_rndis                                                                     
+usb_f_acm               4105  2                                                                                 
+u_serial                8487  1 usb_f_acm                                                                       
+ov5640_camera_mipi_int    21588  0                                                                              
+mxc_v4l2_capture       24990  1 ov5640_camera_mipi_int                                                          
+ipu_bg_overlay_sdc      4113  1 mxc_v4l2_capture                                                                
+ipu_still               1631  1 mxc_v4l2_capture                                                                
+ipu_prp_enc             4653  1 mxc_v4l2_capture                                                                
+max9526_tvin            5800  0                                                                                 
+ipu_csi_enc             2917  1 mxc_v4l2_capture                                                                
+ipu_fg_overlay_sdc      4978  1 mxc_v4l2_capture                                                                
+adv7280_tvin            6563  0                                                                                 
+v4l2_int_device         1759  4 adv7280_tvin,ov5640_camera_mipi_int,mxc_v4l2_capture,max9526_tvin               
+ath10k_pci             27397  0                                                                                 
+ath10k_core           101131  1 ath10k_pci                                                                      
+ath                    17381  1 ath10k_core                                                                     
+mac80211              254675  1 ath10k_core                                                                     
+cfg80211              166770  3 ath,mac80211,ath10k_core                                                        
+libcomposite           28353  12 usb_f_acm,usb_f_rndis                                                          
+configfs               20737  4 usb_f_acm,usb_f_rndis,libcomposite                                              
+galcore               207484  2    
+
+------------
+root@apalis-imx6:~# ip link                                                                                     
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default                  
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00                                                       
+2: can0: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT group default qlen 10                           
+    link/can                                                                                                    
+3: can1: <NOARP,ECHO> mtu 16 qdisc noop state DOWN mode DEFAULT group default qlen 10                           
+    link/can                                                                                                    
+4: eth0: <BROADCAST,MULTICAST,DYNAMIC,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group defaul0
+    link/ether 00:14:2d:4a:30:f9 brd ff:ff:ff:ff:ff:ff                                                          
+5: sit0@NONE: <NOARP> mtu 1480 qdisc noop state DOWN mode DEFAULT group default                                 
+    link/sit 0.0.0.0 brd 0.0.0.0                                                                                
+6: usb0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast state DOWN mode DEFAULT group default ql0
+    link/ether 00:14:2d:ff:ff:ff brd ff:ff:ff:ff:ff:ff 
+
+Thanks again,
+Colin
+
+
+-----Original Message-----
+From: "Ben Greear" <greearb@candelatech.com>
+Sent: Monday, October 24, 2016 9:57pm
 To: cmckay@abineau.com
 Cc: ath10k@lists.infradead.org
+Subject: Re: Direct firmware load failed with error 2
 
 Please let us know 'lspci' or equiv, exactly what firmware you are loading,
 kernel driver version, etc.
@@ -144,6 +234,13 @@ On 10/24/2016 04:22 PM, cmckay@abineau.com wrote:
 -- 
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+
 
 _______________________________________________
 ath10k mailing list
