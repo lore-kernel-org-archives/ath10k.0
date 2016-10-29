@@ -1,23 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx2.mailbox.org ([80.241.60.215])
+Received: from mx1.polytechnique.org ([129.104.30.34])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c0CTx-0003HN-0D
- for ath10k@lists.infradead.org; Fri, 28 Oct 2016 19:06:26 +0000
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mx2.mailbox.org (Postfix) with ESMTPS id C75D8437B0
- for <ath10k@lists.infradead.org>; Fri, 28 Oct 2016 21:06:00 +0200 (CEST)
-Received: from smtp1.mailbox.org ([80.241.60.240])
- by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172])
- (amavisd-new, port 10030)
- with ESMTP id l7wEn2GdPSJ1 for <ath10k@lists.infradead.org>;
- Fri, 28 Oct 2016 21:05:58 +0200 (CEST)
-Date: Fri, 28 Oct 2016 21:05:58 +0200 (CEST)
-From: Conrad Kostecki <ck+ath10k@bl4ckb0x.de>
-Message-ID: <1403930336.4012.1477681558487@office.mailbox.org>
-Subject: Linux freezes after a time while running
-MIME-Version: 1.0
+ id 1c0Rfd-0000nb-Qt
+ for ath10k@lists.infradead.org; Sat, 29 Oct 2016 11:19:31 +0000
+From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Subject: [PATCH 1/1] ath10k: use the right length of "background"
+Date: Sat, 29 Oct 2016 13:17:37 +0200
+Message-Id: <20161029111737.19034-1-nicolas.iooss_linux@m4x.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +15,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Nicolas Iooss <nicolas.iooss_linux@m4x.org>
 
-SGkhCkluIG9yZGVyIHRvIGNyZWF0ZSBhIGR1YWwgYmFuZCBBUCwgSSd2ZSBib3VnaHQgdHdvIENv
-bXBleCBMRTkwMFZYIGNhcmRzLgpBcyB0aGUgbWFpbmJvYXJkIGhhcyBvbmx5IG9uZSBQQ0llIHNs
-b3QsIEkgYWxzbyBib3VnaHQgYSBNaWtyb3RpayBSQjE0ZSBtaW5pUENJZS0+UENJZSBhZGFwdGVy
-LCB3aGljaCBjYW4gY2FycnkgdXAgdG8gNCBtaW5pUENJZSBjYXJkcy4KwqAKQ3VycmVudGx5LCBJ
-IGFtIHJ1bm5pbmcgSG9zdEFQZCAyLjYgYW5kIEtlcm5lbCA0LjguNCB3aXRoIDEwLjIuNC43MC41
-NiBhdGgxMGstZmlybXdhcmUuCkJvdGggY2FyZHMgYXJlIGJlaW5nIGRldGVjdGVkIGZpbmUgYW5k
-IHdvcmtpbmcuCsKgCldoZW4gSSBkbyBzdGFydCBIb3N0QVBkLCB0aGUgd2hvbGUgc2VydmVyIGp1
-c3QgZnJlZXplcyBhZnRlciBhIHRpbWUsIHVzYWxseSBhZnRlciAzMC0xMjAgbWludXRlcy4gVW50
-aWwgaXQgZnJlZXplcywgSG9zdEFQZCBpcyB3b3JraW5nIHBlcmZlY3RseSBmaW5lLiBXaGVuIEkg
-ZG8gbm90IHN0YXJ0IEhvc3RBUGQsIG5vIGZyZWV6ZSBvY2N1cnMgYW5kIHRoZSB3aG9sZSBzeXN0
-ZW0gaXMgcnVubmluZyBzdGFibGUuCsKgCk5vIGVycm9ycyB3ZXJlIGxvZ2dlZCBpbiBkbWVzZy4K
-wqAKQW55IElkZWFzLCBob3cgdG8gZGVidWcgdGhpcz8KQXJlIHRoZSBjYXJkcyBtYXliZSBmYXVs
-dHk/CkkgYWxyZWFkeSBhc2tlZCBvbiB0aGUgSG9zdEFQZC1tYWlsaW5nbGlzdCBhbmQgd2FzIGFz
-a2VkLCB0byBhc2sgaGVyZSA7LSkKwqAKQ2hlZXJzCkNvbnJhZAoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+The word "background" contains 10 characters so the third argument of
+strncmp() need to be 10 in order to match this prefix correctly.
+
+Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Fixes: 855aed1220d2 ("ath10k: add spectral scan feature")
+---
+ drivers/net/wireless/ath/ath10k/spectral.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
+index 7d9b0da1b010..2ffc1fe4923b 100644
+--- a/drivers/net/wireless/ath/ath10k/spectral.c
++++ b/drivers/net/wireless/ath/ath10k/spectral.c
+@@ -338,7 +338,7 @@ static ssize_t write_file_spec_scan_ctl(struct file *file,
+ 		} else {
+ 			res = -EINVAL;
+ 		}
+-	} else if (strncmp("background", buf, 9) == 0) {
++	} else if (strncmp("background", buf, 10) == 0) {
+ 		res = ath10k_spectral_scan_config(ar, SPECTRAL_BACKGROUND);
+ 	} else if (strncmp("manual", buf, 6) == 0) {
+ 		res = ath10k_spectral_scan_config(ar, SPECTRAL_MANUAL);
+-- 
+2.10.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
