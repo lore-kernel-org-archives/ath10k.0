@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.mailbox.org ([80.241.60.212])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c1Fm1-0003Rf-T8
- for ath10k@lists.infradead.org; Mon, 31 Oct 2016 16:49:29 +0000
-From: "Conrad Kostecki" <ck+ath10k@bl4ckb0x.de>
-Subject: Re[2]: Linux freezes after a time while running
-Date: Mon, 31 Oct 2016 16:48:49 +0000
-Message-Id: <ema51f2924-a0bb-4f7a-8d84-3ee6fb82e317@valkyrie>
-In-Reply-To: <CA+BoTQmbz1vHjn0Xbo2hKcb9v8MdN5uTEnVNOAK0Kfh_NwTp5w@mail.gmail.com>
-References: <1403930336.4012.1477681558487@office.mailbox.org>
- <CA+BoTQmbz1vHjn0Xbo2hKcb9v8MdN5uTEnVNOAK0Kfh_NwTp5w@mail.gmail.com>
-Mime-Version: 1.0
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c1clS-0008V5-CO
+ for ath10k@lists.infradead.org; Tue, 01 Nov 2016 17:22:22 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 36F8940B146
+ for <ath10k@lists.infradead.org>; Tue,  1 Nov 2016 10:21:38 -0700 (PDT)
+From: Ben Greear <greearb@candelatech.com>
+Subject: Question on 10.4 firmware and fetch-indication logic.
+Message-ID: <9af68587-603e-2fa9-5ce9-1dc373238b71@candelatech.com>
+Date: Tue, 1 Nov 2016 10:21:37 -0700
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,39 +21,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: Conrad Kostecki <ck+ath10k@bl4ckb0x.de>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-SGVsbG8gTWljaGHFgiwKCkFtIDMxLjEwLjIwMTYgMTE6MTI6MDMsICJNaWNoYWwgS2F6aW9yIiA8
-bWljaGFsLmthemlvckB0aWV0by5jb20+IApzY2hyaWViOgoKPiAgWW91IGNvdWxkIHRyeSBsb2Fk
-aW5nIGF0aDEwa19wY2kgd2l0aCByZXNldF9tb2RlPTEgcGFyYW1ldGVyLgo+Cj5Db2xkIHJlc2V0
-IGlzIGtub3duIHRvIGNhdXNlIHNvbWUgcHJvYmxlbXMgYWZ0ZXIgZmlybXdhcmUgY2VydGFpbgo+
-Y3Jhc2hlcyBhbmQgSSd2ZSBwZXJzb25hbGx5IGV4cGVyaWVuY2VkIHN5c3RlbSBmcmVlemVzIG9u
-IHg4NiAoTUlQUwo+dGVuZHMgdG8gc3BpdCAiZGF0YSBidXMgZXJyb3IiIGFuZCBkb2Vzbid0IGxv
-Y2sgdXApLgp0aGFuayB5b3UgdmVyeSBtdWNoIGZvciB5b3VyIGFuc3dlci4gSSd2ZSBub3cgc2V0
-IHJlc2V0X21vZGU9MSwKd2hpY2ggc2VlbXMgdG8gYmUgbm93IGFjdGl2ZSwgYXMgSSBjYW4gc2Vl
-IGluIGRtZXNnOgpbICAgIDguNDcxNjU5XSBhdGgxMGtfcGNpIDAwMDA6MDg6MDAuMDogcGNpIGly
-cSBtc2kgb3Blcl9pcnFfbW9kZSAyIAppcnFfbW9kZSAwIHJlc2V0X21vZGUgMQpbICAgIDguNTg3
-MjY3XSBhdGgxMGtfcGNpIDAwMDA6MDk6MDAuMDogcGNpIGlycSBtc2kgb3Blcl9pcnFfbW9kZSAy
-IAppcnFfbW9kZSAwIHJlc2V0X21vZGUgMQoKQWZ0ZXIgc3RhcnRpbmcgSG9zdEFQZCwgSSBwb3dl
-cmVkIHVwIG15IFNxdWVlemVib3ggUmFkaW8gdG8gY29ubmVjdCB2aWEgCldpRmkuCkp1c3QgYWZ0
-ZXIgYSBmZXcgbWludXRlcywgaXQgY3Jhc2hlZCwgYXMgZXhwZWN0ZWQsIGJ1dCBpdCBkaWQgbm90
-IApyZXN0YXJ0IHRoZSB3aG9sZSBzZXJ2ZXIuCkl0IHRoaXMgZHVlIHJlc2V0X21vZGU9MT8gSSB3
-YXMgbm93IGFibGUgdG8gY2FwdHVyZSBhIGxvdCBvZiBpbmZvcm1hdGlvbiAKZnJvbSBkbWVzZy4K
-WW91IGNhbiBjbGVhcmx5IHNlZSwgdGhhdCB0aGUgZmlybXdhcmUgY3Jhc2hlZC4gVGhlIEhvc3RB
-UGQgcHJvY2VzcyBpcyAKc3RpbGwgcnVubmluZywKYnV0IHRoZSBXaUZpIGNhbiBiZSBkZXRlY3Rl
-ZCBhbnltb3JlLgoKQXMgaXQncyB2ZXJ5IG11Y2gsIEkndmUgcHV0IHRoaXMgb24gcGFzdGViaW46
-IApodHRwOi8vcGFzdGViaW4uY29tLzgzV1prdHA2CgpZb3UgY2FuIHNlZSBhdCBtYXJrIDI1MCwg
-V2lGaTEgKDIuNEdIeikgY29tZXMgdXAgYW5kIGF0IG1hcmsgMzU2IFdJRkkyIAooNUdIeikgY29t
-ZXMgdXAuCkJ5IG1hcmsgNjkxLCBhdGgxMGtfcGNpIGNyYXNoZWQgYW5kIFdpRmkgc3RvcHBlZCB3
-b3JraW5nLiBOb3JtYWxseSwgYXQgCnRoaXMgcG9pbnQgdGhlIHdob2xlIHNlcnZlciB3b3VsZCBy
-ZWJvb3QuCgpJJ3ZlIGFsc28gbm93IHRyaWVkIHRoZSBuZXdlc3QgZmlybXdhcmUgMTAuMi40Ljcw
-LjU4IHdoaWNoIG5vIGx1Y2suCgpBbnkgSWRlYXM/CgpDaGVlcnMgYW5kIFRoYW5rcwpDb25yYWQK
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+I am testing on modified 4.7 kernel and modified firmware with QCA9984 NIC
+and lots of virtual station vdevs.
+
+The issue I am looking at currently is that I am seeing floods of these messages
+in some cases:
+
+Nov 01 09:43:38 ath-9984 kernel: ath10k_pci 0000:05:00.0: fetch-ind: failed to lookup txq for peer_id 56 tid 7
+Nov 01 09:43:38 ath-9984 kernel: ath10k_pci 0000:05:00.0: fetch-ind: failed to lookup txq for peer_id 56 tid 7
+Nov 01 09:43:38 ath-9984 kernel: ath10k_pci 0000:05:00.0: fetch-ind: failed to lookup txq for peer_id 56 tid 7
+Nov 01 09:43:38 ath-9984 kernel: ath10k_pci 0000:05:00.0: fetch-ind: failed to lookup txq for peer_id 56 tid 7
+
+ From this code in htt_rx.c:
+
+static void ath10k_htt_rx_tx_fetch_ind(struct ath10k *ar, struct sk_buff *skb)
+...
+
+		/* It is okay to release the lock and use txq because RCU read
+		 * lock is held.
+		 */
+
+		if (unlikely(!txq)) {
+			if (net_ratelimit())
+				ath10k_warn(ar, "fetch-ind: failed to lookup txq for peer_id %hu tid %hhu\n",
+					    peer_id, tid);
+			continue;
+		}
+
+
+I am getting these after the vdev in question (and its peers) have been removed.  I guess these
+must be stale buffers that are finally transmitted or cleaned up by the firmware after
+vdev has been deleted?
+
+I am curious if anyone else sees something similar, and if this is expected behaviour.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
