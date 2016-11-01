@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c1clS-0008V5-CO
- for ath10k@lists.infradead.org; Tue, 01 Nov 2016 17:22:22 +0000
-Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 36F8940B146
- for <ath10k@lists.infradead.org>; Tue,  1 Nov 2016 10:21:38 -0700 (PDT)
-From: Ben Greear <greearb@candelatech.com>
-Subject: Question on 10.4 firmware and fetch-indication logic.
-Message-ID: <9af68587-603e-2fa9-5ce9-1dc373238b71@candelatech.com>
-Date: Tue, 1 Nov 2016 10:21:37 -0700
+Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c1dIq-0006eT-89
+ for ath10k@lists.infradead.org; Tue, 01 Nov 2016 17:56:59 +0000
+Received: by mail-wm0-x232.google.com with SMTP id p190so220207255wmp.1
+ for <ath10k@lists.infradead.org>; Tue, 01 Nov 2016 10:56:30 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <9af68587-603e-2fa9-5ce9-1dc373238b71@candelatech.com>
+References: <9af68587-603e-2fa9-5ce9-1dc373238b71@candelatech.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Tue, 1 Nov 2016 18:56:27 +0100
+Message-ID: <CA+BoTQkxsrGsGTOzxrNvmTOrdOqL1STG4i1ke0Lei6gMP5VZwA@mail.gmail.com>
+Subject: Re: Question on 10.4 firmware and fetch-indication logic.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,55 +20,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-I am testing on modified 4.7 kernel and modified firmware with QCA9984 NIC
-and lots of virtual station vdevs.
-
-The issue I am looking at currently is that I am seeing floods of these messages
-in some cases:
-
-Nov 01 09:43:38 ath-9984 kernel: ath10k_pci 0000:05:00.0: fetch-ind: failed to lookup txq for peer_id 56 tid 7
-Nov 01 09:43:38 ath-9984 kernel: ath10k_pci 0000:05:00.0: fetch-ind: failed to lookup txq for peer_id 56 tid 7
-Nov 01 09:43:38 ath-9984 kernel: ath10k_pci 0000:05:00.0: fetch-ind: failed to lookup txq for peer_id 56 tid 7
-Nov 01 09:43:38 ath-9984 kernel: ath10k_pci 0000:05:00.0: fetch-ind: failed to lookup txq for peer_id 56 tid 7
-
- From this code in htt_rx.c:
-
-static void ath10k_htt_rx_tx_fetch_ind(struct ath10k *ar, struct sk_buff *skb)
-...
-
-		/* It is okay to release the lock and use txq because RCU read
-		 * lock is held.
-		 */
-
-		if (unlikely(!txq)) {
-			if (net_ratelimit())
-				ath10k_warn(ar, "fetch-ind: failed to lookup txq for peer_id %hu tid %hhu\n",
-					    peer_id, tid);
-			continue;
-		}
-
-
-I am getting these after the vdev in question (and its peers) have been removed.  I guess these
-must be stale buffers that are finally transmitted or cleaned up by the firmware after
-vdev has been deleted?
-
-I am curious if anyone else sees something similar, and if this is expected behaviour.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMSBOb3ZlbWJlciAyMDE2IGF0IDE4OjIxLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
+ZWNoLmNvbT4gd3JvdGU6Cj4gSSBhbSB0ZXN0aW5nIG9uIG1vZGlmaWVkIDQuNyBrZXJuZWwgYW5k
+IG1vZGlmaWVkIGZpcm13YXJlIHdpdGggUUNBOTk4NCBOSUMKPiBhbmQgbG90cyBvZiB2aXJ0dWFs
+IHN0YXRpb24gdmRldnMuCj4KPiBUaGUgaXNzdWUgSSBhbSBsb29raW5nIGF0IGN1cnJlbnRseSBp
+cyB0aGF0IEkgYW0gc2VlaW5nIGZsb29kcyBvZiB0aGVzZQo+IG1lc3NhZ2VzCj4gaW4gc29tZSBj
+YXNlczoKPgo+IE5vdiAwMSAwOTo0MzozOCBhdGgtOTk4NCBrZXJuZWw6IGF0aDEwa19wY2kgMDAw
+MDowNTowMC4wOiBmZXRjaC1pbmQ6IGZhaWxlZAo+IHRvIGxvb2t1cCB0eHEgZm9yIHBlZXJfaWQg
+NTYgdGlkIDcKPiBOb3YgMDEgMDk6NDM6MzggYXRoLTk5ODQga2VybmVsOiBhdGgxMGtfcGNpIDAw
+MDA6MDU6MDAuMDogZmV0Y2gtaW5kOiBmYWlsZWQKPiB0byBsb29rdXAgdHhxIGZvciBwZWVyX2lk
+IDU2IHRpZCA3Cj4gTm92IDAxIDA5OjQzOjM4IGF0aC05OTg0IGtlcm5lbDogYXRoMTBrX3BjaSAw
+MDAwOjA1OjAwLjA6IGZldGNoLWluZDogZmFpbGVkCj4gdG8gbG9va3VwIHR4cSBmb3IgcGVlcl9p
+ZCA1NiB0aWQgNwo+IE5vdiAwMSAwOTo0MzozOCBhdGgtOTk4NCBrZXJuZWw6IGF0aDEwa19wY2kg
+MDAwMDowNTowMC4wOiBmZXRjaC1pbmQ6IGZhaWxlZAo+IHRvIGxvb2t1cCB0eHEgZm9yIHBlZXJf
+aWQgNTYgdGlkIDcKPgo+IEZyb20gdGhpcyBjb2RlIGluIGh0dF9yeC5jOgo+Cj4gc3RhdGljIHZv
+aWQgYXRoMTBrX2h0dF9yeF90eF9mZXRjaF9pbmQoc3RydWN0IGF0aDEwayAqYXIsIHN0cnVjdCBz
+a19idWZmCj4gKnNrYikKPiAuLi4KPgo+ICAgICAgICAgICAgICAgICAvKiBJdCBpcyBva2F5IHRv
+IHJlbGVhc2UgdGhlIGxvY2sgYW5kIHVzZSB0eHEgYmVjYXVzZSBSQ1UKPiByZWFkCj4gICAgICAg
+ICAgICAgICAgICAqIGxvY2sgaXMgaGVsZC4KPiAgICAgICAgICAgICAgICAgICovCj4KPiAgICAg
+ICAgICAgICAgICAgaWYgKHVubGlrZWx5KCF0eHEpKSB7Cj4gICAgICAgICAgICAgICAgICAgICAg
+ICAgaWYgKG5ldF9yYXRlbGltaXQoKSkKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGF0aDEwa193YXJuKGFyLCAiZmV0Y2gtaW5kOiBmYWlsZWQgdG8gbG9va3VwCj4gdHhxIGZvciBw
+ZWVyX2lkICVodSB0aWQgJWhodVxuIiwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHBlZXJfaWQsIHRpZCk7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgY29u
+dGludWU7Cj4gICAgICAgICAgICAgICAgIH0KPgo+Cj4gSSBhbSBnZXR0aW5nIHRoZXNlIGFmdGVy
+IHRoZSB2ZGV2IGluIHF1ZXN0aW9uIChhbmQgaXRzIHBlZXJzKSBoYXZlIGJlZW4KPiByZW1vdmVk
+LiAgSSBndWVzcyB0aGVzZQo+IG11c3QgYmUgc3RhbGUgYnVmZmVycyB0aGF0IGFyZSBmaW5hbGx5
+IHRyYW5zbWl0dGVkIG9yIGNsZWFuZWQgdXAgYnkgdGhlCj4gZmlybXdhcmUgYWZ0ZXIKPiB2ZGV2
+IGhhcyBiZWVuIGRlbGV0ZWQ/Cj4KPiBJIGFtIGN1cmlvdXMgaWYgYW55b25lIGVsc2Ugc2VlcyBz
+b21ldGhpbmcgc2ltaWxhciwgYW5kIGlmIHRoaXMgaXMgZXhwZWN0ZWQKPiBiZWhhdmlvdXIuCgpI
+bW0sIFdNSSBhbmQgSFRUIGRvIHVzZSBpbmRlcGVuZGVudCBDRSByaW5nIGJ1ZmZlcnMgYnV0IHBl
+ZXJfaWRzIGFyZQp1bm1hcHBlZCBpbiByZXNwb25zZSB0byBIVFQgZXZlbnRzIHNvIGl0IHNob3Vs
+ZCBiZSBwcm9wZXJseSBzZXJpYWxpemVkCmJ5IGZpcm13YXJlIGl0c2VsZi4KCkRpZCB5b3UgaGFw
+cGVuIHRvIG5vdCByZW1vdmUgcGVlcnMgcHJpb3IgdG8gZGVsZXRpbmcgdmRldj8gUGVyaGFwcwp0
+aGF0J3MgdGhlIGNhdXNlIHRoYXQgdHJpZ2dlcnMgdGhlICF0eHEgY29uZGl0aW9uLgoKUGVyaGFw
+cyBpdCB3b3VsZCBtYWtlIHNlbnNlIHRvIGZsdXNoIChpLmUuIHB1dCB1cCBhIGJhcnJpZXIpIEhU
+VCByeAphZnRlciBzdG9wcGluZyB2ZGV2LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hdGgxMGsK
