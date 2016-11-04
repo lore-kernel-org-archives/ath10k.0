@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x22d.google.com ([2607:f8b0:4003:c06::22d])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c2MHv-0003at-3c
- for ath10k@lists.infradead.org; Thu, 03 Nov 2016 17:58:56 +0000
-Received: by mail-oi0-x22d.google.com with SMTP id v84so101084407oie.3
- for <ath10k@lists.infradead.org>; Thu, 03 Nov 2016 10:58:34 -0700 (PDT)
+ id 1c2a1q-000338-MY
+ for ath10k@lists.infradead.org; Fri, 04 Nov 2016 08:39:15 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Fix crash during rmmod when probe firmware fails
+Date: Fri, 4 Nov 2016 14:08:44 +0530
+Message-ID: <1478248724-12773-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Thu, 3 Nov 2016 10:58:33 -0700
-Message-ID: <CAJ-VmokO7F1_HA+Td_COqO+v-aHy-uc-033KwV0ZYts+8d6+tQ@mail.gmail.com>
-Subject: 10.2 firmware going out for lunch with 11a/11bg iperf tests
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +20,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-hiya,
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-I've been porting ath10k to freebsd. I have it up and running, but
-only in 11abg mode - once that's stable, I plan on doing 11n, then
-11ac.
+This fixes the below crash when ath10k probe firmware fails,
+NAPI polling tries to access a rx ring resource which was never
+allocated, fix this by disabling NAPI right away once the probe
+firmware fails
 
-So, I hit a fun roadblock. If I do an iperf test (TCP or UDP TX) then
-the firmware/NIC goes out to lunch. It's not a target assert with a
-firmware dump - the whole NIC detaches from the PCI bus. I have to
-completely reprobe everything from scratch to get it back alive.
+BUG: unable to handle kernel NULL pointer dereference at (null)
+IP:  __ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
+__ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
 
-I've also verified this on linux-4.4 w/ firmware 10.2.4.70.9-2 and the
-latest 10.2.4 drop in Kalle's branch. If I configure it up in STA mode
-and have it associate to an 11a AP, the firmware/NIC goes to lunch
-pretty quickly and reproducably.
+Call Trace:
 
-Amusingly, Ben's CT firmware doesn't have the bug - it looks like he
-fixed it in a commit. I tested stock 10.1 from kalle's tree and an
-early 10.1 CT firmware and both died the same way.
+[<ffffffffa113ec62>] ath10k_htt_rx_msdu_buff_replenish+0x42/0x90
+[ath10k_core]
+[<ffffffffa113f393>] ath10k_htt_txrx_compl_task+0x433/0x17d0
+[ath10k_core]
+[<ffffffff8114406d>] ? __wake_up_common+0x4d/0x80
+[<ffffffff811349ec>] ? cpu_load_update+0xdc/0x150
+[<ffffffffa119301d>] ? ath10k_pci_read32+0xd/0x10 [ath10k_pci]
+[<ffffffffa1195b17>] ath10k_pci_napi_poll+0x47/0x110 [ath10k_pci]
+[<ffffffff817863af>] net_rx_action+0x20f/0x370
 
-Are any QCA devs out there? I believe Ben and I have a fix for you,
-but I can't build/test 10.2 firmware. :(
+Reported-by: Ben Greear <greearb@candelatech.com>
+Fixes: 3c97f5de1f28 ("ath10k: implement NAPI support")
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks!
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 7005e2a..8187eb2 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2165,6 +2165,8 @@ err_free_firmware_files:
+ 
+ err_power_down:
+ 	ath10k_hif_power_down(ar);
++	napi_synchronize(&ar->napi);
++	napi_disable(&ar->napi);
+ 
+ 	return ret;
+ }
+-- 
+1.9.1
 
-
-
--adrian
 
 _______________________________________________
 ath10k mailing list
