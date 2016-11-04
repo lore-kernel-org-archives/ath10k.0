@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-qt0-x233.google.com ([2607:f8b0:400d:c0d::233])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c2a1q-000338-MY
- for ath10k@lists.infradead.org; Fri, 04 Nov 2016 08:39:15 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Fix crash during rmmod when probe firmware fails
-Date: Fri, 4 Nov 2016 14:08:44 +0530
-Message-ID: <1478248724-12773-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1c2fG0-00067k-Fn
+ for ath10k@lists.infradead.org; Fri, 04 Nov 2016 14:14:13 +0000
+Received: by mail-qt0-x233.google.com with SMTP id p16so48682517qta.0
+ for <ath10k@lists.infradead.org>; Fri, 04 Nov 2016 07:13:51 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
+References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
+ <566849DB.9040901@candelatech.com> <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
+From: Bruno Antunes <baantunes@gmail.com>
+Date: Fri, 4 Nov 2016 14:13:29 +0000
+Message-ID: <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
+Subject: Re: ATH10K VLAN firmware issue
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,61 +21,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: voncken <cedric.voncken@acksys.fr>
+Cc: OpenWrt Development List <openwrt-devel@lists.openwrt.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-
-This fixes the below crash when ath10k probe firmware fails,
-NAPI polling tries to access a rx ring resource which was never
-allocated, fix this by disabling NAPI right away once the probe
-firmware fails
-
-BUG: unable to handle kernel NULL pointer dereference at (null)
-IP:  __ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
-__ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
-
-Call Trace:
-
-[<ffffffffa113ec62>] ath10k_htt_rx_msdu_buff_replenish+0x42/0x90
-[ath10k_core]
-[<ffffffffa113f393>] ath10k_htt_txrx_compl_task+0x433/0x17d0
-[ath10k_core]
-[<ffffffff8114406d>] ? __wake_up_common+0x4d/0x80
-[<ffffffff811349ec>] ? cpu_load_update+0xdc/0x150
-[<ffffffffa119301d>] ? ath10k_pci_read32+0xd/0x10 [ath10k_pci]
-[<ffffffffa1195b17>] ath10k_pci_napi_poll+0x47/0x110 [ath10k_pci]
-[<ffffffff817863af>] net_rx_action+0x20f/0x370
-
-Reported-by: Ben Greear <greearb@candelatech.com>
-Fixes: 3c97f5de1f28 ("ath10k: implement NAPI support")
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 7005e2a..8187eb2 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2165,6 +2165,8 @@ err_free_firmware_files:
- 
- err_power_down:
- 	ath10k_hif_power_down(ar);
-+	napi_synchronize(&ar->napi);
-+	napi_disable(&ar->napi);
- 
- 	return ret;
- }
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgYWxsLAoKT2xkIHRocmVhZCBidXQgSSB0aGluayB0aGUgaXNzdWUgaXMgc3RpbGwgcHJlc2Vu
+dC4KCkknbSBydW5uaW5nIGEgc2V0dXAgd2l0aCBWTEFOcyB3aXRoIFdEUyBhbmQgYXRoMTBrIGNh
+cmRzLgoKVG8gbWFrZSBpdCB3b3JrIGJvdGggY2FyZHMgbXVzdCBiZSBsb2FkZWQgaW4gcmF3bW9k
+ZSwgQVAKYW5kIFN0YSwgYW5kIHdpdGggbm8gc2VjdXJpdHkuCgpJJ20gdXNpbmcgYSBPcGVuV3J0
+IHRydW5rIHI0OTk0MSBhbmQgdGhlIG1vc3QgcmVjZW50IGZpcm13YXJlLAoxMC4yLjQuNzAuNTgs
+IGZyb20gS2FsbGUgYXRoMTBrIGZpcm13YXJlIHRyZWUuCgpBbHRob3VnaCBpdCB3b3JrcyB0aGUg
+dGhyb3VnaHB1dCBpcyB2ZXJ5IGJhZC4KQXJlIHRoZXJlIGFueSBhbHRlcm5hdGl2ZXMgdG8gaW1w
+cm92ZSB0aGUgdGhyb3VnaHB1dC4KCkJlc3QgUmVnYXJkcywKQnJ1bm8KCk9uIDkgRGVjZW1iZXIg
+MjAxNSBhdCAxNzoyNCwgdm9uY2tlbiA8Y2VkcmljLnZvbmNrZW5AYWNrc3lzLmZyPiB3cm90ZToK
+Pgo+Cj4+IC0tLS0tTWVzc2FnZSBkJ29yaWdpbmUtLS0tLQo+PiBEZSA6IEJlbiBHcmVlYXIgW21h
+aWx0bzpncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbV0KPj4gRW52b3nDqSA6IG1lcmNyZWRpIDkgZMOp
+Y2VtYnJlIDIwMTUgMTY6MzQKPj4gw4AgOiBDZWRyaWMgVk9OQ0tFTjsgYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmc7IGxpbnV4LXdpcmVsZXNzCj4+IE9iamV0IDogUmU6IEFUSDEwSyBWTEFOIGZp
+cm13YXJlIGlzc3VlCj4+Cj4+IFRoaXMgb25seSBoYXBwZW5zIHdoZW4geW91IHVzZSBTVEEgICsg
+V0RTLCBvciBpcyAuMXEgYnJva2VuIGZvciB5b3UgaW4KPj4gb3RoZXIgY2FzZXMgYXMgd2VsbD8K
+Pgo+IE5vLCB0aGlzIGlzc3VlIG9jY3VycyBpbiBhbGwgbW9kZXMgKFNUQSwgU1RBICsgV0RTLCBB
+UCkuCj4KPiBUaGFua3MKPgo+IENlZHJpYy4KPgo+Pgo+PiBUaGFua3MsCj4+IEJlbgo+Pgo+PiBP
+biAxMi8wOC8yMDE1IDA2OjI5IEFNLCBDZWRyaWMgVk9OQ0tFTiB3cm90ZToKPj4gPiAgICAgSSdt
+IHRlc3RpbmcgdG8gdHJhbnNtaXQgZnJhbWUgd2l0aCA4MDIuMXEgdGFnIChWTEFOKS4KPj4gPgo+
+PiA+ICAgICBNeSBjbGllbnQgaXMgc2V0IGluIFNUQSArIFdEUyBhbmQgdGhlIG5ldGRldiBpcyBi
+cmlkZ2VkIHdpdGggZXRoMC4KPj4gPiAgICAgSSBoYXZlIGEgY29tcHV0ZXIgd2l0aCB2bGFuIGNv
+bmZpZ3VyYXRpb24gc2V0IGNvbm5lY3RlZCB0byB0aGUgU1RBCj4+ID4gZXRoMC4KPj4gPgo+PiA+
+ICAgICBJZiBJIHRyeSB0byB0cmFuc21pdCBmcmFtZXMgd2l0aCA4MDIuMXEgdGFnLCB0aGUgZnJh
+bWVzIGFyZSBub3QKPiBzZW50Lgo+PiA+ICAgICBJIGNoZWNrZWQgd2l0aCB3aXJlbGVzcyBzbmlm
+ZmVyLCBhbmQgSSBkb24ndCBzZWUgdGhlIGZyYW1lIHdpdGggVkxBTgo+PiA+IHRhZyAodGhlIGZy
+YW1lcyB3aXRob3V0IFZMQU4gdGFnIGFyZSBzZW50KS4KPj4gPgo+PiA+ICAgICBJIHRlc3RlZCB3
+aXRoIGZpcm13YXJlIDEwLjIuNC43MC4xNC0yIGZyb20ga2FsZSBnaXRodWIsCj4+ID4gMTAuMS40
+NjctY3QtY29tLWZ1bGwtMDE1IGZyb20gY2FuZGVsYXRlY2ggYW5kIDEwLjIuNC43MC0yIGZyb20K
+Pj4gPiBvcGVud3J0LCBhbmQgaW4gYWxsIGNhc2VzIEkgaGF2ZSB0aGUgc2FtZSBpc3N1ZS4KPj4g
+Pgo+PiA+ICAgICBUaGFua3MgZm9yIHlvdXIgaGVscC4KPj4gPgo+PiA+Cj4+ID4gLS0KPj4gPiBU
+byB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUK
+Pj4gPiBsaW51eC13aXJlbGVzcyIgaW4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9t
+b0B2Z2VyLmtlcm5lbC5vcmcKPj4gPiBNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdl
+ci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwKPj4gPgo+Pgo+PiAtLQo+PiBCZW4gR3Jl
+ZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4gQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5j
+ICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQo+Cj4gLS0KPiBUbyB1bnN1YnNjcmliZSBmcm9t
+IHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbGludXgtd2lyZWxlc3MiIGlu
+Cj4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcKPiBN
+b3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3JnL21ham9yZG9tby1p
+bmZvLmh0bWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
