@@ -1,21 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x232.google.com ([2607:f8b0:4003:c06::232])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c2iHy-0004tC-Bq
- for ath10k@lists.infradead.org; Fri, 04 Nov 2016 17:28:28 +0000
-Received: by mail-oi0-x232.google.com with SMTP id 128so174248109oih.0
- for <ath10k@lists.infradead.org>; Fri, 04 Nov 2016 10:28:05 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CABUTiXUBfHB5RiZ8=ODzrK4-rCBJZ8QqZuZhMK_J7c7haFMEcw@mail.gmail.com>
+ id 1c2lrq-0005Sq-My
+ for ath10k@lists.infradead.org; Fri, 04 Nov 2016 21:17:43 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: ATH10K VLAN firmware issue
+Date: Fri, 4 Nov 2016 21:17:13 +0000
+Message-ID: <87twbnueqv.fsf@kamboji.qca.qualcomm.com>
 References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
- <566849DB.9040901@candelatech.com> <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
+ <566849DB.9040901@candelatech.com>
+ <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
  <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
- <27f802e7-79c5-a17f-1883-88e62a6520ef@ezplanet.net>
- <CABUTiXUBfHB5RiZ8=ODzrK4-rCBJZ8QqZuZhMK_J7c7haFMEcw@mail.gmail.com>
-From: yu-chieh kung <jay0607@gmail.com>
-Date: Sat, 5 Nov 2016 01:28:04 +0800
-Message-ID: <CAGJdtRCKidEfDF7sc4BRGSfOTmcGJUJ4KZt0xU1vj4bGAnuu1Q@mail.gmail.com>
-Subject: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
+In-Reply-To: <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>	(Bruno
+ Antunes's message of "Fri, 4 Nov 2016 14:13:29 +0000")
+Content-Language: en-US
+Content-ID: <F3C53E7BB7913345A565A4BCEFDA3A84@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,76 +24,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Bruno Antunes <baantunes@gmail.com>
-Cc: Mauro Mozzarelli <openwrt@ezplanet.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: OpenWrt Development List <openwrt-devel@lists.openwrt.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, voncken <cedric.voncken@acksys.fr>
 
-SSBtZXQgdGhlIHNhbWUgcHJvYmxlbSBiZWZvcmUsCmlmIGkgbW9kaWZ5IHRoZSAxcSBoZWFkZXIg
-dG8gb3RoZXIgdmFsdWUgKDB4YWEwMCkgYmVmb3JlIGdvIGludG8gZmlybXdhcmUuCkkgY2FuIGNh
-cHR1cmUgdGhlIHBhY2tldCBpbiB0aGUgYWlyCkkgdGhpbmsgdGhlIHZsYW4gcGFja2V0IGlzIGRy
-b3BwZWQgaW4gZmlybXdhcmUuCgoyMDE2LTExLTA0IDIyOjQxIEdNVCswODowMCBCcnVubyBBbnR1
-bmVzIDxiYWFudHVuZXNAZ21haWwuY29tPjoKPiBPbiA0IE5vdmVtYmVyIDIwMTYgYXQgMTQ6MTgs
-IE1hdXJvIE1venphcmVsbGkgPG9wZW53cnRAZXpwbGFuZXQubmV0PiB3cm90ZToKPj4gU2luY2Ug
-dGhlIGNhcGFiaWxpdHkgaXMgaW1wbGVtZW50ZWQgaW4gc29mdHdhcmUgeW91IG1pZ2h0IGJlIHRl
-c3RpbmcgdGhlCj4+IGxpbWl0IG9mIHlvdXIgcm91dGVyJ3MgQ1BVIGkvbyBzcGVlZC4KPgo+IEJ5
-IGxvYWRpbmcgdGhlIG1vZHVsZSBpbiByYXdtb2RlPwo+Cj4gVGhlIEFQIGlzIGFuIEFQVSBhbmQg
-U3RhIGlzIGFuIEFQVTIuCj4KPj4KPj4KPj4KPj4gT24gMDQvMTEvMTYgMTQ6MTMsIEJydW5vIEFu
-dHVuZXMgd3JvdGU6Cj4+Pgo+Pj4gSGkgYWxsLAo+Pj4KPj4+IE9sZCB0aHJlYWQgYnV0IEkgdGhp
-bmsgdGhlIGlzc3VlIGlzIHN0aWxsIHByZXNlbnQuCj4+Pgo+Pj4gSSdtIHJ1bm5pbmcgYSBzZXR1
-cCB3aXRoIFZMQU5zIHdpdGggV0RTIGFuZCBhdGgxMGsgY2FyZHMuCj4+Pgo+Pj4gVG8gbWFrZSBp
-dCB3b3JrIGJvdGggY2FyZHMgbXVzdCBiZSBsb2FkZWQgaW4gcmF3bW9kZSwgQVAKPj4+IGFuZCBT
-dGEsIGFuZCB3aXRoIG5vIHNlY3VyaXR5Lgo+Pj4KPj4+IEknbSB1c2luZyBhIE9wZW5XcnQgdHJ1
-bmsgcjQ5OTQxIGFuZCB0aGUgbW9zdCByZWNlbnQgZmlybXdhcmUsCj4+PiAxMC4yLjQuNzAuNTgs
-IGZyb20gS2FsbGUgYXRoMTBrIGZpcm13YXJlIHRyZWUuCj4+Pgo+Pj4gQWx0aG91Z2ggaXQgd29y
-a3MgdGhlIHRocm91Z2hwdXQgaXMgdmVyeSBiYWQuCj4+PiBBcmUgdGhlcmUgYW55IGFsdGVybmF0
-aXZlcyB0byBpbXByb3ZlIHRoZSB0aHJvdWdocHV0Lgo+Pj4KPj4+IEJlc3QgUmVnYXJkcywKPj4+
-IEJydW5vCj4+Pgo+Pj4gT24gOSBEZWNlbWJlciAyMDE1IGF0IDE3OjI0LCB2b25ja2VuIDxjZWRy
-aWMudm9uY2tlbkBhY2tzeXMuZnI+IHdyb3RlOgo+Pj4+Cj4+Pj4KPj4+Pj4gLS0tLS1NZXNzYWdl
-IGQnb3JpZ2luZS0tLS0tCj4+Pj4+IERlIDogQmVuIEdyZWVhciBbbWFpbHRvOmdyZWVhcmJAY2Fu
-ZGVsYXRlY2guY29tXQo+Pj4+PiBFbnZvecOpIDogbWVyY3JlZGkgOSBkw6ljZW1icmUgMjAxNSAx
-NjozNAo+Pj4+PiDDgCA6IENlZHJpYyBWT05DS0VOOyBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-ZzsgbGludXgtd2lyZWxlc3MKPj4+Pj4gT2JqZXQgOiBSZTogQVRIMTBLIFZMQU4gZmlybXdhcmUg
-aXNzdWUKPj4+Pj4KPj4+Pj4gVGhpcyBvbmx5IGhhcHBlbnMgd2hlbiB5b3UgdXNlIFNUQSAgKyBX
-RFMsIG9yIGlzIC4xcSBicm9rZW4gZm9yIHlvdSBpbgo+Pj4+PiBvdGhlciBjYXNlcyBhcyB3ZWxs
-Pwo+Pj4+Cj4+Pj4gTm8sIHRoaXMgaXNzdWUgb2NjdXJzIGluIGFsbCBtb2RlcyAoU1RBLCBTVEEg
-KyBXRFMsIEFQKS4KPj4+Pgo+Pj4+IFRoYW5rcwo+Pj4+Cj4+Pj4gQ2VkcmljLgo+Pj4+Cj4+Pj4+
-IFRoYW5rcywKPj4+Pj4gQmVuCj4+Pj4+Cj4+Pj4+IE9uIDEyLzA4LzIwMTUgMDY6MjkgQU0sIENl
-ZHJpYyBWT05DS0VOIHdyb3RlOgo+Pj4+Pj4KPj4+Pj4+ICAgICAgSSdtIHRlc3RpbmcgdG8gdHJh
-bnNtaXQgZnJhbWUgd2l0aCA4MDIuMXEgdGFnIChWTEFOKS4KPj4+Pj4+Cj4+Pj4+PiAgICAgIE15
-IGNsaWVudCBpcyBzZXQgaW4gU1RBICsgV0RTIGFuZCB0aGUgbmV0ZGV2IGlzIGJyaWRnZWQgd2l0
-aCBldGgwLgo+Pj4+Pj4gICAgICBJIGhhdmUgYSBjb21wdXRlciB3aXRoIHZsYW4gY29uZmlndXJh
-dGlvbiBzZXQgY29ubmVjdGVkIHRvIHRoZSBTVEEKPj4+Pj4+IGV0aDAuCj4+Pj4+Pgo+Pj4+Pj4g
-ICAgICBJZiBJIHRyeSB0byB0cmFuc21pdCBmcmFtZXMgd2l0aCA4MDIuMXEgdGFnLCB0aGUgZnJh
-bWVzIGFyZSBub3QKPj4+Pgo+Pj4+IHNlbnQuCj4+Pj4+Pgo+Pj4+Pj4gICAgICBJIGNoZWNrZWQg
-d2l0aCB3aXJlbGVzcyBzbmlmZmVyLCBhbmQgSSBkb24ndCBzZWUgdGhlIGZyYW1lIHdpdGgKPj4+
-Pj4+IFZMQU4KPj4+Pj4+IHRhZyAodGhlIGZyYW1lcyB3aXRob3V0IFZMQU4gdGFnIGFyZSBzZW50
-KS4KPj4+Pj4+Cj4+Pj4+PiAgICAgIEkgdGVzdGVkIHdpdGggZmlybXdhcmUgMTAuMi40LjcwLjE0
-LTIgZnJvbSBrYWxlIGdpdGh1YiwKPj4+Pj4+IDEwLjEuNDY3LWN0LWNvbS1mdWxsLTAxNSBmcm9t
-IGNhbmRlbGF0ZWNoIGFuZCAxMC4yLjQuNzAtMiBmcm9tCj4+Pj4+PiBvcGVud3J0LCBhbmQgaW4g
-YWxsIGNhc2VzIEkgaGF2ZSB0aGUgc2FtZSBpc3N1ZS4KPj4+Pj4+Cj4+Pj4+PiAgICAgIFRoYW5r
-cyBmb3IgeW91ciBoZWxwLgo+Pj4+Pj4KPj4+Pj4+Cj4+Pj4+PiAtLQo+Pj4+Pj4gVG8gdW5zdWJz
-Y3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlCj4+Pj4+PiBs
-aW51eC13aXJlbGVzcyIgaW4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2Vy
-Lmtlcm5lbC5vcmcKPj4+Pj4+IE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtl
-cm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbAo+Pj4+Pj4KPj4+Pj4gLS0KPj4+Pj4gQmVuIEdy
-ZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+Cj4+Pj4+IENhbmRlbGEgVGVjaG5vbG9naWVz
-IEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KPj4+Pgo+Pj4+IC0tCj4+Pj4gVG8gdW5z
-dWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4
-LXdpcmVsZXNzIgo+Pj4+IGluCj4+Pj4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9t
-b0B2Z2VyLmtlcm5lbC5vcmcKPj4+PiBNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdl
-ci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwKPj4+Cj4+PiBfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+Pj4gb3BlbndydC1kZXZlbCBtYWlsaW5n
-IGxpc3QKPj4+IG9wZW53cnQtZGV2ZWxAbGlzdHMub3BlbndydC5vcmcKPj4+IGh0dHBzOi8vbGlz
-dHMub3BlbndydC5vcmcvY2dpLWJpbi9tYWlsbWFuL2xpc3RpbmZvL29wZW53cnQtZGV2ZWwKPj4K
-Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4gb3Bl
-bndydC1kZXZlbCBtYWlsaW5nIGxpc3QKPj4gb3BlbndydC1kZXZlbEBsaXN0cy5vcGVud3J0Lm9y
-Zwo+PiBodHRwczovL2xpc3RzLm9wZW53cnQub3JnL2NnaS1iaW4vbWFpbG1hbi9saXN0aW5mby9v
-cGVud3J0LWRldmVsCj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-Zwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Bruno Antunes <baantunes@gmail.com> writes:
+
+> Old thread but I think the issue is still present.
+>
+> I'm running a setup with VLANs with WDS and ath10k cards.
+>
+> To make it work both cards must be loaded in rawmode, AP
+> and Sta, and with no security.
+>
+> I'm using a OpenWrt trunk r49941 and the most recent firmware,
+> 10.2.4.70.58, from Kalle ath10k firmware tree.
+>
+> Although it works the throughput is very bad.
+> Are there any alternatives to improve the throughput.
+
+Can someone file a bug to bugzilla about this so that all the info is
+properly stored? The more comprehensive the report is the better.
+
+https://bugzilla.kernel.org/
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
