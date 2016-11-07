@@ -1,24 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c32Vd-0002sz-1F
- for ath10k@lists.infradead.org; Sat, 05 Nov 2016 15:03:55 +0000
-Message-ID: <581DEE2E.3010502@candelatech.com>
-Date: Sat, 05 Nov 2016 07:35:26 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-qk0-x22a.google.com ([2607:f8b0:400d:c09::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c3iWV-0005dd-61
+ for ath10k@lists.infradead.org; Mon, 07 Nov 2016 11:55:35 +0000
+Received: by mail-qk0-x22a.google.com with SMTP id n204so162008439qke.2
+ for <ath10k@lists.infradead.org>; Mon, 07 Nov 2016 03:55:14 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
+In-Reply-To: <68bd7ebd-b12a-5dbf-a267-5913127718a1@candelatech.com>
 References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
- <566849DB.9040901@candelatech.com>
- <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
+ <566849DB.9040901@candelatech.com> <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
  <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
  <27f802e7-79c5-a17f-1883-88e62a6520ef@ezplanet.net>
  <CABUTiXUBfHB5RiZ8=ODzrK4-rCBJZ8QqZuZhMK_J7c7haFMEcw@mail.gmail.com>
  <CAGJdtRCKidEfDF7sc4BRGSfOTmcGJUJ4KZt0xU1vj4bGAnuu1Q@mail.gmail.com>
  <c58ffbe0-c305-3282-34e9-98814c6f0d14@candelatech.com>
  <68bd7ebd-b12a-5dbf-a267-5913127718a1@candelatech.com>
- <846c145b-3b15-45ca-249a-040518bc2dad@dd-wrt.com>
-In-Reply-To: <846c145b-3b15-45ca-249a-040518bc2dad@dd-wrt.com>
+From: Bruno Antunes <baantunes@gmail.com>
+Date: Mon, 7 Nov 2016 11:54:53 +0000
+Message-ID: <CABUTiXXvqQ=yrrK3wp0fck=Mcb0LSrE7_Jw6KisYOuADvo3sdQ@mail.gmail.com>
+Subject: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,110 +27,83 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, yu-chieh kung <jay0607@gmail.com>, Bruno Antunes <baantunes@gmail.com>
-Cc: Mauro Mozzarelli <openwrt@ezplanet.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Mauro Mozzarelli <openwrt@ezplanet.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, yu-chieh kung <jay0607@gmail.com>
 
-TG9va3MgdG8gbWUgbGlrZSAxMC40IGRlZmF1bHRzIHRvIHRoZSByaWdodCB2YWx1ZSwgYnV0IHBv
-c3NpYmx5IHRoZXJlIGFyZSBvdGhlcgppc3N1ZXMgd2l0aCBpdC4gIEkgdGVzdGVkIG15IENUIDEw
-LjQgYW5kIGl0IHdvcmtlZCBPSyB3aXRoIHZsYW5zIGZvciBtZS4KClRoYW5rcywKQmVuCgpPbiAx
-MS8wNS8yMDE2IDAxOjA1IEFNLCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPiB3b3VsZCBi
-ZSBnb29kIGlmIHFjYSBjYW4gZml4IHRoaXMgYnVnIGZpbmFsbHkgaW4gYWxsIGF2YWlsYWJsZSBm
-aXJtd2FyZXMuIGl0cyBhIHZlcnkgYW5ub3lpbmcgaXNzdWUgc2luY2UgYSBsb25nIHRpbWUKPgo+
-IFNlYmFzdGlhbgo+Cj4KPiBBbSAwNC4xMS4yMDE2IHVtIDIzOjIzIHNjaHJpZWIgQmVuIEdyZWVh
-cjoKPj4gVGhlIGJ1ZyBhcHBlYXJzIHRoYXQgdmxhbi10eC1zdHJpcHBpbmcgaXMgdW5jb25kaXRp
-b25hbGx5IGVuYWJsZWQgaW4KPj4gYXQgbGVhc3QgbXkgZmlybXdhcmUuICBJIGhhdmUgcmUtY29t
-cGlsZWQgdy9vdXQgdGhhdCBmbGFnIHNldCwgYW5kIGl0IGFwcGVhcnMKPj4gdG8gd29yayBmb3Ig
-bWUuCj4+Cj4+IFBsZWFzZSBkb3dubG9hZCB0aGlzIGZpcm13YXJlLCByZW5hbWUgaXQgZmlybXdh
-cmUtMi5iaW4sIG1ha2Ugc3VyZSB5b3UgcmVtb3ZlL3JlbmFtZQo+PiBhbnkgZmlybXdhcmUtNS5i
-aW4gKGV0Yykgc28gbWluZSB3aWxsIGxvYWQsIGFuZCBzZWUgaWYgdGhhdCBmaXhlcyB5b3VyIHBy
-b2JsZW0uCj4+Cj4+IFBsZWFzZSBub3RlIHRoYXQgaXQgaXMgdmVyeSBsaWtlbHkgeW91IHdpbGwg
-aGF2ZSB0byB1c2Ugc2FtZSBNQUMgYWRkcmVzcwo+PiBmb3IgdGhlIFZMQU4gZGV2aWNlcyB0aGF0
-IHRoZSB1bmRlcmx5aW5nIHN0YXRpb24gdXNlcyBpbiBvcmRlciBmb3IgdGhpcyB0byB3b3JrLgo+
-Pgo+PiBodHRwczovL3d3dy5jYW5kZWxhdGVjaC5jb20vZG93bmxvYWRzL3RtcC9maXJtd2FyZS0y
-LWZ1bGwtY29tbXVuaXR5LmJpbgo+Pgo+Pgo+PiBUaGFua3MsCj4+IEJlbgo+Pgo+Pgo+PiBPbiAx
-MS8wNC8yMDE2IDAyOjUwIFBNLCBCZW4gR3JlZWFyIHdyb3RlOgo+Pj4gSSBjYW4gcmVwcm9kdWNl
-IHRoaXMgaW4gbXkgQ1QgZmlybXdhcmUuIEknbGwgc2VlIGlmIEkgY2FuIGZpeCBpdCwKPj4+IGJ1
-dCBmb3Igc3RvY2sgZmlybXdhcmUsIGl0IG1pZ2h0IGJlIHRoYXQgY2hhbmdpbmcgdGhlIGRyaXZl
-ciB0byB1c2UgRXRoZXJuZXQgcGFja2V0IHR5cGUKPj4+IG9mIG5hdGl2ZS13aWZpIHdvdWxkIG1h
-a2UgLjFxIHZsYW5zIHdvcmsuCj4+Pgo+Pj4gVGhhbmtzLAo+Pj4gQmVuCj4+Pgo+Pj4gT24gMTEv
-MDQvMjAxNiAxMDoyOCBBTSwgeXUtY2hpZWgga3VuZyB3cm90ZToKPj4+PiBJIG1ldCB0aGUgc2Ft
-ZSBwcm9ibGVtIGJlZm9yZSwKPj4+PiBpZiBpIG1vZGlmeSB0aGUgMXEgaGVhZGVyIHRvIG90aGVy
-IHZhbHVlICgweGFhMDApIGJlZm9yZSBnbyBpbnRvIGZpcm13YXJlLgo+Pj4+IEkgY2FuIGNhcHR1
-cmUgdGhlIHBhY2tldCBpbiB0aGUgYWlyCj4+Pj4gSSB0aGluayB0aGUgdmxhbiBwYWNrZXQgaXMg
-ZHJvcHBlZCBpbiBmaXJtd2FyZS4KPj4+Pgo+Pj4+IDIwMTYtMTEtMDQgMjI6NDEgR01UKzA4OjAw
-IEJydW5vIEFudHVuZXMgPGJhYW50dW5lc0BnbWFpbC5jb20+Ogo+Pj4+PiBPbiA0IE5vdmVtYmVy
-IDIwMTYgYXQgMTQ6MTgsIE1hdXJvIE1venphcmVsbGkgPG9wZW53cnRAZXpwbGFuZXQubmV0PiB3
-cm90ZToKPj4+Pj4+IFNpbmNlIHRoZSBjYXBhYmlsaXR5IGlzIGltcGxlbWVudGVkIGluIHNvZnR3
-YXJlIHlvdSBtaWdodCBiZSB0ZXN0aW5nIHRoZQo+Pj4+Pj4gbGltaXQgb2YgeW91ciByb3V0ZXIn
-cyBDUFUgaS9vIHNwZWVkLgo+Pj4+Pgo+Pj4+PiBCeSBsb2FkaW5nIHRoZSBtb2R1bGUgaW4gcmF3
-bW9kZT8KPj4+Pj4KPj4+Pj4gVGhlIEFQIGlzIGFuIEFQVSBhbmQgU3RhIGlzIGFuIEFQVTIuCj4+
-Pj4+Cj4+Pj4+Pgo+Pj4+Pj4KPj4+Pj4+Cj4+Pj4+PiBPbiAwNC8xMS8xNiAxNDoxMywgQnJ1bm8g
-QW50dW5lcyB3cm90ZToKPj4+Pj4+Pgo+Pj4+Pj4+IEhpIGFsbCwKPj4+Pj4+Pgo+Pj4+Pj4+IE9s
-ZCB0aHJlYWQgYnV0IEkgdGhpbmsgdGhlIGlzc3VlIGlzIHN0aWxsIHByZXNlbnQuCj4+Pj4+Pj4K
-Pj4+Pj4+PiBJJ20gcnVubmluZyBhIHNldHVwIHdpdGggVkxBTnMgd2l0aCBXRFMgYW5kIGF0aDEw
-ayBjYXJkcy4KPj4+Pj4+Pgo+Pj4+Pj4+IFRvIG1ha2UgaXQgd29yayBib3RoIGNhcmRzIG11c3Qg
-YmUgbG9hZGVkIGluIHJhd21vZGUsIEFQCj4+Pj4+Pj4gYW5kIFN0YSwgYW5kIHdpdGggbm8gc2Vj
-dXJpdHkuCj4+Pj4+Pj4KPj4+Pj4+PiBJJ20gdXNpbmcgYSBPcGVuV3J0IHRydW5rIHI0OTk0MSBh
-bmQgdGhlIG1vc3QgcmVjZW50IGZpcm13YXJlLAo+Pj4+Pj4+IDEwLjIuNC43MC41OCwgZnJvbSBL
-YWxsZSBhdGgxMGsgZmlybXdhcmUgdHJlZS4KPj4+Pj4+Pgo+Pj4+Pj4+IEFsdGhvdWdoIGl0IHdv
-cmtzIHRoZSB0aHJvdWdocHV0IGlzIHZlcnkgYmFkLgo+Pj4+Pj4+IEFyZSB0aGVyZSBhbnkgYWx0
-ZXJuYXRpdmVzIHRvIGltcHJvdmUgdGhlIHRocm91Z2hwdXQuCj4+Pj4+Pj4KPj4+Pj4+PiBCZXN0
-IFJlZ2FyZHMsCj4+Pj4+Pj4gQnJ1bm8KPj4+Pj4+Pgo+Pj4+Pj4+IE9uIDkgRGVjZW1iZXIgMjAx
-NSBhdCAxNzoyNCwgdm9uY2tlbiA8Y2VkcmljLnZvbmNrZW5AYWNrc3lzLmZyPiB3cm90ZToKPj4+
-Pj4+Pj4KPj4+Pj4+Pj4KPj4+Pj4+Pj4+IC0tLS0tTWVzc2FnZSBkJ29yaWdpbmUtLS0tLQo+Pj4+
-Pj4+Pj4gRGUgOiBCZW4gR3JlZWFyIFttYWlsdG86Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb21dCj4+
-Pj4+Pj4+PiBFbnZvecOpIDogbWVyY3JlZGkgOSBkw6ljZW1icmUgMjAxNSAxNjozNAo+Pj4+Pj4+
-Pj4gw4AgOiBDZWRyaWMgVk9OQ0tFTjsgYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4
-LXdpcmVsZXNzCj4+Pj4+Pj4+PiBPYmpldCA6IFJlOiBBVEgxMEsgVkxBTiBmaXJtd2FyZSBpc3N1
-ZQo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+IFRoaXMgb25seSBoYXBwZW5zIHdoZW4geW91IHVzZSBTVEEg
-ICsgV0RTLCBvciBpcyAuMXEgYnJva2VuIGZvciB5b3UgaW4KPj4+Pj4+Pj4+IG90aGVyIGNhc2Vz
-IGFzIHdlbGw/Cj4+Pj4+Pj4+Cj4+Pj4+Pj4+IE5vLCB0aGlzIGlzc3VlIG9jY3VycyBpbiBhbGwg
-bW9kZXMgKFNUQSwgU1RBICsgV0RTLCBBUCkuCj4+Pj4+Pj4+Cj4+Pj4+Pj4+IFRoYW5rcwo+Pj4+
-Pj4+Pgo+Pj4+Pj4+PiBDZWRyaWMuCj4+Pj4+Pj4+Cj4+Pj4+Pj4+PiBUaGFua3MsCj4+Pj4+Pj4+
-PiBCZW4KPj4+Pj4+Pj4+Cj4+Pj4+Pj4+PiBPbiAxMi8wOC8yMDE1IDA2OjI5IEFNLCBDZWRyaWMg
-Vk9OQ0tFTiB3cm90ZToKPj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+ICAgICAgSSdtIHRlc3RpbmcgdG8g
-dHJhbnNtaXQgZnJhbWUgd2l0aCA4MDIuMXEgdGFnIChWTEFOKS4KPj4+Pj4+Pj4+Pgo+Pj4+Pj4+
-Pj4+ICAgICAgTXkgY2xpZW50IGlzIHNldCBpbiBTVEEgKyBXRFMgYW5kIHRoZSBuZXRkZXYgaXMg
-YnJpZGdlZCB3aXRoIGV0aDAuCj4+Pj4+Pj4+Pj4gICAgICBJIGhhdmUgYSBjb21wdXRlciB3aXRo
-IHZsYW4gY29uZmlndXJhdGlvbiBzZXQgY29ubmVjdGVkIHRvIHRoZSBTVEEKPj4+Pj4+Pj4+PiBl
-dGgwLgo+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4gICAgICBJZiBJIHRyeSB0byB0cmFuc21pdCBmcmFt
-ZXMgd2l0aCA4MDIuMXEgdGFnLCB0aGUgZnJhbWVzIGFyZSBub3QKPj4+Pj4+Pj4KPj4+Pj4+Pj4g
-c2VudC4KPj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+ICAgICAgSSBjaGVja2VkIHdpdGggd2lyZWxlc3Mg
-c25pZmZlciwgYW5kIEkgZG9uJ3Qgc2VlIHRoZSBmcmFtZSB3aXRoCj4+Pj4+Pj4+Pj4gVkxBTgo+
-Pj4+Pj4+Pj4+IHRhZyAodGhlIGZyYW1lcyB3aXRob3V0IFZMQU4gdGFnIGFyZSBzZW50KS4KPj4+
-Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+ICAgICAgSSB0ZXN0ZWQgd2l0aCBmaXJtd2FyZSAxMC4yLjQuNzAu
-MTQtMiBmcm9tIGthbGUgZ2l0aHViLAo+Pj4+Pj4+Pj4+IDEwLjEuNDY3LWN0LWNvbS1mdWxsLTAx
-NSBmcm9tIGNhbmRlbGF0ZWNoIGFuZCAxMC4yLjQuNzAtMiBmcm9tCj4+Pj4+Pj4+Pj4gb3Blbndy
-dCwgYW5kIGluIGFsbCBjYXNlcyBJIGhhdmUgdGhlIHNhbWUgaXNzdWUuCj4+Pj4+Pj4+Pj4KPj4+
-Pj4+Pj4+PiAgICAgIFRoYW5rcyBmb3IgeW91ciBoZWxwLgo+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4K
-Pj4+Pj4+Pj4+PiAtLQo+Pj4+Pj4+Pj4+IFRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBz
-ZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZQo+Pj4+Pj4+Pj4+IGxpbnV4LXdpcmVsZXNzIiBpbiB0
-aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZwo+Pj4+Pj4+
-Pj4+IE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRv
-bW8taW5mby5odG1sCj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+IC0tCj4+Pj4+Pj4+PiBCZW4gR3JlZWFy
-IDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4+Pj4+Pj4+IENhbmRlbGEgVGVjaG5vbG9naWVz
-IEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KPj4+Pj4+Pj4KPj4+Pj4+Pj4gLS0KPj4+
-Pj4+Pj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vi
-c2NyaWJlIGxpbnV4LXdpcmVsZXNzIgo+Pj4+Pj4+PiBpbgo+Pj4+Pj4+PiB0aGUgYm9keSBvZiBh
-IG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZwo+Pj4+Pj4+PiBNb3JlIG1ham9y
-ZG9tbyBpbmZvIGF0IGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbAo+
-Pj4+Pj4+Cj4+Pj4+Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KPj4+Pj4+PiBvcGVud3J0LWRldmVsIG1haWxpbmcgbGlzdAo+Pj4+Pj4+IG9wZW53cnQt
-ZGV2ZWxAbGlzdHMub3BlbndydC5vcmcKPj4+Pj4+PiBodHRwczovL2xpc3RzLm9wZW53cnQub3Jn
-L2NnaS1iaW4vbWFpbG1hbi9saXN0aW5mby9vcGVud3J0LWRldmVsCj4+Pj4+Pgo+Pj4+Pj4gX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+Pj4+IG9wZW53
-cnQtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+Pj4+PiBvcGVud3J0LWRldmVsQGxpc3RzLm9wZW53cnQu
-b3JnCj4+Pj4+PiBodHRwczovL2xpc3RzLm9wZW53cnQub3JnL2NnaS1iaW4vbWFpbG1hbi9saXN0
-aW5mby9vcGVud3J0LWRldmVsCj4+Pj4+Cj4+Pj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCj4+Pj4+IGF0aDEwayBtYWlsaW5nIGxpc3QKPj4+Pj4gYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4+Pj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPj4+Pgo+Pj4KPj4+Cj4+Cj4+Cj4KPgoKLS0gCkJlbiBH
-cmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMg
-IGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCg==
+On 4 November 2016 at 22:23, Ben Greear <greearb@candelatech.com> wrote:
+> The bug appears that vlan-tx-stripping is unconditionally enabled in
+> at least my firmware.  I have re-compiled w/out that flag set, and it
+> appears
+> to work for me.
+>
+> Please download this firmware, rename it firmware-2.bin, make sure you
+> remove/rename
+> any firmware-5.bin (etc) so mine will load, and see if that fixes your
+> problem.
+
+Thanks for the fast reply but it only solves "half"  the problem.
+
+Now the connection between the AP and the Sta can be secure and the
+driver doesn't need to be loaded in rawmode.
+
+Unfortunatly the the throughput is still bad.
+
+iperf3 -c 10.10.4.15
+Connecting to host 10.10.4.15, port 5201
+[  4] local 10.10.4.16 port 44893 connected to 10.10.4.15 port 5201
+[ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
+[  4]   0.00-1.01   sec  42.4 KBytes   345 Kbits/sec    6   1.41 KBytes
+[  4]   1.01-2.01   sec  0.00 Bytes  0.00 bits/sec    1   1.41 KBytes
+[  4]   2.01-3.01   sec  0.00 Bytes  0.00 bits/sec    1   1.41 KBytes
+[  4]   3.01-4.01   sec  0.00 Bytes  0.00 bits/sec    0   1.41 KBytes
+[  4]   4.01-5.01   sec  0.00 Bytes  0.00 bits/sec    0   1.41 KBytes
+[  4]   5.01-6.01   sec  0.00 Bytes  0.00 bits/sec    0   1.41 KBytes
+[  4]   6.01-7.01   sec  0.00 Bytes  0.00 bits/sec    1   1.41 KBytes
+[  4]   7.01-8.01   sec  0.00 Bytes  0.00 bits/sec    0   1.41 KBytes
+[  4]   8.01-9.01   sec  0.00 Bytes  0.00 bits/sec    0   1.41 KBytes
+[  4]   9.01-10.01  sec  0.00 Bytes  0.00 bits/sec    0   1.41 KBytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bandwidth       Retr
+[  4]   0.00-10.01  sec  42.4 KBytes  34.7 Kbits/sec    9             sender
+[  4]   0.00-10.01  sec  0.00 Bytes  0.00 bits/sec                  receiver
+
+iperf Done.
+
+>
+> Please note that it is very likely you will have to use same MAC address
+> for the VLAN devices that the underlying station uses in order for this to
+> work.
+
+Can you please elaborate more?
+My setup  is the folowing.
+The connection between the AP and Sta is in WDS
+For the moment all devices are in the same VLAN.
+
+client1 --- SW1 ---- AP ...... Sta ---- SW2 --- client2
+
+
+Thanks,
+Bruno
+
+>
+> https://www.candelatech.com/downloads/tmp/firmware-2-full-community.bin
+>
+>
+> Thanks,
+> Ben
+>
+>
+>
+
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+>
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
