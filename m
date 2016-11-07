@@ -1,23 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c3n1C-0005Cj-GP
- for ath10k@lists.infradead.org; Mon, 07 Nov 2016 16:43:37 +0000
-Received: by mail-wm0-x22e.google.com with SMTP id t79so188613848wmt.0
- for <ath10k@lists.infradead.org>; Mon, 07 Nov 2016 08:43:05 -0800 (PST)
+ id 1c3oJT-0000Xz-R2
+ for ath10k@lists.infradead.org; Mon, 07 Nov 2016 18:06:32 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: ATH10K VLAN firmware issue
+Date: Mon, 7 Nov 2016 18:06:03 +0000
+Message-ID: <871syn5fnb.fsf@qca.qualcomm.com>
+References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
+ <566849DB.9040901@candelatech.com>
+ <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
+ <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
+ <87twbnueqv.fsf@kamboji.qca.qualcomm.com>
+ <CABUTiXW5QSh2KkD+sQ-6QOD5zTce0dun+nyfAMnvL580U=OVNw@mail.gmail.com>
+In-Reply-To: <CABUTiXW5QSh2KkD+sQ-6QOD5zTce0dun+nyfAMnvL580U=OVNw@mail.gmail.com>	(Bruno
+ Antunes's message of "Mon, 7 Nov 2016 12:01:01 +0000")
+Content-Language: en-US
+Content-ID: <04B313AC73159F4DA0278BFC67321753@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1204267275.1178.1478525905172@office.mailbox.org>
-References: <1403930336.4012.1477681558487@office.mailbox.org>
- <CA+BoTQmbz1vHjn0Xbo2hKcb9v8MdN5uTEnVNOAK0Kfh_NwTp5w@mail.gmail.com>
- <ema51f2924-a0bb-4f7a-8d84-3ee6fb82e317@valkyrie>
- <CA+BoTQkyd2f78Pk=_FrYyuQXedn8t6EEYq6BWHB8zthOF_AZ6w@mail.gmail.com>
- <1233772075.6396.1478077219620@office.mailbox.org>
- <CA+BoTQnOGOAEvM=M-1TqaN3GPgSJ2CUX-6Upa38jmaRzW9JkGA@mail.gmail.com>
- <1204267275.1178.1478525905172@office.mailbox.org>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Mon, 7 Nov 2016 09:43:02 -0700
-Message-ID: <CA+BoTQniCnXce6-w9SPp_aiuei8bjfbVJSkvXi_p4ew_Ed4Qdg@mail.gmail.com>
-Subject: Re: Re[2]: Linux freezes after a time while running
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +30,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Conrad Kostecki <ck+ath10k@bl4ckb0x.de>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: OpenWrt Development List <openwrt-devel@lists.openwrt.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, voncken <cedric.voncken@acksys.fr>
 
-On 7 November 2016 at 06:38, Conrad Kostecki <ck+ath10k@bl4ckb0x.de> wrote:
-> Hello Michal,
->
->> Michal Kazior <michal.kazior@tieto.com> hat am 2. November 2016 um 16:27 geschrieben:
->
->> Were the cards working with this particular microATX mainboard before though?
->
-> i was now able to borrow a Soekris net6501, the same model, which I used to have. I've now inserted there also those two Compex cards.
->
-> Interestingly, it's not working. The Soekris net6501 shows the same behavior. After a WiFi client connects, atk10k firmware crashed. As this mainboard does not have AER, I can't see the exact cause.
->
-> But what I can say, my Soekris net6501, which I used to have, was for years working fine, before it started to freeze. As the same now happens with my borrowed Soekris net6501 (It does not freeze with reboot_mode=1), I am unsure, if this is really a hardware problem.. maybe you have a clou?
+Bruno Antunes <baantunes@gmail.com> writes:
 
-I assume you used a different kernel in the past compared to the
-recent test you did. You could try re-testing the older kernel
-(assuming you remember which one it was) and if it works you could
-bisect your way to find the commit that breaks it for you.
+> On 4 November 2016 at 21:17, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+>> Bruno Antunes <baantunes@gmail.com> writes:
+>>
+>>> Old thread but I think the issue is still present.
+>>>
+>>> I'm running a setup with VLANs with WDS and ath10k cards.
+>>>
+>>> To make it work both cards must be loaded in rawmode, AP
+>>> and Sta, and with no security.
+>>>
+>>> I'm using a OpenWrt trunk r49941 and the most recent firmware,
+>>> 10.2.4.70.58, from Kalle ath10k firmware tree.
+>>>
+>>> Although it works the throughput is very bad.
+>>> Are there any alternatives to improve the throughput.
+>>
+>> Can someone file a bug to bugzilla about this so that all the info is
+>> properly stored? The more comprehensive the report is the better.
+>>
+>> https://bugzilla.kernel.org/
+>
+> I will file a bug report.
 
+Thanks, it's good to store all in one place so that it's easier to find
+the relevant info.
 
-Michal
+> But since it appears to be a firmware related issue
+> under what category can fill in the bug?
 
+You can file it under Drivers/network-wireless, AFAIK we don't have any
+separate components for firmware bugs. Here's one example to follow:
+
+https://bugzilla.kernel.org/show_bug.cgi?id=186161
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
