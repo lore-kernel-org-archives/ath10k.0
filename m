@@ -1,20 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c3klf-0004WA-R9
- for ath10k@lists.infradead.org; Mon, 07 Nov 2016 14:19:24 +0000
-Message-ID: <58208D40.8070406@candelatech.com>
-Date: Mon, 07 Nov 2016 06:18:40 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c3n1C-0005Cj-GP
+ for ath10k@lists.infradead.org; Mon, 07 Nov 2016 16:43:37 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id t79so188613848wmt.0
+ for <ath10k@lists.infradead.org>; Mon, 07 Nov 2016 08:43:05 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] cfg80211: Add support to set tx power for a station
- associated
-References: <1465926256-6463-1-git-send-email-arnagara@qti.qualcomm.com>
- <1467110918.2493.9.camel@sipsolutions.net>
- <1cb3e2cc49b433fe5ed834a33adf64b6@codeaurora.org>
- <1470043740.3389.10.camel@sipsolutions.net> <579F4E4E.80103@candelatech.com>
- <8908f6e7bb8ca043fbeb07ee8b004e8f@codeaurora.org>
-In-Reply-To: <8908f6e7bb8ca043fbeb07ee8b004e8f@codeaurora.org>
+In-Reply-To: <1204267275.1178.1478525905172@office.mailbox.org>
+References: <1403930336.4012.1477681558487@office.mailbox.org>
+ <CA+BoTQmbz1vHjn0Xbo2hKcb9v8MdN5uTEnVNOAK0Kfh_NwTp5w@mail.gmail.com>
+ <ema51f2924-a0bb-4f7a-8d84-3ee6fb82e317@valkyrie>
+ <CA+BoTQkyd2f78Pk=_FrYyuQXedn8t6EEYq6BWHB8zthOF_AZ6w@mail.gmail.com>
+ <1233772075.6396.1478077219620@office.mailbox.org>
+ <CA+BoTQnOGOAEvM=M-1TqaN3GPgSJ2CUX-6Upa38jmaRzW9JkGA@mail.gmail.com>
+ <1204267275.1178.1478525905172@office.mailbox.org>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Mon, 7 Nov 2016 09:43:02 -0700
+Message-ID: <CA+BoTQniCnXce6-w9SPp_aiuei8bjfbVJSkvXi_p4ew_Ed4Qdg@mail.gmail.com>
+Subject: Re: Re[2]: Linux freezes after a time while running
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,65 +26,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ashok Raj Nagarajan <arnagara@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: Conrad Kostecki <ck+ath10k@bl4ckb0x.de>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
-
-On 11/07/2016 06:10 AM, Ashok Raj Nagarajan wrote:
-> On 2016-08-01 18:57, Ben Greear wrote:
->> On 08/01/2016 02:29 AM, Johannes Berg wrote:
->>>
->>>> Sure.. First use case will be to help with the problem of legacy
->>>> client devices that roam across multiple APs. It is a classic
->>>> enterprise Wi-Fi AP problem,  often managed by a "network controller"
->>>> unit that is connected to all the APs.
->>>> The problem is how to handle seamless handoff of clients between
->>>> multiple  APs while maximizing the client throughput and minimizing
->>>> disruption of IP application services like VoIP calls and video
->>>> streaming. A legacy client will often  hold onto an AP association,
->>>> even down to 1 Mbps as it roams away. Instead,  if the AP can
->>>> recognise that the client RSSI (and therefore throughput) is poor, it
->>>> can "drop" the Tx power significantly (just to that client) such that
->>>> it forcesthe client to look for a better, closer, and therefore
->>>> higher-throughputassociation. It would "give it a kick" without
->>>> blacklisting it. It just needsto hold the power low for the small
->>>> amount of time it takes to convince it to go away.
->>>
->>> Not sure that *works* since implementations may just compare beacon
->>> signal strength and hold on to the AP based on that, but it does seem
->>> like a reasonable use case.
->>
->> How is that better than just kicking the station deliberately and/or
->> refusing to send frames to it at all?
->>
+On 7 November 2016 at 06:38, Conrad Kostecki <ck+ath10k@bl4ckb0x.de> wrote:
+> Hello Michal,
 >
-> Ben, deliberately kicking out the station can potentially cause the black
-> listing behaviour on the client side and results in connection failures. Each
-> client handles the kickout logic differently. Reducing the tx power, causes the
-> station to trigger its roaming algorithm.
+>> Michal Kazior <michal.kazior@tieto.com> hat am 2. November 2016 um 16:27 geschrieben:
+>
+>> Were the cards working with this particular microATX mainboard before though?
+>
+> i was now able to borrow a Soekris net6501, the same model, which I used to have. I've now inserted there also those two Compex cards.
+>
+> Interestingly, it's not working. The Soekris net6501 shows the same behavior. After a WiFi client connects, atk10k firmware crashed. As this mainboard does not have AER, I can't see the exact cause.
+>
+> But what I can say, my Soekris net6501, which I used to have, was for years working fine, before it started to freeze. As the same now happens with my borrowed Soekris net6501 (It does not freeze with reboot_mode=1), I am unsure, if this is really a hardware problem.. maybe you have a clou?
 
-We tested some phones a year or so ago, and used a variable attenuator
-to decrease the signal of one AP while ramping up signal of a second AP.
-They did not roam until they lost connection, and since we were not using an isolation
-chamber, we could not get the AP signal less than around -75 DB, so in our test,
-the phones often did not roam at all.
+I assume you used a different kernel in the past compared to the
+recent test you did. You could try re-testing the older kernel
+(assuming you remember which one it was) and if it works you could
+bisect your way to find the commit that breaks it for you.
 
-http://www.candelatech.com/cookbook.php?vol=wifire&book=Emulating+Station+Motion+with+Programmable+Attenuator
 
-So, I am not sure you can assume much about scanning behaviour either.  Maybe newer
-phones are better...
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Michal
 
 _______________________________________________
 ath10k mailing list
