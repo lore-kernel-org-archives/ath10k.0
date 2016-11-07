@@ -1,24 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x22a.google.com ([2607:f8b0:400d:c09::22a])
+Received: from mail-qt0-x22d.google.com ([2607:f8b0:400d:c0d::22d])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c3iWV-0005dd-61
- for ath10k@lists.infradead.org; Mon, 07 Nov 2016 11:55:35 +0000
-Received: by mail-qk0-x22a.google.com with SMTP id n204so162008439qke.2
- for <ath10k@lists.infradead.org>; Mon, 07 Nov 2016 03:55:14 -0800 (PST)
+ id 1c3icR-00008f-Aw
+ for ath10k@lists.infradead.org; Mon, 07 Nov 2016 12:01:43 +0000
+Received: by mail-qt0-x22d.google.com with SMTP id w33so85241468qtc.3
+ for <ath10k@lists.infradead.org>; Mon, 07 Nov 2016 04:01:22 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <68bd7ebd-b12a-5dbf-a267-5913127718a1@candelatech.com>
+In-Reply-To: <87twbnueqv.fsf@kamboji.qca.qualcomm.com>
 References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
  <566849DB.9040901@candelatech.com> <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
  <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
- <27f802e7-79c5-a17f-1883-88e62a6520ef@ezplanet.net>
- <CABUTiXUBfHB5RiZ8=ODzrK4-rCBJZ8QqZuZhMK_J7c7haFMEcw@mail.gmail.com>
- <CAGJdtRCKidEfDF7sc4BRGSfOTmcGJUJ4KZt0xU1vj4bGAnuu1Q@mail.gmail.com>
- <c58ffbe0-c305-3282-34e9-98814c6f0d14@candelatech.com>
- <68bd7ebd-b12a-5dbf-a267-5913127718a1@candelatech.com>
+ <87twbnueqv.fsf@kamboji.qca.qualcomm.com>
 From: Bruno Antunes <baantunes@gmail.com>
-Date: Mon, 7 Nov 2016 11:54:53 +0000
-Message-ID: <CABUTiXXvqQ=yrrK3wp0fck=Mcb0LSrE7_Jw6KisYOuADvo3sdQ@mail.gmail.com>
-Subject: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
+Date: Mon, 7 Nov 2016 12:01:01 +0000
+Message-ID: <CABUTiXW5QSh2KkD+sQ-6QOD5zTce0dun+nyfAMnvL580U=OVNw@mail.gmail.com>
+Subject: Re: ATH10K VLAN firmware issue
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,77 +27,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Mauro Mozzarelli <openwrt@ezplanet.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, yu-chieh kung <jay0607@gmail.com>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: OpenWrt Development List <openwrt-devel@lists.openwrt.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, voncken <cedric.voncken@acksys.fr>
 
-On 4 November 2016 at 22:23, Ben Greear <greearb@candelatech.com> wrote:
-> The bug appears that vlan-tx-stripping is unconditionally enabled in
-> at least my firmware.  I have re-compiled w/out that flag set, and it
-> appears
-> to work for me.
+On 4 November 2016 at 21:17, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+> Bruno Antunes <baantunes@gmail.com> writes:
 >
-> Please download this firmware, rename it firmware-2.bin, make sure you
-> remove/rename
-> any firmware-5.bin (etc) so mine will load, and see if that fixes your
-> problem.
-
-Thanks for the fast reply but it only solves "half"  the problem.
-
-Now the connection between the AP and the Sta can be secure and the
-driver doesn't need to be loaded in rawmode.
-
-Unfortunatly the the throughput is still bad.
-
-iperf3 -c 10.10.4.15
-Connecting to host 10.10.4.15, port 5201
-[  4] local 10.10.4.16 port 44893 connected to 10.10.4.15 port 5201
-[ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
-[  4]   0.00-1.01   sec  42.4 KBytes   345 Kbits/sec    6   1.41 KBytes
-[  4]   1.01-2.01   sec  0.00 Bytes  0.00 bits/sec    1   1.41 KBytes
-[  4]   2.01-3.01   sec  0.00 Bytes  0.00 bits/sec    1   1.41 KBytes
-[  4]   3.01-4.01   sec  0.00 Bytes  0.00 bits/sec    0   1.41 KBytes
-[  4]   4.01-5.01   sec  0.00 Bytes  0.00 bits/sec    0   1.41 KBytes
-[  4]   5.01-6.01   sec  0.00 Bytes  0.00 bits/sec    0   1.41 KBytes
-[  4]   6.01-7.01   sec  0.00 Bytes  0.00 bits/sec    1   1.41 KBytes
-[  4]   7.01-8.01   sec  0.00 Bytes  0.00 bits/sec    0   1.41 KBytes
-[  4]   8.01-9.01   sec  0.00 Bytes  0.00 bits/sec    0   1.41 KBytes
-[  4]   9.01-10.01  sec  0.00 Bytes  0.00 bits/sec    0   1.41 KBytes
-- - - - - - - - - - - - - - - - - - - - - - - - -
-[ ID] Interval           Transfer     Bandwidth       Retr
-[  4]   0.00-10.01  sec  42.4 KBytes  34.7 Kbits/sec    9             sender
-[  4]   0.00-10.01  sec  0.00 Bytes  0.00 bits/sec                  receiver
-
-iperf Done.
-
+>> Old thread but I think the issue is still present.
+>>
+>> I'm running a setup with VLANs with WDS and ath10k cards.
+>>
+>> To make it work both cards must be loaded in rawmode, AP
+>> and Sta, and with no security.
+>>
+>> I'm using a OpenWrt trunk r49941 and the most recent firmware,
+>> 10.2.4.70.58, from Kalle ath10k firmware tree.
+>>
+>> Although it works the throughput is very bad.
+>> Are there any alternatives to improve the throughput.
 >
-> Please note that it is very likely you will have to use same MAC address
-> for the VLAN devices that the underlying station uses in order for this to
-> work.
+> Can someone file a bug to bugzilla about this so that all the info is
+> properly stored? The more comprehensive the report is the better.
+>
+> https://bugzilla.kernel.org/
 
-Can you please elaborate more?
-My setup  is the folowing.
-The connection between the AP and Sta is in WDS
-For the moment all devices are in the same VLAN.
+I will file a bug report.
 
-client1 --- SW1 ---- AP ...... Sta ---- SW2 --- client2
-
+But since it appears to be a firmware related issue
+under what category can fill in the bug?
 
 Thanks,
 Bruno
 
 >
-> https://www.candelatech.com/downloads/tmp/firmware-2-full-community.bin
->
->
-> Thanks,
-> Ben
->
->
->
-
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
+> --
+> Kalle Valo
 
 _______________________________________________
 ath10k mailing list
