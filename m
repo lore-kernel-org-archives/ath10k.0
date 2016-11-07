@@ -1,22 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x22a.google.com ([2607:f8b0:400d:c09::22a])
+Received: from n1nlsmtp03.shr.prod.ams1.secureserver.net ([188.121.43.193])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c3orA-0005CA-IW
- for ath10k@lists.infradead.org; Mon, 07 Nov 2016 18:41:21 +0000
-Received: by mail-qk0-x22a.google.com with SMTP id n21so77076248qka.3
- for <ath10k@lists.infradead.org>; Mon, 07 Nov 2016 10:40:59 -0800 (PST)
+ id 1c3rxu-0003Jt-ON
+ for ath10k@lists.infradead.org; Mon, 07 Nov 2016 22:00:31 +0000
+Received: from jane12345 by n1plcpnl0029.prod.ams1.secureserver.net with local
+ (Exim 4.87)
+ (envelope-from <jane12345@n1plcpnl0029.prod.ams1.secureserver.net>)
+ id 1c3rvC-001hV4-FF
+ for ath10k@lists.infradead.org; Mon, 07 Nov 2016 14:57:42 -0700
+Subject: Shipment delivery problem #000450706
+Date: Mon, 7 Nov 2016 21:57:42 +0000
+From: "FedEx International MailService" <guy.wilcox@countrywidefund.com>
+Message-ID: <c607ba42254c3309a3b635b333802ea0@countrywidefund.com>
 MIME-Version: 1.0
-In-Reply-To: <871syn5fnb.fsf@qca.qualcomm.com>
-References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
- <566849DB.9040901@candelatech.com> <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
- <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
- <87twbnueqv.fsf@kamboji.qca.qualcomm.com>
- <CABUTiXW5QSh2KkD+sQ-6QOD5zTce0dun+nyfAMnvL580U=OVNw@mail.gmail.com>
- <871syn5fnb.fsf@qca.qualcomm.com>
-From: Bruno Antunes <baantunes@gmail.com>
-Date: Mon, 7 Nov 2016 18:40:37 +0000
-Message-ID: <CABUTiXV8eFsW4MJET4spvjVQvFgi66NV7hLLxFC6Ttqs1znxjA@mail.gmail.com>
-Subject: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
+Content-Type: multipart/mixed; boundary="b1_9db911659c2482982981f26f4056cf7a"
+Content-Transfer-Encoding: 8bit
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,67 +23,150 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: FedEx International MailService <guy.wilcox@countrywidefund.com>
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: OpenWrt Development List <openwrt-devel@lists.openwrt.org>, linux-wireless <linux-wireless@vger.kernel.org>, voncken <cedric.voncken@acksys.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-On 7 November 2016 at 18:06, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
-> Bruno Antunes <baantunes@gmail.com> writes:
->
->> On 4 November 2016 at 21:17, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
->>> Bruno Antunes <baantunes@gmail.com> writes:
->>>
->>>> Old thread but I think the issue is still present.
->>>>
->>>> I'm running a setup with VLANs with WDS and ath10k cards.
->>>>
->>>> To make it work both cards must be loaded in rawmode, AP
->>>> and Sta, and with no security.
->>>>
->>>> I'm using a OpenWrt trunk r49941 and the most recent firmware,
->>>> 10.2.4.70.58, from Kalle ath10k firmware tree.
->>>>
->>>> Although it works the throughput is very bad.
->>>> Are there any alternatives to improve the throughput.
->>>
->>> Can someone file a bug to bugzilla about this so that all the info is
->>> properly stored? The more comprehensive the report is the better.
->>>
->>> https://bugzilla.kernel.org/
->>
->> I will file a bug report.
->
-> Thanks, it's good to store all in one place so that it's easier to find
-> the relevant info.
+--b1_9db911659c2482982981f26f4056cf7a
+Content-Type: text/plain; charset=us-ascii
 
-Just file the bug with the ID 187241 -  VLAN support in ATH10k
-Feel free to ask for adicional info.
-I did not mention any names in the bug report fell free to take credit
-if wanted.
+Dear Customer,
 
-Regards,
-Bruno
+This is to confirm that one or more of your parcels has been shipped.
+You can review complete details of your order in the find attached.
 
->
->> But since it appears to be a firmware related issue
->> under what category can fill in the bug?
->
-> You can file it under Drivers/network-wireless, AFAIK we don't have any
-> separate components for firmware bugs. Here's one example to follow:
->
-> https://bugzilla.kernel.org/show_bug.cgi?id=186161
->
-> --
-> Kalle Valo
-> _______________________________________________
-> openwrt-devel mailing list
-> openwrt-devel@lists.openwrt.org
-> https://lists.openwrt.org/cgi-bin/mailman/listinfo/openwrt-devel
+Sincerely,
+Guy Wilcox,
+Delivery Manager.
+
+
+--b1_9db911659c2482982981f26f4056cf7a
+Content-Type: application/zip; name="FedEx_000450706.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=FedEx_000450706.zip
+
+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
+
+
+--b1_9db911659c2482982981f26f4056cf7a
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--b1_9db911659c2482982981f26f4056cf7a--
