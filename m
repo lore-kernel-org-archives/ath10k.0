@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail.equus-tech.com ([82.81.105.142]
+ helo=eq-mail-01.equus.local)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c47wi-0008Tx-Ld
- for ath10k@lists.infradead.org; Tue, 08 Nov 2016 15:04:21 +0000
-From: <c_traja@qti.qualcomm.com>
-Subject: [PATCH 4/4] ath10k: Add support to read btcoex related data from DT
-Date: Tue, 8 Nov 2016 20:34:45 +0530
-Message-ID: <1478617485-28223-1-git-send-email-c_traja@qti.qualcomm.com>
+ id 1c4DPp-0004zA-Qr
+ for ath10k@lists.infradead.org; Tue, 08 Nov 2016 20:54:46 +0000
+From: Ouri Lipner <lipner@equus-tech.com>
+Subject: Re: QCA988X firmware crash when sending in monitor mode
+Date: Tue, 8 Nov 2016 20:54:21 +0000
+Message-ID: <04634A67-CCB6-40B0-93BB-E219F4148E19@equus-tech.com>
+References: <D7E3E963-AA63-439A-AE90-E029409D3520@equus-tech.com>
+ <CA+BoTQm0fE6DAd1wNXnZ_M1r_PbitQETwV+ku8Ue5h6kW67SCw@mail.gmail.com>
+In-Reply-To: <CA+BoTQm0fE6DAd1wNXnZ_M1r_PbitQETwV+ku8Ue5h6kW67SCw@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <D4CA2ADB770D2A49A3580E5AEF4079BA@equus-tech.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,190 +22,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, tamizhchelvam@codeaurora.org, linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Tamizh chelvam <c_traja@qti.qualcomm.com>
-
-BTCOEX feature is not supported by all qca40xx chipsets.
-Since btcoex enabled by default in firmware, host needs to
-enable COEX support depends on the hardware. This patch is
-used to read btcoex_support flag and btcoex gpio pin
-number from DT. Depends on the btcoex_support flag value
-host will expose BTCOEX support and btcoex gpio pin
-number to target.
-
-Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c  |   44 ++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/core.h  |    9 +++++++
- drivers/net/wireless/ath/ath10k/debug.c |    3 +++
- drivers/net/wireless/ath/ath10k/mac.c   |    4 ++-
- drivers/net/wireless/ath/ath10k/wmi.c   |    1 +
- drivers/net/wireless/ath/ath10k/wmi.h   |    2 ++
- 6 files changed, 61 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 7005e2a..eec2436 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1439,6 +1439,39 @@ static int ath10k_download_cal_data(struct ath10k *ar)
- 	return 0;
- }
- 
-+static void ath10k_core_fetch_btcoex_dt(struct ath10k *ar)
-+{
-+	struct device_node *node;
-+	u32 btcoex_support = 0;
-+	int ret;
-+
-+	node = ar->dev->of_node;
-+	if (!node)
-+		goto out;
-+
-+	ret = of_property_read_u32(node, "btcoex_support", &btcoex_support);
-+	if (ret) {
-+		ar->btcoex_support = ATH10K_DT_BTCOEX_NOT_FOUND;
-+		goto out;
-+	}
-+
-+	if (btcoex_support)
-+		ar->btcoex_support = ATH10K_DT_BTCOEX_SUPPORTED;
-+	else
-+		ar->btcoex_support = ATH10K_DT_BTCOEX_NOT_SUPPORTED;
-+
-+	ret = of_property_read_u32(node, "btcoex_gpio_pin",
-+				   &ar->btcoex_gpio_pin);
-+	if (ret) {
-+		ar->btcoex_gpio_pin = -1;
-+		goto out;
-+	}
-+
-+out:
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "btcoex support flag :%d gpio %d\n",
-+		   ar->btcoex_support, ar->btcoex_gpio_pin);
-+}
-+
- static int ath10k_init_uart(struct ath10k *ar)
- {
- 	int ret;
-@@ -1920,14 +1953,23 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		if (test_bit(WMI_SERVICE_BSS_CHANNEL_INFO_64, ar->wmi.svc_map))
- 			val |= WMI_10_4_BSS_CHANNEL_INFO_64;
- 
-+		ath10k_core_fetch_btcoex_dt(ar);
-+
- 		/* 10.4 firmware supports BT-Coex without reloading firmware
- 		 * via pdev param. To support Bluetooth coexistence pdev param,
- 		 * WMI_COEX_GPIO_SUPPORT of extended resource config should be
- 		 * enabled always.
- 		 */
-+
-+		/* we can still enable BTCOEX if firmware has the support
-+		 * eventhough btceox_support value is
-+		 * ATH10K_DT_BTCOEX_NOT_FOUND
-+		 */
-+
- 		if (test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map) &&
- 		    test_bit(ATH10K_FW_FEATURE_BTCOEX_PARAM,
--			     ar->running_fw->fw_file.fw_features))
-+			     ar->running_fw->fw_file.fw_features) &&
-+		    ar->btcoex_support != ATH10K_DT_BTCOEX_NOT_SUPPORTED)
- 			val |= WMI_10_4_COEX_GPIO_SUPPORT;
- 
- 		status = ath10k_mac_ext_resource_config(ar, val);
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index b7067cc..66824c73 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -658,6 +658,12 @@ enum ath10k_tx_pause_reason {
- 	ATH10K_TX_PAUSE_MAX,
- };
- 
-+enum ath10k_dt_btcoex_support_flag {
-+	ATH10K_DT_BTCOEX_NOT_FOUND,
-+	ATH10K_DT_BTCOEX_SUPPORTED,
-+	ATH10K_DT_BTCOEX_NOT_SUPPORTED,
-+};
-+
- struct ath10k_fw_file {
- 	const struct firmware *firmware;
- 
-@@ -926,6 +932,9 @@ struct ath10k {
- 		u32 reg_ack_cts_timeout_orig;
- 	} fw_coverage;
- 
-+	enum ath10k_dt_btcoex_support_flag btcoex_support;
-+	int btcoex_gpio_pin;
-+
- 	/* must be last */
- 	u8 drv_priv[0] __aligned(sizeof(void *));
- };
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index ea30fbe..e0e316c 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2149,6 +2149,9 @@ static ssize_t ath10k_write_btcoex(struct file *file,
- 	if (strtobool(buf, &val) != 0)
- 		return -EINVAL;
- 
-+	if (ar->btcoex_support == ATH10K_DT_BTCOEX_NOT_SUPPORTED)
-+		return -EOPNOTSUPP;
-+
- 	mutex_lock(&ar->conf_mutex);
- 	ret = ath10k_mac_set_btcoex(ar, val);
- 	if (!ret)
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 6b0f1ea..e021951 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4564,9 +4564,11 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 	}
- 
- 	param = ar->wmi.pdev_param->enable_btcoex;
-+
- 	if (test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map) &&
- 	    test_bit(ATH10K_FW_FEATURE_BTCOEX_PARAM,
--		     ar->running_fw->fw_file.fw_features)) {
-+		     ar->running_fw->fw_file.fw_features) &&
-+	    ar->btcoex_support != ATH10K_DT_BTCOEX_NOT_SUPPORTED) {
- 		ret = ath10k_wmi_pdev_set_param(ar, param, 0);
- 		if (ret) {
- 			ath10k_warn(ar,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index de35c17..1eb5678 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -7811,6 +7811,7 @@ static int ath10k_wmi_10_4_op_get_vdev_subtype(struct ath10k *ar,
- 	cmd = (struct wmi_ext_resource_config_10_4_cmd *)skb->data;
- 	cmd->host_platform_config = __cpu_to_le32(type);
- 	cmd->fw_feature_bitmap = __cpu_to_le32(fw_feature_bitmap);
-+	cmd->btcoex_gpio_pin = __cpu_to_le32(ar->btcoex_gpio_pin);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_WMI,
- 		   "wmi ext resource config host type %d firmware feature bitmap %08x\n",
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 3a739e3..f83a21e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2734,6 +2734,8 @@ struct wmi_ext_resource_config_10_4_cmd {
- 	__le32 host_platform_config;
- 	/* see enum wmi_10_4_feature_mask */
- 	__le32 fw_feature_bitmap;
-+	/* Contains btcoex gpio pin number */
-+	__le32 btcoex_gpio_pin;
- };
- 
- struct wmi_set_coex_param_10_4_cmd {
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SeKAmW0gYXdhcmUgb2Ygd2hhdCB0aGUgd2lraSBzYXlzLCBidXQgd2FzIHVuZGVyIHRoZSBpbXBy
+ZXNzaW9uIHRoaXMgaXMgb3V0ZGF0ZWQuDQpSZWNlbnQgZmlybXdhcmUgZmlsZXMgaGF2ZSBhIHJh
+dyBtb2RlIGNhcGFiaWxpdHksIGFuZCB0aGVyZSBpcyBhbHNvIGNvZGUgaW4gdGhlIGRyaXZlciB0
+byBoYW5kbGUgaXQuDQoNCkFkZGluZyBhbiBBUCBhbG9uZ3NpZGUgdGhlIG1vbml0b3IgdmRldiBp
+cyBhbiBpbnRlcmVzdGluZyBpZGVhLCB0aGFua3MuDQpJ4oCZbGwgaGF2ZSB0byBkaXNhYmxlIGJl
+YWNvbiBzZW5kIGV0Yy4uLg0KDQpPbiAwOC8xMS8yMDE2LCAwMTowMywgIk1pY2hhbCBLYXppb3Ii
+IDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6DQoNCiAgICBPbiA3IE5vdmVtYmVyIDIw
+MTYgYXQgMTU6MjIsIE91cmkgTGlwbmVyIDxsaXBuZXJAZXF1dXMtdGVjaC5jb20+IHdyb3RlOg0K
+ICAgID4gSGkgYWxsLA0KICAgID4gSeKAmW0gY29uc2lzdGVudGx5IGVuY291bnRlcmluZyBpc3N1
+ZXMgd2l0aCByYXcgd2lmaSBwYWNrZXQgaW5qZWN0aW9uLg0KICAgID4NCiAgICA+IFNlbmRpbmcg
+YSByYXcgcGFja2V0IGluIG1vbml0b3IgbW9kZSBrZWVwcyBjcmFzaGluZyB0aGUgZmlybXdhcmUu
+DQogICAgPiBUaGlzIGhhcHBlbnMgY29uc2lzdGVudGx5IHdpdGggZXZlcnkgZmlybXdhcmUgdGhh
+dCBzdXBwb3J0cyByYXcgbW9kZS4NCiAgICA+IEN1cnJlbnRseSBvbiBrZXJuZWwgNC45LXJjMiBi
+dXQgb2xkZXIgZHJpdmVycyBiZWhhdmUgdGhlIHNhbWUuDQogICAgPiBJcyB0aGlzIGFuIGlzc3Vl
+cyB3aXRoIGEgbWlzc2luZyBwYXJhbWV0ZXIgKGUuZy4gaW4gUmFkaW9UYXApIG9yIGEgcmVhbCBw
+cm9ibGVtIHdpdGggdGhlIGZpcm13YXJlPw0KICAgIA0KICAgIFRvIHRoZSBiZXN0IG9mIG15IGtu
+b3dsZWRnZSBmaXJtd2FyZSBkb2VzIG5vdCBzdXBwb3J0IGZyYW1lIGluamVjdGlvbg0KICAgIG9u
+IG1vbml0b3IgdmRldi4gVGhlcmVmb3JlIHRoaXMgaXMgZXhwZWN0ZWQuIE1vcmVvdmVyIHRoaXMg
+bGltaXRhdGlvbg0KICAgIGlzIG1lbnRpb25lZCBvbiBhdGgxMGsgd2lraToNCiAgICBodHRwczov
+L3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi91c2Vycy9kcml2ZXJzL2F0aDEwaw0KICAgIA0K
+ICAgIA0KICAgID4gQW55IGlkZWFzPw0KICAgIA0KICAgIFlvdSBjb3VsZCBwcm9iYWJseSBoYWNr
+IHVwIHRoZSBkcml2ZXIgdG8gY3JlYXRlIGFuZCB1c2UgQVAgb3IgU1RBIHZkZXYNCiAgICBhbG9u
+Z3NpZGUgbW9uaXRvciB2ZGV2IHRvIHVzZSBpdCdzIHZkZXZfaWQgZm9yIGZyYW1lIGluamVjdGlv
+bi4gSSdtDQogICAgbm90IGF3YXJlIG9mIGFueW9uZSB0cnlpbmcgdGhhdCBvdXQgc28gZmFyIHRo
+b3VnaC4NCiAgICANCiAgICANCiAgICBNaWNoYcWCDQogICAgDQoNCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
+QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hdGgxMGsK
