@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga05.intel.com ([192.55.52.43])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c4EzK-0004Xh-O5
- for ath10k@lists.infradead.org; Tue, 08 Nov 2016 22:35:31 +0000
-Date: Wed, 9 Nov 2016 06:34:05 +0800
+ id 1c4FJP-0000QJ-Dd
+ for ath10k@lists.infradead.org; Tue, 08 Nov 2016 22:56:16 +0000
+Date: Wed, 9 Nov 2016 06:54:57 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH 1/4] ath10k: Add support to enable or disable btcoex via
- nl80211
-Message-ID: <201611090603.GDUO1iW1%fengguang.wu@intel.com>
+Subject: Re: [PATCH 2/4] ath10k: Add support to update btcoex priority value
+ via nl80211
+Message-ID: <201611090609.b0nT5ZUY%fengguang.wu@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="qMm9M+Fa2AknHoGS"
+Content-Type: multipart/mixed; boundary="OgqxwSJOaUobr8KG"
 Content-Disposition: inline
-In-Reply-To: <1478617354-28146-2-git-send-email-c_traja@qti.qualcomm.com>
+In-Reply-To: <1478617354-28146-3-git-send-email-c_traja@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +26,14 @@ To: c_traja@qti.qualcomm.com
 Cc: tamizhchelvam@codeaurora.org, linux-wireless@vger.kernel.org, kbuild-all@01.org, ath10k@lists.infradead.org
 
 
---qMm9M+Fa2AknHoGS
+--OgqxwSJOaUobr8KG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 Hi Tamizh,
 
 [auto build test ERROR on ath6kl/ath-next]
-[also build test ERROR on v4.9-rc4 next-20161108]
+[cannot apply to v4.9-rc4 next-20161108]
 [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
 
 url:    https://github.com/0day-ci/linux/commits/c_traja-qti-qualcomm-com/ath10k-Add-support-for-BTCOEX-feature/20161109-043718
@@ -44,40 +44,214 @@ reproduce:
         # save the attached .config to linux build tree
         make ARCH=x86_64 
 
-All errors (new ones prefixed by >>):
+All error/warnings (new ones prefixed by >>):
 
->> drivers/net/wireless/ath/ath10k/mac.c:7548:2: error: unknown field 'set_btcoex' specified in initializer
+>> drivers/net/wireless/ath/ath10k/mac.c:7508:35: warning: 'struct cfg80211_btcoex_priority' declared inside parameter list will not be visible outside of this definition or declaration
+    ath10k_mac_get_btcoex_prio(struct cfg80211_btcoex_priority *btcoex_priority)
+                                      ^~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_mac_get_btcoex_prio':
+>> drivers/net/wireless/ath/ath10k/mac.c:7512:21: error: dereferencing pointer to incomplete type 'struct cfg80211_btcoex_priority'
+     if (btcoex_priority->wlan_be_preferred)
+                        ^~
+>> drivers/net/wireless/ath/ath10k/mac.c:7513:18: error: 'WIPHY_WLAN_BE_PREFERRED' undeclared (first use in this function)
+      btcoex_prio |= WIPHY_WLAN_BE_PREFERRED;
+                     ^~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c:7513:18: note: each undeclared identifier is reported only once for each function it appears in
+>> drivers/net/wireless/ath/ath10k/mac.c:7516:18: error: 'WIPHY_WLAN_BK_PREFERRED' undeclared (first use in this function)
+      btcoex_prio |= WIPHY_WLAN_BK_PREFERRED;
+                     ^~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/wireless/ath/ath10k/mac.c:7519:18: error: 'WIPHY_WLAN_VI_PREFERRED' undeclared (first use in this function)
+      btcoex_prio |= WIPHY_WLAN_VI_PREFERRED;
+                     ^~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/wireless/ath/ath10k/mac.c:7522:18: error: 'WIPHY_WLAN_VO_PREFERRED' undeclared (first use in this function)
+      btcoex_prio |= WIPHY_WLAN_VO_PREFERRED;
+                     ^~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/wireless/ath/ath10k/mac.c:7525:18: error: 'WIPHY_WLAN_BEACON_PREFERRED' undeclared (first use in this function)
+      btcoex_prio |= WIPHY_WLAN_BEACON_PREFERRED;
+                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/wireless/ath/ath10k/mac.c:7528:18: error: 'WIPHY_WLAN_MGMT_PREFERRED' undeclared (first use in this function)
+      btcoex_prio |= WIPHY_WLAN_MGMT_PREFERRED;
+                     ^~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c: At top level:
+   drivers/net/wireless/ath/ath10k/mac.c:7534:11: warning: 'struct cfg80211_btcoex_priority' declared inside parameter list will not be visible outside of this definition or declaration
+       struct cfg80211_btcoex_priority *btcoex_priority)
+              ^~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_mac_op_set_btcoex_priority':
+>> drivers/net/wireless/ath/ath10k/mac.c:7553:43: error: passing argument 1 of 'ath10k_mac_get_btcoex_prio' from incompatible pointer type [-Werror=incompatible-pointer-types]
+     btcoex_prio = ath10k_mac_get_btcoex_prio(btcoex_priority);
+                                              ^~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c:7508:1: note: expected 'struct cfg80211_btcoex_priority *' but argument is of type 'struct cfg80211_btcoex_priority *'
+    ath10k_mac_get_btcoex_prio(struct cfg80211_btcoex_priority *btcoex_priority)
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c: At top level:
+   drivers/net/wireless/ath/ath10k/mac.c:7611:2: error: unknown field 'set_btcoex' specified in initializer
      .set_btcoex                     = ath10k_mac_op_set_btcoex,
      ^
->> drivers/net/wireless/ath/ath10k/mac.c:7548:36: error: initialization from incompatible pointer type [-Werror=incompatible-pointer-types]
+   drivers/net/wireless/ath/ath10k/mac.c:7611:36: error: initialization from incompatible pointer type [-Werror=incompatible-pointer-types]
      .set_btcoex                     = ath10k_mac_op_set_btcoex,
                                        ^~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/wireless/ath/ath10k/mac.c:7548:36: note: (near initialization for 'ath10k_ops.reconfig_complete')
+   drivers/net/wireless/ath/ath10k/mac.c:7611:36: note: (near initialization for 'ath10k_ops.reconfig_complete')
+>> drivers/net/wireless/ath/ath10k/mac.c:7612:2: error: unknown field 'set_btcoex_priority' specified in initializer
+     .set_btcoex_priority  = ath10k_mac_op_set_btcoex_priority,
+     ^
+   drivers/net/wireless/ath/ath10k/mac.c:7612:26: error: initialization from incompatible pointer type [-Werror=incompatible-pointer-types]
+     .set_btcoex_priority  = ath10k_mac_op_set_btcoex_priority,
+                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c:7612:26: note: (near initialization for 'ath10k_ops.ipv6_addr_change')
+   drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_mac_register':
+>> drivers/net/wireless/ath/ath10k/mac.c:8203:16: error: 'struct wiphy' has no member named 'btcoex_support_flags'
+      ar->hw->wiphy->btcoex_support_flags =
+                   ^~
+   drivers/net/wireless/ath/ath10k/mac.c:8204:4: error: 'WIPHY_WLAN_BE_PREFERRED' undeclared (first use in this function)
+       WIPHY_WLAN_BE_PREFERRED |
+       ^~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c:8205:4: error: 'WIPHY_WLAN_BK_PREFERRED' undeclared (first use in this function)
+       WIPHY_WLAN_BK_PREFERRED |
+       ^~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c:8206:4: error: 'WIPHY_WLAN_VI_PREFERRED' undeclared (first use in this function)
+       WIPHY_WLAN_VI_PREFERRED |
+       ^~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c:8207:4: error: 'WIPHY_WLAN_VO_PREFERRED' undeclared (first use in this function)
+       WIPHY_WLAN_VO_PREFERRED |
+       ^~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c:8208:4: error: 'WIPHY_WLAN_BEACON_PREFERRED' undeclared (first use in this function)
+       WIPHY_WLAN_BEACON_PREFERRED |
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c:8209:4: error: 'WIPHY_WLAN_MGMT_PREFERRED' undeclared (first use in this function)
+       WIPHY_WLAN_MGMT_PREFERRED;
+       ^~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/wireless/ath/ath10k/mac.c:8211:20: error: 'struct wiphy' has no member named 'btcoex_support_flags'
+          ar->hw->wiphy->btcoex_support_flags);
+                       ^~
    cc1: some warnings being treated as errors
 
-vim +/set_btcoex +7548 drivers/net/wireless/ath/ath10k/mac.c
+vim +7512 drivers/net/wireless/ath/ath10k/mac.c
 
-  7542		.add_chanctx			= ath10k_mac_op_add_chanctx,
-  7543		.remove_chanctx			= ath10k_mac_op_remove_chanctx,
-  7544		.change_chanctx			= ath10k_mac_op_change_chanctx,
-  7545		.assign_vif_chanctx		= ath10k_mac_op_assign_vif_chanctx,
-  7546		.unassign_vif_chanctx		= ath10k_mac_op_unassign_vif_chanctx,
-  7547		.switch_vif_chanctx		= ath10k_mac_op_switch_vif_chanctx,
-> 7548		.set_btcoex                     = ath10k_mac_op_set_btcoex,
-  7549	
-  7550		CFG80211_TESTMODE_CMD(ath10k_tm_cmd)
-  7551	
+  7502		mutex_unlock(&ar->conf_mutex);
+  7503	
+  7504		return ret;
+  7505	}
+  7506	
+  7507	u32
+> 7508	ath10k_mac_get_btcoex_prio(struct cfg80211_btcoex_priority *btcoex_priority)
+  7509	{
+  7510		u32 btcoex_prio = 0;
+  7511	
+> 7512		if (btcoex_priority->wlan_be_preferred)
+> 7513			btcoex_prio |= WIPHY_WLAN_BE_PREFERRED;
+  7514	
+  7515		if (btcoex_priority->wlan_bk_preferred)
+> 7516			btcoex_prio |= WIPHY_WLAN_BK_PREFERRED;
+  7517	
+  7518		if (btcoex_priority->wlan_vi_preferred)
+> 7519			btcoex_prio |= WIPHY_WLAN_VI_PREFERRED;
+  7520	
+  7521		if (btcoex_priority->wlan_vo_preferred)
+> 7522			btcoex_prio |= WIPHY_WLAN_VO_PREFERRED;
+  7523	
+  7524		if (btcoex_priority->wlan_beacon_preferred)
+> 7525			btcoex_prio |= WIPHY_WLAN_BEACON_PREFERRED;
+  7526	
+  7527		if (btcoex_priority->wlan_mgmt_preferred)
+> 7528			btcoex_prio |= WIPHY_WLAN_MGMT_PREFERRED;
+  7529	
+  7530		return btcoex_prio;
+  7531	}
+  7532	
+  7533	static int ath10k_mac_op_set_btcoex_priority(struct ieee80211_hw *hw,
+  7534				struct cfg80211_btcoex_priority *btcoex_priority)
+  7535	{
+  7536		u32 btcoex_prio;
+  7537		struct ath10k *ar = hw->priv;
+  7538		int ret;
+  7539	
+  7540		if (!(test_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags))) {
+  7541			ret = -EINVAL;
+  7542			goto exit;
+  7543		}
+  7544	
+  7545		mutex_lock(&ar->conf_mutex);
+  7546	
+  7547		if (ar->state != ATH10K_STATE_ON &&
+  7548		    ar->state != ATH10K_STATE_RESTARTED) {
+  7549			ret = -ENETDOWN;
+  7550			goto exit;
+  7551		}
+  7552	
+> 7553		btcoex_prio = ath10k_mac_get_btcoex_prio(btcoex_priority);
+  7554	
+  7555		if (btcoex_prio > 0x3f)
+  7556			return -E2BIG;
+  7557	
+  7558		ret = ath10k_wmi_set_coex_param(ar, btcoex_prio);
+  7559	
+  7560		if (ret) {
+  7561			ath10k_warn(ar, "failed to set btcoex priority: %d\n", ret);
+  7562			goto exit;
+  7563		}
+  7564	
+  7565	exit:
+  7566		mutex_unlock(&ar->conf_mutex);
+  7567		return ret;
+  7568	}
+  7569	
+  7570	static const struct ieee80211_ops ath10k_ops = {
+  7571		.tx				= ath10k_mac_op_tx,
+  7572		.wake_tx_queue			= ath10k_mac_op_wake_tx_queue,
+  7573		.start				= ath10k_start,
+  7574		.stop				= ath10k_stop,
+  7575		.config				= ath10k_config,
+  7576		.add_interface			= ath10k_add_interface,
+  7577		.remove_interface		= ath10k_remove_interface,
+  7578		.configure_filter		= ath10k_configure_filter,
+  7579		.bss_info_changed		= ath10k_bss_info_changed,
+  7580		.set_coverage_class		= ath10k_mac_op_set_coverage_class,
+  7581		.hw_scan			= ath10k_hw_scan,
+  7582		.cancel_hw_scan			= ath10k_cancel_hw_scan,
+  7583		.set_key			= ath10k_set_key,
+  7584		.set_default_unicast_key        = ath10k_set_default_unicast_key,
+  7585		.sta_state			= ath10k_sta_state,
+  7586		.conf_tx			= ath10k_conf_tx,
+  7587		.remain_on_channel		= ath10k_remain_on_channel,
+  7588		.cancel_remain_on_channel	= ath10k_cancel_remain_on_channel,
+  7589		.set_rts_threshold		= ath10k_set_rts_threshold,
+  7590		.set_frag_threshold		= ath10k_mac_op_set_frag_threshold,
+  7591		.flush				= ath10k_flush,
+  7592		.tx_last_beacon			= ath10k_tx_last_beacon,
+  7593		.set_antenna			= ath10k_set_antenna,
+  7594		.get_antenna			= ath10k_get_antenna,
+  7595		.reconfig_complete		= ath10k_reconfig_complete,
+  7596		.get_survey			= ath10k_get_survey,
+  7597		.set_bitrate_mask		= ath10k_mac_op_set_bitrate_mask,
+  7598		.sta_rc_update			= ath10k_sta_rc_update,
+  7599		.get_tsf			= ath10k_get_tsf,
+  7600		.set_tsf			= ath10k_set_tsf,
+  7601		.ampdu_action			= ath10k_ampdu_action,
+  7602		.get_et_sset_count		= ath10k_debug_get_et_sset_count,
+  7603		.get_et_stats			= ath10k_debug_get_et_stats,
+  7604		.get_et_strings			= ath10k_debug_get_et_strings,
+  7605		.add_chanctx			= ath10k_mac_op_add_chanctx,
+  7606		.remove_chanctx			= ath10k_mac_op_remove_chanctx,
+  7607		.change_chanctx			= ath10k_mac_op_change_chanctx,
+  7608		.assign_vif_chanctx		= ath10k_mac_op_assign_vif_chanctx,
+  7609		.unassign_vif_chanctx		= ath10k_mac_op_unassign_vif_chanctx,
+  7610		.switch_vif_chanctx		= ath10k_mac_op_switch_vif_chanctx,
+> 7611		.set_btcoex                     = ath10k_mac_op_set_btcoex,
+> 7612		.set_btcoex_priority		= ath10k_mac_op_set_btcoex_priority,
+  7613	
+  7614		CFG80211_TESTMODE_CMD(ath10k_tm_cmd)
+  7615	
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---qMm9M+Fa2AknHoGS
+--OgqxwSJOaUobr8KG
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICB9PIlgAAy5jb25maWcAjDxLc9w20vf8iilnD7sHx5Isy0pt6QCS4AwyJMEQ4MxIF5Yi
+H4sICEpVIlgAAy5jb25maWcAjDxLc9w20vf8iilnD7sHx5Isy0pt6QCS4AwyJMEQ4MxIF5Yi
 jRPV6uGV5Hzxv/+6G3w0QIw2OcRidwPEo9/dnB9/+HEhvr0+PVy/3t1c399/X/y+f9w/X7/u
 bxdf7u73/15kelFpu5CZsj8BcXH3+O2vD3+dn3Vnp4vTn85/Onr/fHO2WO+fH/f3i/Tp8cvd
 799g/N3T4w8//pDqKldLIE2Uvfg+PO5otPc8PajK2KZNrdJVl8lUZ7KZkLq1dWu7XDelsBfv
@@ -1109,7 +1283,7 @@ rJ0UNdMKdSzOq49KvB0gprMfZw7ChzJBb35wD1cEvf2x2igIwzjlngQDaJrSg6NHymHzw5PZ
 sVOT0lMqQFfrH+u1glfHP1YsqxbfLeZcgGgxohN/1DaNhBYHZ8AtYiYShkMaxLXrREK5elC2
 ozR+46Qmw+b/Bw5XOgsRawMA
 
---qMm9M+Fa2AknHoGS
+--OgqxwSJOaUobr8KG
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1120,4 +1294,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---qMm9M+Fa2AknHoGS--
+--OgqxwSJOaUobr8KG--
