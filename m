@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c46G1-0000Pj-JW
- for ath10k@lists.infradead.org; Tue, 08 Nov 2016 13:16:10 +0000
+ id 1c46G2-0000Pj-Gs
+ for ath10k@lists.infradead.org; Tue, 08 Nov 2016 13:16:12 +0000
 From: <c_traja@qti.qualcomm.com>
-Subject: [PATCH 3/4] mac80211: Add support to enable or disable btcoex
-Date: Tue, 8 Nov 2016 18:45:31 +0530
-Message-ID: <1478610932-21954-4-git-send-email-c_traja@qti.qualcomm.com>
+Subject: [PATCH 4/4] mac80211: Add support to update btcoex priority value
+Date: Tue, 8 Nov 2016 18:45:32 +0530
+Message-ID: <1478610932-21954-5-git-send-email-c_traja@qti.qualcomm.com>
 In-Reply-To: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
 References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -27,112 +27,87 @@ Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, johannes@sipsolutions.net, tamizh
 
 From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
-This patch introduces a new driver call back drv_set_btcoex
-This API will pass user space value to driver to
-enable or disabe btcoex.
+This patch introduces a new driver callback drv_set_btcoex_priority
+to pass the priority value to driver.
 
 Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
 ---
- include/net/mac80211.h    |    4 ++++
- net/mac80211/cfg.c        |    8 ++++++++
- net/mac80211/driver-ops.h |   14 ++++++++++++++
- net/mac80211/trace.h      |   14 ++++++++++++++
- 4 files changed, 40 insertions(+)
+ include/net/mac80211.h    |    7 +++++++
+ net/mac80211/cfg.c        |    9 +++++++++
+ net/mac80211/driver-ops.h |   12 ++++++++++++
+ 3 files changed, 28 insertions(+)
 
 diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index b9b24ab..e7db763 100644
+index e7db763..3c61015 100644
 --- a/include/net/mac80211.h
 +++ b/include/net/mac80211.h
-@@ -3453,6 +3453,9 @@ enum ieee80211_reconfig_type {
-  * @del_nan_func: Remove a NAN function. The driver must call
-  *	ieee80211_nan_func_terminated() with
-  *	NL80211_NAN_FUNC_TERM_REASON_USER_REQUEST reason code upon removal.
-+ *
-+ * @set_btcoex_: set_btcoex: Called when BTCOEX is enabled/disabled, use
-+ *	this callback to enable or disable btcoex.
+@@ -3456,6 +3456,11 @@ enum ieee80211_reconfig_type {
+  *
+  * @set_btcoex_: set_btcoex: Called when BTCOEX is enabled/disabled, use
+  *	this callback to enable or disable btcoex.
++ * @set_btcoex_priority: Use this callback to set wlan high
++ *	priority frames over bluetooth. Driver supported wlan frames
++ *	for the BTCOEX is exposed by btcoex_support_flags.
++ *	When BTCOEX enabled, the high priority wlan frames will have
++ *	more priority than BT.
   */
  struct ieee80211_ops {
  	void (*tx)(struct ieee80211_hw *hw,
-@@ -3705,6 +3708,7 @@ struct ieee80211_ops {
- 	void (*del_nan_func)(struct ieee80211_hw *hw,
+@@ -3709,6 +3714,8 @@ struct ieee80211_ops {
  			    struct ieee80211_vif *vif,
  			    u8 instance_id);
-+	int (*set_btcoex)(struct ieee80211_hw *hw, bool enabled);
+ 	int (*set_btcoex)(struct ieee80211_hw *hw, bool enabled);
++	int (*set_btcoex_priority)(struct ieee80211_hw *hw,
++		struct cfg80211_btcoex_priority *btcoex_priority);
  };
  
  /**
 diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index eb68add..a687056 100644
+index a687056..d75cf97 100644
 --- a/net/mac80211/cfg.c
 +++ b/net/mac80211/cfg.c
-@@ -3562,6 +3562,13 @@ void ieee80211_nan_func_match(struct ieee80211_vif *vif,
+@@ -3569,6 +3569,14 @@ static int ieee80211_set_btcoex(struct wiphy *wiphy, bool enabled)
+ 	return drv_set_btcoex(local, enabled);
  }
- EXPORT_SYMBOL(ieee80211_nan_func_match);
  
-+static int ieee80211_set_btcoex(struct wiphy *wiphy, bool enabled)
++static int ieee80211_set_btcoex_priority(struct wiphy *wiphy,
++			struct cfg80211_btcoex_priority *btcoex_priority)
 +{
 +	struct ieee80211_local *local = wiphy_priv(wiphy);
 +
-+	return drv_set_btcoex(local, enabled);
++	return drv_set_btcoex_priority(local, btcoex_priority);
 +}
 +
  const struct cfg80211_ops mac80211_config_ops = {
  	.add_virtual_intf = ieee80211_add_iface,
  	.del_virtual_intf = ieee80211_del_iface,
-@@ -3652,4 +3659,5 @@ void ieee80211_nan_func_match(struct ieee80211_vif *vif,
- 	.nan_change_conf = ieee80211_nan_change_conf,
+@@ -3660,4 +3668,5 @@ static int ieee80211_set_btcoex(struct wiphy *wiphy, bool enabled)
  	.add_nan_func = ieee80211_add_nan_func,
  	.del_nan_func = ieee80211_del_nan_func,
-+	.set_btcoex = ieee80211_set_btcoex,
+ 	.set_btcoex = ieee80211_set_btcoex,
++	.set_btcoex_priority = ieee80211_set_btcoex_priority,
  };
 diff --git a/net/mac80211/driver-ops.h b/net/mac80211/driver-ops.h
-index 09f77e4..16d9c98 100644
+index 16d9c98..75ac3ed 100644
 --- a/net/mac80211/driver-ops.h
 +++ b/net/mac80211/driver-ops.h
-@@ -1248,4 +1248,18 @@ static inline void drv_del_nan_func(struct ieee80211_local *local,
- 	trace_drv_return_void(local);
+@@ -1262,4 +1262,16 @@ static inline int drv_set_btcoex(struct ieee80211_local *local,
+ 	return ret;
  }
  
-+static inline int drv_set_btcoex(struct ieee80211_local *local,
-+				 bool enabled)
++static inline int drv_set_btcoex_priority(struct ieee80211_local *local,
++			struct cfg80211_btcoex_priority *btcoex_priority)
 +{
 +	int ret = -EOPNOTSUPP;
 +
-+	trace_drv_set_btcoex(local, enabled);
-+	if (local->ops->set_btcoex)
-+		ret = local->ops->set_btcoex(&local->hw, enabled);
-+
-+	trace_drv_return_int(local, ret);
++	if (local->ops->set_btcoex_priority)
++		ret = local->ops->set_btcoex_priority(&local->hw,
++						      btcoex_priority);
 +
 +	return ret;
 +}
 +
  #endif /* __MAC80211_DRIVER_OPS */
-diff --git a/net/mac80211/trace.h b/net/mac80211/trace.h
-index 92a47af..760dfb6 100644
---- a/net/mac80211/trace.h
-+++ b/net/mac80211/trace.h
-@@ -742,6 +742,20 @@
- 	TP_ARGS(local, value)
- );
- 
-+TRACE_EVENT(drv_set_btcoex,
-+	TP_PROTO(struct ieee80211_local *local, bool enabled),
-+	TP_ARGS(local, enabled),
-+	TP_STRUCT__entry(
-+		LOCAL_ENTRY
-+		__field(bool, enabled)
-+	),
-+	TP_fast_assign(
-+		LOCAL_ASSIGN;
-+		__entry->enabled = enabled;
-+	),
-+	TP_printk(LOCAL_PR_FMT " enabled:%d", LOCAL_PR_ARG, __entry->enabled)
-+);
-+
- TRACE_EVENT(drv_set_coverage_class,
- 	TP_PROTO(struct ieee80211_local *local, s16 value),
- 
 -- 
 1.7.9.5
 
