@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
+Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6HF2-0005nQ-Pg
- for ath10k@lists.infradead.org; Mon, 14 Nov 2016 13:24:09 +0000
-Received: by mail-lf0-x233.google.com with SMTP id t196so58132622lff.3
- for <ath10k@lists.infradead.org>; Mon, 14 Nov 2016 05:23:48 -0800 (PST)
+ id 1c6HG3-0006O9-NY
+ for ath10k@lists.infradead.org; Mon, 14 Nov 2016 13:25:13 +0000
+Received: by mail-lf0-x22e.google.com with SMTP id t196so58153940lff.3
+ for <ath10k@lists.infradead.org>; Mon, 14 Nov 2016 05:24:51 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: fix null deref on wmi-tlv when trying spectral scan
-Date: Mon, 14 Nov 2016 14:25:23 +0100
-Message-Id: <1479129923-11083-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: add spectral scan support to wmi-tlv
+Date: Mon, 14 Nov 2016 14:26:40 +0100
+Message-Id: <1479130000-11551-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,71 +25,110 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-WMI ops wrappers did not properly check for null
-function pointers for spectral scan. This caused
-null dereference crash with WMI-TLV based firmware
-which doesn't implement spectral scan.
+Command structure and event flow doesn't seem to
+be any different compared to existing
+implementation for other firmware branches.
 
-The crash could be triggered with:
+This patch effectively adds in-driver support for
+spectral scanning on QCA61x4 and QCA9377.
 
-  ip link set dev wlan0 up
-  echo background > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
-
-The crash looked like this:
-
-  [  168.031989] BUG: unable to handle kernel NULL pointer dereference at           (null)
-  [  168.037406] IP: [<          (null)>]           (null)
-  [  168.040395] PGD cdd4067 PUD fa0f067 PMD 0
-  [  168.043303] Oops: 0010 [#1] SMP
-  [  168.045377] Modules linked in: ath10k_pci(O) ath10k_core(O) ath mac80211 cfg80211 [last unloaded: cfg80211]
-  [  168.051560] CPU: 1 PID: 1380 Comm: bash Tainted: G        W  O    4.8.0 #78
-  [  168.054336] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.7.5-20140531_083030-gandalf 04/01/2014
-  [  168.059183] task: ffff88000c460c00 task.stack: ffff88000d4bc000
-  [  168.061736] RIP: 0010:[<0000000000000000>]  [<          (null)>]           (null)
-  ...
-  [  168.100620] Call Trace:
-  [  168.101910]  [<ffffffffa03b9566>] ? ath10k_spectral_scan_config+0x96/0x200 [ath10k_core]
-  [  168.104871]  [<ffffffff811386e2>] ? filemap_fault+0xb2/0x4a0
-  [  168.106696]  [<ffffffffa03b97e6>] write_file_spec_scan_ctl+0x116/0x280 [ath10k_core]
-  [  168.109618]  [<ffffffff812da3a1>] full_proxy_write+0x51/0x80
-  [  168.111443]  [<ffffffff811957b8>] __vfs_write+0x28/0x120
-  [  168.113090]  [<ffffffff812f1a2d>] ? security_file_permission+0x3d/0xc0
-  [  168.114932]  [<ffffffff8109b912>] ? percpu_down_read+0x12/0x60
-  [  168.116680]  [<ffffffff811965f8>] vfs_write+0xb8/0x1a0
-  [  168.118293]  [<ffffffff81197966>] SyS_write+0x46/0xa0
-  [  168.119912]  [<ffffffff818f2972>] entry_SYSCALL_64_fastpath+0x1a/0xa4
-  [  168.121737] Code:  Bad RIP value.
-  [  168.123318] RIP  [<          (null)>]           (null)
+Tested QCA9377 w/ WLAN.TF.1.0-00267-1.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 72 +++++++++++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index c9a8bb1186f2..c7956e181f80 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -660,6 +660,9 @@ ath10k_wmi_vdev_spectral_conf(struct ath10k *ar,
- 	struct sk_buff *skb;
- 	u32 cmd_id;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index e64f59300a7c..7f9b1185b549 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -3136,6 +3136,76 @@ ath10k_wmi_tlv_op_gen_echo(struct ath10k *ar, u32 value)
+ 	return skb;
+ }
  
-+	if (!ar->wmi.ops->gen_vdev_spectral_conf)
-+		return -EOPNOTSUPP;
++static struct sk_buff *
++ath10k_wmi_tlv_op_gen_vdev_spectral_conf(struct ath10k *ar,
++					 const struct wmi_vdev_spectral_conf_arg *arg)
++{
++	struct wmi_vdev_spectral_conf_cmd *cmd;
++	struct sk_buff *skb;
++	struct wmi_tlv *tlv;
++	void *ptr;
++	size_t len;
 +
- 	skb = ar->wmi.ops->gen_vdev_spectral_conf(ar, arg);
- 	if (IS_ERR(skb))
- 		return PTR_ERR(skb);
-@@ -675,6 +678,9 @@ ath10k_wmi_vdev_spectral_enable(struct ath10k *ar, u32 vdev_id, u32 trigger,
- 	struct sk_buff *skb;
- 	u32 cmd_id;
++	len = sizeof(*tlv) + sizeof(*cmd);
++	skb = ath10k_wmi_alloc_skb(ar, len);
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	ptr = (void *)skb->data;
++	tlv = ptr;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_VDEV_SPECTRAL_CONFIGURE_CMD);
++	tlv->len = __cpu_to_le16(sizeof(*cmd));
++	cmd = (void *)tlv->value;
++	cmd->vdev_id = __cpu_to_le32(arg->vdev_id);
++	cmd->scan_count = __cpu_to_le32(arg->scan_count);
++	cmd->scan_period = __cpu_to_le32(arg->scan_period);
++	cmd->scan_priority = __cpu_to_le32(arg->scan_priority);
++	cmd->scan_fft_size = __cpu_to_le32(arg->scan_fft_size);
++	cmd->scan_gc_ena = __cpu_to_le32(arg->scan_gc_ena);
++	cmd->scan_restart_ena = __cpu_to_le32(arg->scan_restart_ena);
++	cmd->scan_noise_floor_ref = __cpu_to_le32(arg->scan_noise_floor_ref);
++	cmd->scan_init_delay = __cpu_to_le32(arg->scan_init_delay);
++	cmd->scan_nb_tone_thr = __cpu_to_le32(arg->scan_nb_tone_thr);
++	cmd->scan_str_bin_thr = __cpu_to_le32(arg->scan_str_bin_thr);
++	cmd->scan_wb_rpt_mode = __cpu_to_le32(arg->scan_wb_rpt_mode);
++	cmd->scan_rssi_rpt_mode = __cpu_to_le32(arg->scan_rssi_rpt_mode);
++	cmd->scan_rssi_thr = __cpu_to_le32(arg->scan_rssi_thr);
++	cmd->scan_pwr_format = __cpu_to_le32(arg->scan_pwr_format);
++	cmd->scan_rpt_mode = __cpu_to_le32(arg->scan_rpt_mode);
++	cmd->scan_bin_scale = __cpu_to_le32(arg->scan_bin_scale);
++	cmd->scan_dbm_adj = __cpu_to_le32(arg->scan_dbm_adj);
++	cmd->scan_chn_mask = __cpu_to_le32(arg->scan_chn_mask);
++
++	return skb;
++}
++
++static struct sk_buff *
++ath10k_wmi_tlv_op_gen_vdev_spectral_enable(struct ath10k *ar, u32 vdev_id,
++					   u32 trigger, u32 enable)
++{
++	struct wmi_vdev_spectral_enable_cmd *cmd;
++	struct sk_buff *skb;
++	struct wmi_tlv *tlv;
++	void *ptr;
++	size_t len;
++
++	len = sizeof(*tlv) + sizeof(*cmd);
++	skb = ath10k_wmi_alloc_skb(ar, len);
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	ptr = (void *)skb->data;
++	tlv = ptr;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_VDEV_SPECTRAL_ENABLE_CMD);
++	tlv->len = __cpu_to_le16(sizeof(*cmd));
++	cmd = (void *)tlv->value;
++	cmd->vdev_id = __cpu_to_le32(vdev_id);
++	cmd->trigger_cmd = __cpu_to_le32(trigger);
++	cmd->enable_cmd = __cpu_to_le32(enable);
++
++	return skb;
++}
++
+ /****************/
+ /* TLV mappings */
+ /****************/
+@@ -3542,6 +3612,8 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	.fw_stats_fill = ath10k_wmi_main_op_fw_stats_fill,
+ 	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
+ 	.gen_echo = ath10k_wmi_tlv_op_gen_echo,
++	.gen_vdev_spectral_conf = ath10k_wmi_tlv_op_gen_vdev_spectral_conf,
++	.gen_vdev_spectral_enable = ath10k_wmi_tlv_op_gen_vdev_spectral_enable,
+ };
  
-+	if (!ar->wmi.ops->gen_vdev_spectral_enable)
-+		return -EOPNOTSUPP;
-+
- 	skb = ar->wmi.ops->gen_vdev_spectral_enable(ar, vdev_id, trigger,
- 						    enable);
- 	if (IS_ERR(skb))
+ static const struct wmi_peer_flags_map wmi_tlv_peer_flags_map = {
 -- 
 2.1.4
 
