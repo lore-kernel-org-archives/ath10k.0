@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6KEc-0000ST-5H
- for ath10k@lists.infradead.org; Mon, 14 Nov 2016 16:35:55 +0000
-Received: by mail-lf0-x242.google.com with SMTP id o20so7510818lfg.3
- for <ath10k@lists.infradead.org>; Mon, 14 Nov 2016 08:35:35 -0800 (PST)
+ id 1c6KEb-0000Ry-4D
+ for ath10k@lists.infradead.org; Mon, 14 Nov 2016 16:35:54 +0000
+Received: by mail-lf0-x244.google.com with SMTP id 98so7490930lfs.0
+ for <ath10k@lists.infradead.org>; Mon, 14 Nov 2016 08:35:32 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC 10/12] ath10k: Added QCA65XX hw definition
-Date: Mon, 14 Nov 2016 17:33:40 +0100
-Message-Id: <1479141222-8493-11-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC 07/12] ath10k: Added SDIO dbg masks
+Date: Mon, 14 Nov 2016 17:33:37 +0100
+Message-Id: <1479141222-8493-8-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,23 +27,26 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
+Debug masks for SDIO HIF layer.
+
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/hw.h |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath10k/debug.h |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 46142e9..ef45ecf 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -224,6 +224,7 @@ enum ath10k_hw_rev {
- 	ATH10K_HW_QCA9377,
- 	ATH10K_HW_QCA4019,
- 	ATH10K_HW_QCA9887,
-+	ATH10K_HW_QCA65XX,
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 335512b..d35263c 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -38,6 +38,8 @@ enum ath10k_debug_mask {
+ 	ATH10K_DBG_WMI_PRINT	= 0x00002000,
+ 	ATH10K_DBG_PCI_PS	= 0x00004000,
+ 	ATH10K_DBG_AHB		= 0x00008000,
++	ATH10K_DBG_SDIO		= 0x00010000,
++	ATH10K_DBG_SDIO_DUMP	= 0x00020000,
+ 	ATH10K_DBG_ANY		= 0xffffffff,
  };
  
- struct ath10k_hw_regs {
 -- 
 1.7.9.5
 
