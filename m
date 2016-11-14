@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6H5N-00084l-70
- for ath10k@lists.infradead.org; Mon, 14 Nov 2016 13:14:10 +0000
-Received: by mail-wm0-x22c.google.com with SMTP id t79so97242022wmt.0
- for <ath10k@lists.infradead.org>; Mon, 14 Nov 2016 05:13:47 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CABkmk0WJhXOW2voJwNSHa7G0oz7T70grS2PGt_eNUcJKgxe0wg@mail.gmail.com>
-References: <CABkmk0WJhXOW2voJwNSHa7G0oz7T70grS2PGt_eNUcJKgxe0wg@mail.gmail.com>
+ id 1c6HF2-0005nQ-Pg
+ for ath10k@lists.infradead.org; Mon, 14 Nov 2016 13:24:09 +0000
+Received: by mail-lf0-x233.google.com with SMTP id t196so58132622lff.3
+ for <ath10k@lists.infradead.org>; Mon, 14 Nov 2016 05:23:48 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Date: Mon, 14 Nov 2016 14:13:44 +0100
-Message-ID: <CA+BoTQk9znROEy4o958DVuBkv1cpY6eG=-wCof1fahuh93PObw@mail.gmail.com>
-Subject: Re: Connection problems with Qualcomm Atheros QCA6174
+Subject: [PATCH] ath10k: fix null deref on wmi-tlv when trying spectral scan
+Date: Mon, 14 Nov 2016 14:25:23 +0100
+Message-Id: <1479129923-11083-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,102 +17,84 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?B?SGVucsO9IMOew7NyIEJhbGR1cnNzb24=?= <henry.baldursson@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMTMgTm92ZW1iZXIgMjAxNiBhdCAwNjo1NywgSGVucsO9IMOew7NyIEJhbGR1cnNzb24KPGhl
-bnJ5LmJhbGR1cnNzb25AZ21haWwuY29tPiB3cm90ZToKPiBIZWxsbwo+Cj4gSSBoYXZlIGEgTGVu
-b3ZvIElkZWFwYWQgWW9nYSA5MTAgcnVubmluZyBBdGhlcmdvcywga2VybmVsIHZlcnNpb24gNC44
-LjcuCj4KPiBNeSBwcm9ibGVtIGlzIHRoYXQgaW50ZXJtaXR0ZW50bHkgbXkgd2lmaSB3aWxsIGp1
-c3QgZ3JpbmQgdG8gYSBoYWx0Cj4gYW5kIGV2ZW4gc3RvcCB3b3JraW5nLgo+Cj4gVGhlIGRyaXZl
-ciByZXBvcnRzIHRoZSBmaXJtd2FyZSBhcyBiZWluZyBXTEFOLlJNLjIuMC0wMDE4MC1RQ0FSTVNX
-UFotMQo+Cj4gSGVyZSdzIHRoZSBpbml0aWFsaXphdGlvbiBpbiBkbWVzZzoKPgo+IFsgICAgMS45
-MDAwMzNdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBwY2kgaXJxIG1zaSBvcGVyX2lycV9tb2Rl
-IDIKPiBpcnFfbW9kZSAwIHJlc2V0X21vZGUgMAo+IFsgICAgMi4xNzMwMzldIGF0aDEwa19wY2kg
-MDAwMDowMTowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPiBhdGgxMGsvcHJlLWNhbC1w
-Y2ktMDAwMDowMTowMC4wLmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMgo+IFsgICAgMi4xNzMwNTRd
-IGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPiBhdGgx
-MGsvY2FsLXBjaS0wMDAwOjAxOjAwLjAuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4gWyAgICAy
-LjE3NDIxN10gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZv
-cgo+IGF0aDEway9RQ0E2MTc0L2h3My4wL2Zpcm13YXJlLTUuYmluIGZhaWxlZCB3aXRoIGVycm9y
-IC0yCj4gWyAgICAyLjE3NDIxOF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGNvdWxkIG5vdCBm
-ZXRjaCBmaXJtd2FyZSBmaWxlCj4gJ2F0aDEway9RQ0E2MTc0L2h3My4wL2Zpcm13YXJlLTUuYmlu
-JzogLTIKPiBbICAgIDIuMTc1NDg1XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogcWNhNjE3NCBo
-dzMuMiB0YXJnZXQKPiAweDA1MDMwMDAwIGNoaXBfaWQgMHgwMDM0MGFmZiBzdWIgMTdhYTowODI3
-Cj4gWyAgICAyLjE3NTQ4N10gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGtjb25maWcgZGVidWcg
-MCBkZWJ1Z2ZzIDEKPiB0cmFjaW5nIDAgZGZzIDAgdGVzdG1vZGUgMAo+IFsgICAgMi4xNzU4NzZd
-IGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmaXJtd2FyZSB2ZXIKPiBXTEFOLlJNLjIuMC0wMDE4
-MC1RQ0FSTVNXUFotMSBhcGkgNCBmZWF0dXJlcwo+IHdvd2xhbixpZ25vcmUtb3RwLG5vLTRhZGRy
-LXBhZCBjcmMzMiA3NWRlZTZjNQo+IFsgICAgMi4yNDAzMTJdIGF0aDEwa19wY2kgMDAwMDowMTow
-MC4wOiBib2FyZF9maWxlIGFwaSAyIGJtaV9pZCBOL0EKPiBjcmMzMiA2ZmM4OGZlNwo+IFsgICAg
-NC40MDU3NDFdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBodHQtdmVyIDMuMjYgd21pLW9wIDQg
-aHR0LW9wIDMKPiBjYWwgb3RwIG1heC1zdGEgMzIgcmF3IDAgaHdjcnlwdG8gMQo+IFsgICAgNC40
-ODUzNjJdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wIHdscDFzMDogcmVuYW1lZCBmcm9tIHdsYW4w
-Cj4KPgo+IEhlcmUncyB3aGF0IGRtZXNnIHNob3dzIGR1cmluZyB0aGUgZXJyb3JzOgo+Cj4gWyAx
-MjM4LjcxMDg5OV0gcGNpZXBvcnQgMDAwMDowMDoxYy4wOiBBRVI6IENvcnJlY3RlZCBlcnJvciBy
-ZWNlaXZlZDogaWQ9MDBlMAo+IFsgMTIzOC43MTA5MjBdIHBjaWVwb3J0IDAwMDA6MDA6MWMuMDog
-UENJZSBCdXMgRXJyb3I6Cj4gc2V2ZXJpdHk9Q29ycmVjdGVkLCB0eXBlPURhdGEgTGluayBMYXll
-ciwgaWQ9MDBlMChUcmFuc21pdHRlciBJRCkKPiBbIDEyMzguNzEwOTM1XSBwY2llcG9ydCAwMDAw
-OjAwOjFjLjA6ICAgZGV2aWNlIFs4MDg2OjlkMTRdIGVycm9yCj4gc3RhdHVzL21hc2s9MDAwMDEw
-MDAvMDAwMDAwMDAKPiBbIDEyMzguNzEwOTQ1XSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6ICAgIFsx
-Ml0gUmVwbGF5IFRpbWVyIFRpbWVvdXQKPiBbIDEyNDMuODU1NDU2XSBwY2llcG9ydCAwMDAwOjAw
-OjFjLjA6IEFFUjogQ29ycmVjdGVkIGVycm9yIHJlY2VpdmVkOiBpZD0wMGUwCj4gWyAxMjQzLjg1
-NTQ3Ml0gcGNpZXBvcnQgMDAwMDowMDoxYy4wOiBQQ0llIEJ1cyBFcnJvcjoKPiBzZXZlcml0eT1D
-b3JyZWN0ZWQsIHR5cGU9RGF0YSBMaW5rIExheWVyLCBpZD0wMGUwKFRyYW5zbWl0dGVyIElEKQo+
-IFsgMTI0My44NTU0ODRdIHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogICBkZXZpY2UgWzgwODY6OWQx
-NF0gZXJyb3IKPiBzdGF0dXMvbWFzaz0wMDAwMTAwMC8wMDAwMDAwMAo+IFsgMTI0My44NTU0OTFd
-IHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogICAgWzEyXSBSZXBsYXkgVGltZXIgVGltZW91dAo+IFsg
-MTI5Ni4wOTU0MzddIHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogQUVSOiBDb3JyZWN0ZWQgZXJyb3Ig
-cmVjZWl2ZWQ6IGlkPTAwZTAKPiBbIDEyOTYuMDk1NDUyXSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6
-IFBDSWUgQnVzIEVycm9yOgo+IHNldmVyaXR5PUNvcnJlY3RlZCwgdHlwZT1EYXRhIExpbmsgTGF5
-ZXIsIGlkPTAwZTAoVHJhbnNtaXR0ZXIgSUQpCj4gWyAxMjk2LjA5NTQ2NF0gcGNpZXBvcnQgMDAw
-MDowMDoxYy4wOiAgIGRldmljZSBbODA4Njo5ZDE0XSBlcnJvcgo+IHN0YXR1cy9tYXNrPTAwMDAx
-MDAwLzAwMDAwMDAwCj4gWyAxMjk2LjA5NTQ3Ml0gcGNpZXBvcnQgMDAwMDowMDoxYy4wOiAgICBb
-MTJdIFJlcGxheSBUaW1lciBUaW1lb3V0Cj4gWyAxMzA1Ljg3NzU0N10gcGNpZXBvcnQgMDAwMDow
-MDoxYy4wOiBBRVI6IENvcnJlY3RlZCBlcnJvciByZWNlaXZlZDogaWQ9MDBlMAo+IFsgMTMwNS44
-Nzc1NjJdIHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogUENJZSBCdXMgRXJyb3I6Cj4gc2V2ZXJpdHk9
-Q29ycmVjdGVkLCB0eXBlPURhdGEgTGluayBMYXllciwgaWQ9MDBlMChUcmFuc21pdHRlciBJRCkK
-PiBbIDEzMDUuODc3NTc0XSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6ICAgZGV2aWNlIFs4MDg2Ojlk
-MTRdIGVycm9yCj4gc3RhdHVzL21hc2s9MDAwMDEwMDAvMDAwMDAwMDAKPiBbIDEzMDUuODc3NTgx
-XSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6ICAgIFsxMl0gUmVwbGF5IFRpbWVyIFRpbWVvdXQKPiBb
-IDE1NTYuNTk2MDkyXSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6IEFFUjogQ29ycmVjdGVkIGVycm9y
-IHJlY2VpdmVkOiBpZD0wMGUwCj4gWyAxNTU2LjU5NjEwN10gcGNpZXBvcnQgMDAwMDowMDoxYy4w
-OiBQQ0llIEJ1cyBFcnJvcjoKPiBzZXZlcml0eT1Db3JyZWN0ZWQsIHR5cGU9RGF0YSBMaW5rIExh
-eWVyLCBpZD0wMGUwKFRyYW5zbWl0dGVyIElEKQo+IFsgMTU1Ni41OTYxMTVdIHBjaWVwb3J0IDAw
-MDA6MDA6MWMuMDogICBkZXZpY2UgWzgwODY6OWQxNF0gZXJyb3IKPiBzdGF0dXMvbWFzaz0wMDAw
-MTAwMC8wMDAwMDAwMAo+IFsgMTU1Ni41OTYxMjJdIHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogICAg
-WzEyXSBSZXBsYXkgVGltZXIgVGltZW91dAo+IFsgMTYxMi43NjQxMDhdIHBjaWVwb3J0IDAwMDA6
-MDA6MWMuMDogQUVSOiBDb3JyZWN0ZWQgZXJyb3IgcmVjZWl2ZWQ6IGlkPTAwZTAKPiBbIDE2MTIu
-NzY0MTI0XSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6IFBDSWUgQnVzIEVycm9yOgo+IHNldmVyaXR5
-PUNvcnJlY3RlZCwgdHlwZT1EYXRhIExpbmsgTGF5ZXIsIGlkPTAwZTAoVHJhbnNtaXR0ZXIgSUQp
-Cj4gWyAxNjEyLjc2NDEzNV0gcGNpZXBvcnQgMDAwMDowMDoxYy4wOiAgIGRldmljZSBbODA4Njo5
-ZDE0XSBlcnJvcgo+IHN0YXR1cy9tYXNrPTAwMDAxMDAwLzAwMDAwMDAwCj4gWyAxNjEyLjc2NDE0
-M10gcGNpZXBvcnQgMDAwMDowMDoxYy4wOiAgICBbMTJdIFJlcGxheSBUaW1lciBUaW1lb3V0CgpD
-YW4geW91IHRyeSB0byBvdmVycmlkZSBhcl9wY2ktPnBjaV9wcyB0byBmYWxzZSBpbiBhdGgxMGtf
-cGNpX3Byb2JlKCkKYW5kIHNlZSBpZiBpdCBoZWxwcz8gU29tZXRoaW5nIGFsb25nIHRoZSBkaWZm
-OgoKLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYworKysgYi9kcml2
-ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCkBAIC0zMjM2LDcgKzMyMzYsNyBAQCBz
-dGF0aWMgaW50IGF0aDEwa19wY2lfcHJvYmUoc3RydWN0IHBjaV9kZXYgKnBkZXYsCiAgICAgICAg
-YXJfcGNpLT5kZXYgPSAmcGRldi0+ZGV2OwogICAgICAgIGFyX3BjaS0+YXIgPSBhcjsKICAgICAg
-ICBhci0+ZGV2X2lkID0gcGNpX2Rldi0+ZGV2aWNlOwotICAgICAgIGFyX3BjaS0+cGNpX3BzID0g
-cGNpX3BzOworICAgICAgIGFyX3BjaS0+cGNpX3BzID0gZmFsc2U7CiAgICAgICAgYXJfcGNpLT5i
-dXNfb3BzID0gJmF0aDEwa19wY2lfYnVzX29wczsKICAgICAgICBhcl9wY2ktPnBjaV9zb2Z0X3Jl
-c2V0ID0gcGNpX3NvZnRfcmVzZXQ7CiAgICAgICAgYXJfcGNpLT5wY2lfaGFyZF9yZXNldCA9IHBj
-aV9oYXJkX3Jlc2V0OwoKQW5vdGhlciB0aGluZyB3aGljaCBjb3VsZCBiZSBoYXBwZW5pbmcgaXMg
-QUNQSSBTMGl4IHN0YXRlcyB3aGljaCAtIHRvCnRoZSBiZXN0IG9mIG15IGtub3dsZWRnZSAtIExp
-bnV4IGRvZXMgbm90IHN1cHBvcnQuIEkndmUgc2VlbiBhdCBsZWFzdAppOTE1IG5vdCBiZWluZyBh
-YmxlIHRvIHdha2UtdXAgRFNJIGRpc3BsYXlzIHByb3Blcmx5IHdoZW4gUzBpeCBzdGF0ZXMKYXJl
-IGVuYWJsZWQgb24gc29tZSAxMCBpbmNoIDItaW4tMSBkZXZpY2VzLiBJIHdvdWxkbid0IGJlIHN1
-cnByaXNlZCBpZgpvdGhlciBQQ0ktRSAoc3VjaCBhcyB3aWZpL25ldHdvcmsgZGV2aWNlcykgY2Fu
-IGJlIGFmZmVjdGVkIGFkdmVyc2VseQphcyB3ZWxsLgoKVGhlcmVmb3JlLCBjYW4geW91IGNoZWNr
-IFVFRkkvQklPUyAoeW91IG1heSBuZWVkIHRvIGVuYWJsZSAiZXhwZXJ0CnNldHRpbmdzIikgaWYg
-dGhlcmUgYXJlIGFueSBtZW50aW9ucyBhYm91dCBTMHggb3IgUzBpeCBBQ1BJIG1vZGVzCnRoZXJl
-IGFuZCAtIGlmIGZvdW5kIC0gdHJ5IGRpc2FibGluZyB0aGVtIGFuZCBjaGVja2luZyBiYWNrIGlm
-IHlvdQpzdGlsbCBnZXQgQUVSL2J1cyBlcnJvcnMsIHBsZWFzZT8KCgpNaWNoYcWCCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
-aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+WMI ops wrappers did not properly check for null
+function pointers for spectral scan. This caused
+null dereference crash with WMI-TLV based firmware
+which doesn't implement spectral scan.
+
+The crash could be triggered with:
+
+  ip link set dev wlan0 up
+  echo background > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
+
+The crash looked like this:
+
+  [  168.031989] BUG: unable to handle kernel NULL pointer dereference at           (null)
+  [  168.037406] IP: [<          (null)>]           (null)
+  [  168.040395] PGD cdd4067 PUD fa0f067 PMD 0
+  [  168.043303] Oops: 0010 [#1] SMP
+  [  168.045377] Modules linked in: ath10k_pci(O) ath10k_core(O) ath mac80211 cfg80211 [last unloaded: cfg80211]
+  [  168.051560] CPU: 1 PID: 1380 Comm: bash Tainted: G        W  O    4.8.0 #78
+  [  168.054336] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.7.5-20140531_083030-gandalf 04/01/2014
+  [  168.059183] task: ffff88000c460c00 task.stack: ffff88000d4bc000
+  [  168.061736] RIP: 0010:[<0000000000000000>]  [<          (null)>]           (null)
+  ...
+  [  168.100620] Call Trace:
+  [  168.101910]  [<ffffffffa03b9566>] ? ath10k_spectral_scan_config+0x96/0x200 [ath10k_core]
+  [  168.104871]  [<ffffffff811386e2>] ? filemap_fault+0xb2/0x4a0
+  [  168.106696]  [<ffffffffa03b97e6>] write_file_spec_scan_ctl+0x116/0x280 [ath10k_core]
+  [  168.109618]  [<ffffffff812da3a1>] full_proxy_write+0x51/0x80
+  [  168.111443]  [<ffffffff811957b8>] __vfs_write+0x28/0x120
+  [  168.113090]  [<ffffffff812f1a2d>] ? security_file_permission+0x3d/0xc0
+  [  168.114932]  [<ffffffff8109b912>] ? percpu_down_read+0x12/0x60
+  [  168.116680]  [<ffffffff811965f8>] vfs_write+0xb8/0x1a0
+  [  168.118293]  [<ffffffff81197966>] SyS_write+0x46/0xa0
+  [  168.119912]  [<ffffffff818f2972>] entry_SYSCALL_64_fastpath+0x1a/0xa4
+  [  168.121737] Code:  Bad RIP value.
+  [  168.123318] RIP  [<          (null)>]           (null)
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index c9a8bb1186f2..c7956e181f80 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -660,6 +660,9 @@ ath10k_wmi_vdev_spectral_conf(struct ath10k *ar,
+ 	struct sk_buff *skb;
+ 	u32 cmd_id;
+ 
++	if (!ar->wmi.ops->gen_vdev_spectral_conf)
++		return -EOPNOTSUPP;
++
+ 	skb = ar->wmi.ops->gen_vdev_spectral_conf(ar, arg);
+ 	if (IS_ERR(skb))
+ 		return PTR_ERR(skb);
+@@ -675,6 +678,9 @@ ath10k_wmi_vdev_spectral_enable(struct ath10k *ar, u32 vdev_id, u32 trigger,
+ 	struct sk_buff *skb;
+ 	u32 cmd_id;
+ 
++	if (!ar->wmi.ops->gen_vdev_spectral_enable)
++		return -EOPNOTSUPP;
++
+ 	skb = ar->wmi.ops->gen_vdev_spectral_enable(ar, vdev_id, trigger,
+ 						    enable);
+ 	if (IS_ERR(skb))
+-- 
+2.1.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
