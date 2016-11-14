@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6HG3-0006O9-NY
- for ath10k@lists.infradead.org; Mon, 14 Nov 2016 13:25:13 +0000
-Received: by mail-lf0-x22e.google.com with SMTP id t196so58153940lff.3
- for <ath10k@lists.infradead.org>; Mon, 14 Nov 2016 05:24:51 -0800 (PST)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: add spectral scan support to wmi-tlv
-Date: Mon, 14 Nov 2016 14:26:40 +0100
-Message-Id: <1479130000-11551-1-git-send-email-michal.kazior@tieto.com>
+ id 1c6KEU-0000RA-Os
+ for ath10k@lists.infradead.org; Mon, 14 Nov 2016 16:35:48 +0000
+Received: by mail-lf0-x241.google.com with SMTP id 98so7490548lfs.0
+ for <ath10k@lists.infradead.org>; Mon, 14 Nov 2016 08:35:26 -0800 (PST)
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Subject: [RFC 00/12] ath10k sdio support
+Date: Mon, 14 Nov 2016 17:33:30 +0100
+Message-Id: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,115 +22,81 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Command structure and event flow doesn't seem to
-be any different compared to existing
-implementation for other firmware branches.
+This patch series adds sdio support to ath10k.
 
-This patch effectively adds in-driver support for
-spectral scanning on QCA61x4 and QCA9377.
+Some of the patches affect the existing pcie/ahb code as well.
+Those are patches 3 and 4 in the series.
 
-Tested QCA9377 w/ WLAN.TF.1.0-00267-1.
+Overview:
+A new HIF layer: sdio/mailbox.
+The current HIF ops are unaltered even though some ops
+are not applicable for sdio.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 72 +++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+The HTC layer has only suffered minor modifications:
+- A few new functions for handling the mailbox specific
+  RX trailers (lookahead reports)
+- Some minor refactorization of the existing code
+  (patches 3 and 4)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index e64f59300a7c..7f9b1185b549 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -3136,6 +3136,76 @@ ath10k_wmi_tlv_op_gen_echo(struct ath10k *ar, u32 value)
- 	return skb;
- }
- 
-+static struct sk_buff *
-+ath10k_wmi_tlv_op_gen_vdev_spectral_conf(struct ath10k *ar,
-+					 const struct wmi_vdev_spectral_conf_arg *arg)
-+{
-+	struct wmi_vdev_spectral_conf_cmd *cmd;
-+	struct sk_buff *skb;
-+	struct wmi_tlv *tlv;
-+	void *ptr;
-+	size_t len;
-+
-+	len = sizeof(*tlv) + sizeof(*cmd);
-+	skb = ath10k_wmi_alloc_skb(ar, len);
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ptr = (void *)skb->data;
-+	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_VDEV_SPECTRAL_CONFIGURE_CMD);
-+	tlv->len = __cpu_to_le16(sizeof(*cmd));
-+	cmd = (void *)tlv->value;
-+	cmd->vdev_id = __cpu_to_le32(arg->vdev_id);
-+	cmd->scan_count = __cpu_to_le32(arg->scan_count);
-+	cmd->scan_period = __cpu_to_le32(arg->scan_period);
-+	cmd->scan_priority = __cpu_to_le32(arg->scan_priority);
-+	cmd->scan_fft_size = __cpu_to_le32(arg->scan_fft_size);
-+	cmd->scan_gc_ena = __cpu_to_le32(arg->scan_gc_ena);
-+	cmd->scan_restart_ena = __cpu_to_le32(arg->scan_restart_ena);
-+	cmd->scan_noise_floor_ref = __cpu_to_le32(arg->scan_noise_floor_ref);
-+	cmd->scan_init_delay = __cpu_to_le32(arg->scan_init_delay);
-+	cmd->scan_nb_tone_thr = __cpu_to_le32(arg->scan_nb_tone_thr);
-+	cmd->scan_str_bin_thr = __cpu_to_le32(arg->scan_str_bin_thr);
-+	cmd->scan_wb_rpt_mode = __cpu_to_le32(arg->scan_wb_rpt_mode);
-+	cmd->scan_rssi_rpt_mode = __cpu_to_le32(arg->scan_rssi_rpt_mode);
-+	cmd->scan_rssi_thr = __cpu_to_le32(arg->scan_rssi_thr);
-+	cmd->scan_pwr_format = __cpu_to_le32(arg->scan_pwr_format);
-+	cmd->scan_rpt_mode = __cpu_to_le32(arg->scan_rpt_mode);
-+	cmd->scan_bin_scale = __cpu_to_le32(arg->scan_bin_scale);
-+	cmd->scan_dbm_adj = __cpu_to_le32(arg->scan_dbm_adj);
-+	cmd->scan_chn_mask = __cpu_to_le32(arg->scan_chn_mask);
-+
-+	return skb;
-+}
-+
-+static struct sk_buff *
-+ath10k_wmi_tlv_op_gen_vdev_spectral_enable(struct ath10k *ar, u32 vdev_id,
-+					   u32 trigger, u32 enable)
-+{
-+	struct wmi_vdev_spectral_enable_cmd *cmd;
-+	struct sk_buff *skb;
-+	struct wmi_tlv *tlv;
-+	void *ptr;
-+	size_t len;
-+
-+	len = sizeof(*tlv) + sizeof(*cmd);
-+	skb = ath10k_wmi_alloc_skb(ar, len);
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ptr = (void *)skb->data;
-+	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_VDEV_SPECTRAL_ENABLE_CMD);
-+	tlv->len = __cpu_to_le16(sizeof(*cmd));
-+	cmd = (void *)tlv->value;
-+	cmd->vdev_id = __cpu_to_le32(vdev_id);
-+	cmd->trigger_cmd = __cpu_to_le32(trigger);
-+	cmd->enable_cmd = __cpu_to_le32(enable);
-+
-+	return skb;
-+}
-+
- /****************/
- /* TLV mappings */
- /****************/
-@@ -3542,6 +3612,8 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.fw_stats_fill = ath10k_wmi_main_op_fw_stats_fill,
- 	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
- 	.gen_echo = ath10k_wmi_tlv_op_gen_echo,
-+	.gen_vdev_spectral_conf = ath10k_wmi_tlv_op_gen_vdev_spectral_conf,
-+	.gen_vdev_spectral_enable = ath10k_wmi_tlv_op_gen_vdev_spectral_enable,
- };
- 
- static const struct wmi_peer_flags_map wmi_tlv_peer_flags_map = {
+This is not included in this patch series:
+
+- HTT High latency RX and TX support
+- Full integration in core.c
+
+The following basic tests have been made so far:
+
+BMI fw load and firmware startup (all the steps in ath10k_core_start).
+This means:
+
+- HTT service connect
+- WMI control service connect
+- WMI unified init
+
+The above mentioned bullets where verified with a QCA6584 chipset.
+
+I have not been able to test the patch series together with
+ath10k pcie hardware, but I will do so as soon as I can get
+my hands on some hardware.
+
+The patches have been built and tested against the ath tree:
+git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+branch/tag: master/ath-201611090123
+
+Erik Stromdahl (12):
+  ath10k: htc: made static function public
+  ath10k: htc: rx trailer lookahead support
+  ath10k: htc: Changed order of wait target and ep connect
+  ath10k: htc: refactorization
+  ath10k: htc: Added ATH10K_HTC_FLAG_BUNDLE_LSB
+  ath10k: bmi: Added SOC reg read/write functions
+  ath10k: Added SDIO dbg masks
+  ath10k: Added ATH10K_BUS_SDIO enum
+  ath10k: Mailbox address definitions
+  ath10k: Added QCA65XX hw definition
+  ath10k: Added more host_interest members
+  ath10k: Added sdio support
+
+ drivers/net/wireless/ath/ath10k/Kconfig     |    6 +
+ drivers/net/wireless/ath/ath10k/Makefile    |    3 +
+ drivers/net/wireless/ath/ath10k/bmi.c       |   79 +-
+ drivers/net/wireless/ath/ath10k/bmi.h       |    4 +
+ drivers/net/wireless/ath/ath10k/core.h      |    3 +
+ drivers/net/wireless/ath/ath10k/debug.h     |    2 +
+ drivers/net/wireless/ath/ath10k/htc.c       |  208 ++-
+ drivers/net/wireless/ath/ath10k/htc.h       |   36 +-
+ drivers/net/wireless/ath/ath10k/hw.h        |   54 +
+ drivers/net/wireless/ath/ath10k/sdio.c      | 1855 +++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/sdio.h      |  276 ++++
+ drivers/net/wireless/ath/ath10k/targaddrs.h |   24 +
+ 12 files changed, 2484 insertions(+), 66 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/sdio.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/sdio.h
+
 -- 
-2.1.4
+1.7.9.5
 
 
 _______________________________________________
