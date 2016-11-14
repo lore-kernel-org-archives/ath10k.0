@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6KEU-0000RA-Os
- for ath10k@lists.infradead.org; Mon, 14 Nov 2016 16:35:48 +0000
-Received: by mail-lf0-x241.google.com with SMTP id 98so7490548lfs.0
- for <ath10k@lists.infradead.org>; Mon, 14 Nov 2016 08:35:26 -0800 (PST)
+ id 1c6KEV-0000Rw-Q0
+ for ath10k@lists.infradead.org; Mon, 14 Nov 2016 16:35:51 +0000
+Received: by mail-lf0-x243.google.com with SMTP id o141so7513715lff.1
+ for <ath10k@lists.infradead.org>; Mon, 14 Nov 2016 08:35:31 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC 00/12] ath10k sdio support
-Date: Mon, 14 Nov 2016 17:33:30 +0100
-Message-Id: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC 06/12] ath10k: bmi: Added SOC reg read/write functions
+Date: Mon, 14 Nov 2016 17:33:36 +0100
+Message-Id: <1479141222-8493-7-git-send-email-erik.stromdahl@gmail.com>
+In-Reply-To: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
+References: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,76 +27,139 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-This patch series adds sdio support to ath10k.
+Added functions implementing the following BMI commands:
 
-Some of the patches affect the existing pcie/ahb code as well.
-Those are patches 3 and 4 in the series.
+BMI_READ_SOC_REGISTER
+BMI_WRITE_SOC_REGISTER
 
-Overview:
-A new HIF layer: sdio/mailbox.
-The current HIF ops are unaltered even though some ops
-are not applicable for sdio.
+Reading and writing BMI registers is sometimes needed for
+SDIO chipsets.
 
-The HTC layer has only suffered minor modifications:
-- A few new functions for handling the mailbox specific
-  RX trailers (lookahead reports)
-- Some minor refactorization of the existing code
-  (patches 3 and 4)
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/bmi.c |   79 ++++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/bmi.h |    4 ++
+ 2 files changed, 81 insertions(+), 2 deletions(-)
 
-This is not included in this patch series:
-
-- HTT High latency RX and TX support
-- Full integration in core.c
-
-The following basic tests have been made so far:
-
-BMI fw load and firmware startup (all the steps in ath10k_core_start).
-This means:
-
-- HTT service connect
-- WMI control service connect
-- WMI unified init
-
-The above mentioned bullets where verified with a QCA6584 chipset.
-
-I have not been able to test the patch series together with
-ath10k pcie hardware, but I will do so as soon as I can get
-my hands on some hardware.
-
-The patches have been built and tested against the ath tree:
-git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
-branch/tag: master/ath-201611090123
-
-Erik Stromdahl (12):
-  ath10k: htc: made static function public
-  ath10k: htc: rx trailer lookahead support
-  ath10k: htc: Changed order of wait target and ep connect
-  ath10k: htc: refactorization
-  ath10k: htc: Added ATH10K_HTC_FLAG_BUNDLE_LSB
-  ath10k: bmi: Added SOC reg read/write functions
-  ath10k: Added SDIO dbg masks
-  ath10k: Added ATH10K_BUS_SDIO enum
-  ath10k: Mailbox address definitions
-  ath10k: Added QCA65XX hw definition
-  ath10k: Added more host_interest members
-  ath10k: Added sdio support
-
- drivers/net/wireless/ath/ath10k/Kconfig     |    6 +
- drivers/net/wireless/ath/ath10k/Makefile    |    3 +
- drivers/net/wireless/ath/ath10k/bmi.c       |   79 +-
- drivers/net/wireless/ath/ath10k/bmi.h       |    4 +
- drivers/net/wireless/ath/ath10k/core.h      |    3 +
- drivers/net/wireless/ath/ath10k/debug.h     |    2 +
- drivers/net/wireless/ath/ath10k/htc.c       |  208 ++-
- drivers/net/wireless/ath/ath10k/htc.h       |   36 +-
- drivers/net/wireless/ath/ath10k/hw.h        |   54 +
- drivers/net/wireless/ath/ath10k/sdio.c      | 1855 +++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/sdio.h      |  276 ++++
- drivers/net/wireless/ath/ath10k/targaddrs.h |   24 +
- 12 files changed, 2484 insertions(+), 66 deletions(-)
- create mode 100644 drivers/net/wireless/ath/ath10k/sdio.c
- create mode 100644 drivers/net/wireless/ath/ath10k/sdio.h
-
+diff --git a/drivers/net/wireless/ath/ath10k/bmi.c b/drivers/net/wireless/ath/ath10k/bmi.c
+index 2872d34..1c378a2 100644
+--- a/drivers/net/wireless/ath/ath10k/bmi.c
++++ b/drivers/net/wireless/ath/ath10k/bmi.c
+@@ -97,7 +97,8 @@ int ath10k_bmi_read_memory(struct ath10k *ar,
+ 	u32 rxlen;
+ 	int ret;
+ 
+-	ath10k_dbg(ar, ATH10K_DBG_BMI, "bmi read address 0x%x length %d\n",
++	ath10k_dbg(ar, ATH10K_DBG_BMI,
++		   "bmi read memory address 0x%x length %d\n",
+ 		   address, length);
+ 
+ 	if (ar->bmi.done_sent) {
+@@ -137,7 +138,8 @@ int ath10k_bmi_write_memory(struct ath10k *ar,
+ 	u32 txlen;
+ 	int ret;
+ 
+-	ath10k_dbg(ar, ATH10K_DBG_BMI, "bmi write address 0x%x length %d\n",
++	ath10k_dbg(ar, ATH10K_DBG_BMI,
++		   "bmi write memory address 0x%x length %d\n",
+ 		   address, length);
+ 
+ 	if (ar->bmi.done_sent) {
+@@ -175,6 +177,79 @@ int ath10k_bmi_write_memory(struct ath10k *ar,
+ 	return 0;
+ }
+ 
++int ath10k_bmi_read_soc_reg(struct ath10k *ar,
++			    u32 address, u32 *regval)
++{
++	struct bmi_cmd cmd;
++	union bmi_resp resp;
++	u32 cmdlen = sizeof(cmd.id) + sizeof(cmd.read_soc_reg);
++	u32 rxlen;
++	int ret;
++
++	ath10k_dbg(ar, ATH10K_DBG_BMI,
++		   "bmi read SOC register address 0x%x\n",
++		   address);
++
++	if (ar->bmi.done_sent) {
++		ath10k_warn(ar, "command disallowed\n");
++		return -EBUSY;
++	}
++
++	rxlen = sizeof(resp.read_soc_reg.value);
++
++	cmd.id                = __cpu_to_le32(BMI_READ_SOC_REGISTER);
++	cmd.read_soc_reg.addr = __cpu_to_le32(address);
++
++	ret = ath10k_hif_exchange_bmi_msg(ar, &cmd, cmdlen,
++					  &resp, &rxlen);
++	if (ret) {
++		ath10k_warn(ar, "unable to read from the device (%d)\n",
++			    ret);
++		return ret;
++	}
++
++	if (rxlen != sizeof(resp.read_soc_reg.value)) {
++		ath10k_warn(ar, "Unexpected read len: %u (expected %u)\n",
++			    rxlen, sizeof(resp.read_soc_reg.value));
++		return ret;
++	}
++
++	*regval = __le32_to_cpu(resp.read_soc_reg.value);
++
++	return 0;
++}
++
++int ath10k_bmi_write_soc_reg(struct ath10k *ar,
++			     u32 address, u32 regval)
++{
++	struct bmi_cmd cmd;
++	u32 cmdlen = sizeof(cmd.id) + sizeof(cmd.write_soc_reg);
++	int ret;
++
++	ath10k_dbg(ar, ATH10K_DBG_BMI,
++		   "bmi write SOC register address 0x%x\n",
++		   address);
++
++	if (ar->bmi.done_sent) {
++		ath10k_warn(ar, "command disallowed\n");
++		return -EBUSY;
++	}
++
++	cmd.id                  = __cpu_to_le32(BMI_WRITE_SOC_REGISTER);
++	cmd.write_soc_reg.addr  = __cpu_to_le32(address);
++	cmd.write_soc_reg.value = __cpu_to_le32(regval);
++
++	ret = ath10k_hif_exchange_bmi_msg(ar, &cmd, cmdlen,
++					  NULL, NULL);
++	if (ret) {
++		ath10k_warn(ar, "unable to write to the device (%d)\n",
++			    ret);
++		return ret;
++	}
++
++	return 0;
++}
++
+ int ath10k_bmi_execute(struct ath10k *ar, u32 address, u32 param, u32 *result)
+ {
+ 	struct bmi_cmd cmd;
+diff --git a/drivers/net/wireless/ath/ath10k/bmi.h b/drivers/net/wireless/ath/ath10k/bmi.h
+index 7d3231a..a867867 100644
+--- a/drivers/net/wireless/ath/ath10k/bmi.h
++++ b/drivers/net/wireless/ath/ath10k/bmi.h
+@@ -201,6 +201,10 @@ int ath10k_bmi_read_memory(struct ath10k *ar, u32 address,
+ 			   void *buffer, u32 length);
+ int ath10k_bmi_write_memory(struct ath10k *ar, u32 address,
+ 			    const void *buffer, u32 length);
++int ath10k_bmi_read_soc_reg(struct ath10k *ar,
++			    u32 address, u32 *regval);
++int ath10k_bmi_write_soc_reg(struct ath10k *ar,
++			     u32 address, u32 regval);
+ 
+ #define ath10k_bmi_read32(ar, item, val)				\
+ 	({								\
 -- 
 1.7.9.5
 
