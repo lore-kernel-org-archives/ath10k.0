@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6e6d-00084E-Pg
- for ath10k@lists.infradead.org; Tue, 15 Nov 2016 13:49:01 +0000
-Received: by mail-wm0-x233.google.com with SMTP id g23so168278542wme.1
- for <ath10k@lists.infradead.org>; Tue, 15 Nov 2016 05:48:39 -0800 (PST)
+ id 1c6eqm-0004Xq-Mf
+ for ath10k@lists.infradead.org; Tue, 15 Nov 2016 14:36:41 +0000
 MIME-Version: 1.0
-In-Reply-To: <582B069D.8030002@gmail.com>
-References: <5825B478.4020405@gmail.com>
- <CA+BoTQnkhxDZFF5C3Bex1OFS9f76GBAq6kiQN1aqwWnGYFMgCg@mail.gmail.com>
- <582B069D.8030002@gmail.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Tue, 15 Nov 2016 14:48:36 +0100
-Message-ID: <CA+BoTQmP=nJYXLTLPkHT=eG09wborJHvuuL0qm0AnPzvV5ZfDQ@mail.gmail.com>
-Subject: Re: Connection Problems with on QCA9880-BR4A
+Subject: Re: [PATCHv2,1/2] ath10k: add per peer htt tx stats support for 10.4
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1476783085-10724-2-git-send-email-akolli@qti.qualcomm.com>
+References: <1476783085-10724-2-git-send-email-akolli@qti.qualcomm.com>
+Message-ID: <82cc2d18b1e747068ea6a10ca47b212a@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 15 Nov 2016 15:36:12 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,83 +18,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Felix <kramerfe@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: akolli@qti.qualcomm.com
+Cc: akolli@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMTUgTm92ZW1iZXIgMjAxNiBhdCAxMzo1OSwgRmVsaXggPGtyYW1lcmZlQGdtYWlsLmNvbT4g
-d3JvdGU6ClsuLi5dCj4+PiBjYXQgL2V0Yy93cGFfc3VwcGxpY2FudC93cGFfc3VwcGxpY2FudC5j
-b25mCj4gY3RybF9pbnRlcmZhY2U9L3Zhci9ydW4vd3BhX3N1cHBsaWNhbnQKPiBuZXR3b3JrPXsK
-PiAgICAgc3NpZD0iZWR1cm9hbSIKPiAgICAgcHJvdG89UlNOCj4gICAgIHBhaXJ3aXNlPUNDTVAK
-PiAgICAgZ3JvdXA9Q0NNUAo+ICAgICBrZXlfbWdtdD1XUEEtRUFQCj4gICAgIGVhcD1UVExTCj4g
-ICAgIGRvbWFpbl9zdWZmaXhfbWF0Y2g9IlhYWCIKPiAgICAgcGhhc2UxPSJwZWFwbGFiZWw9MCIK
-PiAgICAgYW5vbnltb3VzX2lkZW50aXR5PSJhbm9ueW1vdXNAWFhYIgo+ICAgICBwaGFzZTI9ImF1
-dGg9UEFQIgo+ICAgICBjYV9jZXJ0PSJYWFgiCj4gICAgIGlkZW50aXR5PSJYWFgiCj4gICAgIHBh
-c3N3b3JkPSJYWFgiCj4gfQo+Cj4+PiB3cGFfc3VwcGxpY2FudCAtaSB3bGFuMCAtRCBubDgwMjEx
-IC1jCj4+PiAvZXRjL3dwYV9zdXBwbGljYW50L3dwYV9zdXBwbGljYW50LmNvbmYKPiBTdWNjZXNz
-ZnVsbHkgaW5pdGlhbGl6ZWQgd3BhX3N1cHBsaWNhbnQKPiB3bGFuMDogU01FOiBUcnlpbmcgdG8g
-YXV0aGVudGljYXRlIHdpdGggWFhYIChTU0lEPSdlZHVyb2FtJyBmcmVxPTUyNDAgTUh6KQo+IHds
-YW4wOiBUcnlpbmcgdG8gYXNzb2NpYXRlIHdpdGggWFhYIChTU0lEPSdlZHVyb2FtJyBmcmVxPTUy
-NDAgTUh6KQo+IHdsYW4wOiBBc3NvY2lhdGVkIHdpdGggWFhYCj4gd2xhbjA6IENUUkwtRVZFTlQt
-RUFQLVNUQVJURUQgRUFQIGF1dGhlbnRpY2F0aW9uIHN0YXJ0ZWQKPiB3bGFuMDogQ1RSTC1FVkVO
-VC1FQVAtUFJPUE9TRUQtTUVUSE9EIHZlbmRvcj0wIG1ldGhvZD0yMQo+IHdsYW4wOiBDVFJMLUVW
-RU5ULUVBUC1NRVRIT0QgRUFQIHZlbmRvciAwIG1ldGhvZCAyMSAoVFRMUykgc2VsZWN0ZWQKPiB3
-bGFuMDogQ1RSTC1FVkVOVC1SRUdET00tQ0hBTkdFIGluaXQ9Q09VTlRSWV9JRSB0eXBlPUNPVU5U
-UlkgYWxwaGEyPVhYWAo+IHdsYW4wOiBDVFJMLUVWRU5ULUVBUC1QRUVSLUNFUlQgZGVwdGg9MyBz
-dWJqZWN0PSdYWFgnCj4gd2xhbjA6IENUUkwtRVZFTlQtRUFQLVBFRVItQ0VSVCBkZXB0aD0yIHN1
-YmplY3Q9J1hYWCcKPiB3bGFuMDogQ1RSTC1FVkVOVC1FQVAtUEVFUi1DRVJUIGRlcHRoPTEgc3Vi
-amVjdD0nWFhYJwo+IHdsYW4wOiBDVFJMLUVWRU5ULUVBUC1QRUVSLUNFUlQgZGVwdGg9MCBzdWJq
-ZWN0PSdYWFgnCj4gd2xhbjA6IENUUkwtRVZFTlQtRUFQLVNVQ0NFU1MgRUFQIGF1dGhlbnRpY2F0
-aW9uIGNvbXBsZXRlZCBzdWNjZXNzZnVsbHkKPiB3bGFuMDogV1BBOiBLZXkgbmVnb3RpYXRpb24g
-Y29tcGxldGVkIHdpdGggWFhYIFtQVEs9Q0NNUCBHVEs9Q0NNUF0KPiB3bGFuMDogQ1RSTC1FVkVO
-VC1DT05ORUNURUQgLSBDb25uZWN0aW9uIHRvIFhYWCBjb21wbGV0ZWQgW2lkPTAgaWRfc3RyPV0K
-PiB3bGFuMDogQ1RSTC1FVkVOVC1ESVNDT05ORUNURUQgYnNzaWQ9WFhYIHJlYXNvbj0yCgpIb3cg
-bG9uZyBpcyBDT05ORUNURUQgYXdheSBmcm9tIERJU0NPTk5FQ1RFRD8gUnVubmluZyB3aXRoICIt
-dCIgc2hvdWxkCmFkZCB0aW1lc3RhbXBzLiBBdCB0aGlzIHBvaW50IEkgd291bGQgc3VnZ2VzdCAi
-LWRkZCIgdG8gZ2V0IHZlcmJvc2UKbG9ncy4KCgo+Pj4gY2F0IC9ldGMvZGhjcC9kaGNsaWVudC5j
-b25mCj4gb3B0aW9uIHJmYzM0NDItY2xhc3NsZXNzLXN0YXRpYy1yb3V0ZXMgY29kZSAxMjEgPSBh
-cnJheSBvZiB1bnNpZ25lZCBpbnRlZ2VyCj4gODsKPiBzdXBlcnNlZGUgZGhjcC1zZXJ2ZXItaWRl
-bnRpZmllciAyNTUuMjU1LjI1NS4yNTU7Cj4gcmVxdWVzdCBzdWJuZXQtbWFzaywgYnJvYWRjYXN0
-LWFkZHJlc3MsIHRpbWUtb2Zmc2V0LCByb3V0ZXJzLCBpbnRlcmZhY2UtbXR1LAo+IHJmYzM0NDIt
-Y2xhc3NsZXNzLXN0YXRpYy1yb3V0ZXM7Cj4gdGltZW91dCAzMDsKPiByZXRyeSAzMDsKPgo+Pj4g
-am91cm5hbGN0bCAtYiB8IGdyZXAgZGhjbGllbnQKPiBOb3YgMTUgMTI6MzI6NTcgYW5kcm9pZDEw
-Mjc4IGRoY2xpZW50Wzg1Ml06IERIQ1BSRVFVRVNUIG9uIHdsYW4wIHRvCj4gMjU1LjI1NS4yNTUu
-MjU1IHBvcnQgNjcKWy4uLl0KPgo+Pj4gdGNwZHVtcCAtaSB3bGFuMAo+IHRjcGR1bXA6IHZlcmJv
-c2Ugb3V0cHV0IHN1cHByZXNzZWQsIHVzZSAtdiBvciAtdnYgZm9yIGZ1bGwgcHJvdG9jb2wgZGVj
-b2RlCj4gbGlzdGVuaW5nIG9uIHdsYW4wLCBsaW5rLXR5cGUgRU4xME1CIChFdGhlcm5ldCksIGNh
-cHR1cmUgc2l6ZSAyNjIxNDQgYnl0ZXMKPiAxMjoyNjozMS43NjUxODggQVJQLCBSZXF1ZXN0IHdo
-by1oYXMgOC44LjguOCB0ZWxsIDE5Mi4xNjguMC4xLCBsZW5ndGggMjgKPiAxMjoyNjozMS43NjUy
-MjcgQVJQLCBSZXF1ZXN0IHdoby1oYXMgOC44LjQuNCB0ZWxsIDE5Mi4xNjguMC4xLCBsZW5ndGgg
-MjgKWy4uLl0KPiAxMjoyNjo1Ny4xODE0ODAgRUFQIHBhY2tldCAoMCkgdjIsIGxlbiA2Cj4gMTI6
-MjY6NTcuMTkyOTk3IEVBUCBwYWNrZXQgKDApIHYyLCBsZW4gMTAyNAo+IDEyOjI2OjU3LjE5MzI1
-MCBFQVAgcGFja2V0ICgwKSB2MiwgbGVuIDYKPiAxMjoyNjo1Ny4yMDM0NDIgRUFQIHBhY2tldCAo
-MCkgdjIsIGxlbiAxMDI0Cj4gMTI6MjY6NTcuMjAzNjkwIEVBUCBwYWNrZXQgKDApIHYyLCBsZW4g
-Ngo+IDEyOjI2OjU3LjIxNDg3NiBFQVAgcGFja2V0ICgwKSB2MiwgbGVuIDQ2MQo+IDEyOjI2OjU3
-LjIyODE2NyBFQVAgcGFja2V0ICgwKSB2MiwgbGVuIDE0MAo+IDEyOjI2OjU3LjIzODEwMSBFQVAg
-cGFja2V0ICgwKSB2MiwgbGVuIDY5Cj4gMTI6MjY6NTcuMjM5Mzk1IEVBUCBwYWNrZXQgKDApIHYy
-LCBsZW4gMTQ0Cj4gMTI6MjY6NTcuMzA5OTQ4IEVBUCBwYWNrZXQgKDApIHYyLCBsZW4gNAo+IDEy
-OjI2OjU3LjMxMDI2MSBFQVBPTCBrZXkgKDMpIHYyLCBsZW4gMTE3Cj4gMTI6MjY6NTcuMzE0NDU1
-IEVBUE9MIGtleSAoMykgdjIsIGxlbiAxMTcKPiAxMjoyNjo1Ny4zMTYxNTEgRUFQT0wga2V5ICgz
-KSB2MiwgbGVuIDE1MQo+IDEyOjI2OjU3LjMxNjQ4NSBFQVBPTCBrZXkgKDMpIHYyLCBsZW4gOTUK
-ClRoaXMgc3VnZ2VzdHMga2V5IGV4Y2hhbmdlIGhhcyBjb21wbGV0ZWQuCgoKPiAxMjoyNjo1Ny4z
-NzkzODggSVAgWFhYLjE1Mi41NC5uZXRiaW9zLW5zID4gWFhYLjE1NS4yNTUubmV0Ymlvcy1uczog
-TkJUIFVEUAo+IFBBQ0tFVCgxMzcpOiBRVUVSWTsgUkVRVUVTVDsgQlJPQURDQVNUCj4gMTI6MjY6
-NTcuMzg4NjYxIElQIFhYWC4xNTQuMjIubmV0Ymlvcy1ucyA+IFhYWC4xNTUuMjU1Lm5ldGJpb3Mt
-bnM6IE5CVCBVRFAKPiBQQUNLRVQoMTM3KTogUVVFUlk7IFJFUVVFU1Q7IEJST0FEQ0FTVApbLi4u
-XQo+IDQ1MiBwYWNrZXRzIGNhcHR1cmVkCj4gODM0OCBwYWNrZXRzIHJlY2VpdmVkIGJ5IGZpbHRl
-cgo+IDc4OTYgcGFja2V0cyBkcm9wcGVkIGJ5IGtlcm5lbCMKCldoYXQgaGFwcGVuZWQgdG8gYWxs
-IHRoZSBwYWNrZXRzPyBBcmUgeW91IHJlYWxseSBydW5uaW5nIGp1c3QKInRjcGR1bXAiIG9yIGFy
-ZSB5b3UgYXBwbHlpbmcgcGNhcCBmaWx0ZXJzIHRoYXQgeW91IGRpZG4ndCBtZW50aW9uPwoKVGhl
-cmUgYXJlIG5vIERIQ1AgcmVxdWVzdHMgc28gZWl0aGVyIGZpcm13YXJlIGlzIHJlZnVzaW5nIHRv
-IHRyYW5zbWl0CnRoZW0gT1RBLCBoYXZlIGJlZW4gZmlsdGVyZWQgYnkga2VybmVsL3RjcGR1bXAg
-b3IgeW91IGhhdmUgc29tZQpmaXJld2FsbCBydWxlIHRoYXQgZHJvcHMgdGhlIHBhY2tldHMuIFRj
-cGR1bXAgZG9lcyByZXBvcnQgc29tZSB0cmFmZmljCndoaWNoIEkgaW5mZXIgaXMganVzdCBSeCBz
-dWdnZXN0aW5nIGNyeXB0byBpcyAoYXQgbGVhc3QgcGFydGlhbGx5KSBzZXQKdXAuIElzIHRoZXJl
-IHNvbWV0aGluZyB5b3UncmUgbm90IHRlbGxpbmcgYWJvdXQgeW91ciBzZXR1cD8KCkNhbiB5b3Ug
-bG9hZCBhdGgxMGtfY29yZSB3aXRoIGRlYnVnX21hc2s9MHhmZmZmZmYzZiBhbmQgcHJvdmlkZSBs
-b2dzPwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+akolli@qti.qualcomm.com wrote:
+> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+> 
+> Per peer tx stats are part of 'HTT_10_4_T2H_MSG_TYPE_PEER_STATS'
+> event, Firmware sends one HTT event for every four PPDUs.
+> HTT payload has success pkts/bytes, failed pkts/bytes, retry
+> pkts/bytes and rate info per ppdu.
+> Peer stats are enabled through 'WMI_SERVICE_PEER_STATS',
+> which are nowadays enabled by default.
+> 
+> Parse peer stats and update the tx rate information per STA.
+> 
+> tx rate, Peer stats are tested on QCA4019 with Firmware version
+> 10.4-3.2.1-00028.
+> 
+> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
+
+I see a new sparse warning:
+
+drivers/net/wireless/ath/ath10k/htt_rx.c:2290:17: warning: incorrect type in assignment (different base types)
+drivers/net/wireless/ath/ath10k/htt_rx.c:2290:17:    expected int [signed] peer_id
+drivers/net/wireless/ath/ath10k/htt_rx.c:2290:17:    got restricted __le16 [usertype] peer_id
+
+2 patches set to Changes Requested.
+
+9381691 [PATCHv2,1/2] ath10k: add per peer htt tx stats support for 10.4
+9381693 [PATCHv2,2/2] ath10k: add support for per sta tx bitrate
+
+-- 
+https://patchwork.kernel.org/patch/9381691/
+
+Documentation about submitting wireless patches and checking status
+from patchwork:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
