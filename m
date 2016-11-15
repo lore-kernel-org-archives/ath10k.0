@@ -1,26 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out05.msg.oleane.net ([62.161.7.3])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6iBm-0007Q7-Gd
- for ath10k@lists.infradead.org; Tue, 15 Nov 2016 18:10:39 +0000
-From: "voncken" <cedric.voncken@acksys.fr>
-References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
- <566849DB.9040901@candelatech.com>
- <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
- <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
- <27f802e7-79c5-a17f-1883-88e62a6520ef@ezplanet.net>
- <CABUTiXUBfHB5RiZ8=ODzrK4-rCBJZ8QqZuZhMK_J7c7haFMEcw@mail.gmail.com>
- <CAGJdtRCKidEfDF7sc4BRGSfOTmcGJUJ4KZt0xU1vj4bGAnuu1Q@mail.gmail.com>
- <c58ffbe0-c305-3282-34e9-98814c6f0d14@candelatech.com>
- <68bd7ebd-b12a-5dbf-a267-5913127718a1@candelatech.com>
- <846c145b-3b15-45ca-249a-040518bc2dad@dd-wrt.com>
- <581DEE2E.3010502@candelatech.com>
-In-Reply-To: <581DEE2E.3010502@candelatech.com>
-Subject: RE: [OpenWrt-Devel] ATH10K VLAN firmware issue
-Date: Tue, 15 Nov 2016 15:37:32 +0100
-Message-ID: <001a01d23f4d$cd1df550$6759dff0$@acksys.fr>
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c6iZH-0004PT-Vz
+ for ath10k@lists.infradead.org; Tue, 15 Nov 2016 18:34:52 +0000
+Received: by mail-wm0-x244.google.com with SMTP id g23so2828241wme.1
+ for <ath10k@lists.infradead.org>; Tue, 15 Nov 2016 10:34:30 -0800 (PST)
+Subject: Re: [RFC 10/12] ath10k: Added QCA65XX hw definition
+References: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
+ <1479141222-8493-11-git-send-email-erik.stromdahl@gmail.com>
+ <CA+BoTQmcyVQDOd2o0YDvepuLbSz76p8hetrWA6mWJeGxvbM8iQ@mail.gmail.com>
+ <87wpg5qai1.fsf@qca.qualcomm.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <0c1172f0-2e3b-6147-646c-adb98b9ea3b7@gmail.com>
+Date: Tue, 15 Nov 2016 19:34:28 +0100
 MIME-Version: 1.0
-Content-Language: fr
+In-Reply-To: <87wpg5qai1.fsf@qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,125 +23,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Ben Greear' <greearb@candelatech.com>
-Cc: 'OpenWrt Development List' <openwrt-devel@lists.openwrt.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-CUhpIEJlbiwgCgoJRG8geW91IHBsYW4gdG8gcmVsZWFzZSBhIGNhbmRlbGF0ZWNoIGZpcm13YXJl
-IHdpdGggdGhpcyBmaXg/CgoJUmVnYXJkcy4KCkNlZHJpYyBWb25ja2VuLgo+IC0tLS0tTWVzc2Fn
-ZSBkJ29yaWdpbmUtLS0tLQo+IERlIDogbGludXgtd2lyZWxlc3Mtb3duZXJAdmdlci5rZXJuZWwu
-b3JnIFttYWlsdG86bGludXgtd2lyZWxlc3MtCj4gb3duZXJAdmdlci5rZXJuZWwub3JnXSBEZSBs
-YSBwYXJ0IGRlIEJlbiBHcmVlYXIKPiBFbnZvecOpIDogc2FtZWRpIDUgbm92ZW1icmUgMjAxNiAx
-NTozNQo+IMOAIDogU2ViYXN0aWFuIEdvdHRzY2hhbGw7IHl1LWNoaWVoIGt1bmc7IEJydW5vIEFu
-dHVuZXMKPiBDYyA6IE1hdXJvIE1venphcmVsbGk7IGxpbnV4LXdpcmVsZXNzQHZnZXIua2VybmVs
-Lm9yZzsgT3BlbldydAo+IERldmVsb3BtZW50IExpc3Q7IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCj4gT2JqZXQgOiBSZTogW09wZW5XcnQtRGV2ZWxdIEFUSDEwSyBWTEFOIGZpcm13YXJlIGlz
-c3VlCj4gCj4gTG9va3MgdG8gbWUgbGlrZSAxMC40IGRlZmF1bHRzIHRvIHRoZSByaWdodCB2YWx1
-ZSwgYnV0IHBvc3NpYmx5IHRoZXJlCj4gYXJlIG90aGVyIGlzc3VlcyB3aXRoIGl0LiAgSSB0ZXN0
-ZWQgbXkgQ1QgMTAuNCBhbmQgaXQgd29ya2VkIE9LIHdpdGgKPiB2bGFucyBmb3IgbWUuCj4gCj4g
-VGhhbmtzLAo+IEJlbgo+IAo+IE9uIDExLzA1LzIwMTYgMDE6MDUgQU0sIFNlYmFzdGlhbiBHb3R0
-c2NoYWxsIHdyb3RlOgo+ID4gd291bGQgYmUgZ29vZCBpZiBxY2EgY2FuIGZpeCB0aGlzIGJ1ZyBm
-aW5hbGx5IGluIGFsbCBhdmFpbGFibGUKPiA+IGZpcm13YXJlcy4gaXRzIGEgdmVyeSBhbm5veWlu
-ZyBpc3N1ZSBzaW5jZSBhIGxvbmcgdGltZQo+ID4KPiA+IFNlYmFzdGlhbgo+ID4KPiA+Cj4gPiBB
-bSAwNC4xMS4yMDE2IHVtIDIzOjIzIHNjaHJpZWIgQmVuIEdyZWVhcjoKPiA+PiBUaGUgYnVnIGFw
-cGVhcnMgdGhhdCB2bGFuLXR4LXN0cmlwcGluZyBpcyB1bmNvbmRpdGlvbmFsbHkgZW5hYmxlZCBp
-bgo+ID4+IGF0IGxlYXN0IG15IGZpcm13YXJlLiAgSSBoYXZlIHJlLWNvbXBpbGVkIHcvb3V0IHRo
-YXQgZmxhZyBzZXQsIGFuZAo+IGl0Cj4gPj4gYXBwZWFycyB0byB3b3JrIGZvciBtZS4KPiA+Pgo+
-ID4+IFBsZWFzZSBkb3dubG9hZCB0aGlzIGZpcm13YXJlLCByZW5hbWUgaXQgZmlybXdhcmUtMi5i
-aW4sIG1ha2Ugc3VyZQo+ID4+IHlvdSByZW1vdmUvcmVuYW1lIGFueSBmaXJtd2FyZS01LmJpbiAo
-ZXRjKSBzbyBtaW5lIHdpbGwgbG9hZCwgYW5kCj4gc2VlIGlmIHRoYXQgZml4ZXMgeW91ciBwcm9i
-bGVtLgo+ID4+Cj4gPj4gUGxlYXNlIG5vdGUgdGhhdCBpdCBpcyB2ZXJ5IGxpa2VseSB5b3Ugd2ls
-bCBoYXZlIHRvIHVzZSBzYW1lIE1BQwo+ID4+IGFkZHJlc3MgZm9yIHRoZSBWTEFOIGRldmljZXMg
-dGhhdCB0aGUgdW5kZXJseWluZyBzdGF0aW9uIHVzZXMgaW4KPiBvcmRlciBmb3IgdGhpcyB0byB3
-b3JrLgo+ID4+Cj4gPj4gaHR0cHM6Ly93d3cuY2FuZGVsYXRlY2guY29tL2Rvd25sb2Fkcy90bXAv
-ZmlybXdhcmUtMi1mdWxsLQo+IGNvbW11bml0eS5iCj4gPj4gaW4KPiA+Pgo+ID4+Cj4gPj4gVGhh
-bmtzLAo+ID4+IEJlbgo+ID4+Cj4gPj4KPiA+PiBPbiAxMS8wNC8yMDE2IDAyOjUwIFBNLCBCZW4g
-R3JlZWFyIHdyb3RlOgo+ID4+PiBJIGNhbiByZXByb2R1Y2UgdGhpcyBpbiBteSBDVCBmaXJtd2Fy
-ZS4gSSdsbCBzZWUgaWYgSSBjYW4gZml4IGl0LAo+ID4+PiBidXQgZm9yIHN0b2NrIGZpcm13YXJl
-LCBpdCBtaWdodCBiZSB0aGF0IGNoYW5naW5nIHRoZSBkcml2ZXIgdG8gdXNlCj4gPj4+IEV0aGVy
-bmV0IHBhY2tldCB0eXBlIG9mIG5hdGl2ZS13aWZpIHdvdWxkIG1ha2UgLjFxIHZsYW5zIHdvcmsu
-Cj4gPj4+Cj4gPj4+IFRoYW5rcywKPiA+Pj4gQmVuCj4gPj4+Cj4gPj4+IE9uIDExLzA0LzIwMTYg
-MTA6MjggQU0sIHl1LWNoaWVoIGt1bmcgd3JvdGU6Cj4gPj4+PiBJIG1ldCB0aGUgc2FtZSBwcm9i
-bGVtIGJlZm9yZSwKPiA+Pj4+IGlmIGkgbW9kaWZ5IHRoZSAxcSBoZWFkZXIgdG8gb3RoZXIgdmFs
-dWUgKDB4YWEwMCkgYmVmb3JlIGdvIGludG8KPiBmaXJtd2FyZS4KPiA+Pj4+IEkgY2FuIGNhcHR1
-cmUgdGhlIHBhY2tldCBpbiB0aGUgYWlyIEkgdGhpbmsgdGhlIHZsYW4gcGFja2V0IGlzCj4gPj4+
-PiBkcm9wcGVkIGluIGZpcm13YXJlLgo+ID4+Pj4KPiA+Pj4+IDIwMTYtMTEtMDQgMjI6NDEgR01U
-KzA4OjAwIEJydW5vIEFudHVuZXMgPGJhYW50dW5lc0BnbWFpbC5jb20+Ogo+ID4+Pj4+IE9uIDQg
-Tm92ZW1iZXIgMjAxNiBhdCAxNDoxOCwgTWF1cm8gTW96emFyZWxsaQo+IDxvcGVud3J0QGV6cGxh
-bmV0Lm5ldD4gd3JvdGU6Cj4gPj4+Pj4+IFNpbmNlIHRoZSBjYXBhYmlsaXR5IGlzIGltcGxlbWVu
-dGVkIGluIHNvZnR3YXJlIHlvdSBtaWdodCBiZQo+ID4+Pj4+PiB0ZXN0aW5nIHRoZSBsaW1pdCBv
-ZiB5b3VyIHJvdXRlcidzIENQVSBpL28gc3BlZWQuCj4gPj4+Pj4KPiA+Pj4+PiBCeSBsb2FkaW5n
-IHRoZSBtb2R1bGUgaW4gcmF3bW9kZT8KPiA+Pj4+Pgo+ID4+Pj4+IFRoZSBBUCBpcyBhbiBBUFUg
-YW5kIFN0YSBpcyBhbiBBUFUyLgo+ID4+Pj4+Cj4gPj4+Pj4+Cj4gPj4+Pj4+Cj4gPj4+Pj4+Cj4g
-Pj4+Pj4+IE9uIDA0LzExLzE2IDE0OjEzLCBCcnVubyBBbnR1bmVzIHdyb3RlOgo+ID4+Pj4+Pj4K
-PiA+Pj4+Pj4+IEhpIGFsbCwKPiA+Pj4+Pj4+Cj4gPj4+Pj4+PiBPbGQgdGhyZWFkIGJ1dCBJIHRo
-aW5rIHRoZSBpc3N1ZSBpcyBzdGlsbCBwcmVzZW50Lgo+ID4+Pj4+Pj4KPiA+Pj4+Pj4+IEknbSBy
-dW5uaW5nIGEgc2V0dXAgd2l0aCBWTEFOcyB3aXRoIFdEUyBhbmQgYXRoMTBrIGNhcmRzLgo+ID4+
-Pj4+Pj4KPiA+Pj4+Pj4+IFRvIG1ha2UgaXQgd29yayBib3RoIGNhcmRzIG11c3QgYmUgbG9hZGVk
-IGluIHJhd21vZGUsIEFQIGFuZAo+ID4+Pj4+Pj4gU3RhLCBhbmQgd2l0aCBubyBzZWN1cml0eS4K
-PiA+Pj4+Pj4+Cj4gPj4+Pj4+PiBJJ20gdXNpbmcgYSBPcGVuV3J0IHRydW5rIHI0OTk0MSBhbmQg
-dGhlIG1vc3QgcmVjZW50IGZpcm13YXJlLAo+ID4+Pj4+Pj4gMTAuMi40LjcwLjU4LCBmcm9tIEth
-bGxlIGF0aDEwayBmaXJtd2FyZSB0cmVlLgo+ID4+Pj4+Pj4KPiA+Pj4+Pj4+IEFsdGhvdWdoIGl0
-IHdvcmtzIHRoZSB0aHJvdWdocHV0IGlzIHZlcnkgYmFkLgo+ID4+Pj4+Pj4gQXJlIHRoZXJlIGFu
-eSBhbHRlcm5hdGl2ZXMgdG8gaW1wcm92ZSB0aGUgdGhyb3VnaHB1dC4KPiA+Pj4+Pj4+Cj4gPj4+
-Pj4+PiBCZXN0IFJlZ2FyZHMsCj4gPj4+Pj4+PiBCcnVubwo+ID4+Pj4+Pj4KPiA+Pj4+Pj4+IE9u
-IDkgRGVjZW1iZXIgMjAxNSBhdCAxNzoyNCwgdm9uY2tlbiA8Y2VkcmljLnZvbmNrZW5AYWNrc3lz
-LmZyPgo+IHdyb3RlOgo+ID4+Pj4+Pj4+Cj4gPj4+Pj4+Pj4KPiA+Pj4+Pj4+Pj4gLS0tLS1NZXNz
-YWdlIGQnb3JpZ2luZS0tLS0tCj4gPj4+Pj4+Pj4+IERlIDogQmVuIEdyZWVhciBbbWFpbHRvOmdy
-ZWVhcmJAY2FuZGVsYXRlY2guY29tXSBFbnZvecOpIDoKPiA+Pj4+Pj4+Pj4gbWVyY3JlZGkgOSBk
-w6ljZW1icmUgMjAxNSAxNjozNCDDgCA6IENlZHJpYyBWT05DS0VOOwo+ID4+Pj4+Pj4+PiBhdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXgtd2lyZWxlc3MgT2JqZXQgOiBSZTogQVRIMTBL
-Cj4gPj4+Pj4+Pj4+IFZMQU4gZmlybXdhcmUgaXNzdWUKPiA+Pj4+Pj4+Pj4KPiA+Pj4+Pj4+Pj4g
-VGhpcyBvbmx5IGhhcHBlbnMgd2hlbiB5b3UgdXNlIFNUQSAgKyBXRFMsIG9yIGlzIC4xcSBicm9r
-ZW4KPiA+Pj4+Pj4+Pj4gZm9yIHlvdSBpbiBvdGhlciBjYXNlcyBhcyB3ZWxsPwo+ID4+Pj4+Pj4+
-Cj4gPj4+Pj4+Pj4gTm8sIHRoaXMgaXNzdWUgb2NjdXJzIGluIGFsbCBtb2RlcyAoU1RBLCBTVEEg
-KyBXRFMsIEFQKS4KPiA+Pj4+Pj4+Pgo+ID4+Pj4+Pj4+IFRoYW5rcwo+ID4+Pj4+Pj4+Cj4gPj4+
-Pj4+Pj4gQ2VkcmljLgo+ID4+Pj4+Pj4+Cj4gPj4+Pj4+Pj4+IFRoYW5rcywKPiA+Pj4+Pj4+Pj4g
-QmVuCj4gPj4+Pj4+Pj4+Cj4gPj4+Pj4+Pj4+IE9uIDEyLzA4LzIwMTUgMDY6MjkgQU0sIENlZHJp
-YyBWT05DS0VOIHdyb3RlOgo+ID4+Pj4+Pj4+Pj4KPiA+Pj4+Pj4+Pj4+ICAgICAgSSdtIHRlc3Rp
-bmcgdG8gdHJhbnNtaXQgZnJhbWUgd2l0aCA4MDIuMXEgdGFnIChWTEFOKS4KPiA+Pj4+Pj4+Pj4+
-Cj4gPj4+Pj4+Pj4+PiAgICAgIE15IGNsaWVudCBpcyBzZXQgaW4gU1RBICsgV0RTIGFuZCB0aGUg
-bmV0ZGV2IGlzIGJyaWRnZWQKPiB3aXRoIGV0aDAuCj4gPj4+Pj4+Pj4+PiAgICAgIEkgaGF2ZSBh
-IGNvbXB1dGVyIHdpdGggdmxhbiBjb25maWd1cmF0aW9uIHNldCBjb25uZWN0ZWQKPiA+Pj4+Pj4+
-Pj4+IHRvIHRoZSBTVEEgZXRoMC4KPiA+Pj4+Pj4+Pj4+Cj4gPj4+Pj4+Pj4+PiAgICAgIElmIEkg
-dHJ5IHRvIHRyYW5zbWl0IGZyYW1lcyB3aXRoIDgwMi4xcSB0YWcsIHRoZSBmcmFtZXMKPiA+Pj4+
-Pj4+Pj4+IGFyZSBub3QKPiA+Pj4+Pj4+Pgo+ID4+Pj4+Pj4+IHNlbnQuCj4gPj4+Pj4+Pj4+Pgo+
-ID4+Pj4+Pj4+Pj4gICAgICBJIGNoZWNrZWQgd2l0aCB3aXJlbGVzcyBzbmlmZmVyLCBhbmQgSSBk
-b24ndCBzZWUgdGhlCj4gPj4+Pj4+Pj4+PiBmcmFtZSB3aXRoIFZMQU4gdGFnICh0aGUgZnJhbWVz
-IHdpdGhvdXQgVkxBTiB0YWcgYXJlIHNlbnQpLgo+ID4+Pj4+Pj4+Pj4KPiA+Pj4+Pj4+Pj4+ICAg
-ICAgSSB0ZXN0ZWQgd2l0aCBmaXJtd2FyZSAxMC4yLjQuNzAuMTQtMiBmcm9tIGthbGUgZ2l0aHVi
-LAo+ID4+Pj4+Pj4+Pj4gMTAuMS40NjctY3QtY29tLWZ1bGwtMDE1IGZyb20gY2FuZGVsYXRlY2gg
-YW5kIDEwLjIuNC43MC0yCj4gPj4+Pj4+Pj4+PiBmcm9tIG9wZW53cnQsIGFuZCBpbiBhbGwgY2Fz
-ZXMgSSBoYXZlIHRoZSBzYW1lIGlzc3VlLgo+ID4+Pj4+Pj4+Pj4KPiA+Pj4+Pj4+Pj4+ICAgICAg
-VGhhbmtzIGZvciB5b3VyIGhlbHAuCj4gPj4+Pj4+Pj4+Pgo+ID4+Pj4+Pj4+Pj4KPiA+Pj4+Pj4+
-Pj4+IC0tCj4gPj4+Pj4+Pj4+PiBUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0
-aGUgbGluZSAidW5zdWJzY3JpYmUKPiA+Pj4+Pj4+Pj4+IGxpbnV4LXdpcmVsZXNzIiBpbiB0aGUg
-Ym9keSBvZiBhIG1lc3NhZ2UgdG8KPiA+Pj4+Pj4+Pj4+IG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5v
-cmcgTW9yZSBtYWpvcmRvbW8gaW5mbyBhdAo+ID4+Pj4+Pj4+Pj4gaHR0cDovL3ZnZXIua2VybmVs
-Lm9yZy9tYWpvcmRvbW8taW5mby5odG1sCj4gPj4+Pj4+Pj4+Pgo+ID4+Pj4+Pj4+PiAtLQo+ID4+
-Pj4+Pj4+PiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gQ2FuZGVsYSBUZWNo
-bm9sb2dpZXMgSW5jCj4gPj4+Pj4+Pj4+IGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCj4gPj4+
-Pj4+Pj4KPiA+Pj4+Pj4+PiAtLQo+ID4+Pj4+Pj4+IFRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBs
-aXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZQo+IGxpbnV4LXdpcmVsZXNzIgo+ID4+Pj4+
-Pj4+IGluCj4gPj4+Pj4+Pj4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2Vy
-Lmtlcm5lbC5vcmcgTW9yZQo+ID4+Pj4+Pj4+IG1ham9yZG9tbyBpbmZvIGF0IGh0dHA6Ly92Z2Vy
-Lmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbAo+ID4+Pj4+Pj4KPiA+Pj4+Pj4+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPj4+Pj4+PiBvcGVu
-d3J0LWRldmVsIG1haWxpbmcgbGlzdAo+ID4+Pj4+Pj4gb3BlbndydC1kZXZlbEBsaXN0cy5vcGVu
-d3J0Lm9yZwo+ID4+Pj4+Pj4gaHR0cHM6Ly9saXN0cy5vcGVud3J0Lm9yZy9jZ2ktYmluL21haWxt
-YW4vbGlzdGluZm8vb3BlbndydC0KPiBkZXZlbAo+ID4+Pj4+Pgo+ID4+Pj4+PiBfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4+Pj4+PiBvcGVud3J0LWRl
-dmVsIG1haWxpbmcgbGlzdAo+ID4+Pj4+PiBvcGVud3J0LWRldmVsQGxpc3RzLm9wZW53cnQub3Jn
-Cj4gPj4+Pj4+IGh0dHBzOi8vbGlzdHMub3BlbndydC5vcmcvY2dpLWJpbi9tYWlsbWFuL2xpc3Rp
-bmZvL29wZW53cnQtZGV2ZWwKPiA+Pj4+Pgo+ID4+Pj4+IF9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCj4gPj4+Pj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+ID4+
-Pj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gPj4+Pj4gaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPiA+Pj4+Cj4gPj4+Cj4gPj4+Cj4gPj4K
-PiA+Pgo+ID4KPiA+Cj4gCj4gLS0KPiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4KPiBDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29t
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
-IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+
+
+On 11/15/2016 11:54 AM, Valo, Kalle wrote:
+> Michal Kazior <michal.kazior@tieto.com> writes:
+> 
+>> On 14 November 2016 at 17:33, Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
+>>> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+>>> ---
+>>>  drivers/net/wireless/ath/ath10k/hw.h |    1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+>>> index 46142e9..ef45ecf 100644
+>>> --- a/drivers/net/wireless/ath/ath10k/hw.h
+>>> +++ b/drivers/net/wireless/ath/ath10k/hw.h
+>>> @@ -224,6 +224,7 @@ enum ath10k_hw_rev {
+>>>         ATH10K_HW_QCA9377,
+>>>         ATH10K_HW_QCA4019,
+>>>         ATH10K_HW_QCA9887,
+>>> +       ATH10K_HW_QCA65XX,
+>>
+>> Are you 100% positive that you're supporting all QCA65XX chips? The
+>> rule of thumb is to avoid Xs as much as possible unless totally
+>> perfectly completely sure.
+> 
+I admit that I am definitely not totally perfectly completely sure about
+this :)
+In fact, I don't have a clue what does numbers really mean. All I know
+is that the chipset I am using is called QCA6584 which I think is an
+automotive version of another chipses called QCA6574. I have tried to
+google these numbers up, but it is really hard to find anything useful.
+So I thought, hey, why don't I just add a few X'es in there and I have
+support for both!
+
+> But the thing is that nobody can't be absolutely sure as we never know
+> what marketing comes up within few years again. So I would say that XX
+> in chip names should be completely avoided to avoid any confusion. We
+> already suffer from this in ath10k with QCA988X and QCA9888 which are
+> different designs but the names overlap.
+> 
+> I haven't reviewed Erik's patches yet but I'm surprised why even a new
+> enum value is needed here. I was assuming we could use ATH10K_HW_QCA6174
+> because AFAIK they share the same design. Any particular reason for
+> this?
+> 
+The reason for this was that the switch(hw_rev)-statement in
+ath10k_core_create assigns ar->regs and ar->hw_values to structures
+containing values that are not applicable for SDIO. I though that I
+would potentially need other structures, but after investigating the
+qca6174_regs struct, it seems that the values that are applicable for
+SDIO are the same.
+I will remove this enum and use ATH10K_HW_QCA6174 instead as you
+propose. If for some reason I would need other regs and hw_values
+structs in the future, we can figure out appropriate names then.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
