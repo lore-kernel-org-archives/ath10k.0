@@ -1,28 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6fQA-0008Pt-RQ
- for ath10k@lists.infradead.org; Tue, 15 Nov 2016 15:13:15 +0000
-Message-ID: <582B2482.8060707@candelatech.com>
-Date: Tue, 15 Nov 2016 07:06:42 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c6gjE-0003OP-Ls
+ for ath10k@lists.infradead.org; Tue, 15 Nov 2016 16:37:03 +0000
+From: <akolli@qti.qualcomm.com>
+Subject: [PATCHv3 1/2] ath10k: add per peer htt tx stats support for 10.4
+Date: Tue, 15 Nov 2016 22:07:29 +0530
+Message-ID: <1479227849-10042-1-git-send-email-akolli@qti.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
-References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
- <566849DB.9040901@candelatech.com>
- <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
- <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
- <27f802e7-79c5-a17f-1883-88e62a6520ef@ezplanet.net>
- <CABUTiXUBfHB5RiZ8=ODzrK4-rCBJZ8QqZuZhMK_J7c7haFMEcw@mail.gmail.com>
- <CAGJdtRCKidEfDF7sc4BRGSfOTmcGJUJ4KZt0xU1vj4bGAnuu1Q@mail.gmail.com>
- <c58ffbe0-c305-3282-34e9-98814c6f0d14@candelatech.com>
- <68bd7ebd-b12a-5dbf-a267-5913127718a1@candelatech.com>
- <846c145b-3b15-45ca-249a-040518bc2dad@dd-wrt.com>
- <581DEE2E.3010502@candelatech.com>
- <001a01d23f4d$cd1df550$6759dff0$@acksys.fr>
- <582B21DD.6000306@candelatech.com>
- <CABUTiXWRkzyV_ic02pUTHG8TbzQUOOYj0L35wMYFcBRgssG0eA@mail.gmail.com>
-In-Reply-To: <CABUTiXWRkzyV_ic02pUTHG8TbzQUOOYj0L35wMYFcBRgssG0eA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,158 +16,325 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bruno Antunes <baantunes@gmail.com>
-Cc: OpenWrt Development List <openwrt-devel@lists.openwrt.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, voncken <cedric.voncken@acksys.fr>
+To: ath10k@lists.infradead.org
+Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wireless@vger.kernel.org
 
-CgpPbiAxMS8xNS8yMDE2IDA3OjAwIEFNLCBCcnVubyBBbnR1bmVzIHdyb3RlOgo+IE9uIDE1IE5v
-dmVtYmVyIDIwMTYgYXQgMTQ6NTUsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29t
-PiB3cm90ZToKPj4gVGhlIGJldGEtMTggcmVsZWFzZSBvbiBteSB3ZWIgcGFnZSBoYXMgdGhlIGZp
-eCBhbmQgc2hvdWxkIHdvcmsgZmluZS4KPj4KPj4gUHJvYmFibHkgc29vbiBJIHdpbGwgcHJvbW90
-ZSB0aGUgYmV0YS0xOCB0byBmaW5hbCByZWxlYXNlCj4+IHN0YXR1cy4gIEFueSBoZWxwIGluIHRl
-c3RpbmcgYW5kIHZlcmlmeWluZyB0aGUgYmV0YSB3b3JrcyB3ZWxsCj4+IGlzIHdlbGNvbWUuCj4K
-PiBJIHdpbGwgYWxzbyBkbyB0ZXN0aW5nIHdpdGggdGhhdCB2ZXJzaW9uLgo+Cj4gRm9yIGNsYXJp
-dHkgY2FuIEkgcmVmZXIgeW91IGFuZCB5b3VyIGZpcm13YXJlIHJlbGVhc2VzIGluIHRoZSBidWcg
-cmVwb3J0PwoKSXQgaXMgZmluZSBieSBtZS4gIEl0IGlzIGEgb25lLWxpbmUgcGF0Y2ggdG8gZml4
-IHRoZSBmaXJtd2FyZS4uLlFDQQpjYW4gYXNrIG1lIGFzIHdlbGwgaWYgdGhleSBkb24ndCBmaWd1
-cmUgaXQgb3V0IG9uIHRoZWlyIG93bi4KClRoYW5rcywKQmVuCgo+Cj4gVGhhbmtzLAo+IEJydW5v
-Cj4+Cj4+IFRoYW5rcywKPj4gQmVuCj4+Cj4+IE9uIDExLzE1LzIwMTYgMDY6MzcgQU0sIHZvbmNr
-ZW4gd3JvdGU6Cj4+Pgo+Pj4gICAgICAgICAgSGkgQmVuLAo+Pj4KPj4+ICAgICAgICAgIERvIHlv
-dSBwbGFuIHRvIHJlbGVhc2UgYSBjYW5kZWxhdGVjaCBmaXJtd2FyZSB3aXRoIHRoaXMgZml4Pwo+
-Pj4KPj4+ICAgICAgICAgIFJlZ2FyZHMuCj4+Pgo+Pj4gQ2VkcmljIFZvbmNrZW4uCj4+Pj4KPj4+
-PiAtLS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0KPj4+PiBEZSA6IGxpbnV4LXdpcmVsZXNzLW93
-bmVyQHZnZXIua2VybmVsLm9yZyBbbWFpbHRvOmxpbnV4LXdpcmVsZXNzLQo+Pj4+IG93bmVyQHZn
-ZXIua2VybmVsLm9yZ10gRGUgbGEgcGFydCBkZSBCZW4gR3JlZWFyCj4+Pj4gRW52b3nDqSA6IHNh
-bWVkaSA1IG5vdmVtYnJlIDIwMTYgMTU6MzUKPj4+PiDDgCA6IFNlYmFzdGlhbiBHb3R0c2NoYWxs
-OyB5dS1jaGllaCBrdW5nOyBCcnVubyBBbnR1bmVzCj4+Pj4gQ2MgOiBNYXVybyBNb3p6YXJlbGxp
-OyBsaW51eC13aXJlbGVzc0B2Z2VyLmtlcm5lbC5vcmc7IE9wZW5XcnQKPj4+PiBEZXZlbG9wbWVu
-dCBMaXN0OyBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+Pj4+IE9iamV0IDogUmU6IFtPcGVu
-V3J0LURldmVsXSBBVEgxMEsgVkxBTiBmaXJtd2FyZSBpc3N1ZQo+Pj4+Cj4+Pj4KPj4+PiBMb29r
-cyB0byBtZSBsaWtlIDEwLjQgZGVmYXVsdHMgdG8gdGhlIHJpZ2h0IHZhbHVlLCBidXQgcG9zc2li
-bHkgdGhlcmUKPj4+PiBhcmUgb3RoZXIgaXNzdWVzIHdpdGggaXQuICBJIHRlc3RlZCBteSBDVCAx
-MC40IGFuZCBpdCB3b3JrZWQgT0sgd2l0aAo+Pj4+IHZsYW5zIGZvciBtZS4KPj4+Pgo+Pj4+IFRo
-YW5rcywKPj4+PiBCZW4KPj4+Pgo+Pj4+IE9uIDExLzA1LzIwMTYgMDE6MDUgQU0sIFNlYmFzdGlh
-biBHb3R0c2NoYWxsIHdyb3RlOgo+Pj4+Pgo+Pj4+PiB3b3VsZCBiZSBnb29kIGlmIHFjYSBjYW4g
-Zml4IHRoaXMgYnVnIGZpbmFsbHkgaW4gYWxsIGF2YWlsYWJsZQo+Pj4+PiBmaXJtd2FyZXMuIGl0
-cyBhIHZlcnkgYW5ub3lpbmcgaXNzdWUgc2luY2UgYSBsb25nIHRpbWUKPj4+Pj4KPj4+Pj4gU2Vi
-YXN0aWFuCj4+Pj4+Cj4+Pj4+Cj4+Pj4+IEFtIDA0LjExLjIwMTYgdW0gMjM6MjMgc2NocmllYiBC
-ZW4gR3JlZWFyOgo+Pj4+Pj4KPj4+Pj4+IFRoZSBidWcgYXBwZWFycyB0aGF0IHZsYW4tdHgtc3Ry
-aXBwaW5nIGlzIHVuY29uZGl0aW9uYWxseSBlbmFibGVkIGluCj4+Pj4+PiBhdCBsZWFzdCBteSBm
-aXJtd2FyZS4gIEkgaGF2ZSByZS1jb21waWxlZCB3L291dCB0aGF0IGZsYWcgc2V0LCBhbmQKPj4+
-Pgo+Pj4+IGl0Cj4+Pj4+Pgo+Pj4+Pj4gYXBwZWFycyB0byB3b3JrIGZvciBtZS4KPj4+Pj4+Cj4+
-Pj4+PiBQbGVhc2UgZG93bmxvYWQgdGhpcyBmaXJtd2FyZSwgcmVuYW1lIGl0IGZpcm13YXJlLTIu
-YmluLCBtYWtlIHN1cmUKPj4+Pj4+IHlvdSByZW1vdmUvcmVuYW1lIGFueSBmaXJtd2FyZS01LmJp
-biAoZXRjKSBzbyBtaW5lIHdpbGwgbG9hZCwgYW5kCj4+Pj4KPj4+PiBzZWUgaWYgdGhhdCBmaXhl
-cyB5b3VyIHByb2JsZW0uCj4+Pj4+Pgo+Pj4+Pj4KPj4+Pj4+IFBsZWFzZSBub3RlIHRoYXQgaXQg
-aXMgdmVyeSBsaWtlbHkgeW91IHdpbGwgaGF2ZSB0byB1c2Ugc2FtZSBNQUMKPj4+Pj4+IGFkZHJl
-c3MgZm9yIHRoZSBWTEFOIGRldmljZXMgdGhhdCB0aGUgdW5kZXJseWluZyBzdGF0aW9uIHVzZXMg
-aW4KPj4+Pgo+Pj4+IG9yZGVyIGZvciB0aGlzIHRvIHdvcmsuCj4+Pj4+Pgo+Pj4+Pj4KPj4+Pj4+
-IGh0dHBzOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbS9kb3dubG9hZHMvdG1wL2Zpcm13YXJlLTItZnVs
-bC0KPj4+Pgo+Pj4+IGNvbW11bml0eS5iCj4+Pj4+Pgo+Pj4+Pj4gaW4KPj4+Pj4+Cj4+Pj4+Pgo+
-Pj4+Pj4gVGhhbmtzLAo+Pj4+Pj4gQmVuCj4+Pj4+Pgo+Pj4+Pj4KPj4+Pj4+IE9uIDExLzA0LzIw
-MTYgMDI6NTAgUE0sIEJlbiBHcmVlYXIgd3JvdGU6Cj4+Pj4+Pj4KPj4+Pj4+PiBJIGNhbiByZXBy
-b2R1Y2UgdGhpcyBpbiBteSBDVCBmaXJtd2FyZS4gSSdsbCBzZWUgaWYgSSBjYW4gZml4IGl0LAo+
-Pj4+Pj4+IGJ1dCBmb3Igc3RvY2sgZmlybXdhcmUsIGl0IG1pZ2h0IGJlIHRoYXQgY2hhbmdpbmcg
-dGhlIGRyaXZlciB0byB1c2UKPj4+Pj4+PiBFdGhlcm5ldCBwYWNrZXQgdHlwZSBvZiBuYXRpdmUt
-d2lmaSB3b3VsZCBtYWtlIC4xcSB2bGFucyB3b3JrLgo+Pj4+Pj4+Cj4+Pj4+Pj4gVGhhbmtzLAo+
-Pj4+Pj4+IEJlbgo+Pj4+Pj4+Cj4+Pj4+Pj4gT24gMTEvMDQvMjAxNiAxMDoyOCBBTSwgeXUtY2hp
-ZWgga3VuZyB3cm90ZToKPj4+Pj4+Pj4KPj4+Pj4+Pj4gSSBtZXQgdGhlIHNhbWUgcHJvYmxlbSBi
-ZWZvcmUsCj4+Pj4+Pj4+IGlmIGkgbW9kaWZ5IHRoZSAxcSBoZWFkZXIgdG8gb3RoZXIgdmFsdWUg
-KDB4YWEwMCkgYmVmb3JlIGdvIGludG8KPj4+Pgo+Pj4+IGZpcm13YXJlLgo+Pj4+Pj4+Pgo+Pj4+
-Pj4+PiBJIGNhbiBjYXB0dXJlIHRoZSBwYWNrZXQgaW4gdGhlIGFpciBJIHRoaW5rIHRoZSB2bGFu
-IHBhY2tldCBpcwo+Pj4+Pj4+PiBkcm9wcGVkIGluIGZpcm13YXJlLgo+Pj4+Pj4+Pgo+Pj4+Pj4+
-PiAyMDE2LTExLTA0IDIyOjQxIEdNVCswODowMCBCcnVubyBBbnR1bmVzIDxiYWFudHVuZXNAZ21h
-aWwuY29tPjoKPj4+Pj4+Pj4+Cj4+Pj4+Pj4+PiBPbiA0IE5vdmVtYmVyIDIwMTYgYXQgMTQ6MTgs
-IE1hdXJvIE1venphcmVsbGkKPj4+Pgo+Pj4+IDxvcGVud3J0QGV6cGxhbmV0Lm5ldD4gd3JvdGU6
-Cj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+PiBTaW5jZSB0aGUgY2FwYWJpbGl0eSBpcyBpbXBsZW1lbnRl
-ZCBpbiBzb2Z0d2FyZSB5b3UgbWlnaHQgYmUKPj4+Pj4+Pj4+PiB0ZXN0aW5nIHRoZSBsaW1pdCBv
-ZiB5b3VyIHJvdXRlcidzIENQVSBpL28gc3BlZWQuCj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4KPj4+Pj4+
-Pj4+IEJ5IGxvYWRpbmcgdGhlIG1vZHVsZSBpbiByYXdtb2RlPwo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+
-IFRoZSBBUCBpcyBhbiBBUFUgYW5kIFN0YSBpcyBhbiBBUFUyLgo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+
-Pgo+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+PiBPbiAwNC8xMS8xNiAxNDoxMywgQnJ1
-bm8gQW50dW5lcyB3cm90ZToKPj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4gSGkg
-YWxsLAo+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+PiBPbGQgdGhyZWFkIGJ1dCBJIHRoaW5rIHRoZSBp
-c3N1ZSBpcyBzdGlsbCBwcmVzZW50Lgo+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+PiBJJ20gcnVubmlu
-ZyBhIHNldHVwIHdpdGggVkxBTnMgd2l0aCBXRFMgYW5kIGF0aDEwayBjYXJkcy4KPj4+Pj4+Pj4+
-Pj4KPj4+Pj4+Pj4+Pj4gVG8gbWFrZSBpdCB3b3JrIGJvdGggY2FyZHMgbXVzdCBiZSBsb2FkZWQg
-aW4gcmF3bW9kZSwgQVAgYW5kCj4+Pj4+Pj4+Pj4+IFN0YSwgYW5kIHdpdGggbm8gc2VjdXJpdHku
-Cj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+IEknbSB1c2luZyBhIE9wZW5XcnQgdHJ1bmsgcjQ5OTQx
-IGFuZCB0aGUgbW9zdCByZWNlbnQgZmlybXdhcmUsCj4+Pj4+Pj4+Pj4+IDEwLjIuNC43MC41OCwg
-ZnJvbSBLYWxsZSBhdGgxMGsgZmlybXdhcmUgdHJlZS4KPj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4g
-QWx0aG91Z2ggaXQgd29ya3MgdGhlIHRocm91Z2hwdXQgaXMgdmVyeSBiYWQuCj4+Pj4+Pj4+Pj4+
-IEFyZSB0aGVyZSBhbnkgYWx0ZXJuYXRpdmVzIHRvIGltcHJvdmUgdGhlIHRocm91Z2hwdXQuCj4+
-Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+IEJlc3QgUmVnYXJkcywKPj4+Pj4+Pj4+Pj4gQnJ1bm8KPj4+
-Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4gT24gOSBEZWNlbWJlciAyMDE1IGF0IDE3OjI0LCB2b25ja2Vu
-IDxjZWRyaWMudm9uY2tlbkBhY2tzeXMuZnI+Cj4+Pj4KPj4+PiB3cm90ZToKPj4+Pj4+Pj4+Pj4+
-Cj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4+PiAtLS0tLU1lc3NhZ2UgZCdv
-cmlnaW5lLS0tLS0KPj4+Pj4+Pj4+Pj4+PiBEZSA6IEJlbiBHcmVlYXIgW21haWx0bzpncmVlYXJi
-QGNhbmRlbGF0ZWNoLmNvbV0gRW52b3nDqSA6Cj4+Pj4+Pj4+Pj4+Pj4gbWVyY3JlZGkgOSBkw6lj
-ZW1icmUgMjAxNSAxNjozNCDDgCA6IENlZHJpYyBWT05DS0VOOwo+Pj4+Pj4+Pj4+Pj4+IGF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC13aXJlbGVzcyBPYmpldCA6IFJlOiBBVEgxMEsK
-Pj4+Pj4+Pj4+Pj4+PiBWTEFOIGZpcm13YXJlIGlzc3VlCj4+Pj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+
-Pj4+PiBUaGlzIG9ubHkgaGFwcGVucyB3aGVuIHlvdSB1c2UgU1RBICArIFdEUywgb3IgaXMgLjFx
-IGJyb2tlbgo+Pj4+Pj4+Pj4+Pj4+IGZvciB5b3UgaW4gb3RoZXIgY2FzZXMgYXMgd2VsbD8KPj4+
-Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4gTm8sIHRoaXMgaXNzdWUgb2NjdXJz
-IGluIGFsbCBtb2RlcyAoU1RBLCBTVEEgKyBXRFMsIEFQKS4KPj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+
-Pj4+PiBUaGFua3MKPj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+PiBDZWRyaWMuCj4+Pj4+Pj4+Pj4+
-Pgo+Pj4+Pj4+Pj4+Pj4+IFRoYW5rcywKPj4+Pj4+Pj4+Pj4+PiBCZW4KPj4+Pj4+Pj4+Pj4+Pgo+
-Pj4+Pj4+Pj4+Pj4+IE9uIDEyLzA4LzIwMTUgMDY6MjkgQU0sIENlZHJpYyBWT05DS0VOIHdyb3Rl
-Ogo+Pj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4+PiAgICAgICAgSSdt
-IHRlc3RpbmcgdG8gdHJhbnNtaXQgZnJhbWUgd2l0aCA4MDIuMXEgdGFnIChWTEFOKS4KPj4+Pj4+
-Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4+Pj4gICAgICAgIE15IGNsaWVudCBpcyBzZXQgaW4gU1RBICsg
-V0RTIGFuZCB0aGUgbmV0ZGV2IGlzIGJyaWRnZWQKPj4+Pgo+Pj4+IHdpdGggZXRoMC4KPj4+Pj4+
-Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4+Pj4gICAgICAgIEkgaGF2ZSBhIGNvbXB1dGVyIHdpdGggdmxh
-biBjb25maWd1cmF0aW9uIHNldCBjb25uZWN0ZWQKPj4+Pj4+Pj4+Pj4+Pj4gdG8gdGhlIFNUQSBl
-dGgwLgo+Pj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4+PiAgICAgICAgSWYgSSB0cnkgdG8gdHJh
-bnNtaXQgZnJhbWVzIHdpdGggODAyLjFxIHRhZywgdGhlIGZyYW1lcwo+Pj4+Pj4+Pj4+Pj4+PiBh
-cmUgbm90Cj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4+IHNlbnQuCj4+Pj4+
-Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+Pj4+ICAgICAgICBJIGNoZWNrZWQg
-d2l0aCB3aXJlbGVzcyBzbmlmZmVyLCBhbmQgSSBkb24ndCBzZWUgdGhlCj4+Pj4+Pj4+Pj4+Pj4+
-IGZyYW1lIHdpdGggVkxBTiB0YWcgKHRoZSBmcmFtZXMgd2l0aG91dCBWTEFOIHRhZyBhcmUgc2Vu
-dCkuCj4+Pj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+Pj4+ICAgICAgICBJIHRlc3RlZCB3aXRoIGZp
-cm13YXJlIDEwLjIuNC43MC4xNC0yIGZyb20ga2FsZSBnaXRodWIsCj4+Pj4+Pj4+Pj4+Pj4+IDEw
-LjEuNDY3LWN0LWNvbS1mdWxsLTAxNSBmcm9tIGNhbmRlbGF0ZWNoIGFuZCAxMC4yLjQuNzAtMgo+
-Pj4+Pj4+Pj4+Pj4+PiBmcm9tIG9wZW53cnQsIGFuZCBpbiBhbGwgY2FzZXMgSSBoYXZlIHRoZSBz
-YW1lIGlzc3VlLgo+Pj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4+PiAgICAgICAgVGhhbmtzIGZv
-ciB5b3VyIGhlbHAuCj4+Pj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+Pj4+
-IC0tCj4+Pj4+Pj4+Pj4+Pj4+IFRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRo
-ZSBsaW5lICJ1bnN1YnNjcmliZQo+Pj4+Pj4+Pj4+Pj4+PiBsaW51eC13aXJlbGVzcyIgaW4gdGhl
-IGJvZHkgb2YgYSBtZXNzYWdlIHRvCj4+Pj4+Pj4+Pj4+Pj4+IG1ham9yZG9tb0B2Z2VyLmtlcm5l
-bC5vcmcgTW9yZSBtYWpvcmRvbW8gaW5mbyBhdAo+Pj4+Pj4+Pj4+Pj4+PiBodHRwOi8vdmdlci5r
-ZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwKPj4+Pj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4+
-PiAtLQo+Pj4+Pj4+Pj4+Pj4+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiBD
-YW5kZWxhIFRlY2hub2xvZ2llcyBJbmMKPj4+Pj4+Pj4+Pj4+PiBodHRwOi8vd3d3LmNhbmRlbGF0
-ZWNoLmNvbQo+Pj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+PiAtLQo+Pj4+Pj4+
-Pj4+Pj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vi
-c2NyaWJlCj4+Pj4KPj4+PiBsaW51eC13aXJlbGVzcyIKPj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+
-PiBpbgo+Pj4+Pj4+Pj4+Pj4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2Vy
-Lmtlcm5lbC5vcmcgTW9yZQo+Pj4+Pj4+Pj4+Pj4gbWFqb3Jkb21vIGluZm8gYXQgaHR0cDovL3Zn
-ZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1sCj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+
-Cj4+Pj4+Pj4+Pj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCj4+Pj4+Pj4+Pj4+IG9wZW53cnQtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+Pj4+Pj4+Pj4+IG9w
-ZW53cnQtZGV2ZWxAbGlzdHMub3BlbndydC5vcmcKPj4+Pj4+Pj4+Pj4gaHR0cHM6Ly9saXN0cy5v
-cGVud3J0Lm9yZy9jZ2ktYmluL21haWxtYW4vbGlzdGluZm8vb3BlbndydC0KPj4+Pgo+Pj4+IGRl
-dmVsCj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+IF9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+Pj4+Pj4+Pj4gb3BlbndydC1kZXZlbCBtYWls
-aW5nIGxpc3QKPj4+Pj4+Pj4+PiBvcGVud3J0LWRldmVsQGxpc3RzLm9wZW53cnQub3JnCj4+Pj4+
-Pj4+Pj4gaHR0cHM6Ly9saXN0cy5vcGVud3J0Lm9yZy9jZ2ktYmluL21haWxtYW4vbGlzdGluZm8v
-b3BlbndydC1kZXZlbAo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Cj4+Pj4+Pj4+PiBfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+Pj4+Pj4+Pj4gYXRoMTBrIG1haWxp
-bmcgbGlzdAo+Pj4+Pj4+Pj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4+Pj4+Pj4+IGh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4+Pj4+Pj4+
-Cj4+Pj4+Pj4+Cj4+Pj4+Pj4KPj4+Pj4+Pgo+Pj4+Pj4KPj4+Pj4+Cj4+Pj4+Cj4+Pj4+Cj4+Pj4K
-Pj4+PiAtLQo+Pj4+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+Pj4+IENh
-bmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KPj4+Cj4+
-Pgo+Pgo+PiAtLQo+PiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4gQ2Fu
-ZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQo+PiBfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBvcGVud3J0LWRl
-dmVsIG1haWxpbmcgbGlzdAo+PiBvcGVud3J0LWRldmVsQGxpc3RzLm9wZW53cnQub3JnCj4+IGh0
-dHBzOi8vbGlzdHMub3BlbndydC5vcmcvY2dpLWJpbi9tYWlsbWFuL2xpc3RpbmZvL29wZW53cnQt
-ZGV2ZWwKPgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5kZWxh
-IFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
-CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+
+Per peer tx stats are part of 'HTT_10_4_T2H_MSG_TYPE_PEER_STATS'
+event, Firmware sends one HTT event for every four PPDUs.
+HTT payload has success pkts/bytes, failed pkts/bytes, retry
+pkts/bytes and rate info per ppdu.
+Peer stats are enabled through 'WMI_SERVICE_PEER_STATS',
+which are nowadays enabled by default.
+
+Parse peer stats and update the tx rate information per STA.
+
+tx rate, Peer stats are tested on QCA4019 with Firmware version
+10.4-3.2.1-00028.
+
+Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
+---
+v2:
+ * address Kalle's comments
+ * fix compilation warnings
+v3:
+ * fix compilation warnings (kvalo)
+
+ drivers/net/wireless/ath/ath10k/core.h   |   17 ++++
+ drivers/net/wireless/ath/ath10k/htt.c    |    2 +
+ drivers/net/wireless/ath/ath10k/htt.h    |   25 ++++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  125 ++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h    |   10 ++-
+ 5 files changed, 178 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index e8decfaba5b6..2f324a115b18 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -337,6 +337,7 @@ struct ath10k_sta {
+ 	u32 nss;
+ 	u32 smps;
+ 	u16 peer_id;
++	struct rate_info txrate;
+ 
+ 	struct work_struct update_wk;
+ 
+@@ -693,6 +694,21 @@ struct ath10k_fw_components {
+ 	struct ath10k_fw_file fw_file;
+ };
+ 
++struct ath10k_per_peer_tx_stats {
++	u32	succ_bytes;
++	u32	retry_bytes;
++	u32	failed_bytes;
++	u8	ratecode;
++	u8	flags;
++	u16	peer_id;
++	u16	succ_pkts;
++	u16	retry_pkts;
++	u16	failed_pkts;
++	u16	duration;
++	u32	reserved1;
++	u32	reserved2;
++};
++
+ struct ath10k {
+ 	struct ath_common ath_common;
+ 	struct ieee80211_hw *hw;
+@@ -906,6 +922,7 @@ struct ath10k {
+ 
+ 	struct ath10k_thermal thermal;
+ 	struct ath10k_wow wow;
++	struct ath10k_per_peer_tx_stats peer_tx_stats;
+ 
+ 	/* NAPI */
+ 	struct net_device napi_dev;
+diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
+index 130cd9502021..cd160b16db1e 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.c
++++ b/drivers/net/wireless/ath/ath10k/htt.c
+@@ -137,6 +137,8 @@
+ 				HTT_T2H_MSG_TYPE_STATS_NOUPLOAD,
+ 	[HTT_10_4_T2H_MSG_TYPE_TX_MODE_SWITCH_IND] =
+ 				HTT_T2H_MSG_TYPE_TX_MODE_SWITCH_IND,
++	[HTT_10_4_T2H_MSG_TYPE_PEER_STATS] =
++				HTT_T2H_MSG_TYPE_PEER_STATS,
+ };
+ 
+ int ath10k_htt_connect(struct ath10k_htt *htt)
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 0d2ed09f202b..164eb3a10566 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -419,6 +419,7 @@ enum htt_10_4_t2h_msg_type {
+ 	HTT_10_4_T2H_MSG_TYPE_STATS_NOUPLOAD         = 0x18,
+ 	/* 0x19 to 0x2f are reserved */
+ 	HTT_10_4_T2H_MSG_TYPE_TX_MODE_SWITCH_IND     = 0x30,
++	HTT_10_4_T2H_MSG_TYPE_PEER_STATS	     = 0x31,
+ 	/* keep this last */
+ 	HTT_10_4_T2H_NUM_MSGS
+ };
+@@ -453,6 +454,7 @@ enum htt_t2h_msg_type {
+ 	HTT_T2H_MSG_TYPE_TX_FETCH_IND,
+ 	HTT_T2H_MSG_TYPE_TX_FETCH_CONFIRM,
+ 	HTT_T2H_MSG_TYPE_TX_MODE_SWITCH_IND,
++	HTT_T2H_MSG_TYPE_PEER_STATS,
+ 	/* keep this last */
+ 	HTT_T2H_NUM_MSGS
+ };
+@@ -1470,6 +1472,28 @@ struct htt_channel_change {
+ 	__le32 phymode;
+ } __packed;
+ 
++struct htt_per_peer_tx_stats_ind {
++	__le32	succ_bytes;
++	__le32  retry_bytes;
++	__le32  failed_bytes;
++	u8	ratecode;
++	u8	flags;
++	__le16	peer_id;
++	__le16  succ_pkts;
++	__le16	retry_pkts;
++	__le16	failed_pkts;
++	__le16	tx_duration;
++	__le32	reserved1;
++	__le32	reserved2;
++} __packed;
++
++struct htt_peer_tx_stats {
++	u8 num_ppdu;
++	u8 ppdu_len;
++	u8 version;
++	u8 payload[0];
++} __packed;
++
+ union htt_rx_pn_t {
+ 	/* WEP: 24-bit PN */
+ 	u32 pn24;
+@@ -1521,6 +1545,7 @@ struct htt_resp {
+ 		struct htt_tx_fetch_confirm tx_fetch_confirm;
+ 		struct htt_tx_mode_switch_ind tx_mode_switch_ind;
+ 		struct htt_channel_change chan_change;
++		struct htt_peer_tx_stats peer_tx_stats;
+ 	};
+ } __packed;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 285b235268d7..86d082cf4eef 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2194,6 +2194,128 @@ void ath10k_htt_htc_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		dev_kfree_skb_any(skb);
+ }
+ 
++static inline bool is_valid_legacy_rate(u8 rate)
++{
++	static const u8 legacy_rates[] = {1, 2, 5, 11, 6, 9, 12,
++					  18, 24, 36, 48, 54};
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(legacy_rates); i++) {
++		if (rate == legacy_rates[i])
++			return true;
++	}
++
++	return false;
++}
++
++static void
++ath10k_update_per_peer_tx_stats(struct ath10k *ar,
++				struct ieee80211_sta *sta,
++				struct ath10k_per_peer_tx_stats *peer_stats)
++{
++	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
++	u8 rate = 0, sgi;
++	struct rate_info txrate;
++
++	lockdep_assert_held(&ar->data_lock);
++
++	txrate.flags = ATH10K_HW_PREAMBLE(peer_stats->ratecode);
++	txrate.bw = ATH10K_HW_BW(peer_stats->flags);
++	txrate.nss = ATH10K_HW_NSS(peer_stats->ratecode);
++	txrate.mcs = ATH10K_HW_MCS_RATE(peer_stats->ratecode);
++	sgi = ATH10K_HW_GI(peer_stats->flags);
++
++	if (((txrate.flags == WMI_RATE_PREAMBLE_HT) ||
++	     (txrate.flags == WMI_RATE_PREAMBLE_VHT)) && txrate.mcs > 9) {
++		ath10k_warn(ar, "Invalid mcs %hhd peer stats", txrate.mcs);
++		return;
++	}
++
++	if (txrate.flags == WMI_RATE_PREAMBLE_CCK ||
++	    txrate.flags == WMI_RATE_PREAMBLE_OFDM) {
++		rate = ATH10K_HW_LEGACY_RATE(peer_stats->ratecode);
++
++		if (!is_valid_legacy_rate(rate)) {
++			ath10k_warn(ar, "Invalid legacy rate %hhd peer stats",
++				    rate);
++			return;
++		}
++
++		/* This is hacky, FW sends CCK rate 5.5Mbps as 6 */
++		rate *= 10;
++		if (rate == 60 && txrate.flags == WMI_RATE_PREAMBLE_CCK)
++			rate = rate - 5;
++		arsta->txrate.legacy = rate * 10;
++	} else if (txrate.flags == WMI_RATE_PREAMBLE_HT) {
++		arsta->txrate.flags = RATE_INFO_FLAGS_MCS;
++		arsta->txrate.mcs = txrate.mcs;
++	} else {
++		arsta->txrate.flags = RATE_INFO_FLAGS_VHT_MCS;
++		arsta->txrate.mcs = txrate.mcs;
++	}
++
++	if (sgi)
++		arsta->txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
++
++	arsta->txrate.nss = txrate.nss;
++	arsta->txrate.bw = txrate.bw + RATE_INFO_BW_20;
++}
++
++static void ath10k_htt_fetch_peer_stats(struct ath10k *ar,
++					struct sk_buff *skb)
++{
++	struct htt_resp *resp = (struct htt_resp *)skb->data;
++	struct ath10k_per_peer_tx_stats *p_tx_stats = &ar->peer_tx_stats;
++	struct htt_per_peer_tx_stats_ind *tx_stats;
++	struct ieee80211_sta *sta;
++	struct ath10k_peer *peer;
++	int peer_id, i;
++	u8 ppdu_len, num_ppdu;
++
++	num_ppdu = resp->peer_tx_stats.num_ppdu;
++	ppdu_len = resp->peer_tx_stats.ppdu_len * sizeof(__le32);
++
++	if (skb->len < sizeof(struct htt_resp_hdr) + num_ppdu * ppdu_len) {
++		ath10k_warn(ar, "Invalid peer stats buf length %d\n", skb->len);
++		return;
++	}
++
++	tx_stats = (struct htt_per_peer_tx_stats_ind *)
++			(resp->peer_tx_stats.payload);
++	peer_id = __le16_to_cpu(tx_stats->peer_id);
++
++	rcu_read_lock();
++	spin_lock_bh(&ar->data_lock);
++	peer = ath10k_peer_find_by_id(ar, peer_id);
++	if (!peer) {
++		ath10k_warn(ar, "Invalid peer id %d peer stats buffer\n",
++			    peer_id);
++		goto out;
++	}
++
++	sta = peer->sta;
++	for (i = 0; i < num_ppdu; i++) {
++		tx_stats = (struct htt_per_peer_tx_stats_ind *)
++			   (resp->peer_tx_stats.payload + i * ppdu_len);
++
++		p_tx_stats->succ_bytes = __le32_to_cpu(tx_stats->succ_bytes);
++		p_tx_stats->retry_bytes = __le32_to_cpu(tx_stats->retry_bytes);
++		p_tx_stats->failed_bytes =
++				__le32_to_cpu(tx_stats->failed_bytes);
++		p_tx_stats->ratecode = tx_stats->ratecode;
++		p_tx_stats->flags = tx_stats->flags;
++		p_tx_stats->succ_pkts = __le16_to_cpu(tx_stats->succ_pkts);
++		p_tx_stats->retry_pkts = __le16_to_cpu(tx_stats->retry_pkts);
++		p_tx_stats->failed_pkts = __le16_to_cpu(tx_stats->failed_pkts);
++
++		ath10k_update_per_peer_tx_stats(ar, sta, p_tx_stats);
++	}
++
++out:
++	spin_unlock_bh(&ar->data_lock);
++	rcu_read_unlock();
++}
++
+ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct ath10k_htt *htt = &ar->htt;
+@@ -2354,6 +2476,9 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 	case HTT_T2H_MSG_TYPE_TX_MODE_SWITCH_IND:
+ 		ath10k_htt_rx_tx_mode_switch_ind(ar, skb);
+ 		break;
++	case HTT_T2H_MSG_TYPE_PEER_STATS:
++		ath10k_htt_fetch_peer_stats(ar, skb);
++		break;
+ 	case HTT_T2H_MSG_TYPE_EN_STATS:
+ 	default:
+ 		ath10k_warn(ar, "htt event (%d) not handled\n",
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 1b243c899bef..e108d49998c3 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -4603,9 +4603,17 @@ enum wmi_rate_preamble {
+ 
+ #define ATH10K_HW_NSS(rate)		(1 + (((rate) >> 4) & 0x3))
+ #define ATH10K_HW_PREAMBLE(rate)	(((rate) >> 6) & 0x3)
+-#define ATH10K_HW_RATECODE(rate, nss, preamble)	\
++#define ATH10K_HW_MCS_RATE(rate)	((rate) & 0xf)
++#define ATH10K_HW_LEGACY_RATE(rate)	((rate) & 0x3f)
++#define ATH10K_HW_BW(flags)		(((flags) >> 3) & 0x3)
++#define ATH10K_HW_GI(flags)		(((flags) >> 5) & 0x1)
++#define ATH10K_HW_RATECODE(rate, nss, preamble) \
+ 	(((preamble) << 6) | ((nss) << 4) | (rate))
+ 
++#define VHT_MCS_NUM     10
++#define VHT_BW_NUM      4
++#define VHT_NSS_NUM     4
++
+ /* Value to disable fixed rate setting */
+ #define WMI_FIXED_RATE_NONE    (0xff)
+ 
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
