@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6fHy-0000qL-Fm
- for ath10k@lists.infradead.org; Tue, 15 Nov 2016 15:04:47 +0000
+ id 1c6fJd-0002lx-If
+ for ath10k@lists.infradead.org; Tue, 15 Nov 2016 15:06:30 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: Fix failure to send NULL func frame for 10.4
+Subject: Re: [v3,1/2] ath10k: clean up HTT tx buffer allocation and free
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1476257342-3241-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1476257342-3241-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <755fcf2ee5da4f8f9f0e618e1bece8c1@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 15 Nov 2016 16:04:08 +0100
+In-Reply-To: <1476278778-4253-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1476278778-4253-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <b46170abfbc548458e6be817f9d31079@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 15 Nov 2016 16:06:02 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +28,19 @@ Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infrad
 Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
 > From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > 
-> This partially reverts 'commit 2cdce425aa33
-> ("ath10k: Fix broken NULL func data frame status for 10.4")'
-> Unfortunately this breaks sending NULL func and the existing
-> issue of obtaining proper tx status for NULL function will be
-> fixed. Also update the comments for feature flag added to be
-> useless and not working
+> cleanup 'ath10k_htt_tx_alloc' by introducing the API's
+> 'ath10k_htt_tx_alloc/free_{cont_txbuf, txdone_fifo} and
+> re-use them whereever needed
 > 
-> Fixes: 2cdce425aa33 "ath10k: Fix broken NULL func data frame status for
-> 10.4"
 > Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Patch applied to ath-next branch of ath.git, thanks.
+2 patches applied to ath-next branch of ath.git, thanks.
 
-fcf7cf1551ca ath10k: fix failure to send NULL func frame for 10.4
+19f338c6eb0c ath10k: clean up HTT tx buffer allocation and free
+f004e532a80a ath10k: remove extraneous error message in tx alloc
 
 -- 
-https://patchwork.kernel.org/patch/9372171/
+https://patchwork.kernel.org/patch/9373055/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
