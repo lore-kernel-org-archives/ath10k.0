@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6fJd-0002lx-If
- for ath10k@lists.infradead.org; Tue, 15 Nov 2016 15:06:30 +0000
+ id 1c6fLU-00044m-29
+ for ath10k@lists.infradead.org; Tue, 15 Nov 2016 15:08:25 +0000
 MIME-Version: 1.0
-Subject: Re: [v3,1/2] ath10k: clean up HTT tx buffer allocation and free
+Subject: Re: [1/1] ath10k: use the right length of "background"
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1476278778-4253-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1476278778-4253-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <b46170abfbc548458e6be817f9d31079@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 15 Nov 2016 16:06:02 +0100
+In-Reply-To: <20161029111737.19034-1-nicolas.iooss_linux@m4x.org>
+References: <20161029111737.19034-1-nicolas.iooss_linux@m4x.org>
+Message-ID: <67898e02d2c1489b84cd0c85517445dc@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 15 Nov 2016 16:07:56 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +22,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Nicolas Iooss <nicolas.iooss_linux@m4x.org> wrote:
+> The word "background" contains 10 characters so the third argument of
+> strncmp() need to be 10 in order to match this prefix correctly.
 > 
-> cleanup 'ath10k_htt_tx_alloc' by introducing the API's
-> 'ath10k_htt_tx_alloc/free_{cont_txbuf, txdone_fifo} and
-> re-use them whereever needed
-> 
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+> Fixes: 855aed1220d2 ("ath10k: add spectral scan feature")
 
-2 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-19f338c6eb0c ath10k: clean up HTT tx buffer allocation and free
-f004e532a80a ath10k: remove extraneous error message in tx alloc
+31b239824ece ath10k: use the right length of "background"
 
 -- 
-https://patchwork.kernel.org/patch/9373055/
+https://patchwork.kernel.org/patch/9403561/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
