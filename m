@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6bNu-0002mj-LV
- for ath10k@lists.infradead.org; Tue, 15 Nov 2016 10:54:39 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC 10/12] ath10k: Added QCA65XX hw definition
-Date: Tue, 15 Nov 2016 10:54:13 +0000
-Message-ID: <87wpg5qai1.fsf@qca.qualcomm.com>
-References: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
- <1479141222-8493-11-git-send-email-erik.stromdahl@gmail.com>
- <CA+BoTQmcyVQDOd2o0YDvepuLbSz76p8hetrWA6mWJeGxvbM8iQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQmcyVQDOd2o0YDvepuLbSz76p8hetrWA6mWJeGxvbM8iQ@mail.gmail.com>	(Michal
- Kazior's message of "Tue, 15 Nov 2016 11:34:11 +0100")
-Content-Language: en-US
-Content-ID: <83863CD04566E445AEE5F7C9EF966DCA@qualcomm.com>
+ id 1c6d9y-0002Tm-8P
+ for ath10k@lists.infradead.org; Tue, 15 Nov 2016 12:48:23 +0000
+Received: by mail-wm0-x234.google.com with SMTP id a197so164725912wmd.0
+ for <ath10k@lists.infradead.org>; Tue, 15 Nov 2016 04:48:01 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <59882CA1-E038-4C9B-9DA9-360B4567CB00@gmail.com>
+References: <0DA73A6D-68F0-4999-8F63-62B4D594796B@gmail.com>
+ <CA+BoTQ=nTSpWcEh4n-0jEh3HHFNC-j-g1YdgY5U+yFT8Trdd8g@mail.gmail.com>
+ <59882CA1-E038-4C9B-9DA9-360B4567CB00@gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Tue, 15 Nov 2016 13:47:59 +0100
+Message-ID: <CA+BoTQnFyT=s_ZrABnv2Nv0LVDnNnSe9tDQW3An5UhZ3Rt3wRw@mail.gmail.com>
+Subject: Re: Getting ATH10K to work with Linksys WUSB6100M
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +22,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: =?UTF-8?Q?Johan_Lindstr=C3=B6m?= <johan.von.lindstrom@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 14 November 2016 at 17:33, Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
->> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
->> ---
->>  drivers/net/wireless/ath/ath10k/hw.h |    1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
->> index 46142e9..ef45ecf 100644
->> --- a/drivers/net/wireless/ath/ath10k/hw.h
->> +++ b/drivers/net/wireless/ath/ath10k/hw.h
->> @@ -224,6 +224,7 @@ enum ath10k_hw_rev {
->>         ATH10K_HW_QCA9377,
->>         ATH10K_HW_QCA4019,
->>         ATH10K_HW_QCA9887,
->> +       ATH10K_HW_QCA65XX,
->
-> Are you 100% positive that you're supporting all QCA65XX chips? The
-> rule of thumb is to avoid Xs as much as possible unless totally
-> perfectly completely sure.
-
-But the thing is that nobody can't be absolutely sure as we never know
-what marketing comes up within few years again. So I would say that XX
-in chip names should be completely avoided to avoid any confusion. We
-already suffer from this in ath10k with QCA988X and QCA9888 which are
-different designs but the names overlap.
-
-I haven't reviewed Erik's patches yet but I'm surprised why even a new
-enum value is needed here. I was assuming we could use ATH10K_HW_QCA6174
-because AFAIK they share the same design. Any particular reason for
-this?
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTUgTm92ZW1iZXIgMjAxNiBhdCAxMTo0MSwgSm9oYW4gTGluZHN0csO2bQo8am9oYW4udm9u
+LmxpbmRzdHJvbUBnbWFpbC5jb20+IHdyb3RlOgo+Cj4+IDE0IG5vdi4gMjAxNiBrbC4gMTI6NDAg
+d3JvdGUgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Ogo+Pgo+PiBPbiAx
+MSBOb3ZlbWJlciAyMDE2IGF0IDAwOjU2LCBKb2hhbiBMaW5kc3Ryw7ZtCj4+IDxqb2hhbi52b24u
+bGluZHN0cm9tQGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiBUaGlzIGRldmljZSBpcyBydW5uaW5nICBR
+Q0E5Mzc3IGNoaXBzZXQgd2l0aCB0aGUgdXNiLmlkIDEzYjE6MDA0Mgo+Pj4KPj4+IEFueSBpZGVh
+cyBvbiBob3cgdG8gYWRkIHRoaXMgZGV2aWNlIHRvIHRoZSB3b3JraW5nIGRldmljZXM/IERvZXMg
+YXRoMTBrIGV2ZW4gd29yayB3aXRoIFVTQiBkZXZpY2VzPwo+Pj4KPj4+IFNlZSBpbmZvOiBodHRw
+Oi8vYXNrdWJ1bnR1LmNvbS9xdWVzdGlvbnMvNzk5MTA0L2xpbmtzeXMtd3VzYjYxMDBtCj4KPj4g
+VVNCIHRyYW5zcG9ydCBpcyBub3QgaW1wbGVtZW50ZWQgaW4gYXRoMTBrLiBBZGRpbmcgaXQgd2ls
+bCByZXF1aXJlIGEKPj4gc2xpZ2h0IEhUQy9IVFQgcmV3b3JrIGFuZCBpbXBsZW1lbnRpbmcgdGhl
+IHRyYW5zcG9ydCBjb2RlIGl0c2VsZi4gSSdtCj4+IHByZXR0eSBzdXJlIHFjYWNsZFsxXSBjYW4g
+dXNlZCBhcyByZWZlcmVuY2UuCj4+Cj4+IFsxXTogaHR0cHM6Ly9naXRodWIuY29tL3NrdGpkZ25z
+MTE4OS9xY2FjbGQtMi4wL3RyZWUvbWFzdGVyL0NPUkUvU0VSVklDRVMvSElGL1VTQgo+Pgo+Pgo+
+PiBNaWNoYcWCCj4KPiBBbnlvbmUgdXAgZm9yIHRoaXM/IEkgbXlzZWxmIGhhdmUgbm90IGRvbmUg
+YW55dGhpbmcgY2xvc2UgdG8gdGhpcy4KCkknbSBub3QgYXdhcmUgb2YgYW55b25lIHdvcmtpbmcg
+b24gdGhpcy4KCkVyaWMgU3Ryb21kYWhsIGlzIGN1cnJlbnRseSB3b3JraW5nIG9uIGFkZGluZyBT
+RElPIHN1cHBvcnQuIFRoaXMKcmVxdWlyZXMgSFRDL0hUVCByZXdvcmsgZm9yIHRoZSBzbyBjYWxs
+ZWQgImhpZ2ggbGF0ZW5jeSIgZGV2aWNlcy4gQm90aApTRElPIGFuZCBVU0IgYXJlIGNvbnNpZGVy
+ZWQgc3VjaCBoZW5jZSBhZGRpbmcgVVNCIHN1cHBvcnQgd2lsbCBiZWNvbWUKZWFzaWVyIG9uY2Ug
+RXJpYyBjb21wbGV0ZXMgaGlzIFNESU8gd29yay4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
+a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCg==
