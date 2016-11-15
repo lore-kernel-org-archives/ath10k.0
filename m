@@ -1,25 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6e1t-0005ra-Sv
- for ath10k@lists.infradead.org; Tue, 15 Nov 2016 13:44:06 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
-Date: Tue, 15 Nov 2016 13:43:38 +0000
-Message-ID: <87polwq2nq.fsf@kamboji.qca.qualcomm.com>
-References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
- <566849DB.9040901@candelatech.com>
- <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
- <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
- <87twbnueqv.fsf@kamboji.qca.qualcomm.com>
- <CABUTiXW5QSh2KkD+sQ-6QOD5zTce0dun+nyfAMnvL580U=OVNw@mail.gmail.com>
- <871syn5fnb.fsf@qca.qualcomm.com>
- <CABUTiXV8eFsW4MJET4spvjVQvFgi66NV7hLLxFC6Ttqs1znxjA@mail.gmail.com>
-In-Reply-To: <CABUTiXV8eFsW4MJET4spvjVQvFgi66NV7hLLxFC6Ttqs1znxjA@mail.gmail.com>	(Bruno
- Antunes's message of "Mon, 7 Nov 2016 18:40:37 +0000")
-Content-Language: en-US
-Content-ID: <8560DFE3D1C2C34BBEFC05171D9B01E0@qualcomm.com>
+ id 1c6e6d-00084E-Pg
+ for ath10k@lists.infradead.org; Tue, 15 Nov 2016 13:49:01 +0000
+Received: by mail-wm0-x233.google.com with SMTP id g23so168278542wme.1
+ for <ath10k@lists.infradead.org>; Tue, 15 Nov 2016 05:48:39 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <582B069D.8030002@gmail.com>
+References: <5825B478.4020405@gmail.com>
+ <CA+BoTQnkhxDZFF5C3Bex1OFS9f76GBAq6kiQN1aqwWnGYFMgCg@mail.gmail.com>
+ <582B069D.8030002@gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Tue, 15 Nov 2016 14:48:36 +0100
+Message-ID: <CA+BoTQmP=nJYXLTLPkHT=eG09wborJHvuuL0qm0AnPzvV5ZfDQ@mail.gmail.com>
+Subject: Re: Connection Problems with on QCA9880-BR4A
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +22,83 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bruno Antunes <baantunes@gmail.com>
-Cc: OpenWrt Development List <openwrt-devel@lists.openwrt.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, voncken <cedric.voncken@acksys.fr>
+To: Felix <kramerfe@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Bruno Antunes <baantunes@gmail.com> writes:
-
-> On 7 November 2016 at 18:06, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
->> Bruno Antunes <baantunes@gmail.com> writes:
->>
->>> On 4 November 2016 at 21:17, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
->>>
->>>> Can someone file a bug to bugzilla about this so that all the info is
->>>> properly stored? The more comprehensive the report is the better.
->>>>
->>>> https://bugzilla.kernel.org/
->>>
->>> I will file a bug report.
->>
->> Thanks, it's good to store all in one place so that it's easier to find
->> the relevant info.
->
-> Just file the bug with the ID 187241 - VLAN support in ATH10k Feel
-> free to ask for adicional info. I did not mention any names in the bug
-> report fell free to take credit if wanted.
-
-Thanks. I'll report it to the firmware team, let's see what happens. If
-there's more information which might help to fix this feel free to
-update that to the bug report.
-
-https://bugzilla.kernel.org/show_bug.cgi?id=187241
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTUgTm92ZW1iZXIgMjAxNiBhdCAxMzo1OSwgRmVsaXggPGtyYW1lcmZlQGdtYWlsLmNvbT4g
+d3JvdGU6ClsuLi5dCj4+PiBjYXQgL2V0Yy93cGFfc3VwcGxpY2FudC93cGFfc3VwcGxpY2FudC5j
+b25mCj4gY3RybF9pbnRlcmZhY2U9L3Zhci9ydW4vd3BhX3N1cHBsaWNhbnQKPiBuZXR3b3JrPXsK
+PiAgICAgc3NpZD0iZWR1cm9hbSIKPiAgICAgcHJvdG89UlNOCj4gICAgIHBhaXJ3aXNlPUNDTVAK
+PiAgICAgZ3JvdXA9Q0NNUAo+ICAgICBrZXlfbWdtdD1XUEEtRUFQCj4gICAgIGVhcD1UVExTCj4g
+ICAgIGRvbWFpbl9zdWZmaXhfbWF0Y2g9IlhYWCIKPiAgICAgcGhhc2UxPSJwZWFwbGFiZWw9MCIK
+PiAgICAgYW5vbnltb3VzX2lkZW50aXR5PSJhbm9ueW1vdXNAWFhYIgo+ICAgICBwaGFzZTI9ImF1
+dGg9UEFQIgo+ICAgICBjYV9jZXJ0PSJYWFgiCj4gICAgIGlkZW50aXR5PSJYWFgiCj4gICAgIHBh
+c3N3b3JkPSJYWFgiCj4gfQo+Cj4+PiB3cGFfc3VwcGxpY2FudCAtaSB3bGFuMCAtRCBubDgwMjEx
+IC1jCj4+PiAvZXRjL3dwYV9zdXBwbGljYW50L3dwYV9zdXBwbGljYW50LmNvbmYKPiBTdWNjZXNz
+ZnVsbHkgaW5pdGlhbGl6ZWQgd3BhX3N1cHBsaWNhbnQKPiB3bGFuMDogU01FOiBUcnlpbmcgdG8g
+YXV0aGVudGljYXRlIHdpdGggWFhYIChTU0lEPSdlZHVyb2FtJyBmcmVxPTUyNDAgTUh6KQo+IHds
+YW4wOiBUcnlpbmcgdG8gYXNzb2NpYXRlIHdpdGggWFhYIChTU0lEPSdlZHVyb2FtJyBmcmVxPTUy
+NDAgTUh6KQo+IHdsYW4wOiBBc3NvY2lhdGVkIHdpdGggWFhYCj4gd2xhbjA6IENUUkwtRVZFTlQt
+RUFQLVNUQVJURUQgRUFQIGF1dGhlbnRpY2F0aW9uIHN0YXJ0ZWQKPiB3bGFuMDogQ1RSTC1FVkVO
+VC1FQVAtUFJPUE9TRUQtTUVUSE9EIHZlbmRvcj0wIG1ldGhvZD0yMQo+IHdsYW4wOiBDVFJMLUVW
+RU5ULUVBUC1NRVRIT0QgRUFQIHZlbmRvciAwIG1ldGhvZCAyMSAoVFRMUykgc2VsZWN0ZWQKPiB3
+bGFuMDogQ1RSTC1FVkVOVC1SRUdET00tQ0hBTkdFIGluaXQ9Q09VTlRSWV9JRSB0eXBlPUNPVU5U
+UlkgYWxwaGEyPVhYWAo+IHdsYW4wOiBDVFJMLUVWRU5ULUVBUC1QRUVSLUNFUlQgZGVwdGg9MyBz
+dWJqZWN0PSdYWFgnCj4gd2xhbjA6IENUUkwtRVZFTlQtRUFQLVBFRVItQ0VSVCBkZXB0aD0yIHN1
+YmplY3Q9J1hYWCcKPiB3bGFuMDogQ1RSTC1FVkVOVC1FQVAtUEVFUi1DRVJUIGRlcHRoPTEgc3Vi
+amVjdD0nWFhYJwo+IHdsYW4wOiBDVFJMLUVWRU5ULUVBUC1QRUVSLUNFUlQgZGVwdGg9MCBzdWJq
+ZWN0PSdYWFgnCj4gd2xhbjA6IENUUkwtRVZFTlQtRUFQLVNVQ0NFU1MgRUFQIGF1dGhlbnRpY2F0
+aW9uIGNvbXBsZXRlZCBzdWNjZXNzZnVsbHkKPiB3bGFuMDogV1BBOiBLZXkgbmVnb3RpYXRpb24g
+Y29tcGxldGVkIHdpdGggWFhYIFtQVEs9Q0NNUCBHVEs9Q0NNUF0KPiB3bGFuMDogQ1RSTC1FVkVO
+VC1DT05ORUNURUQgLSBDb25uZWN0aW9uIHRvIFhYWCBjb21wbGV0ZWQgW2lkPTAgaWRfc3RyPV0K
+PiB3bGFuMDogQ1RSTC1FVkVOVC1ESVNDT05ORUNURUQgYnNzaWQ9WFhYIHJlYXNvbj0yCgpIb3cg
+bG9uZyBpcyBDT05ORUNURUQgYXdheSBmcm9tIERJU0NPTk5FQ1RFRD8gUnVubmluZyB3aXRoICIt
+dCIgc2hvdWxkCmFkZCB0aW1lc3RhbXBzLiBBdCB0aGlzIHBvaW50IEkgd291bGQgc3VnZ2VzdCAi
+LWRkZCIgdG8gZ2V0IHZlcmJvc2UKbG9ncy4KCgo+Pj4gY2F0IC9ldGMvZGhjcC9kaGNsaWVudC5j
+b25mCj4gb3B0aW9uIHJmYzM0NDItY2xhc3NsZXNzLXN0YXRpYy1yb3V0ZXMgY29kZSAxMjEgPSBh
+cnJheSBvZiB1bnNpZ25lZCBpbnRlZ2VyCj4gODsKPiBzdXBlcnNlZGUgZGhjcC1zZXJ2ZXItaWRl
+bnRpZmllciAyNTUuMjU1LjI1NS4yNTU7Cj4gcmVxdWVzdCBzdWJuZXQtbWFzaywgYnJvYWRjYXN0
+LWFkZHJlc3MsIHRpbWUtb2Zmc2V0LCByb3V0ZXJzLCBpbnRlcmZhY2UtbXR1LAo+IHJmYzM0NDIt
+Y2xhc3NsZXNzLXN0YXRpYy1yb3V0ZXM7Cj4gdGltZW91dCAzMDsKPiByZXRyeSAzMDsKPgo+Pj4g
+am91cm5hbGN0bCAtYiB8IGdyZXAgZGhjbGllbnQKPiBOb3YgMTUgMTI6MzI6NTcgYW5kcm9pZDEw
+Mjc4IGRoY2xpZW50Wzg1Ml06IERIQ1BSRVFVRVNUIG9uIHdsYW4wIHRvCj4gMjU1LjI1NS4yNTUu
+MjU1IHBvcnQgNjcKWy4uLl0KPgo+Pj4gdGNwZHVtcCAtaSB3bGFuMAo+IHRjcGR1bXA6IHZlcmJv
+c2Ugb3V0cHV0IHN1cHByZXNzZWQsIHVzZSAtdiBvciAtdnYgZm9yIGZ1bGwgcHJvdG9jb2wgZGVj
+b2RlCj4gbGlzdGVuaW5nIG9uIHdsYW4wLCBsaW5rLXR5cGUgRU4xME1CIChFdGhlcm5ldCksIGNh
+cHR1cmUgc2l6ZSAyNjIxNDQgYnl0ZXMKPiAxMjoyNjozMS43NjUxODggQVJQLCBSZXF1ZXN0IHdo
+by1oYXMgOC44LjguOCB0ZWxsIDE5Mi4xNjguMC4xLCBsZW5ndGggMjgKPiAxMjoyNjozMS43NjUy
+MjcgQVJQLCBSZXF1ZXN0IHdoby1oYXMgOC44LjQuNCB0ZWxsIDE5Mi4xNjguMC4xLCBsZW5ndGgg
+MjgKWy4uLl0KPiAxMjoyNjo1Ny4xODE0ODAgRUFQIHBhY2tldCAoMCkgdjIsIGxlbiA2Cj4gMTI6
+MjY6NTcuMTkyOTk3IEVBUCBwYWNrZXQgKDApIHYyLCBsZW4gMTAyNAo+IDEyOjI2OjU3LjE5MzI1
+MCBFQVAgcGFja2V0ICgwKSB2MiwgbGVuIDYKPiAxMjoyNjo1Ny4yMDM0NDIgRUFQIHBhY2tldCAo
+MCkgdjIsIGxlbiAxMDI0Cj4gMTI6MjY6NTcuMjAzNjkwIEVBUCBwYWNrZXQgKDApIHYyLCBsZW4g
+Ngo+IDEyOjI2OjU3LjIxNDg3NiBFQVAgcGFja2V0ICgwKSB2MiwgbGVuIDQ2MQo+IDEyOjI2OjU3
+LjIyODE2NyBFQVAgcGFja2V0ICgwKSB2MiwgbGVuIDE0MAo+IDEyOjI2OjU3LjIzODEwMSBFQVAg
+cGFja2V0ICgwKSB2MiwgbGVuIDY5Cj4gMTI6MjY6NTcuMjM5Mzk1IEVBUCBwYWNrZXQgKDApIHYy
+LCBsZW4gMTQ0Cj4gMTI6MjY6NTcuMzA5OTQ4IEVBUCBwYWNrZXQgKDApIHYyLCBsZW4gNAo+IDEy
+OjI2OjU3LjMxMDI2MSBFQVBPTCBrZXkgKDMpIHYyLCBsZW4gMTE3Cj4gMTI6MjY6NTcuMzE0NDU1
+IEVBUE9MIGtleSAoMykgdjIsIGxlbiAxMTcKPiAxMjoyNjo1Ny4zMTYxNTEgRUFQT0wga2V5ICgz
+KSB2MiwgbGVuIDE1MQo+IDEyOjI2OjU3LjMxNjQ4NSBFQVBPTCBrZXkgKDMpIHYyLCBsZW4gOTUK
+ClRoaXMgc3VnZ2VzdHMga2V5IGV4Y2hhbmdlIGhhcyBjb21wbGV0ZWQuCgoKPiAxMjoyNjo1Ny4z
+NzkzODggSVAgWFhYLjE1Mi41NC5uZXRiaW9zLW5zID4gWFhYLjE1NS4yNTUubmV0Ymlvcy1uczog
+TkJUIFVEUAo+IFBBQ0tFVCgxMzcpOiBRVUVSWTsgUkVRVUVTVDsgQlJPQURDQVNUCj4gMTI6MjY6
+NTcuMzg4NjYxIElQIFhYWC4xNTQuMjIubmV0Ymlvcy1ucyA+IFhYWC4xNTUuMjU1Lm5ldGJpb3Mt
+bnM6IE5CVCBVRFAKPiBQQUNLRVQoMTM3KTogUVVFUlk7IFJFUVVFU1Q7IEJST0FEQ0FTVApbLi4u
+XQo+IDQ1MiBwYWNrZXRzIGNhcHR1cmVkCj4gODM0OCBwYWNrZXRzIHJlY2VpdmVkIGJ5IGZpbHRl
+cgo+IDc4OTYgcGFja2V0cyBkcm9wcGVkIGJ5IGtlcm5lbCMKCldoYXQgaGFwcGVuZWQgdG8gYWxs
+IHRoZSBwYWNrZXRzPyBBcmUgeW91IHJlYWxseSBydW5uaW5nIGp1c3QKInRjcGR1bXAiIG9yIGFy
+ZSB5b3UgYXBwbHlpbmcgcGNhcCBmaWx0ZXJzIHRoYXQgeW91IGRpZG4ndCBtZW50aW9uPwoKVGhl
+cmUgYXJlIG5vIERIQ1AgcmVxdWVzdHMgc28gZWl0aGVyIGZpcm13YXJlIGlzIHJlZnVzaW5nIHRv
+IHRyYW5zbWl0CnRoZW0gT1RBLCBoYXZlIGJlZW4gZmlsdGVyZWQgYnkga2VybmVsL3RjcGR1bXAg
+b3IgeW91IGhhdmUgc29tZQpmaXJld2FsbCBydWxlIHRoYXQgZHJvcHMgdGhlIHBhY2tldHMuIFRj
+cGR1bXAgZG9lcyByZXBvcnQgc29tZSB0cmFmZmljCndoaWNoIEkgaW5mZXIgaXMganVzdCBSeCBz
+dWdnZXN0aW5nIGNyeXB0byBpcyAoYXQgbGVhc3QgcGFydGlhbGx5KSBzZXQKdXAuIElzIHRoZXJl
+IHNvbWV0aGluZyB5b3UncmUgbm90IHRlbGxpbmcgYWJvdXQgeW91ciBzZXR1cD8KCkNhbiB5b3Ug
+bG9hZCBhdGgxMGtfY29yZSB3aXRoIGRlYnVnX21hc2s9MHhmZmZmZmYzZiBhbmQgcHJvdmlkZSBs
+b2dzPwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
