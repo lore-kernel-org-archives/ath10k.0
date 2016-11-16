@@ -1,21 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+Received: from mx1.mailbox.org ([80.241.60.212])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c71DR-0005zi-2T
- for ath10k@lists.infradead.org; Wed, 16 Nov 2016 14:29:34 +0000
-Received: by mail-wm0-x22c.google.com with SMTP id g23so243289584wme.1
- for <ath10k@lists.infradead.org>; Wed, 16 Nov 2016 06:29:11 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <33589cf2-a7e6-fe9a-ea2b-a2252ac00355@gmail.com>
-References: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
- <1479141222-8493-4-git-send-email-erik.stromdahl@gmail.com>
- <CA+BoTQmA0E+N46E3XkpqVPXSVkQNyZj2Qzrizk8iLdYzVthNQg@mail.gmail.com>
- <33589cf2-a7e6-fe9a-ea2b-a2252ac00355@gmail.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Wed, 16 Nov 2016 15:29:09 +0100
-Message-ID: <CA+BoTQ=vpdHYHdE2UCcY4jCOcMqXEMSaKQUXekF7O+H9dWuREQ@mail.gmail.com>
-Subject: Re: [RFC 03/12] ath10k: htc: Changed order of wait target and ep
- connect
+ id 1c78aV-0000S1-Lr
+ for ath10k@lists.infradead.org; Wed, 16 Nov 2016 22:21:54 +0000
+From: "Conrad Kostecki" <ck+ath10k@bl4ckb0x.de>
+Subject: Re[4]: Linux freezes after a time while running
+Date: Wed, 16 Nov 2016 22:21:10 +0000
+Message-Id: <em6522b3b0-023a-4914-bdd1-d5f8734f6c75@valkyrie>
+In-Reply-To: <CA+BoTQniCnXce6-w9SPp_aiuei8bjfbVJSkvXi_p4ew_Ed4Qdg@mail.gmail.com>
+References: <1403930336.4012.1477681558487@office.mailbox.org>
+ <CA+BoTQmbz1vHjn0Xbo2hKcb9v8MdN5uTEnVNOAK0Kfh_NwTp5w@mail.gmail.com>
+ <ema51f2924-a0bb-4f7a-8d84-3ee6fb82e317@valkyrie>
+ <CA+BoTQkyd2f78Pk=_FrYyuQXedn8t6EEYq6BWHB8zthOF_AZ6w@mail.gmail.com>
+ <1233772075.6396.1478077219620@office.mailbox.org>
+ <CA+BoTQnOGOAEvM=M-1TqaN3GPgSJ2CUX-6Upa38jmaRzW9JkGA@mail.gmail.com>
+ <1204267275.1178.1478525905172@office.mailbox.org>
+ <CA+BoTQniCnXce6-w9SPp_aiuei8bjfbVJSkvXi_p4ew_Ed4Qdg@mail.gmail.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,80 +25,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Conrad Kostecki <ck+ath10k@bl4ckb0x.de>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTUgTm92ZW1iZXIgMjAxNiBhdCAxODowNywgRXJpayBTdHJvbWRhaGwgPGVyaWsuc3Ryb21k
-YWhsQGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gMTEvMTUvMjAxNiAxMToxMyBBTSwgTWljaGFsIEth
-emlvciB3cm90ZToKPj4gT24gMTQgTm92ZW1iZXIgMjAxNiBhdCAxNzozMywgRXJpayBTdHJvbWRh
-aGwgPGVyaWsuc3Ryb21kYWhsQGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiBUaGlzIHBhdGNoIGNoYW5n
-ZXMgdGhlIG9yZGVyIGluIHdoaWNoIHRoZSBkcml2ZXIgd2FpdHMgZm9yIHRoZQo+Pj4gdGFyZ2V0
-IHRvIGJlY29tZSByZWFkeSBhbmQgdGhlIHNlcnZpY2UgY29ubmVjdCBvZiB0aGUgSFRDCj4+PiBj
-b250cm9sIHNlcnZpY2UuCj4+Pgo+Pj4gVGhlIEhUQyBjb250cm9sIHNlcnZpY2UgaXMgY29ubmVj
-dGVkIGJlZm9yZSB0aGUgZHJpdmVyIHN0YXJ0cwo+Pj4gd2FpdGluZyBmb3IgdGhlIEhUQyByZWFk
-eSBjb250cm9sIG1lc3NhZ2UuCj4+Pgo+Pj4gVGhlIHJlYXNvbiBmb3IgdGhpcyBpcyB0aGF0IHRo
-ZSBIVEMgcmVhZHkgY29udHJvbCBtZXNzYWdlIGlzCj4+PiB0cmFuc21pdHRlZCBvbiBFUCAwIGFu
-ZCB0aGF0IHNkaW8vbWJveCBiYXNlZCBzeXN0ZW1zIHdpbGwgaWdub3JlCj4+PiBtZXNzYWdlcyBy
-ZWNlaXZlZCBvbiB1bmNvbm5lY3RlZCBlbmRwb2ludHMuCj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTog
-RXJpayBTdHJvbWRhaGwgPGVyaWsuc3Ryb21kYWhsQGdtYWlsLmNvbT4KPj4+IC0tLQo+Pj4gIGRy
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHRjLmMgfCAgIDMyICsrKysrKysrKysrKysr
-KystLS0tLS0tLS0tLS0tLS0tCj4+PiAgMSBmaWxlIGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyks
-IDE2IGRlbGV0aW9ucygtKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL2h0Yy5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odGMu
-Ywo+Pj4gaW5kZXggZTNmN2JmNC4uNzI1NzM2NiAxMDA2NDQKPj4+IC0tLSBhL2RyaXZlcnMvbmV0
-L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHRjLmMKPj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNz
-L2F0aC9hdGgxMGsvaHRjLmMKPj4+IEBAIC02MDYsNiArNjA2LDIyIEBAIGludCBhdGgxMGtfaHRj
-X3dhaXRfdGFyZ2V0KHN0cnVjdCBhdGgxMGtfaHRjICpodGMpCj4+PiAgICAgICAgIHUxNiBjcmVk
-aXRfY291bnQ7Cj4+PiAgICAgICAgIHUxNiBjcmVkaXRfc2l6ZTsKPj4+Cj4+PiArICAgICAgIC8q
-IHNldHVwIG91ciBwc2V1ZG8gSFRDIGNvbnRyb2wgZW5kcG9pbnQgY29ubmVjdGlvbiAqLwo+Pj4g
-KyAgICAgICBtZW1zZXQoJmNvbm5fcmVxLCAwLCBzaXplb2YoY29ubl9yZXEpKTsKPj4+ICsgICAg
-ICAgbWVtc2V0KCZjb25uX3Jlc3AsIDAsIHNpemVvZihjb25uX3Jlc3ApKTsKPj4+ICsgICAgICAg
-Y29ubl9yZXEuZXBfb3BzLmVwX3R4X2NvbXBsZXRlID0gYXRoMTBrX2h0Y19jb250cm9sX3R4X2Nv
-bXBsZXRlOwo+Pj4gKyAgICAgICBjb25uX3JlcS5lcF9vcHMuZXBfcnhfY29tcGxldGUgPSBhdGgx
-MGtfaHRjX2NvbnRyb2xfcnhfY29tcGxldGU7Cj4+PiArICAgICAgIGNvbm5fcmVxLm1heF9zZW5k
-X3F1ZXVlX2RlcHRoID0gQVRIMTBLX05VTV9DT05UUk9MX1RYX0JVRkZFUlM7Cj4+PiArICAgICAg
-IGNvbm5fcmVxLnNlcnZpY2VfaWQgPSBBVEgxMEtfSFRDX1NWQ19JRF9SU1ZEX0NUUkw7Cj4+PiAr
-Cj4+PiArICAgICAgIC8qIGNvbm5lY3QgZmFrZSBzZXJ2aWNlICovCj4+PiArICAgICAgIHN0YXR1
-cyA9IGF0aDEwa19odGNfY29ubmVjdF9zZXJ2aWNlKGh0YywgJmNvbm5fcmVxLCAmY29ubl9yZXNw
-KTsKPj4+ICsgICAgICAgaWYgKHN0YXR1cykgewo+Pj4gKyAgICAgICAgICAgICAgIGF0aDEwa19l
-cnIoYXIsICJjb3VsZCBub3QgY29ubmVjdCB0byBodGMgc2VydmljZSAoJWQpXG4iLAo+Pj4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgc3RhdHVzKTsKPj4+ICsgICAgICAgICAgICAgICByZXR1
-cm4gc3RhdHVzOwo+Pj4gKyAgICAgICB9Cj4+PiArCj4+Cj4+IEhvdyBpcyB0aGlzIHN1cHBvc2Vk
-IHRvIHdvcms/IGF0aDEwa19odGNfY29ubmVjdF9zZXJ2aWNlKCkgcmVxdWlyZXMKPj4gaHRjLT50
-YXJnZXRfY3JlZGl0X3NpemUgdG8gY29tcHV0ZSB0eF9jcmVkaXRzX3Blcl9tYXhfbWVzc2FnZS4g
-T3IgYW0gSQo+PiBtaXNzaW5nIHNvbWV0aGluZz8gQXBwbHlpbmcgdGhpcyBwYXRjaCBhbG9uZSBy
-ZXN1bHRzIGluOgo+Pgo+PiBbICAgIDYuNjgwMTAxXSBkaXZpZGUgZXJyb3I6IDAwMDAgWyMxXSBT
-TVAKPj4gWyAgICA2LjY4MTM0Ml0gTW9kdWxlcyBsaW5rZWQgaW46IGF0aDEwa19wY2koTykgYXRo
-MTBrX2NvcmUoTykgYXRoCj4+IG1hYzgwMjExIGNmZzgwMjExCj4+IFsgICAgNi42ODQ4NzZdIENQ
-VTogMyBQSUQ6IDgyMyBDb21tOiBrd29ya2VyL3U4OjIgVGFpbnRlZDogRyAgICAgICAgVwo+PiBP
-ICAgIDQuOS4wLXJjNC13dC1hdGgrICM3OQo+PiBbICAgIDYuNjg4MDUxXSBIYXJkd2FyZSBuYW1l
-OiBRRU1VIFN0YW5kYXJkIFBDIChpNDQwRlggKyBQSUlYLCAxOTk2KSwKPj4gQklPUyAxLjcuNS0y
-MDE0MDUzMV8wODMwMzAtZ2FuZGFsZiAwNC8wMS8yMDE0Cj4+IFsgICAgNi42OTE2NDRdIFdvcmtx
-dWV1ZTogYXRoMTBrX3dxIGF0aDEwa19jb3JlX3JlZ2lzdGVyX3dvcmsgW2F0aDEwa19jb3JlXQo+
-PiBbICAgIDYuNjk0MzA5XSB0YXNrOiBmZmZmODgwMDBhMTkwMDAwIHRhc2suc3RhY2s6IGZmZmZj
-OTAwMDA2ZDQwMDAKPj4gWyAgICA2LjY5NTQ1OF0gUklQOiAwMDEwOls8ZmZmZmZmZmZhMDFhZTQ2
-Yj5dICBbPGZmZmZmZmZmYTAxYWU0NmI+XQo+PiBhdGgxMGtfaHRjX2Nvbm5lY3Rfc2VydmljZSsw
-eDIxYi8weDQyMCBbYXRoMTBrX2NvcmVdCj4+Cj4+Cj4+IE1pY2hhxYIKPj4KPgo+IFlvdSdyZSBy
-aWdodC4gSSBoYXZlIHRvdGFsbHkgbWlzc2VkIHRoaXMuIFdoYXQgaXMgc3RyYW5nZSBpcyB0aGF0
-IG15Cj4gY29tcGlsZXIgKEFSTSBsaW5hcm8pIHNlZW1zIHRvIG9wdGltaXplIHRoZSBjb2RlIGlu
-IGEgd2F5IHRoYXQgcmVtb3Zlcwo+IHRoZSB0eF9jcmVkaXRzX3Blcl9tYXhfbWVzc2FnZSB2YWx1
-ZS4KPgo+IElmIEkgYWRkIGEgcHJpbnRrIGluIGF0aDEwa19odGNfY29ubmVjdF9zZXJ2aWNlIChw
-cmludGluZyB0aGUgdmFsdWUpIEkKPiBnZXQgYSBzaW1pbGFyIG9vcHMuCj4KPiBJIHRoaW5rIGl0
-IGhhcyB0byBkbyB3aXRoIHRoZSBmYWN0IHRoZSB0aGlzIHZhbHVlIGlzbid0IHJlYWxseSB1c2Vk
-IGF0Cj4gYWxsLiBncmVwcGluZyB0aGUgY29kZSByZXZlYWxzIHRoYXQgdHhfY3JlZGl0c19wZXJf
-bWF4X21lc3NhZ2UgaXMgb25seQo+IHVzZWQgaW5zaWRlIGF0aDEwa19odGNfY29ubmVjdF9zZXJ2
-aWNlIChvbmx5IHdyaXR0ZW4sIG5ldmVyIHJlYWQpLgo+Cj4gUmVtb3ZpbmcgaXQgZG9lc24ndCBz
-ZWVtIHRvIGJyZWFrIGFueXRoaW5nLCBzbyBwZXJoYXBzIGl0IHNob3VsZCBiZSByZW1vdmVkPwoK
-SSB0aGluayBpdCdzIHNhZmUgdG8gcmVtb3ZlIG5vdy4gVGhpcyBpcyBsZWdhY3kgaW5oZXJpdGVk
-IGZyb20gdGhlCmludGVybmFsIGRyaXZlci4KCk90aGVyd2lzZSB0aGlzIGxvb2tzIG9rYXkgZXhj
-ZXB0IGNvbW1pdCBsb2cgd2hpY2ggaXMgYSBiaXQgdW5jbGVhci4KSSdtIHN0aWxsIG5vdCBzdXJl
-ICp3aHkqIHlvdSBuZWVkIHRvIHJlb3JkZXIgdGhpcy4gRldJVyB0aGlzIGNhbiBiZSBhCmdlbmVy
-YWwgY2xlYW4gdXAgdGhpbmcgdGhhdCBlbmRzIHVwIG1vdmluZyB0aGUgaWYgKGVpZCA9PSBFUDAp
-IHtjb2RlfQp0byBjb250cm9sIGVuZHBvaW50IGhhbmRsZXIgaW4gcGF0Y2ggNC4KCgpNaWNoYcWC
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hello Michal,
+
+Am 07.11.2016 17:43:02, "Michal Kazior" <michal.kazior@tieto.com> 
+schrieb:
+
+>
+>I assume you used a different kernel in the past compared to the
+>recent test you did. You could try re-testing the older kernel
+>(assuming you remember which one it was) and if it works you could
+>bisect your way to find the commit that breaks it for you.
+>
+>
+I don't have the older kernel config anymore, but it was pretty the 
+same, as my current one.
+I've now done some tests and it's quite interesseting. Kernelversion did 
+not matter for me.
+
+Running with current firmware-5.bin, it's always crashing. I tried 
+different BIOS options, nothing helped.
+
+BUT: Downgrade to firmware-2.bin helps.
+ath10k_pci 0000:03:00.0: firmware ver 10.1.467.3-1 api 2 features 
+wmi-10.x, has-wmi-mgmt-tx,no-p2p crc32 2c3ffc2f
+
+Running such old firmware, the Wifi just runs stable. NO firmware crash 
+happens. When I just change firmware back to firmware-5.bin, it crashes 
+again.
+So there seems to changed something. Can be this debugged somehow?
+
+With firmware-2.bin, I am also getting such errors, but WiFi works fine:
+[   82.504901] ath10k_pci 0000:03:00.0: SWBA overrun on vdev 0, skipped 
+old beacon
+[   82.556103] ath10k_pci 0000:03:00.0: SWBA overrun on vdev 1, skipped 
+old beacon
+[   87.113085] ath10k_warn: 89 callbacks suppressed
+
+Currently, the workaround is for me firmware-2.bin, but IMHO it's not a 
+solution..
+Any Ideas?
+
+Cheers
+Conrad
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
