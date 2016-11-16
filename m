@@ -1,21 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c70eU-00053V-AD
- for ath10k@lists.infradead.org; Wed, 16 Nov 2016 13:53:30 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC 02/12] ath10k: htc: rx trailer lookahead support
-Date: Wed, 16 Nov 2016 13:53:00 +0000
-Message-ID: <87eg2bo7k7.fsf@kamboji.qca.qualcomm.com>
-References: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
- <1479141222-8493-3-git-send-email-erik.stromdahl@gmail.com>
- <CA+BoTQkJqv28=Mg1ncmyznRo-CLh6Y_OW-mJ+YTyqaREaqp39Q@mail.gmail.com>
- <ac58b3f6-4432-b0b6-8b50-c733f898eded@gmail.com>
-In-Reply-To: <ac58b3f6-4432-b0b6-8b50-c733f898eded@gmail.com> (Erik
- Stromdahl's message of "Tue, 15 Nov 2016 18:31:15 +0100")
-Content-Language: en-US
-Content-ID: <F2180D525DC86A4C9176FF7F2C6A489D@qualcomm.com>
+ id 1c71DR-0005zi-2T
+ for ath10k@lists.infradead.org; Wed, 16 Nov 2016 14:29:34 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id g23so243289584wme.1
+ for <ath10k@lists.infradead.org>; Wed, 16 Nov 2016 06:29:11 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <33589cf2-a7e6-fe9a-ea2b-a2252ac00355@gmail.com>
+References: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
+ <1479141222-8493-4-git-send-email-erik.stromdahl@gmail.com>
+ <CA+BoTQmA0E+N46E3XkpqVPXSVkQNyZj2Qzrizk8iLdYzVthNQg@mail.gmail.com>
+ <33589cf2-a7e6-fe9a-ea2b-a2252ac00355@gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Wed, 16 Nov 2016 15:29:09 +0100
+Message-ID: <CA+BoTQ=vpdHYHdE2UCcY4jCOcMqXEMSaKQUXekF7O+H9dWuREQ@mail.gmail.com>
+Subject: Re: [RFC 03/12] ath10k: htc: Changed order of wait target and ep
+ connect
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +24,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
-
-> On 11/15/2016 10:57 AM, Michal Kazior wrote:
->> On 14 November 2016 at 17:33, Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
->>> The RX trailer parsing is now capable of parsing lookahead reports.
->>> This is needed by SDIO/mbox.
->> 
->> It'd be useful to know what exactly lookahead will be used for. What
->> payload does it carry.
->> 
-> It carries the 4 first bytes of the next RX message, i.e. the first 4
-> bytes of an HTC header.
->
-> It is used by the sdio interrupt handler to know if the next packet is a
-> part of an RX bundle, which endpoint it belongs to and how long it is
-> (so we know how many bytes to allocate).
-
-Please add that to the commit log, it's useful information. Or maybe a
-code comment would be better?
-
->>> +static int
->>> +ath10k_htc_process_lookahead(struct ath10k_htc *htc,
->>> +                            const struct ath10k_htc_lookahead_report *report,
->>> +                            int len,
->>> +                            enum ath10k_htc_ep_id eid,
->>> +                            u32 *next_lk_ahds,
->> 
->> next_lk_ahds should be u8 or void. From what I understand by glancing
->> through the code it is an agnostic buffer that carries payload which
->> is later interpreted either as eid or htc header, right? void is
->> probably most suitable in this case for passing around and u8 for
->> inline-based storage.
->> 
-> Sounds reasonable, I'll change to void pointer.
->
->> I'd also avoid silly abbreviations. Probably "lookahead" alone is enough.
->> 
-> Ok, this abbreviation was actually taken from the ath6kl code. I think
-> the intention was to reduce line lengths.
-
-Most likely that comes from the staging ath6kl driver which again is a
-fork of the Atheros internal driver. I agree with Michal, better to
-avoid silly abbreviations as much as possible. Readability is most
-important.
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTUgTm92ZW1iZXIgMjAxNiBhdCAxODowNywgRXJpayBTdHJvbWRhaGwgPGVyaWsuc3Ryb21k
+YWhsQGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gMTEvMTUvMjAxNiAxMToxMyBBTSwgTWljaGFsIEth
+emlvciB3cm90ZToKPj4gT24gMTQgTm92ZW1iZXIgMjAxNiBhdCAxNzozMywgRXJpayBTdHJvbWRh
+aGwgPGVyaWsuc3Ryb21kYWhsQGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiBUaGlzIHBhdGNoIGNoYW5n
+ZXMgdGhlIG9yZGVyIGluIHdoaWNoIHRoZSBkcml2ZXIgd2FpdHMgZm9yIHRoZQo+Pj4gdGFyZ2V0
+IHRvIGJlY29tZSByZWFkeSBhbmQgdGhlIHNlcnZpY2UgY29ubmVjdCBvZiB0aGUgSFRDCj4+PiBj
+b250cm9sIHNlcnZpY2UuCj4+Pgo+Pj4gVGhlIEhUQyBjb250cm9sIHNlcnZpY2UgaXMgY29ubmVj
+dGVkIGJlZm9yZSB0aGUgZHJpdmVyIHN0YXJ0cwo+Pj4gd2FpdGluZyBmb3IgdGhlIEhUQyByZWFk
+eSBjb250cm9sIG1lc3NhZ2UuCj4+Pgo+Pj4gVGhlIHJlYXNvbiBmb3IgdGhpcyBpcyB0aGF0IHRo
+ZSBIVEMgcmVhZHkgY29udHJvbCBtZXNzYWdlIGlzCj4+PiB0cmFuc21pdHRlZCBvbiBFUCAwIGFu
+ZCB0aGF0IHNkaW8vbWJveCBiYXNlZCBzeXN0ZW1zIHdpbGwgaWdub3JlCj4+PiBtZXNzYWdlcyBy
+ZWNlaXZlZCBvbiB1bmNvbm5lY3RlZCBlbmRwb2ludHMuCj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTog
+RXJpayBTdHJvbWRhaGwgPGVyaWsuc3Ryb21kYWhsQGdtYWlsLmNvbT4KPj4+IC0tLQo+Pj4gIGRy
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHRjLmMgfCAgIDMyICsrKysrKysrKysrKysr
+KystLS0tLS0tLS0tLS0tLS0tCj4+PiAgMSBmaWxlIGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyks
+IDE2IGRlbGV0aW9ucygtKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVz
+cy9hdGgvYXRoMTBrL2h0Yy5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odGMu
+Ywo+Pj4gaW5kZXggZTNmN2JmNC4uNzI1NzM2NiAxMDA2NDQKPj4+IC0tLSBhL2RyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHRjLmMKPj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNz
+L2F0aC9hdGgxMGsvaHRjLmMKPj4+IEBAIC02MDYsNiArNjA2LDIyIEBAIGludCBhdGgxMGtfaHRj
+X3dhaXRfdGFyZ2V0KHN0cnVjdCBhdGgxMGtfaHRjICpodGMpCj4+PiAgICAgICAgIHUxNiBjcmVk
+aXRfY291bnQ7Cj4+PiAgICAgICAgIHUxNiBjcmVkaXRfc2l6ZTsKPj4+Cj4+PiArICAgICAgIC8q
+IHNldHVwIG91ciBwc2V1ZG8gSFRDIGNvbnRyb2wgZW5kcG9pbnQgY29ubmVjdGlvbiAqLwo+Pj4g
+KyAgICAgICBtZW1zZXQoJmNvbm5fcmVxLCAwLCBzaXplb2YoY29ubl9yZXEpKTsKPj4+ICsgICAg
+ICAgbWVtc2V0KCZjb25uX3Jlc3AsIDAsIHNpemVvZihjb25uX3Jlc3ApKTsKPj4+ICsgICAgICAg
+Y29ubl9yZXEuZXBfb3BzLmVwX3R4X2NvbXBsZXRlID0gYXRoMTBrX2h0Y19jb250cm9sX3R4X2Nv
+bXBsZXRlOwo+Pj4gKyAgICAgICBjb25uX3JlcS5lcF9vcHMuZXBfcnhfY29tcGxldGUgPSBhdGgx
+MGtfaHRjX2NvbnRyb2xfcnhfY29tcGxldGU7Cj4+PiArICAgICAgIGNvbm5fcmVxLm1heF9zZW5k
+X3F1ZXVlX2RlcHRoID0gQVRIMTBLX05VTV9DT05UUk9MX1RYX0JVRkZFUlM7Cj4+PiArICAgICAg
+IGNvbm5fcmVxLnNlcnZpY2VfaWQgPSBBVEgxMEtfSFRDX1NWQ19JRF9SU1ZEX0NUUkw7Cj4+PiAr
+Cj4+PiArICAgICAgIC8qIGNvbm5lY3QgZmFrZSBzZXJ2aWNlICovCj4+PiArICAgICAgIHN0YXR1
+cyA9IGF0aDEwa19odGNfY29ubmVjdF9zZXJ2aWNlKGh0YywgJmNvbm5fcmVxLCAmY29ubl9yZXNw
+KTsKPj4+ICsgICAgICAgaWYgKHN0YXR1cykgewo+Pj4gKyAgICAgICAgICAgICAgIGF0aDEwa19l
+cnIoYXIsICJjb3VsZCBub3QgY29ubmVjdCB0byBodGMgc2VydmljZSAoJWQpXG4iLAo+Pj4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgc3RhdHVzKTsKPj4+ICsgICAgICAgICAgICAgICByZXR1
+cm4gc3RhdHVzOwo+Pj4gKyAgICAgICB9Cj4+PiArCj4+Cj4+IEhvdyBpcyB0aGlzIHN1cHBvc2Vk
+IHRvIHdvcms/IGF0aDEwa19odGNfY29ubmVjdF9zZXJ2aWNlKCkgcmVxdWlyZXMKPj4gaHRjLT50
+YXJnZXRfY3JlZGl0X3NpemUgdG8gY29tcHV0ZSB0eF9jcmVkaXRzX3Blcl9tYXhfbWVzc2FnZS4g
+T3IgYW0gSQo+PiBtaXNzaW5nIHNvbWV0aGluZz8gQXBwbHlpbmcgdGhpcyBwYXRjaCBhbG9uZSBy
+ZXN1bHRzIGluOgo+Pgo+PiBbICAgIDYuNjgwMTAxXSBkaXZpZGUgZXJyb3I6IDAwMDAgWyMxXSBT
+TVAKPj4gWyAgICA2LjY4MTM0Ml0gTW9kdWxlcyBsaW5rZWQgaW46IGF0aDEwa19wY2koTykgYXRo
+MTBrX2NvcmUoTykgYXRoCj4+IG1hYzgwMjExIGNmZzgwMjExCj4+IFsgICAgNi42ODQ4NzZdIENQ
+VTogMyBQSUQ6IDgyMyBDb21tOiBrd29ya2VyL3U4OjIgVGFpbnRlZDogRyAgICAgICAgVwo+PiBP
+ICAgIDQuOS4wLXJjNC13dC1hdGgrICM3OQo+PiBbICAgIDYuNjg4MDUxXSBIYXJkd2FyZSBuYW1l
+OiBRRU1VIFN0YW5kYXJkIFBDIChpNDQwRlggKyBQSUlYLCAxOTk2KSwKPj4gQklPUyAxLjcuNS0y
+MDE0MDUzMV8wODMwMzAtZ2FuZGFsZiAwNC8wMS8yMDE0Cj4+IFsgICAgNi42OTE2NDRdIFdvcmtx
+dWV1ZTogYXRoMTBrX3dxIGF0aDEwa19jb3JlX3JlZ2lzdGVyX3dvcmsgW2F0aDEwa19jb3JlXQo+
+PiBbICAgIDYuNjk0MzA5XSB0YXNrOiBmZmZmODgwMDBhMTkwMDAwIHRhc2suc3RhY2s6IGZmZmZj
+OTAwMDA2ZDQwMDAKPj4gWyAgICA2LjY5NTQ1OF0gUklQOiAwMDEwOls8ZmZmZmZmZmZhMDFhZTQ2
+Yj5dICBbPGZmZmZmZmZmYTAxYWU0NmI+XQo+PiBhdGgxMGtfaHRjX2Nvbm5lY3Rfc2VydmljZSsw
+eDIxYi8weDQyMCBbYXRoMTBrX2NvcmVdCj4+Cj4+Cj4+IE1pY2hhxYIKPj4KPgo+IFlvdSdyZSBy
+aWdodC4gSSBoYXZlIHRvdGFsbHkgbWlzc2VkIHRoaXMuIFdoYXQgaXMgc3RyYW5nZSBpcyB0aGF0
+IG15Cj4gY29tcGlsZXIgKEFSTSBsaW5hcm8pIHNlZW1zIHRvIG9wdGltaXplIHRoZSBjb2RlIGlu
+IGEgd2F5IHRoYXQgcmVtb3Zlcwo+IHRoZSB0eF9jcmVkaXRzX3Blcl9tYXhfbWVzc2FnZSB2YWx1
+ZS4KPgo+IElmIEkgYWRkIGEgcHJpbnRrIGluIGF0aDEwa19odGNfY29ubmVjdF9zZXJ2aWNlIChw
+cmludGluZyB0aGUgdmFsdWUpIEkKPiBnZXQgYSBzaW1pbGFyIG9vcHMuCj4KPiBJIHRoaW5rIGl0
+IGhhcyB0byBkbyB3aXRoIHRoZSBmYWN0IHRoZSB0aGlzIHZhbHVlIGlzbid0IHJlYWxseSB1c2Vk
+IGF0Cj4gYWxsLiBncmVwcGluZyB0aGUgY29kZSByZXZlYWxzIHRoYXQgdHhfY3JlZGl0c19wZXJf
+bWF4X21lc3NhZ2UgaXMgb25seQo+IHVzZWQgaW5zaWRlIGF0aDEwa19odGNfY29ubmVjdF9zZXJ2
+aWNlIChvbmx5IHdyaXR0ZW4sIG5ldmVyIHJlYWQpLgo+Cj4gUmVtb3ZpbmcgaXQgZG9lc24ndCBz
+ZWVtIHRvIGJyZWFrIGFueXRoaW5nLCBzbyBwZXJoYXBzIGl0IHNob3VsZCBiZSByZW1vdmVkPwoK
+SSB0aGluayBpdCdzIHNhZmUgdG8gcmVtb3ZlIG5vdy4gVGhpcyBpcyBsZWdhY3kgaW5oZXJpdGVk
+IGZyb20gdGhlCmludGVybmFsIGRyaXZlci4KCk90aGVyd2lzZSB0aGlzIGxvb2tzIG9rYXkgZXhj
+ZXB0IGNvbW1pdCBsb2cgd2hpY2ggaXMgYSBiaXQgdW5jbGVhci4KSSdtIHN0aWxsIG5vdCBzdXJl
+ICp3aHkqIHlvdSBuZWVkIHRvIHJlb3JkZXIgdGhpcy4gRldJVyB0aGlzIGNhbiBiZSBhCmdlbmVy
+YWwgY2xlYW4gdXAgdGhpbmcgdGhhdCBlbmRzIHVwIG1vdmluZyB0aGUgaWYgKGVpZCA9PSBFUDAp
+IHtjb2RlfQp0byBjb250cm9sIGVuZHBvaW50IGhhbmRsZXIgaW4gcGF0Y2ggNC4KCgpNaWNoYcWC
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
