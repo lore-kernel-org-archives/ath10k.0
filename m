@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c6oLD-0005nW-Et
- for ath10k@lists.infradead.org; Wed, 16 Nov 2016 00:44:45 +0000
-Received: by mail-wm0-x242.google.com with SMTP id g23so5701939wme.1
- for <ath10k@lists.infradead.org>; Tue, 15 Nov 2016 16:44:22 -0800 (PST)
+ id 1c70eU-00053V-AD
+ for ath10k@lists.infradead.org; Wed, 16 Nov 2016 13:53:30 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC 02/12] ath10k: htc: rx trailer lookahead support
+Date: Wed, 16 Nov 2016 13:53:00 +0000
+Message-ID: <87eg2bo7k7.fsf@kamboji.qca.qualcomm.com>
+References: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
+ <1479141222-8493-3-git-send-email-erik.stromdahl@gmail.com>
+ <CA+BoTQkJqv28=Mg1ncmyznRo-CLh6Y_OW-mJ+YTyqaREaqp39Q@mail.gmail.com>
+ <ac58b3f6-4432-b0b6-8b50-c733f898eded@gmail.com>
+In-Reply-To: <ac58b3f6-4432-b0b6-8b50-c733f898eded@gmail.com> (Erik
+ Stromdahl's message of "Tue, 15 Nov 2016 18:31:15 +0100")
+Content-Language: en-US
+Content-ID: <F2180D525DC86A4C9176FF7F2C6A489D@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CABkmk0UnZcZ4ryp0PLXK_yvbR19Xi+FH1g0jcJgkAdA23kNYYQ@mail.gmail.com>
-References: <CABkmk0WJhXOW2voJwNSHa7G0oz7T70grS2PGt_eNUcJKgxe0wg@mail.gmail.com>
- <CA+BoTQk9znROEy4o958DVuBkv1cpY6eG=-wCof1fahuh93PObw@mail.gmail.com>
- <CABkmk0UnZcZ4ryp0PLXK_yvbR19Xi+FH1g0jcJgkAdA23kNYYQ@mail.gmail.com>
-From: =?UTF-8?B?SGVucsO9IMOew7NyIEJhbGR1cnNzb24=?= <henry.baldursson@gmail.com>
-Date: Wed, 16 Nov 2016 00:44:20 +0000
-Message-ID: <CABkmk0V6ymDXR93Mq62u10t54q8qe7KdB-VvQ=-LYhu2nU7tAg@mail.gmail.com>
-Subject: Re: Connection problems with Qualcomm Atheros QCA6174
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,123 +24,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGVsbG8KCkl0IGFwcGVhcnMgdG8gc3RpbGwgYmUgaGFwcGVuaW5nLiBJbiBmYWN0IGVhY2ggcmVi
-b290IG15IHdpZmkgd29ya3MKZm9yIGEgZmV3IG1pbnV0ZXMgYW5kIHRoZW4gY3JhcHMgb3V0IGFu
-ZCBJIGdvdHRhIGN5Y2xlIGl0LiBJdCdzCmRlZmluaXRlbHkgbm90IHNob3dpbmcgdGhlIGJ1cyBl
-cnJvciBJIG1lbnRpb25lZCBldmVyeSB0aW1lLiBTbyBtYXliZQppdCdzIHVucmVsYXRlZC4KCklz
-IHRoZXJlIGEgd2F5IGZvciBtZSB0byBkZWJ1ZyB0aGUgZHJpdmVyLCBnZXQgaXQgdG8gYmUgbW9y
-ZSB2ZXJib3NlCm9yIHNvbWV0aGluZz8KCgpIZW5yeQoKT24gTW9uLCBOb3YgMTQsIDIwMTYgYXQg
-ODo1NiBQTSwgSGVucsO9IMOew7NyIEJhbGR1cnNzb24KPGhlbnJ5LmJhbGR1cnNzb25AZ21haWwu
-Y29tPiB3cm90ZToKPiBIaQo+Cj4gVGhhbmtzIGZvciB5b3VyIHJlcGx5LiA6LSkKPgo+IFRoZSBC
-SU9TIGRpZG4ndCBkaXNwbGF5IG9wdGlvbnMgcmVsYXRlZCB0byBTMHggb3IgUzBpeCBBQ1BJIG1v
-ZGVzLiBCdXQKPiB0aGVuLCBpdCdzIGEgTGVub3ZvIEJJT1MgYW5kIHRoZXkgZGlzYWJsZSBhbG90
-IG9mIGZlYXR1cmVzIGFuZCBkb24ndAo+IG9mZmVyIGFueSBleHBlcnQgbW9kZS4KPgo+IEkgYXBw
-bGllZCB5b3VyIHBhdGNoLCBhbmQgd2lsbCBzZWUgaWYgaXQga2VlcHMgbXkgbmV0d29yayBmcm9t
-IGZhaWxpbmcuCj4KPgo+IEl0J3MgYmVlbiBhIHdoaWxlIHNpbmNlIEkndmUgZG9uZSB0aGlzLCBp
-cyB0aGlzIGEgcHJvYmxlbT86Cj4gTm92IDE0IDIwOjQ3OjU4IHRlbXBlc3Qga2VybmVsOiBhdGgx
-MGtfY29yZTogbG9hZGluZyBvdXQtb2YtdHJlZQo+IG1vZHVsZSB0YWludHMga2VybmVsLgo+Cj4K
-Pgo+IC0gSGVucnkuCj4KPiBPbiBNb24sIE5vdiAxNCwgMjAxNiBhdCAxOjEzIFBNLCBNaWNoYWwg
-S2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4+IE9uIDEzIE5vdmVtYmVy
-IDIwMTYgYXQgMDY6NTcsIEhlbnLDvSDDnsOzciBCYWxkdXJzc29uCj4+IDxoZW5yeS5iYWxkdXJz
-c29uQGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiBIZWxsbwo+Pj4KPj4+IEkgaGF2ZSBhIExlbm92byBJ
-ZGVhcGFkIFlvZ2EgOTEwIHJ1bm5pbmcgQXRoZXJnb3MsIGtlcm5lbCB2ZXJzaW9uIDQuOC43Lgo+
-Pj4KPj4+IE15IHByb2JsZW0gaXMgdGhhdCBpbnRlcm1pdHRlbnRseSBteSB3aWZpIHdpbGwganVz
-dCBncmluZCB0byBhIGhhbHQKPj4+IGFuZCBldmVuIHN0b3Agd29ya2luZy4KPj4+Cj4+PiBUaGUg
-ZHJpdmVyIHJlcG9ydHMgdGhlIGZpcm13YXJlIGFzIGJlaW5nIFdMQU4uUk0uMi4wLTAwMTgwLVFD
-QVJNU1dQWi0xCj4+Pgo+Pj4gSGVyZSdzIHRoZSBpbml0aWFsaXphdGlvbiBpbiBkbWVzZzoKPj4+
-Cj4+PiBbICAgIDEuOTAwMDMzXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogcGNpIGlycSBtc2kg
-b3Blcl9pcnFfbW9kZSAyCj4+PiBpcnFfbW9kZSAwIHJlc2V0X21vZGUgMAo+Pj4gWyAgICAyLjE3
-MzAzOV0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvcgo+
-Pj4gYXRoMTBrL3ByZS1jYWwtcGNpLTAwMDA6MDE6MDAuMC5iaW4gZmFpbGVkIHdpdGggZXJyb3Ig
-LTIKPj4+IFsgICAgMi4xNzMwNTRdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBEaXJlY3QgZmly
-bXdhcmUgbG9hZCBmb3IKPj4+IGF0aDEway9jYWwtcGNpLTAwMDA6MDE6MDAuMC5iaW4gZmFpbGVk
-IHdpdGggZXJyb3IgLTIKPj4+IFsgICAgMi4xNzQyMTddIGF0aDEwa19wY2kgMDAwMDowMTowMC4w
-OiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPj4+IGF0aDEway9RQ0E2MTc0L2h3My4wL2Zpcm13
-YXJlLTUuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4+PiBbICAgIDIuMTc0MjE4XSBhdGgxMGtf
-cGNpIDAwMDA6MDE6MDAuMDogY291bGQgbm90IGZldGNoIGZpcm13YXJlIGZpbGUKPj4+ICdhdGgx
-MGsvUUNBNjE3NC9odzMuMC9maXJtd2FyZS01LmJpbic6IC0yCj4+PiBbICAgIDIuMTc1NDg1XSBh
-dGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogcWNhNjE3NCBodzMuMiB0YXJnZXQKPj4+IDB4MDUwMzAw
-MDAgY2hpcF9pZCAweDAwMzQwYWZmIHN1YiAxN2FhOjA4MjcKPj4+IFsgICAgMi4xNzU0ODddIGF0
-aDEwa19wY2kgMDAwMDowMTowMC4wOiBrY29uZmlnIGRlYnVnIDAgZGVidWdmcyAxCj4+PiB0cmFj
-aW5nIDAgZGZzIDAgdGVzdG1vZGUgMAo+Pj4gWyAgICAyLjE3NTg3Nl0gYXRoMTBrX3BjaSAwMDAw
-OjAxOjAwLjA6IGZpcm13YXJlIHZlcgo+Pj4gV0xBTi5STS4yLjAtMDAxODAtUUNBUk1TV1BaLTEg
-YXBpIDQgZmVhdHVyZXMKPj4+IHdvd2xhbixpZ25vcmUtb3RwLG5vLTRhZGRyLXBhZCBjcmMzMiA3
-NWRlZTZjNQo+Pj4gWyAgICAyLjI0MDMxMl0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGJvYXJk
-X2ZpbGUgYXBpIDIgYm1pX2lkIE4vQQo+Pj4gY3JjMzIgNmZjODhmZTcKPj4+IFsgICAgNC40MDU3
-NDFdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBodHQtdmVyIDMuMjYgd21pLW9wIDQgaHR0LW9w
-IDMKPj4+IGNhbCBvdHAgbWF4LXN0YSAzMiByYXcgMCBod2NyeXB0byAxCj4+PiBbICAgIDQuNDg1
-MzYyXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMCB3bHAxczA6IHJlbmFtZWQgZnJvbSB3bGFuMAo+
-Pj4KPj4+Cj4+PiBIZXJlJ3Mgd2hhdCBkbWVzZyBzaG93cyBkdXJpbmcgdGhlIGVycm9yczoKPj4+
-Cj4+PiBbIDEyMzguNzEwODk5XSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6IEFFUjogQ29ycmVjdGVk
-IGVycm9yIHJlY2VpdmVkOiBpZD0wMGUwCj4+PiBbIDEyMzguNzEwOTIwXSBwY2llcG9ydCAwMDAw
-OjAwOjFjLjA6IFBDSWUgQnVzIEVycm9yOgo+Pj4gc2V2ZXJpdHk9Q29ycmVjdGVkLCB0eXBlPURh
-dGEgTGluayBMYXllciwgaWQ9MDBlMChUcmFuc21pdHRlciBJRCkKPj4+IFsgMTIzOC43MTA5MzVd
-IHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogICBkZXZpY2UgWzgwODY6OWQxNF0gZXJyb3IKPj4+IHN0
-YXR1cy9tYXNrPTAwMDAxMDAwLzAwMDAwMDAwCj4+PiBbIDEyMzguNzEwOTQ1XSBwY2llcG9ydCAw
-MDAwOjAwOjFjLjA6ICAgIFsxMl0gUmVwbGF5IFRpbWVyIFRpbWVvdXQKPj4+IFsgMTI0My44NTU0
-NTZdIHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogQUVSOiBDb3JyZWN0ZWQgZXJyb3IgcmVjZWl2ZWQ6
-IGlkPTAwZTAKPj4+IFsgMTI0My44NTU0NzJdIHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogUENJZSBC
-dXMgRXJyb3I6Cj4+PiBzZXZlcml0eT1Db3JyZWN0ZWQsIHR5cGU9RGF0YSBMaW5rIExheWVyLCBp
-ZD0wMGUwKFRyYW5zbWl0dGVyIElEKQo+Pj4gWyAxMjQzLjg1NTQ4NF0gcGNpZXBvcnQgMDAwMDow
-MDoxYy4wOiAgIGRldmljZSBbODA4Njo5ZDE0XSBlcnJvcgo+Pj4gc3RhdHVzL21hc2s9MDAwMDEw
-MDAvMDAwMDAwMDAKPj4+IFsgMTI0My44NTU0OTFdIHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogICAg
-WzEyXSBSZXBsYXkgVGltZXIgVGltZW91dAo+Pj4gWyAxMjk2LjA5NTQzN10gcGNpZXBvcnQgMDAw
-MDowMDoxYy4wOiBBRVI6IENvcnJlY3RlZCBlcnJvciByZWNlaXZlZDogaWQ9MDBlMAo+Pj4gWyAx
-Mjk2LjA5NTQ1Ml0gcGNpZXBvcnQgMDAwMDowMDoxYy4wOiBQQ0llIEJ1cyBFcnJvcjoKPj4+IHNl
-dmVyaXR5PUNvcnJlY3RlZCwgdHlwZT1EYXRhIExpbmsgTGF5ZXIsIGlkPTAwZTAoVHJhbnNtaXR0
-ZXIgSUQpCj4+PiBbIDEyOTYuMDk1NDY0XSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6ICAgZGV2aWNl
-IFs4MDg2OjlkMTRdIGVycm9yCj4+PiBzdGF0dXMvbWFzaz0wMDAwMTAwMC8wMDAwMDAwMAo+Pj4g
-WyAxMjk2LjA5NTQ3Ml0gcGNpZXBvcnQgMDAwMDowMDoxYy4wOiAgICBbMTJdIFJlcGxheSBUaW1l
-ciBUaW1lb3V0Cj4+PiBbIDEzMDUuODc3NTQ3XSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6IEFFUjog
-Q29ycmVjdGVkIGVycm9yIHJlY2VpdmVkOiBpZD0wMGUwCj4+PiBbIDEzMDUuODc3NTYyXSBwY2ll
-cG9ydCAwMDAwOjAwOjFjLjA6IFBDSWUgQnVzIEVycm9yOgo+Pj4gc2V2ZXJpdHk9Q29ycmVjdGVk
-LCB0eXBlPURhdGEgTGluayBMYXllciwgaWQ9MDBlMChUcmFuc21pdHRlciBJRCkKPj4+IFsgMTMw
-NS44Nzc1NzRdIHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogICBkZXZpY2UgWzgwODY6OWQxNF0gZXJy
-b3IKPj4+IHN0YXR1cy9tYXNrPTAwMDAxMDAwLzAwMDAwMDAwCj4+PiBbIDEzMDUuODc3NTgxXSBw
-Y2llcG9ydCAwMDAwOjAwOjFjLjA6ICAgIFsxMl0gUmVwbGF5IFRpbWVyIFRpbWVvdXQKPj4+IFsg
-MTU1Ni41OTYwOTJdIHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogQUVSOiBDb3JyZWN0ZWQgZXJyb3Ig
-cmVjZWl2ZWQ6IGlkPTAwZTAKPj4+IFsgMTU1Ni41OTYxMDddIHBjaWVwb3J0IDAwMDA6MDA6MWMu
-MDogUENJZSBCdXMgRXJyb3I6Cj4+PiBzZXZlcml0eT1Db3JyZWN0ZWQsIHR5cGU9RGF0YSBMaW5r
-IExheWVyLCBpZD0wMGUwKFRyYW5zbWl0dGVyIElEKQo+Pj4gWyAxNTU2LjU5NjExNV0gcGNpZXBv
-cnQgMDAwMDowMDoxYy4wOiAgIGRldmljZSBbODA4Njo5ZDE0XSBlcnJvcgo+Pj4gc3RhdHVzL21h
-c2s9MDAwMDEwMDAvMDAwMDAwMDAKPj4+IFsgMTU1Ni41OTYxMjJdIHBjaWVwb3J0IDAwMDA6MDA6
-MWMuMDogICAgWzEyXSBSZXBsYXkgVGltZXIgVGltZW91dAo+Pj4gWyAxNjEyLjc2NDEwOF0gcGNp
-ZXBvcnQgMDAwMDowMDoxYy4wOiBBRVI6IENvcnJlY3RlZCBlcnJvciByZWNlaXZlZDogaWQ9MDBl
-MAo+Pj4gWyAxNjEyLjc2NDEyNF0gcGNpZXBvcnQgMDAwMDowMDoxYy4wOiBQQ0llIEJ1cyBFcnJv
-cjoKPj4+IHNldmVyaXR5PUNvcnJlY3RlZCwgdHlwZT1EYXRhIExpbmsgTGF5ZXIsIGlkPTAwZTAo
-VHJhbnNtaXR0ZXIgSUQpCj4+PiBbIDE2MTIuNzY0MTM1XSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6
-ICAgZGV2aWNlIFs4MDg2OjlkMTRdIGVycm9yCj4+PiBzdGF0dXMvbWFzaz0wMDAwMTAwMC8wMDAw
-MDAwMAo+Pj4gWyAxNjEyLjc2NDE0M10gcGNpZXBvcnQgMDAwMDowMDoxYy4wOiAgICBbMTJdIFJl
-cGxheSBUaW1lciBUaW1lb3V0Cj4+Cj4+IENhbiB5b3UgdHJ5IHRvIG92ZXJyaWRlIGFyX3BjaS0+
-cGNpX3BzIHRvIGZhbHNlIGluIGF0aDEwa19wY2lfcHJvYmUoKQo+PiBhbmQgc2VlIGlmIGl0IGhl
-bHBzPyBTb21ldGhpbmcgYWxvbmcgdGhlIGRpZmY6Cj4+Cj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dp
-cmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMKPj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
-L2F0aDEway9wY2kuYwo+PiBAQCAtMzIzNiw3ICszMjM2LDcgQEAgc3RhdGljIGludCBhdGgxMGtf
-cGNpX3Byb2JlKHN0cnVjdCBwY2lfZGV2ICpwZGV2LAo+PiAgICAgICAgIGFyX3BjaS0+ZGV2ID0g
-JnBkZXYtPmRldjsKPj4gICAgICAgICBhcl9wY2ktPmFyID0gYXI7Cj4+ICAgICAgICAgYXItPmRl
-dl9pZCA9IHBjaV9kZXYtPmRldmljZTsKPj4gLSAgICAgICBhcl9wY2ktPnBjaV9wcyA9IHBjaV9w
-czsKPj4gKyAgICAgICBhcl9wY2ktPnBjaV9wcyA9IGZhbHNlOwo+PiAgICAgICAgIGFyX3BjaS0+
-YnVzX29wcyA9ICZhdGgxMGtfcGNpX2J1c19vcHM7Cj4+ICAgICAgICAgYXJfcGNpLT5wY2lfc29m
-dF9yZXNldCA9IHBjaV9zb2Z0X3Jlc2V0Owo+PiAgICAgICAgIGFyX3BjaS0+cGNpX2hhcmRfcmVz
-ZXQgPSBwY2lfaGFyZF9yZXNldDsKPj4KPj4gQW5vdGhlciB0aGluZyB3aGljaCBjb3VsZCBiZSBo
-YXBwZW5pbmcgaXMgQUNQSSBTMGl4IHN0YXRlcyB3aGljaCAtIHRvCj4+IHRoZSBiZXN0IG9mIG15
-IGtub3dsZWRnZSAtIExpbnV4IGRvZXMgbm90IHN1cHBvcnQuIEkndmUgc2VlbiBhdCBsZWFzdAo+
-PiBpOTE1IG5vdCBiZWluZyBhYmxlIHRvIHdha2UtdXAgRFNJIGRpc3BsYXlzIHByb3Blcmx5IHdo
-ZW4gUzBpeCBzdGF0ZXMKPj4gYXJlIGVuYWJsZWQgb24gc29tZSAxMCBpbmNoIDItaW4tMSBkZXZp
-Y2VzLiBJIHdvdWxkbid0IGJlIHN1cnByaXNlZCBpZgo+PiBvdGhlciBQQ0ktRSAoc3VjaCBhcyB3
-aWZpL25ldHdvcmsgZGV2aWNlcykgY2FuIGJlIGFmZmVjdGVkIGFkdmVyc2VseQo+PiBhcyB3ZWxs
-Lgo+Pgo+PiBUaGVyZWZvcmUsIGNhbiB5b3UgY2hlY2sgVUVGSS9CSU9TICh5b3UgbWF5IG5lZWQg
-dG8gZW5hYmxlICJleHBlcnQKPj4gc2V0dGluZ3MiKSBpZiB0aGVyZSBhcmUgYW55IG1lbnRpb25z
-IGFib3V0IFMweCBvciBTMGl4IEFDUEkgbW9kZXMKPj4gdGhlcmUgYW5kIC0gaWYgZm91bmQgLSB0
-cnkgZGlzYWJsaW5nIHRoZW0gYW5kIGNoZWNraW5nIGJhY2sgaWYgeW91Cj4+IHN0aWxsIGdldCBB
-RVIvYnVzIGVycm9ycywgcGxlYXNlPwo+Pgo+Pgo+PiBNaWNoYcWCCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+
+> On 11/15/2016 10:57 AM, Michal Kazior wrote:
+>> On 14 November 2016 at 17:33, Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
+>>> The RX trailer parsing is now capable of parsing lookahead reports.
+>>> This is needed by SDIO/mbox.
+>> 
+>> It'd be useful to know what exactly lookahead will be used for. What
+>> payload does it carry.
+>> 
+> It carries the 4 first bytes of the next RX message, i.e. the first 4
+> bytes of an HTC header.
+>
+> It is used by the sdio interrupt handler to know if the next packet is a
+> part of an RX bundle, which endpoint it belongs to and how long it is
+> (so we know how many bytes to allocate).
+
+Please add that to the commit log, it's useful information. Or maybe a
+code comment would be better?
+
+>>> +static int
+>>> +ath10k_htc_process_lookahead(struct ath10k_htc *htc,
+>>> +                            const struct ath10k_htc_lookahead_report *report,
+>>> +                            int len,
+>>> +                            enum ath10k_htc_ep_id eid,
+>>> +                            u32 *next_lk_ahds,
+>> 
+>> next_lk_ahds should be u8 or void. From what I understand by glancing
+>> through the code it is an agnostic buffer that carries payload which
+>> is later interpreted either as eid or htc header, right? void is
+>> probably most suitable in this case for passing around and u8 for
+>> inline-based storage.
+>> 
+> Sounds reasonable, I'll change to void pointer.
+>
+>> I'd also avoid silly abbreviations. Probably "lookahead" alone is enough.
+>> 
+> Ok, this abbreviation was actually taken from the ath6kl code. I think
+> the intention was to reduce line lengths.
+
+Most likely that comes from the staging ath6kl driver which again is a
+fork of the Atheros internal driver. I agree with Michal, better to
+avoid silly abbreviations as much as possible. Readability is most
+important.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
