@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.mailbox.org ([80.241.60.212])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c78aV-0000S1-Lr
- for ath10k@lists.infradead.org; Wed, 16 Nov 2016 22:21:54 +0000
-From: "Conrad Kostecki" <ck+ath10k@bl4ckb0x.de>
-Subject: Re[4]: Linux freezes after a time while running
-Date: Wed, 16 Nov 2016 22:21:10 +0000
-Message-Id: <em6522b3b0-023a-4914-bdd1-d5f8734f6c75@valkyrie>
-In-Reply-To: <CA+BoTQniCnXce6-w9SPp_aiuei8bjfbVJSkvXi_p4ew_Ed4Qdg@mail.gmail.com>
-References: <1403930336.4012.1477681558487@office.mailbox.org>
- <CA+BoTQmbz1vHjn0Xbo2hKcb9v8MdN5uTEnVNOAK0Kfh_NwTp5w@mail.gmail.com>
- <ema51f2924-a0bb-4f7a-8d84-3ee6fb82e317@valkyrie>
- <CA+BoTQkyd2f78Pk=_FrYyuQXedn8t6EEYq6BWHB8zthOF_AZ6w@mail.gmail.com>
- <1233772075.6396.1478077219620@office.mailbox.org>
- <CA+BoTQnOGOAEvM=M-1TqaN3GPgSJ2CUX-6Upa38jmaRzW9JkGA@mail.gmail.com>
- <1204267275.1178.1478525905172@office.mailbox.org>
- <CA+BoTQniCnXce6-w9SPp_aiuei8bjfbVJSkvXi_p4ew_Ed4Qdg@mail.gmail.com>
-Mime-Version: 1.0
+ id 1c7L7P-0008Ba-5P
+ for ath10k@lists.infradead.org; Thu, 17 Nov 2016 11:44:40 +0000
+From: <c_traja@qti.qualcomm.com>
+Subject: [PATCHv2 1/4] ath10k: Add support to enable or disable btcoex via
+ nl80211
+Date: Thu, 17 Nov 2016 17:14:21 +0530
+Message-ID: <1479383064-25718-2-git-send-email-c_traja@qti.qualcomm.com>
+In-Reply-To: <1479383064-25718-1-git-send-email-c_traja@qti.qualcomm.com>
+References: <1479383064-25718-1-git-send-email-c_traja@qti.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +19,181 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: Conrad Kostecki <ck+ath10k@bl4ckb0x.de>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: robh@kernel.org, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Tamizh chelvam <c_traja@qti.qualcomm.com>, tamizhchelvam@codeaurora.org
 
-Hello Michal,
+From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
-Am 07.11.2016 17:43:02, "Michal Kazior" <michal.kazior@tieto.com> 
-schrieb:
+This patch add support to enable or disable btcoex via nl80211.
+The firmware support this feature since 10.2.4.54 on 2G-only board,
+dual band or 5G boards don't support this. WMI service
+WMI_SERVICE_COEX_GPIO is used to identify the firmware support of this
+feature.
 
->
->I assume you used a different kernel in the past compared to the
->recent test you did. You could try re-testing the older kernel
->(assuming you remember which one it was) and if it works you could
->bisect your way to find the commit that breaks it for you.
->
->
-I don't have the older kernel config anymore, but it was pretty the 
-same, as my current one.
-I've now done some tests and it's quite interesseting. Kernelversion did 
-not matter for me.
+Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/debug.c |   37 ++------------------
+ drivers/net/wireless/ath/ath10k/mac.c   |   58 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/mac.h   |    1 +
+ 3 files changed, 62 insertions(+), 34 deletions(-)
 
-Running with current firmware-5.bin, it's always crashing. I tried 
-different BIOS options, nothing helped.
-
-BUT: Downgrade to firmware-2.bin helps.
-ath10k_pci 0000:03:00.0: firmware ver 10.1.467.3-1 api 2 features 
-wmi-10.x, has-wmi-mgmt-tx,no-p2p crc32 2c3ffc2f
-
-Running such old firmware, the Wifi just runs stable. NO firmware crash 
-happens. When I just change firmware back to firmware-5.bin, it crashes 
-again.
-So there seems to changed something. Can be this debugged somehow?
-
-With firmware-2.bin, I am also getting such errors, but WiFi works fine:
-[   82.504901] ath10k_pci 0000:03:00.0: SWBA overrun on vdev 0, skipped 
-old beacon
-[   82.556103] ath10k_pci 0000:03:00.0: SWBA overrun on vdev 1, skipped 
-old beacon
-[   87.113085] ath10k_warn: 89 callbacks suppressed
-
-Currently, the workaround is for me firmware-2.bin, but IMHO it's not a 
-solution..
-Any Ideas?
-
-Cheers
-Conrad
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 82a4c67..ea30fbe 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -26,6 +26,7 @@
+ #include "debug.h"
+ #include "hif.h"
+ #include "wmi-ops.h"
++#include "mac.h"
+ 
+ /* ms */
+ #define ATH10K_DEBUG_HTT_STATS_INTERVAL 1000
+@@ -2138,7 +2139,6 @@ static ssize_t ath10k_write_btcoex(struct file *file,
+ 	size_t buf_size;
+ 	int ret;
+ 	bool val;
+-	u32 pdev_param;
+ 
+ 	buf_size = min(count, (sizeof(buf) - 1));
+ 	if (copy_from_user(buf, ubuf, buf_size))
+@@ -2150,40 +2150,9 @@ static ssize_t ath10k_write_btcoex(struct file *file,
+ 		return -EINVAL;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+-
+-	if (ar->state != ATH10K_STATE_ON &&
+-	    ar->state != ATH10K_STATE_RESTARTED) {
+-		ret = -ENETDOWN;
+-		goto exit;
+-	}
+-
+-	if (!(test_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags) ^ val)) {
++	ret = ath10k_mac_set_btcoex(ar, val);
++	if (!ret)
+ 		ret = count;
+-		goto exit;
+-	}
+-
+-	pdev_param = ar->wmi.pdev_param->enable_btcoex;
+-	if (test_bit(ATH10K_FW_FEATURE_BTCOEX_PARAM,
+-		     ar->running_fw->fw_file.fw_features)) {
+-		ret = ath10k_wmi_pdev_set_param(ar, pdev_param, val);
+-		if (ret) {
+-			ath10k_warn(ar, "failed to enable btcoex: %d\n", ret);
+-			ret = count;
+-			goto exit;
+-		}
+-	} else {
+-		ath10k_info(ar, "restarting firmware due to btcoex change");
+-		queue_work(ar->workqueue, &ar->restart_work);
+-	}
+-
+-	if (val)
+-		set_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags);
+-	else
+-		clear_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags);
+-
+-	ret = count;
+-
+-exit:
+ 	mutex_unlock(&ar->conf_mutex);
+ 
+ 	return ret;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 717b2fa..e7131b9 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7445,6 +7445,63 @@ struct ath10k_mac_change_chanctx_arg {
+ 	return 0;
+ }
+ 
++static inline void ath10k_mac_update_btcoex_flag(struct ath10k *ar, bool val)
++{
++	if (val)
++		set_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags);
++	else
++		clear_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags);
++}
++
++int ath10k_mac_set_btcoex(struct ath10k *ar, bool val)
++{
++	u32 pdev_param;
++	int ret;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	if (ar->state != ATH10K_STATE_ON &&
++	    ar->state != ATH10K_STATE_RESTARTED)
++		return -ENETDOWN;
++
++	if (!(test_bit(ATH10K_FLAG_BTCOEX, &ar->dev_flags) ^ val))
++		return 0;
++
++	pdev_param = ar->wmi.pdev_param->enable_btcoex;
++	if (test_bit(ATH10K_FW_FEATURE_BTCOEX_PARAM,
++		     ar->running_fw->fw_file.fw_features)) {
++		ret = ath10k_wmi_pdev_set_param(ar, pdev_param, val);
++
++		if (ret) {
++			ath10k_warn(ar,
++				    "failed to modify btcoex state: %d\n", ret);
++			return ret;
++		}
++		ath10k_mac_update_btcoex_flag(ar, val);
++	} else {
++		ath10k_info(ar, "restarting firmware due to btcoex change");
++		ath10k_mac_update_btcoex_flag(ar, val);
++		queue_work(ar->workqueue, &ar->restart_work);
++	}
++
++	return 0;
++}
++
++static int ath10k_mac_op_set_btcoex(struct ieee80211_hw *hw, bool enabled)
++{
++	int ret;
++	struct ath10k *ar = hw->priv;
++
++	if (!test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map))
++		return -EOPNOTSUPP;
++
++	mutex_lock(&ar->conf_mutex);
++	ret = ath10k_mac_set_btcoex(ar, enabled);
++	mutex_unlock(&ar->conf_mutex);
++
++	return ret;
++}
++
+ static const struct ieee80211_ops ath10k_ops = {
+ 	.tx				= ath10k_mac_op_tx,
+ 	.wake_tx_queue			= ath10k_mac_op_wake_tx_queue,
+@@ -7486,6 +7543,7 @@ struct ath10k_mac_change_chanctx_arg {
+ 	.assign_vif_chanctx		= ath10k_mac_op_assign_vif_chanctx,
+ 	.unassign_vif_chanctx		= ath10k_mac_op_unassign_vif_chanctx,
+ 	.switch_vif_chanctx		= ath10k_mac_op_switch_vif_chanctx,
++	.set_btcoex                     = ath10k_mac_op_set_btcoex,
+ 
+ 	CFG80211_TESTMODE_CMD(ath10k_tm_cmd)
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
+index 1bd29ec..de1fa72 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.h
++++ b/drivers/net/wireless/ath/ath10k/mac.h
+@@ -82,6 +82,7 @@ struct ieee80211_txq *ath10k_mac_txq_lookup(struct ath10k *ar,
+ 					    u16 peer_id,
+ 					    u8 tid);
+ int ath10k_mac_ext_resource_config(struct ath10k *ar, u32 val);
++int ath10k_mac_set_btcoex(struct ath10k *ar, bool val);
+ 
+ static inline struct ath10k_vif *ath10k_vif_to_arvif(struct ieee80211_vif *vif)
+ {
+-- 
+1.7.9.5
 
 
 _______________________________________________
