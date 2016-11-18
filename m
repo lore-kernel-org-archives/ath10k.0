@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x241.google.com ([2607:f8b0:400d:c09::241])
+Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7om1-0005t1-Kq
- for ath10k@lists.infradead.org; Fri, 18 Nov 2016 19:24:35 +0000
-Received: by mail-qk0-x241.google.com with SMTP id y205so857593qkb.1
- for <ath10k@lists.infradead.org>; Fri, 18 Nov 2016 11:24:12 -0800 (PST)
+ id 1c7om6-00065j-W5
+ for ath10k@lists.infradead.org; Fri, 18 Nov 2016 19:24:40 +0000
+Received: by mail-qk0-x242.google.com with SMTP id y205so858691qkb.1
+ for <ath10k@lists.infradead.org>; Fri, 18 Nov 2016 11:24:21 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v2 01/11] ath10k: htc: made static function public
-Date: Fri, 18 Nov 2016 20:22:41 +0100
-Message-Id: <1479496971-19174-2-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v2 10/11] ath10k: Added more host_interest members
+Date: Fri, 18 Nov 2016 20:22:50 +0100
+Message-Id: <1479496971-19174-11-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,79 +27,55 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Changed ath10k_htc_notify_tx_completion and
-ath10k_htc_process_trailer from static to non static.
-
-These functions are needed by SDIO/mbox.
+Augmented struct host_interest with more members.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.c |   14 ++++++++------
- drivers/net/wireless/ath/ath10k/htc.h |    6 ++++++
- 2 files changed, 14 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath10k/targaddrs.h |   24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 175aae3..26b1e15 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -57,8 +57,8 @@ static inline void ath10k_htc_restore_tx_skb(struct ath10k_htc *htc,
- 	skb_pull(skb, sizeof(struct ath10k_htc_hdr));
- }
+diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
+index a47cab4..58e0541 100644
+--- a/drivers/net/wireless/ath/ath10k/targaddrs.h
++++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
+@@ -205,6 +205,24 @@ struct host_interest {
+ 	 */
+ 	/* Bit 1 - unused */
+ 	u32 hi_fw_swap;					/* 0x104 */
++
++	/* global arenas pointer address, used by host driver debug */
++	u32 hi_dynamic_mem_arenas_addr;			/* 0x108 */
++
++	/* allocated bytes of DRAM use by allocated */
++	u32 hi_dynamic_mem_allocated;			/* 0x10C */
++
++	/* remaining bytes of DRAM */
++	u32 hi_dynamic_mem_remaining;			/* 0x110 */
++
++	/* memory track count, configured by host */
++	u32 hi_dynamic_mem_track_max;			/* 0x114 */
++
++	/* minidump buffer */
++	u32 hi_minidump;				/* 0x118 */
++
++	/* bdata's sig and key addr */
++	u32 hi_bd_sig_key;				/* 0x11c */
+ } __packed;
  
--static void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
--					    struct sk_buff *skb)
-+void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
-+				     struct sk_buff *skb)
- {
- 	struct ath10k *ar = ep->htc->ar;
+ #define HI_ITEM(item)  offsetof(struct host_interest, item)
+@@ -319,6 +337,12 @@ struct host_interest {
+ #define HI_ACS_FLAGS_USE_WWAN       (1 << 1)
+ /* Use test VAP */
+ #define HI_ACS_FLAGS_TEST_VAP       (1 << 2)
++/* SDIO/mailbox ACS flag definitions */
++#define HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET       (1 << 0)
++#define HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET    (1 << 1)
++#define HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE        (1 << 2)
++#define HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_FW_ACK    (1 << 16)
++#define HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_FW_ACK (1 << 17)
  
-@@ -75,6 +75,7 @@ static void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
- 
- 	ep->ep_ops.ep_tx_complete(ep->htc->ar, skb);
- }
-+EXPORT_SYMBOL(ath10k_htc_notify_tx_completion);
- 
- static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
- 				      struct sk_buff *skb)
-@@ -227,10 +228,10 @@ void ath10k_htc_tx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
- 	spin_unlock_bh(&htc->tx_lock);
- }
- 
--static int ath10k_htc_process_trailer(struct ath10k_htc *htc,
--				      u8 *buffer,
--				      int length,
--				      enum ath10k_htc_ep_id src_eid)
-+int ath10k_htc_process_trailer(struct ath10k_htc *htc,
-+			       u8 *buffer,
-+			       int length,
-+			       enum ath10k_htc_ep_id src_eid)
- {
- 	struct ath10k *ar = htc->ar;
- 	int status = 0;
-@@ -291,6 +292,7 @@ static int ath10k_htc_process_trailer(struct ath10k_htc *htc,
- 
- 	return status;
- }
-+EXPORT_SYMBOL(ath10k_htc_process_trailer);
- 
- void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
- {
-diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index 0c55cd9..858e19f 100644
---- a/drivers/net/wireless/ath/ath10k/htc.h
-+++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -354,5 +354,11 @@ int ath10k_htc_send(struct ath10k_htc *htc, enum ath10k_htc_ep_id eid,
- struct sk_buff *ath10k_htc_alloc_skb(struct ath10k *ar, int size);
- void ath10k_htc_tx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
- void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
-+void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
-+				     struct sk_buff *skb);
-+int ath10k_htc_process_trailer(struct ath10k_htc *htc,
-+			       u8 *buffer,
-+			       int length,
-+			       enum ath10k_htc_ep_id src_eid);
- 
- #endif
+ /*
+  * CONSOLE FLAGS
 -- 
 1.7.9.5
 
