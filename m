@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x243.google.com ([2607:f8b0:400d:c09::243])
+Received: from mail-qk0-x244.google.com ([2607:f8b0:400d:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7om3-0005vQ-JC
- for ath10k@lists.infradead.org; Fri, 18 Nov 2016 19:24:37 +0000
-Received: by mail-qk0-x243.google.com with SMTP id x190so34214540qkb.0
+ id 1c7om1-0005vW-IW
+ for ath10k@lists.infradead.org; Fri, 18 Nov 2016 19:24:34 +0000
+Received: by mail-qk0-x244.google.com with SMTP id h201so34193727qke.3
  for <ath10k@lists.infradead.org>; Fri, 18 Nov 2016 11:24:15 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v2 03/11] ath10k: htc: Removal of unused struct members
-Date: Fri, 18 Nov 2016 20:22:43 +0100
-Message-Id: <1479496971-19174-4-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v2 04/11] ath10k: htc: Changed order of wait target and ep
+ connect
+Date: Fri, 18 Nov 2016 20:22:44 +0100
+Message-Id: <1479496971-19174-5-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,47 +28,81 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Removed tx_credits_per_max_message and tx_credit_size
-from struct ath10k_htc_ep since they are not used
-anywhere in the code.
+This patch changes the order in which the driver waits for the
+target to become ready and the service connect of the HTC
+control service.
 
-They are just written, never read.
+The HTC control service is connected before the driver starts
+waiting for the HTC ready message.
+
+The HTC ready message contains the total number of transmit
+credits the driver can distribute between endpoints.
+Since the HTC control service does not use any flow control
+it is not necessary to wait for the ready message before
+connecting the service.
+There will be no credits assigned to this service anyway.
+Besides, connecting the HTC control service does not yield
+any bus traffic at all.
+
+The ready message will always be transmitted on endpoint 0
+(which is always assigned to the HTC control service) so it
+makes more sense if HTC control has been connected before the
+ready message is received.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.c |    6 ------
- drivers/net/wireless/ath/ath10k/htc.h |    2 --
- 2 files changed, 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/htc.c |   32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 957e828..79d44de 100644
+index 79d44de..6ff5837 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.c
 +++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -815,12 +815,6 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
- 	ep->max_tx_queue_depth = conn_req->max_send_queue_depth;
- 	ep->max_ep_message_len = __le16_to_cpu(resp_msg->max_msg_size);
- 	ep->tx_credits = tx_alloc;
--	ep->tx_credit_size = htc->target_credit_size;
--	ep->tx_credits_per_max_message = ep->max_ep_message_len /
--					 htc->target_credit_size;
+@@ -606,6 +606,22 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
+ 	u16 credit_count;
+ 	u16 credit_size;
+ 
++	/* setup our pseudo HTC control endpoint connection */
++	memset(&conn_req, 0, sizeof(conn_req));
++	memset(&conn_resp, 0, sizeof(conn_resp));
++	conn_req.ep_ops.ep_tx_complete = ath10k_htc_control_tx_complete;
++	conn_req.ep_ops.ep_rx_complete = ath10k_htc_control_rx_complete;
++	conn_req.max_send_queue_depth = ATH10K_NUM_CONTROL_TX_BUFFERS;
++	conn_req.service_id = ATH10K_HTC_SVC_ID_RSVD_CTRL;
++
++	/* connect fake service */
++	status = ath10k_htc_connect_service(htc, &conn_req, &conn_resp);
++	if (status) {
++		ath10k_err(ar, "could not connect to htc service (%d)\n",
++			   status);
++		return status;
++	}
++
+ 	time_left = wait_for_completion_timeout(&htc->ctl_resp,
+ 						ATH10K_HTC_WAIT_TIMEOUT_HZ);
+ 	if (!time_left) {
+@@ -665,22 +681,6 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
+ 
+ 	ath10k_htc_setup_target_buffer_assignments(htc);
+ 
+-	/* setup our pseudo HTC control endpoint connection */
+-	memset(&conn_req, 0, sizeof(conn_req));
+-	memset(&conn_resp, 0, sizeof(conn_resp));
+-	conn_req.ep_ops.ep_tx_complete = ath10k_htc_control_tx_complete;
+-	conn_req.ep_ops.ep_rx_complete = ath10k_htc_control_rx_complete;
+-	conn_req.max_send_queue_depth = ATH10K_NUM_CONTROL_TX_BUFFERS;
+-	conn_req.service_id = ATH10K_HTC_SVC_ID_RSVD_CTRL;
 -
--	if (ep->max_ep_message_len % htc->target_credit_size)
--		ep->tx_credits_per_max_message++;
- 
- 	/* copy all the callbacks */
- 	ep->ep_ops = conn_req->ep_ops;
-diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index b0f9cf3..f94b25a 100644
---- a/drivers/net/wireless/ath/ath10k/htc.h
-+++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -336,8 +336,6 @@ struct ath10k_htc_ep {
- 
- 	u8 seq_no; /* for debugging */
- 	int tx_credits;
--	int tx_credit_size;
--	int tx_credits_per_max_message;
- 	bool tx_credit_flow_enabled;
- };
+-	/* connect fake service */
+-	status = ath10k_htc_connect_service(htc, &conn_req, &conn_resp);
+-	if (status) {
+-		ath10k_err(ar, "could not connect to htc service (%d)\n",
+-			   status);
+-		return status;
+-	}
+-
+ 	return 0;
+ }
  
 -- 
 1.7.9.5
