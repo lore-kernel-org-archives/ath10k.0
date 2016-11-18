@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x244.google.com ([2607:f8b0:400d:c09::244])
+Received: from mail-qk0-x243.google.com ([2607:f8b0:400d:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7om4-0005yK-UF
- for ath10k@lists.infradead.org; Fri, 18 Nov 2016 19:24:38 +0000
-Received: by mail-qk0-x244.google.com with SMTP id y205so858339qkb.1
- for <ath10k@lists.infradead.org>; Fri, 18 Nov 2016 11:24:18 -0800 (PST)
+ id 1c7om3-0005vQ-JC
+ for ath10k@lists.infradead.org; Fri, 18 Nov 2016 19:24:37 +0000
+Received: by mail-qk0-x243.google.com with SMTP id x190so34214540qkb.0
+ for <ath10k@lists.infradead.org>; Fri, 18 Nov 2016 11:24:15 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v2 07/11] ath10k: Added SDIO dbg masks
-Date: Fri, 18 Nov 2016 20:22:47 +0100
-Message-Id: <1479496971-19174-8-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v2 03/11] ath10k: htc: Removal of unused struct members
+Date: Fri, 18 Nov 2016 20:22:43 +0100
+Message-Id: <1479496971-19174-4-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,24 +27,46 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Debug masks for SDIO HIF layer.
+Removed tx_credits_per_max_message and tx_credit_size
+from struct ath10k_htc_ep since they are not used
+anywhere in the code.
+
+They are just written, never read.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/debug.h |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/ath/ath10k/htc.c |    6 ------
+ drivers/net/wireless/ath/ath10k/htc.h |    2 --
+ 2 files changed, 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 335512b..d35263c 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -38,6 +38,8 @@ enum ath10k_debug_mask {
- 	ATH10K_DBG_WMI_PRINT	= 0x00002000,
- 	ATH10K_DBG_PCI_PS	= 0x00004000,
- 	ATH10K_DBG_AHB		= 0x00008000,
-+	ATH10K_DBG_SDIO		= 0x00010000,
-+	ATH10K_DBG_SDIO_DUMP	= 0x00020000,
- 	ATH10K_DBG_ANY		= 0xffffffff,
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 957e828..79d44de 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -815,12 +815,6 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+ 	ep->max_tx_queue_depth = conn_req->max_send_queue_depth;
+ 	ep->max_ep_message_len = __le16_to_cpu(resp_msg->max_msg_size);
+ 	ep->tx_credits = tx_alloc;
+-	ep->tx_credit_size = htc->target_credit_size;
+-	ep->tx_credits_per_max_message = ep->max_ep_message_len /
+-					 htc->target_credit_size;
+-
+-	if (ep->max_ep_message_len % htc->target_credit_size)
+-		ep->tx_credits_per_max_message++;
+ 
+ 	/* copy all the callbacks */
+ 	ep->ep_ops = conn_req->ep_ops;
+diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+index b0f9cf3..f94b25a 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.h
++++ b/drivers/net/wireless/ath/ath10k/htc.h
+@@ -336,8 +336,6 @@ struct ath10k_htc_ep {
+ 
+ 	u8 seq_no; /* for debugging */
+ 	int tx_credits;
+-	int tx_credit_size;
+-	int tx_credits_per_max_message;
+ 	bool tx_credit_flow_enabled;
  };
  
 -- 
