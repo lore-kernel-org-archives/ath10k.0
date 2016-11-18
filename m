@@ -1,15 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7mJC-0000Hv-6h
- for ath10k@lists.infradead.org; Fri, 18 Nov 2016 16:46:40 +0000
-Received: by mail-wm0-x243.google.com with SMTP id a20so7957134wme.2
- for <ath10k@lists.infradead.org>; Fri, 18 Nov 2016 08:46:17 -0800 (PST)
-From: Christian Lamparter <chunkeey@googlemail.com>
-Subject: IPQ4019 Firmware: board-2.bin vs board.bin
-Date: Fri, 18 Nov 2016 17:46:14 +0100
-Message-ID: <3020314.NNveBmB38o@debian64>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1c7mrk-0001ru-HM
+ for ath10k@lists.infradead.org; Fri, 18 Nov 2016 17:22:21 +0000
+Subject: Re: Linux freezes after a time while running
+References: <1403930336.4012.1477681558487@office.mailbox.org>
+ <CA+BoTQmbz1vHjn0Xbo2hKcb9v8MdN5uTEnVNOAK0Kfh_NwTp5w@mail.gmail.com>
+ <ema51f2924-a0bb-4f7a-8d84-3ee6fb82e317@valkyrie>
+ <CA+BoTQkyd2f78Pk=_FrYyuQXedn8t6EEYq6BWHB8zthOF_AZ6w@mail.gmail.com>
+ <1233772075.6396.1478077219620@office.mailbox.org>
+ <CA+BoTQnOGOAEvM=M-1TqaN3GPgSJ2CUX-6Upa38jmaRzW9JkGA@mail.gmail.com>
+ <1204267275.1178.1478525905172@office.mailbox.org>
+ <CA+BoTQniCnXce6-w9SPp_aiuei8bjfbVJSkvXi_p4ew_Ed4Qdg@mail.gmail.com>
+ <em6522b3b0-023a-4914-bdd1-d5f8734f6c75@valkyrie>
+ <CA+BoTQ=TMHfHJOAuystH_K-Uu7nP-t9BZhL6MpjHstU1QBe52g@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <e991fa3d-56dc-b290-201f-a80b61720a52@candelatech.com>
+Date: Fri, 18 Nov 2016 09:21:34 -0800
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQ=TMHfHJOAuystH_K-Uu7nP-t9BZhL6MpjHstU1QBe52g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,66 +27,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>, Conrad Kostecki <ck+ath10k@bl4ckb0x.de>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hello,
+On 11/18/2016 06:47 AM, Michal Kazior wrote:
+> On 16 November 2016 at 23:21, Conrad Kostecki <ck+ath10k@bl4ckb0x.de> wrote:
+>> Hello Michal,
+>>
+>> Am 07.11.2016 17:43:02, "Michal Kazior" <michal.kazior@tieto.com> schrieb:
+>>
+>>>
+>>> I assume you used a different kernel in the past compared to the
+>>> recent test you did. You could try re-testing the older kernel
+>>> (assuming you remember which one it was) and if it works you could
+>>> bisect your way to find the commit that breaks it for you.
+>>>
+>>>
+>> I don't have the older kernel config anymore, but it was pretty the same, as
+>> my current one.
+>> I've now done some tests and it's quite interesseting. Kernelversion did not
+>> matter for me.
+>>
+>> Running with current firmware-5.bin, it's always crashing. I tried different
+>> BIOS options, nothing helped.
+>>
+>> BUT: Downgrade to firmware-2.bin helps.
+>> ath10k_pci 0000:03:00.0: firmware ver 10.1.467.3-1 api 2 features wmi-10.x,
+>> has-wmi-mgmt-tx,no-p2p crc32 2c3ffc2f
+>>
+>> Running such old firmware, the Wifi just runs stable. NO firmware crash
+>> happens. When I just change firmware back to firmware-5.bin, it crashes
+>> again.
+>> So there seems to changed something. Can be this debugged somehow?
+>>
+>> With firmware-2.bin, I am also getting such errors, but WiFi works fine:
+>> [   82.504901] ath10k_pci 0000:03:00.0: SWBA overrun on vdev 0, skipped old
+>> beacon
+>> [   82.556103] ath10k_pci 0000:03:00.0: SWBA overrun on vdev 1, skipped old
+>> beacon
+>> [   87.113085] ath10k_warn: 89 callbacks suppressed
+>>
+>> Currently, the workaround is for me firmware-2.bin, but IMHO it's not a
+>> solution..
+>> Any Ideas?
+>
+> Hmm.. looks like there's a stall in target-host communication for ~5
+> seconds (89 suppressed warnings match 2 vifs beaconing at ~100ms
+> interval).
+>
+> Did you try running without multi-BSS, i.e. just one AP vif? That's
+> probably not going to help but it's worth ruling that out.
 
-I've acquired a IPQ4019 Router (Asus RT-AC58U). And It has a IPQ4019-SoC.
-I'm currently in the process of porting it to LEDE. I can report that the
-router is booting and I got the ath10k to work with 4.8.8 +
-LEDE's compat-wireless (2016-10-08-1).
+While backporting some 10.2 code into my 10.1 tree, I found a change to
+the CE logic in the firmware that appeared to cause hangs in our longer
+duration runs.
 
-Now, I ran across a small discrepancy with the provided firmware for
-the IPQ4019. From the ath10k's driver prospective it seems that the
-board-2.bin provided on github[0] has the wrong filename:
+I'll trade a hint of how to possibly fix this for a hint of how to fix
+the warm-start/cold-start bug that is evidently fixed in 10.2 upstream firmware :)
 
-ath10k_ahb a000000.wifi: Direct firmware load for ath10k/pre-cal-ahb-a000000.wifi.bin failed with error -2
-ath10k_ahb a000000.wifi: Falling back to user helper
-firmware ath10k!pre-cal-ahb-a000000.wifi.bin: firmware_loading_store: map pages failed
-ath10k_ahb a000000.wifi: qca4019 hw1.0 target 0x01000000 chip_id 0x003b00ff sub 0000:0000
-ath10k_ahb a000000.wifi: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
-ath10k_ahb a000000.wifi: firmware ver 10.4-3.2.1-00044 api 5 features no-p2p,mfp,peer-flow-ctrl,btcoex-param crc32 b9833652
-ath10k_ahb a000000.wifi: failed to fetch board data for bus=ahb,vendor=0000,device=0000,subsystem-vendor=0000,subsystem-devn
-ath10k_ahb a000000.wifi: Direct firmware load for ath10k/QCA4019/hw1.0/board.bin failed with error -2
-ath10k_ahb a000000.wifi: Falling back to user helper
-firmware ath10k!QCA4019!hw1.0!board.bin: firmware_loading_store: map pages failed
-ath10k_ahb a000000.wifi: failed to fetch board data
-ath10k_ahb a000000.wifi: failed to fetch board file: -11
-ath10k_ahb a000000.wifi: could not probe fw (-11)
+Thanks,
+Ben
 
-Now, If I rename board-2.bin to board.bin it works fine and the device initializes
-successfully (and seems to work too):
-
-ath10k_ahb a000000.wifi: Direct firmware load for ath10k/pre-cal-ahb-a000000.wifi.bin failed with error -2
-ath10k_ahb a000000.wifi: Falling back to user helper
-firmware ath10k!pre-cal-ahb-a000000.wifi.bin: firmware_loading_store: map pages failed
-ath10k_ahb a000000.wifi: qca4019 hw1.0 target 0x01000000 chip_id 0x003b00ff sub 0000:0000
-ath10k_ahb a000000.wifi: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
-ath10k_ahb a000000.wifi: firmware ver 10.4-3.2.1-00044 api 5 features no-p2p,mfp,peer-flow-ctrl,btcoex-param crc32 b9833652
-ath10k_ahb a000000.wifi: Direct firmware load for ath10k/QCA4019/hw1.0/board-2.bin failed with error -2
-ath10k_ahb a000000.wifi: Falling back to user helper
-firmware ath10k!QCA4019!hw1.0!board-2.bin: firmware_loading_store: map pages failed
-ath10k_ahb a000000.wifi: board_file api 1 bmi_id N/A crc32 9e6ce62c
-ath10k_ahb a000000.wifi: htt-ver 2.2 wmi-op 6 htt-op 4 cal file max-sta 512 raw 0 hwcrypto 1
-ath: EEPROM regdomain: 0x0
-ath: EEPROM indicates default country code should be used
-ath: doing EEPROM country->regdmn map search
-ath: country maps to regdmn code: 0x3a
-ath: Country alpha2 being used: US
-ath: Regpair used: 0x3a
-
-What's up with the board-2.bin name? Kalle, can you rename it or
-should ath10k look for board-2.bin instead?
-
-Regards,
-Christian
-
-[0] <https://github.com/kvalo/ath10k-firmware/tree/master/QCA4019/hw1.0>
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
