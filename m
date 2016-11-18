@@ -1,20 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-f68.google.com ([209.85.218.68])
+Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7kOz-0007o2-8x
- for ath10k@lists.infradead.org; Fri, 18 Nov 2016 14:44:30 +0000
-Received: by mail-oi0-f68.google.com with SMTP id f201so7280170oib.0
- for <ath10k@lists.infradead.org>; Fri, 18 Nov 2016 06:44:09 -0800 (PST)
-Date: Fri, 18 Nov 2016 08:44:06 -0600
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCHv2 3/4] dt: bindings: add new dt entry for BTCOEX feature
- in qcom,ath10k.txt
-Message-ID: <20161118144406.3se7gnckhcmwqytp@rob-hp-laptop>
-References: <1479383064-25718-1-git-send-email-c_traja@qti.qualcomm.com>
- <1479383064-25718-4-git-send-email-c_traja@qti.qualcomm.com>
+ id 1c7kST-0002B4-Vt
+ for ath10k@lists.infradead.org; Fri, 18 Nov 2016 14:48:07 +0000
+Received: by mail-wm0-x22f.google.com with SMTP id a197so42858094wmd.0
+ for <ath10k@lists.infradead.org>; Fri, 18 Nov 2016 06:47:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1479383064-25718-4-git-send-email-c_traja@qti.qualcomm.com>
+In-Reply-To: <em6522b3b0-023a-4914-bdd1-d5f8734f6c75@valkyrie>
+References: <1403930336.4012.1477681558487@office.mailbox.org>
+ <CA+BoTQmbz1vHjn0Xbo2hKcb9v8MdN5uTEnVNOAK0Kfh_NwTp5w@mail.gmail.com>
+ <ema51f2924-a0bb-4f7a-8d84-3ee6fb82e317@valkyrie>
+ <CA+BoTQkyd2f78Pk=_FrYyuQXedn8t6EEYq6BWHB8zthOF_AZ6w@mail.gmail.com>
+ <1233772075.6396.1478077219620@office.mailbox.org>
+ <CA+BoTQnOGOAEvM=M-1TqaN3GPgSJ2CUX-6Upa38jmaRzW9JkGA@mail.gmail.com>
+ <1204267275.1178.1478525905172@office.mailbox.org>
+ <CA+BoTQniCnXce6-w9SPp_aiuei8bjfbVJSkvXi_p4ew_Ed4Qdg@mail.gmail.com>
+ <em6522b3b0-023a-4914-bdd1-d5f8734f6c75@valkyrie>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Fri, 18 Nov 2016 15:47:42 +0100
+Message-ID: <CA+BoTQ=TMHfHJOAuystH_K-Uu7nP-t9BZhL6MpjHstU1QBe52g@mail.gmail.com>
+Subject: Re: Re[4]: Linux freezes after a time while running
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +28,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_traja@qti.qualcomm.com
-Cc: tamizhchelvam@codeaurora.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, devicetree@vger.kernel.org
+To: Conrad Kostecki <ck+ath10k@bl4ckb0x.de>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Thu, Nov 17, 2016 at 05:14:23PM +0530, c_traja@qti.qualcomm.com wrote:
-> From: Tamizh chelvam <tamizhchelvam@codeaurora.org>
-> 
-> There two things done in this patch.
-> 
-> 1) 'btcoex_support' flag for BTCOEX feature support by the hardware.
-> 2) 'wlan_btcoex_gpio' is used to fill wlan priority pin number for
->    BTCOEX priority feature support.
-> 
-> Signed-off-by: Tamizh chelvam <tamizhchelvam@codeaurora.org>
-> ---
->  .../bindings/net/wireless/qcom,ath10k.txt          |    4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> index 74d7f0a..08150e2d 100644
-> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> @@ -46,6 +46,10 @@ Optional properties:
->  				 hw versions.
->  - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
->  				     the length can vary between hw versions.
-> +- btcoex_support  : should contain eithr "0" or "1" to indicate btcoex
-> +		    support by the hardware.
-
-This is BT coexistence? Make this boolean and n
-
-> +- btcoex_gpio_pin :  btcoex gpio pin number for the device which
-> +		     supports BTCOEX.
-
-This is a pin number on the chip, not any pin number Linux GPIO subsys 
-cares about, right? Is there a connection to the host too, or this is 
-internal between BT and WiFi?
-
-Do you really need 2 properties? Does supporting this feature require 
-the GPIO? If so, then the first property is redundant.
-
-Needs vendor prefix and don't use '_'. Should be something like 
-'qcom,bt-coexist-gpio-pin'.
-
-Rob
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTYgTm92ZW1iZXIgMjAxNiBhdCAyMzoyMSwgQ29ucmFkIEtvc3RlY2tpIDxjaythdGgxMGtA
+Ymw0Y2tiMHguZGU+IHdyb3RlOgo+IEhlbGxvIE1pY2hhbCwKPgo+IEFtIDA3LjExLjIwMTYgMTc6
+NDM6MDIsICJNaWNoYWwgS2F6aW9yIiA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHNjaHJpZWI6
+Cj4KPj4KPj4gSSBhc3N1bWUgeW91IHVzZWQgYSBkaWZmZXJlbnQga2VybmVsIGluIHRoZSBwYXN0
+IGNvbXBhcmVkIHRvIHRoZQo+PiByZWNlbnQgdGVzdCB5b3UgZGlkLiBZb3UgY291bGQgdHJ5IHJl
+LXRlc3RpbmcgdGhlIG9sZGVyIGtlcm5lbAo+PiAoYXNzdW1pbmcgeW91IHJlbWVtYmVyIHdoaWNo
+IG9uZSBpdCB3YXMpIGFuZCBpZiBpdCB3b3JrcyB5b3UgY291bGQKPj4gYmlzZWN0IHlvdXIgd2F5
+IHRvIGZpbmQgdGhlIGNvbW1pdCB0aGF0IGJyZWFrcyBpdCBmb3IgeW91Lgo+Pgo+Pgo+IEkgZG9u
+J3QgaGF2ZSB0aGUgb2xkZXIga2VybmVsIGNvbmZpZyBhbnltb3JlLCBidXQgaXQgd2FzIHByZXR0
+eSB0aGUgc2FtZSwgYXMKPiBteSBjdXJyZW50IG9uZS4KPiBJJ3ZlIG5vdyBkb25lIHNvbWUgdGVz
+dHMgYW5kIGl0J3MgcXVpdGUgaW50ZXJlc3NldGluZy4gS2VybmVsdmVyc2lvbiBkaWQgbm90Cj4g
+bWF0dGVyIGZvciBtZS4KPgo+IFJ1bm5pbmcgd2l0aCBjdXJyZW50IGZpcm13YXJlLTUuYmluLCBp
+dCdzIGFsd2F5cyBjcmFzaGluZy4gSSB0cmllZCBkaWZmZXJlbnQKPiBCSU9TIG9wdGlvbnMsIG5v
+dGhpbmcgaGVscGVkLgo+Cj4gQlVUOiBEb3duZ3JhZGUgdG8gZmlybXdhcmUtMi5iaW4gaGVscHMu
+Cj4gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZpcm13YXJlIHZlciAxMC4xLjQ2Ny4zLTEgYXBp
+IDIgZmVhdHVyZXMgd21pLTEwLngsCj4gaGFzLXdtaS1tZ210LXR4LG5vLXAycCBjcmMzMiAyYzNm
+ZmMyZgo+Cj4gUnVubmluZyBzdWNoIG9sZCBmaXJtd2FyZSwgdGhlIFdpZmkganVzdCBydW5zIHN0
+YWJsZS4gTk8gZmlybXdhcmUgY3Jhc2gKPiBoYXBwZW5zLiBXaGVuIEkganVzdCBjaGFuZ2UgZmly
+bXdhcmUgYmFjayB0byBmaXJtd2FyZS01LmJpbiwgaXQgY3Jhc2hlcwo+IGFnYWluLgo+IFNvIHRo
+ZXJlIHNlZW1zIHRvIGNoYW5nZWQgc29tZXRoaW5nLiBDYW4gYmUgdGhpcyBkZWJ1Z2dlZCBzb21l
+aG93Pwo+Cj4gV2l0aCBmaXJtd2FyZS0yLmJpbiwgSSBhbSBhbHNvIGdldHRpbmcgc3VjaCBlcnJv
+cnMsIGJ1dCBXaUZpIHdvcmtzIGZpbmU6Cj4gWyAgIDgyLjUwNDkwMV0gYXRoMTBrX3BjaSAwMDAw
+OjAzOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAsIHNraXBwZWQgb2xkCj4gYmVhY29uCj4g
+WyAgIDgyLjU1NjEwM10gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2
+ZGV2IDEsIHNraXBwZWQgb2xkCj4gYmVhY29uCj4gWyAgIDg3LjExMzA4NV0gYXRoMTBrX3dhcm46
+IDg5IGNhbGxiYWNrcyBzdXBwcmVzc2VkCj4KPiBDdXJyZW50bHksIHRoZSB3b3JrYXJvdW5kIGlz
+IGZvciBtZSBmaXJtd2FyZS0yLmJpbiwgYnV0IElNSE8gaXQncyBub3QgYQo+IHNvbHV0aW9uLi4K
+PiBBbnkgSWRlYXM/CgpIbW0uLiBsb29rcyBsaWtlIHRoZXJlJ3MgYSBzdGFsbCBpbiB0YXJnZXQt
+aG9zdCBjb21tdW5pY2F0aW9uIGZvciB+NQpzZWNvbmRzICg4OSBzdXBwcmVzc2VkIHdhcm5pbmdz
+IG1hdGNoIDIgdmlmcyBiZWFjb25pbmcgYXQgfjEwMG1zCmludGVydmFsKS4KCkRpZCB5b3UgdHJ5
+IHJ1bm5pbmcgd2l0aG91dCBtdWx0aS1CU1MsIGkuZS4ganVzdCBvbmUgQVAgdmlmPyBUaGF0J3MK
+cHJvYmFibHkgbm90IGdvaW5nIHRvIGhlbHAgYnV0IGl0J3Mgd29ydGggcnVsaW5nIHRoYXQgb3V0
+LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
