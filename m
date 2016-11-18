@@ -1,21 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7kwW-0007LV-GU
- for ath10k@lists.infradead.org; Fri, 18 Nov 2016 15:19:09 +0000
-Received: by mail-wm0-x22f.google.com with SMTP id t79so43853731wmt.0
- for <ath10k@lists.infradead.org>; Fri, 18 Nov 2016 07:18:48 -0800 (PST)
+ id 1c7mJC-0000Hv-6h
+ for ath10k@lists.infradead.org; Fri, 18 Nov 2016 16:46:40 +0000
+Received: by mail-wm0-x243.google.com with SMTP id a20so7957134wme.2
+ for <ath10k@lists.infradead.org>; Fri, 18 Nov 2016 08:46:17 -0800 (PST)
+From: Christian Lamparter <chunkeey@googlemail.com>
+Subject: IPQ4019 Firmware: board-2.bin vs board.bin
+Date: Fri, 18 Nov 2016 17:46:14 +0100
+Message-ID: <3020314.NNveBmB38o@debian64>
 MIME-Version: 1.0
-In-Reply-To: <582B8F45.4060601@gmail.com>
-References: <5825B478.4020405@gmail.com>
- <CA+BoTQnkhxDZFF5C3Bex1OFS9f76GBAq6kiQN1aqwWnGYFMgCg@mail.gmail.com>
- <582B069D.8030002@gmail.com>
- <CA+BoTQmP=nJYXLTLPkHT=eG09wborJHvuuL0qm0AnPzvV5ZfDQ@mail.gmail.com>
- <582B8F45.4060601@gmail.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Fri, 18 Nov 2016 16:18:45 +0100
-Message-ID: <CA+BoTQn4ks9OiEg9c26i0oAin6oeaokgY0XC-AUhg_GsMzR5BQ@mail.gmail.com>
-Subject: Re: Connection Problems with on QCA9880-BR4A
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +18,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Felix <kramerfe@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>
 
-T24gMTUgTm92ZW1iZXIgMjAxNiBhdCAyMzo0MiwgRmVsaXggPGtyYW1lcmZlQGdtYWlsLmNvbT4g
-d3JvdGU6Cj4gSGksCj4KPiBDb25uZWN0ZWQgaXMgdXN1YWxseSBhIGZldyBtaW51dGVzIGF3YXkg
-ZnJvbSBkc2ljb25uZWN0ZWQuIEkgYW0gcnVubmluZwo+IHRjcGR1bXAgd2l0aG91dCBwY2FwIGZp
-bHRlcnMuIEhlcmUgYXJlIG15IGlwdGFibGVzIGFuZCB1ZGV2IHJ1bGVzLiBJZiBJIHVzZQo+IHRo
-ZSBTUjcxIGV2ZXJ5dGhpbmcgd29ya3MgZmluZSB0aGVyZWZvcmUgSSBkb3VidCBpdCBoYXMgYW55
-dGhpbmcgdG8gZG8gd2l0aAo+IHRoZXNlLgpbLi4uXQo+IFRoZSBvcHRpb24gZGVidWdfbWFzaz0w
-eGZmZmZmZjNmIGRvZXMgbm90IGdpdmUgbWUgYW55IGFkZGlkdGlvbmFsIGVudHJpZXMgaW4KPiBk
-bWVzZyBvciBqb3VybmFsY3RsLiBJIGFsc28gdHJpZWQgIm1vZHByb2JlIGF0aDEwa19jb3JlCj4g
-ZGVidWdfbWFzaz0weGZmZmZmZmZmIiB3aXRoIHRoZSBzYW1lIHJlc3VsdCBhbmQgc2hvd3MgdGhl
-IGRlYnVnX21hc2sgdmFsdWUKPiBzZWVtcyBwcm9wZXJseSBzZXQ6Cj4+PiBjYXQgL3N5cy9tb2R1
-bGUvYXRoMTBrX2NvcmUvcGFyYW1ldGVycy9kZWJ1Z19tYXNrCj4gNDI5NDk2NzI5NQo+Pj4gcHl0
-aG9uIC1jICdwcmludCAiJWkiICUgMHhmZmZmZmZmZicKPiA0Mjk0OTY3Mjk1ClsuLi5dCj4+PiBq
-b3VybmFsY3RsClsuLi5dCj4gTm92IDE1IDIxOjI3OjE3IGFuZHJvaWQzNDI3IGtlcm5lbDogYXRo
-MTBrX3BjaSAwMDAwOjAyOjAwLjA6IHFjYTk4OHggaHcyLjAKPiB0YXJnZXQgMHg0MTAwMDE2YyBj
-aGlwX2lkIDB4MDQzMjAyZmYgc3ViIDE5YjY6ZDAzYwo+IE5vdiAxNSAyMToyNzoxNyBhbmRyb2lk
-MzQyNyBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBrY29uZmlnIGRlYnVnIDAKPiBk
-ZWJ1Z2ZzIDAgdHJhY2luZyAwIGRmcyAwIHRlc3Rtb2RlIDAKWy4uLl0KCllvdXIgZHJpdmVyIGlz
-IGNvbXBpbGVkIHdpdGhvdXQgZGVidWcgcHJpbnRzIHdoaWNoIGV4cGxhaW5zIHdoeSB5b3UncmUK
-bm90IHNlZWluZyBhbnkgZGlmZmVyZW5jZSBhZnRlciBzZXR0aW5nIGRlYnVnX21hc2suIFlvdSds
-bCBuZWVkIHRvCnJlY29tcGlsZSBmb3IgdGhhdC4KCgpbLi4uXQo+IE5vdiAxNSAyMToyNzo1MiBh
-bmRyb2lkMjk2NDYga2VybmVsOiB3bGFuMDogYXV0aGVudGljYXRlIHdpdGggWFhYMAo+IE5vdiAx
-NSAyMToyNzo1MiBhbmRyb2lkMjk2NDYga2VybmVsOiB3bGFuMDogc2VuZCBhdXRoIHRvIFhYWDAg
-KHRyeSAxLzMpCj4gTm92IDE1IDIxOjI3OjUyIGFuZHJvaWQyOTY0NiBrZXJuZWw6IHdsYW4wOiBh
-dXRoZW50aWNhdGVkCj4gTm92IDE1IDIxOjI3OjUyIGFuZHJvaWQyOTY0NiBrZXJuZWw6IGF0aDEw
-a19wY2kgMDAwMDowMjowMC4wIHdsYW4wOgo+IGRpc2FibGluZyBIVCBhcyBXTU0vUW9TIGlzIG5v
-dCBzdXBwb3J0ZWQgYnkgdGhlIEFQCj4gTm92IDE1IDIxOjI3OjUyIGFuZHJvaWQyOTY0NiBrZXJu
-ZWw6IGF0aDEwa19wY2kgMDAwMDowMjowMC4wIHdsYW4wOgo+IGRpc2FibGluZyBWSFQgYXMgV01N
-L1FvUyBpcyBub3Qgc3VwcG9ydGVkIGJ5IHRoZSBBUAoKWW91ciBBUCBkb2Vzbid0IGV2ZW4gSFQg
-bm9yIFZIVCBub3IgV01NIGVuYWJsZWQuIElzIHRoaXMgZXhwZWN0ZWQ/CgoKPiBOb3YgMTUgMjE6
-Mjc6NTIgYW5kcm9pZDI5NjQ2IGtlcm5lbDogd2xhbjA6IGFzc29jaWF0ZSB3aXRoIFhYWDAgKHRy
-eSAxLzMpCj4gTm92IDE1IDIxOjI3OjUyIGFuZHJvaWQyOTY0NiBrZXJuZWw6IHdsYW4wOiBSWCBB
-c3NvY1Jlc3AgZnJvbSBYWFgwCj4gKGNhcGFiPTB4MTEgc3RhdHVzPTAgYWlkPTEpCj4gTm92IDE1
-IDIxOjI3OjUyIGFuZHJvaWQyOTY0NiBrZXJuZWw6IHdsYW4wOiBhc3NvY2lhdGVkCj4gTm92IDE1
-IDIxOjI3OjUyIGFuZHJvaWQyOTY0NiBrZXJuZWw6IHdsYW4wOiBMaW1pdGluZyBUWCBwb3dlciB0
-byAxNyBkQm0gYXMKPiBhZHZlcnRpc2VkIGJ5IFhYWDAKWy4uLl0KPiBOb3YgMTUgMjE6MzA6MTIg
-YW5kcm9pZDI5NjQ2IGtlcm5lbDogd2xhbjA6IGRlYXV0aGVudGljYXRlZCBmcm9tIFhYWDAKPiAo
-UmVhc29uOiAyPVBSRVZfQVVUSF9OT1RfVkFMSUQpCgpJdCBzZWVtcyBBUCBpcyBraWNraW5nIHlv
-dSBvdXQuIEVBUCBsaWtlbHkgZGlkbid0IGNvbXBsZXRlIHVwIGFsbCB0aGUKd2F5IGFuZCBhIHRp
-bWVvdXQgb24gQVAgaXMgdHJpZ2dlcmVkLgoKSSBzdXNwZWN0IGxhY2sgb2YgUW9TIGlzIHNvdXJj
-ZSBvZiBjb2Z1c2lvbiBoZXJlLiBFaXRoZXIgZHJpdmVyIGlzCnJlcXVlc3RpbmcgZmlybXdhcmUg
-dG8gdXNlIHdyb25nIHRpZCBvciBmaXJtd2FyZSB0cmllcyB0byBiZSBjbGV2ZXIKYW5kIGVuZHMg
-dXAgdXNpbmcgd3JvbmcgaGFyZHdhcmUgcXVldWUgd2hlcmUgdGhlIGZpbmFsIEVBUE9MIGdldHMK
-c3R1Y2sgYW5kIGlzIG5ldmVyIHRyYW5zbWl0dGVkLiBUaGF0J3MganVzdCBhIGd1ZXNzIHRob3Vn
-aC4KCkRyaXZlciBkdW1wcyAoZGVidWdfbWFzaz0weGZmZmZmZmZmIGFjdHVhbGx5KSB3b3VsZCBi
-ZSByZWFsbHkgdXNlZnVsIGhlcmUuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2F0aDEwawo=
+Hello,
+
+I've acquired a IPQ4019 Router (Asus RT-AC58U). And It has a IPQ4019-SoC.
+I'm currently in the process of porting it to LEDE. I can report that the
+router is booting and I got the ath10k to work with 4.8.8 +
+LEDE's compat-wireless (2016-10-08-1).
+
+Now, I ran across a small discrepancy with the provided firmware for
+the IPQ4019. From the ath10k's driver prospective it seems that the
+board-2.bin provided on github[0] has the wrong filename:
+
+ath10k_ahb a000000.wifi: Direct firmware load for ath10k/pre-cal-ahb-a000000.wifi.bin failed with error -2
+ath10k_ahb a000000.wifi: Falling back to user helper
+firmware ath10k!pre-cal-ahb-a000000.wifi.bin: firmware_loading_store: map pages failed
+ath10k_ahb a000000.wifi: qca4019 hw1.0 target 0x01000000 chip_id 0x003b00ff sub 0000:0000
+ath10k_ahb a000000.wifi: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
+ath10k_ahb a000000.wifi: firmware ver 10.4-3.2.1-00044 api 5 features no-p2p,mfp,peer-flow-ctrl,btcoex-param crc32 b9833652
+ath10k_ahb a000000.wifi: failed to fetch board data for bus=ahb,vendor=0000,device=0000,subsystem-vendor=0000,subsystem-devn
+ath10k_ahb a000000.wifi: Direct firmware load for ath10k/QCA4019/hw1.0/board.bin failed with error -2
+ath10k_ahb a000000.wifi: Falling back to user helper
+firmware ath10k!QCA4019!hw1.0!board.bin: firmware_loading_store: map pages failed
+ath10k_ahb a000000.wifi: failed to fetch board data
+ath10k_ahb a000000.wifi: failed to fetch board file: -11
+ath10k_ahb a000000.wifi: could not probe fw (-11)
+
+Now, If I rename board-2.bin to board.bin it works fine and the device initializes
+successfully (and seems to work too):
+
+ath10k_ahb a000000.wifi: Direct firmware load for ath10k/pre-cal-ahb-a000000.wifi.bin failed with error -2
+ath10k_ahb a000000.wifi: Falling back to user helper
+firmware ath10k!pre-cal-ahb-a000000.wifi.bin: firmware_loading_store: map pages failed
+ath10k_ahb a000000.wifi: qca4019 hw1.0 target 0x01000000 chip_id 0x003b00ff sub 0000:0000
+ath10k_ahb a000000.wifi: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
+ath10k_ahb a000000.wifi: firmware ver 10.4-3.2.1-00044 api 5 features no-p2p,mfp,peer-flow-ctrl,btcoex-param crc32 b9833652
+ath10k_ahb a000000.wifi: Direct firmware load for ath10k/QCA4019/hw1.0/board-2.bin failed with error -2
+ath10k_ahb a000000.wifi: Falling back to user helper
+firmware ath10k!QCA4019!hw1.0!board-2.bin: firmware_loading_store: map pages failed
+ath10k_ahb a000000.wifi: board_file api 1 bmi_id N/A crc32 9e6ce62c
+ath10k_ahb a000000.wifi: htt-ver 2.2 wmi-op 6 htt-op 4 cal file max-sta 512 raw 0 hwcrypto 1
+ath: EEPROM regdomain: 0x0
+ath: EEPROM indicates default country code should be used
+ath: doing EEPROM country->regdmn map search
+ath: country maps to regdmn code: 0x3a
+ath: Country alpha2 being used: US
+ath: Regpair used: 0x3a
+
+What's up with the board-2.bin name? Kalle, can you rename it or
+should ath10k look for board-2.bin instead?
+
+Regards,
+Christian
+
+[0] <https://github.com/kvalo/ath10k-firmware/tree/master/QCA4019/hw1.0>
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
