@@ -1,25 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
+Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c7kST-0002B4-Vt
- for ath10k@lists.infradead.org; Fri, 18 Nov 2016 14:48:07 +0000
-Received: by mail-wm0-x22f.google.com with SMTP id a197so42858094wmd.0
- for <ath10k@lists.infradead.org>; Fri, 18 Nov 2016 06:47:44 -0800 (PST)
+ id 1c7kUX-0002hq-Qr
+ for ath10k@lists.infradead.org; Fri, 18 Nov 2016 14:50:14 +0000
+Received: by mail-wm0-x229.google.com with SMTP id g23so42987863wme.1
+ for <ath10k@lists.infradead.org>; Fri, 18 Nov 2016 06:49:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <em6522b3b0-023a-4914-bdd1-d5f8734f6c75@valkyrie>
-References: <1403930336.4012.1477681558487@office.mailbox.org>
- <CA+BoTQmbz1vHjn0Xbo2hKcb9v8MdN5uTEnVNOAK0Kfh_NwTp5w@mail.gmail.com>
- <ema51f2924-a0bb-4f7a-8d84-3ee6fb82e317@valkyrie>
- <CA+BoTQkyd2f78Pk=_FrYyuQXedn8t6EEYq6BWHB8zthOF_AZ6w@mail.gmail.com>
- <1233772075.6396.1478077219620@office.mailbox.org>
- <CA+BoTQnOGOAEvM=M-1TqaN3GPgSJ2CUX-6Upa38jmaRzW9JkGA@mail.gmail.com>
- <1204267275.1178.1478525905172@office.mailbox.org>
- <CA+BoTQniCnXce6-w9SPp_aiuei8bjfbVJSkvXi_p4ew_Ed4Qdg@mail.gmail.com>
- <em6522b3b0-023a-4914-bdd1-d5f8734f6c75@valkyrie>
+In-Reply-To: <5b62d41b-7125-f1ce-b09f-29db7572a748@gmail.com>
+References: <1479141222-8493-1-git-send-email-erik.stromdahl@gmail.com>
+ <1479141222-8493-5-git-send-email-erik.stromdahl@gmail.com>
+ <CA+BoTQnTkwQjmNBdr8a+YauXffWGNBNyPTZ=RByoviTSp+1ZYQ@mail.gmail.com>
+ <5b62d41b-7125-f1ce-b09f-29db7572a748@gmail.com>
 From: Michal Kazior <michal.kazior@tieto.com>
-Date: Fri, 18 Nov 2016 15:47:42 +0100
-Message-ID: <CA+BoTQ=TMHfHJOAuystH_K-Uu7nP-t9BZhL6MpjHstU1QBe52g@mail.gmail.com>
-Subject: Re: Re[4]: Linux freezes after a time while running
+Date: Fri, 18 Nov 2016 15:49:50 +0100
+Message-ID: <CA+BoTQk8kov-fZ3CiTrVdfoevM=AmO-a2GK2PcGtLh6Ch2-x6g@mail.gmail.com>
+Subject: Re: [RFC 04/12] ath10k: htc: refactorization
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,41 +27,29 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Conrad Kostecki <ck+ath10k@bl4ckb0x.de>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTYgTm92ZW1iZXIgMjAxNiBhdCAyMzoyMSwgQ29ucmFkIEtvc3RlY2tpIDxjaythdGgxMGtA
-Ymw0Y2tiMHguZGU+IHdyb3RlOgo+IEhlbGxvIE1pY2hhbCwKPgo+IEFtIDA3LjExLjIwMTYgMTc6
-NDM6MDIsICJNaWNoYWwgS2F6aW9yIiA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHNjaHJpZWI6
-Cj4KPj4KPj4gSSBhc3N1bWUgeW91IHVzZWQgYSBkaWZmZXJlbnQga2VybmVsIGluIHRoZSBwYXN0
-IGNvbXBhcmVkIHRvIHRoZQo+PiByZWNlbnQgdGVzdCB5b3UgZGlkLiBZb3UgY291bGQgdHJ5IHJl
-LXRlc3RpbmcgdGhlIG9sZGVyIGtlcm5lbAo+PiAoYXNzdW1pbmcgeW91IHJlbWVtYmVyIHdoaWNo
-IG9uZSBpdCB3YXMpIGFuZCBpZiBpdCB3b3JrcyB5b3UgY291bGQKPj4gYmlzZWN0IHlvdXIgd2F5
-IHRvIGZpbmQgdGhlIGNvbW1pdCB0aGF0IGJyZWFrcyBpdCBmb3IgeW91Lgo+Pgo+Pgo+IEkgZG9u
-J3QgaGF2ZSB0aGUgb2xkZXIga2VybmVsIGNvbmZpZyBhbnltb3JlLCBidXQgaXQgd2FzIHByZXR0
-eSB0aGUgc2FtZSwgYXMKPiBteSBjdXJyZW50IG9uZS4KPiBJJ3ZlIG5vdyBkb25lIHNvbWUgdGVz
-dHMgYW5kIGl0J3MgcXVpdGUgaW50ZXJlc3NldGluZy4gS2VybmVsdmVyc2lvbiBkaWQgbm90Cj4g
-bWF0dGVyIGZvciBtZS4KPgo+IFJ1bm5pbmcgd2l0aCBjdXJyZW50IGZpcm13YXJlLTUuYmluLCBp
-dCdzIGFsd2F5cyBjcmFzaGluZy4gSSB0cmllZCBkaWZmZXJlbnQKPiBCSU9TIG9wdGlvbnMsIG5v
-dGhpbmcgaGVscGVkLgo+Cj4gQlVUOiBEb3duZ3JhZGUgdG8gZmlybXdhcmUtMi5iaW4gaGVscHMu
-Cj4gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZpcm13YXJlIHZlciAxMC4xLjQ2Ny4zLTEgYXBp
-IDIgZmVhdHVyZXMgd21pLTEwLngsCj4gaGFzLXdtaS1tZ210LXR4LG5vLXAycCBjcmMzMiAyYzNm
-ZmMyZgo+Cj4gUnVubmluZyBzdWNoIG9sZCBmaXJtd2FyZSwgdGhlIFdpZmkganVzdCBydW5zIHN0
-YWJsZS4gTk8gZmlybXdhcmUgY3Jhc2gKPiBoYXBwZW5zLiBXaGVuIEkganVzdCBjaGFuZ2UgZmly
-bXdhcmUgYmFjayB0byBmaXJtd2FyZS01LmJpbiwgaXQgY3Jhc2hlcwo+IGFnYWluLgo+IFNvIHRo
-ZXJlIHNlZW1zIHRvIGNoYW5nZWQgc29tZXRoaW5nLiBDYW4gYmUgdGhpcyBkZWJ1Z2dlZCBzb21l
-aG93Pwo+Cj4gV2l0aCBmaXJtd2FyZS0yLmJpbiwgSSBhbSBhbHNvIGdldHRpbmcgc3VjaCBlcnJv
-cnMsIGJ1dCBXaUZpIHdvcmtzIGZpbmU6Cj4gWyAgIDgyLjUwNDkwMV0gYXRoMTBrX3BjaSAwMDAw
-OjAzOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAsIHNraXBwZWQgb2xkCj4gYmVhY29uCj4g
-WyAgIDgyLjU1NjEwM10gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2
-ZGV2IDEsIHNraXBwZWQgb2xkCj4gYmVhY29uCj4gWyAgIDg3LjExMzA4NV0gYXRoMTBrX3dhcm46
-IDg5IGNhbGxiYWNrcyBzdXBwcmVzc2VkCj4KPiBDdXJyZW50bHksIHRoZSB3b3JrYXJvdW5kIGlz
-IGZvciBtZSBmaXJtd2FyZS0yLmJpbiwgYnV0IElNSE8gaXQncyBub3QgYQo+IHNvbHV0aW9uLi4K
-PiBBbnkgSWRlYXM/CgpIbW0uLiBsb29rcyBsaWtlIHRoZXJlJ3MgYSBzdGFsbCBpbiB0YXJnZXQt
-aG9zdCBjb21tdW5pY2F0aW9uIGZvciB+NQpzZWNvbmRzICg4OSBzdXBwcmVzc2VkIHdhcm5pbmdz
-IG1hdGNoIDIgdmlmcyBiZWFjb25pbmcgYXQgfjEwMG1zCmludGVydmFsKS4KCkRpZCB5b3UgdHJ5
-IHJ1bm5pbmcgd2l0aG91dCBtdWx0aS1CU1MsIGkuZS4ganVzdCBvbmUgQVAgdmlmPyBUaGF0J3MK
-cHJvYmFibHkgbm90IGdvaW5nIHRvIGhlbHAgYnV0IGl0J3Mgd29ydGggcnVsaW5nIHRoYXQgb3V0
-LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+T24gMTcgTm92ZW1iZXIgMjAxNiBhdCAxNzozMiwgRXJpayBTdHJvbWRhaGwgPGVyaWsuc3Ryb21k
+YWhsQGdtYWlsLmNvbT4gd3JvdGU6Cj4KPgo+IE9uIDExLzE1LzIwMTYgMTE6MTkgQU0sIE1pY2hh
+bCBLYXppb3Igd3JvdGU6Cj4+IE9uIDE0IE5vdmVtYmVyIDIwMTYgYXQgMTc6MzMsIEVyaWsgU3Ry
+b21kYWhsIDxlcmlrLnN0cm9tZGFobEBnbWFpbC5jb20+IHdyb3RlOgo+Pj4gQ29kZSByZWZhY3Rv
+cml6YXRpb246Cj4+Pgo+Pj4gTW92ZWQgdGhlIGNvZGUgZm9yIGVwIDAgaW4gYXRoMTBrX2h0Y19y
+eF9jb21wbGV0aW9uX2hhbmRsZXIKPj4+IHRvIGF0aDEwa19odGNfY29udHJvbF9yeF9jb21wbGV0
+ZS4KPj4+Cj4+PiBUaGlzIGVhc2VzIHRoZSBpbXBsZW1lbnRhdGlvbiBvZiBTRElPL21ib3ggc2ln
+bmlmaWNhbnRseSBzaW5jZQo+Pj4gdGhlIGVwX3J4X2NvbXBsZXRlIGNiIGlzIGludm9rZWQgZGly
+ZWN0bHkgZnJvbSB0aGUgU0RJTy9tYm94Cj4+PiBoaWYgbGF5ZXIuCj4+Pgo+Pj4gU2luY2UgdGhl
+IGF0aDEwa19odGNfY29udHJvbF9yeF9jb21wbGV0ZSBhbHJlYWR5IGlzIHByZXNlbnQKPj4+IChv
+bmx5IGNvbnRhaW5pbmcgYSB3YXJuaW5nIG1lc3NhZ2UpIHRoZXJlIGlzIG5vIHJlYXNvbiBmb3Ig
+bm90Cj4+PiB1c2luZyBpdCAoaW5zdGVhZCBvZiBoYXZpbmcgYSBzcGVjaWFsIGNhc2UgZm9yIGVw
+IDAgaW4KPj4+IGF0aDEwa19odGNfcnhfY29tcGxldGlvbl9oYW5kbGVyKS4KPj4KPj4gVGhpcyBz
+aG91bGQgYmUgc3F1YXNoZWQgd2l0aCBQYXRjaCAzIHNpbmNlIGl0J3MgaW5zZXBhcmFibGUgcGFy
+dCBvZgo+PiB0aGUgc2FtZSByZWZhY3Rvcml6YXRpb24uCj4+Cj4+Cj4+IE1pY2hhxYIKPj4KPgo+
+Cj4gSG1tLCBJIGRvbid0IHJlYWxseSBzZWUgd2h5IHRoaXMgaXMgYW4gaW5zZXBhcmFibGUgcGFy
+dCBvZiB0aGUgcHJldmlvdXMKPiBwYXRjaC4KPgo+IEFzIGZhciBhcyBJIHNlZSB0aGlzIHBhdGNo
+IGhhcyBub3RoaW5nIHRvIGRvIHdpdGggcGF0Y2ggMywgb3IgYW0gSQo+IG1pc3NpbmcgYW55dGhp
+bmc/Cj4KPiBBcmUgeW91IHJlYWxseSBzdXJlIHRoZXkgc2hvdWxkIGJlIHNxdWFzaGVkPwoKSG1t
+Li4gb24gc2Vjb25kIHRob3VnaHQgdGhpcyBzaG91bGQgYmUgZmluZSBhcyBpdCBpcy4KCgpNaWNo
+YcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
+MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
