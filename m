@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9dQ5-0001bS-Fw
- for ath10k@lists.infradead.org; Wed, 23 Nov 2016 19:41:26 +0000
+ id 1c9dRG-0001nU-7M
+ for ath10k@lists.infradead.org; Wed, 23 Nov 2016 19:42:39 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCHv3,1/2] ath10k: add per peer htt tx stats support for 10.4
+Subject: Re: ath10k: fix monitor vdev for receiving other bss frames
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1479227849-10042-1-git-send-email-akolli@qti.qualcomm.com>
-References: <1479227849-10042-1-git-send-email-akolli@qti.qualcomm.com>
-Message-ID: <49fc279bffdf4ff2bd613044a7325cb4@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 23 Nov 2016 20:40:41 +0100
+In-Reply-To: <1479510658-8326-1-git-send-email-rmanohar@qca.qualcomm.com>
+References: <1479510658-8326-1-git-send-email-rmanohar@qca.qualcomm.com>
+Message-ID: <8167e14b023b48af8cf8f277c36415d3@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 23 Nov 2016 20:42:10 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +22,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: akolli@qti.qualcomm.com
-Cc: akolli@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "Manoharan, Rajkumar" <rmanohar@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rmanohar@codeaurora.org
 
-akolli@qti.qualcomm.com wrote:
-> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+"Manoharan, Rajkumar" <rmanohar@qca.qualcomm.com> wrote:
+> In order to receive other BSS entries in mesh mode, Monitor vdev
+> is created whenever filter flag is set with OTHER_BSS. Recently
+> it is root caused that setting promisc filter for Mesh interface
+> is causing performance and stability issues. To fix this issue,
+> firmware will configure appropriate rxfilters by default for mesh
+> vdev during vdev creation. This change fixes monitor vdev creation
+> based on firmware IE
 > 
-> Per peer tx stats are part of 'HTT_10_4_T2H_MSG_TYPE_PEER_STATS'
-> event, Firmware sends one HTT event for every four PPDUs.
-> HTT payload has success pkts/bytes, failed pkts/bytes, retry
-> pkts/bytes and rate info per ppdu.
-> Peer stats are enabled through 'WMI_SERVICE_PEER_STATS',
-> which are nowadays enabled by default.
-> 
-> Parse peer stats and update the tx rate information per STA.
-> 
-> tx rate, Peer stats are tested on QCA4019 with Firmware version
-> 10.4-3.2.1-00028.
-> 
-> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qca.qualcomm.com>
 
-2 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-cec17c382140 ath10k: add per peer htt tx stats support for 10.4
-5608eaf7b086 ath10k: add support for per sta tx bitrate
+705d7aa06220 ath10k: fix monitor vdev for receiving other bss frames
 
 -- 
-https://patchwork.kernel.org/patch/9430197/
+https://patchwork.kernel.org/patch/9437519/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
