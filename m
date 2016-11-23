@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9UfT-0003wm-95
- for ath10k@lists.infradead.org; Wed, 23 Nov 2016 10:20:47 +0000
+ id 1c9Y03-000074-8Q
+ for ath10k@lists.infradead.org; Wed, 23 Nov 2016 13:54:11 +0000
 MIME-Version: 1.0
-Date: Wed, 23 Nov 2016 15:50:17 +0530
-From: Tamizh chelvam <tamizhchelvam@codeaurora.org>
-Subject: Re: [PATCHv2 3/4] dt: bindings: add new dt entry for BTCOEX feature
- in qcom,ath10k.txt
-In-Reply-To: <20161118144406.3se7gnckhcmwqytp@rob-hp-laptop>
-References: <1479383064-25718-1-git-send-email-c_traja@qti.qualcomm.com>
- <1479383064-25718-4-git-send-email-c_traja@qti.qualcomm.com>
- <20161118144406.3se7gnckhcmwqytp@rob-hp-laptop>
-Message-ID: <df0313af8ab0ed1e7bddcfeca8429632@codeaurora.org>
+Subject: Re: ath10k: advertize hardware packet loss mechanism
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <20160906070841.4266-1-rmanohar@qti.qualcomm.com>
+References: <20160906070841.4266-1-rmanohar@qti.qualcomm.com>
+Message-ID: <53adc90b02a842499170bf3324e4645c@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 23 Nov 2016 14:53:43 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,70 +18,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rob Herring <robh@kernel.org>
-Cc: c_traja@qti.qualcomm.com, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rmanohar@codeaurora.org
 
-Thanks for the comments.
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
+> Indicate hardware (or firmware) supports that CQM packet-loss report
+> will be generated based on station kickout algorithm. As of now mac80211
+> tracks connection loss by missing msdu counts (50) whereas ath10k
+> firmware tracks them by missing ppdus (+ BAR tries). While firmware is
+> trying to adapt its rate table, mac80211 might send out low_ack event to
+> hostapd. This is causing frequent connect and disconnect iteration under
+> noisy environment or when station is roaming around.
+> 
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-On 2016-11-18 20:14, Rob Herring wrote:
-> On Thu, Nov 17, 2016 at 05:14:23PM +0530, c_traja@qti.qualcomm.com 
-> wrote:
->> From: Tamizh chelvam <tamizhchelvam@codeaurora.org>
->> 
->> There two things done in this patch.
->> 
->> 1) 'btcoex_support' flag for BTCOEX feature support by the hardware.
->> 2) 'wlan_btcoex_gpio' is used to fill wlan priority pin number for
->>    BTCOEX priority feature support.
->> 
->> Signed-off-by: Tamizh chelvam <tamizhchelvam@codeaurora.org>
->> ---
->>  .../bindings/net/wireless/qcom,ath10k.txt          |    4 ++++
->>  1 file changed, 4 insertions(+)
->> 
->> diff --git 
->> a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt 
->> b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> index 74d7f0a..08150e2d 100644
->> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
->> @@ -46,6 +46,10 @@ Optional properties:
->>  				 hw versions.
->>  - qcom,ath10k-pre-calibration-data : pre calibration data as an 
->> array,
->>  				     the length can vary between hw versions.
->> +- btcoex_support  : should contain eithr "0" or "1" to indicate 
->> btcoex
->> +		    support by the hardware.
-> 
-> This is BT coexistence? Make this boolean and n
+Patch applied to ath-next branch of ath.git, thanks.
 
-Yes, this is BT coexistence. And I didn't get what are you trying to say 
-in this "Make this boolean and n"
-> 
->> +- btcoex_gpio_pin :  btcoex gpio pin number for the device which
->> +		     supports BTCOEX.
-> 
-> This is a pin number on the chip, not any pin number Linux GPIO subsys
-> cares about, right? Is there a connection to the host too, or this is
-> internal between BT and WiFi?
+ff32eeb86aa1 ath10k: advertize hardware packet loss mechanism
 
-This is internal between BT and wifi.
-> 
-> Do you really need 2 properties? Does supporting this feature require
-> the GPIO? If so, then the first property is redundant.
-> 
-Target/driver can hard copy this gpio pin for some chipsets and there we 
-will need btcoex_support flag to find the btcoex support.
+-- 
+https://patchwork.kernel.org/patch/9315811/
 
-> Needs vendor prefix and don't use '_'. Should be something like
-> 'qcom,bt-coexist-gpio-pin'.
-> 
-Sure I'll update this and send in v3 patch
+Documentation about submitting wireless patches and checking status
+from patchwork:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
