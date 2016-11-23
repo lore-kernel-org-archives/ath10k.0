@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1c9Y03-000074-8Q
- for ath10k@lists.infradead.org; Wed, 23 Nov 2016 13:54:11 +0000
+ id 1c9Y1C-0000GN-7I
+ for ath10k@lists.infradead.org; Wed, 23 Nov 2016 13:55:23 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: advertize hardware packet loss mechanism
+Subject: Re: [2/4] ath10k: implement offset_tsf ieee80211_op
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20160906070841.4266-1-rmanohar@qti.qualcomm.com>
-References: <20160906070841.4266-1-rmanohar@qti.qualcomm.com>
-Message-ID: <53adc90b02a842499170bf3324e4645c@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 23 Nov 2016 14:53:43 +0100
+In-Reply-To: <20160928235631.9197-3-twp@qca.qualcomm.com>
+References: <20160928235631.9197-3-twp@qca.qualcomm.com>
+Message-ID: <5d001697eeb847e887d282d63af3cd40@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 23 Nov 2016 14:54:54 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +22,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rmanohar@codeaurora.org
+To: "Pedersen, Thomas" <twp@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
-> Indicate hardware (or firmware) supports that CQM packet-loss report
-> will be generated based on station kickout algorithm. As of now mac80211
-> tracks connection loss by missing msdu counts (50) whereas ath10k
-> firmware tracks them by missing ppdus (+ BAR tries). While firmware is
-> trying to adapt its rate table, mac80211 might send out low_ack event to
-> hostapd. This is causing frequent connect and disconnect iteration under
-> noisy environment or when station is roaming around.
+"Pedersen, Thomas" <twp@qca.qualcomm.com> wrote:
+> Current set_tsf is implemented in terms of TSF_INCREMENT
+> only. Instead support new WMI command TSF_DECREMENT and
+> export these through offset_tsf. Advantage is we get
+> more accurate TSF adjustments, and don't calculate wrong
+> offset in case absolute TSF was calculated from rx_mactime
+> (actual TSF).
 > 
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> The new WMI command is available in firmware
+> 10.4-3.2.1-00033 for QCA4019 chips. Old drivers on new
+> firmware or vice versa shouldn't  be a problem since
+> get/set tsf logic was already broken.
+> 
+> Signed-off-by: Thomas Pedersen <twp@qca.qualcomm.com>
 
-Patch applied to ath-next branch of ath.git, thanks.
+2 patches applied to ath-next branch of ath.git, thanks.
 
-ff32eeb86aa1 ath10k: advertize hardware packet loss mechanism
+973324fff154 ath10k: implement offset_tsf ieee80211_op
+f6f64cfb966d ath10k: remove set/get_tsf ieee80211_ops
 
 -- 
-https://patchwork.kernel.org/patch/9315811/
+https://patchwork.kernel.org/patch/9355377/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
