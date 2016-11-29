@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x230.google.com ([2607:f8b0:4003:c06::230])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cBIYH-0001ZA-8P
- for ath10k@lists.infradead.org; Mon, 28 Nov 2016 09:48:48 +0000
-Received: by mail-oi0-x230.google.com with SMTP id b126so143392146oia.2
- for <ath10k@lists.infradead.org>; Mon, 28 Nov 2016 01:48:29 -0800 (PST)
+ id 1cBjfz-0002tj-4h
+ for ath10k@lists.infradead.org; Tue, 29 Nov 2016 14:46:33 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: ath10k: Fix soft lockup during firmware crash/hw-restart
+Date: Tue, 29 Nov 2016 20:16:02 +0530
+Message-ID: <1480430762-15995-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-From: yu-chieh kung <jay0607@gmail.com>
-Date: Mon, 28 Nov 2016 17:48:28 +0800
-Message-ID: <CAGJdtRCGbavfaLi_40B30CGnnBdA2f2zWKT+63GKSfjHOz4seg@mail.gmail.com>
-Subject: Who decide "Duration"?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +21,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Hi All,
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Does anyone know who decide duration in ath10k.
-Decided by rate table or ?
+During firmware crash (or) user requested manual restart
+the system gets into a soft lock up state because of the
+below root cause.
 
-I am using 998x chipset with CT firmware in IBSS mode
-I did some experiment.
+During user requested hardware restart / firmware crash
+the system goes into a soft lockup state as 'napi_synchronize'
+is called after 'napi_disable' (which sets 'NAPI_STATE_SCHED'
+bit) and it sleeps into infinite loop as it waits for
+'NAPI_STATE_SCHED' to be cleared. This condition is hit because
+'ath10k_hif_stop' is called twice as below (resulting in calling
+'napi_synchronize' after 'napi_disable')
 
-I create a ack (or Block Ack), send via MGMT_TID.
-the date rate is 6Mb, and duration is 60.
+'ath10k_core_restart' -> 'ath10k_hif_stop' (ATH10K_STATE_ON) ->
+-> 'ieee80211_restart_hw' -> 'ath10k_start' -> 'ath10k_halt' ->
+'ath10k_core_stop' -> 'ath10k_hif_stop' (ATH10K_STATE_RESTARTING)
 
-i check the normal ack (or Block Ack),
-date rate is 6Mb as well, but the duration is 0.
+Fix this by calling 'ath10k_halt' in ath10k_core_restart itself
+as it makes more sense before informing mac80211 to restart h/w
+Also remove 'ath10k_halt' in ath10k_start for the state of 'restarting'
 
-is it possible to send ack with duration 0 via MGMT_TID?
-or there is any other TID which is used for ACK?
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+[thanks to Kalle and Michal for their inputs]
 
-Thanks.
+ drivers/net/wireless/ath/ath10k/core.c | 2 +-
+ drivers/net/wireless/ath/ath10k/mac.c  | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 7005e2a..5bc6847 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1536,7 +1536,7 @@ static void ath10k_core_restart(struct work_struct *work)
+ 	switch (ar->state) {
+ 	case ATH10K_STATE_ON:
+ 		ar->state = ATH10K_STATE_RESTARTING;
+-		ath10k_hif_stop(ar);
++		ath10k_halt(ar);
+ 		ath10k_scan_finish(ar);
+ 		ieee80211_restart_hw(ar->hw);
+ 		break;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 717b2fa..481842b 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4449,7 +4449,6 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 		ar->state = ATH10K_STATE_ON;
+ 		break;
+ 	case ATH10K_STATE_RESTARTING:
+-		ath10k_halt(ar);
+ 		ar->state = ATH10K_STATE_RESTARTED;
+ 		break;
+ 	case ATH10K_STATE_ON:
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
