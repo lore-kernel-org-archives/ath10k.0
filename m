@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x241.google.com ([2607:f8b0:4001:c06::241])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cC9bg-0003Sd-0Y
- for ath10k@lists.infradead.org; Wed, 30 Nov 2016 18:27:50 +0000
-Received: by mail-io0-x241.google.com with SMTP id r94so4156931ioe.1
- for <ath10k@lists.infradead.org>; Wed, 30 Nov 2016 10:27:26 -0800 (PST)
+Received: from smtp-out06.msg.oleane.net ([62.161.7.4])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cCBcC-0001WW-8E
+ for ath10k@lists.infradead.org; Wed, 30 Nov 2016 20:36:29 +0000
+Received: from smtp26.msg.oleane.net ([172.17.20.148]) 
+ by smtp-out06.msg.oleane.net with ESMTP id uAUIP1sE026407
+ for <ath10k@lists.infradead.org>; Wed, 30 Nov 2016 19:25:02 +0100
+Received: from RD9 ([195.6.104.67]) (authenticated)
+ by smtp26.msg.oleane.net (MSA) with ESMTP id uAUI3lua006186
+ for <ath10k@lists.infradead.org>; Wed, 30 Nov 2016 19:03:47 +0100
+From: "Jean-Pierre Tosoni" <jp.tosoni@acksys.fr>
+Subject: Client station sends probes on DFS channels
+Date: Wed, 30 Nov 2016 19:03:47 +0100
+Message-ID: <006401d24b34$191d7830$4b586890$@acksys.fr>
 MIME-Version: 1.0
-In-Reply-To: <1480499414-19543-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1480499414-19543-1-git-send-email-mohammed@qca.qualcomm.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Wed, 30 Nov 2016 10:27:25 -0800
-Message-ID: <CAJ-VmokhmPy7Bb++wRb2h5H-_g3Vu2jqLqeoh9kiP0tGdC1_vA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Fix Tx DMA alloc failure during continuous wifi
- down/up
+Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,239 +27,78 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-Heh, I had to do something like this for freebsd too for my ath10k
-port. So thanks. :)
+Hello list,
 
-Suggestion - take a look at where tasklets, completions, locks, etc
-are all re-allocated multiple times, once upon initial VAP bringup. I
-had to also undo this in FreeBSD, as we don't allow re-init of tasks,
-completions, callouts and locks without first freeing/zero'ing them
-appropriately. :)
+There is a case where I can see probes on a DFS channel, from a
+non-associated station using ath10k. (note that the problem does
+not arise when using ath9k).
+
+*The setup*
+
+I am using Openwrt, wpa_supplicant and compat-wireless 2016-10-08,
+Card firmware is	ath10k_pci: qca988x hw2.0 (0x4100016c, 0x043202ff)
+		fw 10.2.4.70-2 api 5 htt-ver 2.1 wmi-op 5 htt-op 2
+		cal otp max-sta 128 features no-p2p
+	ath10k_pci: debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
+
+I am using channel 116, regdom US or FR, where I see no traffic at all
+using wireshark+Airpcap.
+I set wpa_supplicant to scan this channel only for a specific SSID "ssid1".
+
+At initial startup of the client device, no probes are going out, which is
+OK.
+
+Then, on another device, I start a hostapd set to channel 116, with a
+different SSID "otherssid" so that the supplicant will not associate.
+
+Shortly (1-2s) after the beacons appear in the air, the client begins to
+Send probe request in the air, which is unexpected, but acceptable since
+the client can infer absence of radars from the presence of beacons.
+
+*The problem*
+
+If I power down the AP, the client continues to send probes for around
+10 minutes, which is unacceptable since it cannot handle radar detection,
+as it is a slave device in the meaning of ETSI/EN 301-893[1].
+
+
+Some tests I made:
+- I tried to investigate the "beacon hint" mechanism but it appears that it
+  is not used on DFS channels.
+
+- I tried to force the IEEE80211_NO_IR flag when IEEE80211_CHAN_DFS is set.
+
+- When I reload the reg. domain using "iw reg set", the probes cease, but
+will
+  reappear if I cycle my AP again On then Off.
+
+- When I let the client associate, then disassociate and stop the AP, the
+same
+  problem arises. It disappears if I add a call to ath10k_regd_update() in
+mac.c
+  after a disconnection (This is not a fix, since in my case the client
+never
+  associates).
+
+- Since at startup, the client does not send probes, I infer that the
+problem
+  is *not* caused by a hidden AP that the card could see but not airpcap.
+
+- I tried with channels 52 and 100, with regdom FR or US: same problem.
+
+Any ideas?
+
+
+[1]
+http://www.etsi.org/deliver/etsi_en/301800_301899/301893/01.08.01_60/en_3018
+93v010801p.pdf 
+
+J.P. Tosoni - ACKSYS
 
 
 
--adrian
-
-
-On 30 November 2016 at 01:50, Mohammed Shafi Shajakhan
-<mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
->
-> With maximum number of vap's configured in a two radio supported
-> systems of ~256 Mb RAM, doing a continuous wifi down/up and
-> intermittent traffic streaming from the connected stations results
-> in failure to allocate contiguous memory for tx buffers. This results
-> in the disappearance of all VAP's and a manual reboot is needed as
-> this is not a crash (or) OOM(for OOM killer to be invoked). To address
-> this allocate contiguous memory for tx buffers one time and re-use them
-> until the modules are unloaded but this results in a slight increase in
-> memory footprint of ath10k when the wifi is down, but the modules are
-> still loaded. Also as of now we use a separate bool 'tx_mem_allocated'
-> to keep track of the one time memory allocation, as we cannot come up
-> with something like 'ath10k_tx_{register,unregister}' before
-> 'ath10k_probe_fw' is called as 'ath10k_htt_tx_alloc_cont_frag_desc'
-> memory allocation is dependent on the hw_param 'continuous_frag_desc'
->
-> a) memory footprint of ath10k without the change
->
-> lsmod | grep ath10k
-> ath10k_core           414498  1 ath10k_pci
-> ath10k_pci             38236  0
->
-> b) memory footprint of ath10k with the change
->
-> ath10k_core           414980  1 ath10k_pci
-> ath10k_pci             38236  0
->
-> Memory Failure Call trace:
->
-> hostapd: page allocation failure: order:6, mode:0xd0
->  [<c021f150>] (__dma_alloc_buffer.isra.23) from
-> [<c021f23c>] (__alloc_remap_buffer.isra.26+0x14/0xb8)
-> [<c021f23c>] (__alloc_remap_buffer.isra.26) from
-> [<c021f664>] (__dma_alloc+0x224/0x2b8)
-> [<c021f664>] (__dma_alloc) from [<c021f810>]
-> (arm_dma_alloc+0x84/0x90)
-> [<c021f810>] (arm_dma_alloc) from [<bf954764>]
-> (ath10k_htt_tx_alloc+0xe0/0x2e4 [ath10k_core])
-> [<bf954764>] (ath10k_htt_tx_alloc [ath10k_core]) from
-> [<bf94e6ac>] (ath10k_core_start+0x538/0xcf8 [ath10k_core])
-> [<bf94e6ac>] (ath10k_core_start [ath10k_core]) from
-> [<bf947eec>] (ath10k_start+0xbc/0x56c [ath10k_core])
-> [<bf947eec>] (ath10k_start [ath10k_core]) from
-> [<bf8a7a04>] (drv_start+0x40/0x5c [mac80211])
-> [<bf8a7a04>] (drv_start [mac80211]) from [<bf8b7cf8>]
-> (ieee80211_do_open+0x170/0x82c [mac80211])
-> [<bf8b7cf8>] (ieee80211_do_open [mac80211]) from
-> [<c056afc8>] (__dev_open+0xa0/0xf4)
-> [21053.491752] Normal: 641*4kB (UEMR) 505*8kB (UEMR) 330*16kB (UEMR)
-> 126*32kB (UEMR) 762*64kB (UEMR) 237*128kB (UEMR) 1*256kB (M) 0*512kB
-> 0*1024kB 0*2048kB 0*4096kB = 95276kB
->
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> ---
->  drivers/net/wireless/ath/ath10k/core.c   |  5 +--
->  drivers/net/wireless/ath/ath10k/htt.h    |  6 +++-
->  drivers/net/wireless/ath/ath10k/htt_tx.c | 54 +++++++++++++++++++++++++-------
->  3 files changed, 51 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 5bc6847..f7ea4de 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -1857,7 +1857,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
->                 goto err_wmi_detach;
->         }
->
-> -       status = ath10k_htt_tx_alloc(&ar->htt);
-> +       status = ath10k_htt_tx_start(&ar->htt);
->         if (status) {
->                 ath10k_err(ar, "failed to alloc htt tx: %d\n", status);
->                 goto err_wmi_detach;
-> @@ -2052,7 +2052,7 @@ void ath10k_core_stop(struct ath10k *ar)
->                 ath10k_wait_for_suspend(ar, WMI_PDEV_SUSPEND_AND_DISABLE_INTR);
->
->         ath10k_hif_stop(ar);
-> -       ath10k_htt_tx_free(&ar->htt);
-> +       ath10k_htt_tx_stop(&ar->htt);
->         ath10k_htt_rx_free(&ar->htt);
->         ath10k_wmi_detach(ar);
->  }
-> @@ -2385,6 +2385,7 @@ void ath10k_core_destroy(struct ath10k *ar)
->         destroy_workqueue(ar->workqueue_aux);
->
->         ath10k_debug_destroy(ar);
-> +       ath10k_htt_tx_destroy(&ar->htt);
->         ath10k_wmi_free_host_mem(ar);
->         ath10k_mac_destroy(ar);
->  }
-> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-> index 0d2ed09..96bf7bf 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt.h
-> +++ b/drivers/net/wireless/ath/ath10k/htt.h
-> @@ -1692,6 +1692,8 @@ struct ath10k_htt {
->                 enum htt_tx_mode_switch_mode mode;
->                 enum htt_q_depth_type type;
->         } tx_q_state;
-> +
-> +       bool tx_mem_allocated;
->  };
->
->  #define RX_HTT_HDR_STATUS_LEN 64
-> @@ -1754,7 +1756,9 @@ struct htt_rx_desc {
->  int ath10k_htt_init(struct ath10k *ar);
->  int ath10k_htt_setup(struct ath10k_htt *htt);
->
-> -int ath10k_htt_tx_alloc(struct ath10k_htt *htt);
-> +int ath10k_htt_tx_start(struct ath10k_htt *htt);
-> +void ath10k_htt_tx_stop(struct ath10k_htt *htt);
-> +void ath10k_htt_tx_destroy(struct ath10k_htt *htt);
->  void ath10k_htt_tx_free(struct ath10k_htt *htt);
->
->  int ath10k_htt_rx_alloc(struct ath10k_htt *htt);
-> diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-> index ccbc8c03..27e49db 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-> +++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-> @@ -350,21 +350,15 @@ static int ath10k_htt_tx_alloc_txdone_fifo(struct ath10k_htt *htt)
->         return ret;
->  }
->
-> -int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
-> +static int ath10k_htt_tx_alloc_buf(struct ath10k_htt *htt)
->  {
->         struct ath10k *ar = htt->ar;
->         int ret;
->
-> -       ath10k_dbg(ar, ATH10K_DBG_BOOT, "htt tx max num pending tx %d\n",
-> -                  htt->max_num_pending_tx);
-> -
-> -       spin_lock_init(&htt->tx_lock);
-> -       idr_init(&htt->pending_tx);
-> -
->         ret = ath10k_htt_tx_alloc_cont_txbuf(htt);
->         if (ret) {
->                 ath10k_err(ar, "failed to alloc cont tx buffer: %d\n", ret);
-> -               goto free_idr_pending_tx;
-> +               return ret;
->         }
->
->         ret = ath10k_htt_tx_alloc_cont_frag_desc(htt);
-> @@ -396,6 +390,31 @@ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
->  free_txbuf:
->         ath10k_htt_tx_free_cont_txbuf(htt);
->
-> +       return ret;
-> +}
-> +
-> +int ath10k_htt_tx_start(struct ath10k_htt *htt)
-> +{
-> +       struct ath10k *ar = htt->ar;
-> +       int ret;
-> +
-> +       ath10k_dbg(ar, ATH10K_DBG_BOOT, "htt tx max num pending tx %d\n",
-> +                  htt->max_num_pending_tx);
-> +
-> +       spin_lock_init(&htt->tx_lock);
-> +       idr_init(&htt->pending_tx);
-> +
-> +       if (htt->tx_mem_allocated)
-> +               return 0;
-> +
-> +       ret = ath10k_htt_tx_alloc_buf(htt);
-> +       if (ret)
-> +               goto free_idr_pending_tx;
-> +
-> +       htt->tx_mem_allocated = true;
-> +
-> +       return 0;
-> +
->  free_idr_pending_tx:
->         idr_destroy(&htt->pending_tx);
->
-> @@ -418,15 +437,28 @@ static int ath10k_htt_tx_clean_up_pending(int msdu_id, void *skb, void *ctx)
->         return 0;
->  }
->
-> -void ath10k_htt_tx_free(struct ath10k_htt *htt)
-> +void ath10k_htt_tx_destroy(struct ath10k_htt *htt)
->  {
-> -       idr_for_each(&htt->pending_tx, ath10k_htt_tx_clean_up_pending, htt->ar);
-> -       idr_destroy(&htt->pending_tx);
-> +       if (!htt->tx_mem_allocated)
-> +               return;
->
->         ath10k_htt_tx_free_cont_txbuf(htt);
->         ath10k_htt_tx_free_txq(htt);
->         ath10k_htt_tx_free_cont_frag_desc(htt);
->         ath10k_htt_tx_free_txdone_fifo(htt);
-> +       htt->tx_mem_allocated = false;
-> +}
-> +
-> +void ath10k_htt_tx_stop(struct ath10k_htt *htt)
-> +{
-> +       idr_for_each(&htt->pending_tx, ath10k_htt_tx_clean_up_pending, htt->ar);
-> +       idr_destroy(&htt->pending_tx);
-> +}
-> +
-> +void ath10k_htt_tx_free(struct ath10k_htt *htt)
-> +{
-> +       ath10k_htt_tx_stop(htt);
-> +       ath10k_htt_tx_destroy(htt);
->  }
->
->  void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
-> --
-> 1.9.1
->
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
