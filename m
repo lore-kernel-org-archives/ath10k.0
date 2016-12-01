@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCOhx-0004rw-Ch
- for ath10k@lists.infradead.org; Thu, 01 Dec 2016 10:35:18 +0000
+ id 1cCOim-0006lI-Ss
+ for ath10k@lists.infradead.org; Thu, 01 Dec 2016 10:36:10 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k: Fix soft lockup during firmware crash/hw-restart
-Date: Thu, 1 Dec 2016 10:34:50 +0000
-Message-ID: <87mvggrl87.fsf@kamboji.qca.qualcomm.com>
-References: <1480430762-15995-1-git-send-email-mohammed@qca.qualcomm.com>
- <1a44a3e9-3d67-30a5-0325-a65003ebe1fc@candelatech.com>
- <20161201060612.GA8611@atheros-ThinkPad-T61>
-In-Reply-To: <20161201060612.GA8611@atheros-ThinkPad-T61> (Mohammed Shafi
- Shajakhan's message of "Thu, 1 Dec 2016 11:36:31 +0530")
+Subject: Re: [PATCH v2] ath10k: Fix soft lockup during firmware
+ crash/hw-restart
+Date: Thu, 1 Dec 2016 10:35:38 +0000
+Message-ID: <87inr4rl6t.fsf@kamboji.qca.qualcomm.com>
+References: <1480483769-17693-1-git-send-email-mohammed@qca.qualcomm.com>
+In-Reply-To: <1480483769-17693-1-git-send-email-mohammed@qca.qualcomm.com>
+ (Mohammed Shafi Shajakhan's message of "Wed, 30 Nov 2016 10:59:29	+0530")
 Content-Language: en-US
-Content-ID: <DA1E155190FE024F95893998DF689BD8@qualcomm.com>
+Content-ID: <2C4869A2CAFE0542AFF81453207D0E09@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,21 +26,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Cc: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
- Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+Cc: "mohammed@codeaurora.org" <mohammed@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Mohammed Shafi Shajakhan <mohammed@codeaurora.org> writes:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
 
-> On Tue, Nov 29, 2016 at 10:16:50AM -0800, Ben Greear wrote:
->> Is this something for stable?  And if so, how far back should it be applied?
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 >
-> @Kalle,
+> During firmware crash (or) user requested manual restart
+> the system gets into a soft lock up state because of the
+> below root cause.
 >
-> [shafi] kindly suggest. If i am not wrong this is only needed for 4.9
+> During user requested hardware restart / firmware crash
+> the system goes into a soft lockup state as 'napi_synchronize'
+> is called after 'napi_disable' (which sets 'NAPI_STATE_SCHED'
+> bit) and it sleeps into infinite loop as it waits for
+> 'NAPI_STATE_SCHED' to be cleared. This condition is hit because
+> 'ath10k_hif_stop' is called twice as below (resulting in calling
+> 'napi_synchronize' after 'napi_disable')
+>
+> 'ath10k_core_restart' -> 'ath10k_hif_stop' (ATH10K_STATE_ON) ->
+> -> 'ieee80211_restart_hw' -> 'ath10k_start' -> 'ath10k_halt' ->
+> 'ath10k_core_stop' -> 'ath10k_hif_stop' (ATH10K_STATE_RESTARTING)
+>
+> Fix this by calling 'ath10k_halt' in ath10k_core_restart itself
+> as it makes more sense before informing mac80211 to restart h/w
+> Also remove 'ath10k_halt' in ath10k_start for the state of 'restarting'
+>
+> Fixes: 3c97f5de1f28 ("ath10k: implement NAPI support")
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> ---
+> [v2 Added Fixes ]
 
-Correct, commit 3c97f5de1f28 went to 4.9-rc1, it was not in 4.8. I'll
-add CC stable to the commit log.
+I'll also add:
+
+Cc: <stable@vger.kernel.org> # v4.9
 
 -- 
 Kalle Valo
