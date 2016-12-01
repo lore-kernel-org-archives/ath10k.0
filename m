@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out06.msg.oleane.net ([62.161.7.4])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCOaW-0007FS-3l
- for ath10k@lists.infradead.org; Thu, 01 Dec 2016 10:27:40 +0000
-Received: from smtp05.msg.oleane.net ([172.17.20.114]) 
- by smtp-out06.msg.oleane.net with ESMTP id uB19Yx7W005657
- for <ath10k@lists.infradead.org>; Thu, 1 Dec 2016 10:34:59 +0100
-From: "Jean-Pierre Tosoni" <jp.tosoni@acksys.fr>
-References: <006401d24b34$191d7830$4b586890$@acksys.fr>
- <CAJ-Vmom1EDyHH8Pcuxq83ptsYEGj0LWeDCNvx7gDAUKQmbWZ6g@mail.gmail.com>
-In-Reply-To: <CAJ-Vmom1EDyHH8Pcuxq83ptsYEGj0LWeDCNvx7gDAUKQmbWZ6g@mail.gmail.com>
-Subject: RE: Client station sends probes on DFS channels
-Date: Thu, 1 Dec 2016 10:13:30 +0100
-Message-ID: <008001d24bb3$2f1e4db0$8d5ae910$@acksys.fr>
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cCOhx-0004rw-Ch
+ for ath10k@lists.infradead.org; Thu, 01 Dec 2016 10:35:18 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: ath10k: Fix soft lockup during firmware crash/hw-restart
+Date: Thu, 1 Dec 2016 10:34:50 +0000
+Message-ID: <87mvggrl87.fsf@kamboji.qca.qualcomm.com>
+References: <1480430762-15995-1-git-send-email-mohammed@qca.qualcomm.com>
+ <1a44a3e9-3d67-30a5-0325-a65003ebe1fc@candelatech.com>
+ <20161201060612.GA8611@atheros-ThinkPad-T61>
+In-Reply-To: <20161201060612.GA8611@atheros-ThinkPad-T61> (Mohammed Shafi
+ Shajakhan's message of "Thu, 1 Dec 2016 11:36:31 +0530")
+Content-Language: en-US
+Content-ID: <DA1E155190FE024F95893998DF689BD8@qualcomm.com>
 MIME-Version: 1.0
-Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,85 +23,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Adrian Chadd' <adrian.chadd@gmail.com>, ath10k@lists.infradead.org
+To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Cc: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
+ Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
 
-SGkgQWRyaWFuLAoKPiBXaGF0J3MgdGhlIGV0c2kgc3BlYyBzYXkgYWJvdXQgb25jZSBhIHN0YXRp
-b24gaGVhcnMgYmVhY29ucz8KCldoYXQgRVRTSSBFTjMwMTg5MyB2MS44LjEgWzFdIHNheXMgaXM6
-CgoxKSBFVFNJIGRpc3Rpbmd1aXNoZXMgIm1hc3RlciIgZGV2aWNlcyBhbmQgInNsYXZlIiBkZXZp
-Y2VzCiAgIChzZWN0aW9uIDQuNy4xLjMpCgoyKSAiU2xhdmVzIHNoYWxsIG9ubHkgb3BlcmF0ZSBp
-biBhIG5ldHdvcmsgY29udHJvbGxlZCBieSAoLi4uKSBhIG1hc3RlciIKICAgKHNlY3Rpb24gNC43
-LjEuMykKCjMpICJBIHNsYXZlIGRldmljZSBzaGFsbCBzdG9wIGl0cyB0cmFuc21pc3Npb25zIG9u
-IGEgY2hhbm5lbCB3aGVuZXZlcgogICBpbnN0cnVjdGVkIGJ5IGEgbWFzdGVyIGRldmljZSIgKHNl
-Y3Rpb24gNC43LjEuNCkKICAgPT4gSW4gbXkgdW5kZXJzdGFuZGluZywgZnJvbSBhIDgwMi4xMSBw
-b2ludCBvZiB2aWV3LCB0aGlzIGltcGxpZXMgdGhhdAogICAgICBUaGUgc2xhdmUgb2JleXMgdGhl
-IG1hc3RlciwgaGVuY2UgaXQgaXMgYXNzb2NpYXRlZCB3aXRoIGl0ICJzb21laG93Ii4KICAgICAg
-T3RoZXJ3aXNlLCB0aGUgc3RhdGlvbiBtdXN0IGJlIGNvbnNpZGVyZWQgYXMgYmVpbmcgYSBtYXN0
-ZXIuCgo0KSBDaGFubmVsIG1vdmUgdGltZTogdGhlIHNsYXZlIG11c3Qgc3RvcCB0cmFuc21pc3Np
-b24gd2l0aGluICoxMCBzZWNvbmRzKgogICBBZnRlciBiZWluZyBpbnN0cnVjdGVkIHNvIChzZWN0
-aW9uIDQuNy4yLjUuMSBhbmQgdGFibGUgRC4xKQoKNSkgRHVyaW5nIHRoZXNlIDEwIHNlY29uZHMs
-IHRoZSBhaXJ0aW1lIHVzZWQgbXVzdCBub3QgZXhjZWVkIDEgc2Vjb25kLgoKClNvLAotIGVpdGhl
-ciBhbnkgdW5yZWxhdGVkIEFQIGlzIGNvbnNpZGVyZWQgYSBtYXN0ZXIsIGFuZCB3aGVuIGJlYWNv
-bnMKICBjZWFzZSB0aGlzIHNob3VsZCBiZSBjb25zaWRlcmVkIGEgaGludCB0byBzdG9wIHdpdGhp
-biAxMCBzZWNvbmRzLAotIG9yIHRoZSB1bmFzc29jaWF0ZWQgY2xpZW50IGlzIGNvbnNpZGVyZWQg
-YSBtYXN0ZXIgaXRzZWxmLCBhbmQKICBtdXN0IG9iZXkgQ0FDLCBOT1AgYW5kIHNvIG9uLgoKSGVu
-Y2UgSSB0aGluayB0aGUgcmVsZXZhbnQgZHVyYXRpb24gaXMgdGhlICJjaGFubmVsIG1vdmUgdGlt
-ZSIgaW4gdGFibGUgRC4xCndoaWNoIGlzIGxpbWl0ZWQgdG8gMTAgc2Vjb25kcyAtLSBpbnN0ZWFk
-IG9mIDEwIG1pbnV0ZXMuCgpKZWFuLVBpZXJyZQoKRGUgOiBBZHJpYW4gQ2hhZGQgW21haWx0bzph
-ZHJpYW4uY2hhZGRAZ21haWwuY29tXSAKRW52b3nDqSA6IG1lcmNyZWRpIDMwIG5vdmVtYnJlIDIw
-MTYgMjE6NDEKw4AgOiBKZWFuLVBpZXJyZSBUb3NvbmkKQ2MgOiBhdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpPYmpldCA6IFJlOiBDbGllbnQgc3RhdGlvbiBzZW5kcyBwcm9iZXMgb24gREZTIGNo
-YW5uZWxzCgpIaSwKSSB0aG91Z2h0IHRoYXQgc2VlaW5nIGJlYWNvbnMgbWVhbnQgdGhlIHNlYSBj
-b3VsZCB0cmVhdCBpdCBhcyBub24gcGFzc2l2ZSBmb3IgYSB3aGlsZS4gVGVuIG1pbnV0ZXMgc291
-bmRzIGFib3V0IHJpZ2h0LgpXaGF0J3MgdGhlIGV0c2kgc3BlYyBzYXkgYWJvdXQgb25jZSBhIHN0
-YXRpb24gaGVhcnMgYmVhY29ucz8KQQoKT24gTm92IDMwLCAyMDE2IDEyOjM2IFBNLCAiSmVhbi1Q
-aWVycmUgVG9zb25pIiA8anAudG9zb25pQGFja3N5cy5mcj4gd3JvdGU6CkhlbGxvIGxpc3QsCgpU
-aGVyZSBpcyBhIGNhc2Ugd2hlcmUgSSBjYW4gc2VlIHByb2JlcyBvbiBhIERGUyBjaGFubmVsLCBm
-cm9tIGEKbm9uLWFzc29jaWF0ZWQgc3RhdGlvbiB1c2luZyBhdGgxMGsuIChub3RlIHRoYXQgdGhl
-IHByb2JsZW0gZG9lcwpub3QgYXJpc2Ugd2hlbiB1c2luZyBhdGg5aykuCgoqVGhlIHNldHVwKgoK
-SSBhbSB1c2luZyBPcGVud3J0LCB3cGFfc3VwcGxpY2FudCBhbmQgY29tcGF0LXdpcmVsZXNzIDIw
-MTYtMTAtMDgsCkNhcmQgZmlybXdhcmUgaXMgYXRoMTBrX3BjaTogcWNhOTg4eCBodzIuMCAoMHg0
-MTAwMDE2YywgMHgwNDMyMDJmZikKICAgICAgICAgICAgICAgIGZ3IDEwLjIuNC43MC0yIGFwaSA1
-IGh0dC12ZXIgMi4xIHdtaS1vcCA1IGh0dC1vcCAyCiAgICAgICAgICAgICAgICBjYWwgb3RwIG1h
-eC1zdGEgMTI4IGZlYXR1cmVzIG5vLXAycAogICAgICAgIGF0aDEwa19wY2k6IGRlYnVnIDAgZGVi
-dWdmcyAxIHRyYWNpbmcgMCBkZnMgMSB0ZXN0bW9kZSAxCgpJIGFtIHVzaW5nIGNoYW5uZWwgMTE2
-LCByZWdkb20gVVMgb3IgRlIsIHdoZXJlIEkgc2VlIG5vIHRyYWZmaWMgYXQgYWxsCnVzaW5nIHdp
-cmVzaGFyaytBaXJwY2FwLgpJIHNldCB3cGFfc3VwcGxpY2FudCB0byBzY2FuIHRoaXMgY2hhbm5l
-bCBvbmx5IGZvciBhIHNwZWNpZmljIFNTSUQgInNzaWQxIi4KCkF0IGluaXRpYWwgc3RhcnR1cCBv
-ZiB0aGUgY2xpZW50IGRldmljZSwgbm8gcHJvYmVzIGFyZSBnb2luZyBvdXQsIHdoaWNoIGlzCk9L
-LgoKVGhlbiwgb24gYW5vdGhlciBkZXZpY2UsIEkgc3RhcnQgYSBob3N0YXBkIHNldCB0byBjaGFu
-bmVsIDExNiwgd2l0aCBhCmRpZmZlcmVudCBTU0lEICJvdGhlcnNzaWQiIHNvIHRoYXQgdGhlIHN1
-cHBsaWNhbnQgd2lsbCBub3QgYXNzb2NpYXRlLgoKU2hvcnRseSAoMS0ycykgYWZ0ZXIgdGhlIGJl
-YWNvbnMgYXBwZWFyIGluIHRoZSBhaXIsIHRoZSBjbGllbnQgYmVnaW5zIHRvClNlbmQgcHJvYmUg
-cmVxdWVzdCBpbiB0aGUgYWlyLCB3aGljaCBpcyB1bmV4cGVjdGVkLCBidXQgYWNjZXB0YWJsZSBz
-aW5jZQp0aGUgY2xpZW50IGNhbiBpbmZlciBhYnNlbmNlIG9mIHJhZGFycyBmcm9tIHRoZSBwcmVz
-ZW5jZSBvZiBiZWFjb25zLgoKKlRoZSBwcm9ibGVtKgoKSWYgSSBwb3dlciBkb3duIHRoZSBBUCwg
-dGhlIGNsaWVudCBjb250aW51ZXMgdG8gc2VuZCBwcm9iZXMgZm9yIGFyb3VuZAoxMCBtaW51dGVz
-LCB3aGljaCBpcyB1bmFjY2VwdGFibGUgc2luY2UgaXQgY2Fubm90IGhhbmRsZSByYWRhciBkZXRl
-Y3Rpb24sCmFzIGl0IGlzIGEgc2xhdmUgZGV2aWNlIGluIHRoZSBtZWFuaW5nIG9mIEVUU0kvRU4g
-MzAxLTg5M1sxXS4KCgpTb21lIHRlc3RzIEkgbWFkZToKLSBJIHRyaWVkIHRvIGludmVzdGlnYXRl
-IHRoZSAiYmVhY29uIGhpbnQiIG1lY2hhbmlzbSBidXQgaXQgYXBwZWFycyB0aGF0IGl0CiAgaXMg
-bm90IHVzZWQgb24gREZTIGNoYW5uZWxzLgoKLSBJIHRyaWVkIHRvIGZvcmNlIHRoZSBJRUVFODAy
-MTFfTk9fSVIgZmxhZyB3aGVuIElFRUU4MDIxMV9DSEFOX0RGUyBpcyBzZXQuCgotIFdoZW4gSSBy
-ZWxvYWQgdGhlIHJlZy4gZG9tYWluIHVzaW5nICJpdyByZWcgc2V0IiwgdGhlIHByb2JlcyBjZWFz
-ZSwgYnV0CiAgd2lsbCByZWFwcGVhciBpZiBJIGN5Y2xlIG15IEFQIGFnYWluIE9uIHRoZW4gT2Zm
-LgoKLSBXaGVuIEkgbGV0IHRoZSBjbGllbnQgYXNzb2NpYXRlLCB0aGVuIGRpc2Fzc29jaWF0ZSBh
-bmQgc3RvcCB0aGUgQVAsIHRoZQogIHNhbWUgcHJvYmxlbSBhcmlzZXMuIEl0IGRpc2FwcGVhcnMg
-aWYgSSBhZGQgYSBjYWxsIHRvIGF0aDEwa19yZWdkX3VwZGF0ZSgpCiAgaW4gbWFjLmMgYWZ0ZXIg
-YSBkaXNjb25uZWN0aW9uIChUaGlzIGlzIG5vdCBhIGZpeCwgc2luY2UgaW4gbXkgY2FzZSB0aGUK
-ICBjbGllbnQgbmV2ZXIgYXNzb2NpYXRlcykuCgotIFNpbmNlIGF0IHN0YXJ0dXAsIHRoZSBjbGll
-bnQgZG9lcyBub3Qgc2VuZCBwcm9iZXMsIEkgaW5mZXIgdGhhdCB0aGUKICBwcm9ibGVtIGlzICpu
-b3QqIGNhdXNlZCBieSBhIGhpZGRlbiBBUCB0aGF0IHRoZSBjYXJkIGNvdWxkIHNlZSBidXQKICBu
-b3QgYWlycGNhcC4KCi0gSSB0cmllZCB3aXRoIGNoYW5uZWxzIDUyIGFuZCAxMDAsIHdpdGggcmVn
-ZG9tIEZSIG9yIFVTOiBzYW1lIHByb2JsZW0uCgpBbnkgaWRlYXM/CgoKWzFdCmh0dHA6Ly93d3cu
-ZXRzaS5vcmcvZGVsaXZlci9ldHNpX2VuLzMwMTgwMF8zMDE4OTkvMzAxODkzLzAxLjA4LjAxXzYw
-L2VuXzMwMTgKOTN2MDEwODAxcC5wZGYKCkouUC4gVG9zb25pIC0gQUNLU1lTCgoKCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
-aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
-awo=
+Mohammed Shafi Shajakhan <mohammed@codeaurora.org> writes:
+
+> On Tue, Nov 29, 2016 at 10:16:50AM -0800, Ben Greear wrote:
+>> Is this something for stable?  And if so, how far back should it be applied?
+>
+> @Kalle,
+>
+> [shafi] kindly suggest. If i am not wrong this is only needed for 4.9
+
+Correct, commit 3c97f5de1f28 went to 4.9-rc1, it was not in 4.8. I'll
+add CC stable to the commit log.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
