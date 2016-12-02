@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cCdiB-0006gL-To
- for ath10k@lists.infradead.org; Fri, 02 Dec 2016 02:36:32 +0000
+ id 1cCdiC-0006gM-8c
+ for ath10k@lists.infradead.org; Fri, 02 Dec 2016 02:36:33 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 2/2] ath10k:  work-around for stale txq in ar->txqs
-Date: Thu,  1 Dec 2016 18:30:00 -0800
-Message-Id: <1480645800-2148-2-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1480645800-2148-1-git-send-email-greearb@candelatech.com>
-References: <1480645800-2148-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 1/2] mac80211: do not iterate active interfaces when in
+ re-configure
+Date: Thu,  1 Dec 2016 18:29:59 -0800
+Message-Id: <1480645800-2148-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,148 +26,106 @@ Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-Due to reasons I do not fully understand, when ath10k firmware
-crashes when trying to bring up lots of vdevs, the ar->txqs
-may still have references to the txq struct when mac80211 re-adds
-the network devices.
+This appears to fix a problem where ath10k firmware would crash,
+mac80211 would start re-adding interfaces to the driver, but the
+iterate-active-interfaces logic would then try to use the half-built
+interfaces.  With a bit of extra debug to catch the problem, the
+ath10k crash looks like this:
 
-The device add logic was re-initializing the list members, but
-if they were already in the ar->txqs, then that meant the list
-was broken and trying to walk the list would end up in an infinite
-loop.
+ath10k_pci 0000:05:00.0: Initializing arvif: ffff8801ce97e320 on vif: ffff8801ce97e1d8
 
-So, check for this particular isue, and remove the reference from
-ar->txqs before re-initializing the list-head.  There must be
-a cleaner way to do this, but I am not sure exactly what that would
-be.
+[the print that happens after arvif->ar is assigned is not shown, so code did not make it that far before
+ the tx-beacon-nowait method was called]
+
+tx-beacon-nowait:  arvif: ffff8801ce97e320  ar:           (null)
+arvif->magic: 0x87560001
+------------[ cut here ]------------
+kernel BUG at /home/greearb/git/linux-4.7.dev.y/drivers/net/wireless/ath/ath10k/wmi.c:1781!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 bridge carl9170 mac80211_hwsim ath10k_pci ath10k_core ath5k ath9k ath9k_common ath9k_hw ath mac80211 cfg80211 8021q garp mrp stp llc bnep bluetooth fuse macvlan pktgen rpcsec_gss_krb5 nfsv4 nfs fscache snd_hda_codec_hdmi coretemp hwmon intel_rapl x86_pkg_temp_thermal intel_powerclamp snd_hda_codec_realtek snd_hda_codec_generic kvm iTCO_wdt irqbypass iTCO_vendor_support joydev snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_seq snd_seq_device pcspkr snd_pcm snd_timer shpchp snd i2c_i801 lpc_ich soundcore tpm_tis tpm nfsd auth_rpcgss nfs_acl lockd grace sunrpc i915 serio_raw i2c_algo_bit drm_kms_helper ata_generic e1000e pata_acpi drm ptp pps_core i2c_core fjes video ipv6 [last unloaded: nf_conntrack]
+CPU: 1 PID: 0 Comm: swapper/1 Not tainted 4.7.10+ #15
+Hardware name: To be filled by O.E.M. To be filled by O.E.M./ChiefRiver, BIOS 4.6.5 06/07/2013
+task: ffff8801d4f20000 ti: ffff8801d4f28000 task.ti: ffff8801d4f28000
+RIP: 0010:[<ffffffffa0efbcfb>]  [<ffffffffa0efbcfb>] ath10k_wmi_tx_beacons_iter+0x28b/0x290 [ath10k_core]
+RSP: 0018:ffff8801d6447a98  EFLAGS: 00010293
+RAX: 0000000000000018 RBX: ffff8801ce97e1d8 RCX: 0000000000000000
+RDX: 0000000000000018 RSI: 0000000000000003 RDI: ffffed003ac88f49
+RBP: ffff8801d6447af0 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff8801ce97e320 R14: ffff8801ce97e378 R15: ffff8801ce97ca40
+FS:  0000000000000000(0000) GS:ffff8801d6440000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007eff191ef1ab CR3: 000000000260a000 CR4: 00000000001406e0
+Stack:
+ 1ffff1003ac88f59 0000000041b58ab3 ffffffffa0f4d52a ffff8801d4f20000
+ 0000000000000246 0000000000000002 ffff8801ce97e1d8 ffff8801bd5d39b8
+ 0000000000000002 0000000000000001 ffff8801ce97ca40 ffff8801d6447b48
+Call Trace:
+ <IRQ>
+ [<ffffffffa0d03e5c>] __iterate_interfaces+0xfc/0x1d0 [mac80211]
+ [<ffffffffa0efba70>] ? ath10k_wmi_cmd_send_nowait+0x260/0x260 [ath10k_core]
+ [<ffffffffa0efba70>] ? ath10k_wmi_cmd_send_nowait+0x260/0x260 [ath10k_core]
+ [<ffffffffa0d04477>] ieee80211_iterate_active_interfaces_atomic+0x67/0x100 [mac80211]
+ [<ffffffffa0d04410>] ? ieee80211_handle_reconfig_failure+0x140/0x140 [mac80211]
+ [<ffffffffa0ef4060>] ? ath10k_tpc_config_disp_tables+0x620/0x620 [ath10k_core]
+ [<ffffffffa0ef408b>] ath10k_wmi_op_ep_tx_credits+0x2b/0x50 [ath10k_core]
+ [<ffffffffa0ee2fd2>] ath10k_htc_rx_completion_handler+0x422/0x5c0 [ath10k_core]
+ [<ffffffffa0b4301e>] ath10k_pci_process_rx_cb+0x37e/0x430 [ath10k_pci]
+ [<ffffffffa0ee2bb0>] ? ath10k_htc_build_tx_ctrl_skb+0xc0/0xc0 [ath10k_core]
+ [<ffffffffa0b42ca0>] ? ath10k_pci_rx_post_pipe+0x550/0x550 [ath10k_pci]
+ [<ffffffff8120cbe5>] ? debug_lockdep_rcu_enabled+0x35/0x40
+ [<ffffffff811e1893>] ? mark_held_locks+0x23/0xc0
+ [<ffffffff8116019a>] ? __local_bh_enable_ip+0x6a/0xd0
+ [<ffffffff811e1abb>] ? trace_hardirqs_on_caller+0x18b/0x290
+ [<ffffffff811e1bcd>] ? trace_hardirqs_on+0xd/0x10
+ [<ffffffff8116019a>] ? __local_bh_enable_ip+0x6a/0xd0
+ [<ffffffff81df11d0>] ? _raw_spin_unlock_bh+0x30/0x40
+ [<ffffffffa0b4902e>] ? ath10k_ce_per_engine_service+0xee/0x100 [ath10k_pci]
+ [<ffffffffa0b43139>] ath10k_pci_htt_htc_rx_cb+0x29/0x30 [ath10k_pci]
+ [<ffffffffa0b48fe6>] ath10k_ce_per_engine_service+0xa6/0x100 [ath10k_pci]
+ [<ffffffffa0b49116>] ath10k_ce_per_engine_service_any+0xd6/0xf0 [ath10k_pci]
+ [<ffffffffa0b45800>] ? ath10k_pci_enable_legacy_irq+0xe0/0xe0 [ath10k_pci]
+ [<ffffffffa0b4585f>] ath10k_pci_tasklet+0x5f/0xb0 [ath10k_pci]
+ [<ffffffff81160445>] tasklet_action+0x245/0x2b0
+ [<ffffffff81df4831>] __do_softirq+0x181/0x595
+ [<ffffffff8116137c>] irq_exit+0xbc/0xc0
+ [<ffffffff81df423c>] do_IRQ+0x7c/0x150
+ [<ffffffff81df23cc>] common_interrupt+0x8c/0x8c
+ <EOI>
+ [<ffffffff811e1abb>] ? trace_hardirqs_on_caller+0x18b/0x290
+ [<ffffffff81b722ae>] ? cpuidle_enter_state+0x1ae/0x4b0
+ [<ffffffff81b722a7>] ? cpuidle_enter_state+0x1a7/0x4b0
+ [<ffffffff81b72602>] cpuidle_enter+0x12/0x20
+ [<ffffffff811d0b6e>] call_cpuidle+0x4e/0x90
+ [<ffffffff811d10e7>] cpu_startup_entry+0x3f7/0x540
+ [<ffffffff811d0cf0>] ? default_idle_call+0x50/0x50
+ [<ffffffff81234bdf>] ? clockevents_config_and_register+0x5f/0x70
+ [<ffffffff81085a9a>] ? setup_APIC_timer+0xfa/0x110
+ [<ffffffff81083b63>] start_secondary+0x253/0x2b0
+ [<ffffffff81083910>] ? set_cpu_sibling_map+0x920/0x920
+Code: 4d 49 e0 8b b3 48 01 00 00 48 c7 c7 a0 ee f3 a0 e8 d9 c2 3f e0 49 81 fd 3f 1f 00 00 76 0f 49 81 fc 3f 1f 00 00 0f 87 c0 fd ff ff <0f> 0b 0f 0b 90 55 48 89 e5 41 57 41 56 48 8d 85 58 ff ff ff 41
+RIP  [<ffffffffa0efbcfb>] ath10k_wmi_tx_beacons_iter+0x28b/0x290 [ath10k_core]
+ RSP <ffff8801d6447a98>
+---[ end trace 6588464714e5163a ]---
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 48 ++++++++++++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/wmi.c |  9 +++++++
- 2 files changed, 51 insertions(+), 6 deletions(-)
+ net/mac80211/util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 784cf2b..2f50915 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4190,13 +4190,37 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
- 	}
- }
- 
--static void ath10k_mac_txq_init(struct ieee80211_txq *txq)
-+static void ath10k_mac_txq_init(struct ath10k *ar, struct ieee80211_txq *txq)
- {
- 	struct ath10k_txq *artxq = (void *)txq->drv_priv;
-+	struct ath10k_txq *tmp, *walker;
-+	struct ieee80211_txq *txq_tmp;
-+	int i = 0;
- 
- 	if (!txq)
- 		return;
- 
-+	spin_lock_bh(&ar->txqs_lock);
-+
-+	/* Remove from ar->txqs in case it still exists there. */
-+	list_for_each_entry_safe(walker, tmp, &ar->txqs, list) {
-+		txq_tmp = container_of((void *)walker, struct ieee80211_txq,
-+				       drv_priv);
-+		if ((++i % 10000) == 0) {
-+			ath10k_err(ar, "txq-init: Checking txq_tmp: %p i: %d\n", txq_tmp, i);
-+			ath10k_err(ar, "txq-init: txqs: %p walker->list: %p w->next: %p  w->prev: %p ar->txqs: %p\n",
-+				   &ar->txqs, &(walker->list), walker->list.next, walker->list.prev, &ar->txqs);
-+		}
-+
-+		if (txq_tmp == txq) {
-+			WARN_ON_ONCE(1);
-+			ath10k_err(ar, "txq-init: Found txq when it should be deleted, txq_tmp: %p  txq: %p\n",
-+				   txq_tmp, txq);
-+			list_del(&walker->list);
-+		}
-+	}
-+	spin_unlock_bh(&ar->txqs_lock);
-+
- 	INIT_LIST_HEAD(&artxq->list);
- }
- 
-@@ -4208,6 +4232,7 @@ static void ath10k_mac_txq_unref(struct ath10k *ar, struct ieee80211_txq *txq)
- 	struct sk_buff *msdu;
- 	struct ieee80211_txq *txq_tmp;
- 	int msdu_id;
-+	int i = 0;
- 
- 	if (!txq)
- 		return;
-@@ -4220,8 +4245,18 @@ static void ath10k_mac_txq_unref(struct ath10k *ar, struct ieee80211_txq *txq)
- 	list_for_each_entry_safe(walker, tmp, &ar->txqs, list) {
- 		txq_tmp = container_of((void *)walker, struct ieee80211_txq,
- 				       drv_priv);
--		if (txq_tmp == txq)
-+		if ((++i % 10000) == 0) {
-+			ath10k_err(ar, "Checking txq_tmp: %p i: %d\n", txq_tmp, i);
-+			ath10k_err(ar, "txqs: %p walker->list: %p w->next: %p  w->prev: %p ar->txqs: %p\n",
-+				   &ar->txqs, &(walker->list), walker->list.next, walker->list.prev, &ar->txqs);
-+		}
-+
-+		if (txq_tmp == txq) {
-+			WARN_ON_ONCE(1);
-+			ath10k_err(ar, "Found txq when it should be deleted, txq_tmp: %p  txq: %p\n",
-+				   txq_tmp, txq);
- 			list_del(&walker->list);
-+		}
- 	}
- 	spin_unlock_bh(&ar->txqs_lock);
- 
-@@ -5255,7 +5290,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 	mutex_lock(&ar->conf_mutex);
- 
- 	memset(arvif, 0, sizeof(*arvif));
--	ath10k_mac_txq_init(vif->txq);
-+	ath10k_mac_txq_init(ar, vif->txq);
- 
- 	memset(&arvif->bcast_rate, WMI_FIXED_RATE_NONE, sizeof(arvif->bcast_rate));
- 	memset(&arvif->mcast_rate, WMI_FIXED_RATE_NONE, sizeof(arvif->mcast_rate));
-@@ -5620,8 +5655,9 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 		kfree(arvif->u.ap.noa_data);
- 	}
- 
--	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vdev %i delete (remove interface)\n",
--		   arvif->vdev_id);
-+	ath10k_dbg(ar, ATH10K_DBG_MAC,
-+		   "mac vdev %i delete (remove interface), vif: %p  arvif: %p\n",
-+		   arvif->vdev_id, vif, arvif);
- 
- 	ret = ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
- 	if (ret)
-@@ -6437,7 +6473,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 		INIT_WORK(&arsta->update_wk, ath10k_sta_rc_update_wk);
- 
- 		for (i = 0; i < ARRAY_SIZE(sta->txq); i++)
--			ath10k_mac_txq_init(sta->txq[i]);
-+			ath10k_mac_txq_init(ar, sta->txq[i]);
- 	}
- 
- 	/* cancel must be done outside the mutex to avoid deadlock */
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index fd685c4..1c8ceb2 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1771,6 +1771,15 @@ static void ath10k_wmi_tx_beacon_nowait(struct ath10k_vif *arvif)
- 	bool deliver_cab;
- 	int ret;
- 
-+	/* I saw a kasan warning here, looks like arvif and/or ar might have been
-+	 * NULL, add something to catch this if it happens again.
-+	 */
-+	if ((((unsigned long)(arvif)) < 8000) || (((unsigned long)(ar)) < 8000)) {
-+		pr_err("tx-beacon-nowait:  arvif: %p  ar: %p\n", arvif, ar);
-+		BUG_ON(((unsigned long)(arvif)) < 8000);
-+		BUG_ON(((unsigned long)(ar)) < 8000);
-+	}
-+
- 	spin_lock_bh(&ar->data_lock);
- 
- 	bcn = arvif->beacon;
+diff --git a/net/mac80211/util.c b/net/mac80211/util.c
+index 863f2c1..abe1f64 100644
+--- a/net/mac80211/util.c
++++ b/net/mac80211/util.c
+@@ -705,7 +705,7 @@ static void __iterate_interfaces(struct ieee80211_local *local,
+ 			break;
+ 		}
+ 		if (!(iter_flags & IEEE80211_IFACE_ITER_RESUME_ALL) &&
+-		    active_only && !(sdata->flags & IEEE80211_SDATA_IN_DRIVER))
++		    (active_only && (local->in_reconfig || !(sdata->flags & IEEE80211_SDATA_IN_DRIVER))))
+ 			continue;
+ 		if (ieee80211_sdata_running(sdata) || !active_only)
+ 			iterator(data, sdata->vif.addr,
 -- 
 2.4.11
 
