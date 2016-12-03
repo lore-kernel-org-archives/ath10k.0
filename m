@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
+Date: Sat, 3 Dec 2016 18:13:58 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: ath10k firmware crashes in mesh mode on QCA9880
+Message-ID: <20161203124358.GB31861@atheros-ThinkPad-T61>
+References: <583DD564.8040704@cococorp.com>
+ <20161201070908.GB11953@atheros-ThinkPad-T61>
+ <58421FA2.2020004@cococorp.com>
 MIME-Version: 1.0
-In-Reply-To: <20161121124752.GA5475@atheros-ThinkPad-T61>
-References: <20161118093041.961686C80A76@dd34104.kasserver.com>
- <CAJ-VmokbM8s0CzwZNTXigt9e+MTng7-UOEMMtqDyLf0_D9_Pwg@mail.gmail.com>
- <20161120013527.30A6F6C80437@dd34104.kasserver.com><20161121124752.GA5475@atheros-ThinkPad-T61>
-Subject: Re: [BUG] Kernel crashes with ath10k radio and Nexus 5X clients
-From: "Timo Sigurdsson" <public_timo.s@silentcreek.de>
-Message-Id: <20161203113352.6B6786C80496@dd34104.kasserver.com>
-Date: Sat,  3 Dec 2016 12:33:52 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <58421FA2.2020004@cococorp.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,670 +17,225 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: mohammed@codeaurora.org
-Cc: adrian@freebsd.org, lede-dev@lists.infradead.org, ath10k@lists.infradead.org
+To: Benjamin Morgan <bmorgan@cococorp.com>
+Cc: agreen@cococorp.com, lede-dev@lists.infradead.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi Mohammed,
-
-so, I provoked the crash again on a newer build with debugging enabled
-(LEDE r2321, Linux 4.4.32, ath10k firmware 10.2.4.70.54).
-
-The relevant dmesg output is pasted below (with mac addresses
-pseudo-anonymized). I hope this includes the information you were
-looking for. If not, please let me know what other useful information I
-can provide. I haven't rebooted the access point yet.
-
-Regards,
-
-Timo
-
-[283232.075393] ath10k_pci 0000:01:00.0: failed to delete peer 78:f8:82:00:00:00 for vdev 0: -145
-[283232.084140] ath10k_pci 0000:01:00.0: found sta peer 78:f8:82:00:00:00 (ptr 86df2800 id 62) entry on vdev 0 after it was supposedly removed
-[283232.096976] ------------[ cut here ]------------
-[283232.101904] WARNING: CPU: 0 PID: 1841 at compat-wireless-2016-10-08/net/mac80211/sta_info.c:964 sta_set_sinfo+0x92c/0x9e0 [mac80211]()
-[283232.114279] Modules linked in: pppoe ppp_async iptable_nat ath9k pppox ppp_generic nf_nat_ipv4 nf_conntrack_ipv6 nf_conntrack_ipv4 ipt_REJECT ipt_MASQUERADE ax88179_178a ath9k_common xt_time xt_tcpudp xt_tcpmss xt_statistic xt_state xt_recent xt_nat xt_multiport xt_mark xt_mac xt_limit xt_length xt_id xt_hl xt_helper xt_ecn xt_dscp xt_conntrack xt_connmark xt_connlimit xt_connbytes xt_comment xt_TCPMSS xt_REDIRECT xt_LOG xt_HL xt_DSCP xt_CT xt_CLASSIFY usbnet slhc nf_reject_ipv4 nf_nat_redirect nf_nat_masquerade_ipv4 nf_nat nf_log_ipv4 nf_defrag_ipv6 nf_defrag_ipv4 nf_conntrack_rtcache nf_conntrack iptable_raw iptable_mangle iptable_filter ipt_ECN ip_tables crc_ccitt ath9k_hw em_nbyte sch_tbf sch_pie sch_gred sch_htb sch_teql cls_basic act_ipt sch_red sch_prio em_meta em_text sch_codel sch_sfq act_police sch_dsmark em_cmp sch_fq act_skbedit act_mirred em_u32 cls_u32 cls_tcindex cls_flow cls_route cls_fw sch_hfsc sch_ingress ath10k_pci ath10k_core ath mac80211 cfg80211 compat ledt
- rig_usbport ip6t_REJECT nf_reject_ipv6 nf_log_ipv6 nf_log_common ip6table_raw ip6table_mangle ip6table_filter ip6_tables x_tables ifb ehci_platform ehci_hcd gpio_button_hotplug usbcore nls_base usb_common mii
-[283232.221696] CPU: 0 PID: 1841 Comm: hostapd Not tainted 4.4.32 #0
-[283232.227884] Stack : 803c74e4 00000000 00000001 80420000 87d65b80 8040ed83 803a8bac 00000731
-[283232.227884] 	  8048379c 8740e800 00000000 7782fe94 00000000 800a7238 803ae218 80410000
-[283232.227884] 	  00000003 8740e800 803ac624 86e1db2c 00000000 800a51b4 01afb952 00000000
-[283232.227884] 	  00000001 801f3200 00000000 00000000 00000000 00000000 00000000 00000000
-[283232.227884] 	  00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[283232.227884] 	  ...
-[283232.264341] Call Trace:
-[283232.266934] [<80071b80>] show_stack+0x50/0x84
-[283232.271445] [<80081900>] warn_slowpath_common+0xa0/0xd0
-[283232.276847] [<800819b8>] warn_slowpath_null+0x18/0x24
-[283232.282164] [<875870a4>] sta_set_sinfo+0x92c/0x9e0 [mac80211]
-[283232.288224] [<87587188>] __sta_info_destroy+0x30/0x48 [mac80211]
-[283232.294519] [<87587238>] sta_info_destroy_addr_bss+0x38/0x60 [mac80211]
-[283232.301475] [<874cc144>] cfg80211_check_station_change+0xed8/0x1390 [cfg80211]
-[283232.308942] 
-[283232.310543] ---[ end trace 1e173b5175dabd85 ]---
-[283547.702654] ath10k_pci 0000:01:00.0: failed to install key for vdev 0 peer a0:02:dc:00:00:00: -145
-[283547.711846] wlan0: failed to remove key (0, a0:02:dc:00:00:00) from hardware (-145)
-[283547.720952] ath10k_pci 0000:01:00.0: cipher 0 is not supported
-[283547.727006] ath10k_pci 0000:01:00.0: failed to remove peer wep key 0: -122
-[283547.734106] ath10k_pci 0000:01:00.0: failed to clear all peer wep keys for vdev 0: -122
-[283547.742313] ath10k_pci 0000:01:00.0: failed to disassociate station: a0:02:dc:00:00:00 vdev 0: -122
-[283547.751590] ------------[ cut here ]------------
-[283547.756521] WARNING: CPU: 0 PID: 1841 at compat-wireless-2016-10-08/net/mac80211/sta_info.c:956 sta_set_sinfo+0x8d8/0x9e0 [mac80211]()
-[283547.768872] Modules linked in: pppoe ppp_async iptable_nat ath9k pppox ppp_generic nf_nat_ipv4 nf_conntrack_ipv6 nf_conntrack_ipv4 ipt_REJECT ipt_MASQUERADE ax88179_178a ath9k_common xt_time xt_tcpudp xt_tcpmss xt_statistic xt_state xt_recent xt_nat xt_multiport xt_mark xt_mac xt_limit xt_length xt_id xt_hl xt_helper xt_ecn xt_dscp xt_conntrack xt_connmark xt_connlimit xt_connbytes xt_comment xt_TCPMSS xt_REDIRECT xt_LOG xt_HL xt_DSCP xt_CT xt_CLASSIFY usbnet slhc nf_reject_ipv4 nf_nat_redirect nf_nat_masquerade_ipv4 nf_nat nf_log_ipv4 nf_defrag_ipv6 nf_defrag_ipv4 nf_conntrack_rtcache nf_conntrack iptable_raw iptable_mangle iptable_filter ipt_ECN ip_tables crc_ccitt ath9k_hw em_nbyte sch_tbf sch_pie sch_gred sch_htb sch_teql cls_basic act_ipt sch_red sch_prio em_meta em_text sch_codel sch_sfq act_police sch_dsmark em_cmp sch_fq act_skbedit act_mirred em_u32 cls_u32 cls_tcindex cls_flow cls_route cls_fw sch_hfsc sch_ingress ath10k_pci ath10k_core ath mac80211 cfg80211 compat ledt
- rig_usbport ip6t_REJECT nf_reject_ipv6 nf_log_ipv6 nf_log_common ip6table_raw ip6table_mangle ip6table_filter ip6_tables x_tables ifb ehci_platform ehci_hcd gpio_button_hotplug usbcore nls_base usb_common mii
-[283547.876293] CPU: 0 PID: 1841 Comm: hostapd Tainted: G        W       4.4.32 #0
-[283547.883714] Stack : 803c74e4 00000000 00000001 80420000 87d65b80 8040ed83 803a8bac 00000731
-[283547.883714] 	  8048379c 8740e800 00000000 7782fe94 00000000 800a7238 803ae218 80410000
-[283547.883714] 	  00000003 8740e800 803ac624 86e1db2c 00000000 800a51b4 00000000 00000000
-[283547.883714] 	  8040de90 801f3200 00000000 00000000 00000000 00000000 00000000 00000000
-[283547.883714] 	  00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[283547.883714] 	  ...
-[283547.920171] Call Trace:
-[283547.922762] [<80071b80>] show_stack+0x50/0x84
-[283547.927274] [<80081900>] warn_slowpath_common+0xa0/0xd0
-[283547.932676] [<800819b8>] warn_slowpath_null+0x18/0x24
-[283547.937995] [<87587050>] sta_set_sinfo+0x8d8/0x9e0 [mac80211]
-[283547.944054] [<87587188>] __sta_info_destroy+0x30/0x48 [mac80211]
-[283547.950349] [<87587238>] sta_info_destroy_addr_bss+0x38/0x60 [mac80211]
-[283547.957314] [<874cc144>] cfg80211_check_station_change+0xed8/0x1390 [cfg80211]
-[283547.964779] 
-[283547.966381] ---[ end trace 1e173b5175dabd86 ]---
-[283550.962647] ath10k_pci 0000:01:00.0: failed to delete peer a0:02:dc:00:00:00 for vdev 0: -11
-[283550.971316] ath10k_pci 0000:01:00.0: found sta peer a0:02:dc:00:00:00 (ptr 86df6400 id 196) entry on vdev 0 after it was supposedly removed
-[283553.982619] ath10k_pci 0000:01:00.0: failed to install key for vdev 0 peer 64:bc:0c:00:00:00: -11
-[283553.991720] wlan0: failed to remove key (0, 64:bc:0c:00:00:00) from hardware (-11)
-[283554.017647] ath10k_pci 0000:01:00.0: cipher 0 is not supported
-[283554.023706] ath10k_pci 0000:01:00.0: failed to remove peer wep key 0: -122
-[283554.030778] ath10k_pci 0000:01:00.0: failed to clear all peer wep keys for vdev 0: -122
-[283554.039005] ath10k_pci 0000:01:00.0: failed to disassociate station: 64:bc:0c:00:00:00 vdev 0: -122
-[283557.042589] ath10k_pci 0000:01:00.0: failed to delete peer 64:bc:0c:00:00:00 for vdev 0: -11
-[283557.051248] ath10k_pci 0000:01:00.0: found sta peer 64:bc:0c:00:00:00 (ptr 86e31800 id 43) entry on vdev 0 after it was supposedly removed
-[283560.062553] ath10k_pci 0000:01:00.0: failed to set beacon mode for vdev 0: -11
-[283563.062522] ath10k_pci 0000:01:00.0: failed to set dtim period for vdev 0: -11
-[283566.077407] ath10k_pci 0000:01:00.0: failed to recalculate rts/cts prot for vdev 0: -11
-[283569.082474] ath10k_pci 0000:01:00.0: failed to set protection mode 0 on vdev 0: -11
-[283572.082447] ath10k_pci 0000:01:00.0: failed to set preamble for vdev 0: -11
-[283826.570252] ath10k_pci 0000:01:00.0: failed to install key for vdev 0 peer 30:b5:c2:00:00:00: -11
-[283826.579348] wlan0: failed to remove key (1, ff:ff:ff:ff:ff:ff) from hardware (-11)
-[283829.580227] ath10k_pci 0000:01:00.0: failed to install key for vdev 0 peer 30:b5:c2:00:00:00: -11
-[283829.589379] wlan0: failed to set key (1, ff:ff:ff:ff:ff:ff) to hardware (-11)
-
-
-Mohammed Shafi Shajakhan schrieb am 21.11.2016 13:47:
-
-> Hi Timo,
-> 
-> sorry had I missed the exact kernel crash call trace ?
-> I could see only the warnings, can you please post the call
-> trace of the kernel crash please ?
-> 
-> regards,
-> shafi
-> 
-> On Sun, Nov 20, 2016 at 02:35:27AM +0100, Timo Sigurdsson wrote:
->> Hi Adrian,
->> 
->> sure - here's the bug report on kernel.org:
->> https://bugzilla.kernel.org/show_bug.cgi?id=188201
->> 
->> Regards,
->> 
->> Timo
->> 
->> 
->> Adrian Chadd schrieb am 18.11.2016 22:22:
->> 
->> > hiya!
->> > 
->> > Can you file a kernel.org bug mentioning this?
->> > 
->> > thanks!
->> > 
->> > 
->> > -a
->> > 
->> > 
->> > On 18 November 2016 at 01:30, Timo Sigurdsson
->> > <public_timo.s@silentcreek.de> wrote:
->> >> Hi again,
->> >>
->> >> in the meantime, I have some more information to add to the issue mentioned
->> in
->> >> my email quoted further down below.
->> >>
->> >> Ben Greear approached me off-list and suggested to try the Candela Tech
->> ath10k
->> >> driver and firmware and see if the issue occurs with that as well. So, for
->> the
->> >> last 3 weeks I've been testing the CT driver and firmware and I can happily
->> >> report that the issue with the driver crashing after a while when a Nexus
->> 5X
->> >> device is connected is not occuring with the current BETA 18
->> >> firmware-2-ct-full-community.bin. So, this really seems like a regression
->> in
->> >> the official API level 5 ath10k firmware blobs.
->> >>
->> >> The CT firmware is not perfect either, since it seems to suffer from a
->> >> different
->> >> bug that has been resolved in the official firmwares, and that is that
->> after a
->> >> reboot of my TP-Link Archer C7 v2, the ath10k driver won't load. Only after
->> a
->> >> hard reset or "cold boot" it will come up. That's an issue I had with older
->> >> official firmwares as well, but it has been resolved with the recent API
->> level
->> >> 5 firmwares.
->> >>
->> >> Nevertheless, for the time being, I will stick to the CT firmware because I
->> >> can
->> >> work around the reboot issue and having the 5GHz wifi working for my Nexus
->> 5X
->> >> clients is more important.
->> >>
->> >> Over the next weeks, I will test different combinations of ath10k(-ct)
->> driver
->> >> and firmware to see if there's a combination that resolves all issues. This
->> >> morning I flashed a LEDE build with the official ath10k driver and the CT
->> >> firmware binary.
->> >>
->> >> But of course, if someone has more suggestions on what I could try or what
->> >> information I could collect to help resolve the issue related to the Nexus
->> 5X
->> >> clients in the official firmware binaries, I think that would be beneficial
->> >> for a larger audience.
->> >>
->> >> Regards,
->> >>
->> >> Timo
->> >>
->> >> P.S.: Please include my email address in any reply, since I'm not
->> subscribed
->> >> to the mailing list. Thank you.
->> >>
->> >>
->> >> Timo Sigurdsson schrieb am 29.10.2016 22:19:
->> >>
->> >>> Hi everybody,
->> >>>
->> >>> I have a TP-Link Archer C7 v2 running a fairly recent build of LEDE
->> (r1952,
->> >>> Linux 4.4.26, compat-wireless-2016-10-08). It all works well except for
->> the
->> >>> fact that when I connect a Nexus 5X device to the 5GHz radio, the kernel
->> or
->> >>> ath10k driver will crash after a while. 5Ghz wifi will be dead after that
->> >>> until I reboot the system.
->> >>>
->> >>> This issue has been reported before [1] and it also has been declared as
->> >>> solved with newer firmwares [2] (but reopened by other users). However,
->> even
->> >>> with the latest firmware 10.2.4.70.58 from Kalle Valo's Github repository
->> the
->> >>> issue is far from resolved. I have tried many different firmware revisions
->> >>> over the time (more recently 10.2.4.70.56 and 10.2.4.70.54), and I can
->> could
->> >>> only find that the issue sometimes takes longer to trigger with some
->> >>> firmwares
->> >>> (which might just be random), but it would always occur at some point with
->> >>> API
->> >>> level 5 firmwares. With API level 2 firmwares (which I testesd when I was
->> >>> still using OpenWrt 15.05) I never saw these crashes, but the Nexus 5X had
->> >>> other connectivity issues with these older firmwares that made this
->> >>> combination no fun to use either. But this shows that the firmware itself
->> >>> makes the difference here.
->> >>>
->> >>> I actually have two Nexus 5X on my network (my wife's and my own). I can
->> >>> trigger the crash with either one of them. And if both Nexus 5X are
->> connected
->> >>> to the 5Ghz radio, then the issue triggers much faster (can be as low as
->> 15
->> >>> minutes). My workaround is to let the Nexus 5X devices only connect to the
->> >>> 2.4GHz radio. This way, the device can runs for weeks without any issue or
->> >>> crash, but of course I would prefer the actual bug being fixed rather than
->> to
->> >>> circumvent it.
->> >>>
->> >>> I'm appending a syslog from my access point with a crash happening while
->> one
->> >>> Nexus 5X was connected to the 5GHz radio starting from the time the system
->> >>> booted. I randomized the MAC addresses. but left the first two characters
->> >>> unique so different clients can be distinguished.
->> >>>
->> >>> If there is more info I could collect to help identify the cause of this
->> >>> issue, please let me know (and possibly how to do that as well).
->> >>>
->> >>> Thank you and regards,
->> >>>
->> >>> Timo
->> >>>
->> >>> [1] http://lists.infradead.org/pipermail/ath10k/2015-November/006413.html
->> >>> [2] https://dev.openwrt.org/ticket/20854
->> >>>
->> >>> And here's the log:
->> >>> Fri Oct 28 02:01:35 2016 kern.notice kernel: [    0.000000] Linux version
->> >>> 4.4.26 (user@buildsystem) (gcc version 5.4.0 (LEDE GCC 5.4.0 r1952) ) #0
->> Fri
->> >>> Oct 21 15:52:28 2016
->> >>> [...]
->> >>> Fri Oct 28 02:01:35 2016 kern.info kernel: [    9.468751] Loading modules
->> >>> backported from Linux version wt-2016-10-03-1-g6fcb1a6
->> >>> Fri Oct 28 02:01:35 2016 kern.info kernel: [    9.476481] Backport
->> generated
->> >>> by
->> >>> backports.git backports-20160324-9-g0e38f5c
->> >>> Fri Oct 28 02:01:35 2016 kern.warn kernel: [    9.576570] PCI: Enabling
->> >>> device
->> >>> 0000:01:00.0 (0000 -> 0002)
->> >>> Fri Oct 28 02:01:35 2016 kern.info kernel: [    9.582475] ath10k_pci
->> >>> 0000:01:00.0: pci irq legacy oper_irq_mode 1 irq_mode 0 reset_mode 0
->> >>> Fri Oct 28 02:01:35 2016 kern.warn kernel: [   10.087609] ath10k_pci
->> >>> 0000:01:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:01:00.0.bin
->> >>> failed with error -2
->> >>> Fri Oct 28 02:01:35 2016 kern.warn kernel: [   10.098492] ath10k_pci
->> >>> 0000:01:00.0: Falling back to user helper
->> >>> Fri Oct 28 02:01:35 2016 kern.err kernel: [   10.176500] firmware
->> >>> ath10k!pre-cal-pci-0000:01:00.0.bin: firmware_loading_store: map pages
->> failed
->> >>> Fri Oct 28 02:01:35 2016 kern.info kernel: [   10.677026] ath10k_pci
->> >>> 0000:01:00.0: qca988x hw2.0 target 0x4100016c chip_id 0x043202ff sub
->> >>> 0000:0000
->> >>> Fri Oct 28 02:01:35 2016 kern.info kernel: [   10.686424] ath10k_pci
->> >>> 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
->> >>> Fri Oct 28 02:01:35 2016 kern.info kernel: [   10.699498] ath10k_pci
->> >>> 0000:01:00.0: firmware ver 10.2.4.70.58 api 5 features no-p2p,raw-mode,mfp
->> >>> crc32 e1af076f
->> >>> Fri Oct 28 02:01:35 2016 kern.warn kernel: [   10.709932] ath10k_pci
->> >>> 0000:01:00.0: Direct firmware load for ath10k/QCA988X/hw2.0/board-2.bin
->> >>> failed
->> >>> with error -2
->> >>> Fri Oct 28 02:01:35 2016 kern.warn kernel: [   10.720531] ath10k_pci
->> >>> 0000:01:00.0: Falling back to user helper
->> >>> Fri Oct 28 02:01:35 2016 kern.err kernel: [   10.798719] firmware
->> >>> ath10k!QCA988X!hw2.0!board-2.bin: firmware_loading_store: map pages failed
->> >>> Fri Oct 28 02:01:35 2016 kern.info kernel: [   10.823845] ath10k_pci
->> >>> 0000:01:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
->> >>> Fri Oct 28 02:01:35 2016 kern.info kernel: [   11.954723] ath10k_pci
->> >>> 0000:01:00.0: htt-ver 2.1 wmi-op 5 htt-op 2 cal file max-sta 128 raw 0
->> >>> hwcrypto
->> >>> 1
->> >>> [...]
->> >>> // Evertyhing runs fine for a bit more than a day, but then this happens
->> ...
->> >>> //
->> >>> // Note: The ath10k radio in question is wlan0 //
->> >>> Sat Oct 29 10:38:21 2016 daemon.info hostapd: wlan1: STA 9c:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: disassociated
->> >>> Sat Oct 29 10:38:22 2016 daemon.info hostapd: wlan1: STA 9c:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: deauthenticated due to inactivity (timer DEAUTH/REMOVE)
->> >>> Sat Oct 29 10:42:57 2016 daemon.info hostapd: wlan1: STA 00:12:34:56:78:9a
->> >>> WPA:
->> >>> group key handshake completed (RSN)
->> >>> Sat Oct 29 10:42:57 2016 daemon.info hostapd: wlan0: STA a0:12:34:56:78:9a
->> >>> WPA:
->> >>> group key handshake completed (RSN)
->> >>> Sat Oct 29 10:42:57 2016 daemon.info hostapd: wlan0: STA 70:12:34:56:78:9a
->> >>> WPA:
->> >>> group key handshake completed (RSN)
->> >>> Sat Oct 29 10:43:05 2016 kern.warn kernel: [117635.147861] ath10k_pci
->> >>> 0000:01:00.0: failed to delete peer 7f:12:34:56:78:9a for vdev 0: -145
->> >>> Sat Oct 29 10:43:05 2016 kern.warn kernel: [117635.156679] ath10k_pci
->> >>> 0000:01:00.0: found sta peer 7f:12:34:56:78:9a (ptr 86ebf200 id 62) entry
->> on
->> >>> vdev 0 after it was supposedly removed
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.169489] ------------[
->> cut
->> >>> here ]------------
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.174314] WARNING: CPU: 0
->> >>> PID:
->> >>> 1885 at compat-wireless-2016-10-08/net/mac80211/sta_info.c:964 0x875870a4
->> >>> [mac80211@87580000+0x5f500]()
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.186854] Modules linked
->> in:
->> >>> pppoe ppp_async iptable_nat ath9k pppox ppp_generic nf_nat_ipv4
->> >>> nf_conntrack_ipv6 nf_conntrack_ipv4 ipt_REJECT ipt_MASQUERADE ax88179_178a
->> >>> ath9k_common xt_time xt_tcpudp xt_tcpmss xt_statistic xt_state xt_recent
->> >>> xt_nat
->> >>> xt_multiport xt_mark xt_mac xt_limit xt_length xt_id xt_hl xt_helper
->> xt_ecn
->> >>> xt_dscp xt_conntrack xt_connmark xt_connlimit xt_connbytes xt_comment
->> >>> xt_TCPMSS
->> >>> xt_REDIRECT xt_LOG xt_HL xt_DSCP xt_CT xt_CLASSIFY usbnet Sat Oct 29
->> 10:43:06
->> >>> 2016 kern.warn kernel: [117635.294282] CPU: 0 PID: 1885 Comm: hostapd Not
->> >>> tainted 4.4.26 #0
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.300471] Stack :
->> 8036cff4
->> >>> 00000000 00000001 803c0000 00000000 00000000 00000000 00000000
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.300471]      00000000
->> >>> 00000000
->> >>> 00000000 00000000 00000000 00000000 00000000 00000000
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.300471]      00000000
->> >>> 00000000
->> >>> 00000000 00000000 00000000 00000000 00000000 00000000
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.300471]      00000000
->> >>> 00000000
->> >>> 00000000 00000000 00000000 00000000 00000000 00000000
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.300471]      00000000
->> >>> 00000000
->> >>> 00000000 00000000 00000000 00000000 00000000 00000000
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.300471]      ...
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.336918] Call
->> >>> Trace:[<800716f0>] 0x800716f0
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.341551] [<800716f0>]
->> >>> 0x800716f0
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.345176] [<8008144c>]
->> >>> 0x8008144c
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.348832] [<875870a4>]
->> >>> 0x875870a4 [mac80211@87580000+0x5f500]
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.354943] [<80081504>]
->> >>> 0x80081504
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.358611] [<875870a4>]
->> >>> 0x875870a4 [mac80211@87580000+0x5f500]
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.364742] [<87587188>]
->> >>> 0x87587188 [mac80211@87580000+0x5f500]
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.370861] [<875849b4>]
->> >>> 0x875849b4 [mac80211@87580000+0x5f500]
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.376951] [<80115770>]
->> >>> 0x80115770
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.380613] [<87587238>]
->> >>> 0x87587238 [mac80211@87580000+0x5f500]
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.386727] [<874cc114>]
->> >>> 0x874cc114 [cfg80211@874c0000+0x35b60]
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.392854] [<80293074>]
->> >>> 0x80293074
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.396485] [<80291900>]
->> >>> 0x80291900
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.400176] [<80292df8>]
->> >>> 0x80292df8
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.403801] [<80292238>]
->> >>> 0x80292238
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.407439] [<80292de0>]
->> >>> 0x80292de0
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.411079] [<80257794>]
->> >>> 0x80257794
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.414711] [<80291aa0>]
->> >>> 0x80291aa0
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.418345] [<80256c90>]
->> >>> 0x80256c90
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.421991] [<80292004>]
->> >>> 0x80292004
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.425616] [<801b5304>]
->> >>> 0x801b5304
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.429260] [<8025b478>]
->> >>> 0x8025b478
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.432902] [<8024d0e4>]
->> >>> 0x8024d0e4
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.436540] [<8024e4f8>]
->> >>> 0x8024e4f8
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.440195] [<801b5304>]
->> >>> 0x801b5304
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.443835] [<8027e338>]
->> >>> 0x8027e338
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.447464] [<802e8244>]
->> >>> 0x802e8244
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.451136] [<8011aa58>]
->> >>> 0x8011aa58
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.454762] [<8011ae3c>]
->> >>> 0x8011ae3c
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.458402] [<8011acd4>]
->> >>> 0x8011acd4
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.462057] [<80117a10>]
->> >>> 0x80117a10
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.465700] [<8024f424>]
->> >>> 0x8024f424
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.469344] [<800b1dd0>]
->> >>> 0x800b1dd0
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.472986] [<8006295c>]
->> >>> 0x8006295c
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.476615]
->> >>> Sat Oct 29 10:43:06 2016 kern.warn kernel: [117635.478223] ---[ end trace
->> >>> 2c07f06df2595aa5 ]---
->> >>> Sat Oct 29 10:43:06 2016 daemon.info hostapd: wlan0: STA 7f:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: deauthenticated due to local deauth request
->> >>> Sat Oct 29 10:43:15 2016 daemon.info hostapd: wlan1: STA 70:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: authenticated
->> >>> Sat Oct 29 10:43:15 2016 daemon.info hostapd: wlan1: STA 70:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: associated (aid 2)
->> >>> Sat Oct 29 10:43:15 2016 daemon.info hostapd: wlan1: STA 70:12:34:56:78:9a
->> >>> RADIUS: starting accounting session D1227001A194DA09
->> >>> Sat Oct 29 10:43:15 2016 daemon.info hostapd: wlan1: STA 70:12:34:56:78:9a
->> >>> WPA:
->> >>> pairwise key handshake completed (RSN)
->> >>> Sat Oct 29 10:43:31 2016 daemon.info hostapd: wlan1: STA a0:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: authenticated
->> >>> Sat Oct 29 10:43:31 2016 daemon.info hostapd: wlan1: STA a0:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: associated (aid 3)
->> >>> Sat Oct 29 10:43:31 2016 daemon.info hostapd: wlan1: STA a0:12:34:56:78:9a
->> >>> RADIUS: starting accounting session 92084E55AFE512B3
->> >>> Sat Oct 29 10:43:31 2016 daemon.info hostapd: wlan1: STA a0:12:34:56:78:9a
->> >>> WPA:
->> >>> pairwise key handshake completed (RSN)
->> >>> Sat Oct 29 10:48:02 2016 daemon.info hostapd: wlan0: STA a0:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: disassociated due to inactivity
->> >>> Sat Oct 29 10:48:05 2016 kern.warn kernel: [117935.165013] ath10k_pci
->> >>> 0000:01:00.0: failed to install key for vdev 0 peer a0:12:34:56:78:9a:
->> -145
->> >>> Sat Oct 29 10:48:05 2016 kern.err kernel: [117935.174193] wlan0: failed to
->> >>> remove key (0, a0:12:34:56:78:9a) from hardware (-145)
->> >>> Sat Oct 29 10:48:05 2016 daemon.info hostapd: wlan0: STA 70:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: disassociated due to inactivity
->> >>> Sat Oct 29 10:48:08 2016 kern.warn kernel: [117938.174996] ath10k_pci
->> >>> 0000:01:00.0: failed to install key for vdev 0 peer 70:12:34:56:78:9a: -11
->> >>> Sat Oct 29 10:48:08 2016 kern.err kernel: [117938.184092] wlan0: failed to
->> >>> remove key (0, 70:12:34:56:78:9a) from hardware (-11)
->> >>> Sat Oct 29 10:48:08 2016 daemon.info hostapd: wlan0: STA a0:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: deauthenticated due to inactivity (timer DEAUTH/REMOVE)
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.193251] ath10k_pci
->> >>> 0000:01:00.0: cipher 0 is not supported
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.199320] ath10k_pci
->> >>> 0000:01:00.0: failed to remove peer wep key 0: -122
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.206409] ath10k_pci
->> >>> 0000:01:00.0: failed to clear all peer wep keys for vdev 0: -122
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.214621] ath10k_pci
->> >>> 0000:01:00.0: failed to disassociate station: a0:12:34:56:78:9a vdev 0:
->> -122
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.223892] ------------[
->> cut
->> >>> here ]------------
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.228706] WARNING: CPU: 0
->> >>> PID:
->> >>> 1885 at compat-wireless-2016-10-08/net/mac80211/sta_info.c:956 0x87587050
->> >>> [mac80211@87580000+0x5f500]()
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.241226] Modules linked
->> in:
->> >>> pppoe ppp_async iptable_nat ath9k pppox ppp_generic nf_nat_ipv4
->> >>> nf_conntrack_ipv6 nf_conntrack_ipv4 ipt_REJECT ipt_MASQUERADE ax88179_178a
->> >>> ath9k_common xt_time xt_tcpudp xt_tcpmss xt_statistic xt_state xt_recent
->> >>> xt_nat
->> >>> xt_multiport xt_mark xt_mac xt_limit xt_length xt_id xt_hl xt_helper
->> xt_ecn
->> >>> xt_dscp xt_conntrack xt_connmark xt_connlimit xt_connbytes xt_comment
->> >>> xt_TCPMSS
->> >>> xt_REDIRECT xt_LOG xt_HL xt_DSCP xt_CT xt_CLASSIFY usbnet Sat Oct 29
->> 10:48:09
->> >>> 2016 kern.warn kernel: [117938.348645] CPU: 0 PID: 1885 Comm: hostapd
->> >>> Tainted:
->> >>> G        W       4.4.26 #0
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.356067] Stack :
->> 8036cff4
->> >>> 00000000 00000001 803c0000 00000000 00000000 00000000 00000000
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.356067]      00000000
->> >>> 00000000
->> >>> 00000000 00000000 00000000 00000000 00000000 00000000
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.356067]      00000000
->> >>> 00000000
->> >>> 00000000 00000000 00000000 00000000 00000000 00000000
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.356067]      00000000
->> >>> 00000000
->> >>> 00000000 00000000 00000000 00000000 00000000 00000000
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.356067]      00000000
->> >>> 00000000
->> >>> 00000000 00000000 00000000 00000000 00000000 00000000
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.356067]      ...
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.392511] Call
->> >>> Trace:[<800716f0>] 0x800716f0
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.397147] [<800716f0>]
->> >>> 0x800716f0
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.400770] [<8008144c>]
->> >>> 0x8008144c
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.404414] [<87587050>]
->> >>> 0x87587050 [mac80211@87580000+0x5f500]
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.410531] [<80081504>]
->> >>> 0x80081504
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.414184] [<87587050>]
->> >>> 0x87587050 [mac80211@87580000+0x5f500]
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.420297] [<8759cb40>]
->> >>> 0x8759cb40 [mac80211@87580000+0x5f500]
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.426431] [<87587188>]
->> >>> 0x87587188 [mac80211@87580000+0x5f500]
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.432531] [<875849b4>]
->> >>> 0x875849b4 [mac80211@87580000+0x5f500]
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.438629] [<801018e4>]
->> >>> 0x801018e4
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.442276] [<87587238>]
->> >>> 0x87587238 [mac80211@87580000+0x5f500]
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.448406] [<874cc114>]
->> >>> 0x874cc114 [cfg80211@874c0000+0x35b60]
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.454516] [<80293074>]
->> >>> 0x80293074
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.458147] [<80291900>]
->> >>> 0x80291900
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.461822] [<80292df8>]
->> >>> 0x80292df8
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.465461] [<80292238>]
->> >>> 0x80292238
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.469092] [<800a15d0>]
->> >>> 0x800a15d0
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.472726] [<80292de0>]
->> >>> 0x80292de0
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.476371] [<80257794>]
->> >>> 0x80257794
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.480002] [<80291aa0>]
->> >>> 0x80291aa0
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.483630] [<80256c90>]
->> >>> 0x80256c90
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.487280] [<80292004>]
->> >>> 0x80292004
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.490908] [<801b5304>]
->> >>> 0x801b5304
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.494541] [<8025b478>]
->> >>> 0x8025b478
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.498198] [<8024d0e4>]
->> >>> 0x8024d0e4
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.501840] [<8024e4f8>]
->> >>> 0x8024e4f8
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.505492] [<8027e338>]
->> >>> 0x8027e338
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.509121] [<802e8244>]
->> >>> 0x802e8244
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.512780] [<8011aa58>]
->> >>> 0x8011aa58
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.516413] [<8011ae3c>]
->> >>> 0x8011ae3c
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.520043] [<8011acd4>]
->> >>> 0x8011acd4
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.523697] [<80117a10>]
->> >>> 0x80117a10
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.527352] [<8024f424>]
->> >>> 0x8024f424
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.530981] [<801059e8>]
->> >>> 0x801059e8
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.534625] [<8006295c>]
->> >>> 0x8006295c
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.538265]
->> >>> Sat Oct 29 10:48:09 2016 kern.warn kernel: [117938.539870] ---[ end trace
->> >>> 2c07f06df2595aa6 ]---
->> >>> Sat Oct 29 10:48:12 2016 kern.warn kernel: [117941.534956] ath10k_pci
->> >>> 0000:01:00.0: failed to delete peer a0:12:34:56:78:9a for vdev 0: -11
->> >>> Sat Oct 29 10:48:12 2016 kern.warn kernel: [117941.543716] ath10k_pci
->> >>> 0000:01:00.0: found sta peer a0:12:34:56:78:9a (ptr 86ebf400 id 196) entry
->> on
->> >>> vdev 0 after it was supposedly removed
->> >>> Sat Oct 29 10:48:12 2016 daemon.info hostapd: wlan0: STA 70:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: deauthenticated due to inactivity (timer DEAUTH/REMOVE)
->> >>> Sat Oct 29 10:48:12 2016 kern.warn kernel: [117941.558962] ath10k_pci
->> >>> 0000:01:00.0: cipher 0 is not supported
->> >>> Sat Oct 29 10:48:12 2016 kern.warn kernel: [117941.565049] ath10k_pci
->> >>> 0000:01:00.0: failed to remove peer wep key 0: -122
->> >>> Sat Oct 29 10:48:15 2016 kern.warn kernel: [117944.564917] ath10k_warn: 2
->> >>> callbacks suppressed
->> >>> Sat Oct 29 10:48:15 2016 kern.warn kernel: [117944.569617] ath10k_pci
->> >>> 0000:01:00.0: failed to delete peer 70:12:34:56:78:9a for vdev 0: -11
->> >>> Sat Oct 29 10:48:15 2016 kern.warn kernel: [117944.578309] ath10k_pci
->> >>> 0000:01:00.0: found sta peer 70:12:34:56:78:9a (ptr 86320c00 id 251) entry
->> on
->> >>> vdev 0 after it was supposedly removed
->> >>> Sat Oct 29 10:48:18 2016 kern.warn kernel: [117947.584908] ath10k_pci
->> >>> 0000:01:00.0: failed to set beacon mode for vdev 0: -11
->> >>> Sat Oct 29 10:48:21 2016 kern.warn kernel: [117950.584876] ath10k_pci
->> >>> 0000:01:00.0: failed to set dtim period for vdev 0: -11
->> >>> Sat Oct 29 10:48:24 2016 kern.warn kernel: [117953.594843] ath10k_pci
->> >>> 0000:01:00.0: failed to recalculate rts/cts prot for vdev 0: -11
->> >>> Sat Oct 29 10:48:27 2016 kern.warn kernel: [117956.594833] ath10k_pci
->> >>> 0000:01:00.0: failed to set protection mode 0 on vdev 0: -11
->> >>> Sat Oct 29 10:48:30 2016 kern.warn kernel: [117959.594805] ath10k_pci
->> >>> 0000:01:00.0: failed to set preamble for vdev 0: -11
->> >>> Sat Oct 29 10:52:57 2016 daemon.info hostapd: wlan1: STA 00:12:34:56:78:9a
->> >>> WPA:
->> >>> group key handshake completed (RSN)
->> >>> Sat Oct 29 10:52:57 2016 daemon.info hostapd: wlan1: STA a0:12:34:56:78:9a
->> >>> WPA:
->> >>> group key handshake completed (RSN)
->> >>> Sat Oct 29 10:53:00 2016 kern.warn kernel: [118229.632250] ath10k_pci
->> >>> 0000:01:00.0: failed to install key for vdev 0 peer 30:12:34:56:78:9a: -11
->> >>> Sat Oct 29 10:53:00 2016 kern.err kernel: [118229.641421] wlan0: failed to
->> >>> remove key (2, ff:ff:ff:ff:ff:ff) from hardware (-11)
->> >>> Sat Oct 29 10:53:03 2016 kern.warn kernel: [118232.642204] ath10k_pci
->> >>> 0000:01:00.0: failed to install key for vdev 0 peer 30:12:34:56:78:9a: -11
->> >>> Sat Oct 29 10:53:03 2016 kern.err kernel: [118232.651309] wlan0: failed to
->> >>> set
->> >>> key (2, ff:ff:ff:ff:ff:ff) to hardware (-11)
->> >>> Sat Oct 29 10:53:08 2016 daemon.info hostapd: wlan1: STA 70:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: deauthenticated due to local deauth request
->> >>> Sat Oct 29 10:53:11 2016 daemon.info hostapd: wlan1: STA 70:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: authenticated
->> >>> Sat Oct 29 10:53:11 2016 daemon.info hostapd: wlan1: STA 70:12:34:56:78:9a
->> >>> IEEE
->> >>> 802.11: associated (aid 2)
->> >>> Sat Oct 29 10:53:11 2016 daemon.info hostapd: wlan1: STA 70:12:34:56:78:9a
->> >>> RADIUS: starting accounting session 56977F3FD253EA9C
->> >>> Sat Oct 29 10:53:11 2016 daemon.info hostapd: wlan1: STA 70:12:34:56:78:9a
->> >>> WPA:
->> >>> pairwise key handshake completed (RSN)
->> >>>
->> >>
->> >>
->> >> _______________________________________________
->> >> ath10k mailing list
->> >> ath10k@lists.infradead.org
->> >> http://lists.infradead.org/mailman/listinfo/ath10k
->> > 
->> 
->> 
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
-> 
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgQmVuamFtaW4sCgpPbiBGcmksIERlYyAwMiwgMjAxNiBhdCAwNToyODowMlBNIC0wODAwLCBC
+ZW5qYW1pbiBNb3JnYW4gd3JvdGU6Cj4gSnVzdCB0cmllZCAxMC4yLjQuNzAuNTggZmlybXdhcmUg
+dGhhdCB5b3UgbGlua2VkIHRvIGFuZCBpdCBzdGlsbCBjcmFzaGVzOgo+IAo+IFsgIDEzMS41Njg5
+ODldIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmaXJtd2FyZSBjcmFzaGVkISAodXVpZAo+IDE4
+MzgzNDdlLTkzODAtNGEyNi1hYzlkLTI5NjNlZTk1OTY4YikKPiBbICAxMzEuNTc4MTI0XSBhdGgx
+MGtfcGNpIDAwMDA6MDE6MDAuMDogcWNhOTg4eCBodzIuMCB0YXJnZXQKPiAweDQxMDAwMTZjIGNo
+aXBfaWQgMHgwNDMyMDJmZiBzdWIgMDAwMDowMDAwCj4gWyAgMTMxLjU4NzQ5MV0gYXRoMTBrX3Bj
+aSAwMDAwOjAxOjAwLjA6IGtjb25maWcgZGVidWcgMCBkZWJ1Z2ZzIDEKPiB0cmFjaW5nIDAgZGZz
+IDEgdGVzdG1vZGUgMQo+IFsgIDEzMS42MDA1MjFdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBm
+aXJtd2FyZSB2ZXIgMTAuMi40LjcwLjU4Cj4gYXBpIDUgZmVhdHVyZXMgbm8tcDJwLHJhdy1tb2Rl
+LG1mcCBjcmMzMiBlMWFmMDc2Zgo+IFsgIDEzMS42MTA4OTldIGF0aDEwa19wY2kgMDAwMDowMTow
+MC4wOiBib2FyZF9maWxlIGFwaSAxIGJtaV9pZCBOL0EKPiBjcmMzMiBiZWJjN2MwOAo+IFsgIDEz
+MS42MTgzMjVdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBodHQtdmVyIDIuMSB3bWktb3AgNSBo
+dHQtb3AKPiAyIGNhbCBmaWxlIG1heC1zdGEgMTI4IHJhdyAwIGh3Y3J5cHRvIDEKPiBbICAxMzEu
+NjI5OTY1XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmlybXdhcmUgcmVnaXN0ZXIgZHVtcDoK
+PiBbICAxMzEuNjM1NzI4XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzAwXTogMHg0MTAwMDE2
+QyAweDAwMDAxNUIzCj4gMHgwMDlBNDVBRiAweDAwOTU1QjMxCj4gWyAgMTMxLjY0Mzc2MV0gYXRo
+MTBrX3BjaSAwMDAwOjAxOjAwLjA6IFswNF06IDB4MDA5QTQ1QUYgMHgwMDA2MDEzMAo+IDB4MDAw
+MDAwMDIgMHgwMDQzOUU5OAo+IFsgIDEzMS42NTE4MDZdIGF0aDEwa19wY2kgMDAwMDowMTowMC4w
+OiBbMDhdOiAweDAwNDQxMTBDIDB4MDA0NDIwNzQKPiAweDAwNDA3MTIwIDB4MDA0NDM2Q0MKPiBb
+ICAxMzEuNjU5ODUyXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzEyXTogMHgwMDAwMDAwOSAw
+eDAwMDAwMDAwCj4gMHgwMDlBMzU1MCAweDAwOUEzNTVFCj4gWyAgMTMxLjY2Nzg5Ml0gYXRoMTBr
+X3BjaSAwMDAwOjAxOjAwLjA6IFsxNl06IDB4MDA5NTgwODAgMHgwMDlBMzFENgo+IDB4MDAwMDAw
+MDAgMHgwMDAwMDAwMAo+IFsgIDEzMS42NzU5MzZdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBb
+MjBdOiAweDQwOUE0NUFGIDB4MDA0MEFBQzQKPiAweDAwNDBBQzYwIDB4MDA0MEFDMDkKPiBbICAx
+MzEuNjgzOTY4XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzI0XTogMHg4MDlBNDRGMiAweDAw
+NDBBQjI0Cj4gMHgwMDQwMDAwMCAweEMwOUE0NUFGCj4gWyAgMTMxLjY5MjAxM10gYXRoMTBrX3Bj
+aSAwMDAwOjAxOjAwLjA6IFsyOF06IDB4ODA5QTNBMTYgMHgwMDQwQUI4NAo+IDB4MDA0NDExMEMg
+MHgwMDQ0MjA3NAo+IFsgIDEzMS43MDAwNTZdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBbMzJd
+OiAweDgwOUE2MDFBIDB4MDA0MEFCQjQKPiAweDAwNDQxMTBDIDB4MDA0MDcxMjAKPiBbICAxMzEu
+NzA4MTAwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzM2XTogMHg4MDlBMkVBNCAweDAwNDBB
+QkY0Cj4gMHgwMDQwQUMxNCAweDAwMDAxNTgwCj4gWyAgMTMxLjcxNjE0M10gYXRoMTBrX3BjaSAw
+MDAwOjAxOjAwLjA6IFs0MF06IDB4ODA5OTBGNjMgMHgwMDQwQUQwNAo+IDB4MDA5QzY0NTggMHgw
+MDQ0MzZDQwo+IFsgIDEzMS43MjQxNzVdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBbNDRdOiAw
+eDgwOTk4NTIwIDB4MDA0MEFENjQKPiAweDAwNDIwOEZDIDB4MDA0MzlFNEMKPiBbICAxMzEuNzMy
+MjIwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzQ4XTogMHg4MDk5QUVBNSAweDAwNDBBRDg0
+Cj4gMHgwMDQyMDhGQyAweDAwNDI1ODc0Cj4gWyAgMTMxLjc0MDI2M10gYXRoMTBrX3BjaSAwMDAw
+OjAxOjAwLjA6IFs1Ml06IDB4ODA5QkZDMzkgMHgwMDQwQUVFNAo+IDB4MDA0MjRGRTggMHgwMDAw
+MDAwMgo+IFsgIDEzMS43NDgzMDZdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBbNTZdOiAweDgw
+OTQwRjE4IDB4MDA0MEFGMTQKPiAweDAwMDAwMDA0IDB4MDA0MDM5RDAKPiBbICAxMzEuODU3MDc2
+XSBpZWVlODAyMTEgcGh5MDogSGFyZHdhcmUgcmVzdGFydCB3YXMgcmVxdWVzdGVkCj4gWyAgMTMx
+Ljg2MjcwNV0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGZhaWxlZCB0byBzeW5jaHJvbml6ZQo+
+IG1vbml0b3IgdmRldiAxIHN0b3A6IC0xNDMKPiBbICAxMzEuODcwNTk0XSBhdGgxMGtfcGNpIDAw
+MDA6MDE6MDAuMDogZmFpbGVkIHRvIHN0b3AgbW9uaXRvciB2ZGV2OiAtMTQzCgpbc2hhZmldIHJl
+cXVlc3QgdG8gdHJ5IHdpdGggdGhlIGxhdGVzdCBiYWNrcG9ydHMgYW5kIGF0aC5naXQKQWxzbyB3
+b3J0aCB0cnlpbmcgdGhpcyBmaXggaW4gYXRoMTBrIChvbmNlIHRoZSBuZXh0IGZpcm13YXJlIHZl
+cnNpb24pCmlzIGF2YWlsYWJsZS4gSSB3aWxsIGtlZXAgeW91IHBvc3RlZC4gdGhhbmsgeW91ICEK
+Cj4gCj4gfkJlbmphbWluCj4gCj4gT24gMTEvMzAvMjAxNiAxMTowOSBQTSwgTW9oYW1tZWQgU2hh
+ZmkgU2hhamFraGFuIHdyb3RlOgo+ID5IaSwKPiA+Cj4gPk9uIFR1ZSwgTm92IDI5LCAyMDE2IGF0
+IDExOjIyOjEyQU0gLTA4MDAsIEJlbmphbWluIE1vcmdhbiB3cm90ZToKPiA+PldoZW4gd2UgdHJ5
+IHRvIHRyYW5zbWl0IHRyYWZmaWMgKHBpbmcpIGJldHdlZW4gdHdvIG1lc2hlZCBhdGgxMGsKPiA+
+PmRldmljZXMgcnVubmluZyBsYXRlc3QgbGVkZSB3ZSBrZWVwIGV4cGVyaWVuY2luZyBhdGgxMGsg
+ZmlybXdhcmUKPiA+PmNyYXNoZXMuIFRoaXMgc2VlbXMgdG8gb25seSBoYXBwZW4gd2hlbiBydW5u
+aW5nIGluIDgwMi4xMW4vYWMgbW9kZQo+ID4+YnV0IG5vdCBpbiA4MDIuMTFhL2cgbW9kZS4gQWxz
+bywgZnJvbSB0aGUgc3RhdGlvbiBkdW1wcyBpdCBhcHBlYXJzCj4gPj50aGF0IG1hbmFnZW1lbnQg
+dHJhZmZpYyBpcyBmbG93aW5nIGJldHdlZW4gdGhlIGRldmljZXMsIGhvd2V2ZXIgd2hlbgo+ID4+
+d2UgdHJ5IHRvIHNlbmQgdW5pY2FzdCBkYXRhIHRyYWZmaWMgdGhlIGZpcm13YXJlIGNyYXNoZXMK
+PiA+PmltbWVkaWF0ZWx5Lgo+ID5bc2hhZmldIERpZCB5b3UgZ2V0IGEgY2hhbmNlIHRvIHRyeSB3
+aXRoIHRoZSBiZWxvdyBmaXJtd2FyZSBhcyB3ZWxsCj4gPmh0dHBzOi8vZ2l0aHViLmNvbS9rdmFs
+by9hdGgxMGstZmlybXdhcmUvYmxvYi9tYXN0ZXIvUUNBOTg4WC9odzIuMC8xMC4yLjQuNzAvZmly
+bXdhcmUtNS5iaW5fMTAuMi40LjcwLjU4Cj4gPgo+ID4+UGxhdGZvcm06IEFyY2hlciBDNyBBQzE3
+NTAgdjIKPiA+PlNvZnR3YXJlIEltYWdlOiBMRURFIChIRUFELCByMjI5OSkgQ29tbWl0OiBodHRw
+czovL2dpdGh1Yi5jb20vbGVkZS1wcm9qZWN0L3NvdXJjZS9jb21taXQvZDU5NmMyMWViZDVhM2U2
+Y2U5MzNlZmYzZTUxOTg5MDMxZTRiMWQ1OAo+ID4+Cj4gPj5DcnlwdG86IHdwYV9zdXBwbGljYW50
+Cj4gPj53cGFfc3VwcGxpY2FudC13bGFuMC5jb25mCj4gPj5uZXR3b3JrPXsKPiA+PnNzaWQ9ImJt
+b3JnYW5fbGVkZV9tZXNoIgo+ID4+a2V5X21nbXQ9U0FFCj4gPj5tb2RlPTUKPiA+PmZyZXF1ZW5j
+eT01MTgwCj4gPj5wc2s9Im1lc2hwYXNzd29yZCIKPiA+Pn0KPiA+Pgo+ID4+QmFja3BvcnRzIFZl
+cnN0aW9uOgo+ID4+WyAgICA5LjgxODAwN10gTG9hZGluZyBtb2R1bGVzIGJhY2twb3J0ZWQgZnJv
+bSBMaW51eCB2ZXJzaW9uCj4gPj53dC0yMDE2LTEwLTAzLTEtZzZmY2IxYTYKPiA+PlsgICAgOS44
+MjU3MzZdIEJhY2twb3J0IGdlbmVyYXRlZCBieSBiYWNrcG9ydHMuZ2l0Cj4gPj5iYWNrcG9ydHMt
+MjAxNjAzMjQtOS1nMGUzOGY1Ywo+ID4+Cj4gPj7igIvigItBdGgxMGsgSW5pdGlhbGl6YXRpb24g
+b24gU3RhdGlvbiBBIChkbWVzZykKPiA+PlsgICAgOS44OTY3MTVdIFBDSTogRW5hYmxpbmcgZGV2
+aWNlIDAwMDA6MDE6MDAuMCAoMDAwMCAtPiAwMDAyKQo+ID4+WyAgICA5LjkwMjYyMl0gYXRoMTBr
+X3BjaSAwMDAwOjAxOjAwLjA6IHBjaSBpcnEgbGVnYWN5IG9wZXJfaXJxX21vZGUKPiA+PjEgaXJx
+X21vZGUgMCByZXNldF9tb2RlIDAKPiA+PlsgICAxMC4xMjM3MzRdIGF0aDEwa19wY2kgMDAwMDow
+MTowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPiA+PmF0aDEway9wcmUtY2FsLXBjaS0w
+MDAwOjAxOjAwLjAuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4gPj5bICAgMTAuMTM0NjIwXSBh
+dGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogRmFsbGluZyBiYWNrIHRvIHVzZXIgaGVscGVyCj4gPj5b
+ICAgMTAuMjg3NjgwXSBmaXJtd2FyZSBhdGgxMGshcHJlLWNhbC1wY2ktMDAwMDowMTowMC4wLmJp
+bjoKPiA+PmZpcm13YXJlX2xvYWRpbmdfc3RvcmU6IG1hcCBwYWdlcyBmYWlsZWQKPiA+PlsgICAx
+MC42MjI3ODldIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBxY2E5ODh4IGh3Mi4wIHRhcmdldAo+
+ID4+MHg0MTAwMDE2YyBjaGlwX2lkIDB4MDQzMjAyZmYgc3ViIDAwMDA6MDAwMAo+ID4+WyAgIDEw
+LjYzMjE4NF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGtjb25maWcgZGVidWcgMCBkZWJ1Z2Zz
+IDEKPiA+PnRyYWNpbmcgMCBkZnMgMSB0ZXN0bW9kZSAxCj4gPj5bICAgMTAuNjQ1MjMxXSBhdGgx
+MGtfcGNpIDAwMDA6MDE6MDAuMDogZmlybXdhcmUgdmVyIDEwLjIuNC43MC41NAo+ID4+YXBpIDUg
+ZmVhdHVyZXMgbm8tcDJwLHJhdy1tb2RlLG1mcCBjcmMzMiA5ZDM0MGRkOQo+ID4+WyAgIDEwLjY1
+NTY2MF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvcgo+
+ID4+YXRoMTBrL1FDQTk4OFgvaHcyLjAvYm9hcmQtMi5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTIK
+PiA+PlsgICAxMC42NjYyNjRdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBGYWxsaW5nIGJhY2sg
+dG8gdXNlciBoZWxwZXIKPiA+PlsgICAxMC43NDc5MjVdIGZpcm13YXJlIGF0aDEwayFRQ0E5ODhY
+IWh3Mi4wIWJvYXJkLTIuYmluOgo+ID4+ZmlybXdhcmVfbG9hZGluZ19zdG9yZTogbWFwIHBhZ2Vz
+IGZhaWxlZAo+ID4+WyAgIDExLjAxMTEyM10gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGJvYXJk
+X2ZpbGUgYXBpIDEgYm1pX2lkIE4vQQo+ID4+Y3JjMzIgYmViYzdjMDgKPiA+PlsgICAxMi4xNTUy
+MjRdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBodHQtdmVyIDIuMSB3bWktb3AgNSBodHQtb3AK
+PiA+PjIgY2FsIGZpbGUgbWF4LXN0YSAxMjggcmF3IDAgaHdjcnlwdG8gMQo+ID4+Cj4gPj5TdGF0
+aW9uIEEgKHdsYW4wKToKPiA+PjE4OkE2OkY3OjIzOjZFOjY2Cj4gPj4xMC4yMzAuNS40MQo+ID4+
+Cj4gPj5TdGF0aW9uIEIgKHdsYW4wKToKPiA+PjE4OmE2OmY3OjI2OjBmOjIxCj4gPj4xMC4yMzAu
+NS40Mgo+ID4+Cj4gPj5TdGF0aW9uIER1bXAgb24gU3RhdGlvbiBBIGJlZm9yZSBwaW5nOgo+ID4+
+U3RhdGlvbiAxODphNjpmNzoyNjowZjoyMSAob24gd2xhbjApCj4gPj5pbmFjdGl2ZSB0aW1lOjM0
+MCBtcwo+ID4+cnggYnl0ZXM6MjQ3Mgo+ID4+cnggcGFja2V0czoyOAo+ID4+dHggYnl0ZXM6MTIw
+NAo+ID4+dHggcGFja2V0czo5Cj4gPj50eCByZXRyaWVzOjAKPiA+PnR4IGZhaWxlZDowCj4gPj5y
+eCBkcm9wIG1pc2M6MQo+ID4+c2lnbmFsOiAtMTQgZEJtCj4gPj5zaWduYWwgYXZnOi0xNCBkQm0K
+PiA+PlRvZmZzZXQ6MTgxNDI1MzAgdXMKPiA+PnR4IGJpdHJhdGU6Ni4wIE1CaXQvcwo+ID4+cngg
+Yml0cmF0ZTo2LjAgTUJpdC9zCj4gPj5yeCBkdXJhdGlvbjoxNTI0IHVzCj4gPj5tZXNoIGxsaWQ6
+MAo+ID4+bWVzaCBwbGlkOjAKPiA+Pm1lc2ggcGxpbms6RVNUQUIKPiA+Pm1lc2ggbG9jYWwgUFMg
+bW9kZTpBQ1RJVkUKPiA+Pm1lc2ggcGVlciBQUyBtb2RlOlVOS05PV04KPiA+Pm1lc2ggbm9uLXBl
+ZXIgUFMgbW9kZTpBQ1RJVkUKPiA+PmF1dGhvcml6ZWQ6eWVzCj4gPj5hdXRoZW50aWNhdGVkOnll
+cwo+ID4+YXNzb2NpYXRlZDp5ZXMKPiA+PnByZWFtYmxlOmxvbmcKPiA+PldNTS9XTUU6eWVzCj4g
+Pj5NRlA6eWVzCj4gPj5URExTIHBlZXI6bm8KPiA+PkRUSU0gcGVyaW9kOjIKPiA+PmJlYWNvbiBp
+bnRlcnZhbDoxMDAwCj4gPj5jb25uZWN0ZWQgdGltZToxMCBzZWNvbmRzCj4gPj4KPiA+PuKAi0Ny
+YXNoIExvZyBvbiBTdGF0aW9uIEIgKDEwLjIzMC41LjQyKQo+ID4+WzI0NS40ODM4ODhdIGF0aDEw
+a19wY2kgMDAwMDowMTowMC4wOiBmaXJtd2FyZSBjcmFzaGVkISAodXVpZAo+ID4+MmJhYjVlZTkt
+MDhmZi00YTE3LTk1YjEtNjM2ZDIxMmFjZWJjKQo+ID4+WzI0NS40OTMwMjBdIGF0aDEwa19wY2kg
+MDAwMDowMTowMC4wOiBxY2E5ODh4IGh3Mi4wIHRhcmdldAo+ID4+MHg0MTAwMDE2YyBjaGlwX2lk
+IDB4MDQzMjAyZmYgc3ViIDAwMDA6MDAwMAo+ID4+WzI0NS41MDIzODRdIGF0aDEwa19wY2kgMDAw
+MDowMTowMC4wOiBrY29uZmlnIGRlYnVnIDAgZGVidWdmcyAxCj4gPj50cmFjaW5nIDAgZGZzIDEg
+dGVzdG1vZGUgMQo+ID4+WzI0NS41MTU0MzZdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmaXJt
+d2FyZSB2ZXIgMTAuMi40LjcwLjU0IGFwaQo+ID4+NSBmZWF0dXJlcyBuby1wMnAscmF3LW1vZGUs
+bWZwIGNyYzMyIDlkMzQwZGQ5Cj4gPj5bMjQ1LjUyNTgxMl0gYXRoMTBrX3BjaSAwMDAwOjAxOjAw
+LjA6IGJvYXJkX2ZpbGUgYXBpIDEgYm1pX2lkIE4vQQo+ID4+Y3JjMzIgYmViYzdjMDgKPiA+Plsy
+NDUuNTMzMjMyXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogaHR0LXZlciAyLjEgd21pLW9wIDUg
+aHR0LW9wIDIKPiA+PmNhbCBmaWxlIG1heC1zdGEgMTI4IHJhdyAwIGh3Y3J5cHRvIDEKPiA+Plsy
+NDUuNTQ0ODc2XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmlybXdhcmUgcmVnaXN0ZXIgZHVt
+cDoKPiA+PlsyNDUuNTUwNjMzXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzAwXTogMHg0MTAw
+MDE2QyAweDAwMDAxNUIzCj4gPj4weDAwOUE0NTc3IDB4MDA5NTVCMzEKPiA+PlsyNDUuNTU4Njc2
+XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzA0XTogMHgwMDlBNDU3NyAweDAwMDYwMTMwCj4g
+Pj4weDAwMDAwMDAyIDB4MDA0MzlFOTgKPiA+PlsyNDUuNTY2NzE1XSBhdGgxMGtfcGNpIDAwMDA6
+MDE6MDAuMDogWzA4XTogMHgwMDQ0MTEwQyAweDAwNDQyMDc0Cj4gPj4weDAwNDA3MTIwIDB4MDA0
+NDM2Q0MKPiA+PlsyNDUuNTc0NzQ5XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzEyXTogMHgw
+MDAwMDAwOSAweDAwMDAwMDAwCj4gPj4weDAwOUEzNTE4IDB4MDA5QTM1MjYKPiA+PlsyNDUuNTgy
+NzkzXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzE2XTogMHgwMDk1ODA4MCAweDAwOTQwODVE
+Cj4gPj4weDAwMDAwMDAwIDB4MDAwMDAwMDAKPiA+PlsyNDUuNTkwODM2XSBhdGgxMGtfcGNpIDAw
+MDA6MDE6MDAuMDogWzIwXTogMHg0MDlBNDU3NyAweDAwNDBBQUM0Cj4gPj4weDAwNDBBQzYwIDB4
+MDA0MEFDMDkKPiA+PlsyNDUuNTk4ODgyXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzI0XTog
+MHg4MDlBNDRCQSAweDAwNDBBQjI0Cj4gPj4weDAwNDAwMDAwIDB4QzA5QTQ1NzcKPiA+PlsyNDUu
+NjA2OTIzXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzI4XTogMHg4MDlBMzlERSAweDAwNDBB
+Qjg0Cj4gPj4weDAwNDQxMTBDIDB4MDA0NDIwNzQKPiA+PlsyNDUuNjE0OTU1XSBhdGgxMGtfcGNp
+IDAwMDA6MDE6MDAuMDogWzMyXTogMHg4MDlBNUZFMiAweDAwNDBBQkI0Cj4gPj4weDAwNDQxMTBD
+IDB4MDA0MDcxMjAKPiA+PlsyNDUuNjIzMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzM2
+XTogMHg4MDlBMkU2QyAweDAwNDBBQkY0Cj4gPj4weDAwNDBBQzE0IDB4MDAwMDE1ODAKPiA+Plsy
+NDUuNjMxMDQzXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzQwXTogMHg4MDk5MEY2RiAweDAw
+NDBBRDA0Cj4gPj4weDAwOUM2NDNDIDB4MDA0NDM2Q0MKPiA+PlsyNDUuNjM5MDg2XSBhdGgxMGtf
+cGNpIDAwMDA6MDE6MDAuMDogWzQ0XTogMHg4MDk5ODUxMCAweDAwNDBBRDY0Cj4gPj4weDAwNDIw
+OEZDIDB4MDA0MzlFNEMKPiA+PlsyNDUuNjQ3MTI5XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDog
+WzQ4XTogMHg4MDk5QUU5NSAweDAwNDBBRDg0Cj4gPj4weDAwNDIwOEZDIDB4MDA0MjU0MDQKPiA+
+PlsyNDUuNjU1MTcwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzUyXTogMHg4MDlCRkM1NSAw
+eDAwNDBBRUU0Cj4gPj4weDAwNDI0RkU4IDB4MDAwMDAwMDIKPiA+PlsyNDUuNjYzMTk4XSBhdGgx
+MGtfcGNpIDAwMDA6MDE6MDAuMDogWzU2XTogMHg4MDk0MEYxOCAweDAwNDBBRjE0Cj4gPj4weDAw
+MDAwMDA0IDB4MDA0MDM5RDAKPiA+PlsyNDUuNzY3MDIzXSBpZWVlODAyMTEgcGh5MDogSGFyZHdh
+cmUgcmVzdGFydCB3YXMgcmVxdWVzdGVkCj4gPj5bMjQ1Ljc3MjY1NV0gYXRoMTBrX3BjaSAwMDAw
+OjAxOjAwLjA6IGZhaWxlZCB0byBzeW5jaHJvbml6ZSBtb25pdG9yCj4gPj52ZGV2IDEgc3RvcDog
+LTE0Mwo+ID4+WzI0NS43ODA1NDJdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmYWlsZWQgdG8g
+c3RvcCBtb25pdG9yIHZkZXY6IC0xNDMKPiA+PuKAiwo+ID4+V2l0aCB3cGFfc3VwcGxpY2FudCB0
+dXJuZWQgb2ZmOgo+ID4+Cj4gPj5TdGF0aW9uIER1bXAgb24gU3RhdGlvbiBBIGJlZm9yZSBwaW5n
+Ogo+ID4+U3RhdGlvbiAxODphNjpmNzoyNjowZjoyMSAob24gd2xhbjApCj4gPj5pbmFjdGl2ZSB0
+aW1lOjYwIG1zCj4gPj5yeCBieXRlczozODc0Cj4gPj5yeCBwYWNrZXRzOjY3Cj4gPj50eCBieXRl
+czo3MDcKPiA+PnR4IHBhY2tldHM6Nwo+ID4+dHggcmV0cmllczowCj4gPj50eCBmYWlsZWQ6MQo+
+ID4+cnggZHJvcCBtaXNjOjMKPiA+PnNpZ25hbDogLTE0IGRCbQo+ID4+c2lnbmFsIGF2ZzotMTQg
+ZEJtCj4gPj5Ub2Zmc2V0OjE4NDQ2NzQ0MDczNjg0MjUwOTk5IHVzCj4gPj50eCBiaXRyYXRlOjYu
+MCBNQml0L3MKPiA+PnJ4IGJpdHJhdGU6Ni4wIE1CaXQvcwo+ID4+cnggZHVyYXRpb246MTMxMiB1
+cwo+ID4+bWVzaCBsbGlkOjI0OTUzCj4gPj5tZXNoIHBsaWQ6NTk0MTIKPiA+Pm1lc2ggcGxpbms6
+RVNUQUIKPiA+Pm1lc2ggbG9jYWwgUFMgbW9kZTpBQ1RJVkUKPiA+Pm1lc2ggcGVlciBQUyBtb2Rl
+OlVOS05PV04KPiA+Pm1lc2ggbm9uLXBlZXIgUFMgbW9kZTpBQ1RJVkUKPiA+PmF1dGhvcml6ZWQ6
+eWVzCj4gPj5hdXRoZW50aWNhdGVkOnllcwo+ID4+YXNzb2NpYXRlZDp5ZXMKPiA+PnByZWFtYmxl
+OmxvbmcKPiA+PldNTS9XTUU6eWVzCj4gPj5NRlA6bm8KPiA+PlRETFMgcGVlcjpubwo+ID4+RFRJ
+TSBwZXJpb2Q6Mgo+ID4+YmVhY29uIGludGVydmFsOjEwMDAKPiA+PnNob3J0IHNsb3QgdGltZTp5
+ZXMKPiA+PmNvbm5lY3RlZCB0aW1lOjMzIHNlY29uZHMKPiA+Pgo+ID4+RmlybXdhcmUgY3Jhc2gg
+b24gU3RhdGlvbiBBICgxMC4yMzAuNS40MSkKPiA+PlsgMTA0MC45ODQ1OTldIGF0aDEwa19wY2kg
+MDAwMDowMTowMC4wOiBmaXJtd2FyZSBjcmFzaGVkISAodXVpZAo+ID4+NDJkNGY2ZGMtMGU4OS00
+NTA1LWFlZmItNThjYmI3MGQwZGNlKQo+ID4+WyAxMDQwLjk5MzczMl0gYXRoMTBrX3BjaSAwMDAw
+OjAxOjAwLjA6IHFjYTk4OHggaHcyLjAgdGFyZ2V0Cj4gPj4weDQxMDAwMTZjIGNoaXBfaWQgMHgw
+NDMyMDJmZiBzdWIgMDAwMDowMDAwCj4gPj5bIDEwNDEuMDAzMTAwXSBhdGgxMGtfcGNpIDAwMDA6
+MDE6MDAuMDoga2NvbmZpZyBkZWJ1ZyAwIGRlYnVnZnMgMQo+ID4+dHJhY2luZyAwIGRmcyAxIHRl
+c3Rtb2RlIDEKPiA+PlsgMTA0MS4wMTYxNDRdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmaXJt
+d2FyZSB2ZXIgMTAuMi40LjcwLjU0Cj4gPj5hcGkgNSBmZWF0dXJlcyBuby1wMnAscmF3LW1vZGUs
+bWZwIGNyYzMyIDlkMzQwZGQ5Cj4gPj5bIDEwNDEuMDI2NTIzXSBhdGgxMGtfcGNpIDAwMDA6MDE6
+MDAuMDogYm9hcmRfZmlsZSBhcGkgMSBibWlfaWQgTi9BCj4gPj5jcmMzMiBiZWJjN2MwOAo+ID4+
+WyAxMDQxLjAzMzk0MF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGh0dC12ZXIgMi4xIHdtaS1v
+cCA1IGh0dC1vcAo+ID4+MiBjYWwgZmlsZSBtYXgtc3RhIDEyOCByYXcgMCBod2NyeXB0byAxCj4g
+Pj5bIDEwNDEuMDQ1NTkzXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmlybXdhcmUgcmVnaXN0
+ZXIgZHVtcDoKPiA+PlsgMTA0MS4wNTEzMzZdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBbMDBd
+OiAweDQxMDAwMTZDIDB4MDAwMDE1QjMKPiA+PjB4MDA5QTQ1NzcgMHgwMDk1NUIzMQo+ID4+WyAx
+MDQxLjA1OTM4M10gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IFswNF06IDB4MDA5QTQ1NzcgMHgw
+MDA2MDEzMAo+ID4+MHgwMDAwMDAwMSAweDAwNDM1MzU0Cj4gPj5bIDEwNDEuMDY3NDI0XSBhdGgx
+MGtfcGNpIDAwMDA6MDE6MDAuMDogWzA4XTogMHgwMDQ0MTEwQyAweDAwNDQyMDc0Cj4gPj4weDAw
+NDA3MTIwIDB4MDA0NDM2Q0MKPiA+PlsgMTA0MS4wNzU0NjNdIGF0aDEwa19wY2kgMDAwMDowMTow
+MC4wOiBbMTJdOiAweDAwMDAwMDA5IDB4MDAwMDAwMDAKPiA+PjB4MDA5QTQzQTAgMHgwMDlBNDNE
+RQo+ID4+WyAxMDQxLjA4MzQ5MF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IFsxNl06IDB4MDA5
+NTgwODAgMHgwMDk0MDg1RAo+ID4+MHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gPj5bIDEwNDEuMDkx
+NTM1XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzIwXTogMHg0MDlBNDU3NyAweDAwNDBBQUM0
+Cj4gPj4weDAwNDBBQzYwIDB4MDA0MEFDMDkKPiA+PlsgMTA0MS4wOTk1NzldIGF0aDEwa19wY2kg
+MDAwMDowMTowMC4wOiBbMjRdOiAweDgwOUE0NEJBIDB4MDA0MEFCMjQKPiA+PjB4MDA5NTVBMDAg
+MHhDMDlBNDU3Nwo+ID4+WyAxMDQxLjEwNzYyMl0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IFsy
+OF06IDB4ODA5QTM5REUgMHgwMDQwQUI4NAo+ID4+MHgwMDQ0MTEwQyAweDAwNDQyMDc0Cj4gPj5b
+IDEwNDEuMTE1NjYxXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzMyXTogMHg4MDlBNUZFMiAw
+eDAwNDBBQkI0Cj4gPj4weDAwNDQxMTBDIDB4MDA0MDcxMjAKPiA+PlsgMTA0MS4xMjM2ODldIGF0
+aDEwa19wY2kgMDAwMDowMTowMC4wOiBbMzZdOiAweDgwOUEyRTZDIDB4MDA0MEFCRjQKPiA+PjB4
+MDA0MEFDMTAgMHgwMDAwMTU4MAo+ID4+WyAxMDQxLjEzMTczM10gYXRoMTBrX3BjaSAwMDAwOjAx
+OjAwLjA6IFs0MF06IDB4ODA5OTBGNkYgMHgwMDQwQUQwNAo+ID4+MHgwMDlDNjQzQyAweDAwNDQz
+NkNDCj4gPj5bIDEwNDEuMTM5Nzc3XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogWzQ0XTogMHg4
+MDk5ODUxMCAweDAwNDBBRDY0Cj4gPj4weDAwNDIwOEZDIDB4MDA0MzlFNEMKPiA+PlsgMTA0MS4x
+NDc4MjBdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBbNDhdOiAweDgwOTlBRTk1IDB4MDA0MEFE
+ODQKPiA+PjB4MDA0MjA4RkMgMHgwMDQyNTc1OAo+ID4+WyAxMDQxLjE1NTg2MF0gYXRoMTBrX3Bj
+aSAwMDAwOjAxOjAwLjA6IFs1Ml06IDB4ODA5QkZDNTUgMHgwMDQwQUVFNAo+ID4+MHgwMDQyNEZF
+OCAweDAwMDAwMDAyCj4gPj5bIDEwNDEuMTYzODg4XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDog
+WzU2XTogMHg4MDk0MEYxOCAweDAwNDBBRjE0Cj4gPj4weDAwMDAwMDA0IDB4MDA0MDM5RDAKPiA+
+PlsgMTA0MS4yNjcwMjVdIGllZWU4MDIxMSBwaHkwOiBIYXJkd2FyZSByZXN0YXJ0IHdhcyByZXF1
+ZXN0ZWQKPiA+PlsgMTA0MS4yNzI2NTZdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmYWlsZWQg
+dG8gc3luY2hyb25pemUKPiA+Pm1vbml0b3IgdmRldiAxIHN0b3A6IC0xNDMKPiA+PlsgMTA0MS4y
+ODA1NDVdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBmYWlsZWQgdG8gc3RvcCBtb25pdG9yIHZk
+ZXY6IC0xNDMKPiA+Pgo+ID4+4oCLCj4gPj5UaGFua3MgaW4gYWR2YW5jZSBmb3IgeW91ciB0aW1l
+IGFuZCBoZWxwLAo+ID4+Cj4gPj5+QmVuamFtaW4KPiA+Pgo+IAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
