@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cDyID-0004Z7-Fs
- for ath10k@lists.infradead.org; Mon, 05 Dec 2016 18:47:13 +0000
-Subject: Re: [PATCH 1/3] ath10k: Ensure there are no stale ar->txqs entries.
-References: <1471569995-10028-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQn0d1bEB662r-Yivmdk_21LhjCQjJP_GoPaj-WT2wA=1g@mail.gmail.com>
- <57B70AED.2010200@candelatech.com>
- <ba1cc818-6194-11d6-7cc3-1db28036a519@candelatech.com>
- <ef7e16a6-9353-0f63-ac70-fc8e234d6c25@candelatech.com>
- <CA+BoTQnuLbVzuEVvf9+wOGhj7i3DV2LaMqGBfGhQHEgOSXei4g@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <4c1d2822-05cd-c0cb-7c57-a3f6c7ced709@candelatech.com>
-Date: Mon, 5 Dec 2016 10:19:08 -0800
+From: "Nagarajan, Ashok Raj" <arnagara@qti.qualcomm.com>
+Subject: RE: ath10k firmware crashes in mesh mode on QCA9880
+Date: Mon, 5 Dec 2016 19:24:08 +0000
+Message-ID: <d8eb0ba5828d43dd83030247ba443b88@aphydexm01f.ap.qualcomm.com>
+References: <583DD564.8040704@cococorp.com>
+ <20161201070908.GB11953@atheros-ThinkPad-T61> <58421FA2.2020004@cococorp.com>
+ <20161203124358.GB31861@atheros-ThinkPad-T61>
+ <20161203124600.GC31861@atheros-ThinkPad-T61> <5845B325.6060002@cococorp.com>
+In-Reply-To: <5845B325.6060002@cococorp.com>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnuLbVzuEVvf9+wOGhj7i3DV2LaMqGBfGhQHEgOSXei4g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,109 +18,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Benjamin Morgan <bmorgan@cococorp.com>, Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "lede-dev@lists.infradead.org" <lede-dev@lists.infradead.org>, "agreen@cococorp.com" <agreen@cococorp.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 12/05/2016 12:50 AM, Michal Kazior wrote:
-> On 2 December 2016 at 01:24, Ben Greear <greearb@candelatech.com> wrote:
->> On 12/01/2016 02:52 PM, Ben Greear wrote:
->>>
->>> On 08/19/2016 06:34 AM, Ben Greear wrote:
->>>>
->>>>
->>>>
->>>> On 08/18/2016 11:59 PM, Michal Kazior wrote:
->>>>>
->>>>> On 19 August 2016 at 03:26,  <greearb@candelatech.com> wrote:
->>>>>>
->>>>>> From: Ben Greear <greearb@candelatech.com>
->>>>>>
->>>>>> I was seeing kernel crashes due to accessing freed memory
->>>>>> while debugging a 9984 firmware that was crashing often.
->>>>>>
->>>>>> This patch fixes the crashes.  I am not certain if there
->>>>>> is a better way or not.
->>
->>
->> Michal, thanks for the help on IRC.  I added this logic:
->>
->> static void ieee80211_drv_tx(struct ieee80211_local *local,
->>                              struct ieee80211_vif *vif,
->>                              struct ieee80211_sta *pubsta,
->>                              struct sk_buff *skb)
->> {
->>         struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
->>         struct ieee80211_sub_if_data *sdata = vif_to_sdata(vif);
->>         struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
->>         struct ieee80211_tx_control control = {
->>                 .sta = pubsta,
->>         };
->>         struct ieee80211_txq *txq = NULL;
->>         struct txq_info *txqi;
->>         u8 ac;
->>
->>         if ((info->flags & IEEE80211_TX_CTL_SEND_AFTER_DTIM) ||
->>             (info->control.flags & IEEE80211_TX_CTRL_PS_RESPONSE))
->>                 goto tx_normal;
->>
->>         if (!ieee80211_is_data(hdr->frame_control))
->>                 goto tx_normal;
->>
->>         if (unlikely(!ieee80211_sdata_running(sdata))) {
->>                 WARN_ON_ONCE(1);
->>                 goto delete_and_return;
->>         }
->>
->> ...
->>
->>         if (atomic_read(&sdata->txqs_len[ac]) >=
->>             (local->hw.txq_ac_max_pending * 2)) {
->>                 /* Must be that something is not paying attention to
->>                  * max-pending, like pktgen, so just drop this frame.
->>                  */
->> delete_and_return:
->>                 ieee80211_free_txskb(&local->hw, skb);
->>                 return;
->>         }
->>
->>
->> But, I still see the txq entries on the ar->txqs list in the
->> ath10k_mac_txq_init
->> after firmware crash in my test case.  Is this the test you were suggesting?
->
-> Yes.
->
-> Now that I think about it mac80211 doesn't call anything in driver
-> during hw_restart that would unref txqs. This means you'll have them
-> still linked when add_interface/sta_state is called, no?
->
-> This means that either:
->  (a) txq (re-)init should be smarter in ath10k
->  (b) txqs should be purged during hw_restart in ath10k
+>> Applied the patch and tried with 10.2.4.70.54 firmware and it still crashes:
 
-I posted a patch that does (a) last Friday:
+>> [  142.438377] ath10k_pci 0000:01:00.0: firmware crashed! (uuid 
+>> a5499582-e220-46d2-9359-0b44219f69ea)
+>> [  142.447512] ath10k_pci 0000:01:00.0: qca988x hw2.0 target 0x4100016c 
+>> chip_id 0x043202ff sub 0000:0000
+>> [  142.456879] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 
+>> tracing 0 dfs 1 testmode 1
+>> [  142.469916] ath10k_pci 0000:01:00.0: firmware ver 10.2.4.70.54 api 5 
+features no-p2p,raw-mode,mfp crc32 9d340dd9
+>> [  142.480295] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A 
+>> crc32 bebc7c08
+>> [  142.487717] ath10k_pci 0000:01:00.0: htt-ver 2.1 wmi-op 5 htt-op 2 
+>> cal file max-sta 128 raw 0 hwcrypto 1
+>> [  142.499361] ath10k_pci 0000:01:00.0: firmware register dump:
+>> [  142.505124] ath10k_pci 0000:01:00.0: [00]: 0x4100016C 0x000015B3 
+0x009A4577 0x00955B31
 
-"ath10k:  work-around for stale txq in ar->txqs"
+Benjamin, Thanks for the logs.
+Quick questions to further debug the issue here,
 
-I realized it will not apply upstream because it is also patching the previous
-work-around I had in the patch that originated this email thread.
-
-With these patches and the iterate hack to mac80211, then I no longer
-see crashes in my test case that previously crashed very readily.
+1. Is this issue seen every time you start sending data traffic?
+2. Issue seen with older firmwares? (FYR, http://linuxwireless.org/en/users/Drivers/ath10k/firmware/ )
+3. Could you please share the dmesg from your device after enabling MAC and WMI logs in ath10k driver
+	To enable debug logs please see http://linuxwireless.org/en/users/Drivers/ath10k/debug/	
+4. Do you know what is the Number of Spatial Streams seen in mesh beacons and in mesh data packet?
 
 Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
+Ashok
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
