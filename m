@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cDuXF-0002oe-M5
- for ath10k@lists.infradead.org; Mon, 05 Dec 2016 14:46:30 +0000
-Message-ID: <1480949161.31788.23.camel@sipsolutions.net>
-Subject: Re: [PATCH 1/4] cfg80211: Add support to enable or disable btcoex
+ id 1cDuaL-00036j-By
+ for ath10k@lists.infradead.org; Mon, 05 Dec 2016 14:49:42 +0000
+Message-ID: <1480949353.31788.27.camel@sipsolutions.net>
+Subject: Re: [PATCH 2/4] cfg80211: Add new NL80211_CMD_SET_BTCOEX_PRIORITY
+ to support BTCOEX
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 05 Dec 2016 15:46:01 +0100
-In-Reply-To: <1478610932-21954-2-git-send-email-c_traja@qti.qualcomm.com>
+Date: Mon, 05 Dec 2016 15:49:13 +0100
+In-Reply-To: <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
 References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
- <1478610932-21954-2-git-send-email-c_traja@qti.qualcomm.com>
+ <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,29 +20,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org
 Cc: tamizhchelvam@codeaurora.org, ath10k@lists.infradead.org
 
-On Tue, 2016-11-08 at 18:45 +0530, c_traja@qti.qualcomm.com wrote:
-> From: Tamizh chelvam <c_traja@qti.qualcomm.com>
-> 
-> This patch adds support to enable or disable btcoex by
-> adding NL80211_ATTR_WIPHY_BTCOEX_ENABLE attribute in
-> NL80211_CMD_SET_WIPHY command. By default BTCOEX disabled in driver.
-
-I think overloading SET_WIPHY even more is a mistake - why not group
-this with the new command you're introducing in the second patch?
-
-Also, can have a flag attribute to enable/disable, or better even
-disable when you're not setting any other parameters.
-
-johannes
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gVHVlLCAyMDE2LTExLTA4IGF0IDE4OjQ1ICswNTMwLCBjX3RyYWphQHF0aS5xdWFsY29tbS5j
+b20gd3JvdGU6Cj7CoAo+ICsgKiBzdHJ1Y3QgY2ZnODAyMTFfYnRjb2V4X3ByaW9yaXR5IC0gQlRD
+T0VYIHN1cHBvcnQgZnJhbWUgdHlwZQo+ICsgKgo+ICsgKiBUaGlzIHN0cnVjdHVyZSBkZWZpbmVz
+IHRoZSBkcml2ZXIgc3VwcG9ydGluZyBmcmFtZSB0eXBlcyBmb3IKPiBCVENPRVgKPiArICoKPiAr
+ICogQHdsYW5fYmVfcHJlZmVycmVkOiBiZXN0IGVmZm9ydCBmcmFtZXMgcHJlZmVycmVkIG92ZXIg
+YnQgdHJhZmZpYwo+ICsgKiBAd2xhbl9ia19wcmVmZXJyZWQ6IGJhY2tncm91bmQgZnJhbWVzIHBy
+ZWZlcnJlZCBvdmVyIGJ0IHRyYWZmaWMKPiArICogQHdsYW5fdmlfcHJlZmVycmVkOiB2aWRlbyBm
+cmFtZXMgcHJlZmVycmVkIG92ZXIgYnQgdHJhZmZpYwo+ICsgKiBAd2xhbl92b19wcmVmZXJyZWQ6
+IHZvaWNlIGZyYW1lcyBwcmVmZXJyZWQgb3ZlciBidCB0cmFmZmljCj4gKyAqIEB3bGFuX2JlYWNv
+bl9wcmVmZXJyZWQ6IGJlYWNvbiBwcmVmZXJyZWQgb3ZlciBidCB0cmFmZmljCj4gKyAqIEB3bGFu
+X21nbXRfcHJlZmVycmVkOiBtYW5hZ2VtZW50IGZyYW1lcyBwcmVmZXJyZWQgb3ZldCBidCB0cmFm
+ZmljCgp0eXBvOiBvdmVyCgo+IMKgCj4gwqAvKioKPiArICogd2lwaHlfYnRjb2V4X3N1cHBvcnRf
+ZmxhZ3MKPiArICoJVGhpcyBlbnVtIGhhcyB0aGUgZHJpdmVyIHN1cHBvcnRlZCBmcmFtZSB0eXBl
+cyBmb3IgQlRDT0VYLgo+ICsgKiBAV0lQSFlfV0xBTl9CRV9QUkVGRVJSRUQgLSBTdXBwb3J0cyBC
+ZXN0IEVmZm9ydCBmcmFtZSBmb3IgQlRDT0VYCj4gKyAqIEBXSVBIWV9XTEFOX0JLX1BSRUZFUlJF
+RCAtIHN1cHBvcnRzIEJhY2tncm91bmQgZnJhbWUgZm9yIEJUQ09FWAo+ICsgKiBAV0lQSFlfV0xB
+Tl9WSV9QUkVGRVJSRUQgLSBzdXBwb3J0cyBWaWRlbyBmcmFtZSBmb3IgQlRDT0VYCj4gKyAqIEBX
+SVBIWV9XTEFOX1ZPX1BSRUZFUlJFRCAtIHN1cHBvcnRzIFZvaWNlIGZyYW1lIGZvciBCVENPRVgK
+PiArICogQFdJUEhZX1dMQU5fQkVBQ09OX1BSRUZFUlJFRCAtIHN1cHBvcnRzIEJlYWNvbiBmcmFt
+ZSBmb3IgQlRDT0VYCj4gKyAqIEBXSVBIWV9XTEFOX01HTVRfUFJFRkVSUkVEIC0gc3VwcG9ydHMg
+TWFuYWdlbWVudCBmcmFtZXMgZm9yCj4gQlRDT0VYLgo+ICsgKi8KClRoYXQncyBub3QgbWFraW5n
+IG11Y2ggc2Vuc2UgdG8gbWU/Cgo+ICsvKioKPiArICogZW51bSB3aXBoeV9idGNvZXhfcHJpb3Jp
+dHkgLSBCVENPRVggcHJpb3JpdHkgbGV2ZWwKPiArICoJVGhpcyBlbnVtIGRlZmluZXMgcHJpb3Jp
+dHkgbGV2ZWwgZm9yIEJUQ09FWAo+ICsgKiBXSVBIWV9XTEFOX1BSRUZFUlJFRF9MT1cgLSBsb3cg
+cHJpb3JpdHkgZnJhbWVzIG92ZXIgQlQgdHJhZmZpYwo+ICsgKiBXSVBIWV9XTEFOX1BSRUZFUlJF
+RF9ISUdIIC0gaGlnaCBwcmlvcml0eSBmcmFtZXMgb3ZlciBCVCB0cmFmZmljCj4gKyAqLwo+ICsK
+PiArZW51bSB3aXBoeV9idGNvZXhfcHJpb3JpdHkgewo+ICsJV0lQSFlfV0xBTl9QUkVGRVJSRURf
+TE9XID0gZmFsc2UsCj4gKwlXSVBIWV9XTEFOX1BSRUZFUlJFRF9ISUdIID0gdHJ1ZSwKPiArfTsK
+ClRoYXQgZmFsc2UvdHJ1ZSBzZWVtcyBqdXN0IHN0cmFuZ2UuCgo+ICsgKiBAYnRjb2V4X3N1cHBv
+cnRfZmxhZ3M6IFRoaXMgd2lsbCBoYXZlIHRoZSBkcml2ZXIgc3VwcG9ydGVkCj4gKyAqCWZyYW1l
+IHR5cGVzIGZvciBCVENPRVguIFRoaXMgdmFsdWUgZmlsbGVkIGJ5IHVzaW5nCj4gKyAqCSVlbnVt
+IHdpcGh5X2J0Y29leF9zdXBwb3J0X2ZsYWdzIHdoaWxlIGRyaXZlcgo+ICsgKglpbml0aWFsaXph
+dGlvbi4KClRoZSB3aG9sZSAid2lsbCBoYXZlIiBpc24ndCByZWFsbHkgY2xlYXIuCgo+ICsgKiBA
+Tkw4MDIxMV9BVFRSX1NFVF9CVENPRVhfUFJJT1JJVFk6IG5lc3RlZCBhdHRyaWJ1dGUgZm9yIGRy
+aXZlcgo+IHN1cHBvcnRpbmcKPiArICoJdGhlIEJUQ09FWC4gV2hlbiB1c2VkIHdpdGgKPiAlTkw4
+MDIxMV9DTURfU0VUX0JUQ09FWF9QUklPUklUWSBpdCBjb250YWlucwo+ICsgKglhdHRyaWJ1dGVz
+IGFjY29yZGluZyAmZW51bSBubDgwMjExX2J0Y29leF9wcmlvcml0eSB0bwo+IGluZGljYXRlCj4g
+KyAqCXdoaWNoIGZyYW1lIGhhcyBoaWdoIHByaW9yaXR5IG92ZXIgQlQuCgpUaGVyZSBzaG91bGQg
+YmUgbm8gIlNFVCIgaW4gdGhlcmUuCgo+IMKgLyoqCj4gKyAqIGVudW0gbmw4MDIxMV9idGNvZXhf
+cHJpb3JpdHkgLSBCVENPRVggcGFyYW1ldGVyIGF0dHJpYnV0ZXMKPiArICoJVGhpcyBzdHJjdXR1
+cmUgaGFzIGVudW0gdmFsdWVzIGZvciBkcml2ZXIgc3VwcG9ydGVkIHdsYW4KPiArICoJZnJhbWUg
+dHlwZSBmb3IgQlRDT0VYLgo+ICsgKiBATkw4MDIxMV9XTEFOX0JFX1BSRUZFUlJFRCAtIEJlc3Qg
+RWZmb3J0IGZyYW1lCj4gKyAqIEBOTDgwMjExX1dMQU5fQktfUFJFRkVSUkVEIC0gQmFja2dyb3Vu
+ZCBmcmFtZQo+ICsgKiBATkw4MDIxMV9XTEFOX1ZJX1BSRUZFUlJFRCAtIFZpZGVvIGZyYW1lCj4g
+KyAqIEBOTDgwMjExX1dMQU5fVk9fUFJFRkVSUkVEIC0gVm9pY2UgZnJhbWUKPiArICogQE5MODAy
+MTFfV0xBTl9CRUFDT05fUFJFRkVSUkVEIC0gQkVBQ09OIGZyYW1lCj4gKyAqIEBOTDgwMjExX1dM
+QU5fTUdNVF9QUkVGRVJSRUQgLSBNR01UIGZyYW1lCj4gKyAqLwo+ICsKPiArZW51bSBubDgwMjEx
+X2J0Y29leF9wcmlvcml0eSB7Cj4gKwlfX05MODAyMTFfV0xBTl9QUkVGRVJSRURfSU5WQUxJRCwK
+PiArCU5MODAyMTFfV0xBTl9CRV9QUkVGRVJSRUQsCj4gKwlOTDgwMjExX1dMQU5fQktfUFJFRkVS
+UkVELAo+ICsJTkw4MDIxMV9XTEFOX1ZJX1BSRUZFUlJFRCwKPiArCU5MODAyMTFfV0xBTl9WT19Q
+UkVGRVJSRUQsCj4gKwlOTDgwMjExX1dMQU5fQkVBQ09OX1BSRUZFUlJFRCwKPiArCU5MODAyMTFf
+V0xBTl9NR01UX1BSRUZFUlJFRCwKPiArCV9fTkw4MDIxMV9XTEFOX1BSRUZFUlJFRF9MQVNULAo+
+ICsJTkw4MDIxMV9XTEFOX1BSRUZFUlJFRF9NQVggPQo+ICsJCQlfX05MODAyMTFfV0xBTl9QUkVG
+RVJSRURfTEFTVCAtIDEsCj4gK307CgpXb3VsZG4ndCBhIGJpdG1hcCBiZSBlYXNpZXI/Cgpqb2hh
+bm5lcwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
