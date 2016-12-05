@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cDthV-0004VM-0G
- for ath10k@lists.infradead.org; Mon, 05 Dec 2016 13:53:02 +0000
-Message-ID: <1480945950.31788.4.camel@sipsolutions.net>
-Subject: Re: [PATCH 1/2] mac80211: do not iterate active interfaces when in
- re-configure
+ id 1cDuXF-0002oe-M5
+ for ath10k@lists.infradead.org; Mon, 05 Dec 2016 14:46:30 +0000
+Message-ID: <1480949161.31788.23.camel@sipsolutions.net>
+Subject: Re: [PATCH 1/4] cfg80211: Add support to enable or disable btcoex
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 05 Dec 2016 14:52:30 +0100
-In-Reply-To: <CA+BoTQkEaC-ZSbeK=JB=q+ucF1PWcEQXkJEp6JYv4pfOf35cHg@mail.gmail.com>
- (sfid-20161205_092619_855272_0854B225)
-References: <1480645800-2148-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQkEaC-ZSbeK=JB=q+ucF1PWcEQXkJEp6JYv4pfOf35cHg@mail.gmail.com>
- (sfid-20161205_092619_855272_0854B225)
+Date: Mon, 05 Dec 2016 15:46:01 +0100
+In-Reply-To: <1478610932-21954-2-git-send-email-c_traja@qti.qualcomm.com>
+References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
+ <1478610932-21954-2-git-send-email-c_traja@qti.qualcomm.com>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,55 +19,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org
+Cc: tamizhchelvam@codeaurora.org, ath10k@lists.infradead.org
 
-T24gTW9uLCAyMDE2LTEyLTA1IGF0IDA5OjEzICswMTAwLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+
-IE9uIDIgRGVjZW1iZXIgMjAxNiBhdCAwMzoyOSzCoMKgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29t
-PiB3cm90ZToKPiA+IAo+ID4gRnJvbTogQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
-b20+Cj4gPiAKPiA+IFRoaXMgYXBwZWFycyB0byBmaXggYSBwcm9ibGVtIHdoZXJlIGF0aDEwayBm
-aXJtd2FyZSB3b3VsZCBjcmFzaCwKPiA+IG1hYzgwMjExIHdvdWxkIHN0YXJ0IHJlLWFkZGluZyBp
-bnRlcmZhY2VzIHRvIHRoZSBkcml2ZXIsIGJ1dCB0aGUKPiA+IGl0ZXJhdGUtYWN0aXZlLWludGVy
-ZmFjZXMgbG9naWMgd291bGQgdGhlbiB0cnkgdG8gdXNlIHRoZSBoYWxmLQo+ID4gYnVpbHQKPiA+
-IGludGVyZmFjZXMuwqDCoFdpdGggYSBiaXQgb2YgZXh0cmEgZGVidWcgdG8gY2F0Y2ggdGhlIHBy
-b2JsZW0sIHRoZQo+ID4gYXRoMTBrIGNyYXNoIGxvb2tzIGxpa2UgdGhpczoKPiA+IAo+ID4gYXRo
-MTBrX3BjaSAwMDAwOjA1OjAwLjA6IEluaXRpYWxpemluZyBhcnZpZjogZmZmZjg4MDFjZTk3ZTMy
-MCBvbgo+ID4gdmlmOiBmZmZmODgwMWNlOTdlMWQ4Cj4gPiAKPiA+IFt0aGUgcHJpbnQgdGhhdCBo
-YXBwZW5zIGFmdGVyIGFydmlmLT5hciBpcyBhc3NpZ25lZCBpcyBub3Qgc2hvd24sCj4gPiBzbyBj
-b2RlIGRpZCBub3QgbWFrZSBpdCB0aGF0IGZhciBiZWZvcmUKPiA+IMKgdGhlIHR4LWJlYWNvbi1u
-b3dhaXQgbWV0aG9kIHdhcyBjYWxsZWRdCj4gPiAKPiA+IHR4LWJlYWNvbi1ub3dhaXQ6wqDCoGFy
-dmlmOiBmZmZmODgwMWNlOTdlMzIwwqDCoGFyOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqAobnVsbCkK
-PiBbLi4uXQo+ID4gCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IEJlbiBHcmVlYXIgPGdyZWVhcmJA
-Y2FuZGVsYXRlY2guY29tPgo+ID4gLS0tCj4gPiDCoG5ldC9tYWM4MDIxMS91dGlsLmMgfCAyICst
-Cj4gPiDCoDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQo+ID4g
-Cj4gPiBkaWZmIC0tZ2l0IGEvbmV0L21hYzgwMjExL3V0aWwuYyBiL25ldC9tYWM4MDIxMS91dGls
-LmMKPiA+IGluZGV4IDg2M2YyYzEuLmFiZTFmNjQgMTAwNjQ0Cj4gPiAtLS0gYS9uZXQvbWFjODAy
-MTEvdXRpbC5jCj4gPiArKysgYi9uZXQvbWFjODAyMTEvdXRpbC5jCj4gPiBAQCAtNzA1LDcgKzcw
-NSw3IEBAIHN0YXRpYyB2b2lkIF9faXRlcmF0ZV9pbnRlcmZhY2VzKHN0cnVjdAo+ID4gaWVlZTgw
-MjExX2xvY2FsICpsb2NhbCwKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoGJyZWFrOwo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9
-Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmICghKGl0ZXJfZmxhZ3MgJiBJ
-RUVFODAyMTFfSUZBQ0VfSVRFUl9SRVNVTUVfQUxMKQo+ID4gJiYKPiA+IC3CoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGFjdGl2ZV9vbmx5ICYmICEoc2RhdGEtPmZsYWdzICYK
-PiA+IElFRUU4MDIxMV9TREFUQV9JTl9EUklWRVIpKQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgKGFjdGl2ZV9vbmx5ICYmIChsb2NhbC0+aW5fcmVjb25maWcgfHwg
-IShzZGF0YS0KPiA+ID5mbGFncyAmIElFRUU4MDIxMV9TREFUQV9JTl9EUklWRVIpKSkpCj4gPiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjb250aW51ZTsK
-PiAKPiBEb2Vzbid0IHRoaXMgZWZmZWN0aXZlbGx5IHByZXZlbnQgeW91IGZyb20gaXRlcmF0aW5n
-IG92ZXIgaW50ZXJmYWNlcwo+IGNvbXBsZXRlbHkgZHVyaW5nIHJlY29uZmlnPyBBcyB5b3UgYnJp
-bmcgdXAgaW50ZXJmYWNlcyB5b3UgbWlnaHQKPiBuZWVkL3dhbnQgdG8gaXRlcmF0ZSBvdmVyIG90
-aGVycyB0byByZS1hZGp1c3QgeW91ciBvd24gc3RhdGUuCgpBZ3JlZSwgdGhhdCBkb2Vzbid0IHJl
-YWxseSBtYWtlIHNlbnNlLgoKPiBJJ2QgYXJndWUgdGhlcmUgc2hvdWxkIGJlIGFub3RoZXIgZmxh
-ZywgSUVFRTgwMjExX1NEQVRBX1JFU1VNSU5HLAo+IHVzZWQgd2l0aCBzZGF0YS0+ZmxhZ3MgZm9y
-IHJlc3VtaW5nIHNvIHRoYXQgb25jZSBpdCBpcyByZS1hZGRlZCB0bwo+IHRoZSBkcml2ZXIgaXQg
-Y2FuIGJlIGNsZWFyZWQgKGFuZCB0aGVyZWZvcmUgcHJvcGVybHkgaXRlcmF0ZWQgb3ZlcikuCgpU
-aGF0IHdvdWxkIG1ha2Ugc29tZSBzZW5zZSwgb3IgcGVyaGFwcyB0aGUgc2RhdGFfaW5fZHJpdmVy
-IHNob3VsZCBiZQpjbGVhcmVkIChhbmQgcmVtZW1iZXJlZCBlbHNld2hlcmUpIGF0IHNvbWUgcG9p
-bnQgZHVyaW5nIHRoZSByZXN0YXJ0LgoKam9oYW5uZXMKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+On Tue, 2016-11-08 at 18:45 +0530, c_traja@qti.qualcomm.com wrote:
+> From: Tamizh chelvam <c_traja@qti.qualcomm.com>
+> 
+> This patch adds support to enable or disable btcoex by
+> adding NL80211_ATTR_WIPHY_BTCOEX_ENABLE attribute in
+> NL80211_CMD_SET_WIPHY command. By default BTCOEX disabled in driver.
+
+I think overloading SET_WIPHY even more is a mistake - why not group
+this with the new command you're introducing in the second patch?
+
+Also, can have a flag attribute to enable/disable, or better even
+disable when you're not setting any other parameters.
+
+johannes
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
