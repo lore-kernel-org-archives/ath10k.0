@@ -1,18 +1,31 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cDqWh-0002D3-6J
- for ath10k@lists.infradead.org; Mon, 05 Dec 2016 10:29:41 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k: wmi-alloc-chunk should use DMA_BIDIRECTIONAL.
-Date: Mon, 5 Dec 2016 10:29:13 +0000
-Message-ID: <87k2beoeiv.fsf@kamboji.qca.qualcomm.com>
-References: <1480456828-13735-1-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1480456828-13735-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Tue, 29 Nov 2016 14:00:28	-0800")
-Content-Language: en-US
-Content-ID: <5CA91B11B3BB3D47B43EA61A01AB5054@qualcomm.com>
+Received: from smtp-out05.msg.oleane.net ([62.161.7.3])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cDsnu-0007A3-8M
+ for ath10k@lists.infradead.org; Mon, 05 Dec 2016 12:55:36 +0000
+Received: from smtp27.msg.oleane.net ([172.17.20.149]) 
+ by smtp-out05.msg.oleane.net with ESMTP id uB595LcC014909
+ for <ath10k@lists.infradead.org>; Mon, 5 Dec 2016 10:05:21 +0100
+Received: from RD9 ([195.6.104.67]) (authenticated)
+ by smtp27.msg.oleane.net (MSA) with ESMTP id uB58htnk007831
+ for <ath10k@lists.infradead.org>; Mon, 5 Dec 2016 09:43:55 +0100
+From: "Jean-Pierre Tosoni" <jp.tosoni@acksys.fr>
+References: <006401d24b34$191d7830$4b586890$@acksys.fr>
+ <CAJ-Vmom1EDyHH8Pcuxq83ptsYEGj0LWeDCNvx7gDAUKQmbWZ6g@mail.gmail.com>
+ <008001d24bb3$2f1e4db0$8d5ae910$@acksys.fr>
+ <CAJ-VmokWUF=TkQcYdzSZ9z4Ozb3Ci-XGY_DP6-tp2rQD2sh5iQ@mail.gmail.com>
+ <000001d24bf5$b0c9c690$125d53b0$@acksys.fr>
+ <CAJ-VmokpLMHL3ND34C4FAW3tVtxHKKOcgSHR9Vs+GsxPwMVE8A@mail.gmail.com>
+ <000201d24bfb$e0248550$a06d8ff0$@acksys.fr>
+ <CAJ-Vmo=DabqVwVpBui7gu9p9EBQ_o+o7JGSaKriHvA-OMWBb0A@mail.gmail.com>
+ <000301d24bff$61d07200$25715600$@acksys.fr>
+ <CAJ-VmonyohH8qEGMYT5fVAgQ9BskZYj9djYU6mZ1Zp_HEsgdVw@mail.gmail.com>
+In-Reply-To: <CAJ-VmonyohH8qEGMYT5fVAgQ9BskZYj9djYU6mZ1Zp_HEsgdVw@mail.gmail.com>
+Subject: TR: Client station sends probes on DFS channels
+Date: Mon, 5 Dec 2016 09:43:55 +0100
+Message-ID: <001c01d24ed3$b6c5ad80$24510880$@acksys.fr>
 MIME-Version: 1.0
+Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,88 +34,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "greearb@candelatech.com" <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-greearb@candelatech.com writes:
-
-> From: Ben Greear <greearb@candelatech.com>
->
-> These memory chunks are often used as 'swap' by the NIC,
-> so it will be both reading and writing to these areas.
->
-> This seems to fix errors like this on my x86-64 machine:
->
-> kernel: DMAR: DMAR:[DMA Write] Request device [05:00.0] fault addr ff5de000
->         DMAR:[fault reason 05] PTE Write access is not set
-
-Noticed this in my log, but I don't have time to investigate this in
-detail right now:
-
-[  413.795346] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
-[  414.158755] IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-[  477.439659] ath10k_pci 0000:02:00.0: could not get mac80211 beacon
-[  481.666630] ------------[ cut here ]------------
-[  481.666669] WARNING: CPU: 0 PID: 1978 at lib/dma-debug.c:1155 check_unmap+0x320/0x8e0
-[  481.666688] ath10k_pci 0000:02:00.0: DMA-API: device driver frees DMA memory with different direction [device address=0x000000002d130000] [size=63800 bytes] [mapped with DMA_BIDIRECTIONAL] [unmapped with DMA_TO_DEVICE]
-[  481.666703] Modules linked in: ctr ccm ath10k_pci(E-) ath10k_core(E) ath(E) mac80211(E) cfg80211(E) snd_hda_codec_hdmi snd_hda_codec_idt snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_pcm snd_seq_midi arc4 snd_rawmidi snd_seq_midi_event snd_seq btusb btintel snd_seq_device joydev coret
-[  481.671468] CPU: 0 PID: 1978 Comm: rmmod Tainted: G            E   4.9.0-rc7-wt+ #54
-[  481.671478] Hardware name: Hewlett-Packard HP ProBook 6540b/1722, BIOS 68CDD Ver. F.04 01/27/2010
-[  481.671489]  ef49dcec c842ee92 c8b5830e ef49dd34 ef49dd20 c80850f5 c8b5a13c ef49dd50
-[  481.671560]  000007ba c8b5830e 00000483 c8461830 c8461830 00000483 ef49ddcc f34e64b8
-[  481.671641]  c8b58360 ef49dd3c c80851bb 00000009 00000000 ef49dd34 c8b5a13c ef49dd50
-[  481.671716] Call Trace:
-[  481.671731]  [<c842ee92>] dump_stack+0x76/0xb4
-[  481.671745]  [<c80850f5>] __warn+0xe5/0x100
-[  481.671757]  [<c8461830>] ? check_unmap+0x320/0x8e0
-[  481.671769]  [<c8461830>] ? check_unmap+0x320/0x8e0
-[  481.671780]  [<c80851bb>] warn_slowpath_fmt+0x3b/0x40
-[  481.671791]  [<c8461830>] check_unmap+0x320/0x8e0
-[  481.671804]  [<c8462054>] debug_dma_unmap_page+0x84/0xa0
-[  481.671835]  [<f937cd7a>] ath10k_wmi_free_host_mem+0x9a/0xe0 [ath10k_core]
-[  481.671861]  [<f9363400>] ath10k_core_destroy+0x50/0x60 [ath10k_core]
-[  481.671875]  [<f8e13969>] ath10k_pci_remove+0x79/0xa0 [ath10k_pci]
-[  481.671889]  [<c848d8d8>] pci_device_remove+0x38/0xb0
-[  481.671901]  [<c859fe4b>] __device_release_driver+0x7b/0x110
-[  481.671913]  [<c85a00e7>] driver_detach+0x97/0xa0
-[  481.671923]  [<c859ef8b>] bus_remove_driver+0x4b/0xb0
-[  481.671934]  [<c85a0cda>] driver_unregister+0x2a/0x60
-[  481.671949]  [<c848c888>] pci_unregister_driver+0x18/0x70
-[  481.671965]  [<f8e14dae>] ath10k_pci_exit+0xd/0x25f [ath10k_pci]
-[  481.671979]  [<c812bb84>] SyS_delete_module+0xf4/0x180
-[  481.671995]  [<c81f801b>] ? __might_fault+0x8b/0xa0
-[  481.672009]  [<c80037d0>] do_fast_syscall_32+0xa0/0x1e0
-[  481.672025]  [<c88d4c88>] sysenter_past_esp+0x45/0x74
-[  481.672037] ---[ end trace 3fd23759e17e1622 ]---
-[  481.672049] Mapped at:
-[  481.672060]  [  481.672072] [<c846062c>] debug_dma_map_page.part.25+0x1c/0xf0
-[  481.672083]  [  481.672095] [<c8460799>] debug_dma_map_page+0x99/0xc0
-[  481.672106]  [  481.672132] [<f93745ec>] ath10k_wmi_alloc_chunk+0x12c/0x1f0 [ath10k_core]
-[  481.672142]  [  481.672168] [<f937d0c4>] ath10k_wmi_event_service_ready_work+0x304/0x540 [ath10k_core]
-[  481.672178]  [  481.672190] [<c80a3643>] process_one_work+0x1c3/0x670
-[  482.137134] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-[  482.313144] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
-[  482.313274] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/cal-pci-0000:02:00.0.bin failed with error -2
-[  482.313768] ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000
-[  482.313777] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 0 testmode 1
-[  482.313974] ath10k_pci 0000:02:00.0: firmware ver 10.2.4.70.59-2 api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 4159f498
-[  482.369858] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
-[  482.370011] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
-[  483.596770] ath10k_pci 0000:02:00.0: htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-sta 128 raw 0 hwcrypto 1
-[  483.701686] ath: EEPROM regdomain: 0x0
-[  483.701706] ath: EEPROM indicates default country code should be used
-[  483.701713] ath: doing EEPROM country->regdmn map search
-[  483.701721] ath: country maps to regdmn code: 0x3a
-[  483.701730] ath: Country alpha2 being used: US
-[  483.701737] ath: Regpair used: 0x3a
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SnVzdCBrZWVwaW5nIHRoZSBsaXN0IGluZm9ybWVkLi4uIEF0IHNvbWUgcG9pbnQgdGhlIGRpc2N1
+c3Npb24gdHVybmVkIHByaXZhdGUuCgpKZWFuLVBpZXJyZSBUb3NvbmkKCi0tLS0tTWVzc2FnZSBk
+J29yaWdpbmUtLS0tLQpEZSA6IEFkcmlhbiBDaGFkZCBbbWFpbHRvOmFkcmlhbi5jaGFkZEBnbWFp
+bC5jb21dIApFbnZvecOpIDogamV1ZGkgMSBkw6ljZW1icmUgMjAxNiAxOToyMArDgCA6IEplYW4t
+UGllcnJlIFRvc29uaQpPYmpldCA6IFJlOiBDbGllbnQgc3RhdGlvbiBzZW5kcyBwcm9iZXMgb24g
+REZTIGNoYW5uZWxzCgp3ZWxsLCBpZiBpdCBmYWlscyBFVFNJIGNlcnRpZmljYXRpb24gdGhlbiB5
+b3UgY2FuIGZpbGUgYSBjb21wbGFpbiB3aXRoIFFDQS4gOikgdGhleSdyZSBwYXNzaW5nIGNlcnRp
+ZmljYXRpb24gdGVzdHMgd2l0aCBpdCBhdG0sIHNvLi4uCgoKLWEKCgpPbiAxIERlY2VtYmVyIDIw
+MTYgYXQgMTA6MTgsIEplYW4tUGllcnJlIFRvc29uaSA8anAudG9zb25pQGFja3N5cy5mcj4gd3Jv
+dGU6Cj4gOigKPiBDYW4gd2UgZXhwZWN0IGEgZml4IHNvbWVkYXk/Cj4KPiBKUAo+Cj4KPgo+PiAt
+LS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0KPj4gRGUgOiBBZHJpYW4gQ2hhZGQgW21haWx0bzph
+ZHJpYW4uY2hhZGRAZ21haWwuY29tXSBFbnZvecOpIDogamV1ZGkgMSAKPj4gZMOpY2VtYnJlIDIw
+MTYgMTk6MDAgw4AgOiBKZWFuLVBpZXJyZSBUb3NvbmkgT2JqZXQgOiBSZTogQ2xpZW50IHN0YXRp
+b24gCj4+IHNlbmRzIHByb2JlcyBvbiBERlMgY2hhbm5lbHMKPj4KPj4gZmlybXdhcmUKPj4KPj4K
+Pj4gLWEKPj4KPj4KPj4gT24gMSBEZWNlbWJlciAyMDE2IGF0IDA5OjUzLCBKZWFuLVBpZXJyZSBU
+b3NvbmkgPGpwLnRvc29uaUBhY2tzeXMuZnI+Cj4+IHdyb3RlOgo+PiA+IEhpIGFnYWluLAo+PiA+
+Cj4+ID4gVGhhdCBiZWluZyBzYWlkLCBpcyB0aGlzIDEwLW1pbnV0ZXMgZGVsYXkgaW1wbGVtZW50
+ZWQgaW4gYXRoMTBrIG9yIAo+PiA+IGluIHRoZSBmaXJtd2FyZSBvZiB0aGUgY2FyZD8gT3IgaXMg
+aXQgY29uZmlndXJhYmxlIG1heWJlPwo+PiA+Cj4+ID4gSmVhbi1QaWVycmUKPj4gPgo+PiA+PiAt
+LS0tLU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0KPj4gPj4gRGUgOiBBZHJpYW4gQ2hhZGQgW21haWx0
+bzphZHJpYW4uY2hhZGRAZ21haWwuY29tXSBFbnZvecOpIDogamV1ZGkgMSAKPj4gPj4gZMOpY2Vt
+YnJlIDIwMTYgMTg6MjEgw4AgOiBKZWFuLVBpZXJyZSBUb3NvbmkgT2JqZXQgOiBSZTogQ2xpZW50
+IAo+PiA+PiBzdGF0aW9uIHNlbmRzIHByb2JlcyBvbiBERlMgY2hhbm5lbHMKPj4gPj4KPj4gPj4g
+SGksCj4+ID4+Cj4+ID4+IFNvIHRoZSBpbXBsZW1lbnRhdGlvbnMgSSd2ZSBzZWVuIGFsbCB0cmVh
+dCAiSSBzZWUgYmVhY29ucyIgYXMgInRoZSAKPj4gPj4gY2hhbm5lbCBpcyBibGVzc2VkIjsgdGhl
+cmUncyBubyBsb2dpYyBmb3IgZG9pbmcgaXQgZm9yIGFuIEFQIHRoYXQgCj4+ID4+IHlvdSdyZSBh
+c3NvY2lhdGVkIHRvLgo+PiA+Pgo+PiA+PiBUaGF0J3MgbGlrZWx5IHdoYXQgd2UgbmVlZCBjbGFy
+aWZpY2F0aW9uIGFyb3VuZC4KPj4gPj4KPj4gPj4gVGhlICJjb250cm9sbGVkIGJ5IGEgbWFzdGVy
+IiBkb2Vzbid0IG5lY2Vzc2FyaWx5IGltcGx5IHRoYXQgdGhlIAo+PiA+PiBTVEEgaXMgY29udHJv
+bGxlZCBieSB0aGUgQVAsIGp1c3QgdGhhdCB0aGUgQVAgaGFzIGdvbmUgdGhyb3VnaCB0aGUgCj4+
+ID4+IENBQyBhbmQgaXMgZG9pbmcgREZTIGNoZWNraW5nLiBPdGhlcndpc2UgdGhlIFNUQSBjb3Vs
+ZG4ndCBhY3R1YWxseSAKPj4gPj4gc2VuZCBhc3NvYyByZXEvcmVzcG9uc2UgZnJhbWVzLCBiZWNh
+dXNlIHRoZSBzdGF0aW9uIGhhc24ndCB5ZXQgCj4+ID4+IGFzc29jaWF0ZWQgdG8gYW4gQVAgdG8g
+YmUgY29uc2lkZXJlZCAiaW4gY29udHJvbCIgYnkgaXQuCj4+ID4+Cj4+ID4+Cj4+ID4+IC1hZHJp
+YW4KPj4gPj4KPj4gPj4KPj4gPj4gT24gMSBEZWNlbWJlciAyMDE2IGF0IDA5OjA5LCBKZWFuLVBp
+ZXJyZSBUb3NvbmkgCj4+ID4+IDxqcC50b3NvbmlAYWNrc3lzLmZyPgo+PiA+PiB3cm90ZToKPj4g
+Pj4gPiBOb3QgcXVpdGUgc28uCj4+ID4+ID4KPj4gPj4gPj4gKiBpZiB5b3UgZ2V0IGEgQ1NBLCB0
+aGUgU1RBIHNob3VsZCBtb3ZlIGFuZCBub3QgdXNlIHRoZSBhaXIKPj4gPj4gPgo+PiA+PiA+IE5v
+LCBiZWNhdXNlIHRoZSBTVEEgaXMgbm90IGFzc29jaWF0ZWQ6IGl0IGlzIGN1cnJlbnRseSBzZWFy
+Y2hpbmcgCj4+ID4+ID4gZm9yIGFuCj4+ID4+IEFQLgo+PiA+PiA+IFNvLCBpdCBjYW5ub3QgcmVj
+ZWl2ZSBhIENTQSwgYW5kIHNob3VsZCBkbyBhIHBhc3NpdmUgc2Nhbi4KPj4gPj4gPgo+PiA+PiA+
+PiAqIGlmIHlvdSBqdXN0IHN0YXJ0IGFub3RoZXIgQVAgQW5kIHRoZW4ga2lsbCB0aGUgQVBzLCB0
+aGVyZSdzIAo+PiA+PiA+PiBub3RoaW5nIGFib3ZlIHRoYXQgc2F5cyB3aGVuIHRoZSBTVEEgc2hv
+dWxkIHN0b3AgdGFsa2luZz8KPj4gPj4gPgo+PiA+PiA+IFdyb25nLCB0aGUgbm9ybSBzYXlzIHRo
+YXQgdGhlIFNUQSBzaG91bGQgKm5vdCBiZWdpbiogdGFsa2luZyAKPj4gPj4gPiAoc2luY2UgaXQg
+aXMgbm90IGFzc29jaWF0ZWQgd2l0aCBhIG1hc3RlciBBUCkKPj4gPj4gPgo+PiA+PiA+PiAtLS0t
+LU1lc3NhZ2UgZCdvcmlnaW5lLS0tLS0KPj4gPj4gPj4gRGUgOiBBZHJpYW4gQ2hhZGQgW21haWx0
+bzphZHJpYW4uY2hhZGRAZ21haWwuY29tXSBFbnZvecOpIDogCj4+ID4+ID4+IGpldWRpIDEgZMOp
+Y2VtYnJlIDIwMTYgMTc6NTMgw4AgOiBKZWFuLVBpZXJyZSBUb3NvbmkgQ2MgOgo+PiA+PiA+PiBh
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyBPYmpldCA6IFJlOiBDbGllbnQgc3RhdGlvbiBzZW5k
+cyAKPj4gPj4gPj4gcHJvYmVzIG9uIERGUyBjaGFubmVscwo+PiA+PiA+Pgo+PiA+PiA+PiBIaSwK
+Pj4gPj4gPj4KPj4gPj4gPj4gU28gdG8gYmUgY2xlYXI6Cj4+ID4+ID4+Cj4+ID4+ID4+ICogaWYg
+eW91IGdldCBhIENTQSwgdGhlIFNUQSBzaG91bGQgbW92ZSBhbmQgbm90IHVzZSB0aGUgYWlyCj4+
+ID4+ID4+ICogaWYgeW91IGp1c3Qgc3RhcnQgYW5vdGhlciBBUCBBbmQgdGhlbiBraWxsIHRoZSBB
+UHMsIHRoZXJlJ3MgCj4+ID4+ID4+IG5vdGhpbmcgYWJvdmUgdGhhdCBzYXlzIHdoZW4gdGhlIFNU
+QSBzaG91bGQgc3RvcCB0YWxraW5nPwo+PiA+PiA+Pgo+PiA+PiA+PiBUaGFua3MsCj4+ID4+ID4+
+Cj4+ID4+ID4+Cj4+ID4+ID4+Cj4+ID4+ID4+IC1hZHJpYW4KPj4gPj4gPgo+PiA+Cj4KCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
+ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
