@@ -1,20 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cDuld-0000bP-Da
- for ath10k@lists.infradead.org; Mon, 05 Dec 2016 15:01:22 +0000
-Message-ID: <1480950054.31788.36.camel@sipsolutions.net>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cDurP-0003fg-Sd
+ for ath10k@lists.infradead.org; Mon, 05 Dec 2016 15:07:20 +0000
+Message-ID: <5845827B.2000000@candelatech.com>
+Date: Mon, 05 Dec 2016 07:06:35 -0800
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
 Subject: Re: [PATCH 1/2] mac80211: do not iterate active interfaces when in
  re-configure
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 05 Dec 2016 16:00:54 +0100
-In-Reply-To: <58458058.5020008@candelatech.com>
-References: <1480645800-2148-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQkEaC-ZSbeK=JB=q+ucF1PWcEQXkJEp6JYv4pfOf35cHg@mail.gmail.com>
+References: <1480645800-2148-1-git-send-email-greearb@candelatech.com>	
+ <CA+BoTQkEaC-ZSbeK=JB=q+ucF1PWcEQXkJEp6JYv4pfOf35cHg@mail.gmail.com>	
  (sfid-20161205_092619_855272_0854B225)
- <1480945950.31788.4.camel@sipsolutions.net>
+ <1480945950.31788.4.camel@sipsolutions.net>	
  <58458058.5020008@candelatech.com>
-Mime-Version: 1.0
+ <1480950054.31788.36.camel@sipsolutions.net>
+In-Reply-To: <1480950054.31788.36.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +24,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Michal Kazior <michal.kazior@tieto.com>
+To: Johannes Berg <johannes@sipsolutions.net>, Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gTW9uLCAyMDE2LTEyLTA1IGF0IDA2OjU3IC0wODAwLCBCZW4gR3JlZWFyIHdyb3RlOgoKPiBJ
-IHRoaW5rIGNsZWFyaW5nIHNkYXRhLWluLWRyaXZlciB3b3VsZCBmaXggdGhlIGF0aDEwayBwcm9i
-bGVtLCBhdAo+IGxlYXN0LCBidXQgSSB3YXMgYWZyYWlkIGl0IHdvdWxkIGJyZWFrIHNvbWV0aGlu
-ZyBlbHNlIGluIG1hYzgwMjExIG9yCj4gbWF5YmUgaW4gb3RoZXIgdGhpY2sgZmlybXdhcmUgZHJp
-dmVycy4KCkl0J3MgcHJldHR5IG11Y2ggYW4gaW50ZXJuYWwgdGhpbmcgLSBub3Qgc3VyZSB3aGF0
-IGl0J2QgYnJlYWsuIE9UT0gsCnNvbWUgZHJpdmVycyBtaWdodCBhY3R1YWxseSBhc3N1bWUgdGhh
-dCBpdGVyYXRpbmcgZmluZHMgdGhlbSBhbGwsIGlmCnRoZXkgbmV2ZXIgY2xlYXIgdGhlIGRhdGEg
-ZXZlbiBhY3Jvc3MgYSByZXN0YXJ0PwoKPiBPbmUgd2F5IG9yIGFub3RoZXIsIHdlIGNhbm5vdCBi
-ZSBpdGVyYXRpbmcgb3ZlciBpbnRlcmZhY2VzIHdoaWxlCj4gdGhlIGludGVyZmFjZXMgYXJlIGF0
-IHRoZSBzYW1lIHRpbWUgYmVpbmcgKHJlKWFkZGVkLgoKV2VsbCwgd2Ugb2J2aW91c2x5ICpjYW4q
-IGJlLCBhbmQgd2UgZG8gaW4gZmFjdCBkbyB0aGF0IC0gaXQncyBqdXN0IHRoYXQKYXRoMTBrIHNw
-ZWNpZmljYWxseSBoYXMgaXNzdWVzIHdpdGggdGhlIGRhdGEgaXQncyBwdXR0aW5nIHRoZXJlLCBu
-bz8KCj4gTWF5YmUgbWFjODAyMTEgc2hvdWxkIGV4cGxpY2l0bHkgcmVtb3ZlIGFsbCBpbnRlcmZh
-Y2VzIGZyb20gdGhlCj4gZHJpdmVyIGR1cmluZyBjcmFzaCByZWNvdmVyeT/CoMKgCgpJIGRvbid0
-IHRoaW5rIHRoYXQnbGwgd29yay4gUmVtb3ZpbmcgdGhlbSB3b3VsZCBpbnRlcmFjdCB3aXRoIHRo
-ZQpmaXJtd2FyZSwgd2hpY2ggaXMgZGVhZCwgZXRjLiBUaGF0J2QganVzdCBjYXVzZSB0cm91Ymxl
-LgoKPiBBbmQgdGhlIGJlaGF2aW91ciBuZWVkcyB0byBiZSBjbGVhcmx5IGRvY3VtZW50ZWQgc29t
-ZXdoZXJlCj4gZWFzeSB0byBmaW5kIHNvIHRoYXQgd2UgY2FuIHRoaW5rIGFib3V0IGFuZCBwcm9n
-cmFtIHRvIHRoZSBjb3JyZWN0Cj4gQVBJIGJlaGF2aW91ci4KCldlIGFzc3VtZSB0aGF0IHRoZSBk
-cml2ZXIgcmVzZXRzIGFsbCBpdHMgaW50ZXJuYWwgc3RhdGUgLSB0aGlzIHdob2xlCmludGVyZmFj
-ZSBpdGVyYXRpb24gaXMgYSBjb3JuZXIgY2FzZSB3ZSBoYWRuJ3QgY29uc2lkZXJlZCwgSSBzdXBw
-b3NlLgoKam9oYW5uZXMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+
+
+On 12/05/2016 07:00 AM, Johannes Berg wrote:
+> On Mon, 2016-12-05 at 06:57 -0800, Ben Greear wrote:
+>
+>> I think clearing sdata-in-driver would fix the ath10k problem, at
+>> least, but I was afraid it would break something else in mac80211 or
+>> maybe in other thick firmware drivers.
+>
+> It's pretty much an internal thing - not sure what it'd break. OTOH,
+> some drivers might actually assume that iterating finds them all, if
+> they never clear the data even across a restart?
+>
+>> One way or another, we cannot be iterating over interfaces while
+>> the interfaces are at the same time being (re)added.
+>
+> Well, we obviously *can* be, and we do in fact do that - it's just that
+> ath10k specifically has issues with the data it's putting there, no?
+
+It causes races that appear to be very difficult to resolve in the
+driver alone.  On normal bringup of an interface, the sdata-in-driver
+flag is only set at the bottom of the add-interface.  In case of re-config,
+the flag is already set, and never cleared, so behaviour is different
+w/regard to the iterate.
+
+>
+>> Maybe mac80211 should explicitly remove all interfaces from the
+>> driver during crash recovery?
+>
+> I don't think that'll work. Removing them would interact with the
+> firmware, which is dead, etc. That'd just cause trouble.
+
+That issue already causes trouble and is dealt with in ath10k, I think,
+but clearing the flag in mac80211 would probably be enough to fix the
+iterate logic.
+
+>> And the behaviour needs to be clearly documented somewhere
+>> easy to find so that we can think about and program to the correct
+>> API behaviour.
+>
+> We assume that the driver resets all its internal state - this whole
+> interface iteration is a corner case we hadn't considered, I suppose.
+
+Yeah, tricky beastie.  I think the txq issue is also part of this since there
+are references up in mac80211 and also down in ath10k.  Part of my hack
+to clean up that crash might be resolved by mac80211 doing better cleanup
+API when firmware crashes.
+
+Thanks,
+Ben
+
+>
+> johannes
+>
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
