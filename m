@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEfhq-0001ML-F8
- for ath10k@lists.infradead.org; Wed, 07 Dec 2016 17:09:04 +0000
-Received: by mail-wm0-x22d.google.com with SMTP id g23so177905813wme.1
- for <ath10k@lists.infradead.org>; Wed, 07 Dec 2016 09:08:13 -0800 (PST)
+Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
+ by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cEfhs-0001KG-JR
+ for ath10k@lists.infradead.org; Wed, 07 Dec 2016 17:08:38 +0000
+Received: by mail-wm0-x22b.google.com with SMTP id a197so177544666wmd.0
+ for <ath10k@lists.infradead.org>; Wed, 07 Dec 2016 09:08:15 -0800 (PST)
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH 2/5] ath10k: override CE5 config for QCA9377
-Date: Wed,  7 Dec 2016 18:07:31 +0100
-Message-Id: <1481130454-27244-2-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH 4/5] ath10k: set CTS protection VDEV param only if VDEV is up
+Date: Wed,  7 Dec 2016 18:07:33 +0100
+Message-Id: <1481130454-27244-4-git-send-email-bartosz.markowski@tieto.com>
 In-Reply-To: <1481130454-27244-1-git-send-email-bartosz.markowski@tieto.com>
 References: <1481130454-27244-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,32 +27,116 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Similarly to QCA6174, QCA9377 requires the CE5 configuration to be
-available for other feature. Use the ath10k_pci_override_ce_config()
-for it as well.
+The cts protection vdev parameter, in new QCA9377 TF2.0 firmware,
+requires bss peer to be created for the STATION vdev type.
+bss peer is being allocated by the firmware after vdev_start/_up commands.
+mac80211 may call the cts protection setup at any time, so the
+we needs to track the situation and defer the cts configuration
+to prevent firmware asserts, like below:
 
-This is required for TF2.0 firmware. Previous FW revisions were
-working fine without this patch.
+[00]: 0x05020001 0x000015B3 0x0099ACE2 0x00955B31
+[04]: 0x0099ACE2 0x00060730 0x00000004 0x00000000
+[08]: 0x0044C754 0x00412C10 0x00000000 0x00409C54
+[12]: 0x00000009 0x00000000 0x00952F6C 0x00952F77
+[16]: 0x00952CC4 0x00910712 0x00000000 0x00000000
+[20]: 0x4099ACE2 0x0040E858 0x00421254 0x004127F4
+[24]: 0x8099B9B2 0x0040E8B8 0x00000000 0xC099ACE2
+[28]: 0x800B75CB 0x0040E8F8 0x00000007 0x00005008
+[32]: 0x809B048A 0x0040E958 0x00000010 0x00433B10
+[36]: 0x809AFBBC 0x0040E9A8 0x0042BB74 0x0042BBBC
+[40]: 0x8091D252 0x0040E9C8 0x0042BBBC 0x00000001
+[44]: 0x809FFA45 0x0040EA78 0x0043D3E4 0x0042C2C8
+[48]: 0x809FCEF4 0x0040EA98 0x0043D3E4 0x00000001
+[52]: 0x80911210 0x0040EAE8 0x00000010 0x004041D0
+[56]: 0x80911154 0x0040EB28 0x00400000 0x00000000
 
-Fixes: a70587b3389a ("ath10k: configure copy engine 5 for HTT messages")
 Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 51 +++++++++++++++++++++++++++++------
+ 1 file changed, 43 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 983f65bbb7fb..85367006a80a 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3132,7 +3132,7 @@ int ath10k_pci_setup_resource(struct ath10k *ar)
- 	setup_timer(&ar_pci->rx_post_retry, ath10k_pci_rx_replenish_retry,
- 		    (unsigned long)ar);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index d06a12d548fd..6f1825964177 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1227,6 +1227,36 @@ static int ath10k_monitor_recalc(struct ath10k *ar)
+ 		return ath10k_monitor_stop(ar);
+ }
  
--	if (QCA_REV_6174(ar))
-+	if (QCA_REV_6174(ar) || QCA_REV_9377(ar))
- 		ath10k_pci_override_ce_config(ar);
++static bool ath10k_mac_can_set_cts_prot(struct ath10k_vif *arvif)
++{
++	struct ath10k *ar = arvif->ar;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	if (!arvif->is_started) {
++		ath10k_dbg(ar, ATH10K_DBG_MAC, "defer cts setup, vdev is not ready yet\n");
++		return false;
++	}
++
++	return true;
++}
++
++static int ath10k_mac_set_cts_prot(struct ath10k_vif *arvif)
++{
++	struct ath10k *ar = arvif->ar;
++	u32 vdev_param;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	vdev_param = ar->wmi.vdev_param->protection_mode;
++
++	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vdev %d cts_protection %d\n",
++		   arvif->vdev_id, arvif->use_cts_prot);
++
++	return ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++					 arvif->use_cts_prot ? 1 : 0);
++}
++
+ static int ath10k_recalc_rtscts_prot(struct ath10k_vif *arvif)
+ {
+ 	struct ath10k *ar = arvif->ar;
+@@ -5329,20 +5359,18 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
  
- 	ret = ath10k_pci_alloc_pipes(ar);
+ 	if (changed & BSS_CHANGED_ERP_CTS_PROT) {
+ 		arvif->use_cts_prot = info->use_cts_prot;
+-		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vdev %d cts_prot %d\n",
+-			   arvif->vdev_id, info->use_cts_prot);
+ 
+ 		ret = ath10k_recalc_rtscts_prot(arvif);
+ 		if (ret)
+ 			ath10k_warn(ar, "failed to recalculate rts/cts prot for vdev %d: %d\n",
+ 				    arvif->vdev_id, ret);
+ 
+-		vdev_param = ar->wmi.vdev_param->protection_mode;
+-		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+-						info->use_cts_prot ? 1 : 0);
+-		if (ret)
+-			ath10k_warn(ar, "failed to set protection mode %d on vdev %i: %d\n",
+-				    info->use_cts_prot, arvif->vdev_id, ret);
++		if (ath10k_mac_can_set_cts_prot(arvif)) {
++			ret = ath10k_mac_set_cts_prot(arvif);
++			if (ret)
++				ath10k_warn(ar, "failed to set cts protection for vdev %d: %d\n",
++					    arvif->vdev_id, ret);
++		}
+ 	}
+ 
+ 	if (changed & BSS_CHANGED_ERP_SLOT) {
+@@ -7365,6 +7393,13 @@ ath10k_mac_op_assign_vif_chanctx(struct ieee80211_hw *hw,
+ 		arvif->is_up = true;
+ 	}
+ 
++	if (ath10k_mac_can_set_cts_prot(arvif)) {
++		ret = ath10k_mac_set_cts_prot(arvif);
++		if (ret)
++			ath10k_warn(ar, "failed to set cts protection for vdev %d: %d\n",
++				    arvif->vdev_id, ret);
++	}
++
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return 0;
+ 
 -- 
 2.1.2
 
