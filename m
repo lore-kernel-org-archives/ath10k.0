@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qk0-x234.google.com ([2607:f8b0:400d:c09::234])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEbjN-0007XX-70
- for ath10k@lists.infradead.org; Wed, 07 Dec 2016 12:53:54 +0000
-Date: Wed, 7 Dec 2016 18:22:45 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: boot kernel panic with QCA6174 and kernel 4.8
-Message-ID: <20161207125245.GA4429@atheros-ThinkPad-T61>
-References: <c932ec30-7538-3229-e965-cfea18742e9c@maloteaux.net>
- <20161207124149.GA4410@atheros-ThinkPad-T61>
+ id 1cEccM-0003DE-AV
+ for ath10k@lists.infradead.org; Wed, 07 Dec 2016 13:50:44 +0000
+Received: by mail-qk0-x234.google.com with SMTP id x190so413889706qkb.0
+ for <ath10k@lists.infradead.org>; Wed, 07 Dec 2016 05:50:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20161207124149.GA4410@atheros-ThinkPad-T61>
+In-Reply-To: <CA+BoTQ=kXyjtNFmj_bvym2-OxOP84XKhxpTgX0PmeMd7y52=kw@mail.gmail.com>
+References: <CAMfKPAXXtuwbn2nQC19NwN=XuF-B8XQEzuk0pMPS8tHRMUV3Yg@mail.gmail.com>
+ <CA+BoTQ=kXyjtNFmj_bvym2-OxOP84XKhxpTgX0PmeMd7y52=kw@mail.gmail.com>
+From: Zoilo Gomez <zoilo214.gomez@gmail.com>
+Date: Wed, 7 Dec 2016 14:50:20 +0100
+Message-ID: <CAMfKPAWq-RvnE2neYMTSQUdmOEwjk5wpy58kCtzab8ebqiywHQ@mail.gmail.com>
+Subject: Re: ath10k qca988x: hostapd does not start properly
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,101 +25,120 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alexandre Maloteaux <alexandre@maloteaux.net>
-Cc: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+
+Thank you very much Michal, I have installed CRDA and wireless-regdb
+now and got it to work!
 
 
-Hi,
 
-also worth putting a print in 'ath10k_debug_print_board_info'
-debug.c
-
-~/ath/drivers/net/wireless/ath/ath10k$ git diff
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c
-b/drivers/net/wireless/ath/ath10k/debug.c
-index bfc0215..89ab4af 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-	+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -169,6 +169,12 @@ void ath10k_debug_print_board_info(struct ath10k *ar)
-	else
-	scnprintf(boardinfo, sizeof(boardinfo), "N/A");
-
-	+	       if (IS_ERR_OR_NULL(ar->normal_mode_fw.board)) {
-		+               printk("\nAvoided oops ?\n");
-		+               WARN_ON(1);
-		+               return;
-		+       }
-		+
-		ath10k_info(ar, "board_file api %d bmi_id %s
-				crc32 %08x",
-				ar->bd_api,
-				boardinfo,
-
-Let me know if it helps, or you need a patch format
-
-regards,
-shafi
-
-On Wed, Dec 07, 2016 at 06:11:49PM +0530, Mohammed Shafi Shajakhan wrote:
-> Hi,
-> 
-> On Wed, Dec 07, 2016 at 09:40:29AM +0100, Alexandre Maloteaux wrote:
-> > Hi
-> > Since recent kernel upgrade on Arch linux ;  im facing  boot kernel
-> > panics with the ath10k_pci and QCA6174 802.11ac Wireless Network Adapter
-> > on an Eurocom P5 Pro laptop.
-> > 
-> > This is the main call stack dump :
-> > 
-> > ath10k_print_driver_info(ath10k_core)
-> > ath10k_pcl_fw_crashed_dump (ath10k_pci)
-> > ath10k_pcl.tasklet
-> 
-> [shafi] If you have the source of the same and with the help of gdb we
-> can get the exact line
-> 
-> > 
-> > So far i can circumvent the kernel panic by appending
-> > modprobe.blacklist=ath10k_pci  to the kernel command line.
-> > Once the Os is booted i can load the module with modprobe without
-> > triggering the kernel panic.
-> > 
-> > I also unpacked the initrd and the firmware file are not located in
-> > lib/firmware.
-> 
-> [shafi] interesting your log (image file) seems to show the firmware is crashed
-> ? if the firmware is missing you can give a try with this
-> https://patchwork.kernel.org/patch/9412085/ but the call trace looks completely
-> different, if the f/w is not there
-> 
-> long time back we fixed a race https://patchwork.kernel.org/patch/9167045/ but
-> it should be available in 4.8.11
-> 
-> > 
-> > I could not setup kdump so early in the boot process so i have attached
-> > a screenshot of the on screen dump.
-> > 
-> > lspci :
-> > 06:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac Wireless
-> > Network Adapter (rev 20)
-> > 
-> > uname -r
-> > 4.8.11-1-ARCH
-> > 
-> > Best Regards
-> 
-> 
-> > _______________________________________________
-> > ath10k mailing list
-> > ath10k@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/ath10k
-> 
-> 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+On Thu, Nov 24, 2016 at 8:21 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+> On 23 November 2016 at 23:02, Zoilo Gomez <zoilo214.gomez@gmail.com> wrote:
+>> Hi guys,
+>>
+>> I am trying to build an AP using QCA988X. All seems to go well to the
+>> point where I can load the ath10k drivers, and (after installing
+>> firmware in /lib/firmware/QCA988X/HW2.0), firmware seems to be loaded
+>> properly. I can run iw and get results (see below), however hostapd
+>> does not start properly, throwing errors (a.o.):
+>> => Channel list update timeout - try to continue anyway
+>> => channel [0] (36) is disabled for use in AP mode, flags: 0x853 NO-IR
+>> => wlan0: IEEE 802.11 Configured channel (36) not found from the
+>> channel list of current mode (2) IEEE 802.11a
+>>
+>> This must be really easy, but I have just started working on this, so
+>> your help to get me going is very much appreciated!
+>>
+>> Thank you in advance for your time and help,
+>>
+>> Zoilo.
+>>
+>>
+>>
+>> Kernel is 3.10.87 with backport-3.18.1-1.
+>>
+>> I use these firware versions:
+>>
+>> ~ # ls -l /root/firmware-*
+>> -rwxr-xr-x    1 root     root        197244 Nov 16  2016
+>> /root/firmware-2.bin_10.1.467.2-1
+>> -rwxr-xr-x    1 root     root        235056 Nov 17  2016
+>> /root/firmware-3.bin_10.2.2.39.6-1
+>>
+>>
+>> ~ # iw list
+>> Wiphy phy1
+>>                 Frequencies:
+>>                         * 5180 MHz [36] (30.0 dBm) (no IR)
+>>                         * 5200 MHz [40] (30.0 dBm) (no IR)
+>>                         * 5220 MHz [44] (30.0 dBm) (no IR)
+>>                         * 5240 MHz [48] (30.0 dBm) (no IR)
+>>                         * 5260 MHz [52] (30.0 dBm) (no IR, radar detection)
+>>                           DFS state: usable (for 207721 sec)
+>>                           DFS CAC time: 0 ms
+>>                         * 5280 MHz [56] (30.0 dBm) (no IR, radar detection)
+>>                           DFS state: usable (for 207721 sec)
+>>                           DFS CAC time: 0 ms
+>>                         * 5300 MHz [60] (30.0 dBm) (no IR, radar detection)
+>>                           DFS state: usable (for 207721 sec)
+>>                           DFS CAC time: 0 ms
+>>                         * 5320 MHz [64] (30.0 dBm) (no IR, radar detection)
+>>                           DFS state: usable (for 207721 sec)
+>>                           DFS CAC time: 0 ms
+>>                         * 5500 MHz [100] (disabled)
+>>                         * 5520 MHz [104] (disabled)
+>>                         * 5540 MHz [108] (disabled)
+>>                         * 5560 MHz [112] (disabled)
+>>                         * 5580 MHz [116] (disabled)
+>>                         * 5600 MHz [120] (disabled)
+>>                         * 5620 MHz [124] (disabled)
+>>                         * 5640 MHz [128] (disabled)
+>>                         * 5660 MHz [132] (disabled)
+>>                         * 5680 MHz [136] (disabled)
+>>                         * 5700 MHz [140] (disabled)
+>>                         * 5745 MHz [149] (30.0 dBm) (no IR)
+>>                         * 5765 MHz [153] (30.0 dBm) (no IR)
+>>                         * 5785 MHz [157] (30.0 dBm) (no IR)
+>>                         * 5805 MHz [161] (30.0 dBm) (no IR)
+>>                         * 5825 MHz [165] (30.0 dBm) (no IR)
+> [...]
+>> Here is my configuration file for hostapd:
+>>
+>> /root # cat test.80211ac.conf
+>> interface=wlan0
+>> driver=nl80211
+>>
+>> ssid=ath10k-test
+>>
+>> country_code=US
+>> hw_mode=a
+>> channel=36
+> [...]
+>> Channel list update timeout - try to continue anyway
+>> nl80211: Regulatory information - country=00
+>> nl80211: 2402-2472 @ 40 MHz 20 mBm
+>> nl80211: 2457-2482 @ 40 MHz 20 mBm (no IR)
+>> nl80211: 2474-2494 @ 20 MHz 20 mBm (no OFDM) (no IR)
+>> nl80211: 5170-5250 @ 160 MHz 20 mBm (no IR)
+>> nl80211: 5250-5330 @ 160 MHz 20 mBm (DFS) (no IR)
+>> nl80211: 5490-5730 @ 160 MHz 20 mBm (DFS) (no IR)
+>> channel [0] (36) is disabled for use in AP mode, flags: 0x853 NO-IR
+>> wlan0: IEEE 802.11 Configured channel (36) not found from the channel
+>> list of current mode (2) IEEE 802.11a
+>> wlan0: IEEE 802.11 Hardware does not support configured channel
+>> Could not select hw_mode and channel. (-3)
+>> wlan0: interface state COUNTRY_UPDATE->DISABLED
+>> wlan0: AP-DISABLED
+>
+> Your regulatory domain doesn't seem to get updated and all 5GHz
+> channels remain to be restricted by the (conservative) world
+> regulatory which disallows initiating radiation (NO-IR).
+>
+> Your regulatory update seems to timeout suggesting you're missing CRDA.
+>
+>
+> Michal
 
 _______________________________________________
 ath10k mailing list
