@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
- by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEfhr-0001KD-GR
- for ath10k@lists.infradead.org; Wed, 07 Dec 2016 17:08:36 +0000
-Received: by mail-wm0-x235.google.com with SMTP id g23so177906321wme.1
- for <ath10k@lists.infradead.org>; Wed, 07 Dec 2016 09:08:13 -0800 (PST)
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH 3/5] ath10k: decrease num of peers support
-Date: Wed,  7 Dec 2016 18:07:32 +0100
-Message-Id: <1481130454-27244-3-git-send-email-bartosz.markowski@tieto.com>
-In-Reply-To: <1481130454-27244-1-git-send-email-bartosz.markowski@tieto.com>
-References: <1481130454-27244-1-git-send-email-bartosz.markowski@tieto.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cEgV7-0003IC-UW
+ for ath10k@lists.infradead.org; Wed, 07 Dec 2016 17:59:31 +0000
+MIME-Version: 1.0
+Date: Wed, 07 Dec 2016 23:29:08 +0530
+From: Tamizh chelvam <tamizhchelvam@codeaurora.org>
+Subject: Re: [PATCH 2/4] cfg80211: Add new NL80211_CMD_SET_BTCOEX_PRIORITY to
+ support BTCOEX
+In-Reply-To: <1480949353.31788.27.camel@sipsolutions.net>
+References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
+ <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
+ <1480949353.31788.27.camel@sipsolutions.net>
+Message-ID: <5e5e8971c96293a81e7cb37bcdfbd593@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +21,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-The correct number for QCA9377 chip is 33 VDEVs.
-This impacts also QCA6174 chip and it's max VDEV number.
-
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
----
- drivers/net/wireless/ath/ath10k/hw.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 883547f3347c..7feffec531cc 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -512,7 +512,7 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
- /* Target specific defines for WMI-TLV firmware */
- #define TARGET_TLV_NUM_VDEVS			4
- #define TARGET_TLV_NUM_STATIONS			32
--#define TARGET_TLV_NUM_PEERS			35
-+#define TARGET_TLV_NUM_PEERS			33
- #define TARGET_TLV_NUM_TDLS_VDEVS		1
- #define TARGET_TLV_NUM_TIDS			((TARGET_TLV_NUM_PEERS) * 2)
- #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
--- 
-2.1.2
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgSm9oYW5uZXMsCgpUaGFua3MgZm9yIHRoZSBjb21tZW50cy4KCk9uIDIwMTYtMTItMDUgMjA6
+MTksIEpvaGFubmVzIEJlcmcgd3JvdGU6Cj4gT24gVHVlLCAyMDE2LTExLTA4IGF0IDE4OjQ1ICsw
+NTMwLCBjX3RyYWphQHF0aS5xdWFsY29tbS5jb20gd3JvdGU6Cj4+IMKgCj4+ICsgKiBzdHJ1Y3Qg
+Y2ZnODAyMTFfYnRjb2V4X3ByaW9yaXR5IC0gQlRDT0VYIHN1cHBvcnQgZnJhbWUgdHlwZQo+PiAr
+ICoKPj4gKyAqIFRoaXMgc3RydWN0dXJlIGRlZmluZXMgdGhlIGRyaXZlciBzdXBwb3J0aW5nIGZy
+YW1lIHR5cGVzIGZvcgo+PiBCVENPRVgKPj4gKyAqCj4+ICsgKiBAd2xhbl9iZV9wcmVmZXJyZWQ6
+IGJlc3QgZWZmb3J0IGZyYW1lcyBwcmVmZXJyZWQgb3ZlciBidCB0cmFmZmljCj4+ICsgKiBAd2xh
+bl9ia19wcmVmZXJyZWQ6IGJhY2tncm91bmQgZnJhbWVzIHByZWZlcnJlZCBvdmVyIGJ0IHRyYWZm
+aWMKPj4gKyAqIEB3bGFuX3ZpX3ByZWZlcnJlZDogdmlkZW8gZnJhbWVzIHByZWZlcnJlZCBvdmVy
+IGJ0IHRyYWZmaWMKPj4gKyAqIEB3bGFuX3ZvX3ByZWZlcnJlZDogdm9pY2UgZnJhbWVzIHByZWZl
+cnJlZCBvdmVyIGJ0IHRyYWZmaWMKPj4gKyAqIEB3bGFuX2JlYWNvbl9wcmVmZXJyZWQ6IGJlYWNv
+biBwcmVmZXJyZWQgb3ZlciBidCB0cmFmZmljCj4+ICsgKiBAd2xhbl9tZ210X3ByZWZlcnJlZDog
+bWFuYWdlbWVudCBmcmFtZXMgcHJlZmVycmVkIG92ZXQgYnQgdHJhZmZpYwo+IAo+IHR5cG86IG92
+ZXIKPiAKT2theQo+PiDCoAo+PiDCoC8qKgo+PiArICogd2lwaHlfYnRjb2V4X3N1cHBvcnRfZmxh
+Z3MKPj4gKyAqCVRoaXMgZW51bSBoYXMgdGhlIGRyaXZlciBzdXBwb3J0ZWQgZnJhbWUgdHlwZXMg
+Zm9yIEJUQ09FWC4KPj4gKyAqIEBXSVBIWV9XTEFOX0JFX1BSRUZFUlJFRCAtIFN1cHBvcnRzIEJl
+c3QgRWZmb3J0IGZyYW1lIGZvciBCVENPRVgKPj4gKyAqIEBXSVBIWV9XTEFOX0JLX1BSRUZFUlJF
+RCAtIHN1cHBvcnRzIEJhY2tncm91bmQgZnJhbWUgZm9yIEJUQ09FWAo+PiArICogQFdJUEhZX1dM
+QU5fVklfUFJFRkVSUkVEIC0gc3VwcG9ydHMgVmlkZW8gZnJhbWUgZm9yIEJUQ09FWAo+PiArICog
+QFdJUEhZX1dMQU5fVk9fUFJFRkVSUkVEIC0gc3VwcG9ydHMgVm9pY2UgZnJhbWUgZm9yIEJUQ09F
+WAo+PiArICogQFdJUEhZX1dMQU5fQkVBQ09OX1BSRUZFUlJFRCAtIHN1cHBvcnRzIEJlYWNvbiBm
+cmFtZSBmb3IgQlRDT0VYCj4+ICsgKiBAV0lQSFlfV0xBTl9NR01UX1BSRUZFUlJFRCAtIHN1cHBv
+cnRzIE1hbmFnZW1lbnQgZnJhbWVzIGZvcgo+PiBCVENPRVguCj4+ICsgKi8KPiAKPiBUaGF0J3Mg
+bm90IG1ha2luZyBtdWNoIHNlbnNlIHRvIG1lPwo+IAoKaXMgaXQgZmluZSB0byBoYXZlIGFzIFdJ
+UEhZX0JUQ09FWF9CRV9QUkVGRVJSRUQgPwoKPj4gKy8qKgo+PiArICogZW51bSB3aXBoeV9idGNv
+ZXhfcHJpb3JpdHkgLSBCVENPRVggcHJpb3JpdHkgbGV2ZWwKPj4gKyAqCVRoaXMgZW51bSBkZWZp
+bmVzIHByaW9yaXR5IGxldmVsIGZvciBCVENPRVgKPj4gKyAqIFdJUEhZX1dMQU5fUFJFRkVSUkVE
+X0xPVyAtIGxvdyBwcmlvcml0eSBmcmFtZXMgb3ZlciBCVCB0cmFmZmljCj4+ICsgKiBXSVBIWV9X
+TEFOX1BSRUZFUlJFRF9ISUdIIC0gaGlnaCBwcmlvcml0eSBmcmFtZXMgb3ZlciBCVCB0cmFmZmlj
+Cj4+ICsgKi8KPj4gKwo+PiArZW51bSB3aXBoeV9idGNvZXhfcHJpb3JpdHkgewo+PiArCVdJUEhZ
+X1dMQU5fUFJFRkVSUkVEX0xPVyA9IGZhbHNlLAo+PiArCVdJUEhZX1dMQU5fUFJFRkVSUkVEX0hJ
+R0ggPSB0cnVlLAo+PiArfTsKPiAKPiBUaGF0IGZhbHNlL3RydWUgc2VlbXMganVzdCBzdHJhbmdl
+Lgo+IAoKSSB3aWxsIGp1c3QgdXNlIGFzIGEgZW51bSB3aXRob3V0IGFzc2lnbmluZyBmYWxzZS90
+cnVlLgoKPj4gKyAqIEBidGNvZXhfc3VwcG9ydF9mbGFnczogVGhpcyB3aWxsIGhhdmUgdGhlIGRy
+aXZlciBzdXBwb3J0ZWQKPj4gKyAqCWZyYW1lIHR5cGVzIGZvciBCVENPRVguIFRoaXMgdmFsdWUg
+ZmlsbGVkIGJ5IHVzaW5nCj4+ICsgKgklZW51bSB3aXBoeV9idGNvZXhfc3VwcG9ydF9mbGFncyB3
+aGlsZSBkcml2ZXIKPj4gKyAqCWluaXRpYWxpemF0aW9uLgo+IAo+IFRoZSB3aG9sZSAid2lsbCBo
+YXZlIiBpc24ndCByZWFsbHkgY2xlYXIuCj4gCj4+ICsgKiBATkw4MDIxMV9BVFRSX1NFVF9CVENP
+RVhfUFJJT1JJVFk6IG5lc3RlZCBhdHRyaWJ1dGUgZm9yIGRyaXZlcgo+PiBzdXBwb3J0aW5nCj4+
+ICsgKgl0aGUgQlRDT0VYLiBXaGVuIHVzZWQgd2l0aAo+PiAlTkw4MDIxMV9DTURfU0VUX0JUQ09F
+WF9QUklPUklUWSBpdCBjb250YWlucwo+PiArICoJYXR0cmlidXRlcyBhY2NvcmRpbmcgJmVudW0g
+bmw4MDIxMV9idGNvZXhfcHJpb3JpdHkgdG8KPj4gaW5kaWNhdGUKPj4gKyAqCXdoaWNoIGZyYW1l
+IGhhcyBoaWdoIHByaW9yaXR5IG92ZXIgQlQuCj4gCj4gVGhlcmUgc2hvdWxkIGJlIG5vICJTRVQi
+IGluIHRoZXJlLgo+IApPa2F5IHN1cmUuCgo+PiDCoC8qKgo+PiArICogZW51bSBubDgwMjExX2J0
+Y29leF9wcmlvcml0eSAtIEJUQ09FWCBwYXJhbWV0ZXIgYXR0cmlidXRlcwo+PiArICoJVGhpcyBz
+dHJjdXR1cmUgaGFzIGVudW0gdmFsdWVzIGZvciBkcml2ZXIgc3VwcG9ydGVkIHdsYW4KPj4gKyAq
+CWZyYW1lIHR5cGUgZm9yIEJUQ09FWC4KPj4gKyAqIEBOTDgwMjExX1dMQU5fQkVfUFJFRkVSUkVE
+IC0gQmVzdCBFZmZvcnQgZnJhbWUKPj4gKyAqIEBOTDgwMjExX1dMQU5fQktfUFJFRkVSUkVEIC0g
+QmFja2dyb3VuZCBmcmFtZQo+PiArICogQE5MODAyMTFfV0xBTl9WSV9QUkVGRVJSRUQgLSBWaWRl
+byBmcmFtZQo+PiArICogQE5MODAyMTFfV0xBTl9WT19QUkVGRVJSRUQgLSBWb2ljZSBmcmFtZQo+
+PiArICogQE5MODAyMTFfV0xBTl9CRUFDT05fUFJFRkVSUkVEIC0gQkVBQ09OIGZyYW1lCj4+ICsg
+KiBATkw4MDIxMV9XTEFOX01HTVRfUFJFRkVSUkVEIC0gTUdNVCBmcmFtZQo+PiArICovCj4+ICsK
+Pj4gK2VudW0gbmw4MDIxMV9idGNvZXhfcHJpb3JpdHkgewo+PiArCV9fTkw4MDIxMV9XTEFOX1BS
+RUZFUlJFRF9JTlZBTElELAo+PiArCU5MODAyMTFfV0xBTl9CRV9QUkVGRVJSRUQsCj4+ICsJTkw4
+MDIxMV9XTEFOX0JLX1BSRUZFUlJFRCwKPj4gKwlOTDgwMjExX1dMQU5fVklfUFJFRkVSUkVELAo+
+PiArCU5MODAyMTFfV0xBTl9WT19QUkVGRVJSRUQsCj4+ICsJTkw4MDIxMV9XTEFOX0JFQUNPTl9Q
+UkVGRVJSRUQsCj4+ICsJTkw4MDIxMV9XTEFOX01HTVRfUFJFRkVSUkVELAo+PiArCV9fTkw4MDIx
+MV9XTEFOX1BSRUZFUlJFRF9MQVNULAo+PiArCU5MODAyMTFfV0xBTl9QUkVGRVJSRURfTUFYID0K
+Pj4gKwkJCV9fTkw4MDIxMV9XTEFOX1BSRUZFUlJFRF9MQVNUIC0gMSwKPj4gK307Cj4gCj4gV291
+bGRuJ3QgYSBiaXRtYXAgYmUgZWFzaWVyPwo+IApzaW5jZSB0aGlzIGlzIHRvIGRpc3Rpbmd1aXNo
+IGJldHdlZW4gZGlmZmVyZW50IGJ0Y29leCBwcmlvcml0aWVzIGFuZCB3ZSAKYXJlIG5vdCBnb2lu
+ZyB0byBkbyBhbnkgbWFuaXB1bGF0aW9ucyBvbiB0aGVzZSBwYXJhbWV0ZXJzLgpJdCBpcyBqdXN0
+IHVzZWQgYXMgZmxhZyBhdHRyaWJ1dGUuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
+Cg==
