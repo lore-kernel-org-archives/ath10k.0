@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cEULQ-0003zU-AA
- for ath10k@lists.infradead.org; Wed, 07 Dec 2016 05:00:41 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Avoid potential page alloc BUG_ON in tx free path
-Date: Wed, 7 Dec 2016 10:30:32 +0530
-Message-ID: <1481086832-17281-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1cEViu-0002Aa-Im
+ for ath10k@lists.infradead.org; Wed, 07 Dec 2016 06:29:01 +0000
+Date: Wed, 7 Dec 2016 11:58:24 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH 1/2] ath10k: add accounting for the extended peer
+ statistics
+Message-ID: <20161207062824.GA3404@atheros-ThinkPad-T61>
+References: <992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,81 +24,68 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: Christian Lamparter <chunkeey@googlemail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Hi Christian,
 
-'ath10k_htt_tx_free_cont_txbuf' and 'ath10k_htt_tx_free_cont_frag_desc'
-have NULL pointer checks to avoid crash if they are called twice
-but this is as of now not sufficient as these pointers are not assigned
-to NULL once the contiguous DMA memory allocation is freed, fix this.
-Though this may not be hit with the explicity check of state variable
-'tx_mem_allocated' check, good to have this addressed as well.
+On Mon, Dec 05, 2016 at 10:52:45PM +0100, Christian Lamparter wrote:
+> The 10.4 firmware adds extended peer information to the
+> firmware's statistics payload. This additional info is
+> stored as a separate data field and the elements are
+> stored in their own "peers_extd" list.
+> 
+> These elements can pile up in the same way as the peer
+> information elements. This is because the
+> ath10k_wmi_10_4_op_pull_fw_stats() function tries to
+> pull the same amount (num_peer_stats) for every statistic
+> data unit.
+> 
+> Fixes: 4a49ae94a448faa ("ath10k: fix 10.4 extended peer stats update")
+> Signed-off-by: Christian Lamparter <chunkeey@googlemail.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/debug.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+> index 82a4c67f3672..4acd9eb65910 100644
+> --- a/drivers/net/wireless/ath/ath10k/debug.c
+> +++ b/drivers/net/wireless/ath/ath10k/debug.c
+> @@ -399,6 +399,7 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+>  			 * prevent firmware from DoS-ing the host.
+>  			 */
+>  			ath10k_fw_stats_peers_free(&ar->debug.fw_stats.peers);
+> +			ath10k_fw_extd_stats_peers_free(&ar->debug.fw_stats.peers_extd);
 
-Below BUG_ON is hit when the above scenario is simulated
-with kernel debugging enabled
+[shafi] thanks for fixing this !
 
- page:f6d09a00 count:0 mapcount:-127 mapping:  (null)
-index:0x0
- flags: 0x40000000()
- page dumped because: VM_BUG_ON_PAGE(page_ref_count(page)
-== 0)
- ------------[ cut here ]------------
- kernel BUG at ./include/linux/mm.h:445!
- invalid opcode: 0000 [#1] SMP DEBUG_PAGEALLOC
- EIP is at put_page_testzero.part.88+0xd/0xf
- Call Trace:
-  [<c118a2cc>] __free_pages+0x3c/0x40
-  [<c118a30e>] free_pages+0x3e/0x50
-  [<c10222b4>] dma_generic_free_coherent+0x24/0x30
-  [<f8c1d9a8>] ath10k_htt_tx_free_cont_txbuf+0xf8/0x140
+>  			ath10k_warn(ar, "dropping fw peer stats\n");
+>  			goto free;
+>  		}
+> @@ -409,10 +410,12 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+>  			goto free;
+>  		}
+>  
+> +		if (!list_empty(&stats.peers))
 
-  [<f8c1e2a9>] ath10k_htt_tx_destroy+0x29/0xa0
+[shafi] sorry please correct me if i am wrong, for 'extended peer stats' we are checking
+for normal 'peer stats' ? Is this the fix intended, i had started a build to
+check your change and we will keep you posted, does this fix displaying
+'rx_duration' in ath10k fw_stats.
 
-  [<f8c143e0>] ath10k_core_destroy+0x60/0x80 [ath10k_core]
-  [<f8acd7e9>] ath10k_pci_remove+0x79/0xa0 [ath10k_pci]
-  [<c13ed7a8>] pci_device_remove+0x38/0xb0
-  [<c14d3492>] __device_release_driver+0x72/0x100
-  [<c14d36b7>] driver_detach+0x97/0xa0
-  [<c14d29c0>] bus_remove_driver+0x40/0x80
-  [<c14d427a>] driver_unregister+0x2a/0x60
-  [<c13ec768>] pci_unregister_driver+0x18/0x70
-  [<f8aced4f>] ath10k_pci_exit+0xd/0x2be [ath10k_pci]
-  [<c1101e78>] SyS_delete_module+0x158/0x210
-  [<c11b34f1>] ? __might_fault+0x41/0xa0
-  [<c11b353b>] ? __might_fault+0x8b/0xa0
-  [<c1001a4b>] do_fast_syscall_32+0x9b/0x1c0
-  [<c178da34>] sysenter_past_esp+0x45/0x74
+> +			list_splice_tail_init(&stats.peers_extd,
+> +					      &ar->debug.fw_stats.peers_extd);
+> +
+>  		list_splice_tail_init(&stats.peers, &ar->debug.fw_stats.peers);
+>  		list_splice_tail_init(&stats.vdevs, &ar->debug.fw_stats.vdevs);
+> -		list_splice_tail_init(&stats.peers_extd,
+> -				      &ar->debug.fw_stats.peers_extd);
+>  	}
+>  
+>  	complete(&ar->debug.fw_stats_complete);
 
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/htt_tx.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 27e49db..86b427f 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -239,6 +239,7 @@ static void ath10k_htt_tx_free_cont_txbuf(struct ath10k_htt *htt)
- 
- 	size = htt->max_num_pending_tx * sizeof(struct ath10k_htt_txbuf);
- 	dma_free_coherent(ar->dev, size, htt->txbuf.vaddr, htt->txbuf.paddr);
-+	htt->txbuf.vaddr = NULL;
- }
- 
- static int ath10k_htt_tx_alloc_cont_txbuf(struct ath10k_htt *htt)
-@@ -268,6 +269,7 @@ static void ath10k_htt_tx_free_cont_frag_desc(struct ath10k_htt *htt)
- 			  size,
- 			  htt->frag_desc.vaddr,
- 			  htt->frag_desc.paddr);
-+	htt->frag_desc.vaddr = NULL;
- }
- 
- static int ath10k_htt_tx_alloc_cont_frag_desc(struct ath10k_htt *htt)
--- 
-1.9.1
-
+thanks,
+shafi
 
 _______________________________________________
 ath10k mailing list
