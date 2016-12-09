@@ -1,21 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wj0-x241.google.com ([2a00:1450:400c:c01::241])
+Received: from mail-qk0-x231.google.com ([2607:f8b0:400d:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cF497-0004Rb-G8
- for ath10k@lists.infradead.org; Thu, 08 Dec 2016 19:14:22 +0000
-Received: by mail-wj0-x241.google.com with SMTP id j10so28472794wjb.3
- for <ath10k@lists.infradead.org>; Thu, 08 Dec 2016 11:14:00 -0800 (PST)
-Received: from ac ([213.140.203.51])
- by smtp.gmail.com with ESMTPSA id l6sm16765699wmd.5.2016.12.08.11.13.57
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 08 Dec 2016 11:13:58 -0800 (PST)
-Date: Thu, 8 Dec 2016 21:13:55 +0200
-From: Andreas Christoforou <andreaschristofo@gmail.com>
-Subject: ath10k raw mode
-Message-ID: <20161208191355.GA6764@ac>
+ id 1cFGk1-0006GR-8S
+ for ath10k@lists.infradead.org; Fri, 09 Dec 2016 08:41:19 +0000
+Received: by mail-qk0-x231.google.com with SMTP id x190so10967497qkb.0
+ for <ath10k@lists.infradead.org>; Fri, 09 Dec 2016 00:40:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
+In-Reply-To: <20161208191355.GA6764@ac>
+References: <20161208191355.GA6764@ac>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Fri, 9 Dec 2016 09:40:52 +0100
+Message-ID: <CA+BoTQm5u+QkbK54aG7fNrcLZyqC7ne0P93VnPGHSKJ-fdCBwg@mail.gmail.com>
+Subject: Re: ath10k raw mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +20,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Andreas Christoforou <andreaschristofo@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Dear All,
-
-could you please someone send me or let me know where I can download a firmware with raw mode flag enabled for my QCA988X card.
-
-Thanks,
-Andreas
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOCBEZWNlbWJlciAyMDE2IGF0IDIwOjEzLCBBbmRyZWFzIENocmlzdG9mb3JvdQo8YW5kcmVh
+c2NocmlzdG9mb0BnbWFpbC5jb20+IHdyb3RlOgo+IERlYXIgQWxsLAo+Cj4gY291bGQgeW91IHBs
+ZWFzZSBzb21lb25lIHNlbmQgbWUgb3IgbGV0IG1lIGtub3cgd2hlcmUgSSBjYW4gZG93bmxvYWQg
+YSBmaXJtd2FyZSB3aXRoIHJhdyBtb2RlIGZsYWcgZW5hYmxlZCBmb3IgbXkgUUNBOTg4WCBjYXJk
+LgoKWW91IGNhbiBjaGVjayB0aGlzOgoKICBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBr
+LWZpcm13YXJlL3RyZWUvbWFzdGVyL1FDQTk4OFgvaHcyLjAvMTAuMi40LjcwCgpBdCB0aGUgdmVy
+eSBsZWFzdCAxMC4yLjQuNzAuNTQgc2hvdWxkIHN1cHBvcnQgaXQgKGF0IGxlYXN0IGl0IGRvZXMK
+YWR2ZXJ0aXNlIGl0KS4gSXQgcHJvYmFibHkgbWFrZXMgc2Vuc2UgdG8gaGF2ZSB0aGlzIChsaXN0
+IG9mIHJhdy1tb2RlCnN1cHBvcnRpbmcgZmlybXdhcmUgcmV2aXNpb25zKSBsaXN0ZWQgc29tZXdo
+ZXJlIG9uCmh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3VzZXJzL2RyaXZlcnMv
+YXRoMTBrIC0gYW55CnZvbHVudGVlcnM/IDopCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
