@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cFhGC-0002uK-9f
+ id 1cFhGC-0002u8-9T
  for ath10k@lists.infradead.org; Sat, 10 Dec 2016 13:00:17 +0000
-Received: by mail-lf0-x242.google.com with SMTP id y21so2226491lfa.0
- for <ath10k@lists.infradead.org>; Sat, 10 Dec 2016 04:59:57 -0800 (PST)
+Received: by mail-lf0-x242.google.com with SMTP id o20so2230155lfg.3
+ for <ath10k@lists.infradead.org>; Sat, 10 Dec 2016 04:59:55 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [PATCH 2/2] ath10k: htc: Simplified credit distribution.
-Date: Sat, 10 Dec 2016 13:58:41 +0100
-Message-Id: <1481374721-16354-2-git-send-email-erik.stromdahl@gmail.com>
-In-Reply-To: <1481374721-16354-1-git-send-email-erik.stromdahl@gmail.com>
-References: <1481374721-16354-1-git-send-email-erik.stromdahl@gmail.com>
+Subject: [PATCH 1/2] ath10k: htc: Removal of unused struct members
+Date: Sat, 10 Dec 2016 13:58:40 +0100
+Message-Id: <1481374721-16354-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,79 +25,46 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Simplified transmit credit distribution code somewhat.
-Since the WMI control service will get assigned all credits
-there is no need for having a credit_allocation array in
-struct ath10k_htc.
+Removed tx_credits_per_max_message and tx_credit_size
+from struct ath10k_htc_ep since they are not used
+anywhere in the code.
+
+They are just written, never read.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.c |   29 +++++------------------------
- drivers/net/wireless/ath/ath10k/htc.h |    1 -
- 2 files changed, 5 insertions(+), 25 deletions(-)
+ drivers/net/wireless/ath/ath10k/htc.c |    6 ------
+ drivers/net/wireless/ath/ath10k/htc.h |    2 --
+ 2 files changed, 8 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index f2e0659..9f6a915 100644
+index 175aae3..f2e0659 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.c
 +++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -474,33 +474,16 @@ static void ath10k_htc_reset_endpoint_states(struct ath10k_htc *htc)
- 	}
- }
- 
--static void ath10k_htc_setup_target_buffer_assignments(struct ath10k_htc *htc)
--{
--	struct ath10k_htc_svc_tx_credits *entry;
+@@ -726,12 +726,6 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+ 	ep->max_tx_queue_depth = conn_req->max_send_queue_depth;
+ 	ep->max_ep_message_len = __le16_to_cpu(resp_msg->max_msg_size);
+ 	ep->tx_credits = tx_alloc;
+-	ep->tx_credit_size = htc->target_credit_size;
+-	ep->tx_credits_per_max_message = ep->max_ep_message_len /
+-					 htc->target_credit_size;
 -
--	entry = &htc->service_tx_alloc[0];
--
--	/*
--	 * for PCIE allocate all credists/HTC buffers to WMI.
--	 * no buffers are used/required for data. data always
--	 * remains on host.
--	 */
--	entry++;
--	entry->service_id = ATH10K_HTC_SVC_ID_WMI_CONTROL;
--	entry->credit_allocation = htc->total_transmit_credits;
--}
--
- static u8 ath10k_htc_get_credit_allocation(struct ath10k_htc *htc,
- 					   u16 service_id)
- {
- 	u8 allocation = 0;
--	int i;
+-	if (ep->max_ep_message_len % htc->target_credit_size)
+-		ep->tx_credits_per_max_message++;
  
--	for (i = 0; i < ATH10K_HTC_EP_COUNT; i++) {
--		if (htc->service_tx_alloc[i].service_id == service_id)
--			allocation =
--			    htc->service_tx_alloc[i].credit_allocation;
--	}
-+	/* The WMI control service is the only service with flow control.
-+	 * Let it have all transmit credits.
-+	 */
-+	if (service_id == ATH10K_HTC_SVC_ID_WMI_CONTROL)
-+		allocation = htc->total_transmit_credits;
- 
- 	return allocation;
- }
-@@ -574,8 +557,6 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 		return -ECOMM;
- 	}
- 
--	ath10k_htc_setup_target_buffer_assignments(htc);
--
- 	/* setup our pseudo HTC control endpoint connection */
- 	memset(&conn_req, 0, sizeof(conn_req));
- 	memset(&conn_resp, 0, sizeof(conn_resp));
+ 	/* copy all the callbacks */
+ 	ep->ep_ops = conn_req->ep_ops;
 diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index ca150c9..6ababa3 100644
+index 0c55cd9..ca150c9 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.h
 +++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -337,7 +337,6 @@ struct ath10k_htc {
- 	struct completion ctl_resp;
+@@ -314,8 +314,6 @@ struct ath10k_htc_ep {
  
- 	int total_transmit_credits;
--	struct ath10k_htc_svc_tx_credits service_tx_alloc[ATH10K_HTC_EP_COUNT];
- 	int target_credit_size;
+ 	u8 seq_no; /* for debugging */
+ 	int tx_credits;
+-	int tx_credit_size;
+-	int tx_credits_per_max_message;
+ 	bool tx_credit_flow_enabled;
  };
  
 -- 
