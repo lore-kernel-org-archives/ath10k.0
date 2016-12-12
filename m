@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x231.google.com ([2607:f8b0:400d:c0d::231])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGQkJ-0000Jj-0p
- for ath10k@lists.infradead.org; Mon, 12 Dec 2016 13:34:29 +0000
-Received: by mail-qt0-x231.google.com with SMTP id c47so75486322qtc.2
- for <ath10k@lists.infradead.org>; Mon, 12 Dec 2016 05:34:01 -0800 (PST)
+ id 1cGTZh-0005dd-71
+ for ath10k@lists.infradead.org; Mon, 12 Dec 2016 16:35:38 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k:  free host-mem with DMA_BIRECTIONAL flag.
+Date: Mon, 12 Dec 2016 16:35:10 +0000
+Message-ID: <87eg1d14xt.fsf@kamboji.qca.qualcomm.com>
+References: <1480962519-13027-1-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1480962519-13027-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Mon, 5 Dec 2016 10:28:39	-0800")
+Content-Language: en-US
+Content-ID: <3DE109F7EDE0DB40A15FCB6C72C26121@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPd_300YffoiqezwWx82GuMiSHgC7kg6JCF8KNZ2_ytj=gnfzQ@mail.gmail.com>
-References: <20161208191355.GA6764@ac>
- <CA+BoTQm5u+QkbK54aG7fNrcLZyqC7ne0P93VnPGHSKJ-fdCBwg@mail.gmail.com>
- <CAPd_300YffoiqezwWx82GuMiSHgC7kg6JCF8KNZ2_ytj=gnfzQ@mail.gmail.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Mon, 12 Dec 2016 14:33:59 +0100
-Message-ID: <CA+BoTQnzfoHE6SwuM819iA2PwB7sjYmz10Pv9b1C-fBdqMdLjA@mail.gmail.com>
-Subject: Re: ath10k raw mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,62 +21,88 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Andreas Christoforou <aceoscy@gmail.com>
-Cc: Andreas Christoforou <andreaschristofo@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "greearb@candelatech.com" <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTIgRGVjZW1iZXIgMjAxNiBhdCAxNDoyMywgQW5kcmVhcyBDaHJpc3RvZm9yb3UgPGFjZW9z
-Y3lAZ21haWwuY29tPiB3cm90ZToKPiBEZWFyIE1pY2hhbCwKPgo+IHVuZm9ydHVuYXRlbHkgSSBh
-bSBnZXR0aW5nIHRoZSBmb2xsb3dpbmcgZXJyb3IKPgo+ICAgWyA1MC40MTY0ODNdIGF0aDEwa19w
-Y2kgMDAwMDowNzowMC4wOiBmaXJtd2FyZSBjcmFzaGVkISAodXVpZAo+IGJkZjZiMjMwLWM4ZjUt
-NGU2MS1iMTc0LTkzYjA5ODBlZTVkYykKPiBbICAgNTAuNDI1NTA2XSBhdGgxMGtfcGNpIDAwMDA6
-MDc6MDAuMDogcWNhOTg4eCBodzIuMCAoMHg0MTAwMDE2YywKPiAweDA0MzIwMmZmIHN1YiAwMDAw
-OjAwMDApIGZ3IDEwLjIuNC43MC41OS0yIGZ3YXBpIDUgYmRhcGkgMSBodHQtdmVyIDIuMQo+IHdt
-aS1vcCA1IGh0dC1vcCAyIGNhbCBvdHAgbWF4LXN0YSAxMjggcmF3IDEgaHdjcnlwdG8gMCBmZWF0
-dXJlcwo+IG5vLXAycCxyYXctbW9kZQo+IFsgICA1MC40NDQ2ODZdIGF0aDEwa19wY2kgMDAwMDow
-NzowMC4wOiBkZWJ1ZyAxIGRlYnVnZnMgMSB0cmFjaW5nIDEgZGZzIDAKPiB0ZXN0bW9kZSAxCj4g
-WyAgIDUwLjQ1NDI4M10gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IGZpcm13YXJlIHJlZ2lzdGVy
-IGR1bXA6Cj4gWyAgIDUwLjQ2MDAwOF0gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IFswMF06IDB4
-NDEwMDAxNkMgMHgwMDAwMDAwMAo+IDB4MDA5N0Y4RDUgMHgwMDAwMDAwMAo+IFsgICA1MC40Njc5
-NDBdIGF0aDEwa19wY2kgMDAwMDowNzowMC4wOiBbMDRdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAK
-PiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiBbICAgNTAuNDc1OTA4XSBhdGgxMGtfcGNpIDAwMDA6
-MDc6MDAuMDogWzA4XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAw
-MDAwCj4gWyAgIDUwLjQ4Mzg2NV0gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IFsxMl06IDB4MDAw
-MDAwMDAgMHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgICA1MC40OTE4Njld
-IGF0aDEwa19wY2kgMDAwMDowNzowMC4wOiBbMTZdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiAw
-eDAwMDAwMDAwIDB4MDA5N0Y4RDUKPiBbICAgNTAuNDk5ODUxXSBhdGgxMGtfcGNpIDAwMDA6MDc6
-MDAuMDogWzIwXTogMHgwMDAwMDAwMCAweDAwNDAxOTMwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAw
-Cj4gWyAgIDUwLjUwNzc4NF0gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IFsyNF06IDB4MDAwMDAw
-MDAgMHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgICA1MC41MTU3NTZdIGF0
-aDEwa19wY2kgMDAwMDowNzowMC4wOiBbMjhdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiAweDAw
-MDAwMDAwIDB4MDAwMDAwMDAKPiBbICAgNTAuNTIzNzIxXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAu
-MDogWzMyXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4g
-WyAgIDUwLjUzMTY5Ml0gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IFszNl06IDB4MDAwMDAwMDAg
-MHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgICA1MC41Mzk2NDldIGF0aDEw
-a19wY2kgMDAwMDowNzowMC4wOiBbNDBdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiAweDAwMDAw
-MDAwIDB4MDAwMDAwMDAKPiBbICAgNTAuNTQ3NTkyXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDog
-WzQ0XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gWyAg
-IDUwLjU1NTU0N10gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IFs0OF06IDB4MDAwMDAwMDAgMHgw
-MDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgICA1MC41NjM1MTldIGF0aDEwa19w
-Y2kgMDAwMDowNzowMC4wOiBbNTJdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiAweDAwMDAwMDAw
-IDB4MDAwMDAwMDAKPiBbICAgNTAuNTcxNDc4XSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDogWzU2
-XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gWyAgIDUw
-LjU4MzM2MF0gYXRoMTBrX3dhcm46IDYgY2FsbGJhY2tzIHN1cHByZXNzZWQKPiBbICAgNTAuNTg3
-OTE2XSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDogZmFpbGVkIHRvIHN0YXJ0IFdNSSB2ZGV2IDA6
-IC0xMDgKPiBbICAgNTAuNTk0NDYxXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDogZmFpbGVkIHRv
-IHN0YXJ0IHZkZXYgMCBhZGRyCj4gMDA6MDA6MDA6MDA6MDA6MDAgb24gZnJlcSAyNDEyOiAtMTA4
-Cj4gWyAgIDUwLjcwNTc5OV0gaWVlZTgwMjExIHBoeTA6IEhhcmR3YXJlIHJlc3RhcnQgd2FzIHJl
-cXVlc3RlZAo+IFsgICA1MC43MTI0NzZdIGF0aDEwa19wY2kgMDAwMDowNzowMC4wOiBmYWlsZWQg
-dG8gZmx1c2ggdHJhbnNtaXQgcXVldWUgKHNraXAKPiAxIGFyLXN0YXRlIDIpOiA1MDAKPiBbICAg
-NTAuNzIyMjM1XSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDogZmFpbGVkIHRvIGRlbGV0ZSBXTUkg
-dmRldiAwOiAtMTA4CgpBbGwgSSBjYW4gdGVsbCBmcm9tIHRoaXMgaXMgc2VlbXMgdG8gY3Jhc2gg
-d2hlbiB5b3UgdHJ5IHRvIHN0YXJ0IGFuCmludGVyZmFjZS4gSXMgaXQgYSBtb25pdG9yIGludGVy
-ZmFjZT8gSWYgeW91IGludGVuZCB0byBpbmplY3QgZnJhbWVzIC0KaXQncyBub3Qgc3VwcG9ydGVk
-LiBJJ20gbm90IHN1cmUgaWYgYW55b25lIHRyaWVkIG1vbml0b3IgbW9kZSBmb3IKc25pZmZpbmcg
-d2l0aCByYXctbW9kZSBlbmFibGVkLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+greearb@candelatech.com writes:
+
+> From: Ben Greear <greearb@candelatech.com>
+>
+> Hopefully this fixes the problem reported by Kalle:
+>
+> Noticed this in my log, but I don't have time to investigate this in
+> detail right now:
+>
+> [  413.795346] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+> [  414.158755] IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
+> [  477.439659] ath10k_pci 0000:02:00.0: could not get mac80211 beacon
+> [  481.666630] ------------[ cut here ]------------
+> [  481.666669] WARNING: CPU: 0 PID: 1978 at lib/dma-debug.c:1155 check_unmap+0x320/0x8e0
+> [  481.666688] ath10k_pci 0000:02:00.0: DMA-API: device driver frees DMA memory with different direction [device address=0x000000002d130000] [size=63800 bytes] [mapped with DMA_BIDIRECTIONAL] [unmapped with DMA_TO_DEVICE]
+> [  481.666703] Modules linked in: ctr ccm ath10k_pci(E-) ath10k_core(E) ath(E) mac80211(E) cfg80211(E) snd_hda_codec_hdmi snd_hda_codec_idt snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_pcm snd_seq_midi arc4 snd_rawmidi snd_seq_midi_event snd_seq btusb btintel snd_seq_device joydev coret
+> [  481.671468] CPU: 0 PID: 1978 Comm: rmmod Tainted: G            E   4.9.0-rc7-wt+ #54
+> [  481.671478] Hardware name: Hewlett-Packard HP ProBook 6540b/1722, BIOS 68CDD Ver. F.04 01/27/2010
+> [  481.671489]  ef49dcec c842ee92 c8b5830e ef49dd34 ef49dd20 c80850f5 c8b5a13c ef49dd50
+> [  481.671560]  000007ba c8b5830e 00000483 c8461830 c8461830 00000483 ef49ddcc f34e64b8
+> [  481.671641]  c8b58360 ef49dd3c c80851bb 00000009 00000000 ef49dd34 c8b5a13c ef49dd50
+> [  481.671716] Call Trace:
+> [  481.671731]  [<c842ee92>] dump_stack+0x76/0xb4
+> [  481.671745]  [<c80850f5>] __warn+0xe5/0x100
+> [  481.671757]  [<c8461830>] ? check_unmap+0x320/0x8e0
+> [  481.671769]  [<c8461830>] ? check_unmap+0x320/0x8e0
+> [  481.671780]  [<c80851bb>] warn_slowpath_fmt+0x3b/0x40
+> [  481.671791]  [<c8461830>] check_unmap+0x320/0x8e0
+> [  481.671804]  [<c8462054>] debug_dma_unmap_page+0x84/0xa0
+> [  481.671835]  [<f937cd7a>] ath10k_wmi_free_host_mem+0x9a/0xe0 [ath10k_core]
+> [  481.671861]  [<f9363400>] ath10k_core_destroy+0x50/0x60 [ath10k_core]
+> [  481.671875]  [<f8e13969>] ath10k_pci_remove+0x79/0xa0 [ath10k_pci]
+> [  481.671889]  [<c848d8d8>] pci_device_remove+0x38/0xb0
+> [  481.671901]  [<c859fe4b>] __device_release_driver+0x7b/0x110
+> [  481.671913]  [<c85a00e7>] driver_detach+0x97/0xa0
+> [  481.671923]  [<c859ef8b>] bus_remove_driver+0x4b/0xb0
+> [  481.671934]  [<c85a0cda>] driver_unregister+0x2a/0x60
+> [  481.671949]  [<c848c888>] pci_unregister_driver+0x18/0x70
+> [  481.671965]  [<f8e14dae>] ath10k_pci_exit+0xd/0x25f [ath10k_pci]
+> [  481.671979]  [<c812bb84>] SyS_delete_module+0xf4/0x180
+> [  481.671995]  [<c81f801b>] ? __might_fault+0x8b/0xa0
+> [  481.672009]  [<c80037d0>] do_fast_syscall_32+0xa0/0x1e0
+> [  481.672025]  [<c88d4c88>] sysenter_past_esp+0x45/0x74
+> [  481.672037] ---[ end trace 3fd23759e17e1622 ]---
+> [  481.672049] Mapped at:
+> [  481.672060]  [  481.672072] [<c846062c>] debug_dma_map_page.part.25+0x1c/0xf0
+> [  481.672083]  [  481.672095] [<c8460799>] debug_dma_map_page+0x99/0xc0
+> [  481.672106]  [  481.672132] [<f93745ec>] ath10k_wmi_alloc_chunk+0x12c/0x1f0 [ath10k_core]
+> [  481.672142]  [  481.672168] [<f937d0c4>] ath10k_wmi_event_service_ready_work+0x304/0x540 [ath10k_core]
+> [  481.672178]  [  481.672190] [<c80a3643>] process_one_work+0x1c3/0x670
+> [  482.137134] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+> [  482.313144] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
+> [  482.313274] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/cal-pci-0000:02:00.0.bin failed with error -2
+> [  482.313768] ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000
+> [  482.313777] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 0 testmode 1
+> [  482.313974] ath10k_pci 0000:02:00.0: firmware ver 10.2.4.70.59-2 api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 4159f498
+> [  482.369858] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
+> [  482.370011] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
+> [  483.596770] ath10k_pci 0000:02:00.0: htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-sta 128 raw 0 hwcrypto 1
+> [  483.701686] ath: EEPROM regdomain: 0x0
+> [  483.701706] ath: EEPROM indicates default country code should be used
+> [  483.701713] ath: doing EEPROM country->regdmn map search
+> [  483.701721] ath: country maps to regdmn code: 0x3a
+> [  483.701730] ath: Country alpha2 being used: US
+> [  483.701737] ath: Regpair used: 0x3a
+>
+> Reported-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+
+Thanks, I don't see the warning anymore so this seems to be fixed. I'll
+push this to 4.10.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
