@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-qt0-x231.google.com ([2607:f8b0:400d:c0d::231])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cFhGC-0002u8-9T
- for ath10k@lists.infradead.org; Sat, 10 Dec 2016 13:00:17 +0000
-Received: by mail-lf0-x242.google.com with SMTP id o20so2230155lfg.3
- for <ath10k@lists.infradead.org>; Sat, 10 Dec 2016 04:59:55 -0800 (PST)
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [PATCH 1/2] ath10k: htc: Removal of unused struct members
-Date: Sat, 10 Dec 2016 13:58:40 +0100
-Message-Id: <1481374721-16354-1-git-send-email-erik.stromdahl@gmail.com>
+ id 1cGQkJ-0000Jj-0p
+ for ath10k@lists.infradead.org; Mon, 12 Dec 2016 13:34:29 +0000
+Received: by mail-qt0-x231.google.com with SMTP id c47so75486322qtc.2
+ for <ath10k@lists.infradead.org>; Mon, 12 Dec 2016 05:34:01 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <CAPd_300YffoiqezwWx82GuMiSHgC7kg6JCF8KNZ2_ytj=gnfzQ@mail.gmail.com>
+References: <20161208191355.GA6764@ac>
+ <CA+BoTQm5u+QkbK54aG7fNrcLZyqC7ne0P93VnPGHSKJ-fdCBwg@mail.gmail.com>
+ <CAPd_300YffoiqezwWx82GuMiSHgC7kg6JCF8KNZ2_ytj=gnfzQ@mail.gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Mon, 12 Dec 2016 14:33:59 +0100
+Message-ID: <CA+BoTQnzfoHE6SwuM819iA2PwB7sjYmz10Pv9b1C-fBdqMdLjA@mail.gmail.com>
+Subject: Re: ath10k raw mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,61 +22,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
+To: Andreas Christoforou <aceoscy@gmail.com>
+Cc: Andreas Christoforou <andreaschristofo@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Removed tx_credits_per_max_message and tx_credit_size
-from struct ath10k_htc_ep since they are not used
-anywhere in the code.
-
-They are just written, never read.
-
-Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
----
- drivers/net/wireless/ath/ath10k/htc.c |    6 ------
- drivers/net/wireless/ath/ath10k/htc.h |    2 --
- 2 files changed, 8 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 175aae3..f2e0659 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -726,12 +726,6 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
- 	ep->max_tx_queue_depth = conn_req->max_send_queue_depth;
- 	ep->max_ep_message_len = __le16_to_cpu(resp_msg->max_msg_size);
- 	ep->tx_credits = tx_alloc;
--	ep->tx_credit_size = htc->target_credit_size;
--	ep->tx_credits_per_max_message = ep->max_ep_message_len /
--					 htc->target_credit_size;
--
--	if (ep->max_ep_message_len % htc->target_credit_size)
--		ep->tx_credits_per_max_message++;
- 
- 	/* copy all the callbacks */
- 	ep->ep_ops = conn_req->ep_ops;
-diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index 0c55cd9..ca150c9 100644
---- a/drivers/net/wireless/ath/ath10k/htc.h
-+++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -314,8 +314,6 @@ struct ath10k_htc_ep {
- 
- 	u8 seq_no; /* for debugging */
- 	int tx_credits;
--	int tx_credit_size;
--	int tx_credits_per_max_message;
- 	bool tx_credit_flow_enabled;
- };
- 
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTIgRGVjZW1iZXIgMjAxNiBhdCAxNDoyMywgQW5kcmVhcyBDaHJpc3RvZm9yb3UgPGFjZW9z
+Y3lAZ21haWwuY29tPiB3cm90ZToKPiBEZWFyIE1pY2hhbCwKPgo+IHVuZm9ydHVuYXRlbHkgSSBh
+bSBnZXR0aW5nIHRoZSBmb2xsb3dpbmcgZXJyb3IKPgo+ICAgWyA1MC40MTY0ODNdIGF0aDEwa19w
+Y2kgMDAwMDowNzowMC4wOiBmaXJtd2FyZSBjcmFzaGVkISAodXVpZAo+IGJkZjZiMjMwLWM4ZjUt
+NGU2MS1iMTc0LTkzYjA5ODBlZTVkYykKPiBbICAgNTAuNDI1NTA2XSBhdGgxMGtfcGNpIDAwMDA6
+MDc6MDAuMDogcWNhOTg4eCBodzIuMCAoMHg0MTAwMDE2YywKPiAweDA0MzIwMmZmIHN1YiAwMDAw
+OjAwMDApIGZ3IDEwLjIuNC43MC41OS0yIGZ3YXBpIDUgYmRhcGkgMSBodHQtdmVyIDIuMQo+IHdt
+aS1vcCA1IGh0dC1vcCAyIGNhbCBvdHAgbWF4LXN0YSAxMjggcmF3IDEgaHdjcnlwdG8gMCBmZWF0
+dXJlcwo+IG5vLXAycCxyYXctbW9kZQo+IFsgICA1MC40NDQ2ODZdIGF0aDEwa19wY2kgMDAwMDow
+NzowMC4wOiBkZWJ1ZyAxIGRlYnVnZnMgMSB0cmFjaW5nIDEgZGZzIDAKPiB0ZXN0bW9kZSAxCj4g
+WyAgIDUwLjQ1NDI4M10gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IGZpcm13YXJlIHJlZ2lzdGVy
+IGR1bXA6Cj4gWyAgIDUwLjQ2MDAwOF0gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IFswMF06IDB4
+NDEwMDAxNkMgMHgwMDAwMDAwMAo+IDB4MDA5N0Y4RDUgMHgwMDAwMDAwMAo+IFsgICA1MC40Njc5
+NDBdIGF0aDEwa19wY2kgMDAwMDowNzowMC4wOiBbMDRdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAK
+PiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiBbICAgNTAuNDc1OTA4XSBhdGgxMGtfcGNpIDAwMDA6
+MDc6MDAuMDogWzA4XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAw
+MDAwCj4gWyAgIDUwLjQ4Mzg2NV0gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IFsxMl06IDB4MDAw
+MDAwMDAgMHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgICA1MC40OTE4Njld
+IGF0aDEwa19wY2kgMDAwMDowNzowMC4wOiBbMTZdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiAw
+eDAwMDAwMDAwIDB4MDA5N0Y4RDUKPiBbICAgNTAuNDk5ODUxXSBhdGgxMGtfcGNpIDAwMDA6MDc6
+MDAuMDogWzIwXTogMHgwMDAwMDAwMCAweDAwNDAxOTMwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAw
+Cj4gWyAgIDUwLjUwNzc4NF0gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IFsyNF06IDB4MDAwMDAw
+MDAgMHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgICA1MC41MTU3NTZdIGF0
+aDEwa19wY2kgMDAwMDowNzowMC4wOiBbMjhdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiAweDAw
+MDAwMDAwIDB4MDAwMDAwMDAKPiBbICAgNTAuNTIzNzIxXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAu
+MDogWzMyXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4g
+WyAgIDUwLjUzMTY5Ml0gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IFszNl06IDB4MDAwMDAwMDAg
+MHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgICA1MC41Mzk2NDldIGF0aDEw
+a19wY2kgMDAwMDowNzowMC4wOiBbNDBdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiAweDAwMDAw
+MDAwIDB4MDAwMDAwMDAKPiBbICAgNTAuNTQ3NTkyXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDog
+WzQ0XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gWyAg
+IDUwLjU1NTU0N10gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IFs0OF06IDB4MDAwMDAwMDAgMHgw
+MDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgICA1MC41NjM1MTldIGF0aDEwa19w
+Y2kgMDAwMDowNzowMC4wOiBbNTJdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiAweDAwMDAwMDAw
+IDB4MDAwMDAwMDAKPiBbICAgNTAuNTcxNDc4XSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDogWzU2
+XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gWyAgIDUw
+LjU4MzM2MF0gYXRoMTBrX3dhcm46IDYgY2FsbGJhY2tzIHN1cHByZXNzZWQKPiBbICAgNTAuNTg3
+OTE2XSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDogZmFpbGVkIHRvIHN0YXJ0IFdNSSB2ZGV2IDA6
+IC0xMDgKPiBbICAgNTAuNTk0NDYxXSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDogZmFpbGVkIHRv
+IHN0YXJ0IHZkZXYgMCBhZGRyCj4gMDA6MDA6MDA6MDA6MDA6MDAgb24gZnJlcSAyNDEyOiAtMTA4
+Cj4gWyAgIDUwLjcwNTc5OV0gaWVlZTgwMjExIHBoeTA6IEhhcmR3YXJlIHJlc3RhcnQgd2FzIHJl
+cXVlc3RlZAo+IFsgICA1MC43MTI0NzZdIGF0aDEwa19wY2kgMDAwMDowNzowMC4wOiBmYWlsZWQg
+dG8gZmx1c2ggdHJhbnNtaXQgcXVldWUgKHNraXAKPiAxIGFyLXN0YXRlIDIpOiA1MDAKPiBbICAg
+NTAuNzIyMjM1XSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDogZmFpbGVkIHRvIGRlbGV0ZSBXTUkg
+dmRldiAwOiAtMTA4CgpBbGwgSSBjYW4gdGVsbCBmcm9tIHRoaXMgaXMgc2VlbXMgdG8gY3Jhc2gg
+d2hlbiB5b3UgdHJ5IHRvIHN0YXJ0IGFuCmludGVyZmFjZS4gSXMgaXQgYSBtb25pdG9yIGludGVy
+ZmFjZT8gSWYgeW91IGludGVuZCB0byBpbmplY3QgZnJhbWVzIC0KaXQncyBub3Qgc3VwcG9ydGVk
+LiBJJ20gbm90IHN1cmUgaWYgYW55b25lIHRyaWVkIG1vbml0b3IgbW9kZSBmb3IKc25pZmZpbmcg
+d2l0aCByYXctbW9kZSBlbmFibGVkLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
