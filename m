@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGmPC-0001PL-WA
- for ath10k@lists.infradead.org; Tue, 13 Dec 2016 12:42:05 +0000
-Received: by mail-wm0-x244.google.com with SMTP id m203so18080550wma.3
- for <ath10k@lists.infradead.org>; Tue, 13 Dec 2016 04:41:42 -0800 (PST)
-From: Christian Lamparter <chunkeey@googlemail.com>
-Subject: Re: [PATCH 1/2] ath10k: add accounting for the extended peer
- statistics
-Date: Tue, 13 Dec 2016 13:41:33 +0100
-Message-ID: <2870294.lMmxz9iPmq@debian64>
-In-Reply-To: <20161207062824.GA3404@atheros-ThinkPad-T61>
-References: <992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
- <20161207062824.GA3404@atheros-ThinkPad-T61>
+ id 1cGmrX-0006h1-0i
+ for ath10k@lists.infradead.org; Tue, 13 Dec 2016 13:11:20 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC v2 11/11] ath10k: Added sdio support
+Date: Tue, 13 Dec 2016 13:10:53 +0000
+Message-ID: <87pokwynxf.fsf@kamboji.qca.qualcomm.com>
+References: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
+ <1479496971-19174-12-git-send-email-erik.stromdahl@gmail.com>
+In-Reply-To: <1479496971-19174-12-git-send-email-erik.stromdahl@gmail.com>
+ (Erik Stromdahl's message of "Fri, 18 Nov 2016 20:22:51 +0100")
+Content-Language: en-US
+Content-ID: <3F7A0717A225E54AA8CCCAFA3CA44FBA@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,78 +26,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hello,
+Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
-It looks like google put your mail into the spam-can. 
-I'm sorry for not answering sooner.
+> Initial HIF sdio/mailbox implementation.
+>
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-On Wednesday, December 7, 2016 11:58:24 AM CET Mohammed Shafi Shajakhan wrote:
-> On Mon, Dec 05, 2016 at 10:52:45PM +0100, Christian Lamparter wrote:
-> > The 10.4 firmware adds extended peer information to the
-> > firmware's statistics payload. This additional info is
-> > stored as a separate data field and the elements are
-> > stored in their own "peers_extd" list.
-> > 
-> > These elements can pile up in the same way as the peer
-> > information elements. This is because the
-> > ath10k_wmi_10_4_op_pull_fw_stats() function tries to
-> > pull the same amount (num_peer_stats) for every statistic
-> > data unit.
-> > 
-> > Fixes: 4a49ae94a448faa ("ath10k: fix 10.4 extended peer stats update")
-> > Signed-off-by: Christian Lamparter <chunkeey@googlemail.com>
-> > ---
-> >  drivers/net/wireless/ath/ath10k/debug.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-> > index 82a4c67f3672..4acd9eb65910 100644
-> > --- a/drivers/net/wireless/ath/ath10k/debug.c
-> > +++ b/drivers/net/wireless/ath/ath10k/debug.c
-> > @@ -399,6 +399,7 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
-> >  			 * prevent firmware from DoS-ing the host.
-> >  			 */
-> >  			ath10k_fw_stats_peers_free(&ar->debug.fw_stats.peers);
-> > +			ath10k_fw_extd_stats_peers_free(&ar->debug.fw_stats.peers_extd);
-> 
-> [shafi] thanks for fixing this !
-> 
-> >  			ath10k_warn(ar, "dropping fw peer stats\n");
-> >  			goto free;
-> >  		}
-> > @@ -409,10 +410,12 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
-> >  			goto free;
-> >  		}
-> >  
-> > +		if (!list_empty(&stats.peers))
-> 
-> [shafi] sorry please correct me if i am wrong, for 'extended peer stats' we are checking
-> for normal 'peer stats' ? Is this the fix intended, i had started a build to
-> check your change and we will keep you posted, does this fix displaying
-> 'rx_duration' in ath10k fw_stats.
-The idea is not to queue any "extended peer stats" when there where no "peer stats" to
-begin with. Because otherwise, the function is still vulnerable to OOM since the 
-extended peers stats will be queued unchecked (not that this is currently a problem).
- 
-> > +			list_splice_tail_init(&stats.peers_extd,
-> > +					      &ar->debug.fw_stats.peers_extd);
-> > +
-> >  		list_splice_tail_init(&stats.peers, &ar->debug.fw_stats.peers);
-> >  		list_splice_tail_init(&stats.vdevs, &ar->debug.fw_stats.vdevs);
-> > -		list_splice_tail_init(&stats.peers_extd,
-> > -				      &ar->debug.fw_stats.peers_extd);
-> >  	}
-> >  
-> >  	complete(&ar->debug.fw_stats_complete);
+While testing this I noticed few new warnings:
 
-Regards,
-Christian
+drivers/net/wireless/ath/ath10k/sdio.c: In function ath10k_sdio_probe:
+drivers/net/wireless/ath/ath10k/sdio.c:1723:6: warning: 'ret' may be used uninitialized in this function [-Wuninitialized]
+drivers/net/wireless/ath/ath10k/sdio.c:375:5: warning: symbol 'ath10k_sdio_mbox_rxmsg_pending_handler' was not declared. Should it be static?
+drivers/net/wireless/ath/ath10k/sdio.c:1018:5: warning: symbol 'ath10k_sdio_hif_tx_sg' was not declared. Should it be static?
+drivers/net/wireless/ath/ath10k/sdio.c:1415:5: warning: symbol 'ath10k_sdio_hif_exchange_bmi_msg' was not declared. Should it be static?
+drivers/net/wireless/ath/ath10k/sdio.c:1555:5: warning: symbol 'ath10k_sdio_hif_map_service_to_pipe' was not declared. Should it be static?
+drivers/net/wireless/ath/ath10k/sdio.c:1635:6: warning: symbol 'ath10k_sdio_hif_get_default_pipe' was not declared. Should it be static?
+drivers/net/wireless/ath/ath10k/htc.c:265: line over 90 characters
+drivers/net/wireless/ath/ath10k/htc.c:355: line over 90 characters
 
-
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
