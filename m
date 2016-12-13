@@ -1,22 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x231.google.com ([2607:f8b0:400d:c0d::231])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGseV-0005cU-7X
- for ath10k@lists.infradead.org; Tue, 13 Dec 2016 19:22:17 +0000
-Received: by mail-qt0-x231.google.com with SMTP id p16so116468707qta.0
- for <ath10k@lists.infradead.org>; Tue, 13 Dec 2016 11:21:54 -0800 (PST)
+ id 1cGvzn-0004D3-E2
+ for ath10k@lists.infradead.org; Tue, 13 Dec 2016 22:56:28 +0000
+From: <ryanhsu@qca.qualcomm.com>
+Subject: [PATCH V2] ath10k: fix incorrect txpower set by P2P_DEVICE interface
+Date: Tue, 13 Dec 2016 14:55:19 -0800
+Message-ID: <1481669719-3423-1-git-send-email-ryanhsu@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <70b8a055-e6ba-857d-8b03-06f50e3f10fe@gmail.com>
-References: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
- <1479496971-19174-6-git-send-email-erik.stromdahl@gmail.com>
- <87inqoymd0.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkuUFxnra75B4LpF5+k9yE7hkNYDXbtUMBLq2LFuPSasg@mail.gmail.com>
- <871sxbzqo6.fsf@kamboji.qca.qualcomm.com>
- <70b8a055-e6ba-857d-8b03-06f50e3f10fe@gmail.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Tue, 13 Dec 2016 20:21:53 +0100
-Message-ID: <CA+BoTQmRV59imnmSykjs=ym0qut9akUHzFKfAMioK=MT8my98A@mail.gmail.com>
-Subject: Re: [RFC v2 05/11] ath10k: htc: refactorization
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,97 +16,83 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: ryanhsu@qca.qualcomm.com
 
-T24gMTMgRGVjZW1iZXIgMjAxNiBhdCAxOTozNywgRXJpayBTdHJvbWRhaGwgPGVyaWsuc3Ryb21k
-YWhsQGdtYWlsLmNvbT4gd3JvdGU6Cj4KPgo+IE9uIDEyLzEzLzIwMTYgMDY6MjYgUE0sIFZhbG8s
-IEthbGxlIHdyb3RlOgo+PiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4g
-d3JpdGVzOgo+Pgo+Pj4gT24gMTMgRGVjZW1iZXIgMjAxNiBhdCAxNDo0NCwgVmFsbywgS2FsbGUg
-PGt2YWxvQHFjYS5xdWFsY29tbS5jb20+IHdyb3RlOgo+Pj4+IEVyaWsgU3Ryb21kYWhsIDxlcmlr
-LnN0cm9tZGFobEBnbWFpbC5jb20+IHdyaXRlczoKPj4+Pgo+Pj4+PiBDb2RlIHJlZmFjdG9yaXph
-dGlvbjoKPj4+Pj4KPj4+Pj4gTW92ZWQgdGhlIGNvZGUgZm9yIGVwIDAgaW4gYXRoMTBrX2h0Y19y
-eF9jb21wbGV0aW9uX2hhbmRsZXIKPj4+Pj4gdG8gYXRoMTBrX2h0Y19jb250cm9sX3J4X2NvbXBs
-ZXRlLgo+Pj4+Pgo+Pj4+PiBUaGlzIGVhc2VzIHRoZSBpbXBsZW1lbnRhdGlvbiBvZiBTRElPL21i
-b3ggc2lnbmlmaWNhbnRseSBzaW5jZQo+Pj4+PiB0aGUgZXBfcnhfY29tcGxldGUgY2IgaXMgaW52
-b2tlZCBkaXJlY3RseSBmcm9tIHRoZSBTRElPL21ib3gKPj4+Pj4gaGlmIGxheWVyLgo+Pj4+Pgo+
-Pj4+PiBTaW5jZSB0aGUgYXRoMTBrX2h0Y19jb250cm9sX3J4X2NvbXBsZXRlIGFscmVhZHkgaXMg
-cHJlc2VudAo+Pj4+PiAob25seSBjb250YWluaW5nIGEgd2FybmluZyBtZXNzYWdlKSB0aGVyZSBp
-cyBubyByZWFzb24gZm9yIG5vdAo+Pj4+PiB1c2luZyBpdCAoaW5zdGVhZCBvZiBoYXZpbmcgYSBz
-cGVjaWFsIGNhc2UgZm9yIGVwIDAgaW4KPj4+Pj4gYXRoMTBrX2h0Y19yeF9jb21wbGV0aW9uX2hh
-bmRsZXIpLgo+Pj4+Pgo+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBFcmlrIFN0cm9tZGFobCA8ZXJpay5z
-dHJvbWRhaGxAZ21haWwuY29tPgo+Pj4+Cj4+Pj4gSSB0ZXN0ZWQgdGhpcyBvbiBRQ0E5ODhYIFBD
-SSBib2FyZCBqdXN0IHRvIHNlZSBpZiB0aGVyZSBhcmUgYW55Cj4+Pj4gcmVncmVzc2lvbnMuIEl0
-IGNyYXNoZXMgaW1tZWRpYXRlbHkgZHVyaW5nIG1vZHVsZSBsb2FkLCBldmVyeSB0aW1lLCBhbmQK
-Pj4+PiBiaXNlY3RlZCB0aGF0IHRoZSBjcmFzaGluZyBzdGFydHMgb24gdGhpcyBwYXRjaDoKPj4+
-Pgo+Pj4+IFsgMTIzOS43MTUzMjVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBwY2kgaXJxIG1z
-aSBvcGVyX2lycV9tb2RlIDIgaXJxX21vZGUgMCByZXNldF9tb2RlIDAKPj4+PiBbIDEyMzkuODg1
-MTI1XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yIGF0
-aDEway9wcmUtY2FsLXBjaS0wMDAwOjAyOjAwLjAuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4+
-Pj4gWyAxMjM5Ljg4NTI2MF0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IERpcmVjdCBmaXJtd2Fy
-ZSBsb2FkIGZvciBhdGgxMGsvY2FsLXBjaS0wMDAwOjAyOjAwLjAuYmluIGZhaWxlZCB3aXRoIGVy
-cm9yIC0yCj4+Pj4gWyAxMjM5Ljg4NTY4N10gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IHFjYTk4
-OHggaHcyLjAgdGFyZ2V0IDB4NDEwMDAxNmMgY2hpcF9pZCAweDA0MzIwMmZmIHN1YiAwMDAwOjAw
-MDAKPj4+PiBbIDEyMzkuODg1Njk5XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDoga2NvbmZpZyBk
-ZWJ1ZyAxIGRlYnVnZnMgMSB0cmFjaW5nIDEgZGZzIDEgdGVzdG1vZGUgMQo+Pj4+IFsgMTIzOS44
-ODU4OTldIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBmaXJtd2FyZSB2ZXIgMTAuMi40LjcwLjU5
-LTIgYXBpIDUgZmVhdHVyZXMgbm8tcDJwLHJhdy1tb2RlLG1mcCxhbGxvd3MtbWVzaC1iY2FzdCBj
-cmMzMiA0MTU5ZjQ5OAo+Pj4+IFsgMTIzOS45NDE4MzZdIGF0aDEwa19wY2kgMDAwMDowMjowMC4w
-OiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IgYXRoMTBrL1FDQTk4OFgvaHcyLjAvYm9hcmQtMi5i
-aW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPj4+PiBbIDEyMzkuOTQxOTkzXSBhdGgxMGtfcGNpIDAw
-MDA6MDI6MDAuMDogYm9hcmRfZmlsZSBhcGkgMSBibWlfaWQgTi9BIGNyYzMyIGJlYmM3YzA4Cj4+
-Pj4gWyAxMjQxLjEzNjY5M10gQlVHOiB1bmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50
-ZXIgZGVyZWZlcmVuY2UgYXQgICAobnVsbCkKPj4+PiBbIDEyNDEuMTM2NzM4XSBJUDogWzwgIChu
-dWxsKT5dICAgKG51bGwpCj4+Pj4gWyAxMjQxLjEzNjc1OV0gKnBkcHQgPSAwMDAwMDAwMDAwMDAw
-MDAwICpwZGUgPSBmMDAwMmE1NWYwMDAyYTU1IFsgMTI0MS4xMzY3ODFdCj4+Pj4gWyAxMjQxLjEz
-Njc5M10gT29wczogMDAxMCBbIzFdIFNNUAo+Pj4+Cj4+Pj4gV2hhdCdzIG9kZCBpcyB0aGF0IHdo
-ZW4gSSBhZGRlZCBzb21lIHByaW50a3Mgb24gbXkgb3duIGFuZCBlbmFibGVkIGJvdGgKPj4+PiBi
-b290IGFuZCBodGMgZGVidWcgbGV2ZWxzIGl0IGRvZXNuJ3QgY3Jhc2ggYW55bW9yZS4gQWZ0ZXIg
-ZXZlcnl0aGluZwo+Pj4+IHdvcmtzIG5vcm1hbGx5IGFmdGVyIHRoYXQsIEkgY2FuIHN0YXJ0IEFQ
-IG1vZGUgYW5kIGNvbm5lY3QgdG8gaXQuIElzIGl0Cj4+Pj4gYSByYWNlIHNvbWV3aGVyZT8KPj4+
-Cj4+PiBZZXMuIGh0Y193YWl0X3RhcmdldCgpIGlzIGNhbGxlZCBhZnRlciBoaWZfc3RhcnQoKS4g
-VGhlIGVwX3J4X2NvbXBsZXRlCj4+PiBpcyBzZXQgaW4gaHRjX3dhaXRfdGFyZ2V0KCkgW2NoYW5n
-ZWQgcGF0Y2ggNCwgYnV0IHN0aWxsIHRvbyBsYXRlXS4KPj4+Cj4+PiBlcF9yeF9jb21wbGV0ZSBt
-dXN0IGJlIHNldCBwcmlvciB0byBjYWxsaW5nIGhpZl9zdGFydCgpLiBZb3UgcHJvYmFibHkKPj4+
-IGNyYXNoIG9uIGVuZCBvZiBhdGgxMGtfaHRjX3J4X2NvbXBsZXRpb25faGFuZGxlcigpIHdoZW4g
-dHJ5aW5nIHRvIGNhbGwKPj4+IGVwLT5lcF9vcHMuZXBfcnhfY29tcGxldGUoYXIsIHNrYikuCj4+
-Cj4+IFllYWgsIGp1c3QgY2hlY2tlZCBhbmQgZXAtPmVwX29wcy5lcF9yeF9jb21wbGV0ZSBpcyBO
-VUxMIGF0IHRoZSBlbmQgb2YKPj4gYXRoMTBrX2h0Y19yeF9jb21wbGV0aW9uX2hhbmRsZXIoKS4K
-Pj4KPiBJdCBpcyBpbmRlZWQgY29ycmVjdCBhcyBNaWNoYWwgcG9pbnRzIG91dCwgdGhlcmUgaXMg
-YSByaXNrIHRoYXQgdGhlCj4gZmlyc3QgSFRDIGNvbnRyb2wgbWVzc2FnZSAodHlwaWNhbGx5IGFu
-IEhUQyByZWFkeSBtZXNzYWdlKSBpcyByZWNlaXZlZAo+IGJlZm9yZSB0aGUgSFRDIGNvbnRyb2wg
-ZW5kcG9pbnQgaXMgY29ubmVjdGVkLgo+Cj4gSSBoYXZlIGV4cGVyaWVuY2VkIGEgc2ltaWxhciBy
-YWNlIHdpdGggbXkgU0RJTyBpbXBsZW1lbnRhdGlvbiBhcyB3ZWxsLgo+IEluIHRoaXMgY2FzZSBJ
-IGRpZCBzb2x2ZSB0aGUgaXNzdWUgYnkgZW5hYmxpbmcgSElGIHRhcmdldCBpbnRlcnJ1cHRzCj4g
-YWZ0ZXIgdGhlIEhUQyBjb250cm9sIGVuZHBvaW50IHdhcyBjb25uZWN0ZWQuIEkgYW0gbm90IHN1
-cmUgaG93ZXZlciBpZgo+IHRoaXMgaXMgdGhlIG1vc3QgZWxlZ2FudCB3YXkgdG8gc29sdmUgdGhp
-cyBwcm9ibGVtLgo+Cj4gTXkgU0RJTyB0YXJnZXQgd29uJ3Qgc2VuZCB0aGUgSFRDIHJlYWR5IG1l
-c3NhZ2UgYmVmb3JlIHRoaXMgaXMgZG9uZS4KPiBUaGUgZml4IGVzc2VudGlhbGx5IGNvbnNpc3Rz
-IG9mIG1vdmluZyB0aGUgLi4uX2lyZ19lbmFibGUgY2FsbCBmcm9tCj4gaGlmX3N0YXJ0IGludG8g
-YW5vdGhlciBoaWYgb3AuCgpJdCBtYWtlcyBtb3JlIHNlbnNlIHRvIG1vdmUgZXBfcnhfY29tcGxl
-dGUgc2V0dXAvYXNzaWdubWVudCBiZWZvcmUKaGlmX3N0YXJ0KCkuIFRoaXMgYXNzaWdubWVudCBz
-aG91bGQgYmUgZG9uZSB2ZXJ5IGVhcmx5IGFzIHRoZXJlIGlzCm5vdGhpbmcgdG8gY2hhbmdlL292
-ZXJyaWRlIGZvciB0aGlzIGVuZHBvaW50IGR1cmluZyBvcGVyYXRpb24sIGlzCnRoZXJlPyBJdCdz
-IGtub3duIHdoYXQgaXQgbmVlZHMgdG8gc3RvcmUgdmVyeSBlYXJseSBvbi4KCgo+IEkgaGF2ZSBt
-YWRlIGEgZmV3IHVwZGF0ZXMgc2luY2UgSSBzdWJtaXR0ZWQgdGhlIG9yaWdpbmFsIFJGQyBhbmQg
-Y3JlYXRlZAo+IGEgcmVwbyBvbiBnaXRodWI6Cj4KPiBodHRwczovL2dpdGh1Yi5jb20vZXJzdHJv
-bS9saW51eC1hdGgKPgo+IEkgaGF2ZSBhIGJ1bmNoIG9mIGJyYW5jaGVzIHRoYXQgYXJlIGFsbCBi
-YXNlZCBvbiB0aGUgdGFncyBvbiB0aGUgYXRoIG1hc3Rlci4KPgo+IEFzIG9mIHRoaXMgbW9tZW50
-IHRoZSBsYXRlc3QgdmVyc2lvbiBpczoKPgo+IGF0aC0yMDE2MTIxMzExNTYtYXRoMTBrLXNkaW8K
-Pgo+IFRoaXMgYnJhbmNoIGNvbnRhaW5zIHRoZSBvcmlnaW5hbCBSRkMgcGF0Y2hlcyBwbHVzIHNv
-bWUgYWRkb25zL2ZpeGVzLgo+Cj4gSW4gdGhlIGFib3ZlIG1lbnRpb25lZCBicmFuY2ggdGhlcmUg
-YXJlIGEgZmV3IGNvbW1pdHMgcmVsYXRlZCB0byB0aGlzCj4gcmFjZSBjb25kaXRpb24uIFBlcmhh
-cHMgeW91IGNhbiBoYXZlIGEgbG9vayBhdCB0aGVtPwo+Cj4gVGhlIGNvbW1pdHMgYXJlOgo+IDgy
-MTY3MjkxMzMyOGNmNzM3Yzk2MTY3ODZkYzI4ZDJlNGU4YTRhOTAKCkkgd291bGQgYXZvaWQgaWYo
-YnVzPT14eCkgY2hlY2tzLgoKCj4gZGQ3ZmNmMGExZjc4ZTY4ODc2ZDE0ZjkwYzEyYmQzN2YzYTcw
-MGFkNwo+IDc0MzRiN2I0MDg3NWJkMDhhM2E0OGE0MzdiYTUwYWZlZDc3NTQ5MzEKPgo+IFBlcmhh
-cHMgdGhpcyBhcHByb2FjaCBjYW4gd29yayB3aXRoIFBDSWUgYXMgd2VsbD8KCkkgdGhpbmsgSSBk
-aWQgY29udGVtcGxhdGUgdGhlIHVubWFzay9zdGFydCBkaXN0aW5jdGlvbiBhdCBzb21lIHBvaW50
-CmJ1dCBJIGRpZG4ndCBnbyB3aXRoIGl0IGZvciBzb21lIHJlYXNvbiBJIGNhbid0IHJlY2FsbCBu
-b3cuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+
+Ath10k reports the phy capability that supports P2P_DEVICE interface.
+
+When we use the P2P supported wpa_supplicant to start connection, it'll
+create two interfaces, one is wlan0 (vdev_id=0) and one is P2P_DEVICE
+p2p-dev-wlan0 which is for p2p control channel (vdev_id=1).
+
+	ath10k_pci mac vdev create 0 (add interface) type 2 subtype 0
+	ath10k_add_interface: vdev_id: 0, txpower: 0, bss_power: 0
+	...
+	ath10k_pci mac vdev create 1 (add interface) type 2 subtype 1
+	ath10k_add_interface: vdev_id: 1, txpower: 0, bss_power: 0
+
+And the txpower in per vif bss_conf will only be set to valid tx power when
+the interface is assigned with channel_ctx.
+
+But this P2P_DEVICE interface will never be used for any connection, so
+that the uninitialized bss_conf.txpower=0 is assinged to the
+arvif->txpower when interface created.
+
+Since the txpower configuration is firmware per physical interface.
+So the smallest txpower of all vifs will be the one limit the tx power
+of the physical device, that causing the low txpower issue on other
+active interfaces.
+
+	wlan0: Limiting TX power to 21 (24 - 3) dBm
+	ath10k_pci mac vdev_id 0 txpower 21
+	ath10k_mac_txpower_recalc: vdev_id: 1, txpower: 0
+	ath10k_mac_txpower_recalc: vdev_id: 0, txpower: 21
+	ath10k_pci mac txpower 0
+
+This issue only happens when we use the wpa_supplicant that supports
+P2P or if we use the iw tool to create the control P2P_DEVICE interface.
+
+Signed-off-by: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index fe42bf5..6e1550b 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4671,7 +4671,8 @@ static int ath10k_mac_txpower_recalc(struct ath10k *ar)
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+ 	list_for_each_entry(arvif, &ar->arvifs, list) {
+-		WARN_ON(arvif->txpower < 0);
++		if (arvif->txpower <= 0)
++			continue;
+ 
+ 		if (txpower == -1)
+ 			txpower = arvif->txpower;
+@@ -4679,8 +4680,8 @@ static int ath10k_mac_txpower_recalc(struct ath10k *ar)
+ 			txpower = min(txpower, arvif->txpower);
+ 	}
+ 
+-	if (WARN_ON(txpower == -1))
+-		return -EINVAL;
++	if (txpower == -1)
++		return 0;
+ 
+ 	ret = ath10k_mac_txpower_setup(ar, txpower);
+ 	if (ret) {
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
