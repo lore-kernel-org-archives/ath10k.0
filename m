@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGTZh-0005dd-71
- for ath10k@lists.infradead.org; Mon, 12 Dec 2016 16:35:38 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k:  free host-mem with DMA_BIRECTIONAL flag.
-Date: Mon, 12 Dec 2016 16:35:10 +0000
-Message-ID: <87eg1d14xt.fsf@kamboji.qca.qualcomm.com>
-References: <1480962519-13027-1-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1480962519-13027-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Mon, 5 Dec 2016 10:28:39	-0800")
-Content-Language: en-US
-Content-ID: <3DE109F7EDE0DB40A15FCB6C72C26121@qualcomm.com>
+ id 1cGmPC-0001PL-WA
+ for ath10k@lists.infradead.org; Tue, 13 Dec 2016 12:42:05 +0000
+Received: by mail-wm0-x244.google.com with SMTP id m203so18080550wma.3
+ for <ath10k@lists.infradead.org>; Tue, 13 Dec 2016 04:41:42 -0800 (PST)
+From: Christian Lamparter <chunkeey@googlemail.com>
+Subject: Re: [PATCH 1/2] ath10k: add accounting for the extended peer
+ statistics
+Date: Tue, 13 Dec 2016 13:41:33 +0100
+Message-ID: <2870294.lMmxz9iPmq@debian64>
+In-Reply-To: <20161207062824.GA3404@atheros-ThinkPad-T61>
+References: <992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
+ <20161207062824.GA3404@atheros-ThinkPad-T61>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,83 +26,78 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "greearb@candelatech.com" <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-greearb@candelatech.com writes:
+Hello,
 
-> From: Ben Greear <greearb@candelatech.com>
->
-> Hopefully this fixes the problem reported by Kalle:
->
-> Noticed this in my log, but I don't have time to investigate this in
-> detail right now:
->
-> [  413.795346] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
-> [  414.158755] IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-> [  477.439659] ath10k_pci 0000:02:00.0: could not get mac80211 beacon
-> [  481.666630] ------------[ cut here ]------------
-> [  481.666669] WARNING: CPU: 0 PID: 1978 at lib/dma-debug.c:1155 check_unmap+0x320/0x8e0
-> [  481.666688] ath10k_pci 0000:02:00.0: DMA-API: device driver frees DMA memory with different direction [device address=0x000000002d130000] [size=63800 bytes] [mapped with DMA_BIDIRECTIONAL] [unmapped with DMA_TO_DEVICE]
-> [  481.666703] Modules linked in: ctr ccm ath10k_pci(E-) ath10k_core(E) ath(E) mac80211(E) cfg80211(E) snd_hda_codec_hdmi snd_hda_codec_idt snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_pcm snd_seq_midi arc4 snd_rawmidi snd_seq_midi_event snd_seq btusb btintel snd_seq_device joydev coret
-> [  481.671468] CPU: 0 PID: 1978 Comm: rmmod Tainted: G            E   4.9.0-rc7-wt+ #54
-> [  481.671478] Hardware name: Hewlett-Packard HP ProBook 6540b/1722, BIOS 68CDD Ver. F.04 01/27/2010
-> [  481.671489]  ef49dcec c842ee92 c8b5830e ef49dd34 ef49dd20 c80850f5 c8b5a13c ef49dd50
-> [  481.671560]  000007ba c8b5830e 00000483 c8461830 c8461830 00000483 ef49ddcc f34e64b8
-> [  481.671641]  c8b58360 ef49dd3c c80851bb 00000009 00000000 ef49dd34 c8b5a13c ef49dd50
-> [  481.671716] Call Trace:
-> [  481.671731]  [<c842ee92>] dump_stack+0x76/0xb4
-> [  481.671745]  [<c80850f5>] __warn+0xe5/0x100
-> [  481.671757]  [<c8461830>] ? check_unmap+0x320/0x8e0
-> [  481.671769]  [<c8461830>] ? check_unmap+0x320/0x8e0
-> [  481.671780]  [<c80851bb>] warn_slowpath_fmt+0x3b/0x40
-> [  481.671791]  [<c8461830>] check_unmap+0x320/0x8e0
-> [  481.671804]  [<c8462054>] debug_dma_unmap_page+0x84/0xa0
-> [  481.671835]  [<f937cd7a>] ath10k_wmi_free_host_mem+0x9a/0xe0 [ath10k_core]
-> [  481.671861]  [<f9363400>] ath10k_core_destroy+0x50/0x60 [ath10k_core]
-> [  481.671875]  [<f8e13969>] ath10k_pci_remove+0x79/0xa0 [ath10k_pci]
-> [  481.671889]  [<c848d8d8>] pci_device_remove+0x38/0xb0
-> [  481.671901]  [<c859fe4b>] __device_release_driver+0x7b/0x110
-> [  481.671913]  [<c85a00e7>] driver_detach+0x97/0xa0
-> [  481.671923]  [<c859ef8b>] bus_remove_driver+0x4b/0xb0
-> [  481.671934]  [<c85a0cda>] driver_unregister+0x2a/0x60
-> [  481.671949]  [<c848c888>] pci_unregister_driver+0x18/0x70
-> [  481.671965]  [<f8e14dae>] ath10k_pci_exit+0xd/0x25f [ath10k_pci]
-> [  481.671979]  [<c812bb84>] SyS_delete_module+0xf4/0x180
-> [  481.671995]  [<c81f801b>] ? __might_fault+0x8b/0xa0
-> [  481.672009]  [<c80037d0>] do_fast_syscall_32+0xa0/0x1e0
-> [  481.672025]  [<c88d4c88>] sysenter_past_esp+0x45/0x74
-> [  481.672037] ---[ end trace 3fd23759e17e1622 ]---
-> [  481.672049] Mapped at:
-> [  481.672060]  [  481.672072] [<c846062c>] debug_dma_map_page.part.25+0x1c/0xf0
-> [  481.672083]  [  481.672095] [<c8460799>] debug_dma_map_page+0x99/0xc0
-> [  481.672106]  [  481.672132] [<f93745ec>] ath10k_wmi_alloc_chunk+0x12c/0x1f0 [ath10k_core]
-> [  481.672142]  [  481.672168] [<f937d0c4>] ath10k_wmi_event_service_ready_work+0x304/0x540 [ath10k_core]
-> [  481.672178]  [  481.672190] [<c80a3643>] process_one_work+0x1c3/0x670
-> [  482.137134] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-> [  482.313144] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
-> [  482.313274] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/cal-pci-0000:02:00.0.bin failed with error -2
-> [  482.313768] ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000
-> [  482.313777] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 0 testmode 1
-> [  482.313974] ath10k_pci 0000:02:00.0: firmware ver 10.2.4.70.59-2 api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 4159f498
-> [  482.369858] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
-> [  482.370011] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
-> [  483.596770] ath10k_pci 0000:02:00.0: htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-sta 128 raw 0 hwcrypto 1
-> [  483.701686] ath: EEPROM regdomain: 0x0
-> [  483.701706] ath: EEPROM indicates default country code should be used
-> [  483.701713] ath: doing EEPROM country->regdmn map search
-> [  483.701721] ath: country maps to regdmn code: 0x3a
-> [  483.701730] ath: Country alpha2 being used: US
-> [  483.701737] ath: Regpair used: 0x3a
->
-> Reported-by: Kalle Valo <kvalo@qca.qualcomm.com>
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
+It looks like google put your mail into the spam-can. 
+I'm sorry for not answering sooner.
 
-Thanks, I don't see the warning anymore so this seems to be fixed. I'll
-push this to 4.10.
+On Wednesday, December 7, 2016 11:58:24 AM CET Mohammed Shafi Shajakhan wrote:
+> On Mon, Dec 05, 2016 at 10:52:45PM +0100, Christian Lamparter wrote:
+> > The 10.4 firmware adds extended peer information to the
+> > firmware's statistics payload. This additional info is
+> > stored as a separate data field and the elements are
+> > stored in their own "peers_extd" list.
+> > 
+> > These elements can pile up in the same way as the peer
+> > information elements. This is because the
+> > ath10k_wmi_10_4_op_pull_fw_stats() function tries to
+> > pull the same amount (num_peer_stats) for every statistic
+> > data unit.
+> > 
+> > Fixes: 4a49ae94a448faa ("ath10k: fix 10.4 extended peer stats update")
+> > Signed-off-by: Christian Lamparter <chunkeey@googlemail.com>
+> > ---
+> >  drivers/net/wireless/ath/ath10k/debug.c | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+> > index 82a4c67f3672..4acd9eb65910 100644
+> > --- a/drivers/net/wireless/ath/ath10k/debug.c
+> > +++ b/drivers/net/wireless/ath/ath10k/debug.c
+> > @@ -399,6 +399,7 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+> >  			 * prevent firmware from DoS-ing the host.
+> >  			 */
+> >  			ath10k_fw_stats_peers_free(&ar->debug.fw_stats.peers);
+> > +			ath10k_fw_extd_stats_peers_free(&ar->debug.fw_stats.peers_extd);
+> 
+> [shafi] thanks for fixing this !
+> 
+> >  			ath10k_warn(ar, "dropping fw peer stats\n");
+> >  			goto free;
+> >  		}
+> > @@ -409,10 +410,12 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+> >  			goto free;
+> >  		}
+> >  
+> > +		if (!list_empty(&stats.peers))
+> 
+> [shafi] sorry please correct me if i am wrong, for 'extended peer stats' we are checking
+> for normal 'peer stats' ? Is this the fix intended, i had started a build to
+> check your change and we will keep you posted, does this fix displaying
+> 'rx_duration' in ath10k fw_stats.
+The idea is not to queue any "extended peer stats" when there where no "peer stats" to
+begin with. Because otherwise, the function is still vulnerable to OOM since the 
+extended peers stats will be queued unchecked (not that this is currently a problem).
+ 
+> > +			list_splice_tail_init(&stats.peers_extd,
+> > +					      &ar->debug.fw_stats.peers_extd);
+> > +
+> >  		list_splice_tail_init(&stats.peers, &ar->debug.fw_stats.peers);
+> >  		list_splice_tail_init(&stats.vdevs, &ar->debug.fw_stats.vdevs);
+> > -		list_splice_tail_init(&stats.peers_extd,
+> > -				      &ar->debug.fw_stats.peers_extd);
+> >  	}
+> >  
+> >  	complete(&ar->debug.fw_stats_complete);
 
--- 
-Kalle Valo
+Regards,
+Christian
+
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
