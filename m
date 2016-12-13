@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGpe8-0006UM-J7
- for ath10k@lists.infradead.org; Tue, 13 Dec 2016 16:09:42 +0000
-Message-ID: <1481645351.20412.34.camel@sipsolutions.net>
-Subject: Re: [PATCH 2/4] cfg80211: Add new NL80211_CMD_SET_BTCOEX_PRIORITY
- to support BTCOEX
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 13 Dec 2016 17:09:11 +0100
-In-Reply-To: <5e5e8971c96293a81e7cb37bcdfbd593@codeaurora.org>
-References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
- <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
- <1480949353.31788.27.camel@sipsolutions.net>
- <5e5e8971c96293a81e7cb37bcdfbd593@codeaurora.org>
-Mime-Version: 1.0
+ id 1cGqqj-0000jL-Bv
+ for ath10k@lists.infradead.org; Tue, 13 Dec 2016 17:26:46 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC v2 05/11] ath10k: htc: refactorization
+Date: Tue, 13 Dec 2016 17:26:18 +0000
+Message-ID: <871sxbzqo6.fsf@kamboji.qca.qualcomm.com>
+References: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
+ <1479496971-19174-6-git-send-email-erik.stromdahl@gmail.com>
+ <87inqoymd0.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQkuUFxnra75B4LpF5+k9yE7hkNYDXbtUMBLq2LFuPSasg@mail.gmail.com>
+In-Reply-To: <CA+BoTQkuUFxnra75B4LpF5+k9yE7hkNYDXbtUMBLq2LFuPSasg@mail.gmail.com>	(Michal
+ Kazior's message of "Tue, 13 Dec 2016 14:52:41 +0100")
+Content-Language: en-US
+Content-ID: <C711B29C497F4C469E1B395FA011F024@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +24,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tamizh chelvam <tamizhchelvam@codeaurora.org>
-Cc: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Cj4gPiA+IMKgLyoqCj4gPiA+ICsgKiB3aXBoeV9idGNvZXhfc3VwcG9ydF9mbGFncwo+ID4gPiAr
-ICoJVGhpcyBlbnVtIGhhcyB0aGUgZHJpdmVyIHN1cHBvcnRlZCBmcmFtZSB0eXBlcyBmb3IKPiA+
-ID4gQlRDT0VYLgo+ID4gPiArICogQFdJUEhZX1dMQU5fQkVfUFJFRkVSUkVEIC0gU3VwcG9ydHMg
-QmVzdCBFZmZvcnQgZnJhbWUgZm9yCj4gPiA+IEJUQ09FWAo+ID4gPiArICogQFdJUEhZX1dMQU5f
-QktfUFJFRkVSUkVEIC0gc3VwcG9ydHMgQmFja2dyb3VuZCBmcmFtZSBmb3IKPiA+ID4gQlRDT0VY
-Cj4gPiA+ICsgKiBAV0lQSFlfV0xBTl9WSV9QUkVGRVJSRUQgLSBzdXBwb3J0cyBWaWRlbyBmcmFt
-ZSBmb3IgQlRDT0VYCj4gPiA+ICsgKiBAV0lQSFlfV0xBTl9WT19QUkVGRVJSRUQgLSBzdXBwb3J0
-cyBWb2ljZSBmcmFtZSBmb3IgQlRDT0VYCj4gPiA+ICsgKiBAV0lQSFlfV0xBTl9CRUFDT05fUFJF
-RkVSUkVEIC0gc3VwcG9ydHMgQmVhY29uIGZyYW1lIGZvcgo+ID4gPiBCVENPRVgKPiA+ID4gKyAq
-IEBXSVBIWV9XTEFOX01HTVRfUFJFRkVSUkVEIC0gc3VwcG9ydHMgTWFuYWdlbWVudCBmcmFtZXMg
-Zm9yCj4gPiA+IEJUQ09FWC4KPiA+ID4gKyAqLwo+ID4gCj4gPiBUaGF0J3Mgbm90IG1ha2luZyBt
-dWNoIHNlbnNlIHRvIG1lPwo+ID4gCj4gCj4gaXMgaXQgZmluZSB0byBoYXZlIGFzIFdJUEhZX0JU
-Q09FWF9CRV9QUkVGRVJSRUQgPwoKSXQncyBub3QgcmVhbGx5IGNsZWFyIHRvIG1lIHdoYXQgeW91
-IGludGVuZCB0byBkbyB0aGlzIC0gaWYgaXQncyByZWFsbHkKc3VwcG9ydCBmbGFncyB0aGVuIHlv
-dSByZWFsbHkgc2hvdWxkIG5hbWUgdGhvc2UgYmV0dGVyLgoKPiA+ID4gKy8qKgo+ID4gPiArICog
-ZW51bSB3aXBoeV9idGNvZXhfcHJpb3JpdHkgLSBCVENPRVggcHJpb3JpdHkgbGV2ZWwKPiA+ID4g
-KyAqCVRoaXMgZW51bSBkZWZpbmVzIHByaW9yaXR5IGxldmVsIGZvciBCVENPRVgKPiA+ID4gKyAq
-IFdJUEhZX1dMQU5fUFJFRkVSUkVEX0xPVyAtIGxvdyBwcmlvcml0eSBmcmFtZXMgb3ZlciBCVAo+
-ID4gPiB0cmFmZmljCj4gPiA+ICsgKiBXSVBIWV9XTEFOX1BSRUZFUlJFRF9ISUdIIC0gaGlnaCBw
-cmlvcml0eSBmcmFtZXMgb3ZlciBCVAo+ID4gPiB0cmFmZmljCj4gPiA+ICsgKi8KPiA+ID4gKwo+
-ID4gPiArZW51bSB3aXBoeV9idGNvZXhfcHJpb3JpdHkgewo+ID4gPiArCVdJUEhZX1dMQU5fUFJF
-RkVSUkVEX0xPVyA9IGZhbHNlLAo+ID4gPiArCVdJUEhZX1dMQU5fUFJFRkVSUkVEX0hJR0ggPSB0
-cnVlLAo+ID4gPiArfTsKPiA+IAo+ID4gVGhhdCBmYWxzZS90cnVlIHNlZW1zIGp1c3Qgc3RyYW5n
-ZS4KPiA+IAo+IAo+IEkgd2lsbCBqdXN0IHVzZSBhcyBhIGVudW0gd2l0aG91dCBhc3NpZ25pbmcg
-ZmFsc2UvdHJ1ZS4KCldoYXQgZG8geW91IGV2ZW4gbmVlZCB0aGlzIGVudW0gZm9yIHRob3VnaD8K
-Cj4gPiA+ICtlbnVtIG5sODAyMTFfYnRjb2V4X3ByaW9yaXR5IHsKPiA+ID4gKwlfX05MODAyMTFf
-V0xBTl9QUkVGRVJSRURfSU5WQUxJRCwKPiA+ID4gKwlOTDgwMjExX1dMQU5fQkVfUFJFRkVSUkVE
-LAo+ID4gPiArCU5MODAyMTFfV0xBTl9CS19QUkVGRVJSRUQsCj4gPiA+ICsJTkw4MDIxMV9XTEFO
-X1ZJX1BSRUZFUlJFRCwKPiA+ID4gKwlOTDgwMjExX1dMQU5fVk9fUFJFRkVSUkVELAo+ID4gPiAr
-CU5MODAyMTFfV0xBTl9CRUFDT05fUFJFRkVSUkVELAo+ID4gPiArCU5MODAyMTFfV0xBTl9NR01U
-X1BSRUZFUlJFRCwKPiA+ID4gKwlfX05MODAyMTFfV0xBTl9QUkVGRVJSRURfTEFTVCwKPiA+ID4g
-KwlOTDgwMjExX1dMQU5fUFJFRkVSUkVEX01BWCA9Cj4gPiA+ICsJCQlfX05MODAyMTFfV0xBTl9Q
-UkVGRVJSRURfTEFTVCAtIDEsCj4gPiA+ICt9Owo+ID4gCj4gPiBXb3VsZG4ndCBhIGJpdG1hcCBi
-ZSBlYXNpZXI/Cj4gPiAKPiBzaW5jZSB0aGlzIGlzIHRvIGRpc3Rpbmd1aXNoIGJldHdlZW4gZGlm
-ZmVyZW50IGJ0Y29leCBwcmlvcml0aWVzIGFuZAo+IHdlwqAKPiBhcmUgbm90IGdvaW5nIHRvIGRv
-IGFueSBtYW5pcHVsYXRpb25zIG9uIHRoZXNlIHBhcmFtZXRlcnMuCj4gSXQgaXMganVzdCB1c2Vk
-IGFzIGZsYWcgYXR0cmlidXRlLgoKQnV0IHdoeSB0aGUgKHBhcnNpbmcpIGNvbXBsZXhpdHksIHdo
-ZW4gYSBzaW5nbGUgYml0bWFwIHdvdWxkIGRvPwoKam9oYW5uZXMKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
-QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hdGgxMGsK
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 13 December 2016 at 14:44, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+>> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+>>
+>>> Code refactorization:
+>>>
+>>> Moved the code for ep 0 in ath10k_htc_rx_completion_handler
+>>> to ath10k_htc_control_rx_complete.
+>>>
+>>> This eases the implementation of SDIO/mbox significantly since
+>>> the ep_rx_complete cb is invoked directly from the SDIO/mbox
+>>> hif layer.
+>>>
+>>> Since the ath10k_htc_control_rx_complete already is present
+>>> (only containing a warning message) there is no reason for not
+>>> using it (instead of having a special case for ep 0 in
+>>> ath10k_htc_rx_completion_handler).
+>>>
+>>> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+>>
+>> I tested this on QCA988X PCI board just to see if there are any
+>> regressions. It crashes immediately during module load, every time, and
+>> bisected that the crashing starts on this patch:
+>>
+>> [ 1239.715325] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+>> [ 1239.885125] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
+>> [ 1239.885260] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/cal-pci-0000:02:00.0.bin failed with error -2
+>> [ 1239.885687] ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000
+>> [ 1239.885699] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
+>> [ 1239.885899] ath10k_pci 0000:02:00.0: firmware ver 10.2.4.70.59-2 api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 4159f498
+>> [ 1239.941836] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
+>> [ 1239.941993] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
+>> [ 1241.136693] BUG: unable to handle kernel NULL pointer dereference at   (null)
+>> [ 1241.136738] IP: [<  (null)>]   (null)
+>> [ 1241.136759] *pdpt = 0000000000000000 *pde = f0002a55f0002a55 [ 1241.136781]
+>> [ 1241.136793] Oops: 0010 [#1] SMP
+>>
+>> What's odd is that when I added some printks on my own and enabled both
+>> boot and htc debug levels it doesn't crash anymore. After everything
+>> works normally after that, I can start AP mode and connect to it. Is it
+>> a race somewhere?
+>
+> Yes. htc_wait_target() is called after hif_start(). The ep_rx_complete
+> is set in htc_wait_target() [changed patch 4, but still too late].
+>
+> ep_rx_complete must be set prior to calling hif_start(). You probably
+> crash on end of ath10k_htc_rx_completion_handler() when trying to call
+> ep->ep_ops.ep_rx_complete(ar, skb).
+
+Yeah, just checked and ep->ep_ops.ep_rx_complete is NULL at the end of
+ath10k_htc_rx_completion_handler().
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
