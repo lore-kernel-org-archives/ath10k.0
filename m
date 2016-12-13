@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-qk0-x22f.google.com ([2607:f8b0:400d:c09::22f])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cGnOK-0002oz-KV
- for ath10k@lists.infradead.org; Tue, 13 Dec 2016 13:45:15 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC v2 05/11] ath10k: htc: refactorization
-Date: Tue, 13 Dec 2016 13:44:44 +0000
-Message-ID: <87inqoymd0.fsf@kamboji.qca.qualcomm.com>
+ id 1cGnVw-0002ds-9V
+ for ath10k@lists.infradead.org; Tue, 13 Dec 2016 13:53:06 +0000
+Received: by mail-qk0-x22f.google.com with SMTP id q130so116456320qke.1
+ for <ath10k@lists.infradead.org>; Tue, 13 Dec 2016 05:52:42 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <87inqoymd0.fsf@kamboji.qca.qualcomm.com>
 References: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
  <1479496971-19174-6-git-send-email-erik.stromdahl@gmail.com>
-In-Reply-To: <1479496971-19174-6-git-send-email-erik.stromdahl@gmail.com>
- (Erik Stromdahl's message of "Fri, 18 Nov 2016 20:22:45 +0100")
-Content-Language: en-US
-Content-ID: <FBE106D596261441BB63FA9F8ECBDCE1@qualcomm.com>
-MIME-Version: 1.0
+ <87inqoymd0.fsf@kamboji.qca.qualcomm.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Tue, 13 Dec 2016 14:52:41 +0100
+Message-ID: <CA+BoTQkuUFxnra75B4LpF5+k9yE7hkNYDXbtUMBLq2LFuPSasg@mail.gmail.com>
+Subject: Re: [RFC v2 05/11] ath10k: htc: refactorization
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,56 +22,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
-
-> Code refactorization:
->
-> Moved the code for ep 0 in ath10k_htc_rx_completion_handler
-> to ath10k_htc_control_rx_complete.
->
-> This eases the implementation of SDIO/mbox significantly since
-> the ep_rx_complete cb is invoked directly from the SDIO/mbox
-> hif layer.
->
-> Since the ath10k_htc_control_rx_complete already is present
-> (only containing a warning message) there is no reason for not
-> using it (instead of having a special case for ep 0 in
-> ath10k_htc_rx_completion_handler).
->
-> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
-
-I tested this on QCA988X PCI board just to see if there are any
-regressions. It crashes immediately during module load, every time, and
-bisected that the crashing starts on this patch:
-
-[ 1239.715325] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-[ 1239.885125] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
-[ 1239.885260] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/cal-pci-0000:02:00.0.bin failed with error -2
-[ 1239.885687] ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000
-[ 1239.885699] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
-[ 1239.885899] ath10k_pci 0000:02:00.0: firmware ver 10.2.4.70.59-2 api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 4159f498
-[ 1239.941836] ath10k_pci 0000:02:00.0: Direct firmware load for ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
-[ 1239.941993] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
-[ 1241.136693] BUG: unable to handle kernel NULL pointer dereference at   (null)
-[ 1241.136738] IP: [<  (null)>]   (null)
-[ 1241.136759] *pdpt = 0000000000000000 *pde = f0002a55f0002a55 [ 1241.136781] 
-[ 1241.136793] Oops: 0010 [#1] SMP
-
-What's odd is that when I added some printks on my own and enabled both
-boot and htc debug levels it doesn't crash anymore. After everything
-works normally after that, I can start AP mode and connect to it. Is it
-a race somewhere?
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTMgRGVjZW1iZXIgMjAxNiBhdCAxNDo0NCwgVmFsbywgS2FsbGUgPGt2YWxvQHFjYS5xdWFs
+Y29tbS5jb20+IHdyb3RlOgo+IEVyaWsgU3Ryb21kYWhsIDxlcmlrLnN0cm9tZGFobEBnbWFpbC5j
+b20+IHdyaXRlczoKPgo+PiBDb2RlIHJlZmFjdG9yaXphdGlvbjoKPj4KPj4gTW92ZWQgdGhlIGNv
+ZGUgZm9yIGVwIDAgaW4gYXRoMTBrX2h0Y19yeF9jb21wbGV0aW9uX2hhbmRsZXIKPj4gdG8gYXRo
+MTBrX2h0Y19jb250cm9sX3J4X2NvbXBsZXRlLgo+Pgo+PiBUaGlzIGVhc2VzIHRoZSBpbXBsZW1l
+bnRhdGlvbiBvZiBTRElPL21ib3ggc2lnbmlmaWNhbnRseSBzaW5jZQo+PiB0aGUgZXBfcnhfY29t
+cGxldGUgY2IgaXMgaW52b2tlZCBkaXJlY3RseSBmcm9tIHRoZSBTRElPL21ib3gKPj4gaGlmIGxh
+eWVyLgo+Pgo+PiBTaW5jZSB0aGUgYXRoMTBrX2h0Y19jb250cm9sX3J4X2NvbXBsZXRlIGFscmVh
+ZHkgaXMgcHJlc2VudAo+PiAob25seSBjb250YWluaW5nIGEgd2FybmluZyBtZXNzYWdlKSB0aGVy
+ZSBpcyBubyByZWFzb24gZm9yIG5vdAo+PiB1c2luZyBpdCAoaW5zdGVhZCBvZiBoYXZpbmcgYSBz
+cGVjaWFsIGNhc2UgZm9yIGVwIDAgaW4KPj4gYXRoMTBrX2h0Y19yeF9jb21wbGV0aW9uX2hhbmRs
+ZXIpLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBFcmlrIFN0cm9tZGFobCA8ZXJpay5zdHJvbWRhaGxA
+Z21haWwuY29tPgo+Cj4gSSB0ZXN0ZWQgdGhpcyBvbiBRQ0E5ODhYIFBDSSBib2FyZCBqdXN0IHRv
+IHNlZSBpZiB0aGVyZSBhcmUgYW55Cj4gcmVncmVzc2lvbnMuIEl0IGNyYXNoZXMgaW1tZWRpYXRl
+bHkgZHVyaW5nIG1vZHVsZSBsb2FkLCBldmVyeSB0aW1lLCBhbmQKPiBiaXNlY3RlZCB0aGF0IHRo
+ZSBjcmFzaGluZyBzdGFydHMgb24gdGhpcyBwYXRjaDoKPgo+IFsgMTIzOS43MTUzMjVdIGF0aDEw
+a19wY2kgMDAwMDowMjowMC4wOiBwY2kgaXJxIG1zaSBvcGVyX2lycV9tb2RlIDIgaXJxX21vZGUg
+MCByZXNldF9tb2RlIDAKPiBbIDEyMzkuODg1MTI1XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDog
+RGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yIGF0aDEway9wcmUtY2FsLXBjaS0wMDAwOjAyOjAwLjAu
+YmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4gWyAxMjM5Ljg4NTI2MF0gYXRoMTBrX3BjaSAwMDAw
+OjAyOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvciBhdGgxMGsvY2FsLXBjaS0wMDAwOjAy
+OjAwLjAuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4gWyAxMjM5Ljg4NTY4N10gYXRoMTBrX3Bj
+aSAwMDAwOjAyOjAwLjA6IHFjYTk4OHggaHcyLjAgdGFyZ2V0IDB4NDEwMDAxNmMgY2hpcF9pZCAw
+eDA0MzIwMmZmIHN1YiAwMDAwOjAwMDAKPiBbIDEyMzkuODg1Njk5XSBhdGgxMGtfcGNpIDAwMDA6
+MDI6MDAuMDoga2NvbmZpZyBkZWJ1ZyAxIGRlYnVnZnMgMSB0cmFjaW5nIDEgZGZzIDEgdGVzdG1v
+ZGUgMQo+IFsgMTIzOS44ODU4OTldIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBmaXJtd2FyZSB2
+ZXIgMTAuMi40LjcwLjU5LTIgYXBpIDUgZmVhdHVyZXMgbm8tcDJwLHJhdy1tb2RlLG1mcCxhbGxv
+d3MtbWVzaC1iY2FzdCBjcmMzMiA0MTU5ZjQ5OAo+IFsgMTIzOS45NDE4MzZdIGF0aDEwa19wY2kg
+MDAwMDowMjowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IgYXRoMTBrL1FDQTk4OFgvaHcy
+LjAvYm9hcmQtMi5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPiBbIDEyMzkuOTQxOTkzXSBhdGgx
+MGtfcGNpIDAwMDA6MDI6MDAuMDogYm9hcmRfZmlsZSBhcGkgMSBibWlfaWQgTi9BIGNyYzMyIGJl
+YmM3YzA4Cj4gWyAxMjQxLjEzNjY5M10gQlVHOiB1bmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxM
+IHBvaW50ZXIgZGVyZWZlcmVuY2UgYXQgICAobnVsbCkKPiBbIDEyNDEuMTM2NzM4XSBJUDogWzwg
+IChudWxsKT5dICAgKG51bGwpCj4gWyAxMjQxLjEzNjc1OV0gKnBkcHQgPSAwMDAwMDAwMDAwMDAw
+MDAwICpwZGUgPSBmMDAwMmE1NWYwMDAyYTU1IFsgMTI0MS4xMzY3ODFdCj4gWyAxMjQxLjEzNjc5
+M10gT29wczogMDAxMCBbIzFdIFNNUAo+Cj4gV2hhdCdzIG9kZCBpcyB0aGF0IHdoZW4gSSBhZGRl
+ZCBzb21lIHByaW50a3Mgb24gbXkgb3duIGFuZCBlbmFibGVkIGJvdGgKPiBib290IGFuZCBodGMg
+ZGVidWcgbGV2ZWxzIGl0IGRvZXNuJ3QgY3Jhc2ggYW55bW9yZS4gQWZ0ZXIgZXZlcnl0aGluZwo+
+IHdvcmtzIG5vcm1hbGx5IGFmdGVyIHRoYXQsIEkgY2FuIHN0YXJ0IEFQIG1vZGUgYW5kIGNvbm5l
+Y3QgdG8gaXQuIElzIGl0Cj4gYSByYWNlIHNvbWV3aGVyZT8KClllcy4gaHRjX3dhaXRfdGFyZ2V0
+KCkgaXMgY2FsbGVkIGFmdGVyIGhpZl9zdGFydCgpLiBUaGUgZXBfcnhfY29tcGxldGUKaXMgc2V0
+IGluIGh0Y193YWl0X3RhcmdldCgpIFtjaGFuZ2VkIHBhdGNoIDQsIGJ1dCBzdGlsbCB0b28gbGF0
+ZV0uCgplcF9yeF9jb21wbGV0ZSBtdXN0IGJlIHNldCBwcmlvciB0byBjYWxsaW5nIGhpZl9zdGFy
+dCgpLiBZb3UgcHJvYmFibHkKY3Jhc2ggb24gZW5kIG9mIGF0aDEwa19odGNfcnhfY29tcGxldGlv
+bl9oYW5kbGVyKCkgd2hlbiB0cnlpbmcgdG8gY2FsbAplcC0+ZXBfb3BzLmVwX3J4X2NvbXBsZXRl
+KGFyLCBza2IpLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
+cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
