@@ -1,17 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.w1.fi ([212.71.239.96] helo=li674-96.members.linode.com)
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cHFhC-00028G-BQ
- for ath10k@lists.infradead.org; Wed, 14 Dec 2016 19:58:35 +0000
-Date: Wed, 14 Dec 2016 21:58:05 +0200
-From: Jouni Malinen <j@w1.fi>
-Subject: Re: ath10k firmware sends probes on DFS channels without radar
- detection
-Message-ID: <20161214195805.GA15022@w1.fi>
-References: <004a01d24fe2$94da8dc0$be8fa940$@acksys.fr>
+ id 1cHGmf-000272-Fa
+ for ath10k@lists.infradead.org; Wed, 14 Dec 2016 21:08:18 +0000
+Received: by mail-wm0-x241.google.com with SMTP id u144so1796637wmu.0
+ for <ath10k@lists.infradead.org>; Wed, 14 Dec 2016 13:07:53 -0800 (PST)
+Subject: Re: [RFC v2 05/11] ath10k: htc: refactorization
+References: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
+ <1479496971-19174-6-git-send-email-erik.stromdahl@gmail.com>
+ <87inqoymd0.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQkuUFxnra75B4LpF5+k9yE7hkNYDXbtUMBLq2LFuPSasg@mail.gmail.com>
+ <871sxbzqo6.fsf@kamboji.qca.qualcomm.com>
+ <70b8a055-e6ba-857d-8b03-06f50e3f10fe@gmail.com>
+ <871sxay66a.fsf@kamboji.qca.qualcomm.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <b3068401-aee9-47bc-141e-692ea72ffb74@gmail.com>
+Date: Wed, 14 Dec 2016 22:07:50 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <004a01d24fe2$94da8dc0$be8fa940$@acksys.fr>
+In-Reply-To: <871sxay66a.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,60 +30,74 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jean-Pierre Tosoni <jp.tosoni@acksys.fr>
-Cc: linux-wireless@vger.kernel.org, Cedric VONCKEN <cedric.voncken@acksys.fr>, ath10k@lists.infradead.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tue, Dec 06, 2016 at 06:02:52PM +0100, Jean-Pierre Tosoni wrote:
-> This follows on the previous discussion
-> 	"Client station sends probes on DFS channels"
+
+
+On 12/14/2016 02:46 PM, Valo, Kalle wrote:
+> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 > 
-> Problem:
-> The combination of QCA988X firmware v10.2.4.70-2 + ath10k +
-> wpa_supplicant do not comply with the norm ETSI/EN 301-893
-> section 4.7; because they can send probes for 600s when no
-> AP is around.
+>> I have made a few updates since I submitted the original RFC and created
+>> a repo on github:
+>>
+>> https://github.com/erstrom/linux-ath
+>>
+>> I have a bunch of branches that are all based on the tags on the ath master.
+>>
+>> As of this moment the latest version is:
+>>
+>> ath-201612131156-ath10k-sdio
+>>
+>> This branch contains the original RFC patches plus some addons/fixes.
 > 
-> Analysis:
-> The problem seems to lie in the firmware, which regards the presence
-> of *any* beacon as a proof that the channel is radar-clean for 600s.
+> Good, this makes it easier to follow the development. So what's the
+> current status with this branch? What works and what doesn't?
+> 
+Well, everything in there has been tested (limited though, as you
+yourself experienced), but it is not complete. I still have some other
+patches that need some more refurbishing before I can push them.
 
-I don't think this is really firmware, but cfg80211 regulatory code and
-how it interacts with ath10k..
+I will push those patches that I consider "good enough" for publish to
+this repo. Most likely I will rewrite/squash etc. some of it before
+submitting a new RFC series.
 
-> - there is no obvious fix working in ath10k.
-> - the issue does not show up with other mac80211 devices like ath9k.
-> - wpa_supplicant considers this is a kernel issue [2]
+So, there are still some additional stuff that needs to be added. In my
+case I have a series of patches related to OCB (Outside the Context of a
+BSS) mode of operation (since the chipset I am using is intended for
+this purpose). These patches are still not complete.
 
-There seems to be a difference between ath9k (mac80211-based Probe
-Request frame sending) and ath10k (firmware) in this area for active
-scanning. mac80211 uses IEEE80211_CHAN_NO_IR | IEEE80211_CHAN_RADAR
-while ath10k uses IEEE80211_CHAN_NO_IR. I'd assume this difference
-results in ath10k using cfg80211 beacon hints (etc.) to update the NO_IR
-flag and that might be behind the difference you see.
+Other SDIO 11ac chipsets might just need an item in the struct
+ath10k_hw_params array together with some firmware files.
 
-Could you check whether the following change gets you the behavior you
-want to see here? I have not had a chance to test this yet, but based on
-code review, it looks like something that brings the same behavior to
-ath10k that ath9k has for this through mac80211.
+> Especially I'm interested about the state of the HTT high latency
+> support. How much work is to add that? It would also make it easier to
+> add USB support to ath10k.
+> 
 
+I actually have some patches regarding this, but they have not been
+tested at all since I have not yet managed to fully configure my SDIO
+chip properly so far. I must finish the OCB code I mentioned earlier and
+fix another really annoying issue with a missing HTT version response
+(sometimes target won't respond to the HTT version request).
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index aa545a1..758dbbd 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2973,7 +2973,8 @@ static int ath10k_update_channel_list(struct ath10k *ar)
- 			ch->chan_radar =
- 				!!(channel->flags & IEEE80211_CHAN_RADAR);
- 
--			passive = channel->flags & IEEE80211_CHAN_NO_IR;
-+			passive = channel->flags & (IEEE80211_CHAN_NO_IR |
-+						    IEEE80211_CHAN_RADAR);
- 			ch->passive = passive;
- 
- 			ch->freq = channel->center_freq;
+Then, hopefully, I can make some TX and RX tests.
 
--- 
-Jouni Malinen                                            PGP id EFC895FA
+I think the HTT TX part is fairly straight forward. But the RX part is a
+little bit more tricky since I am not really sure about how to interface
+mac80211 in the RX path.
+
+My work flow goes like this:
+
+As soon as there is a new tag on the ath.git master, I rebase my stuff
+on top of it and push a new branch to my repo.
+
+I will continuously push updates to the latest branch (the branch based
+on the latest ath tag).
+
+Older branches will not be maintained.
+
+/Erik
 
 _______________________________________________
 ath10k mailing list
