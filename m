@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cH9wG-0003cZ-05
- for ath10k@lists.infradead.org; Wed, 14 Dec 2016 13:49:44 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC v2 05/11] ath10k: htc: refactorization
-Date: Wed, 14 Dec 2016 13:49:10 +0000
-Message-ID: <87wpf2wrhm.fsf@kamboji.qca.qualcomm.com>
-References: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
- <1479496971-19174-6-git-send-email-erik.stromdahl@gmail.com>
- <87inqoymd0.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkuUFxnra75B4LpF5+k9yE7hkNYDXbtUMBLq2LFuPSasg@mail.gmail.com>
- <871sxbzqo6.fsf@kamboji.qca.qualcomm.com>
- <70b8a055-e6ba-857d-8b03-06f50e3f10fe@gmail.com>
- <CA+BoTQmRV59imnmSykjs=ym0qut9akUHzFKfAMioK=MT8my98A@mail.gmail.com>
-In-Reply-To: <CA+BoTQmRV59imnmSykjs=ym0qut9akUHzFKfAMioK=MT8my98A@mail.gmail.com>	(Michal
- Kazior's message of "Tue, 13 Dec 2016 20:21:53 +0100")
-Content-Language: en-US
-Content-ID: <720A8D67622C764FB8EA50ADB64DEAAF@qualcomm.com>
+ id 1cHCZW-0006TJ-Tz
+ for ath10k@lists.infradead.org; Wed, 14 Dec 2016 16:38:28 +0000
+Received: by mail-wm0-x243.google.com with SMTP id u144so320274wmu.0
+ for <ath10k@lists.infradead.org>; Wed, 14 Dec 2016 08:38:06 -0800 (PST)
+From: Christian Lamparter <chunkeey@googlemail.com>
+Subject: Re: [PATCH 1/2] ath10k: add accounting for the extended peer
+ statistics
+Date: Wed, 14 Dec 2016 17:38:02 +0100
+Message-ID: <1859306.unY1Rqbrx8@debian64>
+In-Reply-To: <20161214073337.GA4046@atheros-ThinkPad-T61>
+References: <992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
+ <2870294.lMmxz9iPmq@debian64> <20161214073337.GA4046@atheros-ThinkPad-T61>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,39 +26,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+On Wednesday, December 14, 2016 1:03:38 PM CET Mohammed Shafi Shajakhan wrote:
+> > On Wednesday, December 7, 2016 11:58:24 AM CET Mohammed Shafi Shajakhan wrote:
+> > > On Mon, Dec 05, 2016 at 10:52:45PM +0100, Christian Lamparter wrote:
+> > > > @@ -409,10 +410,12 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+> > > >  			goto free;
+> > > >  		}
+> > > >  
+> > > > +		if (!list_empty(&stats.peers))
+> > > 
+> > > [shafi] sorry please correct me if i am wrong, for 'extended peer stats' we are checking
+> > > for normal 'peer stats' ? Is this the fix intended, i had started a build to
+> > > check your change and we will keep you posted, does this fix displaying
+> > > 'rx_duration' in ath10k fw_stats.
+> > The idea is not to queue any "extended peer stats" when there where no "peer stats" to
+> > begin with. Because otherwise, the function is still vulnerable to OOM since the 
+> > extended peers stats will be queued unchecked (not that this is currently a problem).
+> 
+> [shafi] list_splice_tail_init should still check for non-empty 'peers_extd' list
+> and append if required ? please let me know if i am still missing something
+Well, you can also count the entries in peers_extd and delete the old entries
+if they start to overflow. If you want to do it differently, please go ahead.
 
->> I have made a few updates since I submitted the original RFC and created
->> a repo on github:
->>
->> https://github.com/erstrom/linux-ath
->>
->> I have a bunch of branches that are all based on the tags on the ath master.
->>
->> As of this moment the latest version is:
->>
->> ath-201612131156-ath10k-sdio
->>
->> This branch contains the original RFC patches plus some addons/fixes.
->>
->> In the above mentioned branch there are a few commits related to this
->> race condition. Perhaps you can have a look at them?
->>
->> The commits are:
->> 821672913328cf737c9616786dc28d2e4e8a4a90
->
-> I would avoid if(bus==xx) checks.
+Regards,
+Christian
 
-Very much agreed. For example to enable HTT high latency support you
-could add an enum to ath10k_core_create() with values for both high and
-low latency. This way sdio.c and pci.c can enable the correct mode
-during initialisation.
-
--- 
-Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
