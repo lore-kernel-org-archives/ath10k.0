@@ -1,19 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cH44w-0006kK-Vm
- for ath10k@lists.infradead.org; Wed, 14 Dec 2016 07:34:19 +0000
-Date: Wed, 14 Dec 2016 13:03:38 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH 1/2] ath10k: add accounting for the extended peer
- statistics
-Message-ID: <20161214073337.GA4046@atheros-ThinkPad-T61>
-References: <992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
- <20161207062824.GA3404@atheros-ThinkPad-T61>
- <2870294.lMmxz9iPmq@debian64>
+ id 1cH9tg-0002or-JF
+ for ath10k@lists.infradead.org; Wed, 14 Dec 2016 13:47:05 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC v2 05/11] ath10k: htc: refactorization
+Date: Wed, 14 Dec 2016 13:46:38 +0000
+Message-ID: <871sxay66a.fsf@kamboji.qca.qualcomm.com>
+References: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
+ <1479496971-19174-6-git-send-email-erik.stromdahl@gmail.com>
+ <87inqoymd0.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQkuUFxnra75B4LpF5+k9yE7hkNYDXbtUMBLq2LFuPSasg@mail.gmail.com>
+ <871sxbzqo6.fsf@kamboji.qca.qualcomm.com>
+ <70b8a055-e6ba-857d-8b03-06f50e3f10fe@gmail.com>
+In-Reply-To: <70b8a055-e6ba-857d-8b03-06f50e3f10fe@gmail.com> (Erik
+ Stromdahl's message of "Tue, 13 Dec 2016 19:37:30 +0100")
+Content-Language: en-US
+Content-ID: <895E7102C84BBF418E5CB875030860DF@qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <2870294.lMmxz9iPmq@debian64>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,86 +30,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christian Lamparter <chunkeey@googlemail.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tue, Dec 13, 2016 at 01:41:33PM +0100, Christian Lamparter wrote:
-> Hello,
-> 
-> It looks like google put your mail into the spam-can. 
-> I'm sorry for not answering sooner.
+Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
-[shafi] np, thanks for your reply !
+> I have made a few updates since I submitted the original RFC and created
+> a repo on github:
+>
+> https://github.com/erstrom/linux-ath
+>
+> I have a bunch of branches that are all based on the tags on the ath master.
+>
+> As of this moment the latest version is:
+>
+> ath-201612131156-ath10k-sdio
+>
+> This branch contains the original RFC patches plus some addons/fixes.
 
-> 
-> On Wednesday, December 7, 2016 11:58:24 AM CET Mohammed Shafi Shajakhan wrote:
-> > On Mon, Dec 05, 2016 at 10:52:45PM +0100, Christian Lamparter wrote:
-> > > The 10.4 firmware adds extended peer information to the
-> > > firmware's statistics payload. This additional info is
-> > > stored as a separate data field and the elements are
-> > > stored in their own "peers_extd" list.
-> > > 
-> > > These elements can pile up in the same way as the peer
-> > > information elements. This is because the
-> > > ath10k_wmi_10_4_op_pull_fw_stats() function tries to
-> > > pull the same amount (num_peer_stats) for every statistic
-> > > data unit.
-> > > 
-> > > Fixes: 4a49ae94a448faa ("ath10k: fix 10.4 extended peer stats update")
-> > > Signed-off-by: Christian Lamparter <chunkeey@googlemail.com>
-> > > ---
-> > >  drivers/net/wireless/ath/ath10k/debug.c | 7 +++++--
-> > >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-> > > index 82a4c67f3672..4acd9eb65910 100644
-> > > --- a/drivers/net/wireless/ath/ath10k/debug.c
-> > > +++ b/drivers/net/wireless/ath/ath10k/debug.c
-> > > @@ -399,6 +399,7 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
-> > >  			 * prevent firmware from DoS-ing the host.
-> > >  			 */
-> > >  			ath10k_fw_stats_peers_free(&ar->debug.fw_stats.peers);
-> > > +			ath10k_fw_extd_stats_peers_free(&ar->debug.fw_stats.peers_extd);
-> > 
-> > [shafi] thanks for fixing this !
-> > 
-> > >  			ath10k_warn(ar, "dropping fw peer stats\n");
-> > >  			goto free;
-> > >  		}
-> > > @@ -409,10 +410,12 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
-> > >  			goto free;
-> > >  		}
-> > >  
-> > > +		if (!list_empty(&stats.peers))
-> > 
-> > [shafi] sorry please correct me if i am wrong, for 'extended peer stats' we are checking
-> > for normal 'peer stats' ? Is this the fix intended, i had started a build to
-> > check your change and we will keep you posted, does this fix displaying
-> > 'rx_duration' in ath10k fw_stats.
-> The idea is not to queue any "extended peer stats" when there where no "peer stats" to
-> begin with. Because otherwise, the function is still vulnerable to OOM since the 
-> extended peers stats will be queued unchecked (not that this is currently a problem).
+Good, this makes it easier to follow the development. So what's the
+current status with this branch? What works and what doesn't?
 
-[shafi] list_splice_tail_init should still check for non-empty 'peers_extd' list
-and append if required ? please let me know if i am still missing something
+Especially I'm interested about the state of the HTT high latency
+support. How much work is to add that? It would also make it easier to
+add USB support to ath10k.
 
->  
-> > > +			list_splice_tail_init(&stats.peers_extd,
-> > > +					      &ar->debug.fw_stats.peers_extd);
-> > > +
-> > >  		list_splice_tail_init(&stats.peers, &ar->debug.fw_stats.peers);
-> > >  		list_splice_tail_init(&stats.vdevs, &ar->debug.fw_stats.vdevs);
-> > > -		list_splice_tail_init(&stats.peers_extd,
-> > > -				      &ar->debug.fw_stats.peers_extd);
-> > >  	}
-> > >  
-> > >  	complete(&ar->debug.fw_stats_complete);
-> 
-> Regards,
-> Christian
-> 
-> 
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
