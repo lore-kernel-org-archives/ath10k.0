@@ -1,21 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cH44w-0006kK-Vm
+ for ath10k@lists.infradead.org; Wed, 14 Dec 2016 07:34:19 +0000
+Date: Wed, 14 Dec 2016 13:03:38 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH 1/2] ath10k: add accounting for the extended peer
+ statistics
+Message-ID: <20161214073337.GA4046@atheros-ThinkPad-T61>
+References: <992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
+ <20161207062824.GA3404@atheros-ThinkPad-T61>
+ <2870294.lMmxz9iPmq@debian64>
 MIME-Version: 1.0
-In-Reply-To: <CAAnMG+MY=LhfJxxUVdfRNYUW-2R+EXdLm2o6yDcCH0T1brRVxw@mail.gmail.com>
-References: <583DD564.8040704@cococorp.com>
- <20161201070908.GB11953@atheros-ThinkPad-T61>
- <58421FA2.2020004@cococorp.com> <20161203124358.GB31861@atheros-ThinkPad-T61>
- <20161203124600.GC31861@atheros-ThinkPad-T61> <5845B325.6060002@cococorp.com>
- <d8eb0ba5828d43dd83030247ba443b88@aphydexm01f.ap.qualcomm.com>
- <58472E7B.7090603@cococorp.com> <58504113.2080702@cococorp.com>
- <5850831D.7020206@cococorp.com>
- <ccf17009a52748c99accdaa005ea837a@NALASEXR01H.na.qualcomm.com>
- <CAAnMG+OmeataRKYRjOjtBXF_1-De-F4zWbUsWoYRhVu02NPrrw@mail.gmail.com>
- <CAJ-Vmo=iLryhOS--PPYCGa9pE2GovPDOXi6xoH22xFOYXXKNVA@mail.gmail.com>
- <CAAnMG+MY=LhfJxxUVdfRNYUW-2R+EXdLm2o6yDcCH0T1brRVxw@mail.gmail.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Tue, 13 Dec 2016 22:17:57 -0800
-Message-ID: <CAJ-VmomEMCxfyy2=440epuTP1rGMaEKBKwPA4qC5V8Hj8LmSbw@mail.gmail.com>
-Subject: Re: ath10k firmware crashes in mesh mode on QCA9880
+Content-Disposition: inline
+In-Reply-To: <2870294.lMmxz9iPmq@debian64>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +26,85 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alexis Green <agreen@cococorp.com>
-Cc: Benjamin Morgan <bmorgan@cococorp.com>, "lede-dev@lists.infradead.org" <lede-dev@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Mohammed Shafi Shajakhan <mohammed@codeaurora.org>, "Nagarajan,
- Ashok Raj" <arnagara@qti.qualcomm.com>, "Manoharan,
- Rajkumar" <rmanohar@qca.qualcomm.com>
+To: Christian Lamparter <chunkeey@googlemail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi!
+On Tue, Dec 13, 2016 at 01:41:33PM +0100, Christian Lamparter wrote:
+> Hello,
+> 
+> It looks like google put your mail into the spam-can. 
+> I'm sorry for not answering sooner.
 
-ok, thanks! I've seen some .. annoying rate control related firmware
-crashes if you aren't using 11ac / 11n rates (ie you're /really/
-legacy, so I wondered if something similar is going on here.
+[shafi] np, thanks for your reply !
 
-Thanks!
+> 
+> On Wednesday, December 7, 2016 11:58:24 AM CET Mohammed Shafi Shajakhan wrote:
+> > On Mon, Dec 05, 2016 at 10:52:45PM +0100, Christian Lamparter wrote:
+> > > The 10.4 firmware adds extended peer information to the
+> > > firmware's statistics payload. This additional info is
+> > > stored as a separate data field and the elements are
+> > > stored in their own "peers_extd" list.
+> > > 
+> > > These elements can pile up in the same way as the peer
+> > > information elements. This is because the
+> > > ath10k_wmi_10_4_op_pull_fw_stats() function tries to
+> > > pull the same amount (num_peer_stats) for every statistic
+> > > data unit.
+> > > 
+> > > Fixes: 4a49ae94a448faa ("ath10k: fix 10.4 extended peer stats update")
+> > > Signed-off-by: Christian Lamparter <chunkeey@googlemail.com>
+> > > ---
+> > >  drivers/net/wireless/ath/ath10k/debug.c | 7 +++++--
+> > >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+> > > index 82a4c67f3672..4acd9eb65910 100644
+> > > --- a/drivers/net/wireless/ath/ath10k/debug.c
+> > > +++ b/drivers/net/wireless/ath/ath10k/debug.c
+> > > @@ -399,6 +399,7 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+> > >  			 * prevent firmware from DoS-ing the host.
+> > >  			 */
+> > >  			ath10k_fw_stats_peers_free(&ar->debug.fw_stats.peers);
+> > > +			ath10k_fw_extd_stats_peers_free(&ar->debug.fw_stats.peers_extd);
+> > 
+> > [shafi] thanks for fixing this !
+> > 
+> > >  			ath10k_warn(ar, "dropping fw peer stats\n");
+> > >  			goto free;
+> > >  		}
+> > > @@ -409,10 +410,12 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+> > >  			goto free;
+> > >  		}
+> > >  
+> > > +		if (!list_empty(&stats.peers))
+> > 
+> > [shafi] sorry please correct me if i am wrong, for 'extended peer stats' we are checking
+> > for normal 'peer stats' ? Is this the fix intended, i had started a build to
+> > check your change and we will keep you posted, does this fix displaying
+> > 'rx_duration' in ath10k fw_stats.
+> The idea is not to queue any "extended peer stats" when there where no "peer stats" to
+> begin with. Because otherwise, the function is still vulnerable to OOM since the 
+> extended peers stats will be queued unchecked (not that this is currently a problem).
 
+[shafi] list_splice_tail_init should still check for non-empty 'peers_extd' list
+and append if required ? please let me know if i am still missing something
 
--a
-
-
-On 13 December 2016 at 22:06, Alexis Green <agreen@cococorp.com> wrote:
-> Hi Adrian,
->
-> I have not done much testing of ath10k and ath9k devices in a single
-> encrypted mesh recently, but I have a memory of only having this issue
-> when communicating between ath10k devices.
->
-> Alexis
->
-> On Tue, Dec 13, 2016 at 9:53 PM, Adrian Chadd <adrian@freebsd.org> wrote:
->> Hi!
->>
->> Hm! So is there a firmware bug if there are 11n only capable nodes in
->> an 11s mesh?
->>
->>
->>
->> -adrian
+>  
+> > > +			list_splice_tail_init(&stats.peers_extd,
+> > > +					      &ar->debug.fw_stats.peers_extd);
+> > > +
+> > >  		list_splice_tail_init(&stats.peers, &ar->debug.fw_stats.peers);
+> > >  		list_splice_tail_init(&stats.vdevs, &ar->debug.fw_stats.vdevs);
+> > > -		list_splice_tail_init(&stats.peers_extd,
+> > > -				      &ar->debug.fw_stats.peers_extd);
+> > >  	}
+> > >  
+> > >  	complete(&ar->debug.fw_stats_complete);
+> 
+> Regards,
+> Christian
+> 
+> 
 
 _______________________________________________
 ath10k mailing list
