@@ -1,15 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cHSBY-0003oB-1r
- for ath10k@lists.infradead.org; Thu, 15 Dec 2016 09:18:44 +0000
+Received: from smtp-out03.msg.oleane.net ([62.161.7.1])
+ by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cHYg4-0000fT-Sl
+ for ath10k@lists.infradead.org; Thu, 15 Dec 2016 16:14:42 +0000
+Received: from smtp27.msg.oleane.net ([172.17.20.149]) 
+ by smtp-out03.msg.oleane.net with ESMTP id uBFFiDl3025373
+ for <ath10k@lists.infradead.org>; Thu, 15 Dec 2016 16:44:15 +0100
+From: "Jean-Pierre Tosoni" <jp.tosoni@acksys.fr>
+References: <004a01d24fe2$94da8dc0$be8fa940$@acksys.fr>
+ <20161214195805.GA15022@w1.fi>
+In-Reply-To: <20161214195805.GA15022@w1.fi>
+Subject: RE: ath10k firmware sends probes on DFS channels without radar
+ detection
+Date: Thu, 15 Dec 2016 16:22:34 +0100
+Message-ID: <00f501d256e7$0f8d5380$2ea7fa80$@acksys.fr>
 MIME-Version: 1.0
-Subject: Re: ath10k: Avoid potential page alloc BUG_ON in tx free path
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1481086832-17281-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1481086832-17281-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <d64a028b471e4d38b6d9ac3e664f7c4d@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 15 Dec 2016 10:18:15 +0100
+Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,67 +28,117 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: 'Jouni Malinen' <j@w1.fi>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> 
-> 'ath10k_htt_tx_free_cont_txbuf' and 'ath10k_htt_tx_free_cont_frag_desc'
-> have NULL pointer checks to avoid crash if they are called twice
-> but this is as of now not sufficient as these pointers are not assigned
-> to NULL once the contiguous DMA memory allocation is freed, fix this.
-> Though this may not be hit with the explicity check of state variable
-> 'tx_mem_allocated' check, good to have this addressed as well.
-> 
-> Below BUG_ON is hit when the above scenario is simulated
-> with kernel debugging enabled
-> 
->  page:f6d09a00 count:0 mapcount:-127 mapping:  (null)
-> index:0x0
->  flags: 0x40000000()
->  page dumped because: VM_BUG_ON_PAGE(page_ref_count(page)
-> == 0)
->  ------------[ cut here ]------------
->  kernel BUG at ./include/linux/mm.h:445!
->  invalid opcode: 0000 [#1] SMP DEBUG_PAGEALLOC
->  EIP is at put_page_testzero.part.88+0xd/0xf
->  Call Trace:
->   [<c118a2cc>] __free_pages+0x3c/0x40
->   [<c118a30e>] free_pages+0x3e/0x50
->   [<c10222b4>] dma_generic_free_coherent+0x24/0x30
->   [<f8c1d9a8>] ath10k_htt_tx_free_cont_txbuf+0xf8/0x140
-> 
->   [<f8c1e2a9>] ath10k_htt_tx_destroy+0x29/0xa0
-> 
->   [<f8c143e0>] ath10k_core_destroy+0x60/0x80 [ath10k_core]
->   [<f8acd7e9>] ath10k_pci_remove+0x79/0xa0 [ath10k_pci]
->   [<c13ed7a8>] pci_device_remove+0x38/0xb0
->   [<c14d3492>] __device_release_driver+0x72/0x100
->   [<c14d36b7>] driver_detach+0x97/0xa0
->   [<c14d29c0>] bus_remove_driver+0x40/0x80
->   [<c14d427a>] driver_unregister+0x2a/0x60
->   [<c13ec768>] pci_unregister_driver+0x18/0x70
->   [<f8aced4f>] ath10k_pci_exit+0xd/0x2be [ath10k_pci]
->   [<c1101e78>] SyS_delete_module+0x158/0x210
->   [<c11b34f1>] ? __might_fault+0x41/0xa0
->   [<c11b353b>] ? __might_fault+0x8b/0xa0
->   [<c1001a4b>] do_fast_syscall_32+0x9b/0x1c0
->   [<c178da34>] sysenter_past_esp+0x45/0x74
-> 
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Jouni,
 
-Patch applied to ath-next branch of ath.git, thanks.
+Thanks for the suggestion, I already tried something like this in wmi.c,
+with the same result:
 
-02a9e08d7374 ath10k: Avoid potential page alloc BUG_ON in tx free path
+- Before patching the firmware scans DFS channels actively (with probes).
 
--- 
-https://patchwork.kernel.org/patch/9463923/
+- After patching, the firmware scans DFS channels passively *until* any
+beacon is received on the DFS channel. When *any* beacon is seen, the
+firmware decides to scan actively on its own, without any new IR/RADAR
+info from the driver.
 
-Documentation about submitting wireless patches and checking status
-from patchwork:
+So, your patch is required but not sufficient.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Somehow I was able to overcome this by reloading the regulation domain
+in the radio card before each scan request:
+
+////// awful patch ahead ////////
+
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2842,7 +2842,9 @@ static int ath10k_update_channel_list(st
+ 			ch->chan_radar =
+ 				!!(channel->flags & IEEE80211_CHAN_RADAR);
+ 
+-			passive = channel->flags & IEEE80211_CHAN_NO_IR;
++			passive = channel->flags & (IEEE80211_CHAN_NO_IR |
++						    IEEE80211_CHAN_RADAR);
++
+ 			ch->passive = passive;
+ 
+ 			ch->freq = channel->center_freq;
+@@ -3548,6 +3550,9 @@ static int ath10k_start_scan(struct ath1
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
++	if (ar->state == ATH10K_STATE_ON)
++		ath10k_regd_update(ar);
++
+ 	ret = ath10k_wmi_start_scan(ar, arg);
+ 	if (ret)
+ 		return ret;
+
+////////////////////////////////////////
+
+...But this sets a terrible penalty on performance when applied to
+background scan.
+
+
+On 12/14/16 20:58 Jouni Malinen wrote:
+> 
+> On Tue, Dec 06, 2016 at 06:02:52PM +0100, Jean-Pierre Tosoni wrote:
+> > This follows on the previous discussion
+> > 	"Client station sends probes on DFS channels"
+> >
+> > Problem:
+> > The combination of QCA988X firmware v10.2.4.70-2 + ath10k +
+> > wpa_supplicant do not comply with the norm ETSI/EN 301-893 section
+> > 4.7; because they can send probes for 600s when no AP is around.
+> >
+> > Analysis:
+> > The problem seems to lie in the firmware, which regards the presence
+> > of *any* beacon as a proof that the channel is radar-clean for 600s.
+> 
+> I don't think this is really firmware, but cfg80211 regulatory code and
+> how it interacts with ath10k..
+> 
+> > - there is no obvious fix working in ath10k.
+> > - the issue does not show up with other mac80211 devices like ath9k.
+> > - wpa_supplicant considers this is a kernel issue [2]
+> 
+> There seems to be a difference between ath9k (mac80211-based Probe Request
+> frame sending) and ath10k (firmware) in this area for active scanning.
+> mac80211 uses IEEE80211_CHAN_NO_IR | IEEE80211_CHAN_RADAR while ath10k
+> uses IEEE80211_CHAN_NO_IR. I'd assume this difference results in ath10k
+> using cfg80211 beacon hints (etc.) to update the NO_IR flag and that might
+> be behind the difference you see.
+> 
+> Could you check whether the following change gets you the behavior you
+> want to see here? I have not had a chance to test this yet, but based on
+> code review, it looks like something that brings the same behavior to
+> ath10k that ath9k has for this through mac80211.
+> 
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c
+> b/drivers/net/wireless/ath/ath10k/mac.c
+> index aa545a1..758dbbd 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -2973,7 +2973,8 @@ static int ath10k_update_channel_list(struct ath10k
+> *ar)
+>  			ch->chan_radar =
+>  				!!(channel->flags & IEEE80211_CHAN_RADAR);
+> 
+> -			passive = channel->flags & IEEE80211_CHAN_NO_IR;
+> +			passive = channel->flags & (IEEE80211_CHAN_NO_IR |
+> +						    IEEE80211_CHAN_RADAR);
+>  			ch->passive = passive;
+> 
+>  			ch->freq = channel->center_freq;
+> 
+> --
+> Jouni Malinen                                            PGP id EFC895FA
+> 
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 
 _______________________________________________
