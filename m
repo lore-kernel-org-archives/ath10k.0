@@ -1,23 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cHGmf-000272-Fa
- for ath10k@lists.infradead.org; Wed, 14 Dec 2016 21:08:18 +0000
-Received: by mail-wm0-x241.google.com with SMTP id u144so1796637wmu.0
- for <ath10k@lists.infradead.org>; Wed, 14 Dec 2016 13:07:53 -0800 (PST)
-Subject: Re: [RFC v2 05/11] ath10k: htc: refactorization
-References: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
- <1479496971-19174-6-git-send-email-erik.stromdahl@gmail.com>
- <87inqoymd0.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkuUFxnra75B4LpF5+k9yE7hkNYDXbtUMBLq2LFuPSasg@mail.gmail.com>
- <871sxbzqo6.fsf@kamboji.qca.qualcomm.com>
- <70b8a055-e6ba-857d-8b03-06f50e3f10fe@gmail.com>
- <871sxay66a.fsf@kamboji.qca.qualcomm.com>
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Message-ID: <b3068401-aee9-47bc-141e-692ea72ffb74@gmail.com>
-Date: Wed, 14 Dec 2016 22:07:50 +0100
+ id 1cHSBY-0003oB-1r
+ for ath10k@lists.infradead.org; Thu, 15 Dec 2016 09:18:44 +0000
 MIME-Version: 1.0
-In-Reply-To: <871sxay66a.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k: Avoid potential page alloc BUG_ON in tx free path
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1481086832-17281-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1481086832-17281-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <d64a028b471e4d38b6d9ac3e664f7c4d@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 15 Dec 2016 10:18:15 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,74 +22,68 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-
-
-On 12/14/2016 02:46 PM, Valo, Kalle wrote:
-> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > 
->> I have made a few updates since I submitted the original RFC and created
->> a repo on github:
->>
->> https://github.com/erstrom/linux-ath
->>
->> I have a bunch of branches that are all based on the tags on the ath master.
->>
->> As of this moment the latest version is:
->>
->> ath-201612131156-ath10k-sdio
->>
->> This branch contains the original RFC patches plus some addons/fixes.
+> 'ath10k_htt_tx_free_cont_txbuf' and 'ath10k_htt_tx_free_cont_frag_desc'
+> have NULL pointer checks to avoid crash if they are called twice
+> but this is as of now not sufficient as these pointers are not assigned
+> to NULL once the contiguous DMA memory allocation is freed, fix this.
+> Though this may not be hit with the explicity check of state variable
+> 'tx_mem_allocated' check, good to have this addressed as well.
 > 
-> Good, this makes it easier to follow the development. So what's the
-> current status with this branch? What works and what doesn't?
+> Below BUG_ON is hit when the above scenario is simulated
+> with kernel debugging enabled
 > 
-Well, everything in there has been tested (limited though, as you
-yourself experienced), but it is not complete. I still have some other
-patches that need some more refurbishing before I can push them.
-
-I will push those patches that I consider "good enough" for publish to
-this repo. Most likely I will rewrite/squash etc. some of it before
-submitting a new RFC series.
-
-So, there are still some additional stuff that needs to be added. In my
-case I have a series of patches related to OCB (Outside the Context of a
-BSS) mode of operation (since the chipset I am using is intended for
-this purpose). These patches are still not complete.
-
-Other SDIO 11ac chipsets might just need an item in the struct
-ath10k_hw_params array together with some firmware files.
-
-> Especially I'm interested about the state of the HTT high latency
-> support. How much work is to add that? It would also make it easier to
-> add USB support to ath10k.
+>  page:f6d09a00 count:0 mapcount:-127 mapping:  (null)
+> index:0x0
+>  flags: 0x40000000()
+>  page dumped because: VM_BUG_ON_PAGE(page_ref_count(page)
+> == 0)
+>  ------------[ cut here ]------------
+>  kernel BUG at ./include/linux/mm.h:445!
+>  invalid opcode: 0000 [#1] SMP DEBUG_PAGEALLOC
+>  EIP is at put_page_testzero.part.88+0xd/0xf
+>  Call Trace:
+>   [<c118a2cc>] __free_pages+0x3c/0x40
+>   [<c118a30e>] free_pages+0x3e/0x50
+>   [<c10222b4>] dma_generic_free_coherent+0x24/0x30
+>   [<f8c1d9a8>] ath10k_htt_tx_free_cont_txbuf+0xf8/0x140
 > 
+>   [<f8c1e2a9>] ath10k_htt_tx_destroy+0x29/0xa0
+> 
+>   [<f8c143e0>] ath10k_core_destroy+0x60/0x80 [ath10k_core]
+>   [<f8acd7e9>] ath10k_pci_remove+0x79/0xa0 [ath10k_pci]
+>   [<c13ed7a8>] pci_device_remove+0x38/0xb0
+>   [<c14d3492>] __device_release_driver+0x72/0x100
+>   [<c14d36b7>] driver_detach+0x97/0xa0
+>   [<c14d29c0>] bus_remove_driver+0x40/0x80
+>   [<c14d427a>] driver_unregister+0x2a/0x60
+>   [<c13ec768>] pci_unregister_driver+0x18/0x70
+>   [<f8aced4f>] ath10k_pci_exit+0xd/0x2be [ath10k_pci]
+>   [<c1101e78>] SyS_delete_module+0x158/0x210
+>   [<c11b34f1>] ? __might_fault+0x41/0xa0
+>   [<c11b353b>] ? __might_fault+0x8b/0xa0
+>   [<c1001a4b>] do_fast_syscall_32+0x9b/0x1c0
+>   [<c178da34>] sysenter_past_esp+0x45/0x74
+> 
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-I actually have some patches regarding this, but they have not been
-tested at all since I have not yet managed to fully configure my SDIO
-chip properly so far. I must finish the OCB code I mentioned earlier and
-fix another really annoying issue with a missing HTT version response
-(sometimes target won't respond to the HTT version request).
+Patch applied to ath-next branch of ath.git, thanks.
 
-Then, hopefully, I can make some TX and RX tests.
+02a9e08d7374 ath10k: Avoid potential page alloc BUG_ON in tx free path
 
-I think the HTT TX part is fairly straight forward. But the RX part is a
-little bit more tricky since I am not really sure about how to interface
-mac80211 in the RX path.
+-- 
+https://patchwork.kernel.org/patch/9463923/
 
-My work flow goes like this:
+Documentation about submitting wireless patches and checking status
+from patchwork:
 
-As soon as there is a new tag on the ath.git master, I rebase my stuff
-on top of it and push a new branch to my repo.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-I will continuously push updates to the latest branch (the branch based
-on the latest ath tag).
-
-Older branches will not be maintained.
-
-/Erik
 
 _______________________________________________
 ath10k mailing list
