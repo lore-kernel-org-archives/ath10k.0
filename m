@@ -1,21 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out03.msg.oleane.net ([62.161.7.1])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cHYg4-0000fT-Sl
- for ath10k@lists.infradead.org; Thu, 15 Dec 2016 16:14:42 +0000
-Received: from smtp27.msg.oleane.net ([172.17.20.149]) 
- by smtp-out03.msg.oleane.net with ESMTP id uBFFiDl3025373
- for <ath10k@lists.infradead.org>; Thu, 15 Dec 2016 16:44:15 +0100
-From: "Jean-Pierre Tosoni" <jp.tosoni@acksys.fr>
-References: <004a01d24fe2$94da8dc0$be8fa940$@acksys.fr>
- <20161214195805.GA15022@w1.fi>
-In-Reply-To: <20161214195805.GA15022@w1.fi>
-Subject: RE: ath10k firmware sends probes on DFS channels without radar
- detection
-Date: Thu, 15 Dec 2016 16:22:34 +0100
-Message-ID: <00f501d256e7$0f8d5380$2ea7fa80$@acksys.fr>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cHYsb-00070O-5X
+ for ath10k@lists.infradead.org; Thu, 15 Dec 2016 16:27:38 +0000
+Date: Thu, 15 Dec 2016 21:56:59 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH 1/2] ath10k: add accounting for the extended peer
+ statistics
+Message-ID: <20161215162659.GA8030@atheros-ThinkPad-T61>
+References: <992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
+ <2870294.lMmxz9iPmq@debian64>
+ <20161214073337.GA4046@atheros-ThinkPad-T61>
+ <1859306.unY1Rqbrx8@debian64>
 MIME-Version: 1.0
-Content-Language: fr
+Content-Disposition: inline
+In-Reply-To: <1859306.unY1Rqbrx8@debian64>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,118 +27,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Jouni Malinen' <j@w1.fi>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Christian Lamparter <chunkeey@googlemail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Jouni,
+Hello Christian,
 
-Thanks for the suggestion, I already tried something like this in wmi.c,
-with the same result:
+On Wed, Dec 14, 2016 at 05:38:02PM +0100, Christian Lamparter wrote:
+> On Wednesday, December 14, 2016 1:03:38 PM CET Mohammed Shafi Shajakhan wrote:
+> > > On Wednesday, December 7, 2016 11:58:24 AM CET Mohammed Shafi Shajakhan wrote:
+> > > > On Mon, Dec 05, 2016 at 10:52:45PM +0100, Christian Lamparter wrote:
+> > > > > @@ -409,10 +410,12 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+> > > > >  			goto free;
+> > > > >  		}
+> > > > >  
+> > > > > +		if (!list_empty(&stats.peers))
+> > > > 
+> > > > [shafi] sorry please correct me if i am wrong, for 'extended peer stats' we are checking
+> > > > for normal 'peer stats' ? Is this the fix intended, i had started a build to
+> > > > check your change and we will keep you posted, does this fix displaying
+> > > > 'rx_duration' in ath10k fw_stats.
+> > > The idea is not to queue any "extended peer stats" when there where no "peer stats" to
+> > > begin with. Because otherwise, the function is still vulnerable to OOM since the 
+> > > extended peers stats will be queued unchecked (not that this is currently a problem).
+> > 
+> > [shafi] list_splice_tail_init should still check for non-empty 'peers_extd' list
+> > and append if required ? please let me know if i am still missing something
+> Well, you can also count the entries in peers_extd and delete the old entries
+> if they start to overflow. If you want to do it differently, please go ahead.
+>
+[shafi] sorry for the delay (got stuck up with something else), I will add some prints explicitly
+and keep you posted ASAP. Since the extended peer stats gets updated periodically I
+would like to confirm the debug linked list associated to the extended peer
+stats does not overflows and potentially cause OOM.
 
-- Before patching the firmware scans DFS channels actively (with probes).
-
-- After patching, the firmware scans DFS channels passively *until* any
-beacon is received on the DFS channel. When *any* beacon is seen, the
-firmware decides to scan actively on its own, without any new IR/RADAR
-info from the driver.
-
-So, your patch is required but not sufficient.
-
-Somehow I was able to overcome this by reloading the regulation domain
-in the radio card before each scan request:
-
-////// awful patch ahead ////////
-
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2842,7 +2842,9 @@ static int ath10k_update_channel_list(st
- 			ch->chan_radar =
- 				!!(channel->flags & IEEE80211_CHAN_RADAR);
- 
--			passive = channel->flags & IEEE80211_CHAN_NO_IR;
-+			passive = channel->flags & (IEEE80211_CHAN_NO_IR |
-+						    IEEE80211_CHAN_RADAR);
-+
- 			ch->passive = passive;
- 
- 			ch->freq = channel->center_freq;
-@@ -3548,6 +3550,9 @@ static int ath10k_start_scan(struct ath1
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
-+	if (ar->state == ATH10K_STATE_ON)
-+		ath10k_regd_update(ar);
-+
- 	ret = ath10k_wmi_start_scan(ar, arg);
- 	if (ret)
- 		return ret;
-
-////////////////////////////////////////
-
-...But this sets a terrible penalty on performance when applied to
-background scan.
-
-
-On 12/14/16 20:58 Jouni Malinen wrote:
-> 
-> On Tue, Dec 06, 2016 at 06:02:52PM +0100, Jean-Pierre Tosoni wrote:
-> > This follows on the previous discussion
-> > 	"Client station sends probes on DFS channels"
-> >
-> > Problem:
-> > The combination of QCA988X firmware v10.2.4.70-2 + ath10k +
-> > wpa_supplicant do not comply with the norm ETSI/EN 301-893 section
-> > 4.7; because they can send probes for 600s when no AP is around.
-> >
-> > Analysis:
-> > The problem seems to lie in the firmware, which regards the presence
-> > of *any* beacon as a proof that the channel is radar-clean for 600s.
-> 
-> I don't think this is really firmware, but cfg80211 regulatory code and
-> how it interacts with ath10k..
-> 
-> > - there is no obvious fix working in ath10k.
-> > - the issue does not show up with other mac80211 devices like ath9k.
-> > - wpa_supplicant considers this is a kernel issue [2]
-> 
-> There seems to be a difference between ath9k (mac80211-based Probe Request
-> frame sending) and ath10k (firmware) in this area for active scanning.
-> mac80211 uses IEEE80211_CHAN_NO_IR | IEEE80211_CHAN_RADAR while ath10k
-> uses IEEE80211_CHAN_NO_IR. I'd assume this difference results in ath10k
-> using cfg80211 beacon hints (etc.) to update the NO_IR flag and that might
-> be behind the difference you see.
-> 
-> Could you check whether the following change gets you the behavior you
-> want to see here? I have not had a chance to test this yet, but based on
-> code review, it looks like something that brings the same behavior to
-> ath10k that ath9k has for this through mac80211.
-> 
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c
-> b/drivers/net/wireless/ath/ath10k/mac.c
-> index aa545a1..758dbbd 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -2973,7 +2973,8 @@ static int ath10k_update_channel_list(struct ath10k
-> *ar)
->  			ch->chan_radar =
->  				!!(channel->flags & IEEE80211_CHAN_RADAR);
-> 
-> -			passive = channel->flags & IEEE80211_CHAN_NO_IR;
-> +			passive = channel->flags & (IEEE80211_CHAN_NO_IR |
-> +						    IEEE80211_CHAN_RADAR);
->  			ch->passive = passive;
-> 
->  			ch->freq = channel->center_freq;
-> 
-> --
-> Jouni Malinen                                            PGP id EFC895FA
-> 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
+regards,
+shafi
 
 _______________________________________________
 ath10k mailing list
