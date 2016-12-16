@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cHl0k-0000sh-AW
- for ath10k@lists.infradead.org; Fri, 16 Dec 2016 05:24:51 +0000
-Date: Fri, 16 Dec 2016 10:54:18 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: [PATCH 1/2] ath10k: add accounting for the extended peer
- statistics
-Message-ID: <20161216052418.GA8936@atheros-ThinkPad-T61>
-References: <992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
- <20161215162659.GA8030@atheros-ThinkPad-T61>
- <20161215164338.GB8030@atheros-ThinkPad-T61>
- <2970240.ih558OrmaK@debian64>
+ id 1cHlTC-0001eO-5S
+ for ath10k@lists.infradead.org; Fri, 16 Dec 2016 05:54:15 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <2970240.ih558OrmaK@debian64>
+Date: Fri, 16 Dec 2016 11:23:52 +0530
+From: Tamizh chelvam <tamizhchelvam@codeaurora.org>
+Subject: Re: [PATCH 2/4] cfg80211: Add new NL80211_CMD_SET_BTCOEX_PRIORITY to
+ support BTCOEX
+In-Reply-To: <1481645351.20412.34.camel@sipsolutions.net>
+References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
+ <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
+ <1480949353.31788.27.camel@sipsolutions.net>
+ <5e5e8971c96293a81e7cb37bcdfbd593@codeaurora.org>
+ <1481645351.20412.34.camel@sipsolutions.net>
+Message-ID: <134cc8e58ecb804b6dda0137c4c37be8@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +23,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christian Lamparter <chunkeey@googlemail.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi Christian,
-
-> On Thursday, December 15, 2016 10:13:39 PM CET Mohammed Shafi Shajakhan wrote:
-> > I am also thinking, as of now there is not much use in appending
-> > the extended peer stats (which gets periodically ) to the linked list
-> > '&ar->debug.fw_stats.peers_extd)'  and should we get rid of the below
-> > (and the required cleanup as well) 
-> > 
-> > list_splice_tail_init(&stats.peers_extd,
-> > 		&ar->debug.fw_stats.peers_extd);
-> > 
-> > 
-> > since rx_duration is getting updated periodically to the per sta
-> > information. Kindly let me know your thoughts about this.
-> 
-> Yes, of course. I see what your are trying to do and I think it's much better
-> to get rid of peers_extd and ath10k_fw_extd_stats_peers_free.
->
-[shafi] Feel free to post the change and I can test the same for you(next week) !
-Let me know if you are busy on something else, I can take this up.
-As discussed, the fix to free 'extd stats' when number of peers exceeds the range
-is definitely needed. Thank you for looking into this.
-
-thanks,
-shafi
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgSm9oYW5uZXMsCgpUaGFua3MgZm9yIHRoZSBjb21tZW50cwoKT24gMjAxNi0xMi0xMyAyMToz
+OSwgSm9oYW5uZXMgQmVyZyB3cm90ZToKPj4gPiA+IMKgLyoqCj4+ID4gPiArICogd2lwaHlfYnRj
+b2V4X3N1cHBvcnRfZmxhZ3MKPj4gPiA+ICsgKglUaGlzIGVudW0gaGFzIHRoZSBkcml2ZXIgc3Vw
+cG9ydGVkIGZyYW1lIHR5cGVzIGZvcgo+PiA+ID4gQlRDT0VYLgo+PiA+ID4gKyAqIEBXSVBIWV9X
+TEFOX0JFX1BSRUZFUlJFRCAtIFN1cHBvcnRzIEJlc3QgRWZmb3J0IGZyYW1lIGZvcgo+PiA+ID4g
+QlRDT0VYCj4+ID4gPiArICogQFdJUEhZX1dMQU5fQktfUFJFRkVSUkVEIC0gc3VwcG9ydHMgQmFj
+a2dyb3VuZCBmcmFtZSBmb3IKPj4gPiA+IEJUQ09FWAo+PiA+ID4gKyAqIEBXSVBIWV9XTEFOX1ZJ
+X1BSRUZFUlJFRCAtIHN1cHBvcnRzIFZpZGVvIGZyYW1lIGZvciBCVENPRVgKPj4gPiA+ICsgKiBA
+V0lQSFlfV0xBTl9WT19QUkVGRVJSRUQgLSBzdXBwb3J0cyBWb2ljZSBmcmFtZSBmb3IgQlRDT0VY
+Cj4+ID4gPiArICogQFdJUEhZX1dMQU5fQkVBQ09OX1BSRUZFUlJFRCAtIHN1cHBvcnRzIEJlYWNv
+biBmcmFtZSBmb3IKPj4gPiA+IEJUQ09FWAo+PiA+ID4gKyAqIEBXSVBIWV9XTEFOX01HTVRfUFJF
+RkVSUkVEIC0gc3VwcG9ydHMgTWFuYWdlbWVudCBmcmFtZXMgZm9yCj4+ID4gPiBCVENPRVguCj4+
+ID4gPiArICovCj4+ID4KPj4gPiBUaGF0J3Mgbm90IG1ha2luZyBtdWNoIHNlbnNlIHRvIG1lPwo+
+PiA+Cj4+IAo+PiBpcyBpdCBmaW5lIHRvIGhhdmUgYXMgV0lQSFlfQlRDT0VYX0JFX1BSRUZFUlJF
+RCA/Cj4gCj4gSXQncyBub3QgcmVhbGx5IGNsZWFyIHRvIG1lIHdoYXQgeW91IGludGVuZCB0byBk
+byB0aGlzIC0gaWYgaXQncyByZWFsbHkKPiBzdXBwb3J0IGZsYWdzIHRoZW4geW91IHJlYWxseSBz
+aG91bGQgbmFtZSB0aG9zZSBiZXR0ZXIuCj4gClRoaXMgaXMgc3VwcG9ydCBmbGFncyBhbmQgaXQg
+dXNlZCBieSB0aGUgZHJpdmVyIHRvIGludGltYXRlIGRyaXZlciAKc3VwcG9ydGVkIGZyYW1lIHR5
+cGUKZm9yIHRoZSBCVENPRVggdG8gY2ZnIGxpa2UgIndpcGh5X3dvd2xhbl9zdXBwb3J0X2ZsYWdz
+IiBpbXBsZW1lbnRhdGlvbi4KUGxlYXNlIHN1Z2dlc3QgaWYgdGhpcyBpcyBvayA/IEkgd2lsbCBi
+ZSB0aGFua2Z1bCBpZiB5b3UgY2FuIHN1Z2dlc3QgYSAKYmV0dGVyIG9uZSBpZiB0aGlzIGlzIG5v
+dCBvawoiV0lQSFlfQlRDT0VYX1NVUFBPUlRTX0JFIgoKPj4gPiA+ICsvKioKPj4gPiA+ICsgKiBl
+bnVtIHdpcGh5X2J0Y29leF9wcmlvcml0eSAtIEJUQ09FWCBwcmlvcml0eSBsZXZlbAo+PiA+ID4g
+KyAqCVRoaXMgZW51bSBkZWZpbmVzIHByaW9yaXR5IGxldmVsIGZvciBCVENPRVgKPj4gPiA+ICsg
+KiBXSVBIWV9XTEFOX1BSRUZFUlJFRF9MT1cgLSBsb3cgcHJpb3JpdHkgZnJhbWVzIG92ZXIgQlQK
+Pj4gPiA+IHRyYWZmaWMKPj4gPiA+ICsgKiBXSVBIWV9XTEFOX1BSRUZFUlJFRF9ISUdIIC0gaGln
+aCBwcmlvcml0eSBmcmFtZXMgb3ZlciBCVAo+PiA+ID4gdHJhZmZpYwo+PiA+ID4gKyAqLwo+PiA+
+ID4gKwo+PiA+ID4gK2VudW0gd2lwaHlfYnRjb2V4X3ByaW9yaXR5IHsKPj4gPiA+ICsJV0lQSFlf
+V0xBTl9QUkVGRVJSRURfTE9XID0gZmFsc2UsCj4+ID4gPiArCVdJUEhZX1dMQU5fUFJFRkVSUkVE
+X0hJR0ggPSB0cnVlLAo+PiA+ID4gK307Cj4+ID4KPj4gPiBUaGF0IGZhbHNlL3RydWUgc2VlbXMg
+anVzdCBzdHJhbmdlLgo+PiA+Cj4+IAo+PiBJIHdpbGwganVzdCB1c2UgYXMgYSBlbnVtIHdpdGhv
+dXQgYXNzaWduaW5nIGZhbHNlL3RydWUuCj4gCj4gV2hhdCBkbyB5b3UgZXZlbiBuZWVkIHRoaXMg
+ZW51bSBmb3IgdGhvdWdoPwo+IApPay4gSSB3aWxsIGRpcmVjdGx5IGFzc2lnbiB0cnVlIGZvciB0
+aGUgZmxhZy4KCj4+ID4gPiArZW51bSBubDgwMjExX2J0Y29leF9wcmlvcml0eSB7Cj4+ID4gPiAr
+CV9fTkw4MDIxMV9XTEFOX1BSRUZFUlJFRF9JTlZBTElELAo+PiA+ID4gKwlOTDgwMjExX1dMQU5f
+QkVfUFJFRkVSUkVELAo+PiA+ID4gKwlOTDgwMjExX1dMQU5fQktfUFJFRkVSUkVELAo+PiA+ID4g
+KwlOTDgwMjExX1dMQU5fVklfUFJFRkVSUkVELAo+PiA+ID4gKwlOTDgwMjExX1dMQU5fVk9fUFJF
+RkVSUkVELAo+PiA+ID4gKwlOTDgwMjExX1dMQU5fQkVBQ09OX1BSRUZFUlJFRCwKPj4gPiA+ICsJ
+Tkw4MDIxMV9XTEFOX01HTVRfUFJFRkVSUkVELAo+PiA+ID4gKwlfX05MODAyMTFfV0xBTl9QUkVG
+RVJSRURfTEFTVCwKPj4gPiA+ICsJTkw4MDIxMV9XTEFOX1BSRUZFUlJFRF9NQVggPQo+PiA+ID4g
+KwkJCV9fTkw4MDIxMV9XTEFOX1BSRUZFUlJFRF9MQVNUIC0gMSwKPj4gPiA+ICt9Owo+PiA+Cj4+
+ID4gV291bGRuJ3QgYSBiaXRtYXAgYmUgZWFzaWVyPwo+PiA+Cj4+IHNpbmNlIHRoaXMgaXMgdG8g
+ZGlzdGluZ3Vpc2ggYmV0d2VlbiBkaWZmZXJlbnQgYnRjb2V4IHByaW9yaXRpZXMgYW5kCj4+IHdl
+wqAKPj4gYXJlIG5vdCBnb2luZyB0byBkbyBhbnkgbWFuaXB1bGF0aW9ucyBvbiB0aGVzZSBwYXJh
+bWV0ZXJzLgo+PiBJdCBpcyBqdXN0IHVzZWQgYXMgZmxhZyBhdHRyaWJ1dGUuCj4gCj4gQnV0IHdo
+eSB0aGUgKHBhcnNpbmcpIGNvbXBsZXhpdHksIHdoZW4gYSBzaW5nbGUgYml0bWFwIHdvdWxkIGRv
+Pwo+IApEbyB5b3UgbWVhbiB0byBzYXksIHNlbmRpbmcgYSB2YWx1ZSBmcm9tIHVzZXIgc3BhY2Ug
+YW5kIHBhcnNlIHRoYXQgaW4gCnRoZSBkcml2ZXI/CgoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawo=
