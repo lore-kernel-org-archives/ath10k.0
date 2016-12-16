@@ -1,21 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.w1.fi ([212.71.239.96] helo=li674-96.members.linode.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cHezD-0001Ss-Gu
- for ath10k@lists.infradead.org; Thu, 15 Dec 2016 22:58:52 +0000
-Date: Fri, 16 Dec 2016 00:58:27 +0200
-From: Jouni Malinen <j@w1.fi>
-Subject: Re: ath10k firmware sends probes on DFS channels without radar
- detection
-Message-ID: <20161215225827.GB24883@w1.fi>
-References: <004a01d24fe2$94da8dc0$be8fa940$@acksys.fr>
- <20161214195805.GA15022@w1.fi>
- <00f501d256e7$0f8d5380$2ea7fa80$@acksys.fr>
- <5852C5AC.6090408@candelatech.com>
- <00fd01d256fc$2f780db0$8e682910$@acksys.fr>
+ id 1cHl0k-0000sh-AW
+ for ath10k@lists.infradead.org; Fri, 16 Dec 2016 05:24:51 +0000
+Date: Fri, 16 Dec 2016 10:54:18 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH 1/2] ath10k: add accounting for the extended peer
+ statistics
+Message-ID: <20161216052418.GA8936@atheros-ThinkPad-T61>
+References: <992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
+ <20161215162659.GA8030@atheros-ThinkPad-T61>
+ <20161215164338.GB8030@atheros-ThinkPad-T61>
+ <2970240.ih558OrmaK@debian64>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <00fd01d256fc$2f780db0$8e682910$@acksys.fr>
+In-Reply-To: <2970240.ih558OrmaK@debian64>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,57 +27,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jean-Pierre Tosoni <jp.tosoni@acksys.fr>
-Cc: 'Ben Greear' <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Christian Lamparter <chunkeey@googlemail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thu, Dec 15, 2016 at 06:53:47PM +0100, Jean-Pierre Tosoni wrote:
-> > > Thanks for the suggestion, I already tried something like this in
-> > > wmi.c, with the same result:
-> > >
-> > > - Before patching the firmware scans DFS channels actively (with
-> > probes).
-> > >
-> > > - After patching, the firmware scans DFS channels passively *until*
-> > > any beacon is received on the DFS channel. When *any* beacon is seen,
-> > > the firmware decides to scan actively on its own, without any new
-> > > IR/RADAR info from the driver.
-> > >
-> > > So, your patch is required but not sufficient.
-> > >
-> > > Somehow I was able to overcome this by reloading the regulation domain
-> > > in the radio card before each scan request:
+Hi Christian,
 
-Interesting.. I'm not completely sure what could have changed the
-behavior based on beacon hint. I thought it was cfg80211, but if the
-simple change for doing NO_IR | RADAR is not sufficient, it would seem
-to imply that something else can do this. Some more debugging to do, I
-guess.
+> On Thursday, December 15, 2016 10:13:39 PM CET Mohammed Shafi Shajakhan wrote:
+> > I am also thinking, as of now there is not much use in appending
+> > the extended peer stats (which gets periodically ) to the linked list
+> > '&ar->debug.fw_stats.peers_extd)'  and should we get rid of the below
+> > (and the required cleanup as well) 
+> > 
+> > list_splice_tail_init(&stats.peers_extd,
+> > 		&ar->debug.fw_stats.peers_extd);
+> > 
+> > 
+> > since rx_duration is getting updated periodically to the per sta
+> > information. Kindly let me know your thoughts about this.
+> 
+> Yes, of course. I see what your are trying to do and I think it's much better
+> to get rid of peers_extd and ath10k_fw_extd_stats_peers_free.
+>
+[shafi] Feel free to post the change and I can test the same for you(next week) !
+Let me know if you are busy on something else, I can take this up.
+As discussed, the fix to free 'extd stats' when number of peers exceeds the range
+is definitely needed. Thank you for looking into this.
 
-> The distinction between NO_IR and CHAN_RADAR is not very clear to me.
-> NO_IR appears only in the world regulatory domain so it's not relevant here.
+thanks,
+shafi
 
-NO_IR is a combination of not allowing AP, IBSS, or active scanning
-without having somehow been enabled by another device. RADAR has that
-same impact and in addition, requirement for doing radar detection and
-DFS by a master device.
-
-> I'd say
->  "the CHAN_RADAR flag should always make the firmware never do IR when
-> probing"
-> ...maybe, except if the channel is the operating channel. (this should
-> exclude
-> unassociated stations)
-
-For most cases, I'd agree that active scanning should not be used on DFS
-channels. That said, unicast Probe Request frame to the current AP while
-associated could be a reasonable exception. In addition, WPS with PBC
-depends on Probe Request frames to allow PBC session overlap detection,
-so there might be sufficient justification to allow Probe Request frame
-to be sent out for a very short duration (couple of seconds) after
-seeing a Beacon frame on the channel for such special cases.
-
--- 
-Jouni Malinen                                            PGP id EFC895FA
 
 _______________________________________________
 ath10k mailing list
