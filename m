@@ -1,21 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cHoxJ-00047g-1d
- for ath10k@lists.infradead.org; Fri, 16 Dec 2016 09:37:34 +0000
-Message-ID: <1481881024.27953.14.camel@sipsolutions.net>
-Subject: Re: [PATCH 2/4] cfg80211: Add new NL80211_CMD_SET_BTCOEX_PRIORITY
- to support BTCOEX
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 16 Dec 2016 10:37:04 +0100
-In-Reply-To: <134cc8e58ecb804b6dda0137c4c37be8@codeaurora.org>
-References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
- <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
- <1480949353.31788.27.camel@sipsolutions.net>
- <5e5e8971c96293a81e7cb37bcdfbd593@codeaurora.org>
- <1481645351.20412.34.camel@sipsolutions.net>
- <134cc8e58ecb804b6dda0137c4c37be8@codeaurora.org>
-Mime-Version: 1.0
+ id 1cHpga-0006LN-In
+ for ath10k@lists.infradead.org; Fri, 16 Dec 2016 10:24:21 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC v2 06/11] ath10k: htc: Added ATH10K_HTC_FLAG_BUNDLE_LSB
+Date: Fri, 16 Dec 2016 10:23:54 +0000
+Message-ID: <877f70uq86.fsf@kamboji.qca.qualcomm.com>
+References: <1479496971-19174-1-git-send-email-erik.stromdahl@gmail.com>
+ <1479496971-19174-7-git-send-email-erik.stromdahl@gmail.com>
+In-Reply-To: <1479496971-19174-7-git-send-email-erik.stromdahl@gmail.com>
+ (Erik Stromdahl's message of "Fri, 18 Nov 2016 20:22:46 +0100")
+Content-Language: en-US
+Content-ID: <5A67DD8BAC0386458F0EB163711574D3@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +22,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tamizh chelvam <tamizhchelvam@codeaurora.org>
-Cc: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-PiA+ID4gaXMgaXQgZmluZSB0byBoYXZlIGFzIFdJUEhZX0JUQ09FWF9CRV9QUkVGRVJSRUQgPwo+
-ID4gCj4gPiBJdCdzIG5vdCByZWFsbHkgY2xlYXIgdG8gbWUgd2hhdCB5b3UgaW50ZW5kIHRvIGRv
-IHRoaXMgLSBpZiBpdCdzCj4gPiByZWFsbHkgc3VwcG9ydCBmbGFncyB0aGVuIHlvdSByZWFsbHkg
-c2hvdWxkIG5hbWUgdGhvc2UgYmV0dGVyLgo+ID4gCj4gCj4gVGhpcyBpcyBzdXBwb3J0IGZsYWdz
-IGFuZCBpdCB1c2VkIGJ5IHRoZSBkcml2ZXIgdG8gaW50aW1hdGUgZHJpdmVywqAKPiBzdXBwb3J0
-ZWQgZnJhbWUgdHlwZSBmb3IgdGhlIEJUQ09FWCB0byBjZmcgbGlrZQo+ICJ3aXBoeV93b3dsYW5f
-c3VwcG9ydF9mbGFncyIgaW1wbGVtZW50YXRpb24uIFBsZWFzZSBzdWdnZXN0IGlmIHRoaXMKPiBp
-cyBvayA/IEkgd2lsbCBiZSB0aGFua2Z1bCBpZiB5b3UgY2FuIHN1Z2dlc3QgYcKgIGJldHRlciBv
-bmUgaWYgdGhpcwo+IGlzIG5vdCBvayAiV0lQSFlfQlRDT0VYX1NVUFBPUlRTX0JFIgoKV2VsbCwg
-SSBzZWUgYSBmZXcgdGhpbmdzIGhlcmU6CgoxKSBkb2VzIGl0IGV2ZW4gbWFrZSBzZW5zZSB0byBz
-cGxpdCBpdCBvdXQgcGVyIEFDPyB3b3VsZG4ndCBpdCBiZSB3ZWlyZAppZiB5b3Ugc3VwcG9ydGVk
-IHRoaXMgb25seSBmb3IgVk8gYW5kIEJLLCBhbmQgbm90IHRoZSBvdGhlcnMsIG9yCnNvbWV0aGlu
-ZyBsaWtlIHRoYXQ/CgoyKSBXb3VsZG4ndCBpdCBtYWtlIG1vcmUgc2Vuc2UgdG8gZGVmaW5lIHRo
-aXMgaW4gbmw4MDIxMSBhbmQganVzdCBwYXNzCnRoZSBiaXRtYXAgdGhyb3VnaCB0byB1c2Vyc3Bh
-Y2U/IFRoYXQgd291bGQgc2F2ZSBxdWl0ZSBhIGJpdCBvZiBuZXRsaW5rCm1hbmdsaW5nIGNvbXBs
-ZXhpdHkuCgozKSBJIHRoaW5rIHRoZSBuYW1pbmcgaXMgY29uZnVzaW5nIC0gIldJUEhZX0JUQ09F
-WF9TVVBQT1JUU19CRV9QUkVGIiBvcgpzbyBtaWdodCBiZSBtb3JlIGFwcHJvcHJpYXRlPwoKPiBE
-byB5b3UgbWVhbiB0byBzYXksIHNlbmRpbmcgYSB2YWx1ZSBmcm9tIHVzZXIgc3BhY2UgYW5kIHBh
-cnNlIHRoYXQKPiBpbsKgIHRoZSBkcml2ZXI/CgpJIHdhcyBtb3JlIHRoaW5raW5nIG9mIHRoZSBj
-YXBhYmlsaXR5IGFkdmVydGlzZW1lbnQsIGJ1dCB5ZWFoLCBib3RoCndheXMgc2VlbXMgcmVhc29u
-YWJsZS4KCmpvaGFubmVzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/htc.h |    2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+> index f94b25a..2963694 100644
+> --- a/drivers/net/wireless/ath/ath10k/htc.h
+> +++ b/drivers/net/wireless/ath/ath10k/htc.h
+> @@ -62,6 +62,8 @@ enum ath10k_htc_rx_flags {
+>  	ATH10K_HTC_FLAG_BUNDLE_MASK     = 0xF0
+>  };
+>  
+> +#define ATH10K_HTC_FLAG_BUNDLE_LSB         4
+> +
+
+I think you could fold patches from 6 to 11 into one patch. They are all
+about adding code, and most of the commit logs are empty anyway.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
