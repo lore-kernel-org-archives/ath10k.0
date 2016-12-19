@@ -1,21 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cIMkp-0000LW-Q8
- for ath10k@lists.infradead.org; Sat, 17 Dec 2016 21:42:56 +0000
-Received: by mail-wm0-x243.google.com with SMTP id m203so11781869wma.3
- for <ath10k@lists.infradead.org>; Sat, 17 Dec 2016 13:42:35 -0800 (PST)
-Received: from DESKTOPFU0R907 ([213.57.52.209])
- by smtp.gmail.com with ESMTPSA id j1sm13094899wjm.26.2016.12.17.13.42.32
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sat, 17 Dec 2016 13:42:33 -0800 (PST)
-From: "Mikhail Sokolovskyy" <msokolovskii@gmail.com>
-Subject: Compex WLE900VX wireless driver
-Date: Sat, 17 Dec 2016 23:42:31 +0200
-Message-ID: <000301d258ae$79b8be70$6d2a3b50$@gmail.com>
+ id 1cIt39-0001Sh-4j
+ for ath10k@lists.infradead.org; Mon, 19 Dec 2016 08:12:00 +0000
 MIME-Version: 1.0
-Content-Language: ru-ua
+Date: Mon, 19 Dec 2016 13:41:35 +0530
+From: Tamizh chelvam <tamizhchelvam@codeaurora.org>
+Subject: Re: [PATCH 2/4] cfg80211: Add new NL80211_CMD_SET_BTCOEX_PRIORITY to
+ support BTCOEX
+In-Reply-To: <1481881024.27953.14.camel@sipsolutions.net>
+References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
+ <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
+ <1480949353.31788.27.camel@sipsolutions.net>
+ <5e5e8971c96293a81e7cb37bcdfbd593@codeaurora.org>
+ <1481645351.20412.34.camel@sipsolutions.net>
+ <134cc8e58ecb804b6dda0137c4c37be8@codeaurora.org>
+ <1481881024.27953.14.camel@sipsolutions.net>
+Message-ID: <ae82112880d55451342e7a6e5a47c33f@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +25,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-HI to all!
-
-
-I've been trying to build my own wireless router from a regular PC for a
-while now. Everything works fine except the wireless NIC Compex WLE900VX
-which is based on Atheros QCA9880 chipset. Although I am able to run it in n
-mode I'm getting this output on the command "dmesg | grep ath10". 
-
-[    2.134534] ath10k_pci 0000:02:00.0: could not fetch firmware file
-'ath10k/QCA988X/hw2.0/firmware-4.bin': -2
-[    2.134561] ath10k_pci 0000:02:00.0: could not fetch firmware file
-'ath10k/QCA988X/hw2.0/firmware-3.bin': -2
-
-The card doesn't want to start at ac mode at all. The OS is ClearOS which is
-based on Red Hat products. Here is the output for "ethtool -i wlp2s0"
-
-driver: ath10k_pci
-version: 3.10.0-327.36.3.v7.x86_64
-firmware-version: 999.999.0.636
-bus-info: 0000:02:00.0
-supports-statistics: yes
-supports-test: no
-supports-eeprom-access: no
-supports-register-dump: no
-supports-priv-flags: no 
-
-Any help is much appreciated. If any extra information needed please let me
-know.
-Thanks!
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgSm9oYW5uZXMsCgpUaGFua3MgZm9yIHlvdXIgY29tbWVudHMuCgpPbiAyMDE2LTEyLTE2IDE1
+OjA3LCBKb2hhbm5lcyBCZXJnIHdyb3RlOgo+PiA+ID4gaXMgaXQgZmluZSB0byBoYXZlIGFzIFdJ
+UEhZX0JUQ09FWF9CRV9QUkVGRVJSRUQgPwo+PiA+Cj4+ID4gSXQncyBub3QgcmVhbGx5IGNsZWFy
+IHRvIG1lIHdoYXQgeW91IGludGVuZCB0byBkbyB0aGlzIC0gaWYgaXQncwo+PiA+IHJlYWxseSBz
+dXBwb3J0IGZsYWdzIHRoZW4geW91IHJlYWxseSBzaG91bGQgbmFtZSB0aG9zZSBiZXR0ZXIuCj4+
+ID4KPj4gCj4+IFRoaXMgaXMgc3VwcG9ydCBmbGFncyBhbmQgaXQgdXNlZCBieSB0aGUgZHJpdmVy
+IHRvIGludGltYXRlIGRyaXZlcsKgCj4+IHN1cHBvcnRlZCBmcmFtZSB0eXBlIGZvciB0aGUgQlRD
+T0VYIHRvIGNmZyBsaWtlCj4+ICJ3aXBoeV93b3dsYW5fc3VwcG9ydF9mbGFncyIgaW1wbGVtZW50
+YXRpb24uIFBsZWFzZSBzdWdnZXN0IGlmIHRoaXMKPj4gaXMgb2sgPyBJIHdpbGwgYmUgdGhhbmtm
+dWwgaWYgeW91IGNhbiBzdWdnZXN0IGHCoCBiZXR0ZXIgb25lIGlmIHRoaXMKPj4gaXMgbm90IG9r
+ICJXSVBIWV9CVENPRVhfU1VQUE9SVFNfQkUiCj4gCj4gV2VsbCwgSSBzZWUgYSBmZXcgdGhpbmdz
+IGhlcmU6Cj4gCj4gMSkgZG9lcyBpdCBldmVuIG1ha2Ugc2Vuc2UgdG8gc3BsaXQgaXQgb3V0IHBl
+ciBBQz8gd291bGRuJ3QgaXQgYmUgd2VpcmQKPiBpZiB5b3Ugc3VwcG9ydGVkIHRoaXMgb25seSBm
+b3IgVk8gYW5kIEJLLCBhbmQgbm90IHRoZSBvdGhlcnMsIG9yCj4gc29tZXRoaW5nIGxpa2UgdGhh
+dD8KPiAKSXQgaGFzIHN1cHBvcnQgZm9yIEJFLCBWSSwgbWFuYWdlbWVudCBhbmQgYmVhY29uIGZy
+YW1lcyBhbHNvLgpPciBkbyB5b3UgbWVhbnQgdG8gc2F5IGxpa2Ugc3VwcG9ydCBvbmx5IGZvciBW
+TyBhbmQgQks/Cgo+IDIpIFdvdWxkbid0IGl0IG1ha2UgbW9yZSBzZW5zZSB0byBkZWZpbmUgdGhp
+cyBpbiBubDgwMjExIGFuZCBqdXN0IHBhc3MKPiB0aGUgYml0bWFwIHRocm91Z2ggdG8gdXNlcnNw
+YWNlPyBUaGF0IHdvdWxkIHNhdmUgcXVpdGUgYSBiaXQgb2YgbmV0bGluawo+IG1hbmdsaW5nIGNv
+bXBsZXhpdHkuCj4gClBsZWFzZSBsZXQgbWUga25vdyBpZiB0aGUgYmVsb3cgZGVzaWduL3Rob3Vn
+aHQgaXMgZmluZSB0byB5b3UuCgppdyBwaHlYIHNldCBidGNvZXhfcHJpb3JpdHkgPFt2aSwgdm8s
+IGJlLCBiaywgbWdtdCwgYmVhY29uXT4KCkJ5IHRoaXMgY29tbWFuZCB1c2VyIHNob3VsZCBnaXZl
+IG9uZSBvciBtb3JlIHRoYW4gb25lIGZyYW1lIHR5cGVzIGZvciAKdGhpcyBidGNvZXggcHJpb3Jp
+dHksCndlIHdpbGwgcGFyc2UgdGhhdCBpbiAiaXciIGFuZCBzZW5kIGFzIGEgc2luZ2xlIGJpdG1h
+cChsZXNzIHRoYW4gMHg2NCkgCnRvCnRoZSBkcml2ZXI/Cgo+IDMpIEkgdGhpbmsgdGhlIG5hbWlu
+ZyBpcyBjb25mdXNpbmcgLSAiV0lQSFlfQlRDT0VYX1NVUFBPUlRTX0JFX1BSRUYiIG9yCj4gc28g
+bWlnaHQgYmUgbW9yZSBhcHByb3ByaWF0ZT8KPiAKSWYgdGhlIGFib3ZlIHN1Z2dlc3Rpb24gaXMg
+ZmluZSwgd2UgbWF5IG5vdCBuZWVkIHRoZXNlIGZsYWdzLgoKPj4gRG8geW91IG1lYW4gdG8gc2F5
+LCBzZW5kaW5nIGEgdmFsdWUgZnJvbSB1c2VyIHNwYWNlIGFuZCBwYXJzZSB0aGF0Cj4+IGluwqAg
+dGhlIGRyaXZlcj8KPiAKPiBJIHdhcyBtb3JlIHRoaW5raW5nIG9mIHRoZSBjYXBhYmlsaXR5IGFk
+dmVydGlzZW1lbnQsIGJ1dCB5ZWFoLCBib3RoCj4gd2F5cyBzZWVtcyByZWFzb25hYmxlLgo+IApP
+a2F5LgoKVGhhbmtzLApUYW1pemguCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
