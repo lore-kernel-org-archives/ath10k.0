@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cIzdd-0001yr-7e
- for ath10k@lists.infradead.org; Mon, 19 Dec 2016 15:14:06 +0000
-Received: from [192.168.254.12] (h208.6.186.173.ip.windstream.net
- [173.186.6.208])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id E4D3840A7E2
- for <ath10k@lists.infradead.org>; Mon, 19 Dec 2016 07:07:30 -0800 (PST)
-Message-ID: <5857F7B3.206@candelatech.com>
-Date: Mon, 19 Dec 2016 07:07:31 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cJ197-00022N-J8
+ for ath10k@lists.infradead.org; Mon, 19 Dec 2016 16:50:43 +0000
+Date: Mon, 19 Dec 2016 22:19:57 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH] ath10k: merge extended peer info data with existing
+ peers info
+Message-ID: <20161219164957.GA13022@atheros-ThinkPad-T61>
+References: <20161216052418.GA8936@atheros-ThinkPad-T61>
+ <20161217174634.4531-1-chunkeey@googlemail.com>
 MIME-Version: 1.0
-Subject: ath10k truesize issue?
+Content-Disposition: inline
+In-Reply-To: <20161217174634.4531-1-chunkeey@googlemail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,89 +21,266 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Christian Lamparter <chunkeey@googlemail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-This warning is from the code below.  Anyone seen this recently?
+Hi Christian,
 
-I think this was from a 9984 NIC (we have several different
-NICs in this chassis).
+On Sat, Dec 17, 2016 at 06:46:34PM +0100, Christian Lamparter wrote:
+> The 10.4 firmware adds extended peer information to the
+> firmware's statistics payload. This additional info is
+> stored as a separate data field. During review of
+> "ath10k: add accounting for the extended peer statistics" [0]
+> 
+> Mohammed Shafi Shajakhan commented that the extended peer statistics
+> lists are of little use:"... there is not much use in appending
+> the extended peer stats (which gets periodically updated) to the
+> linked list '&ar->debug.fw_stats.peers_extd)' and should we get
+> rid of the below (and the required cleanup as well)
+> 
+> list_splice_tail_init(&stats.peers_extd,
+>                 &ar->debug.fw_stats.peers_extd);
+> 
+> since rx_duration is getting updated periodically to the per sta
+> information."
 
+[shafi] thanks !
 
-} else {
-                 if (skb_shinfo(to)->nr_frags +
-                     skb_shinfo(from)->nr_frags > MAX_SKB_FRAGS)
-                         return false;
+> 
+> This patch replaces the extended peers list with a lookup and
+> puts the retrieved data (rx_duration) into the existing
+> ath10k_fw_stats_peer entry that was created earlier.
 
-                 delta = from->truesize - SKB_TRUESIZE(skb_end_offset(from));
-         }
+[shafi] Its good to maintain the extended stats variable
+and retain the two different functions to update rx_duration.
 
-         WARN_ON_ONCE(delta < len);
-
-Dec 18 22:40:36 ct524-9933 kernel: WARNING: CPU: 7 PID: 0 at /home/greearb/git/linux-4.7.dev.y/net/core/skbuff.c:4283 skb_try_coalesce+0x402/0x410
-Dec 18 22:40:36 ct524-9933 kernel: Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink wanlink(O) nf_defrag_ipv4 macvlan pktgen fuse vfat fat 
-coretemp intel_rapl x86_pkg_temp_thermal intel_powerclamp kvm_intel kvm irqbypass ath10k_pci ath10k_core ath mac80211 iTCO_wdt iTCO_vendor_support ipmi_ssif 
-cfg80211 hci_uart joydev i2c_i801 btbcm btqca btintel ie31200_edac bluetooth edac_core shpchp acpi_als tpm_tis kfifo_buf pinctrl_sunrisepoint intel_lpss_acpi 
-ipmi_msghandler tpm industrialio video pinctrl_intel intel_lpss acpi_power_meter sch_fq_codel nfsd auth_rpcgss nfs_acl lockd grace sunrpc 8021q garp stp llc mrp 
-ast drm_kms_helper ttm drm igb i2c_algo_bit ixgbe mdio hwmon dca ptp pps_core i2c_hid i2c_core fjes efivarfs ipv6 [last unloaded: nfnetlink]
-Dec 18 22:40:36 ct524-9933 kernel: CPU: 7 PID: 0 Comm: swapper/7 Tainted: G           O    4.7.10+ #46
-Dec 18 22:40:36 ct524-9933 kernel: Hardware name: Supermicro Super Server/X11SSM, BIOS 1.0b 12/29/2015
-Dec 18 22:40:36 ct524-9933 kernel:  0000000000000000 ffff8804779c3688 ffffffff81409351 0000000000000000
-Dec 18 22:40:36 ct524-9933 kernel:  0000000000000000 ffff8804779c36c8 ffffffff81103976 000010bb779c36a8
-Dec 18 22:40:36 ct524-9933 kernel:  ffff88007ce1f800 00000000000005a8 ffff8804779c3724 ffff880075b85000
-Dec 18 22:40:36 ct524-9933 kernel: Call Trace:
-Dec 18 22:40:36 ct524-9933 kernel:  <IRQ> [<ffffffff81409351>] dump_stack+0x63/0x82
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff81103976>] __warn+0xc6/0xe0
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff81103a48>] warn_slowpath_null+0x18/0x20
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff81760c62>] skb_try_coalesce+0x402/0x410
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817c7b79>] tcp_try_coalesce+0x39/0xa0
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff81761671>] ? skb_checksum+0x21/0x30
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817c8322>] tcp_queue_rcv+0x52/0x140
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817cee84>] tcp_rcv_established+0x364/0x6f0
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817d9286>] tcp_v4_do_rcv+0x136/0x210
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817dab49>] tcp_v4_rcv+0x8d9/0xaf0
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff8180a7f2>] ? iptable_filter_hook+0x22/0x60
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817b4bdb>] ip_local_deliver_finish+0x9b/0x1f0
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817b4edb>] ip_local_deliver+0x5b/0xd0
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817b4b40>] ? ip_rcv_finish+0x3f0/0x3f0
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817b486a>] ip_rcv_finish+0x11a/0x3f0
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817b51af>] ip_rcv+0x25f/0x380
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817b4750>] ? inet_del_offload+0x40/0x40
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff81773cb4>] __netif_receive_skb_core+0x684/0xa80
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff8124925a>] ? kmem_cache_free+0x17a/0x180
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817740c3>] __netif_receive_skb+0x13/0x60
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff81774133>] netif_receive_skb_internal+0x23/0x90
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff817741b7>] netif_receive_skb+0x17/0x80
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffffa0a08d07>] ieee80211_deliver_skb+0x157/0x1b0 [mac80211]
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffffa0a0ad9a>] ieee80211_rx_handlers+0xa8a/0x2560 [mac80211]
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff8155717a>] ? dma_pte_clear_level+0x14a/0x190
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffffa0a0d077>] ieee80211_prepare_and_rx_handle+0x597/0x10a0 [mac80211]
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffffa0a0ddfa>] ieee80211_rx_napi+0x27a/0x930 [mac80211]
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffffa0c179cc>] ath10k_process_rx+0x2ac/0x4a0 [ath10k_core]
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffffa0c17bf5>] ath10k_htt_rx_h_deliver+0x35/0x80 [ath10k_core]
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffffa0c1a421>] ath10k_htt_txrx_compl_task+0xc91/0xe60 [ath10k_core]
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff81108afb>] tasklet_action+0x10b/0x120
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff81108eca>] __do_softirq+0xca/0x2b0
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff811091e9>] irq_exit+0x89/0x90
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff8102e69f>] do_IRQ+0x4f/0xd0
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff8184db42>] common_interrupt+0x82/0x82
-Dec 18 22:40:36 ct524-9933 kernel:  <EOI> [<ffffffff816e8020>] ? cpuidle_enter_state+0x110/0x290
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff816e81c2>] cpuidle_enter+0x12/0x20
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff81144bb5>] call_cpuidle+0x25/0x40
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff81144f72>] cpu_startup_entry+0x2b2/0x370
-Dec 18 22:40:36 ct524-9933 kernel: [<ffffffff8104d8cd>] start_secondary+0x14d/0x170
-Dec 18 22:40:36 ct524-9933 kernel: ---[ end trace fa9eabf037886c79 ]---
+a) extended peer stats supported - mainly for 10.4
+b) extender peer stats not supported - for 10.2
 
 
-Thanks,
-Ben
+> 
+> [0] <https://lkml.kernel.org/r/992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
+> Cc: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+> Signed-off-by: Christian Lamparter <chunkeey@googlemail.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/core.h        |  2 --
+>  drivers/net/wireless/ath/ath10k/debug.c       | 17 --------------
+>  drivers/net/wireless/ath/ath10k/debugfs_sta.c | 32 ++-----------------------
+>  drivers/net/wireless/ath/ath10k/wmi.c         | 34 ++++++++++++++++++++-------
+>  4 files changed, 28 insertions(+), 57 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+> index 09ff8b8a6441..3fffbbb18c25 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.h
+> +++ b/drivers/net/wireless/ath/ath10k/core.h
+> @@ -268,11 +268,9 @@ struct ath10k_fw_stats_pdev {
+>  };
+>  
+>  struct ath10k_fw_stats {
+> -	bool extended;
+>  	struct list_head pdevs;
+>  	struct list_head vdevs;
+>  	struct list_head peers;
+> -	struct list_head peers_extd;
+>  };
+>  
+>  #define ATH10K_TPC_TABLE_TYPE_FLAG	1
+> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+> index 82a4c67f3672..89f7fde77cdf 100644
+> --- a/drivers/net/wireless/ath/ath10k/debug.c
+> +++ b/drivers/net/wireless/ath/ath10k/debug.c
+> @@ -315,25 +315,13 @@ static void ath10k_fw_stats_peers_free(struct list_head *head)
+>  	}
+>  }
+>  
+> -static void ath10k_fw_extd_stats_peers_free(struct list_head *head)
+> -{
+> -	struct ath10k_fw_extd_stats_peer *i, *tmp;
+> -
+> -	list_for_each_entry_safe(i, tmp, head, list) {
+> -		list_del(&i->list);
+> -		kfree(i);
+> -	}
+> -}
+> -
+>  static void ath10k_debug_fw_stats_reset(struct ath10k *ar)
+>  {
+>  	spin_lock_bh(&ar->data_lock);
+>  	ar->debug.fw_stats_done = false;
+> -	ar->debug.fw_stats.extended = false;
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+[shafi] this looks fine, but not removing the 'extended' variable 
+from ath10k_fw_stats structure, I see the design for 'rx_duration'
+arguably some what convoluted !
+
+*We get periodic events from firmware updating 'ath10k_debug_fw_stats_process'
+*Fetch rx_duration from  'ath10k_wmi_pull_fw_stats(ar, skb, &stats)'
+{certainly 'stats' object is for this particular update only, and freed
+up later)
+*Update immediately using 'ath10k_sta_update_rx_duration'
+
+'ath10k_wmi_pull_fw_stats' has a slightly different implementation
+for 10.2 and 10.4 (the later supporting extended peer stats)
+
+
+
+>  	ath10k_fw_stats_pdevs_free(&ar->debug.fw_stats.pdevs);
+>  	ath10k_fw_stats_vdevs_free(&ar->debug.fw_stats.vdevs);
+>  	ath10k_fw_stats_peers_free(&ar->debug.fw_stats.peers);
+> -	ath10k_fw_extd_stats_peers_free(&ar->debug.fw_stats.peers_extd);
+>  	spin_unlock_bh(&ar->data_lock);
+>  }
+>  
+> @@ -348,7 +336,6 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+>  	INIT_LIST_HEAD(&stats.pdevs);
+>  	INIT_LIST_HEAD(&stats.vdevs);
+>  	INIT_LIST_HEAD(&stats.peers);
+> -	INIT_LIST_HEAD(&stats.peers_extd);
+>  
+>  	spin_lock_bh(&ar->data_lock);
+>  	ret = ath10k_wmi_pull_fw_stats(ar, skb, &stats);
+> @@ -411,8 +398,6 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+>  
+>  		list_splice_tail_init(&stats.peers, &ar->debug.fw_stats.peers);
+>  		list_splice_tail_init(&stats.vdevs, &ar->debug.fw_stats.vdevs);
+> -		list_splice_tail_init(&stats.peers_extd,
+> -				      &ar->debug.fw_stats.peers_extd);
+>  	}
+>  
+>  	complete(&ar->debug.fw_stats_complete);
+> @@ -424,7 +409,6 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+>  	ath10k_fw_stats_pdevs_free(&stats.pdevs);
+>  	ath10k_fw_stats_vdevs_free(&stats.vdevs);
+>  	ath10k_fw_stats_peers_free(&stats.peers);
+> -	ath10k_fw_extd_stats_peers_free(&stats.peers_extd);
+>  
+>  	spin_unlock_bh(&ar->data_lock);
+>  }
+> @@ -2347,7 +2331,6 @@ int ath10k_debug_create(struct ath10k *ar)
+>  	INIT_LIST_HEAD(&ar->debug.fw_stats.pdevs);
+>  	INIT_LIST_HEAD(&ar->debug.fw_stats.vdevs);
+>  	INIT_LIST_HEAD(&ar->debug.fw_stats.peers);
+> -	INIT_LIST_HEAD(&ar->debug.fw_stats.peers_extd);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+> index fce6f8137d33..bf2d49cbb3bb 100644
+> --- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+> +++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+> @@ -18,27 +18,8 @@
+>  #include "wmi-ops.h"
+>  #include "debug.h"
+>  
+> -static void ath10k_sta_update_extd_stats_rx_duration(struct ath10k *ar,
+> -						     struct ath10k_fw_stats *stats)
+> -{
+> -	struct ath10k_fw_extd_stats_peer *peer;
+> -	struct ieee80211_sta *sta;
+> -	struct ath10k_sta *arsta;
+> -
+> -	rcu_read_lock();
+> -	list_for_each_entry(peer, &stats->peers_extd, list) {
+> -		sta = ieee80211_find_sta_by_ifaddr(ar->hw, peer->peer_macaddr,
+> -						   NULL);
+> -		if (!sta)
+> -			continue;
+> -		arsta = (struct ath10k_sta *)sta->drv_priv;
+> -		arsta->rx_duration += (u64)peer->rx_duration;
+> -	}
+> -	rcu_read_unlock();
+> -}
+> -
+> -static void ath10k_sta_update_stats_rx_duration(struct ath10k *ar,
+> -						struct ath10k_fw_stats *stats)
+> +void ath10k_sta_update_rx_duration(struct ath10k *ar,
+> +				   struct ath10k_fw_stats *stats)
+>  {
+>  	struct ath10k_fw_stats_peer *peer;
+>  	struct ieee80211_sta *sta;
+> @@ -56,15 +37,6 @@ static void ath10k_sta_update_stats_rx_duration(struct ath10k *ar,
+>  	rcu_read_unlock();
+>  }
+>  
+> -void ath10k_sta_update_rx_duration(struct ath10k *ar,
+> -				   struct ath10k_fw_stats *stats)
+> -{
+> -	if (stats->extended)
+> -		ath10k_sta_update_extd_stats_rx_duration(ar, stats);
+> -	else
+> -		ath10k_sta_update_stats_rx_duration(ar, stats);
+> -}
+> -
+>  void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+>  			   struct ieee80211_sta *sta,
+>  			   struct station_info *sinfo)
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index c893314a191f..c7ec7b9e9b55 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -3044,23 +3044,41 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
+>  	if ((stats_id & WMI_10_4_STAT_PEER_EXTD) == 0)
+>  		return 0;
+>  
+> -	stats->extended = true;
+> -
+>  	for (i = 0; i < num_peer_stats; i++) {
+>  		const struct wmi_10_4_peer_extd_stats *src;
+> -		struct ath10k_fw_extd_stats_peer *dst;
+> +		struct ath10k_fw_stats_peer *dst;
+>  
+>  		src = (void *)skb->data;
+>  		if (!skb_pull(skb, sizeof(*src)))
+>  			return -EPROTO;
+>  
+> -		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
+> -		if (!dst)
+> -			continue;
+> +		/* Because the stat data may exceed htc-wmi buffer
+> +		 * limit the firmware might split the stats data
+> +		 * and delivers it in multiple update events.
+> +		 * if we can't find the entry in the current event
+> +		 * payload, we have to look in main list as well.
+> +		 */
+> +		list_for_each_entry(dst, &stats->peers, list) {
+> +			if (ether_addr_equal(dst->peer_macaddr,
+> +					     src->peer_macaddr.addr))
+> +				goto found;
+> +		}
+> +
+> +#ifdef CONFIG_ATH10K_DEBUGFS
+> +		list_for_each_entry(dst, &ar->debug.fw_stats.peers, list) {
+> +			if (ether_addr_equal(dst->peer_macaddr,
+> +					     src->peer_macaddr.addr))
+> +				goto found;
+> +		}
+> +#endif
+> +
+> +		ath10k_dbg(ar, ATH10K_DBG_WMI,
+> +			   "Orphaned extended stats entry for station %pM.\n",
+> +			   src->peer_macaddr.addr);
+> +		continue;
+>  
+> -		ether_addr_copy(dst->peer_macaddr, src->peer_macaddr.addr);
+> +found:
+>  		dst->rx_duration = __le32_to_cpu(src->rx_duration);
+> -		list_add_tail(&dst->list, &stats->peers_extd);
+>  	}
+>  
+>  	return 0;
+
+[shafi] Yes i am bit concerned about this change making 10.4 to update
+over the existing peer_stats structure, the idea is to maintain uniformity
+between the structures shared between ath10k and its corresponding to avoid
+confusion/ bugs in the future. Kindly let me know your thoughts, feel free
+to correct me if any of my analysis is incorrect. thank you !
+
+regards,
+shafi
 
 
 _______________________________________________
