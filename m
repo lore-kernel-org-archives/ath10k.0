@@ -1,22 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qt0-x233.google.com ([2607:f8b0:400d:c0d::233])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cIt39-0001Sh-4j
- for ath10k@lists.infradead.org; Mon, 19 Dec 2016 08:12:00 +0000
+ id 1cIx4M-0006P2-A6
+ for ath10k@lists.infradead.org; Mon, 19 Dec 2016 12:29:31 +0000
+Received: by mail-qt0-x233.google.com with SMTP id w33so145014550qtc.3
+ for <ath10k@lists.infradead.org>; Mon, 19 Dec 2016 04:29:09 -0800 (PST)
 MIME-Version: 1.0
-Date: Mon, 19 Dec 2016 13:41:35 +0530
-From: Tamizh chelvam <tamizhchelvam@codeaurora.org>
-Subject: Re: [PATCH 2/4] cfg80211: Add new NL80211_CMD_SET_BTCOEX_PRIORITY to
- support BTCOEX
-In-Reply-To: <1481881024.27953.14.camel@sipsolutions.net>
-References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
- <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
- <1480949353.31788.27.camel@sipsolutions.net>
- <5e5e8971c96293a81e7cb37bcdfbd593@codeaurora.org>
- <1481645351.20412.34.camel@sipsolutions.net>
- <134cc8e58ecb804b6dda0137c4c37be8@codeaurora.org>
- <1481881024.27953.14.camel@sipsolutions.net>
-Message-ID: <ae82112880d55451342e7a6e5a47c33f@codeaurora.org>
+In-Reply-To: <000301d258ae$79b8be70$6d2a3b50$@gmail.com>
+References: <000301d258ae$79b8be70$6d2a3b50$@gmail.com>
+From: Bruno Antunes <baantunes@gmail.com>
+Date: Mon, 19 Dec 2016 12:28:48 +0000
+Message-ID: <CABUTiXVO_v5ujfvu=DB+gwj8YQFFuU9SYa0+_+SeTrWFO9o1Kg@mail.gmail.com>
+Subject: Re: Compex WLE900VX wireless driver
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +20,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Mikhail Sokolovskyy <msokolovskii@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGkgSm9oYW5uZXMsCgpUaGFua3MgZm9yIHlvdXIgY29tbWVudHMuCgpPbiAyMDE2LTEyLTE2IDE1
-OjA3LCBKb2hhbm5lcyBCZXJnIHdyb3RlOgo+PiA+ID4gaXMgaXQgZmluZSB0byBoYXZlIGFzIFdJ
-UEhZX0JUQ09FWF9CRV9QUkVGRVJSRUQgPwo+PiA+Cj4+ID4gSXQncyBub3QgcmVhbGx5IGNsZWFy
-IHRvIG1lIHdoYXQgeW91IGludGVuZCB0byBkbyB0aGlzIC0gaWYgaXQncwo+PiA+IHJlYWxseSBz
-dXBwb3J0IGZsYWdzIHRoZW4geW91IHJlYWxseSBzaG91bGQgbmFtZSB0aG9zZSBiZXR0ZXIuCj4+
-ID4KPj4gCj4+IFRoaXMgaXMgc3VwcG9ydCBmbGFncyBhbmQgaXQgdXNlZCBieSB0aGUgZHJpdmVy
-IHRvIGludGltYXRlIGRyaXZlcsKgCj4+IHN1cHBvcnRlZCBmcmFtZSB0eXBlIGZvciB0aGUgQlRD
-T0VYIHRvIGNmZyBsaWtlCj4+ICJ3aXBoeV93b3dsYW5fc3VwcG9ydF9mbGFncyIgaW1wbGVtZW50
-YXRpb24uIFBsZWFzZSBzdWdnZXN0IGlmIHRoaXMKPj4gaXMgb2sgPyBJIHdpbGwgYmUgdGhhbmtm
-dWwgaWYgeW91IGNhbiBzdWdnZXN0IGHCoCBiZXR0ZXIgb25lIGlmIHRoaXMKPj4gaXMgbm90IG9r
-ICJXSVBIWV9CVENPRVhfU1VQUE9SVFNfQkUiCj4gCj4gV2VsbCwgSSBzZWUgYSBmZXcgdGhpbmdz
-IGhlcmU6Cj4gCj4gMSkgZG9lcyBpdCBldmVuIG1ha2Ugc2Vuc2UgdG8gc3BsaXQgaXQgb3V0IHBl
-ciBBQz8gd291bGRuJ3QgaXQgYmUgd2VpcmQKPiBpZiB5b3Ugc3VwcG9ydGVkIHRoaXMgb25seSBm
-b3IgVk8gYW5kIEJLLCBhbmQgbm90IHRoZSBvdGhlcnMsIG9yCj4gc29tZXRoaW5nIGxpa2UgdGhh
-dD8KPiAKSXQgaGFzIHN1cHBvcnQgZm9yIEJFLCBWSSwgbWFuYWdlbWVudCBhbmQgYmVhY29uIGZy
-YW1lcyBhbHNvLgpPciBkbyB5b3UgbWVhbnQgdG8gc2F5IGxpa2Ugc3VwcG9ydCBvbmx5IGZvciBW
-TyBhbmQgQks/Cgo+IDIpIFdvdWxkbid0IGl0IG1ha2UgbW9yZSBzZW5zZSB0byBkZWZpbmUgdGhp
-cyBpbiBubDgwMjExIGFuZCBqdXN0IHBhc3MKPiB0aGUgYml0bWFwIHRocm91Z2ggdG8gdXNlcnNw
-YWNlPyBUaGF0IHdvdWxkIHNhdmUgcXVpdGUgYSBiaXQgb2YgbmV0bGluawo+IG1hbmdsaW5nIGNv
-bXBsZXhpdHkuCj4gClBsZWFzZSBsZXQgbWUga25vdyBpZiB0aGUgYmVsb3cgZGVzaWduL3Rob3Vn
-aHQgaXMgZmluZSB0byB5b3UuCgppdyBwaHlYIHNldCBidGNvZXhfcHJpb3JpdHkgPFt2aSwgdm8s
-IGJlLCBiaywgbWdtdCwgYmVhY29uXT4KCkJ5IHRoaXMgY29tbWFuZCB1c2VyIHNob3VsZCBnaXZl
-IG9uZSBvciBtb3JlIHRoYW4gb25lIGZyYW1lIHR5cGVzIGZvciAKdGhpcyBidGNvZXggcHJpb3Jp
-dHksCndlIHdpbGwgcGFyc2UgdGhhdCBpbiAiaXciIGFuZCBzZW5kIGFzIGEgc2luZ2xlIGJpdG1h
-cChsZXNzIHRoYW4gMHg2NCkgCnRvCnRoZSBkcml2ZXI/Cgo+IDMpIEkgdGhpbmsgdGhlIG5hbWlu
-ZyBpcyBjb25mdXNpbmcgLSAiV0lQSFlfQlRDT0VYX1NVUFBPUlRTX0JFX1BSRUYiIG9yCj4gc28g
-bWlnaHQgYmUgbW9yZSBhcHByb3ByaWF0ZT8KPiAKSWYgdGhlIGFib3ZlIHN1Z2dlc3Rpb24gaXMg
-ZmluZSwgd2UgbWF5IG5vdCBuZWVkIHRoZXNlIGZsYWdzLgoKPj4gRG8geW91IG1lYW4gdG8gc2F5
-LCBzZW5kaW5nIGEgdmFsdWUgZnJvbSB1c2VyIHNwYWNlIGFuZCBwYXJzZSB0aGF0Cj4+IGluwqAg
-dGhlIGRyaXZlcj8KPiAKPiBJIHdhcyBtb3JlIHRoaW5raW5nIG9mIHRoZSBjYXBhYmlsaXR5IGFk
-dmVydGlzZW1lbnQsIGJ1dCB5ZWFoLCBib3RoCj4gd2F5cyBzZWVtcyByZWFzb25hYmxlLgo+IApP
-a2F5LgoKVGhhbmtzLApUYW1pemguCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hi,
+
+On 17 December 2016 at 21:42, Mikhail Sokolovskyy
+<msokolovskii@gmail.com> wrote:
+> HI to all!
+>
+
+> The card doesn't want to start at ac mode at all. The OS is ClearOS which is
+
+That can be the hostapd configuration file or hostapd version.
+
+> based on Red Hat products. Here is the output for "ethtool -i wlp2s0"
+>
+> driver: ath10k_pci
+> version: 3.10.0-327.36.3.v7.x86_64
+> firmware-version: 999.999.0.636
+
+Is there any reason to use this firmware version?
+
+You can upgrade to more recent versions:
+https://github.com/kvalo/ath10k-firmware
+
+Some info and instructions can be found here:
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/firmware
+
+Regards,
+Bruno
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
