@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJFPn-0005n4-Gy
- for ath10k@lists.infradead.org; Tue, 20 Dec 2016 08:04:53 +0000
+ id 1cJFTC-0000oO-Hv
+ for ath10k@lists.infradead.org; Tue, 20 Dec 2016 08:08:23 +0000
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH v2] ath10k: Fix crash during rmmod when probe firmware fails
-Date: Tue, 20 Dec 2016 13:35:35 +0530
-Message-ID: <1482221135-23960-1-git-send-email-mohammed@qca.qualcomm.com>
+Subject: [PATCH v3] ath10k: Fix crash during rmmod when probe firmware fails
+Date: Tue, 20 Dec 2016 13:39:11 +0530
+Message-ID: <1482221351-24029-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -51,7 +51,6 @@ Call Trace:
 
 Reported-by: Ben Greear <greearb@candelatech.com>
 Fixes: 3c97f5de1f28 ("ath10k: implement NAPI support")
-
 Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 ---
  drivers/net/wireless/ath/ath10k/core.c | 1 +
