@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJfsB-0008OJ-K7
- for ath10k@lists.infradead.org; Wed, 21 Dec 2016 12:19:57 +0000
-Subject: [PATCH] ath10k: support dev_coredump for crash dump
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 21 Dec 2016 14:19:21 +0200
-Message-ID: <20161221121921.25119.93932.stgit@potku.adurom.net>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cJgpz-00051h-UR
+ for ath10k@lists.infradead.org; Wed, 21 Dec 2016 13:21:44 +0000
+Message-ID: <585A81BC.1040908@candelatech.com>
+Date: Wed, 21 Dec 2016 05:21:00 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: Can the ath10k driver support more than one MAC address?
+References: <CAJ-VmonG3p2K69kjcLscRgWsOEQhyzj4_3c_aGhK=fXcZqXB=g@mail.gmail.com>
+In-Reply-To: <CAJ-VmonG3p2K69kjcLscRgWsOEQhyzj4_3c_aGhK=fXcZqXB=g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,168 +18,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Adrian Chadd <adrian@freebsd.org>, Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: "Gordon, Charles" <Charles.Gordon@digi.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Arun Khandavalli <akhandav@qti.qualcomm.com>
+Yeah, seems to work fine for me with CT firmware.
 
-Whenever firmware crashes, and both CONFIG_ATH10K_DEBUGFS and
-CONFIG_ALLOW_DEV_COREDUMP are enabled, dump information about the crash via a
-devcoredump device. Dump can be read from userspace for further analysis from:
+It can probably work OK with stock FW too.
 
-/sys/class/devcoredump/devcd*/data
+Thanks,
+Ben
 
-As until now we have provided the firmware crash dump file via fw_crash_dump
-debugfs keep it still available but deprecate and a warning print that the user
-should switch to using dev_coredump.
+On 12/21/2016 12:29 AM, Adrian Chadd wrote:
+> hiya,
+>
+> This is the kind of thing that Ben Greear has spent a lot of time
+> debugging in his firmware branch.
+>
+>
+> -adrian
+>
+>
+> On 21 December 2016 at 00:18, Janusz Dziedzic <janusz.dziedzic@tieto.com> wrote:
+>> On 20 December 2016 at 23:35, Gordon, Charles <Charles.Gordon@digi.com> wrote:
+>>> Hi,
+>>>
+>>> We are trying to use the ath10k driver in an embedded application.  We want to support a wifi client with multiple access points.  Does the ath10k driver support this?  Can the ath10k hardware and driver support multiple simultaneous MAC addresses?  Can it support multiple APs?
+>>>
+>> iw wlan0 interface add wlan0_1 type managed
+>> ifconfig wlan0_1 hw ether <new_mac>
+>>
+>> Depends on HW you have, some ath10k support single/multi channel concurrency.
+>> You can check this using
+>> iw phyX info - and next check valid combinations (channels <= 1 mean
+>> SCC, so best if you have <= 2)
+>>
+>> BR
+>> Janusz
+>>
+>>> Thanks for any information.
+>>>
+>>> Charles
+>>>
+>>> _______________________________________________
+>>> ath10k mailing list
+>>> ath10k@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
 
-Future improvement would be not to depend on CONFIG_ATH10K_DEBUGFS, as there
-might be systems which want to get the firmware crash dump but not enable
-debugfs. How to handle memory consumption is also something which needs to be
-taken into account.
 
-Signed-off-by: Arun Khandavalli <akhandav@qti.qualcomm.com>
-[kvalo@qca.qualcomm.com: rebase, fixes, improve commit log]
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c  |    6 ++++
- drivers/net/wireless/ath/ath10k/debug.c |   43 +++++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/debug.h |    8 ++++++
- 3 files changed, 54 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 749e381edd38..3319db178c2e 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1510,6 +1510,7 @@ static int ath10k_init_hw_params(struct ath10k *ar)
- static void ath10k_core_restart(struct work_struct *work)
- {
- 	struct ath10k *ar = container_of(work, struct ath10k, restart_work);
-+	int ret;
- 
- 	set_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
- 
-@@ -1561,6 +1562,11 @@ static void ath10k_core_restart(struct work_struct *work)
- 	}
- 
- 	mutex_unlock(&ar->conf_mutex);
-+
-+	ret = ath10k_debug_fw_devcoredump(ar);
-+	if (ret)
-+		ath10k_warn(ar, "failed to send firmware crash dump via devcoredump: %d",
-+			    ret);
- }
- 
- static void ath10k_core_set_coverage_class_work(struct work_struct *work)
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 82a4c67f3672..e1a70dffc52a 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -21,6 +21,7 @@
- #include <linux/utsname.h>
- #include <linux/crc32.h>
- #include <linux/firmware.h>
-+#include <linux/devcoredump.h>
- 
- #include "core.h"
- #include "debug.h"
-@@ -721,7 +722,8 @@ struct ath10k_fw_crash_data *
- }
- EXPORT_SYMBOL(ath10k_debug_get_new_fw_crash_data);
- 
--static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
-+static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar,
-+							    bool mark_read)
- {
- 	struct ath10k_fw_crash_data *crash_data = ar->debug.fw_crash_data;
- 	struct ath10k_dump_file_data *dump_data;
-@@ -790,19 +792,54 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
- 	       sizeof(crash_data->registers));
- 	sofar += sizeof(*dump_tlv) + sizeof(crash_data->registers);
- 
--	ar->debug.fw_crash_data->crashed_since_read = false;
-+	ar->debug.fw_crash_data->crashed_since_read = !mark_read;
- 
- 	spin_unlock_bh(&ar->data_lock);
- 
- 	return dump_data;
- }
- 
-+int ath10k_debug_fw_devcoredump(struct ath10k *ar)
-+{
-+	struct ath10k_dump_file_data *dump;
-+	void *dump_ptr;
-+	u32 dump_len;
-+
-+	/* To keep the dump file available also for debugfs don't mark the
-+	 * file read, only debugfs should do that.
-+	 */
-+	dump = ath10k_build_dump_file(ar, false);
-+	if (!dump) {
-+		ath10k_warn(ar, "no crash dump data found for devcoredump");
-+		return -ENODATA;
-+	}
-+
-+	/* Make a copy of the dump file for dev_coredumpv() as during the
-+	 * transition period we need to own the original file. Once
-+	 * fw_crash_dump debugfs file is removed no need to have a copy
-+	 * anymore.
-+	 */
-+	dump_len = le32_to_cpu(dump->len);
-+	dump_ptr = vzalloc(dump_len);
-+
-+	if (!dump_ptr)
-+		return -ENOMEM;
-+
-+	memcpy(dump_ptr, dump, dump_len);
-+
-+	dev_coredumpv(ar->dev, dump_ptr, dump_len, GFP_KERNEL);
-+
-+	return 0;
-+}
-+
- static int ath10k_fw_crash_dump_open(struct inode *inode, struct file *file)
- {
- 	struct ath10k *ar = inode->i_private;
- 	struct ath10k_dump_file_data *dump;
- 
--	dump = ath10k_build_dump_file(ar);
-+	ath10k_warn(ar, "fw_crash_dump debugfs file is deprecated, please use /sys/class/devcoredump instead.");
-+
-+	dump = ath10k_build_dump_file(ar, true);
- 	if (!dump)
- 		return -ENODATA;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 335512b11ca2..2368f47314ae 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -84,6 +84,9 @@ struct ath10k_fw_crash_data *
- ath10k_debug_get_new_fw_crash_data(struct ath10k *ar);
- 
- void ath10k_debug_dbglog_add(struct ath10k *ar, u8 *buffer, int len);
-+
-+int ath10k_debug_fw_devcoredump(struct ath10k *ar);
-+
- #define ATH10K_DFS_STAT_INC(ar, c) (ar->debug.dfs_stats.c++)
- 
- void ath10k_debug_get_et_strings(struct ieee80211_hw *hw,
-@@ -166,6 +169,11 @@ static inline u32 ath10k_debug_get_fw_dbglog_level(struct ath10k *ar)
- 	return 0;
- }
- 
-+static inline int ath10k_debug_fw_devcoredump(struct ath10k *ar)
-+{
-+	return 0;
-+}
-+
- #define ATH10K_DFS_STAT_INC(ar, c) do { } while (0)
- 
- #define ath10k_debug_get_et_strings NULL
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
