@@ -1,15 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cJgpz-00051h-UR
- for ath10k@lists.infradead.org; Wed, 21 Dec 2016 13:21:44 +0000
-Message-ID: <585A81BC.1040908@candelatech.com>
-Date: Wed, 21 Dec 2016 05:21:00 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cK5bh-0004oe-Ni
+ for ath10k@lists.infradead.org; Thu, 22 Dec 2016 15:48:39 +0000
+Date: Thu, 22 Dec 2016 21:18:01 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH] ath10k: merge extended peer info data with existing
+ peers info
+Message-ID: <20161222154801.GA16241@atheros-ThinkPad-T61>
+References: <20161216052418.GA8936@atheros-ThinkPad-T61>
+ <20161217174634.4531-1-chunkeey@googlemail.com>
+ <20161219164957.GA13022@atheros-ThinkPad-T61>
+ <2696316.Ugl5Pim1oL@debian64>
 MIME-Version: 1.0
-Subject: Re: Can the ath10k driver support more than one MAC address?
-References: <CAJ-VmonG3p2K69kjcLscRgWsOEQhyzj4_3c_aGhK=fXcZqXB=g@mail.gmail.com>
-In-Reply-To: <CAJ-VmonG3p2K69kjcLscRgWsOEQhyzj4_3c_aGhK=fXcZqXB=g@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <2696316.Ugl5Pim1oL@debian64>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,72 +23,246 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>, Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: "Gordon, Charles" <Charles.Gordon@digi.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Christian Lamparter <chunkeey@googlemail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Yeah, seems to work fine for me with CT firmware.
+Hi Christian,
 
-It can probably work OK with stock FW too.
+once again sorry for the delay
 
-Thanks,
-Ben
+> 
+> On Monday, December 19, 2016 10:19:57 PM CET Mohammed Shafi Shajakhan wrote:
+> > On Sat, Dec 17, 2016 at 06:46:34PM +0100, Christian Lamparter wrote:
+> > > The 10.4 firmware adds extended peer information to the
+> > > firmware's statistics payload. This additional info is
+> > > stored as a separate data field. During review of
+> > > "ath10k: add accounting for the extended peer statistics" [0]
+> > > 
+> > > Mohammed Shafi Shajakhan commented that the extended peer statistics
+> > > lists are of little use:"... there is not much use in appending
+> > > the extended peer stats (which gets periodically updated) to the
+> > > linked list '&ar->debug.fw_stats.peers_extd)' and should we get
+> > > rid of the below (and the required cleanup as well)
+> > > 
+> > > list_splice_tail_init(&stats.peers_extd,
+> > >                 &ar->debug.fw_stats.peers_extd);
+> > > 
+> > > since rx_duration is getting updated periodically to the per sta
+> > > information."
+> > > 
+> > > This patch replaces the extended peers list with a lookup and
+> > > puts the retrieved data (rx_duration) into the existing
+> > > ath10k_fw_stats_peer entry that was created earlier.
+> > 
+> > [shafi] Its good to maintain the extended stats variable
+> > and retain the two different functions to update rx_duration.
+> > 
+> > a) extended peer stats supported - mainly for 10.4
+> > b) extender peer stats not supported - for 10.2
+> Well, I have to ask why you want to retain the two different
+> functions to update the same arsta->rx_duration? I think a
+> little bit of code that helps to explain what's on your mind
+> (or how you would do it) would help immensely in this case.
+> Since I have the feeling that this is the problem here. 
+> So please explain it in C(lang).
 
-On 12/21/2016 12:29 AM, Adrian Chadd wrote:
-> hiya,
->
-> This is the kind of thing that Ben Greear has spent a lot of time
-> debugging in his firmware branch.
->
->
-> -adrian
->
->
-> On 21 December 2016 at 00:18, Janusz Dziedzic <janusz.dziedzic@tieto.com> wrote:
->> On 20 December 2016 at 23:35, Gordon, Charles <Charles.Gordon@digi.com> wrote:
->>> Hi,
->>>
->>> We are trying to use the ath10k driver in an embedded application.  We want to support a wifi client with multiple access points.  Does the ath10k driver support this?  Can the ath10k hardware and driver support multiple simultaneous MAC addresses?  Can it support multiple APs?
->>>
->> iw wlan0 interface add wlan0_1 type managed
->> ifconfig wlan0_1 hw ether <new_mac>
->>
->> Depends on HW you have, some ath10k support single/multi channel concurrency.
->> You can check this using
->> iw phyX info - and next check valid combinations (channels <= 1 mean
->> SCC, so best if you have <= 2)
->>
->> BR
->> Janusz
->>
->>> Thanks for any information.
->>>
->>> Charles
->>>
->>> _______________________________________________
->>> ath10k mailing list
->>> ath10k@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/ath10k
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
+[shafi] I see you prefer to stuff the 'rx_duration' from
+the extended stats to the existing global 'ath10k_peer_stats'
+The idea of extended stats is, ideally its not going to stop
+for 'rx_duration' . Extended stats is maintained as a seperate
+list / entry for addition of new fields as well
 
+> 
+> > > [0] <https://lkml.kernel.org/r/992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
+> > > Cc: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+> > > Signed-off-by: Christian Lamparter <chunkeey@googlemail.com>
+> > > ---
+> > >  drivers/net/wireless/ath/ath10k/core.h        |  2 --
+> > >  drivers/net/wireless/ath/ath10k/debug.c       | 17 --------------
+> > >  drivers/net/wireless/ath/ath10k/debugfs_sta.c | 32 ++-----------------------
+> > >  drivers/net/wireless/ath/ath10k/wmi.c         | 34 ++++++++++++++++++++-------
+> > >  4 files changed, 28 insertions(+), 57 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+> > > index 09ff8b8a6441..3fffbbb18c25 100644
+> > > --- a/drivers/net/wireless/ath/ath10k/core.h
+> > > +++ b/drivers/net/wireless/ath/ath10k/core.h
+> > > @@ -268,11 +268,9 @@ struct ath10k_fw_stats_pdev {
+> > >  };
+> > >  
+> > >  struct ath10k_fw_stats {
+> > > -	bool extended;
+> > >  	struct list_head pdevs;
+> > >  	struct list_head vdevs;
+> > >  	struct list_head peers;
+> > > -	struct list_head peers_extd;
+> > >  };
+> > >  
+> > >  #define ATH10K_TPC_TABLE_TYPE_FLAG	1
+> > > diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+> > > index 82a4c67f3672..89f7fde77cdf 100644
+> > > --- a/drivers/net/wireless/ath/ath10k/debug.c
+> > > +++ b/drivers/net/wireless/ath/ath10k/debug.c
+> > > @@ -315,25 +315,13 @@ static void ath10k_fw_stats_peers_free(struct list_head *head)
+> > >  	}
+> > >  }
+> > >  
+> > > -static void ath10k_fw_extd_stats_peers_free(struct list_head *head)
+> > > -{
+> > > -	struct ath10k_fw_extd_stats_peer *i, *tmp;
+> > > -
+> > > -	list_for_each_entry_safe(i, tmp, head, list) {
+> > > -		list_del(&i->list);
+> > > -		kfree(i);
+> > > -	}
+> > > -}
+> > > -
+> > >  static void ath10k_debug_fw_stats_reset(struct ath10k *ar)
+> > >  {
+> > >  	spin_lock_bh(&ar->data_lock);
+> > >  	ar->debug.fw_stats_done = false;
+> > > -	ar->debug.fw_stats.extended = false;
+> > 
+> > [shafi] this looks fine, but not removing the 'extended' variable 
+> > from ath10k_fw_stats structure, I see the design for 'rx_duration'
+> > arguably some what convoluted !
+> I removed extended because it is now a write-only variable.
+> So I figured, there's no point in keeping it around? I don't have
+> access to the firmware interface documentation, so I don't know
+> if there's a reason why it would be good to have it later.
+> So please tell me, what information do we gain from it?
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+[shafi] while parsing the stats from 'wmi' we clearly mark there whether
+the extended stats is available (or) not and if its there parse it and
+deal with it seperately
 
+> 
+> > *We get periodic events from firmware updating 'ath10k_debug_fw_stats_process'
+> > *Fetch rx_duration from  'ath10k_wmi_pull_fw_stats(ar, skb, &stats)'
+> > {certainly 'stats' object is for this particular update only, and freed
+> > up later)
+> > *Update immediately using 'ath10k_sta_update_rx_duration'
+> > 
+> > 'ath10k_wmi_pull_fw_stats' has a slightly different implementation
+> > for 10.2 and 10.4 (the later supporting extended peer stats)
+> 
+> I see that 10.2.4's ath10k_wmi_10_2_4_op_pull_fw_stats()
+> passes the rx_duration as part of the wmi_10_2_4_ext_peer_stats
+> element which is basically a carbon-copy of wmi_10_2_4_peer_stats
+> (but with one extra __le32 for the rx_duration at the end.)
+> This rx_duration is then used to set the rx_duration field in the
+> generated ath10k_fw_stats_peer struct.
+> 
+> 10.4's ath10k_wmi_10_4_op_pull_fw_stats() has a "fixed" wmi_10_4_peer_stats
+> element and uses an separate "fixed" wmi_10_4_peer_extd_stats element for
+> the communicating the rx_duration to the driver.
+> 
+> Thing is, both function have the same signature. They produce the same
+> struct ath10k_fw_stats_peer for the given data in the sk_buff input. So
+> why does 10.4 need to have it's peer_extd infrastructure, when it can use
+> the existing rx_duration field in the *universal* ath10k_fw_stats_peer?
+
+[shafi] agreed we need to fix that, it would have been easier if 10.2.4
+and 10.4 had the same definitions.
+
+> 
+> What's with the extra layers / HAL here? Because it looks like it's merged
+> back together in the same manner into the same arsta->rx_duration?
+> [ath10k_sta_update_stats_rx_duration() vs. 
+>  ath10k_sta_update_extd_stats_rx_duration() - they are almost carbon copies too]
+> 
+> > > diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> > > index c893314a191f..c7ec7b9e9b55 100644
+> > > --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> > > +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> > > @@ -3044,23 +3044,41 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
+> > >  	if ((stats_id & WMI_10_4_STAT_PEER_EXTD) == 0)
+> > >  		return 0;
+> > >  
+> > > -	stats->extended = true;
+> > > -
+> > >  	for (i = 0; i < num_peer_stats; i++) {
+> > >  		const struct wmi_10_4_peer_extd_stats *src;
+> > > -		struct ath10k_fw_extd_stats_peer *dst;
+> > > +		struct ath10k_fw_stats_peer *dst;
+> > >  
+> > >  		src = (void *)skb->data;
+> > >  		if (!skb_pull(skb, sizeof(*src)))
+> > >  			return -EPROTO;
+> > >  
+> > > -		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
+> > > -		if (!dst)
+> > > -			continue;
+> > > +		/* Because the stat data may exceed htc-wmi buffer
+> > > +		 * limit the firmware might split the stats data
+> > > +		 * and delivers it in multiple update events.
+> > > +		 * if we can't find the entry in the current event
+> > > +		 * payload, we have to look in main list as well.
+> > > +		 */
+
+[shafi] thanks ! sorry i might have missed this bug, did you happen
+to see this condition being hit ?
+
+> > > +		list_for_each_entry(dst, &stats->peers, list) {
+> > > +			if (ether_addr_equal(dst->peer_macaddr,
+> > > +					     src->peer_macaddr.addr))
+> > > +				goto found;
+> > > +		}
+> > > +
+
+[shafi] Again, we can simply cache the macaddress and rx_duration
+and deal with it later, rather than doing the whole lookup here ?
+Will it be an overhead for large number of clients ?
+
+> > > +#ifdef CONFIG_ATH10K_DEBUGFS
+> > > +		list_for_each_entry(dst, &ar->debug.fw_stats.peers, list) {
+> > > +			if (ether_addr_equal(dst->peer_macaddr,
+> > > +					     src->peer_macaddr.addr))
+> > > +				goto found;
+> > > +		}
+> > > +#endif
+
+[shafi] again, this could be handled seperately.
+
+> > > +
+> > > +		ath10k_dbg(ar, ATH10K_DBG_WMI,
+> > > +			   "Orphaned extended stats entry for station %pM.\n",
+> > > +			   src->peer_macaddr.addr);
+> > > +		continue;
+> > >  
+> > > -		ether_addr_copy(dst->peer_macaddr, src->peer_macaddr.addr);
+> > > +found:
+> > >  		dst->rx_duration = __le32_to_cpu(src->rx_duration);
+> > > -		list_add_tail(&dst->list, &stats->peers_extd);
+> > >  	}
+> > >  
+> > >  	return 0;
+> > 
+> > [shafi] Yes i am bit concerned about this change making 10.4 to update
+> > over the existing peer_stats structure, the idea is to maintain uniformity
+> > between the structures shared between ath10k and its corresponding to avoid
+> > confusion/ bugs in the future. Kindly let me know your thoughts, feel free
+> > to correct me if any of my analysis is incorrect. thank you !
+> Isn't the point of the ath10k_wmi_10_*_op_pull_fw_stats() functions to make 
+> a "universal" statistic (in your case a unified ath10k_fw_stats_peer structure)
+> that other functions can use, without caring about if the FW was 10.4 
+> or 10.2.4?
+> 
+> There's no indication that the rx_duration field in wmi_10_2_4_ext_peer_stats
+> conveys any different information than the rx_duration in 
+> wmi_10_4_peer_extd_stats. So, what's going on here? Can't you just make
+> wmi_10_4_peer_extd_stats's rx_duration use the existing field in
+> ath10k_fw_stats_peer? And if not: why exactly?
+>
+[shafi] I will soon test your change and keep you posted. We will also
+get Kalle's take/view on this. 
+
+regards,
+shafi
 
 _______________________________________________
 ath10k mailing list
