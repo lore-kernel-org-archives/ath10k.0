@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cKBv7-0004yJ-QG
- for ath10k@lists.infradead.org; Thu, 22 Dec 2016 22:33:06 +0000
+ id 1cKCOk-00040h-G0
+ for ath10k@lists.infradead.org; Thu, 22 Dec 2016 23:03:43 +0000
 From: <ryanhsu@qca.qualcomm.com>
-Subject: [PATCH] ath10k: recal the txpower when removing interface
-Date: Thu, 22 Dec 2016 14:31:46 -0800
-Message-ID: <1482445906-20421-1-git-send-email-ryanhsu@qca.qualcomm.com>
+Subject: [PATCH] ath10k: ignore configuring the incorrect board_id
+Date: Thu, 22 Dec 2016 15:02:37 -0800
+Message-ID: <1482447757-23577-1-git-send-email-ryanhsu@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,52 +25,41 @@ Cc: ryanhsu@qca.qualcomm.com
 
 From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
 
-The txpower is being recalculated when adding interface to make sure
-txpower won't overshoot the spec, and when removing the interface,
-the txpower should again to be recalculated to restore the correct value
-from the active interface list.
+With command to get board_id from otp, in the case of following
 
-Following is one of the scenario
-	vdev0 is created as STA and connected: txpower:23
-	vdev1 is created as P2P_DEVICE for control interface: txpower:0
-	vdev2 is created as p2p go/gc interface: txpower is 21
+  boot get otp board id result 0x00000000 board_id 0 chip_id 0
+  boot using board name 'bus=pci,bmi-chip-id=0,bmi-board-id=0"
+  ...
+  failed to fetch board data for bus=pci,bmi-chip-id=0,bmi-board-id=0 from
+  ath10k/QCA6174/hw3.0/board-2.bin
 
-So the vdev2@txpower:21 will be set to firmware when vdev2 is created.
-When we tear down the vdev2, the txpower needs to be recalculated to
-re-set it to vdev0@txpower:23 as vdev0/vdev1 are the active interface.
+The invalid board_id=0 will be used as index to search in the board-2.bin.
 
-	ath10k_pci mac vdev 0 peer create 8c:fd:f0:01:62:98
-	ath10k_pci mac vdev_id 0 txpower 23
-	... (adding interface)
-	ath10k_pci mac vdev create 2 (add interface) type 1 subtype 3
-	ath10k_pci mac vdev_id 2 txpower 21
-	ath10k_pci mac txpower 21
-	... (removing interface)
-	ath10k_pci mac vdev 2 delete (remove interface)
-	ath10k_pci vdev 1 txpower 0
-	ath10k_pci vdev 0 txpower 23
-	ath10k_pci mac txpower 23
+Ignore the case with board_id=0, as it means the otp is not carrying
+the board id information.
 
 Signed-off-by: Ryan Hsu <ryanhsu@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index aa545a1..6475dc8 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5194,6 +5194,10 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 			ath10k_warn(ar, "failed to recalc monitor: %d\n", ret);
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 749e381..1bf67ad 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -694,8 +694,11 @@ static int ath10k_core_get_board_id_from_otp(struct ath10k *ar)
+ 		   "boot get otp board id result 0x%08x board_id %d chip_id %d\n",
+ 		   result, board_id, chip_id);
  
-+	ret = ath10k_mac_txpower_recalc(ar);
-+	if (ret)
-+		ath10k_warn(ar, "failed to recalc tx power: %d\n", ret);
-+
- 	spin_lock_bh(&ar->htt.tx_lock);
- 	ath10k_mac_vif_tx_unlock_all(arvif);
- 	spin_unlock_bh(&ar->htt.tx_lock);
+-	if ((result & ATH10K_BMI_BOARD_ID_STATUS_MASK) != 0)
++	if ((result & ATH10K_BMI_BOARD_ID_STATUS_MASK) != 0 ||
++	    (board_id == 0)) {
++		ath10k_warn(ar, "board id is not exist in otp, ignore it\n");
+ 		return -EOPNOTSUPP;
++	}
+ 
+ 	ar->id.bmi_ids_valid = true;
+ 	ar->id.bmi_board_id = board_id;
 -- 
 1.9.1
 
