@@ -1,23 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out06.msg.oleane.net ([62.161.7.4])
- by bombadil.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cLVAs-0002oM-MR
- for ath10k@lists.infradead.org; Mon, 26 Dec 2016 13:18:48 +0000
-Received: from smtp29.msg.oleane.net ([172.17.20.151]) 
- by smtp-out06.msg.oleane.net with ESMTP id uBQBaSNZ025783
- for <ath10k@lists.infradead.org>; Mon, 26 Dec 2016 12:36:29 +0100
-From: "Jean-Pierre Tosoni" <jp.tosoni@acksys.fr>
-References: <004a01d24fe2$94da8dc0$be8fa940$@acksys.fr>
- <20161214195805.GA15022@w1.fi> <00f501d256e7$0f8d5380$2ea7fa80$@acksys.fr>
- <5852C5AC.6090408@candelatech.com>
- <00fd01d256fc$2f780db0$8e682910$@acksys.fr> <20161215225827.GB24883@w1.fi>
-In-Reply-To: <20161215225827.GB24883@w1.fi>
-Subject: RE: ath10k firmware sends probes on DFS channels without radar
- detection
-Date: Mon, 26 Dec 2016 12:15:02 +0100
-Message-ID: <012001d25f69$4df62ef0$e9e28cd0$@acksys.fr>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1cLrsK-0002ct-Rn
+ for ath10k@lists.infradead.org; Tue, 27 Dec 2016 13:33:09 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Remove passing unused argument for ath10k_mac_tx
+Date: Tue, 27 Dec 2016 19:02:35 +0530
+Message-ID: <1482845555-6076-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,98 +16,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Jouni Malinen' <j@w1.fi>
-Cc: 'Ben Greear' <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-> -----Message d'origine-----
-> De=A0: Jouni Malinen [mailto:j@w1.fi]
-> Envoy=E9=A0: jeudi 15 d=E9cembre 2016 23:58
-> =C0=A0: Jean-Pierre Tosoni
-> Cc=A0: 'Ben Greear'; linux-wireless@vger.kernel.org;
-> ath10k@lists.infradead.org
-> Objet=A0: Re: ath10k firmware sends probes on DFS channels without radar
-> detection
-> =
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-> On Thu, Dec 15, 2016 at 06:53:47PM +0100, Jean-Pierre Tosoni wrote:
-> > > > Thanks for the suggestion, I already tried something like this in
-> > > > wmi.c, with the same result:
-> > > >
-> > > > - Before patching the firmware scans DFS channels actively (with
-> > > probes).
-> > > >
-> > > > - After patching, the firmware scans DFS channels passively
-> > > > *until* any beacon is received on the DFS channel. When *any*
-> > > > beacon is seen, the firmware decides to scan actively on its own,
-> > > > without any new IR/RADAR info from the driver.
-> > > >
-> > > > So, your patch is required but not sufficient.
-> > > >
-> > > > Somehow I was able to overcome this by reloading the regulation
-> > > > domain in the radio card before each scan request:
-> =
+'ath10k_mac_tx' does not seems to use the per station table
+entry pointer 'sta' (struct ieee80211_sta), hence remove passing
+this unused argument
 
-> Interesting.. I'm not completely sure what could have changed the behavior
-> based on beacon hint. I thought it was cfg80211, but if the simple change
-> for doing NO_IR | RADAR is not sufficient, it would seem to imply that
-> something else can do this. Some more debugging to do, I guess.
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-After some debugging I think the card firmware does this, probably due to
-the lack of precise definition of NO_IR, see below.
-
-> =
-
-> > The distinction between NO_IR and CHAN_RADAR is not very clear to me.
-> > NO_IR appears only in the world regulatory domain so it's not relevant
-> here.
-> =
-
-> NO_IR is a combination of not allowing AP, IBSS, or active scanning
-> without having somehow been enabled by another device. RADAR has that same
-> impact and in addition, requirement for doing radar detection and DFS by a
-> master device.
-
-Ah, thanks. But then, NO_IR does not define the way for the "other device"
-to enable the local device? So, depending on the interpretation, it can
-render the local device unusable. OTOH RADAR defines a way which depends on
-the local regulations.
-
-> =
-
-> > I'd say
-> >  "the CHAN_RADAR flag should always make the firmware never do IR when
-> > probing"
-> > ...maybe, except if the channel is the operating channel. (this should
-> > exclude unassociated stations)
-> =
-
-> For most cases, I'd agree that active scanning should not be used on DFS
-> channels. That said, unicast Probe Request frame to the current AP while
-> associated could be a reasonable exception. In addition, WPS with PBC
-> depends on Probe Request frames to allow PBC session overlap detection, so
-> there might be sufficient justification to allow Probe Request frame to be
-> sent out for a very short duration (couple of seconds) after seeing a
-> Beacon frame on the channel for such special cases.
-
-I agree that unicast probes to the current AP should go through. It goes
-with my condition "operating channel".
-
-For WPS, I do not know it well, but I guess probes are acceptable if
-1) they are not sent repeatedly over a long period of time during
-unassociated state,
-2) the AP uses CAC.
-And here, both seem to be true.
-
-> =
-
-> --
-> Jouni Malinen                                            PGP id EFC895FA
-
-Regards, Jean-Pierre
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 7d2f0ae..d0d3059 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3493,7 +3493,6 @@ static int ath10k_mac_tx_submit(struct ath10k *ar,
+  */
+ static int ath10k_mac_tx(struct ath10k *ar,
+ 			 struct ieee80211_vif *vif,
+-			 struct ieee80211_sta *sta,
+ 			 enum ath10k_hw_txrx_mode txmode,
+ 			 enum ath10k_mac_tx_path txpath,
+ 			 struct sk_buff *skb)
+@@ -3635,7 +3634,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
+ 		txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
+ 		txpath = ath10k_mac_tx_h_get_txpath(ar, skb, txmode);
+ 
+-		ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb);
++		ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb);
+ 		if (ret) {
+ 			ath10k_warn(ar, "failed to transmit offchannel frame: %d\n",
+ 				    ret);
+@@ -3822,7 +3821,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
+ 		spin_unlock_bh(&ar->htt.tx_lock);
+ 	}
+ 
+-	ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb);
++	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb);
+ 	if (unlikely(ret)) {
+ 		ath10k_warn(ar, "failed to push frame: %d\n", ret);
+ 
+@@ -4103,7 +4102,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
+ 		spin_unlock_bh(&ar->htt.tx_lock);
+ 	}
+ 
+-	ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb);
++	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to transmit frame: %d\n", ret);
+ 		if (is_htt) {
+-- 
+1.9.1
 
 
 _______________________________________________
