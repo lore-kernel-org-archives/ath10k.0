@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cLrsK-0002ct-Rn
- for ath10k@lists.infradead.org; Tue, 27 Dec 2016 13:33:09 +0000
+ id 1cLtbm-0003yl-L7
+ for ath10k@lists.infradead.org; Tue, 27 Dec 2016 15:24:11 +0000
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Remove passing unused argument for ath10k_mac_tx
-Date: Tue, 27 Dec 2016 19:02:35 +0530
-Message-ID: <1482845555-6076-1-git-send-email-mohammed@qca.qualcomm.com>
+Subject: [PATCH] ath10k: Enable advertising support for channel 169, 5Ghz
+Date: Tue, 27 Dec 2016 20:53:35 +0530
+Message-ID: <1482852215-6438-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,54 +25,42 @@ Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shaj
 
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-'ath10k_mac_tx' does not seems to use the per station table
-entry pointer 'sta' (struct ieee80211_sta), hence remove passing
-this unused argument
+Enable advertising support for channel 169, 5Ghz so that
+based on the regulatory domain(country code) this channel
+shall be active for use. For example in countries like India
+this channel shall be available for use with latest regulatory updates
 
 Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h | 2 +-
+ drivers/net/wireless/ath/ath10k/mac.c  | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 756e876..a19cef2 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -46,7 +46,7 @@
+ #define WMI_READY_TIMEOUT (5 * HZ)
+ #define ATH10K_FLUSH_TIMEOUT_HZ (5 * HZ)
+ #define ATH10K_CONNECTION_LOSS_HZ (3 * HZ)
+-#define ATH10K_NUM_CHANS 39
++#define ATH10K_NUM_CHANS 40
+ 
+ /* Antenna noise floor */
+ #define ATH10K_DEFAULT_NOISE_FLOOR -95
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 7d2f0ae..d0d3059 100644
+index 481842b..7d2f0ae 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3493,7 +3493,6 @@ static int ath10k_mac_tx_submit(struct ath10k *ar,
-  */
- static int ath10k_mac_tx(struct ath10k *ar,
- 			 struct ieee80211_vif *vif,
--			 struct ieee80211_sta *sta,
- 			 enum ath10k_hw_txrx_mode txmode,
- 			 enum ath10k_mac_tx_path txpath,
- 			 struct sk_buff *skb)
-@@ -3635,7 +3634,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 		txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
- 		txpath = ath10k_mac_tx_h_get_txpath(ar, skb, txmode);
+@@ -7559,6 +7559,7 @@ struct ath10k_mac_change_chanctx_arg {
+ 	CHAN5G(157, 5785, 0),
+ 	CHAN5G(161, 5805, 0),
+ 	CHAN5G(165, 5825, 0),
++	CHAN5G(169, 5845, 0),
+ };
  
--		ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb);
-+		ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to transmit offchannel frame: %d\n",
- 				    ret);
-@@ -3822,7 +3821,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
- 		spin_unlock_bh(&ar->htt.tx_lock);
- 	}
- 
--	ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb);
-+	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb);
- 	if (unlikely(ret)) {
- 		ath10k_warn(ar, "failed to push frame: %d\n", ret);
- 
-@@ -4103,7 +4102,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
- 		spin_unlock_bh(&ar->htt.tx_lock);
- 	}
- 
--	ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb);
-+	ret = ath10k_mac_tx(ar, vif, txmode, txpath, skb);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to transmit frame: %d\n", ret);
- 		if (is_htt) {
+ struct ath10k *ath10k_mac_create(size_t priv_size)
 -- 
 1.9.1
 
