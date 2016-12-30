@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cMtFq-0004it-Nf
- for ath10k@lists.infradead.org; Fri, 30 Dec 2016 09:13:39 +0000
+ id 1cMtHB-00057i-F5
+ for ath10k@lists.infradead.org; Fri, 30 Dec 2016 09:15:02 +0000
 MIME-Version: 1.0
-Subject: Re: [V2] ath10k: fix incorrect txpower set by P2P_DEVICE interface
+Subject: Re: ath10k: support dev_coredump for crash dump
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1481669719-3423-1-git-send-email-ryanhsu@qca.qualcomm.com>
-References: <1481669719-3423-1-git-send-email-ryanhsu@qca.qualcomm.com>
-Message-ID: <e5044151a04d4f82a4c07c9e06369ea8@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 30 Dec 2016 10:13:11 +0100
+In-Reply-To: <20161221121921.25119.93932.stgit@potku.adurom.net>
+References: <20161221121921.25119.93932.stgit@potku.adurom.net>
+Message-ID: <ea5cf07e249847d5a4f5078c8f31889e@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 30 Dec 2016 10:14:34 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,53 +22,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Ryan Hsu <ryanhsu@qca.qualcomm.com> wrote:
-> From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> From: Arun Khandavalli <akhandav@qti.qualcomm.com>
 > 
-> Ath10k reports the phy capability that supports P2P_DEVICE interface.
+> Whenever firmware crashes, and both CONFIG_ATH10K_DEBUGFS and
+> CONFIG_ALLOW_DEV_COREDUMP are enabled, dump information about the crash via a
+> devcoredump device. Dump can be read from userspace for further analysis from:
 > 
-> When we use the P2P supported wpa_supplicant to start connection, it'll
-> create two interfaces, one is wlan0 (vdev_id=0) and one is P2P_DEVICE
-> p2p-dev-wlan0 which is for p2p control channel (vdev_id=1).
+> /sys/class/devcoredump/devcd*/data
 > 
-> 	ath10k_pci mac vdev create 0 (add interface) type 2 subtype 0
-> 	ath10k_add_interface: vdev_id: 0, txpower: 0, bss_power: 0
-> 	...
-> 	ath10k_pci mac vdev create 1 (add interface) type 2 subtype 1
-> 	ath10k_add_interface: vdev_id: 1, txpower: 0, bss_power: 0
+> As until now we have provided the firmware crash dump file via fw_crash_dump
+> debugfs keep it still available but deprecate and a warning print that the user
+> should switch to using dev_coredump.
 > 
-> And the txpower in per vif bss_conf will only be set to valid tx power when
-> the interface is assigned with channel_ctx.
+> Future improvement would be not to depend on CONFIG_ATH10K_DEBUGFS, as there
+> might be systems which want to get the firmware crash dump but not enable
+> debugfs. How to handle memory consumption is also something which needs to be
+> taken into account.
 > 
-> But this P2P_DEVICE interface will never be used for any connection, so
-> that the uninitialized bss_conf.txpower=0 is assinged to the
-> arvif->txpower when interface created.
-> 
-> Since the txpower configuration is firmware per physical interface.
-> So the smallest txpower of all vifs will be the one limit the tx power
-> of the physical device, that causing the low txpower issue on other
-> active interfaces.
-> 
-> 	wlan0: Limiting TX power to 21 (24 - 3) dBm
-> 	ath10k_pci mac vdev_id 0 txpower 21
-> 	ath10k_mac_txpower_recalc: vdev_id: 1, txpower: 0
-> 	ath10k_mac_txpower_recalc: vdev_id: 0, txpower: 21
-> 	ath10k_pci mac txpower 0
-> 
-> This issue only happens when we use the wpa_supplicant that supports
-> P2P or if we use the iw tool to create the control P2P_DEVICE interface.
-> 
-> Signed-off-by: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+> Signed-off-by: Arun Khandavalli <akhandav@qti.qualcomm.com>
+> [kvalo@qca.qualcomm.com: rebase, fixes, improve commit log]
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-88407beb1b14 ath10k: fix incorrect txpower set by P2P_DEVICE interface
+727000e6af34 ath10k: support dev_coredump for crash dump
 
 -- 
-https://patchwork.kernel.org/patch/9473309/
+https://patchwork.kernel.org/patch/9482989/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
