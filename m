@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cO0B6-0004wV-6z
- for ath10k@lists.infradead.org; Mon, 02 Jan 2017 10:49:21 +0000
-Message-ID: <1483354130.4596.5.camel@sipsolutions.net>
-Subject: Re: [PATCH 2/4] cfg80211: Add new NL80211_CMD_SET_BTCOEX_PRIORITY
- to support BTCOEX
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 02 Jan 2017 11:48:50 +0100
-In-Reply-To: <ae82112880d55451342e7a6e5a47c33f@codeaurora.org>
-References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
- <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
- <1480949353.31788.27.camel@sipsolutions.net>
- <5e5e8971c96293a81e7cb37bcdfbd593@codeaurora.org>
- <1481645351.20412.34.camel@sipsolutions.net>
- <134cc8e58ecb804b6dda0137c4c37be8@codeaurora.org>
- <1481881024.27953.14.camel@sipsolutions.net>
- <ae82112880d55451342e7a6e5a47c33f@codeaurora.org>
-Mime-Version: 1.0
+ id 1cOHeh-0005Zi-90
+ for ath10k@lists.infradead.org; Tue, 03 Jan 2017 05:29:04 +0000
+Date: Tue, 3 Jan 2017 10:58:27 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [1/2] ath10k: add accounting for the extended peer statistics
+Message-ID: <20170103052827.GA8204@atheros-ThinkPad-T61>
+References: <992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
+ <c3f99e7634384475b475b97ff46bec76@euamsexm01a.eu.qualcomm.com>
+ <CAAd0S9DcCM9XQOihZx1sVf_1=S3VvDye4k1gEMgWEmNWDaBk5Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAAd0S9DcCM9XQOihZx1sVf_1=S3VvDye4k1gEMgWEmNWDaBk5Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +21,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tamizh chelvam <tamizhchelvam@codeaurora.org>
-Cc: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Christian Lamparter <chunkeey@googlemail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Cj4gPiAxKSBkb2VzIGl0IGV2ZW4gbWFrZSBzZW5zZSB0byBzcGxpdCBpdCBvdXQgcGVyIEFDPyB3
-b3VsZG4ndCBpdCBiZQo+ID4gd2VpcmQKPiA+IGlmIHlvdSBzdXBwb3J0ZWQgdGhpcyBvbmx5IGZv
-ciBWTyBhbmQgQkssIGFuZCBub3QgdGhlIG90aGVycywgb3IKPiA+IHNvbWV0aGluZyBsaWtlIHRo
-YXQ/Cj4gPiAKPiAKPiBJdCBoYXMgc3VwcG9ydCBmb3IgQkUsIFZJLCBtYW5hZ2VtZW50IGFuZCBi
-ZWFjb24gZnJhbWVzIGFsc28uCj4gT3IgZG8geW91IG1lYW50IHRvIHNheSBsaWtlIHN1cHBvcnQg
-b25seSBmb3IgVk8gYW5kIEJLPwoKSSBtZWFuIC0gZG9lcyBpdCBtYWtlIHNlbnNlIGZvciBhIHBp
-ZWNlIG9mIGhhcmR3YXJlIHRvIHN1cHBvcnQgb25seQpWTy9CSywgd2l0aG91dCB0aGUgb3RoZXJz
-PyBJIGRvbid0IHJlYWxseSBzZWUgaG93IHRoYXQgd291bGQgbWFrZQpzZW5zZSwgYnV0IG1heWJl
-IEknbSBtaXNzaW5nIHNvbWV0aGluZz8KCklPVyAtIHdoeSBoYXZlIGFsbCB0aGVzZSBiaXRzIHJh
-dGhlciB0aGFuIGp1c3Qgb25lPwoKPiA+IDIpIFdvdWxkbid0IGl0IG1ha2UgbW9yZSBzZW5zZSB0
-byBkZWZpbmUgdGhpcyBpbiBubDgwMjExIGFuZCBqdXN0Cj4gPiBwYXNzIHRoZSBiaXRtYXAgdGhy
-b3VnaCB0byB1c2Vyc3BhY2U/IFRoYXQgd291bGQgc2F2ZSBxdWl0ZSBhIGJpdAo+ID4gb2YgbmV0
-bGluayBtYW5nbGluZyBjb21wbGV4aXR5Lgo+ID4gCj4gCj4gUGxlYXNlIGxldCBtZSBrbm93IGlm
-IHRoZSBiZWxvdyBkZXNpZ24vdGhvdWdodCBpcyBmaW5lIHRvIHlvdS4KPiAKPiBpdyBwaHlYIHNl
-dCBidGNvZXhfcHJpb3JpdHkgPFt2aSwgdm8sIGJlLCBiaywgbWdtdCwgYmVhY29uXT4KClRoYXQg
-c2VlbXMgZmluZSwgYnV0IEkgZG9uJ3Qgc2VlIGhvdyB0aGUgaXcgY29tbWFuZCBsaW5lIGlzIHJl
-bGV2YW50IHRvCnRoZSBxdWVzdGlvbiBvZiB3aGV0aGVyIHdlIHBhc3MgZmxhZyBhdHRyaWJ1dGVz
-IG9yIGEgYml0bWFwPz8KCj4gQnkgdGhpcyBjb21tYW5kIHVzZXIgc2hvdWxkIGdpdmUgb25lIG9y
-IG1vcmUgdGhhbiBvbmUgZnJhbWUgdHlwZXMKPiBmb3LCoAo+IHRoaXMgYnRjb2V4IHByaW9yaXR5
-LAo+IHdlIHdpbGwgcGFyc2UgdGhhdCBpbiAiaXciIGFuZCBzZW5kIGFzIGEgc2luZ2xlIGJpdG1h
-cChsZXNzIHRoYW4KPiAweDY0KcKgIHRvIHRoZSBkcml2ZXI/CgpSaWdodCwgYW5kIGFsc28gdG8g
-bmw4MDIxMS4gV2h5IG5vdD8KCmpvaGFubmVzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCg==
+Hi Christian / Kalle,
+
+On Fri, Dec 30, 2016 at 03:35:10PM +0100, Christian Lamparter wrote:
+> On Thu, Dec 29, 2016 at 3:11 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> > Christian Lamparter <chunkeey@googlemail.com> wrote:
+> >> The 10.4 firmware adds extended peer information to the
+> >> firmware's statistics payload. This additional info is
+> >> stored as a separate data field and the elements are
+> >> stored in their own "peers_extd" list.
+> >>
+> >> These elements can pile up in the same way as the peer
+> >> information elements. This is because the
+> >> ath10k_wmi_10_4_op_pull_fw_stats() function tries to
+> >> pull the same amount (num_peer_stats) for every statistic
+> >> data unit.
+> >>
+> >> Fixes: 4a49ae94a448faa ("ath10k: fix 10.4 extended peer stats update")
+> >> Signed-off-by: Christian Lamparter <chunkeey@googlemail.com>
+> >
+> > My understanding is that I should skip this patch 1. Please let me know if
+> > I misunderstood. But I'm still plannning to apply patch 2.
+> 
+> I added Mohammed (I hope, he can reply to the open question when he
+> returns), Since I'm not sure what he wants or not.
+> 
+> As far as I'm aware, the "extended" boolean serves no purpose
+> because it was only used in once place in debugfs_sta which was
+> removed in the patch. ( "ath10k_sta_update_stats_rx_duration"
+> and "ath10k_sta_update_extd_stats_rx_duration" have been unified).
+
+[shafi] We will wait for Kalle to review from the de-ferred stage
+and get his opinion as well(regarding the design change).
+I have no concerns as long this does not changes the existing behaviour.
+thank you !
+
+regards,
+shafi
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
