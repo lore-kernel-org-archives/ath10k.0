@@ -1,19 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
- by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1cOrpd-0001Er-9Y
- for ath10k@lists.infradead.org; Wed, 04 Jan 2017 20:06:45 +0000
-Received: by mail-wm0-x242.google.com with SMTP id u144so93178427wmu.0
- for <ath10k@lists.infradead.org>; Wed, 04 Jan 2017 12:06:24 -0800 (PST)
-From: Christian Lamparter <chunkeey@googlemail.com>
-Subject: Re: [1/2] ath10k: add accounting for the extended peer statistics
-Date: Wed, 04 Jan 2017 21:06:20 +0100
-Message-ID: <2769662.Qa6eUCGVkY@debian64>
-In-Reply-To: <20170103052827.GA8204@atheros-ThinkPad-T61>
-References: <992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
- <CAAd0S9DcCM9XQOihZx1sVf_1=S3VvDye4k1gEMgWEmNWDaBk5Q@mail.gmail.com>
- <20170103052827.GA8204@atheros-ThinkPad-T61>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cP7ws-00046V-0H
+ for ath10k@lists.infradead.org; Thu, 05 Jan 2017 13:19:19 +0000
 MIME-Version: 1.0
+Date: Thu, 05 Jan 2017 18:48:56 +0530
+From: Tamizh chelvam <tamizhchelvam@codeaurora.org>
+Subject: Re: [PATCH 2/4] cfg80211: Add new NL80211_CMD_SET_BTCOEX_PRIORITY to
+ support BTCOEX
+In-Reply-To: <1483354130.4596.5.camel@sipsolutions.net>
+References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
+ <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
+ <1480949353.31788.27.camel@sipsolutions.net>
+ <5e5e8971c96293a81e7cb37bcdfbd593@codeaurora.org>
+ <1481645351.20412.34.camel@sipsolutions.net>
+ <134cc8e58ecb804b6dda0137c4c37be8@codeaurora.org>
+ <1481881024.27953.14.camel@sipsolutions.net>
+ <ae82112880d55451342e7a6e5a47c33f@codeaurora.org>
+ <1483354130.4596.5.camel@sipsolutions.net>
+Message-ID: <a5521b4e246de90ed8526891c84a97e5@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,66 +27,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hello Shafi and Kalle,
-
-On Tuesday, January 3, 2017 10:58:27 AM CET Mohammed Shafi Shajakhan wrote:
-> On Fri, Dec 30, 2016 at 03:35:10PM +0100, Christian Lamparter wrote:
-> > On Thu, Dec 29, 2016 at 3:11 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> > > Christian Lamparter <chunkeey@googlemail.com> wrote:
-> > >> The 10.4 firmware adds extended peer information to the
-> > >> firmware's statistics payload. This additional info is
-> > >> stored as a separate data field and the elements are
-> > >> stored in their own "peers_extd" list.
-> > >>
-> > >> These elements can pile up in the same way as the peer
-> > >> information elements. This is because the
-> > >> ath10k_wmi_10_4_op_pull_fw_stats() function tries to
-> > >> pull the same amount (num_peer_stats) for every statistic
-> > >> data unit.
-> > >>
-> > >> Fixes: 4a49ae94a448faa ("ath10k: fix 10.4 extended peer stats update")
-> > >> Signed-off-by: Christian Lamparter <chunkeey@googlemail.com>
-> > >
-> > > My understanding is that I should skip this patch 1. Please let me know if
-> > > I misunderstood. But I'm still plannning to apply patch 2.
-> > 
-> > I added Mohammed (I hope, he can reply to the open question when he
-> > returns), Since I'm not sure what he wants or not.
-> > 
-> > As far as I'm aware, the "extended" boolean serves no purpose
-> > because it was only used in once place in debugfs_sta which was
-> > removed in the patch. ( "ath10k_sta_update_stats_rx_duration"
-> > and "ath10k_sta_update_extd_stats_rx_duration" have been unified).
-> 
-> [shafi] We will wait for Kalle to review from the de-ferred stage
-> and get his opinion as well(regarding the design change).
-> I have no concerns as long this does not changes the existing behaviour.
-> thank you !
-
-Thank you Shafi for sticking around. I just fished your response to 
-"Re: [PATCH] ath10k: merge extended peer info data with existing peers info" [0].
-out of my spam-bucket. Kalle, please look if your copy of the mail got 
-flagged/deleted as well. Judging from the reply in this thread, I think you
-overlooked it as well? 
-
-After reading it, I think the previous post and the request to put the patch
-on wait was unnecessary. As of now, it seems to me that the open questions
-between us have been settled amically (so to speak). Kalle, do you have any
-concerns or can you put this in the next round then?
-
-Regards,
-Christian
-
-[0] <https://www.mail-archive.com/ath10k@lists.infradead.org/msg06066.html>
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxNy0wMS0wMiAxNjoxOCwgSm9oYW5uZXMgQmVyZyB3cm90ZToKPj4gPiAxKSBkb2VzIGl0
+IGV2ZW4gbWFrZSBzZW5zZSB0byBzcGxpdCBpdCBvdXQgcGVyIEFDPyB3b3VsZG4ndCBpdCBiZQo+
+PiA+IHdlaXJkCj4+ID4gaWYgeW91IHN1cHBvcnRlZCB0aGlzIG9ubHkgZm9yIFZPIGFuZCBCSywg
+YW5kIG5vdCB0aGUgb3RoZXJzLCBvcgo+PiA+IHNvbWV0aGluZyBsaWtlIHRoYXQ/Cj4+ID4KPj4g
+Cj4+IEl0IGhhcyBzdXBwb3J0IGZvciBCRSwgVkksIG1hbmFnZW1lbnQgYW5kIGJlYWNvbiBmcmFt
+ZXMgYWxzby4KPj4gT3IgZG8geW91IG1lYW50IHRvIHNheSBsaWtlIHN1cHBvcnQgb25seSBmb3Ig
+Vk8gYW5kIEJLPwo+IAo+IEkgbWVhbiAtIGRvZXMgaXQgbWFrZSBzZW5zZSBmb3IgYSBwaWVjZSBv
+ZiBoYXJkd2FyZSB0byBzdXBwb3J0IG9ubHkKPiBWTy9CSywgd2l0aG91dCB0aGUgb3RoZXJzPyBJ
+IGRvbid0IHJlYWxseSBzZWUgaG93IHRoYXQgd291bGQgbWFrZQo+IHNlbnNlLCBidXQgbWF5YmUg
+SSdtIG1pc3Npbmcgc29tZXRoaW5nPwo+IAo+IElPVyAtIHdoeSBoYXZlIGFsbCB0aGVzZSBiaXRz
+IHJhdGhlciB0aGFuIGp1c3Qgb25lPwoKSGFyZHdhcmUgc3VwcG9ydHMgZGF0YSBhY3Jvc3MgYWxs
+IHRoZSBhY2Nlc3MgY2F0ZWdvcmllcywgdGhpcyBpcyBqdXN0IAptZWFudCBmb3IgcHJpb3JpdGlz
+aW5nIHRoZSB0cmFmZmljLgpmLmUsIElmIHRoZSBmdy90YXJnZXQgaGFzIGJvdGggd2xhbiBhbmQg
+YnQgdHJhZmZpYyBxdWV1ZWQgYW5kIGlmIFZPIGlzIApzZXQgYXMgcHJpb3JpdHksIHRoZW4gd2xh
+biBWTyBwYWNrZXRzCndpbGwgYmUgcHVzaGVkIG91dCBvZiB0aGUgcmFkaW8gZmlyc3QgYW5kIHRo
+ZW4gdGhlIGJ0IHRyYWZmaWMuCgpIZXJlIHdlIGRvIG5vdCBibG9jayB0cmFmZmljIGVpdGhlciBm
+cm9tIHdsYW4gb3IgQlQsIHBhY2tldHMgd2lsbCAKZGVmaW5pdGVseSBnbyBvdXQgb2YgdGhlIHJh
+ZGlvIGJ1dCB0cmFmZmljCmFyYml0cmF0aW9uIHdpbGwgaGFwcGVuIGJhc2VkIG9uIHRoZSBwcmlv
+cml0aWVzIHNldC4KCj4gCj4+ID4gMikgV291bGRuJ3QgaXQgbWFrZSBtb3JlIHNlbnNlIHRvIGRl
+ZmluZSB0aGlzIGluIG5sODAyMTEgYW5kIGp1c3QKPj4gPiBwYXNzIHRoZSBiaXRtYXAgdGhyb3Vn
+aCB0byB1c2Vyc3BhY2U/IFRoYXQgd291bGQgc2F2ZSBxdWl0ZSBhIGJpdAo+PiA+IG9mIG5ldGxp
+bmsgbWFuZ2xpbmcgY29tcGxleGl0eS4KPj4gPgo+PiAKPj4gUGxlYXNlIGxldCBtZSBrbm93IGlm
+IHRoZSBiZWxvdyBkZXNpZ24vdGhvdWdodCBpcyBmaW5lIHRvIHlvdS4KPj4gCj4+IGl3IHBoeVgg
+c2V0IGJ0Y29leF9wcmlvcml0eSA8W3ZpLCB2bywgYmUsIGJrLCBtZ210LCBiZWFjb25dPgo+IAo+
+IFRoYXQgc2VlbXMgZmluZSwgYnV0IEkgZG9uJ3Qgc2VlIGhvdyB0aGUgaXcgY29tbWFuZCBsaW5l
+IGlzIHJlbGV2YW50IHRvCj4gdGhlIHF1ZXN0aW9uIG9mIHdoZXRoZXIgd2UgcGFzcyBmbGFnIGF0
+dHJpYnV0ZXMgb3IgYSBiaXRtYXA/Pwo+IAo+PiBCeSB0aGlzIGNvbW1hbmQgdXNlciBzaG91bGQg
+Z2l2ZSBvbmUgb3IgbW9yZSB0aGFuIG9uZSBmcmFtZSB0eXBlcwo+PiBmb3LCoAo+PiB0aGlzIGJ0
+Y29leCBwcmlvcml0eSwKPj4gd2Ugd2lsbCBwYXJzZSB0aGF0IGluICJpdyIgYW5kIHNlbmQgYXMg
+YSBzaW5nbGUgYml0bWFwKGxlc3MgdGhhbgo+PiAweDY0KcKgIHRvIHRoZSBkcml2ZXI/Cj4gCj4g
+UmlnaHQsIGFuZCBhbHNvIHRvIG5sODAyMTEuIFdoeSBub3Q/CgpZZXMgdXNlciBzcGFjZSB0byBu
+bDgwMjExIGFuZCB0byBkcml2ZXIKCj4gCj4gam9oYW5uZXMKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hdGgxMGsK
