@@ -1,17 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x229.google.com ([2607:f8b0:400d:c09::229])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cQVeF-0005U9-R0
- for ath10k@lists.infradead.org; Mon, 09 Jan 2017 08:49:50 +0000
-Received: by mail-qk0-x229.google.com with SMTP id a20so134263918qkc.1
- for <ath10k@lists.infradead.org>; Mon, 09 Jan 2017 00:49:25 -0800 (PST)
+ id 1cQWv9-0001d1-7N
+ for ath10k@lists.infradead.org; Mon, 09 Jan 2017 10:11:20 +0000
 MIME-Version: 1.0
-In-Reply-To: <CAB3ewxNa2V3sLqB4FwxjK9vASzKq3cQhCDqLefudNs=xtKiSwg@mail.gmail.com>
-References: <CAB3ewxNa2V3sLqB4FwxjK9vASzKq3cQhCDqLefudNs=xtKiSwg@mail.gmail.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Mon, 9 Jan 2017 09:49:23 +0100
-Message-ID: <CA+BoTQkYqa5dpneqm=cZfA0Le-TNAauCgcomfZc2NWy14Bf5nw@mail.gmail.com>
-Subject: Re: Regular firmware crashes with QCA6174
+Date: Mon, 09 Jan 2017 15:40:57 +0530
+From: Tamizh chelvam <tamizhchelvam@codeaurora.org>
+Subject: Re: [PATCH 2/4] cfg80211: Add new NL80211_CMD_SET_BTCOEX_PRIORITY to
+ support BTCOEX
+In-Reply-To: <1483623500.4394.18.camel@sipsolutions.net>
+References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
+ <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
+ <1480949353.31788.27.camel@sipsolutions.net>
+ <5e5e8971c96293a81e7cb37bcdfbd593@codeaurora.org>
+ <1481645351.20412.34.camel@sipsolutions.net>
+ <134cc8e58ecb804b6dda0137c4c37be8@codeaurora.org>
+ <1481881024.27953.14.camel@sipsolutions.net>
+ <ae82112880d55451342e7a6e5a47c33f@codeaurora.org>
+ <1483354130.4596.5.camel@sipsolutions.net>
+ <a5521b4e246de90ed8526891c84a97e5@codeaurora.org>
+ <1483623500.4394.18.camel@sipsolutions.net>
+Message-ID: <6f9711ed6f6fe170b915b67a054b985b@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +29,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Shaun Crampton <shaun@cantab.net>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gNyBKYW51YXJ5IDIwMTcgYXQgMjI6NDEsIFNoYXVuIENyYW1wdG9uIDxzaGF1bkBjYW50YWIu
-bmV0PiB3cm90ZToKPiBIaSwKPgo+IEknbSBnZXR0aW5nIHJlZ3VsYXIgUUNBNjE3NCBmaXJtd2Fy
-ZSBjcmFzaGVzIG9uIFVidW50dSAxNi4xMCB3aXRoIHRoZQo+IFFDQTYxNzQgKG5ldyBEZWxsIFhQ
-UyAxMywgd2hpY2ggc2hpcHBlZCB3aXRoIFVidW50dSAxNi4wNCkuICBDcmFzaAo+IHNlZW1zIHRv
-IGJlIGF0IHJhbmRvbSwgcm91Z2hseSBldmVyeSAzMCBtaW51dGVzLiAgQWZ0ZXIgdGhlIGNyYXNo
-LAo+IHdpZmkgc3RvcHMgd29ya2luZyB1bnRpbCBJIHR1cm4gaXQgb2ZmIGFuZCBvbiBhZ2Fpbi4K
-Pgo+IEFueSBoZWxwIG9yIHdvcmthcm91bmQgYXBwcmVjaWF0ZWQuICBJJ3ZlIGNvcGllZCB0aGUg
-ZG1lc2cgbG9nIGluCj4gYmVsb3cuICBJIGhhdmUgdGhlIGxhdGVzdCBmaXJtd2FyZSBmcm9tIGxp
-bnV4LWZpcm13YXJlIGluCj4gL2xpYi9maXJtd2FyZS4KPgo+IFBsZWFzZSBDQyBpbiBtZSBhbnkg
-cmVzcG9uc2VzLgo+Cj4gVGhhbmtzLAo+Cj4gLVNoYXVuCj4KPiBbIDM2ODMuNTYzNDE5XSB3bHA1
-OHMwOiBBUCAwMDowNzoyNjphYTplMDo0NSBjaGFuZ2VkIGJhbmR3aWR0aCwgbmV3Cj4gY29uZmln
-IGlzIDI0NzIgTUh6LCB3aWR0aCAyICgyNDYyLzAgTUh6KQoKWW91ciBBUCBzZWVtcyB0byBiZSB0
-b2dnbGluZyBIVDIwIGFuZCBIVDQwLgoKQ2FuIHlvdSBmb3JjZSB5b3VyIEFQIHRvIHJ1biBhdCBI
-VDIwIGF0IGFsbCB0aW1lcywgcGxlYXNlPyBJZiB0aGUKcHJvYmxlbSBjZWFzZXMgaXQnbGwgc3Ry
-b25nbHkgcG9pbnQgdG8gZmlybXdhcmUncyByYXRlIGNvbnRyb2wKYmVjb21pbmcgY29uZnVzZWQg
-KGUuZy4gZHVlIHRvIGRyaXZlciBub3QgcHJvcGVybHkgdGVsbGluZyBpdCBob3cKcGVlcidzIGNh
-cGFiaWxpdGllcyBoYXZlIGNoYW5nZXMpLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hdGgxMGsK
+SGkgSm9oYW5uZXMsCgpUaGFuayB5b3UgZm9yIHRoZSByZXBseS4KCk9uIDIwMTctMDEtMDUgMTk6
+MDgsIEpvaGFubmVzIEJlcmcgd3JvdGU6Cj4+ID4gSU9XIC0gd2h5IGhhdmUgYWxsIHRoZXNlIGJp
+dHMgcmF0aGVyIHRoYW4ganVzdCBvbmU/Cj4+IAo+PiBIYXJkd2FyZSBzdXBwb3J0cyBkYXRhIGFj
+cm9zcyBhbGwgdGhlIGFjY2VzcyBjYXRlZ29yaWVzLCB0aGlzIGlzCj4+IGp1c3TCoCBtZWFudCBm
+b3IgcHJpb3JpdGlzaW5nIHRoZSB0cmFmZmljLiBmLmUsIElmIHRoZSBmdy90YXJnZXQgaGFzCj4+
+IGJvdGggd2xhbiBhbmQgYnQgdHJhZmZpYyBxdWV1ZWQgYW5kIGlmIFZPIGlzwqAgc2V0IGFzIHBy
+aW9yaXR5LCB0aGVuCj4+IHdsYW4gVk8gcGFja2V0cyB3aWxsIGJlIHB1c2hlZCBvdXQgb2YgdGhl
+IHJhZGlvIGZpcnN0IGFuZCB0aGVuIHRoZSBidAo+PiB0cmFmZmljLgo+IAo+IEV4YWN0bHkuIFNv
+IGFzIGZhciBhcyAqY2FwYWJpbGl0aWVzKiBhcmUgY29uY2VybmVkLCB3aHkgZG8gd2UgbmVlZCBz
+bwo+IG1hbnkgYml0cz8KPiAKSXMgaXQgZmluZSB0byBoYXZlIHNvbWV0aGluZyBsaWtlIHRoaXMK
+CjEpIFdlIGNhbiBoYXZlIHRoaXMgYnRjb2V4X3ByaW9yaXR5IHZhbHVlIGFzIGEgb3B0aW9uYWwg
+dmFsdWUgaW4gYnRjb2V4IAplbmFibGUgY29tbWFuZCBsaWtlIGJlbG93CgppdyBwaHlYIGJ0Y29l
+eF9zdGF0ZSA8ZW5hYmxlfCBkaXNhYmxlPiBbcHJpcm9yaXR5KHZlbmRvciBzcGNpZmljIHZhbHVl
+KV0KCjIpIE9yIHdlIGNhbiBoYXZlIHNlcGVyYXRlIGNvbW1hbmQgZm9yIGJ0Y29leF9wcmlvcml0
+eSBhcyBiZWxvdwoKaXcgcGh5WCBzZXQgYnRjb2V4X3ByaW9yaXR5IDxwcmlvcml0eSAodmVuZG9y
+IHNwY2lmaWMgdmFsdWUpPgoKSG9wZWZ1bGx5IHRoaXMgd2lsbCBnZXQgcmlkIG9mZiBhbGwgdGhl
+IG5sODAyMTEgYml0cy4KCktpbmRseSBzdWdnZXN0IHlvdXIgdGhvdWdodHMuCgpUaGFua3MsClRh
+bWl6aC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
