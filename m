@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.compex.com.sg ([116.12.130.103] helo=compex.com.sg)
+Received: from mx2.compex.com.sg ([116.12.130.103] helo=compex.com.sg)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cQpty-0005cr-5K
- for ath10k@lists.infradead.org; Tue, 10 Jan 2017 06:27:23 +0000
+ id 1cQq0y-0001pv-KG
+ for ath10k@lists.infradead.org; Tue, 10 Jan 2017 06:34:38 +0000
 Received: from PhyuThe (unknown [116.12.130.109])
  (Authenticated sender: pt_myat)
- by compex.com.sg (Postfix) with ESMTPA id E5A961400AC
- for <ath10k@lists.infradead.org>; Tue, 10 Jan 2017 14:19:07 +0800 (SGT)
-Message-ID: <63DDC83FD9364560ACBA60D17C3F5AD8@PhyuThe>
+ by compex.com.sg (Postfix) with ESMTPA id 8FC871400AC
+ for <ath10k@lists.infradead.org>; Tue, 10 Jan 2017 14:34:10 +0800 (SGT)
+Message-ID: <403C85C4EF2D47DD8134E0394DBC678D@PhyuThe>
 From: "Phyu The" <pt_myat@compex.com.sg>
-References: <20170110061217.096FD148A08@compex.com.sg>
-In-Reply-To: <20170110061217.096FD148A08@compex.com.sg>
-Subject: QCA9880 3x3 80Mhz low performance
-Date: Tue, 10 Jan 2017 14:19:08 +0800
+Subject: Re: QCA9880 3x3 80Mhz low performance
+Date: Tue, 10 Jan 2017 14:34:11 +0800
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,9 +28,23 @@ To: ath10k@lists.infradead.org
 
 Dear Sir,
 
-I tested performance throughput test used WPQ864 + QCA9880 11ac 80MHz is 
-640Mbps that is very low since theoretical data rate is 1300Mbps. It should 
-be at least 866Mbps. Could you please suggest me how to get better 
+WPQ864 refer to IPQ8064 using LEDE firmware with ath10k driver. If you have 
+any questions, please feel free to let me know.
+
+thanks,
+Phyuthe
+
+-----Original Message----- 
+From: Phyu The
+Sent: Tuesday, January 10, 2017 2:19 PM
+To: ath10k@lists.infradead.org
+Subject: QCA9880 3x3 80Mhz low performance
+
+Dear Sir,
+
+I tested performance throughput test used WPQ864 + QCA9880 11ac 80MHz is
+640Mbps that is very low since theoretical data rate is 1300Mbps. It should
+be at least 866Mbps. Could you please suggest me how to get better
 performance?
 
 thanks,
