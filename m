@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from mail-qk0-x231.google.com ([2607:f8b0:400d:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRhap-0005Aj-QK
- for ath10k@lists.infradead.org; Thu, 12 Jan 2017 15:47:15 +0000
-Message-ID: <1484235986.19860.1.camel@sipsolutions.net>
-Subject: Re: [PATCH] ath10k: prevent sta pointer rcu violation
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 12 Jan 2017 16:46:26 +0100
-In-Reply-To: <1484234070-7431-1-git-send-email-michal.kazior@tieto.com>
- (sfid-20170112_161320_723424_362B312F)
+ id 1cRi5u-0005AN-Rq
+ for ath10k@lists.infradead.org; Thu, 12 Jan 2017 16:19:21 +0000
+Received: by mail-qk0-x231.google.com with SMTP id s140so25711066qke.0
+ for <ath10k@lists.infradead.org>; Thu, 12 Jan 2017 08:18:58 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1484235986.19860.1.camel@sipsolutions.net>
 References: <1484234070-7431-1-git-send-email-michal.kazior@tieto.com>
- (sfid-20170112_161320_723424_362B312F)
-Mime-Version: 1.0
+ <1484235986.19860.1.camel@sipsolutions.net>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Thu, 12 Jan 2017 17:18:57 +0100
+Message-ID: <CA+BoTQkgD5umVsGnRM4uu_8GO=KjQ6MuJCjQRnSHrDuQdU4z1w@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: prevent sta pointer rcu violation
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +21,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, kvalo@qca.qualcomm.com
-Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, mohammed@qti.qualcomm.com
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-On Thu, 2017-01-12 at 16:14 +0100, Michal Kazior wrote:
-> Station pointers are RCU protected so driver must
-> be extra careful if it tries to store them
-> internally for later use outside of the RCU
-> section it obtained it in.
-> 
-> It was possible for station teardown to race with
-> some htt events. The possible outcome could be a
-> use-after-free and a crash.
-> 
-> Only peer-flow-control capable firmware was
-> affected (so hardware-wise qca99x0 and qca4019).
-> 
-> This could be done in sta_state() itself via
-> explicit synchronize_net() call but there's
-> already a convenient sta_pre_rcu_remove() op that
-> can be hooked up to avoid extra rcu stall.
-
-I don't think this makes sense. You're not using RCU-protected pointers
-to the stations yourself, all accesses to them are locked under the
-&ar->data_lock. As a consequence, you can't have any need for waiting
-for a grace period. Since you also remove the pointer (under lock) when
-the station gets removed, I don't think RCU can be the problem?
-
-johannes
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTIgSmFudWFyeSAyMDE3IGF0IDE2OjQ2LCBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lc0BzaXBz
+b2x1dGlvbnMubmV0PiB3cm90ZToKPiBPbiBUaHUsIDIwMTctMDEtMTIgYXQgMTY6MTQgKzAxMDAs
+IE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+IFN0YXRpb24gcG9pbnRlcnMgYXJlIFJDVSBwcm90ZWN0
+ZWQgc28gZHJpdmVyIG11c3QKPj4gYmUgZXh0cmEgY2FyZWZ1bCBpZiBpdCB0cmllcyB0byBzdG9y
+ZSB0aGVtCj4+IGludGVybmFsbHkgZm9yIGxhdGVyIHVzZSBvdXRzaWRlIG9mIHRoZSBSQ1UKPj4g
+c2VjdGlvbiBpdCBvYnRhaW5lZCBpdCBpbi4KPj4KPj4gSXQgd2FzIHBvc3NpYmxlIGZvciBzdGF0
+aW9uIHRlYXJkb3duIHRvIHJhY2Ugd2l0aAo+PiBzb21lIGh0dCBldmVudHMuIFRoZSBwb3NzaWJs
+ZSBvdXRjb21lIGNvdWxkIGJlIGEKPj4gdXNlLWFmdGVyLWZyZWUgYW5kIGEgY3Jhc2guCj4+Cj4+
+IE9ubHkgcGVlci1mbG93LWNvbnRyb2wgY2FwYWJsZSBmaXJtd2FyZSB3YXMKPj4gYWZmZWN0ZWQg
+KHNvIGhhcmR3YXJlLXdpc2UgcWNhOTl4MCBhbmQgcWNhNDAxOSkuCj4+Cj4+IFRoaXMgY291bGQg
+YmUgZG9uZSBpbiBzdGFfc3RhdGUoKSBpdHNlbGYgdmlhCj4+IGV4cGxpY2l0IHN5bmNocm9uaXpl
+X25ldCgpIGNhbGwgYnV0IHRoZXJlJ3MKPj4gYWxyZWFkeSBhIGNvbnZlbmllbnQgc3RhX3ByZV9y
+Y3VfcmVtb3ZlKCkgb3AgdGhhdAo+PiBjYW4gYmUgaG9va2VkIHVwIHRvIGF2b2lkIGV4dHJhIHJj
+dSBzdGFsbC4KPgo+IEkgZG9uJ3QgdGhpbmsgdGhpcyBtYWtlcyBzZW5zZS4gWW91J3JlIG5vdCB1
+c2luZyBSQ1UtcHJvdGVjdGVkIHBvaW50ZXJzCj4gdG8gdGhlIHN0YXRpb25zIHlvdXJzZWxmLCBh
+bGwgYWNjZXNzZXMgdG8gdGhlbSBhcmUgbG9ja2VkIHVuZGVyIHRoZQo+ICZhci0+ZGF0YV9sb2Nr
+LiBBcyBhIGNvbnNlcXVlbmNlLCB5b3UgY2FuJ3QgaGF2ZSBhbnkgbmVlZCBmb3Igd2FpdGluZwo+
+IGZvciBhIGdyYWNlIHBlcmlvZC4gU2luY2UgeW91IGFsc28gcmVtb3ZlIHRoZSBwb2ludGVyICh1
+bmRlciBsb2NrKSB3aGVuCj4gdGhlIHN0YXRpb24gZ2V0cyByZW1vdmVkLCBJIGRvbid0IHRoaW5r
+IFJDVSBjYW4gYmUgdGhlIHByb2JsZW0/CgpVbmxlc3MgeW91IHRoZW4gY29udGludWUgdG8gdXNl
+IHRoYXQgc3RhIHBvaW50ZXIgYWZ0ZXIgeW91IHJlbGVhc2UKZGF0YV9sb2NrLiBDb25zaWRlciB0
+aGlzOgoKPiAgICAgICAgICBDUFUwICAgICAgICAgICAgIENQVTEKPiAxICAgc3luY2hyb25pemVf
+bmV0KCkKPiAyICAgIGRydl9zdGFfc3RhdGUoKQo+IDMgICAgICAgICAgICAgICAgICAgICAgaHR0
+X2ZldGNoX2luZChwaWQsdGlkKSBjYWxsZWQKPiA0ICAgICAgICAgICAgICAgICAgICAgIHJjdV9y
+ZWFkX2xvY2soKQo+IDUgICAgICAgICAgICAgICAgICAgICAgZ2V0KGRhdGFfbG9jaykKPiA2ICAg
+ICAgICAgICAgICAgICAgICAgIHR4cT1wZWVyc1twaWRdLT5zdGEtPnR4cVt0aWRdCj4gNyAgICAg
+ICAgICAgICAgICAgICAgICBwdXQoZGF0YV9sb2NrKQo+IDggICAgZ2V0KGRhdGFfbG9jaykKPiA5
+ICAgICBwZWVyLT5zdGE9MAo+IDEwICAgcHV0KGRhdGFfbG9jaykKPiAxMSAgICAga2ZyZWUoc3Rh
+KQo+IDEyICAgICAgICAgICAgICAgICAgICAgaWVlZTgwMjExX3R4X2RlcXVldWUodHhxKQoKRXZl
+biB0aG91Z2ggdGhlcmUncyBubyBjb2RlIGxpa2UgKDkpIHBlciBzZSB5b3UgY2FuIHRoaW5rIG9m
+IGl0IGFzCmFueXRoaW5nIHRoYXQgdHJpZXMgdG8gInJlbW92ZSIgdGhlIHBlZXItLXN0YSBhc3Nv
+Y2lhdGlvbiAoYXRoMTBrX3BlZXIKaXMgcmVtb3ZlZCBpbXBsaWNpdGx5IHZpYSB3bWkgcGVlciBk
+ZWxldGUgY29tbWFuZCBhbmQgd2FpdGluZyBmb3IgaHR0CmV2ZW50IGNvbXBsZXRpb24pLgoKSG9s
+ZGluZyBkYXRhX2xvY2sgZm9yIHRoZSBlbnRpcmUgZHVyYXRpb24gb2YgaGFuZGxpbmcgZmV0Y2gg
+aW5kaWNhdGlvbgppc24ndCByZWFsbHkgZ29vZCBmb3IgcGVyZm9ybWFuY2Ugc28gaXQncyBiZXR0
+ZXIgdG8gZml4IFJDVSBoYW5kbGluZy4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCg==
