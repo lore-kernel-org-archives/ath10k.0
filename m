@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cS9Vm-0003bh-Uk
- for ath10k@lists.infradead.org; Fri, 13 Jan 2017 21:35:55 +0000
-Received: by mail-lf0-x242.google.com with SMTP id v186so7072243lfa.2
- for <ath10k@lists.infradead.org>; Fri, 13 Jan 2017 13:35:32 -0800 (PST)
+ id 1cS9Vj-0003bY-Rg
+ for ath10k@lists.infradead.org; Fri, 13 Jan 2017 21:35:54 +0000
+Received: by mail-lf0-x244.google.com with SMTP id q89so7082203lfi.1
+ for <ath10k@lists.infradead.org>; Fri, 13 Jan 2017 13:35:31 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC 10/10] ath10k: htt: High latency RX support
-Date: Fri, 13 Jan 2017 22:35:09 +0100
-Message-Id: <1484343309-6327-11-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC 09/10] ath10k: htt: High latency TX support
+Date: Fri, 13 Jan 2017 22:35:08 +0100
+Message-Id: <1484343309-6327-10-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1484343309-6327-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1484343309-6327-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,322 +27,135 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Special HTT RX handling for high latency interfaces.
-
-Since no DMA physical addresses are used in the RX ring
-config message (this is not supported by the high latency
-devices), no RX ring is allocated.
-All RX skb's are allocated by the driver and passed directly
-to mac80211 in the HTT RX indication handler.
-
-A nice side effect of this is that no huge buffer will be
-allocated with dma_alloc_coherent. On embedded systems with
-limited memory resources, the allocation of the RX ring is
-prone to fail.
-
-Some tweaks made to "make it work":
-
-Removal of protected bit in 802.11 header frame control field.
-The chipset seems to do hw decryption but the frame_control
-protected bit is still set.
-
-This is necessary for mac80211 not to drop the frame.
+Add HTT TX function for HL interfaces.
+Intended for SDIO and USB.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c    | 38 ++++++++-----
- drivers/net/wireless/ath/ath10k/htt.h     | 47 +++++++++++++++
- drivers/net/wireless/ath/ath10k/htt_rx.c  | 95 ++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/rx_desc.h | 15 +++++
- 4 files changed, 177 insertions(+), 18 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h    |  9 ++--
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 72 +++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/mac.c    |  5 ++-
+ 3 files changed, 80 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 250e32b..41a1ca6 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1917,10 +1917,12 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		goto err_wmi_detach;
- 	}
- 
--	status = ath10k_htt_rx_alloc(&ar->htt);
--	if (status) {
--		ath10k_err(ar, "failed to alloc htt rx: %d\n", status);
--		goto err_htt_tx_detach;
-+	if (!ar->is_high_latency) {
-+		status = ath10k_htt_rx_alloc(&ar->htt);
-+		if (status) {
-+			ath10k_err(ar, "failed to alloc htt rx: %d\n", status);
-+			goto err_htt_tx_detach;
-+		}
- 	}
- 
- 	status = ath10k_hif_start(ar);
-@@ -2025,16 +2027,20 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		goto err_hif_stop;
- 	}
- 
--	/* If firmware indicates Full Rx Reorder support it must be used in a
--	 * slightly different manner. Let HTT code know.
--	 */
--	ar->htt.rx_ring.in_ord_rx = !!(test_bit(WMI_SERVICE_RX_FULL_REORDER,
--						ar->wmi.svc_map));
-+	if (!ar->is_high_latency) {
-+		/* If firmware indicates Full Rx Reorder support it must be
-+		 * used in a slightly different manner. Let HTT code know.
-+		 */
-+		ar->htt.rx_ring.in_ord_rx =
-+			!!(test_bit(WMI_SERVICE_RX_FULL_REORDER,
-+				    ar->wmi.svc_map));
- 
--	status = ath10k_htt_rx_ring_refill(ar);
--	if (status) {
--		ath10k_err(ar, "failed to refill htt rx ring: %d\n", status);
--		goto err_hif_stop;
-+		status = ath10k_htt_rx_ring_refill(ar);
-+		if (status) {
-+			ath10k_err(ar, "failed to refill htt rx ring: %d\n",
-+				   status);
-+			goto err_hif_stop;
-+		}
- 	}
- 
- 	if (ar->max_num_vdevs >= 64)
-@@ -2063,7 +2069,8 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- err_hif_stop:
- 	ath10k_hif_stop(ar);
- err_htt_rx_detach:
--	ath10k_htt_rx_free(&ar->htt);
-+	if (!ar->is_high_latency)
-+		ath10k_htt_rx_free(&ar->htt);
- err_htt_tx_detach:
- 	ath10k_htt_tx_free(&ar->htt);
- err_wmi_detach:
-@@ -2108,7 +2115,8 @@ void ath10k_core_stop(struct ath10k *ar)
- 
- 	ath10k_hif_stop(ar);
- 	ath10k_htt_tx_stop(&ar->htt);
--	ath10k_htt_rx_free(&ar->htt);
-+	if (!ar->is_high_latency)
-+		ath10k_htt_rx_free(&ar->htt);
- 	ath10k_wmi_detach(ar);
- 	ar->is_started = false;
- }
 diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index d40b3a0..a51bf57 100644
+index dd9e582..d40b3a0 100644
 --- a/drivers/net/wireless/ath/ath10k/htt.h
 +++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -645,6 +645,15 @@ struct htt_rx_indication {
- 	struct htt_rx_indication_mpdu_range mpdu_ranges[0];
- } __packed;
- 
-+/* High latency version of the RX indication */
-+struct htt_rx_indication_hl {
-+	struct htt_rx_indication_hdr hdr;
-+	struct htt_rx_indication_ppdu ppdu;
-+	struct htt_rx_indication_prefix prefix;
-+	struct fw_rx_desc_hl fw_desc;
-+	struct htt_rx_indication_mpdu_range mpdu_ranges[0];
-+} __packed;
-+
- static inline struct htt_rx_indication_mpdu_range *
- 		htt_rx_ind_get_mpdu_ranges(struct htt_rx_indication *rx_ind)
- {
-@@ -657,6 +666,18 @@ static inline struct htt_rx_indication_mpdu_range *
- 	return ptr;
+@@ -1826,9 +1826,12 @@ int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_mgmt,
+ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb);
+ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
+ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *);
+-int ath10k_htt_tx(struct ath10k_htt *htt,
+-		  enum ath10k_hw_txrx_mode txmode,
+-		  struct sk_buff *msdu);
++int ath10k_htt_tx_ll(struct ath10k_htt *htt,
++		     enum ath10k_hw_txrx_mode txmode,
++		     struct sk_buff *msdu);
++int ath10k_htt_tx_hl(struct ath10k_htt *htt,
++		     enum ath10k_hw_txrx_mode txmode,
++		     struct sk_buff *msdu);
+ void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
+ 					     struct sk_buff *skb);
+ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 505d3ed..e64c249 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -945,8 +945,76 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	return res;
  }
  
-+static inline struct htt_rx_indication_mpdu_range *
-+	htt_rx_ind_get_mpdu_ranges_hl(struct htt_rx_indication_hl *rx_ind)
-+{
-+	void *ptr = rx_ind;
+-int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
+-		  struct sk_buff *msdu)
++#define HTT_TX_HL_NEEDED_HEADROOM \
++	(unsigned int)(sizeof(struct htt_cmd_hdr) + \
++	sizeof(struct htt_data_tx_desc) + \
++	sizeof(struct ath10k_htc_hdr))
 +
-+	ptr += sizeof(rx_ind->hdr)
-+	     + sizeof(rx_ind->ppdu)
-+	     + sizeof(rx_ind->prefix)
-+	     + sizeof(rx_ind->fw_desc);
-+	return ptr;
-+}
-+
- enum htt_rx_flush_mpdu_status {
- 	HTT_RX_FLUSH_MPDU_DISCARD = 0,
- 	HTT_RX_FLUSH_MPDU_REORDER = 1,
-@@ -1527,6 +1548,7 @@ struct htt_resp {
- 		struct htt_mgmt_tx_completion mgmt_tx_completion;
- 		struct htt_data_tx_completion data_tx_completion;
- 		struct htt_rx_indication rx_ind;
-+		struct htt_rx_indication_hl rx_ind_hl;
- 		struct htt_rx_fragment_indication rx_frag_ind;
- 		struct htt_rx_peer_map peer_map;
- 		struct htt_rx_peer_unmap peer_unmap;
-@@ -1747,6 +1769,31 @@ struct htt_rx_desc {
- 	u8 msdu_payload[0];
- };
- 
-+#define HTT_RX_DESC_HL_INFO_SEQ_NUM_MASK           0x00000fff
-+#define HTT_RX_DESC_HL_INFO_SEQ_NUM_LSB            0
-+#define HTT_RX_DESC_HL_INFO_ENCRYPTED_MASK         0x00001000
-+#define HTT_RX_DESC_HL_INFO_ENCRYPTED_LSB          12
-+#define HTT_RX_DESC_HL_INFO_CHAN_INFO_PRESENT_MASK 0x00002000
-+#define HTT_RX_DESC_HL_INFO_CHAN_INFO_PRESENT_LSB  13
-+#define HTT_RX_DESC_HL_INFO_MCAST_BCAST_MASK       0x00008000
-+#define HTT_RX_DESC_HL_INFO_MCAST_BCAST_LSB        15
-+#define HTT_RX_DESC_HL_INFO_FRAGMENT_MASK          0x00010000
-+#define HTT_RX_DESC_HL_INFO_FRAGMENT_LSB           16
-+#define HTT_RX_DESC_HL_INFO_KEY_ID_OCT_MASK        0x01fe0000
-+#define HTT_RX_DESC_HL_INFO_KEY_ID_OCT_LSB         17
-+
-+struct htt_rx_desc_base_hl {
-+	__le32 info; /* HTT_RX_DESC_HL_INFO_ */
-+};
-+
-+struct htt_rx_chan_info {
-+	__le16 primary_chan_center_freq_mhz;
-+	__le16 contig_chan1_center_freq_mhz;
-+	__le16 contig_chan2_center_freq_mhz;
-+	u8 phy_mode;
-+	u8 reserved;
-+} __packed;
-+
- #define HTT_RX_DESC_ALIGN 8
- 
- #define HTT_MAC_ADDR_LEN 6
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 3d72265..be46044 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1568,8 +1568,92 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
- 	return num_msdus;
- }
- 
--static void ath10k_htt_rx_proc_rx_ind(struct ath10k_htt *htt,
--				      struct htt_rx_indication *rx)
-+static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
-+					 struct htt_rx_indication_hl *rx,
-+					 struct sk_buff *skb)
++int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
++		     struct sk_buff *msdu)
 +{
 +	struct ath10k *ar = htt->ar;
-+	struct ath10k_peer *peer;
-+	struct htt_rx_indication_mpdu_range *mpdu_ranges;
-+	struct fw_rx_desc_hl *fw_desc;
-+	struct ieee80211_hdr *hdr;
-+	struct ieee80211_rx_status *rx_status;
-+	u16 peer_id;
-+	u8 rx_desc_len;
-+	int num_mpdu_ranges;
-+	size_t tot_hdr_len;
++	int res, data_len;
++	struct htt_cmd_hdr *cmd_hdr;
++	struct htt_data_tx_desc *tx_desc;
++	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
++	u8 flags0;
++	u16 flags1 = 0;
 +
-+	peer_id = __le16_to_cpu(rx->hdr.peer_id);
++	data_len = msdu->len;
++	flags0 = SM(txmode, HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
 +
-+	peer = ath10k_peer_find_by_id(ar, peer_id);
-+	if (!peer)
-+		ath10k_warn(ar, "Got RX ind from invalid peer: %u\n", peer_id);
++	if (skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT)
++		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
 +
-+	num_mpdu_ranges = MS(__le32_to_cpu(rx->hdr.info1),
-+			     HTT_RX_INDICATION_INFO1_NUM_MPDU_RANGES);
-+	mpdu_ranges = htt_rx_ind_get_mpdu_ranges_hl(rx);
-+	fw_desc = &rx->fw_desc;
-+	rx_desc_len = fw_desc->len;
-+
-+	/* I have not yet seen any case where num_mpdu_ranges > 1.
-+	 * qcacld does not seem handle that case either, so we introduce the
-+	 * same limitiation here as well.
-+	 */
-+	if (num_mpdu_ranges > 1)
-+		ath10k_warn(ar,
-+			    "Unsupported number of MPDU ranges: %d, ignoring all but the first\n",
-+			    num_mpdu_ranges);
-+
-+	if (mpdu_ranges->mpdu_range_status !=
-+	    HTT_RX_IND_MPDU_STATUS_OK) {
-+		ath10k_warn(ar, "MPDU range status: %d\n",
-+			    mpdu_ranges->mpdu_range_status);
-+		goto err;
++	if (msdu->ip_summed == CHECKSUM_PARTIAL &&
++	    !test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
++		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L3_OFFLOAD;
++		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L4_OFFLOAD;
 +	}
 +
-+	/* Strip off all headers before the MAC header before delivery to
-+	 * mac80211
++	/* Prepend the HTT header and TX desc struct to the data message
++	 * and realloc the skb if it does not have enough headroom.
 +	 */
-+	tot_hdr_len = sizeof(struct htt_resp_hdr) + sizeof(rx->hdr) +
-+		      sizeof(rx->ppdu) + sizeof(rx->prefix) +
-+		      sizeof(rx->fw_desc) + sizeof(*mpdu_ranges) + rx_desc_len;
-+	skb_pull(skb, tot_hdr_len);
++	if (skb_headroom(msdu) < HTT_TX_HL_NEEDED_HEADROOM) {
++		struct sk_buff *tmp_skb = msdu;
 +
-+	hdr = (struct ieee80211_hdr *)skb->data;
-+	rx_status = IEEE80211_SKB_RXCB(skb);
-+	rx_status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
-+			    rx->ppdu.combined_rssi;
-+	rx_status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
-+
-+	/* Not entirely sure about this, but all frames from the chipset has
-+	 * the protected flag set even though they have already been decrypted.
-+	 * Unmasking this flag is necessary in order for mac80211 not to drop
-+	 * the frame.
-+	 * TODO: Verify this is always the case or find out a way to check
-+	 * if there has been hw decryption.
-+	 */
-+	if (ieee80211_has_protected(hdr->frame_control)) {
-+		hdr->frame_control &= ~__cpu_to_le16(IEEE80211_FCTL_PROTECTED);
-+		rx_status->flag |= RX_FLAG_DECRYPTED |
-+				   RX_FLAG_IV_STRIPPED |
-+				   RX_FLAG_MMIC_STRIPPED;
++		ath10k_dbg(htt->ar, ATH10K_DBG_HTT,
++			   "Not enough headroom in skb. Current headroom: %u, needed: %u. Reallocating...\n",
++			   skb_headroom(msdu), HTT_TX_HL_NEEDED_HEADROOM);
++		msdu = skb_realloc_headroom(msdu, HTT_TX_HL_NEEDED_HEADROOM);
++		kfree_skb(tmp_skb);
++		if (!msdu) {
++			ath10k_warn(htt->ar, "htt hl tx: Unable to realloc skb!\n");
++			res = -ENOMEM;
++			goto out;
++		}
 +	}
 +
-+	ieee80211_rx(ar->hw, skb);
++	skb_push(msdu, sizeof(*cmd_hdr));
++	skb_push(msdu, sizeof(*tx_desc));
++	cmd_hdr = (struct htt_cmd_hdr *)msdu->data;
++	tx_desc = (struct htt_data_tx_desc *)(msdu->data + sizeof(*cmd_hdr));
 +
-+	/* We have delivered the skb to the upper layers (mac80211) so we
-+	 * must not free it.
++	cmd_hdr->msg_type = HTT_H2T_MSG_TYPE_TX_FRM;
++	tx_desc->flags0 = flags0;
++	tx_desc->flags1 = __cpu_to_le16(flags1);
++	tx_desc->len = __cpu_to_le16(data_len);
++	tx_desc->id = 0;
++	tx_desc->frags_paddr = 0; /* always zero */
++	/* Initialize peer_id to INVALID_PEER because this is NOT
++	 * Reinjection path
 +	 */
-+	return false;
-+err:
-+	/* Tell the caller that it must free the skb since we have not
-+	 * consumed it
-+	 */
-+	return true;
++	tx_desc->peerid = __cpu_to_le16(HTT_INVALID_PEERID);
++
++	res = ath10k_htc_send(&htt->ar->htc, htt->eid, msdu);
++
++out:
++	return res;
 +}
 +
-+static void ath10k_htt_rx_proc_rx_ind_ll(struct ath10k_htt *htt,
-+					 struct htt_rx_indication *rx)
++int ath10k_htt_tx_ll(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
++		     struct sk_buff *msdu)
  {
  	struct ath10k *ar = htt->ar;
- 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
-@@ -2349,7 +2433,12 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	}
- 	case HTT_T2H_MSG_TYPE_RX_IND:
--		ath10k_htt_rx_proc_rx_ind(htt, &resp->rx_ind);
-+		if (ar->is_high_latency)
-+			return ath10k_htt_rx_proc_rx_ind_hl(htt,
-+							    &resp->rx_ind_hl,
-+							    skb);
-+		else
-+			ath10k_htt_rx_proc_rx_ind_ll(htt, &resp->rx_ind);
- 		break;
- 	case HTT_T2H_MSG_TYPE_PEER_MAP: {
- 		struct htt_peer_map_event ev = {
-diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
-index 034e7a5..0e625cf 100644
---- a/drivers/net/wireless/ath/ath10k/rx_desc.h
-+++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
-@@ -1219,4 +1219,19 @@ struct fw_rx_desc_base {
- 	u8 info0;
- } __packed;
+ 	struct device *dev = ar->dev;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 28bf199..477e170 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3531,7 +3531,10 @@ static int ath10k_mac_tx_submit(struct ath10k *ar,
  
-+#define FW_RX_DESC_FLAGS_FIRST_MSDU (1 << 0)
-+#define FW_RX_DESC_FLAGS_LAST_MSDU  (1 << 1)
-+#define FW_RX_DESC_C3_FAILED        (1 << 2)
-+#define FW_RX_DESC_C4_FAILED        (1 << 3)
-+#define FW_RX_DESC_IPV6             (1 << 4)
-+#define FW_RX_DESC_TCP              (1 << 5)
-+#define FW_RX_DESC_UDP              (1 << 6)
-+
-+struct fw_rx_desc_hl {
-+	u8 info0;
-+	u8 version;
-+	u8 len;
-+	u8 flags;
-+} __packed;
-+
- #endif /* _RX_DESC_H_ */
+ 	switch (txpath) {
+ 	case ATH10K_MAC_TX_HTT:
+-		ret = ath10k_htt_tx(htt, txmode, skb);
++		if (ar->is_high_latency)
++			ret = ath10k_htt_tx_hl(htt, txmode, skb);
++		else
++			ret = ath10k_htt_tx_ll(htt, txmode, skb);
+ 		break;
+ 	case ATH10K_MAC_TX_HTT_MGMT:
+ 		ret = ath10k_htt_mgmt_tx(htt, skb);
 -- 
 2.7.4
 
