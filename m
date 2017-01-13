@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cS9NO-0005d2-Lm
- for ath10k@lists.infradead.org; Fri, 13 Jan 2017 21:27:13 +0000
-Received: by mail-lf0-x241.google.com with SMTP id q89so7066725lfi.1
- for <ath10k@lists.infradead.org>; Fri, 13 Jan 2017 13:26:52 -0800 (PST)
+ id 1cS9NM-0005cj-Cs
+ for ath10k@lists.infradead.org; Fri, 13 Jan 2017 21:27:11 +0000
+Received: by mail-lf0-x244.google.com with SMTP id q89so7066614lfi.1
+ for <ath10k@lists.infradead.org>; Fri, 13 Jan 2017 13:26:49 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v3 8/8] ath10k: htc: ready_ext msg support
-Date: Fri, 13 Jan 2017 22:26:11 +0100
-Message-Id: <1484342771-6160-9-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v3 5/8] ath10k: various sdio related definitions
+Date: Fri, 13 Jan 2017 22:26:08 +0100
+Message-Id: <1484342771-6160-6-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1484342771-6160-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1484342771-6160-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,108 +27,158 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Added support for extended ready message.
-The extended ready message contains the maximum bundle
-count supported by SDIO chipsets.
-
-It is transmitted by SDIO chipset only and replaces the
-"standard" ready message in this case.
+Debug masks for SDIO HIF layer.
+Address definitions for SDIO/mbox based chipsets.
+Augmented struct host_interest with more members.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.c | 28 ++++++++++++++++++++++------
- drivers/net/wireless/ath/ath10k/htc.h |  5 +++++
- 2 files changed, 27 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h      |  3 ++
+ drivers/net/wireless/ath/ath10k/debug.h     |  2 ++
+ drivers/net/wireless/ath/ath10k/hw.h        | 53 +++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/targaddrs.h | 24 +++++++++++++
+ 4 files changed, 82 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index eb036b3..3eaa9a8 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -581,8 +581,6 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 	unsigned long time_left;
- 	struct ath10k_htc_msg *msg;
- 	u16 message_id;
--	u16 credit_count;
--	u16 credit_size;
- 
- 	time_left = wait_for_completion_timeout(&htc->ctl_resp,
- 						ATH10K_HTC_WAIT_TIMEOUT_HZ);
-@@ -619,16 +617,14 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 
- 	msg = (struct ath10k_htc_msg *)htc->control_resp_buffer;
- 	message_id   = __le16_to_cpu(msg->hdr.message_id);
--	credit_count = __le16_to_cpu(msg->ready.credit_count);
--	credit_size  = __le16_to_cpu(msg->ready.credit_size);
- 
- 	if (message_id != ATH10K_HTC_MSG_READY_ID) {
- 		ath10k_err(ar, "Invalid HTC ready msg: 0x%x\n", message_id);
- 		return -ECOMM;
- 	}
- 
--	htc->total_transmit_credits = credit_count;
--	htc->target_credit_size = credit_size;
-+	htc->total_transmit_credits = __le16_to_cpu(msg->ready.credit_count);
-+	htc->target_credit_size = __le16_to_cpu(msg->ready.credit_size);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_HTC,
- 		   "Target ready! transmit resources: %d size:%d\n",
-@@ -641,6 +637,19 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 		return -ECOMM;
- 	}
- 
-+	/* The only way to determine if the ready message is an extended
-+	 * message is from the size.
-+	 */
-+	if (htc->control_resp_len >=
-+	    sizeof(msg->hdr) + sizeof(msg->ready_ext)) {
-+		htc->max_msgs_per_htc_bundle =
-+			min_t(u8, msg->ready_ext.max_msgs_per_htc_bundle,
-+			      HTC_HOST_MAX_MSG_PER_BUNDLE);
-+		ath10k_dbg(ar, ATH10K_DBG_HTC,
-+			   "Extended ready message. RX bundle size: %d\n",
-+			   htc->max_msgs_per_htc_bundle);
-+	}
-+
- 	return 0;
- }
- 
-@@ -836,6 +845,13 @@ int ath10k_htc_start(struct ath10k_htc *htc)
- 	msg->hdr.message_id =
- 		__cpu_to_le16(ATH10K_HTC_MSG_SETUP_COMPLETE_EX_ID);
- 
-+	if (ar->hif.bus == ATH10K_BUS_SDIO) {
-+		/* Extra setup params used by SDIO */
-+		msg->setup_complete_ext.flags =
-+			__cpu_to_le32(ATH10K_HTC_SETUP_COMPLETE_FLAGS_RX_BNDL_EN);
-+		msg->setup_complete_ext.max_msgs_per_bundled_recv =
-+			htc->max_msgs_per_htc_bundle;
-+	}
- 	ath10k_dbg(ar, ATH10K_DBG_HTC, "HTC is using TX credit flow control\n");
- 
- 	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
-diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index 9a1db90..566e437 100644
---- a/drivers/net/wireless/ath/ath10k/htc.h
-+++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -112,6 +112,10 @@ enum ath10k_htc_conn_svc_status {
- 	ATH10K_HTC_CONN_SVC_STATUS_NO_MORE_EP   = 4
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index c7664d6..1ffef90 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -74,6 +74,7 @@ struct ath10k;
+ enum ath10k_bus {
+ 	ATH10K_BUS_PCI,
+ 	ATH10K_BUS_AHB,
++	ATH10K_BUS_SDIO,
  };
  
-+enum ath10k_htc_setup_complete_flags {
-+	ATH10K_HTC_SETUP_COMPLETE_FLAGS_RX_BNDL_EN = 1
-+};
+ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+@@ -83,6 +84,8 @@ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+ 		return "pci";
+ 	case ATH10K_BUS_AHB:
+ 		return "ahb";
++	case ATH10K_BUS_SDIO:
++		return "sdio";
+ 	}
+ 
+ 	return "unknown";
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 2368f47..257d109 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -38,6 +38,8 @@ enum ath10k_debug_mask {
+ 	ATH10K_DBG_WMI_PRINT	= 0x00002000,
+ 	ATH10K_DBG_PCI_PS	= 0x00004000,
+ 	ATH10K_DBG_AHB		= 0x00008000,
++	ATH10K_DBG_SDIO		= 0x00010000,
++	ATH10K_DBG_SDIO_DUMP	= 0x00020000,
+ 	ATH10K_DBG_ANY		= 0xffffffff,
+ };
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 7feffec..6bdea86 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -814,6 +814,59 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
+ #define QCA9887_EEPROM_ADDR_LO_MASK		0x00ff0000
+ #define QCA9887_EEPROM_ADDR_LO_LSB		16
+ 
++#define MBOX_RESET_CONTROL_ADDRESS		0x00000000
++#define MBOX_HOST_INT_STATUS_ADDRESS		0x00000800
++#define MBOX_HOST_INT_STATUS_ERROR_LSB		7
++#define MBOX_HOST_INT_STATUS_ERROR_MASK		0x00000080
++#define MBOX_HOST_INT_STATUS_CPU_LSB		6
++#define MBOX_HOST_INT_STATUS_CPU_MASK		0x00000040
++#define MBOX_HOST_INT_STATUS_COUNTER_LSB	4
++#define MBOX_HOST_INT_STATUS_COUNTER_MASK	0x00000010
++#define MBOX_CPU_INT_STATUS_ADDRESS		0x00000801
++#define MBOX_ERROR_INT_STATUS_ADDRESS		0x00000802
++#define MBOX_ERROR_INT_STATUS_WAKEUP_LSB	2
++#define MBOX_ERROR_INT_STATUS_WAKEUP_MASK	0x00000004
++#define MBOX_ERROR_INT_STATUS_RX_UNDERFLOW_LSB	1
++#define MBOX_ERROR_INT_STATUS_RX_UNDERFLOW_MASK	0x00000002
++#define MBOX_ERROR_INT_STATUS_TX_OVERFLOW_LSB	0
++#define MBOX_ERROR_INT_STATUS_TX_OVERFLOW_MASK	0x00000001
++#define MBOX_COUNTER_INT_STATUS_ADDRESS		0x00000803
++#define MBOX_COUNTER_INT_STATUS_COUNTER_LSB	0
++#define MBOX_COUNTER_INT_STATUS_COUNTER_MASK	0x000000ff
++#define MBOX_RX_LOOKAHEAD_VALID_ADDRESS		0x00000805
++#define MBOX_INT_STATUS_ENABLE_ADDRESS		0x00000828
++#define MBOX_INT_STATUS_ENABLE_ERROR_LSB	7
++#define MBOX_INT_STATUS_ENABLE_ERROR_MASK	0x00000080
++#define MBOX_INT_STATUS_ENABLE_CPU_LSB		6
++#define MBOX_INT_STATUS_ENABLE_CPU_MASK		0x00000040
++#define MBOX_INT_STATUS_ENABLE_INT_LSB		5
++#define MBOX_INT_STATUS_ENABLE_INT_MASK		0x00000020
++#define MBOX_INT_STATUS_ENABLE_COUNTER_LSB	4
++#define MBOX_INT_STATUS_ENABLE_COUNTER_MASK	0x00000010
++#define MBOX_INT_STATUS_ENABLE_MBOX_DATA_LSB	0
++#define MBOX_INT_STATUS_ENABLE_MBOX_DATA_MASK	0x0000000f
++#define MBOX_CPU_INT_STATUS_ENABLE_ADDRESS	0x00000819
++#define MBOX_CPU_INT_STATUS_ENABLE_BIT_LSB	0
++#define MBOX_CPU_INT_STATUS_ENABLE_BIT_MASK	0x000000ff
++#define MBOX_ERROR_STATUS_ENABLE_ADDRESS	0x0000081a
++#define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_LSB  1
++#define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_MASK 0x00000002
++#define MBOX_ERROR_STATUS_ENABLE_TX_OVERFLOW_LSB   0
++#define MBOX_ERROR_STATUS_ENABLE_TX_OVERFLOW_MASK  0x00000001
++#define MBOX_COUNTER_INT_STATUS_ENABLE_ADDRESS	0x0000081b
++#define MBOX_COUNTER_INT_STATUS_ENABLE_BIT_LSB	0
++#define MBOX_COUNTER_INT_STATUS_ENABLE_BIT_MASK	0x000000ff
++#define MBOX_COUNT_ADDRESS			0x00000820
++#define MBOX_COUNT_DEC_ADDRESS			0x00000840
++#define MBOX_WINDOW_DATA_ADDRESS		0x00000874
++#define MBOX_WINDOW_WRITE_ADDR_ADDRESS		0x00000878
++#define MBOX_WINDOW_READ_ADDR_ADDRESS		0x0000087c
++#define MBOX_CPU_DBG_SEL_ADDRESS		0x00000883
++#define MBOX_CPU_DBG_ADDRESS			0x00000884
++#define MBOX_RTC_BASE_ADDRESS			0x00000000
++#define MBOX_GPIO_BASE_ADDRESS			0x00005000
++#define MBOX_MBOX_BASE_ADDRESS			0x00008000
 +
- struct ath10k_ath10k_htc_msg_hdr {
- 	__le16 message_id; /* @enum htc_message_id */
+ #define RTC_STATE_V_GET(x) (((x) & RTC_STATE_V_MASK) >> RTC_STATE_V_LSB)
+ 
+ /* Register definitions for first generation ath10k cards. These cards include
+diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
+index a47cab4..58e0541 100644
+--- a/drivers/net/wireless/ath/ath10k/targaddrs.h
++++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
+@@ -205,6 +205,24 @@ struct host_interest {
+ 	 */
+ 	/* Bit 1 - unused */
+ 	u32 hi_fw_swap;					/* 0x104 */
++
++	/* global arenas pointer address, used by host driver debug */
++	u32 hi_dynamic_mem_arenas_addr;			/* 0x108 */
++
++	/* allocated bytes of DRAM use by allocated */
++	u32 hi_dynamic_mem_allocated;			/* 0x10C */
++
++	/* remaining bytes of DRAM */
++	u32 hi_dynamic_mem_remaining;			/* 0x110 */
++
++	/* memory track count, configured by host */
++	u32 hi_dynamic_mem_track_max;			/* 0x114 */
++
++	/* minidump buffer */
++	u32 hi_minidump;				/* 0x118 */
++
++	/* bdata's sig and key addr */
++	u32 hi_bd_sig_key;				/* 0x11c */
  } __packed;
-@@ -360,6 +364,7 @@ struct ath10k_htc {
  
- 	int total_transmit_credits;
- 	int target_credit_size;
-+	u8 max_msgs_per_htc_bundle;
- };
+ #define HI_ITEM(item)  offsetof(struct host_interest, item)
+@@ -319,6 +337,12 @@ Fw Mode/SubMode Mask
+ #define HI_ACS_FLAGS_USE_WWAN       (1 << 1)
+ /* Use test VAP */
+ #define HI_ACS_FLAGS_TEST_VAP       (1 << 2)
++/* SDIO/mailbox ACS flag definitions */
++#define HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET       (1 << 0)
++#define HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET    (1 << 1)
++#define HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE        (1 << 2)
++#define HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_FW_ACK    (1 << 16)
++#define HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_FW_ACK (1 << 17)
  
- int ath10k_htc_init(struct ath10k *ar);
+ /*
+  * CONSOLE FLAGS
 -- 
 2.7.4
 
