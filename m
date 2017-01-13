@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cS9NM-0005cj-Cs
- for ath10k@lists.infradead.org; Fri, 13 Jan 2017 21:27:11 +0000
-Received: by mail-lf0-x244.google.com with SMTP id q89so7066614lfi.1
- for <ath10k@lists.infradead.org>; Fri, 13 Jan 2017 13:26:49 -0800 (PST)
+ id 1cS9NP-0005cw-Fk
+ for ath10k@lists.infradead.org; Fri, 13 Jan 2017 21:27:14 +0000
+Received: by mail-lf0-x242.google.com with SMTP id q89so7066695lfi.1
+ for <ath10k@lists.infradead.org>; Fri, 13 Jan 2017 13:26:51 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v3 5/8] ath10k: various sdio related definitions
-Date: Fri, 13 Jan 2017 22:26:08 +0100
-Message-Id: <1484342771-6160-6-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v3 7/8] ath10k: sdio get target info
+Date: Fri, 13 Jan 2017 22:26:10 +0100
+Message-Id: <1484342771-6160-8-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1484342771-6160-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1484342771-6160-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,158 +27,125 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Debug masks for SDIO HIF layer.
-Address definitions for SDIO/mbox based chipsets.
-Augmented struct host_interest with more members.
+Special BMI get target info function for SDIO.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h      |  3 ++
- drivers/net/wireless/ath/ath10k/debug.h     |  2 ++
- drivers/net/wireless/ath/ath10k/hw.h        | 53 +++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/targaddrs.h | 24 +++++++++++++
- 4 files changed, 82 insertions(+)
+ drivers/net/wireless/ath/ath10k/bmi.c  | 70 ++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/bmi.h  |  2 +
+ drivers/net/wireless/ath/ath10k/core.c |  5 ++-
+ 3 files changed, 76 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index c7664d6..1ffef90 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -74,6 +74,7 @@ struct ath10k;
- enum ath10k_bus {
- 	ATH10K_BUS_PCI,
- 	ATH10K_BUS_AHB,
-+	ATH10K_BUS_SDIO,
- };
+diff --git a/drivers/net/wireless/ath/ath10k/bmi.c b/drivers/net/wireless/ath/ath10k/bmi.c
+index 2872d34..d9db153 100644
+--- a/drivers/net/wireless/ath/ath10k/bmi.c
++++ b/drivers/net/wireless/ath/ath10k/bmi.c
+@@ -88,6 +88,76 @@ int ath10k_bmi_get_target_info(struct ath10k *ar,
+ 	return 0;
+ }
  
- static inline const char *ath10k_bus_str(enum ath10k_bus bus)
-@@ -83,6 +84,8 @@ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
- 		return "pci";
- 	case ATH10K_BUS_AHB:
- 		return "ahb";
-+	case ATH10K_BUS_SDIO:
-+		return "sdio";
++#define TARGET_VERSION_SENTINAL 0xffffffffu
++
++int ath10k_bmi_get_target_info_sdio(struct ath10k *ar,
++				    struct bmi_target_info *target_info)
++{
++	struct bmi_cmd cmd;
++	union bmi_resp resp;
++	u32 cmdlen = sizeof(cmd.id) + sizeof(cmd.get_target_info);
++	u32 resplen, tmp, ver_len;
++	int ret;
++
++	ath10k_dbg(ar, ATH10K_DBG_BMI, "bmi get target info SDIO\n");
++
++	if (ar->bmi.done_sent) {
++		ath10k_warn(ar, "BMI Get Target Info Command disallowed\n");
++		return -EBUSY;
++	}
++
++	cmd.id = __cpu_to_le32(BMI_GET_TARGET_INFO);
++
++	/* Step 1: Read 4 bytes of the target info and check if it is
++	 * the special sentinal version word or the first word in the
++	 * version response.
++	 */
++	resplen = sizeof(u32);
++	ret = ath10k_hif_exchange_bmi_msg(ar, &cmd, cmdlen, &tmp, &resplen);
++	if (ret) {
++		ath10k_warn(ar, "unable to read from device\n");
++		return ret;
++	}
++
++	/* Some SDIO boards have a special sentinal byte before the real
++	 * version response.
++	 */
++	if (tmp == TARGET_VERSION_SENTINAL) {
++		/* Step 1b: Read the version length */
++		resplen = sizeof(u32);
++		ret = ath10k_hif_exchange_bmi_msg(ar, NULL, 0, &tmp,
++						  &resplen);
++		if (ret) {
++			ath10k_warn(ar, "unable to read from device\n");
++			return ret;
++		}
++	}
++
++	ver_len = __le32_to_cpu(tmp);
++
++	/* Step 2: Check the target info length */
++	if (ver_len != sizeof(resp.get_target_info)) {
++		ath10k_warn(ar, "Unexpected target info len: %u. Expected: %lu\n",
++			    ver_len, sizeof(resp.get_target_info));
++		return -EINVAL;
++	}
++
++	/* Step 3: Read the rest of the version response */
++	resplen = sizeof(resp.get_target_info) - sizeof(u32);
++	ret = ath10k_hif_exchange_bmi_msg(ar, NULL, 0,
++					  &resp.get_target_info.version,
++					  &resplen);
++	if (ret) {
++		ath10k_warn(ar, "unable to read from device\n");
++		return ret;
++	}
++
++	target_info->version = __le32_to_cpu(resp.get_target_info.version);
++	target_info->type    = __le32_to_cpu(resp.get_target_info.type);
++
++	return 0;
++}
++
+ int ath10k_bmi_read_memory(struct ath10k *ar,
+ 			   u32 address, void *buffer, u32 length)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/bmi.h b/drivers/net/wireless/ath/ath10k/bmi.h
+index 7d3231a..8a5ef1b 100644
+--- a/drivers/net/wireless/ath/ath10k/bmi.h
++++ b/drivers/net/wireless/ath/ath10k/bmi.h
+@@ -197,6 +197,8 @@ void ath10k_bmi_start(struct ath10k *ar);
+ int ath10k_bmi_done(struct ath10k *ar);
+ int ath10k_bmi_get_target_info(struct ath10k *ar,
+ 			       struct bmi_target_info *target_info);
++int ath10k_bmi_get_target_info_sdio(struct ath10k *ar,
++				    struct bmi_target_info *target_info);
+ int ath10k_bmi_read_memory(struct ath10k *ar, u32 address,
+ 			   void *buffer, u32 length);
+ int ath10k_bmi_write_memory(struct ath10k *ar, u32 address,
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 874c2a7..e34c734 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2084,7 +2084,10 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
  	}
  
- 	return "unknown";
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 2368f47..257d109 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -38,6 +38,8 @@ enum ath10k_debug_mask {
- 	ATH10K_DBG_WMI_PRINT	= 0x00002000,
- 	ATH10K_DBG_PCI_PS	= 0x00004000,
- 	ATH10K_DBG_AHB		= 0x00008000,
-+	ATH10K_DBG_SDIO		= 0x00010000,
-+	ATH10K_DBG_SDIO_DUMP	= 0x00020000,
- 	ATH10K_DBG_ANY		= 0xffffffff,
- };
- 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 7feffec..6bdea86 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -814,6 +814,59 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
- #define QCA9887_EEPROM_ADDR_LO_MASK		0x00ff0000
- #define QCA9887_EEPROM_ADDR_LO_LSB		16
- 
-+#define MBOX_RESET_CONTROL_ADDRESS		0x00000000
-+#define MBOX_HOST_INT_STATUS_ADDRESS		0x00000800
-+#define MBOX_HOST_INT_STATUS_ERROR_LSB		7
-+#define MBOX_HOST_INT_STATUS_ERROR_MASK		0x00000080
-+#define MBOX_HOST_INT_STATUS_CPU_LSB		6
-+#define MBOX_HOST_INT_STATUS_CPU_MASK		0x00000040
-+#define MBOX_HOST_INT_STATUS_COUNTER_LSB	4
-+#define MBOX_HOST_INT_STATUS_COUNTER_MASK	0x00000010
-+#define MBOX_CPU_INT_STATUS_ADDRESS		0x00000801
-+#define MBOX_ERROR_INT_STATUS_ADDRESS		0x00000802
-+#define MBOX_ERROR_INT_STATUS_WAKEUP_LSB	2
-+#define MBOX_ERROR_INT_STATUS_WAKEUP_MASK	0x00000004
-+#define MBOX_ERROR_INT_STATUS_RX_UNDERFLOW_LSB	1
-+#define MBOX_ERROR_INT_STATUS_RX_UNDERFLOW_MASK	0x00000002
-+#define MBOX_ERROR_INT_STATUS_TX_OVERFLOW_LSB	0
-+#define MBOX_ERROR_INT_STATUS_TX_OVERFLOW_MASK	0x00000001
-+#define MBOX_COUNTER_INT_STATUS_ADDRESS		0x00000803
-+#define MBOX_COUNTER_INT_STATUS_COUNTER_LSB	0
-+#define MBOX_COUNTER_INT_STATUS_COUNTER_MASK	0x000000ff
-+#define MBOX_RX_LOOKAHEAD_VALID_ADDRESS		0x00000805
-+#define MBOX_INT_STATUS_ENABLE_ADDRESS		0x00000828
-+#define MBOX_INT_STATUS_ENABLE_ERROR_LSB	7
-+#define MBOX_INT_STATUS_ENABLE_ERROR_MASK	0x00000080
-+#define MBOX_INT_STATUS_ENABLE_CPU_LSB		6
-+#define MBOX_INT_STATUS_ENABLE_CPU_MASK		0x00000040
-+#define MBOX_INT_STATUS_ENABLE_INT_LSB		5
-+#define MBOX_INT_STATUS_ENABLE_INT_MASK		0x00000020
-+#define MBOX_INT_STATUS_ENABLE_COUNTER_LSB	4
-+#define MBOX_INT_STATUS_ENABLE_COUNTER_MASK	0x00000010
-+#define MBOX_INT_STATUS_ENABLE_MBOX_DATA_LSB	0
-+#define MBOX_INT_STATUS_ENABLE_MBOX_DATA_MASK	0x0000000f
-+#define MBOX_CPU_INT_STATUS_ENABLE_ADDRESS	0x00000819
-+#define MBOX_CPU_INT_STATUS_ENABLE_BIT_LSB	0
-+#define MBOX_CPU_INT_STATUS_ENABLE_BIT_MASK	0x000000ff
-+#define MBOX_ERROR_STATUS_ENABLE_ADDRESS	0x0000081a
-+#define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_LSB  1
-+#define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_MASK 0x00000002
-+#define MBOX_ERROR_STATUS_ENABLE_TX_OVERFLOW_LSB   0
-+#define MBOX_ERROR_STATUS_ENABLE_TX_OVERFLOW_MASK  0x00000001
-+#define MBOX_COUNTER_INT_STATUS_ENABLE_ADDRESS	0x0000081b
-+#define MBOX_COUNTER_INT_STATUS_ENABLE_BIT_LSB	0
-+#define MBOX_COUNTER_INT_STATUS_ENABLE_BIT_MASK	0x000000ff
-+#define MBOX_COUNT_ADDRESS			0x00000820
-+#define MBOX_COUNT_DEC_ADDRESS			0x00000840
-+#define MBOX_WINDOW_DATA_ADDRESS		0x00000874
-+#define MBOX_WINDOW_WRITE_ADDR_ADDRESS		0x00000878
-+#define MBOX_WINDOW_READ_ADDR_ADDRESS		0x0000087c
-+#define MBOX_CPU_DBG_SEL_ADDRESS		0x00000883
-+#define MBOX_CPU_DBG_ADDRESS			0x00000884
-+#define MBOX_RTC_BASE_ADDRESS			0x00000000
-+#define MBOX_GPIO_BASE_ADDRESS			0x00005000
-+#define MBOX_MBOX_BASE_ADDRESS			0x00008000
-+
- #define RTC_STATE_V_GET(x) (((x) & RTC_STATE_V_MASK) >> RTC_STATE_V_LSB)
- 
- /* Register definitions for first generation ath10k cards. These cards include
-diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
-index a47cab4..58e0541 100644
---- a/drivers/net/wireless/ath/ath10k/targaddrs.h
-+++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
-@@ -205,6 +205,24 @@ struct host_interest {
- 	 */
- 	/* Bit 1 - unused */
- 	u32 hi_fw_swap;					/* 0x104 */
-+
-+	/* global arenas pointer address, used by host driver debug */
-+	u32 hi_dynamic_mem_arenas_addr;			/* 0x108 */
-+
-+	/* allocated bytes of DRAM use by allocated */
-+	u32 hi_dynamic_mem_allocated;			/* 0x10C */
-+
-+	/* remaining bytes of DRAM */
-+	u32 hi_dynamic_mem_remaining;			/* 0x110 */
-+
-+	/* memory track count, configured by host */
-+	u32 hi_dynamic_mem_track_max;			/* 0x114 */
-+
-+	/* minidump buffer */
-+	u32 hi_minidump;				/* 0x118 */
-+
-+	/* bdata's sig and key addr */
-+	u32 hi_bd_sig_key;				/* 0x11c */
- } __packed;
- 
- #define HI_ITEM(item)  offsetof(struct host_interest, item)
-@@ -319,6 +337,12 @@ Fw Mode/SubMode Mask
- #define HI_ACS_FLAGS_USE_WWAN       (1 << 1)
- /* Use test VAP */
- #define HI_ACS_FLAGS_TEST_VAP       (1 << 2)
-+/* SDIO/mailbox ACS flag definitions */
-+#define HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET       (1 << 0)
-+#define HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET    (1 << 1)
-+#define HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE        (1 << 2)
-+#define HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_FW_ACK    (1 << 16)
-+#define HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_FW_ACK (1 << 17)
- 
- /*
-  * CONSOLE FLAGS
+ 	memset(&target_info, 0, sizeof(target_info));
+-	ret = ath10k_bmi_get_target_info(ar, &target_info);
++	if (ar->hif.bus == ATH10K_BUS_SDIO)
++		ret = ath10k_bmi_get_target_info_sdio(ar, &target_info);
++	else
++		ret = ath10k_bmi_get_target_info(ar, &target_info);
+ 	if (ret) {
+ 		ath10k_err(ar, "could not get target info (%d)\n", ret);
+ 		goto err_power_down;
 -- 
 2.7.4
 
