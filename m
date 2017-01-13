@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cS9Vi-0003bH-6g
+ id 1cS9Vi-0003ac-6i
  for ath10k@lists.infradead.org; Fri, 13 Jan 2017 21:35:51 +0000
-Received: by mail-lf0-x243.google.com with SMTP id x1so1724608lff.0
- for <ath10k@lists.infradead.org>; Fri, 13 Jan 2017 13:35:30 -0800 (PST)
+Received: by mail-lf0-x243.google.com with SMTP id v186so7071990lfa.2
+ for <ath10k@lists.infradead.org>; Fri, 13 Jan 2017 13:35:25 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC 07/10] ath10k: per target configurablity of various items
-Date: Fri, 13 Jan 2017 22:35:06 +0100
-Message-Id: <1484343309-6327-8-git-send-email-erik.stromdahl@gmail.com>
-In-Reply-To: <1484343309-6327-1-git-send-email-erik.stromdahl@gmail.com>
-References: <1484343309-6327-1-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC 00/10] ath10k usb support
+Date: Fri, 13 Jan 2017 22:34:59 +0100
+Message-Id: <1484343309-6327-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,255 +25,159 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Added ability to set bus type and configure the max number of
-peers in the ath10k_hw_params struct.
+This patch series adds usb support to ath10k.
 
-With this functionality it is possible to have a different
-hw configuration depending on bus type for the same radio
-chipset.
+The target device used during development was a Linksys WUSB6100M
+based on QCA9377.
 
-E.g. SDIO and USB devices using the same chipset as PCIe
-devices will potentially use different board files and perhaps
-other configuration parameters.
+I have tried to verify that the patches have not broken the existing
+PCIe support since some of the patches affect the generic code as well.
+To this end I have used a QCA9880 PCIe device operating in STA mode.
 
-One such parameter is the max number of peers.
-Instead of using a default value (suitable for PCIe devices)
-derived from the WMI op version, a per target value can be
-used instead.
+This patch series is depending on my previous sdio RFC (currently
+version 3) since both these implementations share a lot of common
+code. Hence, the sdio patches must be applied before these patches
+can be applied!
 
-This is needed by the QCA9377 USB device in order to prevent
-the target fw to crash after HTT RX ring cfg is issued.
+* overview of patches *
 
-Apparently, the QCA9377 HL device does not seem to handle the
-same amount of peers as the LL devices.
+patch 1 adds some usb definitions needed by the HIF layer.
 
-A new struct ath10k_hw_params item for QCA9377 USB devices was
-also added to ath10k_hw_params_list.
+patch 2 contains the actual usb HIF implementation.
 
-Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
----
- drivers/net/wireless/ath/ath10k/core.c    | 55 ++++++++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/core.h    |  7 ----
- drivers/net/wireless/ath/ath10k/hw.h      | 23 +++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  4 +--
- 4 files changed, 72 insertions(+), 17 deletions(-)
+patch 3 adds a is_high_latency check functionality
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 573e772..31a9471 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -282,6 +282,28 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.decap_align_bytes = 4,
- 	},
- 	{
-+		.id = QCA9377_HW_1_1_DEV_VERSION,
-+		.dev_id = QCA9377_1_0_DEVICE_ID,
-+		.name = "qca9377 hw1.1 usb",
-+		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
-+		.uart_pin = 6,
-+		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
-+		.max_probe_resp_desc_thres = 0,
-+		.cal_data_len = 8124,
-+		.fw = {
-+			.dir = QCA9377_HW_1_0_FW_DIR,
-+			.board = QCA9377_HW_1_0_BOARD_DATA_FILE_USB,
-+			.board_size = QCA9377_BOARD_DATA_SZ,
-+			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
-+		},
-+		.hw_ops = &qca988x_ops,
-+		.decap_align_bytes = 4,
-+		.max_num_peers = TARGET_QCA9377_HL_NUM_PEERS,
-+		.is_high_latency = true,
-+		.bus = ATH10K_BUS_USB,
-+	},
-+	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
- 		.dev_id = 0,
- 		.name = "qca4019 hw1.0",
-@@ -1487,9 +1509,19 @@ static int ath10k_init_hw_params(struct ath10k *ar)
- 	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
- 		hw_params = &ath10k_hw_params_list[i];
- 
--		if (hw_params->id == ar->target_version &&
--		    hw_params->dev_id == ar->dev_id)
--			break;
-+		if (ar->is_high_latency) {
-+			/* High latency devices will use different fw depending
-+			 * on if it is a USB or SDIO device.
-+			 */
-+			if (hw_params->bus == ar->hif.bus &&
-+			    hw_params->id == ar->target_version &&
-+			    hw_params->dev_id == ar->dev_id)
-+				break;
-+		} else {
-+			if (hw_params->id == ar->target_version &&
-+			    hw_params->dev_id == ar->dev_id)
-+				break;
-+		}
- 	}
- 
- 	if (i == ARRAY_SIZE(ath10k_hw_params_list)) {
-@@ -1580,6 +1612,7 @@ static void ath10k_core_set_coverage_class_work(struct work_struct *work)
- static int ath10k_core_init_firmware_features(struct ath10k *ar)
- {
- 	struct ath10k_fw_file *fw_file = &ar->normal_mode_fw.fw_file;
-+	int max_num_peers;
- 
- 	if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, fw_file->fw_features) &&
- 	    !test_bit(ATH10K_FW_FEATURE_WMI_10X, fw_file->fw_features)) {
-@@ -1664,7 +1697,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 
- 	switch (fw_file->wmi_op_version) {
- 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
--		ar->max_num_peers = TARGET_NUM_PEERS;
-+		max_num_peers = TARGET_NUM_PEERS;
- 		ar->max_num_stations = TARGET_NUM_STATIONS;
- 		ar->max_num_vdevs = TARGET_NUM_VDEVS;
- 		ar->htt.max_num_pending_tx = TARGET_NUM_MSDU_DESC;
-@@ -1676,10 +1709,10 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 	case ATH10K_FW_WMI_OP_VERSION_10_2:
- 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
- 		if (ath10k_peer_stats_enabled(ar)) {
--			ar->max_num_peers = TARGET_10X_TX_STATS_NUM_PEERS;
-+			max_num_peers = TARGET_10X_TX_STATS_NUM_PEERS;
- 			ar->max_num_stations = TARGET_10X_TX_STATS_NUM_STATIONS;
- 		} else {
--			ar->max_num_peers = TARGET_10X_NUM_PEERS;
-+			max_num_peers = TARGET_10X_NUM_PEERS;
- 			ar->max_num_stations = TARGET_10X_NUM_STATIONS;
- 		}
- 		ar->max_num_vdevs = TARGET_10X_NUM_VDEVS;
-@@ -1688,7 +1721,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_TLV:
--		ar->max_num_peers = TARGET_TLV_NUM_PEERS;
-+		max_num_peers = TARGET_TLV_NUM_PEERS;
- 		ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
- 		ar->max_num_vdevs = TARGET_TLV_NUM_VDEVS;
- 		ar->max_num_tdls_vdevs = TARGET_TLV_NUM_TDLS_VDEVS;
-@@ -1699,7 +1732,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_10_4:
--		ar->max_num_peers = TARGET_10_4_NUM_PEERS;
-+		max_num_peers = TARGET_10_4_NUM_PEERS;
- 		ar->max_num_stations = TARGET_10_4_NUM_STATIONS;
- 		ar->num_active_peers = TARGET_10_4_ACTIVE_PEERS;
- 		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
-@@ -1716,10 +1749,16 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
- 	case ATH10K_FW_WMI_OP_VERSION_MAX:
-+	default:
- 		WARN_ON(1);
- 		return -EINVAL;
- 	}
- 
-+	if (ar->hw_params.max_num_peers)
-+		ar->max_num_peers = ar->hw_params.max_num_peers;
-+	else
-+		ar->max_num_peers = max_num_peers;
-+
- 	/* Backwards compatibility for firmwares without
- 	 * ATH10K_FW_IE_HTT_OP_VERSION.
- 	 */
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index c58250c..d9d7805 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -71,13 +71,6 @@
- 
- struct ath10k;
- 
--enum ath10k_bus {
--	ATH10K_BUS_PCI,
--	ATH10K_BUS_AHB,
--	ATH10K_BUS_SDIO,
--	ATH10K_BUS_USB,
--};
--
- static inline const char *ath10k_bus_str(enum ath10k_bus bus)
- {
- 	switch (bus) {
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 9f4cd76..33186be 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -20,6 +20,13 @@
- 
- #include "targaddrs.h"
- 
-+enum ath10k_bus {
-+	ATH10K_BUS_PCI,
-+	ATH10K_BUS_AHB,
-+	ATH10K_BUS_SDIO,
-+	ATH10K_BUS_USB,
-+};
-+
- #define ATH10K_FW_DIR			"ath10k"
- 
- #define QCA988X_2_0_DEVICE_ID   (0x003c)
-@@ -120,6 +127,7 @@ enum qca9377_chip_id_rev {
- /* QCA9377 1.0 definitions */
- #define QCA9377_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA9377/hw1.0"
- #define QCA9377_HW_1_0_BOARD_DATA_FILE "board.bin"
-+#define QCA9377_HW_1_0_BOARD_DATA_FILE_USB "board-usb.bin"
- #define QCA9377_HW_1_0_PATCH_LOAD_ADDR	0x1234
- 
- /* QCA4019 1.0 definitions */
-@@ -416,6 +424,18 @@ struct ath10k_hw_params {
- 
- 	/* Number of bytes used for alignment in rx_hdr_status of rx desc. */
- 	int decap_align_bytes;
-+
-+	/* max_num_peers can be used to override the setting derived from
-+	 * the WMI op version. If this value is non-zero, it will always
-+	 * be used instead of the default value derived from the WMI op
-+	 * version.
-+	 */
-+	int max_num_peers;
-+
-+	/* Specifies whether or not the device is a high latency device */
-+	bool is_high_latency;
-+
-+	enum ath10k_bus bus;
- };
- 
- struct htt_rx_desc;
-@@ -522,6 +542,9 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
- #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
- #define TARGET_TLV_NUM_WOW_PATTERNS		22
- 
-+/* Target specific defines for QCA9377 high latency firmware */
-+#define TARGET_QCA9377_HL_NUM_PEERS		15
-+
- /* Diagnostic Window */
- #define CE_DIAG_PIPE	7
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index f918802..754d445 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1406,7 +1406,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	cmd->num_host_mem_chunks = __cpu_to_le32(ar->wmi.num_mem_chunks);
- 
- 	cfg->num_vdevs = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
--	cfg->num_peers = __cpu_to_le32(TARGET_TLV_NUM_PEERS);
-+	cfg->num_peers = __cpu_to_le32(ar->max_num_peers);
- 
- 	if (test_bit(WMI_SERVICE_RX_FULL_REORDER, ar->wmi.svc_map)) {
- 		cfg->num_offload_peers = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
-@@ -1417,7 +1417,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	}
- 
- 	cfg->num_peer_keys = __cpu_to_le32(2);
--	cfg->num_tids = __cpu_to_le32(TARGET_TLV_NUM_TIDS);
-+	cfg->num_tids = __cpu_to_le32(ar->max_num_peers * 2);
- 	cfg->ast_skid_limit = __cpu_to_le32(0x10);
- 	cfg->tx_chain_mask = __cpu_to_le32(0x7);
- 	cfg->rx_chain_mask = __cpu_to_le32(0x7);
+patch 4 introduces a new mechanism for fw fetch where the bus name is
+used to determine which files to fetch (so we can have different fw for
+usb and sdio).
+
+patch 5 adds a HL version of the RX ring config.
+This patch is applicable for sdio as well.
+
+patch 6 sets the AMPDU and AMSDU limit to 1 for HL interfaces.
+I believe this is the same thing as disabling frame aggregation but
+I am not entirely sure (perhaps it just disables aggregation from
+target to host). The reason for this patch is to have a simple setup
+as possible. I have tried without this patch and the behavior is
+identical so perhaps it should be removed from the series.
+
+patch 7 adds more members to the ath10k_hw_params structure. These is
+done in order to make it easier to separate HL config from LL config.
+Some of stuff in here could potentially be added as elements in the
+firmware file.
+
+patch 8 adds "start once" functionality. It is used to leave the target
+running after the BMI init phase in ath10k_core_probe_fw.
+Could potentially be added as an element in the firmware file.
+
+The last two patches (9 and 10) adds high latency RX and TX support.
+These patches are applicable for sdio as well.
+
+* testing *
+
+The following functionality have been tested:
+
+- connection to an 802.11ac AP with WPA2 PSK security.
+- dhcp lease of ipv4 address
+- pinging of access point and a few other devices on my home network
+- TX/RX of TCP and UDP messages using netcat
+
+UDP and TCP RX/TX is unfortunately not stable.
+Currently I am only capable of receiving ~2.7 Mbytes over TCP before
+the device stops receiving.
+
+My RX/TX test looks like this:
+
+Computer A (receiver):
+nc -l -p 12345 > /tmp/random-out
+
+Computer B (transmitter):
+time nc -w 3 192.168.1.233 12345 < random-test-file
+
+192.168.1.233 was the IPv4 address the WUSB6100M was assigned on my
+home network.
+
+The TCP RX data is identical to the TX data (no data is lost) but the
+receiver stops receiving after ~2.7 Mbytes, so the RX data (/tmp/random-out
+in my example) will be a truncated version of the TX file (random-test-file)
+
+Adding a "-u" flag to netcat will do the same with UDP instead of TCP.
+
+IMPORTANT:
+It is possible to make the fw crash if an unsupported command or a
+command with an unsupported setting is issued. This was the initial
+problem I had with a crashing firmware after the RX ring config.
+In this particular case the problem was related to an invalid init
+message (containing an invalid maximum number of peers setting). There
+could be more of this stuff in there that has not yet been fixed.
+Depending on how wpa_supplicant etc. is configured there is a possibility
+that the usb device will receive an unsupported command and crash.
+It this happens, please enable logging and post the logs on the ath10k
+mailing list.
+
+* usb firmware *
+
+Special firmware for usb is needed.
+Linksys provide firmware for the QCA9377 version here:
+
+http://www.linksys.com/us/support-article?articleNum=198580
+
+The firmware must be converted into ath10k firmware using the below
+command:
+
+ath10k-fwencoder --create \
+--otp=otp_AR6320.bin \
+--firmware=athwlan_AR6320.bin \
+--set-wmi-op-version=tlv \
+--set-htt-op-version=tlv \
+--set-fw-api=5 \
+--features=ignore-otp-result
+
+The firmware should be named firmware-usb-5.bin and should be placed
+in /lib/firmware/ath10k/QCA9377/hw1.0
+
+A board file is also needed:
+
+cd /lib/firmware/ath10k/QCA9377/hw1.0
+ln -s eeprom_qca9377_7_1p1_Robin_clpc_XXX.bin board-usb.bin
+
+Pre-converted firmware can be obtained from my github fork of
+ath10k-firmware:
+
+https://github.com/erstrom/ath10k-firmware.git
+branch: usb
+
+Erik Stromdahl (10):
+  ath10k: various usb related definitions
+  ath10k: usb support
+  ath10k: high_latency detection
+  ath10k: new fw fetch functionality
+  ath10k: htt: RX ring config HL support
+  ath10k: disable frame aggregation for high latency
+  ath10k: per target configurablity of various items
+  ath10k: add start_once support
+  ath10k: htt: High latency TX support
+  ath10k: htt: High latency RX support
+
+ drivers/net/wireless/ath/ath10k/Kconfig   |    6 +
+ drivers/net/wireless/ath/ath10k/Makefile  |    3 +
+ drivers/net/wireless/ath/ath10k/core.c    |  179 +++--
+ drivers/net/wireless/ath/ath10k/core.h    |   17 +-
+ drivers/net/wireless/ath/ath10k/debug.h   |    2 +
+ drivers/net/wireless/ath/ath10k/htt.c     |    5 +-
+ drivers/net/wireless/ath/ath10k/htt.h     |   61 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c  |   95 ++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c  |  123 +++-
+ drivers/net/wireless/ath/ath10k/hw.h      |   33 +
+ drivers/net/wireless/ath/ath10k/mac.c     |    5 +-
+ drivers/net/wireless/ath/ath10k/rx_desc.h |   15 +
+ drivers/net/wireless/ath/ath10k/usb.c     | 1125 +++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/usb.h     |  128 ++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |    4 +-
+ 15 files changed, 1724 insertions(+), 77 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/usb.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/usb.h
+
 -- 
 2.7.4
 
