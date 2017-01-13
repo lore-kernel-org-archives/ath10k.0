@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-lf0-x22d.google.com ([2a00:1450:4010:c07::22d])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cRz7y-0002zr-JA
- for ath10k@lists.infradead.org; Fri, 13 Jan 2017 10:30:36 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Fix per station tx bit rate reporting
-Date: Fri, 13 Jan 2017 16:00:03 +0530
-Message-ID: <1484303403-8908-1-git-send-email-mohammed@qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1cRzlA-0002RH-Gj
+ for ath10k@lists.infradead.org; Fri, 13 Jan 2017 11:11:07 +0000
+Received: by mail-lf0-x22d.google.com with SMTP id v186so34516240lfa.1
+ for <ath10k@lists.infradead.org>; Fri, 13 Jan 2017 03:10:41 -0800 (PST)
+From: Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>
+Subject: [PATCH] ath10k: Search SMBIOS for OEM board file extension
+Date: Fri, 13 Jan 2017 12:10:22 +0100
+Message-Id: <20170113111022.5570-1-ext.waldemar.rymarkiewicz@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,61 +17,204 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: kvalo@qca.qualcomm.com, ath10k@lists.infradead.org
+Cc: alanliu@qca.qualcomm.com, rwchang@qti.qualcomm.com, linux-wireless@vger.kernel.org, Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>, bartosz.markowski@tieto.com
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Board Data File (BDF) is loaded upon driver boot-up procedure. The right
+board data file is identified, among others, by device and sybsystem ids.
 
-Not clearing the previous tx bit rate status
-results in a ambigous tx bit rate reporting to
-mac80211/cfg80211, for example the previous bit
-rate status would have been marked as legacy rate
-, while the current rate would have been an HT/VHT
-rate with the tx bit rate flags set and this results
-in exporting tx bitrate as legacy rate but with HT/VHT
-rate flags set, fix this by clearing the tx bitrate
-status for each event. This also fixes the below
-warning when we do:
+The problem, however, can occur when the (default) board data file cannot
+fulfill with the vendor requirements and it is necessary to use a different
+board data file.
 
-iw dev wlan#N station dump
+To solve the issue QCA uses SMBIOS type 0xF8 to store Board Data File Name
+Extension to specify the extension/variant name. The driver will take the
+extension suffix into consideration and will load the right (non-default)
+board data file if necessary.
 
-WARNING: net/wireless/util.c:1222 cfg80211
+If it is unnecessary to use extension board data file, please leave the
+SMBIOS field blank and default configuration will be used.
 
-[<c022f104>] (warn_slowpath_null) from [<bf3b9adc>]
-(cfg80211_calculate_bitrate+0x110/0x1f4 [cfg80211])
-[<bf3b9adc>] (cfg80211_calculate_bitrate [cfg80211]) from
-[<bf3dcd54>] (nl80211_put_sta_rate+0x44/0x1dc [cfg80211])
-[<bf3dcd54>] (nl80211_put_sta_rate [cfg80211]) from
-[<bf3cbc34>] (nl80211_set_interface+0x724/0xd70 [cfg80211])
-[<bf3cbc34>] (nl80211_set_interface [cfg80211]) from
-[<bf3d0a18>] (nl80211_dump_station+0xdc/0x100 [cfg80211])
-[<bf3d0a18>] (nl80211_dump_station [cfg80211])
+Example:
+If a default board data file for a specific board is identified by a string
+      "bus=pci,vendor=168c,device=003e,subsystem-vendor=1028,
+       subsystem-device=0310"
+then the OEM specific data file, if used, could be identified by variant
+suffix:
+      "bus=pci,vendor=168c,device=003e,subsystem-vendor=1028,
+       subsystem-device=0310,variant=DE_1AB"
 
-Fixes: cec17c382140 ("ath10k: add per peer htt tx stats support for 10.4")
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Signed-off-by: Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c | 79 ++++++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/core.h | 19 ++++++++
+ 2 files changed, 95 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 0bc7fe8..74b66e5 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2231,6 +2231,8 @@ static inline bool is_valid_legacy_rate(u8 rate)
- 		return;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 874c2a755c66..e6276027ec83 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -18,6 +18,8 @@
+ #include <linux/module.h>
+ #include <linux/firmware.h>
+ #include <linux/of.h>
++#include <linux/dmi.h>
++#include <linux/ctype.h>
+ #include <asm/byteorder.h>
+ 
+ #include "core.h"
+@@ -707,6 +709,67 @@ static int ath10k_core_get_board_id_from_otp(struct ath10k *ar)
+ 	return 0;
+ }
+ 
++static void ath10k_core_check_bdfext(const struct dmi_header *hdr, void *data)
++{
++	struct ath10k *ar = data;
++	const char *bdf_ext;
++	const char *magic = ATH10K_SMBIOS_BDF_EXT_MAGIC;
++	u8 bdf_enabled;
++	int i;
++
++	if (hdr->type != ATH10K_SMBIOS_BDF_EXT_TYPE)
++		return;
++
++	if (hdr->length != ATH10K_SMBIOS_BDF_EXT_LENGTH) {
++		ath10k_dbg(ar, ATH10K_DBG_BOOT,
++			   "wrong smbios bdf ext type length (%d).\n",
++			   hdr->length);
++		return;
++	}
++
++	bdf_enabled = *((u8 *)hdr + ATH10K_SMBIOS_BDF_EXT_OFFSET);
++	if (!bdf_enabled) {
++		ath10k_dbg(ar, ATH10K_DBG_BOOT, "bdf variant name not found.\n");
++		return;
++	}
++
++	/* Only one string exists (per spec) */
++	bdf_ext = (char *)hdr + hdr->length;
++
++	if (memcmp(bdf_ext, magic, strlen(magic)) != 0) {
++		ath10k_dbg(ar, ATH10K_DBG_BOOT,
++			   "bdf variant magic does not match.\n");
++		return;
++	}
++
++	for (i = 0; i < strlen(bdf_ext); i++) {
++		if (!isascii(bdf_ext[i]) || !isprint(bdf_ext[i])) {
++			ath10k_dbg(ar, ATH10K_DBG_BOOT,
++				   "bdf variant name contains non ascii chars.\n");
++			return;
++		}
++	}
++
++	/* Copy extension name without magic suffix */
++	strscpy(ar->id.bdf_ext, bdf_ext + strlen(magic),
++		sizeof(ar->id.bdf_ext));
++
++	ath10k_dbg(ar, ATH10K_DBG_BOOT,
++		   "found and validated bdf variant smbios_type 0x%x bdf %s\n",
++		   ATH10K_SMBIOS_BDF_EXT_TYPE, bdf_ext);
++}
++
++static int ath10k_core_check_smbios(struct ath10k *ar)
++{
++	ar->id.bdf_ext[0] = '\0';
++	dmi_walk(ath10k_core_check_bdfext, ar);
++
++	if (ar->id.bdf_ext[0] == '\0')
++		return -ENODATA;
++
++	return 0;
++}
++
+ static int ath10k_download_and_run_otp(struct ath10k *ar)
+ {
+ 	u32 result, address = ar->hw_params.patch_load_addr;
+@@ -1053,6 +1116,9 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
+ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
+ 					 size_t name_len)
+ {
++	/* strlen(',variant=') + strlen(ar->id.bdf_ext) */
++	char variant[9 + ATH10K_SMBIOS_BDF_EXT_STR_LENGTH];
++
+ 	if (ar->id.bmi_ids_valid) {
+ 		scnprintf(name, name_len,
+ 			  "bus=%s,bmi-chip-id=%d,bmi-board-id=%d",
+@@ -1062,12 +1128,15 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
+ 		goto out;
  	}
  
-+	memset(&arsta->txrate, 0, sizeof(arsta->txrate));
++	if (ar->id.bdf_ext[0] != '\0')
++		scnprintf(variant, sizeof(variant), ",variant=%s",
++			  ar->id.bdf_ext);
 +
- 	if (txrate.flags == WMI_RATE_PREAMBLE_CCK ||
- 	    txrate.flags == WMI_RATE_PREAMBLE_OFDM) {
- 		rate = ATH10K_HW_LEGACY_RATE(peer_stats->ratecode);
+ 	scnprintf(name, name_len,
+-		  "bus=%s,vendor=%04x,device=%04x,subsystem-vendor=%04x,subsystem-device=%04x",
++		  "bus=%s,vendor=%04x,device=%04x,subsystem-vendor=%04x,subsystem-device=%04x%s",
+ 		  ath10k_bus_str(ar->hif.bus),
+ 		  ar->id.vendor, ar->id.device,
+-		  ar->id.subsystem_vendor, ar->id.subsystem_device);
+-
++		  ar->id.subsystem_vendor, ar->id.subsystem_device, variant);
+ out:
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot using board name '%s'\n", name);
+ 
+@@ -2128,6 +2197,10 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 		goto err_free_firmware_files;
+ 	}
+ 
++	ret = ath10k_core_check_smbios(ar);
++	if (ret)
++		ath10k_dbg(ar, ATH10K_DBG_BOOT, "bdf variant name not set.\n");
++
+ 	ret = ath10k_core_fetch_board_file(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to fetch board file: %d\n", ret);
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index c7664d6569fa..c7a289a4819d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -69,6 +69,23 @@
+ #define ATH10K_NAPI_BUDGET      64
+ #define ATH10K_NAPI_QUOTA_LIMIT 60
+ 
++/* SMBIOS type containing Board Data File Name Extension */
++#define ATH10K_SMBIOS_BDF_EXT_TYPE 0xF8
++
++/* SMBIOS type structure length (excluding strings-set) */
++#define ATH10K_SMBIOS_BDF_EXT_LENGTH 0x9
++
++/* Offset pointing to Board Data File Name Extension */
++#define ATH10K_SMBIOS_BDF_EXT_OFFSET 0x8
++
++/* Board Data File Name Extension string length.
++ * String format: BDF_<Customer ID>_<Extension>\0
++ */
++#define ATH10K_SMBIOS_BDF_EXT_STR_LENGTH 0x20
++
++/* The magic used by QCA spec */
++#define ATH10K_SMBIOS_BDF_EXT_MAGIC "BDF_"
++
+ struct ath10k;
+ 
+ enum ath10k_bus {
+@@ -781,6 +798,8 @@ struct ath10k {
+ 		bool bmi_ids_valid;
+ 		u8 bmi_board_id;
+ 		u8 bmi_chip_id;
++
++		char bdf_ext[ATH10K_SMBIOS_BDF_EXT_STR_LENGTH];
+ 	} id;
+ 
+ 	int fw_api;
 -- 
-1.9.1
+2.11.0
 
 
 _______________________________________________
