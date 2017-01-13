@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cS9NK-0005cO-Oa
+ id 1cS9NK-0005cP-T9
  for ath10k@lists.infradead.org; Fri, 13 Jan 2017 21:27:11 +0000
-Received: by mail-lf0-x241.google.com with SMTP id q89so7066552lfi.1
- for <ath10k@lists.infradead.org>; Fri, 13 Jan 2017 13:26:45 -0800 (PST)
+Received: by mail-lf0-x242.google.com with SMTP id x1so1709473lff.0
+ for <ath10k@lists.infradead.org>; Fri, 13 Jan 2017 13:26:46 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v3 0/8] ath10k sdio support
-Date: Fri, 13 Jan 2017 22:26:03 +0100
-Message-Id: <1484342771-6160-1-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v3 1/8] ath10k: htc: made static function public
+Date: Fri, 13 Jan 2017 22:26:04 +0100
+Message-Id: <1484342771-6160-2-git-send-email-erik.stromdahl@gmail.com>
+In-Reply-To: <1484342771-6160-1-git-send-email-erik.stromdahl@gmail.com>
+References: <1484342771-6160-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,62 +27,79 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-This is the third version of the sdio RFC patch series.
-The actual sdio code (patch 6) has been subject to a massive overhaul,
-mainly as a result of Kalle's review comments.
-It no longer has any strong resemblance of the original ath6kl code from
-which it was originally based upon.
+Changed ath10k_htc_notify_tx_completion and
+ath10k_htc_process_trailer from static to non static.
 
-Previous pathes 6 to 10 have been merged into one single patch.
+These functions are needed by SDIO/mbox.
 
-The previous series had a rework of the "HTC fake service" connect
-(ep 0 connect) that introduced a race between the actual endpoint
-connect and the HTC ready message. This issue has been addressed,
-and the current patches (3 and 4) has been rewritten accordingly.
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/htc.c | 14 ++++++++------
+ drivers/net/wireless/ath/ath10k/htc.h |  6 ++++++
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
-* overview of patches *
-
-Patches 1 to 4 are more or less identical to the previous RFC, with an
-exception for patch 3 that changes the "HTC fake service" connect
-(mentioned above).
-
-Patch 5 is a squashed version of previous patches 6 to 10.
-
-Patch 6 is the actual sdio patch
-
-Patches 7 to 8 are new and adds special sdio versions of BMI get
-target info and HTC ready.
-
-The new version was built and tested against:
-tag: ath-201701121109
-
-Erik Stromdahl (8):
-  ath10k: htc: made static function public
-  ath10k: htc: rx trailer lookahead support
-  ath10k: htc: move htc ctrl ep connect to htc_init
-  ath10k: htc: refactorization
-  ath10k: various sdio related definitions
-  ath10k: sdio support
-  ath10k: sdio get target info
-  ath10k: htc: ready_ext msg support
-
- drivers/net/wireless/ath/ath10k/Kconfig     |    6 +
- drivers/net/wireless/ath/ath10k/Makefile    |    3 +
- drivers/net/wireless/ath/ath10k/bmi.c       |   70 +
- drivers/net/wireless/ath/ath10k/bmi.h       |    2 +
- drivers/net/wireless/ath/ath10k/core.c      |    5 +-
- drivers/net/wireless/ath/ath10k/core.h      |    3 +
- drivers/net/wireless/ath/ath10k/debug.h     |    2 +
- drivers/net/wireless/ath/ath10k/htc.c       |  241 ++-
- drivers/net/wireless/ath/ath10k/htc.h       |   39 +-
- drivers/net/wireless/ath/ath10k/hw.h        |   53 +
- drivers/net/wireless/ath/ath10k/sdio.c      | 2105 +++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/sdio.h      |  259 ++++
- drivers/net/wireless/ath/ath10k/targaddrs.h |   24 +
- 13 files changed, 2737 insertions(+), 75 deletions(-)
- create mode 100644 drivers/net/wireless/ath/ath10k/sdio.c
- create mode 100644 drivers/net/wireless/ath/ath10k/sdio.h
-
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 9f6a915..35e67c4 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -57,8 +57,8 @@ static inline void ath10k_htc_restore_tx_skb(struct ath10k_htc *htc,
+ 	skb_pull(skb, sizeof(struct ath10k_htc_hdr));
+ }
+ 
+-static void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
+-					    struct sk_buff *skb)
++void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
++				     struct sk_buff *skb)
+ {
+ 	struct ath10k *ar = ep->htc->ar;
+ 
+@@ -75,6 +75,7 @@ static void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
+ 
+ 	ep->ep_ops.ep_tx_complete(ep->htc->ar, skb);
+ }
++EXPORT_SYMBOL(ath10k_htc_notify_tx_completion);
+ 
+ static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
+ 				      struct sk_buff *skb)
+@@ -227,10 +228,10 @@ ath10k_htc_process_credit_report(struct ath10k_htc *htc,
+ 	spin_unlock_bh(&htc->tx_lock);
+ }
+ 
+-static int ath10k_htc_process_trailer(struct ath10k_htc *htc,
+-				      u8 *buffer,
+-				      int length,
+-				      enum ath10k_htc_ep_id src_eid)
++int ath10k_htc_process_trailer(struct ath10k_htc *htc,
++			       u8 *buffer,
++			       int length,
++			       enum ath10k_htc_ep_id src_eid)
+ {
+ 	struct ath10k *ar = htc->ar;
+ 	int status = 0;
+@@ -291,6 +292,7 @@ static int ath10k_htc_process_trailer(struct ath10k_htc *htc,
+ 
+ 	return status;
+ }
++EXPORT_SYMBOL(ath10k_htc_process_trailer);
+ 
+ void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+index 6ababa3..f728ce7 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.h
++++ b/drivers/net/wireless/ath/ath10k/htc.h
+@@ -351,5 +351,11 @@ int ath10k_htc_send(struct ath10k_htc *htc, enum ath10k_htc_ep_id eid,
+ struct sk_buff *ath10k_htc_alloc_skb(struct ath10k *ar, int size);
+ void ath10k_htc_tx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
+ void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
++void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
++				     struct sk_buff *skb);
++int ath10k_htc_process_trailer(struct ath10k_htc *htc,
++			       u8 *buffer,
++			       int length,
++			       enum ath10k_htc_ep_id src_eid);
+ 
+ #endif
 -- 
 2.7.4
 
