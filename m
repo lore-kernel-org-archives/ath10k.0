@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTBJ2-0005dS-Fi
- for ath10k@lists.infradead.org; Mon, 16 Jan 2017 17:42:59 +0000
-Received: by mail-wm0-x229.google.com with SMTP id d140so14559473wmd.0
- for <ath10k@lists.infradead.org>; Mon, 16 Jan 2017 09:42:36 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <002c01d26fe0$2a664ab0$7f32e010$@acksys.fr>
-References: <CAJ-Vmo=_apPFE1LQmXj6pn9g1c0bvzAS-gk86Hi7-CX+KuZtrw@mail.gmail.com>
- <002c01d26fe0$2a664ab0$7f32e010$@acksys.fr>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Mon, 16 Jan 2017 09:42:33 -0800
-Message-ID: <CAJ-VmokegH87gnsJ8Rp57OPnNUo_C=_7V0b9AD4-NcaYtLxJHw@mail.gmail.com>
-Subject: Re: ath9k/ath10k DFS testing / certification
+ id 1cTCtu-00071V-Dn
+ for ath10k@lists.infradead.org; Mon, 16 Jan 2017 19:25:08 +0000
+Received: by mail-wm0-x243.google.com with SMTP id r126so33014022wmr.3
+ for <ath10k@lists.infradead.org>; Mon, 16 Jan 2017 11:24:45 -0800 (PST)
+Received: from naiad (fishface.org.uk. [5.196.65.160])
+ by smtp.gmail.com with ESMTPSA id d64sm30888334wmh.3.2017.01.16.11.24.42
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Mon, 16 Jan 2017 11:24:42 -0800 (PST)
+Message-ID: <1484594680.14978.5.camel@gmail.com>
+Subject: ath10k failing with firmware RM.4.4-00022-QCARMSWPZ-2 on QCA6174
+ (Killer 1535)
+From: Chris Le Sueur <thefishface@gmail.com>
+Date: Mon, 16 Jan 2017 19:24:40 +0000
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,71 +24,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jean-Pierre Tosoni <jp.tosoni@acksys.fr>
-Cc: Cedric VONCKEN <cedric.voncken@acksys.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-aGl5YSwKClllYWggLSBpIHdhcyBhIHBhcnQgb2YgdGhhdCBkaXNjdXNzaW9uLiA6KSBUaGF0J3Mg
-d2h5IEkgd2FzIHBvaW50aW5nCm91dCB0aGF0IGxpa2VseSBJJ20gZ29pbmcgdG8gYnVnIFFDQSB0
-byBnZXQgdGhpcyBmaXhlZCB3aGVuIHRoZSB0aW1lCmlzIHJpZ2h0LgoKU28sIHRpbWUgaXMgcmln
-aHQgOikKCkRpZCB5b3UgZG8gREZTIGNlcnRpZmljYXRpb24gZm9yIEFQL21hc3RlciBkZXZpY2Vz
-LCBvciBqdXN0IGNsaWVudD8KCgoKLWFkcmlhbgoKCk9uIDE2IEphbnVhcnkgMjAxNyBhdCAwMjow
-NiwgSmVhbi1QaWVycmUgVG9zb25pIDxqcC50b3NvbmlAYWNrc3lzLmZyPiB3cm90ZToKPiBIaSBB
-ZHJpYW4sCj4KPj4gLS0tLS1NZXNzYWdlIGQnb3JpZ2luZS0tLS0tCj4+IERlIDogYXRoMTBrIFtt
-YWlsdG86YXRoMTBrLWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZ10gRGUgbGEgcGFydCBkZQo+
-PiBBZHJpYW4gQ2hhZGQKPj4gRW52b3nDqSA6IGRpbWFuY2hlIDE1IGphbnZpZXIgMjAxNyAyMjox
-Nwo+PiDDgCA6IGF0aDlrLWRldmVsOyBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+PiBPYmpl
-dCA6IGF0aDlrL2F0aDEwayBERlMgdGVzdGluZyAvIGNlcnRpZmljYXRpb24KPj4KPj4gaGl5YSwK
-Pj4KPj4gSSdtIHdvcmtpbmcgb24gYSBzZXQgb2YgdGhpbmdzIHRoYXQgd2lsbCBpbnZvbHZlIERG
-UyBjZXJ0aWZpY2F0aW9uIGZvcgo+PiBhdGg5ay9hdGgxMGsuIEluaXRpYWxseSBpdCdsbCBiZSBm
-b3IgRkNDIGJ1dCBJJ2xsIGJyYW5jaCBvdXQgdG8gdGhlIG90aGVyCj4+IHJlZ2lvbnMgc2hvcnRs
-eSBhZnRlcndhcmRzLgo+Pgo+PiBJJ2QgbG92ZSB0byBoZWFyIGZyb20gYW55b25lIGVsc2Ugd2hv
-IGhhcyBkb25lIHRoaXMgYW5kIHdoYXQgdGhlaXIKPj4gY2hhbGxlbmdlcyB3ZXJlLCBpbmNsdWRp
-bmcgd2hldGhlciB0aGV5IGhhdmUgYW55IGxvY2FsIHBhdGNoZXMgLyB0b29scwo+PiB0aGF0IGhh
-dmVuJ3QgeWV0IGJlZW4gdXBzdHJlYW1lZC4KPj4KPj4gVGhhbmtzIQo+Pgo+Pgo+PiAtYWRyaWFu
-Cj4KPiBGb3IgdGhlIHJlY29yZCwgYSBzdW1tYXJ5IG9mIG91ciBkaXNjdXNzaW9uIGxhc3QgbW9u
-dGguCj4KPiBXZSB3ZW50IHRvIGFuIGluZGVwZW5kZW50IGxhYiB3aXRoIHdwYV9zdXBwbGljYW50
-K2F0aDEwaytDb21wZXggV0xFOTAwVlgKPiAoUUNBOTg4eCkgZm9yIEVUU0kgY2VydGlmaWNhdGlv
-bi4KPiBXZSBwYXNzZWQgZm9yIHRoZSBtb3N0IHBhcnQsIGJ1dCB3ZSB3ZXJlIHJlamVjdGVkIGJl
-Y2F1c2UgdGhlIHN1cHBsaWNhbnQKPiBzZW5kcyBwcm9iZXMgb24gREZTIGNoYW5uZWxzLgo+IFdl
-IGFwcGxpZWQgdGhlIGZvbGxvd2luZyBwYXRjaCB0aGF0IGRpZCBzb2x2ZSB0aGUgaXNzdWUgYXQg
-aGFuZCwgYnV0IG1hZGUKPiBhbm90aGVyIGlzc3VlIGFwcGVhcjoKPiA9PiB0aGUgUUNBIGZpcm13
-YXJlIGJlbGlldmVzIGFueSByb2d1ZSBzeXN0ZW0gdGhhdCBzZW5kcyBvdXQgYmVhY29ucyBvbiBh
-Cj4gREZTIGNoYW5uZWwsIHNvIHRoYXQKPiB0aGUgZmlybXdhcmUgYWN0aXZlLXNjYW5zIHRoYXQg
-Y2hhbm5lbCwgd2l0aG91dCBjaGVja2luZyBmb3IgcmFkYXIKPiBzaWduYXR1cmVzIG9uIGl0cyBv
-d24uCj4KPiBTbyB0aGUgcGF0Y2ggc29sdmVzIG9ubHkgcGFydCBvZiB0aGUgaXNzdWUuCj4KPiBQ
-YXRjaDoKPgo+IFByb2Nlc3MgTk9fSVIgYW5kIFJBREFSIGZsYWdzIGluIHRoZSBzYW1lIG1hbm5l
-ci4gRG8gdGhpcyBvbmx5IHdoZW4gY2hhbm5lbHMKPiBhcmUgcHJlcGFyZWQgZm9yIGEgc2Nhbiwg
-aW4gb3JkZXIgdG8gYXZvaWQgc2lkZSBlZmZlY3RzLgo+IC0tLQo+IC0tLSBhL2RyaXZlcnMvbmV0
-L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9h
-dGgvYXRoMTBrL3dtaS5jCj4gQEAgLTU2NzksNiArNTY3OSw5IEBAIGF0aDEwa193bWlfb3BfZ2Vu
-X3NjYW5fY2hhbl9saXN0KHN0cnVjdAo+ICAgICAgICAgICAgICAgICBjaSA9ICZjbWQtPmNoYW5f
-aW5mb1tpXTsKPgo+ICAgICAgICAgICAgICAgICBhdGgxMGtfd21pX3B1dF93bWlfY2hhbm5lbChj
-aSwgY2gpOwo+ICsKPiArICAgICAgICAgICAgICAgaWYgKGNoLT5jaGFuX3JhZGFyKQo+ICsgICAg
-ICAgICAgICAgICAgICAgICAgIGNpLT5mbGFncyB8PSBfX2NwdV90b19sZTMyKFdNSV9DSEFOX0ZM
-QUdfUEFTU0lWRSk7Cj4gICAgICAgICB9Cj4KPiAgICAgICAgIHJldHVybiBza2I7Cj4gLS0KPiAx
-LjcuMi41Cj4KPiBKb3VuaSBNYWxpbmVuIHN1Z2dlc3RlZCBhbiBlcXVpdmFsZW50LCBtb3JlIGdl
-bmVyYWwsIGZvcm0gb2YgdGhlIGFib3ZlLAo+IHdoaWNoIHNlZW1zIHRvIHdvcmsgYXMgd2VsbDoK
-Pgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4g
-Yi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4gaW5kZXggYWE1NDVhMS4u
-NzU4ZGJiZCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21h
-Yy5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYwo+IEBAIC0y
-OTczLDcgKzI5NzMsOCBAQCBzdGF0aWMgaW50IGF0aDEwa191cGRhdGVfY2hhbm5lbF9saXN0KHN0
-cnVjdCBhdGgxMGsKPiAqYXIpCj4gICAgICAgICAgICAgICAgICAgICAgICAgY2gtPmNoYW5fcmFk
-YXIgPQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgISEoY2hhbm5lbC0+ZmxhZ3Mg
-JiBJRUVFODAyMTFfQ0hBTl9SQURBUik7Cj4KPiAtICAgICAgICAgICAgICAgICAgICAgICBwYXNz
-aXZlID0gY2hhbm5lbC0+ZmxhZ3MgJiBJRUVFODAyMTFfQ0hBTl9OT19JUjsKPiArICAgICAgICAg
-ICAgICAgICAgICAgICBwYXNzaXZlID0gY2hhbm5lbC0+ZmxhZ3MgJiAoSUVFRTgwMjExX0NIQU5f
-Tk9fSVIgfAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBJRUVFODAyMTFfQ0hBTl9SQURBUik7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgY2gt
-PnBhc3NpdmUgPSBwYXNzaXZlOwo+Cj4gICAgICAgICAgICAgICAgICAgICAgICAgY2gtPmZyZXEg
-PSBjaGFubmVsLT5jZW50ZXJfZnJlcTsKPgo+IC0tCj4gKGJ5IEpvdW5pIE1hbGluZW4pCj4KPj4K
-Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4gYXRo
-MTBrIG1haWxpbmcgbGlzdAo+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+PiBodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+CgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
-CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Dear all,
+
+(per request by kvalo on #ath10k)
+
+I was trying out the firmware-5 from git to see if it would fix
+throughput issues, but instead the driver just failed to work. I am
+using kernel 4.8.15 on Fedora 25, and the following was printed to the
+kernel log:
+
+ath10k_pci 0000:3a:00.0: pci irq msi oper_irq_mode 2 irq_mode 0
+reset_mode 0
+ath10k_pci 0000:3a:00.0: Direct firmware load for ath10k/pre-cal-pci-
+0000:3a:00.0 .bin failed with error -2
+ath10k_pci 0000:3a:00.0: Direct firmware load for ath10k/cal-pci-
+0000:3a:00.0.bin failed with error -2
+ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id
+0x00340aff sub 1a56:1535
+ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0
+testmode 0
+ath10k_pci 0000:3a:00.0: firmware ver WLAN.RM.4.4-00022-QCARMSWPZ-2 api
+5 features wowlan,ignore-otp crc32 4d458559
+ath10k_pci 0000:3a:00.0: failed to fetch board data for bus=pci,bmi-
+chip-id=0,bmi-board-id=0 from ath10k/QCA6174/hw3.0/board-2.bin
+ath10k_pci 0000:3a:00.0: board_file api 1 bmi_id 0:0 crc32 ed5f849a
+ath10k_pci 0000:3a:00.0: Unknown eventid: 90118
+ath10k_pci 0000:3a:00.0: htt-ver 3.32 wmi-op 4 htt-op 3 cal otp max-sta 
+32 raw 0 hwcrypto 1
+ath10k_pci 0000:3a:00.0: could not suspend target (-11)
+ath10k_pci 0000:3a:00.0 wlp58s0: renamed from wlan0
+ath10k_pci 0000:3a:00.0: Unknown eventid: 90118
+ath10k_pci 0000:3a:00.0: failed to enable dynamic BW: -11
+ath10k_pci 0000:3a:00.0: could not suspend target (-11)
+ath10k_pci 0000:3a:00.0: Unknown eventid: 90118
+ath10k_pci 0000:3a:00.0: failed to enable dynamic BW: -11
+ath10k_pci 0000:3a:00.0: could not suspend target (-11)
+ath10k_pci 0000:3a:00.0: Unknown eventid: 90118
+ath10k_pci 0000:3a:00.0: failed to enable dynamic BW: -11
+ath10k_pci 0000:3a:00.0: could not suspend target (-11)
+ath10k_pci 0000:3a:00.0: Unknown eventid: 90118
+ath10k_pci 0000:3a:00.0: failed to enable dynamic BW: -11
+ath10k_pci 0000:3a:00.0: could not suspend target (-11)
+ath10k_pci 0000:3a:00.0: Unknown eventid: 90118
+ath10k_pci 0000:3a:00.0: failed to enable dynamic BW: -11
+ath10k_pci 0000:3a:00.0: could not suspend target (-11)
+ath10k_pci 0000:3a:00.0: Unknown eventid: 90118
+ath10k_pci 0000:3a:00.0: failed to enable dynamic BW: -11
+ath10k_pci 0000:3a:00.0: could not suspend target (-11)
+ath10k_pci 0000:3a:00.0: Unknown eventid: 90118
+ath10k_pci 0000:3a:00.0: failed to enable dynamic BW: -11
+ath10k_pci 0000:3a:00.0: could not suspend target (-11)
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
