@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from cmailsend001.wmail.naver.com ([125.209.215.140])
+Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cTRyT-0005h8-8m
- for ath10k@lists.infradead.org; Tue, 17 Jan 2017 11:30:51 +0000
-Date: Tue, 17 Jan 2017 20:30:22 +0900 (KST)
-From: =?UTF-8?B?6rmA6rSR66+8?= <gwondori@nimbus.kr>
-Message-ID: <388374faef47fee11e7866ad71211bc@cvweb09.wmail.nhnsystem.com>
-In-Reply-To: <65667ea2aa7e867acb684cb64c1d07@cvweb11.wmail.nhnsystem.com>
-References: <65667ea2aa7e867acb684cb64c1d07@cvweb11.wmail.nhnsystem.com>
-Subject: =?UTF-8?B?QWxsICcwJyBpbiBhZ2dfc3RhdHVz?=
+ id 1cTkrS-0003Vk-Dc
+ for ath10k@lists.infradead.org; Wed, 18 Jan 2017 07:40:51 +0000
+Received: by mail-wm0-x234.google.com with SMTP id c85so232965255wmi.1
+ for <ath10k@lists.infradead.org>; Tue, 17 Jan 2017 23:40:28 -0800 (PST)
 MIME-Version: 1.0
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Tue, 17 Jan 2017 23:40:26 -0800
+Message-ID: <CAJ-VmomSTUAONqeOTZEqm_ApU64r1=RSqm8=Y6u+Km+OkL_JQA@mail.gmail.com>
+Subject: Re: All '0' in agg_status
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,99 +18,21 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: =?UTF-8?B?6rmA6rSR66+8?= <gwondori@nimbus.kr>
-Content-Type: multipart/mixed; boundary="===============8873198349858529072=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: =?UTF-8?B?6rCV6rK97JmE?= <bigskang@nimbus.kr>
+To: =?UTF-8?B?6rmA6rSR66+8?= <gwondori@nimbus.kr>
+Cc: =?UTF-8?B?6rCV6rK97JmE?= <bigskang@nimbus.kr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+
+hiya
+
+which firmware, chipset, driver version is this with?
 
 
---===============8873198349858529072==
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_1236683_41697302.1484652622786"
-
-
-------=_Part_1236683_41697302.1484652622786
-Content-Type: text/plain;
-	charset=UTF-8
-Content-Transfer-Encoding: base64
-
-VmVyeSByYXJlbHksIEkgZXhwZXJpZW5jZSB0aGUgcHJvYmxlbSB0aGF0IHBhY2tldHMgYXJlIHNl
-cmlvdXMgZHJvcHBlZCBldmVuIHRob3VnaCBhbGwgd2lyZWxlc3Mgc3RhdGVzKGl3Y29uZmlnLCBp
-dyB3bGFuMCBpbmZvLCBmd19zdGF0cywgZXRjLikgYXJlIE9LLgoKVGhpcyBwcm9ibGVtIG9jY3Vy
-cyBvbmx5IGFmdGVyIHRoZSBBUCBhbmQgc3RhdGlvbiBhcmUgYmFkbHkoPykgY29ubmVjdGVkLCBh
-bmQgb25jZSB0aGUgY29ubmVjdGlvbiBpcyBlc3RhYmxpc2hlZCBub3JtYWxseSwgdGhpcyBwcm9i
-bGVtIGRvZXMgbm90IG9jY3VyIG9uIHRoZSBnb29kIGNvbm5lY3Rpb24uIEFuZCBvbmNlIHRoaXMg
-cHJvYmxlbSBvY2N1cnJlZCwgaXQgd29uJ3QgYmUgZml4ZWQgYnkgaXRzZWxmIHVudGlsIHRoZSBB
-UCBhbmQgdGhlIHN0YXRpb24gYXJlIHJlY29ubmVjdGVkLgoKSSBoYXZlIGludmVzdGlnYXRlZCBh
-bmQgSSBoYXZlIGZvdW5kIHR3byBkaWZmZXJlbmNlcyBiZXR3ZWVuIHRoZSBnb29kIGNvbm5lY3Rp
-b24gYW5kIHRoZSBiYWQgY29ubmVjdGlvbi4KClRoZSBvbmUgaXMgdGhlIGVycm9yIG1lc3NhZ2Vz
-IG9uIGRtZXNnLAogICAgPC4uLj4KICAgIFsgMjgyNi40MzI3ODRdIHdsYW4wOiBMaW1pdGluZyBU
-WCBwb3dlciB0byAyMSAoMjQgLSAzKSBkQm0gYXMgYWR2ZXJ0aXNlZCBieSAwNDpmMDoyMToyMDoz
-ODowOQogICAgWyAyODI3LjI5NjkyNV0gd2xhbjA6IFJ4IEEtTVBEVSByZXF1ZXN0IG9uIDA0OmYw
-OjIxOjIwOjM4OjA5IHRpZCAwIHJlc3VsdCAwIAogICAgWyAyODI3LjI5NzQ4M10gd2xhbjA6IFJ4
-IEJBIHNlc3Npb24gc3RvcCByZXF1ZXN0ZWQgZm9yIDA0OmYwOjIxOjIwOjM4OjA5IHRpZCAwIHJl
-Y2lwaWVudCByZWFzb246IDAgPC0tLSBmcm9tIHRoaXMgbGluZQogICAgWyAyODI3LjI5NzU3OF0g
-d2xhbjA6IFJ4IEEtTVBEVSByZXF1ZXN0IG9uIDA0OmYwOjIxOjIwOjM4OjA5IHRpZCAwIHJlc3Vs
-dCAwIAogICAgWyAyODI3LjI5ODY5NF0gd2xhbjA6IFJ4IEJBIHNlc3Npb24gc3RvcCByZXF1ZXN0
-ZWQgZm9yIDA0OmYwOjIxOjIwOjM4OjA5IHRpZCAwIHJlY2lwaWVudCByZWFzb246IDAgCiAgICBb
-IDI4MjkuMDc0NDM5XSB3bGFuMDogUnggQS1NUERVIHJlcXVlc3Qgb24gMDQ6ZjA6MjE6MjA6Mzg6
-MDkgdGlkIDYgcmVzdWx0IDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8LS0gdG8gdGhp
-cyBsaW5lCiAgICA8Li4uPgpUaGUgYW5vdGhlciBkaWZmZXJlbmNlIGlzIGluICJhZ2dfc3RhdHVz
-IiBmaWxlIG9uIFN0YXRpb24gc2lkZSAoL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeTAv
-bmV0ZGV2OndsYW4wL3N0YXRpb25zL1hYOlhYOlhYOlhYOlhYOlhYL2FnZ19zdGF0dXMpLgpBcyBt
-eSBpbnZlc3RpZ2F0aW9uLCB0aGUgZmlsZSBvZiB0aGUgQVAgc2lkZSBhbHdheXMgaGF2ZSBvbmUg
-b3IgdHdvICcxJyBhdCB0aGUgc2Vjb25kIGNvbHVtbi4gQW5kIHRoZSBmaWxlIG9mIHRoZSBzdGF0
-aW9uIHNpZGUgd2l0aG91dCBwcm9ibGVtIGFsc28gaGF2ZSBvbmUgb3IgdHdvICcxJy4gQnV0LCB0
-aGVyZSBpcyBubyAnMScgaW4gdGhlIGZpbGUgb24gdGhlIHN0YXRpb24gd2hlcmUgdGhlIHByb2Js
-ZW0gb2NjdXJyZWQuCiAgICAjbW9yZSAvc3lzL2tlcm5lbC9kZWJ1Zy9pZWVlODAyMTEvcGh5MC9u
-ZXRkZXZcOndsYW4wL3N0YXRpb25zLyovYWdnX3N0YXR1cwogICAgbmV4dCBkaWFsb2dfdG9rZW46
-IDB4MQogICAgVElEICAgICAgICAgICAgICAgIFJYICAgICAgICBEVEtOICAgICAgICBTU04gICAg
-ICAgICAgICAgICAgVFggICAgICAgIERUS04gICAgICAgIHBlbmRpbmcKICAgIDAwICAgICAgICAg
-ICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDB4MDAwICAgICAgICAgICAgICAgIDAgICAgICAg
-IDB4MDAgICAgICAgIDAwMAogICAgMDEgICAgICAgICAgICAgICAgMCAgICAgICAgMHgwMCAgICAg
-ICAgMHgwMDAgICAgICAgICAgICAgICAgMCAgICAgICAgMHgwMCAgICAgICAgMDAwCiAgICAwMiAg
-ICAgICAgICAgICAgICAwICAgICAgICAweDAwICAgICAgICAweDAwMCAgICAgICAgICAgICAgICAw
-ICAgICAgICAweDAwICAgICAgICAwMDAKICAgIDAzICAgICAgICAgICAgICAgIDAgICAgICAgIDB4
-MDAgICAgICAgIDB4MDAwICAgICAgICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDAwMAog
-ICAgMDQgICAgICAgICAgICAgICAgMCAgICAgICAgMHgwMCAgICAgICAgMHgwMDAgICAgICAgICAg
-ICAgICAgMCAgICAgICAgMHgwMCAgICAgICAgMDAwCiAgICAwNSAgICAgICAgICAgICAgICAwICAg
-ICAgICAweDAwICAgICAgICAweDAwMCAgICAgICAgICAgICAgICAwICAgICAgICAweDAwICAgICAg
-ICAwMDAKICAgIDA2ICAgICAgICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDB4MDAwICAg
-ICAgICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDAwMAogICAgMDcgICAgICAgICAgICAg
-ICAgMCAgICAgICAgMHgwMCAgICAgICAgMHgwMDAgICAgICAgICAgICAgICAgMCAgICAgICAgMHgw
-MCAgICAgICAgMDAwCiAgICAwOCAgICAgICAgICAgICAgICAwICAgICAgICAweDAwICAgICAgICAw
-eDAwMCAgICAgICAgICAgICAgICAwICAgICAgICAweDAwICAgICAgICAwMDAKICAgIDA5ICAgICAg
-ICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDB4MDAwICAgICAgICAgICAgICAgIDAgICAg
-ICAgIDB4MDAgICAgICAgIDAwMAogICAgMTAgICAgICAgICAgICAgICAgMCAgICAgICAgMHgwMCAg
-ICAgICAgMHgwMDAgICAgICAgICAgICAgICAgMCAgICAgICAgMHgwMCAgICAgICAgMDAwCiAgICAx
-MSAgICAgICAgICAgICAgICAwICAgICAgICAweDAwICAgICAgICAweDAwMCAgICAgICAgICAgICAg
-ICAwICAgICAgICAweDAwICAgICAgICAwMDAKICAgIDEyICAgICAgICAgICAgICAgIDAgICAgICAg
-IDB4MDAgICAgICAgIDB4MDAwICAgICAgICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDAw
-MAogICAgMTMgICAgICAgICAgICAgICAgMCAgICAgICAgMHgwMCAgICAgICAgMHgwMDAgICAgICAg
-ICAgICAgICAgMCAgICAgICAgMHgwMCAgICAgICAgMDAwCiAgICAxNCAgICAgICAgICAgICAgICAw
-ICAgICAgICAweDAwICAgICAgICAweDAwMCAgICAgICAgICAgICAgICAwICAgICAgICAweDAwICAg
-ICAgICAwMDAKICAgIDE1ICAgICAgICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDB4MDAw
-ICAgICAgICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDAwMAoKQ291bGQgeW91IHRlbGwg
-bWUgd2hhdCBJIGhhdmUgdG8gZG8/ClNob3VsZCBvbmUgbW9yZSAnMScgZXhpc3QgYXQgdGhlIHNl
-Y29uZCBjb2x1bW5zIG9mICJhZ2dfc3RhdHVzIj8gSW4gb3RoZXIgd29yZHMsIGlzIGl0IHByb2Js
-ZW0gaWYgdGhlcmUgaXMgbm8gJzEnIGluIHRoZSBzZWNvbmQgY29sdW1uIG9mIGFnZ19zdGF0dXM/
-CgpJZiB5b3Uga25vdyBob3cgdG8gZml4IHRoaXMsIHBsZWFzZSBsZXQgbWUga25vdyB0aGF0LiAK
-Ci0tLS0tLS0tLS0tLS0tLQoKS2ltIEt3YW5nIE1pbgoKTW9iaWxlICs4MiAwMTAtNTUyMS02Mzkz
-IApNYWlsIGd3b25kb3JpQG5pbWJ1cy5rciAgCgoKCgo=
-------=_Part_1236683_41697302.1484652622786--
-
-
---===============8873198349858529072==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-adrian
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============8873198349858529072==--
