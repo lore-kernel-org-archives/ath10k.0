@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUCc6-0008I2-Bs
- for ath10k@lists.infradead.org; Thu, 19 Jan 2017 13:18:52 +0000
+ id 1cUCcj-00006z-Ru
+ for ath10k@lists.infradead.org; Thu, 19 Jan 2017 13:19:31 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: prevent sta pointer rcu violation
+Subject: Re: ath10k: Fix per station tx bit rate reporting
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1484234070-7431-1-git-send-email-michal.kazior@tieto.com>
-References: <1484234070-7431-1-git-send-email-michal.kazior@tieto.com>
-Message-ID: <09e8655e878946659bc62c52e59abd76@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 19 Jan 2017 14:18:20 +0100
+In-Reply-To: <1484303403-8908-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1484303403-8908-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <4ded1e01b9ae4c168a0d2ca73b7b72c2@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 19 Jan 2017 14:19:02 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +22,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, mohammed@qti.qualcomm.com
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> wrote:
-> Station pointers are RCU protected so driver must
-> be extra careful if it tries to store them
-> internally for later use outside of the RCU
-> section it obtained it in.
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > 
-> It was possible for station teardown to race with
-> some htt events. The possible outcome could be a
-> use-after-free and a crash.
+> Not clearing the previous tx bit rate status
+> results in a ambigous tx bit rate reporting to
+> mac80211/cfg80211, for example the previous bit
+> rate status would have been marked as legacy rate
+> , while the current rate would have been an HT/VHT
+> rate with the tx bit rate flags set and this results
+> in exporting tx bitrate as legacy rate but with HT/VHT
+> rate flags set, fix this by clearing the tx bitrate
+> status for each event. This also fixes the below
+> warning when we do:
 > 
-> Only peer-flow-control capable firmware was
-> affected (so hardware-wise qca99x0 and qca4019).
+> iw dev wlan#N station dump
 > 
-> This could be done in sta_state() itself via
-> explicit synchronize_net() call but there's
-> already a convenient sta_pre_rcu_remove() op that
-> can be hooked up to avoid extra rcu stall.
+> WARNING: net/wireless/util.c:1222 cfg80211
 > 
-> The peer->sta pointer itself can't be set to
-> NULL/ERR_PTR because it is later used in
-> sta_state() for extra sanity checks.
+> [<c022f104>] (warn_slowpath_null) from [<bf3b9adc>]
+> (cfg80211_calculate_bitrate+0x110/0x1f4 [cfg80211])
+> [<bf3b9adc>] (cfg80211_calculate_bitrate [cfg80211]) from
+> [<bf3dcd54>] (nl80211_put_sta_rate+0x44/0x1dc [cfg80211])
+> [<bf3dcd54>] (nl80211_put_sta_rate [cfg80211]) from
+> [<bf3cbc34>] (nl80211_set_interface+0x724/0xd70 [cfg80211])
+> [<bf3cbc34>] (nl80211_set_interface [cfg80211]) from
+> [<bf3d0a18>] (nl80211_dump_station+0xdc/0x100 [cfg80211])
+> [<bf3d0a18>] (nl80211_dump_station [cfg80211])
 > 
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Fixes: cec17c382140 ("ath10k: add per peer htt tx stats support for 10.4")
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-0a744d927406 ath10k: prevent sta pointer rcu violation
+0f8a2b7772f7 ath10k: fix per station tx bit rate reporting
 
 -- 
-https://patchwork.kernel.org/patch/9513391/
+https://patchwork.kernel.org/patch/9514989/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
