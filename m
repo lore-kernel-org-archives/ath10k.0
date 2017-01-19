@@ -1,15 +1,28 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUCdR-0000Xk-Cy
- for ath10k@lists.infradead.org; Thu, 19 Jan 2017 13:20:16 +0000
+ id 1cUD8x-0001XS-8o
+ for ath10k@lists.infradead.org; Thu, 19 Jan 2017 13:52:50 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: dump Copy Engine registers during firmware crash
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <148458066842.22029.11182008791835649945.stgit@potku.adurom.net>
-References: <148458066842.22029.11182008791835649945.stgit@potku.adurom.net>
-Message-ID: <942368b5799b490bbdff933a379ea80a@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 19 Jan 2017 14:19:45 +0100
+Date: Thu, 19 Jan 2017 19:22:25 +0530
+From: Tamizh chelvam <tamizhchelvam@codeaurora.org>
+Subject: Re: [PATCH 2/4] cfg80211: Add new NL80211_CMD_SET_BTCOEX_PRIORITY to
+ support BTCOEX
+In-Reply-To: <1483958190.17582.15.camel@sipsolutions.net>
+References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
+ <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
+ <1480949353.31788.27.camel@sipsolutions.net>
+ <5e5e8971c96293a81e7cb37bcdfbd593@codeaurora.org>
+ <1481645351.20412.34.camel@sipsolutions.net>
+ <134cc8e58ecb804b6dda0137c4c37be8@codeaurora.org>
+ <1481881024.27953.14.camel@sipsolutions.net>
+ <ae82112880d55451342e7a6e5a47c33f@codeaurora.org>
+ <1483354130.4596.5.camel@sipsolutions.net>
+ <a5521b4e246de90ed8526891c84a97e5@codeaurora.org>
+ <1483623500.4394.18.camel@sipsolutions.net>
+ <6f9711ed6f6fe170b915b67a054b985b@codeaurora.org>
+ <1483958190.17582.15.camel@sipsolutions.net>
+Message-ID: <53738f0ff79f0cf32026b9c700059fb1@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,76 +31,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> 
-> Dump Copy Engine source and destination ring addresses.
-> This is useful information to debug firmware crashes, assertes or hangs over long run
-> assessing the Copy Engine Register status. This also enables dumping CE
-> register status in debugfs Crash Dump file.
-> 
-> Screenshot:
-> 
-> ath10k_pci 0000:02:00.0: simulating hard firmware crash
-> ath10k_pci 0000:02:00.0: firmware crashed! (uuid 84901ff5-d33c-456e-93ee-0165dea643cf)
-> ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000
-> ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
-> ath10k_pci 0000:02:00.0: firmware ver 10.2.4.70.59-2 api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 4159f498
-> ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
-> ath10k_pci 0000:02:00.0: htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-sta 128 raw 0 hwcrypto 1
-> ath10k_pci 0000:02:00.0: firmware register dump:
-> ath10k_pci 0000:02:00.0: [00]: 0x4100016C 0x00000000 0x009A0F2A 0x00000000
-> ath10k_pci 0000:02:00.0: [04]: 0x00000000 0x00000000 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: [08]: 0x00000000 0x00000000 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: [12]: 0x00000000 0x00000000 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: [16]: 0x00000000 0x00000000 0x00000000 0x009A0F2A
-> ath10k_pci 0000:02:00.0: [20]: 0x00000000 0x00401930 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: [24]: 0x00000000 0x00000000 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: [28]: 0x00000000 0x00000000 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: [32]: 0x00000000 0x00000000 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: [36]: 0x00000000 0x00000000 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: [40]: 0x00000000 0x00000000 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: [44]: 0x00000000 0x00000000 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: [48]: 0x00000000 0x00000000 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: [52]: 0x00000000 0x00000000 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: [56]: 0x00000000 0x00000000 0x00000000 0x00000000
-> ath10k_pci 0000:02:00.0: Copy Engine register dump:
-> ath10k_pci 0000:02:00.0: [00]: 0x00057400   7   7   3   3
-> ath10k_pci 0000:02:00.0: [01]: 0x00057800  18  18  85  86
-> ath10k_pci 0000:02:00.0: [02]: 0x00057c00  49  49  48  49
-> ath10k_pci 0000:02:00.0: [03]: 0x00058000  16  16  17  16
-> ath10k_pci 0000:02:00.0: [04]: 0x00058400   4   4  44   4
-> ath10k_pci 0000:02:00.0: [05]: 0x00058800  12  12  11  12
-> ath10k_pci 0000:02:00.0: [06]: 0x00058c00   3   3   3   3
-> ath10k_pci 0000:02:00.0: [07]: 0x00059000   0   0   0   0
-> ieee80211 phy0: Hardware restart was requested
-> ath10k_pci 0000:02:00.0: device successfully recovered
-> 
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> [kvalo@qca.qualcomm.com: simplify the implementation]
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-c75c398be6ed ath10k: dump Copy Engine registers during firmware crash
-
--- 
-https://patchwork.kernel.org/patch/9518985/
-
-Documentation about submitting wireless patches and checking status
-from patchwork:
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgSm9oYW5uZXMsCgpTb3JyeSBmb3IgdGhlIGxhdGUgcmVzcG9uc2U6KAoKT24gMjAxNy0wMS0w
+OSAxNjowNiwgSm9oYW5uZXMgQmVyZyB3cm90ZToKPj4gSXMgaXQgZmluZSB0byBoYXZlIHNvbWV0
+aGluZyBsaWtlIHRoaXMKPj4gCj4+IDEpIFdlIGNhbiBoYXZlIHRoaXMgYnRjb2V4X3ByaW9yaXR5
+IHZhbHVlIGFzIGEgb3B0aW9uYWwgdmFsdWUgaW4KPj4gYnRjb2V4wqBlbmFibGUgY29tbWFuZCBs
+aWtlIGJlbG93Cj4+IAo+PiBpdyBwaHlYIGJ0Y29leF9zdGF0ZSA8ZW5hYmxlfCBkaXNhYmxlPiBb
+cHJpcm9yaXR5KHZlbmRvciBzcGNpZmljCj4+IHZhbHVlKV0KPj4gCj4+IDIpIE9yIHdlIGNhbiBo
+YXZlIHNlcGVyYXRlIGNvbW1hbmQgZm9yIGJ0Y29leF9wcmlvcml0eSBhcyBiZWxvdwo+PiAKPj4g
+aXcgcGh5WCBzZXQgYnRjb2V4X3ByaW9yaXR5IDxwcmlvcml0eSAodmVuZG9yIHNwY2lmaWMgdmFs
+dWUpPgo+PiAKPj4gSG9wZWZ1bGx5IHRoaXMgd2lsbCBnZXQgcmlkIG9mZiBhbGwgdGhlIG5sODAy
+MTEgYml0cy4KPiAKPiBUaGF0IG1ha2VzIG5vIHNlbnNlLgo+IAo+IElmIHRoZSBiaXRzIGFyZSB2
+ZW5kb3Igc3BlY2lmaWMsIHRoZW4gdGhlcmUncyBubyB2YWx1ZSBpbiBoYXZpbmcgdGhpcwo+IGFz
+IGFuIG5sODAyMTEgY29tbWFuZCAocmF0aGVyIHRoYW4gYSB2ZW5kb3IgY29tbWFuZCkgdG8gc3Rh
+cnQgd2l0aC4KPiAKPiBZb3UgbmVlZCB0byB1bmRlcnN0YW5kIHRoYXQgSSdtIGRpZmZlcmVudGlh
+dGluZyBiZXR3ZWVuICpjYXBhYmlsaXR5Kgo+IGJpdHMgYW5kIGFjdHVhbCAqcHJpb3JpdHkgc2V0
+dGluZyogYml0cyAtIHBsZWFzZSByZS1yZWFkIHRoZSB0aHJlYWQKPiB3aXRoIHRoYXQgaW4gbWlu
+ZC4KPiAKVGhvc2UgYXJlIGZvciBwcmlvcml0eSBhbmQgbm90IGZvciBjYXBhYmlsaXR5IHB1cnBv
+c2UuIEhhcmR3YXJlIGlzIApjYXBhYmxlIG9mCnRyYW5zbWl0dGluZyBhbGwgdGhlIGZyYW1lcyB3
+aGVuIHRoZXJlIGlzIGEgYnQgdHJhZmZpYy4gVGhpcyBpcyBqdXN0IApzZXR0aW5nIHByaW9yaXR5
+IGZvciB0aGUgd2xhbgpmcmFtZSwgd2hlbiB0aGVyZSBpcyBhIGNvbnRlbnRpb24gd2l0aCBCVCB0
+cmFmZmljIHdoaWNoIG9uZSBoYXMgdG8gZ28gCm91dCBmaXJzdC4KT3RoZXIgdGhhbiB0aGF0IGhh
+cmR3YXJlIGhhcyB0aGUgY2FwYWJpbGl0eSBvZiBzZW5kaW5nIGFsbCB0aGUgZnJhbWVzLgoKVGhp
+cyBwcmlvcml0eSBmaWVsZCBpcyBvcHRpb25hbCwgaWYgdXNlcnMgZG9lcyBub3Qgd2FudCB0byBz
+ZXQgYW55IApwcmlvcml0eSB0aGVuIGRyaXZlciB3aWxsIGZvcmNlIHRoZQpkZWZhdWx0IHByaW9y
+aXRpZXMgd2hlbiBidF9jb2V4IGlzIGVuYWJsZWQKCml3IHBoeVggYnRjb2V4X3N0YXRlIDxlbmFi
+bGV8IGRpc2FibGU+IFtwcmlyb3JpdHldCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
+Cg==
