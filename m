@@ -1,28 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from cmailsend03.wmail.naver.com ([125.209.236.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUD8x-0001XS-8o
- for ath10k@lists.infradead.org; Thu, 19 Jan 2017 13:52:50 +0000
+ id 1cU9w0-0003yb-EN
+ for ath10k@lists.infradead.org; Thu, 19 Jan 2017 10:27:14 +0000
+Date: Thu, 19 Jan 2017 19:26:44 +0900 (KST)
+From: Kwang Min Kim <gwondori@nimbus.kr>
+Message-ID: <44c5a11bf373394ee73ca1dfa9f6d37a@cvweb08.wmail.nhnsystem.com>
+In-Reply-To: <328523ea1b53d27f8a72b776481c15dc@cvweb05.wmail.nhnsystem.com>
+References: <CAJ-VmomSTUAONqeOTZEqm_ApU64r1=RSqm8=Y6u+Km+OkL_JQA@mail.gmail.com>
+ <328523ea1b53d27f8a72b776481c15dc@cvweb05.wmail.nhnsystem.com>
+Subject: =?UTF-8?B?UmU6IEFsbCAnMCcgaW4gYWdnX3N0YXR1cw==?=
 MIME-Version: 1.0
-Date: Thu, 19 Jan 2017 19:22:25 +0530
-From: Tamizh chelvam <tamizhchelvam@codeaurora.org>
-Subject: Re: [PATCH 2/4] cfg80211: Add new NL80211_CMD_SET_BTCOEX_PRIORITY to
- support BTCOEX
-In-Reply-To: <1483958190.17582.15.camel@sipsolutions.net>
-References: <1478610932-21954-1-git-send-email-c_traja@qti.qualcomm.com>
- <1478610932-21954-3-git-send-email-c_traja@qti.qualcomm.com>
- <1480949353.31788.27.camel@sipsolutions.net>
- <5e5e8971c96293a81e7cb37bcdfbd593@codeaurora.org>
- <1481645351.20412.34.camel@sipsolutions.net>
- <134cc8e58ecb804b6dda0137c4c37be8@codeaurora.org>
- <1481881024.27953.14.camel@sipsolutions.net>
- <ae82112880d55451342e7a6e5a47c33f@codeaurora.org>
- <1483354130.4596.5.camel@sipsolutions.net>
- <a5521b4e246de90ed8526891c84a97e5@codeaurora.org>
- <1483623500.4394.18.camel@sipsolutions.net>
- <6f9711ed6f6fe170b915b67a054b985b@codeaurora.org>
- <1483958190.17582.15.camel@sipsolutions.net>
-Message-ID: <53738f0ff79f0cf32026b9c700059fb1@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,38 +19,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Reply-To: Kwang Min Kim <gwondori@nimbus.kr>
+Content-Type: multipart/mixed; boundary="===============4908878718701404931=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: c_traja@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Adrian Chadd <adrian@freebsd.org>, ath10k@lists.infradead.org
 
-SGkgSm9oYW5uZXMsCgpTb3JyeSBmb3IgdGhlIGxhdGUgcmVzcG9uc2U6KAoKT24gMjAxNy0wMS0w
-OSAxNjowNiwgSm9oYW5uZXMgQmVyZyB3cm90ZToKPj4gSXMgaXQgZmluZSB0byBoYXZlIHNvbWV0
-aGluZyBsaWtlIHRoaXMKPj4gCj4+IDEpIFdlIGNhbiBoYXZlIHRoaXMgYnRjb2V4X3ByaW9yaXR5
-IHZhbHVlIGFzIGEgb3B0aW9uYWwgdmFsdWUgaW4KPj4gYnRjb2V4wqBlbmFibGUgY29tbWFuZCBs
-aWtlIGJlbG93Cj4+IAo+PiBpdyBwaHlYIGJ0Y29leF9zdGF0ZSA8ZW5hYmxlfCBkaXNhYmxlPiBb
-cHJpcm9yaXR5KHZlbmRvciBzcGNpZmljCj4+IHZhbHVlKV0KPj4gCj4+IDIpIE9yIHdlIGNhbiBo
-YXZlIHNlcGVyYXRlIGNvbW1hbmQgZm9yIGJ0Y29leF9wcmlvcml0eSBhcyBiZWxvdwo+PiAKPj4g
-aXcgcGh5WCBzZXQgYnRjb2V4X3ByaW9yaXR5IDxwcmlvcml0eSAodmVuZG9yIHNwY2lmaWMgdmFs
-dWUpPgo+PiAKPj4gSG9wZWZ1bGx5IHRoaXMgd2lsbCBnZXQgcmlkIG9mZiBhbGwgdGhlIG5sODAy
-MTEgYml0cy4KPiAKPiBUaGF0IG1ha2VzIG5vIHNlbnNlLgo+IAo+IElmIHRoZSBiaXRzIGFyZSB2
-ZW5kb3Igc3BlY2lmaWMsIHRoZW4gdGhlcmUncyBubyB2YWx1ZSBpbiBoYXZpbmcgdGhpcwo+IGFz
-IGFuIG5sODAyMTEgY29tbWFuZCAocmF0aGVyIHRoYW4gYSB2ZW5kb3IgY29tbWFuZCkgdG8gc3Rh
-cnQgd2l0aC4KPiAKPiBZb3UgbmVlZCB0byB1bmRlcnN0YW5kIHRoYXQgSSdtIGRpZmZlcmVudGlh
-dGluZyBiZXR3ZWVuICpjYXBhYmlsaXR5Kgo+IGJpdHMgYW5kIGFjdHVhbCAqcHJpb3JpdHkgc2V0
-dGluZyogYml0cyAtIHBsZWFzZSByZS1yZWFkIHRoZSB0aHJlYWQKPiB3aXRoIHRoYXQgaW4gbWlu
-ZC4KPiAKVGhvc2UgYXJlIGZvciBwcmlvcml0eSBhbmQgbm90IGZvciBjYXBhYmlsaXR5IHB1cnBv
-c2UuIEhhcmR3YXJlIGlzIApjYXBhYmxlIG9mCnRyYW5zbWl0dGluZyBhbGwgdGhlIGZyYW1lcyB3
-aGVuIHRoZXJlIGlzIGEgYnQgdHJhZmZpYy4gVGhpcyBpcyBqdXN0IApzZXR0aW5nIHByaW9yaXR5
-IGZvciB0aGUgd2xhbgpmcmFtZSwgd2hlbiB0aGVyZSBpcyBhIGNvbnRlbnRpb24gd2l0aCBCVCB0
-cmFmZmljIHdoaWNoIG9uZSBoYXMgdG8gZ28gCm91dCBmaXJzdC4KT3RoZXIgdGhhbiB0aGF0IGhh
-cmR3YXJlIGhhcyB0aGUgY2FwYWJpbGl0eSBvZiBzZW5kaW5nIGFsbCB0aGUgZnJhbWVzLgoKVGhp
-cyBwcmlvcml0eSBmaWVsZCBpcyBvcHRpb25hbCwgaWYgdXNlcnMgZG9lcyBub3Qgd2FudCB0byBz
-ZXQgYW55IApwcmlvcml0eSB0aGVuIGRyaXZlciB3aWxsIGZvcmNlIHRoZQpkZWZhdWx0IHByaW9y
-aXRpZXMgd2hlbiBidF9jb2V4IGlzIGVuYWJsZWQKCml3IHBoeVggYnRjb2V4X3N0YXRlIDxlbmFi
-bGV8IGRpc2FibGU+IFtwcmlyb3JpdHldCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+
+--===============4908878718701404931==
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_1320726_1270802242.1484821604718"
+
+
+------=_Part_1320726_1270802242.1484821604718
+Content-Type: text/plain;
+	charset=UTF-8
+Content-Transfer-Encoding: base64
+
+aGksIGFkcmlhbgoKZmlybXdhcmU6IDEwLjIuNC41OS0yCgpjaGlwc2V0OiBxY2E5ODgwCgpkcml2
+ZXIgdmVyc2lvbjogYmFja3BvcnRzLTQuNC4yCgpUaGFua3MuCgotLS0tLS0tLS0tLS0tLS0KCktp
+bSBLd2FuZyBNaW4KCk1vYmlsZSArODIgMDEwLTU1MjEtNjM5MyAKTWFpbCBnd29uZG9yaUBuaW1i
+dXMua3IgCgoKCgoKCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCkZyb206ICJBZHJpYW4gQ2hh
+ZGQiPGFkcmlhbkBmcmVlYnNkLm9yZz4gClRvOiAi6rmA6rSR66+8Ijxnd29uZG9yaUBuaW1idXMu
+a3I+OyAKQ2M6ICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyI8YXRoMTBrQGxpc3RzLmluZnJh
+ZGVhZC5vcmc+OyAi6rCV6rK97JmEIjxiaWdza2FuZ0BuaW1idXMua3I+OyAKU2VudDogMjAxNy0w
+MS0xOCAo7IiYKSAxNjo0MDoyNgpTdWJqZWN0OiBSZTogQWxsICcwJyBpbiBhZ2dfc3RhdHVzCiAK
+aGl5YQoKd2hpY2ggZmlybXdhcmUsIGNoaXBzZXQsIGRyaXZlciB2ZXJzaW9uIGlzIHRoaXMgd2l0
+aD8KCgotYWRyaWFu
+------=_Part_1320726_1270802242.1484821604718--
+
+
+--===============4908878718701404931==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============4908878718701404931==--
