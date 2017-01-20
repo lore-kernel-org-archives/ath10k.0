@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-yb0-f181.google.com ([209.85.213.181])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUYfW-0005HJ-4G
- for ath10k@lists.infradead.org; Fri, 20 Jan 2017 12:51:52 +0000
+ id 1cUYl5-000109-8n
+ for ath10k@lists.infradead.org; Fri, 20 Jan 2017 12:57:37 +0000
+Received: by mail-yb0-f181.google.com with SMTP id l23so52247244ybj.2
+ for <ath10k@lists.infradead.org>; Fri, 20 Jan 2017 04:57:11 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [RFC] ath10k: silence firmware file probing warnings
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <6e5d0596c4af46668c02356ba17a4e5f@euamsexm01a.eu.qualcomm.com>
 References: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
-Message-ID: <6e5d0596c4af46668c02356ba17a4e5f@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 20 Jan 2017 13:51:22 +0100
+ <6e5d0596c4af46668c02356ba17a4e5f@euamsexm01a.eu.qualcomm.com>
+From: Michal Kazior <michal.kazior@tieto.com>
+Date: Fri, 20 Jan 2017 13:56:09 +0100
+Message-ID: <CA+BoTQkutepRAGwE0xLiaGVqg5mXKFdjS26jDdxajkAsQRPuLA@mail.gmail.com>
+Subject: Re: [RFC] ath10k: silence firmware file probing warnings
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,73 +21,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> wrote:
-> Firmware files are versioned to prevent older
-> driver instances to load unsupported firmware
-> blobs. This is reflected with a fallback logic
-> which attempts to load several firmware files.
-> 
-> This however produced a lot of unnecessary
-> warnings sometimes confusing users and leading
-> them to rename firmware files making things even
-> more confusing.
-> 
-> Hence use request_firmware_direct() which does not
-> produce extra warnings. This shouldn't really
-> break anything because most modern systems don't
-> rely on udev/hotplug helpers to load firmware
-> files anymore.
-> 
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-This ended into a rather long discussion, see the full thread from the patchwork link
-below, but I'll try to summarise it here:
-
-* Nobody stepped up and mentioned that they need/use the user fallback helper with ath10k.
-
-* Felix confirmed that LEDE creates the calibration file before loading ath10k
-  so this should not break LEDE.
-
-* This also fixes a 60 second delay per _each_ unexistent firmware/calibration
-  file with distros which have CONFIG_FW_LOADER_USER_HELPER_FALLBACK enabled,
-  RHEL being a notable example. Using ath10k with firmware-2.bin this might
-  end up into a five minute delay in boot.
-
-* Luis is working on new drvdata interface for kernel, but that's not merged yet.
-
-Based on this I think the right approach is to apply this patch. Any concerns?
-
-While writing this I started to suspect is it just by accident that
-request_firmware_direct() does not print any error messages and
-request_firmware() again does print those? Let's hope nobody decides to change
-that.  And at least Luis' drvdata interface has a documented 'optional' flag,
-so we can always switch to using that (once it's merged):
-
-* struct drvdata_req_params - driver data request parameters
-* @optional: if true it is not a hard requirement by the caller that this
-*	file be present. An error will not be recorded if the file is not
-*	found.
-
-Michal, do you mind if I'll add more info to the commit log and submit this RFC
-as a proper patch? It still seems to apply and work just fine.
-
--- 
-https://patchwork.kernel.org/patch/9237095/
-
-Documentation about submitting wireless patches and checking status
-from patchwork:
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAgSmFudWFyeSAyMDE3IGF0IDEzOjUxLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
+bW0uY29tPiB3cm90ZToKPiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4g
+d3JvdGU6Cj4+IEZpcm13YXJlIGZpbGVzIGFyZSB2ZXJzaW9uZWQgdG8gcHJldmVudCBvbGRlcgo+
+PiBkcml2ZXIgaW5zdGFuY2VzIHRvIGxvYWQgdW5zdXBwb3J0ZWQgZmlybXdhcmUKPj4gYmxvYnMu
+IFRoaXMgaXMgcmVmbGVjdGVkIHdpdGggYSBmYWxsYmFjayBsb2dpYwo+PiB3aGljaCBhdHRlbXB0
+cyB0byBsb2FkIHNldmVyYWwgZmlybXdhcmUgZmlsZXMuCj4+Cj4+IFRoaXMgaG93ZXZlciBwcm9k
+dWNlZCBhIGxvdCBvZiB1bm5lY2Vzc2FyeQo+PiB3YXJuaW5ncyBzb21ldGltZXMgY29uZnVzaW5n
+IHVzZXJzIGFuZCBsZWFkaW5nCj4+IHRoZW0gdG8gcmVuYW1lIGZpcm13YXJlIGZpbGVzIG1ha2lu
+ZyB0aGluZ3MgZXZlbgo+PiBtb3JlIGNvbmZ1c2luZy4KPj4KPj4gSGVuY2UgdXNlIHJlcXVlc3Rf
+ZmlybXdhcmVfZGlyZWN0KCkgd2hpY2ggZG9lcyBub3QKPj4gcHJvZHVjZSBleHRyYSB3YXJuaW5n
+cy4gVGhpcyBzaG91bGRuJ3QgcmVhbGx5Cj4+IGJyZWFrIGFueXRoaW5nIGJlY2F1c2UgbW9zdCBt
+b2Rlcm4gc3lzdGVtcyBkb24ndAo+PiByZWx5IG9uIHVkZXYvaG90cGx1ZyBoZWxwZXJzIHRvIGxv
+YWQgZmlybXdhcmUKPj4gZmlsZXMgYW55bW9yZS4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWljaGFs
+IEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4KPiBUaGlzIGVuZGVkIGludG8gYSBy
+YXRoZXIgbG9uZyBkaXNjdXNzaW9uLCBzZWUgdGhlIGZ1bGwgdGhyZWFkIGZyb20gdGhlIHBhdGNo
+d29yayBsaW5rCj4gYmVsb3csIGJ1dCBJJ2xsIHRyeSB0byBzdW1tYXJpc2UgaXQgaGVyZToKPgo+
+ICogTm9ib2R5IHN0ZXBwZWQgdXAgYW5kIG1lbnRpb25lZCB0aGF0IHRoZXkgbmVlZC91c2UgdGhl
+IHVzZXIgZmFsbGJhY2sgaGVscGVyIHdpdGggYXRoMTBrLgo+Cj4gKiBGZWxpeCBjb25maXJtZWQg
+dGhhdCBMRURFIGNyZWF0ZXMgdGhlIGNhbGlicmF0aW9uIGZpbGUgYmVmb3JlIGxvYWRpbmcgYXRo
+MTBrCj4gICBzbyB0aGlzIHNob3VsZCBub3QgYnJlYWsgTEVERS4KPgo+ICogVGhpcyBhbHNvIGZp
+eGVzIGEgNjAgc2Vjb25kIGRlbGF5IHBlciBfZWFjaF8gdW5leGlzdGVudCBmaXJtd2FyZS9jYWxp
+YnJhdGlvbgo+ICAgZmlsZSB3aXRoIGRpc3Ryb3Mgd2hpY2ggaGF2ZSBDT05GSUdfRldfTE9BREVS
+X1VTRVJfSEVMUEVSX0ZBTExCQUNLIGVuYWJsZWQsCj4gICBSSEVMIGJlaW5nIGEgbm90YWJsZSBl
+eGFtcGxlLiBVc2luZyBhdGgxMGsgd2l0aCBmaXJtd2FyZS0yLmJpbiB0aGlzIG1pZ2h0Cj4gICBl
+bmQgdXAgaW50byBhIGZpdmUgbWludXRlIGRlbGF5IGluIGJvb3QuCj4KPiAqIEx1aXMgaXMgd29y
+a2luZyBvbiBuZXcgZHJ2ZGF0YSBpbnRlcmZhY2UgZm9yIGtlcm5lbCwgYnV0IHRoYXQncyBub3Qg
+bWVyZ2VkIHlldC4KPgo+IEJhc2VkIG9uIHRoaXMgSSB0aGluayB0aGUgcmlnaHQgYXBwcm9hY2gg
+aXMgdG8gYXBwbHkgdGhpcyBwYXRjaC4gQW55IGNvbmNlcm5zPwo+Cj4gV2hpbGUgd3JpdGluZyB0
+aGlzIEkgc3RhcnRlZCB0byBzdXNwZWN0IGlzIGl0IGp1c3QgYnkgYWNjaWRlbnQgdGhhdAo+IHJl
+cXVlc3RfZmlybXdhcmVfZGlyZWN0KCkgZG9lcyBub3QgcHJpbnQgYW55IGVycm9yIG1lc3NhZ2Vz
+IGFuZAo+IHJlcXVlc3RfZmlybXdhcmUoKSBhZ2FpbiBkb2VzIHByaW50IHRob3NlPyBMZXQncyBo
+b3BlIG5vYm9keSBkZWNpZGVzIHRvIGNoYW5nZQo+IHRoYXQuICBBbmQgYXQgbGVhc3QgTHVpcycg
+ZHJ2ZGF0YSBpbnRlcmZhY2UgaGFzIGEgZG9jdW1lbnRlZCAnb3B0aW9uYWwnIGZsYWcsCj4gc28g
+d2UgY2FuIGFsd2F5cyBzd2l0Y2ggdG8gdXNpbmcgdGhhdCAob25jZSBpdCdzIG1lcmdlZCk6Cj4K
+PiAqIHN0cnVjdCBkcnZkYXRhX3JlcV9wYXJhbXMgLSBkcml2ZXIgZGF0YSByZXF1ZXN0IHBhcmFt
+ZXRlcnMKPiAqIEBvcHRpb25hbDogaWYgdHJ1ZSBpdCBpcyBub3QgYSBoYXJkIHJlcXVpcmVtZW50
+IGJ5IHRoZSBjYWxsZXIgdGhhdCB0aGlzCj4gKiAgICAgICBmaWxlIGJlIHByZXNlbnQuIEFuIGVy
+cm9yIHdpbGwgbm90IGJlIHJlY29yZGVkIGlmIHRoZSBmaWxlIGlzIG5vdAo+ICogICAgICAgZm91
+bmQuCj4KPiBNaWNoYWwsIGRvIHlvdSBtaW5kIGlmIEknbGwgYWRkIG1vcmUgaW5mbyB0byB0aGUg
+Y29tbWl0IGxvZyBhbmQgc3VibWl0IHRoaXMgUkZDCj4gYXMgYSBwcm9wZXIgcGF0Y2g/IEl0IHN0
+aWxsIHNlZW1zIHRvIGFwcGx5IGFuZCB3b3JrIGp1c3QgZmluZS4KCkkgZG9uJ3QgbWluZCA6KQoK
+Ck1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
