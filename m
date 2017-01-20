@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yb0-f181.google.com ([209.85.213.181])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cUYl5-000109-8n
- for ath10k@lists.infradead.org; Fri, 20 Jan 2017 12:57:37 +0000
-Received: by mail-yb0-f181.google.com with SMTP id l23so52247244ybj.2
- for <ath10k@lists.infradead.org>; Fri, 20 Jan 2017 04:57:11 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cUfjp-0002E1-EC
+ for ath10k@lists.infradead.org; Fri, 20 Jan 2017 20:24:49 +0000
+Subject: Re: QCA9880 3x3 80Mhz low performance
+References: <20170110061217.096FD148A08@compex.com.sg>
+ <63DDC83FD9364560ACBA60D17C3F5AD8@PhyuThe> <5874F1BC.80505@candelatech.com>
+ <10981E9AB9EA46A1897BE3E5CF661C0F@PhyuThe>
+ <f3ed8528-a9ab-fa33-e753-aa1fbebc969e@candelatech.com>
+ <F468EA06CC7341849F013B51FFCC88E2@PhyuThe>
+ <65c12489-6886-22c2-894b-cf0eab2bd51a@dd-wrt.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <2f0e0277-b7fc-ccf6-1d23-1d9e8f9a8d4e@candelatech.com>
+Date: Fri, 20 Jan 2017 12:24:22 -0800
 MIME-Version: 1.0
-In-Reply-To: <6e5d0596c4af46668c02356ba17a4e5f@euamsexm01a.eu.qualcomm.com>
-References: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
- <6e5d0596c4af46668c02356ba17a4e5f@euamsexm01a.eu.qualcomm.com>
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Fri, 20 Jan 2017 13:56:09 +0100
-Message-ID: <CA+BoTQkutepRAGwE0xLiaGVqg5mXKFdjS26jDdxajkAsQRPuLA@mail.gmail.com>
-Subject: Re: [RFC] ath10k: silence firmware file probing warnings
+In-Reply-To: <65c12489-6886-22c2-894b-cf0eab2bd51a@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,54 +23,115 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Phyu The <pt_myat@compex.com.sg>, ath10k@lists.infradead.org
 
-T24gMjAgSmFudWFyeSAyMDE3IGF0IDEzOjUxLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
-bW0uY29tPiB3cm90ZToKPiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4g
-d3JvdGU6Cj4+IEZpcm13YXJlIGZpbGVzIGFyZSB2ZXJzaW9uZWQgdG8gcHJldmVudCBvbGRlcgo+
-PiBkcml2ZXIgaW5zdGFuY2VzIHRvIGxvYWQgdW5zdXBwb3J0ZWQgZmlybXdhcmUKPj4gYmxvYnMu
-IFRoaXMgaXMgcmVmbGVjdGVkIHdpdGggYSBmYWxsYmFjayBsb2dpYwo+PiB3aGljaCBhdHRlbXB0
-cyB0byBsb2FkIHNldmVyYWwgZmlybXdhcmUgZmlsZXMuCj4+Cj4+IFRoaXMgaG93ZXZlciBwcm9k
-dWNlZCBhIGxvdCBvZiB1bm5lY2Vzc2FyeQo+PiB3YXJuaW5ncyBzb21ldGltZXMgY29uZnVzaW5n
-IHVzZXJzIGFuZCBsZWFkaW5nCj4+IHRoZW0gdG8gcmVuYW1lIGZpcm13YXJlIGZpbGVzIG1ha2lu
-ZyB0aGluZ3MgZXZlbgo+PiBtb3JlIGNvbmZ1c2luZy4KPj4KPj4gSGVuY2UgdXNlIHJlcXVlc3Rf
-ZmlybXdhcmVfZGlyZWN0KCkgd2hpY2ggZG9lcyBub3QKPj4gcHJvZHVjZSBleHRyYSB3YXJuaW5n
-cy4gVGhpcyBzaG91bGRuJ3QgcmVhbGx5Cj4+IGJyZWFrIGFueXRoaW5nIGJlY2F1c2UgbW9zdCBt
-b2Rlcm4gc3lzdGVtcyBkb24ndAo+PiByZWx5IG9uIHVkZXYvaG90cGx1ZyBoZWxwZXJzIHRvIGxv
-YWQgZmlybXdhcmUKPj4gZmlsZXMgYW55bW9yZS4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWljaGFs
-IEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4KPiBUaGlzIGVuZGVkIGludG8gYSBy
-YXRoZXIgbG9uZyBkaXNjdXNzaW9uLCBzZWUgdGhlIGZ1bGwgdGhyZWFkIGZyb20gdGhlIHBhdGNo
-d29yayBsaW5rCj4gYmVsb3csIGJ1dCBJJ2xsIHRyeSB0byBzdW1tYXJpc2UgaXQgaGVyZToKPgo+
-ICogTm9ib2R5IHN0ZXBwZWQgdXAgYW5kIG1lbnRpb25lZCB0aGF0IHRoZXkgbmVlZC91c2UgdGhl
-IHVzZXIgZmFsbGJhY2sgaGVscGVyIHdpdGggYXRoMTBrLgo+Cj4gKiBGZWxpeCBjb25maXJtZWQg
-dGhhdCBMRURFIGNyZWF0ZXMgdGhlIGNhbGlicmF0aW9uIGZpbGUgYmVmb3JlIGxvYWRpbmcgYXRo
-MTBrCj4gICBzbyB0aGlzIHNob3VsZCBub3QgYnJlYWsgTEVERS4KPgo+ICogVGhpcyBhbHNvIGZp
-eGVzIGEgNjAgc2Vjb25kIGRlbGF5IHBlciBfZWFjaF8gdW5leGlzdGVudCBmaXJtd2FyZS9jYWxp
-YnJhdGlvbgo+ICAgZmlsZSB3aXRoIGRpc3Ryb3Mgd2hpY2ggaGF2ZSBDT05GSUdfRldfTE9BREVS
-X1VTRVJfSEVMUEVSX0ZBTExCQUNLIGVuYWJsZWQsCj4gICBSSEVMIGJlaW5nIGEgbm90YWJsZSBl
-eGFtcGxlLiBVc2luZyBhdGgxMGsgd2l0aCBmaXJtd2FyZS0yLmJpbiB0aGlzIG1pZ2h0Cj4gICBl
-bmQgdXAgaW50byBhIGZpdmUgbWludXRlIGRlbGF5IGluIGJvb3QuCj4KPiAqIEx1aXMgaXMgd29y
-a2luZyBvbiBuZXcgZHJ2ZGF0YSBpbnRlcmZhY2UgZm9yIGtlcm5lbCwgYnV0IHRoYXQncyBub3Qg
-bWVyZ2VkIHlldC4KPgo+IEJhc2VkIG9uIHRoaXMgSSB0aGluayB0aGUgcmlnaHQgYXBwcm9hY2gg
-aXMgdG8gYXBwbHkgdGhpcyBwYXRjaC4gQW55IGNvbmNlcm5zPwo+Cj4gV2hpbGUgd3JpdGluZyB0
-aGlzIEkgc3RhcnRlZCB0byBzdXNwZWN0IGlzIGl0IGp1c3QgYnkgYWNjaWRlbnQgdGhhdAo+IHJl
-cXVlc3RfZmlybXdhcmVfZGlyZWN0KCkgZG9lcyBub3QgcHJpbnQgYW55IGVycm9yIG1lc3NhZ2Vz
-IGFuZAo+IHJlcXVlc3RfZmlybXdhcmUoKSBhZ2FpbiBkb2VzIHByaW50IHRob3NlPyBMZXQncyBo
-b3BlIG5vYm9keSBkZWNpZGVzIHRvIGNoYW5nZQo+IHRoYXQuICBBbmQgYXQgbGVhc3QgTHVpcycg
-ZHJ2ZGF0YSBpbnRlcmZhY2UgaGFzIGEgZG9jdW1lbnRlZCAnb3B0aW9uYWwnIGZsYWcsCj4gc28g
-d2UgY2FuIGFsd2F5cyBzd2l0Y2ggdG8gdXNpbmcgdGhhdCAob25jZSBpdCdzIG1lcmdlZCk6Cj4K
-PiAqIHN0cnVjdCBkcnZkYXRhX3JlcV9wYXJhbXMgLSBkcml2ZXIgZGF0YSByZXF1ZXN0IHBhcmFt
-ZXRlcnMKPiAqIEBvcHRpb25hbDogaWYgdHJ1ZSBpdCBpcyBub3QgYSBoYXJkIHJlcXVpcmVtZW50
-IGJ5IHRoZSBjYWxsZXIgdGhhdCB0aGlzCj4gKiAgICAgICBmaWxlIGJlIHByZXNlbnQuIEFuIGVy
-cm9yIHdpbGwgbm90IGJlIHJlY29yZGVkIGlmIHRoZSBmaWxlIGlzIG5vdAo+ICogICAgICAgZm91
-bmQuCj4KPiBNaWNoYWwsIGRvIHlvdSBtaW5kIGlmIEknbGwgYWRkIG1vcmUgaW5mbyB0byB0aGUg
-Y29tbWl0IGxvZyBhbmQgc3VibWl0IHRoaXMgUkZDCj4gYXMgYSBwcm9wZXIgcGF0Y2g/IEl0IHN0
-aWxsIHNlZW1zIHRvIGFwcGx5IGFuZCB3b3JrIGp1c3QgZmluZS4KCkkgZG9uJ3QgbWluZCA6KQoK
-Ck1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hello!
+
+We ran some more tests using our x86 based platforms with 9880 NICs and 9984 NICs
+acting as both AP and Station.  This is in an isolation chamber, wired up with SMA cables
+and variable attenuator, in as perfect of a condition as we can manage.
+
+First, here is LANforge acting as AP and station devices, using QCA9880 3x3 hardware:
+
+http://www.candelatech.com/images/data-comp-01-13-2017-144224-lf-ap.png
+
+And with 9984 systems:
+
+http://www.candelatech.com/images/data-comp-01-19-2017-1706-lf-ap-sta-9984.png
+
+In case you read closely and wonder, 'Armageddon' is our modified version of pktgen.
+
+Thanks,
+Ben
+
+
+On 01/12/2017 01:24 AM, Sebastian Gottschall wrote:
+> @ben greear. it cannot be cpu related. the ipq8064 has 1.2 ghz and is a very fast arm core. the platform handles 9984 with much higher speed.
+> i got notice of the same issue reported by people on various cpu platforms.
+>
+> Am 12.01.2017 um 09:15 schrieb Phyu The:
+>> Dear Ben,
+>>
+>> Thanks for your reply and suggestion.
+>>
+>> I have tried as your suggestion to test IPQ8064+QCA9880 with Ath10k CT firmware/driver to run throughput UDP/TCP. Unfortunately, I could not be able to see
+>> throughput improvement. Could you please suggest what may cause low throughput?
+>>
+>> thanks,
+>> Phyuthe
+>>
+>> -----Original Message----- From: Ben Greear
+>> Sent: Thursday, January 12, 2017 12:59 AM
+>> To: Phyu The ; ath10k@lists.infradead.org
+>> Subject: Re: QCA9880 3x3 80Mhz low performance
+>>
+>> We have not done a lot of testing in AP mode, but when using 9880 3x3 compex NICs
+>> in our 2U rackmounts (high end Intel E5 processors), and with CT firmware/drivers,
+>> we see near 950Mbps UDP download in station mode.  I think we were a bit slower in
+>> AP mode, but not that much.
+>>
+>> Are you testing TCP or UDP traffic?
+>>
+>> http://www.candelatech.com/images/data-comp-07-20-2016-1147-with-labels.png
+>>
+>> Have you tried normal STA/AP mode instead of WDS?
+>>
+>> Maybe you are CPU bound on your platform?
+>>
+>> Thanks,
+>> Ben
+>>
+>> On 01/10/2017 05:09 PM, Phyu The wrote:
+>>> Dear Ben,
+>>>
+>>> I configured AP_WDS and Sta_WDS mode, channel 149, 11ac, 3x3, 80MHz and without encryption. I used 2 RF boxes with 3 adjustable attenuators running throughput
+>>> by Ixchairot to get best performance. However, throughput seems limited to 640Mbps. Kindly see attached for your reference for more details.
+>>>
+>>> thanks,
+>>> Phyuthe
+>>>
+>>> -----Original Message----- From: Ben Greear
+>>> Sent: Tuesday, January 10, 2017 10:37 PM
+>>> To: Phyu The ; ath10k@lists.infradead.org
+>>> Subject: Re: QCA9880 3x3 80Mhz low performance
+>>>
+>>> You should provide a lot more information about how you configured and tested the system,
+>>> including traffic generator and RF environment, etc.
+>>>
+>>> Thanks,
+>>> Ben
+>>>
+>>> On 01/09/2017 10:19 PM, Phyu The wrote:
+>>>> Dear Sir,
+>>>>
+>>>> I tested performance throughput test used WPQ864 + QCA9880 11ac 80MHz is 640Mbps that is very low since theoretical data rate is 1300Mbps. It should be at
+>>>> least 866Mbps. Could you please suggest me how to get better performance?
+>>>>
+>>>> thanks,
+>>>> Phyuthe
+>>>>
+>>>> _______________________________________________
+>>>> ath10k mailing list
+>>>> ath10k@lists.infradead.org
+>>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>>>
+>>>
+>>
+>>
+>
+>
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
