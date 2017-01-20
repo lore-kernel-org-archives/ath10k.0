@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from cmailsend03.wmail.naver.com ([125.209.236.77])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cU9w0-0003yb-EN
- for ath10k@lists.infradead.org; Thu, 19 Jan 2017 10:27:14 +0000
-Date: Thu, 19 Jan 2017 19:26:44 +0900 (KST)
-From: Kwang Min Kim <gwondori@nimbus.kr>
-Message-ID: <44c5a11bf373394ee73ca1dfa9f6d37a@cvweb08.wmail.nhnsystem.com>
-In-Reply-To: <328523ea1b53d27f8a72b776481c15dc@cvweb05.wmail.nhnsystem.com>
-References: <CAJ-VmomSTUAONqeOTZEqm_ApU64r1=RSqm8=Y6u+Km+OkL_JQA@mail.gmail.com>
- <328523ea1b53d27f8a72b776481c15dc@cvweb05.wmail.nhnsystem.com>
-Subject: =?UTF-8?B?UmU6IEFsbCAnMCcgaW4gYWdnX3N0YXR1cw==?=
+ id 1cUYfW-0005HJ-4G
+ for ath10k@lists.infradead.org; Fri, 20 Jan 2017 12:51:52 +0000
 MIME-Version: 1.0
+Subject: Re: [RFC] ath10k: silence firmware file probing warnings
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
+References: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
+Message-ID: <6e5d0596c4af46668c02356ba17a4e5f@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 20 Jan 2017 13:51:22 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,45 +18,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: Kwang Min Kim <gwondori@nimbus.kr>
-Content-Type: multipart/mixed; boundary="===============4908878718701404931=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
+Michal Kazior <michal.kazior@tieto.com> wrote:
+> Firmware files are versioned to prevent older
+> driver instances to load unsupported firmware
+> blobs. This is reflected with a fallback logic
+> which attempts to load several firmware files.
+> 
+> This however produced a lot of unnecessary
+> warnings sometimes confusing users and leading
+> them to rename firmware files making things even
+> more confusing.
+> 
+> Hence use request_firmware_direct() which does not
+> produce extra warnings. This shouldn't really
+> break anything because most modern systems don't
+> rely on udev/hotplug helpers to load firmware
+> files anymore.
+> 
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
---===============4908878718701404931==
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_1320726_1270802242.1484821604718"
+This ended into a rather long discussion, see the full thread from the patchwork link
+below, but I'll try to summarise it here:
 
+* Nobody stepped up and mentioned that they need/use the user fallback helper with ath10k.
 
-------=_Part_1320726_1270802242.1484821604718
-Content-Type: text/plain;
-	charset=UTF-8
-Content-Transfer-Encoding: base64
+* Felix confirmed that LEDE creates the calibration file before loading ath10k
+  so this should not break LEDE.
 
-aGksIGFkcmlhbgoKZmlybXdhcmU6IDEwLjIuNC41OS0yCgpjaGlwc2V0OiBxY2E5ODgwCgpkcml2
-ZXIgdmVyc2lvbjogYmFja3BvcnRzLTQuNC4yCgpUaGFua3MuCgotLS0tLS0tLS0tLS0tLS0KCktp
-bSBLd2FuZyBNaW4KCk1vYmlsZSArODIgMDEwLTU1MjEtNjM5MyAKTWFpbCBnd29uZG9yaUBuaW1i
-dXMua3IgCgoKCgoKCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCkZyb206ICJBZHJpYW4gQ2hh
-ZGQiPGFkcmlhbkBmcmVlYnNkLm9yZz4gClRvOiAi6rmA6rSR66+8Ijxnd29uZG9yaUBuaW1idXMu
-a3I+OyAKQ2M6ICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyI8YXRoMTBrQGxpc3RzLmluZnJh
-ZGVhZC5vcmc+OyAi6rCV6rK97JmEIjxiaWdza2FuZ0BuaW1idXMua3I+OyAKU2VudDogMjAxNy0w
-MS0xOCAo7IiYKSAxNjo0MDoyNgpTdWJqZWN0OiBSZTogQWxsICcwJyBpbiBhZ2dfc3RhdHVzCiAK
-aGl5YQoKd2hpY2ggZmlybXdhcmUsIGNoaXBzZXQsIGRyaXZlciB2ZXJzaW9uIGlzIHRoaXMgd2l0
-aD8KCgotYWRyaWFu
-------=_Part_1320726_1270802242.1484821604718--
+* This also fixes a 60 second delay per _each_ unexistent firmware/calibration
+  file with distros which have CONFIG_FW_LOADER_USER_HELPER_FALLBACK enabled,
+  RHEL being a notable example. Using ath10k with firmware-2.bin this might
+  end up into a five minute delay in boot.
 
+* Luis is working on new drvdata interface for kernel, but that's not merged yet.
 
---===============4908878718701404931==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Based on this I think the right approach is to apply this patch. Any concerns?
+
+While writing this I started to suspect is it just by accident that
+request_firmware_direct() does not print any error messages and
+request_firmware() again does print those? Let's hope nobody decides to change
+that.  And at least Luis' drvdata interface has a documented 'optional' flag,
+so we can always switch to using that (once it's merged):
+
+* struct drvdata_req_params - driver data request parameters
+* @optional: if true it is not a hard requirement by the caller that this
+*	file be present. An error will not be recorded if the file is not
+*	found.
+
+Michal, do you mind if I'll add more info to the commit log and submit this RFC
+as a proper patch? It still seems to apply and work just fine.
+
+-- 
+https://patchwork.kernel.org/patch/9237095/
+
+Documentation about submitting wireless patches and checking status
+from patchwork:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============4908878718701404931==--
