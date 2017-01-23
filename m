@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-f67.google.com ([74.125.82.67])
+Received: from mail-wm0-f44.google.com ([74.125.82.44])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cV7Ul-0003If-DE
- for ath10k@lists.infradead.org; Sun, 22 Jan 2017 02:03:06 +0000
-Received: by mail-wm0-f67.google.com with SMTP id d140so16858548wmd.2
- for <ath10k@lists.infradead.org>; Sat, 21 Jan 2017 18:02:41 -0800 (PST)
-Message-ID: <1485050497.3853.1.camel@gmail.com>
-Subject: Re: ath10k failing with firmware RM.4.4-00022-QCARMSWPZ-2 on
- QCA6174 (Killer 1535)
-From: Chris Le Sueur <thefishface@gmail.com>
-Date: Sun, 22 Jan 2017 02:01:37 +0000
-In-Reply-To: <CACKGw+FXdcKHU80fZ8zWwZFwePrF0GPv5ksqLEJMP-gusvOjHw@mail.gmail.com>
-References: <1484594680.14978.5.camel@gmail.com>
- <CACKGw+FXdcKHU80fZ8zWwZFwePrF0GPv5ksqLEJMP-gusvOjHw@mail.gmail.com>
-Mime-Version: 1.0
+ id 1cVa2d-0007Zh-IK
+ for ath10k@lists.infradead.org; Mon, 23 Jan 2017 08:31:57 +0000
+Received: by mail-wm0-f44.google.com with SMTP id c206so141982442wme.0
+ for <ath10k@lists.infradead.org>; Mon, 23 Jan 2017 00:31:32 -0800 (PST)
+From: Sven Eckelmann <sven.eckelmann@open-mesh.com>
+Subject: Re: QCA4019: calibration files and board files
+Date: Mon, 23 Jan 2017 09:30:29 +0100
+Message-ID: <1619669.9tDARU0uNP@bentobox>
+In-Reply-To: <1591748.RGYhBEn8I1@bentobox>
+References: <1591748.RGYhBEn8I1@bentobox>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,108 +20,87 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5002421727054157685=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Christian Lamparter <chunkeey@googlemail.com>, Michal Kazior <michal.kazior@tieto.com>
 
+--===============5002421727054157685==
+Content-Type: multipart/signed; boundary="nextPart3634695.5oNXNPy3nW"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-On Tue, 2017-01-17 at 11:30 +0100, Bartosz Markowski wrote:
-> On 16 January 2017 at 20:24, Chris Le Sueur <thefishface@gmail.com>
-> wrote:
-> > Dear all,
-> > 
-> > (per request by kvalo on #ath10k)
-> > 
-> > I was trying out the firmware-5 from git to see if it would fix
-> > throughput issues, but instead the driver just failed to work. I am
-> > using kernel 4.8.15 on Fedora 25, and the following was printed to
-> > the
-> > kernel log:
-> > 
-> > ath10k_pci 0000:3a:00.0: pci irq msi oper_irq_mode 2 irq_mode 0
-> > reset_mode 0
-> > ath10k_pci 0000:3a:00.0: Direct firmware load for ath10k/pre-cal-
-> > pci-
-> > 0000:3a:00.0 .bin failed with error -2
-> > ath10k_pci 0000:3a:00.0: Direct firmware load for ath10k/cal-pci-
-> > 0000:3a:00.0.bin failed with error -2
-> > ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id
-> > 0x00340aff sub 1a56:1535
-> > ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0
-> > testmode 0
-> > ath10k_pci 0000:3a:00.0: firmware ver WLAN.RM.4.4-00022-QCARMSWPZ-2 
-> > api
-> > 5 features wowlan,ignore-otp crc32 4d458559
-> > ath10k_pci 0000:3a:00.0: failed to fetch board data for
-> > bus=pci,bmi-
-> > chip-id=0,bmi-board-id=0 from ath10k/QCA6174/hw3.0/board-2.bin
-> > ath10k_pci 0000:3a:00.0: board_file api 1 bmi_id 0:0 crc32 ed5f849a
+--nextPart3634695.5oNXNPy3nW
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Dienstag, 17. Januar 2017 12:54:52 CET Sven Eckelmann wrote:
+> Hi,
 > 
-> Please try to apply this patch -
-> https://patchwork.kernel.org/patch/9486941/ and retry.
+> I've just	tested LEDE-IPQ40XX [1] after the official open QSDK 1.1.3 [2] was
+> not able to boot on an ap.dk01.1-c1-like device. This seemed to work
+> exceptionally well (the device basically worked after the first build) but I
+> got a little suspicious when looking at the code which it uses for getting the
+> wifi devices up and running.
 > 
-> -Bartosz
+> Spoiler: My actual questions are at the end of the mail.
+[...]
+> Questions
+> =========
+> 
+> Which therefore brings me back to the initial questions:
+> 
+>  * Is it known what was modified in the board data and why the board-2.bin
+>    from ath10k/QSDK open don't "work"? At least there must be something
+>    essential when each vendor ships completely different versions (according
+>    to the LEDE-IPQ40xx package [3]).
+>  * How were the board-2.bin files from Christian generated
+>    (not the tool to generate the TLV sections of board-2.bin. But the input
+>     files used for the actual board data sections).
+>  * Is the QCA4019 ath10k board data + cal loading order really correct:
+>    - load ART data as pre-cal-* to device
+>    - execute BMI_PARAM_GET_EEPROM_BOARD_ID
+>    - load correct board data from board-2.bin to device
+>    - execute bmi_otp_exe_param
 
-This also fails. I have had to update my kernel as part of obtaining
-the module source (I am using 4.9.4 as distributed with Fedora 25) so
-the messages are a bit different; I've included both the patched and
-stock output. I see the debug message added in that patch is also not
-printed, so I assume the difference here is due to some transient
-situation and not the patch itself.
+*bump*
 
-Patched:
+Kind regards,
+	Sven
+--nextPart3634695.5oNXNPy3nW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-ath10k_pci 0000:3a:00.0: pci irq msi oper_irq_mode 2 irq_mode 0
-reset_mode 0
-ath10k_pci 0000:3a:00.0: Direct firmware load for ath10k/pre-cal-pci-
-0000:3a:00.0.bin failed with error -2
-ath10k_pci 0000:3a:00.0: Direct firmware load for ath10k/cal-pci-
-0000:3a:00.0.bin failed with error -2
-ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id
-0x00340aff sub 1a56:1535
-ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0
-testmode 0
-ath10k_pci 0000:3a:00.0: firmware ver WLAN.RM.4.4-00022-QCARMSWPZ-2 api
-5 features wowlan,ignore-otp crc32 4d458559
-ath10k_pci 0000:3a:00.0: failed to fetch board data for bus=pci,bmi-
-chip-id=0,bmi-board-id=0 from ath10k/QCA6174/hw3.0/board-2.bin
-ath10k_pci 0000:3a:00.0: board_file api 1 bmi_id 0:0 crc32 ed5f849a
-ath10k_pci 0000:3a:00.0: Unknown eventid: 90118
-ath10k_pci 0000:3a:00.0: htt version request timed out
-ath10k_pci 0000:3a:00.0: failed to setup htt: -110
-ath10k_pci 0000:3a:00.0: could not init core (-110)
-ath10k_pci 0000:3a:00.0: could not probe fw (-110)
+-----BEGIN PGP SIGNATURE-----
 
-Stock:
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAliFvyUACgkQXYcKB8Em
+e0YOPA//QZ1Lb4bDbzF506pfvudARxejPhURq4zDgg/rO5h60+3RF2ERJZ/G7vVI
+A9UNsM8btaZz9gATocNiNT5pGA5P2CVvWXS4WIL6CfxpE7zDZKlrXfBDMBFQWTlU
+Dl4WPxUfQfnPHGVuX0ml/RIIibqZ3ri+odeO27q68FkHhO39CKhtFZfY3opHzgh3
+oLs3CMyKi+de+PMkuu7A3zRwY3LU1Pxq33kxVSbb82vJ6C4WNAJNjlzDvsyEhoC7
+P8zGX/cA39eZMYPS1w4AeiaVjX++OwUL4i1+D+40opaRf0wsqIBGVPKAO8PxUpZB
+mQrK5UVUGj5QVQqMhgRhLYE2E7NH0ll3NIQGc1fX69zx4iMv5VrTeybY1MyH/AhP
+n/dNRro6CmI771rpgeZcttjUzt9qOKAZJI0GR5y/syXnD6BgHzG2TT3fuU3AS+Cq
+FiUpKDp6NB6hnQVdCCSxlBRZwLyl1Xg7PCk4J5QQ2C2gwn7c3Jk39JjroZv8P1Ax
+9A6g06wrcF5GB5EbvHuscEK/Gcn3mk/Yjgu5trhN/uBihYWZegeYuXBJmGl6Ysky
+EO3LhZC1aw52FNFGnQHXoO+6a86lt7cxG/odBCHHos7wyiHaVcfM5JR89us5+nFT
+3alBI6mOH02dYN4DuLgoRISTlxevALx0z/j5pfmMNEYhtHd8Sr0=
+=OgXp
+-----END PGP SIGNATURE-----
 
-ath10k_pci 0000:3a:00.0: pci irq msi oper_irq_mode 2 irq_mode 0
-reset_mode 0
-ath10k_pci 0000:3a:00.0: Direct firmware load for ath10k/pre-cal-pci-
-0000:3a:00.0.bin failed with error -2
-ath10k_pci 0000:3a:00.0: Direct firmware load for ath10k/cal-pci-
-0000:3a:00.0.bin failed with error -2
-ath10k_pci 0000:3a:00.0: qca6174 hw3.2 target 0x05030000 chip_id
-0x00340aff sub 1a56:1535
-ath10k_pci 0000:3a:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0
-testmode 0
-ath10k_pci 0000:3a:00.0: firmware ver WLAN.RM.4.4-00022-QCARMSWPZ-2 api
-5 features wowlan,ignore-otp crc32 4d458559
-ath10k_pci 0000:3a:00.0: failed to fetch board data for bus=pci,bmi-
-chip-id=0,bmi-board-id=0 from ath10k/QCA6174/hw3.0/board-2.bin
-ath10k_pci 0000:3a:00.0: board_file api 1 bmi_id 0:0 crc32 ed5f849a
-ath10k_pci 0000:3a:00.0: Unknown eventid: 90118
-ath10k_pci 0000:3a:00.0: failed to ping firmware: -110
-ath10k_pci 0000:3a:00.0: failed to reset rx filter: -110
-ath10k_pci 0000:3a:00.0: could not init core (-110)
-ath10k_pci 0000:3a:00.0: could not probe fw (-110)
+--nextPart3634695.5oNXNPy3nW--
 
-Regards,
-Chris
+
+
+--===============5002421727054157685==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============5002421727054157685==--
