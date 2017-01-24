@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-f44.google.com ([74.125.82.44])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cW4As-0005UF-N7
- for ath10k@lists.infradead.org; Tue, 24 Jan 2017 16:42:29 +0000
-Received: by mail-wm0-f44.google.com with SMTP id c85so190470155wmi.1
- for <ath10k@lists.infradead.org>; Tue, 24 Jan 2017 08:42:05 -0800 (PST)
-From: Sven Eckelmann <sven.eckelmann@open-mesh.com>
-Subject: Re: [OpenWrt-Devel] ath10k mesh + ap + encryption?
-Date: Tue, 24 Jan 2017 17:41:01 +0100
-Message-ID: <2853028.UifzgH78X3@bentobox>
-In-Reply-To: <2962659.7QzjSqzP6C@bentobox>
-References: <2661831.slnB0LOeVt@prime> <5898628.mmcCycDigQ@prime>
- <2962659.7QzjSqzP6C@bentobox>
+Received: from smtp-out04.msg.oleane.net ([62.161.7.2])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cW51H-0002Oz-43
+ for ath10k@lists.infradead.org; Tue, 24 Jan 2017 17:36:37 +0000
+From: "Jean-Pierre Tosoni" <jp.tosoni@acksys.fr>
+References: <CAJ-Vmo=_apPFE1LQmXj6pn9g1c0bvzAS-gk86Hi7-CX+KuZtrw@mail.gmail.com>
+ <002c01d26fe0$2a664ab0$7f32e010$@acksys.fr>
+ <CAJ-VmokegH87gnsJ8Rp57OPnNUo_C=_7V0b9AD4-NcaYtLxJHw@mail.gmail.com>
+ <00d601d27651$ae648ee0$0b2daca0$@acksys.fr>
+ <CAJ-Vmo=JdX-KqjdmSfR+NU8w7ow1nXOhxkZCJWeNt8W3ebExNw@mail.gmail.com>
+In-Reply-To: <CAJ-Vmo=JdX-KqjdmSfR+NU8w7ow1nXOhxkZCJWeNt8W3ebExNw@mail.gmail.com>
+Subject: RE: ath9k/ath10k DFS testing / certification
+Date: Tue, 24 Jan 2017 17:52:47 +0100
+Message-ID: <010801d27662$4a79e220$df6da660$@acksys.fr>
 MIME-Version: 1.0
+Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,282 +23,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0572069875052974852=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: openwrt-devel@lists.openwrt.org
-Cc: Simon Wunderlich <sw@simonwunderlich.de>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, "Valo, Kalle" <kvalo@qca.qualcomm.com>, "Pedersen,
- Thomas" <twp@qca.qualcomm.com>, Felix Fietkau <nbd@nbd.name>
+To: 'Adrian Chadd' <adrian@freebsd.org>
+Cc: Cedric VONCKEN <cedric.voncken@acksys.fr>, ath10k@lists.infradead.org
 
---===============0572069875052974852==
-Content-Type: multipart/signed; boundary="nextPart2205884.Fjh6GFGQaA"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-
---nextPart2205884.Fjh6GFGQaA
-Content-Type: multipart/mixed; boundary="nextPart2106001.IEj1CzrAWl"
-Content-Transfer-Encoding: 7Bit
-
-This is a multi-part message in MIME format.
-
---nextPart2106001.IEj1CzrAWl
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-On Montag, 19. September 2016 11:34:00 CET Sven Eckelmann wrote:
-> On Montag, 19. September 2016 08:43:56 CEST Simon Wunderlich wrote:
-> [...]
-> > > We're testing encrypted AP + Mesh quite successfully right now with
-> > > this firmware: https://github.com/kvalo/ath10k-firmware/commit/307cb46b
-> > > 06661ebd3186723b5002de769c7add83, of course that is for a QCA4019 chip.
-> > > Which chip are you using? I can poke the firmware guys for possibility
-> > > of getting a 10.4.3.2 firmware build for it.
-[...]
->                | 802.11s encrypted | 802.11s unencrypted
-> ---------------+-------------------+--------------------
-> AP encrypted   | AP doesn't beacon | works
-> AP unencrypted | AP doesn't beacon | works
-> 
-> I've also checked 10.2.4.70.12-2 (doesn't seem to support encrypted mesh at 
-> all) and with rawmode=1 (makes no difference).
-
-I just tested it with a IPQ4019 with the (10.4-)3.2.1-00050 image. And I see a 
-similar problem with it. But the AP was not actually active (device was in AP 
-mode but no channel was set and it didn't beacon). So we end up again with an 
-incomplete initialized AP but hostapd was running.
-
-I've simply disabled the LEDE wifi stuff and ran the attached autostart.sh 
-manually. This seemed to work fine. This is rather odd because the same 
-configuration for wpa_supplicant and hostapd was used. It also works fine with 
-the normal LEDE setup scripts when encryption on the mesh device is disabled 
-and it also works fine with ath9k.
-
-With the LEDE scripts/netifd, hostapd thought that the AP went up:
-
-    root@lede:/# hostapd_cli status
-    Selected interface 'wlan0-1'
-    state=ENABLED
-    phy=phy0
-    freq=2462
-    num_sta_non_erp=0
-    num_sta_no_short_slot_time=0
-    num_sta_no_short_preamble=0
-    olbc=0
-    num_sta_ht_no_gf=0
-    num_sta_no_ht=0
-    num_sta_ht_20_mhz=0
-    num_sta_ht40_intolerant=0
-    olbc_ht=1
-    ht_op_mode=0x11
-    cac_time_seconds=0
-    cac_time_left_seconds=N/A
-    channel=11
-    secondary_channel=0
-    ieee80211n=1
-    ieee80211ac=0
-    bss[0]=wlan0-1
-    bssid[0]=ac:86:74:00:0e:35
-    ssid[0]=LEDE3-1
-    num_sta[0]=0
-
-iw dev didn't think so:
-
-    Interface wlan0-1
-            ifindex 13
-            wdev 0x5
-            addr ac:86:74:00:0e:35
-            type AP
-            txpower 30.00 dBm
-
-Interestingly, it sometimes (randomly) started to work when the AP interface 
-was switched to psk2 for encryption instead of using an unencrypted AP.
-
-Right now, it looks like an odd timing problem. Has someone else a good idea 
-what to test?
-
-
-Btw. we never received any (10.4-)3.2 based firmware for QCA988X from QCA. But 
-I am also not sure if I find time to retest it again with QCA988x.
-
-Kind regards,
-	Sven
---nextPart2106001.IEj1CzrAWl
-Content-Disposition: attachment; filename="wpa_supplicant.conf"
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"; name="wpa_supplicant.conf"
-
-network={
-        ssid="openmesh"
-        key_mgmt=SAE
-        mode=5
-        frequency=2462
-        psk="9f0a965af38f2d0a13b66d8b46ab962c"
-        mcast_rate=18
-}
-
---nextPart2106001.IEj1CzrAWl
-Content-Disposition: attachment; filename="hostapd.conf"
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"; name="hostapd.conf"
-
-driver=nl80211
-logger_syslog=127
-logger_syslog_level=2
-logger_stdout=127
-logger_stdout_level=2
-hw_mode=g
-channel=11
-ieee80211n=1
-ht_coex=0
-ht_capab=[LDPC][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1][MAX-AMSDU-7935][DSSS_CCK-40]
-interface=wlan0-1
-ctrl_interface=/var/run/hostapd
-ap_isolate=1
-disassoc_low_ack=1
-preamble=1
-wmm_enabled=1
-ignore_broadcast_ssid=0
-uapsd_advertisement_enabled=1
-auth_algs=1
-wpa=0
-ssid=LEDE3-1
-bridge=br-lan
-bssid=00:11:22:33:17:02
-
---nextPart2106001.IEj1CzrAWl
-Content-Disposition: attachment; filename="wifi.lede.config"
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"; name="wifi.lede.config"
-
-config wifi-device 'radio0'
-        option type 'mac80211'
-        option channel '11'
-        option hwmode '11g'
-        option path 'platform/soc/a000000.wifi'
-        option htmode 'HT20'
-        option disabled '0'
-
-config wifi-iface 'extra_radio0'
-        option device 'radio0'
-        option network 'lan'
-        option mode 'ap'
-        option ssid 'LEDE3-1'
-        option encryption 'none'
-        option disabled 0
-        option macaddr 'ac:86:74:00:0e:35'
-
-config wifi-iface 'default_radio0'
-        option device 'radio0'
-        option network 'lan'
-        option mode 'ap'
-        option ssid 'LEDE2-1'
-        option encryption 'psk2'
-        option key 'testtest'
-        option macaddr 'ac:86:74:00:0e:36'
-        option disabled 1
-
-config wifi-iface 'wmesh0'
-        option device 'radio0'
-        option ifname 'mesh0'
-        option network 'lan'
-        option mode 'mesh'
-        option mesh_id 'openmesh'
-        option disabled '0'
-        option mcast_rate '18000'
-        option macaddr 'ac:86:74:00:0e:37'
-        option mesh_ttl 1
-        option mesh_fwding 0
-#        option encryption 'none'
-        option ieee80211w 1
-        option encryption 'psk2+aes'
-        option key '9f0a965af38f2d0a13b66d8b46ab962c'
-
---nextPart2106001.IEj1CzrAWl
-Content-Disposition: attachment; filename="autostart.sh"
-Content-Transfer-Encoding: 7Bit
-Content-Type: application/x-shellscript; name="autostart.sh"
-
-cat > /tmp/hostapd.conf << EOF
-driver=nl80211
-logger_syslog=127
-logger_syslog_level=2
-logger_stdout=127
-logger_stdout_level=2
-hw_mode=g
-channel=11
-ieee80211n=1
-ht_coex=0
-ht_capab=[LDPC][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1][MAX-AMSDU-7935][DSSS_CCK-40]
-interface=wlan0-1
-ctrl_interface=/var/run/hostapd
-ap_isolate=1
-disassoc_low_ack=1
-preamble=1
-wmm_enabled=1
-ignore_broadcast_ssid=0
-uapsd_advertisement_enabled=1
-auth_algs=1
-wpa=0
-ssid=LEDE3-1
-bridge=br-lan
-bssid=00:11:22:33:17:02
-EOF
-cat > /tmp/wpa_supplicant.conf << EOF
-network={
-        ssid="openmesh"
-        key_mgmt=SAE
-        mode=5
-        frequency=2462
-        psk="9f0a965af38f2d0a13b66d8b46ab962c"
-        mcast_rate=18
-}
-EOF
-
-iw dev wlan0 del
-iw phy phy0 interface add wlan0-1 type managed
-iw phy phy0 interface add mesh0 type mp
-ip link set dev wlan0-1 address 00:11:22:33:17:02
-ip link set up dev mesh0
-brctl addif br-lan mesh0
-hostapd -d /tmp/hostapd.conf  &
-ip link set up dev wlan0-1
-wpa_supplicant -Dnl80211 -b br-lan -i mesh0 -c /tmp/wpa_supplicant.conf  &
-
---nextPart2106001.IEj1CzrAWl--
-
---nextPart2205884.Fjh6GFGQaA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAliHg50ACgkQXYcKB8Em
-e0ZG0RAA1v3nEq7V/vwFiuwFDSOi9wz4uSkDHq2KaoXsEh/2FKo5sTOKS6F/2jnv
-xXPQwZ45QmX/PE3d6eki/IJNDt16poImlidfwxSGxJOUHz99aLJ740gP8e7/81Df
-Bu/aEv9cXv6mp5w7Nja20Qjevvcx/l1Ch6Q4DJ7n6nX0QyIxKeqi9c7DZt4puv22
-MBBBLnHJPud1MvFvoCylGLG4GqJR0Dc5d13SNebEjFIpxbwkgGvoktQ/3IPGrA9d
-A4mlQ1IUcOYNjXJcOuXToXqELS5InvYtb90/zVaMuFqSuQA99LdQ78I5g0V+q87Q
-emvQ4UNadL39UICfMb6KZQBSNd9OcssUpy3PMXkqoO/pq5SnRQ1p7crtGBXRwtEx
-oqhGdp98YSCruq+mrAc7I5j2quD4tKpr6G4SZEIS8kuMhCuNNgPX/XhQNtYRn7Jn
-HD87tJ1NM0ox1yfLjTSZd/s2Y2W0WsojD3EVpycKV8mD2ARm99M+DKlqHha/OGMK
-zmnc7G/MVwWaz2s8uN2EjoRz8MJ2GQO4b/r05+jJ8gDJrpYuEvJcNv7qfnrDTBlx
-kIT7PvMAnvrygJdY3p5XjhPQB6Q7M0VnoEtPSB24hfxKFDd+cLPqu+EDZYSVt52O
-9TahFqAJJJixN5f/IRy6gaqF0iM7SxnW9OEH1TMEauHCYsyw7Ls=
-=8l0B
------END PGP SIGNATURE-----
-
---nextPart2205884.Fjh6GFGQaA--
-
-
-
---===============0572069875052974852==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============0572069875052974852==--
+Cgo+IC0tLS0tTWVzc2FnZSBkJ29yaWdpbmUtLS0tLQo+IERlIDogYXRoMTBrIFttYWlsdG86YXRo
+MTBrLWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZ10gRGUgbGEgcGFydCBkZQo+IEFkcmlhbiBD
+aGFkZAo+IEVudm95w6kgOiBtYXJkaSAyNCBqYW52aWVyIDIwMTcgMTc6MjcKPiDDgCA6IEplYW4t
+UGllcnJlIFRvc29uaQo+IENjIDogYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmc7IENlZHJpYyBW
+T05DS0VOCj4gT2JqZXQgOiBSZTogYXRoOWsvYXRoMTBrIERGUyB0ZXN0aW5nIC8gY2VydGlmaWNh
+dGlvbgo+IAo+IE9uIDI0IEphbnVhcnkgMjAxNyBhdCAwNjo1MywgSmVhbi1QaWVycmUgVG9zb25p
+IDxqcC50b3NvbmlAYWNrc3lzLmZyPgo+IHdyb3RlOgo+ID4KPiA+PiAtLS0tLU1lc3NhZ2UgZCdv
+cmlnaW5lLS0tLS0KPiA+PiBEZSA6IGF0aDEwayBbbWFpbHRvOmF0aDEway1ib3VuY2VzQGxpc3Rz
+LmluZnJhZGVhZC5vcmddIERlIGxhIHBhcnQgZGUKPiA+PiBBZHJpYW4gQ2hhZGQgRW52b3nDqSA6
+IGx1bmRpIDE2IGphbnZpZXIgMjAxNyAxODo0MyDDgCA6IEplYW4tUGllcnJlCj4gPj4gVG9zb25p
+IENjIDogQ2VkcmljIFZPTkNLRU47IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnIE9iamV0IDog
+UmU6Cj4gPj4gYXRoOWsvYXRoMTBrIERGUyB0ZXN0aW5nIC8gY2VydGlmaWNhdGlvbgo+ID4+Cj4g
+Pj4gaGl5YSwKPiA+Pgo+ID4+IFllYWggLSBpIHdhcyBhIHBhcnQgb2YgdGhhdCBkaXNjdXNzaW9u
+LiA6KSBUaGF0J3Mgd2h5IEkgd2FzIHBvaW50aW5nCj4gPj4gb3V0IHRoYXQgbGlrZWx5IEknbSBn
+b2luZyB0byBidWcgUUNBIHRvIGdldCB0aGlzIGZpeGVkIHdoZW4gdGhlIHRpbWUgaXMKPiByaWdo
+dC4KPiA+Pgo+ID4+IFNvLCB0aW1lIGlzIHJpZ2h0IDopCj4gPj4KPiA+PiBEaWQgeW91IGRvIERG
+UyBjZXJ0aWZpY2F0aW9uIGZvciBBUC9tYXN0ZXIgZGV2aWNlcywgb3IganVzdCBjbGllbnQ/Cj4g
+Pgo+ID4gV2UgZGlkIGl0IGZvciBib3RoIEFQIGFuZCBjbGllbnQgbW9kZXMuCj4gPiBXZSBoYWQg
+dGhlIHNhbWUgcHJvYmxlbSB3aXRoIElQRVJGIHRoYW4gU2ltb24sIGFuZCB3ZSBzb2x2ZWQgdGhh
+dCBieQo+IGRlZmluaW5nIGEgaHVnZSBwYWNrZXQgc2l6ZSBhbmQgSVBFUkYgd291bGQgc2VuZCBp
+dCBldmVyeSBub3cgYW5kIHRoZW4KPiBqdXN0IGVub3VnaCB0byBtZWV0IHRoZSB0aHJvdWdocHV0
+IHJlcXVpcmVkLgo+IAo+IFRoZSB0cmFmZmljIGR1dHkgY3ljbGUgc3R1ZmYgd2FzIGFsd2F5cyBh
+IHBhaW4gdG8gZ2V0ICJyaWdodCIgd2hlbiBJIHdhcwo+IGxhc3QgZG9pbmcgdGhpcyAocHJlIGF0
+aDEwayBoYXJkd2FyZS4pCj4gCj4gSXMgdGhpcyBqdXN0IGZvciB5b3VyIGxvY2FsIHRlc3Rpbmcs
+IG9yIGlzIHRoaXMgc29tZXRoaW5nIHRoZSB0ZXN0aW5nCj4gaG91c2UgLyBGQ0MgLyBldGMgZGVm
+aW5lcz8KCkZDQyBJIGRvbid0IGtub3csIEknbSBjb25jZXJuZWQgd2l0aCBFVFNJIDspCldlIHVz
+ZWQgdGhhdCBhdCBhbiBleHRlcm5hbCBsYWIsIGFuZCB0aGV5IHZlcmlmaWVkIHRoYXQgd2UgY29t
+cGxpZWQgd2l0aCB0aGUKMzAlIG92ZXIgMTAwbXMgcmVxdWlyZW1lbnQgKHNlZSBiZWxvdykuIAoK
+RVRTSSBFTiAzMDEgODkzIGRlZmluZXMgYSBzcGVjaWZpYyBidXJzdCByZXF1aXJlbWVudCBmb3Ig
+REZTIHRlc3RpbmcsIHRvIHF1b3RlIGl0OgogICIuLi5zaGFsbCBjb25zaXN0IG9mIHBhY2tldCB0
+cmFuc21pc3Npb25zIHRoYXQgdG9nZXRoZXIgZXhjZWVkIHRoZSB0cmFuc21pdHRlcgogIG1pbmlt
+dW0gYWN0aXZpdHkgcmF0aW8gb2YgMzAgJSBtZWFzdXJlZCBvdmVyIGFuIGludGVydmFsIG9mIDEw
+MCBtcy4uLiIKClRoZSByZXF1aXJlbWVudCBpcyBub3QgcmVhbGx5IHBpY2t5LCBpdCBjb3VsZCBi
+ZSBvbmUgbWVnYS1mcmFtZSBhZnRlciBldmVyeSBiZWFjb24gb3Igc3VjaC4KSWYgd2UgdXNlcyB0
+b28gbXVjaCB0aHJvdWdocHV0IG9yIHRpZ2h0bHkgc2VxdWVuY2VkIGZyYW1lcywgdGhlIHJhZGFy
+IHNpZ25hdHVyZXMgd291bGQgYmUgbG9zdCBhbW9uZyB0aGUgZGF0YSBmcmFtZXMuCgooT3RoZXIg
+dGVzdHMgKG5vdCBhYm91dCBERlMpIGhhdmUgbW9yZSBzdHJpbmdlbnQgcmVxdWlyZW1lbnRzLCBl
+LmcuIDEwJSBiYW5kd2lkdGgKb3ZlciBwZXJpb2RzIG9mIDJtcykKPiAKPiAoWWVzLCBJIGtub3cg
+YWJvdXQgdGhlIHRyYWZmaWMgZHV0eSBjeWNsZSBkZWZpbml0aW9ucyBpbiB0aGUgRkNDIHNwZWMg
+YW5kCj4gaG93IHRoYXQgY2hhbmdlZCBvdmVyIHRpbWUsIGJ1dCBJIGFsc28gcmVtZW1iZXIgaG93
+IGRpZmZlcmVudAo+IGxvY2F0aW9ucy9sYWJzIGhhZCBzdWJ0bHkgZGlmZmVyZW50IHRlc3Rpbmcg
+c2V0dXBzIHdpdGggZGlmZmVyZW50ICJidXJzdHkiCj4gdHJhZmZpYy4pCj4gCldlIG1hZGUgdGhl
+IHNldHVwIGFuZCB0aGUgbGFiIGNoZWNrZWQgdGhhdCBpdCB3YXMgd2l0aGluIHRoZSBub3JtIHJl
+cXVpcmVtZW50cy4KCkplYW4tUGllcnJlCj4gCj4gCj4gLWFkcmlhbgo+IAo+IF9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlz
+dAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
+MTBrCg==
