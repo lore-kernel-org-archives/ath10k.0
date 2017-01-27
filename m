@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cXAtk-0003hO-4E
- for ath10k@lists.infradead.org; Fri, 27 Jan 2017 18:05:22 +0000
+ id 1cXCER-00074v-KG
+ for ath10k@lists.infradead.org; Fri, 27 Jan 2017 19:30:49 +0000
 MIME-Version: 1.0
-Subject: Re: [1/3] ath10k: remove multiple defines of DIAG_TRANSFER_LIMIT
+Subject: Re: [v2] ath10k: Search SMBIOS for OEM board file extension
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1485183876-27080-1-git-send-email-srinivas.kandagatla@linaro.org>
-References: <1485183876-27080-1-git-send-email-srinivas.kandagatla@linaro.org>
-Message-ID: <10e75338551b4824b607cd630521b2f0@eusanexr01a.eu.qualcomm.com>
-Date: Fri, 27 Jan 2017 10:04:54 -0800
+In-Reply-To: <20170117150334.8859-1-ext.waldemar.rymarkiewicz@tieto.com>
+References: <20170117150334.8859-1-ext.waldemar.rymarkiewicz@tieto.com>
+Message-ID: <c57e3b178364400c914677dc577753ae@eusanexr01a.eu.qualcomm.com>
+Date: Fri, 27 Jan 2017 11:30:21 -0800
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +22,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, alanliu@qca.qualcomm.com, rwchang@qti.qualcomm.com, bartosz.markowski@tieto.com
 
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
-> DIAG_TRANSFER_LIMIT is redefined with same value and comments
-> just below this entry, remove this duplicate entry.
+Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com> wrote:
+> Board Data File (BDF) is loaded upon driver boot-up procedure. The right
+> board data file is identified, among others, by device and sybsystem ids.
 > 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> The problem, however, can occur when the (default) board data file cannot
+> fulfill with the vendor requirements and it is necessary to use a different
+> board data file.
+> 
+> To solve the issue QCA uses SMBIOS type 0xF8 to store Board Data File Name
+> Extension to specify the extension/variant name. The driver will take the
+> extension suffix into consideration and will load the right (non-default)
+> board data file if necessary.
+> 
+> If it is unnecessary to use extension board data file, please leave the
+> SMBIOS field blank and default configuration will be used.
+> 
+> Example:
+> If a default board data file for a specific board is identified by a string
+>       "bus=pci,vendor=168c,device=003e,subsystem-vendor=1028,
+>        subsystem-device=0310"
+> then the OEM specific data file, if used, could be identified by variant
+> suffix:
+>       "bus=pci,vendor=168c,device=003e,subsystem-vendor=1028,
+>        subsystem-device=0310,variant=DE_1AB"
+> 
+> Signed-off-by: Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>
 
-3 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-dd51fa3d8a1d ath10k: remove multiple defines of DIAG_TRANSFER_LIMIT
-0de4df5ba2ad ath10k: use dma_zalloc_coherent()
-1ad38fd719da ath10k: fix typo in addr calculation
+f2593cb1b291 ath10k: Search SMBIOS for OEM board file extension
 
 -- 
-https://patchwork.kernel.org/patch/9532691/
+https://patchwork.kernel.org/patch/9521307/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
