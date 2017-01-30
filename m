@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cY53E-00015W-6L
- for ath10k@lists.infradead.org; Mon, 30 Jan 2017 06:02:54 +0000
-From: <c_mkenna@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Add debugfs support to get per peer tids log via
- tracing
-Date: Mon, 30 Jan 2017 11:32:27 +0530
-Message-ID: <1485756147-13762-1-git-send-email-c_mkenna@qti.qualcomm.com>
+ id 1cY6xH-0006lp-6i
+ for ath10k@lists.infradead.org; Mon, 30 Jan 2017 08:04:53 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: Incomplete scan results after rf(un)kill
+Date: Mon, 30 Jan 2017 08:04:27 +0000
+Message-ID: <8737g1t1mh.fsf@kamboji.qca.qualcomm.com>
+References: <CAMVG2ssLQ897kVVE2jZrqsDm2XFmq7snoOG649FgGEogVjWX7g@mail.gmail.com>
+ <87y3xw4ieo.fsf@kamboji.qca.qualcomm.com>
+ <CAMVG2stRGR-rUAXABRaJjgD-816J5s2Jug0cB_sgfjnTjDWobg@mail.gmail.com>
+In-Reply-To: <CAMVG2stRGR-rUAXABRaJjgD-816J5s2Jug0cB_sgfjnTjDWobg@mail.gmail.com>	(Daniel
+ J. Blueman's message of "Sun, 29 Jan 2017 10:38:19 +0800")
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,123 +26,64 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mkenna@codeaurora.org, linux-wireless@vger.kernel.org, Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+To: Daniel J Blueman <daniel@quora.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+Daniel J Blueman <daniel@quora.org> writes:
 
-This patch provides support to get per peer tids log.
+> On 27 January 2017 at 23:44, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+>> Daniel J Blueman <daniel@quora.org> writes:
+>>
+>>> On 4.9.5 and previous, I've noticed that 20% of the time after
+>>> rfunkilling, AP scan results would often have only 1-2 out of the
+>>> previous 10 APs, and the situation would persist until removing and
+>>> reinserting the ath10k_pci module.
+>>>
+>>> This is on my Dell XPS 13 9360 (Kaby Lake) with current BIOS 1.2.3 on
+>>> Ubuntu (ElementaryOS) 16.04 with updates.
+>>>
+>>> Could this have any relation to the missing firmware [1]?
+>>>
+>>> What state can I capture to help diagnose this?
+>>
+>> Do you see any pattern what APs are visible when the bug happens? For
+>> example, are those 1-2 APs always the same one? And are they ones with
+>> strongest signal strength or maybe related to certain channels?
+>>
+>> After the bug happens how does the device work otherwise? Have you
+>> tested performance (iperf) or signal strength? Is there any packet loss
+>> etc?
+>
+> Many thanks for following up Kalle! Interestingly, I do see the same
+> subset of APs (but not the strongest) in the Networkmanager GUI,
+> however when I scan from the CLI, nothing:
+>
+> # nmcli dev wifi
+> *  SSID  MODE  CHAN  RATE  SIGNAL  BARS  SECURITY
+> #
 
-echo 1 > /sys/kernel/debug/ieee80211/phyX/netdev\:wlanX/stations/
-XX:XX/peer_debug_trigger
+Better to use 'sudo iw wlan0 scan' (or whatever is the ath10k network
+interface name in your setup, systemd has made guessing the name
+difficult). That provides more information and communicates directly
+with kernel.
 
-These logs will be the part of FWLOGS which we collect the logs
-via tracing interface. Here we will get the peer tigd logs only
-once(not repeatedly) when we write 1 to the debugfs file.
+> The issue also occurs when coming out of suspend. I didn't check dmesg
+> other times, but this may or may not be related:
+>
+> [  204.454815] WARNING: CPU: 3 PID: 0 at
+> /home/kernel/COD/linux/net/core/dev.c:5161 net_rx_action+0x26e/0x380
 
-Signed-off-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/debugfs_sta.c |   65 +++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h         |    1 +
- 2 files changed, 66 insertions(+)
+It may very well be. Do you know exactly to what warning that line 5161
+points to in your kernel version? With latest ath.git master branch line
+5182 in dev.c is this warning napi_poll():
 
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index fce6f81..7353e7e 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -306,6 +306,69 @@ static ssize_t ath10k_dbg_sta_write_delba(struct file *file,
- 	.llseek = default_llseek,
- };
- 
-+static ssize_t ath10k_dbg_sta_read_peer_debug_trigger(struct file *file,
-+						      char __user *user_buf,
-+						      size_t count,
-+						      loff_t *ppos)
-+{
-+	struct ieee80211_sta *sta = file->private_data;
-+	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	struct ath10k *ar = arsta->arvif->ar;
-+	char buf[8];
-+	int len = 0;
-+
-+	mutex_lock(&ar->conf_mutex);
-+	len = scnprintf(buf, sizeof(buf) - len,
-+			"Write 1 to once trigger the debug logs\n");
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-+}
-+
-+static ssize_t
-+ath10k_dbg_sta_write_peer_debug_trigger(struct file *file,
-+					const char __user *user_buf,
-+					size_t count, loff_t *ppos)
-+{
-+	struct ieee80211_sta *sta = file->private_data;
-+	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	struct ath10k *ar = arsta->arvif->ar;
-+	u8 peer_debug_trigger;
-+	int ret;
-+
-+	if (kstrtou8_from_user(user_buf, count, 0, &peer_debug_trigger))
-+		return -EINVAL;
-+
-+	if (peer_debug_trigger != 1)
-+		return -EINVAL;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	if (ar->state != ATH10K_STATE_ON) {
-+		ret = -ENETDOWN;
-+		goto out;
-+	}
-+
-+	ret = ath10k_wmi_peer_set_param(ar, arsta->arvif->vdev_id, sta->addr,
-+					WMI_PEER_DEBUG, peer_debug_trigger);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to set param to trigger peer tid logs for station ret: %d\n",
-+			    ret);
-+		goto out;
-+	}
-+out:
-+	mutex_unlock(&ar->conf_mutex);
-+	return count;
-+}
-+
-+static const struct file_operations fops_peer_debug_trigger = {
-+	.open = simple_open,
-+	.read = ath10k_dbg_sta_read_peer_debug_trigger,
-+	.write = ath10k_dbg_sta_write_peer_debug_trigger,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			    struct ieee80211_sta *sta, struct dentry *dir)
- {
-@@ -314,4 +377,6 @@ void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 	debugfs_create_file("addba", S_IWUSR, dir, sta, &fops_addba);
- 	debugfs_create_file("addba_resp", S_IWUSR, dir, sta, &fops_addba_resp);
- 	debugfs_create_file("delba", S_IWUSR, dir, sta, &fops_delba);
-+	debugfs_create_file("peer_debug_trigger", 0600, dir, sta,
-+			    &fops_peer_debug_trigger);
- }
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 861c2d8..1b1c1ef 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -5811,6 +5811,7 @@ enum wmi_peer_param {
- 	WMI_PEER_CHAN_WIDTH = 0x4,
- 	WMI_PEER_NSS        = 0x5,
- 	WMI_PEER_USE_4ADDR  = 0x6,
-+	WMI_PEER_DEBUG      = 0xa,
- 	WMI_PEER_DUMMY_VAR  = 0xff, /* dummy parameter for STA PS workaround */
- };
- 
+	WARN_ON_ONCE(work > weight);
+
+But I do not know if you are seeing that warning or something else
+because my kernel sources doesn't match what you use.
+
 -- 
-1.7.9.5
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
