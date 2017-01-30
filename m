@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cY6xH-0006lp-6i
- for ath10k@lists.infradead.org; Mon, 30 Jan 2017 08:04:53 +0000
+ id 1cY75w-0003Ae-NQ
+ for ath10k@lists.infradead.org; Mon, 30 Jan 2017 08:13:50 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: Incomplete scan results after rf(un)kill
-Date: Mon, 30 Jan 2017 08:04:27 +0000
-Message-ID: <8737g1t1mh.fsf@kamboji.qca.qualcomm.com>
-References: <CAMVG2ssLQ897kVVE2jZrqsDm2XFmq7snoOG649FgGEogVjWX7g@mail.gmail.com>
- <87y3xw4ieo.fsf@kamboji.qca.qualcomm.com>
- <CAMVG2stRGR-rUAXABRaJjgD-816J5s2Jug0cB_sgfjnTjDWobg@mail.gmail.com>
-In-Reply-To: <CAMVG2stRGR-rUAXABRaJjgD-816J5s2Jug0cB_sgfjnTjDWobg@mail.gmail.com>	(Daniel
- J. Blueman's message of "Sun, 29 Jan 2017 10:38:19 +0800")
+Subject: Re: QCA988X firmware pull-push support
+Date: Mon, 30 Jan 2017 08:13:25 +0000
+Message-ID: <87y3xtrmn2.fsf@kamboji.qca.qualcomm.com>
+References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
+ <CAJ-Vmo=yD7Ct5LFXBO3qNhKsNco91VXMmZOYeBaAuw+DFGq=RQ@mail.gmail.com>
+ <CAHNKnsT8mzHefrnC4ybrR8T16dAqc4G_SDGesxdU7+81xhuYpw@mail.gmail.com>
+ <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>
+In-Reply-To: <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>	(Adrian
+ Chadd's message of "Sun, 29 Jan 2017 18:50:23 -0800")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -26,61 +27,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Daniel J Blueman <daniel@quora.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Adrian Chadd <adrian.chadd@gmail.com>
+Cc: Sergey Ryazanov <ryazanov.s.a@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Daniel J Blueman <daniel@quora.org> writes:
+Adrian Chadd <adrian.chadd@gmail.com> writes:
 
-> On 27 January 2017 at 23:44, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
->> Daniel J Blueman <daniel@quora.org> writes:
->>
->>> On 4.9.5 and previous, I've noticed that 20% of the time after
->>> rfunkilling, AP scan results would often have only 1-2 out of the
->>> previous 10 APs, and the situation would persist until removing and
->>> reinserting the ath10k_pci module.
->>>
->>> This is on my Dell XPS 13 9360 (Kaby Lake) with current BIOS 1.2.3 on
->>> Ubuntu (ElementaryOS) 16.04 with updates.
->>>
->>> Could this have any relation to the missing firmware [1]?
->>>
->>> What state can I capture to help diagnose this?
->>
->> Do you see any pattern what APs are visible when the bug happens? For
->> example, are those 1-2 APs always the same one? And are they ones with
->> strongest signal strength or maybe related to certain channels?
->>
->> After the bug happens how does the device work otherwise? Have you
->> tested performance (iperf) or signal strength? Is there any packet loss
->> etc?
+> On 29 January 2017 at 17:20, Sergey Ryazanov <ryazanov.s.a@gmail.com> wrote:
+>> Yep. Looks like so.
 >
-> Many thanks for following up Kalle! Interestingly, I do see the same
-> subset of APs (but not the strongest) in the Networkmanager GUI,
-> however when I scan from the CLI, nothing:
+> Which is good, because my FreeBSD ath10k port only works with 10.1 /
+> 10.2 firmware on earlier chips, and I haven't figured out the
+> intermediate software queue support that came with 10.4. :-)
 >
-> # nmcli dev wifi
-> *  SSID  MODE  CHAN  RATE  SIGNAL  BARS  SECURITY
-> #
+> But yeah. I'll wake for Kalle to verify, but I think it's a 10.4
+> thing
 
-Better to use 'sudo iw wlan0 scan' (or whatever is the ath10k network
-interface name in your setup, systemd has made guessing the name
-difficult). That provides more information and communicates directly
-with kernel.
+So there are two parts here, ieee80211_ops::wake_tx_queue() support in
+ath10k and ATH10K_FW_FEATURE_PEER_FLOW_CONTROL in firmware. We did have
+wake_tx_queue() support enabled for all hw/fw combinations but it was
+changed because some people claimed there are throughput regressions in
+certain cases. So for now we only enable wake_tx_queue() support only if
+firmware supports ATH10K_FW_FEATURE_PEER_FLOW_CONTROL:
 
-> The issue also occurs when coming out of suspend. I didn't check dmesg
-> other times, but this may or may not be related:
->
-> [  204.454815] WARNING: CPU: 3 PID: 0 at
-> /home/kernel/COD/linux/net/core/dev.c:5161 net_rx_action+0x26e/0x380
+	if (!test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL,
+		      ar->running_fw->fw_file.fw_features))
+		ar->ops->wake_tx_queue = NULL;
 
-It may very well be. Do you know exactly to what warning that line 5161
-points to in your kernel version? With latest ath.git master branch line
-5182 in dev.c is this warning napi_poll():
+I remember that there were some improvements with wake_tx_queue() even
+if firmware didn't support ATH10K_FW_FEATURE_PEER_FLOW_CONTROL. I'm
+starting to wonder should we have a module parameter to force use of
+wake_tx_queue()?
 
-	WARN_ON_ONCE(work > weight);
-
-But I do not know if you are seeing that warning or something else
-because my kernel sources doesn't match what you use.
+And IIRC ATH10K_FW_FEATURE_PEER_FLOW_CONTROL was supported in some of
+10.4 releases, but not all of them.
 
 -- 
 Kalle Valo
