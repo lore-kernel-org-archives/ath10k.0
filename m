@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cY75w-0003Ae-NQ
- for ath10k@lists.infradead.org; Mon, 30 Jan 2017 08:13:50 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: QCA988X firmware pull-push support
-Date: Mon, 30 Jan 2017 08:13:25 +0000
-Message-ID: <87y3xtrmn2.fsf@kamboji.qca.qualcomm.com>
-References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
- <CAJ-Vmo=yD7Ct5LFXBO3qNhKsNco91VXMmZOYeBaAuw+DFGq=RQ@mail.gmail.com>
- <CAHNKnsT8mzHefrnC4ybrR8T16dAqc4G_SDGesxdU7+81xhuYpw@mail.gmail.com>
- <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>
-In-Reply-To: <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>	(Adrian
- Chadd's message of "Sun, 29 Jan 2017 18:50:23 -0800")
-Content-Language: en-US
+ id 1cY7bW-00080A-SQ
+ for ath10k@lists.infradead.org; Mon, 30 Jan 2017 08:46:28 +0000
+From: <c_traja@qti.qualcomm.com>
+Subject: [PATCHv2] ath10k: fix boot failure in UTF mode/testmode
+Date: Mon, 30 Jan 2017 14:15:58 +0530
+Message-ID: <1485765958-26802-1-git-send-email-c_traja@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,42 +20,71 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian.chadd@gmail.com>
-Cc: Sergey Ryazanov <ryazanov.s.a@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, tamizhchelvam@codeaurora.org, linux-wireless@vger.kernel.org, stable@vger.kernel.org
 
-Adrian Chadd <adrian.chadd@gmail.com> writes:
+From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
-> On 29 January 2017 at 17:20, Sergey Ryazanov <ryazanov.s.a@gmail.com> wrote:
->> Yep. Looks like so.
->
-> Which is good, because my FreeBSD ath10k port only works with 10.1 /
-> 10.2 firmware on earlier chips, and I haven't figured out the
-> intermediate software queue support that came with 10.4. :-)
->
-> But yeah. I'll wake for Kalle to verify, but I think it's a 10.4
-> thing
+Rx filter reset and the dynamic tx switch mode (EXT_RESOURCE_CFG)
+configuration are causing the following errors when UTF firmware
+is loaded to the target.
 
-So there are two parts here, ieee80211_ops::wake_tx_queue() support in
-ath10k and ATH10K_FW_FEATURE_PEER_FLOW_CONTROL in firmware. We did have
-wake_tx_queue() support enabled for all hw/fw combinations but it was
-changed because some people claimed there are throughput regressions in
-certain cases. So for now we only enable wake_tx_queue() support only if
-firmware supports ATH10K_FW_FEATURE_PEER_FLOW_CONTROL:
+Error message 1:
+[ 598.015629] ath10k_pci 0001:01:00.0: failed to ping firmware: -110
+[ 598.020828] ath10k_pci 0001:01:00.0: failed to reset rx filter: -110
+[ 598.141556] ath10k_pci 0001:01:00.0: failed to start core (testmode): -110
 
-	if (!test_bit(ATH10K_FW_FEATURE_PEER_FLOW_CONTROL,
-		      ar->running_fw->fw_file.fw_features))
-		ar->ops->wake_tx_queue = NULL;
+Error message 2:
+[ 668.615839] ath10k_ahb a000000.wifi: failed to send ext resource cfg command : -95
+[ 668.618902] ath10k_ahb a000000.wifi: failed to start core (testmode): -95
 
-I remember that there were some improvements with wake_tx_queue() even
-if firmware didn't support ATH10K_FW_FEATURE_PEER_FLOW_CONTROL. I'm
-starting to wonder should we have a module parameter to force use of
-wake_tx_queue()?
+Avoiding these configurations while bringing the target in
+testmode is solving the problem.
 
-And IIRC ATH10K_FW_FEATURE_PEER_FLOW_CONTROL was supported in some of
-10.4 releases, but not all of them.
+Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+---
+v2:
+   *Added stable@vger.kernel.org in cc list
 
+ drivers/net/wireless/ath/ath10k/core.c |   14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 874c2a7..0d12761 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1922,7 +1922,8 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "firmware %s booted\n",
+ 		   ar->hw->wiphy->fw_version);
+ 
+-	if (test_bit(WMI_SERVICE_EXT_RES_CFG_SUPPORT, ar->wmi.svc_map)) {
++	if (test_bit(WMI_SERVICE_EXT_RES_CFG_SUPPORT, ar->wmi.svc_map) &&
++	    mode == ATH10K_FIRMWARE_MODE_NORMAL) {
+ 		val = 0;
+ 		if (ath10k_peer_stats_enabled(ar))
+ 			val = WMI_10_4_PEER_STATS;
+@@ -1975,10 +1976,13 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 	 * possible to implicitly make it correct by creating a dummy vdev and
+ 	 * then deleting it.
+ 	 */
+-	status = ath10k_core_reset_rx_filter(ar);
+-	if (status) {
+-		ath10k_err(ar, "failed to reset rx filter: %d\n", status);
+-		goto err_hif_stop;
++	if (mode == ATH10K_FIRMWARE_MODE_NORMAL) {
++		status = ath10k_core_reset_rx_filter(ar);
++		if (status) {
++			ath10k_err(ar,
++				   "failed to reset rx filter: %d\n", status);
++			goto err_hif_stop;
++		}
+ 	}
+ 
+ 	/* If firmware indicates Full Rx Reorder support it must be used in a
 -- 
-Kalle Valo
+1.7.9.5
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
