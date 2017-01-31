@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x22f.google.com ([2607:f8b0:400d:c09::22f])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cYWi0-0007pH-9w
- for ath10k@lists.infradead.org; Tue, 31 Jan 2017 11:34:50 +0000
-Received: by mail-qk0-x22f.google.com with SMTP id u25so159870212qki.2
- for <ath10k@lists.infradead.org>; Tue, 31 Jan 2017 03:34:27 -0800 (PST)
+ id 1cYZx7-0001aE-Ec
+ for ath10k@lists.infradead.org; Tue, 31 Jan 2017 15:02:39 +0000
 MIME-Version: 1.0
-In-Reply-To: <c3814c7d-eed3-dad2-c568-6ce456ee7166@gmail.com>
-References: <CAHNpzpeRE6ha4JA9i4oyJ2BjgJg53FvDpAb1yZccncrmTeiBdQ@mail.gmail.com>
- <8737g45xc7.fsf@kamboji.qca.qualcomm.com>
- <c3814c7d-eed3-dad2-c568-6ce456ee7166@gmail.com>
-From: Akesh M Chacko <akesh.chacko@vvdntech.in>
-Date: Tue, 31 Jan 2017 17:04:26 +0530
-Message-ID: <CAHNpzpdbTnapQFPwYhUhi5EvLjQSdpqy9AHMH04KcqF2jHWw_A@mail.gmail.com>
-Subject: Re: Driver support for QCA6174 chip using SDIO interface
+Subject: Re: [RFC] ath10k: silence firmware file probing warnings
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
+References: <1468933237-5226-1-git-send-email-michal.kazior@tieto.com>
+Message-ID: <8c891ab36ff94bdfa1ff91c3f4d2e2a3@eusanexr01a.eu.qualcomm.com>
+Date: Tue, 31 Jan 2017 07:02:10 -0800
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,48 +22,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, Ann Lo <annlo.tech@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Thanks for sharing the patches,
-Our custom board is under assembly stage, once we have the board, will
-test it and let u know
-Thanks & Regards
-Akesh M Chacko
-Cell : +91 9567084416| Skype: akesh.vvdn | mail : akesh.chacko@vvdntech.in
+Michal Kazior <michal.kazior@tieto.com> wrote:
+> Firmware files are versioned to prevent older
+> driver instances to load unsupported firmware
+> blobs. This is reflected with a fallback logic
+> which attempts to load several firmware files.
+> 
+> This however produced a lot of unnecessary
+> warnings sometimes confusing users and leading
+> them to rename firmware files making things even
+> more confusing.
+> 
+> Hence use request_firmware_direct() which does not
+> produce extra warnings. This shouldn't really
+> break anything because most modern systems don't
+> rely on udev/hotplug helpers to load firmware
+> files anymore.
+> 
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
+While testing Erik's usb patches I noticed one problem if the firmware (or
+board file) is not found:
 
-On Mon, Jan 30, 2017 at 2:46 AM, Erik Stromdahl
-<erik.stromdahl@gmail.com> wrote:
-> If you are interested in trying the latest version of the sdio code
-> you can clone the below repo:
->
-> https://github.com/erstrom/linux-ath.git
->
-> I have just pushed some updates for QCA9377 SDIO (that might work with
-> QCA6174 chipsets as well).
->
-> I will do some more testing of this code during the weeks to come.
->
-> If you could try it out and give me feedback it would be great!
->
->
-> On 2017-01-27 16:36, Valo, Kalle wrote:
->>
->> Akesh M Chacko <akesh.chacko@vvdntech.in> writes:
->>
->>> We are using QCA6174 chip on our embedded platform using SDIO
->>> interface. could you please help us to get the SDIO support for
->>> QCA6174 driver.
->>
->>
->> Erik Stromdahl is working on adding SDIO support to ath10k:
->>
->> https://patchwork.kernel.org/patch/9516477/
->>
->> But it's still WIP.
->>
->
+[  517.389399] usbcore: registered new interface driver ath10k_usb
+[  517.391756] usb 2-1.3: could not fetch firmware files (-2)
+[  517.391985] usb 2-1.3: could not probe fw (-2)
+
+Now the user has no way to know what file is exactly missing. I'll try to
+improve that in v2.
+
+-- 
+https://patchwork.kernel.org/patch/9237095/
+
+Documentation about submitting wireless patches and checking status
+from patchwork:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
