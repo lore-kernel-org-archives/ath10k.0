@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cYdNi-00059O-2X
- for ath10k@lists.infradead.org; Tue, 31 Jan 2017 18:42:20 +0000
+ id 1cYdSL-0002TG-MA
+ for ath10k@lists.infradead.org; Tue, 31 Jan 2017 18:47:07 +0000
 From: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix reading sram contents for QCA4019
-Date: Wed, 1 Feb 2017 00:06:51 +0530
-Message-ID: <1485887811-23313-1-git-send-email-arnagara@qti.qualcomm.com>
+Subject: [PATCH v2 1/2] cfg80211: Add support to set tx power for a station
+ associated
+Date: Wed, 1 Feb 2017 00:11:40 +0530
+Message-ID: <1485888101-23454-1-git-send-email-arnagara@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,214 +21,195 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, arnagara@codeaurora.org, linux-wireless@vger.kernel.org
+To: linux-wireless@vger.kernel.org
+Cc: johannes@sipsolutions.net, arnagara@codeaurora.org, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-With QCA4019 platform, SRAM address can be accessed directly from host but
-currently, we are assuming sram addresses cannot be accessed directly and
-hence we convert the addresses.
+This patch adds support to set transmit power setting type and transmit
+power level attributes to NL80211_CMD_SET_STATION in order to facilitate
+adjusting the transmit power level of a station associated to the AP.
 
-While there, clean up growing hw checks during conversion of target CPU
-address to CE address. Now we have function pointer pertaining to different
-chips.
+The added attributes allow selection of automatic and limited transmit
+power level, with the level defined in mBm format.
 
 Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/ahb.c | 23 ++++++++++++++++
- drivers/net/wireless/ath/ath10k/pci.c | 51 ++++++++++++++++++++++-------------
- drivers/net/wireless/ath/ath10k/pci.h |  5 ++++
- 3 files changed, 60 insertions(+), 19 deletions(-)
+v2:
+	- refactor the shared code
+	- "keep what you had" using STATION_PARAM_APPLY_* BIT
+	- feature flag to let the user know if this feature is supported or not (Johannes)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-index 766c63b..45226db 100644
---- a/drivers/net/wireless/ath/ath10k/ahb.c
-+++ b/drivers/net/wireless/ath/ath10k/ahb.c
-@@ -33,6 +33,9 @@
+ include/net/cfg80211.h       |  6 ++++++
+ include/uapi/linux/nl80211.h | 15 +++++++++++++
+ net/wireless/nl80211.c       | 50 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 71 insertions(+)
+
+diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+index 814be4b..c989fbd 100644
+--- a/include/net/cfg80211.h
++++ b/include/net/cfg80211.h
+@@ -808,6 +808,7 @@ enum station_parameters_apply_mask {
+ 	STATION_PARAM_APPLY_UAPSD = BIT(0),
+ 	STATION_PARAM_APPLY_CAPABILITY = BIT(1),
+ 	STATION_PARAM_APPLY_PLINK_STATE = BIT(2),
++	STATION_PARAM_APPLY_STA_TXPOWER = BIT(3),
+ };
  
- MODULE_DEVICE_TABLE(of, ath10k_ahb_of_match);
+ /**
+@@ -849,6 +850,10 @@ enum station_parameters_apply_mask {
+  * @opmode_notif: operating mode field from Operating Mode Notification
+  * @opmode_notif_used: information if operating mode field is used
+  * @support_p2p_ps: information if station supports P2P PS mechanism
++ * @txpwr: tx power (in mBm) to be used for sending data traffic. If tx power
++ *	is not provided, the default per-interface tx power setting will be
++ *	overriding. Driver should be picking up the lowest tx power, either tx
++ *	power per-interface or per-station.
+  */
+ struct station_parameters {
+ 	const u8 *supported_rates;
+@@ -876,6 +881,7 @@ struct station_parameters {
+ 	u8 opmode_notif;
+ 	bool opmode_notif_used;
+ 	int support_p2p_ps;
++	unsigned int txpwr;
+ };
  
-+#define QCA4019_SRAM_ADDR      0x000C0000
-+#define QCA4019_SRAM_LEN       0x00040000 /* 256 kb */
+ /**
+diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
+index 6b76e3b..de2f72c 100644
+--- a/include/uapi/linux/nl80211.h
++++ b/include/uapi/linux/nl80211.h
+@@ -1980,6 +1980,15 @@ enum nl80211_commands {
+  * @NL80211_ATTR_BSSID: The BSSID of the AP. Note that %NL80211_ATTR_MAC is also
+  *	used in various commands/events for specifying the BSSID.
+  *
++ * @NL80211_ATTR_STA_TX_POWER_SETTING: Transmit power setting type (u32) for
++ *	station associated with the AP. See &enum nl80211_tx_power_setting for
++ *	possible values.
++ * @NL80211_ATTR_STA_TX_POWER: Transmit power level (u32) in mBm units. This
++ *	allows to set Tx power for a station. If this attribute is not included,
++ *	the default per-interface tx power setting will be overriding. Driver
++ *	should be picking up the lowest tx power, either tx power per-interface
++ *	or per-station.
++ *
+  * @NUM_NL80211_ATTR: total number of nl80211_attrs available
+  * @NL80211_ATTR_MAX: highest attribute number currently defined
+  * @__NL80211_ATTR_AFTER_LAST: internal use
+@@ -2386,6 +2395,9 @@ enum nl80211_attrs {
+ 
+ 	NL80211_ATTR_BSSID,
+ 
++	NL80211_ATTR_STA_TX_POWER_SETTING,
++	NL80211_ATTR_STA_TX_POWER,
 +
- static inline struct ath10k_ahb *ath10k_ahb_priv(struct ath10k *ar)
- {
- 	return &((struct ath10k_pci *)ar->drv_priv)->ahb[0];
-@@ -699,6 +702,25 @@ static int ath10k_ahb_hif_power_up(struct ath10k *ar)
- 	return ret;
+ 	/* add attributes here, update the policy in nl80211.c */
+ 
+ 	__NL80211_ATTR_AFTER_LAST,
+@@ -4697,6 +4709,8 @@ enum nl80211_feature_flags {
+  *	configuration (AP/mesh) with VHT rates.
+  * @NL80211_EXT_FEATURE_FILS_STA: This driver supports Fast Initial Link Setup
+  *	with user space SME (NL80211_CMD_AUTHENTICATE) in station mode.
++ * @NL80211_EXT_FEATURE_STA_TX_PWR: This driver supports controlling tx power
++ *	to a station.
+  *
+  * @NUM_NL80211_EXT_FEATURES: number of extended features.
+  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
+@@ -4712,6 +4726,7 @@ enum nl80211_ext_feature_index {
+ 	NL80211_EXT_FEATURE_BEACON_RATE_HT,
+ 	NL80211_EXT_FEATURE_BEACON_RATE_VHT,
+ 	NL80211_EXT_FEATURE_FILS_STA,
++	NL80211_EXT_FEATURE_STA_TX_PWR,
+ 
+ 	/* add new features before the definition below */
+ 	NUM_NL80211_EXT_FEATURES,
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index ef5eff93..ace87de 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -246,6 +246,8 @@ enum nl80211_multicast_groups {
+ 	[NL80211_ATTR_STA_SUPPORTED_RATES] = { .type = NLA_BINARY,
+ 					       .len = NL80211_MAX_SUPP_RATES },
+ 	[NL80211_ATTR_STA_PLINK_ACTION] = { .type = NLA_U8 },
++	[NL80211_ATTR_STA_TX_POWER_SETTING] = { .type = NLA_U32 },
++	[NL80211_ATTR_STA_TX_POWER] = { .type = NLA_U32 },
+ 	[NL80211_ATTR_STA_VLAN] = { .type = NLA_U32 },
+ 	[NL80211_ATTR_MNTR_FLAGS] = { /* NLA_NESTED can't be empty */ },
+ 	[NL80211_ATTR_MESH_ID] = { .type = NLA_BINARY,
+@@ -4548,6 +4550,8 @@ int cfg80211_check_station_change(struct wiphy *wiphy,
+ 			return -EINVAL;
+ 		if (params->sta_modify_mask & STATION_PARAM_APPLY_CAPABILITY)
+ 			return -EINVAL;
++		if (params->sta_modify_mask & STATION_PARAM_APPLY_STA_TXPOWER)
++			return -EINVAL;
+ 		if (params->supported_rates)
+ 			return -EINVAL;
+ 		if (params->ext_capab || params->ht_capa || params->vht_capa)
+@@ -4755,6 +4759,40 @@ static int nl80211_set_station_tdls(struct genl_info *info,
+ 	return nl80211_parse_sta_wme(info, params);
  }
  
-+static u32 ath10k_ahb_qca4019_targ_cpu_to_ce_addr(struct ath10k *ar, u32 addr)
++static int nl80211_parse_sta_txpower_setting(struct genl_info *info,
++					     struct station_parameters *params)
 +{
-+	u32 val = 0, region = addr & 0xfffff;
++	struct cfg80211_registered_device *rdev = info->user_ptr[0];
++	enum nl80211_tx_power_setting type;
++	int idx;
 +
-+	val = ath10k_pci_read32(ar, PCIE_BAR_REG_ADDRESS);
++	if (!rdev->ops->set_tx_power ||
++	    !wiphy_ext_feature_isset(&rdev->wiphy,
++				     NL80211_EXT_FEATURE_STA_TX_PWR))
++		return -EOPNOTSUPP;
 +
-+	if (region >= QCA4019_SRAM_ADDR && region <=
-+	    (QCA4019_SRAM_ADDR + QCA4019_SRAM_LEN)) {
-+		/* SRAM contents for QCA4019 can be directly accessed and
-+		 * no conversions are required
-+		 */
-+		val |= region;
++	idx = NL80211_ATTR_STA_TX_POWER_SETTING;
++	type = nla_get_u32(info->attrs[idx]);
++
++	if (!info->attrs[NL80211_ATTR_STA_TX_POWER] &&
++	    (type != NL80211_TX_POWER_AUTOMATIC))
++		return -EINVAL;
++
++	if (type != NL80211_TX_POWER_AUTOMATIC) {
++		if (type == NL80211_TX_POWER_LIMITED) {
++			idx = NL80211_ATTR_STA_TX_POWER;
++			params->txpwr = nla_get_u32(info->attrs[idx]);
++			params->sta_modify_mask |=
++						STATION_PARAM_APPLY_STA_TXPOWER;
++		} else {
++			return -EINVAL;
++		}
 +	} else {
-+		val |= 0x100000 | region;
++		params->txpwr = 0;
++	}
++	return 0;
++}
++
+ static int nl80211_set_station(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	struct cfg80211_registered_device *rdev = info->user_ptr[0];
+@@ -4854,6 +4892,12 @@ static int nl80211_set_station(struct sk_buff *skb, struct genl_info *info)
+ 		params.local_pm = pm;
+ 	}
+ 
++	if (info->attrs[NL80211_ATTR_STA_TX_POWER_SETTING]) {
++		err = nl80211_parse_sta_txpower_setting(info, &params);
++		if (err)
++			return err;
 +	}
 +
-+	return val;
-+}
+ 	/* Include parameters for TDLS peer (will check later) */
+ 	err = nl80211_set_station_tdls(info, &params);
+ 	if (err)
+@@ -4981,6 +5025,12 @@ static int nl80211_new_station(struct sk_buff *skb, struct genl_info *info)
+ 			return -EINVAL;
+ 	}
+ 
++	if (info->attrs[NL80211_ATTR_STA_TX_POWER_SETTING]) {
++		err = nl80211_parse_sta_txpower_setting(info, &params);
++		if (err)
++			return err;
++	}
 +
- static const struct ath10k_hif_ops ath10k_ahb_hif_ops = {
- 	.tx_sg                  = ath10k_pci_hif_tx_sg,
- 	.diag_read              = ath10k_pci_hif_diag_read,
-@@ -766,6 +788,7 @@ static int ath10k_ahb_probe(struct platform_device *pdev)
- 	ar_pci->mem_len = ar_ahb->mem_len;
- 	ar_pci->ar = ar;
- 	ar_pci->bus_ops = &ath10k_ahb_bus_ops;
-+	ar_pci->targ_cpu_to_ce_addr = ath10k_ahb_qca4019_targ_cpu_to_ce_addr;
- 
- 	ret = ath10k_pci_setup_resource(ar);
- 	if (ret) {
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index d2aa9e5..6e0d062 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -840,31 +840,35 @@ void ath10k_pci_rx_replenish_retry(unsigned long ptr)
- 	ath10k_pci_rx_post(ar);
- }
- 
--static u32 ath10k_pci_targ_cpu_to_ce_addr(struct ath10k *ar, u32 addr)
-+static u32 ath10k_pci_qca988x_targ_cpu_to_ce_addr(struct ath10k *ar, u32 addr)
- {
--	u32 val = 0;
-+	u32 val = 0, region = addr & 0xfffff;
- 
--	switch (ar->hw_rev) {
--	case ATH10K_HW_QCA988X:
--	case ATH10K_HW_QCA9887:
--	case ATH10K_HW_QCA6174:
--	case ATH10K_HW_QCA9377:
--		val = (ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--					  CORE_CTRL_ADDRESS) &
--		       0x7ff) << 21;
--		break;
--	case ATH10K_HW_QCA9888:
--	case ATH10K_HW_QCA99X0:
--	case ATH10K_HW_QCA9984:
--	case ATH10K_HW_QCA4019:
--		val = ath10k_pci_read32(ar, PCIE_BAR_REG_ADDRESS);
--		break;
--	}
-+	val = (ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS)
-+				 & 0x7ff) << 21;
-+	val |= 0x100000 | region;
-+	return val;
-+}
-+
-+static u32 ath10k_pci_qca99x0_targ_cpu_to_ce_addr(struct ath10k *ar, u32 addr)
-+{
-+	u32 val = 0, region = addr & 0xfffff;
- 
--	val |= 0x100000 | (addr & 0xfffff);
-+	val = ath10k_pci_read32(ar, PCIE_BAR_REG_ADDRESS);
-+	val |= 0x100000 | region;
- 	return val;
- }
- 
-+static u32 ath10k_pci_targ_cpu_to_ce_addr(struct ath10k *ar, u32 addr)
-+{
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+
-+	if (WARN_ON_ONCE(!ar_pci->targ_cpu_to_ce_addr))
-+		return -ENOTSUPP;
-+
-+	return ar_pci->targ_cpu_to_ce_addr(ar, addr);
-+}
-+
- /*
-  * Diagnostic read/write access is provided for startup/config/debug usage.
-  * Caller must guarantee proper alignment, when applicable, and single user
-@@ -3170,6 +3174,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	bool pci_ps;
- 	int (*pci_soft_reset)(struct ath10k *ar);
- 	int (*pci_hard_reset)(struct ath10k *ar);
-+	u32 (*targ_cpu_to_ce_addr)(struct ath10k *ar, u32 addr);
- 
- 	switch (pci_dev->device) {
- 	case QCA988X_2_0_DEVICE_ID:
-@@ -3177,12 +3182,14 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 		pci_ps = false;
- 		pci_soft_reset = ath10k_pci_warm_reset;
- 		pci_hard_reset = ath10k_pci_qca988x_chip_reset;
-+		targ_cpu_to_ce_addr = ath10k_pci_qca988x_targ_cpu_to_ce_addr;
- 		break;
- 	case QCA9887_1_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA9887;
- 		pci_ps = false;
- 		pci_soft_reset = ath10k_pci_warm_reset;
- 		pci_hard_reset = ath10k_pci_qca988x_chip_reset;
-+		targ_cpu_to_ce_addr = ath10k_pci_qca988x_targ_cpu_to_ce_addr;
- 		break;
- 	case QCA6164_2_1_DEVICE_ID:
- 	case QCA6174_2_1_DEVICE_ID:
-@@ -3190,30 +3197,35 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 		pci_ps = true;
- 		pci_soft_reset = ath10k_pci_warm_reset;
- 		pci_hard_reset = ath10k_pci_qca6174_chip_reset;
-+		targ_cpu_to_ce_addr = ath10k_pci_qca988x_targ_cpu_to_ce_addr;
- 		break;
- 	case QCA99X0_2_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA99X0;
- 		pci_ps = false;
- 		pci_soft_reset = ath10k_pci_qca99x0_soft_chip_reset;
- 		pci_hard_reset = ath10k_pci_qca99x0_chip_reset;
-+		targ_cpu_to_ce_addr = ath10k_pci_qca99x0_targ_cpu_to_ce_addr;
- 		break;
- 	case QCA9984_1_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA9984;
- 		pci_ps = false;
- 		pci_soft_reset = ath10k_pci_qca99x0_soft_chip_reset;
- 		pci_hard_reset = ath10k_pci_qca99x0_chip_reset;
-+		targ_cpu_to_ce_addr = ath10k_pci_qca99x0_targ_cpu_to_ce_addr;
- 		break;
- 	case QCA9888_2_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA9888;
- 		pci_ps = false;
- 		pci_soft_reset = ath10k_pci_qca99x0_soft_chip_reset;
- 		pci_hard_reset = ath10k_pci_qca99x0_chip_reset;
-+		targ_cpu_to_ce_addr = ath10k_pci_qca99x0_targ_cpu_to_ce_addr;
- 		break;
- 	case QCA9377_1_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA9377;
- 		pci_ps = true;
- 		pci_soft_reset = NULL;
- 		pci_hard_reset = ath10k_pci_qca6174_chip_reset;
-+		targ_cpu_to_ce_addr = ath10k_pci_qca988x_targ_cpu_to_ce_addr;
- 		break;
- 	default:
- 		WARN_ON(1);
-@@ -3240,6 +3252,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	ar_pci->bus_ops = &ath10k_pci_bus_ops;
- 	ar_pci->pci_soft_reset = pci_soft_reset;
- 	ar_pci->pci_hard_reset = pci_hard_reset;
-+	ar_pci->targ_cpu_to_ce_addr = targ_cpu_to_ce_addr;
- 
- 	ar->id.vendor = pdev->vendor;
- 	ar->id.device = pdev->device;
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index c76789d..c1e08ad6 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -233,6 +233,11 @@ struct ath10k_pci {
- 	/* Chip specific pci full reset function */
- 	int (*pci_hard_reset)(struct ath10k *ar);
- 
-+	/* chip specific methods for converting target CPU virtual address
-+	 * space to CE address space
-+	 */
-+	u32 (*targ_cpu_to_ce_addr)(struct ath10k *ar, u32 addr);
-+
- 	/* Keep this entry in the last, memory for struct ath10k_ahb is
- 	 * allocated (ahb support enabled case) in the continuation of
- 	 * this struct.
+ 	err = nl80211_parse_sta_channel_info(info, &params);
+ 	if (err)
+ 		return err;
 -- 
 1.9.1
 
