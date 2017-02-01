@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cYz0Z-0007mz-DQ
- for ath10k@lists.infradead.org; Wed, 01 Feb 2017 17:47:53 +0000
+ id 1cYzA3-00071z-TT
+ for ath10k@lists.infradead.org; Wed, 01 Feb 2017 17:57:41 +0000
 MIME-Version: 1.0
-Date: Wed, 01 Feb 2017 23:17:30 +0530
+Date: Wed, 01 Feb 2017 23:27:18 +0530
 From: Ashok Raj Nagarajan <arnagara@codeaurora.org>
-Subject: Re: [PATCH v2 2/2] mac80211: store tx power value from user to station
-In-Reply-To: <35c617ff-c07a-b221-5742-b1487618bce7@candelatech.com>
+Subject: Re: [PATCH v2 1/2] cfg80211: Add support to set tx power for a
+ station associated
+In-Reply-To: <2b68dc12-44bf-f510-339a-3d987a88e8b5@candelatech.com>
 References: <1485888101-23454-1-git-send-email-arnagara@qti.qualcomm.com>
- <1485888101-23454-2-git-send-email-arnagara@qti.qualcomm.com>
- <eff562d4-7dd8-4b5a-812c-58f4f690cde3@candelatech.com>
- <7584a5235b49b7799a2c15f91fb03794@codeaurora.org>
- <35c617ff-c07a-b221-5742-b1487618bce7@candelatech.com>
-Message-ID: <cef8a7325bc010dc26de0bbd006ceff3@codeaurora.org>
+ <12efc3d8-2274-a6e8-6d74-c06bf89762fb@candelatech.com>
+ <14f6b3acb8b26d0eb806148c0ee47fb0@codeaurora.org>
+ <2b68dc12-44bf-f510-339a-3d987a88e8b5@candelatech.com>
+Message-ID: <1f3a3dec67fbe4f580750eb06f9b628b@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,70 +29,53 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
 Cc: linux-wireless@vger.kernel.org, johannes@sipsolutions.net, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-On 2017-02-01 23:02, Ben Greear wrote:
-> On 02/01/2017 09:29 AM, Ashok Raj Nagarajan wrote:
->> On 2017-02-01 00:30, Ben Greear wrote:
->>> On 01/31/2017 10:41 AM, Ashok Raj Nagarajan wrote:
->>>> This patch introduce a new driver callback drv_sta_set_txpwr. This 
->>>> API will
->>>> copy the transmit power value passed from user space and call the 
->>>> driver
->>>> callback to set the tx power for the station.
->>>> 
->>>> Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
->>>> ---
->>>>  include/net/mac80211.h    |  6 ++++++
->>>>  net/mac80211/cfg.c        |  7 +++++++
->>>>  net/mac80211/driver-ops.c | 21 +++++++++++++++++++++
->>>>  net/mac80211/driver-ops.h |  5 +++++
->>>>  net/mac80211/trace.h      | 27 +++++++++++++++++++++++++++
->>>>  5 files changed, 66 insertions(+)
->>>> 
->>>> diff --git a/include/net/mac80211.h b/include/net/mac80211.h
->>>> index 5345d35..e059d5a 100644
->>>> --- a/include/net/mac80211.h
->>>> +++ b/include/net/mac80211.h
->>>> @@ -1777,6 +1777,8 @@ struct ieee80211_sta_rates {
->>>>   *    This is defined by the spec (IEEE 802.11-2012 section 8.3.2.2 
->>>> NOTE 2).
->>>>   * @support_p2p_ps: indicates whether the STA supports P2P PS 
->>>> mechanism or not.
->>>>   * @max_rc_amsdu_len: Maximum A-MSDU size in bytes recommended by 
->>>> rate control.
->>>> + * @txpwr: indicates the tx power, in dBm, to be used when sending 
->>>> data frames
->>>> + *    to the STA. Value of 0 means, automatic (default) tx power.
+On 2017-02-01 23:06, Ben Greear wrote:
+> On 02/01/2017 09:27 AM, Ashok Raj Nagarajan wrote:
+> 
+>>>> +static int nl80211_parse_sta_txpower_setting(struct genl_info 
+>>>> *info,
+>>>> +                         struct station_parameters *params)
+>>>> +{
+>>>> +    struct cfg80211_registered_device *rdev = info->user_ptr[0];
+>>>> +    enum nl80211_tx_power_setting type;
+>>>> +    int idx;
+>>>> +
+>>>> +    if (!rdev->ops->set_tx_power ||
+>>>> +        !wiphy_ext_feature_isset(&rdev->wiphy,
+>>>> +                     NL80211_EXT_FEATURE_STA_TX_PWR))
+>>>> +        return -EOPNOTSUPP;
 >>> 
->>> Atheros NICs use 1/2 dBm increments internally, so maybe pass down 
->>> mBm
->>> to the driver so you don't
->>> loose the granularity?  (Other NICs may potentially have even finer 
->>> control.)
+>>> Maybe always let a user set to default value even if the driver does 
+>>> not
+>>> support setting specific values?
 >>> 
 >> 
->> ath10k firmware expects values to be in dBm and the calculations 
->> regarding 1/2 dBm is taken care in firmware.
+>> IMHO, having some default value in place of non-valid values may not 
+>> be the right way.
 > 
-> Other drivers may want more precision, so I still think you should
-> store this in mBm instead
-> of throwing away precision in the API.
+> If a user or user-space script wants to always be able to initialize
+> things to default
+> values, it would be nice if it did not have to pay specific attention
+> to whether the
+> NIC supports STA_TX_PWR feature or not.  Since a NIC that does not
+> support this feature will always
+> have sta TX power set to default by definition, that is why I think
+> you should let
+> the call succeed in that case.
 > 
 
-Okay point taken! Instead of having the conversion happening now in API, 
-I will push it down to the ath10k driver.
+I think it would be better/easier to handle the error cases in the 
+user-space scripts than at the driver here, no? NIC that doesn't support 
+this feature will set the tx power to the station depending on the rate 
+algorithm in place. So the same NIC and same station will have different 
+txpower depending on the environment? On the other hand, how do we 
+decide what constant (?) default value to be sent to userspace?
 
-> A new and improved ath10k firmware may support 1/2 dBm units directly,
-> for instance.
-> 
+Thanks,
+Ashok
+
 > Thanks,
 > Ben
-> 
->> 
->> Thanks,
->> Ashok
->>> Thanks,
->>> Ben
->> 
 
 _______________________________________________
 ath10k mailing list
