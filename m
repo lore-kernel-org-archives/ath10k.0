@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cYyy2-0005bp-D9
- for ath10k@lists.infradead.org; Wed, 01 Feb 2017 17:45:19 +0000
+ id 1cYz0Z-0007mz-DQ
+ for ath10k@lists.infradead.org; Wed, 01 Feb 2017 17:47:53 +0000
 MIME-Version: 1.0
-Date: Wed, 01 Feb 2017 23:14:50 +0530
+Date: Wed, 01 Feb 2017 23:17:30 +0530
 From: Ashok Raj Nagarajan <arnagara@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: add support for controlling tx power to a
- station
-In-Reply-To: <cbb69298-391d-b3d5-5a84-5792fe170f95@candelatech.com>
-References: <1485888165-23504-1-git-send-email-arnagara@qti.qualcomm.com>
- <cbb69298-391d-b3d5-5a84-5792fe170f95@candelatech.com>
-Message-ID: <0c8b88d40b3adc0f09ade2780ed1d994@codeaurora.org>
+Subject: Re: [PATCH v2 2/2] mac80211: store tx power value from user to station
+In-Reply-To: <35c617ff-c07a-b221-5742-b1487618bce7@candelatech.com>
+References: <1485888101-23454-1-git-send-email-arnagara@qti.qualcomm.com>
+ <1485888101-23454-2-git-send-email-arnagara@qti.qualcomm.com>
+ <eff562d4-7dd8-4b5a-812c-58f4f690cde3@candelatech.com>
+ <7584a5235b49b7799a2c15f91fb03794@codeaurora.org>
+ <35c617ff-c07a-b221-5742-b1487618bce7@candelatech.com>
+Message-ID: <cef8a7325bc010dc26de0bbd006ceff3@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +27,72 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, johannes@sipsolutions.net, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-On 2017-02-01 00:27, Ben Greear wrote:
-> On 01/31/2017 10:42 AM, Ashok Raj Nagarajan wrote:
->> This patch will add the support to control the transmit power for 
->> traffic
->> to a station associated with the AP. Userspace provide the transmit 
->> power
->> value in mBm units and the allowed range is from 0 to 70. Underlying 
->> FW
+On 2017-02-01 23:02, Ben Greear wrote:
+> On 02/01/2017 09:29 AM, Ashok Raj Nagarajan wrote:
+>> On 2017-02-01 00:30, Ben Greear wrote:
+>>> On 01/31/2017 10:41 AM, Ashok Raj Nagarajan wrote:
+>>>> This patch introduce a new driver callback drv_sta_set_txpwr. This 
+>>>> API will
+>>>> copy the transmit power value passed from user space and call the 
+>>>> driver
+>>>> callback to set the tx power for the station.
+>>>> 
+>>>> Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+>>>> ---
+>>>>  include/net/mac80211.h    |  6 ++++++
+>>>>  net/mac80211/cfg.c        |  7 +++++++
+>>>>  net/mac80211/driver-ops.c | 21 +++++++++++++++++++++
+>>>>  net/mac80211/driver-ops.h |  5 +++++
+>>>>  net/mac80211/trace.h      | 27 +++++++++++++++++++++++++++
+>>>>  5 files changed, 66 insertions(+)
+>>>> 
+>>>> diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+>>>> index 5345d35..e059d5a 100644
+>>>> --- a/include/net/mac80211.h
+>>>> +++ b/include/net/mac80211.h
+>>>> @@ -1777,6 +1777,8 @@ struct ieee80211_sta_rates {
+>>>>   *    This is defined by the spec (IEEE 802.11-2012 section 8.3.2.2 
+>>>> NOTE 2).
+>>>>   * @support_p2p_ps: indicates whether the STA supports P2P PS 
+>>>> mechanism or not.
+>>>>   * @max_rc_amsdu_len: Maximum A-MSDU size in bytes recommended by 
+>>>> rate control.
+>>>> + * @txpwr: indicates the tx power, in dBm, to be used when sending 
+>>>> data frames
+>>>> + *    to the STA. Value of 0 means, automatic (default) tx power.
+>>> 
+>>> Atheros NICs use 1/2 dBm increments internally, so maybe pass down 
+>>> mBm
+>>> to the driver so you don't
+>>> loose the granularity?  (Other NICs may potentially have even finer 
+>>> control.)
+>>> 
+>> 
+>> ath10k firmware expects values to be in dBm and the calculations 
+>> regarding 1/2 dBm is taken care in firmware.
 > 
-> How did you come up with 70 mBm as the limit.  This is only 7dBm?
-> 
-> I would expect it to match the range of normal tx-power which is likely 
-> up to
-> 30 dBm or so on some NICs (not counting regulatory limit).
+> Other drivers may want more precision, so I still think you should
+> store this in mBm instead
+> of throwing away precision in the API.
 > 
 
-I think I will have to re-word the commit log a bit. ath10k driver would 
-get the value in dBm only and the range is from 0 to 70 dBm. Looking at 
-the db.txt, I see a max value of 44 dm for a 60GHz channel. SO to be 
-little future proof having a greater acceptable range from user. The 
-final tx power will be calculated based on this extra parameter the user 
-passes on, including the regulatory limit for the channel.
+Okay point taken! Instead of having the conversion happening now in API, 
+I will push it down to the ath10k driver.
 
-Thanks,
-Ashok
-
+> A new and improved ath10k firmware may support 1/2 dBm units directly,
+> for instance.
+> 
 > Thanks,
 > Ben
+> 
+>> 
+>> Thanks,
+>> Ashok
+>>> Thanks,
+>>> Ben
+>> 
 
 _______________________________________________
 ath10k mailing list
