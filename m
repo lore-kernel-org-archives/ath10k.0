@@ -2,8 +2,8 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from nm.newmedia-net.de ([217.113.179.122]
  helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cZOVi-0006Ct-3q
- for ath10k@lists.infradead.org; Thu, 02 Feb 2017 21:01:45 +0000
+ id 1cZOYi-0006XQ-Ki
+ for ath10k@lists.infradead.org; Thu, 02 Feb 2017 21:04:51 +0000
 References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
  <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>
  <87y3xtrmn2.fsf@kamboji.qca.qualcomm.com>
@@ -23,8 +23,8 @@ References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
  <e3e5492e-1a58-ff2c-bf7c-016a2f19a79b@dd-wrt.com>
  <fb1ebe0c-c6b1-ef54-64bb-8a4d4fe3a399@candelatech.com>
 From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <21f64fd0-9cbd-4158-96af-ddfbd2831a5b@dd-wrt.com>
-Date: Thu, 2 Feb 2017 22:01:23 +0100
+Message-ID: <11581bd9-2f7e-a778-1cfa-36e73611039b@dd-wrt.com>
+Date: Thu, 2 Feb 2017 22:04:33 +0100
 MIME-Version: 1.0
 In-Reply-To: <fb1ebe0c-c6b1-ef54-64bb-8a4d4fe3a399@candelatech.com>
 Subject: Re: 9984 VHT
@@ -43,11 +43,22 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-even if hostapd starts now and ath10 doesnt brings any error. the =
+this code here has been used
 
-interface does not broadcast any beacons nor can i scan for networks =
+         if (arg->mode =3D=3D MODE_11AC_VHT160)  {
+                 if (arg->freq < arg->band_center_freq1)
+                         ch->band_center_freq1 =3D __cpu_to_le32(arg->freq =
 
-with it. all results are zero
++ 40);
+                 else
+                         ch->band_center_freq1 =3D __cpu_to_le32(arg->freq =
+
+- 40);
+                 ch->band_center_freq2 =3D =
+
+__cpu_to_le32(arg->band_center_freq1);
+         }
+
 
 Am 02.02.2017 um 21:50 schrieb Ben Greear:
 > On 02/02/2017 12:45 PM, Sebastian Gottschall wrote:
