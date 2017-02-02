@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-lf0-f52.google.com ([209.85.215.52])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cZC8m-0003c2-Ls
- for ath10k@lists.infradead.org; Thu, 02 Feb 2017 07:49:14 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: Recent driver changes destabilized QCA9377 connection quality
-Date: Thu, 2 Feb 2017 07:48:49 +0000
-Message-ID: <8737fxowx5.fsf@kamboji.qca.qualcomm.com>
-References: <20170129104829.GA3440@lichtkranz.fritz.box>
-In-Reply-To: <20170129104829.GA3440@lichtkranz.fritz.box> (Tobias Predel's
- message of "Sun, 29 Jan 2017 11:48:30 +0100")
-Content-Language: en-US
+ id 1cZEVy-0001lY-2x
+ for ath10k@lists.infradead.org; Thu, 02 Feb 2017 10:21:20 +0000
+Received: by mail-lf0-f52.google.com with SMTP id n124so5954736lfd.2
+ for <ath10k@lists.infradead.org>; Thu, 02 Feb 2017 02:20:54 -0800 (PST)
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeusz.slawinski@tieto.com>
+Subject: [PATCH 3/3] ath10k: fix comment
+Date: Thu,  2 Feb 2017 11:19:33 +0100
+Message-Id: <1486030773-30600-3-git-send-email-amadeusz.slawinski@tieto.com>
+In-Reply-To: <1486030773-30600-1-git-send-email-amadeusz.slawinski@tieto.com>
+References: <1486030773-30600-1-git-send-email-amadeusz.slawinski@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,38 +20,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tobias Predel <tobias.predel@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeusz.slawinski@tieto.com>
 
-Tobias Predel <tobias.predel@gmail.com> writes:
-
-> I just want to report a negative development I have been experiencing
-> for a week now.
->
-> Recent changes in ath10k driver code seem to destabilize QCA9377
-> connection quality in 802.11b/g networks, as hardware and software
-> configuration (wpa_supplicant) hasn't changed. Before, I have managed
-> to have a fair connection quality for around three months. At the
-> moment I encounter multiple connection losses.
->
-> dmesg reports usual losses and timeouts on both linux-lts 4.4.44 and
-> linux 4.8.13 (Arch Linux).
->
-> Please restore former functionality.
-
-You mention recent changes, so what kernel exact version works without
-problems? Has the firmware version remained the same all the time?
-
-If it's a regression in kernel, can you bisect to find the commit which
-broke it? You would need to compile your own kernels to do that.
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSB3YW50ZWQgdG8gdGFrZSBhIGxvb2sgYW5kIGl0J3MgYXBwYXJlbnRseSBpbiBvdGhlciBoZWFk
+ZXIKClNpZ25lZC1vZmYtYnk6IEFtYWRldXN6IFPFgmF3acWEc2tpIDxhbWFkZXVzei5zbGF3aW5z
+a2lAdGlldG8uY29tPgotLS0KIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmgg
+fCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRp
+ZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oIGIvZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaAppbmRleCA1ZDNkZmY5Li5iZjhkY2JlIDEw
+MDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oCisrKyBiL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmgKQEAgLTc1LDcgKzc1LDcgQEAgc3Ry
+dWN0IHdtaV9jbWRfaGRyIHsKIAogLyoKICAqIFRoZXJlIGlzIG5vIHNpZ25lZCB2ZXJzaW9uIG9m
+IF9fbGUzMiwgc28gZm9yIGEgdGVtcG9yYXJ5IHNvbHV0aW9uIGNvbWUKLSAqIHVwIHdpdGggb3Vy
+IG93biB2ZXJzaW9uLiBUaGUgaWRlYSBpcyBmcm9tIGZzL250ZnMvdHlwZXMuaC4KKyAqIHVwIHdp
+dGggb3VyIG93biB2ZXJzaW9uLiBUaGUgaWRlYSBpcyBmcm9tIGZzL250ZnMvZW5kaWFuLmguCiAg
+KgogICogVXNlIGFfIHByZWZpeCBzbyB0aGF0IGl0IGRvZXNuJ3QgY29uZmxpY3QgaWYgd2UgZ2V0
+IHByb3BlciBzdXBwb3J0IHRvCiAgKiBsaW51eC90eXBlcy5oLgotLSAKMS45LjEKCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
+aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
