@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cZC4A-0008GM-GU
- for ath10k@lists.infradead.org; Thu, 02 Feb 2017 07:44:28 +0000
+ id 1cZC8m-0003c2-Ls
+ for ath10k@lists.infradead.org; Thu, 02 Feb 2017 07:49:14 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: add support for controlling tx power to a
- station
-Date: Thu, 2 Feb 2017 07:44:00 +0000
-Message-ID: <877f59ox56.fsf@kamboji.qca.qualcomm.com>
-References: <201702010556.QVNevZKo%fengguang.wu@intel.com>
-In-Reply-To: <201702010556.QVNevZKo%fengguang.wu@intel.com> (kbuild test
- robot's message of "Wed, 1 Feb 2017 05:54:43 +0800")
+Subject: Re: Recent driver changes destabilized QCA9377 connection quality
+Date: Thu, 2 Feb 2017 07:48:49 +0000
+Message-ID: <8737fxowx5.fsf@kamboji.qca.qualcomm.com>
+References: <20170129104829.GA3440@lichtkranz.fritz.box>
+In-Reply-To: <20170129104829.GA3440@lichtkranz.fritz.box> (Tobias Predel's
+ message of "Sun, 29 Jan 2017 11:48:30 +0100")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -25,41 +24,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kbuild test robot <lkp@intel.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "arnagara@codeaurora.org" <arnagara@codeaurora.org>, "Nagarajan,
- Ashok Raj" <arnagara@qti.qualcomm.com>, "kbuild-all@01.org" <kbuild-all@01.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Tobias Predel <tobias.predel@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-kbuild test robot <lkp@intel.com> writes:
+Tobias Predel <tobias.predel@gmail.com> writes:
 
-> Hi Ashok,
+> I just want to report a negative development I have been experiencing
+> for a week now.
 >
-> [auto build test WARNING on ath6kl/ath-next]
-> [also build test WARNING on v4.10-rc6 next-20170131]
-> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+> Recent changes in ath10k driver code seem to destabilize QCA9377
+> connection quality in 802.11b/g networks, as hardware and software
+> configuration (wpa_supplicant) hasn't changed. Before, I have managed
+> to have a fair connection quality for around three months. At the
+> moment I encounter multiple connection losses.
 >
-> url:    https://github.com/0day-ci/linux/commits/Ashok-Raj-Nagarajan/ath10k-add-support-for-controlling-tx-power-to-a-station/20170201-032529
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-> config: m68k-allyesconfig (attached as .config)
-> compiler: m68k-linux-gcc (GCC) 4.9.0
-> reproduce:
->         wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         make.cross ARCH=m68k 
+> dmesg reports usual losses and timeouts on both linux-lts 4.4.44 and
+> linux 4.8.13 (Arch Linux).
 >
-> All warnings (new ones prefixed by >>):
->
->    drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_sta_set_txpwr':
->    drivers/net/wireless/ath/ath10k/mac.c:5997:13: error: 'struct ieee80211_sta' has no member named 'txpwr'
->      txpwr = sta->txpwr;
->                 ^
->    drivers/net/wireless/ath/ath10k/mac.c: At top level:
->    drivers/net/wireless/ath/ath10k/mac.c:7581:2: error: unknown field 'sta_set_txpwr' specified in initializer
->      .sta_set_txpwr   = ath10k_sta_set_txpwr,
->      ^
+> Please restore former functionality.
 
-This is expected as this patch depends on a mac80211 feature not yet
-applied.
+You mention recent changes, so what kernel exact version works without
+problems? Has the firmware version remained the same all the time?
+
+If it's a regression in kernel, can you bisect to find the commit which
+broke it? You would need to compile your own kernels to do that.
 
 -- 
 Kalle Valo
