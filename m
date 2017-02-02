@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cZEwM-0005kR-ED
- for ath10k@lists.infradead.org; Thu, 02 Feb 2017 10:48:36 +0000
-Subject: [PATCH 2/3] ath10k: use names in function definition arguments
+ id 1cZEwg-0005q2-UT
+ for ath10k@lists.infradead.org; Thu, 02 Feb 2017 10:48:56 +0000
+Subject: [PATCH 3/3] ath10k: few whitespace fixes
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 2 Feb 2017 12:47:56 +0200
-Message-ID: <148603247602.7275.16142503022595625609.stgit@potku.adurom.net>
+Date: Thu, 2 Feb 2017 12:48:08 +0200
+Message-ID: <148603248800.7275.3176753002583396340.stgit@potku.adurom.net>
 In-Reply-To: <148603246555.7275.3348416808167032391.stgit@potku.adurom.net>
 References: <148603246555.7275.3348416808167032391.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -25,43 +25,47 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Fixes new checkpatch warnings:
+Fixes checkpatch warnings:
 
-drivers/net/wireless/ath/ath10k/htt.h:1823: function definition argument 'struct sk_buff *' should also have an identifier name
-drivers/net/wireless/ath/ath10k/wmi.h:6607: function definition argument 'struct wmi_start_scan_arg *' should also have an identifier name
+drivers/net/wireless/ath/ath10k/pci.c:1593: Statements should start on a tabstop
+drivers/net/wireless/ath/ath10k/ce.c:962: Alignment should match open parenthesis
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h |    2 +-
- drivers/net/wireless/ath/ath10k/wmi.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.c  |    6 +++---
+ drivers/net/wireless/ath/ath10k/pci.c |    2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index dfe9627df7d0..90c2f72666b8 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1820,7 +1820,7 @@ int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_mgmt,
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index da466ab2d823..4045657e0a6e 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -959,9 +959,9 @@ ath10k_ce_alloc_dest_ring(struct ath10k *ar, unsigned int ce_id,
+ 	 */
+ 	dest_ring->base_addr_owner_space_unaligned =
+ 		dma_zalloc_coherent(ar->dev,
+-				   (nentries * sizeof(struct ce_desc) +
+-				    CE_DESC_RING_ALIGN),
+-				   &base_addr, GFP_KERNEL);
++				    (nentries * sizeof(struct ce_desc) +
++				     CE_DESC_RING_ALIGN),
++				    &base_addr, GFP_KERNEL);
+ 	if (!dest_ring->base_addr_owner_space_unaligned) {
+ 		kfree(dest_ring);
+ 		return ERR_PTR(-ENOMEM);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index d2aa9e5ec05d..5e84199d68e1 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1590,7 +1590,7 @@ void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
+ 		/* TODO: Find appropriate register configuration for QCA99X0
+ 		 *  to mask irq/MSI.
+ 		 */
+-		 break;
++		break;
+ 	}
+ }
  
- int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb);
- void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
--int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *);
-+int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu);
- int ath10k_htt_tx(struct ath10k_htt *htt,
- 		  enum ath10k_hw_txrx_mode txmode,
- 		  struct sk_buff *msdu);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 861c2d8c6e8c..1333cbe48693 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6604,7 +6604,7 @@ struct sk_buff *ath10k_wmi_alloc_skb(struct ath10k *ar, u32 len);
- int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
- int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
- 			       u32 cmd_id);
--void ath10k_wmi_start_scan_init(struct ath10k *ar, struct wmi_start_scan_arg *);
-+void ath10k_wmi_start_scan_init(struct ath10k *ar, struct wmi_start_scan_arg *arg);
- 
- void ath10k_wmi_pull_pdev_stats_base(const struct wmi_pdev_stats_base *src,
- 				     struct ath10k_fw_stats_pdev *dst);
 
 
 _______________________________________________
