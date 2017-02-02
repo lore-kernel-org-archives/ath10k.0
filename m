@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cZEwg-0005q2-UT
- for ath10k@lists.infradead.org; Thu, 02 Feb 2017 10:48:56 +0000
-Subject: [PATCH 3/3] ath10k: few whitespace fixes
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 2 Feb 2017 12:48:08 +0200
-Message-ID: <148603248800.7275.3176753002583396340.stgit@potku.adurom.net>
-In-Reply-To: <148603246555.7275.3348416808167032391.stgit@potku.adurom.net>
-References: <148603246555.7275.3348416808167032391.stgit@potku.adurom.net>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cZHo5-0005r9-C2
+ for ath10k@lists.infradead.org; Thu, 02 Feb 2017 13:52:15 +0000
+Message-ID: <58933976.5020403@candelatech.com>
+Date: Thu, 02 Feb 2017 05:51:50 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: firmware register dump description
+References: <CABuVar+gi+Mb3T2wpooysykdWWEofubeCrso45svVyV2H-_CqA@mail.gmail.com>
+In-Reply-To: <CABuVar+gi+Mb3T2wpooysykdWWEofubeCrso45svVyV2H-_CqA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,55 +18,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Sergey Stepanov <no.such.process@gmail.com>, ath10k@lists.infradead.org
 
-Fixes checkpatch warnings:
+Someone who has access to the source can decode these
+if they have the right tools, but you have to let them know
+the exact firmware version, and then you have to get lucky
+and hope someone has time to work on it for you.
 
-drivers/net/wireless/ath/ath10k/pci.c:1593: Statements should start on a tabstop
-drivers/net/wireless/ath/ath10k/ce.c:962: Alignment should match open parenthesis
+Thanks,
+Ben
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/ce.c  |    6 +++---
- drivers/net/wireless/ath/ath10k/pci.c |    2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+On 02/01/2017 10:09 PM, Sergey Stepanov wrote:
+> Hi
+>
+> Are there any description, what the contents of these 60+ registers
+> mean, or if one is under NDA. which one of them address pointers, or
+> bitfields, indexes, etc.?
+>
+>> firmware register dump:
+>> [00]: 0x01000000 0x00000000 0x0099F31B 0x030DE28B
+>> [04]: 0x0099F31B 0x00060730 0x00000016 0x00000000
+>> [08]: 0x030DE233 0x00000001 0x00000000 0x004179D8
+>> [12]: 0x00000009 0x00000007 0x009CD986 0x009CD9DD
+>> [16]: 0x00953438 0x009406B6 0x009406B6 0x00000000
+>> [20]: 0x4099F31B 0x0040658C 0x0000FFFF 0x00413A80
+>> [24]: 0x809A0398 0x004065EC 0x00030000 0xC099F31B
+>> [28]: 0x809CDA1B 0x0040661C 0x000E8284 0x0000901C
+>> [32]: 0x809B307A 0x004066AC 0x009A0370 0x0042026C
+>> [36]: 0x809AF3DA 0x004066FC 0x00000002 0x0042026C
+>> [40]: 0x809AEB02 0x0040672C 0x00406750 0x0041847C
+>> [44]: 0x8094EAAA 0x0040674C 0x000E8278 0x00000001
+>> [48]: 0x8094F3FC 0x004067FC 0x00421E14 0x00418AF8
+>> [52]: 0x80943905 0x0040681C 0x00421E14 0x00000001
+>> [56]: 0x80940E40 0x0040687C 0x0000000D 0x00002000
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index da466ab2d823..4045657e0a6e 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -959,9 +959,9 @@ ath10k_ce_alloc_dest_ring(struct ath10k *ar, unsigned int ce_id,
- 	 */
- 	dest_ring->base_addr_owner_space_unaligned =
- 		dma_zalloc_coherent(ar->dev,
--				   (nentries * sizeof(struct ce_desc) +
--				    CE_DESC_RING_ALIGN),
--				   &base_addr, GFP_KERNEL);
-+				    (nentries * sizeof(struct ce_desc) +
-+				     CE_DESC_RING_ALIGN),
-+				    &base_addr, GFP_KERNEL);
- 	if (!dest_ring->base_addr_owner_space_unaligned) {
- 		kfree(dest_ring);
- 		return ERR_PTR(-ENOMEM);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index d2aa9e5ec05d..5e84199d68e1 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1590,7 +1590,7 @@ void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
- 		/* TODO: Find appropriate register configuration for QCA99X0
- 		 *  to mask irq/MSI.
- 		 */
--		 break;
-+		break;
- 	}
- }
- 
-
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
