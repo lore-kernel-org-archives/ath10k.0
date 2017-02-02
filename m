@@ -1,11 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cZOLI-00021B-1d
- for ath10k@lists.infradead.org; Thu, 02 Feb 2017 20:50:58 +0000
-Subject: Re: 9984 VHT
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cZOVi-0006Ct-3q
+ for ath10k@lists.infradead.org; Thu, 02 Feb 2017 21:01:45 +0000
 References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
- <CAHNKnsT8mzHefrnC4ybrR8T16dAqc4G_SDGesxdU7+81xhuYpw@mail.gmail.com>
  <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>
  <87y3xtrmn2.fsf@kamboji.qca.qualcomm.com>
  <44480bab-0cf7-f4e3-7612-b1cf5d4c040f@dd-wrt.com>
@@ -22,11 +21,13 @@ References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
  <dc16858f-11f4-3aa7-01b8-4165cd1aa087@dd-wrt.com>
  <501bfc50-1c80-999a-af78-2da4a7fc00f4@candelatech.com>
  <e3e5492e-1a58-ff2c-bf7c-016a2f19a79b@dd-wrt.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <fb1ebe0c-c6b1-ef54-64bb-8a4d4fe3a399@candelatech.com>
-Date: Thu, 2 Feb 2017 12:50:35 -0800
+ <fb1ebe0c-c6b1-ef54-64bb-8a4d4fe3a399@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <21f64fd0-9cbd-4158-96af-ddfbd2831a5b@dd-wrt.com>
+Date: Thu, 2 Feb 2017 22:01:23 +0100
 MIME-Version: 1.0
-In-Reply-To: <e3e5492e-1a58-ff2c-bf7c-016a2f19a79b@dd-wrt.com>
+In-Reply-To: <fb1ebe0c-c6b1-ef54-64bb-8a4d4fe3a399@candelatech.com>
+Subject: Re: 9984 VHT
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,36 +36,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
+To: Ben Greear <greearb@candelatech.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 02/02/2017 12:45 PM, Sebastian Gottschall wrote:
+even if hostapd starts now and ath10 doesnt brings any error. the =
 
->>> +       if (arg->mode == MODE_11AC_VHT160)  {
->>> +               ch->band_center_freq1 = __cpu_to_le32(arg->freq);
->>> +               ch->band_center_freq2 = __cpu_to_le32(arg->band_center_freq1);
->>> +       }
->>
->> No, I don't think so.  freq1 should be freq + 40 if freq < center-freq, otherwise
->> should be freq - 40.
-> doesnt sound very logic since 80+80 mode doesnt require that voodoo too since it would require another addition field. but i will try it it right now
+interface does not broadcast any beacons nor can i scan for networks =
 
-The firmware change looks pretty lame to me...it was easy for me to make my FW backwards compat
-to the old way of just passing in the mhz and the freq1 160mhz center-freq, so really I do not know why
-the FW was changed.
+with it. all results are zero
 
-I am testing my FW fixes now...
+Am 02.02.2017 um 21:50 schrieb Ben Greear:
+> On 02/02/2017 12:45 PM, Sebastian Gottschall wrote:
+>
+>>>> +       if (arg->mode =3D=3D MODE_11AC_VHT160)  {
+>>>> +               ch->band_center_freq1 =3D __cpu_to_le32(arg->freq);
+>>>> +               ch->band_center_freq2 =3D =
 
-Thanks,
-Ben
+>>>> __cpu_to_le32(arg->band_center_freq1);
+>>>> +       }
+>>>
+>>> No, I don't think so.  freq1 should be freq + 40 if freq < =
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+>>> center-freq, otherwise
+>>> should be freq - 40.
+>> doesnt sound very logic since 80+80 mode doesnt require that voodoo =
+
+>> too since it would require another addition field. but i will try it =
+
+>> it right now
+>
+> The firmware change looks pretty lame to me...it was easy for me to =
+
+> make my FW backwards compat
+> to the old way of just passing in the mhz and the freq1 160mhz =
+
+> center-freq, so really I do not know why
+> the FW was changed.
+>
+> I am testing my FW fixes now...
+>
+> Thanks,
+> Ben
+>
+
+
+-- =
+
+Mit freundlichen Gr=FCssen / Regards
+
+Sebastian Gottschall / CTO
+
+NewMedia-NET GmbH - DD-WRT
+Firmensitz:  Berliner Ring 101, 64625 Bensheim
+Registergericht: Amtsgericht Darmstadt, HRB 25473
+Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
+http://www.dd-wrt.com
+email: s.gottschall@dd-wrt.com
+Tel.: +496251-582650 / Fax: +496251-5826565
 
 
 _______________________________________________
