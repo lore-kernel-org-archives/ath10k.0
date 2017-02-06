@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail1.g8.pair.com ([66.39.4.88])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1caiE3-0004xb-3K
- for ath10k@lists.infradead.org; Mon, 06 Feb 2017 12:16:59 +0000
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+ id 1caiIp-000743-5S
+ for ath10k@lists.infradead.org; Mon, 06 Feb 2017 12:21:54 +0000
+From: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
 Subject: Re: [PATCH v3] ath10k: Fix crash during rmmod when probe firmware
  fails
-From: Michael Ney <neym@vorklift.com>
-In-Reply-To: <20170206100448.GA13894@atheros-ThinkPad-T61>
-Date: Mon, 6 Feb 2017 07:16:30 -0500
-Message-Id: <2DBE5232-FF3F-4B0E-8739-B6E82361316C@vorklift.com>
+Date: Mon, 6 Feb 2017 12:21:21 +0000
+Message-ID: <1486383699520.26295@qti.qualcomm.com>
 References: <1482221351-24029-1-git-send-email-mohammed@qca.qualcomm.com>
  <8760l38dz0.fsf@kamboji.qca.qualcomm.com>
  <871svr8d83.fsf@kamboji.qca.qualcomm.com>
- <20170206100448.GA13894@atheros-ThinkPad-T61>
+ <20170206100448.GA13894@atheros-ThinkPad-T61>,
+ <2DBE5232-FF3F-4B0E-8739-B6E82361316C@vorklift.com>
+In-Reply-To: <2DBE5232-FF3F-4B0E-8739-B6E82361316C@vorklift.com>
+Content-Language: en-IN
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +28,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
- Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+To: Michael Ney <neym@vorklift.com>, Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+
+Hi,
+
+even with the below patch applied ?
+https://patchwork.kernel.org/patch/9452265/
+
+regards
+shafi
+________________________________________
+From: Michael Ney <neym@vorklift.com>
+Sent: 06 February 2017 17:46
+To: Mohammed Shafi Shajakhan
+Cc: Valo, Kalle; linux-wireless@vger.kernel.org; ath10k@lists.infradead.org; Shajakhan, Mohammed Shafi (Mohammed Shafi)
+Subject: Re: [PATCH v3] ath10k: Fix crash during rmmod when probe firmware fails
 
 Symmetry is still broken on firmware crash (at least with 6174). ath10k_pci_hif_stop gets called twice, once from the driver restart (warm restart) and once from ieee80211 start (cold restart), resulting in napi_synchrionize/napi_disable getting called twice and sticking the driver in an infinite wait loop (napi_synchronize waits until NAPI_STATE_SCHED is off, while napi_disable leaves NAPI_STATE_SCHED to on when leaving).
 
 
 > On Feb 6, 2017, at 5:04 AM, Mohammed Shafi Shajakhan <mohammed@codeaurora.org> wrote:
-> 
+>
 > Hi Kalle,
-> 
+>
 > the change suggested by you helps, and the device probe, scan
 > is successful as well. Still good to have this change part of your
 > basic sanity and regression testing !
-> 
+>
 > regards,
 > shafi
-> 
+>
 > On Wed, Jan 25, 2017 at 01:46:28PM +0000, Valo, Kalle wrote:
 >> Kalle Valo <kvalo@qca.qualcomm.com> writes:
->> 
+>>
 >>> Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
->>> 
+>>>
 >>>> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
->>>> 
+>>>>
 >>>> This fixes the below crash when ath10k probe firmware fails,
 >>>> NAPI polling tries to access a rx ring resource which was never
 >>>> allocated, fix this by disabling NAPI right away once the probe
@@ -58,13 +73,13 @@ Symmetry is still broken on firmware crash (at least with 6174). ath10k_pci_hif_
 >>>> that the error is never propogated to 'ath10k_pci_probe' when
 >>>> ath10k_core_register fails, so calling 'ath10k_hif_stop' to cleanup
 >>>> PCI related things seems to be ok
->>>> 
+>>>>
 >>>> BUG: unable to handle kernel NULL pointer dereference at (null)
 >>>> IP:  __ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
 >>>> __ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
->>>> 
+>>>>
 >>>> Call Trace:
->>>> 
+>>>>
 >>>> [<ffffffffa113ec62>] ath10k_htt_rx_msdu_buff_replenish+0x42/0x90
 >>>> [ath10k_core]
 >>>> [<ffffffffa113f393>] ath10k_htt_txrx_compl_task+0x433/0x17d0
@@ -74,67 +89,67 @@ Symmetry is still broken on firmware crash (at least with 6174). ath10k_pci_hif_
 >>>> [<ffffffffa119301d>] ? ath10k_pci_read32+0xd/0x10 [ath10k_pci]
 >>>> [<ffffffffa1195b17>] ath10k_pci_napi_poll+0x47/0x110 [ath10k_pci]
 >>>> [<ffffffff817863af>] net_rx_action+0x20f/0x370
->>>> 
+>>>>
 >>>> Reported-by: Ben Greear <greearb@candelatech.com>
 >>>> Fixes: 3c97f5de1f28 ("ath10k: implement NAPI support")
 >>>> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
->>> 
+>>>
 >>> Is there an easy way to reproduce this bug? I don't see it on my x86
 >>> laptop with qca988x and I call rmmod all the time. I would like to test
 >>> this myself.
->>> 
+>>>
 >>>> --- a/drivers/net/wireless/ath/ath10k/core.c
 >>>> +++ b/drivers/net/wireless/ath/ath10k/core.c
 >>>> @@ -2164,6 +2164,7 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
->>>> 	ath10k_core_free_firmware_files(ar);
->>>> 
+>>>>    ath10k_core_free_firmware_files(ar);
+>>>>
 >>>> err_power_down:
->>>> +	ath10k_hif_stop(ar);
->>>> 	ath10k_hif_power_down(ar);
->>>> 
->>>> 	return ret;
->>> 
+>>>> +  ath10k_hif_stop(ar);
+>>>>    ath10k_hif_power_down(ar);
+>>>>
+>>>>    return ret;
+>>>
 >>> This breaks the symmetry, we should not be calling ath10k_hif_stop() if
 >>> we haven't called ath10k_hif_start() from the same function. This can
 >>> just create a bigger mess later, for example with other bus support like
 >>> sdio or usb. In theory it should enough that we call
 >>> ath10k_hif_power_down() and pci.c does the rest correctly "behind the
 >>> scenes".
->>> 
+>>>
 >>> I investigated this a bit and I think the real cause is that we call
 >>> napi_enable() from ath10k_pci_hif_power_up() and napi_disable() from
 >>> ath10k_pci_hif_stop(). Does anyone remember why?
->>> 
+>>>
 >>> I was expecting that we would call napi_enable()/napi_disable() either
 >>> in ath10k_hif_power_up/down() or ath10k_hif_start()/stop(), but not
 >>> mixed like it's currently.
->> 
+>>
 >> So below is something I was thinking of, now napi_enable() is called
 >> from ath10k_hif_start() and napi_disable() from ath10k_hif_stop(). Would
 >> that work?
->> 
+>>
 >> --- a/drivers/net/wireless/ath/ath10k/pci.c
 >> +++ b/drivers/net/wireless/ath/ath10k/pci.c
 >> @@ -1648,6 +1648,8 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
->> 
->> 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif start\n");
->> 
->> +	napi_enable(&ar->napi);
+>>
+>>      ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif start\n");
+>>
+>> +    napi_enable(&ar->napi);
 >> +
->> 	ath10k_pci_irq_enable(ar);
->> 	ath10k_pci_rx_post(ar);
->> 
+>>      ath10k_pci_irq_enable(ar);
+>>      ath10k_pci_rx_post(ar);
+>>
 >> @@ -2532,7 +2534,6 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
->> 		ath10k_err(ar, "could not wake up target CPU: %d\n", ret);
->> 		goto err_ce;
->> 	}
->> -	napi_enable(&ar->napi);
->> 
->> 	return 0;
->> 
->> -- 
+>>              ath10k_err(ar, "could not wake up target CPU: %d\n", ret);
+>>              goto err_ce;
+>>      }
+>> -    napi_enable(&ar->napi);
+>>
+>>      return 0;
+>>
+>> --
 >> Kalle Valo
-> 
+>
 > _______________________________________________
 > ath10k mailing list
 > ath10k@lists.infradead.org
