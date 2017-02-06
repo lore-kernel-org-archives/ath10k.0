@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cacOW-0004Rw-VW
- for ath10k@lists.infradead.org; Mon, 06 Feb 2017 06:03:22 +0000
-Date: Mon, 6 Feb 2017 11:32:32 +0530
+ id 1cagAj-0002bp-W8
+ for ath10k@lists.infradead.org; Mon, 06 Feb 2017 10:05:23 +0000
+Date: Mon, 6 Feb 2017 15:34:48 +0530
 From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
 Subject: Re: [PATCH v3] ath10k: Fix crash during rmmod when probe firmware
  fails
-Message-ID: <20170206060232.GA31102@atheros-ThinkPad-T61>
+Message-ID: <20170206100448.GA13894@atheros-ThinkPad-T61>
 References: <1482221351-24029-1-git-send-email-mohammed@qca.qualcomm.com>
  <8760l38dz0.fsf@kamboji.qca.qualcomm.com>
  <871svr8d83.fsf@kamboji.qca.qualcomm.com>
@@ -32,7 +32,12 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@l
 
 Hi Kalle,
 
-sorry for the delay
+the change suggested by you helps, and the device probe, scan
+is successful as well. Still good to have this change part of your
+basic sanity and regression testing !
+
+regards,
+shafi
 
 On Wed, Jan 25, 2017 at 01:46:28PM +0000, Valo, Kalle wrote:
 > Kalle Valo <kvalo@qca.qualcomm.com> writes:
@@ -121,13 +126,9 @@ On Wed, Jan 25, 2017 at 01:46:28PM +0000, Valo, Kalle wrote:
 > -	napi_enable(&ar->napi);
 >  
 >  	return 0;
->
-
-[shafi] I think I tried this change some time back, but it had some regression
-during device start up, let me check this once and get back to you.
-
-regards,
-shafi
+> 
+> -- 
+> Kalle Valo
 
 _______________________________________________
 ath10k mailing list
