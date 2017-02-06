@@ -1,21 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1caiIp-000743-5S
- for ath10k@lists.infradead.org; Mon, 06 Feb 2017 12:21:54 +0000
-From: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: Fix crash during rmmod when probe firmware
- fails
-Date: Mon, 6 Feb 2017 12:21:21 +0000
-Message-ID: <1486383699520.26295@qti.qualcomm.com>
-References: <1482221351-24029-1-git-send-email-mohammed@qca.qualcomm.com>
- <8760l38dz0.fsf@kamboji.qca.qualcomm.com>
- <871svr8d83.fsf@kamboji.qca.qualcomm.com>
- <20170206100448.GA13894@atheros-ThinkPad-T61>,
- <2DBE5232-FF3F-4B0E-8739-B6E82361316C@vorklift.com>
-In-Reply-To: <2DBE5232-FF3F-4B0E-8739-B6E82361316C@vorklift.com>
-Content-Language: en-IN
-MIME-Version: 1.0
+ id 1cakRP-0002Ap-7j
+ for ath10k@lists.infradead.org; Mon, 06 Feb 2017 14:38:53 +0000
+Message-ID: <1486391893.5430.6.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 1/2] cfg80211: Add support to set tx power for a
+ station associated
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 06 Feb 2017 15:38:13 +0100
+In-Reply-To: <00887d68-80b7-cf80-e426-e3772d8122f1@candelatech.com>
+References: <1485888101-23454-1-git-send-email-arnagara@qti.qualcomm.com>
+ <12efc3d8-2274-a6e8-6d74-c06bf89762fb@candelatech.com>
+ <14f6b3acb8b26d0eb806148c0ee47fb0@codeaurora.org>
+ <2b68dc12-44bf-f510-339a-3d987a88e8b5@candelatech.com>
+ <1f3a3dec67fbe4f580750eb06f9b628b@codeaurora.org>
+ <00887d68-80b7-cf80-e426-e3772d8122f1@candelatech.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,133 +28,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michael Ney <neym@vorklift.com>, Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-
-Hi,
-
-even with the below patch applied ?
-https://patchwork.kernel.org/patch/9452265/
-
-regards
-shafi
-________________________________________
-From: Michael Ney <neym@vorklift.com>
-Sent: 06 February 2017 17:46
-To: Mohammed Shafi Shajakhan
-Cc: Valo, Kalle; linux-wireless@vger.kernel.org; ath10k@lists.infradead.org; Shajakhan, Mohammed Shafi (Mohammed Shafi)
-Subject: Re: [PATCH v3] ath10k: Fix crash during rmmod when probe firmware fails
-
-Symmetry is still broken on firmware crash (at least with 6174). ath10k_pci_hif_stop gets called twice, once from the driver restart (warm restart) and once from ieee80211 start (cold restart), resulting in napi_synchrionize/napi_disable getting called twice and sticking the driver in an infinite wait loop (napi_synchronize waits until NAPI_STATE_SCHED is off, while napi_disable leaves NAPI_STATE_SCHED to on when leaving).
+To: Ben Greear <greearb@candelatech.com>, Ashok Raj Nagarajan <arnagara@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, ath10k@lists.infradead.org
 
 
-> On Feb 6, 2017, at 5:04 AM, Mohammed Shafi Shajakhan <mohammed@codeaurora.org> wrote:
->
-> Hi Kalle,
->
-> the change suggested by you helps, and the device probe, scan
-> is successful as well. Still good to have this change part of your
-> basic sanity and regression testing !
->
-> regards,
-> shafi
->
-> On Wed, Jan 25, 2017 at 01:46:28PM +0000, Valo, Kalle wrote:
->> Kalle Valo <kvalo@qca.qualcomm.com> writes:
->>
->>> Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
->>>
->>>> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
->>>>
->>>> This fixes the below crash when ath10k probe firmware fails,
->>>> NAPI polling tries to access a rx ring resource which was never
->>>> allocated, fix this by disabling NAPI right away once the probe
->>>> firmware fails by calling 'ath10k_hif_stop'. Its good to note
->>>> that the error is never propogated to 'ath10k_pci_probe' when
->>>> ath10k_core_register fails, so calling 'ath10k_hif_stop' to cleanup
->>>> PCI related things seems to be ok
->>>>
->>>> BUG: unable to handle kernel NULL pointer dereference at (null)
->>>> IP:  __ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
->>>> __ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
->>>>
->>>> Call Trace:
->>>>
->>>> [<ffffffffa113ec62>] ath10k_htt_rx_msdu_buff_replenish+0x42/0x90
->>>> [ath10k_core]
->>>> [<ffffffffa113f393>] ath10k_htt_txrx_compl_task+0x433/0x17d0
->>>> [ath10k_core]
->>>> [<ffffffff8114406d>] ? __wake_up_common+0x4d/0x80
->>>> [<ffffffff811349ec>] ? cpu_load_update+0xdc/0x150
->>>> [<ffffffffa119301d>] ? ath10k_pci_read32+0xd/0x10 [ath10k_pci]
->>>> [<ffffffffa1195b17>] ath10k_pci_napi_poll+0x47/0x110 [ath10k_pci]
->>>> [<ffffffff817863af>] net_rx_action+0x20f/0x370
->>>>
->>>> Reported-by: Ben Greear <greearb@candelatech.com>
->>>> Fixes: 3c97f5de1f28 ("ath10k: implement NAPI support")
->>>> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
->>>
->>> Is there an easy way to reproduce this bug? I don't see it on my x86
->>> laptop with qca988x and I call rmmod all the time. I would like to test
->>> this myself.
->>>
->>>> --- a/drivers/net/wireless/ath/ath10k/core.c
->>>> +++ b/drivers/net/wireless/ath/ath10k/core.c
->>>> @@ -2164,6 +2164,7 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
->>>>    ath10k_core_free_firmware_files(ar);
->>>>
->>>> err_power_down:
->>>> +  ath10k_hif_stop(ar);
->>>>    ath10k_hif_power_down(ar);
->>>>
->>>>    return ret;
->>>
->>> This breaks the symmetry, we should not be calling ath10k_hif_stop() if
->>> we haven't called ath10k_hif_start() from the same function. This can
->>> just create a bigger mess later, for example with other bus support like
->>> sdio or usb. In theory it should enough that we call
->>> ath10k_hif_power_down() and pci.c does the rest correctly "behind the
->>> scenes".
->>>
->>> I investigated this a bit and I think the real cause is that we call
->>> napi_enable() from ath10k_pci_hif_power_up() and napi_disable() from
->>> ath10k_pci_hif_stop(). Does anyone remember why?
->>>
->>> I was expecting that we would call napi_enable()/napi_disable() either
->>> in ath10k_hif_power_up/down() or ath10k_hif_start()/stop(), but not
->>> mixed like it's currently.
->>
->> So below is something I was thinking of, now napi_enable() is called
->> from ath10k_hif_start() and napi_disable() from ath10k_hif_stop(). Would
->> that work?
->>
->> --- a/drivers/net/wireless/ath/ath10k/pci.c
->> +++ b/drivers/net/wireless/ath/ath10k/pci.c
->> @@ -1648,6 +1648,8 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
->>
->>      ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif start\n");
->>
->> +    napi_enable(&ar->napi);
->> +
->>      ath10k_pci_irq_enable(ar);
->>      ath10k_pci_rx_post(ar);
->>
->> @@ -2532,7 +2534,6 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
->>              ath10k_err(ar, "could not wake up target CPU: %d\n", ret);
->>              goto err_ce;
->>      }
->> -    napi_enable(&ar->napi);
->>
->>      return 0;
->>
->> --
->> Kalle Valo
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+> You use value '0' to mean set to default values, as far as I can
+> tell.
 
+I think you're confusing the internal API and the userspace API - at a
+userspace level you have to set NL80211_ATTR_STA_TX_POWER_SETTING to
+NL80211_TX_POWER_AUTOMATIC to revert back to defaults, no?
+
+For perfect backwards compatibility we should ignore it if not
+supported, but that doesn't really make sense - I think we should
+reject it and handle errors elsewhere in the not supported case.
+
+johannes
 
 _______________________________________________
 ath10k mailing list
