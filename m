@@ -1,33 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cZOYi-0006XQ-Ki
- for ath10k@lists.infradead.org; Thu, 02 Feb 2017 21:04:51 +0000
-References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
- <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>
- <87y3xtrmn2.fsf@kamboji.qca.qualcomm.com>
- <44480bab-0cf7-f4e3-7612-b1cf5d4c040f@dd-wrt.com>
- <1a58440c-80c9-0a86-aae9-213edc5b0019@candelatech.com>
- <ed765a12-6ae8-ed78-6626-ae82312ba525@dd-wrt.com>
- <8bcf2ea6-802f-f249-8e2d-96ec03553a9b@candelatech.com>
- <23b1bd75-a7f9-08e7-5d7b-f67081b89e1b@candelatech.com>
- <5e23ea91-429e-eff6-7443-e4d4f5981735@dd-wrt.com>
- <785bdbc1-fcf5-921b-2092-6142d51aa0ce@candelatech.com>
- <14bd9f40-a79c-5032-778f-2f2ae92afccc@dd-wrt.com>
- <c015184f-b94c-5328-3995-5c223c27905a@candelatech.com>
- <53e8f5d9-9f0d-7386-4de2-46f6e1b26c36@dd-wrt.com>
- <941cc332-782e-897b-ba77-4e6682836f68@candelatech.com>
- <dc16858f-11f4-3aa7-01b8-4165cd1aa087@dd-wrt.com>
- <501bfc50-1c80-999a-af78-2da4a7fc00f4@candelatech.com>
- <e3e5492e-1a58-ff2c-bf7c-016a2f19a79b@dd-wrt.com>
- <fb1ebe0c-c6b1-ef54-64bb-8a4d4fe3a399@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <11581bd9-2f7e-a778-1cfa-36e73611039b@dd-wrt.com>
-Date: Thu, 2 Feb 2017 22:04:33 +0100
+ id 1cacOW-0004Rw-VW
+ for ath10k@lists.infradead.org; Mon, 06 Feb 2017 06:03:22 +0000
+Date: Mon, 6 Feb 2017 11:32:32 +0530
+From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+Subject: Re: [PATCH v3] ath10k: Fix crash during rmmod when probe firmware
+ fails
+Message-ID: <20170206060232.GA31102@atheros-ThinkPad-T61>
+References: <1482221351-24029-1-git-send-email-mohammed@qca.qualcomm.com>
+ <8760l38dz0.fsf@kamboji.qca.qualcomm.com>
+ <871svr8d83.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <fb1ebe0c-c6b1-ef54-64bb-8a4d4fe3a399@candelatech.com>
-Subject: Re: 9984 VHT
+Content-Disposition: inline
+In-Reply-To: <871svr8d83.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -36,79 +22,112 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Shajakhan,
+ Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
 
-this code here has been used
+Hi Kalle,
 
-         if (arg->mode =3D=3D MODE_11AC_VHT160)  {
-                 if (arg->freq < arg->band_center_freq1)
-                         ch->band_center_freq1 =3D __cpu_to_le32(arg->freq =
+sorry for the delay
 
-+ 40);
-                 else
-                         ch->band_center_freq1 =3D __cpu_to_le32(arg->freq =
-
-- 40);
-                 ch->band_center_freq2 =3D =
-
-__cpu_to_le32(arg->band_center_freq1);
-         }
-
-
-Am 02.02.2017 um 21:50 schrieb Ben Greear:
-> On 02/02/2017 12:45 PM, Sebastian Gottschall wrote:
+On Wed, Jan 25, 2017 at 01:46:28PM +0000, Valo, Kalle wrote:
+> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+> 
+> > Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
+> >
+> >> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> >>
+> >> This fixes the below crash when ath10k probe firmware fails,
+> >> NAPI polling tries to access a rx ring resource which was never
+> >> allocated, fix this by disabling NAPI right away once the probe
+> >> firmware fails by calling 'ath10k_hif_stop'. Its good to note
+> >> that the error is never propogated to 'ath10k_pci_probe' when
+> >> ath10k_core_register fails, so calling 'ath10k_hif_stop' to cleanup
+> >> PCI related things seems to be ok
+> >>
+> >> BUG: unable to handle kernel NULL pointer dereference at (null)
+> >> IP:  __ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
+> >> __ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
+> >>
+> >> Call Trace:
+> >>
+> >> [<ffffffffa113ec62>] ath10k_htt_rx_msdu_buff_replenish+0x42/0x90
+> >> [ath10k_core]
+> >> [<ffffffffa113f393>] ath10k_htt_txrx_compl_task+0x433/0x17d0
+> >> [ath10k_core]
+> >> [<ffffffff8114406d>] ? __wake_up_common+0x4d/0x80
+> >> [<ffffffff811349ec>] ? cpu_load_update+0xdc/0x150
+> >> [<ffffffffa119301d>] ? ath10k_pci_read32+0xd/0x10 [ath10k_pci]
+> >> [<ffffffffa1195b17>] ath10k_pci_napi_poll+0x47/0x110 [ath10k_pci]
+> >> [<ffffffff817863af>] net_rx_action+0x20f/0x370
+> >>
+> >> Reported-by: Ben Greear <greearb@candelatech.com>
+> >> Fixes: 3c97f5de1f28 ("ath10k: implement NAPI support")
+> >> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> >
+> > Is there an easy way to reproduce this bug? I don't see it on my x86
+> > laptop with qca988x and I call rmmod all the time. I would like to test
+> > this myself.
+> >
+> >> --- a/drivers/net/wireless/ath/ath10k/core.c
+> >> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> >> @@ -2164,6 +2164,7 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+> >>  	ath10k_core_free_firmware_files(ar);
+> >>  
+> >>  err_power_down:
+> >> +	ath10k_hif_stop(ar);
+> >>  	ath10k_hif_power_down(ar);
+> >>  
+> >>  	return ret;
+> >
+> > This breaks the symmetry, we should not be calling ath10k_hif_stop() if
+> > we haven't called ath10k_hif_start() from the same function. This can
+> > just create a bigger mess later, for example with other bus support like
+> > sdio or usb. In theory it should enough that we call
+> > ath10k_hif_power_down() and pci.c does the rest correctly "behind the
+> > scenes".
+> >
+> > I investigated this a bit and I think the real cause is that we call
+> > napi_enable() from ath10k_pci_hif_power_up() and napi_disable() from
+> > ath10k_pci_hif_stop(). Does anyone remember why?
+> >
+> > I was expecting that we would call napi_enable()/napi_disable() either
+> > in ath10k_hif_power_up/down() or ath10k_hif_start()/stop(), but not
+> > mixed like it's currently.
+> 
+> So below is something I was thinking of, now napi_enable() is called
+> from ath10k_hif_start() and napi_disable() from ath10k_hif_stop(). Would
+> that work?
+> 
+> --- a/drivers/net/wireless/ath/ath10k/pci.c
+> +++ b/drivers/net/wireless/ath/ath10k/pci.c
+> @@ -1648,6 +1648,8 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
+>  
+>  	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif start\n");
+>  
+> +	napi_enable(&ar->napi);
+> +
+>  	ath10k_pci_irq_enable(ar);
+>  	ath10k_pci_rx_post(ar);
+>  
+> @@ -2532,7 +2534,6 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+>  		ath10k_err(ar, "could not wake up target CPU: %d\n", ret);
+>  		goto err_ce;
+>  	}
+> -	napi_enable(&ar->napi);
+>  
+>  	return 0;
 >
->>>> +       if (arg->mode =3D=3D MODE_11AC_VHT160)  {
->>>> +               ch->band_center_freq1 =3D __cpu_to_le32(arg->freq);
->>>> +               ch->band_center_freq2 =3D =
 
->>>> __cpu_to_le32(arg->band_center_freq1);
->>>> +       }
->>>
->>> No, I don't think so.  freq1 should be freq + 40 if freq < =
+[shafi] I think I tried this change some time back, but it had some regression
+during device start up, let me check this once and get back to you.
 
->>> center-freq, otherwise
->>> should be freq - 40.
->> doesnt sound very logic since 80+80 mode doesnt require that voodoo =
-
->> too since it would require another addition field. but i will try it =
-
->> it right now
->
-> The firmware change looks pretty lame to me...it was easy for me to =
-
-> make my FW backwards compat
-> to the old way of just passing in the mhz and the freq1 160mhz =
-
-> center-freq, so really I do not know why
-> the FW was changed.
->
-> I am testing my FW fixes now...
->
-> Thanks,
-> Ben
->
-
-
--- =
-
-Mit freundlichen Gr=FCssen / Regards
-
-Sebastian Gottschall / CTO
-
-NewMedia-NET GmbH - DD-WRT
-Firmensitz:  Berliner Ring 101, 64625 Bensheim
-Registergericht: Amtsgericht Darmstadt, HRB 25473
-Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
-http://www.dd-wrt.com
-email: s.gottschall@dd-wrt.com
-Tel.: +496251-582650 / Fax: +496251-5826565
-
+regards,
+shafi
 
 _______________________________________________
 ath10k mailing list
