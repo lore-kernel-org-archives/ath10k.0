@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cb1VN-0007WR-Q6
- for ath10k@lists.infradead.org; Tue, 07 Feb 2017 08:52:07 +0000
+ id 1cb1WN-0007hS-Sf
+ for ath10k@lists.infradead.org; Tue, 07 Feb 2017 08:53:09 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: Add debugfs support to get per peer tids log via tracing
+Subject: Re: [PATCHv3] ath10k: fix boot failure in UTF mode/testmode
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1485756147-13762-1-git-send-email-c_mkenna@qti.qualcomm.com>
-References: <1485756147-13762-1-git-send-email-c_mkenna@qti.qualcomm.com>
-Message-ID: <6f8d8b25a8d443eabd8f3b6ceb51e24e@eusanexr01a.eu.qualcomm.com>
-Date: Tue, 7 Feb 2017 00:51:41 -0800
+In-Reply-To: <1485838569-1027-1-git-send-email-c_traja@qti.qualcomm.com>
+References: <1485838569-1027-1-git-send-email-c_traja@qti.qualcomm.com>
+Message-ID: <8a5a900974d44581a42675f4977064c7@eusanexr01a.eu.qualcomm.com>
+Date: Tue, 7 Feb 2017 00:52:43 -0800
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +22,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_mkenna@qti.qualcomm.com
-Cc: mkenna@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: c_traja@qti.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, tamizhchelvam@codeaurora.org, stable@vger.kernel.org, ath10k@lists.infradead.org
 
-c_mkenna@qti.qualcomm.com wrote:
-> From: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+c_traja@qti.qualcomm.com wrote:
+> From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 > 
-> This patch provides support to get per peer tids log.
+> Rx filter reset and the dynamic tx switch mode (EXT_RESOURCE_CFG)
+> configuration are causing the following errors when UTF firmware
+> is loaded to the target.
 > 
-> echo 1 > /sys/kernel/debug/ieee80211/phyX/netdev\:wlanX/stations/
-> XX:XX/peer_debug_trigger
+> Error message 1:
+> [ 598.015629] ath10k_pci 0001:01:00.0: failed to ping firmware: -110
+> [ 598.020828] ath10k_pci 0001:01:00.0: failed to reset rx filter: -110
+> [ 598.141556] ath10k_pci 0001:01:00.0: failed to start core (testmode): -110
 > 
-> These logs will be the part of FWLOGS which we collect the logs
-> via tracing interface. Here we will get the peer tigd logs only
-> once(not repeatedly) when we write 1 to the debugfs file.
+> Error message 2:
+> [ 668.615839] ath10k_ahb a000000.wifi: failed to send ext resource cfg command : -95
+> [ 668.618902] ath10k_ahb a000000.wifi: failed to start core (testmode): -95
 > 
-> Signed-off-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
+> Avoiding these configurations while bringing the target in
+> testmode is solving the problem.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-ee8b08a1be82 ath10k: add debugfs support to get per peer tids log via tracing
+cb4281528b62 ath10k: fix boot failure in UTF mode/testmode
 
 -- 
-https://patchwork.kernel.org/patch/9544499/
+https://patchwork.kernel.org/patch/9546451/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
