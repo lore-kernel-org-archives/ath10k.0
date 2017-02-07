@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cb1WN-0007hS-Sf
- for ath10k@lists.infradead.org; Tue, 07 Feb 2017 08:53:09 +0000
+ id 1cb1bv-0001fj-Rw
+ for ath10k@lists.infradead.org; Tue, 07 Feb 2017 08:58:53 +0000
 MIME-Version: 1.0
-Subject: Re: [PATCHv3] ath10k: fix boot failure in UTF mode/testmode
+Subject: Re: ath10k: fix reading sram contents for QCA4019
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1485838569-1027-1-git-send-email-c_traja@qti.qualcomm.com>
-References: <1485838569-1027-1-git-send-email-c_traja@qti.qualcomm.com>
-Message-ID: <8a5a900974d44581a42675f4977064c7@eusanexr01a.eu.qualcomm.com>
-Date: Tue, 7 Feb 2017 00:52:43 -0800
+In-Reply-To: <1485887811-23313-1-git-send-email-arnagara@qti.qualcomm.com>
+References: <1485887811-23313-1-git-send-email-arnagara@qti.qualcomm.com>
+Message-ID: <263756ea946749a08c85691739345bee@eusanexr01a.eu.qualcomm.com>
+Date: Tue, 7 Feb 2017 00:58:27 -0800
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +22,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_traja@qti.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, tamizhchelvam@codeaurora.org, stable@vger.kernel.org, ath10k@lists.infradead.org
+To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, arnagara@codeaurora.org, ath10k@lists.infradead.org
 
-c_traja@qti.qualcomm.com wrote:
-> From: Tamizh chelvam <c_traja@qti.qualcomm.com>
+Ashok Raj Nagarajan <arnagara@qti.qualcomm.com> wrote:
+> With QCA4019 platform, SRAM address can be accessed directly from host but
+> currently, we are assuming sram addresses cannot be accessed directly and
+> hence we convert the addresses.
 > 
-> Rx filter reset and the dynamic tx switch mode (EXT_RESOURCE_CFG)
-> configuration are causing the following errors when UTF firmware
-> is loaded to the target.
+> While there, clean up growing hw checks during conversion of target CPU
+> address to CE address. Now we have function pointer pertaining to different
+> chips.
 > 
-> Error message 1:
-> [ 598.015629] ath10k_pci 0001:01:00.0: failed to ping firmware: -110
-> [ 598.020828] ath10k_pci 0001:01:00.0: failed to reset rx filter: -110
-> [ 598.141556] ath10k_pci 0001:01:00.0: failed to start core (testmode): -110
-> 
-> Error message 2:
-> [ 668.615839] ath10k_ahb a000000.wifi: failed to send ext resource cfg command : -95
-> [ 668.618902] ath10k_ahb a000000.wifi: failed to start core (testmode): -95
-> 
-> Avoiding these configurations while bringing the target in
-> testmode is solving the problem.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+> Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-cb4281528b62 ath10k: fix boot failure in UTF mode/testmode
+7f622593cc5a ath10k: fix reading sram contents for QCA4019
 
 -- 
-https://patchwork.kernel.org/patch/9546451/
+https://patchwork.kernel.org/patch/9548043/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
