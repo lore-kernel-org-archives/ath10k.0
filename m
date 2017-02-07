@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cb1Sl-0005wa-Qv
- for ath10k@lists.infradead.org; Tue, 07 Feb 2017 08:49:25 +0000
+ id 1cb1VN-0007WR-Q6
+ for ath10k@lists.infradead.org; Tue, 07 Feb 2017 08:52:07 +0000
 MIME-Version: 1.0
-Subject: Re: [1/3] ath10k: prefer unsigned int over just unsigned
+Subject: Re: ath10k: Add debugfs support to get per peer tids log via tracing
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <148603246555.7275.3348416808167032391.stgit@potku.adurom.net>
-References: <148603246555.7275.3348416808167032391.stgit@potku.adurom.net>
-Message-ID: <e88995d698ce4db08821046ec9b462ba@eusanexr01a.eu.qualcomm.com>
-Date: Tue, 7 Feb 2017 00:48:54 -0800
+In-Reply-To: <1485756147-13762-1-git-send-email-c_mkenna@qti.qualcomm.com>
+References: <1485756147-13762-1-git-send-email-c_mkenna@qti.qualcomm.com>
+Message-ID: <6f8d8b25a8d443eabd8f3b6ceb51e24e@eusanexr01a.eu.qualcomm.com>
+Date: Tue, 7 Feb 2017 00:51:41 -0800
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +22,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: c_mkenna@qti.qualcomm.com
+Cc: mkenna@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Fixes new checkpatch warnings:
+c_mkenna@qti.qualcomm.com wrote:
+> From: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
 > 
-> drivers/net/wireless/ath/ath10k/htt.h:1639: Prefer 'unsigned int' to bare use of 'unsigned'
-> drivers/net/wireless/ath/ath10k/htt.h:1660: Prefer 'unsigned int' to bare use of 'unsigned'
+> This patch provides support to get per peer tids log.
 > 
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> echo 1 > /sys/kernel/debug/ieee80211/phyX/netdev\:wlanX/stations/
+> XX:XX/peer_debug_trigger
+> 
+> These logs will be the part of FWLOGS which we collect the logs
+> via tracing interface. Here we will get the peer tigd logs only
+> once(not repeatedly) when we write 1 to the debugfs file.
+> 
+> Signed-off-by: Maharaja Kennadyrajan <c_mkenna@qti.qualcomm.com>
 
-3 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-b2d604156846 ath10k: prefer unsigned int over just unsigned
-019e4280fac9 ath10k: use names in function definition arguments
-39bfe9f7c0c9 ath10k: few whitespace fixes
+ee8b08a1be82 ath10k: add debugfs support to get per peer tids log via tracing
 
 -- 
-https://patchwork.kernel.org/patch/9551583/
+https://patchwork.kernel.org/patch/9544499/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
