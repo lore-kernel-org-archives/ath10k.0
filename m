@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cb1bv-0001fj-Rw
- for ath10k@lists.infradead.org; Tue, 07 Feb 2017 08:58:53 +0000
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cb1rg-0001Wb-0e
+ for ath10k@lists.infradead.org; Tue, 07 Feb 2017 09:15:08 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath10k: remove ath10k_vif_to_arvif()
+Date: Tue, 7 Feb 2017 09:14:42 +0000
+Message-ID: <87y3xi4b28.fsf@qca.qualcomm.com>
+References: <1486030773-30600-1-git-send-email-amadeusz.slawinski@tieto.com>
+ <CAJ-VmonrHpS3MArM9ohHgLvb6xspP_gnVVeJWA9F-pjUpJ+LZA@mail.gmail.com>
+In-Reply-To: <CAJ-VmonrHpS3MArM9ohHgLvb6xspP_gnVVeJWA9F-pjUpJ+LZA@mail.gmail.com>	(Adrian
+ Chadd's message of "Thu, 2 Feb 2017 08:17:00 -0800")
+Content-Language: en-US
 MIME-Version: 1.0
-Subject: Re: ath10k: fix reading sram contents for QCA4019
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1485887811-23313-1-git-send-email-arnagara@qti.qualcomm.com>
-References: <1485887811-23313-1-git-send-email-arnagara@qti.qualcomm.com>
-Message-ID: <263756ea946749a08c85691739345bee@eusanexr01a.eu.qualcomm.com>
-Date: Tue, 7 Feb 2017 00:58:27 -0800
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +25,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, arnagara@codeaurora.org, ath10k@lists.infradead.org
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, =?iso-8859-2?Q?Amadeusz_S=B3awi=F1ski?= <amadeusz.slawinski@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 
-Ashok Raj Nagarajan <arnagara@qti.qualcomm.com> wrote:
-> With QCA4019 platform, SRAM address can be accessed directly from host but
-> currently, we are assuming sram addresses cannot be accessed directly and
-> hence we convert the addresses.
-> 
-> While there, clean up growing hw checks during conversion of target CPU
-> address to CE address. Now we have function pointer pertaining to different
-> chips.
-> 
-> Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Adrian Chadd <adrian@freebsd.org> writes:
 
-Patch applied to ath-next branch of ath.git, thanks.
+> Removing this method makes the diff to FreeBSD larger, as "vif" in
+> FreeBSD is a different pointer.
+>
+> (Yes, I have ath10k on freebsd working and I'd like to find a way to
+> reduce the diff moving forward.)
 
-7f622593cc5a ath10k: fix reading sram contents for QCA4019
+I don't like this "(void *) vif->drv_priv" style that much either but
+apparently it's commonly used in Linux wireless code and already parts
+of ath10k. So this patch just unifies the coding style.
 
 -- 
-https://patchwork.kernel.org/patch/9548043/
-
-Documentation about submitting wireless patches and checking status
-from patchwork:
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
