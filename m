@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbQyr-0002ha-CQ
- for ath10k@lists.infradead.org; Wed, 08 Feb 2017 12:04:15 +0000
+ id 1cbR1c-00055M-Az
+ for ath10k@lists.infradead.org; Wed, 08 Feb 2017 12:07:06 +0000
 From: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
-Subject: [PATCH v3] ath10k: add support for controlling tx power to a station
-Date: Wed, 8 Feb 2017 17:28:37 +0530
-Message-ID: <1486555117-25196-1-git-send-email-arnagara@qti.qualcomm.com>
+Subject: [PATCH v3] iw: Add support for controlling tx power for per station
+Date: Wed, 8 Feb 2017 17:31:17 +0530
+Message-ID: <1486555277-25258-1-git-send-email-arnagara@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,105 +20,120 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, arnagara@codeaurora.org, linux-wireless@vger.kernel.org
+To: johannes@sipsolutions.net
+Cc: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, arnagara@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-This patch will add the support to control the transmit power for traffic
-to a station associated with the AP. Userspace provide the transmit power
-value in mBm units. ath10k firmware expects the value to be in dBm and
-hence will convert the value from to dBm before passing down to firmware.
+This patch allows userspace to set transmit power, in mBm units, to a
+station associated to the AP.
 
-Underlying FW will enforce that the maximum tx power will be based on the
-regulatory requirements. If the user given transmit power is greater than
-the allowed tx power in the given channel, then the FW will use the maximum
-tx power in the same channel.
+To set a limit tx power of 2000 mBm:
+iw wlan0 station set <mac-addr> txpwr limit 2000
 
-When 0 is sent to the FW as tx power, it will revert to the automatic tx
-power for the station.
+To revert the user defined tx power for a station:
+iw wlan0 station set <mac-addr> txpwr auto
 
 Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
 ---
 v3:
-	- reword commit log
-	- remove range check for the input from user. (Ben Greear)
+	- rebased
 
- drivers/net/wireless/ath/ath10k/mac.c | 31 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h |  1 +
- 2 files changed, 32 insertions(+)
+ station.c | 69 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9977829..3b91468 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5985,6 +5985,32 @@ static int ath10k_mac_tdls_vifs_count(struct ieee80211_hw *hw)
- 	return num_tdls_vifs;
+diff --git a/station.c b/station.c
+index f3e3da8..8364593 100644
+--- a/station.c
++++ b/station.c
+@@ -569,6 +569,7 @@ COMMAND(station, del, "<MAC address> [subtype <subtype>] [reason-code <code>]",
+ static const struct cmd *station_set_plink;
+ static const struct cmd *station_set_vlan;
+ static const struct cmd *station_set_mesh_power_mode;
++static const struct cmd *station_set_txpwr;
+ 
+ static const struct cmd *select_station_cmd(int argc, char **argv)
+ {
+@@ -580,6 +581,8 @@ static const struct cmd *select_station_cmd(int argc, char **argv)
+ 		return station_set_vlan;
+ 	if (strcmp(argv[1], "mesh_power_mode") == 0)
+ 		return station_set_mesh_power_mode;
++	if (strcmp(argv[1], "txpwr") == 0)
++		return station_set_txpwr;
+ 	return NULL;
  }
  
-+static int ath10k_sta_set_txpwr(struct ieee80211_hw *hw,
-+				struct ieee80211_vif *vif,
-+				struct ieee80211_sta *sta)
+@@ -731,6 +734,72 @@ COMMAND_ALIAS(station, set, "<MAC address> mesh_power_mode "
+ 	"Set link-specific mesh power mode for this station",
+ 	select_station_cmd, station_set_mesh_power_mode);
+ 
++static int handle_station_set_txpwr(struct nl80211_state *state,
++				    struct nl_msg *msg,
++				    int argc, char **argv,
++				    enum id_input id)
 +{
-+	struct ath10k *ar = hw->priv;
-+	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
-+	int ret = 0;
-+	u16 txpwr;
++	enum nl80211_tx_power_setting type;
++	unsigned char mac_addr[ETH_ALEN];
++	unsigned int sta_txpwr = 0;
++	char *err = NULL;
 +
-+	txpwr = MBM_TO_DBM(sta->txpwr);
++	if (argc != 3 && argc != 4)
++		return 1;
 +
-+	mutex_lock(&ar->conf_mutex);
-+
-+	ret = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
-+					WMI_PEER_USE_FIXED_PWR, txpwr);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to set tx power for station ret: %d\n",
-+			    ret);
-+		goto out;
++	if (mac_addr_a2n(mac_addr, argv[0])) {
++		fprintf(stderr, "invalid mac address\n");
++		return 2;
 +	}
 +
-+out:
-+	mutex_unlock(&ar->conf_mutex);
-+	return ret;
-+}
++	NLA_PUT(msg, NL80211_ATTR_MAC, ETH_ALEN, mac_addr);
++	argc--;
++	argv++;
 +
- static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			    struct ieee80211_vif *vif,
- 			    struct ieee80211_sta *sta,
-@@ -7550,6 +7576,7 @@ static void ath10k_mac_op_sta_pre_rcu_remove(struct ieee80211_hw *hw,
- 	.set_key			= ath10k_set_key,
- 	.set_default_unicast_key        = ath10k_set_default_unicast_key,
- 	.sta_state			= ath10k_sta_state,
-+	.sta_set_txpwr			= ath10k_sta_set_txpwr,
- 	.conf_tx			= ath10k_conf_tx,
- 	.remain_on_channel		= ath10k_remain_on_channel,
- 	.cancel_remain_on_channel	= ath10k_cancel_remain_on_channel,
-@@ -8193,11 +8220,15 @@ int ath10k_mac_register(struct ath10k *ar)
- 		ar->hw->wiphy->iface_combinations = ath10k_10x_if_comb;
- 		ar->hw->wiphy->n_iface_combinations =
- 			ARRAY_SIZE(ath10k_10x_if_comb);
-+		wiphy_ext_feature_set(ar->hw->wiphy,
-+				      NL80211_EXT_FEATURE_STA_TX_PWR);
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_10_4:
- 		ar->hw->wiphy->iface_combinations = ath10k_10_4_if_comb;
- 		ar->hw->wiphy->n_iface_combinations =
- 			ARRAY_SIZE(ath10k_10_4_if_comb);
-+		wiphy_ext_feature_set(ar->hw->wiphy,
-+				      NL80211_EXT_FEATURE_STA_TX_PWR);
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
- 	case ATH10K_FW_WMI_OP_VERSION_MAX:
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 861c2d8..1ccb6bf 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -5811,6 +5811,7 @@ enum wmi_peer_param {
- 	WMI_PEER_CHAN_WIDTH = 0x4,
- 	WMI_PEER_NSS        = 0x5,
- 	WMI_PEER_USE_4ADDR  = 0x6,
-+	WMI_PEER_USE_FIXED_PWR = 0x8,
- 	WMI_PEER_DUMMY_VAR  = 0xff, /* dummy parameter for STA PS workaround */
- };
- 
++	if (strcmp("txpwr", argv[0]) != 0)
++		return 1;
++	argc--;
++	argv++;
++
++	if (!strcmp(argv[0], "auto"))
++		type = NL80211_TX_POWER_AUTOMATIC;
++	else if (!strcmp(argv[0], "limit"))
++		type = NL80211_TX_POWER_LIMITED;
++	else {
++		printf("Invalid parameter: %s\n", argv[0]);
++		return 2;
++	}
++
++	NLA_PUT_U32(msg, NL80211_ATTR_STA_TX_POWER_SETTING, type);
++
++	if (type != NL80211_TX_POWER_AUTOMATIC) {
++		if (argc != 2) {
++			printf("Missing TX power level argument.\n");
++			return 2;
++		}
++
++		argc--;
++		argv++;
++
++		sta_txpwr = strtoul(argv[0], &err, 0);
++		NLA_PUT_U32(msg, NL80211_ATTR_STA_TX_POWER, sta_txpwr);
++	}
++
++	argc--;
++	argv++;
++
++	if (argc)
++		return 1;
++
++	return 0;
++ nla_put_failure:
++	return -ENOBUFS;
++}
++COMMAND_ALIAS(station, set, "<MAC address> txpwr <auto|limit> [<tx power mBm>]",
++	NL80211_CMD_SET_STATION, 0, CIB_NETDEV, handle_station_set_txpwr,
++	"Set Tx power for this station.",
++	select_station_cmd, station_set_txpwr);
++
+ static int handle_station_dump(struct nl80211_state *state,
+ 			       struct nl_msg *msg,
+ 			       int argc, char **argv,
 -- 
 1.9.1
 
