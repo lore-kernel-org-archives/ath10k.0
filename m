@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-f48.google.com ([74.125.82.48])
+Received: from mail-wm0-f50.google.com ([74.125.82.50])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbPgr-0000DS-Q4
- for ath10k@lists.infradead.org; Wed, 08 Feb 2017 10:41:35 +0000
-Received: by mail-wm0-f48.google.com with SMTP id c85so191851046wmi.1
- for <ath10k@lists.infradead.org>; Wed, 08 Feb 2017 02:41:11 -0800 (PST)
+ id 1cbQ3G-0001Ds-PM
+ for ath10k@lists.infradead.org; Wed, 08 Feb 2017 11:04:44 +0000
+Received: by mail-wm0-f50.google.com with SMTP id 196so49438620wmm.1
+ for <ath10k@lists.infradead.org>; Wed, 08 Feb 2017 03:04:22 -0800 (PST)
 From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: QCA4019 firmware: wrong numChain setting for bmi-board 16+17
-Date: Wed, 08 Feb 2017 11:40:07 +0100
-Message-ID: <3636841.TTvBqzp5DH@bentobox>
+Subject: Re: QCA4019: calibration files and board files
+Date: Wed, 08 Feb 2017 12:03:19 +0100
+Message-ID: <4082394.QILMJyBdPS@bentobox>
+In-Reply-To: <1591748.RGYhBEn8I1@bentobox>
+References: <1591748.RGYhBEn8I1@bentobox>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -18,66 +20,72 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0962467237280832525=="
+Content-Type: multipart/mixed; boundary="===============4608268555321193139=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Kalle Valo <kvalo@codeaurora.org>, shashidhar.lakkavalli@openmesh.com
+To: shashidhar.lakkavalli@openmesh.com
+Cc: Anilkumar Kolli <akolli@codeaurora.org>, ath10k@lists.infradead.org
 
---===============0962467237280832525==
-Content-Type: multipart/signed; boundary="nextPart4751606.S3aPsx0Kzq"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+--===============4608268555321193139==
+Content-Type: multipart/signed; boundary="nextPart2380546.FYaB2626QZ"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
---nextPart4751606.S3aPsx0Kzq
+--nextPart2380546.FYaB2626QZ
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
 
-Hi,
+Hi Anilkumar Kolli,
 
-I've just noticed that the numChain in (ath10k/)QCA4019/hw1.0/board-2.bin is
-wrong in the bus=ahb,bmi-chip-id=0,bmi-board-id=16 and
-bus=ahb,bmi-chip-id=0,bmi-board-id=17 from the linux-firmware and
-ath10k-firmware repository. It is 0x4 for a 2x2 device. This was fixed in
-the QSDK by commit 171b9607fb8cc694ed469a4e29c91af9d92f2971 [1]. It is not
-known to me whether this has an effect when the pre-cal data says that the
-device should use numChain 2.
+we've noticed that your change in QSDK [1] removed the call to
+ath10k_download_and_run_otp in ath10k_download_cal_data after the call to
+ath10k_core_get_board_id_from_otp. We reported [2] this to ath10k when we
+asked for some clarifications regarding the loading process of the pre-cal +
+board-2.bin data.
 
-It is also currently unknown if this is actually the correct fieldname
-(it is just called numChain_A_0_0 [2] in some text files we got from the
-netgear GPL drop [2]). But I am talking about the byte at offset 0x2771.
-The only other change in these two boarddata sections is the CRC.
+It was also told us by QCA (private mail) and by Adrian Chadd [3] that the
+ath10k_download_and_run_otp step should have been done.
+
+The used release were we noticed this was
+caf_AU_LINUX_QSDK_RELEASE_DATE_R1_TARGET_ALL.5.0.639.021.
+
+Will this be fixed in the QSDK? Why is a different implementation used than in
+the official ath10k version [4]?
 
 Kind regards,
 	Sven
 
-[1] https://source.codeaurora.org/quic/qsdk/oss/firmware/ath10k-firmware/commit/ath10k/QCA40XX/hw1.0/board-2.bin?id=171b9607fb8cc694ed469a4e29c91af9d92f2971
-[2] https://github.com/paul-chambers/netgear-r7800/blob/master/git_home/madwifi-11n.git/halphy_tools/host/eepromUtil/release_ipq4019/boardData_1_0_IPQ4019_Y9803_wifi1.txt
---nextPart4751606.S3aPsx0Kzq
+
+[1] https://source.codeaurora.org/quic/qsdk/oss/system/feeds/wlan-open/commit/?id=cd78cb8fcbc28af3e538743177f106ec8c5fe295
+[2] http://lists.infradead.org/pipermail/ath10k/2017-January/009025.html
+[3] http://lists.infradead.org/pipermail/ath10k/2017-January/009104.html
+[4] https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=3d9195ea19e4854d7daa11688b01905e244aead9
+
+--nextPart2380546.FYaB2626QZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part.
 Content-Transfer-Encoding: 7Bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlia9YcACgkQXYcKB8Em
-e0atmQ//c66dLH27pkyZtx92ye8EDVEbB4e+pA6QlzlMooxTQeoDxu3d+1jW6Ivp
-t6Sp2eGVWMV0LiZNx9RKokjYOeUA2i2xh9a3oBW2GxvUTcXD3WqacGZpy0mU+4oZ
-+s0/WgD0hHLISEUCSj18UVq1hvSUGtQ0uwqlfe407IM61fH3HF5k3aYpmralnkHb
-BjkFq3VbC7mFlmXoIUL4yJwiF1fQSY65IQWdC1WXDwT7Fv3kVW4480NzI0gk8Qp+
-a9UGB8f9VQvegJv88DwswLgm+fZ5B5MI220NqOrmuDQ03hw71oXRommRITP7q7IT
-UWL/6TRyuQqRIhC8ejUuWmNpTdv5c+Rso7LD5H4OparR0Iw5x+hCel/87ZYf7ICm
-2BmBcV6nt/8BopMYnqEQQWe0/GPH6YRunbc9mrQjkC18xDUt6l4K9cLmYa4CBaWr
-XFqFkJZaThBLXmkc7tSog32/VDYadD+TO+sRyW7SjvbjX0dCF2FuvOXvCt8yr4oO
-WxAwZmzZ0GqGoczYIpQmgH+G56v0zXgG1D5EkSMp/G8aF5c67WB+liedf8IW1s5G
-efMPU2b9Y8pcdVqmLkrAx1RLG2+anqUaRqJz1MmBq8vcHlwxavBotyEk0XcEV1cl
-SKObQDCuhS151vQ1cdsKWwqzIa8oJ7BIKMzoFX+yh8bWIttsk6k=
-=YEec
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlia+vcACgkQXYcKB8Em
+e0a0vw//ZJeoSkdQhBOAkkA+3vSAIdmCo7SGe8rKtN0tmLR0mnrIA6ovfut+k+uk
+RMtl0TediRYwP4Ta9JqVZAmHVHeoyZKSZLlFjcdw/yfin3L72YotUDF3mCrLtHs3
+oatzsnv1YdTT9hsR4OGddoBv9X0CwUl8oGiekeyrMdEXcGFcCZtZz0B6JtaBa7mw
+AiQvPIjfB5beUylY60wFLZ5fY+c6DOnjABUXp3LuQLZAv5xFo6CUNY+fTCPkOi2G
+9hh5pB7YYftke1G6IRdJtbRpRh4b9W6IiIOmRNQYa1XcLWtZEVOBk+rsLGTToSNW
+sek02uTllfpV2844rh2m9AXFzHrmOfx+y9ioZz7NSTOMDAvCptnVon3hQcyjyBE2
+SUEWeLglK4q21VFDqJ7BV+dIhiptmucIQwVHK5EkqBlQol0NiNI7WNns4I6xGVHQ
+4Z2Bk12mFF73F4LJHn4yepHIiYQWNFlPYqYrJuz0gXyMOpahISCX77CY3exksc9d
+SlgyoMr4ixmmgDWR6znBReP5O9Ak9N7yV0yFgpfnmZURpyP3WOs5e/wfDf9udyTu
+1gtv3rroFsYjzr60O6vohbcrYHX9kb9+/ysZU41DJnh7LkrnmiEzIG8uNJxZxFl7
+OPNPPWTMCJXifryF5OWYwZ3L7c9U0S20HtbkqPwEjD/xWmpF+uQ=
+=WDrG
 -----END PGP SIGNATURE-----
 
---nextPart4751606.S3aPsx0Kzq--
+--nextPart2380546.FYaB2626QZ--
 
 
 
---===============0962467237280832525==
+--===============4608268555321193139==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -88,4 +96,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---===============0962467237280832525==--
+--===============4608268555321193139==--
