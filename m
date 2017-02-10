@@ -1,15 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccAbg-0007mc-Bx
- for ath10k@lists.infradead.org; Fri, 10 Feb 2017 12:47:23 +0000
+ id 1ccDBN-0005c1-Gs
+ for ath10k@lists.infradead.org; Fri, 10 Feb 2017 15:32:43 +0000
+Received: by mail-wr0-x244.google.com with SMTP id k90so15434875wrc.3
+ for <ath10k@lists.infradead.org>; Fri, 10 Feb 2017 07:32:00 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [v4] ath10k: fix napi crash during rmmod when probe firmware fails
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <148672748569.28126.12259592472689214081.stgit@potku.adurom.net>
-References: <148672748569.28126.12259592472689214081.stgit@potku.adurom.net>
-Message-ID: <9338c9758cbf43d7ad3a6c382236e7b2@eusanexr01a.eu.qualcomm.com>
-Date: Fri, 10 Feb 2017 04:46:55 -0800
+In-Reply-To: <1486712222.2192.3.camel@perches.com>
+References: <1486030773-30600-1-git-send-email-amadeusz.slawinski@tieto.com>
+ <CAJ-VmonrHpS3MArM9ohHgLvb6xspP_gnVVeJWA9F-pjUpJ+LZA@mail.gmail.com>
+ <87y3xi4b28.fsf@qca.qualcomm.com> <5899DDD7.7000605@candelatech.com>
+ <87tw82il32.fsf@kamboji.qca.qualcomm.com>
+ <CAJ-Vmom7k3Tsgs8tRHQppmL7XxADS3V24AGOQY5QgkrSgr5Qzg@mail.gmail.com>
+ <1486712222.2192.3.camel@perches.com>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Fri, 10 Feb 2017 07:31:58 -0800
+Message-ID: <CAJ-Vmo=UrnDVzGAKYZa0qXq5UVb09AZHzmWMtctvtXyu==nzyA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ath10k: remove ath10k_vif_to_arvif()
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +29,86 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Joe Perches <joe@perches.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, =?UTF-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?= <amadeusz.slawinski@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Valo,
+ Kalle" <kvalo@qca.qualcomm.com>, Ben Greear <greearb@candelatech.com>
 
-Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> This fixes the below crash when ath10k probe firmware fails, NAPI polling tries
-> to access a rx ring resource which was never allocated. An easy way to
-> reproduce this is easy to remove all the firmware files, load ath10k modules
-> and ath10k will crash when calling 'rmmod ath10k_pci'. The fix is to call
-> napi_enable() from ath10k_pci_hif_start() so that it matches with
-> napi_disable() being called from ath10k_pci_hif_stop().
-> 
-> Big thanks to Mohammed Shafi Shajakhan who debugged this and provided first
-> version of the fix. In this patch I just fix the actual problem in pci.c
-> instead of having a workaround in core.c.
-> 
-> BUG: unable to handle kernel NULL pointer dereference at (null)
-> IP:  __ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
-> __ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
-> 
-> Call Trace:
-> 
-> [<ffffffffa113ec62>] ath10k_htt_rx_msdu_buff_replenish+0x42/0x90
-> [ath10k_core]
-> [<ffffffffa113f393>] ath10k_htt_txrx_compl_task+0x433/0x17d0
-> [ath10k_core]
-> [<ffffffff8114406d>] ? __wake_up_common+0x4d/0x80
-> [<ffffffff811349ec>] ? cpu_load_update+0xdc/0x150
-> [<ffffffffa119301d>] ? ath10k_pci_read32+0xd/0x10 [ath10k_pci]
-> [<ffffffffa1195b17>] ath10k_pci_napi_poll+0x47/0x110 [ath10k_pci]
-> [<ffffffff817863af>] net_rx_action+0x20f/0x370
-> 
-> Reported-by: Ben Greear <greearb@candelatech.com>
-> Fixes: 3c97f5de1f28 ("ath10k: implement NAPI support")
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+On 9 February 2017 at 23:37, Joe Perches <joe@perches.com> wrote:
+> On Thu, 2017-02-09 at 23:14 -0800, Adrian Chadd wrote:
+>
+>> If there
+>> were accessors for the skb data / len fields (like we do for mbufs)
+>> then porting the code would've involved about 5,000 less changed
+>> lines.
+>
+> What generic mechanisms would you suggest to make
+> porting easier between bsd and linux and what in
+> your opinion are the best naming schemes to make
+> these functions easiest to read and implement
+> without resorting to excessive identifier lengths?
+>
+> If you have some, please provide examples.
 
-I'm planning to push this to 4.11.
+(Why not, it's pre-coffee o'clock.)
 
--- 
-https://patchwork.kernel.org/patch/9566625/
+The biggest barriers are direct struct accessors. Most of the time the
+kernels have similar enough semantics that I can just implement a
+linux shim layer (like we do for graphics layer porting from Linux.)
+Eg, having skb_data(skb) (and skb_data_const(skb)) + skb_len(skb)
+instead of skb->data and skb->len would remove a lot of churn. Having
+say, a vif_to_drvpriv() method analogous to ath10k_vif_to_arvif()
+would also simplify the changes. For the rest of it we can just use a
+linux-like shim layer to get everything else working pretty darn well.
 
-Documentation about submitting wireless patches and checking status
-from patchwork:
+But the biggest thing that helps is a quasi HAL code structure. I know
+HAL is a dirty word, so think of it more as "how would one separate
+out the OS interface layer from the rest of the driver." A good
+example in ath10k is the difference between say, wmi.c, the pci /
+copyengine code and mac.c.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+* the pci / copyengine code is almost 100% compilable on other
+platforms, save the differences in little things (malloc, free, KVA
+versus physical memory allocation, bounce buffering, sync'ing, etc.) A
+sufficiently refactored driver like ath10k where almost all of that
+stuff happens in the pci/copyengine code made porting that much less
+painful.
 
+* the wmi code is almost exclusively portable - besides the
+malloc/free, etc mechanical changes which honestly can be stubbed, it
+uses the lower layers (pci/ce, hif, htc, etc) for doing actual work,
+and the upper layer uses a well-defined API + callback mechanism for
+getting work done. Porting that was mechanical but reasonably easy.
+
+* however, the mac.c code contains both code which sends commands to
+the firmware (vif create/destroy, pdev commands, station
+associate/update/destroy, crypto key handling, peer rate control, etc)
+/and/ very linux mac80211/cfg80211 specific bits. If mac.c were split
+into mac-mac80211.c (which was /just/ mac80211, cfg80211, etc bits)
+and mac-utils.c (the bits that actually /sent/ the commands,
+responses, all the support code, etc) then my port would just
+implement mac-net80211.c as a completely new file, and the rest would
+just be modified as required by porting.
+
+A lot of the ath10k headers too mix linux specific things (eg struct
+device, dependencies) with hardware specific definitions for say,
+register accesses. I split out the register and firmware command /
+structures into separate header files that didn't mingle OS and driver
+specific structures to make it much easier to reuse that code. I find
+that good driver writing hygiene in any case.
+
+I'm not expecting an intel ethernet driver style HAL separation,
+although that'd certainly make life easier in porting over drivers.
+But just having inlined accessor functions for most things and some
+stricter driver structure for OS touch points (dma setup/teardown,
+bounce buffer stuff, mac80211/cfg80211, ethtool, etc APIs) would make
+porting and testing things a lot easier. :-)
+
+2c, and I'll do the porting/reimplementing work anyway regardless of
+how much coffee it requires,
+
+
+
+-adrian
 
 _______________________________________________
 ath10k mailing list
