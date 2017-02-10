@@ -1,18 +1,30 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-f196.google.com ([209.85.128.196])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cbmED-0001EX-Ii
- for ath10k@lists.infradead.org; Thu, 09 Feb 2017 10:45:31 +0000
-Received: by mail-wr0-f196.google.com with SMTP id i10so11494580wrb.0
- for <ath10k@lists.infradead.org>; Thu, 09 Feb 2017 02:45:08 -0800 (PST)
+ id 1cc53A-00068O-V1
+ for ath10k@lists.infradead.org; Fri, 10 Feb 2017 06:51:23 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: 9984 VHT
+Date: Fri, 10 Feb 2017 06:50:56 +0000
+Message-ID: <87y3xeilor.fsf@kamboji.qca.qualcomm.com>
+References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
+ <CAJ-Vmo=yD7Ct5LFXBO3qNhKsNco91VXMmZOYeBaAuw+DFGq=RQ@mail.gmail.com>
+ <CAHNKnsT8mzHefrnC4ybrR8T16dAqc4G_SDGesxdU7+81xhuYpw@mail.gmail.com>
+ <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>
+ <87y3xtrmn2.fsf@kamboji.qca.qualcomm.com>
+ <44480bab-0cf7-f4e3-7612-b1cf5d4c040f@dd-wrt.com>
+ <1a58440c-80c9-0a86-aae9-213edc5b0019@candelatech.com>
+ <ed765a12-6ae8-ed78-6626-ae82312ba525@dd-wrt.com>
+ <8bcf2ea6-802f-f249-8e2d-96ec03553a9b@candelatech.com>
+ <23b1bd75-a7f9-08e7-5d7b-f67081b89e1b@candelatech.com>
+ <5e23ea91-429e-eff6-7443-e4d4f5981735@dd-wrt.com>
+ <785bdbc1-fcf5-921b-2092-6142d51aa0ce@candelatech.com>
+ <87poiu42r2.fsf@qca.qualcomm.com>
+ <2c29c0e6-a207-9d40-fa8d-dc5e54f9c468@dd-wrt.com>
+In-Reply-To: <2c29c0e6-a207-9d40-fa8d-dc5e54f9c468@dd-wrt.com> (Sebastian
+ Gottschall's message of "Tue, 7 Feb 2017 13:39:28 +0100")
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <017699fcd5b2f14fee8708fc8d8863cf@codeaurora.org>
-References: <1591748.RGYhBEn8I1@bentobox> <4082394.QILMJyBdPS@bentobox>
- <017699fcd5b2f14fee8708fc8d8863cf@codeaurora.org>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Thu, 9 Feb 2017 02:44:06 -0800
-Message-ID: <CAJ-Vmo=3fCnFrP9mmgZ9z7EF5WaYoeXes1KTFETMVMPOUynnLA@mail.gmail.com>
-Subject: Re: QCA4019: calibration files and board files
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,89 +37,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: akolli@codeaurora.org
-Cc: shashidhar.lakkavalli@openmesh.com, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sven Eckelmann <sven.eckelmann@openmesh.com>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Heh, as a QSDK user, thankyou for fixing this!
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
 
+> Am 07.02.2017 um 13:14 schrieb Valo, Kalle:
+>> Ben Greear <greearb@candelatech.com> writes:
+>>
+>>> On 02/02/2017 10:42 AM, Sebastian Gottschall wrote:
+>>>> Am 02.02.2017 um 19:24 schrieb Ben Greear:
+>>>>
+>>>>> I hacked ath10k to enable radar detection on 160Mhz bandwidths. Now hostapd
+>>>>> starts.
+>>>>>
+>>>>> I can reproduce the FW failure. It is because FW 3.3-25 release
+>>>>> started asserting
+>>>>> if the freq2 was zero in VHT160 mode. It seems to use both freq1
+>>>>> and freq2, and not
+>>>>> how the driver or linux seems to normally use them.
+>>>> its even worse. starting from 3.3 it uses freq2 instead of freq1.
+>>>> but i made a patch for it. but it still wont work. vdev_start still
+>>>> fails
+>>> Well it would have been helpful from the start to have known about this patch.
+>>>
+>>> Could you post it?
+>>>
+>>> Kalle: Since the firmware API changed, how do you want to handle
+>>> the differences here?
+>>
+>> The firmware API shouldn't change like that, but if it has I guess a
+>> firmware feature flag to enable a workaround in ath10k sounds like the
+>> easiest solution.
+>
+> the more recent firmware have some new wmi services enabled which can
+> be used as indicator as well.
 
+I don't know what flag exactly you are referring to, but using a WMI
+service flag to detect this is not really reliable. They can be enabled
+or disabled between branches, or even between builds.
 
--adrian
-
-On 9 February 2017 at 02:26,  <akolli@codeaurora.org> wrote:
-> On 2017-02-08 16:33, Sven Eckelmann wrote:
->>
->> Hi Anilkumar Kolli,
->>
->> we've noticed that your change in QSDK [1] removed the call to
->> ath10k_download_and_run_otp in ath10k_download_cal_data after the call to
->> ath10k_core_get_board_id_from_otp. We reported [2] this to ath10k when we
->> asked for some clarifications regarding the loading process of the pre-cal
->> +
->> board-2.bin data.
->>
->> It was also told us by QCA (private mail) and by Adrian Chadd [3] that the
->> ath10k_download_and_run_otp step should have been done.
->>
->> The used release were we noticed this was
->> caf_AU_LINUX_QSDK_RELEASE_DATE_R1_TARGET_ALL.5.0.639.021.
->>
->> Will this be fixed in the QSDK? Why is a different implementation used
->> than in
->> the official ath10k version [4]?
->>
->
-> Thanks for pointing this, I broke the sequence in qsdk while loading cal
-> data
-> from flash MTD partitions. I will revert these changes in QSDK patch[1].
->
-> @@ -224,21 +224,13 @@
->  +               * from board data content and caldata content downloaded in
->  +               * previous steps.
->  +              */
-> -+              goto load_bdata_and_run_otp;
-> ++              goto done;
->  +      }
->  +
->         ret = ath10k_download_cal_file(ar, ar->cal_file);
->         if (ret == 0) {
->                 ar->cal_mode = ATH10K_CAL_MODE_FILE;
-> -@@ -1401,6 +1520,7 @@ static int ath10k_download_cal_data(stru
-> -                  "boot did not find target EEPROM entry, try OTP next:
-> %d\n",
-> -                  ret);
-> -
-> -+load_bdata_and_run_otp:
-> -       ret = ath10k_download_and_run_otp(ar);
-> -       if (ret) {
-> -               ath10k_err(ar, "failed to run otp: %d\n", ret);
-> -@@ -2024,6 +2144,8 @@ static int ath10k_core_probe_fw(struct a
-> +@@ -2025,6 +2144,8 @@ static int ath10k_core_probe_fw(struct a
->                            "could not load pre cal data: %d\n", ret);
->         }
->
-> Thanks,
-> Anil.
->
->> Kind regards,
->>         Sven
->>
->>
->> [1]
->>
->> https://source.codeaurora.org/quic/qsdk/oss/system/feeds/wlan-open/commit/?id=cd78cb8fcbc28af3e538743177f106ec8c5fe295
->> [2] http://lists.infradead.org/pipermail/ath10k/2017-January/009025.html
->> [3] http://lists.infradead.org/pipermail/ath10k/2017-January/009104.html
->> [4]
->>
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=3d9195ea19e4854d7daa11688b01905e244aead9
->
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
