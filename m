@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccAId-0006sk-JD
- for ath10k@lists.infradead.org; Fri, 10 Feb 2017 12:27:43 +0000
-Subject: [PATCH v2 4/4] ath10k: convert warning about non-existent OTP board
- id to debug message
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ccAIr-0004wf-74
+ for ath10k@lists.infradead.org; Fri, 10 Feb 2017 12:27:55 +0000
+Subject: [PATCH v2 3/4] ath10k: silence firmware file probing warnings
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Fri, 10 Feb 2017 14:27:07 +0200
-Message-ID: <148672962764.8556.11600829537505995398.stgit@potku.adurom.net>
+Date: Fri, 10 Feb 2017 14:26:56 +0200
+Message-ID: <148672961596.8556.5270733641640682835.stgit@potku.adurom.net>
 In-Reply-To: <148672934198.8556.5588600166627442652.stgit@potku.adurom.net>
 References: <148672934198.8556.5588600166627442652.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -26,42 +25,87 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Currently ath10k unncessarily warns about board id not available from OTP:
+From: Michal Kazior <michal.kazior@tieto.com>
 
-ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000
-ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
-ath10k_pci 0000:02:00.0: firmware ver 10.2.4.70.9-2 api 5 features no-p2p,raw-mode crc32 b8d50af5
-ath10k_pci 0000:02:00.0: board id is not exist in otp, ignore it
-ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
-ath10k_pci 0000:02:00.0: htt-ver 2.1 wmi-op 5 htt-op 2 cal otp max-sta 128 raw 0 hwcrypto 1
+Firmware files are versioned to prevent older
+driver instances to load unsupported firmware
+blobs. This is reflected with a fallback logic
+which attempts to load several firmware files.
 
-But not all boards have the board id in OTP so this is not a problem and no
-need to confuse the user with that info. So this can be safely changed to a
-debug message.
+This however produced a lot of unnecessary
+warnings sometimes confusing users and leading
+them to rename firmware files making things even
+more confusing.
 
-Also fix grammar in the debug message.
+Hence use request_firmware_direct() which does not
+produce extra warnings. This shouldn't really
+break anything because most modern systems don't
+rely on udev/hotplug helpers to load firmware
+files anymore. For example it was confirmed that
+LEDE does not user helper.
 
-Fixes: d2e202c06ca4 ("ath10k: ignore configuring the incorrect board_id")
+This also fixes a 60 second delay per _each_
+unexistent firmware/calibration file with distros
+which have CONFIG_FW_LOADER_USER_HELPER_FALLBACK
+enabled, RHEL being a notable example. Using
+ath10k with firmware-2.bin this might end up
+into a five minute delay in boot.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+Patchwork-Id: 9237095
+[kvalo@qca.qualcomm.com: add more info to the commit log]
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.c     |   11 +++++------
+ drivers/net/wireless/ath/ath10k/testmode.c |    5 ++++-
+ 2 files changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 6433fdd2c0c7..5e8dd3806622 100644
+index f395d3a98bc5..6433fdd2c0c7 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -701,7 +701,8 @@ static int ath10k_core_get_board_id_from_otp(struct ath10k *ar)
+@@ -456,7 +456,10 @@ static const struct firmware *ath10k_fetch_fw_file(struct ath10k *ar,
+ 		dir = ".";
  
- 	if ((result & ATH10K_BMI_BOARD_ID_STATUS_MASK) != 0 ||
- 	    (board_id == 0)) {
--		ath10k_warn(ar, "board id is not exist in otp, ignore it\n");
-+		ath10k_dbg(ar, ATH10K_DBG_BOOT,
-+			   "board id does not exist in otp, ignore it\n");
- 		return -EOPNOTSUPP;
- 	}
+ 	snprintf(filename, sizeof(filename), "%s/%s", dir, file);
+-	ret = request_firmware(&fw, filename, ar->dev);
++	ret = request_firmware_direct(&fw, filename, ar->dev);
++	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot fw request '%s': %d\n",
++		   filename, ret);
++
+ 	if (ret)
+ 		return ERR_PTR(ret);
  
+@@ -1190,12 +1193,8 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
+ 	/* first fetch the firmware file (firmware-*.bin) */
+ 	fw_file->firmware = ath10k_fetch_fw_file(ar, ar->hw_params.fw.dir,
+ 						 name);
+-	if (IS_ERR(fw_file->firmware)) {
+-		ath10k_err(ar, "could not fetch firmware file '%s/%s': %ld\n",
+-			   ar->hw_params.fw.dir, name,
+-			   PTR_ERR(fw_file->firmware));
++	if (IS_ERR(fw_file->firmware))
+ 		return PTR_ERR(fw_file->firmware);
+-	}
+ 
+ 	data = fw_file->firmware->data;
+ 	len = fw_file->firmware->size;
+diff --git a/drivers/net/wireless/ath/ath10k/testmode.c b/drivers/net/wireless/ath/ath10k/testmode.c
+index ed85f938e3c0..8bb36c18a749 100644
+--- a/drivers/net/wireless/ath/ath10k/testmode.c
++++ b/drivers/net/wireless/ath/ath10k/testmode.c
+@@ -150,7 +150,10 @@ static int ath10k_tm_fetch_utf_firmware_api_1(struct ath10k *ar,
+ 		 ar->hw_params.fw.dir, ATH10K_FW_UTF_FILE);
+ 
+ 	/* load utf firmware image */
+-	ret = request_firmware(&fw_file->firmware, filename, ar->dev);
++	ret = request_firmware_direct(&fw_file->firmware, filename, ar->dev);
++	ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode fw request '%s': %d\n",
++		   filename, ret);
++
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to retrieve utf firmware '%s': %d\n",
+ 			    filename, ret);
 
 
 _______________________________________________
