@@ -1,22 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccDBN-0005c1-Gs
- for ath10k@lists.infradead.org; Fri, 10 Feb 2017 15:32:43 +0000
-Received: by mail-wr0-x244.google.com with SMTP id k90so15434875wrc.3
- for <ath10k@lists.infradead.org>; Fri, 10 Feb 2017 07:32:00 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ccDqT-0000zR-Mm
+ for ath10k@lists.infradead.org; Fri, 10 Feb 2017 16:14:54 +0000
+Subject: Re: QCA9880 3x3 80Mhz low performance
+References: <20170110061217.096FD148A08@compex.com.sg>
+ <63DDC83FD9364560ACBA60D17C3F5AD8@PhyuThe> <5874F1BC.80505@candelatech.com>
+ <10981E9AB9EA46A1897BE3E5CF661C0F@PhyuThe>
+ <f3ed8528-a9ab-fa33-e753-aa1fbebc969e@candelatech.com>
+ <F468EA06CC7341849F013B51FFCC88E2@PhyuThe>
+ <65c12489-6886-22c2-894b-cf0eab2bd51a@dd-wrt.com>
+ <2f0e0277-b7fc-ccf6-1d23-1d9e8f9a8d4e@candelatech.com>
+ <225C5D2515A949BABED9735260C92D73@PhyuThe>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <935c16bb-518d-38ee-5713-531565333654@candelatech.com>
+Date: Fri, 10 Feb 2017 08:14:28 -0800
 MIME-Version: 1.0
-In-Reply-To: <1486712222.2192.3.camel@perches.com>
-References: <1486030773-30600-1-git-send-email-amadeusz.slawinski@tieto.com>
- <CAJ-VmonrHpS3MArM9ohHgLvb6xspP_gnVVeJWA9F-pjUpJ+LZA@mail.gmail.com>
- <87y3xi4b28.fsf@qca.qualcomm.com> <5899DDD7.7000605@candelatech.com>
- <87tw82il32.fsf@kamboji.qca.qualcomm.com>
- <CAJ-Vmom7k3Tsgs8tRHQppmL7XxADS3V24AGOQY5QgkrSgr5Qzg@mail.gmail.com>
- <1486712222.2192.3.camel@perches.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Fri, 10 Feb 2017 07:31:58 -0800
-Message-ID: <CAJ-Vmo=UrnDVzGAKYZa0qXq5UVb09AZHzmWMtctvtXyu==nzyA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ath10k: remove ath10k_vif_to_arvif()
+In-Reply-To: <225C5D2515A949BABED9735260C92D73@PhyuThe>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,90 +25,140 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joe Perches <joe@perches.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, =?UTF-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?= <amadeusz.slawinski@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, Ben Greear <greearb@candelatech.com>
+To: Phyu The <pt_myat@compex.com.sg>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org
 
-On 9 February 2017 at 23:37, Joe Perches <joe@perches.com> wrote:
-> On Thu, 2017-02-09 at 23:14 -0800, Adrian Chadd wrote:
+I don't know.  I would first suggest that you try an x86 platform with
+powerful CPU in your own test environment.  Possibly we are just using
+a better isolation chamber or have some other advantage in our environment
+or test setup.
+
+If you can reproduce our good results with x86 in your setup, then you can
+be more sure it is something to do with your particular platform.
+
+Thanks,
+Ben
+
+On 02/09/2017 11:11 PM, Phyu The wrote:
+> Dear Ben,
 >
->> If there
->> were accessors for the skb data / len fields (like we do for mbufs)
->> then porting the code would've involved about 5,000 less changed
->> lines.
+> According to your test result of QCA9880 3x3, what could be the low performance issue at my side IPQ8064+QCA9880 with Ath10k? Is it really CPU related problem
+> on WPQ864?
 >
-> What generic mechanisms would you suggest to make
-> porting easier between bsd and linux and what in
-> your opinion are the best naming schemes to make
-> these functions easiest to read and implement
-> without resorting to excessive identifier lengths?
+> thanks,
+> Phyuthe
 >
-> If you have some, please provide examples.
+> -----Original Message----- From: Ben Greear
+> Sent: Saturday, January 21, 2017 4:24 AM
+> To: Sebastian Gottschall ; Phyu The ; ath10k@lists.infradead.org
+> Subject: Re: QCA9880 3x3 80Mhz low performance
+>
+> Hello!
+>
+> We ran some more tests using our x86 based platforms with 9880 NICs and 9984 NICs
+> acting as both AP and Station.  This is in an isolation chamber, wired up with SMA cables
+> and variable attenuator, in as perfect of a condition as we can manage.
+>
+> First, here is LANforge acting as AP and station devices, using QCA9880 3x3 hardware:
+>
+> http://www.candelatech.com/images/data-comp-01-13-2017-144224-lf-ap.png
+>
+> And with 9984 systems:
+>
+> http://www.candelatech.com/images/data-comp-01-19-2017-1706-lf-ap-sta-9984.png
+>
+> In case you read closely and wonder, 'Armageddon' is our modified version of pktgen.
+>
+> Thanks,
+> Ben
+>
+>
+> On 01/12/2017 01:24 AM, Sebastian Gottschall wrote:
+>> @ben greear. it cannot be cpu related. the ipq8064 has 1.2 ghz and is a very fast arm core. the platform handles 9984 with much higher speed.
+>> i got notice of the same issue reported by people on various cpu platforms.
+>>
+>> Am 12.01.2017 um 09:15 schrieb Phyu The:
+>>> Dear Ben,
+>>>
+>>> Thanks for your reply and suggestion.
+>>>
+>>> I have tried as your suggestion to test IPQ8064+QCA9880 with Ath10k CT firmware/driver to run throughput UDP/TCP. Unfortunately, I could not be able to see
+>>> throughput improvement. Could you please suggest what may cause low throughput?
+>>>
+>>> thanks,
+>>> Phyuthe
+>>>
+>>> -----Original Message----- From: Ben Greear
+>>> Sent: Thursday, January 12, 2017 12:59 AM
+>>> To: Phyu The ; ath10k@lists.infradead.org
+>>> Subject: Re: QCA9880 3x3 80Mhz low performance
+>>>
+>>> We have not done a lot of testing in AP mode, but when using 9880 3x3 compex NICs
+>>> in our 2U rackmounts (high end Intel E5 processors), and with CT firmware/drivers,
+>>> we see near 950Mbps UDP download in station mode.  I think we were a bit slower in
+>>> AP mode, but not that much.
+>>>
+>>> Are you testing TCP or UDP traffic?
+>>>
+>>> http://www.candelatech.com/images/data-comp-07-20-2016-1147-with-labels.png
+>>>
+>>> Have you tried normal STA/AP mode instead of WDS?
+>>>
+>>> Maybe you are CPU bound on your platform?
+>>>
+>>> Thanks,
+>>> Ben
+>>>
+>>> On 01/10/2017 05:09 PM, Phyu The wrote:
+>>>> Dear Ben,
+>>>>
+>>>> I configured AP_WDS and Sta_WDS mode, channel 149, 11ac, 3x3, 80MHz and without encryption. I used 2 RF boxes with 3 adjustable attenuators running throughput
+>>>> by Ixchairot to get best performance. However, throughput seems limited to 640Mbps. Kindly see attached for your reference for more details.
+>>>>
+>>>> thanks,
+>>>> Phyuthe
+>>>>
+>>>> -----Original Message----- From: Ben Greear
+>>>> Sent: Tuesday, January 10, 2017 10:37 PM
+>>>> To: Phyu The ; ath10k@lists.infradead.org
+>>>> Subject: Re: QCA9880 3x3 80Mhz low performance
+>>>>
+>>>> You should provide a lot more information about how you configured and tested the system,
+>>>> including traffic generator and RF environment, etc.
+>>>>
+>>>> Thanks,
+>>>> Ben
+>>>>
+>>>> On 01/09/2017 10:19 PM, Phyu The wrote:
+>>>>> Dear Sir,
+>>>>>
+>>>>> I tested performance throughput test used WPQ864 + QCA9880 11ac 80MHz is 640Mbps that is very low since theoretical data rate is 1300Mbps. It should be at
+>>>>> least 866Mbps. Could you please suggest me how to get better performance?
+>>>>>
+>>>>> thanks,
+>>>>> Phyuthe
+>>>>>
+>>>>> _______________________________________________
+>>>>> ath10k mailing list
+>>>>> ath10k@lists.infradead.org
+>>>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>>>>
+>>>>
+>>>
+>>>
+>>
+>>
+>
+>
 
-(Why not, it's pre-coffee o'clock.)
 
-The biggest barriers are direct struct accessors. Most of the time the
-kernels have similar enough semantics that I can just implement a
-linux shim layer (like we do for graphics layer porting from Linux.)
-Eg, having skb_data(skb) (and skb_data_const(skb)) + skb_len(skb)
-instead of skb->data and skb->len would remove a lot of churn. Having
-say, a vif_to_drvpriv() method analogous to ath10k_vif_to_arvif()
-would also simplify the changes. For the rest of it we can just use a
-linux-like shim layer to get everything else working pretty darn well.
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
-But the biggest thing that helps is a quasi HAL code structure. I know
-HAL is a dirty word, so think of it more as "how would one separate
-out the OS interface layer from the rest of the driver." A good
-example in ath10k is the difference between say, wmi.c, the pci /
-copyengine code and mac.c.
-
-* the pci / copyengine code is almost 100% compilable on other
-platforms, save the differences in little things (malloc, free, KVA
-versus physical memory allocation, bounce buffering, sync'ing, etc.) A
-sufficiently refactored driver like ath10k where almost all of that
-stuff happens in the pci/copyengine code made porting that much less
-painful.
-
-* the wmi code is almost exclusively portable - besides the
-malloc/free, etc mechanical changes which honestly can be stubbed, it
-uses the lower layers (pci/ce, hif, htc, etc) for doing actual work,
-and the upper layer uses a well-defined API + callback mechanism for
-getting work done. Porting that was mechanical but reasonably easy.
-
-* however, the mac.c code contains both code which sends commands to
-the firmware (vif create/destroy, pdev commands, station
-associate/update/destroy, crypto key handling, peer rate control, etc)
-/and/ very linux mac80211/cfg80211 specific bits. If mac.c were split
-into mac-mac80211.c (which was /just/ mac80211, cfg80211, etc bits)
-and mac-utils.c (the bits that actually /sent/ the commands,
-responses, all the support code, etc) then my port would just
-implement mac-net80211.c as a completely new file, and the rest would
-just be modified as required by porting.
-
-A lot of the ath10k headers too mix linux specific things (eg struct
-device, dependencies) with hardware specific definitions for say,
-register accesses. I split out the register and firmware command /
-structures into separate header files that didn't mingle OS and driver
-specific structures to make it much easier to reuse that code. I find
-that good driver writing hygiene in any case.
-
-I'm not expecting an intel ethernet driver style HAL separation,
-although that'd certainly make life easier in porting over drivers.
-But just having inlined accessor functions for most things and some
-stricter driver structure for OS touch points (dma setup/teardown,
-bounce buffer stuff, mac80211/cfg80211, ethtool, etc APIs) would make
-porting and testing things a lot easier. :-)
-
-2c, and I'll do the porting/reimplementing work anyway regardless of
-how much coffee it requires,
-
-
-
--adrian
 
 _______________________________________________
 ath10k mailing list
