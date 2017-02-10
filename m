@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccAav-0007h3-CN
- for ath10k@lists.infradead.org; Fri, 10 Feb 2017 12:46:35 +0000
+ id 1ccAbg-0007mc-Bx
+ for ath10k@lists.infradead.org; Fri, 10 Feb 2017 12:47:23 +0000
 MIME-Version: 1.0
-Subject: Re: [RFC,04/10] ath10k: new fw fetch functionality
+Subject: Re: [v4] ath10k: fix napi crash during rmmod when probe firmware fails
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1484343309-6327-5-git-send-email-erik.stromdahl@gmail.com>
-References: <1484343309-6327-5-git-send-email-erik.stromdahl@gmail.com>
-Message-ID: <6c9dfcb8e55c49818f43492ac8641947@eusanexr01a.eu.qualcomm.com>
-Date: Fri, 10 Feb 2017 04:45:43 -0800
+In-Reply-To: <148672748569.28126.12259592472689214081.stgit@potku.adurom.net>
+References: <148672748569.28126.12259592472689214081.stgit@potku.adurom.net>
+Message-ID: <9338c9758cbf43d7ad3a6c382236e7b2@eusanexr01a.eu.qualcomm.com>
+Date: Fri, 10 Feb 2017 04:46:55 -0800
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +22,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
-> A new function for creating the fw file name dynamically.
+Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> This fixes the below crash when ath10k probe firmware fails, NAPI polling tries
+> to access a rx ring resource which was never allocated. An easy way to
+> reproduce this is easy to remove all the firmware files, load ath10k modules
+> and ath10k will crash when calling 'rmmod ath10k_pci'. The fix is to call
+> napi_enable() from ath10k_pci_hif_start() so that it matches with
+> napi_disable() being called from ath10k_pci_hif_stop().
 > 
-> Since both SDIO and USB based chipsets will use different
-> firmware from the PCIe and AHB chipsets, the fw file name
-> is created dynamically.
+> Big thanks to Mohammed Shafi Shajakhan who debugged this and provided first
+> version of the fix. In this patch I just fix the actual problem in pci.c
+> instead of having a workaround in core.c.
 > 
-> The new firmware names are:
+> BUG: unable to handle kernel NULL pointer dereference at (null)
+> IP:  __ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
+> __ath10k_htt_rx_ring_fill_n+0x19/0x230 [ath10k_core]
 > 
-> For PCIe and AHB:
-> firmware-<api_version>.bin (same as before)
+> Call Trace:
 > 
-> For SDIO:
-> firmware-sdio-<api_version>.bin
+> [<ffffffffa113ec62>] ath10k_htt_rx_msdu_buff_replenish+0x42/0x90
+> [ath10k_core]
+> [<ffffffffa113f393>] ath10k_htt_txrx_compl_task+0x433/0x17d0
+> [ath10k_core]
+> [<ffffffff8114406d>] ? __wake_up_common+0x4d/0x80
+> [<ffffffff811349ec>] ? cpu_load_update+0xdc/0x150
+> [<ffffffffa119301d>] ? ath10k_pci_read32+0xd/0x10 [ath10k_pci]
+> [<ffffffffa1195b17>] ath10k_pci_napi_poll+0x47/0x110 [ath10k_pci]
+> [<ffffffff817863af>] net_rx_action+0x20f/0x370
 > 
-> For USB:
-> firmware-usb-<api_version>.bin
-> 
-> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+> Reported-by: Ben Greear <greearb@candelatech.com>
+> Fixes: 3c97f5de1f28 ("ath10k: implement NAPI support")
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Actually I needed this for something else so I took this into one of my
-patchsets with small modifications:
-
-ath10k: fetch firmware images in a loop
-https://patchwork.kernel.org/patch/9566667/
+I'm planning to push this to 4.11.
 
 -- 
-https://patchwork.kernel.org/patch/9516551/
+https://patchwork.kernel.org/patch/9566625/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
