@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccAIF-0006ir-Ps
- for ath10k@lists.infradead.org; Fri, 10 Feb 2017 12:27:19 +0000
-Subject: [PATCH v2 0/4] ath10k: silence firmware file probing warnings
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Fri, 10 Feb 2017 14:26:20 +0200
-Message-ID: <148672934198.8556.5588600166627442652.stgit@potku.adurom.net>
+ id 1ccAav-0007h3-CN
+ for ath10k@lists.infradead.org; Fri, 10 Feb 2017 12:46:35 +0000
 MIME-Version: 1.0
+Subject: Re: [RFC,04/10] ath10k: new fw fetch functionality
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1484343309-6327-5-git-send-email-erik.stromdahl@gmail.com>
+References: <1484343309-6327-5-git-send-email-erik.stromdahl@gmail.com>
+Message-ID: <6c9dfcb8e55c49818f43492ac8641947@eusanexr01a.eu.qualcomm.com>
+Date: Fri, 10 Feb 2017 04:45:43 -0800
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +22,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
+> A new function for creating the fw file name dynamically.
+> 
+> Since both SDIO and USB based chipsets will use different
+> firmware from the PCIe and AHB chipsets, the fw file name
+> is created dynamically.
+> 
+> The new firmware names are:
+> 
+> For PCIe and AHB:
+> firmware-<api_version>.bin (same as before)
+> 
+> For SDIO:
+> firmware-sdio-<api_version>.bin
+> 
+> For USB:
+> firmware-usb-<api_version>.bin
+> 
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-here are patches to make ath10k less spammy during initialisation.
+Actually I needed this for something else so I took this into one of my
+patchsets with small modifications:
 
-v2:
+ath10k: fetch firmware images in a loop
+https://patchwork.kernel.org/patch/9566667/
 
-* RFC -> PATCH
+-- 
+https://patchwork.kernel.org/patch/9516551/
 
-* add new patches:
+Documentation about submitting wireless patches and checking status
+from patchwork:
 
-  ath10k: fetch firmware images in a loop
-  ath10k: add directory to board data error message
-  ath10k: convert warning about non-existent OTP board id to debug message
-
----
-
-Erik Stromdahl (1):
-      ath10k: fetch firmware images in a loop
-
-Kalle Valo (2):
-      ath10k: add directory to board data error message
-      ath10k: convert warning about non-existent OTP board id to debug message
-
-Michal Kazior (1):
-      ath10k: silence firmware file probing warnings
-
-
- drivers/net/wireless/ath/ath10k/core.c     |   68 +++++++++++++---------------
- drivers/net/wireless/ath/ath10k/hw.h       |    4 ++
- drivers/net/wireless/ath/ath10k/testmode.c |    5 ++
- 3 files changed, 40 insertions(+), 37 deletions(-)
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
