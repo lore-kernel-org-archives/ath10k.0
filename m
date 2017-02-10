@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccHnf-0001rc-Qm
- for ath10k@lists.infradead.org; Fri, 10 Feb 2017 20:28:14 +0000
-From: <ryanhsu@qca.qualcomm.com>
-Subject: [PATCH] ath10k: fix the garage chars in board file name creation
-Date: Fri, 10 Feb 2017 12:27:09 -0800
-Message-ID: <1486758429-18665-1-git-send-email-ryanhsu@qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ccK9V-0007IA-2z
+ for ath10k@lists.infradead.org; Fri, 10 Feb 2017 22:58:55 +0000
+From: Ben Greear <greearb@candelatech.com>
+Subject: VHT 160Mhz and nss related config.
+Message-ID: <0082a9e3-83f3-9bc3-af43-b890b91cfd93@candelatech.com>
+Date: Fri, 10 Feb 2017 14:58:31 -0800
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,36 +16,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: ryanhsu@qca.qualcomm.com
+To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-RnJvbTogUnlhbiBIc3UgPHJ5YW5oc3VAcWNhLnF1YWxjb21tLmNvbT4KClRoZSB2YXJpYW50W10g
-c3RyaW5nIHdpbGwgYmUgdmFsaWQgb25seSBpZiB0aGUgYmRmX2V4dCBpcyBzZXQuCgpUaGUgc3Ry
-aW5nIG1lbW9yeSBuZWVkcyB0byBiZSBudWxsLXRlcm1pbmF0ZWQgdG8gYXZvaWQgdGhlIHVuZGVm
-aW5lZCBnYXJiYWdlCmFwcGVuZGVkIGJ5IHRoZSBzdWJzZXF1ZW50IGJvYXJkIGZpbGUgbmFtZSBj
-cmVhdGlvbi4KCmF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBmYWlsZWQgdG8gZmV0Y2ggYm9hcmQg
-ZGF0YSBmb3IKImJ1cz1wY2ksdmVuZG9yPTE2OGMsZGV2aWNlPTAwM2Usc3Vic3lzdGVtLXZlbmRv
-cj0xNjhjLHN1YnN5c3RlbS1kZXZpY2U9MzM2M++/ve+/vVDvv73vv73vv73vv73vv70iCmZyb20g
-YXRoMTBrL1FDQTYxNzQvaHczLjAvYm9hcmQtMi5iaW4KCkZpeGVzOiBmMjU5M2NiMWIyOTEgKCJh
-dGgxMGs6IFNlYXJjaCBTTUJJT1MgZm9yIE9FTSBib2FyZCBmaWxlIGV4dGVuc2lvbiIpClJlcG9y
-dGVkLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPgpTaWduZWQtb2ZmLWJ5
-OiBSeWFuIEhzdSA8cnlhbmhzdUBxY2EucXVhbGNvbW0uY29tPgotLS0KIGRyaXZlcnMvbmV0L3dp
-cmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0
-aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway9jb3JlLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUu
-YwppbmRleCBjMjdlN2VhLi4wMTRhODdlIDEwMDY0NAotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL2NvcmUuYworKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
-L2NvcmUuYwpAQCAtMTEyMiw3ICsxMTIyLDcgQEAgc3RhdGljIGludCBhdGgxMGtfY29yZV9jcmVh
-dGVfYm9hcmRfbmFtZShzdHJ1Y3QgYXRoMTBrICphciwgY2hhciAqbmFtZSwKIAkJCQkJIHNpemVf
-dCBuYW1lX2xlbikKIHsKIAkvKiBzdHJsZW4oJyx2YXJpYW50PScpICsgc3RybGVuKGFyLT5pZC5i
-ZGZfZXh0KSAqLwotCWNoYXIgdmFyaWFudFs5ICsgQVRIMTBLX1NNQklPU19CREZfRVhUX1NUUl9M
-RU5HVEhdOworCWNoYXIgdmFyaWFudFs5ICsgQVRIMTBLX1NNQklPU19CREZfRVhUX1NUUl9MRU5H
-VEhdID0geyAwIH07CiAKIAlpZiAoYXItPmlkLmJtaV9pZHNfdmFsaWQpIHsKIAkJc2NucHJpbnRm
-KG5hbWUsIG5hbWVfbGVuLAotLSAKMS45LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCg==
+So, it appears that the ath10k QCA9984 4x4 160Mhz chip can do 4x4 MIMO at VHT80, but
+it can do only 2x2 MIMO at VHT160/80+80.
+
+When configuring a peer, we need to tell the firmware the number of spatial streams
+of the peer at VHT160 and at VHT80 and lower.  They are not the same value.
+
+I cannot think of any standard way to get this information based on VHT capabilities
+and such.  Currently, one could just assume VHT160 NSS is 1/2 of the VHT80 NSS,
+but that is unlikely to be true for all vendors.
+
+Any ideas?
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
