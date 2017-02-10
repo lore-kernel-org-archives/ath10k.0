@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail.compex.com.sg ([116.12.130.103] helo=compex.com.sg)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cc5Ff-0002S0-Np
- for ath10k@lists.infradead.org; Fri, 10 Feb 2017 07:04:19 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k: remove ath10k_vif_to_arvif()
-Date: Fri, 10 Feb 2017 07:03:56 +0000
-Message-ID: <87tw82il32.fsf@kamboji.qca.qualcomm.com>
-References: <1486030773-30600-1-git-send-email-amadeusz.slawinski@tieto.com>
- <CAJ-VmonrHpS3MArM9ohHgLvb6xspP_gnVVeJWA9F-pjUpJ+LZA@mail.gmail.com>
- <87y3xi4b28.fsf@qca.qualcomm.com> <5899DDD7.7000605@candelatech.com>
-In-Reply-To: <5899DDD7.7000605@candelatech.com> (Ben Greear's message of "Tue, 
- 7 Feb 2017 06:46:47 -0800")
-Content-Language: en-US
+ id 1cc5Nm-0007eF-TM
+ for ath10k@lists.infradead.org; Fri, 10 Feb 2017 07:12:47 +0000
+Message-ID: <225C5D2515A949BABED9735260C92D73@PhyuThe>
+From: "Phyu The" <pt_myat@compex.com.sg>
+References: <20170110061217.096FD148A08@compex.com.sg>
+ <63DDC83FD9364560ACBA60D17C3F5AD8@PhyuThe> <5874F1BC.80505@candelatech.com>
+ <10981E9AB9EA46A1897BE3E5CF661C0F@PhyuThe>
+ <f3ed8528-a9ab-fa33-e753-aa1fbebc969e@candelatech.com>
+ <F468EA06CC7341849F013B51FFCC88E2@PhyuThe>
+ <65c12489-6886-22c2-894b-cf0eab2bd51a@dd-wrt.com>
+ <2f0e0277-b7fc-ccf6-1d23-1d9e8f9a8d4e@candelatech.com>
+In-Reply-To: <2f0e0277-b7fc-ccf6-1d23-1d9e8f9a8d4e@candelatech.com>
+Subject: Re: QCA9880 3x3 80Mhz low performance
+Date: Fri, 10 Feb 2017 15:11:55 +0800
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,43 +24,154 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, =?iso-8859-2?Q?Amadeusz_S=B3awi=F1ski?= <amadeusz.slawinski@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org, Ben Greear <greearb@candelatech.com>
 
-Ben Greear <greearb@candelatech.com> writes:
+Dear Ben,
 
-> On 02/07/2017 01:14 AM, Valo, Kalle wrote:
->> Adrian Chadd <adrian@freebsd.org> writes:
->>
->>> Removing this method makes the diff to FreeBSD larger, as "vif" in
->>> FreeBSD is a different pointer.
->>>
->>> (Yes, I have ath10k on freebsd working and I'd like to find a way to
->>> reduce the diff moving forward.)
->>
->> I don't like this "(void *) vif->drv_priv" style that much either but
->> apparently it's commonly used in Linux wireless code and already parts
->> of ath10k. So this patch just unifies the coding style.
+According to your test result of QCA9880 3x3, what could be the low 
+performance issue at my side IPQ8064+QCA9880 with Ath10k? Is it really CPU 
+related problem on WPQ864?
+
+thanks,
+Phyuthe
+
+-----Original Message----- 
+From: Ben Greear
+Sent: Saturday, January 21, 2017 4:24 AM
+To: Sebastian Gottschall ; Phyu The ; ath10k@lists.infradead.org
+Subject: Re: QCA9880 3x3 80Mhz low performance
+
+Hello!
+
+We ran some more tests using our x86 based platforms with 9880 NICs and 9984 
+NICs
+acting as both AP and Station.  This is in an isolation chamber, wired up 
+with SMA cables
+and variable attenuator, in as perfect of a condition as we can manage.
+
+First, here is LANforge acting as AP and station devices, using QCA9880 3x3 
+hardware:
+
+http://www.candelatech.com/images/data-comp-01-13-2017-144224-lf-ap.png
+
+And with 9984 systems:
+
+http://www.candelatech.com/images/data-comp-01-19-2017-1706-lf-ap-sta-9984.png
+
+In case you read closely and wonder, 'Armageddon' is our modified version of 
+pktgen.
+
+Thanks,
+Ben
+
+
+On 01/12/2017 01:24 AM, Sebastian Gottschall wrote:
+> @ben greear. it cannot be cpu related. the ipq8064 has 1.2 ghz and is a 
+> very fast arm core. the platform handles 9984 with much higher speed.
+> i got notice of the same issue reported by people on various cpu 
+> platforms.
 >
-> Surely the code compiles to the same thing, so why add a patch that
-> makes it more difficult for Adrian and makes the code no easier to read
-> for the rest of us?
+> Am 12.01.2017 um 09:15 schrieb Phyu The:
+>> Dear Ben,
+>>
+>> Thanks for your reply and suggestion.
+>>
+>> I have tried as your suggestion to test IPQ8064+QCA9880 with Ath10k CT 
+>> firmware/driver to run throughput UDP/TCP. Unfortunately, I could not be 
+>> able to see
+>> throughput improvement. Could you please suggest what may cause low 
+>> throughput?
+>>
+>> thanks,
+>> Phyuthe
+>>
+>> -----Original Message----- From: Ben Greear
+>> Sent: Thursday, January 12, 2017 12:59 AM
+>> To: Phyu The ; ath10k@lists.infradead.org
+>> Subject: Re: QCA9880 3x3 80Mhz low performance
+>>
+>> We have not done a lot of testing in AP mode, but when using 9880 3x3 
+>> compex NICs
+>> in our 2U rackmounts (high end Intel E5 processors), and with CT 
+>> firmware/drivers,
+>> we see near 950Mbps UDP download in station mode.  I think we were a bit 
+>> slower in
+>> AP mode, but not that much.
+>>
+>> Are you testing TCP or UDP traffic?
+>>
+>> http://www.candelatech.com/images/data-comp-07-20-2016-1147-with-labels.png
+>>
+>> Have you tried normal STA/AP mode instead of WDS?
+>>
+>> Maybe you are CPU bound on your platform?
+>>
+>> Thanks,
+>> Ben
+>>
+>> On 01/10/2017 05:09 PM, Phyu The wrote:
+>>> Dear Ben,
+>>>
+>>> I configured AP_WDS and Sta_WDS mode, channel 149, 11ac, 3x3, 80MHz and 
+>>> without encryption. I used 2 RF boxes with 3 adjustable attenuators 
+>>> running throughput
+>>> by Ixchairot to get best performance. However, throughput seems limited 
+>>> to 640Mbps. Kindly see attached for your reference for more details.
+>>>
+>>> thanks,
+>>> Phyuthe
+>>>
+>>> -----Original Message----- From: Ben Greear
+>>> Sent: Tuesday, January 10, 2017 10:37 PM
+>>> To: Phyu The ; ath10k@lists.infradead.org
+>>> Subject: Re: QCA9880 3x3 80Mhz low performance
+>>>
+>>> You should provide a lot more information about how you configured and 
+>>> tested the system,
+>>> including traffic generator and RF environment, etc.
+>>>
+>>> Thanks,
+>>> Ben
+>>>
+>>> On 01/09/2017 10:19 PM, Phyu The wrote:
+>>>> Dear Sir,
+>>>>
+>>>> I tested performance throughput test used WPQ864 + QCA9880 11ac 80MHz 
+>>>> is 640Mbps that is very low since theoretical data rate is 1300Mbps. It 
+>>>> should be at
+>>>> least 866Mbps. Could you please suggest me how to get better 
+>>>> performance?
+>>>>
+>>>> thanks,
+>>>> Phyuthe
+>>>>
+>>>> _______________________________________________
+>>>> ath10k mailing list
+>>>> ath10k@lists.infradead.org
+>>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>>>
+>>>
+>>
+>>
+>
+>
 
-Because that's the coding style used already in Linux. It's great to see
-that parts of ath10k can be used also in other systems but in principle
-I'm not very fond of the idea starting to reject valid upstream patches
-because of driver forks.
-
-I think backports project is doing it right, it's not limiting upstream
-development in any way and handles all the API changes internally. Maybe
-FreeBSD could do something similar?
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k 
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
