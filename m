@@ -1,21 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ccrpc-0003z3-FX
- for ath10k@lists.infradead.org; Sun, 12 Feb 2017 10:56:39 +0000
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ccwfC-0004f6-3M
+ for ath10k@lists.infradead.org; Sun, 12 Feb 2017 16:06:12 +0000
+Subject: Re: VHT 160Mhz and nss related config.
 References: <0082a9e3-83f3-9bc3-af43-b890b91cfd93@candelatech.com>
  <e71fe0b1-4482-b80b-2624-240b154ff980@dd-wrt.com>
  <CAJ-VmokKafmamWJJ0-=PJ_oNBejbqcHbd8NO7-M9=Z6DFRuhzw@mail.gmail.com>
  <589F50B8.4020609@candelatech.com>
  <bbf485eb-f3aa-f49b-8401-03632bc70a7f@dd-wrt.com>
  <02b7f70a-7da2-f2e4-8904-bdffc3ca90a1@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <159ba156-cf2d-db0d-a6af-2557b9bfa6b6@dd-wrt.com>
-Date: Sun, 12 Feb 2017 11:56:03 +0100
+ <159ba156-cf2d-db0d-a6af-2557b9bfa6b6@dd-wrt.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <f2982636-263f-d475-6b0b-85effc184ece@candelatech.com>
+Date: Sun, 12 Feb 2017 08:05:45 -0800
 MIME-Version: 1.0
-In-Reply-To: <02b7f70a-7da2-f2e4-8904-bdffc3ca90a1@candelatech.com>
-Subject: Re: VHT 160Mhz and nss related config.
+In-Reply-To: <159ba156-cf2d-db0d-a6af-2557b9bfa6b6@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,63 +24,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Adrian Chadd <adrian@freebsd.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Adrian Chadd <adrian@freebsd.org>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-QW0gMTEuMDIuMjAxNyB1bSAyMDozOCBzY2hyaWViIEJlbiBHcmVlYXI6Cj4gT24gMDIvMTEvMjAx
-NyAxMDoyMSBBTSwgU2ViYXN0aWFuIEdvdHRzY2hhbGwgd3JvdGU6Cj4+IEFtIDExLjAyLjIwMTcg
-dW0gMTg6NTggc2NocmllYiBCZW4gR3JlZWFyOgo+Pj4gT24gMDIvMTAvMjAxNyAwODozNyBQTSwg
-QWRyaWFuIENoYWRkIHdyb3RlOgo+Pj4+IE9uIDEwIEZlYnJ1YXJ5IDIwMTcgYXQgMjA6MjIsIFNl
-YmFzdGlhbiBHb3R0c2NoYWxsCj4+Pj4gPHMuZ290dHNjaGFsbEBkZC13cnQuY29tPiB3cm90ZToK
-Pj4+Pj4gaSByZWFsbHkgY2FuJ3QgYmVsaWV2ZSB0aGlzLiBpZiB0aGlzIGlzIHRydWUgdGhlICAx
-NjAgbWh6IG1vZGUgCj4+Pj4+IHdvdWxkIG5vdAo+Pj4+PiBtYWtlIGFueSBzZW5zZS4KPj4+Pj4g
-dGhlIG1heGltdW0gdHggLyByeCByYXRlIGZvciA0eDQgdmh0ODAgYW5kIDJ4MiB2aHQxNjAgaXMg
-Cj4+Pj4+IGlkZW50aWNhbC4gc28KPj4+Pj4gdmh0MTYwIHdvdWxkIG5vdCBpbmNyZWFzZSBwZXJm
-b3JtYW5jZSBpbiBhbnkgd2F5Cj4+Pj4KPj4+PiBXZWxsLCBpZiBpdCBjYW4gYWxzbyBkbyAyeDIg
-TVUtTUlNTyBhdCAxNjBNSHogdGhlbiBpdCBjYW4gYmUgYQo+Pj4+IHBlcmZlY3RseSBmaW5lIFNU
-QSB0byBhIDR4NCAxNjBNSHogTVUtTUlNTyBjaGlwIHRoYXQgY2FuIGFjdHVhbGx5Cj4+Pj4gdHJh
-bnNtaXQgMngyIHJhdGVzIHRvIGRpZmZlcmVudCBNVS1NSU1PIHBlZXJzLgo+Pj4+Cj4+Pj4gVGhh
-dCdzIHRoZSBvdXRzdGFuZGluZyBxdWVzdGlvbiBJIGhhdmUgLSBpcyBpdCBsaWtlLCAyeDIgTVUg
-b25seSwgb3IKPj4+PiBpcyBpdCBzYXksIDIgY29uY3VycmVudGx5IGRpZmZlcmVudCBzcGF0aWFs
-IHN0cmVhbSAyeDIgTVU/IEllLCBjYW4geW91Cj4+Pj4gaGF2ZSAyIHBlZXJzLCBkaWZmZXJlbnQg
-VkhUIHNwYXRpYWwgZ3JvdXBzIChvciA0IHBlZXJzLCAxIHNwYXRpYWwKPj4+PiBncm91cCBlYWNo
-KSBhbGwgZ29pbmcgYXQgdGhlIHNhbWUgdGltZT8KPj4+Pgo+Pj4+IEknbSAuLiBub3QgZXZlbiBz
-dXJlIGhvdyB5b3UncmUgc3VwcG9zZWQgdG8gY2xlYW5seSBuZWdvdGlhdGUgdGhhdCB5b3UKPj4+
-PiBjYW4gZG8gNE5TUyBpbiBWSFQ4MCBidXQgMk5TUyBpbiBWSFQxNjAgdG8gYSBwZWVyLi4uIHRo
-YXQgb25seSBtYWtlcwo+Pj4+IHNlbnNlIGlmIHlvdSdyZSBkb2luZyBsb3RzIG9mIDFOU1MgYW5k
-IDJOU1MgTVUtTUlNTyBwZWVycy4uCj4+Pgo+Pj4gSSB0aGluayB1c2luZyB0aGUgbWF4LXJ4LXJh
-dGUgbG9naWMgbWlnaHQgY291bGQgaW1wbHkgdGhpcywgYnV0IEkgYW0gCj4+PiBub3Qgc3VyZQo+
-Pj4gbWFueSBkcml2ZXJzIGZpbGwgdGhpcyBvdXQgcHJvcGVybHkuCj4+Pgo+Pj4gTG9va3MgbGlr
-ZSBhIG1lc3Mgd2FpdGluZyB0byBoYXBwZW4gdG8gbWUuCj4+Pgo+Pj4gRXZlbiBpZiB5b3UgY2Fu
-IGRvIDF4MSAxNjBNaHogTVUtTUlNTyB0byB0d28gc3RhdGlvbnMsIGFuZCBJIGFtIG5vdCAKPj4+
-IGNlcnRhaW4geW91Cj4+PiBjYW4gc2luY2UgaW4gODBNaHogeW91IGNhbiBvbmx5IGRvIGEgMXgx
-IGFuZCBhIDJ4MiAobm90IHR3byAyeDIpLgo+Pj4KPj4+IFNvLCBmcm9tIHdoYXQgSSBrbm93IGN1
-cnJlbnRseSwgODArODAgaXMgbm90IHRoYXQgdXNlZnVsIG9uIHRoZSA5OTg0IAo+Pj4gTklDLi4u
-Cj4+IG5ldmVyIHRyaWVkIDgwKzgwIHNpbmNlIGkgbmVlZCB0byBlbmhhbmNlIHRoZSBjaGFubmVs
-IGxvZ2ljIGFsb3QgaW4gCj4+IG15IGZpcm13YXJlIGNvZGUgdG8gaGFuZGxlIGl0LiB3b3VsZCBi
-ZSBncmVhdCBlbm91Z2ggaWYgdmh0MTYwIHdvdWxkIAo+PiB3b3JrIGFzIGV4cGVjdGVkIGFuZAo+
-PiBpJ20gbm90IHN1cmUgcmlnaHQgbm93IGlmIGl0IHJlYWxseSB3b3JrcywgZXZlbiBpZiB0aGUg
-aW50ZXJmYWNlIAo+PiBpbml0aWFsaXplZCBjb3JyZWN0bHkgaXQgYXNzb2NzIG9ubHkgd2l0aCB2
-aHQ4MAo+Cj4gMTYwTWh6IGlzIHJlYWxseSBpbXBsZW1lbnRlZCBhcyA4MCs4MCBpbnRlcm5hbGx5
-IGl0IHNlZW1zLCBzbyB3aGF0IEkgCj4gbWVhbnQgaXMgdGhhdAo+IDE2ME1oeiBvciA4MCs4MCBi
-b3RoIGhhdmUgdGhlIDJ4MiByZXN0cmljdGlvbi4Kc2luY2UgaSBoYXZlIGEgb2xkZXIgZncgc291
-cmNlLiBjYW4geW91IGdpdmUgbWUgYSBoaW50IHdoZXJlIHlvdSBmb3VuZCBhIAppbmRpY2F0aW9u
-IHRoYXQgaXRzIGp1c3QgMngyPwo+Cj4gU3RvY2sgYXRoMTBrIGRyaXZlciBkb2Vzbid0IHNldCB0
-aGUgcnhuc3Nfb3ZlcnJpZGUsIHNvIHRoZSBjaGlwIHdpbGwgCj4gYWx3YXlzIGJlIGZvcmNlZAo+
-IHRvIHNlbmQgMXgxIGF0IDE2ME1oeiwgc28gZXZlbiBpZiBpdCBhc3NvY2lhdGVzIGFuZCB3b3Jr
-cyBhdCBhbGwsIGl0IAo+IHdpbGwgcHJvYmFibHkgbm90IHB1dAo+IG1hbnkgMTYwTWh6IGZyYW1l
-cyBvbiBhaXIgc2luY2UgdGhlIHJhdGUtY3RybCBzaG91bGQgY2hvb3NlIDN4MyBvciA0eDQgCj4g
-ODBNaHogYXMgZmFzdGVyIHNwZWVkcy4Kc291bmRzIGxvZ2ljCj4KPiBUaGFua3MsCj4gQmVuCj4K
-PgoKCi0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdv
-dHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBC
-ZXJsaW5lciBSaW5nIDEwMSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2Vy
-aWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5o
-w6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMu
-Z290dHNjaGFsbEBkZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUx
-LTU4MjY1NjUKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+
+
+On 02/12/2017 02:56 AM, Sebastian Gottschall wrote:
+> Am 11.02.2017 um 20:38 schrieb Ben Greear:
+>> On 02/11/2017 10:21 AM, Sebastian Gottschall wrote:
+>>> Am 11.02.2017 um 18:58 schrieb Ben Greear:
+>>>> On 02/10/2017 08:37 PM, Adrian Chadd wrote:
+>>>>> On 10 February 2017 at 20:22, Sebastian Gottschall
+>>>>> <s.gottschall@dd-wrt.com> wrote:
+>>>>>> i really can't believe this. if this is true the  160 mhz mode would not
+>>>>>> make any sense.
+>>>>>> the maximum tx / rx rate for 4x4 vht80 and 2x2 vht160 is identical. so
+>>>>>> vht160 would not increase performance in any way
+>>>>>
+>>>>> Well, if it can also do 2x2 MU-MIMO at 160MHz then it can be a
+>>>>> perfectly fine STA to a 4x4 160MHz MU-MIMO chip that can actually
+>>>>> transmit 2x2 rates to different MU-MIMO peers.
+>>>>>
+>>>>> That's the outstanding question I have - is it like, 2x2 MU only, or
+>>>>> is it say, 2 concurrently different spatial stream 2x2 MU? Ie, can you
+>>>>> have 2 peers, different VHT spatial groups (or 4 peers, 1 spatial
+>>>>> group each) all going at the same time?
+>>>>>
+>>>>> I'm .. not even sure how you're supposed to cleanly negotiate that you
+>>>>> can do 4NSS in VHT80 but 2NSS in VHT160 to a peer... that only makes
+>>>>> sense if you're doing lots of 1NSS and 2NSS MU-MIMO peers..
+>>>>
+>>>> I think using the max-rx-rate logic might could imply this, but I am not sure
+>>>> many drivers fill this out properly.
+>>>>
+>>>> Looks like a mess waiting to happen to me.
+>>>>
+>>>> Even if you can do 1x1 160Mhz MU-MIMO to two stations, and I am not certain you
+>>>> can since in 80Mhz you can only do a 1x1 and a 2x2 (not two 2x2).
+>>>>
+>>>> So, from what I know currently, 80+80 is not that useful on the 9984 NIC...
+>>> never tried 80+80 since i need to enhance the channel logic alot in my firmware code to handle it. would be great enough if vht160 would work as expected and
+>>> i'm not sure right now if it really works, even if the interface initialized correctly it assocs only with vht80
+>>
+>> 160Mhz is really implemented as 80+80 internally it seems, so what I meant is that
+>> 160Mhz or 80+80 both have the 2x2 restriction.
+> since i have a older fw source. can you give me a hint where you found a indication that its just 2x2?
+
+Look for:
+
+MAX_SPATIAL_STREAMS_SUPPORTED_AT_160MHZ
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
