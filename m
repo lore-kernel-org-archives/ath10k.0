@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cdMk1-0000kW-9g
- for ath10k@lists.infradead.org; Mon, 13 Feb 2017 19:56:55 +0000
-Subject: Re: VHT 160Mhz and nss related config.
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cdO2P-00021q-5L
+ for ath10k@lists.infradead.org; Mon, 13 Feb 2017 21:20:01 +0000
 References: <0082a9e3-83f3-9bc3-af43-b890b91cfd93@candelatech.com>
  <e71fe0b1-4482-b80b-2624-240b154ff980@dd-wrt.com>
  <CAJ-VmokKafmamWJJ0-=PJ_oNBejbqcHbd8NO7-M9=Z6DFRuhzw@mail.gmail.com>
  <589F50B8.4020609@candelatech.com>
  <bbf485eb-f3aa-f49b-8401-03632bc70a7f@dd-wrt.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <36c7dfa2-b39c-ad7a-5e39-3daf8983ed2f@candelatech.com>
-Date: Mon, 13 Feb 2017 11:56:32 -0800
+ <36c7dfa2-b39c-ad7a-5e39-3daf8983ed2f@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <e9458be2-e3bd-1b40-b690-7c96702b25d7@dd-wrt.com>
+Date: Mon, 13 Feb 2017 22:19:27 +0100
 MIME-Version: 1.0
-In-Reply-To: <bbf485eb-f3aa-f49b-8401-03632bc70a7f@dd-wrt.com>
+In-Reply-To: <36c7dfa2-b39c-ad7a-5e39-3daf8983ed2f@candelatech.com>
+Subject: Re: VHT 160Mhz and nss related config.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,80 +24,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Adrian Chadd <adrian@freebsd.org>
+To: Ben Greear <greearb@candelatech.com>, Adrian Chadd <adrian@freebsd.org>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-On 02/11/2017 10:21 AM, Sebastian Gottschall wrote:
-> Am 11.02.2017 um 18:58 schrieb Ben Greear:
->> On 02/10/2017 08:37 PM, Adrian Chadd wrote:
->>> On 10 February 2017 at 20:22, Sebastian Gottschall
->>> <s.gottschall@dd-wrt.com> wrote:
->>>> i really can't believe this. if this is true the  160 mhz mode would not
->>>> make any sense.
->>>> the maximum tx / rx rate for 4x4 vht80 and 2x2 vht160 is identical. so
->>>> vht160 would not increase performance in any way
->>>
->>> Well, if it can also do 2x2 MU-MIMO at 160MHz then it can be a
->>> perfectly fine STA to a 4x4 160MHz MU-MIMO chip that can actually
->>> transmit 2x2 rates to different MU-MIMO peers.
->>>
->>> That's the outstanding question I have - is it like, 2x2 MU only, or
->>> is it say, 2 concurrently different spatial stream 2x2 MU? Ie, can you
->>> have 2 peers, different VHT spatial groups (or 4 peers, 1 spatial
->>> group each) all going at the same time?
->>>
->>> I'm .. not even sure how you're supposed to cleanly negotiate that you
->>> can do 4NSS in VHT80 but 2NSS in VHT160 to a peer... that only makes
->>> sense if you're doing lots of 1NSS and 2NSS MU-MIMO peers..
->>
->> I think using the max-rx-rate logic might could imply this, but I am not sure
->> many drivers fill this out properly.
->>
->> Looks like a mess waiting to happen to me.
->>
->> Even if you can do 1x1 160Mhz MU-MIMO to two stations, and I am not certain you
->> can since in 80Mhz you can only do a 1x1 and a 2x2 (not two 2x2).
->>
->> So, from what I know currently, 80+80 is not that useful on the 9984 NIC...
-> never tried 80+80 since i need to enhance the channel logic alot in my firmware code to handle it. would be great enough if vht160 would work as expected and
-> i'm not sure right now if it really works, even if the interface initialized correctly it assocs only with vht80
-
-Looks like it is working with the hack I posted:
-
-Station 04:f0:21:2e:49:65 (on wlan2)
-	inactive time:	0 ms
-	rx bytes:	64902998
-	rx packets:	37918
-	tx bytes:	64760298
-	tx packets:	42239
-	tx retries:	0
-	tx failed:	0
-	signal:  	-43 dBm
-	signal avg:	-42 dBm
-	tx bitrate:	1053.0 MBit/s VHT-MCS 6 160MHz VHT-NSS 2
-	rx bitrate:	1560.0 MBit/s VHT-MCS 8 160MHz short GI VHT-NSS 2
-	authorized:	yes
-	authenticated:	yes
-	preamble:	long
-	WMM/WME:	yes
-	MFP:		no
-	TDLS peer:	no
-	connected time:	156 seconds
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMTMuMDIuMjAxNyB1bSAyMDo1NiBzY2hyaWViIEJlbiBHcmVlYXI6Cj4gT24gMDIvMTEvMjAx
+NyAxMDoyMSBBTSwgU2ViYXN0aWFuIEdvdHRzY2hhbGwgd3JvdGU6Cj4+IEFtIDExLjAyLjIwMTcg
+dW0gMTg6NTggc2NocmllYiBCZW4gR3JlZWFyOgo+Pj4gT24gMDIvMTAvMjAxNyAwODozNyBQTSwg
+QWRyaWFuIENoYWRkIHdyb3RlOgo+Pj4+IE9uIDEwIEZlYnJ1YXJ5IDIwMTcgYXQgMjA6MjIsIFNl
+YmFzdGlhbiBHb3R0c2NoYWxsCj4+Pj4gPHMuZ290dHNjaGFsbEBkZC13cnQuY29tPiB3cm90ZToK
+Pj4+Pj4gaSByZWFsbHkgY2FuJ3QgYmVsaWV2ZSB0aGlzLiBpZiB0aGlzIGlzIHRydWUgdGhlICAx
+NjAgbWh6IG1vZGUgCj4+Pj4+IHdvdWxkIG5vdAo+Pj4+PiBtYWtlIGFueSBzZW5zZS4KPj4+Pj4g
+dGhlIG1heGltdW0gdHggLyByeCByYXRlIGZvciA0eDQgdmh0ODAgYW5kIDJ4MiB2aHQxNjAgaXMg
+Cj4+Pj4+IGlkZW50aWNhbC4gc28KPj4+Pj4gdmh0MTYwIHdvdWxkIG5vdCBpbmNyZWFzZSBwZXJm
+b3JtYW5jZSBpbiBhbnkgd2F5Cj4+Pj4KPj4+PiBXZWxsLCBpZiBpdCBjYW4gYWxzbyBkbyAyeDIg
+TVUtTUlNTyBhdCAxNjBNSHogdGhlbiBpdCBjYW4gYmUgYQo+Pj4+IHBlcmZlY3RseSBmaW5lIFNU
+QSB0byBhIDR4NCAxNjBNSHogTVUtTUlNTyBjaGlwIHRoYXQgY2FuIGFjdHVhbGx5Cj4+Pj4gdHJh
+bnNtaXQgMngyIHJhdGVzIHRvIGRpZmZlcmVudCBNVS1NSU1PIHBlZXJzLgo+Pj4+Cj4+Pj4gVGhh
+dCdzIHRoZSBvdXRzdGFuZGluZyBxdWVzdGlvbiBJIGhhdmUgLSBpcyBpdCBsaWtlLCAyeDIgTVUg
+b25seSwgb3IKPj4+PiBpcyBpdCBzYXksIDIgY29uY3VycmVudGx5IGRpZmZlcmVudCBzcGF0aWFs
+IHN0cmVhbSAyeDIgTVU/IEllLCBjYW4geW91Cj4+Pj4gaGF2ZSAyIHBlZXJzLCBkaWZmZXJlbnQg
+VkhUIHNwYXRpYWwgZ3JvdXBzIChvciA0IHBlZXJzLCAxIHNwYXRpYWwKPj4+PiBncm91cCBlYWNo
+KSBhbGwgZ29pbmcgYXQgdGhlIHNhbWUgdGltZT8KPj4+Pgo+Pj4+IEknbSAuLiBub3QgZXZlbiBz
+dXJlIGhvdyB5b3UncmUgc3VwcG9zZWQgdG8gY2xlYW5seSBuZWdvdGlhdGUgdGhhdCB5b3UKPj4+
+PiBjYW4gZG8gNE5TUyBpbiBWSFQ4MCBidXQgMk5TUyBpbiBWSFQxNjAgdG8gYSBwZWVyLi4uIHRo
+YXQgb25seSBtYWtlcwo+Pj4+IHNlbnNlIGlmIHlvdSdyZSBkb2luZyBsb3RzIG9mIDFOU1MgYW5k
+IDJOU1MgTVUtTUlNTyBwZWVycy4uCj4+Pgo+Pj4gSSB0aGluayB1c2luZyB0aGUgbWF4LXJ4LXJh
+dGUgbG9naWMgbWlnaHQgY291bGQgaW1wbHkgdGhpcywgYnV0IEkgYW0gCj4+PiBub3Qgc3VyZQo+
+Pj4gbWFueSBkcml2ZXJzIGZpbGwgdGhpcyBvdXQgcHJvcGVybHkuCj4+Pgo+Pj4gTG9va3MgbGlr
+ZSBhIG1lc3Mgd2FpdGluZyB0byBoYXBwZW4gdG8gbWUuCj4+Pgo+Pj4gRXZlbiBpZiB5b3UgY2Fu
+IGRvIDF4MSAxNjBNaHogTVUtTUlNTyB0byB0d28gc3RhdGlvbnMsIGFuZCBJIGFtIG5vdCAKPj4+
+IGNlcnRhaW4geW91Cj4+PiBjYW4gc2luY2UgaW4gODBNaHogeW91IGNhbiBvbmx5IGRvIGEgMXgx
+IGFuZCBhIDJ4MiAobm90IHR3byAyeDIpLgo+Pj4KPj4+IFNvLCBmcm9tIHdoYXQgSSBrbm93IGN1
+cnJlbnRseSwgODArODAgaXMgbm90IHRoYXQgdXNlZnVsIG9uIHRoZSA5OTg0IAo+Pj4gTklDLi4u
+Cj4+IG5ldmVyIHRyaWVkIDgwKzgwIHNpbmNlIGkgbmVlZCB0byBlbmhhbmNlIHRoZSBjaGFubmVs
+IGxvZ2ljIGFsb3QgaW4gCj4+IG15IGZpcm13YXJlIGNvZGUgdG8gaGFuZGxlIGl0LiB3b3VsZCBi
+ZSBncmVhdCBlbm91Z2ggaWYgdmh0MTYwIHdvdWxkIAo+PiB3b3JrIGFzIGV4cGVjdGVkIGFuZAo+
+PiBpJ20gbm90IHN1cmUgcmlnaHQgbm93IGlmIGl0IHJlYWxseSB3b3JrcywgZXZlbiBpZiB0aGUg
+aW50ZXJmYWNlIAo+PiBpbml0aWFsaXplZCBjb3JyZWN0bHkgaXQgYXNzb2NzIG9ubHkgd2l0aCB2
+aHQ4MAo+Cj4gTG9va3MgbGlrZSBpdCBpcyB3b3JraW5nIHdpdGggdGhlIGhhY2sgSSBwb3N0ZWQ6
+Cj4KPiBTdGF0aW9uIDA0OmYwOjIxOjJlOjQ5OjY1IChvbiB3bGFuMikKPiAgICAgaW5hY3RpdmUg
+dGltZTogICAgMCBtcwo+ICAgICByeCBieXRlczogICAgNjQ5MDI5OTgKPiAgICAgcnggcGFja2V0
+czogICAgMzc5MTgKPiAgICAgdHggYnl0ZXM6ICAgIDY0NzYwMjk4Cj4gICAgIHR4IHBhY2tldHM6
+ICAgIDQyMjM5Cj4gICAgIHR4IHJldHJpZXM6ICAgIDAKPiAgICAgdHggZmFpbGVkOiAgICAwCj4g
+ICAgIHNpZ25hbDogICAgICAtNDMgZEJtCj4gICAgIHNpZ25hbCBhdmc6ICAgIC00MiBkQm0KPiAg
+ICAgdHggYml0cmF0ZTogICAgMTA1My4wIE1CaXQvcyBWSFQtTUNTIDYgMTYwTUh6IFZIVC1OU1Mg
+Mgo+ICAgICByeCBiaXRyYXRlOiAgICAxNTYwLjAgTUJpdC9zIFZIVC1NQ1MgOCAxNjBNSHogc2hv
+cnQgR0kgVkhULU5TUyAyCj4gICAgIGF1dGhvcml6ZWQ6ICAgIHllcwo+ICAgICBhdXRoZW50aWNh
+dGVkOiAgICB5ZXMKPiAgICAgcHJlYW1ibGU6ICAgIGxvbmcKPiAgICAgV01NL1dNRTogICAgeWVz
+Cj4gICAgIE1GUDogICAgICAgIG5vCj4gICAgIFRETFMgcGVlcjogICAgbm8KPiAgICAgY29ubmVj
+dGVkIHRpbWU6ICAgIDE1NiBzZWNvbmRzCj4KPiBUaGFua3MsCj4gQmVuCmNvb2wuIGxldCBtZSBj
+aGVjayBpdCBvbiBteSBkZXZpY2VzCj4KPgoKCi0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2Vu
+IC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJI
+IC0gREQtV1JUCkZpcm1lbnNpdHo6ICBCZXJsaW5lciBSaW5nIDEwMSwgNjQ2MjUgQmVuc2hlaW0K
+UmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOk
+ZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQpodHRwOi8v
+d3d3LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tClRlbC46ICs0OTYy
+NTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCg==
