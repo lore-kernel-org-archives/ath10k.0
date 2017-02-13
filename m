@@ -1,26 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cdHwc-0007XM-2J
- for ath10k@lists.infradead.org; Mon, 13 Feb 2017 14:49:36 +0000
-Subject: Re: QCA9880 3x3 80Mhz low performance
-References: <20170110061217.096FD148A08@compex.com.sg>
- <63DDC83FD9364560ACBA60D17C3F5AD8@PhyuThe> <5874F1BC.80505@candelatech.com>
- <10981E9AB9EA46A1897BE3E5CF661C0F@PhyuThe>
- <f3ed8528-a9ab-fa33-e753-aa1fbebc969e@candelatech.com>
- <F468EA06CC7341849F013B51FFCC88E2@PhyuThe>
- <65c12489-6886-22c2-894b-cf0eab2bd51a@dd-wrt.com>
- <2f0e0277-b7fc-ccf6-1d23-1d9e8f9a8d4e@candelatech.com>
- <225C5D2515A949BABED9735260C92D73@PhyuThe>
- <935c16bb-518d-38ee-5713-531565333654@candelatech.com>
- <484EAAF01F5144198D128154D8FD85CA@PhyuThe>
- <6625357a-f466-e18c-6a3d-22ff2e0898ce@candelatech.com>
- <3C9391D91DC743D5B62BD959FF8251FF@PhyuThe>
+ id 1cdMC7-0000AA-Mu
+ for ath10k@lists.infradead.org; Mon, 13 Feb 2017 19:21:55 +0000
+Subject: Re: VHT 160Mhz and nss related config.
+References: <0082a9e3-83f3-9bc3-af43-b890b91cfd93@candelatech.com>
+ <1486969571.5142.3.camel@sipsolutions.net>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <49a4e34b-053f-a75f-e805-7cbbd68e6e32@candelatech.com>
-Date: Mon, 13 Feb 2017 06:49:11 -0800
+Message-ID: <d53a8fac-b4e0-2fb2-c1e1-c537a2c5e8aa@candelatech.com>
+Date: Mon, 13 Feb 2017 11:21:29 -0800
 MIME-Version: 1.0
-In-Reply-To: <3C9391D91DC743D5B62BD959FF8251FF@PhyuThe>
+In-Reply-To: <1486969571.5142.3.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,185 +23,41 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Phyu The <pt_myat@compex.com.sg>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-Looks like it is driver and/or OS related then, not related to
-firmware.
+On 02/12/2017 11:06 PM, Johannes Berg wrote:
+> On Fri, 2017-02-10 at 14:58 -0800, Ben Greear wrote:
+>> So, it appears that the ath10k QCA9984 4x4 160Mhz chip can do 4x4
+>> MIMO at VHT80, but
+>> it can do only 2x2 MIMO at VHT160/80+80.
+>>
+>> When configuring a peer, we need to tell the firmware the number of
+>> spatial streams
+>> of the peer at VHT160 and at VHT80 and lower.  They are not the same
+>> value.
+>>
+>> I cannot think of any standard way to get this information based on
+>> VHT capabilities and such.  Currently, one could just assume VHT160
+>> NSS is 1/2 of the VHT80 NSS, but that is unlikely to be true for all
+>> vendors.
+>
+> This was recently added to the VHT capabilities in the spec, see Table
+> 9-250 in 802.11-2016.
+>
+> johannes
+>
 
-So, maybe next see if you can get the ath10k driver to work in
-the QCA OS, or get the QCA driver to work in the LEDE OS (replacing
-ath10k driver).
+I don't have that spec...maybe you could post a patch that adds that flag
+and/or other fields to the appropriate header files?  I can attempt to
+add support to ath10k after that...
 
 Thanks,
 Ben
 
-On 02/12/2017 10:09 PM, Phyu The wrote:
-> Dear Ben,
->
-> Kindly see attached that I run with Ixchariot used exact same configuration and set up environment.
->
-> thanks,
-> Phyuthe
->
-> -----Original Message----- From: Ben Greear
-> Sent: Monday, February 13, 2017 1:13 PM
-> To: Phyu The ; Sebastian Gottschall ; ath10k@lists.infradead.org
-> Subject: Re: QCA9880 3x3 80Mhz low performance
->
-> I would try to narrow down where the performance issue happens.
->
-> So, for instance, could you run the exact same ath10k firmware (and board.bin, etc) that you are using
-> in LEDE with the QCA driver?  That would determine if it is firmware related or not.
->
-> Can you compile just the QCA driver into LEDE to see if that makes a difference?
->
-> You are using the exact same networking setup in all cases?
->
-> Thanks,
-> Ben
->
-> On 02/12/2017 07:42 PM, Phyu The wrote:
->> Dear Ben,
->>
->> I tested same set up with QCA driver, I can achieve 984Mbps. With Ath10k driver, throughput stuck at 640Mpbs. Can you give me any suggestion?
->>
->> thanks,
->> Phyuthe
->>
->> -----Original Message----- From: Ben Greear
->> Sent: Saturday, February 11, 2017 12:14 AM
->> To: Phyu The ; Sebastian Gottschall ; ath10k@lists.infradead.org
->> Subject: Re: QCA9880 3x3 80Mhz low performance
->>
->> I don't know.  I would first suggest that you try an x86 platform with
->> powerful CPU in your own test environment.  Possibly we are just using
->> a better isolation chamber or have some other advantage in our environment
->> or test setup.
->>
->> If you can reproduce our good results with x86 in your setup, then you can
->> be more sure it is something to do with your particular platform.
->>
->> Thanks,
->> Ben
->>
->> On 02/09/2017 11:11 PM, Phyu The wrote:
->>> Dear Ben,
->>>
->>> According to your test result of QCA9880 3x3, what could be the low performance issue at my side IPQ8064+QCA9880 with Ath10k? Is it really CPU related problem
->>> on WPQ864?
->>>
->>> thanks,
->>> Phyuthe
->>>
->>> -----Original Message----- From: Ben Greear
->>> Sent: Saturday, January 21, 2017 4:24 AM
->>> To: Sebastian Gottschall ; Phyu The ; ath10k@lists.infradead.org
->>> Subject: Re: QCA9880 3x3 80Mhz low performance
->>>
->>> Hello!
->>>
->>> We ran some more tests using our x86 based platforms with 9880 NICs and 9984 NICs
->>> acting as both AP and Station.  This is in an isolation chamber, wired up with SMA cables
->>> and variable attenuator, in as perfect of a condition as we can manage.
->>>
->>> First, here is LANforge acting as AP and station devices, using QCA9880 3x3 hardware:
->>>
->>> http://www.candelatech.com/images/data-comp-01-13-2017-144224-lf-ap.png
->>>
->>> And with 9984 systems:
->>>
->>> http://www.candelatech.com/images/data-comp-01-19-2017-1706-lf-ap-sta-9984.png
->>>
->>> In case you read closely and wonder, 'Armageddon' is our modified version of pktgen.
->>>
->>> Thanks,
->>> Ben
->>>
->>>
->>> On 01/12/2017 01:24 AM, Sebastian Gottschall wrote:
->>>> @ben greear. it cannot be cpu related. the ipq8064 has 1.2 ghz and is a very fast arm core. the platform handles 9984 with much higher speed.
->>>> i got notice of the same issue reported by people on various cpu platforms.
->>>>
->>>> Am 12.01.2017 um 09:15 schrieb Phyu The:
->>>>> Dear Ben,
->>>>>
->>>>> Thanks for your reply and suggestion.
->>>>>
->>>>> I have tried as your suggestion to test IPQ8064+QCA9880 with Ath10k CT firmware/driver to run throughput UDP/TCP. Unfortunately, I could not be able to see
->>>>> throughput improvement. Could you please suggest what may cause low throughput?
->>>>>
->>>>> thanks,
->>>>> Phyuthe
->>>>>
->>>>> -----Original Message----- From: Ben Greear
->>>>> Sent: Thursday, January 12, 2017 12:59 AM
->>>>> To: Phyu The ; ath10k@lists.infradead.org
->>>>> Subject: Re: QCA9880 3x3 80Mhz low performance
->>>>>
->>>>> We have not done a lot of testing in AP mode, but when using 9880 3x3 compex NICs
->>>>> in our 2U rackmounts (high end Intel E5 processors), and with CT firmware/drivers,
->>>>> we see near 950Mbps UDP download in station mode.  I think we were a bit slower in
->>>>> AP mode, but not that much.
->>>>>
->>>>> Are you testing TCP or UDP traffic?
->>>>>
->>>>> http://www.candelatech.com/images/data-comp-07-20-2016-1147-with-labels.png
->>>>>
->>>>> Have you tried normal STA/AP mode instead of WDS?
->>>>>
->>>>> Maybe you are CPU bound on your platform?
->>>>>
->>>>> Thanks,
->>>>> Ben
->>>>>
->>>>> On 01/10/2017 05:09 PM, Phyu The wrote:
->>>>>> Dear Ben,
->>>>>>
->>>>>> I configured AP_WDS and Sta_WDS mode, channel 149, 11ac, 3x3, 80MHz and without encryption. I used 2 RF boxes with 3 adjustable attenuators running throughput
->>>>>> by Ixchairot to get best performance. However, throughput seems limited to 640Mbps. Kindly see attached for your reference for more details.
->>>>>>
->>>>>> thanks,
->>>>>> Phyuthe
->>>>>>
->>>>>> -----Original Message----- From: Ben Greear
->>>>>> Sent: Tuesday, January 10, 2017 10:37 PM
->>>>>> To: Phyu The ; ath10k@lists.infradead.org
->>>>>> Subject: Re: QCA9880 3x3 80Mhz low performance
->>>>>>
->>>>>> You should provide a lot more information about how you configured and tested the system,
->>>>>> including traffic generator and RF environment, etc.
->>>>>>
->>>>>> Thanks,
->>>>>> Ben
->>>>>>
->>>>>> On 01/09/2017 10:19 PM, Phyu The wrote:
->>>>>>> Dear Sir,
->>>>>>>
->>>>>>> I tested performance throughput test used WPQ864 + QCA9880 11ac 80MHz is 640Mbps that is very low since theoretical data rate is 1300Mbps. It should be at
->>>>>>> least 866Mbps. Could you please suggest me how to get better performance?
->>>>>>>
->>>>>>> thanks,
->>>>>>> Phyuthe
->>>>>>>
->>>>>>> _______________________________________________
->>>>>>> ath10k mailing list
->>>>>>> ath10k@lists.infradead.org
->>>>>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>>>>>
->>>>>>
->>>>>
->>>>>
->>>>
->>>>
->>>
->>>
->>
->>
->
-
 -- 
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
