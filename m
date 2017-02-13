@@ -2,8 +2,8 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from nm.newmedia-net.de ([217.113.179.122]
  helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cdO2P-00021q-5L
- for ath10k@lists.infradead.org; Mon, 13 Feb 2017 21:20:01 +0000
+ id 1cdPQF-0006w1-9e
+ for ath10k@lists.infradead.org; Mon, 13 Feb 2017 22:48:42 +0000
 References: <0082a9e3-83f3-9bc3-af43-b890b91cfd93@candelatech.com>
  <e71fe0b1-4482-b80b-2624-240b154ff980@dd-wrt.com>
  <CAJ-VmokKafmamWJJ0-=PJ_oNBejbqcHbd8NO7-M9=Z6DFRuhzw@mail.gmail.com>
@@ -11,8 +11,8 @@ References: <0082a9e3-83f3-9bc3-af43-b890b91cfd93@candelatech.com>
  <bbf485eb-f3aa-f49b-8401-03632bc70a7f@dd-wrt.com>
  <36c7dfa2-b39c-ad7a-5e39-3daf8983ed2f@candelatech.com>
 From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <e9458be2-e3bd-1b40-b690-7c96702b25d7@dd-wrt.com>
-Date: Mon, 13 Feb 2017 22:19:27 +0100
+Message-ID: <f6d4b239-03af-976b-0c97-e7a5858f00da@dd-wrt.com>
+Date: Mon, 13 Feb 2017 23:48:08 +0100
 MIME-Version: 1.0
 In-Reply-To: <36c7dfa2-b39c-ad7a-5e39-3daf8983ed2f@candelatech.com>
 Subject: Re: VHT 160Mhz and nss related config.
@@ -76,14 +76,16 @@ Mgo+ICAgICByeCBiaXRyYXRlOiAgICAxNTYwLjAgTUJpdC9zIFZIVC1NQ1MgOCAxNjBNSHogc2hv
 cnQgR0kgVkhULU5TUyAyCj4gICAgIGF1dGhvcml6ZWQ6ICAgIHllcwo+ICAgICBhdXRoZW50aWNh
 dGVkOiAgICB5ZXMKPiAgICAgcHJlYW1ibGU6ICAgIGxvbmcKPiAgICAgV01NL1dNRTogICAgeWVz
 Cj4gICAgIE1GUDogICAgICAgIG5vCj4gICAgIFRETFMgcGVlcjogICAgbm8KPiAgICAgY29ubmVj
-dGVkIHRpbWU6ICAgIDE1NiBzZWNvbmRzCj4KPiBUaGFua3MsCj4gQmVuCmNvb2wuIGxldCBtZSBj
-aGVjayBpdCBvbiBteSBkZXZpY2VzCj4KPgoKCi0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2Vu
-IC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJI
-IC0gREQtV1JUCkZpcm1lbnNpdHo6ICBCZXJsaW5lciBSaW5nIDEwMSwgNjQ2MjUgQmVuc2hlaW0K
-UmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOk
-ZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQpodHRwOi8v
-d3d3LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tClRlbC46ICs0OTYy
-NTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+dGVkIHRpbWU6ICAgIDE1NiBzZWNvbmRzCj4KPiBUaGFua3MsCj4gQmVuCj4KPgp0aGUgaGFjayB5
+b3UgcG9zdGVkIGNyYXNoZXMgdGhlIGRyaXZlciBmb3IgbWUuIGkgYWxzbyBzZWUgdGhhdCB0aGlz
+IApwYXRjaCBpcyBiYXNlZCBvbiB0aGUgQ1QgYXRoMTBrIHNvdXJjZS4gaXQgZG9lc250IGFwcGx5
+IGNsZWFuIHRvIGF0aDEway4gCm5lZWRlZCB0byBtZXJnZSBpdCBtYW51YWxseQoKCi0tIApNaXQg
+ZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBD
+VE8KCk5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBCZXJsaW5lciBSaW5n
+IDEwMSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3Rh
+ZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJp
+c3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFsbEBk
+ZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
+bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
