@@ -1,23 +1,32 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cdaDE-0002hW-41
- for ath10k@lists.infradead.org; Tue, 14 Feb 2017 10:20:01 +0000
-References: <0082a9e3-83f3-9bc3-af43-b890b91cfd93@candelatech.com>
- <e71fe0b1-4482-b80b-2624-240b154ff980@dd-wrt.com>
- <CAJ-VmokKafmamWJJ0-=PJ_oNBejbqcHbd8NO7-M9=Z6DFRuhzw@mail.gmail.com>
- <589F50B8.4020609@candelatech.com>
- <bbf485eb-f3aa-f49b-8401-03632bc70a7f@dd-wrt.com>
- <36c7dfa2-b39c-ad7a-5e39-3daf8983ed2f@candelatech.com>
- <f6d4b239-03af-976b-0c97-e7a5858f00da@dd-wrt.com>
- <58A23D68.5070507@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <1ba6afb2-13a6-2eea-c5aa-bcc084b0b8bc@dd-wrt.com>
-Date: Tue, 14 Feb 2017 11:19:30 +0100
+ id 1cdaNc-0008Ml-3l
+ for ath10k@lists.infradead.org; Tue, 14 Feb 2017 10:30:42 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: 9984 VHT
+Date: Tue, 14 Feb 2017 10:30:14 +0000
+Message-ID: <87inodrro1.fsf@kamboji.qca.qualcomm.com>
+References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
+ <CAJ-Vmo=yD7Ct5LFXBO3qNhKsNco91VXMmZOYeBaAuw+DFGq=RQ@mail.gmail.com>
+ <CAHNKnsT8mzHefrnC4ybrR8T16dAqc4G_SDGesxdU7+81xhuYpw@mail.gmail.com>
+ <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>
+ <87y3xtrmn2.fsf@kamboji.qca.qualcomm.com>
+ <44480bab-0cf7-f4e3-7612-b1cf5d4c040f@dd-wrt.com>
+ <1a58440c-80c9-0a86-aae9-213edc5b0019@candelatech.com>
+ <ed765a12-6ae8-ed78-6626-ae82312ba525@dd-wrt.com>
+ <8bcf2ea6-802f-f249-8e2d-96ec03553a9b@candelatech.com>
+ <23b1bd75-a7f9-08e7-5d7b-f67081b89e1b@candelatech.com>
+ <5e23ea91-429e-eff6-7443-e4d4f5981735@dd-wrt.com>
+ <785bdbc1-fcf5-921b-2092-6142d51aa0ce@candelatech.com>
+ <87poiu42r2.fsf@qca.qualcomm.com>
+ <2c29c0e6-a207-9d40-fa8d-dc5e54f9c468@dd-wrt.com>
+ <87y3xeilor.fsf@kamboji.qca.qualcomm.com>
+ <c894f9ae-068a-eac3-16e6-c1ada4da22b9@dd-wrt.com>
+In-Reply-To: <c894f9ae-068a-eac3-16e6-c1ada4da22b9@dd-wrt.com> (Sebastian
+ Gottschall's message of "Fri, 10 Feb 2017 13:38:03 +0100")
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <58A23D68.5070507@candelatech.com>
-Subject: Re: VHT 160Mhz and nss related config.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,83 +35,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Adrian Chadd <adrian@freebsd.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-bm93IHRoZSB0ZXN0IHJlc3VsdC4geWVzLiBpdCBhc3NvY3Mgd2l0aCBWSFQxNjAgU0dJIGluIG15
-IGNhc2UuIGJ1dCAKcGVyZm9ybWFuY2UgaXMgYXMgZXhwZWN0ZWQgaWRlbnRpY2FsIHRvIFZIVDgw
-CgpBbSAxNC4wMi4yMDE3IHVtIDAwOjEyIHNjaHJpZWIgQmVuIEdyZWVhcjoKPiBPbiAwMi8xMy8y
-MDE3IDAyOjQ4IFBNLCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4gQW0gMTMuMDIuMjAx
-NyB1bSAyMDo1NiBzY2hyaWViIEJlbiBHcmVlYXI6Cj4+PiBPbiAwMi8xMS8yMDE3IDEwOjIxIEFN
-LCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4+PiBBbSAxMS4wMi4yMDE3IHVtIDE4OjU4
-IHNjaHJpZWIgQmVuIEdyZWVhcjoKPj4+Pj4gT24gMDIvMTAvMjAxNyAwODozNyBQTSwgQWRyaWFu
-IENoYWRkIHdyb3RlOgo+Pj4+Pj4gT24gMTAgRmVicnVhcnkgMjAxNyBhdCAyMDoyMiwgU2ViYXN0
-aWFuIEdvdHRzY2hhbGwKPj4+Pj4+IDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4gd3JvdGU6Cj4+
-Pj4+Pj4gaSByZWFsbHkgY2FuJ3QgYmVsaWV2ZSB0aGlzLiBpZiB0aGlzIGlzIHRydWUgdGhlICAx
-NjAgbWh6IG1vZGUgCj4+Pj4+Pj4gd291bGQgbm90Cj4+Pj4+Pj4gbWFrZSBhbnkgc2Vuc2UuCj4+
-Pj4+Pj4gdGhlIG1heGltdW0gdHggLyByeCByYXRlIGZvciA0eDQgdmh0ODAgYW5kIDJ4MiB2aHQx
-NjAgaXMgCj4+Pj4+Pj4gaWRlbnRpY2FsLiBzbwo+Pj4+Pj4+IHZodDE2MCB3b3VsZCBub3QgaW5j
-cmVhc2UgcGVyZm9ybWFuY2UgaW4gYW55IHdheQo+Pj4+Pj4KPj4+Pj4+IFdlbGwsIGlmIGl0IGNh
-biBhbHNvIGRvIDJ4MiBNVS1NSU1PIGF0IDE2ME1IeiB0aGVuIGl0IGNhbiBiZSBhCj4+Pj4+PiBw
-ZXJmZWN0bHkgZmluZSBTVEEgdG8gYSA0eDQgMTYwTUh6IE1VLU1JTU8gY2hpcCB0aGF0IGNhbiBh
-Y3R1YWxseQo+Pj4+Pj4gdHJhbnNtaXQgMngyIHJhdGVzIHRvIGRpZmZlcmVudCBNVS1NSU1PIHBl
-ZXJzLgo+Pj4+Pj4KPj4+Pj4+IFRoYXQncyB0aGUgb3V0c3RhbmRpbmcgcXVlc3Rpb24gSSBoYXZl
-IC0gaXMgaXQgbGlrZSwgMngyIE1VIG9ubHksIG9yCj4+Pj4+PiBpcyBpdCBzYXksIDIgY29uY3Vy
-cmVudGx5IGRpZmZlcmVudCBzcGF0aWFsIHN0cmVhbSAyeDIgTVU/IEllLCAKPj4+Pj4+IGNhbiB5
-b3UKPj4+Pj4+IGhhdmUgMiBwZWVycywgZGlmZmVyZW50IFZIVCBzcGF0aWFsIGdyb3VwcyAob3Ig
-NCBwZWVycywgMSBzcGF0aWFsCj4+Pj4+PiBncm91cCBlYWNoKSBhbGwgZ29pbmcgYXQgdGhlIHNh
-bWUgdGltZT8KPj4+Pj4+Cj4+Pj4+PiBJJ20gLi4gbm90IGV2ZW4gc3VyZSBob3cgeW91J3JlIHN1
-cHBvc2VkIHRvIGNsZWFubHkgbmVnb3RpYXRlIAo+Pj4+Pj4gdGhhdCB5b3UKPj4+Pj4+IGNhbiBk
-byA0TlNTIGluIFZIVDgwIGJ1dCAyTlNTIGluIFZIVDE2MCB0byBhIHBlZXIuLi4gdGhhdCBvbmx5
-IG1ha2VzCj4+Pj4+PiBzZW5zZSBpZiB5b3UncmUgZG9pbmcgbG90cyBvZiAxTlNTIGFuZCAyTlNT
-IE1VLU1JTU8gcGVlcnMuLgo+Pj4+Pgo+Pj4+PiBJIHRoaW5rIHVzaW5nIHRoZSBtYXgtcngtcmF0
-ZSBsb2dpYyBtaWdodCBjb3VsZCBpbXBseSB0aGlzLCBidXQgSSAKPj4+Pj4gYW0gbm90IHN1cmUK
-Pj4+Pj4gbWFueSBkcml2ZXJzIGZpbGwgdGhpcyBvdXQgcHJvcGVybHkuCj4+Pj4+Cj4+Pj4+IExv
-b2tzIGxpa2UgYSBtZXNzIHdhaXRpbmcgdG8gaGFwcGVuIHRvIG1lLgo+Pj4+Pgo+Pj4+PiBFdmVu
-IGlmIHlvdSBjYW4gZG8gMXgxIDE2ME1oeiBNVS1NSU1PIHRvIHR3byBzdGF0aW9ucywgYW5kIEkg
-YW0gCj4+Pj4+IG5vdCBjZXJ0YWluIHlvdQo+Pj4+PiBjYW4gc2luY2UgaW4gODBNaHogeW91IGNh
-biBvbmx5IGRvIGEgMXgxIGFuZCBhIDJ4MiAobm90IHR3byAyeDIpLgo+Pj4+Pgo+Pj4+PiBTbywg
-ZnJvbSB3aGF0IEkga25vdyBjdXJyZW50bHksIDgwKzgwIGlzIG5vdCB0aGF0IHVzZWZ1bCBvbiB0
-aGUgCj4+Pj4+IDk5ODQgTklDLi4uCj4+Pj4gbmV2ZXIgdHJpZWQgODArODAgc2luY2UgaSBuZWVk
-IHRvIGVuaGFuY2UgdGhlIGNoYW5uZWwgbG9naWMgYWxvdCBpbiAKPj4+PiBteSBmaXJtd2FyZSBj
-b2RlIHRvIGhhbmRsZSBpdC4gd291bGQgYmUgZ3JlYXQgZW5vdWdoIGlmIHZodDE2MCAKPj4+PiB3
-b3VsZCB3b3JrIGFzIGV4cGVjdGVkIGFuZAo+Pj4+IGknbSBub3Qgc3VyZSByaWdodCBub3cgaWYg
-aXQgcmVhbGx5IHdvcmtzLCBldmVuIGlmIHRoZSBpbnRlcmZhY2UgCj4+Pj4gaW5pdGlhbGl6ZWQg
-Y29ycmVjdGx5IGl0IGFzc29jcyBvbmx5IHdpdGggdmh0ODAKPj4+Cj4+PiBMb29rcyBsaWtlIGl0
-IGlzIHdvcmtpbmcgd2l0aCB0aGUgaGFjayBJIHBvc3RlZDoKPj4+Cj4+PiBTdGF0aW9uIDA0OmYw
-OjIxOjJlOjQ5OjY1IChvbiB3bGFuMikKPj4+ICAgICBpbmFjdGl2ZSB0aW1lOiAgICAwIG1zCj4+
-PiAgICAgcnggYnl0ZXM6ICAgIDY0OTAyOTk4Cj4+PiAgICAgcnggcGFja2V0czogICAgMzc5MTgK
-Pj4+ICAgICB0eCBieXRlczogICAgNjQ3NjAyOTgKPj4+ICAgICB0eCBwYWNrZXRzOiAgICA0MjIz
-OQo+Pj4gICAgIHR4IHJldHJpZXM6ICAgIDAKPj4+ICAgICB0eCBmYWlsZWQ6ICAgIDAKPj4+ICAg
-ICBzaWduYWw6ICAgICAgLTQzIGRCbQo+Pj4gICAgIHNpZ25hbCBhdmc6ICAgIC00MiBkQm0KPj4+
-ICAgICB0eCBiaXRyYXRlOiAgICAxMDUzLjAgTUJpdC9zIFZIVC1NQ1MgNiAxNjBNSHogVkhULU5T
-UyAyCj4+PiAgICAgcnggYml0cmF0ZTogICAgMTU2MC4wIE1CaXQvcyBWSFQtTUNTIDggMTYwTUh6
-IHNob3J0IEdJIFZIVC1OU1MgMgo+Pj4gICAgIGF1dGhvcml6ZWQ6ICAgIHllcwo+Pj4gICAgIGF1
-dGhlbnRpY2F0ZWQ6ICAgIHllcwo+Pj4gICAgIHByZWFtYmxlOiAgICBsb25nCj4+PiAgICAgV01N
-L1dNRTogICAgeWVzCj4+PiAgICAgTUZQOiAgICAgICAgbm8KPj4+ICAgICBURExTIHBlZXI6ICAg
-IG5vCj4+PiAgICAgY29ubmVjdGVkIHRpbWU6ICAgIDE1NiBzZWNvbmRzCj4+Pgo+Pj4gVGhhbmtz
-LAo+Pj4gQmVuCj4+Pgo+Pj4KPj4gdGhlIGhhY2sgeW91IHBvc3RlZCBjcmFzaGVzIHRoZSBkcml2
-ZXIgZm9yIG1lLiBpIGFsc28gc2VlIHRoYXQgdGhpcyAKPj4gcGF0Y2ggaXMgYmFzZWQgb24gdGhl
-IENUIGF0aDEwayBzb3VyY2UuIGl0IGRvZXNudCBhcHBseSBjbGVhbiB0byAKPj4gYXRoMTBrLiBu
-ZWVkZWQgdG8gbWVyZ2UgaXQKPj4gbWFudWFsbHkKPgo+IE9rLCBJJ20gaW4gdGhlIG1pZGRsZSBv
-ZiBhIGJ1bmNoIG9mIGNoYW5nZXMgdG8gc3VwcG9ydCBWSFQgb3ZlcnJpZGVzIAo+IHRvIGFsbG93
-Cj4gZGlzYWJsaW5nIFZIVDE2MC84MCs4MCBpbiBzdGF0aW9uIG1vZGUsIGFuZCBJJ2xsIHB1c2gg
-YWxsIG15IGNoYW5nZXMgCj4gdG8gbXkKPiB0cmVlIHdoZW4gSSBnZXQgdGhhdCBpbXBsZW1lbnRl
-ZCBhbmQgdGVzdGluZy4KPgo+IEkndmUgYWJvdXQgZ2l2ZW4gdXAgb24gZ2V0dGluZyBhdGgxMGsg
-cGF0Y2hlcyB1cHN0cmVhbSwgYnV0IEknbGwgZ2V0IAo+IHRoZXNlIGNoYW5nZXMgaW50bwo+IGF0
-aDEway1jdCBpbiBMRURFIHNvbWV0aW1lLi4uCj4KPiBJZiB5b3Ugd2FudCB0byBwb3N0IHRoZSBz
-cGxhdCwganVzdCBwb3NzaWJseSBJJ2xsIGhhdmUgYSBxdWljayBpZGVhIG9mIAo+IHdoeSBpdAo+
-IGlzIGNyYXNoaW5nLgo+Cj4gVGhhbmtzLAo+IEJlbgo+Cj4KCgotLSAKTWl0IGZyZXVuZGxpY2hl
-biBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RPCgpOZXdNZWRp
-YS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgQmVybGluZXIgUmluZyAxMDEsIDY0NjI1
-IEJlbnNoZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0
-NzMKR2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVl
-bGUKaHR0cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpU
-ZWwuOiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2F0aDEwawo=
+(you forgot to CC ath10k list, adding it back)
+
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+
+> Am 10.02.2017 um 07:50 schrieb Valo, Kalle:
+>> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+>>
+>>> Am 07.02.2017 um 13:14 schrieb Valo, Kalle:
+>>>> Ben Greear <greearb@candelatech.com> writes:
+>>>>
+>>>>> On 02/02/2017 10:42 AM, Sebastian Gottschall wrote:
+>>>>>> Am 02.02.2017 um 19:24 schrieb Ben Greear:
+>>>>>>
+>>>>>>> I hacked ath10k to enable radar detection on 160Mhz bandwidths. Now hostapd
+>>>>>>> starts.
+>>>>>>>
+>>>>>>> I can reproduce the FW failure. It is because FW 3.3-25 release
+>>>>>>> started asserting
+>>>>>>> if the freq2 was zero in VHT160 mode. It seems to use both freq1
+>>>>>>> and freq2, and not
+>>>>>>> how the driver or linux seems to normally use them.
+>>>>>> its even worse. starting from 3.3 it uses freq2 instead of freq1.
+>>>>>> but i made a patch for it. but it still wont work. vdev_start still
+>>>>>> fails
+>>>>> Well it would have been helpful from the start to have known about this patch.
+>>>>>
+>>>>> Could you post it?
+>>>>>
+>>>>> Kalle: Since the firmware API changed, how do you want to handle
+>>>>> the differences here?
+>>>> The firmware API shouldn't change like that, but if it has I guess a
+>>>> firmware feature flag to enable a workaround in ath10k sounds like the
+>>>> easiest solution.
+>>> the more recent firmware have some new wmi services enabled which can
+>>> be used as indicator as well.
+>> I don't know what flag exactly you are referring to, but using a WMI
+>> service flag to detect this is not really reliable. They can be enabled
+>> or disabled between branches, or even between builds.
+>
+> valid argument. but these flags should than be also introduced in
+> codeaurora images
+
+I'm not involved with codeaurora images so I can't help with that.
+
+But the firmware is not supposed to break the firmware interface like
+this. Can someone please write a detailed bug report as a reply to this
+mail (what version, from which location, how exactly the interface is
+broken) and I'll try to report the issue internally.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
