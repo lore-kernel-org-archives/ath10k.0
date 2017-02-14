@@ -1,13 +1,9 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cdPnq-0000fH-WE
- for ath10k@lists.infradead.org; Mon, 13 Feb 2017 23:13:05 +0000
-Message-ID: <58A23D68.5070507@candelatech.com>
-Date: Mon, 13 Feb 2017 15:12:40 -0800
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: VHT 160Mhz and nss related config.
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cdaDE-0002hW-41
+ for ath10k@lists.infradead.org; Tue, 14 Feb 2017 10:20:01 +0000
 References: <0082a9e3-83f3-9bc3-af43-b890b91cfd93@candelatech.com>
  <e71fe0b1-4482-b80b-2624-240b154ff980@dd-wrt.com>
  <CAJ-VmokKafmamWJJ0-=PJ_oNBejbqcHbd8NO7-M9=Z6DFRuhzw@mail.gmail.com>
@@ -15,7 +11,13 @@ References: <0082a9e3-83f3-9bc3-af43-b890b91cfd93@candelatech.com>
  <bbf485eb-f3aa-f49b-8401-03632bc70a7f@dd-wrt.com>
  <36c7dfa2-b39c-ad7a-5e39-3daf8983ed2f@candelatech.com>
  <f6d4b239-03af-976b-0c97-e7a5858f00da@dd-wrt.com>
-In-Reply-To: <f6d4b239-03af-976b-0c97-e7a5858f00da@dd-wrt.com>
+ <58A23D68.5070507@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <1ba6afb2-13a6-2eea-c5aa-bcc084b0b8bc@dd-wrt.com>
+Date: Tue, 14 Feb 2017 11:19:30 +0100
+MIME-Version: 1.0
+In-Reply-To: <58A23D68.5070507@candelatech.com>
+Subject: Re: VHT 160Mhz and nss related config.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,99 +26,83 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Adrian Chadd <adrian@freebsd.org>
+To: Ben Greear <greearb@candelatech.com>, Adrian Chadd <adrian@freebsd.org>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-On 02/13/2017 02:48 PM, Sebastian Gottschall wrote:
-> Am 13.02.2017 um 20:56 schrieb Ben Greear:
->> On 02/11/2017 10:21 AM, Sebastian Gottschall wrote:
->>> Am 11.02.2017 um 18:58 schrieb Ben Greear:
->>>> On 02/10/2017 08:37 PM, Adrian Chadd wrote:
->>>>> On 10 February 2017 at 20:22, Sebastian Gottschall
->>>>> <s.gottschall@dd-wrt.com> wrote:
->>>>>> i really can't believe this. if this is true the  160 mhz mode would not
->>>>>> make any sense.
->>>>>> the maximum tx / rx rate for 4x4 vht80 and 2x2 vht160 is identical. so
->>>>>> vht160 would not increase performance in any way
->>>>>
->>>>> Well, if it can also do 2x2 MU-MIMO at 160MHz then it can be a
->>>>> perfectly fine STA to a 4x4 160MHz MU-MIMO chip that can actually
->>>>> transmit 2x2 rates to different MU-MIMO peers.
->>>>>
->>>>> That's the outstanding question I have - is it like, 2x2 MU only, or
->>>>> is it say, 2 concurrently different spatial stream 2x2 MU? Ie, can you
->>>>> have 2 peers, different VHT spatial groups (or 4 peers, 1 spatial
->>>>> group each) all going at the same time?
->>>>>
->>>>> I'm .. not even sure how you're supposed to cleanly negotiate that you
->>>>> can do 4NSS in VHT80 but 2NSS in VHT160 to a peer... that only makes
->>>>> sense if you're doing lots of 1NSS and 2NSS MU-MIMO peers..
->>>>
->>>> I think using the max-rx-rate logic might could imply this, but I am not sure
->>>> many drivers fill this out properly.
->>>>
->>>> Looks like a mess waiting to happen to me.
->>>>
->>>> Even if you can do 1x1 160Mhz MU-MIMO to two stations, and I am not certain you
->>>> can since in 80Mhz you can only do a 1x1 and a 2x2 (not two 2x2).
->>>>
->>>> So, from what I know currently, 80+80 is not that useful on the 9984 NIC...
->>> never tried 80+80 since i need to enhance the channel logic alot in my firmware code to handle it. would be great enough if vht160 would work as expected and
->>> i'm not sure right now if it really works, even if the interface initialized correctly it assocs only with vht80
->>
->> Looks like it is working with the hack I posted:
->>
->> Station 04:f0:21:2e:49:65 (on wlan2)
->>     inactive time:    0 ms
->>     rx bytes:    64902998
->>     rx packets:    37918
->>     tx bytes:    64760298
->>     tx packets:    42239
->>     tx retries:    0
->>     tx failed:    0
->>     signal:      -43 dBm
->>     signal avg:    -42 dBm
->>     tx bitrate:    1053.0 MBit/s VHT-MCS 6 160MHz VHT-NSS 2
->>     rx bitrate:    1560.0 MBit/s VHT-MCS 8 160MHz short GI VHT-NSS 2
->>     authorized:    yes
->>     authenticated:    yes
->>     preamble:    long
->>     WMM/WME:    yes
->>     MFP:        no
->>     TDLS peer:    no
->>     connected time:    156 seconds
->>
->> Thanks,
->> Ben
->>
->>
-> the hack you posted crashes the driver for me. i also see that this patch is based on the CT ath10k source. it doesnt apply clean to ath10k. needed to merge it
-> manually
-
-Ok, I'm in the middle of a bunch of changes to support VHT overrides to allow
-disabling VHT160/80+80 in station mode, and I'll push all my changes to my
-tree when I get that implemented and testing.
-
-I've about given up on getting ath10k patches upstream, but I'll get these changes into
-ath10k-ct in LEDE sometime...
-
-If you want to post the splat, just possibly I'll have a quick idea of why it
-is crashing.
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+bm93IHRoZSB0ZXN0IHJlc3VsdC4geWVzLiBpdCBhc3NvY3Mgd2l0aCBWSFQxNjAgU0dJIGluIG15
+IGNhc2UuIGJ1dCAKcGVyZm9ybWFuY2UgaXMgYXMgZXhwZWN0ZWQgaWRlbnRpY2FsIHRvIFZIVDgw
+CgpBbSAxNC4wMi4yMDE3IHVtIDAwOjEyIHNjaHJpZWIgQmVuIEdyZWVhcjoKPiBPbiAwMi8xMy8y
+MDE3IDAyOjQ4IFBNLCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4gQW0gMTMuMDIuMjAx
+NyB1bSAyMDo1NiBzY2hyaWViIEJlbiBHcmVlYXI6Cj4+PiBPbiAwMi8xMS8yMDE3IDEwOjIxIEFN
+LCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4+PiBBbSAxMS4wMi4yMDE3IHVtIDE4OjU4
+IHNjaHJpZWIgQmVuIEdyZWVhcjoKPj4+Pj4gT24gMDIvMTAvMjAxNyAwODozNyBQTSwgQWRyaWFu
+IENoYWRkIHdyb3RlOgo+Pj4+Pj4gT24gMTAgRmVicnVhcnkgMjAxNyBhdCAyMDoyMiwgU2ViYXN0
+aWFuIEdvdHRzY2hhbGwKPj4+Pj4+IDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4gd3JvdGU6Cj4+
+Pj4+Pj4gaSByZWFsbHkgY2FuJ3QgYmVsaWV2ZSB0aGlzLiBpZiB0aGlzIGlzIHRydWUgdGhlICAx
+NjAgbWh6IG1vZGUgCj4+Pj4+Pj4gd291bGQgbm90Cj4+Pj4+Pj4gbWFrZSBhbnkgc2Vuc2UuCj4+
+Pj4+Pj4gdGhlIG1heGltdW0gdHggLyByeCByYXRlIGZvciA0eDQgdmh0ODAgYW5kIDJ4MiB2aHQx
+NjAgaXMgCj4+Pj4+Pj4gaWRlbnRpY2FsLiBzbwo+Pj4+Pj4+IHZodDE2MCB3b3VsZCBub3QgaW5j
+cmVhc2UgcGVyZm9ybWFuY2UgaW4gYW55IHdheQo+Pj4+Pj4KPj4+Pj4+IFdlbGwsIGlmIGl0IGNh
+biBhbHNvIGRvIDJ4MiBNVS1NSU1PIGF0IDE2ME1IeiB0aGVuIGl0IGNhbiBiZSBhCj4+Pj4+PiBw
+ZXJmZWN0bHkgZmluZSBTVEEgdG8gYSA0eDQgMTYwTUh6IE1VLU1JTU8gY2hpcCB0aGF0IGNhbiBh
+Y3R1YWxseQo+Pj4+Pj4gdHJhbnNtaXQgMngyIHJhdGVzIHRvIGRpZmZlcmVudCBNVS1NSU1PIHBl
+ZXJzLgo+Pj4+Pj4KPj4+Pj4+IFRoYXQncyB0aGUgb3V0c3RhbmRpbmcgcXVlc3Rpb24gSSBoYXZl
+IC0gaXMgaXQgbGlrZSwgMngyIE1VIG9ubHksIG9yCj4+Pj4+PiBpcyBpdCBzYXksIDIgY29uY3Vy
+cmVudGx5IGRpZmZlcmVudCBzcGF0aWFsIHN0cmVhbSAyeDIgTVU/IEllLCAKPj4+Pj4+IGNhbiB5
+b3UKPj4+Pj4+IGhhdmUgMiBwZWVycywgZGlmZmVyZW50IFZIVCBzcGF0aWFsIGdyb3VwcyAob3Ig
+NCBwZWVycywgMSBzcGF0aWFsCj4+Pj4+PiBncm91cCBlYWNoKSBhbGwgZ29pbmcgYXQgdGhlIHNh
+bWUgdGltZT8KPj4+Pj4+Cj4+Pj4+PiBJJ20gLi4gbm90IGV2ZW4gc3VyZSBob3cgeW91J3JlIHN1
+cHBvc2VkIHRvIGNsZWFubHkgbmVnb3RpYXRlIAo+Pj4+Pj4gdGhhdCB5b3UKPj4+Pj4+IGNhbiBk
+byA0TlNTIGluIFZIVDgwIGJ1dCAyTlNTIGluIFZIVDE2MCB0byBhIHBlZXIuLi4gdGhhdCBvbmx5
+IG1ha2VzCj4+Pj4+PiBzZW5zZSBpZiB5b3UncmUgZG9pbmcgbG90cyBvZiAxTlNTIGFuZCAyTlNT
+IE1VLU1JTU8gcGVlcnMuLgo+Pj4+Pgo+Pj4+PiBJIHRoaW5rIHVzaW5nIHRoZSBtYXgtcngtcmF0
+ZSBsb2dpYyBtaWdodCBjb3VsZCBpbXBseSB0aGlzLCBidXQgSSAKPj4+Pj4gYW0gbm90IHN1cmUK
+Pj4+Pj4gbWFueSBkcml2ZXJzIGZpbGwgdGhpcyBvdXQgcHJvcGVybHkuCj4+Pj4+Cj4+Pj4+IExv
+b2tzIGxpa2UgYSBtZXNzIHdhaXRpbmcgdG8gaGFwcGVuIHRvIG1lLgo+Pj4+Pgo+Pj4+PiBFdmVu
+IGlmIHlvdSBjYW4gZG8gMXgxIDE2ME1oeiBNVS1NSU1PIHRvIHR3byBzdGF0aW9ucywgYW5kIEkg
+YW0gCj4+Pj4+IG5vdCBjZXJ0YWluIHlvdQo+Pj4+PiBjYW4gc2luY2UgaW4gODBNaHogeW91IGNh
+biBvbmx5IGRvIGEgMXgxIGFuZCBhIDJ4MiAobm90IHR3byAyeDIpLgo+Pj4+Pgo+Pj4+PiBTbywg
+ZnJvbSB3aGF0IEkga25vdyBjdXJyZW50bHksIDgwKzgwIGlzIG5vdCB0aGF0IHVzZWZ1bCBvbiB0
+aGUgCj4+Pj4+IDk5ODQgTklDLi4uCj4+Pj4gbmV2ZXIgdHJpZWQgODArODAgc2luY2UgaSBuZWVk
+IHRvIGVuaGFuY2UgdGhlIGNoYW5uZWwgbG9naWMgYWxvdCBpbiAKPj4+PiBteSBmaXJtd2FyZSBj
+b2RlIHRvIGhhbmRsZSBpdC4gd291bGQgYmUgZ3JlYXQgZW5vdWdoIGlmIHZodDE2MCAKPj4+PiB3
+b3VsZCB3b3JrIGFzIGV4cGVjdGVkIGFuZAo+Pj4+IGknbSBub3Qgc3VyZSByaWdodCBub3cgaWYg
+aXQgcmVhbGx5IHdvcmtzLCBldmVuIGlmIHRoZSBpbnRlcmZhY2UgCj4+Pj4gaW5pdGlhbGl6ZWQg
+Y29ycmVjdGx5IGl0IGFzc29jcyBvbmx5IHdpdGggdmh0ODAKPj4+Cj4+PiBMb29rcyBsaWtlIGl0
+IGlzIHdvcmtpbmcgd2l0aCB0aGUgaGFjayBJIHBvc3RlZDoKPj4+Cj4+PiBTdGF0aW9uIDA0OmYw
+OjIxOjJlOjQ5OjY1IChvbiB3bGFuMikKPj4+ICAgICBpbmFjdGl2ZSB0aW1lOiAgICAwIG1zCj4+
+PiAgICAgcnggYnl0ZXM6ICAgIDY0OTAyOTk4Cj4+PiAgICAgcnggcGFja2V0czogICAgMzc5MTgK
+Pj4+ICAgICB0eCBieXRlczogICAgNjQ3NjAyOTgKPj4+ICAgICB0eCBwYWNrZXRzOiAgICA0MjIz
+OQo+Pj4gICAgIHR4IHJldHJpZXM6ICAgIDAKPj4+ICAgICB0eCBmYWlsZWQ6ICAgIDAKPj4+ICAg
+ICBzaWduYWw6ICAgICAgLTQzIGRCbQo+Pj4gICAgIHNpZ25hbCBhdmc6ICAgIC00MiBkQm0KPj4+
+ICAgICB0eCBiaXRyYXRlOiAgICAxMDUzLjAgTUJpdC9zIFZIVC1NQ1MgNiAxNjBNSHogVkhULU5T
+UyAyCj4+PiAgICAgcnggYml0cmF0ZTogICAgMTU2MC4wIE1CaXQvcyBWSFQtTUNTIDggMTYwTUh6
+IHNob3J0IEdJIFZIVC1OU1MgMgo+Pj4gICAgIGF1dGhvcml6ZWQ6ICAgIHllcwo+Pj4gICAgIGF1
+dGhlbnRpY2F0ZWQ6ICAgIHllcwo+Pj4gICAgIHByZWFtYmxlOiAgICBsb25nCj4+PiAgICAgV01N
+L1dNRTogICAgeWVzCj4+PiAgICAgTUZQOiAgICAgICAgbm8KPj4+ICAgICBURExTIHBlZXI6ICAg
+IG5vCj4+PiAgICAgY29ubmVjdGVkIHRpbWU6ICAgIDE1NiBzZWNvbmRzCj4+Pgo+Pj4gVGhhbmtz
+LAo+Pj4gQmVuCj4+Pgo+Pj4KPj4gdGhlIGhhY2sgeW91IHBvc3RlZCBjcmFzaGVzIHRoZSBkcml2
+ZXIgZm9yIG1lLiBpIGFsc28gc2VlIHRoYXQgdGhpcyAKPj4gcGF0Y2ggaXMgYmFzZWQgb24gdGhl
+IENUIGF0aDEwayBzb3VyY2UuIGl0IGRvZXNudCBhcHBseSBjbGVhbiB0byAKPj4gYXRoMTBrLiBu
+ZWVkZWQgdG8gbWVyZ2UgaXQKPj4gbWFudWFsbHkKPgo+IE9rLCBJJ20gaW4gdGhlIG1pZGRsZSBv
+ZiBhIGJ1bmNoIG9mIGNoYW5nZXMgdG8gc3VwcG9ydCBWSFQgb3ZlcnJpZGVzIAo+IHRvIGFsbG93
+Cj4gZGlzYWJsaW5nIFZIVDE2MC84MCs4MCBpbiBzdGF0aW9uIG1vZGUsIGFuZCBJJ2xsIHB1c2gg
+YWxsIG15IGNoYW5nZXMgCj4gdG8gbXkKPiB0cmVlIHdoZW4gSSBnZXQgdGhhdCBpbXBsZW1lbnRl
+ZCBhbmQgdGVzdGluZy4KPgo+IEkndmUgYWJvdXQgZ2l2ZW4gdXAgb24gZ2V0dGluZyBhdGgxMGsg
+cGF0Y2hlcyB1cHN0cmVhbSwgYnV0IEknbGwgZ2V0IAo+IHRoZXNlIGNoYW5nZXMgaW50bwo+IGF0
+aDEway1jdCBpbiBMRURFIHNvbWV0aW1lLi4uCj4KPiBJZiB5b3Ugd2FudCB0byBwb3N0IHRoZSBz
+cGxhdCwganVzdCBwb3NzaWJseSBJJ2xsIGhhdmUgYSBxdWljayBpZGVhIG9mIAo+IHdoeSBpdAo+
+IGlzIGNyYXNoaW5nLgo+Cj4gVGhhbmtzLAo+IEJlbgo+Cj4KCgotLSAKTWl0IGZyZXVuZGxpY2hl
+biBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RPCgpOZXdNZWRp
+YS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgQmVybGluZXIgUmluZyAxMDEsIDY0NjI1
+IEJlbnNoZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0
+NzMKR2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVl
+bGUKaHR0cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpU
+ZWwuOiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
