@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cdegF-0007Ib-IQ
- for ath10k@lists.infradead.org; Tue, 14 Feb 2017 15:06:15 +0000
+ id 1cdejv-0007ej-RX
+ for ath10k@lists.infradead.org; Tue, 14 Feb 2017 15:10:02 +0000
 From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: add support for controlling tx power to a
- station
-Date: Tue, 14 Feb 2017 15:05:45 +0000
-Message-ID: <87zihoq0ce.fsf@kamboji.qca.qualcomm.com>
-References: <201702120825.pCIZZp0b%fengguang.wu@intel.com>
-In-Reply-To: <201702120825.pCIZZp0b%fengguang.wu@intel.com> (kbuild test
- robot's message of "Sun, 12 Feb 2017 08:17:48 +0800")
+Subject: Re: All '0' in agg_status
+Date: Tue, 14 Feb 2017 15:09:18 +0000
+Message-ID: <87vascq06i.fsf@kamboji.qca.qualcomm.com>
+References: <CAJ-VmomSTUAONqeOTZEqm_ApU64r1=RSqm8=Y6u+Km+OkL_JQA@mail.gmail.com>
+ <328523ea1b53d27f8a72b776481c15dc@cvweb05.wmail.nhnsystem.com>
+ <44c5a11bf373394ee73ca1dfa9f6d37a@cvweb08.wmail.nhnsystem.com>
+ <81378355ff1438395ca925d181791dbb@cvweb06.wmail.nhnsystem.com>
+In-Reply-To: <81378355ff1438395ca925d181791dbb@cvweb06.wmail.nhnsystem.com>
+ (Kwang Min Kim's message of "Tue, 14 Feb 2017 17:26:37 +0900 (KST)")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -25,44 +27,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kbuild test robot <lkp@intel.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "arnagara@codeaurora.org" <arnagara@codeaurora.org>, "Nagarajan,
- Ashok Raj" <arnagara@qti.qualcomm.com>, "kbuild-all@01.org" <kbuild-all@01.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kwang Min Kim <gwondori@nimbus.kr>
+Cc: =?ks_c_5601-1987?B?sK2w5r/P?= <bigskang@nimbus.kr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-kbuild test robot <lkp@intel.com> writes:
+Kwang Min Kim <gwondori@nimbus.kr> writes:
 
-> Hi Ashok,
+> I have two questions.
 >
-> [auto build test ERROR on v4.9-rc8]
-> [cannot apply to ath6kl/ath-next next-20170210]
-> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+> 1. As a result of debugging 'ath10k' and 'mac80211', if there is a problem, ADDBA request and DELBA request are receive at 'station' side at the same time.
+>    Could it be this?
 >
-> url:    https://github.com/0day-ci/linux/commits/Ashok-Raj-Nagarajan/ath10k-add-support-for-controlling-tx-power-to-a-station/20170208-203305
-> config: x86_64-randconfig-in0-02120025 (attached as .config)
-> compiler: gcc-4.6 (Debian 4.6.4-7) 4.6.4
-> reproduce:
->         # save the attached .config to linux build tree
->         make ARCH=x86_64 
 >
-> All errors (new ones prefixed by >>):
+> 2. The code below seems to fix the problem. (I did not consider the impact elsewhere.)
+>    Is it the correct code? How do I fix the incorrect code?
 >
->    drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_sta_set_txpwr':
->>> drivers/net/wireless/ath/ath10k/mac.c:5900:10: error: 'struct
->>> ieee80211_sta' has no member named 'txpwr'
->    drivers/net/wireless/ath/ath10k/mac.c: At top level:
->>> drivers/net/wireless/ath/ath10k/mac.c:7469:2: error: unknown field
->>> 'sta_set_txpwr' specified in initializer
->    drivers/net/wireless/ath/ath10k/mac.c:7469:2: warning:
-> initialization from incompatible pointer type [enabled by default]
->    drivers/net/wireless/ath/ath10k/mac.c:7469:2: warning: (near
-> initialization for 'ath10k_ops.sta_pre_rcu_remove') [enabled by
-> default]
->    drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_mac_register':
->>> drivers/net/wireless/ath/ath10k/mac.c:8008:11: error:
->>> 'NL80211_EXT_FEATURE_STA_TX_PWR' undeclared (first use in this
->>> function)
+> --- net/mac80211/iface.c
+> +++ net/mac80211/iface.c
 
-These are expected as this depends on cfg80211 patch not yet applied.
+For mac80211 changes you should ask about that in linux-wireless mailing
+list, but better also CC the ath10k list.
+
+https://wireless.wiki.kernel.org/en/developers/mailinglists
 
 -- 
 Kalle Valo
