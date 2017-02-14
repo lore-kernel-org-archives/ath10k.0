@@ -1,31 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cdaNc-0008Ml-3l
- for ath10k@lists.infradead.org; Tue, 14 Feb 2017 10:30:42 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: 9984 VHT
-Date: Tue, 14 Feb 2017 10:30:14 +0000
-Message-ID: <87inodrro1.fsf@kamboji.qca.qualcomm.com>
-References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
- <CAJ-Vmo=yD7Ct5LFXBO3qNhKsNco91VXMmZOYeBaAuw+DFGq=RQ@mail.gmail.com>
- <CAHNKnsT8mzHefrnC4ybrR8T16dAqc4G_SDGesxdU7+81xhuYpw@mail.gmail.com>
- <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>
- <87y3xtrmn2.fsf@kamboji.qca.qualcomm.com>
- <44480bab-0cf7-f4e3-7612-b1cf5d4c040f@dd-wrt.com>
- <1a58440c-80c9-0a86-aae9-213edc5b0019@candelatech.com>
- <ed765a12-6ae8-ed78-6626-ae82312ba525@dd-wrt.com>
- <8bcf2ea6-802f-f249-8e2d-96ec03553a9b@candelatech.com>
- <23b1bd75-a7f9-08e7-5d7b-f67081b89e1b@candelatech.com>
- <5e23ea91-429e-eff6-7443-e4d4f5981735@dd-wrt.com>
- <785bdbc1-fcf5-921b-2092-6142d51aa0ce@candelatech.com>
- <87poiu42r2.fsf@qca.qualcomm.com>
- <2c29c0e6-a207-9d40-fa8d-dc5e54f9c468@dd-wrt.com>
- <87y3xeilor.fsf@kamboji.qca.qualcomm.com>
- <c894f9ae-068a-eac3-16e6-c1ada4da22b9@dd-wrt.com>
-In-Reply-To: <c894f9ae-068a-eac3-16e6-c1ada4da22b9@dd-wrt.com> (Sebastian
- Gottschall's message of "Fri, 10 Feb 2017 13:38:03 +0100")
-Content-Language: en-US
+Received: from universe.cdot.in ([49.128.111.121])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cdbZb-0006Ow-ON
+ for ath10k@lists.infradead.org; Tue, 14 Feb 2017 11:47:11 +0000
+Received: from cdot.in (localhost [127.0.0.1])
+ by universe.cdot.in (8.14.4/8.13.1) with ESMTP id v1EBf6Zo015835
+ for <ath10k@lists.infradead.org>; Tue, 14 Feb 2017 17:11:06 +0530
+From: "Diganta Jena" <djena@cdot.in>
+Subject: ath10k QCA988x firmware not supporting monitor mode
+Date: Tue, 14 Feb 2017 17:11:06 +0530
+Message-Id: <20170214114008.M61102@cdot.in>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -35,65 +19,88 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-(you forgot to CC ath10k list, adding it back)
-
-Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
-
-> Am 10.02.2017 um 07:50 schrieb Valo, Kalle:
->> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
->>
->>> Am 07.02.2017 um 13:14 schrieb Valo, Kalle:
->>>> Ben Greear <greearb@candelatech.com> writes:
->>>>
->>>>> On 02/02/2017 10:42 AM, Sebastian Gottschall wrote:
->>>>>> Am 02.02.2017 um 19:24 schrieb Ben Greear:
->>>>>>
->>>>>>> I hacked ath10k to enable radar detection on 160Mhz bandwidths. Now hostapd
->>>>>>> starts.
->>>>>>>
->>>>>>> I can reproduce the FW failure. It is because FW 3.3-25 release
->>>>>>> started asserting
->>>>>>> if the freq2 was zero in VHT160 mode. It seems to use both freq1
->>>>>>> and freq2, and not
->>>>>>> how the driver or linux seems to normally use them.
->>>>>> its even worse. starting from 3.3 it uses freq2 instead of freq1.
->>>>>> but i made a patch for it. but it still wont work. vdev_start still
->>>>>> fails
->>>>> Well it would have been helpful from the start to have known about this patch.
->>>>>
->>>>> Could you post it?
->>>>>
->>>>> Kalle: Since the firmware API changed, how do you want to handle
->>>>> the differences here?
->>>> The firmware API shouldn't change like that, but if it has I guess a
->>>> firmware feature flag to enable a workaround in ath10k sounds like the
->>>> easiest solution.
->>> the more recent firmware have some new wmi services enabled which can
->>> be used as indicator as well.
->> I don't know what flag exactly you are referring to, but using a WMI
->> service flag to detect this is not really reliable. They can be enabled
->> or disabled between branches, or even between builds.
->
-> valid argument. but these flags should than be also introduced in
-> codeaurora images
-
-I'm not involved with codeaurora images so I can't help with that.
-
-But the firmware is not supposed to break the firmware interface like
-this. Can someone please write a detailed bug report as a reply to this
-mail (what version, from which location, how exactly the interface is
-broken) and I'll try to report the issue internally.
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkhCgpXZSBhcmUgdXNpbmcgQXRoZXJvcyBRQ0E5ODgwIG1QQ0llIG1vZHVsZSB3aXRoIGF0aDEw
+ayBkcml2ZXJzIGFuZCBmaXJtd2FyZS4KCktlcm5lbDogMy4xMgpCYWNrcG9ydHM6IDQuNApGaXJt
+d2FyZToxMC4yLjQuNzAuNTktMgoKCgpXZSBhcmUgbm90IGFibGUgdG8gcnVuIHRoZSB3bGFuMSBp
+bnRlcmZhY2UgaW4gbW9uaXRvciBtb2RlLiBUaGUgZm9sbG93aW5nIGVycm9yIGNvbWVzCndoZW4g
+d2UgZG8KaXcgcGh5IHBoeTEgaW50ZXJmYWNlIGFkZCB3bGFuMSB0eXBlIG1vbml0b3IKaWZjb25m
+aWcgd2xhbjEgdXAKCgoKYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IGZpcm13YXJlIGNyYXNoZWQh
+ICh1dWlkIG4vYSkKYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IHFjYTk4OHggaHcyLjAgKDB4NDEw
+MDAxNmMsIDB4MDQzMjAyZmYgc3ViIDAwMDA6MDAwMCkgZncKMTAuMi40LjcwLjU5LTIgZndhcGkg
+NSBiZGFwaSAxIGh0dC12ZXIgMi4xIHdtaS1vcCA1IGh0dC1vcCAyIGNhbCBvdHAgbWF4LXN0YSAx
+MjggcmF3IDAKaHdjcnlwdG8gMSBmZWF0dXJlcyBuby1wMnAscmF3LW1vZGUKYXRoMTBrX3BjaSAw
+MDAxOjAzOjAwLjA6IGRlYnVnIDAgZGVidWdmcyAwIHRyYWNpbmcgMCBkZnMgMCB0ZXN0bW9kZSAw
+CmF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBmaXJtd2FyZSByZWdpc3RlciBkdW1wOgphdGgxMGtf
+cGNpIDAwMDE6MDM6MDAuMDogWzAwXTogMHg0MTAwMDE2QyAweDAwMDAwMDAwIDB4MDA5N0Y4RDUg
+MHgwMDAwMDAwMAphdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzA0XTogMHgwMDAwMDAwMCAweDAw
+MDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAphdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzA4
+XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAphdGgxMGtfcGNp
+IDAwMDE6MDM6MDAuMDogWzEyXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgw
+MDAwMDAwMAphdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzE2XTogMHgwMDAwMDAwMCAweDAwMDAw
+MDAwIDB4MDAwMDAwMDAgMHgwMDk3RjhENQphdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzIwXTog
+MHgwMDAwMDAwMCAweDAwNDAxOTMwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAphdGgxMGtfcGNpIDAw
+MDE6MDM6MDAuMDogWzI0XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAw
+MDAwMAphdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzI4XTogMHgwMDAwMDAwMCAweDAwMDAwMDAw
+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAphdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzMyXTogMHgw
+MDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAphdGgxMGtfcGNpIDAwMDE6
+MDM6MDAuMDogWzM2XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAw
+MAphdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzQwXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4
+MDAwMDAwMDAgMHgwMDAwMDAwMAphdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzQ0XTogMHgwMDAw
+MDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAphdGgxMGtfcGNpIDAwMDE6MDM6
+MDAuMDogWzQ4XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAph
+dGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzUyXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAw
+MDAwMDAgMHgwMDAwMDAwMAphdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzU2XTogMHgwMDAwMDAw
+MCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAphdGgxMGtfcGNpIDAwMDE6MDM6MDAu
+MDogZmFpbGVkIHRvIHNldCAyZyB0eHBvd2VyIDA6IC0xMDgKYXRoMTBrX3BjaSAwMDAxOjAzOjAw
+LjA6IGZhaWxlZCB0byBzZXR1cCB0eCBwb3dlciAwOiAtMTA4CmF0aDEwa19wY2kgMDAwMTowMzow
+MC4wOiBmYWlsZWQgdG8gcmVjYWxjIHR4IHBvd2VyOiAtMTA4Ci0tLS0tLS0tLS0tLVsgY3V0IGhl
+cmUgXS0tLS0tLS0tLS0tLQpXQVJOSU5HOiBhdCBmYjgzYzNiOCBbdmVyYm9zZSBkZWJ1ZyBpbmZv
+IHVuYXZhaWxhYmxlXQpNb2R1bGVzIGxpbmtlZCBpbjogYXRoMTBrX3BjaShPKSBhdGgxMGtfY29y
+ZShPKSBtYWM4MDIxMShPKSBhdGgoTykgY2ZnODAyMTEoTykgY29tcGF0KE8pCnVpb19wZHJ2X2dl
+bmlycQpDUFU6IDAgUElEOiAxNzE3MyBDb21tOiBpZmNvbmZpZyBUYWludGVkOiBHICAgICAgICAg
+ICBPIDMuMTIuMzctcnQ1MSsgIzIzCnRhc2s6IGU2NDE1NTAwIHRpOiBlZjAyYTAwMCB0YXNrLnRp
+OiBlZjAyYTAwMApOSVA6IGZiODNjM2I4IExSOiBmYjgzYzNhOCBDVFI6IGMwMDc4OGYwClJFR1M6
+IGVmMDJiY2IwIFRSQVA6IDA3MDAgICBUYWludGVkOiBHICAgICAgICAgICBPICAoMy4xMi4zNy1y
+dDUxKykKTVNSOiAwMDAyOTAwMiA8Q0UsRUUsTUU+ICBDUjogODQwMDg0ODIgIFhFUjogMjAwMDAw
+MDAKCkdQUjAwOiBmYjgzYzNhOCBlZjAyYmQ2MCBlNjQxNTUwMCBmZmZmZmY5NCBlYjg2NWE0MCAw
+MDAwMDE1MiAwMDAwMDAwMCAwMDAwMDAwMApHUFIwODogMDAwMDAwMDAgMDAwMDAwMDEgMDAwMDAw
+MDAgMDAwMjEwMDIgODRhZDJlNDIgMTAwMjU1NzggMTAxMDAwMDAgMDAwMDAwMDAKR1BSMTY6IDAw
+MDAwMDAwIDEwMDBhY2I0IDEwMDFkMjY0IDEwMDFkMjY0IDEwMDFkMWY4IGVmOTgyMDBjIDAwMDAw
+MDAwIGUwZTQ0MDAwCkdQUjI0OiBlMGU0NDQ4MCBmZmZmZmZmZiAwMDAwMDAwMSAwMDAwMDAwMCBl
+MGU0NDcwNCBlMGU0MDAwMCBmZmZmZmY5NCBlZjdjY2JhMApOSVAgW2ZiODNjM2I4XSBpZWVlODAy
+MTFfYWRkX3ZpcnR1YWxfbW9uaXRvcisweGQ4LzB4MWMwIFttYWM4MDIxMV0KTFIgW2ZiODNjM2E4
+XSBpZWVlODAyMTFfYWRkX3ZpcnR1YWxfbW9uaXRvcisweGM4LzB4MWMwIFttYWM4MDIxMV0KQ2Fs
+bCBUcmFjZToKW2VmMDJiZDYwXSBbZmI4M2MzYThdIGllZWU4MDIxMV9hZGRfdmlydHVhbF9tb25p
+dG9yKzB4YzgvMHgxYzAgW21hYzgwMjExXSAodW5yZWxpYWJsZSkKW2VmMDJiZDgwXSBbZmI4M2Qx
+NjhdIGllZWU4MDIxMV9kb19vcGVuKzB4NGU4LzB4YTMwIFttYWM4MDIxMV0KW2VmMDJiZGMwXSBb
+YzA0ZDczYThdIF9fZGV2X29wZW4rMHhlOC8weDE2MApbZWYwMmJkZjBdIFtjMDRkNzZhMF0gX19k
+ZXZfY2hhbmdlX2ZsYWdzKzB4YTAvMHgxODAKW2VmMDJiZTEwXSBbYzA0ZDc4NWNdIGRldl9jaGFu
+Z2VfZmxhZ3MrMHgxYy8weDcwCltlZjAyYmUzMF0gW2MwNTdkOTMwXSBkZXZpbmV0X2lvY3RsKzB4
+NjAwLzB4OGUwCltlZjAyYmU5MF0gW2MwNGJhNmY0XSBzb2NrX2lvY3RsKzB4MjI0LzB4MmUwCltl
+ZjAyYmViMF0gW2MwMTE1MTUwXSBkb192ZnNfaW9jdGwrMHg0MTAvMHg3YTAKW2VmMDJiZjEwXSBb
+YzAxMTU1MjBdIFN5U19pb2N0bCsweDQwLzB4ODAKW2VmMDJiZjQwXSBbYzAwMGZiMDRdIHJldF9m
+cm9tX3N5c2NhbGwrMHgwLzB4M2MKLS0tIEV4Y2VwdGlvbjogYzAxIGF0IDB4ZmY0ZmY4YwogICAg
+TFIgPSAweGZmZWQyYzAKSW5zdHJ1Y3Rpb24gZHVtcDoKMzkyMDAwMDggOTEzZDAzOGMgN2ZhM2Vi
+NzggOTNkZDAwMGMgNGJmZmUzNDkgN2ZlM2ZiNzggN2ZhNGViNzggNGJmZWUyY2QKN2M2OTAwMzQg
+NTUyOWQ5N2UgN2M3ZTFiNzggNjkyOTAwMDEgPDBmMDkwMDAwPiAyZjg5MDAwMCA3ZmEzZWI3OCA0
+MGRlMDBhMAotLS1bIGVuZCB0cmFjZSBjOWRmNDg1OWFjMTkyYmU3IF0tLS0KaWVlZTgwMjExIHBo
+eTE6IEhhcmR3YXJlIHJlc3RhcnQgd2FzIHJlcXVlc3RlZApTSU9DU0lGRkxBR1M6IENhbm5vdCBz
+ZW5kIGFmdGVyIHRyYW5zcG9ydCBlbmRwb2ludCBzaHV0ZG93bgoKCgoKClRoYW5rIHlvdQpSZWdh
+cmRzCkRpZ2FudGEgSmVuYQpEaXNjbGFpbWVyOgoKCgotLS0tLS0tLS0tCgoKClRoaXMgZW1haWwg
+YW5kIGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRoIGl0IGFyZSBjb25maWRlbnRpYWwgYW5kIGlu
+dGVuZGVkIHNvbGVseSBmb3IgCgp0aGUgdXNlIG9mIHRoZSBpbmRpdmlkdWFsIG9yIGVudGl0eSB0
+byB3aG9tIHRoZXkgYXJlIGFkZHJlc3NlZC7CoCBJZiB5b3UgYXJlIG5vdCB0aGUgCgppbnRlbmRl
+ZCByZWNpcGllbnQgeW91IGFyZSBub3RpZmllZCB0aGF0IGRpc2Nsb3NpbmcsIGNvcHlpbmcsIGRp
+c3RyaWJ1dGluZyBvciB0YWtpbmcgCgphbnkgYWN0aW9uIGluIHJlbGlhbmNlIG9uIHRoZSBjb250
+ZW50cyBvZiB0aGlzIGluZm9ybWF0aW9uIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuIFRoZSAKCnNl
+bmRlciBkb2VzIG5vdCBhY2NlcHQgbGlhYmlsaXR5IGZvciBhbnkgZXJyb3JzIG9yIG9taXNzaW9u
+cyBpbiB0aGUgY29udGVudHMgb2YgdGhpcyAKCm1lc3NhZ2UsIHdoaWNoIGFyaXNlIGFzIGEgcmVz
+dWx0CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
