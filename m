@@ -1,17 +1,32 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cdesU-0003Er-OV
- for ath10k@lists.infradead.org; Tue, 14 Feb 2017 15:18:52 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: Suspend resume broken since 4.9
-Date: Tue, 14 Feb 2017 15:18:27 +0000
-Message-ID: <87r330pzr9.fsf@kamboji.qca.qualcomm.com>
-References: <CAMQd7mbOEz0SChV=QcZ_=cWLg9zv3f4zhH9r7YVwC_O6tE-UUw@mail.gmail.com>
-In-Reply-To: <CAMQd7mbOEz0SChV=QcZ_=cWLg9zv3f4zhH9r7YVwC_O6tE-UUw@mail.gmail.com>	(Enrico
- Tagliavini's message of "Wed, 25 Jan 2017 21:35:23 +0100")
-Content-Language: en-US
+ id 1cdevD-000568-Ch
+ for ath10k@lists.infradead.org; Tue, 14 Feb 2017 15:21:42 +0000
+References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
+ <CAJ-Vmo=yD7Ct5LFXBO3qNhKsNco91VXMmZOYeBaAuw+DFGq=RQ@mail.gmail.com>
+ <CAHNKnsT8mzHefrnC4ybrR8T16dAqc4G_SDGesxdU7+81xhuYpw@mail.gmail.com>
+ <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>
+ <87y3xtrmn2.fsf@kamboji.qca.qualcomm.com>
+ <44480bab-0cf7-f4e3-7612-b1cf5d4c040f@dd-wrt.com>
+ <1a58440c-80c9-0a86-aae9-213edc5b0019@candelatech.com>
+ <ed765a12-6ae8-ed78-6626-ae82312ba525@dd-wrt.com>
+ <8bcf2ea6-802f-f249-8e2d-96ec03553a9b@candelatech.com>
+ <23b1bd75-a7f9-08e7-5d7b-f67081b89e1b@candelatech.com>
+ <5e23ea91-429e-eff6-7443-e4d4f5981735@dd-wrt.com>
+ <785bdbc1-fcf5-921b-2092-6142d51aa0ce@candelatech.com>
+ <87poiu42r2.fsf@qca.qualcomm.com>
+ <2c29c0e6-a207-9d40-fa8d-dc5e54f9c468@dd-wrt.com>
+ <87y3xeilor.fsf@kamboji.qca.qualcomm.com>
+ <c894f9ae-068a-eac3-16e6-c1ada4da22b9@dd-wrt.com>
+ <87inodrro1.fsf@kamboji.qca.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <83f88c82-0ea5-2962-a385-bf38946c846d@dd-wrt.com>
+Date: Tue, 14 Feb 2017 16:21:13 +0100
 MIME-Version: 1.0
+In-Reply-To: <87inodrro1.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: 9984 VHT
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,101 +35,136 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Enrico Tagliavini <enrico.tagliavini@gmail.com>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Enrico Tagliavini <enrico.tagliavini@gmail.com> writes:
+Am 14.02.2017 um 11:30 schrieb Valo, Kalle:
+> (you forgot to CC ath10k list, adding it back)
+>
+> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+>
+>> Am 10.02.2017 um 07:50 schrieb Valo, Kalle:
+>>> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+>>>
+>>>> Am 07.02.2017 um 13:14 schrieb Valo, Kalle:
+>>>>> Ben Greear <greearb@candelatech.com> writes:
+>>>>>
+>>>>>> On 02/02/2017 10:42 AM, Sebastian Gottschall wrote:
+>>>>>>> Am 02.02.2017 um 19:24 schrieb Ben Greear:
+>>>>>>>
+>>>>>>>> I hacked ath10k to enable radar detection on 160Mhz bandwidths. No=
+w hostapd
+>>>>>>>> starts.
+>>>>>>>>
+>>>>>>>> I can reproduce the FW failure. It is because FW 3.3-25 release
+>>>>>>>> started asserting
+>>>>>>>> if the freq2 was zero in VHT160 mode. It seems to use both freq1
+>>>>>>>> and freq2, and not
+>>>>>>>> how the driver or linux seems to normally use them.
+>>>>>>> its even worse. starting from 3.3 it uses freq2 instead of freq1.
+>>>>>>> but i made a patch for it. but it still wont work. vdev_start still
+>>>>>>> fails
+>>>>>> Well it would have been helpful from the start to have known about t=
+his patch.
+>>>>>>
+>>>>>> Could you post it?
+>>>>>>
+>>>>>> Kalle: Since the firmware API changed, how do you want to handle
+>>>>>> the differences here?
+>>>>> The firmware API shouldn't change like that, but if it has I guess a
+>>>>> firmware feature flag to enable a workaround in ath10k sounds like the
+>>>>> easiest solution.
+>>>> the more recent firmware have some new wmi services enabled which can
+>>>> be used as indicator as well.
+>>> I don't know what flag exactly you are referring to, but using a WMI
+>>> service flag to detect this is not really reliable. They can be enabled
+>>> or disabled between branches, or even between builds.
+>> valid argument. but these flags should than be also introduced in
+>> codeaurora images
+> I'm not involved with codeaurora images so I can't help with that.
+>
+> But the firmware is not supposed to break the firmware interface like
+> this. Can someone please write a detailed bug report as a reply to this
+> mail (what version, from which location, how exactly the interface is
+> broken) and I'll try to report the issue internally.
+i'm not good in this. but let me try to describe whats wrong
+all the current firmware images including your latest 3.3 based suffer =
 
-> Hello everybody,
->
-> few days ago Fedora 24 pushed kernel 4.9.4 as a stable update, moving
-> from the last release of the 4.8 series. I use suspend to ram very
-> often and I noticed it doesn't work anymore with 4.9.4 (and also
-> 4.9.5). Screen goes black (but still showing mouse pointer) for 5-10
-> seconds and then the desktop comes back instead of going to sleep. It
-> worked without issues on kernel 4.8.16 and earlier series.
->
-> I think it might be a fault of ath10k for two reasons: 1. when I try
-> to suspend firmware crashes, 2. if I modprobe -r ath10k_pci before
-> attempting the suspend, then I suspend to ram it works!
->
-> I've posted a bug report on the kernel bugzilla [1], with some log,
-> which I also report here:
->
-> [   61.104169] ath10k_pci 0000:03:00.0: firmware crashed! (uuid
-> 7f9700df-93ab-4d1b-8c6d-aea24b60d170)
-> [   61.104175] ath10k_pci 0000:03:00.0: qca6174 hw2.1 target
-> 0x05010000 chip_id 0x003405ff sub 1a56:1525
-> [   61.104176] ath10k_pci 0000:03:00.0: kconfig debug 0 debugfs 1
-> tracing 0 dfs 0 testmode 0
-> [   61.104450] ath10k_pci 0000:03:00.0: firmware ver
-> SW_RM.1.1.1-00157-QCARMSWPZ-1 api 5 features ignore-otp,no-4addr-pad
-> crc32 10bf8e08
-> [   61.104596] ath10k_pci 0000:03:00.0: board_file api 2 bmi_id N/A
-> crc32 ae2e275a
-> [   61.104598] ath10k_pci 0000:03:00.0: htt-ver 3.1 wmi-op 4 htt-op 3
-> cal otp max-sta 32 raw 0 hwcrypto 1
-> [   61.105151] ath10k_pci 0000:03:00.0: firmware register dump:
-> [   61.105151] ath10k_pci 0000:03:00.0: [00]: 0x05010000 0x00000000
-> 0x0092E4DC 0x365591B9
-> [   61.105151] ath10k_pci 0000:03:00.0: [04]: 0x0092E4DC 0x00060130
-> 0x00000018 0x0041A760
-> [   61.105151] ath10k_pci 0000:03:00.0: [08]: 0x365591A5 0x00400000
-> 0x00000000 0x000A5C88
-> [   61.105151] ath10k_pci 0000:03:00.0: [12]: 0x00000009 0x00000000
-> 0x0096C09C 0x0096C0A7
-> [   61.105151] ath10k_pci 0000:03:00.0: [16]: 0x0096BDBC 0x009BFC42
-> 0x00000000 0x009287BD
-> [   61.105151] ath10k_pci 0000:03:00.0: [20]: 0x4092E4DC 0x0041A710
-> 0x00000000 0x0F000000
-> [   61.105151] ath10k_pci 0000:03:00.0: [24]: 0x809432A7 0x0041A770
-> 0x0040D400 0xC092E4DC
-> [   61.105151] ath10k_pci 0000:03:00.0: [28]: 0x80942BC4 0x0041A790
-> 0x365591A5 0x00400000
-> [   61.105151] ath10k_pci 0000:03:00.0: [32]: 0x80947BA7 0x0041A7B0
-> 0x00404D88 0x00413980
-> [   61.105151] ath10k_pci 0000:03:00.0: [36]: 0x809BDECC 0x0041A7D0
-> 0x00404D88 0x00413980
-> [   61.105151] ath10k_pci 0000:03:00.0: [40]: 0x8099638C 0x0041A7F0
-> 0x00404D88 0x00000000
-> [   61.105151] ath10k_pci 0000:03:00.0: [44]: 0x80992076 0x0041A810
-> 0x004084F0 0x00405244
-> [   61.105151] ath10k_pci 0000:03:00.0: [48]: 0x80996BD3 0x0041A830
-> 0x004084F0 0x00000000
-> [   61.105151] ath10k_pci 0000:03:00.0: [52]: 0x800B4405 0x0041A850
-> 0x00422318 0x00005002
-> [   61.105151] ath10k_pci 0000:03:00.0: [56]: 0x809A6C34 0x0041A8E0
-> 0x0042932C 0x0042CA20
-> [   61.111014] ath10k_pci 0000:03:00.0: could not suspend target (-108)
-> [   61.178604] ath10k_pci 0000:03:00.0: cannot restart a device that
-> hasn't been started
->
-> there are some more in the bug report, but I don't think they add
-> anything useful so I wont repost them here.
->
-> Needless to say I'm seeking some assistance here, since I rely on
-> suspend to ram for a few things that would make it annoying otherwise.
-> To start with, is my assumption correct in believing this is a fault
-> within ath10k?
+from this issue.
+old behaviour with =
 
-The firmware shouldn't crash, obviously, but I cannot see what's the
-reason for the crash. Most helpful would be to find the change which
-broke your setup. For example, try different kernel versions but don't
-change anything else, especially not the firmware files. And then keep
-the kernel version same but try different firmware versions (if that was
-updated on your system).
+https://github.com/kvalo/ath10k-firmware/raw/master/QCA9984/hw1.0/firmware-=
+5.bin_10.4-3.2-00072
+center freq is stored in band_center_freq1
 
-If it's a kernel problem the best is that if you can build your own
-kernels and use 'git bisect' to find the exact commit which broke this.
-Then the changes to get the problem fixed is very high. There should be
-plenty of instructions on the web how to do that.
+new behaviour with =
 
--- 
-Kalle Valo
+https://github.com/kvalo/ath10k-firmware/raw/master/QCA9984/hw1.0/3.3/firmw=
+are-5.bin_10.4-3.3-00092 =
+
+and all other newers including 3.4 series
+center freq is stored in band_center_freq2. where center_freq1 must =
+
+contain the lower or upper side channel depending on the setting
+
+example for new firmware in  ath10k_wmi_put_wmi_channel
+         if (arg->mode =3D=3D MODE_11AC_VHT160)  {
+                 if (arg->freq < arg->band_center_freq1)
+                         ch->band_center_freq1 =3D =
+
+__cpu_to_le32(arg->band_center_freq1 - 40);
+                 else
+                         ch->band_center_freq1 =3D =
+
+__cpu_to_le32(arg->band_center_freq1 + 40);
+                 ch->band_center_freq2 =3D =
+
+__cpu_to_le32(arg->band_center_freq1);
+         }
+
+according to some code i found in hostapd this has been made to =
+
+workaround a issue with vht80 capable client who arent able to associate =
+
+with vht160 networks.
+the same workaround has been implemented in recent hostapd versions. so =
+
+solving this on firmware side isnt neccessary, but qca was going this way
+
+see also this patch which is now in mainline of hostapd
+
+https://github.com/kaloz/mwlwifi/blob/master/hostapd/700-interoperability-w=
+orkaround-for-80%2B80-and-160-MHz-channels
+
+you will clearly see that it is related to the new behaviour of the =
+
+qca9984 firmware (and likelly other vht160mhz capable chipset firmware, =
+
+but i can't check them without having the devices)
+
+
+>
+
+
+-- =
+
+Mit freundlichen Gr=FCssen / Regards
+
+Sebastian Gottschall / CTO
+
+NewMedia-NET GmbH - DD-WRT
+Firmensitz:  Berliner Ring 101, 64625 Bensheim
+Registergericht: Amtsgericht Darmstadt, HRB 25473
+Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
+http://www.dd-wrt.com
+email: s.gottschall@dd-wrt.com
+Tel.: +496251-582650 / Fax: +496251-5826565
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
