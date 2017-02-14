@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from cmailsend03.wmail.naver.com ([125.209.236.77])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cdYS3-00030U-Fl
- for ath10k@lists.infradead.org; Tue, 14 Feb 2017 08:27:10 +0000
-Date: Tue, 14 Feb 2017 17:26:37 +0900 (KST)
-From: Kwang Min Kim <gwondori@nimbus.kr>
-Message-ID: <81378355ff1438395ca925d181791dbb@cvweb06.wmail.nhnsystem.com>
-In-Reply-To: <44c5a11bf373394ee73ca1dfa9f6d37a@cvweb08.wmail.nhnsystem.com>
-References: <CAJ-VmomSTUAONqeOTZEqm_ApU64r1=RSqm8=Y6u+Km+OkL_JQA@mail.gmail.com>
- <328523ea1b53d27f8a72b776481c15dc@cvweb05.wmail.nhnsystem.com>
- <44c5a11bf373394ee73ca1dfa9f6d37a@cvweb08.wmail.nhnsystem.com>
-Subject: =?UTF-8?B?UmU6IEFsbCAnMCcgaW4gYWdnX3N0YXR1cw==?=
+ id 1cdegF-0007Ib-IQ
+ for ath10k@lists.infradead.org; Tue, 14 Feb 2017 15:06:15 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v3] ath10k: add support for controlling tx power to a
+ station
+Date: Tue, 14 Feb 2017 15:05:45 +0000
+Message-ID: <87zihoq0ce.fsf@kamboji.qca.qualcomm.com>
+References: <201702120825.pCIZZp0b%fengguang.wu@intel.com>
+In-Reply-To: <201702120825.pCIZZp0b%fengguang.wu@intel.com> (kbuild test
+ robot's message of "Sun, 12 Feb 2017 08:17:48 +0800")
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,137 +21,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: Kwang Min Kim <gwondori@nimbus.kr>
-Content-Type: multipart/mixed; boundary="===============1012921042000838778=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: =?UTF-8?B?6rCV6rK97JmE?= <bigskang@nimbus.kr>
+To: kbuild test robot <lkp@intel.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "arnagara@codeaurora.org" <arnagara@codeaurora.org>, "Nagarajan,
+ Ashok Raj" <arnagara@qti.qualcomm.com>, "kbuild-all@01.org" <kbuild-all@01.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+kbuild test robot <lkp@intel.com> writes:
 
---===============1012921042000838778==
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_585483_178015022.1487060797544"
+> Hi Ashok,
+>
+> [auto build test ERROR on v4.9-rc8]
+> [cannot apply to ath6kl/ath-next next-20170210]
+> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+>
+> url:    https://github.com/0day-ci/linux/commits/Ashok-Raj-Nagarajan/ath10k-add-support-for-controlling-tx-power-to-a-station/20170208-203305
+> config: x86_64-randconfig-in0-02120025 (attached as .config)
+> compiler: gcc-4.6 (Debian 4.6.4-7) 4.6.4
+> reproduce:
+>         # save the attached .config to linux build tree
+>         make ARCH=x86_64 
+>
+> All errors (new ones prefixed by >>):
+>
+>    drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_sta_set_txpwr':
+>>> drivers/net/wireless/ath/ath10k/mac.c:5900:10: error: 'struct
+>>> ieee80211_sta' has no member named 'txpwr'
+>    drivers/net/wireless/ath/ath10k/mac.c: At top level:
+>>> drivers/net/wireless/ath/ath10k/mac.c:7469:2: error: unknown field
+>>> 'sta_set_txpwr' specified in initializer
+>    drivers/net/wireless/ath/ath10k/mac.c:7469:2: warning:
+> initialization from incompatible pointer type [enabled by default]
+>    drivers/net/wireless/ath/ath10k/mac.c:7469:2: warning: (near
+> initialization for 'ath10k_ops.sta_pre_rcu_remove') [enabled by
+> default]
+>    drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_mac_register':
+>>> drivers/net/wireless/ath/ath10k/mac.c:8008:11: error:
+>>> 'NL80211_EXT_FEATURE_STA_TX_PWR' undeclared (first use in this
+>>> function)
 
+These are expected as this depends on cfg80211 patch not yet applied.
 
-------=_Part_585483_178015022.1487060797544
-Content-Type: text/plain;
-	charset=UTF-8
-Content-Transfer-Encoding: base64
-
-SSBoYXZlIHR3byBxdWVzdGlvbnMuCgoxLiBBcyBhIHJlc3VsdCBvZiBkZWJ1Z2dpbmcgJ2F0aDEw
-aycgYW5kICdtYWM4MDIxMScsIGlmIHRoZXJlIGlzIGEgcHJvYmxlbSwgQUREQkEgcmVxdWVzdCBh
-bmQgREVMQkEgcmVxdWVzdCBhcmUgcmVjZWl2ZSBhdCAnc3RhdGlvbicgc2lkZSBhdCB0aGUgc2Ft
-ZSB0aW1lLgogICBDb3VsZCBpdCBiZSB0aGlzPwoKCjIuIFRoZSBjb2RlIGJlbG93IHNlZW1zIHRv
-IGZpeCB0aGUgcHJvYmxlbS4gKEkgZGlkIG5vdCBjb25zaWRlciB0aGUgaW1wYWN0IGVsc2V3aGVy
-ZS4pCiAgIElzIGl0IHRoZSBjb3JyZWN0IGNvZGU/IEhvdyBkbyBJIGZpeCB0aGUgaW5jb3JyZWN0
-IGNvZGU/CgotLS0gbmV0L21hYzgwMjExL2lmYWNlLmMKKysrIG5ldC9tYWM4MDIxMS9pZmFjZS5j
-CkBAIC0xMjYwLDEwICsxMjY1LDE0IEBACiAgICAgICAgICAgICAgICAgICAgICAgIG11dGV4X2xv
-Y2soJmxvY2FsLT5zdGFfbXR4KTsKICAgICAgICAgICAgICAgICAgICAgICAgc3RhID0gc3RhX2lu
-Zm9fZ2V0X2JzcyhzZGF0YSwgcnhfYWdnLT5hZGRyKTsKICAgICAgICAgICAgICAgICAgICAgICAg
-aWYgKHN0YSkKKyAgICAgICAgICAgICAgICAgICAgICAgeworLyoKICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBfX2llZWU4MDIxMV9zdG9wX3J4X2JhX3Nlc3Npb24oc3RhLAogICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJ4X2FnZy0+
-dGlkLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIFdMQU5fQkFDS19SRUNJUElFTlQsIDAsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgZmFsc2UpOworICovCisgICAgICAgICAgICAgICAg
-ICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgbXV0ZXhfdW5sb2NrKCZsb2NhbC0+c3Rh
-X210eCk7CiAgICAgICAgICAgICAgICB9IGVsc2UgaWYgKGllZWU4MDIxMV9pc19hY3Rpb24obWdt
-dC0+ZnJhbWVfY29udHJvbCkgJiYKICAgICAgICAgICAgICAgICAgICAgICAgICAgbWdtdC0+dS5h
-Y3Rpb24uY2F0ZWdvcnkgPT0gV0xBTl9DQVRFR09SWV9CQUNLKSB7CgoKCgotLS0tLS0tLS0tLS0t
-LS0KCktpbSBLd2FuZyBNaW4KCk1vYmlsZSArODIgMDEwLTU1MjEtNjM5MyAKTWFpbCBnd29uZG9y
-aUBuaW1idXMua3IgCgoKCgoKCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCkZyb206ICJLd2Fu
-ZyBNaW4gS2ltIjxnd29uZG9yaUBuaW1idXMua3I+IApUbzogIkFkcmlhbiBDaGFkZCI8YWRyaWFu
-QGZyZWVic2Qub3JnPjsgPGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnPjsgCkNjOiAKU2VudDog
-MjAxNy0wMS0xOSAo66qpKSAxOToyNjo0NApTdWJqZWN0OiBSZTogQWxsICcwJyBpbiBhZ2dfc3Rh
-dHVzCiAKaGksIGFkcmlhbgoKZmlybXdhcmU6IDEwLjIuNC41OS0yCgpjaGlwc2V0OiBxY2E5ODgw
-Cgpkcml2ZXIgdmVyc2lvbjogYmFja3BvcnRzLTQuNC4yCgpUaGFua3MuCgotLS0tLS0tLS0tLS0t
-LS0KCktpbSBLd2FuZyBNaW4KCk1vYmlsZSArODIgMDEwLTU1MjEtNjM5MyAKTWFpbCBnd29uZG9y
-aUBuaW1idXMua3IgCgoKCgoKCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCkZyb206ICJBZHJp
-YW4gQ2hhZGQiPGFkcmlhbkBmcmVlYnNkLm9yZz4gClRvOiAi6rmA6rSR66+8Ijxnd29uZG9yaUBu
-aW1idXMua3I+OyAKQ2M6ICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyI8YXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmc+OyAi6rCV6rK97JmEIjxiaWdza2FuZ0BuaW1idXMua3I+OyAKU2VudDog
-MjAxNy0wMS0xOCAo7IiYKSAxNjo0MDoyNgpTdWJqZWN0OiBSZTogQWxsICcwJyBpbiBhZ2dfc3Rh
-dHVzCiAKaGl5YQoKd2hpY2ggZmlybXdhcmUsIGNoaXBzZXQsIGRyaXZlciB2ZXJzaW9uIGlzIHRo
-aXMgd2l0aD8KCgotYWRyaWFuCgoKCgoKLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KRnJvbTog
-Iuq5gOq0keuvvCI8Z3dvbmRvcmlAbmltYnVzLmtyPiAKVG86IDxhdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZz47IApDYzogIuqwleqyveyZhCI8Ymlnc2thbmdAbmltYnVzLmtyPjsgClNlbnQ6IDIw
-MTctMDEtMTcgKO2ZlCkgMjA6MzA6MjIKU3ViamVjdDogQWxsICcwJyBpbiBhZ2dfc3RhdHVzCiAK
-VmVyeSByYXJlbHksIEkgZXhwZXJpZW5jZSB0aGUgcHJvYmxlbSB0aGF0IHBhY2tldHMgYXJlIHNl
-cmlvdXMgZHJvcHBlZCBldmVuIHRob3VnaCBhbGwgd2lyZWxlc3Mgc3RhdGVzKGl3Y29uZmlnLCBp
-dyB3bGFuMCBpbmZvLCBmd19zdGF0cywgZXRjLikgYXJlIE9LLgoKVGhpcyBwcm9ibGVtIG9jY3Vy
-cyBvbmx5IGFmdGVyIHRoZSBBUCBhbmQgc3RhdGlvbiBhcmUgYmFkbHkoPykgY29ubmVjdGVkLCBh
-bmQgb25jZSB0aGUgY29ubmVjdGlvbiBpcyBlc3RhYmxpc2hlZCBub3JtYWxseSwgdGhpcyBwcm9i
-bGVtIGRvZXMgbm90IG9jY3VyIG9uIHRoZSBnb29kIGNvbm5lY3Rpb24uIEFuZCBvbmNlIHRoaXMg
-cHJvYmxlbSBvY2N1cnJlZCwgaXQgd29uJ3QgYmUgZml4ZWQgYnkgaXRzZWxmIHVudGlsIHRoZSBB
-UCBhbmQgdGhlIHN0YXRpb24gYXJlIHJlY29ubmVjdGVkLgoKSSBoYXZlIGludmVzdGlnYXRlZCBh
-bmQgSSBoYXZlIGZvdW5kIHR3byBkaWZmZXJlbmNlcyBiZXR3ZWVuIHRoZSBnb29kIGNvbm5lY3Rp
-b24gYW5kIHRoZSBiYWQgY29ubmVjdGlvbi4KClRoZSBvbmUgaXMgdGhlIGVycm9yIG1lc3NhZ2Vz
-IG9uIGRtZXNnLAogICAgPC4uLj4KICAgIFsgMjgyNi40MzI3ODRdIHdsYW4wOiBMaW1pdGluZyBU
-WCBwb3dlciB0byAyMSAoMjQgLSAzKSBkQm0gYXMgYWR2ZXJ0aXNlZCBieSAwNDpmMDoyMToyMDoz
-ODowOQogICAgWyAyODI3LjI5NjkyNV0gd2xhbjA6IFJ4IEEtTVBEVSByZXF1ZXN0IG9uIDA0OmYw
-OjIxOjIwOjM4OjA5IHRpZCAwIHJlc3VsdCAwIAogICAgWyAyODI3LjI5NzQ4M10gd2xhbjA6IFJ4
-IEJBIHNlc3Npb24gc3RvcCByZXF1ZXN0ZWQgZm9yIDA0OmYwOjIxOjIwOjM4OjA5IHRpZCAwIHJl
-Y2lwaWVudCByZWFzb246IDAgPC0tLSBmcm9tIHRoaXMgbGluZQogICAgWyAyODI3LjI5NzU3OF0g
-d2xhbjA6IFJ4IEEtTVBEVSByZXF1ZXN0IG9uIDA0OmYwOjIxOjIwOjM4OjA5IHRpZCAwIHJlc3Vs
-dCAwIAogICAgWyAyODI3LjI5ODY5NF0gd2xhbjA6IFJ4IEJBIHNlc3Npb24gc3RvcCByZXF1ZXN0
-ZWQgZm9yIDA0OmYwOjIxOjIwOjM4OjA5IHRpZCAwIHJlY2lwaWVudCByZWFzb246IDAgCiAgICBb
-IDI4MjkuMDc0NDM5XSB3bGFuMDogUnggQS1NUERVIHJlcXVlc3Qgb24gMDQ6ZjA6MjE6MjA6Mzg6
-MDkgdGlkIDYgcmVzdWx0IDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8LS0gdG8gdGhp
-cyBsaW5lCiAgICA8Li4uPgpUaGUgYW5vdGhlciBkaWZmZXJlbmNlIGlzIGluICJhZ2dfc3RhdHVz
-IiBmaWxlIG9uIFN0YXRpb24gc2lkZSAoL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeTAv
-bmV0ZGV2OndsYW4wL3N0YXRpb25zL1hYOlhYOlhYOlhYOlhYOlhYL2FnZ19zdGF0dXMpLgpBcyBt
-eSBpbnZlc3RpZ2F0aW9uLCB0aGUgZmlsZSBvZiB0aGUgQVAgc2lkZSBhbHdheXMgaGF2ZSBvbmUg
-b3IgdHdvICcxJyBhdCB0aGUgc2Vjb25kIGNvbHVtbi4gQW5kIHRoZSBmaWxlIG9mIHRoZSBzdGF0
-aW9uIHNpZGUgd2l0aG91dCBwcm9ibGVtIGFsc28gaGF2ZSBvbmUgb3IgdHdvICcxJy4gQnV0LCB0
-aGVyZSBpcyBubyAnMScgaW4gdGhlIGZpbGUgb24gdGhlIHN0YXRpb24gd2hlcmUgdGhlIHByb2Js
-ZW0gb2NjdXJyZWQuCiAgICAjbW9yZSAvc3lzL2tlcm5lbC9kZWJ1Zy9pZWVlODAyMTEvcGh5MC9u
-ZXRkZXZcOndsYW4wL3N0YXRpb25zLyovYWdnX3N0YXR1cwogICAgbmV4dCBkaWFsb2dfdG9rZW46
-IDB4MQogICAgVElEICAgICAgICAgICAgICAgIFJYICAgICAgICBEVEtOICAgICAgICBTU04gICAg
-ICAgICAgICAgICAgVFggICAgICAgIERUS04gICAgICAgIHBlbmRpbmcKICAgIDAwICAgICAgICAg
-ICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDB4MDAwICAgICAgICAgICAgICAgIDAgICAgICAg
-IDB4MDAgICAgICAgIDAwMAogICAgMDEgICAgICAgICAgICAgICAgMCAgICAgICAgMHgwMCAgICAg
-ICAgMHgwMDAgICAgICAgICAgICAgICAgMCAgICAgICAgMHgwMCAgICAgICAgMDAwCiAgICAwMiAg
-ICAgICAgICAgICAgICAwICAgICAgICAweDAwICAgICAgICAweDAwMCAgICAgICAgICAgICAgICAw
-ICAgICAgICAweDAwICAgICAgICAwMDAKICAgIDAzICAgICAgICAgICAgICAgIDAgICAgICAgIDB4
-MDAgICAgICAgIDB4MDAwICAgICAgICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDAwMAog
-ICAgMDQgICAgICAgICAgICAgICAgMCAgICAgICAgMHgwMCAgICAgICAgMHgwMDAgICAgICAgICAg
-ICAgICAgMCAgICAgICAgMHgwMCAgICAgICAgMDAwCiAgICAwNSAgICAgICAgICAgICAgICAwICAg
-ICAgICAweDAwICAgICAgICAweDAwMCAgICAgICAgICAgICAgICAwICAgICAgICAweDAwICAgICAg
-ICAwMDAKICAgIDA2ICAgICAgICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDB4MDAwICAg
-ICAgICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDAwMAogICAgMDcgICAgICAgICAgICAg
-ICAgMCAgICAgICAgMHgwMCAgICAgICAgMHgwMDAgICAgICAgICAgICAgICAgMCAgICAgICAgMHgw
-MCAgICAgICAgMDAwCiAgICAwOCAgICAgICAgICAgICAgICAwICAgICAgICAweDAwICAgICAgICAw
-eDAwMCAgICAgICAgICAgICAgICAwICAgICAgICAweDAwICAgICAgICAwMDAKICAgIDA5ICAgICAg
-ICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDB4MDAwICAgICAgICAgICAgICAgIDAgICAg
-ICAgIDB4MDAgICAgICAgIDAwMAogICAgMTAgICAgICAgICAgICAgICAgMCAgICAgICAgMHgwMCAg
-ICAgICAgMHgwMDAgICAgICAgICAgICAgICAgMCAgICAgICAgMHgwMCAgICAgICAgMDAwCiAgICAx
-MSAgICAgICAgICAgICAgICAwICAgICAgICAweDAwICAgICAgICAweDAwMCAgICAgICAgICAgICAg
-ICAwICAgICAgICAweDAwICAgICAgICAwMDAKICAgIDEyICAgICAgICAgICAgICAgIDAgICAgICAg
-IDB4MDAgICAgICAgIDB4MDAwICAgICAgICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDAw
-MAogICAgMTMgICAgICAgICAgICAgICAgMCAgICAgICAgMHgwMCAgICAgICAgMHgwMDAgICAgICAg
-ICAgICAgICAgMCAgICAgICAgMHgwMCAgICAgICAgMDAwCiAgICAxNCAgICAgICAgICAgICAgICAw
-ICAgICAgICAweDAwICAgICAgICAweDAwMCAgICAgICAgICAgICAgICAwICAgICAgICAweDAwICAg
-ICAgICAwMDAKICAgIDE1ICAgICAgICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDB4MDAw
-ICAgICAgICAgICAgICAgIDAgICAgICAgIDB4MDAgICAgICAgIDAwMAoKQ291bGQgeW91IHRlbGwg
-bWUgd2hhdCBJIGhhdmUgdG8gZG8/ClNob3VsZCBvbmUgbW9yZSAnMScgZXhpc3QgYXQgdGhlIHNl
-Y29uZCBjb2x1bW5zIG9mICJhZ2dfc3RhdHVzIj8gSW4gb3RoZXIgd29yZHMsIGlzIGl0IHByb2Js
-ZW0gaWYgdGhlcmUgaXMgbm8gJzEnIGluIHRoZSBzZWNvbmQgY29sdW1uIG9mIGFnZ19zdGF0dXM/
-CgpJZiB5b3Uga25vdyBob3cgdG8gZml4IHRoaXMsIHBsZWFzZSBsZXQgbWUga25vdyB0aGF0LiAK
-Ci0tLS0tLS0tLS0tLS0tLQoKS2ltIEt3YW5nIE1pbgoKTW9iaWxlICs4MiAwMTAtNTUyMS02Mzkz
-IApNYWlsIGd3b25kb3JpQG5pbWJ1cy5rciAgCgoKCg==
-------=_Part_585483_178015022.1487060797544--
-
-
---===============1012921042000838778==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============1012921042000838778==--
