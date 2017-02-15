@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cdhM8-0007MR-A8
- for ath10k@lists.infradead.org; Tue, 14 Feb 2017 17:57:38 +0000
-MIME-Version: 1.0
-Subject: Re: ath10k: fix the garage chars in board file name creation
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1486758429-18665-1-git-send-email-ryanhsu@qca.qualcomm.com>
-References: <1486758429-18665-1-git-send-email-ryanhsu@qca.qualcomm.com>
-Message-ID: <f72df9cd8ee6421c815bb7ed5a714908@eusanexr01a.eu.qualcomm.com>
-Date: Tue, 14 Feb 2017 09:57:10 -0800
+ id 1cduPd-0001xz-TY
+ for ath10k@lists.infradead.org; Wed, 15 Feb 2017 07:54:08 +0000
+Message-ID: <1487145218.4026.3.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 1/2] cfg80211: Add support to set tx power for a
+ station associated
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 15 Feb 2017 08:53:38 +0100
+In-Reply-To: <1486554984-25097-1-git-send-email-arnagara@qti.qualcomm.com>
+References: <1486554984-25097-1-git-send-email-arnagara@qti.qualcomm.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +23,36 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+Cc: arnagara@codeaurora.org, ath10k@lists.infradead.org
 
-UnlhbiBIc3UgPHJ5YW5oc3VAcWNhLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4gRnJvbTogUnlhbiBI
-c3UgPHJ5YW5oc3VAcWNhLnF1YWxjb21tLmNvbT4KPiAKPiBUaGUgdmFyaWFudFtdIHN0cmluZyB3
-aWxsIGJlIHZhbGlkIG9ubHkgaWYgdGhlIGJkZl9leHQgaXMgc2V0Lgo+IAo+IFRoZSBzdHJpbmcg
-bWVtb3J5IG5lZWRzIHRvIGJlIG51bGwtdGVybWluYXRlZCB0byBhdm9pZCB0aGUgdW5kZWZpbmVk
-IGdhcmJhZ2UKPiBhcHBlbmRlZCBieSB0aGUgc3Vic2VxdWVudCBib2FyZCBmaWxlIG5hbWUgY3Jl
-YXRpb24uCj4gCj4gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6IGZhaWxlZCB0byBmZXRjaCBib2Fy
-ZCBkYXRhIGZvcgo+ICJidXM9cGNpLHZlbmRvcj0xNjhjLGRldmljZT0wMDNlLHN1YnN5c3RlbS12
-ZW5kb3I9MTY4YyxzdWJzeXN0ZW0tZGV2aWNlPTMzNjPvv73vv71Q77+977+977+977+977+9Igo+
-IGZyb20gYXRoMTBrL1FDQTYxNzQvaHczLjAvYm9hcmQtMi5iaW4KPiAKPiBGaXhlczogZjI1OTNj
-YjFiMjkxICgiYXRoMTBrOiBTZWFyY2ggU01CSU9TIGZvciBPRU0gYm9hcmQgZmlsZSBleHRlbnNp
-b24iKQo+IFJlcG9ydGVkLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPgo+
-IFNpZ25lZC1vZmYtYnk6IFJ5YW4gSHN1IDxyeWFuaHN1QHFjYS5xdWFsY29tbS5jb20+CgpQYXRj
-aCBhcHBsaWVkIHRvIGF0aC1uZXh0IGJyYW5jaCBvZiBhdGguZ2l0LCB0aGFua3MuCgphNTMyMjkz
-ZmNiYTQgYXRoMTBrOiBmaXggdGhlIGdhcmFnZSBjaGFycyBpbiBib2FyZCBmaWxlIG5hbWUgY3Jl
-YXRpb24KCi0tIApodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzk1Njc0NjkvCgpE
-b2N1bWVudGF0aW9uIGFib3V0IHN1Ym1pdHRpbmcgd2lyZWxlc3MgcGF0Y2hlcyBhbmQgY2hlY2tp
-bmcgc3RhdHVzCmZyb20gcGF0Y2h3b3JrOgoKaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5v
-cmcvZW4vZGV2ZWxvcGVycy9kb2N1bWVudGF0aW9uL3N1Ym1pdHRpbmdwYXRjaGVzCgoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Cj4gKyAqIEB0eHB3cjogdHggcG93ZXIgKGluIG1CbSkgdG8gYmUgdXNlZCBmb3Igc2VuZGluZyBk
+YXRhIHRyYWZmaWMuIElmCj4gdHggcG93ZXIKPiArICoJaXMgbm90IHByb3ZpZGVkLCB0aGUgZGVm
+YXVsdCBwZXItaW50ZXJmYWNlIHR4IHBvd2VyCj4gc2V0dGluZyB3aWxsIGJlCj4gKyAqCW92ZXJy
+aWRpbmcuIERyaXZlciBzaG91bGQgYmUgcGlja2luZyB1cCB0aGUgbG93ZXN0IHR4Cj4gcG93ZXIs
+IGVpdGhlciB0eAo+ICsgKglwb3dlciBwZXItaW50ZXJmYWNlIG9yIHBlci1zdGF0aW9uLgo+IMKg
+ICovCj4gwqBzdHJ1Y3Qgc3RhdGlvbl9wYXJhbWV0ZXJzIHsKPiDCoAljb25zdCB1OCAqc3VwcG9y
+dGVkX3JhdGVzOwo+IEBAIC04NzYsNiArODgxLDcgQEAgc3RydWN0IHN0YXRpb25fcGFyYW1ldGVy
+cyB7Cj4gwqAJdTggb3Btb2RlX25vdGlmOwo+IMKgCWJvb2wgb3Btb2RlX25vdGlmX3VzZWQ7Cj4g
+wqAJaW50IHN1cHBvcnRfcDJwX3BzOwo+ICsJdTE2IHR4cHdyOwo+IMKgfTsKCldvdWxkbid0IGl0
+IGJlIGJldHRlciB0byBhZGQgdGhlIHR4IHBvd2VyIHR5cGUgKGxpbWl0ZWQvYXV0b21hdGljKSBo
+ZXJlCmFzIHdlbGw/IFRoYXQgd2F5LCB3ZSBkb24ndCBoYXZlIHRvIHBsYXkgZ2FtZXMgd2l0aCAw
+IG1lYW5pbmcgYXV0b21hdGljCih3aGljaCB5b3UgZGlkbid0IGV2ZW4gZG9jdW1lbnQsIGJ1dCBz
+ZWVtcyB0byBiZSB0aGUgY2FzZSksIHdoZW4gaW4KZmFjdCAwZEJtIGNvdWxkIHRlY2huaWNhbGx5
+IGJlIGEgdmFsaWQgVFggcG93ZXIgYXMgd2VsbC4KCj4gKwlpZHggPSBOTDgwMjExX0FUVFJfU1RB
+X1RYX1BPV0VSX1NFVFRJTkc7Cj4gKwl0eXBlID0gbmxhX2dldF91MzIoaW5mby0+YXR0cnNbaWR4
+XSk7Cj4gKwo+ICsJaWYgKCFpbmZvLT5hdHRyc1tOTDgwMjExX0FUVFJfU1RBX1RYX1BPV0VSXSAm
+Jgo+ICsJwqDCoMKgwqAodHlwZSAhPSBOTDgwMjExX1RYX1BPV0VSX0FVVE9NQVRJQykpCj4gKwkJ
+cmV0dXJuIC1FSU5WQUw7Cj4gKwo+ICsJaWYgKHR5cGUgIT0gTkw4MDIxMV9UWF9QT1dFUl9BVVRP
+TUFUSUMpIHsKPiArCQlpZiAodHlwZSA9PSBOTDgwMjExX1RYX1BPV0VSX0xJTUlURUQpIHsKPiAr
+CQkJaWR4ID0gTkw4MDIxMV9BVFRSX1NUQV9UWF9QT1dFUjsKPiArCQkJcGFyYW1zLT50eHB3ciA9
+IG5sYV9nZXRfdTMyKGluZm8tCj4gPmF0dHJzW2lkeF0pOwo+ICsJCX0gZWxzZSB7Cj4gKwkJCXJl
+dHVybiAtRUlOVkFMOwo+ICsJCX0KPiArCX0gZWxzZSB7Cj4gKwkJcGFyYW1zLT50eHB3ciA9IDA7
+Cj4gKwl9CgpUaGlzIGNvdWxkIGJlIG5pY2VyIHVzaW5nIGEgc3dpdGNoIG9uIHRoZSB0eXBlLCBw
+ZXJoYXBzPwoKPiArCWlmIChpbmZvLT5hdHRyc1tOTDgwMjExX0FUVFJfU1RBX1RYX1BPV0VSX1NF
+VFRJTkddKSB7Cj4gKwkJZXJyID0gbmw4MDIxMV9wYXJzZV9zdGFfdHhwb3dlcl9zZXR0aW5nKGlu
+Zm8sCiZwYXJhbXMpOwo+ICsJCWlmIChlcnIpCj4gKwkJCXJldHVybiBlcnI7Cj4gKwl9CgpXaHkg
+bm90IG1vdmUgdGhlIGNoZWNrIHRoYXQgdGhlIGF0dHJpYnV0ZSBleGlzdHMgaW50byB0aGUgZnVu
+Y3Rpb24/Cgpqb2hhbm5lcwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
