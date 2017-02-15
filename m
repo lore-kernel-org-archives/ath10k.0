@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cduPd-0001xz-TY
- for ath10k@lists.infradead.org; Wed, 15 Feb 2017 07:54:08 +0000
-Message-ID: <1487145218.4026.3.camel@sipsolutions.net>
-Subject: Re: [PATCH v3 1/2] cfg80211: Add support to set tx power for a
- station associated
+ id 1cduSj-0003PX-CF
+ for ath10k@lists.infradead.org; Wed, 15 Feb 2017 07:57:19 +0000
+Message-ID: <1487145412.4026.5.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 2/2] mac80211: store tx power value from user to station
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 15 Feb 2017 08:53:38 +0100
-In-Reply-To: <1486554984-25097-1-git-send-email-arnagara@qti.qualcomm.com>
-References: <1486554984-25097-1-git-send-email-arnagara@qti.qualcomm.com>
+Date: Wed, 15 Feb 2017 08:56:52 +0100
+In-Reply-To: <1486555011-25143-1-git-send-email-arnagara@qti.qualcomm.com>
+References: <1486555011-25143-1-git-send-email-arnagara@qti.qualcomm.com>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,40 +18,22 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 Cc: arnagara@codeaurora.org, ath10k@lists.infradead.org
 
-Cj4gKyAqIEB0eHB3cjogdHggcG93ZXIgKGluIG1CbSkgdG8gYmUgdXNlZCBmb3Igc2VuZGluZyBk
-YXRhIHRyYWZmaWMuIElmCj4gdHggcG93ZXIKPiArICoJaXMgbm90IHByb3ZpZGVkLCB0aGUgZGVm
-YXVsdCBwZXItaW50ZXJmYWNlIHR4IHBvd2VyCj4gc2V0dGluZyB3aWxsIGJlCj4gKyAqCW92ZXJy
-aWRpbmcuIERyaXZlciBzaG91bGQgYmUgcGlja2luZyB1cCB0aGUgbG93ZXN0IHR4Cj4gcG93ZXIs
-IGVpdGhlciB0eAo+ICsgKglwb3dlciBwZXItaW50ZXJmYWNlIG9yIHBlci1zdGF0aW9uLgo+IMKg
-ICovCj4gwqBzdHJ1Y3Qgc3RhdGlvbl9wYXJhbWV0ZXJzIHsKPiDCoAljb25zdCB1OCAqc3VwcG9y
-dGVkX3JhdGVzOwo+IEBAIC04NzYsNiArODgxLDcgQEAgc3RydWN0IHN0YXRpb25fcGFyYW1ldGVy
-cyB7Cj4gwqAJdTggb3Btb2RlX25vdGlmOwo+IMKgCWJvb2wgb3Btb2RlX25vdGlmX3VzZWQ7Cj4g
-wqAJaW50IHN1cHBvcnRfcDJwX3BzOwo+ICsJdTE2IHR4cHdyOwo+IMKgfTsKCldvdWxkbid0IGl0
-IGJlIGJldHRlciB0byBhZGQgdGhlIHR4IHBvd2VyIHR5cGUgKGxpbWl0ZWQvYXV0b21hdGljKSBo
-ZXJlCmFzIHdlbGw/IFRoYXQgd2F5LCB3ZSBkb24ndCBoYXZlIHRvIHBsYXkgZ2FtZXMgd2l0aCAw
-IG1lYW5pbmcgYXV0b21hdGljCih3aGljaCB5b3UgZGlkbid0IGV2ZW4gZG9jdW1lbnQsIGJ1dCBz
-ZWVtcyB0byBiZSB0aGUgY2FzZSksIHdoZW4gaW4KZmFjdCAwZEJtIGNvdWxkIHRlY2huaWNhbGx5
-IGJlIGEgdmFsaWQgVFggcG93ZXIgYXMgd2VsbC4KCj4gKwlpZHggPSBOTDgwMjExX0FUVFJfU1RB
-X1RYX1BPV0VSX1NFVFRJTkc7Cj4gKwl0eXBlID0gbmxhX2dldF91MzIoaW5mby0+YXR0cnNbaWR4
-XSk7Cj4gKwo+ICsJaWYgKCFpbmZvLT5hdHRyc1tOTDgwMjExX0FUVFJfU1RBX1RYX1BPV0VSXSAm
-Jgo+ICsJwqDCoMKgwqAodHlwZSAhPSBOTDgwMjExX1RYX1BPV0VSX0FVVE9NQVRJQykpCj4gKwkJ
-cmV0dXJuIC1FSU5WQUw7Cj4gKwo+ICsJaWYgKHR5cGUgIT0gTkw4MDIxMV9UWF9QT1dFUl9BVVRP
-TUFUSUMpIHsKPiArCQlpZiAodHlwZSA9PSBOTDgwMjExX1RYX1BPV0VSX0xJTUlURUQpIHsKPiAr
-CQkJaWR4ID0gTkw4MDIxMV9BVFRSX1NUQV9UWF9QT1dFUjsKPiArCQkJcGFyYW1zLT50eHB3ciA9
-IG5sYV9nZXRfdTMyKGluZm8tCj4gPmF0dHJzW2lkeF0pOwo+ICsJCX0gZWxzZSB7Cj4gKwkJCXJl
-dHVybiAtRUlOVkFMOwo+ICsJCX0KPiArCX0gZWxzZSB7Cj4gKwkJcGFyYW1zLT50eHB3ciA9IDA7
-Cj4gKwl9CgpUaGlzIGNvdWxkIGJlIG5pY2VyIHVzaW5nIGEgc3dpdGNoIG9uIHRoZSB0eXBlLCBw
-ZXJoYXBzPwoKPiArCWlmIChpbmZvLT5hdHRyc1tOTDgwMjExX0FUVFJfU1RBX1RYX1BPV0VSX1NF
-VFRJTkddKSB7Cj4gKwkJZXJyID0gbmw4MDIxMV9wYXJzZV9zdGFfdHhwb3dlcl9zZXR0aW5nKGlu
-Zm8sCiZwYXJhbXMpOwo+ICsJCWlmIChlcnIpCj4gKwkJCXJldHVybiBlcnI7Cj4gKwl9CgpXaHkg
-bm90IG1vdmUgdGhlIGNoZWNrIHRoYXQgdGhlIGF0dHJpYnV0ZSBleGlzdHMgaW50byB0aGUgZnVu
-Y3Rpb24/Cgpqb2hhbm5lcwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+
+> + * @txpwr: indicates the tx power, in mBm, to be used when sending data frames
++ *	to the STA. Value of 0 means, automatic (default) tx power.
+
+Similarly here, I'm not too sure about 0 meaning automatic.
+
+johannes
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
