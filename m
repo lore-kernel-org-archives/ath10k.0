@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cduYt-0005uk-Js
- for ath10k@lists.infradead.org; Wed, 15 Feb 2017 08:03:41 +0000
-Message-ID: <1487145795.4026.9.camel@sipsolutions.net>
-Subject: Re: [PATCH v3] iw: Add support for controlling tx power for per
- station
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 15 Feb 2017 09:03:15 +0100
-In-Reply-To: <1486555277-25258-1-git-send-email-arnagara@qti.qualcomm.com>
- (sfid-20170208_131118_350049_87BE682C)
-References: <1486555277-25258-1-git-send-email-arnagara@qti.qualcomm.com>
- (sfid-20170208_131118_350049_87BE682C)
-Mime-Version: 1.0
+ id 1cdvrw-00014O-6m
+ for ath10k@lists.infradead.org; Wed, 15 Feb 2017 09:27:26 +0000
+MIME-Version: 1.0
+Subject: Re: ath10k: Configure rxnss_override for 10.4 firmware.
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1486771745-15150-1-git-send-email-greearb@candelatech.com>
+References: <1486771745-15150-1-git-send-email-greearb@candelatech.com>
+Message-ID: <e379002d2a6a4563baefb435b4552586@eusanexr01a.eu.qualcomm.com>
+Date: Wed, 15 Feb 2017 01:26:58 -0800
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +22,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
-Cc: arnagara@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-
-> +		sta_txpwr = strtoul(argv[0], &err, 0);
-
-you should error-check this.
-
-> +		NLA_PUT_U32(msg, NL80211_ATTR_STA_TX_POWER,
-> sta_txpwr);
-> +	}
-
-> +}
-> +COMMAND_ALIAS(station, set, "<MAC address> txpwr <auto|limit> [<tx
-> power mBm>]",
+Ben Greear <greearb@candelatech.com> wrote:
+> From: Ben Greear <greearb@candelatech.com>
 > 
+> QCA9984 hardware can do 4x4 at 80Mhz, but only 2x2 at 160Mhz.
+> 
+> First, report this to user-space by setting the max-tx-speed
+> and max-rx-speed vht capabilities.
+> 
+> Second, if the peer rx-speed is configured, and if we
+> are in 160 or 80+80 mode, and the peer rx-speed matches
+> the max speed for 2x2 or 1x1 at 160Mhz (long guard interval),
+> then use that info to set the peer_bw_rxnss_override appropriately.
+> 
+> Without this, a 9984 firmware will not use 2x2 ratesets when
+> transmitting to peer (it will be stuck at 1x1), because
+> the firmware would not have configured the rxnss_override.
+> 
+> This could use some testing....
+> 
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-Seems like that should be
+Does not apply:
 
-<MAC address> txpwr <auto|limit <tx power dBm>>
+error: patch failed: drivers/net/wireless/ath/ath10k/mac.c:2760
+error: drivers/net/wireless/ath/ath10k/mac.c: patch does not apply
+error: patch failed: drivers/net/wireless/ath/ath10k/wmi.h:6173
+error: drivers/net/wireless/ath/ath10k/wmi.h: patch does not apply
+stg import: Diff does not apply cleanly
 
-or so?
+Patch set to Changes Requested.
 
-I made that dBm there, doing that and parsing floating point numbers
-would be nice I think.
+-- 
+https://patchwork.kernel.org/patch/9567655/
 
-johannes
+Documentation about submitting wireless patches and checking status
+from patchwork:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
