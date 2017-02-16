@@ -1,33 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ceP1Y-0006Ac-DL
- for ath10k@lists.infradead.org; Thu, 16 Feb 2017 16:35:20 +0000
-References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
- <CAHNKnsT8mzHefrnC4ybrR8T16dAqc4G_SDGesxdU7+81xhuYpw@mail.gmail.com>
- <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>
- <87y3xtrmn2.fsf@kamboji.qca.qualcomm.com>
- <44480bab-0cf7-f4e3-7612-b1cf5d4c040f@dd-wrt.com>
- <1a58440c-80c9-0a86-aae9-213edc5b0019@candelatech.com>
- <ed765a12-6ae8-ed78-6626-ae82312ba525@dd-wrt.com>
- <8bcf2ea6-802f-f249-8e2d-96ec03553a9b@candelatech.com>
- <23b1bd75-a7f9-08e7-5d7b-f67081b89e1b@candelatech.com>
- <5e23ea91-429e-eff6-7443-e4d4f5981735@dd-wrt.com>
- <785bdbc1-fcf5-921b-2092-6142d51aa0ce@candelatech.com>
- <87poiu42r2.fsf@qca.qualcomm.com>
- <2c29c0e6-a207-9d40-fa8d-dc5e54f9c468@dd-wrt.com>
- <87y3xeilor.fsf@kamboji.qca.qualcomm.com>
- <c894f9ae-068a-eac3-16e6-c1ada4da22b9@dd-wrt.com>
- <87inodrro1.fsf@kamboji.qca.qualcomm.com>
- <83f88c82-0ea5-2962-a385-bf38946c846d@dd-wrt.com>
- <CAJ-VmokKhrZ0aAMyYydr=v5HM4R9ep=YLMP=cJV+k6ZUmpPz1A@mail.gmail.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <6c087c70-8b82-2733-00e3-a6f9bb4e4a82@dd-wrt.com>
-Date: Thu, 16 Feb 2017 17:34:50 +0100
+ id 1ceQWs-0004Il-Jb
+ for ath10k@lists.infradead.org; Thu, 16 Feb 2017 18:11:45 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id r141so21679501wmg.1
+ for <ath10k@lists.infradead.org>; Thu, 16 Feb 2017 10:11:20 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAJ-VmokKhrZ0aAMyYydr=v5HM4R9ep=YLMP=cJV+k6ZUmpPz1A@mail.gmail.com>
-Subject: Re: 9984 VHT
+In-Reply-To: <a1743d94-25bb-b273-6626-dbb283479540@quicksilver.com>
+References: <a1743d94-25bb-b273-6626-dbb283479540@quicksilver.com>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Thu, 16 Feb 2017 10:11:18 -0800
+Message-ID: <CAJ-VmomjtZcp4SSRBbRT5Qa19EjEg-j9Y2cJ_Q_k6S97M+nuKw@mail.gmail.com>
+Subject: Re: Does ath10k's spectral scan support I/Q or phase-magnitude?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -36,110 +20,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michael Everett Feder <mfeder@quicksilver.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-QW0gMTYuMDIuMjAxNyB1bSAxNzoyMCBzY2hyaWViIEFkcmlhbiBDaGFkZDoKPiBhaWVlLCBzb21l
-IGNsaWVudHMgbWVzc2VkIHVwIGZyZXExL2ZyZXEyIGhhbmRsaW5nIGluIHRoaXMgd2F5PwphcyBp
-dCBzZWVtcy4gYnV0IGkgaGF2ZSBubyBwcm9vZiBmb3IgdGhpcy4gaSBqdXN0IHJlYWRlZCB0aGUg
-Y29tbWVudCBvZiAKdGhlIGhvc3RhcGQgcGF0Y2gKYnV0IHdoYXQgaSBrbm93IGlzIHRoYXQgYnJl
-YWtpbmcgdGhlIGFwaSBieSBoYW5kbGluZyB0aGlzIHdpdGhpbiB0aGUgCmZpcm13YXJlIGl0c2Vs
-ZiBpbnN0ZWFkIG9mIGhhbmRsaW5nIGl0IGluIHRoZSBhY2Nlc3NpYmxlIGRyaXZlciBvciAKaG9z
-dGFwZCBpcyBhIGJhZCBkZWNpc2lvbgo+Cj4KPgo+IC1hZHJpYW4KPgo+IE9uIDE0IEZlYnJ1YXJ5
-IDIwMTcgYXQgMDc6MjEsIFNlYmFzdGlhbiBHb3R0c2NoYWxsCj4gPHMuZ290dHNjaGFsbEBkZC13
-cnQuY29tPiB3cm90ZToKPj4gQW0gMTQuMDIuMjAxNyB1bSAxMTozMCBzY2hyaWViIFZhbG8sIEth
-bGxlOgo+Pj4gKHlvdSBmb3Jnb3QgdG8gQ0MgYXRoMTBrIGxpc3QsIGFkZGluZyBpdCBiYWNrKQo+
-Pj4KPj4+IFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4gd3Jp
-dGVzOgo+Pj4KPj4+PiBBbSAxMC4wMi4yMDE3IHVtIDA3OjUwIHNjaHJpZWIgVmFsbywgS2FsbGU6
-Cj4+Pj4+IFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4gd3Jp
-dGVzOgo+Pj4+Pgo+Pj4+Pj4gQW0gMDcuMDIuMjAxNyB1bSAxMzoxNCBzY2hyaWViIFZhbG8sIEth
-bGxlOgo+Pj4+Pj4+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cml0ZXM6
-Cj4+Pj4+Pj4KPj4+Pj4+Pj4gT24gMDIvMDIvMjAxNyAxMDo0MiBBTSwgU2ViYXN0aWFuIEdvdHRz
-Y2hhbGwgd3JvdGU6Cj4+Pj4+Pj4+PiBBbSAwMi4wMi4yMDE3IHVtIDE5OjI0IHNjaHJpZWIgQmVu
-IEdyZWVhcjoKPj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4gSSBoYWNrZWQgYXRoMTBrIHRvIGVuYWJsZSBy
-YWRhciBkZXRlY3Rpb24gb24gMTYwTWh6IGJhbmR3aWR0aHMuIE5vdwo+Pj4+Pj4+Pj4+IGhvc3Rh
-cGQKPj4+Pj4+Pj4+PiBzdGFydHMuCj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+PiBJIGNhbiByZXByb2R1
-Y2UgdGhlIEZXIGZhaWx1cmUuIEl0IGlzIGJlY2F1c2UgRlcgMy4zLTI1IHJlbGVhc2UKPj4+Pj4+
-Pj4+PiBzdGFydGVkIGFzc2VydGluZwo+Pj4+Pj4+Pj4+IGlmIHRoZSBmcmVxMiB3YXMgemVybyBp
-biBWSFQxNjAgbW9kZS4gSXQgc2VlbXMgdG8gdXNlIGJvdGggZnJlcTEKPj4+Pj4+Pj4+PiBhbmQg
-ZnJlcTIsIGFuZCBub3QKPj4+Pj4+Pj4+PiBob3cgdGhlIGRyaXZlciBvciBsaW51eCBzZWVtcyB0
-byBub3JtYWxseSB1c2UgdGhlbS4KPj4+Pj4+Pj4+IGl0cyBldmVuIHdvcnNlLiBzdGFydGluZyBm
-cm9tIDMuMyBpdCB1c2VzIGZyZXEyIGluc3RlYWQgb2YgZnJlcTEuCj4+Pj4+Pj4+PiBidXQgaSBt
-YWRlIGEgcGF0Y2ggZm9yIGl0LiBidXQgaXQgc3RpbGwgd29udCB3b3JrLiB2ZGV2X3N0YXJ0IHN0
-aWxsCj4+Pj4+Pj4+PiBmYWlscwo+Pj4+Pj4+PiBXZWxsIGl0IHdvdWxkIGhhdmUgYmVlbiBoZWxw
-ZnVsIGZyb20gdGhlIHN0YXJ0IHRvIGhhdmUga25vd24gYWJvdXQKPj4+Pj4+Pj4gdGhpcyBwYXRj
-aC4KPj4+Pj4+Pj4KPj4+Pj4+Pj4gQ291bGQgeW91IHBvc3QgaXQ/Cj4+Pj4+Pj4+Cj4+Pj4+Pj4+
-IEthbGxlOiBTaW5jZSB0aGUgZmlybXdhcmUgQVBJIGNoYW5nZWQsIGhvdyBkbyB5b3Ugd2FudCB0
-byBoYW5kbGUKPj4+Pj4+Pj4gdGhlIGRpZmZlcmVuY2VzIGhlcmU/Cj4+Pj4+Pj4gVGhlIGZpcm13
-YXJlIEFQSSBzaG91bGRuJ3QgY2hhbmdlIGxpa2UgdGhhdCwgYnV0IGlmIGl0IGhhcyBJIGd1ZXNz
-IGEKPj4+Pj4+PiBmaXJtd2FyZSBmZWF0dXJlIGZsYWcgdG8gZW5hYmxlIGEgd29ya2Fyb3VuZCBp
-biBhdGgxMGsgc291bmRzIGxpa2UgdGhlCj4+Pj4+Pj4gZWFzaWVzdCBzb2x1dGlvbi4KPj4+Pj4+
-IHRoZSBtb3JlIHJlY2VudCBmaXJtd2FyZSBoYXZlIHNvbWUgbmV3IHdtaSBzZXJ2aWNlcyBlbmFi
-bGVkIHdoaWNoIGNhbgo+Pj4+Pj4gYmUgdXNlZCBhcyBpbmRpY2F0b3IgYXMgd2VsbC4KPj4+Pj4g
-SSBkb24ndCBrbm93IHdoYXQgZmxhZyBleGFjdGx5IHlvdSBhcmUgcmVmZXJyaW5nIHRvLCBidXQg
-dXNpbmcgYSBXTUkKPj4+Pj4gc2VydmljZSBmbGFnIHRvIGRldGVjdCB0aGlzIGlzIG5vdCByZWFs
-bHkgcmVsaWFibGUuIFRoZXkgY2FuIGJlIGVuYWJsZWQKPj4+Pj4gb3IgZGlzYWJsZWQgYmV0d2Vl
-biBicmFuY2hlcywgb3IgZXZlbiBiZXR3ZWVuIGJ1aWxkcy4KPj4+PiB2YWxpZCBhcmd1bWVudC4g
-YnV0IHRoZXNlIGZsYWdzIHNob3VsZCB0aGFuIGJlIGFsc28gaW50cm9kdWNlZCBpbgo+Pj4+IGNv
-ZGVhdXJvcmEgaW1hZ2VzCj4+PiBJJ20gbm90IGludm9sdmVkIHdpdGggY29kZWF1cm9yYSBpbWFn
-ZXMgc28gSSBjYW4ndCBoZWxwIHdpdGggdGhhdC4KPj4+Cj4+PiBCdXQgdGhlIGZpcm13YXJlIGlz
-IG5vdCBzdXBwb3NlZCB0byBicmVhayB0aGUgZmlybXdhcmUgaW50ZXJmYWNlIGxpa2UKPj4+IHRo
-aXMuIENhbiBzb21lb25lIHBsZWFzZSB3cml0ZSBhIGRldGFpbGVkIGJ1ZyByZXBvcnQgYXMgYSBy
-ZXBseSB0byB0aGlzCj4+PiBtYWlsICh3aGF0IHZlcnNpb24sIGZyb20gd2hpY2ggbG9jYXRpb24s
-IGhvdyBleGFjdGx5IHRoZSBpbnRlcmZhY2UgaXMKPj4+IGJyb2tlbikgYW5kIEknbGwgdHJ5IHRv
-IHJlcG9ydCB0aGUgaXNzdWUgaW50ZXJuYWxseS4KPj4gaSdtIG5vdCBnb29kIGluIHRoaXMuIGJ1
-dCBsZXQgbWUgdHJ5IHRvIGRlc2NyaWJlIHdoYXRzIHdyb25nCj4+IGFsbCB0aGUgY3VycmVudCBm
-aXJtd2FyZSBpbWFnZXMgaW5jbHVkaW5nIHlvdXIgbGF0ZXN0IDMuMyBiYXNlZCBzdWZmZXIgZnJv
-bQo+PiB0aGlzIGlzc3VlLgo+PiBvbGQgYmVoYXZpb3VyIHdpdGgKPj4gaHR0cHM6Ly9naXRodWIu
-Y29tL2t2YWxvL2F0aDEway1maXJtd2FyZS9yYXcvbWFzdGVyL1FDQTk5ODQvaHcxLjAvZmlybXdh
-cmUtNS5iaW5fMTAuNC0zLjItMDAwNzIKPj4gY2VudGVyIGZyZXEgaXMgc3RvcmVkIGluIGJhbmRf
-Y2VudGVyX2ZyZXExCj4+Cj4+IG5ldyBiZWhhdmlvdXIgd2l0aAo+PiBodHRwczovL2dpdGh1Yi5j
-b20va3ZhbG8vYXRoMTBrLWZpcm13YXJlL3Jhdy9tYXN0ZXIvUUNBOTk4NC9odzEuMC8zLjMvZmly
-bXdhcmUtNS5iaW5fMTAuNC0zLjMtMDAwOTIKPj4gYW5kIGFsbCBvdGhlciBuZXdlcnMgaW5jbHVk
-aW5nIDMuNCBzZXJpZXMKPj4gY2VudGVyIGZyZXEgaXMgc3RvcmVkIGluIGJhbmRfY2VudGVyX2Zy
-ZXEyLiB3aGVyZSBjZW50ZXJfZnJlcTEgbXVzdCBjb250YWluCj4+IHRoZSBsb3dlciBvciB1cHBl
-ciBzaWRlIGNoYW5uZWwgZGVwZW5kaW5nIG9uIHRoZSBzZXR0aW5nCj4+Cj4+IGV4YW1wbGUgZm9y
-IG5ldyBmaXJtd2FyZSBpbiAgYXRoMTBrX3dtaV9wdXRfd21pX2NoYW5uZWwKPj4gICAgICAgICAg
-aWYgKGFyZy0+bW9kZSA9PSBNT0RFXzExQUNfVkhUMTYwKSAgewo+PiAgICAgICAgICAgICAgICAg
-IGlmIChhcmctPmZyZXEgPCBhcmctPmJhbmRfY2VudGVyX2ZyZXExKQo+PiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgY2gtPmJhbmRfY2VudGVyX2ZyZXExID0KPj4gX19jcHVfdG9fbGUzMihhcmct
-PmJhbmRfY2VudGVyX2ZyZXExIC0gNDApOwo+PiAgICAgICAgICAgICAgICAgIGVsc2UKPj4gICAg
-ICAgICAgICAgICAgICAgICAgICAgIGNoLT5iYW5kX2NlbnRlcl9mcmVxMSA9Cj4+IF9fY3B1X3Rv
-X2xlMzIoYXJnLT5iYW5kX2NlbnRlcl9mcmVxMSArIDQwKTsKPj4gICAgICAgICAgICAgICAgICBj
-aC0+YmFuZF9jZW50ZXJfZnJlcTIgPQo+PiBfX2NwdV90b19sZTMyKGFyZy0+YmFuZF9jZW50ZXJf
-ZnJlcTEpOwo+PiAgICAgICAgICB9Cj4+Cj4+IGFjY29yZGluZyB0byBzb21lIGNvZGUgaSBmb3Vu
-ZCBpbiBob3N0YXBkIHRoaXMgaGFzIGJlZW4gbWFkZSB0byB3b3JrYXJvdW5kIGEKPj4gaXNzdWUg
-d2l0aCB2aHQ4MCBjYXBhYmxlIGNsaWVudCB3aG8gYXJlbnQgYWJsZSB0byBhc3NvY2lhdGUgd2l0
-aCB2aHQxNjAKPj4gbmV0d29ya3MuCj4+IHRoZSBzYW1lIHdvcmthcm91bmQgaGFzIGJlZW4gaW1w
-bGVtZW50ZWQgaW4gcmVjZW50IGhvc3RhcGQgdmVyc2lvbnMuIHNvCj4+IHNvbHZpbmcgdGhpcyBv
-biBmaXJtd2FyZSBzaWRlIGlzbnQgbmVjY2Vzc2FyeSwgYnV0IHFjYSB3YXMgZ29pbmcgdGhpcyB3
-YXkKPj4KPj4gc2VlIGFsc28gdGhpcyBwYXRjaCB3aGljaCBpcyBub3cgaW4gbWFpbmxpbmUgb2Yg
-aG9zdGFwZAo+Pgo+PiBodHRwczovL2dpdGh1Yi5jb20va2Fsb3ovbXdsd2lmaS9ibG9iL21hc3Rl
-ci9ob3N0YXBkLzcwMC1pbnRlcm9wZXJhYmlsaXR5LXdvcmthcm91bmQtZm9yLTgwJTJCODAtYW5k
-LTE2MC1NSHotY2hhbm5lbHMKPj4KPj4geW91IHdpbGwgY2xlYXJseSBzZWUgdGhhdCBpdCBpcyBy
-ZWxhdGVkIHRvIHRoZSBuZXcgYmVoYXZpb3VyIG9mIHRoZSBxY2E5OTg0Cj4+IGZpcm13YXJlIChh
-bmQgbGlrZWxseSBvdGhlciB2aHQxNjBtaHogY2FwYWJsZSBjaGlwc2V0IGZpcm13YXJlLCBidXQg
-aSBjYW4ndAo+PiBjaGVjayB0aGVtIHdpdGhvdXQgaGF2aW5nIHRoZSBkZXZpY2VzKQo+Pgo+Pgo+
-Pgo+PiAtLQo+PiBNaXQgZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwo+Pgo+PiBTZWJh
-c3RpYW4gR290dHNjaGFsbCAvIENUTwo+Pgo+PiBOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVAo+
-PiBGaXJtZW5zaXR6OiAgQmVybGluZXIgUmluZyAxMDEsIDY0NjI1IEJlbnNoZWltCj4+IFJlZ2lz
-dGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0NzMKPj4gR2VzY2jDpGZ0
-c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUKPj4gaHR0cDov
-L3d3dy5kZC13cnQuY29tCj4+IGVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQo+PiBUZWwu
-OiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1Cj4+Cj4+Cj4+IF9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IGF0aDEwayBtYWlsaW5n
-IGxpc3QKPj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCgotLSAKTWl0IGZyZXVuZGxpY2hlbiBH
-csO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RPCgpOZXdNZWRpYS1O
-RVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgQmVybGluZXIgUmluZyAxMDEsIDY0NjI1IEJl
-bnNoZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0NzMK
-R2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUK
-aHR0cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpUZWwu
-OiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2F0aDEwawo=
+hiya,
+
+I'll go double check. I think it's the same as ath9k hardware..
+
+
+-a
+
+
+On 2 February 2017 at 11:21, Michael Everett Feder
+<mfeder@quicksilver.com> wrote:
+> I understand that both the ath9k and the ath10k drivers support a spectral
+> scan feature with an FFT output. But the ath9k's output only lists the
+> magnitudes of each frequency bin, and doesn't seem to support
+> in-phase/quadrature (I/Q) or phase-magnitude output. I was wondering if the
+> ath10k driver's spectral scan supports an I/Q or phase-magnitude output or,
+> like ath9k, it just supports magnitude only?
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
