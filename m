@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cegYR-000557-FR
- for ath10k@lists.infradead.org; Fri, 17 Feb 2017 11:18:25 +0000
+ id 1cegxz-0008BJ-4d
+ for ath10k@lists.infradead.org; Fri, 17 Feb 2017 11:44:52 +0000
 From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Fix a warning during channel switch with multiple vaps
-Date: Fri, 17 Feb 2017 16:48:38 +0530
-Message-ID: <1487330318-11841-1-git-send-email-mohammed@qca.qualcomm.com>
+Subject: [PATCH v2] ath10k: Fix a warning during channel switch with multiple
+ vaps
+Date: Fri, 17 Feb 2017 17:15:02 +0530
+Message-ID: <1487331902-12034-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -53,6 +54,7 @@ WARNING: backports-20161201-3.14.77-9ab3068/drivers/net/wireless/ath/ath10k/mac.
 [<bf7843e8>] (ieee80211_vif_use_reserved_context [mac80211])
 [<bf76e5d4>] (ieee80211_csa_finalize_work+0x5c/0x88 [mac80211])
 
+Fixes: d7bf4b4aba05 ("ath10k: fix ar->rx_channel updating logic")
 Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 ---
  drivers/net/wireless/ath/ath10k/mac.c | 2 +-
