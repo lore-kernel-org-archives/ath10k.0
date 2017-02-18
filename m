@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from fb1.poissonnet.fr ([82.235.198.48])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cfDb9-0007s3-MH
- for ath10k@lists.infradead.org; Sat, 18 Feb 2017 22:35:26 +0000
-Received: from 85.47.132.77.rev.sfr.net ([77.132.47.85]:53568
- helo=[192.168.1.97])
- by fb1.poissonnet.fr with esmtpsa (TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128)
- (Exim 4.80 and XAMS 0.2.4) id 1cfCzd-00051p-5r
- for ath10k@lists.infradead.org; Sat, 18 Feb 2017 22:56:37 +0100
-From: Hugo Poissonnet <hugo@poissonnet.fr>
-Subject: Performance issue with QCA9377
-Message-ID: <49b97f14-be91-7cce-cac7-189253a2b805@poissonnet.fr>
-Date: Sat, 18 Feb 2017 23:04:41 +0100
+ id 1cfEt4-0002T0-TM
+ for ath10k@lists.infradead.org; Sat, 18 Feb 2017 23:58:01 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC v3 0/8] ath10k sdio support
+Date: Sat, 18 Feb 2017 23:57:10 +0000
+Message-ID: <877f4ngii5.fsf@kamboji.qca.qualcomm.com>
+References: <1484342771-6160-1-git-send-email-erik.stromdahl@gmail.com>
+ <87fujbhb29.fsf@kamboji.qca.qualcomm.com>
+ <1c87e0d1-1f14-08bb-2a69-650788fba8dc@gmail.com>
+In-Reply-To: <1c87e0d1-1f14-08bb-2a69-650788fba8dc@gmail.com> (Erik
+ Stromdahl's message of "Sat, 18 Feb 2017 23:05:03 +0100")
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,30 +22,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hello,
-I recently get a laptop with a QCA9377 wifi chipset. I encountered major 
-performance issue with kernel 4.4.0-53 (ubuntu generic build). I can 
-connect to wifi network but performance are very bad below 1Mb/s (iperf 
-with TCP). The network connection is very unstable, multiple disconnect 
-in minutes.
-I check the performance under Windows with same distance and same 
-condition, I get 12Mb/s. So I upgrade to kernel 4.8.0-36 and performance 
-are much better around 8Mb/s and no disconnection nor dmesg warn.
+Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
-With 4.4 kernel in syslog/dmesg there is a lot of:
-ath10k_pci 0000:02:00.0: no channel configured; ignoring frame(s)!
-ath10k_warn: 217 callbacks suppressed
+> I was actually about to email you about this.
+>
+> I have made a few more updates to the sdio code so I think it would be
+> best if I could submit a new series of patches based on this code (v4).
+>
+> Then you can tweak it (v5).
+>
+> It is only minor updates to the HIF layer (added QCA9377 support) and
+> a setup of some pll registers.
 
-Sincerely yours,
+Ok, that sounds good. I'll wait for v4.
 
-Hugo Poissonnet
+> btw, should I still mark them as RFC or should it be PATCH this time?
+>
+> If I go for PATCH, should the version be v4 or should I start from v1?
 
+v4 would be fine. Thanks.
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
