@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cfEt4-0002T0-TM
- for ath10k@lists.infradead.org; Sat, 18 Feb 2017 23:58:01 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC v3 0/8] ath10k sdio support
-Date: Sat, 18 Feb 2017 23:57:10 +0000
-Message-ID: <877f4ngii5.fsf@kamboji.qca.qualcomm.com>
-References: <1484342771-6160-1-git-send-email-erik.stromdahl@gmail.com>
- <87fujbhb29.fsf@kamboji.qca.qualcomm.com>
- <1c87e0d1-1f14-08bb-2a69-650788fba8dc@gmail.com>
-In-Reply-To: <1c87e0d1-1f14-08bb-2a69-650788fba8dc@gmail.com> (Erik
- Stromdahl's message of "Sat, 18 Feb 2017 23:05:03 +0100")
-Content-Language: en-US
+ id 1cfJNX-00021I-Nj
+ for ath10k@lists.infradead.org; Sun, 19 Feb 2017 04:45:46 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id v186so49538536wmd.0
+ for <ath10k@lists.infradead.org>; Sat, 18 Feb 2017 20:45:20 -0800 (PST)
 MIME-Version: 1.0
+From: dineshkumar parameswaran <dineshkumarbeece.esec@gmail.com>
+Date: Sat, 18 Feb 2017 22:45:18 -0600
+Message-ID: <CAN1YWK+gLCbRtD-0qAe=63agcDpoqrdFTmgr2jsqsUp5aiit=A@mail.gmail.com>
+Subject: ath10k support AP+ADHOC on single radio
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +22,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+Hi all,
 
-> I was actually about to email you about this.
->
-> I have made a few more updates to the sdio code so I think it would be
-> best if I could submit a new series of patches based on this code (v4).
->
-> Then you can tweak it (v5).
->
-> It is only minor updates to the HIF layer (added QCA9377 support) and
-> a setup of some pll registers.
+I am using ath10k built-in driver in kernel version 4.1.8 for QCA 9880
+. I want to run AP and ADHOC mode on the single radio. If anyone run
+already run this configuration, Please provide the details how to make
+this working.
 
-Ok, that sounds good. I'll wait for v4.
+Currently, I am trying with firmware-2.bin_999.999.0.636.
 
-> btw, should I still mark them as RFC or should it be PATCH this time?
->
-> If I go for PATCH, should the version be v4 or should I start from v1?
+Thanks in advance.
 
-v4 would be fine. Thanks.
-
--- 
-Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
