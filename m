@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cfURM-0000g5-HD
- for ath10k@lists.infradead.org; Sun, 19 Feb 2017 16:34:27 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC v3 0/8] ath10k sdio support
-Date: Sun, 19 Feb 2017 16:33:55 +0000
-Message-ID: <87tw7q2l8v.fsf@qca.qualcomm.com>
-References: <1484342771-6160-1-git-send-email-erik.stromdahl@gmail.com>
- <87fujbhb29.fsf@kamboji.qca.qualcomm.com>
- <1c87e0d1-1f14-08bb-2a69-650788fba8dc@gmail.com>
- <877f4ngii5.fsf@kamboji.qca.qualcomm.com>
- <8737fagu28.fsf@kamboji.qca.qualcomm.com>
- <e8e1a379-129a-a8c3-9e1f-fb4c70fd0ab6@gmail.com>
-In-Reply-To: <e8e1a379-129a-a8c3-9e1f-fb4c70fd0ab6@gmail.com> (Erik
- Stromdahl's message of "Sun, 19 Feb 2017 17:21:43 +0100")
-Content-Language: en-US
+Received: from universe.cdot.in ([49.128.111.121])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cff0q-0001l5-Qf
+ for ath10k@lists.infradead.org; Mon, 20 Feb 2017 03:51:49 +0000
+Subject: Re: ath10k: MESH points are associated ,but not pinging each other
+References: <23bb1977-84b5-23f7-2637-2016a1d4c864@cdot.in>
+ <87shndgcbw.fsf@kamboji.qca.qualcomm.com>
+From: kavitam <kavitam@cdot.in>
+Message-ID: <4d91f571-9329-a473-65b8-61f5568797ba@cdot.in>
+Date: Mon, 20 Feb 2017 03:49:26 +0530
 MIME-Version: 1.0
+In-Reply-To: <87shndgcbw.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +19,123 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+Hi,
 
-> Ok, I'll do another round of checkpatch before I submit anything.
-> I couldn't find the script you mentioned though (ath10k-check).
+I have  used  backport-4.4.2-1. I have downloaded it from the following 
+link(16 Feb 2016):
 
-Did you check the link I gave you:
+https://www.kernel.org/pub/linux/kernel/projects/backports/stable/v4.4.2/
 
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/codingstyle#checking_code
+I thought this is the latest stable version. Is this correct?
 
-> Is it some kind of checkpatch wrapper?
-
-It runs various tests (gcc, sparse, checkpatch), sets some checkpatch
-settings (like line length) and filters out warnings we don't care
-about.
-
-> Anyway, I have a few warnings related to 'line over 80 chars' that
-> is really hard to get rid of (without breaking indentation etc.) so
-> I won't do anything about those for now.
+Thanks & Regards,
+Kavita
+On Friday 17 February 2017 07:15 PM, Valo, Kalle wrote:
+> kavitam <kavitam@cdot.in> writes:
 >
-> Then there are some other warnings about the BIT macro being preferred
-> over (1 << x). I have used (1 << x) in some files despite the checkpatch
-> warning in order to keep the patches consistent with the existing code.
-> I think the best approach is to have a separate round of cleanup-patches
-> replacing all (1 << x) with BIT(x).
+>> Hi All,
+>>
+>> I have created two mesh points on two different IEEE802.11
+>> system(t1024 based WiFi AP) using following steps:
+>>
+>> $sudo iw phy phy0 interface add mesh0 type mp
+>> $sudo ifconfig mesh0 0.0.0.0 up
+>> $sudo wpa_supplicant -Dnl80211 -B -i mesh0 -c
+>> /mnt/jffs2/conf/mesh0_encp.conf
+>> $sleep 5
+>> $sudo brctl addif br0 mesh0
+>>
+>> Both Mesh points are associated.But  these points are not pinging from
+>> each other.Follwoing error message has been seen on the serial prompt
+>> while executing station dump on either of the system :
+>>
+>> $sudo iw mesh0 station dump
+>>
+>> WARNING: at faaf9548 [verbose debug info unavailable]
+>> Modules linked in: ath10k_pci(O) ath10k_core(O) ath(O) mac80211(O) cfg80211(O) compat(O)
+>> uio_pdrv_genirq
+>> CPU: 0 PID: 2712 Comm: wpa_supplicant Tainted: G           O 3.12.37-rt51+ #23
+>> task: e29764c0 ti: e38d4000 task.ti: e38d4000
+>> NIP: faaf9548 LR: faafddc8 CTR: c06663a0
+>> REGS: e38d5880 TRAP: 0700   Tainted: G           O  (3.12.37-rt51+)
+>> MSR: 00029002 <CE,EE,ME>  CR: 22044444  XER: 20000000
+>>
+>> GPR00: faafddc8 e38d5930 e29764c0 ef1e6d20 efa06624 0000000f 0005803c 00200000
+>> GPR08: 00000000 00000005 00000000 05be4900 82044448 10107770 00000000 00000001
+>> GPR16: 00000004 000000f0 0000000b 00000021 101199ee 00000001 e38d5e68 00000008
+>> GPR24: e2cf5c00 ef1e6d20 c5a59600 ef1e6c20 efa06618 efa06624 c5a59600 00000000
+>> NIP [faaf9548] ath10k_install_peer_wep_keys+0x28/0x250 [ath10k_core]
+>> LR [faafddc8] ath10k_station_assoc+0x258/0x430 [ath10k_core]
+>> Call Trace:
+>> [e38d5930] [fab0f658] ath10k_wmi_op_gen_peer_set_param+0x28/0x90 [ath10k_core] (unreliable)
+>> [e38d5960] [faafddc8] ath10k_station_assoc+0x258/0x430 [ath10k_core]
+>> [e38d5ae0] [faafe184] ath10k_sta_state+0x1e4/0x7b0 [ath10k_core]
+>> [e38d5b30] [fa4f87b4] sta_info_move_state+0x274/0x340 [mac80211]
+>> [e38d5b40] [fa5114b8] sta_apply_auth_flags.isra.42+0x88/0x1e0 [mac80211]
+>> [e38d5b60] [fa511c6c] ieee80211_change_station+0x11c/0x320 [mac80211]
+>> [e38d5b90] [f999dcf0] nl80211_set_station+0x290/0x2e0 [cfg80211]
+>> [e38d5c00] [c052148c] genl_rcv_msg+0x23c/0x3f0
+>> [e38d5c50] [c05207f0] netlink_rcv_skb+0x130/0x150
+>> [e38d5c70] [c0521238] genl_rcv+0x38/0x50
+>> [e38d5c80] [c051ffc0] netlink_unicast+0x170/0x1f0
+>> [e38d5cb0] [c0520400] netlink_sendmsg+0x290/0x3b0
+>> [e38d5d00] [c04b8910] sock_sendmsg+0x70/0xb0
+>> [e38d5da0] [c04ba2d0] ___sys_sendmsg.part.29+0x2c0/0x2d0
+>> [e38d5ec0] [c04bb644] __sys_sendmsg+0x54/0xa0
+>> [e38d5f10] [c04bbe78] SyS_socketcall+0x178/0x2b0
+>> [e38d5f40] [c000fb04] ret_from_syscall+0x0/0x3c
+>> --- Exception: c01 at 0xfbf4f6c
+>>      LR = 0xffac1a0
+>> Instruction dump:
+>> 91210028 4bfffee4 9421ffd0 7c0802a6 90010034 bf210014 81230038 83430034
+>> 81290000 552907fa 2b890001 41de002c <0fe00000> 3bc0ffea 80010034 7fc3f378
+>> ---[ end trace 56617f0f443657ab ]---
+>> 0 ath10k_pci 0000:01:00.0: failed to install peer wep keys for vdev 0: -22
+>> ath10k_pci 0000:01:00.0: failed to associate station 04:f0:21:1d:77:68 for vdev 0: -22
+>> station dump
+>> Station 04:f0:21:1d:77:68 (on mesh0)
+>>          inactive time:  351 ms
+>>          rx bytes:       2122
+>>          rx packets:     24
+>>          tx bytes:       1196
+>>          tx packets:     8
+>>          tx retries:     0
+>>          tx failed:      0
+>>          signal:         -54 dBm
+>>          signal avg:     -52 dBm
+>>          Toffset:        642048384 us
+>>          tx bitrate:     1.0 MBit/s
+>>          rx bitrate:     1.0 MBit/s
+>>          mesh llid:      0
+>>          mesh plid:      0
+>>          mesh plink:     ESTAB
+>>          mesh local PS mode:     ACTIVE
+>>          mesh peer PS mode:      UNKNOWN
+>>          mesh non-peer PS mode:  ACTIVE
+>>
+>> System Details:
+>>
+>> Kernel : 3.12 rt 51+ (SDK 1.9)
+>>
+>> ath10K driver: backport-4.4.2-1
+> Your backports release is old, which means that the version of ath10k is
+> also old. I would try to build the latest backports release from git and
+> see how that works:
+>
+> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/backports
+>
+> But do note that the backports project has become active again only
+> recently so there might be some build issues.
+>
 
-These are all disabled by ath10k-check. I think it's easiest that you
-forget ath10k-check for now and let me fix those in the next round.
 
--- 
-Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
