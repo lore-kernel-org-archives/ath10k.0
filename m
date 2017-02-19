@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cfRup-0000bE-Iz
- for ath10k@lists.infradead.org; Sun, 19 Feb 2017 13:52:41 +0000
-Received: by mail-lf0-x244.google.com with SMTP id 86so451658lfv.0
- for <ath10k@lists.infradead.org>; Sun, 19 Feb 2017 05:52:17 -0800 (PST)
+ id 1cfS2H-0002Qo-E5
+ for ath10k@lists.infradead.org; Sun, 19 Feb 2017 14:00:23 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
 Subject: Re: [RFC v3 0/8] ath10k sdio support
-References: <7b204d34-b791-ea78-cf4e-90e8fe1b79fb@gmail.com>
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Message-ID: <5a3ad65a-8cc0-ab1a-dc95-a5fd31035bd7@gmail.com>
-Date: Sun, 19 Feb 2017 14:52:14 +0100
+Date: Sun, 19 Feb 2017 13:59:48 +0000
+Message-ID: <8737fagu28.fsf@kamboji.qca.qualcomm.com>
+References: <1484342771-6160-1-git-send-email-erik.stromdahl@gmail.com>
+ <87fujbhb29.fsf@kamboji.qca.qualcomm.com>
+ <1c87e0d1-1f14-08bb-2a69-650788fba8dc@gmail.com>
+ <877f4ngii5.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <877f4ngii5.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Sun, 19 Feb 2017 01:57:06 +0200")
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <7b204d34-b791-ea78-cf4e-90e8fe1b79fb@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,38 +23,15 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, ryanhsu@qca.qualcomm.com
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hej,
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-I just noticed that Ryan Hsu submitted two patches containing similar
-functionality to what I have in my tree on github. They have not been
-integrated in the ath master yet, but they have been added to master-pending.
-
-Below are the commits I am talking about
-
-bc1054a15be3c962c83aa22476a3e9c1266da792 ath10k: improve the firmware download time for QCA9377
-db5af2a25bd8c1410ec4456d1d4f4e6ded2649ca ath10k: improve the firmware download time for QCA6174
-
-Since some of my patches overlap with these I think it would be best if
-I add these to my tree and rewrite my patches.
-
-If they haven't made it into master before I submit my updated patch series
-I will include them in my set.
-
-Is this OK?
-
-If they will be added to master soon there is no issue since I will of course
-rebase to the latest ath-YYYYMMDDHHmm before I submit anything.
-
-/Erik
-
-On 2017-02-19 00:57, Valo, Kalle wrote:
 > Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 >
 >> I was actually about to email you about this.
@@ -65,14 +45,21 @@ On 2017-02-19 00:57, Valo, Kalle wrote:
 >> a setup of some pll registers.
 >
 > Ok, that sounds good. I'll wait for v4.
->
->> btw, should I still mark them as RFC or should it be PATCH this time?
->>
->> If I go for PATCH, should the version be v4 or should I start from v1?
->
-> v4 would be fine. Thanks.
->
 
+Forgot to mention can you run ath10k-check before submitting them, it
+shows few problems:
+
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/codingstyle#checking_code
+
+But if you wonder what this is about it's checkpatch warning about camel
+case (doesn't like the lower case x character):
+
+drivers/net/wireless/ath/ath10k/sdio.h:68: <ATH10K_SDIO_DRIVE_DTSx_TYPE_C>
+
+I guess I have a bug in the script when it parses checkpatch output.
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
