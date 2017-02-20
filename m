@@ -1,34 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cfq5O-0003ut-Ov
- for ath10k@lists.infradead.org; Mon, 20 Feb 2017 15:41:13 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: 9984 VHT
-Date: Mon, 20 Feb 2017 15:40:45 +0000
-Message-ID: <87shn8euq1.fsf@kamboji.qca.qualcomm.com>
-References: <CAHNKnsRZ6N7EuzCnKR56ER5cpRemSwgnU99CpujE-+uFaJML+w@mail.gmail.com>
- <CAJ-Vmo=yD7Ct5LFXBO3qNhKsNco91VXMmZOYeBaAuw+DFGq=RQ@mail.gmail.com>
- <CAHNKnsT8mzHefrnC4ybrR8T16dAqc4G_SDGesxdU7+81xhuYpw@mail.gmail.com>
- <CAJ-VmokwMPSg7AW-MkO4JOKKMWc_5O4w-pA2jumhChowFKo0Ug@mail.gmail.com>
- <87y3xtrmn2.fsf@kamboji.qca.qualcomm.com>
- <44480bab-0cf7-f4e3-7612-b1cf5d4c040f@dd-wrt.com>
- <1a58440c-80c9-0a86-aae9-213edc5b0019@candelatech.com>
- <ed765a12-6ae8-ed78-6626-ae82312ba525@dd-wrt.com>
- <8bcf2ea6-802f-f249-8e2d-96ec03553a9b@candelatech.com>
- <23b1bd75-a7f9-08e7-5d7b-f67081b89e1b@candelatech.com>
- <5e23ea91-429e-eff6-7443-e4d4f5981735@dd-wrt.com>
- <785bdbc1-fcf5-921b-2092-6142d51aa0ce@candelatech.com>
- <87poiu42r2.fsf@qca.qualcomm.com>
- <2c29c0e6-a207-9d40-fa8d-dc5e54f9c468@dd-wrt.com>
- <87y3xeilor.fsf@kamboji.qca.qualcomm.com>
- <c894f9ae-068a-eac3-16e6-c1ada4da22b9@dd-wrt.com>
- <87inodrro1.fsf@kamboji.qca.qualcomm.com>
- <83f88c82-0ea5-2962-a385-bf38946c846d@dd-wrt.com>
-In-Reply-To: <83f88c82-0ea5-2962-a385-bf38946c846d@dd-wrt.com> (Sebastian
- Gottschall's message of "Tue, 14 Feb 2017 16:21:13 +0100")
-Content-Language: en-US
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cfs78-0006uN-MH
+ for ath10k@lists.infradead.org; Mon, 20 Feb 2017 17:51:10 +0000
+Message-ID: <58AB2C74.7060603@candelatech.com>
+Date: Mon, 20 Feb 2017 09:50:44 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: who care of addba/delba in ath10k?
+References: <1beccb9973bd869d9cadd0b6823ce854@cweb06.nm.nhnsystem.com>
+ <1487601470622.92250@qti.qualcomm.com>
+In-Reply-To: <1487601470622.92250@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -37,69 +19,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Shajakhan, Mohammed Shafi (Mohammed Shafi)" <mohammed@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, KwangMin Kim <kim25444@naver.com>
+Cc: "gwondori@nimbus.kr" <gwondori@nimbus.kr>
 
-Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+Yes, it is in firmware.
 
-> Am 14.02.2017 um 11:30 schrieb Valo, Kalle:
->> (you forgot to CC ath10k list, adding it back)
->>
->> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
->>
->>> Am 10.02.2017 um 07:50 schrieb Valo, Kalle:
->>>> Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
->>>>
->>>>> Am 07.02.2017 um 13:14 schrieb Valo, Kalle:
->>>>>> Ben Greear <greearb@candelatech.com> writes:
->>>>>>
->>>>>>> On 02/02/2017 10:42 AM, Sebastian Gottschall wrote:
->>>>>>>> Am 02.02.2017 um 19:24 schrieb Ben Greear:
->>>>>>>>
->>>>>>>>> I hacked ath10k to enable radar detection on 160Mhz bandwidths. Now hostapd
->>>>>>>>> starts.
->>>>>>>>>
->>>>>>>>> I can reproduce the FW failure. It is because FW 3.3-25 release
->>>>>>>>> started asserting
->>>>>>>>> if the freq2 was zero in VHT160 mode. It seems to use both freq1
->>>>>>>>> and freq2, and not
->>>>>>>>> how the driver or linux seems to normally use them.
->>>>>>>> its even worse. starting from 3.3 it uses freq2 instead of freq1.
->>>>>>>> but i made a patch for it. but it still wont work. vdev_start still
->>>>>>>> fails
->>>>>>> Well it would have been helpful from the start to have known about this patch.
->>>>>>>
->>>>>>> Could you post it?
->>>>>>>
->>>>>>> Kalle: Since the firmware API changed, how do you want to handle
->>>>>>> the differences here?
->>>>>> The firmware API shouldn't change like that, but if it has I guess a
->>>>>> firmware feature flag to enable a workaround in ath10k sounds like the
->>>>>> easiest solution.
->>>>> the more recent firmware have some new wmi services enabled which can
->>>>> be used as indicator as well.
->>>> I don't know what flag exactly you are referring to, but using a WMI
->>>> service flag to detect this is not really reliable. They can be enabled
->>>> or disabled between branches, or even between builds.
->>> valid argument. but these flags should than be also introduced in
->>> codeaurora images
->> I'm not involved with codeaurora images so I can't help with that.
->>
->> But the firmware is not supposed to break the firmware interface like
->> this. Can someone please write a detailed bug report as a reply to this
->> mail (what version, from which location, how exactly the interface is
->> broken) and I'll try to report the issue internally.
+Thanks,
+Ben
+
+On 02/20/2017 06:37 AM, Shajakhan, Mohammed Shafi (Mohammed Shafi) wrote:
+> I think that ath10k's addba / delba is doing firmware. Is this right?
 >
-> i'm not good in this. but let me try to describe whats wrong
+> [shafi] http://lxr.free-electrons.com/source/drivers/net/wireless/ath/ath10k/debugfs_sta.c#L144
+> yes WMI command is sent to f/w
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
 
-Thanks, this was good. I sent this forward now.
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
