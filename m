@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cff0q-0001l5-Qf
- for ath10k@lists.infradead.org; Mon, 20 Feb 2017 03:51:49 +0000
-Subject: Re: ath10k: MESH points are associated ,but not pinging each other
-References: <23bb1977-84b5-23f7-2637-2016a1d4c864@cdot.in>
- <87shndgcbw.fsf@kamboji.qca.qualcomm.com>
-From: kavitam <kavitam@cdot.in>
-Message-ID: <4d91f571-9329-a473-65b8-61f5568797ba@cdot.in>
-Date: Mon, 20 Feb 2017 03:49:26 +0530
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cfgBT-00026b-84
+ for ath10k@lists.infradead.org; Mon, 20 Feb 2017 05:06:51 +0000
+From: <c_traja@qti.qualcomm.com>
+Subject: [PATCHv2] ath10k: Update available channel list for 5G radio
+Date: Mon, 20 Feb 2017 10:36:30 +0530
+Message-ID: <1487567190-18243-1-git-send-email-c_traja@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87shndgcbw.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,121 +16,184 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-Hi,
+From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
-I have  used  backport-4.4.2-1. I have downloaded it from the following 
-link(16 Feb 2016):
+If a 5 GHz radio is calibrated for operation in both
+the low band (channels 36 to 64) and
+high band(channels 100 to 169), hardware allows operations
+in all the listed channels. However, if the chip has been
+calibrated only for the low/high band and a high/low band
+channel is configured, due to lack of calibration there will
+be potentially invalid signal on those non calibrated channels.
+To avoid this problem this patch introduces ath10k_low_5ghz_channel
+and ath10k_high_5ghz_channel lists as separate arrays.
+The channel list will be initialized depending on the low_5ghz_chan
+and high_5ghz_chan values which we get from target through
+wmi service ready event.
 
-https://www.kernel.org/pub/linux/kernel/projects/backports/stable/v4.4.2/
+Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+---
+v2:
+  * Addressed Jouni and Kalle's comments
 
-I thought this is the latest stable version. Is this correct?
+ drivers/net/wireless/ath/ath10k/core.h |    2 ++
+ drivers/net/wireless/ath/ath10k/mac.c  |   55 +++++++++++++++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/wmi.c  |    6 ++++
+ drivers/net/wireless/ath/ath10k/wmi.h  |    2 ++
+ 4 files changed, 61 insertions(+), 4 deletions(-)
 
-Thanks & Regards,
-Kavita
-On Friday 17 February 2017 07:15 PM, Valo, Kalle wrote:
-> kavitam <kavitam@cdot.in> writes:
->
->> Hi All,
->>
->> I have created two mesh points on two different IEEE802.11
->> system(t1024 based WiFi AP) using following steps:
->>
->> $sudo iw phy phy0 interface add mesh0 type mp
->> $sudo ifconfig mesh0 0.0.0.0 up
->> $sudo wpa_supplicant -Dnl80211 -B -i mesh0 -c
->> /mnt/jffs2/conf/mesh0_encp.conf
->> $sleep 5
->> $sudo brctl addif br0 mesh0
->>
->> Both Mesh points are associated.But  these points are not pinging from
->> each other.Follwoing error message has been seen on the serial prompt
->> while executing station dump on either of the system :
->>
->> $sudo iw mesh0 station dump
->>
->> WARNING: at faaf9548 [verbose debug info unavailable]
->> Modules linked in: ath10k_pci(O) ath10k_core(O) ath(O) mac80211(O) cfg80211(O) compat(O)
->> uio_pdrv_genirq
->> CPU: 0 PID: 2712 Comm: wpa_supplicant Tainted: G           O 3.12.37-rt51+ #23
->> task: e29764c0 ti: e38d4000 task.ti: e38d4000
->> NIP: faaf9548 LR: faafddc8 CTR: c06663a0
->> REGS: e38d5880 TRAP: 0700   Tainted: G           O  (3.12.37-rt51+)
->> MSR: 00029002 <CE,EE,ME>  CR: 22044444  XER: 20000000
->>
->> GPR00: faafddc8 e38d5930 e29764c0 ef1e6d20 efa06624 0000000f 0005803c 00200000
->> GPR08: 00000000 00000005 00000000 05be4900 82044448 10107770 00000000 00000001
->> GPR16: 00000004 000000f0 0000000b 00000021 101199ee 00000001 e38d5e68 00000008
->> GPR24: e2cf5c00 ef1e6d20 c5a59600 ef1e6c20 efa06618 efa06624 c5a59600 00000000
->> NIP [faaf9548] ath10k_install_peer_wep_keys+0x28/0x250 [ath10k_core]
->> LR [faafddc8] ath10k_station_assoc+0x258/0x430 [ath10k_core]
->> Call Trace:
->> [e38d5930] [fab0f658] ath10k_wmi_op_gen_peer_set_param+0x28/0x90 [ath10k_core] (unreliable)
->> [e38d5960] [faafddc8] ath10k_station_assoc+0x258/0x430 [ath10k_core]
->> [e38d5ae0] [faafe184] ath10k_sta_state+0x1e4/0x7b0 [ath10k_core]
->> [e38d5b30] [fa4f87b4] sta_info_move_state+0x274/0x340 [mac80211]
->> [e38d5b40] [fa5114b8] sta_apply_auth_flags.isra.42+0x88/0x1e0 [mac80211]
->> [e38d5b60] [fa511c6c] ieee80211_change_station+0x11c/0x320 [mac80211]
->> [e38d5b90] [f999dcf0] nl80211_set_station+0x290/0x2e0 [cfg80211]
->> [e38d5c00] [c052148c] genl_rcv_msg+0x23c/0x3f0
->> [e38d5c50] [c05207f0] netlink_rcv_skb+0x130/0x150
->> [e38d5c70] [c0521238] genl_rcv+0x38/0x50
->> [e38d5c80] [c051ffc0] netlink_unicast+0x170/0x1f0
->> [e38d5cb0] [c0520400] netlink_sendmsg+0x290/0x3b0
->> [e38d5d00] [c04b8910] sock_sendmsg+0x70/0xb0
->> [e38d5da0] [c04ba2d0] ___sys_sendmsg.part.29+0x2c0/0x2d0
->> [e38d5ec0] [c04bb644] __sys_sendmsg+0x54/0xa0
->> [e38d5f10] [c04bbe78] SyS_socketcall+0x178/0x2b0
->> [e38d5f40] [c000fb04] ret_from_syscall+0x0/0x3c
->> --- Exception: c01 at 0xfbf4f6c
->>      LR = 0xffac1a0
->> Instruction dump:
->> 91210028 4bfffee4 9421ffd0 7c0802a6 90010034 bf210014 81230038 83430034
->> 81290000 552907fa 2b890001 41de002c <0fe00000> 3bc0ffea 80010034 7fc3f378
->> ---[ end trace 56617f0f443657ab ]---
->> 0 ath10k_pci 0000:01:00.0: failed to install peer wep keys for vdev 0: -22
->> ath10k_pci 0000:01:00.0: failed to associate station 04:f0:21:1d:77:68 for vdev 0: -22
->> station dump
->> Station 04:f0:21:1d:77:68 (on mesh0)
->>          inactive time:  351 ms
->>          rx bytes:       2122
->>          rx packets:     24
->>          tx bytes:       1196
->>          tx packets:     8
->>          tx retries:     0
->>          tx failed:      0
->>          signal:         -54 dBm
->>          signal avg:     -52 dBm
->>          Toffset:        642048384 us
->>          tx bitrate:     1.0 MBit/s
->>          rx bitrate:     1.0 MBit/s
->>          mesh llid:      0
->>          mesh plid:      0
->>          mesh plink:     ESTAB
->>          mesh local PS mode:     ACTIVE
->>          mesh peer PS mode:      UNKNOWN
->>          mesh non-peer PS mode:  ACTIVE
->>
->> System Details:
->>
->> Kernel : 3.12 rt 51+ (SDK 1.9)
->>
->> ath10K driver: backport-4.4.2-1
-> Your backports release is old, which means that the version of ath10k is
-> also old. I would try to build the latest backports release from git and
-> see how that works:
->
-> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/backports
->
-> But do note that the backports project has become active again only
-> recently so there might be some build issues.
->
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 88d14be..d07d567 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -774,6 +774,8 @@ struct ath10k {
+ 	u32 vht_cap_info;
+ 	u32 num_rf_chains;
+ 	u32 max_spatial_stream;
++	u32 low_5ghz_chan;
++	u32 high_5ghz_chan;
+ 	/* protected by conf_mutex */
+ 	bool ani_enabled;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 3029f25..0840efb 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7623,6 +7623,38 @@ static void ath10k_mac_op_sta_pre_rcu_remove(struct ieee80211_hw *hw,
+ 	CHAN2G(14, 2484, 0),
+ };
+ 
++static const struct ieee80211_channel ath10k_low_5ghz_channels[] = {
++	CHAN5G(36, 5180, 0),
++	CHAN5G(40, 5200, 0),
++	CHAN5G(44, 5220, 0),
++	CHAN5G(48, 5240, 0),
++	CHAN5G(52, 5260, 0),
++	CHAN5G(56, 5280, 0),
++	CHAN5G(60, 5300, 0),
++	CHAN5G(64, 5320, 0),
++};
++
++static const struct ieee80211_channel ath10k_high_5ghz_channels[] = {
++	CHAN5G(100, 5500, 0),
++	CHAN5G(104, 5520, 0),
++	CHAN5G(108, 5540, 0),
++	CHAN5G(112, 5560, 0),
++	CHAN5G(116, 5580, 0),
++	CHAN5G(120, 5600, 0),
++	CHAN5G(124, 5620, 0),
++	CHAN5G(128, 5640, 0),
++	CHAN5G(132, 5660, 0),
++	CHAN5G(136, 5680, 0),
++	CHAN5G(140, 5700, 0),
++	CHAN5G(144, 5720, 0),
++	CHAN5G(149, 5745, 0),
++	CHAN5G(153, 5765, 0),
++	CHAN5G(157, 5785, 0),
++	CHAN5G(161, 5805, 0),
++	CHAN5G(165, 5825, 0),
++	CHAN5G(169, 5845, 0),
++};
++
+ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
+ 	CHAN5G(36, 5180, 0),
+ 	CHAN5G(40, 5200, 0),
+@@ -8014,6 +8046,7 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	};
+ 	struct ieee80211_supported_band *band;
+ 	void *channels;
++	int n_channels;
+ 	int ret;
+ 
+ 	SET_IEEE80211_PERM_ADDR(ar->hw, ar->mac_addr);
+@@ -8049,16 +8082,30 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	}
+ 
+ 	if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY) {
+-		channels = kmemdup(ath10k_5ghz_channels,
+-				   sizeof(ath10k_5ghz_channels),
+-				   GFP_KERNEL);
++		if (ar->high_5ghz_chan <= 5350) {
++			channels = kmemdup(ath10k_low_5ghz_channels,
++					   sizeof(ath10k_low_5ghz_channels),
++					   GFP_KERNEL);
++			n_channels = ARRAY_SIZE(ath10k_low_5ghz_channels);
++		} else if (ar->low_5ghz_chan >= 5490 &&
++			   ar->high_5ghz_chan <= 5885) {
++			channels = kmemdup(ath10k_high_5ghz_channels,
++					   sizeof(ath10k_high_5ghz_channels),
++					   GFP_KERNEL);
++			n_channels = ARRAY_SIZE(ath10k_high_5ghz_channels);
++		} else {
++			channels = kmemdup(ath10k_5ghz_channels,
++					   sizeof(ath10k_5ghz_channels),
++					   GFP_KERNEL);
++			n_channels = ARRAY_SIZE(ath10k_5ghz_channels);
++		}
+ 		if (!channels) {
+ 			ret = -ENOMEM;
+ 			goto err_free;
+ 		}
+ 
+ 		band = &ar->mac.sbands[NL80211_BAND_5GHZ];
+-		band->n_channels = ARRAY_SIZE(ath10k_5ghz_channels);
++		band->n_channels = n_channels;
+ 		band->channels = channels;
+ 		band->n_bitrates = ath10k_a_rates_size;
+ 		band->bitrates = ath10k_a_rates;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 2f1743e..b31c4f7 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -4593,6 +4593,8 @@ static int ath10k_wmi_alloc_host_mem(struct ath10k *ar, u32 req_id,
+ 	arg->phy_capab = ev->phy_capability;
+ 	arg->num_rf_chains = ev->num_rf_chains;
+ 	arg->eeprom_rd = ev->hal_reg_capabilities.eeprom_rd;
++	arg->low_5ghz_chan = ev->hal_reg_capabilities.low_5ghz_chan;
++	arg->high_5ghz_chan = ev->hal_reg_capabilities.high_5ghz_chan;
+ 	arg->num_mem_reqs = ev->num_mem_reqs;
+ 	arg->service_map = ev->wmi_service_bitmap;
+ 	arg->service_map_len = sizeof(ev->wmi_service_bitmap);
+@@ -4629,6 +4631,8 @@ static int ath10k_wmi_alloc_host_mem(struct ath10k *ar, u32 req_id,
+ 	arg->phy_capab = ev->phy_capability;
+ 	arg->num_rf_chains = ev->num_rf_chains;
+ 	arg->eeprom_rd = ev->hal_reg_capabilities.eeprom_rd;
++	arg->low_5ghz_chan = ev->hal_reg_capabilities.low_5ghz_chan;
++	arg->high_5ghz_chan = ev->hal_reg_capabilities.high_5ghz_chan;
+ 	arg->num_mem_reqs = ev->num_mem_reqs;
+ 	arg->service_map = ev->wmi_service_bitmap;
+ 	arg->service_map_len = sizeof(ev->wmi_service_bitmap);
+@@ -4682,6 +4686,8 @@ static void ath10k_wmi_event_service_ready_work(struct work_struct *work)
+ 	ar->phy_capability = __le32_to_cpu(arg.phy_capab);
+ 	ar->num_rf_chains = __le32_to_cpu(arg.num_rf_chains);
+ 	ar->hw_eeprom_rd = __le32_to_cpu(arg.eeprom_rd);
++	ar->low_5ghz_chan = __le32_to_cpu(arg.low_5ghz_chan);
++	ar->high_5ghz_chan = __le32_to_cpu(arg.high_5ghz_chan);
+ 
+ 	ath10k_dbg_dump(ar, ATH10K_DBG_WMI, NULL, "wmi svc: ",
+ 			arg.service_map, arg.service_map_len);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 386aa51..78350d4 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6335,6 +6335,8 @@ struct wmi_svc_rdy_ev_arg {
+ 	__le32 num_rf_chains;
+ 	__le32 eeprom_rd;
+ 	__le32 num_mem_reqs;
++	__le32 low_5ghz_chan;
++	__le32 high_5ghz_chan;
+ 	const __le32 *service_map;
+ 	size_t service_map_len;
+ 	const struct wlan_host_mem_req *mem_reqs[WMI_MAX_MEM_REQS];
+-- 
+1.7.9.5
 
 
 _______________________________________________
