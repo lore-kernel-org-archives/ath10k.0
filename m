@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wr0-x236.google.com ([2a00:1450:400c:c0c::236])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cfjpA-0002VU-2f
- for ath10k@lists.infradead.org; Mon, 20 Feb 2017 09:00:04 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k: MESH points are associated ,but not pinging each other
-Date: Mon, 20 Feb 2017 08:59:30 +0000
-Message-ID: <87poidfdas.fsf@kamboji.qca.qualcomm.com>
-References: <23bb1977-84b5-23f7-2637-2016a1d4c864@cdot.in>
- <87shndgcbw.fsf@kamboji.qca.qualcomm.com>
- <4d91f571-9329-a473-65b8-61f5568797ba@cdot.in>
-In-Reply-To: <4d91f571-9329-a473-65b8-61f5568797ba@cdot.in> (kavitam@cdot.in's
- message of "Mon, 20 Feb 2017 03:49:26 +0530")
-Content-Language: en-US
+ id 1cflgb-00068h-Pk
+ for ath10k@lists.infradead.org; Mon, 20 Feb 2017 10:59:20 +0000
+Received: by mail-wr0-x236.google.com with SMTP id s27so14821013wrb.2
+ for <ath10k@lists.infradead.org>; Mon, 20 Feb 2017 02:58:56 -0800 (PST)
 MIME-Version: 1.0
+From: "K.Mani" <sailormani@gmail.com>
+Date: Mon, 20 Feb 2017 16:28:54 +0530
+Message-ID: <CACBNxUG+N7X6pxcTqTeESVt9O_KOhH0BHL9daoTmUKj8N1pt0g@mail.gmail.com>
+Subject: ath10k: MAC Address
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +22,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kavitam <kavitam@cdot.in>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-kavitam <kavitam@cdot.in> writes:
+I'm using QCA8994, with PCIe bus the first two bytes of MAC address is
+returned as Null. This behavior is seen on all the 6 devices.
 
-> I have  used  backport-4.4.2-1. I have downloaded it from the
-> following link(16 Feb 2016):
->
-> https://www.kernel.org/pub/linux/kernel/projects/backports/stable/v4.4.2/
->
-> I thought this is the latest stable version. Is this correct?
+log: wmi event ready sw_version 16777216 abi_version 3 mac_addr
+00:00:79:55:a0:14
 
-Yeah, there hasn't been a new release for a while. Hopefully that
-changes soon. You could of course always build a new package from git.
+Annapurna board(Alpine soc V1) on kernel-linux-3.10.20 openWRT
+FW: board-2.bin, firmware-5.bin
 
--- 
-Kalle Valo
+Help needed.
+
+Thanks
+Mani
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
