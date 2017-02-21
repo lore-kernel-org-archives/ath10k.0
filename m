@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgD7C-0006af-OV
+ id 1cgD7C-0006dd-ON
  for ath10k@lists.infradead.org; Tue, 21 Feb 2017 16:16:37 +0000
-Received: by mail-lf0-x244.google.com with SMTP id z127so9536913lfa.2
- for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:16:14 -0800 (PST)
+Received: by mail-lf0-x244.google.com with SMTP id z127so9537030lfa.2
+ for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:16:17 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v4 01/21] ath10k: htc: made static function public
-Date: Tue, 21 Feb 2017 17:15:21 +0100
-Message-Id: <1487693741-10042-2-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v4 04/21] ath10k: htc: refactorization
+Date: Tue, 21 Feb 2017 17:15:24 +0100
+Message-Id: <1487693741-10042-5-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,79 +27,116 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Changed ath10k_htc_notify_tx_completion and
-ath10k_htc_process_trailer from static to non static.
+Code refactorization:
 
-These functions are needed by SDIO/mbox.
+Moved the code for ep 0 in ath10k_htc_rx_completion_handler
+to ath10k_htc_control_rx_complete.
+
+This eases the implementation of SDIO/mbox significantly since
+the ep_rx_complete cb is invoked directly from the SDIO/mbox
+hif layer.
+
+Since the ath10k_htc_control_rx_complete already is present
+(only containing a warning message) there is no reason for not
+using it (instead of having a special case for ep 0 in
+ath10k_htc_rx_completion_handler).
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.c | 14 ++++++++------
- drivers/net/wireless/ath/ath10k/htc.h |  6 ++++++
- 2 files changed, 14 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath10k/htc.c | 73 ++++++++++++++++-------------------
+ 1 file changed, 34 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 9f6a915..35e67c4 100644
+index f39eef6..eb036b3 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.c
 +++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -57,8 +57,8 @@ static inline void ath10k_htc_restore_tx_skb(struct ath10k_htc *htc,
- 	skb_pull(skb, sizeof(struct ath10k_htc_hdr));
- }
+@@ -459,42 +459,6 @@ void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		/* zero length packet with trailer data, just drop these */
+ 		goto out;
  
--static void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
--					    struct sk_buff *skb)
-+void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
-+				     struct sk_buff *skb)
+-	if (eid == ATH10K_HTC_EP_0) {
+-		struct ath10k_htc_msg *msg = (struct ath10k_htc_msg *)skb->data;
+-
+-		switch (__le16_to_cpu(msg->hdr.message_id)) {
+-		case ATH10K_HTC_MSG_READY_ID:
+-		case ATH10K_HTC_MSG_CONNECT_SERVICE_RESP_ID:
+-			/* handle HTC control message */
+-			if (completion_done(&htc->ctl_resp)) {
+-				/*
+-				 * this is a fatal error, target should not be
+-				 * sending unsolicited messages on the ep 0
+-				 */
+-				ath10k_warn(ar, "HTC rx ctrl still processing\n");
+-				complete(&htc->ctl_resp);
+-				goto out;
+-			}
+-
+-			htc->control_resp_len =
+-				min_t(int, skb->len,
+-				      ATH10K_HTC_MAX_CTRL_MSG_LEN);
+-
+-			memcpy(htc->control_resp_buffer, skb->data,
+-			       htc->control_resp_len);
+-
+-			complete(&htc->ctl_resp);
+-			break;
+-		case ATH10K_HTC_MSG_SEND_SUSPEND_COMPLETE:
+-			htc->htc_ops.target_send_suspend_complete(ar);
+-			break;
+-		default:
+-			ath10k_warn(ar, "ignoring unsolicited htc ep0 event\n");
+-			break;
+-		}
+-		goto out;
+-	}
+-
+ 	ath10k_dbg(ar, ATH10K_DBG_HTC, "htc rx completion ep %d skb %pK\n",
+ 		   eid, skb);
+ 	ep->ep_ops.ep_rx_complete(ar, skb);
+@@ -509,9 +473,40 @@ EXPORT_SYMBOL(ath10k_htc_rx_completion_handler);
+ static void ath10k_htc_control_rx_complete(struct ath10k *ar,
+ 					   struct sk_buff *skb)
  {
- 	struct ath10k *ar = ep->htc->ar;
- 
-@@ -75,6 +75,7 @@ static void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
- 
- 	ep->ep_ops.ep_tx_complete(ep->htc->ar, skb);
+-	/* This is unexpected. FW is not supposed to send regular rx on this
+-	 * endpoint. */
+-	ath10k_warn(ar, "unexpected htc rx\n");
++	struct ath10k_htc *htc = &ar->htc;
++	struct ath10k_htc_msg *msg = (struct ath10k_htc_msg *)skb->data;
++
++	switch (__le16_to_cpu(msg->hdr.message_id)) {
++	case ATH10K_HTC_MSG_READY_ID:
++	case ATH10K_HTC_MSG_CONNECT_SERVICE_RESP_ID:
++		/* handle HTC control message */
++		if (completion_done(&htc->ctl_resp)) {
++			/* this is a fatal error, target should not be
++			 * sending unsolicited messages on the ep 0
++			 */
++			ath10k_warn(ar, "HTC rx ctrl still processing\n");
++			complete(&htc->ctl_resp);
++			goto out;
++		}
++
++		htc->control_resp_len =
++			min_t(int, skb->len,
++			      ATH10K_HTC_MAX_CTRL_MSG_LEN);
++
++		memcpy(htc->control_resp_buffer, skb->data,
++		       htc->control_resp_len);
++
++		complete(&htc->ctl_resp);
++		break;
++	case ATH10K_HTC_MSG_SEND_SUSPEND_COMPLETE:
++		htc->htc_ops.target_send_suspend_complete(ar);
++		break;
++	default:
++		ath10k_warn(ar, "ignoring unsolicited htc ep0 event\n");
++		break;
++	}
++
++out:
+ 	kfree_skb(skb);
  }
-+EXPORT_SYMBOL(ath10k_htc_notify_tx_completion);
  
- static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
- 				      struct sk_buff *skb)
-@@ -227,10 +228,10 @@ ath10k_htc_process_credit_report(struct ath10k_htc *htc,
- 	spin_unlock_bh(&htc->tx_lock);
- }
- 
--static int ath10k_htc_process_trailer(struct ath10k_htc *htc,
--				      u8 *buffer,
--				      int length,
--				      enum ath10k_htc_ep_id src_eid)
-+int ath10k_htc_process_trailer(struct ath10k_htc *htc,
-+			       u8 *buffer,
-+			       int length,
-+			       enum ath10k_htc_ep_id src_eid)
- {
- 	struct ath10k *ar = htc->ar;
- 	int status = 0;
-@@ -291,6 +292,7 @@ static int ath10k_htc_process_trailer(struct ath10k_htc *htc,
- 
- 	return status;
- }
-+EXPORT_SYMBOL(ath10k_htc_process_trailer);
- 
- void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
- {
-diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index 6ababa3..f728ce7 100644
---- a/drivers/net/wireless/ath/ath10k/htc.h
-+++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -351,5 +351,11 @@ int ath10k_htc_send(struct ath10k_htc *htc, enum ath10k_htc_ep_id eid,
- struct sk_buff *ath10k_htc_alloc_skb(struct ath10k *ar, int size);
- void ath10k_htc_tx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
- void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
-+void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
-+				     struct sk_buff *skb);
-+int ath10k_htc_process_trailer(struct ath10k_htc *htc,
-+			       u8 *buffer,
-+			       int length,
-+			       enum ath10k_htc_ep_id src_eid);
- 
- #endif
 -- 
 2.7.4
 
