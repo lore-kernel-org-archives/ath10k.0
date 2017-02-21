@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgD7Y-0007HT-0o
- for ath10k@lists.infradead.org; Tue, 21 Feb 2017 16:16:56 +0000
-Received: by mail-lf0-x244.google.com with SMTP id 86so5300599lfv.0
- for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:16:35 -0800 (PST)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cgD7W-0006p2-45
+ for ath10k@lists.infradead.org; Tue, 21 Feb 2017 16:17:15 +0000
+Received: by mail-lf0-x244.google.com with SMTP id h67so3752505lfg.1
+ for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:16:34 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v4 21/21] ath10k: dma fixes for high latency devices
-Date: Tue, 21 Feb 2017 17:15:41 +0100
-Message-Id: <1487693741-10042-22-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v4 20/21] ath10k: add QCA9377 sdio hw_param item
+Date: Tue, 21 Feb 2017 17:15:40 +0100
+Message-Id: <1487693741-10042-21-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,89 +27,62 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Several DMA related functions (such as the dma_map_xxx functions)
-are not used with high latency devices and don't need to be invoked
-in this case.
+Hardware parameters for QCA9377 sdio devices.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.c    | 13 ++++++++-----
- drivers/net/wireless/ath/ath10k/htt_rx.c |  3 ++-
- drivers/net/wireless/ath/ath10k/htt_tx.c |  3 +++
- drivers/net/wireless/ath/ath10k/txrx.c   |  5 +++--
- 4 files changed, 16 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 25 +++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  1 +
+ 2 files changed, 26 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 3eaa9a8..b5fddd7 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -134,11 +134,14 @@ int ath10k_htc_send(struct ath10k_htc *htc,
- 	ath10k_htc_prepare_tx_skb(ep, skb);
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 96b278b..a884e34 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -311,6 +311,31 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.start_once = true,
+ 	},
+ 	{
++		.id = QCA9377_HW_1_1_DEV_VERSION,
++		.dev_id = QCA9377_1_0_DEVICE_ID,
++		.name = "qca9377 hw1.1 sdio",
++		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
++		.uart_pin = 19,
++		.otp_exe_param = 0,
++		.channel_counters_freq_hz = 88000,
++		.max_probe_resp_desc_thres = 0,
++		.cal_data_len = 8124,
++		.fw = {
++			.dir = QCA9377_HW_1_0_FW_DIR,
++			.board = QCA9377_HW_1_0_BOARD_DATA_FILE_SDIO,
++			.board_size = QCA9377_BOARD_DATA_SZ,
++			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
++		},
++		.hw_ops = &qca6174_ops,
++		.hw_clk = qca6174_clk,
++		.target_cpu_freq = 176000000,
++		.decap_align_bytes = 4,
++		.max_num_peers = TARGET_QCA9377_HL_NUM_PEERS,
++		.is_high_latency = true,
++		.bus = ATH10K_BUS_SDIO,
++		.start_once = true,
++	},
++	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+ 		.dev_id = 0,
+ 		.name = "qca4019 hw1.0",
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 5408ebc..d76b206 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -128,6 +128,7 @@ enum qca9377_chip_id_rev {
+ #define QCA9377_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA9377/hw1.0"
+ #define QCA9377_HW_1_0_BOARD_DATA_FILE "board.bin"
+ #define QCA9377_HW_1_0_BOARD_DATA_FILE_USB "board-usb.bin"
++#define QCA9377_HW_1_0_BOARD_DATA_FILE_SDIO "board-sdio.bin"
+ #define QCA9377_HW_1_0_PATCH_LOAD_ADDR	0x1234
  
- 	skb_cb->eid = eid;
--	skb_cb->paddr = dma_map_single(dev, skb->data, skb->len, DMA_TO_DEVICE);
--	ret = dma_mapping_error(dev, skb_cb->paddr);
--	if (ret) {
--		ret = -EIO;
--		goto err_credits;
-+	if (!ar->is_high_latency) {
-+		skb_cb->paddr = dma_map_single(dev, skb->data, skb->len,
-+					       DMA_TO_DEVICE);
-+		ret = dma_mapping_error(dev, skb_cb->paddr);
-+		if (ret) {
-+			ret = -EIO;
-+			goto err_credits;
-+		}
- 	}
- 
- 	sg_item.transfer_id = ep->eid;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index c90570f..96e73b4 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2485,7 +2485,8 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	}
- 	case HTT_T2H_MSG_TYPE_TX_COMPL_IND:
--		ath10k_htt_rx_tx_compl_ind(htt->ar, skb);
-+		if (!ar->is_high_latency)
-+			ath10k_htt_rx_tx_compl_ind(htt->ar, skb);
- 		break;
- 	case HTT_T2H_MSG_TYPE_SEC_IND: {
- 		struct ath10k *ar = htt->ar;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index a714aa8..190d002 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -409,6 +409,9 @@ int ath10k_htt_tx_start(struct ath10k_htt *htt)
- 	if (htt->tx_mem_allocated)
- 		return 0;
- 
-+	if (ar->is_high_latency)
-+		return 0;
-+
- 	ret = ath10k_htt_tx_alloc_buf(htt);
- 	if (ret)
- 		goto free_idr_pending_tx;
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 9852c5d..5e27f6da 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -89,11 +89,12 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 
- 	ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
- 	ath10k_htt_tx_dec_pending(htt);
--	if (htt->num_pending_tx == 0)
-+	if (!ar->is_high_latency && (htt->num_pending_tx == 0))
- 		wake_up(&htt->empty_tx_wq);
- 	spin_unlock_bh(&htt->tx_lock);
- 
--	dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
-+	if (!ar->is_high_latency)
-+		dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
- 
- 	ath10k_report_offchan_tx(htt->ar, msdu);
- 
+ /* QCA4019 1.0 definitions */
 -- 
 2.7.4
 
