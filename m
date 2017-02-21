@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-ot0-x236.google.com ([2607:f8b0:4003:c0f::236])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgFLW-000160-6f
- for ath10k@lists.infradead.org; Tue, 21 Feb 2017 18:39:37 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: ath10k regression on XPS13
+ id 1cgFYV-0008Ha-1F
+ for ath10k@lists.infradead.org; Tue, 21 Feb 2017 18:52:57 +0000
+Received: by mail-ot0-x236.google.com with SMTP id k4so74736200otc.0
+ for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 10:52:34 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20170221.131858.949421414784612398.davem@davemloft.net>
 References: <alpine.LSU.2.20.1702201508280.24579@cbobk.fhfr.pm>
  <CA+55aFxLmgA7drrGfUJmCRPT-A74ROYf6GQHFGO5pzVjZ0dL7Q@mail.gmail.com>
  <87d1eb99dq.fsf_-_@purkki.adurom.net>
  <20170221.131858.949421414784612398.davem@davemloft.net>
-Date: Tue, 21 Feb 2017 20:38:48 +0200
-In-Reply-To: <20170221.131858.949421414784612398.davem@davemloft.net> (David
- Miller's message of "Tue, 21 Feb 2017 13:18:58 -0500 (EST)")
-Message-ID: <87y3wzbd8n.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 21 Feb 2017 10:52:33 -0800
+Message-ID: <CA+55aFyqH3WAKsD_AaCe905zJbPzTXGygu2eiD1L0d6c2sAkGA@mail.gmail.com>
+Subject: Re: ath10k regression on XPS13
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +28,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: David Miller <davem@davemloft.net>
-Cc: linux-wireless@vger.kernel.org, jikos@kernel.org, torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+Cc: "open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>, Jiri Kosina <jikos@kernel.org>, Linux Wireless List <linux-wireless@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Kalle Valo <kvalo@codeaurora.org>
 
-David Miller <davem@davemloft.net> writes:
-
-> From: Kalle Valo <kvalo@codeaurora.org>
-> Date: Tue, 21 Feb 2017 11:32:49 +0200
->
->> We are working on a fix so that ath10k continues to work with older
->> board-2.bin, but that might take a day or two still.
+On Tue, Feb 21, 2017 at 10:18 AM, David Miller <davem@davemloft.net> wrote:
 >
 > Kalle I really wanted to send my net-next pull request to Linus later
 > today.  But I guess I have to wait for this ath10k first.
->
-> Please get this to me as soon as possible, thanks.
 
-We have a fix now but it's not really tested that well so I'm reluctant
-to submit it yet. As I don't want to make you wait I think I'll submit
-you a patch reverting f2593cb1b291 in an hour or two. And later in the
-week I send you a properly fixed (and tested) version of f2593cb1b291.
+Feel free to send it to me - it sounds like the regression is
+ (a) easy to work around
+and
+ (b) has a fix coming up.
 
-Does that sound ok to you?
+And it won't even be something that I personally notice, since I have
+the prev-gen XPS13 that has intel wireless.
 
--- 
-Kalle Valo
+              Linus
 
 _______________________________________________
 ath10k mailing list
