@@ -1,24 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out06.msg.oleane.net ([62.161.7.4])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cgDKw-00019s-7H
- for ath10k@lists.infradead.org; Tue, 21 Feb 2017 16:30:50 +0000
-From: "voncken" <cedric.voncken@acksys.fr>
+Received: from mail-qt0-x231.google.com ([2607:f8b0:400d:c0d::231])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cgDbX-00040W-H3
+ for ath10k@lists.infradead.org; Tue, 21 Feb 2017 16:47:57 +0000
+Received: by mail-qt0-x231.google.com with SMTP id b16so66594683qte.0
+ for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:47:34 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <CAKR_QVLpSWab-kF-f8=xqw+oWAfA966GDm7CtXrWfzmJz8gP-w@mail.gmail.com>
 References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
- <566849DB.9040901@candelatech.com>
- <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
+ <566849DB.9040901@candelatech.com> <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
  <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
  <87twbnueqv.fsf@kamboji.qca.qualcomm.com>
  <CABUTiXW5QSh2KkD+sQ-6QOD5zTce0dun+nyfAMnvL580U=OVNw@mail.gmail.com>
  <871syn5fnb.fsf@qca.qualcomm.com>
  <CABUTiXV8eFsW4MJET4spvjVQvFgi66NV7hLLxFC6Ttqs1znxjA@mail.gmail.com>
  <87polwq2nq.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87polwq2nq.fsf@kamboji.qca.qualcomm.com>
-Subject: RE: [OpenWrt-Devel] ATH10K VLAN firmware issue
-Date: Tue, 21 Feb 2017 13:59:18 +0100
-Message-ID: <027001d28c42$5042c910$f0c85b30$@acksys.fr>
-MIME-Version: 1.0
-Content-Language: fr
+ <027001d28c42$5042c910$f0c85b30$@acksys.fr>
+ <87efyrd6lv.fsf@kamboji.qca.qualcomm.com>
+ <CAKR_QVLpSWab-kF-f8=xqw+oWAfA966GDm7CtXrWfzmJz8gP-w@mail.gmail.com>
+From: Bruno Antunes <baantunes@gmail.com>
+Date: Tue, 21 Feb 2017 16:47:13 +0000
+Message-ID: <CABUTiXUjnBcTUhw6t3Pf+y8xAXmZ-t9OJ06pfhBx71EMqB_k9Q@mail.gmail.com>
+Subject: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,70 +30,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "'Valo, Kalle'" <kvalo@qca.qualcomm.com>
-Cc: 'OpenWrt Development List' <openwrt-devel@lists.openwrt.org>, 'linux-wireless' <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Tom Psyborg <pozega.tomislav@gmail.com>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, linux-wireless <linux-wireless@vger.kernel.org>, voncken <cedric.voncken@acksys.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-	Kalle, =
+On 21 February 2017 at 13:42, Tom Psyborg <pozega.tomislav@gmail.com> wrote:
+> have you tried this one
+> https://forum.lede-project.org/t/new-qca988x-firmware-with-mesh-support/1587
 
+From my testing it does not work.
 
-Do you know if the firmware team planned to fix the VLAN issue on ath10k
-firmware?
-
-Thanks for your help.
-
-Cedric.
-> -----Message d'origine-----
-> De=A0: linux-wireless-owner@vger.kernel.org [mailto:linux-wireless-
-> owner@vger.kernel.org] De la part de Valo, Kalle
-> Envoy=E9=A0: mardi 15 novembre 2016 14:44
-> =C0=A0: Bruno Antunes
-> Cc=A0: OpenWrt Development List; linux-wireless; voncken;
-> ath10k@lists.infradead.org
-> Objet=A0: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
-> =
-
-> Bruno Antunes <baantunes@gmail.com> writes:
-> =
-
-> > On 7 November 2016 at 18:06, Valo, Kalle <kvalo@qca.qualcomm.com>
-> wrote:
-> >> Bruno Antunes <baantunes@gmail.com> writes:
-> >>
-> >>> On 4 November 2016 at 21:17, Valo, Kalle <kvalo@qca.qualcomm.com>
-> wrote:
-> >>>
-> >>>> Can someone file a bug to bugzilla about this so that all the info
-> >>>> is properly stored? The more comprehensive the report is the
-> better.
-> >>>>
-> >>>> https://bugzilla.kernel.org/
-> >>>
-> >>> I will file a bug report.
-> >>
-> >> Thanks, it's good to store all in one place so that it's easier to
-> >> find the relevant info.
-> >
-> > Just file the bug with the ID 187241 - VLAN support in ATH10k Feel
-> > free to ask for adicional info. I did not mention any names in the
-> bug
-> > report fell free to take credit if wanted.
-> =
-
-> Thanks. I'll report it to the firmware team, let's see what happens. If
-> there's more information which might help to fix this feel free to
-> update that to the bug report.
-> =
-
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D187241
-> =
-
-> --
-> Kalle Valo
-
+>
+> On 21 February 2017 at 14:19, Valo, Kalle <kvalo@qca.qualcomm.com> wrote:
+>>
+>> voncken <cedric.voncken@acksys.fr> writes:
+>>
+>> > Do you know if the firmware team planned to fix the VLAN issue on ath10k
+>> > firmware?
+>>
+>> I reported it forward only this week.
+>>
+>> --
+>> Kalle Valo
+>> _______________________________________________
+>> openwrt-devel mailing list
+>> openwrt-devel@lists.openwrt.org
+>> https://lists.openwrt.org/cgi-bin/mailman/listinfo/openwrt-devel
+>
+>
+>
+> _______________________________________________
+> openwrt-devel mailing list
+> openwrt-devel@lists.openwrt.org
+> https://lists.openwrt.org/cgi-bin/mailman/listinfo/openwrt-devel
+>
 
 _______________________________________________
 ath10k mailing list
