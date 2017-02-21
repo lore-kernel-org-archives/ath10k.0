@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgD7C-0006Zs-Nr
+ id 1cgD7E-0006hn-AY
  for ath10k@lists.infradead.org; Tue, 21 Feb 2017 16:16:40 +0000
-Received: by mail-lf0-x244.google.com with SMTP id 86so5299851lfv.0
- for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:16:13 -0800 (PST)
+Received: by mail-lf0-x243.google.com with SMTP id 90so4026759lfr.3
+ for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:16:21 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v4 00/21] ath10k sdio and usb support
-Date: Tue, 21 Feb 2017 17:15:20 +0100
-Message-Id: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v4 08/21] ath10k: sdio get target info
+Date: Tue, 21 Feb 2017 17:15:28 +0100
+Message-Id: <1487693741-10042-9-git-send-email-erik.stromdahl@gmail.com>
+In-Reply-To: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
+References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,138 +27,125 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-This is the 4th version of the sdio and usb RFC patch series.
-I have combined the sdio and usb patches into one series since they are
-inseparable (both series must be applied in order to have a working system).
+Special BMI get target info function for SDIO.
 
-The main difference since last version (v3) is that QCA9377 sdio support
-was added. I have also fixed a few minor issues in the sdio HIF layer.
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/bmi.c  | 70 ++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/bmi.h  |  2 +
+ drivers/net/wireless/ath/ath10k/core.c |  5 ++-
+ 3 files changed, 76 insertions(+), 1 deletion(-)
 
-*Current status*
-
-The sdio and usb HIF layers seem to work fine. I am able to download fw,
-connect WMI and HTT services and so on.
-
-I have been running it for a while now and so far I have not encountered
-any major issues.
-
-The biggest issue right now is that the board setup of high latency devices
-is very different in qcacld than for ath10k. I have a working qcacld
-system on a 4.1 kernel that I am using a as a reference. I am basically
-diffing the bus traffic between qcacld and ath10k to see what the
-differences are and then try to incorporate the missing stuff in ath10k.
-Some WMI messages used by qcacld are not present in ath10k, and a few
-others are different.
-
-An example is the WMI init message:
-
-From qcacld:
-[539.662779]    WMI msg id:      1,  WMI_INIT_CMDID
-WmiTlvInitCmd:
-  TlvHeader:
-    length: 0x1c
-    tag: 0x4a (WMI_TLV_TAG_STRUCT_INIT_CMD)
-  WmiTlvAbiVersion:
-    abi_ver0: 0x1000000
-    abi_ver1: 0xa8                                    <- DIFFERENT
-    abi_ver_ns0: 0x5f414351
-    abi_ver_ns1: 0x4c4d
-    abi_ver_ns2: 0x0
-    abi_ver_ns3: 0x0
-  num_host_mem_chunks: 0x0
-WmiTlvResourceConfig:
-  TlvHeader:
-    length: 0xac                                      <- DIFFERENT
-    tag: 0x4b (WMI_TLV_TAG_STRUCT_RESOURCE_CONFIG)
-    ...
-
-From ath10k:
-[51.312300]     WMI msg id:      1,  WMI_INIT_CMDID
-WmiTlvInitCmd:
-  TlvHeader:
-    length: 0x1c
-    tag: 0x4a (WMI_TLV_TAG_STRUCT_INIT_CMD)
-  WmiTlvAbiVersion:
-    abi_ver0: 0x1000000
-    abi_ver1: 0x35                                    <- DIFFERENT
-    abi_ver_ns0: 0x5f414351
-    abi_ver_ns1: 0x4c4d
-    abi_ver_ns2: 0x0
-    abi_ver_ns3: 0x0
-  num_host_mem_chunks: 0x0
-WmiTlvResourceConfig:
-  TlvHeader:
-    length: 0x9c                                      <- DIFFERENT
-    tag: 0x4b (WMI_TLV_TAG_STRUCT_RESOURCE_CONFIG)
-    ...
-
-Notice the difference in abi_ver1 and the WmiTlvResourceConfig length.
-Apparently qcacld uses a newer version of the wmi tlv protocol.
-I get the feeling that the high latency devices are intended to be used
-with a newer WMI protocol version than ath10k supports.
-
-The usb firmware seems to be more capable of handling the older wmi format
-than the sdio firmware (I am able to connect to my AP and lease an IP
-address with the usb device but not with the sdio device using exactly the
-same setup)
-
-I think these issues will have to be addressed in a future patch series.
-
-The usb stuff is more or less in the same state as previously, nothing
-has happened there except for a few checkpatch fixes.
-
-Erik Stromdahl (21):
-  ath10k: htc: made static function public
-  ath10k: htc: rx trailer lookahead support
-  ath10k: htc: move htc ctrl ep connect to htc_init
-  ath10k: htc: refactorization
-  ath10k: various sdio related definitions
-  ath10k: sdio support
-  ath10k: add sdio extra initializations
-  ath10k: sdio get target info
-  ath10k: htc: ready_ext msg support
-  ath10k: various usb related definitions
-  ath10k: usb support
-  ath10k: high_latency detection
-  ath10k: different fw file names for usb and sdio
-  ath10k: htt: RX ring config HL support
-  ath10k: per target configurablity of various items
-  ath10k: add start_once support
-  ath10k: htt: High latency TX support
-  ath10k: htt: High latency RX support
-  ath10k: add QCA9377 usb hw_param item
-  ath10k: add QCA9377 sdio hw_param item
-  ath10k: dma fixes for high latency devices
-
- drivers/net/wireless/ath/ath10k/Kconfig     |   12 +
- drivers/net/wireless/ath/ath10k/Makefile    |    6 +
- drivers/net/wireless/ath/ath10k/bmi.c       |   70 +
- drivers/net/wireless/ath/ath10k/bmi.h       |    2 +
- drivers/net/wireless/ath/ath10k/core.c      |  176 ++-
- drivers/net/wireless/ath/ath10k/core.h      |   18 +-
- drivers/net/wireless/ath/ath10k/debug.h     |    4 +
- drivers/net/wireless/ath/ath10k/htc.c       |  254 +++-
- drivers/net/wireless/ath/ath10k/htc.h       |   39 +-
- drivers/net/wireless/ath/ath10k/htt.c       |    5 +-
- drivers/net/wireless/ath/ath10k/htt.h       |   57 +-
- drivers/net/wireless/ath/ath10k/htt_rx.c    |   98 +-
- drivers/net/wireless/ath/ath10k/htt_tx.c    |  126 +-
- drivers/net/wireless/ath/ath10k/hw.h        |   83 ++
- drivers/net/wireless/ath/ath10k/mac.c       |    5 +-
- drivers/net/wireless/ath/ath10k/rx_desc.h   |   15 +
- drivers/net/wireless/ath/ath10k/sdio.c      | 2138 +++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/sdio.h      |  263 ++++
- drivers/net/wireless/ath/ath10k/targaddrs.h |   24 +
- drivers/net/wireless/ath/ath10k/txrx.c      |    5 +-
- drivers/net/wireless/ath/ath10k/usb.c       | 1125 ++++++++++++++
- drivers/net/wireless/ath/ath10k/usb.h       |  128 ++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c   |    4 +-
- 23 files changed, 4529 insertions(+), 128 deletions(-)
- create mode 100644 drivers/net/wireless/ath/ath10k/sdio.c
- create mode 100644 drivers/net/wireless/ath/ath10k/sdio.h
- create mode 100644 drivers/net/wireless/ath/ath10k/usb.c
- create mode 100644 drivers/net/wireless/ath/ath10k/usb.h
-
+diff --git a/drivers/net/wireless/ath/ath10k/bmi.c b/drivers/net/wireless/ath/ath10k/bmi.c
+index abeee20..54aaa1c0 100644
+--- a/drivers/net/wireless/ath/ath10k/bmi.c
++++ b/drivers/net/wireless/ath/ath10k/bmi.c
+@@ -97,6 +97,76 @@ int ath10k_bmi_get_target_info(struct ath10k *ar,
+ 	return 0;
+ }
+ 
++#define TARGET_VERSION_SENTINAL 0xffffffffu
++
++int ath10k_bmi_get_target_info_sdio(struct ath10k *ar,
++				    struct bmi_target_info *target_info)
++{
++	struct bmi_cmd cmd;
++	union bmi_resp resp;
++	u32 cmdlen = sizeof(cmd.id) + sizeof(cmd.get_target_info);
++	u32 resplen, tmp, ver_len;
++	int ret;
++
++	ath10k_dbg(ar, ATH10K_DBG_BMI, "bmi get target info SDIO\n");
++
++	if (ar->bmi.done_sent) {
++		ath10k_warn(ar, "BMI Get Target Info Command disallowed\n");
++		return -EBUSY;
++	}
++
++	cmd.id = __cpu_to_le32(BMI_GET_TARGET_INFO);
++
++	/* Step 1: Read 4 bytes of the target info and check if it is
++	 * the special sentinal version word or the first word in the
++	 * version response.
++	 */
++	resplen = sizeof(u32);
++	ret = ath10k_hif_exchange_bmi_msg(ar, &cmd, cmdlen, &tmp, &resplen);
++	if (ret) {
++		ath10k_warn(ar, "unable to read from device\n");
++		return ret;
++	}
++
++	/* Some SDIO boards have a special sentinal byte before the real
++	 * version response.
++	 */
++	if (tmp == TARGET_VERSION_SENTINAL) {
++		/* Step 1b: Read the version length */
++		resplen = sizeof(u32);
++		ret = ath10k_hif_exchange_bmi_msg(ar, NULL, 0, &tmp,
++						  &resplen);
++		if (ret) {
++			ath10k_warn(ar, "unable to read from device\n");
++			return ret;
++		}
++	}
++
++	ver_len = __le32_to_cpu(tmp);
++
++	/* Step 2: Check the target info length */
++	if (ver_len != sizeof(resp.get_target_info)) {
++		ath10k_warn(ar, "Unexpected target info len: %u. Expected: %zu\n",
++			    ver_len, sizeof(resp.get_target_info));
++		return -EINVAL;
++	}
++
++	/* Step 3: Read the rest of the version response */
++	resplen = sizeof(resp.get_target_info) - sizeof(u32);
++	ret = ath10k_hif_exchange_bmi_msg(ar, NULL, 0,
++					  &resp.get_target_info.version,
++					  &resplen);
++	if (ret) {
++		ath10k_warn(ar, "unable to read from device\n");
++		return ret;
++	}
++
++	target_info->version = __le32_to_cpu(resp.get_target_info.version);
++	target_info->type    = __le32_to_cpu(resp.get_target_info.type);
++
++	return 0;
++}
++
+ int ath10k_bmi_read_memory(struct ath10k *ar,
+ 			   u32 address, void *buffer, u32 length)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/bmi.h b/drivers/net/wireless/ath/ath10k/bmi.h
+index a65f262..2043d00 100644
+--- a/drivers/net/wireless/ath/ath10k/bmi.h
++++ b/drivers/net/wireless/ath/ath10k/bmi.h
+@@ -197,6 +197,8 @@ void ath10k_bmi_start(struct ath10k *ar);
+ int ath10k_bmi_done(struct ath10k *ar);
+ int ath10k_bmi_get_target_info(struct ath10k *ar,
+ 			       struct bmi_target_info *target_info);
++int ath10k_bmi_get_target_info_sdio(struct ath10k *ar,
++				    struct bmi_target_info *target_info);
+ int ath10k_bmi_read_memory(struct ath10k *ar, u32 address,
+ 			   void *buffer, u32 length);
+ int ath10k_bmi_write_memory(struct ath10k *ar, u32 address,
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index eae502e..a0b331d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2186,7 +2186,10 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 	}
+ 
+ 	memset(&target_info, 0, sizeof(target_info));
+-	ret = ath10k_bmi_get_target_info(ar, &target_info);
++	if (ar->hif.bus == ATH10K_BUS_SDIO)
++		ret = ath10k_bmi_get_target_info_sdio(ar, &target_info);
++	else
++		ret = ath10k_bmi_get_target_info(ar, &target_info);
+ 	if (ret) {
+ 		ath10k_err(ar, "could not get target info (%d)\n", ret);
+ 		goto err_power_down;
 -- 
 2.7.4
 
