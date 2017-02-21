@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgGRV-0003HX-Qx
- for ath10k@lists.infradead.org; Tue, 21 Feb 2017 19:49:48 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: ath10k regression on XPS13
-References: <87d1eb99dq.fsf_-_@purkki.adurom.net>
- <20170221.131858.949421414784612398.davem@davemloft.net>
- <87y3wzbd8n.fsf@kamboji.qca.qualcomm.com>
- <20170221.135337.291678413491553794.davem@davemloft.net>
-Date: Tue, 21 Feb 2017 21:49:09 +0200
-In-Reply-To: <20170221.135337.291678413491553794.davem@davemloft.net> (David
- Miller's message of "Tue, 21 Feb 2017 13:53:37 -0500 (EST)")
-Message-ID: <87poibb9ze.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+Received: from shards.monkeyblade.net ([184.105.139.130])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cgHY2-0000zV-VM
+ for ath10k@lists.infradead.org; Tue, 21 Feb 2017 21:00:41 +0000
+Date: Tue, 21 Feb 2017 16:00:07 -0500 (EST)
+Message-Id: <20170221.160007.633338603929529207.davem@davemloft.net>
+Subject: Re: [PATCH] Revert "ath10k: Search SMBIOS for OEM board file
+ extension"
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <1487706426-31172-1-git-send-email-kvalo@qca.qualcomm.com>
+References: <1487706426-31172-1-git-send-email-kvalo@qca.qualcomm.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +23,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: David Miller <davem@davemloft.net>
-Cc: linux-wireless@vger.kernel.org, jikos@kernel.org, torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: kvalo@qca.qualcomm.com
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-David Miller <davem@davemloft.net> writes:
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Tue, 21 Feb 2017 21:47:06 +0200
 
-> From: Kalle Valo <kvalo@codeaurora.org>
-> Date: Tue, 21 Feb 2017 20:38:48 +0200
->
->> David Miller <davem@davemloft.net> writes:
->> 
->>> From: Kalle Valo <kvalo@codeaurora.org>
->>> Date: Tue, 21 Feb 2017 11:32:49 +0200
->>>
->>>> We are working on a fix so that ath10k continues to work with older
->>>> board-2.bin, but that might take a day or two still.
->>>
->>> Kalle I really wanted to send my net-next pull request to Linus later
->>> today.  But I guess I have to wait for this ath10k first.
->>>
->>> Please get this to me as soon as possible, thanks.
->> 
->> We have a fix now but it's not really tested that well so I'm reluctant
->> to submit it yet. As I don't want to make you wait I think I'll submit
->> you a patch reverting f2593cb1b291 in an hour or two. And later in the
->> week I send you a properly fixed (and tested) version of f2593cb1b291.
->> 
->> Does that sound ok to you?
->
-> Sure.
+> This reverts commit f2593cb1b29185d38db706cbcbe22ed538720ae1.
+> 
+> Paul reported that this patch with older board-2.bin ath10k initialisation
+> fails on Dell XPS 13:
+> 
+> ath10k_pci 0000:3a:00.0: failed to fetch board data for bus=pci,vendor=168c,
+> device=003e,subsystem-vendor=1a56,subsystem-device=1535,variant=RV_0520 from
+> ath10k/QCA6174/hw3.0/board-2.bin
+> 
+> The reason is that the older board-2.bin does not have the variant version of
+> the image name and ath10k does not fallback to the older naming scheme.
+> 
+> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=185621#c9
+> Fixes: f2593cb1b291 ("ath10k: Search SMBIOS for OEM board file extension")
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> ---
+> 
+> Dave, please take this directly if you can.
 
-Here's the revert:
-
-https://patchwork.ozlabs.org/patch/730735/
-
-I didn't send a pull request because that felt overkill to do just for
-one patch.
-
--- 
-Kalle Valo
+Applied, thanks Kalle.
 
 _______________________________________________
 ath10k mailing list
