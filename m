@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgD7R-0007Gx-2H
+ id 1cgD7R-0007Gw-2I
  for ath10k@lists.infradead.org; Tue, 21 Feb 2017 16:16:52 +0000
-Received: by mail-lf0-x242.google.com with SMTP id 90so4027100lfr.3
- for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:16:29 -0800 (PST)
+Received: by mail-lf0-x242.google.com with SMTP id 90so4027080lfr.3
+ for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:16:28 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v4 16/21] ath10k: add start_once support
-Date: Tue, 21 Feb 2017 17:15:36 +0100
-Message-Id: <1487693741-10042-17-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v4 15/21] ath10k: per target configurablity of various items
+Date: Tue, 21 Feb 2017 17:15:35 +0100
+Message-Id: <1487693741-10042-16-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,104 +27,215 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Add possibility to configure the driver to only start target once.
-This can reduce startup time of SDIO devices significantly since
-loading the firmware can take a substantial amount of time.
+Added ability to set bus type and configure the max number of
+peers in the ath10k_hw_params struct.
 
-The patch is also necessary for high latency devices in general
-since it does not seem to be possible to rerun the BMI phase
-(fw upload) without power-cycling the device.
+With this functionality it is possible to have a different
+hw configuration depending on bus type for the same radio
+chipset.
+
+E.g. SDIO and USB devices using the same chipset as PCIe
+devices will potentially use different board files and perhaps
+other configuration parameters.
+
+One such parameter is the max number of peers.
+Instead of using a default value (suitable for PCIe devices)
+derived from the WMI op version, a per target value can be
+used instead.
+
+This is needed by the QCA9377 USB device in order to prevent
+the target fw to crash after HTT RX ring cfg is issued.
+
+Apparently, the QCA9377 HL device does not seem to handle the
+same amount of peers as the LL devices.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 19 +++++++++++++++----
- drivers/net/wireless/ath/ath10k/core.h |  2 ++
- drivers/net/wireless/ath/ath10k/hw.h   |  6 ++++++
- 3 files changed, 23 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c    | 33 +++++++++++++++++++++++--------
+ drivers/net/wireless/ath/ath10k/core.h    |  7 -------
+ drivers/net/wireless/ath/ath10k/hw.h      | 22 +++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  4 ++--
+ 4 files changed, 49 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 6b667c7..0a177bf 100644
+index 9d60f4b..6b667c7 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1919,6 +1919,9 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 	int status;
- 	u32 val;
+@@ -1592,9 +1592,19 @@ static int ath10k_init_hw_params(struct ath10k *ar)
+ 	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
+ 		hw_params = &ath10k_hw_params_list[i];
  
-+	if (ar->is_started && ar->hw_params.start_once)
-+		return 0;
-+
- 	lockdep_assert_held(&ar->conf_mutex);
- 
- 	clear_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
-@@ -2138,6 +2141,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 	if (status)
- 		goto err_hif_stop;
- 
-+	ar->is_started = true;
- 	return 0;
- 
- err_hif_stop:
-@@ -2190,6 +2194,7 @@ void ath10k_core_stop(struct ath10k *ar)
- 	ath10k_htt_tx_stop(&ar->htt);
- 	ath10k_htt_rx_free(&ar->htt);
- 	ath10k_wmi_detach(ar);
-+	ar->is_started = false;
- }
- EXPORT_SYMBOL(ath10k_core_stop);
- 
-@@ -2291,12 +2296,18 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
- 		goto err_unlock;
+-		if (hw_params->id == ar->target_version &&
+-		    hw_params->dev_id == ar->dev_id)
+-			break;
++		if (ar->is_high_latency) {
++			/* High latency devices will use different fw depending
++			 * on if it is a USB or SDIO device.
++			 */
++			if (hw_params->bus == ar->hif.bus &&
++			    hw_params->id == ar->target_version &&
++			    hw_params->dev_id == ar->dev_id)
++				break;
++		} else {
++			if (hw_params->id == ar->target_version &&
++			    hw_params->dev_id == ar->dev_id)
++				break;
++		}
  	}
  
--	ath10k_debug_print_boot_info(ar);
--	ath10k_core_stop(ar);
-+	/* Leave target running if hw_params.start_once is set */
-+	if (ar->hw_params.start_once) {
-+		mutex_unlock(&ar->conf_mutex);
-+	} else {
-+		ath10k_debug_print_boot_info(ar);
-+		ath10k_core_stop(ar);
+ 	if (i == ARRAY_SIZE(ath10k_hw_params_list)) {
+@@ -1685,6 +1695,7 @@ static void ath10k_core_set_coverage_class_work(struct work_struct *work)
+ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ {
+ 	struct ath10k_fw_file *fw_file = &ar->normal_mode_fw.fw_file;
++	int max_num_peers;
  
--	mutex_unlock(&ar->conf_mutex);
-+		mutex_unlock(&ar->conf_mutex);
+ 	if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, fw_file->fw_features) &&
+ 	    !test_bit(ATH10K_FW_FEATURE_WMI_10X, fw_file->fw_features)) {
+@@ -1764,7 +1775,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 
+ 	switch (fw_file->wmi_op_version) {
+ 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
+-		ar->max_num_peers = TARGET_NUM_PEERS;
++		max_num_peers = TARGET_NUM_PEERS;
+ 		ar->max_num_stations = TARGET_NUM_STATIONS;
+ 		ar->max_num_vdevs = TARGET_NUM_VDEVS;
+ 		ar->htt.max_num_pending_tx = TARGET_NUM_MSDU_DESC;
+@@ -1776,10 +1787,10 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2:
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
+ 		if (ath10k_peer_stats_enabled(ar)) {
+-			ar->max_num_peers = TARGET_10X_TX_STATS_NUM_PEERS;
++			max_num_peers = TARGET_10X_TX_STATS_NUM_PEERS;
+ 			ar->max_num_stations = TARGET_10X_TX_STATS_NUM_STATIONS;
+ 		} else {
+-			ar->max_num_peers = TARGET_10X_NUM_PEERS;
++			max_num_peers = TARGET_10X_NUM_PEERS;
+ 			ar->max_num_stations = TARGET_10X_NUM_STATIONS;
+ 		}
+ 		ar->max_num_vdevs = TARGET_10X_NUM_VDEVS;
+@@ -1788,7 +1799,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_TLV:
+-		ar->max_num_peers = TARGET_TLV_NUM_PEERS;
++		max_num_peers = TARGET_TLV_NUM_PEERS;
+ 		ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
+ 		ar->max_num_vdevs = TARGET_TLV_NUM_VDEVS;
+ 		ar->max_num_tdls_vdevs = TARGET_TLV_NUM_TDLS_VDEVS;
+@@ -1799,7 +1810,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_4:
+-		ar->max_num_peers = TARGET_10_4_NUM_PEERS;
++		max_num_peers = TARGET_10_4_NUM_PEERS;
+ 		ar->max_num_stations = TARGET_10_4_NUM_STATIONS;
+ 		ar->num_active_peers = TARGET_10_4_ACTIVE_PEERS;
+ 		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
+@@ -1816,10 +1827,16 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
+ 	case ATH10K_FW_WMI_OP_VERSION_MAX:
++	default:
+ 		WARN_ON(1);
+ 		return -EINVAL;
+ 	}
+ 
++	if (ar->hw_params.max_num_peers)
++		ar->max_num_peers = ar->hw_params.max_num_peers;
++	else
++		ar->max_num_peers = max_num_peers;
 +
-+		ath10k_hif_power_down(ar);
-+	}
- 
--	ath10k_hif_power_down(ar);
- 	return 0;
- 
- err_unlock:
+ 	/* Backwards compatibility for firmwares without
+ 	 * ATH10K_FW_IE_HTT_OP_VERSION.
+ 	 */
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index e3cdaba..6be6e66 100644
+index 0c970fe..e3cdaba 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -780,6 +780,8 @@ struct ath10k {
+@@ -88,13 +88,6 @@
  
- 	bool is_high_latency;
+ struct ath10k;
  
-+	bool is_started;
-+
- 	struct {
- 		enum ath10k_bus bus;
- 		const struct ath10k_hif_ops *ops;
+-enum ath10k_bus {
+-	ATH10K_BUS_PCI,
+-	ATH10K_BUS_AHB,
+-	ATH10K_BUS_SDIO,
+-	ATH10K_BUS_USB,
+-};
+-
+ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+ {
+ 	switch (bus) {
 diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index bc4fd43..cf88aba 100644
+index 4055144..bc4fd43 100644
 --- a/drivers/net/wireless/ath/ath10k/hw.h
 +++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -466,6 +466,12 @@ struct ath10k_hw_params {
- 	bool is_high_latency;
+@@ -20,6 +20,13 @@
  
- 	enum ath10k_bus bus;
+ #include "targaddrs.h"
+ 
++enum ath10k_bus {
++	ATH10K_BUS_PCI,
++	ATH10K_BUS_AHB,
++	ATH10K_BUS_SDIO,
++	ATH10K_BUS_USB,
++};
 +
-+	/* Specifies whether or not the device should be started once.
-+	 * If set, the device will be started once by the early fw probe
-+	 * and it will not be terminated afterwards.
+ #define ATH10K_FW_DIR			"ath10k"
+ 
+ #define QCA988X_2_0_DEVICE_ID   (0x003c)
+@@ -447,6 +454,18 @@ struct ath10k_hw_params {
+ 	/* hw specific clock control parameters */
+ 	const struct ath10k_hw_clk_params *hw_clk;
+ 	int target_cpu_freq;
++
++	/* max_num_peers can be used to override the setting derived from
++	 * the WMI op version. If this value is non-zero, it will always
++	 * be used instead of the default value derived from the WMI op
++	 * version.
 +	 */
-+	bool start_once;
++	int max_num_peers;
++
++	/* Specifies whether or not the device is a high latency device */
++	bool is_high_latency;
++
++	enum ath10k_bus bus;
  };
  
  struct htt_rx_desc;
+@@ -557,6 +576,9 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
+ #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
+ #define TARGET_TLV_NUM_WOW_PATTERNS		22
+ 
++/* Target specific defines for QCA9377 high latency firmware */
++#define TARGET_QCA9377_HL_NUM_PEERS		15
++
+ /* Diagnostic Window */
+ #define CE_DIAG_PIPE	7
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index f918802..754d445 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1406,7 +1406,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
+ 	cmd->num_host_mem_chunks = __cpu_to_le32(ar->wmi.num_mem_chunks);
+ 
+ 	cfg->num_vdevs = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
+-	cfg->num_peers = __cpu_to_le32(TARGET_TLV_NUM_PEERS);
++	cfg->num_peers = __cpu_to_le32(ar->max_num_peers);
+ 
+ 	if (test_bit(WMI_SERVICE_RX_FULL_REORDER, ar->wmi.svc_map)) {
+ 		cfg->num_offload_peers = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
+@@ -1417,7 +1417,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
+ 	}
+ 
+ 	cfg->num_peer_keys = __cpu_to_le32(2);
+-	cfg->num_tids = __cpu_to_le32(TARGET_TLV_NUM_TIDS);
++	cfg->num_tids = __cpu_to_le32(ar->max_num_peers * 2);
+ 	cfg->ast_skid_limit = __cpu_to_le32(0x10);
+ 	cfg->tx_chain_mask = __cpu_to_le32(0x7);
+ 	cfg->rx_chain_mask = __cpu_to_le32(0x7);
 -- 
 2.7.4
 
