@@ -1,26 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgAM3-0005xE-FN
- for ath10k@lists.infradead.org; Tue, 21 Feb 2017 13:19:46 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
-Date: Tue, 21 Feb 2017 13:19:17 +0000
-Message-ID: <87efyrd6lv.fsf@kamboji.qca.qualcomm.com>
-References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
- <566849DB.9040901@candelatech.com>
- <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
- <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
- <87twbnueqv.fsf@kamboji.qca.qualcomm.com>
- <CABUTiXW5QSh2KkD+sQ-6QOD5zTce0dun+nyfAMnvL580U=OVNw@mail.gmail.com>
- <871syn5fnb.fsf@qca.qualcomm.com>
- <CABUTiXV8eFsW4MJET4spvjVQvFgi66NV7hLLxFC6Ttqs1znxjA@mail.gmail.com>
- <87polwq2nq.fsf@kamboji.qca.qualcomm.com>
- <027001d28c42$5042c910$f0c85b30$@acksys.fr>
-In-Reply-To: <027001d28c42$5042c910$f0c85b30$@acksys.fr> (voncken's message of
- "Tue, 21 Feb 2017 13:59:18 +0100")
-Content-Language: en-US
-MIME-Version: 1.0
+ id 1cgD7C-0006af-OV
+ for ath10k@lists.infradead.org; Tue, 21 Feb 2017 16:16:37 +0000
+Received: by mail-lf0-x244.google.com with SMTP id z127so9536913lfa.2
+ for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:16:14 -0800 (PST)
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Subject: [RFC v4 01/21] ath10k: htc: made static function public
+Date: Tue, 21 Feb 2017 17:15:21 +0100
+Message-Id: <1487693741-10042-2-git-send-email-erik.stromdahl@gmail.com>
+In-Reply-To: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
+References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,22 +19,91 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: voncken <cedric.voncken@acksys.fr>
-Cc: 'OpenWrt Development List' <openwrt-devel@lists.openwrt.org>, 'linux-wireless' <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-voncken <cedric.voncken@acksys.fr> writes:
+Changed ath10k_htc_notify_tx_completion and
+ath10k_htc_process_trailer from static to non static.
 
-> Do you know if the firmware team planned to fix the VLAN issue on ath10k
-> firmware?
+These functions are needed by SDIO/mbox.
 
-I reported it forward only this week.
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/htc.c | 14 ++++++++------
+ drivers/net/wireless/ath/ath10k/htc.h |  6 ++++++
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 9f6a915..35e67c4 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -57,8 +57,8 @@ static inline void ath10k_htc_restore_tx_skb(struct ath10k_htc *htc,
+ 	skb_pull(skb, sizeof(struct ath10k_htc_hdr));
+ }
+ 
+-static void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
+-					    struct sk_buff *skb)
++void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
++				     struct sk_buff *skb)
+ {
+ 	struct ath10k *ar = ep->htc->ar;
+ 
+@@ -75,6 +75,7 @@ static void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
+ 
+ 	ep->ep_ops.ep_tx_complete(ep->htc->ar, skb);
+ }
++EXPORT_SYMBOL(ath10k_htc_notify_tx_completion);
+ 
+ static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
+ 				      struct sk_buff *skb)
+@@ -227,10 +228,10 @@ ath10k_htc_process_credit_report(struct ath10k_htc *htc,
+ 	spin_unlock_bh(&htc->tx_lock);
+ }
+ 
+-static int ath10k_htc_process_trailer(struct ath10k_htc *htc,
+-				      u8 *buffer,
+-				      int length,
+-				      enum ath10k_htc_ep_id src_eid)
++int ath10k_htc_process_trailer(struct ath10k_htc *htc,
++			       u8 *buffer,
++			       int length,
++			       enum ath10k_htc_ep_id src_eid)
+ {
+ 	struct ath10k *ar = htc->ar;
+ 	int status = 0;
+@@ -291,6 +292,7 @@ static int ath10k_htc_process_trailer(struct ath10k_htc *htc,
+ 
+ 	return status;
+ }
++EXPORT_SYMBOL(ath10k_htc_process_trailer);
+ 
+ void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+index 6ababa3..f728ce7 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.h
++++ b/drivers/net/wireless/ath/ath10k/htc.h
+@@ -351,5 +351,11 @@ int ath10k_htc_send(struct ath10k_htc *htc, enum ath10k_htc_ep_id eid,
+ struct sk_buff *ath10k_htc_alloc_skb(struct ath10k *ar, int size);
+ void ath10k_htc_tx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
+ void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb);
++void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
++				     struct sk_buff *skb);
++int ath10k_htc_process_trailer(struct ath10k_htc *htc,
++			       u8 *buffer,
++			       int length,
++			       enum ath10k_htc_ep_id src_eid);
+ 
+ #endif
 -- 
-Kalle Valo
+2.7.4
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
