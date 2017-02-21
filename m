@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgD7K-0006hJ-SD
- for ath10k@lists.infradead.org; Tue, 21 Feb 2017 16:16:45 +0000
-Received: by mail-lf0-x244.google.com with SMTP id 90so4026916lfr.3
- for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:16:25 -0800 (PST)
+ id 1cgD7K-0006gq-SF
+ for ath10k@lists.infradead.org; Tue, 21 Feb 2017 16:16:44 +0000
+Received: by mail-lf0-x244.google.com with SMTP id h67so3752107lfg.1
+ for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:16:22 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v4 12/21] ath10k: high_latency detection
-Date: Tue, 21 Feb 2017 17:15:32 +0100
-Message-Id: <1487693741-10042-13-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v4 09/21] ath10k: htc: ready_ext msg support
+Date: Tue, 21 Feb 2017 17:15:29 +0100
+Message-Id: <1487693741-10042-10-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,56 +27,108 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-The setup of high latency chips (USB and SDIO) is
-sometimes different than for chips using low latency
-interfaces.
+Added support for extended ready message.
+The extended ready message contains the maximum bundle
+count supported by SDIO chipsets.
 
-The bus type is used to determine if the interface is
-a high latency interface.
+It is transmitted by SDIO chipset only and replaces the
+"standard" ready message in this case.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 1 +
- drivers/net/wireless/ath/ath10k/core.h | 7 +++++++
- 2 files changed, 8 insertions(+)
+ drivers/net/wireless/ath/ath10k/htc.c | 28 ++++++++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/htc.h |  5 +++++
+ 2 files changed, 27 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index a0b331d..39c407e 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2400,6 +2400,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 	ar->hw_rev = hw_rev;
- 	ar->hif.ops = hif_ops;
- 	ar->hif.bus = bus;
-+	ar->is_high_latency = ath10k_is_high_latency(bus);
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index eb036b3..3eaa9a8 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -581,8 +581,6 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
+ 	unsigned long time_left;
+ 	struct ath10k_htc_msg *msg;
+ 	u16 message_id;
+-	u16 credit_count;
+-	u16 credit_size;
  
- 	switch (hw_rev) {
- 	case ATH10K_HW_QCA988X:
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 2768b07..0c970fe 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -785,6 +785,8 @@ struct ath10k {
+ 	time_left = wait_for_completion_timeout(&htc->ctl_resp,
+ 						ATH10K_HTC_WAIT_TIMEOUT_HZ);
+@@ -619,16 +617,14 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
  
- 	bool p2p;
+ 	msg = (struct ath10k_htc_msg *)htc->control_resp_buffer;
+ 	message_id   = __le16_to_cpu(msg->hdr.message_id);
+-	credit_count = __le16_to_cpu(msg->ready.credit_count);
+-	credit_size  = __le16_to_cpu(msg->ready.credit_size);
  
-+	bool is_high_latency;
+ 	if (message_id != ATH10K_HTC_MSG_READY_ID) {
+ 		ath10k_err(ar, "Invalid HTC ready msg: 0x%x\n", message_id);
+ 		return -ECOMM;
+ 	}
+ 
+-	htc->total_transmit_credits = credit_count;
+-	htc->target_credit_size = credit_size;
++	htc->total_transmit_credits = __le16_to_cpu(msg->ready.credit_count);
++	htc->target_credit_size = __le16_to_cpu(msg->ready.credit_size);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_HTC,
+ 		   "Target ready! transmit resources: %d size:%d\n",
+@@ -641,6 +637,19 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
+ 		return -ECOMM;
+ 	}
+ 
++	/* The only way to determine if the ready message is an extended
++	 * message is from the size.
++	 */
++	if (htc->control_resp_len >=
++	    sizeof(msg->hdr) + sizeof(msg->ready_ext)) {
++		htc->max_msgs_per_htc_bundle =
++			min_t(u8, msg->ready_ext.max_msgs_per_htc_bundle,
++			      HTC_HOST_MAX_MSG_PER_BUNDLE);
++		ath10k_dbg(ar, ATH10K_DBG_HTC,
++			   "Extended ready message. RX bundle size: %d\n",
++			   htc->max_msgs_per_htc_bundle);
++	}
 +
- 	struct {
- 		enum ath10k_bus bus;
- 		const struct ath10k_hif_ops *ops;
-@@ -1003,6 +1005,11 @@ static inline bool ath10k_peer_stats_enabled(struct ath10k *ar)
- 	return false;
+ 	return 0;
  }
  
-+static inline bool ath10k_is_high_latency(enum ath10k_bus bus)
-+{
-+	return ((bus == ATH10K_BUS_SDIO) || (bus == ATH10K_BUS_USB));
-+}
+@@ -836,6 +845,13 @@ int ath10k_htc_start(struct ath10k_htc *htc)
+ 	msg->hdr.message_id =
+ 		__cpu_to_le16(ATH10K_HTC_MSG_SETUP_COMPLETE_EX_ID);
+ 
++	if (ar->hif.bus == ATH10K_BUS_SDIO) {
++		/* Extra setup params used by SDIO */
++		msg->setup_complete_ext.flags =
++			__cpu_to_le32(ATH10K_HTC_SETUP_COMPLETE_FLAGS_RX_BNDL_EN);
++		msg->setup_complete_ext.max_msgs_per_bundled_recv =
++			htc->max_msgs_per_htc_bundle;
++	}
+ 	ath10k_dbg(ar, ATH10K_DBG_HTC, "HTC is using TX credit flow control\n");
+ 
+ 	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
+diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+index 9a1db90..566e437 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.h
++++ b/drivers/net/wireless/ath/ath10k/htc.h
+@@ -112,6 +112,10 @@ enum ath10k_htc_conn_svc_status {
+ 	ATH10K_HTC_CONN_SVC_STATUS_NO_MORE_EP   = 4
+ };
+ 
++enum ath10k_htc_setup_complete_flags {
++	ATH10K_HTC_SETUP_COMPLETE_FLAGS_RX_BNDL_EN = 1
++};
 +
- struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 				  enum ath10k_bus bus,
- 				  enum ath10k_hw_rev hw_rev,
+ struct ath10k_ath10k_htc_msg_hdr {
+ 	__le16 message_id; /* @enum htc_message_id */
+ } __packed;
+@@ -360,6 +364,7 @@ struct ath10k_htc {
+ 
+ 	int total_transmit_credits;
+ 	int target_credit_size;
++	u8 max_msgs_per_htc_bundle;
+ };
+ 
+ int ath10k_htc_init(struct ath10k *ar);
 -- 
 2.7.4
 
