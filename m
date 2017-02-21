@@ -1,16 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgD7K-0006gq-SF
- for ath10k@lists.infradead.org; Tue, 21 Feb 2017 16:16:44 +0000
-Received: by mail-lf0-x244.google.com with SMTP id h67so3752107lfg.1
- for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 08:16:22 -0800 (PST)
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v4 09/21] ath10k: htc: ready_ext msg support
-Date: Tue, 21 Feb 2017 17:15:29 +0100
-Message-Id: <1487693741-10042-10-git-send-email-erik.stromdahl@gmail.com>
-In-Reply-To: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
-References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
+Received: from smtp-out06.msg.oleane.net ([62.161.7.4])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cgDKw-00019s-7H
+ for ath10k@lists.infradead.org; Tue, 21 Feb 2017 16:30:50 +0000
+From: "voncken" <cedric.voncken@acksys.fr>
+References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
+ <566849DB.9040901@candelatech.com>
+ <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
+ <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
+ <87twbnueqv.fsf@kamboji.qca.qualcomm.com>
+ <CABUTiXW5QSh2KkD+sQ-6QOD5zTce0dun+nyfAMnvL580U=OVNw@mail.gmail.com>
+ <871syn5fnb.fsf@qca.qualcomm.com>
+ <CABUTiXV8eFsW4MJET4spvjVQvFgi66NV7hLLxFC6Ttqs1znxjA@mail.gmail.com>
+ <87polwq2nq.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87polwq2nq.fsf@kamboji.qca.qualcomm.com>
+Subject: RE: [OpenWrt-Devel] ATH10K VLAN firmware issue
+Date: Tue, 21 Feb 2017 13:59:18 +0100
+Message-ID: <027001d28c42$5042c910$f0c85b30$@acksys.fr>
+MIME-Version: 1.0
+Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,118 +27,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
+To: "'Valo, Kalle'" <kvalo@qca.qualcomm.com>
+Cc: 'OpenWrt Development List' <openwrt-devel@lists.openwrt.org>, 'linux-wireless' <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Added support for extended ready message.
-The extended ready message contains the maximum bundle
-count supported by SDIO chipsets.
+	Kalle, =
 
-It is transmitted by SDIO chipset only and replaces the
-"standard" ready message in this case.
 
-Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
----
- drivers/net/wireless/ath/ath10k/htc.c | 28 ++++++++++++++++++++++------
- drivers/net/wireless/ath/ath10k/htc.h |  5 +++++
- 2 files changed, 27 insertions(+), 6 deletions(-)
+Do you know if the firmware team planned to fix the VLAN issue on ath10k
+firmware?
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index eb036b3..3eaa9a8 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -581,8 +581,6 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 	unsigned long time_left;
- 	struct ath10k_htc_msg *msg;
- 	u16 message_id;
--	u16 credit_count;
--	u16 credit_size;
- 
- 	time_left = wait_for_completion_timeout(&htc->ctl_resp,
- 						ATH10K_HTC_WAIT_TIMEOUT_HZ);
-@@ -619,16 +617,14 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 
- 	msg = (struct ath10k_htc_msg *)htc->control_resp_buffer;
- 	message_id   = __le16_to_cpu(msg->hdr.message_id);
--	credit_count = __le16_to_cpu(msg->ready.credit_count);
--	credit_size  = __le16_to_cpu(msg->ready.credit_size);
- 
- 	if (message_id != ATH10K_HTC_MSG_READY_ID) {
- 		ath10k_err(ar, "Invalid HTC ready msg: 0x%x\n", message_id);
- 		return -ECOMM;
- 	}
- 
--	htc->total_transmit_credits = credit_count;
--	htc->target_credit_size = credit_size;
-+	htc->total_transmit_credits = __le16_to_cpu(msg->ready.credit_count);
-+	htc->target_credit_size = __le16_to_cpu(msg->ready.credit_size);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_HTC,
- 		   "Target ready! transmit resources: %d size:%d\n",
-@@ -641,6 +637,19 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 		return -ECOMM;
- 	}
- 
-+	/* The only way to determine if the ready message is an extended
-+	 * message is from the size.
-+	 */
-+	if (htc->control_resp_len >=
-+	    sizeof(msg->hdr) + sizeof(msg->ready_ext)) {
-+		htc->max_msgs_per_htc_bundle =
-+			min_t(u8, msg->ready_ext.max_msgs_per_htc_bundle,
-+			      HTC_HOST_MAX_MSG_PER_BUNDLE);
-+		ath10k_dbg(ar, ATH10K_DBG_HTC,
-+			   "Extended ready message. RX bundle size: %d\n",
-+			   htc->max_msgs_per_htc_bundle);
-+	}
-+
- 	return 0;
- }
- 
-@@ -836,6 +845,13 @@ int ath10k_htc_start(struct ath10k_htc *htc)
- 	msg->hdr.message_id =
- 		__cpu_to_le16(ATH10K_HTC_MSG_SETUP_COMPLETE_EX_ID);
- 
-+	if (ar->hif.bus == ATH10K_BUS_SDIO) {
-+		/* Extra setup params used by SDIO */
-+		msg->setup_complete_ext.flags =
-+			__cpu_to_le32(ATH10K_HTC_SETUP_COMPLETE_FLAGS_RX_BNDL_EN);
-+		msg->setup_complete_ext.max_msgs_per_bundled_recv =
-+			htc->max_msgs_per_htc_bundle;
-+	}
- 	ath10k_dbg(ar, ATH10K_DBG_HTC, "HTC is using TX credit flow control\n");
- 
- 	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
-diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index 9a1db90..566e437 100644
---- a/drivers/net/wireless/ath/ath10k/htc.h
-+++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -112,6 +112,10 @@ enum ath10k_htc_conn_svc_status {
- 	ATH10K_HTC_CONN_SVC_STATUS_NO_MORE_EP   = 4
- };
- 
-+enum ath10k_htc_setup_complete_flags {
-+	ATH10K_HTC_SETUP_COMPLETE_FLAGS_RX_BNDL_EN = 1
-+};
-+
- struct ath10k_ath10k_htc_msg_hdr {
- 	__le16 message_id; /* @enum htc_message_id */
- } __packed;
-@@ -360,6 +364,7 @@ struct ath10k_htc {
- 
- 	int total_transmit_credits;
- 	int target_credit_size;
-+	u8 max_msgs_per_htc_bundle;
- };
- 
- int ath10k_htc_init(struct ath10k *ar);
--- 
-2.7.4
+Thanks for your help.
+
+Cedric.
+> -----Message d'origine-----
+> De=A0: linux-wireless-owner@vger.kernel.org [mailto:linux-wireless-
+> owner@vger.kernel.org] De la part de Valo, Kalle
+> Envoy=E9=A0: mardi 15 novembre 2016 14:44
+> =C0=A0: Bruno Antunes
+> Cc=A0: OpenWrt Development List; linux-wireless; voncken;
+> ath10k@lists.infradead.org
+> Objet=A0: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
+> =
+
+> Bruno Antunes <baantunes@gmail.com> writes:
+> =
+
+> > On 7 November 2016 at 18:06, Valo, Kalle <kvalo@qca.qualcomm.com>
+> wrote:
+> >> Bruno Antunes <baantunes@gmail.com> writes:
+> >>
+> >>> On 4 November 2016 at 21:17, Valo, Kalle <kvalo@qca.qualcomm.com>
+> wrote:
+> >>>
+> >>>> Can someone file a bug to bugzilla about this so that all the info
+> >>>> is properly stored? The more comprehensive the report is the
+> better.
+> >>>>
+> >>>> https://bugzilla.kernel.org/
+> >>>
+> >>> I will file a bug report.
+> >>
+> >> Thanks, it's good to store all in one place so that it's easier to
+> >> find the relevant info.
+> >
+> > Just file the bug with the ID 187241 - VLAN support in ATH10k Feel
+> > free to ask for adicional info. I did not mention any names in the
+> bug
+> > report fell free to take credit if wanted.
+> =
+
+> Thanks. I'll report it to the firmware team, let's see what happens. If
+> there's more information which might help to fix this feel free to
+> update that to the bug report.
+> =
+
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D187241
+> =
+
+> --
+> Kalle Valo
 
 
 _______________________________________________
