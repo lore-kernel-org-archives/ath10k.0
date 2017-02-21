@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qt0-x22f.google.com ([2607:f8b0:400d:c0d::22f])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cg6os-0001i4-2X
- for ath10k@lists.infradead.org; Tue, 21 Feb 2017 09:33:16 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: ath10k regression on XPS13
-References: <alpine.LSU.2.20.1702201508280.24579@cbobk.fhfr.pm>
- <CA+55aFxLmgA7drrGfUJmCRPT-A74ROYf6GQHFGO5pzVjZ0dL7Q@mail.gmail.com>
-Date: Tue, 21 Feb 2017 11:32:49 +0200
-In-Reply-To: <CA+55aFxLmgA7drrGfUJmCRPT-A74ROYf6GQHFGO5pzVjZ0dL7Q@mail.gmail.com>
- (Linus Torvalds's message of "Mon, 20 Feb 2017 18:48:19 -0800")
-Message-ID: <87d1eb99dq.fsf_-_@purkki.adurom.net>
+ id 1cg708-00065z-9B
+ for ath10k@lists.infradead.org; Tue, 21 Feb 2017 09:44:54 +0000
+Received: by mail-qt0-x22f.google.com with SMTP id x35so32958448qtc.2
+ for <ath10k@lists.infradead.org>; Tue, 21 Feb 2017 01:44:29 -0800 (PST)
+Subject: Re: [PATCH] ath10k: Remove return statement from a void function
+References: <1487667873-3493-1-git-send-email-marcin.rokicki@tieto.com>
+From: Arend Van Spriel <arend.vanspriel@broadcom.com>
+Message-ID: <145513d5-e8d7-c7e4-810b-fc278cea3ace@broadcom.com>
+Date: Tue, 21 Feb 2017 10:44:26 +0100
 MIME-Version: 1.0
+In-Reply-To: <1487667873-3493-1-git-send-email-marcin.rokicki@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +24,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Jiri Kosina <jikos@kernel.org>, linux-wireless@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, davem@davemloft.net
+To: Marcin Rokicki <marcin.rokicki@tieto.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-(Changing subject, adding Dave and relevant lists)
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-> On Mon, Feb 20, 2017 at 7:20 AM, Jiri Kosina <jikos@kernel.org> wrote:
->>
->>   git://git.kernel.org/pub/scm/linux/kernel/git/jikos/hid.git for-linus
->>
->> to receive HID subsystem updates for 4.11:
->
-> The touchpad on my XPS13 no longer works. It might not be this pull
-> request, and I'll bisect the exact cause, but this pull seems the most
-> likely culprit.
->
-> Just an early heads-up,
+On 21-2-2017 10:04, Marcin Rokicki wrote:
+> The empty 'return;' statement in a void function should be
+> used to return from somewhere else then the end.
+> 
+> Signed-off-by: Marcin Rokicki <marcin.rokicki@tieto.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/core.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index 59729aa..d65850e 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -2268,7 +2268,7 @@ static void ath10k_core_register_work(struct work_struct *work)
+>  	status = ath10k_core_probe_fw(ar);
+>  	if (status) {
+>  		ath10k_err(ar, "could not probe fw (%d)\n", status);
+> -		goto err;
+> +		return;
 
-While talking about XPS13 also a heads-up from me as we have a nasty
-regression in ath10k on XPS13 with QCA6174 (though not sure if you have
-QCA6174, recent models seem to have that) which completely breaks driver
-initialisation an error:
+The subject seems misleading as you add a return here. Also removing the
+goto will break the desired behavior as expressed in the TODO below.
 
-"ath10k_pci 0000:3a:00.0: failed to fetch board data for
-bus=pci,vendor=168c,device=003e,subsystem-vendor=1a56,subsystem-device=1535,variant=RV_0520
-from ath10k/QCA6174/hw3.0/board-2.bin"
+>  	}
+>  
+>  	status = ath10k_mac_register(ar);
+> @@ -2307,11 +2307,10 @@ static void ath10k_core_register_work(struct work_struct *work)
+>  	ath10k_mac_unregister(ar);
+>  err_release_fw:
+>  	ath10k_core_free_firmware_files(ar);
+> -err:
+> -	/* TODO: It's probably a good idea to release device from the driver
+> -	 * but calling device_release_driver() here will cause a deadlock.
+> -	 */
+> -	return;
 
-https://bugzilla.kernel.org/show_bug.cgi?id=185621#c9
+So to me removing this return statement and no more is sufficient for
+this patch. Just leave the label and TODO comment in place or fix it
+properly by scheduling a "release driver" work here or whatever is
+needed to prevent the deadlock.
 
-This is caused by this commit which I believe Dave will be sending to
-you soon:
+Regards,
+Arend
 
-f2593cb1b291 ath10k: Search SMBIOS for OEM board file extension
-
-As a workaround I recommend updating ath10k/QCA6174/hw3.0/board-2.bin
-from this link _before_ updating the kernel:
-
-https://github.com/kvalo/ath10k-firmware/blob/8d15818b0f9c7b09f743538ac2d3e1409779f52a/QCA6174/hw3.0/board-2.bin
-
-We are working on a fix so that ath10k continues to work with older
-board-2.bin, but that might take a day or two still.
-
--- 
-Kalle Valo
+> +
+> +/* TODO: It's probably a good idea to release device from the driver
+> + * but calling device_release_driver() here will cause a deadlock.
+> + */
+>  }
+>  
+>  int ath10k_core_register(struct ath10k *ar, u32 chip_id)
+> 
 
 _______________________________________________
 ath10k mailing list
