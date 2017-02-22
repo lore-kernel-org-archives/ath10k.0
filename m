@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x231.google.com ([2a00:1450:4010:c07::231])
+Received: from smtprelay0015.hostedemail.com ([216.40.44.15]
+ helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgS5b-0003QR-Dv
- for ath10k@lists.infradead.org; Wed, 22 Feb 2017 08:15:57 +0000
-Received: by mail-lf0-x231.google.com with SMTP id b80so2052049lfe.3
- for <ath10k@lists.infradead.org>; Wed, 22 Feb 2017 00:15:31 -0800 (PST)
-From: Marcin Rokicki <marcin.rokicki@tieto.com>
-Subject: [PATCH] ath10k: Modify macros to fix style issues
-Date: Wed, 22 Feb 2017 09:15:27 +0100
-Message-Id: <1487751327-2917-1-git-send-email-marcin.rokicki@tieto.com>
+ id 1cgVBo-00010S-9m
+ for ath10k@lists.infradead.org; Wed, 22 Feb 2017 11:34:34 +0000
+Message-ID: <1487763244.14159.6.camel@perches.com>
+Subject: Re: [PATCH] ath10k: Modify macros to fix style issues
+From: Joe Perches <joe@perches.com>
+Date: Wed, 22 Feb 2017 03:34:04 -0800
+In-Reply-To: <1487751327-2917-1-git-send-email-marcin.rokicki@tieto.com>
+References: <1487751327-2917-1-git-send-email-marcin.rokicki@tieto.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,124 +19,140 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Marcin Rokicki <marcin.rokicki@tieto.com>, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Both macros are used internally to convert incomming parameters
-to strings in a switch case statement.
+On Wed, 2017-02-22 at 09:15 +0100, Marcin Rokicki wrote:
+> Both macros are used internally to convert incomming parameters
+> to strings in a switch case statement.
+> 
+> Current implementation gives following output from checkpatch.pl:
+>  - ERROR: Macros with complex values should be enclosed in parentheses
+>  - WARNING: Macros with flow control statements should be avoided
+> 
+> Fix them by modify local variable in the middle and just return at the end.
+> 
+> Btw add const to function that return string literals
+[]
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+[]
+> @@ -312,9 +312,16 @@ enum wmi_10_4_service {
+>  	WMI_10_4_SERVICE_TX_MODE_DYNAMIC,
+>  };
+>  
+> -static inline char *wmi_service_name(int service_id)
+> +#define SVCSTR(x) \
+> +{ \
+> +	case x: \
+> +		str = #x; \
+> +		break; \
+> +}
+> +
+> +static inline const char *wmi_service_name(int service_id)
+>  {
+> -#define SVCSTR(x) case x: return #x
+> +	const char *str = NULL;
+>  
+>  	switch (service_id) {
+>  	SVCSTR(WMI_SERVICE_BEACON_OFFLOAD);
+> @@ -408,13 +415,13 @@ static inline char *wmi_service_name(int service_id)
+>  	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_ONLY);
+>  	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_PULL);
+>  	SVCSTR(WMI_SERVICE_TX_MODE_DYNAMIC);
+> -	default:
+> -		return NULL;
+>  	}
+>  
+> -#undef SVCSTR
+> +	return str;
+>  }
+>  
+> +#undef SVCSTR
+> +
+>  #define WMI_SERVICE_IS_ENABLED(wmi_svc_bmap, svc_id, len) \
+>  	((svc_id) < (len) && \
+>  	 __le32_to_cpu((wmi_svc_bmap)[(svc_id) / (sizeof(u32))]) & \
+> @@ -6412,10 +6419,17 @@ enum wmi_wow_wakeup_event {
+>  	WOW_EVENT_MAX,
+>  };
+>  
+> -#define C2S(x) case x: return #x
+> +#define C2S(x) \
+> +{ \
+> +	case x: \
+> +		str = #x; \
+> +		break; \
+> +}
+>  
+>  static inline const char *wow_wakeup_event(enum wmi_wow_wakeup_event ev)
+>  {
+> +	const char *str = NULL;
+> +
+>  	switch (ev) {
+>  	C2S(WOW_BMISS_EVENT);
+>  	C2S(WOW_BETTER_AP_EVENT);
+> @@ -6442,9 +6456,9 @@ static inline const char *wow_wakeup_event(enum wmi_wow_wakeup_event ev)
+>  	C2S(WOW_BEACON_EVENT);
+>  	C2S(WOW_CLIENT_KICKOUT_EVENT);
+>  	C2S(WOW_EVENT_MAX);
+> -	default:
+> -		return NULL;
+>  	}
+> +
+> +	return str;
+>  }
+>  
+>  enum wmi_wow_wake_reason {
+> @@ -6482,6 +6496,8 @@ enum wmi_wow_wake_reason {
+>  
+>  static inline const char *wow_reason(enum wmi_wow_wake_reason reason)
+>  {
+> +	const char *str = NULL;
+> +
+>  	switch (reason) {
+>  	C2S(WOW_REASON_UNSPECIFIED);
+>  	C2S(WOW_REASON_NLOD);
+> @@ -6513,9 +6529,9 @@ static inline const char *wow_reason(enum wmi_wow_wake_reason reason)
+>  	C2S(WOW_REASON_BEACON_RECV);
+>  	C2S(WOW_REASON_CLIENT_KICKOUT_EVENT);
+>  	C2S(WOW_REASON_DEBUG_TEST);
+> -	default:
+> -		return NULL;
+>  	}
+> +
+> +	return str;
+>  }
+>  
+>  #undef C2S
 
-Current implementation gives following output from checkpatch.pl:
- - ERROR: Macros with complex values should be enclosed in parentheses
- - WARNING: Macros with flow control statements should be avoided
+Here is an alternate style used a few times in the kernel
 
-Fix them by modify local variable in the middle and just return at the end.
+Maybe it'd be nicer to change the macros to something like
 
-Btw add const to function that return string literals
+#define CASE_STR(x) case x: return #x
 
-Signed-off-by: Marcin Rokicki <marcin.rokicki@tieto.com>
----
- drivers/net/wireless/ath/ath10k/wmi.h | 36 +++++++++++++++++++++++++----------
- 1 file changed, 26 insertions(+), 10 deletions(-)
+and just return NULL after the switch/case block
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 427220c..0bf578f 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -312,9 +312,16 @@ enum wmi_10_4_service {
- 	WMI_10_4_SERVICE_TX_MODE_DYNAMIC,
- };
- 
--static inline char *wmi_service_name(int service_id)
-+#define SVCSTR(x) \
-+{ \
-+	case x: \
-+		str = #x; \
-+		break; \
-+}
-+
-+static inline const char *wmi_service_name(int service_id)
- {
--#define SVCSTR(x) case x: return #x
-+	const char *str = NULL;
- 
- 	switch (service_id) {
- 	SVCSTR(WMI_SERVICE_BEACON_OFFLOAD);
-@@ -408,13 +415,13 @@ static inline char *wmi_service_name(int service_id)
- 	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_ONLY);
- 	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_PULL);
- 	SVCSTR(WMI_SERVICE_TX_MODE_DYNAMIC);
--	default:
--		return NULL;
- 	}
- 
--#undef SVCSTR
-+	return str;
- }
- 
-+#undef SVCSTR
-+
- #define WMI_SERVICE_IS_ENABLED(wmi_svc_bmap, svc_id, len) \
- 	((svc_id) < (len) && \
- 	 __le32_to_cpu((wmi_svc_bmap)[(svc_id) / (sizeof(u32))]) & \
-@@ -6412,10 +6419,17 @@ enum wmi_wow_wakeup_event {
- 	WOW_EVENT_MAX,
- };
- 
--#define C2S(x) case x: return #x
-+#define C2S(x) \
-+{ \
-+	case x: \
-+		str = #x; \
-+		break; \
-+}
- 
- static inline const char *wow_wakeup_event(enum wmi_wow_wakeup_event ev)
- {
-+	const char *str = NULL;
-+
- 	switch (ev) {
- 	C2S(WOW_BMISS_EVENT);
- 	C2S(WOW_BETTER_AP_EVENT);
-@@ -6442,9 +6456,9 @@ static inline const char *wow_wakeup_event(enum wmi_wow_wakeup_event ev)
- 	C2S(WOW_BEACON_EVENT);
- 	C2S(WOW_CLIENT_KICKOUT_EVENT);
- 	C2S(WOW_EVENT_MAX);
--	default:
--		return NULL;
- 	}
-+
-+	return str;
- }
- 
- enum wmi_wow_wake_reason {
-@@ -6482,6 +6496,8 @@ enum wmi_wow_wake_reason {
- 
- static inline const char *wow_reason(enum wmi_wow_wake_reason reason)
- {
-+	const char *str = NULL;
-+
- 	switch (reason) {
- 	C2S(WOW_REASON_UNSPECIFIED);
- 	C2S(WOW_REASON_NLOD);
-@@ -6513,9 +6529,9 @@ static inline const char *wow_reason(enum wmi_wow_wake_reason reason)
- 	C2S(WOW_REASON_BEACON_RECV);
- 	C2S(WOW_REASON_CLIENT_KICKOUT_EVENT);
- 	C2S(WOW_REASON_DEBUG_TEST);
--	default:
--		return NULL;
- 	}
-+
-+	return str;
- }
- 
- #undef C2S
--- 
-2.7.4
+Maybe make that a global macro and consolidate the various
+uses to a single style
+
+drivers/net/wireless/ath/ath9k/ath9k.h:#define case_rtn_string(val) case val: return #val
+drivers/net/wireless/ath/ath10k/wmi.h:#define SVCSTR(x) case x: return #x
+drivers/net/wireless/ath/ath10k/wmi.h:#define C2S(x) case x: return #x
+drivers/net/wireless/intel/iwlegacy/common.h:#define IL_CMD(x) case x: return #x
+drivers/net/wireless/intel/iwlwifi/iwl-io.c:#define IWL_CMD(x) case x: return #x
+drivers/net/wireless/intel/iwlwifi/pcie/trans.c:#define IWL_CMD(x) case x: return #x
+drivers/net/wireless/atmel/at76c50x-usb.c:#define MAKE_CMD_CASE(c) case (c): return #c
+drivers/net/wireless/atmel/at76c50x-usb.c:#define MAKE_CMD_STATUS_CASE(c)	case (c): return #c
+drivers/net/ethernet/intel/fm10k/fm10k_pci.c:#define FM10K_ERR_MSG(type) case (type): error = #type; break
+drivers/staging/lustre/lnet/selftest/selftest.h:#define STATE2STR(x) case x: return #x
+include/linux/genl_magic_func.h:	case op_num: return #op_name;
+t_case_default.c:#define FOO(BAR)	{ case BAR: return #BAR; }
+
 
 
 _______________________________________________
