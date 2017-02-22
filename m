@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0015.hostedemail.com ([216.40.44.15]
- helo=smtprelay.hostedemail.com)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgVBo-00010S-9m
- for ath10k@lists.infradead.org; Wed, 22 Feb 2017 11:34:34 +0000
-Message-ID: <1487763244.14159.6.camel@perches.com>
-Subject: Re: [PATCH] ath10k: Modify macros to fix style issues
-From: Joe Perches <joe@perches.com>
-Date: Wed, 22 Feb 2017 03:34:04 -0800
-In-Reply-To: <1487751327-2917-1-git-send-email-marcin.rokicki@tieto.com>
-References: <1487751327-2917-1-git-send-email-marcin.rokicki@tieto.com>
-Mime-Version: 1.0
+ id 1cgYuE-0005Gu-3O
+ for ath10k@lists.infradead.org; Wed, 22 Feb 2017 15:32:39 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Disallow DFS simulation if DFS channel is not enabled
+Date: Wed, 22 Feb 2017 21:03:11 +0530
+Message-ID: <1487777591-29743-1-git-send-email-mohammed@qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,136 +20,70 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marcin Rokicki <marcin.rokicki@tieto.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-On Wed, 2017-02-22 at 09:15 +0100, Marcin Rokicki wrote:
-> Both macros are used internally to convert incomming parameters
-> to strings in a switch case statement.
-> 
-> Current implementation gives following output from checkpatch.pl:
->  - ERROR: Macros with complex values should be enclosed in parentheses
->  - WARNING: Macros with flow control statements should be avoided
-> 
-> Fix them by modify local variable in the middle and just return at the end.
-> 
-> Btw add const to function that return string literals
-[]
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-[]
-> @@ -312,9 +312,16 @@ enum wmi_10_4_service {
->  	WMI_10_4_SERVICE_TX_MODE_DYNAMIC,
->  };
->  
-> -static inline char *wmi_service_name(int service_id)
-> +#define SVCSTR(x) \
-> +{ \
-> +	case x: \
-> +		str = #x; \
-> +		break; \
-> +}
-> +
-> +static inline const char *wmi_service_name(int service_id)
->  {
-> -#define SVCSTR(x) case x: return #x
-> +	const char *str = NULL;
->  
->  	switch (service_id) {
->  	SVCSTR(WMI_SERVICE_BEACON_OFFLOAD);
-> @@ -408,13 +415,13 @@ static inline char *wmi_service_name(int service_id)
->  	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_ONLY);
->  	SVCSTR(WMI_SERVICE_TX_MODE_PUSH_PULL);
->  	SVCSTR(WMI_SERVICE_TX_MODE_DYNAMIC);
-> -	default:
-> -		return NULL;
->  	}
->  
-> -#undef SVCSTR
-> +	return str;
->  }
->  
-> +#undef SVCSTR
-> +
->  #define WMI_SERVICE_IS_ENABLED(wmi_svc_bmap, svc_id, len) \
->  	((svc_id) < (len) && \
->  	 __le32_to_cpu((wmi_svc_bmap)[(svc_id) / (sizeof(u32))]) & \
-> @@ -6412,10 +6419,17 @@ enum wmi_wow_wakeup_event {
->  	WOW_EVENT_MAX,
->  };
->  
-> -#define C2S(x) case x: return #x
-> +#define C2S(x) \
-> +{ \
-> +	case x: \
-> +		str = #x; \
-> +		break; \
-> +}
->  
->  static inline const char *wow_wakeup_event(enum wmi_wow_wakeup_event ev)
->  {
-> +	const char *str = NULL;
-> +
->  	switch (ev) {
->  	C2S(WOW_BMISS_EVENT);
->  	C2S(WOW_BETTER_AP_EVENT);
-> @@ -6442,9 +6456,9 @@ static inline const char *wow_wakeup_event(enum wmi_wow_wakeup_event ev)
->  	C2S(WOW_BEACON_EVENT);
->  	C2S(WOW_CLIENT_KICKOUT_EVENT);
->  	C2S(WOW_EVENT_MAX);
-> -	default:
-> -		return NULL;
->  	}
-> +
-> +	return str;
->  }
->  
->  enum wmi_wow_wake_reason {
-> @@ -6482,6 +6496,8 @@ enum wmi_wow_wake_reason {
->  
->  static inline const char *wow_reason(enum wmi_wow_wake_reason reason)
->  {
-> +	const char *str = NULL;
-> +
->  	switch (reason) {
->  	C2S(WOW_REASON_UNSPECIFIED);
->  	C2S(WOW_REASON_NLOD);
-> @@ -6513,9 +6529,9 @@ static inline const char *wow_reason(enum wmi_wow_wake_reason reason)
->  	C2S(WOW_REASON_BEACON_RECV);
->  	C2S(WOW_REASON_CLIENT_KICKOUT_EVENT);
->  	C2S(WOW_REASON_DEBUG_TEST);
-> -	default:
-> -		return NULL;
->  	}
-> +
-> +	return str;
->  }
->  
->  #undef C2S
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Here is an alternate style used a few times in the kernel
+If DFS is not enabled in hostapd (ieee80211h=0) DFS channels shall
+not be available for use even though the hardware may have the capability
+to support DFS. With this configuration (DFS disabled in hostapd) trying to
+bring up ath10k device in DFS channel for AP mode fails and trying to
+simulate DFS in ath10k debugfs results in a warning in cfg80211 complaining
+invalid channel and this should be avoided in the driver itself rather than
+false propogating RADAR detection to mac80211/cfg80211. Fix this by
+checking for the first vif 'is_started' state(should work for client mode
+as well) as all the vifs shall be configured for the same channel
 
-Maybe it'd be nicer to change the macros to something like
+sys/kernel/debug/ieee80211/phy1/ath10k# echo 1 > dfs_simulate_radar
 
-#define CASE_STR(x) case x: return #x
+WARNING: at net/wireless/chan.c:265 cfg80211_radar_event+0x24/0x60
+Workqueue: phy0 ieee80211_dfs_radar_detected_work [mac80211]
+[<c022f2d4>] (warn_slowpath_null) from
+[<bf72dab8>] (cfg80211_radar_event+0x24/0x60 [cfg80211])
+[<bf72dab8>] (cfg80211_radar_event [cfg80211]) from
+[<bf7813e0>] (ieee80211_dfs_radar_detected_work+0x94/0xa0 [mac80211])
+[<bf7813e0>] (ieee80211_dfs_radar_detected_work [mac80211]) from
+[<c0242320>] (process_one_work+0x20c/0x32c)
 
-and just return NULL after the switch/case block
+WARNING: at net/wireless/nl80211.c:2488 nl80211_get_mpath+0x13c/0x4cc
+ Workqueue: phy0 ieee80211_dfs_radar_detected_work [mac80211]
+[<c022f2d4>] (warn_slowpath_null) from
+[<bf72dab8>] (cfg80211_radar_event+0x24/0x60 [cfg80211])
+[<bf72dab8>] (cfg80211_radar_event [cfg80211]) from
+[<bf7813e0>] (ieee80211_dfs_radar_detected_work+0x94/0xa0 [mac80211])
+[<bf7813e0>] (ieee80211_dfs_radar_detected_work [mac80211]) from
+[<c0242320>] (process_one_work+0x20c/0x32c)
 
-Maybe make that a global macro and consolidate the various
-uses to a single style
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+[thanks Kalle, Jouni and Tamizh for the first level review]
 
-drivers/net/wireless/ath/ath9k/ath9k.h:#define case_rtn_string(val) case val: return #val
-drivers/net/wireless/ath/ath10k/wmi.h:#define SVCSTR(x) case x: return #x
-drivers/net/wireless/ath/ath10k/wmi.h:#define C2S(x) case x: return #x
-drivers/net/wireless/intel/iwlegacy/common.h:#define IL_CMD(x) case x: return #x
-drivers/net/wireless/intel/iwlwifi/iwl-io.c:#define IWL_CMD(x) case x: return #x
-drivers/net/wireless/intel/iwlwifi/pcie/trans.c:#define IWL_CMD(x) case x: return #x
-drivers/net/wireless/atmel/at76c50x-usb.c:#define MAKE_CMD_CASE(c) case (c): return #c
-drivers/net/wireless/atmel/at76c50x-usb.c:#define MAKE_CMD_STATUS_CASE(c)	case (c): return #c
-drivers/net/ethernet/intel/fm10k/fm10k_pci.c:#define FM10K_ERR_MSG(type) case (type): error = #type; break
-drivers/staging/lustre/lnet/selftest/selftest.h:#define STATE2STR(x) case x: return #x
-include/linux/genl_magic_func.h:	case op_num: return #op_name;
-t_case_default.c:#define FOO(BAR)	{ case BAR: return #BAR; }
+ drivers/net/wireless/ath/ath10k/debug.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index fb0ade3..ac9090b 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1997,6 +1997,15 @@ static ssize_t ath10k_write_simulate_radar(struct file *file,
+ 					   size_t count, loff_t *ppos)
+ {
+ 	struct ath10k *ar = file->private_data;
++	struct ath10k_vif *arvif;
++
++	/* Just check for for the first vif alone, as all the vifs will be
++	 * sharing the same channel and if the channel is disabled, all the
++	 * vifs will share the same 'is_started' state.
++	 */
++	arvif = list_first_entry(&ar->arvifs, typeof(*arvif), list);
++	if (!arvif->is_started)
++		return -EINVAL;
+ 
+ 	ieee80211_radar_detected(ar->hw);
+ 
+-- 
+1.9.1
 
 
 _______________________________________________
