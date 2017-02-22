@@ -1,29 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out06.msg.oleane.net ([62.161.7.4])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cgZj3-0007vR-UJ
- for ath10k@lists.infradead.org; Wed, 22 Feb 2017 16:25:12 +0000
-Received: from smtp06.msg.oleane.net ([172.17.20.115]) 
- by smtp-out06.msg.oleane.net with ESMTP id v1MEH5bp015260
- for <ath10k@lists.infradead.org>; Wed, 22 Feb 2017 15:17:05 +0100
-From: "voncken" <cedric.voncken@acksys.fr>
-References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
- <566849DB.9040901@candelatech.com>
- <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
- <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
- <87twbnueqv.fsf@kamboji.qca.qualcomm.com>
- <CABUTiXW5QSh2KkD+sQ-6QOD5zTce0dun+nyfAMnvL580U=OVNw@mail.gmail.com>
- <871syn5fnb.fsf@qca.qualcomm.com>
- <CABUTiXV8eFsW4MJET4spvjVQvFgi66NV7hLLxFC6Ttqs1znxjA@mail.gmail.com>
- <87polwq2nq.fsf@kamboji.qca.qualcomm.com>
- <027001d28c42$5042c910$f0c85b30$@acksys.fr>
- <87efyrd6lv.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87efyrd6lv.fsf@kamboji.qca.qualcomm.com>
-Subject: RE: [OpenWrt-Devel] ATH10K VLAN firmware issue
-Date: Wed, 22 Feb 2017 14:55:09 +0100
-Message-ID: <02ef01d28d13$48181ac0$d8485040$@acksys.fr>
+Received: from mail-qk0-x22d.google.com ([2607:f8b0:400d:c09::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cgd0M-0008CS-Tq
+ for ath10k@lists.infradead.org; Wed, 22 Feb 2017 19:55:17 +0000
+Received: by mail-qk0-x22d.google.com with SMTP id n127so13237516qkf.0
+ for <ath10k@lists.infradead.org>; Wed, 22 Feb 2017 11:54:53 -0800 (PST)
+Subject: Re: [PATCH v2] ath10k: Remove return statement from a void function
+References: <1487672891-8584-1-git-send-email-marcin.rokicki@tieto.com>
+From: Arend Van Spriel <arend.vanspriel@broadcom.com>
+Message-ID: <b7ac6892-4cbd-bd60-382f-5c51e9ae588a@broadcom.com>
+Date: Wed, 22 Feb 2017 20:54:49 +0100
 MIME-Version: 1.0
-Content-Language: fr
+In-Reply-To: <1487672891-8584-1-git-send-email-marcin.rokicki@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,43 +20,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "'Valo, Kalle'" <kvalo@qca.qualcomm.com>
-Cc: 'OpenWrt Development List' <openwrt-devel@lists.openwrt.org>, 'linux-wireless' <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
-
-	Thanks for your answer, =
+To: Marcin Rokicki <marcin.rokicki@tieto.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
 
-	How I can know when this issue will be fixed in ath10k firmware
-mainline?
-	Do you know if Qualcomm publish a release note for this firmware?
 
-> -----Message d'origine-----
-> De=A0: linux-wireless-owner@vger.kernel.org [mailto:linux-wireless-
-> owner@vger.kernel.org] De la part de Valo, Kalle
-> Envoy=E9=A0: mardi 21 f=E9vrier 2017 14:19
-> =C0=A0: voncken
-> Cc=A0: 'OpenWrt Development List'; 'linux-wireless';
-> ath10k@lists.infradead.org
-> Objet=A0: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
-> =
+On 21-2-2017 11:28, Marcin Rokicki wrote:
+> The empty 'return;' statement in a void function should be
+> used to return from somewhere else than the end.
+> 
+> Signed-off-by: Marcin Rokicki <marcin.rokicki@tieto.com>
+> ---
+> 
+> Changes for v2
+>  -remove only return statement instead of empty err label
+>   which can be used in the future
+> 
+> ---
+>  drivers/net/wireless/ath/ath10k/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index 59729aa..a22d3c9 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -2311,7 +2311,7 @@ static void ath10k_core_register_work(struct work_struct *work)
+>  	/* TODO: It's probably a good idea to release device from the driver
+>  	 * but calling device_release_driver() here will cause a deadlock.
+>  	 */
+> -	return;
+> +	;
 
-> voncken <cedric.voncken@acksys.fr> writes:
-> =
+Not exactly what I meant. Just drop the whole line include semicolon.
 
-> > Do you know if the firmware team planned to fix the VLAN issue on
-> > ath10k firmware?
-> =
+Regards,
+Arend
 
-> I reported it forward only this week.
-> =
-
-> --
-> Kalle Valo
-
+>  }
+>  
+>  int ath10k_core_register(struct ath10k *ar, u32 chip_id)
+> 
 
 _______________________________________________
 ath10k mailing list
