@@ -1,21 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22c.google.com ([2a00:1450:4010:c07::22c])
+Received: from cmailsend03.wmail.naver.com ([125.209.236.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cge0P-0004mN-Bk
- for ath10k@lists.infradead.org; Wed, 22 Feb 2017 20:59:23 +0000
-Received: by mail-lf0-x22c.google.com with SMTP id z127so7614142lfa.2
- for <ath10k@lists.infradead.org>; Wed, 22 Feb 2017 12:59:00 -0800 (PST)
-Subject: Re: Driver support for QCA6174 chip using SDIO interface
-References: <CAHNpzpeRE6ha4JA9i4oyJ2BjgJg53FvDpAb1yZccncrmTeiBdQ@mail.gmail.com>
- <8737g45xc7.fsf@kamboji.qca.qualcomm.com>
- <c3814c7d-eed3-dad2-c568-6ce456ee7166@gmail.com>
- <CAHNpzpdbTnapQFPwYhUhi5EvLjQSdpqy9AHMH04KcqF2jHWw_A@mail.gmail.com>
- <CAHNpzpeao2rT8JJ5rSALHknrkFHniixJftGLTnUxcd7RtoYdtQ@mail.gmail.com>
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Message-ID: <13839ca7-e43e-8475-04de-8c705c4e3ee2@gmail.com>
-Date: Wed, 22 Feb 2017 21:58:57 +0100
+ id 1cgOiV-0008Mb-N9
+ for ath10k@lists.infradead.org; Wed, 22 Feb 2017 04:39:54 +0000
+Date: Wed, 22 Feb 2017 13:39:21 +0900 (KST)
+From: Kwang Min Kim <gwondori@nimbus.kr>
+Message-ID: <5ed97547edaaf38bb51ec3aba924eb5b@cvweb13.wmail.nhnsystem.com>
+In-Reply-To: <3ea77cabdebeee9f769d52e3f57c2662@cvweb12.wmail.nhnsystem.com>
+References: <1beccb9973bd869d9cadd0b6823ce854@cweb06.nm.nhnsystem.com>
+ <3ea77cabdebeee9f769d52e3f57c2662@cvweb12.wmail.nhnsystem.com>
+Subject: =?UTF-8?B?UkU6IHdobyBjYXJlIG9mIGFkZGJhL2RlbGJhIGluIGF0aDEwaz8=?=
 MIME-Version: 1.0
-In-Reply-To: <CAHNpzpeao2rT8JJ5rSALHknrkFHniixJftGLTnUxcd7RtoYdtQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,98 +19,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Reply-To: Kwang Min Kim <gwondori@nimbus.kr>
+Content-Type: multipart/mixed; boundary="===============4798064000117757845=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Akesh M Chacko <akesh.chacko@vvdntech.in>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, Ann Lo <annlo.tech@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: greearb@candelatech.com
+Cc: ath10k@lists.infradead.org, mohammed@qti.qualcomm.com
 
 
+--===============4798064000117757845==
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_965375_311054790.1487738361388"
 
-On 2017-02-21 12:26, Akesh M Chacko wrote:
-> hi,
-> I'm following your patch for adding SDIO support for QCA6174. Is the
-> firmware image for PCIe and SDIO interface are same?
-> If they are different, from where can i find the firmware image for
-> SDIO interface support in QCA6174A-3 v3.2.
->
-The firmware is not the same for sdio. You will need to obtain the firmware
-from the module vendor and convert it into ath10k format with ath10k-fwencoder.
 
-You need the tool qca-swiss-army-knife for this:
+------=_Part_965375_311054790.1487738361388
+Content-Type: text/plain;
+	charset=UTF-8
+Content-Transfer-Encoding: base64
 
-https://github.com/qca/qca-swiss-army-knife.git
+VGhhbmsgeW91IGZvciB5b3VyIHJlcGx5LgoKSSB3aWxsIGFzayBhbm90aGVyIHF1ZXN0aW9uLi4u
+CgpXaGVuIGRlYnVnZ2luZyBmcm9tICJhdGgxMGsgSFRUIiwgSSB1c3VhbGx5IHNlZSBBRERCQSBy
+ZXF1ZXN0cyBjb21pbmcgd2hlbiAiYXNzb2NpYXRlZCIgaXMgZmluaXNoLgoKQnV0IHZlcnkgcmFy
+ZWx5LCBhZnRlciAiYXNzb2NpYXRlZCIgY29tcGxldGlvbiwgSSBjb3VsZCBzZWUgdGhlIGZvbGxv
+d2luZyBiZWhhdmlvci4KCkFzc29jaWF0ZWQgLT4gQUREQkEgLT4gREVMQkEgLT4gQUREQkEgLT4g
+REVMQkEKCklzIHRoaXMgbm9ybWFsIGNhc2U/CgpUaGFua3MuCgotLS0tLQoKS2ltIEt3YW5nIE1p
+bgoKTW9iaWxlICs4MiAwMTAtNTUyMS02MzkzIApNYWlsIGd3b25kb3JpQG5pbWJ1cy5rciAKCgoK
+CgotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQpGcm9tOiAmcXVvdDtCZW4gR3JlZWFyJnF1b3Q7
+PGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiAKVG86ICJTaGFqYWtoYW4sIE1vaGFtbWVkIFNoYWZp
+IChNb2hhbW1lZCBTaGFmaSkiPG1vaGFtbWVkQHF0aS5xdWFsY29tbS5jb20+OyAiYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmciPGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnPjsgIkt3YW5nTWlu
+IEtpbSI8a2ltMjU0NDRAbmF2ZXIuY29tPjsgCkNjOiAiZ3dvbmRvcmlAbmltYnVzLmtyIjxnd29u
+ZG9yaUBuaW1idXMua3I+OyAKU2VudDogMjAxNy0wMi0yMSAo7ZmUKSAwMjo1MDo0NApTdWJqZWN0
+OiBSZTogd2hvIGNhcmUgb2YgYWRkYmEvZGVsYmEgaW4gYXRoMTBrPwogClllcywgaXQgaXMgaW4g
+ZmlybXdhcmUuCgpUaGFua3MsCkJlbgoKT24gMDIvMjAvMjAxNyAwNjozNyBBTSwgU2hhamFraGFu
+LCBNb2hhbW1lZCBTaGFmaSAoTW9oYW1tZWQgU2hhZmkpIHdyb3RlOgo+IEkgdGhpbmsgdGhhdCBh
+dGgxMGsncyBhZGRiYSAvIGRlbGJhIGlzIGRvaW5nIGZpcm13YXJlLiBJcyB0aGlzIHJpZ2h0Pwo+
+Cj4gW3NoYWZpXSBodHRwOi8vbHhyLmZyZWUtZWxlY3Ryb25zLmNvbS9zb3VyY2UvZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Z2ZzX3N0YS5jI0wxNDQKPiB5ZXMgV01JIGNvbW1h
+bmQgaXMgc2VudCB0byBmL3cKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
+Cj4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVj
+aG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgoKCgotLS0tLU9yaWdp
+bmFsIE1lc3NhZ2UtLS0tLQpGcm9tOiAmcXVvdDtLd2FuZ01pbiBLaW0mcXVvdDs8a2ltMjU0NDRA
+bmF2ZXIuY29tPiAKVG86IDxhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZz47IApDYzogPGd3b25k
+b3JpQG5pbWJ1cy5rcj47IApTZW50OiAyMDE3LTAyLTE5ICjsnbwpIDE3OjMwOjQxClN1YmplY3Q6
+IHdobyBjYXJlIG9mIGFkZGJhL2RlbGJhIGluIGF0aDEwaz8KIApJIHRoaW5rIHRoYXQgYXRoMTBr
+J3MgYWRkYmEgLyBkZWxiYSBpcyBkb2luZyBmaXJtd2FyZS4gSXMgdGhpcyByaWdodD8KCkFuZCBJ
+IGhhdmUgYW5vdGhlciBxdWVzdGlvbi4KCklmIHdtbSBpcyBvbiwgc2hvdWxkIFRJRCAnMCcgaW4g
+YWdnX3N0YXR1cyAoZGVidWdmcyBvbiBtYWM4MDIxMSkgYWx3YXlzIGJlIG9uPwoKVGhhbmtzLgoK
+LS0tLS0KCkt3YW5nLU1pbiBLaW0oa2ltMjU0NDRAbmF2ZXIuY29tKQoKKzgyIDEwLTU1MjEtNjM5
+Mw==
+------=_Part_965375_311054790.1487738361388--
 
-Below is a script I have used when generating fw for my QCA9377 board:
 
-### START ###
-#! /bin/bash
-
-ENCODER="./tools/scripts/ath10k/ath10k-fwencoder"
-
-API_VER=5
-HTT_OP_VERSION="tlv"
-WMI_OP_VERSION="tlv"
-FW="silex-SX-SDCAC-2830-SP/qwlan30.bin"
-OTP="silex-SX-SDCAC-2830-SP/otp30.bin"
-FEATURES="ignore-otp-result"
-
-$ENCODER --create --otp=$OTP --firmware=$FW \
---set-wmi-op-version=$WMI_OP_VERSION \
---set-htt-op-version=$HTT_OP_VERSION \
---set-fw-api=$API_VER --features=$FEATURES
-
-mv firmware-5.bin silex-SX-SDCAC-2830-SP/firmware-sdio-5.bin
-### END ###
-
-> Thanks & Regards
-> Akesh M Chacko
->
->
-> On Tue, Jan 31, 2017 at 5:04 PM, Akesh M Chacko
-> <akesh.chacko@vvdntech.in> wrote:
->> Thanks for sharing the patches,
->> Our custom board is under assembly stage, once we have the board, will
->> test it and let u know
->> Thanks & Regards
->> Akesh M Chacko
->> Cell : +91 9567084416| Skype: akesh.vvdn | mail : akesh.chacko@vvdntech.in
->>
->>
->> On Mon, Jan 30, 2017 at 2:46 AM, Erik Stromdahl
->> <erik.stromdahl@gmail.com> wrote:
->>> If you are interested in trying the latest version of the sdio code
->>> you can clone the below repo:
->>>
->>> https://github.com/erstrom/linux-ath.git
->>>
->>> I have just pushed some updates for QCA9377 SDIO (that might work with
->>> QCA6174 chipsets as well).
->>>
->>> I will do some more testing of this code during the weeks to come.
->>>
->>> If you could try it out and give me feedback it would be great!
->>>
->>>
->>> On 2017-01-27 16:36, Valo, Kalle wrote:
->>>>
->>>> Akesh M Chacko <akesh.chacko@vvdntech.in> writes:
->>>>
->>>>> We are using QCA6174 chip on our embedded platform using SDIO
->>>>> interface. could you please help us to get the SDIO support for
->>>>> QCA6174 driver.
->>>>
->>>>
->>>> Erik Stromdahl is working on adding SDIO support to ath10k:
->>>>
->>>> https://patchwork.kernel.org/patch/9516477/
->>>>
->>>> But it's still WIP.
->>>>
->>>
+--===============4798064000117757845==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============4798064000117757845==--
