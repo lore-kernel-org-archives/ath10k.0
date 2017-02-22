@@ -1,20 +1,29 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0067.hostedemail.com ([216.40.44.67]
- helo=smtprelay.hostedemail.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgZeP-0004b8-GV
- for ath10k@lists.infradead.org; Wed, 22 Feb 2017 16:20:23 +0000
-Message-ID: <1487780395.14159.10.camel@perches.com>
-Subject: Re: [PATCH] ath10k: Modify macros to fix style issues
-From: Joe Perches <joe@perches.com>
-Date: Wed, 22 Feb 2017 08:19:55 -0800
-In-Reply-To: <CAN6SofZJjMmdkwqtD-amUTHzFJyQAYEKJUgOeHPKJEX7w0fD=g@mail.gmail.com>
-References: <1487751327-2917-1-git-send-email-marcin.rokicki@tieto.com>
- <1487763244.14159.6.camel@perches.com>
- <CAM8WyvFtUpWmw+hp6e+d6KY9yp9Ux=2827vqE3JUMwYii9wmFw@mail.gmail.com>
- <CAN6SofaeUUBwJSromwC_WmLC8GpCQMu__rKwNZM5PiKGocJo4g@mail.gmail.com>
- <CAN6SofZJjMmdkwqtD-amUTHzFJyQAYEKJUgOeHPKJEX7w0fD=g@mail.gmail.com>
-Mime-Version: 1.0
+Received: from smtp-out06.msg.oleane.net ([62.161.7.4])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cgZj3-0007vR-UJ
+ for ath10k@lists.infradead.org; Wed, 22 Feb 2017 16:25:12 +0000
+Received: from smtp06.msg.oleane.net ([172.17.20.115]) 
+ by smtp-out06.msg.oleane.net with ESMTP id v1MEH5bp015260
+ for <ath10k@lists.infradead.org>; Wed, 22 Feb 2017 15:17:05 +0100
+From: "voncken" <cedric.voncken@acksys.fr>
+References: <773DB8A82AB6A046AE0195C68612A31901C5B293@sbs2003.acksys.local>
+ <566849DB.9040901@candelatech.com>
+ <079401d132a6$7e7e2050$7b7a60f0$@acksys.fr>
+ <CABUTiXWg3t5qK6O5ooDE+4=Xk3Msybs5mu9+tQm_Bb0wdSrfWQ@mail.gmail.com>
+ <87twbnueqv.fsf@kamboji.qca.qualcomm.com>
+ <CABUTiXW5QSh2KkD+sQ-6QOD5zTce0dun+nyfAMnvL580U=OVNw@mail.gmail.com>
+ <871syn5fnb.fsf@qca.qualcomm.com>
+ <CABUTiXV8eFsW4MJET4spvjVQvFgi66NV7hLLxFC6Ttqs1znxjA@mail.gmail.com>
+ <87polwq2nq.fsf@kamboji.qca.qualcomm.com>
+ <027001d28c42$5042c910$f0c85b30$@acksys.fr>
+ <87efyrd6lv.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87efyrd6lv.fsf@kamboji.qca.qualcomm.com>
+Subject: RE: [OpenWrt-Devel] ATH10K VLAN firmware issue
+Date: Wed, 22 Feb 2017 14:55:09 +0100
+Message-ID: <02ef01d28d13$48181ac0$d8485040$@acksys.fr>
+MIME-Version: 1.0
+Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +32,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marcin Rokicki <marcin.rokicki@gmail.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: "'Valo, Kalle'" <kvalo@qca.qualcomm.com>
+Cc: 'OpenWrt Development List' <openwrt-devel@lists.openwrt.org>, 'linux-wireless' <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-(fyi Marcin, the reason this isn't getting on the list
- is because your 3 tries have all included text and html)
+	Thanks for your answer, =
 
-On Wed, 2017-02-22 at 14:31 +0100, Marcin Rokicki wrote:
-> > 
-> > Here is an alternate style used a few times in the kernel
-> > 
-> > Maybe it'd be nicer to change the macros to something like
-> > 
-> > #define CASE_STR(x) case x: return #x
-> > 
-> > and just return NULL after the switch/case block
-> > 
-> > Maybe make that a global macro and consolidate the various
-> > uses to a single style
 
-[]
+	How I can know when this issue will be fixed in ath10k firmware
+mainline?
+	Do you know if Qualcomm publish a release note for this firmware?
 
-> This alternate style used few times in the kernel cause that
-> checkpatch.pl prints
-> such messages:
->   - ERROR: Macros with complex values should be enclosed in parentheses
->   - WARNING: Macros with flow control statements should be avoided
-> 
-> for "all" of your examples - except fm10k which is implemented (almost) in
-> the same way like above patch
-> but still prints:
->  - ERROR: Macros with multiple statements should be enclosed in a do -
-> while loop
+> -----Message d'origine-----
+> De=A0: linux-wireless-owner@vger.kernel.org [mailto:linux-wireless-
+> owner@vger.kernel.org] De la part de Valo, Kalle
+> Envoy=E9=A0: mardi 21 f=E9vrier 2017 14:19
+> =C0=A0: voncken
+> Cc=A0: 'OpenWrt Development List'; 'linux-wireless';
+> ath10k@lists.infradead.org
+> Objet=A0: Re: [OpenWrt-Devel] ATH10K VLAN firmware issue
+> =
 
-Yes, checkpatch is and will always be imperfect.
-It's just a bunch of regex tests.
+> voncken <cedric.voncken@acksys.fr> writes:
+> =
 
-Anyway, the point of my email was to highlight a
-possible line count reduction and an opportunity
-to standardize a style.
+> > Do you know if the firmware team planned to fix the VLAN issue on
+> > ath10k firmware?
+> =
 
-cheers, Joe
+> I reported it forward only this week.
+> =
+
+> --
+> Kalle Valo
+
 
 _______________________________________________
 ath10k mailing list
