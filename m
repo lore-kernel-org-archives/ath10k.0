@@ -1,13 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from smtprelay0067.hostedemail.com ([216.40.44.67]
+ helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgYuE-0005Gu-3O
- for ath10k@lists.infradead.org; Wed, 22 Feb 2017 15:32:39 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Disallow DFS simulation if DFS channel is not enabled
-Date: Wed, 22 Feb 2017 21:03:11 +0530
-Message-ID: <1487777591-29743-1-git-send-email-mohammed@qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1cgZeP-0004b8-GV
+ for ath10k@lists.infradead.org; Wed, 22 Feb 2017 16:20:23 +0000
+Message-ID: <1487780395.14159.10.camel@perches.com>
+Subject: Re: [PATCH] ath10k: Modify macros to fix style issues
+From: Joe Perches <joe@perches.com>
+Date: Wed, 22 Feb 2017 08:19:55 -0800
+In-Reply-To: <CAN6SofZJjMmdkwqtD-amUTHzFJyQAYEKJUgOeHPKJEX7w0fD=g@mail.gmail.com>
+References: <1487751327-2917-1-git-send-email-marcin.rokicki@tieto.com>
+ <1487763244.14159.6.camel@perches.com>
+ <CAM8WyvFtUpWmw+hp6e+d6KY9yp9Ux=2827vqE3JUMwYii9wmFw@mail.gmail.com>
+ <CAN6SofaeUUBwJSromwC_WmLC8GpCQMu__rKwNZM5PiKGocJo4g@mail.gmail.com>
+ <CAN6SofZJjMmdkwqtD-amUTHzFJyQAYEKJUgOeHPKJEX7w0fD=g@mail.gmail.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,71 +27,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: Marcin Rokicki <marcin.rokicki@gmail.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+(fyi Marcin, the reason this isn't getting on the list
+ is because your 3 tries have all included text and html)
 
-If DFS is not enabled in hostapd (ieee80211h=0) DFS channels shall
-not be available for use even though the hardware may have the capability
-to support DFS. With this configuration (DFS disabled in hostapd) trying to
-bring up ath10k device in DFS channel for AP mode fails and trying to
-simulate DFS in ath10k debugfs results in a warning in cfg80211 complaining
-invalid channel and this should be avoided in the driver itself rather than
-false propogating RADAR detection to mac80211/cfg80211. Fix this by
-checking for the first vif 'is_started' state(should work for client mode
-as well) as all the vifs shall be configured for the same channel
+On Wed, 2017-02-22 at 14:31 +0100, Marcin Rokicki wrote:
+> > 
+> > Here is an alternate style used a few times in the kernel
+> > 
+> > Maybe it'd be nicer to change the macros to something like
+> > 
+> > #define CASE_STR(x) case x: return #x
+> > 
+> > and just return NULL after the switch/case block
+> > 
+> > Maybe make that a global macro and consolidate the various
+> > uses to a single style
 
-sys/kernel/debug/ieee80211/phy1/ath10k# echo 1 > dfs_simulate_radar
+[]
 
-WARNING: at net/wireless/chan.c:265 cfg80211_radar_event+0x24/0x60
-Workqueue: phy0 ieee80211_dfs_radar_detected_work [mac80211]
-[<c022f2d4>] (warn_slowpath_null) from
-[<bf72dab8>] (cfg80211_radar_event+0x24/0x60 [cfg80211])
-[<bf72dab8>] (cfg80211_radar_event [cfg80211]) from
-[<bf7813e0>] (ieee80211_dfs_radar_detected_work+0x94/0xa0 [mac80211])
-[<bf7813e0>] (ieee80211_dfs_radar_detected_work [mac80211]) from
-[<c0242320>] (process_one_work+0x20c/0x32c)
+> This alternate style used few times in the kernel cause that
+> checkpatch.pl prints
+> such messages:
+>   - ERROR: Macros with complex values should be enclosed in parentheses
+>   - WARNING: Macros with flow control statements should be avoided
+> 
+> for "all" of your examples - except fm10k which is implemented (almost) in
+> the same way like above patch
+> but still prints:
+>  - ERROR: Macros with multiple statements should be enclosed in a do -
+> while loop
 
-WARNING: at net/wireless/nl80211.c:2488 nl80211_get_mpath+0x13c/0x4cc
- Workqueue: phy0 ieee80211_dfs_radar_detected_work [mac80211]
-[<c022f2d4>] (warn_slowpath_null) from
-[<bf72dab8>] (cfg80211_radar_event+0x24/0x60 [cfg80211])
-[<bf72dab8>] (cfg80211_radar_event [cfg80211]) from
-[<bf7813e0>] (ieee80211_dfs_radar_detected_work+0x94/0xa0 [mac80211])
-[<bf7813e0>] (ieee80211_dfs_radar_detected_work [mac80211]) from
-[<c0242320>] (process_one_work+0x20c/0x32c)
+Yes, checkpatch is and will always be imperfect.
+It's just a bunch of regex tests.
 
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
-[thanks Kalle, Jouni and Tamizh for the first level review]
+Anyway, the point of my email was to highlight a
+possible line count reduction and an opportunity
+to standardize a style.
 
- drivers/net/wireless/ath/ath10k/debug.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index fb0ade3..ac9090b 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1997,6 +1997,15 @@ static ssize_t ath10k_write_simulate_radar(struct file *file,
- 					   size_t count, loff_t *ppos)
- {
- 	struct ath10k *ar = file->private_data;
-+	struct ath10k_vif *arvif;
-+
-+	/* Just check for for the first vif alone, as all the vifs will be
-+	 * sharing the same channel and if the channel is disabled, all the
-+	 * vifs will share the same 'is_started' state.
-+	 */
-+	arvif = list_first_entry(&ar->arvifs, typeof(*arvif), list);
-+	if (!arvif->is_started)
-+		return -EINVAL;
- 
- 	ieee80211_radar_detected(ar->hw);
- 
--- 
-1.9.1
-
+cheers, Joe
 
 _______________________________________________
 ath10k mailing list
