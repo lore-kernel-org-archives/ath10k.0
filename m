@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0137.hostedemail.com ([216.40.44.137]
- helo=smtprelay.hostedemail.com)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cgsvH-0004IY-Uz
- for ath10k@lists.infradead.org; Thu, 23 Feb 2017 12:55:05 +0000
-Message-ID: <1487854470.14159.24.camel@perches.com>
-Subject: Re: [PATCH v2] ath10k: Remove return statement from a void function
-From: Joe Perches <joe@perches.com>
-Date: Thu, 23 Feb 2017 04:54:30 -0800
-In-Reply-To: <b7ac6892-4cbd-bd60-382f-5c51e9ae588a@broadcom.com>
-References: <1487672891-8584-1-git-send-email-marcin.rokicki@tieto.com>
- <b7ac6892-4cbd-bd60-382f-5c51e9ae588a@broadcom.com>
-Mime-Version: 1.0
+ id 1cgtI2-0000T3-Ca
+ for ath10k@lists.infradead.org; Thu, 23 Feb 2017 13:18:36 +0000
+From: <c_traja@qti.qualcomm.com>
+Subject: [PATCHv2] ath10k: Update available channel list for 5G radio
+Date: Thu, 23 Feb 2017 18:48:22 +0530
+Message-ID: <1487855902-32090-1-git-send-email-c_traja@qti.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +20,133 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arend Van Spriel <arend.vanspriel@broadcom.com>, Marcin Rokicki <marcin.rokicki@tieto.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: ath10k@lists.infradead.org
+Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-On Wed, 2017-02-22 at 20:54 +0100, Arend Van Spriel wrote:
-> 
-> On 21-2-2017 11:28, Marcin Rokicki wrote:
-> > The empty 'return;' statement in a void function should be
-> > used to return from somewhere else than the end.
-> > 
-> > Signed-off-by: Marcin Rokicki <marcin.rokicki@tieto.com>
-> > ---
-> > 
-> > Changes for v2
-> >  -remove only return statement instead of empty err label
-> >   which can be used in the future
-> > 
-> > ---
-> >  drivers/net/wireless/ath/ath10k/core.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> > index 59729aa..a22d3c9 100644
-> > --- a/drivers/net/wireless/ath/ath10k/core.c
-> > +++ b/drivers/net/wireless/ath/ath10k/core.c
-> > @@ -2311,7 +2311,7 @@ static void ath10k_core_register_work(struct work_struct *work)
-> >  	/* TODO: It's probably a good idea to release device from the driver
-> >  	 * but calling device_release_driver() here will cause a deadlock.
-> >  	 */
-> > -	return;
-> > +	;
-> 
-> Not exactly what I meant. Just drop the whole line include semicolon.
+From: Tamizh chelvam <c_traja@qti.qualcomm.com>
 
-gcc doesn't support a goto label without a
-statement immediately before the end-of-function.
+If a 5 GHz radio is calibrated for operation in both
+the low band (channels 36 to 64) and high band(channels 100 to 169),
+hardware allows operations in all the listed channels. However,
+if the chip has been calibrated only for the low/high band and
+a high/low band channel is configured, due to lack of calibration
+there will be potentially invalid signal on those non calibrated channels.
+To avoid this problem this patch sets IEEE80211_CHAN_DISABLED flag for
+those non calibrated channels by using low_5ghz_chan and high_5ghz_chan
+values which we get from target through wmi service ready event.
 
-ie:
+Driver initialized flags are getting re initialized in handle_channel
+in cfg80211. So calling the function to disable the non supported channel
+from reg_notifier().
 
-void foo(void)
-{
-	goto err;
-err:
-}
+Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
+---
+v2:
+  * Removed two separate arrays for channel list, and changed logic
+    to disable non calibrated channels.
 
-fails to compile.
+ drivers/net/wireless/ath/ath10k/core.h |    2 ++
+ drivers/net/wireless/ath/ath10k/mac.c  |   19 +++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c  |    6 ++++++
+ drivers/net/wireless/ath/ath10k/wmi.h  |    2 ++
+ 4 files changed, 29 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 88d14be..d4b9a0e 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -775,6 +775,8 @@ struct ath10k {
+ 	u32 num_rf_chains;
+ 	u32 max_spatial_stream;
+ 	/* protected by conf_mutex */
++	u32 low_5ghz_chan;
++	u32 high_5ghz_chan;
+ 	bool ani_enabled;
+ 
+ 	bool p2p;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index abc291d..c5b6c2a 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3126,6 +3126,21 @@ static void ath10k_regd_update(struct ath10k *ar)
+ 		ath10k_warn(ar, "failed to set pdev regdomain: %d\n", ret);
+ }
+ 
++void ath10k_mac_update_channel_list(struct ath10k *ar,
++				    struct ieee80211_supported_band *band)
++{
++	int i;
++
++	if (ar->low_5ghz_chan && ar->high_5ghz_chan) {
++		for (i = 0; i < band->n_channels; i++) {
++			if (band->channels[i].center_freq < ar->low_5ghz_chan ||
++			    band->channels[i].center_freq > ar->high_5ghz_chan)
++				band->channels[i].flags |=
++					IEEE80211_CHAN_DISABLED;
++		}
++	}
++}
++
+ static void ath10k_reg_notifier(struct wiphy *wiphy,
+ 				struct regulatory_request *request)
+ {
+@@ -3149,6 +3164,10 @@ static void ath10k_reg_notifier(struct wiphy *wiphy,
+ 	if (ar->state == ATH10K_STATE_ON)
+ 		ath10k_regd_update(ar);
+ 	mutex_unlock(&ar->conf_mutex);
++
++	if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY)
++		ath10k_mac_update_channel_list(ar,
++				ar->hw->wiphy->bands[NL80211_BAND_5GHZ]);
+ }
+ 
+ /***************/
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 2f1743e..b31c4f7 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -4593,6 +4593,8 @@ static int ath10k_wmi_alloc_host_mem(struct ath10k *ar, u32 req_id,
+ 	arg->phy_capab = ev->phy_capability;
+ 	arg->num_rf_chains = ev->num_rf_chains;
+ 	arg->eeprom_rd = ev->hal_reg_capabilities.eeprom_rd;
++	arg->low_5ghz_chan = ev->hal_reg_capabilities.low_5ghz_chan;
++	arg->high_5ghz_chan = ev->hal_reg_capabilities.high_5ghz_chan;
+ 	arg->num_mem_reqs = ev->num_mem_reqs;
+ 	arg->service_map = ev->wmi_service_bitmap;
+ 	arg->service_map_len = sizeof(ev->wmi_service_bitmap);
+@@ -4629,6 +4631,8 @@ static int ath10k_wmi_alloc_host_mem(struct ath10k *ar, u32 req_id,
+ 	arg->phy_capab = ev->phy_capability;
+ 	arg->num_rf_chains = ev->num_rf_chains;
+ 	arg->eeprom_rd = ev->hal_reg_capabilities.eeprom_rd;
++	arg->low_5ghz_chan = ev->hal_reg_capabilities.low_5ghz_chan;
++	arg->high_5ghz_chan = ev->hal_reg_capabilities.high_5ghz_chan;
+ 	arg->num_mem_reqs = ev->num_mem_reqs;
+ 	arg->service_map = ev->wmi_service_bitmap;
+ 	arg->service_map_len = sizeof(ev->wmi_service_bitmap);
+@@ -4682,6 +4686,8 @@ static void ath10k_wmi_event_service_ready_work(struct work_struct *work)
+ 	ar->phy_capability = __le32_to_cpu(arg.phy_capab);
+ 	ar->num_rf_chains = __le32_to_cpu(arg.num_rf_chains);
+ 	ar->hw_eeprom_rd = __le32_to_cpu(arg.eeprom_rd);
++	ar->low_5ghz_chan = __le32_to_cpu(arg.low_5ghz_chan);
++	ar->high_5ghz_chan = __le32_to_cpu(arg.high_5ghz_chan);
+ 
+ 	ath10k_dbg_dump(ar, ATH10K_DBG_WMI, NULL, "wmi svc: ",
+ 			arg.service_map, arg.service_map_len);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 386aa51..78350d4 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6335,6 +6335,8 @@ struct wmi_svc_rdy_ev_arg {
+ 	__le32 num_rf_chains;
+ 	__le32 eeprom_rd;
+ 	__le32 num_mem_reqs;
++	__le32 low_5ghz_chan;
++	__le32 high_5ghz_chan;
+ 	const __le32 *service_map;
+ 	size_t service_map_len;
+ 	const struct wlan_host_mem_req *mem_reqs[WMI_MAX_MEM_REQS];
+-- 
+1.7.9.5
 
 
 _______________________________________________
