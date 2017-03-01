@@ -1,15 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot0-x236.google.com ([2607:f8b0:4003:c0f::236])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cj4pl-0005Sf-IV
- for ath10k@lists.infradead.org; Wed, 01 Mar 2017 14:02:27 +0000
-Received: by mail-ot0-x236.google.com with SMTP id k4so29979839otc.0
- for <ath10k@lists.infradead.org>; Wed, 01 Mar 2017 06:02:05 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cj5aO-0004gx-9r
+ for ath10k@lists.infradead.org; Wed, 01 Mar 2017 14:50:41 +0000
+Subject: Re: QCA9880 slow performance adhoc/IBSS mode
+References: <00d001d291e2$dfb7d950$9f278bf0$@rora.be>
+ <ef864ddb-87e0-5eb6-e8f0-6d4e7af2decf@candelatech.com>
+ <00f501d291e9$3921a740$ab64f5c0$@ugent.be>
+ <ff2defd2-5a79-06c6-d92b-2f546b037125@candelatech.com>
+ <00f801d291ec$c7621910$56264b30$@ugent.be>
+ <67dc016b-7533-8984-bbae-5283d261ca2f@candelatech.com>
+ <003c01d2920c$6df87cf0$49e976d0$@ugent.be>
+ <9ff987b6-cd79-76d8-79c1-d0366751a76f@candelatech.com>
+ <001a01d29264$c86d0ae0$594720a0$@ugent.be>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <8f4d9fef-186a-3771-2340-d7bc4956c846@candelatech.com>
+Date: Wed, 1 Mar 2017 06:50:13 -0800
 MIME-Version: 1.0
-From: Chris Price <chris.price@dejero.com>
-Date: Wed, 1 Mar 2017 09:02:03 -0500
-Message-ID: <CALJ2kaEeauorokz4s6zEVTYcuqvnKzYUCNdXxiDH_h1aFqLcYQ@mail.gmail.com>
-Subject: Re: 4.9 Kernel panic on ACS and intermittent ability to host AP
+In-Reply-To: <001a01d29264$c86d0ae0$594720a0$@ugent.be>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,264 +26,317 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
+Cc: ath10k@lists.infradead.org
 
-> Is this  a regression you saw and working with other kernel version but failed with 4.9?
 
-I've only tried this card on a custom 4.1 kernel and `iw list` does
-not report it as supporting more than one channel - for our purposes,
-we require 2 channels, hence the upgrade.
 
-> Can you give it a try with the latest firmware - https://github.com/kvalo/ath10k-firmware.git
+On 03/01/2017 12:21 AM, Ralph Houthoofdt wrote:
+> Dear Ben,
+>
+> Indeed, if I try AP/STA mode I get better bitrates and speeds (this is wi=
+th
+> VHT40)
+> RX: 400.0 Mbit/s, 40MHz, VHT-MCS 9, VHT-NSS 2, Short GI
+> TX: 300.0 Mbit/s, 40MHz, VHT-MCS 7, VHT-NSS 2, Short GI
+>
+> I only have 4 antennas installed on my APUs, so I'm only using 2 spatial
+> streams max.
+> These speeds seem ok.
+>
+> It just seems strange that on adhoc I only get either RX or TX to have go=
+od
+> rates.
+>
+> Thanks for your help!
 
-I should mention that I have the 'skip_otp' directive set to 'y'. I
-tried the following both with and without this setting to no avail.
+If you have only two antenna connected, make sure it is chain 0 and 1,
+and then use 'iw' to set the tx chain mask to 0x3.  That way, the NIC will
+not waste time trying to use the 3-NSS rates.
 
-The card seems to present only intermittently. When it does not
-present, I see the following in the kernel's ring buffer.
+Maybe too running at VHT40 helps somehow?
 
-# dmesg | grep ath
-[    3.460109] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2
-irq_mode 0 reset_mode 0
-[    3.745235] ath10k_pci 0000:02:00.0: firmware: failed to load
-ath10k/pre-cal-pci-0000:02:00.0.bin (-2)
-[    3.745240] ath10k_pci 0000:02:00.0: Direct firmware load for
-ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
-[    3.745249] ath10k_pci 0000:02:00.0: firmware: failed to load
-ath10k/cal-pci-0000:02:00.0.bin (-2)
-[    3.745252] ath10k_pci 0000:02:00.0: Direct firmware load for
-ath10k/cal-pci-0000:02:00.0.bin failed with error -2
-[    3.747717] ath10k_pci 0000:02:00.0: firmware: direct-loading
-firmware ath10k/QCA6174/hw3.0/firmware-5.bin
-[    3.747723] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target
-0x05030000 chip_id 0x00340aff sub 1a3b:2260
-[    3.747724] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 0
-tracing 0 dfs 0 testmode 0
-[    3.748278] ath10k_pci 0000:02:00.0: firmware ver
-WLAN.RM.4.4-00022-QCARMSWPZ-2 api 5 features wowlan,ignore-otp crc32
-4d458559
-[    3.814875] ath10k_pci 0000:02:00.0: firmware: direct-loading
-firmware ath10k/QCA6174/hw3.0/board-2.bin
-[    3.814880] ath10k_pci 0000:02:00.0: failed to fetch board data for
-bus=pci,bmi-chip-id=0,bmi-board-id=0 from
-ath10k/QCA6174/hw3.0/board-2.bin
-[    3.814996] ath10k_pci 0000:02:00.0: firmware: direct-loading
-firmware ath10k/QCA6174/hw3.0/board.bin
-[    3.815007] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id 0:0
-crc32 ed5f849a
-[    5.927102] ath10k_pci 0000:02:00.0: Unknown eventid: 90118
-[    8.934247] ath10k_pci 0000:02:00.0: htt version request timed out
-[    8.934250] ath10k_pci 0000:02:00.0: failed to setup htt: -110
-[    9.013168] ath10k_pci 0000:02:00.0: could not init core (-110)
-[    9.013240] ath10k_pci 0000:02:00.0: could not probe fw (-110)
+Thanks,
+Ben
 
-When the card does present (it seems to work randomly), I see the following.
+>
+> Met vriendelijke groeten,
+> Ralph Houthoofdt
+> Student industri=EBle wetenschappen informatica
+>
+> -----Original Message-----
+> From: Ben Greear [mailto:greearb@candelatech.com]
+> Sent: dinsdag 28 februari 2017 23:03
+> To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
+> Cc: ath10k@lists.infradead.org
+> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
+>
+> I've pushed 475+Mbps on apu2 over wifi, maybe more.  That was AP mode, mo=
+st
+> likely.
+>
+> IBSS on ath10k cannot do AMSDU, so you loose a bit of performance there, =
+but
+> otherwise it should be pretty similar to AP/STA mode.  To verify, try
+> running in AP/STA mode.
+>
+> Thanks,
+> Ben
+>
+> On 02/28/2017 01:48 PM, Ralph Houthoofdt wrote:
+>> Dear Ben,
+>>
+>> The speeds I'm reporting are UDP using these commands for the client:
+>> Iperf3 -uVc <serverAddress> -b0 -w128k
+>> Iperf3 -uRVc <serverAddress> -b0 -w128k
+>>
+>> I will try relocating the nodes and try different antenna positions
+>> and angles.
+>> As you see it, this problem is purely because of the environment, not
+>> because of the configuration or drivers?
+>>
+>> I will let you know what the results of relocation are tomorrow.
+>> Thanks for your help!
+>>
+>> Kind regards,
+>> Met vriendelijke groeten,
+>> Ralph Houthoofdt
+>> Student master industri=EBle wetenschappen: informatica
+>>
+>> -----Original Message-----
+>> From: Ben Greear [mailto:greearb@candelatech.com]
+>> Sent: dinsdag 28 februari 2017 19:12
+>> To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
+>> Cc: ath10k@lists.infradead.org
+>> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
+>>
+>> You try UDP yet, or is this all TCP?
+>>
+>> Also, with some better antenna positions and/or better other RF
+>> environment, you should see NSS of 3, hopefully MCS of 6 or higher.
+>>
+>> On 02/28/2017 10:02 AM, Ralph Houthoofdt wrote:
+>>> Dear Ben,
+>>>
+>>> I ran the same test again, this time running the iperf3 server on my
+>>> laptop and the client on the node. I could indeed see CPU usage rise
+>>> to 40% on my laptop, the node stayed at roughly 10%. The speeds
+>>> remained roughly the same. 215Mbit one way, 40Mbit the other.
+>>>
+>>> As for the tx/rx rates I get these values:
+>>> tx bitrate:     234.0 MBit/s VHT-MCS 3 80MHz VHT-NSS 2
+>>> rx bitrate:     87.8 MBit/s VHT-MCS 2 80MHz VHT-NSS 1
+>>>
+>>> I set the 4 antennas facing different directions approximately at 135
+>>> degree angles relative to the device.
+>>
+>> You try UDP yet, or is this all TCP?
+>>
+>> Also, with some better antenna positions and/or better other RF
+>> environment, you should see NSS of 3, hopefully MCS of 6 or higher.
+>>
+>> The 9880 has 3 antenna, so how did you get to 4?
+>>
+>> Thanks,
+>> Ben
+>>
+>>>
+>>> Thank you for your help so far. I will be leaving home for a few
+>>> hours and will be responding to any replies tomorrow morning.
+>>>
+>>> Met vriendelijke groeten,
+>>> Ralph Houthoofdt
+>>> Student industri=EBle wetenschappen informatica
+>>>
+>>> -----Original Message-----
+>>> From: Ben Greear [mailto:greearb@candelatech.com]
+>>> Sent: dinsdag 28 februari 2017 18:42
+>>> To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
+>>> Cc: ath10k@lists.infradead.org
+>>> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
+>>>
+>>> Try UDP to make sure you are not hitting a TCP issue.
+>>>
+>>> Try running iperf server on another laptop so that CPU of your nodes
+>>> is less important.
+>>>
+>>> Check the tx/rx encoding rates to make sure you are getting good RF
+>>> behaviour.  'iw ... station dump'
+>>>
+>>> Ensure antennas are not pointing all in the same direction so that
+>>> you can get some diversity working.
+>>>
+>>> Thanks,
+>>> Ben
+>>>
+>>> On 02/28/2017 09:36 AM, Ralph Houthoofdt wrote:
+>>>> Dear Ben,
+>>>>
+>>>> Thank you for your quick reply.
+>>>>
+>>>> My mesh is running on channel 36  using VHT80 and a TX power of 20
+>>>> dbm, the maximum allowed according to my regulatory settings from iw
+>>>> reg get. The hwmode is set as 11a.
+>>>> I have also enable the following ht_capabilities on my radio in
+>>>> /etc/config/wireless:
+>>>>
+>>>>         list ht_capab 'short_gi_80'
+>>>>         list ht_capab 'max-mpdu-11454'
+>>>>         list ht_capab 'TX-STBC-2BY1'
+>>>>         list ht_capab 'RX-STBC1'
+>>>>         list ht_capab 'RX-ANTENNA-PATTERN'
+>>>>         list ht_capab 'TX-ANTENNA-PATTERN'
+>>>>         list ht_capab 'MAX-A-MPDU-LEN-EXP7'
+>>>>
+>>>> I just finished running iperf3 from my laptop (2nd gen Core i7) to
+>>>> one of my nodes. The results were indeed a bit different.
+>>>> Iperf server was running on my node and my laptop was the client.
+>>>> UDP:
+>>>> Normal: average result of 221Mbit, which is pretty normal I think.
+>>>> Reverse: average result of 41Mbit, which is better than the average
+>>>> 20Mbit I got when running iperf3 using 2 nodes.
+>>>> TCP:
+>>>> Normal: average result of 49Mbit
+>>>> Reverse: average result of 35.4Mbit
+>>>>
+>>>> In terms of congestion, I'm not sure what you mean, but I'm in a low
+>>>> populated area with few wireless access points. I disabled all my
+>>>> 5GHz devices except for the mesh nodes. InSSIDer only shows my nodes
+>>>> in the 5GHz range.
+>>>>
+>>>> Is there anything else I could try for you?
+>>>>
+>>>> Met vriendelijke groeten,
+>>>> Ralph Houthoofdt
+>>>> Student industri=EBle wetenschappen informatica
+>>>>
+>>>> -----Original Message-----
+>>>> From: ath10k [mailto:ath10k-bounces@lists.infradead.org] On Behalf
+>>>> Of Ben Greear
+>>>> Sent: dinsdag 28 februari 2017 17:56
+>>>> To: Ralph Houthoofdt <ralph@rora.be>; ath10k@lists.infradead.org
+>>>> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
+>>>>
+>>>> Run iperf on a separate machine, as the apu2 have too weak of a CPU
+>>>> to drive the wifi network at full speed.  And, publish what results
+>>>> you do get, including RF information such as channel and how
+>>>> congested is your test area.  Try udp as well as tcp.
+>>>>
+>>>> Thanks,
+>>>> Ben
+>>>>
+>>>> On 02/28/2017 08:51 AM, Ralph Houthoofdt wrote:
+>>>>> Dear all,
+>>>>>
+>>>>> I=92m currently doing me masters thesis on the subject of Wireless
+>>>>> Mesh Networks and how to optimize them for home use.
+>>>>> The devices I use are 5x PC Engine APU2c4 with 2x QCA9880 chip
+>>>>> (Compex WLE900VX). All of them are running LEDE (OpenWRT fork).
+>>>>>
+>>>>> The problem I=92m experiencing is the same as
+>>>>> http://lists.infradead.org/pipermail/ath10k/2017-January/009075.html .
+>>>>> Using the tips mentioned I did not come to a better performance.
+>>>>> I=92m thinking it=92s driver related..
+>>>>> When running iperf3 only one direction is running at a reasonable
+>>>>> throughput. Since I am using adhoc mode primarily I decided to use
+>>>>> these
+>>>>> packages:
+>>>>> -	Kmod-ath10k-ct
+>>>>> -	Ath10k-firmware-qca988x-ct
+>>>>> Some sources on the internet said that using the Candela Tech
+>>>>> drivers should result in better support for adhoc/mesh networks.
+>>>>>
+>>>>> As suggested in the other issue linked above, I switched TCP
+>>>>> congestion control to =91Reno=92 instead of the default =91Cubic=92.
+>>>>> I also did try the command =93iw reg set BE=94 since I am from Belgiu=
+m,
+>>>>> but running =93iw reg get=94 right after still gave me US as a result.
+>>>>>
+>>>>> Let me know what additional command info I should post. Any help
+>>>>> would be greatly appreciated.
+>>>>>
+>>>>> Iwconfig:
+>>>>> adhoc0    IEEE 802.11  ESSID:"mesh"
+>>>>>           Mode:Ad-Hoc  Frequency:5.18 GHz  Cell: 02:CA:FE:CA:CA:40
+>>>>>           Tx-Power=3D20 dBm
+>>>>>           RTS thr:off   Fragment thr:off
+>>>>>           Encryption key:off
+>>>>>           Power Management:off
+>>>>>
+>>>>>
+>>>>> Iw reg get (I=92m from Belgium):
+>>>>> global
+>>>>> country BE: DFS-ETSI
+>>>>>         (2402 - 2482 @ 40), (N/A, 20), (N/A)
+>>>>>         (5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
+>>>>>         (5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
+>>>>>         (5490 - 5710 @ 160), (N/A, 27), (0 ms), DFS
+>>>>>         (57000 - 66000 @ 2160), (N/A, 40), (N/A)
+>>>>>
+>>>>> phy#1
+>>>>> country US: DFS-FCC
+>>>>>         (2402 - 2472 @ 40), (N/A, 30), (N/A)
+>>>>>         (5170 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
+>>>>>         (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
+>>>>>         (5490 - 5730 @ 160), (N/A, 23), (0 ms), DFS
+>>>>>         (5735 - 5835 @ 80), (N/A, 30), (N/A)
+>>>>>         (57240 - 63720 @ 2160), (N/A, 40), (N/A)
+>>>>>
+>>>>> phy#0
+>>>>> country US: DFS-FCC
+>>>>>         (2402 - 2472 @ 40), (N/A, 30), (N/A)
+>>>>>         (5170 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
+>>>>>         (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
+>>>>>         (5490 - 5730 @ 160), (N/A, 23), (0 ms), DFS
+>>>>>         (5735 - 5835 @ 80), (N/A, 30), (N/A)
+>>>>>         (57240 - 63720 @ 2160), (N/A, 40), (N/A)
+>>>>>
+>>>>>
+>>>>> Kind regards,
+>>>>> Met vriendelijke groeten,
+>>>>> Ralph Houthoofdt
+>>>>> Student industri=EBle wetenschappen informatica
+>>>>>
+>>>>>
+>>>>> _______________________________________________
+>>>>> ath10k mailing list
+>>>>> ath10k@lists.infradead.org
+>>>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>>>>
+>>>>
+>>>> --
+>>>> Ben Greear <greearb@candelatech.com> Candela Technologies Inc
+>>>> http://www.candelatech.com
+>>>>
+>>>> _______________________________________________
+>>>> ath10k mailing list
+>>>> ath10k@lists.infradead.org
+>>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>>>
+>>>
+>>> --
+>>> Ben Greear <greearb@candelatech.com>
+>>> Candela Technologies Inc  http://www.candelatech.com
+>>>
+>>
+>> --
+>> Ben Greear <greearb@candelatech.com>
+>> Candela Technologies Inc  http://www.candelatech.com
+>>
+>
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+>
 
-# dmesg | grep ath
-[    3.104528] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2
-irq_mode 0 reset_mode 0
-[    3.384558] ath10k_pci 0000:02:00.0: firmware: failed to load
-ath10k/pre-cal-pci-0000:02:00.0.bin (-2)
-[    3.384564] ath10k_pci 0000:02:00.0: Direct firmware load for
-ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
-[    3.384572] ath10k_pci 0000:02:00.0: firmware: failed to load
-ath10k/cal-pci-0000:02:00.0.bin (-2)
-[    3.384575] ath10k_pci 0000:02:00.0: Direct firmware load for
-ath10k/cal-pci-0000:02:00.0.bin failed with error -2
-[    3.387098] ath10k_pci 0000:02:00.0: firmware: direct-loading
-firmware ath10k/QCA6174/hw3.0/firmware-5.bin
-[    3.387105] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target
-0x05030000 chip_id 0x00340aff sub 1a3b:2260
-[    3.387106] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 0
-tracing 0 dfs 0 testmode 0
-[    3.387664] ath10k_pci 0000:02:00.0: firmware ver
-WLAN.RM.4.4-00022-QCARMSWPZ-2 api 5 features wowlan,ignore-otp crc32
-4d458559
-[    3.454317] ath10k_pci 0000:02:00.0: firmware: direct-loading
-firmware ath10k/QCA6174/hw3.0/board-2.bin
-[    3.454322] ath10k_pci 0000:02:00.0: failed to fetch board data for
-bus=pci,bmi-chip-id=0,bmi-board-id=0 from
-ath10k/QCA6174/hw3.0/board-2.bin
-[    3.454475] ath10k_pci 0000:02:00.0: firmware: direct-loading
-firmware ath10k/QCA6174/hw3.0/board.bin
-[    3.454486] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id 0:0
-crc32 ed5f849a
-[    5.562906] ath10k_pci 0000:02:00.0: Unknown eventid: 90118
-[    5.563521] ath10k_pci 0000:02:00.0: htt-ver 3.32 wmi-op 4 htt-op 3
-cal otp max-sta 32 raw 0 hwcrypto 1
-[    6.565534] ath10k_pci 0000:02:00.0: suspend timed out - target
-pause event never came
-[    6.644490] ath: EEPROM regdomain: 0x6a
-[    6.644491] ath: EEPROM indicates we should expect a direct regpair map
-[    6.644493] ath: Country alpha2 being used: 00
-[    6.644494] ath: Regpair used: 0x6a
+-- =
 
-It now seems to be having some trouble setting the interface up.
-
-# hostapd /etc/hostapd/hostapd1.conf
-Configuration file: /etc/hostapd/hostapd1.conf
-Could not set interface ap1 flags (UP): Connection timed out
-nl80211: Could not set interface 'ap1' UP
-nl80211: deinit ifname=ap1 disabled_11b_rates=0
-nl80211 driver initialization failed.
-ap1: interface state UNINITIALIZED->DISABLED
-ap1: AP-DISABLED
-hostapd_free_hapd_data: Interface ap1 wasn't started
-
-# ip link set dev ap1 up
-RTNETLINK answers: Connection timed out
-
-No kernel panics, however. If I delete the new firmware, the card then
-presents on each boot. I'm using the firmware from the repo at hash
-8d15818.
-
-> Can you give it a try if you just do the STA interface and scan?
-
-For the rest of the response, I'm back to using the old firmware. In
-addition, I tried not setting the skip_otp option and I seem to be
-able to get it working, so this is probably some bad advice I found
-somewhere on the web.
-
-# ip link set dev ap1 up
-# iw dev ap1 scan | grep signal
-signal: -47.00 dBm
-signal: -47.00 dBm
-signal: -47.00 dBm
-signal: -46.00 dBm
-signal: -52.00 dBm
-signal: -58.00 dBm
-signal: -55.00 dBm
-signal: -45.00 dBm
-signal: -57.00 dBm
-signal: -41.00 dBm
-signal: -54.00 dBm
-signal: -49.00 dBm
-signal: -48.00 dBm
-signal: -48.00 dBm
-signal: -50.00 dBm
-signal: -71.00 dBm
-signal: -56.00 dBm
-signal: -55.00 dBm
-signal: -44.00 dBm
-signal: -69.00 dBm
-signal: -68.00 dBm
-signal: -75.00 dBm
-signal: -55.00 dBm
-signal: -55.00 dBm
-signal: -55.00 dBm
-signal: -55.00 dBm
-signal: -84.00 dBm
-signal: -83.00 dBm
-signal: -82.00 dBm
-signal: -41.00 dBm
-signal: -52.00 dBm
-signal: -83.00 dBm
-signal: -83.00 dBm
-signal: -83.00 dBm
-signal: -85.00 dBm
-signal: -67.00 dBm
-signal: -78.00 dBm
-signal: -61.00 dBm
-signal: -60.00 dBm
-signal: -60.00 dBm
-signal: -60.00 dBm
-signal: -55.00 dBm
-signal: -83.00 dBm
-signal: -75.00 dBm
-signal: -78.00 dBm
-signal: -78.00 dBm
-signal: -78.00 dBm
-
-And for the first time, the ACS seems to actually work. I noticed that
-I have to manually set the interface to 'up' however, though this is
-probably a matter for the hostapd devs. I've been able to host the AP
-repeatedly without seeing the panic, so this looks promising.
-
-> What is the other channel you failed? what is the output of the "iw reg get" show?
-> Can you share the kernel log as well?
-
-Possibly not relevant anymore, but here you go.
-
-# iw reg get
-global
-country CA: DFS-FCC
-(2402 - 2472 @ 40), (N/A, 30), (N/A)
-(5170 - 5250 @ 80), (N/A, 17), (N/A), AUTO-BW
-(5250 - 5330 @ 80), (N/A, 24), (0 ms), DFS, AUTO-BW
-(5490 - 5600 @ 80), (N/A, 24), (0 ms), DFS
-(5650 - 5730 @ 80), (N/A, 24), (0 ms), DFS
-(5735 - 5835 @ 80), (N/A, 30), (N/A)
-
-The dmesg output is as above.
-
-> Is the other card also run with ath10k? what is the combination you've?
-> Are you running multiple hostapd or wpa_supplicant instance?
-
-I wasn't clear about this part - there is only one card, and I wish to
-use it in one of a few ways. Namely, I want to host 2 access points,
-or host to one access point and connect to another. `iw list` gives me
-the following.
-
-valid interface combinations:
-* #{ managed } <= 2, #{ AP, mesh point, P2P-client, P2P-GO } <= 2, #{
-P2P-device } <= 1,
-  total <= 4, #channels <= 1
-* #{ managed } <= 2, #{ P2P-client } <= 2, #{ AP, mesh point, P2P-GO }
-<= 1, #{ P2P-device } <= 1,
-  total <= 4, #channels <= 2
-* #{ managed } <= 1, #{ IBSS } <= 1,
-  total <= 2, #channels <= 1
-
-Maybe I misunderstand the output, but I would expect to be able to
-host two access points simultaneously. However I am unable to do that
-by either running a single hostapd instance, specifying both config
-files, or by running two separate instances.
-
-# hostapd /etc/hostapd/hostapd0.conf /etc/hostapd/hostapd1.conf
-Configuration file: /etc/hostapd/hostapd0.conf
-Configuration file: /etc/hostapd/hostapd1.conf
-ap0: interface state UNINITIALIZED->COUNTRY_UPDATE
-Using interface ap0 with hwaddr f0:03:8c:4a:64:fe and ssid "test2.4"
-random: Only 15/20 bytes of strong random data available from /dev/random
-random: Not enough entropy pool available for secure operations
-WPA: Not enough entropy in random pool for secure operations - update
-keys later when the first station connects
-ap0: interface state COUNTRY_UPDATE->ENABLED
-ap0: AP-ENABLED
-ap1: interface state UNINITIALIZED->COUNTRY_UPDATE
-ACS: Automatic channel selection started, this may take a bit
-ap1: interface state COUNTRY_UPDATE->ACS
-ap1: ACS-STARTED
-ap1: ACS-COMPLETED freq=5220 channel=44
-Using interface ap1 with hwaddr f0:03:8c:4a:64:fd and ssid "test5"
-Failed to set beacon parameters
-Interface initialization failed
-ap1: interface state ACS->DISABLED
-ap1: AP-DISABLED
-ACS: Possibly channel configuration is invalid, please report this
-along with your config file.
-ACS: Failed to start
-ap1: AP-DISABLED
-hostapd_free_hapd_data: Interface ap1 wasn't started
-nl80211: deinit ifname=ap1 disabled_11b_rates=0
-ap1: interface state DISABLED->DISABLED
-ap0: interface state ENABLED->DISABLED
-ap0: AP-DISABLED
-nl80211: deinit ifname=ap0 disabled_11b_rates=0
-ap1: interface state DISABLED->DISABLED
-ap1: AP-DISABLED
-hostapd_free_hapd_data: Interface ap1 wasn't started
-
-When I run two instances, I also see "Failed to set beacon parameters"
-on whichever AP I start last.
-
-On the other hand, I am able to simultaneously host one AP and connect
-to another, so it's performing some of the functions I would expect.
-As for the panic, that seems to be related to the 'skip_otp' option.
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
