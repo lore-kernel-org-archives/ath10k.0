@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cixhk-0002Yq-FA
- for ath10k@lists.infradead.org; Wed, 01 Mar 2017 06:25:42 +0000
-Received: by mail-lf0-x241.google.com with SMTP id z127so2532863lfa.2
- for <ath10k@lists.infradead.org>; Tue, 28 Feb 2017 22:25:17 -0800 (PST)
-Subject: Re: Driver support for QCA6174 chip using SDIO interface
-References: <CAHNpzpeRE6ha4JA9i4oyJ2BjgJg53FvDpAb1yZccncrmTeiBdQ@mail.gmail.com>
- <8737g45xc7.fsf@kamboji.qca.qualcomm.com>
- <c3814c7d-eed3-dad2-c568-6ce456ee7166@gmail.com>
- <CAHNpzpdbTnapQFPwYhUhi5EvLjQSdpqy9AHMH04KcqF2jHWw_A@mail.gmail.com>
- <CAHNpzpeao2rT8JJ5rSALHknrkFHniixJftGLTnUxcd7RtoYdtQ@mail.gmail.com>
- <13839ca7-e43e-8475-04de-8c705c4e3ee2@gmail.com>
- <CAHNpzpf5Xd9JYnbt5b-hRhC0tjnGWY2HLdnBUdHkGcdi6-ytGQ@mail.gmail.com>
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Message-ID: <3bc420d1-ced9-f0a3-647a-5b81775a543e@gmail.com>
-Date: Wed, 1 Mar 2017 07:25:14 +0100
+ id 1ciylG-0006Zc-DG
+ for ath10k@lists.infradead.org; Wed, 01 Mar 2017 07:33:24 +0000
+Received: by mail-wm0-x22b.google.com with SMTP id v186so102815177wmd.0
+ for <ath10k@lists.infradead.org>; Tue, 28 Feb 2017 23:33:01 -0800 (PST)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: QCA4019: calibration files and board files
+Date: Wed, 01 Mar 2017 08:32:57 +0100
+Message-ID: <2041049.sDAvLy9HAv@bentobox>
+In-Reply-To: <821ad665d0934c58fc8b3c830e119433@codeaurora.org>
+References: <1591748.RGYhBEn8I1@bentobox> <1884460.SDYHzsflKl@bentobox>
+ <821ad665d0934c58fc8b3c830e119433@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <CAHNpzpf5Xd9JYnbt5b-hRhC0tjnGWY2HLdnBUdHkGcdi6-ytGQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,140 +21,90 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============0255250003102991726=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Akesh M Chacko <akesh.chacko@vvdntech.in>
-Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, Ann Lo <annlo.tech@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Cc: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>, akolli@codeaurora.org, Tamizh chelvam <tamizhchelvam@codeaurora.org>, ath10k@lists.infradead.org, shashidhar.lakkavalli@openmesh.com
 
-Firmware and board files are normally distributed by the module vendor
-(MuRata, Silex, etc.).
+--===============0255250003102991726==
+Content-Type: multipart/signed; boundary="nextPart1646798.dMxl787Sdt"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-Firmware is depending on chipset, so this is something QCA should be able
-to provide.
+--nextPart1646798.dMxl787Sdt
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Board files are module dependent and contains calibration etc. and should
-definitely be obtained from the module vendor.
+On Dienstag, 28. Februar 2017 19:22:32 CET Rajkumar Manoharan wrote:
+> On 2017-02-27 23:58, Sven Eckelmann wrote:
+> > It looks to me now that this information is contradicting your 
+> > implementation
+> > (which now loads the data from 0:ART partition [1] like pre-cal data 
+> > [2] and
+> > then loads the board-2.bin [3]).
+> > 
+> Both reading from ART and loading pre-cal data file are same.
+> 
+> > I have doubt regarding his explanation but I got no actual spec - only
+> > information which seems to be contradicting (or to vague) . Is is 
+> > possible
+> > to get some confirmation from you about whether the data from the 0:ART
+> > partition is pre-cal data or not and whether the board-2.bin should be
+> > used when the data from 0:ART is used.
+> > 
+> In QCA4019 platform, only radio specific calibration (pre-cal-data) is 
+> stored in flash.
+> Board specific contents are read from board-2.bin. For each radio 
+> appropriate board
+> data should be loaded. To fetch correct board data from board-2.bin 
+> bundle, pre-cal/radio
+> specific caldata should be loaded first to get proper board id.
+> 
+> > My understanding until now was that:
+> > 
+> >  * pre-cal data + board-2.bin info == actual calibration data
+> > 
+> Correct.
+[...]
 
-If you have a discrete design you would most likely have to create your own
-board file (using ART etc.)
+Thanks a lot for the confirmation
 
-Kalle:
-Perhaps you (or someone else at QCA) can initiate the work to make the sdio
-firmware publicly available?
+Kind regards,
+	Sven
+--nextPart1646798.dMxl787Sdt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-I have obtained QCA9377 sdio firmware from Silex, but I had to sign a
-License Agreement in order to obtain those files. They are not publicly
-available (so I can't redistribute them just like that).
+-----BEGIN PGP SIGNATURE-----
 
-On 2017-03-01 06:52, Akesh M Chacko wrote:
-> hi,
-> Could you please tell me from where can i get the sdio firmware for
-> QCA6174A-3 v3.2. Do i need to raise a request through qualcomm
-> createpoint for that?
-> Please let me know
-> Thanks & Regards
-> Akesh M Chacko
-> Cell : +91 9567084416| Skype: akesh.vvdn | mail : akesh.chacko@vvdntech.in
->
->
-> On Thu, Feb 23, 2017 at 2:28 AM, Erik Stromdahl
-> <erik.stromdahl@gmail.com> wrote:
->>
->>
->> On 2017-02-21 12:26, Akesh M Chacko wrote:
->>>
->>> hi,
->>> I'm following your patch for adding SDIO support for QCA6174. Is the
->>> firmware image for PCIe and SDIO interface are same?
->>> If they are different, from where can i find the firmware image for
->>> SDIO interface support in QCA6174A-3 v3.2.
->>>
->> The firmware is not the same for sdio. You will need to obtain the firmware
->> from the module vendor and convert it into ath10k format with
->> ath10k-fwencoder.
->>
->> You need the tool qca-swiss-army-knife for this:
->>
->> https://github.com/qca/qca-swiss-army-knife.git
->>
->> Below is a script I have used when generating fw for my QCA9377 board:
->>
->> ### START ###
->> #! /bin/bash
->>
->> ENCODER="./tools/scripts/ath10k/ath10k-fwencoder"
->>
->> API_VER=5
->> HTT_OP_VERSION="tlv"
->> WMI_OP_VERSION="tlv"
->> FW="silex-SX-SDCAC-2830-SP/qwlan30.bin"
->> OTP="silex-SX-SDCAC-2830-SP/otp30.bin"
->> FEATURES="ignore-otp-result"
->>
->> $ENCODER --create --otp=$OTP --firmware=$FW \
->> --set-wmi-op-version=$WMI_OP_VERSION \
->> --set-htt-op-version=$HTT_OP_VERSION \
->> --set-fw-api=$API_VER --features=$FEATURES
->>
->> mv firmware-5.bin silex-SX-SDCAC-2830-SP/firmware-sdio-5.bin
->> ### END ###
->>
->>
->>> Thanks & Regards
->>> Akesh M Chacko
->>>
->>>
->>> On Tue, Jan 31, 2017 at 5:04 PM, Akesh M Chacko
->>> <akesh.chacko@vvdntech.in> wrote:
->>>>
->>>> Thanks for sharing the patches,
->>>> Our custom board is under assembly stage, once we have the board, will
->>>> test it and let u know
->>>> Thanks & Regards
->>>> Akesh M Chacko
->>>> Cell : +91 9567084416| Skype: akesh.vvdn | mail :
->>>> akesh.chacko@vvdntech.in
->>>>
->>>>
->>>> On Mon, Jan 30, 2017 at 2:46 AM, Erik Stromdahl
->>>> <erik.stromdahl@gmail.com> wrote:
->>>>>
->>>>> If you are interested in trying the latest version of the sdio code
->>>>> you can clone the below repo:
->>>>>
->>>>> https://github.com/erstrom/linux-ath.git
->>>>>
->>>>> I have just pushed some updates for QCA9377 SDIO (that might work with
->>>>> QCA6174 chipsets as well).
->>>>>
->>>>> I will do some more testing of this code during the weeks to come.
->>>>>
->>>>> If you could try it out and give me feedback it would be great!
->>>>>
->>>>>
->>>>> On 2017-01-27 16:36, Valo, Kalle wrote:
->>>>>>
->>>>>>
->>>>>> Akesh M Chacko <akesh.chacko@vvdntech.in> writes:
->>>>>>
->>>>>>> We are using QCA6174 chip on our embedded platform using SDIO
->>>>>>> interface. could you please help us to get the SDIO support for
->>>>>>> QCA6174 driver.
->>>>>>
->>>>>>
->>>>>>
->>>>>> Erik Stromdahl is working on adding SDIO support to ath10k:
->>>>>>
->>>>>> https://patchwork.kernel.org/patch/9516477/
->>>>>>
->>>>>> But it's still WIP.
->>>>>>
->>>>>
->>
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAli2eSkACgkQXYcKB8Em
+e0Zr3RAAiFZRT+q6TpqKgH8TYZmfuBLxTnlJ0MfGkyUUnP/Y8b3rZaZ0sd9L2wUP
+plE8qtSfbMA8GYxS4Ws0yDB3ACsX1GUnOmvBcE7lSVa1nH/PXLcPUl6vngYJFbJO
+u+NrQohYsi4jLvS1sN6JxxI7wEMXQVqcUMXQLmAE1b0c4mLABFO1VvI0wPj/Gr5D
+Q8sy58GqfzrOcQjetPySvaXTC8nKmTMEhrEPx4DCwUSBxyNZAePvxdWHgHFLIgh5
+k2zGyMxC61IX93+PKEsV2OXxQauXyRpR0Tkq4S9f6CJ1ghNjcz1O0VpAUShFSl4i
+eJAbtSUtostsKktVUOC9gaeaGX4UGgUVY3mSe2qjQeYtgQUHw+ay/NE54GCqPerH
+ZWhDC9k7LHPe00N3O4pTQ/O5a2huOsamtmPLjWPN7PiKt5OdYd2NKfo1W7H6AUcw
+fgHhwDoXfFn0IY1/GBmzH36n6rFu5qEDlGmUtHOk5ynESJmM6eZDrNCSNDw9baPX
++DrPSDLd/6L9Y+P7rUJG+PIkAw20MV2wkM5iOH6Obqc9Lh/0qz0mp3CQWYXd0dHH
+ki9aF//lozsiLa6Fv7FnGYqRrgOUvc+pKUvfT8Kad9Wso/GgycpmvXWxSCeQoKMP
+dd6db29y+nGV2OtIsUBFbtxa6PGkENop1kJrkT476rsbU0IdyMw=
+=zJlh
+-----END PGP SIGNATURE-----
+
+--nextPart1646798.dMxl787Sdt--
+
+
+
+--===============0255250003102991726==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============0255250003102991726==--
