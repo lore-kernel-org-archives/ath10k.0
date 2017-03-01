@@ -1,23 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp3.ugent.be ([157.193.49.127])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cizVu-0002Aj-Jb
- for ath10k@lists.infradead.org; Wed, 01 Mar 2017 08:21:37 +0000
-From: "Ralph Houthoofdt" <ralph.houthoofdt@ugent.be>
-References: <00d001d291e2$dfb7d950$9f278bf0$@rora.be>
- <ef864ddb-87e0-5eb6-e8f0-6d4e7af2decf@candelatech.com>
- <00f501d291e9$3921a740$ab64f5c0$@ugent.be>
- <ff2defd2-5a79-06c6-d92b-2f546b037125@candelatech.com>
- <00f801d291ec$c7621910$56264b30$@ugent.be>
- <67dc016b-7533-8984-bbae-5283d261ca2f@candelatech.com>
- <003c01d2920c$6df87cf0$49e976d0$@ugent.be>
- <9ff987b6-cd79-76d8-79c1-d0366751a76f@candelatech.com>
-In-Reply-To: <9ff987b6-cd79-76d8-79c1-d0366751a76f@candelatech.com>
-Subject: RE: QCA9880 slow performance adhoc/IBSS mode
-Date: Wed, 1 Mar 2017 09:21:09 +0100
-Message-ID: <001a01d29264$c86d0ae0$594720a0$@ugent.be>
+Received: from universe.cdot.in ([49.128.111.121])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1cj1XW-00066c-0p
+ for ath10k@lists.infradead.org; Wed, 01 Mar 2017 10:31:27 +0000
+From: "KAVITA MATHUR" <kavitam@cdot.in>
+Subject: Re: ath10k QCA988x firmware not supporting monitor mode
+Date: Wed, 1 Mar 2017 15:55:19 +0530
+Message-Id: <20170301102358.M55122@cdot.in>
+In-Reply-To: <20170301052242.GA32547@atheros-ThinkPad-T61>
+References: <20170214114008.M61102@cdot.in> <20170301050002.M24080@cdot.in>
+ <20170301050509.M45885@cdot.in> <20170301052242.GA32547@atheros-ThinkPad-T61>
 MIME-Version: 1.0
-Content-Language: nl-be
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,333 +19,130 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Ben Greear' <greearb@candelatech.com>
+To: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
 Cc: ath10k@lists.infradead.org
 
-Dear Ben,
-
-Indeed, if I try AP/STA mode I get better bitrates and speeds (this is with
-VHT40)
-RX: 400.0 Mbit/s, 40MHz, VHT-MCS 9, VHT-NSS 2, Short GI
-TX: 300.0 Mbit/s, 40MHz, VHT-MCS 7, VHT-NSS 2, Short GI
-
-I only have 4 antennas installed on my APUs, so I'm only using 2 spatial
-streams max.
-These speeds seem ok.
-
-It just seems strange that on adhoc I only get either RX or TX to have good
-rates.
-
-Thanks for your help!
-
-Met vriendelijke groeten,
-Ralph Houthoofdt
-Student industri=EBle wetenschappen informatica
-
------Original Message-----
-From: Ben Greear [mailto:greearb@candelatech.com] =
-
-Sent: dinsdag 28 februari 2017 23:03
-To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
-Cc: ath10k@lists.infradead.org
-Subject: Re: QCA9880 slow performance adhoc/IBSS mode
-
-I've pushed 475+Mbps on apu2 over wifi, maybe more.  That was AP mode, most
-likely.
-
-IBSS on ath10k cannot do AMSDU, so you loose a bit of performance there, but
-otherwise it should be pretty similar to AP/STA mode.  To verify, try
-running in AP/STA mode.
-
-Thanks,
-Ben
-
-On 02/28/2017 01:48 PM, Ralph Houthoofdt wrote:
-> Dear Ben,
->
-> The speeds I'm reporting are UDP using these commands for the client:
-> Iperf3 -uVc <serverAddress> -b0 -w128k
-> Iperf3 -uRVc <serverAddress> -b0 -w128k
->
-> I will try relocating the nodes and try different antenna positions =
-
-> and angles.
-> As you see it, this problem is purely because of the environment, not =
-
-> because of the configuration or drivers?
->
-> I will let you know what the results of relocation are tomorrow. =
-
-> Thanks for your help!
->
-> Kind regards,
-> Met vriendelijke groeten,
-> Ralph Houthoofdt
-> Student master industri=EBle wetenschappen: informatica
->
-> -----Original Message-----
-> From: Ben Greear [mailto:greearb@candelatech.com]
-> Sent: dinsdag 28 februari 2017 19:12
-> To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
-> Cc: ath10k@lists.infradead.org
-> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
->
-> You try UDP yet, or is this all TCP?
->
-> Also, with some better antenna positions and/or better other RF =
-
-> environment, you should see NSS of 3, hopefully MCS of 6 or higher.
->
-> On 02/28/2017 10:02 AM, Ralph Houthoofdt wrote:
->> Dear Ben,
->>
->> I ran the same test again, this time running the iperf3 server on my =
-
->> laptop and the client on the node. I could indeed see CPU usage rise =
-
->> to 40% on my laptop, the node stayed at roughly 10%. The speeds =
-
->> remained roughly the same. 215Mbit one way, 40Mbit the other.
->>
->> As for the tx/rx rates I get these values:
->> tx bitrate:     234.0 MBit/s VHT-MCS 3 80MHz VHT-NSS 2
->> rx bitrate:     87.8 MBit/s VHT-MCS 2 80MHz VHT-NSS 1
->>
->> I set the 4 antennas facing different directions approximately at 135 =
-
->> degree angles relative to the device.
->
-> You try UDP yet, or is this all TCP?
->
-> Also, with some better antenna positions and/or better other RF =
-
-> environment, you should see NSS of 3, hopefully MCS of 6 or higher.
->
-> The 9880 has 3 antenna, so how did you get to 4?
->
-> Thanks,
-> Ben
->
->>
->> Thank you for your help so far. I will be leaving home for a few =
-
->> hours and will be responding to any replies tomorrow morning.
->>
->> Met vriendelijke groeten,
->> Ralph Houthoofdt
->> Student industri=EBle wetenschappen informatica
->>
->> -----Original Message-----
->> From: Ben Greear [mailto:greearb@candelatech.com]
->> Sent: dinsdag 28 februari 2017 18:42
->> To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
->> Cc: ath10k@lists.infradead.org
->> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
->>
->> Try UDP to make sure you are not hitting a TCP issue.
->>
->> Try running iperf server on another laptop so that CPU of your nodes =
-
->> is less important.
->>
->> Check the tx/rx encoding rates to make sure you are getting good RF =
-
->> behaviour.  'iw ... station dump'
->>
->> Ensure antennas are not pointing all in the same direction so that =
-
->> you can get some diversity working.
->>
->> Thanks,
->> Ben
->>
->> On 02/28/2017 09:36 AM, Ralph Houthoofdt wrote:
->>> Dear Ben,
->>>
->>> Thank you for your quick reply.
->>>
->>> My mesh is running on channel 36  using VHT80 and a TX power of 20 =
-
->>> dbm, the maximum allowed according to my regulatory settings from iw =
-
->>> reg get. The hwmode is set as 11a.
->>> I have also enable the following ht_capabilities on my radio in
->>> /etc/config/wireless:
->>>
->>>         list ht_capab 'short_gi_80'
->>>         list ht_capab 'max-mpdu-11454'
->>>         list ht_capab 'TX-STBC-2BY1'
->>>         list ht_capab 'RX-STBC1'
->>>         list ht_capab 'RX-ANTENNA-PATTERN'
->>>         list ht_capab 'TX-ANTENNA-PATTERN'
->>>         list ht_capab 'MAX-A-MPDU-LEN-EXP7'
->>>
->>> I just finished running iperf3 from my laptop (2nd gen Core i7) to =
-
->>> one of my nodes. The results were indeed a bit different.
->>> Iperf server was running on my node and my laptop was the client.
->>> UDP:
->>> Normal: average result of 221Mbit, which is pretty normal I think.
->>> Reverse: average result of 41Mbit, which is better than the average =
-
->>> 20Mbit I got when running iperf3 using 2 nodes.
->>> TCP:
->>> Normal: average result of 49Mbit
->>> Reverse: average result of 35.4Mbit
->>>
->>> In terms of congestion, I'm not sure what you mean, but I'm in a low =
-
->>> populated area with few wireless access points. I disabled all my =
-
->>> 5GHz devices except for the mesh nodes. InSSIDer only shows my nodes =
-
->>> in the 5GHz range.
->>>
->>> Is there anything else I could try for you?
->>>
->>> Met vriendelijke groeten,
->>> Ralph Houthoofdt
->>> Student industri=EBle wetenschappen informatica
->>>
->>> -----Original Message-----
->>> From: ath10k [mailto:ath10k-bounces@lists.infradead.org] On Behalf =
-
->>> Of Ben Greear
->>> Sent: dinsdag 28 februari 2017 17:56
->>> To: Ralph Houthoofdt <ralph@rora.be>; ath10k@lists.infradead.org
->>> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
->>>
->>> Run iperf on a separate machine, as the apu2 have too weak of a CPU =
-
->>> to drive the wifi network at full speed.  And, publish what results =
-
->>> you do get, including RF information such as channel and how =
-
->>> congested is your test area.  Try udp as well as tcp.
->>>
->>> Thanks,
->>> Ben
->>>
->>> On 02/28/2017 08:51 AM, Ralph Houthoofdt wrote:
->>>> Dear all,
->>>>
->>>> I=92m currently doing me masters thesis on the subject of Wireless =
-
->>>> Mesh Networks and how to optimize them for home use.
->>>> The devices I use are 5x PC Engine APU2c4 with 2x QCA9880 chip =
-
->>>> (Compex WLE900VX). All of them are running LEDE (OpenWRT fork).
->>>>
->>>> The problem I=92m experiencing is the same as =
-
->>>> http://lists.infradead.org/pipermail/ath10k/2017-January/009075.html .
->>>> Using the tips mentioned I did not come to a better performance. =
-
->>>> I=92m thinking it=92s driver related..
->>>> When running iperf3 only one direction is running at a reasonable =
-
->>>> throughput. Since I am using adhoc mode primarily I decided to use =
-
->>>> these
->>>> packages:
->>>> -	Kmod-ath10k-ct
->>>> -	Ath10k-firmware-qca988x-ct
->>>> Some sources on the internet said that using the Candela Tech =
-
->>>> drivers should result in better support for adhoc/mesh networks.
->>>>
->>>> As suggested in the other issue linked above, I switched TCP =
-
->>>> congestion control to =91Reno=92 instead of the default =91Cubic=92.
->>>> I also did try the command =93iw reg set BE=94 since I am from Belgium=
-, =
-
->>>> but running =93iw reg get=94 right after still gave me US as a result.
->>>>
->>>> Let me know what additional command info I should post. Any help =
-
->>>> would be greatly appreciated.
->>>>
->>>> Iwconfig:
->>>> adhoc0    IEEE 802.11  ESSID:"mesh"
->>>>           Mode:Ad-Hoc  Frequency:5.18 GHz  Cell: 02:CA:FE:CA:CA:40
->>>>           Tx-Power=3D20 dBm
->>>>           RTS thr:off   Fragment thr:off
->>>>           Encryption key:off
->>>>           Power Management:off
->>>>
->>>>
->>>> Iw reg get (I=92m from Belgium):
->>>> global
->>>> country BE: DFS-ETSI
->>>>         (2402 - 2482 @ 40), (N/A, 20), (N/A)
->>>>         (5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
->>>>         (5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
->>>>         (5490 - 5710 @ 160), (N/A, 27), (0 ms), DFS
->>>>         (57000 - 66000 @ 2160), (N/A, 40), (N/A)
->>>>
->>>> phy#1
->>>> country US: DFS-FCC
->>>>         (2402 - 2472 @ 40), (N/A, 30), (N/A)
->>>>         (5170 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
->>>>         (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
->>>>         (5490 - 5730 @ 160), (N/A, 23), (0 ms), DFS
->>>>         (5735 - 5835 @ 80), (N/A, 30), (N/A)
->>>>         (57240 - 63720 @ 2160), (N/A, 40), (N/A)
->>>>
->>>> phy#0
->>>> country US: DFS-FCC
->>>>         (2402 - 2472 @ 40), (N/A, 30), (N/A)
->>>>         (5170 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
->>>>         (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
->>>>         (5490 - 5730 @ 160), (N/A, 23), (0 ms), DFS
->>>>         (5735 - 5835 @ 80), (N/A, 30), (N/A)
->>>>         (57240 - 63720 @ 2160), (N/A, 40), (N/A)
->>>>
->>>>
->>>> Kind regards,
->>>> Met vriendelijke groeten,
->>>> Ralph Houthoofdt
->>>> Student industri=EBle wetenschappen informatica
->>>>
->>>>
->>>> _______________________________________________
->>>> ath10k mailing list
->>>> ath10k@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>>
->>>
->>> --
->>> Ben Greear <greearb@candelatech.com> Candela Technologies Inc  =
-
->>> http://www.candelatech.com
->>>
->>> _______________________________________________
->>> ath10k mailing list
->>> ath10k@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>
->>
->> --
->> Ben Greear <greearb@candelatech.com>
->> Candela Technologies Inc  http://www.candelatech.com
->>
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
-
---
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCgpUaGFua3MgYSBsb3QuLgoKTm93IEkgYW0gYWJsZSB0byBzZXQgbW9uaXRvciBtb2RlIGFm
+dGVyIGFwcGx5aW5nIHRoZSBwYXRjaCBhbmQgbGF0ZXN0IGZpcm13YXJlLgoKClRoYW5rcyAmIFJl
+Z2FyZHMsCkthdml0YQoKT24gV2VkLCAxIE1hciAyMDE3IDEwOjUyOjQyICswNTMwLCBNb2hhbW1l
+ZCBTaGFmaSBTaGFqYWtoYW4gd3JvdGUKPiBPbiBXZWQsIE1hciAwMSwgMjAxNyBhdCAxMDozODo0
+OEFNICswNTMwLCBLQVZJVEEgTUFUSFVSIHdyb3RlOgo+ID4gCj4gPiAKPiA+IEhpIQo+ID4gCj4g
+PiBXZSBhcmUgdXNpbmcgQXRoZXJvcyBRQ0E5ODgwIG1QQ0llIG1vZHVsZSB3aXRoIGF0aDEwayBk
+cml2ZXJzIGFuZCBmaXJtd2FyZS4KPiA+IAo+ID4gS2VybmVsOiAzLjEyCj4gPiBCYWNrcG9ydHM6
+IDQuNAo+ID4gRmlybXdhcmU6MTAuMi40LjcwLjU5LTIKPiAKPiBbc2hhZmldIHdvcnRoIHRyeWlu
+ZyB1cGRhdGVkIGZpcm13YXJlCj4KaHR0cHM6Ly9zb3VyY2UuY29kZWF1cm9yYS5vcmcvcXVpYy9x
+c2RrL29zcy9maXJtd2FyZS9hdGgxMGstZmlybXdhcmUvcGxhaW4vYXRoMTBrL1FDQTk4OFgvaHcy
+LjAvCj4gCj4gPiAKPiA+IFdlIGFyZSBub3QgYWJsZSB0byBydW4gdGhlIHdsYW4xIGludGVyZmFj
+ZSBpbiBtb25pdG9yIG1vZGUuIFRoZSBmb2xsb3dpbmcgZXJyb3IgY29tZXMKPiA+IHdoZW4gd2Ug
+ZG8KPiA+IGl3IHBoeSBwaHkxIGludGVyZmFjZSBhZGQgd2xhbjEgdHlwZSBtb25pdG9yCj4gPiBp
+ZmNvbmZpZyB3bGFuMSB1cAo+IAo+IFtzaGFmaV0gY2FuIHlvdSBwbGVhc2UgY29uZmlybSB0aGUg
+YmVsb3cgZml4IGlzIGFscmVhZHkgYXZhaWxhYmxlCj4gKGl0cyBjY2VkIHRvIHN0YWJsZSB0aG91
+Z2gpCj4gaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC84NDgxMjgxLwo+IAo+IGFu
+ZCBpZiB5b3Ugc2VlIHN0aWxsIHNlZSB0aGUgaXNzdWUgaW4gbGF0ZXN0IGJhY2twb3J0cwo+IGh0
+dHA6Ly9idWlsZGJvdC53MS5maS9iYWNrcG9ydHMtd2lyZWxlc3MtdGVzdGluZy8KPiAKPiBwbGVh
+c2UgcmV2ZXJ0IGJhY2sKPiAKPiA+IAo+ID4gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IGZpcm13
+YXJlIGNyYXNoZWQhICh1dWlkIG4vYSkKPiA+IGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBxY2E5
+ODh4IGh3Mi4wICgweDQxMDAwMTZjLCAweDA0MzIwMmZmIHN1YiAwMDAwOjAwMDApIGZ3Cj4gPiAx
+MC4yLjQuNzAuNTktMiBmd2FwaSA1IGJkYXBpIDEgaHR0LXZlciAyLjEgd21pLW9wIDUgaHR0LW9w
+IDIgY2FsIG90cCBtYXgtc3RhIDEyOCByYXcgMAo+ID4gaHdjcnlwdG8gMSBmZWF0dXJlcyBuby1w
+MnAscmF3LW1vZGUKPiA+IGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBkZWJ1ZyAwIGRlYnVnZnMg
+MCB0cmFjaW5nIDAgZGZzIDAgdGVzdG1vZGUgMAo+ID4gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6
+IGZpcm13YXJlIHJlZ2lzdGVyIGR1bXA6Cj4gPiBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzAw
+XTogMHg0MTAwMDE2QyAweDAwMDAwMDAwIDB4MDA5N0Y4RDUgMHgwMDAwMDAwMAo+ID4gYXRoMTBr
+X3BjaSAwMDAxOjAzOjAwLjA6IFswNF06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAw
+IDB4MDAwMDAwMDAKPiA+IGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbMDhdOiAweDAwMDAwMDAw
+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gPiBhdGgxMGtfcGNpIDAwMDE6MDM6
+MDAuMDogWzEyXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+
+ID4gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IFsxNl06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAw
+eDAwMDAwMDAwIDB4MDA5N0Y4RDUKPiA+IGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbMjBdOiAw
+eDAwMDAwMDAwIDB4MDA0MDE5MzAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gPiBhdGgxMGtfcGNp
+IDAwMDE6MDM6MDAuMDogWzI0XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgw
+MDAwMDAwMAo+ID4gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IFsyOF06IDB4MDAwMDAwMDAgMHgw
+MDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiA+IGF0aDEwa19wY2kgMDAwMTowMzowMC4w
+OiBbMzJdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gPiBh
+dGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzM2XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAw
+MDAwMDAgMHgwMDAwMDAwMAo+ID4gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IFs0MF06IDB4MDAw
+MDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiA+IGF0aDEwa19wY2kgMDAw
+MTowMzowMC4wOiBbNDRdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAw
+MDAwCj4gPiBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzQ4XTogMHgwMDAwMDAwMCAweDAwMDAw
+MDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+ID4gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IFs1
+Ml06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiA+IGF0aDEw
+a19wY2kgMDAwMTowMzowMC4wOiBbNTZdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAw
+MCAweDAwMDAwMDAwCj4gPiBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogZmFpbGVkIHRvIHNldCAy
+ZyB0eHBvd2VyIDA6IC0xMDgKPiA+IGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBmYWlsZWQgdG8g
+c2V0dXAgdHggcG93ZXIgMDogLTEwOAo+ID4gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IGZhaWxl
+ZCB0byByZWNhbGMgdHggcG93ZXI6IC0xMDgKPiA+IC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0t
+LS0tLS0tLS0tLQo+ID4gV0FSTklORzogYXQgZmI4M2MzYjggW3ZlcmJvc2UgZGVidWcgaW5mbyB1
+bmF2YWlsYWJsZV0KPiA+IE1vZHVsZXMgbGlua2VkIGluOiBhdGgxMGtfcGNpKE8pIGF0aDEwa19j
+b3JlKE8pIG1hYzgwMjExKE8pIGF0aChPKSBjZmc4MDIxMShPKSBjb21wYXQoTykKPiA+IHVpb19w
+ZHJ2X2dlbmlycQo+ID4gQ1BVOiAwIFBJRDogMTcxNzMgQ29tbTogaWZjb25maWcgVGFpbnRlZDog
+RyAgICAgICAgICAgTyAzLjEyLjM3LXJ0NTErICMyMwo+ID4gdGFzazogZTY0MTU1MDAgdGk6IGVm
+MDJhMDAwIHRhc2sudGk6IGVmMDJhMDAwCj4gPiBOSVA6IGZiODNjM2I4IExSOiBmYjgzYzNhOCBD
+VFI6IGMwMDc4OGYwCj4gPiBSRUdTOiBlZjAyYmNiMCBUUkFQOiAwNzAwICAgVGFpbnRlZDogRyAg
+ICAgICAgICAgTyAgKDMuMTIuMzctcnQ1MSspCj4gPiBNU1I6IDAwMDI5MDAyIDxDRSxFRSxNRT4g
+IENSOiA4NDAwODQ4MiAgWEVSOiAyMDAwMDAwMAo+ID4gCj4gPiBHUFIwMDogZmI4M2MzYTggZWYw
+MmJkNjAgZTY0MTU1MDAgZmZmZmZmOTQgZWI4NjVhNDAgMDAwMDAxNTIgMDAwMDAwMDAgMDAwMDAw
+MDAKPiA+IEdQUjA4OiAwMDAwMDAwMCAwMDAwMDAwMSAwMDAwMDAwMCAwMDAyMTAwMiA4NGFkMmU0
+MiAxMDAyNTU3OCAxMDEwMDAwMCAwMDAwMDAwMAo+ID4gR1BSMTY6IDAwMDAwMDAwIDEwMDBhY2I0
+IDEwMDFkMjY0IDEwMDFkMjY0IDEwMDFkMWY4IGVmOTgyMDBjIDAwMDAwMDAwIGUwZTQ0MDAwCj4g
+PiBHUFIyNDogZTBlNDQ0ODAgZmZmZmZmZmYgMDAwMDAwMDEgMDAwMDAwMDAgZTBlNDQ3MDQgZTBl
+NDAwMDAgZmZmZmZmOTQgZWY3Y2NiYTAKPiA+IE5JUCBbZmI4M2MzYjhdIGllZWU4MDIxMV9hZGRf
+dmlydHVhbF9tb25pdG9yKzB4ZDgvMHgxYzAgW21hYzgwMjExXQo+ID4gTFIgW2ZiODNjM2E4XSBp
+ZWVlODAyMTFfYWRkX3ZpcnR1YWxfbW9uaXRvcisweGM4LzB4MWMwIFttYWM4MDIxMV0KPiA+IENh
+bGwgVHJhY2U6Cj4gPiBbZWYwMmJkNjBdIFtmYjgzYzNhOF0gaWVlZTgwMjExX2FkZF92aXJ0dWFs
+X21vbml0b3IrMHhjOC8weDFjMCBbbWFjODAyMTFdICh1bnJlbGlhYmxlKQo+ID4gW2VmMDJiZDgw
+XSBbZmI4M2QxNjhdIGllZWU4MDIxMV9kb19vcGVuKzB4NGU4LzB4YTMwIFttYWM4MDIxMV0KPiA+
+IFtlZjAyYmRjMF0gW2MwNGQ3M2E4XSBfX2Rldl9vcGVuKzB4ZTgvMHgxNjAKPiA+IFtlZjAyYmRm
+MF0gW2MwNGQ3NmEwXSBfX2Rldl9jaGFuZ2VfZmxhZ3MrMHhhMC8weDE4MAo+ID4gW2VmMDJiZTEw
+XSBbYzA0ZDc4NWNdIGRldl9jaGFuZ2VfZmxhZ3MrMHgxYy8weDcwCj4gPiBbZWYwMmJlMzBdIFtj
+MDU3ZDkzMF0gZGV2aW5ldF9pb2N0bCsweDYwMC8weDhlMAo+ID4gW2VmMDJiZTkwXSBbYzA0YmE2
+ZjRdIHNvY2tfaW9jdGwrMHgyMjQvMHgyZTAKPiA+IFtlZjAyYmViMF0gW2MwMTE1MTUwXSBkb192
+ZnNfaW9jdGwrMHg0MTAvMHg3YTAKPiA+IFtlZjAyYmYxMF0gW2MwMTE1NTIwXSBTeVNfaW9jdGwr
+MHg0MC8weDgwCj4gPiBbZWYwMmJmNDBdIFtjMDAwZmIwNF0gcmV0X2Zyb21fc3lzY2FsbCsweDAv
+MHgzYwo+ID4gLS0tIEV4Y2VwdGlvbjogYzAxIGF0IDB4ZmY0ZmY4Ywo+ID4gICAgIExSID0gMHhm
+ZmVkMmMwCj4gPiBJbnN0cnVjdGlvbiBkdW1wOgo+ID4gMzkyMDAwMDggOTEzZDAzOGMgN2ZhM2Vi
+NzggOTNkZDAwMGMgNGJmZmUzNDkgN2ZlM2ZiNzggN2ZhNGViNzggNGJmZWUyY2QKPiA+IDdjNjkw
+MDM0IDU1MjlkOTdlIDdjN2UxYjc4IDY5MjkwMDAxIDwwZjA5MDAwMD4gMmY4OTAwMDAgN2ZhM2Vi
+NzggNDBkZTAwYTAKPiA+IC0tLVsgZW5kIHRyYWNlIGM5ZGY0ODU5YWMxOTJiZTcgXS0tLQo+ID4g
+aWVlZTgwMjExIHBoeTE6IEhhcmR3YXJlIHJlc3RhcnQgd2FzIHJlcXVlc3RlZAo+ID4gU0lPQ1NJ
+RkZMQUdTOiBDYW5ub3Qgc2VuZCBhZnRlciB0cmFuc3BvcnQgZW5kcG9pbnQgc2h1dGRvd24KPiA+
+IAo+ID4gUGxlYXNlIGhlbHAgbWUgdG8gc2V0IG1vbml0b3IgbW9kZSBvbiBXaUZpIG5vZGUuCj4g
+PiAKPiA+IERpc2NsYWltZXI6Cj4gPiAKPiA+IC0tLS0tLS0tLS0KPiA+IAo+ID4gVGhpcyBlbWFp
+bCBhbmQgYW55IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGggaXQgYXJlIGNvbmZpZGVudGlhbCBhbmQg
+aW50ZW5kZWQgc29sZWx5IGZvcgo+ID4gCj4gPiB0aGUgdXNlIG9mIHRoZSBpbmRpdmlkdWFsIG9y
+IGVudGl0eSB0byB3aG9tIHRoZXkgYXJlIGFkZHJlc3NlZC7CoCBJZiB5b3UgYXJlIG5vdCB0aGUK
+PiA+IAo+ID4gaW50ZW5kZWQgcmVjaXBpZW50IHlvdSBhcmUgbm90aWZpZWQgdGhhdCBkaXNjbG9z
+aW5nLCBjb3B5aW5nLCBkaXN0cmlidXRpbmcgb3IgdGFraW5nCj4gPiAKPiA+IGFueSBhY3Rpb24g
+aW4gcmVsaWFuY2Ugb24gdGhlIGNvbnRlbnRzIG9mIHRoaXMgaW5mb3JtYXRpb24gaXMgc3RyaWN0
+bHkgcHJvaGliaXRlZC4gVGhlCj4gPiAKPiA+IHNlbmRlciBkb2VzIG5vdCBhY2NlcHQgbGlhYmls
+aXR5IGZvciBhbnkgZXJyb3JzIG9yIG9taXNzaW9ucyBpbiB0aGUgY29udGVudHMgb2YgdGhpcwo+
+ID4gCj4gPiBtZXNzYWdlLCB3aGljaCBhcmlzZSBhcyBhIHJlc3VsdAo+ID4gLS0tLS0tLSBFbmQg
+b2YgRm9yd2FyZGVkIE1lc3NhZ2UgLS0tLS0tLQo+ID4gCj4gPiAKPiA+IFRoYW5rcyAmIFJlZ2Fy
+ZHMsCj4gPiDgpJXgpLXgpL/gpKTgpL4g4KSu4KS+4KSl4KWB4KSwIEthdml0YSBNYXRodXIgCj4g
+PiDgpLXgpLDgpL/gpLfgpY3gpKAg4KSF4KSo4KWB4KS44KSC4KSn4KS+4KSoIOCkheCkreCkv+Ck
+r+CkguCkpOCkviAgU2VuaW9yIFJlc2VhcmNoIEVuZ2luZWVyIAo+ID4g4KS44KWALeCkoeClieCk
+nyAgICAgICAgICAgICAgICAgICAgICBDLURPVAo+ID4g4KSH4KSy4KWI4KSV4KWN4KSf4KWN4KSw
+4KWJ4KSo4KS/4KSV4KWN4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfgpJzgpLwgSSAgICAgICAgIEVs
+ZWN0cm9uaWNzIENpdHkgUGhhc2UgSQo+ID4g4KS54KWL4KS44KWC4KSwIOCksOCli+CkoSwg4KSs
+4KWH4KSC4KSX4KSy4KWC4KSw4KWBICAgICAgICAgICAgICAgSG9zdXIgUm9hZCwgQmVuZ2FsdXJ1
+IOKAkyA1NjAxMDAKPiA+IOCkq+Cli+CkqCAgUGggMDgwLTI4NTI5ODk2Cj4gPiBEaXNjbGFpbWVy
+Ogo+ID4gLS0tLS0tLS0tLQo+ID4gVGhpcyBlbWFpbCBhbmQgYW55IGZpbGVzIHRyYW5zbWl0dGVk
+IHdpdGggaXQKPiA+IAo+ID4gCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwo+ID4gYXRoMTBrIG1haWxpbmcgbGlzdAo+ID4gYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKPiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCgoKVGhhbmtzICYgUmVnYXJkcywK4KSV4KS14KS/4KSk4KS+IOCkruCkvuCkpeCl
+geCksCBLYXZpdGEgTWF0aHVyIArgpLXgpLDgpL/gpLfgpY3gpKAg4KSF4KSo4KWB4KS44KSC4KSn
+4KS+4KSoIOCkheCkreCkv+Ckr+CkguCkpOCkviAgU2VuaW9yIFJlc2VhcmNoIEVuZ2luZWVyIArg
+pLjgpYAt4KSh4KWJ4KSfICAgICAgICAgICAgICAgICAgICAgIEMtRE9UCuCkh+CksuCliOCkleCl
+jeCkn+CljeCksOClieCkqOCkv+CkleCljeCkuCDgpLjgpL/gpJ/gpYAg4KSr4KWH4KSc4KS8IEkg
+ICAgICAgICBFbGVjdHJvbmljcyBDaXR5IFBoYXNlIEkK4KS54KWL4KS44KWC4KSwIOCksOCli+Ck
+oSwg4KSs4KWH4KSC4KSX4KSy4KWC4KSw4KWBICAgICAgICAgICAgICAgSG9zdXIgUm9hZCwgQmVu
+Z2FsdXJ1IOKAkyA1NjAxMDAK4KSr4KWL4KSoICBQaCAwODAtMjg1Mjk4OTYKRGlzY2xhaW1lcjoK
+LS0tLS0tLS0tLQpUaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQgd2l0aCBpdAoK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
+YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
