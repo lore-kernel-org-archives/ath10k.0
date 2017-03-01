@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail-ot0-x236.google.com ([2607:f8b0:4003:c0f::236])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cj3jL-0001ZX-Dg
- for ath10k@lists.infradead.org; Wed, 01 Mar 2017 12:51:45 +0000
-Received: by mail-wm0-x242.google.com with SMTP id u63so7186883wmu.2
- for <ath10k@lists.infradead.org>; Wed, 01 Mar 2017 04:51:22 -0800 (PST)
-From: Christian Lamparter <chunkeey@googlemail.com>
-Subject: Re: QCA4019: calibration files and board files
-Date: Wed, 01 Mar 2017 13:51:12 +0100
-Message-ID: <2376018.vdZligNO3C@debian64>
-In-Reply-To: <821ad665d0934c58fc8b3c830e119433@codeaurora.org>
-References: <1591748.RGYhBEn8I1@bentobox> <1884460.SDYHzsflKl@bentobox>
- <821ad665d0934c58fc8b3c830e119433@codeaurora.org>
+ id 1cj4pl-0005Sf-IV
+ for ath10k@lists.infradead.org; Wed, 01 Mar 2017 14:02:27 +0000
+Received: by mail-ot0-x236.google.com with SMTP id k4so29979839otc.0
+ for <ath10k@lists.infradead.org>; Wed, 01 Mar 2017 06:02:05 -0800 (PST)
 MIME-Version: 1.0
+From: Chris Price <chris.price@dejero.com>
+Date: Wed, 1 Mar 2017 09:02:03 -0500
+Message-ID: <CALJ2kaEeauorokz4s6zEVTYcuqvnKzYUCNdXxiDH_h1aFqLcYQ@mail.gmail.com>
+Subject: Re: 4.9 Kernel panic on ACS and intermittent ability to host AP
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,108 +18,266 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Rajkumar Manoharan <rmanohar@codeaurora.org>, akolli@codeaurora.org, Sven Eckelmann <sven.eckelmann@openmesh.com>, Mohammed Shafi Shajakhan <mohammed@codeaurora.org>, Tamizh chelvam <tamizhchelvam@codeaurora.org>, shashidhar.lakkavalli@openmesh.com, "Giori, Kathy" <kgiori@qca.qualcomm.com>
 
-T24gVHVlc2RheSwgRmVicnVhcnkgMjgsIDIwMTcgNzoyMjozMiBQTSBDRVQgUmFqa3VtYXIgTWFu
-b2hhcmFuIHdyb3RlOgo+IE9uIDIwMTctMDItMjcgMjM6NTgsIFN2ZW4gRWNrZWxtYW5uIHdyb3Rl
-Ogo+ID4gSXQgbG9va3MgdG8gbWUgbm93IHRoYXQgdGhpcyBpbmZvcm1hdGlvbiBpcyBjb250cmFk
-aWN0aW5nIHlvdXIgCj4gPiBpbXBsZW1lbnRhdGlvbgo+ID4gKHdoaWNoIG5vdyBsb2FkcyB0aGUg
-ZGF0YSBmcm9tIDA6QVJUIHBhcnRpdGlvbiBbMV0gbGlrZSBwcmUtY2FsIGRhdGEgCj4gPiBbMl0g
-YW5kCj4gPiB0aGVuIGxvYWRzIHRoZSBib2FyZC0yLmJpbiBbM10pLgo+ID4gCj4gQm90aCByZWFk
-aW5nIGZyb20gQVJUIGFuZCBsb2FkaW5nIHByZS1jYWwgZGF0YSBmaWxlIGFyZSBzYW1lLgo+IAo+
-ID4gSSBoYXZlIGRvdWJ0IHJlZ2FyZGluZyBoaXMgZXhwbGFuYXRpb24gYnV0IEkgZ290IG5vIGFj
-dHVhbCBzcGVjIC0gb25seQo+ID4gaW5mb3JtYXRpb24gd2hpY2ggc2VlbXMgdG8gYmUgY29udHJh
-ZGljdGluZyAob3IgdG8gdmFndWUpIC4gSXMgaXMgCj4gPiBwb3NzaWJsZQo+ID4gdG8gZ2V0IHNv
-bWUgY29uZmlybWF0aW9uIGZyb20geW91IGFib3V0IHdoZXRoZXIgdGhlIGRhdGEgZnJvbSB0aGUg
-MDpBUlQKPiA+IHBhcnRpdGlvbiBpcyBwcmUtY2FsIGRhdGEgb3Igbm90IGFuZCB3aGV0aGVyIHRo
-ZSBib2FyZC0yLmJpbiBzaG91bGQgYmUKPiA+IHVzZWQgd2hlbiB0aGUgZGF0YSBmcm9tIDA6QVJU
-IGlzIHVzZWQuCj4gPiAKPiBJbiBRQ0E0MDE5IHBsYXRmb3JtLCBvbmx5IHJhZGlvIHNwZWNpZmlj
-IGNhbGlicmF0aW9uIChwcmUtY2FsLWRhdGEpIGlzIAo+IHN0b3JlZCBpbiBmbGFzaC4KPiBCb2Fy
-ZCBzcGVjaWZpYyBjb250ZW50cyBhcmUgcmVhZCBmcm9tIGJvYXJkLTIuYmluLiBGb3IgZWFjaCBy
-YWRpbyAKPiBhcHByb3ByaWF0ZSBib2FyZCBkYXRhIHNob3VsZCBiZSBsb2FkZWQuIFRvIGZldGNo
-IGNvcnJlY3QgYm9hcmQgZGF0YQo+IGZyb20gYm9hcmQtMi5iaW4gYnVuZGxlLCBwcmUtY2FsL3Jh
-ZGlvIHNwZWNpZmljIGNhbGRhdGEgc2hvdWxkIGJlCj4gbG9hZGVkIGZpcnN0IHRvIGdldCBwcm9w
-ZXIgYm9hcmQgaWQuCj4gCj4gPiBNeSB1bmRlcnN0YW5kaW5nIHVudGlsIG5vdyB3YXMgdGhhdDoK
-PiA+IAo+ID4gICogcHJlLWNhbCBkYXRhICsgYm9hcmQtMi5iaW4gaW5mbyA9PSBhY3R1YWwgY2Fs
-aWJyYXRpb24gZGF0YQo+ID4gCj4gQ29ycmVjdC4KPgo+ID4gICogcHJlLWNhbCBkYXRhID09IHNv
-bWUgaW5jb21wbGV0ZSBjYWxpYnJhdGlvbiBkYXRhIGZyb20gc29tZXdoZXJlIGVsc2UKPiA+ICAg
-ICAgICAgICAgICAgICAgICAoaGUgbmV2ZXIgc3BlY2lmaWVkIGl0IC0ganVzdCB0aGF0IGl0IGV4
-aXN0cykKPiA+ICAqIGNhbGlicmF0aW9uIGRhdGEgPT0gaW5jb21wbGV0ZSBjYWxpYnJhdGlvbiBk
-YXRhIGZyb20gMDpBUlQKPiA+ICAgICAgICAgICAgICAgICAgICAgICAgKHdoYXQgSSd2ZSBkZXNj
-cmliZWQgaW4gdGhlIHBhc3QgYXMgcHJlLWNhbCAKPiA+IGRhdGEpCj4gPiAgKiAocHJlLWNhbCBv
-ciBjYWxpYnJhdGlvbiBkYXRhKSArIGJvYXJkLTIuYmluIGluZm8gPT0gYWN0dWFsIAo+ID4gY2Fs
-aWJyYXRpb24gZGF0YQo+ID4gCj4gPiBXb3VsZCBiZSBuaWNlIGlmIHRoaXMgY29uZnVzaW9uIGNv
-dWxkIGJlIGNsZWFyZWQgdXAgYnkgeW91Lgo+ID4gCj4gRm9sbG93aW5nIG1ldGhvZHMgYXJlIHVz
-ZWQgdG8gcmVhZCByYWRpbyBzcGVjaWZpYyBjYWxkYXRhLgo+IAo+IDEpIEluIHNvbWUgcGxhdGZv
-cm0gd2hpY2ggbGFncyBEVCBzdXBwb3J0LCBpbml0LmQgc2NyaXB0IGlzIHVzZWQgdG8gcmVhZAo+
-IHRoZSBjYWxpYnJhdGlvbnMgY29udGVudCBmcm9tIGZsYXNoIG1lbW9yeSBhbmQgd3JpdGUgaXQg
-aW4gZmlsZSBzeXN0ZW0gCj4gYXQgYm9vdCB0aW1lLgo+IFRoaXMgaXMgZG9uZSBieSBkZCBjb21t
-YW5kLgo+IAo+IDIpIERUIGVudHJ5IOKAnHFjb20sYXRoMTBrLXByZS1jYWxpYnJhdGlvbi1kYXRh
-IiBpcyB1c2VkIHRvIHBhc3MgCj4gY2FsaWJyYXRpb24gZGF0YQo+IGZyb20gZmxhc2ggdG8gZHJp
-dmVyLiBCdXQgaXQgbmVlZHMgQ29yZUJTQiBzdXBwb3J0IHRvIHRyYW5zZmVyIHRoZSAKPiBjb250
-ZW50cyBmcm9tIGZsYXNoIHRvIGRldmljZSB0cmVlLgo+Cj4gcWNvbSxwcmUtY2FsaWJyYXRpb24t
-ZGF0YSA9PT4gb25seSByYWRpbyBzcGVjaWZpYyBjYWxpYnJhdGlvbi4KPiBxY29tLGNhbGlicmF0
-aW9uLWRhdGEgPT0+IHtyYWRpbyBzcGVjaWZpYyArIGJvYXJkIHNwZWNpZmljIGNhbGlicmF0aW9u
-fS4KPiAKPiAzKSBSZWFkaW5nIGNhbGlicmF0aW9uIGRhdGEgZGlyZWN0bHkgZnJvbSBBUlQgcGFy
-dGl0aW9uIGJ5IG10ZF9yZWFkIAo+IG9wZXJhdGlvbi4gVGhpcyBvbmUgY2FuIGJlIHJlbW92ZWQg
-ZnJvbSBRU0RLIGVpdGhlciBieSBpbml0IHNjcmlwdAo+IG9yIGJ5IERUIHN1cHBvcnQuCj4gCj4g
-InFjb20sY2FsaWJyYXRpb24tZGF0YSIgaXMgdXNlZCBmb3IgcWNhOTg4eCBvbiBBUDE0OCBwbGFm
-b3JtLiAKPiBIZXJlIGNhbGlicmF0aW9uIGRhdGEgbWVhbiBib3RoIHJhZGlvICsgYm9hcmQgY29u
-dGVudHMuCj4gQWx3YXlzIGNhbGlicmF0aW9uIGNvbnRlbnQgYXJlIHN0b3JlZCBpbiBBUlQgcGFy
-dGl0aW9uLgoKT2suIFRoYW5rcyBmb3IgdGhlIGNsYXJpZmljYXRpb24uCgpTbywgcHJlLWNhbCBk
-YXRhIChmcm9tIGZsYXNoKSArIGJvYXJkLTIgKGZyb20gZnMpIGlzIHRoZSAKcmlnaHQgd2F5IGZv
-ciBub3cuCgpIb3dldmVyLCB0aGlzIGlzIGEgYml0IG9mIGEgcHJvYmxlbSBmb3IgTEVERS9PcGVu
-V1JULgoKWW91IHNlZTogVGhlIGJvYXJkLTIuYmluIHdpbGwgaGF2ZSB0byBiZSBiYWtlZCBpbnRv
-IHRoZSByb290ZnMtaW1hZ2UKb2YgdGhlIExFREUvT3BlbldSVCBmaXJtd2FyZS4KQnV0IGluIG9y
-ZGVyIHRvIGRvIHRoYXQsIHRoZSBib2FyZC0yLmJpbiBuZWVkcyB0byBiZSBleHRyYWN0ZWQgZnJv
-bQp0aGUgdmVuZG9yJ3MgYmluYXJ5IGZpcm13YXJlIGltYWdlICh2aWEgdW5zcXVhc2hmcykuIE9y
-IGlmIHdlIGFyZSAKbHVja3k6IGZyb20gdGhlIHNvdXJjZSBhcmNoaXZlLCBpZiB0aGUgdmVuZG9y
-IGxlZnQgdGhlbSBpbiB0aGVyZS4KClRoZSBwcm9ibGVtIGlzOiB0aGVzZSByYXcgYm9hcmQuYmlu
-IGZpbGVzIHNvdXJjZWQgZnJvbSB0aGUgYmluYXJ5CmZpcm13YXJlIGltYWdlIGxhY2sgYSByZWRp
-c3RyaWJ1dGFibGUgbGljZW5zZS4KQW5kIHRoZXJlZm9yZSB0aGV5IGNhbid0IGJlIHNoaXBwZWQg
-d2l0aCBMRURFL09wZW5XUlQuIAooVGhlIHJhdyBib2FyZC5iaW4gZmlsZXMgZnJvbSB0aGUgc291
-cmNlIGFyY2hpdmUgWzFdIGFyZSB1c3VhbGx5CmluIHRoZSAgbWFkd2lmaS0xMW4gZGlyZWN0b3J5
-LCB3aGljaCBoYXMgYSByZWRpc3RyaWJ1dGFibGUgCmxpY2Vuc2UgZmlsZSBbMl0gYW5kIGNhbiBi
-ZSBjb252ZXJ0ZWQgdG8gYm9hcmQtMi5iaW4gd2l0aCB0aGUgCmF0aDEway1iZGVuY29kZXIgWzNd
-LiBCdXQgdGhlcmUncyBubyBleHBsaWNpdCBzdGF0ZW1lbnQgdGhhdAp0aGlzIGlzIHBvc3NpYmxl
-LikKClRoZSB3YXkgSSBzZWUgaXQgYXRtLCBkZXZlbG9wZXJzIHdvdWxkIG5lZWQgdG8gYXNrIHRo
-ZSB2ZW5kb3JzCmZvciAgcGVybWlzc2lvbiBhbmQgTEVERS9PcGVuV1JUIG5lZWRzIHRvIHNldHVw
-IHNvbWV0aGluZyBsaWtlCmEgYm9hcmQtMi5iaW4gcmVwb3NpdG9yeSAoc2ltaWxhciB0byBsaW51
-eC1maXJtd2FyZSBbMF0pIGZvciAKYWxsIHRoZSBJUFE0MFhYIGRldmljZXMgKGFuZCBmdXR1cmUg
-ZGV2aWNlcz8pLi4uCgouLi4KCklzIHRoZXJlIGEgd2F5IGFyb3VuZCB0aGlzIHByb2JsZW0/IApD
-YW4gc29tZWJvZHkgYXNrIGFyb3VuZCBpbiB0aGUgTGVnYWwgRGVwYXJ0bWVudD8gQW5kIGNsYXJp
-ZnkgaWY6CgoxLiBXaGVuZXZlciB0aGUgYm9hcmQtMi5iaW4gYXJlIGNvcHlyaWdodC1hYmxlIGlu
-IHRoZSBmaXJzdCBwbGFjZT8KICAgSU5BTC4gVGhlc2UgZmlsZXMganVzdCBjb250YWluIGNhbGli
-cmF0aW9uIHZhbHVlcy9wYXJhbWV0ZXJzCiAgIGFuZCBubyBwcm9ncmFtcy4gRnJvbSB3aGF0IEkg
-a25vdyBmYWN0cy9udW1iZXJzIGFyZSBub3QgY29weXJpZ2h0LWFibGUuCiAgIEJ1dCBJIGRvbid0
-IGtub3cgaWYgaXQgYXBwbGllcyBoZXJlIG9yIG5vdC4gQW5kIGlmIHRoZXJlIGlzIGEKICAgZGlm
-ZmVyZW5jZSBiZXR3ZWVuIFVTL0V1cm9wZS9DaGluYS8uLi4gbGF3cy4KCjIuIFdoYXQgbGljZW5z
-ZSB0aGVzZSBib2FyZC5iaW4gZmlsZXMgc2hvdWxkIGhhdmUuCiAgIFRoZXkgYXJlIGdlbmVyYXRl
-ZCBieSB0aGUgaGFscGh5X3Rvb2xzJyBlZXByb21VdGlsIHV0aWxpdHkuCiAgIEFyZSB0aGVzZSBm
-aWxlcyBhbGwgb3JpZ2luYWwsIG9yIGRvIHRoZXkgY2xhc3NpZnkgYXMKICAgZGVyaXZlZCB3b3Jr
-cz8KCjMuIE1vc3QgaW1wb3J0YW50bHk6IENhbiB0aGlzIGJlIGhhbmRsZWQgZGlmZmVyZW50bHkg
-Zm9yIGZ1dHVyZSBkZXZpY2VzPwogICBMaWtlIGFkZGluZyBhIHJlZGlzdHJpYnV0YWJsZSBsaWNl
-bnNlIHRleHQgaW5zaWRlIHRoZSBib2FyZC5iaW4gZmlsZXM/CiAgIChMaWtlIGEgaGVhZGVyIG9y
-IHRyYWlsZXIuIEEgdHJhaWxlciB3b3VsZCBoYXZlIHRoZSBhZHZhbnRhZ2UgdGhhdCBpZgogICB0
-aGUgY2FsZGF0YSBsZW5ndGggaXMgZml4ZWQgKGxpa2UgMTIwNjQgYnl0ZXMgZm9yIElQUTQwWFgp
-LCB0aGUgdHJhaWxlcgogICB3b24ndCBiZSB1cGxvYWRlZCB0byB0aGUgZGV2aWNlLiBTbyBhIHRy
-YWlsZXIgY2FuIGJlIGVhc2lseSBhZGRlZCB0byAKICAgZXhpc3RpbmcgZmlsZXMpLgoKKDQuIEFu
-eSB3b3JrYXJvdW5kPwogICAgTGlrZSB0cnlpbmcgdG8gZ2V0IGJ5IHdpdGgganVzdCB0aGUgcHJl
-Y2FsLWRhdGEgZnJvbSBmbGFzaCBsaWtlIGluIFs0XT8pCgpUaGFua3MsCkNocmlzdGlhbgoKWzBd
-IDxodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2VybmVsL2dpdC9maXJtd2FyZS9s
-aW51eC1maXJtd2FyZS5naXQvdHJlZS9SRUFETUU+ClsxXSA8aHR0cHM6Ly9naXRodWIuY29tL3Bh
-dWwtY2hhbWJlcnMvbmV0Z2Vhci1yNzgwMC90cmVlL21hc3Rlci9naXRfaG9tZS9tYWR3aWZpLTEx
-bi5naXQvaGFscGh5X3Rvb2xzL2hvc3QvZWVwcm9tVXRpbC9yZWxlYXNlX2lwcTQwMTk+ClsyXSA8
-aHR0cHM6Ly9naXRodWIuY29tL3BhdWwtY2hhbWJlcnMvbmV0Z2Vhci1yNzgwMC9ibG9iL21hc3Rl
-ci9naXRfaG9tZS9tYWR3aWZpLTExbi5naXQvQ09QWUlORz4KWzNdIDxodHRwczovL2dpdGh1Yi5j
-b20vcWNhL3FjYS1zd2lzcy1hcm15LWtuaWZlL2Jsb2IvbWFzdGVyL3Rvb2xzL3NjcmlwdHMvYXRo
-MTBrL2F0aDEway1iZGVuY29kZXI+Cls0XSA8aHR0cHM6Ly93d3cubWFpbC1hcmNoaXZlLmNvbS9h
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZy9tc2cwNTkxMS5odG1sPgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2F0aDEwawo=
+> Is this  a regression you saw and working with other kernel version but failed with 4.9?
+
+I've only tried this card on a custom 4.1 kernel and `iw list` does
+not report it as supporting more than one channel - for our purposes,
+we require 2 channels, hence the upgrade.
+
+> Can you give it a try with the latest firmware - https://github.com/kvalo/ath10k-firmware.git
+
+I should mention that I have the 'skip_otp' directive set to 'y'. I
+tried the following both with and without this setting to no avail.
+
+The card seems to present only intermittently. When it does not
+present, I see the following in the kernel's ring buffer.
+
+# dmesg | grep ath
+[    3.460109] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2
+irq_mode 0 reset_mode 0
+[    3.745235] ath10k_pci 0000:02:00.0: firmware: failed to load
+ath10k/pre-cal-pci-0000:02:00.0.bin (-2)
+[    3.745240] ath10k_pci 0000:02:00.0: Direct firmware load for
+ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
+[    3.745249] ath10k_pci 0000:02:00.0: firmware: failed to load
+ath10k/cal-pci-0000:02:00.0.bin (-2)
+[    3.745252] ath10k_pci 0000:02:00.0: Direct firmware load for
+ath10k/cal-pci-0000:02:00.0.bin failed with error -2
+[    3.747717] ath10k_pci 0000:02:00.0: firmware: direct-loading
+firmware ath10k/QCA6174/hw3.0/firmware-5.bin
+[    3.747723] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target
+0x05030000 chip_id 0x00340aff sub 1a3b:2260
+[    3.747724] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 0
+tracing 0 dfs 0 testmode 0
+[    3.748278] ath10k_pci 0000:02:00.0: firmware ver
+WLAN.RM.4.4-00022-QCARMSWPZ-2 api 5 features wowlan,ignore-otp crc32
+4d458559
+[    3.814875] ath10k_pci 0000:02:00.0: firmware: direct-loading
+firmware ath10k/QCA6174/hw3.0/board-2.bin
+[    3.814880] ath10k_pci 0000:02:00.0: failed to fetch board data for
+bus=pci,bmi-chip-id=0,bmi-board-id=0 from
+ath10k/QCA6174/hw3.0/board-2.bin
+[    3.814996] ath10k_pci 0000:02:00.0: firmware: direct-loading
+firmware ath10k/QCA6174/hw3.0/board.bin
+[    3.815007] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id 0:0
+crc32 ed5f849a
+[    5.927102] ath10k_pci 0000:02:00.0: Unknown eventid: 90118
+[    8.934247] ath10k_pci 0000:02:00.0: htt version request timed out
+[    8.934250] ath10k_pci 0000:02:00.0: failed to setup htt: -110
+[    9.013168] ath10k_pci 0000:02:00.0: could not init core (-110)
+[    9.013240] ath10k_pci 0000:02:00.0: could not probe fw (-110)
+
+When the card does present (it seems to work randomly), I see the following.
+
+# dmesg | grep ath
+[    3.104528] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2
+irq_mode 0 reset_mode 0
+[    3.384558] ath10k_pci 0000:02:00.0: firmware: failed to load
+ath10k/pre-cal-pci-0000:02:00.0.bin (-2)
+[    3.384564] ath10k_pci 0000:02:00.0: Direct firmware load for
+ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
+[    3.384572] ath10k_pci 0000:02:00.0: firmware: failed to load
+ath10k/cal-pci-0000:02:00.0.bin (-2)
+[    3.384575] ath10k_pci 0000:02:00.0: Direct firmware load for
+ath10k/cal-pci-0000:02:00.0.bin failed with error -2
+[    3.387098] ath10k_pci 0000:02:00.0: firmware: direct-loading
+firmware ath10k/QCA6174/hw3.0/firmware-5.bin
+[    3.387105] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target
+0x05030000 chip_id 0x00340aff sub 1a3b:2260
+[    3.387106] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 0
+tracing 0 dfs 0 testmode 0
+[    3.387664] ath10k_pci 0000:02:00.0: firmware ver
+WLAN.RM.4.4-00022-QCARMSWPZ-2 api 5 features wowlan,ignore-otp crc32
+4d458559
+[    3.454317] ath10k_pci 0000:02:00.0: firmware: direct-loading
+firmware ath10k/QCA6174/hw3.0/board-2.bin
+[    3.454322] ath10k_pci 0000:02:00.0: failed to fetch board data for
+bus=pci,bmi-chip-id=0,bmi-board-id=0 from
+ath10k/QCA6174/hw3.0/board-2.bin
+[    3.454475] ath10k_pci 0000:02:00.0: firmware: direct-loading
+firmware ath10k/QCA6174/hw3.0/board.bin
+[    3.454486] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id 0:0
+crc32 ed5f849a
+[    5.562906] ath10k_pci 0000:02:00.0: Unknown eventid: 90118
+[    5.563521] ath10k_pci 0000:02:00.0: htt-ver 3.32 wmi-op 4 htt-op 3
+cal otp max-sta 32 raw 0 hwcrypto 1
+[    6.565534] ath10k_pci 0000:02:00.0: suspend timed out - target
+pause event never came
+[    6.644490] ath: EEPROM regdomain: 0x6a
+[    6.644491] ath: EEPROM indicates we should expect a direct regpair map
+[    6.644493] ath: Country alpha2 being used: 00
+[    6.644494] ath: Regpair used: 0x6a
+
+It now seems to be having some trouble setting the interface up.
+
+# hostapd /etc/hostapd/hostapd1.conf
+Configuration file: /etc/hostapd/hostapd1.conf
+Could not set interface ap1 flags (UP): Connection timed out
+nl80211: Could not set interface 'ap1' UP
+nl80211: deinit ifname=ap1 disabled_11b_rates=0
+nl80211 driver initialization failed.
+ap1: interface state UNINITIALIZED->DISABLED
+ap1: AP-DISABLED
+hostapd_free_hapd_data: Interface ap1 wasn't started
+
+# ip link set dev ap1 up
+RTNETLINK answers: Connection timed out
+
+No kernel panics, however. If I delete the new firmware, the card then
+presents on each boot. I'm using the firmware from the repo at hash
+8d15818.
+
+> Can you give it a try if you just do the STA interface and scan?
+
+For the rest of the response, I'm back to using the old firmware. In
+addition, I tried not setting the skip_otp option and I seem to be
+able to get it working, so this is probably some bad advice I found
+somewhere on the web.
+
+# ip link set dev ap1 up
+# iw dev ap1 scan | grep signal
+signal: -47.00 dBm
+signal: -47.00 dBm
+signal: -47.00 dBm
+signal: -46.00 dBm
+signal: -52.00 dBm
+signal: -58.00 dBm
+signal: -55.00 dBm
+signal: -45.00 dBm
+signal: -57.00 dBm
+signal: -41.00 dBm
+signal: -54.00 dBm
+signal: -49.00 dBm
+signal: -48.00 dBm
+signal: -48.00 dBm
+signal: -50.00 dBm
+signal: -71.00 dBm
+signal: -56.00 dBm
+signal: -55.00 dBm
+signal: -44.00 dBm
+signal: -69.00 dBm
+signal: -68.00 dBm
+signal: -75.00 dBm
+signal: -55.00 dBm
+signal: -55.00 dBm
+signal: -55.00 dBm
+signal: -55.00 dBm
+signal: -84.00 dBm
+signal: -83.00 dBm
+signal: -82.00 dBm
+signal: -41.00 dBm
+signal: -52.00 dBm
+signal: -83.00 dBm
+signal: -83.00 dBm
+signal: -83.00 dBm
+signal: -85.00 dBm
+signal: -67.00 dBm
+signal: -78.00 dBm
+signal: -61.00 dBm
+signal: -60.00 dBm
+signal: -60.00 dBm
+signal: -60.00 dBm
+signal: -55.00 dBm
+signal: -83.00 dBm
+signal: -75.00 dBm
+signal: -78.00 dBm
+signal: -78.00 dBm
+signal: -78.00 dBm
+
+And for the first time, the ACS seems to actually work. I noticed that
+I have to manually set the interface to 'up' however, though this is
+probably a matter for the hostapd devs. I've been able to host the AP
+repeatedly without seeing the panic, so this looks promising.
+
+> What is the other channel you failed? what is the output of the "iw reg get" show?
+> Can you share the kernel log as well?
+
+Possibly not relevant anymore, but here you go.
+
+# iw reg get
+global
+country CA: DFS-FCC
+(2402 - 2472 @ 40), (N/A, 30), (N/A)
+(5170 - 5250 @ 80), (N/A, 17), (N/A), AUTO-BW
+(5250 - 5330 @ 80), (N/A, 24), (0 ms), DFS, AUTO-BW
+(5490 - 5600 @ 80), (N/A, 24), (0 ms), DFS
+(5650 - 5730 @ 80), (N/A, 24), (0 ms), DFS
+(5735 - 5835 @ 80), (N/A, 30), (N/A)
+
+The dmesg output is as above.
+
+> Is the other card also run with ath10k? what is the combination you've?
+> Are you running multiple hostapd or wpa_supplicant instance?
+
+I wasn't clear about this part - there is only one card, and I wish to
+use it in one of a few ways. Namely, I want to host 2 access points,
+or host to one access point and connect to another. `iw list` gives me
+the following.
+
+valid interface combinations:
+* #{ managed } <= 2, #{ AP, mesh point, P2P-client, P2P-GO } <= 2, #{
+P2P-device } <= 1,
+  total <= 4, #channels <= 1
+* #{ managed } <= 2, #{ P2P-client } <= 2, #{ AP, mesh point, P2P-GO }
+<= 1, #{ P2P-device } <= 1,
+  total <= 4, #channels <= 2
+* #{ managed } <= 1, #{ IBSS } <= 1,
+  total <= 2, #channels <= 1
+
+Maybe I misunderstand the output, but I would expect to be able to
+host two access points simultaneously. However I am unable to do that
+by either running a single hostapd instance, specifying both config
+files, or by running two separate instances.
+
+# hostapd /etc/hostapd/hostapd0.conf /etc/hostapd/hostapd1.conf
+Configuration file: /etc/hostapd/hostapd0.conf
+Configuration file: /etc/hostapd/hostapd1.conf
+ap0: interface state UNINITIALIZED->COUNTRY_UPDATE
+Using interface ap0 with hwaddr f0:03:8c:4a:64:fe and ssid "test2.4"
+random: Only 15/20 bytes of strong random data available from /dev/random
+random: Not enough entropy pool available for secure operations
+WPA: Not enough entropy in random pool for secure operations - update
+keys later when the first station connects
+ap0: interface state COUNTRY_UPDATE->ENABLED
+ap0: AP-ENABLED
+ap1: interface state UNINITIALIZED->COUNTRY_UPDATE
+ACS: Automatic channel selection started, this may take a bit
+ap1: interface state COUNTRY_UPDATE->ACS
+ap1: ACS-STARTED
+ap1: ACS-COMPLETED freq=5220 channel=44
+Using interface ap1 with hwaddr f0:03:8c:4a:64:fd and ssid "test5"
+Failed to set beacon parameters
+Interface initialization failed
+ap1: interface state ACS->DISABLED
+ap1: AP-DISABLED
+ACS: Possibly channel configuration is invalid, please report this
+along with your config file.
+ACS: Failed to start
+ap1: AP-DISABLED
+hostapd_free_hapd_data: Interface ap1 wasn't started
+nl80211: deinit ifname=ap1 disabled_11b_rates=0
+ap1: interface state DISABLED->DISABLED
+ap0: interface state ENABLED->DISABLED
+ap0: AP-DISABLED
+nl80211: deinit ifname=ap0 disabled_11b_rates=0
+ap1: interface state DISABLED->DISABLED
+ap1: AP-DISABLED
+hostapd_free_hapd_data: Interface ap1 wasn't started
+
+When I run two instances, I also see "Failed to set beacon parameters"
+on whichever AP I start last.
+
+On the other hand, I am able to simultaneously host one AP and connect
+to another, so it's performing some of the functions I would expect.
+As for the panic, that seems to be related to the 'skip_otp' option.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
