@@ -1,17 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qk0-x231.google.com ([2607:f8b0:400d:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ciwjj-0003Cz-9w
- for ath10k@lists.infradead.org; Wed, 01 Mar 2017 05:23:41 +0000
-Date: Wed, 1 Mar 2017 10:52:42 +0530
-From: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
-Subject: Re: ath10k QCA988x firmware not supporting monitor mode
-Message-ID: <20170301052242.GA32547@atheros-ThinkPad-T61>
-References: <20170214114008.M61102@cdot.in> <20170301050002.M24080@cdot.in>
- <20170301050509.M45885@cdot.in>
+ id 1cixBv-0006w8-5H
+ for ath10k@lists.infradead.org; Wed, 01 Mar 2017 05:52:49 +0000
+Received: by mail-qk0-x231.google.com with SMTP id n186so52876800qkb.3
+ for <ath10k@lists.infradead.org>; Tue, 28 Feb 2017 21:52:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20170301050509.M45885@cdot.in>
+In-Reply-To: <13839ca7-e43e-8475-04de-8c705c4e3ee2@gmail.com>
+References: <CAHNpzpeRE6ha4JA9i4oyJ2BjgJg53FvDpAb1yZccncrmTeiBdQ@mail.gmail.com>
+ <8737g45xc7.fsf@kamboji.qca.qualcomm.com>
+ <c3814c7d-eed3-dad2-c568-6ce456ee7166@gmail.com>
+ <CAHNpzpdbTnapQFPwYhUhi5EvLjQSdpqy9AHMH04KcqF2jHWw_A@mail.gmail.com>
+ <CAHNpzpeao2rT8JJ5rSALHknrkFHniixJftGLTnUxcd7RtoYdtQ@mail.gmail.com>
+ <13839ca7-e43e-8475-04de-8c705c4e3ee2@gmail.com>
+From: Akesh M Chacko <akesh.chacko@vvdntech.in>
+Date: Wed, 1 Mar 2017 11:22:24 +0530
+Message-ID: <CAHNpzpf5Xd9JYnbt5b-hRhC0tjnGWY2HLdnBUdHkGcdi6-ytGQ@mail.gmail.com>
+Subject: Re: Driver support for QCA6174 chip using SDIO interface
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,113 +25,119 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: KAVITA MATHUR <kavitam@cdot.in>
-Cc: ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, Ann Lo <annlo.tech@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gV2VkLCBNYXIgMDEsIDIwMTcgYXQgMTA6Mzg6NDhBTSArMDUzMCwgS0FWSVRBIE1BVEhVUiB3
-cm90ZToKPiAKPiAKPiBIaSEKPiAKPiBXZSBhcmUgdXNpbmcgQXRoZXJvcyBRQ0E5ODgwIG1QQ0ll
-IG1vZHVsZSB3aXRoIGF0aDEwayBkcml2ZXJzIGFuZCBmaXJtd2FyZS4KPiAKPiBLZXJuZWw6IDMu
-MTIKPiBCYWNrcG9ydHM6IDQuNAo+IEZpcm13YXJlOjEwLjIuNC43MC41OS0yCgpbc2hhZmldIHdv
-cnRoIHRyeWluZyB1cGRhdGVkIGZpcm13YXJlCmh0dHBzOi8vc291cmNlLmNvZGVhdXJvcmEub3Jn
-L3F1aWMvcXNkay9vc3MvZmlybXdhcmUvYXRoMTBrLWZpcm13YXJlL3BsYWluL2F0aDEway9RQ0E5
-ODhYL2h3Mi4wLwoKPiAKPiBXZSBhcmUgbm90IGFibGUgdG8gcnVuIHRoZSB3bGFuMSBpbnRlcmZh
-Y2UgaW4gbW9uaXRvciBtb2RlLiBUaGUgZm9sbG93aW5nIGVycm9yIGNvbWVzCj4gd2hlbiB3ZSBk
-bwo+IGl3IHBoeSBwaHkxIGludGVyZmFjZSBhZGQgd2xhbjEgdHlwZSBtb25pdG9yCj4gaWZjb25m
-aWcgd2xhbjEgdXAKCltzaGFmaV0gY2FuIHlvdSBwbGVhc2UgY29uZmlybSB0aGUgYmVsb3cgZml4
-IGlzIGFscmVhZHkgYXZhaWxhYmxlCihpdHMgY2NlZCB0byBzdGFibGUgdGhvdWdoKQpodHRwczov
-L3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzg0ODEyODEvCgphbmQgaWYgeW91IHNlZSBzdGls
-bCBzZWUgdGhlIGlzc3VlIGluIGxhdGVzdCBiYWNrcG9ydHMKaHR0cDovL2J1aWxkYm90LncxLmZp
-L2JhY2twb3J0cy13aXJlbGVzcy10ZXN0aW5nLwoKcGxlYXNlIHJldmVydCBiYWNrCgo+IAo+IGF0
-aDEwa19wY2kgMDAwMTowMzowMC4wOiBmaXJtd2FyZSBjcmFzaGVkISAodXVpZCBuL2EpCj4gYXRo
-MTBrX3BjaSAwMDAxOjAzOjAwLjA6IHFjYTk4OHggaHcyLjAgKDB4NDEwMDAxNmMsIDB4MDQzMjAy
-ZmYgc3ViIDAwMDA6MDAwMCkgZncKPiAxMC4yLjQuNzAuNTktMiBmd2FwaSA1IGJkYXBpIDEgaHR0
-LXZlciAyLjEgd21pLW9wIDUgaHR0LW9wIDIgY2FsIG90cCBtYXgtc3RhIDEyOCByYXcgMAo+IGh3
-Y3J5cHRvIDEgZmVhdHVyZXMgbm8tcDJwLHJhdy1tb2RlCj4gYXRoMTBrX3BjaSAwMDAxOjAzOjAw
-LjA6IGRlYnVnIDAgZGVidWdmcyAwIHRyYWNpbmcgMCBkZnMgMCB0ZXN0bW9kZSAwCj4gYXRoMTBr
-X3BjaSAwMDAxOjAzOjAwLjA6IGZpcm13YXJlIHJlZ2lzdGVyIGR1bXA6Cj4gYXRoMTBrX3BjaSAw
-MDAxOjAzOjAwLjA6IFswMF06IDB4NDEwMDAxNkMgMHgwMDAwMDAwMCAweDAwOTdGOEQ1IDB4MDAw
-MDAwMDAKPiBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzA0XTogMHgwMDAwMDAwMCAweDAwMDAw
-MDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBbMDhd
-OiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gYXRoMTBrX3Bj
-aSAwMDAxOjAzOjAwLjA6IFsxMl06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4
-MDAwMDAwMDAKPiBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzE2XTogMHgwMDAwMDAwMCAweDAw
-MDAwMDAwIDB4MDAwMDAwMDAgMHgwMDk3RjhENQo+IGF0aDEwa19wY2kgMDAwMTowMzowMC4wOiBb
-MjBdOiAweDAwMDAwMDAwIDB4MDA0MDE5MzAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gYXRoMTBr
-X3BjaSAwMDAxOjAzOjAwLjA6IFsyNF06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAw
-IDB4MDAwMDAwMDAKPiBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzI4XTogMHgwMDAwMDAwMCAw
-eDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwa19wY2kgMDAwMTowMzowMC4w
-OiBbMzJdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gYXRo
-MTBrX3BjaSAwMDAxOjAzOjAwLjA6IFszNl06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAw
-MDAwIDB4MDAwMDAwMDAKPiBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzQwXTogMHgwMDAwMDAw
-MCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwa19wY2kgMDAwMTowMzow
-MC4wOiBbNDRdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4g
-YXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IFs0OF06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAw
-MDAwMDAwIDB4MDAwMDAwMDAKPiBhdGgxMGtfcGNpIDAwMDE6MDM6MDAuMDogWzUyXTogMHgwMDAw
-MDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwa19wY2kgMDAwMTow
-MzowMC4wOiBbNTZdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAw
-Cj4gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IGZhaWxlZCB0byBzZXQgMmcgdHhwb3dlciAwOiAt
-MTA4Cj4gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IGZhaWxlZCB0byBzZXR1cCB0eCBwb3dlciAw
-OiAtMTA4Cj4gYXRoMTBrX3BjaSAwMDAxOjAzOjAwLjA6IGZhaWxlZCB0byByZWNhbGMgdHggcG93
-ZXI6IC0xMDgKPiAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0KPiBXQVJOSU5H
-OiBhdCBmYjgzYzNiOCBbdmVyYm9zZSBkZWJ1ZyBpbmZvIHVuYXZhaWxhYmxlXQo+IE1vZHVsZXMg
-bGlua2VkIGluOiBhdGgxMGtfcGNpKE8pIGF0aDEwa19jb3JlKE8pIG1hYzgwMjExKE8pIGF0aChP
-KSBjZmc4MDIxMShPKSBjb21wYXQoTykKPiB1aW9fcGRydl9nZW5pcnEKPiBDUFU6IDAgUElEOiAx
-NzE3MyBDb21tOiBpZmNvbmZpZyBUYWludGVkOiBHICAgICAgICAgICBPIDMuMTIuMzctcnQ1MSsg
-IzIzCj4gdGFzazogZTY0MTU1MDAgdGk6IGVmMDJhMDAwIHRhc2sudGk6IGVmMDJhMDAwCj4gTklQ
-OiBmYjgzYzNiOCBMUjogZmI4M2MzYTggQ1RSOiBjMDA3ODhmMAo+IFJFR1M6IGVmMDJiY2IwIFRS
-QVA6IDA3MDAgICBUYWludGVkOiBHICAgICAgICAgICBPICAoMy4xMi4zNy1ydDUxKykKPiBNU1I6
-IDAwMDI5MDAyIDxDRSxFRSxNRT4gIENSOiA4NDAwODQ4MiAgWEVSOiAyMDAwMDAwMAo+IAo+IEdQ
-UjAwOiBmYjgzYzNhOCBlZjAyYmQ2MCBlNjQxNTUwMCBmZmZmZmY5NCBlYjg2NWE0MCAwMDAwMDE1
-MiAwMDAwMDAwMCAwMDAwMDAwMAo+IEdQUjA4OiAwMDAwMDAwMCAwMDAwMDAwMSAwMDAwMDAwMCAw
-MDAyMTAwMiA4NGFkMmU0MiAxMDAyNTU3OCAxMDEwMDAwMCAwMDAwMDAwMAo+IEdQUjE2OiAwMDAw
-MDAwMCAxMDAwYWNiNCAxMDAxZDI2NCAxMDAxZDI2NCAxMDAxZDFmOCBlZjk4MjAwYyAwMDAwMDAw
-MCBlMGU0NDAwMAo+IEdQUjI0OiBlMGU0NDQ4MCBmZmZmZmZmZiAwMDAwMDAwMSAwMDAwMDAwMCBl
-MGU0NDcwNCBlMGU0MDAwMCBmZmZmZmY5NCBlZjdjY2JhMAo+IE5JUCBbZmI4M2MzYjhdIGllZWU4
-MDIxMV9hZGRfdmlydHVhbF9tb25pdG9yKzB4ZDgvMHgxYzAgW21hYzgwMjExXQo+IExSIFtmYjgz
-YzNhOF0gaWVlZTgwMjExX2FkZF92aXJ0dWFsX21vbml0b3IrMHhjOC8weDFjMCBbbWFjODAyMTFd
-Cj4gQ2FsbCBUcmFjZToKPiBbZWYwMmJkNjBdIFtmYjgzYzNhOF0gaWVlZTgwMjExX2FkZF92aXJ0
-dWFsX21vbml0b3IrMHhjOC8weDFjMCBbbWFjODAyMTFdICh1bnJlbGlhYmxlKQo+IFtlZjAyYmQ4
-MF0gW2ZiODNkMTY4XSBpZWVlODAyMTFfZG9fb3BlbisweDRlOC8weGEzMCBbbWFjODAyMTFdCj4g
-W2VmMDJiZGMwXSBbYzA0ZDczYThdIF9fZGV2X29wZW4rMHhlOC8weDE2MAo+IFtlZjAyYmRmMF0g
-W2MwNGQ3NmEwXSBfX2Rldl9jaGFuZ2VfZmxhZ3MrMHhhMC8weDE4MAo+IFtlZjAyYmUxMF0gW2Mw
-NGQ3ODVjXSBkZXZfY2hhbmdlX2ZsYWdzKzB4MWMvMHg3MAo+IFtlZjAyYmUzMF0gW2MwNTdkOTMw
-XSBkZXZpbmV0X2lvY3RsKzB4NjAwLzB4OGUwCj4gW2VmMDJiZTkwXSBbYzA0YmE2ZjRdIHNvY2tf
-aW9jdGwrMHgyMjQvMHgyZTAKPiBbZWYwMmJlYjBdIFtjMDExNTE1MF0gZG9fdmZzX2lvY3RsKzB4
-NDEwLzB4N2EwCj4gW2VmMDJiZjEwXSBbYzAxMTU1MjBdIFN5U19pb2N0bCsweDQwLzB4ODAKPiBb
-ZWYwMmJmNDBdIFtjMDAwZmIwNF0gcmV0X2Zyb21fc3lzY2FsbCsweDAvMHgzYwo+IC0tLSBFeGNl
-cHRpb246IGMwMSBhdCAweGZmNGZmOGMKPiAgICAgTFIgPSAweGZmZWQyYzAKPiBJbnN0cnVjdGlv
-biBkdW1wOgo+IDM5MjAwMDA4IDkxM2QwMzhjIDdmYTNlYjc4IDkzZGQwMDBjIDRiZmZlMzQ5IDdm
-ZTNmYjc4IDdmYTRlYjc4IDRiZmVlMmNkCj4gN2M2OTAwMzQgNTUyOWQ5N2UgN2M3ZTFiNzggNjky
-OTAwMDEgPDBmMDkwMDAwPiAyZjg5MDAwMCA3ZmEzZWI3OCA0MGRlMDBhMAo+IC0tLVsgZW5kIHRy
-YWNlIGM5ZGY0ODU5YWMxOTJiZTcgXS0tLQo+IGllZWU4MDIxMSBwaHkxOiBIYXJkd2FyZSByZXN0
-YXJ0IHdhcyByZXF1ZXN0ZWQKPiBTSU9DU0lGRkxBR1M6IENhbm5vdCBzZW5kIGFmdGVyIHRyYW5z
-cG9ydCBlbmRwb2ludCBzaHV0ZG93bgo+IAo+IFBsZWFzZSBoZWxwIG1lIHRvIHNldCBtb25pdG9y
-IG1vZGUgb24gV2lGaSBub2RlLgo+IAo+IERpc2NsYWltZXI6Cj4gCj4gLS0tLS0tLS0tLQo+IAo+
-IFRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRoIGl0IGFyZSBjb25maWRl
-bnRpYWwgYW5kIGludGVuZGVkIHNvbGVseSBmb3IKPiAKPiB0aGUgdXNlIG9mIHRoZSBpbmRpdmlk
-dWFsIG9yIGVudGl0eSB0byB3aG9tIHRoZXkgYXJlIGFkZHJlc3NlZC7CoCBJZiB5b3UgYXJlIG5v
-dCB0aGUKPiAKPiBpbnRlbmRlZCByZWNpcGllbnQgeW91IGFyZSBub3RpZmllZCB0aGF0IGRpc2Ns
-b3NpbmcsIGNvcHlpbmcsIGRpc3RyaWJ1dGluZyBvciB0YWtpbmcKPiAKPiBhbnkgYWN0aW9uIGlu
-IHJlbGlhbmNlIG9uIHRoZSBjb250ZW50cyBvZiB0aGlzIGluZm9ybWF0aW9uIGlzIHN0cmljdGx5
-IHByb2hpYml0ZWQuIFRoZQo+IAo+IHNlbmRlciBkb2VzIG5vdCBhY2NlcHQgbGlhYmlsaXR5IGZv
-ciBhbnkgZXJyb3JzIG9yIG9taXNzaW9ucyBpbiB0aGUgY29udGVudHMgb2YgdGhpcwo+IAo+IG1l
-c3NhZ2UsIHdoaWNoIGFyaXNlIGFzIGEgcmVzdWx0Cj4gLS0tLS0tLSBFbmQgb2YgRm9yd2FyZGVk
-IE1lc3NhZ2UgLS0tLS0tLQo+IAo+IAo+IFRoYW5rcyAmIFJlZ2FyZHMsCj4g4KSV4KS14KS/4KSk
-4KS+IOCkruCkvuCkpeClgeCksCBLYXZpdGEgTWF0aHVyIAo+IOCkteCksOCkv+Ckt+CljeCkoCDg
-pIXgpKjgpYHgpLjgpILgpKfgpL7gpKgg4KSF4KSt4KS/4KSv4KSC4KSk4KS+ICBTZW5pb3IgUmVz
-ZWFyY2ggRW5naW5lZXIgCj4g4KS44KWALeCkoeClieCknyAgICAgICAgICAgICAgICAgICAgICBD
-LURPVAo+IOCkh+CksuCliOCkleCljeCkn+CljeCksOClieCkqOCkv+CkleCljeCkuCDgpLjgpL/g
-pJ/gpYAg4KSr4KWH4KSc4KS8IEkgICAgICAgICBFbGVjdHJvbmljcyBDaXR5IFBoYXNlIEkKPiDg
-pLngpYvgpLjgpYLgpLAg4KSw4KWL4KShLCDgpKzgpYfgpILgpJfgpLLgpYLgpLDgpYEgICAgICAg
-ICAgICAgICBIb3N1ciBSb2FkLCBCZW5nYWx1cnUg4oCTIDU2MDEwMAo+IOCkq+Cli+CkqCAgUGgg
-MDgwLTI4NTI5ODk2Cj4gRGlzY2xhaW1lcjoKPiAtLS0tLS0tLS0tCj4gVGhpcyBlbWFpbCBhbmQg
-YW55IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGggaXQKPiAKPiAKPiBfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+hi,
+Could you please tell me from where can i get the sdio firmware for
+QCA6174A-3 v3.2. Do i need to raise a request through qualcomm
+createpoint for that?
+Please let me know
+Thanks & Regards
+Akesh M Chacko
+Cell : +91 9567084416| Skype: akesh.vvdn | mail : akesh.chacko@vvdntech.in
+
+
+On Thu, Feb 23, 2017 at 2:28 AM, Erik Stromdahl
+<erik.stromdahl@gmail.com> wrote:
+>
+>
+> On 2017-02-21 12:26, Akesh M Chacko wrote:
+>>
+>> hi,
+>> I'm following your patch for adding SDIO support for QCA6174. Is the
+>> firmware image for PCIe and SDIO interface are same?
+>> If they are different, from where can i find the firmware image for
+>> SDIO interface support in QCA6174A-3 v3.2.
+>>
+> The firmware is not the same for sdio. You will need to obtain the firmware
+> from the module vendor and convert it into ath10k format with
+> ath10k-fwencoder.
+>
+> You need the tool qca-swiss-army-knife for this:
+>
+> https://github.com/qca/qca-swiss-army-knife.git
+>
+> Below is a script I have used when generating fw for my QCA9377 board:
+>
+> ### START ###
+> #! /bin/bash
+>
+> ENCODER="./tools/scripts/ath10k/ath10k-fwencoder"
+>
+> API_VER=5
+> HTT_OP_VERSION="tlv"
+> WMI_OP_VERSION="tlv"
+> FW="silex-SX-SDCAC-2830-SP/qwlan30.bin"
+> OTP="silex-SX-SDCAC-2830-SP/otp30.bin"
+> FEATURES="ignore-otp-result"
+>
+> $ENCODER --create --otp=$OTP --firmware=$FW \
+> --set-wmi-op-version=$WMI_OP_VERSION \
+> --set-htt-op-version=$HTT_OP_VERSION \
+> --set-fw-api=$API_VER --features=$FEATURES
+>
+> mv firmware-5.bin silex-SX-SDCAC-2830-SP/firmware-sdio-5.bin
+> ### END ###
+>
+>
+>> Thanks & Regards
+>> Akesh M Chacko
+>>
+>>
+>> On Tue, Jan 31, 2017 at 5:04 PM, Akesh M Chacko
+>> <akesh.chacko@vvdntech.in> wrote:
+>>>
+>>> Thanks for sharing the patches,
+>>> Our custom board is under assembly stage, once we have the board, will
+>>> test it and let u know
+>>> Thanks & Regards
+>>> Akesh M Chacko
+>>> Cell : +91 9567084416| Skype: akesh.vvdn | mail :
+>>> akesh.chacko@vvdntech.in
+>>>
+>>>
+>>> On Mon, Jan 30, 2017 at 2:46 AM, Erik Stromdahl
+>>> <erik.stromdahl@gmail.com> wrote:
+>>>>
+>>>> If you are interested in trying the latest version of the sdio code
+>>>> you can clone the below repo:
+>>>>
+>>>> https://github.com/erstrom/linux-ath.git
+>>>>
+>>>> I have just pushed some updates for QCA9377 SDIO (that might work with
+>>>> QCA6174 chipsets as well).
+>>>>
+>>>> I will do some more testing of this code during the weeks to come.
+>>>>
+>>>> If you could try it out and give me feedback it would be great!
+>>>>
+>>>>
+>>>> On 2017-01-27 16:36, Valo, Kalle wrote:
+>>>>>
+>>>>>
+>>>>> Akesh M Chacko <akesh.chacko@vvdntech.in> writes:
+>>>>>
+>>>>>> We are using QCA6174 chip on our embedded platform using SDIO
+>>>>>> interface. could you please help us to get the SDIO support for
+>>>>>> QCA6174 driver.
+>>>>>
+>>>>>
+>>>>>
+>>>>> Erik Stromdahl is working on adding SDIO support to ath10k:
+>>>>>
+>>>>> https://patchwork.kernel.org/patch/9516477/
+>>>>>
+>>>>> But it's still WIP.
+>>>>>
+>>>>
+>
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
