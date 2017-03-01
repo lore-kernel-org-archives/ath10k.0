@@ -1,21 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ciprL-0001Zb-HQ
- for ath10k@lists.infradead.org; Tue, 28 Feb 2017 22:03:06 +0000
-Subject: Re: QCA9880 slow performance adhoc/IBSS mode
-References: <00d001d291e2$dfb7d950$9f278bf0$@rora.be>
- <ef864ddb-87e0-5eb6-e8f0-6d4e7af2decf@candelatech.com>
- <00f501d291e9$3921a740$ab64f5c0$@ugent.be>
- <ff2defd2-5a79-06c6-d92b-2f546b037125@candelatech.com>
- <00f801d291ec$c7621910$56264b30$@ugent.be>
- <67dc016b-7533-8984-bbae-5283d261ca2f@candelatech.com>
- <003c01d2920c$6df87cf0$49e976d0$@ugent.be>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <9ff987b6-cd79-76d8-79c1-d0366751a76f@candelatech.com>
-Date: Tue, 28 Feb 2017 14:02:39 -0800
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cis2N-0007sU-Us
+ for ath10k@lists.infradead.org; Wed, 01 Mar 2017 00:22:38 +0000
+From: "Hsu, Ryan" <ryanhsu@qca.qualcomm.com>
+Subject: Re: 4.9 Kernel panic on ACS and intermittent ability to host AP
+Date: Wed, 1 Mar 2017 00:22:12 +0000
+Message-ID: <4ef92b6e-bfc8-31aa-50e7-9b96d8446ec4@qca.qualcomm.com>
+References: <CALJ2kaEcr6EL5gHye4U-qABapGZ9C3R70NB0dZiSTEs0kqKaMA@mail.gmail.com>
+In-Reply-To: <CALJ2kaEcr6EL5gHye4U-qABapGZ9C3R70NB0dZiSTEs0kqKaMA@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <C23D04D6F33DC24A8F47F5F8747FCB4C@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <003c01d2920c$6df87cf0$49e976d0$@ugent.be>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,270 +20,137 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
-Cc: ath10k@lists.infradead.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I've pushed 475+Mbps on apu2 over wifi, maybe more.  That was AP mode, most=
- likely.
+On 02/27/2017 05:21 AM, Chris Price wrote:
+> I'm working with a QCA6174 chipset on a vanilla 4.9 kernel.
+>
+> I'm using the firmware from
+> https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git
 
-IBSS on ath10k cannot do AMSDU, so you loose a bit of performance there,
-but otherwise it should be pretty similar to AP/STA mode.  To verify, try
-running in AP/STA mode.
+Is this  a regression you saw and working with other kernel version but failed with 4.9?
 
-Thanks,
-Ben
+Can you give it a try with the latest firmware - https://github.com/kvalo/ath10k-firmware.git
 
-On 02/28/2017 01:48 PM, Ralph Houthoofdt wrote:
-> Dear Ben,
->
-> The speeds I'm reporting are UDP using these commands for the client:
-> Iperf3 -uVc <serverAddress> -b0 -w128k
-> Iperf3 -uRVc <serverAddress> -b0 -w128k
->
-> I will try relocating the nodes and try different antenna positions and
-> angles.
-> As you see it, this problem is purely because of the environment, not
-> because of the configuration or drivers?
->
-> I will let you know what the results of relocation are tomorrow. Thanks f=
-or
-> your help!
->
-> Kind regards,
-> Met vriendelijke groeten,
-> Ralph Houthoofdt
-> Student master industri=EBle wetenschappen: informatica
->
-> -----Original Message-----
-> From: Ben Greear [mailto:greearb@candelatech.com]
-> Sent: dinsdag 28 februari 2017 19:12
-> To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
-> Cc: ath10k@lists.infradead.org
-> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
->
-> You try UDP yet, or is this all TCP?
->
-> Also, with some better antenna positions and/or better other RF environme=
-nt,
-> you should see NSS of 3, hopefully MCS of 6 or higher.
->
-> On 02/28/2017 10:02 AM, Ralph Houthoofdt wrote:
->> Dear Ben,
->>
->> I ran the same test again, this time running the iperf3 server on my
->> laptop and the client on the node. I could indeed see CPU usage rise
->> to 40% on my laptop, the node stayed at roughly 10%. The speeds
->> remained roughly the same. 215Mbit one way, 40Mbit the other.
->>
->> As for the tx/rx rates I get these values:
->> tx bitrate:     234.0 MBit/s VHT-MCS 3 80MHz VHT-NSS 2
->> rx bitrate:     87.8 MBit/s VHT-MCS 2 80MHz VHT-NSS 1
->>
->> I set the 4 antennas facing different directions approximately at 135
->> degree angles relative to the device.
->
-> You try UDP yet, or is this all TCP?
->
-> Also, with some better antenna positions and/or better other RF environme=
-nt,
-> you should see NSS of 3, hopefully MCS of 6 or higher.
->
-> The 9880 has 3 antenna, so how did you get to 4?
->
-> Thanks,
-> Ben
->
->>
->> Thank you for your help so far. I will be leaving home for a few hours
->> and will be responding to any replies tomorrow morning.
->>
->> Met vriendelijke groeten,
->> Ralph Houthoofdt
->> Student industri=EBle wetenschappen informatica
->>
->> -----Original Message-----
->> From: Ben Greear [mailto:greearb@candelatech.com]
->> Sent: dinsdag 28 februari 2017 18:42
->> To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
->> Cc: ath10k@lists.infradead.org
->> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
->>
->> Try UDP to make sure you are not hitting a TCP issue.
->>
->> Try running iperf server on another laptop so that CPU of your nodes
->> is less important.
->>
->> Check the tx/rx encoding rates to make sure you are getting good RF
->> behaviour.  'iw ... station dump'
->>
->> Ensure antennas are not pointing all in the same direction so that you
->> can get some diversity working.
->>
->> Thanks,
->> Ben
->>
->> On 02/28/2017 09:36 AM, Ralph Houthoofdt wrote:
->>> Dear Ben,
->>>
->>> Thank you for your quick reply.
->>>
->>> My mesh is running on channel 36  using VHT80 and a TX power of 20
->>> dbm, the maximum allowed according to my regulatory settings from iw
->>> reg get. The hwmode is set as 11a.
->>> I have also enable the following ht_capabilities on my radio in
->>> /etc/config/wireless:
->>>
->>>         list ht_capab 'short_gi_80'
->>>         list ht_capab 'max-mpdu-11454'
->>>         list ht_capab 'TX-STBC-2BY1'
->>>         list ht_capab 'RX-STBC1'
->>>         list ht_capab 'RX-ANTENNA-PATTERN'
->>>         list ht_capab 'TX-ANTENNA-PATTERN'
->>>         list ht_capab 'MAX-A-MPDU-LEN-EXP7'
->>>
->>> I just finished running iperf3 from my laptop (2nd gen Core i7) to
->>> one of my nodes. The results were indeed a bit different.
->>> Iperf server was running on my node and my laptop was the client.
->>> UDP:
->>> Normal: average result of 221Mbit, which is pretty normal I think.
->>> Reverse: average result of 41Mbit, which is better than the average
->>> 20Mbit I got when running iperf3 using 2 nodes.
->>> TCP:
->>> Normal: average result of 49Mbit
->>> Reverse: average result of 35.4Mbit
->>>
->>> In terms of congestion, I'm not sure what you mean, but I'm in a low
->>> populated area with few wireless access points. I disabled all my
->>> 5GHz devices except for the mesh nodes. InSSIDer only shows my nodes
->>> in the 5GHz range.
->>>
->>> Is there anything else I could try for you?
->>>
->>> Met vriendelijke groeten,
->>> Ralph Houthoofdt
->>> Student industri=EBle wetenschappen informatica
->>>
->>> -----Original Message-----
->>> From: ath10k [mailto:ath10k-bounces@lists.infradead.org] On Behalf Of
->>> Ben Greear
->>> Sent: dinsdag 28 februari 2017 17:56
->>> To: Ralph Houthoofdt <ralph@rora.be>; ath10k@lists.infradead.org
->>> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
->>>
->>> Run iperf on a separate machine, as the apu2 have too weak of a CPU
->>> to drive the wifi network at full speed.  And, publish what results
->>> you do get, including RF information such as channel and how
->>> congested is your test area.  Try udp as well as tcp.
->>>
->>> Thanks,
->>> Ben
->>>
->>> On 02/28/2017 08:51 AM, Ralph Houthoofdt wrote:
->>>> Dear all,
->>>>
->>>> I=92m currently doing me masters thesis on the subject of Wireless
->>>> Mesh Networks and how to optimize them for home use.
->>>> The devices I use are 5x PC Engine APU2c4 with 2x QCA9880 chip
->>>> (Compex WLE900VX). All of them are running LEDE (OpenWRT fork).
->>>>
->>>> The problem I=92m experiencing is the same as
->>>> http://lists.infradead.org/pipermail/ath10k/2017-January/009075.html .
->>>> Using the tips mentioned I did not come to a better performance. I=92m
->>>> thinking it=92s driver related..
->>>> When running iperf3 only one direction is running at a reasonable
->>>> throughput. Since I am using adhoc mode primarily I decided to use
->>>> these
->>>> packages:
->>>> -	Kmod-ath10k-ct
->>>> -	Ath10k-firmware-qca988x-ct
->>>> Some sources on the internet said that using the Candela Tech
->>>> drivers should result in better support for adhoc/mesh networks.
->>>>
->>>> As suggested in the other issue linked above, I switched TCP
->>>> congestion control to =91Reno=92 instead of the default =91Cubic=92.
->>>> I also did try the command =93iw reg set BE=94 since I am from Belgium,
->>>> but running =93iw reg get=94 right after still gave me US as a result.
->>>>
->>>> Let me know what additional command info I should post. Any help
->>>> would be greatly appreciated.
->>>>
->>>> Iwconfig:
->>>> adhoc0    IEEE 802.11  ESSID:"mesh"
->>>>           Mode:Ad-Hoc  Frequency:5.18 GHz  Cell: 02:CA:FE:CA:CA:40
->>>>           Tx-Power=3D20 dBm
->>>>           RTS thr:off   Fragment thr:off
->>>>           Encryption key:off
->>>>           Power Management:off
->>>>
->>>>
->>>> Iw reg get (I=92m from Belgium):
->>>> global
->>>> country BE: DFS-ETSI
->>>>         (2402 - 2482 @ 40), (N/A, 20), (N/A)
->>>>         (5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
->>>>         (5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
->>>>         (5490 - 5710 @ 160), (N/A, 27), (0 ms), DFS
->>>>         (57000 - 66000 @ 2160), (N/A, 40), (N/A)
->>>>
->>>> phy#1
->>>> country US: DFS-FCC
->>>>         (2402 - 2472 @ 40), (N/A, 30), (N/A)
->>>>         (5170 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
->>>>         (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
->>>>         (5490 - 5730 @ 160), (N/A, 23), (0 ms), DFS
->>>>         (5735 - 5835 @ 80), (N/A, 30), (N/A)
->>>>         (57240 - 63720 @ 2160), (N/A, 40), (N/A)
->>>>
->>>> phy#0
->>>> country US: DFS-FCC
->>>>         (2402 - 2472 @ 40), (N/A, 30), (N/A)
->>>>         (5170 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
->>>>         (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
->>>>         (5490 - 5730 @ 160), (N/A, 23), (0 ms), DFS
->>>>         (5735 - 5835 @ 80), (N/A, 30), (N/A)
->>>>         (57240 - 63720 @ 2160), (N/A, 40), (N/A)
->>>>
->>>>
->>>> Kind regards,
->>>> Met vriendelijke groeten,
->>>> Ralph Houthoofdt
->>>> Student industri=EBle wetenschappen informatica
->>>>
->>>>
->>>> _______________________________________________
->>>> ath10k mailing list
->>>> ath10k@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>>
->>>
->>> --
->>> Ben Greear <greearb@candelatech.com>
->>> Candela Technologies Inc  http://www.candelatech.com
->>>
->>> _______________________________________________
->>> ath10k mailing list
->>> ath10k@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>
->>
->> --
->> Ben Greear <greearb@candelatech.com>
->> Candela Technologies Inc  http://www.candelatech.com
->>
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
+cp ath10k-firmware/QCA6174/hw3.0/4.4/firmware-5.bin_WLAN.RM.4.4-00022-QCARMSWPZ-2 /lib/firmware/ath10k/QCA6174/hw3.0/firmware-5.bin
 
--- =
 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+> The card presents as follows:
+> root@debian:~# lspci -v
+> 02:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac Wireless
+> Network Adapter (rev 32)
+> Subsystem: AzureWave QCA6174 802.11ac Wireless Network Adapter
+> Flags: bus master, fast devsel, latency 0, IRQ 324
+> Memory at df000000 (64-bit, non-prefetchable) [size=2M]
+> Capabilities: [40] Power Management version 3
+> Capabilities: [50] MSI: Enable+ Count=1/8 Maskable+ 64bit-
+> Capabilities: [70] Express Endpoint, MSI 00
+> Capabilities: [100] Advanced Error Reporting
+> Capabilities: [148] Virtual Channel
+> Capabilities: [168] Device Serial Number 00-00-00-00-00-00-00-00
+> Capabilities: [178] Latency Tolerance Reporting
+> Capabilities: [180] L1 PM Substates
+> Kernel driver in use: ath10k_pci
+> Kernel modules: ath10k_pci
+>
+> I wish to host a 5GHz AP. My hostapd.conf file is as follows.
+> root@debian:~# cat /etc/hostapd/hostapd1.conf
+> interface=ap1
+> driver=nl80211
+> hw_mode=a
+> channel=0
+> ieee80211d=1
+> country_code=CA
+> ieee80211ac=1
+> ssid=test5
+> auth_algs=1
+> wpa=2
+> wpa_key_mgmt=WPA-PSK
+> rsn_pairwise=CCMP
+> wpa_passphrase=testtest
+>
+> When I try to start the AP, I either get the following output, or a
+> kernel panic.
+> root@debian:~# hostapd /etc/hostapd/hostapd1.conf
+> Configuration file: /etc/hostapd/hostapd1.conf
+> ap1: interface state UNINITIALIZED->COUNTRY_UPDATE
+> ACS: Automatic channel selection started, this may take a bit
+> ap1: interface state COUNTRY_UPDATE->ACS
+> ap1: ACS-STARTED
+> ACS: Unable to collect survey data
+> ACS: All study options have failed
+
+It seems like the scan result is empty? I tried my device without antenna that I could see the same error.
+But with good RX reception, I could see that the ACS is always working on my 4.10 setup.
+
+Can you give it a try if you just do the STA interface and scan?
+
+Configuration file: /etc/acs_hostapd.conf
+ACS: Automatic channel selection started, this may take a bit
+wlan0: interface state UNINITIALIZED->ACS
+wlan0: ACS-STARTED
+wlan0: ACS-COMPLETED freq=5220 channel=44
+Using interface wlan0 with hwaddr 00:03:7f:91:56:96 and ssid "test-ath10k"
+wlan0: interface state ACS->ENABLED
+wlan0: AP-ENABLED
+
+hostapd_free_hapd_data: Interface wlan0 wasn't started
+nl80211: deinit ifname=wlan0 disabled_11b_rates=0
+wlan0: interface state DISABLED->DISABLED
+wlan0: interface state DISABLED->DISABLED
+wlan0: AP-DISABLED
+hostapd_free_hapd_data: Interface wlan0 wasn't started
+
+> Interface initialization failed
+> ap1: interface state ACS->DISABLED
+> ap1: AP-DISABLED
+> ACS: Possibly channel configuration is invalid, please report this
+> along with your config file.
+> ACS: Failed to start
+> ap1: AP-DISABLED
+> hostapd_free_hapd_data: Interface ap1 wasn't started
+> nl80211: deinit ifname=ap1 disabled_11b_rates=0
+> ap1: interface state DISABLED->DISABLED
+> ap1: interface state DISABLED->DISABLED
+> ap1: AP-DISABLED
+> hostapd_free_hapd_data: Interface ap1 wasn't started
+>
+> Here (http://pasteboard.co/DnVQHOycK.jpg) is a picture of the panic I
+> get otherwise.
+>
+> I am occasionally able to start an access point if I pin the channel
+> to 36. Otherwise, I get the following.
+
+What is the other channel you failed? what is the output of the "iw reg get" show?
+Can you share the kernel log as well?
+
+> root@debian:~# hostapd /etc/hostapd/hostapd1.conf
+> Configuration file: /etc/hostapd/hostapd1.conf
+> ap1: interface state UNINITIALIZED->COUNTRY_UPDATE
+> ap1: IEEE 802.11 Configured channel (36) not found from the channel
+> list of current mode (2) IEEE 802.11a
+> ap1: IEEE 802.11 Hardware does not support configured channel
+> Could not select hw_mode and channel. (-3)
+> ap1: interface state COUNTRY_UPDATE->DISABLED
+> ap1: AP-DISABLED
+> ap1: interface state DISABLED->DISABLED
+> ap1: AP-DISABLED
+> hostapd_free_hapd_data: Interface ap1 wasn't started
+> nl80211: deinit ifname=ap1 disabled_11b_rates=0
+>
+> This latter problem, I suspect, is somehow related to interface
+> combinations, because I have never seen the card work when I create
+> multiple interfaces.
+
+Is the other card also run with ath10k? what is the combination you've?
+Are you running multiple hostapd or wpa_supplicant instance?
+
+
+Ryan
 
 _______________________________________________
 ath10k mailing list
