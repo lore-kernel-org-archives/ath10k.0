@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cj5aO-0004gx-9r
- for ath10k@lists.infradead.org; Wed, 01 Mar 2017 14:50:41 +0000
-Subject: Re: QCA9880 slow performance adhoc/IBSS mode
-References: <00d001d291e2$dfb7d950$9f278bf0$@rora.be>
- <ef864ddb-87e0-5eb6-e8f0-6d4e7af2decf@candelatech.com>
- <00f501d291e9$3921a740$ab64f5c0$@ugent.be>
- <ff2defd2-5a79-06c6-d92b-2f546b037125@candelatech.com>
- <00f801d291ec$c7621910$56264b30$@ugent.be>
- <67dc016b-7533-8984-bbae-5283d261ca2f@candelatech.com>
- <003c01d2920c$6df87cf0$49e976d0$@ugent.be>
- <9ff987b6-cd79-76d8-79c1-d0366751a76f@candelatech.com>
- <001a01d29264$c86d0ae0$594720a0$@ugent.be>
+ id 1cjF2v-0006aX-5D
+ for ath10k@lists.infradead.org; Thu, 02 Mar 2017 00:56:42 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 37B1240A5ED
+ for <ath10k@lists.infradead.org>; Wed,  1 Mar 2017 16:56:19 -0800 (PST)
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <8f4d9fef-186a-3771-2340-d7bc4956c846@candelatech.com>
-Date: Wed, 1 Mar 2017 06:50:13 -0800
+Subject: ath10k bug in station mode with regard to TX-BEAMFORMER?
+Message-ID: <8f2382ad-4778-f32d-762c-09c543e93afd@candelatech.com>
+Date: Wed, 1 Mar 2017 16:56:18 -0800
 MIME-Version: 1.0
-In-Reply-To: <001a01d29264$c86d0ae0$594720a0$@ugent.be>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,317 +21,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
-Cc: ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
+I have a user with an AP that advertises itself as a MU-BEAMFORMEE (and not MU-BEAMFORMER).
+My station firmware on 9984 is crashing because it tries to set up MU-MIMO tx logic as
+best as I can figure.
 
+Does the patch below look like a good idea?
 
-On 03/01/2017 12:21 AM, Ralph Houthoofdt wrote:
-> Dear Ben,
->
-> Indeed, if I try AP/STA mode I get better bitrates and speeds (this is wi=
-th
-> VHT40)
-> RX: 400.0 Mbit/s, 40MHz, VHT-MCS 9, VHT-NSS 2, Short GI
-> TX: 300.0 Mbit/s, 40MHz, VHT-MCS 7, VHT-NSS 2, Short GI
->
-> I only have 4 antennas installed on my APUs, so I'm only using 2 spatial
-> streams max.
-> These speeds seem ok.
->
-> It just seems strange that on adhoc I only get either RX or TX to have go=
-od
-> rates.
->
-> Thanks for your help!
+If so, I'll do it up official.  Unfortunately, I don't have a good way to
+test this locally, so this is just based on my vague understanding of this
+feature...
 
-If you have only two antenna connected, make sure it is chain 0 and 1,
-and then use 'iw' to set the tx chain mask to 0x3.  That way, the NIC will
-not waste time trying to use the 3-NSS rates.
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 219daaee..5aefc8a 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5372,6 +5372,7 @@ static int ath10k_mac_set_txbf_conf(struct ath10k_vif *arvif)
+  {
+         u32 value = 0;
+         struct ath10k *ar = arvif->ar;
++       struct ieee80211_vif *vif = arvif->vif;
+         int nsts;
+         int sound_dim;
 
-Maybe too running at VHT40 helps somehow?
+@@ -5391,17 +5392,21 @@ static int ath10k_mac_set_txbf_conf(struct ath10k_vif *arvif)
+         if (!value)
+                 return 0;
+
+-       if (ar->vht_cap_info & IEEE80211_VHT_CAP_SU_BEAMFORMER_CAPABLE)
++       if ((ar->vht_cap_info & IEEE80211_VHT_CAP_SU_BEAMFORMER_CAPABLE) &&
++           (vif->type != NL80211_IFTYPE_STATION))
+                 value |= WMI_VDEV_PARAM_TXBF_SU_TX_BFER;
+
+-       if (ar->vht_cap_info & IEEE80211_VHT_CAP_MU_BEAMFORMER_CAPABLE)
++       if ((ar->vht_cap_info & IEEE80211_VHT_CAP_MU_BEAMFORMER_CAPABLE) &&
++           (vif->type != NL80211_IFTYPE_STATION))
+                 value |= (WMI_VDEV_PARAM_TXBF_MU_TX_BFER |
+                           WMI_VDEV_PARAM_TXBF_SU_TX_BFER);
+
+-       if (ar->vht_cap_info & IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE)
++       if ((ar->vht_cap_info & IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE) &&
++           (vif->type == NL80211_IFTYPE_STATION))
+                 value |= WMI_VDEV_PARAM_TXBF_SU_TX_BFEE;
+
+-       if (ar->vht_cap_info & IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE)
++       if ((ar->vht_cap_info & IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE) &&
++               (vif->type == NL80211_IFTYPE_STATION))
+                 value |= (WMI_VDEV_PARAM_TXBF_MU_TX_BFEE |
+                           WMI_VDEV_PARAM_TXBF_SU_TX_BFEE);
+
 
 Thanks,
 Ben
 
->
-> Met vriendelijke groeten,
-> Ralph Houthoofdt
-> Student industri=EBle wetenschappen informatica
->
-> -----Original Message-----
-> From: Ben Greear [mailto:greearb@candelatech.com]
-> Sent: dinsdag 28 februari 2017 23:03
-> To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
-> Cc: ath10k@lists.infradead.org
-> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
->
-> I've pushed 475+Mbps on apu2 over wifi, maybe more.  That was AP mode, mo=
-st
-> likely.
->
-> IBSS on ath10k cannot do AMSDU, so you loose a bit of performance there, =
-but
-> otherwise it should be pretty similar to AP/STA mode.  To verify, try
-> running in AP/STA mode.
->
-> Thanks,
-> Ben
->
-> On 02/28/2017 01:48 PM, Ralph Houthoofdt wrote:
->> Dear Ben,
->>
->> The speeds I'm reporting are UDP using these commands for the client:
->> Iperf3 -uVc <serverAddress> -b0 -w128k
->> Iperf3 -uRVc <serverAddress> -b0 -w128k
->>
->> I will try relocating the nodes and try different antenna positions
->> and angles.
->> As you see it, this problem is purely because of the environment, not
->> because of the configuration or drivers?
->>
->> I will let you know what the results of relocation are tomorrow.
->> Thanks for your help!
->>
->> Kind regards,
->> Met vriendelijke groeten,
->> Ralph Houthoofdt
->> Student master industri=EBle wetenschappen: informatica
->>
->> -----Original Message-----
->> From: Ben Greear [mailto:greearb@candelatech.com]
->> Sent: dinsdag 28 februari 2017 19:12
->> To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
->> Cc: ath10k@lists.infradead.org
->> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
->>
->> You try UDP yet, or is this all TCP?
->>
->> Also, with some better antenna positions and/or better other RF
->> environment, you should see NSS of 3, hopefully MCS of 6 or higher.
->>
->> On 02/28/2017 10:02 AM, Ralph Houthoofdt wrote:
->>> Dear Ben,
->>>
->>> I ran the same test again, this time running the iperf3 server on my
->>> laptop and the client on the node. I could indeed see CPU usage rise
->>> to 40% on my laptop, the node stayed at roughly 10%. The speeds
->>> remained roughly the same. 215Mbit one way, 40Mbit the other.
->>>
->>> As for the tx/rx rates I get these values:
->>> tx bitrate:     234.0 MBit/s VHT-MCS 3 80MHz VHT-NSS 2
->>> rx bitrate:     87.8 MBit/s VHT-MCS 2 80MHz VHT-NSS 1
->>>
->>> I set the 4 antennas facing different directions approximately at 135
->>> degree angles relative to the device.
->>
->> You try UDP yet, or is this all TCP?
->>
->> Also, with some better antenna positions and/or better other RF
->> environment, you should see NSS of 3, hopefully MCS of 6 or higher.
->>
->> The 9880 has 3 antenna, so how did you get to 4?
->>
->> Thanks,
->> Ben
->>
->>>
->>> Thank you for your help so far. I will be leaving home for a few
->>> hours and will be responding to any replies tomorrow morning.
->>>
->>> Met vriendelijke groeten,
->>> Ralph Houthoofdt
->>> Student industri=EBle wetenschappen informatica
->>>
->>> -----Original Message-----
->>> From: Ben Greear [mailto:greearb@candelatech.com]
->>> Sent: dinsdag 28 februari 2017 18:42
->>> To: Ralph Houthoofdt <ralph.houthoofdt@ugent.be>
->>> Cc: ath10k@lists.infradead.org
->>> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
->>>
->>> Try UDP to make sure you are not hitting a TCP issue.
->>>
->>> Try running iperf server on another laptop so that CPU of your nodes
->>> is less important.
->>>
->>> Check the tx/rx encoding rates to make sure you are getting good RF
->>> behaviour.  'iw ... station dump'
->>>
->>> Ensure antennas are not pointing all in the same direction so that
->>> you can get some diversity working.
->>>
->>> Thanks,
->>> Ben
->>>
->>> On 02/28/2017 09:36 AM, Ralph Houthoofdt wrote:
->>>> Dear Ben,
->>>>
->>>> Thank you for your quick reply.
->>>>
->>>> My mesh is running on channel 36  using VHT80 and a TX power of 20
->>>> dbm, the maximum allowed according to my regulatory settings from iw
->>>> reg get. The hwmode is set as 11a.
->>>> I have also enable the following ht_capabilities on my radio in
->>>> /etc/config/wireless:
->>>>
->>>>         list ht_capab 'short_gi_80'
->>>>         list ht_capab 'max-mpdu-11454'
->>>>         list ht_capab 'TX-STBC-2BY1'
->>>>         list ht_capab 'RX-STBC1'
->>>>         list ht_capab 'RX-ANTENNA-PATTERN'
->>>>         list ht_capab 'TX-ANTENNA-PATTERN'
->>>>         list ht_capab 'MAX-A-MPDU-LEN-EXP7'
->>>>
->>>> I just finished running iperf3 from my laptop (2nd gen Core i7) to
->>>> one of my nodes. The results were indeed a bit different.
->>>> Iperf server was running on my node and my laptop was the client.
->>>> UDP:
->>>> Normal: average result of 221Mbit, which is pretty normal I think.
->>>> Reverse: average result of 41Mbit, which is better than the average
->>>> 20Mbit I got when running iperf3 using 2 nodes.
->>>> TCP:
->>>> Normal: average result of 49Mbit
->>>> Reverse: average result of 35.4Mbit
->>>>
->>>> In terms of congestion, I'm not sure what you mean, but I'm in a low
->>>> populated area with few wireless access points. I disabled all my
->>>> 5GHz devices except for the mesh nodes. InSSIDer only shows my nodes
->>>> in the 5GHz range.
->>>>
->>>> Is there anything else I could try for you?
->>>>
->>>> Met vriendelijke groeten,
->>>> Ralph Houthoofdt
->>>> Student industri=EBle wetenschappen informatica
->>>>
->>>> -----Original Message-----
->>>> From: ath10k [mailto:ath10k-bounces@lists.infradead.org] On Behalf
->>>> Of Ben Greear
->>>> Sent: dinsdag 28 februari 2017 17:56
->>>> To: Ralph Houthoofdt <ralph@rora.be>; ath10k@lists.infradead.org
->>>> Subject: Re: QCA9880 slow performance adhoc/IBSS mode
->>>>
->>>> Run iperf on a separate machine, as the apu2 have too weak of a CPU
->>>> to drive the wifi network at full speed.  And, publish what results
->>>> you do get, including RF information such as channel and how
->>>> congested is your test area.  Try udp as well as tcp.
->>>>
->>>> Thanks,
->>>> Ben
->>>>
->>>> On 02/28/2017 08:51 AM, Ralph Houthoofdt wrote:
->>>>> Dear all,
->>>>>
->>>>> I=92m currently doing me masters thesis on the subject of Wireless
->>>>> Mesh Networks and how to optimize them for home use.
->>>>> The devices I use are 5x PC Engine APU2c4 with 2x QCA9880 chip
->>>>> (Compex WLE900VX). All of them are running LEDE (OpenWRT fork).
->>>>>
->>>>> The problem I=92m experiencing is the same as
->>>>> http://lists.infradead.org/pipermail/ath10k/2017-January/009075.html .
->>>>> Using the tips mentioned I did not come to a better performance.
->>>>> I=92m thinking it=92s driver related..
->>>>> When running iperf3 only one direction is running at a reasonable
->>>>> throughput. Since I am using adhoc mode primarily I decided to use
->>>>> these
->>>>> packages:
->>>>> -	Kmod-ath10k-ct
->>>>> -	Ath10k-firmware-qca988x-ct
->>>>> Some sources on the internet said that using the Candela Tech
->>>>> drivers should result in better support for adhoc/mesh networks.
->>>>>
->>>>> As suggested in the other issue linked above, I switched TCP
->>>>> congestion control to =91Reno=92 instead of the default =91Cubic=92.
->>>>> I also did try the command =93iw reg set BE=94 since I am from Belgiu=
-m,
->>>>> but running =93iw reg get=94 right after still gave me US as a result.
->>>>>
->>>>> Let me know what additional command info I should post. Any help
->>>>> would be greatly appreciated.
->>>>>
->>>>> Iwconfig:
->>>>> adhoc0    IEEE 802.11  ESSID:"mesh"
->>>>>           Mode:Ad-Hoc  Frequency:5.18 GHz  Cell: 02:CA:FE:CA:CA:40
->>>>>           Tx-Power=3D20 dBm
->>>>>           RTS thr:off   Fragment thr:off
->>>>>           Encryption key:off
->>>>>           Power Management:off
->>>>>
->>>>>
->>>>> Iw reg get (I=92m from Belgium):
->>>>> global
->>>>> country BE: DFS-ETSI
->>>>>         (2402 - 2482 @ 40), (N/A, 20), (N/A)
->>>>>         (5170 - 5250 @ 80), (N/A, 20), (N/A), AUTO-BW
->>>>>         (5250 - 5330 @ 80), (N/A, 20), (0 ms), DFS, AUTO-BW
->>>>>         (5490 - 5710 @ 160), (N/A, 27), (0 ms), DFS
->>>>>         (57000 - 66000 @ 2160), (N/A, 40), (N/A)
->>>>>
->>>>> phy#1
->>>>> country US: DFS-FCC
->>>>>         (2402 - 2472 @ 40), (N/A, 30), (N/A)
->>>>>         (5170 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
->>>>>         (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
->>>>>         (5490 - 5730 @ 160), (N/A, 23), (0 ms), DFS
->>>>>         (5735 - 5835 @ 80), (N/A, 30), (N/A)
->>>>>         (57240 - 63720 @ 2160), (N/A, 40), (N/A)
->>>>>
->>>>> phy#0
->>>>> country US: DFS-FCC
->>>>>         (2402 - 2472 @ 40), (N/A, 30), (N/A)
->>>>>         (5170 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
->>>>>         (5250 - 5330 @ 80), (N/A, 23), (0 ms), DFS, AUTO-BW
->>>>>         (5490 - 5730 @ 160), (N/A, 23), (0 ms), DFS
->>>>>         (5735 - 5835 @ 80), (N/A, 30), (N/A)
->>>>>         (57240 - 63720 @ 2160), (N/A, 40), (N/A)
->>>>>
->>>>>
->>>>> Kind regards,
->>>>> Met vriendelijke groeten,
->>>>> Ralph Houthoofdt
->>>>> Student industri=EBle wetenschappen informatica
->>>>>
->>>>>
->>>>> _______________________________________________
->>>>> ath10k mailing list
->>>>> ath10k@lists.infradead.org
->>>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>>>
->>>>
->>>> --
->>>> Ben Greear <greearb@candelatech.com> Candela Technologies Inc
->>>> http://www.candelatech.com
->>>>
->>>> _______________________________________________
->>>> ath10k mailing list
->>>> ath10k@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>>
->>>
->>> --
->>> Ben Greear <greearb@candelatech.com>
->>> Candela Technologies Inc  http://www.candelatech.com
->>>
->>
->> --
->> Ben Greear <greearb@candelatech.com>
->> Candela Technologies Inc  http://www.candelatech.com
->>
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
-
--- =
-
+-- 
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
