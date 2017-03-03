@@ -1,9 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cjhwS-00054m-TC
- for ath10k@lists.infradead.org; Fri, 03 Mar 2017 07:48:00 +0000
+ id 1cjhy9-0005KT-Ma
+ for ath10k@lists.infradead.org; Fri, 03 Mar 2017 07:49:43 +0000
+Received: by mail-wm0-x22b.google.com with SMTP id t193so8796706wmt.1
+ for <ath10k@lists.infradead.org>; Thu, 02 Mar 2017 23:49:21 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <818d8160-f0a2-723d-fe1d-518ae79f7d1c@dd-wrt.com>
 References: <8f2382ad-4778-f32d-762c-09c543e93afd@candelatech.com>
  <5753f0bb-be72-c64c-2eb4-7a4ac27894b9@dd-wrt.com>
  <96573cb0-9154-0687-0890-945597002108@candelatech.com>
@@ -11,11 +14,10 @@ References: <8f2382ad-4778-f32d-762c-09c543e93afd@candelatech.com>
  <CAJ-VmomO8jpfnDpm30vJNv-pbRmQvNHjQsNAEVv7E+fz1WVkvw@mail.gmail.com>
  <2d0b3ee6-5f23-079b-7c07-a25f69b392b2@dd-wrt.com>
  <CAJ-VmomhM_o7Jz5yw4gfOFHiXrKa-jFL9hk06F7MzMLvZnHUgQ@mail.gmail.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <818d8160-f0a2-723d-fe1d-518ae79f7d1c@dd-wrt.com>
-Date: Fri, 3 Mar 2017 08:47:30 +0100
-MIME-Version: 1.0
-In-Reply-To: <CAJ-VmomhM_o7Jz5yw4gfOFHiXrKa-jFL9hk06F7MzMLvZnHUgQ@mail.gmail.com>
+ <818d8160-f0a2-723d-fe1d-518ae79f7d1c@dd-wrt.com>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Thu, 2 Mar 2017 23:49:19 -0800
+Message-ID: <CAJ-Vmom0HMZh2RMdvrPPQvY0hOGaVjbLX7Zi6Cxkvwx9bQko+Q@mail.gmail.com>
 Subject: Re: ath10k bug in station mode with regard to TX-BEAMFORMER?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,43 +27,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-QW0gMDMuMDMuMjAxNyB1bSAwMToyMiBzY2hyaWViIEFkcmlhbiBDaGFkZDoKPiBPbiAyIE1hcmNo
-IDIwMTcgYXQgMTY6MDgsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0
-LmNvbT4gd3JvdGU6Cj4+IEFtIDAzLjAzLjIwMTcgdW0gMDA6MzAgc2NocmllYiBBZHJpYW4gQ2hh
-ZGQ6Cj4+PiBPbiAyIE1hcmNoIDIwMTcgYXQgMTQ6NTMsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxz
-LmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4KPj4+IHdyb3RlOgo+Pj4KPj4+Pj4gRGlkIHlvdSBwYXRj
-aCBzdXBwbGljYW50PyAgSWYgc28sIGNhbiB5b3UgcG9pbnQgbWUgdG8gdGhlIGNoYW5nZShzKSB5
-b3UKPj4+Pj4gbWFkZT8KPj4+PiBub3BlLiBpIGp1c3QgdXNlZCBpdHMgZmVhdHVyZXMuIHRoZXJl
-IGlzIGEgY29uZmlnIGVudHJ5IG5hbWVkICJ2aHRfY2FwYSIKPj4+PiBhbmQKPj4+PiAidmh0X2Nh
-cGFfbWFzayIgd2hpY2ggYWxsb3dzIHRvIG1hc2sgb3V0IC8gaW4gdmh0IGNhcGFiaWxpdGllcwo+
-Pj4gUklnaHQsIGJ1dCB5b3UganVzdCBkaXNhYmxlZCB0aGUgY2FwYWJpbGl0aWVzIGVudGlyZWx5
-LCByaWdodD8gVGhhdAo+Pj4gZGlkbid0IGZpeCBuZWdvdGlhdGlvbj8KPj4gdGhlcmUgd2FzbnQg
-YSBwcm9ibGVtIHdpdGggbmVnb3RpYXRpb24uICB0aGVyZSB3YXMgYSBwcm9ibGVtIHdpdGggZmly
-bXdhcmUKPj4gY3Jhc2hlcyBhbmQgeWVzIGkgZGlzYWJsZWQgdGhlIGNyYXNoIGNhdXNlIGluIHRo
-YXQgd2F5Cj4gV2VsbCwgdGhlIGNyYXNoIGlzIGEgYmFkIGNhc2Ugb2YgIkkgc2hvdWxkbid0IGhh
-bmRsZSBhIGJyb2tlbiBBUCBieSBjcmFzaGluZy4iCj4KPiBCdXQgYW4gQVAgc2hvdWxkbid0IGJl
-IHNheWluZyAibXUtYmVhbWZvcm1lZSIgYWNjb3JkaW5nIHRvIHRoZQo+IHN0YW5kYXJkLCBidXQg
-bXUtYmVhbWZvcm1lci4gKG9yIHRoZSBvdGhlciB3YXkgYXJvdW5kLCBJIGZvcmdldCAtIGJ1dAo+
-IHdoYXRldmVyIEJlbiBzaG93ZWQgbWUsIGl0IHdhcyBjZXJ0YWlubHkgYW5ub3VuY2luZyB0aGUg
-L29wcG9zaXRlLyBvZgo+IHdoYXQgaXQgc2hvdWxkIGJlIGRvaW5nLikKZ29vZCB0byBrbm93LiB0
-aGVuIHRoZSBjYXVzZSBmb3IgdGhhdCBpc3N1ZSBtaWdodCBiZSBhbHNvIHRoZSBob3N0YXBkIApj
-b25maWcgc2luY2Ugb3BlbndydCBhcyB3ZWxsIGFzIG15IGRkLXdydCBkb2VzIGluY2x1ZGUgYWxs
-IHZodCBjYXBhYmlsaXRpZXMKaW4gaG9zdGFwZC5jb25mIHdoaWNoIGFyZSByZXBvcnRlZCBieSB0
-aGUgZHJpdmVyLiBub3cgb25lIHF1ZXN0aW9uLiB3aHkgCmRvZXMgaG9zdGFwZCBhbGxvdyB0byBz
-ZXQgTVUtQkVBTUZPUk1FRSBzaW5jZSBpdHMgYSBhcCBhdXRoZW50aWNhdG9yPwo+Cj4KPgo+IC1h
-ZHJpYW4KPgoKCi0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0
-aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNp
-dHo6ICBCZXJsaW5lciBSaW5nIDEwMSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBB
-bXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIg
-U3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1h
-aWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiAr
-NDk2MjUxLTU4MjY1NjUKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On 2 March 2017 at 23:47, Sebastian Gottschall <s.gottschall@dd-wrt.com> wrote:
+> Am 03.03.2017 um 01:22 schrieb Adrian Chadd:
+>>
+>> On 2 March 2017 at 16:08, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+>> wrote:
+>>>
+>>> Am 03.03.2017 um 00:30 schrieb Adrian Chadd:
+>>>>
+>>>> On 2 March 2017 at 14:53, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+>>>> wrote:
+>>>>
+>>>>>> Did you patch supplicant?  If so, can you point me to the change(s)
+>>>>>> you
+>>>>>> made?
+>>>>>
+>>>>> nope. i just used its features. there is a config entry named
+>>>>> "vht_capa"
+>>>>> and
+>>>>> "vht_capa_mask" which allows to mask out / in vht capabilities
+>>>>
+>>>> RIght, but you just disabled the capabilities entirely, right? That
+>>>> didn't fix negotiation?
+>>>
+>>> there wasnt a problem with negotiation.  there was a problem with
+>>> firmware
+>>> crashes and yes i disabled the crash cause in that way
+>>
+>> Well, the crash is a bad case of "I shouldn't handle a broken AP by
+>> crashing."
+>>
+>> But an AP shouldn't be saying "mu-beamformee" according to the
+>> standard, but mu-beamformer. (or the other way around, I forget - but
+>> whatever Ben showed me, it was certainly announcing the /opposite/ of
+>> what it should be doing.)
+>
+> good to know. then the cause for that issue might be also the hostapd config
+> since openwrt as well as my dd-wrt does include all vht capabilities
+> in hostapd.conf which are reported by the driver. now one question. why does
+> hostapd allow to set MU-BEAMFORMEE since its a ap authenticator?
+
+"someone didn't read the spec" ?
+
+:)
+
+
+
+-adrian
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
