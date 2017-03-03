@@ -1,20 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cjamQ-000871-4u
- for ath10k@lists.infradead.org; Fri, 03 Mar 2017 00:09:08 +0000
+ id 1cjazp-0006x0-4n
+ for ath10k@lists.infradead.org; Fri, 03 Mar 2017 00:23:00 +0000
+Received: by mail-wm0-x232.google.com with SMTP id v186so4058021wmd.0
+ for <ath10k@lists.infradead.org>; Thu, 02 Mar 2017 16:22:36 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <2d0b3ee6-5f23-079b-7c07-a25f69b392b2@dd-wrt.com>
 References: <8f2382ad-4778-f32d-762c-09c543e93afd@candelatech.com>
  <5753f0bb-be72-c64c-2eb4-7a4ac27894b9@dd-wrt.com>
  <96573cb0-9154-0687-0890-945597002108@candelatech.com>
  <b8f4c91b-0adb-ade9-5287-acb9082f50b0@dd-wrt.com>
  <CAJ-VmomO8jpfnDpm30vJNv-pbRmQvNHjQsNAEVv7E+fz1WVkvw@mail.gmail.com>
- <ca0b2277-f2d8-8307-6b73-6cce8d6c78a4@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <7f5865ba-e576-21c3-4c19-98091b2071c0@dd-wrt.com>
-Date: Fri, 3 Mar 2017 01:08:46 +0100
-MIME-Version: 1.0
-In-Reply-To: <ca0b2277-f2d8-8307-6b73-6cce8d6c78a4@candelatech.com>
+ <2d0b3ee6-5f23-079b-7c07-a25f69b392b2@dd-wrt.com>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Thu, 2 Mar 2017 16:22:34 -0800
+Message-ID: <CAJ-VmomhM_o7Jz5yw4gfOFHiXrKa-jFL9hk06F7MzMLvZnHUgQ@mail.gmail.com>
 Subject: Re: ath10k bug in station mode with regard to TX-BEAMFORMER?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,82 +25,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Adrian Chadd <adrian@freebsd.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-QW0gMDMuMDMuMjAxNyB1bSAwMDozNCBzY2hyaWViIEJlbiBHcmVlYXI6Cj4gT24gMDMvMDIvMjAx
-NyAwMzozMCBQTSwgQWRyaWFuIENoYWRkIHdyb3RlOgo+PiBPbiAyIE1hcmNoIDIwMTcgYXQgMTQ6
-NTMsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIAo+PiA8cy5nb3R0c2NoYWxsQGRkLXdydC5jb20+IHdy
-b3RlOgo+Pgo+Pj4+IERpZCB5b3UgcGF0Y2ggc3VwcGxpY2FudD8gIElmIHNvLCBjYW4geW91IHBv
-aW50IG1lIHRvIHRoZSBjaGFuZ2UocykgCj4+Pj4geW91Cj4+Pj4gbWFkZT8KPj4+Cj4+PiBub3Bl
-LiBpIGp1c3QgdXNlZCBpdHMgZmVhdHVyZXMuIHRoZXJlIGlzIGEgY29uZmlnIGVudHJ5IG5hbWVk
-IAo+Pj4gInZodF9jYXBhIiBhbmQKPj4+ICJ2aHRfY2FwYV9tYXNrIiB3aGljaCBhbGxvd3MgdG8g
-bWFzayBvdXQgLyBpbiB2aHQgY2FwYWJpbGl0aWVzCj4+Cj4+IFJJZ2h0LCBidXQgeW91IGp1c3Qg
-ZGlzYWJsZWQgdGhlIGNhcGFiaWxpdGllcyBlbnRpcmVseSwgcmlnaHQ/IFRoYXQKPj4gZGlkbid0
-IGZpeCBuZWdvdGlhdGlvbj8KPgo+IEVpdGhlciB3YXksIHlvdSBzaG91bGRuJ3QgaGF2ZSB0byBo
-YWNrIG9uIHZodF9jYXBhX21hc2sgaW4gc3VwcGxpY2FudAo+IHRvIGdldCBzdGF0aW9ucyB0byBu
-b3QgYWR2ZXJ0aXNlIE1VX0JFQU1GT1JNRVIgZmVhdHVyZSwgZXZlbiBpZiBpdCBpcwo+IGEgd29y
-ay1hcm91bmQgZm9yIG5vdy4KaXRzIGEgb2xkIHdvcmthcm91bmQgZm9yIHN1cmUuIG5vdyBzaW5j
-ZSB5b3Ugd3JvdGUgdGhhdCBwYXRjaCB3ZSBjYW4gCmdpdmUgaXQgYSB0cnkKPgo+IFRoYW5rcywK
-PiBCZW4KPgo+Pgo+Pgo+Pgo+PiAtYWRyaWFuCj4+Cj4+Pj4KPj4+PiBUaGFua3MsCj4+Pj4gQmVu
-Cj4+Pj4KPj4+Pj4+Cj4+Pj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
-L2F0aDEway9tYWMuYwo+Pj4+Pj4gYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21h
-Yy5jCj4+Pj4+PiBpbmRleCAyMTlkYWFlZS4uNWFlZmM4YSAxMDA2NDQKPj4+Pj4+IC0tLSBhL2Ry
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPj4+Pj4+ICsrKyBiL2RyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPj4+Pj4+IEBAIC01MzcyLDYgKzUzNzIsNyBA
-QCBzdGF0aWMgaW50IGF0aDEwa19tYWNfc2V0X3R4YmZfY29uZihzdHJ1Y3QKPj4+Pj4+IGF0aDEw
-a192aWYgKmFydmlmKQo+Pj4+Pj4gIHsKPj4+Pj4+ICAgICAgICAgdTMyIHZhbHVlID0gMDsKPj4+
-Pj4+ICAgICAgICAgc3RydWN0IGF0aDEwayAqYXIgPSBhcnZpZi0+YXI7Cj4+Pj4+PiArICAgICAg
-IHN0cnVjdCBpZWVlODAyMTFfdmlmICp2aWYgPSBhcnZpZi0+dmlmOwo+Pj4+Pj4gICAgICAgICBp
-bnQgbnN0czsKPj4+Pj4+ICAgICAgICAgaW50IHNvdW5kX2RpbTsKPj4+Pj4+Cj4+Pj4+PiBAQCAt
-NTM5MSwxNyArNTM5MiwyMSBAQCBzdGF0aWMgaW50IGF0aDEwa19tYWNfc2V0X3R4YmZfY29uZihz
-dHJ1Y3QKPj4+Pj4+IGF0aDEwa192aWYgKmFydmlmKQo+Pj4+Pj4gICAgICAgICBpZiAoIXZhbHVl
-KQo+Pj4+Pj4gICAgICAgICAgICAgICAgIHJldHVybiAwOwo+Pj4+Pj4KPj4+Pj4+IC0gICAgICAg
-aWYgKGFyLT52aHRfY2FwX2luZm8gJiAKPj4+Pj4+IElFRUU4MDIxMV9WSFRfQ0FQX1NVX0JFQU1G
-T1JNRVJfQ0FQQUJMRSkKPj4+Pj4+ICsgICAgICAgaWYgKChhci0+dmh0X2NhcF9pbmZvICYgCj4+
-Pj4+PiBJRUVFODAyMTFfVkhUX0NBUF9TVV9CRUFNRk9STUVSX0NBUEFCTEUpCj4+Pj4+PiAmJgo+
-Pj4+Pj4gKyAgICAgICAgICAgKHZpZi0+dHlwZSAhPSBOTDgwMjExX0lGVFlQRV9TVEFUSU9OKSkK
-Pj4+Pj4+ICAgICAgICAgICAgICAgICB2YWx1ZSB8PSBXTUlfVkRFVl9QQVJBTV9UWEJGX1NVX1RY
-X0JGRVI7Cj4+Pj4+Pgo+Pj4+Pj4gLSAgICAgICBpZiAoYXItPnZodF9jYXBfaW5mbyAmIAo+Pj4+
-Pj4gSUVFRTgwMjExX1ZIVF9DQVBfTVVfQkVBTUZPUk1FUl9DQVBBQkxFKQo+Pj4+Pj4gKyAgICAg
-ICBpZiAoKGFyLT52aHRfY2FwX2luZm8gJiAKPj4+Pj4+IElFRUU4MDIxMV9WSFRfQ0FQX01VX0JF
-QU1GT1JNRVJfQ0FQQUJMRSkKPj4+Pj4+ICYmCj4+Pj4+PiArICAgICAgICAgICAodmlmLT50eXBl
-ICE9IE5MODAyMTFfSUZUWVBFX1NUQVRJT04pKQo+Pj4+Pj4gICAgICAgICAgICAgICAgIHZhbHVl
-IHw9IChXTUlfVkRFVl9QQVJBTV9UWEJGX01VX1RYX0JGRVIgfAo+Pj4+Pj4gV01JX1ZERVZfUEFS
-QU1fVFhCRl9TVV9UWF9CRkVSKTsKPj4+Pj4+Cj4+Pj4+PiAtICAgICAgIGlmIChhci0+dmh0X2Nh
-cF9pbmZvICYgCj4+Pj4+PiBJRUVFODAyMTFfVkhUX0NBUF9TVV9CRUFNRk9STUVFX0NBUEFCTEUp
-Cj4+Pj4+PiArICAgICAgIGlmICgoYXItPnZodF9jYXBfaW5mbyAmIAo+Pj4+Pj4gSUVFRTgwMjEx
-X1ZIVF9DQVBfU1VfQkVBTUZPUk1FRV9DQVBBQkxFKQo+Pj4+Pj4gJiYKPj4+Pj4+ICsgICAgICAg
-ICAgICh2aWYtPnR5cGUgPT0gTkw4MDIxMV9JRlRZUEVfU1RBVElPTikpCj4+Pj4+PiAgICAgICAg
-ICAgICAgICAgdmFsdWUgfD0gV01JX1ZERVZfUEFSQU1fVFhCRl9TVV9UWF9CRkVFOwo+Pj4+Pj4K
-Pj4+Pj4+IC0gICAgICAgaWYgKGFyLT52aHRfY2FwX2luZm8gJiAKPj4+Pj4+IElFRUU4MDIxMV9W
-SFRfQ0FQX01VX0JFQU1GT1JNRUVfQ0FQQUJMRSkKPj4+Pj4+ICsgICAgICAgaWYgKChhci0+dmh0
-X2NhcF9pbmZvICYgCj4+Pj4+PiBJRUVFODAyMTFfVkhUX0NBUF9NVV9CRUFNRk9STUVFX0NBUEFC
-TEUpCj4+Pj4+PiAmJgo+Pj4+Pj4gKyAgICAgICAgICAgICAgICh2aWYtPnR5cGUgPT0gTkw4MDIx
-MV9JRlRZUEVfU1RBVElPTikpCj4+Pj4+PiAgICAgICAgICAgICAgICAgdmFsdWUgfD0gKFdNSV9W
-REVWX1BBUkFNX1RYQkZfTVVfVFhfQkZFRSB8Cj4+Pj4+PiBXTUlfVkRFVl9QQVJBTV9UWEJGX1NV
-X1RYX0JGRUUpOwo+Pj4+Pj4KPj4+Pj4+Cj4+Pj4+PiBUaGFua3MsCj4+Pj4+PiBCZW4KPj4+Pj4+
-Cj4+Pj4+Cj4+Pj4+Cj4+Pj4KPj4+Pgo+Pj4KPj4+Cj4+PiAtLSAKPj4+IE1pdCBmcmV1bmRsaWNo
-ZW4gR3LDvHNzZW4gLyBSZWdhcmRzCj4+Pgo+Pj4gU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8K
-Pj4+Cj4+PiBOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVAo+Pj4gRmlybWVuc2l0ejogIEJlcmxp
-bmVyIFJpbmcgMTAxLCA2NDYyNSBCZW5zaGVpbQo+Pj4gUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2Vy
-aWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3Mwo+Pj4gR2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0
-ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUKPj4+IGh0dHA6Ly93d3cuZGQtd3J0LmNvbQo+
-Pj4gZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tCj4+PiBUZWwuOiArNDk2MjUxLTU4MjY1
-MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1Cj4+Pgo+Pj4KPj4+IF9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+PiBh
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+Pj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPj4KPgo+CgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LD
-vHNzZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVU
-IEdtYkggLSBERC1XUlQKRmlybWVuc2l0ejogIEJlcmxpbmVyIFJpbmcgMTAxLCA2NDYyNSBCZW5z
-aGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdl
-c2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0
-dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjog
-KzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
-QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hdGgxMGsK
+On 2 March 2017 at 16:08, Sebastian Gottschall <s.gottschall@dd-wrt.com> wrote:
+> Am 03.03.2017 um 00:30 schrieb Adrian Chadd:
+>>
+>> On 2 March 2017 at 14:53, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+>> wrote:
+>>
+>>>> Did you patch supplicant?  If so, can you point me to the change(s) you
+>>>> made?
+>>>
+>>> nope. i just used its features. there is a config entry named "vht_capa"
+>>> and
+>>> "vht_capa_mask" which allows to mask out / in vht capabilities
+>>
+>> RIght, but you just disabled the capabilities entirely, right? That
+>> didn't fix negotiation?
+>
+> there wasnt a problem with negotiation.  there was a problem with firmware
+> crashes and yes i disabled the crash cause in that way
+
+Well, the crash is a bad case of "I shouldn't handle a broken AP by crashing."
+
+But an AP shouldn't be saying "mu-beamformee" according to the
+standard, but mu-beamformer. (or the other way around, I forget - but
+whatever Ben showed me, it was certainly announcing the /opposite/ of
+what it should be doing.)
+
+
+
+-adrian
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
