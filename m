@@ -1,18 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cjb2F-00012s-OH
- for ath10k@lists.infradead.org; Fri, 03 Mar 2017 00:25:29 +0000
-Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 341EB40A5C4
- for <ath10k@lists.infradead.org>; Thu,  2 Mar 2017 16:25:06 -0800 (PST)
-From: Ben Greear <greearb@candelatech.com>
-Subject: Please update board-2.bin for QCA9888
-Message-ID: <7312b473-4dec-5fec-8642-8233689f4d8a@candelatech.com>
-Date: Thu, 2 Mar 2017 16:25:05 -0800
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cjhwS-00054m-TC
+ for ath10k@lists.infradead.org; Fri, 03 Mar 2017 07:48:00 +0000
+References: <8f2382ad-4778-f32d-762c-09c543e93afd@candelatech.com>
+ <5753f0bb-be72-c64c-2eb4-7a4ac27894b9@dd-wrt.com>
+ <96573cb0-9154-0687-0890-945597002108@candelatech.com>
+ <b8f4c91b-0adb-ade9-5287-acb9082f50b0@dd-wrt.com>
+ <CAJ-VmomO8jpfnDpm30vJNv-pbRmQvNHjQsNAEVv7E+fz1WVkvw@mail.gmail.com>
+ <2d0b3ee6-5f23-079b-7c07-a25f69b392b2@dd-wrt.com>
+ <CAJ-VmomhM_o7Jz5yw4gfOFHiXrKa-jFL9hk06F7MzMLvZnHUgQ@mail.gmail.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <818d8160-f0a2-723d-fe1d-518ae79f7d1c@dd-wrt.com>
+Date: Fri, 3 Mar 2017 08:47:30 +0100
 MIME-Version: 1.0
+In-Reply-To: <CAJ-VmomhM_o7Jz5yw4gfOFHiXrKa-jFL9hk06F7MzMLvZnHUgQ@mail.gmail.com>
+Subject: Re: ath10k bug in station mode with regard to TX-BEAMFORMER?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +25,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Newer 9886 (which use the 9888 firmware it seems) NICs will not
-boot unless you use the board-2.bin from the codeaura repo.
-
-Kalle:  Could you update your repo to the latest from codeaura so that it is
-easy to pull the latest board file into LEDE?
-
-If you have reason not to, please let me know.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMDMuMDMuMjAxNyB1bSAwMToyMiBzY2hyaWViIEFkcmlhbiBDaGFkZDoKPiBPbiAyIE1hcmNo
+IDIwMTcgYXQgMTY6MDgsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0
+LmNvbT4gd3JvdGU6Cj4+IEFtIDAzLjAzLjIwMTcgdW0gMDA6MzAgc2NocmllYiBBZHJpYW4gQ2hh
+ZGQ6Cj4+PiBPbiAyIE1hcmNoIDIwMTcgYXQgMTQ6NTMsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxz
+LmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4KPj4+IHdyb3RlOgo+Pj4KPj4+Pj4gRGlkIHlvdSBwYXRj
+aCBzdXBwbGljYW50PyAgSWYgc28sIGNhbiB5b3UgcG9pbnQgbWUgdG8gdGhlIGNoYW5nZShzKSB5
+b3UKPj4+Pj4gbWFkZT8KPj4+PiBub3BlLiBpIGp1c3QgdXNlZCBpdHMgZmVhdHVyZXMuIHRoZXJl
+IGlzIGEgY29uZmlnIGVudHJ5IG5hbWVkICJ2aHRfY2FwYSIKPj4+PiBhbmQKPj4+PiAidmh0X2Nh
+cGFfbWFzayIgd2hpY2ggYWxsb3dzIHRvIG1hc2sgb3V0IC8gaW4gdmh0IGNhcGFiaWxpdGllcwo+
+Pj4gUklnaHQsIGJ1dCB5b3UganVzdCBkaXNhYmxlZCB0aGUgY2FwYWJpbGl0aWVzIGVudGlyZWx5
+LCByaWdodD8gVGhhdAo+Pj4gZGlkbid0IGZpeCBuZWdvdGlhdGlvbj8KPj4gdGhlcmUgd2FzbnQg
+YSBwcm9ibGVtIHdpdGggbmVnb3RpYXRpb24uICB0aGVyZSB3YXMgYSBwcm9ibGVtIHdpdGggZmly
+bXdhcmUKPj4gY3Jhc2hlcyBhbmQgeWVzIGkgZGlzYWJsZWQgdGhlIGNyYXNoIGNhdXNlIGluIHRo
+YXQgd2F5Cj4gV2VsbCwgdGhlIGNyYXNoIGlzIGEgYmFkIGNhc2Ugb2YgIkkgc2hvdWxkbid0IGhh
+bmRsZSBhIGJyb2tlbiBBUCBieSBjcmFzaGluZy4iCj4KPiBCdXQgYW4gQVAgc2hvdWxkbid0IGJl
+IHNheWluZyAibXUtYmVhbWZvcm1lZSIgYWNjb3JkaW5nIHRvIHRoZQo+IHN0YW5kYXJkLCBidXQg
+bXUtYmVhbWZvcm1lci4gKG9yIHRoZSBvdGhlciB3YXkgYXJvdW5kLCBJIGZvcmdldCAtIGJ1dAo+
+IHdoYXRldmVyIEJlbiBzaG93ZWQgbWUsIGl0IHdhcyBjZXJ0YWlubHkgYW5ub3VuY2luZyB0aGUg
+L29wcG9zaXRlLyBvZgo+IHdoYXQgaXQgc2hvdWxkIGJlIGRvaW5nLikKZ29vZCB0byBrbm93LiB0
+aGVuIHRoZSBjYXVzZSBmb3IgdGhhdCBpc3N1ZSBtaWdodCBiZSBhbHNvIHRoZSBob3N0YXBkIApj
+b25maWcgc2luY2Ugb3BlbndydCBhcyB3ZWxsIGFzIG15IGRkLXdydCBkb2VzIGluY2x1ZGUgYWxs
+IHZodCBjYXBhYmlsaXRpZXMKaW4gaG9zdGFwZC5jb25mIHdoaWNoIGFyZSByZXBvcnRlZCBieSB0
+aGUgZHJpdmVyLiBub3cgb25lIHF1ZXN0aW9uLiB3aHkgCmRvZXMgaG9zdGFwZCBhbGxvdyB0byBz
+ZXQgTVUtQkVBTUZPUk1FRSBzaW5jZSBpdHMgYSBhcCBhdXRoZW50aWNhdG9yPwo+Cj4KPgo+IC1h
+ZHJpYW4KPgoKCi0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0
+aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNp
+dHo6ICBCZXJsaW5lciBSaW5nIDEwMSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBB
+bXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIg
+U3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1h
+aWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiAr
+NDk2MjUxLTU4MjY1NjUKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
