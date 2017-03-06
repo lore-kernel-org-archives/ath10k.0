@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm32-vm6.bullet.mail.ir2.yahoo.com ([212.82.97.102])
+Received: from mail-wr0-x22d.google.com ([2a00:1450:400c:c0c::22d])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ckvxJ-00046E-RI
- for ath10k@lists.infradead.org; Mon, 06 Mar 2017 16:57:55 +0000
-Date: Mon, 6 Mar 2017 16:57:30 +0000 (UTC)
-From: Will Kerr <willjkerr@yahoo.co.uk>
-Message-ID: <1252163427.5136459.1488819450737@mail.yahoo.com>
-In-Reply-To: <506078490.66937.1487918945400@mail.yahoo.com>
-References: <1472714547.6626259.1487882069484.ref@mail.yahoo.com>
- <1472714547.6626259.1487882069484@mail.yahoo.com>
- <506078490.66937.1487918945400@mail.yahoo.com>
-Subject: Re: ath10k - spectral scan - and - channel change
+ id 1ckwDD-0001YO-GM
+ for ath10k@lists.infradead.org; Mon, 06 Mar 2017 17:14:21 +0000
+Received: by mail-wr0-x22d.google.com with SMTP id g10so121442287wrg.2
+ for <ath10k@lists.infradead.org>; Mon, 06 Mar 2017 09:13:57 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <ac305b57-03d4-5c6d-9172-050f9ced5ff9@dks-koeln.de>
+References: <ac305b57-03d4-5c6d-9172-050f9ced5ff9@dks-koeln.de>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Mon, 6 Mar 2017 09:13:55 -0800
+Message-ID: <CAJ-VmomzX3JbxijH+93jeYMOrQPOH_6e04FMgTViK_XWjsYW2A@mail.gmail.com>
+Subject: Re: is it possible to set tx power below 0 dbm
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,87 +20,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: Will Kerr <willjkerr@yahoo.co.uk>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Xue Liu <xue.liu@dks-koeln.de>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
-
-pinging and compacting the Q just in case the experts have an idea on this..
-
-
-Is it possible to control spectral_scan_ctl whilst in AP mode?
-my result:
-
-root@OpenWrt:~# echo disable > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
-ash: write error: No such device
-
-or 
-
-
-change channel whilst in Monitor mode?
-my result:
-
-root@OpenWrt:~# iw dev wlan0 set channel 112
-command failed: Device or resource busy (-16)
-
-Thanks Will.
-
-
-
-
-
-________________________________
-From: Will Kerr <willjkerr@yahoo.co.uk>
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org> 
-Sent: Friday, 24 February 2017, 6:49
-Subject: ath10k - spectral scan - and - channel change
-
-
-Hello, I searched the mail archives but couldn't find a clue to my question so here it is:
-
-Im interested in performing a spectral scan of as much of the spectrum as possible, and quickly. this means scanning a channel for some time, changing channels, and repeating. 
-
-
-Background: when configuring an ath9k radio to Monitor mode, it is possible to do 2 things:
-
-1) change wifi channel via command line, e.g. iw dev wlan1 set channel 3. This does it seemingly quickly, without taking down the interface (good)
-
-2) control the debugfs files like  /sys/kernel/debug/ieee80211/phy1/ath9k/spectral_scan_ctl (good)
-
-
-The problem is:
-
-ath10k, in Monitor mode, I am only able to change channels - 1) iw dev wlan0 set channel 104, but not access the debugfs files  2) (which is essential to control and obtain the spectral scan result)
-the error I get is:
-
-root@OpenWrt:~# echo disable > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
-ash: write error: No such device
-
-
-
-ath10k, in AP mode, The opposite occurs - I am only able to access debugfs files  2) , but not change channel 1), which is annoying because I cant then scan the entire possible range. 
-
-
-the error I get is one of: 
-
-root@OpenWrt:~# iw dev wlan0 set channel 112
-
-command failed: Device or resource busy (-16)
-or
-root@OpenWrt:~# iw dev wlan0 set channel 104
-command failed: Invalid argument (-22)
-
-
-
-Is there anything I can do to get both working?
-
-Thanks. Will
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+aGl5YSwKCkkgZG9uJ3QgdGhpbmsgaXQncyBzb21ldGhpbmcgdGhhdCB5b3UgY2FuIGRvIHdpdGgg
+YW55IGFjY3VyYWN5IG91dCBvZgp0aGUgYm94PyBZb3UnZCBuZWVkIHNvbWUgZGVzaWduIGhlbHAg
+ZnJvbSBRQ0EgdG8gZmlndXJlIG91dCB3aGljaCBOSUNzCndvdWxkIGxldCB5b3Ugc2V0IHN1Y2gg
+bG93IFRYIHBvd2VyIGxldmVscyBhY2N1cmF0ZWx5LgoKCgotYWRyaWFuCgpPbiA2IE1hcmNoIDIw
+MTcgYXQgMDQ6MTMsIFh1ZSBMaXUgPHh1ZS5saXVAZGtzLWtvZWxuLmRlPiB3cm90ZToKPiBIZWxs
+byBldmVyeW9uZSwKPgo+IEkgYW0gd29ya2luZyBvbiBhIHByb2plY3Qgd2hpY2ggdXNlcyB0d28g
+V0xFODAwVlggV0xBTiBjYXJkcyBhbmQgdHdvIHNwZWNpYWwKPiBkaXJlY3Rpb25hbCBhdHRlbm5h
+IGdyb3Vwcy4gVGhlc2UgZGlyZWN0aW9uYWwgYXR0ZW5uYSBncm91cCBzdGF5IHZlcnkgY2xvc2UK
+PiAoMX4zY20pIHdpdGggZWFjaCBvdGhlci4KPgo+IFRoZSBwcm9ibGVtIGlzIHRoYXQgbm93IDAg
+ZEJtIHRyYW5zbWlzc2lvbiBwb3dlciBpcyBzdGlsbCB0b28gaGlnaCBmb3IgdXMuCj4gVGhlIFNO
+UiBpcyB2ZXJ5IGhpZ2ggKCBhYm91dCA5MCBkQiksIGJ1dCB0aGUgcGh5c2ljYWwgYmFuZHdpdGgg
+aXMgbG93ICg1MjYuNQo+IE1icHMpLiBTbyBJIHdvdWxkIGxpa2UgdG8ga25vdyBpcyBpdCBwb3Nz
+aWJsZSB0byBzZXQgdGhlIHR4IHBvd2VyIHRvIGEgZXZlbgo+IGxvd2VyIGxldmVsICgtMTAgZEJt
+IG9yIG1vcmUpID8KPgo+IFRoYW5rcyBhIGxvdC4KPgo+IFJlZ2FyZHMsCj4KPiBYdWUgTGl1Cj4K
+PiAtLQo+IE0uU2NpLgo+Cj4gRW1iZWRkZWQgU29mdHdhcmUgRW50d2lja2x1bmcKPgo+IERLUyBE
+aWVuc3RsZWlzdHVuZ3NnZXNlbGxzY2hhZnQKPiBmw7xyIEtvbW11bmlrYXRpb25zYW5sYWdlbiBk
+ZXMKPiBTdGFkdC0gdW5kIFJlZ2lvbmFsdmVya2VocnMgbWJICj4KPiBSb2JlcnQtUGVydGhlbC1T
+dHIuIDc5Cj4gRC01MDczOSBLw7Zsbgo+Cj4gRm9uOiArNDkgMjIxIDk1NDQ0Mi00Mwo+IEZheDog
+KzQ5IDIyMSA5NTQ0NDItMjMKPiBFLU1haWw6IHh1ZS5saXVAZGtzLWtvZWxuLmRlCj4gV2ViOiB3
+d3cuZGtzLWtvZWxuLmRlCj4KPiBHZXNjaMOkZnRzZsO8aHJ1bmc6IENocmlzdGlhbiBEw7ZyaW5n
+LCBSYWxmIEtvY2hzCj4KPiBBdWZzaWNodHNyYXRzdm9yc2l0emVuZGVyOiBKw7ZybiBTY2h3YXJ6
+ZQo+Cj4gU2l0eiBkZXIgR2VzZWxsc2NoYWZ0OiBLw7Zsbgo+Cj4gUmVnaXN0ZXJnZXJpY2h0OiBL
+w7ZsbiwgSFJCIDQ1MjEKPgo+IFVTVC1JRE5yOiBERTE1NDA4OTc2MQo+Cj4gV2ljaHRpZ2VyIEhp
+bndlaXM6IERpZXNlIEUtTWFpbCB1bmQgZXR3YWlnZSBBbmxhZ2VuIGvDtm5uZW4gQmV0cmllYnMt
+IG9kZXIKPiBHZXNjaMOkZnRzZ2VoZWltbmlzc2UsIGRlbSBBbndhbHRzZ2VoZWltbmlzIHVudGVy
+bGllZ2VuZGUgb2RlciBzb25zdGlnZQo+IHZlcnRyYXVsaWNoZSBJbmZvcm1hdGlvbmVuIGVudGhh
+bHRlbi4gU29sbHRlbiBTaWUgZGllc2UgRS1NYWlsIGlycnTDvG1saWNoCj4gZXJoYWx0ZW4gaGFi
+ZW4sIGlzdCBJaG5lbiBkZXIgU3RhdHVzIGRpZXNlciBFLU1haWwgYmVrYW5udC4gQml0dGUKPiBi
+ZW5hY2hyaWNodGlnZW4gU2llIHVucyBpbiBkaWVzZW0gRmFsbCBzb2ZvcnQgZHVyY2ggQW50d29y
+dC1NYWlsIHVuZCBsw7ZzY2hlbgo+IFNpZSBkaWVzZSBFLU1haWwgbmVic3QgZXR3YWlnZW4gQW5s
+YWdlbiB2b24gSWhyZW0gU3lzdGVtLiBFYmVuc28gZMO8cmZlbiBTaWUKPiBkaWVzZSBFLU1haWwg
+b2RlciBpaHJlIEFubGFnZW4gbmljaHQga29waWVyZW4gb2RlciBhbiBEcml0dGUgd2VpdGVyZ2Vi
+ZW4uCj4gVmllbGVuIERhbmshCj4KPiBJbXBvcnRhbnQgbm90ZTogVGhpcyBlLW1haWwgYW5kIGFu
+eSBhdHRhY2htZW50IGFyZSBjb25maWRlbnRpYWwgYW5kIG1heQo+IGNvbnRhaW4gdHJhZGUgc2Vj
+cmV0cyBhbmQgbWF5IHdlbGwgYWxzbyBiZSBsZWdhbGx5IHByaXZpbGVnZWQgb3Igb3RoZXJ3aXNl
+Cj4gcHJvdGVjdGVkIGZyb20gZGlzY2xvc3VyZS4gSWYgeW91IGhhdmUgcmVjZWl2ZWQgaXQgaW4g
+ZXJyb3IsIHlvdSBhcmUgb24KPiBub3RpY2Ugb2YgaXRzIHN0YXR1cy4gUGxlYXNlIG5vdGlmeSB1
+cyBpbW1lZGlhdGVseSBieSByZXBseSBlLW1haWwgYW5kIHRoZW4KPiBkZWxldGUgdGhpcyBlLW1h
+aWwgYW5kIGFueSBhdHRhY2htZW50IGZyb20geW91ciBzeXN0ZW0uIElmIHlvdSBhcmUgbm90IHRo
+ZQo+IGludGVuZGVkIHJlY2lwaWVudCBwbGVhc2UgdW5kZXJzdGFuZCB0aGF0IHlvdSBtdXN0IG5v
+dCBjb3B5IHRoaXMgZS1tYWlsIG9yCj4gYW55IGF0dGFjaG1lbnQgb3IgZGlzY2xvc2UgdGhlIGNv
+bnRlbnRzIHRvIGFueSBvdGhlciBwZXJzb24uIFRoYW5rIHlvdSBmb3IKPiB5b3VyIGNvb3BlcmF0
+aW9uLgo+Cj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Xwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IGh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
+aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
