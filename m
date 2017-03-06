@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yw0-x230.google.com ([2607:f8b0:4002:c05::230])
+Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cklIq-0007em-Qt
- for ath10k@lists.infradead.org; Mon, 06 Mar 2017 05:35:26 +0000
-Received: by mail-yw0-x230.google.com with SMTP id o4so50797909ywd.3
- for <ath10k@lists.infradead.org>; Sun, 05 Mar 2017 21:35:02 -0800 (PST)
+ id 1cklT1-0003kp-Nw
+ for ath10k@lists.infradead.org; Mon, 06 Mar 2017 05:45:57 +0000
+Received: by mail-wm0-x230.google.com with SMTP id n11so54917433wma.1
+ for <ath10k@lists.infradead.org>; Sun, 05 Mar 2017 21:45:29 -0800 (PST)
 MIME-Version: 1.0
-From: =?UTF-8?B?5a2Z5bu65biM?= <ycsunjane@gmail.com>
-Date: Mon, 6 Mar 2017 13:35:01 +0800
-Message-ID: <CABWe71w6DFo_p2n+83wcUTX9eNhoELv6mXEDUvnYOEMJeLpnaA@mail.gmail.com>
-Subject: ar9003 family unknown registers description
+In-Reply-To: <CABWe71w6DFo_p2n+83wcUTX9eNhoELv6mXEDUvnYOEMJeLpnaA@mail.gmail.com>
+References: <CABWe71w6DFo_p2n+83wcUTX9eNhoELv6mXEDUvnYOEMJeLpnaA@mail.gmail.com>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Sun, 5 Mar 2017 21:45:27 -0800
+Message-ID: <CAJ-VmomwB=cfqdQXeZ2Rfc-bqibdvuqpxVS+Gkdbor7OW_KN-A@mail.gmail.com>
+Subject: Re: ar9003 family unknown registers description
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,41 +20,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: =?UTF-8?B?5a2Z5bu65biM?= <ycsunjane@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-hi,
-    I sent an email to this mailing list to take a chance to see if
-anyone knows some of the ath9k drivers. I can not find the ath9k
-mailing list.
-
-    I am reading ath9k driver code. My chip is ar9331 which is ar9003
-family. I am confused by some registers in ar9003_phy.h. In ar9331
-datasheet many registers are reserved.
-
-e.g:
-
-/*
- * Channel Register Map
-*/
-#define AR_CHAN_BASE    0x9800
-
-/*
- * MRC Register Map
- */
-#define AR_MRC_BASE     0x9c00
-
-The  ATH9K_INT_BB_WATCHDOG bits of ISR_S2 is also reserved.
-
-Is there something i miss? And how can i get full register description
-datasheet?
-
-Regards
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+aGkhCgp0aGUgYXRoOWsgbGlzdCBoYXMgYmVlbiBkZXByZWNhdGVkLiB1c2UgbGludXgtd2lyZWxl
+c3MgbGlzdCBpbnN0ZWFkLiA6KQoKQVJfQ0hBTl9CQVNFIGxvb2tzIGxpa2UgaXQncyB0aGUgc3Rh
+cnQgb2YgdGhlIFBIWS9iYXNlYmFuZCBibG9jay4KCk5vdCBzdXJlIGFib3V0IE1SQyAtIEkgdGhp
+bmsgaXQncyAibWF4aW11bSByYXRlKD8pIGNvbWJpbmluZyIgYnV0IEkKZG9uJ3Qga25vdyBleGFj
+dGx5LiBJJ2QgaGF2ZSB0byBnbyBodW50IGl0IGRvd24uCgpCQl9XQVRDSERPRyBoYXMgdG8gZG8g
+d2l0aCB0aGUgYmFzZWJhbmQgd2F0Y2hkb2cgaW4gT3NwcmV5IGFuZCBsYXRlci4KSXQncyBzb21l
+IHNpbGljb24gdGhhdCB3YXRjaGVzIGZvciBzdHVjayBzdGF0ZXMgaW4gdGhlIGJhc2ViYW5kIGFu
+ZApyZXNldHMgaXQgd2l0aG91dCB0aGUgZHJpdmVyIGhhdmluZyB0byBkbyBhIGZ1bGwgY2hpcCBy
+ZXNldCBldmVyeQp0aW1lLiBJdCdzIGp1c3Qgb25lIGJpdCBhcyBmYXIgYXMgSSBjYW4gdGVsbCEK
+ClRoZXJlJ3Mgbm8gb25lIGRhdGFzaGVldCB3aXRoIGV2ZXJ5IHJlZ2lzdGVyLCBzb3JyeSEgVGhl
+IGRyaXZlciBzaG91bGQKYmUgdHJlYXRlZCBhcyBhdXRob3JpdGF0aXZlLgoKSG9wZSB0aGF0IGhl
+bHBzIQoKCi1hZHJpYW4KCgpPbiA1IE1hcmNoIDIwMTcgYXQgMjE6MzUsIOWtmeW7uuW4jCA8eWNz
+dW5qYW5lQGdtYWlsLmNvbT4gd3JvdGU6Cj4gaGksCj4gICAgIEkgc2VudCBhbiBlbWFpbCB0byB0
+aGlzIG1haWxpbmcgbGlzdCB0byB0YWtlIGEgY2hhbmNlIHRvIHNlZSBpZgo+IGFueW9uZSBrbm93
+cyBzb21lIG9mIHRoZSBhdGg5ayBkcml2ZXJzLiBJIGNhbiBub3QgZmluZCB0aGUgYXRoOWsKPiBt
+YWlsaW5nIGxpc3QuCj4KPiAgICAgSSBhbSByZWFkaW5nIGF0aDlrIGRyaXZlciBjb2RlLiBNeSBj
+aGlwIGlzIGFyOTMzMSB3aGljaCBpcyBhcjkwMDMKPiBmYW1pbHkuIEkgYW0gY29uZnVzZWQgYnkg
+c29tZSByZWdpc3RlcnMgaW4gYXI5MDAzX3BoeS5oLiBJbiBhcjkzMzEKPiBkYXRhc2hlZXQgbWFu
+eSByZWdpc3RlcnMgYXJlIHJlc2VydmVkLgo+Cj4gZS5nOgo+Cj4gLyoKPiAgKiBDaGFubmVsIFJl
+Z2lzdGVyIE1hcAo+ICovCj4gI2RlZmluZSBBUl9DSEFOX0JBU0UgICAgMHg5ODAwCj4KPiAvKgo+
+ICAqIE1SQyBSZWdpc3RlciBNYXAKPiAgKi8KPiAjZGVmaW5lIEFSX01SQ19CQVNFICAgICAweDlj
+MDAKPgo+IFRoZSAgQVRIOUtfSU5UX0JCX1dBVENIRE9HIGJpdHMgb2YgSVNSX1MyIGlzIGFsc28g
+cmVzZXJ2ZWQuCj4KPiBJcyB0aGVyZSBzb21ldGhpbmcgaSBtaXNzPyBBbmQgaG93IGNhbiBpIGdl
+dCBmdWxsIHJlZ2lzdGVyIGRlc2NyaXB0aW9uCj4gZGF0YXNoZWV0Pwo+Cj4gUmVnYXJkcwo+Cj4g
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBhdGgxMGsg
+bWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
