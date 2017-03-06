@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from cmailsend37.nm.naver.com ([125.209.239.214])
+Received: from mail-oi0-x22f.google.com ([2607:f8b0:4003:c06::22f])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1chwbx-0002RZ-Cj
- for ath10k@lists.infradead.org; Sun, 26 Feb 2017 11:03:34 +0000
-Date: Sun, 26 Feb 2017 20:02:58 +0900 (KST)
-From: KwangMin Kim <kim25444@naver.com>
-Message-ID: <8159f4211f5b573fde7cf371d33515@cweb27.nm.nhnsystem.com>
-Subject: =?UTF-8?B?UmU6IHdobyBjYXJlIG9mIGFkZGJhL2RlbGJhIGluIGF0aDEwaz8=?=
+ id 1cktla-0001JJ-RT
+ for ath10k@lists.infradead.org; Mon, 06 Mar 2017 14:37:43 +0000
+Received: by mail-oi0-x22f.google.com with SMTP id m124so85862404oig.1
+ for <ath10k@lists.infradead.org>; Mon, 06 Mar 2017 06:37:18 -0800 (PST)
 MIME-Version: 1.0
+From: Chris Price <chris.price@dejero.com>
+Date: Mon, 6 Mar 2017 09:37:17 -0500
+Message-ID: <CALJ2kaG9Q-_XVi=GrXRZZwRa4Ptd1yMj4tpShEqxB2k2MKXjdQ@mail.gmail.com>
+Subject: Re: 4.9 Kernel panic on ACS and intermittent ability to host AP
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,84 +18,22 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: KwangMin Kim <kim25444@naver.com>
-Content-Type: multipart/mixed; boundary="===============8960144989544947853=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: ath10k@lists.infradead.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+> You might want to apply this one - https://patchwork.kernel.org/patch/9486941/
 
---===============8960144989544947853==
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_958911_1240111917.1488106978759"
+> As mentioned, please try the new firmware again.
 
-
-------=_Part_958911_1240111917.1488106978759
-Content-Type: text/plain;
-	charset=UTF-8
-Content-Transfer-Encoding: base64
-
-VGhhbmsgeW91IGZvciB5b3VyIHJlcGx5LgoKT0ssIEkga25vdy4KCklmIHNvLCB3aWxsIHRoZSBi
-aXQtcmF0ZSBiZSBsb3dlciBpZiBhbGwgKHRoZSBzdGF0aW9uIHNpZGUpVElEcyBhcmUgY2xvc2Vk
-PyAKClRoYW5rcy4KCi0tLS0tCgpLaW0gS3dhbmcgTWluCgpNb2JpbGUgKzgyIDAxMC01NTIxLTYz
-OTMgCk1haWwgZ3dvbmRvcmlAbmltYnVzLmtyIAoKCgoKCgo+LS0tLS1PcmlnaW5hbCBNZXNzYWdl
-LS0tLS0KPkZyb206ICJCZW4gR3JlZWFyIjxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gCj5Ubzog
-Ikt3YW5nIE1pbiBLaW0iPGd3b25kb3JpQG5pbWJ1cy5rcj47IAo+Q2M6IDxhdGgxMGtAbGlzdHMu
-aW5mcmFkZWFkLm9yZz47IDxtb2hhbW1lZEBxdGkucXVhbGNvbW0uY29tPjsgCj5TZW50OiAyMDE3
-LTAyLTIzICjrqqkpIDIzOjQzOjAwCj5TdWJqZWN0OiBSZTogd2hvIGNhcmUgb2YgYWRkYmEvZGVs
-YmEgaW4gYXRoMTBrPwo+IAo+V2VsbCwgYmxvY2stYWNrIHNlZW1zIHRvIHdvcmsgZm9yIG1lLCBz
-byBJIGFzc3VtZSBpdCBpcyB3b3JraW5nIHByb3Blcmx5Li4uCj4KPlRoYW5rcywKPkJlbgo+Cj5P
-biAwMi8yMS8yMDE3IDA4OjM5IFBNLCBLd2FuZyBNaW4gS2ltIHdyb3RlOgo+PiBUaGFuayB5b3Ug
-Zm9yIHlvdXIgcmVwbHkuCj4+Cj4+IEkgd2lsbCBhc2sgYW5vdGhlciBxdWVzdGlvbi4uLgo+Pgo+
-PiBXaGVuIGRlYnVnZ2luZyBmcm9tICJhdGgxMGsgSFRUIiwgSSB1c3VhbGx5IHNlZSBBRERCQSBy
-ZXF1ZXN0cyBjb21pbmcgd2hlbiAiYXNzb2NpYXRlZCIgaXMgZmluaXNoLgo+Pgo+PiBCdXQgdmVy
-eSByYXJlbHksIGFmdGVyICJhc3NvY2lhdGVkIiBjb21wbGV0aW9uLCBJIGNvdWxkIHNlZSB0aGUg
-Zm9sbG93aW5nIGJlaGF2aW9yLgo+Pgo+PiBBc3NvY2lhdGVkIC0+IEFEREJBIC0+IERFTEJBIC0+
-IEFEREJBIC0+IERFTEJBCj4+Cj4+IElzIHRoaXMgbm9ybWFsIGNhc2U/Cj4+Cj4+IFRoYW5rcy4K
-Pj4KPj4gLS0tLS0KPj4KPj4gS2ltIEt3YW5nIE1pbgo+Pgo+PiBNb2JpbGUgKzgyIDAxMC01NTIx
-LTYzOTMKPj4gTWFpbCBnd29uZG9yaUBuaW1idXMua3IKPj4KPj4KPj4KPj4KPj4KPj4gLS0tLS1P
-cmlnaW5hbCBNZXNzYWdlLS0tLS0KPj4gRnJvbTogIkJlbiBHcmVlYXIiPGdyZWVhcmJAY2FuZGVs
-YXRlY2guY29tPgo+PiBUbzogIlNoYWpha2hhbiwgTW9oYW1tZWQgU2hhZmkgKE1vaGFtbWVkIFNo
-YWZpKSI8bW9oYW1tZWRAcXRpLnF1YWxjb21tLmNvbT47ICJhdGgxMGtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZyI8YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmc+OyA+Ikt3YW5nTWluIEtpbSI8a2ltMjU0
-NDRAbmF2ZXIuY29tPjsKPj4gQ2M6ICJnd29uZG9yaUBuaW1idXMua3IiPGd3b25kb3JpQG5pbWJ1
-cy5rcj47Cj4+IFNlbnQ6IDIwMTctMDItMjEgKO2ZlCkgMDI6NTA6NDQKPj4gU3ViamVjdDogUmU6
-IHdobyBjYXJlIG9mIGFkZGJhL2RlbGJhIGluIGF0aDEwaz8KPj4KPj4gWWVzLCBpdCBpcyBpbiBm
-aXJtd2FyZS4KPj4KPj4gVGhhbmtzLAo+PiBCZW4KPj4KPj4gT24gMDIvMjAvMjAxNyAwNjozNyBB
-TSwgU2hhamFraGFuLCBNb2hhbW1lZCBTaGFmaSAoTW9oYW1tZWQgU2hhZmkpIHdyb3RlOgo+Pj4g
-SSB0aGluayB0aGF0IGF0aDEwaydzIGFkZGJhIC8gZGVsYmEgaXMgZG9pbmcgZmlybXdhcmUuIElz
-IHRoaXMgcmlnaHQ/Cj4+Pgo+Pj4gW3NoYWZpXSBodHRwOi8vbHhyLmZyZWUtZWxlY3Ryb25zLmNv
-bS9zb3VyY2UvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Z2ZzX3N0YS5jI0wx
-NDQKPj4+IHllcyBXTUkgY29tbWFuZCBpcyBzZW50IHRvIGYvdwo+Pj4gX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+IGF0aDEwayBtYWlsaW5nIGxpc3QK
-Pj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+Pj4KPj4KPj4KPj4KPj4KPj4gX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4gYXRoMTBrIG1haWxpbmcg
-bGlzdAo+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+PiBodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+Pgo+Cj4tLSAKPkJlbiBHcmVlYXIgPGdy
-ZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+Q2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8v
-d3d3LmNhbmRlbGF0ZWNoLmNvbQo+Cj4KPgo+Cj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+
-RnJvbTogIkt3YW5nTWluIEtpbSI8a2ltMjU0NDRAbmF2ZXIuY29tPiAKPlRvOiA8YXRoMTBrQGxp
-c3RzLmluZnJhZGVhZC5vcmc+OyAKPkNjOiA8Z3dvbmRvcmlAbmltYnVzLmtyPjsgCj5TZW50OiAy
-MDE3LTAyLTE5ICjsnbwpIDE3OjMwOjQxCj5TdWJqZWN0OiB3aG8gY2FyZSBvZiBhZGRiYS9kZWxi
-YSBpbiBhdGgxMGs/Cj4gCj5JIHRoaW5rIHRoYXQgYXRoMTBrJ3MgYWRkYmEgLyBkZWxiYSBpcyBk
-b2luZyBmaXJtd2FyZS4gSXMgdGhpcyByaWdodD8KPgo+QW5kIEkgaGF2ZSBhbm90aGVyIHF1ZXN0
-aW9uLgo+Cj5JZiB3bW0gaXMgb24sIHNob3VsZCBUSUQgJzAnIGluIGFnZ19zdGF0dXMgKGRlYnVn
-ZnMgb24gbWFjODAyMTEpIGFsd2F5cyBiZSBvbj8KPgo+VGhhbmtzLgo+Cj4tLS0tLQo+Cj5Ld2Fu
-Zy1NaW4gS2ltKGtpbTI1NDQ0QG5hdmVyLmNvbSkKPgo+KzgyIDEwLTU1MjEtNjM5Mw==
-------=_Part_958911_1240111917.1488106978759--
-
-
---===============8960144989544947853==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This has been working for me so far (patch + new firmware). The only
+unusual behaviour I've seen is that the 5 GHz AP seems to fail to
+start on the first try after boot, but then works thereafter.
+Obviously this can be worked around. I have yet to see a panic.
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============8960144989544947853==--
