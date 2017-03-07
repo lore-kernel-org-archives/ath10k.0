@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.126.135])
+Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cl9ux-0006z1-C9
- for ath10k@lists.infradead.org; Tue, 07 Mar 2017 07:52:25 +0000
-Subject: Re: is it possible to set tx power below 0 dbm
-References: <ac305b57-03d4-5c6d-9172-050f9ced5ff9@dks-koeln.de>
- <CAJ-VmomzX3JbxijH+93jeYMOrQPOH_6e04FMgTViK_XWjsYW2A@mail.gmail.com>
-From: Xue Liu <xue.liu@dks-koeln.de>
-Message-ID: <e63bc846-2c15-1a12-d437-8db21b8f52cb@dks-koeln.de>
-Date: Tue, 7 Mar 2017 08:51:55 +0100
+ id 1clBpO-0005FE-R5
+ for ath10k@lists.infradead.org; Tue, 07 Mar 2017 09:54:48 +0000
+Received: by mail-wm0-x232.google.com with SMTP id v186so84965032wmd.0
+ for <ath10k@lists.infradead.org>; Tue, 07 Mar 2017 01:54:25 -0800 (PST)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: QCA4019: calibration files and board files
+Date: Tue, 07 Mar 2017 10:54:19 +0100
+Message-ID: <30387745.tG59X1cezt@bentobox>
+In-Reply-To: <CAJ-Vmom3g+cbNG7hXjUB=Rnh9S_rHmr7hS2Z6H+m=LQCfezBAg@mail.gmail.com>
+References: <1591748.RGYhBEn8I1@bentobox>
+ <CAJ-Vmom3g+cbNG7hXjUB=Rnh9S_rHmr7hS2Z6H+m=LQCfezBAg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJ-VmomzX3JbxijH+93jeYMOrQPOH_6e04FMgTViK_XWjsYW2A@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,90 +21,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============1525094093382085482=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Adrian Chadd <adrian@freebsd.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Christian Lamparter <chunkeey@googlemail.com>, simon.wunderlich@openmesh.com, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGVsbG8KClRoYW5rcyBhIGxvdCBmb3IgdGhlIHN1Z2dlc3Rpb24uCgoKT24gMDYuMDMuMjAxNyAx
-ODoxMywgQWRyaWFuIENoYWRkIHdyb3RlOgo+IGhpeWEsCj4KPiBJIGRvbid0IHRoaW5rIGl0J3Mg
-c29tZXRoaW5nIHRoYXQgeW91IGNhbiBkbyB3aXRoIGFueSBhY2N1cmFjeSBvdXQgb2YKPiB0aGUg
-Ym94PyBZb3UnZCBuZWVkIHNvbWUgZGVzaWduIGhlbHAgZnJvbSBRQ0EgdG8gZmlndXJlIG91dCB3
-aGljaCBOSUNzCj4gd291bGQgbGV0IHlvdSBzZXQgc3VjaCBsb3cgVFggcG93ZXIgbGV2ZWxzIGFj
-Y3VyYXRlbHkuCj4KPgo+Cj4gLWFkcmlhbgo+Cj4gT24gNiBNYXJjaCAyMDE3IGF0IDA0OjEzLCBY
-dWUgTGl1IDx4dWUubGl1QGRrcy1rb2Vsbi5kZT4gd3JvdGU6Cj4+IEhlbGxvIGV2ZXJ5b25lLAo+
-Pgo+PiBJIGFtIHdvcmtpbmcgb24gYSBwcm9qZWN0IHdoaWNoIHVzZXMgdHdvIFdMRTgwMFZYIFdM
-QU4gY2FyZHMgYW5kIHR3byBzcGVjaWFsCj4+IGRpcmVjdGlvbmFsIGF0dGVubmEgZ3JvdXBzLiBU
-aGVzZSBkaXJlY3Rpb25hbCBhdHRlbm5hIGdyb3VwIHN0YXkgdmVyeSBjbG9zZQo+PiAoMX4zY20p
-IHdpdGggZWFjaCBvdGhlci4KPj4KPj4gVGhlIHByb2JsZW0gaXMgdGhhdCBub3cgMCBkQm0gdHJh
-bnNtaXNzaW9uIHBvd2VyIGlzIHN0aWxsIHRvbyBoaWdoIGZvciB1cy4KPj4gVGhlIFNOUiBpcyB2
-ZXJ5IGhpZ2ggKCBhYm91dCA5MCBkQiksIGJ1dCB0aGUgcGh5c2ljYWwgYmFuZHdpdGggaXMgbG93
-ICg1MjYuNQo+PiBNYnBzKS4gU28gSSB3b3VsZCBsaWtlIHRvIGtub3cgaXMgaXQgcG9zc2libGUg
-dG8gc2V0IHRoZSB0eCBwb3dlciB0byBhIGV2ZW4KPj4gbG93ZXIgbGV2ZWwgKC0xMCBkQm0gb3Ig
-bW9yZSkgPwo+Pgo+PiBUaGFua3MgYSBsb3QuCj4+Cj4+IFJlZ2FyZHMsCj4+Cj4+IFh1ZSBMaXUK
-Pj4KPj4gLS0KPj4gTS5TY2kuCj4+Cj4+IEVtYmVkZGVkIFNvZnR3YXJlIEVudHdpY2tsdW5nCj4+
-Cj4+IERLUyBEaWVuc3RsZWlzdHVuZ3NnZXNlbGxzY2hhZnQKPj4gZsO8ciBLb21tdW5pa2F0aW9u
-c2FubGFnZW4gZGVzCj4+IFN0YWR0LSB1bmQgUmVnaW9uYWx2ZXJrZWhycyBtYkgKPj4KPj4gUm9i
-ZXJ0LVBlcnRoZWwtU3RyLiA3OQo+PiBELTUwNzM5IEvDtmxuCj4+Cj4+IEZvbjogKzQ5IDIyMSA5
-NTQ0NDItNDMKPj4gRmF4OiArNDkgMjIxIDk1NDQ0Mi0yMwo+PiBFLU1haWw6IHh1ZS5saXVAZGtz
-LWtvZWxuLmRlCj4+IFdlYjogd3d3LmRrcy1rb2Vsbi5kZQo+Pgo+PiBHZXNjaMOkZnRzZsO8aHJ1
-bmc6IENocmlzdGlhbiBEw7ZyaW5nLCBSYWxmIEtvY2hzCj4+Cj4+IEF1ZnNpY2h0c3JhdHN2b3Jz
-aXR6ZW5kZXI6IErDtnJuIFNjaHdhcnplCj4+Cj4+IFNpdHogZGVyIEdlc2VsbHNjaGFmdDogS8O2
-bG4KPj4KPj4gUmVnaXN0ZXJnZXJpY2h0OiBLw7ZsbiwgSFJCIDQ1MjEKPj4KPj4gVVNULUlETnI6
-IERFMTU0MDg5NzYxCj4+Cj4+IFdpY2h0aWdlciBIaW53ZWlzOiBEaWVzZSBFLU1haWwgdW5kIGV0
-d2FpZ2UgQW5sYWdlbiBrw7ZubmVuIEJldHJpZWJzLSBvZGVyCj4+IEdlc2Now6RmdHNnZWhlaW1u
-aXNzZSwgZGVtIEFud2FsdHNnZWhlaW1uaXMgdW50ZXJsaWVnZW5kZSBvZGVyIHNvbnN0aWdlCj4+
-IHZlcnRyYXVsaWNoZSBJbmZvcm1hdGlvbmVuIGVudGhhbHRlbi4gU29sbHRlbiBTaWUgZGllc2Ug
-RS1NYWlsIGlycnTDvG1saWNoCj4+IGVyaGFsdGVuIGhhYmVuLCBpc3QgSWhuZW4gZGVyIFN0YXR1
-cyBkaWVzZXIgRS1NYWlsIGJla2FubnQuIEJpdHRlCj4+IGJlbmFjaHJpY2h0aWdlbiBTaWUgdW5z
-IGluIGRpZXNlbSBGYWxsIHNvZm9ydCBkdXJjaCBBbnR3b3J0LU1haWwgdW5kIGzDtnNjaGVuCj4+
-IFNpZSBkaWVzZSBFLU1haWwgbmVic3QgZXR3YWlnZW4gQW5sYWdlbiB2b24gSWhyZW0gU3lzdGVt
-LiBFYmVuc28gZMO8cmZlbiBTaWUKPj4gZGllc2UgRS1NYWlsIG9kZXIgaWhyZSBBbmxhZ2VuIG5p
-Y2h0IGtvcGllcmVuIG9kZXIgYW4gRHJpdHRlIHdlaXRlcmdlYmVuLgo+PiBWaWVsZW4gRGFuayEK
-Pj4KPj4gSW1wb3J0YW50IG5vdGU6IFRoaXMgZS1tYWlsIGFuZCBhbnkgYXR0YWNobWVudCBhcmUg
-Y29uZmlkZW50aWFsIGFuZCBtYXkKPj4gY29udGFpbiB0cmFkZSBzZWNyZXRzIGFuZCBtYXkgd2Vs
-bCBhbHNvIGJlIGxlZ2FsbHkgcHJpdmlsZWdlZCBvciBvdGhlcndpc2UKPj4gcHJvdGVjdGVkIGZy
-b20gZGlzY2xvc3VyZS4gSWYgeW91IGhhdmUgcmVjZWl2ZWQgaXQgaW4gZXJyb3IsIHlvdSBhcmUg
-b24KPj4gbm90aWNlIG9mIGl0cyBzdGF0dXMuIFBsZWFzZSBub3RpZnkgdXMgaW1tZWRpYXRlbHkg
-YnkgcmVwbHkgZS1tYWlsIGFuZCB0aGVuCj4+IGRlbGV0ZSB0aGlzIGUtbWFpbCBhbmQgYW55IGF0
-dGFjaG1lbnQgZnJvbSB5b3VyIHN5c3RlbS4gSWYgeW91IGFyZSBub3QgdGhlCj4+IGludGVuZGVk
-IHJlY2lwaWVudCBwbGVhc2UgdW5kZXJzdGFuZCB0aGF0IHlvdSBtdXN0IG5vdCBjb3B5IHRoaXMg
-ZS1tYWlsIG9yCj4+IGFueSBhdHRhY2htZW50IG9yIGRpc2Nsb3NlIHRoZSBjb250ZW50cyB0byBh
-bnkgb3RoZXIgcGVyc29uLiBUaGFuayB5b3UgZm9yCj4+IHlvdXIgY29vcGVyYXRpb24uCj4+Cj4+
-Cj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IGF0
-aDEwayBtYWlsaW5nIGxpc3QKPj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPiBfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxp
-c3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgotLSAKTS5TY2kuCgpFbWJlZGRlZCBTb2Z0d2Fy
-ZSBFbnR3aWNrbHVuZwoKREtTIERpZW5zdGxlaXN0dW5nc2dlc2VsbHNjaGFmdApmw7xyIEtvbW11
-bmlrYXRpb25zYW5sYWdlbiBkZXMKU3RhZHQtIHVuZCBSZWdpb25hbHZlcmtlaHJzIG1iSAoKUm9i
-ZXJ0LVBlcnRoZWwtU3RyLiA3OQpELTUwNzM5IEvDtmxuCgpGb246ICs0OSAyMjEgOTU0NDQyLTQz
-CkZheDogKzQ5IDIyMSA5NTQ0NDItMjMKRS1NYWlsOiB4dWUubGl1QGRrcy1rb2Vsbi5kZQpXZWI6
-IHd3dy5ka3Mta29lbG4uZGUKCkdlc2Now6RmdHNmw7xocnVuZzogQ2hyaXN0aWFuIETDtnJpbmcs
-IFJhbGYgS29jaHMKCkF1ZnNpY2h0c3JhdHN2b3JzaXR6ZW5kZXI6IErDtnJuIFNjaHdhcnplCgpT
-aXR6IGRlciBHZXNlbGxzY2hhZnQ6IEvDtmxuCgpSZWdpc3RlcmdlcmljaHQ6IEvDtmxuLCBIUkIg
-NDUyMQoKVVNULUlETnI6IERFMTU0MDg5NzYxCgpXaWNodGlnZXIgSGlud2VpczogRGllc2UgRS1N
-YWlsIHVuZCBldHdhaWdlIEFubGFnZW4ga8O2bm5lbiBCZXRyaWVicy0gb2RlciBHZXNjaMOkZnRz
-Z2VoZWltbmlzc2UsIGRlbSBBbndhbHRzZ2VoZWltbmlzIHVudGVybGllZ2VuZGUgb2RlciBzb25z
-dGlnZSB2ZXJ0cmF1bGljaGUgSW5mb3JtYXRpb25lbiBlbnRoYWx0ZW4uIFNvbGx0ZW4gU2llIGRp
-ZXNlIEUtTWFpbCBpcnJ0w7xtbGljaCBlcmhhbHRlbiBoYWJlbiwgaXN0IElobmVuIGRlciBTdGF0
-dXMgZGllc2VyIEUtTWFpbCBiZWthbm50LiBCaXR0ZSBiZW5hY2hyaWNodGlnZW4gU2llIHVucyBp
-biBkaWVzZW0gRmFsbCBzb2ZvcnQgZHVyY2ggQW50d29ydC1NYWlsIHVuZCBsw7ZzY2hlbiBTaWUg
-ZGllc2UgRS1NYWlsIG5lYnN0IGV0d2FpZ2VuIEFubGFnZW4gdm9uIElocmVtIFN5c3RlbS4gRWJl
-bnNvIGTDvHJmZW4gU2llIGRpZXNlIEUtTWFpbCBvZGVyIGlocmUgQW5sYWdlbiBuaWNodCBrb3Bp
-ZXJlbiBvZGVyIGFuIERyaXR0ZSB3ZWl0ZXJnZWJlbi4gVmllbGVuIERhbmshCgpJbXBvcnRhbnQg
-bm90ZTogVGhpcyBlLW1haWwgYW5kIGFueSBhdHRhY2htZW50IGFyZSBjb25maWRlbnRpYWwgYW5k
-IG1heSBjb250YWluIHRyYWRlIHNlY3JldHMgYW5kIG1heSB3ZWxsIGFsc28gYmUgbGVnYWxseSBw
-cml2aWxlZ2VkIG9yIG90aGVyd2lzZSBwcm90ZWN0ZWQgZnJvbSBkaXNjbG9zdXJlLiBJZiB5b3Ug
-aGF2ZSByZWNlaXZlZCBpdCBpbiBlcnJvciwgeW91IGFyZSBvbiBub3RpY2Ugb2YgaXRzIHN0YXR1
-cy4gUGxlYXNlIG5vdGlmeSB1cyBpbW1lZGlhdGVseSBieSByZXBseSBlLW1haWwgYW5kIHRoZW4g
-ZGVsZXRlIHRoaXMgZS1tYWlsIGFuZCBhbnkgYXR0YWNobWVudCBmcm9tIHlvdXIgc3lzdGVtLiBJ
-ZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50IHBsZWFzZSB1bmRlcnN0YW5kIHRo
-YXQgeW91IG11c3Qgbm90IGNvcHkgdGhpcyBlLW1haWwgb3IgYW55IGF0dGFjaG1lbnQgb3IgZGlz
-Y2xvc2UgdGhlIGNvbnRlbnRzIHRvIGFueSBvdGhlciBwZXJzb24uIFRoYW5rIHlvdSBmb3IgeW91
-ciBjb29wZXJhdGlvbi4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+--===============1525094093382085482==
+Content-Type: multipart/signed; boundary="nextPart1638562.zoNo2GFmKA"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+
+--nextPart1638562.zoNo2GFmKA
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+Hi Adrian,
+
+On Montag, 30. Januar 2017 08:36:19 CET Adrian Chadd wrote:
+> If people aren't using unique BMI IDs (which is another question we
+> have for QCA) then it's possible you don't have enough information to
+> "know" which board data to use, so it has to be overridden by a custom
+> package. We do this at work for our own boards as well - they're
+> sufficiently different to a reference board that indeed we need to
+> "know".
+
+Did you get any feedback from QCA? Our requests regarding registration of two 
+own bmi-board-ids for our product were always answered (slightly simplified) 
+with "don't change the BDF files", "always use board-2.bin from driver/
+firmware" and "ask your ODM". This basically didn't help us and didn't answer 
+the question and creates quite a big problem for us because the ODM insists 
+that we should use his BDF [1] files with modifications [tm]. We just found 
+out that the ODM used a modified version of the DK04.1 BDF files but used the 
+bmi-board-id's for the AP-DK01.1-C1 - so we still have a long road ahead.
+
+We are still trying to get more information. But I though that I could ask you 
+in the meantime whether you had more success and have a status update.
+
+Kind regards,
+	Sven
+
+[1] According to QCA, the BDF files are just the single board files inside
+    the board-2.bin
+--nextPart1638562.zoNo2GFmKA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAli+g0sACgkQXYcKB8Em
+e0aKtw/+P17/3IVMWCUx9edX8+6UGIjZPSLgiFRCtN5NzgWH7BChjDa+sE7jVHhA
+jq1xPcHIN8wfDS5FMn1UaIZiQPr7CCUzrny27TD2f+mY4mfuSpJomHjObOf0UbEA
+CD6LY0uHzmalQH4cJEQv70p3FeGqjR2+QqbmqCYleCVk+hLvXiZYMhvo9cHwOcHt
+Ac8fq7wDrGf4nt415w+uFfp0lmsdkEzY/Dd4SWcUsiYYgI4YOXxdQLqPXKz4gkxt
+wIJh3OmN+rka4EXTXEuiepE5tfmboj6Lm8VtA2t7r4mOtg14d4cEsY545C70HDSn
+2XYpcuIwCvf7ZkOUQVEJ8EPe2Rp65zZF6zMELvBkAX9lNwC7NNn4kabMOjKpX9VJ
+J70ZQi1+seC/QoERhpoiCEv3m1K9ENjn4Ctk8+BUhvdRiFuWxzquQCHWUFs8qaIf
+O8geMIDv/atJP/5+QV45XUcHy+DMTpXRoFimWncwnFZ99Cj4Y3rwHmdyvsMPu9y3
+Wv9mO6fJ/ezESA4OHp/Dx4HIbP5KYK4qnpYFW7M/G+wrCd+m+ujvDKdwrHM2cNtz
+2c2E5q4SHUGS+ATbbVo8sASarQA6TmtuzuedRUMqJG2+d4oWeSUS6Khtgdx464Nn
+ubI7C+7UygM0hTISo0RW/rb6O2m5897WkljHBMIiev2V2xEsRZ8=
+=iUvy
+-----END PGP SIGNATURE-----
+
+--nextPart1638562.zoNo2GFmKA--
+
+
+
+--===============1525094093382085482==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============1525094093382085482==--
