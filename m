@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1clalL-0005eM-BT
- for ath10k@lists.infradead.org; Wed, 08 Mar 2017 12:32:19 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Fix fetching channel during potential radar detection
-Date: Wed, 8 Mar 2017 18:03:32 +0530
-Message-ID: <1488976412-8970-1-git-send-email-mohammed@qca.qualcomm.com>
+ id 1clcf3-0000xU-1h
+ for ath10k@lists.infradead.org; Wed, 08 Mar 2017 14:33:55 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: [PATCH] ath10k: QCA6174 hw3.0: update board-2.bin
+Date: Wed, 8 Mar 2017 16:32:16 +0200
+Message-ID: <1488983536-28364-1-git-send-email-kvalo@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,82 +20,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: linux-firmware@kernel.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Add new board images:
 
-Fetch target operating channel during potential radar detection when
-the interface is just brought up, but no channel is assigned from
-userspace. In this scenario rx_channel may not be having a valid pointer
-hence fetch the target operating channel to avoid warnings as below
-which can be triggered by the commands with DFS testing over longer run
+bus=pci,vendor=168c,device=003e,subsystem-vendor=1a56,subsystem-device=1535,variant=RV_0520
+bus=pci,vendor=168c,device=003e,subsystem-vendor=1a56,subsystem-device=1535,variant=RV_0519
+bus=pci,vendor=168c,device=003e,subsystem-vendor=1028,subsystem-device=0310,variant=RV_0519
 
-comamnds:
-iw wlan1 set type mesh
-ifconfig wlan1 up (valid tgt_oper_chan only)
-iw wlan1 cac trigger freq 5260 HT20 (valid rx_channel, tgt_oper_chan)
-iw wlan1 cac trigger freq 5280 HT20
-iw wlan1 cac trigger freq 5300 HT20
-
-Once the CAC expires, current channel context will be removed and
-we are only left with the fallback option of using 'target operating
-channel'
-
-Firmware and driver log:
-ath: phy1: DFS: radar found on freq=5300: id=1, pri=1125, count=5,
-count_false=4
-ath: phy1: DFS: radar found on freq=5260: id=5, pri=3151, count=6,
-count_false=11
-ath: phy1: DFS: radar found on freq=5280: id=1, pri=1351, count=6,
-count_false=4
-ath: phy1: DFS: radar found on freq=5300: id=1, pri=1125, count=5,
-count_false=4
-ath10k_pci 0001:01:00.0: failed to derive channel for radar pulse,
-treating as radar
-ath10k_pci 0001:01:00.0: failed to derive channel for radar pulse,
-treating as radar
-
-Call trace:
-
-WARNING: CPU: 1 PID: 2145 at
-backports-20161201-3.14.77-9ab3068/net/wireless/chan.c:265
-cfg80211_set_dfs_state+0x3c/0x88 [cfg80211]()
-
- Workqueue: phy1 ieee80211_dfs_radar_detected_work
-[mac80211]
-[<c0320770>] (warn_slowpath_null) from [<bf79b90c>]
-(cfg80211_set_dfs_state+0x3c/0x88 [cfg80211])
-[<bf79b90c>] (cfg80211_set_dfs_state [cfg80211]) from
-[<bf79697c>] (cfg80211_radar_event+0xc4/0x140 [cfg80211])
-[<bf79697c>] (cfg80211_radar_event [cfg80211]) from
-[<bf83c058>] (ieee80211_dfs_radar_detected_work+0xa8/0xb4 [mac80211])
-[<bf83c058>] (ieee80211_dfs_radar_detected_work
-[mac80211]) from [<c0339518>] (process_one_work+0x298/0x4a4)
-
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ ath10k/QCA6174/hw3.0/board-2.bin | Bin 337204 -> 361924 bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 2f1743e..1f83276 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3643,6 +3643,11 @@ static void ath10k_dfs_radar_report(struct ath10k *ar,
- 
- 	spin_lock_bh(&ar->data_lock);
- 	ch = ar->rx_channel;
-+
-+	/* fetch target operating channel during channel change */
-+	if (!ch)
-+		ch = ar->tgt_oper_chan;
-+
- 	spin_unlock_bh(&ar->data_lock);
- 
- 	if (!ch) {
+diff --git a/ath10k/QCA6174/hw3.0/board-2.bin b/ath10k/QCA6174/hw3.0/board-2.bin
+index 8e7b8c0b0cae7f7ac15ef5ca42fa5bcca6ad66c2..ea18004951fed49aa9214093fa900427e4960a5d 100644
+GIT binary patch
+delta 572
+zcmdmTO5{klSVIeA3sVbo3(FQ(6V=HMDlD8D3JhQnJ)Q9>i=T{6Sz=LUVqS@DP*}Wy
+zsi9>qBT#maJO~$V{@tL>A-Q}_K`96?T2s|Bc@ctMK6yWfu7qNen23CW1haf%Bx87D
+zFcXa4{^TvoUq0QQ30rpTJ$Tj!O8bSS^-Wv1|9DW+q(z$!GccfvPtS{CN!I6&;**k$
+zl8EAs;+B$#5*Ln?;D`(rj^q~Pk(3l*V1SA9M~ZMn1`0%Mc9>bgj^wL@3mN@n@%Soq
+z!{$2)S{x#sK(9bB&|5P=Y#_ah!$?9gF;QMVF;P}NAwf1IAwdX6Z%)Z%=I1=?6O#e*
+z)7i-d6{5^QuTAc#$kdOEi<1T7C?J*r(Nb};VsVmk5fYKHu@OKw17#wm5#pN_DhavS
+z$N(uOww(dGS)XHi_8Df!%|4k@{2IU@1-s+mS--fnY3sHj1u2U7<i3hjodnsqq@<{%
+exC9vxtrVA#kRYiPB_XMx0CF3u_-6UaQg#61GR2|*
+
+delta 19
+acmX@oEw<&9NJ9%_3sVbo3(FQ(6IB3C%Lb$X
+
 -- 
-1.9.1
+2.7.4
 
 
 _______________________________________________
