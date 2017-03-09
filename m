@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
+Received: from mail-wr0-x22f.google.com ([2a00:1450:400c:c0c::22f])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cm0fj-0001Hz-Di
- for ath10k@lists.infradead.org; Thu, 09 Mar 2017 16:12:12 +0000
-Received: by mail-wm0-x235.google.com with SMTP id v186so143039536wmd.0
- for <ath10k@lists.infradead.org>; Thu, 09 Mar 2017 08:11:49 -0800 (PST)
+ id 1cm2FF-00005L-0o
+ for ath10k@lists.infradead.org; Thu, 09 Mar 2017 17:52:59 +0000
+Received: by mail-wr0-x22f.google.com with SMTP id u108so50082489wrb.3
+ for <ath10k@lists.infradead.org>; Thu, 09 Mar 2017 09:52:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAJ2u5D+45gG4ZX+AH18twRwdCNa6ecoCmrRkOfB51rXR74F8gA@mail.gmail.com>
-References: <1591748.RGYhBEn8I1@bentobox>
- <87shmm4qk9.fsf@kamboji.qca.qualcomm.com>
- <2093425.PaQnjOtWUV@bentobox> <3868483.qRteKqzzW4@debian64>
- <CAJ2u5D+45gG4ZX+AH18twRwdCNa6ecoCmrRkOfB51rXR74F8gA@mail.gmail.com>
+In-Reply-To: <87o9xa4oqb.fsf@kamboji.qca.qualcomm.com>
+References: <7312b473-4dec-5fec-8642-8233689f4d8a@candelatech.com>
+ <87lgse6hmf.fsf@kamboji.qca.qualcomm.com> <58C14C2D.902@candelatech.com>
+ <87o9xa4oqb.fsf@kamboji.qca.qualcomm.com>
 From: Adrian Chadd <adrian@freebsd.org>
-Date: Thu, 9 Mar 2017 08:11:47 -0800
-Message-ID: <CAJ-VmoncjrYKpUU8=W+a5K7+PfU0JGw9O9gCoxN9phr2NNmk-Q@mail.gmail.com>
-Subject: Re: QCA4019: calibration files and board files
+Date: Thu, 9 Mar 2017 09:52:34 -0800
+Message-ID: <CAJ-VmomgksTfjSeA9o+ci2dLwad6ihAWm4s68M70JhyTq=6miA@mail.gmail.com>
+Subject: Re: Please update board-2.bin for QCA9888
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +26,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Yang,
- Aeolus" <aeolus@qti.qualcomm.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, Sven Eckelmann <sven.eckelmann@openmesh.com>, Christian Lamparter <chunkeey@googlemail.com>, "simon.wunderlich@openmesh.com" <simon.wunderlich@openmesh.com>
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
 
 Hi,
 
-I mean - it's binary data required to make something work, I don't
-know if copyright applies?
+Whilst you're at it, the DK07 2G/5G-low and DK07 5G-high/5G-high board
+values would be good to add too. They're the same bmi-id though;
+there's a jumper to select radio0 as "2G or 5G-high RF path". You'd
+have to add them as separate files that people can select at runtime.
+:)
 
-Guess we should ask QCA again a bit more. :)
+I think there's also the file for the DK07+Cascade and DK07+Besra
+5G-low NICs that aren't in there by default. Lemme go dig up which
+files to use from where.
 
-Yes, we likely need a separate repository of board data files indexed
-by actual board.
+Thanks!
+
 
 
 -adrian
