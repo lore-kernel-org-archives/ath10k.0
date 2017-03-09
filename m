@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-io0-x236.google.com ([2607:f8b0:4001:c06::236])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1clxqq-0007Bg-8E
- for ath10k@lists.infradead.org; Thu, 09 Mar 2017 13:11:30 +0000
-Received: by mail-wm0-x241.google.com with SMTP id v190so10856895wme.3
- for <ath10k@lists.infradead.org>; Thu, 09 Mar 2017 05:11:07 -0800 (PST)
-From: Christian Lamparter <chunkeey@googlemail.com>
-Subject: Re: QCA4019: calibration files and board files
-Date: Thu, 09 Mar 2017 14:11:04 +0100
-Message-ID: <3868483.qRteKqzzW4@debian64>
-In-Reply-To: <2093425.PaQnjOtWUV@bentobox>
-References: <1591748.RGYhBEn8I1@bentobox>
- <87shmm4qk9.fsf@kamboji.qca.qualcomm.com> <2093425.PaQnjOtWUV@bentobox>
+ id 1clyu3-000606-VF
+ for ath10k@lists.infradead.org; Thu, 09 Mar 2017 14:18:54 +0000
+Received: by mail-io0-x236.google.com with SMTP id l7so28867707ioe.3
+ for <ath10k@lists.infradead.org>; Thu, 09 Mar 2017 06:18:27 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <3868483.qRteKqzzW4@debian64>
+References: <1591748.RGYhBEn8I1@bentobox>
+ <87shmm4qk9.fsf@kamboji.qca.qualcomm.com>
+ <2093425.PaQnjOtWUV@bentobox> <3868483.qRteKqzzW4@debian64>
+From: Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>
+Date: Thu, 9 Mar 2017 15:18:06 +0100
+Message-ID: <CAJ2u5D+45gG4ZX+AH18twRwdCNa6ecoCmrRkOfB51rXR74F8gA@mail.gmail.com>
+Subject: Re: QCA4019: calibration files and board files
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,131 +22,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, ext.waldemar.rymarkiewicz@tieto.com, "simon.wunderlich@openmesh.com" <simon.wunderlich@openmesh.com>
+To: Christian Lamparter <chunkeey@googlemail.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Yang,
+ Aeolus" <aeolus@qti.qualcomm.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, Sven Eckelmann <sven.eckelmann@openmesh.com>, "simon.wunderlich@openmesh.com" <simon.wunderlich@openmesh.com>
 
-On Thursday, March 9, 2017 1:46:00 PM CET Sven Eckelmann wrote:
-> On Donnerstag, 9. M=E4rz 2017 11:51:13 CET Valo, Kalle wrote:
-> [...]
-> > I haven't followed the discussion very closely, so I might be way off,
-> > but for laptop SMBIOS implementations Waldemar added a variant field to
-> > board-2.bin so that we can have multiple images for the same subsystem
-> > id. Could it help here also?
-> > =
-
-> > https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/
-> > ?h=3Dath-next&id=3D1657b8f84ed9fc1d2a100671f1d42d6286f20073
-> =
-
-> Thanks for the pointer.
-I've added Waldemar.
-
-From what I can tell, adding something like a variant to the bmi-id would
-help. I looked at the patch note and it strikes me a bit odd that the
-used variant was a non-descriptive "DE_1AB" string? Isn't this bit arbitrar=
-y?
-What is encoded in these variant strings? Are these variants "unique"? =
-
-Who will distribute these special board-2.bin that contain all the =
-
-different variants?
-
-Also the patch says that if the variant isn't found, it will fall back to
-the default. In case of the Asus RT-AC58U, this will not really work.
-From what I can tell, ASUS added a PA chip and 5 dBi Antennas. They had to
-redo the calibration and ended up with different values for the PA, AGC, =
-
-Edges, Slobes, the lot... However, they kept the the project/customer id.
-So the board-2.bin found on codeaurora and in the ath10k-repository will
-not work.
-
-> =
-
-> I also saw this morning but haven't invested a lot of time when I saw it.=
- But =
-
-> let's play around with some ideas around "variant". Maybe someone else ha=
-s =
-
-> some better ideas or comments.
-> =
-
-> The information about the variant has to come from somewhere. Currently, =
-the =
-
-> OTP binary is returning only the bmi-chip-id and bmi-board-id. There does=
-n't =
-
-> seem to be any "project"/"customer" id returned by it (even when it exist=
-s in =
-
-> the EEPROM). And even when there would be, the already existing devices d=
-on't =
-
-> seem to have it and i don't know if QCA actually allocates them for custo=
-mers. =
-
-> I would therefore postpone the use of pre-cal data to generate the the va=
-riant =
-
-> string for now (but I will ask the ODM to get some info from QCA).
-> =
-
-> Let us see how the SMBIOS does it. dmi_walk is used to go through the ent=
-ries =
-
-> and search for the entry. We don't have this here. So let's check what we=
- have =
-
-> with the QCA4019
-> =
-
-> This looks at least like a doable thing with the device tree. It must be =
-a =
-
-> string but this can easily be stored in the device tree itself. =
-
-> =
-
-> The RT-AC58U  could therefore have following entries:
-> =
-
->     		wifi@a000000 {
->     			status =3D "okay";
->     			qcom,ath10k-calibration-variant =3D "RT-AC58U";
->     		};
->     =
-
->     		wifi@a800000 {
->     			status =3D "okay";
->     			qcom,ath10k-calibration-variant =3D "RT-AC58U";
->     		};
-> =
-
-> Some code has to be added to ath10k_core_probe_fw. I can prepare this lat=
-er =
-
-> (when I find the time).
-> =
-
-> The board-2.bin would then require entries for bus=3Dahb,bmi-chip-id=3D0,=
-bmi-
-> board-id=3D16,variant=3DRT-AC58U and bus=3Dahb,bmi-chip-id=3D0,bmi-board-
-> id=3D17,variant=3DRT-AC58U.
-This brings up a issue: Who will distribute these board-2.bin?
-I would prefer them being added to the codeaurora or the
-ath10k-firmware repository. Will this be possible? =
-
-
-Thanks,
-Christian
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOSBNYXJjaCAyMDE3IGF0IDE0OjExLCBDaHJpc3RpYW4gTGFtcGFydGVyIDxjaHVua2VleUBn
+b29nbGVtYWlsLmNvbT4gd3JvdGU6Cj4gT24gVGh1cnNkYXksIE1hcmNoIDksIDIwMTcgMTo0Njow
+MCBQTSBDRVQgU3ZlbiBFY2tlbG1hbm4gd3JvdGU6Cj4+IE9uIERvbm5lcnN0YWcsIDkuIE3DpHJ6
+IDIwMTcgMTE6NTE6MTMgQ0VUIFZhbG8sIEthbGxlIHdyb3RlOgo+PiBbLi4uXQo+PiA+IEkgaGF2
+ZW4ndCBmb2xsb3dlZCB0aGUgZGlzY3Vzc2lvbiB2ZXJ5IGNsb3NlbHksIHNvIEkgbWlnaHQgYmUg
+d2F5IG9mZiwKPj4gPiBidXQgZm9yIGxhcHRvcCBTTUJJT1MgaW1wbGVtZW50YXRpb25zIFdhbGRl
+bWFyIGFkZGVkIGEgdmFyaWFudCBmaWVsZCB0bwo+PiA+IGJvYXJkLTIuYmluIHNvIHRoYXQgd2Ug
+Y2FuIGhhdmUgbXVsdGlwbGUgaW1hZ2VzIGZvciB0aGUgc2FtZSBzdWJzeXN0ZW0KPj4gPiBpZC4g
+Q291bGQgaXQgaGVscCBoZXJlIGFsc28/Cj4+ID4KPj4gPiBodHRwczovL2dpdC5rZXJuZWwub3Jn
+L2NnaXQvbGludXgva2VybmVsL2dpdC9rdmFsby9hdGguZ2l0L2NvbW1pdC8KPj4gPiA/aD1hdGgt
+bmV4dCZpZD0xNjU3YjhmODRlZDlmYzFkMmExMDA2NzFmMWQ0MmQ2Mjg2ZjIwMDczCj4+Cj4+IFRo
+YW5rcyBmb3IgdGhlIHBvaW50ZXIuCj4gSSd2ZSBhZGRlZCBXYWxkZW1hci4KCgpJZiBibWkgaWRz
+IGFyZSB2YWxpZCB5b3Ugd2lsbCBub3QgdXNlIFNNQklPUyB2YXJpYW50IGF0IGFsbC4gU2VlCmF0
+aDEwa19jb3JlX2NyZWF0ZV9ib2FyZF9uYW1lKCkuCgo+IEZyb20gd2hhdCBJIGNhbiB0ZWxsLCBh
+ZGRpbmcgc29tZXRoaW5nIGxpa2UgYSB2YXJpYW50IHRvIHRoZSBibWktaWQgd291bGQKPiBoZWxw
+LiBJIGxvb2tlZCBhdCB0aGUgcGF0Y2ggbm90ZSBhbmQgaXQgc3RyaWtlcyBtZSBhIGJpdCBvZGQg
+dGhhdCB0aGUKPiB1c2VkIHZhcmlhbnQgd2FzIGEgbm9uLWRlc2NyaXB0aXZlICJERV8xQUIiIHN0
+cmluZz8gSXNuJ3QgdGhpcyBiaXQgYXJiaXRyYXJ5PwoKV2VsbCwgREUgaGVyZSBzdGFuZHMgZm9y
+IGN1c3RvbWVyIElELCBidXQgSSBoYXZlbid0IHNlZW4gYW55ICBzcGVjIGhvdwp0aGlzIGlzIGRl
+ZmluZWQuLgoKQWRkaW5nIEFlb2x1cyB3aG8gcGVyaGFwcyBjYW4gaGVscCB0byBleHBsYWluLgoK
+PiBXaGF0IGlzIGVuY29kZWQgaW4gdGhlc2UgdmFyaWFudCBzdHJpbmdzPyBBcmUgdGhlc2UgdmFy
+aWFudHMgInVuaXF1ZSI/CgpJIGd1ZXNzIHNvLCBRQ0EgaXMgYXNzaWduaW5nIGN1c3RvbWVycyBJ
+RC4KCj4gV2hvIHdpbGwgZGlzdHJpYnV0ZSB0aGVzZSBzcGVjaWFsIGJvYXJkLTIuYmluIHRoYXQg
+Y29udGFpbiBhbGwgdGhlCj4gZGlmZmVyZW50IHZhcmlhbnRzPwoKaG1tbS4uIEkgd291bGQgZXhw
+ZWN0IFFDQS4KCj4KPiBBbHNvIHRoZSBwYXRjaCBzYXlzIHRoYXQgaWYgdGhlIHZhcmlhbnQgaXNu
+J3QgZm91bmQsIGl0IHdpbGwgZmFsbCBiYWNrIHRvCj4gdGhlIGRlZmF1bHQuCgpZZXMsIGJlY2F1
+c2UgaWYgaXQgaGFwcGVucyB0aGF0IHVzZXIgdXNlcyBib2FyZCB3aXRoIHNtYmlvcyB2YXJpYW50
+CnNldCBidXQgaGF2ZSBubyBlbnRyeSBmb3IgdGhpcyB2YXJpYW50IGluIGJvYXJkLTIuYmluIChv
+bGQKYm9hcmQtMi5iaW4pIGl0IHdpbGwgZmFpbCB0byBib290LiBXZSBnb3QgcmVwb3J0cyBvbiB0
+aGF0LCBzbyB3ZQpkZWNpZGVkIHRvIGZhbGxiYWNrIHRvIGRlZmF1bHQgIGJkZi4gT3RoZXJ3aXNl
+IGFscmVhZHkgc2hpcHBlZCBkZXZpY2VzCndvcmtpbmcgc28gZmFyIGFmdGVyIGtlcm5lbCB1cGdy
+YWRlIHdpbGwgc3RvcCB0byB3b3JrLgoKIEluIGNhc2Ugb2YgdGhlIEFzdXMgUlQtQUM1OFUsIHRo
+aXMgd2lsbCBub3QgcmVhbGx5IHdvcmsuCj4gRnJvbSB3aGF0IEkgY2FuIHRlbGwsIEFTVVMgYWRk
+ZWQgYSBQQSBjaGlwIGFuZCA1IGRCaSBBbnRlbm5hcy4gVGhleSBoYWQgdG8KPiByZWRvIHRoZSBj
+YWxpYnJhdGlvbiBhbmQgZW5kZWQgdXAgd2l0aCBkaWZmZXJlbnQgdmFsdWVzIGZvciB0aGUgUEEs
+IEFHQywKPiBFZGdlcywgU2xvYmVzLCB0aGUgbG90Li4uIEhvd2V2ZXIsIHRoZXkga2VwdCB0aGUg
+dGhlIHByb2plY3QvY3VzdG9tZXIgaWQuCj4gU28gdGhlIGJvYXJkLTIuYmluIGZvdW5kIG9uIGNv
+ZGVhdXJvcmEgYW5kIGluIHRoZSBhdGgxMGstcmVwb3NpdG9yeSB3aWxsCj4gbm90IHdvcmsuCgpJ
+ZiBJIHVuZGVyc3RhbmQgcHJvcGVybHksIEFzdXMgdXNlcyBtb2RpZmllZCBib2FyZC0yLmJpbiAg
+c28gZGVmYXVsdApmb3VuZCBvbiBjb2RlYXVyb3JhIGFuZCBhdGgxMGstcmVwbyB3aWxsIG5vdCB3
+b3JrLiBSaWdodD8gVXNlIHRoZQpwcm9wZXIgb25lPwoKCi9XYWxkZWsKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
+MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsK
