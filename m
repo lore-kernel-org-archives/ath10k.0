@@ -1,24 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1clsgW-00012B-B1
- for ath10k@lists.infradead.org; Thu, 09 Mar 2017 07:40:29 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: Driver support for QCA6174 chip using SDIO interface
-Date: Thu, 9 Mar 2017 07:39:58 +0000
-Message-ID: <87d1dq6grf.fsf@kamboji.qca.qualcomm.com>
-References: <CAHNpzpeRE6ha4JA9i4oyJ2BjgJg53FvDpAb1yZccncrmTeiBdQ@mail.gmail.com>
- <8737g45xc7.fsf@kamboji.qca.qualcomm.com>
- <c3814c7d-eed3-dad2-c568-6ce456ee7166@gmail.com>
- <CAHNpzpdbTnapQFPwYhUhi5EvLjQSdpqy9AHMH04KcqF2jHWw_A@mail.gmail.com>
- <CAHNpzpeao2rT8JJ5rSALHknrkFHniixJftGLTnUxcd7RtoYdtQ@mail.gmail.com>
- <13839ca7-e43e-8475-04de-8c705c4e3ee2@gmail.com>
- <CAHNpzpf5Xd9JYnbt5b-hRhC0tjnGWY2HLdnBUdHkGcdi6-ytGQ@mail.gmail.com>
- <3bc420d1-ced9-f0a3-647a-5b81775a543e@gmail.com>
-In-Reply-To: <3bc420d1-ced9-f0a3-647a-5b81775a543e@gmail.com> (Erik
- Stromdahl's message of "Wed, 1 Mar 2017 07:25:14 +0100")
-Content-Language: en-US
+ id 1clsxU-0007Gv-IF
+ for ath10k@lists.infradead.org; Thu, 09 Mar 2017 07:58:02 +0000
 MIME-Version: 1.0
+Subject: Re: [v2,1/2] ath10k: improve the firmware download time for QCA6174
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1487205210-17112-1-git-send-email-ryanhsu@qca.qualcomm.com>
+References: <1487205210-17112-1-git-send-email-ryanhsu@qca.qualcomm.com>
+Message-ID: <5a88a04633554a27a30fbd7f4dad1af7@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 9 Mar 2017 08:57:32 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,36 +22,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: Akesh M Chacko <akesh.chacko@vvdntech.in>, Ann Lo <annlo.tech@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+Cc: lenb@kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+Ryan Hsu <ryanhsu@qca.qualcomm.com> wrote:
+> From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+> 
+> Len Brown reported the system resume time is taking more than 2 seconds in
+> bug - https://bugzilla.kernel.org/show_bug.cgi?id=185621.
+> 
+> The reason of the 2 seconds is due to the firmware download time.
+> 
+> The chip is booted up in the default reference clock speed to handle the
+> firmware download to chip memory and advanced to the support higher speed
+> clock to run the firmware after all. The default reference clock in the
+> hardware is slow so that the firmware download time is taking up to 2
+> seconds for a 600KB firmware file.
+> 
+> 	[76796.349701] ath10k_pci : boot uploading firmware image len 688691
+> 	[76798.334612] ath10k_pci : htt tx max num pending tx 1056
+> 
+> The resolution here is to enable the higher speed clock if the hardware
+> supported before the firmware download at BMI stage, so that the hardware
+> can handle the firmare download in a more efficient way. This can help to
+> improve the firmware download time from 2 seconds to around 500ms for the
+> same 600KB firmware file.
+> 
+> 	[322858.577919] ath10k_pci boot uploading firmware image len 688691
+> 	[322859.093094] ath10k_pci htt tx max num pending tx 1056
+> 
+> The steps to advance to the higher speed clock is very hardware specific,
+> so adding the hardware ops for the hardware that can support this.
+> 
+> Reported-by: Len Brown <lenb@kernel.org>
+> Signed-off-by: Ryan Hsu <ryanhsu@qca.qualcomm.com>
 
-sorry for the late reply, I was on vacation and catching up now.
+2 patches applied to ath-next branch of ath.git, thanks.
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
-
-> Firmware and board files are normally distributed by the module vendor
-> (MuRata, Silex, etc.).
->
-> Firmware is depending on chipset, so this is something QCA should be able
-> to provide.
->
-> Board files are module dependent and contains calibration etc. and should
-> definitely be obtained from the module vendor.
->
-> If you have a discrete design you would most likely have to create your own
-> board file (using ART etc.)
->
-> Kalle:
-> Perhaps you (or someone else at QCA) can initiate the work to make the sdio
-> firmware publicly available?
-
-I'll send a request forward internally, but that might take a while as
-I'm heavily backlogged at the moment.
+583a6629432c ath10k: improve the firmware download time for QCA6174
+912b6e8850a5 ath10k: improve the firmware download time for QCA9377
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/9576081/
+
+Documentation about submitting wireless patches and checking status
+from patchwork:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
