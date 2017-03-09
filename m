@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1clt1R-000743-Jc
- for ath10k@lists.infradead.org; Thu, 09 Mar 2017 08:02:11 +0000
+Received: from mail-wr0-x22b.google.com ([2a00:1450:400c:c0c::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1clvnC-0005JK-RA
+ for ath10k@lists.infradead.org; Thu, 09 Mar 2017 10:59:36 +0000
+Received: by mail-wr0-x22b.google.com with SMTP id g10so42393760wrg.2
+ for <ath10k@lists.infradead.org>; Thu, 09 Mar 2017 02:59:14 -0800 (PST)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: QCA4019: calibration files and board files
+Date: Thu, 09 Mar 2017 11:59:08 +0100
+Message-ID: <6104737.JakpnjT6P9@bentobox>
+In-Reply-To: <CAJ-Vmom6_-PAnwSjuA5t3a1AKrLhi58ufkLYAjJZkkD5nneusQ@mail.gmail.com>
+References: <1591748.RGYhBEn8I1@bentobox> <30387745.tG59X1cezt@bentobox>
+ <CAJ-Vmom6_-PAnwSjuA5t3a1AKrLhi58ufkLYAjJZkkD5nneusQ@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [v2] ath10k: Fix a warning during channel switch with multiple
- vaps
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1487331902-12034-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1487331902-12034-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <e4752e9419a146a18fdbc8ac2061f583@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 9 Mar 2017 09:01:36 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,61 +21,92 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8259627727659044300=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: Christian Lamparter <chunkeey@googlemail.com>, simon.wunderlich@openmesh.com, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> 
-> Doing a channel switch via hostapd_cli seems to update
-> the new channel context for each VAP's appropriately as below
-> in 'ath10k_mac_update_vif_chan', hence we can safely suppress the
-> warning that shows up during this operation and dump the warning only
-> if no vaps are available for channel switch
-> 
-> hostapd_cli -i wlan0 chan_switch 5 5200
-> OK
-> 
-> ath10k_pci : mac chanctx switch n_vifs 3 mode 1
-> ath10k_pci : mac chanctx switch vdev_id 2 freq 5180->5200 width 0->0
-> ath10k_pci : mac chanctx switch vdev_id 1 freq 5180->5200 width 0->0
-> ath10k_pci : mac chanctx switch vdev_id 0 freq 5180->5200 width 0->0
-> 
-> Call Trace:
-> 
-> WARNING: backports-20161201-3.14.77-9ab3068/drivers/net/wireless/ath/ath10k/mac.c:7126
-> [<c022f2d4>] (warn_slowpath_null) from [<bf7f150c>]
-> (ath10k_reconfig_complete+0xe4/0x25c [ath10k_core])
-> [<bf7f150c>] (ath10k_reconfig_complete [ath10k_core])
-> [<bf7f35f0>] (ath10k_mac_vif_ap_csa_work+0x214/0x370 [ath10k_core])
-> [<bf7f38b8>] (ath10k_mac_op_change_chanctx+0x108/0x128 [ath10k_core])
-> [<bf782ac0>] (ieee80211_recalc_chanctx_min_def+0x30c/0x430 [mac80211])
-> [<bf7830a4>] (ieee80211_recalc_smps_chanctx+0x2ec/0x840 [mac80211])
-> [<bf7843e8>] (ieee80211_vif_use_reserved_context+0x7c/0xf8 [mac80211])
-> [<bf7843e8>] (ieee80211_vif_use_reserved_context [mac80211])
-> [<bf76e5d4>] (ieee80211_csa_finalize_work+0x5c/0x88 [mac80211])
-> 
-> Fixes: d7bf4b4aba05 ("ath10k: fix ar->rx_channel updating logic")
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+--===============8259627727659044300==
+Content-Type: multipart/signed; boundary="nextPart4244372.W4pXrPEJiB"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-Patch applied to ath-next branch of ath.git, thanks.
+--nextPart4244372.W4pXrPEJiB
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-c73f8c00330f ath10k: fix a warning during channel switch with multiple vaps
+On Dienstag, 7. M=E4rz 2017 08:30:54 CET Adrian Chadd wrote:
+> "use your own bmi ids". :-)
+>=20
+> (yeah, this is going to make open source firmware for these things
+> more painful than it should be. :( )
 
--- 
-https://patchwork.kernel.org/patch/9579679/
+Thanks for the reply. I was just informed that the firmware binary will beh=
+ave=20
+differently depending on the bmi-board-id (even when the rest of the conten=
+t=20
+is the same).
 
-Documentation about submitting wireless patches and checking status
-from patchwork:
+The selection of an own bmi id is therefore also not an actual option. Ok,=
+=20
+maybe in some cases but not in general.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+The method to have a single board-2.bin for QCA4019 and to let ath10k selec=
+t=20
+the right one using bmi-board-id, bmi-chip-id and bus is simply not working.
 
+Either the board-2.bin is simply not used and only the pre-cal data is used=
+=20
+(as seen in Christian Lamparter's/Michal Kazior's patch [1]) or each board =
+has=20
+to come with its own board-2.bin. The latter brings up the license problem=
+=20
+mentioned by Christian [2]. Both have the problem that QCA (for some reason=
+)=20
+wants that always the board-2.bin is used which comes with the "ath10k"=20
+firmware binary [3].
+
+Kind regards,
+	Sven
+
+[1] https://www.mail-archive.com/ath10k@lists.infradead.org/msg05911.html
+[2] https://www.mail-archive.com/ath10k@lists.infradead.org/msg06509.html
+[3] btw. this QCA seems to contradict itself here by helping ODMs to
+    create their own boardata files
+--nextPart4244372.W4pXrPEJiB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAljBNXwACgkQXYcKB8Em
+e0ajlw//cz1R21JvksE7p5RnTMWca/1jJm9hzxIdZJ8GNHzcrxoMNuTibbOAC6UQ
+me2x33SvyY+Y1C9H+NCiRCGM0H13459KOO9lUCT5Zt85ANX2upT7VoUsM0hSmcHU
+GU9W4mDW48UHPSlKJqfgMOEMCx4vjiY3Q7XgbX1WjUrjVKEnHGWlQTY2MUHbTqW1
+d+Rdjgq3E/AUrm0lY0JOlvN5AbZIWhn99LThx//pxd3D6Pzz91yAxv6V89LEKETg
+hlWBTalU5Rjdp46FIxhj3MUq0kNkEyr+m8mqaIk3vRRFSBqMS1hLLcSmVbb908ws
+Aio9VdzAbNBGSdBlqUs9ScUvKHpewYcM1ZE2B6yBZCkILhYjxrXeK4JKnG/t3i+1
+q1ZREG1SV5q0qr7brM7ukEGycTk7KrGde4Btr0m7/BYQcJow8J9tlUPmdewOgJJV
+UP0M6CJYyxVzcnb/JGvOhgBQ1XEk968sIWgHlRZ2+Y3WjaBMbtzo0M3QzEfCqS9c
+zM698WeiwCVSTp+Bvcs1OBvX/5nhlnTWnl9DB9jiubtZFq4fi8hYu3yftBNWptTG
+oiVUEMwm5yiSoJGA0wuCyenJwZIkrQhO3fPbDUAsoqVPANwfC9WN7EKc4yzUQ3YU
+stZJQGwMwAlBDSV9aEmuewzCL/0gkMF67fInExkA0cBCU17/ZSY=
+=Vj+1
+-----END PGP SIGNATURE-----
+
+--nextPart4244372.W4pXrPEJiB--
+
+
+
+--===============8259627727659044300==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============8259627727659044300==--
