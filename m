@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x236.google.com ([2607:f8b0:4001:c06::236])
+Received: from narfation.org ([2001:4d88:2000:7::2] helo=v3-1039.vlinux.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1clyu3-000606-VF
- for ath10k@lists.infradead.org; Thu, 09 Mar 2017 14:18:54 +0000
-Received: by mail-io0-x236.google.com with SMTP id l7so28867707ioe.3
- for <ath10k@lists.infradead.org>; Thu, 09 Mar 2017 06:18:27 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <3868483.qRteKqzzW4@debian64>
-References: <1591748.RGYhBEn8I1@bentobox>
- <87shmm4qk9.fsf@kamboji.qca.qualcomm.com>
- <2093425.PaQnjOtWUV@bentobox> <3868483.qRteKqzzW4@debian64>
-From: Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>
-Date: Thu, 9 Mar 2017 15:18:06 +0100
-Message-ID: <CAJ2u5D+45gG4ZX+AH18twRwdCNa6ecoCmrRkOfB51rXR74F8gA@mail.gmail.com>
-Subject: Re: QCA4019: calibration files and board files
+ id 1cm06J-0006n1-9b
+ for ath10k@lists.infradead.org; Thu, 09 Mar 2017 15:35:37 +0000
+From: Sven Eckelmann <sven@narfation.org>
+Subject: [RFC] ath10k: search DT for qcom,ath10k-calibration-variant
+Date: Thu,  9 Mar 2017 16:24:16 +0100
+Message-Id: <20170309152416.4090-1-sven@narfation.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +15,125 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christian Lamparter <chunkeey@googlemail.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Yang,
- Aeolus" <aeolus@qti.qualcomm.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, Sven Eckelmann <sven.eckelmann@openmesh.com>, "simon.wunderlich@openmesh.com" <simon.wunderlich@openmesh.com>
+To: ath10k@lists.infradead.org
+Cc: Sven Eckelmann <sven.eckelmann@openmesh.com>, linux-wireless@vger.kernel.org, John Crispin <john@phrozen.org>, Christian Lamparter <chunkeey@googlemail.com>, Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>, Simon Wunderlich <simon.wunderlich@openmesh.com>
 
-T24gOSBNYXJjaCAyMDE3IGF0IDE0OjExLCBDaHJpc3RpYW4gTGFtcGFydGVyIDxjaHVua2VleUBn
-b29nbGVtYWlsLmNvbT4gd3JvdGU6Cj4gT24gVGh1cnNkYXksIE1hcmNoIDksIDIwMTcgMTo0Njow
-MCBQTSBDRVQgU3ZlbiBFY2tlbG1hbm4gd3JvdGU6Cj4+IE9uIERvbm5lcnN0YWcsIDkuIE3DpHJ6
-IDIwMTcgMTE6NTE6MTMgQ0VUIFZhbG8sIEthbGxlIHdyb3RlOgo+PiBbLi4uXQo+PiA+IEkgaGF2
-ZW4ndCBmb2xsb3dlZCB0aGUgZGlzY3Vzc2lvbiB2ZXJ5IGNsb3NlbHksIHNvIEkgbWlnaHQgYmUg
-d2F5IG9mZiwKPj4gPiBidXQgZm9yIGxhcHRvcCBTTUJJT1MgaW1wbGVtZW50YXRpb25zIFdhbGRl
-bWFyIGFkZGVkIGEgdmFyaWFudCBmaWVsZCB0bwo+PiA+IGJvYXJkLTIuYmluIHNvIHRoYXQgd2Ug
-Y2FuIGhhdmUgbXVsdGlwbGUgaW1hZ2VzIGZvciB0aGUgc2FtZSBzdWJzeXN0ZW0KPj4gPiBpZC4g
-Q291bGQgaXQgaGVscCBoZXJlIGFsc28/Cj4+ID4KPj4gPiBodHRwczovL2dpdC5rZXJuZWwub3Jn
-L2NnaXQvbGludXgva2VybmVsL2dpdC9rdmFsby9hdGguZ2l0L2NvbW1pdC8KPj4gPiA/aD1hdGgt
-bmV4dCZpZD0xNjU3YjhmODRlZDlmYzFkMmExMDA2NzFmMWQ0MmQ2Mjg2ZjIwMDczCj4+Cj4+IFRo
-YW5rcyBmb3IgdGhlIHBvaW50ZXIuCj4gSSd2ZSBhZGRlZCBXYWxkZW1hci4KCgpJZiBibWkgaWRz
-IGFyZSB2YWxpZCB5b3Ugd2lsbCBub3QgdXNlIFNNQklPUyB2YXJpYW50IGF0IGFsbC4gU2VlCmF0
-aDEwa19jb3JlX2NyZWF0ZV9ib2FyZF9uYW1lKCkuCgo+IEZyb20gd2hhdCBJIGNhbiB0ZWxsLCBh
-ZGRpbmcgc29tZXRoaW5nIGxpa2UgYSB2YXJpYW50IHRvIHRoZSBibWktaWQgd291bGQKPiBoZWxw
-LiBJIGxvb2tlZCBhdCB0aGUgcGF0Y2ggbm90ZSBhbmQgaXQgc3RyaWtlcyBtZSBhIGJpdCBvZGQg
-dGhhdCB0aGUKPiB1c2VkIHZhcmlhbnQgd2FzIGEgbm9uLWRlc2NyaXB0aXZlICJERV8xQUIiIHN0
-cmluZz8gSXNuJ3QgdGhpcyBiaXQgYXJiaXRyYXJ5PwoKV2VsbCwgREUgaGVyZSBzdGFuZHMgZm9y
-IGN1c3RvbWVyIElELCBidXQgSSBoYXZlbid0IHNlZW4gYW55ICBzcGVjIGhvdwp0aGlzIGlzIGRl
-ZmluZWQuLgoKQWRkaW5nIEFlb2x1cyB3aG8gcGVyaGFwcyBjYW4gaGVscCB0byBleHBsYWluLgoK
-PiBXaGF0IGlzIGVuY29kZWQgaW4gdGhlc2UgdmFyaWFudCBzdHJpbmdzPyBBcmUgdGhlc2UgdmFy
-aWFudHMgInVuaXF1ZSI/CgpJIGd1ZXNzIHNvLCBRQ0EgaXMgYXNzaWduaW5nIGN1c3RvbWVycyBJ
-RC4KCj4gV2hvIHdpbGwgZGlzdHJpYnV0ZSB0aGVzZSBzcGVjaWFsIGJvYXJkLTIuYmluIHRoYXQg
-Y29udGFpbiBhbGwgdGhlCj4gZGlmZmVyZW50IHZhcmlhbnRzPwoKaG1tbS4uIEkgd291bGQgZXhw
-ZWN0IFFDQS4KCj4KPiBBbHNvIHRoZSBwYXRjaCBzYXlzIHRoYXQgaWYgdGhlIHZhcmlhbnQgaXNu
-J3QgZm91bmQsIGl0IHdpbGwgZmFsbCBiYWNrIHRvCj4gdGhlIGRlZmF1bHQuCgpZZXMsIGJlY2F1
-c2UgaWYgaXQgaGFwcGVucyB0aGF0IHVzZXIgdXNlcyBib2FyZCB3aXRoIHNtYmlvcyB2YXJpYW50
-CnNldCBidXQgaGF2ZSBubyBlbnRyeSBmb3IgdGhpcyB2YXJpYW50IGluIGJvYXJkLTIuYmluIChv
-bGQKYm9hcmQtMi5iaW4pIGl0IHdpbGwgZmFpbCB0byBib290LiBXZSBnb3QgcmVwb3J0cyBvbiB0
-aGF0LCBzbyB3ZQpkZWNpZGVkIHRvIGZhbGxiYWNrIHRvIGRlZmF1bHQgIGJkZi4gT3RoZXJ3aXNl
-IGFscmVhZHkgc2hpcHBlZCBkZXZpY2VzCndvcmtpbmcgc28gZmFyIGFmdGVyIGtlcm5lbCB1cGdy
-YWRlIHdpbGwgc3RvcCB0byB3b3JrLgoKIEluIGNhc2Ugb2YgdGhlIEFzdXMgUlQtQUM1OFUsIHRo
-aXMgd2lsbCBub3QgcmVhbGx5IHdvcmsuCj4gRnJvbSB3aGF0IEkgY2FuIHRlbGwsIEFTVVMgYWRk
-ZWQgYSBQQSBjaGlwIGFuZCA1IGRCaSBBbnRlbm5hcy4gVGhleSBoYWQgdG8KPiByZWRvIHRoZSBj
-YWxpYnJhdGlvbiBhbmQgZW5kZWQgdXAgd2l0aCBkaWZmZXJlbnQgdmFsdWVzIGZvciB0aGUgUEEs
-IEFHQywKPiBFZGdlcywgU2xvYmVzLCB0aGUgbG90Li4uIEhvd2V2ZXIsIHRoZXkga2VwdCB0aGUg
-dGhlIHByb2plY3QvY3VzdG9tZXIgaWQuCj4gU28gdGhlIGJvYXJkLTIuYmluIGZvdW5kIG9uIGNv
-ZGVhdXJvcmEgYW5kIGluIHRoZSBhdGgxMGstcmVwb3NpdG9yeSB3aWxsCj4gbm90IHdvcmsuCgpJ
-ZiBJIHVuZGVyc3RhbmQgcHJvcGVybHksIEFzdXMgdXNlcyBtb2RpZmllZCBib2FyZC0yLmJpbiAg
-c28gZGVmYXVsdApmb3VuZCBvbiBjb2RlYXVyb3JhIGFuZCBhdGgxMGstcmVwbyB3aWxsIG5vdCB3
-b3JrLiBSaWdodD8gVXNlIHRoZQpwcm9wZXIgb25lPwoKCi9XYWxkZWsKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsK
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+
+Board Data File (BDF) is loaded upon driver boot-up procedure. The right
+board data file is identified on QCA4019 using bus, bmi-chip-id and
+bmi-board-id.
+
+The problem, however, can occur when the (default) board data file cannot
+fulfill with the vendor requirements and it is necessary to use a different
+board data file.
+
+This problem was solved for SMBIOS by adding a special SMBIOS type 0xF8.
+Something similar has to be provided for systems without SMBIOS but with
+device trees. No solution was specified by QCA and therefore a new one has
+to be found for ath10k.
+
+The device tree requires addition strings to define the variant name
+
+    wifi@a000000 {
+    	status = "okay";
+    	qcom,ath10k-calibration-variant = "RT-AC58U";
+    };
+
+    wifi@a800000 {
+    	status = "okay";
+    	qcom,ath10k-calibration-variant = "RT-AC58U";
+    };
+
+This would create the boarddata identifiers for the board-2.bin search
+
+ *  bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=RT-AC58U
+ *  bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=RT-AC58U
+
+Cc: Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>
+Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
+---
+Cc: Christian Lamparter <chunkeey@googlemail.com>
+Cc: John Crispin <john@phrozen.org>
+Cc: Simon Wunderlich <simon.wunderlich@openmesh.com>
+---
+ .../bindings/net/wireless/qcom,ath10k.txt          |  3 +++
+ drivers/net/wireless/ath/ath10k/core.c             | 31 +++++++++++++++++++++-
+ 2 files changed, 33 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index 74d7f0af209c..60f87439308e 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -41,6 +41,9 @@ Optional properties:
+ - qcom,msi_addr: MSI interrupt address.
+ - qcom,msi_base: Base value to add before writing MSI data into
+ 		MSI address register.
++- qcom,ath10k-calibration-variant: string to search for in the board-2.bin
++				   variant list with the same bus bmi-chip-id,
++				   and bmi-board-id
+ - qcom,ath10k-calibration-data : calibration data + board specific data
+ 				 as an array, the length can vary between
+ 				 hw versions.
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 0a8e29e9a0eb..6f4c7ccb0dba 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -779,6 +779,31 @@ static int ath10k_core_check_smbios(struct ath10k *ar)
+ 	return 0;
+ }
+ 
++static int ath10k_core_check_dt(struct ath10k *ar)
++{
++	struct device_node *node;
++	const char *variant;
++
++	/* don't overwrite the smbios entry */
++	if (ar->id.bdf_ext[0] != '\0')
++		return 0;
++
++	node = ar->dev->of_node;
++	if (!node)
++		return -ENOENT;
++
++	of_property_read_string(node, "qcom,ath10k-calibration-variant",
++				&variant);
++	if (!variant) {
++		ath10k_dbg(ar, ATH10K_DBG_BOOT, "DT bdf variant name not found.\n");
++		return -ENODATA;
++	}
++
++	strscpy(ar->id.bdf_ext, variant, sizeof(ar->id.bdf_ext));
++
++	return 0;
++}
++
+ static int ath10k_download_and_run_otp(struct ath10k *ar)
+ {
+ 	u32 result, address = ar->hw_params.patch_load_addr;
+@@ -2221,7 +2246,11 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 
+ 	ret = ath10k_core_check_smbios(ar);
+ 	if (ret)
+-		ath10k_dbg(ar, ATH10K_DBG_BOOT, "bdf variant name not set.\n");
++		ath10k_dbg(ar, ATH10K_DBG_BOOT, "SMBIOS bdf variant name not set.\n");
++
++	ret = ath10k_core_check_dt(ar);
++	if (ret)
++		ath10k_dbg(ar, ATH10K_DBG_BOOT, "DT bdf variant name not set.\n");
+ 
+ 	ret = ath10k_core_fetch_board_file(ar);
+ 	if (ret) {
+-- 
+2.11.0
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
