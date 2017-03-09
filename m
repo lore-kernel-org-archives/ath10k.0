@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1clxao-0005kZ-Rm
- for ath10k@lists.infradead.org; Thu, 09 Mar 2017 12:54:56 +0000
-Received: by mail-wm0-x235.google.com with SMTP id t189so55212998wmt.1
- for <ath10k@lists.infradead.org>; Thu, 09 Mar 2017 04:54:34 -0800 (PST)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+ id 1clxqq-0007Bg-8E
+ for ath10k@lists.infradead.org; Thu, 09 Mar 2017 13:11:30 +0000
+Received: by mail-wm0-x241.google.com with SMTP id v190so10856895wme.3
+ for <ath10k@lists.infradead.org>; Thu, 09 Mar 2017 05:11:07 -0800 (PST)
+From: Christian Lamparter <chunkeey@googlemail.com>
 Subject: Re: QCA4019: calibration files and board files
-Date: Thu, 09 Mar 2017 13:54:30 +0100
-Message-ID: <1647418.NlD0ilV4fH@bentobox>
+Date: Thu, 09 Mar 2017 14:11:04 +0100
+Message-ID: <3868483.qRteKqzzW4@debian64>
 In-Reply-To: <2093425.PaQnjOtWUV@bentobox>
 References: <1591748.RGYhBEn8I1@bentobox>
  <87shmm4qk9.fsf@kamboji.qca.qualcomm.com> <2093425.PaQnjOtWUV@bentobox>
@@ -21,68 +21,131 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2911930605549535318=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: Christian Lamparter <chunkeey@googlemail.com>, Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, "simon.wunderlich@openmesh.com" <simon.wunderlich@openmesh.com>
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Valo,
+ Kalle" <kvalo@qca.qualcomm.com>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>, ext.waldemar.rymarkiewicz@tieto.com, "simon.wunderlich@openmesh.com" <simon.wunderlich@openmesh.com>
 
---===============2911930605549535318==
-Content-Type: multipart/signed; boundary="nextPart6561797.rgSCLr9Vuy"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+On Thursday, March 9, 2017 1:46:00 PM CET Sven Eckelmann wrote:
+> On Donnerstag, 9. M=E4rz 2017 11:51:13 CET Valo, Kalle wrote:
+> [...]
+> > I haven't followed the discussion very closely, so I might be way off,
+> > but for laptop SMBIOS implementations Waldemar added a variant field to
+> > board-2.bin so that we can have multiple images for the same subsystem
+> > id. Could it help here also?
+> > =
 
---nextPart6561797.rgSCLr9Vuy
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+> > https://git.kernel.org/cgit/linux/kernel/git/kvalo/ath.git/commit/
+> > ?h=3Dath-next&id=3D1657b8f84ed9fc1d2a100671f1d42d6286f20073
+> =
 
-On Donnerstag, 9. M=E4rz 2017 13:46:00 CET Sven Eckelmann wrote:
+> Thanks for the pointer.
+I've added Waldemar.
+
+From what I can tell, adding something like a variant to the bmi-id would
+help. I looked at the patch note and it strikes me a bit odd that the
+used variant was a non-descriptive "DE_1AB" string? Isn't this bit arbitrar=
+y?
+What is encoded in these variant strings? Are these variants "unique"? =
+
+Who will distribute these special board-2.bin that contain all the =
+
+different variants?
+
+Also the patch says that if the variant isn't found, it will fall back to
+the default. In case of the Asus RT-AC58U, this will not really work.
+From what I can tell, ASUS added a PA chip and 5 dBi Antennas. They had to
+redo the calibration and ended up with different values for the PA, AGC, =
+
+Edges, Slobes, the lot... However, they kept the the project/customer id.
+So the board-2.bin found on codeaurora and in the ath10k-repository will
+not work.
+
+> =
+
+> I also saw this morning but haven't invested a lot of time when I saw it.=
+ But =
+
+> let's play around with some ideas around "variant". Maybe someone else ha=
+s =
+
+> some better ideas or comments.
+> =
+
+> The information about the variant has to come from somewhere. Currently, =
+the =
+
+> OTP binary is returning only the bmi-chip-id and bmi-board-id. There does=
+n't =
+
+> seem to be any "project"/"customer" id returned by it (even when it exist=
+s in =
+
+> the EEPROM). And even when there would be, the already existing devices d=
+on't =
+
+> seem to have it and i don't know if QCA actually allocates them for custo=
+mers. =
+
+> I would therefore postpone the use of pre-cal data to generate the the va=
+riant =
+
+> string for now (but I will ask the ODM to get some info from QCA).
+> =
+
+> Let us see how the SMBIOS does it. dmi_walk is used to go through the ent=
+ries =
+
+> and search for the entry. We don't have this here. So let's check what we=
+ have =
+
+> with the QCA4019
+> =
+
+> This looks at least like a doable thing with the device tree. It must be =
+a =
+
+> string but this can easily be stored in the device tree itself. =
+
+> =
+
+> The RT-AC58U  could therefore have following entries:
+> =
+
+>     		wifi@a000000 {
+>     			status =3D "okay";
+>     			qcom,ath10k-calibration-variant =3D "RT-AC58U";
+>     		};
+>     =
+
+>     		wifi@a800000 {
+>     			status =3D "okay";
+>     			qcom,ath10k-calibration-variant =3D "RT-AC58U";
+>     		};
+> =
+
+> Some code has to be added to ath10k_core_probe_fw. I can prepare this lat=
+er =
+
+> (when I find the time).
+> =
+
 > The board-2.bin would then require entries for bus=3Dahb,bmi-chip-id=3D0,=
 bmi-
 > board-id=3D16,variant=3DRT-AC58U and bus=3Dahb,bmi-chip-id=3D0,bmi-board-
 > id=3D17,variant=3DRT-AC58U.
-
-Small remark: I know the SMBIOS format would be "BDF_<Customer ID>_<Extensi=
-on>
-\0" and the variant string would usually end up as something like=20
-"variant=3DDE_1AB". But we usually don't seem to have the customer ids +=20
-extension(?) for these boards.
-
-Kind regards,
-	Sven
---nextPart6561797.rgSCLr9Vuy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAljBUIYACgkQXYcKB8Em
-e0buew//Xp+onj6djpt7RPdAOcIUNaU5BwHhdZqKPA5DHHXhK/YmNHttiyxUFJVy
-c6pdYrsgOquN/P1qW0E486rJbh/Dbhlw420CVTTuprf2FUF7M5gwnLsCMa14z9Bj
-tubFdtTFqUsBqL6Ks6mkl9YWRqTbXPseoAJXLRFa2o/6TDuvknvT2MBtnSBu5xh7
-PzJkFNp6yJ9+DK99pq8k5wlVu7Y+fpO1TSh78BQ8y/fYNZHw31Cuhg3rzup9TCyB
-WkuB0rXzoZm0XxCXKCiKJAiwZMUInKa3Y4AjvmQ7M0aq9875WGK5Q05huFeQDbs7
-MPj3YQ+th7QhEfF+689xTr7JUSpJEEFzes+rfj+H/nTdCZKvfyeN0BZGnnCwC2P7
-5Oi1IZh9eXfk4rJgyYpMXeHBpPFbQuIZAeidcMDofgBrgE1nP1YLBeQz884KnQyi
-62cE8TGpyGHCWIj1LdEwME2zjNP4zMk1zQ3LooW0slq8bp3BRwZwDuVabbPh5dHn
-e60erVRgUE8uV7ht1BaeWZGqE7GNOJGh5ZWQxR+Esvvr8FT+ndFUBeoeibuaEuRr
-HafwhPuMoKvzWx+0dbD7A1C9B0khXSfhKlj8AImpDM718jZyxUS/D/178N9CmPAK
-oTw5W1clAHhDVAAVwbqPEGUsuEtD76LjgfprdOauA9ZxsG+T9N8=
-=D+9i
------END PGP SIGNATURE-----
-
---nextPart6561797.rgSCLr9Vuy--
+This brings up a issue: Who will distribute these board-2.bin?
+I would prefer them being added to the codeaurora or the
+ath10k-firmware repository. Will this be possible? =
 
 
-
---===============2911930605549535318==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks,
+Christian
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============2911930605549535318==--
