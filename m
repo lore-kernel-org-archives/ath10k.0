@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot0-x234.google.com ([2607:f8b0:4003:c0f::234])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cmLCC-0004PG-1R
- for ath10k@lists.infradead.org; Fri, 10 Mar 2017 14:07:06 +0000
-Received: by mail-ot0-x234.google.com with SMTP id 19so77270158oti.0
- for <ath10k@lists.infradead.org>; Fri, 10 Mar 2017 06:06:43 -0800 (PST)
+ id 1cmNQZ-00054Q-2i
+ for ath10k@lists.infradead.org; Fri, 10 Mar 2017 16:30:06 +0000
+Received: by mail-lf0-x244.google.com with SMTP id y193so7235788lfd.1
+ for <ath10k@lists.infradead.org>; Fri, 10 Mar 2017 08:29:42 -0800 (PST)
+Subject: Re: [RFC v4 06/21] ath10k: sdio support
+References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
+ <1487693741-10042-7-git-send-email-erik.stromdahl@gmail.com>
+ <8760jh2uy8.fsf@kamboji.qca.qualcomm.com>
+ <871su52th2.fsf@kamboji.qca.qualcomm.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <2528f323-6ec7-915c-d98b-615db04510e9@gmail.com>
+Date: Fri, 10 Mar 2017 17:29:38 +0100
 MIME-Version: 1.0
-From: Chris Price <chris.price@dejero.com>
-Date: Fri, 10 Mar 2017 09:06:42 -0500
-Message-ID: <CALJ2kaHVmmZ9HK_=pEDEQ33gCB+w6+oZ3j3rx-U2ZO9aG2CWmw@mail.gmail.com>
-Subject: Re: How to integrate the latest ath10k driver into an older kernel
- release ?
+In-Reply-To: <871su52th2.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,26 +23,102 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I had similar problems doing the same thing with a 4.1 kernel. I'm not
-sure if you are having the same problem without seeing the compilation
-errors, but here is what worked for me:
 
-- Used linux-stable repo
-- Used the copy-list.ath file from
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/backports
-- Added the following files to copy-list.ath: include/net/codel.h,
-include/net/codel_impl.h, include/net/fq.h, include/net/fq_impl.h
-- Ensure you compile using the same compiler as was used to compile
-your kernel. Otherwise, I couldn't compile one of the arch modules and
-the 'mcount' symbol couldn't be found.
 
-YMMV
+On 2017-03-10 13:43, Valo, Kalle wrote:
+> "Valo, Kalle" <kvalo@qca.qualcomm.com> writes:
+>
+>> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+>>
+>>> sdio/mailbox HIF implementation.
+>>>
+>>> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+>>
+>> I'm looking at this more carefully now and noticed this:
+>>
+>>> +static int ath10k_sdio_bmi_credits(struct ath10k *ar)
+>>> +{
+>>> +	int ret;
+>>> +	u32 addr, *cmd_credits;
+>>> +	unsigned long timeout;
+>>> +
+>>> +	cmd_credits = kzalloc(sizeof(*cmd_credits), GFP_KERNEL);
+>>> +	if (!cmd_credits) {
+>>> +		ret = -ENOMEM;
+>>> +		goto err;
+>>> +	}
+>>> +
+>>> +	/* Read the counter register to get the command credits */
+>>> +	addr = MBOX_COUNT_DEC_ADDRESS + ATH10K_HIF_MBOX_NUM_MAX * 4;
+>>> +
+>>> +	timeout = jiffies + BMI_COMMUNICATION_TIMEOUT_HZ;
+>>> +	while (time_before(jiffies, timeout) && !*cmd_credits) {
+>>> +		/* Hit the credit counter with a 4-byte access, the first byte
+>>> +		 * read will hit the counter and cause a decrement, while the
+>>> +		 * remaining 3 bytes has no effect. The rationale behind this
+>>> +		 * is to make all HIF accesses 4-byte aligned.
+>>> +		 */
+>>> +		ret = ath10k_sdio_read_write_sync(ar, addr,
+>>> +						  (u8 *)cmd_credits,
+>>> +						  sizeof(*cmd_credits),
+>>> +						  HIF_RD_SYNC_BYTE_INC);
+>>> +		if (ret) {
+>>> +			ath10k_warn(ar,
+>>> + "Unable to decrement the command credit count register: %d\n",
+>>> +				    ret);
+>>> +			goto err_free;
+>>> +		}
+>>> +
+>>> +		/* The counter is only 8 bits.
+>>> +		 * Ignore anything in the upper 3 bytes
+>>> +		 */
+>>> +		*cmd_credits &= 0xFF;
+>>> +	}
+>>> +
+>>> +	if (!*cmd_credits) {
+>>> +		ath10k_warn(ar, "bmi communication timeout\n");
+>>> +		ret = -ETIMEDOUT;
+>>> +		goto err_free;
+>>> +	}
+>>> +
+>>> +	return 0;
+>>> +err_free:
+>>> +	kfree(cmd_credits);
+>>> +err:
+>>> +	return ret;
+>>> +}
+>>
+>> AFAICS we are leaking cmd_credits if there's no error. Or is the buffer
+>> freed somewhere within the mmc stack or something? The reason why I ask
+>> is that I saw the same pattern in multiple functions so I'm curious.
+>
+> Also I'm worried about endianness. We are reading from the device
+> directly to an u32 variable and not converting the bytes. Is the MMC
+> subsystem doing the conversion, I guess not?
+>
+You are right, there is definitely a memory leak (and there are similar problems
+in a couple of other functions as well as you have pointed out).
+
+This was introduced in version 3 of the
+RFC when I removed the bounce buffer from ath6kl. Instead I introduced a bunch of
+local "bounce" buffers in order to make sure that the buffers passed to the sdio
+subsystem is dma-able (malloc'ed buffer instead of stack allocated).
+
+Regarding endianess: That particular code construct is an artifact from ath6kl.
+I am not sure it makes any sense to use a u32 in that particular case.
+A u8 array is most likely more convenient.
+
+It is really nice you have found some time to review the patches!
+
+--
+Erik
 
 _______________________________________________
 ath10k mailing list
