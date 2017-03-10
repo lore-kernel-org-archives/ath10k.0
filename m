@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x22f.google.com ([2a00:1450:400c:c0c::22f])
+Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cm2FF-00005L-0o
- for ath10k@lists.infradead.org; Thu, 09 Mar 2017 17:52:59 +0000
-Received: by mail-wr0-x22f.google.com with SMTP id u108so50082489wrb.3
- for <ath10k@lists.infradead.org>; Thu, 09 Mar 2017 09:52:36 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <87o9xa4oqb.fsf@kamboji.qca.qualcomm.com>
-References: <7312b473-4dec-5fec-8642-8233689f4d8a@candelatech.com>
- <87lgse6hmf.fsf@kamboji.qca.qualcomm.com> <58C14C2D.902@candelatech.com>
- <87o9xa4oqb.fsf@kamboji.qca.qualcomm.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Thu, 9 Mar 2017 09:52:34 -0800
-Message-ID: <CAJ-VmomgksTfjSeA9o+ci2dLwad6ihAWm4s68M70JhyTq=6miA@mail.gmail.com>
-Subject: Re: Please update board-2.bin for QCA9888
+ id 1cmFZb-0003Hy-NO
+ for ath10k@lists.infradead.org; Fri, 10 Mar 2017 08:06:54 +0000
+Received: by mail-wm0-x232.google.com with SMTP id n11so4636302wma.0
+ for <ath10k@lists.infradead.org>; Fri, 10 Mar 2017 00:06:30 -0800 (PST)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: [PATCH 1/2] dt: bindings: add new dt entry for ath10k calibration
+ variant
+Date: Fri, 10 Mar 2017 09:06:14 +0100
+Message-Id: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +18,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, robh+dt@kernel.org, Sven Eckelmann <sven.eckelmann@openmesh.com>, ext.waldemar.rymarkiewicz@tieto.com, kvalo@codeaurora.org
 
-Hi,
+The bus + bmi-chip-id + bmi-board-id is not enough to identify the correct
+board data file on QCA4019 based devices. Multiple different boards share
+the same values. Only the original reference designs can currently be
+identified and loaded from the board-2.bin. But these will not result in
+the correct calibration data when combined with the pre-calibration data
+from the device.
 
-Whilst you're at it, the DK07 2G/5G-low and DK07 5G-high/5G-high board
-values would be good to add too. They're the same bmi-id though;
-there's a jumper to select radio0 as "2G or 5G-high RF path". You'd
-have to add them as separate files that people can select at runtime.
-:)
+An additional "variant" information has to be provided (via SMBIOS or DT)
+to select the correct board data for a design which was modified by an ODM.
 
-I think there's also the file for the DK07+Cascade and DK07+Besra
-5G-low NICs that aren't in there by default. Lemme go dig up which
-files to use from where.
+Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
+---
+Since RFC:
 
-Thanks!
+ - Split patch in DT doc and ath10k part (thanks Christian Lamparter)
+ - Remove the words "bmi-chip-id" and "bmi-board-id" and replace them with
+   more generic "device specific ids"
+---
+ Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index 74d7f0af209c..3d2a031217da 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -41,6 +41,9 @@ Optional properties:
+ - qcom,msi_addr: MSI interrupt address.
+ - qcom,msi_base: Base value to add before writing MSI data into
+ 		MSI address register.
++- qcom,ath10k-calibration-variant: string to search for in the board-2.bin
++				   variant list with the same bus and device
++				   specific ids
+ - qcom,ath10k-calibration-data : calibration data + board specific data
+ 				 as an array, the length can vary between
+ 				 hw versions.
+-- 
+2.11.0
 
-
--adrian
 
 _______________________________________________
 ath10k mailing list
