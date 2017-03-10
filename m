@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x236.google.com ([2a00:1450:400c:c0c::236])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cmFZf-0003IF-9z
- for ath10k@lists.infradead.org; Fri, 10 Mar 2017 08:06:58 +0000
-Received: by mail-wr0-x236.google.com with SMTP id g10so59840477wrg.2
- for <ath10k@lists.infradead.org>; Fri, 10 Mar 2017 00:06:34 -0800 (PST)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: [PATCH 2/2] ath10k: search DT for qcom,ath10k-calibration-variant
-Date: Fri, 10 Mar 2017 09:06:15 +0100
-Message-Id: <20170310080615.22958-2-sven.eckelmann@openmesh.com>
-In-Reply-To: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
-References: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
+ id 1cmJOy-0005aG-4k
+ for ath10k@lists.infradead.org; Fri, 10 Mar 2017 12:12:10 +0000
+From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC v4 06/21] ath10k: sdio support
+Date: Fri, 10 Mar 2017 12:11:40 +0000
+Message-ID: <8760jh2uy8.fsf@kamboji.qca.qualcomm.com>
+References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
+ <1487693741-10042-7-git-send-email-erik.stromdahl@gmail.com>
+In-Reply-To: <1487693741-10042-7-git-send-email-erik.stromdahl@gmail.com>
+ (Erik Stromdahl's message of "Tue, 21 Feb 2017 17:15:26 +0100")
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,132 +21,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, robh+dt@kernel.org, Sven Eckelmann <sven.eckelmann@openmesh.com>, ext.waldemar.rymarkiewicz@tieto.com, kvalo@codeaurora.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Board Data File (BDF) is loaded upon driver boot-up procedure. The right
-board data file is identified on QCA4019 using bus, bmi-chip-id and
-bmi-board-id.
+Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
-The problem, however, can occur when the (default) board data file cannot
-fulfill with the vendor requirements and it is necessary to use a different
-board data file.
+> sdio/mailbox HIF implementation.
+>
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-This problem was solved for SMBIOS by adding a special SMBIOS type 0xF8.
-Something similar has to be provided for systems without SMBIOS but with
-device trees. No solution was specified by QCA and therefore a new one has
-to be found for ath10k.
+I'm looking at this more carefully now and noticed this:
 
-The device tree requires addition strings to define the variant name
+> +static int ath10k_sdio_bmi_credits(struct ath10k *ar)
+> +{
+> +	int ret;
+> +	u32 addr, *cmd_credits;
+> +	unsigned long timeout;
+> +
+> +	cmd_credits = kzalloc(sizeof(*cmd_credits), GFP_KERNEL);
+> +	if (!cmd_credits) {
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	/* Read the counter register to get the command credits */
+> +	addr = MBOX_COUNT_DEC_ADDRESS + ATH10K_HIF_MBOX_NUM_MAX * 4;
+> +
+> +	timeout = jiffies + BMI_COMMUNICATION_TIMEOUT_HZ;
+> +	while (time_before(jiffies, timeout) && !*cmd_credits) {
+> +		/* Hit the credit counter with a 4-byte access, the first byte
+> +		 * read will hit the counter and cause a decrement, while the
+> +		 * remaining 3 bytes has no effect. The rationale behind this
+> +		 * is to make all HIF accesses 4-byte aligned.
+> +		 */
+> +		ret = ath10k_sdio_read_write_sync(ar, addr,
+> +						  (u8 *)cmd_credits,
+> +						  sizeof(*cmd_credits),
+> +						  HIF_RD_SYNC_BYTE_INC);
+> +		if (ret) {
+> +			ath10k_warn(ar,
+> +				    "Unable to decrement the command credit count register: %d\n",
+> +				    ret);
+> +			goto err_free;
+> +		}
+> +
+> +		/* The counter is only 8 bits.
+> +		 * Ignore anything in the upper 3 bytes
+> +		 */
+> +		*cmd_credits &= 0xFF;
+> +	}
+> +
+> +	if (!*cmd_credits) {
+> +		ath10k_warn(ar, "bmi communication timeout\n");
+> +		ret = -ETIMEDOUT;
+> +		goto err_free;
+> +	}
+> +
+> +	return 0;
+> +err_free:
+> +	kfree(cmd_credits);
+> +err:
+> +	return ret;
+> +}
 
-    wifi@a000000 {
-    	status = "okay";
-    	qcom,ath10k-calibration-variant = "RT-AC58U";
-    };
+AFAICS we are leaking cmd_credits if there's no error. Or is the buffer
+freed somewhere within the mmc stack or something? The reason why I ask
+is that I saw the same pattern in multiple functions so I'm curious.
 
-    wifi@a800000 {
-    	status = "okay";
-    	qcom,ath10k-calibration-variant = "RT-AC58U";
-    };
-
-This would create the boarddata identifiers for the board-2.bin search
-
- *  bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=RT-AC58U
- *  bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=RT-AC58U
-
-Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
----
-Since RFC:
-
- - initialize variant pointer to have it initialized to NULL when
-   of_property_read_string fails (thanks Christian Lamparter)
- - Only print warning that DT doesn't contain string ones (thanks Christian
-   Lamparter)
- - Split patch in DT doc and ath10k part (thanks Christian Lamparter)
- - Allow to overwrite the variant string via DT and ignore that SMBIOS had
-   written anything to it
----
- drivers/net/wireless/ath/ath10k/core.c | 37 +++++++++++++++++++++++++++-------
- 1 file changed, 30 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 0a8e29e9a0eb..e459e84afe9f 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -779,6 +779,25 @@ static int ath10k_core_check_smbios(struct ath10k *ar)
- 	return 0;
- }
- 
-+static int ath10k_core_check_dt(struct ath10k *ar)
-+{
-+	struct device_node *node;
-+	const char *variant = NULL;
-+
-+	node = ar->dev->of_node;
-+	if (!node)
-+		return -ENOENT;
-+
-+	of_property_read_string(node, "qcom,ath10k-calibration-variant",
-+				&variant);
-+	if (!variant)
-+		return -ENODATA;
-+
-+	strscpy(ar->id.bdf_ext, variant, sizeof(ar->id.bdf_ext));
-+
-+	return 0;
-+}
-+
- static int ath10k_download_and_run_otp(struct ath10k *ar)
- {
- 	u32 result, address = ar->hw_params.patch_load_addr;
-@@ -1145,19 +1164,19 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
- 	/* strlen(',variant=') + strlen(ar->id.bdf_ext) */
- 	char variant[9 + ATH10K_SMBIOS_BDF_EXT_STR_LENGTH] = { 0 };
- 
-+	if (ar->id.bdf_ext[0] != '\0')
-+		scnprintf(variant, sizeof(variant), ",variant=%s",
-+			  ar->id.bdf_ext);
-+
- 	if (ar->id.bmi_ids_valid) {
- 		scnprintf(name, name_len,
--			  "bus=%s,bmi-chip-id=%d,bmi-board-id=%d",
-+			  "bus=%s,bmi-chip-id=%d,bmi-board-id=%d%s",
- 			  ath10k_bus_str(ar->hif.bus),
- 			  ar->id.bmi_chip_id,
--			  ar->id.bmi_board_id);
-+			  ar->id.bmi_board_id, variant);
- 		goto out;
- 	}
- 
--	if (ar->id.bdf_ext[0] != '\0')
--		scnprintf(variant, sizeof(variant), ",variant=%s",
--			  ar->id.bdf_ext);
--
- 	scnprintf(name, name_len,
- 		  "bus=%s,vendor=%04x,device=%04x,subsystem-vendor=%04x,subsystem-device=%04x%s",
- 		  ath10k_bus_str(ar->hif.bus),
-@@ -2221,7 +2240,11 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
- 
- 	ret = ath10k_core_check_smbios(ar);
- 	if (ret)
--		ath10k_dbg(ar, ATH10K_DBG_BOOT, "bdf variant name not set.\n");
-+		ath10k_dbg(ar, ATH10K_DBG_BOOT, "SMBIOS bdf variant name not set.\n");
-+
-+	ret = ath10k_core_check_dt(ar);
-+	if (ret)
-+		ath10k_dbg(ar, ATH10K_DBG_BOOT, "DT bdf variant name not set.\n");
- 
- 	ret = ath10k_core_fetch_board_file(ar);
- 	if (ret) {
 -- 
-2.11.0
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
