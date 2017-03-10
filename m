@@ -1,19 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cmJtp-0003Eq-SW
- for ath10k@lists.infradead.org; Fri, 10 Mar 2017 12:44:04 +0000
-From: "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC v4 06/21] ath10k: sdio support
-Date: Fri, 10 Mar 2017 12:43:34 +0000
-Message-ID: <871su52th2.fsf@kamboji.qca.qualcomm.com>
-References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
- <1487693741-10042-7-git-send-email-erik.stromdahl@gmail.com>
- <8760jh2uy8.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <8760jh2uy8.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Fri, 10 Mar 2017 12:11:40 +0000")
-Content-Language: en-US
-MIME-Version: 1.0
+Received: from mail-wr0-x230.google.com ([2a00:1450:400c:c0c::230])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cmK7A-00043q-5J
+ for ath10k@lists.infradead.org; Fri, 10 Mar 2017 12:57:51 +0000
+Received: by mail-wr0-x230.google.com with SMTP id u48so64479012wrc.0
+ for <ath10k@lists.infradead.org>; Fri, 10 Mar 2017 04:57:26 -0800 (PST)
+Received: from [192.168.0.14] (agqd138.neoplus.adsl.tpnet.pl. [217.99.29.138])
+ by smtp.gmail.com with ESMTPSA id
+ n59sm12775689wrb.54.2017.03.10.04.57.24
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 10 Mar 2017 04:57:25 -0800 (PST)
+From: Jean-Luc Kalmus <jean-luc@picocela.com>
+Mime-Version: 1.0 (Mac OS X Mail 10.2 \(3259\))
+Subject: Re: How to integrate the latest ath10k driver into an older kernel
+ release ? 
+Date: Fri, 10 Mar 2017 13:57:23 +0100
+References: <F3E5DE47-C5E5-46B5-8E19-DF0DD43DBC9C@picocela.com>
+In-Reply-To: <F3E5DE47-C5E5-46B5-8E19-DF0DD43DBC9C@picocela.com>
+Message-Id: <8B6F3E29-15E3-423B-A1E4-F98F73D711B3@picocela.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,86 +27,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-"Valo, Kalle" <kvalo@qca.qualcomm.com> writes:
-
-> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
->
->> sdio/mailbox HIF implementation.
->>
->> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
->
-> I'm looking at this more carefully now and noticed this:
->
->> +static int ath10k_sdio_bmi_credits(struct ath10k *ar)
->> +{
->> +	int ret;
->> +	u32 addr, *cmd_credits;
->> +	unsigned long timeout;
->> +
->> +	cmd_credits = kzalloc(sizeof(*cmd_credits), GFP_KERNEL);
->> +	if (!cmd_credits) {
->> +		ret = -ENOMEM;
->> +		goto err;
->> +	}
->> +
->> +	/* Read the counter register to get the command credits */
->> +	addr = MBOX_COUNT_DEC_ADDRESS + ATH10K_HIF_MBOX_NUM_MAX * 4;
->> +
->> +	timeout = jiffies + BMI_COMMUNICATION_TIMEOUT_HZ;
->> +	while (time_before(jiffies, timeout) && !*cmd_credits) {
->> +		/* Hit the credit counter with a 4-byte access, the first byte
->> +		 * read will hit the counter and cause a decrement, while the
->> +		 * remaining 3 bytes has no effect. The rationale behind this
->> +		 * is to make all HIF accesses 4-byte aligned.
->> +		 */
->> +		ret = ath10k_sdio_read_write_sync(ar, addr,
->> +						  (u8 *)cmd_credits,
->> +						  sizeof(*cmd_credits),
->> +						  HIF_RD_SYNC_BYTE_INC);
->> +		if (ret) {
->> +			ath10k_warn(ar,
->> + "Unable to decrement the command credit count register: %d\n",
->> +				    ret);
->> +			goto err_free;
->> +		}
->> +
->> +		/* The counter is only 8 bits.
->> +		 * Ignore anything in the upper 3 bytes
->> +		 */
->> +		*cmd_credits &= 0xFF;
->> +	}
->> +
->> +	if (!*cmd_credits) {
->> +		ath10k_warn(ar, "bmi communication timeout\n");
->> +		ret = -ETIMEDOUT;
->> +		goto err_free;
->> +	}
->> +
->> +	return 0;
->> +err_free:
->> +	kfree(cmd_credits);
->> +err:
->> +	return ret;
->> +}
->
-> AFAICS we are leaking cmd_credits if there's no error. Or is the buffer
-> freed somewhere within the mmc stack or something? The reason why I ask
-> is that I saw the same pattern in multiple functions so I'm curious.
-
-Also I'm worried about endianness. We are reading from the device
-directly to an u32 variable and not converting the bytes. Is the MMC
-subsystem doing the conversion, I guess not?
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCkhvdyBjYW4gSSBpbnRlZ3JhdGUgdGhlIGxhdGVzdCBhdGgxMGsgZHJpdmVyIGludG8gTGlu
+dXgga2VybmVsIHYzLjEwLjIwID8gCgpBY2NvcmRpbmcgdG8gdGhpcyB3aWtpIGh0dHBzOi8vYmFj
+a3BvcnRzLndpa2kua2VybmVsLm9yZy9pbmRleC5waHAvRG9jdW1lbnRhdGlvbi9pbnRlZ3JhdGlv
+biB0aGUgaW50ZWdyYXRpb24gcmVxdWlyZXMgdGhlIGJhY2twb3J0cy5naXQgYW5kIGxpbnV4LW5l
+eHQuZ2l0IChvciBsaW51eC1uZXh0LWhpc3RvcnkuZ2l0IG9yIGxpbnV4LXN0YWJsZS5naXQpIHRy
+ZWVzIHRvIGJlIG9uIGNvcnJlc3BvbmRpbmcgdGFncy4KSSBmb3VuZCB0aGF0IHRoZSBsYXRlc3Qg
+dGFnIGluIHRoZSBiYWNrcG9ydHMuZ2l0IHRyZWUgaXMg4oCYYmFja3BvcnRzLTIwMTYwMzI04oCZ
+LiBUaGVyZWZvcmUgdGhlIGxhdGVzdCBhdGgxMGsgZHJpdmVyIEkgY2FuIGludGVncmF0ZSBpcyBm
+cm9tIHRoZSBrZXJuZWwgdGFnIG5leHQtMjAxNjAzMjQuCkkgdXNlZCB0aGUgY29tbWFuZDogLi9n
+ZW50cmVlLnB5IC0tY29weS1saXN0IGNvcHktbGlzdCAgLS1pbnRlZ3JhdGUgLS1jbGVhbiAgfi9s
+aW51eC1uZXh0LWhpc3RvcnkvIH4vbGludXgtMy4xMC4yMC8KCkhvd2V2ZXIsIHdoZW4gSSB0cmll
+ZCB0byBpbnRlZ3JhdGUgZHJpdmVycyBmcm9tIHRoZSBsaW51eCB0YWcgbmV4dC0yMDE3MDMwOSB1
+c2luZyBhIGJhY2twb3J0cyB0cmVlIG9uIGJhY2twb3J0cy0yMDE2MDMyNCwgdGhhdCByZXN1bHRl
+ZCBpbiBwYXRjaGluZyBlcnJvcnMuCkhvdyB0byBkbyB0aGUgaW50ZWdyYXRpb24gaW4gdGhhdCBj
+YXNlID8gCgpUaGUgc2FtZSBwcm9ibGVtIG9jY3VycyB3aGVuIHVzaW5nIHRoZSBtZXRob2QgZXhw
+bGFpbmVkIGluIHRoaXMgd2lraSBwYWdlIGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3Jn
+L2VuL3VzZXJzL2RyaXZlcnMvYXRoMTBrL2JhY2twb3J0cyB1c2luZyB0aGUgYXRoLmdpdCB0cmVl
+LgoKLS0KSmVhbi1MdWMgS2FsbXVzCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
