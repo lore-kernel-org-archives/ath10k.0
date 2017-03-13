@@ -1,23 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+Received: from mail-oi0-x235.google.com ([2607:f8b0:4003:c06::235])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cmmPQ-0004XI-5y
- for ath10k@lists.infradead.org; Sat, 11 Mar 2017 19:10:34 +0000
-Received: by mail-lf0-x243.google.com with SMTP id g70so9071582lfh.3
- for <ath10k@lists.infradead.org>; Sat, 11 Mar 2017 11:10:11 -0800 (PST)
-Subject: Re: [RFC v4 06/21] ath10k: sdio support
-References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
- <1487693741-10042-7-git-send-email-erik.stromdahl@gmail.com>
- <8760jh2uy8.fsf@kamboji.qca.qualcomm.com>
- <871su52th2.fsf@kamboji.qca.qualcomm.com>
- <2528f323-6ec7-915c-d98b-615db04510e9@gmail.com>
- <0d331e5f-7868-ed9a-7506-eecd1e8b9df6@gmail.com>
- <87innfq2gp.fsf@qca.qualcomm.com>
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Message-ID: <fb87d7e4-77f3-4b35-8a19-5c6d34015a1c@gmail.com>
-Date: Sat, 11 Mar 2017 20:10:08 +0100
+ id 1cnMVJ-0001YP-TZ
+ for ath10k@lists.infradead.org; Mon, 13 Mar 2017 09:43:04 +0000
+Received: by mail-oi0-x235.google.com with SMTP id 126so75119221oig.3
+ for <ath10k@lists.infradead.org>; Mon, 13 Mar 2017 02:42:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87innfq2gp.fsf@qca.qualcomm.com>
+In-Reply-To: <CALJ2kaHVmmZ9HK_=pEDEQ33gCB+w6+oZ3j3rx-U2ZO9aG2CWmw@mail.gmail.com>
+References: <CALJ2kaHVmmZ9HK_=pEDEQ33gCB+w6+oZ3j3rx-U2ZO9aG2CWmw@mail.gmail.com>
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Date: Mon, 13 Mar 2017 10:42:32 +0100
+Message-ID: <CALhHN=rGsqXOML7Ecd1uRZ5QO9dm3OR_OQ3b3wu_ijzEPGVFrA@mail.gmail.com>
+Subject: Re: How to integrate the latest ath10k driver into an older kernel
+ release ?
+Content-Type: multipart/mixed; boundary=94eb2c091feedc01ab054a998750
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +22,138 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Chris Price <chris.price@dejero.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+--94eb2c091feedc01ab054a998750
+Content-Type: text/plain; charset=UTF-8
 
-
-On 2017-03-11 16:04, Kalle Valo wrote:
-> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+On 10 March 2017 at 15:06, Chris Price <chris.price@dejero.com> wrote:
+> I had similar problems doing the same thing with a 4.1 kernel. I'm not
+> sure if you are having the same problem without seeing the compilation
+> errors, but here is what worked for me:
 >
->>> You are right, there is definitely a memory leak (and there are similar problems
->>> in a couple of other functions as well as you have pointed out).
->>>
->>> This was introduced in version 3 of the
->>> RFC when I removed the bounce buffer from ath6kl. Instead I introduced a bunch of
->>> local "bounce" buffers in order to make sure that the buffers passed to the sdio
->>> subsystem is dma-able (malloc'ed buffer instead of stack allocated).
->>>
->>> Regarding endianess: That particular code construct is an artifact from ath6kl.
->>> I am not sure it makes any sense to use a u32 in that particular case.
->>> A u8 array is most likely more convenient.
->>>
->>> It is really nice you have found some time to review the patches!
->>
->> After doing some reviewing myself I have found some more endianess related issues.
->> I will fix those (and the memory leaks) and submit v5 some time next week.
+I did it today:
+- ./devel/backports-update-manager
+- apply ccm patch from Arend (subscribe to backports mailing list -
+you will see latest required patches)
+- ./gentree.py --verbose --clean --git-revision next-20170310
+--copy-list copy-list.ath ~/linux-next/ ~/backports-output
+
+And backports generate/compile fine.
+(coccinelle installed from APT, ubuntu 16.04)
+
+BR
+Janusz
+
+> - Used linux-stable repo
+> - Used the copy-list.ath file from
+> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/backports
+> - Added the following files to copy-list.ath: include/net/codel.h,
+> include/net/codel_impl.h, include/net/fq.h, include/net/fq_impl.h
+> - Ensure you compile using the same compiler as was used to compile
+> your kernel. Otherwise, I couldn't compile one of the arch modules and
+> the 'mcount' symbol couldn't be found.
 >
-> Actually let me send v5 (for the sdio part, I'm ignoring usb for now). I
-> have made some small changes while looking at the patches.
+> YMMV
 >
-Ok, I have made some fixes in the branch:
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
-ath-201703090806-ath10k-sdio-usb
+--94eb2c091feedc01ab054a998750
+Content-Type: application/octet-stream; name="ccm.patch"
+Content-Disposition: attachment; filename="ccm.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_j07wu3b60
 
-in my ath tree:
-https://github.com/erstrom/linux-ath.git
-
-Perhaps you can have a look at the updated sdio.c
-
---
-Erik
+RGVsaXZlcmVkLVRvOiBqYW51c3ouZHppZWR6aWNAZ21haWwuY29tClJlY2VpdmVkOiBieSAxMC43
+NC43MC4xMzggd2l0aCBTTVRQIGlkIHExMGNzcDMwODk4M29vZDsKICAgICAgICBUaHUsIDkgTWFy
+IDIwMTcgMDU6MDY6MjcgLTA4MDAgKFBTVCkKWC1SZWNlaXZlZDogYnkgMTAuOTkuMTIzLjc1IHdp
+dGggU01UUCBpZCBrMTFtcjEzNTk4Njg1cGduLjE3LjE0ODkwNjQ3ODY5NDk7CiAgICAgICAgVGh1
+LCAwOSBNYXIgMjAxNyAwNTowNjoyNiAtMDgwMCAoUFNUKQpSZXR1cm4tUGF0aDogPGJhY2twb3J0
+cy1vd25lckB2Z2VyLmtlcm5lbC5vcmc+ClJlY2VpdmVkOiBmcm9tIHZnZXIua2VybmVsLm9yZyAo
+dmdlci5rZXJuZWwub3JnLiBbMjA5LjEzMi4xODAuNjddKQogICAgICAgIGJ5IG14Lmdvb2dsZS5j
+b20gd2l0aCBFU01UUCBpZCBmMzVzaTY0MzU5MzhwbGguNDAuMjAxNy4wMy4wOS4wNS4wNi4xODsK
+ICAgICAgICBUaHUsIDA5IE1hciAyMDE3IDA1OjA2OjI2IC0wODAwIChQU1QpClJlY2VpdmVkLVNQ
+RjogcGFzcyAoZ29vZ2xlLmNvbTogYmVzdCBndWVzcyByZWNvcmQgZm9yIGRvbWFpbiBvZiBiYWNr
+cG9ydHMtb3duZXJAdmdlci5rZXJuZWwub3JnIGRlc2lnbmF0ZXMgMjA5LjEzMi4xODAuNjcgYXMg
+cGVybWl0dGVkIHNlbmRlcikgY2xpZW50LWlwPTIwOS4xMzIuMTgwLjY3OwpBdXRoZW50aWNhdGlv
+bi1SZXN1bHRzOiBteC5nb29nbGUuY29tOwogICAgICAgc3BmPXBhc3MgKGdvb2dsZS5jb206IGJl
+c3QgZ3Vlc3MgcmVjb3JkIGZvciBkb21haW4gb2YgYmFja3BvcnRzLW93bmVyQHZnZXIua2VybmVs
+Lm9yZyBkZXNpZ25hdGVzIDIwOS4xMzIuMTgwLjY3IGFzIHBlcm1pdHRlZCBzZW5kZXIpIHNtdHAu
+bWFpbGZyb209YmFja3BvcnRzLW93bmVyQHZnZXIua2VybmVsLm9yZzsKICAgICAgIGRtYXJjPWZh
+aWwgKHA9UVVBUkFOVElORSBzcD1RVUFSQU5USU5FIGRpcz1OT05FKSBoZWFkZXIuZnJvbT1icm9h
+ZGNvbS5jb20KUmVjZWl2ZWQ6IChtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnKSBieSB2Z2VyLmtl
+cm5lbC5vcmcgdmlhIGxpc3RleHBhbmQKICAgICAgICBpZCBTOTMyMzQ2QWJkQ0lORmogKE9SQ1BU
+IDxyZmM4MjI7Y2hhcnViYW5zYWwxMDJAZ21haWwuY29tPgogICAgICAgICsgNTkgb3RoZXJzKTsg
+VGh1LCA5IE1hciAyMDE3IDA4OjA1OjM5IC0wNTAwClJlY2VpdmVkOiBmcm9tIGxwZHZybmRzbXRw
+MDEuYnJvYWRjb20uY29tIChbMTkyLjE5LjIyOS4xNzBdOjQzNDU0ICJFSExPCiAgICAgICAgcm5k
+LXJlbGF5LnNtdHAuYnJvYWRjb20uY29tIiByaG9zdC1mbGFncy1PSy1PSy1PSy1PSykKICAgICAg
+ICBieSB2Z2VyLmtlcm5lbC5vcmcgd2l0aCBFU01UUCBpZCBTOTMyMzQyQWJkQ0lORmkgKE9SQ1BU
+CiAgICAgICAgPHJmYzgyMjtiYWNrcG9ydHNAdmdlci5rZXJuZWwub3JnPik7IFRodSwgOSBNYXIg
+MjAxNyAwODowNTozOCAtMDUwMApSZWNlaXZlZDogZnJvbSBtYWlsLWlydi0xNy5icm9hZGNvbS5j
+b20gKG1haWwtaXJ2LTE3Lmx2bi5icm9hZGNvbS5uZXQgWzEwLjc1LjIyNC4yMzNdKQogICAgICAg
+IGJ5IHJuZC1yZWxheS5zbXRwLmJyb2FkY29tLmNvbSAoUG9zdGZpeCkgd2l0aCBFU01UUCBpZCAw
+RjU1QTMwQzI2QTsKICAgICAgICBUaHUsCiAgOSBNYXIgMjAxNyAwNDo1Nzo0MSAtMDgwMCAoUFNU
+KQpSZWNlaXZlZDogZnJvbSBqZW5raW5zLWNhbS0xNC5jYW0uYnJvYWRjb20uY29tIChqZW5raW5z
+LWNhbS0xNC5jYW0uYnJvYWRjb20uY29tIFsxMC4xNzcuMTI4Ljc3XSkKICAgICAgICBieSBtYWls
+LWlydi0xNy5icm9hZGNvbS5jb20gKFBvc3RmaXgpIHdpdGggRVNNVFAgaWQgQ0U4Q0E4MUU5QzsK
+ICAgICAgICBUaHUsCiAgOSBNYXIgMjAxNyAwNDo1Nzo0MCAtMDgwMCAoUFNUKQpSZWNlaXZlZDog
+YnkgamVua2lucy1jYW0tMTQuY2FtLmJyb2FkY29tLmNvbSAoUG9zdGZpeCwgZnJvbSB1c2VyaWQg
+MjUxNTIpCiAgICAgICAgaWQgREY2RTJCODRFNjY7IFRodSwKICA5IE1hciAyMDE3IDEyOjU3OjM5
+ICswMDAwIChHTVQpCkZyb206IEFyZW5kIHZhbiBTcHJpZWwgPGFyZW5kLnZhbnNwcmllbEBicm9h
+ZGNvbS5jb20+ClRvOiBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lcy5iZXJnQGludGVsLmNvbT4KQ2M6
+IGJhY2twb3J0c0B2Z2VyLmtlcm5lbC5vcmcsIEFyZW5kIHZhbiBTcHJpZWwgPGFyZW5kLnZhbnNw
+cmllbEBicm9hZGNvbS5jb20+ClN1YmplY3Q6IFtQQVRDSCAxLzRdIHBhdGNoZXM6IHVwZGF0ZSBj
+cnlwdG8tY2NtLnBhdGNoIGZvciB2NC4xMS1yYzEKRGF0ZTogVGh1LAogIDkgTWFyIDIwMTcgMTI6
+NTc6MzAgKzAwMDAKTWVzc2FnZS1JZDogPDE0ODkwNjQyNTMtMzY1Mi0yLWdpdC1zZW5kLWVtYWls
+LWFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20+ClgtTWFpbGVyOiBnaXQtc2VuZC1lbWFpbCAx
+LjkuMQpJbi1SZXBseS1UbzogPDE0ODkwNjQyNTMtMzY1Mi0xLWdpdC1zZW5kLWVtYWlsLWFyZW5k
+LnZhbnNwcmllbEBicm9hZGNvbS5jb20+ClJlZmVyZW5jZXM6IDwxNDg5MDY0MjUzLTM2NTItMS1n
+aXQtc2VuZC1lbWFpbC1hcmVuZC52YW5zcHJpZWxAYnJvYWRjb20uY29tPgpTZW5kZXI6IGJhY2tw
+b3J0cy1vd25lckB2Z2VyLmtlcm5lbC5vcmcKUHJlY2VkZW5jZTogYnVsawpMaXN0LUlEOiA8YmFj
+a3BvcnRzLnZnZXIua2VybmVsLm9yZz4KWC1NYWlsaW5nLUxpc3Q6IGJhY2twb3J0c0B2Z2VyLmtl
+cm5lbC5vcmcKClNpbmNlIHY0LjExLXJjMSB0aGUgcGF0Y2ggZmlsZSBmb3IgY3J5cHRvL2NjbS5j
+LCB3aGljaCBpcyBpbmNvcnBvcmF0ZWQKaW4gdGhlIGNvbXBhdCBtb2R1bGUsIG5vIGxvbmdlciBh
+cHBsaWVzLiBVcGRhdGUgdGhlIHBhdGNoIGZpbGUgdG8gZml4CnRoZSBpc3N1ZS4KClNpZ25lZC1v
+ZmYtYnk6IEFyZW5kIHZhbiBTcHJpZWwgPGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20+Ci0t
+LQogcGF0Y2hlcy9jcnlwdG8tY2NtLnBhdGNoIHwgOSArKysrKy0tLS0KIDEgZmlsZSBjaGFuZ2Vk
+LCA1IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvcGF0Y2hlcy9j
+cnlwdG8tY2NtLnBhdGNoIGIvcGF0Y2hlcy9jcnlwdG8tY2NtLnBhdGNoCmluZGV4IDhiZGVhM2Qu
+LjdhNDRkMzcgMTAwNjQ0Ci0tLSBhL3BhdGNoZXMvY3J5cHRvLWNjbS5wYXRjaAorKysgYi9wYXRj
+aGVzL2NyeXB0by1jY20ucGF0Y2gKQEAgLTEsNyArMSw3IEBACiAtLS0gYS9jb21wYXQvY3J5cHRv
+LWNjbS5jCiArKysgYi9jb21wYXQvY3J5cHRvLWNjbS5jCi1AQCAtMTMsMTMgKzEzLDQ0IEBACi0g
+I2luY2x1ZGUgPGNyeXB0by9pbnRlcm5hbC9hZWFkLmg+CitAQCAtMTQsMTMgKzE0LDQ0IEBACisg
+I2luY2x1ZGUgPGNyeXB0by9pbnRlcm5hbC9oYXNoLmg+CiAgI2luY2x1ZGUgPGNyeXB0by9pbnRl
+cm5hbC9za2NpcGhlci5oPgogICNpbmNsdWRlIDxjcnlwdG8vc2NhdHRlcndhbGsuaD4KICsjaW5j
+bHVkZSA8Y3J5cHRvL2FsZ2FwaS5oPgpAQCAtNDYsNyArNDYsNyBAQAogIAogIHN0cnVjdCBjY21f
+aW5zdGFuY2VfY3R4IHsKICAJc3RydWN0IGNyeXB0b19za2NpcGhlcl9zcGF3biBjdHI7Ci1AQCAt
+ODk3LDcgKzkyOCw3IEBAIHN0YXRpYyBzdHJ1Y3QgY3J5cHRvX3RlbXBsYXRlIGNyeXB0b19yZmMK
+K0BAIC0xMDAxLDcgKzEwMzIsNyBAQCBzdGF0aWMgaW50IGNiY21hY19jcmVhdGUoc3RydWN0IGNy
+eXB0b190ZW1wbGF0ZSAqdG1wbCwgc3RydWN0IHJ0YXR0ciAqKnRiKQogIAkubW9kdWxlID0gVEhJ
+U19NT0RVTEUsCiAgfTsKICAKQEAgLTU1LDcgKzU1LDcgQEAKICB7CiAgCWludCBlcnI7CiAgCi1A
+QCAtOTIzLDE4ICs5NTQsOSBAQCBvdXRfdW5kb19iYXNlOgorQEAgLTEwMzMsMTkgKzEwNjQsMTAg
+QEAgc3RhdGljIGludCBfX2luaXQgY3J5cHRvX2NjbV9tb2R1bGVfaW5pdCh2b2lkKQogIAlnb3Rv
+IG91dDsKICB9CiAgCkBAIC02NSw2ICs2NSw3IEBACiAgCWNyeXB0b191bnJlZ2lzdGVyX3RlbXBs
+YXRlKCZjcnlwdG9fcmZjNDMwOV90bXBsKTsKICAJY3J5cHRvX3VucmVnaXN0ZXJfdGVtcGxhdGUo
+JmNyeXB0b19jY21fdG1wbCk7CiAgCWNyeXB0b191bnJlZ2lzdGVyX3RlbXBsYXRlKCZjcnlwdG9f
+Y2NtX2Jhc2VfdG1wbCk7CisgCWNyeXB0b191bnJlZ2lzdGVyX3RlbXBsYXRlKCZjcnlwdG9fY2Jj
+bWFjX3RtcGwpOwogIH0KIC0KIC1tb2R1bGVfaW5pdChjcnlwdG9fY2NtX21vZHVsZV9pbml0KTsK
+LS0gCjEuOS4xCgotLQpUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGlu
+ZSAidW5zdWJzY3JpYmUgYmFja3BvcnRzIiBpbgoK
+--94eb2c091feedc01ab054a998750
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--94eb2c091feedc01ab054a998750--
