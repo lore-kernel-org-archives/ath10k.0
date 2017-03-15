@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1coB7Z-0006Mv-G4
- for ath10k@lists.infradead.org; Wed, 15 Mar 2017 15:45:55 +0000
-Subject: [PATCH v6 03/10] ath10k: htc: move htc ctrl ep connect to htc_init
+ id 1coB7e-0006Mv-KS
+ for ath10k@lists.infradead.org; Wed, 15 Mar 2017 15:46:01 +0000
+Subject: [PATCH v6 05/10] ath10k: various sdio related definitions
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 15 Mar 2017 17:45:21 +0200
-Message-ID: <148959272140.31432.695287262065906036.stgit@potku.adurom.net>
+Date: Wed, 15 Mar 2017 17:45:48 +0200
+Message-ID: <148959274833.31432.12226962233912165365.stgit@potku.adurom.net>
 In-Reply-To: <148959263520.31432.8488419244476213373.stgit@potku.adurom.net>
 References: <148959263520.31432.8488419244476213373.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -27,104 +27,159 @@ Cc: linux-wireless@vger.kernel.org
 
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-This patch moves the HTC ctrl service connect from
-htc_wait_target to htc_init.
-
-This is done in order to make sure the htc ctrl service
-is setup properly before hif_start is called.
-
-The reason for this is that we want the HTC ctrl service
-callback to be initialized before the target sends the
-HTC ready message.
-
-The ready message will always be transmitted on endpoint 0
-(which is always assigned to the HTC control service) so it
-makes more sense if HTC control has been connected before the
-ready message is received.
-
-Since the service to pipe mapping is done as a part of
-the service connect, the get_default_pipe call is redundant
-and was removed.
+Debug masks for SDIO HIF layer.
+Address definitions for SDIO/mbox based chipsets.
+Augmented struct host_interest with more members.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.c |   39 ++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 22 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h      |    3 ++
+ drivers/net/wireless/ath/ath10k/debug.h     |    2 +
+ drivers/net/wireless/ath/ath10k/hw.h        |   53 +++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/targaddrs.h |   24 ++++++++++++
+ 4 files changed, 82 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index fd5be4484984..92d5ac45327a 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -586,8 +586,6 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 	struct ath10k *ar = htc->ar;
- 	int i, status = 0;
- 	unsigned long time_left;
--	struct ath10k_htc_svc_conn_req conn_req;
--	struct ath10k_htc_svc_conn_resp conn_resp;
- 	struct ath10k_htc_msg *msg;
- 	u16 message_id;
- 	u16 credit_count;
-@@ -650,22 +648,6 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 		return -ECOMM;
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 88d14be7fcce..5965d181e6ba 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -91,6 +91,7 @@ struct ath10k;
+ enum ath10k_bus {
+ 	ATH10K_BUS_PCI,
+ 	ATH10K_BUS_AHB,
++	ATH10K_BUS_SDIO,
+ };
+ 
+ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+@@ -100,6 +101,8 @@ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+ 		return "pci";
+ 	case ATH10K_BUS_AHB:
+ 		return "ahb";
++	case ATH10K_BUS_SDIO:
++		return "sdio";
  	}
  
--	/* setup our pseudo HTC control endpoint connection */
--	memset(&conn_req, 0, sizeof(conn_req));
--	memset(&conn_resp, 0, sizeof(conn_resp));
--	conn_req.ep_ops.ep_tx_complete = ath10k_htc_control_tx_complete;
--	conn_req.ep_ops.ep_rx_complete = ath10k_htc_control_rx_complete;
--	conn_req.max_send_queue_depth = ATH10K_NUM_CONTROL_TX_BUFFERS;
--	conn_req.service_id = ATH10K_HTC_SVC_ID_RSVD_CTRL;
--
--	/* connect fake service */
--	status = ath10k_htc_connect_service(htc, &conn_req, &conn_resp);
--	if (status) {
--		ath10k_err(ar, "could not connect to htc service (%d)\n",
--			   status);
--		return status;
--	}
--
- 	return 0;
- }
+ 	return "unknown";
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 2368f47314ae..257d10985c6e 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -38,6 +38,8 @@ enum ath10k_debug_mask {
+ 	ATH10K_DBG_WMI_PRINT	= 0x00002000,
+ 	ATH10K_DBG_PCI_PS	= 0x00004000,
+ 	ATH10K_DBG_AHB		= 0x00008000,
++	ATH10K_DBG_SDIO		= 0x00010000,
++	ATH10K_DBG_SDIO_DUMP	= 0x00020000,
+ 	ATH10K_DBG_ANY		= 0xffffffff,
+ };
  
-@@ -875,8 +857,10 @@ int ath10k_htc_start(struct ath10k_htc *htc)
- /* registered target arrival callback from the HIF layer */
- int ath10k_htc_init(struct ath10k *ar)
- {
--	struct ath10k_htc_ep *ep = NULL;
-+	int status;
- 	struct ath10k_htc *htc = &ar->htc;
-+	struct ath10k_htc_svc_conn_req conn_req;
-+	struct ath10k_htc_svc_conn_resp conn_resp;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index d370b573e0f9..405514455191 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -856,6 +856,59 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
+ #define QCA9887_EEPROM_ADDR_LO_MASK		0x00ff0000
+ #define QCA9887_EEPROM_ADDR_LO_LSB		16
  
- 	spin_lock_init(&htc->tx_lock);
++#define MBOX_RESET_CONTROL_ADDRESS		0x00000000
++#define MBOX_HOST_INT_STATUS_ADDRESS		0x00000800
++#define MBOX_HOST_INT_STATUS_ERROR_LSB		7
++#define MBOX_HOST_INT_STATUS_ERROR_MASK		0x00000080
++#define MBOX_HOST_INT_STATUS_CPU_LSB		6
++#define MBOX_HOST_INT_STATUS_CPU_MASK		0x00000040
++#define MBOX_HOST_INT_STATUS_COUNTER_LSB	4
++#define MBOX_HOST_INT_STATUS_COUNTER_MASK	0x00000010
++#define MBOX_CPU_INT_STATUS_ADDRESS		0x00000801
++#define MBOX_ERROR_INT_STATUS_ADDRESS		0x00000802
++#define MBOX_ERROR_INT_STATUS_WAKEUP_LSB	2
++#define MBOX_ERROR_INT_STATUS_WAKEUP_MASK	0x00000004
++#define MBOX_ERROR_INT_STATUS_RX_UNDERFLOW_LSB	1
++#define MBOX_ERROR_INT_STATUS_RX_UNDERFLOW_MASK	0x00000002
++#define MBOX_ERROR_INT_STATUS_TX_OVERFLOW_LSB	0
++#define MBOX_ERROR_INT_STATUS_TX_OVERFLOW_MASK	0x00000001
++#define MBOX_COUNTER_INT_STATUS_ADDRESS		0x00000803
++#define MBOX_COUNTER_INT_STATUS_COUNTER_LSB	0
++#define MBOX_COUNTER_INT_STATUS_COUNTER_MASK	0x000000ff
++#define MBOX_RX_LOOKAHEAD_VALID_ADDRESS		0x00000805
++#define MBOX_INT_STATUS_ENABLE_ADDRESS		0x00000828
++#define MBOX_INT_STATUS_ENABLE_ERROR_LSB	7
++#define MBOX_INT_STATUS_ENABLE_ERROR_MASK	0x00000080
++#define MBOX_INT_STATUS_ENABLE_CPU_LSB		6
++#define MBOX_INT_STATUS_ENABLE_CPU_MASK		0x00000040
++#define MBOX_INT_STATUS_ENABLE_INT_LSB		5
++#define MBOX_INT_STATUS_ENABLE_INT_MASK		0x00000020
++#define MBOX_INT_STATUS_ENABLE_COUNTER_LSB	4
++#define MBOX_INT_STATUS_ENABLE_COUNTER_MASK	0x00000010
++#define MBOX_INT_STATUS_ENABLE_MBOX_DATA_LSB	0
++#define MBOX_INT_STATUS_ENABLE_MBOX_DATA_MASK	0x0000000f
++#define MBOX_CPU_INT_STATUS_ENABLE_ADDRESS	0x00000819
++#define MBOX_CPU_INT_STATUS_ENABLE_BIT_LSB	0
++#define MBOX_CPU_INT_STATUS_ENABLE_BIT_MASK	0x000000ff
++#define MBOX_ERROR_STATUS_ENABLE_ADDRESS	0x0000081a
++#define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_LSB  1
++#define MBOX_ERROR_STATUS_ENABLE_RX_UNDERFLOW_MASK 0x00000002
++#define MBOX_ERROR_STATUS_ENABLE_TX_OVERFLOW_LSB   0
++#define MBOX_ERROR_STATUS_ENABLE_TX_OVERFLOW_MASK  0x00000001
++#define MBOX_COUNTER_INT_STATUS_ENABLE_ADDRESS	0x0000081b
++#define MBOX_COUNTER_INT_STATUS_ENABLE_BIT_LSB	0
++#define MBOX_COUNTER_INT_STATUS_ENABLE_BIT_MASK	0x000000ff
++#define MBOX_COUNT_ADDRESS			0x00000820
++#define MBOX_COUNT_DEC_ADDRESS			0x00000840
++#define MBOX_WINDOW_DATA_ADDRESS		0x00000874
++#define MBOX_WINDOW_WRITE_ADDR_ADDRESS		0x00000878
++#define MBOX_WINDOW_READ_ADDR_ADDRESS		0x0000087c
++#define MBOX_CPU_DBG_SEL_ADDRESS		0x00000883
++#define MBOX_CPU_DBG_ADDRESS			0x00000884
++#define MBOX_RTC_BASE_ADDRESS			0x00000000
++#define MBOX_GPIO_BASE_ADDRESS			0x00005000
++#define MBOX_MBOX_BASE_ADDRESS			0x00008000
++
+ #define RTC_STATE_V_GET(x) (((x) & RTC_STATE_V_MASK) >> RTC_STATE_V_LSB)
  
-@@ -884,10 +868,21 @@ int ath10k_htc_init(struct ath10k *ar)
+ /* Register definitions for first generation ath10k cards. These cards include
+diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
+index a47cab44d9c8..58e0541da4b5 100644
+--- a/drivers/net/wireless/ath/ath10k/targaddrs.h
++++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
+@@ -205,6 +205,24 @@ struct host_interest {
+ 	 */
+ 	/* Bit 1 - unused */
+ 	u32 hi_fw_swap;					/* 0x104 */
++
++	/* global arenas pointer address, used by host driver debug */
++	u32 hi_dynamic_mem_arenas_addr;			/* 0x108 */
++
++	/* allocated bytes of DRAM use by allocated */
++	u32 hi_dynamic_mem_allocated;			/* 0x10C */
++
++	/* remaining bytes of DRAM */
++	u32 hi_dynamic_mem_remaining;			/* 0x110 */
++
++	/* memory track count, configured by host */
++	u32 hi_dynamic_mem_track_max;			/* 0x114 */
++
++	/* minidump buffer */
++	u32 hi_minidump;				/* 0x118 */
++
++	/* bdata's sig and key addr */
++	u32 hi_bd_sig_key;				/* 0x11c */
+ } __packed;
  
- 	htc->ar = ar;
+ #define HI_ITEM(item)  offsetof(struct host_interest, item)
+@@ -319,6 +337,12 @@ Fw Mode/SubMode Mask
+ #define HI_ACS_FLAGS_USE_WWAN       (1 << 1)
+ /* Use test VAP */
+ #define HI_ACS_FLAGS_TEST_VAP       (1 << 2)
++/* SDIO/mailbox ACS flag definitions */
++#define HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET       (1 << 0)
++#define HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET    (1 << 1)
++#define HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE        (1 << 2)
++#define HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_FW_ACK    (1 << 16)
++#define HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_FW_ACK (1 << 17)
  
--	/* Get HIF default pipe for HTC message exchange */
--	ep = &htc->endpoint[ATH10K_HTC_EP_0];
-+	/* setup our pseudo HTC control endpoint connection */
-+	memset(&conn_req, 0, sizeof(conn_req));
-+	memset(&conn_resp, 0, sizeof(conn_resp));
-+	conn_req.ep_ops.ep_tx_complete = ath10k_htc_control_tx_complete;
-+	conn_req.ep_ops.ep_rx_complete = ath10k_htc_control_rx_complete;
-+	conn_req.max_send_queue_depth = ATH10K_NUM_CONTROL_TX_BUFFERS;
-+	conn_req.service_id = ATH10K_HTC_SVC_ID_RSVD_CTRL;
- 
--	ath10k_hif_get_default_pipe(ar, &ep->ul_pipe_id, &ep->dl_pipe_id);
-+	/* connect fake service */
-+	status = ath10k_htc_connect_service(htc, &conn_req, &conn_resp);
-+	if (status) {
-+		ath10k_err(ar, "could not connect to htc service (%d)\n",
-+			   status);
-+		return status;
-+	}
- 
- 	init_completion(&htc->ctl_resp);
- 
+ /*
+  * CONSOLE FLAGS
 
 
 _______________________________________________
