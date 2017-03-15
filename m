@@ -1,20 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1co7ki-0000rh-8r
- for ath10k@lists.infradead.org; Wed, 15 Mar 2017 12:10:06 +0000
+ id 1coACL-0005N8-8S
+ for ath10k@lists.infradead.org; Wed, 15 Mar 2017 14:46:47 +0000
+Subject: [PATCH v5 00/10] ath10k: sdio support
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC v4 06/21] ath10k: sdio support
-Date: Wed, 15 Mar 2017 12:09:31 +0000
-Message-ID: <877f3qyc5g.fsf@kamboji.qca.qualcomm.com>
-References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
- <1487693741-10042-7-git-send-email-erik.stromdahl@gmail.com>
- <8760jh2uy8.fsf@kamboji.qca.qualcomm.com>
- <871su52th2.fsf@kamboji.qca.qualcomm.com>
- <2528f323-6ec7-915c-d98b-615db04510e9@gmail.com>
-In-Reply-To: <2528f323-6ec7-915c-d98b-615db04510e9@gmail.com> (Erik
- Stromdahl's message of "Fri, 10 Mar 2017 17:29:38 +0100")
-Content-Language: en-US
+Date: Wed, 15 Mar 2017 16:46:12 +0200
+Message-ID: <148958913141.25727.15769281552095255609.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,103 +20,97 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+I did some changes while reviewing Erik's SDIO patches. Only compile
+tested, I don't have any SDIO boards at the moment.
 
-> On 2017-03-10 13:43, Valo, Kalle wrote:
->> "Valo, Kalle" <kvalo@qca.qualcomm.com> writes:
->>
->>> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
->>>
->>>> sdio/mailbox HIF implementation.
->>>>
->>>> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
->>>
->>> I'm looking at this more carefully now and noticed this:
->>>
->>>> +static int ath10k_sdio_bmi_credits(struct ath10k *ar)
->>>> +{
->>>> +	int ret;
->>>> +	u32 addr, *cmd_credits;
->>>> +	unsigned long timeout;
->>>> +
->>>> +	cmd_credits = kzalloc(sizeof(*cmd_credits), GFP_KERNEL);
->>>> +	if (!cmd_credits) {
->>>> +		ret = -ENOMEM;
->>>> +		goto err;
->>>> +	}
->>>> +
->>>> +	/* Read the counter register to get the command credits */
->>>> +	addr = MBOX_COUNT_DEC_ADDRESS + ATH10K_HIF_MBOX_NUM_MAX * 4;
->>>> +
->>>> +	timeout = jiffies + BMI_COMMUNICATION_TIMEOUT_HZ;
->>>> +	while (time_before(jiffies, timeout) && !*cmd_credits) {
->>>> +		/* Hit the credit counter with a 4-byte access, the first byte
->>>> +		 * read will hit the counter and cause a decrement, while the
->>>> +		 * remaining 3 bytes has no effect. The rationale behind this
->>>> +		 * is to make all HIF accesses 4-byte aligned.
->>>> +		 */
->>>> +		ret = ath10k_sdio_read_write_sync(ar, addr,
->>>> +						  (u8 *)cmd_credits,
->>>> +						  sizeof(*cmd_credits),
->>>> +						  HIF_RD_SYNC_BYTE_INC);
->>>> +		if (ret) {
->>>> +			ath10k_warn(ar,
->>>> + "Unable to decrement the command credit count register: %d\n",
->>>> +				    ret);
->>>> +			goto err_free;
->>>> +		}
->>>> +
->>>> +		/* The counter is only 8 bits.
->>>> +		 * Ignore anything in the upper 3 bytes
->>>> +		 */
->>>> +		*cmd_credits &= 0xFF;
->>>> +	}
->>>> +
->>>> +	if (!*cmd_credits) {
->>>> +		ath10k_warn(ar, "bmi communication timeout\n");
->>>> +		ret = -ETIMEDOUT;
->>>> +		goto err_free;
->>>> +	}
->>>> +
->>>> +	return 0;
->>>> +err_free:
->>>> +	kfree(cmd_credits);
->>>> +err:
->>>> +	return ret;
->>>> +}
->>>
->>> AFAICS we are leaking cmd_credits if there's no error. Or is the buffer
->>> freed somewhere within the mmc stack or something? The reason why I ask
->>> is that I saw the same pattern in multiple functions so I'm curious.
->>
->> Also I'm worried about endianness. We are reading from the device
->> directly to an u32 variable and not converting the bytes. Is the MMC
->> subsystem doing the conversion, I guess not?
->>
-> You are right, there is definitely a memory leak (and there are similar problems
-> in a couple of other functions as well as you have pointed out).
->
-> This was introduced in version 3 of the
-> RFC when I removed the bounce buffer from ath6kl. Instead I introduced a bunch of
-> local "bounce" buffers in order to make sure that the buffers passed to the sdio
-> subsystem is dma-able (malloc'ed buffer instead of stack allocated).
->
-> Regarding endianess: That particular code construct is an artifact from ath6kl.
-> I am not sure it makes any sense to use a u32 in that particular case.
-> A u8 array is most likely more convenient.
+Changes in v5:
 
-There seems to be same pattern for reading four bytes, what if we should
-add a helper for that? Something like ath10k_sdio_read32()? It could
-handle the kmalloc and switch endianess also.
+* promote from RFC to PATCH
 
-But please don't make any chances to sdio.c for the moment, let me
-submit v5 first.
+* move "ath10k: sdio support" patch to last
 
--- 
-Kalle Valo
+* in "ath10k: sdio get target info" fix sparse warning by changing tmp
+  variable to __le32:
+
+drivers/net/wireless/ath/ath10k/bmi.c:145:19: warning: cast to restricted __le32
+
+* fix checkpatch warnings by renaming to struct ath10k_htc_lookahead_bundle:
+
+drivers/net/wireless/ath/ath10k/htc.c:265: line over 90 characters
+drivers/net/wireless/ath/ath10k/htc.c:357: line over 90 characters
+
+* use switch statement in ath10k_core_get_fw_name()
+
+* remove enable of fwlog from ath10k_sdio_extra_initialization(),
+  that's not sdio specific and should be enabled separately (with a
+  module parameter?)
+
+* rename ath10k_sdio_extra_initialization() to ath10k_init_sdio()
+
+* add warning to probe() that sdio support is not complete
+
+* unify error and debug messagess
+
+* whitespace changes
+
+* move variable declarations to the beginning of the function
+
+* remove unnecessary gotos
+
+* small cosmetic changes
+
+* add FIXME comments to unclear cases
+
+still todo:
+
+o fix remaining memory leaks (if any)
+
+o endian support, eg ath10k_sdio_hif_set_mbox_sleep()
+
+o are ath10k_sdio_io() and ath10k_sdio_read_write_sync() really
+  necessary? looks like just an unnecessary abstraction layer
+
+o write commit log for patch "ath10k: sdio support"
+
+o improve Kconfig description
+
+
+---
+
+Erik Stromdahl (10):
+      ath10k: htc: made static function public
+      ath10k: htc: rx trailer lookahead support
+      ath10k: htc: move htc ctrl ep connect to htc_init
+      ath10k: htc: refactorization
+      ath10k: various sdio related definitions
+      ath10k: add sdio extra initializations
+      ath10k: sdio get target info
+      ath10k: htc: ready_ext msg support
+      ath10k: different fw file names for usb and sdio
+      ath10k: sdio support
+
+
+ drivers/net/wireless/ath/ath10k/Kconfig     |    6 
+ drivers/net/wireless/ath/ath10k/Makefile    |    3 
+ drivers/net/wireless/ath/ath10k/bmi.c       |   71 +
+ drivers/net/wireless/ath/ath10k/bmi.h       |    2 
+ drivers/net/wireless/ath/ath10k/core.c      |   40 -
+ drivers/net/wireless/ath/ath10k/core.h      |    3 
+ drivers/net/wireless/ath/ath10k/debug.h     |    2 
+ drivers/net/wireless/ath/ath10k/htc.c       |  243 ++-
+ drivers/net/wireless/ath/ath10k/htc.h       |   39 -
+ drivers/net/wireless/ath/ath10k/hw.h        |   53 +
+ drivers/net/wireless/ath/ath10k/sdio.c      | 2102 +++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/sdio.h      |  263 +++
+ drivers/net/wireless/ath/ath10k/targaddrs.h |   24 
+ 13 files changed, 2773 insertions(+), 78 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/sdio.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/sdio.h
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
