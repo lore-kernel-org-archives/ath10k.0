@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
+Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
+ helo=mail.mail.packetmixer.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1coX6P-0002Mq-Uj
- for ath10k@lists.infradead.org; Thu, 16 Mar 2017 15:14:15 +0000
+ id 1coX6Q-0002NB-1v
+ for ath10k@lists.infradead.org; Thu, 16 Mar 2017 15:14:18 +0000
 From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: [PATCH 2/3] ath10k: add support for channels in licensed bands
-Date: Thu, 16 Mar 2017 16:13:36 +0100
-Message-Id: <20170316151337.24163-3-sw@simonwunderlich.de>
+Subject: [PATCH 3/3] ath9k: add noise floor override option
+Date: Thu, 16 Mar 2017 16:13:37 +0100
+Message-Id: <20170316151337.24163-4-sw@simonwunderlich.de>
 In-Reply-To: <20170316151337.24163-1-sw@simonwunderlich.de>
 References: <20170316151337.24163-1-sw@simonwunderlich.de>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,108 +26,139 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com
 Cc: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, linux-wireless@vger.kernel.org, Simon Wunderlich <sw@simonwunderlich.de>
 
-Many chips support channels in licensed bands. Add support for those,
-along with a corresponding kernel config option to disable them by
-default. Note that these channels are not selectable even if the
-option has been compiled unless the user modifies the regulatory
-database to explicitly enable the corresponding channels.
+Introduce a debugfs option to manually override the noise floor,
+ignoring the automatically tuned noise floor of the driver/hw.
 
-NOTE:  These channels must not be used in most regulatory
-domains unless you have a license from the FCC or similar!
+In my tests with a AR9580 based module and a tx99 5 MHz interferer,
+I could tune the noisefloor to -95 dBm or above to allow communication
+again. The automatic noise floor calibration sometimes could adapt to
+the situation as well, but not reliably and permanently.
+
+I would consider this "feature" experimental and interesting for people
+debugging the noise floor calibration or other effects of the hardware.
 
 Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
 Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
 ---
- drivers/net/wireless/ath/ath10k/Kconfig | 20 ++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/core.h  |  4 ++++
- drivers/net/wireless/ath/ath10k/mac.c   |  9 +++++++++
- drivers/net/wireless/ath/ath10k/wmi.c   |  7 +++++--
- 4 files changed, 38 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath9k/calib.c |  5 ++-
+ drivers/net/wireless/ath/ath9k/debug.c | 62 ++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath9k/hw.h    |  1 +
+ 3 files changed, 67 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
-index b4241cf9b7ed..13a23ed33f91 100644
---- a/drivers/net/wireless/ath/ath10k/Kconfig
-+++ b/drivers/net/wireless/ath/ath10k/Kconfig
-@@ -53,3 +53,23 @@ config ATH10K_DFS_CERTIFIED
- 	---help---
- 	This option enables DFS support for initiating radiation on
- 	ath10k.
-+
-+config ATH10K_LICENSED_CHAN
-+	bool "Support channels in licensed bands"
-+	depends on ATH10K && CFG80211_CERTIFICATION_ONUS
-+	default n
-+	---help---
-+	  This option enables support for licensed channels on such as
-+          4.9 GHz (public safety).
-+
-+	  These are PUBLIC SAFETY CHANNELS and MUST NOT BE USED in most
-+	  regulatory domains UNLESS YOU HAVE A FULL LICENSE for their use from
-+	  your local radio regulator, e.g. the FCC or equivalent. Using these
-+	  channels without proper authorisation may result in serious legal
-+	  consequences.
-+
-+	  You will also have to build a regulatory database with these channels
-+	  enabled to actually use them.
-+
-+	  If you are a distro kernel builder or have any doubt whatsoever about
-+	  your legal ability to use these channels, say N.
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index d4b9a0ec1bdc..7674641537b4 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -46,7 +46,11 @@
- #define WMI_READY_TIMEOUT (5 * HZ)
- #define ATH10K_FLUSH_TIMEOUT_HZ (5 * HZ)
- #define ATH10K_CONNECTION_LOSS_HZ (3 * HZ)
-+#ifdef CONFIG_ATH10K_LICENSED_CHAN
-+#define ATH10K_NUM_CHANS 47
-+#else
- #define ATH10K_NUM_CHANS 40
-+#endif
+diff --git a/drivers/net/wireless/ath/ath9k/calib.c b/drivers/net/wireless/ath/ath9k/calib.c
+index 0f71146b781d..13ab6bc46775 100644
+--- a/drivers/net/wireless/ath/ath9k/calib.c
++++ b/drivers/net/wireless/ath/ath9k/calib.c
+@@ -254,7 +254,9 @@ int ath9k_hw_loadnf(struct ath_hw *ah, struct ath9k_channel *chan)
+ 			if ((i >= AR5416_MAX_CHAINS) && !IS_CHAN_HT40(chan))
+ 				continue;
  
- /* Antenna noise floor */
- #define ATH10K_DEFAULT_NOISE_FLOOR -95
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a25f0ec15cf8..23895af0fc63 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7669,6 +7669,15 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
- 	CHAN5G(161, 5805, 0),
- 	CHAN5G(165, 5825, 0),
- 	CHAN5G(169, 5845, 0),
-+#ifdef CONFIG_ATH10K_LICENSED_CHAN
-+	CHAN5G(184, 4920, 0),
-+	CHAN5G(188, 4940, 0),
-+	CHAN5G(192, 4960, 0),
-+	CHAN5G(196, 4980, 0),
-+	CHAN5G(8,   5040, 0),
-+	CHAN5G(12,  5060, 0),
-+	CHAN5G(16,  5080, 0),
-+#endif
+-			if (h)
++			if (ah->nf_override)
++				nfval = ah->nf_override;
++			else if (h)
+ 				nfval = h[i].privNF;
+ 			else
+ 				nfval = default_nf;
+@@ -348,6 +350,7 @@ int ath9k_hw_loadnf(struct ath_hw *ah, struct ath9k_channel *chan)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL(ath9k_hw_loadnf);
+ 
+ 
+ static void ath9k_hw_nf_sanitize(struct ath_hw *ah, s16 *nf)
+diff --git a/drivers/net/wireless/ath/ath9k/debug.c b/drivers/net/wireless/ath/ath9k/debug.c
+index 43930c336987..2e64977a8ab6 100644
+--- a/drivers/net/wireless/ath/ath9k/debug.c
++++ b/drivers/net/wireless/ath/ath9k/debug.c
+@@ -1191,6 +1191,65 @@ static const struct file_operations fops_tpc = {
+ 	.llseek = default_llseek,
  };
  
- struct ath10k *ath10k_mac_create(size_t priv_size)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 4e60caec7ab4..de7a4fa9d347 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2323,10 +2323,13 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	/* Hardware can Rx CCK rates on 5GHz. In that case phy_mode is set to
- 	 * MODE_11B. This means phy_mode is not a reliable source for the band
- 	 * of mgmt rx.
-+	 *
-+	 * On the other hand, channel 8, 12 and 16 are defined in 5GHz as well
-+	 * (5040 - 5080 MHz), therefore apply the override only for channels <=7
- 	 */
--	if (channel >= 1 && channel <= 14) {
-+	if (channel >= 1 && channel <= 7) {
- 		status->band = NL80211_BAND_2GHZ;
--	} else if (channel >= 36 && channel <= 169) {
-+	} else if (channel >= 8 && channel <= 196) {
- 		status->band = NL80211_BAND_5GHZ;
- 	} else {
- 		/* Shouldn't happen unless list of advertised channels to
++static ssize_t read_file_nf_override(struct file *file,
++				     char __user *user_buf,
++				     size_t count, loff_t *ppos)
++{
++	struct ath_softc *sc = file->private_data;
++	struct ath_hw *ah = sc->sc_ah;
++	char buf[32];
++	unsigned int len;
++
++	if (ah->nf_override == 0)
++		len = sprintf(buf, "off\n");
++	else
++		len = sprintf(buf, "%d\n", ah->nf_override);
++
++	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
++}
++
++static ssize_t write_file_nf_override(struct file *file,
++				      const char __user *user_buf,
++				      size_t count, loff_t *ppos)
++{
++	struct ath_softc *sc = file->private_data;
++	struct ath_hw *ah = sc->sc_ah;
++	long val;
++	char buf[32];
++	ssize_t len;
++
++	len = min(count, sizeof(buf) - 1);
++	if (copy_from_user(buf, user_buf, len))
++		return -EFAULT;
++
++	buf[len] = '\0';
++	if (strncmp("off", buf, 3) == 0)
++		val = 0;
++	else if (kstrtol(buf, 0, &val))
++		return -EINVAL;
++
++	if (val > 0)
++		return -EINVAL;
++
++	if (val < -120)
++		return -EINVAL;
++
++	ah->nf_override = val;
++
++	if (ah->curchan)
++		ath9k_hw_loadnf(ah, ah->curchan);
++
++	return count;
++}
++
++static const struct file_operations fops_nf_override = {
++	.read = read_file_nf_override,
++	.write = write_file_nf_override,
++	.open = simple_open,
++	.owner = THIS_MODULE,
++	.llseek = default_llseek,
++};
++
+ /* Ethtool support for get-stats */
+ 
+ #define AMKSTR(nm) #nm "_BE", #nm "_BK", #nm "_VI", #nm "_VO"
+@@ -1402,5 +1461,8 @@ int ath9k_init_debug(struct ath_hw *ah)
+ 	debugfs_create_u16("airtime_flags", S_IRUSR | S_IWUSR,
+ 			   sc->debug.debugfs_phy, &sc->airtime_flags);
+ 
++	debugfs_create_file("nf_override", S_IRUSR | S_IWUSR,
++			    sc->debug.debugfs_phy, sc, &fops_nf_override);
++
+ 	return 0;
+ }
+diff --git a/drivers/net/wireless/ath/ath9k/hw.h b/drivers/net/wireless/ath/ath9k/hw.h
+index 496e3cd1b509..eba478f052b9 100644
+--- a/drivers/net/wireless/ath/ath9k/hw.h
++++ b/drivers/net/wireless/ath/ath9k/hw.h
+@@ -803,6 +803,7 @@ struct ath_hw {
+ 	u32 rfkill_gpio;
+ 	u32 rfkill_polarity;
+ 	u32 ah_flags;
++	s16 nf_override;
+ 
+ 	bool reset_power_on;
+ 	bool htc_reset_init;
 -- 
 2.11.0
 
