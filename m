@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1coREl-0006XQ-0y
- for ath10k@lists.infradead.org; Thu, 16 Mar 2017 08:58:25 +0000
-MIME-Version: 1.0
-Subject: Re: ath10k: remove redundant error check
+ id 1coRRV-0000vU-PA
+ for ath10k@lists.infradead.org; Thu, 16 Mar 2017 09:11:36 +0000
+Subject: [PATCH] ath10k: fix warnings from an earlier commit
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20170228111439.19546-1-colin.king@canonical.com>
-References: <20170228111439.19546-1-colin.king@canonical.com>
-Message-ID: <f9f879b23b604117bf434e122146882e@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 16 Mar 2017 09:57:51 +0100
+Date: Thu, 16 Mar 2017 11:11:02 +0200
+Message-ID: <148965546273.3007.5273967631982279383.stgit@potku.adurom.net>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +20,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Colin Ian King <colin.king@canonical.com> wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The check on ret for an error is redundant because it is already been
-> checked for non-zero earlier on and ret is never non-zero at this point.
-> Fix this by removing the redundant check and error message.
-> 
-> Detected by CoverityScan, CID#1357170 ("Logically Dead Code")
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+I failed to notice that commit 523f6701dbab ("ath10k: update available channel
+list for 5G radio") added two new warnings:
 
-Patch applied to ath-next branch of ath.git, thanks.
+drivers/net/wireless/ath/ath10k/mac.c:3129:6: warning: symbol 'ath10k_mac_update_channel_list' was not declared. Should it be static?
+drivers/net/wireless/ath/ath10k/mac.c:3170: Alignment should match open parenthesis
 
-51f60b8b6979 ath10k: remove redundant error check
+Fix those.
 
--- 
-https://patchwork.kernel.org/patch/9595221/
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Documentation about submitting wireless patches and checking status
-from patchwork:
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index a25f0ec15cf8..d60086cdc584 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3126,8 +3126,8 @@ static void ath10k_regd_update(struct ath10k *ar)
+ 		ath10k_warn(ar, "failed to set pdev regdomain: %d\n", ret);
+ }
+ 
+-void ath10k_mac_update_channel_list(struct ath10k *ar,
+-				    struct ieee80211_supported_band *band)
++static void ath10k_mac_update_channel_list(struct ath10k *ar,
++					   struct ieee80211_supported_band *band)
+ {
+ 	int i;
+ 
+@@ -3167,7 +3167,7 @@ static void ath10k_reg_notifier(struct wiphy *wiphy,
+ 
+ 	if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY)
+ 		ath10k_mac_update_channel_list(ar,
+-				ar->hw->wiphy->bands[NL80211_BAND_5GHZ]);
++					       ar->hw->wiphy->bands[NL80211_BAND_5GHZ]);
+ }
+ 
+ /***************/
 
 
 _______________________________________________
