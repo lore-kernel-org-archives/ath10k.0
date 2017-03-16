@@ -1,12 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1coRRV-0000vU-PA
- for ath10k@lists.infradead.org; Thu, 16 Mar 2017 09:11:36 +0000
-Subject: [PATCH] ath10k: fix warnings from an earlier commit
+ id 1coRn7-0005wc-Mi
+ for ath10k@lists.infradead.org; Thu, 16 Mar 2017 09:33:55 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 16 Mar 2017 11:11:02 +0200
-Message-ID: <148965546273.3007.5273967631982279383.stgit@potku.adurom.net>
+Subject: Re: [RFC v4 06/21] ath10k: sdio support
+Date: Thu, 16 Mar 2017 09:33:26 +0000
+Message-ID: <87y3w5tvkq.fsf@kamboji.qca.qualcomm.com>
+References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
+ <1487693741-10042-7-git-send-email-erik.stromdahl@gmail.com>
+ <8760jh2uy8.fsf@kamboji.qca.qualcomm.com>
+ <871su52th2.fsf@kamboji.qca.qualcomm.com>
+ <2528f323-6ec7-915c-d98b-615db04510e9@gmail.com>
+ <877f3qyc5g.fsf@kamboji.qca.qualcomm.com>
+ <29c3dd40-c3ac-746e-d8ef-cb072c58578a@gmail.com>
+In-Reply-To: <29c3dd40-c3ac-746e-d8ef-cb072c58578a@gmail.com> (Erik
+ Stromdahl's message of "Wed, 15 Mar 2017 19:01:12 +0100")
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,48 +30,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I failed to notice that commit 523f6701dbab ("ath10k: update available channel
-list for 5G radio") added two new warnings:
+Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
-drivers/net/wireless/ath/ath10k/mac.c:3129:6: warning: symbol 'ath10k_mac_update_channel_list' was not declared. Should it be static?
-drivers/net/wireless/ath/ath10k/mac.c:3170: Alignment should match open parenthesis
+>> There seems to be same pattern for reading four bytes, what if we should
+>> add a helper for that? Something like ath10k_sdio_read32()? It could
+>> handle the kmalloc and switch endianess also.
+>>
+>> But please don't make any chances to sdio.c for the moment, let me
+>> submit v5 first.
+>>
+> I notice that you have submitted v5 (and v6) of the sdio patches. Great!
+>
+> I assume you will add them to master-pending soon so I will try out
+> everything (usb too) as soon as they are on master-pending.
 
-Fix those.
+v6 is now in master-pending.
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a25f0ec15cf8..d60086cdc584 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3126,8 +3126,8 @@ static void ath10k_regd_update(struct ath10k *ar)
- 		ath10k_warn(ar, "failed to set pdev regdomain: %d\n", ret);
- }
- 
--void ath10k_mac_update_channel_list(struct ath10k *ar,
--				    struct ieee80211_supported_band *band)
-+static void ath10k_mac_update_channel_list(struct ath10k *ar,
-+					   struct ieee80211_supported_band *band)
- {
- 	int i;
- 
-@@ -3167,7 +3167,7 @@ static void ath10k_reg_notifier(struct wiphy *wiphy,
- 
- 	if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY)
- 		ath10k_mac_update_channel_list(ar,
--				ar->hw->wiphy->bands[NL80211_BAND_5GHZ]);
-+					       ar->hw->wiphy->bands[NL80211_BAND_5GHZ]);
- }
- 
- /***************/
-
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
