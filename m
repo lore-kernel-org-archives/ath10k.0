@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-ot0-x234.google.com ([2607:f8b0:4003:c0f::234])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cocdf-0001qb-Rd
- for ath10k@lists.infradead.org; Thu, 16 Mar 2017 21:08:55 +0000
-From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
-Subject: Re: [PATCH v6 09/10] ath10k: different fw file names for usb and sdio
-Date: Thu, 16 Mar 2017 21:08:20 +0000
-Message-ID: <e25f7672-0114-7928-7f4a-cf64638dc900@qca.qualcomm.com>
-References: <148959263520.31432.8488419244476213373.stgit@potku.adurom.net>
- <148959280431.31432.16087997710973721077.stgit@potku.adurom.net>
-In-Reply-To: <148959280431.31432.16087997710973721077.stgit@potku.adurom.net>
-Content-Language: en-US
-Content-ID: <A417F799E8D3F249924C32FBE0A70CBE@qualcomm.com>
+ id 1conYl-0000O2-Od
+ for ath10k@lists.infradead.org; Fri, 17 Mar 2017 08:48:34 +0000
+Received: by mail-ot0-x234.google.com with SMTP id a12so14059368ota.0
+ for <ath10k@lists.infradead.org>; Fri, 17 Mar 2017 01:48:08 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20170316151337.24163-4-sw@simonwunderlich.de>
+References: <20170316151337.24163-1-sw@simonwunderlich.de>
+ <20170316151337.24163-4-sw@simonwunderlich.de>
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Date: Fri, 17 Mar 2017 09:48:07 +0100
+Message-ID: <CALhHN=qNXW6FVr_Q4B7pmLN2UVywa2dWdZtnhwV+9AAqUO=EAQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ath9k: add noise floor override option
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +25,153 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Simon Wunderlich <sw@simonwunderlich.de>
+Cc: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, linux-wireless@vger.kernel.org, ath9k-devel <ath9k-devel@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 03/15/2017 08:46 AM, Kalle Valo wrote:
-
-> From: Erik Stromdahl <erik.stromdahl@gmail.com>
+On 16 March 2017 at 16:13, Simon Wunderlich <sw@simonwunderlich.de> wrote:
+> Introduce a debugfs option to manually override the noise floor,
+> ignoring the automatically tuned noise floor of the driver/hw.
 >
-> Since both SDIO and USB based chipsets will use different
-
-nitpick, since the patch is separating the USB and SDIO support now, maybe you want to remove the "USB" from the patch title?
-
-> firmware from the PCIe and AHB chipsets, the fw file name
-> must be different depending on bus type.
+> In my tests with a AR9580 based module and a tx99 5 MHz interferer,
+> I could tune the noisefloor to -95 dBm or above to allow communication
+> again. The automatic noise floor calibration sometimes could adapt to
+> the situation as well, but not reliably and permanently.
 >
-> The new firmware names are:
+> I would consider this "feature" experimental and interesting for people
+> debugging the noise floor calibration or other effects of the hardware.
 >
-> For PCIe and AHB:
-> firmware-<api_version>.bin (same as before)
->
-> For SDIO:
-> firmware-sdio-<api_version>.bin
->
-> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+> Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
 > ---
->  drivers/net/wireless/ath/ath10k/core.c |   13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
+>  drivers/net/wireless/ath/ath9k/calib.c |  5 ++-
+>  drivers/net/wireless/ath/ath9k/debug.c | 62 ++++++++++++++++++++++++++++++++++
+>  drivers/net/wireless/ath/ath9k/hw.h    |  1 +
+>  3 files changed, 67 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index d7fb11107df4..d2648d09a772 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -1398,7 +1398,18 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
->  static void ath10k_core_get_fw_name(struct ath10k *ar, char *fw_name,
->  				    size_t fw_name_len, int fw_api)
->  {
-> -	scnprintf(fw_name, fw_name_len, "%s-%d.bin", ATH10K_FW_FILE_BASE, fw_api);
-> +	switch (ar->hif.bus) {
-> +	case ATH10K_BUS_SDIO:
-> +		scnprintf(fw_name, fw_name_len, "%s-%s-%d.bin",
-> +			  ATH10K_FW_FILE_BASE, ath10k_bus_str(ar->hif.bus),
-> +			  fw_api);
-> +		break;
-> +	case ATH10K_BUS_PCI:
-> +	case ATH10K_BUS_AHB:
-> +		scnprintf(fw_name, fw_name_len, "%s-%d.bin",
-> +			  ATH10K_FW_FILE_BASE, fw_api);
-> +		break;
-> +	}
+> diff --git a/drivers/net/wireless/ath/ath9k/calib.c b/drivers/net/wireless/ath/ath9k/calib.c
+> index 0f71146b781d..13ab6bc46775 100644
+> --- a/drivers/net/wireless/ath/ath9k/calib.c
+> +++ b/drivers/net/wireless/ath/ath9k/calib.c
+> @@ -254,7 +254,9 @@ int ath9k_hw_loadnf(struct ath_hw *ah, struct ath9k_channel *chan)
+>                         if ((i >= AR5416_MAX_CHAINS) && !IS_CHAN_HT40(chan))
+>                                 continue;
+>
+> -                       if (h)
+> +                       if (ah->nf_override)
+> +                               nfval = ah->nf_override;
+> +                       else if (h)
+>                                 nfval = h[i].privNF;
+>                         else
+>                                 nfval = default_nf;
+> @@ -348,6 +350,7 @@ int ath9k_hw_loadnf(struct ath_hw *ah, struct ath9k_channel *chan)
+>
+>         return 0;
 >  }
->  
->  static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
+> +EXPORT_SYMBOL(ath9k_hw_loadnf);
+>
+>
+>  static void ath9k_hw_nf_sanitize(struct ath_hw *ah, s16 *nf)
+> diff --git a/drivers/net/wireless/ath/ath9k/debug.c b/drivers/net/wireless/ath/ath9k/debug.c
+> index 43930c336987..2e64977a8ab6 100644
+> --- a/drivers/net/wireless/ath/ath9k/debug.c
+> +++ b/drivers/net/wireless/ath/ath9k/debug.c
+> @@ -1191,6 +1191,65 @@ static const struct file_operations fops_tpc = {
+>         .llseek = default_llseek,
+>  };
+>
+> +static ssize_t read_file_nf_override(struct file *file,
+> +                                    char __user *user_buf,
+> +                                    size_t count, loff_t *ppos)
+> +{
+> +       struct ath_softc *sc = file->private_data;
+> +       struct ath_hw *ah = sc->sc_ah;
+> +       char buf[32];
+> +       unsigned int len;
+> +
+> +       if (ah->nf_override == 0)
+> +               len = sprintf(buf, "off\n");
+> +       else
+> +               len = sprintf(buf, "%d\n", ah->nf_override);
+> +
+> +       return simple_read_from_buffer(user_buf, count, ppos, buf, len);
+> +}
+> +
+> +static ssize_t write_file_nf_override(struct file *file,
+> +                                     const char __user *user_buf,
+> +                                     size_t count, loff_t *ppos)
+> +{
+> +       struct ath_softc *sc = file->private_data;
+> +       struct ath_hw *ah = sc->sc_ah;
+> +       long val;
+> +       char buf[32];
+> +       ssize_t len;
+> +
+> +       len = min(count, sizeof(buf) - 1);
+> +       if (copy_from_user(buf, user_buf, len))
+> +               return -EFAULT;
+> +
+> +       buf[len] = '\0';
+> +       if (strncmp("off", buf, 3) == 0)
+> +               val = 0;
+> +       else if (kstrtol(buf, 0, &val))
+> +               return -EINVAL;
+> +
+> +       if (val > 0)
+> +               return -EINVAL;
+> +
+> +       if (val < -120)
+> +               return -EINVAL;
+> +
+> +       ah->nf_override = val;
+> +
+> +       if (ah->curchan)
+> +               ath9k_hw_loadnf(ah, ah->curchan);
+> +
+> +       return count;
+> +}
+> +
+> +static const struct file_operations fops_nf_override = {
+> +       .read = read_file_nf_override,
+> +       .write = write_file_nf_override,
+> +       .open = simple_open,
+> +       .owner = THIS_MODULE,
+> +       .llseek = default_llseek,
+> +};
+> +
+>  /* Ethtool support for get-stats */
+>
+>  #define AMKSTR(nm) #nm "_BE", #nm "_BK", #nm "_VI", #nm "_VO"
+> @@ -1402,5 +1461,8 @@ int ath9k_init_debug(struct ath_hw *ah)
+>         debugfs_create_u16("airtime_flags", S_IRUSR | S_IWUSR,
+>                            sc->debug.debugfs_phy, &sc->airtime_flags);
+>
+> +       debugfs_create_file("nf_override", S_IRUSR | S_IWUSR,
+> +                           sc->debug.debugfs_phy, sc, &fops_nf_override);
+> +
+
+Why not simply:
+        debugfs_create_u32("nf_override", S_IRUSR|S_IWUSR ,
+sc->debug.debugfs_phy,
+                          &ah->nf_override);
+
+One line patch :)
+
+>         return 0;
+>  }
+> diff --git a/drivers/net/wireless/ath/ath9k/hw.h b/drivers/net/wireless/ath/ath9k/hw.h
+> index 496e3cd1b509..eba478f052b9 100644
+> --- a/drivers/net/wireless/ath/ath9k/hw.h
+> +++ b/drivers/net/wireless/ath/ath9k/hw.h
+> @@ -803,6 +803,7 @@ struct ath_hw {
+>         u32 rfkill_gpio;
+>         u32 rfkill_polarity;
+>         u32 ah_flags;
+> +       s16 nf_override;
+>
+>         bool reset_power_on;
+>         bool htc_reset_init;
+> --
+> 2.11.0
 >
 >
 > _______________________________________________
