@@ -1,17 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cotXq-0003b8-9k
- for ath10k@lists.infradead.org; Fri, 17 Mar 2017 15:12:00 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 4.11] ath10k: fix incorrect wlan_mac_base in qca6174_regs
-Date: Fri, 17 Mar 2017 15:10:45 +0000
-Message-ID: <87mvckq6q3.fsf@kamboji.qca.qualcomm.com>
-References: <1489445343-8719-1-git-send-email-ryanhsu@qca.qualcomm.com>
-In-Reply-To: <1489445343-8719-1-git-send-email-ryanhsu@qca.qualcomm.com>
- (ryanhsu@qca.qualcomm.com's message of "Mon, 13 Mar 2017 15:49:03	-0700")
-Content-Language: en-US
+ id 1couD2-00032U-Ll
+ for ath10k@lists.infradead.org; Fri, 17 Mar 2017 15:54:35 +0000
+Received: by mail-lf0-x241.google.com with SMTP id v2so5817047lfi.2
+ for <ath10k@lists.infradead.org>; Fri, 17 Mar 2017 08:54:11 -0700 (PDT)
+Subject: Re: [RFC v4 06/21] ath10k: sdio support
+References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
+ <1487693741-10042-7-git-send-email-erik.stromdahl@gmail.com>
+ <8760jh2uy8.fsf@kamboji.qca.qualcomm.com>
+ <871su52th2.fsf@kamboji.qca.qualcomm.com>
+ <2528f323-6ec7-915c-d98b-615db04510e9@gmail.com>
+ <877f3qyc5g.fsf@kamboji.qca.qualcomm.com>
+ <29c3dd40-c3ac-746e-d8ef-cb072c58578a@gmail.com>
+ <87y3w5tvkq.fsf@kamboji.qca.qualcomm.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <feaa5932-4a2b-d801-9226-5532cea93a14@gmail.com>
+Date: Fri, 17 Mar 2017 16:54:08 +0100
 MIME-Version: 1.0
+In-Reply-To: <87y3w5tvkq.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,43 +27,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-<ryanhsu@qca.qualcomm.com> writes:
 
-> From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+
+On 2017-03-16 10:33, Kalle Valo wrote:
+> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 >
-> In the 'commit ebee76f7fa46 ("ath10k: allow setting coverage class")',
-> it inherits the design and the address offset from ath9k, but the address
-> is not applicable to QCA6174, which leads to a random crash while doing the
-> resume() operation, since the set_coverage_class.ops will be called from
-> ieee80211_reconfig() when resume() (if the wow is not configured).
+>>> There seems to be same pattern for reading four bytes, what if we should
+>>> add a helper for that? Something like ath10k_sdio_read32()? It could
+>>> handle the kmalloc and switch endianess also.
+>>>
+>>> But please don't make any chances to sdio.c for the moment, let me
+>>> submit v5 first.
+>>>
+>> I notice that you have submitted v5 (and v6) of the sdio patches. Great!
+>>
+>> I assume you will add them to master-pending soon so I will try out
+>> everything (usb too) as soon as they are on master-pending.
 >
-> Fix the incorrect address offset here to avoid the random crash.
+> v6 is now in master-pending.
 >
-> Verified on QCA6174/hw3.0 with firmware WLAN.RM.4.4-00022-QCARMSWPZ-2.
 
-This also seems to fix a regression related to firmware restart. I was
-testing simulate_fw_crash on qca6174 with current ath.git master branch
-and noticed firmware crash recovery fails every time:
+I have added my usb patches on top of sdio v6 and everything works as expected
+(both usb and sdio).
 
-[   90.402204] ath10k_pci 0000:02:00.0: device is wedged, will not restart
+Your changes does not seem to have broken anything.
 
-With this patch the recovery works every time I tested this. But I'm not
-100% sure yet about this, need to test more.
-
-> Cc: stable@vger.kernel.org
-
-I'll add '# v4.10' because that should be first release which had
-ebee76f7fa46, no need to backport to older releases.
-
--- 
-Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
