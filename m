@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ot0-x22a.google.com ([2607:f8b0:4003:c0f::22a])
+Received: from mail.neratec.com ([46.140.151.2])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1corFg-0002kw-TY
- for ath10k@lists.infradead.org; Fri, 17 Mar 2017 12:45:07 +0000
-Received: by mail-ot0-x22a.google.com with SMTP id a12so19786519ota.0
- for <ath10k@lists.infradead.org>; Fri, 17 Mar 2017 05:44:42 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1698550.OFukYSGa7m@prime>
+ id 1cos85-00044L-BM
+ for ath10k@lists.infradead.org; Fri, 17 Mar 2017 13:41:20 +0000
+Subject: Re: [PATCH 1/3] ath9k: Support channels in licensed bands
 References: <20170316151337.24163-1-sw@simonwunderlich.de>
- <20170316151337.24163-4-sw@simonwunderlich.de>
- <CALhHN=qNXW6FVr_Q4B7pmLN2UVywa2dWdZtnhwV+9AAqUO=EAQ@mail.gmail.com>
- <1698550.OFukYSGa7m@prime>
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Date: Fri, 17 Mar 2017 13:44:41 +0100
-Message-ID: <CALhHN=roObX1H3V8=LrOP4QJk8PYyc6kHt_KmPmVrx28Lg9MLw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ath9k: add noise floor override option
+ <20170316151337.24163-2-sw@simonwunderlich.de>
+From: Zefir Kurtisi <zefir.kurtisi@neratec.com>
+Message-ID: <096bcee2-a991-eac1-8f4f-d7cf7c34730d@neratec.com>
+Date: Fri, 17 Mar 2017 14:40:50 +0100
+MIME-Version: 1.0
+In-Reply-To: <20170316151337.24163-2-sw@simonwunderlich.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,169 +23,120 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Simon Wunderlich <sw@simonwunderlich.de>
-Cc: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, linux-wireless@vger.kernel.org, ath9k-devel <ath9k-devel@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Simon Wunderlich <sw@simonwunderlich.de>, ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com
+Cc: Julian Calaby <julian.calaby@gmail.com>, Ben Greear <greearb@candelatech.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, linux-wireless@vger.kernel.org
 
-On 17 March 2017 at 09:55, Simon Wunderlich <sw@simonwunderlich.de> wrote:
-> On Friday, March 17, 2017 9:48:07 AM CET Janusz Dziedzic wrote:
->> On 16 March 2017 at 16:13, Simon Wunderlich <sw@simonwunderlich.de> wrote:
->> > Introduce a debugfs option to manually override the noise floor,
->> > ignoring the automatically tuned noise floor of the driver/hw.
->> >
->> > In my tests with a AR9580 based module and a tx99 5 MHz interferer,
->> > I could tune the noisefloor to -95 dBm or above to allow communication
->> > again. The automatic noise floor calibration sometimes could adapt to
->> > the situation as well, but not reliably and permanently.
->> >
->> > I would consider this "feature" experimental and interesting for people
->> > debugging the noise floor calibration or other effects of the hardware.
->> >
->> > Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
->> > Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
->> > ---
->> >
->> >  drivers/net/wireless/ath/ath9k/calib.c |  5 ++-
->> >  drivers/net/wireless/ath/ath9k/debug.c | 62
->> >  ++++++++++++++++++++++++++++++++++ drivers/net/wireless/ath/ath9k/hw.h
->> >   |  1 +
->> >  3 files changed, 67 insertions(+), 1 deletion(-)
->> >
->> > diff --git a/drivers/net/wireless/ath/ath9k/calib.c
->> > b/drivers/net/wireless/ath/ath9k/calib.c index 0f71146b781d..13ab6bc46775
->> > 100644
->> > --- a/drivers/net/wireless/ath/ath9k/calib.c
->> > +++ b/drivers/net/wireless/ath/ath9k/calib.c
->> > @@ -254,7 +254,9 @@ int ath9k_hw_loadnf(struct ath_hw *ah, struct
->> > ath9k_channel *chan)>
->> >                         if ((i >= AR5416_MAX_CHAINS) &&
->> >                         !IS_CHAN_HT40(chan))
->> >
->> >                                 continue;
->> >
->> > -                       if (h)
->> > +                       if (ah->nf_override)
->> > +                               nfval = ah->nf_override;
->> > +                       else if (h)
->> >
->> >                                 nfval = h[i].privNF;
->> >
->> >                         else
->> >
->> >                                 nfval = default_nf;
->> >
->> > @@ -348,6 +350,7 @@ int ath9k_hw_loadnf(struct ath_hw *ah, struct
->> > ath9k_channel *chan)>
->> >         return 0;
->> >
->> >  }
->> >
->> > +EXPORT_SYMBOL(ath9k_hw_loadnf);
->> >
->> >  static void ath9k_hw_nf_sanitize(struct ath_hw *ah, s16 *nf)
->> >
->> > diff --git a/drivers/net/wireless/ath/ath9k/debug.c
->> > b/drivers/net/wireless/ath/ath9k/debug.c index 43930c336987..2e64977a8ab6
->> > 100644
->> > --- a/drivers/net/wireless/ath/ath9k/debug.c
->> > +++ b/drivers/net/wireless/ath/ath9k/debug.c
->> > @@ -1191,6 +1191,65 @@ static const struct file_operations fops_tpc = {
->> >
->> >         .llseek = default_llseek,
->> >
->> >  };
->> >
->> > +static ssize_t read_file_nf_override(struct file *file,
->> > +                                    char __user *user_buf,
->> > +                                    size_t count, loff_t *ppos)
->> > +{
->> > +       struct ath_softc *sc = file->private_data;
->> > +       struct ath_hw *ah = sc->sc_ah;
->> > +       char buf[32];
->> > +       unsigned int len;
->> > +
->> > +       if (ah->nf_override == 0)
->> > +               len = sprintf(buf, "off\n");
->> > +       else
->> > +               len = sprintf(buf, "%d\n", ah->nf_override);
->> > +
->> > +       return simple_read_from_buffer(user_buf, count, ppos, buf, len);
->> > +}
->> > +
->> > +static ssize_t write_file_nf_override(struct file *file,
->> > +                                     const char __user *user_buf,
->> > +                                     size_t count, loff_t *ppos)
->> > +{
->> > +       struct ath_softc *sc = file->private_data;
->> > +       struct ath_hw *ah = sc->sc_ah;
->> > +       long val;
->> > +       char buf[32];
->> > +       ssize_t len;
->> > +
->> > +       len = min(count, sizeof(buf) - 1);
->> > +       if (copy_from_user(buf, user_buf, len))
->> > +               return -EFAULT;
->> > +
->> > +       buf[len] = '\0';
->> > +       if (strncmp("off", buf, 3) == 0)
->> > +               val = 0;
->> > +       else if (kstrtol(buf, 0, &val))
->> > +               return -EINVAL;
->> > +
->> > +       if (val > 0)
->> > +               return -EINVAL;
->> > +
->> > +       if (val < -120)
->> > +               return -EINVAL;
->> > +
->> > +       ah->nf_override = val;
->> > +
->> > +       if (ah->curchan)
->> > +               ath9k_hw_loadnf(ah, ah->curchan);
->> > +
->> > +       return count;
->> > +}
->> > +
->> > +static const struct file_operations fops_nf_override = {
->> > +       .read = read_file_nf_override,
->> > +       .write = write_file_nf_override,
->> > +       .open = simple_open,
->> > +       .owner = THIS_MODULE,
->> > +       .llseek = default_llseek,
->> > +};
->> > +
->> >
->> >  /* Ethtool support for get-stats */
->> >
->> >  #define AMKSTR(nm) #nm "_BE", #nm "_BK", #nm "_VI", #nm "_VO"
->> >
->> > @@ -1402,5 +1461,8 @@ int ath9k_init_debug(struct ath_hw *ah)
->> >
->> >         debugfs_create_u16("airtime_flags", S_IRUSR | S_IWUSR,
->> >
->> >                            sc->debug.debugfs_phy, &sc->airtime_flags);
->> >
->> > +       debugfs_create_file("nf_override", S_IRUSR | S_IWUSR,
->> > +                           sc->debug.debugfs_phy, sc, &fops_nf_override);
->> > +
->>
->> Why not simply:
->>         debugfs_create_u32("nf_override", S_IRUSR|S_IWUSR ,
->> sc->debug.debugfs_phy,
->>                           &ah->nf_override);
->>
->> One line patch :)
->
-> Thanks Janusz, good idea! That doesn't check the limits, which is probably not
-> a big deal anyway. What bothers me more is that it doesn't update the noise
-> floor immediately (ath9k_hw_loadnf()), which would be nice to have. Otherwise
-> you have to wait up to ~30 seconds or so until the noise floor is updated next
-> time. So I'd keep my variant for now, unless you have a good idea to fix the
-> latter. :)
->
-I see, seems I miss ath9k_hw_loadnf() call :)
+On 03/16/2017 04:13 PM, Simon Wunderlich wrote:
+> From: Ben Greear <greearb@candelatech.com>
+> 
+> Many chips support channels in licensed bands. Add support for those,
+> along with a corresponding kernel config option to disable them by
+> default. Note that these channels are not selectable even if the
+> option has been compiled unless the user modifies the regulatory
+> database to explicitly enable the corresponding channels.
+> 
+> NOTE:  These channels must not be used in most regulatory
+> domains unless you have a license from the FCC or similar!
+> 
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> [Hide this support behind a Kconfig option]
+> Signed-off-by: Julian Calaby <julian.calaby@gmail.com>
+> [only use the 20 mhz channels, add 5 ghz, change to 4.9ghz to licensed bands]
+> Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+> Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+> ---
+>  drivers/net/wireless/ath/ath9k/Kconfig       | 20 ++++++++++++++++
+>  drivers/net/wireless/ath/ath9k/ath9k.h       |  2 +-
+>  drivers/net/wireless/ath/ath9k/common-init.c | 35 +++++++++++++++++++++-------
+>  drivers/net/wireless/ath/ath9k/hw.h          |  4 ++--
+>  4 files changed, 50 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath9k/Kconfig b/drivers/net/wireless/ath/ath9k/Kconfig
+> index 783a38f1a626..23b8abf4449a 100644
+> --- a/drivers/net/wireless/ath/ath9k/Kconfig
+> +++ b/drivers/net/wireless/ath/ath9k/Kconfig
+> @@ -116,6 +116,26 @@ config ATH9K_DFS_CERTIFIED
+>  	  developed. At this point enabling this option won't do anything
+>  	  except increase code size.
+>  
+> +config ATH9K_LICENSED_CHAN
+> +	bool "Support channels in licensed bands"
+> +	depends on ATH9K && CFG80211_CERTIFICATION_ONUS
+> +	default n
+> +	---help---
+> +	  This option enables support for licensed channels on such as
+> +          4.9 GHz (public safety).
+> +
+> +	  These are PUBLIC SAFETY CHANNELS and MUST NOT BE USED in most
+> +	  regulatory domains UNLESS YOU HAVE A FULL LICENSE for their use from
+> +	  your local radio regulator, e.g. the FCC or equivalent. Using these
+> +	  channels without proper authorisation may result in serious legal
+> +	  consequences.
+> +
+> +	  You will also have to build a regulatory database with these channels
+> +	  enabled to actually use them.
+> +
+> +	  If you are a distro kernel builder or have any doubt whatsoever about
+> +	  your legal ability to use these channels, say N.
+> +
+>  config ATH9K_DYNACK
+>  	bool "Atheros ath9k ACK timeout estimation algorithm (EXPERIMENTAL)"
+>  	depends on ATH9K
+> diff --git a/drivers/net/wireless/ath/ath9k/ath9k.h b/drivers/net/wireless/ath/ath9k/ath9k.h
+> index cf076719c27e..d215c3f968d4 100644
+> --- a/drivers/net/wireless/ath/ath9k/ath9k.h
+> +++ b/drivers/net/wireless/ath/ath9k/ath9k.h
+> @@ -996,7 +996,7 @@ struct ath_softc {
+>  	struct device *dev;
+>  
+>  	struct survey_info *cur_survey;
+> -	struct survey_info survey[ATH9K_NUM_CHANNELS];
+> +	struct survey_info survey[ATH9K_MAX_NUM_CHANNELS];
+>  
+>  	spinlock_t intr_lock;
+>  	struct tasklet_struct intr_tq;
+> diff --git a/drivers/net/wireless/ath/ath9k/common-init.c b/drivers/net/wireless/ath/ath9k/common-init.c
+> index 8b4f7fdabf58..0d632c22bc16 100644
+> --- a/drivers/net/wireless/ath/ath9k/common-init.c
+> +++ b/drivers/net/wireless/ath/ath9k/common-init.c
+> @@ -86,6 +86,22 @@ static const struct ieee80211_channel ath9k_5ghz_chantable[] = {
+>  	CHAN5G(5785, 35), /* Channel 157 */
+>  	CHAN5G(5805, 36), /* Channel 161 */
+>  	CHAN5G(5825, 37), /* Channel 165 */
+> +
+> +#ifdef CONFIG_ATH9K_LICENSED_CHAN
+> +	/* 4.9Ghz channels, public safety channels, license is required in US
+> +	 * and most other regulatory domains!
+> +	 */
+> +	/* 802.11j 4.9 GHz (20 MHz) */
+> +	CHAN5G(4920, 38), /* channel 184 */
+> +	CHAN5G(4940, 39), /* channel 188 */
+> +	CHAN5G(4960, 40), /* channel 192 */
+> +	CHAN5G(4980, 41), /* channel 196 */
+> +	/* 802.11j 5.030 - 5.080 GHz (20 MHz) */
+> +	CHAN5G(5040, 42), /* channel 8 */
+> +	CHAN5G(5060, 43), /* channel 12 */
+> +	CHAN5G(5080, 44), /* channel 16 */
+> +#endif
+> +#define ATH9K_NUM_LICENSED_CHANNELS 7
+>  };
+>  
+>  /* Atheros hardware rate code addition for short premble */
+> @@ -126,10 +142,14 @@ int ath9k_cmn_init_channels_rates(struct ath_common *common)
+>  {
+>  	struct ath_hw *ah = (struct ath_hw *)common->ah;
+>  	void *channels;
+> +	int num_5ghz_chan = ARRAY_SIZE(ath9k_5ghz_chantable);
+> +
+> +	if (!IS_ENABLED(CONFIG_ATH9K_LICENSED_CHAN))
+> +		num_5ghz_chan -= ATH9K_NUM_LICENSED_CHANNELS;
+These two lines seem wrong to me, since the extra channels are only added to the
+list if CONFIG_ATH9K_LICENSED_CHAN is defined. If it is not, this cuts off the
+last 7 regular channels, no?
 
-> Cheers,
->       Simon
+Cheers,
+Zefir
+
 
 _______________________________________________
 ath10k mailing list
