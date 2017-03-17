@@ -1,24 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1couD2-00032U-Ll
- for ath10k@lists.infradead.org; Fri, 17 Mar 2017 15:54:35 +0000
-Received: by mail-lf0-x241.google.com with SMTP id v2so5817047lfi.2
- for <ath10k@lists.infradead.org>; Fri, 17 Mar 2017 08:54:11 -0700 (PDT)
-Subject: Re: [RFC v4 06/21] ath10k: sdio support
-References: <1487693741-10042-1-git-send-email-erik.stromdahl@gmail.com>
- <1487693741-10042-7-git-send-email-erik.stromdahl@gmail.com>
- <8760jh2uy8.fsf@kamboji.qca.qualcomm.com>
- <871su52th2.fsf@kamboji.qca.qualcomm.com>
- <2528f323-6ec7-915c-d98b-615db04510e9@gmail.com>
- <877f3qyc5g.fsf@kamboji.qca.qualcomm.com>
- <29c3dd40-c3ac-746e-d8ef-cb072c58578a@gmail.com>
- <87y3w5tvkq.fsf@kamboji.qca.qualcomm.com>
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Message-ID: <feaa5932-4a2b-d801-9226-5532cea93a14@gmail.com>
-Date: Fri, 17 Mar 2017 16:54:08 +0100
-MIME-Version: 1.0
-In-Reply-To: <87y3w5tvkq.fsf@kamboji.qca.qualcomm.com>
+ id 1couTB-0003xO-T9
+ for ath10k@lists.infradead.org; Fri, 17 Mar 2017 16:11:27 +0000
+From: Simon Wunderlich <sw@simonwunderlich.de>
+Subject: [PATCHv2 1/3] ath9k: Support channels in licensed bands
+Date: Fri, 17 Mar 2017 17:00:20 +0100
+Message-Id: <20170317160020.30991-1-sw@simonwunderlich.de>
+In-Reply-To: <096bcee2-a991-eac1-8f4f-d7cf7c34730d@neratec.com>
+References: <096bcee2-a991-eac1-8f4f-d7cf7c34730d@neratec.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +17,116 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com
+Cc: Julian Calaby <julian.calaby@gmail.com>, Ben Greear <greearb@candelatech.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, linux-wireless@vger.kernel.org, Simon Wunderlich <sw@simonwunderlich.de>
 
+From: Ben Greear <greearb@candelatech.com>
 
+Many chips support channels in licensed bands. Add support for those,
+along with a corresponding kernel config option to disable them by
+default. Note that these channels are not selectable even if the
+option has been compiled unless the user modifies the regulatory
+database to explicitly enable the corresponding channels.
 
-On 2017-03-16 10:33, Kalle Valo wrote:
-> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
->
->>> There seems to be same pattern for reading four bytes, what if we should
->>> add a helper for that? Something like ath10k_sdio_read32()? It could
->>> handle the kmalloc and switch endianess also.
->>>
->>> But please don't make any chances to sdio.c for the moment, let me
->>> submit v5 first.
->>>
->> I notice that you have submitted v5 (and v6) of the sdio patches. Great!
->>
->> I assume you will add them to master-pending soon so I will try out
->> everything (usb too) as soon as they are on master-pending.
->
-> v6 is now in master-pending.
->
+NOTE:  These channels must not be used in most regulatory
+domains unless you have a license from the FCC or similar!
 
-I have added my usb patches on top of sdio v6 and everything works as expected
-(both usb and sdio).
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+[Hide this support behind a Kconfig option]
+Signed-off-by: Julian Calaby <julian.calaby@gmail.com>
+[only use the 20 mhz channels, add 5 ghz, change to 4.9ghz to licensed bands, simplify]
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+---
+Changes to PATCHv1:
+ * fix bug reported by Zefir, and simplify patch more
+---
+ drivers/net/wireless/ath/ath9k/Kconfig       | 20 ++++++++++++++++++++
+ drivers/net/wireless/ath/ath9k/common-init.c | 15 +++++++++++++++
+ drivers/net/wireless/ath/ath9k/hw.h          |  4 ++++
+ 3 files changed, 39 insertions(+)
 
-Your changes does not seem to have broken anything.
+diff --git a/drivers/net/wireless/ath/ath9k/Kconfig b/drivers/net/wireless/ath/ath9k/Kconfig
+index 783a38f1a626..23b8abf4449a 100644
+--- a/drivers/net/wireless/ath/ath9k/Kconfig
++++ b/drivers/net/wireless/ath/ath9k/Kconfig
+@@ -116,6 +116,26 @@ config ATH9K_DFS_CERTIFIED
+ 	  developed. At this point enabling this option won't do anything
+ 	  except increase code size.
+ 
++config ATH9K_LICENSED_CHAN
++	bool "Support channels in licensed bands"
++	depends on ATH9K && CFG80211_CERTIFICATION_ONUS
++	default n
++	---help---
++	  This option enables support for licensed channels on such as
++          4.9 GHz (public safety).
++
++	  These are PUBLIC SAFETY CHANNELS and MUST NOT BE USED in most
++	  regulatory domains UNLESS YOU HAVE A FULL LICENSE for their use from
++	  your local radio regulator, e.g. the FCC or equivalent. Using these
++	  channels without proper authorisation may result in serious legal
++	  consequences.
++
++	  You will also have to build a regulatory database with these channels
++	  enabled to actually use them.
++
++	  If you are a distro kernel builder or have any doubt whatsoever about
++	  your legal ability to use these channels, say N.
++
+ config ATH9K_DYNACK
+ 	bool "Atheros ath9k ACK timeout estimation algorithm (EXPERIMENTAL)"
+ 	depends on ATH9K
+diff --git a/drivers/net/wireless/ath/ath9k/common-init.c b/drivers/net/wireless/ath/ath9k/common-init.c
+index 8b4f7fdabf58..3d65dce13048 100644
+--- a/drivers/net/wireless/ath/ath9k/common-init.c
++++ b/drivers/net/wireless/ath/ath9k/common-init.c
+@@ -86,6 +86,21 @@ static const struct ieee80211_channel ath9k_5ghz_chantable[] = {
+ 	CHAN5G(5785, 35), /* Channel 157 */
+ 	CHAN5G(5805, 36), /* Channel 161 */
+ 	CHAN5G(5825, 37), /* Channel 165 */
++
++#ifdef CONFIG_ATH9K_LICENSED_CHAN
++	/* 4.9Ghz channels, public safety channels, license is required in US
++	 * and most other regulatory domains!
++	 */
++	/* 802.11j 4.9 GHz (20 MHz) */
++	CHAN5G(4920, 38), /* channel 184 */
++	CHAN5G(4940, 39), /* channel 188 */
++	CHAN5G(4960, 40), /* channel 192 */
++	CHAN5G(4980, 41), /* channel 196 */
++	/* 802.11j 5.030 - 5.080 GHz (20 MHz) */
++	CHAN5G(5040, 42), /* channel 8 */
++	CHAN5G(5060, 43), /* channel 12 */
++	CHAN5G(5080, 44), /* channel 16 */
++#endif
+ };
+ 
+ /* Atheros hardware rate code addition for short premble */
+diff --git a/drivers/net/wireless/ath/ath9k/hw.h b/drivers/net/wireless/ath/ath9k/hw.h
+index 9cbca1229bac..2166f644599d 100644
+--- a/drivers/net/wireless/ath/ath9k/hw.h
++++ b/drivers/net/wireless/ath/ath9k/hw.h
+@@ -73,7 +73,11 @@
+ 
+ #define ATH9K_RSSI_BAD			-128
+ 
++#ifdef CONFIG_ATH9K_LICENSED_CHAN
++#define ATH9K_NUM_CHANNELS	45
++#else
+ #define ATH9K_NUM_CHANNELS	38
++#endif
+ 
+ /* Register read/write primitives */
+ #define REG_WRITE(_ah, _reg, _val) \
+-- 
+2.11.0
+
 
 _______________________________________________
 ath10k mailing list
