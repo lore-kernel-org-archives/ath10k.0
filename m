@@ -1,13 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cpz71-0007zG-BV
- for ath10k@lists.infradead.org; Mon, 20 Mar 2017 15:20:48 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Fix NAPI enable/disable symmetry for AHB interface
-Date: Mon, 20 Mar 2017 20:52:46 +0530
-Message-ID: <1490023366-8176-1-git-send-email-mohammed@qca.qualcomm.com>
+Received: from mail-ot0-f196.google.com ([74.125.82.196])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cpyua-000640-UB
+ for ath10k@lists.infradead.org; Mon, 20 Mar 2017 15:07:59 +0000
+Received: by mail-ot0-f196.google.com with SMTP id x37so19595655ota.1
+ for <ath10k@lists.infradead.org>; Mon, 20 Mar 2017 08:07:36 -0700 (PDT)
+Date: Mon, 20 Mar 2017 10:07:33 -0500
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/2] dt: bindings: add new dt entry for ath10k
+ calibration variant
+Message-ID: <20170320150733.25bufnzrhh7xabml@rob-hp-laptop>
+References: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,48 +26,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, ext.waldemar.rymarkiewicz@tieto.com, kvalo@codeaurora.org
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+On Fri, Mar 10, 2017 at 09:06:14AM +0100, Sven Eckelmann wrote:
+> The bus + bmi-chip-id + bmi-board-id is not enough to identify the correct
+> board data file on QCA4019 based devices. Multiple different boards share
+> the same values. Only the original reference designs can currently be
+> identified and loaded from the board-2.bin. But these will not result in
+> the correct calibration data when combined with the pre-calibration data
+> from the device.
+> 
+> An additional "variant" information has to be provided (via SMBIOS or DT)
+> to select the correct board data for a design which was modified by an ODM.
+> 
+> Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
+> ---
+> Since RFC:
+> 
+>  - Split patch in DT doc and ath10k part (thanks Christian Lamparter)
+>  - Remove the words "bmi-chip-id" and "bmi-board-id" and replace them with
+>    more generic "device specific ids"
+> ---
+>  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> index 74d7f0af209c..3d2a031217da 100644
+> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> @@ -41,6 +41,9 @@ Optional properties:
+>  - qcom,msi_addr: MSI interrupt address.
+>  - qcom,msi_base: Base value to add before writing MSI data into
+>  		MSI address register.
+> +- qcom,ath10k-calibration-variant: string to search for in the board-2.bin
+> +				   variant list with the same bus and device
+> +				   specific ids
 
-Move NAPI enable to 'ath10k_ahb_hif_start' from
-'ath10k_ahb_hif_power_up'. This is to maintain the symmetry
-of calling napi_enable() from ath10k_ahb_hif_start() so that it
-matches with  napi_disable() being called from ath10k_pci_hif_stop().
+Sounds like you should use a more specific compatible string.
 
-This change is based on the crash fix from Kalle for PCI interface in
-commit 1427228d5869 ("ath10k: fix napi crash during rmmod when probe
-firmware fails").
-
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/ahb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
-index 45226db..da770af 100644
---- a/drivers/net/wireless/ath/ath10k/ahb.c
-+++ b/drivers/net/wireless/ath/ath10k/ahb.c
-@@ -640,6 +640,7 @@ static int ath10k_ahb_hif_start(struct ath10k *ar)
- {
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot ahb hif start\n");
- 
-+	napi_enable(&ar->napi);
- 	ath10k_ce_enable_interrupts(ar);
- 	ath10k_pci_enable_legacy_irq(ar);
- 
-@@ -692,7 +693,6 @@ static int ath10k_ahb_hif_power_up(struct ath10k *ar)
- 		ath10k_err(ar, "could not wake up target CPU: %d\n", ret);
- 		goto err_ce_deinit;
- 	}
--	napi_enable(&ar->napi);
- 
- 	return 0;
- 
--- 
-1.9.1
-
+>  - qcom,ath10k-calibration-data : calibration data + board specific data
+>  				 as an array, the length can vary between
+>  				 hw versions.
+> -- 
+> 2.11.0
+> 
 
 _______________________________________________
 ath10k mailing list
