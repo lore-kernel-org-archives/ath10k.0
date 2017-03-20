@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cpz9M-0000vP-S2
- for ath10k@lists.infradead.org; Mon, 20 Mar 2017 15:23:15 +0000
+ id 1cpzAj-0001W9-PI
+ for ath10k@lists.infradead.org; Mon, 20 Mar 2017 15:24:39 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: fix warnings from an earlier commit
+Subject: Re: ath10k: Fix typo in wmi header file
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <148965546273.3007.5273967631982279383.stgit@potku.adurom.net>
-References: <148965546273.3007.5273967631982279383.stgit@potku.adurom.net>
-Message-ID: <1569c6bba3bc400c9800e036c3731b9c@euamsexm01a.eu.qualcomm.com>
-Date: Mon, 20 Mar 2017 16:22:46 +0100
+In-Reply-To: <1489491204-20855-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1489491204-20855-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <27b179f0f5b841ffbda2ff9f3113b0a6@euamsexm01a.eu.qualcomm.com>
+Date: Mon, 20 Mar 2017 16:24:10 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +22,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> I failed to notice that commit 523f6701dbab ("ath10k: update available channel
-> list for 5G radio") added two new warnings:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > 
-> drivers/net/wireless/ath/ath10k/mac.c:3129:6: warning: symbol 'ath10k_mac_update_channel_list' was not declared. Should it be static?
-> drivers/net/wireless/ath/ath10k/mac.c:3170: Alignment should match open parenthesis
+> Fix typo(spelling mistake) in wmi.h
 > 
-> Fix those.
-> 
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-46bc92bedbd3 ath10k: fix warnings from an earlier commit
+0a7d88e432e7 ath10k: fix typo in wmi header file
 
 -- 
-https://patchwork.kernel.org/patch/9627713/
+https://patchwork.kernel.org/patch/9623069/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
