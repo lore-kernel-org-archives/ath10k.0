@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cpyz9-00040s-9F
- for ath10k@lists.infradead.org; Mon, 20 Mar 2017 15:12:42 +0000
+ id 1cpz71-0007zG-BV
+ for ath10k@lists.infradead.org; Mon, 20 Mar 2017 15:20:48 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Fix NAPI enable/disable symmetry for AHB interface
+Date: Mon, 20 Mar 2017 20:52:46 +0530
+Message-ID: <1490023366-8176-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [4.11] ath10k: fix incorrect wlan_mac_base in qca6174_regs
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1489445343-8719-1-git-send-email-ryanhsu@qca.qualcomm.com>
-References: <1489445343-8719-1-git-send-email-ryanhsu@qca.qualcomm.com>
-Message-ID: <61056b2da2f84bc0bc1def2646729c2c@euamsexm01a.eu.qualcomm.com>
-Date: Mon, 20 Mar 2017 16:12:09 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +20,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Ryan Hsu <ryanhsu@qca.qualcomm.com> wrote:
-> From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
-> 
-> In the 'commit ebee76f7fa46 ("ath10k: allow setting coverage class")',
-> it inherits the design and the address offset from ath9k, but the address
-> is not applicable to QCA6174, which leads to a random crash while doing the
-> resume() operation, since the set_coverage_class.ops will be called from
-> ieee80211_reconfig() when resume() (if the wow is not configured).
-> 
-> Fix the incorrect address offset here to avoid the random crash.
-> 
-> Verified on QCA6174/hw3.0 with firmware WLAN.RM.4.4-00022-QCARMSWPZ-2.
-> 
-> Fixes: ebee76f7fa46 ("ath10k: allow setting coverage class")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-Patch applied to ath-current branch of ath.git, thanks.
+Move NAPI enable to 'ath10k_ahb_hif_start' from
+'ath10k_ahb_hif_power_up'. This is to maintain the symmetry
+of calling napi_enable() from ath10k_ahb_hif_start() so that it
+matches with  napi_disable() being called from ath10k_pci_hif_stop().
 
-6be3b6cce1e2 ath10k: fix incorrect wlan_mac_base in qca6174_regs
+This change is based on the crash fix from Kalle for PCI interface in
+commit 1427228d5869 ("ath10k: fix napi crash during rmmod when probe
+firmware fails").
 
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/ahb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+index 45226db..da770af 100644
+--- a/drivers/net/wireless/ath/ath10k/ahb.c
++++ b/drivers/net/wireless/ath/ath10k/ahb.c
+@@ -640,6 +640,7 @@ static int ath10k_ahb_hif_start(struct ath10k *ar)
+ {
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot ahb hif start\n");
+ 
++	napi_enable(&ar->napi);
+ 	ath10k_ce_enable_interrupts(ar);
+ 	ath10k_pci_enable_legacy_irq(ar);
+ 
+@@ -692,7 +693,6 @@ static int ath10k_ahb_hif_power_up(struct ath10k *ar)
+ 		ath10k_err(ar, "could not wake up target CPU: %d\n", ret);
+ 		goto err_ce_deinit;
+ 	}
+-	napi_enable(&ar->napi);
+ 
+ 	return 0;
+ 
 -- 
-https://patchwork.kernel.org/patch/9622251/
-
-Documentation about submitting wireless patches and checking status
-from patchwork:
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+1.9.1
 
 
 _______________________________________________
