@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cpzAj-0001W9-PI
- for ath10k@lists.infradead.org; Mon, 20 Mar 2017 15:24:39 +0000
+ id 1cpzBr-00031J-4O
+ for ath10k@lists.infradead.org; Mon, 20 Mar 2017 15:25:48 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: Fix typo in wmi header file
+Subject: Re: ath10k: remove redundant check of len with buf_len
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1489491204-20855-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1489491204-20855-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <27b179f0f5b841ffbda2ff9f3113b0a6@euamsexm01a.eu.qualcomm.com>
-Date: Mon, 20 Mar 2017 16:24:10 +0100
+In-Reply-To: <20170315163641.17052-1-colin.king@canonical.com>
+References: <20170315163641.17052-1-colin.king@canonical.com>
+Message-ID: <a669166e00c5481e880f6cfbb28fea7f@euamsexm01a.eu.qualcomm.com>
+Date: Mon, 20 Mar 2017 16:25:19 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Colin Ian King <colin.king@canonical.com> wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Fix typo(spelling mistake) in wmi.h
+> The check of len > buf_len is redundant as len is initialized
+> to 0 and buf_len to 4096, so this comparison is always false.
+> Remove it.
 > 
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-0a7d88e432e7 ath10k: fix typo in wmi header file
+eed4721fb617 ath10k: remove redundant check of len with buf_len
 
 -- 
-https://patchwork.kernel.org/patch/9623069/
+https://patchwork.kernel.org/patch/9626131/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
