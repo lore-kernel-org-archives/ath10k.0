@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cq0Ap-0005MW-0b
- for ath10k@lists.infradead.org; Mon, 20 Mar 2017 16:28:49 +0000
-Received: by mail-wm0-x236.google.com with SMTP id u132so67970845wmg.0
- for <ath10k@lists.infradead.org>; Mon, 20 Mar 2017 09:28:26 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+ id 1cq0O5-0005s4-C6
+ for ath10k@lists.infradead.org; Mon, 20 Mar 2017 16:42:31 +0000
+Received: by mail-wm0-x241.google.com with SMTP id n11so15584261wma.0
+ for <ath10k@lists.infradead.org>; Mon, 20 Mar 2017 09:42:07 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1919994.musG4GLznX@bentobox>
+References: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
+ <20170320150733.25bufnzrhh7xabml@rob-hp-laptop> <1919994.musG4GLznX@bentobox>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Mon, 20 Mar 2017 09:42:05 -0700
+Message-ID: <CAJ-Vmok=6Tcvr4NE9+KMSQ4OSd80e1DSkgbOqFcWnFT3A1ikgw@mail.gmail.com>
 Subject: Re: [PATCH 1/2] dt: bindings: add new dt entry for ath10k calibration
  variant
-Date: Mon, 20 Mar 2017 17:28:21 +0100
-Message-ID: <1919994.musG4GLznX@bentobox>
-In-Reply-To: <20170320150733.25bufnzrhh7xabml@rob-hp-laptop>
-References: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
- <20170320150733.25bufnzrhh7xabml@rob-hp-laptop>
-MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,118 +22,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1991192174359854270=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rob Herring <robh@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, ext.waldemar.rymarkiewicz@tieto.com, kvalo@codeaurora.org
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>, Kalle Valo <kvalo@codeaurora.org>
 
---===============1991192174359854270==
-Content-Type: multipart/signed; boundary="nextPart1747089.KH7Jk6BZzg"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-
---nextPart1747089.KH7Jk6BZzg
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-
-On Montag, 20. M=E4rz 2017 10:07:33 CET Rob Herring wrote:
-> On Fri, Mar 10, 2017 at 09:06:14AM +0100, Sven Eckelmann wrote:
-> > The bus + bmi-chip-id + bmi-board-id is not enough to identify the corr=
-ect
-> > board data file on QCA4019 based devices. Multiple different boards sha=
-re
-> > the same values. Only the original reference designs can currently be
-> > identified and loaded from the board-2.bin. But these will not result in
-> > the correct calibration data when combined with the pre-calibration data
-> > from the device.
-> >=20
-> > An additional "variant" information has to be provided (via SMBIOS or D=
-T)
-> > to select the correct board data for a design which was modified by an =
-ODM.
-> >=20
-> > Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
-> > ---
-> > Since RFC:
-> >=20
-> >  - Split patch in DT doc and ath10k part (thanks Christian Lamparter)
-> >  - Remove the words "bmi-chip-id" and "bmi-board-id" and replace them w=
-ith
-> >    more generic "device specific ids"
-> > ---
-> >  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k=
-=2Etxt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> > index 74d7f0af209c..3d2a031217da 100644
-> > --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> > +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> > @@ -41,6 +41,9 @@ Optional properties:
-> >  - qcom,msi_addr: MSI interrupt address.
-> >  - qcom,msi_base: Base value to add before writing MSI data into
-> >  		MSI address register.
-> > +- qcom,ath10k-calibration-variant: string to search for in the board-2=
-=2Ebin
-> > +				   variant list with the same bus and device
-> > +				   specific ids
->=20
-> Sounds like you should use a more specific compatible string.
-
-Hm, this would require that each calibration data has an own compatibility
-string - which then has to be supported by ath10k, right? Doesn't sound like
-it would work well when each vendor (with an own calibration variant) would
-have to modify ath10k to get it working. This sounds especially odd because
-nothing else in ath10k has to be changed. Only the board data files which w=
-ill
-be selected by ath10k are different on these devices.
-
-It would then up with something like this as compatibility string:
-
- * qcom,ipq4019-wifi-asus-rt-ac58u
- * qcom,ipq4019-wifi-fritzbox-4040
- * qcom,ipq4019-wifi-netgear-whatever
- * qcom,ipq4019-wifi-openmesh-i-have-no-idea
- * ...
-
-But maybe I misunderstood what you've said.
-
-Kind regards,
-	Sven
---nextPart1747089.KH7Jk6BZzg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAljQAyUACgkQXYcKB8Em
-e0aEaBAAuZXbcHfv2BRSu08zarjuMlRqEi3DV8ivP46AFnLdt8deKF84vfyNGse5
-XyKXZYXHMdfJ3DNljS0Eg39QpdAzmOpNVi2eqqS0Ij3hu69arEBKL4nqBZwaBEMx
-7gdLMP0G0xi4UjRY5gpqZF2znPxqUuKwXvChCj1B36z74wejiTLWIyxfigTVvg3q
-zILWpzopXiUReGOzKWuQu5tCazBOBjo+nVEbOPMEc96hz1Yepove2uW75hWFnl3k
-PUgrG9FR8bLkUVkP4PHikprgHVF5xI46TmYD0lNfp8iXVJ31w9scnmPiSIC11gxJ
-J1mdCaKuLeDTGRB2gLjd2FUgICVcdZX2kK6Cn5S/WUg9vdLGwyqhYRwEjHKY8b9i
-PPGGtY7qtCoUeD5OZSCrBc64qj9/8jWVOVNpQpnY5zXf6csNVX1czt3FJmgCzqHN
-Vr5GpAYyeDUR3W8RwL35jEjreiWKSgr7AfdN6ZPOY07XyGQ9OiyeBAgYEVbG9QYL
-ZBeLpwHPnEHOd2S2GfBWBEw6izNLURbbWeGVqPHK6xDZpK+JuwcExGOor9NISTTh
-zBeq2pDBFWjwMMflleL7NOqI8iUfTnxb5ezj8fBOLQumgTIZDkVA5OlyiOEALPMQ
-pFjbRgevm8qt3BLxnxAcW3P8Br7E8qEbkrocfR9yVPEoRdB41ws=
-=zeH3
------END PGP SIGNATURE-----
-
---nextPart1747089.KH7Jk6BZzg--
-
-
-
---===============1991192174359854270==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============1991192174359854270==--
+VmVuZG9ycyB1c2luZyBhdGgxMGsgd2lsbCBsaWtlIHRoaXMuIEkgbWVhbiwgSSdtIHVzaW5nIGF0
+aDEwaywgYW5kIEkKcmVhbGx5IGxpa2UgdGhpcyBtb3ZpbmcgZm9yd2FyZC4gVGhpcyB3aWxsIG1h
+a2UgbGlmZSBzbyBtdWNoIGVhc2llciBpbgp0aGUgbG9uZyBydW4uCgpFdmVyeW9uZSBlbHNlIGlz
+bid0IHVzaW5nIGJvYXJkLTIuYmluOyB0aGV5J3JlIGp1c3QgY29weWluZwpjYWxpYnJhdGlvbi9i
+b2FyZCBkYXRhIGZpbGVzIG92ZXIgc28gdGhlIHJlZmVyZW5jZSBkcml2ZXIgY2FuIGFzc2VtYmxl
+CmEgYm9hcmQgZGF0YSBmaWxlIGJhc2VkIG9uIHdpZmkwL3dpZmkxL2V0YyBwcm9iZSBvcmRlciwg
+YW5kIHVzZSB0aGF0LgoKCgotYWRyaWFuCgoKT24gMjAgTWFyY2ggMjAxNyBhdCAwOToyOCwgU3Zl
+biBFY2tlbG1hbm4gPHN2ZW4uZWNrZWxtYW5uQG9wZW5tZXNoLmNvbT4gd3JvdGU6Cj4gT24gTW9u
+dGFnLCAyMC4gTcOkcnogMjAxNyAxMDowNzozMyBDRVQgUm9iIEhlcnJpbmcgd3JvdGU6Cj4+IE9u
+IEZyaSwgTWFyIDEwLCAyMDE3IGF0IDA5OjA2OjE0QU0gKzAxMDAsIFN2ZW4gRWNrZWxtYW5uIHdy
+b3RlOgo+PiA+IFRoZSBidXMgKyBibWktY2hpcC1pZCArIGJtaS1ib2FyZC1pZCBpcyBub3QgZW5v
+dWdoIHRvIGlkZW50aWZ5IHRoZSBjb3JyZWN0Cj4+ID4gYm9hcmQgZGF0YSBmaWxlIG9uIFFDQTQw
+MTkgYmFzZWQgZGV2aWNlcy4gTXVsdGlwbGUgZGlmZmVyZW50IGJvYXJkcyBzaGFyZQo+PiA+IHRo
+ZSBzYW1lIHZhbHVlcy4gT25seSB0aGUgb3JpZ2luYWwgcmVmZXJlbmNlIGRlc2lnbnMgY2FuIGN1
+cnJlbnRseSBiZQo+PiA+IGlkZW50aWZpZWQgYW5kIGxvYWRlZCBmcm9tIHRoZSBib2FyZC0yLmJp
+bi4gQnV0IHRoZXNlIHdpbGwgbm90IHJlc3VsdCBpbgo+PiA+IHRoZSBjb3JyZWN0IGNhbGlicmF0
+aW9uIGRhdGEgd2hlbiBjb21iaW5lZCB3aXRoIHRoZSBwcmUtY2FsaWJyYXRpb24gZGF0YQo+PiA+
+IGZyb20gdGhlIGRldmljZS4KPj4gPgo+PiA+IEFuIGFkZGl0aW9uYWwgInZhcmlhbnQiIGluZm9y
+bWF0aW9uIGhhcyB0byBiZSBwcm92aWRlZCAodmlhIFNNQklPUyBvciBEVCkKPj4gPiB0byBzZWxl
+Y3QgdGhlIGNvcnJlY3QgYm9hcmQgZGF0YSBmb3IgYSBkZXNpZ24gd2hpY2ggd2FzIG1vZGlmaWVk
+IGJ5IGFuIE9ETS4KPj4gPgo+PiA+IFNpZ25lZC1vZmYtYnk6IFN2ZW4gRWNrZWxtYW5uIDxzdmVu
+LmVja2VsbWFubkBvcGVubWVzaC5jb20+Cj4+ID4gLS0tCj4+ID4gU2luY2UgUkZDOgo+PiA+Cj4+
+ID4gIC0gU3BsaXQgcGF0Y2ggaW4gRFQgZG9jIGFuZCBhdGgxMGsgcGFydCAodGhhbmtzIENocmlz
+dGlhbiBMYW1wYXJ0ZXIpCj4+ID4gIC0gUmVtb3ZlIHRoZSB3b3JkcyAiYm1pLWNoaXAtaWQiIGFu
+ZCAiYm1pLWJvYXJkLWlkIiBhbmQgcmVwbGFjZSB0aGVtIHdpdGgKPj4gPiAgICBtb3JlIGdlbmVy
+aWMgImRldmljZSBzcGVjaWZpYyBpZHMiCj4+ID4gLS0tCj4+ID4gIERvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9uZXQvd2lyZWxlc3MvcWNvbSxhdGgxMGsudHh0IHwgMyArKysKPj4g
+PiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQo+PiA+Cj4+ID4gZGlmZiAtLWdpdCBh
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvd2lyZWxlc3MvcWNvbSxhdGgx
+MGsudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC93aXJlbGVzcy9x
+Y29tLGF0aDEway50eHQKPj4gPiBpbmRleCA3NGQ3ZjBhZjIwOWMuLjNkMmEwMzEyMTdkYSAxMDA2
+NDQKPj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L3dpcmVs
+ZXNzL3Fjb20sYXRoMTBrLnR4dAo+PiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9uZXQvd2lyZWxlc3MvcWNvbSxhdGgxMGsudHh0Cj4+ID4gQEAgLTQxLDYgKzQxLDkg
+QEAgT3B0aW9uYWwgcHJvcGVydGllczoKPj4gPiAgLSBxY29tLG1zaV9hZGRyOiBNU0kgaW50ZXJy
+dXB0IGFkZHJlc3MuCj4+ID4gIC0gcWNvbSxtc2lfYmFzZTogQmFzZSB2YWx1ZSB0byBhZGQgYmVm
+b3JlIHdyaXRpbmcgTVNJIGRhdGEgaW50bwo+PiA+ICAgICAgICAgICAgIE1TSSBhZGRyZXNzIHJl
+Z2lzdGVyLgo+PiA+ICstIHFjb20sYXRoMTBrLWNhbGlicmF0aW9uLXZhcmlhbnQ6IHN0cmluZyB0
+byBzZWFyY2ggZm9yIGluIHRoZSBib2FyZC0yLmJpbgo+PiA+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICB2YXJpYW50IGxpc3Qgd2l0aCB0aGUgc2FtZSBidXMgYW5kIGRldmljZQo+PiA+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzcGVjaWZpYyBpZHMKPj4KPj4gU291bmRz
+IGxpa2UgeW91IHNob3VsZCB1c2UgYSBtb3JlIHNwZWNpZmljIGNvbXBhdGlibGUgc3RyaW5nLgo+
+Cj4gSG0sIHRoaXMgd291bGQgcmVxdWlyZSB0aGF0IGVhY2ggY2FsaWJyYXRpb24gZGF0YSBoYXMg
+YW4gb3duIGNvbXBhdGliaWxpdHkKPiBzdHJpbmcgLSB3aGljaCB0aGVuIGhhcyB0byBiZSBzdXBw
+b3J0ZWQgYnkgYXRoMTBrLCByaWdodD8gRG9lc24ndCBzb3VuZCBsaWtlCj4gaXQgd291bGQgd29y
+ayB3ZWxsIHdoZW4gZWFjaCB2ZW5kb3IgKHdpdGggYW4gb3duIGNhbGlicmF0aW9uIHZhcmlhbnQp
+IHdvdWxkCj4gaGF2ZSB0byBtb2RpZnkgYXRoMTBrIHRvIGdldCBpdCB3b3JraW5nLiBUaGlzIHNv
+dW5kcyBlc3BlY2lhbGx5IG9kZCBiZWNhdXNlCj4gbm90aGluZyBlbHNlIGluIGF0aDEwayBoYXMg
+dG8gYmUgY2hhbmdlZC4gT25seSB0aGUgYm9hcmQgZGF0YSBmaWxlcyB3aGljaCB3aWxsCj4gYmUg
+c2VsZWN0ZWQgYnkgYXRoMTBrIGFyZSBkaWZmZXJlbnQgb24gdGhlc2UgZGV2aWNlcy4KPgo+IEl0
+IHdvdWxkIHRoZW4gdXAgd2l0aCBzb21ldGhpbmcgbGlrZSB0aGlzIGFzIGNvbXBhdGliaWxpdHkg
+c3RyaW5nOgo+Cj4gICogcWNvbSxpcHE0MDE5LXdpZmktYXN1cy1ydC1hYzU4dQo+ICAqIHFjb20s
+aXBxNDAxOS13aWZpLWZyaXR6Ym94LTQwNDAKPiAgKiBxY29tLGlwcTQwMTktd2lmaS1uZXRnZWFy
+LXdoYXRldmVyCj4gICogcWNvbSxpcHE0MDE5LXdpZmktb3Blbm1lc2gtaS1oYXZlLW5vLWlkZWEK
+PiAgKiAuLi4KPgo+IEJ1dCBtYXliZSBJIG1pc3VuZGVyc3Rvb2Qgd2hhdCB5b3UndmUgc2FpZC4K
+Pgo+IEtpbmQgcmVnYXJkcywKPiAgICAgICAgIFN2ZW4KCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
