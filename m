@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cpupU-0008T3-0V
- for ath10k@lists.infradead.org; Mon, 20 Mar 2017 10:46:33 +0000
-References: <20170320081343.M37344@cdot.in>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <0f6c7cd6-5925-61ea-2b65-98023aba4f57@dd-wrt.com>
-Date: Mon, 20 Mar 2017 11:45:16 +0100
+ id 1cpyz9-00040s-9F
+ for ath10k@lists.infradead.org; Mon, 20 Mar 2017 15:12:42 +0000
 MIME-Version: 1.0
-In-Reply-To: <20170320081343.M37344@cdot.in>
-Subject: Re: Maximum Transmit Power for channel 36 ,40,44 and 48
+Subject: Re: [4.11] ath10k: fix incorrect wlan_mac_base in qca6174_regs
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1489445343-8719-1-git-send-email-ryanhsu@qca.qualcomm.com>
+References: <1489445343-8719-1-git-send-email-ryanhsu@qca.qualcomm.com>
+Message-ID: <61056b2da2f84bc0bc1def2646729c2c@euamsexm01a.eu.qualcomm.com>
+Date: Mon, 20 Mar 2017 16:12:09 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,47 +18,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: KAVITA MATHUR <kavitam@cdot.in>, ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com
+To: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-QW0gMjAuMDMuMjAxNyB1bSAwOToyNSBzY2hyaWViIEtBVklUQSBNQVRIVVI6Cj4gSGksCj4KPiBD
-aGlwc2V0IDogQVI5MjIwCj4gUkYgbW9kdWxlIDogV0xNMjAwTlggYW5kIFdMTTIwME41Cj4gTGlu
-dXggS2VybmVsIDogMy4xMgo+IGF0aDlrIGRyaXZlciA6IGJhY2twb3J0NC40LjItMQo+Cj4gV2l0
-aCBhYm92ZSBjb21iaW5hdGlvbiAsIEkgaGF2ZSBtZWFzdXJlZCBtYXhpbXVtIHRyYW5zbWl0IHBv
-d2VyIDEzIGRCbSBmb3IgY2hhbm5lbAo+IDM2LDQwLDQ0IGFuZCA0OC4gV2hpbGUgaXQgaXMgMjAg
-ZEJtIGZvciBjaGFubmVsIDE0OSBhbmQgb3RoZXIgNUdIeiBiYW5kIGNoYW5uZWxzCj4gICBhcyB3
-ZWxsIGFzIGZvciAyLjQgR0h6IGNoYW5uZWxzLgo+Cj4gSWYgSSB0cnkgdG8gc2V0IHR4cG93ZXIg
-dXNpbmcgaXdjb25maWcgd2xhbjAgdHhwb3dlciAyMCAsIGl0IGdpdmVzIG5vIGVycm9yLmJ1dCBp
-dCBzaG93cwo+IG9ubHkgMTNkQk0uCj4KPiBIb3cgSSBjYW4gY2hhbmdlIHRoZSB0eHBvd2VyIGZv
-ciBjaGFubmVsIDM2LDQwLDQ0IGFuZCA0OD8KdGhlIG1heGltdW0gYXZhaWxhbGUgdHhwb3dlciBk
-ZXBlbmRzIG9uIHRoZSBjYWxpYnJhdGlvbiBkYXRhIHdoaWNoIGlzIApzdG9yZWQgd2l0aGluIHRo
-ZSBjYXJkcyBvd20gZWVwcm9tIGFuZCBpcyBhbHNvIHJlbGF0ZWQgdG8gdGhlIGN1cnJlbnQgCnVz
-ZWQgbWNzIHNldCAvIHdpcmVsZXNzIHJhdGUuCmFzIGhpZ2hlciB0aGUgcmF0ZSBpcyBhcyBsb3dl
-ciB0aGUgdHJhbnNtaXNzaW9uIHBvd2VyIHdpbGwgYmUKYWNjb3JkaW5nIHRvIHRoZSBkYXRhc2hl
-ZXQgdGhlIHJhdGUgZm9yIGh0NDAgNSBnaHogZm9yIHRoaXMgY2FyZCBpcyAxNCAKZGJtIGF0IE1D
-UyA3IC8gMTUgd2l0aCBhIHRvbGxlcmFuY2Ugb2YgKy0gMiBkYm0KCmh0dHBzOi8vd3d3LnBjZW5n
-aW5lcy5jaC9wZGYvd2xtMjAwbjUtMjMucGRmCgpTZWJhc3RpYW4KCgo+IFBsZWFzZSBoZWxwIG1l
-IG9uIHRoaXMuCj4KPiBUaGFua3MgJiBSZWdhcmRzLAo+IOCkleCkteCkv+CkpOCkviDgpK7gpL7g
-pKXgpYHgpLAgS2F2aXRhIE1hdGh1cgo+IOCkteCksOCkv+Ckt+CljeCkoCDgpIXgpKjgpYHgpLjg
-pILgpKfgpL7gpKgg4KSF4KSt4KS/4KSv4KSC4KSk4KS+ICBTZW5pb3IgUmVzZWFyY2ggRW5naW5l
-ZXIKPiDgpLjgpYAt4KSh4KWJ4KSfICAgICAgICAgICAgICAgICAgICAgIEMtRE9UCj4g4KSH4KSy
-4KWI4KSV4KWN4KSf4KWN4KSw4KWJ4KSo4KS/4KSV4KWN4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfg
-pJzgpLwgSSAgICAgICAgIEVsZWN0cm9uaWNzIENpdHkgUGhhc2UgSQo+IOCkueCli+CkuOClguCk
-sCDgpLDgpYvgpKEsIOCkrOClh+CkguCkl+CksuClguCksOClgSAgICAgICAgICAgICAgIEhvc3Vy
-IFJvYWQsIEJlbmdhbHVydSDigJMgNTYwMTAwCj4g4KSr4KWL4KSoICBQaCAwODAtMjg1Mjk4OTYK
-PiBEaXNjbGFpbWVyOgo+IC0tLS0tLS0tLS0KPiBUaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJh
-bnNtaXR0ZWQgd2l0aCBpdAo+Cj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4g
-R290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQKRmlybWVuc2l0ejog
-IEJlcmxpbmVyIFJpbmcgMTAxLCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNn
-ZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVp
-bmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDog
-cy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYy
-NTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Ryan Hsu <ryanhsu@qca.qualcomm.com> wrote:
+> From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+> 
+> In the 'commit ebee76f7fa46 ("ath10k: allow setting coverage class")',
+> it inherits the design and the address offset from ath9k, but the address
+> is not applicable to QCA6174, which leads to a random crash while doing the
+> resume() operation, since the set_coverage_class.ops will be called from
+> ieee80211_reconfig() when resume() (if the wow is not configured).
+> 
+> Fix the incorrect address offset here to avoid the random crash.
+> 
+> Verified on QCA6174/hw3.0 with firmware WLAN.RM.4.4-00022-QCARMSWPZ-2.
+> 
+> Fixes: ebee76f7fa46 ("ath10k: allow setting coverage class")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+
+Patch applied to ath-current branch of ath.git, thanks.
+
+6be3b6cce1e2 ath10k: fix incorrect wlan_mac_base in qca6174_regs
+
+-- 
+https://patchwork.kernel.org/patch/9622251/
+
+Documentation about submitting wireless patches and checking status
+from patchwork:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
