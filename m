@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
+Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqEFO-0001Qc-VA
- for ath10k@lists.infradead.org; Tue, 21 Mar 2017 07:30:28 +0000
-Received: by mail-wm0-x236.google.com with SMTP id v203so1177992wmg.0
- for <ath10k@lists.infradead.org>; Tue, 21 Mar 2017 00:30:06 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: [PATCH 1/2] dt: bindings: add new dt entry for ath10k calibration
- variant
-Date: Tue, 21 Mar 2017 08:29:59 +0100
-Message-ID: <6837301.TG6zjU3t3l@bentobox>
-In-Reply-To: <CAJ-Vmok=6Tcvr4NE9+KMSQ4OSd80e1DSkgbOqFcWnFT3A1ikgw@mail.gmail.com>
-References: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
- <1919994.musG4GLznX@bentobox>
- <CAJ-Vmok=6Tcvr4NE9+KMSQ4OSd80e1DSkgbOqFcWnFT3A1ikgw@mail.gmail.com>
+ id 1cqEzs-0005My-04
+ for ath10k@lists.infradead.org; Tue, 21 Mar 2017 08:18:30 +0000
+Received: by mail-io0-x242.google.com with SMTP id f103so6571724ioi.2
+ for <ath10k@lists.infradead.org>; Tue, 21 Mar 2017 01:18:07 -0700 (PDT)
 MIME-Version: 1.0
+From: =?UTF-8?B?5ZCz6YeN5q+F?= <uranus0206@gmail.com>
+Date: Tue, 21 Mar 2017 16:17:45 +0800
+Message-ID: <CAN+BLYF5+LzERrzYfgfZJb5ippPyU59zJY_x03Q3e9oCKYapVA@mail.gmail.com>
+Subject: QCA9984 with kernel panic
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,71 +18,87 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5757084823880295224=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
 
---===============5757084823880295224==
-Content-Type: multipart/signed; boundary="nextPart2648746.l4ldfDgSrg"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-
---nextPart2648746.l4ldfDgSrg
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-
-On Montag, 20. M=E4rz 2017 09:42:05 CET Adrian Chadd wrote:
-> Vendors using ath10k will like this. I mean, I'm using ath10k, and I
-> really like this moving forward. This will make life so much easier in
-> the long run.
->=20
-> Everyone else isn't using board-2.bin; they're just copying
-> calibration/board data files over so the reference driver can assemble
-> a board data file based on wifi0/wifi1/etc probe order, and use that.
-
-Thanks for the feedback. But I am not sure what you mean by "this". Do you=
-=20
-mean the "qcom,ath10k-calibration-variant" entry or the "qcom,ipq4019-
-$vendorstring" compatiblity string?
-
-Kind regards,
-	Sven
-
---nextPart2648746.l4ldfDgSrg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAljQ1ncACgkQXYcKB8Em
-e0YWsBAA1o4nuHYUsT1JZ47Ds/vFNYPVEUh3eFvny7tyZemXxDDrGJbKfs/agMsa
-f7F3GT94iR2lN67PiGhm4VbegPqOpGjEvjh0l2uKyE7Rxp8NpjC+XbdGGhsqzFNw
-Dj38JlZKiMzzma0ZI8hMoxy3aTbljP/HforzZmicASvy5iq3dypEuDBZdJ8aIkrq
-JaOwBxlauQniZ3EXNwim6+s3DWdk0uwJhtB+GITSONyv8sd5j6RdxQH7y2o8zqpx
-ALhdx58iRr03kaQP4nPkQ+aBIs+oBCOdPR1ShAdYGryhqM3ij+DVwtjGjNk/3m0U
-XDPW1T7c9Xvqf7pzKGpf8efgwDVyBriEDzLQo9oSubvFc15aLSiuqU5twnJAIjBA
-IBYPlRilF8WNz2RM3o8JnVUkjIWb5JJbgCYRe2/qolOuZOxpUOjYUdr5cV7AZNVu
-gWehm+ZYtIZf5ywaM8PHJsu9n7CUUHEIfowoM2igJTa1ihgr5heHUZqhctW7AZRA
-bmXS39Cfc3x1XDDmLDZN3Y+9/sSQL359LBNo9pHG/un6qMM7RpFLu8sAVfDMvJsp
-Zyf2eIQP/kvvVd6R9P3VFdSBIDwHCF30H7lho8gQqSl8s9XFm7RegkzZyOOy0972
-hlq1tZw+HCu4pzqhejYqisVPf7Dcmn5ClQ2i6QBEPheg9LVPgvc=
-=W0EM
------END PGP SIGNATURE-----
-
---nextPart2648746.l4ldfDgSrg--
-
-
-
---===============5757084823880295224==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============5757084823880295224==--
+SGkgYWxsOgpJIGhhdmUgYSBQQ0lFIHdpcmVsZXNzIGNhcmQgd2hpY2ggY2hpcCBpcyBRQ0E5OTg0
+LiBTaW5jZSBJIG5vdGljZWQKdGhhdCBhdGgxMGsgaXMgc3VwcG9ydCB0aGlzIGNoaXAgc2luY2Ug
+bGludXgga2VybmVsIDQuOC4gSSBmaXJzdCB0ZXN0Cml0IHdpdGggbXkgUEMgd2hpY2ggVWJ1bnR1
+MTYuMDQgYW5kIGtlcm5lbCA0LjggaW5zdGFsbGVkLiBCdXQgSSBnZXQKa2VybmVsIHBhbmljIGlt
+bWVkaWF0ZWx5IHdoaWxlIGJvb3Rpbmcgc3lzdGVtLiBBbmQgdGhlIHNhbWUgc2l0dWF0aW9uCndp
+dGggVWJ1bnR1K2tlcm5lbDQuMTAuIFRoZW4gSSB0ZXN0IGl0IHdpdGggbGF0ZXN0IEFyY2ggTGlu
+dXggd2hpY2gKa2VybmVsIGlzIDQuMTAgYW5kIEkgZ2V0IHRoZSBzYW1lIHJlc3VsdC4gIENhbiBh
+bnlvbmUgaGVscCBtZSBmaWd1cmUKb3V0IHdoYXQgc2hvdWxkIEkgZG8gbm93PwoKUGFuaWMgbG9n
+OgpVYnVudHU6CgpbMC44OTM0MzJdIEZhaWxlZCB0byBmaW5kIGNwdTAgZGV2aWNlIG5vZGUKWzIu
+MTEzODIxXSBzY3NpIGhvc3Q0OiBydW50aW1lIFBNIHRyeWluZyB0byBhY3RpdmF0ZSBjaGlsZCBk
+ZXZpY2UKaG9zdDQgYnV0IHBhcmVudCAoMeKAlDEuMToxLjApIGlzIG5vdCBhY3RpdmUKL2Rldi9z
+YTE6IGNsZWFuLCAyMjQzMjUvMzAzMjg1NjAgZmlsZXMsIDMxMDQ0MDYvMTIxMDc3NzYwIGJsb2Nr
+cwpbMy4zMTE3MzJdIHNkIDQ6MDowOjA6IFtzZGJdIE5vIENhY2hpbmcgbW9kZSBwYWdlIGZvdW5k
+ClszLjMxMTc4NV0gc2QgNDowOjA6MDogW3NkYl0gYXNzdW1pbmcgZHJpdmUgY2FjaGU6IHdyaXRl
+IHRocm91Z2gKWzE3LjAwNTk2N10gRE1BOiBPdXQgb2YgU0HigJRJT01NVSBzcGFjZSBmb3IgNzcw
+MjI0IGJ5dGVzIGF0IGRldmljZSAwMDAwOjAzOjAwLjAKWzE3LjAwNTk5OF0gS2VybmVsIHBhbmlj
+IC0gbm90IHN5bmNpbmc6IERNQTogUmFuZG9tIG1lbW9yeSBjb3VsZCBiZSBETUEgcmVhZApbMTcu
+MDA1OTk4XQpbMTcuMDA2MDI0XSBDUFU6IDIgUElEOiA3MiBDb21tOiBLd29ya2VyL3U4OjMgTm90
+IHRhaW50ZWQKNC44LjDigJQwNDA4MDAtZ2VuZXJpYyAjMjAxNjEwMDIyMDMxClsxNy4wMDYwNDdd
+IEhhcmR3YXJlIG5hbWU6IEFjZXIgQXNwaXJlIE0xOTM1L0FzcGlyZSBNMTkzNSwgQklPUwpQMDEt
+SDJMIDA2LzE0LzIwMTIKWzE3LjAwNjA3N10gV29ya3F1ZXVlOiBhdGgxMGtfYXV4X3dxCmF0aDEw
+a193bWlfZXZlbnRfc2VydmljZV9yZWFkeV93b3JrIFthdGgxMGtfY29yZV0KWzE3LjAwNjEwMV0g
+MDAwMDAwMDAwMDAwMDA4NiAwMDAwMDAwMDEzYmJiMzg4IGZmZmZmZmZmOWY3NWFlYzQgZmZmZmZm
+ZmZmZmZmZmZPTwpbMTcuMDA2MTI5XSBmZmZmYU8yYmQxOTU3Y2IwIGZmZmZmZmZmOWY1ODdjNTEg
+MDAwMDAwMDAwMDAwMDAwOCBmZmZmYTAyYmQxOTU3Y2MwClsxNy4wMDYxNTddIGZmZmZhTzJiZDE5
+NTcwNTggMDAwMDAwMDAxM2JiYmE4OCAwMDAwMDAwMDAwMDAwMDE4IGZmZmZhTzJiZGUzMGRiNjgK
+WzE3LjAwNjE4M10gQ2FsbCBUcmFjZToKWzE3LjAwNjE5Nl0gWzxmZmZmZmZmZjlmNzVhZWM0Pl0g
+PyBkdW1wX3N0YWNrKzB4U2MvMHg3OApbMTcuMDA2MjEzXSBbPGZmZmZmZmZmOWY1ODdjNTE+XSA/
+IHBhbmljKzB4ZTQvMHgyMjYKWzE3LjAwNjIzMF0gWzxmZmZmZmZmZjlmNzg1MTZjPl0gPyBzd2lv
+dGxiX21hcF9wYWdlKzB4MTZjLzB4MWMwClsxNy4wMDYyNTFdIFs8ZmZmZmZmZmZjbzc4OWM5Mz5d
+ID8KYXRoMTBrX3dtaV9ldmVudF9zZXJ2aWNlX3JlYWR5X3dvcmsrMHgzNTMvMHg2NDAgW2F0aDEw
+a19jb3JlXQpbMTcuMDA2Mjc2XSBbPGZmZmZmZmZmOWY0OThjZjQ+XSA/IHByb2Nlc3Nfb25lX3dv
+cmsrMHgxODQvMHg0YjAKWzE3LjAwNjI5M10gWzxmZmZmZmZmZjlmNDk5MDY2Pl0gPyB3b3JrZXJf
+dGhyZWFkKzB4NGQvMHg0ODAKWzE3LjAwNjMxMl0gWzxmZmZmZmZmZjlmYjNiOGQxPl0gPyBfX3Nj
+aGVkdWxlKzB4MjYxLzB4NzIwClsxNy4wMDYzMjhdIFs8ZmZmZmZmZmY5ZjQ5OTAyMD5dID8gcHJv
+Y2Vzc19vbmVfd29yaysweDRiMC8weDRiMApbMTcuMDA2MzQ3XSBbPGZmZmZmZmZmOWY0OWYxY2Q+
+XSA/IGt0aHJlYWQrMHhjZC8weGYwClsxNy4wMDYzNjNdIFs8ZmZmZmZmZmY5ZjQyYzc1MT5dID8g
+X19zd2l0Y2hfdG8rMHgyYzEvMHg3YTAKWzE3LjAwNjM4MF0gWzxmZmZmZmZmZjlmYjQwNDFmPl0g
+PyByZXRfZnJvbV9mb3JrKzB4MWYvMHg0MApbMTcuMDA2Mzk3XSBbPGZmZmZmZmZmOWY0OWYxMDA+
+XSA/IGt0aHJlYWRfY3JlYXRlX29uX25vZGUrMHgxYTAvMHgxYTAKWzE3LjAwNjQzOV0gS2VybmVs
+IE9mZnNldDogMHgxZTQwMDAwMCBmcm9tIDB4ZmZmZmZmZmY4MTAwMDAwMAoocmVsb2NhdGlvbiBy
+YW5nZTogT3hmZmZmZmZmZjgwMDAwMDAwLTB4ZmZmZmZmZmZiZmZmZmZmZikKWzE3LjAwNjQ2OV0g
+4oCULS1bIGVuZCBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogRE1BOiBSYW5kb20gbWVtb3J5
+CmNvdWxkIGJlIERNQSByZWFkCgpBcmNoIExpbnV4OgpDUFU6IDMgUElEOiAxMTEgQ29tbToga3dv
+cmtlci91ODozIE5vdCB0YWludGVkIDQuMTAuMy0xLUFSQ0ggIzEKSGFyZHdhcmUgbmFtZTogQWNl
+ciBBc3BpcmUgTTE5MzUvQXNwaXJlIE0xOTM1LCBCSU9TIFAwMS1BMkwgMDYvMTQvMjAxMgpXb3Jr
+cXVldWU6IGF0aDEwa19hdXhfd3EgYXRoMTBrX3dtaV9ldmVudF9zZXJ2aWNlX3JlYWR5X3dvcmsg
+W2F0aDEwa19jb3JlXQpDYWxsIFRyYWNlOgogPElSUT4KIGR1bXBfc3RhY2tfMHg2My8weDgzCiBf
+X3dhcm4rMHhjYi8weGYwCiB3YXJuX3Nsb3dwYXRoX251bGxfMHgxZC8weDIwCiBuYXRpdmVfc21w
+X3NlbmRfcmVzY2hlZHVsZSsweDNhLzB4NDAKIHJlc2NoZWRfY3VycisweGMzLzB4ZDAKIGNoZWNr
+X3ByZWVtcHRfY3VycisweDUyLzB4OTAKIHR0d3VfZG9fd2FrZXVwKzB4MTkvMHhmMAogdHR3dV9k
+b19hY3RpdmVfMHg2Zi8weDgwCiB0cnlfdG9fd2FrZV91cCsweDE2NS8weDNjMAogZGVmYXVsdF93
+YWtlX2Z1bmN0aW9uKzB4MTIvMHgyMAogX193YWtlX3VwX2NvbW1vbisweDRkLzB4ODAKIF9fd2Fr
+ZV91cF9sb2NrZWQrMHgxMy8weDIwCiBlcF9wb2xsX2NhbGxiYWNrKzB4MTI4LzB4MWUwCiBfX3dh
+a2VfdXBfY29tbW9uKzB4NGQvMHg4MAogX193YWtlX3VwKzB4MzkvMHg1MAogd2FrZV91cF9rbG9n
+ZF93b3JrX2Z1bmMrMHg0MC8weDYwCiBpcnFfd29ya19ydW5fbGlzdCsweDQ4LzB4NzAKID8gdGlj
+a19zY2hlZF9oYW5kbGUuaXNyYS43KzB4NTAvMHg1MAogaXJxX3dvcmtfdGljaysweDQwLzB4NTAK
+IHVwZGF0ZV9wcm9jZXNzX3RpbWVyKzB4NDIvMHg3MAogdGlja19zY2hlZF9oYW5kbGUuaXNyYS43
+KzB4MjEvMHg1MAogdGlja19zY2hlZF90aW1lcisweDQyLzB4NzAKIF9faHJ0aW1lcl9pbnRlcnJ1
+cHQrMHhhNC8weDFlMAogbG9jYWxfYXBpY190aW1lcl9pbnRlcnJ1cHQrMHg4OS8weDkwCiBhcGlj
+X3RpbWVyX2ludGVycnVwdCsweDg5LzB4OTAKUklQOiAwMDEwOnBhbmljKzB4MWVkMHgyMmQKUlNQ
+OiAwMDE4OmZmZmZjOTAwMDBhZDdjMjAgRUZMQUdTOiAwMDAwMDI4MiBPUklHX1JBWDogZmZmZmZm
+ZmZmZmZmZmYxMApSQVg6IDAwMDAwMDAwMDAwMDAwNGUgUkJYOiAwMDAwMDAwMDAwMDAwMDAwIFJD
+WDogMDAwMDAwMDAwMDAwMDAwNgpSRFg6IDAwMDAwMDAwMDAwMDAwODAgUlNJOiAwMDAwMDAwMDAw
+MDAwMDQ3IFJESTogZmZmZjg4MDExZTM4ZGNhMApSQlA6IGZmZmZjOTgwMDBhZDdjOTggUjA4OiAw
+MDAwMDAwMDAwMDAwMDAwIFIwOTogMDAwMDAwMDAwMDAwMDJlMQpSMTA6IGZmZmZmZmZmODFiMDY5
+OTAgUjExOiAwMDAwMDAwMDAwMDA4MDAxIFIxMjogMDAwMDAwMDAwMDAwMDAwMApSMTM6IDAwMDAw
+MDAwMDAwMDAwMDAgUjE0OiAwMDAwMDAwMDAwMGJjMGIwIFIxNTogMDAwMDAwMDAwMDAwMDAwMAog
+PC9JUlE+CiBzd2lvdGxiX2Z1bGwrMHg4OC8weGEwCiBzd2lvdGxiX21hcF9wYWdlKzB4MTRjLzB4
+MTYwCiBhdGgxMGtfd21pX2V2ZW50X3NlcnZpY2VfcmVhZHlfd29yaysweDM2Ny8weDY5MCBbYXRo
+MTBrX2NvcmVdCiA/IHNldF9uZXh0X2VudGl0eV8weDRjLzB4YjkwCiBwcm9jZXNzX29uZV93b3Jr
+KzB4MWU1LzB4NDcwCiB3b2VrZXJfdGhyZWFkKzB4NDgvMHg0ZTAKIGt0aHJlYWQrMHgxMDEvMHgx
+NDAKID8gcHJvY2Vzc19vbmVfd29yaysweDQ3MC8weDQ3MAogPyBrdGhyZWFkX2NyZWF0ZV9vbl9u
+b2RlKzB4NjAvMHg2MAogcmV0X2Zyb21fZm9yaysweDJjLzB4NDAKLS0tW2VuZCB0cmFjZSA3ZDA4
+Y2ZmZjJlMzgxMDA1IF0tLS0KCi0tIArlkLPph43mr4UgV3UgQ2h1bmcteWkKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hdGgxMGsK
