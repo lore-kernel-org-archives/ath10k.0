@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqBAg-0004a0-45
- for ath10k@lists.infradead.org; Tue, 21 Mar 2017 04:13:24 +0000
-Received: by mail-wm0-x232.google.com with SMTP id n11so3231833wma.0
- for <ath10k@lists.infradead.org>; Mon, 20 Mar 2017 21:13:00 -0700 (PDT)
+ id 1cqEFO-0001Qc-VA
+ for ath10k@lists.infradead.org; Tue, 21 Mar 2017 07:30:28 +0000
+Received: by mail-wm0-x236.google.com with SMTP id v203so1177992wmg.0
+ for <ath10k@lists.infradead.org>; Tue, 21 Mar 2017 00:30:06 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: [PATCH 1/2] dt: bindings: add new dt entry for ath10k calibration
+ variant
+Date: Tue, 21 Mar 2017 08:29:59 +0100
+Message-ID: <6837301.TG6zjU3t3l@bentobox>
+In-Reply-To: <CAJ-Vmok=6Tcvr4NE9+KMSQ4OSd80e1DSkgbOqFcWnFT3A1ikgw@mail.gmail.com>
+References: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
+ <1919994.musG4GLznX@bentobox>
+ <CAJ-Vmok=6Tcvr4NE9+KMSQ4OSd80e1DSkgbOqFcWnFT3A1ikgw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20170321035242.M12518@cdot.in>
-References: <20170320081343.M37344@cdot.in>
- <0f6c7cd6-5925-61ea-2b65-98023aba4f57@dd-wrt.com>
- <20170321035242.M12518@cdot.in>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Mon, 20 Mar 2017 21:12:57 -0700
-Message-ID: <CAJ-Vmo=1YbyQq+27pN5QD65WjE=3HPsmfZEzcUPPqMFjH9e73g@mail.gmail.com>
-Subject: Re: Maximum Transmit Power for channel 36 ,40,44 and 48
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,82 +23,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5757084823880295224=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: KAVITA MATHUR <kavitam@cdot.in>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath9k-devel <ath9k-devel@qca.qualcomm.com>
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>, Kalle Valo <kvalo@codeaurora.org>
 
-aGl5YSwKCnN1cmUsIGJ1dCB0aGUgTklDIGFsc28gaGFzIGNhbGlicmF0aW9uIHRhYmxlcyBmb3Ig
-dGhlIG1heGltdW0gcG93ZXIKaXQncyBiZWVuIGNhbGlicmF0ZWQgYXQgZm9yIGVhY2ggY2hhbm5l
-bC4gVGhpcyBpbmNsdWRlcyBwZXItY2hhbm5lbAp0YXJnZXRzIGFuZCBiYW5kLWVkZ2UgdGFyZ2V0
-cy4KClVuZm9ydHVuYXRlbHkgOiggYXRoMTBrIGRvZXNuJ3QgZWFzaWx5IGV4cG9zZSB0aGUgTklD
-IHJlZ3VsYXRvcnkgLyBDVEwKZW50cmllcyBpbiBhIHVzZWZ1bCBmYXNoaW9uLiBUaGF0IHdvdWxk
-IHN1cmUgYmUgbmljZS4KCgoKLWFkcmlhbgoKCk9uIDIwIE1hcmNoIDIwMTcgYXQgMjA6NTksIEtB
-VklUQSBNQVRIVVIgPGthdml0YW1AY2RvdC5pbj4gd3JvdGU6Cj4KPiBIaSwKPgo+IEJ1dCBJIGdv
-dCAxMyBkQm0gZm9yIDIwIE1IeiBjaGFubmVsKEhUMjApLCBtY3MgNy4gQW5kIEkgZ290IDE4ZEJt
-IGZvciA0MCBNSHoKPiBjaGFubmVsKEhUNDApLCBtY3MgMTUuIEluIGJvdGggY2FzZXMsIEkgaGF2
-ZSBzZXQgY2hhbm5lbCAzNi4KPgo+IElmIEkgY2hhbmdlIGNoYW5uZWwgMzYgdG8gMTQ5LCBJIGFs
-d2F5cyBnZXQgMjBkQm0gZm9yIGFsbCB0aGUgbW9kZXMobGVnYWN5LEhULTIwIGFuZCBIVC00MCku
-Cj4KPiBJIGFtIHVzaW5nIGNvdW50cnkgSU4gaW4gbXkgaG9zdGFwZCBjb25maWd1cmF0aW9uIGZp
-bGUsIHdoaWNoIGdpdmVzIGZvbGxvd2luZyBsaW1pdGF0aW9uOgo+Cj4gY291bnRyeSBJTjogREZT
-LUpQCj4gICAgICAgICAoMjQwMiAtIDI0ODIgQCA0MCksICgyMCkKPiAgICAgICAgICg1MTcwIC0g
-NTI1MCBAIDgwKSwgKDIwKSwgQVVUTy1CVwo+ICAgICAgICAgKDUyNTAgLSA1MzMwIEAgODApLCAo
-MjApLCBERlMsIEFVVE8tQlcKPiAgICAgICAgICg1NzM1IC0gNTgzNSBAIDgwKSwgKDIwKQo+IENh
-biBJIGNoYW5nZSB0aGUgY2FsaWJyYXRpb24gZGF0YT8gSG93IGNhbiBpdCBiZSBkb25lPwo+Cj4g
-VGhhbmtzICYgUmVnYXJkcywKPiBLQXZpdGEKPgo+IE9uIE1vbiwgMjAgTWFyIDIwMTcgMTE6NDU6
-MTYgKzAxMDAsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIHdyb3RlCj4+IEFtIDIwLjAzLjIwMTcgdW0g
-MDk6MjUgc2NocmllYiBLQVZJVEEgTUFUSFVSOgo+PiA+IEhpLAo+PiA+Cj4+ID4gQ2hpcHNldCA6
-IEFSOTIyMAo+PiA+IFJGIG1vZHVsZSA6IFdMTTIwME5YIGFuZCBXTE0yMDBONQo+PiA+IExpbnV4
-IEtlcm5lbCA6IDMuMTIKPj4gPiBhdGg5ayBkcml2ZXIgOiBiYWNrcG9ydDQuNC4yLTEKPj4gPgo+
-PiA+IFdpdGggYWJvdmUgY29tYmluYXRpb24gLCBJIGhhdmUgbWVhc3VyZWQgbWF4aW11bSB0cmFu
-c21pdCBwb3dlciAxMyBkQm0gZm9yIGNoYW5uZWwKPj4gPiAzNiw0MCw0NCBhbmQgNDguIFdoaWxl
-IGl0IGlzIDIwIGRCbSBmb3IgY2hhbm5lbCAxNDkgYW5kIG90aGVyIDVHSHogYmFuZCBjaGFubmVs
-cwo+PiA+ICAgYXMgd2VsbCBhcyBmb3IgMi40IEdIeiBjaGFubmVscy4KPj4gPgo+PiA+IElmIEkg
-dHJ5IHRvIHNldCB0eHBvd2VyIHVzaW5nIGl3Y29uZmlnIHdsYW4wIHR4cG93ZXIgMjAgLCBpdCBn
-aXZlcyBubyBlcnJvci5idXQgaXQgc2hvd3MKPj4gPiBvbmx5IDEzZEJNLgo+PiA+Cj4+ID4gSG93
-IEkgY2FuIGNoYW5nZSB0aGUgdHhwb3dlciBmb3IgY2hhbm5lbCAzNiw0MCw0NCBhbmQgNDg/Cj4+
-IHRoZSBtYXhpbXVtIGF2YWlsYWxlIHR4cG93ZXIgZGVwZW5kcyBvbiB0aGUgY2FsaWJyYXRpb24g
-ZGF0YSB3aGljaCBpcwo+PiBzdG9yZWQgd2l0aGluIHRoZSBjYXJkcyBvd20gZWVwcm9tIGFuZCBp
-cyBhbHNvIHJlbGF0ZWQgdG8gdGhlIGN1cnJlbnQKPj4gdXNlZCBtY3Mgc2V0IC8gd2lyZWxlc3Mg
-cmF0ZS4KPj4gYXMgaGlnaGVyIHRoZSByYXRlIGlzIGFzIGxvd2VyIHRoZSB0cmFuc21pc3Npb24g
-cG93ZXIgd2lsbCBiZQo+PiBhY2NvcmRpbmcgdG8gdGhlIGRhdGFzaGVldCB0aGUgcmF0ZSBmb3Ig
-aHQ0MCA1IGdoeiBmb3IgdGhpcyBjYXJkIGlzIDE0Cj4+IGRibSBhdCBNQ1MgNyAvIDE1IHdpdGgg
-YSB0b2xsZXJhbmNlIG9mICstIDIgZGJtCj4+Cj4+IGh0dHBzOi8vd3d3LnBjZW5naW5lcy5jaC9w
-ZGYvd2xtMjAwbjUtMjMucGRmCj4+Cj4+IFNlYmFzdGlhbgo+Pgo+PiA+IFBsZWFzZSBoZWxwIG1l
-IG9uIHRoaXMuCj4+ID4KPj4gPiBUaGFua3MgJiBSZWdhcmRzLAo+PiA+IOCkleCkteCkv+CkpOCk
-viDgpK7gpL7gpKXgpYHgpLAgS2F2aXRhIE1hdGh1cgo+PiA+IOCkteCksOCkv+Ckt+CljeCkoCDg
-pIXgpKjgpYHgpLjgpILgpKfgpL7gpKgg4KSF4KSt4KS/4KSv4KSC4KSk4KS+ICBTZW5pb3IgUmVz
-ZWFyY2ggRW5naW5lZXIKPj4gPiDgpLjgpYAt4KSh4KWJ4KSfICAgICAgICAgICAgICAgICAgICAg
-IEMtRE9UCj4+ID4g4KSH4KSy4KWI4KSV4KWN4KSf4KWN4KSw4KWJ4KSo4KS/4KSV4KWN4KS4IOCk
-uOCkv+Ckn+ClgCDgpKvgpYfgpJzgpLwgSSAgICAgICAgIEVsZWN0cm9uaWNzIENpdHkgUGhhc2Ug
-SQo+PiA+IOCkueCli+CkuOClguCksCDgpLDgpYvgpKEsIOCkrOClh+CkguCkl+CksuClguCksOCl
-gSAgICAgICAgICAgICAgIEhvc3VyIFJvYWQsIEJlbmdhbHVydSDigJMgNTYwMTAwCj4+ID4g4KSr
-4KWL4KSoICBQaCAwODAtMjg1Mjk4OTYKPj4gPiBEaXNjbGFpbWVyOgo+PiA+IC0tLS0tLS0tLS0K
-Pj4gPiBUaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQgd2l0aCBpdAo+PiA+Cj4+
-ID4KPj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
-PiA+IGF0aDEwayBtYWlsaW5nIGxpc3QKPj4gPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+
-PiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4+
-Cj4+IC0tCj4+IE1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCj4+Cj4+IFNlYmFz
-dGlhbiBHb3R0c2NoYWxsIC8gQ1RPCj4+Cj4+IE5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCj4+
-IEZpcm1lbnNpdHo6ICBCZXJsaW5lciBSaW5nIDEwMSwgNjQ2MjUgQmVuc2hlaW0KPj4gUmVnaXN0
-ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3Mwo+PiBHZXNjaMOkZnRz
-ZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQo+PiBodHRwOi8v
-d3d3LmRkLXdydC5jb20KPj4gZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tCj4+IFRlbC46
-ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKPgo+Cj4gVGhhbmtzICYgUmVn
-YXJkcywKPiDgpJXgpLXgpL/gpKTgpL4g4KSu4KS+4KSl4KWB4KSwIEthdml0YSBNYXRodXIKPiDg
-pLXgpLDgpL/gpLfgpY3gpKAg4KSF4KSo4KWB4KS44KSC4KSn4KS+4KSoIOCkheCkreCkv+Ckr+Ck
-guCkpOCkviAgU2VuaW9yIFJlc2VhcmNoIEVuZ2luZWVyCj4g4KS44KWALeCkoeClieCknyAgICAg
-ICAgICAgICAgICAgICAgICBDLURPVAo+IOCkh+CksuCliOCkleCljeCkn+CljeCksOClieCkqOCk
-v+CkleCljeCkuCDgpLjgpL/gpJ/gpYAg4KSr4KWH4KSc4KS8IEkgICAgICAgICBFbGVjdHJvbmlj
-cyBDaXR5IFBoYXNlIEkKPiDgpLngpYvgpLjgpYLgpLAg4KSw4KWL4KShLCDgpKzgpYfgpILgpJfg
-pLLgpYLgpLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2FkLCBCZW5nYWx1cnUg4oCTIDU2MDEw
-MAo+IOCkq+Cli+CkqCAgUGggMDgwLTI4NTI5ODk2Cj4gRGlzY2xhaW1lcjoKPiAtLS0tLS0tLS0t
-Cj4gVGhpcyBlbWFpbCBhbmQgYW55IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGggaXQKPgo+Cj4gX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFp
-bGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2F0aDEwawo=
+--===============5757084823880295224==
+Content-Type: multipart/signed; boundary="nextPart2648746.l4ldfDgSrg"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+
+--nextPart2648746.l4ldfDgSrg
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+
+On Montag, 20. M=E4rz 2017 09:42:05 CET Adrian Chadd wrote:
+> Vendors using ath10k will like this. I mean, I'm using ath10k, and I
+> really like this moving forward. This will make life so much easier in
+> the long run.
+>=20
+> Everyone else isn't using board-2.bin; they're just copying
+> calibration/board data files over so the reference driver can assemble
+> a board data file based on wifi0/wifi1/etc probe order, and use that.
+
+Thanks for the feedback. But I am not sure what you mean by "this". Do you=
+=20
+mean the "qcom,ath10k-calibration-variant" entry or the "qcom,ipq4019-
+$vendorstring" compatiblity string?
+
+Kind regards,
+	Sven
+
+--nextPart2648746.l4ldfDgSrg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAljQ1ncACgkQXYcKB8Em
+e0YWsBAA1o4nuHYUsT1JZ47Ds/vFNYPVEUh3eFvny7tyZemXxDDrGJbKfs/agMsa
+f7F3GT94iR2lN67PiGhm4VbegPqOpGjEvjh0l2uKyE7Rxp8NpjC+XbdGGhsqzFNw
+Dj38JlZKiMzzma0ZI8hMoxy3aTbljP/HforzZmicASvy5iq3dypEuDBZdJ8aIkrq
+JaOwBxlauQniZ3EXNwim6+s3DWdk0uwJhtB+GITSONyv8sd5j6RdxQH7y2o8zqpx
+ALhdx58iRr03kaQP4nPkQ+aBIs+oBCOdPR1ShAdYGryhqM3ij+DVwtjGjNk/3m0U
+XDPW1T7c9Xvqf7pzKGpf8efgwDVyBriEDzLQo9oSubvFc15aLSiuqU5twnJAIjBA
+IBYPlRilF8WNz2RM3o8JnVUkjIWb5JJbgCYRe2/qolOuZOxpUOjYUdr5cV7AZNVu
+gWehm+ZYtIZf5ywaM8PHJsu9n7CUUHEIfowoM2igJTa1ihgr5heHUZqhctW7AZRA
+bmXS39Cfc3x1XDDmLDZN3Y+9/sSQL359LBNo9pHG/un6qMM7RpFLu8sAVfDMvJsp
+Zyf2eIQP/kvvVd6R9P3VFdSBIDwHCF30H7lho8gQqSl8s9XFm7RegkzZyOOy0972
+hlq1tZw+HCu4pzqhejYqisVPf7Dcmn5ClQ2i6QBEPheg9LVPgvc=
+=W0EM
+-----END PGP SIGNATURE-----
+
+--nextPart2648746.l4ldfDgSrg--
+
+
+
+--===============5757084823880295224==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============5757084823880295224==--
