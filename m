@@ -1,15 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cqK8X-0003e0-MO
- for ath10k@lists.infradead.org; Tue, 21 Mar 2017 13:47:48 +0000
-Subject: Re: QCA9984 with kernel panic
-References: <CAN+BLYF5+LzERrzYfgfZJb5ippPyU59zJY_x03Q3e9oCKYapVA@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <96a2f542-90ab-004d-4070-fdab5a30fd9d@candelatech.com>
-Date: Tue, 21 Mar 2017 06:47:23 -0700
+Received: from mail-wr0-x229.google.com ([2a00:1450:400c:c0c::229])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cqKrU-0007qj-8t
+ for ath10k@lists.infradead.org; Tue, 21 Mar 2017 14:34:14 +0000
+Received: by mail-wr0-x229.google.com with SMTP id u108so113184537wrb.3
+ for <ath10k@lists.infradead.org>; Tue, 21 Mar 2017 07:33:50 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: [PATCH 1/2] dt: bindings: add new dt entry for ath10k calibration
+ variant
+Date: Tue, 21 Mar 2017 15:33:43 +0100
+Message-ID: <5158144.BXJK97egUR@bentobox>
+In-Reply-To: <CAL_Jsq+aEdjq9MR--Hyrw17KoKv=uZ7OBsAqX1_0+Djpw+QUCg@mail.gmail.com>
+References: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
+ <1919994.musG4GLznX@bentobox>
+ <CAL_Jsq+aEdjq9MR--Hyrw17KoKv=uZ7OBsAqX1_0+Djpw+QUCg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAN+BLYF5+LzERrzYfgfZJb5ippPyU59zJY_x03Q3e9oCKYapVA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,93 +23,265 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============0107763127475149156=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?B?5ZCz6YeN5q+F?= <uranus0206@gmail.com>, ath10k@lists.infradead.org
+To: Rob Herring <robh@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, ext.waldemar.rymarkiewicz@tieto.com, Kalle Valo <kvalo@codeaurora.org>
 
-VHJ5IGVuYWJsaW5nIHZ0LWQgaW4geW91ciBCSU9TLgoKVGhhbmtzLApCZW4KCk9uIDAzLzIxLzIw
-MTcgMDE6MTcgQU0sIOWQs+mHjeavhSB3cm90ZToKPiBIaSBhbGw6Cj4gSSBoYXZlIGEgUENJRSB3
-aXJlbGVzcyBjYXJkIHdoaWNoIGNoaXAgaXMgUUNBOTk4NC4gU2luY2UgSSBub3RpY2VkCj4gdGhh
-dCBhdGgxMGsgaXMgc3VwcG9ydCB0aGlzIGNoaXAgc2luY2UgbGludXgga2VybmVsIDQuOC4gSSBm
-aXJzdCB0ZXN0Cj4gaXQgd2l0aCBteSBQQyB3aGljaCBVYnVudHUxNi4wNCBhbmQga2VybmVsIDQu
-OCBpbnN0YWxsZWQuIEJ1dCBJIGdldAo+IGtlcm5lbCBwYW5pYyBpbW1lZGlhdGVseSB3aGlsZSBi
-b290aW5nIHN5c3RlbS4gQW5kIHRoZSBzYW1lIHNpdHVhdGlvbgo+IHdpdGggVWJ1bnR1K2tlcm5l
-bDQuMTAuIFRoZW4gSSB0ZXN0IGl0IHdpdGggbGF0ZXN0IEFyY2ggTGludXggd2hpY2gKPiBrZXJu
-ZWwgaXMgNC4xMCBhbmQgSSBnZXQgdGhlIHNhbWUgcmVzdWx0LiAgQ2FuIGFueW9uZSBoZWxwIG1l
-IGZpZ3VyZQo+IG91dCB3aGF0IHNob3VsZCBJIGRvIG5vdz8KPgo+IFBhbmljIGxvZzoKPiBVYnVu
-dHU6Cj4KPiBbMC44OTM0MzJdIEZhaWxlZCB0byBmaW5kIGNwdTAgZGV2aWNlIG5vZGUKPiBbMi4x
-MTM4MjFdIHNjc2kgaG9zdDQ6IHJ1bnRpbWUgUE0gdHJ5aW5nIHRvIGFjdGl2YXRlIGNoaWxkIGRl
-dmljZQo+IGhvc3Q0IGJ1dCBwYXJlbnQgKDHigJQxLjE6MS4wKSBpcyBub3QgYWN0aXZlCj4gL2Rl
-di9zYTE6IGNsZWFuLCAyMjQzMjUvMzAzMjg1NjAgZmlsZXMsIDMxMDQ0MDYvMTIxMDc3NzYwIGJs
-b2Nrcwo+IFszLjMxMTczMl0gc2QgNDowOjA6MDogW3NkYl0gTm8gQ2FjaGluZyBtb2RlIHBhZ2Ug
-Zm91bmQKPiBbMy4zMTE3ODVdIHNkIDQ6MDowOjA6IFtzZGJdIGFzc3VtaW5nIGRyaXZlIGNhY2hl
-OiB3cml0ZSB0aHJvdWdoCj4gWzE3LjAwNTk2N10gRE1BOiBPdXQgb2YgU0HigJRJT01NVSBzcGFj
-ZSBmb3IgNzcwMjI0IGJ5dGVzIGF0IGRldmljZSAwMDAwOjAzOjAwLjAKPiBbMTcuMDA1OTk4XSBL
-ZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogRE1BOiBSYW5kb20gbWVtb3J5IGNvdWxkIGJlIERN
-QSByZWFkCj4gWzE3LjAwNTk5OF0KPiBbMTcuMDA2MDI0XSBDUFU6IDIgUElEOiA3MiBDb21tOiBL
-d29ya2VyL3U4OjMgTm90IHRhaW50ZWQKPiA0LjguMOKAlDA0MDgwMC1nZW5lcmljICMyMDE2MTAw
-MjIwMzEKPiBbMTcuMDA2MDQ3XSBIYXJkd2FyZSBuYW1lOiBBY2VyIEFzcGlyZSBNMTkzNS9Bc3Bp
-cmUgTTE5MzUsIEJJT1MKPiBQMDEtSDJMIDA2LzE0LzIwMTIKPiBbMTcuMDA2MDc3XSBXb3JrcXVl
-dWU6IGF0aDEwa19hdXhfd3EKPiBhdGgxMGtfd21pX2V2ZW50X3NlcnZpY2VfcmVhZHlfd29yayBb
-YXRoMTBrX2NvcmVdCj4gWzE3LjAwNjEwMV0gMDAwMDAwMDAwMDAwMDA4NiAwMDAwMDAwMDEzYmJi
-Mzg4IGZmZmZmZmZmOWY3NWFlYzQgZmZmZmZmZmZmZmZmZmZPTwo+IFsxNy4wMDYxMjldIGZmZmZh
-TzJiZDE5NTdjYjAgZmZmZmZmZmY5ZjU4N2M1MSAwMDAwMDAwMDAwMDAwMDA4IGZmZmZhMDJiZDE5
-NTdjYzAKPiBbMTcuMDA2MTU3XSBmZmZmYU8yYmQxOTU3MDU4IDAwMDAwMDAwMTNiYmJhODggMDAw
-MDAwMDAwMDAwMDAxOCBmZmZmYU8yYmRlMzBkYjY4Cj4gWzE3LjAwNjE4M10gQ2FsbCBUcmFjZToK
-PiBbMTcuMDA2MTk2XSBbPGZmZmZmZmZmOWY3NWFlYzQ+XSA/IGR1bXBfc3RhY2srMHhTYy8weDc4
-Cj4gWzE3LjAwNjIxM10gWzxmZmZmZmZmZjlmNTg3YzUxPl0gPyBwYW5pYysweGU0LzB4MjI2Cj4g
-WzE3LjAwNjIzMF0gWzxmZmZmZmZmZjlmNzg1MTZjPl0gPyBzd2lvdGxiX21hcF9wYWdlKzB4MTZj
-LzB4MWMwCj4gWzE3LjAwNjI1MV0gWzxmZmZmZmZmZmNvNzg5YzkzPl0gPwo+IGF0aDEwa193bWlf
-ZXZlbnRfc2VydmljZV9yZWFkeV93b3JrKzB4MzUzLzB4NjQwIFthdGgxMGtfY29yZV0KPiBbMTcu
-MDA2Mjc2XSBbPGZmZmZmZmZmOWY0OThjZjQ+XSA/IHByb2Nlc3Nfb25lX3dvcmsrMHgxODQvMHg0
-YjAKPiBbMTcuMDA2MjkzXSBbPGZmZmZmZmZmOWY0OTkwNjY+XSA/IHdvcmtlcl90aHJlYWQrMHg0
-ZC8weDQ4MAo+IFsxNy4wMDYzMTJdIFs8ZmZmZmZmZmY5ZmIzYjhkMT5dID8gX19zY2hlZHVsZSsw
-eDI2MS8weDcyMAo+IFsxNy4wMDYzMjhdIFs8ZmZmZmZmZmY5ZjQ5OTAyMD5dID8gcHJvY2Vzc19v
-bmVfd29yaysweDRiMC8weDRiMAo+IFsxNy4wMDYzNDddIFs8ZmZmZmZmZmY5ZjQ5ZjFjZD5dID8g
-a3RocmVhZCsweGNkLzB4ZjAKPiBbMTcuMDA2MzYzXSBbPGZmZmZmZmZmOWY0MmM3NTE+XSA/IF9f
-c3dpdGNoX3RvKzB4MmMxLzB4N2EwCj4gWzE3LjAwNjM4MF0gWzxmZmZmZmZmZjlmYjQwNDFmPl0g
-PyByZXRfZnJvbV9mb3JrKzB4MWYvMHg0MAo+IFsxNy4wMDYzOTddIFs8ZmZmZmZmZmY5ZjQ5ZjEw
-MD5dID8ga3RocmVhZF9jcmVhdGVfb25fbm9kZSsweDFhMC8weDFhMAo+IFsxNy4wMDY0MzldIEtl
-cm5lbCBPZmZzZXQ6IDB4MWU0MDAwMDAgZnJvbSAweGZmZmZmZmZmODEwMDAwMDAKPiAocmVsb2Nh
-dGlvbiByYW5nZTogT3hmZmZmZmZmZjgwMDAwMDAwLTB4ZmZmZmZmZmZiZmZmZmZmZikKPiBbMTcu
-MDA2NDY5XSDigJQtLVsgZW5kIEtlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5nOiBETUE6IFJhbmRv
-bSBtZW1vcnkKPiBjb3VsZCBiZSBETUEgcmVhZAo+Cj4gQXJjaCBMaW51eDoKPiBDUFU6IDMgUElE
-OiAxMTEgQ29tbToga3dvcmtlci91ODozIE5vdCB0YWludGVkIDQuMTAuMy0xLUFSQ0ggIzEKPiBI
-YXJkd2FyZSBuYW1lOiBBY2VyIEFzcGlyZSBNMTkzNS9Bc3BpcmUgTTE5MzUsIEJJT1MgUDAxLUEy
-TCAwNi8xNC8yMDEyCj4gV29ya3F1ZXVlOiBhdGgxMGtfYXV4X3dxIGF0aDEwa193bWlfZXZlbnRf
-c2VydmljZV9yZWFkeV93b3JrIFthdGgxMGtfY29yZV0KPiBDYWxsIFRyYWNlOgo+ICA8SVJRPgo+
-ICBkdW1wX3N0YWNrXzB4NjMvMHg4Mwo+ICBfX3dhcm4rMHhjYi8weGYwCj4gIHdhcm5fc2xvd3Bh
-dGhfbnVsbF8weDFkLzB4MjAKPiAgbmF0aXZlX3NtcF9zZW5kX3Jlc2NoZWR1bGUrMHgzYS8weDQw
-Cj4gIHJlc2NoZWRfY3VycisweGMzLzB4ZDAKPiAgY2hlY2tfcHJlZW1wdF9jdXJyKzB4NTIvMHg5
-MAo+ICB0dHd1X2RvX3dha2V1cCsweDE5LzB4ZjAKPiAgdHR3dV9kb19hY3RpdmVfMHg2Zi8weDgw
-Cj4gIHRyeV90b193YWtlX3VwKzB4MTY1LzB4M2MwCj4gIGRlZmF1bHRfd2FrZV9mdW5jdGlvbisw
-eDEyLzB4MjAKPiAgX193YWtlX3VwX2NvbW1vbisweDRkLzB4ODAKPiAgX193YWtlX3VwX2xvY2tl
-ZCsweDEzLzB4MjAKPiAgZXBfcG9sbF9jYWxsYmFjaysweDEyOC8weDFlMAo+ICBfX3dha2VfdXBf
-Y29tbW9uKzB4NGQvMHg4MAo+ICBfX3dha2VfdXArMHgzOS8weDUwCj4gIHdha2VfdXBfa2xvZ2Rf
-d29ya19mdW5jKzB4NDAvMHg2MAo+ICBpcnFfd29ya19ydW5fbGlzdCsweDQ4LzB4NzAKPiAgPyB0
-aWNrX3NjaGVkX2hhbmRsZS5pc3JhLjcrMHg1MC8weDUwCj4gIGlycV93b3JrX3RpY2srMHg0MC8w
-eDUwCj4gIHVwZGF0ZV9wcm9jZXNzX3RpbWVyKzB4NDIvMHg3MAo+ICB0aWNrX3NjaGVkX2hhbmRs
-ZS5pc3JhLjcrMHgyMS8weDUwCj4gIHRpY2tfc2NoZWRfdGltZXIrMHg0Mi8weDcwCj4gIF9faHJ0
-aW1lcl9pbnRlcnJ1cHQrMHhhNC8weDFlMAo+ICBsb2NhbF9hcGljX3RpbWVyX2ludGVycnVwdCsw
-eDg5LzB4OTAKPiAgYXBpY190aW1lcl9pbnRlcnJ1cHQrMHg4OS8weDkwCj4gUklQOiAwMDEwOnBh
-bmljKzB4MWVkMHgyMmQKPiBSU1A6IDAwMTg6ZmZmZmM5MDAwMGFkN2MyMCBFRkxBR1M6IDAwMDAw
-MjgyIE9SSUdfUkFYOiBmZmZmZmZmZmZmZmZmZjEwCj4gUkFYOiAwMDAwMDAwMDAwMDAwMDRlIFJC
-WDogMDAwMDAwMDAwMDAwMDAwMCBSQ1g6IDAwMDAwMDAwMDAwMDAwMDYKPiBSRFg6IDAwMDAwMDAw
-MDAwMDAwODAgUlNJOiAwMDAwMDAwMDAwMDAwMDQ3IFJESTogZmZmZjg4MDExZTM4ZGNhMAo+IFJC
-UDogZmZmZmM5ODAwMGFkN2M5OCBSMDg6IDAwMDAwMDAwMDAwMDAwMDAgUjA5OiAwMDAwMDAwMDAw
-MDAwMmUxCj4gUjEwOiBmZmZmZmZmZjgxYjA2OTkwIFIxMTogMDAwMDAwMDAwMDAwODAwMSBSMTI6
-IDAwMDAwMDAwMDAwMDAwMDAKPiBSMTM6IDAwMDAwMDAwMDAwMDAwMDAgUjE0OiAwMDAwMDAwMDAw
-MGJjMGIwIFIxNTogMDAwMDAwMDAwMDAwMDAwMAo+ICA8L0lSUT4KPiAgc3dpb3RsYl9mdWxsKzB4
-ODgvMHhhMAo+ICBzd2lvdGxiX21hcF9wYWdlKzB4MTRjLzB4MTYwCj4gIGF0aDEwa193bWlfZXZl
-bnRfc2VydmljZV9yZWFkeV93b3JrKzB4MzY3LzB4NjkwIFthdGgxMGtfY29yZV0KPiAgPyBzZXRf
-bmV4dF9lbnRpdHlfMHg0Yy8weGI5MAo+ICBwcm9jZXNzX29uZV93b3JrKzB4MWU1LzB4NDcwCj4g
-IHdvZWtlcl90aHJlYWQrMHg0OC8weDRlMAo+ICBrdGhyZWFkKzB4MTAxLzB4MTQwCj4gID8gcHJv
-Y2Vzc19vbmVfd29yaysweDQ3MC8weDQ3MAo+ICA/IGt0aHJlYWRfY3JlYXRlX29uX25vZGUrMHg2
-MC8weDYwCj4gIHJldF9mcm9tX2ZvcmsrMHgyYy8weDQwCj4gLS0tW2VuZCB0cmFjZSA3ZDA4Y2Zm
-ZjJlMzgxMDA1IF0tLS0KPgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29t
-PgpDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+--===============0107763127475149156==
+Content-Type: multipart/signed; boundary="nextPart2121705.Aa6AmNEe8Z"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+
+--nextPart2121705.Aa6AmNEe8Z
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+
+On Dienstag, 21. M=E4rz 2017 08:00:34 CET Rob Herring wrote:
+[...]
+> > It would then up with something like this as compatibility string:
+> >
+> >  * qcom,ipq4019-wifi-asus-rt-ac58u
+> >  * qcom,ipq4019-wifi-fritzbox-4040
+> >  * qcom,ipq4019-wifi-netgear-whatever
+> >  * qcom,ipq4019-wifi-openmesh-i-have-no-idea
+> >  * ...
+>=20
+> Are these all the same board design or variations? In the latter case,
+> you should have specific compatibles anyway. Now if the variants are
+> the same hardware, but different configurations say for different
+> regions or something, then I'd say a separate property is fine.
+>=20
+> We already have a "firmware-name" property. Would that work for you?
+
+Hm, maybe we should specify some names better:
+
+"qcom,ipq4019-wifi" =3D=3D compatibility string for WiFi hardware inside th=
+e SoC.=20
+It is the one which ath10k supports on the Atheros Host Bus (ahb) of the=20
+QCA4019.
+
+The ath10k driver will use the information from these nodes to initialize t=
+he=20
+device. It will basically:
+
+1. load a firmware(-5).bin from /lib/firmware/ath10k/QCA4019/hw1.0/
+2. load the pre-cal (aka first part of calibration) data from
+   /lib/firmware/ath10k/pre-cal-*
+3. do some firmware magic to identify the reference design
+4. load board data "files" (BDF) for this reference design from
+    /lib/firmware/ath10k/QCA4019/hw1.0/board-2.bin
+5. send the BDF data to the firmware to let it compute the final calibration
+   data
+6. start the actual wifi stuff
+
+The IPQ4018/4019 SoC doesn't contain the actual RF parts. There are a coupl=
+e=20
+of reference designs (SoC+RF parts) from QCA which got official numbers. Th=
+ese=20
+numbers identify the BDFs inside the board-2.bin. And the board-2.bin is no=
+t=20
+the firmware - it is a container for multiple BDFs.
+
+
+To summarize:
+
+ * pre-cal is some data stored in a special partition of the devices and wi=
+ll
+   not be overwritten on updates
+ * board-2.bin are multiple BDF files containing the second part of the
+   calibration data
+ * pre-cal + BDF (+ some OTP stuff) are getting combined to form the comple=
+te
+   calibration data
+
+Asus RT-AC58U, Fritzbox 4040 and ZyXEL NBG6617 are products based on the sa=
+me=20
+reference design. But of course, some (all?) fiddled around with the RF par=
+ts=20
+and therefore require special BDFs. They still use the same SoC and require=
+=20
+that the closed source ath10k firmware behaves like on the official referen=
+ce=20
+designs. Only the BDFs have to be different.
+
+So you could say that the wifi-chip hardware (part of the QCA4018/4019 SoC)=
+ is=20
+the same between these different products. But the hardware around the SoC =
+is=20
+different and therefore requires a different "configuration"/calibration fo=
+r=20
+the surrounding RF hardware. It is not a perfect match for your "separate=20
+property is fine" compromise. Maybe you still meant this - I let you decide.
+
+
+This is not only a problem on QCA4019 but also for other devices supported =
+by=20
+ath10k. Waldemar Rymarkiewicz introduced the concept of BDF variants for
+this [1] and implemented the support for SMBIOS. The variant string (genera=
+ted=20
+from the SMBIOS data) is then used by ath10k when it searches for the corre=
+ct=20
+BDFs in the board-2.bin. Kalle Valo suggested to use the same mechanism for=
+=20
+QCA401X based boards (which don't use SMBIOS).
+
+The "qcom,ath10k-calibration-variant" is now the (more or less) equivalent =
+of=20
+the SMBIOS entry - but for device tree users. Let us assume that the varian=
+t=20
+string would be "RT-AC58U" for the Asus RT-AC58U and the first wifi device=
+=20
+(bmi-board-id=3D16) gets initialized [2]. Then the step 4 would get splitte=
+d in=20
+following steps:
+
+4.1. Get the the qcom,ath10k-calibration-variant content
+4.2. jump to 4.5. when there is no qcom,ath10k-calibration-variant
+4.3. calculate BDF search name with variant string
+     "bus=3Dahb,bmi-chip-id=3D0,bmi-board-id=3D16,variant=3DRT-AC58U"
+4.4. load BDF and when found, jump to 5.
+4.5. calculate BDF search name without variant string
+     "bus=3Dahb,bmi-chip-id=3D0,bmi-board-id=3D16"
+4.6. load the BDF
+
+
+There would be no changes in ath10k when adding a new BDF calibration varia=
+nt=20
+using qcom,ath10k-calibration-variant. Only the device tree node would have=
+ to=20
+be updated:
+
+ * device tree (simplified):
+    / {
+      model =3D "ASUS RT-AC58U";
+   =20
+      soc {
+        wifi@a000000 {
+          compatible =3D "qcom,ipq4019-wifi";
+          reg =3D <0xa000000 0x200000>;
+          status =3D "okay";
+          qcom,ath10k-calibration-variant =3D "RT-AC58U";
+        };
+   =20
+        wifi@a800000 {
+          compatible =3D "qcom,ipq4019-wifi";
+          reg =3D <0xa800000 0x200000>;
+          status =3D "okay";
+          qcom,ath10k-calibration-variant =3D "RT-AC58U";
+        };
+      };
+    };
+ * ath10k + ath10k-firmware
+   <no change>
+
+
+
+
+This about how the calibration [insert swearword] works for
+"qcom,ipq4019-wifi" and why the "qcom,ath10k-calibration-variant" was used =
+in
+my first implementation. But then you've suggested to "use a more specific
+compatible string". This information was not enough for me to understand wh=
+at
+you've actually meant. I was therefore proposing some examples which show w=
+hat
+you maybe could have meant. These were following things:
+
+> >  * qcom,ipq4019-wifi-asus-rt-ac58u
+> >  * qcom,ipq4019-wifi-fritzbox-4040
+> >  * qcom,ipq4019-wifi-netgear-whatever
+> >  * qcom,ipq4019-wifi-openmesh-i-have-no-idea
+
+They are basically "qcom,ipq4019-wifi" + a product specific string. The fir=
+st=20
+part is therefore the string which identifies the wifi device(s) in the=20
+QCA4018/4019 SoC. The product specific string is simply the part (or a=20
+variation of it) which would been used before in
+"qcom,ath10k-calibration-variant" - just to make it "use a more specific=20
+compatible string".
+
+I have no idea if this is really what you meant. I just wanted to give you=
+=20
+some examples and explanations why I don't feel that this a good idea. I=20
+thought that this would help you to point me in the right direction and=20
+explain better what you've meant.
+
+Right now it looks to me like following must be done for your(?) proposal f=
+or=20
+each new board:
+
+ * device tree (simplified):
+    / {
+      model =3D "ASUS RT-AC58U";
+   =20
+      soc {
+        wifi@a000000 {
+          compatible =3D "qcom,ipq4019-wifi-asus-rt-ac58u";
+          reg =3D <0xa000000 0x200000>;
+          status =3D "okay";
+        };
+   =20
+        wifi@a800000 {
+          compatible =3D "qcom,ipq4019-wifi-asus-rt-ac58u";
+          reg =3D <0xa800000 0x200000>;
+          status =3D "okay";
+        };
+      };
+    };
+ * ath10k + ath10k-firmware
+   - add qcom,ipq4019-wifi-asus-rt-ac58u to
+     Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+   - add qcom,ipq4019-wifi-asus-rt-ac58u to ath10k_ahb_of_match in
+     drivers/net/wireless/ath/ath10k/ahb.c
+   - add a mapping from qcom,ipq4019-wifi-asus-rt-ac58u to the RT-AC58U
+     variant string somewhere in ath10k
+
+
+I hope this is enough to understand it a little bit better.
+
+Kind regards,
+	Sven
+
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?i=
+d=3D1657b8f84ed9fc1d2a100671f1d42d6286f20073
+[2] the second wifi device for this reference design would be 17. But there
+    are a lot more for the other reference designs from QCA
+--nextPart2121705.Aa6AmNEe8Z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAljROccACgkQXYcKB8Em
+e0aoChAAp6kOR7V+ZhGgvHKsvMGfMb8s5XENZsHJd0QRzHWccm9RJjwfY9rLaRJ4
+tmhBrSWovqzjqVTreE6u8D5lSlcUn8XFAvC8NFPHu4dYyTb3dZ0ERUJfFASEF3Pt
+gf1OMnHb2JIK/XTjhiR9nGbnpev6nCqSYiVtWH0SzmSoY75u6RLEZvn4vt4bpqMC
+I1KbFtgRGrxGlNhoMNe0qkpoN+AGdo24wThqDbqXO6ZnhAPT6O7nVj7IlwPsFL5B
+72OjQ77+fk2V4LjQ9iCsMHY5cqoNheerhpxijHmCJ4Kss21b2q3jFP4m2PI2zVpd
+TjQSxTf+Hh8njbH01nCmidC0ghch5BxjpU/Ggdp/a5D1Z0UsEO73PuYsSSDtLkVD
+GCPT2Ayl/TfLfUfP5AyGf8df/NXMI/nCau1tKxWLURARcu/3aG5mwJjsmrlKVChQ
+LFWV5vlxNWMIDtQ7eC8sXafave51kNM1n+Ej3/3E1hNhVeykS/q3BvOM1MjIg8wG
+JRJ59t2lrxA4JrnYsEmwe1eIj6iDFbpmvXdntb4Ngmn2evtn2VE6oDUMtb+jQskv
+WEIFdVz/xgstRm7jCGPjNZzqb++AFOqxkJFA0IcMBAZTJmYAG7WxnVsZFdhQO4YL
+CvD7/cil5S1sVBfYI6PRBtCmGBE3dtgtwRdRWhnk0slutLRHQ2g=
+=uIBn
+-----END PGP SIGNATURE-----
+
+--nextPart2121705.Aa6AmNEe8Z--
+
+
+
+--===============0107763127475149156==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============0107763127475149156==--
