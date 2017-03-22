@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqaZg-00038B-M4
- for ath10k@lists.infradead.org; Wed, 22 Mar 2017 07:20:54 +0000
-Received: by mail-wm0-x22b.google.com with SMTP id n11so28095425wma.1
- for <ath10k@lists.infradead.org>; Wed, 22 Mar 2017 00:20:31 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: [PATCH 1/2] dt: bindings: add new dt entry for ath10k calibration
- variant
-Date: Wed, 22 Mar 2017 08:20:25 +0100
-Message-ID: <5711518.JB9VTipMpE@bentobox>
-In-Reply-To: <CAL_JsqKSBA8WcR9Q8+6+kVfYoPggZ83yQ_47LWf971Aegqv4yA@mail.gmail.com>
-References: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
- <5158144.BXJK97egUR@bentobox>
- <CAL_JsqKSBA8WcR9Q8+6+kVfYoPggZ83yQ_47LWf971Aegqv4yA@mail.gmail.com>
+Received: from mail-it0-x22b.google.com ([2607:f8b0:4001:c0b::22b])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cqbcC-0003Uw-Rv
+ for ath10k@lists.infradead.org; Wed, 22 Mar 2017 08:27:35 +0000
+Received: by mail-it0-x22b.google.com with SMTP id y18so21298144itc.0
+ for <ath10k@lists.infradead.org>; Wed, 22 Mar 2017 01:27:11 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <96a2f542-90ab-004d-4070-fdab5a30fd9d@candelatech.com>
+References: <CAN+BLYF5+LzERrzYfgfZJb5ippPyU59zJY_x03Q3e9oCKYapVA@mail.gmail.com>
+ <96a2f542-90ab-004d-4070-fdab5a30fd9d@candelatech.com>
+From: =?UTF-8?B?5ZCz6YeN5q+F?= <uranus0206@gmail.com>
+Date: Wed, 22 Mar 2017 16:26:49 +0800
+Message-ID: <CAN+BLYGqtYeUntiRDKkiho79Ru9eDSg7PLFt1DmDx4gPyhPWCA@mail.gmail.com>
+Subject: Re: QCA9984 with kernel panic
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,88 +21,23 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7960021156793729102=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rob Herring <robh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, ext.waldemar.rymarkiewicz@tieto.com, Kalle Valo <kvalo@codeaurora.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
 
---===============7960021156793729102==
-Content-Type: multipart/signed; boundary="nextPart3699751.HZgdfZs6TO"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Dear Ben:
+My PC has already enable vt. However it still crash while boot.
+But if i disable the ath10k module (change name of ath10k's ko files) first,
+then insert module after system booting.
+I can successful insert ath10k modules without system crash.
+Maybe it's some bios's issue to be figure out. So that's my temporary method.
 
---nextPart3699751.HZgdfZs6TO
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-
-On Dienstag, 21. M=E4rz 2017 21:56:54 CET Rob Herring wrote:
-[...]
-> Is this always the case? There's never some variation beyond the
-> reference design that a BDF difference can't handle?
-
-I have no knowledge about anything which isn't handled directly by the BDF
-variants. But maybe Kalle can correct me here.
-
-[...]
-> > They are basically "qcom,ipq4019-wifi" + a product specific string. The=
- first
-> > part is therefore the string which identifies the wifi device(s) in the
-> > QCA4018/4019 SoC. The product specific string is simply the part (or a
-> > variation of it) which would been used before in
-> > "qcom,ath10k-calibration-variant" - just to make it "use a more specific
-> > compatible string".
->=20
-> It would probably be more like: "asus,rt-ac58u-wifi", "qcom,ipq4019-wifi"
->=20
-> A more specific compatible is insurance that at some later point in
-> time you can distinguish between 2 boards due to some difference even
-> if now you believe they are "the same".
-[...]
-> I think the separate property is fine if this is the only one you
-> envision needing to add. If there's 10 more properties, then I'd feel
-> more strongly towards a board specific compatible string.
-
-Thank you. Let's wait a little bit in case someone from QCA/Codeaurora
-has some additional input.
-
-But your comments were really helpful.
-
-Kind regards,
-	Sven
---nextPart3699751.HZgdfZs6TO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAljSJbkACgkQXYcKB8Em
-e0YAtw/+JLz5VKGHwT9O6oee8MuqnlBySVGeANdvMn3FwArtMZJj0SMG2qmGd7tm
-evKgmYWjzGo7ipyVbSm6d8DxmMpVmW++EPj27Tr8SqyWBkgkcI0d2Zy5/3GQGXBM
-JN/sc9IbbaiSdRuKTudL9OgugtDstDnahpeYVVajEutgjFi8+ctg1x4LNy7cnia3
-B+BQCtU1Z8ZHNotaTQfFt/+a9Opf88T3zz/OvVg8e5ToGL2wSympcEsKU+5elLYk
-b7Kli4IKoSSGG4NQyC3/rufOm5bDCor9xO6HI8GX6cxZKI+JqfjUlQ2fcEg1JpOp
-2LSPcisHaEM/B3hBPD/Er2tOCwiA93uiaIiW8QV/Jth56FDi5zH4ssUEKrdVmlfV
-wmkyYXQeAZJjRU93CulTStl+XFXa3kyvIH/8StnqkwVMqxUW0vkE5+xgJdNmaiZc
-sMRlss77gCzBFrJKdtakVztrnVVDIRMrLLDTdMqfjOOnxOSSJO4J7eN0ef2SSkYd
-m3xgSf6PXh4qm/1M6HoMEXJb2W66ybhoYjCYm7FqqJiZN9E+Vcnj2rC/N4EyQhbz
-zjHsgR3Kbp+qCTuZz1PBKRqEfdtmDYrO9c1RsAxTWDucAnusl10g89Ud+xdTJiOT
-WdayFuu7glJ8DJ1K9dgAFkCfGSy7QzLy2+mgskdJafpJ8J7GjDU=
-=un15
------END PGP SIGNATURE-----
-
---nextPart3699751.HZgdfZs6TO--
-
-
-
---===============7960021156793729102==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Many thanks for reply.
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============7960021156793729102==--
