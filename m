@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-it0-x22b.google.com ([2607:f8b0:4001:c0b::22b])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqbcC-0003Uw-Rv
- for ath10k@lists.infradead.org; Wed, 22 Mar 2017 08:27:35 +0000
-Received: by mail-it0-x22b.google.com with SMTP id y18so21298144itc.0
- for <ath10k@lists.infradead.org>; Wed, 22 Mar 2017 01:27:11 -0700 (PDT)
+Received: from mail-io0-x232.google.com ([2607:f8b0:4001:c06::232])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cqgku-00005U-UB
+ for ath10k@lists.infradead.org; Wed, 22 Mar 2017 13:56:54 +0000
+Received: by mail-io0-x232.google.com with SMTP id f84so65758746ioj.0
+ for <ath10k@lists.infradead.org>; Wed, 22 Mar 2017 06:56:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <96a2f542-90ab-004d-4070-fdab5a30fd9d@candelatech.com>
-References: <CAN+BLYF5+LzERrzYfgfZJb5ippPyU59zJY_x03Q3e9oCKYapVA@mail.gmail.com>
- <96a2f542-90ab-004d-4070-fdab5a30fd9d@candelatech.com>
-From: =?UTF-8?B?5ZCz6YeN5q+F?= <uranus0206@gmail.com>
-Date: Wed, 22 Mar 2017 16:26:49 +0800
-Message-ID: <CAN+BLYGqtYeUntiRDKkiho79Ru9eDSg7PLFt1DmDx4gPyhPWCA@mail.gmail.com>
-Subject: Re: QCA9984 with kernel panic
+In-Reply-To: <CAAf+CsDc+kFn+Tn3cH4su0AFr9arHCXE9bdRtNxQBaRL3XxzAg@mail.gmail.com>
+References: <CAAf+CsCYmJMvMfq+UEmE_FDin8i2QS8-sbVyypew8vcmuZfBkg@mail.gmail.com>
+ <43883e2c701b437e9785b89faaaf848b@NALASEXR01G.na.qualcomm.com>
+ <CAAf+CsDc+kFn+Tn3cH4su0AFr9arHCXE9bdRtNxQBaRL3XxzAg@mail.gmail.com>
+From: =?UTF-8?Q?Guilherme_=C3=8Dscaro?= <cabelitostos@gmail.com>
+Date: Wed, 22 Mar 2017 10:56:31 -0300
+Message-ID: <CAAf+CsCo2RVrBfP5LH9k3_F3W60BQOGODExwcKDrgj2Jq=MjWQ@mail.gmail.com>
+Subject: Re: Reporting a bug for QCA6174 802.11ac
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,23 +22,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org
+To: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Dear Ben:
-My PC has already enable vt. However it still crash while boot.
-But if i disable the ath10k module (change name of ath10k's ko files) first,
-then insert module after system booting.
-I can successful insert ath10k modules without system crash.
-Maybe it's some bios's issue to be figure out. So that's my temporary method.
-
-Many thanks for reply.
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSd2ZSBpbnN0YWxsZWQgdGhlIG5ldyBmaXJtd2FyZS9kcml2ZXIuIEknbGwgc2VuZCBhIG5ldyBl
+bWFpbCBpbiBzb21lCmRheXMgdG8gdGVsbCB5b3UgZ3V5cyBpZiB0aGUgbmV3IGRyaXZlci9maXJt
+d2FyZSByZXNvbHZlZCB0aGUgcHJvYmxlbS4KClRoYW5rcyBmb3IgdGhlIGhlbHAuCgoyMDE3LTAz
+LTIxIDE1OjU4IEdNVC0wMzowMCBHdWlsaGVybWUgw41zY2FybyA8Y2FiZWxpdG9zdG9zQGdtYWls
+LmNvbT46Cj4gSGVsbG8gUnlhbiwgVGhhbmtzIGZvciB5b3VyIHJlc3BvbnNlLgo+Cj4gTXkgQVAg
+aXMgaW4gdGhlIHNhbWUgcm9vbSB0aGF0IEkgdXNlIG15IG5vdGVib29rLCBpdCdzIHJpZ2h0IGlu
+IGZyb250Cj4gb2YgbWUuIFRoZXJlJ3Mgbm8gc3BlY2lmaWMgc2NlbmFyaW8gZm9yIHRoaXMgZmFp
+bHVyZSB0byBoYXBwZW4uCj4gU29tZXRpbWVzIGl0IGRvZXMgbm90IGhhcHBlbnMgZm9yIGRheXMs
+IGJ1dCBzb21ldGltZXMgaXQgaGFwcGVucyAzLzQKPiB0aW1lcyBpbiB0aGUgc2FtZSBkYXkuCj4g
+SXQgbG9va3MgbGlrZSB0aGF0IHRoZXJlIGlzIG5vdCBzcGVjaWZpYyBzY2VuYXJpbywgc29tZXRp
+bWVzIGl0Cj4gaGFwcGVucyB3aGlsZSBJJ20gdXNpbmcgZmlyZWZveCwgc29tZXRpbWVzIGl0IGhh
+cHBlbnMgd2hlbiBteSBsYXB0b3AKPiBpcyAiZG9pbmcgbm90aGluZyIuIChXYXMgaXQgaGVscGZ1
+bD8pCj4KPiBJJ20gdXNpbmcgV2lGaSA4MDIuMTFuLCAyLjRnaHogd2l0aCBBRVMuCj4KPiBJJ2xs
+IHRyeSB0aGlzIG5ldyBmaXJtd2FyZS9kcml2ZXIuCj4KPiBUaGFua3MuCj4KPgo+Cj4gMjAxNy0w
+My0yMSAxNTozNSBHTVQtMDM6MDAgUnlhbiBIc3UgPHJ5YW5oc3VAcWNhLnF1YWxjb21tLmNvbT46
+Cj4+IElzY2FybywKPj4KPj4gTm90IHN1cmUgaG93IGV4YWN0bHkgdGhlIGlzc3VlIGFuZCBzY2Vu
+YXJpbyBvZiB5b3VyIHVzYWdlLgo+Pgo+PiBlLmcgaG93IGZhciB0aGUgQVAgZnJvbSB5b3UgYW5k
+IGlzIHRoZXJlIGFueSBzcGVjaWZpYyBzY2VuYXJpbyB5b3UncmUgc2VlaW5nIHRoZSBmYWlsdXJl
+IG9wZW4/Cj4+Cj4+IEFsc28gd291bGQgeW91IG1pbmQgdHJ5IHRvIHBpY2sgdXAgdGhlIGxhdGVz
+dCBmaXJtd2FyZSB0byBzZWUgaWYgdGhhdCBoZWxwPwo+PiBodHRwczovL2dpdGh1Yi5jb20va3Zh
+bG8vYXRoMTBrLWZpcm13YXJlL3RyZWUvbWFzdGVyL1FDQTYxNzQvaHczLjAvNC40Cj4+Cj4+IFdp
+dGggdGhlIGxhdGVzdCBmaXJtd2FyZSwgeW91IG1pZ2h0IGFsc28gbmVlZCB0byBnZXQgdGhlIGxh
+dGVzdCBkcml2ZXIgYmFja3BvcnQgcGFja2FnZS4KPj4gaHR0cDovL2J1aWxkYm90LncxLmZpL2Jh
+Y2twb3J0cy13aXJlbGVzcy10ZXN0aW5nLwo+Pgo+PiBSeWFuCj4+Cj4+PiAtLS0tLU9yaWdpbmFs
+IE1lc3NhZ2UtLS0tLQo+Pj4gRnJvbTogYXRoMTBrIFttYWlsdG86YXRoMTBrLWJvdW5jZXNAbGlz
+dHMuaW5mcmFkZWFkLm9yZ10gT24gQmVoYWxmIE9mCj4+PiBHdWlsaGVybWUgw41zY2Fybwo+Pj4g
+U2VudDogTW9uZGF5LCBNYXJjaCAyMCwgMjAxNyAwODozMiBBTQo+Pj4gVG86IGF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCj4+PiBTdWJqZWN0OiBSZXBvcnRpbmcgYSBidWcgZm9yIFFDQTYxNzQg
+ODAyLjExYWMKPj4+Cj4+PiBIZWxsbyBldmVyeW9uZSwgSSB3b3VsZCBsaWtlIHRvIHJlcG9ydCBh
+IGJ1ZyBmb3IgUUNBNjE3NC4KPj4+Cj4+PiBJIHVzZSBXaUZpIGV2ZXJ5ZGF5LCBidXQgZnJvbSB0
+aW1lIHRvIHRpbWUgSSBsb3NlIG15IGNvbm5lY3Rpb24uIFRoaXMgbWlnaHQgYmUKPj4+IHJlbGF0
+ZWQgdG8gYSBmaXJtd2FyZSBwcm9ibGVtLCBiZWNhdXNlIGFmdGVyIEkgbG9zZSBteSBjb25uZWN0
+aW9uIHRoZSBmaXJtd2FyZQo+Pj4ga2VlcHMgZmxvb2RpbmcgZG1lc2cgYWJvdXQgcHJvYmxlbXMu
+Cj4+Pgo+Pj4gSSBoYXZlIHRoaXMgcHJvYmxlbSBzaW5jZSBJICBib3VnaHQgbXkgbGFwdG9wICh3
+aGljaCB3YXMgbGFzdCB5ZWFyKSBhbmQgSSBkbwo+Pj4gcmVndWxhciB1cGRhdGVzIGluIG15IHN5
+c3RlbS4KPj4+Cj4+PiBQLlM6IGRtZXN0IG91dHB1dCBhdHRhY2hlZC4KPj4+Cj4+PiBNeSBzeXN0
+ZW06Cj4+Pgo+Pj4gRGlzdDogQXJjaCBMaW51eC4KPj4+IEtlcm5lbDogNC4xMC4zLTEKPj4+IExp
+bnV4LWZpcm13YXJlIHZlcnNpb246IDIwMTcwMzA5LjY5NWYyZDYtMSAoY29tbWl0IDY5NWYyZDZk
+ODIxNzNmNGUuLi4KPj4+IGZyb20gbGludXgtZmlybXdhcmUpCj4+PiBCb2FyZDogMDI6MDAuMCBO
+ZXR3b3JrIGNvbnRyb2xsZXI6IFF1YWxjb21tIEF0aGVyb3MgUUNBNjE3NCA4MDIuMTFhYwo+Pj4g
+V2lyZWxlc3MgTmV0d29yayBBZGFwdGVyIChyZXYgMzIpCj4+Pgo+Pj4KPj4+IFBsZWFzZSwgbGV0
+IG1lIGtub3cgaWYgSSBzaG91bGQgcHJvdmlkZSBtb3JlIGluZm8uCj4+Pgo+Pj4gVGhhbmtzLgoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
+aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
