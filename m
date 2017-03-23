@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cr5tc-0005iN-Qs
- for ath10k@lists.infradead.org; Thu, 23 Mar 2017 16:47:35 +0000
-Received: by mail-wm0-x242.google.com with SMTP id x124so252102wmf.3
- for <ath10k@lists.infradead.org>; Thu, 23 Mar 2017 09:47:12 -0700 (PDT)
-From: Christian Lamparter <chunkeey@googlemail.com>
-Subject: QCA9984 bmi identification failure
-Date: Thu, 23 Mar 2017 17:47:08 +0100
-Message-ID: <3243718.FYinmXYgr7@debian64>
+ id 1crBV6-0001hL-MB
+ for ath10k@lists.infradead.org; Thu, 23 Mar 2017 22:46:39 +0000
+From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+Subject: Re: Reporting a bug for QCA6174 802.11ac
+Date: Thu, 23 Mar 2017 22:46:03 +0000
+Message-ID: <1490309165963.76201@qca.qualcomm.com>
+References: <CAAf+CsCYmJMvMfq+UEmE_FDin8i2QS8-sbVyypew8vcmuZfBkg@mail.gmail.com>
+ <43883e2c701b437e9785b89faaaf848b@NALASEXR01G.na.qualcomm.com>
+ <CAAf+CsDc+kFn+Tn3cH4su0AFr9arHCXE9bdRtNxQBaRL3XxzAg@mail.gmail.com>
+ <CAAf+CsCo2RVrBfP5LH9k3_F3W60BQOGODExwcKDrgj2Jq=MjWQ@mail.gmail.com>,
+ <CAAf+CsD0bvwaB2pLLActv9XCimdNaWAjoS2ZU4WN1d-kt3rSDA@mail.gmail.com>
+In-Reply-To: <CAAf+CsD0bvwaB2pLLActv9XCimdNaWAjoS2ZU4WN1d-kt3rSDA@mail.gmail.com>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -18,68 +23,110 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Adrian Chadd <adrian@freebsd.org>, "linux-wireless (linux-wireless@vger.kernel.org)" <linux-wireless@vger.kernel.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k-devel <ath10k-devel@qca.qualcomm.com>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, hannu.nyman@iki.fi, Michal Kazior <michal.kazior@tieto.com>
+To: =?iso-8859-1?Q?Guilherme_=CDscaro?= <cabelitostos@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hannu Nyman reported a issue with the QCA9984 in his Netgear R7800 
-and LEDE's ath10k: (This is with 936-ath10k_skip_otp_check.patch removed):
+Let's start from the basic, could you provide the ftrace logs and also the =
+AP model you're using? try without security or different phy mode to see if=
+ it would behave differently?
 
-[   12.999550] ath10k_pci 0000:01:00.0: enabling device (0140 -> 0142)
-[   12.999637] ath10k_pci 0000:01:00.0: enabling bus mastering
-[   13.000105] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-[   13.130838] ath10k_pci 0000:01:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:01:00.0.bin failed with error -2
-[   13.130888] ath10k_pci 0000:01:00.0: Falling back to user helper
-[   13.183995] firmware ath10k!pre-cal-pci-0000:01:00.0.bin: firmware_loading_store: map pages failed
-[   13.184338] ath10k_pci 0000:01:00.0: Direct firmware load for ath10k/cal-pci-0000:01:00.0.bin failed with error -2
-[   13.191960] ath10k_pci 0000:01:00.0: Falling back to user helper
-[   13.673417] ath10k_pci 0000:01:00.0: qca9984/qca9994 hw1.0 target 0x01000000 chip_id 0x00000000 sub 168c:cafe
-[   13.673451] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
-[   13.684393] ath10k_pci 0000:01:00.0: firmware ver 10.4-3.4-00074 api 5 features no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast crc32 fa32e88e
-[   15.728598] ath10k_pci 0000:01:00.0: unable to read from the device
-[   15.728621] ath10k_pci 0000:01:00.0: could not execute otp for board id check: -110
-[   15.733663] ath10k_pci 0000:01:00.0: failed to get board id from otp: -110
-[   15.741474] ath10k_pci 0000:01:00.0: could not probe fw (-110)
+The last thing is, your previous logs only stuffed with the register access=
+ failure logs, can you share a full dmesg logs as well?
 
-I requested to test what happens, if the driver ignored -ETIMEDOUT error from
-ath10k_core_get_board_id_from_otp() and the device initialized successfully:
+Ryan
+________________________________________
+From: Guilherme =CDscaro <cabelitostos@gmail.com>
+Sent: Wednesday, March 22, 2017 3:17 PM
+To: Ryan Hsu
+Cc: ath10k@lists.infradead.org
+Subject: Re: Reporting a bug for QCA6174 802.11ac
 
-[   16.163318] ath10k_pci 0000:01:00.0: enabling device (0140 -> 0142)
-[   16.163401] ath10k_pci 0000:01:00.0: enabling bus mastering
-[   16.163850] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-[   16.337294] ath10k_pci 0000:01:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:01:00.0.bin failed with error -2
-[   16.337351] ath10k_pci 0000:01:00.0: Falling back to user helper
-[   22.837360] firmware ath10k!pre-cal-pci-0000:01:00.0.bin: firmware_loading_store: map pages failed
-[   23.212157] ath10k_pci 0000:01:00.0: qca9984/qca9994 hw1.0 target 0x01000000 chip_id 0x00000000 sub 168c:cafe
-[   23.212211] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
-[   23.226748] ath10k_pci 0000:01:00.0: firmware ver 10.4-3.4-00074 api 5 features no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast crc32 fa32e88e
-[   25.259266] ath10k_pci 0000:01:00.0: unable to read from the device
-[   25.259288] ath10k_pci 0000:01:00.0: could not execute otp for board id check: -110
-[   25.277326] ath10k_pci 0000:01:00.0: failed to fetch board data for bus=pci,vendor=168c,device=0046,subsystem-vendor=168c,subsystem-device=cafem...from ath10k/QCA9984/hw1.0/board-2.bin
-[   25.277588] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 dd636801
-[   26.800717] ath10k_pci 0000:01:00.0: htt-ver 2.2 wmi-op 6 htt-op 4 cal file max-sta 512 raw 0 hwcrypto 1
+Hi, unfortunately the problem happened with the new drivers and firmware. :[
+I really don't know what to do anymore.....
 
-<https://forum.lede-project.org/t/netgear-r7800-exploration-ipq8065-qca9984/285/277>
+thanks.
 
-What seems strange is that only the call bmi_execute with 
-BMI_PARAM_GET_EEPROM_BOARD_ID is timing out. So by just 
-ignoring the -ETIMEDOUT result from:
-
-        ret = ath10k_bmi_execute(ar, address, BMI_PARAM_GET_EEPROM_BOARD_ID,
-                                 &result);
-
-in ath10k_core_get_board_id_from_otp() the device will initialize and work.
-This begs the question, what is so special about the BMI_PARAM_GET_EEPROM_BOARD_ID
-at that time for the QCA9984? Does the device need some extra msleep time after
-the OTP has been uploaded? Or is the BMI_PARAM_GET_EEPROM_BOARD_ID not 
-implemented/has a different ID, etc... ?
-
-Thanks,
-Christian
+2017-03-22 10:56 GMT-03:00 Guilherme =CDscaro <cabelitostos@gmail.com>:
+> I've installed the new firmware/driver. I'll send a new email in some
+> days to tell you guys if the new driver/firmware resolved the problem.
+>
+> Thanks for the help.
+>
+> 2017-03-21 15:58 GMT-03:00 Guilherme =CDscaro <cabelitostos@gmail.com>:
+>> Hello Ryan, Thanks for your response.
+>>
+>> My AP is in the same room that I use my notebook, it's right in front
+>> of me. There's no specific scenario for this failure to happen.
+>> Sometimes it does not happens for days, but sometimes it happens 3/4
+>> times in the same day.
+>> It looks like that there is not specific scenario, sometimes it
+>> happens while I'm using firefox, sometimes it happens when my laptop
+>> is "doing nothing". (Was it helpful?)
+>>
+>> I'm using WiFi 802.11n, 2.4ghz with AES.
+>>
+>> I'll try this new firmware/driver.
+>>
+>> Thanks.
+>>
+>>
+>>
+>> 2017-03-21 15:35 GMT-03:00 Ryan Hsu <ryanhsu@qca.qualcomm.com>:
+>>> Iscaro,
+>>>
+>>> Not sure how exactly the issue and scenario of your usage.
+>>>
+>>> e.g how far the AP from you and is there any specific scenario you're s=
+eeing the failure open?
+>>>
+>>> Also would you mind try to pick up the latest firmware to see if that h=
+elp?
+>>> https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0/4.4
+>>>
+>>> With the latest firmware, you might also need to get the latest driver =
+backport package.
+>>> http://buildbot.w1.fi/backports-wireless-testing/
+>>>
+>>> Ryan
+>>>
+>>>> -----Original Message-----
+>>>> From: ath10k [mailto:ath10k-bounces@lists.infradead.org] On Behalf Of
+>>>> Guilherme =CDscaro
+>>>> Sent: Monday, March 20, 2017 08:32 AM
+>>>> To: ath10k@lists.infradead.org
+>>>> Subject: Reporting a bug for QCA6174 802.11ac
+>>>>
+>>>> Hello everyone, I would like to report a bug for QCA6174.
+>>>>
+>>>> I use WiFi everyday, but from time to time I lose my connection. This =
+might be
+>>>> related to a firmware problem, because after I lose my connection the =
+firmware
+>>>> keeps flooding dmesg about problems.
+>>>>
+>>>> I have this problem since I  bought my laptop (which was last year) an=
+d I do
+>>>> regular updates in my system.
+>>>>
+>>>> P.S: dmest output attached.
+>>>>
+>>>> My system:
+>>>>
+>>>> Dist: Arch Linux.
+>>>> Kernel: 4.10.3-1
+>>>> Linux-firmware version: 20170309.695f2d6-1 (commit 695f2d6d82173f4e...
+>>>> from linux-firmware)
+>>>> Board: 02:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac
+>>>> Wireless Network Adapter (rev 32)
+>>>>
+>>>>
+>>>> Please, let me know if I should provide more info.
+>>>>
+>>>> Thanks.
 
 _______________________________________________
 ath10k mailing list
