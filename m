@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x22f.google.com ([2607:f8b0:4001:c06::22f])
+Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
+ helo=mail.mail.packetmixer.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqoZL-0004Xl-O6
- for ath10k@lists.infradead.org; Wed, 22 Mar 2017 22:17:30 +0000
-Received: by mail-io0-x22f.google.com with SMTP id l7so72485089ioe.3
- for <ath10k@lists.infradead.org>; Wed, 22 Mar 2017 15:17:06 -0700 (PDT)
+ id 1cqybf-0001b3-0W
+ for ath10k@lists.infradead.org; Thu, 23 Mar 2017 09:00:33 +0000
+From: Simon Wunderlich <sw@simonwunderlich.de>
+Subject: Re: [PATCH 2/3] ath10k: add support for channels in licensed bands
+Date: Thu, 23 Mar 2017 10:00:00 +0100
+Message-ID: <1665455.SGOqsfShXJ@prime>
+In-Reply-To: <327a5fe1-a4f2-6252-9dee-e4b6e79aa5ac@dd-wrt.com>
+References: <20170316151337.24163-1-sw@simonwunderlich.de>
+ <20170316151337.24163-3-sw@simonwunderlich.de>
+ <327a5fe1-a4f2-6252-9dee-e4b6e79aa5ac@dd-wrt.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAf+CsCo2RVrBfP5LH9k3_F3W60BQOGODExwcKDrgj2Jq=MjWQ@mail.gmail.com>
-References: <CAAf+CsCYmJMvMfq+UEmE_FDin8i2QS8-sbVyypew8vcmuZfBkg@mail.gmail.com>
- <43883e2c701b437e9785b89faaaf848b@NALASEXR01G.na.qualcomm.com>
- <CAAf+CsDc+kFn+Tn3cH4su0AFr9arHCXE9bdRtNxQBaRL3XxzAg@mail.gmail.com>
- <CAAf+CsCo2RVrBfP5LH9k3_F3W60BQOGODExwcKDrgj2Jq=MjWQ@mail.gmail.com>
-From: =?UTF-8?Q?Guilherme_=C3=8Dscaro?= <cabelitostos@gmail.com>
-Date: Wed, 22 Mar 2017 19:17:05 -0300
-Message-ID: <CAAf+CsD0bvwaB2pLLActv9XCimdNaWAjoS2ZU4WN1d-kt3rSDA@mail.gmail.com>
-Subject: Re: Reporting a bug for QCA6174 802.11ac
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +21,72 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5030734843719127235=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-SGksIHVuZm9ydHVuYXRlbHkgdGhlIHByb2JsZW0gaGFwcGVuZWQgd2l0aCB0aGUgbmV3IGRyaXZl
-cnMgYW5kIGZpcm13YXJlLiA6WwpJIHJlYWxseSBkb24ndCBrbm93IHdoYXQgdG8gZG8gYW55bW9y
-ZS4uLi4uCgp0aGFua3MuCgoyMDE3LTAzLTIyIDEwOjU2IEdNVC0wMzowMCBHdWlsaGVybWUgw41z
-Y2FybyA8Y2FiZWxpdG9zdG9zQGdtYWlsLmNvbT46Cj4gSSd2ZSBpbnN0YWxsZWQgdGhlIG5ldyBm
-aXJtd2FyZS9kcml2ZXIuIEknbGwgc2VuZCBhIG5ldyBlbWFpbCBpbiBzb21lCj4gZGF5cyB0byB0
-ZWxsIHlvdSBndXlzIGlmIHRoZSBuZXcgZHJpdmVyL2Zpcm13YXJlIHJlc29sdmVkIHRoZSBwcm9i
-bGVtLgo+Cj4gVGhhbmtzIGZvciB0aGUgaGVscC4KPgo+IDIwMTctMDMtMjEgMTU6NTggR01ULTAz
-OjAwIEd1aWxoZXJtZSDDjXNjYXJvIDxjYWJlbGl0b3N0b3NAZ21haWwuY29tPjoKPj4gSGVsbG8g
-UnlhbiwgVGhhbmtzIGZvciB5b3VyIHJlc3BvbnNlLgo+Pgo+PiBNeSBBUCBpcyBpbiB0aGUgc2Ft
-ZSByb29tIHRoYXQgSSB1c2UgbXkgbm90ZWJvb2ssIGl0J3MgcmlnaHQgaW4gZnJvbnQKPj4gb2Yg
-bWUuIFRoZXJlJ3Mgbm8gc3BlY2lmaWMgc2NlbmFyaW8gZm9yIHRoaXMgZmFpbHVyZSB0byBoYXBw
-ZW4uCj4+IFNvbWV0aW1lcyBpdCBkb2VzIG5vdCBoYXBwZW5zIGZvciBkYXlzLCBidXQgc29tZXRp
-bWVzIGl0IGhhcHBlbnMgMy80Cj4+IHRpbWVzIGluIHRoZSBzYW1lIGRheS4KPj4gSXQgbG9va3Mg
-bGlrZSB0aGF0IHRoZXJlIGlzIG5vdCBzcGVjaWZpYyBzY2VuYXJpbywgc29tZXRpbWVzIGl0Cj4+
-IGhhcHBlbnMgd2hpbGUgSSdtIHVzaW5nIGZpcmVmb3gsIHNvbWV0aW1lcyBpdCBoYXBwZW5zIHdo
-ZW4gbXkgbGFwdG9wCj4+IGlzICJkb2luZyBub3RoaW5nIi4gKFdhcyBpdCBoZWxwZnVsPykKPj4K
-Pj4gSSdtIHVzaW5nIFdpRmkgODAyLjExbiwgMi40Z2h6IHdpdGggQUVTLgo+Pgo+PiBJJ2xsIHRy
-eSB0aGlzIG5ldyBmaXJtd2FyZS9kcml2ZXIuCj4+Cj4+IFRoYW5rcy4KPj4KPj4KPj4KPj4gMjAx
-Ny0wMy0yMSAxNTozNSBHTVQtMDM6MDAgUnlhbiBIc3UgPHJ5YW5oc3VAcWNhLnF1YWxjb21tLmNv
-bT46Cj4+PiBJc2Nhcm8sCj4+Pgo+Pj4gTm90IHN1cmUgaG93IGV4YWN0bHkgdGhlIGlzc3VlIGFu
-ZCBzY2VuYXJpbyBvZiB5b3VyIHVzYWdlLgo+Pj4KPj4+IGUuZyBob3cgZmFyIHRoZSBBUCBmcm9t
-IHlvdSBhbmQgaXMgdGhlcmUgYW55IHNwZWNpZmljIHNjZW5hcmlvIHlvdSdyZSBzZWVpbmcgdGhl
-IGZhaWx1cmUgb3Blbj8KPj4+Cj4+PiBBbHNvIHdvdWxkIHlvdSBtaW5kIHRyeSB0byBwaWNrIHVw
-IHRoZSBsYXRlc3QgZmlybXdhcmUgdG8gc2VlIGlmIHRoYXQgaGVscD8KPj4+IGh0dHBzOi8vZ2l0
-aHViLmNvbS9rdmFsby9hdGgxMGstZmlybXdhcmUvdHJlZS9tYXN0ZXIvUUNBNjE3NC9odzMuMC80
-LjQKPj4+Cj4+PiBXaXRoIHRoZSBsYXRlc3QgZmlybXdhcmUsIHlvdSBtaWdodCBhbHNvIG5lZWQg
-dG8gZ2V0IHRoZSBsYXRlc3QgZHJpdmVyIGJhY2twb3J0IHBhY2thZ2UuCj4+PiBodHRwOi8vYnVp
-bGRib3QudzEuZmkvYmFja3BvcnRzLXdpcmVsZXNzLXRlc3RpbmcvCj4+Pgo+Pj4gUnlhbgo+Pj4K
-Pj4+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+Pj4+IEZyb206IGF0aDEwayBbbWFpbHRv
-OmF0aDEway1ib3VuY2VzQGxpc3RzLmluZnJhZGVhZC5vcmddIE9uIEJlaGFsZiBPZgo+Pj4+IEd1
-aWxoZXJtZSDDjXNjYXJvCj4+Pj4gU2VudDogTW9uZGF5LCBNYXJjaCAyMCwgMjAxNyAwODozMiBB
-TQo+Pj4+IFRvOiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+Pj4+IFN1YmplY3Q6IFJlcG9y
-dGluZyBhIGJ1ZyBmb3IgUUNBNjE3NCA4MDIuMTFhYwo+Pj4+Cj4+Pj4gSGVsbG8gZXZlcnlvbmUs
-IEkgd291bGQgbGlrZSB0byByZXBvcnQgYSBidWcgZm9yIFFDQTYxNzQuCj4+Pj4KPj4+PiBJIHVz
-ZSBXaUZpIGV2ZXJ5ZGF5LCBidXQgZnJvbSB0aW1lIHRvIHRpbWUgSSBsb3NlIG15IGNvbm5lY3Rp
-b24uIFRoaXMgbWlnaHQgYmUKPj4+PiByZWxhdGVkIHRvIGEgZmlybXdhcmUgcHJvYmxlbSwgYmVj
-YXVzZSBhZnRlciBJIGxvc2UgbXkgY29ubmVjdGlvbiB0aGUgZmlybXdhcmUKPj4+PiBrZWVwcyBm
-bG9vZGluZyBkbWVzZyBhYm91dCBwcm9ibGVtcy4KPj4+Pgo+Pj4+IEkgaGF2ZSB0aGlzIHByb2Js
-ZW0gc2luY2UgSSAgYm91Z2h0IG15IGxhcHRvcCAod2hpY2ggd2FzIGxhc3QgeWVhcikgYW5kIEkg
-ZG8KPj4+PiByZWd1bGFyIHVwZGF0ZXMgaW4gbXkgc3lzdGVtLgo+Pj4+Cj4+Pj4gUC5TOiBkbWVz
-dCBvdXRwdXQgYXR0YWNoZWQuCj4+Pj4KPj4+PiBNeSBzeXN0ZW06Cj4+Pj4KPj4+PiBEaXN0OiBB
-cmNoIExpbnV4Lgo+Pj4+IEtlcm5lbDogNC4xMC4zLTEKPj4+PiBMaW51eC1maXJtd2FyZSB2ZXJz
-aW9uOiAyMDE3MDMwOS42OTVmMmQ2LTEgKGNvbW1pdCA2OTVmMmQ2ZDgyMTczZjRlLi4uCj4+Pj4g
-ZnJvbSBsaW51eC1maXJtd2FyZSkKPj4+PiBCb2FyZDogMDI6MDAuMCBOZXR3b3JrIGNvbnRyb2xs
-ZXI6IFF1YWxjb21tIEF0aGVyb3MgUUNBNjE3NCA4MDIuMTFhYwo+Pj4+IFdpcmVsZXNzIE5ldHdv
-cmsgQWRhcHRlciAocmV2IDMyKQo+Pj4+Cj4+Pj4KPj4+PiBQbGVhc2UsIGxldCBtZSBrbm93IGlm
-IEkgc2hvdWxkIHByb3ZpZGUgbW9yZSBpbmZvLgo+Pj4+Cj4+Pj4gVGhhbmtzLgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+--===============5030734843719127235==
+Content-Type: multipart/signed; boundary="nextPart2035315.s67eRDaNyR"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+
+--nextPart2035315.s67eRDaNyR
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Friday, March 17, 2017 7:49:55 PM CET Sebastian Gottschall wrote:
+> you may quickly realize that this patch cannot be a solution
+> example:
+> 
+> -	if (channel >= 1 && channel <= 14) {
+> +	if (channel >= 1 && channel <= 7) {
+>   		status->band = NL80211_BAND_2GHZ;
+> 
+> 
+> do you you really want to limit the 2.4 channels for all users?
+
+Hi Sebastian,
+
+you are right, this seems to be too limiting. I'll rework this part.
+
+Cheers,
+     Simon
+
+--nextPart2035315.s67eRDaNyR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE1ilQI7G+y+fdhnrfoSvjmEKSnqEFAljTjpAACgkQoSvjmEKS
+nqEx2w//Rt8uPSRTwU+sBOh9zLWPG3lzB15SjJCWE9ai3ESd2MRaDl+cGrwY2pfP
+5scWcFCLpafcX4/AurXAKkpJnRx6fymT/3WEH9vp1f5D7etFvXOCf3gk89SJJPSH
+lVmE8m9kbuhl1reG3y/FOAf7BlfQnaOHt/ywnrNMSfmgb51fdeFPaaoibfEfTFad
+f7jSK0y2L9Qf28WW6yAzYOvnvYILikfYhdmTuBg1ZgIDHJur1n2QFgU0BUrUsAgJ
+X93v+/OZYavCRJsOdOb/kbgHga60XR7eXdJwFBmSP1p+jUWGvz9RWnkgSK3CUG4d
+nvl71BwwJTEydkIVLro9JJqtGMqG5sFQ5gzsrCD0JxEDYpHDOJv+7XETsqxz5dlg
+F1sZDDnwbtx1uMxeruHHvnREfDqiJKZ3gl7mOLKfkicxQf4vQ1+9RDXiU2YtxjRu
+vbgzx4J9gOorigCOUNLLJN14VWtCfFzjatDFykV1Tiv0xgI5j/pvmiN1fLByGf+W
+gszCs5msflGabtlc36e0VJMvdjKVOWsnYLan77YuMRXrneD2Hll5kIxFjKEFlWXu
+Rh/2v+y/p0EzWbaS1dj9b76OZD+qhEER5GvXxSIi9Sgt4lwXgFZzsEN/64pKDF30
+4kzuBoU3KG7lTH5BmMgjS1YHpVq2wMqDRBNLb7nXdYfRIWHWjd4=
+=kzqC
+-----END PGP SIGNATURE-----
+
+--nextPart2035315.s67eRDaNyR--
+
+
+
+--===============5030734843719127235==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============5030734843719127235==--
