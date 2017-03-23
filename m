@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cr2pd-0001Su-Us
- for ath10k@lists.infradead.org; Thu, 23 Mar 2017 13:31:16 +0000
-From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: [PATCH v2 3/3] ath9k: add noise floor override option
-Date: Thu, 23 Mar 2017 14:30:48 +0100
-Message-Id: <20170323133048.30062-4-sw@simonwunderlich.de>
-In-Reply-To: <20170323133048.30062-1-sw@simonwunderlich.de>
-References: <20170323133048.30062-1-sw@simonwunderlich.de>
+ id 1cr4aQ-00060R-9y
+ for ath10k@lists.infradead.org; Thu, 23 Mar 2017 15:23:40 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v6 10/10] ath10k: sdio support
+Date: Thu, 23 Mar 2017 15:23:11 +0000
+Message-ID: <87r31oyq3l.fsf@kamboji.qca.qualcomm.com>
+References: <148959263520.31432.8488419244476213373.stgit@potku.adurom.net>
+ <148959281831.31432.17236410281378572164.stgit@potku.adurom.net>
+In-Reply-To: <148959281831.31432.17236410281378572164.stgit@potku.adurom.net>
+ (Kalle Valo's message of "Wed, 15 Mar 2017 17:46:58 +0200")
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,151 +21,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com
-Cc: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, linux-wireless@vger.kernel.org, Simon Wunderlich <sw@simonwunderlich.de>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Introduce a debugfs option to manually override the noise floor,
-ignoring the automatically tuned noise floor of the driver/hw.
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-In my tests with a AR9580 based module and a tx99 5 MHz interferer,
-I could tune the noisefloor to -95 dBm or above to allow communication
-again. The automatic noise floor calibration sometimes could adapt to
-the situation as well, but not reliably and permanently.
+> From: Erik Stromdahl <erik.stromdahl@gmail.com>
+>
+> sdio/mailbox HIF implementation.
+>
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-I would consider this "feature" experimental and interesting for people
-debugging the noise floor calibration or other effects of the hardware.
+[...]
 
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
----
- drivers/net/wireless/ath/ath9k/calib.c |  5 ++-
- drivers/net/wireless/ath/ath9k/debug.c | 62 ++++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath9k/hw.h    |  1 +
- 3 files changed, 67 insertions(+), 1 deletion(-)
+> +static int ath10k_sdio_mbox_proc_cpu_intr(struct ath10k *ar)
+> +{
+> +	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+> +	struct ath10k_sdio_irq_data *irq_data = &ar_sdio->irq_data;
+> +	u8 cpu_int_status, *reg_buf;
+> +	int ret;
+> +
+> +	mutex_lock(&irq_data->mtx);
+> +	cpu_int_status = irq_data->irq_proc_reg->cpu_int_status &
+> +			 irq_data->irq_en_reg->cpu_int_status_en;
+> +	if (!cpu_int_status) {
+> +		ath10k_warn(ar, "CPU interrupt status is zero\n");
+> +		return -EIO;
+> +	}
+> +
+> +	/* Clear the interrupt */
+> +	irq_data->irq_proc_reg->cpu_int_status &= ~cpu_int_status;
+> +
+> +	/* Set up the register transfer buffer to hit the register 4 times ,
+> +	 * this is done to make the access 4-byte aligned to mitigate issues
+> +	 * with host bus interconnects that restrict bus transfer lengths to
+> +	 * be a multiple of 4-bytes.
+> +	 */
+> +	reg_buf = kzalloc(4, GFP_KERNEL);
+> +	if (!reg_buf)
+> +		return -ENOMEM;
 
-diff --git a/drivers/net/wireless/ath/ath9k/calib.c b/drivers/net/wireless/ath/ath9k/calib.c
-index 0f71146b781d..13ab6bc46775 100644
---- a/drivers/net/wireless/ath/ath9k/calib.c
-+++ b/drivers/net/wireless/ath/ath9k/calib.c
-@@ -254,7 +254,9 @@ int ath9k_hw_loadnf(struct ath_hw *ah, struct ath9k_channel *chan)
- 			if ((i >= AR5416_MAX_CHAINS) && !IS_CHAN_HT40(chan))
- 				continue;
- 
--			if (h)
-+			if (ah->nf_override)
-+				nfval = ah->nf_override;
-+			else if (h)
- 				nfval = h[i].privNF;
- 			else
- 				nfval = default_nf;
-@@ -348,6 +350,7 @@ int ath9k_hw_loadnf(struct ath_hw *ah, struct ath9k_channel *chan)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL(ath9k_hw_loadnf);
- 
- 
- static void ath9k_hw_nf_sanitize(struct ath_hw *ah, s16 *nf)
-diff --git a/drivers/net/wireless/ath/ath9k/debug.c b/drivers/net/wireless/ath/ath9k/debug.c
-index 43930c336987..2e64977a8ab6 100644
---- a/drivers/net/wireless/ath/ath9k/debug.c
-+++ b/drivers/net/wireless/ath/ath9k/debug.c
-@@ -1191,6 +1191,65 @@ static const struct file_operations fops_tpc = {
- 	.llseek = default_llseek,
- };
- 
-+static ssize_t read_file_nf_override(struct file *file,
-+				     char __user *user_buf,
-+				     size_t count, loff_t *ppos)
-+{
-+	struct ath_softc *sc = file->private_data;
-+	struct ath_hw *ah = sc->sc_ah;
-+	char buf[32];
-+	unsigned int len;
-+
-+	if (ah->nf_override == 0)
-+		len = sprintf(buf, "off\n");
-+	else
-+		len = sprintf(buf, "%d\n", ah->nf_override);
-+
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-+}
-+
-+static ssize_t write_file_nf_override(struct file *file,
-+				      const char __user *user_buf,
-+				      size_t count, loff_t *ppos)
-+{
-+	struct ath_softc *sc = file->private_data;
-+	struct ath_hw *ah = sc->sc_ah;
-+	long val;
-+	char buf[32];
-+	ssize_t len;
-+
-+	len = min(count, sizeof(buf) - 1);
-+	if (copy_from_user(buf, user_buf, len))
-+		return -EFAULT;
-+
-+	buf[len] = '\0';
-+	if (strncmp("off", buf, 3) == 0)
-+		val = 0;
-+	else if (kstrtol(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val > 0)
-+		return -EINVAL;
-+
-+	if (val < -120)
-+		return -EINVAL;
-+
-+	ah->nf_override = val;
-+
-+	if (ah->curchan)
-+		ath9k_hw_loadnf(ah, ah->curchan);
-+
-+	return count;
-+}
-+
-+static const struct file_operations fops_nf_override = {
-+	.read = read_file_nf_override,
-+	.write = write_file_nf_override,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- /* Ethtool support for get-stats */
- 
- #define AMKSTR(nm) #nm "_BE", #nm "_BK", #nm "_VI", #nm "_VO"
-@@ -1402,5 +1461,8 @@ int ath9k_init_debug(struct ath_hw *ah)
- 	debugfs_create_u16("airtime_flags", S_IRUSR | S_IWUSR,
- 			   sc->debug.debugfs_phy, &sc->airtime_flags);
- 
-+	debugfs_create_file("nf_override", S_IRUSR | S_IWUSR,
-+			    sc->debug.debugfs_phy, sc, &fops_nf_override);
-+
- 	return 0;
- }
-diff --git a/drivers/net/wireless/ath/ath9k/hw.h b/drivers/net/wireless/ath/ath9k/hw.h
-index 2166f644599d..f06e02d1c342 100644
---- a/drivers/net/wireless/ath/ath9k/hw.h
-+++ b/drivers/net/wireless/ath/ath9k/hw.h
-@@ -807,6 +807,7 @@ struct ath_hw {
- 	u32 rfkill_gpio;
- 	u32 rfkill_polarity;
- 	u32 ah_flags;
-+	s16 nf_override;
- 
- 	bool reset_power_on;
- 	bool htc_reset_init;
+kbuild bot reported that I failed to release the mutex in these two
+return cases above, I'll fix that in v7.
+
 -- 
-2.11.0
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
