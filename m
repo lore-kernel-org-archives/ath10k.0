@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cr52E-0004Jr-D3
- for ath10k@lists.infradead.org; Thu, 23 Mar 2017 15:52:23 +0000
+ id 1cr59v-00074F-I5
+ for ath10k@lists.infradead.org; Thu, 23 Mar 2017 16:00:25 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v6 09/10] ath10k: different fw file names for usb and sdio
-Date: Thu, 23 Mar 2017 15:51:58 +0000
-Message-ID: <87mvccyorl.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v6 06/10] ath10k: add sdio extra initializations
+Date: Thu, 23 Mar 2017 15:59:53 +0000
+Message-ID: <87h92kyoef.fsf@kamboji.qca.qualcomm.com>
 References: <148959263520.31432.8488419244476213373.stgit@potku.adurom.net>
- <148959280431.31432.16087997710973721077.stgit@potku.adurom.net>
- <e25f7672-0114-7928-7f4a-cf64638dc900@qca.qualcomm.com>
-In-Reply-To: <e25f7672-0114-7928-7f4a-cf64638dc900@qca.qualcomm.com> (Ryan
- Hsu's message of "Thu, 16 Mar 2017 21:08:20 +0000")
+ <148959276143.31432.4108050733445067980.stgit@potku.adurom.net>
+ <9eb52257-2753-d9d0-2590-dd05c7aedea6@qca.qualcomm.com>
+In-Reply-To: <9eb52257-2753-d9d0-2590-dd05c7aedea6@qca.qualcomm.com> (Ryan
+ Hsu's message of "Thu, 16 Mar 2017 01:18:58 +0000")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -27,7 +27,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ryan Hsu <ryanhsu@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Ryan Hsu <ryanhsu@qca.qualcomm.com> writes:
 
@@ -35,12 +35,51 @@ Ryan Hsu <ryanhsu@qca.qualcomm.com> writes:
 >
 >> From: Erik Stromdahl <erik.stromdahl@gmail.com>
 >>
->> Since both SDIO and USB based chipsets will use different
+>> Extra initializations needed by all sdio boards.
+>> Derived from qcacld.
+>>
+>> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+>> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/core.c |   22 ++++++++++++++++++++--
+>>  1 file changed, 20 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+>> index f450ebbb28d5..6b6ea8a571fa 100644
+>> --- a/drivers/net/wireless/ath/ath10k/core.c
+>> +++ b/drivers/net/wireless/ath/ath10k/core.c
+>> @@ -377,7 +377,22 @@ static void ath10k_send_suspend_complete(struct ath10k *ar)
+>>  	complete(&ar->target_suspend);
+>>  }
+>>  
+>> -static int ath10k_init_configure_target(struct ath10k *ar)
+>> +static void ath10k_sdio_extra_initialization(struct ath10k *ar)
+>> +{
+>> +	u32 param = 0;
+>> +
+>> +	ath10k_bmi_write32(ar, hi_mbox_io_block_sz, 256);
+>> +	ath10k_bmi_write32(ar, hi_mbox_isr_yield_limit, 99);
+>> +	ath10k_bmi_read32(ar, hi_acs_flags, &param);
+>> +
+>> +	param |= (HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET |
+>> +		  HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET |
+>> +		  HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE);
+>> +
+>> +	ath10k_bmi_write32(ar, hi_acs_flags, param);
+>> +}
+>> +
+>> +static int ath10k_init_sdio(struct ath10k *ar)
 >
-> nitpick, since the patch is separating the USB and SDIO support now,
-> maybe you want to remove the "USB" from the patch title?
+> Shouldn't we just keep the ath10k_init_configure_target() and move the
+> sdio specific to ath10k_sdio_extra_initialization()?
+> instead of renaming this to ath10k_init_sdio()? not sure if this is
+> just a local hack that didn't revert?
 
-Will fix in v7.
+Ouch, I was supposed to rename ath10k_sdio_extra_initialization() to
+ath10k_init_sdio() but accidentally renamed the wrong function. Will fix
+in v7.
+
+Thanks for catching this!
 
 -- 
 Kalle Valo
