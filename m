@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
- helo=mail.mail.packetmixer.de)
+Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cqybf-0001b3-0W
- for ath10k@lists.infradead.org; Thu, 23 Mar 2017 09:00:33 +0000
+ id 1cr2pd-0001Sp-Ut
+ for ath10k@lists.infradead.org; Thu, 23 Mar 2017 13:31:16 +0000
 From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Re: [PATCH 2/3] ath10k: add support for channels in licensed bands
-Date: Thu, 23 Mar 2017 10:00:00 +0100
-Message-ID: <1665455.SGOqsfShXJ@prime>
-In-Reply-To: <327a5fe1-a4f2-6252-9dee-e4b6e79aa5ac@dd-wrt.com>
-References: <20170316151337.24163-1-sw@simonwunderlich.de>
- <20170316151337.24163-3-sw@simonwunderlich.de>
- <327a5fe1-a4f2-6252-9dee-e4b6e79aa5ac@dd-wrt.com>
-MIME-Version: 1.0
+Subject: [PATCH v2 0/3] Channels in licensed bands, noise floor override
+Date: Thu, 23 Mar 2017 14:30:45 +0100
+Message-Id: <20170323133048.30062-1-sw@simonwunderlich.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,72 +15,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5030734843719127235=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+To: ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com
+Cc: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, linux-wireless@vger.kernel.org, Simon Wunderlich <sw@simonwunderlich.de>
 
---===============5030734843719127235==
-Content-Type: multipart/signed; boundary="nextPart2035315.s67eRDaNyR"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+This is the revised series for adding channels in licensed bands and the
+noise floor override. Thanks for the previous discussions, I've adopted
+suggestions from Zefir and Sebastian accordingly and rebased the series.
 
---nextPart2035315.s67eRDaNyR
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+For more background info, please check the v1 series:
 
-On Friday, March 17, 2017 7:49:55 PM CET Sebastian Gottschall wrote:
-> you may quickly realize that this patch cannot be a solution
-> example:
-> 
-> -	if (channel >= 1 && channel <= 14) {
-> +	if (channel >= 1 && channel <= 7) {
->   		status->band = NL80211_BAND_2GHZ;
-> 
-> 
-> do you you really want to limit the 2.4 channels for all users?
-
-Hi Sebastian,
-
-you are right, this seems to be too limiting. I'll rework this part.
+https://www.spinics.net/lists/linux-wireless/msg160266.html
 
 Cheers,
      Simon
+ 
+Ben Greear (1):
+  ath9k: Support channels in licensed bands
 
---nextPart2035315.s67eRDaNyR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Simon Wunderlich (2):
+  ath10k: add support for channels in licensed bands
+  ath9k: add noise floor override option
 
------BEGIN PGP SIGNATURE-----
+ drivers/net/wireless/ath/ath10k/Kconfig      | 20 +++++++++
+ drivers/net/wireless/ath/ath10k/core.h       |  4 ++
+ drivers/net/wireless/ath/ath10k/mac.c        | 10 +++++
+ drivers/net/wireless/ath/ath10k/wmi.c        | 53 +++++++++++++++++-------
+ drivers/net/wireless/ath/ath9k/Kconfig       | 20 +++++++++
+ drivers/net/wireless/ath/ath9k/calib.c       |  5 ++-
+ drivers/net/wireless/ath/ath9k/common-init.c | 15 +++++++
+ drivers/net/wireless/ath/ath9k/debug.c       | 62 ++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath9k/hw.h          |  5 +++
+ 9 files changed, 177 insertions(+), 17 deletions(-)
 
-iQIzBAABCgAdFiEE1ilQI7G+y+fdhnrfoSvjmEKSnqEFAljTjpAACgkQoSvjmEKS
-nqEx2w//Rt8uPSRTwU+sBOh9zLWPG3lzB15SjJCWE9ai3ESd2MRaDl+cGrwY2pfP
-5scWcFCLpafcX4/AurXAKkpJnRx6fymT/3WEH9vp1f5D7etFvXOCf3gk89SJJPSH
-lVmE8m9kbuhl1reG3y/FOAf7BlfQnaOHt/ywnrNMSfmgb51fdeFPaaoibfEfTFad
-f7jSK0y2L9Qf28WW6yAzYOvnvYILikfYhdmTuBg1ZgIDHJur1n2QFgU0BUrUsAgJ
-X93v+/OZYavCRJsOdOb/kbgHga60XR7eXdJwFBmSP1p+jUWGvz9RWnkgSK3CUG4d
-nvl71BwwJTEydkIVLro9JJqtGMqG5sFQ5gzsrCD0JxEDYpHDOJv+7XETsqxz5dlg
-F1sZDDnwbtx1uMxeruHHvnREfDqiJKZ3gl7mOLKfkicxQf4vQ1+9RDXiU2YtxjRu
-vbgzx4J9gOorigCOUNLLJN14VWtCfFzjatDFykV1Tiv0xgI5j/pvmiN1fLByGf+W
-gszCs5msflGabtlc36e0VJMvdjKVOWsnYLan77YuMRXrneD2Hll5kIxFjKEFlWXu
-Rh/2v+y/p0EzWbaS1dj9b76OZD+qhEER5GvXxSIi9Sgt4lwXgFZzsEN/64pKDF30
-4kzuBoU3KG7lTH5BmMgjS1YHpVq2wMqDRBNLb7nXdYfRIWHWjd4=
-=kzqC
------END PGP SIGNATURE-----
+-- 
+2.11.0
 
---nextPart2035315.s67eRDaNyR--
-
-
-
---===============5030734843719127235==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============5030734843719127235==--
