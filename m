@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1crQj8-0004WR-6e
- for ath10k@lists.infradead.org; Fri, 24 Mar 2017 15:02:15 +0000
-Received: by mail-wr0-x242.google.com with SMTP id u108so798072wrb.2
- for <ath10k@lists.infradead.org>; Fri, 24 Mar 2017 08:01:45 -0700 (PDT)
-From: Christian Lamparter <chunkeey@googlemail.com>
-Subject: Re: QCA9984 bmi identification failure
-Date: Fri, 24 Mar 2017 16:01:42 +0100
-Message-ID: <3143301.IOZImBPhRt@debian64>
-In-Reply-To: <4960795b-028f-27b1-8bdf-6c9fb2242f5f@dd-wrt.com>
-References: <3243718.FYinmXYgr7@debian64>
- <4960795b-028f-27b1-8bdf-6c9fb2242f5f@dd-wrt.com>
+ id 1crU6R-0006Pn-BV
+ for ath10k@lists.infradead.org; Fri, 24 Mar 2017 18:38:26 +0000
+From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+Subject: Re: QCA6174 ACS failure on first attempt
+Date: Fri, 24 Mar 2017 18:37:54 +0000
+Message-ID: <05ddc8a7-2abe-200b-bc70-15f674579d80@qca.qualcomm.com>
+References: <CALJ2kaGBUyjtDDNQj-rLDK-J--ObZ+e5P_KVkaZfa4UtYUUMdQ@mail.gmail.com>
+In-Reply-To: <CALJ2kaGBUyjtDDNQj-rLDK-J--ObZ+e5P_KVkaZfa4UtYUUMdQ@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <323C380BF30A134D84FC72344E9B70D2@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,69 +20,264 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "linux-wireless (linux-wireless@vger.kernel.org)" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, ath10k-devel <ath10k-devel@qca.qualcomm.com>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, hannu.nyman@iki.fi, Michal Kazior <michal.kazior@tieto.com>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gRnJpZGF5LCBNYXJjaCAyNCwgMjAxNyAxMTowOTowMyBBTSBDRVQgU2ViYXN0aWFuIEdvdHRz
-Y2hhbGwgd3JvdGU6Cj4gaSBoYXZlIGEgcjc4MDAgcnVubmluZy4gY29uc2lkZXIgdG8gdXNlIHRo
-ZSBib2FyZC5iaW4gZmlsZSB3aGljaCBpcyAKPiBzdG9yZWQgaW4gZmxhc2ggbWVtb3J5IG9mIHRo
-ZSByNzgwMC4KV2VsbCwgdGhpcyBpcyBhIGJpdCBiZXNpZGUgdGhlIHBvaW50LiBCdXQgd2hhdCBt
-YWtlcyB5b3UgdGhpbmsgdGhhdCAKd2hhdCBpcyBzdG9yZWQgaW4gdGhlIGZsYXNoIG1lbW9yeSBv
-ZiBSNzgwMCBpcyB0aGUgImJvYXJkLmJpbiI/IApJIGtub3cgdGhhdCBOZXRnZWFyIHByb3ZpZGVk
-IGEgbXlyaWFkIG9mIGRpZmZlcmVudCBib2FyZCBkYXRhIGZpbGVzCndpdGggaW4gdGhlcmUgR1BM
-IGRyb3A6CgpIZXJlJ3MgYSBsaW5rOgo8aHR0cHM6Ly9naXRodWIuY29tL3BhdWwtY2hhbWJlcnMv
-bmV0Z2Vhci1yNzgwMC90cmVlL21hc3Rlci9naXRfaG9tZS9tYWR3aWZpLTExbi5naXQvaGFscGh5
-X3Rvb2xzL2hvc3QvZWVwcm9tVXRpbC9yZWxlYXNlX3FjYTk5ODQvaHcxPgoKU28sIGRvZXMgdGhl
-IGRhdGEgaW4geW91ciBmbGFzaCBtYXRjaGVzIGFueSBvZiB0aG9zZSBmaWxlcyAxOjEgb3Igbm90
-PwoKKE5vdGU6IEZyb20gd2hhdCBJIGtub3csIGl0J3MgdGhlIGNhbGRhdGEgdGhhdCdzIGluIHRo
-ZSBmbGFzaC4gCmNhbGRhdGEg4omIIGNhbCtib2FyZC4gQnV0IEknbSBhc2tpbmcgd2h5IGF0aDEw
-aydzIGJtaSBpZGVudGlmaWNhdGlvbgppc24ndCB3b3JraW5nIGZvciB0aG9zZSBjaGlwcyByaWdo
-dCBub3cuIEFuZCBqdWRnaW5nIGZyb20geW91ciBsb2dzLAp5b3UgYXJlIHVzaW5nIHByb2JhYmx5
-IGEgc2ltaWxhciBXQSB0byB0aGUgCjkzNi1hdGgxMGtfc2tpcF9vdHBfY2hlY2sucGF0Y2ggb3V0
-IG9mIG5lY2Vzc2l0eSBhcyB3ZWxsLikKCj4gdGhlcmUgYXJlIDIgc3RvcmVkIGZvciBib3RoIGNh
-cmRzLiB5b3UgbmVlZCB0byBwYXRjaCBhdGgxMGsgdG8gdXNlIAo+IGRpZmZlcmVudCBib2FyZC5i
-aW4gZmlsZXMgZm9yIGVhY2ggY2FyZC4KRXhhY3RseS4gV2h5IGRvIHlvdSAob3IgYW55b25lIGZv
-ciB0aGF0IG1hdHRlcikgbmVlZCB0byBwYXRjaCBhdGgxMGs/ClRoZSBkcml2ZXIgaXMgc3VwcG9z
-ZWQgdG8gc3VwcG9ydCB0aGUgUUNBOTk4NCBvdXQgb2YgdGhlIGJveCwgcmlnaHQ/CgpBbmQgSSBr
-bm93LCB0aGF0IHRoZSBibWkgaWRlbnRpZmljYXRpb24gaXMgc3VwcG9zZWQgdG8gd29yaywgYXMK
-c29tZWJvZHkgcG9zdGVkIHRoZSBmb2xsb3dpbmcgbG9nOgo8aHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvcGlwZXJtYWlsL2xlZGUtZGV2LzIwMTYtRGVjZW1iZXIvMDA0OTg3Lmh0bWw+CgpbICAz
-NzkuMzkyMjEwXSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDogYm9vdCB1cGxvYWQgb3RwIHRvIDB4
-MTIzNCBsZW4gOTAwMCBmb3IgYm9hcmQgaWQKWyAgMzc5LjM5OTk0NV0gYXRoMTBrX3BjaSAwMDAy
-OjAxOjAwLjA6IGJtaSBmYXN0IGRvd25sb2FkIGFkZHJlc3MgMHgxMjM0IGJ1ZmZlciAweGUxNjc2
-MDM4IGxlbmd0aCA5MDAwClsgIDM3OS40MDg5NzddIGF0aDEwa19wY2kgMDAwMjowMTowMC4wOiBi
-bWkgbHogc3RyZWFtIHN0YXJ0IGFkZHJlc3MgMHgxMjM0ClsgIDM3OS40MTU2MDNdIGF0aDEwa19w
-Y2kgMDAwMjowMTowMC4wOiBibWkgbHogZGF0YSBidWZmZXIgMHhlMTY3NjAzOCBsZW5ndGggOTAw
-MApbICAzNzkuNDUxNjI2XSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDogYm1pIGx6IHN0cmVhbSBz
-dGFydCBhZGRyZXNzIDB4MApbICAzNzkuNDU3OTg1XSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDog
-Ym1pIGV4ZWN1dGUgYWRkcmVzcyAweDEyMzQgcGFyYW0gMHgxMApbICAzODAuODU3MDA2XSBhdGgx
-MGtfcGNpIDAwMDI6MDE6MDAuMDogYm1pIGV4ZWN1dGUgcmVzdWx0IDB4NDAwClsgIDM4MC44NjI3
-NDldIGF0aDEwa19wY2kgMDAwMjowMTowMC4wOiBib290IGdldCBvdHAgYm9hcmQgaWQgcmVzdWx0
-IDB4MDAwMDA0MDAgYm9hcmRfaWQgMSBjaGlwX2lkIDAKWyAgMzgwLjg3MTYwM10gYXRoMTBrX3Bj
-aSAwMDAyOjAxOjAwLjA6IGJvb3QgdXNpbmcgYm9hcmQgbmFtZSAnYnVzPXBjaSxibWktY2hpcC1p
-ZD0wLGJtaS1ib2FyZC1pZD0xJwpbICAzODAuODgwNDY4XSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAu
-MDogYm9hcmQgbmFtZQpbICAzODAuODg0OTk5XSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDogMDAw
-MDAwMDA6IDYyIDc1IDczIDNkIDcwIDYzIDY5IDJjIDYyIDZkIDY5IDJkIDYzIDY4IDY5IDcwICBi
-dXM9cGNpLGJtaS1jaGlwClsgIDM4MC44OTUxNTldIGF0aDEwa19wY2kgMDAwMjowMTowMC4wOiAw
-MDAwMDAxMDogMmQgNjkgNjQgM2QgMzAgMmMgNjIgNmQgNjkgMmQgNjIgNmYgNjEgNzIgNjQgMmQg
-IC1pZD0wLGJtaS1ib2FyZC0KWyAgMzgwLjkwNTMxN10gYXRoMTBrX3BjaSAwMDAyOjAxOjAwLjA6
-IDAwMDAwMDIwOiA2OSA2NCAzZCAzMSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgaWQ9MQpbICAzODAuOTE0NDM2XSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDogYm9vdCBmb3Vu
-ZCBtYXRjaCBmb3IgbmFtZSAnYnVzPXBjaSxibWktY2hpcC1pZD0wLGJtaS1ib2FyZC1pZD0xJwpb
-ICAzODAuOTIzNjQwXSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDogYm9vdCBmb3VuZCBib2FyZCBk
-YXRhIGZvciAnYnVzPXBjaSxibWktY2hpcC1pZD0wLGJtaS1ib2FyZC1pZD0xJwpbICAzODAuOTMy
-ODQ1XSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDogdXNpbmcgYm9hcmQgYXBpIDIKLi4uCgpUaGUg
-Ym9hcmQgbmFtZSBmb3IgdGhlIFFDQTk5ODQgaXMgc3VwcG9zZWQgdG8gbG9vayBsaWtlCiInYnVz
-PXBjaSxibWktY2hpcC1pZD0wLGJtaS1ib2FyZC1pZD0xJyIKCmFuZCBub3QgbGlrZSAoZnJvbSB5
-b3VyIGxvZyk6Cj4gYnVzPXBjaSx2ZW5kb3I9MTY4YyxkZXZpY2U9MDA0NixzdWJzeXN0ZW0tdmVu
-ZG9yPTE2OGMsc3Vic3lzdGVtLWRldmljZT1jYWZlIAo+IGZyb20gYXRoMTBrL1FDQTk5ODQvaHcx
-LjAvYm9hcmQtMi5iaW4KCj4gdGhlIGZhaWxlZCB0byBmZXRjaCBib2FyZCBkYXRhIGVycm9yIGlz
-IG5vcm1hbC4gCkkgZG9uJ3QgdGhpbmsgaXQgaXMuIEkgdGhpbmsgaXQncyBhIHJlZ3Jlc3Npb24u
-CgpUaGFua3MsCkNocmlzdGlhbgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On 03/24/2017 05:13 AM, Chris Price wrote:
+
+> My hostapd version and config file are as follows.
+> # hostapd -v
+> hostapd v2.4
+> User space daemon for IEEE 802.11 AP management,
+> IEEE 802.1X/WPA/WPA2/EAP/RADIUS Authenticator
+> Copyright (c) 2002-2015, Jouni Malinen <j@w1.fi> and contributors
+
+You might want to get the latest v2.6|| - git clone git://w1.fi/srv/git/hostap.git
+
+> nl80211: Event message available
+> nl80211: Drv Event 36 (NL80211_CMD_REG_CHANGE) received for wlp2s0
+> nl80211: Regulatory domain change
+>  * initiator=1
+>  * type=0
+>  * alpha2=CA
+> wlp2s0: Event CHANNEL_LIST_CHANGED (28) received
+> Channel list updated - continue setup
+> nl80211: Regulatory information - country=CA (DFS-FCC)
+> nl80211: 2402-2472 @ 40 MHz 30 mBm
+> nl80211: 5170-5250 @ 80 MHz 17 mBm
+> nl80211: 5250-5330 @ 80 MHz 24 mBm (DFS)
+> nl80211: 5490-5600 @ 80 MHz 24 mBm (DFS)
+> nl80211: 5650-5730 @ 80 MHz 24 mBm (DFS)
+> nl80211: 5735-5835 @ 80 MHz 30 mBm
+> nl80211: Added 802.11b mode based on 802.11g information
+> Allowed channel: mode=1 chan=1 freq=2412 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=2 freq=2417 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=3 freq=2422 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=4 freq=2427 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=5 freq=2432 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=6 freq=2437 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=7 freq=2442 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=8 freq=2447 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=9 freq=2452 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=10 freq=2457 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=11 freq=2462 MHz max_tx_power=30 dBm
+> Allowed channel: mode=0 chan=1 freq=2412 MHz max_tx_power=30 dBm
+> Allowed channel: mode=0 chan=2 freq=2417 MHz max_tx_power=30 dBm
+> Allowed channel: mode=0 chan=3 freq=2422 MHz max_tx_power=30 dBm
+> Allowed channel: mode=0 chan=4 freq=2427 MHz max_tx_power=30 dBm
+> Allowed channel: mode=0 chan=5 freq=2432 MHz max_tx_power=30 dBm
+> Allowed channel: mode=0 chan=6 freq=2437 MHz max_tx_power=30 dBm
+> Allowed channel: mode=0 chan=7 freq=2442 MHz max_tx_power=30 dBm
+> Allowed channel: mode=0 chan=8 freq=2447 MHz max_tx_power=30 dBm
+> Allowed channel: mode=0 chan=9 freq=2452 MHz max_tx_power=30 dBm
+> Allowed channel: mode=0 chan=10 freq=2457 MHz max_tx_power=30 dBm
+> Allowed channel: mode=0 chan=11 freq=2462 MHz max_tx_power=30 dBm
+
+I guess the initial run of changing the regulatory and the available channel list cause the issue.
+Since the 5G channel list is not in the allowed channel list here...
+
+> ACS: Automatic channel selection started, this may take a bit
+> ACS: Scanning 1 / 5
+> wlp2s0: nl80211: scan request
+> Scan requested (ret=0) - scan timeout 10 seconds
+> wlp2s0: interface state COUNTRY_UPDATE->ACS
+> wlp2s0: ACS-STARTED
+[snipped]
+
+> nl80211: Drv Event 34 (NL80211_CMD_NEW_SCAN_RESULTS) received for wlp2s0
+> wlp2s0: nl80211: New scan results available
+> nl80211: Scan included frequencies: 2412 2417 2422 2427 2432 2437 2442
+> 2447 2452 2457 2462 5180 5200 5220 5240 5260 5280 5300 5320 5500 5520
+> 5540 5560 5580 5660 5680 5700 5720 5745 5765 5785 5805 5825
+> wlp2s0: Event SCAN_RESULTS (3) received
+
+Then you can see you do have the scan results, but I guess your configuring the hw_mode=a?
+so that the ACS is trying to pick up the channel from 5G only.
+
+> ACS: Using survey based algorithm (acs_num_scans=5)
+> nl80211: Fetch survey data
+> nl80211: Freq survey dump event (freq=2412 MHz noise=-99
+> channel_time=149 busy_time=38 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=2417 MHz noise=-100
+> channel_time=149 busy_time=29 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=2422 MHz noise=-101
+> channel_time=149 busy_time=29 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=2427 MHz noise=-102
+> channel_time=149 busy_time=48 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=2432 MHz noise=-103
+> channel_time=149 busy_time=47 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=2437 MHz noise=-105
+> channel_time=149 busy_time=28 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=2442 MHz noise=-105
+> channel_time=149 busy_time=31 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=2447 MHz noise=-105
+> channel_time=149 busy_time=65 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=2452 MHz noise=-106
+> channel_time=149 busy_time=4 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=2457 MHz noise=-106
+> channel_time=149 busy_time=25 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=2462 MHz noise=-106
+> channel_time=149 busy_time=79 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5180 MHz noise=-99
+> channel_time=149 busy_time=1 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5200 MHz noise=-43
+> channel_time=149 busy_time=94 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5220 MHz noise=-99
+> channel_time=149 busy_time=2 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5240 MHz noise=-99
+> channel_time=149 busy_time=3 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5260 MHz noise=-99
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5280 MHz noise=-99
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5300 MHz noise=-98
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5320 MHz noise=-97
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5500 MHz noise=-43
+> channel_time=149 busy_time=84 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5520 MHz noise=-96
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5540 MHz noise=-96
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5560 MHz noise=-97
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5580 MHz noise=-97
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5660 MHz noise=-97
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5680 MHz noise=-97
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5700 MHz noise=-97
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5720 MHz noise=-97
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5745 MHz noise=-97
+> channel_time=149 busy_time=24 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5765 MHz noise=-43
+> channel_time=149 busy_time=107 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5785 MHz noise=-95
+> channel_time=149 busy_time=13 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5805 MHz noise=-97
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> nl80211: Freq survey dump event (freq=5825 MHz noise=-96
+> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
+> wlp2s0: Event SURVEY (46) received
+> ACS: Trying survey-based ACS
+
+Then while the hostapd_event_get_survey() to parse the scan result.
+due to the channel is not allowed... so that all those channels are not captured.
+
+1029         dl_list_for_each_safe(survey, tmp, &survey_results->survey_list,        
+1030                               struct freq_survey, list) {                       
+1031                 chan = hostapd_get_mode_channel(iface, survey->freq);           
+1032                 if (!chan)                                                      
+1033                         continue;                                               
+1034                 if (chan->flag & HOSTAPD_CHAN_DISABLED)                         
+1035                         continue;                                               
+1036       
+1037                 dl_list_del(&survey->list);                                     
+1038                 dl_list_add_tail(&chan->survey_list, &survey->list);            
+1039                                                                                 
+1040                 hostapd_update_nf(iface, chan, survey);                         
+1041                                                                                 
+1042                 iface->chans_surveyed++;                                        
+1043         }    
+
+> ACS: Unable to collect survey data
+> ACS: All study options have failed
+
+Then this causes the first attempt failed due to the empty iface->chans_surveyed.
+
+> The next (and subsequent) attempts are always successful, as far as I can tell.
+> # hostapd -dd /etc/hostapd/hostapd1.conf
+> random: Trying to read entropy from /dev/random
+> Configuration file: /etc/hostapd/hostapd1.conf
+> rfkill: initial event: idx=0 type=2 op=0 soft=0 hard=0
+> rfkill: initial event: idx=5 type=1 op=0 soft=0 hard=0
+> nl80211: TDLS supported
+> nl80211: TDLS external setup
+> nl80211: Supported cipher 00-0f-ac:1
+> nl80211: Supported cipher 00-0f-ac:5
+> nl80211: Supported cipher 00-0f-ac:2
+> nl80211: Supported cipher 00-0f-ac:4
+> nl80211: Supported cipher 00-0f-ac:6
+> nl80211: Supports Probe Response offload in AP mode
+> nl80211: Using driver-based off-channel TX
+> nl80211: Use separate P2P group interface (driver advertised support)
+> nl80211: Enable multi-channel concurrent (driver advertised support)
+> nl80211: use P2P_DEVICE support
+> nl80211: interface wlp2s0 in phy phy0
+> nl80211: Set mode ifindex 8 iftype 3 (AP)
+> nl80211: Setup AP(wlp2s0) - device_ap_sme=0 use_monitor=0
+> nl80211: Subscribe to mgmt frames with AP handle 0x558bef681100
+> nl80211: Register frame type=0xb0 (WLAN_FC_STYPE_AUTH)
+> nl_handle=0x558bef681100 match=
+> nl80211: Register frame type=0x0 (WLAN_FC_STYPE_ASSOC_REQ)
+> nl_handle=0x558bef681100 match=
+> nl80211: Register frame type=0x20 (WLAN_FC_STYPE_REASSOC_REQ)
+> nl_handle=0x558bef681100 match=
+> nl80211: Register frame type=0xa0 (WLAN_FC_STYPE_DISASSOC)
+> nl_handle=0x558bef681100 match=
+> nl80211: Register frame type=0xc0 (WLAN_FC_STYPE_DEAUTH)
+> nl_handle=0x558bef681100 match=
+> nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION)
+> nl_handle=0x558bef681100 match=
+> nl80211: Register frame type=0x40 (WLAN_FC_STYPE_PROBE_REQ)
+> nl_handle=0x558bef681100 match=
+> nl80211: Add own interface ifindex 8
+> nl80211: if_indices[16]: 8
+> phy: phy0
+> BSS count 1, BSSID mask 00:00:00:00:00:00 (0 bits)
+> wlp2s0: interface state UNINITIALIZED->COUNTRY_UPDATE
+> Previous country code CA, new country code CA
+> nl80211: Regulatory information - country=CA (DFS-FCC)
+> nl80211: 2402-2472 @ 40 MHz 30 mBm
+> nl80211: 5170-5250 @ 80 MHz 17 mBm
+> nl80211: 5250-5330 @ 80 MHz 24 mBm (DFS)
+> nl80211: 5490-5600 @ 80 MHz 24 mBm (DFS)
+> nl80211: 5650-5730 @ 80 MHz 24 mBm (DFS)
+> nl80211: 5735-5835 @ 80 MHz 30 mBm
+> nl80211: Added 802.11b mode based on 802.11g information
+> Allowed channel: mode=1 chan=1 freq=2412 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=2 freq=2417 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=3 freq=2422 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=4 freq=2427 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=5 freq=2432 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=6 freq=2437 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=7 freq=2442 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=8 freq=2447 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=9 freq=2452 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=10 freq=2457 MHz max_tx_power=30 dBm
+> Allowed channel: mode=1 chan=11 freq=2462 MHz max_tx_power=30 dBm
+> Allowed channel: mode=2 chan=36 freq=5180 MHz max_tx_power=17 dBm
+> Allowed channel: mode=2 chan=40 freq=5200 MHz max_tx_power=17 dBm
+> Allowed channel: mode=2 chan=44 freq=5220 MHz max_tx_power=17 dBm
+> Allowed channel: mode=2 chan=48 freq=5240 MHz max_tx_power=17 dBm
+> Allowed channel: mode=2 chan=149 freq=5745 MHz max_tx_power=30 dBm
+> Allowed channel: mode=2 chan=157 freq=5785 MHz max_tx_power=30 dBm
+
+In this 2nd attempt here, you can see the 5G channel list.
+
+[snipped]
+
+> wlp2s0: Event SURVEY (46) received
+> ACS: Trying survey-based ACS
+> ACS: Survey analysis for channel 36 (5180 MHz)
+
+The scan result is not empy this time and with those channel, so that ch36 is picked.
+
+I am actually not sure if this is some bug that has been fixed in the latest v2.6. Or maybe is still valid.
+Would you mind help to dump the iw reg get again at the first attempt before you starting the hostapd?
+
+And also tried with the latest v2.6 hostapd to see if you could see the same issue?
+
+Ryan
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
