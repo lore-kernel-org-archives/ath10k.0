@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1crg4y-0000Bo-KS
- for ath10k@lists.infradead.org; Sat, 25 Mar 2017 07:25:43 +0000
-References: <3243718.FYinmXYgr7@debian64>
- <4960795b-028f-27b1-8bdf-6c9fb2242f5f@dd-wrt.com>
- <3143301.IOZImBPhRt@debian64>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <20d2aa5c-c0a6-f14b-9694-4e4384299d25@dd-wrt.com>
-Date: Sat, 25 Mar 2017 08:24:59 +0100
+ id 1crjfA-0006PC-TB
+ for ath10k@lists.infradead.org; Sat, 25 Mar 2017 11:15:19 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id n11so9082775wma.0
+ for <ath10k@lists.infradead.org>; Sat, 25 Mar 2017 04:14:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3143301.IOZImBPhRt@debian64>
-Subject: Re: QCA9984 bmi identification failure
+In-Reply-To: <05a38580-2a91-62f1-8e6f-e59c8604c047@gmail.com>
+References: <05a38580-2a91-62f1-8e6f-e59c8604c047@gmail.com>
+From: "K.Mani" <sailormani@gmail.com>
+Date: Sat, 25 Mar 2017 16:44:52 +0530
+Message-ID: <CACBNxUEL_W9ErsdxG2vHb4=u6UOvaS32=zJO8GR8+ze6W+uMzA@mail.gmail.com>
+Subject: Re: How to integrate the latest ath10k driver into an older kernel
+ release ?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,132 +21,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christian Lamparter <chunkeey@googlemail.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "linux-wireless (linux-wireless@vger.kernel.org)" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, ath10k-devel <ath10k-devel@qca.qualcomm.com>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, hannu.nyman@iki.fi, Michal Kazior <michal.kazior@tieto.com>
+To: Wu Chung-I <uranus0206@gmail.com>
+Cc: ath10k@lists.infradead.org
 
-QW0gMjQuMDMuMjAxNyB1bSAxNjowMSBzY2hyaWViIENocmlzdGlhbiBMYW1wYXJ0ZXI6Cj4gT24g
-RnJpZGF5LCBNYXJjaCAyNCwgMjAxNyAxMTowOTowMyBBTSBDRVQgU2ViYXN0aWFuIEdvdHRzY2hh
-bGwgd3JvdGU6Cj4+IGkgaGF2ZSBhIHI3ODAwIHJ1bm5pbmcuIGNvbnNpZGVyIHRvIHVzZSB0aGUg
-Ym9hcmQuYmluIGZpbGUgd2hpY2ggaXMKPj4gc3RvcmVkIGluIGZsYXNoIG1lbW9yeSBvZiB0aGUg
-cjc4MDAuCj4gV2VsbCwgdGhpcyBpcyBhIGJpdCBiZXNpZGUgdGhlIHBvaW50LiBCdXQgd2hhdCBt
-YWtlcyB5b3UgdGhpbmsgdGhhdAo+IHdoYXQgaXMgc3RvcmVkIGluIHRoZSBmbGFzaCBtZW1vcnkg
-b2YgUjc4MDAgaXMgdGhlICJib2FyZC5iaW4iPwppIGRvbnQga25vdyBob3cgdG8gYW5zd2VyIHRo
-aXMgcXVlc3Rpb24gd2l0aG91dCBnZXR0aW5nIHJ1ZGUuIGknbSAKZGV2ZWxvcGluZyBkZC13cnQg
-d2hpY2ggaXMgYSBhbHRlcm5hdGUgZmlybXdhcmUgbGlrZSBsZWRlL29wZW53cnQgZm9yIAptYW55
-IGh1bmRyZXRzIG9mIGRpZmZlcmVudCByb3V0ZXJzLnRoaXMgaXMgbXkgam9iIHNpbmNlIG1vcmUg
-dGhhbiAxMCB5ZWFycy4Kc28gbXkgcHJpbWFyeSBqb2IgaXMgcmV2ZXJzZSBlbmdpbmVlcmluZyBh
-bGwgdGhlIHZlbmRvciBzdHVmZiB0aGV5IHdvbnQgCnRlbGwgeW91IGluIGEgZWFzeSB3YXkgYnV0
-IG9uIHRoZSBvdGhlciBoYW5kcyB2ZW5kb3JzIGRvIGFsc28gc2hhcmUgc3VjaCAKaW5mb3JtYXRp
-b25zIHdpdGggbWUgaWYgaSBraW5kbHkgYXNrIHRoZW0KdGhlIGJvYXJkLmJpbiBoYXMgYSBzcGVj
-aWZpYyBmaWxlIGZvcm1hdCB0aGlzIGNhbiBiZSBlYXNpbHkgZGV0ZWN0ZWQuIAp0aGUgZmxhc2gg
-bWVtb3J5IGNvbnRhaW5zIDIgYm9hcmQuYmluIGZpbGVzLCBmb3IgZWFjaCBvZiB0aGUgYm90aCBj
-YXJkcy4Kc2luY2UgdGhlIG10ZCBwYXJ0aXRpb24gd2hlcmUgdGhpcyBhbGwgaXMgc3RvcmVkIGlz
-IG5hbWVkIGFydCB0aGVyZSBpcyAKYWxzbyBhbm90aGVyIGluZGljYXRvci4geW91IG1heSBub3Qg
-a25vdyBpdCwgYnV0IHRoZSBuYW1lIG9mIHRoZSAKcWNhL2F0aGVyb3MgY2FsaWJyYXRpb24gc29m
-dHdhcmUgaXMgImFydCIuCgo+IEkga25vdyB0aGF0IE5ldGdlYXIgcHJvdmlkZWQgYSBteXJpYWQg
-b2YgZGlmZmVyZW50IGJvYXJkIGRhdGEgZmlsZXMKPiB3aXRoIGluIHRoZXJlIEdQTCBkcm9wOgp5
-b3UgY2FuIGlnbm9yZSB0aGVtLiB1c2UgdGhlIGZpbGVzIHN0b3JlZCBpbiBmbGFzaCBtZW1vcnku
-IHRoaXMgYm9hcmQgCmRhdGEgaXMgdGhlIGNhbGlicmF0aW9uIGRhdGEgd2hpY2ggaXMgZGlmZmVy
-ZW50IGZvciBlYWNoIGRldmljZSB5b3UgYnV5LiAKaXRzIHByZWNhbGlicmF0ZWQgYW5kIHN0b3Jl
-ZCBpbiBmbGFzaCBtZW1vcnkuCmEgbm9ybWFsIHdpZmkgY2FyZCBoYXMgYSBvd24gZWVwcm9tIG9u
-IGl0IHdoaWNoIHN0b3JlcyB0aGlzIGRhdGEuIGJ1dCBvbiAKZW1iZWRkZWQgZGV2aWNlcyB0aGUg
-cm91dGVycyBvd24gZmxhc2ggbWVtb3J5IGlzIHVzZWQgZm9yIHN0b3JpbmcgdGhpcyBkYXRhLgp0
-aGlzIGNhc2UgaXMgbWFpbmx5IGlnbm9yZWQgYnkgZHJpdmVycyBsaWtlIGF0aDEwaywgc28gcGF0
-Y2hlcyBhcmUgCnJlcXVpcmVkIHJpZ2h0IG5vdyB1bnRpbCBhdGgxMGsgZG9lcyBvZmZpY2lhbGx5
-IHN1cHBvcnQgdGhlc2UgY29uZGl0aW9ucwo+IEhlcmUncyBhIGxpbms6Cj4gPGh0dHBzOi8vZ2l0
-aHViLmNvbS9wYXVsLWNoYW1iZXJzL25ldGdlYXItcjc4MDAvdHJlZS9tYXN0ZXIvZ2l0X2hvbWUv
-bWFkd2lmaS0xMW4uZ2l0L2hhbHBoeV90b29scy9ob3N0L2VlcHJvbVV0aWwvcmVsZWFzZV9xY2E5
-OTg0L2h3MT4KaSBrbm93IHRoZSBncGwgdHJlZQo+IFNvLCBkb2VzIHRoZSBkYXRhIGluIHlvdXIg
-Zmxhc2ggbWF0Y2hlcyBhbnkgb2YgdGhvc2UgZmlsZXMgMToxIG9yIG5vdD8Kbm9wZS4gdGhlc2Ug
-ZmlsZXMgYXJlIGp1c3QgZGVmYXVsdCBmaWxlcyBzaGlwcGVkIHdpdGggdGhlIGRyaXZlciBieSBx
-Y2EKPiAoTm90ZTogRnJvbSB3aGF0IEkga25vdywgaXQncyB0aGUgY2FsZGF0YSB0aGF0J3MgaW4g
-dGhlIGZsYXNoLgo+IGNhbGRhdGEg4omIIGNhbCtib2FyZC4gQnV0IEknbSBhc2tpbmcgd2h5IGF0
-aDEwaydzIGJtaSBpZGVudGlmaWNhdGlvbgo+IGlzbid0IHdvcmtpbmcgZm9yIHRob3NlIGNoaXBz
-IHJpZ2h0IG5vdy4gQW5kIGp1ZGdpbmcgZnJvbSB5b3VyIGxvZ3MsCj4geW91IGFyZSB1c2luZyBw
-cm9iYWJseSBhIHNpbWlsYXIgV0EgdG8gdGhlCj4gOTM2LWF0aDEwa19za2lwX290cF9jaGVjay5w
-YXRjaCBvdXQgb2YgbmVjZXNzaXR5IGFzIHdlbGwuKQp0aGUgYm9hcmQuYmluIGlzIHRoZSBjYWxk
-YXRhIGFuZCBjb25maWd1cmF0aW9uIHNldCBmb3IgdGhlIGNhcmQuCnRoZSBza2lwIG90cCBjaGVj
-ayBwYXRjaCBpcyByZXF1aXJlZCBpbiBhbnkgd2F5IHNpbmNlIHRoZSBjYXJkcyBoYXMgbm8gCm9u
-IGJvYXJkIGVlcHJvbQppZiBibWkgaWRlbnRpZmljYXRpb24gZmFpbHMsIHRoZSBhcGkgMSBib2Fy
-ZC0yLmJpbiBmaWxlIGlzIGxvYWRlZCBhcyAKYWx0ZXJuYXRlIHZhcmlhbnQgYW5kIHRoaXMgaXMg
-ZXhhY3RseSB0aGUgZGF0YSB3aGljaCBpcyBzdG9yZWQgaW4gZmxhc2ggCm1lbW9yeS4KPj4gdGhl
-cmUgYXJlIDIgc3RvcmVkIGZvciBib3RoIGNhcmRzLiB5b3UgbmVlZCB0byBwYXRjaCBhdGgxMGsg
-dG8gdXNlCj4+IGRpZmZlcmVudCBib2FyZC5iaW4gZmlsZXMgZm9yIGVhY2ggY2FyZC4KPiBFeGFj
-dGx5LiBXaHkgZG8geW91IChvciBhbnlvbmUgZm9yIHRoYXQgbWF0dGVyKSBuZWVkIHRvIHBhdGNo
-IGF0aDEwaz8KPiBUaGUgZHJpdmVyIGlzIHN1cHBvc2VkIHRvIHN1cHBvcnQgdGhlIFFDQTk5ODQg
-b3V0IG9mIHRoZSBib3gsIHJpZ2h0PwppdCBpcyBzdXBwb3NlZCwgYnV0IHRoYXRzIG5vdCB0aGUg
-Y2FzZS4gYXRoMTBrIG1haW5seSBzdXBwb3J0cyBjYXJkcyAKd2l0aCBvd24gb24gYm9hcmQgZWVw
-cm9tLgplbWJlZGRlZCByb3V0ZXJzIGNhbiBiZSB2ZXJ5IHNwZWNpZmljIGFuZCBub25zdGFuZGFy
-ZCwgc28gY3VzdG9taXphdGlvbnMgCmFyZSByZXF1aXJlZCBzb21ldGltZXMuCnlvdSBtYXkgbm90
-IGxpa2UgaXQsIGJ1dCBpIGtub3cgdGhpcyBkZXZpY2UgdmVyeSB3ZWxsIGFuZCBhbHNvIG90aGVy
-cy4gCmNvbnNpZGVyIGhvdyB0aGUgc2tpcCBvdHAgcGF0Y2ggd2FzIGNyZWF0ZWQuCml0cyBhIHdv
-cmthcm91bmQgd2hpY2ggaXMgb25seSByZXF1aXJlZCBmb3Igcm91dGVycy4KPiBBbmQgSSBrbm93
-LCB0aGF0IHRoZSBibWkgaWRlbnRpZmljYXRpb24gaXMgc3VwcG9zZWQgdG8gd29yaywgYXMKPiBz
-b21lYm9keSBwb3N0ZWQgdGhlIGZvbGxvd2luZyBsb2c6Cj4gPGh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL3BpcGVybWFpbC9sZWRlLWRldi8yMDE2LURlY2VtYmVyLzAwNDk4Ny5odG1sPgo+Cj4g
-WyAgMzc5LjM5MjIxMF0gYXRoMTBrX3BjaSAwMDAyOjAxOjAwLjA6IGJvb3QgdXBsb2FkIG90cCB0
-byAweDEyMzQgbGVuIDkwMDAgZm9yIGJvYXJkIGlkCj4gWyAgMzc5LjM5OTk0NV0gYXRoMTBrX3Bj
-aSAwMDAyOjAxOjAwLjA6IGJtaSBmYXN0IGRvd25sb2FkIGFkZHJlc3MgMHgxMjM0IGJ1ZmZlciAw
-eGUxNjc2MDM4IGxlbmd0aCA5MDAwCj4gWyAgMzc5LjQwODk3N10gYXRoMTBrX3BjaSAwMDAyOjAx
-OjAwLjA6IGJtaSBseiBzdHJlYW0gc3RhcnQgYWRkcmVzcyAweDEyMzQKPiBbICAzNzkuNDE1NjAz
-XSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDogYm1pIGx6IGRhdGEgYnVmZmVyIDB4ZTE2NzYwMzgg
-bGVuZ3RoIDkwMDAKPiBbICAzNzkuNDUxNjI2XSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDogYm1p
-IGx6IHN0cmVhbSBzdGFydCBhZGRyZXNzIDB4MAo+IFsgIDM3OS40NTc5ODVdIGF0aDEwa19wY2kg
-MDAwMjowMTowMC4wOiBibWkgZXhlY3V0ZSBhZGRyZXNzIDB4MTIzNCBwYXJhbSAweDEwCj4gWyAg
-MzgwLjg1NzAwNl0gYXRoMTBrX3BjaSAwMDAyOjAxOjAwLjA6IGJtaSBleGVjdXRlIHJlc3VsdCAw
-eDQwMAo+IFsgIDM4MC44NjI3NDldIGF0aDEwa19wY2kgMDAwMjowMTowMC4wOiBib290IGdldCBv
-dHAgYm9hcmQgaWQgcmVzdWx0IDB4MDAwMDA0MDAgYm9hcmRfaWQgMSBjaGlwX2lkIDAKPiBbICAz
-ODAuODcxNjAzXSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDogYm9vdCB1c2luZyBib2FyZCBuYW1l
-ICdidXM9cGNpLGJtaS1jaGlwLWlkPTAsYm1pLWJvYXJkLWlkPTEnCj4gWyAgMzgwLjg4MDQ2OF0g
-YXRoMTBrX3BjaSAwMDAyOjAxOjAwLjA6IGJvYXJkIG5hbWUKPiBbICAzODAuODg0OTk5XSBhdGgx
-MGtfcGNpIDAwMDI6MDE6MDAuMDogMDAwMDAwMDA6IDYyIDc1IDczIDNkIDcwIDYzIDY5IDJjIDYy
-IDZkIDY5IDJkIDYzIDY4IDY5IDcwICBidXM9cGNpLGJtaS1jaGlwCj4gWyAgMzgwLjg5NTE1OV0g
-YXRoMTBrX3BjaSAwMDAyOjAxOjAwLjA6IDAwMDAwMDEwOiAyZCA2OSA2NCAzZCAzMCAyYyA2MiA2
-ZCA2OSAyZCA2MiA2ZiA2MSA3MiA2NCAyZCAgLWlkPTAsYm1pLWJvYXJkLQo+IFsgIDM4MC45MDUz
-MTddIGF0aDEwa19wY2kgMDAwMjowMTowMC4wOiAwMDAwMDAyMDogNjkgNjQgM2QgMzEgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlkPTEKPiBbICAzODAuOTE0NDM2XSBhdGgx
-MGtfcGNpIDAwMDI6MDE6MDAuMDogYm9vdCBmb3VuZCBtYXRjaCBmb3IgbmFtZSAnYnVzPXBjaSxi
-bWktY2hpcC1pZD0wLGJtaS1ib2FyZC1pZD0xJwo+IFsgIDM4MC45MjM2NDBdIGF0aDEwa19wY2kg
-MDAwMjowMTowMC4wOiBib290IGZvdW5kIGJvYXJkIGRhdGEgZm9yICdidXM9cGNpLGJtaS1jaGlw
-LWlkPTAsYm1pLWJvYXJkLWlkPTEnCj4gWyAgMzgwLjkzMjg0NV0gYXRoMTBrX3BjaSAwMDAyOjAx
-OjAwLjA6IHVzaW5nIGJvYXJkIGFwaSAyCj4gLi4uCj4KPiBUaGUgYm9hcmQgbmFtZSBmb3IgdGhl
-IFFDQTk5ODQgaXMgc3VwcG9zZWQgdG8gbG9vayBsaWtlCj4gIididXM9cGNpLGJtaS1jaGlwLWlk
-PTAsYm1pLWJvYXJkLWlkPTEnIgo+Cj4gYW5kIG5vdCBsaWtlIChmcm9tIHlvdXIgbG9nKToKc3Vy
-ZS4geW91IGNhbiBsb2FkIHdyb25nIGJvYXJkIGRhdGEgaW50byB5b3VyIGNhcmQgdGhpcyBtYXkg
-cmVzdWx0IGluIAp0aGUgZm9sbG93aW5nIHNpdHVhdGlvbiBhIDUgZ2h6IGNhcmQgaXMgc2hvd24g
-YXMgMi40IGdoeiBjYXJkIGFuZCB2aWNlIAp2ZXJzYSBvciBldmVuIGR1YWxiYW5kIGFsc28gaWYg
-dGhlIGNhcmQgaXMgbm90IHN1cHBvcnRpbmcgdGhpcy4gdGhpcyBtYXkgCm5vdCBiZSB0aGUgY2Fz
-ZSBvbiB0aGUgcjc4MDAgYnV0IGkga25vdyBhbm90aGVyIGRldmljZSB3aGVyZSB0aGlzIGlzIHRo
-ZSAKYmV2YXZpb3VyLiBwb3dlciBjYWxpYnJhdGlvbiBzZXQgaXMgd3JvbmcgaW4gYW55IHdheSBz
-byBvdXRwdXQgcG93ZXIgbWF5IApiZSBsb3dlciBhcyBleHBlY3RlZC4KYW5kIHRoZSByZXN1bHRp
-bmcgb3BlcmF0aW9uIHN0YXRlIHdpbGwgbm90IHdvcmsgaW4gYmVzdCB3YXkuIGxlZGUgZG9lcyAK
-bm90IHN1cHBvcnQgdGhpcyBkZXZpY2UgaW4gY29ycmVjdCB3YXkuCndyb25nIGJvYXJkIGRhdGEg
-Y2FuIGFsc28gZGVzdHJveSB0aGUgaGFyZHdhcmUuIHRoaXMgbWF5IG5vdCBoYXBwZW4gCmZhc3Qs
-IGJ1dCB1c2luZyB3cm9uZyBwb3dlciBjYWxpYnJhdGlvbiBkYXRhIG1heSBkZXN0cm95IHRoZSBw
-aHkgb3ZlciAKdGltZSBieSBvdmVyaGVhdGluZwoKdGFrZSBhIGxvb2sgb24geW91ciByb3V0ZXIu
-IGVzcGVjaWFsbHkgb24gbXRkMwptdGQzOiAwMDE0MDAwMCAwMDAyMDAwMCAiYXJ0IgoKZHVtcCB0
-aGlzIHBhcnRpdGlvbiBhbmQgdGFrZSBhIGxvb2sgaW5zaWRlIGFuZCB0YWtlIGEgZ3Vlc3Mgd2hh
-dCB5b3UgCndpbGwgZmluZC4gb2Zmc2V0IDB4MTAwMCBpcyBmaXJzdCBib2FyZCBkYXRhLiBvZmZz
-ZXQgMHg1MDAwIGlzIHNlY29uZCAKYm9hcmQgZGF0YQp0aGlzIGlzIGNvbW1vbiBmb3IgYWxtb3N0
-IGFsbCB3aXJlbGVzcyByb3V0ZXJzIG9uIHRoZSBtYXJrZXQuIGkgZG9udCAKa25vdyBhIHNpbmds
-ZSByb3V0ZXIgd2l0aCBhIHFjYSBvciBhdGhlcm9zIGNoaXBzZXQgb24gdGhlIG1hcmtldCB3aGlj
-aCAKZG9lcyBub3QgaGF2ZSBzdG9yZWQgdGhlIGJvYXJkIGRhdGEgaW4gZmxhc2ggbWVtb3J5CgoK
-Pj4gYnVzPXBjaSx2ZW5kb3I9MTY4YyxkZXZpY2U9MDA0NixzdWJzeXN0ZW0tdmVuZG9yPTE2OGMs
-c3Vic3lzdGVtLWRldmljZT1jYWZlCj4+IGZyb20gYXRoMTBrL1FDQTk5ODQvaHcxLjAvYm9hcmQt
-Mi5iaW4KPj4gdGhlIGZhaWxlZCB0byBmZXRjaCBib2FyZCBkYXRhIGVycm9yIGlzIG5vcm1hbC4K
-PiBJIGRvbid0IHRoaW5rIGl0IGlzLiBJIHRoaW5rIGl0J3MgYSByZWdyZXNzaW9uLgphaG0gbm8u
-IHlvdSBkb250IGtub3cgd2hhdCB5b3UncmUgZGVhbGluZyB3aXRoLgo+Cj4gVGhhbmtzLAo+IENo
-cmlzdGlhbgo+CgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCgpTZWJh
-c3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQKRmlybWVu
-c2l0ejogIEJlcmxpbmVyIFJpbmcgMTAxLCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6
-IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRl
-ciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQpl
-bWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6
-ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+i'd used 'compat-wireless-2016-10-08' from lede-dev, to run
+qca9984(PCIe) on linux-3.10.20
+https://sources.lede-project.org/
+
+i remember facing issue in 'skb_get_hash_perturb' as the symbol is not
+defined & build was failing, but mac80211 in lede-dev patches the
+symbol definition.
+You can make verbose build to find the exact cause of build fail.
+
+I'd also applied few minor patch on my own to support my board.
+
+Thanks
+Mani
+
+On Fri, Mar 24, 2017 at 4:55 PM, Wu Chung-I <uranus0206@gmail.com> wrote:
+> Hi Janusz:
+> I follow your procedure (include patched your attachment).
+> I can generate but failing compile.
+> Any advise?
+> My environment is Ubuntu 16.04 (same with you), git the backports and
+> checkout to master.
+>
+> Log of make:
+> make[5]: 'conf' is up to date.
+> #
+> # configuration written to .config
+> #
+> Building backport-include/backport/autoconf.h ... done.
+>   CC [M]  /home/chungyi/backports-output/compat/main.o
+>   CC [M]  /home/chungyi/backports-output/compat/backport-4.5.o
+>   CC [M]  /home/chungyi/backports-output/compat/backport-4.6.o
+>   CC [M]  /home/chungyi/backports-output/compat/backport-4.7.o
+>   CC [M]  /home/chungyi/backports-output/compat/backport-4.8.o
+>   CC [M]  /home/chungyi/backports-output/compat/lib-rhashtable.o
+> scripts/Makefile.build:258: recipe for target
+> '/home/chungyi/backports-output/compat/lib-rhashtable.o' failed
+> scripts/Makefile.build:403: recipe for target
+> '/home/chungyi/backports-output/compat' failed
+> Makefile:1418: recipe for target '_module_/home/chungyi/backports-output'
+> failed
+> Makefile.build:6: recipe for target 'modules' failed
+> Makefile.real:88: recipe for target 'modules' failed
+> Makefile:40: recipe for target 'modules' failed
+> Makefile:30: recipe for target 'default' failed
+>   CC [M]  /home/chungyi/backports-output/compat/lib-rhashtable.o
+> scripts/Makefile.build:258: recipe for target
+> '/home/chungyi/backports-output/compat/lib-rhashtable.o' failed
+> scripts/Makefile.build:403: recipe for target
+> '/home/chungyi/backports-output/compat' failed
+> Makefile:1418: recipe for target '_module_/home/chungyi/backports-output'
+> failed
+> Makefile.build:6: recipe for target 'modules' failed
+> Makefile.real:88: recipe for target 'modules' failed
+> Makefile:40: recipe for target 'modules' failed
+> Makefile:30: recipe for target 'default' failed
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
