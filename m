@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1crU6R-0006Pn-BV
- for ath10k@lists.infradead.org; Fri, 24 Mar 2017 18:38:26 +0000
-From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
-Subject: Re: QCA6174 ACS failure on first attempt
-Date: Fri, 24 Mar 2017 18:37:54 +0000
-Message-ID: <05ddc8a7-2abe-200b-bc70-15f674579d80@qca.qualcomm.com>
-References: <CALJ2kaGBUyjtDDNQj-rLDK-J--ObZ+e5P_KVkaZfa4UtYUUMdQ@mail.gmail.com>
-In-Reply-To: <CALJ2kaGBUyjtDDNQj-rLDK-J--ObZ+e5P_KVkaZfa4UtYUUMdQ@mail.gmail.com>
-Content-Language: en-US
-Content-ID: <323C380BF30A134D84FC72344E9B70D2@qualcomm.com>
+ id 1crg4y-0000Bo-KS
+ for ath10k@lists.infradead.org; Sat, 25 Mar 2017 07:25:43 +0000
+References: <3243718.FYinmXYgr7@debian64>
+ <4960795b-028f-27b1-8bdf-6c9fb2242f5f@dd-wrt.com>
+ <3143301.IOZImBPhRt@debian64>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <20d2aa5c-c0a6-f14b-9694-4e4384299d25@dd-wrt.com>
+Date: Sat, 25 Mar 2017 08:24:59 +0100
 MIME-Version: 1.0
+In-Reply-To: <3143301.IOZImBPhRt@debian64>
+Subject: Re: QCA9984 bmi identification failure
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,264 +21,132 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Christian Lamparter <chunkeey@googlemail.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, "linux-wireless (linux-wireless@vger.kernel.org)" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, ath10k-devel <ath10k-devel@qca.qualcomm.com>, "Valo,
+ Kalle" <kvalo@qca.qualcomm.com>, hannu.nyman@iki.fi, Michal Kazior <michal.kazior@tieto.com>
 
-On 03/24/2017 05:13 AM, Chris Price wrote:
-
-> My hostapd version and config file are as follows.
-> # hostapd -v
-> hostapd v2.4
-> User space daemon for IEEE 802.11 AP management,
-> IEEE 802.1X/WPA/WPA2/EAP/RADIUS Authenticator
-> Copyright (c) 2002-2015, Jouni Malinen <j@w1.fi> and contributors
-
-You might want to get the latest v2.6|| - git clone git://w1.fi/srv/git/hostap.git
-
-> nl80211: Event message available
-> nl80211: Drv Event 36 (NL80211_CMD_REG_CHANGE) received for wlp2s0
-> nl80211: Regulatory domain change
->  * initiator=1
->  * type=0
->  * alpha2=CA
-> wlp2s0: Event CHANNEL_LIST_CHANGED (28) received
-> Channel list updated - continue setup
-> nl80211: Regulatory information - country=CA (DFS-FCC)
-> nl80211: 2402-2472 @ 40 MHz 30 mBm
-> nl80211: 5170-5250 @ 80 MHz 17 mBm
-> nl80211: 5250-5330 @ 80 MHz 24 mBm (DFS)
-> nl80211: 5490-5600 @ 80 MHz 24 mBm (DFS)
-> nl80211: 5650-5730 @ 80 MHz 24 mBm (DFS)
-> nl80211: 5735-5835 @ 80 MHz 30 mBm
-> nl80211: Added 802.11b mode based on 802.11g information
-> Allowed channel: mode=1 chan=1 freq=2412 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=2 freq=2417 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=3 freq=2422 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=4 freq=2427 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=5 freq=2432 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=6 freq=2437 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=7 freq=2442 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=8 freq=2447 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=9 freq=2452 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=10 freq=2457 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=11 freq=2462 MHz max_tx_power=30 dBm
-> Allowed channel: mode=0 chan=1 freq=2412 MHz max_tx_power=30 dBm
-> Allowed channel: mode=0 chan=2 freq=2417 MHz max_tx_power=30 dBm
-> Allowed channel: mode=0 chan=3 freq=2422 MHz max_tx_power=30 dBm
-> Allowed channel: mode=0 chan=4 freq=2427 MHz max_tx_power=30 dBm
-> Allowed channel: mode=0 chan=5 freq=2432 MHz max_tx_power=30 dBm
-> Allowed channel: mode=0 chan=6 freq=2437 MHz max_tx_power=30 dBm
-> Allowed channel: mode=0 chan=7 freq=2442 MHz max_tx_power=30 dBm
-> Allowed channel: mode=0 chan=8 freq=2447 MHz max_tx_power=30 dBm
-> Allowed channel: mode=0 chan=9 freq=2452 MHz max_tx_power=30 dBm
-> Allowed channel: mode=0 chan=10 freq=2457 MHz max_tx_power=30 dBm
-> Allowed channel: mode=0 chan=11 freq=2462 MHz max_tx_power=30 dBm
-
-I guess the initial run of changing the regulatory and the available channel list cause the issue.
-Since the 5G channel list is not in the allowed channel list here...
-
-> ACS: Automatic channel selection started, this may take a bit
-> ACS: Scanning 1 / 5
-> wlp2s0: nl80211: scan request
-> Scan requested (ret=0) - scan timeout 10 seconds
-> wlp2s0: interface state COUNTRY_UPDATE->ACS
-> wlp2s0: ACS-STARTED
-[snipped]
-
-> nl80211: Drv Event 34 (NL80211_CMD_NEW_SCAN_RESULTS) received for wlp2s0
-> wlp2s0: nl80211: New scan results available
-> nl80211: Scan included frequencies: 2412 2417 2422 2427 2432 2437 2442
-> 2447 2452 2457 2462 5180 5200 5220 5240 5260 5280 5300 5320 5500 5520
-> 5540 5560 5580 5660 5680 5700 5720 5745 5765 5785 5805 5825
-> wlp2s0: Event SCAN_RESULTS (3) received
-
-Then you can see you do have the scan results, but I guess your configuring the hw_mode=a?
-so that the ACS is trying to pick up the channel from 5G only.
-
-> ACS: Using survey based algorithm (acs_num_scans=5)
-> nl80211: Fetch survey data
-> nl80211: Freq survey dump event (freq=2412 MHz noise=-99
-> channel_time=149 busy_time=38 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=2417 MHz noise=-100
-> channel_time=149 busy_time=29 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=2422 MHz noise=-101
-> channel_time=149 busy_time=29 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=2427 MHz noise=-102
-> channel_time=149 busy_time=48 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=2432 MHz noise=-103
-> channel_time=149 busy_time=47 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=2437 MHz noise=-105
-> channel_time=149 busy_time=28 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=2442 MHz noise=-105
-> channel_time=149 busy_time=31 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=2447 MHz noise=-105
-> channel_time=149 busy_time=65 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=2452 MHz noise=-106
-> channel_time=149 busy_time=4 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=2457 MHz noise=-106
-> channel_time=149 busy_time=25 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=2462 MHz noise=-106
-> channel_time=149 busy_time=79 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5180 MHz noise=-99
-> channel_time=149 busy_time=1 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5200 MHz noise=-43
-> channel_time=149 busy_time=94 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5220 MHz noise=-99
-> channel_time=149 busy_time=2 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5240 MHz noise=-99
-> channel_time=149 busy_time=3 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5260 MHz noise=-99
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5280 MHz noise=-99
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5300 MHz noise=-98
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5320 MHz noise=-97
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5500 MHz noise=-43
-> channel_time=149 busy_time=84 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5520 MHz noise=-96
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5540 MHz noise=-96
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5560 MHz noise=-97
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5580 MHz noise=-97
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5660 MHz noise=-97
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5680 MHz noise=-97
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5700 MHz noise=-97
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5720 MHz noise=-97
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5745 MHz noise=-97
-> channel_time=149 busy_time=24 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5765 MHz noise=-43
-> channel_time=149 busy_time=107 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5785 MHz noise=-95
-> channel_time=149 busy_time=13 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5805 MHz noise=-97
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> nl80211: Freq survey dump event (freq=5825 MHz noise=-96
-> channel_time=149 busy_time=0 tx_time=0 rx_time=0 filled=0007)
-> wlp2s0: Event SURVEY (46) received
-> ACS: Trying survey-based ACS
-
-Then while the hostapd_event_get_survey() to parse the scan result.
-due to the channel is not allowed... so that all those channels are not captured.
-
-1029         dl_list_for_each_safe(survey, tmp, &survey_results->survey_list,        
-1030                               struct freq_survey, list) {                       
-1031                 chan = hostapd_get_mode_channel(iface, survey->freq);           
-1032                 if (!chan)                                                      
-1033                         continue;                                               
-1034                 if (chan->flag & HOSTAPD_CHAN_DISABLED)                         
-1035                         continue;                                               
-1036       
-1037                 dl_list_del(&survey->list);                                     
-1038                 dl_list_add_tail(&chan->survey_list, &survey->list);            
-1039                                                                                 
-1040                 hostapd_update_nf(iface, chan, survey);                         
-1041                                                                                 
-1042                 iface->chans_surveyed++;                                        
-1043         }    
-
-> ACS: Unable to collect survey data
-> ACS: All study options have failed
-
-Then this causes the first attempt failed due to the empty iface->chans_surveyed.
-
-> The next (and subsequent) attempts are always successful, as far as I can tell.
-> # hostapd -dd /etc/hostapd/hostapd1.conf
-> random: Trying to read entropy from /dev/random
-> Configuration file: /etc/hostapd/hostapd1.conf
-> rfkill: initial event: idx=0 type=2 op=0 soft=0 hard=0
-> rfkill: initial event: idx=5 type=1 op=0 soft=0 hard=0
-> nl80211: TDLS supported
-> nl80211: TDLS external setup
-> nl80211: Supported cipher 00-0f-ac:1
-> nl80211: Supported cipher 00-0f-ac:5
-> nl80211: Supported cipher 00-0f-ac:2
-> nl80211: Supported cipher 00-0f-ac:4
-> nl80211: Supported cipher 00-0f-ac:6
-> nl80211: Supports Probe Response offload in AP mode
-> nl80211: Using driver-based off-channel TX
-> nl80211: Use separate P2P group interface (driver advertised support)
-> nl80211: Enable multi-channel concurrent (driver advertised support)
-> nl80211: use P2P_DEVICE support
-> nl80211: interface wlp2s0 in phy phy0
-> nl80211: Set mode ifindex 8 iftype 3 (AP)
-> nl80211: Setup AP(wlp2s0) - device_ap_sme=0 use_monitor=0
-> nl80211: Subscribe to mgmt frames with AP handle 0x558bef681100
-> nl80211: Register frame type=0xb0 (WLAN_FC_STYPE_AUTH)
-> nl_handle=0x558bef681100 match=
-> nl80211: Register frame type=0x0 (WLAN_FC_STYPE_ASSOC_REQ)
-> nl_handle=0x558bef681100 match=
-> nl80211: Register frame type=0x20 (WLAN_FC_STYPE_REASSOC_REQ)
-> nl_handle=0x558bef681100 match=
-> nl80211: Register frame type=0xa0 (WLAN_FC_STYPE_DISASSOC)
-> nl_handle=0x558bef681100 match=
-> nl80211: Register frame type=0xc0 (WLAN_FC_STYPE_DEAUTH)
-> nl_handle=0x558bef681100 match=
-> nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION)
-> nl_handle=0x558bef681100 match=
-> nl80211: Register frame type=0x40 (WLAN_FC_STYPE_PROBE_REQ)
-> nl_handle=0x558bef681100 match=
-> nl80211: Add own interface ifindex 8
-> nl80211: if_indices[16]: 8
-> phy: phy0
-> BSS count 1, BSSID mask 00:00:00:00:00:00 (0 bits)
-> wlp2s0: interface state UNINITIALIZED->COUNTRY_UPDATE
-> Previous country code CA, new country code CA
-> nl80211: Regulatory information - country=CA (DFS-FCC)
-> nl80211: 2402-2472 @ 40 MHz 30 mBm
-> nl80211: 5170-5250 @ 80 MHz 17 mBm
-> nl80211: 5250-5330 @ 80 MHz 24 mBm (DFS)
-> nl80211: 5490-5600 @ 80 MHz 24 mBm (DFS)
-> nl80211: 5650-5730 @ 80 MHz 24 mBm (DFS)
-> nl80211: 5735-5835 @ 80 MHz 30 mBm
-> nl80211: Added 802.11b mode based on 802.11g information
-> Allowed channel: mode=1 chan=1 freq=2412 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=2 freq=2417 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=3 freq=2422 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=4 freq=2427 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=5 freq=2432 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=6 freq=2437 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=7 freq=2442 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=8 freq=2447 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=9 freq=2452 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=10 freq=2457 MHz max_tx_power=30 dBm
-> Allowed channel: mode=1 chan=11 freq=2462 MHz max_tx_power=30 dBm
-> Allowed channel: mode=2 chan=36 freq=5180 MHz max_tx_power=17 dBm
-> Allowed channel: mode=2 chan=40 freq=5200 MHz max_tx_power=17 dBm
-> Allowed channel: mode=2 chan=44 freq=5220 MHz max_tx_power=17 dBm
-> Allowed channel: mode=2 chan=48 freq=5240 MHz max_tx_power=17 dBm
-> Allowed channel: mode=2 chan=149 freq=5745 MHz max_tx_power=30 dBm
-> Allowed channel: mode=2 chan=157 freq=5785 MHz max_tx_power=30 dBm
-
-In this 2nd attempt here, you can see the 5G channel list.
-
-[snipped]
-
-> wlp2s0: Event SURVEY (46) received
-> ACS: Trying survey-based ACS
-> ACS: Survey analysis for channel 36 (5180 MHz)
-
-The scan result is not empy this time and with those channel, so that ch36 is picked.
-
-I am actually not sure if this is some bug that has been fixed in the latest v2.6. Or maybe is still valid.
-Would you mind help to dump the iw reg get again at the first attempt before you starting the hostapd?
-
-And also tried with the latest v2.6 hostapd to see if you could see the same issue?
-
-Ryan
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMjQuMDMuMjAxNyB1bSAxNjowMSBzY2hyaWViIENocmlzdGlhbiBMYW1wYXJ0ZXI6Cj4gT24g
+RnJpZGF5LCBNYXJjaCAyNCwgMjAxNyAxMTowOTowMyBBTSBDRVQgU2ViYXN0aWFuIEdvdHRzY2hh
+bGwgd3JvdGU6Cj4+IGkgaGF2ZSBhIHI3ODAwIHJ1bm5pbmcuIGNvbnNpZGVyIHRvIHVzZSB0aGUg
+Ym9hcmQuYmluIGZpbGUgd2hpY2ggaXMKPj4gc3RvcmVkIGluIGZsYXNoIG1lbW9yeSBvZiB0aGUg
+cjc4MDAuCj4gV2VsbCwgdGhpcyBpcyBhIGJpdCBiZXNpZGUgdGhlIHBvaW50LiBCdXQgd2hhdCBt
+YWtlcyB5b3UgdGhpbmsgdGhhdAo+IHdoYXQgaXMgc3RvcmVkIGluIHRoZSBmbGFzaCBtZW1vcnkg
+b2YgUjc4MDAgaXMgdGhlICJib2FyZC5iaW4iPwppIGRvbnQga25vdyBob3cgdG8gYW5zd2VyIHRo
+aXMgcXVlc3Rpb24gd2l0aG91dCBnZXR0aW5nIHJ1ZGUuIGknbSAKZGV2ZWxvcGluZyBkZC13cnQg
+d2hpY2ggaXMgYSBhbHRlcm5hdGUgZmlybXdhcmUgbGlrZSBsZWRlL29wZW53cnQgZm9yIAptYW55
+IGh1bmRyZXRzIG9mIGRpZmZlcmVudCByb3V0ZXJzLnRoaXMgaXMgbXkgam9iIHNpbmNlIG1vcmUg
+dGhhbiAxMCB5ZWFycy4Kc28gbXkgcHJpbWFyeSBqb2IgaXMgcmV2ZXJzZSBlbmdpbmVlcmluZyBh
+bGwgdGhlIHZlbmRvciBzdHVmZiB0aGV5IHdvbnQgCnRlbGwgeW91IGluIGEgZWFzeSB3YXkgYnV0
+IG9uIHRoZSBvdGhlciBoYW5kcyB2ZW5kb3JzIGRvIGFsc28gc2hhcmUgc3VjaCAKaW5mb3JtYXRp
+b25zIHdpdGggbWUgaWYgaSBraW5kbHkgYXNrIHRoZW0KdGhlIGJvYXJkLmJpbiBoYXMgYSBzcGVj
+aWZpYyBmaWxlIGZvcm1hdCB0aGlzIGNhbiBiZSBlYXNpbHkgZGV0ZWN0ZWQuIAp0aGUgZmxhc2gg
+bWVtb3J5IGNvbnRhaW5zIDIgYm9hcmQuYmluIGZpbGVzLCBmb3IgZWFjaCBvZiB0aGUgYm90aCBj
+YXJkcy4Kc2luY2UgdGhlIG10ZCBwYXJ0aXRpb24gd2hlcmUgdGhpcyBhbGwgaXMgc3RvcmVkIGlz
+IG5hbWVkIGFydCB0aGVyZSBpcyAKYWxzbyBhbm90aGVyIGluZGljYXRvci4geW91IG1heSBub3Qg
+a25vdyBpdCwgYnV0IHRoZSBuYW1lIG9mIHRoZSAKcWNhL2F0aGVyb3MgY2FsaWJyYXRpb24gc29m
+dHdhcmUgaXMgImFydCIuCgo+IEkga25vdyB0aGF0IE5ldGdlYXIgcHJvdmlkZWQgYSBteXJpYWQg
+b2YgZGlmZmVyZW50IGJvYXJkIGRhdGEgZmlsZXMKPiB3aXRoIGluIHRoZXJlIEdQTCBkcm9wOgp5
+b3UgY2FuIGlnbm9yZSB0aGVtLiB1c2UgdGhlIGZpbGVzIHN0b3JlZCBpbiBmbGFzaCBtZW1vcnku
+IHRoaXMgYm9hcmQgCmRhdGEgaXMgdGhlIGNhbGlicmF0aW9uIGRhdGEgd2hpY2ggaXMgZGlmZmVy
+ZW50IGZvciBlYWNoIGRldmljZSB5b3UgYnV5LiAKaXRzIHByZWNhbGlicmF0ZWQgYW5kIHN0b3Jl
+ZCBpbiBmbGFzaCBtZW1vcnkuCmEgbm9ybWFsIHdpZmkgY2FyZCBoYXMgYSBvd24gZWVwcm9tIG9u
+IGl0IHdoaWNoIHN0b3JlcyB0aGlzIGRhdGEuIGJ1dCBvbiAKZW1iZWRkZWQgZGV2aWNlcyB0aGUg
+cm91dGVycyBvd24gZmxhc2ggbWVtb3J5IGlzIHVzZWQgZm9yIHN0b3JpbmcgdGhpcyBkYXRhLgp0
+aGlzIGNhc2UgaXMgbWFpbmx5IGlnbm9yZWQgYnkgZHJpdmVycyBsaWtlIGF0aDEwaywgc28gcGF0
+Y2hlcyBhcmUgCnJlcXVpcmVkIHJpZ2h0IG5vdyB1bnRpbCBhdGgxMGsgZG9lcyBvZmZpY2lhbGx5
+IHN1cHBvcnQgdGhlc2UgY29uZGl0aW9ucwo+IEhlcmUncyBhIGxpbms6Cj4gPGh0dHBzOi8vZ2l0
+aHViLmNvbS9wYXVsLWNoYW1iZXJzL25ldGdlYXItcjc4MDAvdHJlZS9tYXN0ZXIvZ2l0X2hvbWUv
+bWFkd2lmaS0xMW4uZ2l0L2hhbHBoeV90b29scy9ob3N0L2VlcHJvbVV0aWwvcmVsZWFzZV9xY2E5
+OTg0L2h3MT4KaSBrbm93IHRoZSBncGwgdHJlZQo+IFNvLCBkb2VzIHRoZSBkYXRhIGluIHlvdXIg
+Zmxhc2ggbWF0Y2hlcyBhbnkgb2YgdGhvc2UgZmlsZXMgMToxIG9yIG5vdD8Kbm9wZS4gdGhlc2Ug
+ZmlsZXMgYXJlIGp1c3QgZGVmYXVsdCBmaWxlcyBzaGlwcGVkIHdpdGggdGhlIGRyaXZlciBieSBx
+Y2EKPiAoTm90ZTogRnJvbSB3aGF0IEkga25vdywgaXQncyB0aGUgY2FsZGF0YSB0aGF0J3MgaW4g
+dGhlIGZsYXNoLgo+IGNhbGRhdGEg4omIIGNhbCtib2FyZC4gQnV0IEknbSBhc2tpbmcgd2h5IGF0
+aDEwaydzIGJtaSBpZGVudGlmaWNhdGlvbgo+IGlzbid0IHdvcmtpbmcgZm9yIHRob3NlIGNoaXBz
+IHJpZ2h0IG5vdy4gQW5kIGp1ZGdpbmcgZnJvbSB5b3VyIGxvZ3MsCj4geW91IGFyZSB1c2luZyBw
+cm9iYWJseSBhIHNpbWlsYXIgV0EgdG8gdGhlCj4gOTM2LWF0aDEwa19za2lwX290cF9jaGVjay5w
+YXRjaCBvdXQgb2YgbmVjZXNzaXR5IGFzIHdlbGwuKQp0aGUgYm9hcmQuYmluIGlzIHRoZSBjYWxk
+YXRhIGFuZCBjb25maWd1cmF0aW9uIHNldCBmb3IgdGhlIGNhcmQuCnRoZSBza2lwIG90cCBjaGVj
+ayBwYXRjaCBpcyByZXF1aXJlZCBpbiBhbnkgd2F5IHNpbmNlIHRoZSBjYXJkcyBoYXMgbm8gCm9u
+IGJvYXJkIGVlcHJvbQppZiBibWkgaWRlbnRpZmljYXRpb24gZmFpbHMsIHRoZSBhcGkgMSBib2Fy
+ZC0yLmJpbiBmaWxlIGlzIGxvYWRlZCBhcyAKYWx0ZXJuYXRlIHZhcmlhbnQgYW5kIHRoaXMgaXMg
+ZXhhY3RseSB0aGUgZGF0YSB3aGljaCBpcyBzdG9yZWQgaW4gZmxhc2ggCm1lbW9yeS4KPj4gdGhl
+cmUgYXJlIDIgc3RvcmVkIGZvciBib3RoIGNhcmRzLiB5b3UgbmVlZCB0byBwYXRjaCBhdGgxMGsg
+dG8gdXNlCj4+IGRpZmZlcmVudCBib2FyZC5iaW4gZmlsZXMgZm9yIGVhY2ggY2FyZC4KPiBFeGFj
+dGx5LiBXaHkgZG8geW91IChvciBhbnlvbmUgZm9yIHRoYXQgbWF0dGVyKSBuZWVkIHRvIHBhdGNo
+IGF0aDEwaz8KPiBUaGUgZHJpdmVyIGlzIHN1cHBvc2VkIHRvIHN1cHBvcnQgdGhlIFFDQTk5ODQg
+b3V0IG9mIHRoZSBib3gsIHJpZ2h0PwppdCBpcyBzdXBwb3NlZCwgYnV0IHRoYXRzIG5vdCB0aGUg
+Y2FzZS4gYXRoMTBrIG1haW5seSBzdXBwb3J0cyBjYXJkcyAKd2l0aCBvd24gb24gYm9hcmQgZWVw
+cm9tLgplbWJlZGRlZCByb3V0ZXJzIGNhbiBiZSB2ZXJ5IHNwZWNpZmljIGFuZCBub25zdGFuZGFy
+ZCwgc28gY3VzdG9taXphdGlvbnMgCmFyZSByZXF1aXJlZCBzb21ldGltZXMuCnlvdSBtYXkgbm90
+IGxpa2UgaXQsIGJ1dCBpIGtub3cgdGhpcyBkZXZpY2UgdmVyeSB3ZWxsIGFuZCBhbHNvIG90aGVy
+cy4gCmNvbnNpZGVyIGhvdyB0aGUgc2tpcCBvdHAgcGF0Y2ggd2FzIGNyZWF0ZWQuCml0cyBhIHdv
+cmthcm91bmQgd2hpY2ggaXMgb25seSByZXF1aXJlZCBmb3Igcm91dGVycy4KPiBBbmQgSSBrbm93
+LCB0aGF0IHRoZSBibWkgaWRlbnRpZmljYXRpb24gaXMgc3VwcG9zZWQgdG8gd29yaywgYXMKPiBz
+b21lYm9keSBwb3N0ZWQgdGhlIGZvbGxvd2luZyBsb2c6Cj4gPGh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL3BpcGVybWFpbC9sZWRlLWRldi8yMDE2LURlY2VtYmVyLzAwNDk4Ny5odG1sPgo+Cj4g
+WyAgMzc5LjM5MjIxMF0gYXRoMTBrX3BjaSAwMDAyOjAxOjAwLjA6IGJvb3QgdXBsb2FkIG90cCB0
+byAweDEyMzQgbGVuIDkwMDAgZm9yIGJvYXJkIGlkCj4gWyAgMzc5LjM5OTk0NV0gYXRoMTBrX3Bj
+aSAwMDAyOjAxOjAwLjA6IGJtaSBmYXN0IGRvd25sb2FkIGFkZHJlc3MgMHgxMjM0IGJ1ZmZlciAw
+eGUxNjc2MDM4IGxlbmd0aCA5MDAwCj4gWyAgMzc5LjQwODk3N10gYXRoMTBrX3BjaSAwMDAyOjAx
+OjAwLjA6IGJtaSBseiBzdHJlYW0gc3RhcnQgYWRkcmVzcyAweDEyMzQKPiBbICAzNzkuNDE1NjAz
+XSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDogYm1pIGx6IGRhdGEgYnVmZmVyIDB4ZTE2NzYwMzgg
+bGVuZ3RoIDkwMDAKPiBbICAzNzkuNDUxNjI2XSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDogYm1p
+IGx6IHN0cmVhbSBzdGFydCBhZGRyZXNzIDB4MAo+IFsgIDM3OS40NTc5ODVdIGF0aDEwa19wY2kg
+MDAwMjowMTowMC4wOiBibWkgZXhlY3V0ZSBhZGRyZXNzIDB4MTIzNCBwYXJhbSAweDEwCj4gWyAg
+MzgwLjg1NzAwNl0gYXRoMTBrX3BjaSAwMDAyOjAxOjAwLjA6IGJtaSBleGVjdXRlIHJlc3VsdCAw
+eDQwMAo+IFsgIDM4MC44NjI3NDldIGF0aDEwa19wY2kgMDAwMjowMTowMC4wOiBib290IGdldCBv
+dHAgYm9hcmQgaWQgcmVzdWx0IDB4MDAwMDA0MDAgYm9hcmRfaWQgMSBjaGlwX2lkIDAKPiBbICAz
+ODAuODcxNjAzXSBhdGgxMGtfcGNpIDAwMDI6MDE6MDAuMDogYm9vdCB1c2luZyBib2FyZCBuYW1l
+ICdidXM9cGNpLGJtaS1jaGlwLWlkPTAsYm1pLWJvYXJkLWlkPTEnCj4gWyAgMzgwLjg4MDQ2OF0g
+YXRoMTBrX3BjaSAwMDAyOjAxOjAwLjA6IGJvYXJkIG5hbWUKPiBbICAzODAuODg0OTk5XSBhdGgx
+MGtfcGNpIDAwMDI6MDE6MDAuMDogMDAwMDAwMDA6IDYyIDc1IDczIDNkIDcwIDYzIDY5IDJjIDYy
+IDZkIDY5IDJkIDYzIDY4IDY5IDcwICBidXM9cGNpLGJtaS1jaGlwCj4gWyAgMzgwLjg5NTE1OV0g
+YXRoMTBrX3BjaSAwMDAyOjAxOjAwLjA6IDAwMDAwMDEwOiAyZCA2OSA2NCAzZCAzMCAyYyA2MiA2
+ZCA2OSAyZCA2MiA2ZiA2MSA3MiA2NCAyZCAgLWlkPTAsYm1pLWJvYXJkLQo+IFsgIDM4MC45MDUz
+MTddIGF0aDEwa19wY2kgMDAwMjowMTowMC4wOiAwMDAwMDAyMDogNjkgNjQgM2QgMzEgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlkPTEKPiBbICAzODAuOTE0NDM2XSBhdGgx
+MGtfcGNpIDAwMDI6MDE6MDAuMDogYm9vdCBmb3VuZCBtYXRjaCBmb3IgbmFtZSAnYnVzPXBjaSxi
+bWktY2hpcC1pZD0wLGJtaS1ib2FyZC1pZD0xJwo+IFsgIDM4MC45MjM2NDBdIGF0aDEwa19wY2kg
+MDAwMjowMTowMC4wOiBib290IGZvdW5kIGJvYXJkIGRhdGEgZm9yICdidXM9cGNpLGJtaS1jaGlw
+LWlkPTAsYm1pLWJvYXJkLWlkPTEnCj4gWyAgMzgwLjkzMjg0NV0gYXRoMTBrX3BjaSAwMDAyOjAx
+OjAwLjA6IHVzaW5nIGJvYXJkIGFwaSAyCj4gLi4uCj4KPiBUaGUgYm9hcmQgbmFtZSBmb3IgdGhl
+IFFDQTk5ODQgaXMgc3VwcG9zZWQgdG8gbG9vayBsaWtlCj4gIididXM9cGNpLGJtaS1jaGlwLWlk
+PTAsYm1pLWJvYXJkLWlkPTEnIgo+Cj4gYW5kIG5vdCBsaWtlIChmcm9tIHlvdXIgbG9nKToKc3Vy
+ZS4geW91IGNhbiBsb2FkIHdyb25nIGJvYXJkIGRhdGEgaW50byB5b3VyIGNhcmQgdGhpcyBtYXkg
+cmVzdWx0IGluIAp0aGUgZm9sbG93aW5nIHNpdHVhdGlvbiBhIDUgZ2h6IGNhcmQgaXMgc2hvd24g
+YXMgMi40IGdoeiBjYXJkIGFuZCB2aWNlIAp2ZXJzYSBvciBldmVuIGR1YWxiYW5kIGFsc28gaWYg
+dGhlIGNhcmQgaXMgbm90IHN1cHBvcnRpbmcgdGhpcy4gdGhpcyBtYXkgCm5vdCBiZSB0aGUgY2Fz
+ZSBvbiB0aGUgcjc4MDAgYnV0IGkga25vdyBhbm90aGVyIGRldmljZSB3aGVyZSB0aGlzIGlzIHRo
+ZSAKYmV2YXZpb3VyLiBwb3dlciBjYWxpYnJhdGlvbiBzZXQgaXMgd3JvbmcgaW4gYW55IHdheSBz
+byBvdXRwdXQgcG93ZXIgbWF5IApiZSBsb3dlciBhcyBleHBlY3RlZC4KYW5kIHRoZSByZXN1bHRp
+bmcgb3BlcmF0aW9uIHN0YXRlIHdpbGwgbm90IHdvcmsgaW4gYmVzdCB3YXkuIGxlZGUgZG9lcyAK
+bm90IHN1cHBvcnQgdGhpcyBkZXZpY2UgaW4gY29ycmVjdCB3YXkuCndyb25nIGJvYXJkIGRhdGEg
+Y2FuIGFsc28gZGVzdHJveSB0aGUgaGFyZHdhcmUuIHRoaXMgbWF5IG5vdCBoYXBwZW4gCmZhc3Qs
+IGJ1dCB1c2luZyB3cm9uZyBwb3dlciBjYWxpYnJhdGlvbiBkYXRhIG1heSBkZXN0cm95IHRoZSBw
+aHkgb3ZlciAKdGltZSBieSBvdmVyaGVhdGluZwoKdGFrZSBhIGxvb2sgb24geW91ciByb3V0ZXIu
+IGVzcGVjaWFsbHkgb24gbXRkMwptdGQzOiAwMDE0MDAwMCAwMDAyMDAwMCAiYXJ0IgoKZHVtcCB0
+aGlzIHBhcnRpdGlvbiBhbmQgdGFrZSBhIGxvb2sgaW5zaWRlIGFuZCB0YWtlIGEgZ3Vlc3Mgd2hh
+dCB5b3UgCndpbGwgZmluZC4gb2Zmc2V0IDB4MTAwMCBpcyBmaXJzdCBib2FyZCBkYXRhLiBvZmZz
+ZXQgMHg1MDAwIGlzIHNlY29uZCAKYm9hcmQgZGF0YQp0aGlzIGlzIGNvbW1vbiBmb3IgYWxtb3N0
+IGFsbCB3aXJlbGVzcyByb3V0ZXJzIG9uIHRoZSBtYXJrZXQuIGkgZG9udCAKa25vdyBhIHNpbmds
+ZSByb3V0ZXIgd2l0aCBhIHFjYSBvciBhdGhlcm9zIGNoaXBzZXQgb24gdGhlIG1hcmtldCB3aGlj
+aCAKZG9lcyBub3QgaGF2ZSBzdG9yZWQgdGhlIGJvYXJkIGRhdGEgaW4gZmxhc2ggbWVtb3J5CgoK
+Pj4gYnVzPXBjaSx2ZW5kb3I9MTY4YyxkZXZpY2U9MDA0NixzdWJzeXN0ZW0tdmVuZG9yPTE2OGMs
+c3Vic3lzdGVtLWRldmljZT1jYWZlCj4+IGZyb20gYXRoMTBrL1FDQTk5ODQvaHcxLjAvYm9hcmQt
+Mi5iaW4KPj4gdGhlIGZhaWxlZCB0byBmZXRjaCBib2FyZCBkYXRhIGVycm9yIGlzIG5vcm1hbC4K
+PiBJIGRvbid0IHRoaW5rIGl0IGlzLiBJIHRoaW5rIGl0J3MgYSByZWdyZXNzaW9uLgphaG0gbm8u
+IHlvdSBkb250IGtub3cgd2hhdCB5b3UncmUgZGVhbGluZyB3aXRoLgo+Cj4gVGhhbmtzLAo+IENo
+cmlzdGlhbgo+CgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCgpTZWJh
+c3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQKRmlybWVu
+c2l0ejogIEJlcmxpbmVyIFJpbmcgMTAxLCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6
+IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRl
+ciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQpl
+bWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6
+ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
