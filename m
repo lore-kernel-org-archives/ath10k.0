@@ -1,25 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ctuUR-0000DF-Lg
- for ath10k@lists.infradead.org; Fri, 31 Mar 2017 11:13:12 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Reporting a bug for QCA6174 802.11ac
-Date: Fri, 31 Mar 2017 11:12:37 +0000
-Message-ID: <87tw69r97f.fsf@kamboji.qca.qualcomm.com>
-References: <CAAf+CsCYmJMvMfq+UEmE_FDin8i2QS8-sbVyypew8vcmuZfBkg@mail.gmail.com>
- <43883e2c701b437e9785b89faaaf848b@NALASEXR01G.na.qualcomm.com>
- <CAAf+CsDc+kFn+Tn3cH4su0AFr9arHCXE9bdRtNxQBaRL3XxzAg@mail.gmail.com>
- <CAAf+CsCo2RVrBfP5LH9k3_F3W60BQOGODExwcKDrgj2Jq=MjWQ@mail.gmail.com>
- <CAAf+CsD0bvwaB2pLLActv9XCimdNaWAjoS2ZU4WN1d-kt3rSDA@mail.gmail.com>
- <1490309165963.76201@qca.qualcomm.com>
- <CAAf+CsCzy=v6v5p2NrzpWbbRKbvcF+TxWT6YF3xO0TVgcQWrrw@mail.gmail.com>
- <CAAf+CsCKx3p=TdWZxbSi9JRfKUicCqyAUaP-Kzxgj1N6XK0WqQ@mail.gmail.com>
-In-Reply-To: <CAAf+CsCKx3p=TdWZxbSi9JRfKUicCqyAUaP-Kzxgj1N6XK0WqQ@mail.gmail.com>
- ("Guilherme \=\?utf-8\?Q\?\=C3\=8Dscaro\=22's\?\= message of "Tue, 28 Mar
- 2017 14:45:59 -0300")
-Content-Language: en-US
-Content-ID: <E9E907D48AF90D4480CEB1DB7EB0D1B9@qualcomm.com>
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ctv9t-0006St-3O
+ for ath10k@lists.infradead.org; Fri, 31 Mar 2017 11:56:06 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: cancel coverage class work during stop and restart
+Date: Fri, 31 Mar 2017 17:28:41 +0530
+Message-ID: <1490961521-32746-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,28 +16,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?utf-8?B?R3VpbGhlcm1lIMONc2Nhcm8=?= <cabelitostos@gmail.com>
-Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-R3VpbGhlcm1lIMONc2Nhcm8gPGNhYmVsaXRvc3Rvc0BnbWFpbC5jb20+IHdyaXRlczoNCg0KPiBJ
-IHdvdWxkIGxpa2UgdG8gaW5mb3JtIHRoYXQgSSAiZml4ZWQiIHRoZSBwcm9ibGVtLiBBZnRlciBt
-eSBsYXN0DQo+IGVtYWlsLCBJIGNsb25lZCB0aGUgbGludXggcmVwbyBhbmQgc3RhcnRlZCB0byBo
-YWNrIGFyb3VuZCB0aGUgZHJpdmVyDQo+IHNvdXJjZSBjb2RlLiBCeSBsb29raW5nIGF0IHRoZSBk
-bWVzZyBvdXRwdXQgdGhhdCBJIHByb3ZpZGVkIHRvIHlvdQ0KPiBndXlzLCBJIG5vdGljZWQgdGhh
-dCBmb3Igc29tZSByZWFzb24gdGhlIGJvYXJkIHdhcyBub3QgYmVpbmcgcHJvcGVybHkNCj4gYXdh
-a2UgKCBhdGgxMGtfcGNpX3dha2Vfd2FpdCgpIHJldHVybnMgRVRJTUVPVVQpLiBJIHNvIHNpY2sg
-d2l0aCB0aGlzDQo+IHByb2JsZW0gdGhhdCBJIGhhcmRjb2RlZCAiYXJfcGNpLT5wY2lfcHMiIHRv
-IGZhbHNlLCB0aHVzIHRoZSBib2FyZA0KPiBjYW4ndCBzbGVlcCBub3cuDQoNClNvdW5kcyBsaWtl
-IGEgcHJvYmxlbSB3aXRoIHlvdXIgUENJIGJ1cyBvciB0aGUgcGxhdGZvcm0vbGFwdG9wIHNvIHRy
-eQ0KZGlmZmVyZW50IFBDSSBzZXR0aW5ncyBib3RoIG9uIEJJT1MgYW5kIGtlcm5lbC4gSSBoYXZl
-IHNlZW4gbG90cyBvZiB0YWxrDQphYm91dCBBU1BNLCBlc3BlY2lhbGx5IHdpdGggc29tZSBpd2x3
-aWZpIGRldmljZXMsIHNvIHlvdSBzaG91bGQgYWxzbw0KaW52ZXN0aWdhdGUgYWJvdXQgdGhhdC4N
-Cg0KUGxlYXNlIGxldCB1cyBrbm93IGlmIHlvdSBmaW5kIGFueXRoaW5nLCBpdCdzIGFsd2F5cyB2
-YWx1YWJsZQ0KaW5mb3JtYXRpb24uIEhhdmUgZnVuIGdvb2dsaW5nIDopDQoNCi0tIA0KS2FsbGUg
-VmFsbwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+
+It seems set_coverage_class_work is not cancelled anywhere,
+though I could not find a crash/warning  with this existing
+design, its safer to cancel it during stop() and also before
+restarting the hardware.
+
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+[comments updated, thanks Kalle]
+
+ drivers/net/wireless/ath/ath10k/core.c | 7 +++++++
+ drivers/net/wireless/ath/ath10k/mac.c  | 1 +
+ 2 files changed, 8 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index ba8768d..e653717 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1610,6 +1610,13 @@ static void ath10k_core_restart(struct work_struct *work)
+ 	wake_up(&ar->wmi.tx_credits_wq);
+ 	wake_up(&ar->peer_mapping_wq);
+ 
++	/* TODO: We can have one instance of cancelling coverage_class_work by
++	 * moving it to ath10k_halt(), so that both stop() and restart() would
++	 * call that but it takes conf_mutex() and if we call cancel_work_sync()
++	 * with conf_mutex it will deadlock.
++	 */
++	cancel_work_sync(&ar->set_coverage_class_work);
++
+ 	mutex_lock(&ar->conf_mutex);
+ 
+ 	switch (ar->state) {
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 3029f25..6470ed3 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4684,6 +4684,7 @@ static void ath10k_stop(struct ieee80211_hw *hw)
+ 	}
+ 	mutex_unlock(&ar->conf_mutex);
+ 
++	cancel_work_sync(&ar->set_coverage_class_work);
+ 	cancel_delayed_work_sync(&ar->scan.timeout);
+ 	cancel_work_sync(&ar->restart_work);
+ }
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
