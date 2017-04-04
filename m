@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cvMXG-0007Yi-Uf
- for ath10k@lists.infradead.org; Tue, 04 Apr 2017 11:22:10 +0000
-From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: Is green field support available in ath10K?
-Date: Tue, 4 Apr 2017 16:45:28 +0530
-Message-Id: <20170404105500.M25032@cdot.in>
+Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cvQKO-0007PE-Rm
+ for ath10k@lists.infradead.org; Tue, 04 Apr 2017 15:25:07 +0000
+Received: by mail-wm0-x232.google.com with SMTP id y22so28585755wmh.0
+ for <ath10k@lists.infradead.org>; Tue, 04 Apr 2017 08:24:43 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20170404105500.M25032@cdot.in>
+References: <20170404105500.M25032@cdot.in>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Tue, 4 Apr 2017 08:24:41 -0700
+Message-ID: <CAJ-VmonvJDbEtew9xcy9qPpsjv9z98TdLqnPHUn1g+FEgRafjg@mail.gmail.com>
+Subject: Re: Is green field support available in ath10K?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +24,30 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com
+To: KAVITA MATHUR <kavitam@cdot.in>
+Cc: ath9k-devel <ath9k-devel@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-CkhpLAoKV2hlbiBJIGdpdmUgaHRfY2FwYWI9W0hUNDArXVtTSE9SVC1HSS0yMF1bU0hPUlQtR0kt
-NDBdW0dGXSBpbiBob3NhcGQuY29uZiwgQVAgaXMKZGlzYWJsZWQgd2l0aCBmb2xsb3dpbmcgZXJy
-b3I6Cgp3bGFuMDogaW50ZXJmYWNlIHN0YXRlIFVJTklUSUFMSVpFRC0+Y291bnRyeV91cGRhdGUK
-RHJpdmVyIGRvZXMgbm90IHN1cHBvcnQgY29uZmlndXJlZCBIVCBjYXBhYmlsaXR5IFtHRl0uCgph
-dGgxMGsgZHJpdmVyOiBiYWNrcG9ydC00LjQuMi0xIHJlbGVhc2UKCklzIHRoZXJlIGFueSBwYXRj
-aCB0byBlbmFibGUgZ3JlZW4gZmllbGQgaW4gYXRoMTBrIGRyaXZlcj8KCgoKClRoYW5rcyAmIFJl
-Z2FyZHMsCuCkleCkteCkv+CkpOCkviDgpK7gpL7gpKXgpYHgpLAgS2F2aXRhIE1hdGh1ciAK4KS1
-4KSw4KS/4KS34KWN4KSgIOCkheCkqOClgeCkuOCkguCkp+CkvuCkqCDgpIXgpK3gpL/gpK/gpILg
-pKTgpL4gIFNlbmlvciBSZXNlYXJjaCBFbmdpbmVlciAK4KS44KWALeCkoeClieCknyAgICAgICAg
-ICAgICAgICAgICAgICBDLURPVArgpIfgpLLgpYjgpJXgpY3gpJ/gpY3gpLDgpYngpKjgpL/gpJXg
-pY3gpLgg4KS44KS/4KSf4KWAIOCkq+Clh+CknOCkvCBJICAgICAgICAgRWxlY3Ryb25pY3MgQ2l0
-eSBQaGFzZSBJCuCkueCli+CkuOClguCksCDgpLDgpYvgpKEsIOCkrOClh+CkguCkl+CksuClguCk
-sOClgSAgICAgICAgICAgICAgIEhvc3VyIFJvYWQsIEJlbmdhbHVydSDigJMgNTYwMTAwCuCkq+Cl
-i+CkqCAgUGggMDgwLTI4NTI5ODk2CkRpc2NsYWltZXI6Ci0tLS0tLS0tLS0KVGhpcyBlbWFpbCBh
-bmQgYW55IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGggaXQKCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+aGksDQoNCkkgZG9uJ3QgdGhpbmsgSFQgZ3JlZW5maWVsZCBpcyBzdXBwb3J0ZWQsIG5vIDooDQoN
+Cg0KDQotYWRyaWFuDQoNCk9uIDQgQXByaWwgMjAxNyBhdCAwNDoxNSwgS0FWSVRBIE1BVEhVUiA8
+a2F2aXRhbUBjZG90LmluPiB3cm90ZToNCj4NCj4gSGksDQo+DQo+IFdoZW4gSSBnaXZlIGh0X2Nh
+cGFiPVtIVDQwK11bU0hPUlQtR0ktMjBdW1NIT1JULUdJLTQwXVtHRl0gaW4gaG9zYXBkLmNvbmYs
+IEFQIGlzDQo+IGRpc2FibGVkIHdpdGggZm9sbG93aW5nIGVycm9yOg0KPg0KPiB3bGFuMDogaW50
+ZXJmYWNlIHN0YXRlIFVJTklUSUFMSVpFRC0+Y291bnRyeV91cGRhdGUNCj4gRHJpdmVyIGRvZXMg
+bm90IHN1cHBvcnQgY29uZmlndXJlZCBIVCBjYXBhYmlsaXR5IFtHRl0uDQo+DQo+IGF0aDEwayBk
+cml2ZXI6IGJhY2twb3J0LTQuNC4yLTEgcmVsZWFzZQ0KPg0KPiBJcyB0aGVyZSBhbnkgcGF0Y2gg
+dG8gZW5hYmxlIGdyZWVuIGZpZWxkIGluIGF0aDEwayBkcml2ZXI/DQo+DQo+DQo+DQo+DQo+IFRo
+YW5rcyAmIFJlZ2FyZHMsDQo+IOCkleCkteCkv+CkpOCkviDgpK7gpL7gpKXgpYHgpLAgS2F2aXRh
+IE1hdGh1cg0KPiDgpLXgpLDgpL/gpLfgpY3gpKAg4KSF4KSo4KWB4KS44KSC4KSn4KS+4KSoIOCk
+heCkreCkv+Ckr+CkguCkpOCkviAgU2VuaW9yIFJlc2VhcmNoIEVuZ2luZWVyDQo+IOCkuOClgC3g
+pKHgpYngpJ8gICAgICAgICAgICAgICAgICAgICAgQy1ET1QNCj4g4KSH4KSy4KWI4KSV4KWN4KSf
+4KWN4KSw4KWJ4KSo4KS/4KSV4KWN4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfgpJzgpLwgSSAgICAg
+ICAgIEVsZWN0cm9uaWNzIENpdHkgUGhhc2UgSQ0KPiDgpLngpYvgpLjgpYLgpLAg4KSw4KWL4KSh
+LCDgpKzgpYfgpILgpJfgpLLgpYLgpLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2FkLCBCZW5n
+YWx1cnUg4oCTIDU2MDEwMA0KPiDgpKvgpYvgpKggIFBoIDA4MC0yODUyOTg5Ng0KPiBEaXNjbGFp
+bWVyOg0KPiAtLS0tLS0tLS0tDQo+IFRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFuc21pdHRl
+ZCB3aXRoIGl0DQo+DQo+DQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fDQo+IGF0aDEwayBtYWlsaW5nIGxpc3QNCj4gYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcNCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
+MGsNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
+ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
