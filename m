@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cvQKO-0007PE-Rm
- for ath10k@lists.infradead.org; Tue, 04 Apr 2017 15:25:07 +0000
-Received: by mail-wm0-x232.google.com with SMTP id y22so28585755wmh.0
- for <ath10k@lists.infradead.org>; Tue, 04 Apr 2017 08:24:43 -0700 (PDT)
+ id 1cvRee-0005ev-OT
+ for ath10k@lists.infradead.org; Tue, 04 Apr 2017 16:50:06 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Fix compile time sanity check for CE4 buffer size
+Date: Tue, 4 Apr 2017 22:22:56 +0530
+Message-ID: <1491324776-8418-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <20170404105500.M25032@cdot.in>
-References: <20170404105500.M25032@cdot.in>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Tue, 4 Apr 2017 08:24:41 -0700
-Message-ID: <CAJ-VmonvJDbEtew9xcy9qPpsjv9z98TdLqnPHUn1g+FEgRafjg@mail.gmail.com>
-Subject: Re: Is green field support available in ath10K?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +16,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: KAVITA MATHUR <kavitam@cdot.in>
-Cc: ath9k-devel <ath9k-devel@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-aGksDQoNCkkgZG9uJ3QgdGhpbmsgSFQgZ3JlZW5maWVsZCBpcyBzdXBwb3J0ZWQsIG5vIDooDQoN
-Cg0KDQotYWRyaWFuDQoNCk9uIDQgQXByaWwgMjAxNyBhdCAwNDoxNSwgS0FWSVRBIE1BVEhVUiA8
-a2F2aXRhbUBjZG90LmluPiB3cm90ZToNCj4NCj4gSGksDQo+DQo+IFdoZW4gSSBnaXZlIGh0X2Nh
-cGFiPVtIVDQwK11bU0hPUlQtR0ktMjBdW1NIT1JULUdJLTQwXVtHRl0gaW4gaG9zYXBkLmNvbmYs
-IEFQIGlzDQo+IGRpc2FibGVkIHdpdGggZm9sbG93aW5nIGVycm9yOg0KPg0KPiB3bGFuMDogaW50
-ZXJmYWNlIHN0YXRlIFVJTklUSUFMSVpFRC0+Y291bnRyeV91cGRhdGUNCj4gRHJpdmVyIGRvZXMg
-bm90IHN1cHBvcnQgY29uZmlndXJlZCBIVCBjYXBhYmlsaXR5IFtHRl0uDQo+DQo+IGF0aDEwayBk
-cml2ZXI6IGJhY2twb3J0LTQuNC4yLTEgcmVsZWFzZQ0KPg0KPiBJcyB0aGVyZSBhbnkgcGF0Y2gg
-dG8gZW5hYmxlIGdyZWVuIGZpZWxkIGluIGF0aDEwayBkcml2ZXI/DQo+DQo+DQo+DQo+DQo+IFRo
-YW5rcyAmIFJlZ2FyZHMsDQo+IOCkleCkteCkv+CkpOCkviDgpK7gpL7gpKXgpYHgpLAgS2F2aXRh
-IE1hdGh1cg0KPiDgpLXgpLDgpL/gpLfgpY3gpKAg4KSF4KSo4KWB4KS44KSC4KSn4KS+4KSoIOCk
-heCkreCkv+Ckr+CkguCkpOCkviAgU2VuaW9yIFJlc2VhcmNoIEVuZ2luZWVyDQo+IOCkuOClgC3g
-pKHgpYngpJ8gICAgICAgICAgICAgICAgICAgICAgQy1ET1QNCj4g4KSH4KSy4KWI4KSV4KWN4KSf
-4KWN4KSw4KWJ4KSo4KS/4KSV4KWN4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfgpJzgpLwgSSAgICAg
-ICAgIEVsZWN0cm9uaWNzIENpdHkgUGhhc2UgSQ0KPiDgpLngpYvgpLjgpYLgpLAg4KSw4KWL4KSh
-LCDgpKzgpYfgpILgpJfgpLLgpYLgpLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2FkLCBCZW5n
-YWx1cnUg4oCTIDU2MDEwMA0KPiDgpKvgpYvgpKggIFBoIDA4MC0yODUyOTg5Ng0KPiBEaXNjbGFp
-bWVyOg0KPiAtLS0tLS0tLS0tDQo+IFRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFuc21pdHRl
-ZCB3aXRoIGl0DQo+DQo+DQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fDQo+IGF0aDEwayBtYWlsaW5nIGxpc3QNCj4gYXRoMTBrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcNCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
-ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+
+In 'ath10k_ce_alloc_pipe' the compile time sanity check to
+ensure that there is sufficient buffers in CE4 for HTT Tx
+MSDU descriptors, but this did not take into account of the
+case with 'peer flow control' enabled, fix this.
+
+Cc: Michal Kazior <michal.kazior@tieto.com>
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+[thanks to Michal for the suggestion]
+
+ drivers/net/wireless/ath/ath10k/ce.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 9ac0a73..ee1090c 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -1051,7 +1051,7 @@ int ath10k_ce_alloc_pipe(struct ath10k *ar, int ce_id,
+ 	 */
+ 	BUILD_BUG_ON(2 * TARGET_NUM_MSDU_DESC >
+ 		     (CE_HTT_H2T_MSG_SRC_NENTRIES - 1));
+-	BUILD_BUG_ON(2 * TARGET_10X_NUM_MSDU_DESC >
++	BUILD_BUG_ON(2 * TARGET_10_4_NUM_MSDU_DESC_PFC >
+ 		     (CE_HTT_H2T_MSG_SRC_NENTRIES - 1));
+ 	BUILD_BUG_ON(2 * TARGET_TLV_NUM_MSDU_DESC >
+ 		     (CE_HTT_H2T_MSG_SRC_NENTRIES - 1));
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
