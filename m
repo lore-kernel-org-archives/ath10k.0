@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cvf2r-0004Cg-2e
- for ath10k@lists.infradead.org; Wed, 05 Apr 2017 07:12:41 +0000
-Subject: [PATCH 2/7] ath10k: add ath10k_sdio_writesb()
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cvf6u-0008Fi-PH
+ for ath10k@lists.infradead.org; Wed, 05 Apr 2017 07:12:10 +0000
+Subject: [PATCH 7/7] ath10k: remove unused sdio wrappers
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 5 Apr 2017 10:06:39 +0300
-Message-ID: <149137599947.4898.11552190369103872038.stgit@potku.adurom.net>
+Date: Wed, 5 Apr 2017 10:07:49 +0300
+Message-ID: <149137606916.4898.873080560482504845.stgit@potku.adurom.net>
 In-Reply-To: <149137591893.4898.2318291094351440261.stgit@potku.adurom.net>
 References: <149137591893.4898.2318291094351440261.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -27,155 +27,111 @@ Cc: linux-wireless@vger.kernel.org
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/sdio.c |   85 +++++++++++++++++++-------------
- 1 file changed, 50 insertions(+), 35 deletions(-)
+ drivers/net/wireless/ath/ath10k/sdio.c |   44 --------------------------------
+ drivers/net/wireless/ath/ath10k/sdio.h |   35 -------------------------
+ 2 files changed, 79 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index c7bc86e5063f..56728d44dd12 100644
+index 8ea1629c7bae..a5ed4282b3b3 100644
 --- a/drivers/net/wireless/ath/ath10k/sdio.c
 +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -287,6 +287,39 @@ static int ath10k_sdio_write32(struct ath10k *ar, u32 addr, u32 val)
+@@ -219,50 +219,6 @@ static int ath10k_sdio_config(struct ath10k *ar)
  	return ret;
  }
  
-+static int ath10k_sdio_writesb32(struct ath10k *ar, u32 addr, u32 val)
-+{
-+	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-+	struct sdio_func *func = ar_sdio->func;
-+	__le32 *buf;
-+	int ret;
-+
-+	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	*buf = cpu_to_le32(val);
-+
-+	sdio_claim_host(func);
-+
-+	ret = sdio_writesb(func, addr, buf, sizeof(*buf));
-+	if (ret) {
-+		ath10k_warn(ar, "failed to write value 0x%x to fixed sb address 0x%x: %d\n",
-+			    val, addr, ret);
-+		goto out;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio writesb32 addr 0x%x val 0x%x\n",
-+		   addr, val);
-+
-+out:
-+	sdio_release_host(func);
-+
-+	kfree(buf);
-+
-+	return ret;
-+}
-+
- static int ath10k_sdio_read32(struct ath10k *ar, u32 addr, u32 *val)
- {
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-@@ -709,21 +742,16 @@ static int ath10k_sdio_mbox_proc_err_intr(struct ath10k *ar)
- {
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
- 	struct ath10k_sdio_irq_data *irq_data = &ar_sdio->irq_data;
--	u8 error_int_status, *reg_buf;
-+	u8 error_int_status;
- 	int ret;
- 
--	reg_buf = kzalloc(4, GFP_KERNEL);
--	if (!reg_buf)
--		return -ENOMEM;
+-static int ath10k_sdio_io(struct ath10k *ar, u32 request, u32 addr,
+-			  u8 *buf, u32 len)
+-{
+-	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+-	struct sdio_func *func = ar_sdio->func;
+-	int ret;
 -
- 	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio error interrupt\n");
- 
- 	error_int_status = irq_data->irq_proc_reg->error_int_status & 0x0F;
- 	if (!error_int_status) {
- 		ath10k_warn(ar, "invalid error interrupt status: 0x%x\n",
- 			    error_int_status);
--		ret = -EIO;
--		goto out;
-+		return -EIO;
- 	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_SDIO,
-@@ -744,29 +772,25 @@ static int ath10k_sdio_mbox_proc_err_intr(struct ath10k *ar)
- 	/* Clear the interrupt */
- 	irq_data->irq_proc_reg->error_int_status &= ~error_int_status;
- 
-+	/* FIXME: is this correct? originally it was "reg_buf[0] =
-+	 * error_int_status" and not sure if this is the same anymore */
- 	/* set W1C value to clear the interrupt, this hits the register first */
--	reg_buf[0] = error_int_status;
+-	sdio_claim_host(func);
 -
--	ret = ath10k_sdio_read_write_sync(ar,
--					  MBOX_ERROR_INT_STATUS_ADDRESS,
--					  reg_buf, 4, HIF_WR_SYNC_BYTE_FIX);
-+	ret = ath10k_sdio_writesb32(ar, MBOX_ERROR_INT_STATUS_ADDRESS,
-+				    error_int_status);
- 	if (ret) {
- 		ath10k_warn(ar, "unable to write to error int status address: %d\n",
- 			    ret);
--		goto out;
-+		return ret;
- 	}
- 
--out:
--	kfree(reg_buf);
--
--	return ret;
-+	return 0;
- }
- 
- static int ath10k_sdio_mbox_proc_cpu_intr(struct ath10k *ar)
- {
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
- 	struct ath10k_sdio_irq_data *irq_data = &ar_sdio->irq_data;
--	u8 cpu_int_status, *reg_buf;
-+	u8 cpu_int_status;
- 	int ret;
- 
- 	mutex_lock(&irq_data->mtx);
-@@ -781,32 +805,23 @@ static int ath10k_sdio_mbox_proc_cpu_intr(struct ath10k *ar)
- 	/* Clear the interrupt */
- 	irq_data->irq_proc_reg->cpu_int_status &= ~cpu_int_status;
- 
--	/* Set up the register transfer buffer to hit the register 4 times ,
-+	/* FIXME: is this correct? originally it was "reg_buf[0] =
-+	 * cpu_int_status" and not sure if this is the same anymore */
-+	/* Set up the register transfer buffer to hit the register 4 times,
- 	 * this is done to make the access 4-byte aligned to mitigate issues
- 	 * with host bus interconnects that restrict bus transfer lengths to
- 	 * be a multiple of 4-bytes.
-+	 *
-+	 * Set W1C value to clear the interrupt, this hits the register first.
- 	 */
--	reg_buf = kzalloc(4, GFP_KERNEL);
--	if (!reg_buf) {
--		ret = -ENOMEM;
--		goto out;
+-	if (request & HIF_WRITE) {
+-		if (request & HIF_FIXED_ADDRESS)
+-			ret = sdio_writesb(func, addr, buf, len);
+-		else
+-			ret = sdio_memcpy_toio(func, addr, buf, len);
+-	} else {
+-		if (request & HIF_FIXED_ADDRESS)
+-			ret = sdio_readsb(func, buf, addr, len);
+-		else
+-			ret = sdio_memcpy_fromio(func, buf, addr, len);
 -	}
 -
--	/* set W1C value to clear the interrupt, this hits the register first */
--	reg_buf[0] = cpu_int_status;
+-	sdio_release_host(func);
 -
--	ret = ath10k_sdio_read_write_sync(ar,
--					  MBOX_CPU_INT_STATUS_ADDRESS,
--					  reg_buf, 4, HIF_WR_SYNC_BYTE_FIX);
-+	ret = ath10k_sdio_writesb32(ar, MBOX_CPU_INT_STATUS_ADDRESS,
-+				    cpu_int_status);
- 	if (ret) {
- 		ath10k_warn(ar, "unable to write to cpu interrupt status address: %d\n",
- 			    ret);
--		goto out_free;
-+		goto out;
- 	}
+-	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio %s addr 0x%x%s buf 0x%p len %d\n",
+-		   request & HIF_WRITE ? "wr" : "rd", addr,
+-		   request & HIF_FIXED_ADDRESS ? " (fixed)" : "", buf, len);
+-	ath10k_dbg_dump(ar, ATH10K_DBG_SDIO_DUMP, NULL,
+-			request & HIF_WRITE ? "sdio wr " : "sdio rd ",
+-			buf, len);
+-
+-	return ret;
+-}
+-
+-static int ath10k_sdio_read_write_sync(struct ath10k *ar, u32 addr, u8 *buf,
+-				       u32 len, u32 request)
+-{
+-	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+-
+-	if (request & HIF_BLOCK_BASIS)
+-		len = round_down(len, ar_sdio->mbox_info.block_size);
+-
+-	return ath10k_sdio_io(ar, request, addr, buf, len);
+-}
+-
+ static int ath10k_sdio_write32(struct ath10k *ar, u32 addr, u32 val)
+ {
+ 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
+index 1bce56447e53..62d2699123ec 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.h
++++ b/drivers/net/wireless/ath/ath10k/sdio.h
+@@ -136,41 +136,6 @@ struct ath10k_sdio_rx_data {
+ 	int status;
+ };
  
--out_free:
--	kfree(reg_buf);
+-/* direction of transfer (read/write) */
+-#define HIF_READ                    0x00000001
+-#define HIF_WRITE                   0x00000002
 -
- out:
- 	mutex_unlock(&irq_data->mtx);
- 	return ret;
+-/*     dmode - An interface may support different kinds of commands based on
+- *             the tradeoff between the amount of data it can carry and the
+- *             setup time. Byte and Block modes are supported (HIF_BYTE_BASIS/
+- *             HIF_BLOCK_BASIS). In case of latter, the data is rounded off
+- *             to the nearest block size by padding. The size of the block is
+- *             configurable at compile time using the HIF_BLOCK_SIZE and is
+- *             negotiated with the target during initialization after the
+- *             ATH10K interrupts are enabled.
+- */
+-#define HIF_BYTE_BASIS              0x00000040
+-#define HIF_BLOCK_BASIS             0x00000080
+-
+-/*     amode - This indicates if the address has to be incremented on ATH10K
+- *             after every read/write operation (HIF?FIXED_ADDRESS/
+- *             HIF_INCREMENTAL_ADDRESS).
+- */
+-#define HIF_FIXED_ADDRESS           0x00000100
+-#define HIF_INCREMENTAL_ADDRESS     0x00000200
+-
+-#define HIF_WR_SYNC_BYTE_FIX					\
+-	(HIF_WRITE | HIF_BYTE_BASIS | HIF_FIXED_ADDRESS)
+-
+-#define HIF_WR_SYNC_BYTE_INC					\
+-	(HIF_WRITE | HIF_BYTE_BASIS | HIF_INCREMENTAL_ADDRESS)
+-
+-#define HIF_RD_SYNC_BYTE_INC						\
+-	(HIF_READ | HIF_BYTE_BASIS | HIF_INCREMENTAL_ADDRESS)
+-
+-#define HIF_RD_SYNC_BLOCK_FIX						\
+-	(HIF_READ | HIF_BLOCK_BASIS | HIF_FIXED_ADDRESS)
+-
+ struct ath10k_sdio_irq_proc_regs {
+ 	u8 host_int_status;
+ 	u8 cpu_int_status;
 
 
 _______________________________________________
