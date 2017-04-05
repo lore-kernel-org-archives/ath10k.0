@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cvfWw-0008CF-AD
- for ath10k@lists.infradead.org; Wed, 05 Apr 2017 07:43:54 +0000
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cvfXM-0001P3-Rf
+ for ath10k@lists.infradead.org; Wed, 05 Apr 2017 07:39:29 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: fix station nss computation
+Subject: Re: ath10k: Remove obselete Copy Engine comments
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1490342248-6213-1-git-send-email-c_vnaral@qti.qualcomm.com>
-References: <1490342248-6213-1-git-send-email-c_vnaral@qti.qualcomm.com>
-Message-ID: <1078a1d3e46744f4bf0ff96e047c54c5@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 5 Apr 2017 09:36:26 +0200
+In-Reply-To: <1490961644-375-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1490961644-375-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <d80356c70d454a3a8d4decd85ff8033d@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 5 Apr 2017 09:39:00 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_vnaral@qti.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-c_vnaral@qti.qualcomm.com wrote:
-> From: Venkateswara Rao Naralasetty <c_vnaral@qti.qualcomm.com>
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > 
-> If station advertises diffferent NSS capabilities in Rx_mcs set
-> of HT and VHT IEs in assoc req, the current NSS computation
-> logic configures the NSS support only based on Rx_mcs set of
-> HT capabilities in the driver. This is configuring the station
-> NSS capabilities incorreclty in the target.
+> Remove obselete Copy Engine comments referring to the function
+> ath10k_ce_sendlist_send as this function was removed long time back
+> by the commit 2e761b5a5222 ("ath10k: remove ce_sendlist_send").
 > 
-> For example, if station advertise Rx_mcs set as 2 spatial streams
-> in HT capabilities and 1 spatial streams in VHT capabilities in
-> assoc request, as per current logic we are calculating nss from
-> HT capabilities and the driver sets peer_num_spatial_streams as
-> 2 for the station which is configured in VHT 1*1.
-> 
-> This patchs fix this issue by calculating the nss from VHT cap if
-> station supports vht.
-> 
-> Signed-off-by: Venkateswara Rao Naralasetty <c_vnaral@qti.qualcomm.com>
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-fefcd11535ab ath10k: fix station nss computation
+fb7fa766a8cf ath10k: remove obselete Copy Engine comments
 
 -- 
-https://patchwork.kernel.org/patch/9642345/
+https://patchwork.kernel.org/patch/9656117/
 
 Documentation about submitting wireless patches and checking status
 from patchwork:
