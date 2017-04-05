@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cvf2P-00083Z-CR
- for ath10k@lists.infradead.org; Wed, 05 Apr 2017 07:07:31 +0000
-Subject: [PATCH 3/7] ath10k: add ath10k_sdio_read()
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cvf2g-0000y1-CC
+ for ath10k@lists.infradead.org; Wed, 05 Apr 2017 07:07:47 +0000
+Subject: [PATCH 6/7] ath10k: convert __ath10k_sdio_write_async() to use
+ ath10k_sdio_write()
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 5 Apr 2017 10:06:53 +0300
-Message-ID: <149137601370.4898.4600249077985000688.stgit@potku.adurom.net>
+Date: Wed, 5 Apr 2017 10:07:36 +0300
+Message-ID: <149137605651.4898.4712041956291103322.stgit@potku.adurom.net>
 In-Reply-To: <149137591893.4898.2318291094351440261.stgit@potku.adurom.net>
 References: <149137591893.4898.2318291094351440261.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -27,81 +28,50 @@ Cc: linux-wireless@vger.kernel.org
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/sdio.c |   40 +++++++++++++++++++++++---------
- 1 file changed, 29 insertions(+), 11 deletions(-)
+ drivers/net/wireless/ath/ath10k/sdio.c |    9 +++++----
+ drivers/net/wireless/ath/ath10k/sdio.h |    2 +-
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 56728d44dd12..bbd8317de861 100644
+index 301355228cfa..8ea1629c7bae 100644
 --- a/drivers/net/wireless/ath/ath10k/sdio.c
 +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -343,6 +343,31 @@ static int ath10k_sdio_read32(struct ath10k *ar, u32 addr, u32 *val)
- 	return ret;
- }
+@@ -1304,9 +1304,11 @@ static void __ath10k_sdio_write_async(struct ath10k *ar,
+ 	int ret;
  
-+static int ath10k_sdio_read(struct ath10k *ar, u32 addr, void *buf, size_t len)
-+{
-+	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-+	struct sdio_func *func = ar_sdio->func;
-+	int ret;
+ 	skb = req->skb;
+-	ret = ath10k_sdio_read_write_sync(ar, req->address,
+-					  skb->data, skb->len,
+-					  req->request);
++	ret = ath10k_sdio_write(ar, req->address, skb->data, skb->len);
++	if (ret)
++		ath10k_warn(ar, "failed to write skb to 0x%x asynchronously: %d",
++			    req->address, ret);
 +
-+	sdio_claim_host(func);
-+
-+	ret = sdio_memcpy_fromio(func, buf, addr, len);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to read from address 0x%x: %d\n",
-+			    addr, ret);
-+		goto out;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio read addr 0x%x buf 0x%p len %zu\n",
-+		   addr, buf, len);
-+	ath10k_dbg_dump(ar, ATH10K_DBG_SDIO_DUMP, NULL, "sdio read ", buf, len);
-+
-+out:
-+	sdio_release_host(func);
-+
-+	return ret;
-+}
-+
- /* HIF mbox functions */
- 
- static int ath10k_sdio_mbox_rx_process_packet(struct ath10k *ar,
-@@ -859,11 +884,8 @@ static int ath10k_sdio_mbox_read_int_status(struct ath10k *ar,
- 	 * will yield us the value of different int status
- 	 * registers and the lookahead registers.
- 	 */
--	ret = ath10k_sdio_read_write_sync(ar,
--					  MBOX_HOST_INT_STATUS_ADDRESS,
--					  (u8 *)irq_proc_reg,
--					  sizeof(*irq_proc_reg),
--					  HIF_RD_SYNC_BYTE_INC);
-+	ret = ath10k_sdio_read(ar, MBOX_HOST_INT_STATUS_ADDRESS,
-+			       irq_proc_reg, sizeof(*irq_proc_reg));
- 	if (ret)
- 		goto out;
- 
-@@ -1175,9 +1197,7 @@ static int ath10k_sdio_bmi_exchange_msg(struct ath10k *ar,
- 
- 	/* We always read from the start of the mbox address */
- 	addr = ar_sdio->mbox_info.htc_addr;
--	ret = ath10k_sdio_read_write_sync(ar, addr, ar_sdio->bmi_buf,
--					  *resp_len,
--					  HIF_RD_SYNC_BYTE_INC);
-+	ret = ath10k_sdio_read(ar, addr, ar_sdio->bmi_buf, *resp_len);
- 	if (ret) {
- 		ath10k_warn(ar,
- 			    "unable to read the bmi data from the device: %d\n",
-@@ -1538,9 +1558,7 @@ static int ath10k_sdio_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
+ 	if (req->htc_msg) {
+ 		ep = &ar->htc.endpoint[req->eid];
+ 		ath10k_htc_notify_tx_completion(ep, skb);
+@@ -1355,7 +1357,6 @@ static int ath10k_sdio_prep_async_req(struct ath10k *ar, u32 addr,
  	}
  
- 	/* read the data */
--	ret = ath10k_sdio_read_write_sync(ar, MBOX_WINDOW_DATA_ADDRESS,
--					  (u8 *)buf, buf_len,
--					  HIF_RD_SYNC_BYTE_INC);
-+	ret = ath10k_sdio_read(ar, MBOX_WINDOW_DATA_ADDRESS, buf, buf_len);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to read from mbox window data addrress: %d\n",
- 			    ret);
+ 	bus_req->skb = skb;
+-	bus_req->request = HIF_WRITE;
+ 	bus_req->eid = eid;
+ 	bus_req->address = addr;
+ 	bus_req->htc_msg = htc_msg;
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
+index d1e4f78ddaeb..1bce56447e53 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.h
++++ b/drivers/net/wireless/ath/ath10k/sdio.h
+@@ -110,7 +110,7 @@ struct ath10k_sdio_bus_request {
+ 
+ 	/* sdio address */
+ 	u32 address;
+-	u32 request;
++
+ 	struct sk_buff *skb;
+ 	enum ath10k_htc_ep_id eid;
+ 	int status;
 
 
 _______________________________________________
