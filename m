@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cvf2a-0000y1-Lz
- for ath10k@lists.infradead.org; Wed, 05 Apr 2017 07:07:41 +0000
-Subject: [PATCH 4/7] ath10k: add ath10k_sdio_write()
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cvf4g-0004Je-9X
+ for ath10k@lists.infradead.org; Wed, 05 Apr 2017 07:14:32 +0000
+Subject: [PATCH 0/7] ath10k: remove ath10k_sdio_io()
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 5 Apr 2017 10:07:08 +0300
-Message-ID: <149137602808.4898.9375951462565501167.stgit@potku.adurom.net>
-In-Reply-To: <149137591893.4898.2318291094351440261.stgit@potku.adurom.net>
-References: <149137591893.4898.2318291094351440261.stgit@potku.adurom.net>
+Date: Wed, 5 Apr 2017 10:06:13 +0300
+Message-ID: <149137591893.4898.2318291094351440261.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,98 +23,62 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/sdio.c |   48 +++++++++++++++++++++++---------
- 1 file changed, 34 insertions(+), 14 deletions(-)
+Using ath10k_sdio_io() and ath10k_sdio_read_write_sync() are just
+confusing. Refactor the code by following the plan outlined
+below.
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index bbd8317de861..beb1749672f0 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -368,6 +368,34 @@ static int ath10k_sdio_read(struct ath10k *ar, u32 addr, void *buf, size_t len)
- 	return ret;
- }
- 
-+static int ath10k_sdio_write(struct ath10k *ar, u32 addr, const void *buf, size_t len)
-+{
-+	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-+	struct sdio_func *func = ar_sdio->func;
-+	int ret;
-+
-+	sdio_claim_host(func);
-+
-+	/* For some reason toio() doesn't have const for the buffer, need
-+	 * an ugly hack to workaround that.
-+	 */
-+	ret = sdio_memcpy_toio(func, addr, (void *)buf, len);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to write to address 0x%x: %d\n",
-+			    addr, ret);
-+		goto out;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio write addr 0x%x buf 0x%p len %zu\n",
-+		   addr, buf, len);
-+	ath10k_dbg_dump(ar, ATH10K_DBG_SDIO_DUMP, NULL, "sdio write ", buf, len);
-+
-+out:
-+	sdio_release_host(func);
-+
-+	return ret;
-+}
-+
- /* HIF mbox functions */
- 
- static int ath10k_sdio_mbox_rx_process_packet(struct ath10k *ar,
-@@ -1131,9 +1159,7 @@ static int ath10k_sdio_bmi_exchange_msg(struct ath10k *ar,
- 		addr = ar_sdio->mbox_info.htc_addr;
- 
- 		memcpy(ar_sdio->bmi_buf, req, req_len);
--		ret = ath10k_sdio_read_write_sync(ar, addr, ar_sdio->bmi_buf,
--						  req_len,
--						  HIF_WR_SYNC_BYTE_INC);
-+		ret = ath10k_sdio_write(ar, addr, ar_sdio->bmi_buf, req_len);
- 		if (ret) {
- 			ath10k_warn(ar,
- 				    "unable to send the bmi data to the device: %d\n",
-@@ -1361,10 +1387,8 @@ static int ath10k_sdio_hif_disable_intrs(struct ath10k *ar)
- 	mutex_lock(&irq_data->mtx);
- 
- 	memset(regs, 0, sizeof(*regs));
--	ret = ath10k_sdio_read_write_sync(ar,
--					  MBOX_INT_STATUS_ENABLE_ADDRESS,
--					  &regs->int_status_en, sizeof(*regs),
--					  HIF_WR_SYNC_BYTE_INC);
-+	ret = ath10k_sdio_write(ar, MBOX_INT_STATUS_ENABLE_ADDRESS,
-+				&regs->int_status_en, sizeof(*regs));
- 	if (ret)
- 		ath10k_warn(ar, "unable to disable sdio interrupts: %d\n", ret);
- 
-@@ -1498,10 +1522,8 @@ static int ath10k_sdio_hif_enable_intrs(struct ath10k *ar)
- 		FIELD_PREP(MBOX_COUNTER_INT_STATUS_ENABLE_BIT_MASK,
- 			   ATH10K_SDIO_TARGET_DEBUG_INTR_MASK);
- 
--	ret = ath10k_sdio_read_write_sync(ar,
--					  MBOX_INT_STATUS_ENABLE_ADDRESS,
--					  &regs->int_status_en, sizeof(*regs),
--					  HIF_WR_SYNC_BYTE_INC);
-+	ret = ath10k_sdio_write(ar, MBOX_INT_STATUS_ENABLE_ADDRESS,
-+				&regs->int_status_en, sizeof(*regs));
- 	if (ret)
- 		ath10k_warn(ar,
- 			    "failed to update mbox interrupt status register : %d\n",
-@@ -1596,9 +1618,7 @@ static int ath10k_sdio_hif_diag_write_mem(struct ath10k *ar, u32 address,
- 	int ret;
- 
- 	/* set write data */
--	ret = ath10k_sdio_read_write_sync(ar, MBOX_WINDOW_DATA_ADDRESS,
--					  (u8 *)data, nbytes,
--					  HIF_WR_SYNC_BYTE_INC);
-+	ret = ath10k_sdio_write(ar, MBOX_WINDOW_DATA_ADDRESS, data, nbytes);
- 	if (ret) {
- 		ath10k_warn(ar,
- 			    "failed to write 0x%p to mbox window data addrress: %d\n",
+I'm planning to fold all these seven patches into Erik's patch
+adding sdio.c[1] so I didn't write any commit logs. I'm just
+submitting these separately to make it easier to review the
+changes.
+
+Kalle
+
+ath10k_sdio_read_write_sync():
+X HIF_RD_SYNC_BLOCK_FIX	-> ath10k_sdio_readsb()
+X HIF_RD_SYNC_BYTE_INC	-> ath10k_sdio_read(), ath10k_sdio_read32()
+X HIF_WR_SYNC_BYTE_FIX	-> ath10k_sdio_writesb32()
+X HIF_WR_SYNC_BYTE_INC	-> ath10k_sdio_write()
+
+ath10k_sdio_prep_async_req():
+X HIF_WRITE		-> HIF_WR_SYNC_BYTE_INC -> ath10k_sdio_write()
+
+ath10k_sdio_read/write32():
+sdio_readl()/sdio_writel() (those use endian macros)
+
+ath10k_sdio_writesb32():
+kmalloc()
+sdio_writesb(len)
+kfree()
+
+ath10k_sdio_readsb():
+len = round_down(len, ar_sdio->mbox_info.block_size);
+sdio_readsb(len)
+
+ath10k_sdio_read():
+sdio_memcpy_fromio()
+
+ath10k_sdio_write():
+sdio_memcpy_toio()
+
+
+[1] https://patchwork.kernel.org/patch/9626001/
+
+---
+
+Kalle Valo (7):
+      ath10k: add ath10k_sdio_write32/read32()
+      ath10k: add ath10k_sdio_writesb()
+      ath10k: add ath10k_sdio_read()
+      ath10k: add ath10k_sdio_write()
+      ath10k: add ath10k_sdio_readsb()
+      ath10k: convert __ath10k_sdio_write_async() to use ath10k_sdio_write()
+      ath10k: remove unused sdio wrappers
+
+
+ drivers/net/wireless/ath/ath10k/sdio.c |  419 +++++++++++++++++---------------
+ drivers/net/wireless/ath/ath10k/sdio.h |   40 ---
+ 2 files changed, 219 insertions(+), 240 deletions(-)
 
 
 _______________________________________________
