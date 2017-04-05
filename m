@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cvfXM-0001P3-Rf
- for ath10k@lists.infradead.org; Wed, 05 Apr 2017 07:39:29 +0000
-MIME-Version: 1.0
-Subject: Re: ath10k: Remove obselete Copy Engine comments
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cvgch-0003AC-Hl
+ for ath10k@lists.infradead.org; Wed, 05 Apr 2017 08:51:39 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1490961644-375-1-git-send-email-mohammed@qca.qualcomm.com>
-References: <1490961644-375-1-git-send-email-mohammed@qca.qualcomm.com>
-Message-ID: <d80356c70d454a3a8d4decd85ff8033d@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 5 Apr 2017 09:39:00 +0200
+Subject: Re: ath10k: Clean header files from bad block comments
+Date: Wed, 5 Apr 2017 08:48:26 +0000
+Message-ID: <87zifvi6jp.fsf@kamboji.qca.qualcomm.com>
+References: <1487601530-22932-1-git-send-email-marcin.rokicki@tieto.com>
+ <744f9259075b4d0784712a5cd272024e@euamsexm01a.eu.qualcomm.com>
+In-Reply-To: <744f9259075b4d0784712a5cd272024e@euamsexm01a.eu.qualcomm.com>
+ (Kalle Valo's message of "Wed, 5 Apr 2017 09:45:39 +0200")
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +25,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Marcin Rokicki <marcin.rokicki@tieto.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> 
-> Remove obselete Copy Engine comments referring to the function
-> ath10k_ce_sendlist_send as this function was removed long time back
-> by the commit 2e761b5a5222 ("ath10k: remove ce_sendlist_send").
-> 
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-Patch applied to ath-next branch of ath.git, thanks.
+> Marcin Rokicki <marcin.rokicki@tieto.com> wrote:
+>> Fix output from checkpatch.pl like:
+>>  Block comments use a trailing */ on a separate line
+>> 
+>> Signed-off-by: Marcin Rokicki <marcin.rokicki@tieto.com>
+>
+> Patch applied to ath-next branch of ath.git, thanks.
+>
+> 37ff1b0df37a ath10k: clean header files from bad block comments
 
-fb7fa766a8cf ath10k: remove obselete Copy Engine comments
+I also enabled the checkpatch warning in ath10k-check so that we can
+catch any new warnings:
+
+https://github.com/qca/qca-swiss-army-knife/commit/e23fbd3c9647c20e29e819b8a6d934e1b56067b9
 
 -- 
-https://patchwork.kernel.org/patch/9656117/
-
-Documentation about submitting wireless patches and checking status
-from patchwork:
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
