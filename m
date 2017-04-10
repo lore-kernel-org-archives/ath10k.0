@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from universe.cdot.in ([49.128.111.121])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cxS58-0005xV-3o
- for ath10k@lists.infradead.org; Mon, 10 Apr 2017 05:41:45 +0000
+ id 1cxWls-0006uW-19
+ for ath10k@lists.infradead.org; Mon, 10 Apr 2017 10:42:12 +0000
 From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: how to enable more than 1  spatial stream in Rx STBC
-Date: Mon, 10 Apr 2017 11:05:11 +0530
-Message-Id: <20170410053059.M79025@cdot.in>
+Subject: Re: how to enable more than 1  spatial stream in Rx STBC
+Date: Mon, 10 Apr 2017 16:05:38 +0530
+Message-Id: <20170410103407.M20522@cdot.in>
+In-Reply-To: <20170410053059.M79025@cdot.in>
+References: <20170410053059.M79025@cdot.in>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,13 +22,35 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com
+To: KAVITA MATHUR <kavitam@cdot.in>, ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com
 
-CkhpLAoKVGhlcmUgaXMgYWx3YXlzIHNpbmdsZSBSeCBzcGF0aWFsIHN0cmVhbSBzZXQgZXZlbiBt
-dWx0aXBsZSBzdHJlYW1zIGFyZSBjb25maWd1cmVkIGZyb20KaG9zdGFwZCBjb25maWd1cmF0aW9u
-IGZpbGUuCgpJIGFtIHVzaW5nIGF0aDEwayBkcml2ZXIgZm9yIGNoaXBzZXQgUUNBOTg4MCAoV0xN
-OTAwVlgpIGZyb20gYmFja3BvcnQtNC40LjItMS4KCkRvIEkgbmVlZCB0byBhcHBseSBhbnkgcGF0
-Y2g/CgpQbGVhc2UgaGVscCBtZSB0byB0ZXN0IG11bHRpcGxlIHNwYXRpYWwgc3RyZWFtcy4KCgoK
+CndoZW4gSSBzZXQgaHRfY2FwYWI9W0hUNDArXVtSWC1TVEJDMTJdIGluIGhvc3RhcGQuY29uZiwg
+Zm9sbG93aW5nIGVycm9yIGxvZyB3aWxsIGNvbWU6Cgp3bGFuMDogaW50ZXJmYWNlIHN0YXRlIFVO
+SU5JVElBTElaRUQtPkNPVU5UUllfVVBEQVRFCkRyaXZlciBkb2VzIG5vdCBzdXBwb3J0IGNvbmZp
+Z3VyZWQgSFQgY2FwYWJpbGl0eSBbUlgtU1RCQypdCndsYW4wOiBpbnRlcmZhY2Ugc3RhdGUgQ09V
+TlRSWV9VUERBVEUtPkRJU0FCTEVECndsYW4wOiBBUC1ESVNBQkxFRCAKd2xhbjA6IFVuYWJsZSB0
+byBzZXR1cCBpbnRlcmZhY2UuCndsYW4wOiBpbnRlcmZhY2Ugc3RhdGUgRElTQUJMRUQtPkRJU0FC
+TEVECndsYW4wOiBBUC1ESVNBQkxFRCAKaG9zdGFwZF9mcmVlX2hhcGRfZGF0YTogSW50ZXJmYWNl
+IHdsYW4wIHdhc24ndCBzdGFydGVkCm5sODAyMTE6IGRlaW5pdCBpZm5hbWU9d2xhbjAgZGlzYWJs
+ZWRfMTFiX3JhdGVzPTAKClRoYW5rcyAmIFJlZ2FyZHMsCkthdml0YQoKT24gTW9uLCAxMCBBcHIg
+MjAxNyAxMTowNToxMSArMDUzMCwgS0FWSVRBIE1BVEhVUiB3cm90ZQo+IEhpLAo+IAo+IFRoZXJl
+IGlzIGFsd2F5cyBzaW5nbGUgUnggc3BhdGlhbCBzdHJlYW0gc2V0IGV2ZW4gbXVsdGlwbGUgc3Ry
+ZWFtcyBhcmUgCj4gY29uZmlndXJlZCBmcm9tIGhvc3RhcGQgY29uZmlndXJhdGlvbiBmaWxlLgo+
+IAo+IEkgYW0gdXNpbmcgYXRoMTBrIGRyaXZlciBmb3IgY2hpcHNldCBRQ0E5ODgwIChXTE05MDBW
+WCkgZnJvbSBiYWNrcG9ydC00LjQuMi0xLgo+IAo+IERvIEkgbmVlZCB0byBhcHBseSBhbnkgcGF0
+Y2g/Cj4gCj4gUGxlYXNlIGhlbHAgbWUgdG8gdGVzdCBtdWx0aXBsZSBzcGF0aWFsIHN0cmVhbXMu
+Cj4gCj4gVGhhbmtzICYgUmVnYXJkcywKPiDgpJXgpLXgpL/gpKTgpL4g4KSu4KS+4KSl4KWB4KSw
+IEthdml0YSBNYXRodXIgCj4g4KS14KSw4KS/4KS34KWN4KSgIOCkheCkqOClgeCkuOCkguCkp+Ck
+vuCkqCDgpIXgpK3gpL/gpK/gpILgpKTgpL4gIFNlbmlvciAKPiBSZXNlYXJjaCBFbmdpbmVlciDg
+pLjgpYAt4KSh4KWJ4KSfICAgICAgICAgICAgICAgICAgICAgIEMtRE9UIAo+IOCkh+CksuCliOCk
+leCljeCkn+CljeCksOClieCkqOCkv+CkleCljeCkuCDgpLjgpL/gpJ/gpYAg4KSr4KWH4KSc4KS8
+IEkgICAgICAgICAKPiBFbGVjdHJvbmljcyBDaXR5IFBoYXNlIEkg4KS54KWL4KS44KWC4KSwIOCk
+sOCli+CkoSwg4KSs4KWH4KSC4KSX4KSy4KWC4KSw4KWBICAgCj4gICAgICAgICAgICAgSG9zdXIg
+Um9hZCwgQmVuZ2FsdXJ1IOKAkyA1NjAxMDAg4KSr4KWL4KSoICBQaCAwODAtMjg1Mjk4OTYgRGlz
+Y2xhaW1lcjoKPiAtLS0tLS0tLS0tCj4gVGhpcyBlbWFpbCBhbmQgYW55IGZpbGVzIHRyYW5zbWl0
+dGVkIHdpdGggaXQKPiAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+Zwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgoK
 VGhhbmtzICYgUmVnYXJkcywK4KSV4KS14KS/4KSk4KS+IOCkruCkvuCkpeClgeCksCBLYXZpdGEg
 TWF0aHVyIArgpLXgpLDgpL/gpLfgpY3gpKAg4KSF4KSo4KWB4KS44KSC4KSn4KS+4KSoIOCkheCk
 reCkv+Ckr+CkguCkpOCkviAgU2VuaW9yIFJlc2VhcmNoIEVuZ2luZWVyIArgpLjgpYAt4KSh4KWJ
