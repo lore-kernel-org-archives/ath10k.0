@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1cxWls-0006uW-19
- for ath10k@lists.infradead.org; Mon, 10 Apr 2017 10:42:12 +0000
-From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: Re: how to enable more than 1  spatial stream in Rx STBC
-Date: Mon, 10 Apr 2017 16:05:38 +0530
-Message-Id: <20170410103407.M20522@cdot.in>
-In-Reply-To: <20170410053059.M79025@cdot.in>
-References: <20170410053059.M79025@cdot.in>
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1cxaDf-0002AB-G8
+ for ath10k@lists.infradead.org; Mon, 10 Apr 2017 14:23:05 +0000
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Fix spectral scan for QCA99X0 family of chipsets
+Date: Mon, 10 Apr 2017 19:56:14 +0530
+Message-ID: <1491834374-25239-1-git-send-email-mohammed@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -18,48 +16,200 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: KAVITA MATHUR <kavitam@cdot.in>, ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com
+To: ath10k@lists.infradead.org
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
-CndoZW4gSSBzZXQgaHRfY2FwYWI9W0hUNDArXVtSWC1TVEJDMTJdIGluIGhvc3RhcGQuY29uZiwg
-Zm9sbG93aW5nIGVycm9yIGxvZyB3aWxsIGNvbWU6Cgp3bGFuMDogaW50ZXJmYWNlIHN0YXRlIFVO
-SU5JVElBTElaRUQtPkNPVU5UUllfVVBEQVRFCkRyaXZlciBkb2VzIG5vdCBzdXBwb3J0IGNvbmZp
-Z3VyZWQgSFQgY2FwYWJpbGl0eSBbUlgtU1RCQypdCndsYW4wOiBpbnRlcmZhY2Ugc3RhdGUgQ09V
-TlRSWV9VUERBVEUtPkRJU0FCTEVECndsYW4wOiBBUC1ESVNBQkxFRCAKd2xhbjA6IFVuYWJsZSB0
-byBzZXR1cCBpbnRlcmZhY2UuCndsYW4wOiBpbnRlcmZhY2Ugc3RhdGUgRElTQUJMRUQtPkRJU0FC
-TEVECndsYW4wOiBBUC1ESVNBQkxFRCAKaG9zdGFwZF9mcmVlX2hhcGRfZGF0YTogSW50ZXJmYWNl
-IHdsYW4wIHdhc24ndCBzdGFydGVkCm5sODAyMTE6IGRlaW5pdCBpZm5hbWU9d2xhbjAgZGlzYWJs
-ZWRfMTFiX3JhdGVzPTAKClRoYW5rcyAmIFJlZ2FyZHMsCkthdml0YQoKT24gTW9uLCAxMCBBcHIg
-MjAxNyAxMTowNToxMSArMDUzMCwgS0FWSVRBIE1BVEhVUiB3cm90ZQo+IEhpLAo+IAo+IFRoZXJl
-IGlzIGFsd2F5cyBzaW5nbGUgUnggc3BhdGlhbCBzdHJlYW0gc2V0IGV2ZW4gbXVsdGlwbGUgc3Ry
-ZWFtcyBhcmUgCj4gY29uZmlndXJlZCBmcm9tIGhvc3RhcGQgY29uZmlndXJhdGlvbiBmaWxlLgo+
-IAo+IEkgYW0gdXNpbmcgYXRoMTBrIGRyaXZlciBmb3IgY2hpcHNldCBRQ0E5ODgwIChXTE05MDBW
-WCkgZnJvbSBiYWNrcG9ydC00LjQuMi0xLgo+IAo+IERvIEkgbmVlZCB0byBhcHBseSBhbnkgcGF0
-Y2g/Cj4gCj4gUGxlYXNlIGhlbHAgbWUgdG8gdGVzdCBtdWx0aXBsZSBzcGF0aWFsIHN0cmVhbXMu
-Cj4gCj4gVGhhbmtzICYgUmVnYXJkcywKPiDgpJXgpLXgpL/gpKTgpL4g4KSu4KS+4KSl4KWB4KSw
-IEthdml0YSBNYXRodXIgCj4g4KS14KSw4KS/4KS34KWN4KSgIOCkheCkqOClgeCkuOCkguCkp+Ck
-vuCkqCDgpIXgpK3gpL/gpK/gpILgpKTgpL4gIFNlbmlvciAKPiBSZXNlYXJjaCBFbmdpbmVlciDg
-pLjgpYAt4KSh4KWJ4KSfICAgICAgICAgICAgICAgICAgICAgIEMtRE9UIAo+IOCkh+CksuCliOCk
-leCljeCkn+CljeCksOClieCkqOCkv+CkleCljeCkuCDgpLjgpL/gpJ/gpYAg4KSr4KWH4KSc4KS8
-IEkgICAgICAgICAKPiBFbGVjdHJvbmljcyBDaXR5IFBoYXNlIEkg4KS54KWL4KS44KWC4KSwIOCk
-sOCli+CkoSwg4KSs4KWH4KSC4KSX4KSy4KWC4KSw4KWBICAgCj4gICAgICAgICAgICAgSG9zdXIg
-Um9hZCwgQmVuZ2FsdXJ1IOKAkyA1NjAxMDAg4KSr4KWL4KSoICBQaCAwODAtMjg1Mjk4OTYgRGlz
-Y2xhaW1lcjoKPiAtLS0tLS0tLS0tCj4gVGhpcyBlbWFpbCBhbmQgYW55IGZpbGVzIHRyYW5zbWl0
-dGVkIHdpdGggaXQKPiAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-Zwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgoK
-VGhhbmtzICYgUmVnYXJkcywK4KSV4KS14KS/4KSk4KS+IOCkruCkvuCkpeClgeCksCBLYXZpdGEg
-TWF0aHVyIArgpLXgpLDgpL/gpLfgpY3gpKAg4KSF4KSo4KWB4KS44KSC4KSn4KS+4KSoIOCkheCk
-reCkv+Ckr+CkguCkpOCkviAgU2VuaW9yIFJlc2VhcmNoIEVuZ2luZWVyIArgpLjgpYAt4KSh4KWJ
-4KSfICAgICAgICAgICAgICAgICAgICAgIEMtRE9UCuCkh+CksuCliOCkleCljeCkn+CljeCksOCl
-ieCkqOCkv+CkleCljeCkuCDgpLjgpL/gpJ/gpYAg4KSr4KWH4KSc4KS8IEkgICAgICAgICBFbGVj
-dHJvbmljcyBDaXR5IFBoYXNlIEkK4KS54KWL4KS44KWC4KSwIOCksOCli+CkoSwg4KSs4KWH4KSC
-4KSX4KSy4KWC4KSw4KWBICAgICAgICAgICAgICAgSG9zdXIgUm9hZCwgQmVuZ2FsdXJ1IOKAkyA1
-NjAxMDAK4KSr4KWL4KSoICBQaCAwODAtMjg1Mjk4OTYKRGlzY2xhaW1lcjoKLS0tLS0tLS0tLQpU
-aGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQgd2l0aCBpdAoKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
-YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hdGgxMGsK
+From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+
+spectral_bin length (number of bins per fft sample) is usually
+a value where (2^n = value), n is an integer.  All of the QCA99X0
+family of chipsets seems to report a spectral_bin length of
+2^n + 'm' bytes, where m = 4, 12 based on the chipset. This 'm'
+bytes seems to carry some radar related info which is currenly
+discarded only for 'bin_len = 68' bytes. Extend this discarding of
+irrelevant 'bin_len' for QCA9984, QCA9888, IPQ4019 as well by
+introducing a hardware parameter 'spectral_bin_discard'. Also
+for QCA988X based family of chipsets which doesn't seem to have this
+issue and also for some of the hardware which I have not tested
+like QCA6174/QCA9377 the existing behaviour is retained as it is.
+
+Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+---
+
+ drivers/net/wireless/ath/ath10k/core.c     | 12 ++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h       |  3 +++
+ drivers/net/wireless/ath/ath10k/spectral.c | 25 +++++++++++++++++--------
+ 3 files changed, 32 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 5736f79..b543c84 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -71,6 +71,7 @@
+ 		},
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
++		.spectral_bin_discard = 0,
+ 	},
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+@@ -91,6 +92,7 @@
+ 		},
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
++		.spectral_bin_discard = 0,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -110,6 +112,7 @@
+ 		},
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
++		.spectral_bin_discard = 0,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -129,6 +132,7 @@
+ 		},
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
++		.spectral_bin_discard = 0,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -148,6 +152,7 @@
+ 		},
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
++		.spectral_bin_discard = 0,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -168,6 +173,7 @@
+ 		},
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
++		.spectral_bin_discard = 0,
+ 	},
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+@@ -193,6 +199,7 @@
+ 		.sw_decrypt_mcast_mgmt = true,
+ 		.hw_ops = &qca99x0_ops,
+ 		.decap_align_bytes = 1,
++		.spectral_bin_discard = 4,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -219,6 +226,7 @@
+ 		.sw_decrypt_mcast_mgmt = true,
+ 		.hw_ops = &qca99x0_ops,
+ 		.decap_align_bytes = 1,
++		.spectral_bin_discard = 12,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -244,6 +252,7 @@
+ 		.sw_decrypt_mcast_mgmt = true,
+ 		.hw_ops = &qca99x0_ops,
+ 		.decap_align_bytes = 1,
++		.spectral_bin_discard = 12,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -263,6 +272,7 @@
+ 		},
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
++		.spectral_bin_discard = 0,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -282,6 +292,7 @@
+ 		},
+ 		.hw_ops = &qca988x_ops,
+ 		.decap_align_bytes = 4,
++		.spectral_bin_discard = 0,
+ 	},
+ 	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+@@ -308,6 +319,7 @@
+ 		.sw_decrypt_mcast_mgmt = true,
+ 		.hw_ops = &qca99x0_ops,
+ 		.decap_align_bytes = 1,
++		.spectral_bin_discard = 4,
+ 	},
+ };
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index f0fda0f..8a0f9db 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -416,6 +416,9 @@ struct ath10k_hw_params {
+ 
+ 	/* Number of bytes used for alignment in rx_hdr_status of rx desc. */
+ 	int decap_align_bytes;
++
++	/* Number of bytes to be discarded for each FFT sample */
++	int spectral_bin_discard;
+ };
+ 
+ struct htt_rx_desc;
+diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
+index c061d69..3fd5d7d 100644
+--- a/drivers/net/wireless/ath/ath10k/spectral.c
++++ b/drivers/net/wireless/ath/ath10k/spectral.c
+@@ -56,6 +56,21 @@ static uint8_t get_max_exp(s8 max_index, u16 max_magnitude, size_t bin_len,
+ 	return max_exp;
+ }
+ 
++static inline size_t ath10k_spectral_fix_bin_size(struct ath10k *ar,
++						  size_t bin_len)
++{
++	/* some chipsets reports bin size as 2^n bytes + 'm' bytes in
++	 * report mode 2. First 2^n bytes carries inband tones and last
++	 * 'm' bytes carries band edge detection data mainly used in
++	 * radar detection purpose. Strip last 'm' bytes to make bin size
++	 * as a valid one. 'm' can take possible values of 4, 12.
++	 */
++	if (!is_power_of_2(bin_len))
++		bin_len -= ar->hw_params.spectral_bin_discard;
++
++	return bin_len;
++}
++
+ int ath10k_spectral_process_fft(struct ath10k *ar,
+ 				struct wmi_phyerr_ev_arg *phyerr,
+ 				const struct phyerr_fft_report *fftr,
+@@ -70,17 +85,11 @@ int ath10k_spectral_process_fft(struct ath10k *ar,
+ 
+ 	fft_sample = (struct fft_sample_ath10k *)&buf;
+ 
++	bin_len = ath10k_spectral_fix_bin_size(ar, bin_len);
++
+ 	if (bin_len < 64 || bin_len > SPECTRAL_ATH10K_MAX_NUM_BINS)
+ 		return -EINVAL;
+ 
+-	/* qca99x0 reports bin size as 68 bytes (64 bytes + 4 bytes) in
+-	 * report mode 2. First 64 bytes carries inband tones (-32 to +31)
+-	 * and last 4 byte carries band edge detection data (+32) mainly
+-	 * used in radar detection purpose. Strip last 4 byte to make bin
+-	 * size is valid one.
+-	 */
+-	if (bin_len == 68)
+-		bin_len -= 4;
+ 
+ 	reg0 = __le32_to_cpu(fftr->reg0);
+ 	reg1 = __le32_to_cpu(fftr->reg1);
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
