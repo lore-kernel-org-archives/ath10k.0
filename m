@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cy2yj-00060J-AN
- for ath10k@lists.infradead.org; Tue, 11 Apr 2017 21:05:35 +0000
-From: <ryanhsu@qti.qualcomm.com>
-Subject: [PATCH] ath10k: ath10k: bump up FW API to 6
-Date: Tue, 11 Apr 2017 14:04:48 -0700
-Message-ID: <1491944688-5795-1-git-send-email-ryanhsu@qca.qualcomm.com>
+ id 1cyCOb-0003Zt-Gn
+ for ath10k@lists.infradead.org; Wed, 12 Apr 2017 07:08:55 +0000
+From: Tamizh Chelvam Raja <c_traja@qti.qualcomm.com>
+Subject: RE: [PATCHv4 0/2] cfg80211: mac80211: BTCOEX feature support
+Date: Wed, 12 Apr 2017 07:08:25 +0000
+Message-ID: <efe890d95d374af7b7a8839811afe0d8@aphydexm01f.ap.qualcomm.com>
+References: <1491905730-16392-1-git-send-email-c_traja@qti.qualcomm.com>
+ <50d867d1-740c-85b9-2bab-6ef49c4d87c1@broadcom.com>
+In-Reply-To: <50d867d1-740c-85b9-2bab-6ef49c4d87c1@broadcom.com>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,63 +24,59 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: ryanhsu@qti.qualcomm.com
+To: Arend Van Spriel <arend.vanspriel@broadcom.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+Cc: "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "tamizhchelvam@codeaurora.org" <tamizhchelvam@codeaurora.org>, Marcel Holtmann <marcel@holtmann.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
-
-For QCA6174 hw3.0, since WLAN.RM.4.4-00022-QCARMSWPZ-2, it starts to
-support the board ID information from otp, with some devices released on
-the market that didn't calibrated with OTP, will have 0 for board ID
-information, which cause the backward compatibility issue and was fixed
-in commit 'd2e202c06ca4 ("ath10k: ignore configuring the incorrect board_id")'
-
-So bump the fw api version to differentiate the latest firmware support.
-
-Signed-off-by: Ryan Hsu <ryanhsu@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/hw.h  | 5 ++++-
- drivers/net/wireless/ath/ath10k/pci.c | 1 +
- 2 files changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index f7c5c13..cd3dd11 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -129,7 +129,7 @@ enum qca9377_chip_id_rev {
- #define QCA4019_HW_1_0_PATCH_LOAD_ADDR  0x1234
+> + linux-bluetooth, Marcel
+> 
+> On 11-4-2017 12:15, c_traja@qti.qualcomm.com wrote:
+> > From: Tamizh chelvam <c_traja@qti.qualcomm.com>
+> >
+> > This patchset add support for BTCOEX feature to enable/disable and
+> > modifying btcoex priority value via nl80211
+> 
+> So you make a distinction between WMM ACs, but what about the different
+> types/profiles of BT traffic?
+>
+[Tamizh] There will be BT high and BT low traffic. It will be decided by BT module. Firmware internally checks BT low traffic with wlan traffic. If we enable some of
+wlan frames as high priority, those frames will have more priority than BT low traffic.
  
- #define ATH10K_FW_FILE_BASE		"firmware"
--#define ATH10K_FW_API_MAX		5
-+#define ATH10K_FW_API_MAX		6
- #define ATH10K_FW_API_MIN		2
- 
- #define ATH10K_FW_API2_FILE		"firmware-2.bin"
-@@ -141,6 +141,9 @@ enum qca9377_chip_id_rev {
- /* HTT id conflict fix for management frames over HTT */
- #define ATH10K_FW_API5_FILE		"firmware-5.bin"
- 
-+/* the firmware-6.bin blob */
-+#define ATH10K_FW_API6_FILE		"firmware-6.bin"
-+
- #define ATH10K_FW_UTF_FILE		"utf.bin"
- #define ATH10K_FW_UTF_API2_FILE		"utf-2.bin"
- 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 5d2f9b9..66e27a3 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3429,6 +3429,7 @@ static void __exit ath10k_pci_exit(void)
- /* QCA6174 3.1 firmware files */
- MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" ATH10K_FW_API4_FILE);
- MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" ATH10K_FW_API5_FILE);
-+MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" ATH10K_FW_API6_FILE);
- MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" QCA6174_HW_3_0_BOARD_DATA_FILE);
- MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" ATH10K_BOARD_API2_FILE);
- 
--- 
-1.9.1
-
+> Regards,
+> Arend
+> 
+> > Tamizh chelvam (2):
+> >   cfg80211: Add support to enable or disable btcoex and set
+> >     btcoex_priority
+> >   mac80211: Add support to enable or disable btcoex and set btcoex
+> >     priority value
+> >
+> > v4 :
+> >   * Moved btcoex_priority_support_flag enum to nl80211.h and renamed it.
+> >   * fixed typo.
+> >
+> > v3 :
+> >   * Introduced NL80211_EXT_FEATURE_BTCOEX_PRIORITY to expose
+> >     btcoex priority support and removed bool variable.
+> >
+> > v2 :
+> >   * Introduced NL80211_CMD_SET_BTCOEX to enable/disable btcoex and
+> >     to set/modify btcoex_priority.
+> >   * Added bool variable in wiphy structure to advertise btcoex_priority
+> >     feature and removed BITMAP calculation for btcoex_priority value.
+> >
+> >  include/net/cfg80211.h       |    6 +++++
+> >  include/net/mac80211.h       |    5 +++++
+> >  include/uapi/linux/nl80211.h |   50
+> ++++++++++++++++++++++++++++++++++++++++++
+> >  net/mac80211/cfg.c           |    9 ++++++++
+> >  net/mac80211/driver-ops.h    |   15 +++++++++++++
+> >  net/mac80211/trace.h         |   20 +++++++++++++++++
+> >  net/wireless/nl80211.c       |   45
+> +++++++++++++++++++++++++++++++++++++
+> >  net/wireless/rdev-ops.h      |   13 +++++++++++
+> >  net/wireless/trace.h         |   17 ++++++++++++++
+> >  9 files changed, 180 insertions(+)
+> >
 
 _______________________________________________
 ath10k mailing list
