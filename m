@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cya8Y-0007Vm-Gu
- for ath10k@lists.infradead.org; Thu, 13 Apr 2017 08:29:56 +0000
-Subject: [PATCH v7 03/10] ath10k: htc: move htc ctrl ep connect to htc_init
+ id 1cya8i-0007ZQ-Gj
+ for ath10k@lists.infradead.org; Thu, 13 Apr 2017 08:30:10 +0000
+Subject: [PATCH v7 04/10] ath10k: htc: refactorization
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 13 Apr 2017 11:29:24 +0300
-Message-ID: <149207216424.4590.8349330640077644797.stgit@potku.adurom.net>
+Date: Thu, 13 Apr 2017 11:29:37 +0300
+Message-ID: <149207217697.4590.8343909021938155204.stgit@potku.adurom.net>
 In-Reply-To: <149207201649.4590.5821794186383265138.stgit@potku.adurom.net>
 References: <149207201649.4590.5821794186383265138.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -27,103 +27,117 @@ Cc: linux-wireless@vger.kernel.org
 
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-This patch moves the HTC ctrl service connect from
-htc_wait_target to htc_init.
+Code refactorization:
 
-This is done in order to make sure the htc ctrl service
-is setup properly before hif_start is called.
+Moved the code for ep 0 in ath10k_htc_rx_completion_handler
+to ath10k_htc_control_rx_complete.
 
-The reason for this is that we want the HTC ctrl service
-callback to be initialized before the target sends the
-HTC ready message.
+This eases the implementation of SDIO/mbox significantly since
+the ep_rx_complete cb is invoked directly from the SDIO/mbox
+hif layer.
 
-The ready message will always be transmitted on endpoint 0
-(which is always assigned to the HTC control service) so it
-makes more sense if HTC control has been connected before the
-ready message is received.
-
-Since the service to pipe mapping is done as a part of
-the service connect, the get_default_pipe call is redundant
-and was removed.
+Since the ath10k_htc_control_rx_complete already is present
+(only containing a warning message) there is no reason for not
+using it (instead of having a special case for ep 0 in
+ath10k_htc_rx_completion_handler).
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.c |   39 ++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 22 deletions(-)
+ drivers/net/wireless/ath/ath10k/htc.c |   74 +++++++++++++++------------------
+ 1 file changed, 34 insertions(+), 40 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 0a06562c0d32..04e355207a2d 100644
+index 04e355207a2d..15b805629336 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.c
 +++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -590,8 +590,6 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 	struct ath10k *ar = htc->ar;
- 	int i, status = 0;
- 	unsigned long time_left;
--	struct ath10k_htc_svc_conn_req conn_req;
--	struct ath10k_htc_svc_conn_resp conn_resp;
- 	struct ath10k_htc_msg *msg;
- 	u16 message_id;
- 	u16 credit_count;
-@@ -654,22 +652,6 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
- 		return -ECOMM;
- 	}
+@@ -464,42 +464,6 @@ void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		/* zero length packet with trailer data, just drop these */
+ 		goto out;
  
--	/* setup our pseudo HTC control endpoint connection */
--	memset(&conn_req, 0, sizeof(conn_req));
--	memset(&conn_resp, 0, sizeof(conn_resp));
--	conn_req.ep_ops.ep_tx_complete = ath10k_htc_control_tx_complete;
--	conn_req.ep_ops.ep_rx_complete = ath10k_htc_control_rx_complete;
--	conn_req.max_send_queue_depth = ATH10K_NUM_CONTROL_TX_BUFFERS;
--	conn_req.service_id = ATH10K_HTC_SVC_ID_RSVD_CTRL;
+-	if (eid == ATH10K_HTC_EP_0) {
+-		struct ath10k_htc_msg *msg = (struct ath10k_htc_msg *)skb->data;
 -
--	/* connect fake service */
--	status = ath10k_htc_connect_service(htc, &conn_req, &conn_resp);
--	if (status) {
--		ath10k_err(ar, "could not connect to htc service (%d)\n",
--			   status);
--		return status;
+-		switch (__le16_to_cpu(msg->hdr.message_id)) {
+-		case ATH10K_HTC_MSG_READY_ID:
+-		case ATH10K_HTC_MSG_CONNECT_SERVICE_RESP_ID:
+-			/* handle HTC control message */
+-			if (completion_done(&htc->ctl_resp)) {
+-				/*
+-				 * this is a fatal error, target should not be
+-				 * sending unsolicited messages on the ep 0
+-				 */
+-				ath10k_warn(ar, "HTC rx ctrl still processing\n");
+-				complete(&htc->ctl_resp);
+-				goto out;
+-			}
+-
+-			htc->control_resp_len =
+-				min_t(int, skb->len,
+-				      ATH10K_HTC_MAX_CTRL_MSG_LEN);
+-
+-			memcpy(htc->control_resp_buffer, skb->data,
+-			       htc->control_resp_len);
+-
+-			complete(&htc->ctl_resp);
+-			break;
+-		case ATH10K_HTC_MSG_SEND_SUSPEND_COMPLETE:
+-			htc->htc_ops.target_send_suspend_complete(ar);
+-			break;
+-		default:
+-			ath10k_warn(ar, "ignoring unsolicited htc ep0 event\n");
+-			break;
+-		}
+-		goto out;
 -	}
 -
- 	return 0;
- }
- 
-@@ -879,8 +861,10 @@ int ath10k_htc_start(struct ath10k_htc *htc)
- /* registered target arrival callback from the HIF layer */
- int ath10k_htc_init(struct ath10k *ar)
+ 	ath10k_dbg(ar, ATH10K_DBG_HTC, "htc rx completion ep %d skb %pK\n",
+ 		   eid, skb);
+ 	ep->ep_ops.ep_rx_complete(ar, skb);
+@@ -514,10 +478,40 @@ EXPORT_SYMBOL(ath10k_htc_rx_completion_handler);
+ static void ath10k_htc_control_rx_complete(struct ath10k *ar,
+ 					   struct sk_buff *skb)
  {
--	struct ath10k_htc_ep *ep = NULL;
-+	int status;
- 	struct ath10k_htc *htc = &ar->htc;
-+	struct ath10k_htc_svc_conn_req conn_req;
-+	struct ath10k_htc_svc_conn_resp conn_resp;
- 
- 	spin_lock_init(&htc->tx_lock);
- 
-@@ -888,10 +872,21 @@ int ath10k_htc_init(struct ath10k *ar)
- 
- 	htc->ar = ar;
- 
--	/* Get HIF default pipe for HTC message exchange */
--	ep = &htc->endpoint[ATH10K_HTC_EP_0];
-+	/* setup our pseudo HTC control endpoint connection */
-+	memset(&conn_req, 0, sizeof(conn_req));
-+	memset(&conn_resp, 0, sizeof(conn_resp));
-+	conn_req.ep_ops.ep_tx_complete = ath10k_htc_control_tx_complete;
-+	conn_req.ep_ops.ep_rx_complete = ath10k_htc_control_rx_complete;
-+	conn_req.max_send_queue_depth = ATH10K_NUM_CONTROL_TX_BUFFERS;
-+	conn_req.service_id = ATH10K_HTC_SVC_ID_RSVD_CTRL;
- 
--	ath10k_hif_get_default_pipe(ar, &ep->ul_pipe_id, &ep->dl_pipe_id);
-+	/* connect fake service */
-+	status = ath10k_htc_connect_service(htc, &conn_req, &conn_resp);
-+	if (status) {
-+		ath10k_err(ar, "could not connect to htc service (%d)\n",
-+			   status);
-+		return status;
+-	/* This is unexpected. FW is not supposed to send regular rx on this
+-	 * endpoint.
+-	 */
+-	ath10k_warn(ar, "unexpected htc rx\n");
++	struct ath10k_htc *htc = &ar->htc;
++	struct ath10k_htc_msg *msg = (struct ath10k_htc_msg *)skb->data;
++
++	switch (__le16_to_cpu(msg->hdr.message_id)) {
++	case ATH10K_HTC_MSG_READY_ID:
++	case ATH10K_HTC_MSG_CONNECT_SERVICE_RESP_ID:
++		/* handle HTC control message */
++		if (completion_done(&htc->ctl_resp)) {
++			/* this is a fatal error, target should not be
++			 * sending unsolicited messages on the ep 0
++			 */
++			ath10k_warn(ar, "HTC rx ctrl still processing\n");
++			complete(&htc->ctl_resp);
++			goto out;
++		}
++
++		htc->control_resp_len =
++			min_t(int, skb->len,
++			      ATH10K_HTC_MAX_CTRL_MSG_LEN);
++
++		memcpy(htc->control_resp_buffer, skb->data,
++		       htc->control_resp_len);
++
++		complete(&htc->ctl_resp);
++		break;
++	case ATH10K_HTC_MSG_SEND_SUSPEND_COMPLETE:
++		htc->htc_ops.target_send_suspend_complete(ar);
++		break;
++	default:
++		ath10k_warn(ar, "ignoring unsolicited htc ep0 event\n");
++		break;
 +	}
- 
- 	init_completion(&htc->ctl_resp);
++
++out:
+ 	kfree_skb(skb);
+ }
  
 
 
