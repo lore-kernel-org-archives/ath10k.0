@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from s3.sipsolutions.net ([2a01:4f8:190:3424::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cyMPB-0003ek-SM
- for ath10k@lists.infradead.org; Wed, 12 Apr 2017 17:50:11 +0000
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Subject: [PATCH] ath: Fix updating radar flags for coutry code India
-Date: Wed, 12 Apr 2017 23:19:37 +0530
-Message-ID: <1492019377-5556-1-git-send-email-mohammed@qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1cyYJQ-000062-0q
+ for ath10k@lists.infradead.org; Thu, 13 Apr 2017 06:33:02 +0000
+Message-ID: <1492065153.28255.1.camel@sipsolutions.net>
+Subject: Re: [PATCHv4 0/2] cfg80211: mac80211: BTCOEX feature support
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Thu, 13 Apr 2017 08:32:33 +0200
+In-Reply-To: <efe890d95d374af7b7a8839811afe0d8@aphydexm01f.ap.qualcomm.com>
+References: <1491905730-16392-1-git-send-email-c_traja@qti.qualcomm.com>
+ <50d867d1-740c-85b9-2bab-6ef49c4d87c1@broadcom.com>
+ <efe890d95d374af7b7a8839811afe0d8@aphydexm01f.ap.qualcomm.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,95 +25,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: Tamizh Chelvam Raja <c_traja@qti.qualcomm.com>, Arend Van Spriel <arend.vanspriel@broadcom.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+Cc: "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>, Marcel Holtmann <marcel@holtmann.org>, "tamizhchelvam@codeaurora.org" <tamizhchelvam@codeaurora.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+On Wed, 2017-04-12 at 07:08 +0000, Tamizh Chelvam Raja wrote:
+> > 
+> > So you make a distinction between WMM ACs, but what about the
+> > different
+> > types/profiles of BT traffic?
+> > 
+> 
+> [Tamizh] There will be BT high and BT low traffic. It will be decided
+> by BT module. Firmware internally checks BT low traffic with wlan
+> traffic. If we enable some of wlan frames as high priority, those
+> frames will have more priority than BT low traffic.
 
-As per latest regulatory update for India, channel 52, 56, 60, 64
-is no longer restricted to DFS. Enabling DFS/no infra flags in driver
-results in applying all DFS related restrictions (like doing CAC etc
-before this channel moves to 'available state') for these channels
-even though the country code is programmed as 'India' in he hardware,
-fix this by relaxing the frequency range while applying RADAR flags
-only if the country code is programmed to India. If the frequency range
-needs to modified based on different country code, ath_is_radar_freq
-can be extended/modified dynamically.
+That ("firmware internally..." etc.) really sounds more like an
+argument *not* to apply this patch ...
 
-Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
----
- drivers/net/wireless/ath/regd.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+Everyone has their favourite BT coex control. We could possibly
+implement this in our driver, but I'm not sure we'd *want* to, since
+it's so far from what we actually do today.
 
-diff --git a/drivers/net/wireless/ath/regd.c b/drivers/net/wireless/ath/regd.c
-index 43afa83..e25bfdf 100644
---- a/drivers/net/wireless/ath/regd.c
-+++ b/drivers/net/wireless/ath/regd.c
-@@ -254,8 +254,12 @@ bool ath_is_49ghz_allowed(u16 regdomain)
- EXPORT_SYMBOL(ath_is_49ghz_allowed);
- 
- /* Frequency is one where radar detection is required */
--static bool ath_is_radar_freq(u16 center_freq)
-+static bool ath_is_radar_freq(u16 center_freq,
-+			      struct ath_regulatory *reg)
-+
- {
-+	if (reg->country_code == CTRY_INDIA)
-+		return (center_freq >= 5500 && center_freq <= 5700);
- 	return (center_freq >= 5260 && center_freq <= 5700);
- }
- 
-@@ -306,7 +310,7 @@ static void ath_force_no_ir_freq(struct wiphy *wiphy, u16 center_freq)
- 				enum nl80211_reg_initiator initiator,
- 				struct ieee80211_channel *ch)
- {
--	if (ath_is_radar_freq(ch->center_freq) ||
-+	if (ath_is_radar_freq(ch->center_freq, reg) ||
- 	    (ch->flags & IEEE80211_CHAN_RADAR))
- 		return;
- 
-@@ -395,8 +399,9 @@ static void ath_force_no_ir_freq(struct wiphy *wiphy, u16 center_freq)
- 	}
- }
- 
--/* Always apply Radar/DFS rules on freq range 5260 MHz - 5700 MHz */
--static void ath_reg_apply_radar_flags(struct wiphy *wiphy)
-+/* Always apply Radar/DFS rules on freq range 5500 MHz - 5700 MHz */
-+static void ath_reg_apply_radar_flags(struct wiphy *wiphy,
-+				      struct ath_regulatory *reg)
- {
- 	struct ieee80211_supported_band *sband;
- 	struct ieee80211_channel *ch;
-@@ -409,7 +414,7 @@ static void ath_reg_apply_radar_flags(struct wiphy *wiphy)
- 
- 	for (i = 0; i < sband->n_channels; i++) {
- 		ch = &sband->channels[i];
--		if (!ath_is_radar_freq(ch->center_freq))
-+		if (!ath_is_radar_freq(ch->center_freq, reg))
- 			continue;
- 		/* We always enable radar detection/DFS on this
- 		 * frequency range. Additionally we also apply on
-@@ -506,7 +511,7 @@ void ath_reg_notifier_apply(struct wiphy *wiphy,
- 	struct ath_common *common = container_of(reg, struct ath_common,
- 						 regulatory);
- 	/* We always apply this */
--	ath_reg_apply_radar_flags(wiphy);
-+	ath_reg_apply_radar_flags(wiphy, reg);
- 
- 	/*
- 	 * This would happen when we have sent a custom regulatory request
-@@ -654,7 +659,7 @@ static u16 ath_regd_get_default_country(u16 rd)
- 	}
- 
- 	wiphy_apply_custom_regulatory(wiphy, regd);
--	ath_reg_apply_radar_flags(wiphy);
-+	ath_reg_apply_radar_flags(wiphy, reg);
- 	ath_reg_apply_world_flags(wiphy, NL80211_REGDOM_SET_BY_DRIVER, reg);
- 	return 0;
- }
--- 
-1.9.1
+Do we really need more than toggling it on/off?
 
+Actually, I probably should've asked this much earlier - but what use
+cases do you see for this? What can a user, or userspace application
+like NM, really try to set here? It seems the use cases for this would
+be rather constrained?
+
+johannes
 
 _______________________________________________
 ath10k mailing list
