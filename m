@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1cya99-0000Wa-Gb
- for ath10k@lists.infradead.org; Thu, 13 Apr 2017 08:30:33 +0000
-Subject: [PATCH v7 06/10] ath10k: add sdio extra initializations
+ id 1cya9f-0000nb-SZ
+ for ath10k@lists.infradead.org; Thu, 13 Apr 2017 08:31:05 +0000
+Subject: [PATCH v7 08/10] ath10k: htc: ready_ext msg support
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 13 Apr 2017 11:30:05 +0300
-Message-ID: <149207220550.4590.5420612965578988206.stgit@potku.adurom.net>
+Date: Thu, 13 Apr 2017 11:30:33 +0300
+Message-ID: <149207223329.4590.6028438533326508621.stgit@potku.adurom.net>
 In-Reply-To: <149207201649.4590.5821794186383265138.stgit@potku.adurom.net>
 References: <149207201649.4590.5821794186383265138.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -27,51 +27,109 @@ Cc: linux-wireless@vger.kernel.org
 
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Extra initializations needed by all sdio boards.
-Derived from qcacld.
+Added support for extended ready message.
+The extended ready message contains the maximum bundle
+count supported by SDIO chipsets.
+
+It is transmitted by SDIO chipset only and replaces the
+"standard" ready message in this case.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/net/wireless/ath/ath10k/htc.c |   28 ++++++++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/htc.h |    5 +++++
+ 2 files changed, 27 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 1b4c08b5eaa9..15a9549aad07 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -377,6 +377,21 @@ static void ath10k_send_suspend_complete(struct ath10k *ar)
- 	complete(&ar->target_suspend);
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 15b805629336..e5c80f582ff5 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -586,8 +586,6 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
+ 	unsigned long time_left;
+ 	struct ath10k_htc_msg *msg;
+ 	u16 message_id;
+-	u16 credit_count;
+-	u16 credit_size;
+ 
+ 	time_left = wait_for_completion_timeout(&htc->ctl_resp,
+ 						ATH10K_HTC_WAIT_TIMEOUT_HZ);
+@@ -624,16 +622,14 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
+ 
+ 	msg = (struct ath10k_htc_msg *)htc->control_resp_buffer;
+ 	message_id   = __le16_to_cpu(msg->hdr.message_id);
+-	credit_count = __le16_to_cpu(msg->ready.credit_count);
+-	credit_size  = __le16_to_cpu(msg->ready.credit_size);
+ 
+ 	if (message_id != ATH10K_HTC_MSG_READY_ID) {
+ 		ath10k_err(ar, "Invalid HTC ready msg: 0x%x\n", message_id);
+ 		return -ECOMM;
+ 	}
+ 
+-	htc->total_transmit_credits = credit_count;
+-	htc->target_credit_size = credit_size;
++	htc->total_transmit_credits = __le16_to_cpu(msg->ready.credit_count);
++	htc->target_credit_size = __le16_to_cpu(msg->ready.credit_size);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_HTC,
+ 		   "Target ready! transmit resources: %d size:%d\n",
+@@ -646,6 +642,19 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
+ 		return -ECOMM;
+ 	}
+ 
++	/* The only way to determine if the ready message is an extended
++	 * message is from the size.
++	 */
++	if (htc->control_resp_len >=
++	    sizeof(msg->hdr) + sizeof(msg->ready_ext)) {
++		htc->max_msgs_per_htc_bundle =
++			min_t(u8, msg->ready_ext.max_msgs_per_htc_bundle,
++			      HTC_HOST_MAX_MSG_PER_BUNDLE);
++		ath10k_dbg(ar, ATH10K_DBG_HTC,
++			   "Extended ready message. RX bundle size: %d\n",
++			   htc->max_msgs_per_htc_bundle);
++	}
++
+ 	return 0;
  }
  
-+static void ath10k_init_sdio(struct ath10k *ar)
-+{
-+	u32 param = 0;
-+
-+	ath10k_bmi_write32(ar, hi_mbox_io_block_sz, 256);
-+	ath10k_bmi_write32(ar, hi_mbox_isr_yield_limit, 99);
-+	ath10k_bmi_read32(ar, hi_acs_flags, &param);
-+
-+	param |= (HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET |
-+		  HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET |
-+		  HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE);
-+
-+	ath10k_bmi_write32(ar, hi_acs_flags, param);
-+}
-+
- static int ath10k_init_configure_target(struct ath10k *ar)
- {
- 	u32 param_host;
-@@ -1941,6 +1956,9 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 	if (status)
- 		goto err;
+@@ -841,6 +850,13 @@ int ath10k_htc_start(struct ath10k_htc *htc)
+ 	msg->hdr.message_id =
+ 		__cpu_to_le16(ATH10K_HTC_MSG_SETUP_COMPLETE_EX_ID);
  
-+	if (ar->hif.bus == ATH10K_BUS_SDIO)
-+		ath10k_init_sdio(ar);
-+
- 	ar->htc.htc_ops.target_send_suspend_complete =
- 		ath10k_send_suspend_complete;
++	if (ar->hif.bus == ATH10K_BUS_SDIO) {
++		/* Extra setup params used by SDIO */
++		msg->setup_complete_ext.flags =
++			__cpu_to_le32(ATH10K_HTC_SETUP_COMPLETE_FLAGS_RX_BNDL_EN);
++		msg->setup_complete_ext.max_msgs_per_bundled_recv =
++			htc->max_msgs_per_htc_bundle;
++	}
+ 	ath10k_dbg(ar, ATH10K_DBG_HTC, "HTC is using TX credit flow control\n");
  
+ 	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
+diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+index ae6003495649..24663b07eeac 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.h
++++ b/drivers/net/wireless/ath/ath10k/htc.h
+@@ -112,6 +112,10 @@ enum ath10k_htc_conn_svc_status {
+ 	ATH10K_HTC_CONN_SVC_STATUS_NO_MORE_EP   = 4
+ };
+ 
++enum ath10k_htc_setup_complete_flags {
++	ATH10K_HTC_SETUP_COMPLETE_FLAGS_RX_BNDL_EN = 1
++};
++
+ struct ath10k_ath10k_htc_msg_hdr {
+ 	__le16 message_id; /* @enum htc_message_id */
+ } __packed;
+@@ -360,6 +364,7 @@ struct ath10k_htc {
+ 
+ 	int total_transmit_credits;
+ 	int target_credit_size;
++	u8 max_msgs_per_htc_bundle;
+ };
+ 
+ int ath10k_htc_init(struct ath10k *ar);
 
 
 _______________________________________________
