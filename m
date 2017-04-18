@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from cmailsend001.wmail.naver.com ([125.209.215.140])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d04CD-00078b-Rn
- for ath10k@lists.infradead.org; Mon, 17 Apr 2017 10:47:52 +0000
-Date: Mon, 17 Apr 2017 19:47:18 +0900 (KST)
-From: Kwang Min Kim <gwondori@nimbus.kr>
-Message-ID: <894a88a7c45afe22b31aa419df683576@cvweb06.wmail.nhnsystem.com>
-Subject: =?UTF-8?B?SG93IGNhbiBJIHVzZSB0aGUgYXRoMTBrIDQuOUdIeiBiYW5kPw==?=
+ id 1d0UFn-0008EB-1T
+ for ath10k@lists.infradead.org; Tue, 18 Apr 2017 14:37:16 +0000
 MIME-Version: 1.0
+Subject: Re: [v2,1/3] ath9k: Support channels in licensed bands
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20170323133048.30062-2-sw@simonwunderlich.de>
+References: <20170323133048.30062-2-sw@simonwunderlich.de>
+Message-Id: <20170418143654.49EA960F94@smtp.codeaurora.org>
+Date: Tue, 18 Apr 2017 14:36:54 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,43 +18,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: Kwang Min Kim <gwondori@nimbus.kr>
-Content-Type: multipart/mixed; boundary="===============6184059823843105981=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: =?UTF-8?B?6rCV6rK97JmE?= <bigskang@nimbus.kr>
+To: Simon Wunderlich <sw@simonwunderlich.de>
+Cc: Julian Calaby <julian.calaby@gmail.com>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org, Ben Greear <greearb@candelatech.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
 
+Simon Wunderlich <sw@simonwunderlich.de> wrote:
+> From: Ben Greear <greearb@candelatech.com>
+> 
+> Many chips support channels in licensed bands. Add support for those,
+> along with a corresponding kernel config option to disable them by
+> default. Note that these channels are not selectable even if the
+> option has been compiled unless the user modifies the regulatory
+> database to explicitly enable the corresponding channels.
+> 
+> NOTE:  These channels must not be used in most regulatory
+> domains unless you have a license from the FCC or similar!
+> 
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> [Hide this support behind a Kconfig option]
+> Signed-off-by: Julian Calaby <julian.calaby@gmail.com>
+> [only use the 20 mhz channels, add 5 ghz, change to 4.9ghz to licensed bands, simplify]
+> Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+> Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
 
---===============6184059823843105981==
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_824093_94573122.1492426038745"
+I am not sure that we should support unlicensed bands in Linux and hence
+hesitant to apply these. My view is that due to regulatory restrictions we
+should not make it too easy to use unlicensed bands. But I'm open for
+discussion, this is a challenging area and my knowledge here is limited.
 
+-- 
+https://patchwork.kernel.org/patch/9641105/
 
-------=_Part_824093_94573122.1492426038745
-Content-Type: text/plain;
-	charset=UTF-8
-Content-Transfer-Encoding: base64
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-SGksIAoKSG93IGNhbiBJIHVzZSB0aGUgYXRoMTBrIDQuOUdIeiBiYW5kPwoKSSBoYXZlIG1vZGlm
-aWVkICJjb3JlLmgiIGFuZCAibWFjLmMiIGJ1dCA0LjkgR0h6IGJhbmQgZG9lcyBub3Qgd29yay4K
-ClRoZSBjaGlwc2V0IEkgYW0gdXNpbmcgaXMgUUNBOTg5MCBhbmQgdGhlIG1vZGVsIG5hbWUgaXMg
-V0xFOTAwVlgtN0JBLgoKQW5kIGRyaXZlciB2ZXJzaW9uIHVzZXMgYmFja3BvcnRzLTQuNC4yIHN0
-YWJsZSwgYW5kIHRoZSBmaXJtd2FyZSB2ZXJzaW9uIG9mIGF0aDEwayB1c2VzICIxMC4yLjQuNzAu
-NjMtMiIuCgpUaGFua3MuCgotLS0KCktpbSBLd2FuZyBNaW4KCk1vYmlsZSArODIgMDEwLTU1MjEt
-NjM5MyAKTWFpbCBnd29uZG9yaUBuaW1idXMua3IgCgoKCgo=
-------=_Part_824093_94573122.1492426038745--
-
-
---===============6184059823843105981==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============6184059823843105981==--
