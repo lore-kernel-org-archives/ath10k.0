@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
+Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
+ helo=mail.mail.packetmixer.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0UTN-0006gj-Bw
- for ath10k@lists.infradead.org; Tue, 18 Apr 2017 14:51:19 +0000
+ id 1d0VNv-00082G-89
+ for ath10k@lists.infradead.org; Tue, 18 Apr 2017 15:49:46 +0000
 From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Re: [v2,1/3] ath9k: Support channels in licensed bands
-Date: Tue, 18 Apr 2017 16:50:52 +0200
-Message-ID: <3170657.DNPqgEf8fi@prime>
-In-Reply-To: <20170418143654.8AC0A60FAA@smtp.codeaurora.org>
-References: <20170323133048.30062-2-sw@simonwunderlich.de>
- <20170418143654.8AC0A60FAA@smtp.codeaurora.org>
+Subject: Re: How can I use the ath10k 4.9GHz band?
+Date: Tue, 18 Apr 2017 17:49:19 +0200
+Message-ID: <5948146.VDxszqfsK7@prime>
+In-Reply-To: <894a88a7c45afe22b31aa419df683576@cvweb06.wmail.nhnsystem.com>
+References: <894a88a7c45afe22b31aa419df683576@cvweb06.wmail.nhnsystem.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,97 +19,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7527463387671596742=="
+Content-Type: multipart/mixed; boundary="===============5147146807917668154=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Julian Calaby <julian.calaby@gmail.com>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org, Ben Greear <greearb@candelatech.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+To: ath10k@lists.infradead.org, Kwang Min Kim <gwondori@nimbus.kr>
+Cc: =?utf-8?B?6rCV6rK97JmE?= <bigskang@nimbus.kr>
 
---===============7527463387671596742==
-Content-Type: multipart/signed; boundary="nextPart2143168.6jItE74DCN"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+--===============5147146807917668154==
+Content-Type: multipart/signed; boundary="nextPart8939118.Iah7FIpKaF"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
---nextPart2143168.6jItE74DCN
+--nextPart8939118.Iah7FIpKaF
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
 
-Hi,
+Hi Kim,
 
-On Tuesday, April 18, 2017 2:36:54 PM CEST Kalle Valo wrote:
-> Simon Wunderlich <sw@simonwunderlich.de> wrote:
-> > From: Ben Greear <greearb@candelatech.com>
-> > 
-> > Many chips support channels in licensed bands. Add support for those,
-> > along with a corresponding kernel config option to disable them by
-> > default. Note that these channels are not selectable even if the
-> > option has been compiled unless the user modifies the regulatory
-> > database to explicitly enable the corresponding channels.
-> > 
-> > NOTE:  These channels must not be used in most regulatory
-> > domains unless you have a license from the FCC or similar!
-> > 
-> > Signed-off-by: Ben Greear <greearb@candelatech.com>
-> > [Hide this support behind a Kconfig option]
-> > Signed-off-by: Julian Calaby <julian.calaby@gmail.com>
-> > [only use the 20 mhz channels, add 5 ghz, change to 4.9ghz to licensed
-> > bands, simplify] Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-> > Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
-> 
-> I am not sure that we should support unlicensed bands in Linux and hence
-> hesitant to apply these. My view is that due to regulatory restrictions we
-> should not make it too easy to use unlicensed bands. But I'm open for
-> discussion, this is a challenging area and my knowledge here is limited.
+I've posted some patches recently here:
 
-thanks for your reply! I agree that we should not make it too easy, and 
-therefore there are the following "obstacles" which should avoid accidental 
-use of license bands:
+https://patchwork.kernel.org/patch/9641113/
 
- * we have the kernel CONFIG option which features a big fat warning
- * regulatory database must be tampered with to enabel the channels. In 
-distributions, the regdb also gets signed. There is also the "internal regdb" 
-CONFIG option if you compile your own kernel (rarely used, except for 
-OpenWRT). In each case, a user must actively add the 4.9 GHz channels into it, 
-because they are not included in the default regdb (and this should not 
-change).
- * CFG80211_CERTIFICATION_ONUS is also required, which also says "you are on 
-your own".
-
-I had a comparison with ath5k, which also allows using those channels without 
-at least the special configuration option (there is one enabling even more 
-channels). The regdb "obstacle" is in place as well. However, ath5k is for 
-very old chips and therefore the threat is limited.
-
-In my personal view, we have quite a few obstacles which I consider "enough", 
-but would be interesting to hear others opinions ...
+Not sure if those channels match those which you have a license for, though. 
+And they are for a more recent kernel (i.e. not 4.4)
 
 Cheers,
-      Simon
---nextPart2143168.6jItE74DCN
+     Simon
+
+On Monday, April 17, 2017 7:47:18 PM CEST Kwang Min Kim wrote:
+> Hi,
+> 
+> How can I use the ath10k 4.9GHz band?
+> 
+> I have modified "core.h" and "mac.c" but 4.9 GHz band does not work.
+> 
+> The chipset I am using is QCA9890 and the model name is WLE900VX-7BA.
+> 
+> And driver version uses backports-4.4.2 stable, and the firmware version of
+> ath10k uses "10.2.4.70.63-2".
+> 
+> Thanks.
+> 
+> ---
+> 
+> Kim Kwang Min
+> 
+> Mobile +82 010-5521-6393
+> Mail gwondori@nimbus.kr
+
+
+--nextPart8939118.Iah7FIpKaF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part.
 Content-Transfer-Encoding: 7Bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE1ilQI7G+y+fdhnrfoSvjmEKSnqEFAlj2J8wACgkQoSvjmEKS
-nqFFmBAAmdGgMdLutorSFpPauYucnNYi2aAIN0yaKgGz968dI6OYn2eYXkZKGjYo
-kTIdLTDt1SORb41PU6Csda8FwDDdv+A9WJZT7mUZz4uD1/fRZpj5irq0Er9+5ikA
-wbcmpSUlYKYnoWU1eRv5XMB7SjyWwAziPlZLA4+lGo+ga/YOXxq3dkIP/q2Xz5IF
-Hc+X+OtYH1QWZSxraH3KRIjZke6y6ak82Ef/geqJ6WiPhbOcAFI5oNuRKGnZy3Ts
-/srLgssUjWWBYTZ5+lc4cXEPT9PCtA31NoOvME7U12nA3v42NncdJVbjaDp+CSQJ
-f3fvFd+r7mOWhxc4SwWtFL87XMww4HyikiSXFAjpJcbJpxOyEfiPgW/wSH74MGC/
-lGeR+F4LYpG2Ymzob42XoxswFbik5BXhncMgih5F4qzC9qI9pfWEWRBh6PzNn2ZV
-ImmEolkGq7OKjig0sO9xJxKG3f6xlbI+r2A+SUJiTafSLyxKnTqZ+Eu5YhrsdIrt
-WRGEKLH3VHRfgYetGutEFB2PGXkTpLsKpu6vXjSvgFpPKAX7gQwZuszXiHHmsc95
-X5ygcv0xvzgwwbBnQNB6jHmLCXr44r4TE6oO5oQL7A128XXWEnp3vR407woYwKOv
-Dk9CNsdPfe5LtdqCq2ghob47rEcamA3q4oh5ni5xdVW0RyZKe7c=
-=71q+
+iQIzBAABCgAdFiEE1ilQI7G+y+fdhnrfoSvjmEKSnqEFAlj2NX8ACgkQoSvjmEKS
+nqEjsg//WvIiqTYAcSBMkOZsjOi9WGssPDNlQKqv4g8uAEKokp1Skcylm2kkGhCP
+aQ7V9bwowWnvNOteAtE3xC539t46oerU71ZzCHGUm+OuVzkQWfG3IbD6eJ5j0xf3
+u1KWFqpDT8fH4lN46HlMdYaDllcDiTDXaMzRPwfomR8UVEOI47JJJ4wuoCvHLois
+RczG7TXdCF6KPgRQ1BvEmQuu+52g4d9ixroOxkv0IoW30ULYPxWm/9IegCn979SI
+d6qK8PC6xXOg4qoGCSuZ70qqFZ1UU74z9CzacfOK2Aq1m6kicJs7fC+QwJQgiZ4k
+Vxa+Zg8NBzWugX8ctAIpgSNZb0ov5zBQvk1baYkFnCFMdyhvqLlUS61dD6sa1oMa
+Y8ppyQWKiJsf09vQuD/0tTcencmrNLuflfWOPsAskVkg8PcLhnPmkybOnL100DNO
+98RbS5wLGakGDf++OKv0A4ekSbINSc9k6MOWROy+82pZw+MqjhFNyfMcx9Z7rUIj
+N6IG6iAiehanfmbPrjYDY1ziIZ9x0Dx4oKeh8kMMZtGbZoks/Hd4tODvgqObuoWB
+e9o/ZPY9yhVDLgu6J1N7Y2lBO3gjZCG0T7AeSy4i9JhkRckytWSc3tGUU+Xwcm1l
+1lp8h/ljv3WtY54YKipj5kHN6o6RQczq9an0gQ+uO6Zaea6/WPM=
+=aRjd
 -----END PGP SIGNATURE-----
 
---nextPart2143168.6jItE74DCN--
+--nextPart8939118.Iah7FIpKaF--
 
 
 
---===============7527463387671596742==
+--===============5147146807917668154==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -120,4 +103,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---===============7527463387671596742==--
+--===============5147146807917668154==--
