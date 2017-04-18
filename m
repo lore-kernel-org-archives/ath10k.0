@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
- helo=mail.mail.packetmixer.de)
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0VNv-00082G-89
- for ath10k@lists.infradead.org; Tue, 18 Apr 2017 15:49:46 +0000
-From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Re: How can I use the ath10k 4.9GHz band?
-Date: Tue, 18 Apr 2017 17:49:19 +0200
-Message-ID: <5948146.VDxszqfsK7@prime>
-In-Reply-To: <894a88a7c45afe22b31aa419df683576@cvweb06.wmail.nhnsystem.com>
-References: <894a88a7c45afe22b31aa419df683576@cvweb06.wmail.nhnsystem.com>
+ id 1d0W93-0006ck-CT
+ for ath10k@lists.infradead.org; Tue, 18 Apr 2017 16:38:27 +0000
+Received: by mail-wm0-x241.google.com with SMTP id o81so429200wmb.0
+ for <ath10k@lists.infradead.org>; Tue, 18 Apr 2017 09:38:02 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <3170657.DNPqgEf8fi@prime>
+References: <20170323133048.30062-2-sw@simonwunderlich.de>
+ <20170418143654.8AC0A60FAA@smtp.codeaurora.org>
+ <3170657.DNPqgEf8fi@prime>
+From: Steve deRosier <derosier@gmail.com>
+Date: Tue, 18 Apr 2017 09:38:00 -0700
+Message-ID: <CALLGbRKADjbZ72W0XD_dU-6YtCHGY2koM4AjUVKdCuHAqCpb3Q@mail.gmail.com>
+Subject: Re: [v2,1/3] ath9k: Support channels in licensed bands
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,88 +22,148 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5147146807917668154=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, Kwang Min Kim <gwondori@nimbus.kr>
-Cc: =?utf-8?B?6rCV6rK97JmE?= <bigskang@nimbus.kr>
+To: Simon Wunderlich <sw@simonwunderlich.de>
+Cc: Julian Calaby <julian.calaby@gmail.com>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org, Ben Greear <greearb@candelatech.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, Kalle Valo <kvalo@codeaurora.org>
 
---===============5147146807917668154==
-Content-Type: multipart/signed; boundary="nextPart8939118.Iah7FIpKaF"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Hi,
 
---nextPart8939118.Iah7FIpKaF
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+(sorry, resending due to my not noticing that gmail had changed my
+default compose mode to HTML. Why does it randomly do that
+sometimes?!?!)
 
-Hi Kim,
-
-I've posted some patches recently here:
-
-https://patchwork.kernel.org/patch/9641113/
-
-Not sure if those channels match those which you have a license for, though. 
-And they are for a more recent kernel (i.e. not 4.4)
-
-Cheers,
-     Simon
-
-On Monday, April 17, 2017 7:47:18 PM CEST Kwang Min Kim wrote:
+On Tue, Apr 18, 2017 at 7:50 AM, Simon Wunderlich <sw@simonwunderlich.de> wrote:
+>
 > Hi,
-> 
-> How can I use the ath10k 4.9GHz band?
-> 
-> I have modified "core.h" and "mac.c" but 4.9 GHz band does not work.
-> 
-> The chipset I am using is QCA9890 and the model name is WLE900VX-7BA.
-> 
-> And driver version uses backports-4.4.2 stable, and the firmware version of
-> ath10k uses "10.2.4.70.63-2".
-> 
-> Thanks.
-> 
-> ---
-> 
-> Kim Kwang Min
-> 
-> Mobile +82 010-5521-6393
-> Mail gwondori@nimbus.kr
+>
+> On Tuesday, April 18, 2017 2:36:54 PM CEST Kalle Valo wrote:
+> > Simon Wunderlich <sw@simonwunderlich.de> wrote:
+> > > From: Ben Greear <greearb@candelatech.com>
+> > >
+> > > Many chips support channels in licensed bands. Add support for those,
+> > > along with a corresponding kernel config option to disable them by
+
+...
+
+> > I am not sure that we should support unlicensed bands in Linux and hence
+> > hesitant to apply these. My view is that due to regulatory restrictions we
+> > should not make it too easy to use unlicensed bands. But I'm open for
+> > discussion, this is a challenging area and my knowledge here is limited.
+>
+...
+>
+>
+> In my personal view, we have quite a few obstacles which I consider "enough",
+> but would be interesting to hear others opinions ...
+>
+
+I'll throw in my 2-cents. This patch is treading on very dangerous
+ground. I can't speak to other regulatory environments, but at least
+the FCC is cracking down on even the possibility that anyone can
+operate a WiFi device outside the regulatory bounds.
+
+I know this is going to be TLDR, but please bear with me.
+
+The testing groups are (incorrectly in my opinion) interpreting the
+current FCC guidelines to be that no one with the device could ever
+get in and change it to operate outside the permitted frequencies and
+powers. And I'm not even talking about having a command-line interface
+and issuing a command as sudo. To the degree that if it's even
+possible to recompile a driver or otherwise change the source code and
+put that changed code on the device they're denying modular
+certifications.
+
+The end result is we have a lot of chip manufacturers' scrambling to
+do things like require eeproms, signed board files, etc. Module
+manufacturers (think of things like Laird's msd45nbt, msd50nbt, or the
+Sterling LWB) are scrambling even harder trying to think of ways to
+force chips to fail to function if they aren't using their regulatory
+file or other strategies to manage to fulfill their customer's needs
+while still getting it to pass through the regulatory agencies.
+
+@Simon, with much respect: With the current regulatory environment,
+those obstacles which you are considering "enough", the testing boards
+aren't considering "enough".
+
+I happen to agree with you that it's more than enough. And just
+because it's possible for a customer of a module who is integrating a
+device to operate it out of the regulatory bounds, doesn't mean it
+shouldn't get the modular certification. In fact, depending on the
+exact situations, it might be _necessary_ for them to make setting
+adjustments for their products. And the reality is, anyone with a
+soldering iron can make the thing operate outside the regulatory
+domain anyway. The whole thing just makes it impossible for modular
+operators and for the Linux community instead of solving any real
+problems.
+
+What's going on in the FCC regulatory environment has stark
+implications that those of us in the Linux wireless community can't
+afford to ignore anymore. This is a direct threat to mac80211, Open
+Source and the ability to do anything sane with our devices. And even
+if you're more practical (like me) about these things, think of it:
+each manufacturer being forced to make it harder and harder for anyone
+to change the code or work with their chips - you think it's hard to
+work with a Marvell or Broadcom chip right now with minimal and
+non-accessible documentation? Imagine how it's going to be when
+everything is locked behind Secure Boot and signed proprietary drivers
+where the hardware itself is locked so it can only work with the (bad
+quality and buggy) closed-source driver.
+
+I brought this up at Wireless Summit at the last LPC and basically got
+a room of shrugs. Admittedly I wasn't terribly eloquent on the subject
+so it's solely my fault I didn't impress. I know that most of us are
+representing various companies (though not I anymore) and each has
+their own proprietary way to deal with it and no one wants to rock the
+boat*. And many of the people in the room are just implementing code
+to make stuff work and don't actually know that much depth about the
+regulatory environment in which we're working. But we all need to get
+together and come up with a better solution.
+
+What's going on right now doesn't serve our interests. I know it's an
+agenda being pushed by someone and while I have a few suspects I
+really don't know for sure. In any case, who it's being pushed by and
+for doesn't matter too much - we as a community aren't pushing back as
+a cohesive group; we aren't even talking about it! And so, we're going
+to get the short end of the stick.
+
+So, with re: to the patch, that's the environment it will live in.
+Personally I don't really care one way or another specifically to what
+Simon's patch does. But he opened the door to discussion and it seemed
+like an appropriate opportunity. I don't mind that it opens more
+functionality, functionality that the chip in question supports. I'd
+even regard this as a good thing, especially considering the
+"obstacles" in place. And keeping it out doesn't solve anything to do
+with the root of the problem either.
+
+As for merging it, I guess my only test would be: is this a
+functionality that the community as a whole benefits from? Either
+because more than one person would be using it, or we have a vested
+interest in keeping a cohesive codebase that doesn't require people to
+use it a crazy maintenance overhead by requiring patching every time
+they upgrade? But that's always the same questions with any patch.
+
+In either case, patch merged or not: we still have an important
+discussion to have about what we're going to do about the FCC
+regulatory problems - before someone "solves" it for us in a way that
+hurts us all.
+
+If you got this far, thanks for reading this.
+
+Thanks,
+- Steve
 
 
---nextPart8939118.Iah7FIpKaF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE1ilQI7G+y+fdhnrfoSvjmEKSnqEFAlj2NX8ACgkQoSvjmEKS
-nqEjsg//WvIiqTYAcSBMkOZsjOi9WGssPDNlQKqv4g8uAEKokp1Skcylm2kkGhCP
-aQ7V9bwowWnvNOteAtE3xC539t46oerU71ZzCHGUm+OuVzkQWfG3IbD6eJ5j0xf3
-u1KWFqpDT8fH4lN46HlMdYaDllcDiTDXaMzRPwfomR8UVEOI47JJJ4wuoCvHLois
-RczG7TXdCF6KPgRQ1BvEmQuu+52g4d9ixroOxkv0IoW30ULYPxWm/9IegCn979SI
-d6qK8PC6xXOg4qoGCSuZ70qqFZ1UU74z9CzacfOK2Aq1m6kicJs7fC+QwJQgiZ4k
-Vxa+Zg8NBzWugX8ctAIpgSNZb0ov5zBQvk1baYkFnCFMdyhvqLlUS61dD6sa1oMa
-Y8ppyQWKiJsf09vQuD/0tTcencmrNLuflfWOPsAskVkg8PcLhnPmkybOnL100DNO
-98RbS5wLGakGDf++OKv0A4ekSbINSc9k6MOWROy+82pZw+MqjhFNyfMcx9Z7rUIj
-N6IG6iAiehanfmbPrjYDY1ziIZ9x0Dx4oKeh8kMMZtGbZoks/Hd4tODvgqObuoWB
-e9o/ZPY9yhVDLgu6J1N7Y2lBO3gjZCG0T7AeSy4i9JhkRckytWSc3tGUU+Xwcm1l
-1lp8h/ljv3WtY54YKipj5kHN6o6RQczq9an0gQ+uO6Zaea6/WPM=
-=aRjd
------END PGP SIGNATURE-----
-
---nextPart8939118.Iah7FIpKaF--
-
-
-
---===============5147146807917668154==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+footnote:
+* Personally, I think that many of the devices in the past and
+currently are getting certifications by clever wording on the
+documents and getting through on a wink and a nod. And no one wants to
+talk about it because that means acknowledging that fact and risking
+newer devices having a more difficult time getting through.
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============5147146807917668154==--
