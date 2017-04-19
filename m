@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0qIF-0000am-Q8
- for ath10k@lists.infradead.org; Wed, 19 Apr 2017 14:09:22 +0000
+ id 1d0qJE-0000vt-SN
+ for ath10k@lists.infradead.org; Wed, 19 Apr 2017 14:10:23 +0000
 MIME-Version: 1.0
-Subject: Re: [v2,3/3] ath9k: add noise floor override option
+Subject: Re: ath: Fix updating radar flags for coutry code India
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20170323133048.30062-4-sw@simonwunderlich.de>
-References: <20170323133048.30062-4-sw@simonwunderlich.de>
-Message-ID: <789c82fc5c3b446b8b24c87ec9e45ed5@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 19 Apr 2017 16:08:47 +0200
+In-Reply-To: <1492019377-5556-1-git-send-email-mohammed@qca.qualcomm.com>
+References: <1492019377-5556-1-git-send-email-mohammed@qca.qualcomm.com>
+Message-ID: <be61b7a7dfe14b338d7c8fef2f3d1ef4@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 19 Apr 2017 16:09:49 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +22,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Simon Wunderlich <sw@simonwunderlich.de>
-Cc: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Simon Wunderlich <sw@simonwunderlich.de> wrote:
-> Introduce a debugfs option to manually override the noise floor,
-> ignoring the automatically tuned noise floor of the driver/hw.
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 > 
-> In my tests with a AR9580 based module and a tx99 5 MHz interferer,
-> I could tune the noisefloor to -95 dBm or above to allow communication
-> again. The automatic noise floor calibration sometimes could adapt to
-> the situation as well, but not reliably and permanently.
+> As per latest regulatory update for India, channel 52, 56, 60, 64
+> is no longer restricted to DFS. Enabling DFS/no infra flags in driver
+> results in applying all DFS related restrictions (like doing CAC etc
+> before this channel moves to 'available state') for these channels
+> even though the country code is programmed as 'India' in he hardware,
+> fix this by relaxing the frequency range while applying RADAR flags
+> only if the country code is programmed to India. If the frequency range
+> needs to modified based on different country code, ath_is_radar_freq
+> can be extended/modified dynamically.
 > 
-> I would consider this "feature" experimental and interesting for people
-> debugging the noise floor calibration or other effects of the hardware.
-> 
-> Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-> Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-b90189759a7f ath9k: add noise floor override option
+c0c345d4cacc ath: Fix updating radar flags for coutry code India
 
 -- 
-https://patchwork.kernel.org/patch/9641107/
+https://patchwork.kernel.org/patch/9678079/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
