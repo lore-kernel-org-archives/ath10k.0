@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d0Wdx-0002Kc-HI
- for ath10k@lists.infradead.org; Tue, 18 Apr 2017 17:10:23 +0000
-Subject: Re: [v2,1/3] ath9k: Support channels in licensed bands
-References: <20170323133048.30062-2-sw@simonwunderlich.de>
- <20170418143654.8AC0A60FAA@smtp.codeaurora.org> <3170657.DNPqgEf8fi@prime>
- <CALLGbRK2d1wZpfLnXu_UDWxVPA9LvejFyEFpzMub56uLH0+DTw@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <d4acedac-e28c-4c1c-d112-40557d52f3a2@candelatech.com>
-Date: Tue, 18 Apr 2017 10:09:59 -0700
+Received: from mail-yb0-x22f.google.com ([2607:f8b0:4002:c09::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d0gMF-0003Z5-Cu
+ for ath10k@lists.infradead.org; Wed, 19 Apr 2017 03:32:45 +0000
+Received: by mail-yb0-x22f.google.com with SMTP id s22so2822186ybe.3
+ for <ath10k@lists.infradead.org>; Tue, 18 Apr 2017 20:32:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALLGbRK2d1wZpfLnXu_UDWxVPA9LvejFyEFpzMub56uLH0+DTw@mail.gmail.com>
+From: =?UTF-8?B?5a2Z5bu65biM?= <ycsunjane@gmail.com>
+Date: Wed, 19 Apr 2017 11:32:19 +0800
+Message-ID: <CABWe71yxXG5VMaPPUK3HeYjNDOn7PiHk1AJy8WnXb-nntOMz4g@mail.gmail.com>
+Subject: ath10k otp.bin board.bin firmware.bin art.bin?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,63 +18,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Steve deRosier <derosier@gmail.com>, Simon Wunderlich <sw@simonwunderlich.de>
-Cc: Julian Calaby <julian.calaby@gmail.com>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
 
-On 04/18/2017 09:33 AM, Steve deRosier wrote:
-> Hi,
->
-> On Tue, Apr 18, 2017 at 7:50 AM, Simon Wunderlich <sw@simonwunderlich.de <mailto:sw@simonwunderlich.de>> wrote:
->
->     Hi,
->
->     On Tuesday, April 18, 2017 2:36:54 PM CEST Kalle Valo wrote:
->     > Simon Wunderlich <sw@simonwunderlich.de <mailto:sw@simonwunderlich.de>> wrote:
->     > > From: Ben Greear <greearb@candelatech.com <mailto:greearb@candelatech.com>>
->     > >
->     > > Many chips support channels in licensed bands. Add support for those,
->     > > along with a corresponding kernel config option to disable them by
->
-> ...
->
->     > I am not sure that we should support unlicensed bands in Linux and hence
->     > hesitant to apply these. My view is that due to regulatory restrictions we
->     > should not make it too easy to use unlicensed bands. But I'm open for
->     > discussion, this is a challenging area and my knowledge here is limited.
->
-> ...
->
->
->     In my personal view, we have quite a few obstacles which I consider "enough",
->     but would be interesting to hear others opinions ...
->
->
-> I'll throw in my 2-cents. This patch is treading on very dangerous ground. I can't speak to other regulatory environments, but at least the FCC is cracking down
-> on even the possibility that anyone can operate a WiFi device outside the regulatory bounds.
+hi,
 
-These patches make it slightly easier to use the licensed bands, but no one
-can accidentally use them due to the regdb and other constaints in these
-patches.
+I am debugging ath10k QCA986x 5g WNIC. And installed the firmware. But
+the card did not rise. The kernel log is as follows:
 
-So, I don't think these patches offer any fundamental new vulnerability
-that should concern the FCC.
+[    9.320705] ath10k_pci 0000:00:00.0: firmware ver 10.2.4-1.0-00029
+api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 88595bb8
+[    9.365636] ath10k_pci 0000:00:00.0: board id is not exist in otp, ignore it
+[    9.372894] ath10k_pci 0000:00:00.0: Direct firmware load for
+ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
 
-After all, someone who really wants to do evil can find and apply the patches
-without undue effort, and it could easily be that those applying the patches would
-then make it even easier to abuse the new channels due to laziness or poor coding
-choices.
+What is the board id in otp?
 
-Thanks,
-Ben
+I found ath10k have otp.bin board.bin firmware.bin art.bin. But ath9k
+only have art.bin which used to calibrate wnic.
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+What are these bin files doing for?
 
 _______________________________________________
 ath10k mailing list
