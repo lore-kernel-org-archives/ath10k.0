@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-yb0-x22b.google.com ([2607:f8b0:4002:c09::22b])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d15fh-0000ZJ-Sh
- for ath10k@lists.infradead.org; Thu, 20 Apr 2017 06:34:31 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: odd msg using kvalo firmware-5.bin w/ KillerAC 1535(QCA6174)
-Date: Thu, 20 Apr 2017 06:34:00 +0000
-Message-ID: <87a87b7fl4.fsf@kamboji.qca.qualcomm.com>
-References: <2103690e-ad1f-4612-e343-1ea711c14a00@linaro.org>
- <1492660230116.11983@qti.qualcomm.com>
-In-Reply-To: <1492660230116.11983@qti.qualcomm.com> (Mohammed Shafi
- Shajakhan's message of "Thu, 20 Apr 2017 03:50:30 +0000")
-Content-Language: en-US
+ id 1d16F8-00088i-DO
+ for ath10k@lists.infradead.org; Thu, 20 Apr 2017 07:11:08 +0000
+Received: by mail-yb0-x22b.google.com with SMTP id 11so17373913ybw.1
+ for <ath10k@lists.infradead.org>; Thu, 20 Apr 2017 00:10:44 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87inlz7fvn.fsf@kamboji.qca.qualcomm.com>
+References: <CABWe71yxXG5VMaPPUK3HeYjNDOn7PiHk1AJy8WnXb-nntOMz4g@mail.gmail.com>
+ <87zifc8w80.fsf@kamboji.qca.qualcomm.com>
+ <CABWe71z5p6pYfpnd6vpjH8Ky=Vg9YjKdLKocGZvBG32B6RDdEA@mail.gmail.com>
+ <87inlz7fvn.fsf@kamboji.qca.qualcomm.com>
+From: =?UTF-8?B?5a2Z5bu65biM?= <ycsunjane@gmail.com>
+Date: Thu, 20 Apr 2017 15:10:43 +0800
+Message-ID: <CABWe71w40QWSw655f8GVJgse-km9=uAqKy2cUC+BdrKuk368hg@mail.gmail.com>
+Subject: Re: ath10k otp.bin board.bin firmware.bin art.bin?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,56 +23,78 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Mohammed Shafi Shajakhan (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Michael Scott <michael.scott@linaro.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-(please don't top post)
-
-"Mohammed Shafi Shajakhan (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
-writes:
-
-> my quick analysis suggests this belongs to
-> 'WMI_TLV_GRP_STATS' 
->
-> WMI_TLV_STATS_EXT_EVENTID = WMI_TLV_EV(WMI_TLV_GRP_STATS), equals to 90112 (0x16000)
->         WMI_TLV_IFACE_LINK_STATS_EVENTID, 90113
->         WMI_TLV_PEER_LINK_STATS_EVENTID, 90114
->         WMI_TLV_RADIO_LINK_STATS_EVENTID, 90015
->              .... ?
->         WMI_TLV_NLO_MATCH_EVENTID = WMI_TLV_EV(WMI_TLV_GRP_NLO_OFL),
-
-
-I checked and I think this is a some kind of RSSI stats event. I assume
-that's a new feature coming from RM.4.4 branch. (Michael said on IRC he
-is not seeing that with RM.2.0 branch.)
-
-> but this should be a harmless warning message indicating the host had not implemented
-> any action for this particular event.
->
-> For example in 10.2 wmi.c
->
->
->    case WMI_10_2_GPIO_INPUT_EVENTID:
->         case WMI_10_2_PEER_RATECODE_LIST_EVENTID:
->         case WMI_10_2_GENERIC_BUFFER_EVENTID:
->         case WMI_10_2_MCAST_BUF_RELEASE_EVENTID:
->         case WMI_10_2_MCAST_LIST_AGEOUT_EVENTID:
->         case WMI_10_2_WDS_PEER_EVENTID:
->                 ath10k_dbg(ar, ATH10K_DBG_WMI,
->                            "received event id %d not implemented\n", id);
->                 break;
-
-Yes, it's harmless but ath10k should not print that warning to not
-distract the users. Can someone make a patch to silent the warning that
-similarly like with WMI_10_2_WDS_PEER_EVENTID above?
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSBoYXZlIHNvbHZlZCB0aGlzIHByb2JsZW0uCkkgYW0gdXNpbmcgTEVERSBMaW51eCB2ZXJzaW9u
+IDQuNC42MS4gRGV2aWNlIGlzIGEgV0YtOTZBICBmcm9tIENJRyBzaGFuZ2hhaS4KCldGLTk2QSB3
+cml0ZSBjYWxpYnJhdGlvbiBkYXRhIGluIHNwaSBmbGFzaC4gSSBoYXZlIHN1Y2Nlc3MgcmVhZCBp
+dCB0bwpgYXRoMTBrL2NhbC1wY2ktMDAwMDowMDowMC4wLmJpbmAuIExFREUgZGVmYXVsdCB1c2Ug
+ZmlybXdhcmUtNS5iaW4gZm9yClFDQTk4OFguIEJ1dCBgYXRoMTBrL2NhbC1wY2ktMDAwMDowMDow
+MC4wLmJpbmAgY2FuIG9ubHkgd29yayB3aXRoCmZpcm13YXJlLTQuYmluLgoKV2hhdCBpcyB0aGUg
+ZnVsbCBuYW1lIG9mIG90cD8gSG93IGRvZXMgb3RwIHdvcms/ClNob3VsZCB3ZSBwYXkgYXR0ZW50
+aW9uIHRvIHRoZSB2ZXJzaW9uIG9mIGNhbGlicmF0aW9uIGFuZCBmaXJtd2FyZSA/CgoyMDE3LTA0
+LTIwIDE0OjI3IEdNVCswODowMCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPjoK
+PiDlrZnlu7rluIwgPHljc3VuamFuZUBnbWFpbC5jb20+IHdyaXRlczoKPgo+PiBUaGUgZHJpdmVy
+IHRlcm1pbmF0ZXMgZXhlY3V0aW9uIGluIHRoZSBmdW5jdGlvbgo+PiAnYXRoMTBrX2Rvd25sb2Fk
+X2NhbF9kYXRhYC4gIGBhdGgxMGtfZG93bmxvYWRfY2FsX2RhdGFgICB0cnkgbG9hZCB0aGUKPj4g
+YCBwcmVfY2FsX2ZpbGVgIGFuZCBgY2FsX2ZpbGVgIGZpbGVzIHZpYSBoaWYuICBTaW5jZSB0aGVz
+ZSB0d28gZmlsZXMKPj4gYXJlIG5vdCBwcm92aWRlZCAsIHRoZW4gdHJ5IHRvIGdldCBmcm9tIGBk
+dCwgZWVwcm9tLCBvdHBgLgo+Pgo+PiBgcHJlLWNhbC5iaW4sIGNhbC5iaW4gYW5kIG90cGAgYXJl
+IHVzZWQgdG8gY2FsaWJyYXRlIHJhZGlvPwo+Pgo+PiBJJ20gc3VyZSBgYm9hcmQuYmluYCB3YXMg
+c3VjY2Vzc2Z1bGx5IGxvYWRlZC4KPj4KPj4gWyAgICA5LjU3MzYwMl0gYXRoMTBrX3BjaSAwMDAw
+OjAwOjAwLjA6IGJvYXJkX2ZpbGUgYXBpIDEgYm1pX2lkIE4vQQo+PiBjcmMzMiBiZWJjN2MwOAo+
+Pgo+PiBEb2VzIGBib2FyZC5iaW5gIG9ubHkgdXNlZCBpbiBgYXRoMTBrX2Rvd25sb2FkX2FuZF9y
+dW5fb3RwYD8gIFdoYXQgaXMKPj4gdGhlIHJlbGF0aW9uc2hpcCBiZXR3ZWVuIG90cCBhbmQgYm9h
+cmQuYmluPwo+Pgo+PiBmdWxsIGtlcm5lbCBsb2c6Cj4+Cj4+IFsgICAgOC41NzkzNzBdIFBDSTog
+RW5hYmxpbmcgZGV2aWNlIDAwMDA6MDA6MDAuMCAoMDAwMCAtPiAwMDAyKQo+PiBbICAgIDguNTg1
+Mjc2XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogcGNpIGlycSBsZWdhY3kgb3Blcl9pcnFfbW9k
+ZSAxCj4+IGlycV9tb2RlIDAgcmVzZXRfbW9kZSAwCj4+IFsgICAgOC44MDIyMjVdIGF0aDEwa19w
+Y2kgMDAwMDowMDowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPj4gYXRoMTBrL3ByZS1j
+YWwtcGNpLTAwMDA6MDA6MDAuMC5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPj4gWyAgICA4Ljgx
+MzEwNF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IEZhbGxpbmcgYmFjayB0byB1c2VyIGhlbHBl
+cgo+PiBbICAgIDguOTYwMDE0XSBmaXJtd2FyZSBhdGgxMGshcHJlLWNhbC1wY2ktMDAwMDowMDow
+MC4wLmJpbjoKPj4gZmlybXdhcmVfbG9hZGluZ19zdG9yZTogbWFwIHBhZ2VzIGZhaWxlZAo+PiBb
+ICAgIDguOTY5MzcyXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxv
+YWQgZm9yCj4+IGF0aDEway9jYWwtcGNpLTAwMDA6MDA6MDAuMC5iaW4gZmFpbGVkIHdpdGggZXJy
+b3IgLTIKPj4gWyAgICA4Ljk3OTg5OF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IEZhbGxpbmcg
+YmFjayB0byB1c2VyIGhlbHBlcgo+PiBbICAgIDkuMTUyNzM1XSBmaXJtd2FyZSBhdGgxMGshY2Fs
+LXBjaS0wMDAwOjAwOjAwLjAuYmluOgo+PiBmaXJtd2FyZV9sb2FkaW5nX3N0b3JlOiBtYXAgcGFn
+ZXMgZmFpbGVkCj4+IFsgICAgOS4zNzIwMTFdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBxY2E5
+ODh4IGh3Mi4wIHRhcmdldAo+PiAweDQxMDAwMTZjIGNoaXBfaWQgMHgwNDMyMjJmZiBzdWIgMDAw
+MDowMDAwCj4+IFsgICAgOS4zODE0MDldIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBrY29uZmln
+IGRlYnVnIDEgZGVidWdmcyAxCj4+IHRyYWNpbmcgMCBkZnMgMCB0ZXN0bW9kZSAxCj4+IFsgICAg
+OS4zOTQ0NTZdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBmaXJtd2FyZSB2ZXIgMTAuMi40Ljcw
+LjYzLTIKPj4gYXBpIDUgZmVhdHVyZXMgbm8tcDJwLHJhdy1tb2RlLG1mcCxhbGxvd3MtbWVzaC1i
+Y2FzdCBjcmMzMiA0ZmY5ZTE0ZAo+PiBbICAgIDkuNDA2NTUxXSBhdGgxMGtfcGNpIDAwMDA6MDA6
+MDAuMDogYm9vdCB1cGxvYWQgb3RwIHRvIDB4MTIzNCBsZW4KPj4gNzIwNSBmb3IgYm9hcmQgaWQK
+Pj4gWyAgICA5LjQ1MjMyNl0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGJvb3QgZ2V0IG90cCBi
+b2FyZCBpZCByZXN1bHQKPj4gMHgwMDAwMDAwMSBib2FyZF9pZCAwIGNoaXBfaWQgMAo+PiBbICAg
+IDkuNDU5MTM0XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogYm9hcmQgaWQgaXMgbm90IGV4aXN0
+IGluIG90cCwgaWdub3JlIGl0Cj4+IFsgICAgOS40NjQxODBdIGF0aDEwa19wY2kgMDAwMDowMDow
+MC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPj4gYXRoMTBrL1FDQTk4OFgvaHcyLjAvYm9h
+cmQtMi5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPj4gWyAgICA5LjQ3NDc3OF0gYXRoMTBrX3Bj
+aSAwMDAwOjAwOjAwLjA6IEZhbGxpbmcgYmFjayB0byB1c2VyIGhlbHBlcgo+PiBbICAgIDkuNTY0
+MzczXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmlybXdhcmUKPj4gYXRoMTBrIVFDQTk4OFgh
+aHcyLjAhYm9hcmQtMi5iaW46IGZpcm13YXJlX2xvYWRpbmdfc3RvcmU6IG1hcCBwYWdlcwo+PiBm
+YWlsZWQKPj4gWyAgICA5LjU3MzYwMl0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGJvYXJkX2Zp
+bGUgYXBpIDEgYm1pX2lkIE4vQQo+PiBjcmMzMiBiZWJjN2MwOAo+PiBbICAgIDkuNTkyNzkzXSBh
+dGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogcHJlIGNhbCBkb3dubG9hZCBwcm9jZWR1cmUKPj4gZmFp
+bGVkLCB0cnkgY2FsIGZpbGU6IC0yCj4+IFsgICAgOS41OTg3ODldIGF0aDEwa19wY2kgMDAwMDow
+MDowMC4wOiBib290IGRpZCBub3QgZmluZCBhCj4+IGNhbGlicmF0aW9uIGZpbGUsIHRyeSBEVCBu
+ZXh0OiAtMTEKPj4gWyAgICA5LjYwNTA4MF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGJvb3Qg
+ZGlkIG5vdCBmaW5kIERUIGVudHJ5LAo+PiB0cnkgdGFyZ2V0IEVFUFJPTSBuZXh0OiAtMgo+PiBb
+ICAgIDkuNjExMzU1XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogYm9vdCBkaWQgbm90IGZpbmQg
+dGFyZ2V0Cj4+IEVFUFJPTSBlbnRyeSwgdHJ5IE9UUCBuZXh0OiAtMTIyCj4+IFsgICAgOS43Mzk1
+NDldIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBvdHAgY2FsaWJyYXRpb24gZmFpbGVkOiAyCj4K
+PiBUaGlzIGlzIHRoZSBwcm9ibGVtLCBvdHAuYmluIGZhaWxzIHRvIGZpbmQgeW91ciBjYWxpYnJh
+dGlvbiBkYXRhIGZyb20KPiB0aGUgYm9hcmRzJ3MgT1RQIG1lbW9yeS4gQXJlIHlvdSBzdXJlIHRo
+YXQgdGhlIGJvYXJkIGhhcyB0aGUgY2FsaWJyYXRpb24KPiBkYXRhIGluIE9UUD8KPgo+IFdoYXQg
+a2VybmVsIGlzIHRoaXM/IFNvbWV0aGluZyBmcm9tIG9wZW53cnQ/IEFuZCB3aGF0IGRldmljZT8K
+Pgo+IC0tCj4gS2FsbGUgVmFsbwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
