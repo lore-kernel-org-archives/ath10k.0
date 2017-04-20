@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d17pG-0000j9-Dj
- for ath10k@lists.infradead.org; Thu, 20 Apr 2017 08:52:32 +0000
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d1A6Y-0002NE-7F
+ for ath10k@lists.infradead.org; Thu, 20 Apr 2017 11:18:32 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k: ath10k: bump up FW API to 6
-Date: Thu, 20 Apr 2017 08:52:00 +0000
-Message-ID: <87fuh35umo.fsf@kamboji.qca.qualcomm.com>
-References: <1491944688-5795-1-git-send-email-ryanhsu@qca.qualcomm.com>
- <8a9bab5f36e8456bafa8d872012bcf3a@euamsexm01a.eu.qualcomm.com>
-In-Reply-To: <8a9bab5f36e8456bafa8d872012bcf3a@euamsexm01a.eu.qualcomm.com>
- (Kalle Valo's message of "Wed, 19 Apr 2017 16:07:07 +0200")
+Subject: Re: Please update board-2.bin for QCA9888
+Date: Thu, 20 Apr 2017 11:18:03 +0000
+Message-ID: <87bmrr5nv9.fsf@kamboji.qca.qualcomm.com>
+References: <7312b473-4dec-5fec-8642-8233689f4d8a@candelatech.com>
+ <87lgse6hmf.fsf@kamboji.qca.qualcomm.com>	<58C14C2D.902@candelatech.com>
+In-Reply-To: <58C14C2D.902@candelatech.com> (Ben Greear's message of "Thu, 9
+ Mar 2017 04:35:57 -0800")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -25,31 +25,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Ben Greear <greearb@candelatech.com> writes:
 
-> ryanhsu@qti.qualcomm.com wrote:
->> From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
->> 
->> For QCA6174 hw3.0, since WLAN.RM.4.4-00022-QCARMSWPZ-2, it starts to
->> support the board ID information from otp, with some devices released on
->> the market that didn't calibrated with OTP, will have 0 for board ID
->> information, which cause the backward compatibility issue and was fixed
->> in commit 'd2e202c06ca4 ("ath10k: ignore configuring the incorrect board_id")'
->> 
->> So bump the fw api version to differentiate the latest firmware support.
->> 
->> Signed-off-by: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+> On 03/08/2017 11:21 PM, Valo, Kalle wrote:
+>> Ben Greear <greearb@candelatech.com> writes:
+>>
+>>> Newer 9886 (which use the 9888 firmware it seems) NICs will not
+>>> boot unless you use the board-2.bin from the codeaura repo.
+>>>
+>>> Kalle:  Could you update your repo to the latest from codeaura so that it is
+>>> easy to pull the latest board file into LEDE?
+>>>
+>>> If you have reason not to, please let me know.
+>>
+>> I'm not involved with codeaurora repositories so I don't know what file
+>> you are talking about. What's the URL?
+>>
 >
-> Patch applied to ath-next branch of ath.git, thanks.
+> git://codeaurora.org/quic/qsdk/oss/firmware/ath10k-firmware
 >
-> aad1fd7f7677 ath10k: bump up FW API to 6
+> [greearb@ben-dt3 ath10k-firmware]$ ls -l ath10k/QCA9888/hw2.0/board-2.bin
+> -rw-rw-r--. 1 greearb greearb 60660 Mar  2 16:20 ath10k/QCA9888/hw2.0/board-2.bin
+>
+> [greearb@ben-dt3 ath10k-firmware]$ md5sum ath10k/QCA9888/hw2.0/board-2.bin
+> 4fffcdf246cea4a4fd5ba67730262563  ath10k/QCA9888/hw2.0/board-2.bin
+>
+> I actually tested an older version of that file, but I assume the more
+> recent one works
+> fine too.  I don't have a 9886/8 system available for testing at the moment.
 
-And I renamed the RM.4.4 firmware image also:
-
-https://github.com/kvalo/ath10k-firmware/commit/da1564dafe1c8175faf694482d1649f56229ae96
+I got some updated to ath10k-firmware.git some time ago. Please check
+and let me know if something is still missing.
 
 -- 
 Kalle Valo
