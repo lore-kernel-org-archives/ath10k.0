@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d15ZY-0006tk-LF
- for ath10k@lists.infradead.org; Thu, 20 Apr 2017 06:28:10 +0000
+ id 1d15fh-0000ZJ-Sh
+ for ath10k@lists.infradead.org; Thu, 20 Apr 2017 06:34:31 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k otp.bin board.bin firmware.bin art.bin?
-Date: Thu, 20 Apr 2017 06:27:41 +0000
-Message-ID: <87inlz7fvn.fsf@kamboji.qca.qualcomm.com>
-References: <CABWe71yxXG5VMaPPUK3HeYjNDOn7PiHk1AJy8WnXb-nntOMz4g@mail.gmail.com>
- <87zifc8w80.fsf@kamboji.qca.qualcomm.com>
- <CABWe71z5p6pYfpnd6vpjH8Ky=Vg9YjKdLKocGZvBG32B6RDdEA@mail.gmail.com>
-In-Reply-To: <CABWe71z5p6pYfpnd6vpjH8Ky=Vg9YjKdLKocGZvBG32B6RDdEA@mail.gmail.com>
- (=?utf-8?B?IuWtmeW7uuW4jCIncw==?= message of "Wed, 19 Apr 2017 22:58:49
- +0800")
+Subject: Re: odd msg using kvalo firmware-5.bin w/ KillerAC 1535(QCA6174)
+Date: Thu, 20 Apr 2017 06:34:00 +0000
+Message-ID: <87a87b7fl4.fsf@kamboji.qca.qualcomm.com>
+References: <2103690e-ad1f-4612-e343-1ea711c14a00@linaro.org>
+ <1492660230116.11983@qti.qualcomm.com>
+In-Reply-To: <1492660230116.11983@qti.qualcomm.com> (Mohammed Shafi
+ Shajakhan's message of "Thu, 20 Apr 2017 03:50:30 +0000")
 Content-Language: en-US
-Content-ID: <738B1B97DE5CE541B8AA95BDC3D0ABAD@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,69 +21,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?utf-8?B?5a2Z5bu65biM?= <ycsunjane@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Mohammed Shafi Shajakhan (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Michael Scott <michael.scott@linaro.org>
 
-5a2Z5bu65biMIDx5Y3N1bmphbmVAZ21haWwuY29tPiB3cml0ZXM6DQoNCj4gVGhlIGRyaXZlciB0
-ZXJtaW5hdGVzIGV4ZWN1dGlvbiBpbiB0aGUgZnVuY3Rpb24NCj4gJ2F0aDEwa19kb3dubG9hZF9j
-YWxfZGF0YWAuICBgYXRoMTBrX2Rvd25sb2FkX2NhbF9kYXRhYCAgdHJ5IGxvYWQgdGhlDQo+IGAg
-cHJlX2NhbF9maWxlYCBhbmQgYGNhbF9maWxlYCBmaWxlcyB2aWEgaGlmLiAgU2luY2UgdGhlc2Ug
-dHdvIGZpbGVzDQo+IGFyZSBub3QgcHJvdmlkZWQgLCB0aGVuIHRyeSB0byBnZXQgZnJvbSBgZHQs
-IGVlcHJvbSwgb3RwYC4NCj4NCj4gYHByZS1jYWwuYmluLCBjYWwuYmluIGFuZCBvdHBgIGFyZSB1
-c2VkIHRvIGNhbGlicmF0ZSByYWRpbz8NCj4NCj4gSSdtIHN1cmUgYGJvYXJkLmJpbmAgd2FzIHN1
-Y2Nlc3NmdWxseSBsb2FkZWQuDQo+DQo+IFsgICAgOS41NzM2MDJdIGF0aDEwa19wY2kgMDAwMDow
-MDowMC4wOiBib2FyZF9maWxlIGFwaSAxIGJtaV9pZCBOL0ENCj4gY3JjMzIgYmViYzdjMDgNCj4N
-Cj4gRG9lcyBgYm9hcmQuYmluYCBvbmx5IHVzZWQgaW4gYGF0aDEwa19kb3dubG9hZF9hbmRfcnVu
-X290cGA/ICBXaGF0IGlzDQo+IHRoZSByZWxhdGlvbnNoaXAgYmV0d2VlbiBvdHAgYW5kIGJvYXJk
-LmJpbj8NCj4NCj4gZnVsbCBrZXJuZWwgbG9nOg0KPg0KPiBbICAgIDguNTc5MzcwXSBQQ0k6IEVu
-YWJsaW5nIGRldmljZSAwMDAwOjAwOjAwLjAgKDAwMDAgLT4gMDAwMikNCj4gWyAgICA4LjU4NTI3
-Nl0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IHBjaSBpcnEgbGVnYWN5IG9wZXJfaXJxX21vZGUg
-MQ0KPiBpcnFfbW9kZSAwIHJlc2V0X21vZGUgMA0KPiBbICAgIDguODAyMjI1XSBhdGgxMGtfcGNp
-IDAwMDA6MDA6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yDQo+IGF0aDEway9wcmUtY2Fs
-LXBjaS0wMDAwOjAwOjAwLjAuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yDQo+IFsgICAgOC44MTMx
-MDRdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBGYWxsaW5nIGJhY2sgdG8gdXNlciBoZWxwZXIN
-Cj4gWyAgICA4Ljk2MDAxNF0gZmlybXdhcmUgYXRoMTBrIXByZS1jYWwtcGNpLTAwMDA6MDA6MDAu
-MC5iaW46DQo+IGZpcm13YXJlX2xvYWRpbmdfc3RvcmU6IG1hcCBwYWdlcyBmYWlsZWQNCj4gWyAg
-ICA4Ljk2OTM3Ml0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2Fk
-IGZvcg0KPiBhdGgxMGsvY2FsLXBjaS0wMDAwOjAwOjAwLjAuYmluIGZhaWxlZCB3aXRoIGVycm9y
-IC0yDQo+IFsgICAgOC45Nzk4OThdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBGYWxsaW5nIGJh
-Y2sgdG8gdXNlciBoZWxwZXINCj4gWyAgICA5LjE1MjczNV0gZmlybXdhcmUgYXRoMTBrIWNhbC1w
-Y2ktMDAwMDowMDowMC4wLmJpbjoNCj4gZmlybXdhcmVfbG9hZGluZ19zdG9yZTogbWFwIHBhZ2Vz
-IGZhaWxlZA0KPiBbICAgIDkuMzcyMDExXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogcWNhOTg4
-eCBodzIuMCB0YXJnZXQNCj4gMHg0MTAwMDE2YyBjaGlwX2lkIDB4MDQzMjIyZmYgc3ViIDAwMDA6
-MDAwMA0KPiBbICAgIDkuMzgxNDA5XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDoga2NvbmZpZyBk
-ZWJ1ZyAxIGRlYnVnZnMgMQ0KPiB0cmFjaW5nIDAgZGZzIDAgdGVzdG1vZGUgMQ0KPiBbICAgIDku
-Mzk0NDU2XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmlybXdhcmUgdmVyIDEwLjIuNC43MC42
-My0yDQo+IGFwaSA1IGZlYXR1cmVzIG5vLXAycCxyYXctbW9kZSxtZnAsYWxsb3dzLW1lc2gtYmNh
-c3QgY3JjMzIgNGZmOWUxNGQNCj4gWyAgICA5LjQwNjU1MV0gYXRoMTBrX3BjaSAwMDAwOjAwOjAw
-LjA6IGJvb3QgdXBsb2FkIG90cCB0byAweDEyMzQgbGVuDQo+IDcyMDUgZm9yIGJvYXJkIGlkDQo+
-IFsgICAgOS40NTIzMjZdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBib290IGdldCBvdHAgYm9h
-cmQgaWQgcmVzdWx0DQo+IDB4MDAwMDAwMDEgYm9hcmRfaWQgMCBjaGlwX2lkIDANCj4gWyAgICA5
-LjQ1OTEzNF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGJvYXJkIGlkIGlzIG5vdCBleGlzdCBp
-biBvdHAsIGlnbm9yZSBpdA0KPiBbICAgIDkuNDY0MTgwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAu
-MDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yDQo+IGF0aDEway9RQ0E5ODhYL2h3Mi4wL2JvYXJk
-LTIuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yDQo+IFsgICAgOS40NzQ3NzhdIGF0aDEwa19wY2kg
-MDAwMDowMDowMC4wOiBGYWxsaW5nIGJhY2sgdG8gdXNlciBoZWxwZXINCj4gWyAgICA5LjU2NDM3
-M10gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZpcm13YXJlDQo+IGF0aDEwayFRQ0E5ODhYIWh3
-Mi4wIWJvYXJkLTIuYmluOiBmaXJtd2FyZV9sb2FkaW5nX3N0b3JlOiBtYXAgcGFnZXMNCj4gZmFp
-bGVkDQo+IFsgICAgOS41NzM2MDJdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBib2FyZF9maWxl
-IGFwaSAxIGJtaV9pZCBOL0ENCj4gY3JjMzIgYmViYzdjMDgNCj4gWyAgICA5LjU5Mjc5M10gYXRo
-MTBrX3BjaSAwMDAwOjAwOjAwLjA6IHByZSBjYWwgZG93bmxvYWQgcHJvY2VkdXJlDQo+IGZhaWxl
-ZCwgdHJ5IGNhbCBmaWxlOiAtMg0KPiBbICAgIDkuNTk4Nzg5XSBhdGgxMGtfcGNpIDAwMDA6MDA6
-MDAuMDogYm9vdCBkaWQgbm90IGZpbmQgYQ0KPiBjYWxpYnJhdGlvbiBmaWxlLCB0cnkgRFQgbmV4
-dDogLTExDQo+IFsgICAgOS42MDUwODBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBib290IGRp
-ZCBub3QgZmluZCBEVCBlbnRyeSwNCj4gdHJ5IHRhcmdldCBFRVBST00gbmV4dDogLTINCj4gWyAg
-ICA5LjYxMTM1NV0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGJvb3QgZGlkIG5vdCBmaW5kIHRh
-cmdldA0KPiBFRVBST00gZW50cnksIHRyeSBPVFAgbmV4dDogLTEyMg0KPiBbICAgIDkuNzM5NTQ5
-XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogb3RwIGNhbGlicmF0aW9uIGZhaWxlZDogMg0KDQpU
-aGlzIGlzIHRoZSBwcm9ibGVtLCBvdHAuYmluIGZhaWxzIHRvIGZpbmQgeW91ciBjYWxpYnJhdGlv
-biBkYXRhIGZyb20NCnRoZSBib2FyZHMncyBPVFAgbWVtb3J5LiBBcmUgeW91IHN1cmUgdGhhdCB0
-aGUgYm9hcmQgaGFzIHRoZSBjYWxpYnJhdGlvbg0KZGF0YSBpbiBPVFA/DQoNCldoYXQga2VybmVs
-IGlzIHRoaXM/IFNvbWV0aGluZyBmcm9tIG9wZW53cnQ/IEFuZCB3aGF0IGRldmljZT8NCg0KLS0g
-DQpLYWxsZSBWYWxvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+(please don't top post)
+
+"Mohammed Shafi Shajakhan (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+writes:
+
+> my quick analysis suggests this belongs to
+> 'WMI_TLV_GRP_STATS' 
+>
+> WMI_TLV_STATS_EXT_EVENTID = WMI_TLV_EV(WMI_TLV_GRP_STATS), equals to 90112 (0x16000)
+>         WMI_TLV_IFACE_LINK_STATS_EVENTID, 90113
+>         WMI_TLV_PEER_LINK_STATS_EVENTID, 90114
+>         WMI_TLV_RADIO_LINK_STATS_EVENTID, 90015
+>              .... ?
+>         WMI_TLV_NLO_MATCH_EVENTID = WMI_TLV_EV(WMI_TLV_GRP_NLO_OFL),
+
+
+I checked and I think this is a some kind of RSSI stats event. I assume
+that's a new feature coming from RM.4.4 branch. (Michael said on IRC he
+is not seeing that with RM.2.0 branch.)
+
+> but this should be a harmless warning message indicating the host had not implemented
+> any action for this particular event.
+>
+> For example in 10.2 wmi.c
+>
+>
+>    case WMI_10_2_GPIO_INPUT_EVENTID:
+>         case WMI_10_2_PEER_RATECODE_LIST_EVENTID:
+>         case WMI_10_2_GENERIC_BUFFER_EVENTID:
+>         case WMI_10_2_MCAST_BUF_RELEASE_EVENTID:
+>         case WMI_10_2_MCAST_LIST_AGEOUT_EVENTID:
+>         case WMI_10_2_WDS_PEER_EVENTID:
+>                 ath10k_dbg(ar, ATH10K_DBG_WMI,
+>                            "received event id %d not implemented\n", id);
+>                 break;
+
+Yes, it's harmless but ath10k should not print that warning to not
+distract the users. Can someone make a patch to silent the warning that
+similarly like with WMI_10_2_WDS_PEER_EVENTID above?
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
