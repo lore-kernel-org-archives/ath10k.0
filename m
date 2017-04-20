@@ -1,22 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d16Yy-00076c-KX
- for ath10k@lists.infradead.org; Thu, 20 Apr 2017 07:31:38 +0000
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d17pG-0000j9-Dj
+ for ath10k@lists.infradead.org; Thu, 20 Apr 2017 08:52:32 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k otp.bin board.bin firmware.bin art.bin?
-Date: Thu, 20 Apr 2017 07:31:10 +0000
-Message-ID: <87wpaf5yde.fsf@kamboji.qca.qualcomm.com>
-References: <CABWe71yxXG5VMaPPUK3HeYjNDOn7PiHk1AJy8WnXb-nntOMz4g@mail.gmail.com>
- <87zifc8w80.fsf@kamboji.qca.qualcomm.com>
- <CABWe71z5p6pYfpnd6vpjH8Ky=Vg9YjKdLKocGZvBG32B6RDdEA@mail.gmail.com>
- <87inlz7fvn.fsf@kamboji.qca.qualcomm.com>
- <CABWe71w40QWSw655f8GVJgse-km9=uAqKy2cUC+BdrKuk368hg@mail.gmail.com>
-In-Reply-To: <CABWe71w40QWSw655f8GVJgse-km9=uAqKy2cUC+BdrKuk368hg@mail.gmail.com>
- (=?utf-8?B?IuWtmeW7uuW4jCIncw==?= message of "Thu, 20 Apr 2017 15:10:43
- +0800")
+Subject: Re: ath10k: ath10k: bump up FW API to 6
+Date: Thu, 20 Apr 2017 08:52:00 +0000
+Message-ID: <87fuh35umo.fsf@kamboji.qca.qualcomm.com>
+References: <1491944688-5795-1-git-send-email-ryanhsu@qca.qualcomm.com>
+ <8a9bab5f36e8456bafa8d872012bcf3a@euamsexm01a.eu.qualcomm.com>
+In-Reply-To: <8a9bab5f36e8456bafa8d872012bcf3a@euamsexm01a.eu.qualcomm.com>
+ (Kalle Valo's message of "Wed, 19 Apr 2017 16:07:07 +0200")
 Content-Language: en-US
-Content-ID: <E38D6811D9469640A3B9A0DAE957B04E@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,25 +21,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?utf-8?B?5a2Z5bu65biM?= <ycsunjane@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-5a2Z5bu65biMIDx5Y3N1bmphbmVAZ21haWwuY29tPiB3cml0ZXM6DQoNCj4gSSBoYXZlIHNvbHZl
-ZCB0aGlzIHByb2JsZW0uDQo+IEkgYW0gdXNpbmcgTEVERSBMaW51eCB2ZXJzaW9uIDQuNC42MS4g
-RGV2aWNlIGlzIGEgV0YtOTZBICBmcm9tIENJRyBzaGFuZ2hhaS4NCj4NCj4gV0YtOTZBIHdyaXRl
-IGNhbGlicmF0aW9uIGRhdGEgaW4gc3BpIGZsYXNoLiBJIGhhdmUgc3VjY2VzcyByZWFkIGl0IHRv
-DQo+IGBhdGgxMGsvY2FsLXBjaS0wMDAwOjAwOjAwLjAuYmluYC4gTEVERSBkZWZhdWx0IHVzZSBm
-aXJtd2FyZS01LmJpbiBmb3INCj4gUUNBOTg4WC4gQnV0IGBhdGgxMGsvY2FsLXBjaS0wMDAwOjAw
-OjAwLjAuYmluYCBjYW4gb25seSB3b3JrIHdpdGgNCj4gZmlybXdhcmUtNC5iaW4uDQoNCkkgZG9u
-J3Qga25vdyB3aGF0IGNoYW5nZXMgTEVERSBoYXMgcmVsYXRlZCB0byB0aGlzLCBidXQgZG8gbm90
-ZSB0aGF0DQpmaXJtd2FyZS00LmJpbiBpcyBub3QgdGhlIGZpcm13YXJlIHZlcnNpb24gbnVtYmVy
-IGFuZCBpdCBvbmx5IHNob3dzIHRoZQ0KZmlybXdhcmUgQVBJIG51bWJlci4gVGhlIGV4YWN0IGZp
-cm13YXJlIHZlcnNpb25zIG9mIGJvdGggaW1hZ2VzIGFyZQ0KaW1wb3J0YW50LCBsaWtlICIxMC4x
-LjIuMy00IiBvciBzb21ldGhpbmcgbGlrZSB0aGF0Lg0KDQotLSANCkthbGxlIFZhbG8KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
+
+> ryanhsu@qti.qualcomm.com wrote:
+>> From: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+>> 
+>> For QCA6174 hw3.0, since WLAN.RM.4.4-00022-QCARMSWPZ-2, it starts to
+>> support the board ID information from otp, with some devices released on
+>> the market that didn't calibrated with OTP, will have 0 for board ID
+>> information, which cause the backward compatibility issue and was fixed
+>> in commit 'd2e202c06ca4 ("ath10k: ignore configuring the incorrect board_id")'
+>> 
+>> So bump the fw api version to differentiate the latest firmware support.
+>> 
+>> Signed-off-by: Ryan Hsu <ryanhsu@qca.qualcomm.com>
+>
+> Patch applied to ath-next branch of ath.git, thanks.
+>
+> aad1fd7f7677 ath10k: bump up FW API to 6
+
+And I renamed the RM.4.4 firmware image also:
+
+https://github.com/kvalo/ath10k-firmware/commit/da1564dafe1c8175faf694482d1649f56229ae96
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
