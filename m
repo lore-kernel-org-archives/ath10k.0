@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from iron02.fraunhofer.de ([153.96.1.56])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d1XsC-0003JV-Ja
- for ath10k@lists.infradead.org; Fri, 21 Apr 2017 12:41:19 +0000
-Subject: Re: [v2,1/3] ath9k: Support channels in licensed bands
-References: <20170323133048.30062-2-sw@simonwunderlich.de>
- <CALLGbRK2d1wZpfLnXu_UDWxVPA9LvejFyEFpzMub56uLH0+DTw@mail.gmail.com>
- <d4acedac-e28c-4c1c-d112-40557d52f3a2@candelatech.com>
- <1811221.G4Vz0DPyQ8@prime>
-From: Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
-Message-ID: <12133a0e-b030-5b21-8de1-3bf7334d47df@fit.fraunhofer.de>
-Date: Fri, 21 Apr 2017 14:40:51 +0200
-MIME-Version: 1.0
-In-Reply-To: <1811221.G4Vz0DPyQ8@prime>
+ id 1d1dnf-00049d-Qe
+ for ath10k@lists.infradead.org; Fri, 21 Apr 2017 19:01:01 +0000
+From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+Subject: Re: odd msg using kvalo firmware-5.bin w/ KillerAC 1535(QCA6174)
+Date: Fri, 21 Apr 2017 19:00:13 +0000
+Message-ID: <2c39033b-b444-da10-c444-c25ae627c051@qca.qualcomm.com>
+References: <2103690e-ad1f-4612-e343-1ea711c14a00@linaro.org>
+ <1492660230116.11983@qti.qualcomm.com>
+ <87a87b7fl4.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87a87b7fl4.fsf@kamboji.qca.qualcomm.com>
 Content-Language: en-US
+Content-ID: <3057D1A200A18547878E9DB95B06FC91@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,95 +22,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Simon Wunderlich <sw@simonwunderlich.de>, ath10k@lists.infradead.org
-Cc: Julian Calaby <julian.calaby@gmail.com>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, Steve deRosier <derosier@gmail.com>, Ben Greear <greearb@candelatech.com>, Kalle Valo <kvalo@codeaurora.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi all,
+On 04/19/2017 11:34 PM, Kalle Valo wrote:
 
-as one of the parties who triggered this patch to be included into the 
-main line kernel, we do support Simon's or Ben's point of view.
-
-Safeguards against accidental misuse are in place. Various patches are 
-(have been) already in the open, so if someone wants to be evil, it 
-can't be prevented.
-
-Also, these patches do not make up new channels out of the blue, they 
-merely enable channels which are allowed in certain countries under 
-specific regulations. To me it seems to be the task of the distribution 
-manager (or manufacturer) to ensure that only hardware/kernel features 
-are made available that are legal in the given jurisdiction.
-
-The default behavior is to disable those extra channels. If you are 
-building, i.e. First Responder solutions, you need to ensure that those 
-guys use the systems incl. the frequency spectrum accordingly.
-
-To be pragmatic and to avoid out-of-tree code maintenance, my vote would 
-be for integration into mainline.
-
-Best regards,
-
-Mathias
-
-
-
-
-Hence, for
-
-On 21-Apr-17 13:29, Simon Wunderlich wrote:
-> Hi,
-> 
-> On Tuesday, April 18, 2017 10:09:59 AM CEST Ben Greear wrote:
->> [...]
->>>      In my personal view, we have quite a few obstacles which I consider
->>>      "enough", but would be interesting to hear others opinions ...
->>>
->>> I'll throw in my 2-cents. This patch is treading on very dangerous ground.
->>> I can't speak to other regulatory environments, but at least the FCC is
->>> cracking down on even the possibility that anyone can operate a WiFi
->>> device outside the regulatory bounds.
->> These patches make it slightly easier to use the licensed bands, but no one
->> can accidentally use them due to the regdb and other constaints in these
->> patches.
+> "Mohammed Shafi Shajakhan (Mohammed Shafi)" <mohammed@qti.qualcomm.com>
+> writes:
+>
+>> my quick analysis suggests this belongs to
+>> 'WMI_TLV_GRP_STATS' 
 >>
->> So, I don't think these patches offer any fundamental new vulnerability
->> that should concern the FCC.
+>> WMI_TLV_STATS_EXT_EVENTID = WMI_TLV_EV(WMI_TLV_GRP_STATS), equals to 90112 (0x16000)
+>>         WMI_TLV_IFACE_LINK_STATS_EVENTID, 90113
+>>         WMI_TLV_PEER_LINK_STATS_EVENTID, 90114
+>>         WMI_TLV_RADIO_LINK_STATS_EVENTID, 90015
+>>              .... ?
+>>         WMI_TLV_NLO_MATCH_EVENTID = WMI_TLV_EV(WMI_TLV_GRP_NLO_OFL),
+>
+> I checked and I think this is a some kind of RSSI stats event. I assume
+> that's a new feature coming from RM.4.4 branch. (Michael said on IRC he
+> is not seeing that with RM.2.0 branch.)
+>
+>> but this should be a harmless warning message indicating the host had not implemented
+>> any action for this particular event.
 >>
->> After all, someone who really wants to do evil can find and apply the
->> patches without undue effort, and it could easily be that those applying
->> the patches would then make it even easier to abuse the new channels due to
->> laziness or poor coding choices.
-> 
-> I'm with Ben on this one. I also have followed the FCC actions in the past few
-> years, and I've also been involved into that [1,2,3]. There are mailing lists
-> on the topic if you want to get involved. I agree that the topic is important,
-> but I would prefer to not have this patch serving as battleground. :)
-> 
-> The patches proposed here, as Ben says, at least put proper warnings and
-> obstacles which users have to knowingly overcome (or read). It's probably
-> safer than keeping the driver as is and having people apply random patches
-> from the internet which they don't understand or hack the code themselves.
-> Frankly, it's not that hard to enable those channels.
-> 
-> As we have seen by the number of questions and people trying to bring this
-> patch in (Ben and Julian), there is quite some interest for supporting those
-> bands. I've also got a few requests from companies to have it supported
-> (Fraunhofer is one of those).
-> 
-> Cheers,
->        Simon
-> 
-> 
-> [1] https://www.reddit.com/r/wireless/comments/3irr5b/
-> openwrt_vs_fcc_forced_firmware_lockdown/
-> [2] http://hackaday.com/2016/02/26/fcc-locks-down-router-firmware/
-> [3] https://libreplanet.org/wiki/Save_WiFi
-> 
+>> For example in 10.2 wmi.c
+>>
+>>
+>>    case WMI_10_2_GPIO_INPUT_EVENTID:
+>>         case WMI_10_2_PEER_RATECODE_LIST_EVENTID:
+>>         case WMI_10_2_GENERIC_BUFFER_EVENTID:
+>>         case WMI_10_2_MCAST_BUF_RELEASE_EVENTID:
+>>         case WMI_10_2_MCAST_LIST_AGEOUT_EVENTID:
+>>         case WMI_10_2_WDS_PEER_EVENTID:
+>>                 ath10k_dbg(ar, ATH10K_DBG_WMI,
+>>                            "received event id %d not implemented\n", id);
+>>                 break;
+> Yes, it's harmless but ath10k should not print that warning to not
+> distract the users. Can someone make a patch to silent the warning that
+> similarly like with WMI_10_2_WDS_PEER_EVENTID above?
+>
 
+It doesn't harm anything, just a new firmware feature that is not implemented in ath10k.
+I'll make the message silent instead of warn to avoid confusion. And will also see if we could also disable it
 
+Ryan
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
