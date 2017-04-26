@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d3KUt-0001yZ-ID
- for ath10k@lists.infradead.org; Wed, 26 Apr 2017 10:48:39 +0000
-From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: HT-Duplicate mode or MCS32
-Date: Wed, 26 Apr 2017 16:11:45 +0530
-Message-Id: <20170426104011.M37221@cdot.in>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d3KoU-00023N-6G
+ for ath10k@lists.infradead.org; Wed, 26 Apr 2017 11:08:51 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [RESEND] ath10k: fix out of bounds access to local buffer
+Date: Wed, 26 Apr 2017 11:08:22 +0000
+Message-ID: <87r30fxw7u.fsf@kamboji.qca.qualcomm.com>
+References: <20170424071157.6979-1-dev@michaelmera.com>
+ <0a7aa133740b4488a19bd95115831988@euamsexm01a.eu.qualcomm.com>
+ <87a873wjak.fsf@michaelmera.com>
+In-Reply-To: <87a873wjak.fsf@michaelmera.com> (Michael Mera's message of "Wed, 
+ 26 Apr 2017 19:32:51 +0900")
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,23 +22,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com
+To: Michael Mera <dev@michaelmera.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGksCgpJcyBhbnlvbmUgdGVzdGVkIE1DUzMyIG9yIEhULWR1cGxpY2F0ZSBtb2RlIHVzaW5nIGF0
-aDEwayBkcml2ZXIgb24gQXRoZXJvcyBjaGlwc2V0cz8KClRoYW5rcyAmIFJlZ2FyZHMsCkthdml0
-YQoKCgpUaGFua3MgJiBSZWdhcmRzLArgpJXgpLXgpL/gpKTgpL4g4KSu4KS+4KSl4KWB4KSwIEth
-dml0YSBNYXRodXIgCuCkteCksOCkv+Ckt+CljeCkoCDgpIXgpKjgpYHgpLjgpILgpKfgpL7gpKgg
-4KSF4KSt4KS/4KSv4KSC4KSk4KS+ICBTZW5pb3IgUmVzZWFyY2ggRW5naW5lZXIgCuCkuOClgC3g
-pKHgpYngpJ8gICAgICAgICAgICAgICAgICAgICAgQy1ET1QK4KSH4KSy4KWI4KSV4KWN4KSf4KWN
-4KSw4KWJ4KSo4KS/4KSV4KWN4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfgpJzgpLwgSSAgICAgICAg
-IEVsZWN0cm9uaWNzIENpdHkgUGhhc2UgSQrgpLngpYvgpLjgpYLgpLAg4KSw4KWL4KShLCDgpKzg
-pYfgpILgpJfgpLLgpYLgpLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2FkLCBCZW5nYWx1cnUg
-4oCTIDU2MDEwMArgpKvgpYvgpKggIFBoIDA4MC0yODUyOTg5NgpEaXNjbGFpbWVyOgotLS0tLS0t
-LS0tClRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRoIGl0CgoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michael Mera <dev@michaelmera.com> writes:
+
+> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+>> I fixed a checkpatch warning in the pending branch:
+>>
+>> drivers/net/wireless/ath/ath10k/debug.c:636: spaces preferred around
+>> that '-' (ctx:VxV)
+>
+> Hum... but then you will have a line longer than 80 characters (81), so
+> another warning.
+
+I have extended the line length in my check script to 90 chars just
+because of cases like this:
+
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/codingstyle#checking_code
+
+> I prefered this version since I feel that splitting this line would hurt
+> readability and on the other hand the expression is clearly delimited
+> by the spaces around the ',' so I don't think spaces around the operator
+> add any value (except for compliance with the coding style that is).
+
+I actually guessed why you did that. But I want to keep the output of my
+test script clean, makes review a lot easier. Making exceptions to the
+script is more work for me.
+
+Anyway, I already did the change in my pending branch and will apply the
+patch in few days. Thanks for the fix.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
