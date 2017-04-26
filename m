@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d3KoU-00023N-6G
- for ath10k@lists.infradead.org; Wed, 26 Apr 2017 11:08:51 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RESEND] ath10k: fix out of bounds access to local buffer
-Date: Wed, 26 Apr 2017 11:08:22 +0000
-Message-ID: <87r30fxw7u.fsf@kamboji.qca.qualcomm.com>
-References: <20170424071157.6979-1-dev@michaelmera.com>
- <0a7aa133740b4488a19bd95115831988@euamsexm01a.eu.qualcomm.com>
- <87a873wjak.fsf@michaelmera.com>
-In-Reply-To: <87a873wjak.fsf@michaelmera.com> (Michael Mera's message of "Wed, 
- 26 Apr 2017 19:32:51 +0900")
-Content-Language: en-US
+ id 1d3O8A-0006YV-VH
+ for ath10k@lists.infradead.org; Wed, 26 Apr 2017 14:41:28 +0000
+From: Venkateswara Rao Naralasetty <c_vnaral@qti.qualcomm.com>
+Subject: [PATCH] ath10k : Fix channel survey dump
+Date: Wed, 26 Apr 2017 20:11:38 +0530
+Message-ID: <1493217698-22451-1-git-send-email-c_vnaral@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,39 +20,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michael Mera <dev@michaelmera.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Venkateswara Rao Naralasetty <c_vnaral@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-Michael Mera <dev@michaelmera.com> writes:
+Channel active/busy time are showing incorrect
+(less than previous or sometimes zero) for
+successive survey dump command.
 
-> Kalle Valo <kvalo@qca.qualcomm.com> writes:
->> I fixed a checkpatch warning in the pending branch:
->>
->> drivers/net/wireless/ath/ath10k/debug.c:636: spaces preferred around
->> that '-' (ctx:VxV)
->
-> Hum... but then you will have a line longer than 80 characters (81), so
-> another warning.
+example:
+Survey data from wlan0
+        frequency:                      5180 MHz [in use]
+        channel active time:            54995 ms
+        channel busy time:              432 ms
+        channel receive time:           0 ms
+        channel transmit time:          59 ms
+Survey data from wlan0
+        frequency:                      5180 MHz [in use]
+        channel active time:            32592 ms
+        channel busy time:              254 ms
+        channel receive time:           0 ms
+        channel transmit time:          0 ms
 
-I have extended the line length in my check script to 90 chars just
-because of cases like this:
+This patch fix this issue by assigning 'wmi_bss_survey_req_type'
+as 'WMI_BSS_SURVEY_REQ_TYPE_READ'.
 
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/codingstyle#checking_code
+Firmware ver 10.4-3.4-00082
+Hardware QCA4019
 
-> I prefered this version since I feel that splitting this line would hurt
-> readability and on the other hand the expression is clearly delimited
-> by the spaces around the ',' so I don't think spaces around the operator
-> add any value (except for compliance with the coding style that is).
+Signed-off-by: Venkateswara Rao Naralasetty <c_vnaral@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I actually guessed why you did that. But I want to keep the output of my
-test script clean, makes review a lot easier. Making exceptions to the
-script is more work for me.
-
-Anyway, I already did the change in my pending branch and will apply the
-patch in few days. Thanks for the fix.
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 9977829..87a9b55 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6621,7 +6621,7 @@ static void ath10k_reconfig_complete(struct ieee80211_hw *hw,
+ 				  struct ieee80211_channel *channel)
+ {
+ 	int ret;
+-	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR;
++	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
 -- 
-Kalle Valo
+1.7.9.5
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
