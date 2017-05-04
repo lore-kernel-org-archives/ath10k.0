@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d6GMI-0007Xv-MU
- for ath10k@lists.infradead.org; Thu, 04 May 2017 12:59:52 +0000
+ id 1d6GNc-0000jF-1l
+ for ath10k@lists.infradead.org; Thu, 04 May 2017 13:01:20 +0000
 MIME-Version: 1.0
-Subject: Re: [RESEND] ath10k: fix out of bounds access to local buffer
+Subject: Re: ath10k: append the wmi_op_version to testmode get_version cmd
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20170424071157.6979-1-dev@michaelmera.com>
-References: <20170424071157.6979-1-dev@michaelmera.com>
-Message-ID: <afaf2e43f4d341e98650d6deb4b7769c@eusanexr01a.eu.qualcomm.com>
-Date: Thu, 4 May 2017 05:59:26 -0700
+In-Reply-To: <1493155156-22697-1-git-send-email-ryanhsu@qti.qualcomm.com>
+References: <1493155156-22697-1-git-send-email-ryanhsu@qti.qualcomm.com>
+Message-ID: <f2affc9fdafb443b962a418be6d2470b@eusanexr01a.eu.qualcomm.com>
+Date: Thu, 4 May 2017 06:00:47 -0700
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michael Mera <dev@michaelmera.com>
+To: ryanhsu@qti.qualcomm.com
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michael Mera <dev@michaelmera.com> wrote:
-> During write to debugfs file simulate_fw_crash, fixed-size local buffer
-> 'buf' is accessed and modified at index 'count-1', where 'count' is the
-> size of the write (so potentially out of bounds).
-> This patch fixes this problem.
+ryanhsu@qti.qualcomm.com wrote:
+> From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
 > 
-> Signed-off-by: Michael Mera <dev@michaelmera.com>
+> QCA9xxx and QCA61x4/QCA93xx are using different wmi operation, in order
+> for userspace to differentiate it, appends the wmi_op_version information
+> alone with the get_version command.
+> 
+> Signed-off-by: Ryan Hsu <ryanhsu@qti.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-a16703aaeaed ath10k: fix out of bounds access to local buffer
+4dcb78085d56 ath10k: append the wmi_op_version to testmode get_version cmd
 
 -- 
-https://patchwork.kernel.org/patch/9695703/
+https://patchwork.kernel.org/patch/9699775/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
