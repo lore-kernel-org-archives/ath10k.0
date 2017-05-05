@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d6GNc-0000jF-1l
- for ath10k@lists.infradead.org; Thu, 04 May 2017 13:01:20 +0000
+ id 1d6chx-0004Sp-BE
+ for ath10k@lists.infradead.org; Fri, 05 May 2017 12:51:43 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: append the wmi_op_version to testmode get_version cmd
+Subject: Re: ath10k: merge extended peer info data with existing peers info
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1493155156-22697-1-git-send-email-ryanhsu@qti.qualcomm.com>
-References: <1493155156-22697-1-git-send-email-ryanhsu@qti.qualcomm.com>
-Message-ID: <f2affc9fdafb443b962a418be6d2470b@eusanexr01a.eu.qualcomm.com>
-Date: Thu, 4 May 2017 06:00:47 -0700
+In-Reply-To: <20161217174634.4531-1-chunkeey@googlemail.com>
+References: <20161217174634.4531-1-chunkeey@googlemail.com>
+Message-ID: <02c99a9342f546488356517e56bc7a4c@eusanexr01a.eu.qualcomm.com>
+Date: Fri, 5 May 2017 05:51:16 -0700
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +22,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ryanhsu@qti.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Christian Lamparter <chunkeey@googlemail.com>
+Cc: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-ryanhsu@qti.qualcomm.com wrote:
-> From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+Christian Lamparter <chunkeey@googlemail.com> wrote:
+> The 10.4 firmware adds extended peer information to the
+> firmware's statistics payload. This additional info is
+> stored as a separate data field. During review of
+> "ath10k: add accounting for the extended peer statistics" [0]
 > 
-> QCA9xxx and QCA61x4/QCA93xx are using different wmi operation, in order
-> for userspace to differentiate it, appends the wmi_op_version information
-> alone with the get_version command.
+> Mohammed Shafi Shajakhan commented that the extended peer statistics
+> lists are of little use:"... there is not much use in appending
+> the extended peer stats (which gets periodically updated) to the
+> linked list '&ar->debug.fw_stats.peers_extd)' and should we get
+> rid of the below (and the required cleanup as well)
 > 
-> Signed-off-by: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+> list_splice_tail_init(&stats.peers_extd,
+>                 &ar->debug.fw_stats.peers_extd);
+> 
+> since rx_duration is getting updated periodically to the per sta
+> information."
+> 
+> This patch replaces the extended peers list with a lookup and
+> puts the retrieved data (rx_duration) into the existing
+> ath10k_fw_stats_peer entry that was created earlier.
+> 
+> [0] <https://lkml.kernel.org/r/992a4e2676037a06f482cdbe2d3d39e287530be5.1480974623.git.chunkeey@googlemail.com>
+> Cc: Mohammed Shafi Shajakhan <mohammed@codeaurora.org>
+> Signed-off-by: Christian Lamparter <chunkeey@googlemail.com>
 
-Patch applied to ath-next branch of ath.git, thanks.
+The discussion with this bug was quite hard to follow, so what is the
+conclusion from this? The patch still applies using three way merge but there
+are compilation errors:
 
-4dcb78085d56 ath10k: append the wmi_op_version to testmode get_version cmd
+drivers/net/wireless/ath/ath10k/debug.c: In function 'ath10k_debug_fw_stats_process':
+drivers/net/wireless/ath/ath10k/debug.c:388:4: error: implicit declaration of function 'ath10k_fw_extd_stats_peers_free' [-Werror=implicit-function-declaration]
+drivers/net/wireless/ath/ath10k/debug.c:388:55: error: 'struct ath10k_fw_stats' has no member named 'peers_extd'
+drivers/net/wireless/ath/ath10k/debug.c:400:32: error: 'struct ath10k_fw_stats' has no member named 'peers_extd'
+drivers/net/wireless/ath/ath10k/debug.c:401:31: error: 'struct ath10k_fw_stats' has no member named 'peers_extd'
+
+I admit that I didn't look this patch very carefully, but I'm not really seeing
+how this patch makes things better? wmi.c gets more complicated and a new
+ifdef is added. We have tried hard to keep all ar->debug access in debug.c,
+this way there's no need to sprinkle ifdefs in the code.
 
 -- 
-https://patchwork.kernel.org/patch/9699775/
+https://patchwork.kernel.org/patch/9479079/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
