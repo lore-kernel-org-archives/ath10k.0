@@ -1,20 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x229.google.com ([2a00:1450:400c:c0c::229])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d89Hd-0001gs-9i
- for ath10k@lists.infradead.org; Tue, 09 May 2017 17:50:51 +0000
-Received: by mail-wr0-x229.google.com with SMTP id z52so9403138wrc.2
- for <ath10k@lists.infradead.org>; Tue, 09 May 2017 10:50:27 -0700 (PDT)
+Received: from m15-32.126.com ([220.181.15.32])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1d8EWd-0003JW-Ok
+ for ath10k@lists.infradead.org; Tue, 09 May 2017 23:26:41 +0000
+Date: Wed, 10 May 2017 07:26:18 +0800 (CST)
+From: "Guo Feng" <18511331204@126.com>
+Subject: Does qca9994 support available in ath10K?
 MIME-Version: 1.0
-In-Reply-To: <1863250.VEhGCjvYY0@prime>
-References: <20170323133048.30062-2-sw@simonwunderlich.de>
- <1811221.G4Vz0DPyQ8@prime>
- <12133a0e-b030-5b21-8de1-3bf7334d47df@fit.fraunhofer.de>
- <1863250.VEhGCjvYY0@prime>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Tue, 9 May 2017 10:50:25 -0700
-Message-ID: <CAJ-Vmonxt8BmpL+mM07f4-TLU+LKW+eg1Ri3twcrFOKWp9NXLw@mail.gmail.com>
-Subject: Re: [v2,1/3] ath9k: Support channels in licensed bands
+Message-ID: <3bd8a7fe.42a.15bef88e8db.Coremail.18511331204@126.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +16,18 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Simon Wunderlich <sw@simonwunderlich.de>
-Cc: Julian Calaby <julian.calaby@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath9k-devel <ath9k-devel@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Steve deRosier <derosier@gmail.com>, Ben Greear <greearb@candelatech.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-On 9 May 2017 at 05:57, Simon Wunderlich <sw@simonwunderlich.de> wrote:
-> Hey Kalle,
->
-> it seems like there was some discussion here and I wouldn't expect too many
-> more opinions ... do you think we can have a decision based on what has been
-> discussed here?
-
-(Note: FreeBSD has had in-tree support for 4.9GHz and 900MHz bands
-since forever. I'm actually thinking of extending it to include 5.9
-and other UHF bands to cover licenced hardware people are making but
-then leaving the support disabled unless you compile in very specific
-licenced bits. No, it doesn't work out of the box unless your NIC
-actually supports it in the calibration section.)
-
-(Note note: some of those channels have non-megahertz boundaries,
-which means ... yeah, hello inter-operability boundaries. Hilarious.)
-
-
-
--adrian
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VG8gd2hvbWV2ZXIgbWF5IGNhbiBoZWxwLAoKClJlY2VudGx5LCBJIGdvdCBvbmUgcmVmZXJlbmNl
+IGRlc2lnbsKgIGJvYXJkIHdpdGggYSBxY2E5OTk0IDgwMi4xMWFjIFdhdmUyIHBjaWUgbW9kdWxl
+LgoKCkFuZCBub3cgSSBoYXZlIGJyaW5nIHVwIHRoZSBib2FyZCwgYnV0IEkgY2Fu4oCZdCBnZXQg
+dGhlIHdpZmkgbW9kdWxlIHdvcmsuCgoKwqBJIHdhbnQgdG8ga25vdyB0aGF0IGRvZXMgcWNhOTk5
+NCBoYXZlIGJlZW4gc3VwcG9ydGVkIGJ5IGF0aDEwaz8gCgoKUmVnYXJkcwoKCkZlbmcKCgoKCgrC
+oAogICAgICAgICAgICAKICAgICAgICAKICAgIApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
+MTBrCg==
