@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from gateway33.websitewelcome.com ([192.185.146.78])
+Received: from gateway30.websitewelcome.com ([192.185.144.21])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d84M8-0000te-Of
- for ath10k@lists.infradead.org; Tue, 09 May 2017 12:35:10 +0000
-Received: from cm1.websitewelcome.com (cm.websitewelcome.com [192.185.0.102])
- by gateway33.websitewelcome.com (Postfix) with ESMTP id 5FFB454F8B
- for <ath10k@lists.infradead.org>; Tue,  9 May 2017 07:34:44 -0500 (CDT)
-Date: Tue, 09 May 2017 07:34:42 -0500
-Message-ID: <20170509073442.Horde.Q8CbZi0XhNUcuRQ3NxtQfks@gator4166.hostgator.com>
+ id 1d84cL-0007f6-Ni
+ for ath10k@lists.infradead.org; Tue, 09 May 2017 12:51:55 +0000
+Received: from cm15.websitewelcome.com (cm15.websitewelcome.com [100.42.49.9])
+ by gateway30.websitewelcome.com (Postfix) with ESMTP id 4AD101840B
+ for <ath10k@lists.infradead.org>; Tue,  9 May 2017 07:51:30 -0500 (CDT)
+Date: Tue, 9 May 2017 07:51:29 -0500
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Subject: Re: [PATCH] net: wireless: ath: ath10k: remove unnecessary code
-References: <20170509042159.GA19727@embeddedgus>
- <87lgq6387s.fsf@kamboji.qca.qualcomm.com>
- <76408651-07c6-fe31-863f-e1cb73b49663@broadcom.com>
-In-Reply-To: <76408651-07c6-fe31-863f-e1cb73b49663@broadcom.com>
+Subject: [PATCH v2] ath10k: remove unnecessary code
+Message-ID: <20170509125129.GA21962@embeddedgus>
 MIME-Version: 1.0
 Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
@@ -24,43 +20,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="Yes"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arend Van Spriel <arend.vanspriel@broadcom.com>
-Cc: netdev@vger.kernel.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Arend Van Spriel <arend.vanspriel@broadcom.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
 
-Hi Arend,
+The array fields in struct wmi_start_scan_arg that are checked here are
+fixed size arrays so they can never be NULL.
 
-Quoting Arend Van Spriel <arend.vanspriel@broadcom.com>:
+Addresses-Coverity-ID: 1260031
+Cc: Arend Van Spriel <arend.vanspriel@broadcom.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>
+Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+---
+Changes in v2:
+ Rephrase commit log.
 
-> On 9-5-2017 7:33, Kalle Valo wrote:
->> "Gustavo A. R. Silva" <garsilva@embeddedor.com> writes:
->>
->>> The name of an array used by itself will always return the array's address.
->>> So these tests will always evaluate as false and therefore the _return_
->>> will never be executed.
->>>
->>> Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
->>
->> I don't understand the commit log, especially what does "The name of an
->> array used by itself" mean?
->
-> The array fields in struct wmi_start_scan_arg that are checked here are
-> fixed size arrays so they can never be NULL.
->
-> Maybe that helps rephrasing this commit message.
->
+ drivers/net/wireless/ath/ath10k/wmi.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-Definitely. Thank you!
---
-Gustavo A. R. Silva
-
-
-
-
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 2f1743e..135cf83 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -5933,15 +5933,6 @@ static struct sk_buff *ath10k_wmi_10_4_op_gen_init(struct ath10k *ar)
+ 
+ int ath10k_wmi_start_scan_verify(const struct wmi_start_scan_arg *arg)
+ {
+-	if (arg->ie_len && !arg->ie)
+-		return -EINVAL;
+-	if (arg->n_channels && !arg->channels)
+-		return -EINVAL;
+-	if (arg->n_ssids && !arg->ssids)
+-		return -EINVAL;
+-	if (arg->n_bssids && !arg->bssids)
+-		return -EINVAL;
+-
+ 	if (arg->ie_len > WLAN_SCAN_PARAMS_MAX_IE_LEN)
+ 		return -EINVAL;
+ 	if (arg->n_channels > ARRAY_SIZE(arg->channels))
+-- 
+2.5.0
 
 
 _______________________________________________
