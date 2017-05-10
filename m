@@ -1,15 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d8Ep6-0001YJ-C0
- for ath10k@lists.infradead.org; Tue, 09 May 2017 23:45:46 +0000
-Subject: Re: Does qca9994 support available in ath10K
-References: <CAPYAbSzyx7jWhoVb6_V_nMHpMOx0ziU7eYbdL4aFizyF_2PcXg@mail.gmail.com>
+ id 1d8UJL-0005TZ-EO
+ for ath10k@lists.infradead.org; Wed, 10 May 2017 16:18:01 +0000
+Subject: Re: [v2,1/3] ath9k: Support channels in licensed bands
+References: <20170323133048.30062-2-sw@simonwunderlich.de>
+ <1811221.G4Vz0DPyQ8@prime>
+ <12133a0e-b030-5b21-8de1-3bf7334d47df@fit.fraunhofer.de>
+ <1863250.VEhGCjvYY0@prime>
+ <CAJ-Vmonxt8BmpL+mM07f4-TLU+LKW+eg1Ri3twcrFOKWp9NXLw@mail.gmail.com>
+ <CAKR_QV+0cPXbiScO3cS52R97o=wGh4+zgmqaRM7QbotmEJD51Q@mail.gmail.com>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <3cd962c4-09b7-f2cc-9d50-ac4fb8cbe4be@candelatech.com>
-Date: Tue, 9 May 2017 16:45:22 -0700
+Message-ID: <a45f00f8-0a6f-5e8d-f6f3-1c9a898410e2@candelatech.com>
+Date: Wed, 10 May 2017 09:17:37 -0700
 MIME-Version: 1.0
-In-Reply-To: <CAPYAbSzyx7jWhoVb6_V_nMHpMOx0ziU7eYbdL4aFizyF_2PcXg@mail.gmail.com>
+In-Reply-To: <CAKR_QV+0cPXbiScO3cS52R97o=wGh4+zgmqaRM7QbotmEJD51Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,22 +23,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: feng guo <guo.nxp@gmail.com>, ath10k@lists.infradead.org
+To: Tom Psyborg <pozega.tomislav@gmail.com>, Adrian Chadd <adrian@freebsd.org>
+Cc: Simon Wunderlich <sw@simonwunderlich.de>, Julian Calaby <julian.calaby@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath9k-devel <ath9k-devel@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Steve deRosier <derosier@gmail.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, Kalle Valo <kvalo@codeaurora.org>
 
-T24gMDUvMDkvMjAxNyAwNDo0MCBQTSwgZmVuZyBndW8gd3JvdGU6Cj4gVG8gd2hvbWV2ZXIgbWF5
-IGNhbiBoZWxwLAo+Cj4gUmVjZW50bHksIEkgZ290IG9uZSByZWZlcmVuY2UgZGVzaWduICBib2Fy
-ZCB3aXRoIGEgcWNhOTk5NCA4MDIuMTFhYwo+IFdhdmUyIHBjaWUgbW9kdWxlLgo+Cj4gQW5kIG5v
-dyBJIGhhdmUgYnJpbmcgdXAgdGhlIGJvYXJkLCBidXQgSSBjYW7igJl0IGdldCB0aGUgd2lmaSBt
-b2R1bGUgd29yay4KPgo+ICBJIHdhbnQgdG8ga25vdyB0aGF0IGRvZXMgcWNhOTk5NCBoYXZlIGJl
-ZW4gc3VwcG9ydGVkIGJ5IGF0aDEwaz8KCkl0IHdvcmtzIHdpdGggY2VydGFpbiBmaXJtd2FyZSBh
-bmQga2VybmVscyBhdCBsZWFzdC4KCldoYXQgZXJyb3JzIGRvIHlvdSBzZWUsIHdoYXQga2VybmVs
-IGFuZCBmaXJtd2FyZSBhcmUgeW91IHVzaW5nPwoKVGhhbmtzLApCZW4KCgotLSAKQmVuIEdyZWVh
-ciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0
-cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+On 05/10/2017 03:30 AM, Tom Psyborg wrote:
+>
+>
+> On 9 May 2017 at 19:50, Adrian Chadd <adrian@freebsd.org <mailto:adrian@freebsd.org>> wrote:
+>
+>
+>     (Note note: some of those channels have non-megahertz boundaries,
+>     which means ... yeah, hello inter-operability boundaries. Hilarious.)
+>
+>
+>
+>     -adrian
+>
+>
+>
+> From what I can tell, it seems like as long as your both points are configured with identical settings, you can use any channel/frequency/bandwidth combination
+> that hardware supports. Possibly even 802.11ac at 2.4 GHz if we got more than 100MHz of bandwidth from 2.4 to 2.5 GHz. The solution i've made myself doesn't
+> include all available channels but can serve as an example: https://forum.openwrt.org/viewtopic.php?pid=353870#p353870 primary/sec HT channel option should also
+> be further extended.
+>
+> Cheers, Tom
+
+I've successfully used 802.11ac VHT-40 on 2.4Ghz band with ath10k...it just requires a few small changes
+in the mac80211 stack to allow it to be configured....just FYI.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
