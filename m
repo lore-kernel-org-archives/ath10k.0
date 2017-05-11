@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
+Received: from mail-wr0-x22a.google.com ([2a00:1450:400c:c0c::22a])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d8kZu-0007Iw-0X
- for ath10k@lists.infradead.org; Thu, 11 May 2017 09:40:11 +0000
-Received: by mail-wm0-x22b.google.com with SMTP id b84so34053222wmh.0
- for <ath10k@lists.infradead.org>; Thu, 11 May 2017 02:39:49 -0700 (PDT)
+ id 1d8l1p-0004q8-Kj
+ for ath10k@lists.infradead.org; Thu, 11 May 2017 10:09:03 +0000
+Received: by mail-wr0-x22a.google.com with SMTP id z52so16329464wrc.2
+ for <ath10k@lists.infradead.org>; Thu, 11 May 2017 03:08:41 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
 Subject: Re: [PATCH] ath10k: Fix reported HT MCS rates with NSS > 1
+Date: Thu, 11 May 2017 12:08:37 +0200
+Message-ID: <1754114.EBhbnoIm2s@bentobox>
+In-Reply-To: <6e066fe4-35e0-981a-a86e-d9dcaf6ec3b1@broadcom.com>
 References: <20170511090930.18205-1-sven.eckelmann@openmesh.com>
-From: Arend Van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <6e066fe4-35e0-981a-a86e-d9dcaf6ec3b1@broadcom.com>
-Date: Thu, 11 May 2017 11:39:46 +0200
+ <6e066fe4-35e0-981a-a86e-d9dcaf6ec3b1@broadcom.com>
 MIME-Version: 1.0
-In-Reply-To: <20170511090930.18205-1-sven.eckelmann@openmesh.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,59 +21,97 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4008792100571578209=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>, ath10k@lists.infradead.org
-Cc: akolli@qti.qualcomm.com, linux-wireless@vger.kernel.org
+To: Arend Van Spriel <arend.vanspriel@broadcom.com>
+Cc: akolli@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 11-5-2017 11:09, Sven Eckelmann wrote:
-> The QCA4019 firmware 10.4-3.2.1-00050 reports only HT MCS rates between
-> 0-9. But 802.11n MCS rates can be larger than that. For example a 2x2
-> device can send with up to MCS 15.
-> 
-> The firmware encodes the higher MCS rates using the NSS field. The actual
-> calculation is not documented by QCA but it seems like the NSS field can be
-> mapped for HT rates to following MCS offsets:
-> 
->  * NSS 1: 0
->  * NSS 2: 8
->  * NSS 3: 16
->  * NSS 4: 24
-> 
-> This offset therefore has to be added for HT rates before they are stored
-> in the rate_info struct.
-> 
-> Fixes: cec17c382140 ("ath10k: add per peer htt tx stats support for 10.4")
-> Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
-> ---
->  drivers/net/wireless/ath/ath10k/htt_rx.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> index 84b6067ff6e7..6c0a821fe79d 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> @@ -2229,9 +2229,15 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
->  	txrate.mcs = ATH10K_HW_MCS_RATE(peer_stats->ratecode);
->  	sgi = ATH10K_HW_GI(peer_stats->flags);
->  
-> -	if (((txrate.flags == WMI_RATE_PREAMBLE_HT) ||
-> -	     (txrate.flags == WMI_RATE_PREAMBLE_VHT)) && txrate.mcs > 9) {
-> -		ath10k_warn(ar, "Invalid mcs %hhd peer stats", txrate.mcs);
-> +	if (txrate.flags == WMI_RATE_PREAMBLE_VHT && txrate.mcs > 9) {
-> +		ath10k_warn(ar, "Invalid VHT mcs %hhd peer stats",  txrate.mcs);
-> +		return;
-> +	}
+--===============4008792100571578209==
+Content-Type: multipart/signed; boundary="nextPart4423655.Riqkk3SaUx"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-So you leave VHT as is. Did you check with 11ac device? I am wondering
-if it needs the same change.
+--nextPart4423655.Riqkk3SaUx
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Regards,
-Arend
+On Donnerstag, 11. Mai 2017 11:39:46 CEST Arend Van Spriel wrote:
+[...]
+> So you leave VHT as is. Did you check with 11ac device? I am wondering
+> if it needs the same change.
+
+VHT MCS rates are reported by drivers with NSS + MCS rates 0-9 [1] as 
+separated values. So I would say that the code is correct to report them as 
+separate values. But no, I haven't tested with an 802.11ac capable device 
+which I can fully trust because I didn't have one in arms reach (and I would 
+have to compile a new firmware for it). But the output for a second ath10k 
+based device looks ok'ish:
+
+    Station ac:86:74:61:6b:30 (on wlan1)
+            inactive time:  700 ms
+            rx bytes:       10741
+            rx packets:     95
+            tx bytes:       9886
+            tx packets:     86
+            tx retries:     0
+            tx failed:      0
+            rx drop misc:   1
+            signal:         -22 dBm
+            signal avg:     -21 dBm
+            tx bitrate:     780.0 MBit/s VHT-MCS 8 80MHz short GI VHT-NSS 2
+            rx bitrate:     780.0 MBit/s VHT-MCS 8 80MHz short GI VHT-NSS 2
+            rx duration:    8172 us
+            authorized:     yes
+            authenticated:  yes
+            associated:     yes
+            preamble:       long
+            WMM/WME:        yes
+            MFP:            no
+            TDLS peer:      no
+            DTIM period:    2
+            beacon interval:100
+            short slot time:yes
+            connected time: 106 seconds
+
+Kind regards,
+	Sven
+
+[1] http://mcsindex.com/
+
+--nextPart4423655.Riqkk3SaUx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlkUOCUACgkQXYcKB8Em
+e0ZxxA/9G185Mxios+ISuM6sJGJbBSzdG0HtNMXfr1rXriPOoQMfQLIrKInguJ6E
+dSL17sawa/6wvkuaxlvxZiW7VooSyyMHJXymDisDMz+vD3Q0HovLMuegVa6B7r1b
+dqJuQRQZgBm3lYq6NxCAMSSlH5SePUhq5RUU1I6jG271pbhSqid/+tltbzTS7+Eq
+RD7DO612aHK2+saaHy3p9OT83v1sFW5dBbp/Oyy4YjOYJYm3/FtKmUBs5JPV/RMc
+8BUGb2vOlha8S3JZUncowl6BrI3PggBD/X04yk70CUzAmoCN3PN+Vawmz8mfdXhS
+NZRTfQgW3Hbe/MVOxv2CdL8PWSU+HVMxIjT4gOqVSsCVlquWskfRUkigA0vqwxsf
+D3kbgIZZARxEacB+B6TYmYioxnR1Dop0S++DYSjRLUaudYAaMC05ZD3W6tEkzm5t
+1NnkS9HiQ+O4LsUAFKwDjO8sENvL60vGXodfQKFBh1JIjcbDg8qEoK+FmbecGL3+
+rKINAfWM/q7Ahry3dKN2oe5lZR5RtHaealYfVE5D+R+GlAhSlTYwXru4M5n8vzIR
+J3PtzzDeh7fLY4V3gnm1SKlUfJXFAmgAzAEZbeMmmDl8PR24UBSP3X0UYFZttB46
+CVvo4hn8NFNjA0nMG5a/7vY/ZRhzF9UT0qRPc/SXWc+4vT3osgM=
+=DXQt
+-----END PGP SIGNATURE-----
+
+--nextPart4423655.Riqkk3SaUx--
+
+
+
+--===============4008792100571578209==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============4008792100571578209==--
