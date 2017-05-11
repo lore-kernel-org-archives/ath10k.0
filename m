@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x22a.google.com ([2a00:1450:400c:c0c::22a])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d8l1p-0004q8-Kj
- for ath10k@lists.infradead.org; Thu, 11 May 2017 10:09:03 +0000
-Received: by mail-wr0-x22a.google.com with SMTP id z52so16329464wrc.2
- for <ath10k@lists.infradead.org>; Thu, 11 May 2017 03:08:41 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: [PATCH] ath10k: Fix reported HT MCS rates with NSS > 1
-Date: Thu, 11 May 2017 12:08:37 +0200
-Message-ID: <1754114.EBhbnoIm2s@bentobox>
-In-Reply-To: <6e066fe4-35e0-981a-a86e-d9dcaf6ec3b1@broadcom.com>
-References: <20170511090930.18205-1-sven.eckelmann@openmesh.com>
- <6e066fe4-35e0-981a-a86e-d9dcaf6ec3b1@broadcom.com>
+ id 1d8mRK-0004VN-V3
+ for ath10k@lists.infradead.org; Thu, 11 May 2017 11:39:29 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [v2,1/3] ath9k: Support channels in licensed bands
+References: <20170323133048.30062-2-sw@simonwunderlich.de>
+ <1811221.G4Vz0DPyQ8@prime>
+ <12133a0e-b030-5b21-8de1-3bf7334d47df@fit.fraunhofer.de>
+ <1863250.VEhGCjvYY0@prime>
+Date: Thu, 11 May 2017 14:38:58 +0300
+In-Reply-To: <1863250.VEhGCjvYY0@prime> (Simon Wunderlich's message of "Tue,
+ 09 May 2017 14:57:32 +0200")
+Message-ID: <87efvvvd0t.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,97 +22,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4008792100571578209=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arend Van Spriel <arend.vanspriel@broadcom.com>
-Cc: akolli@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Simon Wunderlich <sw@simonwunderlich.de>
+Cc: Julian Calaby <julian.calaby@gmail.com>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org, Steve deRosier <derosier@gmail.com>, Ben Greear <greearb@candelatech.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
 
---===============4008792100571578209==
-Content-Type: multipart/signed; boundary="nextPart4423655.Riqkk3SaUx"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Simon Wunderlich <sw@simonwunderlich.de> writes:
 
---nextPart4423655.Riqkk3SaUx
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+> it seems like there was some discussion here and I wouldn't expect too many 
+> more opinions ... do you think we can have a decision based on what has been 
+> discussed here?
 
-On Donnerstag, 11. Mai 2017 11:39:46 CEST Arend Van Spriel wrote:
-[...]
-> So you leave VHT as is. Did you check with 11ac device? I am wondering
-> if it needs the same change.
+Well, there was an excellent reply from Steve and quite a few "in my
+opinion this is safe" type of answers. [1] But bluntly said it does not
+really matter what we (the engineers) think. What really matters here
+are regulatory authorities' opinions and rulings. In that respect here
+are few items I want to point out:
 
-VHT MCS rates are reported by drivers with NSS + MCS rates 0-9 [1] as 
-separated values. So I would say that the code is correct to report them as 
-separate values. But no, I haven't tested with an 802.11ac capable device 
-which I can fully trust because I didn't have one in arms reach (and I would 
-have to compile a new firmware for it). But the output for a second ath10k 
-based device looks ok'ish:
+o I suspect that from someone's, who is not familiar with software
+  engineering, point of view there is still quite a diffference from
+  modifiying source code or just enabling few options from Kconfig with
+  a custom regdb rule.
 
-    Station ac:86:74:61:6b:30 (on wlan1)
-            inactive time:  700 ms
-            rx bytes:       10741
-            rx packets:     95
-            tx bytes:       9886
-            tx packets:     86
-            tx retries:     0
-            tx failed:      0
-            rx drop misc:   1
-            signal:         -22 dBm
-            signal avg:     -21 dBm
-            tx bitrate:     780.0 MBit/s VHT-MCS 8 80MHz short GI VHT-NSS 2
-            rx bitrate:     780.0 MBit/s VHT-MCS 8 80MHz short GI VHT-NSS 2
-            rx duration:    8172 us
-            authorized:     yes
-            authenticated:  yes
-            associated:     yes
-            preamble:       long
-            WMM/WME:        yes
-            MFP:            no
-            TDLS peer:      no
-            DTIM period:    2
-            beacon interval:100
-            short slot time:yes
-            connected time: 106 seconds
+o I don't know about other countries, but in Finland applying for any
+  type of license (even if just to a license to drive a moped) needs
+  both time and money. So there is significant effort anyway needed to
+  legally use this band. And how many users there really are is unclear.
 
-Kind regards,
-	Sven
+o Also this is not about enabling or disabling channel 13, but about a
+  public _safety_ band which makes me very uneasy.
 
-[1] http://mcsindex.com/
+So the way I see this is that the risks outweigh the benefits and that's
+why I do not want to take these. Sorry.
 
---nextPart4423655.Riqkk3SaUx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+[1] https://patchwork.kernel.org/patch/9641105/
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlkUOCUACgkQXYcKB8Em
-e0ZxxA/9G185Mxios+ISuM6sJGJbBSzdG0HtNMXfr1rXriPOoQMfQLIrKInguJ6E
-dSL17sawa/6wvkuaxlvxZiW7VooSyyMHJXymDisDMz+vD3Q0HovLMuegVa6B7r1b
-dqJuQRQZgBm3lYq6NxCAMSSlH5SePUhq5RUU1I6jG271pbhSqid/+tltbzTS7+Eq
-RD7DO612aHK2+saaHy3p9OT83v1sFW5dBbp/Oyy4YjOYJYm3/FtKmUBs5JPV/RMc
-8BUGb2vOlha8S3JZUncowl6BrI3PggBD/X04yk70CUzAmoCN3PN+Vawmz8mfdXhS
-NZRTfQgW3Hbe/MVOxv2CdL8PWSU+HVMxIjT4gOqVSsCVlquWskfRUkigA0vqwxsf
-D3kbgIZZARxEacB+B6TYmYioxnR1Dop0S++DYSjRLUaudYAaMC05ZD3W6tEkzm5t
-1NnkS9HiQ+O4LsUAFKwDjO8sENvL60vGXodfQKFBh1JIjcbDg8qEoK+FmbecGL3+
-rKINAfWM/q7Ahry3dKN2oe5lZR5RtHaealYfVE5D+R+GlAhSlTYwXru4M5n8vzIR
-J3PtzzDeh7fLY4V3gnm1SKlUfJXFAmgAzAEZbeMmmDl8PR24UBSP3X0UYFZttB46
-CVvo4hn8NFNjA0nMG5a/7vY/ZRhzF9UT0qRPc/SXWc+4vT3osgM=
-=DXQt
------END PGP SIGNATURE-----
-
---nextPart4423655.Riqkk3SaUx--
-
-
-
---===============4008792100571578209==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============4008792100571578209==--
