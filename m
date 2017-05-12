@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d9BJT-00082G-KW
- for ath10k@lists.infradead.org; Fri, 12 May 2017 14:13:01 +0000
-Subject: Re: [v2,1/3] ath9k: Support channels in licensed bands
-References: <20170323133048.30062-2-sw@simonwunderlich.de>
- <1811221.G4Vz0DPyQ8@prime>
- <12133a0e-b030-5b21-8de1-3bf7334d47df@fit.fraunhofer.de>
- <1863250.VEhGCjvYY0@prime> <87efvvvd0t.fsf@kamboji.qca.qualcomm.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <1c5720d5-8264-26a8-a63e-b225524471cc@candelatech.com>
-Date: Fri, 12 May 2017 07:12:36 -0700
+Received: from mail-io0-x22c.google.com ([2607:f8b0:4001:c06::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d9BnU-0004Aj-NK
+ for ath10k@lists.infradead.org; Fri, 12 May 2017 14:44:02 +0000
+Received: by mail-io0-x22c.google.com with SMTP id k91so41398641ioi.1
+ for <ath10k@lists.infradead.org>; Fri, 12 May 2017 07:43:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87efvvvd0t.fsf@kamboji.qca.qualcomm.com>
+From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
+Date: Fri, 12 May 2017 20:13:18 +0530
+Message-ID: <CABPxzY+mQ-G6PTsQV9_WVgju4bmQHwxKKW070j7v6=DDgZop4Q@mail.gmail.com>
+Subject: ath10k: controlling TX aggregation
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,58 +18,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>, Simon Wunderlich <sw@simonwunderlich.de>
-Cc: Julian Calaby <julian.calaby@gmail.com>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org, Steve deRosier <derosier@gmail.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+To: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
+Hi,
 
+I am doing some comparative tests, wanted to configure common
+settings btw all STA's. wanted to limit agg_size to 24 in ath10k with
+the below command.
 
-On 05/11/2017 04:38 AM, Kalle Valo wrote:
-> Simon Wunderlich <sw@simonwunderlich.de> writes:
->
->> it seems like there was some discussion here and I wouldn't expect too many
->> more opinions ... do you think we can have a decision based on what has been
->> discussed here?
->
-> Well, there was an excellent reply from Steve and quite a few "in my
-> opinion this is safe" type of answers. [1] But bluntly said it does not
-> really matter what we (the engineers) think. What really matters here
-> are regulatory authorities' opinions and rulings. In that respect here
-> are few items I want to point out:
->
-> o I suspect that from someone's, who is not familiar with software
->   engineering, point of view there is still quite a diffference from
->   modifiying source code or just enabling few options from Kconfig with
->   a custom regdb rule.
+echo "3 24" > /sys/kernel/debug/ieee80211/phy0/ath10k/htt_max_amsdu_ampdu
 
-If someone with real authority ever complains, then the code could be
-backed out again.  Your opinion seems not much more informed than the
-rest of us discussing this.
+The ADDBA request still has 64 and when i run iperf it is aggregating 64 frames.
 
->
-> o I don't know about other countries, but in Finland applying for any
->   type of license (even if just to a license to drive a moped) needs
->   both time and money. So there is significant effort anyway needed to
->   legally use this band. And how many users there really are is unclear.
+Except for 1 no number takes effect. If i configure 1 there is no ADDBA exchange
+initiated by ath10k.
 
-This is almost certainly not going to be used by regular end-users.  It is going to be
-used by public safety organizations who are buying equipment from companies
-using open-wrt, LEDE, or similar, or possibly small teams at public safety
-organizations doing the work themselves.  Rather than having each of these vendors
-hack their own crap into their kernels or forcing the the organizations to use Cisco gear,
-we could work on it together.
+Is this expected? Can we control the aggregation size through driver?
 
-Anyway, if upstream is blocked, then maybe we could work on getting this into LEDE?
-
-Thanks,
-Ben
+latest wireless-drivers-next and linux-firmware git is used.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Thanks,
+Regards,
+Chaitanya T K.
 
 _______________________________________________
 ath10k mailing list
