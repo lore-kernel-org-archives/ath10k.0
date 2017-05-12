@@ -1,21 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d9EP9-0001jg-Ok
- for ath10k@lists.infradead.org; Fri, 12 May 2017 17:31:05 +0000
-Received: by mail-pg0-x242.google.com with SMTP id h64so3666574pge.3
- for <ath10k@lists.infradead.org>; Fri, 12 May 2017 10:30:42 -0700 (PDT)
+ id 1d9G8R-0003lI-7k
+ for ath10k@lists.infradead.org; Fri, 12 May 2017 19:21:57 +0000
+Received: by mail-wm0-x244.google.com with SMTP id v4so15692661wmb.2
+ for <ath10k@lists.infradead.org>; Fri, 12 May 2017 12:21:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d4b33a7a-1504-585a-312a-c3ba00d5bab9@gmail.com>
-References: <CAHNpzpeRE6ha4JA9i4oyJ2BjgJg53FvDpAb1yZccncrmTeiBdQ@mail.gmail.com>
- <8737g45xc7.fsf@kamboji.qca.qualcomm.com>
- <c3814c7d-eed3-dad2-c568-6ce456ee7166@gmail.com>
- <CABy9W5kF8KcTUgk9UOguu1A-N==tMbjVW1gWGeq8pgAN6YREUg@mail.gmail.com>
- <d4b33a7a-1504-585a-312a-c3ba00d5bab9@gmail.com>
-From: Ann Lo <annlo.tech@gmail.com>
-Date: Fri, 12 May 2017 10:30:41 -0700
-Message-ID: <CABy9W5n1YqrsrXhT+Zb57_=OAEUELgx0Hk3Gp+Yx_BcEzwu++Q@mail.gmail.com>
-Subject: Re: Driver support for QCA6174 chip using SDIO interface
+In-Reply-To: <1c5720d5-8264-26a8-a63e-b225524471cc@candelatech.com>
+References: <20170323133048.30062-2-sw@simonwunderlich.de>
+ <1811221.G4Vz0DPyQ8@prime>
+ <12133a0e-b030-5b21-8de1-3bf7334d47df@fit.fraunhofer.de>
+ <1863250.VEhGCjvYY0@prime>
+ <87efvvvd0t.fsf@kamboji.qca.qualcomm.com>
+ <1c5720d5-8264-26a8-a63e-b225524471cc@candelatech.com>
+From: Steve deRosier <derosier@gmail.com>
+Date: Fri, 12 May 2017 12:21:32 -0700
+Message-ID: <CALLGbR+3JZL4=t78TQbLwKdq938B3cw0qj369dd6sY4q5A5ctw@mail.gmail.com>
+Subject: Re: [v2,1/3] ath9k: Support channels in licensed bands
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,125 +29,167 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: Akesh M Chacko <akesh.chacko@vvdntech.in>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Simon Wunderlich <sw@simonwunderlich.de>, Julian Calaby <julian.calaby@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, Kalle Valo <kvalo@codeaurora.org>
 
-Thanks Erik for your reply. Your information is very useful to us.
+Hi Ben,
 
-Ann
+On Fri, May 12, 2017 at 7:12 AM, Ben Greear <greearb@candelatech.com> wrote:
+>
+>
+> On 05/11/2017 04:38 AM, Kalle Valo wrote:
+>>
+>> Simon Wunderlich <sw@simonwunderlich.de> writes:
+>>
+>>> it seems like there was some discussion here and I wouldn't expect too
+>>> many
+>>> more opinions ... do you think we can have a decision based on what has
+>>> been
+>>> discussed here?
+>>
+>>
+>> Well, there was an excellent reply from Steve and quite a few "in my
+>> opinion this is safe" type of answers. [1] But bluntly said it does not
+>> really matter what we (the engineers) think. What really matters here
+>> are regulatory authorities' opinions and rulings. In that respect here
+>> are few items I want to point out:
+>>
+>> o I suspect that from someone's, who is not familiar with software
+>>   engineering, point of view there is still quite a diffference from
+>>   modifiying source code or just enabling few options from Kconfig with
+>>   a custom regdb rule.
+>
+>
+> If someone with real authority ever complains, then the code could be
+> backed out again.  Your opinion seems not much more informed than the
+> rest of us discussing this.
+>
 
-On Fri, May 12, 2017 at 7:51 AM, Erik Stromdahl
-<erik.stromdahl@gmail.com> wrote:
->
->
-> On 2017-05-12 02:20, Ann Lo wrote:
+With all due respect, _I_ am quite well informed about this issue.
+From my conversations with him, I'd also judge Kalle to be quite
+informed likewise.
+
+"Someone with real authority" has already complained. That's the
+entire point here. For the past two+ years it's been difficult to get
+modular approvals through the FCC and their TCBs. The standard they
+are applying is both pointless and technically misinformed, but
+they've got the authority and they're using it. I can't speak for any
+other manufacturers other than what I specifically have experience
+with, but I expect the rest are having similar conversations with the
+TCBs. From my work with them, I know that the chip manufacturers like
+QCA, Marvell and Cypress/Broadcom are also having similar issues.
+However, the chip manufacturers, and end-user equipment manufacturers
+are less vulnerable here than the module manufacturers.
+
+
 >>
->> Hi Erik,
->>
->> We are hoping to use your new SDIO patches for QCA9377 on kernel
->> version 4.1.36. There appears to be version 7 patches according to the
->> following email:
->> http://lists.infradead.org/pipermail/ath10k/2017-April/009633.html
->>
->> Would you advise on the followings?
->>
->> 1) What is the status of ath10k SDIO for QCA9377? The above email has
->> the comment "With this patch we have the low level HTC protocol
->> working and it's possible to boot the firmware, but it's still not
->> possible to connect or anything like." Do you have an estimate of the
->> time for full functionality, that wpa_supplicant and hostapd will run
->> successfully? How much further work is needed?
->>
-> Well, first of all, the patches on the ath10k master only contain the
-> HIF layer (which is not that useful by itself). You will need a bunch
-> of generic HL (High Latency) patches as well. These patches are common
-> for both USB and SDIO and has not yet been integrated into the ath
-> mainline.
-> These patches are available on my ath repo on github:
->
-> https://github.com/erstrom/linux-ath
->
-> They should be treated as very experimental though!
-> There are a few known issues with the QCA9377 SDIO chip.
-> I have as of today not been able to associate with an AP (which
-> kind of limits the usefulness of the device, at least when operating
-> in STA mode :).
-> QCA9377 USB (Linksys WUSB6100M) works much better, but is unfortunately
-> not fully stable either since I am only capable of transmit/receive
-> ~3Mbytes before it goes deaf (but at least I can associate and authenticate
-> to an AP with WPA2 PSK security).
->
-> So what remains to be done then?
-> Well, it seems as if the sdio chipset won't work that well with the
-> generic parts of ath10k. The setup of a device is HIF layer independent
-> (mostly implemented in mac.c) and has been tested thoroughly with the
-> PCIe devices. When looking at qcacld (another driver that is not part
-> of the Linux kernel), the setup is very different (different internal
-> parameters are configured and commands are executed in a different order).
->
-> From my point of view I think the following things needs to be done:
->
-> 1. Make mac.c work with high latency devices (SDIO and USB). I suspect
->    that the setup of SDIO and USB is similar.
-> 2. Add support for newer version of the WMI protocol. qcacld uses a
->    different ABI version for the WMI messages.
->
-> Since I am doing this work as a spare time activity only, I can't make
-> any commitments or estimates of when everything is fully implemented.
->
->> 2) Our BSP uses kernel version 4.1.36. Can we apply your patches to
->> this version? Or, do we need to backport a newer version for QCA9377?
->>
-> I would be very surprised if the patches applies on a 4.1.36 kernel.
-> ath10k is a very active project and much has happened since 4.1.36.
-> Besides, you would need a few other patches as well that has already
-> been integrated.
-> Perhaps the best way forward is the ath10k backports project?
+>> o I don't know about other countries, but in Finland applying for any
+>>   type of license (even if just to a license to drive a moped) needs
+>>   both time and money. So there is significant effort anyway needed to
+>>   legally use this band. And how many users there really are is unclear.
 >
 >
->> We are trying to prepare the software so that we can test when our
->> hardware is ready.
->>
->> Thanks,
->> Ann
->>
->>
->>
->> On Sun, Jan 29, 2017 at 1:16 PM, Erik Stromdahl
->> <erik.stromdahl@gmail.com> wrote:
->>>
->>> If you are interested in trying the latest version of the sdio code
->>> you can clone the below repo:
->>>
->>> https://github.com/erstrom/linux-ath.git
->>>
->>> I have just pushed some updates for QCA9377 SDIO (that might work with
->>> QCA6174 chipsets as well).
->>>
->>> I will do some more testing of this code during the weeks to come.
->>>
->>> If you could try it out and give me feedback it would be great!
->>>
->>> On 2017-01-27 16:36, Valo, Kalle wrote:
->>>>
->>>>
->>>> Akesh M Chacko <akesh.chacko@vvdntech.in> writes:
->>>>
->>>>> We are using QCA6174 chip on our embedded platform using SDIO
->>>>> interface. could you please help us to get the SDIO support for
->>>>> QCA6174 driver.
->>>>
->>>>
->>>>
->>>> Erik Stromdahl is working on adding SDIO support to ath10k:
->>>>
->>>> https://patchwork.kernel.org/patch/9516477/
->>>>
->>>> But it's still WIP.
->>>>
->>>
+> This is almost certainly not going to be used by regular end-users.  It is
+> going to be
+> used by public safety organizations who are buying equipment from companies
+> using open-wrt, LEDE, or similar, or possibly small teams at public safety
+> organizations doing the work themselves.  Rather than having each of these
+> vendors
+
+I agree 100% that this won't be used by "regular end-users", if you
+define those users as the 99% of the population who will go to Best
+Buy and buy a router, plug it into their network and use it to get
+their iOS updates and download movies from Netflix. These aren't the
+users that the FCC is worried about.  They're concerned about the user
+who buys an OpenWRT compatible router, installs OpenWRT on it, builds
+a custom kernel. And that person happens to live in an area with
+congested WiFi bands, the person notices an option to use these other
+non-congested bands, decides that ignoring the warning would be
+harmless and the FCC won't ever know anyway.
+
+And then there's a fire or other event in the area, and the emergency
+workers can't communicate. At best case, the FCC investigates and
+slaps a $25,000 fine on the operator. At worst case, someone dies.
+
+I don't feel it's responsible as an engineer to hide behind "well, we
+warned them that they shouldn't do that" while ignoring my culpability
+in the matter. Setting the stage for others to fail due to their
+ignorance is not ethical.
+
+Anyone building a custom kernel is able to enable a config option. You
+can say that, "sure they can pull the patch from here and enable it
+anyway" or "they can figure it out and do it themselves, it's easy",
+but I do think there's a significant difference between being able to
+build a custom kernel with a configuration enabled vs being able to
+find and apply a random patch to a kernel and get it building and
+working. That's a different level of expertise. And going through that
+effort gives a person some time to reflect and think about if it
+should be done in the first place.
+
+Adding this code to mainline makes it a feature of Linux and this
+driver. There's no way around that argument. Saying that "this is
+almost certainly not going to be used by regular end-users" is both
+fairly true as well as disingenuous. You're still making it an
+accepted feature.
+
+
+> hack their own crap into their kernels or forcing the the organizations to
+> use Cisco gear,
+> we could work on it together.
 >
+
+I absolutely concur with the idea of "we could work on it together."
+Working together means coming up with a holistic plan that will work
+and satisfy the regulatory agencies (and I'm not just talking FCC,
+though they're right now one of the worst offenders IMHO). Just
+putting a patch to use licenced public-safety bands into a single
+random 802.11 chip driver to satisfy your particular
+project/product/itch is not the same as working together. In
+particular because this is _exactly_ the type of stuff that the FCC is
+actually concerned about and fighting against with their misinformed
+lock-down attitudes.
+
+What really needs to happen to solve these sort of issues is a
+whole-system approach where we work with the agencies and figure out a
+way that works for everyone. The lawmakers and the regulatory agencies
+as a group entity don't understand software, electronics, technology,
+nor Open Source. The whole idea of a bunch of us "hackers" able to do
+anything we want with just a few lines of code scares the hell out of
+them. We need to engage with them. Educate them. Work with the
+specific people inside their organizations that _do_ understand the
+technology. Let them understand we're not the enemy and then work with
+them to achieve both their goals and ours.
+
+I tried to get the ball rolling on this at the Wireless Summit at the
+last LPC, but no one bit. Probably some due to the lack of clarity
+around the issue as well as my lack of eloquence, but no matter why,
+it didn't go anywhere. I'm happy to try again if people are
+interested.
+
+This isn't just about letting it operate out of spec, nor a technical
+argument. I don't have any issue with making it easier to enable a
+feature of the chipset. That's all good. But "making it easier" in
+this case equates to making it harder for the entire community who
+depends on this stuff to get their work done and their products
+certified. That's a net negative.
+
+> Anyway, if upstream is blocked, then maybe we could work on getting this
+> into LEDE?
+>
+
+Honestly, I don't see how this solves any problems. You're just moving
+the chair. A chair that someone will stand on and fall off and get
+hurt. LEDE, OpenWRT or even Buildroot is essentially just a big patch
+and build system. For a closed-ecosystem manufacturer, which by
+definition a public-safety band licensed equipment manufacturer must
+be, can just as easily maintain their own internal fork of the kernel
+with these patches sitting there.
+
+That's not something I'd normally advocate, but it does seem
+appropriate in this specific application.
+
+Thanks,
+- Steve
 
 _______________________________________________
 ath10k mailing list
