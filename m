@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pg0-x233.google.com ([2607:f8b0:400e:c05::233])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d8yJz-0001Cx-A7
- for ath10k@lists.infradead.org; Fri, 12 May 2017 00:20:41 +0000
-Received: by mail-pg0-x233.google.com with SMTP id q125so2544744pgq.2
- for <ath10k@lists.infradead.org>; Thu, 11 May 2017 17:20:17 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1d9BJT-00082G-KW
+ for ath10k@lists.infradead.org; Fri, 12 May 2017 14:13:01 +0000
+Subject: Re: [v2,1/3] ath9k: Support channels in licensed bands
+References: <20170323133048.30062-2-sw@simonwunderlich.de>
+ <1811221.G4Vz0DPyQ8@prime>
+ <12133a0e-b030-5b21-8de1-3bf7334d47df@fit.fraunhofer.de>
+ <1863250.VEhGCjvYY0@prime> <87efvvvd0t.fsf@kamboji.qca.qualcomm.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <1c5720d5-8264-26a8-a63e-b225524471cc@candelatech.com>
+Date: Fri, 12 May 2017 07:12:36 -0700
 MIME-Version: 1.0
-In-Reply-To: <c3814c7d-eed3-dad2-c568-6ce456ee7166@gmail.com>
-References: <CAHNpzpeRE6ha4JA9i4oyJ2BjgJg53FvDpAb1yZccncrmTeiBdQ@mail.gmail.com>
- <8737g45xc7.fsf@kamboji.qca.qualcomm.com>
- <c3814c7d-eed3-dad2-c568-6ce456ee7166@gmail.com>
-From: Ann Lo <annlo.tech@gmail.com>
-Date: Thu, 11 May 2017 17:20:13 -0700
-Message-ID: <CABy9W5kF8KcTUgk9UOguu1A-N==tMbjVW1gWGeq8pgAN6YREUg@mail.gmail.com>
-Subject: Re: Driver support for QCA6174 chip using SDIO interface
+In-Reply-To: <87efvvvd0t.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,71 +21,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: Akesh M Chacko <akesh.chacko@vvdntech.in>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@codeaurora.org>, Simon Wunderlich <sw@simonwunderlich.de>
+Cc: Julian Calaby <julian.calaby@gmail.com>, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org, Steve deRosier <derosier@gmail.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
 
-Hi Erik,
 
-We are hoping to use your new SDIO patches for QCA9377 on kernel
-version 4.1.36. There appears to be version 7 patches according to the
-following email:
-http://lists.infradead.org/pipermail/ath10k/2017-April/009633.html
 
-Would you advise on the followings?
+On 05/11/2017 04:38 AM, Kalle Valo wrote:
+> Simon Wunderlich <sw@simonwunderlich.de> writes:
+>
+>> it seems like there was some discussion here and I wouldn't expect too many
+>> more opinions ... do you think we can have a decision based on what has been
+>> discussed here?
+>
+> Well, there was an excellent reply from Steve and quite a few "in my
+> opinion this is safe" type of answers. [1] But bluntly said it does not
+> really matter what we (the engineers) think. What really matters here
+> are regulatory authorities' opinions and rulings. In that respect here
+> are few items I want to point out:
+>
+> o I suspect that from someone's, who is not familiar with software
+>   engineering, point of view there is still quite a diffference from
+>   modifiying source code or just enabling few options from Kconfig with
+>   a custom regdb rule.
 
-1) What is the status of ath10k SDIO for QCA9377? The above email has
-the comment "With this patch we have the low level HTC protocol
-working and it's possible to boot the firmware, but it's still not
-possible to connect or anything like." Do you have an estimate of the
-time for full functionality, that wpa_supplicant and hostapd will run
-successfully? How much further work is needed?
+If someone with real authority ever complains, then the code could be
+backed out again.  Your opinion seems not much more informed than the
+rest of us discussing this.
 
-2) Our BSP uses kernel version 4.1.36. Can we apply your patches to
-this version? Or, do we need to backport a newer version for QCA9377?
+>
+> o I don't know about other countries, but in Finland applying for any
+>   type of license (even if just to a license to drive a moped) needs
+>   both time and money. So there is significant effort anyway needed to
+>   legally use this band. And how many users there really are is unclear.
 
-We are trying to prepare the software so that we can test when our
-hardware is ready.
+This is almost certainly not going to be used by regular end-users.  It is going to be
+used by public safety organizations who are buying equipment from companies
+using open-wrt, LEDE, or similar, or possibly small teams at public safety
+organizations doing the work themselves.  Rather than having each of these vendors
+hack their own crap into their kernels or forcing the the organizations to use Cisco gear,
+we could work on it together.
+
+Anyway, if upstream is blocked, then maybe we could work on getting this into LEDE?
 
 Thanks,
-Ann
+Ben
 
-
-
-On Sun, Jan 29, 2017 at 1:16 PM, Erik Stromdahl
-<erik.stromdahl@gmail.com> wrote:
-> If you are interested in trying the latest version of the sdio code
-> you can clone the below repo:
->
-> https://github.com/erstrom/linux-ath.git
->
-> I have just pushed some updates for QCA9377 SDIO (that might work with
-> QCA6174 chipsets as well).
->
-> I will do some more testing of this code during the weeks to come.
->
-> If you could try it out and give me feedback it would be great!
->
-> On 2017-01-27 16:36, Valo, Kalle wrote:
->>
->> Akesh M Chacko <akesh.chacko@vvdntech.in> writes:
->>
->>> We are using QCA6174 chip on our embedded platform using SDIO
->>> interface. could you please help us to get the SDIO support for
->>> QCA6174 driver.
->>
->>
->> Erik Stromdahl is working on adding SDIO support to ath10k:
->>
->> https://patchwork.kernel.org/patch/9516477/
->>
->> But it's still WIP.
->>
->
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
