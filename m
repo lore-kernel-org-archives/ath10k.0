@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dANVE-0002jJ-AK
+ id 1dANVE-0002jP-AK
  for ath10k@lists.infradead.org; Mon, 15 May 2017 21:26:05 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 1/3] ath10k:  Increase BMI timeout.
-Date: Mon, 15 May 2017 14:25:38 -0700
-Message-Id: <1494883540-18558-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 3/3] ath10k:  Log when longer bmi cmds happen.
+Date: Mon, 15 May 2017 14:25:40 -0700
+Message-Id: <1494883540-18558-3-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1494883540-18558-1-git-send-email-greearb@candelatech.com>
+References: <1494883540-18558-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +27,77 @@ Cc: Ben Greear <greearb@candelatech.com>
 
 From: Ben Greear <greearb@candelatech.com>
 
-When testing a 9888 chipset NIC, I notice it often takes
-almost 2 seconds, and then many times OTP fails, probably due
-to the two-second timeout.
-
-[ 2269.841842] ath10k_pci 0000:05:00.0: bmi cmd took: 1984 jiffies (HZ: 1000), rv: 0
-[ 2273.608185] ath10k_pci 0000:05:00.0: bmi cmd took: 1986 jiffies (HZ: 1000), rv: 0
-[ 2277.294732] ath10k_pci 0000:05:00.0: bmi cmd took: 1989 jiffies (HZ: 1000), rv: 0
-
-So, increase the BMI timeout to 3 seconds.
+This lets one have a clue that maybe timeouts are happening
+when we just aren't waiting long enough.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/bmi.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/bmi.h b/drivers/net/wireless/ath/ath10k/bmi.h
-index 7d3231a..1054c0c 100644
---- a/drivers/net/wireless/ath/ath10k/bmi.h
-+++ b/drivers/net/wireless/ath/ath10k/bmi.h
-@@ -187,8 +187,8 @@ struct bmi_target_info {
- 	u32 type;
- };
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 52b9ebb..0311b07 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -101,7 +101,8 @@ static int ath10k_pci_init_irq(struct ath10k *ar);
+ static int ath10k_pci_deinit_irq(struct ath10k *ar);
+ static int ath10k_pci_request_irq(struct ath10k *ar);
+ static void ath10k_pci_free_irq(struct ath10k *ar);
+-static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
++static int ath10k_pci_bmi_wait(struct ath10k *ar,
++			       struct ath10k_ce_pipe *tx_pipe,
+ 			       struct ath10k_ce_pipe *rx_pipe,
+ 			       struct bmi_xfer *xfer);
+ static int ath10k_pci_qca99x0_chip_reset(struct ath10k *ar);
+@@ -2156,7 +2157,7 @@ int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
+ 	if (ret)
+ 		goto err_resp;
  
--/* in msec */
--#define BMI_COMMUNICATION_TIMEOUT_HZ (2 * HZ)
-+/* in jiffies */
-+#define BMI_COMMUNICATION_TIMEOUT_HZ (3 * HZ)
+-	ret = ath10k_pci_bmi_wait(ce_tx, ce_rx, &xfer);
++	ret = ath10k_pci_bmi_wait(ar, ce_tx, ce_rx, &xfer);
+ 	if (ret) {
+ 		u32 unused_buffer;
+ 		unsigned int unused_nbytes;
+@@ -2225,23 +2226,35 @@ static void ath10k_pci_bmi_recv_data(struct ath10k_ce_pipe *ce_state)
+ 	xfer->rx_done = true;
+ }
  
- #define BMI_CE_NUM_TO_TARG 0
- #define BMI_CE_NUM_TO_HOST 1
+-static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
++static int ath10k_pci_bmi_wait(struct ath10k *ar,
++			       struct ath10k_ce_pipe *tx_pipe,
+ 			       struct ath10k_ce_pipe *rx_pipe,
+ 			       struct bmi_xfer *xfer)
+ {
+ 	unsigned long timeout = jiffies + BMI_COMMUNICATION_TIMEOUT_HZ;
++	unsigned long started = jiffies;
++	unsigned long dur;
++	int rv = -ETIMEDOUT;
+ 
+ 	while (time_before_eq(jiffies, timeout)) {
+ 		ath10k_pci_bmi_send_done(tx_pipe);
+ 		ath10k_pci_bmi_recv_data(rx_pipe);
+ 
+-		if (xfer->tx_done && (xfer->rx_done == xfer->wait_for_resp))
+-			return 0;
++		if (xfer->tx_done && (xfer->rx_done == xfer->wait_for_resp)) {
++			rv = 0;
++			goto out;
++		}
+ 
+ 		schedule();
+ 	}
+ 
+-	return -ETIMEDOUT;
++out:
++	dur = jiffies - started;
++	if (dur > HZ)
++		ath10k_dbg(ar, ATH10K_DBG_BMI,
++			   "bmi cmd took: %lu jiffies (HZ: %d), rv: %d\n",
++			   dur, HZ, rv);
++	return rv;
+ }
+ 
+ /*
 -- 
 2.4.11
 
