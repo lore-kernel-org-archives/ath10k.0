@@ -1,22 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+Received: from mail-it0-x230.google.com ([2607:f8b0:4001:c0b::230])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d9Vv6-0004qt-2t
- for ath10k@lists.infradead.org; Sat, 13 May 2017 12:13:13 +0000
-Received: by mail-wm0-x22c.google.com with SMTP id v15so5033282wmv.1
- for <ath10k@lists.infradead.org>; Sat, 13 May 2017 05:12:50 -0700 (PDT)
-Subject: Re: [v2,1/3] ath9k: Support channels in licensed bands
-References: <20170323133048.30062-2-sw@simonwunderlich.de>
- <1811221.G4Vz0DPyQ8@prime>
- <12133a0e-b030-5b21-8de1-3bf7334d47df@fit.fraunhofer.de>
- <1863250.VEhGCjvYY0@prime> <87efvvvd0t.fsf@kamboji.qca.qualcomm.com>
- <1c5720d5-8264-26a8-a63e-b225524471cc@candelatech.com>
- <CALLGbR+3JZL4=t78TQbLwKdq938B3cw0qj369dd6sY4q5A5ctw@mail.gmail.com>
-From: Arend Van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <5ef5997b-f243-e9e3-2c45-b3bf8b6d39d7@broadcom.com>
-Date: Sat, 13 May 2017 14:12:48 +0200
+ id 1dACN8-0000YJ-C1
+ for ath10k@lists.infradead.org; Mon, 15 May 2017 09:33:00 +0000
+Received: by mail-it0-x230.google.com with SMTP id o5so39452602ith.1
+ for <ath10k@lists.infradead.org>; Mon, 15 May 2017 02:32:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALLGbR+3JZL4=t78TQbLwKdq938B3cw0qj369dd6sY4q5A5ctw@mail.gmail.com>
+In-Reply-To: <b830b657-3f73-de7f-d61c-1565dc14c2ef@candelatech.com>
+References: <CABPxzY+mQ-G6PTsQV9_WVgju4bmQHwxKKW070j7v6=DDgZop4Q@mail.gmail.com>
+ <b830b657-3f73-de7f-d61c-1565dc14c2ef@candelatech.com>
+From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
+Date: Mon, 15 May 2017 15:02:16 +0530
+Message-ID: <CABPxzY+Y3Jcxw9UitytgrFS1H53pT7mCvVSbFM0qoj74x4gdFg@mail.gmail.com>
+Subject: Re: ath10k: controlling TX aggregation
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,86 +25,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Steve deRosier <derosier@gmail.com>, Ben Greear <greearb@candelatech.com>
-Cc: Simon Wunderlich <sw@simonwunderlich.de>, Julian Calaby <julian.calaby@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, Kalle Valo <kvalo@codeaurora.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-On 12-5-2017 21:21, Steve deRosier wrote:
-> Hi Ben,
-> 
-> On Fri, May 12, 2017 at 7:12 AM, Ben Greear <greearb@candelatech.com> wrote:
+On Fri, May 12, 2017 at 8:15 PM, Ben Greear <greearb@candelatech.com> wrote:
+> What chipset, and what firmware version?
+>
+> Thanks,
+> Ben
+
+Hi Ben,
+
+I have missed your response. PFB details.
+
+ chip: QCA986x/988x PCIe
+ FW ver: 10.2.4.70.54 api 5
+ kernel: 4.11.0-rc+7 (wireless-drivers-next)
+
+
+> On 05/12/2017 07:43 AM, Krishna Chaitanya wrote:
 >>
+>> Hi,
 >>
->> On 05/11/2017 04:38 AM, Kalle Valo wrote:
->>>
-
-[snip]
-
->>> o I don't know about other countries, but in Finland applying for any
->>>   type of license (even if just to a license to drive a moped) needs
->>>   both time and money. So there is significant effort anyway needed to
->>>   legally use this band. And how many users there really are is unclear.
+>> I am doing some comparative tests, wanted to configure common
+>> settings btw all STA's. wanted to limit agg_size to 24 in ath10k with
+>> the below command.
 >>
+>> echo "3 24" > /sys/kernel/debug/ieee80211/phy0/ath10k/htt_max_amsdu_ampdu
 >>
->> This is almost certainly not going to be used by regular end-users.  It is
->> going to be
->> used by public safety organizations who are buying equipment from companies
->> using open-wrt, LEDE, or similar, or possibly small teams at public safety
->> organizations doing the work themselves.  Rather than having each of these
->> vendors
-> 
-> I agree 100% that this won't be used by "regular end-users", if you
-> define those users as the 99% of the population who will go to Best
-> Buy and buy a router, plug it into their network and use it to get
-> their iOS updates and download movies from Netflix. These aren't the
-> users that the FCC is worried about.  They're concerned about the user
-> who buys an OpenWRT compatible router, installs OpenWRT on it, builds
-> a custom kernel. And that person happens to live in an area with
-> congested WiFi bands, the person notices an option to use these other
-> non-congested bands, decides that ignoring the warning would be
-> harmless and the FCC won't ever know anyway.
-> 
-> And then there's a fire or other event in the area, and the emergency
-> workers can't communicate. At best case, the FCC investigates and
-> slaps a $25,000 fine on the operator. At worst case, someone dies.
-> 
-> I don't feel it's responsible as an engineer to hide behind "well, we
-> warned them that they shouldn't do that" while ignoring my culpability
-> in the matter. Setting the stage for others to fail due to their
-> ignorance is not ethical.
+>> The ADDBA request still has 64 and when i run iperf it is aggregating 64
+>> frames.
+>>
+>> Except for 1 no number takes effect. If i configure 1 there is no ADDBA
+>> exchange
+>> initiated by ath10k.
+>>
+>> Is this expected? Can we control the aggregation size through driver?
+>>
+>> latest wireless-drivers-next and linux-firmware git is used.
+>>
+>
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
 
-Totally agree this is about being responsible.
 
-> Anyone building a custom kernel is able to enable a config option. You
-> can say that, "sure they can pull the patch from here and enable it
-> anyway" or "they can figure it out and do it themselves, it's easy",
-> but I do think there's a significant difference between being able to
-> build a custom kernel with a configuration enabled vs being able to
-> find and apply a random patch to a kernel and get it building and
-> working. That's a different level of expertise. And going through that
-> effort gives a person some time to reflect and think about if it
-> should be done in the first place.
-> 
-> Adding this code to mainline makes it a feature of Linux and this
-> driver. There's no way around that argument. Saying that "this is
-> almost certainly not going to be used by regular end-users" is both
-> fairly true as well as disingenuous. You're still making it an
-> accepted feature.
 
-Indeed. I had my concerns back when the CFG80211_CERTIFICATION_ONUS was
-added to the kernel, but that is water under the bridge. It is not only
-these kind of changes the FCC is looking at. They also have issues with
-802.11d support. That does not even need a custom kernel. The end-user
-just sets the country to some nice EU channel while being in the US and
-screw up some weather radar. It has happened. Not life-threatening,
-unless some tornado was missed maybe, but the concern is justified. How
-the FCC is handling it may indeed be pointless and technically
-misinformed, but that is because there is no good solution right now. At
-least not a solution that assures it will not happen. I can only agree
-that we as a community should not accommodate such (ab)use. Finding a
-solution that is working for everyone is indeed the real challenge.
-
+-- 
+Thanks,
 Regards,
-Arend
+Chaitanya T K.
 
 _______________________________________________
 ath10k mailing list
