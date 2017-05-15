@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-it0-x230.google.com ([2607:f8b0:4001:c0b::230])
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dACN8-0000YJ-C1
- for ath10k@lists.infradead.org; Mon, 15 May 2017 09:33:00 +0000
-Received: by mail-it0-x230.google.com with SMTP id o5so39452602ith.1
- for <ath10k@lists.infradead.org>; Mon, 15 May 2017 02:32:37 -0700 (PDT)
+ id 1dAK8W-0000Rs-4d
+ for ath10k@lists.infradead.org; Mon, 15 May 2017 17:50:27 +0000
+Received: by mail-wm0-x231.google.com with SMTP id d127so85260115wmf.0
+ for <ath10k@lists.infradead.org>; Mon, 15 May 2017 10:50:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b830b657-3f73-de7f-d61c-1565dc14c2ef@candelatech.com>
-References: <CABPxzY+mQ-G6PTsQV9_WVgju4bmQHwxKKW070j7v6=DDgZop4Q@mail.gmail.com>
- <b830b657-3f73-de7f-d61c-1565dc14c2ef@candelatech.com>
-From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
-Date: Mon, 15 May 2017 15:02:16 +0530
-Message-ID: <CABPxzY+Y3Jcxw9UitytgrFS1H53pT7mCvVSbFM0qoj74x4gdFg@mail.gmail.com>
-Subject: Re: ath10k: controlling TX aggregation
+In-Reply-To: <d4b33a7a-1504-585a-312a-c3ba00d5bab9@gmail.com>
+References: <CAHNpzpeRE6ha4JA9i4oyJ2BjgJg53FvDpAb1yZccncrmTeiBdQ@mail.gmail.com>
+ <8737g45xc7.fsf@kamboji.qca.qualcomm.com>
+ <c3814c7d-eed3-dad2-c568-6ce456ee7166@gmail.com>
+ <CABy9W5kF8KcTUgk9UOguu1A-N==tMbjVW1gWGeq8pgAN6YREUg@mail.gmail.com>
+ <d4b33a7a-1504-585a-312a-c3ba00d5bab9@gmail.com>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Mon, 15 May 2017 10:50:00 -0700
+Message-ID: <CAJ-Vmo=FadyRGTmJBR7dEQeQ97CYHg=D3ViLtDR3eNV4j8B8ew@mail.gmail.com>
+Subject: Re: Driver support for QCA6174 chip using SDIO interface
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +28,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Fri, May 12, 2017 at 8:15 PM, Ben Greear <greearb@candelatech.com> wrote:
-> What chipset, and what firmware version?
->
-> Thanks,
-> Ben
+[snip]
 
-Hi Ben,
+hi!
 
-I have missed your response. PFB details.
+Which driver are you using as a reference for the SDIO/USB side of things?
 
- chip: QCA986x/988x PCIe
- FW ver: 10.2.4.70.54 api 5
- kernel: 4.11.0-rc+7 (wireless-drivers-next)
-
-
-> On 05/12/2017 07:43 AM, Krishna Chaitanya wrote:
->>
->> Hi,
->>
->> I am doing some comparative tests, wanted to configure common
->> settings btw all STA's. wanted to limit agg_size to 24 in ath10k with
->> the below command.
->>
->> echo "3 24" > /sys/kernel/debug/ieee80211/phy0/ath10k/htt_max_amsdu_ampdu
->>
->> The ADDBA request still has 64 and when i run iperf it is aggregating 64
->> frames.
->>
->> Except for 1 no number takes effect. If i configure 1 there is no ADDBA
->> exchange
->> initiated by ath10k.
->>
->> Is this expected? Can we control the aggregation size through driver?
->>
->> latest wireless-drivers-next and linux-firmware git is used.
->>
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
+We have an interest in USB/SDIO support for Rome/Tuffalo in ath10k and
+I'd like to see how I/we could help in kicking this along!
 
 
 
--- 
-Thanks,
-Regards,
-Chaitanya T K.
+-adrian
 
 _______________________________________________
 ath10k mailing list
