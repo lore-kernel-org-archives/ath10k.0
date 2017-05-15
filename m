@@ -1,13 +1,31 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAKhV-0001Tk-DM
- for ath10k@lists.infradead.org; Mon, 15 May 2017 18:26:35 +0000
-From: Ben Greear <greearb@candelatech.com>
-Subject: BUG related to NAPI and ath10k in 4.9 + hacks kernel.
-Message-ID: <ea83250f-03d0-c07e-b2a1-09717724f40e@candelatech.com>
-Date: Mon, 15 May 2017 11:26:11 -0700
+Received: from mxout2.iskon.hr ([213.191.128.81])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAMm9-0006wY-A1
+ for ath10k@lists.infradead.org; Mon, 15 May 2017 20:39:31 +0000
+Received: from mxscanout.iskon.hr (localhost [127.0.0.1])
+ by localhost (Postfix) with SMTP id 93ADAA991B
+ for <ath10k@lists.infradead.org>; Mon, 15 May 2017 22:38:59 +0200 (CEST)
+Received: from mxscanout.iskon.hr (localhost [127.0.0.1])
+ by mxscanout (MCF 1.0.2) with SMTP for ath10k@lists.infradead.org;
+ Mon, 15 May 2017 22:38:59 +0200 (CEST)
+Received: from in1.mail.iskon.hr (in1.mail.iskon.hr [213.191.133.66])
+ by mxscanout.iskon.hr (Postfix) with ESMTP id 92258A9317
+ for <ath10k@lists.infradead.org>; Mon, 15 May 2017 22:38:59 +0200 (CEST)
+Received: from in1 (localhost [127.0.0.1])
+ by in1.mail.iskon.hr (Postfix) with ESMTP id 3wRXVW3zyPz15hj
+ for <ath10k@lists.infradead.org>; Mon, 15 May 2017 22:38:59 +0200 (CEST)
+Received: from webmail.iskon.hr (webmail.iskon.hr [213.191.133.146])
+ by in1.mail.iskon.hr (Postfix) with ESMTP id 3wRXVV5w0wz15hf
+ for <ath10k@lists.infradead.org>; Mon, 15 May 2017 22:38:58 +0200 (CEST)
+Received: from webmail.iskon.hr (localhost [127.0.0.1])
+ by webmail.iskon.hr (Postfix) with ESMTP id 5FDD32403F
+ for <ath10k@lists.infradead.org>; Mon, 15 May 2017 22:38:58 +0200 (CEST)
 MIME-Version: 1.0
+Date: Mon, 15 May 2017 22:38:58 +0200
+From: Filip Fila <filip.fila@inet.hr>
+Subject: QCA6147 (rev 32) Speed and Connectivity Issues
+Message-ID: <e4aaf4b100861243e607bfad0d968289@inet.hr>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,82 +38,42 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: ath10k@lists.infradead.org
 
-This is from a test system running my hacked 4.9 kernel, with 9888 ath10k
-NIC which often fails during startup.  The firmware did fail to boot this time,
-and maybe it left things in a weird state.  Then, the whole OS crashed with BUG.
+Hello,
 
+I recently bought a Lenovo V510 laptop that comes with a QCA6147 (rev 
+32) chip.
 
-------------[ cut here ]------------
-kernel BUG at /home/greearb/git/linux-4.9.dev.y/include/linux/netdevice.h:515!
-invalid opcode: 0000 [#1] PREEMPT SMP
-Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 bridge ath10k_pci ath10k_core 8021q garp mrp stp llc bnep bluetooth fuse macv]
-CPU: 1 PID: 3651 Comm: wpa_supplicant Not tainted 4.9.27+ #35
-Hardware name: To be filled by O.E.M. To be filled by O.E.M./ChiefRiver, BIOS 4.6.5 06/07/2013
-task: ffff8802111f0000 task.stack: ffffc90001fb4000
-RIP: 0010:[<ffffffffa1498d33>]  [<ffffffffa1498d33>] ath10k_pci_hif_power_up+0x173/0x180 [ath10k_pci]
-RSP: 0018:ffffc90001fb7c30  EFLAGS: 00010246
-RAX: 0000000000000008 RBX: ffff880212bc2bc0 RCX: 0000000000082004
-RDX: ffffc9000d282000 RSI: ffffc9000d282000 RDI: 000000000fd0a000
-RBP: ffffc90001fb7c40 R08: 0000000000200000 R09: 0000000000000101
-R10: 0000000000000d00 R11: 0000000000000003 R12: 0000000000082000
-R13: ffff880212beaef8 R14: 0000000000000000 R15: ffff8802134c1118
-FS:  00007f476575c800(0000) GS:ffff88021e240000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f3da950b490 CR3: 0000000212b5a000 CR4: 00000000001406e0
-Stack:
-  ffff880212bc2bc0 ffff880212bc0700 ffffc90001fb7c68 ffffffffa1429281
-  ffff8802134c0000 ffff880212bc0700 0000000000000000 ffffc90001fb7c90
-  ffffffffa07cb818 ffff8802134c0000 ffff880212bc0700 0000000000000000
-Call Trace:
-  [<ffffffffa1429281>] ath10k_start+0x51/0x5c0 [ath10k_core]
-  [<ffffffffa07cb818>] drv_start+0x38/0x140 [mac80211]
-  [<ffffffffa07e2cc5>] ieee80211_do_open+0x2c5/0x990 [mac80211]
-  [<ffffffffa07e33e0>] ieee80211_open+0x50/0x60 [mac80211]
-  [<ffffffff817a9f2a>] __dev_open+0xaa/0x120
-  [<ffffffff817aa208>] __dev_change_flags+0x98/0x160
-  [<ffffffff817aa2f4>] dev_change_flags+0x24/0x60
-  [<ffffffff8182388e>] devinet_ioctl+0x5ee/0x6c0
-  [<ffffffff8182535b>] inet_ioctl+0x4b/0x70
-  [<ffffffff81787430>] sock_do_ioctl+0x20/0x50
-  [<ffffffff81787936>] sock_ioctl+0x1d6/0x2a0
-  [<ffffffff8128d24b>] do_vfs_ioctl+0x8b/0x5b0
-  [<ffffffff8178adbd>] ? __sys_recvmsg+0x3d/0x70
-  [<ffffffff8128d7e4>] SyS_ioctl+0x74/0x80
-  [<ffffffff8188a83b>] entry_SYSCALL_64_fastpath+0x1e/0xad
-Code: ff ff ff 89 c2 48 89 df 48 c7 c6 10 d3 49 a1 e8 34 1d f9 ff 48 89 df e8 2c f9 ff ff 44 89 e0 c6 83 0e 74 02 00 01 5b 41 5c 5d c3 <0f> 0b 66 66 2e 0f
-RIP  [<ffffffffa1498d33>] ath10k_pci_hif_power_up+0x173/0x180 [ath10k_pci]
-  RSP <ffffc90001fb7c30>
----[ end trace b6dede286ed70e39 ]---
+I am having quite a few issues with it in Linux. I've researched all I 
+could on the internet and haven't been able to solve them so I come to 
+you as a last resort.
 
+The issue is that the chip does not work with NetworkManager at all - 
+wireless won't turn itself on, meaning no connections are listed.
 
-The BUG in question is this:
+It's possible to connect through cli with netctl or connman, however, 
+there are three issues:
 
-/**
-  *      napi_enable - enable NAPI scheduling
-  *      @n: NAPI context
-  *
-  * Resume NAPI from being scheduled on this context.
-  * Must be paired with napi_disable.
-  */
-static inline void napi_enable(struct napi_struct *n)
-{
-         BUG_ON(!test_bit(NAPI_STATE_SCHED, &n->state));
-         smp_mb__before_atomic();
-         clear_bit(NAPI_STATE_SCHED, &n->state);
-         clear_bit(NAPI_STATE_NPSVC, &n->state);
-}
+1) the max speed is roughly half the amount it reaches in Windows;
+2) the speed will fluctuate a lot, reaching its capped max and then 
+instantly dropping to even 10-20% of the maximum connection speed, 
+sometimes even to speeds like 50 kb/s;
+3) once in a while, I assume the drivers don't load during boot and no 
+connection can be established.
 
+The kernel used is 4.11, NetworkManager is at 1.8 and I also replaced 
+all the firmware files with the latest ones from Kvalo's GitHub repo, 
+but the result is the same.
 
-Any ideas what might be the cause of this?
+Could you please let me know if this is perhaps a hardware problem, and 
+if not, are this chip's drivers going to be updated so that it works out 
+of the box (with NetworkManager and its GUI applets) and at full speed? 
+If I could be of assistance with any kind of output messages, I will 
+gladly do my best to help out.
 
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Best regards,
+Filip Fila
 
 
 _______________________________________________
