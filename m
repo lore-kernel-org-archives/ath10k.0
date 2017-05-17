@@ -1,17 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yw0-x241.google.com ([2607:f8b0:4002:c05::241])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dAiQS-0004Ze-1I
- for ath10k@lists.infradead.org; Tue, 16 May 2017 19:46:39 +0000
-Received: by mail-yw0-x241.google.com with SMTP id p144so8598245ywp.2
- for <ath10k@lists.infradead.org>; Tue, 16 May 2017 12:46:11 -0700 (PDT)
+ id 1dAvKE-0000wf-8F
+ for ath10k@lists.infradead.org; Wed, 17 May 2017 09:33:00 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: Driver support for QCA6174 chip using SDIO interface
+Date: Wed, 17 May 2017 09:32:31 +0000
+Message-ID: <87pof76d75.fsf@kamboji.qca.qualcomm.com>
+References: <CAHNpzpeRE6ha4JA9i4oyJ2BjgJg53FvDpAb1yZccncrmTeiBdQ@mail.gmail.com>
+ <8737g45xc7.fsf@kamboji.qca.qualcomm.com>
+ <c3814c7d-eed3-dad2-c568-6ce456ee7166@gmail.com>
+ <CABy9W5kF8KcTUgk9UOguu1A-N==tMbjVW1gWGeq8pgAN6YREUg@mail.gmail.com>
+ <d4b33a7a-1504-585a-312a-c3ba00d5bab9@gmail.com>
+ <878tlxuvcz.fsf@qca.qualcomm.com>
+ <933866d5-5ddc-b0d7-98c2-3c7a31ea8276@gmail.com>
+In-Reply-To: <933866d5-5ddc-b0d7-98c2-3c7a31ea8276@gmail.com> (Erik
+ Stromdahl's message of "Tue, 16 May 2017 15:13:15 +0200")
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <1fdab9d5-d8c6-88dc-38ac-2948e5fa74ec@rempel-privat.de>
-References: <1fdab9d5-d8c6-88dc-38ac-2948e5fa74ec@rempel-privat.de>
-From: Max Filippov <jcmvbkbc@gmail.com>
-Date: Tue, 16 May 2017 12:46:09 -0700
-Message-ID: <CAMo8Bf+xbS46Kj4VP_+F2aZPZpOJ2UHV6WdHP_Ku_eaSQwm-7g@mail.gmail.com>
-Subject: Re: Search for devices with Xtensa cores
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +30,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Oleksij Rempel <linux@rempel-privat.de>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: Akesh M Chacko <akesh.chacko@vvdntech.in>, Ann Lo <annlo.tech@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-HI Oleksij,
+Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
-On Fri, Apr 28, 2017 at 11:23 PM, Oleksij Rempel <linux@rempel-privat.de> wrote:
-> this year started with inclusion of open-ath9k-htc-firmware to debian
-> *main* repository. As first we started to getting advantage of regular
-> compile tests. See results here:
-> https://tests.reproducible-builds.org/debian/rb-pkg/unstable/i386/open-ath9k-htc-firmware.html
+>> I think we should try to get rest of your patches into mainline as well,
+>> even if they are experimental still. Hopefully we get more people
+>> helping that way, Adrian already expressed his interest which is very
+>> cool and others have been also asking especially SDIO support. And with
+>> good luck there are just small fixes needed to SDIO and USB properly
+>> working.
+>>
+> I am actually preparing another RFC round for USB. I think I will split
+> my remaining patches in two patchsets: USB and High Latency.
 >
-> Most of the problems which we currently get, are related to gcc xtensa
-> compiler.
-> In details: device specific patch set is used to provide our own
-> gcc/binutils version because Xtensa don't really have defined CPU cores.
-> As result, upstream compiler developers will never notice if some thing
-> will brake this patch set.
+> The USB patches will have a few USB specific patches and the HL patches
+> will have the high latency stuff that is common between SDIO and USB.
+>
+> What do you think?
 
-Below are the links to the xtensa-dynconfig repository and xtensa-plugin-env
-branches in binutils-gdb and gcc repositories. Together it is a draft
-implementation of dynamically configurable xtensa toolchain.
-Could you please take a look at it and see if it's useful for you?
-
-https://github.com/jcmvbkbc/xtensa-dynconfig
-https://github.com/jcmvbkbc/binutils-gdb-xtensa/commits/xtensa-plugin-env
-https://github.com/jcmvbkbc/gcc-xtensa/commits/xtensa-plugin-env
+I did take a look at your USB and HL patches earlier but I have already
+forgotten what they contained. But at least in principle the split
+sounds like a good idea. Just try to keep the size of patchsets
+reasonable, a maximum of about a dozen (dependent) patches per set is a
+good rule of thumb.
 
 -- 
-Thanks.
--- Max
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
