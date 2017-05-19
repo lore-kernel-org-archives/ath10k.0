@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dBdw8-0004NI-5W
- for ath10k@lists.infradead.org; Fri, 19 May 2017 09:11:06 +0000
+ id 1dBdnu-0000xT-K4
+ for ath10k@lists.infradead.org; Fri, 19 May 2017 09:02:40 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH] [ath10k] go back to using dma_alloc_coherent() for
  firmware scratch memory.
-Date: Fri, 19 May 2017 09:10:38 +0000
-Message-ID: <871srlw6t0.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 19 May 2017 09:02:08 +0000
+Message-ID: <8760gxw776.fsf@kamboji.qca.qualcomm.com>
 References: <20170501214327.5621-1-adrian@freebsd.org>
-In-Reply-To: <20170501214327.5621-1-adrian@freebsd.org> (Adrian Chadd's
- message of "Mon, 1 May 2017 14:43:27 -0700")
+ <2107639.cIofNFgAHq@bentobox>
+In-Reply-To: <2107639.cIofNFgAHq@bentobox> (Sven Eckelmann's message of "Wed, 
+ 17 May 2017 12:06:01 +0200")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -25,70 +26,65 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "nbd@nbd.name" <nbd@nbd.name>
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "simon.wunderlich@openmesh.com" <simon.wunderlich@openmesh.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Adrian Chadd <adrian@freebsd.org> writes:
+Sven Eckelmann <sven.eckelmann@openmesh.com> writes:
 
-> This reverts b057886524be060021e3cfad0ba8458c850330cd in 2015
-> which converted this allocation from dma_map_coherent() to
-> kzalloc() / dma_map_single().
+> On Montag, 1. Mai 2017 14:43:27 CEST Adrian Chadd wrote:
+>> This reverts b057886524be060021e3cfad0ba8458c850330cd in 2015
+>> which converted this allocation from dma_map_coherent() to
+>> kzalloc() / dma_map_single().
+>> 
+>> The current problem manifests when using later model NICs with larger
+>> (>700KiB) scratch spaces in memory.  Although the kzalloc call
+>> succeeds, the software IOMMU TLB code (via dma_map_single()) panics
+>> because it can't find 700KiB of linear physmem bounce buffers for DMA.
+>> Now, this is a bit of a silly failure mode for the dma map API,
+>> but it's what we currently have to play with.
+> [....]
+>> 
+>> Signed-off-by: Adrian Chadd <adrian@FreeBSD.org>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/wmi.c | 35 ++++++++++-------------------------
+>>  1 file changed, 10 insertions(+), 25 deletions(-)
 >
-> The current problem manifests when using later model NICs with larger
-> (>700KiB) scratch spaces in memory.  Although the kzalloc call
-> succeeds, the software IOMMU TLB code (via dma_map_single()) panics
-> because it can't find 700KiB of linear physmem bounce buffers for DMA.
-> Now, this is a bit of a silly failure mode for the dma map API,
-> but it's what we currently have to play with.
+> Thanks for investigating this. This partial revert fixes following crash for
+> me with QCA99X0 on amd64 with SWIOMMU:
 >
-> In these cases, doing kzalloc() works fine, but the dma_map_single()
-> call fails.
->
-> After chatting with Linus briefly about this, it indeed should be
-> using dma_alloc_coherent() for doing larger device memory allocation
-> that requires some kind of physical address mapping.
->
-> You're not supposed to be using kzalloc and dma_map_* calls for
-> large memory regions, and I'm guessing not for long-held mappings
-> either.  Typically dma mappings should be temporary for DMA,
-> not long held like these.
->
-> Now, since hopefully the major annoying underlying problem has also been
-> addressed (ie, ath10k is no longer tears down all of these allocations
-> and reallocates them every time the vdevs are brought down) fragmentation
-> should stop being such a touchy issue.  If it is though, using
-> dma_alloc_coherent() use gets us access to the CMB APIs too relatively
-> easily and ideally we would be allocating memory early in boot for
-> exactly these reasons.
->
-> Signed-off-by: Adrian Chadd <adrian@FreeBSD.org>
+>     [    9.167281] DMA: Out of SW-IOMMU space for 689816 bytes at device 0000:02:00.0
+>     [    9.174719] Kernel panic - not syncing: DMA: Random memory could be DMA read
 
-So there are now three positive test results (including mine) so I would
-like to queue this to 4.12 as an important bug fix.
+I recently got a Compex WLE1216V5-20 board and this patch also fixed a
+similar crash for me on my HP x86_64 test laptop:
 
-But I think all of them was with x86 and I'm worried if this patch
-creates problems with other architectures, especially on ARM? In the
-original commit Felix wrote that coherent memory is constrained some
-architectures. I would hate to go ping pong with this and reverting this
-patch soon after, instead I would prefer to find a proper solution which
-works for everyone.
+[  840.491019] do_IRQ: 3.82 No irq handler for vector
+[  840.965049] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+[  841.094985] ath10k_pci 0000:02:00.0: qca9984/qca9994 hw1.0 target 0x01000000 chip_id 0x00000000 sub 168c:cafe
+[  841.095096] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
+[  841.095603] ath10k_pci 0000:02:00.0: firmware ver 10.4-3.4-00082 api 5 features no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast crc32 f301de65
+[  842.518071] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id 0:1 crc32 751efba1
+[  845.220186] ath10k_pci 0000:02:00.0: swiotlb buffer is full (sz: 1172264 bytes)
+[  845.220478] ath10k_pci 0000:02:00.0: DMA: Out of SW-IOMMU space for 1172264 bytes
+[  845.220506] Kernel panic - not syncing: DMA: Random memory could be DMA accessed#012[  845.220506] 
+[  845.220532] CPU: 0 PID: 116 Comm: kworker/u16:4 Tainted: G            E   4.11.0-wt-ath+ #336
+[  845.220554] Hardware name: Hewlett-Packard HP ProBook 6540b/1722, BIOS 68CDD Ver. F.04 01/27/2010
+[  845.220600] Workqueue: ath10k_aux_wq ath10k_wmi_event_service_ready_work [ath10k_core]
+[  845.220626] Call Trace:
+[  845.220656]  dump_stack+0x85/0xc2
+[  845.220684]  panic+0xda/0x228
+[  845.220719]  swiotlb_full+0x88/0xa0
+[  845.220746]  swiotlb_map_page+0x214/0x280
+[  845.220785]  ath10k_wmi_event_service_ready_work+0x3f2/0x7d0 [ath10k_core]
+[  845.220812]  ? swiotlb_map_sg_attrs+0x140/0x140
+[  845.220858]  process_one_work+0x23b/0x7d0
+[  845.221093]  worker_thread+0x4e/0x4a0
+[  845.221126]  kthread+0x117/0x150
+[  845.221149]  ? process_one_work+0x7d0/0x7d0
+[  845.221175]  ? kthread_create_on_node+0x40/0x40
+[  845.221205]  ret_from_fork+0x31/0x40
+[  845.221314] Kernel Offset: 0xb000000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
 
-Felix, what do you think? Can someone test this patch on LEDE with the
-most problematic boards?
-
-commit b057886524be060021e3cfad0ba8458c850330cd
-Author: Felix Fietkau <nbd@openwrt.org>
-Date:   Mon Nov 30 19:32:01 2015 +0100
-
-    ath10k: do not use coherent memory for allocated device memory chunks
-    
-    Coherent memory is more expensive to allocate (and constrained on some
-    architectures where it has to be pre-allocated). It is also completely
-    unnecessary, since the host has no reason to even access these allocated
-    memory spaces
-    
-    Signed-off-by: Felix Fietkau <nbd@openwrt.org>
-    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
 -- 
 Kalle Valo
