@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x233.google.com ([2a00:1450:400c:c0c::233])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dBju3-0004gT-7L
- for ath10k@lists.infradead.org; Fri, 19 May 2017 15:33:20 +0000
-Received: by mail-wr0-x233.google.com with SMTP id l50so19344282wrc.3
- for <ath10k@lists.infradead.org>; Fri, 19 May 2017 08:32:57 -0700 (PDT)
+Received: from mout.gmx.net ([212.227.17.20])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dC2AK-0004La-2m
+ for ath10k@lists.infradead.org; Sat, 20 May 2017 11:03:22 +0000
+Subject: Re: Search for devices with Xtensa cores
+References: <1fdab9d5-d8c6-88dc-38ac-2948e5fa74ec@rempel-privat.de>
+ <CAMo8Bf+xbS46Kj4VP_+F2aZPZpOJ2UHV6WdHP_Ku_eaSQwm-7g@mail.gmail.com>
+From: Oleksij Rempel <linux@rempel-privat.de>
+Message-ID: <1855b2ff-3ed0-a2c3-ad27-7971fa92ee98@rempel-privat.de>
+Date: Sat, 20 May 2017 13:02:35 +0200
 MIME-Version: 1.0
-In-Reply-To: <87wp9durwe.fsf@kamboji.qca.qualcomm.com>
-References: <1493217698-22451-1-git-send-email-c_vnaral@qti.qualcomm.com>
- <40f2b7a2-7276-6de6-afc6-407348c92e70@nbd.name>
- <87wp9durwe.fsf@kamboji.qca.qualcomm.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Fri, 19 May 2017 08:32:54 -0700
-Message-ID: <CAJ-Vmok6UXVpYfK5c_tDnFGN1uLfx+sGp0W2zFppB=TYtax72g@mail.gmail.com>
-Subject: Re: [PATCH] ath10k : Fix channel survey dump
+In-Reply-To: <CAMo8Bf+xbS46Kj4VP_+F2aZPZpOJ2UHV6WdHP_Ku_eaSQwm-7g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +19,108 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4514201229848667852=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Venkateswara Naralasettty <vnaralas@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "nbd@nbd.name" <nbd@nbd.name>
+To: Max Filippov <jcmvbkbc@gmail.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org
 
-On 19 May 2017 at 02:17, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Felix Fietkau <nbd@nbd.name> writes:
->
->> On 2017-04-26 16:41, Venkateswara Rao Naralasetty wrote:
->>> Channel active/busy time are showing incorrect
->>> (less than previous or sometimes zero) for
->>> successive survey dump command.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============4514201229848667852==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="pAhHodKCb7gkBHUDcVR4dI3LF89ADOHAw"
 
-[snip]
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--pAhHodKCb7gkBHUDcVR4dI3LF89ADOHAw
+Content-Type: multipart/mixed; boundary="3RmeA5vnFOPCLsfIIHBvJjJLnQX9B1i7l";
+ protected-headers="v1"
+From: Oleksij Rempel <linux@rempel-privat.de>
+To: Max Filippov <jcmvbkbc@gmail.com>
+Cc: ath9k-devel@qca.qualcomm.com,
+ "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+ ath10k@lists.infradead.org
+Message-ID: <1855b2ff-3ed0-a2c3-ad27-7971fa92ee98@rempel-privat.de>
+Subject: Re: Search for devices with Xtensa cores
+References: <1fdab9d5-d8c6-88dc-38ac-2948e5fa74ec@rempel-privat.de>
+ <CAMo8Bf+xbS46Kj4VP_+F2aZPZpOJ2UHV6WdHP_Ku_eaSQwm-7g@mail.gmail.com>
+In-Reply-To: <CAMo8Bf+xbS46Kj4VP_+F2aZPZpOJ2UHV6WdHP_Ku_eaSQwm-7g@mail.gmail.com>
 
->> Does the firmware read the registers directly, or does it accumulate
->> the results in a way that can't overflow? If you don't clear the
->> counters on reset, the overflow will be problematic for the
->> current-channel stats. I think a better approach would be to use
->> READ_CLEAR for in-use channels and store the sum inside the driver.
->
-> Venkateswara, any comments?
+--3RmeA5vnFOPCLsfIIHBvJjJLnQX9B1i7l
+Content-Type: text/plain; charset=utf-8
+Content-Language: ru
+Content-Transfer-Encoding: quoted-printable
 
-I just bumped into this at work. I'm thinking of teaching mac80211
-about optionally summing things so each driver doesn't need another
-per-channel array.
+Am 16.05.2017 um 21:46 schrieb Max Filippov:
+> HI Oleksij,
+>=20
+> On Fri, Apr 28, 2017 at 11:23 PM, Oleksij Rempel <linux@rempel-privat.d=
+e> wrote:
+>> this year started with inclusion of open-ath9k-htc-firmware to debian
+>> *main* repository. As first we started to getting advantage of regular=
+
+>> compile tests. See results here:
+>> https://tests.reproducible-builds.org/debian/rb-pkg/unstable/i386/open=
+-ath9k-htc-firmware.html
+>>
+>> Most of the problems which we currently get, are related to gcc xtensa=
+
+>> compiler.
+>> In details: device specific patch set is used to provide our own
+>> gcc/binutils version because Xtensa don't really have defined CPU core=
+s.
+>> As result, upstream compiler developers will never notice if some thin=
+g
+>> will brake this patch set.
+>=20
+> Below are the links to the xtensa-dynconfig repository and xtensa-plugi=
+n-env
+> branches in binutils-gdb and gcc repositories. Together it is a draft
+> implementation of dynamically configurable xtensa toolchain.
+> Could you please take a look at it and see if it's useful for you?
+>=20
+> https://github.com/jcmvbkbc/xtensa-dynconfig
+> https://github.com/jcmvbkbc/binutils-gdb-xtensa/commits/xtensa-plugin-e=
+nv
+> https://github.com/jcmvbkbc/gcc-xtensa/commits/xtensa-plugin-env
+
+I didn't tested it jet, but it looks promising. How can i itegrate this
+two patches?
+https://github.com/olerem/open-ath9k-htc-firmware/tree/master/local/patch=
+es
 
 
+--=20
+Regards,
+Oleksij
 
--adrian
+
+--3RmeA5vnFOPCLsfIIHBvJjJLnQX9B1i7l--
+
+--pAhHodKCb7gkBHUDcVR4dI3LF89ADOHAw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF4EAREIAAYFAlkgIlAACgkQHwImuRkmbWmu3AD9HiEncsncqAtV/Cn9W70QNB3e
+0uwEaF80sC5WuqQGGosBAIc4dRA8LCjVM4cRJASP5fBxdm+NceIHGIyhlTFTkTNT
+=kncH
+-----END PGP SIGNATURE-----
+
+--pAhHodKCb7gkBHUDcVR4dI3LF89ADOHAw--
+
+
+--===============4514201229848667852==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============4514201229848667852==--
