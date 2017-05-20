@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x22c.google.com ([2607:f8b0:4001:c06::22c])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dC792-0004xC-9K
- for ath10k@lists.infradead.org; Sat, 20 May 2017 16:22:22 +0000
-Received: by mail-io0-x22c.google.com with SMTP id p24so62135193ioi.0
- for <ath10k@lists.infradead.org>; Sat, 20 May 2017 09:21:59 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CABPxzY+Y3Jcxw9UitytgrFS1H53pT7mCvVSbFM0qoj74x4gdFg@mail.gmail.com>
-References: <CABPxzY+mQ-G6PTsQV9_WVgju4bmQHwxKKW070j7v6=DDgZop4Q@mail.gmail.com>
- <b830b657-3f73-de7f-d61c-1565dc14c2ef@candelatech.com>
- <CABPxzY+Y3Jcxw9UitytgrFS1H53pT7mCvVSbFM0qoj74x4gdFg@mail.gmail.com>
-From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
-Date: Sat, 20 May 2017 21:51:38 +0530
-Message-ID: <CABPxzY+bnfV-z=J=Tz7HH_8PQ1kW-XDpDhEZnqQK6DV_mGfaDg@mail.gmail.com>
-Subject: Re: ath10k: controlling TX aggregation
+ id 1dCB4v-0005t3-D3
+ for ath10k@lists.infradead.org; Sat, 20 May 2017 20:34:23 +0000
+Received: by mail-lf0-x241.google.com with SMTP id q24so2391808lfb.1
+ for <ath10k@lists.infradead.org>; Sat, 20 May 2017 13:34:00 -0700 (PDT)
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Subject: [RFC v2 1/3] ath10k: various usb related definitions
+Date: Sat, 20 May 2017 22:33:28 +0200
+Message-Id: <1495312410-9937-2-git-send-email-erik.stromdahl@gmail.com>
+In-Reply-To: <1495312410-9937-1-git-send-email-erik.stromdahl@gmail.com>
+References: <1495312410-9937-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,58 +19,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-On Mon, May 15, 2017 at 3:02 PM, Krishna Chaitanya
-<chaitanya.mgit@gmail.com> wrote:
-> On Fri, May 12, 2017 at 8:15 PM, Ben Greear <greearb@candelatech.com> wrote:
->> What chipset, and what firmware version?
->>
->> Thanks,
->> Ben
->
-> Hi Ben,
->
-> I have missed your response. PFB details.
->
->  chip: QCA986x/988x PCIe
->  FW ver: 10.2.4.70.54 api 5
->  kernel: 4.11.0-rc+7 (wireless-drivers-next)
->
-Ben,
+Definitions for USB based chipsets
 
-any clues?
->
->> On 05/12/2017 07:43 AM, Krishna Chaitanya wrote:
->>>
->>> Hi,
->>>
->>> I am doing some comparative tests, wanted to configure common
->>> settings btw all STA's. wanted to limit agg_size to 24 in ath10k with
->>> the below command.
->>>
->>> echo "3 24" > /sys/kernel/debug/ieee80211/phy0/ath10k/htt_max_amsdu_ampdu
->>>
->>> The ADDBA request still has 64 and when i run iperf it is aggregating 64
->>> frames.
->>>
->>> Except for 1 no number takes effect. If i configure 1 there is no ADDBA
->>> exchange
->>> initiated by ath10k.
->>>
->>> Is this expected? Can we control the aggregation size through driver?
->>>
->>> latest wireless-drivers-next and linux-firmware git is used.
->>>
->>
->> --
->> Ben Greear <greearb@candelatech.com>
->> Candela Technologies Inc  http://www.candelatech.com
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h  | 3 +++
+ drivers/net/wireless/ath/ath10k/debug.h | 2 ++
+ 2 files changed, 5 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 8fc08a5..1efe0a1 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -92,6 +92,7 @@ enum ath10k_bus {
+ 	ATH10K_BUS_PCI,
+ 	ATH10K_BUS_AHB,
+ 	ATH10K_BUS_SDIO,
++	ATH10K_BUS_USB,
+ };
+ 
+ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+@@ -103,6 +104,8 @@ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+ 		return "ahb";
+ 	case ATH10K_BUS_SDIO:
+ 		return "sdio";
++	case ATH10K_BUS_USB:
++		return "usb";
+ 	}
+ 
+ 	return "unknown";
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 257d109..548ad54 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -40,6 +40,8 @@ enum ath10k_debug_mask {
+ 	ATH10K_DBG_AHB		= 0x00008000,
+ 	ATH10K_DBG_SDIO		= 0x00010000,
+ 	ATH10K_DBG_SDIO_DUMP	= 0x00020000,
++	ATH10K_DBG_USB		= 0x00040000,
++	ATH10K_DBG_USB_BULK	= 0x00080000,
+ 	ATH10K_DBG_ANY		= 0xffffffff,
+ };
+ 
+-- 
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
