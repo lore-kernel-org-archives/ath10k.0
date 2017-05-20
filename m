@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCB4v-0005t2-DA
- for ath10k@lists.infradead.org; Sat, 20 May 2017 20:34:23 +0000
-Received: by mail-lf0-x241.google.com with SMTP id m18so2393486lfj.0
- for <ath10k@lists.infradead.org>; Sat, 20 May 2017 13:33:59 -0700 (PDT)
+ id 1dCB4v-0005t4-Rj
+ for ath10k@lists.infradead.org; Sat, 20 May 2017 20:34:24 +0000
+Received: by mail-lf0-x243.google.com with SMTP id m18so2393513lfj.0
+ for <ath10k@lists.infradead.org>; Sat, 20 May 2017 13:34:01 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v2 0/3] ath10k usb support
-Date: Sat, 20 May 2017 22:33:27 +0200
-Message-Id: <1495312410-9937-1-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v2 2/3] ath10k: different fw file names for usb
+Date: Sat, 20 May 2017 22:33:29 +0200
+Message-Id: <1495312410-9937-3-git-send-email-erik.stromdahl@gmail.com>
+In-Reply-To: <1495312410-9937-1-git-send-email-erik.stromdahl@gmail.com>
+References: <1495312410-9937-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +27,26 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-This is the 2nd version of the ath10k USB RFC. There are only minor updates
-since last version.
+USB firmware will be named in the same way as SDIO files,
+i.e, the bus type will be added to the firmware file name.
 
-The main difference when compared to the previous RFC is that the
-high latency stuff that is common between USB and SDIO has been moved out
-of this patchset and into another (separate) patchset.
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I was actually thinking about squashing all the patches into one, but
-decided not to do so since I wanted usb.h, usb.c and the update Kconfig +
-Makefile in one separate patch.
-
-Perhaps patch 1 and 2 should be squashed?
-
-Erik Stromdahl (3):
-  ath10k: various usb related definitions
-  ath10k: different fw file names for usb
-  ath10k: add initial USB support
-
- drivers/net/wireless/ath/ath10k/Kconfig  |    7 +
- drivers/net/wireless/ath/ath10k/Makefile |    3 +
- drivers/net/wireless/ath/ath10k/core.c   |    1 +
- drivers/net/wireless/ath/ath10k/core.h   |    3 +
- drivers/net/wireless/ath/ath10k/debug.h  |    2 +
- drivers/net/wireless/ath/ath10k/usb.c    | 1128 ++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/usb.h    |  128 ++++
- 7 files changed, 1272 insertions(+)
- create mode 100644 drivers/net/wireless/ath/ath10k/usb.c
- create mode 100644 drivers/net/wireless/ath/ath10k/usb.h
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index eea111d..46ce263 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1412,6 +1412,7 @@ static void ath10k_core_get_fw_name(struct ath10k *ar, char *fw_name,
+ {
+ 	switch (ar->hif.bus) {
+ 	case ATH10K_BUS_SDIO:
++	case ATH10K_BUS_USB:
+ 		scnprintf(fw_name, fw_name_len, "%s-%s-%d.bin",
+ 			  ATH10K_FW_FILE_BASE, ath10k_bus_str(ar->hif.bus),
+ 			  fw_api);
 -- 
 2.7.4
 
