@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCX2r-00022Y-8E
+ id 1dCX2r-00022Z-8A
  for ath10k@lists.infradead.org; Sun, 21 May 2017 20:01:43 +0000
-Received: by mail-lf0-x242.google.com with SMTP id h4so3695944lfj.3
+Received: by mail-lf0-x242.google.com with SMTP id q24so3696093lfb.1
  for <ath10k@lists.infradead.org>; Sun, 21 May 2017 13:01:21 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC 1/9] ath10k: high_latency detection
-Date: Sun, 21 May 2017 21:59:03 +0200
-Message-Id: <1495396751-4805-2-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC 2/9] ath10k: htt: RX ring config HL support
+Date: Sun, 21 May 2017 21:59:04 +0200
+Message-Id: <1495396751-4805-3-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1495396751-4805-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1495396751-4805-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,56 +27,110 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-The setup of high latency chips (USB and SDIO) is
-sometimes different than for chips using low latency
-interfaces.
+Special HTT RX ring config message used by high latency
+devices.
 
-The bus type is used to determine if the interface is
-a high latency interface.
+The main difference between HL and LL is that HL devices
+do not use shared memory between device and host and thus,
+no host paddr's are added to the RX config message.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 1 +
- drivers/net/wireless/ath/ath10k/core.h | 7 +++++++
- 2 files changed, 8 insertions(+)
+ drivers/net/wireless/ath/ath10k/htt.c    |  5 +++-
+ drivers/net/wireless/ath/ath10k/htt.h    |  1 +
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 51 ++++++++++++++++++++++++++++++++
+ 3 files changed, 56 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 46ce263..627954e 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2445,6 +2445,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 	ar->hw_rev = hw_rev;
- 	ar->hif.ops = hif_ops;
- 	ar->hif.bus = bus;
-+	ar->is_high_latency = ath10k_is_high_latency(bus);
+diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
+index cd160b1..29ed4af 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.c
++++ b/drivers/net/wireless/ath/ath10k/htt.c
+@@ -258,7 +258,10 @@ int ath10k_htt_setup(struct ath10k_htt *htt)
+ 	if (status)
+ 		return status;
  
- 	switch (hw_rev) {
- 	case ATH10K_HW_QCA988X:
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 1efe0a1..90069b8 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -789,6 +789,8 @@ struct ath10k {
- 
- 	bool p2p;
- 
-+	bool is_high_latency;
-+
- 	struct {
- 		enum ath10k_bus bus;
- 		const struct ath10k_hif_ops *ops;
-@@ -1008,6 +1010,11 @@ static inline bool ath10k_peer_stats_enabled(struct ath10k *ar)
- 	return false;
+-	status = ath10k_htt_send_rx_ring_cfg_ll(htt);
++	if (ar->is_high_latency)
++		status = ath10k_htt_send_rx_ring_cfg_hl(htt);
++	else
++		status = ath10k_htt_send_rx_ring_cfg_ll(htt);
+ 	if (status) {
+ 		ath10k_warn(ar, "failed to setup rx ring: %d\n",
+ 			    status);
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 6305308..7ffa1d4 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1805,6 +1805,7 @@ int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt);
+ int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie);
+ int ath10k_htt_send_frag_desc_bank_cfg(struct ath10k_htt *htt);
+ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt);
++int ath10k_htt_send_rx_ring_cfg_hl(struct ath10k_htt *htt);
+ int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
+ 				u8 max_subfrms_ampdu,
+ 				u8 max_subfrms_amsdu);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 685faac..8d85f82 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -693,6 +693,57 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
+ 	return 0;
  }
  
-+static inline bool ath10k_is_high_latency(enum ath10k_bus bus)
++int ath10k_htt_send_rx_ring_cfg_hl(struct ath10k_htt *htt)
 +{
-+	return ((bus == ATH10K_BUS_SDIO) || (bus == ATH10K_BUS_USB));
++	struct ath10k *ar = htt->ar;
++	struct sk_buff *skb;
++	struct htt_cmd *cmd;
++	struct htt_rx_ring_setup_ring *ring;
++	const int num_rx_ring = 1;
++	u16 flags;
++	int len;
++	int ret;
++
++	/*
++	 * the HW expects the buffer to be an integral number of 4-byte
++	 * "words"
++	 */
++	BUILD_BUG_ON(!IS_ALIGNED(HTT_RX_BUF_SIZE, 4));
++	BUILD_BUG_ON((HTT_RX_BUF_SIZE & HTT_MAX_CACHE_LINE_SIZE_MASK) != 0);
++
++	len = sizeof(cmd->hdr) + sizeof(cmd->rx_setup.hdr)
++	    + (sizeof(*ring) * num_rx_ring);
++	skb = ath10k_htc_alloc_skb(ar, len);
++	if (!skb)
++		return -ENOMEM;
++
++	skb_put(skb, len);
++
++	cmd = (struct htt_cmd *)skb->data;
++	ring = &cmd->rx_setup.rings[0];
++
++	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_RX_RING_CFG;
++	cmd->rx_setup.hdr.num_rings = 1;
++
++	flags = 0;
++	flags |= HTT_RX_RING_FLAGS_MSDU_PAYLOAD;
++	flags |= HTT_RX_RING_FLAGS_UNICAST_RX;
++	flags |= HTT_RX_RING_FLAGS_MULTICAST_RX;
++
++	memset(ring, 0, sizeof(*ring));
++	ring->rx_ring_len = __cpu_to_le16(HTT_RX_RING_SIZE_MIN);
++	ring->rx_ring_bufsize = __cpu_to_le16(HTT_RX_BUF_SIZE);
++	ring->flags = __cpu_to_le16(flags);
++
++	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
++	if (ret) {
++		dev_kfree_skb_any(skb);
++		return ret;
++	}
++
++	return 0;
 +}
 +
- struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 				  enum ath10k_bus bus,
- 				  enum ath10k_hw_rev hw_rev,
+ int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
+ 				u8 max_subfrms_ampdu,
+ 				u8 max_subfrms_amsdu)
 -- 
 2.7.4
 
