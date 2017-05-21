@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yw0-x231.google.com ([2607:f8b0:4002:c05::231])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCIm4-0001l0-DA
- for ath10k@lists.infradead.org; Sun, 21 May 2017 04:47:26 +0000
-Received: by mail-yw0-x231.google.com with SMTP id b68so48322215ywe.3
- for <ath10k@lists.infradead.org>; Sat, 20 May 2017 21:47:03 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dCSRW-0001CY-8M
+ for ath10k@lists.infradead.org; Sun, 21 May 2017 15:06:51 +0000
+Subject: Re: ath10k: controlling TX aggregation
+References: <CABPxzY+mQ-G6PTsQV9_WVgju4bmQHwxKKW070j7v6=DDgZop4Q@mail.gmail.com>
+ <b830b657-3f73-de7f-d61c-1565dc14c2ef@candelatech.com>
+ <CABPxzY+Y3Jcxw9UitytgrFS1H53pT7mCvVSbFM0qoj74x4gdFg@mail.gmail.com>
+ <CABPxzY+bnfV-z=J=Tz7HH_8PQ1kW-XDpDhEZnqQK6DV_mGfaDg@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <a2beca1e-5dfc-5962-cf4b-c39668b6968e@candelatech.com>
+Date: Sun, 21 May 2017 08:06:27 -0700
 MIME-Version: 1.0
-In-Reply-To: <1855b2ff-3ed0-a2c3-ad27-7971fa92ee98@rempel-privat.de>
-References: <1fdab9d5-d8c6-88dc-38ac-2948e5fa74ec@rempel-privat.de>
- <CAMo8Bf+xbS46Kj4VP_+F2aZPZpOJ2UHV6WdHP_Ku_eaSQwm-7g@mail.gmail.com>
- <1855b2ff-3ed0-a2c3-ad27-7971fa92ee98@rempel-privat.de>
-From: Max Filippov <jcmvbkbc@gmail.com>
-Date: Sat, 20 May 2017 21:47:02 -0700
-Message-ID: <CAMo8BfLxTU0PVUC+7FMjX9YOkmJ6+PEy09fFvC--HmvFNwyNvw@mail.gmail.com>
-Subject: Re: Search for devices with Xtensa cores
+In-Reply-To: <CABPxzY+bnfV-z=J=Tz7HH_8PQ1kW-XDpDhEZnqQK6DV_mGfaDg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +21,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Oleksij Rempel <linux@rempel-privat.de>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org
+To: Krishna Chaitanya <chaitanya.mgit@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-On Sat, May 20, 2017 at 4:02 AM, Oleksij Rempel <linux@rempel-privat.de> wrote:
-> Am 16.05.2017 um 21:46 schrieb Max Filippov:
->> On Fri, Apr 28, 2017 at 11:23 PM, Oleksij Rempel <linux@rempel-privat.de> wrote:
->>> this year started with inclusion of open-ath9k-htc-firmware to debian
->>> *main* repository. As first we started to getting advantage of regular
->>> compile tests. See results here:
->>> https://tests.reproducible-builds.org/debian/rb-pkg/unstable/i386/open-ath9k-htc-firmware.html
+
+
+On 05/20/2017 09:21 AM, Krishna Chaitanya wrote:
+> On Mon, May 15, 2017 at 3:02 PM, Krishna Chaitanya
+> <chaitanya.mgit@gmail.com> wrote:
+>> On Fri, May 12, 2017 at 8:15 PM, Ben Greear <greearb@candelatech.com> wrote:
+>>> What chipset, and what firmware version?
 >>>
->>> Most of the problems which we currently get, are related to gcc xtensa
->>> compiler.
->>> In details: device specific patch set is used to provide our own
->>> gcc/binutils version because Xtensa don't really have defined CPU cores.
->>> As result, upstream compiler developers will never notice if some thing
->>> will brake this patch set.
+>>> Thanks,
+>>> Ben
 >>
->> Below are the links to the xtensa-dynconfig repository and xtensa-plugin-env
->> branches in binutils-gdb and gcc repositories. Together it is a draft
->> implementation of dynamically configurable xtensa toolchain.
->> Could you please take a look at it and see if it's useful for you?
+>> Hi Ben,
 >>
->> https://github.com/jcmvbkbc/xtensa-dynconfig
->> https://github.com/jcmvbkbc/binutils-gdb-xtensa/commits/xtensa-plugin-env
->> https://github.com/jcmvbkbc/gcc-xtensa/commits/xtensa-plugin-env
+>> I have missed your response. PFB details.
+>>
+>>  chip: QCA986x/988x PCIe
+>>  FW ver: 10.2.4.70.54 api 5
+>>  kernel: 4.11.0-rc+7 (wireless-drivers-next)
+>>
+> Ben,
 >
-> I didn't tested it jet, but it looks promising. How can i itegrate this
-> two patches?
-> https://github.com/olerem/open-ath9k-htc-firmware/tree/master/local/patches
+> any clues?
 
-Apply binutils.patch to the binutils-2.26.1 and then copy
-binutils/bfd/xtensa-modules.c
-and binutils/include/xtensa-config.h into xtensa-dynconfig/config/<config-name>.
-And since the gdb part is missing you'd need to create two empty c source files:
-xtensa-dynconfig/config/<config-name>/gdb/gdb/{xtensa-config.c,xtensa-xtregs.c}
+I haven't tried that test yet, and use a different
+firmware version.  I did recently work on allowing larger
+AMSDU aggregates and have that working in my CT firmware and
+driver.
+
+Thanks,
+Ben
 
 -- 
-Thanks.
--- Max
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
