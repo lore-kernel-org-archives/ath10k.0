@@ -1,21 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x232.google.com ([2607:f8b0:4001:c06::232])
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCT1R-0005hu-PT
- for ath10k@lists.infradead.org; Sun, 21 May 2017 15:43:59 +0000
-Received: by mail-io0-x232.google.com with SMTP id f102so68719523ioi.2
- for <ath10k@lists.infradead.org>; Sun, 21 May 2017 08:43:37 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <a2beca1e-5dfc-5962-cf4b-c39668b6968e@candelatech.com>
-References: <CABPxzY+mQ-G6PTsQV9_WVgju4bmQHwxKKW070j7v6=DDgZop4Q@mail.gmail.com>
- <b830b657-3f73-de7f-d61c-1565dc14c2ef@candelatech.com>
- <CABPxzY+Y3Jcxw9UitytgrFS1H53pT7mCvVSbFM0qoj74x4gdFg@mail.gmail.com>
- <CABPxzY+bnfV-z=J=Tz7HH_8PQ1kW-XDpDhEZnqQK6DV_mGfaDg@mail.gmail.com>
- <a2beca1e-5dfc-5962-cf4b-c39668b6968e@candelatech.com>
-From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
-Date: Sun, 21 May 2017 21:13:16 +0530
-Message-ID: <CABPxzYJJ5qXix7OYVFq3K+w+SukA9fqPuQt-w8ULAZkgt9uppQ@mail.gmail.com>
-Subject: Re: ath10k: controlling TX aggregation
+ id 1dCX2r-00022f-8H
+ for ath10k@lists.infradead.org; Sun, 21 May 2017 20:01:45 +0000
+Received: by mail-lf0-x242.google.com with SMTP id 99so3690729lfu.2
+ for <ath10k@lists.infradead.org>; Sun, 21 May 2017 13:01:24 -0700 (PDT)
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Subject: [RFC 4/9] ath10k: add start_once support
+Date: Sun, 21 May 2017 21:59:06 +0200
+Message-Id: <1495396751-4805-5-git-send-email-erik.stromdahl@gmail.com>
+In-Reply-To: <1495396751-4805-1-git-send-email-erik.stromdahl@gmail.com>
+References: <1495396751-4805-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +19,115 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-On Sun, May 21, 2017 at 8:36 PM, Ben Greear <greearb@candelatech.com> wrote:
->
->
-> On 05/20/2017 09:21 AM, Krishna Chaitanya wrote:
->>
->> On Mon, May 15, 2017 at 3:02 PM, Krishna Chaitanya
->> <chaitanya.mgit@gmail.com> wrote:
->>>
->>> On Fri, May 12, 2017 at 8:15 PM, Ben Greear <greearb@candelatech.com>
->>> wrote:
->>>>
->>>> What chipset, and what firmware version?
->>>>
->>>> Thanks,
->>>> Ben
->>>
->>>
->>> Hi Ben,
->>>
->>> I have missed your response. PFB details.
->>>
->>>  chip: QCA986x/988x PCIe
->>>  FW ver: 10.2.4.70.54 api 5
->>>  kernel: 4.11.0-rc+7 (wireless-drivers-next)
->>>
->> Ben,
->>
->> any clues?
->
->
-> I haven't tried that test yet, and use a different
-> firmware version.  I did recently work on allowing larger
-> AMSDU aggregates and have that working in my CT firmware and
-> driver.
-ok, so at least its suppose to work.
+Add possibility to configure the driver to only start target once.
+This can reduce startup time of SDIO devices significantly since
+loading the firmware can take a substantial amount of time.
+
+The patch is also necessary for high latency devices in general
+since it does not seem to be possible to rerun the BMI phase
+(fw upload) without power-cycling the device.
+
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 19 +++++++++++++++----
+ drivers/net/wireless/ath/ath10k/core.h |  2 ++
+ drivers/net/wireless/ath/ath10k/hw.h   |  6 ++++++
+ 3 files changed, 23 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 0c46004..54bf396 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1956,6 +1956,9 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 	int status;
+ 	u32 val;
+ 
++	if (ar->is_started && ar->hw_params.start_once)
++		return 0;
++
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+ 	clear_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
+@@ -2175,6 +2178,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 	if (status)
+ 		goto err_hif_stop;
+ 
++	ar->is_started = true;
+ 	return 0;
+ 
+ err_hif_stop:
+@@ -2227,6 +2231,7 @@ void ath10k_core_stop(struct ath10k *ar)
+ 	ath10k_htt_tx_stop(&ar->htt);
+ 	ath10k_htt_rx_free(&ar->htt);
+ 	ath10k_wmi_detach(ar);
++	ar->is_started = false;
+ }
+ EXPORT_SYMBOL(ath10k_core_stop);
+ 
+@@ -2329,12 +2334,18 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 		goto err_unlock;
+ 	}
+ 
+-	ath10k_debug_print_boot_info(ar);
+-	ath10k_core_stop(ar);
++	/* Leave target running if hw_params.start_once is set */
++	if (ar->hw_params.start_once) {
++		mutex_unlock(&ar->conf_mutex);
++	} else {
++		ath10k_debug_print_boot_info(ar);
++		ath10k_core_stop(ar);
+ 
+-	mutex_unlock(&ar->conf_mutex);
++		mutex_unlock(&ar->conf_mutex);
++
++		ath10k_hif_power_down(ar);
++	}
+ 
+-	ath10k_hif_power_down(ar);
+ 	return 0;
+ 
+ err_unlock:
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index cdac923..0e75441 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -784,6 +784,8 @@ struct ath10k {
+ 
+ 	bool is_high_latency;
+ 
++	bool is_started;
++
+ 	struct {
+ 		enum ath10k_bus bus;
+ 		const struct ath10k_hif_ops *ops;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 160377aa..f733e73 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -473,6 +473,12 @@ struct ath10k_hw_params {
+ 	bool is_high_latency;
+ 
+ 	enum ath10k_bus bus;
++
++	/* Specifies whether or not the device should be started once.
++	 * If set, the device will be started once by the early fw probe
++	 * and it will not be terminated afterwards.
++	 */
++	bool start_once;
+ };
+ 
+ struct htt_rx_desc;
+-- 
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
