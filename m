@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCp67-0005CD-V9
- for ath10k@lists.infradead.org; Mon, 22 May 2017 15:18:17 +0000
-From: Venkateswara Naralasettty <vnaralas@qti.qualcomm.com>
-Subject: RE: [PATCH] ath10k : Fix channel survey dump
-Date: Mon, 22 May 2017 15:17:50 +0000
-Message-ID: <bf174d49b9be4b3697601f6bef7394d8@APSANEXR01F.ap.qualcomm.com>
-References: <1493217698-22451-1-git-send-email-c_vnaral@qti.qualcomm.com>
- <40f2b7a2-7276-6de6-afc6-407348c92e70@nbd.name>
- <87wp9durwe.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87wp9durwe.fsf@kamboji.qca.qualcomm.com>
-Content-Language: en-US
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dCq1J-00079R-Q0
+ for ath10k@lists.infradead.org; Mon, 22 May 2017 16:17:24 +0000
+Subject: Re: ath10k: Initialize nbytes to 0
+References: <1483653641-8377-1-git-send-email-greearb@candelatech.com>
+ <0fa10cfb9e514244a0c39fa2688574e4@euamsexm01a.eu.qualcomm.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <ad091f4e-b315-3cf7-c3aa-a0fddfe8c1c3@candelatech.com>
+Date: Mon, 22 May 2017 09:17:00 -0700
 MIME-Version: 1.0
+In-Reply-To: <0fa10cfb9e514244a0c39fa2688574e4@euamsexm01a.eu.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,79 +19,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, "nbd@nbd.name" <nbd@nbd.name>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-
------Original Message-----
-From: Kalle Valo 
-Sent: Friday, May 19, 2017 2:48 PM
-To: nbd@nbd.name
-Cc: Venkateswara Naralasettty <vnaralas@qti.qualcomm.com>; ath10k@lists.infradead.org; linux-wireless@vger.kernel.org
-Subject: Re: [PATCH] ath10k : Fix channel survey dump
-
-Felix Fietkau <nbd@nbd.name> writes:
-
-> On 2017-04-26 16:41, Venkateswara Rao Naralasetty wrote:
->> Channel active/busy time are showing incorrect (less than previous or 
->> sometimes zero) for successive survey dump command.
->> 
->> example:
->> Survey data from wlan0
->>         frequency:                      5180 MHz [in use]
->>         channel active time:            54995 ms
->>         channel busy time:              432 ms
->>         channel receive time:           0 ms
->>         channel transmit time:          59 ms
->> Survey data from wlan0
->>         frequency:                      5180 MHz [in use]
->>         channel active time:            32592 ms
->>         channel busy time:              254 ms
->>         channel receive time:           0 ms
->>         channel transmit time:          0 ms
->> 
->> This patch fix this issue by assigning 'wmi_bss_survey_req_type'
->> as 'WMI_BSS_SURVEY_REQ_TYPE_READ'.
->> 
->> Firmware ver 10.4-3.4-00082
->> Hardware QCA4019
->> 
->> Signed-off-by: Venkateswara Rao Naralasetty 
->> <c_vnaral@qti.qualcomm.com>
->> ---
->>  drivers/net/wireless/ath/ath10k/mac.c |    2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/drivers/net/wireless/ath/ath10k/mac.c 
->> b/drivers/net/wireless/ath/ath10k/mac.c
->> index 9977829..87a9b55 100644
->> --- a/drivers/net/wireless/ath/ath10k/mac.c
->> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->> @@ -6621,7 +6621,7 @@ static void ath10k_reconfig_complete(struct ieee80211_hw *hw,
->>  				  struct ieee80211_channel *channel)  {
->>  	int ret;
->> -	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR;
->> +	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ;
+On 05/22/2017 07:53 AM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> wrote:
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> ath10k firmware checks nbytes == 0 as part of determining if DMA
+>> has completed successfully.  To help make this work more often,
+>> have the driver initialize nbytes to zero when freeing the descriptor
+>> slot.
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
 >
-> Does the firmware read the registers directly, or does it accumulate 
-> the results in a way that can't overflow? If you don't clear the 
-> counters on reset, the overflow will be problematic for the 
-> current-channel stats. I think a better approach would be to use 
-> READ_CLEAR for in-use channels and store the sum inside the driver.
+> This patch was in linux-wireless patchwork instance but not in ath10k instance,
+> which means that the patch was not delivered to ath10k list. I guesss mailing
+> list problems?
+>
+> But anyway, I didn't see any comments. Is this still valid?
 
-Venkateswara, any comments?
+ From my reading of the firmware, it appears the patch is a good idea.
+It at least does not seem to make anything worse as it has not
+been implicated in any problems in our testing and it has been in our kernel
+since I posted the patch.
 
---
-Kalle Valo
+So, I think it should be applied.
 
-Sorry for the delayed response I held up with some other work. Currently I am working with firmware team to address your comments.
+Thanks,
+Ben
 
---
-Venkatesh.
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
