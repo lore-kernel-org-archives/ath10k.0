@@ -1,21 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:190:3424::2]
- helo=sipsolutions.net)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCgZD-0006pF-0o
- for ath10k@lists.infradead.org; Mon, 22 May 2017 06:11:45 +0000
-Message-ID: <1495433473.2653.0.camel@sipsolutions.net>
-Subject: Re: [PATCH] ath10k : Fix channel survey dump
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 22 May 2017 08:11:13 +0200
-In-Reply-To: <CAJ-Vmok6UXVpYfK5c_tDnFGN1uLfx+sGp0W2zFppB=TYtax72g@mail.gmail.com>
- (sfid-20170519_173300_356433_4FB5D671)
-References: <1493217698-22451-1-git-send-email-c_vnaral@qti.qualcomm.com>
- <40f2b7a2-7276-6de6-afc6-407348c92e70@nbd.name>
- <87wp9durwe.fsf@kamboji.qca.qualcomm.com>
- <CAJ-Vmok6UXVpYfK5c_tDnFGN1uLfx+sGp0W2zFppB=TYtax72g@mail.gmail.com>
- (sfid-20170519_173300_356433_4FB5D671)
-Mime-Version: 1.0
+ id 1dCoiG-0002kV-6q
+ for ath10k@lists.infradead.org; Mon, 22 May 2017 14:53:39 +0000
+MIME-Version: 1.0
+Subject: Re: ath10k: Initialize nbytes to 0
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1483653641-8377-1-git-send-email-greearb@candelatech.com>
+References: <1483653641-8377-1-git-send-email-greearb@candelatech.com>
+Message-ID: <0fa10cfb9e514244a0c39fa2688574e4@euamsexm01a.eu.qualcomm.com>
+Date: Mon, 22 May 2017 16:53:06 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +22,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Venkateswara Naralasettty <vnaralas@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "nbd@nbd.name" <nbd@nbd.name>
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Fri, 2017-05-19 at 08:32 -0700, Adrian Chadd wrote:
+Ben Greear <greearb@candelatech.com> wrote:
+> From: Ben Greear <greearb@candelatech.com>
 > 
-> I just bumped into this at work. I'm thinking of teaching mac80211
-> about optionally summing things so each driver doesn't need another
-> per-channel array.
+> ath10k firmware checks nbytes == 0 as part of determining if DMA
+> has completed successfully.  To help make this work more often,
+> have the driver initialize nbytes to zero when freeing the descriptor
+> slot.
 > 
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-We could possibly even do that in cfg80211, I guess.
+This patch was in linux-wireless patchwork instance but not in ath10k instance,
+which means that the patch was not delivered to ath10k list. I guesss mailing
+list problems?
 
-johannes
+But anyway, I didn't see any comments. Is this still valid?
+
+-- 
+https://patchwork.kernel.org/patch/9499733/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
