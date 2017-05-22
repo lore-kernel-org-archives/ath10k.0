@@ -1,16 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from s3.sipsolutions.net ([2a01:4f8:190:3424::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCX2x-00023A-D9
- for ath10k@lists.infradead.org; Sun, 21 May 2017 20:01:52 +0000
-Received: by mail-lf0-x241.google.com with SMTP id 99so3690901lfu.2
- for <ath10k@lists.infradead.org>; Sun, 21 May 2017 13:01:28 -0700 (PDT)
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC 9/9] ath10k: add QCA9377 sdio hw_param item
-Date: Sun, 21 May 2017 21:59:11 +0200
-Message-Id: <1495396751-4805-10-git-send-email-erik.stromdahl@gmail.com>
-In-Reply-To: <1495396751-4805-1-git-send-email-erik.stromdahl@gmail.com>
-References: <1495396751-4805-1-git-send-email-erik.stromdahl@gmail.com>
+ id 1dCgZD-0006pF-0o
+ for ath10k@lists.infradead.org; Mon, 22 May 2017 06:11:45 +0000
+Message-ID: <1495433473.2653.0.camel@sipsolutions.net>
+Subject: Re: [PATCH] ath10k : Fix channel survey dump
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 22 May 2017 08:11:13 +0200
+In-Reply-To: <CAJ-Vmok6UXVpYfK5c_tDnFGN1uLfx+sGp0W2zFppB=TYtax72g@mail.gmail.com>
+ (sfid-20170519_173300_356433_4FB5D671)
+References: <1493217698-22451-1-git-send-email-c_vnaral@qti.qualcomm.com>
+ <40f2b7a2-7276-6de6-afc6-407348c92e70@nbd.name>
+ <87wp9durwe.fsf@kamboji.qca.qualcomm.com>
+ <CAJ-Vmok6UXVpYfK5c_tDnFGN1uLfx+sGp0W2zFppB=TYtax72g@mail.gmail.com>
+ (sfid-20170519_173300_356433_4FB5D671)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,73 +24,23 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
+To: Adrian Chadd <adrian@freebsd.org>, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Venkateswara Naralasettty <vnaralas@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "nbd@nbd.name" <nbd@nbd.name>
 
-Hardware parameters for QCA9377 sdio devices.
+On Fri, 2017-05-19 at 08:32 -0700, Adrian Chadd wrote:
+> 
+> I just bumped into this at work. I'm thinking of teaching mac80211
+> about optionally summing things so each driver doesn't need another
+> per-channel array.
+> 
 
-Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 25 +++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  1 +
- 2 files changed, 26 insertions(+)
+We could possibly even do that in cfg80211, I guess.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index edf9943..2a9afde 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -322,6 +322,31 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.start_once = true,
- 	},
- 	{
-+		.id = QCA9377_HW_1_1_DEV_VERSION,
-+		.dev_id = QCA9377_1_0_DEVICE_ID,
-+		.name = "qca9377 hw1.1 sdio",
-+		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
-+		.uart_pin = 19,
-+		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
-+		.max_probe_resp_desc_thres = 0,
-+		.cal_data_len = 8124,
-+		.fw = {
-+			.dir = QCA9377_HW_1_0_FW_DIR,
-+			.board = QCA9377_HW_1_0_BOARD_DATA_FILE_SDIO,
-+			.board_size = QCA9377_BOARD_DATA_SZ,
-+			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
-+		},
-+		.hw_ops = &qca6174_ops,
-+		.hw_clk = qca6174_clk,
-+		.target_cpu_freq = 176000000,
-+		.decap_align_bytes = 4,
-+		.max_num_peers = TARGET_QCA9377_HL_NUM_PEERS,
-+		.is_high_latency = true,
-+		.bus = ATH10K_BUS_SDIO,
-+		.start_once = true,
-+	},
-+	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
- 		.dev_id = 0,
- 		.name = "qca4019 hw1.0",
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index cc3d0eb..676c855 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -128,6 +128,7 @@ enum qca9377_chip_id_rev {
- #define QCA9377_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA9377/hw1.0"
- #define QCA9377_HW_1_0_BOARD_DATA_FILE "board.bin"
- #define QCA9377_HW_1_0_BOARD_DATA_FILE_USB "board-usb.bin"
-+#define QCA9377_HW_1_0_BOARD_DATA_FILE_SDIO "board-sdio.bin"
- #define QCA9377_HW_1_0_PATCH_LOAD_ADDR	0x1234
- 
- /* QCA4019 1.0 definitions */
--- 
-2.7.4
-
+johannes
 
 _______________________________________________
 ath10k mailing list
