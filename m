@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDBhK-0005Mo-6U
- for ath10k@lists.infradead.org; Tue, 23 May 2017 15:26:17 +0000
+ id 1dDBkR-0006Mo-9h
+ for ath10k@lists.infradead.org; Tue, 23 May 2017 15:29:25 +0000
 MIME-Version: 1.0
-Subject: Re: [v2] ath10k: remove unnecessary code
+Subject: Re: ath10k: Fix reported HT MCS rates with NSS > 1
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20170509125129.GA21962@embeddedgus>
-References: <20170509125129.GA21962@embeddedgus>
-Message-ID: <b5d346a9f0fd483f96b7f0fff6174750@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 23 May 2017 17:25:41 +0200
+In-Reply-To: <20170511090930.18205-1-sven.eckelmann@openmesh.com>
+References: <20170511090930.18205-1-sven.eckelmann@openmesh.com>
+Message-ID: <0a29ec25ec374a12adbc222af9a7dda1@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 23 May 2017 17:28:55 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +22,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Cc: Arend Van Spriel <arend.vanspriel@broadcom.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: akolli@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-"Gustavo A. R. Silva" <garsilva@embeddedor.com> wrote:
-> The array fields in struct wmi_start_scan_arg that are checked here are
-> fixed size arrays so they can never be NULL.
+Sven Eckelmann <sven.eckelmann@openmesh.com> wrote:
+> The QCA4019 firmware 10.4-3.2.1-00050 reports only HT MCS rates between
+> 0-9. But 802.11n MCS rates can be larger than that. For example a 2x2
+> device can send with up to MCS 15.
 > 
-> Addresses-Coverity-ID: 1260031
-> Cc: Arend Van Spriel <arend.vanspriel@broadcom.com>
-> Cc: Kalle Valo <kvalo@qca.qualcomm.com>
-> Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+> The firmware encodes the higher MCS rates using the NSS field. The actual
+> calculation is not documented by QCA but it seems like the NSS field can be
+> mapped for HT rates to following MCS offsets:
+> 
+>  * NSS 1: 0
+>  * NSS 2: 8
+>  * NSS 3: 16
+>  * NSS 4: 24
+> 
+> This offset therefore has to be added for HT rates before they are stored
+> in the rate_info struct.
+> 
+> Fixes: cec17c382140 ("ath10k: add per peer htt tx stats support for 10.4")
+> Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-8c1f20815231 ath10k: remove unnecessary code
+c1dd8016ae02 ath10k: fix reported HT MCS rates with NSS > 1
 
 -- 
-https://patchwork.kernel.org/patch/9717869/
+https://patchwork.kernel.org/patch/9721111/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
