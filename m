@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-sn1nam01on0057.outbound.protection.outlook.com
+ ([104.47.32.57] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDqMv-0005Pn-C7
- for ath10k@lists.infradead.org; Thu, 25 May 2017 10:51:50 +0000
-From: <akolli@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Add BMI parameters to fix calibration from DT/pre-cal
-Date: Thu, 25 May 2017 16:21:23 +0530
-Message-ID: <1495709483-29793-1-git-send-email-akolli@qti.qualcomm.com>
+ id 1dEO3b-00082C-Sm
+ for ath10k@lists.infradead.org; Fri, 26 May 2017 22:50:09 +0000
+From: Norik Dzhandzhapanyan <norikd@ethertronics.com>
+Subject: [PATCH] Per chain RSSI reporting
+Date: Fri, 26 May 2017 22:49:45 +0000
+Message-ID: <SN1PR08MB1373BF583E9CE2AA6A0F6381B0FC0@SN1PR08MB1373.namprd08.prod.outlook.com>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,95 +22,93 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wireless@vger.kernel.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+Add support for per chain RSSI reporting w/smoothing.
 
-QCA99X0, QCA9888, QCA9984 supports calibration data in
-either OTP or DT/pre-cal file. Current ath10k supports
-Calibration data from OTP only.
+Signed-off-by: Norik Dzhandzhapanyan norikd@ethertronics.com
 
-If caldata is loaded from DT/pre-cal file, fetching board id
-and applying calibration parameters like tx power gets failed.
 
-error log:
-[   15.733663] ath10k_pci 0000:01:00.0: failed to fetch board file: -2
-[   15.741474] ath10k_pci 0000:01:00.0: could not probe fw (-2)
+--- htt_rx.c.orig  2017-05-26 15:26:37.918504255 -0700
++++ htt_rx.c        2017-05-26 12:10:33.139809025 -0700
+@@ -825,14 +825,71 @@ static bool ath10k_htt_rx_h_channel(stru
+              return true;
+}
 
-This patch adds calibration data support from DT/pre-cal
-file.  Below parameters are used to get board id and
-applying calibration parameters from cal data.
-
-		EEPROM[OTP]	FLASH[DT/pre-cal file]
-Cal param	0x700		0x10000
-Board id	0x10		0x8000
-
-Tested on QCA9888 with pre-cal file.
-
-Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/bmi.h  |    2 ++
- drivers/net/wireless/ath/ath10k/core.c |   16 +++++++++++++---
- 2 files changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/bmi.h b/drivers/net/wireless/ath/ath10k/bmi.h
-index 0342073ed397..9834f351807e 100644
---- a/drivers/net/wireless/ath/ath10k/bmi.h
-+++ b/drivers/net/wireless/ath/ath10k/bmi.h
-@@ -83,6 +83,8 @@ enum bmi_cmd_id {
- #define BMI_NVRAM_SEG_NAME_SZ 16
- 
- #define BMI_PARAM_GET_EEPROM_BOARD_ID 0x10
-+#define BMI_PARAM_GET_FLASH_BOARD_ID 0x8000
-+#define BMI_PARAM_FLASH_SECTION_ALL 0x10000
- 
- #define ATH10K_BMI_BOARD_ID_FROM_OTP_MASK   0x7c00
- #define ATH10K_BMI_BOARD_ID_FROM_OTP_LSB    10
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index eea111d704c5..fb859a0c197a 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -691,7 +691,7 @@ static int ath10k_core_get_board_id_from_otp(struct ath10k *ar)
- {
- 	u32 result, address;
- 	u8 board_id, chip_id;
--	int ret;
-+	int ret, bmi_board_id_param;
- 
- 	address = ar->hw_params.patch_load_addr;
- 
-@@ -715,8 +715,13 @@ static int ath10k_core_get_board_id_from_otp(struct ath10k *ar)
- 		return ret;
- 	}
- 
--	ret = ath10k_bmi_execute(ar, address, BMI_PARAM_GET_EEPROM_BOARD_ID,
--				 &result);
-+	if (ar->cal_mode == ATH10K_PRE_CAL_MODE_DT ||
-+	    ar->cal_mode == ATH10K_PRE_CAL_MODE_FILE)
-+		bmi_board_id_param = BMI_PARAM_GET_FLASH_BOARD_ID;
-+	else
-+		bmi_board_id_param = BMI_PARAM_GET_EEPROM_BOARD_ID;
++/*
++ * Signal data is somewhat glitchy. We smooth it out here with
++ * a 16 point moving average by storing samples in a buffer.
++ * As new samples come in, remove the oldest and add the newest
++ * to the running sum.  Avoids changes/impact to other generic averaging.
++ */
 +
-+	ret = ath10k_bmi_execute(ar, address, bmi_board_id_param, &result);
- 	if (ret) {
- 		ath10k_err(ar, "could not execute otp for board id check: %d\n",
- 			   ret);
-@@ -845,6 +850,11 @@ static int ath10k_download_and_run_otp(struct ath10k *ar)
- 		return ret;
- 	}
- 
-+	/* As of now pre-cal is valid for 10_4 variants */
-+	if (ar->cal_mode == ATH10K_PRE_CAL_MODE_DT ||
-+	    ar->cal_mode == ATH10K_PRE_CAL_MODE_FILE)
-+		bmi_otp_exe_param = BMI_PARAM_FLASH_SECTION_ALL;
++/* Moving average buffer */
++#define MA_SAMPLES (16)
 +
- 	ret = ath10k_bmi_execute(ar, address, bmi_otp_exe_param, &result);
- 	if (ret) {
- 		ath10k_err(ar, "could not execute otp (%d)\n", ret);
--- 
-1.7.9.5
++struct ma_buffer
++{
++             int count;
++             int head;
++             int tail;
++             int sum;
++             int samps[MA_SAMPLES];
++};
++
++struct ma_buffer ma_buffers[IEEE80211_MAX_CHAINS] = {{ 0 }};
++
++static int ath_cb_moving_average(struct ma_buffer *mb, int8_t samp)
++{
++             if (mb->count < MA_SAMPLES) {
++                            mb->count++;
++                            mb->sum += samp;
++                            mb->tail = 0;
++             } else {
++                            int oldest = mb->samps[mb->tail];
++                            mb->tail = (mb->head == MA_SAMPLES - 1) ? 0 : mb->head + 1;
++                            mb->sum = mb->sum - oldest + samp;
++             }
++
++             mb->samps[mb->head] = samp;
++             mb->head = (mb->head == MA_SAMPLES - 1) ? 0 : mb->head + 1;
++
++             return (mb->sum / mb->count);
++}
++
+static void ath10k_htt_rx_h_signal(struct ath10k *ar,
+                                                              struct ieee80211_rx_status *status,
+                                                              struct htt_rx_desc *rxd)
+{
+-              /* FIXME: Get real NF */
+-              status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
+-                                            rxd->ppdu_start.rssi_comb;
+-              status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
++    int i;
++
++    for(i=0;i<IEEE80211_MAX_CHAINS;i++)
++    {
++        status->chains &= ~BIT(i);
++
++        if (rxd->ppdu_start.rssi_chains[i].pri20_mhz != 0x80)
++        {
++            int8_t rssi = ATH10K_DEFAULT_NOISE_FLOOR +
++                rxd->ppdu_start.rssi_chains[i].pri20_mhz;
++
++            status->chains |= BIT(i);
++
++            /* Compute the moving average of rssi */
++                                status->chain_signal[i] = ath_cb_moving_average(&ma_buffers[i], rssi);
++        }
++    }
++
++    /* FIXME: Get real NF */
++    status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
++        rxd->ppdu_start.rssi_comb;
++    status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
+}
 
+ static void ath10k_htt_rx_h_mactime(struct ath10k *ar,
+The contents of this transmission are Ethertronics Inc. Confidential and may contain proprietary or legally privileged information which may not be disclosed, copied or distributed without the express written consent of Ethertronics Inc. The information is intended to be for the use of the individual or entity named on this transmission. If you are not the intended recipient, be aware that any disclosure, copying, distribution or use of the contents of this information is prohibited. If you have received this transmission in error, please notify us by telephone immediately so that we can arrange for the retrieval of the original documents at no cost to you. Alternatively, notify the sender by replying to this transmission and delete the message without disclosing it. Thank you
 
 _______________________________________________
 ath10k mailing list
