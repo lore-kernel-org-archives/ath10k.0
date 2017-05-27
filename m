@@ -1,9 +1,9 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-dm3nam03on0074.outbound.protection.outlook.com
- ([104.47.41.74] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
+Received: from mail-by2nam03on0066.outbound.protection.outlook.com
+ ([104.47.42.66] helo=NAM03-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dEhQk-0001es-Rn
- for ath10k@lists.infradead.org; Sat, 27 May 2017 19:31:20 +0000
+ id 1dEhR8-0001iD-2I
+ for ath10k@lists.infradead.org; Sat, 27 May 2017 19:31:43 +0000
 Subject: Re: [PATCH] Per chain RSSI reporting
 References: <SN1PR08MB1373BF583E9CE2AA6A0F6381B0FC0@SN1PR08MB1373.namprd08.prod.outlook.com>
  <CAJ-VmomiKOgV4pJWNKdOCzsUJZYEixvP4p5bQ9X1FBqAGk_o0w@mail.gmail.com>
@@ -12,8 +12,8 @@ References: <SN1PR08MB1373BF583E9CE2AA6A0F6381B0FC0@SN1PR08MB1373.namprd08.prod.
  <CAJ-Vmonp72WpT_aUVo_To+k676Ra8S165efPOyXRvvk=_W0YEQ@mail.gmail.com>
  <4A8583B3-FFB2-4BDE-8041-9478CAD9EF73@vorklift.com>
 From: Norik Dzhandzhapanyan <norikd@ethertronics.com>
-Message-ID: <98efa255-b481-ce11-69d5-f2d141d44c2b@ethertronics.com>
-Date: Sat, 27 May 2017 12:30:48 -0700
+Message-ID: <27cddbb1-4c05-c014-e489-f005d38653d6@ethertronics.com>
+Date: Sat, 27 May 2017 12:31:14 -0700
 MIME-Version: 1.0
 In-Reply-To: <4A8583B3-FFB2-4BDE-8041-9478CAD9EF73@vorklift.com>
 Content-Language: en-US
