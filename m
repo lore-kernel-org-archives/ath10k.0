@@ -1,23 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.neratec.com ([46.140.151.2])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dFh7Y-0008UA-N9
- for ath10k@lists.infradead.org; Tue, 30 May 2017 13:23:39 +0000
-Subject: Re: [PATCH] Per chain RSSI reporting
-References: <SN1PR08MB1373BF583E9CE2AA6A0F6381B0FC0@SN1PR08MB1373.namprd08.prod.outlook.com>
- <CAJ-VmomiKOgV4pJWNKdOCzsUJZYEixvP4p5bQ9X1FBqAGk_o0w@mail.gmail.com>
- <SN1PR08MB137316C4132262145C58CEA3B0FD0@SN1PR08MB1373.namprd08.prod.outlook.com>
- <21095854-07c7-7586-6a6e-e60c11932b84@candelatech.com>
- <CAJ-Vmonp72WpT_aUVo_To+k676Ra8S165efPOyXRvvk=_W0YEQ@mail.gmail.com>
- <8e314337-a1f0-5ed4-aa90-3f1a0e2d09fc@ethertronics.com>
- <50e245a7-60ad-39f1-920e-e8edf5d9a5ab@candelatech.com>
- <SN1PR08MB13736CC61B1D00ED2968CF5CB0FD0@SN1PR08MB1373.namprd08.prod.outlook.com>
- <82088c50-f800-9d5c-8ccf-879f4b425e66@candelatech.com>
-From: Matthias May <matthias.may@neratec.com>
-Message-ID: <2bc35b78-97b4-bdd8-d8dd-6ec59fa9dbd0@neratec.com>
-Date: Tue, 30 May 2017 15:23:05 +0200
+ id 1dFhQ6-0001Jq-NO
+ for ath10k@lists.infradead.org; Tue, 30 May 2017 13:42:52 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: ath10k Issue with eduroam?
+Date: Tue, 30 May 2017 13:42:20 +0000
+Message-ID: <87wp8yo40s.fsf@kamboji.qca.qualcomm.com>
+References: <CA+ssr=fOa4NfGyg0VOe7KW2W=nDAO0o6v_c=7LHx04Eqz80WUw@mail.gmail.com>
+In-Reply-To: <CA+ssr=fOa4NfGyg0VOe7KW2W=nDAO0o6v_c=7LHx04Eqz80WUw@mail.gmail.com>	(Blair
+ Robert Drummond's message of "Mon, 29 May 2017 21:30:59 -0400")
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <82088c50-f800-9d5c-8ccf-879f4b425e66@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,63 +24,64 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Norik Dzhandzhapanyan <norikd@ethertronics.com>, Adrian Chadd <adrian@freebsd.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Blair Robert Drummond <bdrum047@uottawa.ca>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 27/05/17 23:49, Ben Greear wrote:
-> On 05/27/2017 02:41 PM, Norik Dzhandzhapanyan wrote:
->> Yes ~6dB
-> 
-> If a packet is sent on 1 chain with ath10k firmware (9880 hardware, specifically, but probably
-> others as well), it will be around 6db higher on that particular chain
-> than if the rate-control sends it on all three chains.
-> 
-> Are you measuring on a single chain, or on all of the chains at once and adding
-> the power?
-> 
-> I think we would need more detailed reporting using a good third-party device before
-> smoothing and RSSI.
-> 
-> Thanks,
-> Ben
-> 
->>
+Blair Robert Drummond <bdrum047@uottawa.ca> writes:
 
-Also noteworthy is that if you measure in a cabled environment and add the signal from multiple chains with a combiner
-you will probably measure the power wrong.
-The reason for this is that the cyclic shift diversity doesn't work well in a 2 dimensional environment (cable) compared
-to the 3 dimensional environment (air).
+> I'm having some trouble connecting to eduroam, and I think that ath10k
+> is where this issue is. To be clear, the wireless *mostly* works, in
+> that it has no issue with most wireless networks, but this specific
+> network it doesn't behave on. When I blacklist ath10k_pci and use a
+> usb wireless card, I can connect just fine, so I don't think it's a
+> configuration issue. This is on a fresh install of Elementary OS
+> (originally with kernel 4.8, but I upgraded to 4.10, though to no
+> effect). A similar fresh install on a different computer doesn't
+> suffer from this problem, and a void linux live image also has the
+> same issue.
+>
+> So, I hope that I've successfully ruled out all other reasonable
+> sources of error (though, admittedly I don't know what I'm doing). The
+> eduroam network is a WPA2-Enterprise network with PEAP and MSCHAPv2.
+> I'm attaching the output of dmesg, journalctl, lspci, and lsmod. The
+> specific problem is that while I do "connect" I can't seem to pass any
+> data 'ping -c 30 www.google.com' terminates with "unknown host" and
+> browsers fail with "temporary failure in name resolution".
+>
 
-BR
-Matthias
+[...]
 
->>
->> From: Ben Greear
->> Sent: Saturday, May 27, 2:38 PM
->> Subject: Re: [PATCH] Per chain RSSI reporting
->> To: Norik Dzhandzhapanyan, Adrian Chadd
->> Cc: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
->>
->>
->> On 05/27/2017 12:25 PM, Norik Dzhandzhapanyan wrote: > We see this inconsistent/incorrect reporting in our RF chamber.
->> How different are the values, and did you sniff with a third-party device to see if it sees the same spikes in RSSI?
->> Thanks, Ben > > Norik > > On 05/27/2017 09:39 AM, Adrian Chadd wrote: >> On 27 May 2017 at 09:07, Ben Greear wrote:
->> >>> At low encoding rates, especially if it switches to a single-chain encoding, >>> maybe the on-air signal really is
->> stronger? >>> >>> Have you verified in some other manner than the signals reported by ath10k >>> are >>> wrong? >>
->> Hiya, >> >> So yeah, multipath, higher TX rates == weaker TX signal, TPC, etc are >> all interesting to know about at
->> the receiver. it's hard to separate >> that out from the noise sometimes, but in some controlled deployments >> its
->> really obvious. >> >> >> >> -adrian >> >> > > > The contents of this transmission are Ethertronics Inc. Confidential
->> and may contain proprietary or legally privileged
->> information which may not be disclosed, copied or distributed without the express written consent of Ethertronics Inc.
->> The information is intended to be for the use of the individual or entity named on this transmission. If you are not
->> the intended recipient, be aware that any disclosure, copying, distribution or use of the contents of this information
->> is prohibited. If you have received this transmission in error, please notify us by telephone immediately so that we
->> can arrange for the retrieval of the original documents at no cost to you. Alternatively, notify the sender by
->> replying to this transmission and delete the message without disclosing it. Thank you > -- Ben Greear Candela
->> Technologies Inc http://www.candelatech.com
->>
-> 
+> I also noticed things like:
+> kernel: ath10k_pci 0000:02:00.0: Direct firmware load for
+> ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
+> kernel: ath10k_pci 0000:02:00.0: Direct firmware load for
+> ath10k/cal-pci-0000:02:00.0.bin failed with error -2
 
+You can ignore these warnings, they are fixed in
+9f5bcfe93315d75da4cc46bd30b536966559359a and should not be related in
+your problem in any way.
+
+> [  333.396188] ath10k_pci 0000:02:00.0: no channel configured; ignoring frame(s)!
+> [  337.696604] wlp2s0: authenticate with 00:1a:1e:bb:2a:29
+> [  337.734058] wlp2s0: send auth to 00:1a:1e:bb:2a:29 (try 1/3)
+> [  337.834610] wlp2s0: send auth to 00:1a:1e:bb:2a:29 (try 2/3)
+> [  337.838398] wlp2s0: authenticated
+> [ 337.838605] ath10k_pci 0000:02:00.0 wlp2s0: disabling HT as WMM/QoS
+> is not supported by the AP
+> [ 337.838607] ath10k_pci 0000:02:00.0 wlp2s0: disabling VHT as WMM/QoS
+> is not supported by the AP
+> [  337.842590] wlp2s0: associate with 00:1a:1e:bb:2a:29 (try 1/3)
+> [ 337.855890] wlp2s0: RX AssocResp from 00:1a:1e:bb:2a:29 (capab=0x411
+> status=0 aid=1)
+> [  337.858372] wlp2s0: associated
+
+From a quick look only suspicious I found was these disabling HT and VHT
+messages. It might be that ath10k is not handling that case correctly.
+Do you see these messages with ath10k when the connection works without
+problems?
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
