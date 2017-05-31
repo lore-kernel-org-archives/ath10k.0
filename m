@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dG2Yo-0000Sh-GQ
- for ath10k@lists.infradead.org; Wed, 31 May 2017 12:17:12 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add configurable debugging.
-Date: Wed, 31 May 2017 12:16:44 +0000
-Message-ID: <87y3tdmdbo.fsf@kamboji.qca.qualcomm.com>
-References: <20170510211925.17468-1-adrian@freebsd.org>
-In-Reply-To: <20170510211925.17468-1-adrian@freebsd.org> (Adrian Chadd's
- message of "Wed, 10 May 2017 14:19:25 -0700")
-Content-Language: en-US
+ id 1dG2j6-0004M6-QP
+ for ath10k@lists.infradead.org; Wed, 31 May 2017 12:27:50 +0000
 MIME-Version: 1.0
+Subject: Re: [2/3] ath10k: Fix napi related crash when otp fails.
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1494883540-18558-2-git-send-email-greearb@candelatech.com>
+References: <1494883540-18558-2-git-send-email-greearb@candelatech.com>
+Message-ID: <cbad3de9ad8349ddb59e17d7d043000d@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 31 May 2017 14:27:21 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +22,97 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
 
-Adrian Chadd <adrian@freebsd.org> writes:
+Ben Greear <greearb@candelatech.com> wrote:
 
-> This adds a few configurable debugging options:
->
-> * driver debugging and tracing is now configurable per device
-> * driver debugging and tracing is now configurable at runtime
-> * the debugging / tracing is not run at all (besides a mask check)
->   unless the specific debugging bitmap field is configured.
->
-> Signed-off-by: Adrian Chadd <adrian@FreeBSD.org>
+> The failure case is something like this:
+> 
+> otp fails (probably because BMI timeout was too short)
+> so core_start fails
+> so the entire firmware load fails..but since it was not ever
+> started properly, then it is not stopped as far as PCI is concerned.
+> So, napi is not released.
+> 
+> A bit later, maybe, the driver succeeds in loading and then we have a
+> BUG splat.
+> 
+> ------------[ cut here ]------------
+> kernel BUG at /home/greearb/git/linux-4.9.dev.y/include/linux/netdevice.h:515!
+> invalid opcode: 0000 [#1] PREEMPT SMP
+> Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 bridge ath10k_pci ath10k_core 8021q garp mrp stp llc bnep bluetooth fuse macv]
+> CPU: 1 PID: 3651 Comm: wpa_supplicant Not tainted 4.9.27+ #35
+> Hardware name: To be filled by O.E.M. To be filled by O.E.M./ChiefRiver, BIOS 4.6.5 06/07/2013
+> task: ffff8802111f0000 task.stack: ffffc90001fb4000
+> RIP: 0010:[<ffffffffa1498d33>]  [<ffffffffa1498d33>] ath10k_pci_hif_power_up+0x173/0x180 [ath10k_pci]
+> RSP: 0018:ffffc90001fb7c30  EFLAGS: 00010246
+> RAX: 0000000000000008 RBX: ffff880212bc2bc0 RCX: 0000000000082004
+> RDX: ffffc9000d282000 RSI: ffffc9000d282000 RDI: 000000000fd0a000
+> RBP: ffffc90001fb7c40 R08: 0000000000200000 R09: 0000000000000101
+> R10: 0000000000000d00 R11: 0000000000000003 R12: 0000000000082000
+> R13: ffff880212beaef8 R14: 0000000000000000 R15: ffff8802134c1118
+> FS:  00007f476575c800(0000) GS:ffff88021e240000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f3da950b490 CR3: 0000000212b5a000 CR4: 00000000001406e0
+> Stack:
+>  ffff880212bc2bc0 ffff880212bc0700 ffffc90001fb7c68 ffffffffa1429281
+>  ffff8802134c0000 ffff880212bc0700 0000000000000000 ffffc90001fb7c90
+>  ffffffffa07cb818 ffff8802134c0000 ffff880212bc0700 0000000000000000
+> Call Trace:
+>  [<ffffffffa1429281>] ath10k_start+0x51/0x5c0 [ath10k_core]
+>  [<ffffffffa07cb818>] drv_start+0x38/0x140 [mac80211]
+>  [<ffffffffa07e2cc5>] ieee80211_do_open+0x2c5/0x990 [mac80211]
+>  [<ffffffffa07e33e0>] ieee80211_open+0x50/0x60 [mac80211]
+>  [<ffffffff817a9f2a>] __dev_open+0xaa/0x120
+>  [<ffffffff817aa208>] __dev_change_flags+0x98/0x160
+>  [<ffffffff817aa2f4>] dev_change_flags+0x24/0x60
+>  [<ffffffff8182388e>] devinet_ioctl+0x5ee/0x6c0
+>  [<ffffffff8182535b>] inet_ioctl+0x4b/0x70
+>  [<ffffffff81787430>] sock_do_ioctl+0x20/0x50
+>  [<ffffffff81787936>] sock_ioctl+0x1d6/0x2a0
+>  [<ffffffff8128d24b>] do_vfs_ioctl+0x8b/0x5b0
+>  [<ffffffff8178adbd>] ? __sys_recvmsg+0x3d/0x70
+>  [<ffffffff8128d7e4>] SyS_ioctl+0x74/0x80
+>  [<ffffffff8188a83b>] entry_SYSCALL_64_fastpath+0x1e/0xad
+> Code: ff ff ff 89 c2 48 89 df 48 c7 c6 10 d3 49 a1 e8 34 1d f9 ff 48 89 df e8 2c f9 ff ff 44 89 e0 c6 83 0e 74 02 00 01 5b 41 5c 5d c3 <0f> 0b 66 66 2e 0f
+> RIP  [<ffffffffa1498d33>] ath10k_pci_hif_power_up+0x173/0x180 [ath10k_pci]
+>  RSP <ffffc90001fb7c30>
+> ---[ end trace b6dede286ed70e39 ]---
+> 
+> The BUG in question is this:
+> 
+> /**
+>  *      napi_enable - enable NAPI scheduling
+>  *      @n: NAPI context
+>  *
+>  * Resume NAPI from being scheduled on this context.
+>  * Must be paired with napi_disable.
+>  */
+> static inline void napi_enable(struct napi_struct *n)
+> {
+>         BUG_ON(!test_bit(NAPI_STATE_SCHED, &n->state));
+>         smp_mb__before_atomic();
+>         clear_bit(NAPI_STATE_SCHED, &n->state);
+>         clear_bit(NAPI_STATE_NPSVC, &n->state);
+> }
+> 
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-[...]
+Doesn't the commit below fix this?
 
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -2444,6 +2444,8 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
->  	ar->hw_rev = hw_rev;
->  	ar->hif.ops = hif_ops;
->  	ar->hif.bus = bus;
-> +	ar->debug_mask = ath10k_debug_mask;
-> +	ar->trace_debug_mask = ath10k_debug_mask;
+commit 1427228d5869f5804b03d47acfa4a88122572a78
+Author: Kalle Valo <kvalo@qca.qualcomm.com>
+Date:   Mon Feb 13 12:38:39 2017 +0200
 
-Until now tracing has been always enabled, irrespective what debug_mask
-has contained. Now you are changing that and by default log messages are
-not delivered through tracing until user enables them. So I think to
-keep the old behaviour trace_debug_mask should be ATH10K_DBG_ANY
-(0xffffffff) by default and the user can modify the mask per device via
-the debugfs file.
-
-But is it really needed to be able to filter trace messages? debug_mask
-I understand, but not sure about trace_debug_mask.
+    ath10k: fix napi crash during rmmod when probe firmware fails
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/9727993/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
