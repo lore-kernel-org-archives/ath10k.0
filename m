@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dG37h-0007rz-DZ
- for ath10k@lists.infradead.org; Wed, 31 May 2017 12:53:15 +0000
+ id 1dG38f-00081B-32
+ for ath10k@lists.infradead.org; Wed, 31 May 2017 12:54:14 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH] Per chain RSSI reporting
-Date: Wed, 31 May 2017 12:52:37 +0000
-Message-ID: <87tw41mbnq.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 31 May 2017 12:53:47 +0000
+Message-ID: <87poepmbls.fsf@kamboji.qca.qualcomm.com>
 References: <SN1PR08MB1373BF583E9CE2AA6A0F6381B0FC0@SN1PR08MB1373.namprd08.prod.outlook.com>
-In-Reply-To: <SN1PR08MB1373BF583E9CE2AA6A0F6381B0FC0@SN1PR08MB1373.namprd08.prod.outlook.com>
- (Norik Dzhandzhapanyan's message of "Fri, 26 May 2017 22:49:45 +0000")
+ <CAJ-VmomiKOgV4pJWNKdOCzsUJZYEixvP4p5bQ9X1FBqAGk_o0w@mail.gmail.com>
+In-Reply-To: <CAJ-VmomiKOgV4pJWNKdOCzsUJZYEixvP4p5bQ9X1FBqAGk_o0w@mail.gmail.com>	(Adrian
+ Chadd's message of "Fri, 26 May 2017 18:12:18 -0700")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -24,47 +25,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Norik Dzhandzhapanyan <norikd@ethertronics.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: Norik Dzhandzhapanyan <norikd@ethertronics.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Norik Dzhandzhapanyan <norikd@ethertronics.com> writes:
+Adrian Chadd <adrian@freebsd.org> writes:
 
-> Add support for per chain RSSI reporting w/smoothing.
+> I have something local that I've been meaning to push up to do this,
+> but with no smoothing. Ideally (!) smoothing is done optionally in
+> mac80211.
 >
-> Signed-off-by: Norik Dzhandzhapanyan norikd@ethertronics.com
->
->
-> --- htt_rx.c.orig  2017-05-26 15:26:37.918504255 -0700
-> +++ htt_rx.c        2017-05-26 12:10:33.139809025 -0700
-> @@ -825,14 +825,71 @@ static bool ath10k_htt_rx_h_channel(stru
->               return true;
-> }
+> What do you think about just committing the per-chain RSSI stuff to
+> mac80211 so it shows up right now, and then we figure out how to
+> express the smoothing in mac80211 or further up the layers?
 
-The patch formatting is broken and I can't apply this. Please use git
-send-email, more info here:
-
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches
-
-But more importantly:
-
-> The contents of this transmission are Ethertronics Inc. Confidential
-> and may contain proprietary or legally privileged information which
-> may not be disclosed, copied or distributed without the express
-> written consent of Ethertronics Inc. The information is intended to be
-> for the use of the individual or entity named on this transmission. If
-> you are not the intended recipient, be aware that any disclosure,
-> copying, distribution or use of the contents of this information is
-> prohibited. If you have received this transmission in error, please
-> notify us by telephone immediately so that we can arrange for the
-> retrieval of the original documents at no cost to you. Alternatively,
-> notify the sender by replying to this transmission and delete the
-> message without disclosing it. Thank you
-
-I will never apply a patch which has this kind of disclaimer. The
-patches must follow the Developer's Certificate of Origin[1] and not
-have any other disclaimer.
-
-[1] https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
+I think this is a good approach.
 
 -- 
 Kalle Valo
