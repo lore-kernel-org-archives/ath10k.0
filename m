@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dG1b7-0003R1-8p
- for ath10k@lists.infradead.org; Wed, 31 May 2017 11:15:31 +0000
-MIME-Version: 1.0
-Subject: Re: go back to using dma_alloc_coherent() for firmware scratch memory.
+ id 1dG2C6-0006Te-Gm
+ for ath10k@lists.infradead.org; Wed, 31 May 2017 11:53:44 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20170501214327.5621-1-adrian@freebsd.org>
-References: <20170501214327.5621-1-adrian@freebsd.org>
-Message-ID: <3f92c875c8fa4c66a3e32d88947c18b7@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 31 May 2017 13:15:00 +0200
+Subject: Re: [PATCH] ath10k: add configurable debugging.
+Date: Wed, 31 May 2017 11:53:13 +0000
+Message-ID: <8737blnsz6.fsf@kamboji.qca.qualcomm.com>
+References: <20170510211925.17468-1-adrian@freebsd.org>
+In-Reply-To: <20170510211925.17468-1-adrian@freebsd.org> (Adrian Chadd's
+ message of "Wed, 10 May 2017 14:19:25 -0700")
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +25,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Adrian Chadd <adrian@freebsd.org>
-Cc: Adrian Chadd <adrian@FreeBSD.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Adrian Chadd <adrian@freebsd.org> wrote:
+Adrian Chadd <adrian@freebsd.org> writes:
 
-> This reverts commit b057886524be ("ath10k: do not use coherent memory for
-> allocated device memory chunks") in 2015 which converted this allocation from
-> dma_map_coherent() to kzalloc() / dma_map_single().
-> 
-> The current problem manifests when using later model NICs with larger
-> (>700KiB) scratch spaces in memory.  Although the kzalloc call
-> succeeds, the software IOMMU TLB code (via dma_map_single()) panics
-> because it can't find 700KiB of linear physmem bounce buffers for DMA.
-> Now, this is a bit of a silly failure mode for the dma map API,
-> but it's what we currently have to play with.
-> 
-> In these cases, doing kzalloc() works fine, but the dma_map_single()
-> call fails.
-> 
-> After chatting with Linus briefly about this, it indeed should be
-> using dma_alloc_coherent() for doing larger device memory allocation
-> that requires some kind of physical address mapping.
-> 
-> You're not supposed to be using kzalloc and dma_map_* calls for
-> large memory regions, and I'm guessing not for long-held mappings
-> either.  Typically dma mappings should be temporary for DMA,
-> not long held like these.
-> 
-> Now, since hopefully the major annoying underlying problem has also been
-> addressed (ie, ath10k is no longer tears down all of these allocations
-> and reallocates them every time the vdevs are brought down) fragmentation
-> should stop being such a touchy issue.  If it is though, using
-> dma_alloc_coherent() use gets us access to the CMB APIs too relatively
-> easily and ideally we would be allocating memory early in boot for
-> exactly these reasons.
-> 
-> Signed-off-by: Adrian Chadd <adrian@FreeBSD.org>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> This adds a few configurable debugging options:
+>
+> * driver debugging and tracing is now configurable per device
 
-Patch applied to ath-next branch of ath.git, thanks.
+So this means that there's a debugfs file
+/sys/kernel/debug/ieee80211/phy0/ath10k/debug for every ath10k device.
+Sounds like a good idea. I just don't like the name of file, would
+debug_mask be more descriptive?
 
-79e68821582d ath10k: go back to using dma_alloc_coherent() for firmware scratch memory
+> * driver debugging and tracing is now configurable at runtime
+
+Correction, debug_mask has been always to possible change via
+/sys/module/ath10k_core/parameters/debug_mask file. Now it doesn't work
+anymore, which is ok, but I think we should make it clear for users as
+well.
+
+I wonder would that work if we change the mask to 0444:
+
+module_param_named(debug_mask, ath10k_debug_mask, uint, 0644);
+
+> * the debugging / tracing is not run at all (besides a mask check)
+>   unless the specific debugging bitmap field is configured.
+
+So I guess with this you mean that the function ath10k_dbg() is not
+called if debug messages are disabled? This is something which is good
+to do in another patch. And the original assumption was that if you care
+about performance you won't even enable CONFIG_ATH10K_DEBUG, so that
+path was not optimised in any way. How much benefit does this bring?
+
+> --- a/drivers/net/wireless/ath/ath10k/debug.c
+> +++ b/drivers/net/wireless/ath/ath10k/debug.c
+> @@ -2418,6 +2418,79 @@ int ath10k_debug_create(struct ath10k *ar)
+>  	return 0;
+>  }
+>  
+> +#ifdef	CONFIG_ATH10K_DEBUGFS
+> +static ssize_t ath10k_write_debug_mask(struct file *file,
+> +				       const char __user *ubuf,
+> +				       size_t count, loff_t *ppos)
+> +{
+
+The ifdef looks wrong, it's already inside CONFIG_ATH10K_DEBUGFS. Was it
+supposed to be CONFIG_ATH10K_DEBUG?
 
 -- 
-https://patchwork.kernel.org/patch/9707059/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
