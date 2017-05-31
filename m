@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mx3.ghmt.de ([188.210.45.230])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dFoEC-0007xe-Do
- for ath10k@lists.infradead.org; Tue, 30 May 2017 20:58:58 +0000
-From: <ryanhsu@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix the logic of limiting tdls peer counts
-Date: Tue, 30 May 2017 13:58:29 -0700
-Message-ID: <1496177909-5579-1-git-send-email-ryanhsu@qca.qualcomm.com>
+ id 1dFw73-000678-O6
+ for ath10k@lists.infradead.org; Wed, 31 May 2017 05:24:07 +0000
+From: "Lindner, Frank" <Frank.Lindner@ghmt.de>
+Date: Wed, 31 May 2017 07:23:34 +0200
+Subject: AW: is it possible to enable dualband or even 2.4 GHz on QCA9994?
+ (Compex WLE1216V5-20)
+Message-ID: <35449B299288584097A15B3FEB9C3E582578710584@SBS-GHMT.ghmt.local>
+References: <35449B299288584097A15B3FEB9C3E5825786B4500@SBS-GHMT.ghmt.local>
+ <6cadea3f-b386-7fc2-9295-720ced82631d@candelatech.com>
+ <CAJ-VmontSGS9yBCRKJu7kkjrmG6zkYV47YH6vRSpUqyUEj2nvw@mail.gmail.com>
+In-Reply-To: <CAJ-VmontSGS9yBCRKJu7kkjrmG6zkYV47YH6vRSpUqyUEj2nvw@mail.gmail.com>
+Content-Language: de-DE
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,111 +22,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: ryanhsu@qti.qualcomm.com, kaliu@qti.qualcomm.com, yintang@qti.qualcomm.com
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
-
-The original idea is to limit the maximum TDLS peer link, but the logic
-is always false, and never be able to restrict the number of TDLS peer
-creation.
-
-Fix the logic here and also move the checking earlier, so that it could
-avoid to handle the failure case, e.g disable the tdls peer, delete the
-peer and also vdev count cleanup.
-
-Signed-off-by: Ryan Hsu <ryanhsu@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 49 +++++++++++++++--------------------
- 1 file changed, 21 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 4674ff3..48418f9 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6073,6 +6073,20 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			   ar->num_stations + 1, ar->max_num_stations,
- 			   ar->num_peers + 1, ar->max_num_peers);
- 
-+		num_tdls_stations = ath10k_mac_tdls_vif_stations_count(hw, vif);
-+		num_tdls_vifs = ath10k_mac_tdls_vifs_count(hw);
-+
-+		if (sta->tdls) {
-+			if (num_tdls_stations >= ar->max_num_tdls_vdevs) {
-+				ath10k_warn(ar, "vdev %i exceeded maximum number of tdls vdevs %i\n",
-+					    arvif->vdev_id,
-+					    ar->max_num_tdls_vdevs);
-+				ret = -ELNRNG;
-+				goto exit;
-+			}
-+			peer_type = WMI_PEER_TYPE_TDLS;
-+		}
-+
- 		ret = ath10k_mac_inc_num_stations(arvif, sta);
- 		if (ret) {
- 			ath10k_warn(ar, "refusing to associate station: too many connected already (%d)\n",
-@@ -6080,9 +6094,6 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			goto exit;
- 		}
- 
--		if (sta->tdls)
--			peer_type = WMI_PEER_TYPE_TDLS;
--
- 		ret = ath10k_peer_create(ar, vif, sta, arvif->vdev_id,
- 					 sta->addr, peer_type);
- 		if (ret) {
-@@ -6113,35 +6124,17 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 		if (!sta->tdls)
- 			goto exit;
- 
--		num_tdls_stations = ath10k_mac_tdls_vif_stations_count(hw, vif);
--		num_tdls_vifs = ath10k_mac_tdls_vifs_count(hw);
--
--		if (num_tdls_vifs >= ar->max_num_tdls_vdevs &&
--		    num_tdls_stations == 0) {
--			ath10k_warn(ar, "vdev %i exceeded maximum number of tdls vdevs %i\n",
--				    arvif->vdev_id, ar->max_num_tdls_vdevs);
--			ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
-+		ret = ath10k_wmi_update_fw_tdls_state(ar, arvif->vdev_id,
-+						      WMI_TDLS_ENABLE_ACTIVE);
-+		if (ret) {
-+			ath10k_warn(ar, "failed to update fw tdls state on vdev %i: %i\n",
-+				    arvif->vdev_id, ret);
-+			ath10k_peer_delete(ar, arvif->vdev_id,
-+					   sta->addr);
- 			ath10k_mac_dec_num_stations(arvif, sta);
--			ret = -ENOBUFS;
- 			goto exit;
- 		}
- 
--		if (num_tdls_stations == 0) {
--			/* This is the first tdls peer in current vif */
--			enum wmi_tdls_state state = WMI_TDLS_ENABLE_ACTIVE;
--
--			ret = ath10k_wmi_update_fw_tdls_state(ar, arvif->vdev_id,
--							      state);
--			if (ret) {
--				ath10k_warn(ar, "failed to update fw tdls state on vdev %i: %i\n",
--					    arvif->vdev_id, ret);
--				ath10k_peer_delete(ar, arvif->vdev_id,
--						   sta->addr);
--				ath10k_mac_dec_num_stations(arvif, sta);
--				goto exit;
--			}
--		}
--
- 		ret = ath10k_mac_tdls_peer_update(ar, arvif->vdev_id, sta,
- 						  WMI_TDLS_PEER_STATE_PEERING);
- 		if (ret) {
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkuDQo5OTk0IGlzIENhc2NhZGUsIHdoaWNoIHNob3VsZCBiZSAyLjQgR0h6IGNhcGFibGUgYXMg
+ZmFzIGFzIFF1YWxjb21tIGlzIGNvcnJlY3Qgb24gdGhlaXIgc3BlY3Mgc2l0ZS4NClF1ZXN0aW9u
+IHdhcyBub3QsIHdoaWNoIG90aGVyIGNhcmQgY2FuIGRvIDIuNCBHSHouIEkgd2FudCB0byBlbmFi
+bGUgMi40IEdIeiAvIGR1YWxiYW5kIG1vZGUgdmlhIHNvbWUgcmVnaXN0ZXJzIG9yIHdoYXQgZXZl
+ciBvbiB0aGlzIGNhcmQuDQpXaGVyZSBjYW4gSSBmaW5kIHRoZSBjYWxicmF0aW9uIGZpbGVzICB5
+b3UndmUgbWVudGlvbmVkPw0KDQpCUg0KRnJhbmsNCi0tLS0tVXJzcHLDvG5nbGljaGUgTmFjaHJp
+Y2h0LS0tLS0NClZvbjogYWRyaWFuLmNoYWRkQGdtYWlsLmNvbSBbbWFpbHRvOmFkcmlhbi5jaGFk
+ZEBnbWFpbC5jb21dIEltIEF1ZnRyYWcgdm9uIEFkcmlhbiBDaGFkZA0KR2VzZW5kZXQ6IERpZW5z
+dGFnLCAzMC4gTWFpIDIwMTcgMjA6MjINCkFuOiBCZW4gR3JlZWFyDQpDYzogTGluZG5lciwgRnJh
+bms7IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnDQpCZXRyZWZmOiBSZTogaXMgaXQgcG9zc2li
+bGUgdG8gZW5hYmxlIGR1YWxiYW5kIG9yIGV2ZW4gMi40IEdIeiBvbiBRQ0E5OTk0PyAoQ29tcGV4
+IFdMRTEyMTZWNS0yMCkNCg0KaGksDQoNCndhaXQgLSBpcyB0aGF0IGJlc3JhPyBpZiBpdCdzIGJl
+c3JhIHRoZW4gbm9wZSAtIDVHIG9ubHkuIElmIGl0J3MgYmVlbGluZXIgb3IgY2FzY2FkZSB0aGVu
+IEkgdGhpbmsgeW91IGNhbiBkbyAyRywgYnV0IG5vIGR5bmFtaWMgMkcvNUc/DQoNCg0KLWENCg0K
+DQpPbiAzMCBNYXkgMjAxNyBhdCAwOToyOCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
+aC5jb20+IHdyb3RlOg0KPiBJIHRoaW5rIHpjb21heCBtYWtlcyBhIDIuNEdoeiBOSUMgd2l0aCA5
+OTg0IGNoaXBzZXQsIGJ1dCB0aGF0IE5JQw0KPiBjYW5ub3QgZG8gNUdoeiBhcyBmYXIgYXMgSSBr
+bm93Lg0KPg0KPiBUaGFua3MsDQo+IEJlbg0KPg0KPg0KPg0KPiBPbiAwNS8yOS8yMDE3IDA4OjE1
+IEFNLCBMaW5kbmVyLCBGcmFuayB3cm90ZToNCj4+DQo+PiBUaGlzIGNhcmQgaXMgb25seSA1R0h6
+IGNhcGFibGUuIElzIHRoaXMgc29tZWhvdyBwb3NzaWJsZSB0byBlbmFibGUNCj4+IGR1YWxiYW5k
+IG9yIDIuNCBHSHogY2hhbm5lbHMsIGV2ZW4gd2hlbiB0aGVyZSBpcyBubyBzdWl0YWJsZSBMTkEg
+b24NCj4+IHRoZSBtb2R1bGU/DQo+PiBXaGVuIHllcywgaG93IHRvIGRvIHRoaXM/DQo+Pg0KPj4g
+VGhhbmtzDQo+Pg0KPj4gQmVzdCBSZWdhcmRzLA0KPj4gRnJhbmsNCj4+DQo+Pg0KPj4NCj4+DQo+
+PiBWb3JzdGFuZHN2b3JzaXR6ZW5kZXI6IERpcGwuLUluZy4gRGlyayBXaWxoZWxtDQo+PiBBdWZz
+aWNodHNyYXRzdm9yc2l0emVuZGVyOiBEci4tSW5nLiBQZXRlciBIYXNzZQ0KPj4gSGFuZGVsc3Jl
+Z2lzdGVyOiBIUkIgU2FhcmJyw7xja2VuIE5yLiAxMzIwMSBVc3QuSUQgTnIuOiBERSAxNTM4MDc2
+MjcNCj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+
+PiBhdGgxMGsgbWFpbGluZyBsaXN0DQo+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPj4g
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsNCj4+DQo+
+DQo+DQo+IC0tDQo+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPg0KPiBDYW5k
+ZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tDQo+DQo+DQo+
+DQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+IGF0
+aDEwayBtYWlsaW5nIGxpc3QNCj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsNCg0KDQoNClZvcnN0
+YW5kc3ZvcnNpdHplbmRlcjogRGlwbC4tSW5nLiBEaXJrIFdpbGhlbG0NCkF1ZnNpY2h0c3JhdHN2
+b3JzaXR6ZW5kZXI6IERyLi1JbmcuIFBldGVyIEhhc3NlDQpIYW5kZWxzcmVnaXN0ZXI6IEhSQiBT
+YWFyYnLDvGNrZW4gTnIuIDEzMjAxDQpVc3QuSUQgTnIuOiBERSAxNTM4MDc2MjcNCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
+c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
