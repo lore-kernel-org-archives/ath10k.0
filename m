@@ -1,16 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dG3Q4-0000V5-F6
- for ath10k@lists.infradead.org; Wed, 31 May 2017 13:12:14 +0000
-Subject: Re: [2/3] ath10k: Fix napi related crash when otp fails.
-References: <1494883540-18558-2-git-send-email-greearb@candelatech.com>
- <cbad3de9ad8349ddb59e17d7d043000d@euamsexm01a.eu.qualcomm.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <33cae296-755f-a60a-85fd-18b1441a01fd@candelatech.com>
-Date: Wed, 31 May 2017 06:11:51 -0700
+Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dG9bI-00084w-51
+ for ath10k@lists.infradead.org; Wed, 31 May 2017 19:48:14 +0000
+Received: by mail-wm0-x22d.google.com with SMTP id d127so33109335wmf.0
+ for <ath10k@lists.infradead.org>; Wed, 31 May 2017 12:47:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cbad3de9ad8349ddb59e17d7d043000d@euamsexm01a.eu.qualcomm.com>
+In-Reply-To: <35449B299288584097A15B3FEB9C3E582578710584@SBS-GHMT.ghmt.local>
+References: <35449B299288584097A15B3FEB9C3E5825786B4500@SBS-GHMT.ghmt.local>
+ <6cadea3f-b386-7fc2-9295-720ced82631d@candelatech.com>
+ <CAJ-VmontSGS9yBCRKJu7kkjrmG6zkYV47YH6vRSpUqyUEj2nvw@mail.gmail.com>
+ <35449B299288584097A15B3FEB9C3E582578710584@SBS-GHMT.ghmt.local>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Wed, 31 May 2017 12:47:48 -0700
+Message-ID: <CAJ-Vmo=-mcob1dEv4i2EWJ2whh2tBwF7J+EO-XpBcRMZXNULbA@mail.gmail.com>
+Subject: Re: is it possible to enable dualband or even 2.4 GHz on QCA9994?
+ (Compex WLE1216V5-20)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,105 +24,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath10k@lists.infradead.org
+To: "Lindner, Frank" <Frank.Lindner@ghmt.de>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+
+On 30 May 2017 at 22:23, Lindner, Frank <Frank.Lindner@ghmt.de> wrote:
+> Hi.
+> 9994 is Cascade, which should be 2.4 GHz capable as fas as Qualcomm is correct on their specs site.
+> Question was not, which other card can do 2.4 GHz. I want to enable 2.4 GHz / dualband mode via some registers or what ever on this card.
+> Where can I find the calbration files  you've mentioned?
+
+Hi,
+
+I /think/ cascade doesn't have the ability to run dual mode. It's
+designed to either be 2G or 5G, and not both like STA mode. I'd have
+to go check.
+
+(I think I ran over this issue at work recently..)
 
 
-
-On 05/31/2017 05:27 AM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> wrote:
->
->> The failure case is something like this:
->>
->> otp fails (probably because BMI timeout was too short)
->> so core_start fails
->> so the entire firmware load fails..but since it was not ever
->> started properly, then it is not stopped as far as PCI is concerned.
->> So, napi is not released.
->>
->> A bit later, maybe, the driver succeeds in loading and then we have a
->> BUG splat.
->>
->> ------------[ cut here ]------------
->> kernel BUG at /home/greearb/git/linux-4.9.dev.y/include/linux/netdevice.h:515!
->> invalid opcode: 0000 [#1] PREEMPT SMP
->> Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 bridge ath10k_pci ath10k_core 8021q garp mrp stp llc bnep bluetooth fuse macv]
->> CPU: 1 PID: 3651 Comm: wpa_supplicant Not tainted 4.9.27+ #35
->> Hardware name: To be filled by O.E.M. To be filled by O.E.M./ChiefRiver, BIOS 4.6.5 06/07/2013
->> task: ffff8802111f0000 task.stack: ffffc90001fb4000
->> RIP: 0010:[<ffffffffa1498d33>]  [<ffffffffa1498d33>] ath10k_pci_hif_power_up+0x173/0x180 [ath10k_pci]
->> RSP: 0018:ffffc90001fb7c30  EFLAGS: 00010246
->> RAX: 0000000000000008 RBX: ffff880212bc2bc0 RCX: 0000000000082004
->> RDX: ffffc9000d282000 RSI: ffffc9000d282000 RDI: 000000000fd0a000
->> RBP: ffffc90001fb7c40 R08: 0000000000200000 R09: 0000000000000101
->> R10: 0000000000000d00 R11: 0000000000000003 R12: 0000000000082000
->> R13: ffff880212beaef8 R14: 0000000000000000 R15: ffff8802134c1118
->> FS:  00007f476575c800(0000) GS:ffff88021e240000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007f3da950b490 CR3: 0000000212b5a000 CR4: 00000000001406e0
->> Stack:
->>  ffff880212bc2bc0 ffff880212bc0700 ffffc90001fb7c68 ffffffffa1429281
->>  ffff8802134c0000 ffff880212bc0700 0000000000000000 ffffc90001fb7c90
->>  ffffffffa07cb818 ffff8802134c0000 ffff880212bc0700 0000000000000000
->> Call Trace:
->>  [<ffffffffa1429281>] ath10k_start+0x51/0x5c0 [ath10k_core]
->>  [<ffffffffa07cb818>] drv_start+0x38/0x140 [mac80211]
->>  [<ffffffffa07e2cc5>] ieee80211_do_open+0x2c5/0x990 [mac80211]
->>  [<ffffffffa07e33e0>] ieee80211_open+0x50/0x60 [mac80211]
->>  [<ffffffff817a9f2a>] __dev_open+0xaa/0x120
->>  [<ffffffff817aa208>] __dev_change_flags+0x98/0x160
->>  [<ffffffff817aa2f4>] dev_change_flags+0x24/0x60
->>  [<ffffffff8182388e>] devinet_ioctl+0x5ee/0x6c0
->>  [<ffffffff8182535b>] inet_ioctl+0x4b/0x70
->>  [<ffffffff81787430>] sock_do_ioctl+0x20/0x50
->>  [<ffffffff81787936>] sock_ioctl+0x1d6/0x2a0
->>  [<ffffffff8128d24b>] do_vfs_ioctl+0x8b/0x5b0
->>  [<ffffffff8178adbd>] ? __sys_recvmsg+0x3d/0x70
->>  [<ffffffff8128d7e4>] SyS_ioctl+0x74/0x80
->>  [<ffffffff8188a83b>] entry_SYSCALL_64_fastpath+0x1e/0xad
->> Code: ff ff ff 89 c2 48 89 df 48 c7 c6 10 d3 49 a1 e8 34 1d f9 ff 48 89 df e8 2c f9 ff ff 44 89 e0 c6 83 0e 74 02 00 01 5b 41 5c 5d c3 <0f> 0b 66 66 2e 0f
->> RIP  [<ffffffffa1498d33>] ath10k_pci_hif_power_up+0x173/0x180 [ath10k_pci]
->>  RSP <ffffc90001fb7c30>
->> ---[ end trace b6dede286ed70e39 ]---
->>
->> The BUG in question is this:
->>
->> /**
->>  *      napi_enable - enable NAPI scheduling
->>  *      @n: NAPI context
->>  *
->>  * Resume NAPI from being scheduled on this context.
->>  * Must be paired with napi_disable.
->>  */
->> static inline void napi_enable(struct napi_struct *n)
->> {
->>         BUG_ON(!test_bit(NAPI_STATE_SCHED, &n->state));
->>         smp_mb__before_atomic();
->>         clear_bit(NAPI_STATE_SCHED, &n->state);
->>         clear_bit(NAPI_STATE_NPSVC, &n->state);
->> }
->>
->> Signed-off-by: Ben Greear <greearb@candelatech.com>
->
-> Doesn't the commit below fix this?
-
-I don't know, but the problem in my case is that napi wasn't properly stopped,
-and the patch you reference is just about starting napi earlier, right?
-
-I do think you should make the effort to provide such important
-fixes to stable trees...if you had, then it would have been in my 4.9 tree already
-and it would have either fixed the problem or I would know for certain it was needed.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+-adrian
 
 _______________________________________________
 ath10k mailing list
