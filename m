@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dG3KT-0006PO-QX
- for ath10k@lists.infradead.org; Wed, 31 May 2017 13:06:27 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] Per chain RSSI reporting
-Date: Wed, 31 May 2017 13:05:59 +0000
-Message-ID: <87h901mb1g.fsf@kamboji.qca.qualcomm.com>
-References: <SN1PR08MB1373BF583E9CE2AA6A0F6381B0FC0@SN1PR08MB1373.namprd08.prod.outlook.com>
- <CAJ-VmomiKOgV4pJWNKdOCzsUJZYEixvP4p5bQ9X1FBqAGk_o0w@mail.gmail.com>
- <SN1PR08MB137316C4132262145C58CEA3B0FD0@SN1PR08MB1373.namprd08.prod.outlook.com>
-In-Reply-To: <SN1PR08MB137316C4132262145C58CEA3B0FD0@SN1PR08MB1373.namprd08.prod.outlook.com>
- (Norik Dzhandzhapanyan's message of "Sat, 27 May 2017 02:09:22 +0000")
-Content-Language: en-US
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dG3Q4-0000V5-F6
+ for ath10k@lists.infradead.org; Wed, 31 May 2017 13:12:14 +0000
+Subject: Re: [2/3] ath10k: Fix napi related crash when otp fails.
+References: <1494883540-18558-2-git-send-email-greearb@candelatech.com>
+ <cbad3de9ad8349ddb59e17d7d043000d@euamsexm01a.eu.qualcomm.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <33cae296-755f-a60a-85fd-18b1441a01fd@candelatech.com>
+Date: Wed, 31 May 2017 06:11:51 -0700
 MIME-Version: 1.0
+In-Reply-To: <cbad3de9ad8349ddb59e17d7d043000d@euamsexm01a.eu.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +19,106 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Norik Dzhandzhapanyan <norikd@ethertronics.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: ath10k@lists.infradead.org
 
-Norik Dzhandzhapanyan <norikd@ethertronics.com> writes:
 
-> Inserting the smoothing function here is motivated by what we see as
-> 'spikes' in rssi data under weak rssi conditions. Figured its best to
-> get rid of the 'bogus' data as close to the source as possible. Also
-> to minimize the impact on the changes.
+
+On 05/31/2017 05:27 AM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> wrote:
 >
-> I believe the averaging that happens at higher levels is based on EWMA
-> macros in net/mac80211/sta_info.c which not wifi card/chipset
-> specific. Didn't want to touch that since other cards seem to not have
-> this spikey behavior. And, it doesnt seem to have an effect on the
-> ath10k data anyway (iw reports the exact same values for both).
+>> The failure case is something like this:
+>>
+>> otp fails (probably because BMI timeout was too short)
+>> so core_start fails
+>> so the entire firmware load fails..but since it was not ever
+>> started properly, then it is not stopped as far as PCI is concerned.
+>> So, napi is not released.
+>>
+>> A bit later, maybe, the driver succeeds in loading and then we have a
+>> BUG splat.
+>>
+>> ------------[ cut here ]------------
+>> kernel BUG at /home/greearb/git/linux-4.9.dev.y/include/linux/netdevice.h:515!
+>> invalid opcode: 0000 [#1] PREEMPT SMP
+>> Modules linked in: nf_conntrack_netlink nf_conntrack nfnetlink nf_defrag_ipv4 bridge ath10k_pci ath10k_core 8021q garp mrp stp llc bnep bluetooth fuse macv]
+>> CPU: 1 PID: 3651 Comm: wpa_supplicant Not tainted 4.9.27+ #35
+>> Hardware name: To be filled by O.E.M. To be filled by O.E.M./ChiefRiver, BIOS 4.6.5 06/07/2013
+>> task: ffff8802111f0000 task.stack: ffffc90001fb4000
+>> RIP: 0010:[<ffffffffa1498d33>]  [<ffffffffa1498d33>] ath10k_pci_hif_power_up+0x173/0x180 [ath10k_pci]
+>> RSP: 0018:ffffc90001fb7c30  EFLAGS: 00010246
+>> RAX: 0000000000000008 RBX: ffff880212bc2bc0 RCX: 0000000000082004
+>> RDX: ffffc9000d282000 RSI: ffffc9000d282000 RDI: 000000000fd0a000
+>> RBP: ffffc90001fb7c40 R08: 0000000000200000 R09: 0000000000000101
+>> R10: 0000000000000d00 R11: 0000000000000003 R12: 0000000000082000
+>> R13: ffff880212beaef8 R14: 0000000000000000 R15: ffff8802134c1118
+>> FS:  00007f476575c800(0000) GS:ffff88021e240000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 00007f3da950b490 CR3: 0000000212b5a000 CR4: 00000000001406e0
+>> Stack:
+>>  ffff880212bc2bc0 ffff880212bc0700 ffffc90001fb7c68 ffffffffa1429281
+>>  ffff8802134c0000 ffff880212bc0700 0000000000000000 ffffc90001fb7c90
+>>  ffffffffa07cb818 ffff8802134c0000 ffff880212bc0700 0000000000000000
+>> Call Trace:
+>>  [<ffffffffa1429281>] ath10k_start+0x51/0x5c0 [ath10k_core]
+>>  [<ffffffffa07cb818>] drv_start+0x38/0x140 [mac80211]
+>>  [<ffffffffa07e2cc5>] ieee80211_do_open+0x2c5/0x990 [mac80211]
+>>  [<ffffffffa07e33e0>] ieee80211_open+0x50/0x60 [mac80211]
+>>  [<ffffffff817a9f2a>] __dev_open+0xaa/0x120
+>>  [<ffffffff817aa208>] __dev_change_flags+0x98/0x160
+>>  [<ffffffff817aa2f4>] dev_change_flags+0x24/0x60
+>>  [<ffffffff8182388e>] devinet_ioctl+0x5ee/0x6c0
+>>  [<ffffffff8182535b>] inet_ioctl+0x4b/0x70
+>>  [<ffffffff81787430>] sock_do_ioctl+0x20/0x50
+>>  [<ffffffff81787936>] sock_ioctl+0x1d6/0x2a0
+>>  [<ffffffff8128d24b>] do_vfs_ioctl+0x8b/0x5b0
+>>  [<ffffffff8178adbd>] ? __sys_recvmsg+0x3d/0x70
+>>  [<ffffffff8128d7e4>] SyS_ioctl+0x74/0x80
+>>  [<ffffffff8188a83b>] entry_SYSCALL_64_fastpath+0x1e/0xad
+>> Code: ff ff ff 89 c2 48 89 df 48 c7 c6 10 d3 49 a1 e8 34 1d f9 ff 48 89 df e8 2c f9 ff ff 44 89 e0 c6 83 0e 74 02 00 01 5b 41 5c 5d c3 <0f> 0b 66 66 2e 0f
+>> RIP  [<ffffffffa1498d33>] ath10k_pci_hif_power_up+0x173/0x180 [ath10k_pci]
+>>  RSP <ffffc90001fb7c30>
+>> ---[ end trace b6dede286ed70e39 ]---
+>>
+>> The BUG in question is this:
+>>
+>> /**
+>>  *      napi_enable - enable NAPI scheduling
+>>  *      @n: NAPI context
+>>  *
+>>  * Resume NAPI from being scheduled on this context.
+>>  * Must be paired with napi_disable.
+>>  */
+>> static inline void napi_enable(struct napi_struct *n)
+>> {
+>>         BUG_ON(!test_bit(NAPI_STATE_SCHED, &n->state));
+>>         smp_mb__before_atomic();
+>>         clear_bit(NAPI_STATE_SCHED, &n->state);
+>>         clear_bit(NAPI_STATE_NPSVC, &n->state);
+>> }
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
 >
-> I wonder if it would be acceptable to pass a module load time
-> parameter which would indicate an average factor with 0 (as default)
-> to indicate no averaging?
+> Doesn't the commit below fix this?
 
-I don't know what Johannes thinks, but in my opinion this kind of
-smoothing should be in mac80211 and not in drivers. The driver should be
-as simple as possible.
+I don't know, but the problem in my case is that napi wasn't properly stopped,
+and the patch you reference is just about starting napi earlier, right?
+
+I do think you should make the effort to provide such important
+fixes to stable trees...if you had, then it would have been in my 4.9 tree already
+and it would have either fixed the problem or I would know for certain it was needed.
+
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
