@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dG2C6-0006Te-Gm
- for ath10k@lists.infradead.org; Wed, 31 May 2017 11:53:44 +0000
+ id 1dG2Yo-0000Sh-GQ
+ for ath10k@lists.infradead.org; Wed, 31 May 2017 12:17:12 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH] ath10k: add configurable debugging.
-Date: Wed, 31 May 2017 11:53:13 +0000
-Message-ID: <8737blnsz6.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 31 May 2017 12:16:44 +0000
+Message-ID: <87y3tdmdbo.fsf@kamboji.qca.qualcomm.com>
 References: <20170510211925.17468-1-adrian@freebsd.org>
 In-Reply-To: <20170510211925.17468-1-adrian@freebsd.org> (Adrian Chadd's
  message of "Wed, 10 May 2017 14:19:25 -0700")
@@ -32,46 +32,32 @@ Adrian Chadd <adrian@freebsd.org> writes:
 > This adds a few configurable debugging options:
 >
 > * driver debugging and tracing is now configurable per device
-
-So this means that there's a debugfs file
-/sys/kernel/debug/ieee80211/phy0/ath10k/debug for every ath10k device.
-Sounds like a good idea. I just don't like the name of file, would
-debug_mask be more descriptive?
-
 > * driver debugging and tracing is now configurable at runtime
-
-Correction, debug_mask has been always to possible change via
-/sys/module/ath10k_core/parameters/debug_mask file. Now it doesn't work
-anymore, which is ok, but I think we should make it clear for users as
-well.
-
-I wonder would that work if we change the mask to 0444:
-
-module_param_named(debug_mask, ath10k_debug_mask, uint, 0644);
-
 > * the debugging / tracing is not run at all (besides a mask check)
 >   unless the specific debugging bitmap field is configured.
+>
+> Signed-off-by: Adrian Chadd <adrian@FreeBSD.org>
 
-So I guess with this you mean that the function ath10k_dbg() is not
-called if debug messages are disabled? This is something which is good
-to do in another patch. And the original assumption was that if you care
-about performance you won't even enable CONFIG_ATH10K_DEBUG, so that
-path was not optimised in any way. How much benefit does this bring?
+[...]
 
-> --- a/drivers/net/wireless/ath/ath10k/debug.c
-> +++ b/drivers/net/wireless/ath/ath10k/debug.c
-> @@ -2418,6 +2418,79 @@ int ath10k_debug_create(struct ath10k *ar)
->  	return 0;
->  }
->  
-> +#ifdef	CONFIG_ATH10K_DEBUGFS
-> +static ssize_t ath10k_write_debug_mask(struct file *file,
-> +				       const char __user *ubuf,
-> +				       size_t count, loff_t *ppos)
-> +{
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -2444,6 +2444,8 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+>  	ar->hw_rev = hw_rev;
+>  	ar->hif.ops = hif_ops;
+>  	ar->hif.bus = bus;
+> +	ar->debug_mask = ath10k_debug_mask;
+> +	ar->trace_debug_mask = ath10k_debug_mask;
 
-The ifdef looks wrong, it's already inside CONFIG_ATH10K_DEBUGFS. Was it
-supposed to be CONFIG_ATH10K_DEBUG?
+Until now tracing has been always enabled, irrespective what debug_mask
+has contained. Now you are changing that and by default log messages are
+not delivered through tracing until user enables them. So I think to
+keep the old behaviour trace_debug_mask should be ATH10K_DBG_ANY
+(0xffffffff) by default and the user can modify the mask per device via
+the debugfs file.
+
+But is it really needed to be able to filter trace messages? debug_mask
+I understand, but not sure about trace_debug_mask.
 
 -- 
 Kalle Valo
