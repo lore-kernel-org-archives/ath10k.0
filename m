@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx3.ghmt.de ([188.210.45.230])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dFw73-000678-O6
- for ath10k@lists.infradead.org; Wed, 31 May 2017 05:24:07 +0000
-From: "Lindner, Frank" <Frank.Lindner@ghmt.de>
-Date: Wed, 31 May 2017 07:23:34 +0200
-Subject: AW: is it possible to enable dualband or even 2.4 GHz on QCA9994?
- (Compex WLE1216V5-20)
-Message-ID: <35449B299288584097A15B3FEB9C3E582578710584@SBS-GHMT.ghmt.local>
-References: <35449B299288584097A15B3FEB9C3E5825786B4500@SBS-GHMT.ghmt.local>
- <6cadea3f-b386-7fc2-9295-720ced82631d@candelatech.com>
- <CAJ-VmontSGS9yBCRKJu7kkjrmG6zkYV47YH6vRSpUqyUEj2nvw@mail.gmail.com>
-In-Reply-To: <CAJ-VmontSGS9yBCRKJu7kkjrmG6zkYV47YH6vRSpUqyUEj2nvw@mail.gmail.com>
-Content-Language: de-DE
+ id 1dG1b7-0003R1-8p
+ for ath10k@lists.infradead.org; Wed, 31 May 2017 11:15:31 +0000
 MIME-Version: 1.0
+Subject: Re: go back to using dma_alloc_coherent() for firmware scratch memory.
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <20170501214327.5621-1-adrian@freebsd.org>
+References: <20170501214327.5621-1-adrian@freebsd.org>
+Message-ID: <3f92c875c8fa4c66a3e32d88947c18b7@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 31 May 2017 13:15:00 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +18,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Adrian Chadd <adrian@freebsd.org>
-Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Adrian Chadd <adrian@FreeBSD.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-SGkuDQo5OTk0IGlzIENhc2NhZGUsIHdoaWNoIHNob3VsZCBiZSAyLjQgR0h6IGNhcGFibGUgYXMg
-ZmFzIGFzIFF1YWxjb21tIGlzIGNvcnJlY3Qgb24gdGhlaXIgc3BlY3Mgc2l0ZS4NClF1ZXN0aW9u
-IHdhcyBub3QsIHdoaWNoIG90aGVyIGNhcmQgY2FuIGRvIDIuNCBHSHouIEkgd2FudCB0byBlbmFi
-bGUgMi40IEdIeiAvIGR1YWxiYW5kIG1vZGUgdmlhIHNvbWUgcmVnaXN0ZXJzIG9yIHdoYXQgZXZl
-ciBvbiB0aGlzIGNhcmQuDQpXaGVyZSBjYW4gSSBmaW5kIHRoZSBjYWxicmF0aW9uIGZpbGVzICB5
-b3UndmUgbWVudGlvbmVkPw0KDQpCUg0KRnJhbmsNCi0tLS0tVXJzcHLDvG5nbGljaGUgTmFjaHJp
-Y2h0LS0tLS0NClZvbjogYWRyaWFuLmNoYWRkQGdtYWlsLmNvbSBbbWFpbHRvOmFkcmlhbi5jaGFk
-ZEBnbWFpbC5jb21dIEltIEF1ZnRyYWcgdm9uIEFkcmlhbiBDaGFkZA0KR2VzZW5kZXQ6IERpZW5z
-dGFnLCAzMC4gTWFpIDIwMTcgMjA6MjINCkFuOiBCZW4gR3JlZWFyDQpDYzogTGluZG5lciwgRnJh
-bms7IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnDQpCZXRyZWZmOiBSZTogaXMgaXQgcG9zc2li
-bGUgdG8gZW5hYmxlIGR1YWxiYW5kIG9yIGV2ZW4gMi40IEdIeiBvbiBRQ0E5OTk0PyAoQ29tcGV4
-IFdMRTEyMTZWNS0yMCkNCg0KaGksDQoNCndhaXQgLSBpcyB0aGF0IGJlc3JhPyBpZiBpdCdzIGJl
-c3JhIHRoZW4gbm9wZSAtIDVHIG9ubHkuIElmIGl0J3MgYmVlbGluZXIgb3IgY2FzY2FkZSB0aGVu
-IEkgdGhpbmsgeW91IGNhbiBkbyAyRywgYnV0IG5vIGR5bmFtaWMgMkcvNUc/DQoNCg0KLWENCg0K
-DQpPbiAzMCBNYXkgMjAxNyBhdCAwOToyOCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
-aC5jb20+IHdyb3RlOg0KPiBJIHRoaW5rIHpjb21heCBtYWtlcyBhIDIuNEdoeiBOSUMgd2l0aCA5
-OTg0IGNoaXBzZXQsIGJ1dCB0aGF0IE5JQw0KPiBjYW5ub3QgZG8gNUdoeiBhcyBmYXIgYXMgSSBr
-bm93Lg0KPg0KPiBUaGFua3MsDQo+IEJlbg0KPg0KPg0KPg0KPiBPbiAwNS8yOS8yMDE3IDA4OjE1
-IEFNLCBMaW5kbmVyLCBGcmFuayB3cm90ZToNCj4+DQo+PiBUaGlzIGNhcmQgaXMgb25seSA1R0h6
-IGNhcGFibGUuIElzIHRoaXMgc29tZWhvdyBwb3NzaWJsZSB0byBlbmFibGUNCj4+IGR1YWxiYW5k
-IG9yIDIuNCBHSHogY2hhbm5lbHMsIGV2ZW4gd2hlbiB0aGVyZSBpcyBubyBzdWl0YWJsZSBMTkEg
-b24NCj4+IHRoZSBtb2R1bGU/DQo+PiBXaGVuIHllcywgaG93IHRvIGRvIHRoaXM/DQo+Pg0KPj4g
-VGhhbmtzDQo+Pg0KPj4gQmVzdCBSZWdhcmRzLA0KPj4gRnJhbmsNCj4+DQo+Pg0KPj4NCj4+DQo+
-PiBWb3JzdGFuZHN2b3JzaXR6ZW5kZXI6IERpcGwuLUluZy4gRGlyayBXaWxoZWxtDQo+PiBBdWZz
-aWNodHNyYXRzdm9yc2l0emVuZGVyOiBEci4tSW5nLiBQZXRlciBIYXNzZQ0KPj4gSGFuZGVsc3Jl
-Z2lzdGVyOiBIUkIgU2FhcmJyw7xja2VuIE5yLiAxMzIwMSBVc3QuSUQgTnIuOiBERSAxNTM4MDc2
-MjcNCj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+
-PiBhdGgxMGsgbWFpbGluZyBsaXN0DQo+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPj4g
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsNCj4+DQo+
-DQo+DQo+IC0tDQo+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPg0KPiBDYW5k
-ZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tDQo+DQo+DQo+
-DQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+IGF0
-aDEwayBtYWlsaW5nIGxpc3QNCj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsNCg0KDQoNClZvcnN0
-YW5kc3ZvcnNpdHplbmRlcjogRGlwbC4tSW5nLiBEaXJrIFdpbGhlbG0NCkF1ZnNpY2h0c3JhdHN2
-b3JzaXR6ZW5kZXI6IERyLi1JbmcuIFBldGVyIEhhc3NlDQpIYW5kZWxzcmVnaXN0ZXI6IEhSQiBT
-YWFyYnLDvGNrZW4gTnIuIDEzMjAxDQpVc3QuSUQgTnIuOiBERSAxNTM4MDc2MjcNCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
-c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Adrian Chadd <adrian@freebsd.org> wrote:
+
+> This reverts commit b057886524be ("ath10k: do not use coherent memory for
+> allocated device memory chunks") in 2015 which converted this allocation from
+> dma_map_coherent() to kzalloc() / dma_map_single().
+> 
+> The current problem manifests when using later model NICs with larger
+> (>700KiB) scratch spaces in memory.  Although the kzalloc call
+> succeeds, the software IOMMU TLB code (via dma_map_single()) panics
+> because it can't find 700KiB of linear physmem bounce buffers for DMA.
+> Now, this is a bit of a silly failure mode for the dma map API,
+> but it's what we currently have to play with.
+> 
+> In these cases, doing kzalloc() works fine, but the dma_map_single()
+> call fails.
+> 
+> After chatting with Linus briefly about this, it indeed should be
+> using dma_alloc_coherent() for doing larger device memory allocation
+> that requires some kind of physical address mapping.
+> 
+> You're not supposed to be using kzalloc and dma_map_* calls for
+> large memory regions, and I'm guessing not for long-held mappings
+> either.  Typically dma mappings should be temporary for DMA,
+> not long held like these.
+> 
+> Now, since hopefully the major annoying underlying problem has also been
+> addressed (ie, ath10k is no longer tears down all of these allocations
+> and reallocates them every time the vdevs are brought down) fragmentation
+> should stop being such a touchy issue.  If it is though, using
+> dma_alloc_coherent() use gets us access to the CMB APIs too relatively
+> easily and ideally we would be allocating memory early in boot for
+> exactly these reasons.
+> 
+> Signed-off-by: Adrian Chadd <adrian@FreeBSD.org>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+
+Patch applied to ath-next branch of ath.git, thanks.
+
+79e68821582d ath10k: go back to using dma_alloc_coherent() for firmware scratch memory
+
+-- 
+https://patchwork.kernel.org/patch/9707059/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
