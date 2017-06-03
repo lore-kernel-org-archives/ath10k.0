@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-MIME-Version: 1.0
-In-Reply-To: <edc163f6-a49c-21f3-9cf1-74df6e262fdb@gmail.com>
-References: <edc163f6-a49c-21f3-9cf1-74df6e262fdb@gmail.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Fri, 2 Jun 2017 22:18:31 -0700
-Message-ID: <CAJ-Vmo=4-wKKV_4pXTSgVqdPOyR+zOrHbtVP4Mv9vxaueyrh=A@mail.gmail.com>
 Subject: Re: [wpa_supplicant] Is there a way to limit peers (to about 12) for
  IBSS/adhoc?
+References: <edc163f6-a49c-21f3-9cf1-74df6e262fdb@gmail.com>
+ <CAJ-Vmo=4-wKKV_4pXTSgVqdPOyR+zOrHbtVP4Mv9vxaueyrh=A@mail.gmail.com>
+From: Xuebing Wang <xbing6@gmail.com>
+Message-ID: <c9f21f91-992d-604f-91ac-4784e8258c3e@gmail.com>
+Date: Sat, 3 Jun 2017 13:28:56 +0800
+MIME-Version: 1.0
+In-Reply-To: <CAJ-Vmo=4-wKKV_4pXTSgVqdPOyR+zOrHbtVP4Mv9vxaueyrh=A@mail.gmail.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,23 +17,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Xuebing Wang <xbing6@gmail.com>
+To: Adrian Chadd <adrian@freebsd.org>
 Cc: hostap@lists.infradead.org, simon Wunderlich <sw@simonwunderlich.de>, b.a.t.m.a.n@lists.open-mesh.org, Jason Toschlog <jason.toschlog@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sven Eckelmann <sven@narfation.org>
 
-Hi!
-
-Does it happen if you run 40 IBSS nodes without encryption?
-
-(I wonder if it's a MAC or PHY bug..)
-
-
--adrian
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VGhhbmtzLgoKSSBkaWQgbm90IHRyeSA0MCBJQlNTIG5vZGVzIHdpdGhvdXQgZW5jcnlwdGlvbi4g
+SSBhbSB1c2luZyBzb2Z0d2FyZSAKZW5jcnlwdGlvbiBmb3IgYXRoOWsgYmVjYXVzZSBvZiBrZXkg
+Y2FjaGluZyBpc3N1ZXMgZGlzY3Vzc2VkIGluIGJlbG93IAp0aHJlYWRzOgpodHRwczovL3BhdGNo
+d29yay5rZXJuZWwub3JnL3BhdGNoLzkzODE2NTEvCmh0dHBzOi8vZ2l0aHViLmNvbS9jb3p5Yml0
+L2F1dGhzYWUvaXNzdWVzLzQyCgpUaGlzIGlzIGEgY3VzdG9tZXIgc2l0ZSBpbiB0aGUgZmllbGQs
+IG91ciB0ZW1wb3Jhcnkgd29yay1hcm91bmQgaXMgdG8gCmNyZWF0ZSAyIG5ldHdvcmtzIChlYWNo
+IGlzIHdpdGggMjAgbm9kZXMpIGJ5IHVzaW5nIGRpZmZlcmVudCBTU0lELgoKQmVjYXVzZSB0aGlz
+IGlzIGN1c3RvbWVyIHNpdGUgaW4gdGhlIGZpZWxkLCBpdCBpcyBub3QgY29udmVuaWVudCB0byAK
+Y2hhbmdlIGFuZCB0ZXN0LiBEb2VzIGl0IG1ha2Ugc2Vuc2UgdG8gdGVzdCB3aXRob3V0IGVuY3J5
+cHRpb24sIAplbmNyeXB0aW9uIGlzIGEgTVVTVD8KClh1ZWJpbmcgV2FuZwoKT24gMjAxN+W5tDA2
+5pyIMDPml6UgMTM6MTgsIEFkcmlhbiBDaGFkZCB3cm90ZToKPiBIaSEKPgo+IERvZXMgaXQgaGFw
+cGVuIGlmIHlvdSBydW4gNDAgSUJTUyBub2RlcyB3aXRob3V0IGVuY3J5cHRpb24/Cj4KPiAoSSB3
+b25kZXIgaWYgaXQncyBhIE1BQyBvciBQSFkgYnVnLi4pCj4KPgo+IC1hZHJpYW4KPgoKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
