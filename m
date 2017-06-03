@@ -1,15 +1,11 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x231.google.com ([2607:f8b0:400d:c09::231])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGqYd-0007Fw-QE
- for ath10k@lists.infradead.org; Fri, 02 Jun 2017 17:40:21 +0000
-Received: by mail-qk0-x231.google.com with SMTP id p66so48509330qkf.3
- for <ath10k@lists.infradead.org>; Fri, 02 Jun 2017 10:39:59 -0700 (PDT)
+From: Xuebing Wang <xbing6@gmail.com>
+Subject: [wpa_supplicant] Is there a way to limit peers (to about 12) for
+ IBSS/adhoc?
+Message-ID: <edc163f6-a49c-21f3-9cf1-74df6e262fdb@gmail.com>
+Date: Sat, 3 Jun 2017 12:09:15 +0800
 MIME-Version: 1.0
-From: David Parks <davidparks21@gmail.com>
-Date: Fri, 2 Jun 2017 10:39:57 -0700
-Message-ID: <CAEhz3L8uOpABoCbVuAeb62Jq=srjLt4u_f9Ub8QGZupE3xWoJw@mail.gmail.com>
-Subject: Transmit performance unexpectedly low
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,101 +14,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: hostap@lists.infradead.org
+Cc: Jason Toschlog <jason.toschlog@gmail.com>, b.a.t.m.a.n@lists.open-mesh.org, Sven Eckelmann <sven@narfation.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, simon Wunderlich <sw@simonwunderlich.de>
 
-Hi, for months I've been trying to understand why the performance of
-my Athos wireless card in my laptop is significantly worse than what I
-get on my Android phone. I often USB tether my phone when I need to
-transfer large files.
+Hi community,
 
-I've posted a few questions along the way that got no resolution:
-https://unix.stackexchange.com/questions/363293/transmit-bitrate-shown-in-iw-is-unexpectedly-low
+This email is mainly addressed to hostap/wpa_supplicant mailing list.
 
-I have the latest firmware drivers applied from:
-https://github.com/kvalo/ath10k-firmware
+Descriptions of my issue:
+- I am establishing IBSS/adhoc network using OpenWRT 15.05 + ath9k (AR9331).
+- When nodes are relatively closely placed, the peers (the term is 
+'neighbors' in batman-adv mesh) reach 40, ath9k driver detects "tx hung, 
+resetting the chip" (for RESET_TYPE_TX_HANG).
+- This ath9k "tx hung" randomly happens among the 40 nodes (in adhoc 
+network), and it happens relatively often (seemingly randomly for 
+nodes), and randomly makes some nodes un-usable.
+- This appears to be an issue with ath9k kernel driver or ath9k hardware 
+that it can not handle ~40 peers.
+- IBSS/adhoc with 20 peers work well.
 
-The first issue I notice is that the reported transmit bitrate seems
-to be locked at a low rate, however, I get faster than 6Mbit in speed
-tests.
+Is there a config in wpa_supplicant that we can limit the number of peers?
 
-$ iw dev wlp5s0 station dump
-Station 00:f2:8b:f9:81:8f (on wlp5s0)
-inactive time: 0 ms
-rx bytes: 564466344
-rx packets: 494835
-tx bytes: 64977046
-tx packets: 236533
-tx retries: 0
-tx failed: 94
-signal:   -46 dBm
-signal avg: -46 dBm
-tx bitrate: 6.0 MBit/s
-rx bitrate: 300.0 MBit/s VHT-MCS 7 40MHz short GI VHT-NSS 2
-authorized: yes
-authenticated: yes
-preamble: long
-WMM/WME: yes
-MFP: no
-TDLS peer: no
+In the other words, once the number of peers ('iw wlan0 station dump') 
+reaches a pre-configured number (e.g. 12 or 16), wpa_supplicant does not 
+authenticate any more, for IBSS/adhoc only?
+- A subtle detail: once a new beacon with higher RSSI is detected, the 
+current connection with lowest RSSI will be de-authenticated, and to 
+authenticate this new peer (with higher RSSI in beacon).
 
-On my laptop, I get a speed test with 109.98Mbps download / 21.91 Mbps upload
+Is this "limiting number of peers for IBSS/adhoc" a good work-around for 
+40+ peers adhoc network, although the ultimate root cause seemingly is 
+with ath9k kernel driver or ath9k hardware?
 
-However on my Nexus 6p phone, in the same location, near the access
-point, I get 121.74 Mbps download / 178.17 Mbps upload.
+Also, if there are many (like 40+) peers in IBSS/adhoc network, I am not 
+sure how medium access contention and collisions factor in, for 
+management frames?
 
-This is the wireless card shown from lspci:
-05:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac Wireless
-Network Adapter (rev 20)
+Here is my wpa_supplicant conf file:
+------
+ctrl_interface=/var/run/wpa_supplicant
 
-Can anyone here help me understand this better?
+# use 'ap_scan=2' on all devices connected to the network
+# this is unnecessary if you only want the network to be created when no 
+other networks are available
+ap_scan=2
 
-To install the latest firmware I've followed some instructions from
-here: https://askubuntu.com/questions/607707/ath10k-installation
-I've copied the QCA6174 folder directly from the git repo and renamed
-all the firmware* files to their base names.
+network={
+     ssid="Net-xxxxxxxx"
+     mode=1
+     frequency=2462
+     proto=WPA2
+     key_mgmt=WPA-PSK
+     pairwise=CCMP
+     group=CCMP
+     psk="xxxxxxxx"
+}
+------
 
-Not sure if this is useful, but I'll include it:
-$ modinfo ath10k_pci
-filename:
-/lib/modules/4.4.0-78-generic/kernel/drivers/net/wireless/ath/ath10k/ath10k_pci.ko
-firmware:       ath10k/QCA9377/hw1.0/board.bin
-firmware:       ath10k/QCA9377/hw1.0/firmware-5.bin
-firmware:       ath10k/QCA6174/hw3.0/board-2.bin
-firmware:       ath10k/QCA6174/hw3.0/board.bin
-firmware:       ath10k/QCA6174/hw3.0/firmware-5.bin
-firmware:       ath10k/QCA6174/hw3.0/firmware-4.bin
-firmware:       ath10k/QCA6174/hw2.1/board-2.bin
-firmware:       ath10k/QCA6174/hw2.1/board.bin
-firmware:       ath10k/QCA6174/hw2.1/firmware-5.bin
-firmware:       ath10k/QCA6174/hw2.1/firmware-4.bin
-firmware:       ath10k/QCA988X/hw2.0/board-2.bin
-firmware:       ath10k/QCA988X/hw2.0/board.bin
-firmware:       ath10k/QCA988X/hw2.0/firmware-5.bin
-firmware:       ath10k/QCA988X/hw2.0/firmware-4.bin
-firmware:       ath10k/QCA988X/hw2.0/firmware-3.bin
-firmware:       ath10k/QCA988X/hw2.0/firmware-2.bin
-firmware:       ath10k/QCA988X/hw2.0/firmware.bin
-license:        Dual BSD/GPL
-description:    Driver support for Atheros QCA988X PCIe devices
-author:         Qualcomm Atheros
-srcversion:     8CBDAC7980FC042032AE6A6
-alias:          pci:v0000168Cd00000042sv*sd*bc*sc*i*
-alias:          pci:v0000168Cd00000040sv*sd*bc*sc*i*
-alias:          pci:v0000168Cd0000003Esv*sd*bc*sc*i*
-alias:          pci:v0000168Cd00000041sv*sd*bc*sc*i*
-alias:          pci:v0000168Cd0000003Csv*sd*bc*sc*i*
-depends:        ath10k_core
-intree:         Y
-vermagic:       4.4.0-78-generic SMP mod_unload modversions
-parm:           irq_mode:0: auto, 1: legacy, 2: msi (default: 0) (uint)
-parm:           reset_mode:0: auto, 1: warm only (default: 0) (uint)
+Another approach could be to use user-space shell script to "iw <dev> 
+ibss leave" for the lower RSSI stations?
+- As I am using batman-adv to build mesh network on the top of 
+IBSS/adhoc, a similar approach can be done at batman-adv level.
 
-Thanks,
-David
+Suggestions?
+
+Thanks.
+Xuebing Wang
+
 
 _______________________________________________
 ath10k mailing list
