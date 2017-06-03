@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
+From: Simon Wunderlich <sw@simonwunderlich.de>
 Subject: Re: [wpa_supplicant] Is there a way to limit peers (to about 12) for
  IBSS/adhoc?
-From: Xuebing Wang <xbing6@gmail.com>
+Date: Sat, 03 Jun 2017 11:21:09 +0200
+Message-ID: <6159566.YFa7EaokOW@prime>
+In-Reply-To: <458fa88b-b6d9-d02a-8d5f-012f6c83edef@gmail.com>
 References: <edc163f6-a49c-21f3-9cf1-74df6e262fdb@gmail.com>
-Message-ID: <30a44936-a1e9-4a50-00e2-e240bb09f4a2@gmail.com>
-Date: Sat, 3 Jun 2017 16:45:28 +0800
+ <CAJ-Vmo=RnRGCEOTs6VHzTVZeex0n7OnTEiJq8jZR2cDhbnTXwA@mail.gmail.com>
+ <458fa88b-b6d9-d02a-8d5f-012f6c83edef@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <edc163f6-a49c-21f3-9cf1-74df6e262fdb@gmail.com>
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,57 +17,131 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============3959446533655352354=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: hostap@lists.infradead.org, Masashi Honma <masashi.honma@gmail.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, simon Wunderlich <sw@simonwunderlich.de>, b.a.t.m.a.n@lists.open-mesh.org, Jason Toschlog <jason.toschlog@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sven Eckelmann <sven@narfation.org>
+To: Xuebing Wang <xbing6@gmail.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, b.a.t.m.a.n@lists.open-mesh.org, hostap@lists.infradead.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Jason Toschlog <jason.toschlog@gmail.com>, Sven Eckelmann <sven@narfation.org>
 
-SGkgSG9ubWEtc2FuLAoKRG9lcyBtYXhfcGVlcl9saW5rcyBhcHBseSB0byBJQlNTL2FkaG9jIChp
-biBhZGRpdGlvbiB0byA4MDIuMTFzIG1lc2gpPyAKVGhhbmtzLgoKWHVlYmluZyBXYW5nCgoKT24g
-MjAxN+W5tDA25pyIMDPml6UgMTI6MDksIFh1ZWJpbmcgV2FuZyB3cm90ZToKPiBIaSBjb21tdW5p
-dHksCj4KPiBUaGlzIGVtYWlsIGlzIG1haW5seSBhZGRyZXNzZWQgdG8gaG9zdGFwL3dwYV9zdXBw
-bGljYW50IG1haWxpbmcgbGlzdC4KPgo+IERlc2NyaXB0aW9ucyBvZiBteSBpc3N1ZToKPiAtIEkg
-YW0gZXN0YWJsaXNoaW5nIElCU1MvYWRob2MgbmV0d29yayB1c2luZyBPcGVuV1JUIDE1LjA1ICsg
-YXRoOWsgCj4gKEFSOTMzMSkuCj4gLSBXaGVuIG5vZGVzIGFyZSByZWxhdGl2ZWx5IGNsb3NlbHkg
-cGxhY2VkLCB0aGUgcGVlcnMgKHRoZSB0ZXJtIGlzIAo+ICduZWlnaGJvcnMnIGluIGJhdG1hbi1h
-ZHYgbWVzaCkgcmVhY2ggNDAsIGF0aDlrIGRyaXZlciBkZXRlY3RzICJ0eCAKPiBodW5nLCByZXNl
-dHRpbmcgdGhlIGNoaXAiIChmb3IgUkVTRVRfVFlQRV9UWF9IQU5HKS4KPiAtIFRoaXMgYXRoOWsg
-InR4IGh1bmciIHJhbmRvbWx5IGhhcHBlbnMgYW1vbmcgdGhlIDQwIG5vZGVzIChpbiBhZGhvYyAK
-PiBuZXR3b3JrKSwgYW5kIGl0IGhhcHBlbnMgcmVsYXRpdmVseSBvZnRlbiAoc2VlbWluZ2x5IHJh
-bmRvbWx5IGZvciAKPiBub2RlcyksIGFuZCByYW5kb21seSBtYWtlcyBzb21lIG5vZGVzIHVuLXVz
-YWJsZS4KPiAtIFRoaXMgYXBwZWFycyB0byBiZSBhbiBpc3N1ZSB3aXRoIGF0aDlrIGtlcm5lbCBk
-cml2ZXIgb3IgYXRoOWsgCj4gaGFyZHdhcmUgdGhhdCBpdCBjYW4gbm90IGhhbmRsZSB+NDAgcGVl
-cnMuCj4gLSBJQlNTL2FkaG9jIHdpdGggMjAgcGVlcnMgd29yayB3ZWxsLgo+Cj4gSXMgdGhlcmUg
-YSBjb25maWcgaW4gd3BhX3N1cHBsaWNhbnQgdGhhdCB3ZSBjYW4gbGltaXQgdGhlIG51bWJlciBv
-ZiAKPiBwZWVycz8KPgo+IEluIHRoZSBvdGhlciB3b3Jkcywgb25jZSB0aGUgbnVtYmVyIG9mIHBl
-ZXJzICgnaXcgd2xhbjAgc3RhdGlvbiBkdW1wJykgCj4gcmVhY2hlcyBhIHByZS1jb25maWd1cmVk
-IG51bWJlciAoZS5nLiAxMiBvciAxNiksIHdwYV9zdXBwbGljYW50IGRvZXMgCj4gbm90IGF1dGhl
-bnRpY2F0ZSBhbnkgbW9yZSwgZm9yIElCU1MvYWRob2Mgb25seT8KPiAtIEEgc3VidGxlIGRldGFp
-bDogb25jZSBhIG5ldyBiZWFjb24gd2l0aCBoaWdoZXIgUlNTSSBpcyBkZXRlY3RlZCwgdGhlIAo+
-IGN1cnJlbnQgY29ubmVjdGlvbiB3aXRoIGxvd2VzdCBSU1NJIHdpbGwgYmUgZGUtYXV0aGVudGlj
-YXRlZCwgYW5kIHRvIAo+IGF1dGhlbnRpY2F0ZSB0aGlzIG5ldyBwZWVyICh3aXRoIGhpZ2hlciBS
-U1NJIGluIGJlYWNvbikuCj4KPiBJcyB0aGlzICJsaW1pdGluZyBudW1iZXIgb2YgcGVlcnMgZm9y
-IElCU1MvYWRob2MiIGEgZ29vZCB3b3JrLWFyb3VuZCAKPiBmb3IgNDArIHBlZXJzIGFkaG9jIG5l
-dHdvcmssIGFsdGhvdWdoIHRoZSB1bHRpbWF0ZSByb290IGNhdXNlIAo+IHNlZW1pbmdseSBpcyB3
-aXRoIGF0aDlrIGtlcm5lbCBkcml2ZXIgb3IgYXRoOWsgaGFyZHdhcmU/Cj4KPiBBbHNvLCBpZiB0
-aGVyZSBhcmUgbWFueSAobGlrZSA0MCspIHBlZXJzIGluIElCU1MvYWRob2MgbmV0d29yaywgSSBh
-bSAKPiBub3Qgc3VyZSBob3cgbWVkaXVtIGFjY2VzcyBjb250ZW50aW9uIGFuZCBjb2xsaXNpb25z
-IGZhY3RvciBpbiwgZm9yIAo+IG1hbmFnZW1lbnQgZnJhbWVzPwo+Cj4gSGVyZSBpcyBteSB3cGFf
-c3VwcGxpY2FudCBjb25mIGZpbGU6Cj4gLS0tLS0tCj4gY3RybF9pbnRlcmZhY2U9L3Zhci9ydW4v
-d3BhX3N1cHBsaWNhbnQKPgo+ICMgdXNlICdhcF9zY2FuPTInIG9uIGFsbCBkZXZpY2VzIGNvbm5l
-Y3RlZCB0byB0aGUgbmV0d29yawo+ICMgdGhpcyBpcyB1bm5lY2Vzc2FyeSBpZiB5b3Ugb25seSB3
-YW50IHRoZSBuZXR3b3JrIHRvIGJlIGNyZWF0ZWQgd2hlbiAKPiBubyBvdGhlciBuZXR3b3JrcyBh
-cmUgYXZhaWxhYmxlCj4gYXBfc2Nhbj0yCj4KPiBuZXR3b3JrPXsKPiAgICAgc3NpZD0iTmV0LXh4
-eHh4eHh4Igo+ICAgICBtb2RlPTEKPiAgICAgZnJlcXVlbmN5PTI0NjIKPiAgICAgcHJvdG89V1BB
-Mgo+ICAgICBrZXlfbWdtdD1XUEEtUFNLCj4gICAgIHBhaXJ3aXNlPUNDTVAKPiAgICAgZ3JvdXA9
-Q0NNUAo+ICAgICBwc2s9Inh4eHh4eHh4Igo+IH0KPiAtLS0tLS0KPgo+IEFub3RoZXIgYXBwcm9h
-Y2ggY291bGQgYmUgdG8gdXNlIHVzZXItc3BhY2Ugc2hlbGwgc2NyaXB0IHRvICJpdyA8ZGV2PiAK
-PiBpYnNzIGxlYXZlIiBmb3IgdGhlIGxvd2VyIFJTU0kgc3RhdGlvbnM/Cj4gLSBBcyBJIGFtIHVz
-aW5nIGJhdG1hbi1hZHYgdG8gYnVpbGQgbWVzaCBuZXR3b3JrIG9uIHRoZSB0b3Agb2YgCj4gSUJT
-Uy9hZGhvYywgYSBzaW1pbGFyIGFwcHJvYWNoIGNhbiBiZSBkb25lIGF0IGJhdG1hbi1hZHYgbGV2
-ZWwuCj4KPiBTdWdnZXN0aW9ucz8KPgo+IFRoYW5rcy4KPiBYdWViaW5nIFdhbmcKPgoKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
-IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+--===============3959446533655352354==
+Content-Type: multipart/signed; boundary="nextPart1665812.oBcpM4xXnS"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+
+--nextPart1665812.oBcpM4xXnS
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Xuebing,
+
+are your devices all configured with on AP and one IBSS interface? Or even =
+more=20
+AP interfaces? What is the multicast rate you used?
+
+One thing you need to consider is that in ath9k if you run AP and IBSS at t=
+he=20
+same time (at least with OpenWRT), the distributed IBSS beaconing is disabl=
+ed=20
+and each node will beacon the "normal" ~10 times per second. That means wit=
+h=20
+AP and IBSS and 40 nodes, you end up with ~800 beacons per second. That mig=
+ht=20
+be a problem (especially if all nodes are in the same spot).
+
+To change this, you can try:
+
+ * increase the multicast rate to e.g. 18 mbit/s (note, this may also chang=
+e=20
+the batman-adv neighbor range) and verify that the beacons are sent on high=
+er=20
+rates
+ * disable some APs - you don't need so many anyway if they are all on the=
+=20
+same spot
+ * increase the beacon interval on the APs- although some clients may not l=
+ike=20
+that.
+
+=2E. anyway, that is all stuff you can try if you have the feeling the airt=
+ime=20
+is "polluted", so I would suggest to verify if this is the cause first befo=
+re=20
+taking counter measures.
+
+Cheers,
+     Simon
+On Saturday, June 3, 2017 2:30:27 PM CEST Xuebing Wang wrote:
+> Hi Adrian,
+>=20
+> =3D> Is it a gradual thing?  Ie, do you know when it starts to hang? Does
+> it hang at 40? or gradually as you approach 40?
+>=20
+> We do not know. What we do know is, 20 peers / neighbors work well.
+>=20
+> Jason Toschlog in CC said that he observed similar issues with brcmfmac
+> when peers reach 32 (16 peers work for him).
+>=20
+> I guess I will setup 32 or 40 nodes here and try limit the max number of
+> peers (at wpa_supplicant) for IBSS/adhoc.
+>=20
+> Thanks again.
+>=20
+> Xuebing Wang
+>=20
+> On 2017=E5=B9=B406=E6=9C=8803=E6=97=A5 14:16, Adrian Chadd wrote:
+> > Hi,
+> >=20
+> > Well, it sounds like something you need a 40 node test network for :)
+> >=20
+> > I was wondering whether it was some kind of MAC bug that was being
+> > triggered because of so many units say, overflowing the keycache or
+> > something. But if it's software encryption then maybe not. I wish I
+> > could help more, but setting up a 40 node network to test is a big
+> > challenge. :)
+> >=20
+> > Is it a gradual thing?  Ie, do you know when it starts to hang? Does
+> > it hang at 40? or gradually as you approach 40?
+> >=20
+> > As for association limits - I thought there was a maximum station
+> > parameter somewhere...
+> >=20
+> >=20
+> > -adrian
+
+
+--nextPart1665812.oBcpM4xXnS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE1ilQI7G+y+fdhnrfoSvjmEKSnqEFAlkyf4UACgkQoSvjmEKS
+nqHN2Q/7Bqg9SUnIBY3E3NLjY7sE14FEKpitmnmihtymd3LeIdUoZTl+o4hHVI8n
+WPmL/nGhz3A7qhtxK18ITT7f6fgg+bwyQJumukivNshSWxRAmHVB5eiOayCkKBPr
+E1IpB5E4njPHu+MxiFCFSt033vBD2xpmcVSGBOlcP3gueM2km3sdguqkcR8+BTbv
+81h74cUvne9zb/QcFkjt6a3NhjDhhcZ2/l9yZ1pWC1155p/csxps1d64Z87p7+KA
+o4MhP32bmDZObPFwG3D0F6rN/jBk1SbUH6vKuwSd4gMpeRdRVjwfOhO257CWpDgT
+j6S5yD75m0N0+ySpy8fBA91aooYyzr4MLAFbdm97+wkOH2AN2RAMovxmqRe/Rlqo
+ztSGlYqw4LAYTHpNr5w55kpNfJoqMVHN7WKWs8+k+4luWofieba0wTSL0uhzrfes
+2F8t1UEZ08tDeOGlWyjt0Y0k1gCBC7aq4fhiLZxqvYfFQM9qfSzLYFd4m35iGM6C
+3NyEyiAZMZHqkYBzEdHZ5dSaLQg0DPbRDAWNTXgA6ZOsy6TtJkUojJhiApBtBXPR
++ja8s/SOsXC8VnPE8xblTprlhG744E7VM6sBlu77b+kkiXSp0xTjlwu61QSREs79
+j2rd4tdDUma4cfO214QtKrWTOUpg+HPLdYclljYaaT1CffYJy+Y=
+=oWc1
+-----END PGP SIGNATURE-----
+
+--nextPart1665812.oBcpM4xXnS--
+
+
+
+--===============3959446533655352354==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============3959446533655352354==--
