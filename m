@@ -1,23 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
+Received: from mail-it0-x22e.google.com ([2607:f8b0:4001:c0b::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dI89m-0007Xk-QQ
- for ath10k@lists.infradead.org; Tue, 06 Jun 2017 06:40:00 +0000
-Received: by mail-wm0-x233.google.com with SMTP id x70so29287183wme.0
- for <ath10k@lists.infradead.org>; Mon, 05 Jun 2017 23:39:37 -0700 (PDT)
+ id 1dI9xp-0006sg-KB
+ for ath10k@lists.infradead.org; Tue, 06 Jun 2017 08:35:47 +0000
+Received: by mail-it0-x22e.google.com with SMTP id r63so103213304itc.1
+ for <ath10k@lists.infradead.org>; Tue, 06 Jun 2017 01:35:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <35449B299288584097A15B3FEB9C3E58257871085F@SBS-GHMT.ghmt.local>
-References: <35449B299288584097A15B3FEB9C3E5825786B4500@SBS-GHMT.ghmt.local>
- <6cadea3f-b386-7fc2-9295-720ced82631d@candelatech.com>
- <CAJ-VmontSGS9yBCRKJu7kkjrmG6zkYV47YH6vRSpUqyUEj2nvw@mail.gmail.com>
- <35449B299288584097A15B3FEB9C3E582578710584@SBS-GHMT.ghmt.local>
- <CAJ-Vmo=-mcob1dEv4i2EWJ2whh2tBwF7J+EO-XpBcRMZXNULbA@mail.gmail.com>
- <35449B299288584097A15B3FEB9C3E58257871085F@SBS-GHMT.ghmt.local>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Mon, 5 Jun 2017 23:39:35 -0700
-Message-ID: <CAJ-VmomPZhs-g=618wLxAAHey-Ri5mNZ2ngE91wkABdj5mc_fg@mail.gmail.com>
-Subject: Re: is it possible to enable dualband or even 2.4 GHz on QCA9994?
- (Compex WLE1216V5-20)
+From: yu-chieh kung <jay0607@gmail.com>
+Date: Tue, 6 Jun 2017 16:35:21 +0800
+Message-ID: <CAGJdtRBNcf_bp9GuJRw+Ob=BpSkmJMBGUU_YxM9Mj1c_rpkLNg@mail.gmail.com>
+Subject: Dakota support IBSS mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +18,20 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Lindner, Frank" <Frank.Lindner@ghmt.de>
-Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-SXQgbG9va3MgbGlrZSBpdCdzIHJlYWxseSBkZXNpZ25lZCBhcyBlaXRoZXIgMmcgb3IgNWcuIFlv
-dSBjb3VsZCBtYWtlCnlvdXIgb3duIGNhcmQgdXAgd2l0aCBib3RoIDJnLzVnIHBhdGhzIGJ1dCB5
-b3UnZCBoYXZlIHRvIHJlbG9hZCB0aGUKZmlybXdhcmUvY2FsaWJyYXRpb24gZGF0YSBhcyBuZWVk
-ZWQgdG8gYmFuZCBzd2l0Y2guIGl0IHdvdWxkbid0IGJlCiJhdXRvbWF0aWMiLiA6KAoKc29ycnkh
-CgoKLWEKCgpPbiA1IEp1bmUgMjAxNyBhdCAyMjozMywgTGluZG5lciwgRnJhbmsgPEZyYW5rLkxp
-bmRuZXJAZ2htdC5kZT4gd3JvdGU6Cj4gSGksCj4KPiBBZHJpYW4sIGRvIHlvdSBoYXZlIHNvbWUg
-dXBkYXRlcz8gSSBzZWFyY2ggZm9yIGFuIGR1YWxiYW5kIGNhcmQgKE1JTkkgUENJZSkgd2l0aCA0
-eDQgV2F2ZTIsIGxpa2UgOTk4NCBvIDk5OTQuIEl0IHdpbGwgYmUgbmVlZGVkIG9ubHkgZm9yIHJl
-Y2VpdmluZyBwYXRoLiBBbmQgSSBuZWVkIHRoZSBpbmZvLCBpZiBhbmQgaG93IGlzIHBvc3NpYmxl
-IHRvIGVuYWJsZSBkdWFsYmFuZCBtb2RlLiBJZiB0aGVyZSBpcyBzb21lIHBoeXNpY3MgbGlrZSBM
-TkEgb3Igd2hhdCBldmVyIG1pc3NpbmcsIHdlIGNhbiBkbyB0aGlzIG91ciBzZWxmLgo+IFRoYW5r
-cy4KPiBCRwo+IEZyYW5rCj4KPiAtLS0tLVVyc3Byw7xuZ2xpY2hlIE5hY2hyaWNodC0tLS0tCj4g
-Vm9uOiBhZHJpYW4uY2hhZGRAZ21haWwuY29tIFttYWlsdG86YWRyaWFuLmNoYWRkQGdtYWlsLmNv
-bV0gSW0gQXVmdHJhZyB2b24gQWRyaWFuIENoYWRkCj4gR2VzZW5kZXQ6IE1pdHR3b2NoLCAzMS4g
-TWFpIDIwMTcgMjE6NDgKPiBBbjogTGluZG5lciwgRnJhbmsKPiBDYzogQmVuIEdyZWVhcjsgYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBCZXRyZWZmOiBSZTogaXMgaXQgcG9zc2libGUgdG8g
-ZW5hYmxlIGR1YWxiYW5kIG9yIGV2ZW4gMi40IEdIeiBvbiBRQ0E5OTk0PyAoQ29tcGV4IFdMRTEy
-MTZWNS0yMCkKPgo+IE9uIDMwIE1heSAyMDE3IGF0IDIyOjIzLCBMaW5kbmVyLCBGcmFuayA8RnJh
-bmsuTGluZG5lckBnaG10LmRlPiB3cm90ZToKPj4gSGkuCj4+IDk5OTQgaXMgQ2FzY2FkZSwgd2hp
-Y2ggc2hvdWxkIGJlIDIuNCBHSHogY2FwYWJsZSBhcyBmYXMgYXMgUXVhbGNvbW0gaXMgY29ycmVj
-dCBvbiB0aGVpciBzcGVjcyBzaXRlLgo+PiBRdWVzdGlvbiB3YXMgbm90LCB3aGljaCBvdGhlciBj
-YXJkIGNhbiBkbyAyLjQgR0h6LiBJIHdhbnQgdG8gZW5hYmxlIDIuNCBHSHogLyBkdWFsYmFuZCBt
-b2RlIHZpYSBzb21lIHJlZ2lzdGVycyBvciB3aGF0IGV2ZXIgb24gdGhpcyBjYXJkLgo+PiBXaGVy
-ZSBjYW4gSSBmaW5kIHRoZSBjYWxicmF0aW9uIGZpbGVzICB5b3UndmUgbWVudGlvbmVkPwo+Cj4g
-SGksCj4KPiBJIC90aGluay8gY2FzY2FkZSBkb2Vzbid0IGhhdmUgdGhlIGFiaWxpdHkgdG8gcnVu
-IGR1YWwgbW9kZS4gSXQncyBkZXNpZ25lZCB0byBlaXRoZXIgYmUgMkcgb3IgNUcsIGFuZCBub3Qg
-Ym90aCBsaWtlIFNUQSBtb2RlLiBJJ2QgaGF2ZSB0byBnbyBjaGVjay4KPgo+IChJIHRoaW5rIEkg
-cmFuIG92ZXIgdGhpcyBpc3N1ZSBhdCB3b3JrIHJlY2VudGx5Li4pCj4KPgo+IC1hZHJpYW4KPgo+
-Cj4KPiBWb3JzdGFuZHN2b3JzaXR6ZW5kZXI6IERpcGwuLUluZy4gRGlyayBXaWxoZWxtCj4gQXVm
-c2ljaHRzcmF0c3ZvcnNpdHplbmRlcjogRHIuLUluZy4gUGV0ZXIgSGFzc2UKPiBIYW5kZWxzcmVn
-aXN0ZXI6IEhSQiBTYWFyYnLDvGNrZW4gTnIuIDEzMjAxCj4gVXN0LklEIE5yLjogREUgMTUzODA3
-NjI3CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hi All,
+
+Does anyone know if any ath10k firmware that can support IBSS mode on
+Dakota platform?
+
+Thanks,
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
