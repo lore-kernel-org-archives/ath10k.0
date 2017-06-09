@@ -1,25 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x22d.google.com ([2a00:1450:400c:c0c::22d])
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dJKj3-0003XR-Ti
- for ath10k@lists.infradead.org; Fri, 09 Jun 2017 14:17:23 +0000
-Received: by mail-wr0-x22d.google.com with SMTP id v111so34823870wrc.3
- for <ath10k@lists.infradead.org>; Fri, 09 Jun 2017 07:17:00 -0700 (PDT)
+ id 1dJNch-0007pF-OD
+ for ath10k@lists.infradead.org; Fri, 09 Jun 2017 17:23:04 +0000
+Received: by mail-wr0-x244.google.com with SMTP id v104so8151868wrb.0
+ for <ath10k@lists.infradead.org>; Fri, 09 Jun 2017 10:22:38 -0700 (PDT)
+From: Christian Lamparter <chunkeey@googlemail.com>
+Subject: Re: QCA9984 bmi identification failure (fixed)
+Date: Fri, 09 Jun 2017 19:22:34 +0200
+Message-ID: <13393560.5t7FXRZE7t@debian64>
+In-Reply-To: <3243718.FYinmXYgr7@debian64>
+References: <3243718.FYinmXYgr7@debian64>
 MIME-Version: 1.0
-In-Reply-To: <35449B299288584097A15B3FEB9C3E582578710BFE@SBS-GHMT.ghmt.local>
-References: <35449B299288584097A15B3FEB9C3E5825786B4500@SBS-GHMT.ghmt.local>
- <6cadea3f-b386-7fc2-9295-720ced82631d@candelatech.com>
- <CAJ-VmontSGS9yBCRKJu7kkjrmG6zkYV47YH6vRSpUqyUEj2nvw@mail.gmail.com>
- <35449B299288584097A15B3FEB9C3E582578710584@SBS-GHMT.ghmt.local>
- <CAJ-Vmo=-mcob1dEv4i2EWJ2whh2tBwF7J+EO-XpBcRMZXNULbA@mail.gmail.com>
- <35449B299288584097A15B3FEB9C3E58257871085F@SBS-GHMT.ghmt.local>
- <CAJ-VmomPZhs-g=618wLxAAHey-Ri5mNZ2ngE91wkABdj5mc_fg@mail.gmail.com>
- <35449B299288584097A15B3FEB9C3E582578710BFE@SBS-GHMT.ghmt.local>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Fri, 9 Jun 2017 07:16:58 -0700
-Message-ID: <CAJ-VmokJDF9c_D4HALRmo0VU_6zcsoqRgQob4E9RHa168-N-Ng@mail.gmail.com>
-Subject: Re: is it possible to enable dualband or even 2.4 GHz on QCA9994?
- (Compex WLE1216V5-20)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,62 +20,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Lindner, Frank" <Frank.Lindner@ghmt.de>
-Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org, "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: ath10k-devel <ath10k-devel@qca.qualcomm.com>, Adrian Chadd <adrian@freebsd.org>, hannu.nyman@iki.fi, "linux-wireless (linux-wireless@vger.kernel.org)" <linux-wireless@vger.kernel.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-WW91J2QgaGF2ZSB0byBhbHNvIGJ1aWxkIHRoZSBOSUMgdG8gZG8gaXQsIHllYWguCgpZb3UnZCBo
-YXZlIHRvIGdldCB0aGVtIGZyb20geW91ciB2ZW5kb3IuIDpQCgoKCi1hZHJpYW4KCgpPbiA5IEp1
-bmUgMjAxNyBhdCAwMzoxMCwgTGluZG5lciwgRnJhbmsgPEZyYW5rLkxpbmRuZXJAZ2htdC5kZT4g
-d3JvdGU6Cj4gSGksCj4KPiBhcyBmYXIgYXMgSSB1bmRlcnN0YW5kLCBJIG5lZWQgYSBzcGVjaWFs
-ICJib2FyZC5iaW4iLWZpbGUgb3IgImZpcm13YXJlLXguYmluIi1maWxlIHRvIHNheSB0aGUgY2Fy
-ZCBpdCBzaG91bGQgbWFrZSAyZyBvciA1Zz8KPiBTbyB3aGVyZSBkbyBJIGdldCB0aG9zZSAic3Bl
-Y2lhbCIgZmlsZXM/IE9yIGNhbiBJIGJ1aWxkIHRoZW0gbXlzZWxmPwo+IEkgY2FuIG5vdCBmaW5k
-IGFueSBoZWxwZnVsIGluZm9ybWF0aW9uIG9uICJHb29nbGUiLgo+Cj4gVGhhbmtzCj4gQkcKPiBG
-cmFuawo+Cj4gLS0tLS1VcnNwcsO8bmdsaWNoZSBOYWNocmljaHQtLS0tLQo+IFZvbjogYWRyaWFu
-LmNoYWRkQGdtYWlsLmNvbSBbbWFpbHRvOmFkcmlhbi5jaGFkZEBnbWFpbC5jb21dIEltIEF1ZnRy
-YWcgdm9uIEFkcmlhbiBDaGFkZAo+IEdlc2VuZGV0OiBEaWVuc3RhZywgNi4gSnVuaSAyMDE3IDA4
-OjQwCj4gQW46IExpbmRuZXIsIEZyYW5rCj4gQ2M6IEJlbiBHcmVlYXI7IGF0aDEwa0BsaXN0cy5p
-bmZyYWRlYWQub3JnCj4gQmV0cmVmZjogUmU6IGlzIGl0IHBvc3NpYmxlIHRvIGVuYWJsZSBkdWFs
-YmFuZCBvciBldmVuIDIuNCBHSHogb24gUUNBOTk5ND8gKENvbXBleCBXTEUxMjE2VjUtMjApCj4K
-PiBJdCBsb29rcyBsaWtlIGl0J3MgcmVhbGx5IGRlc2lnbmVkIGFzIGVpdGhlciAyZyBvciA1Zy4g
-WW91IGNvdWxkIG1ha2UgeW91ciBvd24gY2FyZCB1cCB3aXRoIGJvdGggMmcvNWcgcGF0aHMgYnV0
-IHlvdSdkIGhhdmUgdG8gcmVsb2FkIHRoZSBmaXJtd2FyZS9jYWxpYnJhdGlvbiBkYXRhIGFzIG5l
-ZWRlZCB0byBiYW5kIHN3aXRjaC4gaXQgd291bGRuJ3QgYmUgImF1dG9tYXRpYyIuIDooCj4KPiBz
-b3JyeSEKPgo+Cj4gLWEKPgo+Cj4gT24gNSBKdW5lIDIwMTcgYXQgMjI6MzMsIExpbmRuZXIsIEZy
-YW5rIDxGcmFuay5MaW5kbmVyQGdobXQuZGU+IHdyb3RlOgo+PiBIaSwKPj4KPj4gQWRyaWFuLCBk
-byB5b3UgaGF2ZSBzb21lIHVwZGF0ZXM/IEkgc2VhcmNoIGZvciBhbiBkdWFsYmFuZCBjYXJkIChN
-SU5JIFBDSWUpIHdpdGggNHg0IFdhdmUyLCBsaWtlIDk5ODQgbyA5OTk0LiBJdCB3aWxsIGJlIG5l
-ZWRlZCBvbmx5IGZvciByZWNlaXZpbmcgcGF0aC4gQW5kIEkgbmVlZCB0aGUgaW5mbywgaWYgYW5k
-IGhvdyBpcyBwb3NzaWJsZSB0byBlbmFibGUgZHVhbGJhbmQgbW9kZS4gSWYgdGhlcmUgaXMgc29t
-ZSBwaHlzaWNzIGxpa2UgTE5BIG9yIHdoYXQgZXZlciBtaXNzaW5nLCB3ZSBjYW4gZG8gdGhpcyBv
-dXIgc2VsZi4KPj4gVGhhbmtzLgo+PiBCRwo+PiBGcmFuawo+Pgo+PiAtLS0tLVVyc3Byw7xuZ2xp
-Y2hlIE5hY2hyaWNodC0tLS0tCj4+IFZvbjogYWRyaWFuLmNoYWRkQGdtYWlsLmNvbSBbbWFpbHRv
-OmFkcmlhbi5jaGFkZEBnbWFpbC5jb21dIEltIEF1ZnRyYWcKPj4gdm9uIEFkcmlhbiBDaGFkZAo+
-PiBHZXNlbmRldDogTWl0dHdvY2gsIDMxLiBNYWkgMjAxNyAyMTo0OAo+PiBBbjogTGluZG5lciwg
-RnJhbmsKPj4gQ2M6IEJlbiBHcmVlYXI7IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+IEJl
-dHJlZmY6IFJlOiBpcyBpdCBwb3NzaWJsZSB0byBlbmFibGUgZHVhbGJhbmQgb3IgZXZlbiAyLjQg
-R0h6IG9uCj4+IFFDQTk5OTQ/IChDb21wZXggV0xFMTIxNlY1LTIwKQo+Pgo+PiBPbiAzMCBNYXkg
-MjAxNyBhdCAyMjoyMywgTGluZG5lciwgRnJhbmsgPEZyYW5rLkxpbmRuZXJAZ2htdC5kZT4gd3Jv
-dGU6Cj4+PiBIaS4KPj4+IDk5OTQgaXMgQ2FzY2FkZSwgd2hpY2ggc2hvdWxkIGJlIDIuNCBHSHog
-Y2FwYWJsZSBhcyBmYXMgYXMgUXVhbGNvbW0gaXMgY29ycmVjdCBvbiB0aGVpciBzcGVjcyBzaXRl
-Lgo+Pj4gUXVlc3Rpb24gd2FzIG5vdCwgd2hpY2ggb3RoZXIgY2FyZCBjYW4gZG8gMi40IEdIei4g
-SSB3YW50IHRvIGVuYWJsZSAyLjQgR0h6IC8gZHVhbGJhbmQgbW9kZSB2aWEgc29tZSByZWdpc3Rl
-cnMgb3Igd2hhdCBldmVyIG9uIHRoaXMgY2FyZC4KPj4+IFdoZXJlIGNhbiBJIGZpbmQgdGhlIGNh
-bGJyYXRpb24gZmlsZXMgIHlvdSd2ZSBtZW50aW9uZWQ/Cj4+Cj4+IEhpLAo+Pgo+PiBJIC90aGlu
-ay8gY2FzY2FkZSBkb2Vzbid0IGhhdmUgdGhlIGFiaWxpdHkgdG8gcnVuIGR1YWwgbW9kZS4gSXQn
-cyBkZXNpZ25lZCB0byBlaXRoZXIgYmUgMkcgb3IgNUcsIGFuZCBub3QgYm90aCBsaWtlIFNUQSBt
-b2RlLiBJJ2QgaGF2ZSB0byBnbyBjaGVjay4KPj4KPj4gKEkgdGhpbmsgSSByYW4gb3ZlciB0aGlz
-IGlzc3VlIGF0IHdvcmsgcmVjZW50bHkuLikKPj4KPj4KPj4gLWFkcmlhbgo+Pgo+Pgo+Pgo+PiBW
-b3JzdGFuZHN2b3JzaXR6ZW5kZXI6IERpcGwuLUluZy4gRGlyayBXaWxoZWxtCj4+IEF1ZnNpY2h0
-c3JhdHN2b3JzaXR6ZW5kZXI6IERyLi1JbmcuIFBldGVyIEhhc3NlCj4+IEhhbmRlbHNyZWdpc3Rl
-cjogSFJCIFNhYXJicsO8Y2tlbiBOci4gMTMyMDEgVXN0LklEIE5yLjogREUgMTUzODA3NjI3Cj4K
-Pgo+Cj4gVm9yc3RhbmRzdm9yc2l0emVuZGVyOiBEaXBsLi1JbmcuIERpcmsgV2lsaGVsbQo+IEF1
-ZnNpY2h0c3JhdHN2b3JzaXR6ZW5kZXI6IERyLi1JbmcuIFBldGVyIEhhc3NlCj4gSGFuZGVsc3Jl
-Z2lzdGVyOiBIUkIgU2FhcmJyw7xja2VuIE5yLiAxMzIwMQo+IFVzdC5JRCBOci46IERFIDE1Mzgw
-NzYyNwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Thursday, March 23, 2017 5:47:08 PM CEST Christian Lamparter wrote:
+> Hannu Nyman reported a issue with the QCA9984 in his Netgear R7800 
+> and LEDE's ath10k: (This is with 936-ath10k_skip_otp_check.patch removed):
+> 
+> [   25.259266] ath10k_pci 0000:01:00.0: unable to read from the device
+> [   25.259288] ath10k_pci 0000:01:00.0: could not execute otp for board id check: -110
+> [   25.277326] ath10k_pci 0000:01:00.0: failed to fetch board data for bus=pci,vendor=168c,device=0046,subsystem-vendor=168c,subsystem-device=cafem...from ath10k/QCA9984/hw1.0/board-2.bin
+> [   25.277588] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 dd636801
+> [   26.800717] ath10k_pci 0000:01:00.0: htt-ver 2.2 wmi-op 6 htt-op 4 cal file max-sta 512 raw 0 hwcrypto 1
+> [...]
+>
+> <https://forum.lede-project.org/t/netgear-r7800-exploration-ipq8065-qca9984/285/277>
+> 
+> What seems strange is that only the call bmi_execute with 
+> BMI_PARAM_GET_EEPROM_BOARD_ID is timing out. [...]
+> 
+> This begs the question, what is so special about the BMI_PARAM_GET_EEPROM_BOARD_ID
+> at that time for the QCA9984? Does the device need some extra msleep time after
+> the OTP has been uploaded? Or is the BMI_PARAM_GET_EEPROM_BOARD_ID not 
+> implemented/has a different ID, etc... ?
+
+The issue regarding the BMI_PARAM_GET_EEPROM_BOARD_ID has
+been addressed by the following patch:
+"[PATCH] ath10k: Add BMI parameters to fix calibration from DT/pre-cal"
+<https://patchwork.kernel.org/patch/9748097/>
+|QCA99X0, QCA9888, QCA9984 supports calibration data in
+|either OTP or DT/pre-cal file. Current ath10k supports
+|Calibration data from OTP only.
+|
+|If caldata is loaded from DT/pre-cal file, fetching board id
+|and applying calibration parameters like tx power gets failed.
+|
+|error log:
+|[   15.733663] ath10k_pci 0000:01:00.0: failed to fetch board file: -2
+|[   15.741474] ath10k_pci 0000:01:00.0: could not probe fw (-2)
+|
+|This patch adds calibration data support from DT/pre-cal
+|file.  Below parameters are used to get board id and
+|applying calibration parameters from cal data.
+|
+|		EEPROM[OTP]	FLASH[DT/pre-cal file]
+|Cal param	0x700		0x10000
+|Board id	0x10		0x8000
+|
+|Tested on QCA9888 with pre-cal file.
+
+Several developers and users have reported success with Pavel's PR:
+<https://github.com/lede-project/source/pull/1153>
+
+[   19.132296] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+[   19.314182] ath10k_pci 0000:01:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:01:00.0.bin failed with error -2
+[   19.314235] ath10k_pci 0000:01:00.0: Falling back to user helper
+[   32.827197] ath10k_pci 0000:01:00.0: qca9984/qca9994 hw1.0 target 0x01000000 chip_id 0x00000000 sub 168c:cafe
+[   32.827233] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
+[   32.839487] ath10k_pci 0000:01:00.0: firmware ver 10.4-3.4-00082 api 5 features no-p2p,mfp,peer-flow-ctrl,[...]
+[   35.116999] ath10k_pci 0000:01:00.0: *board_file api 2 bmi_id 0:1* crc32 751efba1
+[   40.981190] ath10k_pci 0000:01:00.0: htt-ver 2.2 wmi-op 6 htt-op 4 cal pre-cal-file max-sta 512 raw 0 hwcrypto 1
+
+All existing users of 936-ath10k_skip_otp_check.patch should be
+able to drop the 936-patch entirely and switch to the pre-cal
+file cal method for their devices.
+
+Regards,
+Christian
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
