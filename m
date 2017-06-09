@@ -1,20 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mx3.ghmt.de ([188.210.45.230])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dJ15B-0005KK-F3
- for ath10k@lists.infradead.org; Thu, 08 Jun 2017 17:18:55 +0000
-Received: by mail-lf0-x242.google.com with SMTP id v20so3549380lfa.2
- for <ath10k@lists.infradead.org>; Thu, 08 Jun 2017 10:18:32 -0700 (PDT)
-Subject: Re: [PATCH 1/1] mac80211: ieee80211_rx_napi: remove warning
-References: <1496581915-4412-1-git-send-email-erik.stromdahl@gmail.com>
- <1496581915-4412-2-git-send-email-erik.stromdahl@gmail.com>
- <1496872642.3291.4.camel@sipsolutions.net>
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Message-ID: <9a570231-00c2-e234-8ac8-fbee66bd07af@gmail.com>
-Date: Thu, 8 Jun 2017 19:10:08 +0200
+ id 1dJGsj-00050L-4W
+ for ath10k@lists.infradead.org; Fri, 09 Jun 2017 10:11:07 +0000
+From: "Lindner, Frank" <Frank.Lindner@ghmt.de>
+Date: Fri, 9 Jun 2017 12:10:34 +0200
+Subject: AW: is it possible to enable dualband or even 2.4 GHz on QCA9994?
+ (Compex WLE1216V5-20)
+Message-ID: <35449B299288584097A15B3FEB9C3E582578710BFE@SBS-GHMT.ghmt.local>
+References: <35449B299288584097A15B3FEB9C3E5825786B4500@SBS-GHMT.ghmt.local>
+ <6cadea3f-b386-7fc2-9295-720ced82631d@candelatech.com>
+ <CAJ-VmontSGS9yBCRKJu7kkjrmG6zkYV47YH6vRSpUqyUEj2nvw@mail.gmail.com>
+ <35449B299288584097A15B3FEB9C3E582578710584@SBS-GHMT.ghmt.local>
+ <CAJ-Vmo=-mcob1dEv4i2EWJ2whh2tBwF7J+EO-XpBcRMZXNULbA@mail.gmail.com>
+ <35449B299288584097A15B3FEB9C3E58257871085F@SBS-GHMT.ghmt.local>
+ <CAJ-VmomPZhs-g=618wLxAAHey-Ri5mNZ2ngE91wkABdj5mc_fg@mail.gmail.com>
+In-Reply-To: <CAJ-VmomPZhs-g=618wLxAAHey-Ri5mNZ2ngE91wkABdj5mc_fg@mail.gmail.com>
+Content-Language: de-DE
 MIME-Version: 1.0
-In-Reply-To: <1496872642.3291.4.camel@sipsolutions.net>
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +26,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
-
-On 2017-06-07 23:57, Johannes Berg wrote:
-> On Sun, 2017-06-04 at 15:11 +0200, Erik Stromdahl wrote:
->> The softirq count is not always incremented during driver
->> operation. This is the case for usb and sdio network
->> drivers.
-> 
-> I'm pretty sure the warning is correct, and we do rely on having
-> local_bh_disable(), otherwise we may end up taking a soft-IRQ and I
-> believe there are some things that could get messed up in that case.
-> 
-Ok, I will make sure to increment the softirq counter before calling
-ieee80211_rx then.
-
-> So - I think the warning is there for a reason, and drivers should just
-> local_bh_disable() before calling into that. What's wrong with that?
-I guess there is nothing wrong with that, it's just that ath10k does not
-call local_bh_disable anywhere in the code.
-I guess it is relying on lower layers (pcie?) to do that.
-When introducing sdio and usb support these calls will have to be added
-explicitly in ath10k.
-
-> 
-> johannes
-> 
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksDQoNCmFzIGZhciBhcyBJIHVuZGVyc3RhbmQsIEkgbmVlZCBhIHNwZWNpYWwgImJvYXJkLmJp
+biItZmlsZSBvciAiZmlybXdhcmUteC5iaW4iLWZpbGUgdG8gc2F5IHRoZSBjYXJkIGl0IHNob3Vs
+ZCBtYWtlIDJnIG9yIDVnPw0KU28gd2hlcmUgZG8gSSBnZXQgdGhvc2UgInNwZWNpYWwiIGZpbGVz
+PyBPciBjYW4gSSBidWlsZCB0aGVtIG15c2VsZj8NCkkgY2FuIG5vdCBmaW5kIGFueSBoZWxwZnVs
+IGluZm9ybWF0aW9uIG9uICJHb29nbGUiLg0KDQpUaGFua3MNCkJHDQpGcmFuaw0KDQotLS0tLVVy
+c3Byw7xuZ2xpY2hlIE5hY2hyaWNodC0tLS0tDQpWb246IGFkcmlhbi5jaGFkZEBnbWFpbC5jb20g
+W21haWx0bzphZHJpYW4uY2hhZGRAZ21haWwuY29tXSBJbSBBdWZ0cmFnIHZvbiBBZHJpYW4gQ2hh
+ZGQNCkdlc2VuZGV0OiBEaWVuc3RhZywgNi4gSnVuaSAyMDE3IDA4OjQwDQpBbjogTGluZG5lciwg
+RnJhbmsNCkNjOiBCZW4gR3JlZWFyOyBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KQmV0cmVm
+ZjogUmU6IGlzIGl0IHBvc3NpYmxlIHRvIGVuYWJsZSBkdWFsYmFuZCBvciBldmVuIDIuNCBHSHog
+b24gUUNBOTk5ND8gKENvbXBleCBXTEUxMjE2VjUtMjApDQoNCkl0IGxvb2tzIGxpa2UgaXQncyBy
+ZWFsbHkgZGVzaWduZWQgYXMgZWl0aGVyIDJnIG9yIDVnLiBZb3UgY291bGQgbWFrZSB5b3VyIG93
+biBjYXJkIHVwIHdpdGggYm90aCAyZy81ZyBwYXRocyBidXQgeW91J2QgaGF2ZSB0byByZWxvYWQg
+dGhlIGZpcm13YXJlL2NhbGlicmF0aW9uIGRhdGEgYXMgbmVlZGVkIHRvIGJhbmQgc3dpdGNoLiBp
+dCB3b3VsZG4ndCBiZSAiYXV0b21hdGljIi4gOigNCg0Kc29ycnkhDQoNCg0KLWENCg0KDQpPbiA1
+IEp1bmUgMjAxNyBhdCAyMjozMywgTGluZG5lciwgRnJhbmsgPEZyYW5rLkxpbmRuZXJAZ2htdC5k
+ZT4gd3JvdGU6DQo+IEhpLA0KPg0KPiBBZHJpYW4sIGRvIHlvdSBoYXZlIHNvbWUgdXBkYXRlcz8g
+SSBzZWFyY2ggZm9yIGFuIGR1YWxiYW5kIGNhcmQgKE1JTkkgUENJZSkgd2l0aCA0eDQgV2F2ZTIs
+IGxpa2UgOTk4NCBvIDk5OTQuIEl0IHdpbGwgYmUgbmVlZGVkIG9ubHkgZm9yIHJlY2VpdmluZyBw
+YXRoLiBBbmQgSSBuZWVkIHRoZSBpbmZvLCBpZiBhbmQgaG93IGlzIHBvc3NpYmxlIHRvIGVuYWJs
+ZSBkdWFsYmFuZCBtb2RlLiBJZiB0aGVyZSBpcyBzb21lIHBoeXNpY3MgbGlrZSBMTkEgb3Igd2hh
+dCBldmVyIG1pc3NpbmcsIHdlIGNhbiBkbyB0aGlzIG91ciBzZWxmLg0KPiBUaGFua3MuDQo+IEJH
+DQo+IEZyYW5rDQo+DQo+IC0tLS0tVXJzcHLDvG5nbGljaGUgTmFjaHJpY2h0LS0tLS0NCj4gVm9u
+OiBhZHJpYW4uY2hhZGRAZ21haWwuY29tIFttYWlsdG86YWRyaWFuLmNoYWRkQGdtYWlsLmNvbV0g
+SW0gQXVmdHJhZw0KPiB2b24gQWRyaWFuIENoYWRkDQo+IEdlc2VuZGV0OiBNaXR0d29jaCwgMzEu
+IE1haSAyMDE3IDIxOjQ4DQo+IEFuOiBMaW5kbmVyLCBGcmFuaw0KPiBDYzogQmVuIEdyZWVhcjsg
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gQmV0cmVmZjogUmU6IGlzIGl0IHBvc3NpYmxl
+IHRvIGVuYWJsZSBkdWFsYmFuZCBvciBldmVuIDIuNCBHSHogb24NCj4gUUNBOTk5ND8gKENvbXBl
+eCBXTEUxMjE2VjUtMjApDQo+DQo+IE9uIDMwIE1heSAyMDE3IGF0IDIyOjIzLCBMaW5kbmVyLCBG
+cmFuayA8RnJhbmsuTGluZG5lckBnaG10LmRlPiB3cm90ZToNCj4+IEhpLg0KPj4gOTk5NCBpcyBD
+YXNjYWRlLCB3aGljaCBzaG91bGQgYmUgMi40IEdIeiBjYXBhYmxlIGFzIGZhcyBhcyBRdWFsY29t
+bSBpcyBjb3JyZWN0IG9uIHRoZWlyIHNwZWNzIHNpdGUuDQo+PiBRdWVzdGlvbiB3YXMgbm90LCB3
+aGljaCBvdGhlciBjYXJkIGNhbiBkbyAyLjQgR0h6LiBJIHdhbnQgdG8gZW5hYmxlIDIuNCBHSHog
+LyBkdWFsYmFuZCBtb2RlIHZpYSBzb21lIHJlZ2lzdGVycyBvciB3aGF0IGV2ZXIgb24gdGhpcyBj
+YXJkLg0KPj4gV2hlcmUgY2FuIEkgZmluZCB0aGUgY2FsYnJhdGlvbiBmaWxlcyAgeW91J3ZlIG1l
+bnRpb25lZD8NCj4NCj4gSGksDQo+DQo+IEkgL3RoaW5rLyBjYXNjYWRlIGRvZXNuJ3QgaGF2ZSB0
+aGUgYWJpbGl0eSB0byBydW4gZHVhbCBtb2RlLiBJdCdzIGRlc2lnbmVkIHRvIGVpdGhlciBiZSAy
+RyBvciA1RywgYW5kIG5vdCBib3RoIGxpa2UgU1RBIG1vZGUuIEknZCBoYXZlIHRvIGdvIGNoZWNr
+Lg0KPg0KPiAoSSB0aGluayBJIHJhbiBvdmVyIHRoaXMgaXNzdWUgYXQgd29yayByZWNlbnRseS4u
+KQ0KPg0KPg0KPiAtYWRyaWFuDQo+DQo+DQo+DQo+IFZvcnN0YW5kc3ZvcnNpdHplbmRlcjogRGlw
+bC4tSW5nLiBEaXJrIFdpbGhlbG0NCj4gQXVmc2ljaHRzcmF0c3ZvcnNpdHplbmRlcjogRHIuLUlu
+Zy4gUGV0ZXIgSGFzc2UNCj4gSGFuZGVsc3JlZ2lzdGVyOiBIUkIgU2FhcmJyw7xja2VuIE5yLiAx
+MzIwMSBVc3QuSUQgTnIuOiBERSAxNTM4MDc2MjcNCg0KDQoNClZvcnN0YW5kc3ZvcnNpdHplbmRl
+cjogRGlwbC4tSW5nLiBEaXJrIFdpbGhlbG0NCkF1ZnNpY2h0c3JhdHN2b3JzaXR6ZW5kZXI6IERy
+Li1JbmcuIFBldGVyIEhhc3NlDQpIYW5kZWxzcmVnaXN0ZXI6IEhSQiBTYWFyYnLDvGNrZW4gTnIu
+IDEzMjAxDQpVc3QuSUQgTnIuOiBERSAxNTM4MDc2MjcNCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
