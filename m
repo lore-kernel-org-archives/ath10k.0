@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
+Received: from mail-wr0-x230.google.com ([2a00:1450:400c:c0c::230])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dJGvr-0005h5-QR
- for ath10k@lists.infradead.org; Fri, 09 Jun 2017 10:14:22 +0000
-Received: by mail-wm0-x229.google.com with SMTP id d73so46821810wma.0
- for <ath10k@lists.infradead.org>; Fri, 09 Jun 2017 03:13:59 -0700 (PDT)
+ id 1dJHm8-0002Iy-Rr
+ for ath10k@lists.infradead.org; Fri, 09 Jun 2017 11:08:22 +0000
+Received: by mail-wr0-x230.google.com with SMTP id g76so29064983wrd.1
+ for <ath10k@lists.infradead.org>; Fri, 09 Jun 2017 04:08:00 -0700 (PDT)
 From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: ath10k: Configure rxnss_override for 10.4 firmware.
-Date: Fri, 09 Jun 2017 12:13:56 +0200
-Message-ID: <12172761.EOB4KtkSt3@bentobox>
-In-Reply-To: <e379002d2a6a4563baefb435b4552586@eusanexr01a.eu.qualcomm.com>
-References: <1486771745-15150-1-git-send-email-greearb@candelatech.com>
- <e379002d2a6a4563baefb435b4552586@eusanexr01a.eu.qualcomm.com>
-MIME-Version: 1.0
+Subject: [PATCH v2 1/3] ath10k: Use complete VHT chan width for 160MHz
+ workaround
+Date: Fri,  9 Jun 2017 13:07:48 +0200
+Message-Id: <20170609110750.14950-1-sven.eckelmann@openmesh.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,75 +18,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7269053018383602663=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, Sven Eckelmann <sven.eckelmann@openmesh.com>
 
---===============7269053018383602663==
-Content-Type: multipart/signed; boundary="nextPart6539135.DE6dNImiSn"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+From: Ben Greear <greearb@candelatech.com>
 
---nextPart6539135.DE6dNImiSn
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+The ath10k firmware doesn't announce its VHT channel width capabilities in
+the vht_cap information from the "service ready event" arguments. The
+driver must therefore check whether the 160MHz short GI bit is set and
+whether the driver still doesn't set the bits for the 160/80+80 MHz
+capabilities.
 
-On Mittwoch, 15. Februar 2017 01:26:58 CEST Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> wrote:
-> > From: Ben Greear <greearb@candelatech.com>
-> > 
-> > QCA9984 hardware can do 4x4 at 80Mhz, but only 2x2 at 160Mhz.
-[....]
-> Does not apply:
-> 
-> error: patch failed: drivers/net/wireless/ath/ath10k/mac.c:2760
-> error: drivers/net/wireless/ath/ath10k/mac.c: patch does not apply
-> error: patch failed: drivers/net/wireless/ath/ath10k/wmi.h:6173
-> error: drivers/net/wireless/ath/ath10k/wmi.h: patch does not apply
-> stg import: Diff does not apply cleanly
-> 
-> Patch set to Changes Requested.
+The two bits for the channel width are a two bit integer and not two
+separate bits which cannot be parsed without the knowledge of the other
+bit. Using IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ (b10..) as a
+mask for this task doesn't make any sense. The correct mask for the VHT
+channel width should be used instead to make this check more readable.
 
-I wanted to use this patch to announce the maximum speed for QCA9888.
-I hope it is ok for Ben Greear when I rebase and resubmit it.
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+[sven.eckelmann@openmesh.com: separate 160Mhz workaround cleanup, add commit
+ message]
+Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
+---
+v2:
+ - extracted this cleanup portion and converted it to a separate patch
 
-Kind regards,
-	Sven
---nextPart6539135.DE6dNImiSn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+ drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 4674ff33d320..8087b6be5484 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4391,7 +4391,7 @@ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
+ 	 * mode until that's resolved.
+ 	 */
+ 	if ((ar->vht_cap_info & IEEE80211_VHT_CAP_SHORT_GI_160) &&
+-	    !(ar->vht_cap_info & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ))
++	    (ar->vht_cap_info & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_MASK) == 0)
+ 		vht_cap.cap |= IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ;
+ 
+ 	mcs_map = 0;
+-- 
+2.11.0
 
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlk6dOQACgkQXYcKB8Em
-e0YE7BAAv9uzvYlQ+6R7+Em6ZdP+Jh0qaXkLMPzODNx4HxdHoGnh3RwYzYc95apz
-SMtS23xdbETzSGdRVTlODN7fbe+ScOo+6UQTLzZJREfPFTHWpkh3Ls0OFkAUva4T
-+2Q0qNK5PAgY7clrZ4NAsq1bSUyoSxs0pVVQRxOzrR1tsevI9vggiTaoRf1eDb+l
-cdncgBX+Ybl+ptFE1ceY9U7MC9hTkn6IZ4r74C9fdOphfiZzlhYY65oODf4oyFDm
-/qoW88lwaBPUjzurG0P/pzm++I9/ynAnx4VnfLbFWPw7g1zyD1IaUYvLVdTr6X3r
-0g2ko2YaLe0ft3lFQkIUVzuhU9I33h0f4/BK/ZRxAkmm3wos7LWENXklXkzfr2QJ
-/nlJ580Vipkg8OQGU5l3sn63QxTobmbcfjJv7Vh/7hR49h53AOJwJArK4yDAqyWn
-8x5xzUcDza378FswS/wAZfQQ1F/Sut7P0f3TMPZXGPQi4nOW61w8pZzqmAWbBjXD
-nWkoRhaJJB/PNxppa+2tpsrvH2AZw+zd3Y109bHSayppEOSzcFYzWvGcpPgDUDfW
-ET9ZjPhZf/qK5lXPk3Kjlcu1N2ipFNVg23Uv2Ai/Hbq0Ktwl/HVk2PbE+ZKSBzPY
-0YVRM0cYLUW1AjSOSddeOD8I1YIMEgNPVeIU1hE/2ph/imMkojw=
-=WOFR
------END PGP SIGNATURE-----
-
---nextPart6539135.DE6dNImiSn--
-
-
-
---===============7269053018383602663==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============7269053018383602663==--
