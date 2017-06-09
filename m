@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x22c.google.com ([2a00:1450:400c:c0c::22c])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dJHmH-0002Jd-Qc
- for ath10k@lists.infradead.org; Fri, 09 Jun 2017 11:08:32 +0000
-Received: by mail-wr0-x22c.google.com with SMTP id q97so29171809wrb.2
- for <ath10k@lists.infradead.org>; Fri, 09 Jun 2017 04:08:09 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: [PATCH v2 3/3] ath10k: Set rxnss_override for QCA9888
-Date: Fri,  9 Jun 2017 13:07:50 +0200
-Message-Id: <20170609110750.14950-3-sven.eckelmann@openmesh.com>
-In-Reply-To: <20170609110750.14950-1-sven.eckelmann@openmesh.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dJKJ6-0004M5-FG
+ for ath10k@lists.infradead.org; Fri, 09 Jun 2017 13:50:34 +0000
+Subject: Re: [PATCH v2 1/3] ath10k: Use complete VHT chan width for 160MHz
+ workaround
 References: <20170609110750.14950-1-sven.eckelmann@openmesh.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <c91d2578-d491-c813-cbfb-f742d04f9417@candelatech.com>
+Date: Fri, 9 Jun 2017 06:50:11 -0700
+MIME-Version: 1.0
+In-Reply-To: <20170609110750.14950-1-sven.eckelmann@openmesh.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,48 +19,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Sven Eckelmann <sven.eckelmann@openmesh.com>
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-QCA9888 supports VHT80 with 2x2. But it only support 1x1 with VHT160 or
-VHT80+80. Inform userspace and the the QCA firmware about that limitation
-whenever VHT80+80 or VHT160 is configured.
 
-Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
----
-v2:
- - new patch
 
- drivers/net/wireless/ath/ath10k/mac.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+On 06/09/2017 04:07 AM, Sven Eckelmann wrote:
+> From: Ben Greear <greearb@candelatech.com>
+>
+> The ath10k firmware doesn't announce its VHT channel width capabilities in
+> the vht_cap information from the "service ready event" arguments. The
+> driver must therefore check whether the 160MHz short GI bit is set and
+> whether the driver still doesn't set the bits for the 160/80+80 MHz
+> capabilities.
+>
+> The two bits for the channel width are a two bit integer and not two
+> separate bits which cannot be parsed without the knowledge of the other
+> bit. Using IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ (b10..) as a
+> mask for this task doesn't make any sense. The correct mask for the VHT
+> channel width should be used instead to make this check more readable.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0752cf351b4a..75e90adc8fb4 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4436,6 +4436,14 @@ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
- 			vht_cap.vht_mcs.rx_highest = 1560;
- 			vht_cap.vht_mcs.tx_highest = 1560;
- 			break;
-+		case QCA9888_2_0_DEVICE_ID:
-+			/* Can do only 1x1 VHT160 or 80+80.
-+			 * 780Mbps is 2x2 80Mhz or 1x1 160Mhz,
-+			 * long-guard-interval
-+			 */
-+			vht_cap.vht_mcs.rx_highest = 780;
-+			vht_cap.vht_mcs.tx_highest = 780;
-+			break;
- 		}
- 	}
- 
+I didn't test them, but a quick review looks good.  Thanks for picking this up!
+
+--Ben
+
+
 -- 
-2.11.0
-
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
