@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKQsd-0007IM-SA
- for ath10k@lists.infradead.org; Mon, 12 Jun 2017 15:03:55 +0000
-Received: by mail-lf0-x244.google.com with SMTP id o28so9679070lfk.1
- for <ath10k@lists.infradead.org>; Mon, 12 Jun 2017 08:03:29 -0700 (PDT)
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v2 09/10] ath10k: add QCA9377 sdio hw_param item
-Date: Mon, 12 Jun 2017 17:03:10 +0200
-Message-Id: <1497279791-9598-10-git-send-email-erik.stromdahl@gmail.com>
-In-Reply-To: <1497279791-9598-1-git-send-email-erik.stromdahl@gmail.com>
-References: <1497279791-9598-1-git-send-email-erik.stromdahl@gmail.com>
+ id 1dKROT-0008Ut-Mr
+ for ath10k@lists.infradead.org; Mon, 12 Jun 2017 15:37:08 +0000
+MIME-Version: 1.0
+Subject: Re: [v3] ath10k: Define structures for CE ctrl/misc register
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1496739941-18132-1-git-send-email-c_sgarna@qti.qualcomm.com>
+References: <1496739941-18132-1-git-send-email-c_sgarna@qti.qualcomm.com>
+Message-ID: <a383aa68b0c744e186e0b7e98b78446b@eusanexr01a.eu.qualcomm.com>
+Date: Mon, 12 Jun 2017 08:36:17 -0700
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,72 +18,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
+To: Sarada Prasanna Garnayak <c_sgarna@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hardware parameters for QCA9377 sdio devices.
+Sarada Prasanna Garnayak <c_sgarna@qti.qualcomm.com> wrote:
 
-Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 25 +++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  1 +
- 2 files changed, 26 insertions(+)
+> Define structures for the copy engine ctrl/misc registers,
+> that includes CE CMD halt, watermark source, watermark destination,
+> host IE ring, source, destination and dmax ring.
+> 
+> This adds support to avoid the conditional compilation,
+> code optimization and dynamic configuration of the copy engine
+> register map for respective hardware bus interface.
+> 
+> Signed-off-by: Sarada Prasanna Garnayak <c_sgarna@qti.qualcomm.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index dc8ea5e..675ce08 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -322,6 +322,31 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.start_once = true,
- 	},
- 	{
-+		.id = QCA9377_HW_1_1_DEV_VERSION,
-+		.dev_id = QCA9377_1_0_DEVICE_ID,
-+		.name = "qca9377 hw1.1 sdio",
-+		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
-+		.uart_pin = 19,
-+		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
-+		.max_probe_resp_desc_thres = 0,
-+		.cal_data_len = 8124,
-+		.fw = {
-+			.dir = QCA9377_HW_1_0_FW_DIR,
-+			.board = QCA9377_HW_1_0_BOARD_DATA_FILE_SDIO,
-+			.board_size = QCA9377_BOARD_DATA_SZ,
-+			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
-+		},
-+		.hw_ops = &qca6174_ops,
-+		.hw_clk = qca6174_clk,
-+		.target_cpu_freq = 176000000,
-+		.decap_align_bytes = 4,
-+		.max_num_peers = TARGET_QCA9377_HL_NUM_PEERS,
-+		.is_high_latency = true,
-+		.bus = ATH10K_BUS_SDIO,
-+		.start_once = true,
-+	},
-+	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
- 		.dev_id = 0,
- 		.name = "qca4019 hw1.0",
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index cc3d0eb..676c855 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -128,6 +128,7 @@ enum qca9377_chip_id_rev {
- #define QCA9377_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA9377/hw1.0"
- #define QCA9377_HW_1_0_BOARD_DATA_FILE "board.bin"
- #define QCA9377_HW_1_0_BOARD_DATA_FILE_USB "board-usb.bin"
-+#define QCA9377_HW_1_0_BOARD_DATA_FILE_SDIO "board-sdio.bin"
- #define QCA9377_HW_1_0_PATCH_LOAD_ADDR	0x1234
- 
- /* QCA4019 1.0 definitions */
+Like kbuild test robot reported, this failed to build. I fixed it like this in
+ahb.c in pending branch:
+
+	ar_pci->bus_ops = &ath10k_ahb_bus_ops;
+
 -- 
-2.7.4
+https://patchwork.kernel.org/patch/9768317/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
