@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKROT-0008Ut-Mr
- for ath10k@lists.infradead.org; Mon, 12 Jun 2017 15:37:08 +0000
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dKRQ7-0003wT-SM
+ for ath10k@lists.infradead.org; Mon, 12 Jun 2017 15:38:25 +0000
 MIME-Version: 1.0
-Subject: Re: [v3] ath10k: Define structures for CE ctrl/misc register
+Subject: Re: [1/1] Add per chain RSSI reporting.
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1496739941-18132-1-git-send-email-c_sgarna@qti.qualcomm.com>
-References: <1496739941-18132-1-git-send-email-c_sgarna@qti.qualcomm.com>
-Message-ID: <a383aa68b0c744e186e0b7e98b78446b@eusanexr01a.eu.qualcomm.com>
-Date: Mon, 12 Jun 2017 08:36:17 -0700
+In-Reply-To: <CAAV6Hgmjq9DDpcUUTZtDwodUjKrkzjnKSNZ+sK8U=M_AQgr-iQ@mail.gmail.com>
+References: <CAAV6Hgmjq9DDpcUUTZtDwodUjKrkzjnKSNZ+sK8U=M_AQgr-iQ@mail.gmail.com>
+Message-ID: <866823ed4ac64b8dae61f791aeb7e6f9@eusanexr01a.eu.qualcomm.com>
+Date: Mon, 12 Jun 2017 08:37:56 -0700
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sarada Prasanna Garnayak <c_sgarna@qti.qualcomm.com>
+To: Norik Dzhandzhapanyan <norikd@gmail.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Sarada Prasanna Garnayak <c_sgarna@qti.qualcomm.com> wrote:
+Norik Dzhandzhapanyan <norikd@gmail.com> wrote:
 
-> Define structures for the copy engine ctrl/misc registers,
-> that includes CE CMD halt, watermark source, watermark destination,
-> host IE ring, source, destination and dmax ring.
+> Report per chain RSSI to mac80211.
 > 
-> This adds support to avoid the conditional compilation,
-> code optimization and dynamic configuration of the copy engine
-> register map for respective hardware bus interface.
-> 
-> Signed-off-by: Sarada Prasanna Garnayak <c_sgarna@qti.qualcomm.com>
+> Signed-off-by: Norik Dzhandzhapanyan <norikd@gmail.com>
+> [kvalo@qca.qualcomm.com: fix conflicts and style]
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Like kbuild test robot reported, this failed to build. I fixed it like this in
-ahb.c in pending branch:
+This failed to apply and had quite a few checkpatch warnings. So I recreted the
+patch manually:
 
-	ar_pci->bus_ops = &ath10k_ahb_bus_ops;
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=5df110e3a093771f23001be2012ab6fa4d87089b
 
 -- 
-https://patchwork.kernel.org/patch/9768317/
+https://patchwork.kernel.org/patch/9760887/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
