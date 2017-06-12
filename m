@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKQsY-0007G3-Df
- for ath10k@lists.infradead.org; Mon, 12 Jun 2017 15:03:49 +0000
-Received: by mail-lf0-x243.google.com with SMTP id o28so9678907lfk.1
- for <ath10k@lists.infradead.org>; Mon, 12 Jun 2017 08:03:21 -0700 (PDT)
+ id 1dKQsd-0007IE-SB
+ for ath10k@lists.infradead.org; Mon, 12 Jun 2017 15:03:52 +0000
+Received: by mail-lf0-x244.google.com with SMTP id o28so9679034lfk.1
+ for <ath10k@lists.infradead.org>; Mon, 12 Jun 2017 08:03:27 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v2 01/10] ath10k: high_latency detection
-Date: Mon, 12 Jun 2017 17:03:02 +0200
-Message-Id: <1497279791-9598-2-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v2 07/10] ath10k: dma fixes for high latency devices
+Date: Mon, 12 Jun 2017 17:03:08 +0200
+Message-Id: <1497279791-9598-8-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1497279791-9598-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1497279791-9598-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,56 +27,89 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-The setup of high latency chips (USB and SDIO) is
-sometimes different than for chips using low latency
-interfaces.
-
-The bus type is used to determine if the interface is
-a high latency interface.
+Several DMA related functions (such as the dma_map_xxx functions)
+are not used with high latency devices and don't need to be invoked
+in this case.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 1 +
- drivers/net/wireless/ath/ath10k/core.h | 7 +++++++
- 2 files changed, 8 insertions(+)
+ drivers/net/wireless/ath/ath10k/htc.c    | 13 ++++++++-----
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  3 ++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  3 +++
+ drivers/net/wireless/ath/ath10k/txrx.c   |  5 +++--
+ 4 files changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 3fb1429..d3bf5c4 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2455,6 +2455,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 	ar->hw_rev = hw_rev;
- 	ar->hif.ops = hif_ops;
- 	ar->hif.bus = bus;
-+	ar->is_high_latency = ath10k_is_high_latency(bus);
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index e5c80f5..232740c 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -137,11 +137,14 @@ int ath10k_htc_send(struct ath10k_htc *htc,
+ 	ath10k_htc_prepare_tx_skb(ep, skb);
  
- 	switch (hw_rev) {
- 	case ATH10K_HW_QCA988X:
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 1efe0a1..90069b8 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -789,6 +789,8 @@ struct ath10k {
+ 	skb_cb->eid = eid;
+-	skb_cb->paddr = dma_map_single(dev, skb->data, skb->len, DMA_TO_DEVICE);
+-	ret = dma_mapping_error(dev, skb_cb->paddr);
+-	if (ret) {
+-		ret = -EIO;
+-		goto err_credits;
++	if (!ar->is_high_latency) {
++		skb_cb->paddr = dma_map_single(dev, skb->data, skb->len,
++					       DMA_TO_DEVICE);
++		ret = dma_mapping_error(dev, skb_cb->paddr);
++		if (ret) {
++			ret = -EIO;
++			goto err_credits;
++		}
+ 	}
  
- 	bool p2p;
+ 	sg_item.transfer_id = ep->eid;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 5833c08..972c21c 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2492,7 +2492,8 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	}
+ 	case HTT_T2H_MSG_TYPE_TX_COMPL_IND:
+-		ath10k_htt_rx_tx_compl_ind(htt->ar, skb);
++		if (!ar->is_high_latency)
++			ath10k_htt_rx_tx_compl_ind(htt->ar, skb);
+ 		break;
+ 	case HTT_T2H_MSG_TYPE_SEC_IND: {
+ 		struct ath10k *ar = htt->ar;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index e3b820d..27bbc3e 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -409,6 +409,9 @@ int ath10k_htt_tx_start(struct ath10k_htt *htt)
+ 	if (htt->tx_mem_allocated)
+ 		return 0;
  
-+	bool is_high_latency;
++	if (ar->is_high_latency)
++		return 0;
 +
- 	struct {
- 		enum ath10k_bus bus;
- 		const struct ath10k_hif_ops *ops;
-@@ -1008,6 +1010,11 @@ static inline bool ath10k_peer_stats_enabled(struct ath10k *ar)
- 	return false;
- }
+ 	ret = ath10k_htt_tx_alloc_buf(htt);
+ 	if (ret)
+ 		goto free_idr_pending_tx;
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index d4986f6..fae143e 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -90,11 +90,12 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
  
-+static inline bool ath10k_is_high_latency(enum ath10k_bus bus)
-+{
-+	return ((bus == ATH10K_BUS_SDIO) || (bus == ATH10K_BUS_USB));
-+}
-+
- struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 				  enum ath10k_bus bus,
- 				  enum ath10k_hw_rev hw_rev,
+ 	ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
+ 	ath10k_htt_tx_dec_pending(htt);
+-	if (htt->num_pending_tx == 0)
++	if (!ar->is_high_latency && (htt->num_pending_tx == 0))
+ 		wake_up(&htt->empty_tx_wq);
+ 	spin_unlock_bh(&htt->tx_lock);
+ 
+-	dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
++	if (!ar->is_high_latency)
++		dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
+ 
+ 	ath10k_report_offchan_tx(htt->ar, msdu);
+ 
 -- 
 2.7.4
 
