@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dJNch-0007pF-OD
- for ath10k@lists.infradead.org; Fri, 09 Jun 2017 17:23:04 +0000
-Received: by mail-wr0-x244.google.com with SMTP id v104so8151868wrb.0
- for <ath10k@lists.infradead.org>; Fri, 09 Jun 2017 10:22:38 -0700 (PDT)
-From: Christian Lamparter <chunkeey@googlemail.com>
-Subject: Re: QCA9984 bmi identification failure (fixed)
-Date: Fri, 09 Jun 2017 19:22:34 +0200
-Message-ID: <13393560.5t7FXRZE7t@debian64>
-In-Reply-To: <3243718.FYinmXYgr7@debian64>
-References: <3243718.FYinmXYgr7@debian64>
+ id 1dKQdi-00061k-Q7
+ for ath10k@lists.infradead.org; Mon, 12 Jun 2017 14:48:25 +0000
 MIME-Version: 1.0
+Subject: Re: [v2,2/3] ath10k: Configure rxnss_override for 10.4 firmware.
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <20170609110750.14950-2-sven.eckelmann@openmesh.com>
+References: <20170609110750.14950-2-sven.eckelmann@openmesh.com>
+Message-ID: <6eeaab36e33747e3ac057888070acb2b@eusanexr01a.eu.qualcomm.com>
+Date: Mon, 12 Jun 2017 07:47:57 -0700
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,73 +22,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: ath10k-devel <ath10k-devel@qca.qualcomm.com>, Adrian Chadd <adrian@freebsd.org>, hannu.nyman@iki.fi, "linux-wireless (linux-wireless@vger.kernel.org)" <linux-wireless@vger.kernel.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thursday, March 23, 2017 5:47:08 PM CEST Christian Lamparter wrote:
-> Hannu Nyman reported a issue with the QCA9984 in his Netgear R7800 
-> and LEDE's ath10k: (This is with 936-ath10k_skip_otp_check.patch removed):
+Sven Eckelmann <sven.eckelmann@openmesh.com> wrote:
+
+> QCA9984 hardware can do 4x4 at 80Mhz, but only 2x2 at 160Mhz.
 > 
-> [   25.259266] ath10k_pci 0000:01:00.0: unable to read from the device
-> [   25.259288] ath10k_pci 0000:01:00.0: could not execute otp for board id check: -110
-> [   25.277326] ath10k_pci 0000:01:00.0: failed to fetch board data for bus=pci,vendor=168c,device=0046,subsystem-vendor=168c,subsystem-device=cafem...from ath10k/QCA9984/hw1.0/board-2.bin
-> [   25.277588] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 dd636801
-> [   26.800717] ath10k_pci 0000:01:00.0: htt-ver 2.2 wmi-op 6 htt-op 4 cal file max-sta 512 raw 0 hwcrypto 1
-> [...]
->
-> <https://forum.lede-project.org/t/netgear-r7800-exploration-ipq8065-qca9984/285/277>
+> First, report this to user-space by setting the max-tx-speed
+> and max-rx-speed vht capabilities.
 > 
-> What seems strange is that only the call bmi_execute with 
-> BMI_PARAM_GET_EEPROM_BOARD_ID is timing out. [...]
+> Second, if the peer rx-speed is configured, and if we
+> are in 160 or 80+80 mode, and the peer rx-speed matches
+> the max speed for 2x2 or 1x1 at 160Mhz (long guard interval),
+> then use that info to set the peer_bw_rxnss_override appropriately.
 > 
-> This begs the question, what is so special about the BMI_PARAM_GET_EEPROM_BOARD_ID
-> at that time for the QCA9984? Does the device need some extra msleep time after
-> the OTP has been uploaded? Or is the BMI_PARAM_GET_EEPROM_BOARD_ID not 
-> implemented/has a different ID, etc... ?
+> Without this, a 9984 firmware will not use 2x2 ratesets when
+> transmitting to peer (it will be stuck at 1x1), because
+> the firmware would not have configured the rxnss_override.
+> 
+> This could use some testing....
+> 
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> [sven.eckelmann@openmesh.com: rebase, cleanup, drop 160Mhz workaround cleanup]
+> Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-The issue regarding the BMI_PARAM_GET_EEPROM_BOARD_ID has
-been addressed by the following patch:
-"[PATCH] ath10k: Add BMI parameters to fix calibration from DT/pre-cal"
-<https://patchwork.kernel.org/patch/9748097/>
-|QCA99X0, QCA9888, QCA9984 supports calibration data in
-|either OTP or DT/pre-cal file. Current ath10k supports
-|Calibration data from OTP only.
-|
-|If caldata is loaded from DT/pre-cal file, fetching board id
-|and applying calibration parameters like tx power gets failed.
-|
-|error log:
-|[   15.733663] ath10k_pci 0000:01:00.0: failed to fetch board file: -2
-|[   15.741474] ath10k_pci 0000:01:00.0: could not probe fw (-2)
-|
-|This patch adds calibration data support from DT/pre-cal
-|file.  Below parameters are used to get board id and
-|applying calibration parameters from cal data.
-|
-|		EEPROM[OTP]	FLASH[DT/pre-cal file]
-|Cal param	0x700		0x10000
-|Board id	0x10		0x8000
-|
-|Tested on QCA9888 with pre-cal file.
+This one had warnings, fixed in pending branch:
 
-Several developers and users have reported success with Pavel's PR:
-<https://github.com/lede-project/source/pull/1153>
+drivers/net/wireless/ath/ath10k/mac.c:4436:52: warning: incorrect type in assignment (different base types)
+drivers/net/wireless/ath/ath10k/mac.c:4436:52:    expected restricted __le16 [assigned] [usertype] rx_highest
+drivers/net/wireless/ath/ath10k/mac.c:4436:52:    got int
+drivers/net/wireless/ath/ath10k/mac.c:4437:52: warning: incorrect type in assignment (different base types)
+drivers/net/wireless/ath/ath10k/mac.c:4437:52:    expected restricted __le16 [assigned] [usertype] tx_highest
+drivers/net/wireless/ath/ath10k/mac.c:4437:52:    got int
 
-[   19.132296] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-[   19.314182] ath10k_pci 0000:01:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:01:00.0.bin failed with error -2
-[   19.314235] ath10k_pci 0000:01:00.0: Falling back to user helper
-[   32.827197] ath10k_pci 0000:01:00.0: qca9984/qca9994 hw1.0 target 0x01000000 chip_id 0x00000000 sub 168c:cafe
-[   32.827233] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
-[   32.839487] ath10k_pci 0000:01:00.0: firmware ver 10.4-3.4-00082 api 5 features no-p2p,mfp,peer-flow-ctrl,[...]
-[   35.116999] ath10k_pci 0000:01:00.0: *board_file api 2 bmi_id 0:1* crc32 751efba1
-[   40.981190] ath10k_pci 0000:01:00.0: htt-ver 2.2 wmi-op 6 htt-op 4 cal pre-cal-file max-sta 512 raw 0 hwcrypto 1
+-- 
+https://patchwork.kernel.org/patch/9778087/
 
-All existing users of 936-ath10k_skip_otp_check.patch should be
-able to drop the 936-patch entirely and switch to the pre-cal
-file cal method for their devices.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-Regards,
-Christian
 
 _______________________________________________
 ath10k mailing list
