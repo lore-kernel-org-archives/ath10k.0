@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKQsX-0007HQ-O3
- for ath10k@lists.infradead.org; Mon, 12 Jun 2017 15:03:43 +0000
-Received: by mail-lf0-x242.google.com with SMTP id u62so9692205lfg.0
- for <ath10k@lists.infradead.org>; Mon, 12 Jun 2017 08:03:24 -0700 (PDT)
+ id 1dKQsZ-0007Hq-B1
+ for ath10k@lists.infradead.org; Mon, 12 Jun 2017 15:03:45 +0000
+Received: by mail-lf0-x241.google.com with SMTP id o28so9679017lfk.1
+ for <ath10k@lists.infradead.org>; Mon, 12 Jun 2017 08:03:25 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v2 04/10] ath10k: add start_once support
-Date: Mon, 12 Jun 2017 17:03:05 +0200
-Message-Id: <1497279791-9598-5-git-send-email-erik.stromdahl@gmail.com>
+Subject: [RFC v2 05/10] ath10k: htt: High latency TX support
+Date: Mon, 12 Jun 2017 17:03:06 +0200
+Message-Id: <1497279791-9598-6-git-send-email-erik.stromdahl@gmail.com>
 In-Reply-To: <1497279791-9598-1-git-send-email-erik.stromdahl@gmail.com>
 References: <1497279791-9598-1-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,104 +27,135 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Add possibility to configure the driver to only start target once.
-This can reduce startup time of SDIO devices significantly since
-loading the firmware can take a substantial amount of time.
-
-The patch is also necessary for high latency devices in general
-since it does not seem to be possible to rerun the BMI phase
-(fw upload) without power-cycling the device.
+Add HTT TX function for HL interfaces.
+Intended for SDIO and USB.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 19 +++++++++++++++----
- drivers/net/wireless/ath/ath10k/core.h |  2 ++
- drivers/net/wireless/ath/ath10k/hw.h   |  6 ++++++
- 3 files changed, 23 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h    |  9 ++--
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 72 +++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/mac.c    |  5 ++-
+ 3 files changed, 80 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 587c013..a1a4610 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1966,6 +1966,9 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 	int status;
- 	u32 val;
- 
-+	if (ar->is_started && ar->hw_params.start_once)
-+		return 0;
-+
- 	lockdep_assert_held(&ar->conf_mutex);
- 
- 	clear_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
-@@ -2185,6 +2188,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 	if (status)
- 		goto err_hif_stop;
- 
-+	ar->is_started = true;
- 	return 0;
- 
- err_hif_stop:
-@@ -2237,6 +2241,7 @@ void ath10k_core_stop(struct ath10k *ar)
- 	ath10k_htt_tx_stop(&ar->htt);
- 	ath10k_htt_rx_free(&ar->htt);
- 	ath10k_wmi_detach(ar);
-+	ar->is_started = false;
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 7ffa1d4..bac453f 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1830,9 +1830,12 @@ int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_mgmt,
+ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb);
+ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
+ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu);
+-int ath10k_htt_tx(struct ath10k_htt *htt,
+-		  enum ath10k_hw_txrx_mode txmode,
+-		  struct sk_buff *msdu);
++int ath10k_htt_tx_ll(struct ath10k_htt *htt,
++		     enum ath10k_hw_txrx_mode txmode,
++		     struct sk_buff *msdu);
++int ath10k_htt_tx_hl(struct ath10k_htt *htt,
++		     enum ath10k_hw_txrx_mode txmode,
++		     struct sk_buff *msdu);
+ void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
+ 					     struct sk_buff *skb);
+ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 8d85f82..e3b820d 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -946,8 +946,76 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	return res;
  }
- EXPORT_SYMBOL(ath10k_core_stop);
  
-@@ -2339,12 +2344,18 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
- 		goto err_unlock;
- 	}
- 
--	ath10k_debug_print_boot_info(ar);
--	ath10k_core_stop(ar);
-+	/* Leave target running if hw_params.start_once is set */
-+	if (ar->hw_params.start_once) {
-+		mutex_unlock(&ar->conf_mutex);
-+	} else {
-+		ath10k_debug_print_boot_info(ar);
-+		ath10k_core_stop(ar);
- 
--	mutex_unlock(&ar->conf_mutex);
-+		mutex_unlock(&ar->conf_mutex);
+-int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
+-		  struct sk_buff *msdu)
++#define HTT_TX_HL_NEEDED_HEADROOM \
++	(unsigned int)(sizeof(struct htt_cmd_hdr) + \
++	sizeof(struct htt_data_tx_desc) + \
++	sizeof(struct ath10k_htc_hdr))
 +
-+		ath10k_hif_power_down(ar);
++int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
++		     struct sk_buff *msdu)
++{
++	struct ath10k *ar = htt->ar;
++	int res, data_len;
++	struct htt_cmd_hdr *cmd_hdr;
++	struct htt_data_tx_desc *tx_desc;
++	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
++	u8 flags0;
++	u16 flags1 = 0;
++
++	data_len = msdu->len;
++	flags0 = SM(txmode, HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
++
++	if (skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT)
++		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
++
++	if (msdu->ip_summed == CHECKSUM_PARTIAL &&
++	    !test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
++		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L3_OFFLOAD;
++		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L4_OFFLOAD;
 +	}
- 
--	ath10k_hif_power_down(ar);
- 	return 0;
- 
- err_unlock:
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index cdac923..0e75441 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -784,6 +784,8 @@ struct ath10k {
- 
- 	bool is_high_latency;
- 
-+	bool is_started;
 +
- 	struct {
- 		enum ath10k_bus bus;
- 		const struct ath10k_hif_ops *ops;
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 160377aa..f733e73 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -473,6 +473,12 @@ struct ath10k_hw_params {
- 	bool is_high_latency;
- 
- 	enum ath10k_bus bus;
-+
-+	/* Specifies whether or not the device should be started once.
-+	 * If set, the device will be started once by the early fw probe
-+	 * and it will not be terminated afterwards.
++	/* Prepend the HTT header and TX desc struct to the data message
++	 * and realloc the skb if it does not have enough headroom.
 +	 */
-+	bool start_once;
- };
++	if (skb_headroom(msdu) < HTT_TX_HL_NEEDED_HEADROOM) {
++		struct sk_buff *tmp_skb = msdu;
++
++		ath10k_dbg(htt->ar, ATH10K_DBG_HTT,
++			   "Not enough headroom in skb. Current headroom: %u, needed: %u. Reallocating...\n",
++			   skb_headroom(msdu), HTT_TX_HL_NEEDED_HEADROOM);
++		msdu = skb_realloc_headroom(msdu, HTT_TX_HL_NEEDED_HEADROOM);
++		kfree_skb(tmp_skb);
++		if (!msdu) {
++			ath10k_warn(htt->ar, "htt hl tx: Unable to realloc skb!\n");
++			res = -ENOMEM;
++			goto out;
++		}
++	}
++
++	skb_push(msdu, sizeof(*cmd_hdr));
++	skb_push(msdu, sizeof(*tx_desc));
++	cmd_hdr = (struct htt_cmd_hdr *)msdu->data;
++	tx_desc = (struct htt_data_tx_desc *)(msdu->data + sizeof(*cmd_hdr));
++
++	cmd_hdr->msg_type = HTT_H2T_MSG_TYPE_TX_FRM;
++	tx_desc->flags0 = flags0;
++	tx_desc->flags1 = __cpu_to_le16(flags1);
++	tx_desc->len = __cpu_to_le16(data_len);
++	tx_desc->id = 0;
++	tx_desc->frags_paddr = 0; /* always zero */
++	/* Initialize peer_id to INVALID_PEER because this is NOT
++	 * Reinjection path
++	 */
++	tx_desc->peerid = __cpu_to_le32(HTT_INVALID_PEERID);
++
++	res = ath10k_htc_send(&htt->ar->htc, htt->eid, msdu);
++
++out:
++	return res;
++}
++
++int ath10k_htt_tx_ll(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
++		     struct sk_buff *msdu)
+ {
+ 	struct ath10k *ar = htt->ar;
+ 	struct device *dev = ar->dev;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 48418f9..c5fd803 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3572,7 +3572,10 @@ static int ath10k_mac_tx_submit(struct ath10k *ar,
  
- struct htt_rx_desc;
+ 	switch (txpath) {
+ 	case ATH10K_MAC_TX_HTT:
+-		ret = ath10k_htt_tx(htt, txmode, skb);
++		if (ar->is_high_latency)
++			ret = ath10k_htt_tx_hl(htt, txmode, skb);
++		else
++			ret = ath10k_htt_tx_ll(htt, txmode, skb);
+ 		break;
+ 	case ATH10K_MAC_TX_HTT_MGMT:
+ 		ret = ath10k_htt_mgmt_tx(htt, skb);
 -- 
 2.7.4
 
