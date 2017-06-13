@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKRQ7-0003wT-SM
- for ath10k@lists.infradead.org; Mon, 12 Jun 2017 15:38:25 +0000
+Received: from mail-db5eur01on0063.outbound.protection.outlook.com
+ ([104.47.2.63] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dKpmT-0001oC-F4
+ for ath10k@lists.infradead.org; Tue, 13 Jun 2017 17:39:07 +0000
+Subject: Re: [RFC v2 05/10] ath10k: htt: High latency TX support
+References: <1497279791-9598-1-git-send-email-erik.stromdahl@gmail.com>
+ <1497279791-9598-6-git-send-email-erik.stromdahl@gmail.com>
+From: Peter Oh <peter.oh@bowerswilkins.com>
+Message-ID: <f446d226-ca60-7dcb-f62d-00de6ead4cd4@bowerswilkins.com>
+Date: Tue, 13 Jun 2017 10:38:28 -0700
 MIME-Version: 1.0
-Subject: Re: [1/1] Add per chain RSSI reporting.
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <CAAV6Hgmjq9DDpcUUTZtDwodUjKrkzjnKSNZ+sK8U=M_AQgr-iQ@mail.gmail.com>
-References: <CAAV6Hgmjq9DDpcUUTZtDwodUjKrkzjnKSNZ+sK8U=M_AQgr-iQ@mail.gmail.com>
-Message-ID: <866823ed4ac64b8dae61f791aeb7e6f9@eusanexr01a.eu.qualcomm.com>
-Date: Mon, 12 Jun 2017 08:37:56 -0700
+In-Reply-To: <1497279791-9598-6-git-send-email-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,30 +20,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Norik Dzhandzhapanyan <norikd@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Erik Stromdahl <erik.stromdahl@gmail.com>, kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Norik Dzhandzhapanyan <norikd@gmail.com> wrote:
-
-> Report per chain RSSI to mac80211.
-> 
-> Signed-off-by: Norik Dzhandzhapanyan <norikd@gmail.com>
-> [kvalo@qca.qualcomm.com: fix conflicts and style]
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-This failed to apply and had quite a few checkpatch warnings. So I recreted the
-patch manually:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=5df110e3a093771f23001be2012ab6fa4d87089b
-
--- 
-https://patchwork.kernel.org/patch/9760887/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+On 06/12/2017 08:03 AM, Erik Stromdahl wrote:
+> Add HTT TX function for HL interfaces.
+> Intended for SDIO and USB.
+>
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+> ---
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 48418f9..c5fd803 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -3572,7 +3572,10 @@ static int ath10k_mac_tx_submit(struct ath10k *ar,
+>   
+>   	switch (txpath) {
+>   	case ATH10K_MAC_TX_HTT:
+> -		ret = ath10k_htt_tx(htt, txmode, skb);
+> +		if (ar->is_high_latency)
+Can we use function pointers at initial time to avoid condition check at 
+hot path?
+I'm afraid adding more lines on hot path.
+> +			ret = ath10k_htt_tx_hl(htt, txmode, skb);
+> +		else
+> +			ret = ath10k_htt_tx_ll(htt, txmode, skb);
+>   		break;
+>   	case ATH10K_MAC_TX_HTT_MGMT:
+>   		ret = ath10k_htt_mgmt_tx(htt, skb);
 
 
 _______________________________________________
