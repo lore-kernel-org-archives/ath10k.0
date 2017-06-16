@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dLl7B-0004aK-KW
- for ath10k@lists.infradead.org; Fri, 16 Jun 2017 06:52:19 +0000
+ id 1dLl8L-0004nI-HD
+ for ath10k@lists.infradead.org; Fri, 16 Jun 2017 06:53:31 +0000
 MIME-Version: 1.0
-Subject: Re: [v3] ath10k: Define structures for CE ctrl/misc register
+Subject: Re: [1/1] Add per chain RSSI reporting.
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1496739941-18132-1-git-send-email-c_sgarna@qti.qualcomm.com>
-References: <1496739941-18132-1-git-send-email-c_sgarna@qti.qualcomm.com>
-Message-ID: <5db1646de68e4b9c86763c7a37ba1397@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 16 Jun 2017 08:51:49 +0200
+In-Reply-To: <CAAV6Hgmjq9DDpcUUTZtDwodUjKrkzjnKSNZ+sK8U=M_AQgr-iQ@mail.gmail.com>
+References: <CAAV6Hgmjq9DDpcUUTZtDwodUjKrkzjnKSNZ+sK8U=M_AQgr-iQ@mail.gmail.com>
+Message-ID: <f7d81be8a6694889bd159699c10c949b@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 16 Jun 2017 08:53:02 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +22,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sarada Prasanna Garnayak <c_sgarna@qti.qualcomm.com>
+To: Norik Dzhandzhapanyan <norikd@gmail.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Sarada Prasanna Garnayak <c_sgarna@qti.qualcomm.com> wrote:
+Norik Dzhandzhapanyan <norikd@gmail.com> wrote:
 
-> Define structures for the copy engine ctrl/misc registers,
-> that includes CE CMD halt, watermark source, watermark destination,
-> host IE ring, source, destination and dmax ring.
+> Report per chain RSSI to mac80211.
 > 
-> This adds support to avoid the conditional compilation,
-> code optimization and dynamic configuration of the copy engine
-> register map for respective hardware bus interface.
-> 
-> Signed-off-by: Sarada Prasanna Garnayak <c_sgarna@qti.qualcomm.com>
+> Signed-off-by: Norik Dzhandzhapanyan <norikd@gmail.com>
+> [kvalo@qca.qualcomm.com: fix conflicts and style]
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-03a016f8944c ath10k: define structures for CE ctrl/misc register
+8241253d03fe ath10k: add per chain RSSI reporting
 
 -- 
-https://patchwork.kernel.org/patch/9768317/
+https://patchwork.kernel.org/patch/9760887/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
