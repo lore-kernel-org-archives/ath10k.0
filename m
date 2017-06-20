@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from thunder.iei.com.tw ([122.147.228.153])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dN8kG-0007yE-7u
- for ath10k@lists.infradead.org; Tue, 20 Jun 2017 02:18:21 +0000
-Received: from exchange-2007.ieinet.org ([172.16.2.151])
- by Thunder.iei.com.tw with ESMTP id v5K2I2pB046023
- for <ath10k@lists.infradead.org>; Tue, 20 Jun 2017 10:18:02 +0800 (GMT-8)
- (envelope-from mingmintang@ieiworld.com)
-From: Mingmin Tang <mingmintang@ieiworld.com>
-Subject: QCA6174A Bluetooth HSP could not work
-Date: Tue, 20 Jun 2017 10:18:24 +0800
-Message-ID: <000a01d2e96b$7e82a7b0$7b87f710$@com>
+Received: from universe.cdot.in ([49.128.111.121])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dNAOF-0006a0-5W
+ for ath10k@lists.infradead.org; Tue, 20 Jun 2017 04:03:46 +0000
+From: "KAVITA MATHUR" <kavitam@cdot.in>
+Subject: Enabling 802.11h transmit power control
+Date: Tue, 20 Jun 2017 09:26:28 +0530
+Message-Id: <20170620035519.M70456@cdot.in>
 MIME-Version: 1.0
-Content-Language: zh-tw
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +16,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: mingmintang@ieiworld.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, ath9k-devel@qca.qualcomm.com
 
-OS: lubuntu 17.04
-Headphone: SONY SBH60
-Bluetooth Module: AW-CB260NF(QCA6174A)
-
-No error message when select A2DP and HSP/HFP profile in pavucontrol.
-A2DP: work ok.
-HSP/HFP: Input and output devices could be shown in pavucontrol, but they
-don't have volume meter bar.
-The media player would stop(like waiting bluetooth device) when playing
-audio by hsp.
-
-Test other bluetooth module(Intel 7260HMW, Realtek RTL8821ae), A2DP and
-HSP/HFP profile all work ok.
-It seems like firmware or driver issue of QCA6174A.
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CkhpLAogIFdlIGFyZSB3b3JraW5nIG9uIFQxMDI0IGJhc2VkIGN1c3RvbSBib2FyZCB3aXRoIGF0
+aGVyb3MgV0xFOTAwdnggcmFkaW8uIHRoZSBrZXJuZWwKdmVyc2lvbiBpcyAzLjEyLCBhdGgxMGsg
+ZHJpdmVycyBhcmUgYmFja3BvcnRlZCBmcm9tIDQuNC4gSW4gdGhpcyBzZXR1cCB3ZSB3YW50IHRv
+IGVuYWJsZQo4MDIuMTFoIHRyYW5zbWl0IHBvd2VyIGNvbnRyb2wuIEhvdyB0byBkbyBpdD8KICBD
+YW4geW91IHBsZWFzZSBoZWxwIG9uIHRoaXMuCgpUaGFua3MgJiBSZWdhcmRzLArgpJXgpLXgpL/g
+pKTgpL4g4KSu4KS+4KSl4KWB4KSwIEthdml0YSBNYXRodXIgCuCkteCksOCkv+Ckt+CljeCkoCDg
+pIXgpKjgpYHgpLjgpILgpKfgpL7gpKgg4KSF4KSt4KS/4KSv4KSC4KSk4KS+ICBTZW5pb3IgUmVz
+ZWFyY2ggRW5naW5lZXIgCuCkuOClgC3gpKHgpYngpJ8gICAgICAgICAgICAgICAgICAgICAgQy1E
+T1QK4KSH4KSy4KWI4KSV4KWN4KSf4KWN4KSw4KWJ4KSo4KS/4KSV4KWN4KS4IOCkuOCkv+Ckn+Cl
+gCDgpKvgpYfgpJzgpLwgSSAgICAgICAgIEVsZWN0cm9uaWNzIENpdHkgUGhhc2UgSQrgpLngpYvg
+pLjgpYLgpLAg4KSw4KWL4KShLCDgpKzgpYfgpILgpJfgpLLgpYLgpLDgpYEgICAgICAgICAgICAg
+ICBIb3N1ciBSb2FkLCBCZW5nYWx1cnUg4oCTIDU2MDEwMArgpKvgpYvgpKggIFBoIDA4MC0yODUy
+OTg5NgpEaXNjbGFpbWVyOgotLS0tLS0tLS0tClRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFu
+c21pdHRlZCB3aXRoIGl0CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
