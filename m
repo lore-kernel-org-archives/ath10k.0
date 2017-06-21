@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x22c.google.com ([2a00:1450:400c:c0c::22c])
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNbrN-000703-Ei
- for ath10k@lists.infradead.org; Wed, 21 Jun 2017 09:23:39 +0000
-Received: by mail-wr0-x22c.google.com with SMTP id r103so126382603wrb.0
- for <ath10k@lists.infradead.org>; Wed, 21 Jun 2017 02:23:16 -0700 (PDT)
-Received: from [192.168.2.120] ([213.58.201.38])
- by smtp.gmail.com with ESMTPSA id l46sm3557695wrl.15.2017.06.21.02.23.14
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 21 Jun 2017 02:23:14 -0700 (PDT)
-From: =?utf-8?Q?Patr=C3=ADcia_Oliveira?= <poliveira@veniamworks.com>
-Mime-Version: 1.0 (Mac OS X Mail 10.0 \(3226\))
-Subject: Test mode
-Message-Id: <41F54C83-4493-48FC-AA15-A777C477DB29@veniamworks.com>
-Date: Wed, 21 Jun 2017 10:23:13 +0100
+ id 1dNbtW-0000Qo-5i
+ for ath10k@lists.infradead.org; Wed, 21 Jun 2017 09:25:51 +0000
+Received: by mail-pg0-x241.google.com with SMTP id e187so17812163pgc.3
+ for <ath10k@lists.infradead.org>; Wed, 21 Jun 2017 02:25:29 -0700 (PDT)
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ath10k: add const to thermal_cooling_device_ops structure
+Date: Wed, 21 Jun 2017 14:53:30 +0530
+Message-Id: <1498037010-21024-1-git-send-email-bhumirks@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +17,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: julia.lawall@lip6.fr, kvalo@qca.qualcomm.com, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 
-SSB3b3VsZCBsaWtlIHRvIGtub3cgaWYgeW91IGhhdmUgdGVzdCBtb2RlIG9wdGlvbiBhdmFpbGFi
-bGUuIEkgd291bGQgbGlrZSB0byBwdXQgbXkgd2lmaSBtb2R1bGUgb3BlcmF0aW5nIGluIHRlc3Qg
-bW9kZSBhbmQgYmUgYWJsZSB0byBjaGFuZ2UgOgoKLSBUcmFuc21pc3Npb24gZnJlcXVlbmN5Ci0g
-Q2hhbm5lbAotVHJhbnNtaXNzaW9uIHBvd2VyCi0gVHJhbnNtaXNzaW9uIGR1dHkgY3ljbGUKClRo
-YW5rIHlvdS4KCkJlc3QgUmVnYXJkcywKUGF0csOtY2lhCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+Declare thermal_cooling_device_ops structure as const as it is only passed
+as an argument to the function thermal_cooling_device_register and this
+argument is of type const. So, declare the structure as const.
+
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/thermal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
+index 87948af..ef717b6 100644
+--- a/drivers/net/wireless/ath/ath10k/thermal.c
++++ b/drivers/net/wireless/ath/ath10k/thermal.c
+@@ -63,7 +63,7 @@ ath10k_thermal_set_cur_throttle_state(struct thermal_cooling_device *cdev,
+ 	return 0;
+ }
+ 
+-static struct thermal_cooling_device_ops ath10k_thermal_ops = {
++static const struct thermal_cooling_device_ops ath10k_thermal_ops = {
+ 	.get_max_state = ath10k_thermal_get_max_throttle_state,
+ 	.get_cur_state = ath10k_thermal_get_cur_throttle_state,
+ 	.set_cur_state = ath10k_thermal_set_cur_throttle_state,
+-- 
+2.7.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
