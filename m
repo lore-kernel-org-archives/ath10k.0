@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNxXu-0000cO-AM
+ id 1dNxXu-0000cg-AN
  for ath10k@lists.infradead.org; Thu, 22 Jun 2017 08:32:59 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: [PATCH 00/12] ath10k: firmware update 20170621
-Date: Thu, 22 Jun 2017 11:31:56 +0300
-Message-ID: <1498120328-2017-1-git-send-email-kvalo@qca.qualcomm.com>
+Subject: [PATCH 01/12] ath10k: QCA4019 hw1.0: update board-2.bin
+Date: Thu, 22 Jun 2017 11:31:57 +0300
+Message-ID: <1498120328-2017-2-git-send-email-kvalo@qca.qualcomm.com>
+In-Reply-To: <1498120328-2017-1-git-send-email-kvalo@qca.qualcomm.com>
+References: <1498120328-2017-1-git-send-email-kvalo@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,43 +25,37 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-firmware@kernel.org
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ ath10k/QCA4019/hw1.0/board-2.bin | Bin 72788 -> 109172 bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
 
-here's a set of firmware and board file updates for ath10k.
+diff --git a/ath10k/QCA4019/hw1.0/board-2.bin b/ath10k/QCA4019/hw1.0/board-2.bin
+index 25d204295d532758730d6dc5957ac075bf486827..a8b1f34b70a3ca3ef54a80bcfe2186de3fbefc8d 100644
+GIT binary patch
+delta 1973
+zcmc&!ZAep57(Qq0!=|a3uC>;>%(Z#@G>y20VU4jYRvDyq>0@Gqc4^g0%ed(k6Mw`~
+z^U%a-pfODf=IpG^1v)E={zMT%5%eeMU-kh}{V6-=x&lEc`mpzMxX*dsuk#+>^NtNE
+zKa8o{cfs+&-5wiM;QO}s8YtkQm9ynt`HmFWiS=$-*V00CdR*5k>soFST{U_(d=CcE
+zMui?nN7}3;g7X!zdW5<0q?J7-lk<2y5CFier0cpL>D|UzMgUR^38^H`^UzMWh}uS2
+z{Mp^7l~|Uw(UnKUYPFgfCW#o6=}$Nk%WAP$%w|SL<Zm)g!?Dwm({kkK+4xdgM>c*f
+zb*bgzUussZol<UEFN9gE%j?>+Nbw+tAthG;kdu)~000XC&=is|3sB8?HmY_z(BTo+
+z0;<{QPy&Z)@}qky6B84t@C~aTm;m716XLc^p@k@Ol>;@VF4q_g20#{}Sv2SEB2@Zz
+zzjic-(Us~NbzvRyrmoS3e+aR%;L8QiHTdJFMy1+!u{$#S5cOo_pm2r?T`ORu#9%1s
+zlY|Q1nTQ9v#9DqUw<Hk__(d=8<Q6Ax5UnWiobfY}-ncCfB%+~y-&vuOF9}5gSHuS4
+z7+*$Ew;=G_xMhi0phNWVc8;MA!MM!^5;)Z7YZ59;)`eoePN9z9#}$Qc`TWB15(kHF
+z7H7;SW-K77dVLMTUfv#x2l~Wjp_bo+UKHyU!8ktkC7>x97(COy*-0-b8n5r#UPV!j
+z-`UK14V7um(cr=J>&4uvdHitn=-DkLREr}gFKjBK2tD4EU33SZXmV|)+gq{vPS-w)
+zhWfq!4NdIvtg^e;4x!@4+{60)1HCm3E<4rUj#o8r*+WsRTLpWRXy>fCXw1cE!|l}@
+z^bhJw3ry&%>k<xM{h)}YrNbd8Ev2#~k944n@~ou)W{{KqSK?$|Y3WQ?Jhk8hGjRRr
+z!uczm&MatGGHWef+;cSo(P+7f&eigKO~;~j=<$lDa|-jP42as(sIJwhGSPV`Pl8CR
+z2qDUEJEm|7^o^q<6=wXd?ZIp)Bp;|6^%t1&$3XgAiOjRfk;Z%nCX<ZlnEUsf^wT7{
+zREU+yC?hh$4f?;wNx6S1pqVimlE*R{bd%^8xC7LZ-1Kib|DrGHs&3qjp+fGX^ptNn
+CCezRW
 
-Kalle
-
-Kalle Valo (12):
-  ath10k: QCA4019 hw1.0: update board-2.bin
-  ath10k: QCA4019 hw1.0: update firmware to 10.4-3.4-00082
-  ath10k: QCA6174 hw3.0: update board-2.bin
-  ath10k: QCA6174 hw3.0: add WLAN.RM.4.4-00022-QCARMSWPZ-2
-  ath10k: QCA9377 hw1.0: update board-2.bin
-  ath10k: QCA9887 hw1.0: update firmware to 10.2.4-1.0-00029
-  ath10k: QCA9888 hw2.0: update board-2.bin
-  ath10k: QCA9888 hw2.0: update firmware to 10.4-3.5.1-00014
-  ath10k: QCA988X hw2.0: update firmware to 10.2.4.70.63-2
-  ath10k: QCA9984 hw1.0: update board-2.bin
-  ath10k: QCA9984 hw1.0: update firmware to 10.4-3.4-00082
-  ath10k: update year in license
-
- LICENSE.QualcommAtheros_ath10k                    |    2 +-
- WHENCE                                            |   13 +-
- ath10k/QCA4019/hw1.0/board-2.bin                  |  Bin 72788 -> 109172 bytes
- ath10k/QCA4019/hw1.0/firmware-5.bin               |  Bin 512520 -> 535412 bytes
- ath10k/QCA6174/hw3.0/board-2.bin                  |  Bin 361924 -> 477060 bytes
- ath10k/QCA6174/hw3.0/firmware-6.bin               |  Bin 0 -> 711408 bytes
- ath10k/QCA6174/hw3.0/notice_ath10k_firmware-6.txt | 1781 +++++++++++++++++++++
- ath10k/QCA9377/hw1.0/board-2.bin                  |  Bin 427668 -> 304308 bytes
- ath10k/QCA9887/hw1.0/firmware-5.bin               |  Bin 234560 -> 235880 bytes
- ath10k/QCA9888/hw2.0/board-2.bin                  |  Bin 12148 -> 72788 bytes
- ath10k/QCA9888/hw2.0/firmware-5.bin               |  Bin 565168 -> 647460 bytes
- ath10k/QCA988X/hw2.0/firmware-5.bin               |  Bin 248188 -> 249384 bytes
- ath10k/QCA9984/hw1.0/board-2.bin                  |  Bin 12144 -> 121264 bytes
- ath10k/QCA9984/hw1.0/firmware-5.bin               |  Bin 591308 -> 622060 bytes
- 14 files changed, 1790 insertions(+), 6 deletions(-)
- create mode 100644 ath10k/QCA6174/hw3.0/firmware-6.bin
- create mode 100644 ath10k/QCA6174/hw3.0/notice_ath10k_firmware-6.txt
+delta 99
+zcmexzh3(1?mI>jEuQx{Isxz`|KBoSWoiS(g4t-uQFD#IQapGo)c(7bs8&FPeb44Fm
+nu5Bw&?$qQPdyh_*_m$kdZC}3{P`}$#pqi7LE#5-)^Kk$Gpt~l2
 
 -- 
 2.7.4
