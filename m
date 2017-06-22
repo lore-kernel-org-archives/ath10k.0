@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNxYR-0000jx-6z
- for ath10k@lists.infradead.org; Thu, 22 Jun 2017 08:33:32 +0000
+ id 1dNxYW-0000k6-O3
+ for ath10k@lists.infradead.org; Thu, 22 Jun 2017 08:33:38 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: [PATCH 03/12] ath10k: QCA6174 hw3.0: update board-2.bin
-Date: Thu, 22 Jun 2017 11:31:59 +0300
-Message-ID: <1498120328-2017-4-git-send-email-kvalo@qca.qualcomm.com>
+Subject: [PATCH 05/12] ath10k: QCA9377 hw1.0: update board-2.bin
+Date: Thu, 22 Jun 2017 11:32:01 +0300
+Message-ID: <1498120328-2017-6-git-send-email-kvalo@qca.qualcomm.com>
 In-Reply-To: <1498120328-2017-1-git-send-email-kvalo@qca.qualcomm.com>
 References: <1498120328-2017-1-git-send-email-kvalo@qca.qualcomm.com>
 MIME-Version: 1.0
@@ -27,20 +27,25 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- ath10k/QCA6174/hw3.0/board-2.bin | Bin 361924 -> 477060 bytes
+ ath10k/QCA9377/hw1.0/board-2.bin | Bin 427668 -> 304308 bytes
  1 file changed, 0 insertions(+), 0 deletions(-)
 
-diff --git a/ath10k/QCA6174/hw3.0/board-2.bin b/ath10k/QCA6174/hw3.0/board-2.bin
-index ea18004951fed49aa9214093fa900427e4960a5d..a442315503bfc70f5a5fbfaa6f04004702d8474c 100644
+diff --git a/ath10k/QCA9377/hw1.0/board-2.bin b/ath10k/QCA9377/hw1.0/board-2.bin
+index 841456c9e982599fb4c3552d0ab28c62abc6f63f..a92e8cbd168ead02d829d9fa80e7ef4599b9a44b 100644
 GIT binary patch
-delta 261
-zcmX@oE!NU6+t9+;!qmdt!m@?+NbBSeye!ji9AXM%G~N8Zfn8zxwq#~8W^+@+&HfJ&
-zJR=Ct>@kx#lacY}eg&YE*kL9KMk9!(FlJ`)>1R_|csKuQ_#-cwl9;ShT$)r|SzMBu
-ztDBNqmYJMtYhYw*0Z|RsX@=0rWN5MZd;+@yPJNbmrOgZ>4l;YhD9U1NU}OU2f*flI
-Qb?ml8MhV75pu|ym0QL-7P5=M^
+delta 168
+zcmV;Z09XH%jT*Gc60n*ew;G}W{2#Yg0|U6Aw{8RkC_uM%ApwM7w;H4a{2#aWp#gSa
+zw~QtRDnPf^f&y1Sw@u>$2_U!jqXTzfx6Nb($>6v4r3ICMx65V*$sduh1eds>0Y4=&
+zI4pB@Vsm+ObY*QVWMy_~V`V)tI59A70RR91ydMAnydOdQmmH!29|8sulMx#mw^*V9
+W^c)AA9|8cJ-vP7ngwX+$gdecERza}<
 
-delta 19
-acmZqamp#%g*3iP(!qmdt!m@?+NGkwIwFfc)
+delta 618
+zcmdmTQfNxA)P`9KOiwZ<*2ptS2u_};BE9*B!UM+5GnjNmHa|7H%E|P29!O3cEH`mS
+z&*l`x1jfxvm^|1#lz>1H3m{b-XzQ-+eXAL-^K3pUcABwXYG8pNhV`2#s$62+Y!tnM
+z6<0{9mIFfyM<}{Z$1Rt-{VM0isz36R%^s?3pQXqsq%b{)k&zF=+}@+en3n)z|B>JR
+zZ6RY>!t@>$7Cs#IY=3ISg43eyOMfupmOLuKgj@2d1rvwY=3WI(h3(gxm=qK?PjlF@
+zU_0Mpruc--z7I7WwqI*xR8ZI+#?1WS0mzjJ3ERz{Fi&mRp3TIh?XZ1Y3d=ot0K9Iq
+Aj{pDw
 
 -- 
 2.7.4
