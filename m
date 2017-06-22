@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNfWo-0007i4-VM
- for ath10k@lists.infradead.org; Wed, 21 Jun 2017 13:18:41 +0000
-MIME-Version: 1.0
-Subject: Re: [v2,
- 1/3] ath10k: Use complete VHT chan width for 160MHz workaround
+ id 1dNxXu-0000cO-AM
+ for ath10k@lists.infradead.org; Thu, 22 Jun 2017 08:32:59 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20170609110750.14950-1-sven.eckelmann@openmesh.com>
-References: <20170609110750.14950-1-sven.eckelmann@openmesh.com>
-Message-ID: <afa6ec98d286450687ed30267026d7a8@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 21 Jun 2017 15:18:09 +0200
+Subject: [PATCH 00/12] ath10k: firmware update 20170621
+Date: Thu, 22 Jun 2017 11:31:56 +0300
+Message-ID: <1498120328-2017-1-git-send-email-kvalo@qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +20,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: linux-firmware@kernel.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Sven Eckelmann <sven.eckelmann@openmesh.com> wrote:
+Hi,
 
-> The ath10k firmware doesn't announce its VHT channel width capabilities in
-> the vht_cap information from the "service ready event" arguments. The
-> driver must therefore check whether the 160MHz short GI bit is set and
-> whether the driver still doesn't set the bits for the 160/80+80 MHz
-> capabilities.
-> 
-> The two bits for the channel width are a two bit integer and not two
-> separate bits which cannot be parsed without the knowledge of the other
-> bit. Using IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160_80PLUS80MHZ (b10..) as a
-> mask for this task doesn't make any sense. The correct mask for the VHT
-> channel width should be used instead to make this check more readable.
-> 
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> [sven.eckelmann@openmesh.com: separate 160Mhz workaround cleanup, add commit
->  message]
-> Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+here's a set of firmware and board file updates for ath10k.
 
-3 patches applied to ath-next branch of ath.git, thanks.
+Kalle
 
-e509e5947708 ath10k: use complete VHT chan width for 160MHz workaround
-cc914a55006e ath10k: configure rxnss_override for QCA9984
-6824834946a6 ath10k: set rxnss_override for QCA9888
+Kalle Valo (12):
+  ath10k: QCA4019 hw1.0: update board-2.bin
+  ath10k: QCA4019 hw1.0: update firmware to 10.4-3.4-00082
+  ath10k: QCA6174 hw3.0: update board-2.bin
+  ath10k: QCA6174 hw3.0: add WLAN.RM.4.4-00022-QCARMSWPZ-2
+  ath10k: QCA9377 hw1.0: update board-2.bin
+  ath10k: QCA9887 hw1.0: update firmware to 10.2.4-1.0-00029
+  ath10k: QCA9888 hw2.0: update board-2.bin
+  ath10k: QCA9888 hw2.0: update firmware to 10.4-3.5.1-00014
+  ath10k: QCA988X hw2.0: update firmware to 10.2.4.70.63-2
+  ath10k: QCA9984 hw1.0: update board-2.bin
+  ath10k: QCA9984 hw1.0: update firmware to 10.4-3.4-00082
+  ath10k: update year in license
+
+ LICENSE.QualcommAtheros_ath10k                    |    2 +-
+ WHENCE                                            |   13 +-
+ ath10k/QCA4019/hw1.0/board-2.bin                  |  Bin 72788 -> 109172 bytes
+ ath10k/QCA4019/hw1.0/firmware-5.bin               |  Bin 512520 -> 535412 bytes
+ ath10k/QCA6174/hw3.0/board-2.bin                  |  Bin 361924 -> 477060 bytes
+ ath10k/QCA6174/hw3.0/firmware-6.bin               |  Bin 0 -> 711408 bytes
+ ath10k/QCA6174/hw3.0/notice_ath10k_firmware-6.txt | 1781 +++++++++++++++++++++
+ ath10k/QCA9377/hw1.0/board-2.bin                  |  Bin 427668 -> 304308 bytes
+ ath10k/QCA9887/hw1.0/firmware-5.bin               |  Bin 234560 -> 235880 bytes
+ ath10k/QCA9888/hw2.0/board-2.bin                  |  Bin 12148 -> 72788 bytes
+ ath10k/QCA9888/hw2.0/firmware-5.bin               |  Bin 565168 -> 647460 bytes
+ ath10k/QCA988X/hw2.0/firmware-5.bin               |  Bin 248188 -> 249384 bytes
+ ath10k/QCA9984/hw1.0/board-2.bin                  |  Bin 12144 -> 121264 bytes
+ ath10k/QCA9984/hw1.0/firmware-5.bin               |  Bin 591308 -> 622060 bytes
+ 14 files changed, 1790 insertions(+), 6 deletions(-)
+ create mode 100644 ath10k/QCA6174/hw3.0/firmware-6.bin
+ create mode 100644 ath10k/QCA6174/hw3.0/notice_ath10k_firmware-6.txt
 
 -- 
-https://patchwork.kernel.org/patch/9778085/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.7.4
 
 
 _______________________________________________
