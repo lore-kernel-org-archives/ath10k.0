@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Thu, 22 Jun 2017 12:06:59 -0700
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH 00/12] ath10k: firmware update 20170621
-Message-ID: <20170622190659.GK13400@bombadil.infradead.org>
-References: <1498120328-2017-1-git-send-email-kvalo@qca.qualcomm.com>
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dPF6T-0000mF-E3
+ for ath10k@lists.infradead.org; Sun, 25 Jun 2017 21:29:59 +0000
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH][-next] ath10k: fix a bunch of spelling mistakes in messages
+Date: Sun, 25 Jun 2017 22:29:32 +0100
+Message-Id: <20170625212932.29787-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1498120328-2017-1-git-send-email-kvalo@qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,57 +20,89 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, linux-firmware@kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-On Thu, Jun 22, 2017 at 11:31:56AM +0300, Kalle Valo wrote:
-> Hi,
-> 
-> here's a set of firmware and board file updates for ath10k.
-> 
+From: Colin Ian King <colin.king@canonical.com>
 
-applied, thanks kalle.
+Fix the following spelling mistakes in messages:
+  syncronise -> synchronize
+  unusally -> unusually
+  addrress -> address
+  inverval -> interval
 
---kyle
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c     | 2 +-
+ drivers/net/wireless/ath/ath10k/pci.c     | 2 +-
+ drivers/net/wireless/ath/ath10k/sdio.c    | 4 ++--
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-> Kalle
-> 
-> Kalle Valo (12):
->   ath10k: QCA4019 hw1.0: update board-2.bin
->   ath10k: QCA4019 hw1.0: update firmware to 10.4-3.4-00082
->   ath10k: QCA6174 hw3.0: update board-2.bin
->   ath10k: QCA6174 hw3.0: add WLAN.RM.4.4-00022-QCARMSWPZ-2
->   ath10k: QCA9377 hw1.0: update board-2.bin
->   ath10k: QCA9887 hw1.0: update firmware to 10.2.4-1.0-00029
->   ath10k: QCA9888 hw2.0: update board-2.bin
->   ath10k: QCA9888 hw2.0: update firmware to 10.4-3.5.1-00014
->   ath10k: QCA988X hw2.0: update firmware to 10.2.4.70.63-2
->   ath10k: QCA9984 hw1.0: update board-2.bin
->   ath10k: QCA9984 hw1.0: update firmware to 10.4-3.4-00082
->   ath10k: update year in license
-> 
->  LICENSE.QualcommAtheros_ath10k                    |    2 +-
->  WHENCE                                            |   13 +-
->  ath10k/QCA4019/hw1.0/board-2.bin                  |  Bin 72788 -> 109172 bytes
->  ath10k/QCA4019/hw1.0/firmware-5.bin               |  Bin 512520 -> 535412 bytes
->  ath10k/QCA6174/hw3.0/board-2.bin                  |  Bin 361924 -> 477060 bytes
->  ath10k/QCA6174/hw3.0/firmware-6.bin               |  Bin 0 -> 711408 bytes
->  ath10k/QCA6174/hw3.0/notice_ath10k_firmware-6.txt | 1781 +++++++++++++++++++++
->  ath10k/QCA9377/hw1.0/board-2.bin                  |  Bin 427668 -> 304308 bytes
->  ath10k/QCA9887/hw1.0/firmware-5.bin               |  Bin 234560 -> 235880 bytes
->  ath10k/QCA9888/hw2.0/board-2.bin                  |  Bin 12148 -> 72788 bytes
->  ath10k/QCA9888/hw2.0/firmware-5.bin               |  Bin 565168 -> 647460 bytes
->  ath10k/QCA988X/hw2.0/firmware-5.bin               |  Bin 248188 -> 249384 bytes
->  ath10k/QCA9984/hw1.0/board-2.bin                  |  Bin 12144 -> 121264 bytes
->  ath10k/QCA9984/hw1.0/firmware-5.bin               |  Bin 591308 -> 622060 bytes
->  14 files changed, 1790 insertions(+), 6 deletions(-)
->  create mode 100644 ath10k/QCA6174/hw3.0/firmware-6.bin
->  create mode 100644 ath10k/QCA6174/hw3.0/notice_ath10k_firmware-6.txt
-> 
-> -- 
-> 2.7.4
-> 
-> 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 4a71815490ae..55c808f03a84 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1392,7 +1392,7 @@ static int ath10k_vdev_stop(struct ath10k_vif *arvif)
+ 
+ 	ret = ath10k_vdev_setup_sync(ar);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to syncronise setup for vdev %i: %d\n",
++		ath10k_warn(ar, "failed to synchronize setup for vdev %i: %d\n",
+ 			    arvif->vdev_id, ret);
+ 		return ret;
+ 	}
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 4f3f513dac4f..7ebfc409018d 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -469,7 +469,7 @@ static int ath10k_pci_wake_wait(struct ath10k *ar)
+ 	while (tot_delay < PCIE_WAKE_TIMEOUT) {
+ 		if (ath10k_pci_is_awake(ar)) {
+ 			if (tot_delay > PCIE_WAKE_LATE_US)
+-				ath10k_warn(ar, "device wakeup took %d ms which is unusally long, otherwise it works normally.\n",
++				ath10k_warn(ar, "device wakeup took %d ms which is unusually long, otherwise it works normally.\n",
+ 					    tot_delay / 1000);
+ 			return 0;
+ 		}
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 9e78fbae8413..859ed870bd97 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -1553,7 +1553,7 @@ static int ath10k_sdio_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
+ 	/* read the data */
+ 	ret = ath10k_sdio_read(ar, MBOX_WINDOW_DATA_ADDRESS, buf, buf_len);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to read from mbox window data addrress: %d\n",
++		ath10k_warn(ar, "failed to read from mbox window data address: %d\n",
+ 			    ret);
+ 		return ret;
+ 	}
+@@ -1592,7 +1592,7 @@ static int ath10k_sdio_hif_diag_write_mem(struct ath10k *ar, u32 address,
+ 	ret = ath10k_sdio_write(ar, MBOX_WINDOW_DATA_ADDRESS, data, nbytes);
+ 	if (ret) {
+ 		ath10k_warn(ar,
+-			    "failed to write 0x%p to mbox window data addrress: %d\n",
++			    "failed to write 0x%p to mbox window data address: %d\n",
+ 			    data, ret);
+ 		return ret;
+ 	}
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index f9188027a6f6..7616c1c4bbd3 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -2022,7 +2022,7 @@ ath10k_wmi_tlv_op_gen_sta_keepalive(struct ath10k *ar,
+ 	arp->dest_ip4_addr = arg->dest_ip4_addr;
+ 	ether_addr_copy(arp->dest_mac_addr.addr, arg->dest_mac_addr);
+ 
+-	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv sta keepalive vdev %d enabled %d method %d inverval %d\n",
++	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv sta keepalive vdev %d enabled %d method %d interval %d\n",
+ 		   arg->vdev_id, arg->enabled, arg->method, arg->interval);
+ 	return skb;
+ }
+-- 
+2.11.0
+
 
 _______________________________________________
 ath10k mailing list
