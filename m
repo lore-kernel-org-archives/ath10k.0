@@ -1,13 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPF6T-0000mF-E3
- for ath10k@lists.infradead.org; Sun, 25 Jun 2017 21:29:59 +0000
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][-next] ath10k: fix a bunch of spelling mistakes in messages
-Date: Sun, 25 Jun 2017 22:29:32 +0100
-Message-Id: <20170625212932.29787-1-colin.king@canonical.com>
+ id 1dPINw-0001Bz-G0
+ for ath10k@lists.infradead.org; Mon, 26 Jun 2017 01:00:14 +0000
+Received: from mail-vk0-f42.google.com (mail-vk0-f42.google.com
+ [209.85.213.42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id B7D6722B6C
+ for <ath10k@lists.infradead.org>; Mon, 26 Jun 2017 00:59:50 +0000 (UTC)
+Received: by mail-vk0-f42.google.com with SMTP id 191so33221421vko.2
+ for <ath10k@lists.infradead.org>; Sun, 25 Jun 2017 17:59:50 -0700 (PDT)
 MIME-Version: 1.0
+From: Andy Lutomirski <luto@kernel.org>
+Date: Sun, 25 Jun 2017 17:59:28 -0700
+Message-ID: <CALCETrUB2_=aTfvLGEb0qq0uGOr1CiR-Kmq975of2gDAiVooOA@mail.gmail.com>
+Subject: ath10k isn't working on my Killer 1535 isn't working
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,89 +28,299 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Colin Ian King <colin.king@canonical.com>
+I have a Killer Wireless 1535 (only slightly dubiously sourced)
+plugged in to an NGFF-to-desktop-PCIe adapter (nameless Chinese brand
+resold on Amazon) plugged into an entirely legit Intel workstation
+board.
 
-Fix the following spelling mistakes in messages:
-  syncronise -> synchronize
-  unusally -> unusually
-  addrress -> address
-  inverval -> interval
+With 4.12-rc5, I get:
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/ath/ath10k/mac.c     | 2 +-
- drivers/net/wireless/ath/ath10k/pci.c     | 2 +-
- drivers/net/wireless/ath/ath10k/sdio.c    | 4 ++--
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+[   20.104932] ath10k_pci 0000:02:00.0: enabling device (0000 -> 0002)
+[   20.105911] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2
+irq_mode 0 reset_mode 0
+[   20.327323] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target
+0x05030000 chip_id 0x00340aff sub 1a56:1535
+[   20.327324] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1
+tracing 1 dfs 0 testmode 1
+[   20.327697] ath10k_pci 0000:02:00.0: firmware ver
+WLAN.RM.4.4-00022-QCARMSWPZ-2 api 6 features wowlan,ignore-otp crc32
+4d458559
+[   20.394828] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A
+crc32 07ee144e
+[   20.973781] ath10k_pci 0000:02:00.0: Unknown eventid: 90118
+[   20.974556] ath10k_pci 0000:02:00.0: htt-ver 3.32 wmi-op 4 htt-op 3
+cal otp max-sta 32 raw 0 hwcrypto 1
+[   21.036355] ath: EEPROM regdomain: 0x69
+[   21.036356] ath: EEPROM indicates we should expect a direct regpair map
+[   21.036357] ath: Country alpha2 being used: 00
+[   21.036357] ath: Regpair used: 0x69
+[   21.045463] ath10k_pci 0000:02:00.0 wlp2s0: renamed from wlan0
+[   31.838938] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   32.736163] ath10k_pci 0000:02:00.0: failed to receive control
+response completion, polling..
+[   32.769738] ath10k_pci 0000:02:00.0: failed to wake target for
+write32 of 0x00000001 at 0x00034430: -110
+[   32.803518] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x00034444: -110
+[   32.836961] ath10k_pci 0000:02:00.0: failed to wake target for
+write32 of 0x0000001e at 0x00034430: -110
+[   32.870447] ath10k_pci 0000:02:00.0: failed to wake target for
+write32 of 0x00000001 at 0x00034830: -110
+[   32.904047] ath10k_pci 0000:02:00.0: failed to wake target for
+write32 of 0x00000001 at 0x00035430: -110
+[   32.937485] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x00035444: -110
+[   32.970914] ath10k_pci 0000:02:00.0: failed to wake target for
+write32 of 0x0000001e at 0x00035430: -110
+[   33.004331] ath10k_pci 0000:02:00.0: failed to wake target for
+write32 of 0x0000000e at 0x00034840: -110
+[   34.592162] ath10k_pci 0000:02:00.0: Service connect timeout
+[   34.592165] ath10k_pci 0000:02:00.0: failed to connect htt (-110)
+[   36.865085] ath10k_warn: 82 callbacks suppressed
+[   36.865088] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x00034410: -110
+[   36.898734] ath10k_pci 0000:02:00.0: failed to wake target for
+write32 of 0xffff0100 at 0x00034410: -110
+[   36.932328] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x00034410: -110
+[   36.965992] ath10k_pci 0000:02:00.0: failed to wake target for
+write32 of 0xfffeffff at 0x00034410: -110
+[   36.999573] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003444c: -110
+[   37.032967] ath10k_pci 0000:02:00.0: failed to wake target for
+write32 of 0x0000ffff at 0x0003444c: -110
+[   37.066458] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003444c: -110
+[   37.099847] ath10k_pci 0000:02:00.0: failed to wake target for
+write32 of 0xffff0010 at 0x0003444c: -110
+[   37.133236] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x00034848: -110
+[   37.166614] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x00034840: -110
+[   41.898469] ath10k_warn: 141 callbacks suppressed
+[   41.898471] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   41.931752] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   41.965137] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   41.998492] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   42.031904] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   42.065291] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   42.098680] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   42.132009] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   42.165346] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   42.198677] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   42.465839] ath10k_pci 0000:02:00.0: failed to read device
+register, device is gone
+[   46.908017] ath10k_warn: 140 callbacks suppressed
+[   46.908019] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   46.941401] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   46.974786] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   47.008182] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   47.041562] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   47.074957] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   47.108346] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   47.141729] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   47.175113] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   47.208507] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   48.508326] ath10k_pci 0000:02:00.0: failed to read device
+register, device is gone
+[   50.274668] ath10k_pci 0000:02:00.0: Could not init core: -110
+[   51.932467] ath10k_warn: 142 callbacks suppressed
+[   51.932470] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   51.964172] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   51.995922] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   52.027517] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   52.059156] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   52.090766] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   52.122471] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   52.154114] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   52.185810] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   52.217488] ath10k_pci 0000:02:00.0: failed to wake target for
+read32 at 0x0003a028: -110
+[   53.603019] ath10k_pci 0000:02:00.0: failed to read device
+register, device is gone
+[   53.697343] ath10k_pci 0000:02:00.0: firmware crashed! (uuid
+d1421756-f08d-44cd-a107-62ccc736f6d1)
+[   53.697345] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target
+0x05030000 chip_id 0x00340aff sub 1a56:1535
+[   53.697346] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1
+tracing 1 dfs 0 testmode 1
+[   53.697784] ath10k_pci 0000:02:00.0: firmware ver
+WLAN.RM.4.4-00022-QCARMSWPZ-2 api 6 features wowlan,ignore-otp crc32
+4d458559
+[   53.698011] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A
+crc32 07ee144e
+[   53.698012] ath10k_pci 0000:02:00.0: htt-ver 3.32 wmi-op 4 htt-op 3
+cal otp max-sta 32 raw 0 hwcrypto 1
+[   54.182050] ath10k_pci 0000:02:00.0: failed to read firmware dump area: -16
+[   54.182051] ath10k_pci 0000:02:00.0: Copy Engine register dump:
+[   54.308000] ath10k_pci 0000:02:00.0: [00]: 0x00034400 4294967295
+4294967295 4294967295 4294967295
+[   54.433988] ath10k_pci 0000:02:00.0: [01]: 0x00034800 4294967295
+4294967295 4294967295 4294967295
+[   54.559987] ath10k_pci 0000:02:00.0: [02]: 0x00034c00 4294967295
+4294967295 4294967295 4294967295
+[   54.685818] ath10k_pci 0000:02:00.0: [03]: 0x00035000 4294967295
+4294967295 4294967295 4294967295
+[   54.811703] ath10k_pci 0000:02:00.0: [04]: 0x00035400 4294967295
+4294967295 4294967295 4294967295
+[   54.937508] ath10k_pci 0000:02:00.0: [05]: 0x00035800 4294967295
+4294967295 4294967295 4294967295
+[   55.063466] ath10k_pci 0000:02:00.0: [06]: 0x00035c00 4294967295
+4294967295 4294967295 4294967295
+[   55.189298] ath10k_pci 0000:02:00.0: [07]: 0x00036000 4294967295
+4294967295 4294967295 4294967295
+[   55.189334] ath10k_pci 0000:02:00.0: failed to reset chip: -5
+[   55.189336] ath10k_pci 0000:02:00.0: Could not init hif: -5
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 4a71815490ae..55c808f03a84 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1392,7 +1392,7 @@ static int ath10k_vdev_stop(struct ath10k_vif *arvif)
- 
- 	ret = ath10k_vdev_setup_sync(ar);
- 	if (ret) {
--		ath10k_warn(ar, "failed to syncronise setup for vdev %i: %d\n",
-+		ath10k_warn(ar, "failed to synchronize setup for vdev %i: %d\n",
- 			    arvif->vdev_id, ret);
- 		return ret;
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 4f3f513dac4f..7ebfc409018d 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -469,7 +469,7 @@ static int ath10k_pci_wake_wait(struct ath10k *ar)
- 	while (tot_delay < PCIE_WAKE_TIMEOUT) {
- 		if (ath10k_pci_is_awake(ar)) {
- 			if (tot_delay > PCIE_WAKE_LATE_US)
--				ath10k_warn(ar, "device wakeup took %d ms which is unusally long, otherwise it works normally.\n",
-+				ath10k_warn(ar, "device wakeup took %d ms which is unusually long, otherwise it works normally.\n",
- 					    tot_delay / 1000);
- 			return 0;
- 		}
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 9e78fbae8413..859ed870bd97 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -1553,7 +1553,7 @@ static int ath10k_sdio_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
- 	/* read the data */
- 	ret = ath10k_sdio_read(ar, MBOX_WINDOW_DATA_ADDRESS, buf, buf_len);
- 	if (ret) {
--		ath10k_warn(ar, "failed to read from mbox window data addrress: %d\n",
-+		ath10k_warn(ar, "failed to read from mbox window data address: %d\n",
- 			    ret);
- 		return ret;
- 	}
-@@ -1592,7 +1592,7 @@ static int ath10k_sdio_hif_diag_write_mem(struct ath10k *ar, u32 address,
- 	ret = ath10k_sdio_write(ar, MBOX_WINDOW_DATA_ADDRESS, data, nbytes);
- 	if (ret) {
- 		ath10k_warn(ar,
--			    "failed to write 0x%p to mbox window data addrress: %d\n",
-+			    "failed to write 0x%p to mbox window data address: %d\n",
- 			    data, ret);
- 		return ret;
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index f9188027a6f6..7616c1c4bbd3 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2022,7 +2022,7 @@ ath10k_wmi_tlv_op_gen_sta_keepalive(struct ath10k *ar,
- 	arp->dest_ip4_addr = arg->dest_ip4_addr;
- 	ether_addr_copy(arp->dest_mac_addr.addr, arg->dest_mac_addr);
- 
--	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv sta keepalive vdev %d enabled %d method %d inverval %d\n",
-+	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv sta keepalive vdev %d enabled %d method %d interval %d\n",
- 		   arg->vdev_id, arg->enabled, arg->method, arg->interval);
- 	return skb;
- }
--- 
-2.11.0
+[snipped lots more fail]
 
+If I patch the driver to set pci_ps = false, I get this failure instead:
+
+[   10.329394] ath10k_pci 0000:02:00.0: enabling device (0000 -> 0002)
+[   10.329858] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2
+irq_mode 0 reset_mode 0
+[   10.551844] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target
+0x05030000 chip_id 0x00340aff sub 1a56:1535
+[   10.551850] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1
+tracing 1 dfs 0 testmode 1
+[   10.553492] ath10k_pci 0000:02:00.0: firmware ver
+WLAN.RM.4.4-00022-QCARMSWPZ-2 api 6 features wowlan,ignore-otp crc32
+4d458559
+[   10.620307] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A
+crc32 07ee144e
+[   11.247766] ath10k_pci 0000:02:00.0: Unknown eventid: 90118
+[   11.248425] ath10k_pci 0000:02:00.0: htt-ver 3.32 wmi-op 4 htt-op 3
+cal otp max-sta 32 raw 0 hwcrypto 1
+[   11.427598] ath10k_pci 0000:02:00.0 wlp2s0: renamed from wlan0
+[   13.280143] ath10k_pci 0000:02:00.0: failed to receive control
+response completion, polling..
+[   14.368314] ath10k_pci 0000:02:00.0: ctl_resp never came in (-110)
+[   14.368324] ath10k_pci 0000:02:00.0: failed to connect to HTC: -110
+[   17.391941] ath10k_pci 0000:02:00.0: failed to read device
+register, device is gone
+[   20.403868] ath10k_pci 0000:02:00.0: failed to read device
+register, device is gone
+[   20.403870] ath10k_pci 0000:02:00.0: failed to wait for target init: -5
+[   20.404589] ath10k_pci 0000:02:00.0: Could not init core: -110
+[   23.457795] ath10k_pci 0000:02:00.0: failed to read device
+register, device is gone
+[   23.457797] ath10k_pci 0000:02:00.0: failed to wait for target
+after cold reset: -5
+[   23.457801] ath10k_pci 0000:02:00.0: firmware crashed during chip reset
+[   23.457804] ath10k_pci 0000:02:00.0: firmware crashed! (uuid
+6e7a0871-efd3-4177-9ffc-5548b04b0a8c)
+[   23.457806] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target
+0x05030000 chip_id 0x00340aff sub 1a56:1535
+[   23.457807] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1
+tracing 1 dfs 0 testmode 1
+[   23.458148] ath10k_pci 0000:02:00.0: firmware ver
+WLAN.RM.4.4-00022-QCARMSWPZ-2 api 6 features wowlan,ignore-otp crc32
+4d458559
+[   23.458371] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A
+crc32 07ee144e
+[   23.458372] ath10k_pci 0000:02:00.0: htt-ver 3.32 wmi-op 4 htt-op 3
+cal otp max-sta 32 raw 0 hwcrypto 1
+[   23.470412] ath10k_pci 0000:02:00.0: failed to get memcpy hi
+address for firmware address 4: -16
+[   23.470412] ath10k_pci 0000:02:00.0: failed to read firmware dump area: -16
+[   23.470413] ath10k_pci 0000:02:00.0: Copy Engine register dump:
+[   23.470424] ath10k_pci 0000:02:00.0: [00]: 0x00034400 4294967295
+4294967295 4294967295 4294967295
+[   23.470433] ath10k_pci 0000:02:00.0: [01]: 0x00034800 4294967295
+4294967295 4294967295 4294967295
+[   23.470443] ath10k_pci 0000:02:00.0: [02]: 0x00034c00 4294967295
+4294967295 4294967295 4294967295
+[   23.470453] ath10k_pci 0000:02:00.0: [03]: 0x00035000 4294967295
+4294967295 4294967295 4294967295
+[   23.470463] ath10k_pci 0000:02:00.0: [04]: 0x00035400 4294967295
+4294967295 4294967295 4294967295
+[   23.470472] ath10k_pci 0000:02:00.0: [05]: 0x00035800 4294967295
+4294967295 4294967295 4294967295
+[   23.470482] ath10k_pci 0000:02:00.0: [06]: 0x00035c00 4294967295
+4294967295 4294967295 4294967295
+[   23.470492] ath10k_pci 0000:02:00.0: [07]: 0x00036000 4294967295
+4294967295 4294967295 4294967295
+[   23.470495] ath10k_pci 0000:02:00.0: failed to reset chip: -5
+[   23.470496] ath10k_pci 0000:02:00.0: Could not init hif: -5
+[   26.514721] ath10k_pci 0000:02:00.0: failed to read device
+register, device is gone
+[   26.514724] ath10k_pci 0000:02:00.0: failed to wait for target
+after cold reset: -5
+[   26.514727] ath10k_pci 0000:02:00.0: firmware crashed during chip reset
+[   26.514731] ath10k_pci 0000:02:00.0: firmware crashed! (uuid
+859351a8-cc25-4636-88a9-4ecb71461ca8)
+[   26.514734] ath10k_pci 0000:02:00.0: qca6174 hw3.2 target
+0x05030000 chip_id 0x00340aff sub 1a56:1535
+[   26.514735] ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1
+tracing 1 dfs 0 testmode 1
+[   26.515077] ath10k_pci 0000:02:00.0: firmware ver
+WLAN.RM.4.4-00022-QCARMSWPZ-2 api 6 features wowlan,ignore-otp crc32
+4d458559
+[   26.515300] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A
+crc32 07ee144e
+[   26.515301] ath10k_pci 0000:02:00.0: htt-ver 3.32 wmi-op 4 htt-op 3
+cal otp max-sta 32 raw 0 hwcrypto 1
+[   26.515304] ath10k_pci 0000:02:00.0: failed to get memcpy hi
+address for firmware address 4: -28
+[   26.515304] ath10k_pci 0000:02:00.0: failed to read firmware dump area: -28
+[   26.515305] ath10k_pci 0000:02:00.0: Copy Engine register dump:
+[   26.515316] ath10k_pci 0000:02:00.0: [00]: 0x00034400 4294967295
+4294967295 4294967295 4294967295
+[   26.515325] ath10k_pci 0000:02:00.0: [01]: 0x00034800 4294967295
+4294967295 4294967295 4294967295
+[   26.515335] ath10k_pci 0000:02:00.0: [02]: 0x00034c00 4294967295
+4294967295 4294967295 4294967295
+[   26.515345] ath10k_pci 0000:02:00.0: [03]: 0x00035000 4294967295
+4294967295 4294967295 4294967295
+[   26.515355] ath10k_pci 0000:02:00.0: [04]: 0x00035400 4294967295
+4294967295 4294967295 4294967295
+[   26.515364] ath10k_pci 0000:02:00.0: [05]: 0x00035800 4294967295
+4294967295 4294967295 4294967295
+[   26.515374] ath10k_pci 0000:02:00.0: [06]: 0x00035c00 4294967295
+4294967295 4294967295 4294967295
+[   26.515384] ath10k_pci 0000:02:00.0: [07]: 0x00036000 4294967295
+4294967295 4294967295 4294967295
+[   26.515386] ath10k_pci 0000:02:00.0: failed to reset chip: -5
+[   26.515387] ath10k_pci 0000:02:00.0: Could not init hif: -5
+
+[more snip]
+
+Is this a firmware / driver problem or do I just have dud hardware?
+
+Thanks,
+Andy
 
 _______________________________________________
 ath10k mailing list
