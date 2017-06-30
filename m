@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
- helo=mail.mail.packetmixer.de)
+Received: from s3.sipsolutions.net ([2a01:4f8:190:3424::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQsXo-0002go-Rx
- for ath10k@lists.infradead.org; Fri, 30 Jun 2017 09:48:59 +0000
-From: Simon Wunderlich <sw@simonwunderlich.de>
+ id 1dQu1g-0002Ge-6M
+ for ath10k@lists.infradead.org; Fri, 30 Jun 2017 11:23:54 +0000
+Message-ID: <1498821800.4798.2.camel@sipsolutions.net>
 Subject: Re: Is using 802.11s with DFS possible?
-Date: Fri, 30 Jun 2017 11:48:29 +0200
-Message-ID: <2614300.ercbpO68rJ@prime>
-In-Reply-To: <CAEFj986gxesLcSaeVH9Yfwre7cTB0uqSzHBMpZKSNbmgQFcmhA@mail.gmail.com>
+From: Benjamin Berg <benjamin@sipsolutions.net>
+Date: Fri, 30 Jun 2017 13:23:20 +0200
+In-Reply-To: <2614300.ercbpO68rJ@prime>
 References: <CAOiRWuXVO5ACHCX6ZHy_rP1oA7+sgnnvtOTydHqUJWHjpBZTZw@mail.gmail.com>
  <d4a7c59c-85f0-bbfb-84ce-ce0a6c7bf483@bowerswilkins.com>
  <CAEFj986gxesLcSaeVH9Yfwre7cTB0uqSzHBMpZKSNbmgQFcmhA@mail.gmail.com>
-MIME-Version: 1.0
+ <2614300.ercbpO68rJ@prime>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,78 +22,78 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4297851611517292067=="
+Content-Type: multipart/mixed; boundary="===============0349979449486369319=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
-Cc: Zach Sherin <zach@netblazr.com>, benjamin@sipsolutions.net, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Peter Oh <peter.oh@bowerswilkins.com>
+To: Simon Wunderlich <sw@simonwunderlich.de>, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Cc: Zach Sherin <zach@netblazr.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Peter Oh <peter.oh@bowerswilkins.com>
 
---===============4297851611517292067==
-Content-Type: multipart/signed; boundary="nextPart2977437.IJzX4yts1A"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
---nextPart2977437.IJzX4yts1A
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+--===============0349979449486369319==
+Content-Type: multipart/signed; micalg="pgp-sha256";
+	protocol="application/pgp-signature"; boundary="=-LsVjtFstg+JI5LX37SjT"
 
-On Friday, June 30, 2017 12:08:51 PM CEST Chun-Yeow Yeoh wrote:
-> On Fri, Jun 30, 2017 at 1:53 AM, Peter Oh <peter.oh@bowerswilkins.com> 
-wrote:
-> > On 06/28/2017 06:54 PM, Zach Sherin wrote:
-> >> Hi all,
-> >> 
-> >> I've been running some experiments in LEDE thanks to your help many
-> >> months ago, and I want to use DFS frequencies with my mesh network.
-> >> Does ath10k currently support this or am I up a creek? My tests show
-> >> that I can use DFS frequencies with AP mode but have always failed
-> >> when I use them in a mesh, such that the interface won't even start.
-> >> 
-> >> Any suggestions?
-> > 
-> > As far as I know, no DFS channels enabled in mesh mode at this moment.
-> > To support DFS channels in mesh mode, wpa_supplicant and mac80211 changes
-> > are required.
-> 
-> https://www.spinics.net/lists/linux-wireless/msg162307.html
-> Simon and Benjamin have submitted the above patches and some of them
-> has upstream to mac80211-next.
-> 
-> Perhaps, Simon and Benjamin can comment on this.
 
-Our mac80211 patches have been upstreamed. However, the (experimental) 
-wpa_supplicant patches have not been adopted and I've reworked them a little 
-but they are not in a state to resubmit yet. So I don't expect the 
-wpa_supplicant portion to work yet, and you also may need to think of a good 
-way to have the mesh peers on a channel succession order.
+--=-LsVjtFstg+JI5LX37SjT
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Cheers,
-     Simon
---nextPart2977437.IJzX4yts1A
+On Fri, 2017-06-30 at 11:48 +0200, Simon Wunderlich wrote:
+> Our mac80211 patches have been upstreamed. However, the (experimental)=C2=
+=A0
+> wpa_supplicant patches have not been adopted and I've reworked them a lit=
+tle=C2=A0
+> but they are not in a state to resubmit yet. So I don't expect the=C2=A0
+> wpa_supplicant portion to work yet, and you also may need to think of a g=
+ood=C2=A0
+> way to have the mesh peers on a channel succession order.
+
+For reference, an earlier version of the patchset was submitted as an
+RFC in November with a bit of follow up discussion later:
+ http://lists.infradead.org/pipermail/hostap/2016-November/036726.html
+ http://lists.infradead.org/pipermail/hostap/2016-December/036741.html
+
+There have been improvements since (e.g. solving the use after free
+issue) that are not yet submitted. I cannot comment on the current
+state of the patches though.
+
+In general a major issue is making sure that all stations switch to the
+same channel when a radar is detected. There is a simple mechanism in
+the standard for this which to my knowledge is not implemented in
+mac80211 at this point. But even with this in place you will likely
+want a versatile mechanism in hostap for stations to switch to a common
+channel should they end up on differing ones.
+
+Regards,
+Benjamin
+--=-LsVjtFstg+JI5LX37SjT
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-iQIzBAABCgAdFiEE1ilQI7G+y+fdhnrfoSvjmEKSnqEFAllWHm0ACgkQoSvjmEKS
-nqGdeQ/+MCNEB6Z5yXEEIZlE7eECmJuIBwtLCU+zc0mlKXmiVocOATym+BInO2wl
-mnHp7amlHO2eSt8/VV6yTEi25ULwmT78+9OfpGSFnFLFKstLhjcCcew5/qGnAId8
-Vp7ExsBpcpXJLV3q2r0MkfPtOn02koiyUV1Km68Beh03R6Y4CZxErKI8rGhwZPon
-XqgCowNk8TaOmC2R5OOQbLsux3hIMUmPUigixLK0diyRoVFSw3YBDCALXq/EyO7P
-Uy68ZluKLDw+s73AoigD5BMCvOS/pCd/CNYGO3X+emOdoMNWhnlha8OVOfxFH+Sh
-0Cdhh5tu7o7zdkUGu6RkgaBNltxM2vYDS+Dt3Te41ZcxoE5xd7Ee27gAJ05Xn63Q
-84K26HBzSX4C904TcoDiWXL1l/cdUvjdizxUl+UHu/2nid3tNFefbOqojLBLnYiB
-7wGevxr8dY4cETOvOGHDFhSNoFoy+bUfU9JpeUAv4Gb8kVn7h1kBVG0F9MD1C1Oi
-PLkQz3imBjTTmED7vqCNKxYANsen5uCkuBzy8Rayhw+97cSjyIQWKbb/SbXZ9c1+
-DvTKZNe1xEflgBv9yV4Ex5IU7ToXdD+k6Jt9T5sMiqHNj7J6Eofzp1/Dp0ZaC8YT
-a9U6jcTA7jm1pfQk9vtdj/jQK1S1vIBFI9CXQpHE0pxOAX0vU18=
-=//CR
+iQI3BAABCAAhBQJZVjSoGhxiZW5qYW1pbkBzaXBzb2x1dGlvbnMubmV0AAoJENEj
+aKZhhWwg2MQP/iemhZ+hGVu3kVdDyDApIs8//jfYJc0d2DUmOWE7tkAEp+WEAK6C
+MlAcR76q06zPn8LVGZ43y1D6gPXa2MOM/Pqz69qSgnd0XikNBTfrhhL1pnlXM4za
+A1pYZGS5STvhw8kbgozKoJcKctBpGVzknIKj6BB9zXUbiX9jqkQsZxMdeb7o3hNB
+yH8CbieTpQnL2Qc1idMMfw/yR9ND30cIJ2EnBQ90zZkU3q0o7pK/ZpRZ27QrPaBX
+xZGpfKqlprvndwPCein7i59AA4BJEM3l3zTtzq16spw/U35MXOC2Q9uUc1h+ohOi
+ZGBx5w0Z/g8PUobsbRUGV04dqklo+x1Q45+0rso0UuRG3sz9pQfdIvRv4dI6VUjW
+NYc2N8NgmfFyp+06w5tjSbXSZZvG3WdwA+3gIF2JB96DzgyoQ7oP6MClsPgimlgW
+LyCFFrYVATtuNDPdrcbJTgpIgwHGg+av+QoIQgQ6YoiyZd73zl+dNwp7ElMnjc/R
+3ckXyUcNvUiqUKIW/4chdtRLX7JU7zJN67rgAL0wV2WmTg/rS5nojqLCcdbI5lAq
+dao+HsltOOl8Mg4D+xqUhtE/0ztK3zQlYriDhItncTiUkaRuVZkEw8YXfA5nHffY
+E1WaKI/25SszkqtZK91GkfTIHyLjXPi8MJzdN+JchhrcEy59uFlzOnzt
+=IhB2
 -----END PGP SIGNATURE-----
 
---nextPart2977437.IJzX4yts1A--
+--=-LsVjtFstg+JI5LX37SjT--
 
 
 
---===============4297851611517292067==
+--===============0349979449486369319==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -103,4 +104,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---===============4297851611517292067==--
+--===============0349979449486369319==--
