@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from arabica.frei.media ([176.9.117.169] helo=mail.frei.media)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dSky7-00012n-20
- for ath10k@lists.infradead.org; Wed, 05 Jul 2017 14:07:52 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Switching away from ath10k patchwork project
-Date: Wed, 5 Jul 2017 13:29:20 +0000
-Message-ID: <87tw2rgggu.fsf@kamboji.qca.qualcomm.com>
-Content-Language: en-US
-MIME-Version: 1.0
+ id 1dSp8K-0007DE-7S
+ for ath10k@lists.infradead.org; Wed, 05 Jul 2017 18:34:42 +0000
+From: Matthias Frei <mf@frei.media>
+Subject: [PATCH] ath10k: set a-mpdu reference number in ath10k (receiver)
+Date: Wed, 5 Jul 2017 20:34:10 +0200
+Message-Id: <B8D63297-0A88-42A3-B789-3849895CF201@frei.media>
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +20,69 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-TL;DR:
+Set the a-mpdu reference number in ath10k to make it accessible in the receivers radiotap header. Implemented as in ath9k. 
+The reference number is needed for troubleshooting and research at the receivers site (e.g. to identify mpdu's that were aggregated in an a-mpdu)
 
-Starting from patches submitted today I'm switching away from
-ath10k specific patchwork project to the general linux-wireless
-patchwork project.
+Signed-off-by: Matthias Frei <mf@frei.media>
+---
+ drivers/net/wireless/ath/ath10k/core.h   |  3 +++
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 14 +++++++++++---
+ 2 files changed, 14 insertions(+), 3 deletions(-)
 
-The longer story:
-
-For legacy reasons we have had two patchwork projects, the main project
-being linux-wireless (which tracks linux-wireless mailing list):
-
-https://patchwork.kernel.org/project/linux-wireless/list/?state=*
-
-And then we have a separate project for ath10k (which tracks the ath10k
-mailing list):
-
-https://patchwork.kernel.org/project/ath10k/list/?state=*
-
-This creates a confusion as people don't always know which patchwork
-project to follow. To simplify this I'm dropping the ath10k project in
-patchwork and track also ath10k patches using the general linux-wireless
-project so that all wireless patches can be tracked from the same
-patchwork project.
-
-The only downside from this is that if someone posts a patch only to the
-ath10k list and forgets to CC linux-wireless I will not see it as I only
-take patches from patchwork. But we have instructed everyone to CC
-linux-wireless anyway[1] so hopefully this is a small problem. I do
-remember having few cases where the patch was not CCed to
-linux-wireless, but usually it's actually the other way around (people
-forget to CC the ath10k list). So I'm not expecting that much problems
-with this change.
-
-[1] https://wireless.wiki.kernel.org/en/users/drivers/ath10k/submittingpatches
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index bf09151..82adf55 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -989,6 +989,9 @@ struct ath10k {
+ 		u32 reg_ack_cts_timeout_orig;
+ 	} fw_coverage;
+ 
++	/* AMPDU */
++	u32 ampdu_ref;
++
+ 	/* must be last */
+ 	u8 drv_priv[0] __aligned(sizeof(void *));
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 84b6067..a4de02b 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -877,16 +877,24 @@ static void ath10k_htt_rx_h_ppdu(struct ath10k *ar,
+ 		status->nss = 0;
+ 		status->encoding = RX_ENC_LEGACY;
+ 		status->bw = RATE_INFO_BW_20;
+-		status->flag &= ~RX_FLAG_MACTIME_END;
+-		status->flag |= RX_FLAG_NO_SIGNAL_VAL;
++		status->flag &= ~(RX_FLAG_MACTIME_END | RX_FLAG_AMPDU_IS_LAST);
++		status->flag |= RX_FLAG_NO_SIGNAL_VAL | RX_FLAG_AMPDU_DETAILS | RX_FLAG_AMPDU_LAST_KNOWN;
++
++		/* set ampdu ref */
++		status->ampdu_reference = ar->ampdu_ref;
+ 
+ 		ath10k_htt_rx_h_signal(ar, status, rxd);
+ 		ath10k_htt_rx_h_channel(ar, status, rxd, vdev_id);
+ 		ath10k_htt_rx_h_rates(ar, status, rxd);
+ 	}
+ 
+-	if (is_last_ppdu)
++	if (is_last_ppdu) {
+ 		ath10k_htt_rx_h_mactime(ar, status, rxd);
++
++		/* set ampdu last segment flag */
++		status->flag |= RX_FLAG_AMPDU_IS_LAST;
++		ar->ampdu_ref++;
++	}
+ }
+ 
+ static const char * const tid_to_ac[] = {
 -- 
-Kalle Valo
+2.7.4
+
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
