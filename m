@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from alexa-out.qualcomm.com ([129.46.98.28]
+ helo=alexa-out-lv-01.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dT2v3-0006sD-1m
- for ath10k@lists.infradead.org; Thu, 06 Jul 2017 09:17:54 +0000
+ id 1dT5e1-0005ci-2N
+ for ath10k@lists.infradead.org; Thu, 06 Jul 2017 12:12:30 +0000
+Subject: [PATCH v3 0/2] ath10k usb support
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC v2 0/3] ath10k usb support
-Date: Thu, 6 Jul 2017 09:17:29 +0000
-Message-ID: <87r2xtexgn.fsf@kamboji.qca.qualcomm.com>
-References: <1495312410-9937-1-git-send-email-erik.stromdahl@gmail.com>
-In-Reply-To: <1495312410-9937-1-git-send-email-erik.stromdahl@gmail.com> (Erik
- Stromdahl's message of "Sat, 20 May 2017 22:33:27 +0200")
-Content-Language: en-US
+Date: Thu, 6 Jul 2017 15:11:42 +0300
+Message-ID: <149934296332.20024.5652905816164718891.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,34 +21,67 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+Here's v3 of usb support patches. I mostly cosmetic changes to follow
+the style used elsewhere in ath10k. Only compile tested, but it should
+still work :)
 
-> This is the 2nd version of the ath10k USB RFC. There are only minor updates
-> since last version.
->
-> The main difference when compared to the previous RFC is that the
-> high latency stuff that is common between USB and SDIO has been moved out
-> of this patchset and into another (separate) patchset.
->
-> I was actually thinking about squashing all the patches into one, but
-> decided not to do so since I wanted usb.h, usb.c and the update Kconfig +
-> Makefile in one separate patch.
->
-> Perhaps patch 1 and 2 should be squashed?
->
-> Erik Stromdahl (3):
->   ath10k: various usb related definitions
->   ath10k: different fw file names for usb
->   ath10k: add initial USB support
+I think these are now ready for commit. I did have few open questions
+(but they don't prevent committing these):
 
-This looks good. I'll again do some cosmetic changes and submit v2 as
-proper patch. Sorry for taking so long with this.
+* why atomic allocations?
 
--- 
-Kalle Valo
+* why some of the error messages use ath10k_dbg()?
+
+* ath10k_usb_submit_ctrl_out() & ath10k_usb_submit_ctrl_in(): is size == 0 a valid transmission?
+
+Changelog:
+
+v3:
+
+* squash patches 1 and 2
+
+* simplify is_trailer_only_msg()
+
+* unify debug message style ("usb foo %d bar 0x%x")
+
+* use %pK
+
+* don't use __func__ in debug messages, make sure debug messages are unique 
+
+* cosmetic style changes
+
+* remove err labels which just have return and nothing else
+
+* fix error handling in ath10k_usb_probe()
+
+* update MODULE_DESCRIPTION()
+
+v2:
+
+* separate high latency code to a separate patchset
+
+---
+
+Erik Stromdahl (2):
+      ath10k: various usb related definitions
+      ath10k: add initial USB support
+
+
+ drivers/net/wireless/ath/ath10k/Kconfig  |    7 
+ drivers/net/wireless/ath/ath10k/Makefile |    3 
+ drivers/net/wireless/ath/ath10k/core.c   |    1 
+ drivers/net/wireless/ath/ath10k/core.h   |    3 
+ drivers/net/wireless/ath/ath10k/debug.h  |    2 
+ drivers/net/wireless/ath/ath10k/usb.c    | 1106 ++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/usb.h    |  128 +++
+ 7 files changed, 1250 insertions(+)
+ create mode 100644 drivers/net/wireless/ath/ath10k/usb.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/usb.h
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
