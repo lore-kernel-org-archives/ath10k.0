@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from arabica.frei.media ([176.9.117.169] helo=mail.frei.media)
+Received: from alexa-out.qualcomm.com ([129.46.98.28]
+ helo=alexa-out-lv-02.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dSp8K-0007DE-7S
- for ath10k@lists.infradead.org; Wed, 05 Jul 2017 18:34:42 +0000
-From: Matthias Frei <mf@frei.media>
-Subject: [PATCH] ath10k: set a-mpdu reference number in ath10k (receiver)
-Date: Wed, 5 Jul 2017 20:34:10 +0200
-Message-Id: <B8D63297-0A88-42A3-B789-3849895CF201@frei.media>
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+ id 1dT0V9-0007su-Kb
+ for ath10k@lists.infradead.org; Thu, 06 Jul 2017 06:43:01 +0000
+Subject: [PATCH] ath10k: fix indenting in ath10k_wmi_update_noa()
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Thu, 6 Jul 2017 09:42:20 +0300
+Message-ID: <149932333976.15174.4921279022358234069.stgit@potku.adurom.net>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +24,31 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Set the a-mpdu reference number in ath10k to make it accessible in the receivers radiotap header. Implemented as in ath9k. 
-The reference number is needed for troubleshooting and research at the receivers site (e.g. to identify mpdu's that were aggregated in an a-mpdu)
+Commit 59ae1d127ac0 ("networking: introduce and use skb_put_data()") introduced
+a new checkpatch warning:
 
-Signed-off-by: Matthias Frei <mf@frei.media>
+drivers/net/wireless/ath/ath10k/wmi.c:3308: code indent should use tabs where possible
+
+Fix that.
+
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h   |  3 +++
- drivers/net/wireless/ath/ath10k/htt_rx.c | 14 +++++++++++---
- 2 files changed, 14 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index bf09151..82adf55 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -989,6 +989,9 @@ struct ath10k {
- 		u32 reg_ack_cts_timeout_orig;
- 	} fw_coverage;
- 
-+	/* AMPDU */
-+	u32 ampdu_ref;
-+
- 	/* must be last */
- 	u8 drv_priv[0] __aligned(sizeof(void *));
- };
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 84b6067..a4de02b 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -877,16 +877,24 @@ static void ath10k_htt_rx_h_ppdu(struct ath10k *ar,
- 		status->nss = 0;
- 		status->encoding = RX_ENC_LEGACY;
- 		status->bw = RATE_INFO_BW_20;
--		status->flag &= ~RX_FLAG_MACTIME_END;
--		status->flag |= RX_FLAG_NO_SIGNAL_VAL;
-+		status->flag &= ~(RX_FLAG_MACTIME_END | RX_FLAG_AMPDU_IS_LAST);
-+		status->flag |= RX_FLAG_NO_SIGNAL_VAL | RX_FLAG_AMPDU_DETAILS | RX_FLAG_AMPDU_LAST_KNOWN;
-+
-+		/* set ampdu ref */
-+		status->ampdu_reference = ar->ampdu_ref;
- 
- 		ath10k_htt_rx_h_signal(ar, status, rxd);
- 		ath10k_htt_rx_h_channel(ar, status, rxd, vdev_id);
- 		ath10k_htt_rx_h_rates(ar, status, rxd);
- 	}
- 
--	if (is_last_ppdu)
-+	if (is_last_ppdu) {
- 		ath10k_htt_rx_h_mactime(ar, status, rxd);
-+
-+		/* set ampdu last segment flag */
-+		status->flag |= RX_FLAG_AMPDU_IS_LAST;
-+		ar->ampdu_ref++;
-+	}
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 3efb404b83c0..96cd1ebd6a7e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3305,7 +3305,7 @@ static void ath10k_wmi_update_noa(struct ath10k *ar, struct ath10k_vif *arvif,
+ 	if (arvif->u.ap.noa_data)
+ 		if (!pskb_expand_head(bcn, 0, arvif->u.ap.noa_len, GFP_ATOMIC))
+ 			skb_put_data(bcn, arvif->u.ap.noa_data,
+-			             arvif->u.ap.noa_len);
++				     arvif->u.ap.noa_len);
  }
  
- static const char * const tid_to_ac[] = {
--- 
-2.7.4
-
+ static int ath10k_wmi_op_pull_swba_ev(struct ath10k *ar, struct sk_buff *skb,
 
 
 _______________________________________________
