@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-lf0-x22b.google.com ([2a00:1450:4010:c07::22b])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dT5le-0008Kx-Rk
- for ath10k@lists.infradead.org; Thu, 06 Jul 2017 12:20:24 +0000
+ id 1dTCyk-0002rS-Vl
+ for ath10k@lists.infradead.org; Thu, 06 Jul 2017 20:02:25 +0000
+Received: by mail-lf0-x22b.google.com with SMTP id b207so10716387lfg.2
+ for <ath10k@lists.infradead.org>; Thu, 06 Jul 2017 13:02:01 -0700 (PDT)
+Subject: Re: ath10k: ret used but uninitialized (was: Re: ath10k: add initial
+ SDIO support)
+References: <CAMuHMdWVYA4TejcTjOQh7CBfFwJ=q59pzvuHrpH91Kx=-BK9fg@mail.gmail.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <c72d2e7a-195d-bcac-4ce5-f3051531664c@gmail.com>
+Date: Thu, 6 Jul 2017 22:01:57 +0200
 MIME-Version: 1.0
-Subject: Re: ath10k: Increase buffer len to print all wmi services.
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1499059956-30051-1-git-send-email-c_traja@qti.qualcomm.com>
-References: <1499059956-30051-1-git-send-email-c_traja@qti.qualcomm.com>
-Message-ID: <58c15d01a59543be9123d77f3ac15417@eusanexr01a.eu.qualcomm.com>
-Date: Thu, 6 Jul 2017 05:19:52 -0700
+In-Reply-To: <CAMuHMdWVYA4TejcTjOQh7CBfFwJ=q59pzvuHrpH91Kx=-BK9fg@mail.gmail.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,35 +22,97 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_traja@qti.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 
-c_traja@qti.qualcomm.com wrote:
-
-> All wmi_services are not printing when we give below command.
-> 
-> cat /sys/kernel/debug/ieee80211/phyX/ath10k/wmi_services
-> 
-> This patch increases the buffer_len to 8192 to print all the wmi_services.
-> 
-> Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-75e0dde2abf6 ath10k: increase buffer len to print all wmi services
-
--- 
-https://patchwork.kernel.org/patch/9821955/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+PiBXaXRoIGdjYyA0LjEuMjoKPiAKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3Nk
+aW8uYzogSW4gZnVuY3Rpb24KPiDigJhhdGgxMGtfc2Rpb19tYm94X3J4bXNnX3BlbmRpbmdfaGFu
+ZGxlcuKAmToKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3NkaW8uYzo2NzY6IHdh
+cm5pbmc6IOKAmHJldOKAmSBtYXkgYmUgdXNlZAo+IHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5j
+dGlvbgo+IAo+PiArCj4+ICsgICAgICAgKmRvbmUgPSB0cnVlOwo+PiArCj4+ICsgICAgICAgLyog
+Q29weSB0aGUgbG9va2FoZWFkIG9idGFpbmVkIGZyb20gdGhlIEhUQyByZWdpc3RlciB0YWJsZSBp
+bnRvIG91cgo+PiArICAgICAgICAqIHRlbXAgYXJyYXkgYXMgYSBzdGFydCB2YWx1ZS4KPj4gKyAg
+ICAgICAgKi8KPj4gKyAgICAgICBsb29rYWhlYWRzWzBdID0gbXNnX2xvb2thaGVhZDsKPj4gKwo+
+PiArICAgICAgIHRpbWVvdXQgPSBqaWZmaWVzICsgU0RJT19NQk9YX1BST0NFU1NJTkdfVElNRU9V
+VF9IWjsKPiAKPiBBbHRob3VnaCB2ZXJ5IHVubGlrZWx5IGR1ZSB0byB0aGUgbG9uZyB0aW1lb3V0
+LCBpZiB0aGUgY29kZSBpcyBwcmVlbXB0ZWQgaGVyZSwKPiBhbmQgdGhlIGxvb3AgYmVsb3cgbmV2
+ZXIgZW50ZXJlZCwgcmV0IHdpbGwgaW5kZWVkIGJlIHVuaW5pdGlhbGl6ZWQuCj4gCj4gSXQncyB1
+bmNsZWFyIHRvIG1lIHdoYXQgdGhlIHByb3BlciBpbml0aWFsaXphdGlvbiB3b3VsZCBiZSwgdGhv
+dWdoLCBzbwo+IHRoYXQncyB3aHkgSSBkaWRuJ3Qgc2VuZCBhIHBhdGNoLgo+IApJIHRoaW5rIGl0
+IHdvdWxkIGJlIGJlc3QgdG8gdXNlIDAgYXMgaW5pdGlhbCB2YWx1ZSBvZiByZXQgaW4gdGhpcyBj
+YXNlLgpUaGlzIHdpbGwgbWFrZSBhbGwgb3RoZXIgaW50ZXJydXB0cyBiZSBwcm9jZXNzZWQgaW4g
+YSBub3JtYWwgd2F5LgoKS2FsbGU6IFNob3VsZCBJIGNyZWF0ZSBhIG5ldyBwYXRjaCAoaW5pdGlh
+bGl6aW5nIHJldCB3aXRoIHplcm8pPwoKPj4gKyAgICAgICB3aGlsZSAodGltZV9iZWZvcmUoamlm
+ZmllcywgdGltZW91dCkpIHsKPj4gKyAgICAgICAgICAgICAgIC8qIFRyeSB0byBhbGxvY2F0ZSBh
+cyBtYW55IEhUQyBSWCBwYWNrZXRzIGluZGljYXRlZCBieQo+PiArICAgICAgICAgICAgICAgICog
+bl9sb29rYWhlYWRzLgo+PiArICAgICAgICAgICAgICAgICovCj4+ICsgICAgICAgICAgICAgICBy
+ZXQgPSBhdGgxMGtfc2Rpb19tYm94X3J4X2FsbG9jKGFyLCBsb29rYWhlYWRzLAo+PiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBuX2xvb2thaGVhZHMpOwo+
+PiArICAgICAgICAgICAgICAgaWYgKHJldCkKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgYnJl
+YWs7Cj4+ICsKPj4gKyAgICAgICAgICAgICAgIGlmIChhcl9zZGlvLT5uX3J4X3BrdHMgPj0gMikK
+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgLyogQSByZWN2IGJ1bmRsZSB3YXMgZGV0ZWN0ZWQs
+IGZvcmNlIElSUSBzdGF0dXMKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICogcmUtY2hlY2sg
+YWdhaW4uCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAqLwo+PiArICAgICAgICAgICAgICAg
+ICAgICAgICAqZG9uZSA9IGZhbHNlOwo+PiArCj4+ICsgICAgICAgICAgICAgICByZXQgPSBhdGgx
+MGtfc2Rpb19tYm94X3J4X2ZldGNoKGFyKTsKPj4gKwo+PiArICAgICAgICAgICAgICAgLyogUHJv
+Y2VzcyBmZXRjaGVkIHBhY2tldHMuIFRoaXMgd2lsbCBwb3RlbnRpYWxseSB1cGRhdGUKPj4gKyAg
+ICAgICAgICAgICAgICAqIG5fbG9va2FoZWFkcyBkZXBlbmRpbmcgb24gaWYgdGhlIHBhY2tldHMg
+Y29udGFpbiBsb29rYWhlYWQKPj4gKyAgICAgICAgICAgICAgICAqIHJlcG9ydHMuCj4+ICsgICAg
+ICAgICAgICAgICAgKi8KPj4gKyAgICAgICAgICAgICAgIG5fbG9va2FoZWFkcyA9IDA7Cj4+ICsg
+ICAgICAgICAgICAgICByZXQgPSBhdGgxMGtfc2Rpb19tYm94X3J4X3Byb2Nlc3NfcGFja2V0cyhh
+ciwKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGxvb2thaGVhZHMsCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAmbl9sb29rYWhlYWRzKTsKPj4gKwo+PiArICAgICAgICAg
+ICAgICAgaWYgKCFuX2xvb2thaGVhZHMgfHwgcmV0KQo+PiArICAgICAgICAgICAgICAgICAgICAg
+ICBicmVhazsKPj4gKwo+PiArICAgICAgICAgICAgICAgLyogRm9yIFNZTkNIIHByb2Nlc3Npbmcs
+IGlmIHdlIGdldCBoZXJlLCB3ZSBhcmUgcnVubmluZwo+PiArICAgICAgICAgICAgICAgICogdGhy
+b3VnaCB0aGUgbG9vcCBhZ2FpbiBkdWUgdG8gdXBkYXRlZCBsb29rYWhlYWRzLiBTZXQKPj4gKyAg
+ICAgICAgICAgICAgICAqIGZsYWcgdGhhdCB3ZSBzaG91bGQgcmUtY2hlY2sgSVJRIHN0YXR1cyBy
+ZWdpc3RlcnMgYWdhaW4KPj4gKyAgICAgICAgICAgICAgICAqIGJlZm9yZSBsZWF2aW5nIElSUSBw
+cm9jZXNzaW5nLCB0aGlzIGNhbiBuZXQgYmV0dGVyCj4+ICsgICAgICAgICAgICAgICAgKiBwZXJm
+b3JtYW5jZSBpbiBoaWdoIHRocm91Z2hwdXQgc2l0dWF0aW9ucy4KPj4gKyAgICAgICAgICAgICAg
+ICAqLwo+PiArICAgICAgICAgICAgICAgKmRvbmUgPSBmYWxzZTsKPj4gKyAgICAgICB9Cj4+ICsK
+Pj4gKyAgICAgICBpZiAocmV0ICYmIChyZXQgIT0gLUVDQU5DRUxFRCkpCj4+ICsgICAgICAgICAg
+ICAgICBhdGgxMGtfd2FybihhciwgImZhaWxlZCB0byBnZXQgcGVuZGluZyByZWN2IG1lc3NhZ2Vz
+OiAlZFxuIiwKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldCk7Cj4+ICsKPj4gKyAg
+ICAgICByZXR1cm4gcmV0Owo+PiArfQo+IAo+PiArc3RhdGljIHZvaWQgYXRoMTBrX3NkaW9faXJx
+X2hhbmRsZXIoc3RydWN0IHNkaW9fZnVuYyAqZnVuYykKPj4gK3sKPj4gKyAgICAgICBzdHJ1Y3Qg
+YXRoMTBrX3NkaW8gKmFyX3NkaW8gPSBzZGlvX2dldF9kcnZkYXRhKGZ1bmMpOwo+PiArICAgICAg
+IHN0cnVjdCBhdGgxMGsgKmFyID0gYXJfc2Rpby0+YXI7Cj4+ICsgICAgICAgdW5zaWduZWQgbG9u
+ZyB0aW1lb3V0Owo+PiArICAgICAgIGJvb2wgZG9uZSA9IGZhbHNlOwo+PiArICAgICAgIGludCBy
+ZXQ7Cj4gCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9zZGlvLmM6IEluIGZ1bmN0
+aW9uIOKAmGF0aDEwa19zZGlvX2lycV9oYW5kbGVy4oCZOgo+IGRyaXZlcnMvbmV0L3dpcmVsZXNz
+L2F0aC9hdGgxMGsvc2Rpby5jOjEzMzE6IHdhcm5pbmc6IOKAmHJldOKAmSBtYXkgYmUKPiB1c2Vk
+IHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbgo+IAo+PiArCj4+ICsgICAgICAgLyogUmVs
+ZWFzZSB0aGUgaG9zdCBkdXJpbmcgaW50ZXJydXB0cyBzbyB3ZSBjYW4gcGljayBpdCBiYWNrIHVw
+IHdoZW4KPj4gKyAgICAgICAgKiB3ZSBwcm9jZXNzIGNvbW1hbmRzLgo+PiArICAgICAgICAqLwo+
+PiArICAgICAgIHNkaW9fcmVsZWFzZV9ob3N0KGFyX3NkaW8tPmZ1bmMpOwo+PiArCj4+ICsgICAg
+ICAgdGltZW91dCA9IGppZmZpZXMgKyBBVEgxMEtfU0RJT19ISUZfQ09NTVVOSUNBVElPTl9USU1F
+T1VUX0haOwo+IAo+IFNhbWUgaGVyZS4KPiAKPiBTaG91bGQgcmV0IGJlIHByZWluaXRpYWxpemVk
+IHRvIDAsIC1FQ0FOQ0VMRUQsIG9yIHNvbWV0aGluZyBlbHNlPwo+IApyZXQgPSAwIG9yIHJldCA9
+IC1FQ0FOQ0VMRUQsIHdpbGwgcmVzdWx0IGluIG5vIHdhcm5pbmcgbWVzc2FnZS4KLUVUSU1FRE9V
+VCBjb3VsZCBiZSB1c2VkIHBlcmhhcHMuCgpOb3RlIHRoYXQgdGhlIGZ1bmN0aW9uIGlzIGEgdm9p
+ZCBmdW5jdGlvbiBzbyB0aGUgZXJyb3Igd2lsbCBub3QgZ2V0CnByb3BhZ2F0ZWQuCgpJIGFtIGZp
+bmUgd2l0aCByZXQgPSAwIGluIHRoaXMgY2FzZSBhcyB3ZWxsLgo+PiArICAgICAgIHdoaWxlICh0
+aW1lX2JlZm9yZShqaWZmaWVzLCB0aW1lb3V0KSAmJiAhZG9uZSkgewo+PiArICAgICAgICAgICAg
+ICAgcmV0ID0gYXRoMTBrX3NkaW9fbWJveF9wcm9jX3BlbmRpbmdfaXJxcyhhciwgJmRvbmUpOwo+
+PiArICAgICAgICAgICAgICAgaWYgKHJldCkKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgYnJl
+YWs7Cj4+ICsgICAgICAgfQo+PiArCj4+ICsgICAgICAgc2Rpb19jbGFpbV9ob3N0KGFyX3NkaW8t
+PmZ1bmMpOwo+PiArCj4+ICsgICAgICAgd2FrZV91cCgmYXJfc2Rpby0+aXJxX3dxKTsKPj4gKwo+
+PiArICAgICAgIGlmIChyZXQgJiYgcmV0ICE9IC1FQ0FOQ0VMRUQpCj4+ICsgICAgICAgICAgICAg
+ICBhdGgxMGtfd2FybihhciwgImZhaWxlZCB0byBwcm9jZXNzIHBlbmRpbmcgU0RJTyBpbnRlcnJ1
+cHRzOiAlZFxuIiwKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldCk7Cj4+ICt9Cj4g
+Cj4gR3J7b2V0amUsZWV0aW5nfXMsCj4gCj4gICAgICAgICAgICAgICAgICAgICAgICAgIEdlZXJ0
+Cj4gCj4gLS0KPiBHZWVydCBVeXR0ZXJob2V2ZW4gLS0gVGhlcmUncyBsb3RzIG9mIExpbnV4IGJl
+eW9uZCBpYTMyIC0tIGdlZXJ0QGxpbnV4LW02OGsub3JnCj4gCj4gSW4gcGVyc29uYWwgY29udmVy
+c2F0aW9ucyB3aXRoIHRlY2huaWNhbCBwZW9wbGUsIEkgY2FsbCBteXNlbGYgYSBoYWNrZXIuIEJ1
+dAo+IHdoZW4gSSdtIHRhbGtpbmcgdG8gam91cm5hbGlzdHMgSSBqdXN0IHNheSAicHJvZ3JhbW1l
+ciIgb3Igc29tZXRoaW5nIGxpa2UgdGhhdC4KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAtLSBMaW51cyBUb3J2YWxkcwo+IAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
+awo=
