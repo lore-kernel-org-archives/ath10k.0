@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from arabica.frei.media ([176.9.117.169] helo=mail.frei.media)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dTQ83-0001t8-1z
- for ath10k@lists.infradead.org; Fri, 07 Jul 2017 10:04:53 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k: ret used but uninitialized
-Date: Fri, 7 Jul 2017 10:04:24 +0000
-Message-ID: <87bmowd0mh.fsf@kamboji.qca.qualcomm.com>
-References: <CAMuHMdWVYA4TejcTjOQh7CBfFwJ=q59pzvuHrpH91Kx=-BK9fg@mail.gmail.com>
- <c72d2e7a-195d-bcac-4ce5-f3051531664c@gmail.com>
-In-Reply-To: <c72d2e7a-195d-bcac-4ce5-f3051531664c@gmail.com> (Erik
- Stromdahl's message of "Thu, 6 Jul 2017 22:01:57 +0200")
-Content-Language: en-US
-Content-ID: <3A66E09684FF0242BCD94863EA28B1E8@qualcomm.com>
-MIME-Version: 1.0
+ id 1dTS8L-0006dO-2a
+ for ath10k@lists.infradead.org; Fri, 07 Jul 2017 12:13:19 +0000
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Subject: Re: [PATCH] ath10k: set a-mpdu reference number in ath10k (receiver)
+From: Matthias Frei <mf@frei.media>
+In-Reply-To: <87o9syf1uf.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 7 Jul 2017 14:12:41 +0200
+Message-Id: <D2C4D994-E760-490A-805C-494D05BA46F2@frei.media>
+References: <B8D63297-0A88-42A3-B789-3849895CF201@frei.media>
+ <87o9syf1uf.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,63 +19,165 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============7206750535553031417=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-RXJpayBTdHJvbWRhaGwgPGVyaWsuc3Ryb21kYWhsQGdtYWlsLmNvbT4gd3JpdGVzOg0KDQo+PiBX
-aXRoIGdjYyA0LjEuMjoNCj4+DQo+PiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3Nk
-aW8uYzogSW4gZnVuY3Rpb24NCj4+IOKAmGF0aDEwa19zZGlvX21ib3hfcnhtc2dfcGVuZGluZ19o
-YW5kbGVy4oCZOg0KPj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9zZGlvLmM6Njc2
-OiB3YXJuaW5nOiDigJhyZXTigJkgbWF5IGJlIHVzZWQNCj4+IHVuaW5pdGlhbGl6ZWQgaW4gdGhp
-cyBmdW5jdGlvbg0KPj4NCj4+PiArDQo+Pj4gKyAgICAgICAqZG9uZSA9IHRydWU7DQo+Pj4gKw0K
-Pj4+ICsgICAgICAgLyogQ29weSB0aGUgbG9va2FoZWFkIG9idGFpbmVkIGZyb20gdGhlIEhUQyBy
-ZWdpc3RlciB0YWJsZSBpbnRvIG91cg0KPj4+ICsgICAgICAgICogdGVtcCBhcnJheSBhcyBhIHN0
-YXJ0IHZhbHVlLg0KPj4+ICsgICAgICAgICovDQo+Pj4gKyAgICAgICBsb29rYWhlYWRzWzBdID0g
-bXNnX2xvb2thaGVhZDsNCj4+PiArDQo+Pj4gKyAgICAgICB0aW1lb3V0ID0gamlmZmllcyArIFNE
-SU9fTUJPWF9QUk9DRVNTSU5HX1RJTUVPVVRfSFo7DQo+Pg0KPj4gQWx0aG91Z2ggdmVyeSB1bmxp
-a2VseSBkdWUgdG8gdGhlIGxvbmcgdGltZW91dCwgaWYgdGhlIGNvZGUgaXMgcHJlZW1wdGVkIGhl
-cmUsDQo+PiBhbmQgdGhlIGxvb3AgYmVsb3cgbmV2ZXIgZW50ZXJlZCwgcmV0IHdpbGwgaW5kZWVk
-IGJlIHVuaW5pdGlhbGl6ZWQuDQo+Pg0KPj4gSXQncyB1bmNsZWFyIHRvIG1lIHdoYXQgdGhlIHBy
-b3BlciBpbml0aWFsaXphdGlvbiB3b3VsZCBiZSwgdGhvdWdoLCBzbw0KPj4gdGhhdCdzIHdoeSBJ
-IGRpZG4ndCBzZW5kIGEgcGF0Y2guDQo+Pg0KPiBJIHRoaW5rIGl0IHdvdWxkIGJlIGJlc3QgdG8g
-dXNlIDAgYXMgaW5pdGlhbCB2YWx1ZSBvZiByZXQgaW4gdGhpcyBjYXNlLg0KPiBUaGlzIHdpbGwg
-bWFrZSBhbGwgb3RoZXIgaW50ZXJydXB0cyBiZSBwcm9jZXNzZWQgaW4gYSBub3JtYWwgd2F5Lg0K
-Pg0KPiBLYWxsZTogU2hvdWxkIEkgY3JlYXRlIGEgbmV3IHBhdGNoIChpbml0aWFsaXppbmcgcmV0
-IHdpdGggemVybyk/DQoNClllcywgcGxlYXNlIHNlbmQgYSBuZXcgcGF0Y2ggZml4aW5nIHRoaXMu
-DQoNCkJ1dCBJIGRvbid0IGxpa2UgdGhhdCBtdWNoIHdpdGggdGhlIHN0eWxlIG9mIGluaXRpYWxp
-c2luZyByZXQgdG8gemVybywNCml0IHRlbmRzIHRvIGhpZGUgdGhpbmdzLiBJbnN0ZWFkIG15IHBy
-ZWZlcmVuY2UgaXMgc29tZXRoaW5nIGxpa2UgYmVsb3cNCndoZXJlIHRoZSBlcnJvciBoYW5kbGlu
-ZyBpcyBtb3JlIGV4cGxpY2l0IGFuZCBlYXNpZXIgdG8gZmluZCB3aGVyZSBpdCdzDQpleGFjdGx5
-IGZhaWxpbmcuIEJ1dCB0aGF0J3MganVzdCBhbiBleGFtcGxlIGhvdyBJIHdvdWxkIHRyeSB0byBz
-b2x2ZSBpdCwNCml0IHN0aWxsIGxhY2tzIHRoZSBoYW5kbGluZyBvZiAtRUNBTkNFTCBldGMuDQoN
-CmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3NkaW8uYyBiL2Ry
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvc2Rpby5jDQppbmRleCA4NTllZDg3MGJkOTcu
-LjE5YTUzZTU3NzkzMiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
-MGsvc2Rpby5jDQorKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3NkaW8uYw0K
-QEAgLTY4OSw4ICs2ODksMTAgQEAgc3RhdGljIGludCBhdGgxMGtfc2Rpb19tYm94X3J4bXNnX3Bl
-bmRpbmdfaGFuZGxlcihzdHJ1Y3QgYXRoMTBrICphciwNCiAJCSAqLw0KIAkJcmV0ID0gYXRoMTBr
-X3NkaW9fbWJveF9yeF9hbGxvYyhhciwgbG9va2FoZWFkcywNCiAJCQkJCQluX2xvb2thaGVhZHMp
-Ow0KLQkJaWYgKHJldCkNCi0JCQlicmVhazsNCisJCWlmIChyZXQpIHsNCisJCQlhdGgxMGtfd2Fy
-bihhciwgImZhaWxlZCB0byAuLi4uOiAlZCIsIHJldCk7DQorCQkJcmV0dXJuIHJldDsNCisJCX0N
-CiANCiAJCWlmIChhcl9zZGlvLT5uX3J4X3BrdHMgPj0gMikNCiAJCQkvKiBBIHJlY3YgYnVuZGxl
-IHdhcyBkZXRlY3RlZCwgZm9yY2UgSVJRIHN0YXR1cw0KQEAgLTcwOSw4ICs3MTEsMTAgQEAgc3Rh
-dGljIGludCBhdGgxMGtfc2Rpb19tYm94X3J4bXNnX3BlbmRpbmdfaGFuZGxlcihzdHJ1Y3QgYXRo
-MTBrICphciwNCiAJCQkJCQkJICBsb29rYWhlYWRzLA0KIAkJCQkJCQkgICZuX2xvb2thaGVhZHMp
-Ow0KIA0KLQkJaWYgKCFuX2xvb2thaGVhZHMgfHwgcmV0KQ0KLQkJCWJyZWFrOw0KKwkJaWYgKCFu
-X2xvb2thaGVhZHMgfHwgcmV0KSB7DQorCQkJYXRoMTBrX3dhcm4oYXIsICJmYWlsZWQgdG8gLi4u
-LiIpOw0KKwkJCXJldHVybiByZXQ7DQorCQl9DQogDQogCQkvKiBGb3IgU1lOQ0ggcHJvY2Vzc2lu
-ZywgaWYgd2UgZ2V0IGhlcmUsIHdlIGFyZSBydW5uaW5nDQogCQkgKiB0aHJvdWdoIHRoZSBsb29w
-IGFnYWluIGR1ZSB0byB1cGRhdGVkIGxvb2thaGVhZHMuIFNldA0KQEAgLTcyMSwxMSArNzI1LDcg
-QEAgc3RhdGljIGludCBhdGgxMGtfc2Rpb19tYm94X3J4bXNnX3BlbmRpbmdfaGFuZGxlcihzdHJ1
-Y3QgYXRoMTBrICphciwNCiAJCSpkb25lID0gZmFsc2U7DQogCX0NCiANCi0JaWYgKHJldCAmJiAo
-cmV0ICE9IC1FQ0FOQ0VMRUQpKQ0KLQkJYXRoMTBrX3dhcm4oYXIsICJmYWlsZWQgdG8gZ2V0IHBl
-bmRpbmcgcmVjdiBtZXNzYWdlczogJWRcbiIsDQotCQkJICAgIHJldCk7DQotDQotCXJldHVybiBy
-ZXQ7DQorCXJldHVybiAwOw0KIH0NCiANCiBzdGF0aWMgaW50IGF0aDEwa19zZGlvX21ib3hfcHJv
-Y19kYmdfaW50cihzdHJ1Y3QgYXRoMTBrICphcikNCg0KDQotLSANCkthbGxlIFZhbG8KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+
+--===============7206750535553031417==
+Content-Type: multipart/signed; boundary="Apple-Mail=_754F0F17-EE0B-4C93-BE92-01E9FC86C0CE"; protocol="application/pgp-signature"; micalg=pgp-sha512
+
+
+--Apple-Mail=_754F0F17-EE0B-4C93-BE92-01E9FC86C0CE
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+> So this counter is per wiphy, not per vdev. Is that ok?
+
+
+Well, I think this should be okay.
+The counter depends on the point of view. Counting per wiphy and looking =
+on the physical transmission it counts every incoming ampdu that was =
+received by the physical wireless card. On the other hand, looking =
+=E2=80=9Edown the network stack=E2=80=9C from the application layer, you =
+may want a consistent ampdu reference number.
+I think doing the counting per wiphy should be okay, because it is still =
+a virtual counter on the receivers site. Doing the counting per wiphy =
+still allows to identify aggregated mpdu=E2=80=99s on the application =
+layer, as you just search for mpdus with the same reference number. =
+Additionally, counting per whipy enables you to get a feeling on the =
+application layer, how much incoming load the wiphy has to handle at the =
+moment. Considering this counter is only used for debugging and =
+research, this additional information can be useful or if not, it does =
+not change anything.
+
+
+> What about locking? How is this protected or doesn't it need anything?
+I don=E2=80=99t think locking is needed here since the counter is per =
+wiphy and it is only incremented on the last mpdu of a ampdu. =
+Additionally, locking is also not used in ath9k.
+
+Thanks!
+Best,
+Matthias Frei
+
+
+
+> Am 06.07.2017 um 09:42 schrieb Kalle Valo <kvalo@qca.qualcomm.com>:
+>=20
+> Matthias Frei <mf@frei.media> writes:
+>=20
+>> Set the a-mpdu reference number in ath10k to make it accessible in =
+the receivers radiotap header. Implemented as in ath9k.
+>> The reference number is needed for troubleshooting and research at =
+the receivers site (e.g. to identify mpdu's that were aggregated in an =
+a-mpdu)
+>>=20
+>> Signed-off-by: Matthias Frei <mf@frei.media>
+>=20
+> I did some changes in pending branch, please review them:
+>=20
+> =
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=3D=
+pending&id=3Df722728460a5c9e9200a7f1362fa605a714c1968
+>=20
+>> --- a/drivers/net/wireless/ath/ath10k/core.h
+>> +++ b/drivers/net/wireless/ath/ath10k/core.h
+>> @@ -989,6 +989,9 @@ struct ath10k {
+>> 		u32 reg_ack_cts_timeout_orig;
+>> 	} fw_coverage;
+>>=20
+>> +	/* AMPDU */
+>> +	u32 ampdu_ref;
+>=20
+> The comment is not providing any extra value, I'll remove that.
+>=20
+> What about locking? How is this protected or doesn't it need anything?
+>=20
+> Also I renamed this to ampdu_reference just to be consistent with the
+> mac80211 name.
+>=20
+>> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> @@ -877,16 +877,24 @@ static void ath10k_htt_rx_h_ppdu(struct ath10k =
+*ar,
+>> 		status->nss =3D 0;
+>> 		status->encoding =3D RX_ENC_LEGACY;
+>> 		status->bw =3D RATE_INFO_BW_20;
+>> -		status->flag &=3D ~RX_FLAG_MACTIME_END;
+>> -		status->flag |=3D RX_FLAG_NO_SIGNAL_VAL;
+>> +		status->flag &=3D ~(RX_FLAG_MACTIME_END | =
+RX_FLAG_AMPDU_IS_LAST);
+>> +		status->flag |=3D RX_FLAG_NO_SIGNAL_VAL | =
+RX_FLAG_AMPDU_DETAILS | RX_FLAG_AMPDU_LAST_KNOWN;
+>=20
+> This added a new warning:
+>=20
+> drivers/net/wireless/ath/ath10k/htt_rx.c:894: line over 90 characters
+>=20
+> I fixed that by separating the setting of ampdu flags.
+>=20
+>> +		/* set ampdu ref */
+>> +		status->ampdu_reference =3D ar->ampdu_ref;
+>=20
+> The comment is not telling anything new so removed it.
+>=20
+>> -	if (is_last_ppdu)
+>> +	if (is_last_ppdu) {
+>> 		ath10k_htt_rx_h_mactime(ar, status, rxd);
+>> +
+>> +		/* set ampdu last segment flag */
+>> +		status->flag |=3D RX_FLAG_AMPDU_IS_LAST;
+>> +		ar->ampdu_ref++;
+>> +	}
+>=20
+> So this counter is per wiphy, not per vdev. Is that ok?
+>=20
+> --
+> Kalle Valo
+
+
+--Apple-Mail=_754F0F17-EE0B-4C93-BE92-01E9FC86C0CE
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP using GPGMail
+
+-----BEGIN PGP SIGNATURE-----
+Comment: FREI.media
+
+iQIcBAEBCgAGBQJZX3q6AAoJEEwLkI6cZ4BOsUsP/3qA458WhIk8kMBsZmfDF7fZ
+xz+19hLZcVfvnvF8YZEDpPJYSrSOk8tibO1wJsqK7lrZ+0eYmwK0zgjD6w6WxVtX
+8wt+mRZ41IQVQqfNMcauqf9W+Zt9dhRrh3GMDMaCXp0vmNj/BQYQtGmiW9nlIZxM
+atDRQG88ytf8ijSi+Ry+jaSZy6Wdl5cF9zwpQ+e7NkYo75heen/T9pKrcr0u29pV
+Y+4pZq2OijGHYbUkoAucB0De2jqiY6s1K6QygjDMk7FxQsrEo0wL7GiPyJ9RI4Ca
+yUYeWE039T2p60QarsHkC/DZrK1tVmqK2pJfe6MEMHVKz3nMMT5oSlOEVn42Lfjj
+A+Ul4QNmhtnC4tUVojAsEmxgerj1lPOS3s6I/GZMGWMHYezJ+gMncCNAe+QTwmSx
+yHg1lUA03SPcVfxFfPqolkKmEoqLRpTRfHnE3EpJNn7/NmvgMQ0eHuyYRrxw8CvI
+iE4mP+AuUVwzQMPdT9EnBgH03TxiJbloobG1/399Qap1NQFPiWwpF42ulLCNvJEa
+5IhNM00t3IeemTJXk47l2tCWIpuDZOKBpGHOEMw5wCqiWbxgu0PcmJAoLrjKTQe/
+t9+oUSnR92ka1870xCHhrgAEXAy8d+Uk7PFQzRflcCMAsiMmIOyAI9gHo/OLJHAq
+/K775KOjK1O8uXCJcH9L
+=n7uk
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_754F0F17-EE0B-4C93-BE92-01E9FC86C0CE--
+
+
+--===============7206750535553031417==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============7206750535553031417==--
