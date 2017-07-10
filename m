@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+Received: from mail-ua0-x231.google.com ([2607:f8b0:400c:c08::231])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dTv6S-0005L5-Dy
- for ath10k@lists.infradead.org; Sat, 08 Jul 2017 19:09:18 +0000
-Received: by mail-lf0-x243.google.com with SMTP id g21so6758160lfk.1
- for <ath10k@lists.infradead.org>; Sat, 08 Jul 2017 12:08:54 -0700 (PDT)
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [PATCH] ath10k: sdio: fix compile warning
-Date: Sat,  8 Jul 2017 21:08:41 +0200
-Message-Id: <1499540921-18521-1-git-send-email-erik.stromdahl@gmail.com>
+ id 1dUVUK-0008Ka-Iq
+ for ath10k@lists.infradead.org; Mon, 10 Jul 2017 10:00:22 +0000
+Received: by mail-ua0-x231.google.com with SMTP id j53so50753364uaa.2
+ for <ath10k@lists.infradead.org>; Mon, 10 Jul 2017 02:59:59 -0700 (PDT)
 MIME-Version: 1.0
+From: Richard Toy <richard.toy@gmail.com>
+Date: Mon, 10 Jul 2017 11:59:17 +0200
+Message-ID: <CAK3eJOA31c5pCRvvz3HUKJPW61WHOMMVMBHYsr=nQm-t-kw0Cw@mail.gmail.com>
+Subject: Nightly builds to try
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,48 +18,16 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
+To: ath10k@lists.infradead.org
 
-QXMgc3VnZ2VzdGVkIGJ5IEFybmQgQmVyZ21hbm4sIHJlcGxhY2UKIndoaWxlICh0aW1lX2JlZm9y
-ZV8uLi4pIHt9Igp3aXRoCiJkbyB7fSB3aGlsZSAodGltZV9iZWZvcmVfLi4uKSIKClRoaXMgZml4
-ZXMgdGhlIGZvbGxvd2luZyB3YXJuaW5ncyBkZXRlY3RlZCBieSBnY2MgNC4xLjI6Cgpkcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3NkaW8uYzogSW4gZnVuY3Rpb24K4oCYYXRoMTBrX3Nk
-aW9fbWJveF9yeG1zZ19wZW5kaW5nX2hhbmRsZXLigJk6CmRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
-aC9hdGgxMGsvc2Rpby5jOjY3Njogd2FybmluZzog4oCYcmV04oCZIG1heSBiZSB1c2VkIHVuaW5p
-dGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbgoKLi4uCgpkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
-YXRoMTBrL3NkaW8uYzogSW4gZnVuY3Rpb24K4oCYYXRoMTBrX3NkaW9faXJxX2hhbmRsZXLigJk6
-CmRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvc2Rpby5jOjEzMzE6IHdhcm5pbmc6IOKA
-mHJldOKAmSBtYXkgYmUgdXNlZCB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24KClNpZ25l
-ZC1vZmYtYnk6IEVyaWsgU3Ryb21kYWhsIDxlcmlrLnN0cm9tZGFobEBnbWFpbC5jb20+Ci0tLQog
-ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9zZGlvLmMgfCA4ICsrKystLS0tCiAxIGZp
-bGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvc2Rpby5jIGIvZHJpdmVycy9uZXQvd2ly
-ZWxlc3MvYXRoL2F0aDEway9zZGlvLmMKaW5kZXggODU5ZWQ4Ny4uNDgyNjhmMCAxMDA2NDQKLS0t
-IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9zZGlvLmMKKysrIGIvZHJpdmVycy9u
-ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9zZGlvLmMKQEAgLTY4Myw3ICs2ODMsNyBAQCBzdGF0aWMg
-aW50IGF0aDEwa19zZGlvX21ib3hfcnhtc2dfcGVuZGluZ19oYW5kbGVyKHN0cnVjdCBhdGgxMGsg
-KmFyLAogCWxvb2thaGVhZHNbMF0gPSBtc2dfbG9va2FoZWFkOwogCiAJdGltZW91dCA9IGppZmZp
-ZXMgKyBTRElPX01CT1hfUFJPQ0VTU0lOR19USU1FT1VUX0haOwotCXdoaWxlICh0aW1lX2JlZm9y
-ZShqaWZmaWVzLCB0aW1lb3V0KSkgeworCWRvIHsKIAkJLyogVHJ5IHRvIGFsbG9jYXRlIGFzIG1h
-bnkgSFRDIFJYIHBhY2tldHMgaW5kaWNhdGVkIGJ5CiAJCSAqIG5fbG9va2FoZWFkcy4KIAkJICov
-CkBAIC03MTksNyArNzE5LDcgQEAgc3RhdGljIGludCBhdGgxMGtfc2Rpb19tYm94X3J4bXNnX3Bl
-bmRpbmdfaGFuZGxlcihzdHJ1Y3QgYXRoMTBrICphciwKIAkJICogcGVyZm9ybWFuY2UgaW4gaGln
-aCB0aHJvdWdocHV0IHNpdHVhdGlvbnMuCiAJCSAqLwogCQkqZG9uZSA9IGZhbHNlOwotCX0KKwl9
-IHdoaWxlICh0aW1lX2JlZm9yZShqaWZmaWVzLCB0aW1lb3V0KSk7CiAKIAlpZiAocmV0ICYmIChy
-ZXQgIT0gLUVDQU5DRUxFRCkpCiAJCWF0aDEwa193YXJuKGFyLCAiZmFpbGVkIHRvIGdldCBwZW5k
-aW5nIHJlY3YgbWVzc2FnZXM6ICVkXG4iLApAQCAtMTMzNiwxMSArMTMzNiwxMSBAQCBzdGF0aWMg
-dm9pZCBhdGgxMGtfc2Rpb19pcnFfaGFuZGxlcihzdHJ1Y3Qgc2Rpb19mdW5jICpmdW5jKQogCXNk
-aW9fcmVsZWFzZV9ob3N0KGFyX3NkaW8tPmZ1bmMpOwogCiAJdGltZW91dCA9IGppZmZpZXMgKyBB
-VEgxMEtfU0RJT19ISUZfQ09NTVVOSUNBVElPTl9USU1FT1VUX0haOwotCXdoaWxlICh0aW1lX2Jl
-Zm9yZShqaWZmaWVzLCB0aW1lb3V0KSAmJiAhZG9uZSkgeworCWRvIHsKIAkJcmV0ID0gYXRoMTBr
-X3NkaW9fbWJveF9wcm9jX3BlbmRpbmdfaXJxcyhhciwgJmRvbmUpOwogCQlpZiAocmV0KQogCQkJ
-YnJlYWs7Ci0JfQorCX0gd2hpbGUgKHRpbWVfYmVmb3JlKGppZmZpZXMsIHRpbWVvdXQpICYmICFk
-b25lKTsKIAogCXNkaW9fY2xhaW1faG9zdChhcl9zZGlvLT5mdW5jKTsKIAotLSAKMi43LjQKCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Is there a staging area where nightly builds of the drivers may be
+downloaded from?
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
