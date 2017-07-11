@@ -2,12 +2,14 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28]
  helo=alexa-out-lv-01.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dUvf1-0006bD-Os
- for ath10k@lists.infradead.org; Tue, 11 Jul 2017 13:57:09 +0000
+ id 1dUvfG-0006br-EE
+ for ath10k@lists.infradead.org; Tue, 11 Jul 2017 13:57:24 +0000
 From: <mpubbise@qti.qualcomm.com>
-Subject: [PATCH 0/3] TDLS support on 10.4 firmware
-Date: Tue, 11 Jul 2017 19:26:15 +0530
-Message-ID: <1499781378-858-1-git-send-email-mpubbise@qti.qualcomm.com>
+Subject: [PATCH 1/3] ath10k: extend wmi service map to accommodate new services
+Date: Tue, 11 Jul 2017 19:26:16 +0530
+Message-ID: <1499781378-858-2-git-send-email-mpubbise@qti.qualcomm.com>
+In-Reply-To: <1499781378-858-1-git-send-email-mpubbise@qti.qualcomm.com>
+References: <1499781378-858-1-git-send-email-mpubbise@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,20 +28,48 @@ Cc: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>, linux-wireless@vger.kernel
 
 From: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
 
-This patchset adds TDLS support on 10.4 firmwares.
+Though there is room to accommodate 512 services in wmi service
+ready event, target uses only first 4-bits of each 32-bit word for
+advertising wmi services thereby limiting max wmi services to 64.
 
-Manikanta Pubbisetty (3):
-  ath10k: extend wmi service map to accommodate new services
-  ath10k: add tdls support for 10.4 firmwares
-  ath10k: push peer type to target for TDLS peers
+TDLS implementation for 10.4 firmwares introduces new wmi services by
+making use of remaining unused bits of each 32-bit word, therefore the
+wmi service mapping in host needs to be extended.
 
- drivers/net/wireless/ath/ath10k/core.c |    9 ++
- drivers/net/wireless/ath/ath10k/hw.h   |    5 +
- drivers/net/wireless/ath/ath10k/mac.c  |    5 +-
- drivers/net/wireless/ath/ath10k/wmi.c  |  162 ++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h  |  256 +++++++++++++++++++++++++++++++-
- 5 files changed, 435 insertions(+), 2 deletions(-)
+This patch adds the logic to extend the wmi SVCMAP to accommodate new
+wmi services.
 
+Signed-off-by: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h |   13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index baa38c8..3a4cbbc 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -420,9 +420,20 @@ static inline char *wmi_service_name(int service_id)
+ 	 __le32_to_cpu((wmi_svc_bmap)[(svc_id) / (sizeof(u32))]) & \
+ 	 BIT((svc_id) % (sizeof(u32))))
+ 
++/* This extension is required to accommodate new services, current limit
++ * for wmi_services is 64 as target is using only 4-bits of each 32-bit
++ * wmi_service word. Extending this to make use of remaining unused bits
++ * for new services.
++ */
++#define WMI_EXT_SERVICE_IS_ENABLED(wmi_svc_bmap, svc_id, len) \
++	((svc_id) >= (len) && \
++	__le32_to_cpu((wmi_svc_bmap)[((svc_id) - (len)) / 28]) & \
++	BIT(((((svc_id) - (len)) % 28) & 0x1f) + 4))
++
+ #define SVCMAP(x, y, len) \
+ 	do { \
+-		if (WMI_SERVICE_IS_ENABLED((in), (x), (len))) \
++		if ((WMI_SERVICE_IS_ENABLED((in), (x), (len))) || \
++		    (WMI_EXT_SERVICE_IS_ENABLED((in), (x), (len)))) \
+ 			__set_bit(y, out); \
+ 	} while (0)
+ 
 -- 
 1.7.9.5
 
