@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-cys01nam02on0050.outbound.protection.outlook.com
- ([104.47.37.50] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dV6KS-0007KL-MR
- for ath10k@lists.infradead.org; Wed, 12 Jul 2017 01:20:38 +0000
-Subject: Re: WARN_ON_ONCE(work > weight) in napi_poll()
-References: <26670dce-4dd2-f8e4-0e14-90d74257e739@virtuozzo.com>
- <87wp7oia6j.fsf@kamboji.qca.qualcomm.com>
- <952aefe1-6f6a-3978-e7e7-5e74076f26a3@virtuozzo.com>
- <b418d63d-d348-90b5-ea58-6478a1a037f5@qca.qualcomm.com>
- <8cb28d9b-41c9-043c-16ca-f0bea41944e9@virtuozzo.com>
-From: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>
-Message-ID: <3ce246b3-b110-dd50-bf29-45ee78985872@quantenna.com>
-Date: Tue, 11 Jul 2017 18:19:51 -0700
+ id 1dWsTP-0001QY-RU
+ for ath10k@lists.infradead.org; Sun, 16 Jul 2017 22:57:13 +0000
+Received: by mail-wm0-x243.google.com with SMTP id 15so8268135wmm.3
+ for <ath10k@lists.infradead.org>; Sun, 16 Jul 2017 15:56:50 -0700 (PDT)
+From: Gabriel C <nix.or.die@gmail.com>
+Subject: ath10k_htt_rx_amsdu_allowed() noise
+Message-ID: <edbe270b-ba70-b844-f814-53d04d07d253@gmail.com>
+Date: Mon, 17 Jul 2017 00:56:48 +0200
 MIME-Version: 1.0
-In-Reply-To: <8cb28d9b-41c9-043c-16ca-f0bea41944e9@virtuozzo.com>
 Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,40 +23,47 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Andrey Ryabinin <aryabinin@virtuozzo.com>, Ryan Hsu <ryanhsu@qti.qualcomm.com>, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Networking <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On 07/11/2017 10:28 AM, Andrey Ryabinin wrote:
-> 
-> It gave me this:
-> 
-> [118648.825347] #1 quota too big 72 64 16
-> [118648.825351] #2 quota too big 72 64 16
-> [118648.825471] ------------[ cut here ]------------
-> [118648.825484] WARNING: CPU: 0 PID: 0 at ../net/core/dev.c:5274 net_rx_action+0x258/0x360
-> 
-> So this means that we didn't met the condition bellow, i.e. skb_queue_empty() returned true.
-> 
->          ath10k_htt_txrx_compl_task():
-> 
->                  if ((quota > ATH10K_NAPI_QUOTA_LIMIT) &&
->                      !skb_queue_empty(&htt->rx_in_ord_compl_q)) {
->                          resched_napi = true;
->                          goto exit;
->                  }
-> 
->> Also WLAN.RM.2.0-00180-QCARMSWPZ-1 firmware is a bit old, could you also update firmware to give it a try?
->> https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0/4.4
->>
-> 
-> Will try.
-> 
+Hello,
 
-Maybe ath10k_htt_rx_in_ord_ind() has to accept "budget_left" parameter 
-and use it to limit number of processed MSDUs in queued AMSDU and saving 
-rest for later (NAPI has to be rescheduled in this case).
-It seems natural that this problem happens with current logic, in case 
-AMSDU in Rx queue has more elements then left in budget.
+each time I disconnect my card from AP my dmesg gets flooded like this :
+
+...
+ath10k_pci 0000:03:00.0: no channel configured; ignoring frame(s)!
+<until ratelimit kicks in>
+ath10k_warn: 155 callbacks suppressed
+<and so on>
+
+Can ath10k_warn() be ath10k_dbg() there ? Maybe this ?
+
+
+ From d4138d936635ca7b69ed7f7b0cda4914f0f07917 Mon Sep 17 00:00:00 2001
+From: Gabriel Craciunescu <nix.or.die@gmail.com>
+Date: Mon, 17 Jul 2017 00:45:29 +0200
+Subject: [PATCH] ath10k_htt_rx_amsdu_allowed(): change ath10k_warn() to th10k_dbg()
+
+Signed-off-by: Gabriel Craciunescu <nix.or.die@gmail.com>
+---
+  drivers/net/wireless/ath/ath10k/htt_rx.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 398dda978d6e..ad0306cd6ee1 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1514,7 +1514,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k *ar,
+          */
+
+         if (!rx_status->freq) {
+-               ath10k_warn(ar, "no channel configured; ignoriframe(s)!\n");
++               ath10k_dbg(ar, ATH10K_DBG_HTT, "no channel configured, ignoring frame(s)!\n");
+                 return false;
+         }
+
+-- 
+2.13.3
 
 _______________________________________________
 ath10k mailing list
