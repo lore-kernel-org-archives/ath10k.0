@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXqTD-00059T-Qe
- for ath10k@lists.infradead.org; Wed, 19 Jul 2017 15:01:01 +0000
-Received: by mail-wm0-x22e.google.com with SMTP id w191so1669445wmw.1
- for <ath10k@lists.infradead.org>; Wed, 19 Jul 2017 08:00:39 -0700 (PDT)
-Subject: Re: ath10k_htt_rx_amsdu_allowed() noise
-References: <edbe270b-ba70-b844-f814-53d04d07d253@gmail.com>
- <79f47b0b-eb71-db71-2700-e30b01b11c76@qca.qualcomm.com>
-From: Gabriel C <nix.or.die@gmail.com>
-Message-ID: <ba10dfac-37c4-20d7-1c08-3ee988aff1c6@gmail.com>
-Date: Wed, 19 Jul 2017 17:00:36 +0200
-MIME-Version: 1.0
-In-Reply-To: <79f47b0b-eb71-db71-2700-e30b01b11c76@qca.qualcomm.com>
-Content-Language: en-US
+ id 1dXqun-0001IN-TL
+ for ath10k@lists.infradead.org; Wed, 19 Jul 2017 15:29:35 +0000
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: [PATCH 049/102] ath10k: explicitly request exclusive reset control
+Date: Wed, 19 Jul 2017 17:25:53 +0200
+Message-Id: <20170719152646.25903-50-p.zabel@pengutronix.de>
+In-Reply-To: <20170719152646.25903-1-p.zabel@pengutronix.de>
+References: <20170719152646.25903-1-p.zabel@pengutronix.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +17,84 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Philipp Zabel <p.zabel@pengutronix.de>
 
-On 18.07.2017 09:14, Ryan Hsu wrote:
-> On 07/16/2017 03:56 PM, Gabriel C wrote:
-> 
->>
->> Can ath10k_warn() be ath10k_dbg() there ? Maybe this ?
->>
-> 
-> Looks good to me.
-> 
->>
->>  From d4138d936635ca7b69ed7f7b0cda4914f0f07917 Mon Sep 17 00:00:00 2001
->> From: Gabriel Craciunescu <nix.or.die@gmail.com>
->> Date: Mon, 17 Jul 2017 00:45:29 +0200
->> Subject: [PATCH] ath10k_htt_rx_amsdu_allowed(): change ath10k_warn() to th10k_dbg()
->>
->> Signed-off-by: Gabriel Craciunescu <nix.or.die@gmail.com>
->> ---
->>   drivers/net/wireless/ath/ath10k/htt_rx.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
->> index 398dda978d6e..ad0306cd6ee1 100644
->> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
->> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
->> @@ -1514,7 +1514,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k *ar,
->>           */
->>
->>          if (!rx_status->freq) {
->> -               ath10k_warn(ar, "no channel configured; ignoriframe(s)!\n");
->> +               ath10k_dbg(ar, ATH10K_DBG_HTT, "no channel configured, ignoring frame(s)!\n");
->>                  return false;
->>          }
->>
-> 
-> Can you send this as patch for reviewing, please?
-> 
+Commit a53e35db70d1 ("reset: Ensure drivers are explicit when requesting
+reset lines") started to transition the reset control request API calls
+to explicitly state whether the driver needs exclusive or shared reset
+control behavior. Convert all drivers requesting exclusive resets to the
+explicit API call so the temporary transition helpers can be removed.
 
-Sure .. I'll try to send the patch to the list later on today..
+No functional changes.
 
-Regards,
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+---
+ drivers/net/wireless/ath/ath10k/ahb.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-Gabriel C
+diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+index da770af830369..2ad3ed7b89417 100644
+--- a/drivers/net/wireless/ath/ath10k/ahb.c
++++ b/drivers/net/wireless/ath/ath10k/ahb.c
+@@ -197,35 +197,40 @@ static int ath10k_ahb_rst_ctrl_init(struct ath10k *ar)
+ 
+ 	dev = &ar_ahb->pdev->dev;
+ 
+-	ar_ahb->core_cold_rst = devm_reset_control_get(dev, "wifi_core_cold");
++	ar_ahb->core_cold_rst = devm_reset_control_get_exclusive(dev,
++								 "wifi_core_cold");
+ 	if (IS_ERR(ar_ahb->core_cold_rst)) {
+ 		ath10k_err(ar, "failed to get core cold rst ctrl: %ld\n",
+ 			   PTR_ERR(ar_ahb->core_cold_rst));
+ 		return PTR_ERR(ar_ahb->core_cold_rst);
+ 	}
+ 
+-	ar_ahb->radio_cold_rst = devm_reset_control_get(dev, "wifi_radio_cold");
++	ar_ahb->radio_cold_rst = devm_reset_control_get_exclusive(dev,
++								  "wifi_radio_cold");
+ 	if (IS_ERR(ar_ahb->radio_cold_rst)) {
+ 		ath10k_err(ar, "failed to get radio cold rst ctrl: %ld\n",
+ 			   PTR_ERR(ar_ahb->radio_cold_rst));
+ 		return PTR_ERR(ar_ahb->radio_cold_rst);
+ 	}
+ 
+-	ar_ahb->radio_warm_rst = devm_reset_control_get(dev, "wifi_radio_warm");
++	ar_ahb->radio_warm_rst = devm_reset_control_get_exclusive(dev,
++								  "wifi_radio_warm");
+ 	if (IS_ERR(ar_ahb->radio_warm_rst)) {
+ 		ath10k_err(ar, "failed to get radio warm rst ctrl: %ld\n",
+ 			   PTR_ERR(ar_ahb->radio_warm_rst));
+ 		return PTR_ERR(ar_ahb->radio_warm_rst);
+ 	}
+ 
+-	ar_ahb->radio_srif_rst = devm_reset_control_get(dev, "wifi_radio_srif");
++	ar_ahb->radio_srif_rst = devm_reset_control_get_exclusive(dev,
++								  "wifi_radio_srif");
+ 	if (IS_ERR(ar_ahb->radio_srif_rst)) {
+ 		ath10k_err(ar, "failed to get radio srif rst ctrl: %ld\n",
+ 			   PTR_ERR(ar_ahb->radio_srif_rst));
+ 		return PTR_ERR(ar_ahb->radio_srif_rst);
+ 	}
+ 
+-	ar_ahb->cpu_init_rst = devm_reset_control_get(dev, "wifi_cpu_init");
++	ar_ahb->cpu_init_rst = devm_reset_control_get_exclusive(dev,
++								"wifi_cpu_init");
+ 	if (IS_ERR(ar_ahb->cpu_init_rst)) {
+ 		ath10k_err(ar, "failed to get cpu init rst ctrl: %ld\n",
+ 			   PTR_ERR(ar_ahb->cpu_init_rst));
+-- 
+2.11.0
+
 
 _______________________________________________
 ath10k mailing list
