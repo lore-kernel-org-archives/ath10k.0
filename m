@@ -1,22 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr40125.outbound.protection.outlook.com
- ([40.107.4.125] helo=EUR03-DB5-obe.outbound.protection.outlook.com)
+Received: from smtp-relay-02.dondominio.net ([31.214.176.33])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dZZfS-0006Gt-VB
- for ath10k@lists.infradead.org; Mon, 24 Jul 2017 09:28:49 +0000
-Subject: Re: WARN_ON_ONCE(work > weight) in napi_poll()
-References: <26670dce-4dd2-f8e4-0e14-90d74257e739@virtuozzo.com>
- <87wp7oia6j.fsf@kamboji.qca.qualcomm.com>
- <952aefe1-6f6a-3978-e7e7-5e74076f26a3@virtuozzo.com>
- <b418d63d-d348-90b5-ea58-6478a1a037f5@qca.qualcomm.com>
- <8cb28d9b-41c9-043c-16ca-f0bea41944e9@virtuozzo.com>
- <3ce246b3-b110-dd50-bf29-45ee78985872@quantenna.com>
- <daa2fbf9-ac75-a7eb-f2b7-054dfae6fc56@qca.qualcomm.com>
-From: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Message-ID: <b5e60c2f-c719-0c65-f2c4-bb280fee2eb7@virtuozzo.com>
-Date: Mon, 24 Jul 2017 12:30:44 +0300
+ id 1dZb2J-0003Ah-66
+ for ath10k@lists.infradead.org; Mon, 24 Jul 2017 10:56:29 +0000
+From: =?UTF-8?Q?Ignacio_N=c3=ba=c3=b1ez_Hernanz?= <nacho.nunez@aoifes.com>
+Subject: [PATCH] ath10k: Make ath10k report discarded packets to mac80211
+Message-ID: <863ed21f-d2fe-f1e1-6f3c-b4061c777f59@aoifes.com>
+Date: Mon, 24 Jul 2017 12:49:04 +0200
 MIME-Version: 1.0
-In-Reply-To: <daa2fbf9-ac75-a7eb-f2b7-054dfae6fc56@qca.qualcomm.com>
 Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,52 +17,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qti.qualcomm.com>, Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Networking <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, =?UTF-8?Q?Ignacio_N=c3=ba=c3=b1ez_Hernanz?= <nacho.nunez@aoifes.com>
 
-On 07/18/2017 09:47 AM, Ryan Hsu wrote:
-> On 07/11/2017 06:19 PM, Igor Mitsyanko wrote:
-> 
->> On 07/11/2017 10:28 AM, Andrey Ryabinin wrote:
->>>
->>> It gave me this:
->>>
->>> [118648.825347] #1 quota too big 72 64 16
->>> [118648.825351] #2 quota too big 72 64 16
->>> [118648.825471] ------------[ cut here ]------------
->>> [118648.825484] WARNING: CPU: 0 PID: 0 at ../net/core/dev.c:5274 net_rx_action+0x258/0x360
->>>
->>> So this means that we didn't met the condition bellow, i.e. skb_queue_empty() returned true.
->>>
->>>          ath10k_htt_txrx_compl_task():
->>>
->>>                  if ((quota > ATH10K_NAPI_QUOTA_LIMIT) &&
->>>                      !skb_queue_empty(&htt->rx_in_ord_compl_q)) {
->>>                          resched_napi = true;
->>>                          goto exit;
->>>                  }
->>>
->>>> Also WLAN.RM.2.0-00180-QCARMSWPZ-1 firmware is a bit old, could you also update firmware to give it a try?
->>>> https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0/4.4
->>>>
->>>
->>> Will try.
->>>
->>
->> Maybe ath10k_htt_rx_in_ord_ind() has to accept "budget_left" parameter and use it to limit number of processed MSDUs in queued AMSDU and saving rest for later (NAPI has to be rescheduled in this case).
->> It seems natural that this problem happens with current logic, in case AMSDU in Rx queue has more elements then left in budget.
-> 
-> Thanks, likely in current logic, it does have chance to exceed the budget while dequeuing from the last list.
-> 
-> Can you give it a try this one? for QCA6174 reorder is offload, so this should be good enough for your case to test, will have to check non-offload reorder case... but let me know if you're seeing something different....
-> 
+ From 2caef0e851a23cc9e979a3f36a2ae0d964cfeba7 Mon Sep 17 00:00:00 2001
+From: Ignacio Nunez Hernanz <nacho.nunez@aoifes.com>
+Date: Mon, 24 Jul 2017 11:52:48 +0200
+Subject: [PATCH] ath10k: Make ath10k report discarded packets to mac80211
 
-I've been running with this patch almost a week and haven't seen the WARNING. One week is usually enough to trigger it several times.
-I guess we can assume that the patch fixed the problem.
+Whenever ath10k firmware discards a packet (HTT_TX_COMPL_STATE_DISCARD
+flag), the skb is freed and mac80211 does not get feedback through
+ieee80211_tx_status().
+
+Instead, make sure that the IEEE80211_TX_STAT_ACK flag is disabled and
+let the packet go through, like ath9k does.
+
+Signed-off-by: Ignacio Nunez Hernanz <nacho.nunez@aoifes.com>
+---
+  drivers/net/wireless/ath/ath10k/txrx.c | 12 +++++++-----
+  1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c 
+b/drivers/net/wireless/ath/ath10k/txrx.c
+index d4986f626c35..37537530de76 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -102,11 +102,6 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+      memset(&info->status, 0, sizeof(info->status));
+      trace_ath10k_txrx_tx_unref(ar, tx_done->msdu_id);
+
+-    if (tx_done->status == HTT_TX_COMPL_STATE_DISCARD) {
+-        ieee80211_free_txskb(htt->ar->hw, msdu);
+-        return 0;
+-    }
+-
+      if (!(info->flags & IEEE80211_TX_CTL_NO_ACK))
+          info->flags |= IEEE80211_TX_STAT_ACK;
+
+@@ -117,6 +112,13 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+          (info->flags & IEEE80211_TX_CTL_NO_ACK))
+          info->flags |= IEEE80211_TX_STAT_NOACK_TRANSMITTED;
+
++    if (tx_done->status == HTT_TX_COMPL_STATE_DISCARD) {
++          if (info->flags & IEEE80211_TX_CTL_NO_ACK)
++            info->flags &= ~IEEE80211_TX_STAT_NOACK_TRANSMITTED;
++          else
++            info->flags &= ~IEEE80211_TX_STAT_ACK;
++    }
++
+      ieee80211_tx_status(htt->ar->hw, msdu);
+      /* we do not own the msdu anymore */
+
+-- 
+2.13.1
 
 _______________________________________________
 ath10k mailing list
