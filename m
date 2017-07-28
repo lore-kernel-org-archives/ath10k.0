@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-relay-02.dondominio.net ([31.214.176.33])
+Received: from alexa-out.qualcomm.com ([129.46.98.28]
+ helo=alexa-out-lv-02.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dZb2J-0003Ah-66
- for ath10k@lists.infradead.org; Mon, 24 Jul 2017 10:56:29 +0000
-From: =?UTF-8?Q?Ignacio_N=c3=ba=c3=b1ez_Hernanz?= <nacho.nunez@aoifes.com>
-Subject: [PATCH] ath10k: Make ath10k report discarded packets to mac80211
-Message-ID: <863ed21f-d2fe-f1e1-6f3c-b4061c777f59@aoifes.com>
-Date: Mon, 24 Jul 2017 12:49:04 +0200
+ id 1db3l5-0002Xu-Me
+ for ath10k@lists.infradead.org; Fri, 28 Jul 2017 11:48:45 +0000
 MIME-Version: 1.0
-Content-Language: en-US
+Subject: Re: [PATCHv2,2/3] ath10k: add tdls support for 10.4 firmwares
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1500379094-2373-3-git-send-email-mpubbise@qti.qualcomm.com>
+References: <1500379094-2373-3-git-send-email-mpubbise@qti.qualcomm.com>
+Message-ID: <777f86a7a19e42989d1e11cb522fa5e5@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 28 Jul 2017 13:48:12 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,63 +19,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, =?UTF-8?Q?Ignacio_N=c3=ba=c3=b1ez_Hernanz?= <nacho.nunez@aoifes.com>
+To: mpubbise@qti.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
- From 2caef0e851a23cc9e979a3f36a2ae0d964cfeba7 Mon Sep 17 00:00:00 2001
-From: Ignacio Nunez Hernanz <nacho.nunez@aoifes.com>
-Date: Mon, 24 Jul 2017 11:52:48 +0200
-Subject: [PATCH] ath10k: Make ath10k report discarded packets to mac80211
+mpubbise@qti.qualcomm.com wrote:
 
-Whenever ath10k firmware discards a packet (HTT_TX_COMPL_STATE_DISCARD
-flag), the skb is freed and mac80211 does not get feedback through
-ieee80211_tx_status().
+> This patch adds the support of TDLS feature for 10.4 firmware
+> versions.
+> 
+> A new WMI service is added to advertise the support of TDLS for
+> 10.4 firmwares.
+> 
+> Signed-off-by: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Instead, make sure that the IEEE80211_TX_STAT_ACK flag is disabled and
-let the packet go through, like ath9k does.
+This added new warnings, I fixed them in the pending branch:
 
-Signed-off-by: Ignacio Nunez Hernanz <nacho.nunez@aoifes.com>
----
-  drivers/net/wireless/ath/ath10k/txrx.c | 12 +++++++-----
-  1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c 
-b/drivers/net/wireless/ath/ath10k/txrx.c
-index d4986f626c35..37537530de76 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -102,11 +102,6 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
-      memset(&info->status, 0, sizeof(info->status));
-      trace_ath10k_txrx_tx_unref(ar, tx_done->msdu_id);
-
--    if (tx_done->status == HTT_TX_COMPL_STATE_DISCARD) {
--        ieee80211_free_txskb(htt->ar->hw, msdu);
--        return 0;
--    }
--
-      if (!(info->flags & IEEE80211_TX_CTL_NO_ACK))
-          info->flags |= IEEE80211_TX_STAT_ACK;
-
-@@ -117,6 +112,13 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
-          (info->flags & IEEE80211_TX_CTL_NO_ACK))
-          info->flags |= IEEE80211_TX_STAT_NOACK_TRANSMITTED;
-
-+    if (tx_done->status == HTT_TX_COMPL_STATE_DISCARD) {
-+          if (info->flags & IEEE80211_TX_CTL_NO_ACK)
-+            info->flags &= ~IEEE80211_TX_STAT_NOACK_TRANSMITTED;
-+          else
-+            info->flags &= ~IEEE80211_TX_STAT_ACK;
-+    }
-+
-      ieee80211_tx_status(htt->ar->hw, msdu);
-      /* we do not own the msdu anymore */
+drivers/net/wireless/ath/ath10k/wmi.c:654:10: warning: Initializer entry defined twice
+drivers/net/wireless/ath/ath10k/wmi.c:738:10:   also defined here
+drivers/net/wireless/ath/ath10k/wmi.h:2881: line over 90 characters
 
 -- 
-2.13.1
+https://patchwork.kernel.org/patch/9848159/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
