@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dcqym-0003O0-Sn
- for ath10k@lists.infradead.org; Wed, 02 Aug 2017 10:34:25 +0000
-From: Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH v2] ath10k: fix memory leak in rx ring buffer allocation
-Date: Wed,  2 Aug 2017 16:03:37 +0530
-Message-Id: <1501670017-12862-1-git-send-email-pillair@codeaurora.org>
+ id 1dcuAG-0001Zt-RC
+ for ath10k@lists.infradead.org; Wed, 02 Aug 2017 13:58:34 +0000
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1] ath10k: Switch to use new generic UUID API
+Date: Wed,  2 Aug 2017 16:57:25 +0300
+Message-Id: <20170802135725.9317-1-andriy.shevchenko@linux.intel.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,69 +20,95 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-From: Rakesh Pillai <pillair@qti.qualcomm.com>
+There are new types and helpers that are supposed to be used in new code.
 
-ath10k: fix memory leak in rx ring buffer allocation
+As a preparation to get rid of legacy types and API functions do
+the conversion here.
 
-The rx ring buffers are added to a hash table if
-firmware support full rx reorder. If the full rx
-reorder support flag is not set before allocating
-the rx ring buffers, none of the buffers are added
-to the hash table.
-
-There is a race condition between rx ring refill and
-rx buffer replenish from napi poll. The interrupts are
-enabled in hif start, before the rx ring is refilled during init.
-We replenish buffers from napi poll due to the interrupts which
-get enabled after hif start. Hence before the entire rx ring is
-refilled during the init, the napi poll replenishes a few buffers
-in steps of 100 buffers per attempt. During this rx ring replenish
-from napi poll, the rx reorder flag has not been set due to which
-the replenished buffers are not added to the hash table
-
-Set the rx full reorder support flag before we allocate
-the rx ring buffer to avoid the memory leak.
-
-Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h  | 2 +-
+ drivers/net/wireless/ath/ath10k/debug.c | 6 +++---
+ drivers/net/wireless/ath/ath10k/pci.c   | 8 ++++----
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 6906bdd..10b3384 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1886,6 +1886,12 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		goto err_wmi_detach;
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 2b499af722ad..4b13e0078cf6 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -459,7 +459,7 @@ struct ath10k_ce_crash_hdr {
+ struct ath10k_fw_crash_data {
+ 	bool crashed_since_read;
  
-+	/* If firmware indicates Full Rx Reorder support it must be used in a
-+	 * slightly different manner. Let HTT code know.
-+	 */
-+	ar->htt.rx_ring.in_ord_rx = !!(test_bit(WMI_SERVICE_RX_FULL_REORDER,
-+						ar->wmi.svc_map));
-+
- 	status = ath10k_htt_rx_alloc(&ar->htt);
- 	if (status) {
- 		ath10k_err(ar, "failed to alloc htt rx: %d\n", status);
-@@ -1997,12 +2003,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		}
- 	}
+-	uuid_le uuid;
++	guid_t guid;
+ 	struct timespec timestamp;
+ 	__le32 registers[REG_DUMP_COUNT_QCA988X];
+ 	struct ath10k_ce_crash_data ce_crash_data[CE_COUNT_MAX];
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 56404fe4e8f5..df514507d3f1 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -70,7 +70,7 @@ struct ath10k_dump_file_data {
  
--	/* If firmware indicates Full Rx Reorder support it must be used in a
--	 * slightly different manner. Let HTT code know.
--	 */
--	ar->htt.rx_ring.in_ord_rx = !!(test_bit(WMI_SERVICE_RX_FULL_REORDER,
--						ar->wmi.svc_map));
--
- 	status = ath10k_htt_rx_ring_refill(ar);
- 	if (status) {
- 		ath10k_err(ar, "failed to refill htt rx ring: %d\n", status);
+ 	/* some info we can get from ath10k struct that might help */
+ 
+-	u8 uuid[16];
++	guid_t guid;
+ 
+ 	__le32 chip_id;
+ 
+@@ -719,7 +719,7 @@ ath10k_debug_get_new_fw_crash_data(struct ath10k *ar)
+ 	lockdep_assert_held(&ar->data_lock);
+ 
+ 	crash_data->crashed_since_read = true;
+-	uuid_le_gen(&crash_data->uuid);
++	guid_gen(&crash_data->guid);
+ 	getnstimeofday(&crash_data->timestamp);
+ 
+ 	return crash_data;
+@@ -766,7 +766,7 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar,
+ 
+ 	dump_data->version = cpu_to_le32(ATH10K_FW_CRASH_DUMP_VERSION);
+ 
+-	memcpy(dump_data->uuid, &crash_data->uuid, sizeof(dump_data->uuid));
++	guid_copy(&dump_data->guid, &crash_data->guid);
+ 	dump_data->chip_id = cpu_to_le32(ar->chip_id);
+ 	dump_data->bus_type = cpu_to_le32(0);
+ 	dump_data->target_version = cpu_to_le32(ar->target_version);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index a697caec6579..0a5b88e80214 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1463,7 +1463,7 @@ static void ath10k_pci_dump_registers(struct ath10k *ar,
+ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
+ {
+ 	struct ath10k_fw_crash_data *crash_data;
+-	char uuid[50];
++	char guid[UUID_STRING_LEN + 1];
+ 
+ 	spin_lock_bh(&ar->data_lock);
+ 
+@@ -1472,11 +1472,11 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
+ 	crash_data = ath10k_debug_get_new_fw_crash_data(ar);
+ 
+ 	if (crash_data)
+-		scnprintf(uuid, sizeof(uuid), "%pUl", &crash_data->uuid);
++		scnprintf(guid, sizeof(guid), "%pUl", &crash_data->guid);
+ 	else
+-		scnprintf(uuid, sizeof(uuid), "n/a");
++		scnprintf(guid, sizeof(guid), "n/a");
+ 
+-	ath10k_err(ar, "firmware crashed! (uuid %s)\n", uuid);
++	ath10k_err(ar, "firmware crashed! (guid %s)\n", guid);
+ 	ath10k_print_driver_info(ar);
+ 	ath10k_pci_dump_registers(ar, crash_data);
+ 	ath10k_ce_dump_registers(ar, crash_data);
 -- 
-1.9.1
+2.13.2
 
 
 _______________________________________________
