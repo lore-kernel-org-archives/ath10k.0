@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from alexa-out.qualcomm.com ([129.46.98.28]
+ helo=alexa-out-lv-02.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dcvRQ-0006zW-Ct
- for ath10k@lists.infradead.org; Wed, 02 Aug 2017 15:20:09 +0000
-Message-ID: <1501687174.29303.357.camel@linux.intel.com>
-Subject: Re: [PATCH v1] ath10k: Switch to use new generic UUID API
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Wed, 02 Aug 2017 18:19:34 +0300
-In-Reply-To: <87d18erpuv.fsf@kamboji.qca.qualcomm.com>
-References: <20170802135725.9317-1-andriy.shevchenko@linux.intel.com>
- <87d18erpuv.fsf@kamboji.qca.qualcomm.com>
-Mime-Version: 1.0
+ id 1ddEL1-0007YD-7D
+ for ath10k@lists.infradead.org; Thu, 03 Aug 2017 11:30:50 +0000
+MIME-Version: 1.0
+Subject: Re: ath10k: set a-mpdu reference number in ath10k (receiver)
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <B8D63297-0A88-42A3-B789-3849895CF201@frei.media>
+References: <B8D63297-0A88-42A3-B789-3849895CF201@frei.media>
+Message-ID: <be71938f7b3742c685e91c54cce1a7de@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 3 Aug 2017 13:30:19 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +23,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Matthias Frei <mf@frei.media>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Wed, 2017-08-02 at 14:44 +0000, Kalle Valo wrote:
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
+Matthias Frei <mf@frei.media> wrote:
+
+> Set the a-mpdu reference number in ath10k to make it accessible in the
+> receivers radiotap header. Implemented as in ath9k.  The reference number is
+> needed for troubleshooting and research at the receivers site (e.g. to identify
+> mpdu's that were aggregated in an a-mpdu)
 > 
-> > There are new types and helpers that are supposed to be used in new
-> > code.
-> > 
-> > As a preparation to get rid of legacy types and API functions do
-> > the conversion here.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> To which tree are you planning to submit this? Can I take this to my
-> ath.git tree?
+> Signed-off-by: Matthias Frei <mf@frei.media>
+> [kvalo@qca.qualcomm.com: fix checkpatch warning, commit log cleanup]
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-I guess it's precisely for your tree.
+Patch applied to ath-next branch of ath.git, thanks.
 
+47cc0ca91c9e ath10k: set a-mpdu receiver reference number
 
 -- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+https://patchwork.kernel.org/patch/9826931/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
 _______________________________________________
 ath10k mailing list
