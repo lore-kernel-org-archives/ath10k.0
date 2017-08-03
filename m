@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28]
- helo=alexa-out-lv-02.qualcomm.com)
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ddEL1-0007YD-7D
- for ath10k@lists.infradead.org; Thu, 03 Aug 2017 11:30:50 +0000
+ id 1ddEMx-0007jx-Qa
+ for ath10k@lists.infradead.org; Thu, 03 Aug 2017 11:32:49 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: set a-mpdu reference number in ath10k (receiver)
+Subject: Re: [v3,1/2] ath10k: various usb related definitions
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <B8D63297-0A88-42A3-B789-3849895CF201@frei.media>
-References: <B8D63297-0A88-42A3-B789-3849895CF201@frei.media>
-Message-ID: <be71938f7b3742c685e91c54cce1a7de@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 3 Aug 2017 13:30:19 +0200
+In-Reply-To: <149934311592.20024.14245790092679266925.stgit@potku.adurom.net>
+References: <149934311592.20024.14245790092679266925.stgit@potku.adurom.net>
+Message-ID: <cfaa9f7390c8447983d38ce91e5fae30@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 3 Aug 2017 13:32:20 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +22,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Matthias Frei <mf@frei.media>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Matthias Frei <mf@frei.media> wrote:
+Kalle Valo <kvalo@qca.qualcomm.com> wrote:
 
-> Set the a-mpdu reference number in ath10k to make it accessible in the
-> receivers radiotap header. Implemented as in ath9k.  The reference number is
-> needed for troubleshooting and research at the receivers site (e.g. to identify
-> mpdu's that were aggregated in an a-mpdu)
+> Definitions for USB based chipsets
 > 
-> Signed-off-by: Matthias Frei <mf@frei.media>
-> [kvalo@qca.qualcomm.com: fix checkpatch warning, commit log cleanup]
+> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Patch applied to ath-next branch of ath.git, thanks.
+2 patches applied to ath-next branch of ath.git, thanks.
 
-47cc0ca91c9e ath10k: set a-mpdu receiver reference number
+b00435e6cda6 ath10k: various usb related definitions
+4db66499df91 ath10k: add initial USB support
 
 -- 
-https://patchwork.kernel.org/patch/9826931/
+https://patchwork.kernel.org/patch/9828093/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
