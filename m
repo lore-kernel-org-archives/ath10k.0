@@ -1,15 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-lf0-x229.google.com ([2a00:1450:4010:c07::229])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ddESc-0002ei-Q3
- for ath10k@lists.infradead.org; Thu, 03 Aug 2017 11:39:46 +0000
+ id 1ddgFb-0003wl-Id
+ for ath10k@lists.infradead.org; Fri, 04 Aug 2017 17:19:05 +0000
+Received: by mail-lf0-x229.google.com with SMTP id g25so9637938lfh.1
+ for <ath10k@lists.infradead.org>; Fri, 04 Aug 2017 10:18:42 -0700 (PDT)
+Received: from [176.77.54.146] ([176.77.54.146])
+ by smtp.googlemail.com with ESMTPSA id 2sm1146586ljo.10.2017.08.04.10.18.39
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 04 Aug 2017 10:18:39 -0700 (PDT)
+From: svp <s.pooheer@gmail.com>
+Subject: Compex WLE600VX firmware crash
+Message-ID: <4e8550cf-6d07-374f-160e-19d41fef101b@localhost>
+Date: Fri, 4 Aug 2017 20:18:38 +0300
 MIME-Version: 1.0
-Subject: Re: [049/102] ath10k: explicitly request exclusive reset control
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20170719152646.25903-50-p.zabel@pengutronix.de>
-References: <20170719152646.25903-50-p.zabel@pengutronix.de>
-Message-ID: <10a2383f853747d5ac59a871502b1404@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 3 Aug 2017 13:38:11 +0200
+Content-Language: ru-RU
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,41 +24,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: netdev@vger.kernel.org, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+To: ath10k@lists.infradead.org
 
-Philipp Zabel <p.zabel@pengutronix.de> wrote:
-
-> Commit a53e35db70d1 ("reset: Ensure drivers are explicit when requesting
-> reset lines") started to transition the reset control request API calls
-> to explicitly state whether the driver needs exclusive or shared reset
-> control behavior. Convert all drivers requesting exclusive resets to the
-> explicit API call so the temporary transition helpers can be removed.
-> 
-> No functional changes.
-> 
-> Cc: Kalle Valo <kvalo@qca.qualcomm.com>
-> Cc: ath10k@lists.infradead.org
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-a764284f34f9 ath10k: explicitly request exclusive reset control
-
--- 
-https://patchwork.kernel.org/patch/9852575/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkhCgpIYXZlIGEgZmlyd2FyZSBjcmFzaCBhdCBzeXN0ZW0gc3RhcnQuCgp1bmFtZSAtYQpMaW51
+eCBJNS00NjcwIDQuMTIuNC0xLUFSQ0ggIzEgU01QIFBSRUVNUFQgRnJpIEp1bCAyOCAxODo1NDox
+OCBVVEMgMjAxNyAKeDg2XzY0IEdOVS9MaW51eAoKam91cm5hbGN0bCAtcgrQsNCy0LMgMDQgMTQ6
+MDE6NDggSTUtNDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBib2FyZF9maWxl
+IGFwaSAKMSBibWlfaWQgTi9BIGNyYzMyIGJlYmM3YzA4CtCw0LLQsyAwNCAxNDowMTo0OCBJNS00
+NjcwIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjA2OjAwLjA6IGZpcm13YXJlIHZlciAKMTAuMi40
+LjcwLjYzLTIgYXBpIDUgZmVhdHVyZXMgbm8tcDJwLHJhdy1tb2RlLG1mcCxhbGxvd3MtbWVzaC1i
+CtCw0LLQsyAwNCAxNDowMTo0OCBJNS00NjcwIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjA2OjAw
+LjA6IGtjb25maWcgZGVidWcgMCAKZGVidWdmcyAxIHRyYWNpbmcgMCBkZnMgMCB0ZXN0bW9kZSAw
+CtCw0LLQsyAwNCAxNDowMTo0OCBJNS00NjcwIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjA2OjAw
+LjA6IHFjYTk4OHggaHcyLjAgCnRhcmdldCAweDQxMDAwMTZjIGNoaXBfaWQgMHgwNDMyMjJmZiBz
+dWIgMDAwMDowMDAwCgoK0LDQstCzIDA0IDE0OjAxOjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtf
+cGNpIDAwMDA6MDY6MDAuMDogWzUyXTogCjB4ODA5QjI5M0MgMHgwMDQwQURBNCAweDAwNDAwMDAw
+IDB4MDA0MTZGQTQK0LDQstCzIDA0IDE0OjAxOjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNp
+IDAwMDA6MDY6MDAuMDogWzQ4XTogCjB4ODA5QjY3QzQgMHgwMDQwQUQ4NCAweDAwNDEwNzYwIDB4
+MDA0MTEzNDQK0LDQstCzIDA0IDE0OjAxOjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNpIDAw
+MDA6MDY6MDAuMDogWzQ0XTogCjB4ODA5OEFFQzggMHgwMDQwQUQ0NCAweDAwNDEwNzYwIDB4MDAw
+MDAwMDEK0LDQstCzIDA0IDE0OjAxOjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6
+MDY6MDAuMDogWzQwXTogCjB4ODA5ODg3ODUgMHgwMDQwQUM5NCAweDAwNDEwNzYwIDB4MDA0MDAw
+MDAK0LDQstCzIDA0IDE0OjAxOjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDY6
+MDAuMDogWzM2XTogCjB4ODA5OEE3REEgMHgwMDQwQUMzNCAweDAwNDIwQUEwIDB4MDA0MDYyREMK
+0LDQstCzIDA0IDE0OjAxOjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDY6MDAu
+MDogWzMyXTogCjB4ODA5OEZEM0IgMHgwMDQwQUJGNCAweDAwNDIwOUVDIDB4MDA0MjBCMEMK0LDQ
+stCzIDA0IDE0OjAxOjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDog
+WzI4XTogCjB4ODA5OEU5MDcgMHgwMDQwQUJENCAweDAwOUM4RTdDIDB4MDAwMDAxNkIK0LDQstCz
+IDA0IDE0OjAxOjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogWzI0
+XTogCjB4ODA5QkZFMUMgMHgwMDQwQUJBNCAweDAwMDAwMDA2IDB4QzA5QkZGODQK0LDQstCzIDA0
+IDE0OjAxOjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogWzIwXTog
+CjB4NDA5QkZGODQgMHgwMDQwQUI0NCAweDAwNDEwMUUwIDB4MDAwMDAwMEMK0LDQstCzIDA0IDE0
+OjAxOjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogWzE2XTogCjB4
+MDA5NTgwODAgMHgwMDk0MDc4RSAweDAwMDAwMDAwIDB4MDAwMDAwMDAK0LDQstCzIDA0IDE0OjAx
+OjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogWzEyXTogCjB4MDAw
+MDAwMDkgMHgwMDAwMDAwMCAweDAwOTU4MzYwIDB4MDA5NTgzNkIK0LDQstCzIDA0IDE0OjAxOjQ5
+IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogWzA4XTogCjB4MDA5QzhF
+QTQgMHgwMDAwNzE3MCAweDAwMDAwMDAxIDB4MDA0MzUzMDAK0LDQstCzIDA0IDE0OjAxOjQ5IEk1
+LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogWzA0XTogCjB4MDA5QkZGODQg
+MHgwMDA2MDEzMCAweDAwMDAwMDEzIDB4MDAwMDAwMDAK0LDQstCzIDA0IDE0OjAxOjQ5IEk1LTQ2
+NzAga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogWzAwXTogCjB4NDEwMDAxNkMgMHgw
+MDAwMTVCMyAweDAwOUJGRjg0IDB4MDA5NTVCMzEK0LDQstCzIDA0IDE0OjAxOjQ5IEk1LTQ2NzAg
+a2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogZmlybXdhcmUgCnJlZ2lzdGVyIGR1bXA6
+CtCw0LLQsyAwNCAxNDowMTo0OSBJNS00NjcwIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjA2OjAw
+LjA6IGh0dC12ZXIgMC4wIAp3bWktb3AgNSBodHQtb3AgMiBjYWwgb3RwIG1heC1zdGEgMTI4IHJh
+dyAwIGh3Y3J5cHRvIDEK0LDQstCzIDA0IDE0OjAxOjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtf
+cGNpIDAwMDA6MDY6MDAuMDogYm9hcmRfZmlsZSBhcGkgCjEgYm1pX2lkIE4vQSBjcmMzMiBiZWJj
+N2MwOArQsNCy0LMgMDQgMTQ6MDE6NDkgSTUtNDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDow
+NjowMC4wOiBmaXJtd2FyZSB2ZXIgCjEwLjIuNC43MC42My0yIGFwaSA1IGZlYXR1cmVzIG5vLXAy
+cCxyYXctbW9kZSxtZnAsYWxsb3dzLW1lc2gtYgrQsNCy0LMgMDQgMTQ6MDE6NDkgSTUtNDY3MCBr
+ZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBrY29uZmlnIGRlYnVnIDAgCmRlYnVnZnMg
+MSB0cmFjaW5nIDAgZGZzIDAgdGVzdG1vZGUgMArQsNCy0LMgMDQgMTQ6MDE6NDkgSTUtNDY3MCBr
+ZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBxY2E5ODh4IGh3Mi4wIAp0YXJnZXQgMHg0
+MTAwMDE2YyBjaGlwX2lkIDB4MDQzMjIyZmYgc3ViIDAwMDA6MDAwMArQsNCy0LMgMDQgMTQ6MDE6
+NDkgSTUtNDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBmaXJtd2FyZSAKY3Jh
+c2hlZCEgKHV1aWQgYjU3YjQyNWEtMWE4ZC00ZDE0LTg0N2QtNDFmNjExNDczY2RmKQoKClNlcmdl
+eQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
+IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
