@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yw0-x231.google.com ([2607:f8b0:4002:c05::231])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ddmdG-0001mu-P3
- for ath10k@lists.infradead.org; Sat, 05 Aug 2017 00:07:57 +0000
-Received: by mail-yw0-x231.google.com with SMTP id u207so18485013ywc.3
- for <ath10k@lists.infradead.org>; Fri, 04 Aug 2017 17:07:34 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <4e8550cf-6d07-374f-160e-19d41fef101b@localhost>
-References: <4e8550cf-6d07-374f-160e-19d41fef101b@localhost>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Fri, 4 Aug 2017 17:07:32 -0700
-Message-ID: <CAJ-VmonevTpU7DaJMujoy2Ko5GtzEQX-3F=1FO9SH3K7uWYqaw@mail.gmail.com>
-Subject: Re: Compex WLE600VX firmware crash
+Received: from kirsty.vergenet.net ([202.4.237.240])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ddn9Q-0007tU-RX
+ for ath10k@lists.infradead.org; Sat, 05 Aug 2017 00:41:11 +0000
+Date: Sat, 5 Aug 2017 09:40:38 +0900
+From: Carsten Haitzler (The Rasterman) <raster@rasterman.com>
+Subject: ath10k QCA6174 not working -> missing data in board2.bin?
+Message-Id: <20170805094038.a46e864a48cae1ad50b10bab@rasterman.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,73 +16,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: svp <s.pooheer@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-SGksCgpJcyB0aGlzIGJlaW5nIHVzZWQgYXMgYSBTVEE/IEFQPyBXaGF0J3MgaXQgYXNzb2NpYXRp
-bmcgdG8/IHdoYXQKY2hhbm5lbCwgbW9kZSwgZXRjCgoKCi1hZHJpYW4KCgpPbiA0IEF1Z3VzdCAy
-MDE3IGF0IDEwOjE4LCBzdnAgPHMucG9vaGVlckBnbWFpbC5jb20+IHdyb3RlOgo+IEhpIQo+Cj4g
-SGF2ZSBhIGZpcndhcmUgY3Jhc2ggYXQgc3lzdGVtIHN0YXJ0Lgo+Cj4gdW5hbWUgLWEKPiBMaW51
-eCBJNS00NjcwIDQuMTIuNC0xLUFSQ0ggIzEgU01QIFBSRUVNUFQgRnJpIEp1bCAyOCAxODo1NDox
-OCBVVEMgMjAxNwo+IHg4Nl82NCBHTlUvTGludXgKPgo+IGpvdXJuYWxjdGwgLXIKPiDQsNCy0LMg
-MDQgMTQ6MDE6NDggSTUtNDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBib2Fy
-ZF9maWxlIGFwaSAxCj4gYm1pX2lkIE4vQSBjcmMzMiBiZWJjN2MwOAo+INCw0LLQsyAwNCAxNDow
-MTo0OCBJNS00NjcwIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjA2OjAwLjA6IGZpcm13YXJlIHZl
-cgo+IDEwLjIuNC43MC42My0yIGFwaSA1IGZlYXR1cmVzIG5vLXAycCxyYXctbW9kZSxtZnAsYWxs
-b3dzLW1lc2gtYgo+INCw0LLQsyAwNCAxNDowMTo0OCBJNS00NjcwIGtlcm5lbDogYXRoMTBrX3Bj
-aSAwMDAwOjA2OjAwLjA6IGtjb25maWcgZGVidWcgMAo+IGRlYnVnZnMgMSB0cmFjaW5nIDAgZGZz
-IDAgdGVzdG1vZGUgMAo+INCw0LLQsyAwNCAxNDowMTo0OCBJNS00NjcwIGtlcm5lbDogYXRoMTBr
-X3BjaSAwMDAwOjA2OjAwLjA6IHFjYTk4OHggaHcyLjAKPiB0YXJnZXQgMHg0MTAwMDE2YyBjaGlw
-X2lkIDB4MDQzMjIyZmYgc3ViIDAwMDA6MDAwMAo+Cj4KPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbNTJdOiAweDgwOUIyOTNDCj4g
-MHgwMDQwQURBNCAweDAwNDAwMDAwIDB4MDA0MTZGQTQKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbNDhdOiAweDgwOUI2N0M0Cj4g
-MHgwMDQwQUQ4NCAweDAwNDEwNzYwIDB4MDA0MTEzNDQKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbNDRdOiAweDgwOThBRUM4Cj4g
-MHgwMDQwQUQ0NCAweDAwNDEwNzYwIDB4MDAwMDAwMDEKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbNDBdOiAweDgwOTg4Nzg1Cj4g
-MHgwMDQwQUM5NCAweDAwNDEwNzYwIDB4MDA0MDAwMDAKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbMzZdOiAweDgwOThBN0RBCj4g
-MHgwMDQwQUMzNCAweDAwNDIwQUEwIDB4MDA0MDYyREMKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbMzJdOiAweDgwOThGRDNCCj4g
-MHgwMDQwQUJGNCAweDAwNDIwOUVDIDB4MDA0MjBCMEMKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbMjhdOiAweDgwOThFOTA3Cj4g
-MHgwMDQwQUJENCAweDAwOUM4RTdDIDB4MDAwMDAxNkIKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbMjRdOiAweDgwOUJGRTFDCj4g
-MHgwMDQwQUJBNCAweDAwMDAwMDA2IDB4QzA5QkZGODQKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbMjBdOiAweDQwOUJGRjg0Cj4g
-MHgwMDQwQUI0NCAweDAwNDEwMUUwIDB4MDAwMDAwMEMKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbMTZdOiAweDAwOTU4MDgwCj4g
-MHgwMDk0MDc4RSAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbMTJdOiAweDAwMDAwMDA5Cj4g
-MHgwMDAwMDAwMCAweDAwOTU4MzYwIDB4MDA5NTgzNkIKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbMDhdOiAweDAwOUM4RUE0Cj4g
-MHgwMDAwNzE3MCAweDAwMDAwMDAxIDB4MDA0MzUzMDAKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbMDRdOiAweDAwOUJGRjg0Cj4g
-MHgwMDA2MDEzMCAweDAwMDAwMDEzIDB4MDAwMDAwMDAKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBbMDBdOiAweDQxMDAwMTZDCj4g
-MHgwMDAwMTVCMyAweDAwOUJGRjg0IDB4MDA5NTVCMzEKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUt
-NDY3MCBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBmaXJtd2FyZSByZWdpc3Rlcgo+
-IGR1bXA6Cj4g0LDQstCzIDA0IDE0OjAxOjQ5IEk1LTQ2NzAga2VybmVsOiBhdGgxMGtfcGNpIDAw
-MDA6MDY6MDAuMDogaHR0LXZlciAwLjAgd21pLW9wCj4gNSBodHQtb3AgMiBjYWwgb3RwIG1heC1z
-dGEgMTI4IHJhdyAwIGh3Y3J5cHRvIDEKPiDQsNCy0LMgMDQgMTQ6MDE6NDkgSTUtNDY3MCBrZXJu
-ZWw6IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBib2FyZF9maWxlIGFwaSAxCj4gYm1pX2lkIE4v
-QSBjcmMzMiBiZWJjN2MwOAo+INCw0LLQsyAwNCAxNDowMTo0OSBJNS00NjcwIGtlcm5lbDogYXRo
-MTBrX3BjaSAwMDAwOjA2OjAwLjA6IGZpcm13YXJlIHZlcgo+IDEwLjIuNC43MC42My0yIGFwaSA1
-IGZlYXR1cmVzIG5vLXAycCxyYXctbW9kZSxtZnAsYWxsb3dzLW1lc2gtYgo+INCw0LLQsyAwNCAx
-NDowMTo0OSBJNS00NjcwIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjA2OjAwLjA6IGtjb25maWcg
-ZGVidWcgMAo+IGRlYnVnZnMgMSB0cmFjaW5nIDAgZGZzIDAgdGVzdG1vZGUgMAo+INCw0LLQsyAw
-NCAxNDowMTo0OSBJNS00NjcwIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjA2OjAwLjA6IHFjYTk4
-OHggaHcyLjAKPiB0YXJnZXQgMHg0MTAwMDE2YyBjaGlwX2lkIDB4MDQzMjIyZmYgc3ViIDAwMDA6
-MDAwMAo+INCw0LLQsyAwNCAxNDowMTo0OSBJNS00NjcwIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAw
-OjA2OjAwLjA6IGZpcm13YXJlIGNyYXNoZWQhCj4gKHV1aWQgYjU3YjQyNWEtMWE4ZC00ZDE0LTg0
-N2QtNDFmNjExNDczY2RmKQo+Cj4KPiBTZXJnZXkKPgo+IF9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hdGgxMGsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+I've scored myself a new laptop. With that come new problems.
+
+I updated to 4.12.0 to make sure i'm on the latest.
+
+lspci says:
+
+01:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter (rev 32)
+
+So relevant bits from dmesg:
+
+[  124.268483] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+[  124.524661] ath10k_pci 0000:01:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 144d:c14f
+[  124.524668] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
+[  124.526309] ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4.1-00008-QCARMSWP-1 api 6 features wowlan,ignore-otp crc32 bdced4e9
+[  124.590884] ath10k_pci 0000:01:00.0: failed to fetch board data for bus=pci,vendor=168c,device=003e,subsystem-vendor=144d,subsystem-device=c14f,variant=K from ath10k/QCA6174/hw3.0/board-2.bin
+[  124.590901] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 ed5f849a
+[  125.164076] ath10k_pci 0000:01:00.0: Unknown eventid: 118809
+[  125.167113] ath10k_pci 0000:01:00.0: Unknown eventid: 90118
+
+I've tried firmware-6 from:
+
+  https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0
+
+Specifically firmware-6.bin_WLAN.RM.4.4.1-00008-QCARMSWP-1. firmware-4.bin also is a no go.
+
+How can I help make this work? I have all the windows .bin's but none of them
+match the same header that the Linux fw bin files have (but a chunk of the
+binary seems familiar having a quick binary dump of it). There is some
+mysterious way of generating the Linux firmware files I can't google for.
+
+I also have some help from the OEM - the engineers who made the laptop (not
+the chip wifi maker though). I have already verified which GPIO lines control
+RFkill on this device (and they are clear and unkilled by default - both lines
+up at 1 and it's confirmed that this means RF is unblocked from the engineers.
+It took me a while to figure out their GPIO mapping table/naming onto kernel
+GPIO numbering). So the Wifi (an BT actually) should be powered on. It's a
+combo chip.
+
+So how can I help. What data do I need to scrounge to provide. How are firmware
+files built to work for Linux (based off the windows ones) for ath10k? Any pointers on what to look into and what to poke? This smells of something firmware based and at this point I have no documentation or information about it. Perhaps there are people here who know something?
+
+-- 
+------------- Codito, ergo sum - "I code, therefore I am" --------------
+The Rasterman (Carsten Haitzler)    raster@rasterman.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
