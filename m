@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-it0-x22a.google.com ([2607:f8b0:4001:c0b::22a])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1deTl5-00025i-7D
- for ath10k@lists.infradead.org; Sun, 06 Aug 2017 22:10:53 +0000
-Received: by mail-it0-x22a.google.com with SMTP id 76so10947107ith.0
- for <ath10k@lists.infradead.org>; Sun, 06 Aug 2017 15:10:30 -0700 (PDT)
+ id 1deh7F-00056N-5L
+ for ath10k@lists.infradead.org; Mon, 07 Aug 2017 12:26:39 +0000
+Received: by mail-lf0-x241.google.com with SMTP id o85so228309lff.1
+ for <ath10k@lists.infradead.org>; Mon, 07 Aug 2017 05:26:16 -0700 (PDT)
+Subject: Re: Compex WLE600VX firmware crash
+References: <4e8550cf-6d07-374f-160e-19d41fef101b@localhost>
+ <CAJ-VmonevTpU7DaJMujoy2Ko5GtzEQX-3F=1FO9SH3K7uWYqaw@mail.gmail.com>
+From: svp <s.pooheer@gmail.com>
+Message-ID: <10eb580b-9c4f-d683-92ea-d058e6acb0d0@gmail.com>
+Date: Mon, 7 Aug 2017 15:26:12 +0300
 MIME-Version: 1.0
-From: Kouroche Bouchiat <kouroche.bouchiat@gmail.com>
-Date: Mon, 7 Aug 2017 00:10:28 +0200
-Message-ID: <CAPYrjBWL8LmVyWcXRZZDE1pEpwq-E6vRh5Ed_kG=ieZfsZdeiA@mail.gmail.com>
-Subject: ath10k firmware-6.bin bug: Disconnections every 20 minutes on QCA6174
+In-Reply-To: <CAJ-VmonevTpU7DaJMujoy2Ko5GtzEQX-3F=1FO9SH3K7uWYqaw@mail.gmail.com>
+Content-Language: ru-RU
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,104 +22,121 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hey,
-On hw3.0/firmware-6.bin my QCA6174 seems to be dropping 100% of
-packets after exactly 20 minutes. I talked to people over on the
-Archlinux forums who suggested to force the kernel to load
-firmware-4.bin instead. I did just that ("mv firmware-6.bin
-firmware-6.bin.bak") and my connection seems to be working fine now.
-The forum thread is the following:
-https://bbs.archlinux.org/viewtopic.php?id=228793
+On 05.08.2017 03:07, Adrian Chadd wrote:
+> Hi,
+>
+> Is this being used as a STA? AP? What's it associating to? what
+> channel, mode, etc
+>
+>
+>
+> -adrian
+>
 
-dmesg doesn't appear to show anything significant but I've provided it
-just in case (w/ lspci -k):
+Hi!
+The device was not initialized. Driver failed to set up network interface.
+If then I try to start driver as modprobe ath10k_pci  - result is the same -
+firware crash.
+More accurate dmesg log here:
 
-$ lspci -k | grep ath10k_pci
-02:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac Wireless
-Network Adapter (rev 32)
-Subsystem: Bigfoot Networks, Inc. Device 1535
-Kernel driver in use: ath10k_pci
-Kernel modules: ath10k_pci
+[    2.651496] ath10k_pci 0000:06:00.0: enabling device (0000 -> 0002)
+[    2.651731] ath10k_pci 0000:06:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 
+reset_mode 0
+[    2.677241] snd_hda_intel 0000:00:03.0: bound 0000:00:02.0 (ops 
+i915_audio_component_bind_ops [i915])
+[    2.688848] random: crng init done
+[    2.694209] input: HDA Intel HDMI HDMI/DP,pcm=3 as 
+/devices/pci0000:00/0000:00:03.0/sound/card0/input17
+[    2.694237] input: HDA Intel HDMI HDMI/DP,pcm=7 as 
+/devices/pci0000:00/0000:00:03.0/sound/card0/input18
+[    2.694259] input: HDA Intel HDMI HDMI/DP,pcm=8 as 
+/devices/pci0000:00/0000:00:03.0/sound/card0/input19
+[    2.694280] input: HDA Intel HDMI HDMI/DP,pcm=9 as 
+/devices/pci0000:00/0000:00:03.0/sound/card0/input20
+[    2.719901] fbcon: inteldrmfb (fb0) is primary device
+[    2.763642] Console: switching to colour frame buffer device 240x75
+[    2.785165] i915 0000:00:02.0: fb0: inteldrmfb frame buffer device
+[    2.808817] ath10k_pci 0000:06:00.0: qca988x hw2.0 target 0x4100016c chip_id 
+0x043222ff sub 0000:0000
+[    2.808818] ath10k_pci 0000:06:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 
+0 testmode 0
+[    2.808960] ath10k_pci 0000:06:00.0: firmware ver 10.2.4.70.63-2 api 5 
+features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 4ff9e14d
+[    2.849225] ath10k_pci 0000:06:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
+[    3.102190] EXT4-fs (sda2): mounted filesystem with ordered data mode. Opts: 
+data=ordered
+[    3.120930] nct6775: Enabling hardware monitor logical device mappings.
+[    3.120944] nct6775: Found NCT6791D or compatible chip at 0x2e:0x290
+[    3.403675] enp3s0: 0xffffa31883295000, 74:d0:2b:7e:f7:35, IRQ 30
+[    3.979192] ath10k_pci 0000:06:00.0: firmware crashed! (uuid 
+1773073a-6896-4834-91d4-6d0e9b026b06)
+[    3.979241] ath10k_pci 0000:06:00.0: qca988x hw2.0 target 0x4100016c chip_id 
+0x043222ff sub 0000:0000
+[    3.979244] ath10k_pci 0000:06:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 
+0 testmode 0
+[    3.979456] ath10k_pci 0000:06:00.0: firmware ver 10.2.4.70.63-2 api 5 
+features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 4ff9e14d
+[    3.979461] ath10k_pci 0000:06:00.0: board_file api 1 bmi_id N/A crc32 bebc7c08
+[    3.979463] ath10k_pci 0000:06:00.0: htt-ver 0.0 wmi-op 5 htt-op 2 cal otp 
+max-sta 128 raw 0 hwcrypto 1
+[    3.981477] ath10k_pci 0000:06:00.0: firmware register dump:
+[    3.981501] ath10k_pci 0000:06:00.0: [00]: 0x4100016C 0x000015B3 0x009BFF84 
+0x00955B31
+[    3.981530] ath10k_pci 0000:06:00.0: [04]: 0x009BFF84 0x00060130 0x00000013 
+0x00000000
+[    3.981559] ath10k_pci 0000:06:00.0: [08]: 0x009C8EA4 0x00007170 0x00000001 
+0x00435300
+[    3.981588] ath10k_pci 0000:06:00.0: [12]: 0x00000009 0x00000000 0x00958360 
+0x0095836B
+[    3.981616] ath10k_pci 0000:06:00.0: [16]: 0x00958080 0x0094078E 0x00000000 
+0x00000000
+[    3.981645] ath10k_pci 0000:06:00.0: [20]: 0x409BFF84 0x0040AB44 0x004101E0 
+0x0000000C
+[    3.981675] ath10k_pci 0000:06:00.0: [24]: 0x809BFE1C 0x0040ABA4 0x00000006 
+0xC09BFF84
+[    3.981703] ath10k_pci 0000:06:00.0: [28]: 0x8098E907 0x0040ABD4 0x009C8E7C 
+0x0000016B
+[    3.982735] ath10k_pci 0000:06:00.0: [32]: 0x8098FD3B 0x0040ABF4 0x004209EC 
+0x00420B0C
+[    3.983755] ath10k_pci 0000:06:00.0: [36]: 0x8098A7DA 0x0040AC34 0x00420AA0 
+0x004062DC
+[    3.984763] ath10k_pci 0000:06:00.0: [40]: 0x80988785 0x0040AC94 0x00410760 
+0x00400000
+[    3.985763] ath10k_pci 0000:06:00.0: [44]: 0x8098AEC8 0x0040AD44 0x00410760 
+0x00000001
+[    3.986752] ath10k_pci 0000:06:00.0: [48]: 0x809B67C4 0x0040AD84 0x00410760 
+0x00411344
+[    3.987740] ath10k_pci 0000:06:00.0: [52]: 0x809B293C 0x0040ADA4 0x00400000 
+0x00416FA4
+[    3.988723] ath10k_pci 0000:06:00.0: [56]: 0x809C0C3D 0x0040ADE4 0x0040AE08 
+0x00412118
+[    3.989700] ath10k_pci 0000:06:00.0: Copy Engine register dump:
+[    3.990684] ath10k_pci 0000:06:00.0: [00]: 0x00057400   0   0 3   3
+[    3.991670] ath10k_pci 0000:06:00.0: [01]: 0x00057800   3   3 8   9
+[    3.992652] ath10k_pci 0000:06:00.0: [02]: 0x00057c00   1   1 0   1
+[    3.993628] ath10k_pci 0000:06:00.0: [03]: 0x00058000   1   1 2   1
+[    3.994587] ath10k_pci 0000:06:00.0: [04]: 0x00058400   0   0 40   0
+[    3.995529] ath10k_pci 0000:06:00.0: [05]: 0x00058800   0   0 0   0
+[    3.996454] ath10k_pci 0000:06:00.0: [06]: 0x00058c00   0   0 0   0
+[    3.997359] ath10k_pci 0000:06:00.0: [07]: 0x00059000   0   0 0   0
+[    5.501878] r8168: enp3s0: link up
+[    7.630654] usb 3-13: device descriptor read/64, error -110
+[    9.010685] ath10k_pci 0000:06:00.0: wmi unified ready event not received
+[    9.082483] ath10k_pci 0000:06:00.0: could not init core (-110)
+[    9.083167] ath10k_pci 0000:06:00.0: could not probe fw (-110)
+[    9.097304] ath10k_pci 0000:06:00.0: cannot restart a device that hasn't been 
+started
 
-$ dmesg | grep ath10k
-Aug 01 15:41:04 chibilinux kernel: ath10k_pci 0000:02:00.0: enabling
-device (0000 -> 0002)
-Aug 01 15:41:04 chibilinux kernel: ath10k_pci 0000:02:00.0: pci irq
-msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-Aug 01 15:41:05 chibilinux kernel: ath10k_pci 0000:02:00.0: qca6174
-hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
-Aug 01 15:41:05 chibilinux kernel: ath10k_pci 0000:02:00.0: kconfig
-debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
-Aug 01 15:41:05 chibilinux kernel: ath10k_pci 0000:02:00.0: firmware
-ver WLAN.RM.4.4-00022-QCARMSWPZ-2 api 6 features wowlan,ignore-otp
-crc32 4d458559
-Aug 01 15:41:05 chibilinux kernel: ath10k_pci 0000:02:00.0: board_file
-api 2 bmi_id N/A crc32 07ee144e
-Aug 01 15:41:05 chibilinux kernel: ath10k_pci 0000:02:00.0: Unknown
-eventid: 90118
-Aug 01 15:41:05 chibilinux kernel: ath10k_pci 0000:02:00.0: htt-ver
-3.32 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
-Aug 01 15:41:05 chibilinux kernel: ath10k_pci 0000:02:00.0 wlp2s0:
-renamed from wlan0
-Aug 01 15:43:00 chibilinux kernel: ath10k_pci 0000:02:00.0: Unknown
-eventid: 90118
-Aug 01 15:59:48 chibilinux kernel: ath10k_pci 0000:02:00.0: Unknown
-eventid: 90118
-Aug 01 16:20:39 chibilinux kernel: ath10k_pci 0000:02:00.0: Unknown
-eventid: 90118
-Aug 01 16:39:24 chibilinux kernel: ath10k_pci 0000:02:00.0: Unknown
-eventid: 90118
 
-Seems like those Unknown eventids come from me reconnecting to the network:
-$ journalctl -xb | grep ath10k -A 3 -B 3
-...
-Aug 01 15:59:47 chibilinux sudo[32399]: pam_unix(sudo:session):
-session opened for user root by (uid=0)
-Aug 01 15:59:47 chibilinux systemd[1]: Starting Networking for netctl
-profile homeb...
-Aug 01 15:59:47 chibilinux network[32404]: Starting network profile 'homeb'...
-Aug 01 15:59:48 chibilinux kernel: ath10k_pci 0000:02:00.0: Unknown
-eventid: 90118
-Aug 01 15:59:48 chibilinux kernel: IPv6: ADDRCONF(NETDEV_UP): wlp2s0:
-link is not ready
-Aug 01 15:59:53 chibilinux kernel: wlp2s0: authenticate with f4:ca:e5:fd:ed:04
-Aug 01 15:59:53 chibilinux kernel: wlp2s0: send auth to
-f4:ca:e5:fd:ed:04 (try 1/3)
---
-Aug 01 16:20:39 chibilinux sudo[9344]: pam_unix(sudo:session): session
-opened for user root by (uid=0)
-Aug 01 16:20:39 chibilinux systemd[1]: Starting Networking for netctl
-profile homeb...
-Aug 01 16:20:39 chibilinux network[9349]: Starting network profile 'homeb'...
-Aug 01 16:20:39 chibilinux kernel: ath10k_pci 0000:02:00.0: Unknown
-eventid: 90118
-Aug 01 16:20:40 chibilinux kernel: IPv6: ADDRCONF(NETDEV_UP): wlp2s0:
-link is not ready
-Aug 01 16:20:45 chibilinux kernel: wlp2s0: authenticate with f4:ca:e5:fd:ed:04
-Aug 01 16:20:45 chibilinux kernel: wlp2s0: send auth to
-f4:ca:e5:fd:ed:04 (try 1/3)
---
-Aug 01 16:39:24 chibilinux sudo[10122]: pam_unix(sudo:session):
-session opened for user root by (uid=0)
-Aug 01 16:39:24 chibilinux systemd[1]: Starting Networking for netctl
-profile homeb...
-Aug 01 16:39:24 chibilinux network[10127]: Starting network profile 'homeb'...
-Aug 01 16:39:24 chibilinux kernel: ath10k_pci 0000:02:00.0: Unknown
-eventid: 90118
-Aug 01 16:39:25 chibilinux kernel: IPv6: ADDRCONF(NETDEV_UP): wlp2s0:
-link is not ready
-Aug 01 16:39:29 chibilinux kernel: wlp2s0: authenticate with f4:ca:e5:fd:ed:04
-Aug 01 16:39:30 chibilinux kernel: wlp2s0: send auth to
-f4:ca:e5:fd:ed:04 (try 1/3)
+Sergey
 
-Thanks,
-Kouroche
 
 _______________________________________________
 ath10k mailing list
