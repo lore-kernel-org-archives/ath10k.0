@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dem3f-0004JJ-1F
- for ath10k@lists.infradead.org; Mon, 07 Aug 2017 17:43:49 +0000
-Subject: Re: Compex WLE600VX firmware crash
+Received: from mail-vk0-x235.google.com ([2607:f8b0:400c:c05::235])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1deo0y-0003Q3-Bh
+ for ath10k@lists.infradead.org; Mon, 07 Aug 2017 19:48:38 +0000
+Received: by mail-vk0-x235.google.com with SMTP id j189so5621840vka.0
+ for <ath10k@lists.infradead.org>; Mon, 07 Aug 2017 12:48:14 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <10eb580b-9c4f-d683-92ea-d058e6acb0d0@gmail.com>
 References: <4e8550cf-6d07-374f-160e-19d41fef101b@localhost>
  <CAJ-VmonevTpU7DaJMujoy2Ko5GtzEQX-3F=1FO9SH3K7uWYqaw@mail.gmail.com>
  <10eb580b-9c4f-d683-92ea-d058e6acb0d0@gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <e86d1e3a-ab2e-0e12-c86e-0bb9e605906b@candelatech.com>
-Date: Mon, 7 Aug 2017 10:42:51 -0700
-MIME-Version: 1.0
-In-Reply-To: <10eb580b-9c4f-d683-92ea-d058e6acb0d0@gmail.com>
+From: Richard Toy <richard.toy@gmail.com>
+Date: Mon, 7 Aug 2017 21:47:33 +0200
+Message-ID: <CAK3eJOA9v=UOSHtDZA4_98eVuosWsHM_nBq3Q3=JT=uhpPVH9Q@mail.gmail.com>
+Subject: Re: Compex WLE600VX firmware crash
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,17 +22,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: svp <s.pooheer@gmail.com>
 Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+As I already said to Sergey, that dump looks identical to the one I
+posted last month for exactly the same version of firmware running on
+a TP AC1750.  I never found a solution but the previous version (54?)
+works fine.
 
+http://lists.infradead.org/pipermail/ath10k/2017-July/009933.html
 
-On 08/07/2017 05:26 AM, svp wrote:
+Richard
+
+On 7 August 2017 at 14:26, svp <s.pooheer@gmail.com> wrote:
+>
 > On 05.08.2017 03:07, Adrian Chadd wrote:
+>>
 >> Hi,
 >>
 >> Is this being used as a STA? AP? What's it associating to? what
@@ -46,16 +57,6 @@ On 08/07/2017 05:26 AM, svp wrote:
 > If then I try to start driver as modprobe ath10k_pci  - result is the same -
 > firware crash.
 > More accurate dmesg log here:
-
-I'd be curious how my firmware works on this system if you want to try it...send me the crash if it does crash:
-
-The 988X version should work with this NIC.
-
-http://www.candelatech.com/ath10k-10.1.php
-
-Thanks,
-Ben
-
 >
 > [    2.651496] ath10k_pci 0000:06:00.0: enabling device (0000 -> 0002)
 > [    2.651731] ath10k_pci 0000:06:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
@@ -122,11 +123,6 @@ Ben
 > ath10k mailing list
 > ath10k@lists.infradead.org
 > http://lists.infradead.org/mailman/listinfo/ath10k
->
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
