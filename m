@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from alexa-out.qualcomm.com ([129.46.98.28]
+ helo=alexa-out-lv-02.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1df2N7-0007MK-CQ
- for ath10k@lists.infradead.org; Tue, 08 Aug 2017 11:08:27 +0000
+ id 1df2LS-0006dB-VZ
+ for ath10k@lists.infradead.org; Tue, 08 Aug 2017 11:06:46 +0000
 MIME-Version: 1.0
-Subject: Re: [v1] ath10k: Switch to use new generic UUID API
+Subject: Re: [v3] ath10k: ath10k_htt_rx_amsdu_allowed() use ath10k_dbg()
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20170802135725.9317-1-andriy.shevchenko@linux.intel.com>
-References: <20170802135725.9317-1-andriy.shevchenko@linux.intel.com>
-Message-ID: <8f7406eceeba4163a5ced29cb35f4244@euamsexm01a.eu.qualcomm.com>
-Date: Tue, 8 Aug 2017 13:07:55 +0200
+In-Reply-To: <20170719191955.11518-1-nix.or.die@gmail.com>
+References: <20170719191955.11518-1-nix.or.die@gmail.com>
+Message-ID: <b458726452224508b342d1ab932e1fa2@euamsexm01a.eu.qualcomm.com>
+Date: Tue, 8 Aug 2017 13:06:11 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +23,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Gabriel C <nix.or.die@gmail.com>
+Cc: ryanhsu@qti.qualcomm.com, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, joe@perches.com
 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+Gabriel C <nix.or.die@gmail.com> wrote:
 
-> There are new types and helpers that are supposed to be used in new code.
+> Each time we get disconnected from AP we get flooded with messages like:
 > 
-> As a preparation to get rid of legacy types and API functions do
-> the conversion here.
+> ...
+> ath10k_pci 0000:03:00.0: no channel configured; ignoring frame(s)!
+> <until ratelimit kicks in>
+> ath10k_warn: 155 callbacks suppressed
+> ...
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Use ath10k_dbg() here too.
+> 
+> Signed-off-by: Gabriel Craciunescu <nix.or.die@gmail.com>
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-ab3f9c886865 ath10k: switch to use new generic UUID API
+984eb9053280 ath10k: ath10k_htt_rx_amsdu_allowed() use ath10k_dbg()
 
 -- 
-https://patchwork.kernel.org/patch/9876823/
+https://patchwork.kernel.org/patch/9853129/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
