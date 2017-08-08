@@ -1,15 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x22d.google.com ([2607:f8b0:400d:c0d::22d])
+Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1df15P-0004Be-E7
- for ath10k@lists.infradead.org; Tue, 08 Aug 2017 09:46:14 +0000
-Received: by mail-qt0-x22d.google.com with SMTP id 16so16706248qtz.4
- for <ath10k@lists.infradead.org>; Tue, 08 Aug 2017 02:45:42 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: ath: Incorrect regDomainPairs/allCountries settings
-Date: Tue, 08 Aug 2017 11:45:38 +0200
-Message-ID: <1693831.JqVThioVz9@bentobox>
+ id 1df17q-0005NH-ON
+ for ath10k@lists.infradead.org; Tue, 08 Aug 2017 09:48:38 +0000
+Received: by mail-wm0-x234.google.com with SMTP id t201so2654122wmt.0
+ for <ath10k@lists.infradead.org>; Tue, 08 Aug 2017 02:48:13 -0700 (PDT)
+Received: from laptop (HSI-KBW-085-216-067-125.hsi.kabelbw.de. [85.216.67.125])
+ by smtp.gmail.com with ESMTPSA id w73sm656211wmw.20.2017.08.08.02.48.11
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Tue, 08 Aug 2017 02:48:11 -0700 (PDT)
+Date: Tue, 8 Aug 2017 11:48:25 +0200
+From: Tobias Predel <tobias.predel@gmail.com>
+Subject: QCA9377 stops working operating on 802.11g when WMM disabled
+Message-ID: <20170808094825.GA2995@laptop>
 MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,277 +28,67 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>, "Luis R. Rodriguez" <mcgrof@do-not-panic.com>
+To: ath10k@lists.infradead.org
 
-Hi,
+Hello,
 
-I just had two inquiries from Vietnam and Singapore regarding the used CTL 
-limits by Atheros based chips. I've checked through the code and noticed that 
-regd_common.h assigns SG to APL6_WORLD and VN to NULL1_WORLD.
+playing with my QCA9377 card and my 802.11 b+g (g++) router (Fritz!Box 7170 doing still a great job)
+in order to check interoperability I get this:
 
- * SG: APL6_WORLD
-   - 2.4GHz: CTL_ETSI
-   -   5GHz: CTL_ETSI
- * VN: NULL1_WORLD
-   - 2.4GHz: CTL_ETSI
-   -   5GHz: NO_CTL
+When I disable WMM (IEEE 802.11e) on the web interface of my router that is operating
+on 2,4 GHz channel with IEEE 802.11g, ath10k can't manage to establish a reliable
+connection any more (no VHT and HT, so no WMM/QoS). Instead, after seemingly 
+having established a connection (authenticated/associated), it disconnects 
+directly after that giving reason=1 UNSPECIFIED (following deauthentification). 
 
-But I personally would have expected that both countries would be assigned to 
-FCC3_WORLD.
+The product website of QCA9377 says that the chipset supports the complete range of 
+commonly used WLAN standards (802.11a/b/g/n/ac). Other devices continue
+working properly (without WMM) even on my Linux Android phone so I think they 
+implement support for IEEE 802.11 (g) standard in the right way while
+QCA9377 screws up already at key negotiation state on my laptop here
+running Linux 4.12.4 (the router log says wrong passphrase but it's the 
+same as on the other devices I can guarantee). 
 
- * FCC3_WORLD
-   - 2.4GHz: CTL_ETSI
-   -   5GHz: CTL_FCC
+And even with WMM enabled, the connection is ruther lousy with periods 
+of very high transfer rate following periods of drought. Is it 
+possible that 
+(1) WMM and/or 802.11g isn't implemented in the firmware or somewhere else in a standard-compilant way 
+or 
+(2) is it that the firmware requires WMM to be activated in order to
+operate on 802.11g (1) given?
 
-Maybe someone from QCA can check with their internal driver.
+Or more generally speaking, is g/b and so on supported by those devices
+as they focus on 802.11 ac support? I am currently using 
 
-I have compared the current ath/regd_common.h with what I would have expected 
-(which might not be correct after all). I still wanted to list the things 
-which I found:
+driver: ath10k_pci
+version: 4.12.4-1-ARCH
+firmware-version: WLAN.TF.1.0-00267-1
+expansion-rom-version: 
+bus-info: 0000:02:00.0
+supports-statistics: yes
+supports-test: no
+supports-eeprom-access: no
+supports-register-dump: no
+supports-priv-flags: no
 
-Missing Entries in CountryCode (regd.h):
+as ethtool says and
 
- * CTRY_AFGHANISTAN = 4,
- * CTRY_AMERICAN_SAMOA = 16,
- * CTRY_ANGUILLA = 660,
- * CTRY_BAHAMAS = 44,
- * CTRY_BERMUDA = 60,
- * CTRY_BHUTAN = 64,
- * CTRY_BURKINA_FASO = 854,
- * CTRY_CAYMAN_ISLANDS = 136,
- * CTRY_CENTRAL_AFRICA_REPUBLIC = 140,
- * CTRY_CHAD = 148,
- * CTRY_CHRISTMAS_ISLAND = 162,
- * CTRY_DOMINICA = 212,
- * CTRY_ETHIOPIA = 231,
- * CTRY_FRENCH_GUIANA = 254,
- * CTRY_FRENCH_POLYNESIA = 258,
- * CTRY_GHANA = 288,
- * CTRY_GUADELOUPE = 312,
- * CTRY_GUYANA = 328,
- * CTRY_COTE_D_IVOIRE = 384,
- * CTRY_LESOTHO = 426,
- * CTRY_MALAWI = 454,
- * CTRY_MALDIVES = 462,
- * CTRY_MARSHALL_ISLANDS = 584,
- * CTRY_MARTINIQUE = 474,
- * CTRY_MAURITANIA = 478,
- * CTRY_MAURITIUS = 480,
- * CTRY_MAYOTTE = 175,
- * CTRY_MICRONESIA = 583,
- * CTRY_MOLDOVA = 498,
- * CTRY_MONGOLIA = 496,
- * CTRY_NAMIBIA = 516,
- * CTRY_NIGERIA = 566,
- * CTRY_NORTHERN_MARIANA_ISLANDS = 580,
- * CTRY_PALAU = 585,
- * CTRY_REUNION = 638,
- * CTRY_RWANDA = 646,
- * CTRY_ST_BARTHELEMY = 652,
- * CTRY_ST_KITTS_NEVIS = 659,
- * CTRY_ST_LUCIA = 662,
- * CTRY_ST_MARTIN = 663,
- * CTRY_ST_PIERRE_MIQUELON = 666,
- * CTRY_ST_VINCENT_GRENADIENS= 670,
- * CTRY_SAMOA = 882,
- * CTRY_SENEGAL = 686,
- * CTRY_SERBIA = 688,
- * CTRY_MONTENEGRO = 499,
- * CTRY_SURINAME = 740,
- * CTRY_TANZANIA = 834,
- * CTRY_TOGO = 768,
- * CTRY_TURKS_CAICOS = 796,
- * CTRY_UGANDA = 800,
- * CTRY_UNITED_STATES2 = 841,
- * CTRY_UNITED_STATES3 = 843,
- * CTRY_VANUATU = 548,
- * CTRY_VIRGIN_ISLANDS = 850,
- * CTRY_WALLIS_FUTUNA = 876,
- * CTRY_ARGENTINA2 = 5003
+[    4.673694] ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+[    4.957885] ath10k_pci 0000:02:00.0: qca9377 hw1.0 target 0x05020000 chip_id 0x003820ff sub 1a3b:2231
+[    4.957890] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
+[    4.958574] ath10k_pci 0000:02:00.0: firmware ver WLAN.TF.1.0-00267-1 api 5 features ignore-otp crc32 79cea2c7
+[    5.030545] ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 8aedfa4a
+[    6.838415] ath10k_pci 0000:02:00.0: htt-ver 3.1 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+[    6.860542] ath10k_pci 0000:02:00.0 wlp2s0: renamed from wlan0
+[   15.923945] ath10k_pci 0000:02:00.0 wlp2s0: disabling HT as WMM/QoS is not supported by the AP
+[   15.923960] ath10k_pci 0000:02:00.0 wlp2s0: disabling VHT as WMM/QoS is not supported by the AP
 
-Entries which most likely shouldn't exist in CountryCode:
+as dmesg says. I think that I'm using the latest binary blobs of Qualcomm regarding firmware and EEPROM board. 
+I mean QCNFA435 -> QCA9377? Would it be possible to provide all firmware and board BLOBs (different versions etc.) regarding
+ath10k instead of squeezing each file out of the Qualcomm staff?
 
- * CTRY_KOREA_ROC2
- * CTRY_SERBIA_MONTENEGRO
-
-Things which I missed in the EnumRd:
-
- * FCC11_WORLD = 0x19,
- * FCC3_ETSIC = 0x3F,
- * ETSI8_WORLD = 0x3D,
- * ETSI9_WORLD = 0x3E,
- * APL12_WORLD = 0x51,
- * APL14_WORLD = 0x57,
- * APL15_WORLD = 0x59,
- * APL13_WORLD = 0x5A,
- * APL10_WORLD = 0x5F,
-
-
-The new mappings in regDomainPairs for the used EnumRds would then be:
-
- * {FCC11_WORLD, CTL_FCC, CTL_ETSI},
- * {FCC3_ETSIC, CTL_FCC, CTL_ETSI},
- * {ETSI8_WORLD, CTL_ETSI, CTL_ETSI},
- * {ETSI9_WORLD, CTL_ETSI, CTL_ETSI},
- * {APL10_WORLD, CTL_ETSI, CTL_ETSI},
- * {APL12_WORLD, CTL_ETSI, CTL_ETSI},
- * {APL13_WORLD, CTL_ETSI, CTL_ETSI},
- * {APL14_WORLD, CTL_FCC, CTL_ETSI},
- * {APL15_WORLD, CTL_FCC, CTL_ETSI},
-
-
-Things which I missed in allCountries
-
- * {CTRY_AFGHANISTAN, ETSI1_WORLD, "AF"},
- * {CTRY_AMERICAN_SAMOA, FCC3_FCCA, "AS"},
- * {CTRY_ANGUILLA, ETSI1_WORLD, "AI"},
- * {CTRY_BAHAMAS, FCC3_WORLD, "BS"},
- * {CTRY_BERMUDA, FCC3_FCCA, "BM"},
- * {CTRY_BHUTAN, ETSI1_WORLD, "BT"},
- * {CTRY_BURKINA_FASO,FCC3_WORLD, "BF"},
- * {CTRY_CAYMAN_ISLANDS, FCC3_WORLD, "KY"},
- * {CTRY_CENTRAL_AFRICA_REPUBLIC, FCC3_WORLD, "CF"},
- * {CTRY_CHAD, ETSI1_WORLD, "TD"},
- * {CTRY_CHRISTMAS_ISLAND, FCC3_WORLD, "CX"},
- * {CTRY_DOMINICA, FCC1_FCCA, "DM"},
- * {CTRY_ETHIOPIA, ETSI1_WORLD, "ET"},
- * {CTRY_FRENCH_GUIANA, ETSI1_WORLD, "GF"},
- * {CTRY_FRENCH_POLYNESIA, ETSI1_WORLD, "PF"},
- * {CTRY_GHANA, FCC3_WORLD, "GH"},
- * {CTRY_GUADELOUPE, ETSI1_WORLD, "GP"},
- * {CTRY_GUYANA, APL1_ETSIC, "GY"},
- * {CTRY_COTE_D_IVOIRE, FCC3_WORLD, "CI"},
- * {CTRY_KENYA, APL12_WORLD, "KE"},
- * {CTRY_LESOTHO, ETSI1_WORLD, "LS"},
- * {CTRY_MALDIVES, APL6_WORLD, "MV"},
- * {CTRY_MARSHALL_ISLANDS, FCC3_FCCA, "MH"},
- * {CTRY_MARTINIQUE, ETSI1_WORLD, "MQ"},
- * {CTRY_MAURITANIA, ETSI1_WORLD, "MR"},
- * {CTRY_MAURITIUS, FCC3_WORLD, "MU"},
- * {CTRY_MAYOTTE, ETSI1_WORLD, "YT"},
- * {CTRY_MICRONESIA, FCC3_FCCA, "FM"},
- * {CTRY_MOLDOVA, ETSI1_WORLD, "MD"},
- * {CTRY_MONGOLIA, FCC3_WORLD, "MN"},
- * {CTRY_MONTENEGRO, ETSI1_WORLD, "ME"},
- * {CTRY_NAMIBIA, APL9_WORLD, "NA"},
- * {CTRY_NICARAGUA, FCC3_FCCA, "NI"},
- * {CTRY_NIGERIA, APL8_WORLD, "NG"},
- * {CTRY_NORTHERN_MARIANA_ISLANDS, FCC3_FCCA, "MP"},
- * {CTRY_PALAU, FCC3_FCCA, "PW"},
- * {CTRY_PARAGUAY, FCC3_WORLD, "PY"},
- * {CTRY_REUNION, ETSI1_WORLD, "RE"},
- * {CTRY_RWANDA, FCC3_WORLD, "RW"},
- * {CTRY_SENEGAL, FCC3_WORLD, "SN"},
- * {CTRY_SERBIA, ETSI1_WORLD, "RS"},
- * {CTRY_ST_BARTHELEMY, ETSI1_WORLD, "BL"},
- * {CTRY_ST_KITTS_NEVIS, APL10_WORLD, "KN"},
- * {CTRY_ST_LUCIA, APL10_WORLD, "LC"},
- * {CTRY_ST_MARTIN, ETSI1_WORLD, "MF"},
- * {CTRY_ST_PIERRE_MIQUELON, ETSI1_WORLD, "PM"},
- * {CTRY_ST_VINCENT_GRENADIENS, ETSI1_WORLD, "VC"},
- * {CTRY_SAMOA, ETSI1_WORLD, "WS"},
- * {CTRY_SURINAME, ETSI1_WORLD, "SR"},
- * {CTRY_TANZANIA, APL1_WORLD, "TZ"},
- * {CTRY_TOGO, ETSI1_WORLD, "TG"},
- * {CTRY_TURKS_CAICOS, FCC3_WORLD, "TC"},
- * {CTRY_UGANDA, FCC3_WORLD, "UG"},
- * {CTRY_VANUATU, FCC3_WORLD, "VU"},
- * {CTRY_VIRGIN_ISLANDS, FCC3_FCCA, "VI"},
- * {CTRY_WALLIS_FUTUNA, ETSI1_WORLD, "WF"},
-
-Things which seemed to be "wrong" in allCountries:
-
- * CTRY_ALBANIA: NULL1_WORLD -> ETSI1_WORLD
-   - changes 5GHz to CTL_ETSI
- * CTRY_ALGERIA: NULL1_WORLD -> APL13_WORLD
-   - changes 5GHz to CTL_ETSI
- * CTRY_AUSTRALIA: FCC2_WORLD -> FCC3_WORLD
- * CTRY_BAHRAIN: APL6_WORLD -> APL15_WORLD
-   - changes 5GHz to CTL_ETSI
- * CTRY_BANGLADESH: NULL1_WORLD -> APL1_WORLD
-   - changes 5GHz to CTL_FCC
- * CTRY_BOLIVIA: APL1_ETSIC -> APL8_WORLD
-   - changes 5GHz to CTL_FCC
- * CTRY_BRAZIL: FCC3_WORLD -> FCC3_ETSIC
- * CTRY_BRUNEI_DARUSSALAM: APL1_WORLD -> APL6_WORLD
-   - changes 5GHz to CTL_FCC
- * CTRY_BULGARIA: ETSI6_WORLD -> ETSI1_WORLD
- * CTRY_CHINA: APL1_WORLD -> APL14_WORLD
- * CTRY_COLOMBIA: FCC1_FCCA -> FCC3_WORLD
-   - changes 2.4GHz to CTL_ETSI
- * CTRY_COSTA_RICA: FCC1_WORLD -> FCC3_WORLD
- * CTRY_CZECH: ETSI3_WORLD -> ETSI1_WORLD
- * CTRY_ECUADOR: FCC1_WORLD -> FCC3_WORLD
- * CTRY_GUAM: FCC1_FCCA -> FCC3_FCCA
- * CTRY_GUATEMALA: FCC1_FCCA -> ETSI1_WORLD
-   - changes 2.4GHz to CTL_ETSI
-   - changes 5GHz to CTL_ETSI
- * CTRY_HAITI: ETSI1_WORLD -> FCC3_FCCA
-   - changes 2.4GHz to CTL_FCC
-   - changes 5GHz to CTL_FCC
- * CTRY_HONDURAS: NULL1_WORLD -> FCC3_WORLD
-   - changes 5GHz to CTL_FCC
- * CTRY_INDIA: APL6_WORLD -> APL15_WORLD
-   - changes 5GHz to CTL_ETSI
- * CTRY_INDONESIA: NULL1_WORLD -> APL2_ETSIC
-   - changes 5GHz to CTL_FCC
- * CTRY_ISRAEL: NULL1_WORLD -> ETSI3_WORLD
-   - changes 5GHz to CTL_ETSI
- * CTRY_JORDAN: ETSI2_WORLD -> APL4_WORLD
-   - changes 5GHz to CTL_ETSI
- * CTRY_LEBANON: NULL1_WORLD -> FCC3_WORLD
-   - changes 5GHz to CTL_FCC
- * CTRY_MACAU: FCC2_WORLD -> FCC3_WORLD
- * CTRY_MACEDONIA: NULL1_WORLD -> ETSI1_WORLD
-   - changes 5GHz to CTL_ETSI
- * CTRY_MALAYSIA: APL8_WORLD -> FCC11_WORLD
-   - changes 5GHz to CTL_FCC
- * CTRY_MEXICO: FCC1_FCCA -> FCC3_ETSIC
-   - changes 2.4GHz to CTL_FCC
- * CTRY_MONACO: ETSI4_WORLD -> ETSI1_WORLD
- * CTRY_MOROCCO: APL4_WORLD -> ETSI3_WORLD
-   - changes 5GHz to CTL_FCC
- * CTRY_NEPAL: APL1_WORLD -> APL6_WORLD
-   - changes 5GHz to CTL_FCC
- * CTRY_NEW_ZEALAND: FCC2_ETSIC -> FCC3_ETSIC
- * CTRY_OMAN: FCC3_WORLD -> ETSI1_WORLD
-   - changes 5GHz to CTL_ETSI
- * CTRY_PAKISTAN: NULL1_WORLD -> APL1_ETSIC
-   - changes 5GHz to CTL_FCC
- * CTRY_PAPUA_NEW_GUINEA: FCC1_WORLD -> FCC3_WORLD
- * CTRY_PERU: APL1_WORLD -> FCC3_WORLD
- * CTRY_PHILIPPINES: APL1_WORLD -> FCC3_WORLD
- * CTRY_PUERTO_RICO: FCC1_FCCA -> FCC3_FCCA
- * CTRY_ROMANIA: NULL1_WORLD -> ETSI1_WORLD
-   - changes 5GHz to CTL_ETSI
- * CTRY_RUSSIA: NULL1_WORLD -> ETSI8_WORLD
- * CTRY_SAUDI_ARABIA: NULL1_WORLD -> ETSI1_WORLD
-   - changes 5GHz to CTL_ETSI
- * CTRY_SINGAPORE: APL6_WORLD -> FCC3_WORLD
-   - changes 5GHz to CTL_ETSI
- * CTRY_TAIWAN: APL3_FCCA -> FCC3_FCCA
- * CTRY_TURKEY: ETSI3_WORLD -> ETSI1_WORLD
- * CTRY_UKRAINE: NULL1_WORLD -> ETSI9_WORLD
-   - changes 5GHz to CTL_ETSI
- * CTRY_UAE: NULL1_WORLD -> FCC3_WORLD
-   - changes 5GHz to CTL_FCC
- * CTRY_URUGUAY: FCC3_WORLD -> FCC2_WORLD
- * CTRY_UZBEKISTAN: FCC3_FCCA -> ETSI3_WORLD
-   - changes 2.4GHz to CTL_ETSI
-   - changes 5GHz to CTL_ETSI
- * CTRY_VENEZUELA: APL2_ETSIC -> FCC2_ETSIC
- * CTRY_VIET_NAM: NULL1_WORLD -> FCC3_WORLD
-   - changes 5GHz to CTL_FCC
- * CTRY_ZIMBABWE: NULL1_WORLD -> ETSI1_WORLD
-   - changes 5GHz to CTL_ETSI
-
-Not existing countries in allCountries:
-
- * CTRY_SERBIA_MONTENEGRO
-
-Kind regards,
-	Sven
+Regards,
+Tobias
 
 _______________________________________________
 ath10k mailing list
