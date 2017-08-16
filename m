@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from turtle.smart-cactus.org ([163.172.166.228]
- helo=mail.smart-cactus.org)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dhnkG-0000Lo-R6
- for ath10k@lists.infradead.org; Wed, 16 Aug 2017 02:07:46 +0000
-From: Ben Gamari <ben@smart-cactus.org>
-Subject: Re: QCA 9880 probe failure
-In-Reply-To: <CAK3eJOBDNLw1oLZHLdBWKHe2KBRwOv3ZUHC8Sn1_v3a7w7uT6w@mail.gmail.com>
-References: <87fuctfzqp.fsf@ben-laptop.smart-cactus.org>
- <CAK3eJOBDNLw1oLZHLdBWKHe2KBRwOv3ZUHC8Sn1_v3a7w7uT6w@mail.gmail.com>
-Date: Tue, 15 Aug 2017 22:07:14 -0400
-Message-ID: <87y3qke04t.fsf@ben-laptop.smart-cactus.org>
-MIME-Version: 1.0
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129] helo=mellanox.co.il)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dhnqI-0005DP-Lh
+ for ath10k@lists.infradead.org; Wed, 16 Aug 2017 02:14:07 +0000
+From: Chris Mi <chrism@mellanox.com>
+Subject: [patch net-next 0/3] net/sched: Improve getting objects by indexes
+Date: Tue, 15 Aug 2017 22:12:15 -0400
+Message-Id: <1502849538-14284-1-git-send-email-chrism@mellanox.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +15,210 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6078213902806890540=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Richard Toy <richard.toy@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: netdev@vger.kernel.org
+Cc: lucho@ionkov.net, sergey.senozhatsky.work@gmail.com, snitzer@redhat.com, wsa@the-dreams.de, markb@mellanox.com, tom.leiming@gmail.com, stefanr@s5r6.in-berlin.de, zhi.a.wang@intel.com, nsekhar@ti.com, dri-devel@lists.freedesktop.org, bfields@fieldses.org, linux-sctp@vger.kernel.org, paulus@samba.org, jinpu.wang@profitbricks.com, pshelar@ovn.org, sumit.semwal@linaro.org, AlexBin.Xie@amd.com, david1.zhou@amd.com, linux-samsung-soc@vger.kernel.org, maximlevitsky@gmail.com, sudarsana.kalluru@qlogic.com, marek.vasut@gmail.com, linux-atm-general@lists.sourceforge.net, dtwlin@gmail.com, michel.daenzer@amd.com, dledford@redhat.com, tpmdd-devel@lists.sourceforge.net, stern@rowland.harvard.edu, longman@redhat.com, niranjana.vishwanathapura@intel.com, philipp.reisner@linbit.com, shli@kernel.org, linux@roeck-us.net, ohad@wizery.com, pmladek@suse.com, dick.kennedy@broadcom.com, linux-pm@vger.kernel.org, ericvh@gmail.com, geliangtang@gmail.com, sparmaintainer@unisys.com, giometti@enneenne.com, acme@kernel.org, inki.dae@samsung.com, alex.williamson@redhat.com, rppt@linux.vnet.ibm.com, teigland@redhat.com, viro@zeniv.linux.org.uk, anna.schumaker@netapp.com, weiyj.lk@gmail.com, chrism@mellanox.com, marcos.souza.org@gmail.com, mike.marciniszyn@intel.com, elder@kernel.org, nbd-general@lists.sourceforge.net, nhorman@tuxdriver.com, nicolai.haehnle@amd.com, david.binder@unisys.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, anil.gurumurthy@qlogic.com, linux-kernel@vger.kernel.org, varun@chelsio.com, majd@mellanox.com, devesh.sharma@broadcom.com, sameer.wadgaonkar@unisys.com, bhaktipriya96@gmail.com, alexander.deucher@amd.com, shaun.tancheff@seagate.com, akpm@linux-foundation.org, matan@mellanox.com, jlbec@evilplan.org, kraxel@redhat.com, Jason@zx2c4.com, timothy.sell@unisys.com, airlied@linux.ie, linux-wireless@vger.kernel.org, pantelis.antoniou@konsulko.com, sudeep.dutt@intel.com, neilb@suse.com, edumazet@google.com, target-devel@vger.kernel.org, linux-i2c@vger.kernel.org, daniel.vetter@intel.com, jsarha@ti.com, osandov@fb.com, agk@redhat.com, drbd-dev@lists.linbit.com, boris.brezillon@free-electrons.com, thellstrom@vmware.com, dave@stgolabs.net, paul@paul-moore.com, leon@kernel.org, sainath.grandhi@intel.com, gustavo.padovan@collabora.co.uk, james.smart@broadcom.com, jonathanh@nvidia.com, selvin.xavier@broadcom.com, kgene@kernel.org, linux-graphics-maintainer@vmware.com, andresx7@gmail.com, 3chas3@gmail.com, airlied@redhat.com, sean.hefty@intel.com, virtualization@lists.linux-foundation.org, hal.rosenstock@gmail.com, tj@kernel.org, mszeredi@redhat.com, hannes@stressinduktion.org, felipe.balbi@linux.intel.com, pali.rohar@gmail.com, tpmdd@selhorst.net, linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com, greybus-dev@lists.linaro.org, nishants@marvell.com, swise@chelsio.com, yuval.shaia@oracle.com, xiyou.wangcong@gmail.com, evan.quan@amd.com, lars.ellenberg@linbit.com, linux-arm-kernel@lists.infradead.org, dwindsor@gmail.com, linux-raid@vger.kernel.org, syeh@vmware.com, bryan.thompson@unisys.com, ying.xue@windriver.com, Felix.Kuehling@amd.com, oneukum@suse.com, fw@strlen.de, davem@davemloft.net, minchan@kernel.org, kyungmin.park@samsung.com, monis@mellanox.com, ebiederm@xmission.com, sre@kernel.org, don.hiatt@intel.com, leo.liu@amd.com, jens.wiklander@linaro.org, hans.westgaard.ry@oracle.com, alexander.shishkin@linux.intel.com, dennis.dalessandro@intel.com, jasowang@redhat.com, joonas.lahtinen@linux.intel.com, jiangshanlai@gmail.com, ast@kernel.org, fbarrat@linux.vnet.ibm.com, mhocko@kernel.org, alexandre.bounine@idt.com, linux-mtd@lists.infradead.org, amd-gfx@lists.freedesktop.org, cgroups@vger.kernel.org, jlayton@poochiereds.net, frowand.list@gmail.com, elena.reshetova@intel.com, f.fainelli@gmail.com, jejb@linux.vnet.ibm.com, daniel@iogearbox.net, linux-rdma@vger.kernel.org, p.shailesh@samsung.com, ath10k@lists.infradead.org, jgunthorpe@obsidianresearch.com, ccaulfie@redhat.com, tomi.valkeinen@ti.com, Monk.Liu@amd.com, dgilbert@interlog.com, ira.weiny@intel.com, david.kershner@unisys.com, adobriyan@gmail.com, jon.maloy@ericsson.com, keescook@chromium.org, arnd@arndb.de, intel-gfx@lists.freedesktop.org, jhs@mojatatu.com, zhenyuw@linux.intel.com, v9fs-developer@lists.sourceforge.net, rmk+kernel@armlinux.org.uk, seanpaul@chromium.org, nab@linux-iscsi.org, Jerry.Zhang@amd.com, eparis@parisplace.org, nicolas.dichtel@6wind.com, chris@chris-wilson.co.uk, mporter@kernel.crashing.org, rogerq@ti.com, linux-nfs@vger.kernel.org, martin.petersen@oracle.com, linux-ppp@vger.kernel.org, dm-devel@redhat.com, sw0312.kim@samsung.com, fujita.tomonori@lab.ntt.co.jp, iommu@lists.linux-foundation.org, roman.kapl@sysgo.com, ngupta@vflare.org, andrew.donnellan@au1.ibm.com, cyrille.pitchen@wedev4u.fr, thierry.reding@gmail.com, colin.king@canonical.com, computersforpeace@gmail.com, logang@deltatee.com, christian.koenig@amd.com, ocfs2-devel@oss.oracle.com, rlove@rlove.org, jack@suse.cz, kvm@vger.kernel.org, mst@redhat.com, peterz@infradead.org, bigeasy@linutronix.de, trond.myklebust@primarydata.com, linux-remoteproc@vger.kernel.org, amitkarwar@gmail.com, bjorn.andersson@linaro.org, dhowells@redhat.com, linux-mm@kvack.org, ray.huang@amd.com, jiri@resnulli.us, peterhuewe@gmx.de, linux1394-devel@lists.sourceforge.net, lee.jones@linaro.org, john@johnmccutchan.com, devel@driverdev.osuosl.org, stephen@networkplumber.org, mario.kleiner.de@gmail.com, manfred@colorfullife.com, oakad@yahoo.com, linux-scsi@vger.kernel.org, mawilcox@microsoft.com, mfasheh@versity.com, richard@nod.at, joro@8bytes.org, jiangyilism@gmail.com, elfring@users.sourceforge.net, cluster-devel@redhat.com, javier@osg.samsung.com, jarkko.sakkinen@linux.intel.com, mingo@redhat.com, vdavydov.dev@gmail.com, kvalo@qca.qualcomm.com, tipc-discussion@lists.sourceforge.net, ogerlitz@mellanox.com, ishkamiel@gmail.com, devicetree@vger.kernel.org, lizefan@huawei.com, huxm@marvell.com, mchehab@kernel.org, johan@kernel.org, aditr@vmware.com, linux-block@vger.kernel.org, robh+dt@kernel.org, Kai.Makisara@kolumbus.fi, hare@suse.de, rminnich@sandia.gov, linux-tegra@vger.kernel.org, dsa@cumulusnetworks.com, intel-gvt-dev@lists.freedesktop.org, jy0922.shim@samsung.com, axboe@kernel.dk, gbhat@marvell.com, tomas.winkler@intel.com, dedekind1@gmail.com, jbacik@fb.com, jarno@ovn.org, vyasevich@gmail.com, krzk@kernel.org, sboyd@codeaurora.org, jiri@mellanox.com, afd@ti.com, ashutosh.dixit@intel.com, yishaih@mellanox.com, rjw@rjwysocki.net, hannes@cmpxchg.org, Bart.VanAssche@sandisk.com, johannes@sipsolutions.net, dwmw2@infradead.org, dasaratharaman.chandramouli@intel.com
 
---===============6078213902806890540==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha256; protocol="application/pgp-signature"
+Using current TC code, it is very slow to insert a lot of rules.
 
---=-=-=
-Content-Type: text/plain
+In order to improve the rules update rate in TC,
+we introduced the following two changes:
+        1) changed cls_flower to use IDR to manage the filters.
+        2) changed all act_xxx modules to use IDR instead of
+           a small hash table
 
-Richard Toy <richard.toy@gmail.com> writes:
+But IDR has a limitation that it uses int. TC handle uses u32.
+To make sure there is no regression, we also changed IDR to use
+unsigned long. All clients of IDR are changed to use new IDR API.
 
-> Others also have issues with 10.2.4.70.63-2, see my post from last
-> month and earlier this month.
->
-> Try firmware-5.bin_10.2.4.70.61-2 or earlier.
+Chris Mi (3):
+  idr: Use unsigned long instead of int
+  net/sched: Change cls_flower to use IDR
+  net/sched: Change act_api and act_xxx modules to use IDR
 
-Indeed that did the trick. Thanks!
+ block/bsg.c                                     |   8 +-
+ block/genhd.c                                   |  12 +-
+ drivers/atm/nicstar.c                           |  11 +-
+ drivers/block/drbd/drbd_main.c                  |  31 +--
+ drivers/block/drbd/drbd_nl.c                    |  22 ++-
+ drivers/block/drbd/drbd_proc.c                  |   3 +-
+ drivers/block/drbd/drbd_receiver.c              |  15 +-
+ drivers/block/drbd/drbd_state.c                 |  34 ++--
+ drivers/block/drbd/drbd_worker.c                |   6 +-
+ drivers/block/loop.c                            |  17 +-
+ drivers/block/nbd.c                             |  20 +-
+ drivers/block/zram/zram_drv.c                   |   9 +-
+ drivers/char/tpm/tpm-chip.c                     |  10 +-
+ drivers/char/tpm/tpm.h                          |   2 +-
+ drivers/dca/dca-sysfs.c                         |   9 +-
+ drivers/firewire/core-cdev.c                    |  18 +-
+ drivers/firewire/core-device.c                  |  15 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c     |   8 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c         |   9 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c         |   6 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c         |   2 +-
+ drivers/gpu/drm/drm_auth.c                      |   9 +-
+ drivers/gpu/drm/drm_connector.c                 |  10 +-
+ drivers/gpu/drm/drm_context.c                   |  20 +-
+ drivers/gpu/drm/drm_dp_aux_dev.c                |  11 +-
+ drivers/gpu/drm/drm_drv.c                       |   6 +-
+ drivers/gpu/drm/drm_gem.c                       |  19 +-
+ drivers/gpu/drm/drm_info.c                      |   2 +-
+ drivers/gpu/drm/drm_mode_object.c               |  11 +-
+ drivers/gpu/drm/drm_syncobj.c                   |  18 +-
+ drivers/gpu/drm/exynos/exynos_drm_ipp.c         |  25 ++-
+ drivers/gpu/drm/i915/gvt/display.c              |   2 +-
+ drivers/gpu/drm/i915/gvt/kvmgt.c                |   2 +-
+ drivers/gpu/drm/i915/gvt/vgpu.c                 |   9 +-
+ drivers/gpu/drm/i915/i915_debugfs.c             |   6 +-
+ drivers/gpu/drm/i915/i915_gem_context.c         |   9 +-
+ drivers/gpu/drm/qxl/qxl_cmd.c                   |   8 +-
+ drivers/gpu/drm/qxl/qxl_release.c               |  14 +-
+ drivers/gpu/drm/sis/sis_mm.c                    |   8 +-
+ drivers/gpu/drm/tegra/drm.c                     |  10 +-
+ drivers/gpu/drm/tilcdc/tilcdc_slave_compat.c    |   3 +-
+ drivers/gpu/drm/vgem/vgem_fence.c               |  12 +-
+ drivers/gpu/drm/via/via_mm.c                    |   8 +-
+ drivers/gpu/drm/virtio/virtgpu_kms.c            |   5 +-
+ drivers/gpu/drm/virtio/virtgpu_vq.c             |   5 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_resource.c        |   9 +-
+ drivers/i2c/i2c-core-base.c                     |  19 +-
+ drivers/infiniband/core/cm.c                    |   8 +-
+ drivers/infiniband/core/cma.c                   |  12 +-
+ drivers/infiniband/core/rdma_core.c             |   9 +-
+ drivers/infiniband/core/sa_query.c              |  23 +--
+ drivers/infiniband/core/ucm.c                   |   7 +-
+ drivers/infiniband/core/ucma.c                  |  14 +-
+ drivers/infiniband/hw/cxgb3/iwch.c              |   4 +-
+ drivers/infiniband/hw/cxgb3/iwch.h              |   4 +-
+ drivers/infiniband/hw/cxgb4/device.c            |  18 +-
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h          |   4 +-
+ drivers/infiniband/hw/hfi1/init.c               |   9 +-
+ drivers/infiniband/hw/hfi1/vnic_main.c          |   6 +-
+ drivers/infiniband/hw/mlx4/cm.c                 |  13 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_main.c      |   7 +-
+ drivers/infiniband/hw/qib/qib_init.c            |   9 +-
+ drivers/infiniband/ulp/opa_vnic/opa_vnic_vema.c |  10 +-
+ drivers/iommu/intel-svm.c                       |   9 +-
+ drivers/md/dm.c                                 |  13 +-
+ drivers/memstick/core/memstick.c                |  10 +-
+ drivers/memstick/core/ms_block.c                |   9 +-
+ drivers/memstick/core/mspro_block.c             |  12 +-
+ drivers/mfd/rtsx_pcr.c                          |   9 +-
+ drivers/misc/c2port/core.c                      |   7 +-
+ drivers/misc/cxl/context.c                      |   8 +-
+ drivers/misc/cxl/main.c                         |  15 +-
+ drivers/misc/mei/main.c                         |   8 +-
+ drivers/misc/mic/scif/scif_api.c                |  11 +-
+ drivers/misc/mic/scif/scif_ports.c              |  18 +-
+ drivers/misc/tifm_core.c                        |   9 +-
+ drivers/mtd/mtdcore.c                           |   9 +-
+ drivers/mtd/mtdcore.h                           |   2 +-
+ drivers/mtd/ubi/block.c                         |   7 +-
+ drivers/net/ppp/ppp_generic.c                   |  27 +--
+ drivers/net/tap.c                               |  10 +-
+ drivers/net/wireless/ath/ath10k/htt.h           |   3 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c        |  22 ++-
+ drivers/net/wireless/ath/ath10k/mac.c           |   2 +-
+ drivers/net/wireless/marvell/mwifiex/main.c     |  13 +-
+ drivers/net/wireless/marvell/mwifiex/wmm.c      |   2 +-
+ drivers/of/overlay.c                            |  15 +-
+ drivers/of/unittest.c                           |  25 ++-
+ drivers/power/supply/bq2415x_charger.c          |  16 +-
+ drivers/power/supply/bq27xxx_battery_i2c.c      |  15 +-
+ drivers/power/supply/ds2782_battery.c           |   9 +-
+ drivers/powercap/powercap_sys.c                 |   8 +-
+ drivers/pps/pps.c                               |  10 +-
+ drivers/rapidio/rio_cm.c                        |  17 +-
+ drivers/remoteproc/remoteproc_core.c            |   8 +-
+ drivers/rpmsg/virtio_rpmsg_bus.c                |   8 +-
+ drivers/scsi/bfa/bfad_im.c                      |   8 +-
+ drivers/scsi/ch.c                               |   8 +-
+ drivers/scsi/lpfc/lpfc_crtn.h                   |   2 +-
+ drivers/scsi/lpfc/lpfc_init.c                   |  11 +-
+ drivers/scsi/lpfc/lpfc_vport.c                  |   8 +-
+ drivers/scsi/sg.c                               |  10 +-
+ drivers/scsi/st.c                               |   8 +-
+ drivers/staging/greybus/uart.c                  |  22 +--
+ drivers/staging/unisys/visorhba/visorhba_main.c |   7 +-
+ drivers/target/iscsi/iscsi_target.c             |   7 +-
+ drivers/target/iscsi/iscsi_target_login.c       |   9 +-
+ drivers/target/target_core_device.c             |   9 +-
+ drivers/target/target_core_user.c               |  13 +-
+ drivers/tee/tee_shm.c                           |   8 +-
+ drivers/uio/uio.c                               |   9 +-
+ drivers/usb/class/cdc-acm.c                     |  24 +--
+ drivers/usb/core/devices.c                      |   2 +-
+ drivers/usb/core/hcd.c                          |   7 +-
+ drivers/usb/mon/mon_main.c                      |   3 +-
+ drivers/usb/serial/usb-serial.c                 |  11 +-
+ drivers/vfio/vfio.c                             |  15 +-
+ fs/dlm/lock.c                                   |   9 +-
+ fs/dlm/lockspace.c                              |   6 +-
+ fs/dlm/recover.c                                |  10 +-
+ fs/nfs/nfs4client.c                             |   9 +-
+ fs/nfsd/nfs4state.c                             |   8 +-
+ fs/notify/inotify/inotify_fsnotify.c            |   4 +-
+ fs/notify/inotify/inotify_user.c                |   9 +-
+ fs/ocfs2/cluster/tcp.c                          |  10 +-
+ include/linux/idr.h                             |  26 +--
+ include/linux/of.h                              |   4 +-
+ include/linux/radix-tree.h                      |   2 +-
+ include/net/9p/9p.h                             |   2 +-
+ include/net/act_api.h                           |  76 +++-----
+ ipc/msg.c                                       |   2 +-
+ ipc/sem.c                                       |   2 +-
+ ipc/shm.c                                       |   4 +-
+ ipc/util.c                                      |  17 +-
+ kernel/bpf/syscall.c                            |  20 +-
+ kernel/cgroup/cgroup.c                          |  57 +++---
+ kernel/events/core.c                            |  10 +-
+ kernel/workqueue.c                              |  15 +-
+ lib/idr.c                                       |  38 ++--
+ lib/radix-tree.c                                |   5 +-
+ mm/memcontrol.c                                 |  11 +-
+ net/9p/client.c                                 |  17 +-
+ net/9p/util.c                                   |  14 +-
+ net/core/net_namespace.c                        |  23 ++-
+ net/mac80211/cfg.c                              |  23 +--
+ net/mac80211/iface.c                            |   3 +-
+ net/mac80211/main.c                             |   2 +-
+ net/mac80211/tx.c                               |   7 +-
+ net/mac80211/util.c                             |   3 +-
+ net/netlink/genetlink.c                         |  18 +-
+ net/qrtr/qrtr.c                                 |  21 +-
+ net/rxrpc/conn_client.c                         |  15 +-
+ net/sched/act_api.c                             | 249 +++++++++++-------------
+ net/sched/act_bpf.c                             |  17 +-
+ net/sched/act_connmark.c                        |  16 +-
+ net/sched/act_csum.c                            |  16 +-
+ net/sched/act_gact.c                            |  16 +-
+ net/sched/act_ife.c                             |  20 +-
+ net/sched/act_ipt.c                             |  26 ++-
+ net/sched/act_mirred.c                          |  19 +-
+ net/sched/act_nat.c                             |  16 +-
+ net/sched/act_pedit.c                           |  18 +-
+ net/sched/act_police.c                          |  18 +-
+ net/sched/act_sample.c                          |  17 +-
+ net/sched/act_simple.c                          |  20 +-
+ net/sched/act_skbedit.c                         |  18 +-
+ net/sched/act_skbmod.c                          |  18 +-
+ net/sched/act_tunnel_key.c                      |  20 +-
+ net/sched/act_vlan.c                            |  22 +--
+ net/sched/cls_flower.c                          |  55 +++---
+ net/sctp/associola.c                            |   8 +-
+ net/tipc/server.c                               |   7 +-
+ 172 files changed, 1256 insertions(+), 1113 deletions(-)
 
-Cheers,
+-- 
+1.8.3.1
 
-- Ben
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEmwpsh4C13+CdDZRjcVB86Evun78FAlmTqNIACgkQcVB86Evu
-n79ZfAgAlWFjCHYkDi6vI4IlukGyq9hjsfajRrd1+UkiXxIfNeRiorHnppuOGne1
-jnd6fWpqVneOgusnBMYiYTiU4Zxlizt5qyG4skRhQ01cWQsFk07LmIwuzeilP32P
-QRBDzEoKueYUnUyyWKFbLMu8yj86lTLx6pVAzQ8s5Ts+4oi/5rJyGhTa/KwEhr+z
-yCWMHyoac7BXZyjQRSA364p3S33ios1mIfWp0EIq4KOwwN6cMuFSkHZb49dK1YuZ
-m1RyVQftIS82e0AipJnIG/brpnvY6SA5veSFcnP8EFgJUM9qCFIs/wMmsw1DEkIl
-ll4TbFdLakWPlTnNoX5AlR/jEGeuZw==
-=oTnU
------END PGP SIGNATURE-----
---=-=-=--
-
-
---===============6078213902806890540==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============6078213902806890540==--
