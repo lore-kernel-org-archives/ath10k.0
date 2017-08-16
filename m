@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dhfro-0006e7-Mt
- for ath10k@lists.infradead.org; Tue, 15 Aug 2017 17:43:02 +0000
-Subject: Re: [PATCH 5/6] ath10k: add memory dump support for QCA6174/QCA9377
-References: <150278532045.22482.14490702801292107536.stgit@potku.adurom.net>
- <150278542590.22482.1613614809483892010.stgit@potku.adurom.net>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <8be660a1-fde8-ad87-b3ef-0d3e8590ed01@candelatech.com>
-Date: Tue, 15 Aug 2017 10:42:38 -0700
+Received: from turtle.smart-cactus.org ([163.172.166.228]
+ helo=mail.smart-cactus.org)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dhnkG-0000Lo-R6
+ for ath10k@lists.infradead.org; Wed, 16 Aug 2017 02:07:46 +0000
+From: Ben Gamari <ben@smart-cactus.org>
+Subject: Re: QCA 9880 probe failure
+In-Reply-To: <CAK3eJOBDNLw1oLZHLdBWKHe2KBRwOv3ZUHC8Sn1_v3a7w7uT6w@mail.gmail.com>
+References: <87fuctfzqp.fsf@ben-laptop.smart-cactus.org>
+ <CAK3eJOBDNLw1oLZHLdBWKHe2KBRwOv3ZUHC8Sn1_v3a7w7uT6w@mail.gmail.com>
+Date: Tue, 15 Aug 2017 22:07:14 -0400
+Message-ID: <87y3qke04t.fsf@ben-laptop.smart-cactus.org>
 MIME-Version: 1.0
-In-Reply-To: <150278542590.22482.1613614809483892010.stgit@potku.adurom.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,59 +20,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============6078213902806890540=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Richard Toy <richard.toy@gmail.com>
+Cc: ath10k@lists.infradead.org
 
-On 08/15/2017 01:23 AM, Kalle Valo wrote:
-> From: Alan Liu <alanliu@qca.qualcomm.com>
+--===============6078213902806890540==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha256; protocol="application/pgp-signature"
+
+--=-=-=
+Content-Type: text/plain
+
+Richard Toy <richard.toy@gmail.com> writes:
+
+> Others also have issues with 10.2.4.70.63-2, see my post from last
+> month and earlier this month.
 >
-> Add memory dump to the firmware crash data file which is provided to user space
-> via devcoredump interface. This makes it easier for firmware engineers to debug
-> firmware crashes.
->
-> Due to increased memory consumption the memory dump is disabled by default. To
-> enable it make sure that bit 3 is set in coredump_mask module parameter:
->
-> modprobe ath10k_core coredump_mask=0xffffffff
->
-> When RAMDUMP is enabled a buffer for the dump is allocated with vmalloc during
-> device probe. The actual memory layout is different in hardware versions and
-> the layouts are defined in coredump.c. The memory is split to regions and, to
-> get even finegrained control of what to copy, the region can split to smaller
-> sections as not all registers are readable (which could cause the whole system
-> to stall).
->
-> Signed-off-by: Alan Liu <alanliu@qca.qualcomm.com>
-> [kvalo@qca.qualcomm.com: refactoring and cleanup]
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> Try firmware-5.bin_10.2.4.70.61-2 or earlier.
 
->  #include "debug.h"
-> +#include "hw.h"
-> +
-> +static const struct ath10k_mem_section qca6174_hw21_register_sections[] = {
-> +	{0x800, 0x810},
-> +	{0x820, 0x82C},
-> +	{0x830, 0x8F4},
-> +	{0x90C, 0x91C},
-> +	{0xA14, 0xA18},
+Indeed that did the trick. Thanks!
 
-This looks pretty fragile.  Any chance this type of info could be packaged
-into the firmware image and then the driver just pulls it out of there
-instead of having all these hard coded magic values in the driver?
+Cheers,
 
-Thanks,
-Ben
+- Ben
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEmwpsh4C13+CdDZRjcVB86Evun78FAlmTqNIACgkQcVB86Evu
+n79ZfAgAlWFjCHYkDi6vI4IlukGyq9hjsfajRrd1+UkiXxIfNeRiorHnppuOGne1
+jnd6fWpqVneOgusnBMYiYTiU4Zxlizt5qyG4skRhQ01cWQsFk07LmIwuzeilP32P
+QRBDzEoKueYUnUyyWKFbLMu8yj86lTLx6pVAzQ8s5Ts+4oi/5rJyGhTa/KwEhr+z
+yCWMHyoac7BXZyjQRSA364p3S33ios1mIfWp0EIq4KOwwN6cMuFSkHZb49dK1YuZ
+m1RyVQftIS82e0AipJnIG/brpnvY6SA5veSFcnP8EFgJUM9qCFIs/wMmsw1DEkIl
+ll4TbFdLakWPlTnNoX5AlR/jEGeuZw==
+=oTnU
+-----END PGP SIGNATURE-----
+--=-=-=--
+
+
+--===============6078213902806890540==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============6078213902806890540==--
