@@ -1,18 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diGMj-0006BC-Jg
- for ath10k@lists.infradead.org; Thu, 17 Aug 2017 08:42:02 +0000
-Received: by mail-lf0-x22e.google.com with SMTP id o85so26620582lff.3
- for <ath10k@lists.infradead.org>; Thu, 17 Aug 2017 01:41:01 -0700 (PDT)
+Received: from mail-wr0-x235.google.com ([2a00:1450:400c:c0c::235])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1diGeF-0004lo-Lh
+ for ath10k@lists.infradead.org; Thu, 17 Aug 2017 08:59:29 +0000
+Received: by mail-wr0-x235.google.com with SMTP id 49so28911881wrw.2
+ for <ath10k@lists.infradead.org>; Thu, 17 Aug 2017 01:59:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87lgmi4q81.fsf@kamboji.qca.qualcomm.com>
-References: <CAM8JFhCRQM58qMT2d06ZW8zqxX=G5M3ZodaGug+MfYUSHsTvDg@mail.gmail.com>
- <87lgmi4q81.fsf@kamboji.qca.qualcomm.com>
-From: Gilbert Moisio <gmoisio@gmail.com>
-Date: Thu, 17 Aug 2017 10:40:58 +0200
-Message-ID: <CAM8JFhCCGcWGiD2JRjGyk=mskNUaFF=U1OYLtWM=-Kkx6Q542w@mail.gmail.com>
-Subject: Re: Introducing issue when updating firmware to 10.2.4.70.63-2
+In-Reply-To: <87pobu4qer.fsf@kamboji.qca.qualcomm.com>
+References: <CAPYrjBWL8LmVyWcXRZZDE1pEpwq-E6vRh5Ed_kG=ieZfsZdeiA@mail.gmail.com>
+ <87lgmj7g75.fsf@kamboji.qca.qualcomm.com>
+ <CAM8JFhD0qFeDnHywTXmsHSdp4dzWeL_by1a=a4btaMcCbibmEw@mail.gmail.com>
+ <87ziaz60ce.fsf@kamboji.qca.qualcomm.com>
+ <CAM8JFhBEkiRoyO+10ShcU2UDbz3a+zFxKVvxkipvqd2e3B9u3w@mail.gmail.com>
+ <87valn5vhs.fsf@kamboji.qca.qualcomm.com>
+ <CAM8JFhCpWBDv=_rZ_KDTsQ008wjUgv5nix=kxv-RPd2035xGLQ@mail.gmail.com>
+ <CAPYrjBUrEuuxpO=KYi1EXh-bZU2sPNLEsnNZnnp6_w1viss3wQ@mail.gmail.com>
+ <87pobu4qer.fsf@kamboji.qca.qualcomm.com>
+From: Kouroche Bouchiat <kouroche.bouchiat@gmail.com>
+Date: Thu, 17 Aug 2017 10:59:04 +0200
+Message-ID: <CAPYrjBWJ5teJ9SDN0NPEr4Qa=cGvSkbHzLfE=-pyYw=hVgGryA@mail.gmail.com>
+Subject: Re: ath10k firmware-6.bin bug: Disconnections every 20 minutes on
+ QCA6174
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,48 +29,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath10k@lists.infradead.org
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-VGhhbmtzIGFuZCBzb3JyeSBmb3IgdGhlIGNvbmZ1c2lvbgoKTGUgMTcgYW/Du3QgMjAxNyAwOTox
-OCwgIkthbGxlIFZhbG8iIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPiBhIMOpY3JpdCA6CgpHaWxi
-ZXJ0IE1vaXNpbyA8Z21vaXNpb0BnbWFpbC5jb20+IHdyaXRlczoKCj4gSGksIG1vdmluZyBhdGgx
-MGtfcGNpIGZpcm13YXJlIHRvIHZlciAxMC4yLjQuNzAuNjMtMiBpbiB0aGUKPiBsaW51eC1maXJt
-d2FyZSBwYWNrYWdlIGlzIGNyYXNoaW5nIHdpdGggdGhlIGZvbGxvd2luZyBkbWVzZyBvdXRwdXQ6
-Cj4KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+
-IFsgMy43OTQ5OTBdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBwY2kgaXJxIG1zaSBvcGVyX2ly
-cV9tb2RlIDIKPiBpcnFfbW9kZSAwIHJlc2V0X21vZGUgMAo+IFsgMy45NTY2MDRdIGF0aDEwa19w
-Y2kgMDAwMDowMTowMC4wOiBxY2E5ODh4IGh3Mi4wIHRhcmdldCAweDQxMDAwMTZjCj4gY2hpcF9p
-ZCAweDA0MzIyMmZmIHN1YiAwMDAwOjAwMDAKPiBbIDMuOTU2NjE2XSBhdGgxMGtfcGNpIDAwMDA6
-MDE6MDAuMDoga2NvbmZpZyBkZWJ1ZyAwIGRlYnVnZnMgMSB0cmFjaW5nCj4gMCBkZnMgMCB0ZXN0
-bW9kZSAwCj4gWyAzLjk1NzUwOF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGZpcm13YXJlIHZl
-ciAxMC4yLjQuNzAuNjMtMiBhcGkgNQo+IGZlYXR1cmVzIG5vLXAycCxyYXctbW9kZSxtZnAsYWxs
-b3dzLW1lc2gtYmNhc3QgY3JjMzIgNGZmOWUxNGQKPiBbIDMuOTk5MDI0XSBhdGgxMGtfcGNpIDAw
-MDA6MDE6MDAuMDogYm9hcmRfZmlsZSBhcGkgMSBibWlfaWQgTi9BIGNyYzMyIGJlYmM3YzA4Cj4g
-WyA1LjE0MTk5M10gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGZpcm13YXJlIGNyYXNoZWQhICh1
-dWlkCj4gNWUxYmY4NDUtYzI3OC00MjVjLThjNmQtYzMzNWE3ODMzNjU1KQo+IFsgNS4xNTEzMDdd
-IGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBxY2E5ODh4IGh3Mi4wIHRhcmdldCAweDQxMDAwMTZj
-Cj4gY2hpcF9pZCAweDA0MzIyMmZmIHN1YiAwMDAwOjAwMDAKPiBbIDUuMTUxMzE1XSBhdGgxMGtf
-cGNpIDAwMDA6MDE6MDAuMDoga2NvbmZpZyBkZWJ1ZyAwIGRlYnVnZnMgMSB0cmFjaW5nCj4gMCBk
-ZnMgMCB0ZXN0bW9kZSAwCj4gWyA1LjE1MjIzNV0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGZp
-cm13YXJlIHZlciAxMC4yLjQuNzAuNjMtMiBhcGkgNQo+IGZlYXR1cmVzIG5vLXAycCxyYXctbW9k
-ZSxtZnAsYWxsb3dzLW1lc2gtYmNhc3QgY3JjMzIgNGZmOWUxNGQKPiBbIDUuMTUyMjU0XSBhdGgx
-MGtfcGNpIDAwMDA6MDE6MDAuMDogYm9hcmRfZmlsZSBhcGkgMSBibWlfaWQgTi9BIGNyYzMyIGJl
-YmM3YzA4Cj4gWyA1LjE1MjI2NV0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGh0dC12ZXIgMC4w
-IHdtaS1vcCA1IGh0dC1vcCAyIGNhbAo+IG90cCBtYXgtc3RhIDEyOCByYXcgMCBod2NyeXB0byAx
-Cj4gWyA1LjE1NDMwN10gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGZpcm13YXJlIHJlZ2lzdGVy
-IGR1bXA6Cj4gWyA1LjE2MDAwN10gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IFswMF06IDB4NDEw
-MDAxNkMgMHgwMDAwMTVCMwo+IDB4MDA5QkZGODQgMHgwMDk1NUIzMQo+IFsgNS4xNjc5NjFdIGF0
-aDEwa19wY2kgMDAwMDowMTowMC4wOiBbMDRdOiAweDAwOUJGRjg0IDB4MDAwNjAxMzAKPiAweDAw
-MDAwMDEzIDB4MDAwMDAwMDAKPiBbIDUuMTc1OTQzXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDog
-WzA4XTogMHgwMDlDOEVBNCAweDAwMDA3MTcwCj4gMHgwMDAwMDAwMSAweDAwNDM1MzAwCgpUaGFu
-a3MsIEkgc2VlIG11bHRpcGxlIHJlcG9ydHMgb2YgdGhpcyBpbiB0aGUgYXRoMTBrIGxpc3QuIFRo
-aXMgaXMgbm93CnJlcG9ydGVkIHRvIHRoZSBmaXJtd2FyZSB0ZWFtLgoKLS0KS2FsbGUgVmFsbwoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
-aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> I was told that 4.4.1 firmare should have a fix for this. Please let me
+> know if you can confirm that and then I'll update the firmware in
+> linux-firmware.
+
+I'm sorry about my previous email. I forgot to disable HTML formatting.
+Been testing the 4.4.1 firmware for around 40 minutes and no
+disconnections so far. It's looking great. dmesg tells me it's been
+correctly upgraded:
+ ath10k_pci 0000:02:00.0: enabling device (0000 -> 0002)
+ ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+ ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000 chip_id
+0x00340aff sub 1a56:1535
+ ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
+ ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-00026-QCARMSWP-1
+api 6 features wowlan,ignore-otp,raw-mode crc32 7b90c3fc
+ ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 07ee144e
+ ath10k_pci 0000:02:00.0: Unknown eventid: 118809
+ ath10k_pci 0000:02:00.0: Unknown eventid: 90118
+ ath10k_pci 0000:02:00.0: htt-ver 3.44 wmi-op 4 htt-op 3 cal otp
+max-sta 32 raw 0 hwcrypto 1
+ ath10k_pci 0000:02:00.0 wlp2s0: renamed from wlan0
+ ath10k_pci 0000:02:00.0: Unknown eventid: 118809
+ ath10k_pci 0000:02:00.0: Unknown eventid: 90118
+ ath10k_pci 0000:02:00.0: Unknown eventid: 118809
+ ath10k_pci 0000:02:00.0: Unknown eventid: 90118
+
+A diff on the previous firmware's dmesg (before moving to
+firmware-4.bin) shows the new version:
+5c5
+<  ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4-00022-QCARMSWPZ-2
+api 6 features wowlan,ignore-otp crc32 4d458559
+>  ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-00026-QCARMSWP-1 api 6 features wowlan,ignore-otp,raw-mode crc32 7b90c3fc
+8c9
+<  ath10k_pci 0000:02:00.0: htt-ver 3.32 wmi-op 4 htt-op 3 cal otp
+max-sta 32 raw 0 hwcrypto 1
+>  ath10k_pci 0000:02:00.0: htt-ver 3.44 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+
+Thanks a lot for your help,
+Tell me if you need anything else.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
