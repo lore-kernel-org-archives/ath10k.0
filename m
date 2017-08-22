@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-f178.google.com ([209.85.128.178])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dk5Df-0008N1-Uq
- for ath10k@lists.infradead.org; Tue, 22 Aug 2017 09:11:34 +0000
-Received: by mail-wr0-f178.google.com with SMTP id p8so55489580wrf.5
- for <ath10k@lists.infradead.org>; Tue, 22 Aug 2017 02:11:11 -0700 (PDT)
-From: Jiri Slaby <jslaby@suse.cz>
-Subject: ath10k frequently disconnects with firmware-6.bin
-Message-ID: <32171fa5-5785-f844-ca76-e2536e66ce68@suse.cz>
-Date: Tue, 22 Aug 2017 11:11:07 +0200
+ id 1dkCXc-0004Wq-Rl
+ for ath10k@lists.infradead.org; Tue, 22 Aug 2017 17:00:38 +0000
+Received: by mail-lf0-x244.google.com with SMTP id d202so2920394lfd.2
+ for <ath10k@lists.infradead.org>; Tue, 22 Aug 2017 10:00:11 -0700 (PDT)
+Subject: Re: [PATCH] ath10k: sdio: remove unused struct member
+References: <1503153382-11100-1-git-send-email-erik.stromdahl@gmail.com>
+ <a97bab8e-fd91-715d-918e-0074fe0ac3d6@qti.qualcomm.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <49816d2b-e081-657d-aca0-20402989e1ed@gmail.com>
+Date: Tue, 22 Aug 2017 19:00:05 +0200
 MIME-Version: 1.0
-Content-Language: en-GB
+In-Reply-To: <a97bab8e-fd91-715d-918e-0074fe0ac3d6@qti.qualcomm.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,26 +22,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
+To: Ryan Hsu <ryanhsu@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi,
 
-are you aware of this issue:
-https://bbs.archlinux.org/viewtopic.php?pid=1728715#p1728715
-?
 
-If the guys use an older firmware, everything works.
+On 2017-08-22 02:18, Ryan Hsu wrote:
+> On 08/19/2017 07:36 AM, Erik Stromdahl wrote:
+> 
+>> irq_wq in struct ath10k_sdio is a remnant from an earlier
+>> version of the sdio patchset.
+>>
+>> It's use was removed as a result of Kalle's review, but somehow
+> 
+> Its?
+> 
+Aah, of course.
+It's of course supposed to be its:)
 
-Is there any FW or code fix available somewhere?
+I'll fix it in v2.
 
-thanks,
--- 
-js
-suse labs
+--
+Erik
 
 _______________________________________________
 ath10k mailing list
