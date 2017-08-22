@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x22a.google.com ([2a00:1450:400c:c0c::22a])
+Received: from alexa-out.qualcomm.com ([129.46.98.28]
+ helo=alexa-out-lv-01.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1djgsY-0003IZ-5M
- for ath10k@lists.infradead.org; Mon, 21 Aug 2017 07:12:08 +0000
-Received: by mail-wr0-x22a.google.com with SMTP id f8so54526196wrf.3
- for <ath10k@lists.infradead.org>; Mon, 21 Aug 2017 00:11:44 -0700 (PDT)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: [PATCH 2/2] ath10k: search DT for qcom, ath10k-calibration-variant
-Date: Mon, 21 Aug 2017 09:11:40 +0200
-Message-ID: <3114796.44GtYcDsBs@bentobox>
-In-Reply-To: <3853747.Q0JJmSnsYM@debian64>
-References: <20170310080615.22958-1-sven.eckelmann@openmesh.com>
- <20170310080615.22958-2-sven.eckelmann@openmesh.com>
- <3853747.Q0JJmSnsYM@debian64>
+ id 1djwuI-0005fI-SK
+ for ath10k@lists.infradead.org; Tue, 22 Aug 2017 00:19:00 +0000
+From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+Subject: Re: [PATCH] ath10k: sdio: remove unused struct member
+Date: Tue, 22 Aug 2017 00:18:14 +0000
+Message-ID: <a97bab8e-fd91-715d-918e-0074fe0ac3d6@qti.qualcomm.com>
+References: <1503153382-11100-1-git-send-email-erik.stromdahl@gmail.com>
+In-Reply-To: <1503153382-11100-1-git-send-email-erik.stromdahl@gmail.com>
+Content-Language: en-US
+Content-ID: <BAD33E727CAB804A826A9E4B09FC0539@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,76 +21,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6170894996582334081=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@codeaurora.org
-Cc: Adrian Chadd <adrian@freebsd.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Aeolus Yang <aeolus@qti.qualcomm.com>, Christian Lamparter <chunkeey@googlemail.com>, ext.waldemar.rymarkiewicz@tieto.com
+To: Erik Stromdahl <erik.stromdahl@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
---===============6170894996582334081==
-Content-Type: multipart/signed; boundary="nextPart12028771.XzEh3oFhZC"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+On 08/19/2017 07:36 AM, Erik Stromdahl wrote:
 
---nextPart12028771.XzEh3oFhZC
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+> irq_wq in struct ath10k_sdio is a remnant from an earlier
+> version of the sdio patchset.
+>
+> It's use was removed as a result of Kalle's review, but somehow
 
-On Freitag, 10. M=E4rz 2017 19:20:54 CEST Christian Lamparter wrote:
-[...]
-> @Aeolus Yang / Kalle / QCA: Would it be possible to assign a variant stri=
-ng to
-> the Asus RT-AC58U?
->=20
-> I've attached the necessary bmi-board-id=3D16 and bmi-board-id=3D17 board=
-=20
-> files to this mail as well. So, all that needs to be done is to add
-> them to the board-2.bin on your codeaurora / ath10k-firmware project.
->=20
-> Kalle: Can you please update the board-2.bin for the IPQ40XX on your
-> ath10k-firmware project on github?
->=20
-> https://source.codeaurora.org/quic/qsdk/oss/firmware/ath10k-firmware/plai=
-n/ath10k/QCA40XX/hw1.0/board-2.bin
-> It looks like this board-2.bin has support for a few more boards.
+Its?
 
-Any updates on that?
-
-Kind regards,
-	Sven
---nextPart12028771.XzEh3oFhZC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlmah6wACgkQXYcKB8Em
-e0a5fA/7BWyQh0lltWysUHy37ocXfu6fLIzEop3yiJAx1FMPVVYbrDR3dMbYLvE8
-02RPipu5O7W1+VV5ugnyGUJ/DaJCrN5SngrWrjGT7GGZX5Kkpk3fqb1/UArpTAlD
-xb5/ubbwK59rXUqsa1AkOC+UP1ltm9HcPkVVROA4FcMcjZXvCVKOfLd+spW5uGXc
-5o5mPHG7pTpfCR+qIcOrjM72vT5mdyvZtVg5UTb/2Tuq2qyLWEcCs/H0/NXWzp9x
-O6R9L0cr68JuSoUhee+20SZ8KvsNAliAEqskvlzD+5GFyNTNNxOdSo5NaPeTUs1n
-Ik+X3Ie3hH1qTUrf7ue4hpvCmvyfg5wJZnF3hoYJLCI9y0HXRmEgjAoBpCD0ENP5
-Nrjg03ETJ2sDCDuG3lSAtcEVB7qerowkd4RRk2tObTXshoPFLAGXUrevMnS6qouj
-mAdDhpY6/VZ8MhiDFTcYg5rf5qxY553Q19V65GVKwGXJNUN+iO2H/P4SFeKutVpv
-xFobADPor9NXL+rWwHrIlqdRnZFu+byE0D/o9WhO/p/MbfDSXJs9s6XuToNkBK0d
-hpqKbkFfMVNwvDRtW8zo7Toa4pQrygyoLga1UgRwDSoEQznnXOFtcYJoWjGaxuBT
-Bn5iyQMD4r6nYHoVoqkyqWDHTBh+p2fKrsyFiarjluiz821jnRY=
-=NqWy
------END PGP SIGNATURE-----
-
---nextPart12028771.XzEh3oFhZC--
-
-
-
---===============6170894996582334081==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Ryan Hsu
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============6170894996582334081==--
