@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28]
- helo=alexa-out-lv-01.qualcomm.com)
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dkGke-0000qb-9B
+ id 1dkGkd-0000qW-Nf
  for ath10k@lists.infradead.org; Tue, 22 Aug 2017 21:30:21 +0000
 From: <ryanhsu@qti.qualcomm.com>
-Subject: [PATCH v2 2/2] ath10k: Configure and enable the wakeup capability
-Date: Tue, 22 Aug 2017 14:30:20 -0700
-Message-ID: <1503437420-5470-2-git-send-email-ryanhsu@qti.qualcomm.com>
-In-Reply-To: <1503437420-5470-1-git-send-email-ryanhsu@qti.qualcomm.com>
-References: <1503437420-5470-1-git-send-email-ryanhsu@qti.qualcomm.com>
+Subject: [PATCH v2 1/2] ath10k: add the PCI PM core suspend/resume ops
+Date: Tue, 22 Aug 2017 14:30:19 -0700
+Message-ID: <1503437420-5470-1-git-send-email-ryanhsu@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,75 +25,89 @@ Cc: ryanhsu@qti.qualcomm.com
 
 From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
 
-ACPI will rely on device driver to tell it if the device could support
-wakeup function when system in D3 state.
+The actual PCI suspend/resume in ath10k has been handled in wow.c,
+but in the case of the device doesn't support remote wakeup,
+the .hif_suspend() and .hif_resume() will never be handled.
 
-This has caused some platform can't support remote wakeup correctly,
-because the ACPI wakeup GPE is not enabled, hence registers the .set_wakeup
-callback to handle it if device supports wakeup.
+  ath10k_wow_op_suspend()
+  {
+	if (WARN_ON(!test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
+		    ar->running_fw->fw_file.fw_features))) {
+		ret = 1;
+		goto exit;
+	}
+
+	....
+
+	ret = ath10k_hif_suspend(ar);
+  }
+
+So register the PCI PM core to support the suspend/resume if the device
+doesn't support remote wakeup.
 
 Signed-off-by: Ryan Hsu <ryanhsu@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |  1 +
- drivers/net/wireless/ath/ath10k/wow.c | 14 ++++++++++++++
- drivers/net/wireless/ath/ath10k/wow.h |  1 +
- 3 files changed, 16 insertions(+)
+ drivers/net/wireless/ath/ath10k/pci.c | 42 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 2e5d2ca..bbf7da1 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7488,6 +7488,7 @@ static const struct ieee80211_ops ath10k_ops = {
- #ifdef CONFIG_PM
- 	.suspend			= ath10k_wow_op_suspend,
- 	.resume				= ath10k_wow_op_resume,
-+	.set_wakeup			= ath10k_wow_op_set_wakeup,
- #endif
- #ifdef CONFIG_MAC80211_DEBUGFS
- 	.sta_add_debugfs		= ath10k_sta_add_debugfs,
-diff --git a/drivers/net/wireless/ath/ath10k/wow.c b/drivers/net/wireless/ath/ath10k/wow.c
-index 77100d4..0d46d6d 100644
---- a/drivers/net/wireless/ath/ath10k/wow.c
-+++ b/drivers/net/wireless/ath/ath10k/wow.c
-@@ -277,6 +277,18 @@ exit:
- 	return ret ? 1 : 0;
- }
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 0457e31..4aac0de 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3358,11 +3358,53 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
  
-+void ath10k_wow_op_set_wakeup(struct ieee80211_hw *hw, bool enabled)
-+{
-+	struct ath10k *ar = hw->priv;
+ MODULE_DEVICE_TABLE(pci, ath10k_pci_id_table);
+ 
++#ifdef CONFIG_PM
 +
-+	mutex_lock(&ar->conf_mutex);
++static int ath10k_pci_pm_suspend(struct device *dev)
++{
++	struct ath10k *ar = dev_get_drvdata(dev);
++	int ret;
++
 +	if (test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
-+		     ar->running_fw->fw_file.fw_features)) {
-+		device_set_wakeup_enable(ar->dev, enabled);
-+	}
-+	mutex_unlock(&ar->conf_mutex);
++		     ar->running_fw->fw_file.fw_features))
++		return 0;
++
++	ret = ath10k_hif_suspend(ar);
++	if (ret)
++		ath10k_warn(ar, "failed to suspend hif: %d\n", ret);
++
++	return ret;
 +}
 +
- int ath10k_wow_op_resume(struct ieee80211_hw *hw)
- {
- 	struct ath10k *ar = hw->priv;
-@@ -336,5 +348,7 @@ int ath10k_wow_init(struct ath10k *ar)
- 	ar->wow.wowlan_support.n_patterns = ar->wow.max_num_patterns;
- 	ar->hw->wiphy->wowlan = &ar->wow.wowlan_support;
- 
-+	device_set_wakeup_capable(ar->dev, true);
++static int ath10k_pci_pm_resume(struct device *dev)
++{
++	struct ath10k *ar = dev_get_drvdata(dev);
++	int ret;
 +
- 	return 0;
- }
-diff --git a/drivers/net/wireless/ath/ath10k/wow.h b/drivers/net/wireless/ath/ath10k/wow.h
-index abbb04b..9745b9d 100644
---- a/drivers/net/wireless/ath/ath10k/wow.h
-+++ b/drivers/net/wireless/ath/ath10k/wow.h
-@@ -28,6 +28,7 @@ int ath10k_wow_init(struct ath10k *ar);
- int ath10k_wow_op_suspend(struct ieee80211_hw *hw,
- 			  struct cfg80211_wowlan *wowlan);
- int ath10k_wow_op_resume(struct ieee80211_hw *hw);
-+void ath10k_wow_op_set_wakeup(struct ieee80211_hw *hw, bool enabled);
++	if (test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
++		     ar->running_fw->fw_file.fw_features))
++		return 0;
++
++	ret = ath10k_hif_resume(ar);
++	if (ret)
++		ath10k_warn(ar, "failed to resume hif: %d\n", ret);
++
++	return ret;
++}
++
++SIMPLE_DEV_PM_OPS(ath10k_pci_pm_ops,
++		  ath10k_pci_pm_suspend,
++		  ath10k_pci_pm_resume);
++#endif
++
+ static struct pci_driver ath10k_pci_driver = {
+ 	.name = "ath10k_pci",
+ 	.id_table = ath10k_pci_id_table,
+ 	.probe = ath10k_pci_probe,
+ 	.remove = ath10k_pci_remove,
++#ifdef CONFIG_PM
++	.driver.pm = &ath10k_pci_pm_ops,
++#endif
+ };
  
- #else
- 
+ static int __init ath10k_pci_init(void)
 -- 
 1.9.1
 
