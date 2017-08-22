@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from alexa-out.qualcomm.com ([129.46.98.28]
+ helo=alexa-out-lv-02.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dkGkd-0000qW-Nf
- for ath10k@lists.infradead.org; Tue, 22 Aug 2017 21:30:21 +0000
+ id 1dkGyW-00088R-87
+ for ath10k@lists.infradead.org; Tue, 22 Aug 2017 21:44:42 +0000
 From: <ryanhsu@qti.qualcomm.com>
-Subject: [PATCH v2 1/2] ath10k: add the PCI PM core suspend/resume ops
-Date: Tue, 22 Aug 2017 14:30:19 -0700
-Message-ID: <1503437420-5470-1-git-send-email-ryanhsu@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix napi_poll budget overflow
+Date: Tue, 22 Aug 2017 14:44:02 -0700
+Message-ID: <1503438242-5657-1-git-send-email-ryanhsu@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,89 +26,89 @@ Cc: ryanhsu@qti.qualcomm.com
 
 From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
 
-The actual PCI suspend/resume in ath10k has been handled in wow.c,
-but in the case of the device doesn't support remote wakeup,
-the .hif_suspend() and .hif_resume() will never be handled.
+In napi_poll, the budget number is used to control the amount of packets
+we should handle per poll to balance the resource in the system.
 
-  ath10k_wow_op_suspend()
-  {
-	if (WARN_ON(!test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
-		    ar->running_fw->fw_file.fw_features))) {
-		ret = 1;
-		goto exit;
-	}
+In the list of the amsdu packets reception, we check if there is budget
+count left and handle the complete list of the packets, that it will have
+chances the very last list will over the budget leftover.
 
-	....
+So adding one more parameter - budget_left, this would help while
+traversing the list to avoid handling more than the budget given.
 
-	ret = ath10k_hif_suspend(ar);
-  }
-
-So register the PCI PM core to support the suspend/resume if the device
-doesn't support remote wakeup.
+Reported-by: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Fix-suggested-by: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>
 
 Signed-off-by: Ryan Hsu <ryanhsu@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 42 +++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 0457e31..4aac0de 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3358,11 +3358,53 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 0b4c156..95a5a18 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1718,7 +1718,8 @@ static void ath10k_htt_rx_delba(struct ath10k *ar, struct htt_resp *resp)
+ }
  
- MODULE_DEVICE_TABLE(pci, ath10k_pci_id_table);
+ static int ath10k_htt_rx_extract_amsdu(struct sk_buff_head *list,
+-				       struct sk_buff_head *amsdu)
++				       struct sk_buff_head *amsdu,
++				       int budget_left)
+ {
+ 	struct sk_buff *msdu;
+ 	struct htt_rx_desc *rxd;
+@@ -1729,8 +1730,9 @@ static int ath10k_htt_rx_extract_amsdu(struct sk_buff_head *list,
+ 	if (WARN_ON(!skb_queue_empty(amsdu)))
+ 		return -EINVAL;
  
-+#ifdef CONFIG_PM
-+
-+static int ath10k_pci_pm_suspend(struct device *dev)
-+{
-+	struct ath10k *ar = dev_get_drvdata(dev);
-+	int ret;
-+
-+	if (test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
-+		     ar->running_fw->fw_file.fw_features))
-+		return 0;
-+
-+	ret = ath10k_hif_suspend(ar);
-+	if (ret)
-+		ath10k_warn(ar, "failed to suspend hif: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static int ath10k_pci_pm_resume(struct device *dev)
-+{
-+	struct ath10k *ar = dev_get_drvdata(dev);
-+	int ret;
-+
-+	if (test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
-+		     ar->running_fw->fw_file.fw_features))
-+		return 0;
-+
-+	ret = ath10k_hif_resume(ar);
-+	if (ret)
-+		ath10k_warn(ar, "failed to resume hif: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+SIMPLE_DEV_PM_OPS(ath10k_pci_pm_ops,
-+		  ath10k_pci_pm_suspend,
-+		  ath10k_pci_pm_resume);
-+#endif
-+
- static struct pci_driver ath10k_pci_driver = {
- 	.name = "ath10k_pci",
- 	.id_table = ath10k_pci_id_table,
- 	.probe = ath10k_pci_probe,
- 	.remove = ath10k_pci_remove,
-+#ifdef CONFIG_PM
-+	.driver.pm = &ath10k_pci_pm_ops,
-+#endif
- };
+-	while ((msdu = __skb_dequeue(list))) {
++	while ((msdu = __skb_dequeue(list)) && budget_left) {
+ 		__skb_queue_tail(amsdu, msdu);
++		budget_left--;
  
- static int __init ath10k_pci_init(void)
+ 		rxd = (void *)msdu->data - sizeof(*rxd);
+ 		if (rxd->msdu_end.common.info0 &
+@@ -1821,7 +1823,8 @@ static int ath10k_htt_rx_h_rx_offload(struct ath10k *ar,
+ 	return num_msdu;
+ }
+ 
+-static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
++static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb,
++				    int budget_left)
+ {
+ 	struct ath10k_htt *htt = &ar->htt;
+ 	struct htt_resp *resp = (void *)skb->data;
+@@ -1878,9 +1881,9 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 	if (offload)
+ 		num_msdus = ath10k_htt_rx_h_rx_offload(ar, &list);
+ 
+-	while (!skb_queue_empty(&list)) {
++	while (!skb_queue_empty(&list) && budget_left) {
+ 		__skb_queue_head_init(&amsdu);
+-		ret = ath10k_htt_rx_extract_amsdu(&list, &amsdu);
++		ret = ath10k_htt_rx_extract_amsdu(&list, &amsdu, budget_left);
+ 		switch (ret) {
+ 		case 0:
+ 			/* Note: The in-order indication may report interleaved
+@@ -1890,6 +1893,7 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 			 * should still give an idea about rx rate to the user.
+ 			 */
+ 			num_msdus += skb_queue_len(&amsdu);
++			budget_left -= skb_queue_len(&amsdu);
+ 			ath10k_htt_rx_h_ppdu(ar, &amsdu, status, vdev_id);
+ 			ath10k_htt_rx_h_filter(ar, &amsdu, status);
+ 			ath10k_htt_rx_h_mpdu(ar, &amsdu, status);
+@@ -2400,7 +2404,8 @@ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget)
+ 		}
+ 
+ 		spin_lock_bh(&htt->rx_ring.lock);
+-		num_rx_msdus = ath10k_htt_rx_in_ord_ind(ar, skb);
++		num_rx_msdus = ath10k_htt_rx_in_ord_ind(ar, skb,
++							(budget - quota));
+ 		spin_unlock_bh(&htt->rx_ring.lock);
+ 		if (num_rx_msdus < 0) {
+ 			resched_napi = true;
 -- 
 1.9.1
 
