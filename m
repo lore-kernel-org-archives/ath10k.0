@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+Received: from alexa-out.qualcomm.com ([129.46.98.28]
+ helo=alexa-out-lv-02.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dkbP9-0004Wl-Ub
- for ath10k@lists.infradead.org; Wed, 23 Aug 2017 19:33:33 +0000
-Received: by mail-lf0-x243.google.com with SMTP id v79so314223lfa.1
- for <ath10k@lists.infradead.org>; Wed, 23 Aug 2017 12:33:09 -0700 (PDT)
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [PATCH v2] ath10k: sdio: remove unused struct member
-Date: Wed, 23 Aug 2017 21:32:58 +0200
-Message-Id: <1503516778-5835-1-git-send-email-erik.stromdahl@gmail.com>
+ id 1dko7Q-0004df-Dd
+ for ath10k@lists.infradead.org; Thu, 24 Aug 2017 09:08:06 +0000
+MIME-Version: 1.0
+Subject: Re: ath10k: fix napi_poll budget overflow
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1503438242-5657-1-git-send-email-ryanhsu@qti.qualcomm.com>
+References: <1503438242-5657-1-git-send-email-ryanhsu@qti.qualcomm.com>
+Message-ID: <2cd00da66a6847c1829ed9edf7ad7009@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 24 Aug 2017 11:07:35 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,67 +19,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
+To: ryanhsu@qti.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-irq_wq in struct ath10k_sdio is a remnant from an earlier
-version of the sdio patchset.
+ryanhsu@qti.qualcomm.com wrote:
 
-Its use was removed as a result of Kalle's review, but somehow
-the struct member survived.
+> From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+> 
+> In napi_poll, the budget number is used to control the amount of packets
+> we should handle per poll to balance the resource in the system.
+> 
+> In the list of the amsdu packets reception, we check if there is budget
+> count left and handle the complete list of the packets, that it will have
+> chances the very last list will over the budget leftover.
+> 
+> So adding one more parameter - budget_left, this would help while
+> traversing the list to avoid handling more than the budget given.
+> 
+> Reported-by: Andrey Ryabinin <aryabinin@virtuozzo.com>
+> Fix-suggested-by: Igor Mitsyanko <igor.mitsyanko.os@quantenna.com>
+> 
+> Signed-off-by: Ryan Hsu <ryanhsu@qti.qualcomm.com>
 
-It is not used and can therefore safely be removed.
+Was there a bug report about this? I can add a link to that and maybe also
+include the warning.
 
-Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
----
-V2: Fix typo in commit log (It's -> Its)
----
- drivers/net/wireless/ath/ath10k/sdio.c | 4 ----
- drivers/net/wireless/ath/ath10k/sdio.h | 2 --
- 2 files changed, 6 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 48268f0..03a69e5 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -1344,8 +1344,6 @@ static void ath10k_sdio_irq_handler(struct sdio_func *func)
- 
- 	sdio_claim_host(ar_sdio->func);
- 
--	wake_up(&ar_sdio->irq_wq);
--
- 	if (ret && ret != -ECANCELED)
- 		ath10k_warn(ar, "failed to process pending SDIO interrupts: %d\n",
- 			    ret);
-@@ -2000,8 +1998,6 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 		goto err_free_bmi_buf;
- 	}
- 
--	init_waitqueue_head(&ar_sdio->irq_wq);
--
- 	for (i = 0; i < ATH10K_SDIO_BUS_REQUEST_MAX_NUM; i++)
- 		ath10k_sdio_free_bus_req(ar, &ar_sdio->bus_req[i]);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
-index 3f61c67..4ff7b54 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.h
-+++ b/drivers/net/wireless/ath/ath10k/sdio.h
-@@ -210,8 +210,6 @@ struct ath10k_sdio {
- 	/* temporary buffer for BMI requests */
- 	u8 *bmi_buf;
- 
--	wait_queue_head_t irq_wq;
--
- 	bool is_disabled;
- 
- 	struct workqueue_struct *workqueue;
 -- 
-2.7.4
+https://patchwork.kernel.org/patch/9916207/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
