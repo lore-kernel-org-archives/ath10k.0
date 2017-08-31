@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from alexa-out.qualcomm.com ([129.46.98.28]
+ helo=alexa-out-lv-01.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dnOOI-0005tI-Ce
- for ath10k@lists.infradead.org; Thu, 31 Aug 2017 12:16:12 +0000
+ id 1dnOyN-0005Ih-O6
+ for ath10k@lists.infradead.org; Thu, 31 Aug 2017 12:53:29 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: activate user space firmware loading again
+Subject: Re: [v3,1/2] ath10k: add the PCI PM core suspend/resume ops
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20170824210641.19595-1-hauke@hauke-m.de>
-References: <20170824210641.19595-1-hauke@hauke-m.de>
-Message-ID: <9a6c90a6d5dd431d8e940f619baf7b0c@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 31 Aug 2017 14:15:41 +0200
+In-Reply-To: <1503438455-6133-1-git-send-email-ryanhsu@qti.qualcomm.com>
+References: <1503438455-6133-1-git-send-email-ryanhsu@qti.qualcomm.com>
+Message-ID: <f4652c401e1f462d89b4611afe9bd623@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 31 Aug 2017 14:52:54 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +23,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: ryanhsu@qti.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hauke Mehrtens <hauke@hauke-m.de> wrote:
+ryanhsu@qti.qualcomm.com wrote:
 
-> In commit 9f5bcfe93315 ("ath10k: silence firmware file probing
-> warnings") the firmware loading was changed from request_firmware() to
-> request_firmware_direct() to silence some warnings in case it fails.
-> request_firmware_direct() directly searches in the file system only and
-> does not send a hotplug event to user space in case it could not find
-> the firmware directly.
-> In LEDE we use a user space script to extract the calibration data from
-> the flash memory which gets triggered by the hotplug event. This way the
-> firmware gets extracted from some vendor specific partition when the
-> driver requests this firmware. This mechanism does not work any more
-> after this change.
+> The actual PCI suspend/resume in ath10k has been handled in wow.c,
+> but in the case of the device doesn't support remote wakeup,
+> the .hif_suspend() and .hif_resume() will never be handled.
 > 
-> Fixes: 9f5bcfe93315 ("ath10k: silence firmware file probing warnings")
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> Cc: Michal Kazior <michal.kazior@tieto.com>
+>   ath10k_wow_op_suspend()
+>   {
+> 	if (WARN_ON(!test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
+> 		    ar->running_fw->fw_file.fw_features))) {
+> 		ret = 1;
+> 		goto exit;
+> 	}
+> 
+> 	....
+> 
+> 	ret = ath10k_hif_suspend(ar);
+>   }
+> 
+> So register the PCI PM core to support the suspend/resume if the device
+> doesn't support remote wakeup.
+> 
+> Signed-off-by: Ryan Hsu <ryanhsu@qti.qualcomm.com>
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Patch applied to ath-next branch of ath.git, thanks.
+This had a warning:
 
-c0cc00f250e1 ath10k: activate user space firmware loading again
+drivers/net/wireless/ath/ath10k/pci.c:3651:1: warning: symbol 'ath10k_pci_pm_ops' was not declared. Should it be static?
+
+I fixed it in the pending branch by making it static:
+
+static SIMPLE_DEV_PM_OPS(ath10k_pci_pm_ops,
+			 ath10k_pci_pm_suspend,
+			 ath10k_pci_pm_resume);
+
+Please review.
 
 -- 
-https://patchwork.kernel.org/patch/9920973/
+https://patchwork.kernel.org/patch/9916215/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
