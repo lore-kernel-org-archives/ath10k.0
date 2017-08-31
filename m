@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28]
- helo=alexa-out-lv-02.qualcomm.com)
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dnONH-0004Hr-JV
- for ath10k@lists.infradead.org; Thu, 31 Aug 2017 12:15:14 +0000
+ id 1dnOOI-0005tI-Ce
+ for ath10k@lists.infradead.org; Thu, 31 Aug 2017 12:16:12 +0000
 MIME-Version: 1.0
-Subject: Re: [v2] ath10k: sdio: remove unused struct member
+Subject: Re: ath10k: activate user space firmware loading again
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1503516778-5835-1-git-send-email-erik.stromdahl@gmail.com>
-References: <1503516778-5835-1-git-send-email-erik.stromdahl@gmail.com>
-Message-ID: <6796e78b3c3c42aba8799767cf21694f@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 31 Aug 2017 14:14:40 +0200
+In-Reply-To: <20170824210641.19595-1-hauke@hauke-m.de>
+References: <20170824210641.19595-1-hauke@hauke-m.de>
+Message-ID: <9a6c90a6d5dd431d8e940f619baf7b0c@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 31 Aug 2017 14:15:41 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +22,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
+Hauke Mehrtens <hauke@hauke-m.de> wrote:
 
-> irq_wq in struct ath10k_sdio is a remnant from an earlier
-> version of the sdio patchset.
+> In commit 9f5bcfe93315 ("ath10k: silence firmware file probing
+> warnings") the firmware loading was changed from request_firmware() to
+> request_firmware_direct() to silence some warnings in case it fails.
+> request_firmware_direct() directly searches in the file system only and
+> does not send a hotplug event to user space in case it could not find
+> the firmware directly.
+> In LEDE we use a user space script to extract the calibration data from
+> the flash memory which gets triggered by the hotplug event. This way the
+> firmware gets extracted from some vendor specific partition when the
+> driver requests this firmware. This mechanism does not work any more
+> after this change.
 > 
-> Its use was removed as a result of Kalle's review, but somehow
-> the struct member survived.
-> 
-> It is not used and can therefore safely be removed.
-> 
-> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+> Fixes: 9f5bcfe93315 ("ath10k: silence firmware file probing warnings")
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> Cc: Michal Kazior <michal.kazior@tieto.com>
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-30b83fff6d97 ath10k: sdio: remove unused struct member
+c0cc00f250e1 ath10k: activate user space firmware loading again
 
 -- 
-https://patchwork.kernel.org/patch/9918195/
+https://patchwork.kernel.org/patch/9920973/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
