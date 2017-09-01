@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dnpiB-0003uk-6s
- for ath10k@lists.infradead.org; Fri, 01 Sep 2017 17:26:33 +0000
-Subject: Re: ath10k kernel panic on boot
-References: <ACA1EFDA-E3D4-452B-A25B-CB3A18943AAF@marriott.org>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <9b8a7147-efd2-6b3f-1349-f56b48c75643@candelatech.com>
-Date: Fri, 1 Sep 2017 10:26:09 -0700
+Received: from alexa-out.qualcomm.com ([129.46.98.28]
+ helo=alexa-out-lv-02.qualcomm.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dnv8J-0008OX-2t
+ for ath10k@lists.infradead.org; Fri, 01 Sep 2017 23:13:52 +0000
+From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+Subject: Re: [v3,1/2] ath10k: add the PCI PM core suspend/resume ops
+Date: Fri, 1 Sep 2017 23:13:19 +0000
+Message-ID: <ac6334cb-6a59-88db-cf3e-9efbfc0a9286@qti.qualcomm.com>
+References: <1503438455-6133-1-git-send-email-ryanhsu@qti.qualcomm.com>
+ <f4652c401e1f462d89b4611afe9bd623@euamsexm01a.eu.qualcomm.com>
+In-Reply-To: <f4652c401e1f462d89b4611afe9bd623@euamsexm01a.eu.qualcomm.com>
+Content-Language: en-US
+Content-ID: <CB3DC6664CA6C8468940CCCAF6D01F12@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <ACA1EFDA-E3D4-452B-A25B-CB3A18943AAF@marriott.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,38 +22,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nick Marriott <nick@marriott.org>, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMDkvMDEvMjAxNyAxMDoyMiBBTSwgTmljayBNYXJyaW90dCB3cm90ZToKPiBJIGhhdmUgYSBR
-Q0E5ODg4IENvbXBleCBXTEU2NTBWNS0xOCB0aGF0IHJ1bnMganVzdCBmaW5lIG9uIGkzODYga2Vy
-bmVscyBidXQgYXRoMTBrIHNlZW1zIHRvIGJlIGNhdXNpbmcgYSBrZXJuZWwgcGFuaWMgb24gYm9v
-dCB3aXRoIHg4Nl82NCBrZXJuZWxzLiAgTG9nIGlzIGJlbG93LiAgSSd2ZSB0cmllZCBtdWx0aXBs
-ZSBmaXJtd2FyZSB2ZXJzaW9ucyBmcm9tIGt2YWxvIGFuZCBjYW5kZWxhdGVjaCBidXQgbXkgZ29v
-Z2xlLWZ1IGNvdWxkbuKAmXQgZmluZCBhIHNvbHV0aW9uLiAgQW55IHRob3VnaHRzIG9yIHN1Z2dl
-c3Rpb25zPwo+Cj4gWyAgIDE0LjUwMzcxNV0gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6IHBjaSBp
-cnEgbXNpIG9wZXJfaXJxX21vZGUgMiBpcnFfbW9kZSAwIHJlc2V0X21vZGUgMAo+IFsgICAxNC42
-MzQxMTJdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBxY2E5ODg4IGh3Mi4wIHRhcmdldCAweDAx
-MDAwMDAwIGNoaXBfaWQgMHgwMDAwMDAwMCBzdWIgMDAwMDowMDAwCj4gWyAgIDE0LjY0MzQ0OF0g
-YXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6IGtjb25maWcgZGVidWcgMCBkZWJ1Z2ZzIDEgdHJhY2lu
-ZyAwIGRmcyAwIHRlc3Rtb2RlIDAKPiBbICAgMTQuNjUyOTM3XSBhdGgxMGtfcGNpIDAwMDA6MDQ6
-MDAuMDogZmlybXdhcmUgdmVyIDEwLjQtMy4yLTAwMDcyIGFwaSA1IGZlYXR1cmVzIG5vLXAycCxt
-ZnAscGVlci1mbG93LWN0cmwgY3JjMzIgYjFkYTA3MTYKPiBbICAgMTYuNjcxNTk0XSBhdGgxMGtf
-cGNpIDAwMDA6MDQ6MDAuMDogYm9hcmRfZmlsZSBhcGkgMiBibWlfaWQgMDoxNyBjcmMzMiA3NGEw
-NDI1MAo+Cj4gWyAgIDIwLjEzMzAzOV0gc3dpb3RsYl90YmxfbWFwX3NpbmdsZTogOSBjYWxsYmFj
-a3Mgc3VwcHJlc3NlZAo+IFsgICAyMC4xMzg3MDVdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBz
-d2lvdGxiIGJ1ZmZlciBpcyBmdWxsIChzejogNDYxMjg4IGJ5dGVzKQo+IFsgICAyMC4xNDU5OTJd
-IGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBETUE6IE91dCBvZiBTVy1JT01NVSBzcGFjZSBmb3Ig
-NDYxMjg4IGJ5dGVzCj4gWyAgIDIwLjE1MzM5N10gS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6
-IERNQTogUmFuZG9tIG1lbW9yeSBjb3VsZCBiZSBETUEgYWNjZXNzZWQKCllvdSBuZWVkIHRoZSBw
-YXRjaCB0aGF0IGNoYW5nZXMgaG93IERNQSBtZW1vcnkgaXMgYWxsb2NhdGVkLiAgSXQgaXMgaW4g
-dGhlIDQuMTMga2VybmVsLAphbmQgYWxzbyBpbiB0aGUgNC45IGtlcm5lbCBsaW5rZWQgZnJvbSB0
-aGUgQ1QgZmlybXdhcmUgcGFnZS4KCmh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tL2F0aDEway0x
-MC4xLnBocAoKVGhhbmtzLApCZW4KCi0tIApCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNo
-LmNvbT4KQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNv
-bQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
-ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On 08/31/2017 05:52 AM, Kalle Valo wrote:
+
+> This had a warning:
+>
+> drivers/net/wireless/ath/ath10k/pci.c:3651:1: warning: symbol 'ath10k_pci_pm_ops' was not declared. Should it be static?
+>
+> I fixed it in the pending branch by making it static:
+>
+> static SIMPLE_DEV_PM_OPS(ath10k_pci_pm_ops,
+> 			 ath10k_pci_pm_suspend,
+> 			 ath10k_pci_pm_resume);
+>
+> Please review.
+>
+
+Yes and thanks!
+
+-- 
+Ryan Hsu
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
