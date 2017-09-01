@@ -1,20 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-f180.google.com ([209.85.128.180])
+Received: from smtprelay0129.hostedemail.com ([216.40.44.129]
+ helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dnlTY-0007ge-FR
- for ath10k@lists.infradead.org; Fri, 01 Sep 2017 12:55:10 +0000
-Received: by mail-wr0-f180.google.com with SMTP id z91so403843wrc.1
- for <ath10k@lists.infradead.org>; Fri, 01 Sep 2017 05:54:47 -0700 (PDT)
-Subject: Re: ath10k frequently disconnects with firmware-6.bin
-References: <32171fa5-5785-f844-ca76-e2536e66ce68@suse.cz>
- <f5f1e657-7213-d3a3-7b80-db4060e38d4b@qti.qualcomm.com>
- <87r2vrr4qg.fsf@kamboji.qca.qualcomm.com>
-From: Jiri Slaby <jslaby@suse.cz>
-Message-ID: <a4f1dac5-6cf6-18f7-6bf0-ee25b50bbd61@suse.cz>
-Date: Fri, 1 Sep 2017 14:54:44 +0200
-MIME-Version: 1.0
-In-Reply-To: <87r2vrr4qg.fsf@kamboji.qca.qualcomm.com>
-Content-Language: en-GB
+ id 1dnpeJ-0000rd-LF
+ for ath10k@lists.infradead.org; Fri, 01 Sep 2017 17:22:33 +0000
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net
+ [216.40.38.60])
+ by smtprelay08.hostedemail.com (Postfix) with ESMTP id 0E6E9182CF666
+ for <ath10k@lists.infradead.org>; Fri,  1 Sep 2017 17:22:03 +0000 (UTC)
+Received: from [192.168.43.10] (unknown [24.214.175.104])
+ (Authenticated sender: nick@marriott.org)
+ by omf04.hostedemail.com (Postfix) with ESMTPA
+ for <ath10k@lists.infradead.org>; Fri,  1 Sep 2017 17:22:02 +0000 (UTC)
+From: Nick Marriott <nick@marriott.org>
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: ath10k kernel panic on boot
+Message-Id: <ACA1EFDA-E3D4-452B-A25B-CB3A18943AAF@marriott.org>
+Date: Fri, 1 Sep 2017 13:22:01 -0400
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +25,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, Ryan Hsu <ryanhsu@qti.qualcomm.com>
-Cc: Michal Hlavac <miso@hlavki.eu>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-On 08/31/2017, 08:07 PM, Kalle Valo wrote:
-> Ryan Hsu <ryanhsu@qti.qualcomm.com> writes:
-> 
->> On 08/22/2017 02:11 AM, Jiri Slaby wrote:
->>
->>> Hi,
->>>
->>> are you aware of this issue:
->>> https://bbs.archlinux.org/viewtopic.php?pid=1728715#p1728715
->>> ?
->>>
->>> If the guys use an older firmware, everything works.
->>>
->>> Is there any FW or code fix available somewhere?
->>
->> Can you give it a try with Rm4.4.1 firmware?
->> https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0/4.4.1
->>
->> http://lists.infradead.org/pipermail/ath10k/2017-August/010055.html
-> 
-> Jiri, did it help? I'll try to update RM4.4.1 to linux-firmware as soon
-> as I can but it would be good to get confirmation that RM4.4.1 has
-> solved the regression.
-
-Hi, I never got a reply from Michal (CCed).
-
--- 
-js
-suse labs
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSBoYXZlIGEgUUNBOTg4OCBDb21wZXggV0xFNjUwVjUtMTggdGhhdCBydW5zIGp1c3QgZmluZSBv
+biBpMzg2IGtlcm5lbHMgYnV0IGF0aDEwayBzZWVtcyB0byBiZSBjYXVzaW5nIGEga2VybmVsIHBh
+bmljIG9uIGJvb3Qgd2l0aCB4ODZfNjQga2VybmVscy4gIExvZyBpcyBiZWxvdy4gIEkndmUgdHJp
+ZWQgbXVsdGlwbGUgZmlybXdhcmUgdmVyc2lvbnMgZnJvbSBrdmFsbyBhbmQgY2FuZGVsYXRlY2gg
+YnV0IG15IGdvb2dsZS1mdSBjb3VsZG7igJl0IGZpbmQgYSBzb2x1dGlvbi4gIEFueSB0aG91Z2h0
+cyBvciBzdWdnZXN0aW9ucz8KClsgICAxNC41MDM3MTVdIGF0aDEwa19wY2kgMDAwMDowNDowMC4w
+OiBwY2kgaXJxIG1zaSBvcGVyX2lycV9tb2RlIDIgaXJxX21vZGUgMCByZXNldF9tb2RlIDAKWyAg
+IDE0LjYzNDExMl0gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6IHFjYTk4ODggaHcyLjAgdGFyZ2V0
+IDB4MDEwMDAwMDAgY2hpcF9pZCAweDAwMDAwMDAwIHN1YiAwMDAwOjAwMDAKWyAgIDE0LjY0MzQ0
+OF0gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6IGtjb25maWcgZGVidWcgMCBkZWJ1Z2ZzIDEgdHJh
+Y2luZyAwIGRmcyAwIHRlc3Rtb2RlIDAKWyAgIDE0LjY1MjkzN10gYXRoMTBrX3BjaSAwMDAwOjA0
+OjAwLjA6IGZpcm13YXJlIHZlciAxMC40LTMuMi0wMDA3MiBhcGkgNSBmZWF0dXJlcyBuby1wMnAs
+bWZwLHBlZXItZmxvdy1jdHJsIGNyYzMyIGIxZGEwNzE2ClsgICAxNi42NzE1OTRdIGF0aDEwa19w
+Y2kgMDAwMDowNDowMC4wOiBib2FyZF9maWxlIGFwaSAyIGJtaV9pZCAwOjE3IGNyYzMyIDc0YTA0
+MjUwCgpbICAgMjAuMTMzMDM5XSBzd2lvdGxiX3RibF9tYXBfc2luZ2xlOiA5IGNhbGxiYWNrcyBz
+dXBwcmVzc2VkClsgICAyMC4xMzg3MDVdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBzd2lvdGxi
+IGJ1ZmZlciBpcyBmdWxsIChzejogNDYxMjg4IGJ5dGVzKQpbICAgMjAuMTQ1OTkyXSBhdGgxMGtf
+cGNpIDAwMDA6MDQ6MDAuMDogRE1BOiBPdXQgb2YgU1ctSU9NTVUgc3BhY2UgZm9yIDQ2MTI4OCBi
+eXRlcwpbICAgMjAuMTUzMzk3XSBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogRE1BOiBSYW5k
+b20gbWVtb3J5IGNvdWxkIGJlIERNQSBhY2Nlc3NlZApbICAgMjAuMTUzMzk3XSAKWyAgIDIwLjE2
+MjI3M10gQ1BVOiAwIFBJRDogMTA2IENvbW06IGt3b3JrZXIvdTQ6MiBOb3QgdGFpbnRlZCA0LjEy
+LjgtMzAwLmZjMjYueDg2XzY0ICMxClsgICAyMC4xNzAwMTRdIEhhcmR3YXJlIG5hbWU6IFBDIEVu
+Z2luZXMgQVBVL0FQVSwgQklPUyA0LjAgMDkvMDgvMjAxNApbICAgMjAuMTc2MjY3XSBXb3JrcXVl
+dWU6IGF0aDEwa19hdXhfd3EgYXRoMTBrX3dtaV9ldmVudF9zZXJ2aWNlX3JlYWR5X3dvcmsgW2F0
+aDEwa19jb3JlXQpbICAgMjAuMTg0MjI5XSBDYWxsIFRyYWNlOgpbICAgMjAuMTg2Njk4XSAgZHVt
+cF9zdGFjaysweDYzLzB4OTAKWyAgIDIwLjE5MDAyN10gIHBhbmljKzB4ZTQvMHgyMmQKWyAgIDIw
+LjE5MzAwNF0gIHN3aW90bGJfZnVsbCsweGEzLzB4YjAKWyAgIDIwLjE5NjUwMl0gIHN3aW90bGJf
+bWFwX3BhZ2UrMHgxMmYvMHgxNDAKWyAgIDIwLjIwMDUzN10gIGF0aDEwa193bWlfZXZlbnRfc2Vy
+dmljZV9yZWFkeV93b3JrKzB4M2IxLzB4NmIwIFthdGgxMGtfY29yZV0KWyAgIDIwLjIwNzQyMl0g
+IHByb2Nlc3Nfb25lX3dvcmsrMHgxOTMvMHgzYzAKWyAgIDIwLjIxMTQ0M10gIHdvcmtlcl90aHJl
+YWQrMHg0YS8weDNhMApbICAgMjAuMjE1MTE5XSAga3RocmVhZCsweDEyNS8weDE0MApbICAgMjAu
+MjE4MzU5XSAgPyBwcm9jZXNzX29uZV93b3JrKzB4M2MwLzB4M2MwClsgICAyMC4yMjI1NTFdICA/
+IGt0aHJlYWRfcGFyaysweDYwLzB4NjAKWyAgIDIwLjIyNjIyN10gIHJldF9mcm9tX2ZvcmsrMHgy
+NS8weDMwClsgICAyMC4yMjk4MjldIEtlcm5lbCBPZmZzZXQ6IDB4ZTAwMDAwMCBmcm9tIDB4ZmZm
+ZmZmZmY4MTAwMDAwMCAocmVsb2NhdGlvbiByYW5nZTogMHhmZmZmZmZmZjgwMDAwMDAwLTB4ZmZm
+ZmZmZmZiZmZmZmZmZikKWyAgIDIwLjI0MDUyMl0gLS0tWyBlbmQgS2VybmVsIHBhbmljIC0gbm90
+IHN5bmNpbmc6IERNQTogUmFuZG9tIG1lbW9yeSBjb3VsZCBiZSBETUEgYWNjZXNzZWQKWyAgIDIw
+LjI0MDUyMl0gCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
