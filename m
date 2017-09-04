@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yw0-x22f.google.com ([2607:f8b0:4002:c05::22f])
+Received: from mail-wm0-f44.google.com ([74.125.82.44])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1doBr4-00036B-SU
- for ath10k@lists.infradead.org; Sat, 02 Sep 2017 17:05:12 +0000
-Received: by mail-yw0-x22f.google.com with SMTP id s187so11963021ywf.2
- for <ath10k@lists.infradead.org>; Sat, 02 Sep 2017 10:04:50 -0700 (PDT)
+ id 1dokYP-0002QE-NR
+ for ath10k@lists.infradead.org; Mon, 04 Sep 2017 06:08:16 +0000
+Received: by mail-wm0-f44.google.com with SMTP id u26so30885542wma.0
+ for <ath10k@lists.infradead.org>; Sun, 03 Sep 2017 23:07:52 -0700 (PDT)
+Subject: Re: ath10k frequently disconnects with firmware-6.bin
+References: <32171fa5-5785-f844-ca76-e2536e66ce68@suse.cz>
+ <87r2vrr4qg.fsf@kamboji.qca.qualcomm.com>
+ <a4f1dac5-6cf6-18f7-6bf0-ee25b50bbd61@suse.cz> <2110484.l7ZCCl52st@hlknb>
+From: Jiri Slaby <jslaby@suse.cz>
+Message-ID: <5acf77de-bc0e-acdf-31bc-93c4a0bb2604@suse.cz>
+Date: Mon, 4 Sep 2017 08:07:48 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAJ-VmokZ6kzRwEmHOyYZL4m12jr4t_yMumXTf8MiJ7E6aGb7ZA@mail.gmail.com>
-References: <20170902095224.xqrzlwajxwzs5bxz@eq.uc.pt>
- <CAJ-VmokZ6kzRwEmHOyYZL4m12jr4t_yMumXTf8MiJ7E6aGb7ZA@mail.gmail.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Sat, 2 Sep 2017 10:04:49 -0700
-Message-ID: <CAJ-Vmo=QU7BMOHxjea-qayP2no6z8t6wSiTUFffPu1YB2bqO1w@mail.gmail.com>
-Subject: Re: Compex WLE600VX firmware crash
+In-Reply-To: <2110484.l7ZCCl52st@hlknb>
+Content-Language: en-GB
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +23,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nuno Oliveira <nuno@eq.uc.pt>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Hlavac <miso@hlavki.eu>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, Ryan Hsu <ryanhsu@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+
+On 09/01/2017, 03:25 PM, Michal Hlavac wrote:
+> Hi Jiri,
+> =
+
+> =A0
+> =
+
+> strange (maybe spam), but I wrote you (23.8.17 11:17), that it works
+> without any problem.
 
 Hi,
 
-So I asked around. I haven't gotten an official answer from QCA yet.
+strange, as factory received your reply only yesterday too. That is not
+important. The reply is:
 
-The peregrine caldata format uhm, "changed slightly" between versions
-of 10.2, and they didn't make it backwards compatible. I need to ask
-them about it again.
+I can confirm it works without any problem with
+QCA6174/hw3.0/4.4.1/firmware-6.bin_WLAN.RM.4.4.1-00026-QCARMSWP-1
 
-The later firmware works with the later caldata. The earlier firmware
-works with the earlier caldata. I think it panics on any other
-combination.
+thanks,
+-- =
 
-Thanks,
-
-
-
--adrian
+js
+suse labs
 
 _______________________________________________
 ath10k mailing list
