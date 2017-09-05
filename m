@@ -1,22 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28]
- helo=alexa-out-lv-02.qualcomm.com)
+Received: from smtprelay0029.hostedemail.com ([216.40.44.29]
+ helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dorZU-00050j-Kw
- for ath10k@lists.infradead.org; Mon, 04 Sep 2017 13:37:50 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k frequently disconnects with firmware-6.bin
-Date: Mon, 4 Sep 2017 13:36:54 +0000
-Message-ID: <87r2vmoaa2.fsf@kamboji.qca.qualcomm.com>
-References: <32171fa5-5785-f844-ca76-e2536e66ce68@suse.cz>
- <87r2vrr4qg.fsf@kamboji.qca.qualcomm.com>
- <a4f1dac5-6cf6-18f7-6bf0-ee25b50bbd61@suse.cz>	<2110484.l7ZCCl52st@hlknb>
- <5acf77de-bc0e-acdf-31bc-93c4a0bb2604@suse.cz>
-In-Reply-To: <5acf77de-bc0e-acdf-31bc-93c4a0bb2604@suse.cz> (Jiri Slaby's
- message of "Mon, 4 Sep 2017 08:07:48 +0200")
-Content-Language: en-US
-Content-ID: <D70953DECAD9E7438EBB6DA341AC6F1B@qualcomm.com>
-MIME-Version: 1.0
+ id 1dpBv0-0007sr-QE
+ for ath10k@lists.infradead.org; Tue, 05 Sep 2017 11:21:27 +0000
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: ath10k kernel panic on boot
+From: Nick Marriott <nick@marriott.org>
+In-Reply-To: <9b8a7147-efd2-6b3f-1349-f56b48c75643@candelatech.com>
+Date: Tue, 5 Sep 2017 07:20:14 -0400
+Message-Id: <5F490518-C2C3-479B-9010-0DAA0DAE57FC@marriott.org>
+References: <ACA1EFDA-E3D4-452B-A25B-CB3A18943AAF@marriott.org>
+ <9b8a7147-efd2-6b3f-1349-f56b48c75643@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,20 +24,38 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jiri Slaby <jslaby@suse.cz>
-Cc: Michal Hlavac <miso@hlavki.eu>, Ryan Hsu <ryanhsu@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>
 
-SmlyaSBTbGFieSA8anNsYWJ5QHN1c2UuY3o+IHdyaXRlczoNCg0KPiBPbiAwOS8wMS8yMDE3LCAw
-MzoyNSBQTSwgTWljaGFsIEhsYXZhYyB3cm90ZToNCj4+IEhpIEppcmksDQo+PiANCj4+IMKgDQo+
-PiANCj4+IHN0cmFuZ2UgKG1heWJlIHNwYW0pLCBidXQgSSB3cm90ZSB5b3UgKDIzLjguMTcgMTE6
-MTcpLCB0aGF0IGl0IHdvcmtzDQo+PiB3aXRob3V0IGFueSBwcm9ibGVtLg0KPg0KPiBIaSwNCj4N
-Cj4gc3RyYW5nZSwgYXMgZmFjdG9yeSByZWNlaXZlZCB5b3VyIHJlcGx5IG9ubHkgeWVzdGVyZGF5
-IHRvby4gVGhhdCBpcyBub3QNCj4gaW1wb3J0YW50LiBUaGUgcmVwbHkgaXM6DQo+DQo+IEkgY2Fu
-IGNvbmZpcm0gaXQgd29ya3Mgd2l0aG91dCBhbnkgcHJvYmxlbSB3aXRoDQo+IFFDQTYxNzQvaHcz
-LjAvNC40LjEvZmlybXdhcmUtNi5iaW5fV0xBTi5STS40LjQuMS0wMDAyNi1RQ0FSTVNXUC0xDQoN
-ClRoYW5rcywgSSdsbCB0cnkgdG8gdXBkYXRlIHRoYXQgdG8gbGludXgtZmlybXdhcmUgdGhpcyB3
-ZWVrLiBJJ20ganVzdA0Kd29ya2luZyBvbiBhdXRvbWF0aW5nIHRoYXQgYW5kIHdhbnQgdG8gZmlu
-aXNoIHRoYXQgZmlyc3QuDQoNCi0tIA0KS2FsbGUgVmFsbwpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+WW914oCZcmUgcmlnaHQsIDQuMTMgc2VlbXMgdG8gaGF2ZSBmaXhlZCB0aGUgY3Jhc2ghCgpUaGFu
+a3MgYSBsb3QgQmVuIQoKCj4gT24gU2VwIDEsIDIwMTcsIGF0IDEzOjI2LCBCZW4gR3JlZWFyIDxn
+cmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4gCj4gT24gMDkvMDEvMjAxNyAxMDoyMiBB
+TSwgTmljayBNYXJyaW90dCB3cm90ZToKPj4gSSBoYXZlIGEgUUNBOTg4OCBDb21wZXggV0xFNjUw
+VjUtMTggdGhhdCBydW5zIGp1c3QgZmluZSBvbiBpMzg2IGtlcm5lbHMgYnV0IGF0aDEwayBzZWVt
+cyB0byBiZSBjYXVzaW5nIGEga2VybmVsIHBhbmljIG9uIGJvb3Qgd2l0aCB4ODZfNjQga2VybmVs
+cy4gIExvZyBpcyBiZWxvdy4gIEkndmUgdHJpZWQgbXVsdGlwbGUgZmlybXdhcmUgdmVyc2lvbnMg
+ZnJvbSBrdmFsbyBhbmQgY2FuZGVsYXRlY2ggYnV0IG15IGdvb2dsZS1mdSBjb3VsZG7igJl0IGZp
+bmQgYSBzb2x1dGlvbi4gIEFueSB0aG91Z2h0cyBvciBzdWdnZXN0aW9ucz8KPj4gCj4+IFsgICAx
+NC41MDM3MTVdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBwY2kgaXJxIG1zaSBvcGVyX2lycV9t
+b2RlIDIgaXJxX21vZGUgMCByZXNldF9tb2RlIDAKPj4gWyAgIDE0LjYzNDExMl0gYXRoMTBrX3Bj
+aSAwMDAwOjA0OjAwLjA6IHFjYTk4ODggaHcyLjAgdGFyZ2V0IDB4MDEwMDAwMDAgY2hpcF9pZCAw
+eDAwMDAwMDAwIHN1YiAwMDAwOjAwMDAKPj4gWyAgIDE0LjY0MzQ0OF0gYXRoMTBrX3BjaSAwMDAw
+OjA0OjAwLjA6IGtjb25maWcgZGVidWcgMCBkZWJ1Z2ZzIDEgdHJhY2luZyAwIGRmcyAwIHRlc3Rt
+b2RlIDAKPj4gWyAgIDE0LjY1MjkzN10gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6IGZpcm13YXJl
+IHZlciAxMC40LTMuMi0wMDA3MiBhcGkgNSBmZWF0dXJlcyBuby1wMnAsbWZwLHBlZXItZmxvdy1j
+dHJsIGNyYzMyIGIxZGEwNzE2Cj4+IFsgICAxNi42NzE1OTRdIGF0aDEwa19wY2kgMDAwMDowNDow
+MC4wOiBib2FyZF9maWxlIGFwaSAyIGJtaV9pZCAwOjE3IGNyYzMyIDc0YTA0MjUwCj4+IAo+PiBb
+ICAgMjAuMTMzMDM5XSBzd2lvdGxiX3RibF9tYXBfc2luZ2xlOiA5IGNhbGxiYWNrcyBzdXBwcmVz
+c2VkCj4+IFsgICAyMC4xMzg3MDVdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBzd2lvdGxiIGJ1
+ZmZlciBpcyBmdWxsIChzejogNDYxMjg4IGJ5dGVzKQo+PiBbICAgMjAuMTQ1OTkyXSBhdGgxMGtf
+cGNpIDAwMDA6MDQ6MDAuMDogRE1BOiBPdXQgb2YgU1ctSU9NTVUgc3BhY2UgZm9yIDQ2MTI4OCBi
+eXRlcwo+PiBbICAgMjAuMTUzMzk3XSBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogRE1BOiBS
+YW5kb20gbWVtb3J5IGNvdWxkIGJlIERNQSBhY2Nlc3NlZAo+IAo+IFlvdSBuZWVkIHRoZSBwYXRj
+aCB0aGF0IGNoYW5nZXMgaG93IERNQSBtZW1vcnkgaXMgYWxsb2NhdGVkLiAgSXQgaXMgaW4gdGhl
+IDQuMTMga2VybmVsLAo+IGFuZCBhbHNvIGluIHRoZSA0Ljkga2VybmVsIGxpbmtlZCBmcm9tIHRo
+ZSBDVCBmaXJtd2FyZSBwYWdlLgo+IAo+IGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tL2F0aDEw
+ay0xMC4xLnBocAo+IAo+IFRoYW5rcywKPiBCZW4KPiAKPiAtLSAKPiBCZW4gR3JlZWFyIDxncmVl
+YXJiQGNhbmRlbGF0ZWNoLmNvbT4KPiBDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93
+d3cuY2FuZGVsYXRlY2guY29tCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
