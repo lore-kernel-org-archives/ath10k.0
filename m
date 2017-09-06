@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0029.hostedemail.com ([216.40.44.29]
- helo=smtprelay.hostedemail.com)
+Received: from mout.kundenserver.de ([212.227.17.13])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dpBv0-0007sr-QE
- for ath10k@lists.infradead.org; Tue, 05 Sep 2017 11:21:27 +0000
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: ath10k kernel panic on boot
-From: Nick Marriott <nick@marriott.org>
-In-Reply-To: <9b8a7147-efd2-6b3f-1349-f56b48c75643@candelatech.com>
-Date: Tue, 5 Sep 2017 07:20:14 -0400
-Message-Id: <5F490518-C2C3-479B-9010-0DAA0DAE57FC@marriott.org>
-References: <ACA1EFDA-E3D4-452B-A25B-CB3A18943AAF@marriott.org>
- <9b8a7147-efd2-6b3f-1349-f56b48c75643@candelatech.com>
+ id 1dpZvg-0007kO-Bp
+ for ath10k@lists.infradead.org; Wed, 06 Sep 2017 12:59:42 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ath10: mark PM functions as __maybe_unused
+Date: Wed,  6 Sep 2017 14:58:53 +0200
+Message-Id: <20170906125904.2588620-1-arnd@arndb.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +15,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Govind Singh <govinds@qti.qualcomm.com>, Ryan Hsu <ryanhsu@qti.qualcomm.com>, Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Colin Ian King <colin.king@canonical.com>, Ben Greear <greearb@candelatech.com>, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-WW914oCZcmUgcmlnaHQsIDQuMTMgc2VlbXMgdG8gaGF2ZSBmaXhlZCB0aGUgY3Jhc2ghCgpUaGFu
-a3MgYSBsb3QgQmVuIQoKCj4gT24gU2VwIDEsIDIwMTcsIGF0IDEzOjI2LCBCZW4gR3JlZWFyIDxn
-cmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4gCj4gT24gMDkvMDEvMjAxNyAxMDoyMiBB
-TSwgTmljayBNYXJyaW90dCB3cm90ZToKPj4gSSBoYXZlIGEgUUNBOTg4OCBDb21wZXggV0xFNjUw
-VjUtMTggdGhhdCBydW5zIGp1c3QgZmluZSBvbiBpMzg2IGtlcm5lbHMgYnV0IGF0aDEwayBzZWVt
-cyB0byBiZSBjYXVzaW5nIGEga2VybmVsIHBhbmljIG9uIGJvb3Qgd2l0aCB4ODZfNjQga2VybmVs
-cy4gIExvZyBpcyBiZWxvdy4gIEkndmUgdHJpZWQgbXVsdGlwbGUgZmlybXdhcmUgdmVyc2lvbnMg
-ZnJvbSBrdmFsbyBhbmQgY2FuZGVsYXRlY2ggYnV0IG15IGdvb2dsZS1mdSBjb3VsZG7igJl0IGZp
-bmQgYSBzb2x1dGlvbi4gIEFueSB0aG91Z2h0cyBvciBzdWdnZXN0aW9ucz8KPj4gCj4+IFsgICAx
-NC41MDM3MTVdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBwY2kgaXJxIG1zaSBvcGVyX2lycV9t
-b2RlIDIgaXJxX21vZGUgMCByZXNldF9tb2RlIDAKPj4gWyAgIDE0LjYzNDExMl0gYXRoMTBrX3Bj
-aSAwMDAwOjA0OjAwLjA6IHFjYTk4ODggaHcyLjAgdGFyZ2V0IDB4MDEwMDAwMDAgY2hpcF9pZCAw
-eDAwMDAwMDAwIHN1YiAwMDAwOjAwMDAKPj4gWyAgIDE0LjY0MzQ0OF0gYXRoMTBrX3BjaSAwMDAw
-OjA0OjAwLjA6IGtjb25maWcgZGVidWcgMCBkZWJ1Z2ZzIDEgdHJhY2luZyAwIGRmcyAwIHRlc3Rt
-b2RlIDAKPj4gWyAgIDE0LjY1MjkzN10gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6IGZpcm13YXJl
-IHZlciAxMC40LTMuMi0wMDA3MiBhcGkgNSBmZWF0dXJlcyBuby1wMnAsbWZwLHBlZXItZmxvdy1j
-dHJsIGNyYzMyIGIxZGEwNzE2Cj4+IFsgICAxNi42NzE1OTRdIGF0aDEwa19wY2kgMDAwMDowNDow
-MC4wOiBib2FyZF9maWxlIGFwaSAyIGJtaV9pZCAwOjE3IGNyYzMyIDc0YTA0MjUwCj4+IAo+PiBb
-ICAgMjAuMTMzMDM5XSBzd2lvdGxiX3RibF9tYXBfc2luZ2xlOiA5IGNhbGxiYWNrcyBzdXBwcmVz
-c2VkCj4+IFsgICAyMC4xMzg3MDVdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBzd2lvdGxiIGJ1
-ZmZlciBpcyBmdWxsIChzejogNDYxMjg4IGJ5dGVzKQo+PiBbICAgMjAuMTQ1OTkyXSBhdGgxMGtf
-cGNpIDAwMDA6MDQ6MDAuMDogRE1BOiBPdXQgb2YgU1ctSU9NTVUgc3BhY2UgZm9yIDQ2MTI4OCBi
-eXRlcwo+PiBbICAgMjAuMTUzMzk3XSBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogRE1BOiBS
-YW5kb20gbWVtb3J5IGNvdWxkIGJlIERNQSBhY2Nlc3NlZAo+IAo+IFlvdSBuZWVkIHRoZSBwYXRj
-aCB0aGF0IGNoYW5nZXMgaG93IERNQSBtZW1vcnkgaXMgYWxsb2NhdGVkLiAgSXQgaXMgaW4gdGhl
-IDQuMTMga2VybmVsLAo+IGFuZCBhbHNvIGluIHRoZSA0Ljkga2VybmVsIGxpbmtlZCBmcm9tIHRo
-ZSBDVCBmaXJtd2FyZSBwYWdlLgo+IAo+IGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tL2F0aDEw
-ay0xMC4xLnBocAo+IAo+IFRoYW5rcywKPiBCZW4KPiAKPiAtLSAKPiBCZW4gR3JlZWFyIDxncmVl
-YXJiQGNhbmRlbGF0ZWNoLmNvbT4KPiBDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93
-d3cuY2FuZGVsYXRlY2guY29tCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+When CONFIG_PM_SLEEP is disabled, we get a compile-time
+warning:
+
+drivers/net/wireless/ath/ath10k/pci.c:3417:12: error: 'ath10k_pci_pm_resume' defined but not used [-Werror=unused-function]
+ static int ath10k_pci_pm_resume(struct device *dev)
+            ^~~~~~~~~~~~~~~~~~~~
+drivers/net/wireless/ath/ath10k/pci.c:3401:12: error: 'ath10k_pci_pm_suspend' defined but not used [-Werror=unused-function]
+ static int ath10k_pci_pm_suspend(struct device *dev)
+
+Rather than fixing the #ifdef, this just marks both functions
+as __maybe_unused, which is a more robust way to do this.
+
+Fixes: 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index bc1633945a56..195dafb98131 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3396,9 +3396,7 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
+ 
+ MODULE_DEVICE_TABLE(pci, ath10k_pci_id_table);
+ 
+-#ifdef CONFIG_PM
+-
+-static int ath10k_pci_pm_suspend(struct device *dev)
++static __maybe_unused int ath10k_pci_pm_suspend(struct device *dev)
+ {
+ 	struct ath10k *ar = dev_get_drvdata(dev);
+ 	int ret;
+@@ -3414,7 +3412,7 @@ static int ath10k_pci_pm_suspend(struct device *dev)
+ 	return ret;
+ }
+ 
+-static int ath10k_pci_pm_resume(struct device *dev)
++static __maybe_unused int ath10k_pci_pm_resume(struct device *dev)
+ {
+ 	struct ath10k *ar = dev_get_drvdata(dev);
+ 	int ret;
+@@ -3433,7 +3431,6 @@ static int ath10k_pci_pm_resume(struct device *dev)
+ static SIMPLE_DEV_PM_OPS(ath10k_pci_pm_ops,
+ 			 ath10k_pci_pm_suspend,
+ 			 ath10k_pci_pm_resume);
+-#endif
+ 
+ static struct pci_driver ath10k_pci_driver = {
+ 	.name = "ath10k_pci",
+-- 
+2.9.0
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
