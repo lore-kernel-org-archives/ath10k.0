@@ -1,21 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
+Received: from alexa-out.qualcomm.com ([129.46.98.28]
+ helo=alexa-out-lv-01.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1drRyl-0004e5-QQ
- for ath10k@lists.infradead.org; Mon, 11 Sep 2017 16:54:37 +0000
-Received: by mail-wm0-x231.google.com with SMTP id 189so10067830wmh.1
- for <ath10k@lists.infradead.org>; Mon, 11 Sep 2017 09:54:13 -0700 (PDT)
-Received: from bazdara.com (2a01-260-1047--2.link6.t-2.net. [2a01:260:1047::2])
- by smtp.gmail.com with ESMTPSA id 29sm16018800wrz.77.2017.09.11.09.54.10
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 11 Sep 2017 09:54:11 -0700 (PDT)
-From: Luka Karinja <luka.karinja@gmail.com>
-Subject: failed to fetch board data QCA6174
-Message-ID: <53332261-4d0b-3c45-05c5-e129feaad594@gmail.com>
-Date: Mon, 11 Sep 2017 18:54:10 +0200
-MIME-Version: 1.0
+ id 1drW5n-0006lP-81
+ for ath10k@lists.infradead.org; Mon, 11 Sep 2017 21:18:09 +0000
+From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+Subject: Re: failed to fetch board data QCA6174
+Date: Mon, 11 Sep 2017 21:15:12 +0000
+Message-ID: <bb97e4da-20bb-60bc-b7ec-4d59ea44cc8a@qti.qualcomm.com>
+References: <53332261-4d0b-3c45-05c5-e129feaad594@gmail.com>
+In-Reply-To: <53332261-4d0b-3c45-05c5-e129feaad594@gmail.com>
 Content-Language: en-US
+Content-ID: <FB3E40579C28F64884DD71620E58B3F9@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,73 +21,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGVsbG8uIEknbSB0cnlpbmcgdG8gZ2V0IGEgTS4yIFFDQTYxNzQgd29ya2luZyBvbiBteSBNU0kg
-QjE1ME1vcnRhciAKbW90aGVyYm9hcmQuIGkgZGlkIHRyeSBhbGwgdGhlIHZhcmlvdXMgZmlybXdh
-cmUgdmVyc2lvbnMgZnJvbSAKaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2Fy
-ZSBtb3JlIG9yIGxlc3Mgd2l0aCB0aGUgc2FtZSAKZXJyb3JzIGFzIGJlbGxvdwoKaW4gZG1lc2cg
-aSBnZXQ6IGZhaWxlZCB0byBmZXRjaCBib2FyZCBkYXRhIGZvciAKYnVzPXBjaSx2ZW5kb3I9MTY4
-YyxkZXZpY2U9MDAzZSxzdWJzeXN0ZW0tdmVuZG9yPTAwMDAsc3Vic3lzdGVtLWRldmljZT0wMDAw
-IApmcm9tIGF0aDEway9RQ0E2MTc0L2h3My4wL2JvYXJkLTIuYmluCgp3aGVuIHRyeWluZyB0byBn
-ZXQgdGhlIGRldmljZSB1cCBpIGdldDogUlRORVRMSU5LIGFuc3dlcnM6IFJlc291cmNlIAp0ZW1w
-b3JhcmlseSB1bmF2YWlsYWJsZQoKWyAyMDI2LjIxOTI0NV0gYXRoMTBrX3BjaSAwMDAwOjA1OjAw
-LjA6IHBjaSBpcnEgbXNpIG9wZXJfaXJxX21vZGUgMiAKaXJxX21vZGUgMCByZXNldF9tb2RlIDAK
-WyAyMDI2LjQ3NzUxMF0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IHFjYTYxNzQgaHczLjIgdGFy
-Z2V0IDB4MDUwMzAwMDAgCmNoaXBfaWQgMHgwMDM0MGFmZiBzdWIgMDAwMDowMDAwClsgMjAyNi40
-Nzc1MTddIGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBrY29uZmlnIGRlYnVnIDAgZGVidWdmcyAx
-IAp0cmFjaW5nIDAgZGZzIDAgdGVzdG1vZGUgMApbIDIwMjYuNDc4NjQwXSBhdGgxMGtfcGNpIDAw
-MDA6MDU6MDAuMDogZmlybXdhcmUgdmVyIApXTEFOLlJNLjQuNC4xLTAwMDI2LVFDQVJNU1dQLTEg
-YXBpIDYgZmVhdHVyZXMgd293bGFuLGlnbm9yZS1vdHAscmF3LW1vZGUgCmNyYzMyIDdiOTBjM2Zj
-ClsgMjAyNi41NDIxOTZdIGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBmYWlsZWQgdG8gZmV0Y2gg
-Ym9hcmQgZGF0YSBmb3IgCmJ1cz1wY2ksdmVuZG9yPTE2OGMsZGV2aWNlPTAwM2Usc3Vic3lzdGVt
-LXZlbmRvcj0wMDAwLHN1YnN5c3RlbS1kZXZpY2U9MDAwMCAKZnJvbSBhdGgxMGsvUUNBNjE3NC9o
-dzMuMC9ib2FyZC0yLmJpbgpbIDIwMjYuNTQyMjIwXSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDog
-Ym9hcmRfZmlsZSBhcGkgMSBibWlfaWQgTi9BIApjcmMzMiBlZDVmODQ5YQpbIDIwMjcuMTE3NDI5
-XSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogVW5rbm93biBldmVudGlkOiAxMTg4MDkKWyAyMDI3
-LjEyMDM1MV0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IFVua25vd24gZXZlbnRpZDogOTAxMTgK
-WyAyMDI3LjEyMTA1MV0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IGh0dC12ZXIgMy40NCB3bWkt
-b3AgNCBodHQtb3AgMyAKY2FsIG90cCBtYXgtc3RhIDMyIHJhdyAwIGh3Y3J5cHRvIDEKWyAyMDMw
-LjE3MTk0Ml0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IGNvdWxkIG5vdCBzdXNwZW5kIHRhcmdl
-dCAoLTExKQpbIDIwMzAuMjQzNDM3XSBhdGg6IEVFUFJPTSByZWdkb21haW46IDB4MApbIDIwMzAu
-MjQzNDQxXSBhdGg6IEVFUFJPTSBpbmRpY2F0ZXMgZGVmYXVsdCBjb3VudHJ5IGNvZGUgc2hvdWxk
-IGJlIHVzZWQKWyAyMDMwLjI0MzQ0M10gYXRoOiBkb2luZyBFRVBST00gY291bnRyeS0+cmVnZG1u
-IG1hcCBzZWFyY2gKWyAyMDMwLjI0MzQ0NV0gYXRoOiBjb3VudHJ5IG1hcHMgdG8gcmVnZG1uIGNv
-ZGU6IDB4M2EKWyAyMDMwLjI0MzQ0OF0gYXRoOiBDb3VudHJ5IGFscGhhMiBiZWluZyB1c2VkOiBV
-UwpbIDIwMzAuMjQzNDQ5XSBhdGg6IFJlZ3BhaXIgdXNlZDogMHgzYQpbIDIwMzAuMjUyMDgwXSBh
-dGgxMGtfcGNpIDAwMDA6MDU6MDAuMCB3bHA1czA6IHJlbmFtZWQgZnJvbSB3bGFuMAoKd2hlbiBp
-c3N1aW5nOiBpcCBsaW5rIHNldCB3bHA1czAgdXAKClsgMjEwNS41ODIyNjhdIGF0aDEwa19wY2kg
-MDAwMDowNTowMC4wOiBVbmtub3duIGV2ZW50aWQ6IDExODgwOQpbIDIxMDUuNTg1MTY5XSBhdGgx
-MGtfcGNpIDAwMDA6MDU6MDAuMDogVW5rbm93biBldmVudGlkOiA5MDExOApbIDIxMDguNjc2NTUw
-XSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogZmFpbGVkIHRvIGVuYWJsZSBQTUYgUU9TOiAtMTEK
-WyAyMTE1LjA3NjY0NF0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IGNvdWxkIG5vdCBzdXNwZW5k
-IHRhcmdldCAoLTExKQpbIDIxMTguMDk3MDI3XSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogVW5r
-bm93biBldmVudGlkOiAxMTg4MDkKWyAyMTE4LjA5OTg3MF0gYXRoMTBrX3BjaSAwMDAwOjA1OjAw
-LjA6IFVua25vd24gZXZlbnRpZDogOTAxMTgKWyAyMTIxLjI2MzQxN10gYXRoMTBrX3BjaSAwMDAw
-OjA1OjAwLjA6IGZhaWxlZCB0byBlbmFibGUgUE1GIFFPUzogLTExClsgMjEyNy42NjM1MTVdIGF0
-aDEwa19wY2kgMDAwMDowNTowMC4wOiBjb3VsZCBub3Qgc3VzcGVuZCB0YXJnZXQgKC0xMSkKWyAz
-MTcxLjc0MTI5OV0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IFVua25vd24gZXZlbnRpZDogMTE4
-ODA5ClsgMzE3MS43NDQyMzJdIGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBVbmtub3duIGV2ZW50
-aWQ6IDkwMTE4ClsgMzE3NC45Mzc1OTVdIGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBmYWlsZWQg
-dG8gZW5hYmxlIFBNRiBRT1M6IC0xMQpbIDMxODEuMzM0MzUwXSBhdGgxMGtfcGNpIDAwMDA6MDU6
-MDAuMDogY291bGQgbm90IHN1c3BlbmQgdGFyZ2V0ICgtMTEpCgoKbHNodyAtQyBuZXR3b3JrCgog
-wqAgKi1uZXR3b3JrIERJU0FCTEVECiDCoMKgwqDCoMKgwqAgZGVzY3JpcHRpb246IFdpcmVsZXNz
-IGludGVyZmFjZQogwqDCoMKgwqDCoMKgIHByb2R1Y3Q6IFFDQTYxNzQgODAyLjExYWMgV2lyZWxl
-c3MgTmV0d29yayBBZGFwdGVyCiDCoMKgwqDCoMKgwqAgdmVuZG9yOiBRdWFsY29tbSBBdGhlcm9z
-CiDCoMKgwqDCoMKgwqAgcGh5c2ljYWwgaWQ6IDAKIMKgwqDCoMKgwqDCoCBidXMgaW5mbzogcGNp
-QDAwMDA6MDU6MDAuMAogwqDCoMKgwqDCoMKgIGxvZ2ljYWwgbmFtZTogd2xwNXMwCiDCoMKgwqDC
-oMKgwqAgdmVyc2lvbjogMzIKIMKgwqDCoMKgwqDCoCBzZXJpYWw6IDAwOjAzOjdmOjUwOjAwOjAx
-CiDCoMKgwqDCoMKgwqAgd2lkdGg6IDY0IGJpdHMKIMKgwqDCoMKgwqDCoCBjbG9jazogMzNNSHoK
-IMKgwqDCoMKgwqDCoCBjYXBhYmlsaXRpZXM6IHBtIG1zaSBwY2lleHByZXNzIGJ1c19tYXN0ZXIg
-Y2FwX2xpc3QgZXRoZXJuZXQgCnBoeXNpY2FsIHdpcmVsZXNzCiDCoMKgwqDCoMKgwqAgY29uZmln
-dXJhdGlvbjogYnJvYWRjYXN0PXllcyBkcml2ZXI9YXRoMTBrX3BjaSAKZHJpdmVydmVyc2lvbj00
-LjEyLjEwLTEtQVJDSCBmaXJtd2FyZT1XTEFOLlJNLjQuNC4xLTAwMDI2LVFDQVJNU1dQLTEgCmxh
-dGVuY3k9MCBsaW5rPW5vIG11bHRpY2FzdD15ZXMgd2lyZWxlc3M9SUVFRSA4MDIuMTEKIMKgwqDC
-oMKgwqDCoCByZXNvdXJjZXM6IGlycToxMjggbWVtb3J5OmRmMDAwMDAwLWRmMWZmZmZmCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
-bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On 09/11/2017 09:54 AM, Luka Karinja wrote:
+
+> Hello. I'm trying to get a M.2 QCA6174 working on my MSI B150Mortar motherboard. i did try all the various firmware versions from https://github.com/kvalo/ath10k-firmware more or less with the same errors as bellow
+>
+> in dmesg i get: failed to fetch board data for bus=pci,vendor=168c,device=003e,subsystem-vendor=0000,subsystem-device=0000 from ath10k/QCA6174/hw3.0/board-2.bin
+>
+> when trying to get the device up i get: RTNETLINK answers: Resource temporarily unavailable
+>
+> [ 2026.219245] ath10k_pci 0000:05:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+> [ 2026.477510] ath10k_pci 0000:05:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 0000:0000
+> [ 2026.477517] ath10k_pci 0000:05:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
+> [ 2026.478640] ath10k_pci 0000:05:00.0: firmware ver WLAN.RM.4.4.1-00026-QCARMSWP-1 api 6 features wowlan,ignore-otp,raw-mode crc32 7b90c3fc
+> [ 2026.542196] ath10k_pci 0000:05:00.0: failed to fetch board data for bus=pci,vendor=168c,device=003e,subsystem-vendor=0000,subsystem-device=0000 from ath10k/QCA6174/hw3.0/board-2.bin
+>
+
+Not sure what kernel and driver do you have?
+
+This should already fix this case - https://patchwork.kernel.org/patch/9486941/
+
+-- 
+Ryan Hsu
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
