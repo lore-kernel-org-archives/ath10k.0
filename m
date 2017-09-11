@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
+Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dqCON-0003pH-Oy
- for ath10k@lists.infradead.org; Fri, 08 Sep 2017 06:03:55 +0000
-Received: by mail-wm0-x22f.google.com with SMTP id f199so9047094wme.0
- for <ath10k@lists.infradead.org>; Thu, 07 Sep 2017 23:03:25 -0700 (PDT)
+ id 1drP5b-0006oG-0V
+ for ath10k@lists.infradead.org; Mon, 11 Sep 2017 13:49:28 +0000
+Received: by mail-wm0-x22b.google.com with SMTP id i189so40227630wmf.1
+ for <ath10k@lists.infradead.org>; Mon, 11 Sep 2017 06:49:05 -0700 (PDT)
 MIME-Version: 1.0
-From: Nathaniel Filardo <nwfilardo@gmail.com>
-Date: Fri, 8 Sep 2017 02:03:23 -0400
-Message-ID: <CAKsvP2bZpQP2YiLh28HYhsxvParUyuXOk=qENJv20E8n6Fg5pw@mail.gmail.com>
-Subject: LED support for QCA9980
+In-Reply-To: <CAKAh8AMVMy-ACgvmJBu4qwDpTGh_AYRXSTEcirEWFCrvc2h7Pg@mail.gmail.com>
+References: <CAKAh8AMVMy-ACgvmJBu4qwDpTGh_AYRXSTEcirEWFCrvc2h7Pg@mail.gmail.com>
+From: Bartosz Chronowski
+ <ext.bartosz.chronowski@qti-qualcomm.corp-partner.google.com>
+Date: Mon, 11 Sep 2017 15:49:03 +0200
+Message-ID: <CAKAh8ANukMeCt1Zg8OK367LAC1k+BTZBi5+1iBVSOoVNR_6QCA@mail.gmail.com>
+Subject: Fwd: QCA6174 fw logs howto
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +26,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
+Cc: Bartosz Chronowski <ext.bartosz.chronowski@tieto.com>
 
-Hallo ath10k@,
+Hi everyone,
+What are the steps necessary to read QCA6174 firmware logs?
 
-It seems that LED support is still missing in the latest versions of
-the Linux ath10k driver; if that's not so, please ignore this message
-entirely. :)
+echo 0xffff 0 > /sys/kernel/debug/ieee80211/phy*/ath10k/fw_dbglog
+trace-cmd record -e ath10k
+trace-cmd report > file
 
-Thanks to some hero's sleuthing around a GPL source dump
-(https://forum.openwrt.org/viewtopic.php?pid=336237#p336237) and a
-later suggestion to try flipping bits from userspace (using
-https://github.com/billfarrow/pcimem), I can report that, at least for
-the two QCA9980s in my possession (within the TP-Link C2600 gateway I
-have) that the speculation is correct: kicking on bit 17 (the value of
-ATH_BEELINER_LED) in 0x85018 of resource0 makes bit 17 in 0x85000 an
-active-low controller for the LEDs attached to the chip.
+Seems not enought for fw logs. Are hints?
 
-I'd attempt to wire this knowledge into the ath10k driver and the
-broader LED framework within Linux and submit a patch, but I have no
-idea where to begin such a task.  Perhaps it is, nevertheless, useful
-to know and have confirmed?  I know blinking LEDs are a low priority
-relative to getting packets on and off the air. :)
-
-Cheers,
---nwf;
-
-P.S. Please CC as I am not subscribed to ath10k@.
+Regards,
+BC
 
 _______________________________________________
 ath10k mailing list
