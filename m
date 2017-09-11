@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1drP5b-0006oG-0V
- for ath10k@lists.infradead.org; Mon, 11 Sep 2017 13:49:28 +0000
-Received: by mail-wm0-x22b.google.com with SMTP id i189so40227630wmf.1
- for <ath10k@lists.infradead.org>; Mon, 11 Sep 2017 06:49:05 -0700 (PDT)
+ id 1drRyl-0004e5-QQ
+ for ath10k@lists.infradead.org; Mon, 11 Sep 2017 16:54:37 +0000
+Received: by mail-wm0-x231.google.com with SMTP id 189so10067830wmh.1
+ for <ath10k@lists.infradead.org>; Mon, 11 Sep 2017 09:54:13 -0700 (PDT)
+Received: from bazdara.com (2a01-260-1047--2.link6.t-2.net. [2a01:260:1047::2])
+ by smtp.gmail.com with ESMTPSA id 29sm16018800wrz.77.2017.09.11.09.54.10
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 11 Sep 2017 09:54:11 -0700 (PDT)
+From: Luka Karinja <luka.karinja@gmail.com>
+Subject: failed to fetch board data QCA6174
+Message-ID: <53332261-4d0b-3c45-05c5-e129feaad594@gmail.com>
+Date: Mon, 11 Sep 2017 18:54:10 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAKAh8AMVMy-ACgvmJBu4qwDpTGh_AYRXSTEcirEWFCrvc2h7Pg@mail.gmail.com>
-References: <CAKAh8AMVMy-ACgvmJBu4qwDpTGh_AYRXSTEcirEWFCrvc2h7Pg@mail.gmail.com>
-From: Bartosz Chronowski
- <ext.bartosz.chronowski@qti-qualcomm.corp-partner.google.com>
-Date: Mon, 11 Sep 2017 15:49:03 +0200
-Message-ID: <CAKAh8ANukMeCt1Zg8OK367LAC1k+BTZBi5+1iBVSOoVNR_6QCA@mail.gmail.com>
-Subject: Fwd: QCA6174 fw logs howto
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +24,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Bartosz Chronowski <ext.bartosz.chronowski@tieto.com>
 
-Hi everyone,
-What are the steps necessary to read QCA6174 firmware logs?
-
-echo 0xffff 0 > /sys/kernel/debug/ieee80211/phy*/ath10k/fw_dbglog
-trace-cmd record -e ath10k
-trace-cmd report > file
-
-Seems not enought for fw logs. Are hints?
-
-Regards,
-BC
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGVsbG8uIEknbSB0cnlpbmcgdG8gZ2V0IGEgTS4yIFFDQTYxNzQgd29ya2luZyBvbiBteSBNU0kg
+QjE1ME1vcnRhciAKbW90aGVyYm9hcmQuIGkgZGlkIHRyeSBhbGwgdGhlIHZhcmlvdXMgZmlybXdh
+cmUgdmVyc2lvbnMgZnJvbSAKaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2Fy
+ZSBtb3JlIG9yIGxlc3Mgd2l0aCB0aGUgc2FtZSAKZXJyb3JzIGFzIGJlbGxvdwoKaW4gZG1lc2cg
+aSBnZXQ6IGZhaWxlZCB0byBmZXRjaCBib2FyZCBkYXRhIGZvciAKYnVzPXBjaSx2ZW5kb3I9MTY4
+YyxkZXZpY2U9MDAzZSxzdWJzeXN0ZW0tdmVuZG9yPTAwMDAsc3Vic3lzdGVtLWRldmljZT0wMDAw
+IApmcm9tIGF0aDEway9RQ0E2MTc0L2h3My4wL2JvYXJkLTIuYmluCgp3aGVuIHRyeWluZyB0byBn
+ZXQgdGhlIGRldmljZSB1cCBpIGdldDogUlRORVRMSU5LIGFuc3dlcnM6IFJlc291cmNlIAp0ZW1w
+b3JhcmlseSB1bmF2YWlsYWJsZQoKWyAyMDI2LjIxOTI0NV0gYXRoMTBrX3BjaSAwMDAwOjA1OjAw
+LjA6IHBjaSBpcnEgbXNpIG9wZXJfaXJxX21vZGUgMiAKaXJxX21vZGUgMCByZXNldF9tb2RlIDAK
+WyAyMDI2LjQ3NzUxMF0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IHFjYTYxNzQgaHczLjIgdGFy
+Z2V0IDB4MDUwMzAwMDAgCmNoaXBfaWQgMHgwMDM0MGFmZiBzdWIgMDAwMDowMDAwClsgMjAyNi40
+Nzc1MTddIGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBrY29uZmlnIGRlYnVnIDAgZGVidWdmcyAx
+IAp0cmFjaW5nIDAgZGZzIDAgdGVzdG1vZGUgMApbIDIwMjYuNDc4NjQwXSBhdGgxMGtfcGNpIDAw
+MDA6MDU6MDAuMDogZmlybXdhcmUgdmVyIApXTEFOLlJNLjQuNC4xLTAwMDI2LVFDQVJNU1dQLTEg
+YXBpIDYgZmVhdHVyZXMgd293bGFuLGlnbm9yZS1vdHAscmF3LW1vZGUgCmNyYzMyIDdiOTBjM2Zj
+ClsgMjAyNi41NDIxOTZdIGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBmYWlsZWQgdG8gZmV0Y2gg
+Ym9hcmQgZGF0YSBmb3IgCmJ1cz1wY2ksdmVuZG9yPTE2OGMsZGV2aWNlPTAwM2Usc3Vic3lzdGVt
+LXZlbmRvcj0wMDAwLHN1YnN5c3RlbS1kZXZpY2U9MDAwMCAKZnJvbSBhdGgxMGsvUUNBNjE3NC9o
+dzMuMC9ib2FyZC0yLmJpbgpbIDIwMjYuNTQyMjIwXSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDog
+Ym9hcmRfZmlsZSBhcGkgMSBibWlfaWQgTi9BIApjcmMzMiBlZDVmODQ5YQpbIDIwMjcuMTE3NDI5
+XSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogVW5rbm93biBldmVudGlkOiAxMTg4MDkKWyAyMDI3
+LjEyMDM1MV0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IFVua25vd24gZXZlbnRpZDogOTAxMTgK
+WyAyMDI3LjEyMTA1MV0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IGh0dC12ZXIgMy40NCB3bWkt
+b3AgNCBodHQtb3AgMyAKY2FsIG90cCBtYXgtc3RhIDMyIHJhdyAwIGh3Y3J5cHRvIDEKWyAyMDMw
+LjE3MTk0Ml0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IGNvdWxkIG5vdCBzdXNwZW5kIHRhcmdl
+dCAoLTExKQpbIDIwMzAuMjQzNDM3XSBhdGg6IEVFUFJPTSByZWdkb21haW46IDB4MApbIDIwMzAu
+MjQzNDQxXSBhdGg6IEVFUFJPTSBpbmRpY2F0ZXMgZGVmYXVsdCBjb3VudHJ5IGNvZGUgc2hvdWxk
+IGJlIHVzZWQKWyAyMDMwLjI0MzQ0M10gYXRoOiBkb2luZyBFRVBST00gY291bnRyeS0+cmVnZG1u
+IG1hcCBzZWFyY2gKWyAyMDMwLjI0MzQ0NV0gYXRoOiBjb3VudHJ5IG1hcHMgdG8gcmVnZG1uIGNv
+ZGU6IDB4M2EKWyAyMDMwLjI0MzQ0OF0gYXRoOiBDb3VudHJ5IGFscGhhMiBiZWluZyB1c2VkOiBV
+UwpbIDIwMzAuMjQzNDQ5XSBhdGg6IFJlZ3BhaXIgdXNlZDogMHgzYQpbIDIwMzAuMjUyMDgwXSBh
+dGgxMGtfcGNpIDAwMDA6MDU6MDAuMCB3bHA1czA6IHJlbmFtZWQgZnJvbSB3bGFuMAoKd2hlbiBp
+c3N1aW5nOiBpcCBsaW5rIHNldCB3bHA1czAgdXAKClsgMjEwNS41ODIyNjhdIGF0aDEwa19wY2kg
+MDAwMDowNTowMC4wOiBVbmtub3duIGV2ZW50aWQ6IDExODgwOQpbIDIxMDUuNTg1MTY5XSBhdGgx
+MGtfcGNpIDAwMDA6MDU6MDAuMDogVW5rbm93biBldmVudGlkOiA5MDExOApbIDIxMDguNjc2NTUw
+XSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogZmFpbGVkIHRvIGVuYWJsZSBQTUYgUU9TOiAtMTEK
+WyAyMTE1LjA3NjY0NF0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IGNvdWxkIG5vdCBzdXNwZW5k
+IHRhcmdldCAoLTExKQpbIDIxMTguMDk3MDI3XSBhdGgxMGtfcGNpIDAwMDA6MDU6MDAuMDogVW5r
+bm93biBldmVudGlkOiAxMTg4MDkKWyAyMTE4LjA5OTg3MF0gYXRoMTBrX3BjaSAwMDAwOjA1OjAw
+LjA6IFVua25vd24gZXZlbnRpZDogOTAxMTgKWyAyMTIxLjI2MzQxN10gYXRoMTBrX3BjaSAwMDAw
+OjA1OjAwLjA6IGZhaWxlZCB0byBlbmFibGUgUE1GIFFPUzogLTExClsgMjEyNy42NjM1MTVdIGF0
+aDEwa19wY2kgMDAwMDowNTowMC4wOiBjb3VsZCBub3Qgc3VzcGVuZCB0YXJnZXQgKC0xMSkKWyAz
+MTcxLjc0MTI5OV0gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IFVua25vd24gZXZlbnRpZDogMTE4
+ODA5ClsgMzE3MS43NDQyMzJdIGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBVbmtub3duIGV2ZW50
+aWQ6IDkwMTE4ClsgMzE3NC45Mzc1OTVdIGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBmYWlsZWQg
+dG8gZW5hYmxlIFBNRiBRT1M6IC0xMQpbIDMxODEuMzM0MzUwXSBhdGgxMGtfcGNpIDAwMDA6MDU6
+MDAuMDogY291bGQgbm90IHN1c3BlbmQgdGFyZ2V0ICgtMTEpCgoKbHNodyAtQyBuZXR3b3JrCgog
+wqAgKi1uZXR3b3JrIERJU0FCTEVECiDCoMKgwqDCoMKgwqAgZGVzY3JpcHRpb246IFdpcmVsZXNz
+IGludGVyZmFjZQogwqDCoMKgwqDCoMKgIHByb2R1Y3Q6IFFDQTYxNzQgODAyLjExYWMgV2lyZWxl
+c3MgTmV0d29yayBBZGFwdGVyCiDCoMKgwqDCoMKgwqAgdmVuZG9yOiBRdWFsY29tbSBBdGhlcm9z
+CiDCoMKgwqDCoMKgwqAgcGh5c2ljYWwgaWQ6IDAKIMKgwqDCoMKgwqDCoCBidXMgaW5mbzogcGNp
+QDAwMDA6MDU6MDAuMAogwqDCoMKgwqDCoMKgIGxvZ2ljYWwgbmFtZTogd2xwNXMwCiDCoMKgwqDC
+oMKgwqAgdmVyc2lvbjogMzIKIMKgwqDCoMKgwqDCoCBzZXJpYWw6IDAwOjAzOjdmOjUwOjAwOjAx
+CiDCoMKgwqDCoMKgwqAgd2lkdGg6IDY0IGJpdHMKIMKgwqDCoMKgwqDCoCBjbG9jazogMzNNSHoK
+IMKgwqDCoMKgwqDCoCBjYXBhYmlsaXRpZXM6IHBtIG1zaSBwY2lleHByZXNzIGJ1c19tYXN0ZXIg
+Y2FwX2xpc3QgZXRoZXJuZXQgCnBoeXNpY2FsIHdpcmVsZXNzCiDCoMKgwqDCoMKgwqAgY29uZmln
+dXJhdGlvbjogYnJvYWRjYXN0PXllcyBkcml2ZXI9YXRoMTBrX3BjaSAKZHJpdmVydmVyc2lvbj00
+LjEyLjEwLTEtQVJDSCBmaXJtd2FyZT1XTEFOLlJNLjQuNC4xLTAwMDI2LVFDQVJNU1dQLTEgCmxh
+dGVuY3k9MCBsaW5rPW5vIG11bHRpY2FzdD15ZXMgd2lyZWxlc3M9SUVFRSA4MDIuMTEKIMKgwqDC
+oMKgwqDCoCByZXNvdXJjZXM6IGlycToxMjggbWVtb3J5OmRmMDAwMDAwLWRmMWZmZmZmCgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
+bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
