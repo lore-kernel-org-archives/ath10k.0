@@ -1,23 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dsCL4-0003X1-S8
- for ath10k@lists.infradead.org; Wed, 13 Sep 2017 18:24:45 +0000
-From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
-Subject: Re: failed to fetch board data QCA6174
-Date: Wed, 13 Sep 2017 18:23:37 +0000
-Message-ID: <4974930b-1fd3-1341-99a1-28ebe55fcce4@qti.qualcomm.com>
-References: <c1f6096c-7445-7862-a5df-b96211be9df3@gmail.com>
- <8d3a8d6f-5191-d1fa-784b-28cab8b407d5@qti.qualcomm.com>
- <e87292ba-a00c-edf9-2c02-5be14750bb60@gmail.com>
- <d4b43397-3267-abff-fbc1-48cbd9d58073@qti.qualcomm.com>
- <20170913091536.aefe1f16e91dcec2c69ee7b5@rasterman.com>
- <e24d670c-b239-5596-d175-d6b79c660966@qti.qualcomm.com>
- <20170913215659.afd05b8889b4f2eb943db76c@rasterman.com>
-In-Reply-To: <20170913215659.afd05b8889b4f2eb943db76c@rasterman.com>
-Content-Language: en-US
-Content-ID: <EAA1C9362275CC42B390323490267DC1@qualcomm.com>
-MIME-Version: 1.0
+ id 1dsCvh-0004GF-PH
+ for ath10k@lists.infradead.org; Wed, 13 Sep 2017 19:02:35 +0000
+Received: by mail-pf0-x241.google.com with SMTP id q76so432198pfq.5
+ for <ath10k@lists.infradead.org>; Wed, 13 Sep 2017 12:02:13 -0700 (PDT)
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ath10k: make ath10k_hw_ce_regs const
+Date: Thu, 14 Sep 2017 00:31:52 +0530
+Message-Id: <1505329312-26432-1-git-send-email-bhumirks@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,113 +17,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Carsten Haitzler <raster@rasterman.com>
-Cc: Luka Karinja <luka.karinja@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: julia.lawall@lip6.fr, kvalo@qca.qualcomm.com, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 
-On 09/13/2017 05:56 AM, Carsten Haitzler wrote:
+Make them const as they are not modified in the file referencing
+them. They are only stored in the const field 'hw_ce_reg' of an ath10k
+structure. Also, make the declarations in the header const.
 
-> Absolutely. Well ... my first port of call instead of teh above site/url was to
-> use the matching file in the Qualcomm windows driver directory i copied off
-> windows before nuking it.  same filename. eeprom_ar6320_3p0_SS_720.bin. also
-> there's eeprom_ar6320_3p0_SS_720_K.bin too. I tried both... and:
->
-> [  154.007574] ath10k_pci 0000:01:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 144d:c14f
-> [  154.007577] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
-> [  154.008207] ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4-00022-QCARMSWPZ-2 api 6 features wowlan,ignore-otp crc32 4d458559
-> [  154.072786] ath10k_pci 0000:01:00.0: failed to fetch board data for bus=pci,vendor=168c,device=003e,subsystem-vendor=144d,subsystem-device=c14f,variant=K from ath10k/QCA6174/hw3.0/board-2.bin
-> [  154.072807] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 ed5f849a
-> [  154.640347] ath10k_pci 0000:01:00.0: Unknown eventid: 90118
-> [  157.709005] ath10k_pci 0000:01:00.0: failed to ping firmware: -110
-> [  157.709019] ath10k_pci 0000:01:00.0: failed to reset rx filter: -110
-> [  157.782164] ath10k_pci 0000:01:00.0: could not init core (-110)
-> [  157.782206] ath10k_pci 0000:01:00.0: could not probe fw (-110)
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/hw.c | 4 ++--
+ drivers/net/wireless/ath/ath10k/hw.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-So that means the eeprom_ar6320_3p0_SS_720.bin is not the one then, thanks I overlooked the k variant, but thanks for trying that as well.
-
-> and for the _K variant:
->
-> [  372.001685] ath10k_pci 0000:01:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 144d:c14f
-> [  372.001687] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
-> [  372.002098] ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4-00022-QCARMSWPZ-2 api 6 features wowlan,ignore-otp crc32 4d458559
-> [  372.066672] ath10k_pci 0000:01:00.0: failed to fetch board data for bus=pci,vendor=168c,device=003e,subsystem-vendor=144d,subsystem-device=c14f,variant=K from ath10k/QCA6174/hw3.0/board-2.bin
-> [  372.066691] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 ad2a5746
-> [  372.634622] ath10k_pci 0000:01:00.0: Unknown eventid: 90118
-> [  372.635466] ath10k_pci 0000:01:00.0: htt-ver 3.32 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
-> [  372.713216] ath: EEPROM regdomain: 0x5f
-> [  372.713218] ath: EEPROM indicates we should expect a direct regpair map
-> [  372.713218] ath: invalid regulatory domain/country code 0x5f
-> [  372.713219] ath: Invalid EEPROM contents
-> [  372.713223] ath10k_pci 0000:01:00.0: failed to initialise regulatory: -22
-> [  372.713225] ath10k_pci 0000:01:00.0: could not register to mac80211 (-22)
-
-So the _K variant board file seems to be the right one, the firmware is not crashing now.
-But failed due to the unknown country code 0x5f.
-
-Could you give it a try with this to see if that helped to bring it up your case?
-it might not be the final solution but would appreciate if you could help to debug a little bit.
-
-diff --git a/drivers/net/wireless/ath/regd_common.h b/drivers/net/wireless/ath/regd_common.h
-index bdd2b4d..ef578bf 100644
---- a/drivers/net/wireless/ath/regd_common.h
-+++ b/drivers/net/wireless/ath/regd_common.h
-@@ -71,6 +71,7 @@ enum EnumRd {
-        APL7_FCCA = 0x5C,
-        APL8_WORLD = 0x5D,
-        APL9_WORLD = 0x5E,
-+       APL10_WORLD = 0x5F,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index a860691..07df7c6 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -310,7 +310,7 @@
+ 	.wm_high	= &wcn3990_dst_wm_high,
+ };
  
-        WOR0_WORLD = 0x60,
-        WOR1_WORLD = 0x61,
-@@ -194,6 +195,7 @@ static struct reg_dmn_pair_mapping regDomainPairs[] = {
-        {APL6_WORLD, CTL_ETSI, CTL_ETSI},
-        {APL8_WORLD, CTL_ETSI, CTL_ETSI},
-        {APL9_WORLD, CTL_ETSI, CTL_ETSI},
-+       {APL10_WORLD, CTL_ETSI, CTL_ETSI},
+-struct ath10k_hw_ce_regs wcn3990_ce_regs = {
++const struct ath10k_hw_ce_regs wcn3990_ce_regs = {
+ 	.sr_base_addr		= 0x00000000,
+ 	.sr_size_addr		= 0x00000008,
+ 	.dr_base_addr		= 0x0000000c,
+@@ -457,7 +457,7 @@ struct ath10k_hw_ce_regs wcn3990_ce_regs = {
+ 	.wm_high	= &qcax_dst_wm_high,
+ };
  
-        {APL3_FCCA, CTL_FCC, CTL_FCC},
-        {APL7_FCCA, CTL_FCC, CTL_FCC},
-@@ -410,7 +412,7 @@ static struct country_code_to_enum_rd allCountries[] = {
-        {CTRY_JORDAN, ETSI2_WORLD, "JO"},
-        {CTRY_KAZAKHSTAN, NULL1_WORLD, "KZ"},
-        {CTRY_KOREA_NORTH, APL9_WORLD, "KP"},
--       {CTRY_KOREA_ROC, APL9_WORLD, "KR"},
-+       {CTRY_KOREA_ROC, APL10_WORLD, "KR"},
-        {CTRY_KOREA_ROC2, APL2_WORLD, "K2"},
-        {CTRY_KOREA_ROC3, APL9_WORLD, "K3"},
-        {CTRY_KUWAIT, ETSI3_WORLD, "KW"},
-
-> same thing. board.bin is small like the windows eeprom files, so it makes sense and works. trying the url above to download from instead... exact same story. checksum for board file is different, but everything else is the same:
->
-> [   40.135513] ath10k_pci 0000:01:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 144d:c14f
-> [   40.135516] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
-> [   40.136046] ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4-00022-QCARMSWPZ-2 api 6 features wowlan,ignore-otp crc32 4d458559
-> [   40.200646] ath10k_pci 0000:01:00.0: failed to fetch board data for bus=pci,vendor=168c,device=003e,subsystem-vendor=144d,subsystem-device=c14f,variant=K from ath10k/QCA6174/hw3.0/board-2.bin
-> [   40.200664] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32 d0d18eef
-> [   40.769329] ath10k_pci 0000:01:00.0: Unknown eventid: 90118
-> [   40.769912] ath10k_pci 0000:01:00.0: htt-ver 3.32 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
-> [   40.846830] ath: EEPROM regdomain: 0x5f
-> [   40.846831] ath: EEPROM indicates we should expect a direct regpair map
-> [   40.846832] ath: invalid regulatory domain/country code 0x5f
-> [   40.846832] ath: Invalid EEPROM contents
-> [   40.846837] ath10k_pci 0000:01:00.0: failed to initialise regulatory: -22
-> [   40.846839] ath10k_pci 0000:01:00.0: could not register to mac80211 (-22)
-
-Ok, this is the same case, which board file are you using?
-
-> How can I help? The OEM developers are all windows people, so discussing Linux driver needs/specifics with them will be a bit of a challenge. Is there something I can ask for or get for you? As I said in my first mail, I already checked on GPIO's possibly powering down the device etc. and verified with the board HW/Driver devs that it's powered up as desired. Without background on the chips themselves, which driver bin files do what on what chips is a bit of a mystery which I assume you have far better insight into... :)
->
-> So what can I do to help? P.S. Thanks very much for the help/response. :)
->
-
-A rule of thumb is to reporting the unknown or failure board with logs and the model of your laptop, so that we could know what is failing.
-Windows driver is a good reference of which firmware is good for your module, we don't need them to know the Linux driver itself, as this kind of case is mostly due to the mismatch firmware or board files, so if you've access to them, try to check what files you should be using, and then we could add that back to board-2.bin so that more user can benefit.
-
+-struct ath10k_hw_ce_regs qcax_ce_regs = {
++const struct ath10k_hw_ce_regs qcax_ce_regs = {
+ 	.sr_base_addr		= 0x00000000,
+ 	.sr_size_addr		= 0x00000004,
+ 	.dr_base_addr		= 0x00000008,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 0c089f6..f80840f 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -369,8 +369,8 @@ struct ath10k_hw_values {
+ extern const struct ath10k_hw_values qca9888_values;
+ extern const struct ath10k_hw_values qca4019_values;
+ extern const struct ath10k_hw_values wcn3990_values;
+-extern struct ath10k_hw_ce_regs wcn3990_ce_regs;
+-extern struct ath10k_hw_ce_regs qcax_ce_regs;
++extern const struct ath10k_hw_ce_regs wcn3990_ce_regs;
++extern const struct ath10k_hw_ce_regs qcax_ce_regs;
+ 
+ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
+ 				u32 cc, u32 rcc, u32 cc_prev, u32 rcc_prev);
 -- 
-Ryan Hsu
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
