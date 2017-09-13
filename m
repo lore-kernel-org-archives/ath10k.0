@@ -1,14 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-wr0-x234.google.com ([2a00:1450:400c:c0c::234])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dsCvh-0004GF-PH
- for ath10k@lists.infradead.org; Wed, 13 Sep 2017 19:02:35 +0000
-Received: by mail-pf0-x241.google.com with SMTP id q76so432198pfq.5
- for <ath10k@lists.infradead.org>; Wed, 13 Sep 2017 12:02:13 -0700 (PDT)
-From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH] ath10k: make ath10k_hw_ce_regs const
-Date: Thu, 14 Sep 2017 00:31:52 +0530
-Message-Id: <1505329312-26432-1-git-send-email-bhumirks@gmail.com>
+ id 1dsDH2-000529-Pa
+ for ath10k@lists.infradead.org; Wed, 13 Sep 2017 19:24:38 +0000
+Received: by mail-wr0-x234.google.com with SMTP id v109so2484226wrc.1
+ for <ath10k@lists.infradead.org>; Wed, 13 Sep 2017 12:24:14 -0700 (PDT)
+Subject: Re: failed to fetch board data QCA6174
+References: <c1f6096c-7445-7862-a5df-b96211be9df3@gmail.com>
+ <8d3a8d6f-5191-d1fa-784b-28cab8b407d5@qti.qualcomm.com>
+ <e87292ba-a00c-edf9-2c02-5be14750bb60@gmail.com>
+ <d4b43397-3267-abff-fbc1-48cbd9d58073@qti.qualcomm.com>
+ <8b76e913-1205-db34-915b-658fdc017afe@gmail.com>
+ <54ec1899-7db8-088f-e2a9-dc5e532d0cea@qti.qualcomm.com>
+From: Luka Karinja <luka.karinja@gmail.com>
+Message-ID: <bb17d89c-3757-1f57-801e-eee70380ad09@gmail.com>
+Date: Wed, 13 Sep 2017 21:24:10 +0200
+MIME-Version: 1.0
+In-Reply-To: <54ec1899-7db8-088f-e2a9-dc5e532d0cea@qti.qualcomm.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,64 +26,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: julia.lawall@lip6.fr, kvalo@qca.qualcomm.com, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
+To: Ryan Hsu <ryanhsu@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Make them const as they are not modified in the file referencing
-them. They are only stored in the const field 'hw_ce_reg' of an ath10k
-structure. Also, make the declarations in the header const.
+On 09/13/2017 09:00 AM, Ryan Hsu wrote:
+> On 09/12/2017 10:59 PM, Luka Karinja wrote:
+>
+>> Hello. Its a module from ebay. So probably i can't do much with it without the right board.bin?
+>>
+>> this is the module: http://www.ebay.com/itm/Qualcomm-Atheros-QCA6174-QCNFA344A-NGFF-M-2-WIFI-Card-BT4-1-WLAN-Wireless-Blueto/182599401035?ssPageName=STRK%3AMEBIDX%3AIT&_trksid=p2057872.m2749.l2649#viTabs_0
+> Not sure would this works, can you please try to take the driver from here and extract the files.
+>
+> https://drp.su/en/hwids/PCI%5CVEN_168C%26DEV_003E%26SUBSYS_C14F144D%26REV_32
+>
+>  From the inf, QCNFA344A likely is using eeprom_ar6320_3p0_NFA344a.bin (assumed is NFA364A equivalent), rename it to board.bin to see if that works?
+>
+i did try:
+eeprom_ar6320_3p0_NFA344a.bin
+eeprom_ar6320_3p0_NFA344a_BLP.bin
+eeprom_ar6320_3p0_NFA344A_power1213.bin
+with the same calibration not found errors
 
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
----
- drivers/net/wireless/ath/ath10k/hw.c | 4 ++--
- drivers/net/wireless/ath/ath10k/hw.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index a860691..07df7c6 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -310,7 +310,7 @@
- 	.wm_high	= &wcn3990_dst_wm_high,
- };
- 
--struct ath10k_hw_ce_regs wcn3990_ce_regs = {
-+const struct ath10k_hw_ce_regs wcn3990_ce_regs = {
- 	.sr_base_addr		= 0x00000000,
- 	.sr_size_addr		= 0x00000008,
- 	.dr_base_addr		= 0x0000000c,
-@@ -457,7 +457,7 @@ struct ath10k_hw_ce_regs wcn3990_ce_regs = {
- 	.wm_high	= &qcax_dst_wm_high,
- };
- 
--struct ath10k_hw_ce_regs qcax_ce_regs = {
-+const struct ath10k_hw_ce_regs qcax_ce_regs = {
- 	.sr_base_addr		= 0x00000000,
- 	.sr_size_addr		= 0x00000004,
- 	.dr_base_addr		= 0x00000008,
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 0c089f6..f80840f 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -369,8 +369,8 @@ struct ath10k_hw_values {
- extern const struct ath10k_hw_values qca9888_values;
- extern const struct ath10k_hw_values qca4019_values;
- extern const struct ath10k_hw_values wcn3990_values;
--extern struct ath10k_hw_ce_regs wcn3990_ce_regs;
--extern struct ath10k_hw_ce_regs qcax_ce_regs;
-+extern const struct ath10k_hw_ce_regs wcn3990_ce_regs;
-+extern const struct ath10k_hw_ce_regs qcax_ce_regs;
- 
- void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
- 				u32 cc, u32 rcc, u32 cc_prev, u32 rcc_prev);
--- 
-1.9.1
-
+so if i understand correctly, the only way to get it working is with 
+manufacturers board.bin?
 
 _______________________________________________
 ath10k mailing list
