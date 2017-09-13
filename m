@@ -1,21 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x22a.google.com ([2a00:1450:400c:c0c::22a])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ds0jc-0003yh-CI
- for ath10k@lists.infradead.org; Wed, 13 Sep 2017 06:01:18 +0000
-Received: by mail-wr0-x22a.google.com with SMTP id a43so26455251wrc.0
- for <ath10k@lists.infradead.org>; Tue, 12 Sep 2017 23:00:54 -0700 (PDT)
+ id 1ds1fT-0002Bx-Mq
+ for ath10k@lists.infradead.org; Wed, 13 Sep 2017 07:01:06 +0000
+From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
 Subject: Re: failed to fetch board data QCA6174
+Date: Wed, 13 Sep 2017 07:00:41 +0000
+Message-ID: <54ec1899-7db8-088f-e2a9-dc5e532d0cea@qti.qualcomm.com>
 References: <c1f6096c-7445-7862-a5df-b96211be9df3@gmail.com>
  <8d3a8d6f-5191-d1fa-784b-28cab8b407d5@qti.qualcomm.com>
  <e87292ba-a00c-edf9-2c02-5be14750bb60@gmail.com>
  <d4b43397-3267-abff-fbc1-48cbd9d58073@qti.qualcomm.com>
-From: Luka Karinja <luka.karinja@gmail.com>
-Message-ID: <323b1df8-741e-77cd-708b-bb306696f092@gmail.com>
-Date: Wed, 13 Sep 2017 08:00:51 +0200
-MIME-Version: 1.0
-In-Reply-To: <d4b43397-3267-abff-fbc1-48cbd9d58073@qti.qualcomm.com>
+ <8b76e913-1205-db34-915b-658fdc017afe@gmail.com>
+In-Reply-To: <8b76e913-1205-db34-915b-658fdc017afe@gmail.com>
 Content-Language: en-US
+Content-ID: <82F7454D4AF73A49A21890067A339DAF@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +24,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Luka Karinja <luka.karinja@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+On 09/12/2017 10:59 PM, Luka Karinja wrote:
 
-On 09/13/2017 01:14 AM, Ryan Hsu wrote:
-> On 09/12/2017 12:24 AM, Luka Karinja wrote:
+> Hello. Its a module from ebay. So probably i can't do much with it without the right board.bin?
 >
->> [    3.662941] ath10k_pci 0000:05:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 0000:0000
-> Hmm, where did you get this module? it seems like this module is not calibrated or assigned a sub IDs information, that why it cause the failure, since incorrect board file will lead to the firmware crash.
->
-> You might want to contact your module provider to give you the correct board file (board.bin) and replace it under the same firmware folder for testing/developing.
->
+> this is the module: http://www.ebay.com/itm/Qualcomm-Atheros-QCA6174-QCNFA344A-NGFF-M-2-WIFI-Card-BT4-1-WLAN-Wireless-Blueto/182599401035?ssPageName=STRK%3AMEBIDX%3AIT&_trksid=p2057872.m2749.l2649#viTabs_0
 
-Hello. Its a module from ebay. So probably i can't do much with it 
-without the right board.bin?
+Not sure would this works, can you please try to take the driver from here and extract the files.
+
+https://drp.su/en/hwids/PCI%5CVEN_168C%26DEV_003E%26SUBSYS_C14F144D%26REV_32
+
+From the inf, QCNFA344A likely is using eeprom_ar6320_3p0_NFA344a.bin (assumed is NFA364A equivalent), rename it to board.bin to see if that works?
+
+-- 
+Ryan Hsu
 
 _______________________________________________
 ath10k mailing list
