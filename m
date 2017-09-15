@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28]
- helo=alexa-out-lv-02.qualcomm.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dsoQy-00059e-1S
- for ath10k@lists.infradead.org; Fri, 15 Sep 2017 11:05:22 +0000
-From: <yintang@qti.qualcomm.com>
-Subject: [TDLS PATCH V1 5/5] ath10k: Avoid to set WEP key for TDLS peer
-Date: Fri, 15 Sep 2017 19:05:48 +0800
-Message-ID: <1505473548-22977-1-git-send-email-yintang@qti.qualcomm.com>
-In-Reply-To: <TDLS for ath10k>
-References: <TDLS for ath10k>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dstxc-0006oQ-Co
+ for ath10k@lists.infradead.org; Fri, 15 Sep 2017 16:59:33 +0000
+Subject: Re: Failed to wake device (9984)
+References: <c88e48ec-fddc-864e-0ed2-d88e9cc07fb5@candelatech.com>
+ <CAJ-VmoknefqtxZCMc+PETo7Y3-HOcn0H3ySZqVWDTwMirACfcg@mail.gmail.com>
+ <cfd0f2d6-5383-1956-5d32-771a1f329f1f@candelatech.com>
+ <CAJ-Vmom-DUM7R9sGL5SVeMysm-tkRkNrFVXkSfx4kJ+W4yzr1w@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <9068d06f-9245-1eb9-cac3-819c6ed6d471@candelatech.com>
+Date: Fri, 15 Sep 2017 09:59:01 -0700
 MIME-Version: 1.0
+In-Reply-To: <CAJ-Vmom-DUM7R9sGL5SVeMysm-tkRkNrFVXkSfx4kJ+W4yzr1w@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,41 +21,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-From: Yingying Tang <yintang@qti.qualcomm.com>
+On 09/14/2017 07:33 PM, Adrian Chadd wrote:
+> On 14 September 2017 at 17:13, Ben Greear <greearb@candelatech.com> wrote:
+>
+>>>
+>>> There were always weird cold reset races that necessitated a PCI bus reset of the device. :( can you even see the device? do any of the registers work?
+>>
+>>
+>> Can the cold reset be done on generic x86-64 hardware?
+>
+> I'll have to go check. You /should/ be able to. Are there are power
+> and reset files in /sys/bus/pci for those devices?
+>
+>>
+>> And, it shows up enough that the system probes it, at least.  I guess no
+>> infrastructure to speak of set up for this thing, so not sure how to
+>> probe any registers.
+>
+> Well, that could be cached BAR information. There are some cold / warm
+> reset registers in the RTC block that are used during initial wakeup;
+> print what they're saying to see if it's coming back 0xfffffff or
+> 0xdeadc0de or something?
 
-TDLS peer do not need WEP key. Setting WEP key will lead
-to TDLS setup failure. Add fix to avoid setting WEP key
-for TDLS peer.
+One thing I notice, if I simply:  rmmod ath10k_pci ath10k_core; modprobe ath10k_pci
+then it recovered (1 of 1 so far).
 
-Signed-off-by: Yingying Tang <yintang@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c |    4 ++++
- 1 file changed, 4 insertions(+)
+We'll see if that is a reliable way to recover from this problem.  And, will see if we
+can also find a nicer way to go about it...maybe there is just a timer that is not long
+enough somewhere?
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index f6702cb..d2530f7 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5841,6 +5841,10 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 		ath10k_warn(ar, "Peer %pM disappeared!\n", peer_addr);
- 	spin_unlock_bh(&ar->data_lock);
- 
-+	if (sta && sta->tdls)
-+		ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
-+					  WMI_PEER_AUTHORIZE, 1);
-+
- exit:
- 	mutex_unlock(&ar->conf_mutex);
- 	return ret;
+Thanks,
+Ben
+
 -- 
-1.7.9.5
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
