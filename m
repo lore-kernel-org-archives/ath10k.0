@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dtfQs-0008Hg-SP
- for ath10k@lists.infradead.org; Sun, 17 Sep 2017 19:40:51 +0000
-Received: by mail-lf0-x242.google.com with SMTP id y15so3543506lfd.0
- for <ath10k@lists.infradead.org>; Sun, 17 Sep 2017 12:40:25 -0700 (PDT)
+ id 1dtfQt-0008I9-Dg
+ for ath10k@lists.infradead.org; Sun, 17 Sep 2017 19:40:52 +0000
+Received: by mail-lf0-x241.google.com with SMTP id q132so3528891lfe.4
+ for <ath10k@lists.infradead.org>; Sun, 17 Sep 2017 12:40:27 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v3 00/11] ath10k high latency
-Date: Sun, 17 Sep 2017 21:40:02 +0200
-Message-Id: <20170917194013.8658-1-erik.stromdahl@gmail.com>
+Subject: [RFC v3 03/11] ath10k: per target configurablity of various items
+Date: Sun, 17 Sep 2017 21:40:05 +0200
+Message-Id: <20170917194013.8658-4-erik.stromdahl@gmail.com>
+In-Reply-To: <20170917194013.8658-1-erik.stromdahl@gmail.com>
+References: <20170917194013.8658-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,103 +27,215 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-This is the third version of the high latency patches (stuff common for
-usb and sdio).
+Added ability to set bus type and configure the max number of
+peers in the ath10k_hw_params struct.
 
-One major difference between this version and the previous is that the
-num_pending_tx counter has been disabled for high latency devices (last patch).
+With this functionality it is possible to have a different
+hw configuration depending on bus type for the same radio
+chipset.
 
-This fixes the previous issue with the halted USB RX.
-I have tested these patches with a Linksys WUSB6100M and it looks
-much better than the previous version.
+E.g. SDIO and USB devices using the same chipset as PCIe
+devices will potentially use different board files and perhaps
+other configuration parameters.
 
-High latency devices does not seem to send HTT_T2H_MSG_TYPE_TX_COMPL_IND's
-to the host for outgoing packets, resulting in a transmit stop when the
-upper limit of num_pending_tx is reached.
+One such parameter is the max number of peers.
+Instead of using a default value (suitable for PCIe devices)
+derived from the WMI op version, a per target value can be
+used instead.
 
-The qcacld driver mentions that the TX_COMPL_IND can be disabled for HL
-devices in order to achieve better throughput:
+This is needed by the QCA9377 USB device in order to prevent
+the target fw to crash after HTT RX ring cfg is issued.
 
-/*
- * HTT option TLV for specifying whether HL systems should indicate
- * over-the-air tx completion for individual frames, or should instead
- * send a bulk TX_CREDIT_UPDATE_IND except when the host explicitly
- * requests an OTA tx completion for a particular tx frame.
- * This option does not apply to LL systems, where the TX_COMPL_IND
- * is mandatory.
- * This option is primarily intended for HL systems in which the tx frame
- * downloads over the host --> target bus are as slow as or slower than
- * the transmissions over the WLAN PHY.  For cases where the bus is faster
- * than the WLAN PHY, the target will transmit relatively large A-MPDUs,
- * and consquently will send one TX_COMPL_IND message that covers several
- * tx frames.  For cases where the WLAN PHY is faster than the bus,
- * the target will end up transmitting very short A-MPDUs, and consequently
- * sending many TX_COMPL_IND messages, which each cover a very small number
- * of tx frames.
- * The HL_SUPPRESS_TX_COMPL_IND TLV can be sent by the host to the target as
- * a suffix to the VERSION_REQ message to request whether the host desires to
- * use TX_CREDIT_UPDATE_IND rather than TX_COMPL_IND.  The target can then
- * send a HTT_SUPPRESS_TX_COMPL_IND TLV to the host as a suffix to the
- * VERSION_CONF message to confirm whether TX_CREDIT_UPDATE_IND will be used
- * rather than TX_COMPL_IND.  TX_CREDIT_UPDATE_IND shall only be used if the
- * host sends a HL_SUPPRESS_TX_COMPL_IND TLV requesting use of
- * TX_CREDIT_UPDATE_IND, and the target sends a HL_SUPPRESS_TX_COMPLE_IND TLV
- * back to the host confirming use of TX_CREDIT_UPDATE_IND.
- * Lack of a HL_SUPPRESS_TX_COMPL_IND TLV from either host --> target or
- * target --> host is equivalent to a HL_SUPPRESS_TX_COMPL_IND that
- * explicitly specifies HL_ALLOW_TX_COMPL_IND in the value payload of the
- * TLV.
- */
+Apparently, the QCA9377 HL device does not seem to handle the
+same amount of peers as the LL devices.
 
-I am suspecting this is the default behavior in the firmware.
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c    | 33 +++++++++++++++++++++++--------
+ drivers/net/wireless/ath/ath10k/core.h    |  7 -------
+ drivers/net/wireless/ath/ath10k/hw.h      | 22 +++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  4 ++--
+ 4 files changed, 49 insertions(+), 17 deletions(-)
 
-I have tried a simple wget test where I download a Linux kernel tar ball
-from kernel.org. I got the below results:
-
-wget --no-check-certificate \
-https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.4.tar.xz
-
-2017-09-17 16:46:20 (13.3 MB/s) - 'linux-4.11.4.tar.xz' saved
-[95549228/95549228]
-
-13.3 MB/s is a fairly OK result since I have a 100 Mbit/s internet
-connection.
-
-Changes since v2:
-
-- Disabled htt num_pending_tx counter for HL.
-- Fixed transmit flags for HL HTT TX.
-- Proper marking of aggregated frames in the HL HTT RX handler.
-- A few other minor fixes
-
-Erik Stromdahl (11):
-  ath10k: high_latency detection
-  ath10k: htt: RX ring config HL support
-  ath10k: per target configurablity of various items
-  ath10k: add start_once support
-  ath10k: htt: High latency TX support
-  ath10k: htt: High latency RX support
-  ath10k: various fixes for high latency devices
-  ath10k: add QCA9377 usb hw_param item
-  ath10k: add QCA9377 sdio hw_param item
-  ath10k: wmi: disable softirq's while calling ieee80211_rx
-  ath10k: remove htt pending TX count for high latency
-
- drivers/net/wireless/ath/ath10k/core.c    | 128 +++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/core.h    |  16 +--
- drivers/net/wireless/ath/ath10k/htc.c     |  19 ++--
- drivers/net/wireless/ath/ath10k/htt.c     |   5 +-
- drivers/net/wireless/ath/ath10k/htt.h     |  57 ++++++++++-
- drivers/net/wireless/ath/ath10k/htt_rx.c  | 122 ++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/htt_tx.c  | 157 +++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/hw.h      |  30 ++++++
- drivers/net/wireless/ath/ath10k/mac.c     |   5 +-
- drivers/net/wireless/ath/ath10k/rx_desc.h |  15 +++
- drivers/net/wireless/ath/ath10k/txrx.c    |   5 +-
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |   4 +-
- drivers/net/wireless/ath/ath10k/wmi.c     |   3 +
- 13 files changed, 513 insertions(+), 53 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index f1924c974a12..a4a326c89e0d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1663,9 +1663,19 @@ static int ath10k_init_hw_params(struct ath10k *ar)
+ 	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
+ 		hw_params = &ath10k_hw_params_list[i];
+ 
+-		if (hw_params->id == ar->target_version &&
+-		    hw_params->dev_id == ar->dev_id)
+-			break;
++		if (ar->is_high_latency) {
++			/* High latency devices will use different fw depending
++			 * on if it is a USB or SDIO device.
++			 */
++			if (hw_params->bus == ar->hif.bus &&
++			    hw_params->id == ar->target_version &&
++			    hw_params->dev_id == ar->dev_id)
++				break;
++		} else {
++			if (hw_params->id == ar->target_version &&
++			    hw_params->dev_id == ar->dev_id)
++				break;
++		}
+ 	}
+ 
+ 	if (i == ARRAY_SIZE(ath10k_hw_params_list)) {
+@@ -1764,6 +1774,7 @@ static void ath10k_core_set_coverage_class_work(struct work_struct *work)
+ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ {
+ 	struct ath10k_fw_file *fw_file = &ar->normal_mode_fw.fw_file;
++	int max_num_peers;
+ 
+ 	if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, fw_file->fw_features) &&
+ 	    !test_bit(ATH10K_FW_FEATURE_WMI_10X, fw_file->fw_features)) {
+@@ -1843,7 +1854,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 
+ 	switch (fw_file->wmi_op_version) {
+ 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
+-		ar->max_num_peers = TARGET_NUM_PEERS;
++		max_num_peers = TARGET_NUM_PEERS;
+ 		ar->max_num_stations = TARGET_NUM_STATIONS;
+ 		ar->max_num_vdevs = TARGET_NUM_VDEVS;
+ 		ar->htt.max_num_pending_tx = TARGET_NUM_MSDU_DESC;
+@@ -1855,10 +1866,10 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2:
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
+ 		if (ath10k_peer_stats_enabled(ar)) {
+-			ar->max_num_peers = TARGET_10X_TX_STATS_NUM_PEERS;
++			max_num_peers = TARGET_10X_TX_STATS_NUM_PEERS;
+ 			ar->max_num_stations = TARGET_10X_TX_STATS_NUM_STATIONS;
+ 		} else {
+-			ar->max_num_peers = TARGET_10X_NUM_PEERS;
++			max_num_peers = TARGET_10X_NUM_PEERS;
+ 			ar->max_num_stations = TARGET_10X_NUM_STATIONS;
+ 		}
+ 		ar->max_num_vdevs = TARGET_10X_NUM_VDEVS;
+@@ -1867,7 +1878,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_TLV:
+-		ar->max_num_peers = TARGET_TLV_NUM_PEERS;
++		max_num_peers = TARGET_TLV_NUM_PEERS;
+ 		ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
+ 		ar->max_num_vdevs = TARGET_TLV_NUM_VDEVS;
+ 		ar->max_num_tdls_vdevs = TARGET_TLV_NUM_TDLS_VDEVS;
+@@ -1878,7 +1889,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_4:
+-		ar->max_num_peers = TARGET_10_4_NUM_PEERS;
++		max_num_peers = TARGET_10_4_NUM_PEERS;
+ 		ar->max_num_stations = TARGET_10_4_NUM_STATIONS;
+ 		ar->num_active_peers = TARGET_10_4_ACTIVE_PEERS;
+ 		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
+@@ -1896,10 +1907,16 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
+ 	case ATH10K_FW_WMI_OP_VERSION_MAX:
++	default:
+ 		WARN_ON(1);
+ 		return -EINVAL;
+ 	}
+ 
++	if (ar->hw_params.max_num_peers)
++		ar->max_num_peers = ar->hw_params.max_num_peers;
++	else
++		ar->max_num_peers = max_num_peers;
++
+ 	/* Backwards compatibility for firmwares without
+ 	 * ATH10K_FW_IE_HTT_OP_VERSION.
+ 	 */
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index dc9ecf773d51..64dadcd6e531 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -88,13 +88,6 @@
+ 
+ struct ath10k;
+ 
+-enum ath10k_bus {
+-	ATH10K_BUS_PCI,
+-	ATH10K_BUS_AHB,
+-	ATH10K_BUS_SDIO,
+-	ATH10K_BUS_USB,
+-};
+-
+ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+ {
+ 	switch (bus) {
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 0c089f6dd3d9..8cf7b963f3d4 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -20,6 +20,13 @@
+ 
+ #include "targaddrs.h"
+ 
++enum ath10k_bus {
++	ATH10K_BUS_PCI,
++	ATH10K_BUS_AHB,
++	ATH10K_BUS_SDIO,
++	ATH10K_BUS_USB,
++};
++
+ #define ATH10K_FW_DIR			"ath10k"
+ 
+ #define QCA988X_2_0_DEVICE_ID   (0x003c)
+@@ -550,6 +557,18 @@ struct ath10k_hw_params {
+ 	 */
+ 	int vht160_mcs_rx_highest;
+ 	int vht160_mcs_tx_highest;
++
++	/* max_num_peers can be used to override the setting derived from
++	 * the WMI op version. If this value is non-zero, it will always
++	 * be used instead of the default value derived from the WMI op
++	 * version.
++	 */
++	int max_num_peers;
++
++	/* Specifies whether or not the device is a high latency device */
++	bool is_high_latency;
++
++	enum ath10k_bus bus;
+ };
+ 
+ struct htt_rx_desc;
+@@ -660,6 +679,9 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
+ #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
+ #define TARGET_TLV_NUM_WOW_PATTERNS		22
+ 
++/* Target specific defines for QCA9377 high latency firmware */
++#define TARGET_QCA9377_HL_NUM_PEERS		15
++
+ /* Diagnostic Window */
+ #define CE_DIAG_PIPE	7
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 7616c1c4bbd3..34e977049f00 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1406,7 +1406,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
+ 	cmd->num_host_mem_chunks = __cpu_to_le32(ar->wmi.num_mem_chunks);
+ 
+ 	cfg->num_vdevs = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
+-	cfg->num_peers = __cpu_to_le32(TARGET_TLV_NUM_PEERS);
++	cfg->num_peers = __cpu_to_le32(ar->max_num_peers);
+ 
+ 	if (test_bit(WMI_SERVICE_RX_FULL_REORDER, ar->wmi.svc_map)) {
+ 		cfg->num_offload_peers = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
+@@ -1417,7 +1417,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
+ 	}
+ 
+ 	cfg->num_peer_keys = __cpu_to_le32(2);
+-	cfg->num_tids = __cpu_to_le32(TARGET_TLV_NUM_TIDS);
++	cfg->num_tids = __cpu_to_le32(ar->max_num_peers * 2);
+ 	cfg->ast_skid_limit = __cpu_to_le32(0x10);
+ 	cfg->tx_chain_mask = __cpu_to_le32(0x7);
+ 	cfg->rx_chain_mask = __cpu_to_le32(0x7);
 -- 
 2.14.1
 
