@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dtfQs-0008Hj-Td
+ id 1dtfQs-0008II-Sh
  for ath10k@lists.infradead.org; Sun, 17 Sep 2017 19:40:48 +0000
-Received: by mail-lf0-x244.google.com with SMTP id q132so3528879lfe.4
- for <ath10k@lists.infradead.org>; Sun, 17 Sep 2017 12:40:25 -0700 (PDT)
+Received: by mail-lf0-x242.google.com with SMTP id q132so3528900lfe.4
+ for <ath10k@lists.infradead.org>; Sun, 17 Sep 2017 12:40:28 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v3 01/11] ath10k: high_latency detection
-Date: Sun, 17 Sep 2017 21:40:03 +0200
-Message-Id: <20170917194013.8658-2-erik.stromdahl@gmail.com>
+Subject: [RFC v3 04/11] ath10k: add start_once support
+Date: Sun, 17 Sep 2017 21:40:06 +0200
+Message-Id: <20170917194013.8658-5-erik.stromdahl@gmail.com>
 In-Reply-To: <20170917194013.8658-1-erik.stromdahl@gmail.com>
 References: <20170917194013.8658-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,56 +27,104 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-The setup of high latency chips (USB and SDIO) is
-sometimes different than for chips using low latency
-interfaces.
+Add possibility to configure the driver to only start target once.
+This can reduce startup time of SDIO devices significantly since
+loading the firmware can take a substantial amount of time.
 
-The bus type is used to determine if the interface is
-a high latency interface.
+The patch is also necessary for high latency devices in general
+since it does not seem to be possible to rerun the BMI phase
+(fw upload) without power-cycling the device.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 1 +
- drivers/net/wireless/ath/ath10k/core.h | 7 +++++++
- 2 files changed, 8 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c | 19 +++++++++++++++----
+ drivers/net/wireless/ath/ath10k/core.h |  2 ++
+ drivers/net/wireless/ath/ath10k/hw.h   |  6 ++++++
+ 3 files changed, 23 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index a4f635820f35..f1924c974a12 100644
+index a4a326c89e0d..c21227a74996 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2496,6 +2496,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 	ar->hw_rev = hw_rev;
- 	ar->hif.ops = hif_ops;
- 	ar->hif.bus = bus;
-+	ar->is_high_latency = ath10k_is_high_latency(bus);
+@@ -1999,6 +1999,9 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 	int status;
+ 	u32 val;
  
- 	switch (hw_rev) {
- 	case ATH10K_HW_QCA988X:
++	if (ar->is_started && ar->hw_params.start_once)
++		return 0;
++
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+ 	clear_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
+@@ -2226,6 +2229,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 	if (status)
+ 		goto err_hif_stop;
+ 
++	ar->is_started = true;
+ 	return 0;
+ 
+ err_hif_stop:
+@@ -2278,6 +2282,7 @@ void ath10k_core_stop(struct ath10k *ar)
+ 	ath10k_htt_tx_stop(&ar->htt);
+ 	ath10k_htt_rx_free(&ar->htt);
+ 	ath10k_wmi_detach(ar);
++	ar->is_started = false;
+ }
+ EXPORT_SYMBOL(ath10k_core_stop);
+ 
+@@ -2380,12 +2385,18 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 		goto err_unlock;
+ 	}
+ 
+-	ath10k_debug_print_boot_info(ar);
+-	ath10k_core_stop(ar);
++	/* Leave target running if hw_params.start_once is set */
++	if (ar->hw_params.start_once) {
++		mutex_unlock(&ar->conf_mutex);
++	} else {
++		ath10k_debug_print_boot_info(ar);
++		ath10k_core_stop(ar);
+ 
+-	mutex_unlock(&ar->conf_mutex);
++		mutex_unlock(&ar->conf_mutex);
++
++		ath10k_hif_power_down(ar);
++	}
+ 
+-	ath10k_hif_power_down(ar);
+ 	return 0;
+ 
+ err_unlock:
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 949ebb3e967b..dc9ecf773d51 100644
+index 64dadcd6e531..0b5b1dd00e16 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -789,6 +789,8 @@ struct ath10k {
+@@ -784,6 +784,8 @@ struct ath10k {
  
- 	bool p2p;
+ 	bool is_high_latency;
  
-+	bool is_high_latency;
++	bool is_started;
 +
  	struct {
  		enum ath10k_bus bus;
  		const struct ath10k_hif_ops *ops;
-@@ -1013,6 +1015,11 @@ static inline bool ath10k_peer_stats_enabled(struct ath10k *ar)
- 	return false;
- }
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 8cf7b963f3d4..fd0536077404 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -569,6 +569,12 @@ struct ath10k_hw_params {
+ 	bool is_high_latency;
  
-+static inline bool ath10k_is_high_latency(enum ath10k_bus bus)
-+{
-+	return ((bus == ATH10K_BUS_SDIO) || (bus == ATH10K_BUS_USB));
-+}
+ 	enum ath10k_bus bus;
 +
- struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 				  enum ath10k_bus bus,
- 				  enum ath10k_hw_rev hw_rev,
++	/* Specifies whether or not the device should be started once.
++	 * If set, the device will be started once by the early fw probe
++	 * and it will not be terminated afterwards.
++	 */
++	bool start_once;
+ };
+ 
+ struct htt_rx_desc;
 -- 
 2.14.1
 
