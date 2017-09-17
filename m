@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+Received: from mx1.mailbox.org ([80.241.60.212])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dtfQw-0008Ia-6J
- for ath10k@lists.infradead.org; Sun, 17 Sep 2017 19:41:03 +0000
-Received: by mail-lf0-x243.google.com with SMTP id q132so3528912lfe.4
- for <ath10k@lists.infradead.org>; Sun, 17 Sep 2017 12:40:29 -0700 (PDT)
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v3 05/11] ath10k: htt: High latency TX support
-Date: Sun, 17 Sep 2017 21:40:07 +0200
-Message-Id: <20170917194013.8658-6-erik.stromdahl@gmail.com>
-In-Reply-To: <20170917194013.8658-1-erik.stromdahl@gmail.com>
-References: <20170917194013.8658-1-erik.stromdahl@gmail.com>
+ id 1dtfsc-00045D-TR
+ for ath10k@lists.infradead.org; Sun, 17 Sep 2017 20:09:45 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Subject: QCA988X: FW firmware-5.bin_10.2.4.70.63-2 crashes at ath10k load
+Message-ID: <ba581279-8a7b-c38d-fa91-b4a85dd80b15@hauke-m.de>
+Date: Sun, 17 Sep 2017 22:08:58 +0200
+MIME-Version: 1.0
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,165 +17,159 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
+To: kvalo@qca.qualcomm.com, ath10k@lists.infradead.org
 
-Add HTT TX function for HL interfaces.
-Intended for SDIO and USB.
+Hi,
 
-Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
----
- drivers/net/wireless/ath/ath10k/htt.h    |  9 ++--
- drivers/net/wireless/ath/ath10k/htt_tx.c | 91 +++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/mac.c    |  5 +-
- 3 files changed, 99 insertions(+), 6 deletions(-)
+I am using a BT Home Hub 5A with LEDE and backports-4.14-rc1 + some
+patches from the LEDE repository. It has one QCA988X card in it which
+works like expected with FW firmware-5.bin_10.2.4-1.0-00029, but crashes
+with FW firmware-5.bin_10.2.4.70.63-2.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 7ffa1d41f478..bac453f5753e 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1830,9 +1830,12 @@ int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_mgmt,
- int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb);
- void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
- int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu);
--int ath10k_htt_tx(struct ath10k_htt *htt,
--		  enum ath10k_hw_txrx_mode txmode,
--		  struct sk_buff *msdu);
-+int ath10k_htt_tx_ll(struct ath10k_htt *htt,
-+		     enum ath10k_hw_txrx_mode txmode,
-+		     struct sk_buff *msdu);
-+int ath10k_htt_tx_hl(struct ath10k_htt *htt,
-+		     enum ath10k_hw_txrx_mode txmode,
-+		     struct sk_buff *msdu);
- void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
- 					     struct sk_buff *skb);
- int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget);
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 8d85f82ad8f8..a3d69f852e38 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -946,8 +946,95 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	return res;
- }
- 
--int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
--		  struct sk_buff *msdu)
-+#define HTT_TX_HL_NEEDED_HEADROOM \
-+	(unsigned int)(sizeof(struct htt_cmd_hdr) + \
-+	sizeof(struct htt_data_tx_desc) + \
-+	sizeof(struct ath10k_htc_hdr))
-+
-+int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
-+		     struct sk_buff *msdu)
-+{
-+	struct ath10k *ar = htt->ar;
-+	int res, data_len;
-+	struct htt_cmd_hdr *cmd_hdr;
-+	struct htt_data_tx_desc *tx_desc;
-+	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
-+	bool is_eth = (txmode == ATH10K_HW_TXRX_ETHERNET);
-+	u8 vdev_id = ath10k_htt_tx_get_vdev_id(ar, msdu);
-+	u8 tid = ath10k_htt_tx_get_tid(msdu, is_eth);
-+	u8 flags0 = 0;
-+	u16 flags1 = 0;
-+
-+	data_len = msdu->len;
-+
-+	switch (txmode) {
-+	case ATH10K_HW_TXRX_RAW:
-+	case ATH10K_HW_TXRX_NATIVE_WIFI:
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
-+		/* fall through */
-+	case ATH10K_HW_TXRX_ETHERNET:
-+		flags0 |= SM(txmode, HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+		break;
-+	case ATH10K_HW_TXRX_MGMT:
-+		flags0 |= SM(ATH10K_HW_TXRX_MGMT,
-+			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
-+		break;
-+	}
-+
-+	if (skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT)
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
-+
-+	flags1 |= SM((u16)vdev_id, HTT_DATA_TX_DESC_FLAGS1_VDEV_ID);
-+	flags1 |= SM((u16)tid, HTT_DATA_TX_DESC_FLAGS1_EXT_TID);
-+	if (msdu->ip_summed == CHECKSUM_PARTIAL &&
-+	    !test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
-+		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L3_OFFLOAD;
-+		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L4_OFFLOAD;
-+	}
-+
-+	/* Prepend the HTT header and TX desc struct to the data message
-+	 * and realloc the skb if it does not have enough headroom.
-+	 */
-+	if (skb_headroom(msdu) < HTT_TX_HL_NEEDED_HEADROOM) {
-+		struct sk_buff *tmp_skb = msdu;
-+
-+		ath10k_dbg(htt->ar, ATH10K_DBG_HTT,
-+			   "Not enough headroom in skb. Current headroom: %u, needed: %u. Reallocating...\n",
-+			   skb_headroom(msdu), HTT_TX_HL_NEEDED_HEADROOM);
-+		msdu = skb_realloc_headroom(msdu, HTT_TX_HL_NEEDED_HEADROOM);
-+		kfree_skb(tmp_skb);
-+		if (!msdu) {
-+			ath10k_warn(htt->ar, "htt hl tx: Unable to realloc skb!\n");
-+			res = -ENOMEM;
-+			goto out;
-+		}
-+	}
-+
-+	skb_push(msdu, sizeof(*cmd_hdr));
-+	skb_push(msdu, sizeof(*tx_desc));
-+	cmd_hdr = (struct htt_cmd_hdr *)msdu->data;
-+	tx_desc = (struct htt_data_tx_desc *)(msdu->data + sizeof(*cmd_hdr));
-+
-+	cmd_hdr->msg_type = HTT_H2T_MSG_TYPE_TX_FRM;
-+	tx_desc->flags0 = flags0;
-+	tx_desc->flags1 = __cpu_to_le16(flags1);
-+	tx_desc->len = __cpu_to_le16(data_len);
-+	tx_desc->id = 0;
-+	tx_desc->frags_paddr = 0; /* always zero */
-+	/* Initialize peer_id to INVALID_PEER because this is NOT
-+	 * Reinjection path
-+	 */
-+	tx_desc->peerid = __cpu_to_le32(HTT_INVALID_PEERID);
-+
-+	res = ath10k_htc_send(&htt->ar->htc, htt->eid, msdu);
-+
-+out:
-+	return res;
-+}
-+
-+int ath10k_htt_tx_ll(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
-+		     struct sk_buff *msdu)
- {
- 	struct ath10k *ar = htt->ar;
- 	struct device *dev = ar->dev;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5683f1a5330e..aa817b8fcae4 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3585,7 +3585,10 @@ static int ath10k_mac_tx_submit(struct ath10k *ar,
- 
- 	switch (txpath) {
- 	case ATH10K_MAC_TX_HTT:
--		ret = ath10k_htt_tx(htt, txmode, skb);
-+		if (ar->is_high_latency)
-+			ret = ath10k_htt_tx_hl(htt, txmode, skb);
-+		else
-+			ret = ath10k_htt_tx_ll(htt, txmode, skb);
- 		break;
- 	case ATH10K_MAC_TX_HTT_MGMT:
- 		ret = ath10k_htt_mgmt_tx(htt, skb);
--- 
-2.14.1
+Both files are taken from the ath10k-firmware repository and I am using
+the same board.bin file. I also saw the same crash with the older
+mac80211 from January currently shipped in LEDE.
 
+
+Log from crash with FW firmware-5.bin_10.2.4.70.63-2:
+
+[    9.931766] Loading modules backported from Linux version
+v4.14-rc1-0-g2bd6bf03f4c1
+[    9.938075] Backport generated by backports.git
+backports-20160324-159-ga75750fc
+[   10.010918] PCI: Enabling device 0000:01:00.0 (0000 -> 0002)
+[   10.015343] PCI: Enabling device 0000:02:00.0 (0000 -> 0002)
+[   10.021220] ath10k_pci 0000:02:00.0: pci irq legacy oper_irq_mode 1
+irq_mode 0 reset_mode 0
+[   10.238897] ath10k_pci 0000:02:00.0: Direct firmware load for
+ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
+[   10.248261] ath10k_pci 0000:02:00.0: Falling back to user helper
+[   10.375344] firmware ath10k!pre-cal-pci-0000:02:00.0.bin:
+firmware_loading_store: map pages failed
+[   10.383547] ath10k_pci 0000:02:00.0: Direct firmware load for
+ath10k/cal-pci-0000:02:00.0.bin failed with error -2
+[   10.393317] ath10k_pci 0000:02:00.0: Falling back to user helper
+[   11.165300] ath10k_pci 0000:02:00.0: Direct firmware load for
+ath10k/QCA988X/hw2.0/firmware-6.bin failed with error -2
+[   11.174643] ath10k_pci 0000:02:00.0: Falling back to user helper
+[   11.335580] firmware ath10k!QCA988X!hw2.0!firmware-6.bin:
+firmware_loading_store: map pages failed
+[   11.346070] ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c
+chip_id 0x043202ff sub 0000:0000
+[   11.353975] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1
+tracing 0 dfs 1 testmode 1
+[   11.372950] ath10k_pci 0000:02:00.0: firmware ver 10.2.4.70.63-2 api
+5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 4ff9e14d
+[   11.425612] ath10k_pci 0000:02:00.0: Direct firmware load for
+ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
+[   11.434773] ath10k_pci 0000:02:00.0: Falling back to user helper
+[   11.628495] firmware ath10k!QCA988X!hw2.0!board-2.bin:
+firmware_loading_store: map pages failed
+[   11.636714] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A
+crc32 bebc7c08
+[   12.690457] ath10k_pci 0000:02:00.0: firmware crashed! (guid
+81012583-d117-4daa-ba3c-e1b347b884c3)
+[   12.698032] ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c
+chip_id 0x043202ff sub 0000:0000
+[   12.707242] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1
+tracing 0 dfs 1 testmode 1
+[   12.722715] ath10k_pci 0000:02:00.0: firmware ver 10.2.4.70.63-2 api
+5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 4ff9e14d
+[   12.733306] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A
+crc32 bebc7c08
+[   12.740548] ath10k_pci 0000:02:00.0: htt-ver 0.0 wmi-op 5 htt-op 2
+cal file max-sta 128 raw 0 hwcrypto 1
+[   12.752072] ath10k_pci 0000:02:00.0: firmware register dump:
+[   12.756336] ath10k_pci 0000:02:00.0: [00]: 0x4100016C 0x000015B3
+0x009BFF84 0x00955B31
+[   12.764240] ath10k_pci 0000:02:00.0: [04]: 0x009BFF84 0x00060130
+0x00000013 0x00000000
+[   12.772160] ath10k_pci 0000:02:00.0: [08]: 0x009C8EA4 0x00007170
+0x00000001 0x00435300
+[   12.780081] ath10k_pci 0000:02:00.0: [12]: 0x00000009 0x00000000
+0x00958360 0x0095836B
+[   12.788001] ath10k_pci 0000:02:00.0: [16]: 0x00958080 0x0094078E
+0x00000000 0x00000000
+[   12.795922] ath10k_pci 0000:02:00.0: [20]: 0x409BFF84 0x0040AB44
+0x004101E0 0x0000000C
+[   12.803843] ath10k_pci 0000:02:00.0: [24]: 0x809BFE1C 0x0040ABA4
+0x00000006 0xC09BFF84
+[   12.811764] ath10k_pci 0000:02:00.0: [28]: 0x8098E907 0x0040ABD4
+0x009C8E7C 0x0000016B
+[   12.819685] ath10k_pci 0000:02:00.0: [32]: 0x8098FD3B 0x0040ABF4
+0x004209EC 0x00420B0C
+[   12.827606] ath10k_pci 0000:02:00.0: [36]: 0x8098A7DA 0x0040AC34
+0x00420AA0 0x004062DC
+[   12.835526] ath10k_pci 0000:02:00.0: [40]: 0x80988785 0x0040AC94
+0x00410760 0x00400000
+[   12.843447] ath10k_pci 0000:02:00.0: [44]: 0x8098AEC8 0x0040AD44
+0x00410760 0x00000001
+[   12.851368] ath10k_pci 0000:02:00.0: [48]: 0x809B67C4 0x0040AD84
+0x00410760 0x00411344
+[   12.859288] ath10k_pci 0000:02:00.0: [52]: 0x809B293C 0x0040ADA4
+0x00400000 0x00416FA4
+[   12.867209] ath10k_pci 0000:02:00.0: [56]: 0x809C0C3D 0x0040ADE4
+0x0040AE08 0x00412118
+[   12.875121] ath10k_pci 0000:02:00.0: Copy Engine register dump:
+[   12.881054] ath10k_pci 0000:02:00.0: [00]: 0x00057400  14  14   3   3
+[   12.887498] ath10k_pci 0000:02:00.0: [01]: 0x00057800   3   3   7   8
+[   12.893946] ath10k_pci 0000:02:00.0: [02]: 0x00057c00   1   1   0   1
+[   12.900380] ath10k_pci 0000:02:00.0: [03]: 0x00058000   1   1   2   1
+[   12.906818] ath10k_pci 0000:02:00.0: [04]: 0x00058400   0   0  40   0
+[   12.913261] ath10k_pci 0000:02:00.0: [05]: 0x00058800   0   0   0   0
+[   12.919702] ath10k_pci 0000:02:00.0: [06]: 0x00058c00   0   0   0   0
+[   12.926140] ath10k_pci 0000:02:00.0: [07]: 0x00059000   0   0   0   0
+[   17.685056] ath10k_pci 0000:02:00.0: wmi unified ready event not received
+[   17.790926] ath10k_pci 0000:02:00.0: could not init core (-145)
+[   17.795623] ath10k_pci 0000:02:00.0: could not probe fw (-145)
+[   17.819649] ath10k_pci 0000:02:00.0: cannot restart a device that
+hasn't been started
+...
+
+Log file from successful load with FW firmware-5.bin_10.2.4-1.0-00029:
+
+[    9.924850] Loading modules backported from Linux version
+v4.14-rc1-0-g2bd6bf03f4c1
+[    9.931136] Backport generated by backports.git
+backports-20160324-159-ga75750fc
+[   10.000800] PCI: Enabling device 0000:01:00.0 (0000 -> 0002)
+[   10.005231] PCI: Enabling device 0000:02:00.0 (0000 -> 0002)
+[   10.011059] ath10k_pci 0000:02:00.0: pci irq legacy oper_irq_mode 1
+irq_mode 0 reset_mode 0
+[   10.220028] ath10k_pci 0000:02:00.0: Direct firmware load for
+ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
+[   10.229388] ath10k_pci 0000:02:00.0: Falling back to user helper
+[   10.357214] firmware ath10k!pre-cal-pci-0000:02:00.0.bin:
+firmware_loading_store: map pages failed
+[   10.365394] ath10k_pci 0000:02:00.0: Direct firmware load for
+ath10k/cal-pci-0000:02:00.0.bin failed with error -2
+[   10.375165] ath10k_pci 0000:02:00.0: Falling back to user helper
+[   11.150305] ath10k_pci 0000:02:00.0: Direct firmware load for
+ath10k/QCA988X/hw2.0/firmware-6.bin failed with error -2
+[   11.159638] ath10k_pci 0000:02:00.0: Falling back to user helper
+[   11.321171] firmware ath10k!QCA988X!hw2.0!firmware-6.bin:
+firmware_loading_store: map pages failed
+[   11.331751] ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c
+chip_id 0x043202ff sub 0000:0000
+[   11.339651] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1
+tracing 0 dfs 1 testmode 1
+[   11.358632] ath10k_pci 0000:02:00.0: firmware ver 10.2.4-1.0-00029
+api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 88595bb8
+[   11.403270] ath10k_pci 0000:02:00.0: Direct firmware load for
+ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
+[   11.412455] ath10k_pci 0000:02:00.0: Falling back to user helper
+[   11.610645] firmware ath10k!QCA988X!hw2.0!board-2.bin:
+firmware_loading_store: map pages failed
+[   11.618888] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A
+crc32 bebc7c08
+[   12.662797] ath10k_pci 0000:02:00.0: htt-ver 2.1 wmi-op 5 htt-op 2
+cal file max-sta 128 raw 0 hwcrypto 1
+
+Hauke
 
 _______________________________________________
 ath10k mailing list
