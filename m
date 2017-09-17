@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dtfQt-0008I9-Dg
+ id 1dtfQt-0008I1-Dg
  for ath10k@lists.infradead.org; Sun, 17 Sep 2017 19:40:52 +0000
-Received: by mail-lf0-x241.google.com with SMTP id q132so3528891lfe.4
- for <ath10k@lists.infradead.org>; Sun, 17 Sep 2017 12:40:27 -0700 (PDT)
+Received: by mail-lf0-x241.google.com with SMTP id l196so3535664lfl.3
+ for <ath10k@lists.infradead.org>; Sun, 17 Sep 2017 12:40:26 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v3 03/11] ath10k: per target configurablity of various items
-Date: Sun, 17 Sep 2017 21:40:05 +0200
-Message-Id: <20170917194013.8658-4-erik.stromdahl@gmail.com>
+Subject: [RFC v3 02/11] ath10k: htt: RX ring config HL support
+Date: Sun, 17 Sep 2017 21:40:04 +0200
+Message-Id: <20170917194013.8658-3-erik.stromdahl@gmail.com>
 In-Reply-To: <20170917194013.8658-1-erik.stromdahl@gmail.com>
 References: <20170917194013.8658-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,215 +27,110 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Added ability to set bus type and configure the max number of
-peers in the ath10k_hw_params struct.
+Special HTT RX ring config message used by high latency
+devices.
 
-With this functionality it is possible to have a different
-hw configuration depending on bus type for the same radio
-chipset.
-
-E.g. SDIO and USB devices using the same chipset as PCIe
-devices will potentially use different board files and perhaps
-other configuration parameters.
-
-One such parameter is the max number of peers.
-Instead of using a default value (suitable for PCIe devices)
-derived from the WMI op version, a per target value can be
-used instead.
-
-This is needed by the QCA9377 USB device in order to prevent
-the target fw to crash after HTT RX ring cfg is issued.
-
-Apparently, the QCA9377 HL device does not seem to handle the
-same amount of peers as the LL devices.
+The main difference between HL and LL is that HL devices
+do not use shared memory between device and host and thus,
+no host paddr's are added to the RX config message.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c    | 33 +++++++++++++++++++++++--------
- drivers/net/wireless/ath/ath10k/core.h    |  7 -------
- drivers/net/wireless/ath/ath10k/hw.h      | 22 +++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  4 ++--
- 4 files changed, 49 insertions(+), 17 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.c    |  5 +++-
+ drivers/net/wireless/ath/ath10k/htt.h    |  1 +
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 51 ++++++++++++++++++++++++++++++++
+ 3 files changed, 56 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index f1924c974a12..a4a326c89e0d 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1663,9 +1663,19 @@ static int ath10k_init_hw_params(struct ath10k *ar)
- 	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
- 		hw_params = &ath10k_hw_params_list[i];
+diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
+index cd160b16db1e..29ed4afe52a4 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.c
++++ b/drivers/net/wireless/ath/ath10k/htt.c
+@@ -258,7 +258,10 @@ int ath10k_htt_setup(struct ath10k_htt *htt)
+ 	if (status)
+ 		return status;
  
--		if (hw_params->id == ar->target_version &&
--		    hw_params->dev_id == ar->dev_id)
--			break;
-+		if (ar->is_high_latency) {
-+			/* High latency devices will use different fw depending
-+			 * on if it is a USB or SDIO device.
-+			 */
-+			if (hw_params->bus == ar->hif.bus &&
-+			    hw_params->id == ar->target_version &&
-+			    hw_params->dev_id == ar->dev_id)
-+				break;
-+		} else {
-+			if (hw_params->id == ar->target_version &&
-+			    hw_params->dev_id == ar->dev_id)
-+				break;
-+		}
- 	}
- 
- 	if (i == ARRAY_SIZE(ath10k_hw_params_list)) {
-@@ -1764,6 +1774,7 @@ static void ath10k_core_set_coverage_class_work(struct work_struct *work)
- static int ath10k_core_init_firmware_features(struct ath10k *ar)
- {
- 	struct ath10k_fw_file *fw_file = &ar->normal_mode_fw.fw_file;
-+	int max_num_peers;
- 
- 	if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, fw_file->fw_features) &&
- 	    !test_bit(ATH10K_FW_FEATURE_WMI_10X, fw_file->fw_features)) {
-@@ -1843,7 +1854,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 
- 	switch (fw_file->wmi_op_version) {
- 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
--		ar->max_num_peers = TARGET_NUM_PEERS;
-+		max_num_peers = TARGET_NUM_PEERS;
- 		ar->max_num_stations = TARGET_NUM_STATIONS;
- 		ar->max_num_vdevs = TARGET_NUM_VDEVS;
- 		ar->htt.max_num_pending_tx = TARGET_NUM_MSDU_DESC;
-@@ -1855,10 +1866,10 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 	case ATH10K_FW_WMI_OP_VERSION_10_2:
- 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
- 		if (ath10k_peer_stats_enabled(ar)) {
--			ar->max_num_peers = TARGET_10X_TX_STATS_NUM_PEERS;
-+			max_num_peers = TARGET_10X_TX_STATS_NUM_PEERS;
- 			ar->max_num_stations = TARGET_10X_TX_STATS_NUM_STATIONS;
- 		} else {
--			ar->max_num_peers = TARGET_10X_NUM_PEERS;
-+			max_num_peers = TARGET_10X_NUM_PEERS;
- 			ar->max_num_stations = TARGET_10X_NUM_STATIONS;
- 		}
- 		ar->max_num_vdevs = TARGET_10X_NUM_VDEVS;
-@@ -1867,7 +1878,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_TLV:
--		ar->max_num_peers = TARGET_TLV_NUM_PEERS;
-+		max_num_peers = TARGET_TLV_NUM_PEERS;
- 		ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
- 		ar->max_num_vdevs = TARGET_TLV_NUM_VDEVS;
- 		ar->max_num_tdls_vdevs = TARGET_TLV_NUM_TDLS_VDEVS;
-@@ -1878,7 +1889,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_10_4:
--		ar->max_num_peers = TARGET_10_4_NUM_PEERS;
-+		max_num_peers = TARGET_10_4_NUM_PEERS;
- 		ar->max_num_stations = TARGET_10_4_NUM_STATIONS;
- 		ar->num_active_peers = TARGET_10_4_ACTIVE_PEERS;
- 		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
-@@ -1896,10 +1907,16 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
- 	case ATH10K_FW_WMI_OP_VERSION_MAX:
-+	default:
- 		WARN_ON(1);
- 		return -EINVAL;
- 	}
- 
-+	if (ar->hw_params.max_num_peers)
-+		ar->max_num_peers = ar->hw_params.max_num_peers;
+-	status = ath10k_htt_send_rx_ring_cfg_ll(htt);
++	if (ar->is_high_latency)
++		status = ath10k_htt_send_rx_ring_cfg_hl(htt);
 +	else
-+		ar->max_num_peers = max_num_peers;
++		status = ath10k_htt_send_rx_ring_cfg_ll(htt);
+ 	if (status) {
+ 		ath10k_warn(ar, "failed to setup rx ring: %d\n",
+ 			    status);
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 6305308422c4..7ffa1d41f478 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1805,6 +1805,7 @@ int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt);
+ int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie);
+ int ath10k_htt_send_frag_desc_bank_cfg(struct ath10k_htt *htt);
+ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt);
++int ath10k_htt_send_rx_ring_cfg_hl(struct ath10k_htt *htt);
+ int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
+ 				u8 max_subfrms_ampdu,
+ 				u8 max_subfrms_amsdu);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 685faac1368f..8d85f82ad8f8 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -693,6 +693,57 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
+ 	return 0;
+ }
+ 
++int ath10k_htt_send_rx_ring_cfg_hl(struct ath10k_htt *htt)
++{
++	struct ath10k *ar = htt->ar;
++	struct sk_buff *skb;
++	struct htt_cmd *cmd;
++	struct htt_rx_ring_setup_ring *ring;
++	const int num_rx_ring = 1;
++	u16 flags;
++	int len;
++	int ret;
 +
- 	/* Backwards compatibility for firmwares without
- 	 * ATH10K_FW_IE_HTT_OP_VERSION.
- 	 */
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index dc9ecf773d51..64dadcd6e531 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -88,13 +88,6 @@
- 
- struct ath10k;
- 
--enum ath10k_bus {
--	ATH10K_BUS_PCI,
--	ATH10K_BUS_AHB,
--	ATH10K_BUS_SDIO,
--	ATH10K_BUS_USB,
--};
--
- static inline const char *ath10k_bus_str(enum ath10k_bus bus)
- {
- 	switch (bus) {
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 0c089f6dd3d9..8cf7b963f3d4 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -20,6 +20,13 @@
- 
- #include "targaddrs.h"
- 
-+enum ath10k_bus {
-+	ATH10K_BUS_PCI,
-+	ATH10K_BUS_AHB,
-+	ATH10K_BUS_SDIO,
-+	ATH10K_BUS_USB,
-+};
-+
- #define ATH10K_FW_DIR			"ath10k"
- 
- #define QCA988X_2_0_DEVICE_ID   (0x003c)
-@@ -550,6 +557,18 @@ struct ath10k_hw_params {
- 	 */
- 	int vht160_mcs_rx_highest;
- 	int vht160_mcs_tx_highest;
-+
-+	/* max_num_peers can be used to override the setting derived from
-+	 * the WMI op version. If this value is non-zero, it will always
-+	 * be used instead of the default value derived from the WMI op
-+	 * version.
++	/*
++	 * the HW expects the buffer to be an integral number of 4-byte
++	 * "words"
 +	 */
-+	int max_num_peers;
++	BUILD_BUG_ON(!IS_ALIGNED(HTT_RX_BUF_SIZE, 4));
++	BUILD_BUG_ON((HTT_RX_BUF_SIZE & HTT_MAX_CACHE_LINE_SIZE_MASK) != 0);
 +
-+	/* Specifies whether or not the device is a high latency device */
-+	bool is_high_latency;
++	len = sizeof(cmd->hdr) + sizeof(cmd->rx_setup.hdr)
++	    + (sizeof(*ring) * num_rx_ring);
++	skb = ath10k_htc_alloc_skb(ar, len);
++	if (!skb)
++		return -ENOMEM;
 +
-+	enum ath10k_bus bus;
- };
- 
- struct htt_rx_desc;
-@@ -660,6 +679,9 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
- #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
- #define TARGET_TLV_NUM_WOW_PATTERNS		22
- 
-+/* Target specific defines for QCA9377 high latency firmware */
-+#define TARGET_QCA9377_HL_NUM_PEERS		15
++	skb_put(skb, len);
 +
- /* Diagnostic Window */
- #define CE_DIAG_PIPE	7
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 7616c1c4bbd3..34e977049f00 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1406,7 +1406,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	cmd->num_host_mem_chunks = __cpu_to_le32(ar->wmi.num_mem_chunks);
- 
- 	cfg->num_vdevs = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
--	cfg->num_peers = __cpu_to_le32(TARGET_TLV_NUM_PEERS);
-+	cfg->num_peers = __cpu_to_le32(ar->max_num_peers);
- 
- 	if (test_bit(WMI_SERVICE_RX_FULL_REORDER, ar->wmi.svc_map)) {
- 		cfg->num_offload_peers = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
-@@ -1417,7 +1417,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	}
- 
- 	cfg->num_peer_keys = __cpu_to_le32(2);
--	cfg->num_tids = __cpu_to_le32(TARGET_TLV_NUM_TIDS);
-+	cfg->num_tids = __cpu_to_le32(ar->max_num_peers * 2);
- 	cfg->ast_skid_limit = __cpu_to_le32(0x10);
- 	cfg->tx_chain_mask = __cpu_to_le32(0x7);
- 	cfg->rx_chain_mask = __cpu_to_le32(0x7);
++	cmd = (struct htt_cmd *)skb->data;
++	ring = &cmd->rx_setup.rings[0];
++
++	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_RX_RING_CFG;
++	cmd->rx_setup.hdr.num_rings = 1;
++
++	flags = 0;
++	flags |= HTT_RX_RING_FLAGS_MSDU_PAYLOAD;
++	flags |= HTT_RX_RING_FLAGS_UNICAST_RX;
++	flags |= HTT_RX_RING_FLAGS_MULTICAST_RX;
++
++	memset(ring, 0, sizeof(*ring));
++	ring->rx_ring_len = __cpu_to_le16(HTT_RX_RING_SIZE_MIN);
++	ring->rx_ring_bufsize = __cpu_to_le16(HTT_RX_BUF_SIZE);
++	ring->flags = __cpu_to_le16(flags);
++
++	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
++	if (ret) {
++		dev_kfree_skb_any(skb);
++		return ret;
++	}
++
++	return 0;
++}
++
+ int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
+ 				u8 max_subfrms_ampdu,
+ 				u8 max_subfrms_amsdu)
 -- 
 2.14.1
 
