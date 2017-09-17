@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dtfQs-0008II-Sh
- for ath10k@lists.infradead.org; Sun, 17 Sep 2017 19:40:48 +0000
-Received: by mail-lf0-x242.google.com with SMTP id q132so3528900lfe.4
- for <ath10k@lists.infradead.org>; Sun, 17 Sep 2017 12:40:28 -0700 (PDT)
+ id 1dtfQs-0008Hg-SP
+ for ath10k@lists.infradead.org; Sun, 17 Sep 2017 19:40:51 +0000
+Received: by mail-lf0-x242.google.com with SMTP id y15so3543506lfd.0
+ for <ath10k@lists.infradead.org>; Sun, 17 Sep 2017 12:40:25 -0700 (PDT)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v3 04/11] ath10k: add start_once support
-Date: Sun, 17 Sep 2017 21:40:06 +0200
-Message-Id: <20170917194013.8658-5-erik.stromdahl@gmail.com>
-In-Reply-To: <20170917194013.8658-1-erik.stromdahl@gmail.com>
-References: <20170917194013.8658-1-erik.stromdahl@gmail.com>
+Subject: [RFC v3 00/11] ath10k high latency
+Date: Sun, 17 Sep 2017 21:40:02 +0200
+Message-Id: <20170917194013.8658-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,104 +25,103 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Add possibility to configure the driver to only start target once.
-This can reduce startup time of SDIO devices significantly since
-loading the firmware can take a substantial amount of time.
+This is the third version of the high latency patches (stuff common for
+usb and sdio).
 
-The patch is also necessary for high latency devices in general
-since it does not seem to be possible to rerun the BMI phase
-(fw upload) without power-cycling the device.
+One major difference between this version and the previous is that the
+num_pending_tx counter has been disabled for high latency devices (last patch).
 
-Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 19 +++++++++++++++----
- drivers/net/wireless/ath/ath10k/core.h |  2 ++
- drivers/net/wireless/ath/ath10k/hw.h   |  6 ++++++
- 3 files changed, 23 insertions(+), 4 deletions(-)
+This fixes the previous issue with the halted USB RX.
+I have tested these patches with a Linksys WUSB6100M and it looks
+much better than the previous version.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index a4a326c89e0d..c21227a74996 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1999,6 +1999,9 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 	int status;
- 	u32 val;
- 
-+	if (ar->is_started && ar->hw_params.start_once)
-+		return 0;
-+
- 	lockdep_assert_held(&ar->conf_mutex);
- 
- 	clear_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
-@@ -2226,6 +2229,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 	if (status)
- 		goto err_hif_stop;
- 
-+	ar->is_started = true;
- 	return 0;
- 
- err_hif_stop:
-@@ -2278,6 +2282,7 @@ void ath10k_core_stop(struct ath10k *ar)
- 	ath10k_htt_tx_stop(&ar->htt);
- 	ath10k_htt_rx_free(&ar->htt);
- 	ath10k_wmi_detach(ar);
-+	ar->is_started = false;
- }
- EXPORT_SYMBOL(ath10k_core_stop);
- 
-@@ -2380,12 +2385,18 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
- 		goto err_unlock;
- 	}
- 
--	ath10k_debug_print_boot_info(ar);
--	ath10k_core_stop(ar);
-+	/* Leave target running if hw_params.start_once is set */
-+	if (ar->hw_params.start_once) {
-+		mutex_unlock(&ar->conf_mutex);
-+	} else {
-+		ath10k_debug_print_boot_info(ar);
-+		ath10k_core_stop(ar);
- 
--	mutex_unlock(&ar->conf_mutex);
-+		mutex_unlock(&ar->conf_mutex);
-+
-+		ath10k_hif_power_down(ar);
-+	}
- 
--	ath10k_hif_power_down(ar);
- 	return 0;
- 
- err_unlock:
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 64dadcd6e531..0b5b1dd00e16 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -784,6 +784,8 @@ struct ath10k {
- 
- 	bool is_high_latency;
- 
-+	bool is_started;
-+
- 	struct {
- 		enum ath10k_bus bus;
- 		const struct ath10k_hif_ops *ops;
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 8cf7b963f3d4..fd0536077404 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -569,6 +569,12 @@ struct ath10k_hw_params {
- 	bool is_high_latency;
- 
- 	enum ath10k_bus bus;
-+
-+	/* Specifies whether or not the device should be started once.
-+	 * If set, the device will be started once by the early fw probe
-+	 * and it will not be terminated afterwards.
-+	 */
-+	bool start_once;
- };
- 
- struct htt_rx_desc;
+High latency devices does not seem to send HTT_T2H_MSG_TYPE_TX_COMPL_IND's
+to the host for outgoing packets, resulting in a transmit stop when the
+upper limit of num_pending_tx is reached.
+
+The qcacld driver mentions that the TX_COMPL_IND can be disabled for HL
+devices in order to achieve better throughput:
+
+/*
+ * HTT option TLV for specifying whether HL systems should indicate
+ * over-the-air tx completion for individual frames, or should instead
+ * send a bulk TX_CREDIT_UPDATE_IND except when the host explicitly
+ * requests an OTA tx completion for a particular tx frame.
+ * This option does not apply to LL systems, where the TX_COMPL_IND
+ * is mandatory.
+ * This option is primarily intended for HL systems in which the tx frame
+ * downloads over the host --> target bus are as slow as or slower than
+ * the transmissions over the WLAN PHY.  For cases where the bus is faster
+ * than the WLAN PHY, the target will transmit relatively large A-MPDUs,
+ * and consquently will send one TX_COMPL_IND message that covers several
+ * tx frames.  For cases where the WLAN PHY is faster than the bus,
+ * the target will end up transmitting very short A-MPDUs, and consequently
+ * sending many TX_COMPL_IND messages, which each cover a very small number
+ * of tx frames.
+ * The HL_SUPPRESS_TX_COMPL_IND TLV can be sent by the host to the target as
+ * a suffix to the VERSION_REQ message to request whether the host desires to
+ * use TX_CREDIT_UPDATE_IND rather than TX_COMPL_IND.  The target can then
+ * send a HTT_SUPPRESS_TX_COMPL_IND TLV to the host as a suffix to the
+ * VERSION_CONF message to confirm whether TX_CREDIT_UPDATE_IND will be used
+ * rather than TX_COMPL_IND.  TX_CREDIT_UPDATE_IND shall only be used if the
+ * host sends a HL_SUPPRESS_TX_COMPL_IND TLV requesting use of
+ * TX_CREDIT_UPDATE_IND, and the target sends a HL_SUPPRESS_TX_COMPLE_IND TLV
+ * back to the host confirming use of TX_CREDIT_UPDATE_IND.
+ * Lack of a HL_SUPPRESS_TX_COMPL_IND TLV from either host --> target or
+ * target --> host is equivalent to a HL_SUPPRESS_TX_COMPL_IND that
+ * explicitly specifies HL_ALLOW_TX_COMPL_IND in the value payload of the
+ * TLV.
+ */
+
+I am suspecting this is the default behavior in the firmware.
+
+I have tried a simple wget test where I download a Linux kernel tar ball
+from kernel.org. I got the below results:
+
+wget --no-check-certificate \
+https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.4.tar.xz
+
+2017-09-17 16:46:20 (13.3 MB/s) - 'linux-4.11.4.tar.xz' saved
+[95549228/95549228]
+
+13.3 MB/s is a fairly OK result since I have a 100 Mbit/s internet
+connection.
+
+Changes since v2:
+
+- Disabled htt num_pending_tx counter for HL.
+- Fixed transmit flags for HL HTT TX.
+- Proper marking of aggregated frames in the HL HTT RX handler.
+- A few other minor fixes
+
+Erik Stromdahl (11):
+  ath10k: high_latency detection
+  ath10k: htt: RX ring config HL support
+  ath10k: per target configurablity of various items
+  ath10k: add start_once support
+  ath10k: htt: High latency TX support
+  ath10k: htt: High latency RX support
+  ath10k: various fixes for high latency devices
+  ath10k: add QCA9377 usb hw_param item
+  ath10k: add QCA9377 sdio hw_param item
+  ath10k: wmi: disable softirq's while calling ieee80211_rx
+  ath10k: remove htt pending TX count for high latency
+
+ drivers/net/wireless/ath/ath10k/core.c    | 128 +++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/core.h    |  16 +--
+ drivers/net/wireless/ath/ath10k/htc.c     |  19 ++--
+ drivers/net/wireless/ath/ath10k/htt.c     |   5 +-
+ drivers/net/wireless/ath/ath10k/htt.h     |  57 ++++++++++-
+ drivers/net/wireless/ath/ath10k/htt_rx.c  | 122 ++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c  | 157 +++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/hw.h      |  30 ++++++
+ drivers/net/wireless/ath/ath10k/mac.c     |   5 +-
+ drivers/net/wireless/ath/ath10k/rx_desc.h |  15 +++
+ drivers/net/wireless/ath/ath10k/txrx.c    |   5 +-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |   4 +-
+ drivers/net/wireless/ath/ath10k/wmi.c     |   3 +
+ 13 files changed, 513 insertions(+), 53 deletions(-)
+
 -- 
 2.14.1
 
