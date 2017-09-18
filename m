@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-f170.google.com ([209.85.223.170])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dtxlK-0000ji-EJ
- for ath10k@lists.infradead.org; Mon, 18 Sep 2017 15:15:13 +0000
-Received: by mail-io0-f170.google.com with SMTP id e189so2912697ioa.4
- for <ath10k@lists.infradead.org>; Mon, 18 Sep 2017 08:14:45 -0700 (PDT)
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dtxYL-0004bp-LI
+ for ath10k@lists.infradead.org; Mon, 18 Sep 2017 15:01:47 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: [PATCH 0/3] linux-firmware: ath10k update 20170918
+Date: Mon, 18 Sep 2017 18:00:54 +0300
+Message-ID: <1505746857-31938-1-git-send-email-kvalo@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1505746857-31938-4-git-send-email-kvalo@qca.qualcomm.com>
-References: <1505746857-31938-1-git-send-email-kvalo@qca.qualcomm.com>
- <1505746857-31938-4-git-send-email-kvalo@qca.qualcomm.com>
-From: Matteo Croce <mcroce@redhat.com>
-Date: Mon, 18 Sep 2017 17:14:04 +0200
-Message-ID: <CAGnkfhw1bGxD7Z4B=i_xtRJAD5ph_YxEcW0y2F5RTXfPrDkd0A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] Revert "ath10k: QCA988X hw2.0: update firmware to
- 10.2.4.70.63-2"
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +20,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, linux-firmware@kernel.org
+To: linux-firmware@kernel.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Mon, Sep 18, 2017 at 5:00 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> This reverts commit c7370e2728c72e5e87f63a48911a925330485a8e.
->
-> 10.2.4.70.63-2 was buggy and lots of people have been reporting crashes, Hauke
-> Mehrtens among others:
->
-> http://lists.infradead.org/pipermail/ath10k/2017-September/010138.html
->
-> This reverts the firmware back to 10.2.4.70.54.
-> ---
->  WHENCE                              |   2 +-
->  ath10k/QCA988X/hw2.0/firmware-5.bin | Bin 249384 -> 248188 bytes
->  2 files changed, 1 insertion(+), 1 deletion(-)
->
+Few firmware fixes to user reported issues for ath10k, but the other "fix"
+being a revert back to older firmware. Also a small board-2.bin update.
 
-I can confirm that it crashes on insmod:
+Kalle Valo (3):
+  ath10k: QCA6174 hw3.0: update firmware-6.bin to
+    WLAN.RM.4.4.1-00051-QCARMSWP-1
+  ath10k: QCA6174 hw3.0: update board-2.bin
+  Revert "ath10k: QCA988X hw2.0: update firmware to 10.2.4.70.63-2"
 
-https://bugzilla.kernel.org/show_bug.cgi?id=196919
+ WHENCE                                            |   4 +-
+ ath10k/QCA6174/hw3.0/board-2.bin                  | Bin 477060 -> 501748 bytes
+ ath10k/QCA6174/hw3.0/firmware-6.bin               | Bin 711408 -> 727776 bytes
+ ath10k/QCA6174/hw3.0/notice_ath10k_firmware-6.txt |  97 +++++-----------------
+ ath10k/QCA988X/hw2.0/firmware-5.bin               | Bin 249384 -> 248188 bytes
+ 5 files changed, 25 insertions(+), 76 deletions(-)
 
 -- 
-Matteo Croce
-per aspera ad upstream
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
