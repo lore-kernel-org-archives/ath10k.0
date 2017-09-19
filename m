@@ -1,22 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
+Received: from mail-pf0-x22d.google.com ([2607:f8b0:400e:c00::22d])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1duFFs-0002aL-BO
- for ath10k@lists.infradead.org; Tue, 19 Sep 2017 09:55:57 +0000
-Received: by mail-wm0-x22a.google.com with SMTP id e71so3587359wmg.4
- for <ath10k@lists.infradead.org>; Tue, 19 Sep 2017 02:55:27 -0700 (PDT)
-Subject: Re: [TDLS PATCH V3 1/5] mac80211: Enable TDLS peer buffer STA feature
-References: <TDLS for ath10k patchset v3>
- <1505790913-28377-1-git-send-email-yintang@qti.qualcomm.com>
- <1505790913-28377-2-git-send-email-yintang@qti.qualcomm.com>
- <db428527-cb2b-5136-24c2-be2fca9e2407@broadcom.com>
- <1505808914.3026.0.camel@sipsolutions.net>
-From: Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <06857e7e-5ec1-b0b7-7320-42690e852658@broadcom.com>
-Date: Tue, 19 Sep 2017 11:55:24 +0200
-MIME-Version: 1.0
-In-Reply-To: <1505808914.3026.0.camel@sipsolutions.net>
-Content-Language: en-US
+ id 1duRt7-0005XO-QY
+ for ath10k@lists.infradead.org; Tue, 19 Sep 2017 23:25:16 +0000
+Received: by mail-pf0-x22d.google.com with SMTP id n24so600111pfk.5
+ for <ath10k@lists.infradead.org>; Tue, 19 Sep 2017 16:24:48 -0700 (PDT)
+From: Brian Norris <briannorris@chromium.org>
+Subject: [PATCH] ath10k: fix core PCI suspend when WoWLAN is supported but
+ disabled
+Date: Tue, 19 Sep 2017 16:24:16 -0700
+Message-Id: <20170919232416.108247-1-briannorris@chromium.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +18,103 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, yintang@qti.qualcomm.com, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>, Grant Grundler <grundler@chromium.org>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>
 
-On 19-09-17 10:15, Johannes Berg wrote:
-> On Tue, 2017-09-19 at 09:56 +0200, Arend van Spriel wrote:
->>
->>> --- a/include/net/cfg80211.h
->>> +++ b/include/net/cfg80211.h
->>> @@ -3249,6 +3249,8 @@ struct cfg80211_ops {
->>>     *	beaconing mode (AP, IBSS, Mesh, ...).
->>>     * @WIPHY_FLAG_HAS_STATIC_WEP: The device supports static WEP key
->>> installation
->>>     *	before connection.
->>> + * @WIPHY_FLAG_SUPPORT_TDLS_BUFFER_STA: Device support buffer STA
->>> when TDLS is
->>> + *	established.
->>
->> If I am not mistaken no new wiphy flags are supposed to be added.
->> Although this might be something not reported to user-space, right?
->> Have  a look at struct wiphy::ext_features.
-> 
-> I guess it should just be a HW flag in mac80211? Not sure why userspace
-> even needs to know.
+For devices where the FW supports WoWLAN but user-space has not
+configured it, we don't do any PCI-specific suspend/resume operations,
+because mac80211 doesn't call drv_suspend() when !wowlan. This has
+particularly bad effects for some platforms, because we don't stop the
+power-save timer, and if this timer goes off after the PCI controller
+has suspended the link, Bad Things will happen.
 
-Indeed seems specific to stack functionality in mac80211.
+Commit 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
+got some of this right, in that it understood there was a problem on
+non-WoWLAN firmware. But it forgot the $subject case.
 
-Regards,
-Arend
+Fix this by moving all the PCI driver suspend/resume logic exclusively
+into the driver PM hooks. This shouldn't affect WoWLAN support much
+(this just gets executed later on).
+
+I would just as well kill the entirety of ath10k_hif_suspend(), as it's
+not even implemented on the USB or SDIO drivers. I expect that we don't
+need the callback, except to return "supported" (i.e., 0) or "not
+supported" (i.e., -EOPNOTSUPP).
+
+Fixes: 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
+Fixes: 77258d409ce4 ("ath10k: enable pci soc powersaving")
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index bc1633945a56..4655c944e3fd 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2580,6 +2580,12 @@ void ath10k_pci_hif_power_down(struct ath10k *ar)
+ #ifdef CONFIG_PM
+ 
+ static int ath10k_pci_hif_suspend(struct ath10k *ar)
++{
++	/* Nothing to do; the important stuff is in the driver suspend. */
++	return 0;
++}
++
++static int ath10k_pci_suspend(struct ath10k *ar)
+ {
+ 	/* The grace timer can still be counting down and ar->ps_awake be true.
+ 	 * It is known that the device may be asleep after resuming regardless
+@@ -2592,6 +2598,12 @@ static int ath10k_pci_hif_suspend(struct ath10k *ar)
+ }
+ 
+ static int ath10k_pci_hif_resume(struct ath10k *ar)
++{
++	/* Nothing to do; the important stuff is in the driver resume. */
++	return 0;
++}
++
++static int ath10k_pci_resume(struct ath10k *ar)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	struct pci_dev *pdev = ar_pci->pdev;
+@@ -3403,11 +3415,7 @@ static int ath10k_pci_pm_suspend(struct device *dev)
+ 	struct ath10k *ar = dev_get_drvdata(dev);
+ 	int ret;
+ 
+-	if (test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
+-		     ar->running_fw->fw_file.fw_features))
+-		return 0;
+-
+-	ret = ath10k_hif_suspend(ar);
++	ret = ath10k_pci_suspend(ar);
+ 	if (ret)
+ 		ath10k_warn(ar, "failed to suspend hif: %d\n", ret);
+ 
+@@ -3419,11 +3427,7 @@ static int ath10k_pci_pm_resume(struct device *dev)
+ 	struct ath10k *ar = dev_get_drvdata(dev);
+ 	int ret;
+ 
+-	if (test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
+-		     ar->running_fw->fw_file.fw_features))
+-		return 0;
+-
+-	ret = ath10k_hif_resume(ar);
++	ret = ath10k_pci_resume(ar);
+ 	if (ret)
+ 		ath10k_warn(ar, "failed to resume hif: %d\n", ret);
+ 
+-- 
+2.14.1.690.gbb1197296e-goog
+
 
 _______________________________________________
 ath10k mailing list
