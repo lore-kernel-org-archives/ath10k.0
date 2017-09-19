@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1du8zU-0001yv-VK
- for ath10k@lists.infradead.org; Tue, 19 Sep 2017 03:14:34 +0000
+ id 1du91H-0003vk-H0
+ for ath10k@lists.infradead.org; Tue, 19 Sep 2017 03:16:21 +0000
 From: <yintang@qti.qualcomm.com>
-Subject: [TDLS PATCH V3 4/5] ath10k: Avoid to set WEP key for TDLS peer
-Date: Tue, 19 Sep 2017 11:15:12 +0800
-Message-ID: <1505790913-28377-5-git-send-email-yintang@qti.qualcomm.com>
-In-Reply-To: <1505790913-28377-1-git-send-email-yintang@qti.qualcomm.com>
+Subject: [TDLS PATCH V3 5/5] ath10k: Avoid to set WEP key for TDLS peer
+Date: Tue, 19 Sep 2017 11:17:15 +0800
+Message-ID: <1505791035-28426-1-git-send-email-yintang@qti.qualcomm.com>
+In-Reply-To: <TDLS for ath10k patchset v3>
 References: <TDLS for ath10k patchset v3>
- <1505790913-28377-1-git-send-email-yintang@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -34,22 +33,24 @@ for TDLS peer.
 
 Signed-off-by: Yingying Tang <yintang@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 399f9ba..f6702cb 100644
+index f6702cb..d2530f7 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2966,7 +2966,7 @@ static int ath10k_station_assoc(struct ath10k *ar,
- 		}
+@@ -5841,6 +5841,10 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+ 		ath10k_warn(ar, "Peer %pM disappeared!\n", peer_addr);
+ 	spin_unlock_bh(&ar->data_lock);
  
- 		/* Plumb cached keys only for static WEP */
--		if (arvif->def_wep_key_idx != -1) {
-+		if ((arvif->def_wep_key_idx != -1) && (!sta->tdls)) {
- 			ret = ath10k_install_peer_wep_keys(arvif, sta->addr);
- 			if (ret) {
- 				ath10k_warn(ar, "failed to install peer wep keys for vdev %i: %d\n",
++	if (sta && sta->tdls)
++		ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
++					  WMI_PEER_AUTHORIZE, 1);
++
+ exit:
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return ret;
 -- 
 1.7.9.5
 
