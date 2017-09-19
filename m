@@ -2,12 +2,12 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28]
  helo=alexa-out-lv-02.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1du8zI-0001vs-Uz
- for ath10k@lists.infradead.org; Tue, 19 Sep 2017 03:14:18 +0000
+ id 1du8zN-0001xL-NS
+ for ath10k@lists.infradead.org; Tue, 19 Sep 2017 03:14:25 +0000
 From: <yintang@qti.qualcomm.com>
-Subject: [TDLS PATCH V3 1/5] mac80211: Enable TDLS peer buffer STA feature
-Date: Tue, 19 Sep 2017 11:15:09 +0800
-Message-ID: <1505790913-28377-2-git-send-email-yintang@qti.qualcomm.com>
+Subject: [TDLS PATCH V3 3/5] ath10k: Enable TDLS peer inactivity detection
+Date: Tue, 19 Sep 2017 11:15:11 +0800
+Message-ID: <1505790913-28377-4-git-send-email-yintang@qti.qualcomm.com>
 In-Reply-To: <1505790913-28377-1-git-send-email-yintang@qti.qualcomm.com>
 References: <TDLS for ath10k patchset v3>
  <1505790913-28377-1-git-send-email-yintang@qti.qualcomm.com>
@@ -29,60 +29,140 @@ Cc: linux-wireless@vger.kernel.org
 
 From: Yingying Tang <yintang@qti.qualcomm.com>
 
-Enable TDLS peer buffer STA feature.
-Set extended capability bit to enable buffer STA when driver
-support it.
+Enable TDLS peer inactivity detetion feature.
+QCA6174 firmware(version: WLAN.RM.4.4) support TDLS link inactivity detecting.
+Set related parameters in TDLS WMI command to enable this feature.
 
 Signed-off-by: Yingying Tang <yintang@qti.qualcomm.com>
 ---
- include/net/cfg80211.h |    3 +++
- net/mac80211/tdls.c    |    5 ++++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |   52 +++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |   23 +++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |    1 +
+ 3 files changed, 76 insertions(+)
 
-diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index f12fa52..edefc25 100644
---- a/include/net/cfg80211.h
-+++ b/include/net/cfg80211.h
-@@ -3249,6 +3249,8 @@ struct cfg80211_ops {
-  *	beaconing mode (AP, IBSS, Mesh, ...).
-  * @WIPHY_FLAG_HAS_STATIC_WEP: The device supports static WEP key installation
-  *	before connection.
-+ * @WIPHY_FLAG_SUPPORT_TDLS_BUFFER_STA: Device support buffer STA when TDLS is
-+ *	established.
-  */
- enum wiphy_flags {
- 	/* use hole at 0 */
-@@ -3275,6 +3277,7 @@ enum wiphy_flags {
- 	WIPHY_FLAG_SUPPORTS_5_10_MHZ		= BIT(22),
- 	WIPHY_FLAG_HAS_CHANNEL_SWITCH		= BIT(23),
- 	WIPHY_FLAG_HAS_STATIC_WEP		= BIT(24),
-+	WIPHY_FLAG_SUPPORT_TDLS_BUFFER_STA      = BIT(25),
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index f60b46e..63bb2c4 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -412,6 +412,49 @@ static int ath10k_wmi_tlv_event_tx_pause(struct ath10k *ar,
+ 	return 0;
+ }
+ 
++void ath10k_wmi_event_tdls_peer(struct ath10k *ar, struct sk_buff *skb)
++{
++	struct ieee80211_sta *station;
++	const struct wmi_tlv_tdls_peer_event *ev;
++	const void **tb;
++	struct ath10k_vif *arvif;
++
++	tb = ath10k_wmi_tlv_parse_alloc(ar, skb->data, skb->len, GFP_ATOMIC);
++	if (IS_ERR(tb)) {
++		ath10k_warn(ar, "tdls peer failed to parse tlv");
++		return;
++	}
++	ev = tb[WMI_TLV_TAG_STRUCT_TDLS_PEER_EVENT];
++	if (!ev) {
++		kfree(tb);
++		ath10k_warn(ar, "tdls peer NULL event");
++		return;
++	}
++
++	switch (ev->peer_reason) {
++	case WMI_TDLS_TEARDOWN_REASON_TX:
++	case WMI_TDLS_TEARDOWN_REASON_RSSI:
++	case WMI_TDLS_TEARDOWN_REASON_PTR_TIMEOUT:
++		station = ieee80211_find_sta_by_ifaddr(ar->hw,
++						       ev->peer_macaddr.addr,
++						       NULL);
++		if (!station) {
++			ath10k_warn(ar, "did not find station from tdls peer event");
++			kfree(tb);
++			return;
++		}
++		arvif = ath10k_get_arvif(ar, ev->vdev_id);
++		ieee80211_tdls_oper_request(
++					arvif->vif, station->addr,
++					NL80211_TDLS_TEARDOWN,
++					WLAN_REASON_TDLS_TEARDOWN_UNREACHABLE,
++					GFP_ATOMIC
++					);
++		break;
++	}
++	kfree(tb);
++}
++
+ /***********/
+ /* TLV ops */
+ /***********/
+@@ -552,6 +595,9 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	case WMI_TLV_TX_PAUSE_EVENTID:
+ 		ath10k_wmi_tlv_event_tx_pause(ar, skb);
+ 		break;
++	case WMI_TLV_TDLS_PEER_EVENTID:
++		ath10k_wmi_event_tdls_peer(ar, skb);
++		break;
+ 	default:
+ 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
+ 		break;
+@@ -2750,6 +2796,12 @@ static void *ath10k_wmi_tlv_put_wmm(void *ptr,
+ 	if (test_bit(WMI_SERVICE_TDLS_UAPSD_BUFFER_STA, ar->wmi.svc_map))
+ 		options |=  WMI_TLV_TDLS_BUFFER_STA_EN;
+ 
++	/* WMI_TDLS_ENABLE_ACTIVE_EXTERNAL_CONTROL means firm will handle TDLS
++	 * link inactivity detecting logic.
++	 */
++	if (state == WMI_TDLS_ENABLE_ACTIVE)
++		state = WMI_TDLS_ENABLE_ACTIVE_EXTERNAL_CONTROL;
++
+ 	len = sizeof(*tlv) + sizeof(*cmd);
+ 	skb = ath10k_wmi_alloc_skb(ar, len);
+ 	if (!skb)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 22cf011..00d68c5 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1641,6 +1641,29 @@ struct wmi_tlv_tx_pause_ev {
+ 	__le32 tid_map;
+ } __packed;
+ 
++struct wmi_tlv_tdls_peer_event {
++	struct wmi_mac_addr    peer_macaddr;
++	__le32 peer_status;
++	__le32 peer_reason;
++	__le32 vdev_id;
++} __packed;
++
++enum wmi_tdls_peer_reason {
++	WMI_TDLS_TEARDOWN_REASON_TX,
++	WMI_TDLS_TEARDOWN_REASON_RSSI,
++	WMI_TDLS_TEARDOWN_REASON_SCAN,
++	WMI_TDLS_DISCONNECTED_REASON_PEER_DELETE,
++	WMI_TDLS_TEARDOWN_REASON_PTR_TIMEOUT,
++	WMI_TDLS_TEARDOWN_REASON_BAD_PTR,
++	WMI_TDLS_TEARDOWN_REASON_NO_RESPONSE,
++	WMI_TDLS_ENTER_BUF_STA,
++	WMI_TDLS_EXIT_BUF_STA,
++	WMI_TDLS_ENTER_BT_BUSY_MODE,
++	WMI_TDLS_EXIT_BT_BUSY_MODE,
++	WMI_TDLS_SCAN_STARTED_EVENT,
++	WMI_TDLS_SCAN_COMPLETED_EVENT,
++};
++
+ void ath10k_wmi_tlv_attach(struct ath10k *ar);
+ 
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 7a3606d..74a6c78 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6720,6 +6720,7 @@ enum wmi_tdls_state {
+ 	WMI_TDLS_DISABLE,
+ 	WMI_TDLS_ENABLE_PASSIVE,
+ 	WMI_TDLS_ENABLE_ACTIVE,
++	WMI_TDLS_ENABLE_ACTIVE_EXTERNAL_CONTROL,
  };
  
- /**
-diff --git a/net/mac80211/tdls.c b/net/mac80211/tdls.c
-index 91093d4..f99e379 100644
---- a/net/mac80211/tdls.c
-+++ b/net/mac80211/tdls.c
-@@ -49,6 +49,8 @@ static void ieee80211_tdls_add_ext_capab(struct ieee80211_sub_if_data *sdata,
- 			  !ifmgd->tdls_wider_bw_prohibited;
- 	struct ieee80211_supported_band *sband = ieee80211_get_sband(sdata);
- 	bool vht = sband && sband->vht_cap.vht_supported;
-+	bool buffer_sta =
-+		local->hw.wiphy->flags & WIPHY_FLAG_SUPPORT_TDLS_BUFFER_STA;
- 	u8 *pos = skb_put(skb, 10);
- 
- 	*pos++ = WLAN_EID_EXT_CAPABILITY;
-@@ -56,7 +58,8 @@ static void ieee80211_tdls_add_ext_capab(struct ieee80211_sub_if_data *sdata,
- 	*pos++ = 0x0;
- 	*pos++ = 0x0;
- 	*pos++ = 0x0;
--	*pos++ = chan_switch ? WLAN_EXT_CAPA4_TDLS_CHAN_SWITCH : 0;
-+	*pos++ = (chan_switch ? WLAN_EXT_CAPA4_TDLS_CHAN_SWITCH : 0) |
-+		 (buffer_sta ? WLAN_EXT_CAPA4_TDLS_BUFFER_STA : 0);
- 	*pos++ = WLAN_EXT_CAPA5_TDLS_ENABLED;
- 	*pos++ = 0;
- 	*pos++ = 0;
+ enum wmi_tdls_peer_state {
 -- 
 1.7.9.5
 
