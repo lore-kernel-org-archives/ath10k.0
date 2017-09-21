@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf0-x22d.google.com ([2607:f8b0:400e:c00::22d])
+Received: from alexa-out.qualcomm.com ([129.46.98.28]
+ helo=alexa-out-lv-01.qualcomm.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1duRt7-0005XO-QY
- for ath10k@lists.infradead.org; Tue, 19 Sep 2017 23:25:16 +0000
-Received: by mail-pf0-x22d.google.com with SMTP id n24so600111pfk.5
- for <ath10k@lists.infradead.org>; Tue, 19 Sep 2017 16:24:48 -0700 (PDT)
-From: Brian Norris <briannorris@chromium.org>
-Subject: [PATCH] ath10k: fix core PCI suspend when WoWLAN is supported but
- disabled
-Date: Tue, 19 Sep 2017 16:24:16 -0700
-Message-Id: <20170919232416.108247-1-briannorris@chromium.org>
+ id 1dv32q-0001HU-Sa
+ for ath10k@lists.infradead.org; Thu, 21 Sep 2017 15:05:46 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10: mark PM functions as __maybe_unused
+Date: Thu, 21 Sep 2017 15:05:15 +0000
+Message-ID: <87poak853p.fsf@kamboji.qca.qualcomm.com>
+References: <20170906125904.2588620-1-arnd@arndb.de>
+In-Reply-To: <20170906125904.2588620-1-arnd@arndb.de> (Arnd Bergmann's message
+ of "Wed, 6 Sep 2017 14:58:53 +0200")
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,104 +21,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>, Grant Grundler <grundler@chromium.org>, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Govind Singh <govinds@qti.qualcomm.com>, Ryan Hsu <ryanhsu@qti.qualcomm.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Colin Ian King <colin.king@canonical.com>, Ben Greear <greearb@candelatech.com>, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, "bartosz.markowski@tieto.com" <bartosz.markowski@tieto.com>
 
-For devices where the FW supports WoWLAN but user-space has not
-configured it, we don't do any PCI-specific suspend/resume operations,
-because mac80211 doesn't call drv_suspend() when !wowlan. This has
-particularly bad effects for some platforms, because we don't stop the
-power-save timer, and if this timer goes off after the PCI controller
-has suspended the link, Bad Things will happen.
+Arnd Bergmann <arnd@arndb.de> writes:
 
-Commit 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
-got some of this right, in that it understood there was a problem on
-non-WoWLAN firmware. But it forgot the $subject case.
+> When CONFIG_PM_SLEEP is disabled, we get a compile-time
+> warning:
+>
+> drivers/net/wireless/ath/ath10k/pci.c:3417:12: error: 'ath10k_pci_pm_resume' defined but not used [-Werror=unused-function]
+>  static int ath10k_pci_pm_resume(struct device *dev)
+>             ^~~~~~~~~~~~~~~~~~~~
+> drivers/net/wireless/ath/ath10k/pci.c:3401:12: error: 'ath10k_pci_pm_suspend' defined but not used [-Werror=unused-function]
+>  static int ath10k_pci_pm_suspend(struct device *dev)
+>
+> Rather than fixing the #ifdef, this just marks both functions
+> as __maybe_unused, which is a more robust way to do this.
+>
+> Fixes: 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Fix this by moving all the PCI driver suspend/resume logic exclusively
-into the driver PM hooks. This shouldn't affect WoWLAN support much
-(this just gets executed later on).
+Applied to ath-current branch in ath.git, thanks.
 
-I would just as well kill the entirety of ath10k_hif_suspend(), as it's
-not even implemented on the USB or SDIO drivers. I expect that we don't
-need the callback, except to return "supported" (i.e., 0) or "not
-supported" (i.e., -EOPNOTSUPP).
+(Having problems with my patchwork script so sending this manually)
 
-Fixes: 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
-Fixes: 77258d409ce4 ("ath10k: enable pci soc powersaving")
-Signed-off-by: Brian Norris <briannorris@chromium.org>
-Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index bc1633945a56..4655c944e3fd 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2580,6 +2580,12 @@ void ath10k_pci_hif_power_down(struct ath10k *ar)
- #ifdef CONFIG_PM
- 
- static int ath10k_pci_hif_suspend(struct ath10k *ar)
-+{
-+	/* Nothing to do; the important stuff is in the driver suspend. */
-+	return 0;
-+}
-+
-+static int ath10k_pci_suspend(struct ath10k *ar)
- {
- 	/* The grace timer can still be counting down and ar->ps_awake be true.
- 	 * It is known that the device may be asleep after resuming regardless
-@@ -2592,6 +2598,12 @@ static int ath10k_pci_hif_suspend(struct ath10k *ar)
- }
- 
- static int ath10k_pci_hif_resume(struct ath10k *ar)
-+{
-+	/* Nothing to do; the important stuff is in the driver resume. */
-+	return 0;
-+}
-+
-+static int ath10k_pci_resume(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	struct pci_dev *pdev = ar_pci->pdev;
-@@ -3403,11 +3415,7 @@ static int ath10k_pci_pm_suspend(struct device *dev)
- 	struct ath10k *ar = dev_get_drvdata(dev);
- 	int ret;
- 
--	if (test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
--		     ar->running_fw->fw_file.fw_features))
--		return 0;
--
--	ret = ath10k_hif_suspend(ar);
-+	ret = ath10k_pci_suspend(ar);
- 	if (ret)
- 		ath10k_warn(ar, "failed to suspend hif: %d\n", ret);
- 
-@@ -3419,11 +3427,7 @@ static int ath10k_pci_pm_resume(struct device *dev)
- 	struct ath10k *ar = dev_get_drvdata(dev);
- 	int ret;
- 
--	if (test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
--		     ar->running_fw->fw_file.fw_features))
--		return 0;
--
--	ret = ath10k_hif_resume(ar);
-+	ret = ath10k_pci_resume(ar);
- 	if (ret)
- 		ath10k_warn(ar, "failed to resume hif: %d\n", ret);
- 
 -- 
-2.14.1.690.gbb1197296e-goog
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
