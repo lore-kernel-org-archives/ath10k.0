@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28]
- helo=alexa-out-lv-01.qualcomm.com)
+Received: from mail-lf0-x22d.google.com ([2a00:1450:4010:c07::22d])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dv32q-0001HU-Sa
- for ath10k@lists.infradead.org; Thu, 21 Sep 2017 15:05:46 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10: mark PM functions as __maybe_unused
-Date: Thu, 21 Sep 2017 15:05:15 +0000
-Message-ID: <87poak853p.fsf@kamboji.qca.qualcomm.com>
-References: <20170906125904.2588620-1-arnd@arndb.de>
-In-Reply-To: <20170906125904.2588620-1-arnd@arndb.de> (Arnd Bergmann's message
- of "Wed, 6 Sep 2017 14:58:53 +0200")
-Content-Language: en-US
+ id 1dvHm6-0000FC-0P
+ for ath10k@lists.infradead.org; Fri, 22 Sep 2017 06:49:23 +0000
+Received: by mail-lf0-x22d.google.com with SMTP id 80so213971lfy.4
+ for <ath10k@lists.infradead.org>; Thu, 21 Sep 2017 23:49:01 -0700 (PDT)
 MIME-Version: 1.0
+From: Ahmet Ercin <ahmet.ercin@aurea.com>
+Date: Fri, 22 Sep 2017 09:48:59 +0300
+Message-ID: <CAPBk6Lwpa1SN9fp==3kkQRWMobxdtnp6b-E=T+ku68kZUUXD6Q@mail.gmail.com>
+Subject: Firmware names
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +22,10 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Govind Singh <govinds@qti.qualcomm.com>, Ryan Hsu <ryanhsu@qti.qualcomm.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Colin Ian King <colin.king@canonical.com>, Ben Greear <greearb@candelatech.com>, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, "bartosz.markowski@tieto.com" <bartosz.markowski@tieto.com>
+To: ath10k@lists.infradead.org
 
-Arnd Bergmann <arnd@arndb.de> writes:
+What is the meaning of "-2" at the end of firmware names ?
 
-> When CONFIG_PM_SLEEP is disabled, we get a compile-time
-> warning:
->
-> drivers/net/wireless/ath/ath10k/pci.c:3417:12: error: 'ath10k_pci_pm_resume' defined but not used [-Werror=unused-function]
->  static int ath10k_pci_pm_resume(struct device *dev)
->             ^~~~~~~~~~~~~~~~~~~~
-> drivers/net/wireless/ath/ath10k/pci.c:3401:12: error: 'ath10k_pci_pm_suspend' defined but not used [-Werror=unused-function]
->  static int ath10k_pci_pm_suspend(struct device *dev)
->
-> Rather than fixing the #ifdef, this just marks both functions
-> as __maybe_unused, which is a more robust way to do this.
->
-> Fixes: 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Applied to ath-current branch in ath.git, thanks.
-
-(Having problems with my patchwork script so sending this manually)
-
--- 
-Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
