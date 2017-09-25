@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dwNd6-0005sm-KF
- for ath10k@lists.infradead.org; Mon, 25 Sep 2017 07:16:43 +0000
+ id 1dwaO7-0001ur-SA
+ for ath10k@lists.infradead.org; Mon, 25 Sep 2017 20:54:02 +0000
+Subject: Re: [PATCH] ath10k: add new cipher suite support
+References: <1506115070-10467-1-git-send-email-rmanohar@qti.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <bff1aa84-d199-7b10-3718-33323a984954@dd-wrt.com>
+Date: Mon, 25 Sep 2017 22:53:22 +0200
 MIME-Version: 1.0
-Subject: Re: ath10k: make ath10k_hw_ce_regs const
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1505329312-26432-1-git-send-email-bhumirks@gmail.com>
-References: <1505329312-26432-1-git-send-email-bhumirks@gmail.com>
-Message-ID: <7dc5dd650ee340bb9d2e96287e1c4ece@euamsexm01a.eu.qualcomm.com>
-Date: Mon, 25 Sep 2017 09:16:05 +0200
+In-Reply-To: <1506115070-10467-1-git-send-email-rmanohar@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,33 +19,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, julia.lawall@lip6.fr
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
+Cc: Jouni Malinen <jouni@qca.qualcomm.com>, linux-wireless@vger.kernel.org, rmanohar@codeaurora.org
 
-Bhumika Goyal <bhumirks@gmail.com> wrote:
-
-> Make them const as they are not modified in the file referencing
-> them. They are only stored in the const field 'hw_ce_reg' of an ath10k
-> structure. Also, make the declarations in the header const.
-> 
-> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-496cbf3ebb6b ath10k: make ath10k_hw_ce_regs const
-
--- 
-https://patchwork.kernel.org/patch/9951901/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMjIuMDkuMjAxNyB1bSAyMzoxNyBzY2hyaWViIFJhamt1bWFyIE1hbm9oYXJhbjoKPiAtCWFy
+LT5ody0+d2lwaHktPm5fY2lwaGVyX3N1aXRlcyA9IEFSUkFZX1NJWkUoY2lwaGVyX3N1aXRlcyk7
+Cj4gKwo+ICsJLyogUUNBOTg4eCBhbmQgUUNBNjE3NCBmYW1pbHkgY2hpcHMgZG8gbm90IHN1cHBv
+cnQgQ0NNUC0yNTYsIEdDTVAtMTI4Cj4gKwkgKiBhbmQgR0NNUC0yNTYgY2lwaGVycyBpbiBoYXJk
+d2FyZS4KPiArCSAqLwo+ICsJaWYgKCFhci0+aHdfcGFyYW1zLm5fY2lwaGVyX3N1aXRlcykKPiAr
+CQlhci0+aHctPndpcGh5LT5uX2NpcGhlcl9zdWl0ZXMgPSBBUlJBWV9TSVpFKGNpcGhlcl9zdWl0
+ZXMpOwp0aGlzIGlzIGEgYnVnLiB5b3UgZG8gbm90IHNldCBhci0+aHctPndpcGh5LT5uX2NpcGhl
+cl9zdWl0ZXMgaWYgaXRzIG5vbiAKemVyby4gdGhpcyBicmVha3MgYXRoMTBrIGNyeXB0byBzdXBw
+b3J0IGZvciBhbGwgY2hpcHNldHMgZXhjZXB0IGZvciBRQ0E5OThYCgoKLS0gCk1pdCBmcmV1bmRs
+aWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3
+TWVkaWEtTkVUIEdtYkggLSBERC1XUlQKRmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEs
+IDY0NjI1IEJlbnNoZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBI
+UkIgMjU0NzMKR2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFu
+IFNjaGVlbGUKaHR0cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0
+LmNvbQpUZWwuOiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
