@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28]
- helo=alexa-out-lv-01.qualcomm.com)
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dvVKz-0003qd-C6
- for ath10k@lists.infradead.org; Fri, 22 Sep 2017 21:18:19 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: add new cipher suite support
-Date: Fri, 22 Sep 2017 14:17:50 -0700
-Message-ID: <1506115070-10467-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1dwNd6-0005sm-KF
+ for ath10k@lists.infradead.org; Mon, 25 Sep 2017 07:16:43 +0000
 MIME-Version: 1.0
+Subject: Re: ath10k: make ath10k_hw_ce_regs const
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1505329312-26432-1-git-send-email-bhumirks@gmail.com>
+References: <1505329312-26432-1-git-send-email-bhumirks@gmail.com>
+Message-ID: <7dc5dd650ee340bb9d2e96287e1c4ece@euamsexm01a.eu.qualcomm.com>
+Date: Mon, 25 Sep 2017 09:16:05 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,189 +22,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Jouni Malinen <jouni@qca.qualcomm.com>, linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, julia.lawall@lip6.fr
 
-QCA99x0 and QCA4019 family chips support CCMP-256, GCMP-128, and
-GCMP-256 ciphers in hardware, so advertise support for these. As
-firmware does not support group management frame ciphers (BIP),
-handle them in software (mac80211).
+Bhumika Goyal <bhumirks@gmail.com> wrote:
 
-Cc: Jouni Malinen <jouni@qca.qualcomm.com>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c |  8 ++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
- drivers/net/wireless/ath/ath10k/mac.c  | 37 ++++++++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/wmi.h  |  1 +
- 4 files changed, 47 insertions(+), 2 deletions(-)
+> Make them const as they are not modified in the file referencing
+> them. They are only stored in the const field 'hw_ce_reg' of an ath10k
+> structure. Also, make the declarations in the header const.
+> 
+> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index a4f635820f35..607759ebdb44 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -74,6 +74,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA9887_HW_1_0_VERSION,
-@@ -97,6 +98,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -119,6 +121,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -141,6 +144,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA6174_HW_3_0_VERSION,
-@@ -163,6 +167,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
-@@ -188,6 +193,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA99X0_HW_2_0_DEV_VERSION,
-@@ -303,6 +309,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
-@@ -327,6 +334,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 0c089f6dd3d9..ed30d5b6cd0e 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -550,6 +550,9 @@ struct ath10k_hw_params {
- 	 */
- 	int vht160_mcs_rx_highest;
- 	int vht160_mcs_tx_highest;
-+
-+	/* Number of ciphers supported (i.e First N) in cipher_suites array */
-+	int n_cipher_suites;
- };
- 
- struct htt_rx_desc;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5683f1a5330e..4c9d3b1a177b 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -242,6 +242,16 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
- 	case WLAN_CIPHER_SUITE_WEP104:
- 		arg.key_cipher = WMI_CIPHER_WEP;
- 		break;
-+	case WLAN_CIPHER_SUITE_CCMP_256:
-+		arg.key_cipher = WMI_CIPHER_AES_CCM;
-+		break;
-+	case WLAN_CIPHER_SUITE_GCMP:
-+	case WLAN_CIPHER_SUITE_GCMP_256:
-+		arg.key_cipher = WMI_CIPHER_AES_GCM;
-+		break;
-+	case WLAN_CIPHER_SUITE_BIP_GMAC_128:
-+	case WLAN_CIPHER_SUITE_BIP_GMAC_256:
-+	case WLAN_CIPHER_SUITE_BIP_CMAC_256:
- 	case WLAN_CIPHER_SUITE_AES_CMAC:
- 		WARN_ON(1);
- 		return -EINVAL;
-@@ -5723,7 +5733,10 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 	u32 flags2;
- 
- 	/* this one needs to be done in software */
--	if (key->cipher == WLAN_CIPHER_SUITE_AES_CMAC)
-+	if (key->cipher == WLAN_CIPHER_SUITE_AES_CMAC ||
-+	    key->cipher == WLAN_CIPHER_SUITE_BIP_GMAC_128 ||
-+	    key->cipher == WLAN_CIPHER_SUITE_BIP_GMAC_256 ||
-+	    key->cipher == WLAN_CIPHER_SUITE_BIP_CMAC_256)
- 		return 1;
- 
- 	if (arvif->nohwcrypt)
-@@ -8074,7 +8087,22 @@ int ath10k_mac_register(struct ath10k *ar)
- 		WLAN_CIPHER_SUITE_WEP104,
- 		WLAN_CIPHER_SUITE_TKIP,
- 		WLAN_CIPHER_SUITE_CCMP,
-+
-+		/* Do not add hardware supported ciphers before this line.
-+		 * Allow software encryption for all chips. Don't forget to
-+		 * update n_cipher_suites below.
-+		 */
- 		WLAN_CIPHER_SUITE_AES_CMAC,
-+		WLAN_CIPHER_SUITE_BIP_CMAC_256,
-+		WLAN_CIPHER_SUITE_BIP_GMAC_128,
-+		WLAN_CIPHER_SUITE_BIP_GMAC_256,
-+
-+		/* Only QCA99x0 and QCA4019 varients support GCMP-128, GCMP-256
-+		 * and CCMP-256 in hardware.
-+		 */
-+		WLAN_CIPHER_SUITE_GCMP,
-+		WLAN_CIPHER_SUITE_GCMP_256,
-+		WLAN_CIPHER_SUITE_CCMP_256,
- 	};
- 	struct ieee80211_supported_band *band;
- 	void *channels;
-@@ -8313,7 +8341,12 @@ int ath10k_mac_register(struct ath10k *ar)
- 	}
- 
- 	ar->hw->wiphy->cipher_suites = cipher_suites;
--	ar->hw->wiphy->n_cipher_suites = ARRAY_SIZE(cipher_suites);
-+
-+	/* QCA988x and QCA6174 family chips do not support CCMP-256, GCMP-128
-+	 * and GCMP-256 ciphers in hardware.
-+	 */
-+	if (!ar->hw_params.n_cipher_suites)
-+		ar->hw->wiphy->n_cipher_suites = ARRAY_SIZE(cipher_suites);
- 
- 	wiphy_ext_feature_set(ar->hw->wiphy, NL80211_EXT_FEATURE_CQM_RSSI_LIST);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 7a3606dde227..c02b21cff38d 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4751,6 +4751,7 @@ struct wmi_key_seq_counter {
- #define WMI_CIPHER_WAPI     0x5
- #define WMI_CIPHER_CKIP     0x6
- #define WMI_CIPHER_AES_CMAC 0x7
-+#define WMI_CIPHER_AES_GCM  0x8
- 
- struct wmi_vdev_install_key_cmd {
- 	__le32 vdev_id;
+Patch applied to ath-next branch of ath.git, thanks.
+
+496cbf3ebb6b ath10k: make ath10k_hw_ce_regs const
+
 -- 
-1.9.1
+https://patchwork.kernel.org/patch/9951901/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
