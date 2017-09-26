@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dwbtE-0001Qr-KR
- for ath10k@lists.infradead.org; Mon, 25 Sep 2017 22:30:14 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2] ath10k: add new cipher suite support
-Date: Mon, 25 Sep 2017 15:29:41 -0700
-Message-ID: <1506378581-13598-1-git-send-email-rmanohar@qti.qualcomm.com>
-MIME-Version: 1.0
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dwwOx-0000SF-3B
+ for ath10k@lists.infradead.org; Tue, 26 Sep 2017 20:24:20 +0000
+From: greearb@candelatech.com
+Subject: [PATCH] ath10k:  Retry pci probe on failure.
+Date: Tue, 26 Sep 2017 13:23:55 -0700
+Message-Id: <1506457435-26945-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,235 +15,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Jouni Malinen <jouni@qca.qualcomm.com>, linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
+To: linux-wireless@vger.kernel.org
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-QCA99x0 and QCA4019 family chips support CCMP-256, GCMP-128, and
-GCMP-256 ciphers in hardware, so advertise support for these. As
-firmware does not support group management frame ciphers (BIP),
-handle them in software (mac80211).
+From: Ben Greear <greearb@candelatech.com>
 
-Reviewed-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: Jouni Malinen <jouni@qca.qualcomm.com>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+This works around a problem we see when sometimes the wifi NIC does
+not respond the first time.  This seems to happen especially often on
+some of the 9984 NICs in mid-range platforms.
+
+Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
-v2: fix a bug in assigning n_cipher_suites. fill hw_param n_cipher_suites
-   for all chips.
+ drivers/net/wireless/ath/ath10k/pci.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
- drivers/net/wireless/ath/ath10k/core.c | 12 ++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
- drivers/net/wireless/ath/ath10k/mac.c  | 43 ++++++++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/wmi.h  |  1 +
- 4 files changed, 57 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index a4f635820f35..71de3a28b59c 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -74,6 +74,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA9887_HW_1_0_VERSION,
-@@ -97,6 +98,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -119,6 +121,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -141,6 +144,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA6174_HW_3_0_VERSION,
-@@ -163,6 +167,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
-@@ -188,6 +193,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA99X0_HW_2_0_DEV_VERSION,
-@@ -216,6 +222,7 @@
- 		.spectral_bin_discard = 4,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 11,
- 	},
- 	{
- 		.id = QCA9984_HW_1_0_DEV_VERSION,
-@@ -249,6 +256,7 @@
- 		 */
- 		.vht160_mcs_rx_highest = 1560,
- 		.vht160_mcs_tx_highest = 1560,
-+		.n_cipher_suites = 11,
- 	},
- 	{
- 		.id = QCA9888_HW_2_0_DEV_VERSION,
-@@ -281,6 +289,7 @@
- 		 */
- 		.vht160_mcs_rx_highest = 780,
- 		.vht160_mcs_tx_highest = 780,
-+		.n_cipher_suites = 11,
- 	},
- 	{
- 		.id = QCA9377_HW_1_0_DEV_VERSION,
-@@ -303,6 +312,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
-@@ -327,6 +337,7 @@
- 		.spectral_bin_discard = 0,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
- 	},
- 	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
-@@ -356,6 +367,7 @@
- 		.spectral_bin_discard = 4,
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 11,
- 	},
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index e0a7b338..8f3c5b1 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3492,8 +3492,8 @@ static const struct ath10k_bus_ops ath10k_pci_bus_ops = {
+ 	.get_num_banks	= ath10k_pci_get_num_banks,
  };
  
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 0c089f6dd3d9..ed30d5b6cd0e 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -550,6 +550,9 @@ struct ath10k_hw_params {
- 	 */
- 	int vht160_mcs_rx_highest;
- 	int vht160_mcs_tx_highest;
+-static int ath10k_pci_probe(struct pci_dev *pdev,
+-			    const struct pci_device_id *pci_dev)
++static int __ath10k_pci_probe(struct pci_dev *pdev,
++			      const struct pci_device_id *pci_dev)
+ {
+ 	int ret = 0;
+ 	struct ath10k *ar;
+@@ -3668,6 +3668,22 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	return ret;
+ }
+ 
++static int ath10k_pci_probe(struct pci_dev *pdev,
++			    const struct pci_device_id *pci_dev)
++{
++	int cnt = 0;
++	int rv;
++	do {
++		rv = __ath10k_pci_probe(pdev, pci_dev);
++		if (rv == 0)
++			return rv;
++		pr_err("ath10k: failed to probe PCI : %d, retry-count: %d\n", rv, cnt);
++		udelay(10000); /* let the ath10k firmware gerbil take a small break */
++	} while (cnt++ < 10);
++	return rv;
++}
 +
-+	/* Number of ciphers supported (i.e First N) in cipher_suites array */
-+	int n_cipher_suites;
- };
- 
- struct htt_rx_desc;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5683f1a5330e..89455231754c 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -242,6 +242,16 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
- 	case WLAN_CIPHER_SUITE_WEP104:
- 		arg.key_cipher = WMI_CIPHER_WEP;
- 		break;
-+	case WLAN_CIPHER_SUITE_CCMP_256:
-+		arg.key_cipher = WMI_CIPHER_AES_CCM;
-+		break;
-+	case WLAN_CIPHER_SUITE_GCMP:
-+	case WLAN_CIPHER_SUITE_GCMP_256:
-+		arg.key_cipher = WMI_CIPHER_AES_GCM;
-+		break;
-+	case WLAN_CIPHER_SUITE_BIP_GMAC_128:
-+	case WLAN_CIPHER_SUITE_BIP_GMAC_256:
-+	case WLAN_CIPHER_SUITE_BIP_CMAC_256:
- 	case WLAN_CIPHER_SUITE_AES_CMAC:
- 		WARN_ON(1);
- 		return -EINVAL;
-@@ -5723,7 +5733,10 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 	u32 flags2;
- 
- 	/* this one needs to be done in software */
--	if (key->cipher == WLAN_CIPHER_SUITE_AES_CMAC)
-+	if (key->cipher == WLAN_CIPHER_SUITE_AES_CMAC ||
-+	    key->cipher == WLAN_CIPHER_SUITE_BIP_GMAC_128 ||
-+	    key->cipher == WLAN_CIPHER_SUITE_BIP_GMAC_256 ||
-+	    key->cipher == WLAN_CIPHER_SUITE_BIP_CMAC_256)
- 		return 1;
- 
- 	if (arvif->nohwcrypt)
-@@ -8074,7 +8087,22 @@ int ath10k_mac_register(struct ath10k *ar)
- 		WLAN_CIPHER_SUITE_WEP104,
- 		WLAN_CIPHER_SUITE_TKIP,
- 		WLAN_CIPHER_SUITE_CCMP,
 +
-+		/* Do not add hardware supported ciphers before this line.
-+		 * Allow software encryption for all chips. Don't forget to
-+		 * update n_cipher_suites below.
-+		 */
- 		WLAN_CIPHER_SUITE_AES_CMAC,
-+		WLAN_CIPHER_SUITE_BIP_CMAC_256,
-+		WLAN_CIPHER_SUITE_BIP_GMAC_128,
-+		WLAN_CIPHER_SUITE_BIP_GMAC_256,
-+
-+		/* Only QCA99x0 and QCA4019 varients support GCMP-128, GCMP-256
-+		 * and CCMP-256 in hardware.
-+		 */
-+		WLAN_CIPHER_SUITE_GCMP,
-+		WLAN_CIPHER_SUITE_GCMP_256,
-+		WLAN_CIPHER_SUITE_CCMP_256,
- 	};
- 	struct ieee80211_supported_band *band;
- 	void *channels;
-@@ -8313,7 +8341,18 @@ int ath10k_mac_register(struct ath10k *ar)
- 	}
- 
- 	ar->hw->wiphy->cipher_suites = cipher_suites;
--	ar->hw->wiphy->n_cipher_suites = ARRAY_SIZE(cipher_suites);
-+
-+	/* QCA988x and QCA6174 family chips do not support CCMP-256, GCMP-128
-+	 * and GCMP-256 ciphers in hardware. Fetch number of ciphers supported
-+	 * from chip specific hw_param table.
-+	 */
-+	if (!ar->hw_params.n_cipher_suites ||
-+	    ar->hw_params.n_cipher_suites > ARRAY_SIZE(cipher_suites)) {
-+		ath10k_err(ar, "invalid hw_params.n_cipher_suites %d\n",
-+			   ar->hw_params.n_cipher_suites);
-+		ar->hw_params.n_cipher_suites = 8;
-+	}
-+	ar->hw->wiphy->n_cipher_suites = ar->hw_params.n_cipher_suites;
- 
- 	wiphy_ext_feature_set(ar->hw->wiphy, NL80211_EXT_FEATURE_CQM_RSSI_LIST);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 7a3606dde227..c02b21cff38d 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4751,6 +4751,7 @@ struct wmi_key_seq_counter {
- #define WMI_CIPHER_WAPI     0x5
- #define WMI_CIPHER_CKIP     0x6
- #define WMI_CIPHER_AES_CMAC 0x7
-+#define WMI_CIPHER_AES_GCM  0x8
- 
- struct wmi_vdev_install_key_cmd {
- 	__le32 vdev_id;
+ static void ath10k_pci_remove(struct pci_dev *pdev)
+ {
+ 	struct ath10k *ar = pci_get_drvdata(pdev);
 -- 
-1.9.1
+2.4.11
 
 
 _______________________________________________
