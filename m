@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dwwOx-0000SF-3B
- for ath10k@lists.infradead.org; Tue, 26 Sep 2017 20:24:20 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  Retry pci probe on failure.
-Date: Tue, 26 Sep 2017 13:23:55 -0700
-Message-Id: <1506457435-26945-1-git-send-email-greearb@candelatech.com>
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dxyRC-0000P1-K8
+ for ath10k@lists.infradead.org; Fri, 29 Sep 2017 16:46:57 +0000
+Subject: [PATCH] ath10k: check power save support in STA mode through FW IE
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Fri, 29 Sep 2017 19:46:18 +0300
+Message-ID: <150670357817.24239.7065449335785410650.stgit@potku.adurom.net>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,65 +16,78 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-From: Ben Greear <greearb@candelatech.com>
+From: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
 
-This works around a problem we see when sometimes the wifi NIC does
-not respond the first time.  This seems to happen especially often on
-some of the 9984 NICs in mid-range platforms.
+Currently ath10k host enables power save support in station mode by
+default for all firmwares but Power save for station mode still not supported
+in some of the firmware versions. Which results in firmware crash while
+issueing multiple scan commands.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
+Fix this problem by introducing new FW feature flag to check power save
+support in firmware and then the firmware image can tell to ath10k that power
+save mode is not supported in station mode.
+
+Signed-off-by: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c |    1 +
+ drivers/net/wireless/ath/ath10k/core.h |    3 +++
+ drivers/net/wireless/ath/ath10k/mac.c  |    9 +++++++--
+ 3 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index e0a7b338..8f3c5b1 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3492,8 +3492,8 @@ static const struct ath10k_bus_ops ath10k_pci_bus_ops = {
- 	.get_num_banks	= ath10k_pci_get_num_banks,
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index a4f635820f35..7cc426c41817 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -377,6 +377,7 @@ static const char *const ath10k_core_fw_feature_str[] = {
+ 	[ATH10K_FW_FEATURE_BTCOEX_PARAM] = "btcoex-param",
+ 	[ATH10K_FW_FEATURE_SKIP_NULL_FUNC_WAR] = "skip-null-func-war",
+ 	[ATH10K_FW_FEATURE_ALLOWS_MESH_BCAST] = "allows-mesh-bcast",
++	[ATH10K_FW_FEATURE_NO_PS] = "no-ps",
  };
  
--static int ath10k_pci_probe(struct pci_dev *pdev,
--			    const struct pci_device_id *pci_dev)
-+static int __ath10k_pci_probe(struct pci_dev *pdev,
-+			      const struct pci_device_id *pci_dev)
- {
- 	int ret = 0;
- 	struct ath10k *ar;
-@@ -3668,6 +3668,22 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	return ret;
- }
+ static unsigned int ath10k_core_get_fw_feature_str(char *buf,
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 949ebb3e967b..643041ef3271 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -612,6 +612,9 @@ enum ath10k_fw_features {
+ 	 */
+ 	ATH10K_FW_FEATURE_ALLOWS_MESH_BCAST = 16,
  
-+static int ath10k_pci_probe(struct pci_dev *pdev,
-+			    const struct pci_device_id *pci_dev)
-+{
-+	int cnt = 0;
-+	int rv;
-+	do {
-+		rv = __ath10k_pci_probe(pdev, pci_dev);
-+		if (rv == 0)
-+			return rv;
-+		pr_err("ath10k: failed to probe PCI : %d, retry-count: %d\n", rv, cnt);
-+		udelay(10000); /* let the ath10k firmware gerbil take a small break */
-+	} while (cnt++ < 10);
-+	return rv;
-+}
++	/* Firmware does not support power save in station mode. */
++	ATH10K_FW_FEATURE_NO_PS = 17,
 +
+ 	/* keep last */
+ 	ATH10K_FW_FEATURE_COUNT,
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5683f1a5330e..10fb83784832 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -8146,8 +8146,13 @@ int ath10k_mac_register(struct ath10k *ar)
+ 			BIT(NL80211_IFTYPE_P2P_GO);
+ 
+ 	ieee80211_hw_set(ar->hw, SIGNAL_DBM);
+-	ieee80211_hw_set(ar->hw, SUPPORTS_PS);
+-	ieee80211_hw_set(ar->hw, SUPPORTS_DYNAMIC_PS);
 +
- static void ath10k_pci_remove(struct pci_dev *pdev)
- {
- 	struct ath10k *ar = pci_get_drvdata(pdev);
--- 
-2.4.11
++	if (!test_bit(ATH10K_FW_FEATURE_NO_PS,
++		      ar->running_fw->fw_file.fw_features)) {
++		ieee80211_hw_set(ar->hw, SUPPORTS_PS);
++		ieee80211_hw_set(ar->hw, SUPPORTS_DYNAMIC_PS);
++	}
++
+ 	ieee80211_hw_set(ar->hw, MFP_CAPABLE);
+ 	ieee80211_hw_set(ar->hw, REPORTS_TX_ACK_STATUS);
+ 	ieee80211_hw_set(ar->hw, HAS_RATE_CONTROL);
 
 
 _______________________________________________
