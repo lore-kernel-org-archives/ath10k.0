@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dyLj7-0001Q0-HA
- for ath10k@lists.infradead.org; Sat, 30 Sep 2017 17:39:06 +0000
-Received: by mail-pg0-x244.google.com with SMTP id u27so1697730pgn.1
- for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:41 -0700 (PDT)
+ id 1dyLjF-0001RV-Er
+ for ath10k@lists.infradead.org; Sat, 30 Sep 2017 17:39:10 +0000
+Received: by mail-pf0-x244.google.com with SMTP id e69so1759776pfg.4
+ for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:49 -0700 (PDT)
 From: silexcommon@gmail.com
-Subject: [PATCH 07/11] ath10k_sdio: fix rssi indication
-Date: Sat, 30 Sep 2017 23:07:44 +0530
-Message-Id: <1506793068-27445-8-git-send-email-alagusankar@silex-india.com>
+Subject: [PATCH 11/11] ath10k_sdio: hif start once addition
+Date: Sat, 30 Sep 2017 23:07:48 +0530
+Message-Id: <1506793068-27445-12-git-send-email-alagusankar@silex-india.com>
 In-Reply-To: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
 References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -29,39 +29,32 @@ Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org
 
 From: Alagu Sankar <alagusankar@silex-india.com>
 
-Receive descriptor of sdio device does not include the rssi. notify
-mac80211 accordingly. Without the fix, the rssi value indicated by
-iw changes between the actual value and -95.
+sdio hif interface uses the start_once optimization to avoid unnecessary
+firmware downloading. simulate hif_stop in sdio as core_stop does not
+handle this due to start_once optimization.
 
 Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/sdio.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index f025363..21adcad 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1646,9 +1646,16 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
- 	hdr = (struct ieee80211_hdr *)skb->data;
- 	rx_status = IEEE80211_SKB_RXCB(skb);
- 	rx_status->chains |= BIT(0);
--	rx_status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
--			    rx->ppdu.combined_rssi;
--	rx_status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 11fbf6e..c6f23a9 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -2255,6 +2255,12 @@ static void ath10k_sdio_remove(struct sdio_func *func)
+ 	cancel_work_sync(&ar_sdio->wr_async_work);
+ 	ath10k_core_unregister(ar);
+ 	ath10k_core_destroy(ar);
 +
-+	if (ar->hif.bus == ATH10K_BUS_SDIO) {
-+		/* SDIO firmware does not provide signal */
-+		rx_status->signal = 0;
-+		rx_status->flag |= RX_FLAG_NO_SIGNAL_VAL;
-+	} else {
-+		rx_status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
-+			rx->ppdu.combined_rssi;
-+		rx_status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
++	if (ar->is_started && ar->hw_params.start_once) {
++		ath10k_hif_stop(ar);
++		ath10k_hif_power_down(ar);
 +	}
- 
- 	spin_lock_bh(&ar->data_lock);
- 	ch = ar->scan_channel;
++
+ 	kfree(ar_sdio->dma_buffer);
+ 	kfree(ar_sdio->vsg_buffer);
+ }
 -- 
 1.9.1
 
