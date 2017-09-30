@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dyLix-0001Ou-8B
+ id 1dyLix-0001Oa-84
  for ath10k@lists.infradead.org; Sat, 30 Sep 2017 17:38:49 +0000
-Received: by mail-pf0-x243.google.com with SMTP id m28so1627946pfi.0
- for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:30 -0700 (PDT)
+Received: by mail-pf0-x243.google.com with SMTP id g65so1769333pfe.1
+ for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:26 -0700 (PDT)
 From: silexcommon@gmail.com
-Subject: [PATCH 02/11] ath10k_sdio: wb396 reference card fix
-Date: Sat, 30 Sep 2017 23:07:39 +0530
-Message-Id: <1506793068-27445-3-git-send-email-alagusankar@silex-india.com>
-In-Reply-To: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
-References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
+Subject: [PATCH 00/11] SDIO support for ath10k
+Date: Sat, 30 Sep 2017 23:07:37 +0530
+Message-Id: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,36 +27,59 @@ Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org
 
 From: Alagu Sankar <alagusankar@silex-india.com>
 
-The QCA9377-3 WB396 sdio reference card does not get initialized
-due to the conflict in uart gpio pins. This fix is not required
-for other QCA9377 sdio cards.
+This patchset, generated against master-pending branch, enables a fully
+functional SDIO interface driver for ath10k.  Patches have been verified on
+QCA9377-3 WB396 and Silex's SX-SDCAC reference cards with Station, Access Point
+and P2P modes.
 
-Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+The driver is verified with the firmware WLAN.TF.1.1.1-00061-QCATFSWPZ-1
+with the board data from respective SDIO card vendors. Receive performance
+matches the QCA reference driver when used with SDIO3.0 enabled platforms.
+iperf tests indicate a downlink UDP of 275Mbit/s and TCP of 150Mbit/s
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index b4f66cd..86247c8 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1708,8 +1708,15 @@ static int ath10k_init_uart(struct ath10k *ar)
- 		return ret;
- 	}
- 
--	if (!uart_print)
-+	if (!uart_print) {
-+		/* Hack: override dbg TX pin to avoid side effects of default
-+		 * GPIO_6 in QCA9377 WB396 reference card
-+		 */
-+		if (ar->hif.bus == ATH10K_BUS_SDIO)
-+			ath10k_bmi_write32(ar, hi_dbg_uart_txpin,
-+					   ar->hw_params.uart_pin);
- 		return 0;
-+	}
- 
- 	ret = ath10k_bmi_write32(ar, hi_dbg_uart_txpin, ar->hw_params.uart_pin);
- 	if (ret) {
+This patchset differs from the previous high latency patches, specific to SDIO.
+HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET is enabled for HI_ACS. This instructs the
+firmware to use HTT_T2H_MSG_TYPE_TX_COMPL_IND for outgoing packets. Without
+this flag, the management frames are not sent out by the firmware. Possibility
+of management frames being sent via WMI and data frames through the reduced Tx
+completion needs to be probed further.
+
+Further improvements can be done on the transmit path by implementing packet
+bundle. Scatter Gather is another area of improvement for both Transmit and
+Receive, but may not work on all platforms
+
+Known issues: Surprise removal of the card, when the device is in connected
+state, delays sdio function remove due to delayed WMI command failures.
+Existing ath10k framework can not differentiate between a kernel module
+removal and the surprise removal of teh card.
+
+Alagu Sankar (11):
+  ath10k_sdio: sdio htt data transfer fixes
+  ath10k_sdio: wb396 reference card fix
+  ath10k_sdio: DMA bounce buffers for read write
+  ath10k_sdio: reduce transmit msdu count
+  ath10k_sdio: use clean packet headers
+  ath10k_sdio: high latency fixes for beacon buffer
+  ath10k_sdio: fix rssi indication
+  ath10k_sdio: common read write
+  ath10k_sdio: virtual scatter gather for receive
+  ath10k_sdio: enable firmware crash dump
+  ath10k_sdio: hif start once addition
+
+ drivers/net/wireless/ath/ath10k/core.c    |  35 ++-
+ drivers/net/wireless/ath/ath10k/debug.c   |   3 +
+ drivers/net/wireless/ath/ath10k/htc.c     |   4 +-
+ drivers/net/wireless/ath/ath10k/htc.h     |   1 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c  |  19 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c  |  24 +-
+ drivers/net/wireless/ath/ath10k/hw.c      |   2 +
+ drivers/net/wireless/ath/ath10k/hw.h      |   1 +
+ drivers/net/wireless/ath/ath10k/mac.c     |  31 ++-
+ drivers/net/wireless/ath/ath10k/sdio.c    | 398 ++++++++++++++++++++++--------
+ drivers/net/wireless/ath/ath10k/sdio.h    |  10 +-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |   2 +-
+ 12 files changed, 403 insertions(+), 127 deletions(-)
+
 -- 
 1.9.1
 
