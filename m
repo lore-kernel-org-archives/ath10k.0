@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dyLj9-0001Pp-KQ
+ id 1dyLj7-0001Q0-HA
  for ath10k@lists.infradead.org; Sat, 30 Sep 2017 17:39:06 +0000
-Received: by mail-pg0-x241.google.com with SMTP id u27so1697702pgn.1
- for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:39 -0700 (PDT)
+Received: by mail-pg0-x244.google.com with SMTP id u27so1697730pgn.1
+ for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:41 -0700 (PDT)
 From: silexcommon@gmail.com
-Subject: [PATCH 06/11] ath10k_sdio: high latency fixes for beacon buffer
-Date: Sat, 30 Sep 2017 23:07:43 +0530
-Message-Id: <1506793068-27445-7-git-send-email-alagusankar@silex-india.com>
+Subject: [PATCH 07/11] ath10k_sdio: fix rssi indication
+Date: Sat, 30 Sep 2017 23:07:44 +0530
+Message-Id: <1506793068-27445-8-git-send-email-alagusankar@silex-india.com>
 In-Reply-To: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
 References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -29,72 +29,39 @@ Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org
 
 From: Alagu Sankar <alagusankar@silex-india.com>
 
-Beacon buffer for high latency devices does not use dma. other similar
-buffer allocation methods in the driver have already been modified for
-high latency path. Fix the beacon buffer allocation left out in the
-earlier high latency changes.
+Receive descriptor of sdio device does not include the rssi. notify
+mac80211 accordingly. Without the fix, the rssi value indicated by
+iw changes between the actual value and -95.
 
 Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 31 +++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index f374d1b..c48785b 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -944,8 +944,12 @@ static void ath10k_mac_vif_beacon_cleanup(struct ath10k_vif *arvif)
- 	ath10k_mac_vif_beacon_free(arvif);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index f025363..21adcad 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1646,9 +1646,16 @@ static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
+ 	hdr = (struct ieee80211_hdr *)skb->data;
+ 	rx_status = IEEE80211_SKB_RXCB(skb);
+ 	rx_status->chains |= BIT(0);
+-	rx_status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
+-			    rx->ppdu.combined_rssi;
+-	rx_status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
++
++	if (ar->hif.bus == ATH10K_BUS_SDIO) {
++		/* SDIO firmware does not provide signal */
++		rx_status->signal = 0;
++		rx_status->flag |= RX_FLAG_NO_SIGNAL_VAL;
++	} else {
++		rx_status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
++			rx->ppdu.combined_rssi;
++		rx_status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
++	}
  
- 	if (arvif->beacon_buf) {
--		dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
--				  arvif->beacon_buf, arvif->beacon_paddr);
-+		if (ar->is_high_latency)
-+			kfree(arvif->beacon_buf);
-+		else
-+			dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
-+					  arvif->beacon_buf,
-+					  arvif->beacon_paddr);
- 		arvif->beacon_buf = NULL;
- 	}
- }
-@@ -5052,10 +5056,17 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 	if (vif->type == NL80211_IFTYPE_ADHOC ||
- 	    vif->type == NL80211_IFTYPE_MESH_POINT ||
- 	    vif->type == NL80211_IFTYPE_AP) {
--		arvif->beacon_buf = dma_zalloc_coherent(ar->dev,
--							IEEE80211_MAX_FRAME_LEN,
--							&arvif->beacon_paddr,
--							GFP_ATOMIC);
-+		if (ar->is_high_latency) {
-+			arvif->beacon_buf = kmalloc(IEEE80211_MAX_FRAME_LEN,
-+						    GFP_KERNEL);
-+			arvif->beacon_paddr = (dma_addr_t)arvif->beacon_buf;
-+		} else {
-+			arvif->beacon_buf =
-+				dma_zalloc_coherent(ar->dev,
-+						    IEEE80211_MAX_FRAME_LEN,
-+						    &arvif->beacon_paddr,
-+						    GFP_ATOMIC);
-+		}
- 		if (!arvif->beacon_buf) {
- 			ret = -ENOMEM;
- 			ath10k_warn(ar, "failed to allocate beacon buffer: %d\n",
-@@ -5244,8 +5255,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 
- err:
- 	if (arvif->beacon_buf) {
--		dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
--				  arvif->beacon_buf, arvif->beacon_paddr);
-+		if (ar->is_high_latency)
-+			kfree(arvif->beacon_buf);
-+		else
-+			dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
-+					  arvif->beacon_buf,
-+					  arvif->beacon_paddr);
- 		arvif->beacon_buf = NULL;
- 	}
- 
+ 	spin_lock_bh(&ar->data_lock);
+ 	ch = ar->scan_channel;
 -- 
 1.9.1
 
