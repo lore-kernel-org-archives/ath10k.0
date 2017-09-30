@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dyLix-0001Oa-84
- for ath10k@lists.infradead.org; Sat, 30 Sep 2017 17:38:49 +0000
-Received: by mail-pf0-x243.google.com with SMTP id g65so1769333pfe.1
- for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:26 -0700 (PDT)
+ id 1dyLiz-0001On-4z
+ for ath10k@lists.infradead.org; Sat, 30 Sep 2017 17:38:51 +0000
+Received: by mail-pf0-x241.google.com with SMTP id i23so1766037pfi.2
+ for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:29 -0700 (PDT)
 From: silexcommon@gmail.com
-Subject: [PATCH 00/11] SDIO support for ath10k
-Date: Sat, 30 Sep 2017 23:07:37 +0530
-Message-Id: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
+Subject: [PATCH 01/11] ath10k_sdio: sdio htt data transfer fixes
+Date: Sat, 30 Sep 2017 23:07:38 +0530
+Message-Id: <1506793068-27445-2-git-send-email-alagusankar@silex-india.com>
+In-Reply-To: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
+References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,59 +29,157 @@ Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org
 
 From: Alagu Sankar <alagusankar@silex-india.com>
 
-This patchset, generated against master-pending branch, enables a fully
-functional SDIO interface driver for ath10k.  Patches have been verified on
-QCA9377-3 WB396 and Silex's SX-SDCAC reference cards with Station, Access Point
-and P2P modes.
+The ath10k sdio firmware does not allow transmitting packets with the
+reduced tx completion HI_ACS option. sdio firmware uses 1544 as
+alternate credit size, which is not big enough for the maximum sized
+mac80211 frames. Disable both these HI_ACS flags for SDIO.
 
-The driver is verified with the firmware WLAN.TF.1.1.1-00061-QCATFSWPZ-1
-with the board data from respective SDIO card vendors. Receive performance
-matches the QCA reference driver when used with SDIO3.0 enabled platforms.
-iperf tests indicate a downlink UDP of 275Mbit/s and TCP of 150Mbit/s
+Transmit completion for SDIO is similar to PCIe, via the T2H message
+HTT_T2H_MSG_TYPE_TX_COMPL_IND.  Modify the high latency path to allow
+SDIO modules to use the htt transmit completion path. This differs from
+the high latency path taken by the USB devices.
 
-This patchset differs from the previous high latency patches, specific to SDIO.
-HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET is enabled for HI_ACS. This instructs the
-firmware to use HTT_T2H_MSG_TYPE_TX_COMPL_IND for outgoing packets. Without
-this flag, the management frames are not sent out by the firmware. Possibility
-of management frames being sent via WMI and data frames through the reduced Tx
-completion needs to be probed further.
+Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c   | 20 +++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  6 ++++--
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 24 +++++++++++++++++++-----
+ 3 files changed, 40 insertions(+), 10 deletions(-)
 
-Further improvements can be done on the transmit path by implementing packet
-bundle. Scatter Gather is another area of improvement for both Transmit and
-Receive, but may not work on all platforms
-
-Known issues: Surprise removal of the card, when the device is in connected
-state, delays sdio function remove due to delayed WMI command failures.
-Existing ath10k framework can not differentiate between a kernel module
-removal and the surprise removal of teh card.
-
-Alagu Sankar (11):
-  ath10k_sdio: sdio htt data transfer fixes
-  ath10k_sdio: wb396 reference card fix
-  ath10k_sdio: DMA bounce buffers for read write
-  ath10k_sdio: reduce transmit msdu count
-  ath10k_sdio: use clean packet headers
-  ath10k_sdio: high latency fixes for beacon buffer
-  ath10k_sdio: fix rssi indication
-  ath10k_sdio: common read write
-  ath10k_sdio: virtual scatter gather for receive
-  ath10k_sdio: enable firmware crash dump
-  ath10k_sdio: hif start once addition
-
- drivers/net/wireless/ath/ath10k/core.c    |  35 ++-
- drivers/net/wireless/ath/ath10k/debug.c   |   3 +
- drivers/net/wireless/ath/ath10k/htc.c     |   4 +-
- drivers/net/wireless/ath/ath10k/htc.h     |   1 +
- drivers/net/wireless/ath/ath10k/htt_rx.c  |  19 +-
- drivers/net/wireless/ath/ath10k/htt_tx.c  |  24 +-
- drivers/net/wireless/ath/ath10k/hw.c      |   2 +
- drivers/net/wireless/ath/ath10k/hw.h      |   1 +
- drivers/net/wireless/ath/ath10k/mac.c     |  31 ++-
- drivers/net/wireless/ath/ath10k/sdio.c    | 398 ++++++++++++++++++++++--------
- drivers/net/wireless/ath/ath10k/sdio.h    |  10 +-
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |   2 +-
- 12 files changed, 403 insertions(+), 127 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 4351341..b4f66cd 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -494,11 +494,25 @@ static void ath10k_init_sdio(struct ath10k *ar)
+ 	ath10k_bmi_write32(ar, hi_mbox_isr_yield_limit, 99);
+ 	ath10k_bmi_read32(ar, hi_acs_flags, &param);
+ 
+-	param |= (HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET |
+-		  HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET |
+-		  HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE);
++	/* Data transfer is not initiated, when reduced Tx completion
++	 * is used for SDIO. disable it until fixed
++	 */
++	param &= ~HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET;
++
++	/* Alternate credit size of 1544 as used by SDIO firmware is
++	 * not big enough for mac80211 / native wifi frames. disable it
++	 */
++	param &= ~HI_ACS_FLAGS_ALT_DATA_CREDIT_SIZE;
+ 
++	param |= HI_ACS_FLAGS_SDIO_SWAP_MAILBOX_SET;
+ 	ath10k_bmi_write32(ar, hi_acs_flags, param);
++
++	/* Explicitly set fwlog prints to zero as target may turn it on
++	 * based on scratch registers.
++	 */
++	ath10k_bmi_read32(ar, hi_option_flag, &param);
++	param |= HI_OPTION_DISABLE_DBGLOG;
++	ath10k_bmi_write32(ar, hi_option_flag, param);
+ }
+ 
+ static int ath10k_init_configure_target(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 569edd0..f025363 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1764,7 +1764,9 @@ static void ath10k_htt_rx_tx_compl_ind(struct ath10k *ar,
+ 		 *  Note that with only one concurrent reader and one concurrent
+ 		 *  writer, you don't need extra locking to use these macro.
+ 		 */
+-		if (!kfifo_put(&htt->txdone_fifo, tx_done)) {
++		if (ar->hif.bus == ATH10K_BUS_SDIO) {
++			ath10k_txrx_tx_unref(htt, &tx_done);
++		} else if (!kfifo_put(&htt->txdone_fifo, tx_done)) {
+ 			ath10k_warn(ar, "txdone fifo overrun, msdu_id %d status %d\n",
+ 				    tx_done.msdu_id, tx_done.status);
+ 			ath10k_txrx_tx_unref(htt, &tx_done);
+@@ -2541,7 +2543,7 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	}
+ 	case HTT_T2H_MSG_TYPE_TX_COMPL_IND:
+-		if (!ar->is_high_latency)
++		if (!(ar->hif.bus == ATH10K_BUS_USB))
+ 			ath10k_htt_rx_tx_compl_ind(htt->ar, skb);
+ 		break;
+ 	case HTT_T2H_MSG_TYPE_SEC_IND: {
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index c74fc13..d7f59a2 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -153,7 +153,7 @@ void ath10k_htt_tx_txq_update(struct ieee80211_hw *hw,
+ 
+ void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt)
+ {
+-	if (htt->ar->is_high_latency)
++	if (htt->ar->hif.bus == ATH10K_BUS_USB)
+ 		return;
+ 
+ 	lockdep_assert_held(&htt->tx_lock);
+@@ -165,7 +165,7 @@ void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt)
+ 
+ int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt)
+ {
+-	if (htt->ar->is_high_latency)
++	if (htt->ar->hif.bus == ATH10K_BUS_USB)
+ 		return 0;
+ 
+ 	lockdep_assert_held(&htt->tx_lock);
+@@ -454,7 +454,7 @@ void ath10k_htt_tx_destroy(struct ath10k_htt *htt)
+ 		return;
+ 
+ 	ath10k_htt_tx_free_cont_txbuf(htt);
+-	if (!htt->ar->is_high_latency)
++	if (!(htt->ar->hif.bus == ATH10K_BUS_USB))
+ 		ath10k_htt_tx_free_txq(htt);
+ 	ath10k_htt_tx_free_cont_frag_desc(htt);
+ 	ath10k_htt_tx_free_txdone_fifo(htt);
+@@ -475,7 +475,8 @@ void ath10k_htt_tx_free(struct ath10k_htt *htt)
+ 
+ void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
+ {
+-	dev_kfree_skb_any(skb);
++	if (!(ar->hif.bus == ATH10K_BUS_SDIO))
++		dev_kfree_skb_any(skb);
+ }
+ 
+ void ath10k_htt_hif_tx_complete(struct ath10k *ar, struct sk_buff *skb)
+@@ -975,6 +976,7 @@ int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
+ 	u8 tid = ath10k_htt_tx_get_tid(msdu, is_eth);
+ 	u8 flags0 = 0;
+ 	u16 flags1 = 0;
++	u16 msdu_id = 0;
+ 
+ 	data_len = msdu->len;
+ 
+@@ -1022,6 +1024,18 @@ int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
+ 		}
+ 	}
+ 
++	if (ar->hif.bus == ATH10K_BUS_SDIO) {
++		flags1 |= HTT_DATA_TX_DESC_FLAGS1_POSTPONED;
++		spin_lock_bh(&htt->tx_lock);
++		res = ath10k_htt_tx_alloc_msdu_id(htt, msdu);
++		spin_unlock_bh(&htt->tx_lock);
++		if (res < 0) {
++			ath10k_err(ar, "msdu_id allocation failed %d\n", res);
++			goto out;
++		}
++		msdu_id = res;
++	}
++
+ 	skb_push(msdu, sizeof(*cmd_hdr));
+ 	skb_push(msdu, sizeof(*tx_desc));
+ 	cmd_hdr = (struct htt_cmd_hdr *)msdu->data;
+@@ -1031,7 +1045,7 @@ int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
+ 	tx_desc->flags0 = flags0;
+ 	tx_desc->flags1 = __cpu_to_le16(flags1);
+ 	tx_desc->len = __cpu_to_le16(data_len);
+-	tx_desc->id = 0;
++	tx_desc->id = __cpu_to_le16(msdu_id);
+ 	tx_desc->frags_paddr = 0; /* always zero */
+ 	/* Initialize peer_id to INVALID_PEER because this is NOT
+ 	 * Reinjection path
 -- 
 1.9.1
 
