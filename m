@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dyLjE-0001Qd-4O
+ id 1dyLj9-0001QI-KQ
  for ath10k@lists.infradead.org; Sat, 30 Sep 2017 17:39:12 +0000
-Received: by mail-pf0-x241.google.com with SMTP id f84so1764705pfj.3
- for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:45 -0700 (PDT)
+Received: by mail-pg0-x241.google.com with SMTP id j16so1849696pga.2
+ for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:43 -0700 (PDT)
 From: silexcommon@gmail.com
-Subject: [PATCH 09/11] ath10k_sdio: virtual scatter gather for receive
-Date: Sat, 30 Sep 2017 23:07:46 +0530
-Message-Id: <1506793068-27445-10-git-send-email-alagusankar@silex-india.com>
+Subject: [PATCH 08/11] ath10k_sdio: common read write
+Date: Sat, 30 Sep 2017 23:07:45 +0530
+Message-Id: <1506793068-27445-9-git-send-email-alagusankar@silex-india.com>
 In-Reply-To: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
 References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -29,331 +29,373 @@ Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org
 
 From: Alagu Sankar <alagusankar@silex-india.com>
 
-The existing implementation of initiating multiple sdio transfers for
-receive bundling is slowing down the receive speed. Combining the
-transfers using a scatter gather method would be ideal. This results in
-significant performance improvement.
-
-Since the sg implementation for sdio transfers are not reliable due to
-buffer start and size alignment, a virtual scatter gather implementation
-is used.
+convert different read write functions in sdio hif to bring it under a
+single read-write path. This helps in having a common dma bounce buffer
+implementation. Also helps in address modification that is required
+specific to change in certain mbox addresses of sdio_write.
 
 Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.h  |   1 +
- drivers/net/wireless/ath/ath10k/sdio.c | 122 ++++++++++++++++++++++++---------
- drivers/net/wireless/ath/ath10k/sdio.h |   5 +-
- 3 files changed, 93 insertions(+), 35 deletions(-)
+ drivers/net/wireless/ath/ath10k/sdio.c | 131 ++++++++++++++++-----------------
+ 1 file changed, 64 insertions(+), 67 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index 24663b0..5d87908 100644
---- a/drivers/net/wireless/ath/ath10k/htc.h
-+++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -58,6 +58,7 @@ enum ath10k_htc_tx_flags {
- };
- 
- enum ath10k_htc_rx_flags {
-+	ATH10K_HTC_FLAGS_RECV_1MORE_BLOCK = 0x01,
- 	ATH10K_HTC_FLAG_TRAILER_PRESENT = 0x02,
- 	ATH10K_HTC_FLAG_BUNDLE_MASK     = 0xF0
- };
 diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index bb6fa67..45df9db 100644
+index 77d4fa4..bb6fa67 100644
 --- a/drivers/net/wireless/ath/ath10k/sdio.c
 +++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -35,6 +35,7 @@
- #include "sdio.h"
+@@ -36,6 +36,11 @@
  
  #define ATH10K_SDIO_DMA_BUF_SIZE	(32 * 1024)
-+#define ATH10K_SDIO_VSG_BUF_SIZE	(32 * 1024)
  
- static int ath10k_sdio_read(struct ath10k *ar, u32 addr, void *buf,
- 			    u32 len, bool incr);
-@@ -430,6 +431,7 @@ static int ath10k_sdio_mbox_rx_process_packet(struct ath10k *ar,
++static int ath10k_sdio_read(struct ath10k *ar, u32 addr, void *buf,
++			    u32 len, bool incr);
++static int ath10k_sdio_write(struct ath10k *ar, u32 addr, const void *buf,
++			     u32 len, bool incr);
++
+ /* inlined helper functions */
+ 
+ /* Macro to check if DMA buffer is WORD-aligned and DMA-able.
+@@ -152,6 +157,7 @@ static int ath10k_sdio_config(struct ath10k *ar)
+ 	struct sdio_func *func = ar_sdio->func;
+ 	unsigned char byte, asyncintdelay = 2;
+ 	int ret;
++	u32 addr;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "sdio configuration\n");
+ 
+@@ -180,9 +186,8 @@ static int ath10k_sdio_config(struct ath10k *ar)
+ 		 CCCR_SDIO_DRIVER_STRENGTH_ENABLE_C |
+ 		 CCCR_SDIO_DRIVER_STRENGTH_ENABLE_D);
+ 
+-	ret = ath10k_sdio_func0_cmd52_wr_byte(func->card,
+-					      CCCR_SDIO_DRIVER_STRENGTH_ENABLE_ADDR,
+-					      byte);
++	addr = CCCR_SDIO_DRIVER_STRENGTH_ENABLE_ADDR,
++	ret = ath10k_sdio_func0_cmd52_wr_byte(func->card, addr, byte);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to enable driver strength: %d\n", ret);
+ 		goto out;
+@@ -233,13 +238,16 @@ static int ath10k_sdio_config(struct ath10k *ar)
+ 
+ static int ath10k_sdio_write32(struct ath10k *ar, u32 addr, u32 val)
+ {
+-	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+-	struct sdio_func *func = ar_sdio->func;
++	__le32 *buf;
  	int ret;
  
- 	payload_len = le16_to_cpu(htc_hdr->len);
-+	skb->len = payload_len + sizeof(struct ath10k_htc_hdr);
+-	sdio_claim_host(func);
++	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
  
- 	if (trailer_present) {
- 		trailer = skb->data + sizeof(*htc_hdr) +
-@@ -468,12 +470,13 @@ static int ath10k_sdio_mbox_rx_process_packets(struct ath10k *ar,
- 	enum ath10k_htc_ep_id id;
- 	int ret, i, *n_lookahead_local;
- 	u32 *lookaheads_local;
-+	int lookahd_idx = 0;
+-	sdio_writel(func, val, addr, &ret);
++	*buf = cpu_to_le32(val);
++
++	ret = ath10k_sdio_write(ar, addr, &val, sizeof(val), true);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to write 0x%x to address 0x%x: %d\n",
+ 			    val, addr, ret);
+@@ -250,15 +258,13 @@ static int ath10k_sdio_write32(struct ath10k *ar, u32 addr, u32 val)
+ 		   addr, val);
  
- 	for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
- 		lookaheads_local = lookaheads;
- 		n_lookahead_local = n_lookahead;
+ out:
+-	sdio_release_host(func);
++	kfree(buf);
  
--		id = ((struct ath10k_htc_hdr *)&lookaheads[i])->eid;
-+		id = ((struct ath10k_htc_hdr *)&lookaheads[lookahd_idx++])->eid;
- 
- 		if (id >= ATH10K_HTC_EP_COUNT) {
- 			ath10k_warn(ar, "invalid endpoint in look-ahead: %d\n",
-@@ -496,6 +499,7 @@ static int ath10k_sdio_mbox_rx_process_packets(struct ath10k *ar,
- 			/* Only read lookahead's from RX trailers
- 			 * for the last packet in a bundle.
- 			 */
-+			lookahd_idx--;
- 			lookaheads_local = NULL;
- 			n_lookahead_local = NULL;
- 		}
-@@ -529,11 +533,11 @@ static int ath10k_sdio_mbox_rx_process_packets(struct ath10k *ar,
  	return ret;
  }
  
--static int ath10k_sdio_mbox_alloc_pkt_bundle(struct ath10k *ar,
--					     struct ath10k_sdio_rx_data *rx_pkts,
--					     struct ath10k_htc_hdr *htc_hdr,
--					     size_t full_len, size_t act_len,
--					     size_t *bndl_cnt)
-+static int ath10k_sdio_mbox_alloc_bundle(struct ath10k *ar,
-+					 struct ath10k_sdio_rx_data *rx_pkts,
-+					 struct ath10k_htc_hdr *htc_hdr,
-+					 size_t full_len, size_t act_len,
-+					 size_t *bndl_cnt)
+ static int ath10k_sdio_writesb32(struct ath10k *ar, u32 addr, u32 val)
  {
- 	int ret, i;
+-	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+-	struct sdio_func *func = ar_sdio->func;
+ 	__le32 *buf;
+ 	int ret;
  
-@@ -574,6 +578,7 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 	size_t full_len, act_len;
- 	bool last_in_bundle;
- 	int ret, i;
-+	int pkt_cnt = 0;
+@@ -268,9 +274,7 @@ static int ath10k_sdio_writesb32(struct ath10k *ar, u32 addr, u32 val)
  
- 	if (n_lookaheads > ATH10K_SDIO_MAX_RX_MSGS) {
- 		ath10k_warn(ar,
-@@ -616,16 +621,22 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 			 * optimally fetched as a full bundle.
- 			 */
- 			size_t bndl_cnt;
+ 	*buf = cpu_to_le32(val);
+ 
+-	sdio_claim_host(func);
 -
--			ret = ath10k_sdio_mbox_alloc_pkt_bundle(ar,
--								&ar_sdio->rx_pkts[i],
--								htc_hdr,
--								full_len,
--								act_len,
--								&bndl_cnt);
+-	ret = sdio_writesb(func, addr, buf, sizeof(*buf));
++	ret = ath10k_sdio_write(ar, addr, buf, sizeof(*buf), false);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to write value 0x%x to fixed sb address 0x%x: %d\n",
+ 			    val, addr, ret);
+@@ -281,8 +285,6 @@ static int ath10k_sdio_writesb32(struct ath10k *ar, u32 addr, u32 val)
+ 		   addr, val);
+ 
+ out:
+-	sdio_release_host(func);
 -
--			n_lookaheads += bndl_cnt;
--			i += bndl_cnt;
-+			struct ath10k_sdio_rx_data *rx_pkts =
-+				&ar_sdio->rx_pkts[pkt_cnt];
+ 	kfree(buf);
+ 
+ 	return ret;
+@@ -290,28 +292,33 @@ static int ath10k_sdio_writesb32(struct ath10k *ar, u32 addr, u32 val)
+ 
+ static int ath10k_sdio_read32(struct ath10k *ar, u32 addr, u32 *val)
+ {
+-	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+-	struct sdio_func *func = ar_sdio->func;
++	__le32 *buf;
+ 	int ret;
+ 
+-	sdio_claim_host(func);
+-	*val = sdio_readl(func, addr, &ret);
++	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
 +
-+			ret = ath10k_sdio_mbox_alloc_bundle(ar,
-+							    rx_pkts,
-+							    htc_hdr,
-+							    full_len,
-+							    act_len,
-+							    &bndl_cnt);
-+
-+			if (ret) {
-+				ath10k_warn(ar, "alloc_bundle error %d\n", ret);
-+				goto err;
-+			}
-+
-+			pkt_cnt += bndl_cnt;
- 			/*Next buffer will be the last in the bundle */
- 			last_in_bundle = true;
- 		}
-@@ -634,14 +645,18 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
- 		 * ATH10K_HTC_FLAG_BUNDLE_MASK flag set, all bundled
- 		 * packet skb's have been allocated in the previous step.
- 		 */
--		ret = ath10k_sdio_mbox_alloc_rx_pkt(&ar_sdio->rx_pkts[i],
-+		if (htc_hdr->flags & ATH10K_HTC_FLAGS_RECV_1MORE_BLOCK)
-+			full_len += ATH10K_HIF_MBOX_BLOCK_SIZE;
-+
-+		ret = ath10k_sdio_mbox_alloc_rx_pkt(&ar_sdio->rx_pkts[pkt_cnt],
- 						    act_len,
- 						    full_len,
- 						    last_in_bundle,
- 						    last_in_bundle);
-+		pkt_cnt++;
++	ret = ath10k_sdio_read(ar, addr, buf, sizeof(*val), true);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to read from address 0x%x: %d\n",
+ 			    addr, ret);
+ 		goto out;
  	}
  
--	ar_sdio->n_rx_pkts = i;
-+	ar_sdio->n_rx_pkts = pkt_cnt;
++	*val = le32_to_cpu(*buf);
++
+ 	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio read32 addr 0x%x val 0x%x\n",
+ 		   addr, *val);
  
- 	return 0;
+ out:
+-	sdio_release_host(func);
++	kfree(buf);
  
-@@ -655,41 +670,71 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
  	return ret;
  }
  
--static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
--				      struct ath10k_sdio_rx_data *pkt)
-+static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
+-static int ath10k_sdio_read(struct ath10k *ar, u32 addr, void *buf, size_t len)
++static int ath10k_sdio_read(struct ath10k *ar, u32 addr, void *buf,
++			    size_t len, bool incr)
  {
  	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
--	struct sk_buff *skb = pkt->skb;
-+	struct ath10k_sdio_rx_data *pkt = &ar_sdio->rx_pkts[0];
-+	struct sk_buff *skb;
+ 	struct sdio_func *func = ar_sdio->func;
+@@ -330,8 +337,12 @@ static int ath10k_sdio_read(struct ath10k *ar, u32 addr, void *buf, size_t len)
+ 	}
+ 
+ 	sdio_claim_host(func);
++	if (incr)
++		ret = sdio_memcpy_fromio(func, tbuf, addr, len);
++	else
++		ret = sdio_readsb(func, tbuf, addr, len);
++	sdio_release_host(func);
+ 
+-	ret = sdio_memcpy_fromio(func, tbuf, addr, len);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to read from address 0x%x: %d\n",
+ 			    addr, ret);
+@@ -345,14 +356,14 @@ static int ath10k_sdio_read(struct ath10k *ar, u32 addr, void *buf, size_t len)
+ 	ath10k_dbg_dump(ar, ATH10K_DBG_SDIO_DUMP, NULL, "sdio read ", buf, len);
+ 
+ out:
+-	sdio_release_host(func);
+ 	if (bounced)
+ 		mutex_unlock(&ar_sdio->dma_buffer_mutex);
+ 
+ 	return ret;
+ }
+ 
+-static int ath10k_sdio_write(struct ath10k *ar, u32 addr, const void *buf, size_t len)
++static int ath10k_sdio_write(struct ath10k *ar, u32 addr, const void *buf,
++			     size_t len, bool incr)
+ {
+ 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+ 	struct sdio_func *func = ar_sdio->func;
+@@ -371,12 +382,18 @@ static int ath10k_sdio_write(struct ath10k *ar, u32 addr, const void *buf, size_
+ 		tbuf = (u8 *)buf;
+ 	}
+ 
++	if (addr == ar_sdio->mbox_info.htc_addr)
++		addr += (ATH10K_HIF_MBOX_WIDTH - len);
++
+ 	sdio_claim_host(func);
+ 
+ 	/* For some reason toio() doesn't have const for the buffer, need
+ 	 * an ugly hack to workaround that.
+ 	 */
+-	ret = sdio_memcpy_toio(func, addr, (void *)tbuf, len);
++	if (incr)
++		ret = sdio_memcpy_toio(func, addr, (void *)tbuf, len);
++	else
++		ret = sdio_writesb(func, addr, tbuf, len);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to write to address 0x%x: %d\n",
+ 			    addr, ret);
+@@ -389,39 +406,13 @@ static int ath10k_sdio_write(struct ath10k *ar, u32 addr, const void *buf, size_
+ 
+ out:
+ 	sdio_release_host(func);
++
+ 	if (bounced)
+ 		mutex_unlock(&ar_sdio->dma_buffer_mutex);
+ 
+ 	return ret;
+ }
+ 
+-static int ath10k_sdio_readsb(struct ath10k *ar, u32 addr, void *buf, size_t len)
+-{
+-	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+-	struct sdio_func *func = ar_sdio->func;
+-	int ret;
+-
+-	sdio_claim_host(func);
+-
+-	len = round_down(len, ar_sdio->mbox_info.block_size);
+-
+-	ret = sdio_readsb(func, buf, addr, len);
+-	if (ret) {
+-		ath10k_warn(ar, "failed to read from fixed (sb) address 0x%x: %d\n",
+-			    addr, ret);
+-		goto out;
+-	}
+-
+-	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio readsb addr 0x%x buf 0x%p len %zu\n",
+-		   addr, buf, len);
+-	ath10k_dbg_dump(ar, ATH10K_DBG_SDIO_DUMP, NULL, "sdio readsb ", buf, len);
+-
+-out:
+-	sdio_release_host(func);
+-
+-	return ret;
+-}
+-
+ /* HIF mbox functions */
+ 
+ static int ath10k_sdio_mbox_rx_process_packet(struct ath10k *ar,
+@@ -671,8 +662,8 @@ static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
+ 	struct sk_buff *skb = pkt->skb;
  	int ret;
  
-+	skb = pkt->skb;
- 	ret = ath10k_sdio_read(ar, ar_sdio->mbox_info.htc_addr,
- 			       skb->data, pkt->alloc_len, false);
--	pkt->status = ret;
--	if (!ret)
-+	if (ret) {
-+		ar_sdio->n_rx_pkts = 0;
-+		ath10k_sdio_mbox_free_rx_pkt(pkt);
-+	} else {
-+		pkt->status = ret;
+-	ret = ath10k_sdio_readsb(ar, ar_sdio->mbox_info.htc_addr,
+-				 skb->data, pkt->alloc_len);
++	ret = ath10k_sdio_read(ar, ar_sdio->mbox_info.htc_addr,
++			       skb->data, pkt->alloc_len, false);
+ 	pkt->status = ret;
+ 	if (!ret)
  		skb_put(skb, pkt->act_len);
-+	}
+@@ -932,7 +923,7 @@ static int ath10k_sdio_mbox_read_int_status(struct ath10k *ar,
+ 	 * registers and the lookahead registers.
+ 	 */
+ 	ret = ath10k_sdio_read(ar, MBOX_HOST_INT_STATUS_ADDRESS,
+-			       irq_proc_reg, sizeof(*irq_proc_reg));
++			       irq_proc_reg, sizeof(*irq_proc_reg), true);
+ 	if (ret)
+ 		goto out;
  
- 	return ret;
- }
+@@ -1177,7 +1168,8 @@ static int ath10k_sdio_bmi_exchange_msg(struct ath10k *ar,
+ 		addr = ar_sdio->mbox_info.htc_addr;
  
--static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
-+static int ath10k_sdio_mbox_rx_fetch_bundle(struct ath10k *ar)
- {
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
-+	struct ath10k_sdio_rx_data *pkt;
- 	int ret, i;
-+	u32 pkt_offset, virt_pkt_len;
- 
-+	virt_pkt_len = 0;
- 	for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
--		ret = ath10k_sdio_mbox_rx_packet(ar,
--						 &ar_sdio->rx_pkts[i]);
--		if (ret)
-+		virt_pkt_len += ar_sdio->rx_pkts[i].alloc_len;
-+	}
-+	if (virt_pkt_len < ATH10K_SDIO_DMA_BUF_SIZE) {
-+		ret = ath10k_sdio_read(ar, ar_sdio->mbox_info.htc_addr,
-+				       ar_sdio->vsg_buffer, virt_pkt_len,
-+				       false);
-+		if (ret) {
-+			i = 0;
- 			goto err;
-+		}
-+	} else {
-+		ath10k_err(ar, "size exceeding limit %d\n", virt_pkt_len);
-+	}
-+
-+	pkt_offset = 0;
-+	for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
-+		struct sk_buff *skb = ar_sdio->rx_pkts[i].skb;
-+
-+		pkt = &ar_sdio->rx_pkts[i];
-+		memcpy(skb->data, ar_sdio->vsg_buffer + pkt_offset,
-+		       pkt->alloc_len);
-+		pkt->status = 0;
-+		skb_put(skb, pkt->act_len);
-+		pkt_offset += pkt->alloc_len;
- 	}
- 
- 	return 0;
- 
- err:
- 	/* Free all packets that was not successfully fetched. */
--	for (; i < ar_sdio->n_rx_pkts; i++)
-+	for (i = 0; i < ar_sdio->n_rx_pkts; i++)
- 		ath10k_sdio_mbox_free_rx_pkt(&ar_sdio->rx_pkts[i]);
- 
-+	ar_sdio->n_rx_pkts = 0;
-+
- 	return ret;
- }
- 
-@@ -732,7 +777,10 @@ static int ath10k_sdio_mbox_rxmsg_pending_handler(struct ath10k *ar,
- 			 */
- 			*done = false;
- 
--		ret = ath10k_sdio_mbox_rx_fetch(ar);
-+		if (ar_sdio->n_rx_pkts > 1)
-+			ret = ath10k_sdio_mbox_rx_fetch_bundle(ar);
-+		else
-+			ret = ath10k_sdio_mbox_rx_fetch(ar);
- 
- 		/* Process fetched packets. This will potentially update
- 		 * n_lookaheads depending on if the packets contain lookahead
-@@ -1136,7 +1184,7 @@ static int ath10k_sdio_bmi_get_rx_lookahead(struct ath10k *ar)
- 					 MBOX_HOST_INT_STATUS_ADDRESS,
- 					 &rx_word);
+ 		memcpy(ar_sdio->bmi_buf, req, req_len);
+-		ret = ath10k_sdio_write(ar, addr, ar_sdio->bmi_buf, req_len);
++		ret = ath10k_sdio_write(ar, addr, ar_sdio->bmi_buf, req_len,
++					true);
  		if (ret) {
--			ath10k_warn(ar, "unable to read RX_LOOKAHEAD_VALID: %d\n", ret);
-+			ath10k_warn(ar, "unable to read rx_lookahd: %d\n", ret);
- 			return ret;
- 		}
+ 			ath10k_warn(ar,
+ 				    "unable to send the bmi data to the device: %d\n",
+@@ -1241,7 +1233,7 @@ static int ath10k_sdio_bmi_exchange_msg(struct ath10k *ar,
  
-@@ -1480,7 +1528,7 @@ static int ath10k_sdio_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
- 		skb = items[i].transfer_context;
- 		padded_len = ath10k_sdio_calc_txrx_padded_len(ar_sdio,
- 							      skb->len);
--		skb_trim(skb, padded_len);
-+		skb->len = padded_len;
+ 	/* We always read from the start of the mbox address */
+ 	addr = ar_sdio->mbox_info.htc_addr;
+-	ret = ath10k_sdio_read(ar, addr, ar_sdio->bmi_buf, *resp_len);
++	ret = ath10k_sdio_read(ar, addr, ar_sdio->bmi_buf, *resp_len, true);
+ 	if (ret) {
+ 		ath10k_warn(ar,
+ 			    "unable to read the bmi data from the device: %d\n",
+@@ -1298,7 +1290,7 @@ static void __ath10k_sdio_write_async(struct ath10k *ar,
+ 	int ret;
  
- 		/* Write TX data to the end of the mbox address space */
- 		address = ar_sdio->mbox_addr[eid] + ar_sdio->mbox_size[eid] -
-@@ -1508,7 +1556,8 @@ static int ath10k_sdio_hif_enable_intrs(struct ath10k *ar)
- 	/* Enable all but CPU interrupts */
- 	regs->int_status_en = FIELD_PREP(MBOX_INT_STATUS_ENABLE_ERROR_MASK, 1) |
- 			      FIELD_PREP(MBOX_INT_STATUS_ENABLE_CPU_MASK, 1) |
--			      FIELD_PREP(MBOX_INT_STATUS_ENABLE_COUNTER_MASK, 1);
-+			      FIELD_PREP(MBOX_INT_STATUS_ENABLE_COUNTER_MASK,
-+					 1);
+ 	skb = req->skb;
+-	ret = ath10k_sdio_write(ar, req->address, skb->data, skb->len);
++	ret = ath10k_sdio_write(ar, req->address, skb->data, skb->len, true);
+ 	if (ret)
+ 		ath10k_warn(ar, "failed to write skb to 0x%x asynchronously: %d",
+ 			    req->address, ret);
+@@ -1405,7 +1397,7 @@ static int ath10k_sdio_hif_disable_intrs(struct ath10k *ar)
  
- 	/* NOTE: There are some cases where HIF can do detection of
- 	 * pending mbox messages which is disabled now.
-@@ -2024,6 +2073,12 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 		goto err_free_bmi_buf;
+ 	memset(regs, 0, sizeof(*regs));
+ 	ret = ath10k_sdio_write(ar, MBOX_INT_STATUS_ENABLE_ADDRESS,
+-				&regs->int_status_en, sizeof(*regs));
++				&regs->int_status_en, sizeof(*regs), true);
+ 	if (ret)
+ 		ath10k_warn(ar, "unable to disable sdio interrupts: %d\n", ret);
+ 
+@@ -1540,7 +1532,7 @@ static int ath10k_sdio_hif_enable_intrs(struct ath10k *ar)
+ 			   ATH10K_SDIO_TARGET_DEBUG_INTR_MASK);
+ 
+ 	ret = ath10k_sdio_write(ar, MBOX_INT_STATUS_ENABLE_ADDRESS,
+-				&regs->int_status_en, sizeof(*regs));
++				&regs->int_status_en, sizeof(*regs), true);
+ 	if (ret)
+ 		ath10k_warn(ar,
+ 			    "failed to update mbox interrupt status register : %d\n",
+@@ -1555,7 +1547,8 @@ static int ath10k_sdio_hif_set_mbox_sleep(struct ath10k *ar, bool enable_sleep)
+ 	u32 val;
+ 	int ret;
+ 
+-	ret = ath10k_sdio_read32(ar, ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL, &val);
++	ret = ath10k_sdio_read32(ar, ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL,
++				 &val);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to read fifo/chip control register: %d\n",
+ 			    ret);
+@@ -1567,7 +1560,8 @@ static int ath10k_sdio_hif_set_mbox_sleep(struct ath10k *ar, bool enable_sleep)
+ 	else
+ 		val |= ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL_DISABLE_SLEEP_ON;
+ 
+-	ret = ath10k_sdio_write32(ar, ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL, val);
++	ret = ath10k_sdio_write32(ar, ATH10K_FIFO_TIMEOUT_AND_CHIP_CONTROL,
++				  val);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to write to FIFO_TIMEOUT_AND_CHIP_CONTROL: %d",
+ 			    ret);
+@@ -1587,12 +1581,14 @@ static int ath10k_sdio_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
+ 	/* set window register to start read cycle */
+ 	ret = ath10k_sdio_write32(ar, MBOX_WINDOW_READ_ADDR_ADDRESS, address);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to set mbox window read address: %d", ret);
++		ath10k_warn(ar, "failed to set mbox window read address: %d",
++			    ret);
+ 		return ret;
  	}
  
-+	ar_sdio->vsg_buffer = kzalloc(ATH10K_SDIO_VSG_BUF_SIZE, GFP_KERNEL);
-+	if (!ar_sdio->vsg_buffer) {
-+		ret = -ENOMEM;
-+		goto err_free_bmi_buf;
-+	}
-+
- 	ar_sdio->func = func;
- 	sdio_set_drvdata(func, ar_sdio);
+ 	/* read the data */
+-	ret = ath10k_sdio_read(ar, MBOX_WINDOW_DATA_ADDRESS, buf, buf_len);
++	ret = ath10k_sdio_read(ar, MBOX_WINDOW_DATA_ADDRESS, buf, buf_len,
++			       true);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to read from mbox window data address: %d\n",
+ 			    ret);
+@@ -1630,7 +1626,8 @@ static int ath10k_sdio_hif_diag_write_mem(struct ath10k *ar, u32 address,
+ 	int ret;
  
-@@ -2081,7 +2136,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+ 	/* set write data */
+-	ret = ath10k_sdio_write(ar, MBOX_WINDOW_DATA_ADDRESS, data, nbytes);
++	ret = ath10k_sdio_write(ar, MBOX_WINDOW_DATA_ADDRESS, data, nbytes,
++				true);
+ 	if (ret) {
+ 		ath10k_warn(ar,
+ 			    "failed to write 0x%p to mbox window data address: %d\n",
+@@ -1641,7 +1638,7 @@ static int ath10k_sdio_hif_diag_write_mem(struct ath10k *ar, u32 address,
+ 	/* set window register, which starts the write cycle */
+ 	ret = ath10k_sdio_write32(ar, MBOX_WINDOW_WRITE_ADDR_ADDRESS, address);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to set mbox window write address: %d", ret);
++		ath10k_warn(ar, "failed to set mbox window register: %d", ret);
+ 		return ret;
  	}
  
- 	/* TODO: remove this once SDIO support is fully implemented */
--	ath10k_warn(ar, "WARNING: ath10k SDIO support is incomplete, don't expect anything to work!\n");
-+	ath10k_warn(ar, "WARNING: ath10k SDIO support is experimental\n");
+@@ -1691,7 +1688,7 @@ static int ath10k_sdio_hif_start(struct ath10k *ar)
  
- 	return 0;
+ 	ret = ath10k_sdio_hif_diag_read32(ar, addr, &val);
+ 	if (ret) {
+-		ath10k_warn(ar, "unable to read hi_acs_flags address: %d\n", ret);
++		ath10k_warn(ar, "unable to read hi_acs_flags : %d\n", ret);
+ 		return ret;
+ 	}
  
-@@ -2115,6 +2170,7 @@ static void ath10k_sdio_remove(struct sdio_func *func)
- 	ath10k_core_unregister(ar);
- 	ath10k_core_destroy(ar);
- 	kfree(ar_sdio->dma_buffer);
-+	kfree(ar_sdio->vsg_buffer);
- }
- 
- static const struct sdio_device_id ath10k_sdio_devices[] = {
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
-index 718b8b7..8b6a86a 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.h
-+++ b/drivers/net/wireless/ath/ath10k/sdio.h
-@@ -149,8 +149,8 @@ struct ath10k_sdio_irq_proc_regs {
- 	u8 rx_lookahead_valid;
- 	u8 host_int_status2;
- 	u8 gmbox_rx_avail;
--	__le32 rx_lookahead[2];
--	__le32 rx_gmbox_lookahead_alias[2];
-+	__le32 rx_lookahead[2 * ATH10K_HIF_MBOX_NUM_MAX];
-+	__le32 int_status_enable;
- };
- 
- struct ath10k_sdio_irq_enable_regs {
-@@ -207,6 +207,7 @@ struct ath10k_sdio {
- 	struct ath10k *ar;
- 	struct ath10k_sdio_irq_data irq_data;
- 
-+	u8 *vsg_buffer;
- 	u8 *dma_buffer;
- 
- 	/* protects access to dma_buffer */
 -- 
 1.9.1
 
