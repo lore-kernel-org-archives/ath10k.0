@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dyLj5-0001PI-Gx
- for ath10k@lists.infradead.org; Sat, 30 Sep 2017 17:39:02 +0000
-Received: by mail-pf0-x244.google.com with SMTP id m28so1628016pfi.0
- for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:35 -0700 (PDT)
+ id 1dyLj7-0001Pb-H4
+ for ath10k@lists.infradead.org; Sat, 30 Sep 2017 17:39:03 +0000
+Received: by mail-pg0-x244.google.com with SMTP id y192so1837329pgd.5
+ for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:37 -0700 (PDT)
 From: silexcommon@gmail.com
-Subject: [PATCH 04/11] ath10k_sdio: reduce transmit msdu count
-Date: Sat, 30 Sep 2017 23:07:41 +0530
-Message-Id: <1506793068-27445-5-git-send-email-alagusankar@silex-india.com>
+Subject: [PATCH 05/11] ath10k_sdio: use clean packet headers
+Date: Sat, 30 Sep 2017 23:07:42 +0530
+Message-Id: <1506793068-27445-6-git-send-email-alagusankar@silex-india.com>
 In-Reply-To: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
 References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -29,60 +29,52 @@ Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org
 
 From: Alagu Sankar <alagusankar@silex-india.com>
 
-Reduce the transmit MSDU count for SDIO, to match with the descriptors
-as used by the firmware. This also acts as a high watermark level for
-transmit. Too many packets to the firmware results in transmit overflow
-interrupt.
+HTC header carries junk values that may be interpreted by the firmware
+differently. Enable credit update only if flow control is enabled for
+the corresponding endpoint.
+
+PLL clock setting sequence does not mask the PLL_CONTROL
+register value. Side effect of not masking the values is not known as
+the entire pll clock setting sequence is undocumented.
 
 Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c    | 6 +++++-
- drivers/net/wireless/ath/ath10k/hw.h      | 1 +
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 +-
- 3 files changed, 7 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/htc.c | 4 +++-
+ drivers/net/wireless/ath/ath10k/hw.c  | 2 ++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 86247c8..9de49f5 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1968,7 +1968,11 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
- 		ar->max_num_vdevs = TARGET_TLV_NUM_VDEVS;
- 		ar->max_num_tdls_vdevs = TARGET_TLV_NUM_TDLS_VDEVS;
--		ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
-+		if (ar->hif.bus == ATH10K_BUS_SDIO)
-+			ar->htt.max_num_pending_tx =
-+				TARGET_TLV_NUM_MSDU_DESC_HL;
-+		else
-+			ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
- 		ar->wow.max_num_patterns = TARGET_TLV_NUM_WOW_PATTERNS;
- 		ar->fw_stats_req_mask = WMI_STAT_PDEV | WMI_STAT_VDEV |
- 			WMI_STAT_PEER;
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 7c9f6f9..b870a92 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -688,6 +688,7 @@ struct ath10k_hw_ops {
- #define TARGET_TLV_NUM_TDLS_VDEVS		1
- #define TARGET_TLV_NUM_TIDS			((TARGET_TLV_NUM_PEERS) * 2)
- #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
-+#define TARGET_TLV_NUM_MSDU_DESC_HL		64
- #define TARGET_TLV_NUM_WOW_PATTERNS		22
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 75c2a3e..23e7216 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -84,11 +84,13 @@ static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
+ 	struct ath10k_htc_hdr *hdr;
  
- /* Target specific defines for QCA9377 high latency firmware */
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 34e9770..3842caa 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1440,7 +1440,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	cfg->rx_skip_defrag_timeout_dup_detection_check = __cpu_to_le32(0);
- 	cfg->vow_config = __cpu_to_le32(0);
- 	cfg->gtk_offload_max_vdev = __cpu_to_le32(2);
--	cfg->num_msdu_desc = __cpu_to_le32(TARGET_TLV_NUM_MSDU_DESC);
-+	cfg->num_msdu_desc = __cpu_to_le32(ar->htt.max_num_pending_tx);
- 	cfg->max_frag_entries = __cpu_to_le32(2);
- 	cfg->num_tdls_vdevs = __cpu_to_le32(TARGET_TLV_NUM_TDLS_VDEVS);
- 	cfg->num_tdls_conn_table_entries = __cpu_to_le32(0x20);
+ 	hdr = (struct ath10k_htc_hdr *)skb->data;
++	memset(hdr, 0, sizeof(struct ath10k_htc_hdr));
+ 
+ 	hdr->eid = ep->eid;
+ 	hdr->len = __cpu_to_le16(skb->len - sizeof(*hdr));
+ 	hdr->flags = 0;
+-	hdr->flags |= ATH10K_HTC_FLAG_NEED_CREDIT_UPDATE;
++	if (ep->tx_credit_flow_enabled)
++		hdr->flags |= ATH10K_HTC_FLAG_NEED_CREDIT_UPDATE;
+ 
+ 	spin_lock_bh(&ep->htc->tx_lock);
+ 	hdr->seq_no = ep->seq_no++;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index 07df7c6..2092392 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -812,6 +812,8 @@ static int ath10k_hw_qca6174_enable_pll_clock(struct ath10k *ar)
+ 	if (ret)
+ 		return -EINVAL;
+ 
++	reg_val &= ~(WLAN_PLL_CONTROL_REFDIV_MASK | WLAN_PLL_CONTROL_DIV_MASK |
++		     WLAN_PLL_CONTROL_NOPWD_MASK);
+ 	reg_val |= (SM(hw_clk->refdiv, WLAN_PLL_CONTROL_REFDIV) |
+ 		    SM(hw_clk->div, WLAN_PLL_CONTROL_DIV) |
+ 		    SM(1, WLAN_PLL_CONTROL_NOPWD));
 -- 
 1.9.1
 
