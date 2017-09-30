@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dyLj3-0001P5-4Q
- for ath10k@lists.infradead.org; Sat, 30 Sep 2017 17:39:00 +0000
-Received: by mail-pg0-x242.google.com with SMTP id j16so1849545pga.2
- for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:33 -0700 (PDT)
+ id 1dyLj5-0001PI-Gx
+ for ath10k@lists.infradead.org; Sat, 30 Sep 2017 17:39:02 +0000
+Received: by mail-pf0-x244.google.com with SMTP id m28so1628016pfi.0
+ for <ath10k@lists.infradead.org>; Sat, 30 Sep 2017 10:38:35 -0700 (PDT)
 From: silexcommon@gmail.com
-Subject: [PATCH 03/11] ath10k_sdio: DMA bounce buffers for read write
-Date: Sat, 30 Sep 2017 23:07:40 +0530
-Message-Id: <1506793068-27445-4-git-send-email-alagusankar@silex-india.com>
+Subject: [PATCH 04/11] ath10k_sdio: reduce transmit msdu count
+Date: Sat, 30 Sep 2017 23:07:41 +0530
+Message-Id: <1506793068-27445-5-git-send-email-alagusankar@silex-india.com>
 In-Reply-To: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
 References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -29,184 +29,60 @@ Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org
 
 From: Alagu Sankar <alagusankar@silex-india.com>
 
-Some SD host controllers still need bounce buffers for SDIO data
-transfers. While the transfers worked fine on x86 platforms,
-this is found to be required for i.MX6 based systems.
-
-Changes are similar to and derived from the ath6kl sdio driver.
+Reduce the transmit MSDU count for SDIO, to match with the descriptors
+as used by the firmware. This also acts as a high watermark level for
+transmit. Too many packets to the firmware results in transmit overflow
+interrupt.
 
 Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
 ---
- drivers/net/wireless/ath/ath10k/sdio.c | 59 ++++++++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/sdio.h |  5 +++
- 2 files changed, 61 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c    | 6 +++++-
+ drivers/net/wireless/ath/ath10k/hw.h      | 1 +
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 +-
+ 3 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 03a69e5..77d4fa4 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -34,8 +34,20 @@
- #include "trace.h"
- #include "sdio.h"
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 86247c8..9de49f5 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1968,7 +1968,11 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
+ 		ar->max_num_vdevs = TARGET_TLV_NUM_VDEVS;
+ 		ar->max_num_tdls_vdevs = TARGET_TLV_NUM_TDLS_VDEVS;
+-		ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
++		if (ar->hif.bus == ATH10K_BUS_SDIO)
++			ar->htt.max_num_pending_tx =
++				TARGET_TLV_NUM_MSDU_DESC_HL;
++		else
++			ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
+ 		ar->wow.max_num_patterns = TARGET_TLV_NUM_WOW_PATTERNS;
+ 		ar->fw_stats_req_mask = WMI_STAT_PDEV | WMI_STAT_VDEV |
+ 			WMI_STAT_PEER;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 7c9f6f9..b870a92 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -688,6 +688,7 @@ struct ath10k_hw_ops {
+ #define TARGET_TLV_NUM_TDLS_VDEVS		1
+ #define TARGET_TLV_NUM_TIDS			((TARGET_TLV_NUM_PEERS) * 2)
+ #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
++#define TARGET_TLV_NUM_MSDU_DESC_HL		64
+ #define TARGET_TLV_NUM_WOW_PATTERNS		22
  
-+#define ATH10K_SDIO_DMA_BUF_SIZE	(32 * 1024)
-+
- /* inlined helper functions */
- 
-+/* Macro to check if DMA buffer is WORD-aligned and DMA-able.
-+ * Most host controllers assume the buffer is DMA'able and will
-+ * bug-check otherwise (i.e. buffers on the stack). virt_addr_valid
-+ * check fails on stack memory.
-+ */
-+static inline bool buf_needs_bounce(const u8 *buf)
-+{
-+	return ((unsigned long)buf & 0x3) || !virt_addr_valid(buf);
-+}
-+
- static inline int ath10k_sdio_calc_txrx_padded_len(struct ath10k_sdio *ar_sdio,
- 						   size_t len)
- {
-@@ -303,15 +315,29 @@ static int ath10k_sdio_read(struct ath10k *ar, u32 addr, void *buf, size_t len)
- {
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
- 	struct sdio_func *func = ar_sdio->func;
-+	bool bounced = false;
-+	u8 *tbuf = NULL;
- 	int ret;
- 
-+	if (buf_needs_bounce(buf)) {
-+		if (!ar_sdio->dma_buffer)
-+			return -ENOMEM;
-+		mutex_lock(&ar_sdio->dma_buffer_mutex);
-+		tbuf = ar_sdio->dma_buffer;
-+		bounced = true;
-+	} else {
-+		tbuf = buf;
-+	}
-+
- 	sdio_claim_host(func);
- 
--	ret = sdio_memcpy_fromio(func, buf, addr, len);
-+	ret = sdio_memcpy_fromio(func, tbuf, addr, len);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to read from address 0x%x: %d\n",
- 			    addr, ret);
- 		goto out;
-+	} else if (bounced) {
-+		memcpy(buf, tbuf, len);
- 	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio read addr 0x%x buf 0x%p len %zu\n",
-@@ -320,6 +346,8 @@ static int ath10k_sdio_read(struct ath10k *ar, u32 addr, void *buf, size_t len)
- 
- out:
- 	sdio_release_host(func);
-+	if (bounced)
-+		mutex_unlock(&ar_sdio->dma_buffer_mutex);
- 
- 	return ret;
- }
-@@ -328,14 +356,27 @@ static int ath10k_sdio_write(struct ath10k *ar, u32 addr, const void *buf, size_
- {
- 	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
- 	struct sdio_func *func = ar_sdio->func;
-+	bool bounced = false;
-+	u8 *tbuf = NULL;
- 	int ret;
- 
-+	if (buf_needs_bounce(buf)) {
-+		if (!ar_sdio->dma_buffer)
-+			return -ENOMEM;
-+		mutex_lock(&ar_sdio->dma_buffer_mutex);
-+		tbuf = ar_sdio->dma_buffer;
-+		memcpy(tbuf, buf, len);
-+		bounced = true;
-+	} else {
-+		tbuf = (u8 *)buf;
-+	}
-+
- 	sdio_claim_host(func);
- 
- 	/* For some reason toio() doesn't have const for the buffer, need
- 	 * an ugly hack to workaround that.
- 	 */
--	ret = sdio_memcpy_toio(func, addr, (void *)buf, len);
-+	ret = sdio_memcpy_toio(func, addr, (void *)tbuf, len);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to write to address 0x%x: %d\n",
- 			    addr, ret);
-@@ -348,6 +389,8 @@ static int ath10k_sdio_write(struct ath10k *ar, u32 addr, const void *buf, size_
- 
- out:
- 	sdio_release_host(func);
-+	if (bounced)
-+		mutex_unlock(&ar_sdio->dma_buffer_mutex);
- 
- 	return ret;
- }
-@@ -1978,6 +2021,12 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 		goto err_free_en_reg;
- 	}
- 
-+	ar_sdio->dma_buffer = kzalloc(ATH10K_SDIO_DMA_BUF_SIZE, GFP_KERNEL);
-+	if (!ar_sdio->dma_buffer) {
-+		ret = -ENOMEM;
-+		goto err_free_bmi_buf;
-+	}
-+
- 	ar_sdio->func = func;
- 	sdio_set_drvdata(func, ar_sdio);
- 
-@@ -1987,6 +2036,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 	spin_lock_init(&ar_sdio->lock);
- 	spin_lock_init(&ar_sdio->wr_async_lock);
- 	mutex_init(&ar_sdio->irq_data.mtx);
-+	mutex_init(&ar_sdio->dma_buffer_mutex);
- 
- 	INIT_LIST_HEAD(&ar_sdio->bus_req_freeq);
- 	INIT_LIST_HEAD(&ar_sdio->wr_asyncq);
-@@ -1995,7 +2045,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 	ar_sdio->workqueue = create_singlethread_workqueue("ath10k_sdio_wq");
- 	if (!ar_sdio->workqueue) {
- 		ret = -ENOMEM;
--		goto err_free_bmi_buf;
-+		goto err_dma;
- 	}
- 
- 	for (i = 0; i < ATH10K_SDIO_BUS_REQUEST_MAX_NUM; i++)
-@@ -2040,6 +2090,8 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 
- err_free_wq:
- 	destroy_workqueue(ar_sdio->workqueue);
-+err_dma:
-+	kfree(ar_sdio->dma_buffer);
- err_free_bmi_buf:
- 	kfree(ar_sdio->bmi_buf);
- err_free_en_reg:
-@@ -2065,6 +2117,7 @@ static void ath10k_sdio_remove(struct sdio_func *func)
- 	cancel_work_sync(&ar_sdio->wr_async_work);
- 	ath10k_core_unregister(ar);
- 	ath10k_core_destroy(ar);
-+	kfree(ar_sdio->dma_buffer);
- }
- 
- static const struct sdio_device_id ath10k_sdio_devices[] = {
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
-index 4ff7b54..718b8b7 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.h
-+++ b/drivers/net/wireless/ath/ath10k/sdio.h
-@@ -207,6 +207,11 @@ struct ath10k_sdio {
- 	struct ath10k *ar;
- 	struct ath10k_sdio_irq_data irq_data;
- 
-+	u8 *dma_buffer;
-+
-+	/* protects access to dma_buffer */
-+	struct mutex dma_buffer_mutex;
-+
- 	/* temporary buffer for BMI requests */
- 	u8 *bmi_buf;
- 
+ /* Target specific defines for QCA9377 high latency firmware */
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 34e9770..3842caa 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1440,7 +1440,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
+ 	cfg->rx_skip_defrag_timeout_dup_detection_check = __cpu_to_le32(0);
+ 	cfg->vow_config = __cpu_to_le32(0);
+ 	cfg->gtk_offload_max_vdev = __cpu_to_le32(2);
+-	cfg->num_msdu_desc = __cpu_to_le32(TARGET_TLV_NUM_MSDU_DESC);
++	cfg->num_msdu_desc = __cpu_to_le32(ar->htt.max_num_pending_tx);
+ 	cfg->max_frag_entries = __cpu_to_le32(2);
+ 	cfg->num_tdls_vdevs = __cpu_to_le32(TARGET_TLV_NUM_TDLS_VDEVS);
+ 	cfg->num_tdls_conn_table_entries = __cpu_to_le32(0x20);
 -- 
 1.9.1
 
