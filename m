@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wp227.webpack.hosteurope.de ([2a01:488:42:1000:50ed:84ea::])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dya6V-0004Kj-6H
- for ath10k@lists.infradead.org; Sun, 01 Oct 2017 09:00:05 +0000
-From: Thorsten Leemhuis <linux@leemhuis.info>
-Subject: ath10k-regression in 4.14: Connections aborts with "failed to extract
- amsdu: -11"
-Message-ID: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
-Date: Sun, 1 Oct 2017 10:59:31 +0200
+ id 1dyetZ-0004EV-0o
+ for ath10k@lists.infradead.org; Sun, 01 Oct 2017 14:07:04 +0000
+Subject: Re: QCA988x and kernel 4.13
+References: <c6294832-ff1e-595c-da8b-dac59b12a976@gmail.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <7549b77b-3619-f8a5-48d6-eb7e330ba80e@dd-wrt.com>
+Date: Sun, 1 Oct 2017 16:06:28 +0200
 MIME-Version: 1.0
-Content-Language: en-MW
+In-Reply-To: <c6294832-ff1e-595c-da8b-dac59b12a976@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,49 +19,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: svp <s.pooheer@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Lo! The wifi connection of my Dell XPS13 (9360) with its QCA6174
-sometimes suddenly stops working since I switched to 4.14-rc2+. Every
-time it happens, there is this error message in dmesg:
-
-> ath10k_pci 0000:3a:00.0: failed to extract amsdu: -11
-
-I have to switch wifi off and on with the hotkey to reconnect. I can
-trigger the aborts by starting a big download and waiting a few minutes.
-Sometimes the connections aborts during normal load. Installing the
-latest firmware didn't help. The wifi works just fine with 4.13.3. While
-investigating this I noticed a few messages in dmesg that only appear in
-4.14-rc (I used 35dbba31be52):
-
-> ath10k_pci 0000:3a:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:3a:00.0.bin failed with error -2
-> ath10k_pci 0000:3a:00.0: Direct firmware load for ath10k/cal-pci-0000:3a:00.0.bin failed with error -2
-
-Do they have anything to do with this? Hardware is
-
-> 3a:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter [168c:003e] (rev 32)
-Wifi Firmware:
-
-> firmware ver WLAN.RM.4.4.1-00026-QCARMSWP-1 api 6 features wowlan,ignore-otp,raw-mode crc32 7b90c3fc
-> board_file api 2 bmi_id N/A crc32 414716a3
-
-Should I try to bisect this or is this issue already known? Side note
-FYI: I also updated the BIOS of the XPS13 recently (but there is a newer
-one available that I haven't installed yet) and switched to a newer
-Fedora version, but that afaics hasn't anything to do with this, as 4.13
-works just fine (famous last words...)
-
-Ciao, Thorsten
-
-P.S.: full dmesg output:
-http://www.leemhuis.info/files/misc/dmesg-ath10k-problem-4.14-rc
-Kernel config based on Fedora rawhide
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+eW91IGhhdmUgdG8gdXBkYXRlIHRvIHRoZSBsYXRlc3QgbWFjODAyMTEgY29kZS4gdGhlcmUgaXMg
+YSB3ZWxsIGtub3duIApidWcgaW4gbWFjODAyMTEgd2hpY2ggY2F1c2VzIGEgZGVhZGxvY2sgd2l0
+aCBhdGgxMGsKCkFtIDMwLjA5LjIwMTcgdW0gMTA6Mzkgc2NocmllYiBzdnA6Cj4gSGkhCj4KPiBB
+ZnRlciB1cGdyYWRlIHRvIDQuMTMgaGF2ZSBlcnJvcnMgaW4gbG9nCj4KPiBrZXJuZWw6IElORk86
+IHRhc2sga3dvcmtlci91ODo1OjExMyBibG9ja2VkIGZvciBtb3JlIHRoYW4gMTIwIHNlY29uZHMu
+Cj4ga2VybmVsOsKgwqDCoMKgwqDCoCBUYWludGVkOiBHwqDCoMKgwqDCoMKgwqDCoMKgwqAgT8Kg
+wqDCoCA0LjEzLjMtMS1BUkNIICMxCj4ga2VybmVsOiAiZWNobyAwID4gL3Byb2Mvc3lzL2tlcm5l
+bC9odW5nX3Rhc2tfdGltZW91dF9zZWNzIiBkaXNhYmxlcyAKPiB0aGlzIGVzc2FnZS4KPiBrZXJu
+ZWw6IGt3b3JrZXIvdTg6NcKgwqDCoCBEwqDCoMKgIDDCoMKgIDExM8KgwqDCoMKgwqAgMiAweDAw
+MDAwMDAwCj4ga2VybmVsOiBXb3JrcXVldWU6IHBoeTAgaWVlZTgwMjExX2JhX3Nlc3Npb25fd29y
+ayBbbWFjODAyMTFdCj4ga2VybmVsOiBDYWxsIFRyYWNlOgo+IGtlcm5lbDrCoCBfX3NjaGVkdWxl
+KzB4MjM5LzB4ODkwCj4ga2VybmVsOsKgIHNjaGVkdWxlKzB4M2QvMHg5MAo+IGtlcm5lbDrCoCBz
+Y2hlZHVsZV9wcmVlbXB0X2Rpc2FibGVkKzB4MTUvMHgyMAo+IGtlcm5lbDrCoCBfX211dGV4X2xv
+Y2suaXNyYS4yKzB4Mjk1LzB4NTIwCj4ga2VybmVsOsKgID8gdHR3dV9kb193YWtldXArMHgxZS8w
+eDE2MAo+IGtlcm5lbDrCoCBfX211dGV4X2xvY2tfc2xvd3BhdGgrMHgxMy8weDIwCj4ga2VybmVs
+OsKgID8gdXBkYXRlX2xvYWRfYXZnKzB4NDI2LzB4NWEwCj4ga2VybmVsOsKgID8gX19tdXRleF9s
+b2NrX3Nsb3dwYXRoKzB4MTMvMHgyMAo+IGtlcm5lbDrCoCBtdXRleF9sb2NrKzB4MjUvMHgzMAo+
+IGtlcm5lbDrCoCBfX2llZWU4MDIxMV9zdGFydF9yeF9iYV9zZXNzaW9uKzB4MTUzLzB4NTIwIFtt
+YWM4MDIxMV0KPiBrZXJuZWw6wqAgaWVlZTgwMjExX2JhX3Nlc3Npb25fd29yaysweDE2NC8weDI1
+MCBbbWFjODAyMTFdCj4ga2VybmVsOsKgIHByb2Nlc3Nfb25lX3dvcmsrMHgxZGUvMHg0MzAKPiBr
+ZXJuZWw6wqAgd29ya2VyX3RocmVhZCsweDQ3LzB4M2YwCj4ga2VybmVsOsKgIGt0aHJlYWQrMHgx
+MjUvMHgxNDAKPiBrZXJuZWw6wqAgPyBwcm9jZXNzX29uZV93b3JrKzB4NDMwLzB4NDMwCj4ga2Vy
+bmVsOsKgID8ga3RocmVhZF9jcmVhdGVfb25fbm9kZSsweDcwLzB4NzAKPiBrZXJuZWw6wqAgcmV0
+X2Zyb21fZm9yaysweDI1LzB4MzAKPgo+IFRoZW4gdGhpcyBzeXN0ZW0gYmVjYW1lIHVuc3RhYmxl
+Lgo+Cj4gbHNwY2kKPiAwNjowMC4wIE5ldHdvcmsgY29udHJvbGxlcjogUXVhbGNvbW0gQXRoZXJv
+cyBRQ0E5ODZ4Lzk4OHggODAyLjExYWMgCj4gV2lyZWxlc3MgTmV0d29yayBBZGFwdGVyCj4KPiB1
+bmFtZSAtYQo+IExpbnV4IEk1LTQ2NzAgNC4xMy4zLTEtQVJDSCAjMSBTTVAgUFJFRU1QVCBUaHUg
+U2VwIDIxIDIwOjMzOjE2IENFU1QgCj4gMjAxNyB4ODZfNjQgR05VL0xpbnV4Cj4KPiBpd2NvbmZp
+Zwo+IHdscDZzMMKgwqDCoCBJRUVFIDgwMi4xMcKgIE1vZGU6TWFzdGVywqAgVHgtUG93ZXI9MzAg
+ZEJtCj4gwqDCoMKgwqDCoMKgwqDCoMKgIFJldHJ5IHNob3J0IGxpbWl0OjfCoMKgIFJUUyB0aHI6
+b2ZmwqDCoCBGcmFnbWVudCB0aHI6b2ZmCj4gwqDCoMKgwqDCoMKgwqDCoMKgIFBvd2VyIE1hbmFn
+ZW1lbnQ6b24KPgo+IGZpcm13YXJlLTUuYmluXzEwLjIuNC43MC41OS0yIHdhcyB1c2VkCj4KPiBU
+aGFua3MhCj4KPgo+Cj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+Zwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4K
+Ci0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRz
+Y2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHVi
+ZW53YWxkYWxsZWUgMjFhLCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJp
+Y2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjD
+pHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5n
+b3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEt
+NTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
