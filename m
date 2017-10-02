@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dywdA-0005Kt-It
- for ath10k@lists.infradead.org; Mon, 02 Oct 2017 09:03:19 +0000
-Received: by mail-lf0-x243.google.com with SMTP id l196so1965508lfl.3
- for <ath10k@lists.infradead.org>; Mon, 02 Oct 2017 02:02:55 -0700 (PDT)
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: Re: [PATCH 00/11] SDIO support for ath10k
+ id 1dywgs-0003tX-A9
+ for ath10k@lists.infradead.org; Mon, 02 Oct 2017 09:07:11 +0000
+Received: by mail-lf0-x241.google.com with SMTP id q132so1965053lfe.4
+ for <ath10k@lists.infradead.org>; Mon, 02 Oct 2017 02:06:45 -0700 (PDT)
+Subject: Re: [PATCH 02/11] ath10k_sdio: wb396 reference card fix
 References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
-Message-ID: <b4bbf022-77d7-f907-f35b-7afacfc227e5@gmail.com>
-Date: Mon, 2 Oct 2017 11:02:52 +0200
+ <1506793068-27445-3-git-send-email-alagusankar@silex-india.com>
+ <CALLGbR+-G6pKcSPZo=xxJ66iQ0aMJo9xWWq8raSTt5rSASrM=w@mail.gmail.com>
+ <bc6a860a4d655c65583a9da26cb4c63e@silex-india.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <427bfce1-5adb-9cad-b674-e42f8005bb02@gmail.com>
+Date: Mon, 2 Oct 2017 11:06:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
+In-Reply-To: <bc6a860a4d655c65583a9da26cb4c63e@silex-india.com>
 Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,86 +24,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: silexcommon@gmail.com, ath10k@lists.infradead.org
-Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org
+To: Alagu Sankar <alagusankar@silex-india.com>, Steve deRosier <derosier@gmail.com>
+Cc: silexcommon@gmail.com, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Hi Alagu,
-
-It is great to see that we are finally about have fully working
-mainline support for QCA9377 SDIO chipsets!
-
-Great job!
-
-On 2017-09-30 19:37, silexcommon@gmail.com wrote:
-> From: Alagu Sankar <alagusankar@silex-india.com>
-> 
-> This patchset, generated against master-pending branch, enables a fully
-> functional SDIO interface driver for ath10k.  Patches have been verified on
-> QCA9377-3 WB396 and Silex's SX-SDCAC reference cards with Station, Access Point
-> and P2P modes.
-> 
-> The driver is verified with the firmware WLAN.TF.1.1.1-00061-QCATFSWPZ-1
-> with the board data from respective SDIO card vendors. Receive performance
-> matches the QCA reference driver when used with SDIO3.0 enabled platforms.
-> iperf tests indicate a downlink UDP of 275Mbit/s and TCP of 150Mbit/s
-> 
-Can you share any scripts etc. (wrapping hostapd and wpa_supplicant stuff)
-or provide some more info about you test setup?
-
-I made a quick socat based test on an old laptop (I don't think it has SDIO
-3.0 support) and I did unfortunately not get the same figures as you did :(
-
-> This patchset differs from the previous high latency patches, specific to SDIO.
-> HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET is enabled for HI_ACS. This instructs the
-> firmware to use HTT_T2H_MSG_TYPE_TX_COMPL_IND for outgoing packets. Without
-> this flag, the management frames are not sent out by the firmware. Possibility
-> of management frames being sent via WMI and data frames through the reduced Tx
-> completion needs to be probed further.
-> 
-Ah, so that explains why I couldn't see any messages in the air.
-
-> Further improvements can be done on the transmit path by implementing packet
-> bundle. Scatter Gather is another area of improvement for both Transmit and
-> Receive, but may not work on all platforms
-> 
-> Known issues: Surprise removal of the card, when the device is in connected
-> state, delays sdio function remove due to delayed WMI command failures.
-> Existing ath10k framework can not differentiate between a kernel module
-> removal and the surprise removal of teh card.
-> 
-> Alagu Sankar (11):
->    ath10k_sdio: sdio htt data transfer fixes
->    ath10k_sdio: wb396 reference card fix
->    ath10k_sdio: DMA bounce buffers for read write
->    ath10k_sdio: reduce transmit msdu count
->    ath10k_sdio: use clean packet headers
->    ath10k_sdio: high latency fixes for beacon buffer
->    ath10k_sdio: fix rssi indication
->    ath10k_sdio: common read write
->    ath10k_sdio: virtual scatter gather for receive
->    ath10k_sdio: enable firmware crash dump
->    ath10k_sdio: hif start once addition
-> 
->   drivers/net/wireless/ath/ath10k/core.c    |  35 ++-
->   drivers/net/wireless/ath/ath10k/debug.c   |   3 +
->   drivers/net/wireless/ath/ath10k/htc.c     |   4 +-
->   drivers/net/wireless/ath/ath10k/htc.h     |   1 +
->   drivers/net/wireless/ath/ath10k/htt_rx.c  |  19 +-
->   drivers/net/wireless/ath/ath10k/htt_tx.c  |  24 +-
->   drivers/net/wireless/ath/ath10k/hw.c      |   2 +
->   drivers/net/wireless/ath/ath10k/hw.h      |   1 +
->   drivers/net/wireless/ath/ath10k/mac.c     |  31 ++-
->   drivers/net/wireless/ath/ath10k/sdio.c    | 398 ++++++++++++++++++++++--------
->   drivers/net/wireless/ath/ath10k/sdio.h    |  10 +-
->   drivers/net/wireless/ath/ath10k/wmi-tlv.c |   2 +-
->   12 files changed, 403 insertions(+), 127 deletions(-)
-> 
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgQWxhZ3UsCgpPbiAyMDE3LTEwLTAyIDA5OjAyLCBBbGFndSBTYW5rYXIgd3JvdGU6Cj4gSGkg
+U3RldmUsCj4gCj4gT24gMjAxNy0xMC0wMiAwNDoxNywgU3RldmUgZGVSb3NpZXIgd3JvdGU6Cj4+
+IEhpIEFsYWd1LAo+Pgo+Pgo+PiBPbiBTYXQsIFNlcCAzMCwgMjAxNyBhdCAxMDozNyBBTSwgPHNp
+bGV4Y29tbW9uQGdtYWlsLmNvbT4gd3JvdGU6Cj4+Pgo+Pj4gRnJvbTogQWxhZ3UgU2Fua2FyIDxh
+bGFndXNhbmthckBzaWxleC1pbmRpYS5jb20+Cj4+Pgo+Pj4gVGhlIFFDQTkzNzctMyBXQjM5NiBz
+ZGlvIHJlZmVyZW5jZSBjYXJkIGRvZXMgbm90IGdldCBpbml0aWFsaXplZAo+Pj4gZHVlIHRvIHRo
+ZSBjb25mbGljdCBpbiB1YXJ0IGdwaW8gcGlucy4gVGhpcyBmaXggaXMgbm90IHJlcXVpcmVkCj4+
+PiBmb3Igb3RoZXIgUUNBOTM3NyBzZGlvIGNhcmRzLgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IEFs
+YWd1IFNhbmthciA8YWxhZ3VzYW5rYXJAc2lsZXgtaW5kaWEuY29tPgo+Pj4gLS0tCj4+PiDCoGRy
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jIHwgOSArKysrKysrKy0KPj4+IMKg
+MSBmaWxlIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+Pj4KPj4+IGRp
+ZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYyBiL2RyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4+PiBpbmRleCBiNGY2NmNkLi44NjI0
+N2M4IDEwMDY0NAo+Pj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3Jl
+LmMKPj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4+PiBA
+QCAtMTcwOCw4ICsxNzA4LDE1IEBAIHN0YXRpYyBpbnQgYXRoMTBrX2luaXRfdWFydChzdHJ1Y3Qg
+YXRoMTBrICphcikKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gcmV0
+Owo+Pj4gwqDCoMKgwqDCoMKgwqAgfQo+Pj4KPj4+IC3CoMKgwqDCoMKgwqAgaWYgKCF1YXJ0X3By
+aW50KQo+Pj4gK8KgwqDCoMKgwqDCoCBpZiAoIXVhcnRfcHJpbnQpIHsKPj4+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIC8qIEhhY2s6IG92ZXJyaWRlIGRiZyBUWCBwaW4gdG8gYXZvaWQg
+c2lkZSBlZmZlY3RzIG9mIGRlZmF1bHQKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgKiBHUElPXzYgaW4gUUNBOTM3NyBXQjM5NiByZWZlcmVuY2UgY2FyZAo+Pj4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLwo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgaWYgKGFyLT5oaWYuYnVzID09IEFUSDEwS19CVVNfU0RJTykKPj4+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBhdGgxMGtfYm1pX3dyaXRlMzIoYXIsIGhp
+X2RiZ191YXJ0X3R4cGluLAo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYXItPmh3X3Bh
+cmFtcy51YXJ0X3Bpbik7Cj4+Cj4+IElmIGl0IGlzIGluZGVlZCBhICJoYWNrIiwgdGhlbiBJIGRv
+bid0IHRoaW5rIHRoZSBtYWludGFpbmVyIHNob3VsZAo+PiBhY2NlcHQgdGhpcyB1cHN0cmVhbS4g
+SWYgeW91IHdhbnQgaXQgdXBzdHJlYW0geW91IG5lZWQgYSBjbGVhbiBlbm91Z2gKPj4gaW1wbGVt
+ZW50YXRpb24gdGhhdCBkb2Vzbid0IG5lZWQgdG8gYmUgbGFiZWxlZCBhICJoYWNrIi4KPiAKPiBJ
+dCBpcyBhIGhhY2sgYXMgcGVyIHRoZSBxY2FjbGQgcmVmZXJlbmNlIGRyaXZlci4KPiAKPj4gWW91
+ciBjb21taXQgbWVzc2FnZSBzdGF0ZXMgdGhhdCB0aGlzIGlzIG9ubHkgbmVlZGVkIGZvciBhIHZl
+cnkKPj4gc3BlY2lmaWMgY2FyZCBhbmQgbm90IGZvciBvdGhlciBRQ0E5Mzc3IHNkaW8gY2FyZHMu
+IFlldCwgeW91J3JlIGRvaW5nCj4+IHRoaXMgZm9yIGFsbCBBVEgxMEtfQlVTX1NESU8gZGV2aWNl
+cy4gTm90IGdvb2QuIEkgdGhpbmsgdGhhdCBpdCdzIGEKPj4gcXVpcmsgYW5kIGl0J3MgbGltaXRl
+ZCB0byBhIHBhcnRpY3VsYXIgaW1wbGVtZW50YXRpb24gb2YgdGhlIGRldmljZS4KPj4gTXkgc3Vn
+Z2VzdGlvbjogaWYgaXQgY2FuIGJlIGF1dG9tYXRpY2FsbHkgZGV0ZXJtaW5lZCwgdGhlbiBkbyBz
+bwo+PiBleHBsaWNpdGx5LiBJZiBub3QsIHRoZW4gaXQgbmVlZHMgdG8gYmUgYSBEVCBzZXR0aW5n
+IG9yIGEgbW9kdWxlCj4+IHBhcmFtZXRlciBvciBzb21ldGhpbmcgbGlrZSB0aGF0IHNvIHRoZSBw
+bGF0Zm9ybSBtYWtlciBjYW4gZGVjaWRlIHRvCj4+IGRvIGl0LiBIYXZpbmcgaXQgYWZmZWN0IGFs
+bCB1c2VycyBvZiBhIFNESU8gUUNBOTM3NyB3aGVuIGl0IGRvZXNuJ3QKPj4gYXBwbHkgZG9lc24n
+dCBzZWVtIGxpa2UgYSBnb29kIGlkZWEgdG8gbWUuCj4+Cj4+Cj4+IC0gU3RldmUKPiAKPiBHb3Qg
+aXQuIFRoZSBxY2FjbGQgcmVmZXJlbmNlIGRyaXZlciBoYWQgaXQgZm9yIGFsbCB0aGUgUUNBOTM3
+NyBzZGlvIGNhcmRzLgo+IEJ1dCB3ZSBmb3VuZCBpdCB0byBiZSBhIHByb2JsZW0gb25seSBmb3Ig
+dGhlIFdCMzk2IHJlZmVyZW5jZSBjYXJkLiBXaWxsCj4gaGF2ZSB0aGlzIGNoZWNrZWQgYWdhaW4g
+YW5kIHJlbGVhc2UgYSB2MiBwYXRjaCBhY2NvcmRpbmdseS4KPiAKV2hpbGUgeW91IGFyZSBhdCBp
+dCwgeW91IG1pZ2h0IGFzIHdlbGwgY2hhbmdlIHRoZSBjb21taXQgY29tbWVudHMgdG86CgoiYXRo
+MTBrOiBzZGlvOiA8ZGVzY3JpcHRpb24+IgoKb3IgcGVyaGFwcyBqdXN0OgoKImF0aDEwazogPGRl
+c2NyaXB0aW9uPiIKCj4gQmVzdCBSZWdhcmRzLAo+IEFsYWd1IFNhbmthcgo+IAo+IF9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcg
+bGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsK
