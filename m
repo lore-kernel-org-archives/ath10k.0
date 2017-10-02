@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from up.icubehost.com ([185.62.36.194])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dyvP7-0001Pt-V8
- for ath10k@lists.infradead.org; Mon, 02 Oct 2017 07:44:43 +0000
-MIME-Version: 1.0
-Date: Mon, 02 Oct 2017 13:14:18 +0530
-From: Alagu Sankar <alagusankar@silex-india.com>
-Subject: Re: [PATCH 01/11] ath10k_sdio: sdio htt data transfer fixes
-In-Reply-To: <59D1EC94.2020307@broadcom.com>
+ id 1dywdA-0005Kt-It
+ for ath10k@lists.infradead.org; Mon, 02 Oct 2017 09:03:19 +0000
+Received: by mail-lf0-x243.google.com with SMTP id l196so1965508lfl.3
+ for <ath10k@lists.infradead.org>; Mon, 02 Oct 2017 02:02:55 -0700 (PDT)
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Subject: Re: [PATCH 00/11] SDIO support for ath10k
 References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
- <1506793068-27445-2-git-send-email-alagusankar@silex-india.com>
- <59D1EC94.2020307@broadcom.com>
-Message-ID: <f4255671cb5e7b52f823e26ba6816d2f@silex-india.com>
+Message-ID: <b4bbf022-77d7-f907-f35b-7afacfc227e5@gmail.com>
+Date: Mon, 2 Oct 2017 11:02:52 +0200
+MIME-Version: 1.0
+In-Reply-To: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +25,80 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc: silexcommon@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: silexcommon@gmail.com, ath10k@lists.infradead.org
+Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org
 
-Hi Arend,
+Hi Alagu,
 
-On 2017-10-02 13:06, Arend van Spriel wrote:
-> On 9/30/2017 7:37 PM, silexcommon@gmail.com wrote:
->> From: Alagu Sankar <alagusankar@silex-india.com>
->> 
-> 
-> [...]
-> 
->> 
->> Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
-> 
-> Not really have a specific remark for this patch, but for the entire
-> series. These patches are sent using an anonymous email address, apart
-> from 'silex' being in there, which does not show up in the certificate
-> of origin. Just wondering if this is acceptable?
-> 
-> Regards,
-> Arend
-> 
->> ---
->>   drivers/net/wireless/ath/ath10k/core.c   | 20 +++++++++++++++++---
->>   drivers/net/wireless/ath/ath10k/htt_rx.c |  6 ++++--
->>   drivers/net/wireless/ath/ath10k/htt_tx.c | 24 
->> +++++++++++++++++++-----
->>   3 files changed, 40 insertions(+), 10 deletions(-)
-> 
-Could not use git send-email from the official ID due to mail server 
-restrictions. If this is not acceptable, I will figure out a way to 
-overcome this.
+It is great to see that we are finally about have fully working
+mainline support for QCA9377 SDIO chipsets!
 
-Regards,
-Alagu Sankar
+Great job!
+
+On 2017-09-30 19:37, silexcommon@gmail.com wrote:
+> From: Alagu Sankar <alagusankar@silex-india.com>
+> 
+> This patchset, generated against master-pending branch, enables a fully
+> functional SDIO interface driver for ath10k.  Patches have been verified on
+> QCA9377-3 WB396 and Silex's SX-SDCAC reference cards with Station, Access Point
+> and P2P modes.
+> 
+> The driver is verified with the firmware WLAN.TF.1.1.1-00061-QCATFSWPZ-1
+> with the board data from respective SDIO card vendors. Receive performance
+> matches the QCA reference driver when used with SDIO3.0 enabled platforms.
+> iperf tests indicate a downlink UDP of 275Mbit/s and TCP of 150Mbit/s
+> 
+Can you share any scripts etc. (wrapping hostapd and wpa_supplicant stuff)
+or provide some more info about you test setup?
+
+I made a quick socat based test on an old laptop (I don't think it has SDIO
+3.0 support) and I did unfortunately not get the same figures as you did :(
+
+> This patchset differs from the previous high latency patches, specific to SDIO.
+> HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET is enabled for HI_ACS. This instructs the
+> firmware to use HTT_T2H_MSG_TYPE_TX_COMPL_IND for outgoing packets. Without
+> this flag, the management frames are not sent out by the firmware. Possibility
+> of management frames being sent via WMI and data frames through the reduced Tx
+> completion needs to be probed further.
+> 
+Ah, so that explains why I couldn't see any messages in the air.
+
+> Further improvements can be done on the transmit path by implementing packet
+> bundle. Scatter Gather is another area of improvement for both Transmit and
+> Receive, but may not work on all platforms
+> 
+> Known issues: Surprise removal of the card, when the device is in connected
+> state, delays sdio function remove due to delayed WMI command failures.
+> Existing ath10k framework can not differentiate between a kernel module
+> removal and the surprise removal of teh card.
+> 
+> Alagu Sankar (11):
+>    ath10k_sdio: sdio htt data transfer fixes
+>    ath10k_sdio: wb396 reference card fix
+>    ath10k_sdio: DMA bounce buffers for read write
+>    ath10k_sdio: reduce transmit msdu count
+>    ath10k_sdio: use clean packet headers
+>    ath10k_sdio: high latency fixes for beacon buffer
+>    ath10k_sdio: fix rssi indication
+>    ath10k_sdio: common read write
+>    ath10k_sdio: virtual scatter gather for receive
+>    ath10k_sdio: enable firmware crash dump
+>    ath10k_sdio: hif start once addition
+> 
+>   drivers/net/wireless/ath/ath10k/core.c    |  35 ++-
+>   drivers/net/wireless/ath/ath10k/debug.c   |   3 +
+>   drivers/net/wireless/ath/ath10k/htc.c     |   4 +-
+>   drivers/net/wireless/ath/ath10k/htc.h     |   1 +
+>   drivers/net/wireless/ath/ath10k/htt_rx.c  |  19 +-
+>   drivers/net/wireless/ath/ath10k/htt_tx.c  |  24 +-
+>   drivers/net/wireless/ath/ath10k/hw.c      |   2 +
+>   drivers/net/wireless/ath/ath10k/hw.h      |   1 +
+>   drivers/net/wireless/ath/ath10k/mac.c     |  31 ++-
+>   drivers/net/wireless/ath/ath10k/sdio.c    | 398 ++++++++++++++++++++++--------
+>   drivers/net/wireless/ath/ath10k/sdio.h    |  10 +-
+>   drivers/net/wireless/ath/ath10k/wmi-tlv.c |   2 +-
+>   12 files changed, 403 insertions(+), 127 deletions(-)
+> 
 
 _______________________________________________
 ath10k mailing list
