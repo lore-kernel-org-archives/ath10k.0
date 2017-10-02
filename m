@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dz4SK-0000cZ-Jr
- for ath10k@lists.infradead.org; Mon, 02 Oct 2017 17:24:42 +0000
-Subject: Re: QCA988x and kernel 4.13
-References: <c6294832-ff1e-595c-da8b-dac59b12a976@gmail.com>
- <7549b77b-3619-f8a5-48d6-eb7e330ba80e@dd-wrt.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <48aebea8-9231-b41e-cbaa-d592d8540c53@candelatech.com>
-Date: Mon, 2 Oct 2017 10:24:14 -0700
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dzAKV-0006tr-PT
+ for ath10k@lists.infradead.org; Mon, 02 Oct 2017 23:40:57 +0000
+From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+Subject: Re: ath10k-regression in 4.14: Connections aborts with "failed to
+ extract amsdu: -11"
+Date: Mon, 2 Oct 2017 23:40:31 +0000
+Message-ID: <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
+References: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
+In-Reply-To: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
+Content-Language: en-US
+Content-ID: <0CF7EC7F84DE2D4FA8B466607E8D1361@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <7549b77b-3619-f8a5-48d6-eb7e330ba80e@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,83 +21,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, svp <s.pooheer@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Thorsten Leemhuis <linux@leemhuis.info>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 10/01/2017 07:06 AM, Sebastian Gottschall wrote:
-> you have to update to the latest mac80211 code. there is a well known bug in mac80211 which causes a deadlock with ath10k
+On 10/01/2017 01:59 AM, Thorsten Leemhuis wrote:
 
-Do you have a pointer to the patch that fixes this?  I'd like to check if it has
-made it into 4.13 stable yet...
-
-Thanks,
-Ben
-
+> Lo! The wifi connection of my Dell XPS13 (9360) with its QCA6174
+> sometimes suddenly stops working since I switched to 4.14-rc2+. Every
+> time it happens, there is this error message in dmesg:
 >
-> Am 30.09.2017 um 10:39 schrieb svp:
->> Hi!
->>
->> After upgrade to 4.13 have errors in log
->>
->> kernel: INFO: task kworker/u8:5:113 blocked for more than 120 seconds.
->> kernel:       Tainted: G           O    4.13.3-1-ARCH #1
->> kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this essage.
->> kernel: kworker/u8:5    D    0   113      2 0x00000000
->> kernel: Workqueue: phy0 ieee80211_ba_session_work [mac80211]
->> kernel: Call Trace:
->> kernel:  __schedule+0x239/0x890
->> kernel:  schedule+0x3d/0x90
->> kernel:  schedule_preempt_disabled+0x15/0x20
->> kernel:  __mutex_lock.isra.2+0x295/0x520
->> kernel:  ? ttwu_do_wakeup+0x1e/0x160
->> kernel:  __mutex_lock_slowpath+0x13/0x20
->> kernel:  ? update_load_avg+0x426/0x5a0
->> kernel:  ? __mutex_lock_slowpath+0x13/0x20
->> kernel:  mutex_lock+0x25/0x30
->> kernel:  __ieee80211_start_rx_ba_session+0x153/0x520 [mac80211]
->> kernel:  ieee80211_ba_session_work+0x164/0x250 [mac80211]
->> kernel:  process_one_work+0x1de/0x430
->> kernel:  worker_thread+0x47/0x3f0
->> kernel:  kthread+0x125/0x140
->> kernel:  ? process_one_work+0x430/0x430
->> kernel:  ? kthread_create_on_node+0x70/0x70
->> kernel:  ret_from_fork+0x25/0x30
->>
->> Then this system became unstable.
->>
->> lspci
->> 06:00.0 Network controller: Qualcomm Atheros QCA986x/988x 802.11ac Wireless Network Adapter
->>
->> uname -a
->> Linux I5-4670 4.13.3-1-ARCH #1 SMP PREEMPT Thu Sep 21 20:33:16 CEST 2017 x86_64 GNU/Linux
->>
->> iwconfig
->> wlp6s0    IEEE 802.11  Mode:Master  Tx-Power=30 dBm
->>           Retry short limit:7   RTS thr:off   Fragment thr:off
->>           Power Management:on
->>
->> firmware-5.bin_10.2.4.70.59-2 was used
->>
->> Thanks!
->>
->>
->>
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
->>
->
+>> ath10k_pci 0000:3a:00.0: failed to extract amsdu: -11
+> I have to switch wifi off and on with the hotkey to reconnect. I can
+> trigger the aborts by starting a big download and waiting a few minutes.
+> Sometimes the connections aborts during normal load. Installing the
+> latest firmware didn't help. The wifi works just fine with 4.13.3. While
+> investigating this I noticed a few messages in dmesg that only appear in
+> 4.14-rc (I used 35dbba31be52):
 
+You do run the 4.13.3 v.s 4.14-rc with the same QCA6174 firmwrae, right?
+Just want to understand the test setup here so that I could give it a try myself, and in 11ac or 11n mode you're testing?
+
+>> ath10k_pci 0000:3a:00.0: Direct firmware load for ath10k/pre-cal-pci-0000:3a:00.0.bin failed with error -2
+>> ath10k_pci 0000:3a:00.0: Direct firmware load for ath10k/cal-pci-0000:3a:00.0.bin failed with error -2
+> Do they have anything to do with this? Hardware is
+
+This error message is confusing since QCA6174 is not supporting pre-calibration feature, this reminds me that we need to clean this up.
+
+>> 3a:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter [168c:003e] (rev 32)
+> Wifi Firmware:
+>
+>> firmware ver WLAN.RM.4.4.1-00026-QCARMSWP-1 api 6 features wowlan,ignore-otp,raw-mode crc32 7b90c3fc
+>> board_file api 2 bmi_id N/A crc32 414716a3
+> Should I try to bisect this or is this issue already known? Side note
+> FYI: I also updated the BIOS of the XPS13 recently (but there is a newer
+> one available that I haven't installed yet) and switched to a newer
+> Fedora version, but that afaics hasn't anything to do with this, as 4.13
+> works just fine (famous last words...)
+
+I am not aware of this failure, so since you've setup that is easy to reproduce the case.
+Would you mind do a bisect to locate the failure, please?
+
+Also before you're trying to bisect the kernel change, can you also give it a try to roll back to older firmwares or move to the latest one *WLAN.RM.4.4.1-00051-QCARMSWP-1***to isolate if this is a firmware issue.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Ryan Hsu
 
 _______________________________________________
 ath10k mailing list
