@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from up.icubehost.com ([185.62.36.194])
+Received: from mail-qk0-x233.google.com ([2607:f8b0:400d:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dyulY-0006yz-6V
- for ath10k@lists.infradead.org; Mon, 02 Oct 2017 07:03:50 +0000
-MIME-Version: 1.0
-Date: Mon, 02 Oct 2017 12:32:15 +0530
-From: Alagu Sankar <alagusankar@silex-india.com>
-Subject: Re: [PATCH 02/11] ath10k_sdio: wb396 reference card fix
-In-Reply-To: <CALLGbR+-G6pKcSPZo=xxJ66iQ0aMJo9xWWq8raSTt5rSASrM=w@mail.gmail.com>
+ id 1dyvHw-0006iO-UZ
+ for ath10k@lists.infradead.org; Mon, 02 Oct 2017 07:37:18 +0000
+Received: by mail-qk0-x233.google.com with SMTP id w134so4392400qkb.0
+ for <ath10k@lists.infradead.org>; Mon, 02 Oct 2017 00:36:54 -0700 (PDT)
+Subject: Re: [PATCH 01/11] ath10k_sdio: sdio htt data transfer fixes
 References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
- <1506793068-27445-3-git-send-email-alagusankar@silex-india.com>
- <CALLGbR+-G6pKcSPZo=xxJ66iQ0aMJo9xWWq8raSTt5rSASrM=w@mail.gmail.com>
-Message-ID: <bc6a860a4d655c65583a9da26cb4c63e@silex-india.com>
+ <1506793068-27445-2-git-send-email-alagusankar@silex-india.com>
+From: Arend van Spriel <arend.vanspriel@broadcom.com>
+Message-ID: <59D1EC94.2020307@broadcom.com>
+Date: Mon, 2 Oct 2017 09:36:52 +0200
+MIME-Version: 1.0
+In-Reply-To: <1506793068-27445-2-git-send-email-alagusankar@silex-india.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,73 +25,32 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Steve deRosier <derosier@gmail.com>
-Cc: silexcommon@gmail.com, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: silexcommon@gmail.com, ath10k@lists.infradead.org
+Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org
 
-Hi Steve,
+On 9/30/2017 7:37 PM, silexcommon@gmail.com wrote:
+> From: Alagu Sankar <alagusankar@silex-india.com>
+>
 
-On 2017-10-02 04:17, Steve deRosier wrote:
-> Hi Alagu,
-> 
-> 
-> On Sat, Sep 30, 2017 at 10:37 AM, <silexcommon@gmail.com> wrote:
->> 
->> From: Alagu Sankar <alagusankar@silex-india.com>
->> 
->> The QCA9377-3 WB396 sdio reference card does not get initialized
->> due to the conflict in uart gpio pins. This fix is not required
->> for other QCA9377 sdio cards.
->> 
->> Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
->> ---
->>  drivers/net/wireless/ath/ath10k/core.c | 9 ++++++++-
->>  1 file changed, 8 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/net/wireless/ath/ath10k/core.c 
->> b/drivers/net/wireless/ath/ath10k/core.c
->> index b4f66cd..86247c8 100644
->> --- a/drivers/net/wireless/ath/ath10k/core.c
->> +++ b/drivers/net/wireless/ath/ath10k/core.c
->> @@ -1708,8 +1708,15 @@ static int ath10k_init_uart(struct ath10k *ar)
->>                 return ret;
->>         }
->> 
->> -       if (!uart_print)
->> +       if (!uart_print) {
->> +               /* Hack: override dbg TX pin to avoid side effects of 
->> default
->> +                * GPIO_6 in QCA9377 WB396 reference card
->> +                */
->> +               if (ar->hif.bus == ATH10K_BUS_SDIO)
->> +                       ath10k_bmi_write32(ar, hi_dbg_uart_txpin,
->> +                                          ar->hw_params.uart_pin);
-> 
-> If it is indeed a "hack", then I don't think the maintainer should
-> accept this upstream. If you want it upstream you need a clean enough
-> implementation that doesn't need to be labeled a "hack".
+[...]
 
-It is a hack as per the qcacld reference driver.
+>
+> Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
 
-> Your commit message states that this is only needed for a very
-> specific card and not for other QCA9377 sdio cards. Yet, you're doing
-> this for all ATH10K_BUS_SDIO devices. Not good. I think that it's a
-> quirk and it's limited to a particular implementation of the device.
-> My suggestion: if it can be automatically determined, then do so
-> explicitly. If not, then it needs to be a DT setting or a module
-> parameter or something like that so the platform maker can decide to
-> do it. Having it affect all users of a SDIO QCA9377 when it doesn't
-> apply doesn't seem like a good idea to me.
-> 
-> 
-> - Steve
+Not really have a specific remark for this patch, but for the entire 
+series. These patches are sent using an anonymous email address, apart 
+from 'silex' being in there, which does not show up in the certificate 
+of origin. Just wondering if this is acceptable?
 
-Got it. The qcacld reference driver had it for all the QCA9377 sdio 
-cards.
-But we found it to be a problem only for the WB396 reference card. Will
-have this checked again and release a v2 patch accordingly.
+Regards,
+Arend
 
-Best Regards,
-Alagu Sankar
+> ---
+>   drivers/net/wireless/ath/ath10k/core.c   | 20 +++++++++++++++++---
+>   drivers/net/wireless/ath/ath10k/htt_rx.c |  6 ++++--
+>   drivers/net/wireless/ath/ath10k/htt_tx.c | 24 +++++++++++++++++++-----
+>   3 files changed, 40 insertions(+), 10 deletions(-)
+
 
 _______________________________________________
 ath10k mailing list
