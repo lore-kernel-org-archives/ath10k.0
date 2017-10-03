@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dzVQA-00049l-5O
- for ath10k@lists.infradead.org; Tue, 03 Oct 2017 22:12:11 +0000
+ id 1dzVS5-0004jz-PN
+ for ath10k@lists.infradead.org; Tue, 03 Oct 2017 22:14:11 +0000
 From: greearb@candelatech.com
-Subject: [PATCH] ath10k: Store coverage-class in case firmware is not booted.
-Date: Tue,  3 Oct 2017 15:11:47 -0700
-Message-Id: <1507068707-14050-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH v2] ath10k: Retry pci probe on failure.
+Date: Tue,  3 Oct 2017 15:13:46 -0700
+Message-Id: <1507068826-14677-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +25,56 @@ Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-This way, we can apply the values when the NIC does come up.
+This works around a problem we see when sometimes the wifi NIC does
+not respond the first time.  This seems to happen especially often on
+some of the 9984 NICs in mid-range platforms.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/hw.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index afb0c01..31c0589 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -454,8 +454,13 @@ static void ath10k_hw_qca988x_set_coverage_class(struct ath10k *ar,
+v2:  Change to mdelay instead of udelay to fix compile issue on ARM.
+
+ drivers/net/wireless/ath/ath10k/pci.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 77beb13..0861f7f 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3487,8 +3487,8 @@ static const struct ath10k_bus_ops ath10k_pci_bus_ops = {
+ 	.get_num_banks	= ath10k_pci_get_num_banks,
+ };
  
- 	/* Only modify registers if the core is started. */
- 	if ((ar->state != ATH10K_STATE_ON) &&
--	    (ar->state != ATH10K_STATE_RESTARTED))
-+	    (ar->state != ATH10K_STATE_RESTARTED)) {
-+		spin_lock_bh(&ar->data_lock);
-+		/* Store config value for when radio boots up */
-+		ar->fw_coverage.coverage_class = value;
-+		spin_unlock_bh(&ar->data_lock);
- 		goto unlock;
-+	}
+-static int ath10k_pci_probe(struct pci_dev *pdev,
+-			    const struct pci_device_id *pci_dev)
++static int __ath10k_pci_probe(struct pci_dev *pdev,
++			      const struct pci_device_id *pci_dev)
+ {
+ 	int ret = 0;
+ 	struct ath10k *ar;
+@@ -3672,6 +3672,22 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	return ret;
+ }
  
- 	/* Retrieve the current values of the two registers that need to be
- 	 * adjusted.
-@@ -487,7 +492,7 @@ static void ath10k_hw_qca988x_set_coverage_class(struct ath10k *ar,
- 		ar->fw_coverage.reg_ack_cts_timeout_orig = timeout_reg;
- 	ar->fw_coverage.reg_phyclk = phyclk_reg;
- 
--	/* Calculat new value based on the (original) firmware calculation. */
-+	/* Calculate new value based on the (original) firmware calculation. */
- 	slottime_reg = ar->fw_coverage.reg_slottime_orig;
- 	timeout_reg = ar->fw_coverage.reg_ack_cts_timeout_orig;
- 
++static int ath10k_pci_probe(struct pci_dev *pdev,
++			    const struct pci_device_id *pci_dev)
++{
++	int cnt = 0;
++	int rv;
++	do {
++		rv = __ath10k_pci_probe(pdev, pci_dev);
++		if (rv == 0)
++			return rv;
++		pr_err("ath10k: failed to probe PCI : %d, retry-count: %d\n", rv, cnt);
++		mdelay(10); /* let the ath10k firmware gerbil take a small break */
++	} while (cnt++ < 10);
++	return rv;
++}
++
++
+ static void ath10k_pci_remove(struct pci_dev *pdev)
+ {
+ 	struct ath10k *ar = pci_get_drvdata(pdev);
 -- 
 2.4.11
 
