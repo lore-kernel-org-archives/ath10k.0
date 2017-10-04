@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from up.icubehost.com ([185.62.36.194])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dzd5b-0007NJ-JC
- for ath10k@lists.infradead.org; Wed, 04 Oct 2017 06:23:30 +0000
-Subject: Re: [PATCH 00/11] SDIO support for ath10k
-References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
- <b4bbf022-77d7-f907-f35b-7afacfc227e5@gmail.com>
-From: Alagu Sankar <alagusankar@silex-india.com>
-Message-ID: <59D47E1B.5000009@silex-india.com>
-Date: Wed, 4 Oct 2017 11:52:19 +0530
+ id 1dzfIk-0006GE-2V
+ for ath10k@lists.infradead.org; Wed, 04 Oct 2017 08:45:16 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 0/3] linux-firmware: ath10k update 20170918
+Date: Wed, 4 Oct 2017 08:44:39 +0000
+Message-ID: <87lgkrxpxk.fsf@kamboji.qca.qualcomm.com>
+References: <1505746857-31938-1-git-send-email-kvalo@qca.qualcomm.com>
+In-Reply-To: <1505746857-31938-1-git-send-email-kvalo@qca.qualcomm.com> (Kalle
+ Valo's message of "Mon, 18 Sep 2017 18:00:54 +0300")
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <b4bbf022-77d7-f907-f35b-7afacfc227e5@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,120 +20,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>, silexcommon@gmail.com, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: "linux-firmware@kernel.org" <linux-firmware@kernel.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi Erik,
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-We will work to have this support mainlined as soon as possible. Would 
-appreciate your support
-in making sure that the patches do not affect the USB high latency path.
+> Few firmware fixes to user reported issues for ath10k, but the other "fix"
+> being a revert back to older firmware. Also a small board-2.bin update.
+>
+> Kalle Valo (3):
+>   ath10k: QCA6174 hw3.0: update firmware-6.bin to
+>     WLAN.RM.4.4.1-00051-QCARMSWP-1
+>   ath10k: QCA6174 hw3.0: update board-2.bin
+>   Revert "ath10k: QCA988X hw2.0: update firmware to 10.2.4.70.63-2"
+>
+>  WHENCE                                            |   4 +-
+>  ath10k/QCA6174/hw3.0/board-2.bin                  | Bin 477060 -> 501748 bytes
+>  ath10k/QCA6174/hw3.0/firmware-6.bin               | Bin 711408 -> 727776 bytes
+>  ath10k/QCA6174/hw3.0/notice_ath10k_firmware-6.txt |  97 +++++-----------------
+>  ath10k/QCA988X/hw2.0/firmware-5.bin               | Bin 249384 -> 248188 bytes
+>  5 files changed, 25 insertions(+), 76 deletions(-)
 
-On 02-10-2017 14:32, Erik Stromdahl wrote:
-> Hi Alagu,
->
-> It is great to see that we are finally about have fully working
-> mainline support for QCA9377 SDIO chipsets!
->
-> Great job!
->
-> On 2017-09-30 19:37, silexcommon@gmail.com wrote:
->> From: Alagu Sankar <alagusankar@silex-india.com>
->>
->> This patchset, generated against master-pending branch, enables a fully
->> functional SDIO interface driver for ath10k.  Patches have been 
->> verified on
->> QCA9377-3 WB396 and Silex's SX-SDCAC reference cards with Station, 
->> Access Point
->> and P2P modes.
->>
->> The driver is verified with the firmware WLAN.TF.1.1.1-00061-QCATFSWPZ-1
->> with the board data from respective SDIO card vendors. Receive 
->> performance
->> matches the QCA reference driver when used with SDIO3.0 enabled 
->> platforms.
->> iperf tests indicate a downlink UDP of 275Mbit/s and TCP of 150Mbit/s
->>
-> Can you share any scripts etc. (wrapping hostapd and wpa_supplicant 
-> stuff)
-> or provide some more info about you test setup?
->
-I am not using any specific scripts for this. The standard ones from the 
-ath10k configuration page
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/configuration 
-works just fine with the
-NL80211 path.
-> I made a quick socat based test on an old laptop (I don't think it has 
-> SDIO
-> 3.0 support) and I did unfortunately not get the same figures as you 
-> did :(
->
-If it is SDIO v1.x, then the max bus speed is only 100Mbit/s.  With v2.x 
-it is 200Mbit/s and 3.x it is
-832 Mbit/s.  Throughput primarily depends on it. We used i.MX6 SoloX 
-Sabre SDB platform
-which supports SDIO3.x and could see the maximum performance.
->> This patchset differs from the previous high latency patches, 
->> specific to SDIO.
->> HI_ACS_FLAGS_SDIO_REDUCE_TX_COMPL_SET is enabled for HI_ACS. This 
->> instructs the
->> firmware to use HTT_T2H_MSG_TYPE_TX_COMPL_IND for outgoing packets. 
->> Without
->> this flag, the management frames are not sent out by the firmware. 
->> Possibility
->> of management frames being sent via WMI and data frames through the 
->> reduced Tx
->> completion needs to be probed further.
->>
-> Ah, so that explains why I couldn't see any messages in the air.
->
->> Further improvements can be done on the transmit path by implementing 
->> packet
->> bundle. Scatter Gather is another area of improvement for both 
->> Transmit and
->> Receive, but may not work on all platforms
->>
->> Known issues: Surprise removal of the card, when the device is in 
->> connected
->> state, delays sdio function remove due to delayed WMI command failures.
->> Existing ath10k framework can not differentiate between a kernel module
->> removal and the surprise removal of teh card.
->>
->> Alagu Sankar (11):
->>    ath10k_sdio: sdio htt data transfer fixes
->>    ath10k_sdio: wb396 reference card fix
->>    ath10k_sdio: DMA bounce buffers for read write
->>    ath10k_sdio: reduce transmit msdu count
->>    ath10k_sdio: use clean packet headers
->>    ath10k_sdio: high latency fixes for beacon buffer
->>    ath10k_sdio: fix rssi indication
->>    ath10k_sdio: common read write
->>    ath10k_sdio: virtual scatter gather for receive
->>    ath10k_sdio: enable firmware crash dump
->>    ath10k_sdio: hif start once addition
->>
->>   drivers/net/wireless/ath/ath10k/core.c    |  35 ++-
->>   drivers/net/wireless/ath/ath10k/debug.c   |   3 +
->>   drivers/net/wireless/ath/ath10k/htc.c     |   4 +-
->>   drivers/net/wireless/ath/ath10k/htc.h     |   1 +
->>   drivers/net/wireless/ath/ath10k/htt_rx.c  |  19 +-
->>   drivers/net/wireless/ath/ath10k/htt_tx.c  |  24 +-
->>   drivers/net/wireless/ath/ath10k/hw.c      |   2 +
->>   drivers/net/wireless/ath/ath10k/hw.h      |   1 +
->>   drivers/net/wireless/ath/ath10k/mac.c     |  31 ++-
->>   drivers/net/wireless/ath/ath10k/sdio.c    | 398 
->> ++++++++++++++++++++++--------
->>   drivers/net/wireless/ath/ath10k/sdio.h    |  10 +-
->>   drivers/net/wireless/ath/ath10k/wmi-tlv.c |   2 +-
->>   12 files changed, 403 insertions(+), 127 deletions(-)
->>
->
+Ping? These fix serious regressions reported by many so it would be
+really good to get these to linux-firmware soon.
 
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
