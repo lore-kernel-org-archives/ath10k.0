@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dzmeM-0008Cl-0y
- for ath10k@lists.infradead.org; Wed, 04 Oct 2017 16:36:00 +0000
-Subject: Re: QCA988x and kernel 4.13
-References: <c6294832-ff1e-595c-da8b-dac59b12a976@gmail.com>
- <7549b77b-3619-f8a5-48d6-eb7e330ba80e@dd-wrt.com>
- <48aebea8-9231-b41e-cbaa-d592d8540c53@candelatech.com>
- <87d163xpoe.fsf@kamboji.qca.qualcomm.com>
- <78f5383d-0187-628e-cf56-de6234fdb9b0@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <62fdf553-8c2e-538e-3743-511e9bfa7721@dd-wrt.com>
-Date: Wed, 4 Oct 2017 18:35:29 +0200
+ id 1dzpmX-0005x4-Dv
+ for ath10k@lists.infradead.org; Wed, 04 Oct 2017 19:56:44 +0000
+Received: by mail-lf0-x244.google.com with SMTP id l196so5106856lfl.3
+ for <ath10k@lists.infradead.org>; Wed, 04 Oct 2017 12:56:17 -0700 (PDT)
+Subject: Re: [PATCH 09/11] ath10k_sdio: virtual scatter gather for receive
+References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
+ <1506793068-27445-10-git-send-email-alagusankar@silex-india.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <e7a2ac8e-26fb-f273-b4a9-e494dbc6dcc9@gmail.com>
+Date: Wed, 4 Oct 2017 21:56:13 +0200
 MIME-Version: 1.0
-In-Reply-To: <78f5383d-0187-628e-cf56-de6234fdb9b0@candelatech.com>
+In-Reply-To: <1506793068-27445-10-git-send-email-alagusankar@silex-india.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +22,370 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, svp <s.pooheer@gmail.com>
-
-Am 04.10.2017 um 17:13 schrieb Ben Greear:
->
->
-> On 10/04/2017 01:50 AM, Kalle Valo wrote:
->> Ben Greear <greearb@candelatech.com> writes:
->>
->>> On 10/01/2017 07:06 AM, Sebastian Gottschall wrote:
->>>> you have to update to the latest mac80211 code. there is a well
->>>> known bug in mac80211 which causes a deadlock with ath10k
->>>
->>> Do you have a pointer to the patch that fixes this?=A0 I'd like to =
-
->>> check if it has
->>> made it into 4.13 stable yet...
->>
->> I think it's this one:
->>
->> mac80211: fix deadlock in driver-managed RX BA session start
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commi=
-t/?id=3Dbde59c475e0883e4c4294bcd9b9c7e08ae18c828 =
-
->>
->>
->> Adding linux-wireless so that someone can correct me in case I'm wrong.
->
-> That did seem to fix my problems...
->
-> Thanks,
-> ben
->
-consider that this bug does at least exist since may. so older kernels =
-
-might be affected too
+To: silexcommon@gmail.com, ath10k@lists.infradead.org
+Cc: Alagu Sankar <alagusankar@silex-india.com>, linux-wireless@vger.kernel.org
 
 
--- =
 
-Mit freundlichen Gr=FCssen / Regards
+On 2017-09-30 19:37, silexcommon@gmail.com wrote:
+> From: Alagu Sankar <alagusankar@silex-india.com>
+> 
+> The existing implementation of initiating multiple sdio transfers for
+> receive bundling is slowing down the receive speed. Combining the
+> transfers using a scatter gather method would be ideal. This results in
+> significant performance improvement.
+> 
+> Since the sg implementation for sdio transfers are not reliable due to
+> buffer start and size alignment, a virtual scatter gather implementation
+> is used.
+> 
+> Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+> ---
+>   drivers/net/wireless/ath/ath10k/htc.h  |   1 +
+>   drivers/net/wireless/ath/ath10k/sdio.c | 122 ++++++++++++++++++++++++---------
+>   drivers/net/wireless/ath/ath10k/sdio.h |   5 +-
+>   3 files changed, 93 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+> index 24663b0..5d87908 100644
+> --- a/drivers/net/wireless/ath/ath10k/htc.h
+> +++ b/drivers/net/wireless/ath/ath10k/htc.h
+> @@ -58,6 +58,7 @@ enum ath10k_htc_tx_flags {
+>   };
+>   
+>   enum ath10k_htc_rx_flags {
+> +	ATH10K_HTC_FLAGS_RECV_1MORE_BLOCK = 0x01,
+>   	ATH10K_HTC_FLAG_TRAILER_PRESENT = 0x02,
+>   	ATH10K_HTC_FLAG_BUNDLE_MASK     = 0xF0
+>   };
+> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+> index bb6fa67..45df9db 100644
+> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+> @@ -35,6 +35,7 @@
+>   #include "sdio.h"
+>   
+>   #define ATH10K_SDIO_DMA_BUF_SIZE	(32 * 1024)
+> +#define ATH10K_SDIO_VSG_BUF_SIZE	(32 * 1024)
+>   
+>   static int ath10k_sdio_read(struct ath10k *ar, u32 addr, void *buf,
+>   			    u32 len, bool incr);
+> @@ -430,6 +431,7 @@ static int ath10k_sdio_mbox_rx_process_packet(struct ath10k *ar,
+>   	int ret;
+>   
+>   	payload_len = le16_to_cpu(htc_hdr->len);
+> +	skb->len = payload_len + sizeof(struct ath10k_htc_hdr);
+>   
+>   	if (trailer_present) {
+>   		trailer = skb->data + sizeof(*htc_hdr) +
+> @@ -468,12 +470,13 @@ static int ath10k_sdio_mbox_rx_process_packets(struct ath10k *ar,
+>   	enum ath10k_htc_ep_id id;
+>   	int ret, i, *n_lookahead_local;
+>   	u32 *lookaheads_local;
+> +	int lookahd_idx = 0;
 
-Sebastian Gottschall / CTO
+I think the variable should be named *lookahead_idx* instead of *lookahd_idx*,
+since all other variables are using the string lookahead without abbreviations.
 
-NewMedia-NET GmbH - DD-WRT
-Firmensitz:  Stubenwaldallee 21a, 64625 Bensheim
-Registergericht: Amtsgericht Darmstadt, HRB 25473
-Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
-http://www.dd-wrt.com
-email: s.gottschall@dd-wrt.com
-Tel.: +496251-582650 / Fax: +496251-5826565
+>   
+>   	for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
+>   		lookaheads_local = lookaheads;
+>   		n_lookahead_local = n_lookahead;
+>   
+> -		id = ((struct ath10k_htc_hdr *)&lookaheads[i])->eid;
+> +		id = ((struct ath10k_htc_hdr *)&lookaheads[lookahd_idx++])->eid;
+>   
+>   		if (id >= ATH10K_HTC_EP_COUNT) {
+>   			ath10k_warn(ar, "invalid endpoint in look-ahead: %d\n",
+> @@ -496,6 +499,7 @@ static int ath10k_sdio_mbox_rx_process_packets(struct ath10k *ar,
+>   			/* Only read lookahead's from RX trailers
+>   			 * for the last packet in a bundle.
+>   			 */
+> +			lookahd_idx--;
+>   			lookaheads_local = NULL;
+>   			n_lookahead_local = NULL;
+>   		}
+> @@ -529,11 +533,11 @@ static int ath10k_sdio_mbox_rx_process_packets(struct ath10k *ar,
+>   	return ret;
+>   }
+>   
+> -static int ath10k_sdio_mbox_alloc_pkt_bundle(struct ath10k *ar,
+> -					     struct ath10k_sdio_rx_data *rx_pkts,
+> -					     struct ath10k_htc_hdr *htc_hdr,
+> -					     size_t full_len, size_t act_len,
+> -					     size_t *bndl_cnt)
+> +static int ath10k_sdio_mbox_alloc_bundle(struct ath10k *ar,
+> +					 struct ath10k_sdio_rx_data *rx_pkts,
+> +					 struct ath10k_htc_hdr *htc_hdr,
+> +					 size_t full_len, size_t act_len,
+> +					 size_t *bndl_cnt)
+>   {
+>   	int ret, i;
+>   
+> @@ -574,6 +578,7 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+>   	size_t full_len, act_len;
+>   	bool last_in_bundle;
+>   	int ret, i;
+> +	int pkt_cnt = 0;
+>   
+>   	if (n_lookaheads > ATH10K_SDIO_MAX_RX_MSGS) {
+>   		ath10k_warn(ar,
+> @@ -616,16 +621,22 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+>   			 * optimally fetched as a full bundle.
+>   			 */
+>   			size_t bndl_cnt;
+> -
+> -			ret = ath10k_sdio_mbox_alloc_pkt_bundle(ar,
+> -								&ar_sdio->rx_pkts[i],
+> -								htc_hdr,
+> -								full_len,
+> -								act_len,
+> -								&bndl_cnt);
+> -
+> -			n_lookaheads += bndl_cnt;
+> -			i += bndl_cnt;
+> +			struct ath10k_sdio_rx_data *rx_pkts =
+> +				&ar_sdio->rx_pkts[pkt_cnt];
+> +
+> +			ret = ath10k_sdio_mbox_alloc_bundle(ar,
+> +							    rx_pkts,
+> +							    htc_hdr,
+> +							    full_len,
+> +							    act_len,
+> +							    &bndl_cnt);
+> +
+> +			if (ret) {
+> +				ath10k_warn(ar, "alloc_bundle error %d\n", ret);
+> +				goto err;
+> +			}
+> +
+> +			pkt_cnt += bndl_cnt;
+>   			/*Next buffer will be the last in the bundle */
+>   			last_in_bundle = true;
+>   		}
+> @@ -634,14 +645,18 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+>   		 * ATH10K_HTC_FLAG_BUNDLE_MASK flag set, all bundled
+>   		 * packet skb's have been allocated in the previous step.
+>   		 */
+> -		ret = ath10k_sdio_mbox_alloc_rx_pkt(&ar_sdio->rx_pkts[i],
+> +		if (htc_hdr->flags & ATH10K_HTC_FLAGS_RECV_1MORE_BLOCK)
+> +			full_len += ATH10K_HIF_MBOX_BLOCK_SIZE;
+> +
+> +		ret = ath10k_sdio_mbox_alloc_rx_pkt(&ar_sdio->rx_pkts[pkt_cnt],
+>   						    act_len,
+>   						    full_len,
+>   						    last_in_bundle,
+>   						    last_in_bundle);
+> +		pkt_cnt++;
+>   	}
+>   
+> -	ar_sdio->n_rx_pkts = i;
+> +	ar_sdio->n_rx_pkts = pkt_cnt;
+>   
+>   	return 0;
+>   
+> @@ -655,41 +670,71 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+>   	return ret;
+>   }
+>   
+> -static int ath10k_sdio_mbox_rx_packet(struct ath10k *ar,
+> -				      struct ath10k_sdio_rx_data *pkt)
+> +static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
+>   {
+>   	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+> -	struct sk_buff *skb = pkt->skb;
+> +	struct ath10k_sdio_rx_data *pkt = &ar_sdio->rx_pkts[0];
+> +	struct sk_buff *skb;
+>   	int ret;
+>   
+> +	skb = pkt->skb;
+>   	ret = ath10k_sdio_read(ar, ar_sdio->mbox_info.htc_addr,
+>   			       skb->data, pkt->alloc_len, false);
+> -	pkt->status = ret;
+> -	if (!ret)
+> +	if (ret) {
+> +		ar_sdio->n_rx_pkts = 0;
+> +		ath10k_sdio_mbox_free_rx_pkt(pkt);
+> +	} else {
+> +		pkt->status = ret;
+>   		skb_put(skb, pkt->act_len);
+> +	}
+>   
+>   	return ret;
+>   }
+>   
+> -static int ath10k_sdio_mbox_rx_fetch(struct ath10k *ar)
+> +static int ath10k_sdio_mbox_rx_fetch_bundle(struct ath10k *ar)
+>   {
+>   	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+> +	struct ath10k_sdio_rx_data *pkt;
+>   	int ret, i;
+> +	u32 pkt_offset, virt_pkt_len;
+>   
+> +	virt_pkt_len = 0;
+>   	for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
+> -		ret = ath10k_sdio_mbox_rx_packet(ar,
+> -						 &ar_sdio->rx_pkts[i]);
+> -		if (ret)
+> +		virt_pkt_len += ar_sdio->rx_pkts[i].alloc_len;
+> +	}
+> +	if (virt_pkt_len < ATH10K_SDIO_DMA_BUF_SIZE) {
+> +		ret = ath10k_sdio_read(ar, ar_sdio->mbox_info.htc_addr,
+> +				       ar_sdio->vsg_buffer, virt_pkt_len,
+> +				       false);
+> +		if (ret) {
+> +			i = 0;
+>   			goto err;
+> +		}
+> +	} else {
+> +		ath10k_err(ar, "size exceeding limit %d\n", virt_pkt_len);
+> +	}
+> +
+> +	pkt_offset = 0;
+> +	for (i = 0; i < ar_sdio->n_rx_pkts; i++) {
+> +		struct sk_buff *skb = ar_sdio->rx_pkts[i].skb;
+> +
+> +		pkt = &ar_sdio->rx_pkts[i];
+> +		memcpy(skb->data, ar_sdio->vsg_buffer + pkt_offset,
+> +		       pkt->alloc_len);
+> +		pkt->status = 0;
+> +		skb_put(skb, pkt->act_len);
+> +		pkt_offset += pkt->alloc_len;
+>   	}
+>   
+>   	return 0;
+>   
+>   err:
+>   	/* Free all packets that was not successfully fetched. */
 
+Change comment to: /* Free all packets */
+since all packets are freed and not only those that was not successfully fetched.
+
+> -	for (; i < ar_sdio->n_rx_pkts; i++)
+> +	for (i = 0; i < ar_sdio->n_rx_pkts; i++)
+>   		ath10k_sdio_mbox_free_rx_pkt(&ar_sdio->rx_pkts[i]);
+>   
+> +	ar_sdio->n_rx_pkts = 0;
+> +
+>   	return ret;
+>   }
+>   
+> @@ -732,7 +777,10 @@ static int ath10k_sdio_mbox_rxmsg_pending_handler(struct ath10k *ar,
+>   			 */
+>   			*done = false;
+>   
+> -		ret = ath10k_sdio_mbox_rx_fetch(ar);
+> +		if (ar_sdio->n_rx_pkts > 1)
+> +			ret = ath10k_sdio_mbox_rx_fetch_bundle(ar);
+> +		else
+> +			ret = ath10k_sdio_mbox_rx_fetch(ar);
+
+ret is not checked at all (I noticed this is the case in the current code as well).
+I think it would be wise to break the loop if error:
+
+if (ret)
+	break;
+
+>   
+>   		/* Process fetched packets. This will potentially update
+>   		 * n_lookaheads depending on if the packets contain lookahead
+> @@ -1136,7 +1184,7 @@ static int ath10k_sdio_bmi_get_rx_lookahead(struct ath10k *ar)
+>   					 MBOX_HOST_INT_STATUS_ADDRESS,
+>   					 &rx_word);
+>   		if (ret) {
+> -			ath10k_warn(ar, "unable to read RX_LOOKAHEAD_VALID: %d\n", ret);
+> +			ath10k_warn(ar, "unable to read rx_lookahd: %d\n", ret);
+
+Change print to "unable to read RX lookahead: %d\n" as it is more descriptive
+
+>   			return ret;
+>   		}
+>   
+> @@ -1480,7 +1528,7 @@ static int ath10k_sdio_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+>   		skb = items[i].transfer_context;
+>   		padded_len = ath10k_sdio_calc_txrx_padded_len(ar_sdio,
+>   							      skb->len);
+> -		skb_trim(skb, padded_len);
+> +		skb->len = padded_len;
+
+Why this change?
+I think the skb_ family of functions is the preferred way to manipulate skb's
+
+>   
+>   		/* Write TX data to the end of the mbox address space */
+>   		address = ar_sdio->mbox_addr[eid] + ar_sdio->mbox_size[eid] -
+> @@ -1508,7 +1556,8 @@ static int ath10k_sdio_hif_enable_intrs(struct ath10k *ar)
+>   	/* Enable all but CPU interrupts */
+>   	regs->int_status_en = FIELD_PREP(MBOX_INT_STATUS_ENABLE_ERROR_MASK, 1) |
+>   			      FIELD_PREP(MBOX_INT_STATUS_ENABLE_CPU_MASK, 1) |
+> -			      FIELD_PREP(MBOX_INT_STATUS_ENABLE_COUNTER_MASK, 1);
+> +			      FIELD_PREP(MBOX_INT_STATUS_ENABLE_COUNTER_MASK,
+> +					 1);
+
+Is this a checkpatch-fix?
+I would recommend creating a separate patch for style issues.
+
+>   
+>   	/* NOTE: There are some cases where HIF can do detection of
+>   	 * pending mbox messages which is disabled now.
+> @@ -2024,6 +2073,12 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+>   		goto err_free_bmi_buf;
+>   	}
+>   
+> +	ar_sdio->vsg_buffer = kzalloc(ATH10K_SDIO_VSG_BUF_SIZE, GFP_KERNEL);
+> +	if (!ar_sdio->vsg_buffer) {
+> +		ret = -ENOMEM;
+> +		goto err_free_bmi_buf;
+> +	}
+> +
+>   	ar_sdio->func = func;
+>   	sdio_set_drvdata(func, ar_sdio);
+>   
+> @@ -2081,7 +2136,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
+>   	}
+>   
+>   	/* TODO: remove this once SDIO support is fully implemented */
+> -	ath10k_warn(ar, "WARNING: ath10k SDIO support is incomplete, don't expect anything to work!\n");
+> +	ath10k_warn(ar, "WARNING: ath10k SDIO support is experimental\n");
+>   
+>   	return 0;
+>   
+> @@ -2115,6 +2170,7 @@ static void ath10k_sdio_remove(struct sdio_func *func)
+>   	ath10k_core_unregister(ar);
+>   	ath10k_core_destroy(ar);
+>   	kfree(ar_sdio->dma_buffer);
+> +	kfree(ar_sdio->vsg_buffer);
+>   }
+>   
+>   static const struct sdio_device_id ath10k_sdio_devices[] = {
+> diff --git a/drivers/net/wireless/ath/ath10k/sdio.h b/drivers/net/wireless/ath/ath10k/sdio.h
+> index 718b8b7..8b6a86a 100644
+> --- a/drivers/net/wireless/ath/ath10k/sdio.h
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.h
+> @@ -149,8 +149,8 @@ struct ath10k_sdio_irq_proc_regs {
+>   	u8 rx_lookahead_valid;
+>   	u8 host_int_status2;
+>   	u8 gmbox_rx_avail;
+> -	__le32 rx_lookahead[2];
+> -	__le32 rx_gmbox_lookahead_alias[2];
+> +	__le32 rx_lookahead[2 * ATH10K_HIF_MBOX_NUM_MAX];
+> +	__le32 int_status_enable;
+>   };
+>   
+>   struct ath10k_sdio_irq_enable_regs {
+> @@ -207,6 +207,7 @@ struct ath10k_sdio {
+>   	struct ath10k *ar;
+>   	struct ath10k_sdio_irq_data irq_data;
+>   
+> +	u8 *vsg_buffer;
+>   	u8 *dma_buffer;
+>   
+>   	/* protects access to dma_buffer */
+> 
 
 _______________________________________________
 ath10k mailing list
