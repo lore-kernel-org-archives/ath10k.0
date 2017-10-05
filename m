@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dzzIJ-0006YL-0g
- for ath10k@lists.infradead.org; Thu, 05 Oct 2017 06:06:04 +0000
+ id 1dzzIZ-0006b7-NJ
+ for ath10k@lists.infradead.org; Thu, 05 Oct 2017 06:06:27 +0000
 From: <akolli@qti.qualcomm.com>
-Subject: [PATCH 1/2] ath10k: move ath10k_mac_tdls_vif*() functions
-Date: Thu, 5 Oct 2017 11:38:28 +0530
-Message-ID: <1507183709-585-1-git-send-email-akolli@qti.qualcomm.com>
+Subject: [PATCH 2/2] ath10k: block offchannel operations if TDLS session is
+ active
+Date: Thu, 5 Oct 2017 11:38:29 +0530
+Message-ID: <1507183709-585-2-git-send-email-akolli@qti.qualcomm.com>
+In-Reply-To: <1507183709-585-1-git-send-email-akolli@qti.qualcomm.com>
+References: <1507183709-585-1-git-send-email-akolli@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,141 +28,47 @@ Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wire
 
 From: Anilkumar Kolli <akolli@qti.qualcomm.com>
 
-To be able to use ath10k_mac_tdls_vif_stations_count() in
-ath10k_hw_scan() in the following patch, move the functions
-earlier in the file.
+Do not allow off channel operations like scans/roc when
+there are active TDLS sessions.
 
-This commit is pure code move, no functional changes.
+The Current firmware 10.4-3.5.1-00035 on QCA9888 does not
+supports any offchannel operations on active TDLS sessions,
+either driver needs to block the offchannel operation requests
+or should teardown the TDLS connection.
 
 Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |  106 ++++++++++++++++-----------------
- 1 file changed, 53 insertions(+), 53 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5683f1a5330e..0f14da73cf64 100644
+index 0f14da73cf64..2f3851e688f4 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5575,6 +5575,59 @@ static void ath10k_mac_op_set_coverage_class(struct ieee80211_hw *hw, s16 value)
- 	ar->hw_params.hw_ops->set_coverage_class(ar, value);
- }
+@@ -5641,6 +5641,11 @@ static int ath10k_hw_scan(struct ieee80211_hw *hw,
  
-+struct ath10k_mac_tdls_iter_data {
-+	u32 num_tdls_stations;
-+	struct ieee80211_vif *curr_vif;
-+};
-+
-+static void ath10k_mac_tdls_vif_stations_count_iter(void *data,
-+						    struct ieee80211_sta *sta)
-+{
-+	struct ath10k_mac_tdls_iter_data *iter_data = data;
-+	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	struct ieee80211_vif *sta_vif = arsta->arvif->vif;
-+
-+	if (sta->tdls && sta_vif == iter_data->curr_vif)
-+		iter_data->num_tdls_stations++;
-+}
-+
-+static int ath10k_mac_tdls_vif_stations_count(struct ieee80211_hw *hw,
-+					      struct ieee80211_vif *vif)
-+{
-+	struct ath10k_mac_tdls_iter_data data = {};
-+
-+	data.curr_vif = vif;
-+
-+	ieee80211_iterate_stations_atomic(hw,
-+					  ath10k_mac_tdls_vif_stations_count_iter,
-+					  &data);
-+	return data.num_tdls_stations;
-+}
-+
-+static void ath10k_mac_tdls_vifs_count_iter(void *data, u8 *mac,
-+					    struct ieee80211_vif *vif)
-+{
-+	struct ath10k_vif *arvif = (void *)vif->drv_priv;
-+	int *num_tdls_vifs = data;
-+
-+	if (vif->type != NL80211_IFTYPE_STATION)
-+		return;
-+
-+	if (ath10k_mac_tdls_vif_stations_count(arvif->ar->hw, vif) > 0)
-+		(*num_tdls_vifs)++;
-+}
-+
-+static int ath10k_mac_tdls_vifs_count(struct ieee80211_hw *hw)
-+{
-+	int num_tdls_vifs = 0;
-+
-+	ieee80211_iterate_active_interfaces_atomic(hw,
-+						   IEEE80211_IFACE_ITER_NORMAL,
-+						   ath10k_mac_tdls_vifs_count_iter,
-+						   &num_tdls_vifs);
-+	return num_tdls_vifs;
-+}
-+
- static int ath10k_hw_scan(struct ieee80211_hw *hw,
- 			  struct ieee80211_vif *vif,
- 			  struct ieee80211_scan_request *hw_req)
-@@ -6000,59 +6053,6 @@ static void ath10k_mac_dec_num_stations(struct ath10k_vif *arvif,
- 	ar->num_stations--;
- }
+ 	mutex_lock(&ar->conf_mutex);
  
--struct ath10k_mac_tdls_iter_data {
--	u32 num_tdls_stations;
--	struct ieee80211_vif *curr_vif;
--};
--
--static void ath10k_mac_tdls_vif_stations_count_iter(void *data,
--						    struct ieee80211_sta *sta)
--{
--	struct ath10k_mac_tdls_iter_data *iter_data = data;
--	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
--	struct ieee80211_vif *sta_vif = arsta->arvif->vif;
--
--	if (sta->tdls && sta_vif == iter_data->curr_vif)
--		iter_data->num_tdls_stations++;
--}
--
--static int ath10k_mac_tdls_vif_stations_count(struct ieee80211_hw *hw,
--					      struct ieee80211_vif *vif)
--{
--	struct ath10k_mac_tdls_iter_data data = {};
--
--	data.curr_vif = vif;
--
--	ieee80211_iterate_stations_atomic(hw,
--					  ath10k_mac_tdls_vif_stations_count_iter,
--					  &data);
--	return data.num_tdls_stations;
--}
--
--static void ath10k_mac_tdls_vifs_count_iter(void *data, u8 *mac,
--					    struct ieee80211_vif *vif)
--{
--	struct ath10k_vif *arvif = (void *)vif->drv_priv;
--	int *num_tdls_vifs = data;
--
--	if (vif->type != NL80211_IFTYPE_STATION)
--		return;
--
--	if (ath10k_mac_tdls_vif_stations_count(arvif->ar->hw, vif) > 0)
--		(*num_tdls_vifs)++;
--}
--
--static int ath10k_mac_tdls_vifs_count(struct ieee80211_hw *hw)
--{
--	int num_tdls_vifs = 0;
--
--	ieee80211_iterate_active_interfaces_atomic(hw,
--						   IEEE80211_IFACE_ITER_NORMAL,
--						   ath10k_mac_tdls_vifs_count_iter,
--						   &num_tdls_vifs);
--	return num_tdls_vifs;
--}
--
- static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			    struct ieee80211_vif *vif,
- 			    struct ieee80211_sta *sta,
++	if (ath10k_mac_tdls_vif_stations_count(hw, vif) > 0) {
++		ret = -EBUSY;
++		goto exit;
++	}
++
+ 	spin_lock_bh(&ar->data_lock);
+ 	switch (ar->scan.state) {
+ 	case ATH10K_SCAN_IDLE:
+@@ -6477,6 +6482,11 @@ static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
++	if (ath10k_mac_tdls_vif_stations_count(hw, vif) > 0) {
++		ret = -EBUSY;
++		goto exit;
++	}
++
+ 	spin_lock_bh(&ar->data_lock);
+ 	switch (ar->scan.state) {
+ 	case ATH10K_SCAN_IDLE:
 -- 
 1.7.9.5
 
