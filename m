@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oln040092011040.outbound.protection.outlook.com
- ([40.92.11.40] helo=NAM04-SN1-obe.outbound.protection.outlook.com)
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e0UoB-00057Q-93
- for ath10k@lists.infradead.org; Fri, 06 Oct 2017 15:45:05 +0000
-From: =?utf-8?B?TGVvbmFyZG8gU29hcmVzIE3DvGxsZXI=?= <leozinho29_eu@hotmail.com>
-Subject: Kernel panic and boot failures with QCA9377
-Date: Fri, 6 Oct 2017 15:07:06 +0000
-Message-ID: <RO1P152MB1483227F4197234B127B235E97710@RO1P152MB1483.LAMP152.PROD.OUTLOOK.COM>
-Content-Language: en-US
-Content-ID: <2D51AB47F3469F479A90965971B67F04@LAMP152.PROD.OUTLOOK.COM>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e0Vri-0002nH-O7
+ for ath10k@lists.infradead.org; Fri, 06 Oct 2017 16:54:03 +0000
+Subject: Re: mesh point and ap mode on same interface
+References: <e6b02c56-38c7-323e-2bc9-e2b4276b654c@tu-bs.de>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <cc8baced-bd74-5703-d885-6ec444eb62ce@candelatech.com>
+Date: Fri, 6 Oct 2017 09:52:25 -0700
 MIME-Version: 1.0
+In-Reply-To: <e6b02c56-38c7-323e-2bc9-e2b4276b654c@tu-bs.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,38 +18,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Harms, Hannes" <hannes.harms@tu-bs.de>, ath10k@lists.infradead.org
 
-SGkNCg0KSSBhbSBoYXZpbmcgdHJvdWJsZSB3aXRoIG15IExlbm92byBJZGVhcGFkIDMxMC0xNElT
-SyB3aXRoIGEgUUNBOTM3NywgDQp3aGljaCBvY2Nhc2lvbmFsbHkgZmFpbHMgd2hlbiBib290aW5n
-IHRoZSBzeXN0ZW0uIE1vc3Qgb2YgdGhlIHRpbWVzLCB0aGUgDQpzeXN0ZW0gaGFuZ3Mgb24gYm9v
-dCB3aXRoIG1hbnkgbWVzc2FnZXMgbGlrZToNCg0KdXNiIDEtNzogZGV2aWNlIGRlc2NyaXB0b3Ig
-cmVhZC82NCwgZXJyb3IgLTcxDQoNCk9uZSBzaW5nbGUgdGltZSwgYSBrZXJuZWwgcGFuaWMgaGFw
-cGVuZWQgdG9vLiBJIGhhdmUgdG9vayBhIHBob3RvIG9mIHRoZSANCnNjcmVlbjogaHR0cHM6Ly9p
-LmltZ3VyLmNvbS9kZW50WnRSLmpwZw0KDQpUbyB0cmlnZ2VyIHRoaXMgYnVnIGl0J3MgZWFzeSwg
-YnV0IHVucHJlZGljdGFibGU6IGp1c3Qgc2h1dGRvd24gdGhlIA0Kc3lzdGVtLiBJZiB0aGUgZm9s
-bG93aW5nIG1lc3NhZ2UgKHJlZGFjdGVkLCB0aGUgTUFDIGFkZHJlc3MgaXMgZnJvbSB0aGUgDQpy
-b3V0ZXIpIGFwcGVhcnMgd2hlbiBzaHV0dGluZyBkb3duOg0KDQpbNzA4Ny42OTIzMTNdIHdscDJz
-MDogZmFpbGVkIHRvIHJlbW92ZSBrZXkgKDAsIHh4Onh4Onh4Onh4Onh4Onh4KSBmcm9tIA0KaGFy
-ZHdhcmUgKC0xMTApDQoNClRoZW4gb24gdGhlIG5leHQgYm9vdCB0aGUgc3lzdGVtIHdpbGwgaGFu
-ZyBhdCBib290IHRpbWUuIFRoZW4gSSBrZWVwIHRoZSANCnBvd2VyIGJ1dHRvbiBwcmVzc2VkIHVu
-dGlsIHRoZSBub3RlYm9vayB0dXJuIG9mZiBhbmQgdGhlbiBJIHR1cm4gaXQgb24gDQphZ2FpbiBh
-bmQgdGhlbiBpdCB3b3Jrcy4gVGhlIG90aGVyIGFsdGVybmF0aXZlIGlzIHRvIHJlYm9vdCB0byBX
-aW5kb3dzIA0KMTAgYW5kIHRoZW4gdHVybiBpdCBvZmYuDQoNCiBGcm9tIGxzcGNpOg0KDQowMjow
-MC4wIE5ldHdvcmsgY29udHJvbGxlcjogUXVhbGNvbW0gQXRoZXJvcyBRQ0E5Mzc3IDgwMi4xMWFj
-IFdpcmVsZXNzIA0KTmV0d29yayBBZGFwdGVyIChyZXYgMzApDQoNCiBGcm9tIGxzdXNiOg0KDQpC
-dXMgMDAxIERldmljZSAwMDQ6IElEIDBjZjM6ZTM2MCBBdGhlcm9zIENvbW11bmljYXRpb25zLCBJ
-bmMuDQoNCiBGcm9tIHBvd2VydG9wOg0KDQpBdXRvLXN1c3BlbnPDo28gcGFyYSBkaXNwb3NpdGl2
-byBVU0IgZGVzY29uaGVjaWRvIDEtNyAoMGNmMzplMzYwKQ0KDQpOb3cgSSdtIHVzaW5nIFh1YnVu
-dHUgMTcuMDQgd2l0aCB0aGUga2VybmVsIHZlcnNpb24gNC4xMC4wLTM1ICh0aGUgDQpsYXRlc3Qg
-c3RhYmxlIHZlcnNpb24gYXZhaWxhYmxlIG5vdykuIFRoZSBhdGhlcm9zIGZpcm13YXJlIGlzIGlu
-IHRoZSANCmxhdGVzdCB2ZXJzaW9uLg0KDQpJcyB0aGVyZSBzb21ldGhpbmcgSSBjYW4gZG8gdG8g
-bWFrZSB0aGUgUUNBOTM3NyBub3QgY2F1c2Ugc3lzdGVtIGhhbmdzPyANCk5vdyBpdCdzIG1vcmUg
-bGlrZSBhIGxvdHRlcnkgaWYgaXQgd2lsbCB3b3JrIG9yIG5vdC4NCg0KVGhhbmsgeW91Lg0KDQpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+
+On 10/06/2017 05:00 AM, Harms, Hannes wrote:
+> Hi,
+>
+> is it possible to run a mesh point and an access
+> point on the same physical interface?
+> I have tried with a WLE900VX QCA9880, kernel 4.10 with no success.
+>
+> But according to this thread
+> http://lists.infradead.org/pipermail/ath10k/2016-September/008374.html
+> it should be possible.
+>
+> iw list gives to following:
+>
+> #valid interface combinations:
+> #         * #{ AP, mesh point } <= 8, #{ managed } <= 1,
+> #          total <= 8, #channels <= 1, STA/AP BI must match ...
+>
+> So it is not  a valid combination?
+>
+> I have tried t bring up the ap interface with iw / hostapd,
+> after joining the mesh.
+>
+> When I start the second interface, rtnetlink responds with
+> device or resource busy.
+
+IBSS + AP works on the CT firmware/driver, at least,
+but our CT 10.1 (988x) firmware does not support MESH at this point.
+
+I think I had to modify the driver to relax the valid combinations check,
+and possibly the stock firmware cannot handle that.
+
+Maybe someday we'll support MESH on 988x, but to date, there has not been
+a lot of interest...
+
+http://www.candelatech.com/ath10k.php
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
