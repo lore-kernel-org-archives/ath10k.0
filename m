@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-eopbgr50045.outbound.protection.outlook.com ([40.107.5.45]
- helo=EUR03-VE1-obe.outbound.protection.outlook.com)
+Received: from wp227.webpack.hosteurope.de ([2a01:488:42:1000:50ed:84ea::])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e0XDD-0004Ot-8u
- for ath10k@lists.infradead.org; Fri, 06 Oct 2017 18:19:05 +0000
-Subject: Re: mesh point and ap mode on same interface
-References: <e6b02c56-38c7-323e-2bc9-e2b4276b654c@tu-bs.de>
- <cc8baced-bd74-5703-d885-6ec444eb62ce@candelatech.com>
-From: Peter Oh <peter.oh@bowerswilkins.com>
-Message-ID: <43bf6a27-be58-35e4-26fa-5e6b380353ac@bowerswilkins.com>
-Date: Fri, 6 Oct 2017 11:18:29 -0700
+ id 1e16wM-0007Qc-DZ
+ for ath10k@lists.infradead.org; Sun, 08 Oct 2017 08:28:05 +0000
+Subject: ath10k-regression due to "ath10k: fix napi_poll budget overflow"
+ c9353bf483d3 (Was: Re: ath10k-regression in 4.14: Connections aborts with
+ "failed to extract amsdu: -11"
+References: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
+ <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
+From: Thorsten Leemhuis <linux@leemhuis.info>
+Message-ID: <fa6e3ee2-91b5-a54b-afe3-87f30aac7a48@leemhuis.info>
+Date: Sun, 8 Oct 2017 10:27:35 +0200
 MIME-Version: 1.0
-In-Reply-To: <cc8baced-bd74-5703-d885-6ec444eb62ce@candelatech.com>
+In-Reply-To: <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
+Content-Language: en-MW
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +22,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, "Harms, Hannes" <hannes.harms@tu-bs.de>, ath10k@lists.infradead.org
+To: Ryan Hsu <ryanhsu@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I have tried t bring up the ap interface with iw / hostapd,
->> after joining the mesh.
->>
->> When I start the second interface, rtnetlink responds with
->> device or resource busy.
->
-If you give more details of your steps, people may help you more.
-Btw, did you create a 2nd interface on the same radio and change the mac 
-address?
-
-> IBSS + AP works on the CT firmware/driver, at least,
-> but our CT 10.1 (988x) firmware does not support MESH at this point.
->
-> I think I had to modify the driver to relax the valid combinations check,
-> and possibly the stock firmware cannot handle that.
->
-> Maybe someday we'll support MESH on 988x, but to date, there has not been
-> a lot of interest...
->
-> http://www.candelatech.com/ath10k.php
->
-> Thanks,
-> Ben
->
->
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+TG8hIE9uIDAzLjEwLjIwMTcgMDE6NDAsIFJ5YW4gSHN1IHdyb3RlOgo+IE9uIDEwLzAxLzIwMTcg
+MDE6NTkgQU0sIFRob3JzdGVuIExlZW1odWlzIHdyb3RlOgo+PiBMbyEgVGhlIHdpZmkgY29ubmVj
+dGlvbiBvZiBteSBEZWxsIFhQUzEzICg5MzYwKSB3aXRoIGl0cyBRQ0E2MTc0Cj4+IHNvbWV0aW1l
+cyBzdWRkZW5seSBzdG9wcyB3b3JraW5nIHNpbmNlIEkgc3dpdGNoZWQgdG8gNC4xNC1yYzIrLiBF
+dmVyeQo+PiB0aW1lIGl0IGhhcHBlbnMsIHRoZXJlIGlzIHRoaXMgZXJyb3IgbWVzc2FnZSBpbiBk
+bWVzZzoKPj4+IGF0aDEwa19wY2kgMDAwMDozYTowMC4wOiBmYWlsZWQgdG8gZXh0cmFjdCBhbXNk
+dTogLTExCj4+IEkgaGF2ZSB0byBzd2l0Y2ggd2lmaSBvZmYgYW5kIG9uIHdpdGggdGhlIGhvdGtl
+eSB0byByZWNvbm5lY3QuIEkgY2FuCj4+IHRyaWdnZXIgdGhlIGFib3J0cyBieSBzdGFydGluZyBh
+IGJpZyBkb3dubG9hZCBhbmQgd2FpdGluZyBhIGZldyBtaW51dGVzLgo+PiBTb21ldGltZXMgdGhl
+IGNvbm5lY3Rpb25zIGFib3J0cyBkdXJpbmcgbm9ybWFsIGxvYWQuIEluc3RhbGxpbmcgdGhlCj4+
+IGxhdGVzdCBmaXJtd2FyZSBkaWRuJ3QgaGVscC4gVGhlIHdpZmkgd29ya3MganVzdCBmaW5lIHdp
+dGggNC4xMy4zLiBXaGlsZQo+PiBpbnZlc3RpZ2F0aW5nIHRoaXMgSSBub3RpY2VkIGEgZmV3IG1l
+c3NhZ2VzIGluIGRtZXNnIHRoYXQgb25seSBhcHBlYXIgaW4KPj4gNC4xNC1yYyAoSSB1c2VkIDM1
+ZGJiYTMxYmU1Mik6Cj4gWW91IGRvIHJ1biB0aGUgNC4xMy4zIHYucyA0LjE0LXJjIHdpdGggdGhl
+IHNhbWUgUUNBNjE3NCBmaXJtd3JhZSwgcmlnaHQ/Cj4gSnVzdCB3YW50IHRvIHVuZGVyc3RhbmQg
+dGhlIHRlc3Qgc2V0dXAgaGVyZSBzbyB0aGF0IEkgY291bGQgZ2l2ZSBpdCBhIHRyeSBteXNlbGYs
+IGFuZCBpbiAxMWFjIG9yIDExbiBtb2RlIHlvdSdyZSB0ZXN0aW5nPwoKWXVwLCBzYW1lIGZpcm13
+YXJlIChyZXByb2R1Y2VkIGl0IHdpdGgKZmlybXdhcmUtNi5iaW5fV0xBTi5STS40LjQuMS0wMDA1
+OC1RQ0FSTVNXUC0xIGJlZm9yZSBiaXNlY3RpbmcpLiBBbmQgdGhlCnByb2JsZW0gc2hvd2VkIHVw
+IHdpdGggMmcgYW5kIDVnIG5ldHdvcmtzLiBCdXQgd2hpbGUgaW52ZXN0aWdhdGluZyBpdCBJCm5v
+dGljZWQgdGhlIHByb2JsZW0gZG9lcyBub3Qgc2hvdyB1cCB3aXRoIGFsbCB3aWZpIHJvdXRlcnMu
+IEl0IGhhcHBlbnMKd2l0aCBteSBGcml0eiFCb3ggNjQ5MCBDYWJsZSBhbmQgYW5vdGhlciBGcml0
+eiFCb3ggSSB0cmllZCwgYnV0IG5vdCB3aXRoCnRoZSB3aWZpIG5ldHdvcmsgYXQgd29yayAobm8g
+aWRlYSB3aGF0IGtpbmQgb2Ygcm91dGVycyBhcmUgaW5zdGFsbGVkCnRoZXJlOyBJIGNhbiB0cnkg
+dG8gZmluZCBvdXQgaWYgaXQgbWF0dGVycykuCgo+Pj4gM2E6MDAuMCBOZXR3b3JrIGNvbnRyb2xs
+ZXIgWzAyODBdOiBRdWFsY29tbSBBdGhlcm9zIFFDQTYxNzQgODAyLjExYWMgV2lyZWxlc3MgTmV0
+d29yayBBZGFwdGVyIFsxNjhjOjAwM2VdIChyZXYgMzIpCj4gW+KApl0gV291bGQgeW91IG1pbmQg
+ZG8gYSBiaXNlY3QgdG8gbG9jYXRlIHRoZSBmYWlsdXJlLCBwbGVhc2U/CgpEaWQgdGhhdCB5ZXN0
+ZXJkYXkgYW5kIGl0IHR1cm5lZCBvdXQgaXQncyBkdWUgdG8gY29tbWl0IGM5MzUzYmY0ODNkMwoo
+YXRoMTBrOiBmaXggbmFwaV9wb2xsIGJ1ZGdldCBvdmVyZmxvdykuIFJldmVydGluZyBpdCBvbiB0
+b3Agb2YgbGludXgKbWFzdGVyIGZyb20geWVzdGVyZGF5IG1hZGUgdGhlIHdpZmkgY29ubmVjdGlv
+biBzdGFibGUgYWdhaW4gZm9yIG1lLgoKQ2lhbywgVGhvcnN0ZW4KClAuUy46IEZvciBjb21wbGV0
+ZW5lc3M6IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvbGludXMvYzkzNTNiZjQ4M2QzCgo+IGNvbW1p
+dCBjOTM1M2JmNDgzZDM3MjRjMTE2YTlkNTAyYzBlYWQ5Y2VjNTRhNjFhIChyZWZzL2Jpc2VjdC9i
+YWQpCj4gQXV0aG9yOiBSeWFuIEhzdSA8cnlhbmhzdUBxdGkucXVhbGNvbW0uY29tPgo+IERhdGU6
+ICAgVHVlIEF1ZyAyMiAxNDo0NDowMiAyMDE3IC0wNzAwCj4gCj4gICAgIGF0aDEwazogZml4IG5h
+cGlfcG9sbCBidWRnZXQgb3ZlcmZsb3cKPiAgICAgCj4gICAgIEluIG5hcGlfcG9sbCwgdGhlIGJ1
+ZGdldCBudW1iZXIgaXMgdXNlZCB0byBjb250cm9sIHRoZSBhbW91bnQgb2YgcGFja2V0cwo+ICAg
+ICB3ZSBzaG91bGQgaGFuZGxlIHBlciBwb2xsIHRvIGJhbGFuY2UgdGhlIHJlc291cmNlIGluIHRo
+ZSBzeXN0ZW0uCj4gICAgIAo+ICAgICBJbiB0aGUgbGlzdCBvZiB0aGUgYW1zZHUgcGFja2V0cyBy
+ZWNlcHRpb24sIHdlIGNoZWNrIGlmIHRoZXJlIGlzIGJ1ZGdldAo+ICAgICBjb3VudCBsZWZ0IGFu
+ZCBoYW5kbGUgdGhlIGNvbXBsZXRlIGxpc3Qgb2YgdGhlIHBhY2tldHMsIHRoYXQgaXQgd2lsbCBo
+YXZlCj4gICAgIGNoYW5jZXMgdGhlIHZlcnkgbGFzdCBsaXN0IHdpbGwgb3ZlciB0aGUgYnVkZ2V0
+IGxlZnRvdmVyLgo+ICAgICAKPiAgICAgU28gYWRkaW5nIG9uZSBtb3JlIHBhcmFtZXRlciAtIGJ1
+ZGdldF9sZWZ0LCB0aGlzIHdvdWxkIGhlbHAgd2hpbGUKPiAgICAgdHJhdmVyc2luZyB0aGUgbGlz
+dCB0byBhdm9pZCBoYW5kbGluZyBtb3JlIHRoYW4gdGhlIGJ1ZGdldCBnaXZlbi4KPiAgICAgCj4g
+ICAgIFJlcG9ydGVkLWJ5OiBBbmRyZXkgUnlhYmluaW4gPGFyeWFiaW5pbkB2aXJ0dW96em8uY29t
+Pgo+ICAgICBGaXgtc3VnZ2VzdGVkLWJ5OiBJZ29yIE1pdHN5YW5rbyA8aWdvci5taXRzeWFua28u
+b3NAcXVhbnRlbm5hLmNvbT4KPiAgICAgTGluazogaHR0cHM6Ly9sa21sLmtlcm5lbC5vcmcvci8y
+NjY3MGRjZS00ZGQyLWY4ZTQtMGUxNC05MGQ3NDI1N2U3MzlAdmlydHVvenpvLmNvbQo+ICAgICBT
+aWduZWQtb2ZmLWJ5OiBSeWFuIEhzdSA8cnlhbmhzdUBxdGkucXVhbGNvbW0uY29tPgo+ICAgICBT
+aWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
