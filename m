@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wp227.webpack.hosteurope.de ([2a01:488:42:1000:50ed:84ea::])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e183c-0005ad-Rv
- for ath10k@lists.infradead.org; Sun, 08 Oct 2017 09:39:39 +0000
-Subject: Wifi slow on the XPS13 (9360) (QCA6174) (Was Re: ath10k-regression in
- 4.14: Connections aborts with "failed to extract amsdu: -11")
-References: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
- <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
-From: Thorsten Leemhuis <linux@leemhuis.info>
-Message-ID: <74a979dc-f06d-be9d-7c3f-359cd481d16c@leemhuis.info>
-Date: Sun, 8 Oct 2017 11:39:04 +0200
-MIME-Version: 1.0
-In-Reply-To: <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
-Content-Language: en-MW
+ id 1e1HHn-000134-JK
+ for ath10k@lists.infradead.org; Sun, 08 Oct 2017 19:30:53 +0000
+Received: by mail-wm0-x244.google.com with SMTP id b189so18105192wmd.2
+ for <ath10k@lists.infradead.org>; Sun, 08 Oct 2017 12:30:30 -0700 (PDT)
+From: Christos Gkekas <chris.gekas@gmail.com>
+Subject: [PATCH] ath10k: spectral: Simplify error checking
+Date: Sun,  8 Oct 2017 20:30:26 +0100
+Message-Id: <1507491026-28690-1-git-send-email-chris.gekas@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,52 +17,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Paul Menzel <pmenzel@molgen.mpg.de>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Christos Gkekas <chris.gekas@gmail.com>
 
-TG8hIFNwbGl0dGluZyB0aGlzIHRocmVhZCB0byBmb2N1cyBvbiBhIGlzc3VlIHRoYXQgaGFzIG5v
-dGhpbmcgdG8gZG8Kd2l0aCB0aGUgcmVncmVzc2lvbiBpbiA0LjE0IEkgcmVwb3J0ZWQ6CgpPbiAw
-My4xMC4yMDE3IDAxOjQwLCBSeWFuIEhzdSB3cm90ZToKPiBPbiAxMC8wMS8yMDE3IDAxOjU5IEFN
-LCBUaG9yc3RlbiBMZWVtaHVpcyB3cm90ZToKPj4+IGF0aDEwa19wY2kgMDAwMDozYTowMC4wOiBE
-aXJlY3QgZmlybXdhcmUgbG9hZCBmb3IgYXRoMTBrL3ByZS1jYWwtcGNpLTAwMDA6M2E6MDAuMC5i
-aW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPj4+IGF0aDEwa19wY2kgMDAwMDozYTowMC4wOiBEaXJl
-Y3QgZmlybXdhcmUgbG9hZCBmb3IgYXRoMTBrL2NhbC1wY2ktMDAwMDozYTowMC4wLmJpbiBmYWls
-ZWQgd2l0aCBlcnJvciAtMgo+PiBEbyB0aGV5IGhhdmUgYW55dGhpbmcgdG8gZG8gd2l0aCB0aGlz
-PyBIYXJkd2FyZSBpcwo+IFRoaXMgZXJyb3IgbWVzc2FnZSBpcyBjb25mdXNpbmcgc2luY2UgUUNB
-NjE3NCBpcyBub3Qgc3VwcG9ydGluZwo+IHByZS1jYWxpYnJhdGlvbiBmZWF0dXJlLCB0aGlzIHJl
-bWluZHMgbWUgdGhhdCB3ZSBuZWVkIHRvIGNsZWFuIHRoaXMgdXAuCgpJIGd1ZXNzIHRoYXQgd291
-bGQgYmUgZ29vZCB0byBhdm9pZCBjb25mdXNpb24uIEJ1dCB3aGlsZSBhdCBpdDogSWYgeW91Cmhh
-dmUgYSBtaW51dGUsIGNvdWxkIHlvdSBwbGVhc2UgZXhwbGFpbiB0byBtZSBob3cgdG8gcHJvcGVy
-bHkgc2V0IHVwIHRoZQp3aWZpIGZpcm13YXJlIGZpbGVzIGZvciBteSBEZWxsIFhQUzEzICg5MzYw
-KT8gVGhlIHJlYXNvbnMgd2h5IEknbQphc2tpbmc6IFNlbmRpbmcgZGF0YSB2aWEgd2lmaSBpcyBy
-ZWFsbHkgc2xvdyBvbiBteSBsYXB0b3AgKHNjcCBjb3BpZXMKb25seSBnZXQgMiB0byA1IE1CeXRl
-L3Mgb24gbmV0d29ya3MgdGhhdCBhcmUga25vd24gdG8gYmUgYSBsb3QgZmFzdGVyKS4KSSB3b25k
-ZXIgaWYgdGhlIGZpcm13YXJlIGZpbGVzIG9yIHRoZSBjYWxpYnJhdGlvbiBkYXRhIGlzIHBhcnQg
-b2YgdGhlCnJlYXNvbiB3aWZpIFR4IGlzIHNsb3cuIFRoZSBtYWNoaW5lIGlzIG5vcm1hbGx5IHNo
-aXBwZWQgd2l0aCBhIHNsaWdodGx5CmVuaGFuY2VkIFVidW50dSAxNi4wNC4gVGhhdCBhbW9uZyBv
-dGhlcnMgY29udGFpbnMgYSBwYWNrYWdlIHdpdGggdGhlCm1hY2hpbmUgc3BlY2lmaWMgZmlsZXMg
-Ym9hcmQuYmluIGFuZCBib2FyZC0yLmJpbiB0aGF0IHJlcGxhY2UgdGhlIGZpbGVzCm5vcm1hbGx5
-IGluc3RhbGxlZCBpbiAvbGliL2Zpcm13YXJlL2F0aDEway9RQ0E2MTc0L2h3My4wLyBBcmUgdGhv
-c2UKbWFjaGluZSBzcGVjaWZpYyBmaWxlcyBjcnVjaWFsIHRvIGhhdmUgb3IgYXJlIHRoZSBvbmUg
-ZnJvbSB0aGUKbGludXgtZmlybXdhcmUgcmVwbyBnb29kIGVub2d1aD8gSSdtIHVzaW5nIEZlZG9y
-YSBhbmQgY291bGQgY29weSB0aGUKb25lcyBmcm9tIFVidW50dSBvdmVyLCBidXQgb2J2aW91c2x5
-IHRoZXkgd2lsbCBnZXQgb3ZlcndyaXR0ZW4gZXZlcnkKdGltZSBGZWRvcmEgc2hpcHMgYSBuZXcg
-bGludXgtZmlybXdhcmUgcGFja2FnZSDigJMgSU9XOiBldmVyeSBmZXcgd2Vla3MgOi0vCgpTaWRl
-IG5vdGU6IFlvdSBmaW5kIGEgbG90IG9mIHJlcG9ydHMgYWJvdXQgc2xvdyB3aWZpIGlzIHlvdSBz
-ZWFyY2ggdGhlCm5ldCB3aXRoIHRlcm1zIGxpa2UgIjkzNjAgd2lmaSBzbG93IGxpbnV4Ii4gVWJ1
-bnR1IGZpeGVkIHRoYXQgYSBmZXcKbW9udGhzIGFnbyB3aXRoIHRoaXMgcGF0Y2g6Cmh0dHA6Ly9r
-ZXJuZWwudWJ1bnR1LmNvbS9naXQvdWJ1bnR1L3VidW50dS14ZW5pYWwuZ2l0L2NvbW1pdC8/aWQ9
-OTY5MGYxOWYwN2ZlZTJhY2IyYjA0ZWE1ZWFhNWRiMTg0ZWUxNzVkNQoKU29tZSBidWdzIGFib3V0
-IHRoaXM6Cmh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L3VidW50dS8rc291cmNlL2xpbnV4Lyti
-dWcvMTY5MjgzNgpodHRwczovL2J1Z3MubGF1bmNocGFkLm5ldC91YnVudHUvK3NvdXJjZS9saW51
-eC8rYnVnLzE2NzAwNDEKCkJ1dCBmcm9tIHdoYXQgSSBnYXRoZXJlZCBieSBzZWFyY2hpbmcgdGhl
-IG5ldCBhbmQgYXNraW5nIG9uICNhdGgxMGsgSQpnb3QgdGhlIGltcHJlc3Npb24gdGhhdCBwYXRj
-aCBpcyBhIG1hc3NpdmUgdWdseSBoYWNrIGFuZCBubyB3YXkKYWNjZXB0YWJsZSB1cHN0cmVhbS4g
-IElzIHRoYXQgY29ycmVjdD8gSWYgeWVzOiBpcyB0aGVyZSBtYXliZSBhIHByb3BlcgpmaXggb3V0
-IHRoZXJlIHNvbWV3aGVyZT8KCkNpYW8sIFRob3JzdGVuCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+Variable val is unsigned so checking whether it is less than zero is
+redundant.
+
+Signed-off-by: Christos Gkekas <chris.gekas@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/spectral.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
+index dd9cc09..1867937 100644
+--- a/drivers/net/wireless/ath/ath10k/spectral.c
++++ b/drivers/net/wireless/ath/ath10k/spectral.c
+@@ -403,10 +403,7 @@ static ssize_t write_file_spectral_count(struct file *file,
+ 		return -EFAULT;
+ 
+ 	buf[len] = '\0';
+-	if (kstrtoul(buf, 0, &val))
+-		return -EINVAL;
+-
+-	if (val < 0 || val > 255)
++	if (kstrtoul(buf, 0, &val) || val > 255)
+ 		return -EINVAL;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+-- 
+2.7.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
