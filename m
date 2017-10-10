@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e20JG-0005uO-9k
- for ath10k@lists.infradead.org; Tue, 10 Oct 2017 19:35:24 +0000
-Subject: Re: What should setting rate on 'AP' interface mean?
-References: <e99d4daa-fdc2-ce26-8ffb-bd3cf131e87c@candelatech.com>
- <CAJ-Vmok9rNij_hErSfArrf9A6U8wCaZZWhOEPphCODKnj5Xjog@mail.gmail.com>
+ id 1e20RA-0000rr-K6
+ for ath10k@lists.infradead.org; Tue, 10 Oct 2017 19:43:34 +0000
+Subject: Re: ath10k hang on rmmod after fw crash in 4.13.3+ hacks
+References: <d18529ba-1d91-e9c6-4719-4586e6b5b287@candelatech.com>
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <32d357fe-5904-4e8d-2a1e-84a16f498e06@candelatech.com>
-Date: Tue, 10 Oct 2017 12:34:59 -0700
+Message-ID: <8ee59286-42a6-7396-d420-185fefd72b57@candelatech.com>
+Date: Tue, 10 Oct 2017 12:43:11 -0700
 MIME-Version: 1.0
-In-Reply-To: <CAJ-Vmok9rNij_hErSfArrf9A6U8wCaZZWhOEPphCODKnj5Xjog@mail.gmail.com>
+In-Reply-To: <d18529ba-1d91-e9c6-4719-4586e6b5b287@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +22,37 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-On 10/10/2017 12:09 PM, Adrian Chadd wrote:
-> Hi,
->
-> IIRC, I think it's the drivers job to determine per-peer fixed rate.
+On 10/10/2017 12:07 PM, Ben Greear wrote:
+> I loaded a crashing firmware (it crashes early since it ran OOM), and
+> then tried to rmmod it.  rmmod hangs, with this stack:
 
- From poking at the 10.1 firmware source, seems that setting fixed RC on the vdev
-should over-ride all of the stations, but it did not appear to be working
-as expected...
-
-While trying to debug that, I hit a kernel lockup on rmmod ...it is hard
-to make progress some days!
+Looks like this is a hang related to napi, and I had a patch from an
+older kernel that is probably not needed anymore...maybe it causes the
+issue.  I'll test with that removed...
 
 Thanks,
 Ben
 
 >
->
->
-> -adrian
->
->
-> On 10 October 2017 at 11:34, Ben Greear <greearb@candelatech.com> wrote:
->> I was trying to use 'iw' to set rates on an AP interface, hoping it would
->> set tx-rates on all of the stations (peers) to the same thing.
->>
->> It appears that the ath10k driver will set ratesets on all stations if
->> we specify more than one rate, but if we specify a single rate, it does
->> not iterate through all stations, and just sets the 'vdev' fixed rate.
->>
->> So, should the driver somehow attempt to set single rate on all the stations
->> when
->> using a single rate?
->>
->> Or, do we need an API to force rates for individual stations (peers) and
->> leave
->> the driver in the current configuration?
->>
->> Or is it the firmware's responsibility to set the rate for all peers when
->> we set the vdev fixed rate on an AP vdev?
->>
->> Thanks,
->> Ben
->>
->> --
->> Ben Greear <greearb@candelatech.com>
->> Candela Technologies Inc  http://www.candelatech.com
->>
+> [root@ben-ota-2 ~]# cat /proc/32491/stack
+> [<ffffffff8113c51d>] flush_work+0x1fd/0x2d0
+> [<ffffffff8113f031>] __cancel_work_timer+0x111/0x190
+> [<ffffffff8113f0bb>] cancel_work_sync+0xb/0x10
+> [<ffffffffa0b0a054>] ath10k_core_unregister+0x14/0xa0 [ath10k_core]
+> [<ffffffffa07c7dcd>] ath10k_pci_remove+0x2d/0x70 [ath10k_pci]
+> [<ffffffff81528834>] pci_device_remove+0x34/0xb0
+> [<ffffffff81656b18>] device_release_driver_internal+0x158/0x210
+> [<ffffffff81656c1b>] driver_detach+0x3b/0x80
+> [<ffffffff81655ad3>] bus_remove_driver+0x53/0xd0
+> [<ffffffff81657737>] driver_unregister+0x27/0x40
+> [<ffffffff81526ff4>] pci_unregister_driver+0x24/0x90
+> [<ffffffffa07ca922>] ath10k_pci_exit+0x10/0x6ee [ath10k_pci]
+> [<ffffffff811c64c1>] SyS_delete_module+0x1e1/0x2a0
+> [<ffffffff81003d34>] do_syscall_64+0x64/0x140
+> [<ffffffff819b77c9>] entry_SYSCALL64_slow_path+0x25/0x25
+> [<ffffffffffffffff>] 0xffffffffffffffff
 >
 
 
