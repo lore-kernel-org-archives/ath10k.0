@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e20RA-0000rr-K6
- for ath10k@lists.infradead.org; Tue, 10 Oct 2017 19:43:34 +0000
-Subject: Re: ath10k hang on rmmod after fw crash in 4.13.3+ hacks
-References: <d18529ba-1d91-e9c6-4719-4586e6b5b287@candelatech.com>
+ id 1e21Y3-0000VF-1L
+ for ath10k@lists.infradead.org; Tue, 10 Oct 2017 20:54:44 +0000
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <8ee59286-42a6-7396-d420-185fefd72b57@candelatech.com>
-Date: Tue, 10 Oct 2017 12:43:11 -0700
+Subject: Setting single rate in ath10k broken by "reject/clear user rate mask
+ if not usable"
+Message-ID: <13895fa0-3685-dd2b-583d-2d6469d23cfe@candelatech.com>
+Date: Tue, 10 Oct 2017 13:54:20 -0700
 MIME-Version: 1.0
-In-Reply-To: <d18529ba-1d91-e9c6-4719-4586e6b5b287@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +21,50 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com, Johannes Berg <johannes.berg@intel.com>
 
-On 10/10/2017 12:07 PM, Ben Greear wrote:
-> I loaded a crashing firmware (it crashes early since it ran OOM), and
-> then tried to rmmod it.  rmmod hangs, with this stack:
+At one point, you could set a single rate using 'iw' and
+ath10k would convert that to a special firmware API that
+fixed all data traffic to a particular rate set.  (Management
+frames and broadcast will not be affected by setting the rates
+when using ath10k).
 
-Looks like this is a hang related to napi, and I had a patch from an
-older kernel that is probably not needed anymore...maybe it causes the
-issue.  I'll test with that removed...
+But, with the commit below, a command like this will fail:
+
+#iw dev vap206 set bitrates legacy-5 ht-mcs-5 0 vht-mcs-5
+command failed: Invalid argument (-22)
+
+But, it actually *does* successfully set the rate in the driver first, which
+is confusing at best.
+
+So, I think we should relax this check, at least for ath10k.
+
+commit e8e4f5280ddd0a7b43a795f90a0758e3c99df6a6
+Author: Johannes Berg <johannes.berg@intel.com>
+Date:   Wed Mar 8 11:12:10 2017 +0100
+
+     mac80211: reject/clear user rate mask if not usable
+
+     If the user rate mask results in no (basic) rates being usable,
+     clear it. Also, if we're already operating when it's set, reject
+     it instead.
+
+     Technically, selecting basic rates as the criterion is a bit too
+     restrictive, but calculating the usable rates over all stations
+     (e.g. in AP mode) is harder, and all stations must support the
+     basic rates. Similarly, in client mode, the basic rates will be
+     used anyway for control frames.
+
+     This fixes the "no supported rates (...) in rate_mask ..." warning
+     that occurs on TX when you've selected a rate mask that's not
+     compatible with the connection (e.g. an AP that enables only the
+     rates 36, 48, 54 and you've selected only 6, 9, 12.)
+
+     Reported-by: Kirtika Ruchandani <kirtika@google.com>
+     Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 
 Thanks,
 Ben
-
->
-> [root@ben-ota-2 ~]# cat /proc/32491/stack
-> [<ffffffff8113c51d>] flush_work+0x1fd/0x2d0
-> [<ffffffff8113f031>] __cancel_work_timer+0x111/0x190
-> [<ffffffff8113f0bb>] cancel_work_sync+0xb/0x10
-> [<ffffffffa0b0a054>] ath10k_core_unregister+0x14/0xa0 [ath10k_core]
-> [<ffffffffa07c7dcd>] ath10k_pci_remove+0x2d/0x70 [ath10k_pci]
-> [<ffffffff81528834>] pci_device_remove+0x34/0xb0
-> [<ffffffff81656b18>] device_release_driver_internal+0x158/0x210
-> [<ffffffff81656c1b>] driver_detach+0x3b/0x80
-> [<ffffffff81655ad3>] bus_remove_driver+0x53/0xd0
-> [<ffffffff81657737>] driver_unregister+0x27/0x40
-> [<ffffffff81526ff4>] pci_unregister_driver+0x24/0x90
-> [<ffffffffa07ca922>] ath10k_pci_exit+0x10/0x6ee [ath10k_pci]
-> [<ffffffff811c64c1>] SyS_delete_module+0x1e1/0x2a0
-> [<ffffffff81003d34>] do_syscall_64+0x64/0x140
-> [<ffffffff819b77c9>] entry_SYSCALL64_slow_path+0x25/0x25
-> [<ffffffffffffffff>] 0xffffffffffffffff
->
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
