@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e1pdZ-0005dA-CL
- for ath10k@lists.infradead.org; Tue, 10 Oct 2017 08:11:39 +0000
-From: <yintang@qti.qualcomm.com>
-Subject: [PATCH V5 5/5] ath10k: Fix TDLS peer TX data failure issue on
- encryped AP
-Date: Tue, 10 Oct 2017 16:13:05 +0800
-Message-ID: <1507623185-9383-1-git-send-email-yintang@qti.qualcomm.com>
-In-Reply-To: <TDLS for ath10k patch>
-References: <TDLS for ath10k patch>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e1zMQ-0002o0-Fj
+ for ath10k@lists.infradead.org; Tue, 10 Oct 2017 18:34:38 +0000
+From: Ben Greear <greearb@candelatech.com>
+Subject: What should setting rate on 'AP' interface mean?
+Message-ID: <e99d4daa-fdc2-ce26-8ffb-bd3cf131e87c@candelatech.com>
+Date: Tue, 10 Oct 2017 11:34:10 -0700
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,43 +16,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-From: Yingying Tang <yintang@qti.qualcomm.com>
+I was trying to use 'iw' to set rates on an AP interface, hoping it would
+set tx-rates on all of the stations (peers) to the same thing.
 
-For WPA encryption, QCA6174 firmware(version: WLAN.RM.4.4) will unblock
-data when M4 was sent successfully. For other encryption which didn't need
-4-way handshake firmware will unblock the data when peer authorized. Since
-TDLS is 3-way handshake host need send authorize cmd to firmware to unblock
-data.
+It appears that the ath10k driver will set ratesets on all stations if
+we specify more than one rate, but if we specify a single rate, it does
+not iterate through all stations, and just sets the 'vdev' fixed rate.
 
-Signed-off-by: Yingying Tang <yintang@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c |    4 ++++
- 1 file changed, 4 insertions(+)
+So, should the driver somehow attempt to set single rate on all the stations when
+using a single rate?
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index f6702cb..d2530f7 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5841,6 +5841,10 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 		ath10k_warn(ar, "Peer %pM disappeared!\n", peer_addr);
- 	spin_unlock_bh(&ar->data_lock);
- 
-+	if (sta && sta->tdls)
-+		ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
-+					  WMI_PEER_AUTHORIZE, 1);
-+
- exit:
- 	mutex_unlock(&ar->conf_mutex);
- 	return ret;
+Or, do we need an API to force rates for individual stations (peers) and leave
+the driver in the current configuration?
+
+Or is it the firmware's responsibility to set the rate for all peers when
+we set the vdev fixed rate on an AP vdev?
+
+Thanks,
+Ben
+
 -- 
-1.7.9.5
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
