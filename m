@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e28uB-0006j8-Pl
- for ath10k@lists.infradead.org; Wed, 11 Oct 2017 04:46:07 +0000
-From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: Not able to set single rate in ath10k (backports-4.14-rc2-1)
-Date: Wed, 11 Oct 2017 10:07:33 +0530
-Message-Id: <20171011043733.M56782@cdot.in>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e2Byj-0003kh-5N
+ for ath10k@lists.infradead.org; Wed, 11 Oct 2017 08:03:03 +0000
+Message-ID: <1507708948.1998.15.camel@sipsolutions.net>
+Subject: Re: Setting single rate in ath10k broken by "reject/clear user rate
+ mask if not usable"
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 11 Oct 2017 10:02:28 +0200
 In-Reply-To: <13895fa0-3685-dd2b-583d-2d6469d23cfe@candelatech.com>
+ (sfid-20171010_225427_620459_2849A16B)
 References: <13895fa0-3685-dd2b-583d-2d6469d23cfe@candelatech.com>
-MIME-Version: 1.0
+ (sfid-20171010_225427_620459_2849A16B)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,98 +22,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Ben Greear <greearb@candelatech.com>, Johannes Berg <johannes.berg@intel.com>, kirtika@google.com
+To: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com, Johannes Berg <johannes.berg@intel.com>
 
-SGksCgogSSBnb3QgdGhlIHNhbWUgZXJyb3Igd2hpbGUgc2V0dGluZyBzaW5nbGUgcmF0ZSBpbiBh
-dGgxMGsKCiBmaXJtd2FyZSB2ZXJzaW9uIDogZmlybXdhcmUtNS5iaW5fMTAuMi40LjcwLjY2IAog
-YXRoMTBrIHZlcnNpb24gOiBiYWNrcG9ydHMtNC4xNC1yYzItMS50YXIueHoKCiBBZnRlciBydW5u
-aW5nIGZvbGxvd2luZyBjb21tYW5kcywgSSBnb3QgZXJyb3IgYW5kIHJhdGUgZGlkbid0IHNldC4g
-UGxlYXNlIHNlZSBmb2xsb3dpbmcKbG9nIGZvciBlcnJvciBhbmQgaGVscCBtZSB0byByZXNvbHZl
-IGl0LiAKIHJvb3RAQ0RPVC1CQldUOi9ldGMjIGl3IHdsYW4wIGluZm8gCiBJbnRlcmZhY2Ugd2xh
-bjAgCiDCoCDCoCDCoCDCoGlmaW5kZXggMzAgCiDCoCDCoCDCoCDCoHdkZXYgMHgxYSAKIMKgIMKg
-IMKgIMKgYWRkciAwNDpmMDoyMToyNTo0NTo4MSAKIMKgIMKgIMKgIMKgc3NpZCB0ZXN0IAogwqAg
-wqAgwqAgwqB0eXBlIEFQIAogwqAgwqAgwqAgwqB3aXBoeSAwIAogwqAgwqAgwqAgwqBjaGFubmVs
-IDE1MyAoNTc2NSBNSHopLCB3aWR0aDogNDAgTUh6LCBjZW50ZXIxOiA1NzU1IE1IeiAKIMKgIMKg
-IMKgIMKgdHhwb3dlciAxOC4wMCBkQm0gCiByb290QENET1QtQkJXVDovZXRjIyAKIHJvb3RAQ0RP
-VC1CQldUOi9ldGMjIAogcm9vdEBDRE9ULUJCV1Q6L2V0YyMgaXcgd2xhbjAgc2V0IGJpdHJhdGVz
-IGxlZ2FjeS01IGh0LW1jcy01IHZodC1tY3MtNSAyOjQgCiBjb21tYW5kIGZhaWxlZDogSW52YWxp
-ZCBhcmd1bWVudCAoLTIyKSAKIHJvb3RAQ0RPVC1CQldUOi9ldGMjIAogcm9vdEBDRE9ULUJCV1Q6
-L2V0YyMgCiByb290QENET1QtQkJXVDovZXRjIyAKIHJvb3RAQ0RPVC1CQldUOi9ldGMjIAogcm9v
-dEBDRE9ULUJCV1Q6L2V0YyMgaXcgd2xhbjAgc2V0IGJpdHJhdGVzIGxlZ2FjeS01IDI0IGh0LW1j
-cy01IHZodC1tY3MtNSAyOjQgCiBhdGgxMGtfcGNpIDAwMDE6MDI6MDAuMDogcmVmdXNpbmcgYml0
-cmF0ZSBtYXNrIHdpdGggbWlzc2luZyAwLTcgVkhUIE1DUyByYXRlcyAKIGNvbW1hbmQgZmFpbGVk
-OiBJbnZhbGlkIGFyZ3VtZW50ICgtMjIpIAogcm9vdEBDRE9ULUJCV1Q6L2V0YyMgaXcgd2xhbjAg
-c2V0IGJpdHJhdGVzIGxlZ2FjeS01IDI0IGh0LW1jcy01IDQgdmh0LW1jcy01IDI6NCAKIGF0aDEw
-a19wY2kgMDAwMTowMjowMC4wOiByZWZ1c2luZyBiaXRyYXRlIG1hc2sgd2l0aCBtaXNzaW5nIDAt
-NyBWSFQgTUNTIHJhdGVzIAogY29tbWFuZCBmYWlsZWQ6IEludmFsaWQgYXJndW1lbnQgKC0yMikg
-CiByb290QENET1QtQkJXVDovZXRjIyBpdyB3bGFuMCBzZXQgYml0cmF0ZXMgbGVnYWN5LTUgMjQg
-aHQtbWNzLTUgNCB2aHQtbWNzLTUgMjowLTQgCiBhdGgxMGtfcGNpIDAwMDE6MDI6MDAuMDogcmVm
-dXNpbmcgYml0cmF0ZSBtYXNrIHdpdGggbWlzc2luZyAwLTcgVkhUIE1DUyByYXRlcyAKIGNvbW1h
-bmQgZmFpbGVkOiBJbnZhbGlkIGFyZ3VtZW50ICgtMjIpIAogcm9vdEBDRE9ULUJCV1Q6L2V0YyMg
-aXcgd2xhbjAgc2V0IGJpdHJhdGVzIGxlZ2FjeS01IDI0IGh0LW1jcy01IDQgdmh0LW1jcy01IDI6
-MC03CgpGb2xsb3dpbmcgY29tbWFuZHMgd29ya3Mgd2l0aG91dCBhbnkgZXJyb3IgLCBidXQgaXQg
-dGFrZSByYW5nZSBvZiBNQ1MuTXkgcmVxdWlyZW1lbnQgaXMKdG8gc2V0IHNpbmdsZSByYXRlLiAK
-IyBpdyB3bGFuMCBzZXQgYml0cmF0ZXMgbGVnYWN5LTUgMjQgaHQtbWNzLTUgNCB2aHQtbWNzLTUg
-MjowLTcKClRoYW5rcyAmIFJlZ2FyZHMsIAog4KSV4KS14KS/4KSk4KS+IOCkruCkvuCkpeClgeCk
-sCBLYXZpdGEgTWF0aHVyIAog4KS14KSw4KS/4KS34KWN4KSgIOCkheCkqOClgeCkuOCkguCkp+Ck
-vuCkqCDgpIXgpK3gpL/gpK/gpILgpKTgpL4gwqBTZW5pb3IgUmVzZWFyY2ggRW5naW5lZXIgCiDg
-pLjgpYAt4KSh4KWJ4KSfIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIEMtRE9UIAog
-4KSH4KSy4KWI4KSV4KWN4KSf4KWN4KSw4KWJ4KSo4KS/4KSV4KWN4KS4IOCkuOCkv+Ckn+ClgCDg
-pKvgpYfgpJzgpLwgSSDCoCDCoCDCoCDCoCBFbGVjdHJvbmljcyBDaXR5IFBoYXNlIEkgCiDgpLng
-pYvgpLjgpYLgpLAg4KSw4KWL4KShLCDgpKzgpYfgpILgpJfgpLLgpYLgpLDgpYEgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgSG9zdXIgUm9hZCwgQmVuZ2FsdXJ1IOKAkyA1NjAxMDAgCiDgpKvgpYvgpKgg
-wqBQaCAwODAtMjg1Mjk4OTYgIApPbiBUdWUsIDEwIE9jdCAyMDE3IDEzOjU0OjIwIC0wNzAwLCBC
-ZW4gR3JlZWFyIHdyb3RlIAogPiBBdCBvbmUgcG9pbnQsIHlvdSBjb3VsZCBzZXQgYSBzaW5nbGUg
-cmF0ZSB1c2luZyAnaXcnIGFuZCAKID4gYXRoMTBrIHdvdWxkIGNvbnZlcnQgdGhhdCB0byBhIHNw
-ZWNpYWwgZmlybXdhcmUgQVBJIHRoYXQgCiA+IGZpeGVkIGFsbCBkYXRhIHRyYWZmaWMgdG8gYSBw
-YXJ0aWN1bGFyIHJhdGUgc2V0LiDCoCAoTWFuYWdlbWVudCAKID4gZnJhbWVzIGFuZCBicm9hZGNh
-c3Qgd2lsbCBub3QgYmUgYWZmZWN0ZWQgYnkgc2V0dGluZyB0aGUgcmF0ZXMgCiA+IHdoZW4gdXNp
-bmcgYXRoMTBrKS4gCiA+IAogPiBCdXQsIHdpdGggdGhlIGNvbW1pdCBiZWxvdywgYSBjb21tYW5k
-IGxpa2UgdGhpcyB3aWxsIGZhaWw6IAogPiAKID4gI2l3IGRldiB2YXAyMDYgc2V0IGJpdHJhdGVz
-IGxlZ2FjeS01IGh0LW1jcy01IDAgdmh0LW1jcy01IAogPiBjb21tYW5kIGZhaWxlZDogSW52YWxp
-ZCBhcmd1bWVudCAoLTIyKSAKID4gCiA+IEJ1dCwgaXQgYWN0dWFsbHkgKmRvZXMqIHN1Y2Nlc3Nm
-dWxseSBzZXQgdGhlIHJhdGUgaW4gdGhlIGRyaXZlciBmaXJzdCwgd2hpY2ggCiA+IGlzIGNvbmZ1
-c2luZyBhdCBiZXN0LiAKID4gCiA+IFNvLCBJIHRoaW5rIHdlIHNob3VsZCByZWxheCB0aGlzIGNo
-ZWNrLCBhdCBsZWFzdCBmb3IgYXRoMTBrLiAKID4gCiA+IGNvbW1pdCBlOGU0ZjUyODBkZGQwYTdi
-NDNhNzk1ZjkwYTA3NThlM2M5OWRmNmE2IAogPiBBdXRob3I6IEpvaGFubmVzIEJlcmcgPGpvaGFu
-bmVzLmJlcmdAaW50ZWwuY29tPiAKID4gRGF0ZTogwqAgV2VkIE1hciA4IDExOjEyOjEwIDIwMTcg
-KzAxMDAgCiA+IAogPiDCoCDCoCDCoG1hYzgwMjExOiByZWplY3QvY2xlYXIgdXNlciByYXRlIG1h
-c2sgaWYgbm90IHVzYWJsZSAKID4gCiA+IMKgIMKgIMKgSWYgdGhlIHVzZXIgcmF0ZSBtYXNrIHJl
-c3VsdHMgaW4gbm8gKGJhc2ljKSByYXRlcyBiZWluZyB1c2FibGUsIAogPiDCoCDCoCDCoGNsZWFy
-IGl0LiBBbHNvLCBpZiB3ZSdyZSBhbHJlYWR5IG9wZXJhdGluZyB3aGVuIGl0J3Mgc2V0LCByZWpl
-Y3QgCiA+IMKgIMKgIMKgaXQgaW5zdGVhZC4gCiA+IAogPiDCoCDCoCDCoFRlY2huaWNhbGx5LCBz
-ZWxlY3RpbmcgYmFzaWMgcmF0ZXMgYXMgdGhlIGNyaXRlcmlvbiBpcyBhIGJpdCB0b28gCiA+IMKg
-IMKgIMKgcmVzdHJpY3RpdmUsIGJ1dCBjYWxjdWxhdGluZyB0aGUgdXNhYmxlIHJhdGVzIG92ZXIg
-YWxsIHN0YXRpb25zIAogPiDCoCDCoCDCoChlLmcuIGluIEFQIG1vZGUpIGlzIGhhcmRlciwgYW5k
-IGFsbCBzdGF0aW9ucyBtdXN0IHN1cHBvcnQgdGhlIAogPiDCoCDCoCDCoGJhc2ljIHJhdGVzLiBT
-aW1pbGFybHksIGluIGNsaWVudCBtb2RlLCB0aGUgYmFzaWMgcmF0ZXMgd2lsbCBiZSAKID4gwqAg
-wqAgwqB1c2VkIGFueXdheSBmb3IgY29udHJvbCBmcmFtZXMuIAogPiAKID4gwqAgwqAgwqBUaGlz
-IGZpeGVzIHRoZSAibm8gc3VwcG9ydGVkIHJhdGVzICguLi4pIGluIHJhdGVfbWFzayAuLi4iIHdh
-cm5pbmcgCiA+IMKgIMKgIMKgdGhhdCBvY2N1cnMgb24gVFggd2hlbiB5b3UndmUgc2VsZWN0ZWQg
-YSByYXRlIG1hc2sgdGhhdCdzIG5vdCAKID4gwqAgwqAgwqBjb21wYXRpYmxlIHdpdGggdGhlIGNv
-bm5lY3Rpb24gKGUuZy4gYW4gQVAgdGhhdCBlbmFibGVzIG9ubHkgdGhlIAogPiDCoCDCoCDCoHJh
-dGVzIDM2LCA0OCwgNTQgYW5kIHlvdSd2ZSBzZWxlY3RlZCBvbmx5IDYsIDksIDEyLikgCiA+IAog
-PiDCoCDCoCDCoFJlcG9ydGVkLWJ5OiBLaXJ0aWthIFJ1Y2hhbmRhbmkgPGtpcnRpa2FAZ29vZ2xl
-LmNvbT4gCiA+IMKgIMKgIMKgU2lnbmVkLW9mZi1ieTogSm9oYW5uZXMgQmVyZyA8am9oYW5uZXMu
-YmVyZ0BpbnRlbC5jb20+IAogPiAKID4gVGhhbmtzLCAKID4gQmVuIAogPiAKID4gLS0gCiA+IEJl
-biBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiAKID4gQ2FuZGVsYSBUZWNobm9sb2dp
-ZXMgSW5jIMKgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20gCiA+IAogPiBfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXyAKID4gYXRoMTBrIG1haWxpbmcgbGlz
-dCAKID4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcgCiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgogVGhhbmtzICYgUmVnYXJkcywgCiDgpJXg
-pLXgpL/gpKTgpL4g4KSu4KS+4KSl4KWB4KSwIEthdml0YSBNYXRodXIgCiDgpLXgpLDgpL/gpLfg
-pY3gpKAg4KSF4KSo4KWB4KS44KSC4KSn4KS+4KSoIOCkheCkreCkv+Ckr+CkguCkpOCkviDCoFNl
-bmlvciBSZXNlYXJjaCBFbmdpbmVlciAKIOCkuOClgC3gpKHgpYngpJ8gwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgQy1ET1QgCiDgpIfgpLLgpYjgpJXgpY3gpJ/gpY3gpLDgpYngpKjg
-pL/gpJXgpY3gpLgg4KS44KS/4KSf4KWAIOCkq+Clh+CknOCkvCBJIMKgIMKgIMKgIMKgIEVsZWN0
-cm9uaWNzIENpdHkgUGhhc2UgSSAKIOCkueCli+CkuOClguCksCDgpLDgpYvgpKEsIOCkrOClh+Ck
-guCkl+CksuClguCksOClgSDCoCDCoCDCoCDCoCDCoCDCoCDCoCBIb3N1ciBSb2FkLCBCZW5nYWx1
-cnUg4oCTIDU2MDEwMCAKIOCkq+Cli+CkqCDCoFBoIDA4MC0yODUyOTg5NiAKIERpc2NsYWltZXI6
-IAogLS0tLS0tLS0tLSAKIFRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRo
-IGl0CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hi,
+
+> #iw dev vap206 set bitrates legacy-5 ht-mcs-5 0 vht-mcs-5
+> command failed: Invalid argument (-22)
+> 
+> But, it actually *does* successfully set the rate in the driver
+> first, which is confusing at best.
+
+Huh?
+
+> So, I think we should relax this check, at least for ath10k.
+
+Well, yes and no. I don't think we should make ath10k special here, and
+this fixes a real problem - namely that you can set up the system so
+that you have no usable rates at all, and then you just get a WARN_ON
+and start using the lowest possible rate...
+
+> commit e8e4f5280ddd0a7b43a795f90a0758e3c99df6a6
+> Author: Johannes Berg <johannes.berg@intel.com>
+> Date:   Wed Mar 8 11:12:10 2017 +0100
+> 
+>      mac80211: reject/clear user rate mask if not usable
+> 
+>      If the user rate mask results in no (basic) rates being usable,
+>      clear it. Also, if we're already operating when it's set, reject
+>      it instead.
+> 
+>      Technically, selecting basic rates as the criterion is a bit too
+>      restrictive, but calculating the usable rates over all stations
+>      (e.g. in AP mode) is harder, and all stations must support the
+>      basic rates. Similarly, in client mode, the basic rates will be
+>      used anyway for control frames.
+
+I guess you could implement this part? I.e. iterating the clients and
+checking that they all support the rate that is set. However, then you
+also need to implement that this gets reset when a new client that
+doesn't support this rate connects.
+
+Overall, this isn't very well defined for AP mode...
+
+Perhaps it'd be better - as you pointed out in the other thread - to
+have API to force a rate per station? We already have that for iwlwifi
+in debugfs, so perhaps that'd be something to consider for this too,
+I'm not sure there would be a real need to have it in nl80211?
+
+johannes
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
