@@ -2,17 +2,18 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
  helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2C3I-0007Y7-BZ
- for ath10k@lists.infradead.org; Wed, 11 Oct 2017 08:07:42 +0000
-Message-ID: <1507709235.1998.17.camel@sipsolutions.net>
-Subject: Re: Setting single rate in ath10k broken by "reject/clear user rate
- mask if not usable"
+ id 1e2Era-0005E4-PF
+ for ath10k@lists.infradead.org; Wed, 11 Oct 2017 11:07:54 +0000
+Message-ID: <1507720042.1998.31.camel@sipsolutions.net>
+Subject: Re: [PATCH V5 1/5] mac80211: Enable TDLS peer buffer STA feature
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 11 Oct 2017 10:07:15 +0200
-In-Reply-To: <1507708948.1998.15.camel@sipsolutions.net>
-References: <13895fa0-3685-dd2b-583d-2d6469d23cfe@candelatech.com>
- (sfid-20171010_225427_620459_2849A16B)
- <1507708948.1998.15.camel@sipsolutions.net>
+Date: Wed, 11 Oct 2017 13:07:22 +0200
+In-Reply-To: <1507623080-9311-2-git-send-email-yintang@qti.qualcomm.com>
+ (sfid-20171010_100936_649329_136CB55B)
+References: <TDLS for ath10k patch>
+ <1507623080-9311-1-git-send-email-yintang@qti.qualcomm.com>
+ <1507623080-9311-2-git-send-email-yintang@qti.qualcomm.com>
+ (sfid-20171010_100936_649329_136CB55B)
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,16 +27,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com, Johannes Berg <johannes.berg@intel.com>
+To: yintang@qti.qualcomm.com, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On Wed, 2017-10-11 at 10:02 +0200, Johannes Berg wrote:
 
-> Overall, this isn't very well defined for AP mode...
+> +++ b/include/net/cfg80211.h
+> @@ -3249,6 +3249,8 @@ struct cfg80211_ops {
+>   *	beaconing mode (AP, IBSS, Mesh, ...).
+>   * @WIPHY_FLAG_HAS_STATIC_WEP: The device supports static WEP key
+> installation
+>   *	before connection.
+> + * @WIPHY_FLAG_SUPPORT_TDLS_BUFFER_ST: Device support buffer STA
+> when TDLS is
+> + *	established.
 
-No, that's not really correct. It *is* well defined (set the rate for
-all clients to the same fixed rate), but that definition isn't very
-good because if that rate isn't a basic rate, clients can connect that
-don't support this rate...
+There's a typo (missing A) here.
+
+However, I don't see a reason for this to be a WIPHY flag rather than a
+mac80211 hw flag (enum ieee80211_hw_flags) since you only use it in
+mac80211.
+
+In reality, adding WIPHY flags should be really rare - only if
+*cfg80211* needs to know something, but *userspace* doesn't...
+
+If cfg80211 doesn't care, add to mac80211. If userspace cares, add to
+extended nl80211 flags instead :)
 
 johannes
 
