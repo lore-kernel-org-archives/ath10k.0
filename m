@@ -1,17 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e2IMh-0002GD-PL
- for ath10k@lists.infradead.org; Wed, 11 Oct 2017 14:52:09 +0000
-Subject: Re: Setting single rate in ath10k broken by "reject/clear user rate
- mask if not usable"
-References: <13895fa0-3685-dd2b-583d-2d6469d23cfe@candelatech.com>
- <1507708948.1998.15.camel@sipsolutions.net>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <2c293255-aa79-75a0-1c28-994f864cddf4@candelatech.com>
-Date: Wed, 11 Oct 2017 07:51:44 -0700
+Received: from mail-he1eur01on0089.outbound.protection.outlook.com
+ ([104.47.0.89] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e2LTh-0006R0-2D
+ for ath10k@lists.infradead.org; Wed, 11 Oct 2017 18:11:35 +0000
+Subject: Re: mesh point and ap mode on same interface
+References: <e6b02c56-38c7-323e-2bc9-e2b4276b654c@tu-bs.de>
+ <cc8baced-bd74-5703-d885-6ec444eb62ce@candelatech.com>
+ <43bf6a27-be58-35e4-26fa-5e6b380353ac@bowerswilkins.com>
+ <7dc592a5-9381-f715-6ea7-0a8b8deee311@tu-bs.de>
+ <CADjYELwdUxEap_z=_HD4DS4FEQ2_2HP3w9cvDU-BTFLoOTDipg@mail.gmail.com>
+ <5c04c7fe-8cf8-ddd8-d6a7-f42629586a63@bowerswilkins.com>
+ <067d234a-59f0-4175-55af-9354617057b9@tu-bs.de>
+From: Peter Oh <peter.oh@bowerswilkins.com>
+Message-ID: <61192d3b-b4c7-f47e-2ff9-44e17595d6a9@bowerswilkins.com>
+Date: Wed, 11 Oct 2017 11:10:56 -0700
 MIME-Version: 1.0
-In-Reply-To: <1507708948.1998.15.camel@sipsolutions.net>
+In-Reply-To: <067d234a-59f0-4175-55af-9354617057b9@tu-bs.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,115 +29,101 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com, Johannes Berg <johannes.berg@intel.com>
+To: Hannes Harms <hannes.harms@tu-bs.de>, Thomas Pedersen <thomas@eero.com>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
 
 
-On 10/11/2017 01:02 AM, Johannes Berg wrote:
-> Hi,
+On 10/10/2017 06:04 AM, Hannes Harms wrote:
 >
->> #iw dev vap206 set bitrates legacy-5 ht-mcs-5 0 vht-mcs-5
->> command failed: Invalid argument (-22)
+>> On 10/09/2017 08:08 AM, Thomas Pedersen wrote:
+>>> On Oct 9, 2017 1:46 AM, "Harms, Hannes" <hannes.harms@tu-bs.de 
+>>> <mailto:hannes.harms@tu-bs.de>> wrote:
+>>>
+>>>     On 10/06/2017 20:18, Peter, Oh wrote
+>>>
+>>>         I have tried t bring up the ap interface with iw / hostapd,
+>>>
+>>>                 after joining the mesh.
+>>>
+>>>                 When I start the second interface, rtnetlink
+>>>                 responds with
+>>>                 device or resource busy.
+>>>
+>>>
+>>>         If you give more details of your steps, people may help you
+>>>         more.
+>>>         Btw, did you create a 2nd interface on the same radio and
+>>>         change the mac address?
+>>>
+>>>
+>>>     Yes,  I changed the mac of the 2nd interface:
+>>>
+>>>     The mesh setup:
+>>>
+>>>     > brctl addbr mesh-bridge
+>>>     > iw phy0 interface add wlan0 type mp mesh_id my_mesh
+>>>     > iw wlan0 set freq 5500 80 5530
+>>>     > ip link set dev wlan0 up
+>>>     > iw wlan0 mesh join my_mesh
+>>>     > brctl addif  mesh-bridge mesh0
+>>>
+>> Are you sure this configuration is what you're using?
+>> there is no way to use DFS channels on mesh via iw at this moment.
+>> and mesh id on brctl addif is different from interface add.
 >>
->> But, it actually *does* successfully set the rate in the driver
->> first, which is confusing at best.
+>>>     The ap interface:
+>>>
+>>>     > iw dev wlan0 interface add virtual_ap type __ap
+>>>     > ip link set dev virtual_ap address 04:f0:21:1b:7b:48
+>>>     > hostapd -B -dd hostapd.conf
+>>>
+>> hostapd also does not allow interface to use DFS channels without 
+>> country_code parameter.
+>>>
+>>>     I think mesh and AP channel frequency + width need to match.
+>>>
+> Yes, you are right with the dfs channels,
+> I was testing with some relaxed reg rules.
 >
-> Huh?
-
-The call to set the rate in the driver comes before the error
-check.
-
-	if (ieee80211_hw_check(&local->hw, HAS_RATE_CONTROL)) {
-		ret = drv_set_bitrate_mask(local, sdata, mask);
-		if (ret) {
-			pr_err("%s: drv-set-bitrate-mask had error return: %d\n",
-			       sdata->dev->name, ret);
-			return ret;
-		}
-	}
-
-	/*
-	 * If active validate the setting and reject it if it doesn't leave
-	 * at least one basic rate usable, since we really have to be able
-	 * to send something, and if we're an AP we have to be able to do
-	 * so at a basic rate so that all clients can receive it.
-	 */
-	if (rcu_access_pointer(sdata->vif.chanctx_conf) &&
-	    sdata->vif.bss_conf.chandef.chan) {
-		u32 basic_rates = sdata->vif.bss_conf.basic_rates;
-		enum nl80211_band band = sdata->vif.bss_conf.chandef.chan->band;
-
-		if (!(mask->control[band].legacy & basic_rates)) {
-			#### I changed this code so I could set a single rate... --Ben
-			pr_err("%s:  WARNING: no legacy rates for band[%d] in set-bitrate-mask.\n",
-			       sdata->dev->name, band);
-		}
-	}
-
+> However,  I  am still facing the original problem.
+> For example if i run the following, the mesh is working (80Mhz),
+> but ap does not come up.
 >
->> So, I think we should relax this check, at least for ath10k.
+> > iw phy0 interface add mesh0 type mp
+> > ip link set dev mesh0 up
+> > iw dev mesh0 mesh join "my_mesh" freq 5180 80MHz
+> > sleep 5
+> > iw phy0 interface add virtual_ap type __ap
+> > ip link set dev virtual_ap address 04:f0:21:1b:7b:48
+> > hostapd -B -dd hostapd.conf
 >
-> Well, yes and no. I don't think we should make ath10k special here, and
-> this fixes a real problem - namely that you can set up the system so
-> that you have no usable rates at all, and then you just get a WARN_ON
-> and start using the lowest possible rate...
-
-Well, there are a million ways to set up a broken system, and setting a single
-rate has a useful purpose, especially with ath10k since it has such limited
-rate-setting capabilities.
-
-There is basically never going to be a case where setting a single tx-rate on an
-AP is a good idea in a general production environment, so maybe a possible WARN-ON is fine?
-
-If you *do* set up an AP with a limited rateset, then it should simply fail to
-allow a station to connect if it does not have any matching rates.  This might go
-back to a previous idea I had (and patches I posted and carry in my tree) to allow setting a different
-advertise rateset vs usable tx-rateset.
-
-For existing stations that might not match the new fixed rate, we could purposefully kick
-them off I guess, but seems like a lot of work for a case that seems pretty irrelevant.
-
+> hostapd config:
+> interface=virtual_ap
+> ctrl_interface=/var/run/hostapd
+> driver=nl80211
+> ssid=test
+> hw_mode=a
+> channel=36
+> ht_capab=[HT40+]
+> ieee80211n=1
+> ieee80211ac=1
+> vht_oper_chwidth=1
+> vht_oper_centr_freq_seg0_idx=42
+> country_code=US
+> bridge=mesh-bridge
 >
->> commit e8e4f5280ddd0a7b43a795f90a0758e3c99df6a6
->> Author: Johannes Berg <johannes.berg@intel.com>
->> Date:   Wed Mar 8 11:12:10 2017 +0100
->>
->>      mac80211: reject/clear user rate mask if not usable
->>
->>      If the user rate mask results in no (basic) rates being usable,
->>      clear it. Also, if we're already operating when it's set, reject
->>      it instead.
->>
->>      Technically, selecting basic rates as the criterion is a bit too
->>      restrictive, but calculating the usable rates over all stations
->>      (e.g. in AP mode) is harder, and all stations must support the
->>      basic rates. Similarly, in client mode, the basic rates will be
->>      used anyway for control frames.
+Since I don't have QCA9880 products, I'm not able to run it on the chip, 
+but the same steps using the same configurations work for me on QCA4019 
+based product.
+since EBUSY most likely comes from cfg80211, you better trace down the 
+codes where the error comes.
+> I also tried to join the mesh after the ap interface.
+> In this case the ap is running, but joining the mesh fails
+> with the same error. (device or resoure busy)
 >
-> I guess you could implement this part? I.e. iterating the clients and
-> checking that they all support the rate that is set. However, then you
-> also need to implement that this gets reset when a new client that
-> doesn't support this rate connects.
->
-> Overall, this isn't very well defined for AP mode...
->
-> Perhaps it'd be better - as you pointed out in the other thread - to
-> have API to force a rate per station? We already have that for iwlwifi
-> in debugfs, so perhaps that'd be something to consider for this too,
-> I'm not sure there would be a real need to have it in nl80211?
+> thanks for your help & patience
 
-I looked closely at the ath10k firmware yesterday, and it has no way to set a specific
-single rate per peer.  Sure, I could hack something into my CT firmware, but that
-still leaves all the stock driver/firmware people out of luck, and my patches
-won't make it upstream in the main kernel...
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
