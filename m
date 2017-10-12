@@ -1,22 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-he1eur01on0089.outbound.protection.outlook.com
- ([104.47.0.89] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+Received: from mail-pf0-x231.google.com ([2607:f8b0:400e:c00::231])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2LTh-0006R0-2D
- for ath10k@lists.infradead.org; Wed, 11 Oct 2017 18:11:35 +0000
-Subject: Re: mesh point and ap mode on same interface
-References: <e6b02c56-38c7-323e-2bc9-e2b4276b654c@tu-bs.de>
- <cc8baced-bd74-5703-d885-6ec444eb62ce@candelatech.com>
- <43bf6a27-be58-35e4-26fa-5e6b380353ac@bowerswilkins.com>
- <7dc592a5-9381-f715-6ea7-0a8b8deee311@tu-bs.de>
- <CADjYELwdUxEap_z=_HD4DS4FEQ2_2HP3w9cvDU-BTFLoOTDipg@mail.gmail.com>
- <5c04c7fe-8cf8-ddd8-d6a7-f42629586a63@bowerswilkins.com>
- <067d234a-59f0-4175-55af-9354617057b9@tu-bs.de>
-From: Peter Oh <peter.oh@bowerswilkins.com>
-Message-ID: <61192d3b-b4c7-f47e-2ff9-44e17595d6a9@bowerswilkins.com>
-Date: Wed, 11 Oct 2017 11:10:56 -0700
+ id 1e2RW9-0003IV-JR
+ for ath10k@lists.infradead.org; Thu, 12 Oct 2017 00:38:31 +0000
+Received: by mail-pf0-x231.google.com with SMTP id m63so2609821pfk.7
+ for <ath10k@lists.infradead.org>; Wed, 11 Oct 2017 17:38:09 -0700 (PDT)
+Date: Wed, 11 Oct 2017 17:38:06 -0700
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH] ath10k: fix core PCI suspend when WoWLAN is supported
+ but disabled
+Message-ID: <20171012003805.GA89253@google.com>
+References: <20170919232416.108247-1-briannorris@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <067d234a-59f0-4175-55af-9354617057b9@tu-bs.de>
+Content-Disposition: inline
+In-Reply-To: <20170919232416.108247-1-briannorris@chromium.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,105 +22,108 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Hannes Harms <hannes.harms@tu-bs.de>, Thomas Pedersen <thomas@eero.com>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>, Kalle Valo <kvalo@codeaurora.org>
+Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>, Grant Grundler <grundler@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>
 
+Ping? Any comments? I know there's more than one way to slice this
+problem, but it's most definitely a problem...
 
+Brian
 
-On 10/10/2017 06:04 AM, Hannes Harms wrote:
->
->> On 10/09/2017 08:08 AM, Thomas Pedersen wrote:
->>> On Oct 9, 2017 1:46 AM, "Harms, Hannes" <hannes.harms@tu-bs.de 
->>> <mailto:hannes.harms@tu-bs.de>> wrote:
->>>
->>>     On 10/06/2017 20:18, Peter, Oh wrote
->>>
->>>         I have tried t bring up the ap interface with iw / hostapd,
->>>
->>>                 after joining the mesh.
->>>
->>>                 When I start the second interface, rtnetlink
->>>                 responds with
->>>                 device or resource busy.
->>>
->>>
->>>         If you give more details of your steps, people may help you
->>>         more.
->>>         Btw, did you create a 2nd interface on the same radio and
->>>         change the mac address?
->>>
->>>
->>>     Yes,  I changed the mac of the 2nd interface:
->>>
->>>     The mesh setup:
->>>
->>>     > brctl addbr mesh-bridge
->>>     > iw phy0 interface add wlan0 type mp mesh_id my_mesh
->>>     > iw wlan0 set freq 5500 80 5530
->>>     > ip link set dev wlan0 up
->>>     > iw wlan0 mesh join my_mesh
->>>     > brctl addif  mesh-bridge mesh0
->>>
->> Are you sure this configuration is what you're using?
->> there is no way to use DFS channels on mesh via iw at this moment.
->> and mesh id on brctl addif is different from interface add.
->>
->>>     The ap interface:
->>>
->>>     > iw dev wlan0 interface add virtual_ap type __ap
->>>     > ip link set dev virtual_ap address 04:f0:21:1b:7b:48
->>>     > hostapd -B -dd hostapd.conf
->>>
->> hostapd also does not allow interface to use DFS channels without 
->> country_code parameter.
->>>
->>>     I think mesh and AP channel frequency + width need to match.
->>>
-> Yes, you are right with the dfs channels,
-> I was testing with some relaxed reg rules.
->
-> However,  I  am still facing the original problem.
-> For example if i run the following, the mesh is working (80Mhz),
-> but ap does not come up.
->
-> > iw phy0 interface add mesh0 type mp
-> > ip link set dev mesh0 up
-> > iw dev mesh0 mesh join "my_mesh" freq 5180 80MHz
-> > sleep 5
-> > iw phy0 interface add virtual_ap type __ap
-> > ip link set dev virtual_ap address 04:f0:21:1b:7b:48
-> > hostapd -B -dd hostapd.conf
->
-> hostapd config:
-> interface=virtual_ap
-> ctrl_interface=/var/run/hostapd
-> driver=nl80211
-> ssid=test
-> hw_mode=a
-> channel=36
-> ht_capab=[HT40+]
-> ieee80211n=1
-> ieee80211ac=1
-> vht_oper_chwidth=1
-> vht_oper_centr_freq_seg0_idx=42
-> country_code=US
-> bridge=mesh-bridge
->
-Since I don't have QCA9880 products, I'm not able to run it on the chip, 
-but the same steps using the same configurations work for me on QCA4019 
-based product.
-since EBUSY most likely comes from cfg80211, you better trace down the 
-codes where the error comes.
-> I also tried to join the mesh after the ap interface.
-> In this case the ap is running, but joining the mesh fails
-> with the same error. (device or resoure busy)
->
-> thanks for your help & patience
-
+On Tue, Sep 19, 2017 at 04:24:16PM -0700, Brian Norris wrote:
+> For devices where the FW supports WoWLAN but user-space has not
+> configured it, we don't do any PCI-specific suspend/resume operations,
+> because mac80211 doesn't call drv_suspend() when !wowlan. This has
+> particularly bad effects for some platforms, because we don't stop the
+> power-save timer, and if this timer goes off after the PCI controller
+> has suspended the link, Bad Things will happen.
+> 
+> Commit 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
+> got some of this right, in that it understood there was a problem on
+> non-WoWLAN firmware. But it forgot the $subject case.
+> 
+> Fix this by moving all the PCI driver suspend/resume logic exclusively
+> into the driver PM hooks. This shouldn't affect WoWLAN support much
+> (this just gets executed later on).
+> 
+> I would just as well kill the entirety of ath10k_hif_suspend(), as it's
+> not even implemented on the USB or SDIO drivers. I expect that we don't
+> need the callback, except to return "supported" (i.e., 0) or "not
+> supported" (i.e., -EOPNOTSUPP).
+> 
+> Fixes: 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
+> Fixes: 77258d409ce4 ("ath10k: enable pci soc powersaving")
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+> Cc: Kalle Valo <kvalo@qca.qualcomm.com>
+> Cc: Michal Kazior <michal.kazior@tieto.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/pci.c | 24 ++++++++++++++----------
+>  1 file changed, 14 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+> index bc1633945a56..4655c944e3fd 100644
+> --- a/drivers/net/wireless/ath/ath10k/pci.c
+> +++ b/drivers/net/wireless/ath/ath10k/pci.c
+> @@ -2580,6 +2580,12 @@ void ath10k_pci_hif_power_down(struct ath10k *ar)
+>  #ifdef CONFIG_PM
+>  
+>  static int ath10k_pci_hif_suspend(struct ath10k *ar)
+> +{
+> +	/* Nothing to do; the important stuff is in the driver suspend. */
+> +	return 0;
+> +}
+> +
+> +static int ath10k_pci_suspend(struct ath10k *ar)
+>  {
+>  	/* The grace timer can still be counting down and ar->ps_awake be true.
+>  	 * It is known that the device may be asleep after resuming regardless
+> @@ -2592,6 +2598,12 @@ static int ath10k_pci_hif_suspend(struct ath10k *ar)
+>  }
+>  
+>  static int ath10k_pci_hif_resume(struct ath10k *ar)
+> +{
+> +	/* Nothing to do; the important stuff is in the driver resume. */
+> +	return 0;
+> +}
+> +
+> +static int ath10k_pci_resume(struct ath10k *ar)
+>  {
+>  	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+>  	struct pci_dev *pdev = ar_pci->pdev;
+> @@ -3403,11 +3415,7 @@ static int ath10k_pci_pm_suspend(struct device *dev)
+>  	struct ath10k *ar = dev_get_drvdata(dev);
+>  	int ret;
+>  
+> -	if (test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
+> -		     ar->running_fw->fw_file.fw_features))
+> -		return 0;
+> -
+> -	ret = ath10k_hif_suspend(ar);
+> +	ret = ath10k_pci_suspend(ar);
+>  	if (ret)
+>  		ath10k_warn(ar, "failed to suspend hif: %d\n", ret);
+>  
+> @@ -3419,11 +3427,7 @@ static int ath10k_pci_pm_resume(struct device *dev)
+>  	struct ath10k *ar = dev_get_drvdata(dev);
+>  	int ret;
+>  
+> -	if (test_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
+> -		     ar->running_fw->fw_file.fw_features))
+> -		return 0;
+> -
+> -	ret = ath10k_hif_resume(ar);
+> +	ret = ath10k_pci_resume(ar);
+>  	if (ret)
+>  		ath10k_warn(ar, "failed to resume hif: %d\n", ret);
+>  
+> -- 
+> 2.14.1.690.gbb1197296e-goog
+> 
 
 _______________________________________________
 ath10k mailing list
