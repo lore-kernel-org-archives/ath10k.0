@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2yKi-0004i1-RA
- for ath10k@lists.infradead.org; Fri, 13 Oct 2017 11:40:54 +0000
+ id 1e2ym9-0005hl-9z
+ for ath10k@lists.infradead.org; Fri, 13 Oct 2017 12:09:19 +0000
 MIME-Version: 1.0
-Subject: Re: [v2] ath10k: add new cipher suite support
+Subject: Re: ath10k: Store coverage-class in case firmware is not booted.
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1506378581-13598-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1506378581-13598-1-git-send-email-rmanohar@qti.qualcomm.com>
-Message-ID: <811d6d31474148538799b0eaa0ec3031@euamsexm01e.eu.qualcomm.com>
-Date: Fri, 13 Oct 2017 13:40:25 +0200
+In-Reply-To: <1507068707-14050-1-git-send-email-greearb@candelatech.com>
+References: <1507068707-14050-1-git-send-email-greearb@candelatech.com>
+Message-ID: <3bbdd65d31c7406a95a40c85ed03a144@euamsexm01e.eu.qualcomm.com>
+Date: Fri, 13 Oct 2017 14:08:46 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +22,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: Jouni Malinen <jouni@qca.qualcomm.com>, linux-wireless@vger.kernel.org, rmanohar@codeaurora.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
+Ben Greear <greearb@candelatech.com> wrote:
 
-> QCA99x0 and QCA4019 family chips support CCMP-256, GCMP-128, and
-> GCMP-256 ciphers in hardware, so advertise support for these. As
-> firmware does not support group management frame ciphers (BIP),
-> handle them in software (mac80211).
+> This way, we can apply the values when the NIC does come up.
 > 
-> Reviewed-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-> Cc: Jouni Malinen <jouni@qca.qualcomm.com>
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-2ea9f12cefe4 ath10k: add new cipher suite support
+0a590a38778d ath10k: store coverage-class in case firmware is not booted
 
 -- 
-https://patchwork.kernel.org/patch/9970613/
+https://patchwork.kernel.org/patch/9983585/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
