@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2yvh-0002Zn-MX
- for ath10k@lists.infradead.org; Fri, 13 Oct 2017 12:19:08 +0000
-MIME-Version: 1.0
-Subject: Re: [2/2] ath10k: handle tdls peer events
+ id 1e2z5X-0007FF-Ge
+ for ath10k@lists.infradead.org; Fri, 13 Oct 2017 12:29:17 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1507618202-25473-3-git-send-email-mpubbise@qti.qualcomm.com>
-References: <1507618202-25473-3-git-send-email-mpubbise@qti.qualcomm.com>
-Message-ID: <e1bed0a347cf4ce0a1c538b99852398a@euamsexm01e.eu.qualcomm.com>
-Date: Fri, 13 Oct 2017 14:18:26 +0200
+Subject: Re: [PATCH] ath10k: spectral: Simplify error checking
+Date: Fri, 13 Oct 2017 12:28:50 +0000
+Message-ID: <87fuannse6.fsf@kamboji.qca.qualcomm.com>
+References: <1507491026-28690-1-git-send-email-chris.gekas@gmail.com>
+In-Reply-To: <1507491026-28690-1-git-send-email-chris.gekas@gmail.com>
+ (Christos Gkekas's message of "Sun, 8 Oct 2017 20:30:26 +0100")
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +24,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: mpubbise@qti.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Christos Gkekas <chris.gekas@gmail.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-mpubbise@qti.qualcomm.com wrote:
+Christos Gkekas <chris.gekas@gmail.com> writes:
 
-> Handle tdls peer events from the target. TDLS events for the peer
-> could be discover, teardown, etc. As of now, adding the logic to
-> handle tdls teardown events alone.
-> 
-> Teardown due to peer traffic indication(PTR) timeout is one such
-> teardown event from the target.
-> 
-> Tested this change on QCA9888 with 10.4-3.5.1-00018 fw version.
-> 
-> Signed-off-by: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> Variable val is unsigned so checking whether it is less than zero is
+> redundant.
+>
+> Signed-off-by: Christos Gkekas <chris.gekas@gmail.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/spectral.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
+> index dd9cc09..1867937 100644
+> --- a/drivers/net/wireless/ath/ath10k/spectral.c
+> +++ b/drivers/net/wireless/ath/ath10k/spectral.c
+> @@ -403,10 +403,7 @@ static ssize_t write_file_spectral_count(struct file *file,
+>  		return -EFAULT;
+>  
+>  	buf[len] = '\0';
+> -	if (kstrtoul(buf, 0, &val))
+> -		return -EINVAL;
+> -
+> -	if (val < 0 || val > 255)
+> +	if (kstrtoul(buf, 0, &val) || val > 255)
+>  		return -EINVAL;
 
-This patch introduces new warnings:
-
-$ ath10k-check
-drivers/net/wireless/ath/ath10k/wmi.c:4470:39: warning: incorrect type in argument 2 (different base types)
-drivers/net/wireless/ath/ath10k/wmi.c:4470:39:    expected int [signed] vdev_id
-drivers/net/wireless/ath/ath10k/wmi.c:4470:39:    got restricted __le32 [usertype] vdev_id
-drivers/net/wireless/ath/ath10k/wmi.c:4481:27: warning: restricted __le32 degrades to integer
-drivers/net/wireless/ath/ath10k/wmi.c:4481:27: warning: restricted __le32 degrades to integer
-drivers/net/wireless/ath/ath10k/wmi.c:4481:27: warning: restricted __le32 degrades to integer
-drivers/net/wireless/ath/ath10k/wmi.c:4492:48: warning: incorrect type in argument 2 (different base types)
-drivers/net/wireless/ath/ath10k/wmi.c:4492:48:    expected unsigned int [unsigned] [usertype] vdev_id
-drivers/net/wireless/ath/ath10k/wmi.c:4492:48:    got restricted __le32 [usertype] vdev_id
-drivers/net/wireless/ath/ath10k/wmi.c:4479:19: warning: restricted __le32 degrades to integer
-drivers/net/wireless/ath/ath10k/wmi.c:4460:6: warning: symbol 'ath10k_wmi_handle_tdls_peer_event' was not declared. Should it be static?
+Removing the check for negative is correct but I don't think you are
+simplifying anything, on the contrary it's harder to read. Please keep
+the two if statements separate.
 
 -- 
-https://patchwork.kernel.org/patch/9995131/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
