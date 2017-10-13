@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2z5X-0007FF-Ge
- for ath10k@lists.infradead.org; Fri, 13 Oct 2017 12:29:17 +0000
+ id 1e2zIE-0000cL-Km
+ for ath10k@lists.infradead.org; Fri, 13 Oct 2017 12:42:24 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: spectral: Simplify error checking
-Date: Fri, 13 Oct 2017 12:28:50 +0000
-Message-ID: <87fuannse6.fsf@kamboji.qca.qualcomm.com>
-References: <1507491026-28690-1-git-send-email-chris.gekas@gmail.com>
-In-Reply-To: <1507491026-28690-1-git-send-email-chris.gekas@gmail.com>
- (Christos Gkekas's message of "Sun, 8 Oct 2017 20:30:26 +0100")
+Subject: Re: [PATCH v2] ath10k: Retry pci probe on failure.
+Date: Fri, 13 Oct 2017 12:41:57 +0000
+Message-ID: <87a80vnrsb.fsf@kamboji.qca.qualcomm.com>
+References: <1507068826-14677-1-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1507068826-14677-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Tue, 3 Oct 2017 15:13:46	-0700")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -24,37 +24,53 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christos Gkekas <chris.gekas@gmail.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "greearb@candelatech.com" <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Christos Gkekas <chris.gekas@gmail.com> writes:
+greearb@candelatech.com writes:
 
-> Variable val is unsigned so checking whether it is less than zero is
-> redundant.
+> From: Ben Greear <greearb@candelatech.com>
 >
-> Signed-off-by: Christos Gkekas <chris.gekas@gmail.com>
-> ---
->  drivers/net/wireless/ath/ath10k/spectral.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+> This works around a problem we see when sometimes the wifi NIC does
+> not respond the first time.  This seems to happen especially often on
+> some of the 9984 NICs in mid-range platforms.
 >
-> diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
-> index dd9cc09..1867937 100644
-> --- a/drivers/net/wireless/ath/ath10k/spectral.c
-> +++ b/drivers/net/wireless/ath/ath10k/spectral.c
-> @@ -403,10 +403,7 @@ static ssize_t write_file_spectral_count(struct file *file,
->  		return -EFAULT;
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+
+[...]
+
+> -static int ath10k_pci_probe(struct pci_dev *pdev,
+> -			    const struct pci_device_id *pci_dev)
+> +static int __ath10k_pci_probe(struct pci_dev *pdev,
+> +			      const struct pci_device_id *pci_dev)
+>  {
+>  	int ret = 0;
+>  	struct ath10k *ar;
+> @@ -3672,6 +3672,22 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+>  	return ret;
+>  }
 >  
->  	buf[len] = '\0';
-> -	if (kstrtoul(buf, 0, &val))
-> -		return -EINVAL;
-> -
-> -	if (val < 0 || val > 255)
-> +	if (kstrtoul(buf, 0, &val) || val > 255)
->  		return -EINVAL;
+> +static int ath10k_pci_probe(struct pci_dev *pdev,
+> +			    const struct pci_device_id *pci_dev)
+> +{
+> +	int cnt = 0;
+> +	int rv;
+> +	do {
+> +		rv = __ath10k_pci_probe(pdev, pci_dev);
+> +		if (rv == 0)
+> +			return rv;
+> +		pr_err("ath10k: failed to probe PCI : %d, retry-count: %d\n", rv, cnt);
+> +		mdelay(10); /* let the ath10k firmware gerbil take a small break */
+> +	} while (cnt++ < 10);
+> +	return rv;
+> +}
 
-Removing the check for negative is correct but I don't think you are
-simplifying anything, on the contrary it's harder to read. Please keep
-the two if statements separate.
+This is a sledgehammer approach and it causes reload for all error
+cases, like when hardware is broken or memory allocation is failing.
+
+When the problem happens does it always fail at the the same place? Is
+it hw reset or something else? It's better to retry the invidiual action
+than to do this hack. Or is it just some more delay needed somewhere?
 
 -- 
 Kalle Valo
