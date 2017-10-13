@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2yJC-0001nY-Ur
- for ath10k@lists.infradead.org; Fri, 13 Oct 2017 11:39:20 +0000
+ id 1e2yKi-0004i1-RA
+ for ath10k@lists.infradead.org; Fri, 13 Oct 2017 11:40:54 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: check power save support in STA mode through FW IE
+Subject: Re: [v2] ath10k: add new cipher suite support
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <150670357817.24239.7065449335785410650.stgit@potku.adurom.net>
-References: <150670357817.24239.7065449335785410650.stgit@potku.adurom.net>
-Message-ID: <1cded68ebc944a2791525c1065056ef7@euamsexm01e.eu.qualcomm.com>
-Date: Fri, 13 Oct 2017 13:38:51 +0200
+In-Reply-To: <1506378581-13598-1-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1506378581-13598-1-git-send-email-rmanohar@qti.qualcomm.com>
+Message-ID: <811d6d31474148538799b0eaa0ec3031@euamsexm01e.eu.qualcomm.com>
+Date: Fri, 13 Oct 2017 13:40:25 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +22,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: Jouni Malinen <jouni@qca.qualcomm.com>, linux-wireless@vger.kernel.org, rmanohar@codeaurora.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
 
-> Currently ath10k host enables power save support in station mode by
-> default for all firmwares but Power save for station mode still not supported
-> in some of the firmware versions. Which results in firmware crash while
-> issueing multiple scan commands.
+> QCA99x0 and QCA4019 family chips support CCMP-256, GCMP-128, and
+> GCMP-256 ciphers in hardware, so advertise support for these. As
+> firmware does not support group management frame ciphers (BIP),
+> handle them in software (mac80211).
 > 
-> Fix this problem by introducing new FW feature flag to check power save
-> support in firmware and then the firmware image can tell to ath10k that power
-> save mode is not supported in station mode.
-> 
-> Signed-off-by: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
+> Reviewed-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+> Cc: Jouni Malinen <jouni@qca.qualcomm.com>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-36d9cdb6fb4a ath10k: check power save support in STA mode through FW IE
+2ea9f12cefe4 ath10k: add new cipher suite support
 
 -- 
-https://patchwork.kernel.org/patch/9978455/
+https://patchwork.kernel.org/patch/9970613/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
