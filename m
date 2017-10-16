@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e3yQU-0006nQ-09
- for ath10k@lists.infradead.org; Mon, 16 Oct 2017 05:59:00 +0000
+ id 1e3yQZ-0006o1-08
+ for ath10k@lists.infradead.org; Mon, 16 Oct 2017 05:59:07 +0000
 From: <yintang@qti.qualcomm.com>
-Subject: [PATCH V6 2/5] ath10k: Enable TDLS peer buffer STA feature
-Date: Mon, 16 Oct 2017 14:00:30 +0800
-Message-ID: <1508133633-23214-3-git-send-email-yintang@qti.qualcomm.com>
+Subject: [PATCH V6 4/5] ath10k: Avoid to set WEP key for TDLS peer
+Date: Mon, 16 Oct 2017 14:00:32 +0800
+Message-ID: <1508133633-23214-5-git-send-email-yintang@qti.qualcomm.com>
 In-Reply-To: <1508133633-23214-1-git-send-email-yintang@qti.qualcomm.com>
 References: <TDLS for ath10k patches V6>
  <1508133633-23214-1-git-send-email-yintang@qti.qualcomm.com>
@@ -28,45 +28,28 @@ Cc: linux-wireless@vger.kernel.org
 
 From: Yingying Tang <yintang@qti.qualcomm.com>
 
-Enable TDLS peer buffer STA feature.
-QCA6174 firmware(version: WLAN.RM.4.4) support TDLS peer buffer STA,
-it reports this capability through wmi service map in wmi service ready
-event. Set related parameter in TDLS WMI command to enable this feature.
+TDLS peer do not need WEP key. Setting WEP key will lead
+to TDLS setup failure. Add fix to avoid setting WEP key
+for TDLS peer.
 
 Signed-off-by: Yingying Tang <yintang@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c     |    3 +++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |    3 +++
- 2 files changed, 6 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5683f1a..1672043 100644
+index 1672043..a984a72 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8204,6 +8204,9 @@ int ath10k_mac_register(struct ath10k *ar)
- 		ieee80211_hw_set(ar->hw, TDLS_WIDER_BW);
- 	}
+@@ -2966,7 +2966,7 @@ static int ath10k_station_assoc(struct ath10k *ar,
+ 		}
  
-+	if (test_bit(WMI_SERVICE_TDLS_UAPSD_BUFFER_STA, ar->wmi.svc_map))
-+		ieee80211_hw_set(ar->hw, SUPPORTS_TDLS_BUFFER_STA);
-+
- 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL;
- 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_CHANNEL_SWITCH;
- 	ar->hw->wiphy->max_remain_on_channel_duration = 5000;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 7616c1c..f60b46e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2747,6 +2747,9 @@ static void *ath10k_wmi_tlv_put_wmm(void *ptr,
- 	 */
- 	u32 options = 0;
- 
-+	if (test_bit(WMI_SERVICE_TDLS_UAPSD_BUFFER_STA, ar->wmi.svc_map))
-+		options |=  WMI_TLV_TDLS_BUFFER_STA_EN;
-+
- 	len = sizeof(*tlv) + sizeof(*cmd);
- 	skb = ath10k_wmi_alloc_skb(ar, len);
- 	if (!skb)
+ 		/* Plumb cached keys only for static WEP */
+-		if (arvif->def_wep_key_idx != -1) {
++		if ((arvif->def_wep_key_idx != -1) && (!sta->tdls)) {
+ 			ret = ath10k_install_peer_wep_keys(arvif, sta->addr);
+ 			if (ret) {
+ 				ath10k_warn(ar, "failed to install peer wep keys for vdev %i: %d\n",
 -- 
 1.7.9.5
 
