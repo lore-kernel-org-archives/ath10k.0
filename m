@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+Received: from magratgarlick.emantor.de ([2a01:4f8:c17:c88::2]
+ helo=margratgarlick.emantor.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e3yRO-0007CL-5D
- for ath10k@lists.infradead.org; Mon, 16 Oct 2017 05:59:55 +0000
-From: <yintang@qti.qualcomm.com>
-Subject: [PATCH V6 5/5] ath10k: Fix TDLS peer TX data failure issue on
- encryped AP
-Date: Mon, 16 Oct 2017 14:01:37 +0800
-Message-ID: <1508133697-23255-1-git-send-email-yintang@qti.qualcomm.com>
-In-Reply-To: <TDLS for ath10k patches V6>
-References: <TDLS for ath10k patches V6>
+ id 1e41M5-0000q6-95
+ for ath10k@lists.infradead.org; Mon, 16 Oct 2017 09:06:40 +0000
+References: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
+ <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
+ <fa6e3ee2-91b5-a54b-afe3-87f30aac7a48@leemhuis.info>
+From: Rouven Czerwinski <rouven@czerwinskis.de>
+Subject: Re: ath10k-regression due to "ath10k: fix napi_poll budget overflow"
+ c9353bf483d3
+In-Reply-To: <fa6e3ee2-91b5-a54b-afe3-87f30aac7a48@leemhuis.info>
+Date: Mon, 16 Oct 2017 11:04:51 +0200
+Message-ID: <87zi8rv4y4.fsf@czerwinskis.de>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,39 +27,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>, Thorsten Leemhuis <linux@leemhuis.info>
 
-From: Yingying Tang <yintang@qti.qualcomm.com>
+Hello,
 
-For WPA encryption, QCA6174 firmware(version: WLAN.RM.4.4) will unblock
-data when M4 was sent successfully. For other encryption which didn't need
-4-way handshake firmware will unblock the data when peer authorized. Since
-TDLS is 3-way handshake host need send authorize cmd to firmware to unblock
-data.
+here is my analysis of the problem:
+Commit c9353bf483d3 plumps the budget down into the
+ath10k_htt_rx_extract_amsdu function. Per extracted msdu frame the
+budget is reduced by one until either we have no budget left or all
+msdus are extracted from the amsdu. The function then checks whether all
+frames were extracted, if not it returns -EAGAIN.
 
-Signed-off-by: Yingying Tang <yintang@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c |    4 ++++
- 1 file changed, 4 insertions(+)
+The error happens if we have to extract more frames then we have
+budget_left, because not all frames are extracted and
+ath10k_htt_rx_in_ord_ind enters this error path:
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a984a72..fe14d3c 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5841,6 +5841,10 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 		ath10k_warn(ar, "Peer %pM disappeared!\n", peer_addr);
- 	spin_unlock_bh(&ar->data_lock);
- 
-+	if (sta && sta->tdls)
-+		ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
-+					  WMI_PEER_AUTHORIZE, 1);
-+
- exit:
- 	mutex_unlock(&ar->conf_mutex);
- 	return ret;
--- 
-1.7.9.5
+case -EAGAIN:
+	/* fall through */
+default:
+	/* Should not happen. */
+	ath10k_warn(ar, "failed to extract amsdu: %d\n", ret);
+	htt->rx_confused = true;
+	__skb_queue_purge(&list);
+	return -EIO;
 
+Which is not recoverable by the driver, only through hardware reset.
+
+MfG
+Rouven Czerwinski
 
 _______________________________________________
 ath10k mailing list
