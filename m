@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from magratgarlick.emantor.de ([2a01:4f8:c17:c88::2]
- helo=margratgarlick.emantor.de)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e41M5-0000q6-95
- for ath10k@lists.infradead.org; Mon, 16 Oct 2017 09:06:40 +0000
-References: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
- <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
- <fa6e3ee2-91b5-a54b-afe3-87f30aac7a48@leemhuis.info>
-From: Rouven Czerwinski <rouven@czerwinskis.de>
-Subject: Re: ath10k-regression due to "ath10k: fix napi_poll budget overflow"
- c9353bf483d3
-In-Reply-To: <fa6e3ee2-91b5-a54b-afe3-87f30aac7a48@leemhuis.info>
-Date: Mon, 16 Oct 2017 11:04:51 +0200
-Message-ID: <87zi8rv4y4.fsf@czerwinskis.de>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e49eb-0003zF-C2
+ for ath10k@lists.infradead.org; Mon, 16 Oct 2017 17:58:19 +0000
+Subject: Re: [PATCHv3 2/2] ath10k: Allow setting coverage class
+References: <20160825132522.30994-1-benjamin@sipsolutions.net>
+ <20160825132522.30994-3-benjamin@sipsolutions.net>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <6cbadf5a-4289-640c-eb46-694a7da8ea44@candelatech.com>
+Date: Mon, 16 Oct 2017 10:57:51 -0700
 MIME-Version: 1.0
+In-Reply-To: <20160825132522.30994-3-benjamin@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +19,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>, Thorsten Leemhuis <linux@leemhuis.info>
+To: Benjamin Berg <benjamin@sipsolutions.net>, ath10k@lists.infradead.org
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>, Michal Kazior <michal.kazior@tieto.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, Simon Wunderlich <sw@simonwunderlich.de>
+
+On 08/25/2016 06:25 AM, Benjamin Berg wrote:
+> Unfortunately ath10k does not generally allow modifying the coverage class
+> with the stock firmware and Qualcomm has so far refused to implement this
+> feature so that it can be properly supported in ath10k. If we however know
+> the registers that need to be modified for proper operation with a higher
+> coverage class, then we can do these modifications from the driver.
+>
+> This patch implements this hack for first generation cards which are based
+> on a core that is similar to ath9k. The registers are modified in place and
+> need to be re-written every time the firmware sets them. To achieve this
+> the register status is verified after certain WMI events from the firmware.
+>
+> The coverage class may not be modified temporarily right after the card
+> re-initializes the registers. This is for example the case during scanning.
+>
+> Thanks to Sebastian Gottschall <s.gottschall@dd-wrt.com> for initially
+> working on a userspace support for this. This patch wouldn't have been
+> possible without this documentation.
 
 Hello,
 
-here is my analysis of the problem:
-Commit c9353bf483d3 plumps the budget down into the
-ath10k_htt_rx_extract_amsdu function. Per extracted msdu frame the
-budget is reduced by one until either we have no budget left or all
-msdus are extracted from the amsdu. The function then checks whether all
-frames were extracted, if not it returns -EAGAIN.
+Do you happen to know the maximum distance that can work with this
+patch enabled?  The register value maximum seems to be 0x3FFF, but I
+am not sure of the units (nor how exactly that applies to distance).
 
-The error happens if we have to extract more frames then we have
-budget_left, because not all frames are extracted and
-ath10k_htt_rx_in_ord_ind enters this error path:
+Thanks,
+Ben
 
-case -EAGAIN:
-	/* fall through */
-default:
-	/* Should not happen. */
-	ath10k_warn(ar, "failed to extract amsdu: %d\n", ret);
-	htt->rx_confused = true;
-	__skb_queue_purge(&list);
-	return -EIO;
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
-Which is not recoverable by the driver, only through hardware reset.
-
-MfG
-Rouven Czerwinski
 
 _______________________________________________
 ath10k mailing list
