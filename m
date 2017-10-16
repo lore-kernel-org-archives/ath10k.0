@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e49gT-0004E1-7v
- for ath10k@lists.infradead.org; Mon, 16 Oct 2017 18:00:16 +0000
-Received: by mail-wr0-x244.google.com with SMTP id l1so3785731wrc.3
- for <ath10k@lists.infradead.org>; Mon, 16 Oct 2017 10:59:49 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <6cbadf5a-4289-640c-eb46-694a7da8ea44@candelatech.com>
+ id 1e4Amn-0007HG-Re
+ for ath10k@lists.infradead.org; Mon, 16 Oct 2017 19:10:53 +0000
+Subject: Re: [PATCHv3 2/2] ath10k: Allow setting coverage class
 References: <20160825132522.30994-1-benjamin@sipsolutions.net>
  <20160825132522.30994-3-benjamin@sipsolutions.net>
  <6cbadf5a-4289-640c-eb46-694a7da8ea44@candelatech.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Mon, 16 Oct 2017 10:59:47 -0700
-Message-ID: <CAJ-VmomSzvwOLfG_D1BCyfxQDWP3wwMZeN4VxXSD826eYc2AYg@mail.gmail.com>
-Subject: Re: [PATCHv3 2/2] ath10k: Allow setting coverage class
+ <CAJ-VmomSzvwOLfG_D1BCyfxQDWP3wwMZeN4VxXSD826eYc2AYg@mail.gmail.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <bc32a99f-ad4a-8892-b827-b49a3a08a200@dd-wrt.com>
+Date: Mon, 16 Oct 2017 21:10:10 +0200
+MIME-Version: 1.0
+In-Reply-To: <CAJ-VmomSzvwOLfG_D1BCyfxQDWP3wwMZeN4VxXSD826eYc2AYg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +22,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Simon Wunderlich <sw@simonwunderlich.de>, Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Benjamin Berg <benjamin@sipsolutions.net>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Michal Kazior <michal.kazior@tieto.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+To: Adrian Chadd <adrian@freebsd.org>, Ben Greear <greearb@candelatech.com>
+Cc: Simon Wunderlich <sw@simonwunderlich.de>, Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Benjamin Berg <benjamin@sipsolutions.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Michal Kazior <michal.kazior@tieto.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
 
-On 16 October 2017 at 10:57, Ben Greear <greearb@candelatech.com> wrote:
-> On 08/25/2016 06:25 AM, Benjamin Berg wrote:
->>
->> Unfortunately ath10k does not generally allow modifying the coverage class
->> with the stock firmware and Qualcomm has so far refused to implement this
->> feature so that it can be properly supported in ath10k. If we however know
->> the registers that need to be modified for proper operation with a higher
->> coverage class, then we can do these modifications from the driver.
->>
->> This patch implements this hack for first generation cards which are based
->> on a core that is similar to ath9k. The registers are modified in place
->> and
->> need to be re-written every time the firmware sets them. To achieve this
->> the register status is verified after certain WMI events from the
->> firmware.
->>
->> The coverage class may not be modified temporarily right after the card
->> re-initializes the registers. This is for example the case during
->> scanning.
->>
->> Thanks to Sebastian Gottschall <s.gottschall@dd-wrt.com> for initially
->> working on a userspace support for this. This patch wouldn't have been
->> possible without this documentation.
->
->
-> Hello,
->
-> Do you happen to know the maximum distance that can work with this
-> patch enabled?  The register value maximum seems to be 0x3FFF, but I
-> am not sure of the units (nor how exactly that applies to distance).
-
-It's in MAC clocks still, right? So it depends on how fast the MAC
-clock timer runs.
-
-
-
--adrian
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMTYuMTAuMjAxNyB1bSAxOTo1OSBzY2hyaWViIEFkcmlhbiBDaGFkZDoKPiBPbiAxNiBPY3Rv
+YmVyIDIwMTcgYXQgMTA6NTcsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3
+cm90ZToKPj4gT24gMDgvMjUvMjAxNiAwNjoyNSBBTSwgQmVuamFtaW4gQmVyZyB3cm90ZToKPj4+
+IFVuZm9ydHVuYXRlbHkgYXRoMTBrIGRvZXMgbm90IGdlbmVyYWxseSBhbGxvdyBtb2RpZnlpbmcg
+dGhlIGNvdmVyYWdlIGNsYXNzCj4+PiB3aXRoIHRoZSBzdG9jayBmaXJtd2FyZSBhbmQgUXVhbGNv
+bW0gaGFzIHNvIGZhciByZWZ1c2VkIHRvIGltcGxlbWVudCB0aGlzCj4+PiBmZWF0dXJlIHNvIHRo
+YXQgaXQgY2FuIGJlIHByb3Blcmx5IHN1cHBvcnRlZCBpbiBhdGgxMGsuIElmIHdlIGhvd2V2ZXIg
+a25vdwo+Pj4gdGhlIHJlZ2lzdGVycyB0aGF0IG5lZWQgdG8gYmUgbW9kaWZpZWQgZm9yIHByb3Bl
+ciBvcGVyYXRpb24gd2l0aCBhIGhpZ2hlcgo+Pj4gY292ZXJhZ2UgY2xhc3MsIHRoZW4gd2UgY2Fu
+IGRvIHRoZXNlIG1vZGlmaWNhdGlvbnMgZnJvbSB0aGUgZHJpdmVyLgo+Pj4KPj4+IFRoaXMgcGF0
+Y2ggaW1wbGVtZW50cyB0aGlzIGhhY2sgZm9yIGZpcnN0IGdlbmVyYXRpb24gY2FyZHMgd2hpY2gg
+YXJlIGJhc2VkCj4+PiBvbiBhIGNvcmUgdGhhdCBpcyBzaW1pbGFyIHRvIGF0aDlrLiBUaGUgcmVn
+aXN0ZXJzIGFyZSBtb2RpZmllZCBpbiBwbGFjZQo+Pj4gYW5kCj4+PiBuZWVkIHRvIGJlIHJlLXdy
+aXR0ZW4gZXZlcnkgdGltZSB0aGUgZmlybXdhcmUgc2V0cyB0aGVtLiBUbyBhY2hpZXZlIHRoaXMK
+Pj4+IHRoZSByZWdpc3RlciBzdGF0dXMgaXMgdmVyaWZpZWQgYWZ0ZXIgY2VydGFpbiBXTUkgZXZl
+bnRzIGZyb20gdGhlCj4+PiBmaXJtd2FyZS4KPj4+Cj4+PiBUaGUgY292ZXJhZ2UgY2xhc3MgbWF5
+IG5vdCBiZSBtb2RpZmllZCB0ZW1wb3JhcmlseSByaWdodCBhZnRlciB0aGUgY2FyZAo+Pj4gcmUt
+aW5pdGlhbGl6ZXMgdGhlIHJlZ2lzdGVycy4gVGhpcyBpcyBmb3IgZXhhbXBsZSB0aGUgY2FzZSBk
+dXJpbmcKPj4+IHNjYW5uaW5nLgo+Pj4KPj4+IFRoYW5rcyB0byBTZWJhc3RpYW4gR290dHNjaGFs
+bCA8cy5nb3R0c2NoYWxsQGRkLXdydC5jb20+IGZvciBpbml0aWFsbHkKPj4+IHdvcmtpbmcgb24g
+YSB1c2Vyc3BhY2Ugc3VwcG9ydCBmb3IgdGhpcy4gVGhpcyBwYXRjaCB3b3VsZG4ndCBoYXZlIGJl
+ZW4KPj4+IHBvc3NpYmxlIHdpdGhvdXQgdGhpcyBkb2N1bWVudGF0aW9uLgo+Pgo+PiBIZWxsbywK
+Pj4KPj4gRG8geW91IGhhcHBlbiB0byBrbm93IHRoZSBtYXhpbXVtIGRpc3RhbmNlIHRoYXQgY2Fu
+IHdvcmsgd2l0aCB0aGlzCj4+IHBhdGNoIGVuYWJsZWQ/ICBUaGUgcmVnaXN0ZXIgdmFsdWUgbWF4
+aW11bSBzZWVtcyB0byBiZSAweDNGRkYsIGJ1dCBJCj4+IGFtIG5vdCBzdXJlIG9mIHRoZSB1bml0
+cyAobm9yIGhvdyBleGFjdGx5IHRoYXQgYXBwbGllcyB0byBkaXN0YW5jZSkuCj4gSXQncyBpbiBN
+QUMgY2xvY2tzIHN0aWxsLCByaWdodD8gU28gaXQgZGVwZW5kcyBvbiBob3cgZmFzdCB0aGUgTUFD
+Cj4gY2xvY2sgdGltZXIgcnVucy4KPgo+Cj4KPiAtYWRyaWFuCgppZiBzb21lb25lIGlzIGludGVy
+ZXN0ZWQgaSBjYW4gcHJvdmlkZSBhIHBhdGNoIHdpdGNoIHdvcmtzIGFzIHdlbGwgZm9yIAo5OTh4
+IGFuZCA5OTg0IGFuZCB1c3VhbGx5IG90aGVyIG5ld2VyIGNoaXBzZXRzIHRvby4KCmJ1dCBjbG9j
+ayBwYXJhbWV0ZXJzIG5lZWQgdG8gYmUgYWRqdXN0ZWQgZm9yIHRoZXNlIG5ld2VyIG9uZXMuIHRo
+ZSBvbmx5IApwcm9ibGVtIGlzIHRoYXQgaXRzIGJhc2VkIG9uIHVub2ZmaWNhbCByZWdpc3RlcnMg
+d2hpY2ggYXJlbnQgZG9jdW1lbnRlZCAKYW5kIHRoZSBwYXRjaCBmb3IgdGhlIDk5eHggY2hpcHNl
+dHMgaXMgdmVyeSBkaWZmZXJlbnQgZnJvbSA5ODh4CgoKCi0tIApNaXQgZnJldW5kbGljaGVuIEdy
+w7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5F
+VCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUgMjFhLCA2NDYyNSBC
+ZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDcz
+Ckdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxl
+Cmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVs
+LjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
+MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsK
