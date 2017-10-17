@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e4UFu-0005mH-Gy
- for ath10k@lists.infradead.org; Tue, 17 Oct 2017 15:58:12 +0000
-Subject: Re: [PATCH v2] ath10k: Retry pci probe on failure.
-References: <1507068826-14677-1-git-send-email-greearb@candelatech.com>
- <87a80vnrsb.fsf@kamboji.qca.qualcomm.com>
- <CAJ-Vmon0SszxH22Zb+O5RVQSommFFuc5XmG+at9=xbGagOb7PQ@mail.gmail.com>
- <59E124EB.6090602@candelatech.com> <87376imabh.fsf@kamboji.qca.qualcomm.com>
+ id 1e4WuV-0003o7-5N
+ for ath10k@lists.infradead.org; Tue, 17 Oct 2017 18:48:17 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 3AE2040A5CB
+ for <ath10k@lists.infradead.org>; Tue, 17 Oct 2017 11:47:50 -0700 (PDT)
 From: Ben Greear <greearb@candelatech.com>
-Message-ID: <010327cf-77de-069d-da67-eea013333021@candelatech.com>
-Date: Tue, 17 Oct 2017 08:57:44 -0700
+Subject: Sometimes WLE900VX 9880 NIC does not appear in lspci.
+Message-ID: <3eefa2db-33a1-ceb3-730b-62627239e873@candelatech.com>
+Date: Tue, 17 Oct 2017 11:47:49 -0700
 MIME-Version: 1.0
-In-Reply-To: <87376imabh.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,100 +25,54 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-On 10/17/2017 01:45 AM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> writes:
->
->> On 10/13/2017 08:50 AM, Adrian Chadd wrote:
->>> On 13 October 2017 at 05:41, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->>>> greearb@candelatech.com writes:
->>>>
->>>>> From: Ben Greear <greearb@candelatech.com>
->>>>>
->>>>> This works around a problem we see when sometimes the wifi NIC does
->>>>> not respond the first time.  This seems to happen especially often on
->>>>> some of the 9984 NICs in mid-range platforms.
->>>>>
->>>>> Signed-off-by: Ben Greear <greearb@candelatech.com>
->>>>
->>>> [...]
->>>>
->>>>> -static int ath10k_pci_probe(struct pci_dev *pdev,
->>>>> -                         const struct pci_device_id *pci_dev)
->>>>> +static int __ath10k_pci_probe(struct pci_dev *pdev,
->>>>> +                           const struct pci_device_id *pci_dev)
->>>>>   {
->>>>>        int ret = 0;
->>>>>        struct ath10k *ar;
->>>>> @@ -3672,6 +3672,22 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
->>>>>        return ret;
->>>>>   }
->>>>>
->>>>> +static int ath10k_pci_probe(struct pci_dev *pdev,
->>>>> +                         const struct pci_device_id *pci_dev)
->>>>> +{
->>>>> +     int cnt = 0;
->>>>> +     int rv;
->>>>> +     do {
->>>>> +             rv = __ath10k_pci_probe(pdev, pci_dev);
->>>>> +             if (rv == 0)
->>>>> +                     return rv;
->>>>> +             pr_err("ath10k: failed to probe PCI : %d, retry-count: %d\n", rv, cnt);
->>>>> +             mdelay(10); /* let the ath10k firmware gerbil take a small break */
->>>>> +     } while (cnt++ < 10);
->>>>> +     return rv;
->>>>> +}
->>>>
->>>> This is a sledgehammer approach and it causes reload for all error
->>>> cases, like when hardware is broken or memory allocation is failing.
->>>>
->>>> When the problem happens does it always fail at the the same place? Is
->>>> it hw reset or something else? It's better to retry the invidiual action
->>>> than to do this hack. Or is it just some more delay needed somewhere?
->>>
->>> I am seeing WMI timeouts during initial firmware load and wait on
->>> QCA9984 + BCM7444S SoC.
->>> My guess is the WMI wakeup time is not "right" enough and needs to be
->>> extended a little bit.
->>>
->>> But then, I have played a lot of whackamole with WMI timeouts during
->>> my loooong porting effort..
->>
->> The failure I saw was a failure to wake pci, and from comments, it seems that
->> the current wait is longer than what should be required, and it warns on slow
->> wakes, and I never saw that warning.  So I assume that waiting longer would not help.
->>
->> I saw it fail twice in a row to wake pci and then succeed on the third
->> try, for instance,
->> when testing my patch.
->>
->> As for a big hammer, I guess we could check for certain return codes if you think
->> that is better than just retrying all failures?
->
-> ath10k_pci_probe() has a lots of stuff which should not affect your
-> problem, like allocating memory, setting up timers and interrupts etc.
-> It's quite ugly to redo that in every cycle. A more fine grained
-> solution, like looping specific action (reset, wake whatever) is much
-> more preferred.
->
-> Do you have debug logs of failing cases?
+Sometimes, when booting one of my apu2 systems with two of the WLE900VX
+NICs in it, one of them does not show up in lspci.
 
-I'll gather the logs next time I see this problem.
+Here is the pertinent (I think) bit of dmesg:
 
-The patch I wrote likely does more than the minimal required to fix
-this problem, but it does not complicate the code much, so I think that
-is a benefit.  If we try to make it more specific, it will first likely
-require a lot of testing effort to see if it is as effective, and second, it
-will likely complicate the probe method quite a bit.
+OK case (the radio in questions shows up on bus 05):
 
-Its not like this is a performance issue...the extra loops will only be run
-if the probe fails, and only on driver load.
+[    0.781610] pci 0000:04:00.0: [8086:157b] type 00 class 0x020000
+[    0.781644] pci 0000:04:00.0: reg 0x10: [mem 0xfe700000-0xfe71ffff]
+[    0.781705] pci 0000:04:00.0: reg 0x18: [io  0x3000-0x301f]
+[    0.781724] pci 0000:04:00.0: reg 0x1c: [mem 0xfe720000-0xfe723fff]
+[    0.781920] pci 0000:04:00.0: PME# supported from D0 D3hot D3cold
+[    0.784265] pci 0000:00:02.4: PCI bridge to [bus 04]
+[    0.787984] pci 0000:00:02.4:   bridge window [io  0x3000-0x3fff]
+[    0.787991] pci 0000:00:02.4:   bridge window [mem 0xfe700000-0xfe7fffff]
+[    0.788157] pci 0000:05:00.0: [168c:003c] type 00 class 0x028000
+[    0.788192] pci 0000:05:00.0: reg 0x10: [mem 0xfe200000-0xfe3fffff 64bit]
+[    0.788296] pci 0000:05:00.0: reg 0x30: [mem 0xfe400000-0xfe40ffff pref]
+[    0.788428] pci 0000:05:00.0: supports D1 D2
+[    0.791270] pci 0000:00:02.5: PCI bridge to [bus 05]
+[    0.794970] pci 0000:00:02.5:   bridge window [mem 0xfe200000-0xfe4fffff]
+[    0.795728] ACPI: PCI Interrupt Link [INTA] (IRQs *3 5 7 10 11 12 15)
+....
 
-If the driver fails to load due to issues that my hack cannot work around,
-then the user has bigger problems than an extra second of time during the
-boot.
+Failure case:
+
+Jun 09 09:23:37 localhost.localdomain kernel: pci 0000:04:00.0: [8086:10d3] type 00 class 0x020000
+Jun 09 09:23:37 localhost.localdomain kernel: pci 0000:04:00.0: reg 0x10: [mem 0xf6800000-0xf681ffff]
+Jun 09 09:23:37 localhost.localdomain kernel: pci 0000:04:00.0: reg 0x18: [io  0xd000-0xd01f]
+Jun 09 09:23:37 localhost.localdomain kernel: pci 0000:04:00.0: reg 0x1c: [mem 0xf6820000-0xf6823fff]
+Jun 09 09:23:37 localhost.localdomain kernel: pci 0000:04:00.0: PME# supported from D0 D3hot D3cold
+Jun 09 09:23:37 localhost.localdomain kernel: pci 0000:04:00.0: System wakeup disabled by ACPI
+Jun 09 09:23:37 localhost.localdomain kernel: pci 0000:00:1c.1: PCI bridge to [bus 04]
+Jun 09 09:23:37 localhost.localdomain kernel: pci 0000:00:1c.1:   bridge window [io  0xd000-0xdfff]
+Jun 09 09:23:37 localhost.localdomain kernel: pci 0000:00:1c.1:   bridge window [mem 0xf6800000-0xf71fffff]
+Jun 09 09:23:37 localhost.localdomain kernel: pci 0000:00:1c.1:   bridge window [mem 0xf0000000-0xf09fffff 64bit pref]
+Jun 09 09:23:37 localhost.localdomain kernel: ACPI: PCI Interrupt Link [LNKA] (IRQs 3 4 5 6 10 *11 12 14 15)
+...
+
+
+Rebooting the system usually 'fixes' the problem, but sometimes it takes several reboots.
+
+
+Does this provide any clues?
+
+Any suggested work-arounds I could try?
 
 Thanks,
 Ben
