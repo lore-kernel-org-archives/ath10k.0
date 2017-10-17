@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e4NW2-0007LQ-6J
- for ath10k@lists.infradead.org; Tue, 17 Oct 2017 08:46:25 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: Retry pci probe on failure.
-Date: Tue, 17 Oct 2017 08:45:55 +0000
-Message-ID: <87376imabh.fsf@kamboji.qca.qualcomm.com>
-References: <1507068826-14677-1-git-send-email-greearb@candelatech.com>
- <87a80vnrsb.fsf@kamboji.qca.qualcomm.com>
- <CAJ-Vmon0SszxH22Zb+O5RVQSommFFuc5XmG+at9=xbGagOb7PQ@mail.gmail.com>
- <59E124EB.6090602@candelatech.com>
-In-Reply-To: <59E124EB.6090602@candelatech.com> (Ben Greear's message of "Fri, 
- 13 Oct 2017 13:41:15 -0700")
+ id 1e4NxP-0002d6-1f
+ for ath10k@lists.infradead.org; Tue, 17 Oct 2017 09:14:41 +0000
+From: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
+Subject: RE: [2/2] ath10k: handle tdls peer events
+Date: Tue, 17 Oct 2017 09:14:11 +0000
+Message-ID: <063342a953e840758e58b6ea40b5de8a@aphydexm01f.ap.qualcomm.com>
+References: <1507618202-25473-3-git-send-email-mpubbise@qti.qualcomm.com>
+ <e1bed0a347cf4ce0a1c538b99852398a@euamsexm01e.eu.qualcomm.com>
+In-Reply-To: <e1bed0a347cf4ce0a1c538b99852398a@euamsexm01e.eu.qualcomm.com>
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -27,87 +24,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> writes:
-
-> On 10/13/2017 08:50 AM, Adrian Chadd wrote:
->> On 13 October 2017 at 05:41, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->>> greearb@candelatech.com writes:
->>>
->>>> From: Ben Greear <greearb@candelatech.com>
->>>>
->>>> This works around a problem we see when sometimes the wifi NIC does
->>>> not respond the first time.  This seems to happen especially often on
->>>> some of the 9984 NICs in mid-range platforms.
->>>>
->>>> Signed-off-by: Ben Greear <greearb@candelatech.com>
->>>
->>> [...]
->>>
->>>> -static int ath10k_pci_probe(struct pci_dev *pdev,
->>>> -                         const struct pci_device_id *pci_dev)
->>>> +static int __ath10k_pci_probe(struct pci_dev *pdev,
->>>> +                           const struct pci_device_id *pci_dev)
->>>>   {
->>>>        int ret = 0;
->>>>        struct ath10k *ar;
->>>> @@ -3672,6 +3672,22 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
->>>>        return ret;
->>>>   }
->>>>
->>>> +static int ath10k_pci_probe(struct pci_dev *pdev,
->>>> +                         const struct pci_device_id *pci_dev)
->>>> +{
->>>> +     int cnt = 0;
->>>> +     int rv;
->>>> +     do {
->>>> +             rv = __ath10k_pci_probe(pdev, pci_dev);
->>>> +             if (rv == 0)
->>>> +                     return rv;
->>>> +             pr_err("ath10k: failed to probe PCI : %d, retry-count: %d\n", rv, cnt);
->>>> +             mdelay(10); /* let the ath10k firmware gerbil take a small break */
->>>> +     } while (cnt++ < 10);
->>>> +     return rv;
->>>> +}
->>>
->>> This is a sledgehammer approach and it causes reload for all error
->>> cases, like when hardware is broken or memory allocation is failing.
->>>
->>> When the problem happens does it always fail at the the same place? Is
->>> it hw reset or something else? It's better to retry the invidiual action
->>> than to do this hack. Or is it just some more delay needed somewhere?
->>
->> I am seeing WMI timeouts during initial firmware load and wait on
->> QCA9984 + BCM7444S SoC.
->> My guess is the WMI wakeup time is not "right" enough and needs to be
->> extended a little bit.
->>
->> But then, I have played a lot of whackamole with WMI timeouts during
->> my loooong porting effort..
+>This patch introduces new warnings:
 >
-> The failure I saw was a failure to wake pci, and from comments, it seems that
-> the current wait is longer than what should be required, and it warns on slow
-> wakes, and I never saw that warning.  So I assume that waiting longer would not help.
+>$ ath10k-check
+>drivers/net/wireless/ath/ath10k/wmi.c:4470:39: warning: incorrect type in
+>argument 2 (different base types)
+>drivers/net/wireless/ath/ath10k/wmi.c:4470:39:    expected int [signed]
+>vdev_id
+>drivers/net/wireless/ath/ath10k/wmi.c:4470:39:    got restricted __le32
+>[usertype] vdev_id
+>drivers/net/wireless/ath/ath10k/wmi.c:4481:27: warning: restricted __le32
+>degrades to integer
+>drivers/net/wireless/ath/ath10k/wmi.c:4481:27: warning: restricted __le32
+>degrades to integer
+>drivers/net/wireless/ath/ath10k/wmi.c:4481:27: warning: restricted __le32
+>degrades to integer
+>drivers/net/wireless/ath/ath10k/wmi.c:4492:48: warning: incorrect type in
+>argument 2 (different base types)
+>drivers/net/wireless/ath/ath10k/wmi.c:4492:48:    expected unsigned int
+>[unsigned] [usertype] vdev_id
+>drivers/net/wireless/ath/ath10k/wmi.c:4492:48:    got restricted __le32
+>[usertype] vdev_id
+>drivers/net/wireless/ath/ath10k/wmi.c:4479:19: warning: restricted __le32
+>degrades to integer
+>drivers/net/wireless/ath/ath10k/wmi.c:4460:6: warning: symbol
+>'ath10k_wmi_handle_tdls_peer_event' was not declared. Should it be static?
 >
-> I saw it fail twice in a row to wake pci and then succeed on the third
-> try, for instance,
-> when testing my patch.
+>--
+>https://patchwork.kernel.org/patch/9995131/
 >
-> As for a big hammer, I guess we could check for certain return codes if you think
-> that is better than just retrying all failures?
+>https://wireless.wiki.kernel.org/en/developers/documentation/submittingpa
+>tches
 
-ath10k_pci_probe() has a lots of stuff which should not affect your
-problem, like allocating memory, setting up timers and interrupts etc.
-It's quite ugly to redo that in every cycle. A more fine grained
-solution, like looping specific action (reset, wake whatever) is much
-more preferred.
+My bad!!
+Thanks kalle, I will fix this and send a follow up version.
 
-Do you have debug logs of failing cases?
-
--- 
-Kalle Valo
+Manikanta Pubbisetty
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
