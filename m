@@ -1,22 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e4MlL-00049a-Id
- for ath10k@lists.infradead.org; Tue, 17 Oct 2017 07:58:10 +0000
-Subject: Re: [PATCHv3 2/2] ath10k: Allow setting coverage class
-References: <20160825132522.30994-1-benjamin@sipsolutions.net>
- <20160825132522.30994-3-benjamin@sipsolutions.net>
- <6cbadf5a-4289-640c-eb46-694a7da8ea44@candelatech.com>
- <CAJ-VmomSzvwOLfG_D1BCyfxQDWP3wwMZeN4VxXSD826eYc2AYg@mail.gmail.com>
- <bc32a99f-ad4a-8892-b827-b49a3a08a200@dd-wrt.com>
- <CAJ-Vmo=qBvs_g80vee6ONdRr52qf2Mc0tgbdpx4P1XXzwUrNaw@mail.gmail.com>
- <dd504311-fb1f-bad1-85dd-3cf1f4e9badf@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <1e57ea22-3731-f310-9213-a4601e3f1899@dd-wrt.com>
-Date: Tue, 17 Oct 2017 09:57:44 +0200
+ id 1e4NW2-0007LQ-6J
+ for ath10k@lists.infradead.org; Tue, 17 Oct 2017 08:46:25 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: Retry pci probe on failure.
+Date: Tue, 17 Oct 2017 08:45:55 +0000
+Message-ID: <87376imabh.fsf@kamboji.qca.qualcomm.com>
+References: <1507068826-14677-1-git-send-email-greearb@candelatech.com>
+ <87a80vnrsb.fsf@kamboji.qca.qualcomm.com>
+ <CAJ-Vmon0SszxH22Zb+O5RVQSommFFuc5XmG+at9=xbGagOb7PQ@mail.gmail.com>
+ <59E124EB.6090602@candelatech.com>
+In-Reply-To: <59E124EB.6090602@candelatech.com> (Ben Greear's message of "Fri, 
+ 13 Oct 2017 13:41:15 -0700")
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <dd504311-fb1f-bad1-85dd-3cf1f4e9badf@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,84 +23,92 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Adrian Chadd <adrian@freebsd.org>
-Cc: Simon Wunderlich <sw@simonwunderlich.de>, Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Benjamin Berg <benjamin@sipsolutions.net>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Michal Kazior <michal.kazior@tieto.com>, Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-QW0gMTYuMTAuMjAxNyB1bSAyMTo1NSBzY2hyaWViIEJlbiBHcmVlYXI6Cj4gT24gMTAvMTYvMjAx
-NyAxMjoxMiBQTSwgQWRyaWFuIENoYWRkIHdyb3RlOgo+PiBoaXlhLAo+Pgo+PiBJJ2QgaG9uZXN0
-bHkgcmF0aGVyIHNlZSBmaXJtd2FyZSBjaGFuZ2VzIGZvciB3YXZlIDIgY2hpcHMsIGFzIEkga25v
-dwo+PiB0aGVyZSdzIGEgbG90IG1vcmUgTUFDIGNoYW5nZXMgbWVzc2luZyB1cCB0aGlzIHN0dWZm
-IC4uCj4KPiBGb3Igd2F2ZS0xLCBpdCBhcHBlYXJzIHRvIGJlIHF1aXRlIHNpbXBsZSB0byBtb2Rp
-ZnkgdGhlIGZpcm13YXJlIHRvIHNldAo+IHRoZSBhY2stY3RzIHJlZ2lzdGVyIHRvIGEgc3BlY2lm
-aWMgdmFsdWUgKGFuZCByZS1zZXQgaXQgYWZ0ZXIgc2Nhbm5pbmcsCj4gZXRjKS4KPgo+IElzIHRo
-ZSB3YXZlLTIgc3R1ZmYgdGhhdCBtdWNoIGRpZmZlcmVudD/CoCBJJ3ZlIHJlY2VudGx5IGhvb2tl
-ZCBpbiBteQo+IENUIGZpcm13YXJlIGZvciB3YXZlLTEgdG8gc3VwcG9ydCB0aGUgZHJpdmVyJ3Mg
-YWNrL2N0cyBjYWxjdWxhdGlvbnMKPiAoYnV0IHdpdGhvdXQgbmVlZGluZyBhbGwgdGhlIG1hbnVh
-bCByZWdpc3RlciB0d2lkZGxpbmcpLsKgIEkgY291bGQgCj4gcHJvYmFibHkKPiBkbyB0aGUgc2Ft
-ZSBmb3IgOTk4NCBpZiBpdCBtYXR0ZXJlZC7CoCBCdXQsIHRoYXQgc3RpbGwgZG9lc24ndCBoZWxw
-IHN0b2NrCj4gZHJpdmVyL2Zpcm13YXJlIHVzZXJzLgoKd2F2ZSAyIGhhcyBub3RoaW5nIHRvZG8g
-d2l0aCB3YXZlIDEuIHRoZSByZWdpc3RlcnMgYXJlIGRpZmZlcmVudAoKCj4KPiBUaGFua3MsCj4g
-QmVuCj4KPj4KPj4KPj4KPj4gLWFkcmlhbgo+Pgo+Pgo+PiBPbiAxNiBPY3RvYmVyIDIwMTcgYXQg
-MTI6MTAsIFNlYmFzdGlhbiBHb3R0c2NoYWxsCj4+IDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4g
-d3JvdGU6Cj4+PiBBbSAxNi4xMC4yMDE3IHVtIDE5OjU5IHNjaHJpZWIgQWRyaWFuIENoYWRkOgo+
-Pj4+Cj4+Pj4gT24gMTYgT2N0b2JlciAyMDE3IGF0IDEwOjU3LCBCZW4gR3JlZWFyIDxncmVlYXJi
-QGNhbmRlbGF0ZWNoLmNvbT4gCj4+Pj4gd3JvdGU6Cj4+Pj4+Cj4+Pj4+IE9uIDA4LzI1LzIwMTYg
-MDY6MjUgQU0sIEJlbmphbWluIEJlcmcgd3JvdGU6Cj4+Pj4+Pgo+Pj4+Pj4gVW5mb3J0dW5hdGVs
-eSBhdGgxMGsgZG9lcyBub3QgZ2VuZXJhbGx5IGFsbG93IG1vZGlmeWluZyB0aGUgY292ZXJhZ2UK
-Pj4+Pj4+IGNsYXNzCj4+Pj4+PiB3aXRoIHRoZSBzdG9jayBmaXJtd2FyZSBhbmQgUXVhbGNvbW0g
-aGFzIHNvIGZhciByZWZ1c2VkIHRvIGltcGxlbWVudAo+Pj4+Pj4gdGhpcwo+Pj4+Pj4gZmVhdHVy
-ZSBzbyB0aGF0IGl0IGNhbiBiZSBwcm9wZXJseSBzdXBwb3J0ZWQgaW4gYXRoMTBrLiBJZiB3ZSAK
-Pj4+Pj4+IGhvd2V2ZXIKPj4+Pj4+IGtub3cKPj4+Pj4+IHRoZSByZWdpc3RlcnMgdGhhdCBuZWVk
-IHRvIGJlIG1vZGlmaWVkIGZvciBwcm9wZXIgb3BlcmF0aW9uIHdpdGggYQo+Pj4+Pj4gaGlnaGVy
-Cj4+Pj4+PiBjb3ZlcmFnZSBjbGFzcywgdGhlbiB3ZSBjYW4gZG8gdGhlc2UgbW9kaWZpY2F0aW9u
-cyBmcm9tIHRoZSBkcml2ZXIuCj4+Pj4+Pgo+Pj4+Pj4gVGhpcyBwYXRjaCBpbXBsZW1lbnRzIHRo
-aXMgaGFjayBmb3IgZmlyc3QgZ2VuZXJhdGlvbiBjYXJkcyB3aGljaCBhcmUKPj4+Pj4+IGJhc2Vk
-Cj4+Pj4+PiBvbiBhIGNvcmUgdGhhdCBpcyBzaW1pbGFyIHRvIGF0aDlrLiBUaGUgcmVnaXN0ZXJz
-IGFyZSBtb2RpZmllZCBpbiAKPj4+Pj4+IHBsYWNlCj4+Pj4+PiBhbmQKPj4+Pj4+IG5lZWQgdG8g
-YmUgcmUtd3JpdHRlbiBldmVyeSB0aW1lIHRoZSBmaXJtd2FyZSBzZXRzIHRoZW0uIFRvIAo+Pj4+
-Pj4gYWNoaWV2ZSB0aGlzCj4+Pj4+PiB0aGUgcmVnaXN0ZXIgc3RhdHVzIGlzIHZlcmlmaWVkIGFm
-dGVyIGNlcnRhaW4gV01JIGV2ZW50cyBmcm9tIHRoZQo+Pj4+Pj4gZmlybXdhcmUuCj4+Pj4+Pgo+
-Pj4+Pj4gVGhlIGNvdmVyYWdlIGNsYXNzIG1heSBub3QgYmUgbW9kaWZpZWQgdGVtcG9yYXJpbHkg
-cmlnaHQgYWZ0ZXIgCj4+Pj4+PiB0aGUgY2FyZAo+Pj4+Pj4gcmUtaW5pdGlhbGl6ZXMgdGhlIHJl
-Z2lzdGVycy4gVGhpcyBpcyBmb3IgZXhhbXBsZSB0aGUgY2FzZSBkdXJpbmcKPj4+Pj4+IHNjYW5u
-aW5nLgo+Pj4+Pj4KPj4+Pj4+IFRoYW5rcyB0byBTZWJhc3RpYW4gR290dHNjaGFsbCA8cy5nb3R0
-c2NoYWxsQGRkLXdydC5jb20+IGZvciAKPj4+Pj4+IGluaXRpYWxseQo+Pj4+Pj4gd29ya2luZyBv
-biBhIHVzZXJzcGFjZSBzdXBwb3J0IGZvciB0aGlzLiBUaGlzIHBhdGNoIHdvdWxkbid0IGhhdmUg
-Cj4+Pj4+PiBiZWVuCj4+Pj4+PiBwb3NzaWJsZSB3aXRob3V0IHRoaXMgZG9jdW1lbnRhdGlvbi4K
-Pj4+Pj4KPj4+Pj4KPj4+Pj4gSGVsbG8sCj4+Pj4+Cj4+Pj4+IERvIHlvdSBoYXBwZW4gdG8ga25v
-dyB0aGUgbWF4aW11bSBkaXN0YW5jZSB0aGF0IGNhbiB3b3JrIHdpdGggdGhpcwo+Pj4+PiBwYXRj
-aCBlbmFibGVkP8KgIFRoZSByZWdpc3RlciB2YWx1ZSBtYXhpbXVtIHNlZW1zIHRvIGJlIDB4M0ZG
-RiwgYnV0IEkKPj4+Pj4gYW0gbm90IHN1cmUgb2YgdGhlIHVuaXRzIChub3IgaG93IGV4YWN0bHkg
-dGhhdCBhcHBsaWVzIHRvIGRpc3RhbmNlKS4KPj4+Pgo+Pj4+IEl0J3MgaW4gTUFDIGNsb2NrcyBz
-dGlsbCwgcmlnaHQ/IFNvIGl0IGRlcGVuZHMgb24gaG93IGZhc3QgdGhlIE1BQwo+Pj4+IGNsb2Nr
-IHRpbWVyIHJ1bnMuCj4+Pj4KPj4+Pgo+Pj4+Cj4+Pj4gLWFkcmlhbgo+Pj4KPj4+Cj4+PiBpZiBz
-b21lb25lIGlzIGludGVyZXN0ZWQgaSBjYW4gcHJvdmlkZSBhIHBhdGNoIHdpdGNoIHdvcmtzIGFz
-IHdlbGwgCj4+PiBmb3IgOTk4eAo+Pj4gYW5kIDk5ODQgYW5kIHVzdWFsbHkgb3RoZXIgbmV3ZXIg
-Y2hpcHNldHMgdG9vLgo+Pj4KPj4+IGJ1dCBjbG9jayBwYXJhbWV0ZXJzIG5lZWQgdG8gYmUgYWRq
-dXN0ZWQgZm9yIHRoZXNlIG5ld2VyIG9uZXMuIHRoZSBvbmx5Cj4+PiBwcm9ibGVtIGlzIHRoYXQg
-aXRzIGJhc2VkIG9uIHVub2ZmaWNhbCByZWdpc3RlcnMgd2hpY2ggYXJlbnQgCj4+PiBkb2N1bWVu
-dGVkIGFuZAo+Pj4gdGhlIHBhdGNoIGZvciB0aGUgOTl4eCBjaGlwc2V0cyBpcyB2ZXJ5IGRpZmZl
-cmVudCBmcm9tIDk4OHgKPj4+Cj4+Pgo+Pj4KPj4+IC0tIAo+Pj4gTWl0IGZyZXVuZGxpY2hlbiBH
-csO8c3NlbiAvIFJlZ2FyZHMKPj4+Cj4+PiBTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwo+Pj4K
-Pj4+IE5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCj4+PiBGaXJtZW5zaXR6OsKgIFN0dWJlbndh
-bGRhbGxlZSAyMWEsIDY0NjI1IEJlbnNoZWltCj4+Pgo+Pj4gUmVnaXN0ZXJnZXJpY2h0OiBBbXRz
-Z2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3Mwo+Pj4gR2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVy
-IFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUKPj4+IGh0dHA6Ly93d3cuZGQtd3J0LmNv
-bQo+Pj4gZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tCj4+PiBUZWwuOiArNDk2MjUxLTU4
-MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1Cj4+Pgo+Pgo+PiBfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+IGF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vYXRoMTBrCj4+Cj4KPgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNz
-ZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdt
-YkggLSBERC1XUlQKRmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0NjI1IEJlbnNo
-ZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0NzMKR2Vz
-Y2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUKaHR0
-cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpUZWwuOiAr
-NDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+Ben Greear <greearb@candelatech.com> writes:
+
+> On 10/13/2017 08:50 AM, Adrian Chadd wrote:
+>> On 13 October 2017 at 05:41, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>>> greearb@candelatech.com writes:
+>>>
+>>>> From: Ben Greear <greearb@candelatech.com>
+>>>>
+>>>> This works around a problem we see when sometimes the wifi NIC does
+>>>> not respond the first time.  This seems to happen especially often on
+>>>> some of the 9984 NICs in mid-range platforms.
+>>>>
+>>>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>>>
+>>> [...]
+>>>
+>>>> -static int ath10k_pci_probe(struct pci_dev *pdev,
+>>>> -                         const struct pci_device_id *pci_dev)
+>>>> +static int __ath10k_pci_probe(struct pci_dev *pdev,
+>>>> +                           const struct pci_device_id *pci_dev)
+>>>>   {
+>>>>        int ret = 0;
+>>>>        struct ath10k *ar;
+>>>> @@ -3672,6 +3672,22 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+>>>>        return ret;
+>>>>   }
+>>>>
+>>>> +static int ath10k_pci_probe(struct pci_dev *pdev,
+>>>> +                         const struct pci_device_id *pci_dev)
+>>>> +{
+>>>> +     int cnt = 0;
+>>>> +     int rv;
+>>>> +     do {
+>>>> +             rv = __ath10k_pci_probe(pdev, pci_dev);
+>>>> +             if (rv == 0)
+>>>> +                     return rv;
+>>>> +             pr_err("ath10k: failed to probe PCI : %d, retry-count: %d\n", rv, cnt);
+>>>> +             mdelay(10); /* let the ath10k firmware gerbil take a small break */
+>>>> +     } while (cnt++ < 10);
+>>>> +     return rv;
+>>>> +}
+>>>
+>>> This is a sledgehammer approach and it causes reload for all error
+>>> cases, like when hardware is broken or memory allocation is failing.
+>>>
+>>> When the problem happens does it always fail at the the same place? Is
+>>> it hw reset or something else? It's better to retry the invidiual action
+>>> than to do this hack. Or is it just some more delay needed somewhere?
+>>
+>> I am seeing WMI timeouts during initial firmware load and wait on
+>> QCA9984 + BCM7444S SoC.
+>> My guess is the WMI wakeup time is not "right" enough and needs to be
+>> extended a little bit.
+>>
+>> But then, I have played a lot of whackamole with WMI timeouts during
+>> my loooong porting effort..
+>
+> The failure I saw was a failure to wake pci, and from comments, it seems that
+> the current wait is longer than what should be required, and it warns on slow
+> wakes, and I never saw that warning.  So I assume that waiting longer would not help.
+>
+> I saw it fail twice in a row to wake pci and then succeed on the third
+> try, for instance,
+> when testing my patch.
+>
+> As for a big hammer, I guess we could check for certain return codes if you think
+> that is better than just retrying all failures?
+
+ath10k_pci_probe() has a lots of stuff which should not affect your
+problem, like allocating memory, setting up timers and interrupts etc.
+It's quite ugly to redo that in every cycle. A more fine grained
+solution, like looping specific action (reset, wake whatever) is much
+more preferred.
+
+Do you have debug logs of failing cases?
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
