@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e4pgQ-0004A2-7i
- for ath10k@lists.infradead.org; Wed, 18 Oct 2017 14:51:00 +0000
+Received: from mout.gmx.net ([212.227.17.20])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e4saJ-00078L-Ni
+ for ath10k@lists.infradead.org; Wed, 18 Oct 2017 17:56:53 +0000
 Subject: Re: Setting single rate in ath10k broken by "reject/clear user rate
  mask if not usable"
 References: <13895fa0-3685-dd2b-583d-2d6469d23cfe@candelatech.com>
  <1507708948.1998.15.camel@sipsolutions.net>
  <2c293255-aa79-75a0-1c28-994f864cddf4@candelatech.com>
  <1508312033.2674.9.camel@sipsolutions.net>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <2ad42671-59c4-80ed-4bca-f874eb53d653@candelatech.com>
-Date: Wed, 18 Oct 2017 07:50:26 -0700
+ <2ad42671-59c4-80ed-4bca-f874eb53d653@candelatech.com>
+From: Oleksij Rempel <linux@rempel-privat.de>
+Message-ID: <8c2e0e98-f3f4-6e0c-1bf0-43dfa6e97275@rempel-privat.de>
+Date: Wed, 18 Oct 2017 19:56:16 +0200
 MIME-Version: 1.0
-In-Reply-To: <1508312033.2674.9.camel@sipsolutions.net>
+In-Reply-To: <2ad42671-59c4-80ed-4bca-f874eb53d653@candelatech.com>
+Content-Language: en-GB
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,156 +24,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com
+To: Ben Greear <greearb@candelatech.com>, Johannes Berg <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com
 
-
-
-On 10/18/2017 12:33 AM, Johannes Berg wrote:
-> Hi,
->
->> The call to set the rate in the driver comes before the error
->> check.
->>
->> 	if (ieee80211_hw_check(&local->hw, HAS_RATE_CONTROL)) {
->> 		ret = drv_set_bitrate_mask(local, sdata, mask);
->> 		if (ret) {
->> 			pr_err("%s: drv-set-bitrate-mask had error
->> return: %d\n",
->> 			       sdata->dev->name, ret);
->> 			return ret;
->> 		}
->> 	}
->>
->> 	/*
->> 	 * If active validate the setting and reject it if it doesn't
->> leave
->> 	 * at least one basic rate usable, since we really have to be
->> able
->> 	 * to send something, and if we're an AP we have to be able to
->> do
->> 	 * so at a basic rate so that all clients can receive it.
->> 	 */
->> 	if (rcu_access_pointer(sdata->vif.chanctx_conf) &&
->> 	    sdata->vif.bss_conf.chandef.chan) {
->> 		u32 basic_rates = sdata->vif.bss_conf.basic_rates;
->> 		enum nl80211_band band = sdata-
->>> vif.bss_conf.chandef.chan->band;
->>
->> 		if (!(mask->control[band].legacy & basic_rates)) {
->> 			#### I changed this code so I could set a
->> single rate... --Ben
->> 			pr_err("%s:  WARNING: no legacy rates for
->> band[%d] in set-bitrate-mask.\n",
->> 			       sdata->dev->name, band);
->> 		}
->> 	}
->
-> Heh, that's just dumb. I guess I'll fix that by putting the test first,
-> no idea how that happened.
->
->>>
->>>> So, I think we should relax this check, at least for ath10k.
->>>
->>> Well, yes and no. I don't think we should make ath10k special here,
->>> and
->>> this fixes a real problem - namely that you can set up the system
->>> so
->>> that you have no usable rates at all, and then you just get a
->>> WARN_ON
->>> and start using the lowest possible rate...
->>
->> Well, there are a million ways to set up a broken system,
->
-> True, but this one actually happened in practice, for some reason, and
-> stopping the user from constantly shooting themselves in the foot seems
-> like a good idea to me. Especially if the user (or application) can't
-> really even know what they're getting into.
->
-> Now, the case in question was _client_ mode, but still.
->
->> and setting a single rate has a useful purpose, especially with
->> ath10k since it has such limited rate-setting capabilities.
->
-> You're stretching the definition of "useful purpose" a bit here though,
-> you're about the only one who's ever going to need to set a single
-> rate.
-
-People trying to do regulatory testing want this feature, and other people
-that are not me also like to test with specific rates.  Still a small-ish set
-of people, but bigger than just me at least.
-
-This used to work, and now is broken, so it is a regression of at least somewhat
-useful feature.  I think we need a way to re-enable this, even if it requires
-poking some sysfs or debugfs file to allow this check to be relaxed.
-
-And for that matter, it might be nice to allow purposefully broken ratesets
-(with part of basic missing, for instance), in order to test peer devices (including
-other Linux stacks).
-
->> There is basically never going to be a case where setting a single
->> tx-rate on an AP is a good idea in a general production environment,
->> so maybe a possible WARN-ON is fine?
->
-> A WARN_ON() for a user configuration is never fine.
->
-> You're assuming that there's actually a user sitting there and doing
-> this, which is not necessarily the case.
->
-> Even rejecting a single rate setting wouldn't be enough because you can
-> get into problems even when you enable multiple rates, e.g. if you
-> enable all the CCK rates while connected on 5 GHz.
->
->> If you *do* set up an AP with a limited rateset, then it should
->> simply fail to allow a station to connect if it does not have any
->> matching rates.
->
-> That's what requiring at least one basic rate to remain does. If you
-> want to have basic rates 6,9,12 and then configure only 18, how would
-> the client get rejected? Just configure basic rates differently
-> beforehand, and then you can do this easily, and the right thing with
-> rejecting clients will happen automatically (in fact, clients might not
-> even attempt to connect - even better!)
->
->> This might go back to a previous idea I had (and patches I posted and
->> carry in my tree) to allow setting a different advertise rateset vs
->> usable tx-rateset.
->
-> You still have the same problem with which clients support them and
-> require them etc.
-
-For regulatory testing purposes:  You can advertise normal basic rateset,
-and you can accept those (and even transmit mgt and bcast frames on them),
-but for data tx, you use a single fixed rate.  That is one reason it is nice
-to have the advertised rateset different from the tx rateset.
-
-
->> For existing stations that might not match the new fixed rate, we
->> could purposefully kick them off I guess, but seems like a lot of
->> work for a case that seems pretty irrelevant.
->
-> For better or worse, there are people using this API programmatically
-> without a user baby-sitting it, so we need to make it work in all
-> cases. We can let the user shoot themselves in the foot and have only a
-> single usable rate left, but we can't let them hang themselves and have
-> no rate left at all.
-
-Out of curiosity, couldn't 'iw' do the same checks?  It is a lot easier to
-return a useful error code/message from a user-space app anyway, in case that
-can work.
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMTguMTAuMjAxNyB1bSAxNjo1MCBzY2hyaWViIEJlbiBHcmVlYXI6Cj4gCj4gCj4gT24gMTAv
+MTgvMjAxNyAxMjozMyBBTSwgSm9oYW5uZXMgQmVyZyB3cm90ZToKPj4gSGksCj4+Cj4+PiBUaGUg
+Y2FsbCB0byBzZXQgdGhlIHJhdGUgaW4gdGhlIGRyaXZlciBjb21lcyBiZWZvcmUgdGhlIGVycm9y
+Cj4+PiBjaGVjay4KPj4+Cj4+PiDCoMKgwqDCoGlmIChpZWVlODAyMTFfaHdfY2hlY2soJmxvY2Fs
+LT5odywgSEFTX1JBVEVfQ09OVFJPTCkpIHsKPj4+IMKgwqDCoMKgwqDCoMKgIHJldCA9IGRydl9z
+ZXRfYml0cmF0ZV9tYXNrKGxvY2FsLCBzZGF0YSwgbWFzayk7Cj4+PiDCoMKgwqDCoMKgwqDCoCBp
+ZiAocmV0KSB7Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHByX2VycigiJXM6IGRydi1zZXQt
+Yml0cmF0ZS1tYXNrIGhhZCBlcnJvcgo+Pj4gcmV0dXJuOiAlZFxuIiwKPj4+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzZGF0YS0+ZGV2LT5uYW1lLCByZXQpOwo+Pj4gwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gcmV0Owo+Pj4gwqDCoMKgwqDCoMKgwqAgfQo+Pj4g
+wqDCoMKgwqB9Cj4+Pgo+Pj4gwqDCoMKgwqAvKgo+Pj4gwqDCoMKgwqAgKiBJZiBhY3RpdmUgdmFs
+aWRhdGUgdGhlIHNldHRpbmcgYW5kIHJlamVjdCBpdCBpZiBpdCBkb2Vzbid0Cj4+PiBsZWF2ZQo+
+Pj4gwqDCoMKgwqAgKiBhdCBsZWFzdCBvbmUgYmFzaWMgcmF0ZSB1c2FibGUsIHNpbmNlIHdlIHJl
+YWxseSBoYXZlIHRvIGJlCj4+PiBhYmxlCj4+PiDCoMKgwqDCoCAqIHRvIHNlbmQgc29tZXRoaW5n
+LCBhbmQgaWYgd2UncmUgYW4gQVAgd2UgaGF2ZSB0byBiZSBhYmxlIHRvCj4+PiBkbwo+Pj4gwqDC
+oMKgwqAgKiBzbyBhdCBhIGJhc2ljIHJhdGUgc28gdGhhdCBhbGwgY2xpZW50cyBjYW4gcmVjZWl2
+ZSBpdC4KPj4+IMKgwqDCoMKgICovCj4+PiDCoMKgwqDCoGlmIChyY3VfYWNjZXNzX3BvaW50ZXIo
+c2RhdGEtPnZpZi5jaGFuY3R4X2NvbmYpICYmCj4+PiDCoMKgwqDCoMKgwqDCoCBzZGF0YS0+dmlm
+LmJzc19jb25mLmNoYW5kZWYuY2hhbikgewo+Pj4gwqDCoMKgwqDCoMKgwqAgdTMyIGJhc2ljX3Jh
+dGVzID0gc2RhdGEtPnZpZi5ic3NfY29uZi5iYXNpY19yYXRlczsKPj4+IMKgwqDCoMKgwqDCoMKg
+IGVudW0gbmw4MDIxMV9iYW5kIGJhbmQgPSBzZGF0YS0KPj4+PiB2aWYuYnNzX2NvbmYuY2hhbmRl
+Zi5jaGFuLT5iYW5kOwo+Pj4KPj4+IMKgwqDCoMKgwqDCoMKgIGlmICghKG1hc2stPmNvbnRyb2xb
+YmFuZF0ubGVnYWN5ICYgYmFzaWNfcmF0ZXMpKSB7Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+ICMjIyMgSSBjaGFuZ2VkIHRoaXMgY29kZSBzbyBJIGNvdWxkIHNldCBhCj4+PiBzaW5nbGUgcmF0
+ZS4uLiAtLUJlbgo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwcl9lcnIoIiVzOsKgIFdBUk5J
+Tkc6IG5vIGxlZ2FjeSByYXRlcyBmb3IKPj4+IGJhbmRbJWRdIGluIHNldC1iaXRyYXRlLW1hc2su
+XG4iLAo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNkYXRhLT5kZXYt
+Pm5hbWUsIGJhbmQpOwo+Pj4gwqDCoMKgwqDCoMKgwqAgfQo+Pj4gwqDCoMKgwqB9Cj4+Cj4+IEhl
+aCwgdGhhdCdzIGp1c3QgZHVtYi4gSSBndWVzcyBJJ2xsIGZpeCB0aGF0IGJ5IHB1dHRpbmcgdGhl
+IHRlc3QgZmlyc3QsCj4+IG5vIGlkZWEgaG93IHRoYXQgaGFwcGVuZWQuCj4+Cj4+Pj4KPj4+Pj4g
+U28sIEkgdGhpbmsgd2Ugc2hvdWxkIHJlbGF4IHRoaXMgY2hlY2ssIGF0IGxlYXN0IGZvciBhdGgx
+MGsuCj4+Pj4KPj4+PiBXZWxsLCB5ZXMgYW5kIG5vLiBJIGRvbid0IHRoaW5rIHdlIHNob3VsZCBt
+YWtlIGF0aDEwayBzcGVjaWFsIGhlcmUsCj4+Pj4gYW5kCj4+Pj4gdGhpcyBmaXhlcyBhIHJlYWwg
+cHJvYmxlbSAtIG5hbWVseSB0aGF0IHlvdSBjYW4gc2V0IHVwIHRoZSBzeXN0ZW0KPj4+PiBzbwo+
+Pj4+IHRoYXQgeW91IGhhdmUgbm8gdXNhYmxlIHJhdGVzIGF0IGFsbCwgYW5kIHRoZW4geW91IGp1
+c3QgZ2V0IGEKPj4+PiBXQVJOX09OCj4+Pj4gYW5kIHN0YXJ0IHVzaW5nIHRoZSBsb3dlc3QgcG9z
+c2libGUgcmF0ZS4uLgo+Pj4KPj4+IFdlbGwsIHRoZXJlIGFyZSBhIG1pbGxpb24gd2F5cyB0byBz
+ZXQgdXAgYSBicm9rZW4gc3lzdGVtLAo+Pgo+PiBUcnVlLCBidXQgdGhpcyBvbmUgYWN0dWFsbHkg
+aGFwcGVuZWQgaW4gcHJhY3RpY2UsIGZvciBzb21lIHJlYXNvbiwgYW5kCj4+IHN0b3BwaW5nIHRo
+ZSB1c2VyIGZyb20gY29uc3RhbnRseSBzaG9vdGluZyB0aGVtc2VsdmVzIGluIHRoZSBmb290IHNl
+ZW1zCj4+IGxpa2UgYSBnb29kIGlkZWEgdG8gbWUuIEVzcGVjaWFsbHkgaWYgdGhlIHVzZXIgKG9y
+IGFwcGxpY2F0aW9uKSBjYW4ndAo+PiByZWFsbHkgZXZlbiBrbm93IHdoYXQgdGhleSdyZSBnZXR0
+aW5nIGludG8uCj4+Cj4+IE5vdywgdGhlIGNhc2UgaW4gcXVlc3Rpb24gd2FzIF9jbGllbnRfIG1v
+ZGUsIGJ1dCBzdGlsbC4KPj4KPj4+IGFuZCBzZXR0aW5nIGEgc2luZ2xlIHJhdGUgaGFzIGEgdXNl
+ZnVsIHB1cnBvc2UsIGVzcGVjaWFsbHkgd2l0aAo+Pj4gYXRoMTBrIHNpbmNlIGl0IGhhcyBzdWNo
+IGxpbWl0ZWQgcmF0ZS1zZXR0aW5nIGNhcGFiaWxpdGllcy4KPj4KPj4gWW91J3JlIHN0cmV0Y2hp
+bmcgdGhlIGRlZmluaXRpb24gb2YgInVzZWZ1bCBwdXJwb3NlIiBhIGJpdCBoZXJlIHRob3VnaCwK
+Pj4geW91J3JlIGFib3V0IHRoZSBvbmx5IG9uZSB3aG8ncyBldmVyIGdvaW5nIHRvIG5lZWQgdG8g
+c2V0IGEgc2luZ2xlCj4+IHJhdGUuCj4gCj4gUGVvcGxlIHRyeWluZyB0byBkbyByZWd1bGF0b3J5
+IHRlc3Rpbmcgd2FudCB0aGlzIGZlYXR1cmUsIGFuZCBvdGhlciBwZW9wbGUKPiB0aGF0IGFyZSBu
+b3QgbWUgYWxzbyBsaWtlIHRvIHRlc3Qgd2l0aCBzcGVjaWZpYyByYXRlcy7CoCBTdGlsbCBhIAo+
+IHNtYWxsLWlzaCBzZXQKPiBvZiBwZW9wbGUsIGJ1dCBiaWdnZXIgdGhhbiBqdXN0IG1lIGF0IGxl
+YXN0LgoKVGlsbCBub3cgaSB3YXMgaW50ZXJ2aWV3aW5nIGRpZmZlcmVudCBwZW9wbGUgd2hvIHdh
+cyBhc2tpbmcgZm9yIHRoaXMgZm9yIAphdGg5ay1odGMuIFNvIEkgd291bGQgc2F5IHdlIGhhdmU6
+Ci0gYWNhZGVtaWNhbCByZXNlYXJjaGVycwotIHRlc3RlcnMKLSBSJkQKLSBleHBsb2l0IGFuZCBw
+ZW5ldHJhdGlvbiB0ZXN0ZXJzCi0gSEFNCi0ganVzdCBoYWNrZXJzCgpBcyBmb3IgbWUsIGl0IHNv
+dW5kcyBhIHMgbG90LgoKCi0tIApSZWdhcmRzLApPbGVrc2lqCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCg==
