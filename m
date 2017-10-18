@@ -1,21 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.net ([212.227.17.20])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e4saJ-00078L-Ni
- for ath10k@lists.infradead.org; Wed, 18 Oct 2017 17:56:53 +0000
+ id 1e4v3I-0006gn-Ql
+ for ath10k@lists.infradead.org; Wed, 18 Oct 2017 20:34:59 +0000
+Message-ID: <1508358869.2674.55.camel@sipsolutions.net>
 Subject: Re: Setting single rate in ath10k broken by "reject/clear user rate
  mask if not usable"
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 18 Oct 2017 22:34:29 +0200
+In-Reply-To: <8c2e0e98-f3f4-6e0c-1bf0-43dfa6e97275@rempel-privat.de>
+ (sfid-20171018_195626_878094_461B764D)
 References: <13895fa0-3685-dd2b-583d-2d6469d23cfe@candelatech.com>
  <1507708948.1998.15.camel@sipsolutions.net>
  <2c293255-aa79-75a0-1c28-994f864cddf4@candelatech.com>
  <1508312033.2674.9.camel@sipsolutions.net>
  <2ad42671-59c4-80ed-4bca-f874eb53d653@candelatech.com>
-From: Oleksij Rempel <linux@rempel-privat.de>
-Message-ID: <8c2e0e98-f3f4-6e0c-1bf0-43dfa6e97275@rempel-privat.de>
-Date: Wed, 18 Oct 2017 19:56:16 +0200
-MIME-Version: 1.0
-In-Reply-To: <2ad42671-59c4-80ed-4bca-f874eb53d653@candelatech.com>
-Content-Language: en-GB
+ <8c2e0e98-f3f4-6e0c-1bf0-43dfa6e97275@rempel-privat.de>
+ (sfid-20171018_195626_878094_461B764D)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,69 +27,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Johannes Berg <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com
+To: Oleksij Rempel <linux@rempel-privat.de>, Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com
 
-QW0gMTguMTAuMjAxNyB1bSAxNjo1MCBzY2hyaWViIEJlbiBHcmVlYXI6Cj4gCj4gCj4gT24gMTAv
-MTgvMjAxNyAxMjozMyBBTSwgSm9oYW5uZXMgQmVyZyB3cm90ZToKPj4gSGksCj4+Cj4+PiBUaGUg
-Y2FsbCB0byBzZXQgdGhlIHJhdGUgaW4gdGhlIGRyaXZlciBjb21lcyBiZWZvcmUgdGhlIGVycm9y
-Cj4+PiBjaGVjay4KPj4+Cj4+PiDCoMKgwqDCoGlmIChpZWVlODAyMTFfaHdfY2hlY2soJmxvY2Fs
-LT5odywgSEFTX1JBVEVfQ09OVFJPTCkpIHsKPj4+IMKgwqDCoMKgwqDCoMKgIHJldCA9IGRydl9z
-ZXRfYml0cmF0ZV9tYXNrKGxvY2FsLCBzZGF0YSwgbWFzayk7Cj4+PiDCoMKgwqDCoMKgwqDCoCBp
-ZiAocmV0KSB7Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHByX2VycigiJXM6IGRydi1zZXQt
-Yml0cmF0ZS1tYXNrIGhhZCBlcnJvcgo+Pj4gcmV0dXJuOiAlZFxuIiwKPj4+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzZGF0YS0+ZGV2LT5uYW1lLCByZXQpOwo+Pj4gwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gcmV0Owo+Pj4gwqDCoMKgwqDCoMKgwqAgfQo+Pj4g
-wqDCoMKgwqB9Cj4+Pgo+Pj4gwqDCoMKgwqAvKgo+Pj4gwqDCoMKgwqAgKiBJZiBhY3RpdmUgdmFs
-aWRhdGUgdGhlIHNldHRpbmcgYW5kIHJlamVjdCBpdCBpZiBpdCBkb2Vzbid0Cj4+PiBsZWF2ZQo+
-Pj4gwqDCoMKgwqAgKiBhdCBsZWFzdCBvbmUgYmFzaWMgcmF0ZSB1c2FibGUsIHNpbmNlIHdlIHJl
-YWxseSBoYXZlIHRvIGJlCj4+PiBhYmxlCj4+PiDCoMKgwqDCoCAqIHRvIHNlbmQgc29tZXRoaW5n
-LCBhbmQgaWYgd2UncmUgYW4gQVAgd2UgaGF2ZSB0byBiZSBhYmxlIHRvCj4+PiBkbwo+Pj4gwqDC
-oMKgwqAgKiBzbyBhdCBhIGJhc2ljIHJhdGUgc28gdGhhdCBhbGwgY2xpZW50cyBjYW4gcmVjZWl2
-ZSBpdC4KPj4+IMKgwqDCoMKgICovCj4+PiDCoMKgwqDCoGlmIChyY3VfYWNjZXNzX3BvaW50ZXIo
-c2RhdGEtPnZpZi5jaGFuY3R4X2NvbmYpICYmCj4+PiDCoMKgwqDCoMKgwqDCoCBzZGF0YS0+dmlm
-LmJzc19jb25mLmNoYW5kZWYuY2hhbikgewo+Pj4gwqDCoMKgwqDCoMKgwqAgdTMyIGJhc2ljX3Jh
-dGVzID0gc2RhdGEtPnZpZi5ic3NfY29uZi5iYXNpY19yYXRlczsKPj4+IMKgwqDCoMKgwqDCoMKg
-IGVudW0gbmw4MDIxMV9iYW5kIGJhbmQgPSBzZGF0YS0KPj4+PiB2aWYuYnNzX2NvbmYuY2hhbmRl
-Zi5jaGFuLT5iYW5kOwo+Pj4KPj4+IMKgwqDCoMKgwqDCoMKgIGlmICghKG1hc2stPmNvbnRyb2xb
-YmFuZF0ubGVnYWN5ICYgYmFzaWNfcmF0ZXMpKSB7Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICMjIyMgSSBjaGFuZ2VkIHRoaXMgY29kZSBzbyBJIGNvdWxkIHNldCBhCj4+PiBzaW5nbGUgcmF0
-ZS4uLiAtLUJlbgo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwcl9lcnIoIiVzOsKgIFdBUk5J
-Tkc6IG5vIGxlZ2FjeSByYXRlcyBmb3IKPj4+IGJhbmRbJWRdIGluIHNldC1iaXRyYXRlLW1hc2su
-XG4iLAo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNkYXRhLT5kZXYt
-Pm5hbWUsIGJhbmQpOwo+Pj4gwqDCoMKgwqDCoMKgwqAgfQo+Pj4gwqDCoMKgwqB9Cj4+Cj4+IEhl
-aCwgdGhhdCdzIGp1c3QgZHVtYi4gSSBndWVzcyBJJ2xsIGZpeCB0aGF0IGJ5IHB1dHRpbmcgdGhl
-IHRlc3QgZmlyc3QsCj4+IG5vIGlkZWEgaG93IHRoYXQgaGFwcGVuZWQuCj4+Cj4+Pj4KPj4+Pj4g
-U28sIEkgdGhpbmsgd2Ugc2hvdWxkIHJlbGF4IHRoaXMgY2hlY2ssIGF0IGxlYXN0IGZvciBhdGgx
-MGsuCj4+Pj4KPj4+PiBXZWxsLCB5ZXMgYW5kIG5vLiBJIGRvbid0IHRoaW5rIHdlIHNob3VsZCBt
-YWtlIGF0aDEwayBzcGVjaWFsIGhlcmUsCj4+Pj4gYW5kCj4+Pj4gdGhpcyBmaXhlcyBhIHJlYWwg
-cHJvYmxlbSAtIG5hbWVseSB0aGF0IHlvdSBjYW4gc2V0IHVwIHRoZSBzeXN0ZW0KPj4+PiBzbwo+
-Pj4+IHRoYXQgeW91IGhhdmUgbm8gdXNhYmxlIHJhdGVzIGF0IGFsbCwgYW5kIHRoZW4geW91IGp1
-c3QgZ2V0IGEKPj4+PiBXQVJOX09OCj4+Pj4gYW5kIHN0YXJ0IHVzaW5nIHRoZSBsb3dlc3QgcG9z
-c2libGUgcmF0ZS4uLgo+Pj4KPj4+IFdlbGwsIHRoZXJlIGFyZSBhIG1pbGxpb24gd2F5cyB0byBz
-ZXQgdXAgYSBicm9rZW4gc3lzdGVtLAo+Pgo+PiBUcnVlLCBidXQgdGhpcyBvbmUgYWN0dWFsbHkg
-aGFwcGVuZWQgaW4gcHJhY3RpY2UsIGZvciBzb21lIHJlYXNvbiwgYW5kCj4+IHN0b3BwaW5nIHRo
-ZSB1c2VyIGZyb20gY29uc3RhbnRseSBzaG9vdGluZyB0aGVtc2VsdmVzIGluIHRoZSBmb290IHNl
-ZW1zCj4+IGxpa2UgYSBnb29kIGlkZWEgdG8gbWUuIEVzcGVjaWFsbHkgaWYgdGhlIHVzZXIgKG9y
-IGFwcGxpY2F0aW9uKSBjYW4ndAo+PiByZWFsbHkgZXZlbiBrbm93IHdoYXQgdGhleSdyZSBnZXR0
-aW5nIGludG8uCj4+Cj4+IE5vdywgdGhlIGNhc2UgaW4gcXVlc3Rpb24gd2FzIF9jbGllbnRfIG1v
-ZGUsIGJ1dCBzdGlsbC4KPj4KPj4+IGFuZCBzZXR0aW5nIGEgc2luZ2xlIHJhdGUgaGFzIGEgdXNl
-ZnVsIHB1cnBvc2UsIGVzcGVjaWFsbHkgd2l0aAo+Pj4gYXRoMTBrIHNpbmNlIGl0IGhhcyBzdWNo
-IGxpbWl0ZWQgcmF0ZS1zZXR0aW5nIGNhcGFiaWxpdGllcy4KPj4KPj4gWW91J3JlIHN0cmV0Y2hp
-bmcgdGhlIGRlZmluaXRpb24gb2YgInVzZWZ1bCBwdXJwb3NlIiBhIGJpdCBoZXJlIHRob3VnaCwK
-Pj4geW91J3JlIGFib3V0IHRoZSBvbmx5IG9uZSB3aG8ncyBldmVyIGdvaW5nIHRvIG5lZWQgdG8g
-c2V0IGEgc2luZ2xlCj4+IHJhdGUuCj4gCj4gUGVvcGxlIHRyeWluZyB0byBkbyByZWd1bGF0b3J5
-IHRlc3Rpbmcgd2FudCB0aGlzIGZlYXR1cmUsIGFuZCBvdGhlciBwZW9wbGUKPiB0aGF0IGFyZSBu
-b3QgbWUgYWxzbyBsaWtlIHRvIHRlc3Qgd2l0aCBzcGVjaWZpYyByYXRlcy7CoCBTdGlsbCBhIAo+
-IHNtYWxsLWlzaCBzZXQKPiBvZiBwZW9wbGUsIGJ1dCBiaWdnZXIgdGhhbiBqdXN0IG1lIGF0IGxl
-YXN0LgoKVGlsbCBub3cgaSB3YXMgaW50ZXJ2aWV3aW5nIGRpZmZlcmVudCBwZW9wbGUgd2hvIHdh
-cyBhc2tpbmcgZm9yIHRoaXMgZm9yIAphdGg5ay1odGMuIFNvIEkgd291bGQgc2F5IHdlIGhhdmU6
-Ci0gYWNhZGVtaWNhbCByZXNlYXJjaGVycwotIHRlc3RlcnMKLSBSJkQKLSBleHBsb2l0IGFuZCBw
-ZW5ldHJhdGlvbiB0ZXN0ZXJzCi0gSEFNCi0ganVzdCBoYWNrZXJzCgpBcyBmb3IgbWUsIGl0IHNv
-dW5kcyBhIHMgbG90LgoKCi0tIApSZWdhcmRzLApPbGVrc2lqCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+Hi,
+
+On Wed, 2017-10-18 at 19:56 +0200, Oleksij Rempel wrote:
+> 
+> > People trying to do regulatory testing want this feature, and other people
+> > that are not me also like to test with specific rates.  Still a 
+> > small-ish set of people, but bigger than just me at least.
+> 
+> Till now i was interviewing different people who was asking for this for 
+> ath9k-htc. So I would say we have:
+> - academical researchers
+> - testers
+> - R&D
+> - exploit and penetration testers
+> - HAM
+> - just hackers
+> 
+> As for me, it sounds a s lot.
+
+Making (literally) millions of devices in the field hit a WARN_ON() is
+not really acceptable either though.
+
+You can argue that this introduced a regression, but putting the old
+behaviour back would equally be a regression, for more systems by a few
+orders of magnitude.
+
+In any case, I've already suggested a way to fix this, but you've both
+completely ignored that part of my email. All I've been reading is that
+you're demanding that I fix this, and arguments about how much people
+are allowed to shoot themselves in the foot, none of which is very
+constructive.
+
+I might even fix it myself eventually, if only to appease the people
+who say we have a zero tolerance no regressions rule, but it's not
+exactly the most important thing I'm doing right now (also, I'll be
+going on vacation for a few days, and you can probably implement my
+suggestion in that time, and then I can review it when I get back on
+Monday.)
+
+Let's just say that I think we're discussing the wrong thing here - we
+ought to be discussing how it can be fixed, and perhaps you can even be
+constructive in suggesting (and testing, which I can't really do)
+changes.
+
+johannes
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
