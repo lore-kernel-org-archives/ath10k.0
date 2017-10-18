@@ -1,13 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e4bpj-0003h4-Ri
- for ath10k@lists.infradead.org; Wed, 18 Oct 2017 00:03:41 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k: Fix offchannel tx failure when no
- ath10k_mac_tx_frm_has_freq
-Date: Tue, 17 Oct 2017 17:03:12 -0700
-Message-Id: <1508284992-3574-1-git-send-email-greearb@candelatech.com>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e4iru-0007KF-J3
+ for ath10k@lists.infradead.org; Wed, 18 Oct 2017 07:34:26 +0000
+Message-ID: <1508312033.2674.9.camel@sipsolutions.net>
+Subject: Re: Setting single rate in ath10k broken by "reject/clear user rate
+ mask if not usable"
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 18 Oct 2017 09:33:53 +0200
+In-Reply-To: <2c293255-aa79-75a0-1c28-994f864cddf4@candelatech.com>
+References: <13895fa0-3685-dd2b-583d-2d6469d23cfe@candelatech.com>
+ <1507708948.1998.15.camel@sipsolutions.net>
+ <2c293255-aa79-75a0-1c28-994f864cddf4@candelatech.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,110 +22,123 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com
 
-From: Ben Greear <greearb@candelatech.com>
+Hi,
 
-This bug appears to have been added between 4.0 (which works for us),
-and 4.4, which does not work.
+> The call to set the rate in the driver comes before the error
+> check.
+> 
+> 	if (ieee80211_hw_check(&local->hw, HAS_RATE_CONTROL)) {
+> 		ret = drv_set_bitrate_mask(local, sdata, mask);
+> 		if (ret) {
+> 			pr_err("%s: drv-set-bitrate-mask had error
+> return: %d\n",
+> 			       sdata->dev->name, ret);
+> 			return ret;
+> 		}
+> 	}
+> 
+> 	/*
+> 	 * If active validate the setting and reject it if it doesn't
+> leave
+> 	 * at least one basic rate usable, since we really have to be
+> able
+> 	 * to send something, and if we're an AP we have to be able to
+> do
+> 	 * so at a basic rate so that all clients can receive it.
+> 	 */
+> 	if (rcu_access_pointer(sdata->vif.chanctx_conf) &&
+> 	    sdata->vif.bss_conf.chandef.chan) {
+> 		u32 basic_rates = sdata->vif.bss_conf.basic_rates;
+> 		enum nl80211_band band = sdata-
+> >vif.bss_conf.chandef.chan->band;
+> 
+> 		if (!(mask->control[band].legacy & basic_rates)) {
+> 			#### I changed this code so I could set a
+> single rate... --Ben
+> 			pr_err("%s:  WARNING: no legacy rates for
+> band[%d] in set-bitrate-mask.\n",
+> 			       sdata->dev->name, band);
+> 		}
+> 	}
 
-I think this is because the tx-offchannel logic gets in a loop when
-ath10k_mac_tx_frm_has_freq(ar) is false, so pkt is never actually
-sent to the firmware for transmit.
+Heh, that's just dumb. I guess I'll fix that by putting the test first,
+no idea how that happened.
 
-This patch fixes the problem on 4.9 for me, and now HS20 clients
-can work again with my firmware.
+> > 
+> > > So, I think we should relax this check, at least for ath10k.
+> > 
+> > Well, yes and no. I don't think we should make ath10k special here,
+> > and
+> > this fixes a real problem - namely that you can set up the system
+> > so
+> > that you have no usable rates at all, and then you just get a
+> > WARN_ON
+> > and start using the lowest possible rate...
+> 
+> Well, there are a million ways to set up a broken system, 
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+True, but this one actually happened in practice, for some reason, and
+stopping the user from constantly shooting themselves in the foot seems
+like a good idea to me. Especially if the user (or application) can't
+really even know what they're getting into.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index c45ca04..f0a7864 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4101,7 +4101,7 @@ static int ath10k_mac_tx(struct ath10k *ar,
- 			 struct ieee80211_sta *sta,
- 			 enum ath10k_hw_txrx_mode txmode,
- 			 enum ath10k_mac_tx_path txpath,
--			 struct sk_buff *skb)
-+			 struct sk_buff *skb, bool noque_offchan)
- {
- 	struct ieee80211_hw *hw = ar->hw;
- 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-@@ -4134,10 +4134,10 @@ static int ath10k_mac_tx(struct ath10k *ar,
- 		}
- 	}
- 
--	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
-+	if ((!noque_offchan) && info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
- 		if (!ath10k_mac_tx_frm_has_freq(ar)) {
--			ath10k_dbg(ar, ATH10K_DBG_MAC, "queued offchannel skb %pK\n",
--				   skb);
-+			ath10k_dbg(ar, ATH10K_DBG_MAC, "no-tx-frm-has-freq: queued offchannel skb %pK, len: %d\n",
-+				   skb, skb->len);
- 
- 			skb_queue_tail(&ar->offchan_tx_queue, skb);
- 			ieee80211_queue_work(hw, &ar->offchan_tx_work);
-@@ -4198,8 +4198,8 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 
- 		mutex_lock(&ar->conf_mutex);
- 
--		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac offchannel skb %pK\n",
--			   skb);
-+		ath10k_dbg(ar, ATH10K_DBG_MAC, "offchan-tx-work: mac offchannel skb %pK len: %d\n",
-+			   skb, skb->len);
- 
- 		hdr = (struct ieee80211_hdr *)skb->data;
- 		peer_addr = ieee80211_get_DA(hdr);
-@@ -4245,7 +4245,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 		txmode = ath10k_mac_tx_h_get_txmode(ar, vif, sta, skb);
- 		txpath = ath10k_mac_tx_h_get_txpath(ar, skb, txmode);
- 
--		ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb);
-+		ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb, true);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to transmit offchannel frame: %d\n",
- 				    ret);
-@@ -4255,8 +4255,8 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 		time_left =
- 		wait_for_completion_timeout(&ar->offchan_tx_completed, 3 * HZ);
- 		if (time_left == 0)
--			ath10k_warn(ar, "timed out waiting for offchannel skb %pK\n",
--				    skb);
-+			ath10k_warn(ar, "timed out waiting for offchannel skb %pK, len: %d\n",
-+				    skb, skb->len);
- 
- 		if (!peer && tmp_peer_created) {
- 			ret = ath10k_peer_delete(ar, vdev_id, peer_addr);
-@@ -4513,7 +4513,7 @@ int ath10k_mac_tx_push_txq(struct ieee80211_hw *hw,
- 		spin_unlock_bh(&ar->htt.tx_lock);
- 	}
- 
--	ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb);
-+	ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb, false);
- 	if (unlikely(ret)) {
- 		ath10k_warn(ar, "failed to push frame: %d\n", ret);
- 
-@@ -4802,7 +4802,7 @@ static void ath10k_mac_op_tx(struct ieee80211_hw *hw,
- 		spin_unlock_bh(&ar->htt.tx_lock);
- 	}
- 
--	ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb);
-+	ret = ath10k_mac_tx(ar, vif, sta, txmode, txpath, skb, false);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to transmit frame: %d\n", ret);
- 		if (is_htt) {
--- 
-2.4.11
+Now, the case in question was _client_ mode, but still.
 
+> and setting a single rate has a useful purpose, especially with
+> ath10k since it has such limited rate-setting capabilities.
+
+You're stretching the definition of "useful purpose" a bit here though,
+you're about the only one who's ever going to need to set a single
+rate.
+
+> There is basically never going to be a case where setting a single
+> tx-rate on an AP is a good idea in a general production environment,
+> so maybe a possible WARN-ON is fine?
+
+A WARN_ON() for a user configuration is never fine.
+
+You're assuming that there's actually a user sitting there and doing
+this, which is not necessarily the case.
+
+Even rejecting a single rate setting wouldn't be enough because you can
+get into problems even when you enable multiple rates, e.g. if you
+enable all the CCK rates while connected on 5 GHz.
+
+> If you *do* set up an AP with a limited rateset, then it should
+> simply fail to allow a station to connect if it does not have any
+> matching rates.
+
+That's what requiring at least one basic rate to remain does. If you
+want to have basic rates 6,9,12 and then configure only 18, how would
+the client get rejected? Just configure basic rates differently
+beforehand, and then you can do this easily, and the right thing with
+rejecting clients will happen automatically (in fact, clients might not
+even attempt to connect - even better!)
+
+> This might go back to a previous idea I had (and patches I posted and
+> carry in my tree) to allow setting a different advertise rateset vs
+> usable tx-rateset.
+
+You still have the same problem with which clients support them and
+require them etc.
+
+> For existing stations that might not match the new fixed rate, we
+> could purposefully kick them off I guess, but seems like a lot of
+> work for a case that seems pretty irrelevant.
+
+For better or worse, there are people using this API programmatically
+without a user baby-sitting it, so we need to make it work in all
+cases. We can let the user shoot themselves in the foot and have only a
+single usable rate left, but we can't let them hang themselves and have
+no rate left at all.
+
+johannes
 
 _______________________________________________
 ath10k mailing list
