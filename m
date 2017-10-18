@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e4jAE-0006ES-3g
- for ath10k@lists.infradead.org; Wed, 18 Oct 2017 07:54:12 +0000
-Subject: Re: Sometimes WLE900VX 9880 NIC does not appear in lspci.
-References: <3eefa2db-33a1-ceb3-730b-62627239e873@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <16143514-f652-56f9-ff65-4dffec8a6417@dd-wrt.com>
-Date: Wed, 18 Oct 2017 09:52:48 +0200
-MIME-Version: 1.0
-In-Reply-To: <3eefa2db-33a1-ceb3-730b-62627239e873@candelatech.com>
+ id 1e4lhi-0007BW-Nx
+ for ath10k@lists.infradead.org; Wed, 18 Oct 2017 10:36:04 +0000
+Message-ID: <1508322936.2674.19.camel@sipsolutions.net>
+Subject: Re: [PATCH V6 1/5] mac80211: Enable TDLS peer buffer STA feature
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 18 Oct 2017 12:35:36 +0200
+In-Reply-To: <1508133633-23214-2-git-send-email-yintang@qti.qualcomm.com>
+ (sfid-20171016_075844_306502_036ED199)
+References: <TDLS for ath10k patches V6>
+ <1508133633-23214-1-git-send-email-yintang@qti.qualcomm.com>
+ <1508133633-23214-2-git-send-email-yintang@qti.qualcomm.com>
+ (sfid-20171016_075844_306502_036ED199)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,69 +23,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
+To: yintang@qti.qualcomm.com, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-QW0gMTcuMTAuMjAxNyB1bSAyMDo0NyBzY2hyaWViIEJlbiBHcmVlYXI6Cj4gU29tZXRpbWVzLCB3
-aGVuIGJvb3Rpbmcgb25lIG9mIG15IGFwdTIgc3lzdGVtcyB3aXRoIHR3byBvZiB0aGUgV0xFOTAw
-VlgKPiBOSUNzIGluIGl0LCBvbmUgb2YgdGhlbSBkb2VzIG5vdCBzaG93IHVwIGluIGxzcGNpLgoK
-dGhpcyBpcyBhIHdlbGwga25vd24gYnVnLiBidXQgaXRzIGEgYnVnIGluIHRoZSBhcHUKCmkgd2Fz
-IHRhbGtpbmcgYWJvdXQgc3VjaCBpc3N1ZXMgd2l0aCBwY2VuZ2luZXMgYWxyZWFkecKgIGJ1dCBz
-byBzb2x1dGlvbiAKeWV0LgoKPgo+IEhlcmUgaXMgdGhlIHBlcnRpbmVudCAoSSB0aGluaykgYml0
-IG9mIGRtZXNnOgo+Cj4gT0sgY2FzZSAodGhlIHJhZGlvIGluIHF1ZXN0aW9ucyBzaG93cyB1cCBv
-biBidXMgMDUpOgo+Cj4gW8KgwqDCoCAwLjc4MTYxMF0gcGNpIDAwMDA6MDQ6MDAuMDogWzgwODY6
-MTU3Yl0gdHlwZSAwMCBjbGFzcyAweDAyMDAwMAo+IFvCoMKgwqAgMC43ODE2NDRdIHBjaSAwMDAw
-OjA0OjAwLjA6IHJlZyAweDEwOiBbbWVtIDB4ZmU3MDAwMDAtMHhmZTcxZmZmZl0KPiBbwqDCoMKg
-IDAuNzgxNzA1XSBwY2kgMDAwMDowNDowMC4wOiByZWcgMHgxODogW2lvwqAgMHgzMDAwLTB4MzAx
-Zl0KPiBbwqDCoMKgIDAuNzgxNzI0XSBwY2kgMDAwMDowNDowMC4wOiByZWcgMHgxYzogW21lbSAw
-eGZlNzIwMDAwLTB4ZmU3MjNmZmZdCj4gW8KgwqDCoCAwLjc4MTkyMF0gcGNpIDAwMDA6MDQ6MDAu
-MDogUE1FIyBzdXBwb3J0ZWQgZnJvbSBEMCBEM2hvdCBEM2NvbGQKPiBbwqDCoMKgIDAuNzg0MjY1
-XSBwY2kgMDAwMDowMDowMi40OiBQQ0kgYnJpZGdlIHRvIFtidXMgMDRdCj4gW8KgwqDCoCAwLjc4
-Nzk4NF0gcGNpIDAwMDA6MDA6MDIuNDrCoMKgIGJyaWRnZSB3aW5kb3cgW2lvIDB4MzAwMC0weDNm
-ZmZdCj4gW8KgwqDCoCAwLjc4Nzk5MV0gcGNpIDAwMDA6MDA6MDIuNDrCoMKgIGJyaWRnZSB3aW5k
-b3cgW21lbSAKPiAweGZlNzAwMDAwLTB4ZmU3ZmZmZmZdCj4gW8KgwqDCoCAwLjc4ODE1N10gcGNp
-IDAwMDA6MDU6MDAuMDogWzE2OGM6MDAzY10gdHlwZSAwMCBjbGFzcyAweDAyODAwMAo+IFvCoMKg
-wqAgMC43ODgxOTJdIHBjaSAwMDAwOjA1OjAwLjA6IHJlZyAweDEwOiBbbWVtIDB4ZmUyMDAwMDAt
-MHhmZTNmZmZmZiAKPiA2NGJpdF0KPiBbwqDCoMKgIDAuNzg4Mjk2XSBwY2kgMDAwMDowNTowMC4w
-OiByZWcgMHgzMDogW21lbSAweGZlNDAwMDAwLTB4ZmU0MGZmZmYgCj4gcHJlZl0KPiBbwqDCoMKg
-IDAuNzg4NDI4XSBwY2kgMDAwMDowNTowMC4wOiBzdXBwb3J0cyBEMSBEMgo+IFvCoMKgwqAgMC43
-OTEyNzBdIHBjaSAwMDAwOjAwOjAyLjU6IFBDSSBicmlkZ2UgdG8gW2J1cyAwNV0KPiBbwqDCoMKg
-IDAuNzk0OTcwXSBwY2kgMDAwMDowMDowMi41OsKgwqAgYnJpZGdlIHdpbmRvdyBbbWVtIAo+IDB4
-ZmUyMDAwMDAtMHhmZTRmZmZmZl0KPiBbwqDCoMKgIDAuNzk1NzI4XSBBQ1BJOiBQQ0kgSW50ZXJy
-dXB0IExpbmsgW0lOVEFdIChJUlFzICozIDUgNyAxMCAxMSAxMiAxNSkKPiAuLi4uCj4KPiBGYWls
-dXJlIGNhc2U6Cj4KPiBKdW4gMDkgMDk6MjM6MzcgbG9jYWxob3N0LmxvY2FsZG9tYWluIGtlcm5l
-bDogcGNpIDAwMDA6MDQ6MDAuMDogCj4gWzgwODY6MTBkM10gdHlwZSAwMCBjbGFzcyAweDAyMDAw
-MAo+IEp1biAwOSAwOToyMzozNyBsb2NhbGhvc3QubG9jYWxkb21haW4ga2VybmVsOiBwY2kgMDAw
-MDowNDowMC4wOiByZWcgCj4gMHgxMDogW21lbSAweGY2ODAwMDAwLTB4ZjY4MWZmZmZdCj4gSnVu
-IDA5IDA5OjIzOjM3IGxvY2FsaG9zdC5sb2NhbGRvbWFpbiBrZXJuZWw6IHBjaSAwMDAwOjA0OjAw
-LjA6IHJlZyAKPiAweDE4OiBbaW/CoCAweGQwMDAtMHhkMDFmXQo+IEp1biAwOSAwOToyMzozNyBs
-b2NhbGhvc3QubG9jYWxkb21haW4ga2VybmVsOiBwY2kgMDAwMDowNDowMC4wOiByZWcgCj4gMHgx
-YzogW21lbSAweGY2ODIwMDAwLTB4ZjY4MjNmZmZdCj4gSnVuIDA5IDA5OjIzOjM3IGxvY2FsaG9z
-dC5sb2NhbGRvbWFpbiBrZXJuZWw6IHBjaSAwMDAwOjA0OjAwLjA6IFBNRSMgCj4gc3VwcG9ydGVk
-IGZyb20gRDAgRDNob3QgRDNjb2xkCj4gSnVuIDA5IDA5OjIzOjM3IGxvY2FsaG9zdC5sb2NhbGRv
-bWFpbiBrZXJuZWw6IHBjaSAwMDAwOjA0OjAwLjA6IFN5c3RlbSAKPiB3YWtldXAgZGlzYWJsZWQg
-YnkgQUNQSQo+IEp1biAwOSAwOToyMzozNyBsb2NhbGhvc3QubG9jYWxkb21haW4ga2VybmVsOiBw
-Y2kgMDAwMDowMDoxYy4xOiBQQ0kgCj4gYnJpZGdlIHRvIFtidXMgMDRdCj4gSnVuIDA5IDA5OjIz
-OjM3IGxvY2FsaG9zdC5sb2NhbGRvbWFpbiBrZXJuZWw6IHBjaSAwMDAwOjAwOjFjLjE6IGJyaWRn
-ZSAKPiB3aW5kb3cgW2lvwqAgMHhkMDAwLTB4ZGZmZl0KPiBKdW4gMDkgMDk6MjM6MzcgbG9jYWxo
-b3N0LmxvY2FsZG9tYWluIGtlcm5lbDogcGNpIDAwMDA6MDA6MWMuMTogYnJpZGdlIAo+IHdpbmRv
-dyBbbWVtIDB4ZjY4MDAwMDAtMHhmNzFmZmZmZl0KPiBKdW4gMDkgMDk6MjM6MzcgbG9jYWxob3N0
-LmxvY2FsZG9tYWluIGtlcm5lbDogcGNpIDAwMDA6MDA6MWMuMTogYnJpZGdlIAo+IHdpbmRvdyBb
-bWVtIDB4ZjAwMDAwMDAtMHhmMDlmZmZmZiA2NGJpdCBwcmVmXQo+IEp1biAwOSAwOToyMzozNyBs
-b2NhbGhvc3QubG9jYWxkb21haW4ga2VybmVsOiBBQ1BJOiBQQ0kgSW50ZXJydXB0IExpbmsgCj4g
-W0xOS0FdIChJUlFzIDMgNCA1IDYgMTAgKjExIDEyIDE0IDE1KQo+IC4uLgo+Cj4KPiBSZWJvb3Rp
-bmcgdGhlIHN5c3RlbSB1c3VhbGx5ICdmaXhlcycgdGhlIHByb2JsZW0sIGJ1dCBzb21ldGltZXMg
-aXQgCj4gdGFrZXMgc2V2ZXJhbCByZWJvb3RzLgo+Cj4KPiBEb2VzIHRoaXMgcHJvdmlkZSBhbnkg
-Y2x1ZXM/Cj4KPiBBbnkgc3VnZ2VzdGVkIHdvcmstYXJvdW5kcyBJIGNvdWxkIHRyeT8KPgo+IFRo
-YW5rcywKPiBCZW4KPgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCgpT
-ZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQKRmly
-bWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0NjI1IEJlbnNoZWltClJlZ2lzdGVyZ2Vy
-aWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0NzMKR2VzY2jDpGZ0c2bDvGhyZXI6
-IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUKaHR0cDovL3d3dy5kZC13cnQu
-Y29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpUZWwuOiArNDk2MjUxLTU4MjY1MCAv
-IEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Mon, 2017-10-16 at 14:00 +0800, yintang@qti.qualcomm.com wrote:
+> From: Yingying Tang <yintang@qti.qualcomm.com>
+> 
+> Enable TDLS peer buffer STA feature.
+> Set extended capability bit to enable buffer STA when driver
+> support it.
+
+It would help if you could (build) test your changes :-)
+
+johannes
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
