@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve1eur03on0608.outbound.protection.outlook.com
- ([2a01:111:f400:fe09::608]
- helo=EUR03-VE1-obe.outbound.protection.outlook.com)
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e4xuu-0001sg-3S
- for ath10k@lists.infradead.org; Wed, 18 Oct 2017 23:38:31 +0000
-Subject: Re: [PATCH V6 0/5] Add TDLS feature for ath10k
-References: <TDLS for ath10k patches V6>
- <1508133633-23214-1-git-send-email-yintang@qti.qualcomm.com>
-From: Peter Oh <peter.oh@bowerswilkins.com>
-Message-ID: <f634666f-cd35-279f-b161-4fa604b2dd69@bowerswilkins.com>
-Date: Wed, 18 Oct 2017 16:37:50 -0700
+ id 1e5Bsk-0000vj-VR
+ for ath10k@lists.infradead.org; Thu, 19 Oct 2017 14:33:12 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: ath10k: fix core PCI suspend when WoWLAN is supported but disabled
+Date: Thu, 19 Oct 2017 14:32:45 +0000
+Message-ID: <87vajbgqcz.fsf@kamboji.qca.qualcomm.com>
+References: <20170919232416.108247-1-briannorris@chromium.org>
+ <2809b2cf512d4c198d3cef3f5e468c3c@euamsexm01e.eu.qualcomm.com>
+In-Reply-To: <2809b2cf512d4c198d3cef3f5e468c3c@euamsexm01e.eu.qualcomm.com>
+ (Kalle Valo's message of "Fri, 13 Oct 2017 13:37:37 +0200")
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <1508133633-23214-1-git-send-email-yintang@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,38 +21,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: yintang@qti.qualcomm.com, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Brian Norris <briannorris@chromium.org>
+Cc: Grant Grundler <grundler@chromium.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Ryan Hsu <ryanhsu@qti.qualcomm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-
-On 10/15/2017 11:00 PM, yintang@qti.qualcomm.com wrote:
-> From: Yingying Tang <yintang@qti.qualcomm.com>
+> Brian Norris <briannorris@chromium.org> wrote:
 >
-> This patchset is for Rome PCIE chip, it will not affect other hardware
-Please add your patchset history here until V6.
-That's what cover letter is supposed to have.
-> Yingying Tang (5):
->    mac80211: Enable TDLS peer buffer STA feature
->    ath10k: Enable TDLS peer buffer STA feature
->    ath10k: Enable TDLS peer inactivity detection
->    ath10k: Avoid to set WEP key for TDLS peer
->    ath10k: Fix TDLS peer TX data failure issue on encryped AP
+>> For devices where the FW supports WoWLAN but user-space has not
+>> configured it, we don't do any PCI-specific suspend/resume operations,
+>> because mac80211 doesn't call drv_suspend() when !wowlan. This has
+>> particularly bad effects for some platforms, because we don't stop the
+>> power-save timer, and if this timer goes off after the PCI controller
+>> has suspended the link, Bad Things will happen.
+>> 
+>> Commit 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
+>> got some of this right, in that it understood there was a problem on
+>> non-WoWLAN firmware. But it forgot the $subject case.
+>> 
+>> Fix this by moving all the PCI driver suspend/resume logic exclusively
+>> into the driver PM hooks. This shouldn't affect WoWLAN support much
+>> (this just gets executed later on).
+>> 
+>> I would just as well kill the entirety of ath10k_hif_suspend(), as it's
+>> not even implemented on the USB or SDIO drivers. I expect that we don't
+>> need the callback, except to return "supported" (i.e., 0) or "not
+>> supported" (i.e., -EOPNOTSUPP).
+>> 
+>> Fixes: 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
+>> Fixes: 77258d409ce4 ("ath10k: enable pci soc powersaving")
+>> Signed-off-by: Brian Norris <briannorris@chromium.org>
+>> Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+>> Cc: Kalle Valo <kvalo@qca.qualcomm.com>
+>> Cc: Michal Kazior <michal.kazior@tieto.com>
+>> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 >
->   drivers/net/wireless/ath/ath10k/mac.c     |    9 ++++-
->   drivers/net/wireless/ath/ath10k/wmi-tlv.c |   55 +++++++++++++++++++++++++++++
->   drivers/net/wireless/ath/ath10k/wmi-tlv.h |    9 +++++
->   drivers/net/wireless/ath/ath10k/wmi.h     |    1 +
->   include/net/mac80211.h                    |    4 +++
->   net/mac80211/tdls.c                       |    5 ++-
->   6 files changed, 81 insertions(+), 2 deletions(-)
+> Patch applied to ath-next branch of ath.git, thanks.
 >
+> 96378bd2c6cd ath10k: fix core PCI suspend when WoWLAN is supported but disabled
 
+Kbuild found a build problem, I suspect it's caused by this patch:
 
+drivers/net/wireless/ath/ath10k/pci.c:3416:8: error: implicit
+declaration of function 'ath10k_pci_suspend'
+[-Werror=implicit-function-declaration]
+
+drivers/net/wireless/ath/ath10k/pci.c:3428:8: error: implicit
+declaration of function 'ath10k_pci_resume'
+[-Werror=implicit-function-declaration]
+
+http://lists.infradead.org/pipermail/ath10k/2017-October/010269.html
+
+The .config.gz there doesn't have CONFIG_PM set, maybe that's the
+problem?
+
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
