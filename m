@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e5DCq-0006B9-B2
- for ath10k@lists.infradead.org; Thu, 19 Oct 2017 15:58:01 +0000
-Subject: Re: Compex WLE1216-V2-20 (QCA9984 2.4 GHz module) board.bin and
- firmware-x.bin
-References: <35449B299288584097A15B3FEB9C3E582583316B10@SBS-GHMT.ghmt.local>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <49c7e043-f0b3-bbf0-aa5b-9c1174fd3c4f@candelatech.com>
-Date: Thu, 19 Oct 2017 08:57:32 -0700
+Received: from mail-it0-x243.google.com ([2607:f8b0:4001:c0b::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e5ENF-0004xG-V6
+ for ath10k@lists.infradead.org; Thu, 19 Oct 2017 17:12:52 +0000
+Received: by mail-it0-x243.google.com with SMTP id 72so11029270itl.5
+ for <ath10k@lists.infradead.org>; Thu, 19 Oct 2017 10:12:28 -0700 (PDT)
+Date: Thu, 19 Oct 2017 10:12:25 -0700
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: ath10k: fix core PCI suspend when WoWLAN is supported but disabled
+Message-ID: <20171019171224.GA46096@google.com>
+References: <20170919232416.108247-1-briannorris@chromium.org>
+ <2809b2cf512d4c198d3cef3f5e468c3c@euamsexm01e.eu.qualcomm.com>
+ <87vajbgqcz.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <35449B299288584097A15B3FEB9C3E582583316B10@SBS-GHMT.ghmt.local>
+Content-Disposition: inline
+In-Reply-To: <87vajbgqcz.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,29 +23,101 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Lindner, Frank" <Frank.Lindner@ghmt.de>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>, Arnd Bergmann <arnd@arndb.de>, Grant Grundler <grundler@chromium.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTAvMTkvMjAxNyAwNzo0MiBBTSwgTGluZG5lciwgRnJhbmsgd3JvdGU6Cj4gSGksCj4KPiBJ
-IHdhbnQgdG8gdXNlIENvbXBleCBXTEUxMjE2LVYyIDIwIG1vZHVsZXMuIFRoaXMgaXMgdGhlIDIu
-NCBHSHogbW9kdWxlIG9mIHRoZSBRQ0E5OTg0LiBJdCBzZWVtcywgdGhhdCBJIG5lZWQgYSBib2Fy
-ZC5iaW4gaW5zdGVhZCBvZiB0eXBpY2FsIGJvYXJkLTIuYm4gZm9yIFFDQTk5ODQgNSBHSHogdmVy
-c2lvbi4KPiBUaGUgY2FyZCBpcyByZXF1ZXN0aW5nIOKAnGJ1cz1wY2ksYm1pLWNoaXAtaWQ9MCxi
-bWktYm9hcmQtaWQ9MzDigJ0uICBJIGZvdW5kIGEgYm9hcmQuYmluIGZpbGUsIHRoYXTigJlzIGdl
-dCBsb2FkZWQgYnkgdGhlIGRyaXZlciwgYnV0IHRoaXMgcHVzaGVkIDUgR0h6IGNoYW5uZWxzIHRv
-IHRoZSBjYXJkLCB3aGljaCBtaWdodCBub3Qgd29yay4gRXZlbiB0aGFuIEkgY2FuIG5vdCBzZXQg
-dG8gMi40IEdIeiBjaGFubmVscywgY2F1c2UgaXcgcGh5IGluZm8gaXQgdGVsbHMgbWUgb25seSA1
-IEdIeiBjaGFubmVsIHN1cHBvcnQuCj4gV2hlcmUgY2FuIEkgZG93bmxvYWQgdGhlIGNvcnJlY3Qg
-Ym9hcmQuYmluIGFuZCwgaWYgbmVlZGVkLCB0aGUgZmlybXdhcmUteC5iaW4gZmlsZT8gQW55IGlk
-ZWFzPwo+Cj4gVGhhbmtzIGEgbG90IGluIGFkdmFuY2UuCgpBdCBsZWFzdCBmb3IgdGhlIDVHaHog
-dmVyc2lvbiBvZiB0aGF0IGNhcmQsIHlvdSBuZWVkIHRvIGdldCBhIHNwZWNpYWwgYm9hcmQuYmlu
-IGZpbGUgZnJvbSBDb21wZXguCgpBbmQsIEknbSBjdXJpb3VzIHdoYXQgdXNlIHlvdSBnZXQgb3V0
-IG9mIGEgOTk4NCBOSUMgb24gMi40R2h6PyAgQXJlIHlvdSBydW5uaW5nClZIVCBvbiAyLjQ/CgpU
-aGFua3MsCkJlbgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5k
-ZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
++ Arnd
+
+On Thu, Oct 19, 2017 at 02:32:45PM +0000, Kalle Valo wrote:
+> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+> 
+> > Brian Norris <briannorris@chromium.org> wrote:
+> >
+> >> For devices where the FW supports WoWLAN but user-space has not
+> >> configured it, we don't do any PCI-specific suspend/resume operations,
+> >> because mac80211 doesn't call drv_suspend() when !wowlan. This has
+> >> particularly bad effects for some platforms, because we don't stop the
+> >> power-save timer, and if this timer goes off after the PCI controller
+> >> has suspended the link, Bad Things will happen.
+> >> 
+> >> Commit 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
+> >> got some of this right, in that it understood there was a problem on
+> >> non-WoWLAN firmware. But it forgot the $subject case.
+> >> 
+> >> Fix this by moving all the PCI driver suspend/resume logic exclusively
+> >> into the driver PM hooks. This shouldn't affect WoWLAN support much
+> >> (this just gets executed later on).
+> >> 
+> >> I would just as well kill the entirety of ath10k_hif_suspend(), as it's
+> >> not even implemented on the USB or SDIO drivers. I expect that we don't
+> >> need the callback, except to return "supported" (i.e., 0) or "not
+> >> supported" (i.e., -EOPNOTSUPP).
+> >> 
+> >> Fixes: 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
+> >> Fixes: 77258d409ce4 ("ath10k: enable pci soc powersaving")
+> >> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> >> Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+> >> Cc: Kalle Valo <kvalo@qca.qualcomm.com>
+> >> Cc: Michal Kazior <michal.kazior@tieto.com>
+> >> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> >
+> > Patch applied to ath-next branch of ath.git, thanks.
+> >
+> > 96378bd2c6cd ath10k: fix core PCI suspend when WoWLAN is supported but disabled
+> 
+> Kbuild found a build problem, I suspect it's caused by this patch:
+
+Actually, it's the interaction of this patch and Arnd's patch:
+
+6af1de2e4ec4 ath10k: mark PM functions as __maybe_unused
+
+I see that's now in these branches:
+
+  ath/ath-current
+  ath/ath-qca
+  ath/master
+  ath/master-pending
+  wireless-drivers-next/master
+  wireless-drivers-next/pending
+
+Whereas mine got applied to:
+
+  ath/ath-next
+
+So technically, the problem is in your merge here :)
+
+096ad2a15fd8 Merge branch 'ath-next'
+
+> drivers/net/wireless/ath/ath10k/pci.c:3416:8: error: implicit
+> declaration of function 'ath10k_pci_suspend'
+> [-Werror=implicit-function-declaration]
+> 
+> drivers/net/wireless/ath/ath10k/pci.c:3428:8: error: implicit
+> declaration of function 'ath10k_pci_resume'
+> [-Werror=implicit-function-declaration]
+> 
+> http://lists.infradead.org/pipermail/ath10k/2017-October/010269.html
+> 
+> The .config.gz there doesn't have CONFIG_PM set, maybe that's the
+> problem?
+
+Yes, indirectly that's also the problem.
+
+The solution would seem to be either to kill the #ifdefs around
+ath10k_pci_{suspend,resume}() and friends (and use __maybe_unused
+instead, to further extend Arnd's patch), or else revert Arnd's stuff
+and go with CONFIG_PM_SLEEP everywhere, which would resolve the original
+warning (promoted to error) that Arnd was resolving.
+
+I can send out one of these if you'd like.
+
+Brian
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
