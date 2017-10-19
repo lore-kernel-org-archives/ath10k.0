@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+Received: from mx3.ghmt.de ([188.210.45.230])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e5Bsk-0000vj-VR
- for ath10k@lists.infradead.org; Thu, 19 Oct 2017 14:33:12 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k: fix core PCI suspend when WoWLAN is supported but disabled
-Date: Thu, 19 Oct 2017 14:32:45 +0000
-Message-ID: <87vajbgqcz.fsf@kamboji.qca.qualcomm.com>
-References: <20170919232416.108247-1-briannorris@chromium.org>
- <2809b2cf512d4c198d3cef3f5e468c3c@euamsexm01e.eu.qualcomm.com>
-In-Reply-To: <2809b2cf512d4c198d3cef3f5e468c3c@euamsexm01e.eu.qualcomm.com>
- (Kalle Valo's message of "Fri, 13 Oct 2017 13:37:37 +0200")
-Content-Language: en-US
+ id 1e5C1s-0005k1-3Z
+ for ath10k@lists.infradead.org; Thu, 19 Oct 2017 14:42:37 +0000
+Received: from [192.168.0.200] (port=48644 helo=SBS-GHMT.ghmt.local)
+ by mx3.ghmt.de with esmtps (TLSv1:AES128-SHA:128)
+ (Exim 4.82_1-5b7a7c0-XX) (envelope-from <Frank.Lindner@ghmt.de>)
+ id 1e5C1U-0002ev-1i
+ for ath10k@lists.infradead.org; Thu, 19 Oct 2017 16:42:12 +0200
+From: "Lindner, Frank" <Frank.Lindner@ghmt.de>
+Date: Thu, 19 Oct 2017 16:42:11 +0200
+Subject: Compex WLE1216-V2-20 (QCA9984 2.4 GHz module) board.bin and
+ firmware-x.bin
+Message-ID: <35449B299288584097A15B3FEB9C3E582583316B10@SBS-GHMT.ghmt.local>
+Content-Language: de-DE
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,67 +23,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: Grant Grundler <grundler@chromium.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Ryan Hsu <ryanhsu@qti.qualcomm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
-
-> Brian Norris <briannorris@chromium.org> wrote:
->
->> For devices where the FW supports WoWLAN but user-space has not
->> configured it, we don't do any PCI-specific suspend/resume operations,
->> because mac80211 doesn't call drv_suspend() when !wowlan. This has
->> particularly bad effects for some platforms, because we don't stop the
->> power-save timer, and if this timer goes off after the PCI controller
->> has suspended the link, Bad Things will happen.
->> 
->> Commit 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
->> got some of this right, in that it understood there was a problem on
->> non-WoWLAN firmware. But it forgot the $subject case.
->> 
->> Fix this by moving all the PCI driver suspend/resume logic exclusively
->> into the driver PM hooks. This shouldn't affect WoWLAN support much
->> (this just gets executed later on).
->> 
->> I would just as well kill the entirety of ath10k_hif_suspend(), as it's
->> not even implemented on the USB or SDIO drivers. I expect that we don't
->> need the callback, except to return "supported" (i.e., 0) or "not
->> supported" (i.e., -EOPNOTSUPP).
->> 
->> Fixes: 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
->> Fixes: 77258d409ce4 ("ath10k: enable pci soc powersaving")
->> Signed-off-by: Brian Norris <briannorris@chromium.org>
->> Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>
->> Cc: Kalle Valo <kvalo@qca.qualcomm.com>
->> Cc: Michal Kazior <michal.kazior@tieto.com>
->> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
->
-> Patch applied to ath-next branch of ath.git, thanks.
->
-> 96378bd2c6cd ath10k: fix core PCI suspend when WoWLAN is supported but disabled
-
-Kbuild found a build problem, I suspect it's caused by this patch:
-
-drivers/net/wireless/ath/ath10k/pci.c:3416:8: error: implicit
-declaration of function 'ath10k_pci_suspend'
-[-Werror=implicit-function-declaration]
-
-drivers/net/wireless/ath/ath10k/pci.c:3428:8: error: implicit
-declaration of function 'ath10k_pci_resume'
-[-Werror=implicit-function-declaration]
-
-http://lists.infradead.org/pipermail/ath10k/2017-October/010269.html
-
-The .config.gz there doesn't have CONFIG_PM set, maybe that's the
-problem?
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksDQoNCkkgd2FudCB0byB1c2UgQ29tcGV4IFdMRTEyMTYtVjIgMjAgbW9kdWxlcy4gVGhpcyBp
+cyB0aGUgMi40IEdIeiBtb2R1bGUgb2YgdGhlIFFDQTk5ODQuIEl0IHNlZW1zLCB0aGF0IEkgbmVl
+ZCBhIGJvYXJkLmJpbiBpbnN0ZWFkIG9mIHR5cGljYWwgYm9hcmQtMi5ibiBmb3IgUUNBOTk4NCA1
+IEdIeiB2ZXJzaW9uLg0KVGhlIGNhcmQgaXMgcmVxdWVzdGluZyDigJxidXM9cGNpLGJtaS1jaGlw
+LWlkPTAsYm1pLWJvYXJkLWlkPTMw4oCdLiAgSSBmb3VuZCBhIGJvYXJkLmJpbiBmaWxlLCB0aGF0
+4oCZcyBnZXQgbG9hZGVkIGJ5IHRoZSBkcml2ZXIsIGJ1dCB0aGlzIHB1c2hlZCA1IEdIeiBjaGFu
+bmVscyB0byB0aGUgY2FyZCwgd2hpY2ggbWlnaHQgbm90IHdvcmsuIEV2ZW4gdGhhbiBJIGNhbiBu
+b3Qgc2V0IHRvIDIuNCBHSHogY2hhbm5lbHMsIGNhdXNlIGl3IHBoeSBpbmZvIGl0IHRlbGxzIG1l
+IG9ubHkgNSBHSHogY2hhbm5lbCBzdXBwb3J0Lg0KV2hlcmUgY2FuIEkgZG93bmxvYWQgdGhlIGNv
+cnJlY3QgYm9hcmQuYmluIGFuZCwgaWYgbmVlZGVkLCB0aGUgZmlybXdhcmUteC5iaW4gZmlsZT8g
+QW55IGlkZWFzPw0KDQpUaGFua3MgYSBsb3QgaW4gYWR2YW5jZS4NCg0KQmVzdCByZWdhcmRzLA0K
+RnJhbmsNCg0KDQoNCg0KDQpWb3JzdGFuZHN2b3JzaXR6ZW5kZXI6IERpcGwuLUluZy4gRGlyayBX
+aWxoZWxtDQpBdWZzaWNodHNyYXRzdm9yc2l0emVuZGVyOiBEci4tSW5nLiBQZXRlciBIYXNzZQ0K
+SGFuZGVsc3JlZ2lzdGVyOiBIUkIgU2FhcmJyw7xja2VuIE5yLiAxMzIwMQ0KVXN0LklEIE5yLjog
+REUgMTUzODA3NjI3DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
