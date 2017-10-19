@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx3.ghmt.de ([188.210.45.230])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e5C1s-0005k1-3Z
- for ath10k@lists.infradead.org; Thu, 19 Oct 2017 14:42:37 +0000
-Received: from [192.168.0.200] (port=48644 helo=SBS-GHMT.ghmt.local)
- by mx3.ghmt.de with esmtps (TLSv1:AES128-SHA:128)
- (Exim 4.82_1-5b7a7c0-XX) (envelope-from <Frank.Lindner@ghmt.de>)
- id 1e5C1U-0002ev-1i
- for ath10k@lists.infradead.org; Thu, 19 Oct 2017 16:42:12 +0200
-From: "Lindner, Frank" <Frank.Lindner@ghmt.de>
-Date: Thu, 19 Oct 2017 16:42:11 +0200
-Subject: Compex WLE1216-V2-20 (QCA9984 2.4 GHz module) board.bin and
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e5DCq-0006B9-B2
+ for ath10k@lists.infradead.org; Thu, 19 Oct 2017 15:58:01 +0000
+Subject: Re: Compex WLE1216-V2-20 (QCA9984 2.4 GHz module) board.bin and
  firmware-x.bin
-Message-ID: <35449B299288584097A15B3FEB9C3E582583316B10@SBS-GHMT.ghmt.local>
-Content-Language: de-DE
+References: <35449B299288584097A15B3FEB9C3E582583316B10@SBS-GHMT.ghmt.local>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <49c7e043-f0b3-bbf0-aa5b-9c1174fd3c4f@candelatech.com>
+Date: Thu, 19 Oct 2017 08:57:32 -0700
 MIME-Version: 1.0
+In-Reply-To: <35449B299288584097A15B3FEB9C3E582583316B10@SBS-GHMT.ghmt.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +19,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Lindner, Frank" <Frank.Lindner@ghmt.de>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGksDQoNCkkgd2FudCB0byB1c2UgQ29tcGV4IFdMRTEyMTYtVjIgMjAgbW9kdWxlcy4gVGhpcyBp
-cyB0aGUgMi40IEdIeiBtb2R1bGUgb2YgdGhlIFFDQTk5ODQuIEl0IHNlZW1zLCB0aGF0IEkgbmVl
-ZCBhIGJvYXJkLmJpbiBpbnN0ZWFkIG9mIHR5cGljYWwgYm9hcmQtMi5ibiBmb3IgUUNBOTk4NCA1
-IEdIeiB2ZXJzaW9uLg0KVGhlIGNhcmQgaXMgcmVxdWVzdGluZyDigJxidXM9cGNpLGJtaS1jaGlw
-LWlkPTAsYm1pLWJvYXJkLWlkPTMw4oCdLiAgSSBmb3VuZCBhIGJvYXJkLmJpbiBmaWxlLCB0aGF0
-4oCZcyBnZXQgbG9hZGVkIGJ5IHRoZSBkcml2ZXIsIGJ1dCB0aGlzIHB1c2hlZCA1IEdIeiBjaGFu
-bmVscyB0byB0aGUgY2FyZCwgd2hpY2ggbWlnaHQgbm90IHdvcmsuIEV2ZW4gdGhhbiBJIGNhbiBu
-b3Qgc2V0IHRvIDIuNCBHSHogY2hhbm5lbHMsIGNhdXNlIGl3IHBoeSBpbmZvIGl0IHRlbGxzIG1l
-IG9ubHkgNSBHSHogY2hhbm5lbCBzdXBwb3J0Lg0KV2hlcmUgY2FuIEkgZG93bmxvYWQgdGhlIGNv
-cnJlY3QgYm9hcmQuYmluIGFuZCwgaWYgbmVlZGVkLCB0aGUgZmlybXdhcmUteC5iaW4gZmlsZT8g
-QW55IGlkZWFzPw0KDQpUaGFua3MgYSBsb3QgaW4gYWR2YW5jZS4NCg0KQmVzdCByZWdhcmRzLA0K
-RnJhbmsNCg0KDQoNCg0KDQpWb3JzdGFuZHN2b3JzaXR6ZW5kZXI6IERpcGwuLUluZy4gRGlyayBX
-aWxoZWxtDQpBdWZzaWNodHNyYXRzdm9yc2l0emVuZGVyOiBEci4tSW5nLiBQZXRlciBIYXNzZQ0K
-SGFuZGVsc3JlZ2lzdGVyOiBIUkIgU2FhcmJyw7xja2VuIE5yLiAxMzIwMQ0KVXN0LklEIE5yLjog
-REUgMTUzODA3NjI3DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+T24gMTAvMTkvMjAxNyAwNzo0MiBBTSwgTGluZG5lciwgRnJhbmsgd3JvdGU6Cj4gSGksCj4KPiBJ
+IHdhbnQgdG8gdXNlIENvbXBleCBXTEUxMjE2LVYyIDIwIG1vZHVsZXMuIFRoaXMgaXMgdGhlIDIu
+NCBHSHogbW9kdWxlIG9mIHRoZSBRQ0E5OTg0LiBJdCBzZWVtcywgdGhhdCBJIG5lZWQgYSBib2Fy
+ZC5iaW4gaW5zdGVhZCBvZiB0eXBpY2FsIGJvYXJkLTIuYm4gZm9yIFFDQTk5ODQgNSBHSHogdmVy
+c2lvbi4KPiBUaGUgY2FyZCBpcyByZXF1ZXN0aW5nIOKAnGJ1cz1wY2ksYm1pLWNoaXAtaWQ9MCxi
+bWktYm9hcmQtaWQ9MzDigJ0uICBJIGZvdW5kIGEgYm9hcmQuYmluIGZpbGUsIHRoYXTigJlzIGdl
+dCBsb2FkZWQgYnkgdGhlIGRyaXZlciwgYnV0IHRoaXMgcHVzaGVkIDUgR0h6IGNoYW5uZWxzIHRv
+IHRoZSBjYXJkLCB3aGljaCBtaWdodCBub3Qgd29yay4gRXZlbiB0aGFuIEkgY2FuIG5vdCBzZXQg
+dG8gMi40IEdIeiBjaGFubmVscywgY2F1c2UgaXcgcGh5IGluZm8gaXQgdGVsbHMgbWUgb25seSA1
+IEdIeiBjaGFubmVsIHN1cHBvcnQuCj4gV2hlcmUgY2FuIEkgZG93bmxvYWQgdGhlIGNvcnJlY3Qg
+Ym9hcmQuYmluIGFuZCwgaWYgbmVlZGVkLCB0aGUgZmlybXdhcmUteC5iaW4gZmlsZT8gQW55IGlk
+ZWFzPwo+Cj4gVGhhbmtzIGEgbG90IGluIGFkdmFuY2UuCgpBdCBsZWFzdCBmb3IgdGhlIDVHaHog
+dmVyc2lvbiBvZiB0aGF0IGNhcmQsIHlvdSBuZWVkIHRvIGdldCBhIHNwZWNpYWwgYm9hcmQuYmlu
+IGZpbGUgZnJvbSBDb21wZXguCgpBbmQsIEknbSBjdXJpb3VzIHdoYXQgdXNlIHlvdSBnZXQgb3V0
+IG9mIGEgOTk4NCBOSUMgb24gMi40R2h6PyAgQXJlIHlvdSBydW5uaW5nClZIVCBvbiAyLjQ/CgpU
+aGFua3MsCkJlbgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5k
+ZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
