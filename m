@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e5Qjp-0007vl-Fm
- for ath10k@lists.infradead.org; Fri, 20 Oct 2017 06:24:59 +0000
+ id 1e5QoV-0001Lr-6K
+ for ath10k@lists.infradead.org; Fri, 20 Oct 2017 06:29:48 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k: fix core PCI suspend when WoWLAN is supported but disabled
-Date: Fri, 20 Oct 2017 06:24:31 +0000
-Message-ID: <87infafiao.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix build errors with !CONFIG_PM
+Date: Fri, 20 Oct 2017 06:29:21 +0000
+Message-ID: <87efpyfi2n.fsf@kamboji.qca.qualcomm.com>
 References: <20170919232416.108247-1-briannorris@chromium.org>
  <2809b2cf512d4c198d3cef3f5e468c3c@euamsexm01e.eu.qualcomm.com>
  <87vajbgqcz.fsf@kamboji.qca.qualcomm.com>	<20171019171224.GA46096@google.com>
-In-Reply-To: <20171019171224.GA46096@google.com> (Brian Norris's message of
- "Thu, 19 Oct 2017 10:12:25 -0700")
+ <20171019184517.GA76422@google.com>
+In-Reply-To: <20171019184517.GA76422@google.com> (Brian Norris's message of
+ "Thu, 19 Oct 2017 11:45:19 -0700")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -31,99 +32,60 @@ Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>, Arnd Bergmann <arnd@arndb.de>, Grant Gr
 
 Brian Norris <briannorris@chromium.org> writes:
 
-> + Arnd
+> Build errors have been reported with CONFIG_PM=n:
 >
-> On Thu, Oct 19, 2017 at 02:32:45PM +0000, Kalle Valo wrote:
->> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+> drivers/net/wireless/ath/ath10k/pci.c:3416:8: error: implicit
+> declaration of function 'ath10k_pci_suspend'
+> [-Werror=implicit-function-declaration]
+>
+> drivers/net/wireless/ath/ath10k/pci.c:3428:8: error: implicit
+> declaration of function 'ath10k_pci_resume'
+> [-Werror=implicit-function-declaration]
+>
+> These are caused by the combination of the following two commits:
+>
+> 6af1de2e4ec4 ("ath10k: mark PM functions as __maybe_unused")
+> 96378bd2c6cd ("ath10k: fix core PCI suspend when WoWLAN is supported but
+> disabled")
+>
+> Both build fine on their own.
+>
+> But now that ath10k_pci_pm_{suspend,resume}() is compiled
+> unconditionally, we should also compile ath10k_pci_{suspend,resume}()
+> unconditionally.
+>
+> And drop the #ifdef around ath10k_pci_hif_{suspend,resume}() too; they
+> are trivial (empty), so we're not saving much space by compiling them
+> out. And the alternatives would be to sprinkle more __maybe_unused, or
+> spread the #ifdef's further.
+>
+> Build tested with the following combinations:
+> CONFIG_PM=y && CONFIG_PM_SLEEP=y
+> CONFIG_PM=y && CONFIG_PM_SLEEP=n
+> CONFIG_PM=n
+>
+> Fixes: 96378bd2c6cd ("ath10k: fix core PCI suspend when WoWLAN is
+> supported but disabled")
+> Fixes: 096ad2a15fd8 ("Merge branch 'ath-next'")
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/pci.c | 5 -----
+>  1 file changed, 5 deletions(-)
+>
+> On Thu, Oct 19, 2017 at 10:12:25AM -0700, Brian Norris wrote:
+>> The solution would seem to be either to kill the #ifdefs around
+>> ath10k_pci_{suspend,resume}() and friends (and use __maybe_unused
+>> instead, to further extend Arnd's patch), or else revert Arnd's stuff
+>> and go with CONFIG_PM_SLEEP everywhere, which would resolve the original
+>> warning (promoted to error) that Arnd was resolving.
 >> 
->> > Brian Norris <briannorris@chromium.org> wrote:
->> >
->> >> For devices where the FW supports WoWLAN but user-space has not
->> >> configured it, we don't do any PCI-specific suspend/resume operations,
->> >> because mac80211 doesn't call drv_suspend() when !wowlan. This has
->> >> particularly bad effects for some platforms, because we don't stop the
->> >> power-save timer, and if this timer goes off after the PCI controller
->> >> has suspended the link, Bad Things will happen.
->> >> 
->> >> Commit 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
->> >> got some of this right, in that it understood there was a problem on
->> >> non-WoWLAN firmware. But it forgot the $subject case.
->> >> 
->> >> Fix this by moving all the PCI driver suspend/resume logic exclusively
->> >> into the driver PM hooks. This shouldn't affect WoWLAN support much
->> >> (this just gets executed later on).
->> >> 
->> >> I would just as well kill the entirety of ath10k_hif_suspend(), as it's
->> >> not even implemented on the USB or SDIO drivers. I expect that we don't
->> >> need the callback, except to return "supported" (i.e., 0) or "not
->> >> supported" (i.e., -EOPNOTSUPP).
->> >> 
->> >> Fixes: 32faa3f0ee50 ("ath10k: add the PCI PM core suspend/resume ops")
->> >> Fixes: 77258d409ce4 ("ath10k: enable pci soc powersaving")
->> >> Signed-off-by: Brian Norris <briannorris@chromium.org>
->> >> Cc: Ryan Hsu <ryanhsu@qti.qualcomm.com>
->> >> Cc: Kalle Valo <kvalo@qca.qualcomm.com>
->> >> Cc: Michal Kazior <michal.kazior@tieto.com>
->> >> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
->> >
->> > Patch applied to ath-next branch of ath.git, thanks.
->> >
->> > 96378bd2c6cd ath10k: fix core PCI suspend when WoWLAN is supported but disabled
->> 
->> Kbuild found a build problem, I suspect it's caused by this patch:
+>> I can send out one of these if you'd like.
 >
-> Actually, it's the interaction of this patch and Arnd's patch:
->
-> 6af1de2e4ec4 ath10k: mark PM functions as __maybe_unused
->
-> I see that's now in these branches:
->
->   ath/ath-current
->   ath/ath-qca
->   ath/master
->   ath/master-pending
->   wireless-drivers-next/master
->   wireless-drivers-next/pending
->
-> Whereas mine got applied to:
->
->   ath/ath-next
->
-> So technically, the problem is in your merge here :)
->
-> 096ad2a15fd8 Merge branch 'ath-next'
+> Here you go :)
 
-Ah, that's why kbuild bot didn't report about this problem while your
-patch was in my pending branch. And I was also really puzzled why it
-claimed that my merge was at fault :) Thanks for the good explanation.
-
-Just to clarify: ath-current is for patches going to 4.14 and ath-next
-to 4.15, that's why they were applied to a different branch.
-
->> drivers/net/wireless/ath/ath10k/pci.c:3416:8: error: implicit
->> declaration of function 'ath10k_pci_suspend'
->> [-Werror=implicit-function-declaration]
->> 
->> drivers/net/wireless/ath/ath10k/pci.c:3428:8: error: implicit
->> declaration of function 'ath10k_pci_resume'
->> [-Werror=implicit-function-declaration]
->> 
->> http://lists.infradead.org/pipermail/ath10k/2017-October/010269.html
->> 
->> The .config.gz there doesn't have CONFIG_PM set, maybe that's the
->> problem?
->
-> Yes, indirectly that's also the problem.
->
-> The solution would seem to be either to kill the #ifdefs around
-> ath10k_pci_{suspend,resume}() and friends (and use __maybe_unused
-> instead, to further extend Arnd's patch), or else revert Arnd's stuff
-> and go with CONFIG_PM_SLEEP everywhere, which would resolve the original
-> warning (promoted to error) that Arnd was resolving.
->
-> I can send out one of these if you'd like.
-
-I see that you already sent the patch, thanks!
+Thanks! As this an unusual merge problem between two branches I applied
+this manually to ath.git master-pending branch for now. Let's see if
+kbuild bot is happy now.
 
 -- 
 Kalle Valo
