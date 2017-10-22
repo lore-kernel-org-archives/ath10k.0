@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail-pf0-x230.google.com ([2607:f8b0:400e:c00::230])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e5ofw-0006VB-Jw
- for ath10k@lists.infradead.org; Sat, 21 Oct 2017 07:58:35 +0000
-Subject: Re: [PATCH] ath10k: rebuild crypto header in RX data frames
-References: <150851690590.5158.11970481736247725763.stgit@potku.adurom.net>
- <c9bdd915-0667-eee0-3b52-1fdf15abf249@dd-wrt.com>
- <CAGyitvP0wquoo_8_ma3rcj+riJ5Wgfo7+pmbUOx9pQRwFcQHYA@mail.gmail.com>
- <877evpdscc.fsf@kamboji.qca.qualcomm.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <1564413e-41d7-1ad9-261e-38515382b059@dd-wrt.com>
-Date: Sat, 21 Oct 2017 09:58:04 +0200
+ id 1e68mv-0006oT-Pc
+ for ath10k@lists.infradead.org; Sun, 22 Oct 2017 05:27:08 +0000
+Received: by mail-pf0-x230.google.com with SMTP id 17so14815110pfn.12
+ for <ath10k@lists.infradead.org>; Sat, 21 Oct 2017 22:26:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <877evpdscc.fsf@kamboji.qca.qualcomm.com>
+From: William Josefsson <towilliamjosefsson@gmail.com>
+Date: Sun, 22 Oct 2017 13:26:42 +0800
+Message-ID: <CANB4+FnRBDsC8fbxr2tCzTVaUm=ZOPan7ov3Y880qDSsNukBPw@mail.gmail.com>
+Subject: ath10k QCA9377 fails on Acer laptop running 4.13.0-16-generic
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +18,112 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, Jasmine Strong <jas@eero.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-ZXZlbiBpZiBoZSB1c2VkIG15IHBhdGNoLiBteSBwYXRjaCBzaG91bGQgaGF2ZSBubyBpbmZsdWVu
-Y2UgdG8gd3BhMiAKY2NtcC4gaXQganVzdCBhZGRzIHRoZSBuZXcgY2NtcCAyNTYgKyBnY21wIG1v
-ZGVzCgpBbSAyMS4xMC4yMDE3IHVtIDA2OjQyIHNjaHJpZWIgS2FsbGUgVmFsbzoKPiBKYXNtaW5l
-IFN0cm9uZyA8amFzQGVlcm8uY29tPiB3cml0ZXM6Cj4KPj4gV2hlbiB3ZSB0cmllZCB0aGlzIHBh
-dGNoLCBpdCBjb21wbGV0ZWx5IGJyb2tlIGFsbCB3cGEyLWNjbXAtYWVzCj4+IHRyYWZmaWMuCj4g
-V2hpY2ggcGF0Y2gsIFZhc2FudGgncyBvciBTZWJhc3RpYW4ncz8gSSBldmVuIHRlc3RlZCBteXNl
-bGYsIHdpdGggYm90aAo+IENDTVAgYW5kIFRLSVAgb24gYm90aCBBUCBhbmQgY2xpZW50IG1vZGVz
-LCBhbmQgZGlkbid0IHNlZSBzZWUgYW55Cj4gcHJvYmxlbXMuIFdoYXQga2luZCBvZiBzZXR1cCB5
-b3UgaGF2ZT8KPgo+IEkgdGVzdGVkIG9uIGEgeDg2IGxhcHRvcCBhbmQgY3VycmVudCBhdGguZ2l0
-IG1hc3RlciBicmFuY2g6Cj4KPiBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogcGNpIGlycSBtc2kg
-b3Blcl9pcnFfbW9kZSAyIGlycV9tb2RlIDAgcmVzZXRfbW9kZSAwCj4gYXRoMTBrX3BjaSAwMDAw
-OjAyOjAwLjA6IHFjYTk4OHggaHcyLjAgdGFyZ2V0IDB4NDEwMDAxNmMgY2hpcF9pZCAweDA0MzIw
-MmZmIHN1YiAwMDAwOjAwMDAKPiBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDoga2NvbmZpZyBkZWJ1
-ZyAxIGRlYnVnZnMgMSB0cmFjaW5nIDEgZGZzIDEgdGVzdG1vZGUgMQo+IGF0aDEwa19wY2kgMDAw
-MDowMjowMC4wOiBmaXJtd2FyZSB2ZXIgMTAuMi40LjcwLjY2IGFwaSA1IGZlYXR1cmVzIG5vLXAy
-cCxyYXctbW9kZSxtZnAsYWxsb3dzLW1lc2gtYmNhc3QgY3JjMzIgYzJkZDJhZDUKPiBhdGgxMGtf
-cGNpIDAwMDA6MDI6MDAuMDogYm9hcmRfZmlsZSBhcGkgMSBibWlfaWQgTi9BIGNyYzMyIGJlYmM3
-YzA4Cj4KPiBBbmQgbXkgaG9zdGFwZC5jb25mOgo+Cj4gZHJpdmVyPW5sODAyMTEKPiBod19tb2Rl
-PWEKPiBjaGFubmVsPTM2Cj4gaWVlZTgwMjExbj0xCj4gaW50ZXJmYWNlPXdsYW4wCj4gY3RybF9p
-bnRlcmZhY2U9L3Zhci9ydW4vaG9zdGFwZAo+IGN0cmxfaW50ZXJmYWNlX2dyb3VwPWFkbQo+IHNz
-aWQ9dGVzdC1wc2sKPiB3cGE9Mgo+IHdwYV9rZXlfbWdtdD1XUEEtUFNLCj4gd3BhX3BhaXJ3aXNl
-PUNDTVAKPiB3cGFfcGFzc3BocmFzZT0xMjM0NTY3OAo+Cj4KCi0tIApNaXQgZnJldW5kbGljaGVu
-IEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlh
-LU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUgMjFhLCA2NDYy
-NSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1
-NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hl
-ZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20K
-VGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
-YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi,
+
+I've a Acer Aspire 1, A114-31 (Bios 1.08) which I've installed Ubuntu
+17.01 server on. I've spent 2 days trying to the wireless working.
+I've retrieved and installed the firmware from:
+https://github.com/kvalo/ath10k-firmware using the QCA9377 firmware:
+board.bin, board-2.bin,
+WLAN.TF.1.0/firmware-5.bin_WLAN.TF.1.0-00002-QCATFSWPZ-5.
+
+Kernel:  4.13.0-16-generic #19-Ubuntu SMP
+The latest stable backports fails to compile, so I've installed:
+backports-4.14-rc2-1.tar.gz instead.
+I had to disable secure boot to not get error about missing key.
+
+$ sudo modprobe ath10k_pci ath, results in:
+
+[ 2317.636700] Loading modules backported from Linux version
+v4.14-rc2-0-ge19b205be43d
+[ 2317.636702] Backport generated by backports.git v4.14-rc2-1-0-g8bfe0960
+[ 2317.656612] ath10k_pci: unknown parameter 'ath' ignored
+[ 2317.657939] ath10k_pci 0000:03:00.0: pci irq msi oper_irq_mode 2
+irq_mode 0 reset_mode 0
+[ 2317.955588] ath10k_pci 0000:03:00.0: Direct firmware load for
+ath10k/pre-cal-pci-0000:03:00.0.bin failed with error -2
+[ 2317.955601] ath10k_pci 0000:03:00.0: Direct firmware load for
+ath10k/cal-pci-0000:03:00.0.bin failed with error -2
+[ 2317.955631] ath10k_pci 0000:03:00.0: Direct firmware load for
+ath10k/QCA9377/hw1.0/firmware-6.bin failed with error -2
+[ 2317.956039] ath10k_pci 0000:03:00.0: qca9377 hw1.1 target
+0x05020001 chip_id 0x003821ff sub 11ad:08a6
+[ 2317.956044] ath10k_pci 0000:03:00.0: kconfig debug 0 debugfs 0
+tracing 0 dfs 0 testmode 0
+[ 2317.956731] ath10k_pci 0000:03:00.0: firmware ver
+WLAN.TF.1.0-00002-QCATFSWPZ-5 api 5 features ignore-otp crc32 c3e0d04f
+[ 2318.019845] ath10k_pci 0000:03:00.0: board_file api 2 bmi_id N/A
+crc32 8aedfa4a
+[ 2318.638349] ath10k_pci 0000:03:00.0: htt-ver 3.44 wmi-op 4 htt-op 3
+cal otp max-sta 32 raw 0 hwcrypto 1
+[ 2318.641758] ath: EEPROM regdomain: 0x69
+[ 2318.641761] ath: EEPROM indicates we should expect a direct regpair map
+[ 2318.641763] ath: Country alpha2 being used: 00
+[ 2318.641765] ath: Regpair used: 0x69
+[ 2318.651606] ath10k_pci 0000:03:00.0 wlp3s0: renamed from wlan0
+
+$ sudo wpa_supplicant -iwlp3s0 -Dnl80211 -c/etc/wpa.conf
+Successfully initialized wpa_supplicant
+Could not read interface p2p-dev-wlp3s0 flags: No such device
+p2p-dev-wlp3s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+
+When I run dhclient wlp3s0 it just hangs without retrieving an IP lease.
+
+
+I have been unable to find the 3 missing files requested above. Can
+someone please advice how to get this working? thx will
+
+
+
+lspci -v
+
+03:00.0 Network controller: Qualcomm Atheros QCA9377 802.11ac Wireless
+Network Adapter (rev 31)
+Subsystem: Lite-On Communications Inc QCA9377 802.11ac Wireless Network Adapter
+Flags: bus master, fast devsel, latency 0, IRQ 376
+Memory at 91000000 (64-bit, non-prefetchable) [size=2M]
+Capabilities: [40] Power Management version 3
+Capabilities: [50] MSI: Enable+ Count=1/8 Maskable+ 64bit-
+Capabilities: [70] Express Endpoint, MSI 00
+Capabilities: [100] Advanced Error Reporting
+Capabilities: [148] Virtual Channel
+Capabilities: [168] Device Serial Number 00-00-00-00-00-00-00-00
+Capabilities: [178] Latency Tolerance Reporting
+Capabilities: [180] L1 PM Substates
+Kernel driver in use: ath10k_pci
+Kernel modules: ath10k_pci
+
+
+$ rfkill list
+0: acer-wireless: Wireless LAN
+Soft blocked: no
+Hard blocked: no
+1: acer-bluetooth: Bluetooth
+Soft blocked: no
+Hard blocked: no
+2: hci0: Bluetooth
+Soft blocked: no
+Hard blocked: no
+3: phy0: Wireless LAN
+Soft blocked: no
+Hard blocked: no
+
+$ sudo iw dev
+phy#0
+Interface wlp3s0
+ifindex 3
+wdev 0x1
+addr 3c:a0:67:f4:2e:e9
+type managed
+txpower 0.00 dBm
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
