@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pg0-x231.google.com ([2607:f8b0:400e:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6Ao7-0003tL-8z
- for ath10k@lists.infradead.org; Sun, 22 Oct 2017 07:36:29 +0000
-Received: by mail-pf0-x241.google.com with SMTP id b79so14936297pfk.5
- for <ath10k@lists.infradead.org>; Sun, 22 Oct 2017 00:36:07 -0700 (PDT)
+ id 1e6Ctf-0006Pz-IA
+ for ath10k@lists.infradead.org; Sun, 22 Oct 2017 09:50:21 +0000
+Received: by mail-pg0-x231.google.com with SMTP id a192so9636078pge.9
+ for <ath10k@lists.infradead.org>; Sun, 22 Oct 2017 02:49:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <753763d2-5edf-6424-fd40-7269b0e0d0f3@dd-wrt.com>
+In-Reply-To: <CANB4+FnRBDsC8fbxr2tCzTVaUm=ZOPan7ov3Y880qDSsNukBPw@mail.gmail.com>
 References: <CANB4+FnRBDsC8fbxr2tCzTVaUm=ZOPan7ov3Y880qDSsNukBPw@mail.gmail.com>
- <753763d2-5edf-6424-fd40-7269b0e0d0f3@dd-wrt.com>
 From: William Josefsson <towilliamjosefsson@gmail.com>
-Date: Sun, 22 Oct 2017 15:36:06 +0800
-Message-ID: <CANB4+F=nsSbXw88d+7YyHCLiQpv924hq8Na=L=-AH4XofkcMgA@mail.gmail.com>
+Date: Sun, 22 Oct 2017 17:49:57 +0800
+Message-ID: <CANB4+Fku9wS917_2xaXnDBW04SojndHddTXjMJZghE05z+KCDw@mail.gmail.com>
 Subject: Re: ath10k QCA9377 fails on Acer laptop running 4.13.0-16-generic
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,110 +20,127 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-SGksCgpUaGUgY29udGVudCBpcyBnZW5lcmF0ZWQgd2l0aCAnd3BhX3Bhc3NwaHJhc2UnLCBhbmQg
-SSBjYW5ub3Qgc2VlCmFueXRoaW5nIHJlbGF0ZWQgdG8gcDJwLiBUaGlzIGlzIHRoZSBjb250ZW50
-OgoKbmV0d29yaz17CnNzaWQ9Im15U1NJRCIKI3Bzaz0iY2xlYXJ0ZXh0cGFzc3dvcmQiCnBzaz08
-bG9uZyBoYXNoPgp9CgpJJ20gbm90IHN1cmUsIGJ1dCBJIGJlbGlldmUgdGhpcyBBdGhlcm9zIFFD
-QTkzNzcgKE5GQTQzNSkgb24gdGhpcwpsYXB0b3AgaXMgbm90IHN1cHBvcnRlZCwgb3IgSSBtdXN0
-IGhhdmUgbWlzc2VkIG91dCBvbiBzb21lIHN0ZXBzLiA6KApFdmVuIG1vcmUgZnJ1c3RyYXRpbmcg
-aXMgdGhhdCB3aGVuIEkgdHJ5IHRvIGRvIHRoZSBuZGlzd3JhcHBlcgpzb2x1dGlvbiwgdGhlIG1v
-ZHVsZSBzZWVtIHRvIGluc2VydCBuaWNlbHkgd2l0aCBuZGlzd3JhcHBlciAtaSAsCmhvd2V2ZXIg
-d2hlbiBJIGRvIGRlcG1vZCAtYSBhbmQgbW9kcHJvYmUgbmRpc3dyYXBwZXIsIEkgZ2V0OgoKbG9h
-ZG5kaXNkcml2ZXI6IGxvYWRuZGlzZHJpdmVyOiBsb2FkX2RyaXZlcigzMzYpOiB0b28gbWFueSAu
-YmluIGZpbGVzCmZvciBkcml2ZXIgbmV0YXRocjEweAoKCgoKCgpPbiBTdW4sIE9jdCAyMiwgMjAx
-NyBhdCAyOjUxIFBNLCBTZWJhc3RpYW4gR290dHNjaGFsbAo8cy5nb3R0c2NoYWxsQGRkLXdydC5j
-b20+IHdyb3RlOgo+IHRoZSBwcm9ibGVtIHNlZW1zIHRvIGJlIGluIC9ldGMvd3BhLmNvbmYKPiBi
-dXQgaSBkb250IGtub3cgdGhlIGNvbnRlbnQuIHNvIHJlYWxseSBjYW50IGhlbHAgaGVyZS4KPiBp
-dHMgc2VlbXMgdGhhdCBhIGludGVyZmFjZSBuYW1lZCBwMnAtZGV2LXdscDNzMCBpcyByZWZlcmVk
-IGluIGl0LCBidXQgdGhlCj4gY29ycmVjdCAgbmFtZSBpcyBqdXN0IHdscDNzMAo+Cj4KPgo+IEFt
-IDIyLjEwLjIwMTcgdW0gMDc6MjYgc2NocmllYiBXaWxsaWFtIEpvc2Vmc3NvbjoKPj4KPj4gSGks
-Cj4+Cj4+IEkndmUgYSBBY2VyIEFzcGlyZSAxLCBBMTE0LTMxIChCaW9zIDEuMDgpIHdoaWNoIEkn
-dmUgaW5zdGFsbGVkIFVidW50dQo+PiAxNy4wMSBzZXJ2ZXIgb24uIEkndmUgc3BlbnQgMiBkYXlz
-IHRyeWluZyB0byB0aGUgd2lyZWxlc3Mgd29ya2luZy4KPj4gSSd2ZSByZXRyaWV2ZWQgYW5kIGlu
-c3RhbGxlZCB0aGUgZmlybXdhcmUgZnJvbToKPj4gaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0
-aDEway1maXJtd2FyZSB1c2luZyB0aGUgUUNBOTM3NyBmaXJtd2FyZToKPj4gYm9hcmQuYmluLCBi
-b2FyZC0yLmJpbiwKPj4gV0xBTi5URi4xLjAvZmlybXdhcmUtNS5iaW5fV0xBTi5URi4xLjAtMDAw
-MDItUUNBVEZTV1BaLTUuCj4+Cj4+IEtlcm5lbDogIDQuMTMuMC0xNi1nZW5lcmljICMxOS1VYnVu
-dHUgU01QCj4+IFRoZSBsYXRlc3Qgc3RhYmxlIGJhY2twb3J0cyBmYWlscyB0byBjb21waWxlLCBz
-byBJJ3ZlIGluc3RhbGxlZDoKPj4gYmFja3BvcnRzLTQuMTQtcmMyLTEudGFyLmd6IGluc3RlYWQu
-Cj4+IEkgaGFkIHRvIGRpc2FibGUgc2VjdXJlIGJvb3QgdG8gbm90IGdldCBlcnJvciBhYm91dCBt
-aXNzaW5nIGtleS4KPj4KPj4gJCBzdWRvIG1vZHByb2JlIGF0aDEwa19wY2kgYXRoLCByZXN1bHRz
-IGluOgo+Pgo+PiBbIDIzMTcuNjM2NzAwXSBMb2FkaW5nIG1vZHVsZXMgYmFja3BvcnRlZCBmcm9t
-IExpbnV4IHZlcnNpb24KPj4gdjQuMTQtcmMyLTAtZ2UxOWIyMDViZTQzZAo+PiBbIDIzMTcuNjM2
-NzAyXSBCYWNrcG9ydCBnZW5lcmF0ZWQgYnkgYmFja3BvcnRzLmdpdCB2NC4xNC1yYzItMS0wLWc4
-YmZlMDk2MAo+PiBbIDIzMTcuNjU2NjEyXSBhdGgxMGtfcGNpOiB1bmtub3duIHBhcmFtZXRlciAn
-YXRoJyBpZ25vcmVkCj4+IFsgMjMxNy42NTc5MzldIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBw
-Y2kgaXJxIG1zaSBvcGVyX2lycV9tb2RlIDIKPj4gaXJxX21vZGUgMCByZXNldF9tb2RlIDAKPj4g
-WyAyMzE3Ljk1NTU4OF0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBs
-b2FkIGZvcgo+PiBhdGgxMGsvcHJlLWNhbC1wY2ktMDAwMDowMzowMC4wLmJpbiBmYWlsZWQgd2l0
-aCBlcnJvciAtMgo+PiBbIDIzMTcuOTU1NjAxXSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogRGly
-ZWN0IGZpcm13YXJlIGxvYWQgZm9yCj4+IGF0aDEway9jYWwtcGNpLTAwMDA6MDM6MDAuMC5iaW4g
-ZmFpbGVkIHdpdGggZXJyb3IgLTIKPj4gWyAyMzE3Ljk1NTYzMV0gYXRoMTBrX3BjaSAwMDAwOjAz
-OjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvcgo+PiBhdGgxMGsvUUNBOTM3Ny9odzEuMC9m
-aXJtd2FyZS02LmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMgo+PiBbIDIzMTcuOTU2MDM5XSBhdGgx
-MGtfcGNpIDAwMDA6MDM6MDAuMDogcWNhOTM3NyBodzEuMSB0YXJnZXQKPj4gMHgwNTAyMDAwMSBj
-aGlwX2lkIDB4MDAzODIxZmYgc3ViIDExYWQ6MDhhNgo+PiBbIDIzMTcuOTU2MDQ0XSBhdGgxMGtf
-cGNpIDAwMDA6MDM6MDAuMDoga2NvbmZpZyBkZWJ1ZyAwIGRlYnVnZnMgMAo+PiB0cmFjaW5nIDAg
-ZGZzIDAgdGVzdG1vZGUgMAo+PiBbIDIzMTcuOTU2NzMxXSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAu
-MDogZmlybXdhcmUgdmVyCj4+IFdMQU4uVEYuMS4wLTAwMDAyLVFDQVRGU1dQWi01IGFwaSA1IGZl
-YXR1cmVzIGlnbm9yZS1vdHAgY3JjMzIgYzNlMGQwNGYKPj4gWyAyMzE4LjAxOTg0NV0gYXRoMTBr
-X3BjaSAwMDAwOjAzOjAwLjA6IGJvYXJkX2ZpbGUgYXBpIDIgYm1pX2lkIE4vQQo+PiBjcmMzMiA4
-YWVkZmE0YQo+PiBbIDIzMTguNjM4MzQ5XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogaHR0LXZl
-ciAzLjQ0IHdtaS1vcCA0IGh0dC1vcCAzCj4+IGNhbCBvdHAgbWF4LXN0YSAzMiByYXcgMCBod2Ny
-eXB0byAxCj4+IFsgMjMxOC42NDE3NThdIGF0aDogRUVQUk9NIHJlZ2RvbWFpbjogMHg2OQo+PiBb
-IDIzMTguNjQxNzYxXSBhdGg6IEVFUFJPTSBpbmRpY2F0ZXMgd2Ugc2hvdWxkIGV4cGVjdCBhIGRp
-cmVjdCByZWdwYWlyIG1hcAo+PiBbIDIzMTguNjQxNzYzXSBhdGg6IENvdW50cnkgYWxwaGEyIGJl
-aW5nIHVzZWQ6IDAwCj4+IFsgMjMxOC42NDE3NjVdIGF0aDogUmVncGFpciB1c2VkOiAweDY5Cj4+
-IFsgMjMxOC42NTE2MDZdIGF0aDEwa19wY2kgMDAwMDowMzowMC4wIHdscDNzMDogcmVuYW1lZCBm
-cm9tIHdsYW4wCj4+Cj4+ICQgc3VkbyB3cGFfc3VwcGxpY2FudCAtaXdscDNzMCAtRG5sODAyMTEg
-LWMvZXRjL3dwYS5jb25mCj4+IFN1Y2Nlc3NmdWxseSBpbml0aWFsaXplZCB3cGFfc3VwcGxpY2Fu
-dAo+PiBDb3VsZCBub3QgcmVhZCBpbnRlcmZhY2UgcDJwLWRldi13bHAzczAgZmxhZ3M6IE5vIHN1
-Y2ggZGV2aWNlCj4+IHAycC1kZXYtd2xwM3MwOiBDVFJMLUVWRU5ULVJFR0RPTS1DSEFOR0UgaW5p
-dD1CRUFDT05fSElOVCB0eXBlPVVOS05PV04KPj4KPj4gV2hlbiBJIHJ1biBkaGNsaWVudCB3bHAz
-czAgaXQganVzdCBoYW5ncyB3aXRob3V0IHJldHJpZXZpbmcgYW4gSVAgbGVhc2UuCj4+Cj4+Cj4+
-IEkgaGF2ZSBiZWVuIHVuYWJsZSB0byBmaW5kIHRoZSAzIG1pc3NpbmcgZmlsZXMgcmVxdWVzdGVk
-IGFib3ZlLiBDYW4KPj4gc29tZW9uZSBwbGVhc2UgYWR2aWNlIGhvdyB0byBnZXQgdGhpcyB3b3Jr
-aW5nPyB0aHggd2lsbAo+Pgo+Pgo+Pgo+PiBsc3BjaSAtdgo+Pgo+PiAwMzowMC4wIE5ldHdvcmsg
-Y29udHJvbGxlcjogUXVhbGNvbW0gQXRoZXJvcyBRQ0E5Mzc3IDgwMi4xMWFjIFdpcmVsZXNzCj4+
-IE5ldHdvcmsgQWRhcHRlciAocmV2IDMxKQo+PiBTdWJzeXN0ZW06IExpdGUtT24gQ29tbXVuaWNh
-dGlvbnMgSW5jIFFDQTkzNzcgODAyLjExYWMgV2lyZWxlc3MgTmV0d29yawo+PiBBZGFwdGVyCj4+
-IEZsYWdzOiBidXMgbWFzdGVyLCBmYXN0IGRldnNlbCwgbGF0ZW5jeSAwLCBJUlEgMzc2Cj4+IE1l
-bW9yeSBhdCA5MTAwMDAwMCAoNjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0yTV0KPj4g
-Q2FwYWJpbGl0aWVzOiBbNDBdIFBvd2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAzCj4+IENhcGFiaWxp
-dGllczogWzUwXSBNU0k6IEVuYWJsZSsgQ291bnQ9MS84IE1hc2thYmxlKyA2NGJpdC0KPj4gQ2Fw
-YWJpbGl0aWVzOiBbNzBdIEV4cHJlc3MgRW5kcG9pbnQsIE1TSSAwMAo+PiBDYXBhYmlsaXRpZXM6
-IFsxMDBdIEFkdmFuY2VkIEVycm9yIFJlcG9ydGluZwo+PiBDYXBhYmlsaXRpZXM6IFsxNDhdIFZp
-cnR1YWwgQ2hhbm5lbAo+PiBDYXBhYmlsaXRpZXM6IFsxNjhdIERldmljZSBTZXJpYWwgTnVtYmVy
-IDAwLTAwLTAwLTAwLTAwLTAwLTAwLTAwCj4+IENhcGFiaWxpdGllczogWzE3OF0gTGF0ZW5jeSBU
-b2xlcmFuY2UgUmVwb3J0aW5nCj4+IENhcGFiaWxpdGllczogWzE4MF0gTDEgUE0gU3Vic3RhdGVz
-Cj4+IEtlcm5lbCBkcml2ZXIgaW4gdXNlOiBhdGgxMGtfcGNpCj4+IEtlcm5lbCBtb2R1bGVzOiBh
-dGgxMGtfcGNpCj4+Cj4+Cj4+ICQgcmZraWxsIGxpc3QKPj4gMDogYWNlci13aXJlbGVzczogV2ly
-ZWxlc3MgTEFOCj4+IFNvZnQgYmxvY2tlZDogbm8KPj4gSGFyZCBibG9ja2VkOiBubwo+PiAxOiBh
-Y2VyLWJsdWV0b290aDogQmx1ZXRvb3RoCj4+IFNvZnQgYmxvY2tlZDogbm8KPj4gSGFyZCBibG9j
-a2VkOiBubwo+PiAyOiBoY2kwOiBCbHVldG9vdGgKPj4gU29mdCBibG9ja2VkOiBubwo+PiBIYXJk
-IGJsb2NrZWQ6IG5vCj4+IDM6IHBoeTA6IFdpcmVsZXNzIExBTgo+PiBTb2Z0IGJsb2NrZWQ6IG5v
-Cj4+IEhhcmQgYmxvY2tlZDogbm8KPj4KPj4gJCBzdWRvIGl3IGRldgo+PiBwaHkjMAo+PiBJbnRl
-cmZhY2Ugd2xwM3MwCj4+IGlmaW5kZXggMwo+PiB3ZGV2IDB4MQo+PiBhZGRyIDNjOmEwOjY3OmY0
-OjJlOmU5Cj4+IHR5cGUgbWFuYWdlZAo+PiB0eHBvd2VyIDAuMDAgZEJtCj4+Cj4+IF9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IGF0aDEwayBtYWlsaW5n
-IGxpc3QKPj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPj4KPgo+IC0tCj4gTWl0IGZyZXVuZGxp
-Y2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKPgo+IFNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RPCj4K
-PiBOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVAo+IEZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxs
-ZWUgMjFhLCA2NDYyNSBCZW5zaGVpbQo+IFJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFy
-bXN0YWR0LCBIUkIgMjU0NzMKPiBHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2Vy
-LCBDaHJpc3RpYW4gU2NoZWVsZQo+IGh0dHA6Ly93d3cuZGQtd3J0LmNvbQo+IGVtYWlsOiBzLmdv
-dHRzY2hhbGxAZGQtd3J0LmNvbQo+IFRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUx
-LTU4MjY1NjUKPgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
-bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+My apologies. There's nothing wrong with the driver and the QCA9377
+works as expected on Ubuntu 17.01. The problem was my router that had
+3 modes, AUTO, AES, TKIP. I had AUTO (the default) and that resulted
+in all the connectivity issues I experienced with wpa_supplicant.
+
+I discovered this by booting Ubuntu live cd, and couldn't see my SSID.
+Once I changed to fixed TKIP, and restarted the router, than the OS
+discovered it. This reminds me of the days when auto sense in
+networking gear caused similar negotiation/connectivity issues. thx
+will.
+
+
+
+On Sun, Oct 22, 2017 at 1:26 PM, William Josefsson
+<towilliamjosefsson@gmail.com> wrote:
+> Hi,
+>
+> I've a Acer Aspire 1, A114-31 (Bios 1.08) which I've installed Ubuntu
+> 17.01 server on. I've spent 2 days trying to the wireless working.
+> I've retrieved and installed the firmware from:
+> https://github.com/kvalo/ath10k-firmware using the QCA9377 firmware:
+> board.bin, board-2.bin,
+> WLAN.TF.1.0/firmware-5.bin_WLAN.TF.1.0-00002-QCATFSWPZ-5.
+>
+> Kernel:  4.13.0-16-generic #19-Ubuntu SMP
+> The latest stable backports fails to compile, so I've installed:
+> backports-4.14-rc2-1.tar.gz instead.
+> I had to disable secure boot to not get error about missing key.
+>
+> $ sudo modprobe ath10k_pci ath, results in:
+>
+> [ 2317.636700] Loading modules backported from Linux version
+> v4.14-rc2-0-ge19b205be43d
+> [ 2317.636702] Backport generated by backports.git v4.14-rc2-1-0-g8bfe0960
+> [ 2317.656612] ath10k_pci: unknown parameter 'ath' ignored
+> [ 2317.657939] ath10k_pci 0000:03:00.0: pci irq msi oper_irq_mode 2
+> irq_mode 0 reset_mode 0
+> [ 2317.955588] ath10k_pci 0000:03:00.0: Direct firmware load for
+> ath10k/pre-cal-pci-0000:03:00.0.bin failed with error -2
+> [ 2317.955601] ath10k_pci 0000:03:00.0: Direct firmware load for
+> ath10k/cal-pci-0000:03:00.0.bin failed with error -2
+> [ 2317.955631] ath10k_pci 0000:03:00.0: Direct firmware load for
+> ath10k/QCA9377/hw1.0/firmware-6.bin failed with error -2
+> [ 2317.956039] ath10k_pci 0000:03:00.0: qca9377 hw1.1 target
+> 0x05020001 chip_id 0x003821ff sub 11ad:08a6
+> [ 2317.956044] ath10k_pci 0000:03:00.0: kconfig debug 0 debugfs 0
+> tracing 0 dfs 0 testmode 0
+> [ 2317.956731] ath10k_pci 0000:03:00.0: firmware ver
+> WLAN.TF.1.0-00002-QCATFSWPZ-5 api 5 features ignore-otp crc32 c3e0d04f
+> [ 2318.019845] ath10k_pci 0000:03:00.0: board_file api 2 bmi_id N/A
+> crc32 8aedfa4a
+> [ 2318.638349] ath10k_pci 0000:03:00.0: htt-ver 3.44 wmi-op 4 htt-op 3
+> cal otp max-sta 32 raw 0 hwcrypto 1
+> [ 2318.641758] ath: EEPROM regdomain: 0x69
+> [ 2318.641761] ath: EEPROM indicates we should expect a direct regpair map
+> [ 2318.641763] ath: Country alpha2 being used: 00
+> [ 2318.641765] ath: Regpair used: 0x69
+> [ 2318.651606] ath10k_pci 0000:03:00.0 wlp3s0: renamed from wlan0
+>
+> $ sudo wpa_supplicant -iwlp3s0 -Dnl80211 -c/etc/wpa.conf
+> Successfully initialized wpa_supplicant
+> Could not read interface p2p-dev-wlp3s0 flags: No such device
+> p2p-dev-wlp3s0: CTRL-EVENT-REGDOM-CHANGE init=BEACON_HINT type=UNKNOWN
+>
+> When I run dhclient wlp3s0 it just hangs without retrieving an IP lease.
+>
+>
+> I have been unable to find the 3 missing files requested above. Can
+> someone please advice how to get this working? thx will
+>
+>
+>
+> lspci -v
+>
+> 03:00.0 Network controller: Qualcomm Atheros QCA9377 802.11ac Wireless
+> Network Adapter (rev 31)
+> Subsystem: Lite-On Communications Inc QCA9377 802.11ac Wireless Network Adapter
+> Flags: bus master, fast devsel, latency 0, IRQ 376
+> Memory at 91000000 (64-bit, non-prefetchable) [size=2M]
+> Capabilities: [40] Power Management version 3
+> Capabilities: [50] MSI: Enable+ Count=1/8 Maskable+ 64bit-
+> Capabilities: [70] Express Endpoint, MSI 00
+> Capabilities: [100] Advanced Error Reporting
+> Capabilities: [148] Virtual Channel
+> Capabilities: [168] Device Serial Number 00-00-00-00-00-00-00-00
+> Capabilities: [178] Latency Tolerance Reporting
+> Capabilities: [180] L1 PM Substates
+> Kernel driver in use: ath10k_pci
+> Kernel modules: ath10k_pci
+>
+>
+> $ rfkill list
+> 0: acer-wireless: Wireless LAN
+> Soft blocked: no
+> Hard blocked: no
+> 1: acer-bluetooth: Bluetooth
+> Soft blocked: no
+> Hard blocked: no
+> 2: hci0: Bluetooth
+> Soft blocked: no
+> Hard blocked: no
+> 3: phy0: Wireless LAN
+> Soft blocked: no
+> Hard blocked: no
+>
+> $ sudo iw dev
+> phy#0
+> Interface wlp3s0
+> ifindex 3
+> wdev 0x1
+> addr 3c:a0:67:f4:2e:e9
+> type managed
+> txpower 0.00 dBm
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
