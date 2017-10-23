@@ -1,21 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
- helo=sipsolutions.net)
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6WEw-00017D-NT
- for ath10k@lists.infradead.org; Mon, 23 Oct 2017 06:29:37 +0000
-Message-ID: <1508740148.2639.6.camel@sipsolutions.net>
-Subject: Re: [PATCH V6 1/5] mac80211: Enable TDLS peer buffer STA feature
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 23 Oct 2017 08:29:08 +0200
-In-Reply-To: <ad23308b0865465daeba02cd416e22cb@aptaiexm02b.ap.qualcomm.com>
-References: <TDLS for ath10k patches V6>
- <1508133633-23214-1-git-send-email-yintang@qti.qualcomm.com>
- <1508133633-23214-2-git-send-email-yintang@qti.qualcomm.com>
- (sfid-20171016_075844_306502_036ED199)
- <1508322936.2674.19.camel@sipsolutions.net>
- <ad23308b0865465daeba02cd416e22cb@aptaiexm02b.ap.qualcomm.com>
-Mime-Version: 1.0
+ id 1e6dep-00076N-15
+ for ath10k@lists.infradead.org; Mon, 23 Oct 2017 14:24:48 +0000
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Subject: Re: [PATCH] ath10k: rebuild crypto header in RX data frames
+Date: Mon, 23 Oct 2017 14:24:06 +0000
+Message-ID: <fb5f8df1-aa9a-2646-5f98-afc852acce5c@qti.qualcomm.com>
+References: <150851690590.5158.11970481736247725763.stgit@potku.adurom.net>
+ <c9bdd915-0667-eee0-3b52-1fdf15abf249@dd-wrt.com>
+In-Reply-To: <c9bdd915-0667-eee0-3b52-1fdf15abf249@dd-wrt.com>
+Content-Language: en-US
+Content-ID: <3BE154895B651946B0D8D6D5D9351683@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +25,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yingying Tang <yintang@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-On Fri, 2017-10-20 at 03:34 +0000, Yingying Tang wrote:
-> Hi Johannes,
-> 
-> I have built and tested it, it can work
+On Saturday 21 October 2017 01:41 AM, Sebastian Gottschall wrote:
+> i suggest the following patch on top of yours. please tell me if my thoughts are correct here. its mainly a guess
 
-No, you haven't, at least not comprehensively. Try to enable debugfs.
+I agree we need to take care of this for newly added ciphers as well. How about making it as a separate patch 
+to make the patch bit smaller and to reduce the difficulties in back porting it for ciphers supported for long 
+time?
 
-johannes
-
+Vasanth
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
