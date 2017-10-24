@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6uur-0001fO-2B
- for ath10k@lists.infradead.org; Tue, 24 Oct 2017 08:50:30 +0000
+ id 1e6uuB-0001bf-4Y
+ for ath10k@lists.infradead.org; Tue, 24 Oct 2017 08:49:49 +0000
 From: <yintang@qti.qualcomm.com>
-Subject: [PATCH v7 5/5] ath10k: Fix TDLS peer TX data failure issue on
- encryped AP
-Date: Tue, 24 Oct 2017 16:52:23 +0800
-Message-ID: <1508835143-3426-1-git-send-email-yintang@qti.qualcomm.com>
-In-Reply-To: <TDLS for ath10k patch v7>
+Subject: [PATCH v7 4/5] ath10k: Avoid to set WEP key for TDLS peer
+Date: Tue, 24 Oct 2017 16:51:13 +0800
+Message-ID: <1508835074-3384-5-git-send-email-yintang@qti.qualcomm.com>
+In-Reply-To: <1508835074-3384-1-git-send-email-yintang@qti.qualcomm.com>
 References: <TDLS for ath10k patch v7>
+ <1508835074-3384-1-git-send-email-yintang@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,32 +28,28 @@ Cc: linux-wireless@vger.kernel.org
 
 From: Yingying Tang <yintang@qti.qualcomm.com>
 
-For WPA encryption, QCA6174 firmware(version: WLAN.RM.4.4) will unblock
-data when M4 was sent successfully. For other encryption which didn't need
-4-way handshake firmware will unblock the data when peer authorized. Since
-TDLS is 3-way handshake host need send authorize cmd to firmware to unblock
-data.
+TDLS peer do not need WEP key. Setting WEP key will lead
+to TDLS setup failure. Add fix to avoid setting WEP key
+for TDLS peer.
 
 Signed-off-by: Yingying Tang <yintang@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a984a72..fe14d3c 100644
+index 1672043..a984a72 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5841,6 +5841,10 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 		ath10k_warn(ar, "Peer %pM disappeared!\n", peer_addr);
- 	spin_unlock_bh(&ar->data_lock);
+@@ -2966,7 +2966,7 @@ static int ath10k_station_assoc(struct ath10k *ar,
+ 		}
  
-+	if (sta && sta->tdls)
-+		ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
-+					  WMI_PEER_AUTHORIZE, 1);
-+
- exit:
- 	mutex_unlock(&ar->conf_mutex);
- 	return ret;
+ 		/* Plumb cached keys only for static WEP */
+-		if (arvif->def_wep_key_idx != -1) {
++		if ((arvif->def_wep_key_idx != -1) && (!sta->tdls)) {
+ 			ret = ath10k_install_peer_wep_keys(arvif, sta->addr);
+ 			if (ret) {
+ 				ath10k_warn(ar, "failed to install peer wep keys for vdev %i: %d\n",
 -- 
 1.7.9.5
 
