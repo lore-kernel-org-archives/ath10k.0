@@ -1,18 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6iVf-000342-AX
- for ath10k@lists.infradead.org; Mon, 23 Oct 2017 19:35:42 +0000
+ id 1e6rBW-0006ru-KK
+ for ath10k@lists.infradead.org; Tue, 24 Oct 2017 04:51:28 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH] ath10k: rebuild crypto header in RX data frames
+Date: Tue, 24 Oct 2017 04:50:56 +0000
+Message-ID: <8760b5cfnz.fsf@kamboji.qca.qualcomm.com>
 References: <150851690590.5158.11970481736247725763.stgit@potku.adurom.net>
  <c9bdd915-0667-eee0-3b52-1fdf15abf249@dd-wrt.com>
- <fb5f8df1-aa9a-2646-5f98-afc852acce5c@qti.qualcomm.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <3866abd1-e68c-ff83-0463-f4c4042a69b6@dd-wrt.com>
-Date: Mon, 23 Oct 2017 21:35:09 +0200
+ <CAGyitvP0wquoo_8_ma3rcj+riJ5Wgfo7+pmbUOx9pQRwFcQHYA@mail.gmail.com>
+ <87376dds5e.fsf@kamboji.qca.qualcomm.com>
+ <9407ed1f-2bd9-3fd0-981d-1a20452e8ba9@dd-wrt.com>
+ <CAGyitvNj+74HafQ9Aps1HTmknTxa0ZUgV7hao1A8mJ4rV7cibw@mail.gmail.com>
+In-Reply-To: <CAGyitvNj+74HafQ9Aps1HTmknTxa0ZUgV7hao1A8mJ4rV7cibw@mail.gmail.com>	(Jasmine
+ Strong's message of "Mon, 23 Oct 2017 11:28:18 -0700")
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <fb5f8df1-aa9a-2646-5f98-afc852acce5c@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +25,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Jasmine Strong <jas@eero.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-QW0gMjMuMTAuMjAxNyB1bSAxNjoyNCBzY2hyaWViIFZhc2FudGhha3VtYXIgVGhpYWdhcmFqYW46
-Cj4gT24gU2F0dXJkYXkgMjEgT2N0b2JlciAyMDE3IDAxOjQxIEFNLCBTZWJhc3RpYW4gR290dHNj
-aGFsbCB3cm90ZToKPj4gaSBzdWdnZXN0IHRoZSBmb2xsb3dpbmcgcGF0Y2ggb24gdG9wIG9mIHlv
-dXJzLiBwbGVhc2UgdGVsbCBtZSBpZiBteSB0aG91Z2h0cyBhcmUgY29ycmVjdCBoZXJlLiBpdHMg
-bWFpbmx5IGEgZ3Vlc3MKPiBJIGFncmVlIHdlIG5lZWQgdG8gdGFrZSBjYXJlIG9mIHRoaXMgZm9y
-IG5ld2x5IGFkZGVkIGNpcGhlcnMgYXMgd2VsbC4gSG93IGFib3V0IG1ha2luZyBpdCBhcyBhIHNl
-cGFyYXRlIHBhdGNoCj4gdG8gbWFrZSB0aGUgcGF0Y2ggYml0IHNtYWxsZXIgYW5kIHRvIHJlZHVj
-ZSB0aGUgZGlmZmljdWx0aWVzIGluIGJhY2sgcG9ydGluZyBpdCBmb3IgY2lwaGVycyBzdXBwb3J0
-ZWQgZm9yIGxvbmcKPiB0aW1lPwp0aGUgcGF0Y2ggZm9yIHRoZXNlIGJvdGggY2lwaGVycyBkb2Vz
-bnQgbWFrZSBpdCBiaWdnZXIuIGp1c3QgYSBmZXcgCmxpbmVzLiB0aGUgbWFpbiBwcm9ibGVtIHJp
-Z2h0IG5vdyBpcyB0aGF0IHRoZSBvcmlnaW5hbCBwYXRjaCB3aXRob3V0IG15IAplbmhhbmNlbWVu
-dHMgaXNudCB3b3JraW5nLiBpdCBicmVha3MgZW5jcnlwdGlvbgo+IFZhc2FudGgKCgotLSAKTWl0
-IGZyZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8g
-Q1RPCgpOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgU3R1YmVud2FsZGFs
-bGVlIDIxYSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJt
-c3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBD
-aHJpc3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFs
-bEBkZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUK
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Jasmine Strong <jas@eero.com> writes:
+
+> That's what I saw.  A bcom client was able to associate and not pass
+> any traffic.  This is on all three of 9882, 9888 and 4019.
+
+Thanks for the report, we'll investigate it. And I see that your email
+was now succesfully delivered to the list:
+
+http://lists.infradead.org/pipermail/ath10k/2017-October/010325.html
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
