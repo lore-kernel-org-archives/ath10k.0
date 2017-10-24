@@ -1,21 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6rBW-0006ru-KK
- for ath10k@lists.infradead.org; Tue, 24 Oct 2017 04:51:28 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: rebuild crypto header in RX data frames
-Date: Tue, 24 Oct 2017 04:50:56 +0000
-Message-ID: <8760b5cfnz.fsf@kamboji.qca.qualcomm.com>
-References: <150851690590.5158.11970481736247725763.stgit@potku.adurom.net>
- <c9bdd915-0667-eee0-3b52-1fdf15abf249@dd-wrt.com>
- <CAGyitvP0wquoo_8_ma3rcj+riJ5Wgfo7+pmbUOx9pQRwFcQHYA@mail.gmail.com>
- <87376dds5e.fsf@kamboji.qca.qualcomm.com>
- <9407ed1f-2bd9-3fd0-981d-1a20452e8ba9@dd-wrt.com>
- <CAGyitvNj+74HafQ9Aps1HTmknTxa0ZUgV7hao1A8mJ4rV7cibw@mail.gmail.com>
-In-Reply-To: <CAGyitvNj+74HafQ9Aps1HTmknTxa0ZUgV7hao1A8mJ4rV7cibw@mail.gmail.com>	(Jasmine
- Strong's message of "Mon, 23 Oct 2017 11:28:18 -0700")
-Content-Language: en-US
+ id 1e6utq-0001RK-Dd
+ for ath10k@lists.infradead.org; Tue, 24 Oct 2017 08:49:28 +0000
+From: <yintang@qti.qualcomm.com>
+Subject: [PATCH v7 0/5] Add TDLS feature for ath10k
+Date: Tue, 24 Oct 2017 16:51:09 +0800
+Message-ID: <1508835074-3384-1-git-send-email-yintang@qti.qualcomm.com>
+In-Reply-To: <TDLS for ath10k patch v7>
+References: <TDLS for ath10k patch v7>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,21 +22,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jasmine Strong <jas@eero.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Jasmine Strong <jas@eero.com> writes:
+From: Yingying Tang <yintang@qti.qualcomm.com>
 
-> That's what I saw.  A bcom client was able to associate and not pass
-> any traffic.  This is on all three of 9882, 9888 and 4019.
+This patchset is for Rome PCIE chip, it will not affect other hardware
 
-Thanks for the report, we'll investigate it. And I see that your email
-was now succesfully delivered to the list:
+Yingying Tang (5):
+  mac80211: Enable TDLS peer buffer STA feature
+  ath10k: Enable TDLS peer buffer STA feature
+  ath10k: Enable TDLS peer inactivity detection
+  ath10k: Avoid to set WEP key for TDLS peer
+  ath10k: Fix TDLS peer TX data failure issue on encryped AP
 
-http://lists.infradead.org/pipermail/ath10k/2017-October/010325.html
+ drivers/net/wireless/ath/ath10k/mac.c     |    9 ++++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |   55 +++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |    9 +++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |    1 +
+ include/net/mac80211.h                    |    4 +++
+ net/mac80211/debugfs.c                    |    1 +
+ net/mac80211/tdls.c                       |    5 ++-
+ 7 files changed, 82 insertions(+), 2 deletions(-)
 
 -- 
-Kalle Valo
+1.7.9.5
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
