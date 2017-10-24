@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6utq-0001RK-Dd
- for ath10k@lists.infradead.org; Tue, 24 Oct 2017 08:49:28 +0000
+ id 1e6utu-0001U5-0l
+ for ath10k@lists.infradead.org; Tue, 24 Oct 2017 08:49:32 +0000
 From: <yintang@qti.qualcomm.com>
-Subject: [PATCH v7 0/5] Add TDLS feature for ath10k
-Date: Tue, 24 Oct 2017 16:51:09 +0800
-Message-ID: <1508835074-3384-1-git-send-email-yintang@qti.qualcomm.com>
-In-Reply-To: <TDLS for ath10k patch v7>
+Subject: [PATCH v7 2/5] ath10k: Enable TDLS peer buffer STA feature
+Date: Tue, 24 Oct 2017 16:51:11 +0800
+Message-ID: <1508835074-3384-3-git-send-email-yintang@qti.qualcomm.com>
+In-Reply-To: <1508835074-3384-1-git-send-email-yintang@qti.qualcomm.com>
 References: <TDLS for ath10k patch v7>
+ <1508835074-3384-1-git-send-email-yintang@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,24 +28,45 @@ Cc: linux-wireless@vger.kernel.org
 
 From: Yingying Tang <yintang@qti.qualcomm.com>
 
-This patchset is for Rome PCIE chip, it will not affect other hardware
+Enable TDLS peer buffer STA feature.
+QCA6174 firmware(version: WLAN.RM.4.4) support TDLS peer buffer STA,
+it reports this capability through wmi service map in wmi service ready
+event. Set related parameter in TDLS WMI command to enable this feature.
 
-Yingying Tang (5):
-  mac80211: Enable TDLS peer buffer STA feature
-  ath10k: Enable TDLS peer buffer STA feature
-  ath10k: Enable TDLS peer inactivity detection
-  ath10k: Avoid to set WEP key for TDLS peer
-  ath10k: Fix TDLS peer TX data failure issue on encryped AP
+Signed-off-by: Yingying Tang <yintang@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c     |    3 +++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |    3 +++
+ 2 files changed, 6 insertions(+)
 
- drivers/net/wireless/ath/ath10k/mac.c     |    9 ++++-
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |   55 +++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.h |    9 +++++
- drivers/net/wireless/ath/ath10k/wmi.h     |    1 +
- include/net/mac80211.h                    |    4 +++
- net/mac80211/debugfs.c                    |    1 +
- net/mac80211/tdls.c                       |    5 ++-
- 7 files changed, 82 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5683f1a..1672043 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -8204,6 +8204,9 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		ieee80211_hw_set(ar->hw, TDLS_WIDER_BW);
+ 	}
+ 
++	if (test_bit(WMI_SERVICE_TDLS_UAPSD_BUFFER_STA, ar->wmi.svc_map))
++		ieee80211_hw_set(ar->hw, SUPPORTS_TDLS_BUFFER_STA);
++
+ 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL;
+ 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_CHANNEL_SWITCH;
+ 	ar->hw->wiphy->max_remain_on_channel_duration = 5000;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 7616c1c..f60b46e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -2747,6 +2747,9 @@ static void *ath10k_wmi_tlv_put_wmm(void *ptr,
+ 	 */
+ 	u32 options = 0;
+ 
++	if (test_bit(WMI_SERVICE_TDLS_UAPSD_BUFFER_STA, ar->wmi.svc_map))
++		options |=  WMI_TLV_TDLS_BUFFER_STA_EN;
++
+ 	len = sizeof(*tlv) + sizeof(*cmd);
+ 	skb = ath10k_wmi_alloc_skb(ar, len);
+ 	if (!skb)
 -- 
 1.7.9.5
 
