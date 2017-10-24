@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6utu-0001U5-0l
+ id 1e6utu-0001SU-0k
  for ath10k@lists.infradead.org; Tue, 24 Oct 2017 08:49:32 +0000
 From: <yintang@qti.qualcomm.com>
-Subject: [PATCH v7 2/5] ath10k: Enable TDLS peer buffer STA feature
-Date: Tue, 24 Oct 2017 16:51:11 +0800
-Message-ID: <1508835074-3384-3-git-send-email-yintang@qti.qualcomm.com>
+Subject: [PATCH v7 1/5] mac80211: Enable TDLS peer buffer STA feature
+Date: Tue, 24 Oct 2017 16:51:10 +0800
+Message-ID: <1508835074-3384-2-git-send-email-yintang@qti.qualcomm.com>
 In-Reply-To: <1508835074-3384-1-git-send-email-yintang@qti.qualcomm.com>
 References: <TDLS for ath10k patch v7>
  <1508835074-3384-1-git-send-email-yintang@qti.qualcomm.com>
@@ -29,44 +29,73 @@ Cc: linux-wireless@vger.kernel.org
 From: Yingying Tang <yintang@qti.qualcomm.com>
 
 Enable TDLS peer buffer STA feature.
-QCA6174 firmware(version: WLAN.RM.4.4) support TDLS peer buffer STA,
-it reports this capability through wmi service map in wmi service ready
-event. Set related parameter in TDLS WMI command to enable this feature.
+Set extended capability bit to enable buffer STA when driver
+support it.
 
 Signed-off-by: Yingying Tang <yintang@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c     |    3 +++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |    3 +++
- 2 files changed, 6 insertions(+)
+ include/net/mac80211.h |    4 ++++
+ net/mac80211/debugfs.c |    1 +
+ net/mac80211/tdls.c    |    5 ++++-
+ 3 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5683f1a..1672043 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8204,6 +8204,9 @@ int ath10k_mac_register(struct ath10k *ar)
- 		ieee80211_hw_set(ar->hw, TDLS_WIDER_BW);
- 	}
+diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+index f8149ca..5928123 100644
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -2067,6 +2067,9 @@ struct ieee80211_txq {
+  *	The stack will not do fragmentation.
+  *	The callback for @set_frag_threshold should be set as well.
+  *
++ * @IEEE80211_HW_SUPPORTS_TDLS_BUFFER_STA: Hardware support buffer STA when
++ *	TDLS is established.
++ *
+  * @NUM_IEEE80211_HW_FLAGS: number of hardware flags, used for sizing arrays
+  */
+ enum ieee80211_hw_flags {
+@@ -2109,6 +2112,7 @@ enum ieee80211_hw_flags {
+ 	IEEE80211_HW_TX_FRAG_LIST,
+ 	IEEE80211_HW_REPORTS_LOW_ACK,
+ 	IEEE80211_HW_SUPPORTS_TX_FRAG,
++	IEEE80211_HW_SUPPORTS_TDLS_BUFFER_STA,
  
-+	if (test_bit(WMI_SERVICE_TDLS_UAPSD_BUFFER_STA, ar->wmi.svc_map))
-+		ieee80211_hw_set(ar->hw, SUPPORTS_TDLS_BUFFER_STA);
-+
- 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL;
- 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_CHANNEL_SWITCH;
- 	ar->hw->wiphy->max_remain_on_channel_duration = 5000;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 7616c1c..f60b46e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2747,6 +2747,9 @@ static void *ath10k_wmi_tlv_put_wmm(void *ptr,
- 	 */
- 	u32 options = 0;
+ 	/* keep last, obviously */
+ 	NUM_IEEE80211_HW_FLAGS
+diff --git a/net/mac80211/debugfs.c b/net/mac80211/debugfs.c
+index 5fae001..1f466d1 100644
+--- a/net/mac80211/debugfs.c
++++ b/net/mac80211/debugfs.c
+@@ -211,6 +211,7 @@ static ssize_t reset_write(struct file *file, const char __user *user_buf,
+ 	FLAG(TX_FRAG_LIST),
+ 	FLAG(REPORTS_LOW_ACK),
+ 	FLAG(SUPPORTS_TX_FRAG),
++	FLAG(SUPPORTS_TDLS_BUFFER_STA),
+ #undef FLAG
+ };
  
-+	if (test_bit(WMI_SERVICE_TDLS_UAPSD_BUFFER_STA, ar->wmi.svc_map))
-+		options |=  WMI_TLV_TDLS_BUFFER_STA_EN;
-+
- 	len = sizeof(*tlv) + sizeof(*cmd);
- 	skb = ath10k_wmi_alloc_skb(ar, len);
- 	if (!skb)
+diff --git a/net/mac80211/tdls.c b/net/mac80211/tdls.c
+index 91093d4..8231466 100644
+--- a/net/mac80211/tdls.c
++++ b/net/mac80211/tdls.c
+@@ -47,6 +47,8 @@ static void ieee80211_tdls_add_ext_capab(struct ieee80211_sub_if_data *sdata,
+ 			   NL80211_FEATURE_TDLS_CHANNEL_SWITCH;
+ 	bool wider_band = ieee80211_hw_check(&local->hw, TDLS_WIDER_BW) &&
+ 			  !ifmgd->tdls_wider_bw_prohibited;
++	bool buffer_sta = ieee80211_hw_check(&local->hw,
++					     SUPPORTS_TDLS_BUFFER_STA);
+ 	struct ieee80211_supported_band *sband = ieee80211_get_sband(sdata);
+ 	bool vht = sband && sband->vht_cap.vht_supported;
+ 	u8 *pos = skb_put(skb, 10);
+@@ -56,7 +58,8 @@ static void ieee80211_tdls_add_ext_capab(struct ieee80211_sub_if_data *sdata,
+ 	*pos++ = 0x0;
+ 	*pos++ = 0x0;
+ 	*pos++ = 0x0;
+-	*pos++ = chan_switch ? WLAN_EXT_CAPA4_TDLS_CHAN_SWITCH : 0;
++	*pos++ = (chan_switch ? WLAN_EXT_CAPA4_TDLS_CHAN_SWITCH : 0) |
++		 (buffer_sta ? WLAN_EXT_CAPA4_TDLS_BUFFER_STA : 0);
+ 	*pos++ = WLAN_EXT_CAPA5_TDLS_ENABLED;
+ 	*pos++ = 0;
+ 	*pos++ = 0;
 -- 
 1.7.9.5
 
