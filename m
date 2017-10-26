@@ -1,26 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
+Received: from universe.cdot.in ([49.128.111.121])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e7OJK-0005Ec-8n
- for ath10k@lists.infradead.org; Wed, 25 Oct 2017 16:13:44 +0000
-Subject: Re: Setting single rate in ath10k broken by "reject/clear user rate
- mask if not usable"
-References: <13895fa0-3685-dd2b-583d-2d6469d23cfe@candelatech.com>
- <1507708948.1998.15.camel@sipsolutions.net>
- <2c293255-aa79-75a0-1c28-994f864cddf4@candelatech.com>
- <1508312033.2674.9.camel@sipsolutions.net>
- <2ad42671-59c4-80ed-4bca-f874eb53d653@candelatech.com>
- <8c2e0e98-f3f4-6e0c-1bf0-43dfa6e97275@rempel-privat.de>
- <1508358869.2674.55.camel@sipsolutions.net>
- <9791c86a-a15f-4c99-ab84-ce00b242d70f@candelatech.com>
- <1508360527.2674.61.camel@sipsolutions.net>
- <0bfb289d-a9fa-03d9-f9c7-cc0d01b0bd43@candelatech.com>
- <1508944670.2421.49.camel@sipsolutions.net>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <db23762d-3e65-7707-ca78-ad7e7bc7dfa6@candelatech.com>
-Date: Wed, 25 Oct 2017 09:13:07 -0700
+ id 1e7gMd-0007IR-Il
+ for ath10k@lists.infradead.org; Thu, 26 Oct 2017 11:30:26 +0000
+Received: from cdot.in (localhost [127.0.0.1])
+ by universe.cdot.in (8.14.4/8.13.1) with ESMTP id v9QBKPxS008375
+ for <ath10k@lists.infradead.org>; Thu, 26 Oct 2017 16:50:25 +0530
+From: "KAVITA MATHUR" <kavitam@cdot.in>
+Subject: Throughput drop with ath10k latest driver and
+ firmware-5.bin_10.2.4.70.66
+Date: Thu, 26 Oct 2017 16:50:25 +0530
+Message-Id: <20171026105416.M52662@cdot.in>
 MIME-Version: 1.0
-In-Reply-To: <1508944670.2421.49.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,105 +20,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, Oleksij Rempel <linux@rempel-privat.de>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com
+To: ath10k <ath10k@lists.infradead.org>
 
-
-
-On 10/25/2017 08:17 AM, Johannes Berg wrote:
-> Hi,
->
-> So I fixed the part about the rate setting calling into the driver
-> before rejecting.
->
->> If a user specifies a specific rate or rate-set, then I do not think we
->> should quietly change it out from under them.  So, we could check at the
->> time the rate-set is applied (all current peers).  We can reject the change
->> at that point if one of the peers does not support any common rates.
->> And, whenever a peer tries to be associated, we can check that there is some common rateset
->> in place.  If there is no common rateset, then reject the association
->> one way or another.
->
-> It's not trivial to do in the kernel, but if we reject adding the
-> station then hostapd will turn around and reject the association. This
-> might not end up being done nicely, but I think it does still happen
-> before the association response, so a negative one would result.
->
->>> We'll need to be a little careful what happens with client-mode
->>> interfaces, which is where we actually observed hitting the WARN_ON()
->>> about not having any rates at all, but I think I already put a reset of
->>> the rates there anyway if they're not compatible with the AP. At least
->>> that's easier because there's only one client.
->>
->> It would be easy to configure a station to do VHT MCS 8 only, and then
->> it would never be able to associate with an HT AP, for instance.  I don't
->> think this should be a WARN_ON event, just a failure.
->
-> Well it resulted in a WARN_ON because if the AP didn't have those
-> rates, we'd not find any usable rates while trying to transmit a frame,
-> and then ended up warning and falling down to the lowest possible rate.
->
-> I don't think I agree that configuring this should reject the
-> association, and I've already implemented the behaviour of dropping the
-> user's rate set in this case in the patch we're discussing.
-
-So, as long as we are associating to a VHT AP, then we could still set the
-tx-rateset to (only) VHT MCS 8 and allow association, even if there are no additional
-rates set.  There is at least one common rate, so theoretically, the
-station and AP can communicate.
-
-If we tried to associate this same station to an HT AP, then your work-around
-code could kick in and throw away the user's rateset configuration, preferably
-with a fairly noticeable warning message since you are overriding the user's
-preferred tx rateset?
-
-
->> It would be great
->> if we could get a useful error message back to the caller, but I am not
->> sure how feasible that is with the current netlink and mac80211 code.
->
-> If we reject the user setting, then we can easily more useful return
-> error messages now that we have generic netlink extack support. The
-> more "interesting" case is when the user set this and then reconnects.
->
-> This kind of problem is why I absolutely dislike out-of-band state that
-> affects the connection, rather than giving it in the connection
-> command(s) (connect, auth, associate, whatever). We're stuck with it
-> now, and needed to redefine that this selection may be dropped if not
-> usable.
-
-You could start allowing the user to configure the full advertised and
-transmit rateset for each of these actions (and probe too), and user-space can add the fields
-to their netlink commands.  At least going forward, this might help
-make the behaviour more as expected.  If you would like to implement at
-least the basics in cfg/mac80211, I would be happy to work on the supplicant
-end of things.
-
->
->> If your main concern is hitting a WARN_ON, maybe just change it to a
->> quieter error message or remove it entirely and just return a failure
->> code?
->
-> No, the warning serves a useful purpose, it's not useful to fall back
-> to the lowest rate, even if the user selected something completely
-> unusable. Arguably we should simply reject transmitting in that case,
-> but that's not really better either ...
->
-> johannes
-
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCiAKSW4gbXkgQVAgLCB0aGVyZSBhcmUgdHdvIHJhZGlvcywgb25lIGF0aDlrIGJhc2VkIG1v
+ZHVsZSBXTEUyMDBOWCBhbmQgc2Vjb25kIGF0aDEwayBiYXNlZApXTEU2MDBWWC4KCkkgY29uZmln
+dXJlZCBib3RoIHRoZSByYWRpb3MgYXMgQVAgaW4gSUVFRSA4MDIuMTFhIDQwIE1IeiBIVCBtb2Rl
+IGFuZCBwZXJmb3JtZWQKdGhyb3VnaHB1dCB0ZXN0LgoKTWVhc3VyZWQgdGhyb3VnaHB1dCB3aXRo
+IGF0aDlrIGlzIDE2NE1icHMgd2hpbGUgd2l0aCBhdGgxMGsgaXQgaXMgMTM3TWJwcy4gSSBjb3Vs
+ZCBub3QKdW5kZXJzdGFuZCB0aGUgcmVhc29uIG9mIHRoaXMgZHJvcCgyNyBNYnBzKT8gCgpNeSB0
+ZXN0IHNldHVwIHdhcyBpbnNpZGUgUkYtU2hpZWxkLiBUaGVyZSB3YXMgbm8gaW50ZXJmZXJlbmNl
+IGFuZCBzeXN0ZW0gd2FzIGFzc29jaWF0ZWQKYXQgMzAwTWJwcyBpbiBib3RoIGNhc2VzLgoKYXRo
+MTBrIGRyaXZlciB3YXMgdGFrZW4gZnJvbSBhdGgxMGsgZ2l0IGFuZCBmaXJtd2FyZSB2ZXJzaW9u
+IGlzCmZpcm13YXJlLTUuYmluXzEwLjIuNC43MC42Ni4gCmF0aDlrIGRyaXZlcyB3YXMgdGFrZW4g
+ZnJvbSBzdGFibGUgYmFja3BvcnQgcmVsZWFzZSBiYWNrcG9ydC00LjQuMi0xLgoKa2VybmVsIHZl
+cnNpb24gOiAzLjEyCm9wZW53cnQgdmVyc2lvbiA6IENoYW9zIENhbG1lciAxNS4wNS4wCgpQbGVh
+c2Ugc3VnZ2VzdCBtZSBob3cgY2FuIEkgaW5jcmVhc2UgdGhlIHRocm91Z2hwdXQgb2YgbXkgQVAu
+IAoKCgoKVGhhbmtzICYgUmVnYXJkcywK4KSV4KS14KS/4KSk4KS+IOCkruCkvuCkpeClgeCksCBL
+YXZpdGEgTWF0aHVyIArgpLXgpLDgpL/gpLfgpY3gpKAg4KSF4KSo4KWB4KS44KSC4KSn4KS+4KSo
+IOCkheCkreCkv+Ckr+CkguCkpOCkviAgU2VuaW9yIFJlc2VhcmNoIEVuZ2luZWVyIArgpLjgpYAt
+4KSh4KWJ4KSfICAgICAgICAgICAgICAgICAgICAgIEMtRE9UCuCkh+CksuCliOCkleCljeCkn+Cl
+jeCksOClieCkqOCkv+CkleCljeCkuCDgpLjgpL/gpJ/gpYAg4KSr4KWH4KSc4KS8IEkgICAgICAg
+ICBFbGVjdHJvbmljcyBDaXR5IFBoYXNlIEkK4KS54KWL4KS44KWC4KSwIOCksOCli+CkoSwg4KSs
+4KWH4KSC4KSX4KSy4KWC4KSw4KWBICAgICAgICAgICAgICAgSG9zdXIgUm9hZCwgQmVuZ2FsdXJ1
+IOKAkyA1NjAxMDAK4KSr4KWL4KSoICBQaCAwODAtMjg1Mjk4OTYKRGlzY2xhaW1lcjoKLS0tLS0t
+LS0tLQpUaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQgd2l0aCBpdAoKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
