@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
+Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e7gMd-0007IR-Il
- for ath10k@lists.infradead.org; Thu, 26 Oct 2017 11:30:26 +0000
-Received: from cdot.in (localhost [127.0.0.1])
- by universe.cdot.in (8.14.4/8.13.1) with ESMTP id v9QBKPxS008375
- for <ath10k@lists.infradead.org>; Thu, 26 Oct 2017 16:50:25 +0530
-From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: Throughput drop with ath10k latest driver and
+ id 1e7jSj-0006ou-PP
+ for ath10k@lists.infradead.org; Thu, 26 Oct 2017 14:48:51 +0000
+Subject: Re: Throughput drop with ath10k latest driver and
  firmware-5.bin_10.2.4.70.66
-Date: Thu, 26 Oct 2017 16:50:25 +0530
-Message-Id: <20171026105416.M52662@cdot.in>
+References: <20171026105416.M52662@cdot.in>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <df6008fe-79e0-ce06-c191-8557e11f1b3a@candelatech.com>
+Date: Thu, 26 Oct 2017 07:48:18 -0700
 MIME-Version: 1.0
+In-Reply-To: <20171026105416.M52662@cdot.in>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +19,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: KAVITA MATHUR <kavitam@cdot.in>, ath10k <ath10k@lists.infradead.org>
 
-SGksCiAKSW4gbXkgQVAgLCB0aGVyZSBhcmUgdHdvIHJhZGlvcywgb25lIGF0aDlrIGJhc2VkIG1v
-ZHVsZSBXTEUyMDBOWCBhbmQgc2Vjb25kIGF0aDEwayBiYXNlZApXTEU2MDBWWC4KCkkgY29uZmln
-dXJlZCBib3RoIHRoZSByYWRpb3MgYXMgQVAgaW4gSUVFRSA4MDIuMTFhIDQwIE1IeiBIVCBtb2Rl
-IGFuZCBwZXJmb3JtZWQKdGhyb3VnaHB1dCB0ZXN0LgoKTWVhc3VyZWQgdGhyb3VnaHB1dCB3aXRo
-IGF0aDlrIGlzIDE2NE1icHMgd2hpbGUgd2l0aCBhdGgxMGsgaXQgaXMgMTM3TWJwcy4gSSBjb3Vs
-ZCBub3QKdW5kZXJzdGFuZCB0aGUgcmVhc29uIG9mIHRoaXMgZHJvcCgyNyBNYnBzKT8gCgpNeSB0
-ZXN0IHNldHVwIHdhcyBpbnNpZGUgUkYtU2hpZWxkLiBUaGVyZSB3YXMgbm8gaW50ZXJmZXJlbmNl
-IGFuZCBzeXN0ZW0gd2FzIGFzc29jaWF0ZWQKYXQgMzAwTWJwcyBpbiBib3RoIGNhc2VzLgoKYXRo
-MTBrIGRyaXZlciB3YXMgdGFrZW4gZnJvbSBhdGgxMGsgZ2l0IGFuZCBmaXJtd2FyZSB2ZXJzaW9u
-IGlzCmZpcm13YXJlLTUuYmluXzEwLjIuNC43MC42Ni4gCmF0aDlrIGRyaXZlcyB3YXMgdGFrZW4g
-ZnJvbSBzdGFibGUgYmFja3BvcnQgcmVsZWFzZSBiYWNrcG9ydC00LjQuMi0xLgoKa2VybmVsIHZl
-cnNpb24gOiAzLjEyCm9wZW53cnQgdmVyc2lvbiA6IENoYW9zIENhbG1lciAxNS4wNS4wCgpQbGVh
-c2Ugc3VnZ2VzdCBtZSBob3cgY2FuIEkgaW5jcmVhc2UgdGhlIHRocm91Z2hwdXQgb2YgbXkgQVAu
-IAoKCgoKVGhhbmtzICYgUmVnYXJkcywK4KSV4KS14KS/4KSk4KS+IOCkruCkvuCkpeClgeCksCBL
-YXZpdGEgTWF0aHVyIArgpLXgpLDgpL/gpLfgpY3gpKAg4KSF4KSo4KWB4KS44KSC4KSn4KS+4KSo
-IOCkheCkreCkv+Ckr+CkguCkpOCkviAgU2VuaW9yIFJlc2VhcmNoIEVuZ2luZWVyIArgpLjgpYAt
-4KSh4KWJ4KSfICAgICAgICAgICAgICAgICAgICAgIEMtRE9UCuCkh+CksuCliOCkleCljeCkn+Cl
-jeCksOClieCkqOCkv+CkleCljeCkuCDgpLjgpL/gpJ/gpYAg4KSr4KWH4KSc4KS8IEkgICAgICAg
-ICBFbGVjdHJvbmljcyBDaXR5IFBoYXNlIEkK4KS54KWL4KS44KWC4KSwIOCksOCli+CkoSwg4KSs
-4KWH4KSC4KSX4KSy4KWC4KSw4KWBICAgICAgICAgICAgICAgSG9zdXIgUm9hZCwgQmVuZ2FsdXJ1
-IOKAkyA1NjAxMDAK4KSr4KWL4KSoICBQaCAwODAtMjg1Mjk4OTYKRGlzY2xhaW1lcjoKLS0tLS0t
-LS0tLQpUaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQgd2l0aCBpdAoKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
-IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+T24gMTAvMjYvMjAxNyAwNDoyMCBBTSwgS0FWSVRBIE1BVEhVUiB3cm90ZToKPiBIaSwKPgo+IElu
+IG15IEFQICwgdGhlcmUgYXJlIHR3byByYWRpb3MsIG9uZSBhdGg5ayBiYXNlZCBtb2R1bGUgV0xF
+MjAwTlggYW5kIHNlY29uZCBhdGgxMGsgYmFzZWQKPiBXTEU2MDBWWC4KPgo+IEkgY29uZmlndXJl
+ZCBib3RoIHRoZSByYWRpb3MgYXMgQVAgaW4gSUVFRSA4MDIuMTFhIDQwIE1IeiBIVCBtb2RlIGFu
+ZCBwZXJmb3JtZWQKPiB0aHJvdWdocHV0IHRlc3QuCj4KPiBNZWFzdXJlZCB0aHJvdWdocHV0IHdp
+dGggYXRoOWsgaXMgMTY0TWJwcyB3aGlsZSB3aXRoIGF0aDEwayBpdCBpcyAxMzdNYnBzLiBJIGNv
+dWxkIG5vdAo+IHVuZGVyc3RhbmQgdGhlIHJlYXNvbiBvZiB0aGlzIGRyb3AoMjcgTWJwcyk/Cj4K
+PiBNeSB0ZXN0IHNldHVwIHdhcyBpbnNpZGUgUkYtU2hpZWxkLiBUaGVyZSB3YXMgbm8gaW50ZXJm
+ZXJlbmNlIGFuZCBzeXN0ZW0gd2FzIGFzc29jaWF0ZWQKPiBhdCAzMDBNYnBzIGluIGJvdGggY2Fz
+ZXMuCj4KPiBhdGgxMGsgZHJpdmVyIHdhcyB0YWtlbiBmcm9tIGF0aDEwayBnaXQgYW5kIGZpcm13
+YXJlIHZlcnNpb24gaXMKPiBmaXJtd2FyZS01LmJpbl8xMC4yLjQuNzAuNjYuCj4gYXRoOWsgZHJp
+dmVzIHdhcyB0YWtlbiBmcm9tIHN0YWJsZSBiYWNrcG9ydCByZWxlYXNlIGJhY2twb3J0LTQuNC4y
+LTEuCj4KPiBrZXJuZWwgdmVyc2lvbiA6IDMuMTIKPiBvcGVud3J0IHZlcnNpb24gOiBDaGFvcyBD
+YWxtZXIgMTUuMDUuMAo+Cj4gUGxlYXNlIHN1Z2dlc3QgbWUgaG93IGNhbiBJIGluY3JlYXNlIHRo
+ZSB0aHJvdWdocHV0IG9mIG15IEFQLgoKRG9lcyBpdCB3b3JrIGFueSBiZXR0ZXIgd2l0aCBkaWZm
+ZXJlbnQgZmlybXdhcmUvc29mdHdhcmUsIG9yIGlzIGF0aDEwayBqdXN0IGFsd2F5cyBzbG93ZXIK
+Zm9yIHlvdT8KCkhvdyBtdWNoIGF0dGVudWF0aW9uIGFyZSB5b3UgdXNpbmc/CgpUaGFua3MsCkJl
+bgoKPgo+Cj4KPgo+IFRoYW5rcyAmIFJlZ2FyZHMsCj4g4KSV4KS14KS/4KSk4KS+IOCkruCkvuCk
+peClgeCksCBLYXZpdGEgTWF0aHVyCj4g4KS14KSw4KS/4KS34KWN4KSgIOCkheCkqOClgeCkuOCk
+guCkp+CkvuCkqCDgpIXgpK3gpL/gpK/gpILgpKTgpL4gIFNlbmlvciBSZXNlYXJjaCBFbmdpbmVl
+cgo+IOCkuOClgC3gpKHgpYngpJ8gICAgICAgICAgICAgICAgICAgICAgQy1ET1QKPiDgpIfgpLLg
+pYjgpJXgpY3gpJ/gpY3gpLDgpYngpKjgpL/gpJXgpY3gpLgg4KS44KS/4KSf4KWAIOCkq+Clh+Ck
+nOCkvCBJICAgICAgICAgRWxlY3Ryb25pY3MgQ2l0eSBQaGFzZSBJCj4g4KS54KWL4KS44KWC4KSw
+IOCksOCli+CkoSwg4KSs4KWH4KSC4KSX4KSy4KWC4KSw4KWBICAgICAgICAgICAgICAgSG9zdXIg
+Um9hZCwgQmVuZ2FsdXJ1IOKAkyA1NjAxMDAKPiDgpKvgpYvgpKggIFBoIDA4MC0yODUyOTg5Ngo+
+IERpc2NsYWltZXI6Cj4gLS0tLS0tLS0tLQo+IFRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFu
+c21pdHRlZCB3aXRoIGl0Cj4KPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
+MGsKPgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5kZWxhIFRl
+Y2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
+aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vYXRoMTBrCg==
