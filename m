@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e87pJ-0001r8-UF
- for ath10k@lists.infradead.org; Fri, 27 Oct 2017 16:49:47 +0000
-Subject: Re: Throughput drop with ath10k latest driver and
- firmware-5.bin_10.2.4.70.66
-References: <20171026105416.M52662@cdot.in>
- <df6008fe-79e0-ce06-c191-8557e11f1b3a@candelatech.com>
- <20171027081929.M60415@cdot.in>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <258d5ee0-6225-e03c-6d1c-0c88f6c50c70@candelatech.com>
-Date: Fri, 27 Oct 2017 09:49:20 -0700
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e89tL-0006GE-4W
+ for ath10k@lists.infradead.org; Fri, 27 Oct 2017 19:02:05 +0000
+From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+Subject: Re: ath10k-regression due to "ath10k: fix napi_poll budget overflow"
+ c9353bf483d3
+Date: Fri, 27 Oct 2017 19:01:32 +0000
+Message-ID: <72e73df5-c261-cb1a-7fba-b1a3a9019fea@qti.qualcomm.com>
+References: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
+ <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
+ <fa6e3ee2-91b5-a54b-afe3-87f30aac7a48@leemhuis.info>
+ <877evh53p8.fsf_-_@kamboji.qca.qualcomm.com>
+In-Reply-To: <877evh53p8.fsf_-_@kamboji.qca.qualcomm.com>
+Content-Language: en-US
+Content-ID: <E34AF6CECF93BF4EACD3F4FA5B4A6C57@qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <20171027081929.M60415@cdot.in>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,65 +24,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: KAVITA MATHUR <kavitam@cdot.in>, ath10k <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, Thorsten Leemhuis <linux@leemhuis.info>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 10/27/2017 01:25 AM, KAVITA MATHUR wrote:
-> On Thu, 26 Oct 2017 07:48:18 -0700, Ben Greear wrote
->> On 10/26/2017 04:20 AM, KAVITA MATHUR wrote:
->>> Hi,
->>>
->>> In my AP , there are two radios, one ath9k based module WLE200NX and second ath10k based
->>> WLE600VX.
->>>
->>> I configured both the radios as AP in IEEE 802.11a 40 MHz HT mode and performed
->>> throughput test.
->>>
->>> Measured throughput with ath9k is 164Mbps while with ath10k it is 137Mbps. I could not
->>> understand the reason of this drop(27 Mbps)?
->>>
->>> My test setup was inside RF-Shield. There was no interference and system was associated
->>> at 300Mbps in both cases.
->>>
->>> ath10k driver was taken from ath10k git and firmware version is
->>> firmware-5.bin_10.2.4.70.66.
->>> ath9k drives was taken from stable backport release backport-4.4.2-1.
->>>
->>> kernel version : 3.12
->>> openwrt version : Chaos Calmer 15.05.0
->>>
->>> Please suggest me how can I increase the throughput of my AP.
->>
->> Does it work any better with different firmware/software, or is ath10k just
->> always slower for you?
+On 10/27/2017 02:40 AM, Kalle Valo wrote:
+
+> + linux-wireless
 >
-> Yes. Measured throughput in the same configuration was 193 Mbps when used ath10k driver
-> from backport stable release backport-4.4.2-1 and firmware version
-> firmware-5.bin_10.2.4.70.63-2. But this version is not stable for ac mode and it does
-> not support MESH. Please suggest appropriate ath10k driver version and firmware.
+> Sorry, I have not been able to follow this discussion very closely but
+> was the conclusion? Should we should revert c9353bf483d3 for 4.14 or
+> what? I should still have time to do that, but not much.
 
-I would try just changing the firmware and see if it is the firmware or the
-driver change that causes decreased performance.
-
->
->>
->> How much attenuation are you using?
-> Received Signal strength is -38 dBm and tx power is 5dBm in all these testcases.
-
-That would seem to be a good RSSI, so attenuation is probably not the issue.
-
-Thanks,
-Ben
-
+Kalle, I don't think I have enough time to look into the issue, since original change is to avoid the warning, but now is having regression.
+Let's try to revert c9353bf483d3 for 4.14, and I'll look into this later.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
+Ryan Hsu
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
