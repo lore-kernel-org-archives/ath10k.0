@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e86os-0002qF-Pc
- for ath10k@lists.infradead.org; Fri, 27 Oct 2017 15:45:16 +0000
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e87pJ-0001r8-UF
+ for ath10k@lists.infradead.org; Fri, 27 Oct 2017 16:49:47 +0000
+Subject: Re: Throughput drop with ath10k latest driver and
+ firmware-5.bin_10.2.4.70.66
+References: <20171026105416.M52662@cdot.in>
+ <df6008fe-79e0-ce06-c191-8557e11f1b3a@candelatech.com>
+ <20171027081929.M60415@cdot.in>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <258d5ee0-6225-e03c-6d1c-0c88f6c50c70@candelatech.com>
+Date: Fri, 27 Oct 2017 09:49:20 -0700
 MIME-Version: 1.0
-Subject: Re: [v3] ath10k: rebuild crypto header in rx data frames
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1509035774-26553-1-git-send-email-kvalo@qca.qualcomm.com>
-References: <1509035774-26553-1-git-send-email-kvalo@qca.qualcomm.com>
-Message-ID: <00ba42fe21dc4c8f9befeb2ee2cdb3ec@euamsexm01a.eu.qualcomm.com>
-Date: Fri, 27 Oct 2017 17:44:44 +0200
+In-Reply-To: <20171027081929.M60415@cdot.in>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,46 +21,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: KAVITA MATHUR <kavitam@cdot.in>, ath10k <ath10k@lists.infradead.org>
 
-Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+On 10/27/2017 01:25 AM, KAVITA MATHUR wrote:
+> On Thu, 26 Oct 2017 07:48:18 -0700, Ben Greear wrote
+>> On 10/26/2017 04:20 AM, KAVITA MATHUR wrote:
+>>> Hi,
+>>>
+>>> In my AP , there are two radios, one ath9k based module WLE200NX and second ath10k based
+>>> WLE600VX.
+>>>
+>>> I configured both the radios as AP in IEEE 802.11a 40 MHz HT mode and performed
+>>> throughput test.
+>>>
+>>> Measured throughput with ath9k is 164Mbps while with ath10k it is 137Mbps. I could not
+>>> understand the reason of this drop(27 Mbps)?
+>>>
+>>> My test setup was inside RF-Shield. There was no interference and system was associated
+>>> at 300Mbps in both cases.
+>>>
+>>> ath10k driver was taken from ath10k git and firmware version is
+>>> firmware-5.bin_10.2.4.70.66.
+>>> ath9k drives was taken from stable backport release backport-4.4.2-1.
+>>>
+>>> kernel version : 3.12
+>>> openwrt version : Chaos Calmer 15.05.0
+>>>
+>>> Please suggest me how can I increase the throughput of my AP.
+>>
+>> Does it work any better with different firmware/software, or is ath10k just
+>> always slower for you?
+>
+> Yes. Measured throughput in the same configuration was 193 Mbps when used ath10k driver
+> from backport stable release backport-4.4.2-1 and firmware version
+> firmware-5.bin_10.2.4.70.63-2. But this version is not stable for ac mode and it does
+> not support MESH. Please suggest appropriate ath10k driver version and firmware.
 
-> Rx data frames notified through HTT_T2H_MSG_TYPE_RX_IND and
-> HTT_T2H_MSG_TYPE_RX_FRAG_IND expect PN/TSC check to be done
-> on host (mac80211) rather than firmware. Rebuild cipher header
-> in every received data frames (that are notified through those
-> HTT interfaces) from the rx_hdr_status tlv available in the
-> rx descriptor of the first msdu. Skip setting RX_FLAG_IV_STRIPPED
-> flag for the packets which requires mac80211 PN/TSC check support
-> and set appropriate RX_FLAG for stripped crypto tail. Hw QCA988X,
-> QCA9887, QCA99X0, QCA9984, QCA9888 and QCA4019 currently need the
-> rebuilding of cipher header to perform PN/TSC check for replay
-> attack.
-> 
-> Please note that removing crypto tail for CCMP-256, GCMP and GCMP-256 ciphers
-> in raw mode needs to be fixed. Since Rx with these ciphers in raw
-> mode does not work in the current form even without this patch and
-> removing crypto tail for these chipers needs clean up, raw mode related
-> issues in CCMP-256, GCMP and GCMP-256 can be addressed in follow up
-> patches.
-> 
-> Tested-by: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
-> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+I would try just changing the firmware and see if it is the firmware or the
+driver change that causes decreased performance.
 
-Any comments or feedback about this? I'm hoping to apply this during the
-weekend so that it will make it to v4.14 in time. So if there are any issues
-with this patch please let me know ASAP.
+>
+>>
+>> How much attenuation are you using?
+> Received Signal strength is -38 dBm and tx power is 5dBm in all these testcases.
+
+That would seem to be a good RSSI, so attenuation is probably not the issue.
+
+Thanks,
+Ben
+
 
 -- 
-https://patchwork.kernel.org/patch/10028621/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
