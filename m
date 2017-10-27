@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e805i-0006zr-Vx
- for ath10k@lists.infradead.org; Fri, 27 Oct 2017 08:34:16 +0000
-From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: Re: Throughput drop with ath10k latest driver and
- firmware-5.bin_10.2.4.70.66
-Date: Fri, 27 Oct 2017 13:55:22 +0530
-Message-Id: <20171027081929.M60415@cdot.in>
-In-Reply-To: <df6008fe-79e0-ce06-c191-8557e11f1b3a@candelatech.com>
-References: <20171026105416.M52662@cdot.in>
- <df6008fe-79e0-ce06-c191-8557e11f1b3a@candelatech.com>
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e80u8-0002oa-Sg
+ for ath10k@lists.infradead.org; Fri, 27 Oct 2017 09:26:18 +0000
 MIME-Version: 1.0
+Subject: Re: [v7,2/5] ath10k: Enable TDLS peer buffer STA feature
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1508835074-3384-3-git-send-email-yintang@qti.qualcomm.com>
+References: <1508835074-3384-3-git-send-email-yintang@qti.qualcomm.com>
+Message-ID: <1e51ea390a67441faf15f5696e0afea8@euamsexm01a.eu.qualcomm.com>
+Date: Fri, 27 Oct 2017 11:25:49 +0200
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,62 +18,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
+To: yintang@qti.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gVGh1LCAyNiBPY3QgMjAxNyAwNzo0ODoxOCAtMDcwMCwgQmVuIEdyZWVhciB3cm90ZQo+IE9u
-IDEwLzI2LzIwMTcgMDQ6MjAgQU0sIEtBVklUQSBNQVRIVVIgd3JvdGU6Cj4gPiBIaSwKPiA+Cj4g
-PiBJbiBteSBBUCAsIHRoZXJlIGFyZSB0d28gcmFkaW9zLCBvbmUgYXRoOWsgYmFzZWQgbW9kdWxl
-IFdMRTIwME5YIGFuZCBzZWNvbmQgYXRoMTBrIGJhc2VkCj4gPiBXTEU2MDBWWC4KPiA+Cj4gPiBJ
-IGNvbmZpZ3VyZWQgYm90aCB0aGUgcmFkaW9zIGFzIEFQIGluIElFRUUgODAyLjExYSA0MCBNSHog
-SFQgbW9kZSBhbmQgcGVyZm9ybWVkCj4gPiB0aHJvdWdocHV0IHRlc3QuCj4gPgo+ID4gTWVhc3Vy
-ZWQgdGhyb3VnaHB1dCB3aXRoIGF0aDlrIGlzIDE2NE1icHMgd2hpbGUgd2l0aCBhdGgxMGsgaXQg
-aXMgMTM3TWJwcy4gSSBjb3VsZCBub3QKPiA+IHVuZGVyc3RhbmQgdGhlIHJlYXNvbiBvZiB0aGlz
-IGRyb3AoMjcgTWJwcyk/Cj4gPgo+ID4gTXkgdGVzdCBzZXR1cCB3YXMgaW5zaWRlIFJGLVNoaWVs
-ZC4gVGhlcmUgd2FzIG5vIGludGVyZmVyZW5jZSBhbmQgc3lzdGVtIHdhcyBhc3NvY2lhdGVkCj4g
-PiBhdCAzMDBNYnBzIGluIGJvdGggY2FzZXMuCj4gPgo+ID4gYXRoMTBrIGRyaXZlciB3YXMgdGFr
-ZW4gZnJvbSBhdGgxMGsgZ2l0IGFuZCBmaXJtd2FyZSB2ZXJzaW9uIGlzCj4gPiBmaXJtd2FyZS01
-LmJpbl8xMC4yLjQuNzAuNjYuCj4gPiBhdGg5ayBkcml2ZXMgd2FzIHRha2VuIGZyb20gc3RhYmxl
-IGJhY2twb3J0IHJlbGVhc2UgYmFja3BvcnQtNC40LjItMS4KPiA+Cj4gPiBrZXJuZWwgdmVyc2lv
-biA6IDMuMTIKPiA+IG9wZW53cnQgdmVyc2lvbiA6IENoYW9zIENhbG1lciAxNS4wNS4wCj4gPgo+
-ID4gUGxlYXNlIHN1Z2dlc3QgbWUgaG93IGNhbiBJIGluY3JlYXNlIHRoZSB0aHJvdWdocHV0IG9m
-IG15IEFQLgo+IAo+IERvZXMgaXQgd29yayBhbnkgYmV0dGVyIHdpdGggZGlmZmVyZW50IGZpcm13
-YXJlL3NvZnR3YXJlLCBvciBpcyBhdGgxMGsganVzdCAKPiBhbHdheXMgc2xvd2VyIGZvciB5b3U/
-CgpZZXMuIE1lYXN1cmVkIHRocm91Z2hwdXQgaW4gdGhlIHNhbWUgY29uZmlndXJhdGlvbiB3YXMg
-MTkzIE1icHMgd2hlbiB1c2VkIGF0aDEwayBkcml2ZXIKZnJvbSBiYWNrcG9ydCBzdGFibGUgcmVs
-ZWFzZSBiYWNrcG9ydC00LjQuMi0xIGFuZCBmaXJtd2FyZSB2ZXJzaW9uCmZpcm13YXJlLTUuYmlu
-XzEwLjIuNC43MC42My0yLiBCdXQgdGhpcyB2ZXJzaW9uIGlzIG5vdCBzdGFibGUgZm9yIGFjIG1v
-ZGUgYW5kIGl0IGRvZXMKbm90IHN1cHBvcnQgTUVTSC4gUGxlYXNlIHN1Z2dlc3QgYXBwcm9wcmlh
-dGUgYXRoMTBrIGRyaXZlciB2ZXJzaW9uIGFuZCBmaXJtd2FyZS4gCgo+IAo+IEhvdyBtdWNoIGF0
-dGVudWF0aW9uIGFyZSB5b3UgdXNpbmc/ClJlY2VpdmVkIFNpZ25hbCBzdHJlbmd0aCBpcyAtMzgg
-ZEJtIGFuZCB0eCBwb3dlciBpcyA1ZEJtIGluIGFsbCB0aGVzZSB0ZXN0Y2FzZXMuCgo+IFRoYW5r
-cywKPiBCZW4KPiAKPiA+Cj4gPgo+ID4KPiA+Cj4gPiBUaGFua3MgJiBSZWdhcmRzLAo+ID4g4KSV
-4KS14KS/4KSk4KS+IOCkruCkvuCkpeClgeCksCBLYXZpdGEgTWF0aHVyCj4gPiDgpLXgpLDgpL/g
-pLfgpY3gpKAg4KSF4KSo4KWB4KS44KSC4KSn4KS+4KSoIOCkheCkreCkv+Ckr+CkguCkpOCkviAg
-U2VuaW9yIFJlc2VhcmNoIEVuZ2luZWVyCj4gPiDgpLjgpYAt4KSh4KWJ4KSfICAgICAgICAgICAg
-ICAgICAgICAgIEMtRE9UCj4gPiDgpIfgpLLgpYjgpJXgpY3gpJ/gpY3gpLDgpYngpKjgpL/gpJXg
-pY3gpLgg4KS44KS/4KSf4KWAIOCkq+Clh+CknOCkvCBJICAgICAgICAgRWxlY3Ryb25pY3MgQ2l0
-eSBQaGFzZSBJCj4gPiDgpLngpYvgpLjgpYLgpLAg4KSw4KWL4KShLCDgpKzgpYfgpILgpJfgpLLg
-pYLgpLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2FkLCBCZW5nYWx1cnUg4oCTIDU2MDEwMAo+
-ID4g4KSr4KWL4KSoICBQaCAwODAtMjg1Mjk4OTYKPiA+IERpc2NsYWltZXI6Cj4gPiAtLS0tLS0t
-LS0tCj4gPiBUaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQgd2l0aCBpdAo+ID4K
-PiA+Cj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
-ID4gYXRoMTBrIG1haWxpbmcgbGlzdAo+ID4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiA+
-IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4gPgo+
-IAo+IC0tIAo+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+IENhbmRlbGEg
-VGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgpUaGFua3MgJiBS
-ZWdhcmRzLArgpJXgpLXgpL/gpKTgpL4g4KSu4KS+4KSl4KWB4KSwIEthdml0YSBNYXRodXIgCuCk
-teCksOCkv+Ckt+CljeCkoCDgpIXgpKjgpYHgpLjgpILgpKfgpL7gpKgg4KSF4KSt4KS/4KSv4KSC
-4KSk4KS+ICBTZW5pb3IgUmVzZWFyY2ggRW5naW5lZXIgCuCkuOClgC3gpKHgpYngpJ8gICAgICAg
-ICAgICAgICAgICAgICAgQy1ET1QK4KSH4KSy4KWI4KSV4KWN4KSf4KWN4KSw4KWJ4KSo4KS/4KSV
-4KWN4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfgpJzgpLwgSSAgICAgICAgIEVsZWN0cm9uaWNzIENp
-dHkgUGhhc2UgSQrgpLngpYvgpLjgpYLgpLAg4KSw4KWL4KShLCDgpKzgpYfgpILgpJfgpLLgpYLg
-pLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2FkLCBCZW5nYWx1cnUg4oCTIDU2MDEwMArgpKvg
-pYvgpKggIFBoIDA4MC0yODUyOTg5NgpEaXNjbGFpbWVyOgotLS0tLS0tLS0tClRoaXMgZW1haWwg
-YW5kIGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRoIGl0CgoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2F0aDEwawo=
+yintang@qti.qualcomm.com wrote:
+
+> From: Yingying Tang <yintang@qti.qualcomm.com>
+> 
+> Enable TDLS peer buffer STA feature.
+> QCA6174 firmware(version: WLAN.RM.4.4) support TDLS peer buffer STA,
+> it reports this capability through wmi service map in wmi service ready
+> event. Set related parameter in TDLS WMI command to enable this feature.
+> 
+> Signed-off-by: Yingying Tang <yintang@qti.qualcomm.com>
+
+Depends on:
+
+a9cd27b34d66 mac80211: enable TDLS peer buffer STA feature
+
+Currently in mac80211-next.
+
+4 patches set to Awaiting Upstream.
+
+10023753 [v7,2/5] ath10k: Enable TDLS peer buffer STA feature
+10023743 [v7,3/5] ath10k: Enable TDLS peer inactivity detection
+10023725 [v7,4/5] ath10k: Avoid to set WEP key for TDLS peer
+10023737 [v7,5/5] ath10k: Fix TDLS peer TX data failure issue on encryped AP
+
+-- 
+https://patchwork.kernel.org/patch/10023753/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
