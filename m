@@ -1,15 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
- helo=sipsolutions.net)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e8B2a-0002Gf-7d
- for ath10k@lists.infradead.org; Fri, 27 Oct 2017 20:15:43 +0000
-Message-ID: <1509135311.2283.12.camel@sipsolutions.net>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e8BSA-0003tl-6m
+ for ath10k@lists.infradead.org; Fri, 27 Oct 2017 20:42:08 +0000
 Subject: Re: Setting single rate in ath10k broken by "reject/clear user rate
  mask if not usable"
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 27 Oct 2017 22:15:11 +0200
-In-Reply-To: <db23762d-3e65-7707-ca78-ad7e7bc7dfa6@candelatech.com>
 References: <13895fa0-3685-dd2b-583d-2d6469d23cfe@candelatech.com>
  <1507708948.1998.15.camel@sipsolutions.net>
  <2c293255-aa79-75a0-1c28-994f864cddf4@candelatech.com>
@@ -22,7 +17,12 @@ References: <13895fa0-3685-dd2b-583d-2d6469d23cfe@candelatech.com>
  <0bfb289d-a9fa-03d9-f9c7-cc0d01b0bd43@candelatech.com>
  <1508944670.2421.49.camel@sipsolutions.net>
  <db23762d-3e65-7707-ca78-ad7e7bc7dfa6@candelatech.com>
-Mime-Version: 1.0
+ <1509135311.2283.12.camel@sipsolutions.net>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <a1adb2ea-44c4-67ae-1044-08c4dc16bb9a@candelatech.com>
+Date: Fri, 27 Oct 2017 13:41:36 -0700
+MIME-Version: 1.0
+In-Reply-To: <1509135311.2283.12.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,56 +31,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Oleksij Rempel <linux@rempel-privat.de>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com
+To: Johannes Berg <johannes@sipsolutions.net>, Oleksij Rempel <linux@rempel-privat.de>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com
 
-On Wed, 2017-10-25 at 09:13 -0700, Ben Greear wrote:
+On 10/27/2017 01:15 PM, Johannes Berg wrote:
+> On Wed, 2017-10-25 at 09:13 -0700, Ben Greear wrote:
+>
+>>> Well it resulted in a WARN_ON because if the AP didn't have those
+>>> rates, we'd not find any usable rates while trying to transmit a frame,
+>>> and then ended up warning and falling down to the lowest possible rate.
+>>>
+>>> I don't think I agree that configuring this should reject the
+>>> association, and I've already implemented the behaviour of dropping the
+>>> user's rate set in this case in the patch we're discussing.
+>>
+>> So, as long as we are associating to a VHT AP, then we could still set the
+>> tx-rateset to (only) VHT MCS 8 and allow association, even if there are no additional
+>> rates set.  There is at least one common rate, so theoretically, the
+>> station and AP can communicate.
+>>
+>> If we tried to associate this same station to an HT AP, then your work-around
+>> code could kick in and throw away the user's rateset configuration, preferably
+>> with a fairly noticeable warning message since you are overriding the user's
+>> preferred tx rateset?
+>
+> There's only a debug message now, and I actually compare to the basic
+> rates. Like I said, we could fix that to compare to real rates, but
+> that gets a little trickier since we don't select from all possible
+> rates when we try to send management frames, only from legacy rates, so
+> we'd have to modify that code too.
 
-> > Well it resulted in a WARN_ON because if the AP didn't have those
-> > rates, we'd not find any usable rates while trying to transmit a frame,
-> > and then ended up warning and falling down to the lowest possible rate.
-> > 
-> > I don't think I agree that configuring this should reject the
-> > association, and I've already implemented the behaviour of dropping the
-> > user's rate set in this case in the patch we're discussing.
-> 
-> So, as long as we are associating to a VHT AP, then we could still set the
-> tx-rateset to (only) VHT MCS 8 and allow association, even if there are no additional
-> rates set.  There is at least one common rate, so theoretically, the
-> station and AP can communicate.
-> 
-> If we tried to associate this same station to an HT AP, then your work-around
-> code could kick in and throw away the user's rateset configuration, preferably
-> with a fairly noticeable warning message since you are overriding the user's
-> preferred tx rateset?
+ath10k ignores the tx rateset pretty much entirely when sending management
+frames, so even if you set the tx rateset to have only VHT MCS 8,
+management frames are still sent with legacy ratesets.
 
-There's only a debug message now, and I actually compare to the basic
-rates. Like I said, we could fix that to compare to real rates, but
-that gets a little trickier since we don't select from all possible
-rates when we try to send management frames, only from legacy rates, so
-we'd have to modify that code too.
+My end goal about this part is to be able to configure a single tx rate
+and have that be allowed again, at least with ath10k.
 
-> > This kind of problem is why I absolutely dislike out-of-band state that
-> > affects the connection, rather than giving it in the connection
-> > command(s) (connect, auth, associate, whatever). We're stuck with it
-> > now, and needed to redefine that this selection may be dropped if not
-> > usable.
-> 
-> You could start allowing the user to configure the full advertised and
-> transmit rateset for each of these actions (and probe too), and user-space can add the fields
-> to their netlink commands.  At least going forward, this might help
-> make the behaviour more as expected.  If you would like to implement at
-> least the basics in cfg/mac80211, I would be happy to work on the supplicant
-> end of things.
+Maybe a new flag for drivers like ath10k that at least somewhat ignore
+the tx-rateset for management frames, and this flag would allow us to
+bypass the cannot-set-single-rate check?
 
-I'm not sure we can really remove this, there are users out there (e.g.
-Chrome's shill, IIRC), so we'd be stuck with two ways of doing things
-... that's not so much better really :)
+>>> This kind of problem is why I absolutely dislike out-of-band state that
+>>> affects the connection, rather than giving it in the connection
+>>> command(s) (connect, auth, associate, whatever). We're stuck with it
+>>> now, and needed to redefine that this selection may be dropped if not
+>>> usable.
+>>
+>> You could start allowing the user to configure the full advertised and
+>> transmit rateset for each of these actions (and probe too), and user-space can add the fields
+>> to their netlink commands.  At least going forward, this might help
+>> make the behaviour more as expected.  If you would like to implement at
+>> least the basics in cfg/mac80211, I would be happy to work on the supplicant
+>> end of things.
+>
+> I'm not sure we can really remove this, there are users out there (e.g.
+> Chrome's shill, IIRC), so we'd be stuck with two ways of doing things
+> ... that's not so much better really :)
 
-johannes
+I am not saying you should remove the existing support, but since it is clunky
+at best, you can add support for specifying the rates and those rates, if specified,
+can take precedence over whatever was previously set (or auto-configured).
+
+The kernel code will still be somewhat convoluted, but at least user-space
+using newer API might have a more deterministic behaviour.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
