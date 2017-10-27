@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e7wR3-0001Zx-4u
- for ath10k@lists.infradead.org; Fri, 27 Oct 2017 04:39:59 +0000
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Fix data rx for CCMP-256,
- GCMP and GCMP-256 in raw mode
-Date: Fri, 27 Oct 2017 10:09:14 +0530
-Message-ID: <1509079154-22759-1-git-send-email-vthiagar@qti.qualcomm.com>
+Received: from universe.cdot.in ([49.128.111.121])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e805i-0006zr-Vx
+ for ath10k@lists.infradead.org; Fri, 27 Oct 2017 08:34:16 +0000
+From: "KAVITA MATHUR" <kavitam@cdot.in>
+Subject: Re: Throughput drop with ath10k latest driver and
+ firmware-5.bin_10.2.4.70.66
+Date: Fri, 27 Oct 2017 13:55:22 +0530
+Message-Id: <20171027081929.M60415@cdot.in>
+In-Reply-To: <df6008fe-79e0-ce06-c191-8557e11f1b3a@candelatech.com>
+References: <20171026105416.M52662@cdot.in>
+ <df6008fe-79e0-ce06-c191-8557e11f1b3a@candelatech.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -17,128 +20,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
 
-Make sure 16-byte mic is removed from the rx data packet
-tail when CCMP-256, GCMP and GCMP-256 ciphers are used
-in raw decap mode. This fixed rx traffic failures in those
-ciphers in raw mode. Split the helper returning crypto
-tail length into two, one to get the ICV length and other
-to get the mic lengh for the cipher to make it clean.
-
-Fixes: 2ea9f12cefe4 ("ath10k: add new cipher suite support")
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
----
-
-This patch depends on https://patchwork.kernel.org/patch/10028621/
-
- drivers/net/wireless/ath/ath10k/htt_rx.c | 51 ++++++++++++++++++++++++--------
- 1 file changed, 38 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 5beb6ee0f091..656385f80929 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -566,18 +566,16 @@ static int ath10k_htt_rx_crypto_param_len(struct ath10k *ar,
- 
- #define MICHAEL_MIC_LEN 8
- 
--static int ath10k_htt_rx_crypto_tail_len(struct ath10k *ar,
--					 enum htt_rx_mpdu_encrypt_type type)
-+static int ath10k_htt_rx_crypto_mic_len(struct ath10k *ar,
-+					enum htt_rx_mpdu_encrypt_type type)
- {
- 	switch (type) {
- 	case HTT_RX_MPDU_ENCRYPT_NONE:
--		return 0;
- 	case HTT_RX_MPDU_ENCRYPT_WEP40:
- 	case HTT_RX_MPDU_ENCRYPT_WEP104:
--		return IEEE80211_WEP_ICV_LEN;
- 	case HTT_RX_MPDU_ENCRYPT_TKIP_WITHOUT_MIC:
- 	case HTT_RX_MPDU_ENCRYPT_TKIP_WPA:
--		return IEEE80211_TKIP_ICV_LEN;
-+		return 0;
- 	case HTT_RX_MPDU_ENCRYPT_AES_CCM_WPA2:
- 		return IEEE80211_CCMP_MIC_LEN;
- 	case HTT_RX_MPDU_ENCRYPT_AES_CCM256_WPA2:
-@@ -594,6 +592,31 @@ static int ath10k_htt_rx_crypto_tail_len(struct ath10k *ar,
- 	return 0;
- }
- 
-+static int ath10k_htt_rx_crypto_icv_len(struct ath10k *ar,
-+					enum htt_rx_mpdu_encrypt_type type)
-+{
-+	switch (type) {
-+	case HTT_RX_MPDU_ENCRYPT_NONE:
-+	case HTT_RX_MPDU_ENCRYPT_AES_CCM_WPA2:
-+	case HTT_RX_MPDU_ENCRYPT_AES_CCM256_WPA2:
-+	case HTT_RX_MPDU_ENCRYPT_AES_GCMP_WPA2:
-+	case HTT_RX_MPDU_ENCRYPT_AES_GCMP256_WPA2:
-+		return 0;
-+	case HTT_RX_MPDU_ENCRYPT_WEP40:
-+	case HTT_RX_MPDU_ENCRYPT_WEP104:
-+		return IEEE80211_WEP_ICV_LEN;
-+	case HTT_RX_MPDU_ENCRYPT_TKIP_WITHOUT_MIC:
-+	case HTT_RX_MPDU_ENCRYPT_TKIP_WPA:
-+		return IEEE80211_TKIP_ICV_LEN;
-+	case HTT_RX_MPDU_ENCRYPT_WEP128:
-+	case HTT_RX_MPDU_ENCRYPT_WAPI:
-+		break;
-+	}
-+
-+	ath10k_warn(ar, "unsupported encryption type %d\n", type);
-+	return 0;
-+}
-+
- struct amsdu_subframe_hdr {
- 	u8 dst[ETH_ALEN];
- 	u8 src[ETH_ALEN];
-@@ -1063,25 +1086,27 @@ static void ath10k_htt_rx_h_undecap_raw(struct ath10k *ar,
- 	/* Tail */
- 	if (status->flag & RX_FLAG_IV_STRIPPED) {
- 		skb_trim(msdu, msdu->len -
--			 ath10k_htt_rx_crypto_tail_len(ar, enctype));
-+			 ath10k_htt_rx_crypto_mic_len(ar, enctype));
-+
-+		skb_trim(msdu, msdu->len -
-+			 ath10k_htt_rx_crypto_icv_len(ar, enctype));
- 	} else {
- 		/* MIC */
--		if ((status->flag & RX_FLAG_MIC_STRIPPED) &&
--		    enctype == HTT_RX_MPDU_ENCRYPT_AES_CCM_WPA2)
--			skb_trim(msdu, msdu->len - 8);
-+		if (status->flag & RX_FLAG_MIC_STRIPPED)
-+			skb_trim(msdu, msdu->len -
-+				 ath10k_htt_rx_crypto_mic_len(ar, enctype));
- 
- 		/* ICV */
--		if (status->flag & RX_FLAG_ICV_STRIPPED &&
--		    enctype != HTT_RX_MPDU_ENCRYPT_AES_CCM_WPA2)
-+		if (status->flag & RX_FLAG_ICV_STRIPPED)
- 			skb_trim(msdu, msdu->len -
--				 ath10k_htt_rx_crypto_tail_len(ar, enctype));
-+				 ath10k_htt_rx_crypto_icv_len(ar, enctype));
- 	}
- 
- 	/* MMIC */
- 	if ((status->flag & RX_FLAG_MMIC_STRIPPED) &&
- 	    !ieee80211_has_morefrags(hdr->frame_control) &&
- 	    enctype == HTT_RX_MPDU_ENCRYPT_TKIP_WPA)
--		skb_trim(msdu, msdu->len - 8);
-+		skb_trim(msdu, msdu->len - MICHAEL_MIC_LEN);
- 
- 	/* Head */
- 	if (status->flag & RX_FLAG_IV_STRIPPED) {
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gVGh1LCAyNiBPY3QgMjAxNyAwNzo0ODoxOCAtMDcwMCwgQmVuIEdyZWVhciB3cm90ZQo+IE9u
+IDEwLzI2LzIwMTcgMDQ6MjAgQU0sIEtBVklUQSBNQVRIVVIgd3JvdGU6Cj4gPiBIaSwKPiA+Cj4g
+PiBJbiBteSBBUCAsIHRoZXJlIGFyZSB0d28gcmFkaW9zLCBvbmUgYXRoOWsgYmFzZWQgbW9kdWxl
+IFdMRTIwME5YIGFuZCBzZWNvbmQgYXRoMTBrIGJhc2VkCj4gPiBXTEU2MDBWWC4KPiA+Cj4gPiBJ
+IGNvbmZpZ3VyZWQgYm90aCB0aGUgcmFkaW9zIGFzIEFQIGluIElFRUUgODAyLjExYSA0MCBNSHog
+SFQgbW9kZSBhbmQgcGVyZm9ybWVkCj4gPiB0aHJvdWdocHV0IHRlc3QuCj4gPgo+ID4gTWVhc3Vy
+ZWQgdGhyb3VnaHB1dCB3aXRoIGF0aDlrIGlzIDE2NE1icHMgd2hpbGUgd2l0aCBhdGgxMGsgaXQg
+aXMgMTM3TWJwcy4gSSBjb3VsZCBub3QKPiA+IHVuZGVyc3RhbmQgdGhlIHJlYXNvbiBvZiB0aGlz
+IGRyb3AoMjcgTWJwcyk/Cj4gPgo+ID4gTXkgdGVzdCBzZXR1cCB3YXMgaW5zaWRlIFJGLVNoaWVs
+ZC4gVGhlcmUgd2FzIG5vIGludGVyZmVyZW5jZSBhbmQgc3lzdGVtIHdhcyBhc3NvY2lhdGVkCj4g
+PiBhdCAzMDBNYnBzIGluIGJvdGggY2FzZXMuCj4gPgo+ID4gYXRoMTBrIGRyaXZlciB3YXMgdGFr
+ZW4gZnJvbSBhdGgxMGsgZ2l0IGFuZCBmaXJtd2FyZSB2ZXJzaW9uIGlzCj4gPiBmaXJtd2FyZS01
+LmJpbl8xMC4yLjQuNzAuNjYuCj4gPiBhdGg5ayBkcml2ZXMgd2FzIHRha2VuIGZyb20gc3RhYmxl
+IGJhY2twb3J0IHJlbGVhc2UgYmFja3BvcnQtNC40LjItMS4KPiA+Cj4gPiBrZXJuZWwgdmVyc2lv
+biA6IDMuMTIKPiA+IG9wZW53cnQgdmVyc2lvbiA6IENoYW9zIENhbG1lciAxNS4wNS4wCj4gPgo+
+ID4gUGxlYXNlIHN1Z2dlc3QgbWUgaG93IGNhbiBJIGluY3JlYXNlIHRoZSB0aHJvdWdocHV0IG9m
+IG15IEFQLgo+IAo+IERvZXMgaXQgd29yayBhbnkgYmV0dGVyIHdpdGggZGlmZmVyZW50IGZpcm13
+YXJlL3NvZnR3YXJlLCBvciBpcyBhdGgxMGsganVzdCAKPiBhbHdheXMgc2xvd2VyIGZvciB5b3U/
+CgpZZXMuIE1lYXN1cmVkIHRocm91Z2hwdXQgaW4gdGhlIHNhbWUgY29uZmlndXJhdGlvbiB3YXMg
+MTkzIE1icHMgd2hlbiB1c2VkIGF0aDEwayBkcml2ZXIKZnJvbSBiYWNrcG9ydCBzdGFibGUgcmVs
+ZWFzZSBiYWNrcG9ydC00LjQuMi0xIGFuZCBmaXJtd2FyZSB2ZXJzaW9uCmZpcm13YXJlLTUuYmlu
+XzEwLjIuNC43MC42My0yLiBCdXQgdGhpcyB2ZXJzaW9uIGlzIG5vdCBzdGFibGUgZm9yIGFjIG1v
+ZGUgYW5kIGl0IGRvZXMKbm90IHN1cHBvcnQgTUVTSC4gUGxlYXNlIHN1Z2dlc3QgYXBwcm9wcmlh
+dGUgYXRoMTBrIGRyaXZlciB2ZXJzaW9uIGFuZCBmaXJtd2FyZS4gCgo+IAo+IEhvdyBtdWNoIGF0
+dGVudWF0aW9uIGFyZSB5b3UgdXNpbmc/ClJlY2VpdmVkIFNpZ25hbCBzdHJlbmd0aCBpcyAtMzgg
+ZEJtIGFuZCB0eCBwb3dlciBpcyA1ZEJtIGluIGFsbCB0aGVzZSB0ZXN0Y2FzZXMuCgo+IFRoYW5r
+cywKPiBCZW4KPiAKPiA+Cj4gPgo+ID4KPiA+Cj4gPiBUaGFua3MgJiBSZWdhcmRzLAo+ID4g4KSV
+4KS14KS/4KSk4KS+IOCkruCkvuCkpeClgeCksCBLYXZpdGEgTWF0aHVyCj4gPiDgpLXgpLDgpL/g
+pLfgpY3gpKAg4KSF4KSo4KWB4KS44KSC4KSn4KS+4KSoIOCkheCkreCkv+Ckr+CkguCkpOCkviAg
+U2VuaW9yIFJlc2VhcmNoIEVuZ2luZWVyCj4gPiDgpLjgpYAt4KSh4KWJ4KSfICAgICAgICAgICAg
+ICAgICAgICAgIEMtRE9UCj4gPiDgpIfgpLLgpYjgpJXgpY3gpJ/gpY3gpLDgpYngpKjgpL/gpJXg
+pY3gpLgg4KS44KS/4KSf4KWAIOCkq+Clh+CknOCkvCBJICAgICAgICAgRWxlY3Ryb25pY3MgQ2l0
+eSBQaGFzZSBJCj4gPiDgpLngpYvgpLjgpYLgpLAg4KSw4KWL4KShLCDgpKzgpYfgpILgpJfgpLLg
+pYLgpLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2FkLCBCZW5nYWx1cnUg4oCTIDU2MDEwMAo+
+ID4g4KSr4KWL4KSoICBQaCAwODAtMjg1Mjk4OTYKPiA+IERpc2NsYWltZXI6Cj4gPiAtLS0tLS0t
+LS0tCj4gPiBUaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQgd2l0aCBpdAo+ID4K
+PiA+Cj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
+ID4gYXRoMTBrIG1haWxpbmcgbGlzdAo+ID4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiA+
+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4gPgo+
+IAo+IC0tIAo+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+IENhbmRlbGEg
+VGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgpUaGFua3MgJiBS
+ZWdhcmRzLArgpJXgpLXgpL/gpKTgpL4g4KSu4KS+4KSl4KWB4KSwIEthdml0YSBNYXRodXIgCuCk
+teCksOCkv+Ckt+CljeCkoCDgpIXgpKjgpYHgpLjgpILgpKfgpL7gpKgg4KSF4KSt4KS/4KSv4KSC
+4KSk4KS+ICBTZW5pb3IgUmVzZWFyY2ggRW5naW5lZXIgCuCkuOClgC3gpKHgpYngpJ8gICAgICAg
+ICAgICAgICAgICAgICAgQy1ET1QK4KSH4KSy4KWI4KSV4KWN4KSf4KWN4KSw4KWJ4KSo4KS/4KSV
+4KWN4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfgpJzgpLwgSSAgICAgICAgIEVsZWN0cm9uaWNzIENp
+dHkgUGhhc2UgSQrgpLngpYvgpLjgpYLgpLAg4KSw4KWL4KShLCDgpKzgpYfgpILgpJfgpLLgpYLg
+pLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2FkLCBCZW5nYWx1cnUg4oCTIDU2MDEwMArgpKvg
+pYvgpKggIFBoIDA4MC0yODUyOTg5NgpEaXNjbGFpbWVyOgotLS0tLS0tLS0tClRoaXMgZW1haWwg
+YW5kIGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRoIGl0CgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2F0aDEwawo=
