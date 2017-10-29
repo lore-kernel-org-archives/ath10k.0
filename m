@@ -1,12 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e8iEV-00073h-DR
- for ath10k@lists.infradead.org; Sun, 29 Oct 2017 07:42:13 +0000
+ id 1e8iH5-0007Gf-7B
+ for ath10k@lists.infradead.org; Sun, 29 Oct 2017 07:44:53 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: [PATCH] Revert "ath10k: fix napi_poll budget overflow"
-Date: Sun, 29 Oct 2017 09:41:16 +0200
-Message-ID: <1509262876-10944-1-git-send-email-kvalo@qca.qualcomm.com>
+Subject: Re: ath10k-regression due to "ath10k: fix napi_poll budget overflow"
+ c9353bf483d3
+Date: Sun, 29 Oct 2017 07:44:20 +0000
+Message-ID: <87po964cvg.fsf@kamboji.qca.qualcomm.com>
+References: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
+ <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
+ <fa6e3ee2-91b5-a54b-afe3-87f30aac7a48@leemhuis.info>
+ <877evh53p8.fsf_-_@kamboji.qca.qualcomm.com>
+ <72e73df5-c261-cb1a-7fba-b1a3a9019fea@qti.qualcomm.com>
+In-Reply-To: <72e73df5-c261-cb1a-7fba-b1a3a9019fea@qti.qualcomm.com> (Ryan
+ Hsu's message of "Fri, 27 Oct 2017 19:01:32 +0000")
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,97 +29,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Thorsten Leemhuis <linux@leemhuis.info>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Thorsten reported on <fa6e3ee2-91b5-a54b-afe3-87f30aac7a48@leemhuis.info> that
-commit c9353bf483d3 made ath10k unstable with QCA6174 on his Dell XPS13 (9360)
-with an error message:
+Ryan Hsu <ryanhsu@qti.qualcomm.com> writes:
 
-ath10k_pci 0000:3a:00.0: failed to extract amsdu: -11
+> On 10/27/2017 02:40 AM, Kalle Valo wrote:
+>
+>> + linux-wireless
+>>
+>> Sorry, I have not been able to follow this discussion very closely but
+>> was the conclusion? Should we should revert c9353bf483d3 for 4.14 or
+>> what? I should still have time to do that, but not much.
+>
+> Kalle, I don't think I have enough time to look into the issue, since
+> original change is to avoid the warning, but now is having regression.
+> Let's try to revert c9353bf483d3 for 4.14, and I'll look into this later.
 
-It only seemed to happen with certain APs, not all, but when it happened the
-only way to get ath10k working was to switch the wifi off and on with a hotkey.
+Great, thanks Ryan.
 
-As this commit made things even worse (a warning vs breaking the whole
-connection) let's revert the commit for now and while the issue is being fixed.
+I now submitted the revert and I'll try to get it to 4.14:
 
-Link: http://lists.infradead.org/pipermail/ath10k/2017-October/010227.html
-Reported-by: Thorsten Leemhuis <linux@leemhuis.info>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
+https://patchwork.kernel.org/patch/10031233/
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index f068376ec565..7ae3926f4995 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1745,8 +1745,7 @@ static void ath10k_htt_rx_delba(struct ath10k *ar, struct htt_resp *resp)
- }
- 
- static int ath10k_htt_rx_extract_amsdu(struct sk_buff_head *list,
--				       struct sk_buff_head *amsdu,
--				       int budget_left)
-+				       struct sk_buff_head *amsdu)
- {
- 	struct sk_buff *msdu;
- 	struct htt_rx_desc *rxd;
-@@ -1757,9 +1756,8 @@ static int ath10k_htt_rx_extract_amsdu(struct sk_buff_head *list,
- 	if (WARN_ON(!skb_queue_empty(amsdu)))
- 		return -EINVAL;
- 
--	while ((msdu = __skb_dequeue(list)) && budget_left) {
-+	while ((msdu = __skb_dequeue(list))) {
- 		__skb_queue_tail(amsdu, msdu);
--		budget_left--;
- 
- 		rxd = (void *)msdu->data - sizeof(*rxd);
- 		if (rxd->msdu_end.common.info0 &
-@@ -1850,8 +1848,7 @@ static int ath10k_htt_rx_h_rx_offload(struct ath10k *ar,
- 	return num_msdu;
- }
- 
--static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb,
--				    int budget_left)
-+static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct ath10k_htt *htt = &ar->htt;
- 	struct htt_resp *resp = (void *)skb->data;
-@@ -1908,9 +1905,9 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb,
- 	if (offload)
- 		num_msdus = ath10k_htt_rx_h_rx_offload(ar, &list);
- 
--	while (!skb_queue_empty(&list) && budget_left) {
-+	while (!skb_queue_empty(&list)) {
- 		__skb_queue_head_init(&amsdu);
--		ret = ath10k_htt_rx_extract_amsdu(&list, &amsdu, budget_left);
-+		ret = ath10k_htt_rx_extract_amsdu(&list, &amsdu);
- 		switch (ret) {
- 		case 0:
- 			/* Note: The in-order indication may report interleaved
-@@ -1920,7 +1917,6 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb,
- 			 * should still give an idea about rx rate to the user.
- 			 */
- 			num_msdus += skb_queue_len(&amsdu);
--			budget_left -= skb_queue_len(&amsdu);
- 			ath10k_htt_rx_h_ppdu(ar, &amsdu, status, vdev_id);
- 			ath10k_htt_rx_h_filter(ar, &amsdu, status);
- 			ath10k_htt_rx_h_mpdu(ar, &amsdu, status);
-@@ -2563,8 +2559,7 @@ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget)
- 		}
- 
- 		spin_lock_bh(&htt->rx_ring.lock);
--		num_rx_msdus = ath10k_htt_rx_in_ord_ind(ar, skb,
--							(budget - quota));
-+		num_rx_msdus = ath10k_htt_rx_in_ord_ind(ar, skb);
- 		spin_unlock_bh(&htt->rx_ring.lock);
- 		if (num_rx_msdus < 0) {
- 			resched_napi = true;
 -- 
-2.7.4
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
