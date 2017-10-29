@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e8hgm-0003GE-En
- for ath10k@lists.infradead.org; Sun, 29 Oct 2017 07:07:22 +0000
+ id 1e8i0c-0001ne-Mw
+ for ath10k@lists.infradead.org; Sun, 29 Oct 2017 07:27:52 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k-regression in 4.14: Connections aborts with "failed to
- extract amsdu: -11"
-Date: Sun, 29 Oct 2017 07:06:43 +0000
-Message-ID: <87y3nu4em6.fsf@kamboji.qca.qualcomm.com>
+Subject: ath10k: Wifi slow on the XPS13 (9360) (QCA6174)
+Date: Sun, 29 Oct 2017 07:27:18 +0000
+Message-ID: <87tvyi4dnv.fsf_-_@kamboji.qca.qualcomm.com>
 References: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
  <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
-In-Reply-To: <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com> (Ryan
- Hsu's message of "Mon, 2 Oct 2017 23:40:31 +0000")
+ <74a979dc-f06d-be9d-7c3f-359cd481d16c@leemhuis.info>
+In-Reply-To: <74a979dc-f06d-be9d-7c3f-359cd481d16c@leemhuis.info> (Thorsten
+ Leemhuis's message of "Sun, 8 Oct 2017 11:39:04 +0200")
 Content-Language: en-US
+Content-ID: <EBB6C3515AFE3C438AE16D59C6B4C814@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,40 +23,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Thorsten Leemhuis <linux@leemhuis.info>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Thorsten Leemhuis <linux@leemhuis.info>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Paul Menzel <pmenzel@molgen.mpg.de>, Ryan Hsu <ryanhsu@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-+ linux-wireless
-
-Ryan Hsu <ryanhsu@qti.qualcomm.com> writes:
-
->>> ath10k_pci 0000:3a:00.0: Direct firmware load for
->>> ath10k/pre-cal-pci-0000:3a:00.0.bin failed with error -2
->>> ath10k_pci 0000:3a:00.0: Direct firmware load for
->>> ath10k/cal-pci-0000:3a:00.0.bin failed with error -2
->> Do they have anything to do with this? Hardware is
->
-> This error message is confusing since QCA6174 is not supporting
-> pre-calibration feature, this reminds me that we need to clean this
-> up.
-
-These warnings come up again because of this commit:
-
-c0cc00f250e1 ath10k: activate user space firmware loading again
-
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=c0cc00f250e19c717fc9cdbdb7f55aaa569c7498
-
-We really need a function like request_firmware_nowarn() which would not
-print a warning everytime a file is not found. It just confuses the
-users and make them falsely believe that's the reason of their problems.
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+KyBsaW51eC13aXJlbGVzcyBhbmQgY2xlYW5pbmcgdGhlIHN1YmplY3QNCg0KSGkgVGhvcnN0ZW4s
+DQoNCnNvcnJ5IGZvciB0aGUgbGF0ZSByZXBseSwgSSdtIGhhdmluZyBwcm9ibGVtcyBrZWVwaW5n
+IHVwIHdpdGggYWxsIHRoZQ0KZW1haWwuIEkganVzdCBkbyBhIHF1aWNrIHJlcGx5IG5vdyB0byBw
+b2ludCBvdXQgdGhhdCB5b3UgYXJlIHRhbGtpbmcNCmFib3V0IHR3byBkaWZmZXJlbnQgcHJvYmxl
+bXMuIFRvIGtlZXAgdGhlIGRpc2N1c3Npb24gc2ltcGxlIEkgcmVjb21tZW5kDQprZWVwaW5nIHRo
+ZSB0d28gaXNzdWVzIGNvbXBsZXRlIHNlcGFyYXRlLg0KDQpUaG9yc3RlbiBMZWVtaHVpcyA8bGlu
+dXhAbGVlbWh1aXMuaW5mbz4gd3JpdGVzOg0KDQo+IExvISBTcGxpdHRpbmcgdGhpcyB0aHJlYWQg
+dG8gZm9jdXMgb24gYSBpc3N1ZSB0aGF0IGhhcyBub3RoaW5nIHRvIGRvDQo+IHdpdGggdGhlIHJl
+Z3Jlc3Npb24gaW4gNC4xNCBJIHJlcG9ydGVkOg0KPg0KPiBPbiAwMy4xMC4yMDE3IDAxOjQwLCBS
+eWFuIEhzdSB3cm90ZToNCj4+IE9uIDEwLzAxLzIwMTcgMDE6NTkgQU0sIFRob3JzdGVuIExlZW1o
+dWlzIHdyb3RlOg0KPj4+PiBhdGgxMGtfcGNpIDAwMDA6M2E6MDAuMDogRGlyZWN0IGZpcm13YXJl
+IGxvYWQgZm9yDQo+Pj4+IGF0aDEway9wcmUtY2FsLXBjaS0wMDAwOjNhOjAwLjAuYmluIGZhaWxl
+ZCB3aXRoIGVycm9yIC0yDQo+Pj4+IGF0aDEwa19wY2kgMDAwMDozYTowMC4wOiBEaXJlY3QgZmly
+bXdhcmUgbG9hZCBmb3INCj4+Pj4gYXRoMTBrL2NhbC1wY2ktMDAwMDozYTowMC4wLmJpbiBmYWls
+ZWQgd2l0aCBlcnJvciAtMg0KPj4+IERvIHRoZXkgaGF2ZSBhbnl0aGluZyB0byBkbyB3aXRoIHRo
+aXM/IEhhcmR3YXJlIGlzDQo+PiBUaGlzIGVycm9yIG1lc3NhZ2UgaXMgY29uZnVzaW5nIHNpbmNl
+IFFDQTYxNzQgaXMgbm90IHN1cHBvcnRpbmcNCj4+IHByZS1jYWxpYnJhdGlvbiBmZWF0dXJlLCB0
+aGlzIHJlbWluZHMgbWUgdGhhdCB3ZSBuZWVkIHRvIGNsZWFuIHRoaXMgdXAuDQo+DQo+IEkgZ3Vl
+c3MgdGhhdCB3b3VsZCBiZSBnb29kIHRvIGF2b2lkIGNvbmZ1c2lvbi4gQnV0IHdoaWxlIGF0IGl0
+OiBJZiB5b3UNCj4gaGF2ZSBhIG1pbnV0ZSwgY291bGQgeW91IHBsZWFzZSBleHBsYWluIHRvIG1l
+IGhvdyB0byBwcm9wZXJseSBzZXQgdXAgdGhlDQo+IHdpZmkgZmlybXdhcmUgZmlsZXMgZm9yIG15
+IERlbGwgWFBTMTMgKDkzNjApPyBUaGUgcmVhc29ucyB3aHkgSSdtDQo+IGFza2luZzogU2VuZGlu
+ZyBkYXRhIHZpYSB3aWZpIGlzIHJlYWxseSBzbG93IG9uIG15IGxhcHRvcCAoc2NwIGNvcGllcw0K
+PiBvbmx5IGdldCAyIHRvIDUgTUJ5dGUvcyBvbiBuZXR3b3JrcyB0aGF0IGFyZSBrbm93biB0byBi
+ZSBhIGxvdCBmYXN0ZXIpLg0KPiBJIHdvbmRlciBpZiB0aGUgZmlybXdhcmUgZmlsZXMgb3IgdGhl
+IGNhbGlicmF0aW9uIGRhdGEgaXMgcGFydCBvZiB0aGUNCj4gcmVhc29uIHdpZmkgVHggaXMgc2xv
+dy4gVGhlIG1hY2hpbmUgaXMgbm9ybWFsbHkgc2hpcHBlZCB3aXRoIGEgc2xpZ2h0bHkNCj4gZW5o
+YW5jZWQgVWJ1bnR1IDE2LjA0LiBUaGF0IGFtb25nIG90aGVycyBjb250YWlucyBhIHBhY2thZ2Ug
+d2l0aCB0aGUNCj4gbWFjaGluZSBzcGVjaWZpYyBmaWxlcyBib2FyZC5iaW4gYW5kIGJvYXJkLTIu
+YmluIHRoYXQgcmVwbGFjZSB0aGUgZmlsZXMNCj4gbm9ybWFsbHkgaW5zdGFsbGVkIGluIC9saWIv
+ZmlybXdhcmUvYXRoMTBrL1FDQTYxNzQvaHczLjAvIEFyZSB0aG9zZQ0KPiBtYWNoaW5lIHNwZWNp
+ZmljIGZpbGVzIGNydWNpYWwgdG8gaGF2ZSBvciBhcmUgdGhlIG9uZSBmcm9tIHRoZQ0KPiBsaW51
+eC1maXJtd2FyZSByZXBvIGdvb2QgZW5vZ3VoPyBJJ20gdXNpbmcgRmVkb3JhIGFuZCBjb3VsZCBj
+b3B5IHRoZQ0KPiBvbmVzIGZyb20gVWJ1bnR1IG92ZXIsIGJ1dCBvYnZpb3VzbHkgdGhleSB3aWxs
+IGdldCBvdmVyd3JpdHRlbiBldmVyeQ0KPiB0aW1lIEZlZG9yYSBzaGlwcyBhIG5ldyBsaW51eC1m
+aXJtd2FyZSBwYWNrYWdlIOKAkyBJT1c6IGV2ZXJ5IGZldyB3ZWVrcyA6LS8NCg0KWWVzLCB0aGUg
+Ym9hcmQgZmlsZSBjYW4gYWZmZWN0IHRocm91Z2h0cHV0LCBfYm90aF8gVENQIGFuZCBVRFAuIEkg
+ZG9uJ3QNCmtub3cgd2hhdCBib2FyZCBmaWxlcyBVYnVudHUgaXMgc2hpcHBpbmcgYnV0IHdlIHNo
+b3VsZCB0cnkgdG8gZ2V0IHRob3NlDQppbnRvIHVwc3RyZWFtLg0KDQo+IFNpZGUgbm90ZTogWW91
+IGZpbmQgYSBsb3Qgb2YgcmVwb3J0cyBhYm91dCBzbG93IHdpZmkgaXMgeW91IHNlYXJjaCB0aGUN
+Cj4gbmV0IHdpdGggdGVybXMgbGlrZSAiOTM2MCB3aWZpIHNsb3cgbGludXgiLiBVYnVudHUgZml4
+ZWQgdGhhdCBhIGZldw0KPiBtb250aHMgYWdvIHdpdGggdGhpcyBwYXRjaDoNCj4gaHR0cDovL2tl
+cm5lbC51YnVudHUuY29tL2dpdC91YnVudHUvdWJ1bnR1LXhlbmlhbC5naXQvY29tbWl0Lz9pZD05
+NjkwZjE5ZjA3ZmVlMmFjYjJiMDRlYTVlYWE1ZGIxODRlZTE3NWQ1DQo+DQo+IFNvbWUgYnVncyBh
+Ym91dCB0aGlzOg0KPiBodHRwczovL2J1Z3MubGF1bmNocGFkLm5ldC91YnVudHUvK3NvdXJjZS9s
+aW51eC8rYnVnLzE2OTI4MzYNCj4gaHR0cHM6Ly9idWdzLmxhdW5jaHBhZC5uZXQvdWJ1bnR1Lytz
+b3VyY2UvbGludXgvK2J1Zy8xNjcwMDQxDQoNCkJ1dCB0aGlzIGFnYWluIGFib3V0IGludGVycmFj
+dGlvbiBiZXR3ZWVuIGF0aDEwayBhbmQgVENQIHN0YWNrLiBBbmQgaXQNCl9vbmx5XyBhZmZlY3Rz
+IFRDUCwgVURQIHNob3VsZCBiZSB1bmFmZmVjdGVkLiBTbyB3aGVuZXZlciB0ZXN0aW5nDQp0aHJv
+dWdocHV0IHBsZWFzZSBhbHdheXMgbWVhc3VyZSBib3RoIFRDUCBhbmQgVURQIGJlY2F1c2UgdGhl
+biBpdCdzDQplYXNpZXIgdG8gcGlucG9pbnQgdGhlIHJlYXNvbi4NCg0KPiBCdXQgZnJvbSB3aGF0
+IEkgZ2F0aGVyZWQgYnkgc2VhcmNoaW5nIHRoZSBuZXQgYW5kIGFza2luZyBvbiAjYXRoMTBrIEkN
+Cj4gZ290IHRoZSBpbXByZXNzaW9uIHRoYXQgcGF0Y2ggaXMgYSBtYXNzaXZlIHVnbHkgaGFjayBh
+bmQgbm8gd2F5DQo+IGFjY2VwdGFibGUgdXBzdHJlYW0uICBJcyB0aGF0IGNvcnJlY3Q/DQoNClll
+cywgaXQncyBhIGhvcnJpYmxlIGhhY2sgYW5kIEkgY2Fubm90IGFwcGx5IHRoYXQuIEFuZCBsaWtl
+IHlvdSBzYWlkDQojMTY5MjgzNiwgYWxzbyBFcmljIER1bWF6ZXQgKG9uZSBvZiBUQ1AgbWFpbnRh
+aW5lcnMpIGFncmVlcyB3aXRoIHRoYXQuDQoNCj4gSWYgeWVzOiBpcyB0aGVyZSBtYXliZSBhIHBy
+b3BlciBmaXggb3V0IHRoZXJlIHNvbWV3aGVyZT8NCg0KVW5mb3J0dW5hdGVseSB0aGVyZSBzdGls
+bCBpcyBubyBnb29kIHNvbHV0aW9uLiBJbiBhIHdlZWsgdGhlcmUncyBOZXRkZXYNCjIuMiBhbmQg
+d2UgaGF2ZSBMaW51eCBXaXJlbGVzcyBzdW1taXQgdGhlcmUuIFdlIHNob3VsZCBicmluZyB1cCB0
+aGlzDQp0b3BpYyB0aGVyZS4NCg0KLS0gDQpLYWxsZSBWYWxvCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hdGgxMGsK
