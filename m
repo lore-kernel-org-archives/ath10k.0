@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e95ci-0003QN-4I
- for ath10k@lists.infradead.org; Mon, 30 Oct 2017 08:40:46 +0000
+ id 1e96R4-0003G1-Ey
+ for ath10k@lists.infradead.org; Mon, 30 Oct 2017 09:32:54 +0000
+Subject: Re: [v3] ath10k: rebuild crypto header in rx data frames
+References: <1509035774-26553-1-git-send-email-kvalo@qca.qualcomm.com>
+ <59b2ec22dc9c4db0bd30a65dba660b1c@euamsexm01a.eu.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <154f13b8-1e77-dbe5-4cb0-81c534dbc40b@dd-wrt.com>
+Date: Mon, 30 Oct 2017 10:32:12 +0100
 MIME-Version: 1.0
-Subject: Re: Revert "ath10k: fix napi_poll budget overflow"
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1509262876-10944-1-git-send-email-kvalo@qca.qualcomm.com>
-References: <1509262876-10944-1-git-send-email-kvalo@qca.qualcomm.com>
-Message-ID: <84b6d93b325741f7a6d24d1252f93149@euamsexm01a.eu.qualcomm.com>
-Date: Mon, 30 Oct 2017 09:40:16 +0100
+In-Reply-To: <59b2ec22dc9c4db0bd30a65dba660b1c@euamsexm01a.eu.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,42 +20,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-
-> Thorsten reported on <fa6e3ee2-91b5-a54b-afe3-87f30aac7a48@leemhuis.info> that
-> commit c9353bf483d3 made ath10k unstable with QCA6174 on his Dell XPS13 (9360)
-> with an error message:
-> 
-> ath10k_pci 0000:3a:00.0: failed to extract amsdu: -11
-> 
-> It only seemed to happen with certain APs, not all, but when it happened the
-> only way to get ath10k working was to switch the wifi off and on with a hotkey.
-> 
-> As this commit made things even worse (a warning vs breaking the whole
-> connection) let's revert the commit for now and while the issue is being fixed.
-> 
-> Link: http://lists.infradead.org/pipermail/ath10k/2017-October/010227.html
-> Reported-by: Thorsten Leemhuis <linux@leemhuis.info>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-Patch applied to ath-current branch of ath.git, thanks.
-
-e48e9c429a95 Revert "ath10k: fix napi_poll budget overflow"
-
--- 
-https://patchwork.kernel.org/patch/10031233/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+d2lsbCBjaGVjayBpdCB0b21vcnJvdyBpbmNsdWRpbmcgZ2NtcC0yNTYsIGNjbXAtMjU2LiB3YXMg
+b3V0IGZvciB3ZWVrZW5kIDotKQoKQW0gMzAuMTAuMjAxNyB1bSAwOTozOSBzY2hyaWViIEthbGxl
+IFZhbG86Cj4gS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4KPj4g
+UnggZGF0YSBmcmFtZXMgbm90aWZpZWQgdGhyb3VnaCBIVFRfVDJIX01TR19UWVBFX1JYX0lORCBh
+bmQKPj4gSFRUX1QySF9NU0dfVFlQRV9SWF9GUkFHX0lORCBleHBlY3QgUE4vVFNDIGNoZWNrIHRv
+IGJlIGRvbmUKPj4gb24gaG9zdCAobWFjODAyMTEpIHJhdGhlciB0aGFuIGZpcm13YXJlLiBSZWJ1
+aWxkIGNpcGhlciBoZWFkZXIKPj4gaW4gZXZlcnkgcmVjZWl2ZWQgZGF0YSBmcmFtZXMgKHRoYXQg
+YXJlIG5vdGlmaWVkIHRocm91Z2ggdGhvc2UKPj4gSFRUIGludGVyZmFjZXMpIGZyb20gdGhlIHJ4
+X2hkcl9zdGF0dXMgdGx2IGF2YWlsYWJsZSBpbiB0aGUKPj4gcnggZGVzY3JpcHRvciBvZiB0aGUg
+Zmlyc3QgbXNkdS4gU2tpcCBzZXR0aW5nIFJYX0ZMQUdfSVZfU1RSSVBQRUQKPj4gZmxhZyBmb3Ig
+dGhlIHBhY2tldHMgd2hpY2ggcmVxdWlyZXMgbWFjODAyMTEgUE4vVFNDIGNoZWNrIHN1cHBvcnQK
+Pj4gYW5kIHNldCBhcHByb3ByaWF0ZSBSWF9GTEFHIGZvciBzdHJpcHBlZCBjcnlwdG8gdGFpbC4g
+SHcgUUNBOTg4WCwKPj4gUUNBOTg4NywgUUNBOTlYMCwgUUNBOTk4NCwgUUNBOTg4OCBhbmQgUUNB
+NDAxOSBjdXJyZW50bHkgbmVlZCB0aGUKPj4gcmVidWlsZGluZyBvZiBjaXBoZXIgaGVhZGVyIHRv
+IHBlcmZvcm0gUE4vVFNDIGNoZWNrIGZvciByZXBsYXkKPj4gYXR0YWNrLgo+Pgo+PiBQbGVhc2Ug
+bm90ZSB0aGF0IHJlbW92aW5nIGNyeXB0byB0YWlsIGZvciBDQ01QLTI1NiwgR0NNUCBhbmQgR0NN
+UC0yNTYgY2lwaGVycwo+PiBpbiByYXcgbW9kZSBuZWVkcyB0byBiZSBmaXhlZC4gU2luY2UgUngg
+d2l0aCB0aGVzZSBjaXBoZXJzIGluIHJhdwo+PiBtb2RlIGRvZXMgbm90IHdvcmsgaW4gdGhlIGN1
+cnJlbnQgZm9ybSBldmVuIHdpdGhvdXQgdGhpcyBwYXRjaCBhbmQKPj4gcmVtb3ZpbmcgY3J5cHRv
+IHRhaWwgZm9yIHRoZXNlIGNoaXBlcnMgbmVlZHMgY2xlYW4gdXAsIHJhdyBtb2RlIHJlbGF0ZWQK
+Pj4gaXNzdWVzIGluIENDTVAtMjU2LCBHQ01QIGFuZCBHQ01QLTI1NiBjYW4gYmUgYWRkcmVzc2Vk
+IGluIGZvbGxvdyB1cAo+PiBwYXRjaGVzLgo+Pgo+PiBUZXN0ZWQtYnk6IE1hbmlrYW50YSBQdWJi
+aXNldHR5IDxtcHViYmlzZUBxdGkucXVhbGNvbW0uY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBWYXNh
+bnRoYWt1bWFyIFRoaWFnYXJhamFuIDx2dGhpYWdhckBxdGkucXVhbGNvbW0uY29tPgo+PiBTaWdu
+ZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPgo+IFBhdGNoIGFw
+cGxpZWQgdG8gYXRoLWN1cnJlbnQgYnJhbmNoIG9mIGF0aC5naXQsIHRoYW5rcy4KPgo+IDdlY2Ni
+NzM4ZmNlNSBhdGgxMGs6IHJlYnVpbGQgY3J5cHRvIGhlYWRlciBpbiByeCBkYXRhIGZyYW1lcwo+
+CgotLSAKTWl0IGZyZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0
+c2NoYWxsIC8gQ1RPCgpOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgU3R1
+YmVud2FsZGFsbGVlIDIxYSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2Vy
+aWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5o
+w6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMu
+Z290dHNjaGFsbEBkZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUx
+LTU4MjY1NjUKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
