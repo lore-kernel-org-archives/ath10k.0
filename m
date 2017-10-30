@@ -1,22 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wp227.webpack.hosteurope.de ([2a01:488:42:1000:50ed:84ea::])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e8kjC-0007mC-5W
- for ath10k@lists.infradead.org; Sun, 29 Oct 2017 10:22:04 +0000
-Subject: Re: ath10k-regression due to "ath10k: fix napi_poll budget overflow"
- c9353bf483d3
-References: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
- <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
- <fa6e3ee2-91b5-a54b-afe3-87f30aac7a48@leemhuis.info>
- <877evh53p8.fsf_-_@kamboji.qca.qualcomm.com>
- <72e73df5-c261-cb1a-7fba-b1a3a9019fea@qti.qualcomm.com>
- <87po964cvg.fsf@kamboji.qca.qualcomm.com>
-From: Thorsten Leemhuis <linux@leemhuis.info>
-Message-ID: <188f0cdd-d379-10f6-04e6-92f27e403e00@leemhuis.info>
-Date: Sun, 29 Oct 2017 11:21:33 +0100
+ id 1e95bm-00021M-Un
+ for ath10k@lists.infradead.org; Mon, 30 Oct 2017 08:39:49 +0000
 MIME-Version: 1.0
-In-Reply-To: <87po964cvg.fsf@kamboji.qca.qualcomm.com>
-Content-Language: en-MW
+Subject: Re: [v3] ath10k: rebuild crypto header in rx data frames
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1509035774-26553-1-git-send-email-kvalo@qca.qualcomm.com>
+References: <1509035774-26553-1-git-send-email-kvalo@qca.qualcomm.com>
+Message-ID: <59b2ec22dc9c4db0bd30a65dba660b1c@euamsexm01a.eu.qualcomm.com>
+Date: Mon, 30 Oct 2017 09:39:16 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +22,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, Ryan Hsu <ryanhsu@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Lo! On 29.10.2017 08:44, Kalle Valo wrote:
-> Ryan Hsu <ryanhsu@qti.qualcomm.com> writes:
->> On 10/27/2017 02:40 AM, Kalle Valo wrote:
->>
->>> + linux-wireless
->>> Sorry, I have not been able to follow this discussion very closely but
->>> was the conclusion? Should we should revert c9353bf483d3 for 4.14 or
->>> what? I should still have time to do that, but not much.
->> Kalle, I don't think I have enough time to look into the issue, since
->> original change is to avoid the warning, but now is having regression.
->> Let's try to revert c9353bf483d3 for 4.14, and I'll look into this later.
+Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+
+> Rx data frames notified through HTT_T2H_MSG_TYPE_RX_IND and
+> HTT_T2H_MSG_TYPE_RX_FRAG_IND expect PN/TSC check to be done
+> on host (mac80211) rather than firmware. Rebuild cipher header
+> in every received data frames (that are notified through those
+> HTT interfaces) from the rx_hdr_status tlv available in the
+> rx descriptor of the first msdu. Skip setting RX_FLAG_IV_STRIPPED
+> flag for the packets which requires mac80211 PN/TSC check support
+> and set appropriate RX_FLAG for stripped crypto tail. Hw QCA988X,
+> QCA9887, QCA99X0, QCA9984, QCA9888 and QCA4019 currently need the
+> rebuilding of cipher header to perform PN/TSC check for replay
+> attack.
 > 
-> Great, thanks Ryan.
-> I now submitted the revert and I'll try to get it to 4.14:
-> https://patchwork.kernel.org/patch/10031233/
+> Please note that removing crypto tail for CCMP-256, GCMP and GCMP-256 ciphers
+> in raw mode needs to be fixed. Since Rx with these ciphers in raw
+> mode does not work in the current form even without this patch and
+> removing crypto tail for these chipers needs clean up, raw mode related
+> issues in CCMP-256, GCMP and GCMP-256 can be addressed in follow up
+> patches.
+> 
+> Tested-by: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Sorry, I'm a bit behind with my mail after lot's of work@work and some
-travelling right after that.
+Patch applied to ath-current branch of ath.git, thanks.
 
-Ryan, Kalle: Thx for taking care of this. If you sooner or later want me
-to test patches that try to solve the warning without causing this
-regression simply drop me a line. Ciao, Thorsten
+7eccb738fce5 ath10k: rebuild crypto header in rx data frames
 
+-- 
+https://patchwork.kernel.org/patch/10028621/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
