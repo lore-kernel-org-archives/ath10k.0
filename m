@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e96R4-0003G1-Ey
- for ath10k@lists.infradead.org; Mon, 30 Oct 2017 09:32:54 +0000
-Subject: Re: [v3] ath10k: rebuild crypto header in rx data frames
-References: <1509035774-26553-1-git-send-email-kvalo@qca.qualcomm.com>
- <59b2ec22dc9c4db0bd30a65dba660b1c@euamsexm01a.eu.qualcomm.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <154f13b8-1e77-dbe5-4cb0-81c534dbc40b@dd-wrt.com>
-Date: Mon, 30 Oct 2017 10:32:12 +0100
+ id 1e9Rxi-0008BW-Mi
+ for ath10k@lists.infradead.org; Tue, 31 Oct 2017 08:32:00 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: PROBLEM: Issue with wireless driver after resume from suspend.
+References: <20171031065122.GA24662@gmail.com>
+ <1509434604.4492.192.camel@coelho.fi>
+Date: Tue, 31 Oct 2017 10:31:28 +0200
+In-Reply-To: <1509434604.4492.192.camel@coelho.fi> (Luca Coelho's message of
+ "Tue, 31 Oct 2017 09:23:24 +0200")
+Message-ID: <87a807sopr.fsf@purkki.adurom.net>
 MIME-Version: 1.0
-In-Reply-To: <59b2ec22dc9c4db0bd30a65dba660b1c@euamsexm01a.eu.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,46 +20,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Luca Coelho <luca@coelho.fi>
+Cc: linux-wireless@vger.kernel.org, Anil Nair <anilcoll90@gmail.com>, ath10k@lists.infradead.org
 
-d2lsbCBjaGVjayBpdCB0b21vcnJvdyBpbmNsdWRpbmcgZ2NtcC0yNTYsIGNjbXAtMjU2LiB3YXMg
-b3V0IGZvciB3ZWVrZW5kIDotKQoKQW0gMzAuMTAuMjAxNyB1bSAwOTozOSBzY2hyaWViIEthbGxl
-IFZhbG86Cj4gS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4KPj4g
-UnggZGF0YSBmcmFtZXMgbm90aWZpZWQgdGhyb3VnaCBIVFRfVDJIX01TR19UWVBFX1JYX0lORCBh
-bmQKPj4gSFRUX1QySF9NU0dfVFlQRV9SWF9GUkFHX0lORCBleHBlY3QgUE4vVFNDIGNoZWNrIHRv
-IGJlIGRvbmUKPj4gb24gaG9zdCAobWFjODAyMTEpIHJhdGhlciB0aGFuIGZpcm13YXJlLiBSZWJ1
-aWxkIGNpcGhlciBoZWFkZXIKPj4gaW4gZXZlcnkgcmVjZWl2ZWQgZGF0YSBmcmFtZXMgKHRoYXQg
-YXJlIG5vdGlmaWVkIHRocm91Z2ggdGhvc2UKPj4gSFRUIGludGVyZmFjZXMpIGZyb20gdGhlIHJ4
-X2hkcl9zdGF0dXMgdGx2IGF2YWlsYWJsZSBpbiB0aGUKPj4gcnggZGVzY3JpcHRvciBvZiB0aGUg
-Zmlyc3QgbXNkdS4gU2tpcCBzZXR0aW5nIFJYX0ZMQUdfSVZfU1RSSVBQRUQKPj4gZmxhZyBmb3Ig
-dGhlIHBhY2tldHMgd2hpY2ggcmVxdWlyZXMgbWFjODAyMTEgUE4vVFNDIGNoZWNrIHN1cHBvcnQK
-Pj4gYW5kIHNldCBhcHByb3ByaWF0ZSBSWF9GTEFHIGZvciBzdHJpcHBlZCBjcnlwdG8gdGFpbC4g
-SHcgUUNBOTg4WCwKPj4gUUNBOTg4NywgUUNBOTlYMCwgUUNBOTk4NCwgUUNBOTg4OCBhbmQgUUNB
-NDAxOSBjdXJyZW50bHkgbmVlZCB0aGUKPj4gcmVidWlsZGluZyBvZiBjaXBoZXIgaGVhZGVyIHRv
-IHBlcmZvcm0gUE4vVFNDIGNoZWNrIGZvciByZXBsYXkKPj4gYXR0YWNrLgo+Pgo+PiBQbGVhc2Ug
-bm90ZSB0aGF0IHJlbW92aW5nIGNyeXB0byB0YWlsIGZvciBDQ01QLTI1NiwgR0NNUCBhbmQgR0NN
-UC0yNTYgY2lwaGVycwo+PiBpbiByYXcgbW9kZSBuZWVkcyB0byBiZSBmaXhlZC4gU2luY2UgUngg
-d2l0aCB0aGVzZSBjaXBoZXJzIGluIHJhdwo+PiBtb2RlIGRvZXMgbm90IHdvcmsgaW4gdGhlIGN1
-cnJlbnQgZm9ybSBldmVuIHdpdGhvdXQgdGhpcyBwYXRjaCBhbmQKPj4gcmVtb3ZpbmcgY3J5cHRv
-IHRhaWwgZm9yIHRoZXNlIGNoaXBlcnMgbmVlZHMgY2xlYW4gdXAsIHJhdyBtb2RlIHJlbGF0ZWQK
-Pj4gaXNzdWVzIGluIENDTVAtMjU2LCBHQ01QIGFuZCBHQ01QLTI1NiBjYW4gYmUgYWRkcmVzc2Vk
-IGluIGZvbGxvdyB1cAo+PiBwYXRjaGVzLgo+Pgo+PiBUZXN0ZWQtYnk6IE1hbmlrYW50YSBQdWJi
-aXNldHR5IDxtcHViYmlzZUBxdGkucXVhbGNvbW0uY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBWYXNh
-bnRoYWt1bWFyIFRoaWFnYXJhamFuIDx2dGhpYWdhckBxdGkucXVhbGNvbW0uY29tPgo+PiBTaWdu
-ZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPgo+IFBhdGNoIGFw
-cGxpZWQgdG8gYXRoLWN1cnJlbnQgYnJhbmNoIG9mIGF0aC5naXQsIHRoYW5rcy4KPgo+IDdlY2Ni
-NzM4ZmNlNSBhdGgxMGs6IHJlYnVpbGQgY3J5cHRvIGhlYWRlciBpbiByeCBkYXRhIGZyYW1lcwo+
-CgotLSAKTWl0IGZyZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0
-c2NoYWxsIC8gQ1RPCgpOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgU3R1
-YmVud2FsZGFsbGVlIDIxYSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2Vy
-aWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5o
-w6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMu
-Z290dHNjaGFsbEBkZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUx
-LTU4MjY1NjUKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Luca Coelho <luca@coelho.fi> writes:
+
+>> I am having a issue with the wireless driver in my laptop. Attached
+>> information
+>> pertaining to the issue.
+>
+> It would be useful to specify which wireless card you are using.  In
+> this case, the problem seems to be with ath10k.
+
+For ath10k issues please also CC ath10k list:
+
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/support
+
+And please copy the relevant errors from the logs to the email, faster
+that way.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
