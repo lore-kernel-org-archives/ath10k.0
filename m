@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wp227.webpack.hosteurope.de ([2a01:488:42:1000:50ed:84ea::])
+Received: from mail-io0-f171.google.com ([209.85.223.171])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e9YlY-0000fm-Sf
- for ath10k@lists.infradead.org; Tue, 31 Oct 2017 15:47:51 +0000
-Subject: Re: ath10k: Wifi slow on the XPS13 (9360) (QCA6174)
-References: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
- <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
- <74a979dc-f06d-be9d-7c3f-359cd481d16c@leemhuis.info>
- <87tvyi4dnv.fsf_-_@kamboji.qca.qualcomm.com>
-From: Thorsten Leemhuis <linux@leemhuis.info>
-Message-ID: <94b4b903-afeb-439b-2b96-81835ab6ebef@leemhuis.info>
-Date: Tue, 31 Oct 2017 16:47:18 +0100
+ id 1e9Z8R-00040w-V1
+ for ath10k@lists.infradead.org; Tue, 31 Oct 2017 16:11:29 +0000
+Received: by mail-io0-f171.google.com with SMTP id m81so36262832ioi.13
+ for <ath10k@lists.infradead.org>; Tue, 31 Oct 2017 09:11:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87tvyi4dnv.fsf_-_@kamboji.qca.qualcomm.com>
-Content-Language: en-MW
+In-Reply-To: <20171031065122.GA24662@gmail.com>
+References: <20171031065122.GA24662@gmail.com>
+From: Matteo Croce <mcroce@redhat.com>
+Date: Tue, 31 Oct 2017 17:10:25 +0100
+Message-ID: <CAGnkfhz=XJUQrXJR-ZbNxk+gBN_bh8+qYzv=_V_KhV0mV2+tmg@mail.gmail.com>
+Subject: Re: PROBLEM: Issue with wireless driver after resume from suspend.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,80 +20,109 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Paul Menzel <pmenzel@molgen.mpg.de>, Ryan Hsu <ryanhsu@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Anil Nair <anilcoll90@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-TG8hIE9uIDI5LjEwLjIwMTcgMDg6MjcsIEthbGxlIFZhbG8gd3JvdGU6Cj4gWy4uXQo+IHNvcnJ5
-IGZvciB0aGUgbGF0ZSByZXBseSwgSSdtIGhhdmluZyBwcm9ibGVtcyBrZWVwaW5nIHVwIHdpdGgg
-YWxsIHRoZQo+IGVtYWlsLiAKCk5vIHdvcnJpZXMsIHRoaXMgcHJvYmxlbSBpcyBub3RoaW5nIG5l
-dywgSSBqdXN0IHRob3VnaHQgaXQgbWlnaHQgYmUgZ29vZAp0byBmaW5hbGx5IGJyaW5nIHRoaXMg
-dG8gYXRoMTBrLCBhcyBJIGdvdCB0aGUgaW1wcmVzc2lvbnMgaXQgaGFkIG5vdApnb3R0ZW4gcHJv
-cGVyIGF0dGVudGlvbiB0aGVyZSB5ZXQuCgo+IFRob3JzdGVuIExlZW1odWlzIDxsaW51eEBsZWVt
-aHVpcy5pbmZvPiB3cml0ZXM6Cj4+IE9uIDAzLjEwLjIwMTcgMDE6NDAsIFJ5YW4gSHN1IHdyb3Rl
-Ogo+Pj4gT24gMTAvMDEvMjAxNyAwMTo1OSBBTSwgVGhvcnN0ZW4gTGVlbWh1aXMgd3JvdGU6Cj4+
-Pj4+IGF0aDEwa19wY2kgMDAwMDozYTowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPj4+
-Pj4gYXRoMTBrL3ByZS1jYWwtcGNpLTAwMDA6M2E6MDAuMC5iaW4gZmFpbGVkIHdpdGggZXJyb3Ig
-LTIKPj4+Pj4gYXRoMTBrX3BjaSAwMDAwOjNhOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZv
-cgo+Pj4+PiBhdGgxMGsvY2FsLXBjaS0wMDAwOjNhOjAwLjAuYmluIGZhaWxlZCB3aXRoIGVycm9y
-IC0yCj4+Pj4gRG8gdGhleSBoYXZlIGFueXRoaW5nIHRvIGRvIHdpdGggdGhpcz8gSGFyZHdhcmUg
-aXMKPj4+IFRoaXMgZXJyb3IgbWVzc2FnZSBpcyBjb25mdXNpbmcgc2luY2UgUUNBNjE3NCBpcyBu
-b3Qgc3VwcG9ydGluZwo+Pj4gcHJlLWNhbGlicmF0aW9uIGZlYXR1cmUsIHRoaXMgcmVtaW5kcyBt
-ZSB0aGF0IHdlIG5lZWQgdG8gY2xlYW4gdGhpcyB1cC4KPj4gSSBndWVzcyB0aGF0IHdvdWxkIGJl
-IGdvb2QgdG8gYXZvaWQgY29uZnVzaW9uLiBCdXQgd2hpbGUgYXQgaXQ6IElmIHlvdQo+PiBoYXZl
-IGEgbWludXRlLCBjb3VsZCB5b3UgcGxlYXNlIGV4cGxhaW4gdG8gbWUgaG93IHRvIHByb3Blcmx5
-IHNldCB1cCB0aGUKPj4gd2lmaSBmaXJtd2FyZSBmaWxlcyBmb3IgbXkgRGVsbCBYUFMxMyAoOTM2
-MCk/IFRoZSByZWFzb25zIHdoeSBJJ20KPj4gYXNraW5nOiBTZW5kaW5nIGRhdGEgdmlhIHdpZmkg
-aXMgcmVhbGx5IHNsb3cgb24gbXkgbGFwdG9wIChzY3AgY29waWVzCj4+IG9ubHkgZ2V0IDIgdG8g
-NSBNQnl0ZS9zIG9uIG5ldHdvcmtzIHRoYXQgYXJlIGtub3duIHRvIGJlIGEgbG90IGZhc3Rlciku
-Cj4+IEkgd29uZGVyIGlmIHRoZSBmaXJtd2FyZSBmaWxlcyBvciB0aGUgY2FsaWJyYXRpb24gZGF0
-YSBpcyBwYXJ0IG9mIHRoZQo+PiByZWFzb24gd2lmaSBUeCBpcyBzbG93LiBUaGUgbWFjaGluZSBp
-cyBub3JtYWxseSBzaGlwcGVkIHdpdGggYSBzbGlnaHRseQo+PiBlbmhhbmNlZCBVYnVudHUgMTYu
-MDQuIFRoYXQgYW1vbmcgb3RoZXJzIGNvbnRhaW5zIGEgcGFja2FnZSB3aXRoIHRoZQo+PiBtYWNo
-aW5lIHNwZWNpZmljIGZpbGVzIGJvYXJkLmJpbiBhbmQgYm9hcmQtMi5iaW4gdGhhdCByZXBsYWNl
-IHRoZSBmaWxlcwo+PiBub3JtYWxseSBpbnN0YWxsZWQgaW4gL2xpYi9maXJtd2FyZS9hdGgxMGsv
-UUNBNjE3NC9odzMuMC8gQXJlIHRob3NlCj4+IG1hY2hpbmUgc3BlY2lmaWMgZmlsZXMgY3J1Y2lh
-bCB0byBoYXZlIG9yIGFyZSB0aGUgb25lIGZyb20gdGhlCj4+IGxpbnV4LWZpcm13YXJlIHJlcG8g
-Z29vZCBlbm9ndWg/IEknbSB1c2luZyBGZWRvcmEgYW5kIGNvdWxkIGNvcHkgdGhlCj4+IG9uZXMg
-ZnJvbSBVYnVudHUgb3ZlciwgYnV0IG9idmlvdXNseSB0aGV5IHdpbGwgZ2V0IG92ZXJ3cml0dGVu
-IGV2ZXJ5Cj4+IHRpbWUgRmVkb3JhIHNoaXBzIGEgbmV3IGxpbnV4LWZpcm13YXJlIHBhY2thZ2Ug
-4oCTIElPVzogZXZlcnkgZmV3IHdlZWtzIDotLwo+IFllcywgdGhlIGJvYXJkIGZpbGUgY2FuIGFm
-ZmVjdCB0aHJvdWdodHB1dCwgX2JvdGhfIFRDUCBhbmQgVURQLiBJIGRvbid0Cj4ga25vdyB3aGF0
-IGJvYXJkIGZpbGVzIFVidW50dSBpcyBzaGlwcGluZyBidXQgd2Ugc2hvdWxkIHRyeSB0byBnZXQg
-dGhvc2UKPiBpbnRvIHVwc3RyZWFtLgoKT3V0IG9mIGN1cmlvc2l0eSAoZG9uJ3Qgc3BlbmQgdGlt
-ZSBhbnN3ZXJpbmcgdGhpcyBpcyB5b3UgYXJlIGJ1c3kpOiBJcwp0aGVyZSBldmVuIGEgbWVjaGFu
-aXNtIGZvciB0aGlzPyBLaW5kIG9mICJ0YWtlCmZpcm13YXJlZGlyL2JvYXJkLURlbGxfSW5jLi1Y
-UFNfMTNfOTM2MC5iaW4gaWYgaXQgZXhpc3RzIGFuZApmaXJtd2FyZWRpci9ib2FyZC5iaW4gb3Ro
-ZXJ3aXNlPyBPciBjYW4gb25lIGZpbGUgc2VydmUgYWxsIG1hY2hpbmVzPwoKPj4gU2lkZSBub3Rl
-OiBZb3UgZmluZCBhIGxvdCBvZiByZXBvcnRzIGFib3V0IHNsb3cgd2lmaSBpcyB5b3Ugc2VhcmNo
-IHRoZQo+PiBuZXQgd2l0aCB0ZXJtcyBsaWtlICI5MzYwIHdpZmkgc2xvdyBsaW51eCIuIFVidW50
-dSBmaXhlZCB0aGF0IGEgZmV3Cj4+IG1vbnRocyBhZ28gd2l0aCB0aGlzIHBhdGNoOgo+PiBodHRw
-Oi8va2VybmVsLnVidW50dS5jb20vZ2l0L3VidW50dS91YnVudHUteGVuaWFsLmdpdC9jb21taXQv
-P2lkPTk2OTBmMTlmMDdmZWUyYWNiMmIwNGVhNWVhYTVkYjE4NGVlMTc1ZDUKPj4gU29tZSBidWdz
-IGFib3V0IHRoaXM6Cj4+IGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L3VidW50dS8rc291cmNl
-L2xpbnV4LytidWcvMTY5MjgzNgo+PiBodHRwczovL2J1Z3MubGF1bmNocGFkLm5ldC91YnVudHUv
-K3NvdXJjZS9saW51eC8rYnVnLzE2NzAwNDEKPiBCdXQgdGhpcyBhZ2FpbiBhYm91dCBpbnRlcnJh
-Y3Rpb24gYmV0d2VlbiBhdGgxMGsgYW5kIFRDUCBzdGFjay4gQW5kIGl0Cj4gX29ubHlfIGFmZmVj
-dHMgVENQLCBVRFAgc2hvdWxkIGJlIHVuYWZmZWN0ZWQuCgpBaGgsIHNvcnJ5LCBtaXNzZWQgdGhh
-dC4gU2VlbXMgSSBkaWRuJ3QgcHJvcGVybHkgcmVhZCB0aGUgc2Vjb25kCmxhdW5jaHBhZCBsaW5r
-IGFib3ZlLiBTb3JyeS4KCj4gU28gd2hlbmV2ZXIgdGVzdGluZwo+IHRocm91Z2hwdXQgcGxlYXNl
-IGFsd2F5cyBtZWFzdXJlIGJvdGggVENQIGFuZCBVRFAgYmVjYXVzZSB0aGVuIGl0J3MKPiBlYXNp
-ZXIgdG8gcGlucG9pbnQgdGhlIHJlYXNvbi4KCklzIHRoZXJlIGFueSBkYXRhIEkgY291bGQgcHJv
-dmlkZSB0aGF0IG1pZ2h0IGhlbHAgZ2V0dGluZyB0aGlzIHNvbGVkCm9uY2UgYW5kIGZvciBhbGw/
-Cgo+PiBCdXQgZnJvbSB3aGF0IEkgZ2F0aGVyZWQgYnkgc2VhcmNoaW5nIHRoZSBuZXQgYW5kIGFz
-a2luZyBvbiAjYXRoMTBrIEkKPj4gZ290IHRoZSBpbXByZXNzaW9uIHRoYXQgcGF0Y2ggaXMgYSBt
-YXNzaXZlIHVnbHkgaGFjayBhbmQgbm8gd2F5Cj4+IGFjY2VwdGFibGUgdXBzdHJlYW0uICBJcyB0
-aGF0IGNvcnJlY3Q/Cj4gWWVzLCBpdCdzIGEgaG9ycmlibGUgaGFjayBhbmQgSSBjYW5ub3QgYXBw
-bHkgdGhhdC4gQW5kIGxpa2UgeW91IHNhaWQKPiAjMTY5MjgzNiwgYWxzbyBFcmljIER1bWF6ZXQg
-KG9uZSBvZiBUQ1AgbWFpbnRhaW5lcnMpIGFncmVlcyB3aXRoIHRoYXQKQWhoLCBoYWQgbWlzc2Vk
-IHRoYXQsIHNvcnJ5LgoKPj4gSWYgeWVzOiBpcyB0aGVyZSBtYXliZSBhIHByb3BlciBmaXggb3V0
-IHRoZXJlIHNvbWV3aGVyZT8KPiBVbmZvcnR1bmF0ZWx5IHRoZXJlIHN0aWxsIGlzIG5vIGdvb2Qg
-c29sdXRpb24uIEluIGEgd2VlayB0aGVyZSdzIE5ldGRldgo+IDIuMiBhbmQgd2UgaGF2ZSBMaW51
-eCBXaXJlbGVzcyBzdW1taXQgdGhlcmUuIFdlIHNob3VsZCBicmluZyB1cCB0aGlzCj4gdG9waWMg
-dGhlcmUuCgpUaHggZm9yIHBpY2tpbmcgdGhpcyB1cCwgbXVjaCBhcHByZWNpYXRlZCEgQ2lhbywg
-VGhvcnN0ZW4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Tue, Oct 31, 2017 at 7:51 AM, Anil Nair <anilcoll90@gmail.com> wrote:
+> Hi All,
+>
+> I am having a issue with the wireless driver in my laptop. Attached information
+> pertaining to the issue.
+>
+>   [1.] One line summary of the problem:
+>
+>   Wifi not working after resuming from suspend state.
+>
+>   [2.] Full description of the problem/report:
+>
+>   I had put my laptop in suspend mode, after resmuing the laptop from suspend
+>   mode wifi stopped working, or rather not responding I tried switching the
+>   airplane mode on then off still no effect.
+>
+>   [3.] Keywords (i.e., modules, networking, kernel):
+>
+>   Networking particularly Wireless Networking.
+>
+>   [4.] Kernel information
+>
+>   4.13.5
+>
+>   [4.1.] Kernel version (from /proc/version):
+>
+>   Linux version 4.13.5anil-1017 (root@anilnair-lenovo)
+>   (gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.5))
+>   #1 SMP Sat Oct 14 12:30:16 IST 2017
+>
+>   [4.2.] Kernel .config file:
+>
+>   Attached in the below mail file named config_kernel.txt
+>
+>   [5.] Most recent kernel version which did not have the bug:
+>
+>   4.4.0
+>
+>   [6.] Output of Oops.. message (if applicable) with symbolic information
+>        resolved (see Documentation/admin-guide/oops-tracing.rst)
+>
+>   Attached in the below mail file named error_log.txt
+>
+>   [8.1.] Software (add the output of the ver_linux script here)
+>
+>   Attached in the below mail file named software_version.txt
+>
+>   [8.2.] Processor information (from /proc/cpuinfo):
+>
+>   Attached in the below mail file named cpu_config.txt
+>
+>   [8.3.] Module information (from /proc/modules):
+>
+>   Attached in the below mail file named modules_config.txt
+>
+>   [8.4.] Loaded driver and hardware information (/proc/ioports, /proc/iomem)
+>
+>   Attached in the below mail file named ioports_config.txt,iomem_config.txt,
+>
+>   [8.5.] PCI information ('lspci -vvv' as root)
+>
+>   Attached in the below mail file named pci_config.txt
+>
+>   [8.6.] SCSI information (from /proc/scsi/scsi)
+>
+>   Attached in the below mail file named cpu_config.txt
+>
+>   [X.] Other notes, patches, fixes, workarounds:
+>
+>   A reboot fixes the issue.
+>
+>   All Files are compressed in the tar and sent.
+>   Let me know what went wrong and how can i fix it.
+>   Let me know if any further information is required.
+>
+>   Thanking You.
+>
+>   --
+>   Regards,
+>   Anil Nair
+>
+
+I have the same issue with ath10k and kernel 4.13.10.
+If I suspend the system when the card is up it won't work anymore
+until I rmmod and modprobe ath10k_pci again.
+rmmod after suspend can take up to 10 minutes and sometimes crashes the system.
+Removing the driver _before_ suspend and inserting it back after
+resume actually works and it's what I'm using as not-so-temporary
+workaround.
+
+Regards,
+-- 
+Matteo Croce
+per aspera ad upstream
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
