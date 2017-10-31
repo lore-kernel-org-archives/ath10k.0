@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e9Xwk-0007AP-3m
- for ath10k@lists.infradead.org; Tue, 31 Oct 2017 14:55:20 +0000
+ id 1e9Y24-0001vr-7p
+ for ath10k@lists.infradead.org; Tue, 31 Oct 2017 15:00:54 +0000
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 Subject: Re: [v3] ath10k: rebuild crypto header in rx data frames
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Date: Tue, 31 Oct 2017 15:00:14 +0000
+Message-ID: <1509462013076.60330@qti.qualcomm.com>
 References: <1509035774-26553-1-git-send-email-kvalo@qca.qualcomm.com>
  <59b2ec22dc9c4db0bd30a65dba660b1c@euamsexm01a.eu.qualcomm.com>
- <154f13b8-1e77-dbe5-4cb0-81c534dbc40b@dd-wrt.com>
-Message-ID: <92bd2ece-dd71-b115-22c1-9a105df3612c@dd-wrt.com>
-Date: Tue, 31 Oct 2017 15:54:51 +0100
+ <154f13b8-1e77-dbe5-4cb0-81c534dbc40b@dd-wrt.com>,
+ <92bd2ece-dd71-b115-22c1-9a105df3612c@dd-wrt.com>
+In-Reply-To: <92bd2ece-dd71-b115-22c1-9a105df3612c@dd-wrt.com>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <154f13b8-1e77-dbe5-4cb0-81c534dbc40b@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,54 +22,95 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-dGhlIHNhbWUgaXMgZm9yIHRoZSBNSUMKCivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8q
-IE1JQyAqLworwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoKHN0YXR1cy0+ZmxhZyAm
-IFJYX0ZMQUdfTUlDX1NUUklQUEVEKSAmJgorwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGVuY3R5cGUgPT0gSFRUX1JYX01QRFVfRU5DUllQVF9BRVNfQ0NNX1dQQTIpCivCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBza2JfdHJpbShtc2R1LCBt
-c2R1LT5sZW4gLSA4KTsKCgp0aGlzIGNvZGUgbG9va3Mgd3JvbmcgdG9vCgpBbSAzMC4xMC4yMDE3
-IHVtIDEwOjMyIHNjaHJpZWIgU2ViYXN0aWFuIEdvdHRzY2hhbGw6Cj4gd2lsbCBjaGVjayBpdCB0
-b21vcnJvdyBpbmNsdWRpbmcgZ2NtcC0yNTYsIGNjbXAtMjU2LiB3YXMgb3V0IGZvciAKPiB3ZWVr
-ZW5kIDotKQo+Cj4gQW0gMzAuMTAuMjAxNyB1bSAwOTozOSBzY2hyaWViIEthbGxlIFZhbG86Cj4+
-IEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+IHdyb3RlOgo+Pgo+Pj4gUnggZGF0
-YSBmcmFtZXMgbm90aWZpZWQgdGhyb3VnaCBIVFRfVDJIX01TR19UWVBFX1JYX0lORCBhbmQKPj4+
-IEhUVF9UMkhfTVNHX1RZUEVfUlhfRlJBR19JTkQgZXhwZWN0IFBOL1RTQyBjaGVjayB0byBiZSBk
-b25lCj4+PiBvbiBob3N0IChtYWM4MDIxMSkgcmF0aGVyIHRoYW4gZmlybXdhcmUuIFJlYnVpbGQg
-Y2lwaGVyIGhlYWRlcgo+Pj4gaW4gZXZlcnkgcmVjZWl2ZWQgZGF0YSBmcmFtZXMgKHRoYXQgYXJl
-IG5vdGlmaWVkIHRocm91Z2ggdGhvc2UKPj4+IEhUVCBpbnRlcmZhY2VzKSBmcm9tIHRoZSByeF9o
-ZHJfc3RhdHVzIHRsdiBhdmFpbGFibGUgaW4gdGhlCj4+PiByeCBkZXNjcmlwdG9yIG9mIHRoZSBm
-aXJzdCBtc2R1LiBTa2lwIHNldHRpbmcgUlhfRkxBR19JVl9TVFJJUFBFRAo+Pj4gZmxhZyBmb3Ig
-dGhlIHBhY2tldHMgd2hpY2ggcmVxdWlyZXMgbWFjODAyMTEgUE4vVFNDIGNoZWNrIHN1cHBvcnQK
-Pj4+IGFuZCBzZXQgYXBwcm9wcmlhdGUgUlhfRkxBRyBmb3Igc3RyaXBwZWQgY3J5cHRvIHRhaWwu
-IEh3IFFDQTk4OFgsCj4+PiBRQ0E5ODg3LCBRQ0E5OVgwLCBRQ0E5OTg0LCBRQ0E5ODg4IGFuZCBR
-Q0E0MDE5IGN1cnJlbnRseSBuZWVkIHRoZQo+Pj4gcmVidWlsZGluZyBvZiBjaXBoZXIgaGVhZGVy
-IHRvIHBlcmZvcm0gUE4vVFNDIGNoZWNrIGZvciByZXBsYXkKPj4+IGF0dGFjay4KPj4+Cj4+PiBQ
-bGVhc2Ugbm90ZSB0aGF0IHJlbW92aW5nIGNyeXB0byB0YWlsIGZvciBDQ01QLTI1NiwgR0NNUCBh
-bmQgCj4+PiBHQ01QLTI1NiBjaXBoZXJzCj4+PiBpbiByYXcgbW9kZSBuZWVkcyB0byBiZSBmaXhl
-ZC4gU2luY2UgUnggd2l0aCB0aGVzZSBjaXBoZXJzIGluIHJhdwo+Pj4gbW9kZSBkb2VzIG5vdCB3
-b3JrIGluIHRoZSBjdXJyZW50IGZvcm0gZXZlbiB3aXRob3V0IHRoaXMgcGF0Y2ggYW5kCj4+PiBy
-ZW1vdmluZyBjcnlwdG8gdGFpbCBmb3IgdGhlc2UgY2hpcGVycyBuZWVkcyBjbGVhbiB1cCwgcmF3
-IG1vZGUgcmVsYXRlZAo+Pj4gaXNzdWVzIGluIENDTVAtMjU2LCBHQ01QIGFuZCBHQ01QLTI1NiBj
-YW4gYmUgYWRkcmVzc2VkIGluIGZvbGxvdyB1cAo+Pj4gcGF0Y2hlcy4KPj4+Cj4+PiBUZXN0ZWQt
-Ynk6IE1hbmlrYW50YSBQdWJiaXNldHR5IDxtcHViYmlzZUBxdGkucXVhbGNvbW0uY29tPgo+Pj4g
-U2lnbmVkLW9mZi1ieTogVmFzYW50aGFrdW1hciBUaGlhZ2FyYWphbiA8dnRoaWFnYXJAcXRpLnF1
-YWxjb21tLmNvbT4KPj4+IFNpZ25lZC1vZmYtYnk6IEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFs
-Y29tbS5jb20+Cj4+IFBhdGNoIGFwcGxpZWQgdG8gYXRoLWN1cnJlbnQgYnJhbmNoIG9mIGF0aC5n
-aXQsIHRoYW5rcy4KPj4KPj4gN2VjY2I3MzhmY2U1IGF0aDEwazogcmVidWlsZCBjcnlwdG8gaGVh
-ZGVyIGluIHJ4IGRhdGEgZnJhbWVzCj4+Cj4KCi0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2Vu
-IC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJI
-IC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUgMjFhLCA2NDYyNSBCZW5zaGVp
-bQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2No
-w6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6
-Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5
-NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hdGgxMGsK
+
+Sorry top posting.
+
+The issues in raw mode with CCMP-256, GCMP and GCMP-256 were already known =
+and
+the same was captured in the commit log. As mentioned in the commit log, ra=
+w mode
+with these ciphers does not work even without this particular patch and it =
+needs some cleanup
+like done in the follow up patch https://patchwork.kernel.org/patch/1002909=
+9/.
+
+Vasanth
+________________________________________
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Sent: Tuesday, October 31, 2017 8:24 PM
+To: Kalle Valo
+Cc: ath10k@lists.infradead.org; linux-wireless@vger.kernel.org; Vasanthakum=
+ar Thiagarajan
+Subject: Re: [v3] ath10k: rebuild crypto header in rx data frames
+
+the same is for the MIC
+
++               /* MIC */
++               if ((status->flag & RX_FLAG_MIC_STRIPPED) &&
++                   enctype =3D=3D HTT_RX_MPDU_ENCRYPT_AES_CCM_WPA2)
++                       skb_trim(msdu, msdu->len - 8);
+
+
+this code looks wrong too
+
+Am 30.10.2017 um 10:32 schrieb Sebastian Gottschall:
+> will check it tomorrow including gcmp-256, ccmp-256. was out for
+> weekend :-)
+>
+> Am 30.10.2017 um 09:39 schrieb Kalle Valo:
+>> Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>>
+>>> Rx data frames notified through HTT_T2H_MSG_TYPE_RX_IND and
+>>> HTT_T2H_MSG_TYPE_RX_FRAG_IND expect PN/TSC check to be done
+>>> on host (mac80211) rather than firmware. Rebuild cipher header
+>>> in every received data frames (that are notified through those
+>>> HTT interfaces) from the rx_hdr_status tlv available in the
+>>> rx descriptor of the first msdu. Skip setting RX_FLAG_IV_STRIPPED
+>>> flag for the packets which requires mac80211 PN/TSC check support
+>>> and set appropriate RX_FLAG for stripped crypto tail. Hw QCA988X,
+>>> QCA9887, QCA99X0, QCA9984, QCA9888 and QCA4019 currently need the
+>>> rebuilding of cipher header to perform PN/TSC check for replay
+>>> attack.
+>>>
+>>> Please note that removing crypto tail for CCMP-256, GCMP and
+>>> GCMP-256 ciphers
+>>> in raw mode needs to be fixed. Since Rx with these ciphers in raw
+>>> mode does not work in the current form even without this patch and
+>>> removing crypto tail for these chipers needs clean up, raw mode related
+>>> issues in CCMP-256, GCMP and GCMP-256 can be addressed in follow up
+>>> patches.
+>>>
+>>> Tested-by: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
+>>> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+>>> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+>> Patch applied to ath-current branch of ath.git, thanks.
+>>
+>> 7eccb738fce5 ath10k: rebuild crypto header in rx data frames
+>>
+>
+
+--
+Mit freundlichen Gr=FCssen / Regards
+
+Sebastian Gottschall / CTO
+
+NewMedia-NET GmbH - DD-WRT
+Firmensitz:  Stubenwaldallee 21a, 64625 Bensheim
+Registergericht: Amtsgericht Darmstadt, HRB 25473
+Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
+http://www.dd-wrt.com
+email: s.gottschall@dd-wrt.com
+Tel.: +496251-582650 / Fax: +496251-5826565
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
