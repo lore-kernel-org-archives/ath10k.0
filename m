@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e9qjQ-0005cx-Tx
- for ath10k@lists.infradead.org; Wed, 01 Nov 2017 10:58:50 +0000
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e9qb8-0003iv-5Y
+ for ath10k@lists.infradead.org; Wed, 01 Nov 2017 10:50:14 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath: Incorrect regDomainPairs/allCountries settings
-Date: Wed, 1 Nov 2017 10:58:22 +0000
-Message-ID: <87k1zaxo36.fsf@kamboji.qca.qualcomm.com>
-References: <1693831.JqVThioVz9@bentobox>
-In-Reply-To: <1693831.JqVThioVz9@bentobox> (Sven Eckelmann's message of "Tue, 
- 08 Aug 2017 11:45:38 +0200")
+Subject: Re: [PATCH 5/6] ath10k: add memory dump support for QCA6174/QCA9377
+Date: Wed, 1 Nov 2017 10:49:46 +0000
+Message-ID: <87wp3axohi.fsf@kamboji.qca.qualcomm.com>
+References: <150278532045.22482.14490702801292107536.stgit@potku.adurom.net>
+ <150278542590.22482.1613614809483892010.stgit@potku.adurom.net>
+In-Reply-To: <150278542590.22482.1613614809483892010.stgit@potku.adurom.net>
+ (Kalle Valo's message of "Tue, 15 Aug 2017 11:23:46 +0300")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -24,36 +25,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "Luis R.
- Rodriguez" <mcgrof@do-not-panic.com>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Sven Eckelmann <sven.eckelmann@openmesh.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> I just had two inquiries from Vietnam and Singapore regarding the used CTL 
-> limits by Atheros based chips. I've checked through the code and noticed that 
-> regd_common.h assigns SG to APL6_WORLD and VN to NULL1_WORLD.
+> From: Alan Liu <alanliu@qca.qualcomm.com>
 >
->  * SG: APL6_WORLD
->    - 2.4GHz: CTL_ETSI
->    -   5GHz: CTL_ETSI
->  * VN: NULL1_WORLD
->    - 2.4GHz: CTL_ETSI
->    -   5GHz: NO_CTL
+> Add memory dump to the firmware crash data file which is provided to user space
+> via devcoredump interface. This makes it easier for firmware engineers to debug
+> firmware crashes.
 >
-> But I personally would have expected that both countries would be assigned to 
-> FCC3_WORLD.
+> Due to increased memory consumption the memory dump is disabled by default. To
+> enable it make sure that bit 3 is set in coredump_mask module parameter:
 >
->  * FCC3_WORLD
->    - 2.4GHz: CTL_ETSI
->    -   5GHz: CTL_FCC
+> modprobe ath10k_core coredump_mask=0xffffffff
 >
-> Maybe someone from QCA can check with their internal driver.
+> When RAMDUMP is enabled a buffer for the dump is allocated with vmalloc during
+> device probe. The actual memory layout is different in hardware versions and
+> the layouts are defined in coredump.c. The memory is split to regions and, to
+> get even finegrained control of what to copy, the region can split to smaller
+> sections as not all registers are readable (which could cause the whole system
+> to stall).
+>
+> Signed-off-by: Alan Liu <alanliu@qca.qualcomm.com>
+> [kvalo@qca.qualcomm.com: refactoring and cleanup]
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-I asked around and got this answer:
+[...]
 
-"Correct, internal code base assigns SG and VN to FCC3_WORLD regdomain,
-CTL limits are assigned accordingly as he mentioned."
+> +		/* To get IRAM dump, the host driver needs to switch target
+> +		 * ram config from DRAM to IRAM.
+> +		 */
+> +		if (current_region->type == ATH10K_MEM_REGION_TYPE_IRAM1 ||
+> +		    current_region->type == ATH10K_MEM_REGION_TYPE_IRAM2) {
+> +			shift = current_region->start >> 20;
+> +
+> +			ret = ath10k_pci_set_ram_config(ar, shift);
+> +			if (!ret) {
+> +				ath10k_warn(ar, "failed to switch ram config to IRAM for section %s: %d\n",
+> +					    current_region->name, ret);
+
+A colleague noticed that there's a bug here, it should be "if (ret)".
+I'll fix that in the next version.
 
 -- 
 Kalle Valo
