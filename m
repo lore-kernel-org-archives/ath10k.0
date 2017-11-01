@@ -1,15 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e9mqK-000410-4s
- for ath10k@lists.infradead.org; Wed, 01 Nov 2017 06:49:42 +0000
-From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
-Subject: RE: firmware crash; Atheros QCA6174 doesn't work
-Date: Wed, 1 Nov 2017 06:49:15 +0000
-Message-ID: <0eeb4088a7fb48faa3334b4a40f1d020@NALASEXR01G.na.qualcomm.com>
-References: <50327789.T1NR8j5T4B@laptopv>
-In-Reply-To: <50327789.T1NR8j5T4B@laptopv>
+ id 1e9nPp-0003XS-2I
+ for ath10k@lists.infradead.org; Wed, 01 Nov 2017 07:26:23 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: ath10k: Wifi slow on the XPS13 (9360) (QCA6174)
+Date: Wed, 1 Nov 2017 07:25:57 +0000
+Message-ID: <87wp3azchn.fsf@kamboji.qca.qualcomm.com>
+References: <5a4860eb-3734-7587-d81f-9c3de6ff11c8@leemhuis.info>
+ <46f918c5-b07d-e397-2f3d-8136c7c1a8f3@qti.qualcomm.com>
+ <74a979dc-f06d-be9d-7c3f-359cd481d16c@leemhuis.info>
+ <87tvyi4dnv.fsf_-_@kamboji.qca.qualcomm.com>
+ <94b4b903-afeb-439b-2b96-81835ab6ebef@leemhuis.info>
+In-Reply-To: <94b4b903-afeb-439b-2b96-81835ab6ebef@leemhuis.info> (Thorsten
+ Leemhuis's message of "Tue, 31 Oct 2017 16:47:18 +0100")
 Content-Language: en-US
+Content-ID: <2BD62104FC1B8544B91DB998FB9D8EF7@qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,155 +25,89 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "phaef5Ie@nurfuerspam.de" <phaef5Ie@nurfuerspam.de>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Thorsten Leemhuis <linux@leemhuis.info>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Paul Menzel <pmenzel@molgen.mpg.de>, Ryan Hsu <ryanhsu@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-> -----Original Message-----
-> From: ath10k [mailto:ath10k-bounces@lists.infradead.org] On Behalf Of
-> phaef5Ie@nurfuerspam.de
-> Sent: Tuesday, October 31, 2017 10:09 AM
-> To: ath10k@lists.infradead.org
-> Subject: firmware crash; Atheros QCA6174 doesn't work
-> 
-> Hello,
-> 
-> I am trying to get wlan working but it doesn't work. So far I have tried:
-> 
-> 1. tried to boot up Ubuntu based LiveCD neon-kde; wlp1s0 recognized but
-> device doesn't work
->    => dmesg message: failed to fetch board data board-2.bin
-> 
-> 2. using latest firmware driver [git.kernel.org]; rmmod ath10k_pci
-> ath10k_core ath; modprobe ath10k_pci
->    => wlp1s0 gone; dmesg: firmware not found
-> 
-> 3. I found an instruction for user made firmware:
->    a. I took the windows driver "qca61x4_2_2.bin"
->    b. downloaded dissect.py at
-> https://gist.github.com/kazikcz/8e5845ad84ca251aa295
->    c. downloaded assemble.py
-> https://gist.github.com/kazikcz/c970cbf3a863ebbc4495
->    d. python dissect.py <qca61x4_2_2.bin => extracted fw[1-4].bin
->    e. python assemble.py qca61x4_2_2_samsung_api_5 0 fw-2.bin fw-1.bin 0
-> >firmware-5.bin
->    f. cp firmware-5.bin into /lib/firmware/ath10k/QCA6174/hw3.0/
->    g. using windows eeprom-file => cp eeprom_ar6320_3p0_SS_620.bin
-> /lib/....../hw3.0/board.bin
->    h. rmmod ath10k_pci ath10k_core ath; modprobe ath10k_pci
-> 
->    => result: dmesg: firmware-5.bin loaded but "board-2.bin failed"
-> 
-> 4. using a rolling release / installation iso archlinux-2017.10.01-x86_64.iso;
-> doesn't work
-> 
-> 5. ???? user made "board-2.bin"; but how?
-> 6. ???? another kernel version?
-> 7. ?????
-> 
-
-Thanks you've done all the way, with a few of the suggestion I would recommend as well.
-The eeprom_ar6320_3p0_SS_620.bin is the right board file, and we've added to the board-2.bin.
-https://github.com/kvalo/ath10k-firmware/commit/2db82b6981a52abc817abf5c070f9244717201a1
-
-You might want to get this one and give it a try again.
-
-> 
-> ### lspci ####
-> 
-> 01:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac
-> Wireless Network Adapter [168c:003e] (rev 32)
-> 	Subsystem: Samsung Electronics Co Ltd QCA6174 802.11ac Wireless
-> Network Adapter [144d:c150]
-
-As mentioned, and you've tested, the eeprom_ar6320_3p0_SS_620.bin is the right file to use.
-Latest board-2.bin should also have it as well.
-
-> 
-> ### 1. dmesg firmware from Ubuntu ###
-> 
-> [   29.681877] ath10k_pci 0000:01:00.0: enabling device (0000 -> 0002)
-> [   29.683879] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode
-> 0 reset_mode 0
-> [   30.099561] ath10k_pci 0000:01:00.0: Direct firmware load for ath10k/pre-
-> cal-pci-0000:01:00.0.bin failed with error -2
-> [   30.099591] ath10k_pci 0000:01:00.0: Direct firmware load for ath10k/cal-
-> pci-0000:01:00.0.bin failed with error -2
-> [   30.099634] ath10k_pci 0000:01:00.0: Direct firmware load for
-> ath10k/QCA6174/hw3.0/firmware-5.bin failed with error -2
-> [   30.099636] ath10k_pci 0000:01:00.0: could not fetch firmware file
-> 'ath10k/QCA6174/hw3.0/firmware-5.bin': -2
-> [   30.474511] ath10k_pci 0000:01:00.0: qca6174 hw3.2 target 0x05030000
-> chip_id 0x00340aff sub 144d:c150
-> [   30.474513] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs
-> 0 testmode 0
-> [   30.475081] ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.2.0-00180-
-> QCARMSWPZ-1 api 4 features wowlan,ignore-otp,no-4addr-pad crc32
-> 75dee6c5
-> [   30.882452] ath10k_pci 0000:01:00.0: failed to fetch board data for
-> bus=pci,vendor=168c,device=003e,subsystem-vendor=144d,subsystem-
-> device=c150 from ath10k/QCA6174/hw3.0/board-2.bin
-
-Ok, so this means the board-2.bin file you're using is not having the 144d:c150.
-
-> [   31.029907] ath10k_pci 0000:01:00.0: board_file api 1 bmi_id N/A crc32
-> ed5f849a
-
-And the debug board.bin file is not the right one for your module, so that it failed and unfortunately firmware failed to boot.
-
-> [   36.338958] ath10k_pci 0000:01:00.0: failed to ping firmware: -110
-> [   36.338962] ath10k_pci 0000:01:00.0: failed to reset rx filter: -110
-> [   36.419966] ath10k_pci 0000:01:00.0: could not init core (-110)
-> [   36.420010] ath10k_pci 0000:01:00.0: could not probe fw (-110)
-> 
-
-
-> ### 2. dmesg with latest git drivers ath10k ###
-> 
-> [ 1001.544396] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2
-> irq_mode 0 reset_mode 0 [ 1001.820591] ath10k_pci 0000:01:00.0: Direct
-> firmware load for ath10k/pre-cal-pci-0000:01:00.0.bin failed with error -2
-> [ 1001.820619] ath10k_pci 0000:01:00.0: Direct firmware load for ath10k/cal-
-> pci-0000:01:00.0.bin failed with error -2 [ 1001.820649] ath10k_pci
-> 0000:01:00.0: Direct firmware load for ath10k/QCA6174/hw3.0/firmware-
-> 5.bin failed with error -2 [ 1001.820652] ath10k_pci 0000:01:00.0: could not
-> fetch firmware file 'ath10k/QCA6174/hw3.0/firmware-5.bin': -2 [ 1001.820682]
-> ath10k_pci 0000:01:00.0: Direct firmware load for
-> ath10k/QCA6174/hw3.0/firmware-4.bin failed with error -2 [ 1001.820683]
-> ath10k_pci 0000:01:00.0: could not fetch firmware file
-
-Likely the firmware file not found, so that the QCA6174 can't find it and fail to boot.
- 
-> ### 3. dmesg user made firmware ####
-> 
-> 
-> [ 1772.091031] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2
-> irq_mode 0 reset_mode 0 [ 1772.369412] ath10k_pci 0000:01:00.0: qca6174
-> hw3.2 target 0x05030000 chip_id 0x00340aff sub 144d:c150 [ 1772.369417]
-> ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 1 dfs 0 testmode 0
-> [ 1772.370701] ath10k_pci 0000:01:00.0: firmware ver
-> qca61x4_2_2_samsung_api_5 api 5 features  crc32 93d04d09 [ 1772.452929]
-> ath10k_pci 0000:01:00.0: failed to fetch board data for bus=pci,bmi-chip-
-> id=0,bmi-board-id=0 from ath10k/QCA6174/hw3.0/board-2.bin [ 1772.452942]
-
-Are you using the same driver you rebuild on #2? This all 0 seems to be like the same issue that has been fixed.
-Can you help to check the ath10k git you're using have this fix as well?
-https://patchwork.kernel.org/patch/9486941/
-
-
-> ath10k_pci 0000:01:00.0: board_file api 1 bmi_id 0:0 crc32 ed5f849a
-
-And again the default board.bin is failing again.
-
-With the #1 or #2 scenario, can you give it a try with the latest firmware (4.4.1) and the board-2.bin file from here
-https://github.com/kvalo/ath10k-firmware/tree/master/QCA6174/hw3.0
-
-
-Ryan
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VGhvcnN0ZW4gTGVlbWh1aXMgPGxpbnV4QGxlZW1odWlzLmluZm8+IHdyaXRlczoNCg0KPiBMbyEg
+T24gMjkuMTAuMjAxNyAwODoyNywgS2FsbGUgVmFsbyB3cm90ZToNCj4+IFRob3JzdGVuIExlZW1o
+dWlzIDxsaW51eEBsZWVtaHVpcy5pbmZvPiB3cml0ZXM6DQo+Pj4gT24gMDMuMTAuMjAxNyAwMTo0
+MCwgUnlhbiBIc3Ugd3JvdGU6DQo+Pj4+IE9uIDEwLzAxLzIwMTcgMDE6NTkgQU0sIFRob3JzdGVu
+IExlZW1odWlzIHdyb3RlOg0KPj4+Pj4+IGF0aDEwa19wY2kgMDAwMDozYTowMC4wOiBEaXJlY3Qg
+ZmlybXdhcmUgbG9hZCBmb3INCj4+Pj4+PiBhdGgxMGsvcHJlLWNhbC1wY2ktMDAwMDozYTowMC4w
+LmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMg0KPj4+Pj4+IGF0aDEwa19wY2kgMDAwMDozYTowMC4w
+OiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3INCj4+Pj4+PiBhdGgxMGsvY2FsLXBjaS0wMDAwOjNh
+OjAwLjAuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yDQo+Pj4+PiBEbyB0aGV5IGhhdmUgYW55dGhp
+bmcgdG8gZG8gd2l0aCB0aGlzPyBIYXJkd2FyZSBpcw0KPj4+PiBUaGlzIGVycm9yIG1lc3NhZ2Ug
+aXMgY29uZnVzaW5nIHNpbmNlIFFDQTYxNzQgaXMgbm90IHN1cHBvcnRpbmcNCj4+Pj4gcHJlLWNh
+bGlicmF0aW9uIGZlYXR1cmUsIHRoaXMgcmVtaW5kcyBtZSB0aGF0IHdlIG5lZWQgdG8gY2xlYW4g
+dGhpcyB1cC4NCj4+PiBJIGd1ZXNzIHRoYXQgd291bGQgYmUgZ29vZCB0byBhdm9pZCBjb25mdXNp
+b24uIEJ1dCB3aGlsZSBhdCBpdDogSWYgeW91DQo+Pj4gaGF2ZSBhIG1pbnV0ZSwgY291bGQgeW91
+IHBsZWFzZSBleHBsYWluIHRvIG1lIGhvdyB0byBwcm9wZXJseSBzZXQgdXAgdGhlDQo+Pj4gd2lm
+aSBmaXJtd2FyZSBmaWxlcyBmb3IgbXkgRGVsbCBYUFMxMyAoOTM2MCk/IFRoZSByZWFzb25zIHdo
+eSBJJ20NCj4+PiBhc2tpbmc6IFNlbmRpbmcgZGF0YSB2aWEgd2lmaSBpcyByZWFsbHkgc2xvdyBv
+biBteSBsYXB0b3AgKHNjcCBjb3BpZXMNCj4+PiBvbmx5IGdldCAyIHRvIDUgTUJ5dGUvcyBvbiBu
+ZXR3b3JrcyB0aGF0IGFyZSBrbm93biB0byBiZSBhIGxvdCBmYXN0ZXIpLg0KPj4+IEkgd29uZGVy
+IGlmIHRoZSBmaXJtd2FyZSBmaWxlcyBvciB0aGUgY2FsaWJyYXRpb24gZGF0YSBpcyBwYXJ0IG9m
+IHRoZQ0KPj4+IHJlYXNvbiB3aWZpIFR4IGlzIHNsb3cuIFRoZSBtYWNoaW5lIGlzIG5vcm1hbGx5
+IHNoaXBwZWQgd2l0aCBhIHNsaWdodGx5DQo+Pj4gZW5oYW5jZWQgVWJ1bnR1IDE2LjA0LiBUaGF0
+IGFtb25nIG90aGVycyBjb250YWlucyBhIHBhY2thZ2Ugd2l0aCB0aGUNCj4+PiBtYWNoaW5lIHNw
+ZWNpZmljIGZpbGVzIGJvYXJkLmJpbiBhbmQgYm9hcmQtMi5iaW4gdGhhdCByZXBsYWNlIHRoZSBm
+aWxlcw0KPj4+IG5vcm1hbGx5IGluc3RhbGxlZCBpbiAvbGliL2Zpcm13YXJlL2F0aDEway9RQ0E2
+MTc0L2h3My4wLyBBcmUgdGhvc2UNCj4+PiBtYWNoaW5lIHNwZWNpZmljIGZpbGVzIGNydWNpYWwg
+dG8gaGF2ZSBvciBhcmUgdGhlIG9uZSBmcm9tIHRoZQ0KPj4+IGxpbnV4LWZpcm13YXJlIHJlcG8g
+Z29vZCBlbm9ndWg/IEknbSB1c2luZyBGZWRvcmEgYW5kIGNvdWxkIGNvcHkgdGhlDQo+Pj4gb25l
+cyBmcm9tIFVidW50dSBvdmVyLCBidXQgb2J2aW91c2x5IHRoZXkgd2lsbCBnZXQgb3ZlcndyaXR0
+ZW4gZXZlcnkNCj4+PiB0aW1lIEZlZG9yYSBzaGlwcyBhIG5ldyBsaW51eC1maXJtd2FyZSBwYWNr
+YWdlIOKAkyBJT1c6IGV2ZXJ5IGZldyB3ZWVrcyA6LS8NCj4+IFllcywgdGhlIGJvYXJkIGZpbGUg
+Y2FuIGFmZmVjdCB0aHJvdWdodHB1dCwgX2JvdGhfIFRDUCBhbmQgVURQLiBJIGRvbid0DQo+PiBr
+bm93IHdoYXQgYm9hcmQgZmlsZXMgVWJ1bnR1IGlzIHNoaXBwaW5nIGJ1dCB3ZSBzaG91bGQgdHJ5
+IHRvIGdldCB0aG9zZQ0KPj4gaW50byB1cHN0cmVhbS4NCj4NCj4gT3V0IG9mIGN1cmlvc2l0eSAo
+ZG9uJ3Qgc3BlbmQgdGltZSBhbnN3ZXJpbmcgdGhpcyBpcyB5b3UgYXJlIGJ1c3kpOiBJcw0KPiB0
+aGVyZSBldmVuIGEgbWVjaGFuaXNtIGZvciB0aGlzPyBLaW5kIG9mICJ0YWtlDQo+IGZpcm13YXJl
+ZGlyL2JvYXJkLURlbGxfSW5jLi1YUFNfMTNfOTM2MC5iaW4gaWYgaXQgZXhpc3RzIGFuZA0KPiBm
+aXJtd2FyZWRpci9ib2FyZC5iaW4gb3RoZXJ3aXNlPyBPciBjYW4gb25lIGZpbGUgc2VydmUgYWxs
+IG1hY2hpbmVzPw0KDQpKdXN0IHRvIGEgcXVpY2sgc2hvcnQgYW5zd2VyOg0KDQpib2FyZC5iaW4g
+Y29udGFpbnMganVzdCBvbmUgYm9hcmQgZmlsZSBidXQgYm9hcmQtMi5iaW4gaXMgaW4gcHJhY3Rp
+c2UgYQ0KY29udGFpbmVyIGZvcm1hdCB3aGljaCBoYXMgbXVsdGlwbGUgYm9hcmQgZmlsZXMgKG9y
+ICJpbWFnZXMiKS4gRWFjaA0KaW1hZ2UgaGFzIGEgbmFtZSBhc3NvY2lhdGVkIHRvIGl0IHdoaWNo
+IGF0aDEwayB1c2VzIHRvIGZpbmQgdGhlIGNvcnJlY3QNCmltYWdlLiBFeGFtcGxlOg0KDQpidXM9
+cGNpLHZlbmRvcj0xNjhjLGRldmljZT0wMDNlLHN1YnN5c3RlbS12ZW5kb3I9MTQ0ZCxzdWJzeXN0
+ZW0tZGV2aWNlPWMxNGYsdmFyaWFudD1LDQoNClNvIHllcywgd2UgaGF2ZSBpbmZyYXN0cnVjdHVy
+ZSByZWFkeSB0byBwcm92aWRlIG11bHRpcGxlIGJvYXJkIGZpbGVzLg0KQnV0IHVzdWFsbHkgdGhl
+IGNoYWxsZW5nZSBpcyBob3cgdG8gbWFrZSBhdGgxMGsgY29ycmVjdGx5IGRldGVjdCB3aGF0DQpi
+b2FyZCBmaWxlIGEgcGFydGljdWxhciBzeXN0ZW0gbmVlZHMuDQoNCj4+PiBTaWRlIG5vdGU6IFlv
+dSBmaW5kIGEgbG90IG9mIHJlcG9ydHMgYWJvdXQgc2xvdyB3aWZpIGlzIHlvdSBzZWFyY2ggdGhl
+DQo+Pj4gbmV0IHdpdGggdGVybXMgbGlrZSAiOTM2MCB3aWZpIHNsb3cgbGludXgiLiBVYnVudHUg
+Zml4ZWQgdGhhdCBhIGZldw0KPj4+IG1vbnRocyBhZ28gd2l0aCB0aGlzIHBhdGNoOg0KPj4+IGh0
+dHA6Ly9rZXJuZWwudWJ1bnR1LmNvbS9naXQvdWJ1bnR1L3VidW50dS14ZW5pYWwuZ2l0L2NvbW1p
+dC8/aWQ9OTY5MGYxOWYwN2ZlZTJhY2IyYjA0ZWE1ZWFhNWRiMTg0ZWUxNzVkNQ0KPj4+IFNvbWUg
+YnVncyBhYm91dCB0aGlzOg0KPj4+IGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L3VidW50dS8r
+c291cmNlL2xpbnV4LytidWcvMTY5MjgzNg0KPj4+IGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0
+L3VidW50dS8rc291cmNlL2xpbnV4LytidWcvMTY3MDA0MQ0KPj4gQnV0IHRoaXMgYWdhaW4gYWJv
+dXQgaW50ZXJyYWN0aW9uIGJldHdlZW4gYXRoMTBrIGFuZCBUQ1Agc3RhY2suIEFuZCBpdA0KPj4g
+X29ubHlfIGFmZmVjdHMgVENQLCBVRFAgc2hvdWxkIGJlIHVuYWZmZWN0ZWQuDQo+DQo+IEFoaCwg
+c29ycnksIG1pc3NlZCB0aGF0LiBTZWVtcyBJIGRpZG4ndCBwcm9wZXJseSByZWFkIHRoZSBzZWNv
+bmQNCj4gbGF1bmNocGFkIGxpbmsgYWJvdmUuIFNvcnJ5Lg0KPg0KPj4gU28gd2hlbmV2ZXIgdGVz
+dGluZw0KPj4gdGhyb3VnaHB1dCBwbGVhc2UgYWx3YXlzIG1lYXN1cmUgYm90aCBUQ1AgYW5kIFVE
+UCBiZWNhdXNlIHRoZW4gaXQncw0KPj4gZWFzaWVyIHRvIHBpbnBvaW50IHRoZSByZWFzb24uDQo+
+DQo+IElzIHRoZXJlIGFueSBkYXRhIEkgY291bGQgcHJvdmlkZSB0aGF0IG1pZ2h0IGhlbHAgZ2V0
+dGluZyB0aGlzIHNvbGVkDQo+IG9uY2UgYW5kIGZvciBhbGw/DQoNCldpdGggInRoaXMiIHlvdSBt
+ZWFuIFRDUCB0cmFuc21pdCB0aHJvdWdocHV0IHByb2JsZW0gd2l0aCBhdGgxMGs/IEkNCmRvbid0
+IHRoaW5rIHRoZXJlJ3MgYW55IGVhc3kgc29sdXRpb24sIHdlIGp1c3QgbmVlZCB0byBzdGFydCBh
+IHNlcmlvdXMNCmRpc2N1c3Npb24gd2l0aCB0aGUgVENQIG1haW50YWluZXJzIGhvdyB0byBzb2x2
+ZSB0aGlzLiBJSVJDIGF0aDEwaw0KZGlkbid0IGhhdmUgdGhpcyBwcm9ibGVtIHVudGlsIHNvbWV0
+aGluZyBjaGFuZ2VkIGluIHRoZSBUQ1Agc3RhY2ssIHNvIGluDQp0aGVvcnkgdGhpcyBjb3VsZCBi
+ZSBjbGFzc2lmaWVkIGFzIGEgcmVncmVzc2lvbiBpbiB0aGUgVENQIHN0YWNrLiBCdXQNCkknbSBu
+b3Qgc3VyZSBhYm91dCB0aGF0IGFuZCBuZWVkIHRvIGNoZWNrIHRoZSBoaXN0b3J5Lg0KDQpCdXQg
+d2hhdCB3b3VsZCBiZSBoZWxwZnVsIHRvIGhhdmUgYSBkZXRhaWxlZCBzdW1tYXJ5IG9mIHRoZSBp
+c3N1ZSwNCnBvaW50ZXJzIHRvIHBhc3QgZGlzY3Vzc2lvbnMgYW5kIGlkZW50aWZ5IHRoZSBUQ1Ag
+Y29tbWl0IHdoaWNoIHN0YXJ0ZWQNCmFsbCB0aGlzIGV0Yy4gSSdsbCB0cnkgdG8gZG8gdGhhdCBi
+ZWZvcmUgdGhlIE5ldGRldiAyLjIgYnV0IGxldCdzIHNlZSBpZg0KSSBjYW4gbWFrZSBpdC4gSGVs
+cCB3aXRoIHRoYXQgaXMgcmVhbGx5IHdlbGNvbWUuDQoNCi0tIA0KS2FsbGUgVmFsbwpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
+aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
