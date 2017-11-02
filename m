@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e9qb8-0003iv-5Y
- for ath10k@lists.infradead.org; Wed, 01 Nov 2017 10:50:14 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 5/6] ath10k: add memory dump support for QCA6174/QCA9377
-Date: Wed, 1 Nov 2017 10:49:46 +0000
-Message-ID: <87wp3axohi.fsf@kamboji.qca.qualcomm.com>
-References: <150278532045.22482.14490702801292107536.stgit@potku.adurom.net>
- <150278542590.22482.1613614809483892010.stgit@potku.adurom.net>
-In-Reply-To: <150278542590.22482.1613614809483892010.stgit@potku.adurom.net>
- (Kalle Valo's message of "Tue, 15 Aug 2017 11:23:46 +0300")
-Content-Language: en-US
-MIME-Version: 1.0
+Received: from mout.kundenserver.de ([217.72.192.74])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eADNU-0003Ha-7Y
+ for ath10k@lists.infradead.org; Thu, 02 Nov 2017 11:09:43 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ath10k: move pci suspend/resume functions
+Date: Thu,  2 Nov 2017 12:08:53 +0100
+Message-Id: <20171102110903.2886660-1-arnd@arndb.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,56 +15,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Govind Singh <govinds@qti.qualcomm.com>, Ryan Hsu <ryanhsu@qti.qualcomm.com>, Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org, Brian Norris <briannorris@chromium.org>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Colin Ian King <colin.king@canonical.com>, Ben Greear <greearb@candelatech.com>, Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+The combination of two patches has led to a build failure:
 
-> From: Alan Liu <alanliu@qca.qualcomm.com>
->
-> Add memory dump to the firmware crash data file which is provided to user space
-> via devcoredump interface. This makes it easier for firmware engineers to debug
-> firmware crashes.
->
-> Due to increased memory consumption the memory dump is disabled by default. To
-> enable it make sure that bit 3 is set in coredump_mask module parameter:
->
-> modprobe ath10k_core coredump_mask=0xffffffff
->
-> When RAMDUMP is enabled a buffer for the dump is allocated with vmalloc during
-> device probe. The actual memory layout is different in hardware versions and
-> the layouts are defined in coredump.c. The memory is split to regions and, to
-> get even finegrained control of what to copy, the region can split to smaller
-> sections as not all registers are readable (which could cause the whole system
-> to stall).
->
-> Signed-off-by: Alan Liu <alanliu@qca.qualcomm.com>
-> [kvalo@qca.qualcomm.com: refactoring and cleanup]
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+drivers/net/wireless/ath/ath10k/pci.c: In function 'ath10k_pci_pm_suspend':
+drivers/net/wireless/ath/ath10k/pci.c:3416:8: error: implicit declaration of function 'ath10k_pci_suspend'; did you mean 'ath10k_pci_pm_suspend'? [-Werror=implicit-function-declaration]
+drivers/net/wireless/ath/ath10k/pci.c: In function 'ath10k_pci_pm_resume':
+drivers/net/wireless/ath/ath10k/pci.c:3428:8: error: implicit declaration of function 'ath10k_pci_resume'; did you mean 'ath10k_pci_pm_resume'? [-Werror=implicit-function-declaration]
 
-[...]
+This moves the functions outside of the now incorrect #ifdef.
 
-> +		/* To get IRAM dump, the host driver needs to switch target
-> +		 * ram config from DRAM to IRAM.
-> +		 */
-> +		if (current_region->type == ATH10K_MEM_REGION_TYPE_IRAM1 ||
-> +		    current_region->type == ATH10K_MEM_REGION_TYPE_IRAM2) {
-> +			shift = current_region->start >> 20;
-> +
-> +			ret = ath10k_pci_set_ram_config(ar, shift);
-> +			if (!ret) {
-> +				ath10k_warn(ar, "failed to switch ram config to IRAM for section %s: %d\n",
-> +					    current_region->name, ret);
+Fixes: 96378bd2c6cd ("ath10k: fix core PCI suspend when WoWLAN is supported but disabled")
+Fixes: 6af1de2e4ec4 ("ath10k: mark PM functions as __maybe_unused")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-A colleague noticed that there's a bug here, it should be "if (ret)".
-I'll fix that in the next version.
-
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index b18a9b690df4..6513edbd86e6 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2585,6 +2585,13 @@ static int ath10k_pci_hif_suspend(struct ath10k *ar)
+ 	return 0;
+ }
+ 
++static int ath10k_pci_hif_resume(struct ath10k *ar)
++{
++	/* Nothing to do; the important stuff is in the driver resume. */
++	return 0;
++}
++#endif
++
+ static int ath10k_pci_suspend(struct ath10k *ar)
+ {
+ 	/* The grace timer can still be counting down and ar->ps_awake be true.
+@@ -2597,12 +2604,6 @@ static int ath10k_pci_suspend(struct ath10k *ar)
+ 	return 0;
+ }
+ 
+-static int ath10k_pci_hif_resume(struct ath10k *ar)
+-{
+-	/* Nothing to do; the important stuff is in the driver resume. */
+-	return 0;
+-}
+-
+ static int ath10k_pci_resume(struct ath10k *ar)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+@@ -2627,7 +2628,6 @@ static int ath10k_pci_resume(struct ath10k *ar)
+ 
+ 	return ret;
+ }
+-#endif
+ 
+ static bool ath10k_pci_validate_cal(void *data, size_t size)
+ {
 -- 
-Kalle Valo
+2.9.0
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
