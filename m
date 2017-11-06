@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eBcU6-0004NF-55
- for ath10k@lists.infradead.org; Mon, 06 Nov 2017 08:10:19 +0000
+ id 1eBcUB-0004NF-TG
+ for ath10k@lists.infradead.org; Mon, 06 Nov 2017 08:10:27 +0000
 From: <mpubbise@qti.qualcomm.com>
-Subject: [PATCHv2 0/2] ath10k: more on tdls support for 10.4 firmwares
-Date: Mon, 6 Nov 2017 13:39:30 +0530
-Message-ID: <1509955772-4941-1-git-send-email-mpubbise@qti.qualcomm.com>
+Subject: [PATCHv2 1/2] ath10k: update tdls teardown state to target
+Date: Mon, 6 Nov 2017 13:39:31 +0530
+Message-ID: <1509955772-4941-2-git-send-email-mpubbise@qti.qualcomm.com>
+In-Reply-To: <1509955772-4941-1-git-send-email-mpubbise@qti.qualcomm.com>
+References: <1509955772-4941-1-git-send-email-mpubbise@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,21 +27,42 @@ Cc: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>, linux-wireless@vger.kernel
 
 From: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
 
-This patchset includes a bug fix and an enhancement of tdls functionality for 10.4 firmwares.
+It is required to update the teardown state of the peer when
+a tdls link with that peer is terminated. This information is
+useful for the target to perform some cleanups wrt the tdls peer.
 
-First patch in this series is a bug fix, second one is an enhancement.
+Without proper cleanup, target assumes that the peer is connected and
+blocks future connection requests, updating the teardown state of the
+peer addresses the problem.
 
-Manikanta Pubbisetty (2):
-  ath10k: update tdls teardown state to target
-  ath10k: handle tdls peer events
+Tested this change on QCA9888 with 10.4-3.5.1-00018 fw version.
 
-v2:
-  - Corrected the warnings reported by ath10k-check
+Signed-off-by: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
- drivers/net/wireless/ath/ath10k/mac.c |   10 +++++
- drivers/net/wireless/ath/ath10k/wmi.c |   72 +++++++++++++++++++++++++++++++++
- 2 files changed, 82 insertions(+)
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 0a947ee..c6460e7 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6201,6 +6201,16 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 			   "mac vdev %d peer delete %pM sta %pK (sta gone)\n",
+ 			   arvif->vdev_id, sta->addr, sta);
+ 
++		if (sta->tdls) {
++			ret = ath10k_mac_tdls_peer_update(ar, arvif->vdev_id,
++							  sta,
++							  WMI_TDLS_PEER_STATE_TEARDOWN);
++			if (ret)
++				ath10k_warn(ar, "failed to update tdls peer state for %pM state %d: %i\n",
++					    sta->addr,
++					    WMI_TDLS_PEER_STATE_TEARDOWN, ret);
++		}
++
+ 		ret = ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
+ 		if (ret)
+ 			ath10k_warn(ar, "failed to delete peer %pM for vdev %d: %i\n",
 -- 
 1.7.9.5
 
