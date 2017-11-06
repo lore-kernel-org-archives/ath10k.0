@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eBcUB-0004NF-TG
- for ath10k@lists.infradead.org; Mon, 06 Nov 2017 08:10:27 +0000
+ id 1eBcUr-00060k-CX
+ for ath10k@lists.infradead.org; Mon, 06 Nov 2017 08:11:07 +0000
 From: <mpubbise@qti.qualcomm.com>
-Subject: [PATCHv2 1/2] ath10k: update tdls teardown state to target
-Date: Mon, 6 Nov 2017 13:39:31 +0530
-Message-ID: <1509955772-4941-2-git-send-email-mpubbise@qti.qualcomm.com>
+Subject: [PATCHv2 2/2] ath10k: handle tdls peer events
+Date: Mon, 6 Nov 2017 13:39:32 +0530
+Message-ID: <1509955772-4941-3-git-send-email-mpubbise@qti.qualcomm.com>
 In-Reply-To: <1509955772-4941-1-git-send-email-mpubbise@qti.qualcomm.com>
 References: <1509955772-4941-1-git-send-email-mpubbise@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -27,42 +27,117 @@ Cc: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>, linux-wireless@vger.kernel
 
 From: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
 
-It is required to update the teardown state of the peer when
-a tdls link with that peer is terminated. This information is
-useful for the target to perform some cleanups wrt the tdls peer.
+Handle tdls peer events from the target. TDLS events for the peer
+could be discover, teardown, etc. As of now, adding the logic to
+handle tdls teardown events alone.
 
-Without proper cleanup, target assumes that the peer is connected and
-blocks future connection requests, updating the teardown state of the
-peer addresses the problem.
+Teardown due to peer traffic indication(PTR) timeout is one such
+teardown event from the target.
 
 Tested this change on QCA9888 with 10.4-3.5.1-00018 fw version.
 
 Signed-off-by: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi.c |   72 +++++++++++++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0a947ee..c6460e7 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6201,6 +6201,16 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			   "mac vdev %d peer delete %pM sta %pK (sta gone)\n",
- 			   arvif->vdev_id, sta->addr, sta);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index cad2e42..b6cbc02 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -29,6 +29,7 @@
+ #include "p2p.h"
+ #include "hw.h"
+ #include "hif.h"
++#include "txrx.h"
  
-+		if (sta->tdls) {
-+			ret = ath10k_mac_tdls_peer_update(ar, arvif->vdev_id,
-+							  sta,
-+							  WMI_TDLS_PEER_STATE_TEARDOWN);
-+			if (ret)
-+				ath10k_warn(ar, "failed to update tdls peer state for %pM state %d: %i\n",
-+					    sta->addr,
-+					    WMI_TDLS_PEER_STATE_TEARDOWN, ret);
+ #define ATH10K_WMI_BARRIER_ECHO_ID 0xBA991E9
+ #define ATH10K_WMI_BARRIER_TIMEOUT_HZ (3 * HZ)
+@@ -4456,6 +4457,74 @@ void ath10k_wmi_event_pdev_tpc_config(struct ath10k *ar, struct sk_buff *skb)
+ 		   __le32_to_cpu(ev->rate_max));
+ }
+ 
++static void
++ath10k_wmi_handle_tdls_peer_event(struct ath10k *ar, struct sk_buff *skb)
++{
++	struct wmi_tdls_peer_event *ev;
++	struct ath10k_peer *peer;
++	struct ath10k_vif *arvif;
++	int vdev_id;
++	int peer_status;
++	int peer_reason;
++	u8 reason;
++
++	if (skb->len < sizeof(*ev)) {
++		ath10k_err(ar, "received tdls peer event with invalid size (%d bytes)\n",
++			   skb->len);
++		return;
++	}
++
++	ev = (struct wmi_tdls_peer_event *)skb->data;
++	vdev_id = __le32_to_cpu(ev->vdev_id);
++	peer_status = __le32_to_cpu(ev->peer_status);
++	peer_reason = __le32_to_cpu(ev->peer_reason);
++
++	spin_lock_bh(&ar->data_lock);
++	peer = ath10k_peer_find(ar, vdev_id, ev->peer_macaddr.addr);
++	spin_unlock_bh(&ar->data_lock);
++
++	if (!peer) {
++		ath10k_warn(ar, "failed to find peer entry for %pM\n",
++			    ev->peer_macaddr.addr);
++		return;
++	}
++
++	switch (peer_status) {
++	case WMI_TDLS_SHOULD_TEARDOWN:
++		switch (peer_reason) {
++		case WMI_TDLS_TEARDOWN_REASON_PTR_TIMEOUT:
++		case WMI_TDLS_TEARDOWN_REASON_NO_RESPONSE:
++		case WMI_TDLS_TEARDOWN_REASON_RSSI:
++			reason = WLAN_REASON_TDLS_TEARDOWN_UNREACHABLE;
++			break;
++		default:
++			reason = WLAN_REASON_TDLS_TEARDOWN_UNSPECIFIED;
++			break;
 +		}
 +
- 		ret = ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
- 		if (ret)
- 			ath10k_warn(ar, "failed to delete peer %pM for vdev %d: %i\n",
++		arvif = ath10k_get_arvif(ar, vdev_id);
++		if (!arvif) {
++			ath10k_warn(ar, "received tdls peer event for invalid vdev id %u\n",
++				    vdev_id);
++			return;
++		}
++
++		ieee80211_tdls_oper_request(arvif->vif, ev->peer_macaddr.addr,
++					    NL80211_TDLS_TEARDOWN, reason,
++					    GFP_ATOMIC);
++
++		ath10k_dbg(ar, ATH10K_DBG_WMI,
++			   "received tdls teardown event for peer %pM reason %u\n",
++			   ev->peer_macaddr.addr, peer_reason);
++		break;
++	default:
++		ath10k_dbg(ar, ATH10K_DBG_WMI,
++			   "received unknown tdls peer event %u\n",
++			   peer_status);
++		break;
++	}
++}
++
+ void ath10k_wmi_event_pdev_ftm_intg(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI, "WMI_PDEV_FTM_INTG_EVENTID\n");
+@@ -5477,6 +5546,9 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	case WMI_10_4_PDEV_TPC_CONFIG_EVENTID:
+ 		ath10k_wmi_event_pdev_tpc_config(ar, skb);
+ 		break;
++	case WMI_10_4_TDLS_PEER_EVENTID:
++		ath10k_wmi_handle_tdls_peer_event(ar, skb);
++		break;
+ 	default:
+ 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
+ 		break;
 -- 
 1.7.9.5
 
