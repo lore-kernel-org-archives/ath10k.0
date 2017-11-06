@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-db5eur01on0052.outbound.protection.outlook.com
- ([104.47.2.52] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+Received: from rcloudmail.hostconnection.net ([38.96.19.98])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eBouS-00008x-0p
- for ath10k@lists.infradead.org; Mon, 06 Nov 2017 21:26:22 +0000
-Subject: Re: ath10k: Fix reported HT MCS rates with NSS > 1
-References: <20170511090930.18205-1-sven.eckelmann@openmesh.com>
- <1728147.6Xy77nSgBU@bentobox>
- <d27a10b1-6323-ebf0-5c2d-4a9c3b8d978d@dd-wrt.com>
- <1960925.hkIbv4gX65@bentobox>
-From: Peter Oh <peter.oh@bowerswilkins.com>
-Message-ID: <bfcfa3eb-fb45-cb8d-ad87-a5fe6dc96fe3@bowerswilkins.com>
-Date: Mon, 6 Nov 2017 13:25:42 -0800
+ id 1eBpml-0001qj-Iq
+ for ath10k@lists.infradead.org; Mon, 06 Nov 2017 22:22:29 +0000
+From: Jay Foster <jay@systech.com>
+Subject: QCA9377 USB Support
+Message-ID: <258cab35-9a7c-700d-8115-d599ced0f850@systech.com>
+Date: Mon, 6 Nov 2017 14:21:45 -0800
 MIME-Version: 1.0
-In-Reply-To: <1960925.hkIbv4gX65@bentobox>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +17,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Reply-To: jay@systech.com
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: akolli@qti.qualcomm.com, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-
-
-On 11/06/2017 01:02 AM, Sven Eckelmann wrote:
-> On Montag, 6. November 2017 09:28:42 CET Sebastian Gottschall wrote:
->> Am 06.11.2017 um 09:23 schrieb Sven Eckelmann:
->>> On Sonntag, 5. November 2017 10:22:22 CET Sebastian Gottschall wrote:
->>>> the assumption made in this patch is obviously wrong (at least for more
->>>> recent firmwares and 9984)
->>>> my log is flooded with messages like
->>>> [208802.803537] ath10k_pci 0001:03:00.0: Invalid VHT mcs 15 peer stats
->>>> [208805.108515] ath10k_pci 0001:03:00.0: Invalid VHT mcs 15 peer stats
->>>> [208821.747621] ath10k_pci 0001:03:00.0: Invalid VHT mcs 15 peer stats
->>>> [208822.516599] ath10k_pci 0001:03:00.0: Invalid VHT mcs 15 peer stats
->>>> [208841.257780] ath10k_pci 0001:03:00.0: Invalid VHT mcs 15 peer stats
-> [...]
->>> This patch only splits WMI_RATE_PREAMBLE_HT & WMI_RATE_PREAMBLE_VHT. And for
->>> WMI_RATE_PREAMBLE_HT (*not VHT*), it uses a slightly different approach. But
->>> the WMI_RATE_PREAMBLE_VHT part (which you see in your logs) is basically
->>> untouched.
->> then a question follows up. is this check really neccessary?
-> Until we find out what the heck VHT MCS 15 should mean in this context - maybe.
-> But to the message - no, the message is most likely not necessary for each
-> received "invalid" peer tx stat.
-This validation check expects peer tx stat packets from FW contain 
-reasonable values and gives warning if values are different from 
-expectation. The problem comes from the assumption that "it always 
-contains reasonable stat value" which is wrong at least based on my 
-results. For instance, the reason MCS == 15 is because all 4 bits of mcs 
-potion set to 1, not because FW really sets it to 15 intentionally. when 
-the mcs potion bits are set to all 1s, the other bits such as nss are 
-also set to all 1s.
-Hence it looks FW passed totally invalid stat info to me.
-I don't have preference on whether it's better to split VHT and HT check 
-or not, but it is more appropriate to change that warning level to debug 
-level.
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSBhbSBsb29raW5nIGZvciBsaW51eCBkcml2ZXIgc3VwcG9ydCBmb3IgdGhlIFFDQTkzNzcgVVNC
+IFdpLUZpIGRldmljZSAKKDBjZjM6OTM3OCkuwqAgSSBzZWUgb24gdGhlIG1haWxpbmcgbGlzdCBh
+cmNoaXZlcyB0aGF0IGEgcGF0Y2ggCihodHRwczovL21hcmMuaW5mby8/bD1saW51eC13aXJlbGVz
+cyZtPTE1MDU2NzcyNDcxMjMzMiZ3PTIpIHRvIGFkZCB0aGlzIAp0byB0aGUgYXRoMTBrIGRyaXZl
+ciB3YXMgcG9zdGVkIG9uIFNlcHRlbWJlciAxNywgMjAxNy4gQWNjb3JkaW5nIHRvIHRoZSAKYXRo
+MTBrIHNvdXJjZXMgZG9jdW1lbnRhdGlvbiAKKGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwu
+b3JnL2VuL3VzZXJzL2RyaXZlcnMvYXRoMTBrL3NvdXJjZXMpIHN1Y2ggCnBhdGNoZXMgdXN1YWxs
+eSB0YWtlIGEgY291cGxlIG9mIHdlZWtzIHRvIGdldCBjb21taXR0ZWQgdG8gZWl0aGVyIHRoZSAK
+bWFzdGVyIG9yIGF0aC1uZXh0IGJyYW5jaCBvZiB0aGUga3ZhbG8gYXRoLmdpdCB0cmVlLsKgIEkg
+Y2xvbmVkIHRoZSB0cmVlLCAKYnV0IGRvIG5vdCBzZWUgdGhpcyBwYXRjaCB0aGVyZSBvbiBhbnkg
+YnJhbmNoZXMuCgpXaGF0IGlzIHRoZSBzdGF0dXMgb2Ygc3VwcG9ydCBmb3IgdGhlIFFDQTkzNzcg
+VVNCIGRldmljZSB1c2luZyBhdGgxMGs/CgpKYXkKCgoKCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCg==
