@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from rcloudmail.hostconnection.net ([38.96.19.98])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eBpml-0001qj-Iq
- for ath10k@lists.infradead.org; Mon, 06 Nov 2017 22:22:29 +0000
-From: Jay Foster <jay@systech.com>
-Subject: QCA9377 USB Support
-Message-ID: <258cab35-9a7c-700d-8115-d599ced0f850@systech.com>
-Date: Mon, 6 Nov 2017 14:21:45 -0800
-MIME-Version: 1.0
+ id 1eBtKV-0002ZD-KI
+ for ath10k@lists.infradead.org; Tue, 07 Nov 2017 02:09:33 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [ath6kl:pending 15/43]
+ drivers/net//wireless/ath/ath10k/pci.c:3416:8: error: implicit declaration of
+ function 'ath10k_pci_suspend'
+Date: Tue, 7 Nov 2017 02:09:02 +0000
+Message-ID: <87zi7yj0w3.fsf@qca.qualcomm.com>
+References: <201711052011.Ceuy1uww%fengguang.wu@intel.com>
+In-Reply-To: <201711052011.Ceuy1uww%fengguang.wu@intel.com> (kbuild test
+ robot's message of "Sun, 5 Nov 2017 20:15:14 +0800")
 Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,25 +22,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: jay@systech.com
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: "kbuild-all@01.org" <kbuild-all@01.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SSBhbSBsb29raW5nIGZvciBsaW51eCBkcml2ZXIgc3VwcG9ydCBmb3IgdGhlIFFDQTkzNzcgVVNC
-IFdpLUZpIGRldmljZSAKKDBjZjM6OTM3OCkuwqAgSSBzZWUgb24gdGhlIG1haWxpbmcgbGlzdCBh
-cmNoaXZlcyB0aGF0IGEgcGF0Y2ggCihodHRwczovL21hcmMuaW5mby8/bD1saW51eC13aXJlbGVz
-cyZtPTE1MDU2NzcyNDcxMjMzMiZ3PTIpIHRvIGFkZCB0aGlzIAp0byB0aGUgYXRoMTBrIGRyaXZl
-ciB3YXMgcG9zdGVkIG9uIFNlcHRlbWJlciAxNywgMjAxNy4gQWNjb3JkaW5nIHRvIHRoZSAKYXRo
-MTBrIHNvdXJjZXMgZG9jdW1lbnRhdGlvbiAKKGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwu
-b3JnL2VuL3VzZXJzL2RyaXZlcnMvYXRoMTBrL3NvdXJjZXMpIHN1Y2ggCnBhdGNoZXMgdXN1YWxs
-eSB0YWtlIGEgY291cGxlIG9mIHdlZWtzIHRvIGdldCBjb21taXR0ZWQgdG8gZWl0aGVyIHRoZSAK
-bWFzdGVyIG9yIGF0aC1uZXh0IGJyYW5jaCBvZiB0aGUga3ZhbG8gYXRoLmdpdCB0cmVlLsKgIEkg
-Y2xvbmVkIHRoZSB0cmVlLCAKYnV0IGRvIG5vdCBzZWUgdGhpcyBwYXRjaCB0aGVyZSBvbiBhbnkg
-YnJhbmNoZXMuCgpXaGF0IGlzIHRoZSBzdGF0dXMgb2Ygc3VwcG9ydCBmb3IgdGhlIFFDQTkzNzcg
-VVNCIGRldmljZSB1c2luZyBhdGgxMGs/CgpKYXkKCgoKCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+kbuild test robot <fengguang.wu@intel.com> writes:
+
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
+> head:   f651a1484426fb3233a96e643d49d08eda3b1f3c
+> commit: 5a63b04ed508daf5e208fde74bfcc1b3c848ee86 [15/43] Merge ath-next from git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+> config: alpha-allyesconfig (attached as .config)
+> compiler: alpha-linux-gnu-gcc (Debian 6.1.1-9) 6.1.1 20160705
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         git checkout 5a63b04ed508daf5e208fde74bfcc1b3c848ee86
+>         # save the attached .config to linux build tree
+>         make.cross ARCH=alpha 
+>
+> Note: the ath6kl/pending HEAD f651a1484426fb3233a96e643d49d08eda3b1f3c builds fine.
+>       It only hurts bisectibility.
+>
+> All errors (new ones prefixed by >>):
+>
+>    drivers/net//wireless/ath/ath10k/pci.c: In function 'ath10k_pci_pm_suspend':
+>>> drivers/net//wireless/ath/ath10k/pci.c:3416:8: error: implicit
+>>> declaration of function 'ath10k_pci_suspend'
+>>> [-Werror=implicit-function-declaration]
+>      ret = ath10k_pci_suspend(ar);
+>            ^~~~~~~~~~~~~~~~~~
+>    drivers/net//wireless/ath/ath10k/pci.c: In function 'ath10k_pci_pm_resume':
+>>> drivers/net//wireless/ath/ath10k/pci.c:3428:8: error: implicit
+>>> declaration of function 'ath10k_pci_resume'
+>>> [-Werror=implicit-function-declaration]
+>      ret = ath10k_pci_resume(ar);
+>            ^~~~~~~~~~~~~~~~~
+>    cc1: some warnings being treated as errors
+
+This is fixed by a patch from Brian which I applied later, so we should
+be able to ignore this warning.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
