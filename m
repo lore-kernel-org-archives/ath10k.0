@@ -1,24 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve1eur01on0063.outbound.protection.outlook.com
- ([104.47.1.63] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eCUrF-0001RW-UY
- for ath10k@lists.infradead.org; Wed, 08 Nov 2017 18:13:52 +0000
-Subject: Re: mesh point and ap mode on same interface
-References: <e6b02c56-38c7-323e-2bc9-e2b4276b654c@tu-bs.de>
- <cc8baced-bd74-5703-d885-6ec444eb62ce@candelatech.com>
- <43bf6a27-be58-35e4-26fa-5e6b380353ac@bowerswilkins.com>
- <7dc592a5-9381-f715-6ea7-0a8b8deee311@tu-bs.de>
- <CADjYELwdUxEap_z=_HD4DS4FEQ2_2HP3w9cvDU-BTFLoOTDipg@mail.gmail.com>
- <5c04c7fe-8cf8-ddd8-d6a7-f42629586a63@bowerswilkins.com>
- <067d234a-59f0-4175-55af-9354617057b9@tu-bs.de>
- <61192d3b-b4c7-f47e-2ff9-44e17595d6a9@bowerswilkins.com>
- <fc1993f5-8b83-4e74-7866-2adcf318ff5f@tu-bs.de>
-From: Peter Oh <peter.oh@bowerswilkins.com>
-Message-ID: <03700343-7b5c-b21e-8b7b-2ac8c7d3258b@bowerswilkins.com>
-Date: Wed, 8 Nov 2017 10:13:16 -0800
+ id 1eCX6j-0000YK-HW
+ for ath10k@lists.infradead.org; Wed, 08 Nov 2017 20:37:59 +0000
+Received: by mail-lf0-x242.google.com with SMTP id r135so4666223lfe.5
+ for <ath10k@lists.infradead.org>; Wed, 08 Nov 2017 12:37:36 -0800 (PST)
+Subject: Re: QCA9377 USB Support
+References: <258cab35-9a7c-700d-8115-d599ced0f850@systech.com>
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Message-ID: <79b74837-52d4-016f-b0ee-20662a2acc05@gmail.com>
+Date: Wed, 8 Nov 2017 21:37:33 +0100
 MIME-Version: 1.0
-In-Reply-To: <fc1993f5-8b83-4e74-7866-2adcf318ff5f@tu-bs.de>
+In-Reply-To: <258cab35-9a7c-700d-8115-d599ced0f850@systech.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,138 +21,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Harms, Hannes" <hannes.harms@tu-bs.de>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: jay@systech.com, ath10k@lists.infradead.org
 
-
-
-On 11/08/2017 04:49 AM, Harms, Hannes wrote:
-> Am 11.10.2017 um 20:10 schrieb Peter Oh:
->
->>
->>
->> On 10/10/2017 06:04 AM, Hannes Harms wrote:
->>>
->>>> On 10/09/2017 08:08 AM, Thomas Pedersen wrote:
->>>>> On Oct 9, 2017 1:46 AM, "Harms, Hannes" <hannes.harms@tu-bs.de 
->>>>> <mailto:hannes.harms@tu-bs.de>> wrote:
->>>>>
->>>>>     On 10/06/2017 20:18, Peter, Oh wrote
->>>>>
->>>>>         I have tried t bring up the ap interface with iw / hostapd,
->>>>>
->>>>>                 after joining the mesh.
->>>>>
->>>>>                 When I start the second interface, rtnetlink
->>>>>                 responds with
->>>>>                 device or resource busy.
->>>>>
->>>>>
->>>>>         If you give more details of your steps, people may help you
->>>>>         more.
->>>>>         Btw, did you create a 2nd interface on the same radio and
->>>>>         change the mac address?
->>>>>
->>>>>
->>>>>     Yes,  I changed the mac of the 2nd interface:
->>>>>
->>>>>     The mesh setup:
->>>>>
->>>>>     > brctl addbr mesh-bridge
->>>>>     > iw phy0 interface add wlan0 type mp mesh_id my_mesh
->>>>>     > iw wlan0 set freq 5500 80 5530
->>>>>     > ip link set dev wlan0 up
->>>>>     > iw wlan0 mesh join my_mesh
->>>>>     > brctl addif  mesh-bridge mesh0
->>>>>
->>>> Are you sure this configuration is what you're using?
->>>> there is no way to use DFS channels on mesh via iw at this moment.
->>>> and mesh id on brctl addif is different from interface add.
->>>>
->>>>>     The ap interface:
->>>>>
->>>>>     > iw dev wlan0 interface add virtual_ap type __ap
->>>>>     > ip link set dev virtual_ap address 04:f0:21:1b:7b:48
->>>>>     > hostapd -B -dd hostapd.conf
->>>>>
->>>> hostapd also does not allow interface to use DFS channels without 
->>>> country_code parameter.
->>>>>
->>>>>     I think mesh and AP channel frequency + width need to match.
->>>>>
->>> Yes, you are right with the dfs channels,
->>> I was testing with some relaxed reg rules.
->>>
->>> However,  I  am still facing the original problem.
->>> For example if i run the following, the mesh is working (80Mhz),
->>> but ap does not come up.
->>>
->>> > iw phy0 interface add mesh0 type mp
->>> > ip link set dev mesh0 up
->>> > iw dev mesh0 mesh join "my_mesh" freq 5180 80MHz
->>> > sleep 5
->>> > iw phy0 interface add virtual_ap type __ap
->>> > ip link set dev virtual_ap address 04:f0:21:1b:7b:48
->>> > hostapd -B -dd hostapd.conf
->>>
->>> hostapd config:
->>> interface=virtual_ap
->>> ctrl_interface=/var/run/hostapd
->>> driver=nl80211
->>> ssid=test
->>> hw_mode=a
->>> channel=36
->>> ht_capab=[HT40+]
->>> ieee80211n=1
->>> ieee80211ac=1
->>> vht_oper_chwidth=1
->>> vht_oper_centr_freq_seg0_idx=42
->>> country_code=US
->>> bridge=mesh-bridge
->>>
->> Since I don't have QCA9880 products, I'm not able to run it on the 
->> chip, but the same steps using the same configurations work for me on 
->> QCA4019 based product.
->> since EBUSY most likely comes from cfg80211, you better trace down 
->> the codes where the error comes.
->>> I also tried to join the mesh after the ap interface.
->>> In this case the ap is running, but joining the mesh fails
->>> with the same error. (device or resoure busy)
->>>
->>> thanks for your help & patience
->
-> I found a solution for the problem:
->
-> When joining the mesh with beacon interval  set  to 100
-> both  mesh and ap interface are coming up.
->
-> > iw mesh0 mesh join my_mesh beacon-interval 100
->
-> The default beacon interval is 1000 for mesh interfaces.
-> It seems that QCA9880 is not working
-> with different beacon intervals for ap + mesh.
->
-Good to hear that working.
-But mesh beacon interval 1000 which is default value should work.
-Any mesh beacon intervals of multiple of AP beacon intervals are 
-supposed to work
-(In other words, mesh beacon intervals that are not aligned by multiple 
-of AP beacon intervals won't work). These are valid for both of QCA9880 
-and QCA4019 as far as I know.
-> Anyway, I tested with mainline 4.14 and firmware-5.bin_10.2.4.70.61-2
-> and it is working now.
->
->
->
->
->
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgSmF5LAoKT24gMjAxNy0xMS0wNiAyMzoyMSwgSmF5IEZvc3RlciB3cm90ZToKPiBJIGFtIGxv
+b2tpbmcgZm9yIGxpbnV4IGRyaXZlciBzdXBwb3J0IGZvciB0aGUgUUNBOTM3NyBVU0IgV2ktRmkg
+ZGV2aWNlICgwY2YzOjkzNzgpLsKgIEkgc2VlIG9uIHRoZSBtYWlsaW5nIGxpc3QgYXJjaGl2ZXMg
+dGhhdCBhIHBhdGNoIChodHRwczovL21hcmMuaW5mby8/bD1saW51eC13aXJlbGVzcyZtPTE1MDU2
+NzcyNDcxMjMzMiZ3PTIpIHRvIGFkZCB0aGlzIHRvIHRoZSBhdGgxMGsgZHJpdmVyIHdhcyBwb3N0
+ZWQgb24gU2VwdGVtYmVyIDE3LCAyMDE3LiBBY2NvcmRpbmcgdG8gdGhlIGF0aDEwayBzb3VyY2Vz
+IGRvY3VtZW50YXRpb24gKGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3VzZXJz
+L2RyaXZlcnMvYXRoMTBrL3NvdXJjZXMpIHN1Y2ggcGF0Y2hlcyB1c3VhbGx5IHRha2UgYSBjb3Vw
+bGUgb2Ygd2Vla3MgdG8gZ2V0IGNvbW1pdHRlZCB0byBlaXRoZXIgdGhlIG1hc3RlciBvciBhdGgt
+bmV4dCBicmFuY2ggb2YgdGhlIGt2YWxvIGF0aC5naXQgdHJlZS7CoCBJIGNsb25lZCB0aGUgdHJl
+ZSwgYnV0IGRvIG5vdCBzZWUgdGhpcyBwYXRjaCB0aGVyZSBvbiBhbnkgYnJhbmNoZXMuCj4gCj4g
+V2hhdCBpcyB0aGUgc3RhdHVzIG9mIHN1cHBvcnQgZm9yIHRoZSBRQ0E5Mzc3IFVTQiBkZXZpY2Ug
+dXNpbmcgYXRoMTBrPwpQYXJ0cyBvZiB0aGUgVVNCIHN1cHBvcnQgaGF2ZSBiZWVuIGFkZGVkIHRv
+IHRoZSBhdGguZ2l0IHJlcG8gYW5kIHRvIG1haW5saW5lIChidXQgbm90IHRoZSBwYXRjaCB5b3Ug
+d2VyZSByZWZlcnJpbmcgdG8gKGFzIHlvdSBub3RpY2VkIHlvdXJzZWxmKSkuCgpIb3dldmVyLCB0
+aGUgcGF0Y2hlcyBhcmUgYXZhaWxhYmxlIGhlcmU6CgpodHRwczovL2dpdGh1Yi5jb20vZXJzdHJv
+bS9saW51eC1hdGgKCkN1cnJlbnQgc3RhdHVzOgoKaHR0cHM6Ly9naXRodWIuY29tL2Vyc3Ryb20v
+bGludXgtYXRoL3dpa2kKCi0tCkVyaWsKCj4gCj4gSmF5Cj4gCj4gCj4gCj4gCj4gCj4gX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGlu
+ZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawo=
