@@ -1,19 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mailfront2.rz.tu-bs.de ([134.169.12.133] helo=tu-bs.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eBtKV-0002ZD-KI
- for ath10k@lists.infradead.org; Tue, 07 Nov 2017 02:09:33 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [ath6kl:pending 15/43]
- drivers/net//wireless/ath/ath10k/pci.c:3416:8: error: implicit declaration of
- function 'ath10k_pci_suspend'
-Date: Tue, 7 Nov 2017 02:09:02 +0000
-Message-ID: <87zi7yj0w3.fsf@qca.qualcomm.com>
-References: <201711052011.Ceuy1uww%fengguang.wu@intel.com>
-In-Reply-To: <201711052011.Ceuy1uww%fengguang.wu@intel.com> (kbuild test
- robot's message of "Sun, 5 Nov 2017 20:15:14 +0800")
-Content-Language: en-US
+ id 1eCPmA-0007XC-9i
+ for ath10k@lists.infradead.org; Wed, 08 Nov 2017 12:48:16 +0000
+Subject: Re: mesh point and ap mode on same interface
+References: <e6b02c56-38c7-323e-2bc9-e2b4276b654c@tu-bs.de>
+ <cc8baced-bd74-5703-d885-6ec444eb62ce@candelatech.com>
+ <43bf6a27-be58-35e4-26fa-5e6b380353ac@bowerswilkins.com>
+ <7dc592a5-9381-f715-6ea7-0a8b8deee311@tu-bs.de>
+ <CADjYELwdUxEap_z=_HD4DS4FEQ2_2HP3w9cvDU-BTFLoOTDipg@mail.gmail.com>
+ <5c04c7fe-8cf8-ddd8-d6a7-f42629586a63@bowerswilkins.com>
+ <067d234a-59f0-4175-55af-9354617057b9@tu-bs.de>
+ <61192d3b-b4c7-f47e-2ff9-44e17595d6a9@bowerswilkins.com>
+From: "Harms, Hannes" <hannes.harms@tu-bs.de>
+Message-ID: <fc1993f5-8b83-4e74-7866-2adcf318ff5f@tu-bs.de>
+Date: Wed, 8 Nov 2017 13:49:48 +0100
 MIME-Version: 1.0
+In-Reply-To: <61192d3b-b4c7-f47e-2ff9-44e17595d6a9@bowerswilkins.com>
+Content-Language: en-GB
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +26,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: "kbuild-all@01.org" <kbuild-all@01.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org, Peter Oh <peter.oh@bowerswilkins.com>
 
-kbuild test robot <fengguang.wu@intel.com> writes:
-
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git pending
-> head:   f651a1484426fb3233a96e643d49d08eda3b1f3c
-> commit: 5a63b04ed508daf5e208fde74bfcc1b3c848ee86 [15/43] Merge ath-next from git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
-> config: alpha-allyesconfig (attached as .config)
-> compiler: alpha-linux-gnu-gcc (Debian 6.1.1-9) 6.1.1 20160705
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         git checkout 5a63b04ed508daf5e208fde74bfcc1b3c848ee86
->         # save the attached .config to linux build tree
->         make.cross ARCH=alpha 
->
-> Note: the ath6kl/pending HEAD f651a1484426fb3233a96e643d49d08eda3b1f3c builds fine.
->       It only hurts bisectibility.
->
-> All errors (new ones prefixed by >>):
->
->    drivers/net//wireless/ath/ath10k/pci.c: In function 'ath10k_pci_pm_suspend':
->>> drivers/net//wireless/ath/ath10k/pci.c:3416:8: error: implicit
->>> declaration of function 'ath10k_pci_suspend'
->>> [-Werror=implicit-function-declaration]
->      ret = ath10k_pci_suspend(ar);
->            ^~~~~~~~~~~~~~~~~~
->    drivers/net//wireless/ath/ath10k/pci.c: In function 'ath10k_pci_pm_resume':
->>> drivers/net//wireless/ath/ath10k/pci.c:3428:8: error: implicit
->>> declaration of function 'ath10k_pci_resume'
->>> [-Werror=implicit-function-declaration]
->      ret = ath10k_pci_resume(ar);
->            ^~~~~~~~~~~~~~~~~
->    cc1: some warnings being treated as errors
-
-This is fixed by a patch from Brian which I applied later, so we should
-be able to ignore this warning.
-
--- 
-Kalle Valo
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMTEuMTAuMjAxNyB1bSAyMDoxMCBzY2hyaWViIFBldGVyIE9oOgoKPgo+Cj4gT24gMTAvMTAv
+MjAxNyAwNjowNCBBTSwgSGFubmVzIEhhcm1zIHdyb3RlOgo+Pgo+Pj4gT24gMTAvMDkvMjAxNyAw
+ODowOCBBTSwgVGhvbWFzIFBlZGVyc2VuIHdyb3RlOgo+Pj4+IE9uIE9jdCA5LCAyMDE3IDE6NDYg
+QU0sICJIYXJtcywgSGFubmVzIiA8aGFubmVzLmhhcm1zQHR1LWJzLmRlIAo+Pj4+IDxtYWlsdG86
+aGFubmVzLmhhcm1zQHR1LWJzLmRlPj4gd3JvdGU6Cj4+Pj4KPj4+PiDCoMKgwqAgT24gMTAvMDYv
+MjAxNyAyMDoxOCwgUGV0ZXIsIE9oIHdyb3RlCj4+Pj4KPj4+PiDCoMKgwqDCoMKgwqDCoCBJIGhh
+dmUgdHJpZWQgdCBicmluZyB1cCB0aGUgYXAgaW50ZXJmYWNlIHdpdGggaXcgLyBob3N0YXBkLAo+
+Pj4+Cj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGFmdGVyIGpvaW5pbmcgdGhl
+IG1lc2guCj4+Pj4KPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgV2hlbiBJIHN0
+YXJ0IHRoZSBzZWNvbmQgaW50ZXJmYWNlLCBydG5ldGxpbmsKPj4+PiDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgcmVzcG9uZHMgd2l0aAo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBkZXZpY2Ugb3IgcmVzb3VyY2UgYnVzeS4KPj4+Pgo+Pj4+Cj4+Pj4gwqDCoMKgwqDC
+oMKgwqAgSWYgeW91IGdpdmUgbW9yZSBkZXRhaWxzIG9mIHlvdXIgc3RlcHMsIHBlb3BsZSBtYXkg
+aGVscCB5b3UKPj4+PiDCoMKgwqDCoMKgwqDCoCBtb3JlLgo+Pj4+IMKgwqDCoMKgwqDCoMKgIEJ0
+dywgZGlkIHlvdSBjcmVhdGUgYSAybmQgaW50ZXJmYWNlIG9uIHRoZSBzYW1lIHJhZGlvIGFuZAo+
+Pj4+IMKgwqDCoMKgwqDCoMKgIGNoYW5nZSB0aGUgbWFjIGFkZHJlc3M/Cj4+Pj4KPj4+Pgo+Pj4+
+IMKgwqDCoCBZZXMswqAgSSBjaGFuZ2VkIHRoZSBtYWMgb2YgdGhlIDJuZCBpbnRlcmZhY2U6Cj4+
+Pj4KPj4+PiDCoMKgwqAgVGhlIG1lc2ggc2V0dXA6Cj4+Pj4KPj4+PiDCoMKgwqAgPiBicmN0bCBh
+ZGRiciBtZXNoLWJyaWRnZQo+Pj4+IMKgwqDCoCA+IGl3IHBoeTAgaW50ZXJmYWNlIGFkZCB3bGFu
+MCB0eXBlIG1wIG1lc2hfaWQgbXlfbWVzaAo+Pj4+IMKgwqDCoCA+IGl3IHdsYW4wIHNldCBmcmVx
+IDU1MDAgODAgNTUzMAo+Pj4+IMKgwqDCoCA+IGlwIGxpbmsgc2V0IGRldiB3bGFuMCB1cAo+Pj4+
+IMKgwqDCoCA+IGl3IHdsYW4wIG1lc2ggam9pbiBteV9tZXNoCj4+Pj4gwqDCoMKgID4gYnJjdGwg
+YWRkaWbCoCBtZXNoLWJyaWRnZSBtZXNoMAo+Pj4+Cj4+PiBBcmUgeW91IHN1cmUgdGhpcyBjb25m
+aWd1cmF0aW9uIGlzIHdoYXQgeW91J3JlIHVzaW5nPwo+Pj4gdGhlcmUgaXMgbm8gd2F5IHRvIHVz
+ZSBERlMgY2hhbm5lbHMgb24gbWVzaCB2aWEgaXcgYXQgdGhpcyBtb21lbnQuCj4+PiBhbmQgbWVz
+aCBpZCBvbiBicmN0bCBhZGRpZiBpcyBkaWZmZXJlbnQgZnJvbSBpbnRlcmZhY2UgYWRkLgo+Pj4K
+Pj4+PiDCoMKgwqAgVGhlIGFwIGludGVyZmFjZToKPj4+Pgo+Pj4+IMKgwqDCoCA+IGl3IGRldiB3
+bGFuMCBpbnRlcmZhY2UgYWRkIHZpcnR1YWxfYXAgdHlwZSBfX2FwCj4+Pj4gwqDCoMKgID4gaXAg
+bGluayBzZXQgZGV2IHZpcnR1YWxfYXAgYWRkcmVzcyAwNDpmMDoyMToxYjo3Yjo0OAo+Pj4+IMKg
+wqDCoCA+IGhvc3RhcGQgLUIgLWRkIGhvc3RhcGQuY29uZgo+Pj4+Cj4+PiBob3N0YXBkIGFsc28g
+ZG9lcyBub3QgYWxsb3cgaW50ZXJmYWNlIHRvIHVzZSBERlMgY2hhbm5lbHMgd2l0aG91dCAKPj4+
+IGNvdW50cnlfY29kZSBwYXJhbWV0ZXIuCj4+Pj4KPj4+PiDCoMKgwqAgSSB0aGluayBtZXNoIGFu
+ZCBBUCBjaGFubmVsIGZyZXF1ZW5jeSArIHdpZHRoIG5lZWQgdG8gbWF0Y2guCj4+Pj4KPj4gWWVz
+LCB5b3UgYXJlIHJpZ2h0IHdpdGggdGhlIGRmcyBjaGFubmVscywKPj4gSSB3YXMgdGVzdGluZyB3
+aXRoIHNvbWUgcmVsYXhlZCByZWcgcnVsZXMuCj4+Cj4+IEhvd2V2ZXIswqAgScKgIGFtIHN0aWxs
+IGZhY2luZyB0aGUgb3JpZ2luYWwgcHJvYmxlbS4KPj4gRm9yIGV4YW1wbGUgaWYgaSBydW4gdGhl
+IGZvbGxvd2luZywgdGhlIG1lc2ggaXMgd29ya2luZyAoODBNaHopLAo+PiBidXQgYXAgZG9lcyBu
+b3QgY29tZSB1cC4KPj4KPj4gPiBpdyBwaHkwIGludGVyZmFjZSBhZGQgbWVzaDAgdHlwZSBtcAo+
+PiA+IGlwIGxpbmsgc2V0IGRldiBtZXNoMCB1cAo+PiA+IGl3IGRldiBtZXNoMCBtZXNoIGpvaW4g
+Im15X21lc2giIGZyZXEgNTE4MCA4ME1Iego+PiA+IHNsZWVwIDUKPj4gPiBpdyBwaHkwIGludGVy
+ZmFjZSBhZGQgdmlydHVhbF9hcCB0eXBlIF9fYXAKPj4gPiBpcCBsaW5rIHNldCBkZXYgdmlydHVh
+bF9hcCBhZGRyZXNzIDA0OmYwOjIxOjFiOjdiOjQ4Cj4+ID4gaG9zdGFwZCAtQiAtZGQgaG9zdGFw
+ZC5jb25mCj4+Cj4+IGhvc3RhcGQgY29uZmlnOgo+PiBpbnRlcmZhY2U9dmlydHVhbF9hcAo+PiBj
+dHJsX2ludGVyZmFjZT0vdmFyL3J1bi9ob3N0YXBkCj4+IGRyaXZlcj1ubDgwMjExCj4+IHNzaWQ9
+dGVzdAo+PiBod19tb2RlPWEKPj4gY2hhbm5lbD0zNgo+PiBodF9jYXBhYj1bSFQ0MCtdCj4+IGll
+ZWU4MDIxMW49MQo+PiBpZWVlODAyMTFhYz0xCj4+IHZodF9vcGVyX2Nod2lkdGg9MQo+PiB2aHRf
+b3Blcl9jZW50cl9mcmVxX3NlZzBfaWR4PTQyCj4+IGNvdW50cnlfY29kZT1VUwo+PiBicmlkZ2U9
+bWVzaC1icmlkZ2UKPj4KPiBTaW5jZSBJIGRvbid0IGhhdmUgUUNBOTg4MCBwcm9kdWN0cywgSSdt
+IG5vdCBhYmxlIHRvIHJ1biBpdCBvbiB0aGUgCj4gY2hpcCwgYnV0IHRoZSBzYW1lIHN0ZXBzIHVz
+aW5nIHRoZSBzYW1lIGNvbmZpZ3VyYXRpb25zIHdvcmsgZm9yIG1lIG9uIAo+IFFDQTQwMTkgYmFz
+ZWQgcHJvZHVjdC4KPiBzaW5jZSBFQlVTWSBtb3N0IGxpa2VseSBjb21lcyBmcm9tIGNmZzgwMjEx
+LCB5b3UgYmV0dGVyIHRyYWNlIGRvd24gdGhlIAo+IGNvZGVzIHdoZXJlIHRoZSBlcnJvciBjb21l
+cy4KPj4gSSBhbHNvIHRyaWVkIHRvIGpvaW4gdGhlIG1lc2ggYWZ0ZXIgdGhlIGFwIGludGVyZmFj
+ZS4KPj4gSW4gdGhpcyBjYXNlIHRoZSBhcCBpcyBydW5uaW5nLCBidXQgam9pbmluZyB0aGUgbWVz
+aCBmYWlscwo+PiB3aXRoIHRoZSBzYW1lIGVycm9yLiAoZGV2aWNlIG9yIHJlc291cmUgYnVzeSkK
+Pj4KPj4gdGhhbmtzIGZvciB5b3VyIGhlbHAgJiBwYXRpZW5jZQoKSSBmb3VuZCBhIHNvbHV0aW9u
+IGZvciB0aGUgcHJvYmxlbToKCldoZW4gam9pbmluZyB0aGUgbWVzaCB3aXRoIGJlYWNvbiBpbnRl
+cnZhbMKgIHNldMKgIHRvIDEwMApib3RowqAgbWVzaCBhbmQgYXAgaW50ZXJmYWNlIGFyZSBjb21p
+bmcgdXAuCgogPiBpdyBtZXNoMCBtZXNoIGpvaW4gbXlfbWVzaCBiZWFjb24taW50ZXJ2YWwgMTAw
+CgpUaGUgZGVmYXVsdCBiZWFjb24gaW50ZXJ2YWwgaXMgMTAwMCBmb3IgbWVzaCBpbnRlcmZhY2Vz
+LgpJdCBzZWVtcyB0aGF0IFFDQTk4ODAgaXMgbm90IHdvcmtpbmcKd2l0aCBkaWZmZXJlbnQgYmVh
+Y29uIGludGVydmFscyBmb3IgYXAgKyBtZXNoLgoKQW55d2F5LCBJIHRlc3RlZCB3aXRoIG1haW5s
+aW5lIDQuMTQgYW5kIGZpcm13YXJlLTUuYmluXzEwLjIuNC43MC42MS0yCmFuZCBpdCBpcyB3b3Jr
+aW5nIG5vdy4KCgoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
