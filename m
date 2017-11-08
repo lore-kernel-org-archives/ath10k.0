@@ -1,8 +1,9 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailfront2.rz.tu-bs.de ([134.169.12.133] helo=tu-bs.de)
+Received: from mail-ve1eur01on0063.outbound.protection.outlook.com
+ ([104.47.1.63] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eCPmA-0007XC-9i
- for ath10k@lists.infradead.org; Wed, 08 Nov 2017 12:48:16 +0000
+ id 1eCUrF-0001RW-UY
+ for ath10k@lists.infradead.org; Wed, 08 Nov 2017 18:13:52 +0000
 Subject: Re: mesh point and ap mode on same interface
 References: <e6b02c56-38c7-323e-2bc9-e2b4276b654c@tu-bs.de>
  <cc8baced-bd74-5703-d885-6ec444eb62ce@candelatech.com>
@@ -12,12 +13,12 @@ References: <e6b02c56-38c7-323e-2bc9-e2b4276b654c@tu-bs.de>
  <5c04c7fe-8cf8-ddd8-d6a7-f42629586a63@bowerswilkins.com>
  <067d234a-59f0-4175-55af-9354617057b9@tu-bs.de>
  <61192d3b-b4c7-f47e-2ff9-44e17595d6a9@bowerswilkins.com>
-From: "Harms, Hannes" <hannes.harms@tu-bs.de>
-Message-ID: <fc1993f5-8b83-4e74-7866-2adcf318ff5f@tu-bs.de>
-Date: Wed, 8 Nov 2017 13:49:48 +0100
+ <fc1993f5-8b83-4e74-7866-2adcf318ff5f@tu-bs.de>
+From: Peter Oh <peter.oh@bowerswilkins.com>
+Message-ID: <03700343-7b5c-b21e-8b7b-2ac8c7d3258b@bowerswilkins.com>
+Date: Wed, 8 Nov 2017 10:13:16 -0800
 MIME-Version: 1.0
-In-Reply-To: <61192d3b-b4c7-f47e-2ff9-44e17595d6a9@bowerswilkins.com>
-Content-Language: en-GB
+In-Reply-To: <fc1993f5-8b83-4e74-7866-2adcf318ff5f@tu-bs.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,75 +27,138 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org, Peter Oh <peter.oh@bowerswilkins.com>
+To: "Harms, Hannes" <hannes.harms@tu-bs.de>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-QW0gMTEuMTAuMjAxNyB1bSAyMDoxMCBzY2hyaWViIFBldGVyIE9oOgoKPgo+Cj4gT24gMTAvMTAv
-MjAxNyAwNjowNCBBTSwgSGFubmVzIEhhcm1zIHdyb3RlOgo+Pgo+Pj4gT24gMTAvMDkvMjAxNyAw
-ODowOCBBTSwgVGhvbWFzIFBlZGVyc2VuIHdyb3RlOgo+Pj4+IE9uIE9jdCA5LCAyMDE3IDE6NDYg
-QU0sICJIYXJtcywgSGFubmVzIiA8aGFubmVzLmhhcm1zQHR1LWJzLmRlIAo+Pj4+IDxtYWlsdG86
-aGFubmVzLmhhcm1zQHR1LWJzLmRlPj4gd3JvdGU6Cj4+Pj4KPj4+PiDCoMKgwqAgT24gMTAvMDYv
-MjAxNyAyMDoxOCwgUGV0ZXIsIE9oIHdyb3RlCj4+Pj4KPj4+PiDCoMKgwqDCoMKgwqDCoCBJIGhh
-dmUgdHJpZWQgdCBicmluZyB1cCB0aGUgYXAgaW50ZXJmYWNlIHdpdGggaXcgLyBob3N0YXBkLAo+
-Pj4+Cj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGFmdGVyIGpvaW5pbmcgdGhl
-IG1lc2guCj4+Pj4KPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgV2hlbiBJIHN0
-YXJ0IHRoZSBzZWNvbmQgaW50ZXJmYWNlLCBydG5ldGxpbmsKPj4+PiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgcmVzcG9uZHMgd2l0aAo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBkZXZpY2Ugb3IgcmVzb3VyY2UgYnVzeS4KPj4+Pgo+Pj4+Cj4+Pj4gwqDCoMKgwqDC
-oMKgwqAgSWYgeW91IGdpdmUgbW9yZSBkZXRhaWxzIG9mIHlvdXIgc3RlcHMsIHBlb3BsZSBtYXkg
-aGVscCB5b3UKPj4+PiDCoMKgwqDCoMKgwqDCoCBtb3JlLgo+Pj4+IMKgwqDCoMKgwqDCoMKgIEJ0
-dywgZGlkIHlvdSBjcmVhdGUgYSAybmQgaW50ZXJmYWNlIG9uIHRoZSBzYW1lIHJhZGlvIGFuZAo+
-Pj4+IMKgwqDCoMKgwqDCoMKgIGNoYW5nZSB0aGUgbWFjIGFkZHJlc3M/Cj4+Pj4KPj4+Pgo+Pj4+
-IMKgwqDCoCBZZXMswqAgSSBjaGFuZ2VkIHRoZSBtYWMgb2YgdGhlIDJuZCBpbnRlcmZhY2U6Cj4+
-Pj4KPj4+PiDCoMKgwqAgVGhlIG1lc2ggc2V0dXA6Cj4+Pj4KPj4+PiDCoMKgwqAgPiBicmN0bCBh
-ZGRiciBtZXNoLWJyaWRnZQo+Pj4+IMKgwqDCoCA+IGl3IHBoeTAgaW50ZXJmYWNlIGFkZCB3bGFu
-MCB0eXBlIG1wIG1lc2hfaWQgbXlfbWVzaAo+Pj4+IMKgwqDCoCA+IGl3IHdsYW4wIHNldCBmcmVx
-IDU1MDAgODAgNTUzMAo+Pj4+IMKgwqDCoCA+IGlwIGxpbmsgc2V0IGRldiB3bGFuMCB1cAo+Pj4+
-IMKgwqDCoCA+IGl3IHdsYW4wIG1lc2ggam9pbiBteV9tZXNoCj4+Pj4gwqDCoMKgID4gYnJjdGwg
-YWRkaWbCoCBtZXNoLWJyaWRnZSBtZXNoMAo+Pj4+Cj4+PiBBcmUgeW91IHN1cmUgdGhpcyBjb25m
-aWd1cmF0aW9uIGlzIHdoYXQgeW91J3JlIHVzaW5nPwo+Pj4gdGhlcmUgaXMgbm8gd2F5IHRvIHVz
-ZSBERlMgY2hhbm5lbHMgb24gbWVzaCB2aWEgaXcgYXQgdGhpcyBtb21lbnQuCj4+PiBhbmQgbWVz
-aCBpZCBvbiBicmN0bCBhZGRpZiBpcyBkaWZmZXJlbnQgZnJvbSBpbnRlcmZhY2UgYWRkLgo+Pj4K
-Pj4+PiDCoMKgwqAgVGhlIGFwIGludGVyZmFjZToKPj4+Pgo+Pj4+IMKgwqDCoCA+IGl3IGRldiB3
-bGFuMCBpbnRlcmZhY2UgYWRkIHZpcnR1YWxfYXAgdHlwZSBfX2FwCj4+Pj4gwqDCoMKgID4gaXAg
-bGluayBzZXQgZGV2IHZpcnR1YWxfYXAgYWRkcmVzcyAwNDpmMDoyMToxYjo3Yjo0OAo+Pj4+IMKg
-wqDCoCA+IGhvc3RhcGQgLUIgLWRkIGhvc3RhcGQuY29uZgo+Pj4+Cj4+PiBob3N0YXBkIGFsc28g
-ZG9lcyBub3QgYWxsb3cgaW50ZXJmYWNlIHRvIHVzZSBERlMgY2hhbm5lbHMgd2l0aG91dCAKPj4+
-IGNvdW50cnlfY29kZSBwYXJhbWV0ZXIuCj4+Pj4KPj4+PiDCoMKgwqAgSSB0aGluayBtZXNoIGFu
-ZCBBUCBjaGFubmVsIGZyZXF1ZW5jeSArIHdpZHRoIG5lZWQgdG8gbWF0Y2guCj4+Pj4KPj4gWWVz
-LCB5b3UgYXJlIHJpZ2h0IHdpdGggdGhlIGRmcyBjaGFubmVscywKPj4gSSB3YXMgdGVzdGluZyB3
-aXRoIHNvbWUgcmVsYXhlZCByZWcgcnVsZXMuCj4+Cj4+IEhvd2V2ZXIswqAgScKgIGFtIHN0aWxs
-IGZhY2luZyB0aGUgb3JpZ2luYWwgcHJvYmxlbS4KPj4gRm9yIGV4YW1wbGUgaWYgaSBydW4gdGhl
-IGZvbGxvd2luZywgdGhlIG1lc2ggaXMgd29ya2luZyAoODBNaHopLAo+PiBidXQgYXAgZG9lcyBu
-b3QgY29tZSB1cC4KPj4KPj4gPiBpdyBwaHkwIGludGVyZmFjZSBhZGQgbWVzaDAgdHlwZSBtcAo+
-PiA+IGlwIGxpbmsgc2V0IGRldiBtZXNoMCB1cAo+PiA+IGl3IGRldiBtZXNoMCBtZXNoIGpvaW4g
-Im15X21lc2giIGZyZXEgNTE4MCA4ME1Iego+PiA+IHNsZWVwIDUKPj4gPiBpdyBwaHkwIGludGVy
-ZmFjZSBhZGQgdmlydHVhbF9hcCB0eXBlIF9fYXAKPj4gPiBpcCBsaW5rIHNldCBkZXYgdmlydHVh
-bF9hcCBhZGRyZXNzIDA0OmYwOjIxOjFiOjdiOjQ4Cj4+ID4gaG9zdGFwZCAtQiAtZGQgaG9zdGFw
-ZC5jb25mCj4+Cj4+IGhvc3RhcGQgY29uZmlnOgo+PiBpbnRlcmZhY2U9dmlydHVhbF9hcAo+PiBj
-dHJsX2ludGVyZmFjZT0vdmFyL3J1bi9ob3N0YXBkCj4+IGRyaXZlcj1ubDgwMjExCj4+IHNzaWQ9
-dGVzdAo+PiBod19tb2RlPWEKPj4gY2hhbm5lbD0zNgo+PiBodF9jYXBhYj1bSFQ0MCtdCj4+IGll
-ZWU4MDIxMW49MQo+PiBpZWVlODAyMTFhYz0xCj4+IHZodF9vcGVyX2Nod2lkdGg9MQo+PiB2aHRf
-b3Blcl9jZW50cl9mcmVxX3NlZzBfaWR4PTQyCj4+IGNvdW50cnlfY29kZT1VUwo+PiBicmlkZ2U9
-bWVzaC1icmlkZ2UKPj4KPiBTaW5jZSBJIGRvbid0IGhhdmUgUUNBOTg4MCBwcm9kdWN0cywgSSdt
-IG5vdCBhYmxlIHRvIHJ1biBpdCBvbiB0aGUgCj4gY2hpcCwgYnV0IHRoZSBzYW1lIHN0ZXBzIHVz
-aW5nIHRoZSBzYW1lIGNvbmZpZ3VyYXRpb25zIHdvcmsgZm9yIG1lIG9uIAo+IFFDQTQwMTkgYmFz
-ZWQgcHJvZHVjdC4KPiBzaW5jZSBFQlVTWSBtb3N0IGxpa2VseSBjb21lcyBmcm9tIGNmZzgwMjEx
-LCB5b3UgYmV0dGVyIHRyYWNlIGRvd24gdGhlIAo+IGNvZGVzIHdoZXJlIHRoZSBlcnJvciBjb21l
-cy4KPj4gSSBhbHNvIHRyaWVkIHRvIGpvaW4gdGhlIG1lc2ggYWZ0ZXIgdGhlIGFwIGludGVyZmFj
-ZS4KPj4gSW4gdGhpcyBjYXNlIHRoZSBhcCBpcyBydW5uaW5nLCBidXQgam9pbmluZyB0aGUgbWVz
-aCBmYWlscwo+PiB3aXRoIHRoZSBzYW1lIGVycm9yLiAoZGV2aWNlIG9yIHJlc291cmUgYnVzeSkK
-Pj4KPj4gdGhhbmtzIGZvciB5b3VyIGhlbHAgJiBwYXRpZW5jZQoKSSBmb3VuZCBhIHNvbHV0aW9u
-IGZvciB0aGUgcHJvYmxlbToKCldoZW4gam9pbmluZyB0aGUgbWVzaCB3aXRoIGJlYWNvbiBpbnRl
-cnZhbMKgIHNldMKgIHRvIDEwMApib3RowqAgbWVzaCBhbmQgYXAgaW50ZXJmYWNlIGFyZSBjb21p
-bmcgdXAuCgogPiBpdyBtZXNoMCBtZXNoIGpvaW4gbXlfbWVzaCBiZWFjb24taW50ZXJ2YWwgMTAw
-CgpUaGUgZGVmYXVsdCBiZWFjb24gaW50ZXJ2YWwgaXMgMTAwMCBmb3IgbWVzaCBpbnRlcmZhY2Vz
-LgpJdCBzZWVtcyB0aGF0IFFDQTk4ODAgaXMgbm90IHdvcmtpbmcKd2l0aCBkaWZmZXJlbnQgYmVh
-Y29uIGludGVydmFscyBmb3IgYXAgKyBtZXNoLgoKQW55d2F5LCBJIHRlc3RlZCB3aXRoIG1haW5s
-aW5lIDQuMTQgYW5kIGZpcm13YXJlLTUuYmluXzEwLjIuNC43MC42MS0yCmFuZCBpdCBpcyB3b3Jr
-aW5nIG5vdy4KCgoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+
+
+On 11/08/2017 04:49 AM, Harms, Hannes wrote:
+> Am 11.10.2017 um 20:10 schrieb Peter Oh:
+>
+>>
+>>
+>> On 10/10/2017 06:04 AM, Hannes Harms wrote:
+>>>
+>>>> On 10/09/2017 08:08 AM, Thomas Pedersen wrote:
+>>>>> On Oct 9, 2017 1:46 AM, "Harms, Hannes" <hannes.harms@tu-bs.de 
+>>>>> <mailto:hannes.harms@tu-bs.de>> wrote:
+>>>>>
+>>>>>     On 10/06/2017 20:18, Peter, Oh wrote
+>>>>>
+>>>>>         I have tried t bring up the ap interface with iw / hostapd,
+>>>>>
+>>>>>                 after joining the mesh.
+>>>>>
+>>>>>                 When I start the second interface, rtnetlink
+>>>>>                 responds with
+>>>>>                 device or resource busy.
+>>>>>
+>>>>>
+>>>>>         If you give more details of your steps, people may help you
+>>>>>         more.
+>>>>>         Btw, did you create a 2nd interface on the same radio and
+>>>>>         change the mac address?
+>>>>>
+>>>>>
+>>>>>     Yes,  I changed the mac of the 2nd interface:
+>>>>>
+>>>>>     The mesh setup:
+>>>>>
+>>>>>     > brctl addbr mesh-bridge
+>>>>>     > iw phy0 interface add wlan0 type mp mesh_id my_mesh
+>>>>>     > iw wlan0 set freq 5500 80 5530
+>>>>>     > ip link set dev wlan0 up
+>>>>>     > iw wlan0 mesh join my_mesh
+>>>>>     > brctl addif  mesh-bridge mesh0
+>>>>>
+>>>> Are you sure this configuration is what you're using?
+>>>> there is no way to use DFS channels on mesh via iw at this moment.
+>>>> and mesh id on brctl addif is different from interface add.
+>>>>
+>>>>>     The ap interface:
+>>>>>
+>>>>>     > iw dev wlan0 interface add virtual_ap type __ap
+>>>>>     > ip link set dev virtual_ap address 04:f0:21:1b:7b:48
+>>>>>     > hostapd -B -dd hostapd.conf
+>>>>>
+>>>> hostapd also does not allow interface to use DFS channels without 
+>>>> country_code parameter.
+>>>>>
+>>>>>     I think mesh and AP channel frequency + width need to match.
+>>>>>
+>>> Yes, you are right with the dfs channels,
+>>> I was testing with some relaxed reg rules.
+>>>
+>>> However,  I  am still facing the original problem.
+>>> For example if i run the following, the mesh is working (80Mhz),
+>>> but ap does not come up.
+>>>
+>>> > iw phy0 interface add mesh0 type mp
+>>> > ip link set dev mesh0 up
+>>> > iw dev mesh0 mesh join "my_mesh" freq 5180 80MHz
+>>> > sleep 5
+>>> > iw phy0 interface add virtual_ap type __ap
+>>> > ip link set dev virtual_ap address 04:f0:21:1b:7b:48
+>>> > hostapd -B -dd hostapd.conf
+>>>
+>>> hostapd config:
+>>> interface=virtual_ap
+>>> ctrl_interface=/var/run/hostapd
+>>> driver=nl80211
+>>> ssid=test
+>>> hw_mode=a
+>>> channel=36
+>>> ht_capab=[HT40+]
+>>> ieee80211n=1
+>>> ieee80211ac=1
+>>> vht_oper_chwidth=1
+>>> vht_oper_centr_freq_seg0_idx=42
+>>> country_code=US
+>>> bridge=mesh-bridge
+>>>
+>> Since I don't have QCA9880 products, I'm not able to run it on the 
+>> chip, but the same steps using the same configurations work for me on 
+>> QCA4019 based product.
+>> since EBUSY most likely comes from cfg80211, you better trace down 
+>> the codes where the error comes.
+>>> I also tried to join the mesh after the ap interface.
+>>> In this case the ap is running, but joining the mesh fails
+>>> with the same error. (device or resoure busy)
+>>>
+>>> thanks for your help & patience
+>
+> I found a solution for the problem:
+>
+> When joining the mesh with beacon interval  set  to 100
+> both  mesh and ap interface are coming up.
+>
+> > iw mesh0 mesh join my_mesh beacon-interval 100
+>
+> The default beacon interval is 1000 for mesh interfaces.
+> It seems that QCA9880 is not working
+> with different beacon intervals for ap + mesh.
+>
+Good to hear that working.
+But mesh beacon interval 1000 which is default value should work.
+Any mesh beacon intervals of multiple of AP beacon intervals are 
+supposed to work
+(In other words, mesh beacon intervals that are not aligned by multiple 
+of AP beacon intervals won't work). These are valid for both of QCA9880 
+and QCA4019 as far as I know.
+> Anyway, I tested with mainline 4.14 and firmware-5.bin_10.2.4.70.61-2
+> and it is working now.
+>
+>
+>
+>
+>
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
