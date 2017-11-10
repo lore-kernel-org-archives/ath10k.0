@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eCxFD-0005TC-UV
- for ath10k@lists.infradead.org; Fri, 10 Nov 2017 00:32:30 +0000
-From: Ben Greear <greearb@candelatech.com>
-Subject: ath10k targaddrs issue
-Message-ID: <dc4ef513-d100-39b4-c868-d997675bc059@candelatech.com>
-Date: Thu, 9 Nov 2017 16:32:02 -0800
+Received: from mail.toke.dk ([52.28.52.200])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eCxVf-0006Sy-82
+ for ath10k@lists.infradead.org; Fri, 10 Nov 2017 00:49:29 +0000
+From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: [PATCH v2] ath10k: Re-enable TXQs for all devices
+Date: Fri, 10 Nov 2017 09:48:39 +0900
+Message-Id: <20171110004839.7478-1-toke@toke.dk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -16,88 +16,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, erik.stromdahl@gmail.com, ath10k <ath10k@lists.infradead.org>
+To: make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
 
-While poking around in the firmware, I noticed what appears to be
-an ath10k driver issue, which came in with this commit below.
-
-commit 01d6fd6965eaf8d4b3aab681d30e77c53a834162
-Author: Erik Stromdahl <erik.stromdahl@gmail.com>
-Date:   Wed Apr 26 12:17:55 2017 +0300
-
-     ath10k: various sdio related definitions
-
-     Debug masks for SDIO HIF layer.
-     Address definitions for SDIO/mbox based chipsets.
-     Augmented struct host_interest with more members.
-
-     Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
-     Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-...
-
-diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
-index cbac9e42..8bded5d 100644
---- a/drivers/net/wireless/ath/ath10k/targaddrs.h
-+++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
-@@ -205,6 +205,24 @@ struct host_interest {
-          */
-         /* Bit 1 - unused */
-         u32 hi_fw_swap;                                 /* 0x104 */
-+
-+       /* global arenas pointer address, used by host driver debug */
-+       u32 hi_dynamic_mem_arenas_addr;                 /* 0x108 */
-+
-+       /* allocated bytes of DRAM use by allocated */
-+       u32 hi_dynamic_mem_allocated;                   /* 0x10C */
-+
-+       /* remaining bytes of DRAM */
-+       u32 hi_dynamic_mem_remaining;                   /* 0x110 */
-+
-+       /* memory track count, configured by host */
-+       u32 hi_dynamic_mem_track_max;                   /* 0x114 */
-+
-+       /* minidump buffer */
-+       u32 hi_minidump;                                /* 0x118 */
-+
-+       /* bdata's sig and key addr */
-+       u32 hi_bd_sig_key;                              /* 0x11c */
-  } __packed;
-
-
-Those variables above may be correct for some firmware, but they are not
-correct for at least some versions of 10.4, which have this instead:
-
-...
-     A_UINT32               hi_fw_swap;                               /* 0x104 */
-
-     /* host side need to support tx/rx data packet swap */
-     A_UINT32			   hi_txrx_dataswap;	           /* 0x108 */	
-
-     /* enable allocram statistics gathering (set to an integer, which
-      * is the number of tracking records that allocram will allocate).
-      */
-     A_UINT32               hi_allocram_track_max;                     /* 0x108 */
-}
-
-I guess this may not be an issue as long as zero'd values are sent to the
-10.4 nics, but it is confusing at best.
-
-Eric, where did you get these values from?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Q29tbWl0IDRjYTE4MDc4MTVhYTY4MDFhYWNlZDdmZGVmYTllZGFjYzI1MjE3NjcgZGlzYWJsZXMg
+dGhlIHVzZSBvZiB0aGUKbWFjODAyMTEgVFhRcyBmb3Igc29tZSBkZXZpY2VzIGJlY2F1c2Ugb2Yg
+YSB0aGVvcmV0aWNhbCB0aHJvdWdocHV0CnJlZ3Jlc3Npb24uIFRoZSBvcmlnaW5hbCByZWdyZXNz
+aW9uIHJlcG9ydFsxXSB3YXMgcmVsYXRlZCB0byBmcV9jb2RlbApxZGlzYyBkcm9wIHBlcmZvcm1h
+bmNlLCB3aGljaCB3YXMgZml4ZWQgaW4KOWQxODU2MmEyMjc4NzQyODlmZGE4Y2E1ZDExN2Q4ZjUw
+M2YxZGNjYS4gU2luY2UgdGhlbiwgd2UgaGF2ZSBub3Qgc2Vlbgp0aGUgVFhRLXJlbGF0ZWQgcmVn
+cmVzc2lvbiwgc28gaXQgc2hvdWxkIGJlIHNhZmUgdG8gcmUtZW5hYmxlIFRYUXMuCgpbMV0gaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE2LUFwcmlsLzAwNzI2
+Ni5odG1sCgpTaWduZWQtb2ZmLWJ5OiBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gPHRva2VAdG9r
+ZS5kaz4KLS0tClRoaXMgaGFzIGJlZW4gaW4gTEVERSB0cnVuayBmb3IgYSBjb3VwbGUgb2YgbW9u
+dGhzIG5vdyB3aXRoIGdvb2QKcmVzdWx0cy4KCkNoYW5nZXMgc2luY2UgdjE6Ci0gVXBkYXRlIGNv
+bW1pdCBtZXNzYWdlIHRvIHJlZmVyIHRvIG9yaWdpbmFsIHJlcG9ydCBhbmQgdGhlIGZpeCBmb3Ig
+aXQuCi0gQWRkIGF0aDEwayBsaXN0IHRvIGNjCgogZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway9tYWMuYyB8IDkgLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgOSBkZWxldGlvbnMoLSkK
+CmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jIGIvZHJp
+dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYwppbmRleCAwYTk0N2VlZjM0OGQuLmNh
+NTk2ZWNkMmQ2NCAxMDA2NDQKLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9t
+YWMuYworKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCkBAIC04MzI5
+LDE1ICs4MzI5LDYgQEAgaW50IGF0aDEwa19tYWNfcmVnaXN0ZXIoc3RydWN0IGF0aDEwayAqYXIp
+CiAJCQlhdGgxMGtfd2FybihhciwgImZhaWxlZCB0byBpbml0aWFsaXNlIERGUyBwYXR0ZXJuIGRl
+dGVjdG9yXG4iKTsKIAl9CiAKLQkvKiBDdXJyZW50IHdha2VfdHhfcXVldWUgaW1wbGVtZW50YXRp
+b24gaW1wb3NlcyBhIHNpZ25pZmljYW50Ci0JICogcGVyZm9ybWFuY2UgcGVuYWx0eSBpbiBzb21l
+IHNldHVwcy4gVGhlIHR4IHNjaGVkdWxpbmcgY29kZSBuZWVkcwotCSAqIG1vcmUgd29yayBhbnl3
+YXkgc28gZGlzYWJsZSB0aGUgd2FrZV90eF9xdWV1ZSB1bmxlc3MgZmlybXdhcmUKLQkgKiBzdXBw
+b3J0cyB0aGUgcHVsbC1wdXNoIG1lY2hhbmlzbS4KLQkgKi8KLQlpZiAoIXRlc3RfYml0KEFUSDEw
+S19GV19GRUFUVVJFX1BFRVJfRkxPV19DT05UUk9MLAotCQkgICAgICBhci0+cnVubmluZ19mdy0+
+ZndfZmlsZS5md19mZWF0dXJlcykpCi0JCWFyLT5vcHMtPndha2VfdHhfcXVldWUgPSBOVUxMOwot
+CiAJcmV0ID0gYXRoMTBrX21hY19pbml0X3JkKGFyKTsKIAlpZiAocmV0KSB7CiAJCWF0aDEwa19l
+cnIoYXIsICJmYWlsZWQgdG8gZGVyaXZlIHJlZ2RvbTogJWRcbiIsIHJldCk7Ci0tIAoyLjE1LjAK
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
