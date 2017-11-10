@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x22a.google.com ([2607:f8b0:400d:c0d::22a])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eCpAZ-00032n-Fe
- for ath10k@lists.infradead.org; Thu, 09 Nov 2017 15:55:10 +0000
-Received: by mail-qt0-x22a.google.com with SMTP id 8so8213091qtv.1
- for <ath10k@lists.infradead.org>; Thu, 09 Nov 2017 07:54:45 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eCxFD-0005TC-UV
+ for ath10k@lists.infradead.org; Fri, 10 Nov 2017 00:32:30 +0000
+From: Ben Greear <greearb@candelatech.com>
+Subject: ath10k targaddrs issue
+Message-ID: <dc4ef513-d100-39b4-c868-d997675bc059@candelatech.com>
+Date: Thu, 9 Nov 2017 16:32:02 -0800
 MIME-Version: 1.0
-From: Andy Finkel <afinkel@rajant.com>
-Date: Thu, 9 Nov 2017 10:54:43 -0500
-Message-ID: <CADNAk12vdgq7LuD=3jJXJ0_8i19bv-KK0x7Mnbez24TRVT+FyA@mail.gmail.com>
-Subject: QCA9887 firmware and WDS question
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,31 +16,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, erik.stromdahl@gmail.com, ath10k <ath10k@lists.infradead.org>
 
-I'm trying to get an ath10k QCA9887 based radio working with WDS
-stations.  Does anyone know if  firmware-5.bin_10.2.4-1.0-00029
-supports WDS ?
+While poking around in the firmware, I noticed what appears to be
+an ath10k driver issue, which came in with this commit below.
 
-The driver works fine using the QCA9887 card as an AP;
+commit 01d6fd6965eaf8d4b3aab681d30e77c53a834162
+Author: Erik Stromdahl <erik.stromdahl@gmail.com>
+Date:   Wed Apr 26 12:17:55 2017 +0300
 
-The same driver, running a QCA9882 based radio card works as a WDS
-station, as well as an AP.
+     ath10k: various sdio related definitions
 
-Is there a firmware version for the QCA9887 known to support WDS ?  If
-so, I could test with that, and know any problems are in the driver.
+     Debug masks for SDIO HIF layer.
+     Address definitions for SDIO/mbox based chipsets.
+     Augmented struct host_interest with more members.
+
+     Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+     Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+
+...
+
+diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
+index cbac9e42..8bded5d 100644
+--- a/drivers/net/wireless/ath/ath10k/targaddrs.h
++++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
+@@ -205,6 +205,24 @@ struct host_interest {
+          */
+         /* Bit 1 - unused */
+         u32 hi_fw_swap;                                 /* 0x104 */
++
++       /* global arenas pointer address, used by host driver debug */
++       u32 hi_dynamic_mem_arenas_addr;                 /* 0x108 */
++
++       /* allocated bytes of DRAM use by allocated */
++       u32 hi_dynamic_mem_allocated;                   /* 0x10C */
++
++       /* remaining bytes of DRAM */
++       u32 hi_dynamic_mem_remaining;                   /* 0x110 */
++
++       /* memory track count, configured by host */
++       u32 hi_dynamic_mem_track_max;                   /* 0x114 */
++
++       /* minidump buffer */
++       u32 hi_minidump;                                /* 0x118 */
++
++       /* bdata's sig and key addr */
++       u32 hi_bd_sig_key;                              /* 0x11c */
+  } __packed;
+
+
+Those variables above may be correct for some firmware, but they are not
+correct for at least some versions of 10.4, which have this instead:
+
+...
+     A_UINT32               hi_fw_swap;                               /* 0x104 */
+
+     /* host side need to support tx/rx data packet swap */
+     A_UINT32			   hi_txrx_dataswap;	           /* 0x108 */	
+
+     /* enable allocram statistics gathering (set to an integer, which
+      * is the number of tracking records that allocram will allocate).
+      */
+     A_UINT32               hi_allocram_track_max;                     /* 0x108 */
+}
+
+I guess this may not be an issue as long as zero'd values are sent to the
+10.4 nics, but it is confusing at best.
+
+Eric, where did you get these values from?
 
 Thanks,
+Ben
 
-Andy
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
---
-Andy Finkel
-Rajant Corp.
 
 _______________________________________________
 ath10k mailing list
