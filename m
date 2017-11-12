@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nbd.name ([2a01:4f8:221:3d45::2])
+Received: from [2001:470:dc45:1000::1] (helo=mail.toke.dk)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eDVzX-0006gc-DH
- for ath10k@lists.infradead.org; Sat, 11 Nov 2017 13:38:37 +0000
+ id 1eDtRL-00086r-Vg
+ for ath10k@lists.infradead.org; Sun, 12 Nov 2017 14:40:53 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
 Subject: Re: [PATCH v2] ath10k: Re-enable TXQs for all devices
+In-Reply-To: <f5540404-f2e0-203a-ee75-daf357f29547@nbd.name>
 References: <20171110004839.7478-1-toke@toke.dk>
-From: Felix Fietkau <nbd@nbd.name>
-Message-ID: <f5540404-f2e0-203a-ee75-daf357f29547@nbd.name>
-Date: Sat, 11 Nov 2017 14:38:06 +0100
+ <f5540404-f2e0-203a-ee75-daf357f29547@nbd.name>
+Date: Sun, 12 Nov 2017 23:40:12 +0900
+Message-ID: <87shdjpnlf.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <20171110004839.7478-1-toke@toke.dk>
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +23,23 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@toke.dk>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Felix Fietkau <nbd@nbd.name>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjAxNy0xMS0xMCAwMTo0OCwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOgo+IENv
-bW1pdCA0Y2ExODA3ODE1YWE2ODAxYWFjZWQ3ZmRlZmE5ZWRhY2MyNTIxNzY3IGRpc2FibGVzIHRo
-ZSB1c2Ugb2YgdGhlCj4gbWFjODAyMTEgVFhRcyBmb3Igc29tZSBkZXZpY2VzIGJlY2F1c2Ugb2Yg
-YSB0aGVvcmV0aWNhbCB0aHJvdWdocHV0Cj4gcmVncmVzc2lvbi4gVGhlIG9yaWdpbmFsIHJlZ3Jl
-c3Npb24gcmVwb3J0WzFdIHdhcyByZWxhdGVkIHRvIGZxX2NvZGVsCj4gcWRpc2MgZHJvcCBwZXJm
-b3JtYW5jZSwgd2hpY2ggd2FzIGZpeGVkIGluCj4gOWQxODU2MmEyMjc4NzQyODlmZGE4Y2E1ZDEx
-N2Q4ZjUwM2YxZGNjYS4gU2luY2UgdGhlbiwgd2UgaGF2ZSBub3Qgc2Vlbgo+IHRoZSBUWFEtcmVs
-YXRlZCByZWdyZXNzaW9uLCBzbyBpdCBzaG91bGQgYmUgc2FmZSB0byByZS1lbmFibGUgVFhRcy4K
-VGhhdCBjb21taXQgaXMgdW5yZWxhdGVkIHRvIHRoZSBmcS9jb2RlbCBpbXBsZW1lbnRhdGlvbnMg
-aW4gbWFjODAyMTEsCnNpbmNlIG1hYzgwMjExIHdpdGggdHhxIGRvZXMgbm90IHVzZSBxZGlzYy4K
-Ci0gRmVsaXgKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+RmVsaXggRmlldGthdSA8bmJkQG5iZC5uYW1lPiB3cml0ZXM6Cgo+IE9uIDIwMTctMTEtMTAgMDE6
+NDgsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4gQ29tbWl0IDRjYTE4MDc4MTVh
+YTY4MDFhYWNlZDdmZGVmYTllZGFjYzI1MjE3NjcgZGlzYWJsZXMgdGhlIHVzZSBvZiB0aGUKPj4g
+bWFjODAyMTEgVFhRcyBmb3Igc29tZSBkZXZpY2VzIGJlY2F1c2Ugb2YgYSB0aGVvcmV0aWNhbCB0
+aHJvdWdocHV0Cj4+IHJlZ3Jlc3Npb24uIFRoZSBvcmlnaW5hbCByZWdyZXNzaW9uIHJlcG9ydFsx
+XSB3YXMgcmVsYXRlZCB0byBmcV9jb2RlbAo+PiBxZGlzYyBkcm9wIHBlcmZvcm1hbmNlLCB3aGlj
+aCB3YXMgZml4ZWQgaW4KPj4gOWQxODU2MmEyMjc4NzQyODlmZGE4Y2E1ZDExN2Q4ZjUwM2YxZGNj
+YS4gU2luY2UgdGhlbiwgd2UgaGF2ZSBub3Qgc2Vlbgo+PiB0aGUgVFhRLXJlbGF0ZWQgcmVncmVz
+c2lvbiwgc28gaXQgc2hvdWxkIGJlIHNhZmUgdG8gcmUtZW5hYmxlIFRYUXMuCj4gVGhhdCBjb21t
+aXQgaXMgdW5yZWxhdGVkIHRvIHRoZSBmcS9jb2RlbCBpbXBsZW1lbnRhdGlvbnMgaW4gbWFjODAy
+MTEsCj4gc2luY2UgbWFjODAyMTEgd2l0aCB0eHEgZG9lcyBub3QgdXNlIHFkaXNjLgoKWXVwLiBX
+aGljaCBpcyB3aHkgaXQncyBvZGQgdGhhdCB0aGUgaW5pdGlhbCBidWcgcmVwb3J0IHJlZmVycmVk
+IHRvIHRoaXM7CnRoYXQgd291bGQgaW5kaWNhdGUgdGhhdCB0aGUgcmVncmVzc2lvbiBoYWQgbm90
+aGluZyB0byBkbyB3aXRoIFRYUXMgaW4KdGhlIGZpcnN0IHBsYWNlLCBhbmQgd2UgY291bGQgaGF2
+ZSBtZXJnZWQgdGhpcyBhZ2VzIGFnbz8KCi1Ub2tlCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
+bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+YXRoMTBrCg==
