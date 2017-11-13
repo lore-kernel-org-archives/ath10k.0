@@ -1,16 +1,30 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from [2001:470:dc45:1000::1] (helo=mail.toke.dk)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eDtRL-00086r-Vg
- for ath10k@lists.infradead.org; Sun, 12 Nov 2017 14:40:53 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH v2] ath10k: Re-enable TXQs for all devices
-In-Reply-To: <f5540404-f2e0-203a-ee75-daf357f29547@nbd.name>
-References: <20171110004839.7478-1-toke@toke.dk>
- <f5540404-f2e0-203a-ee75-daf357f29547@nbd.name>
-Date: Sun, 12 Nov 2017 23:40:12 +0900
-Message-ID: <87shdjpnlf.fsf@toke.dk>
-MIME-Version: 1.0
+ id 1eEBh2-0005oG-8b
+ for ath10k@lists.infradead.org; Mon, 13 Nov 2017 10:10:18 +0000
+Message-ID: <1510567783.30497.33.camel@sipsolutions.net>
+Subject: Re: Setting single rate in ath10k broken by "reject/clear user rate
+ mask if not usable"
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 13 Nov 2017 11:09:43 +0100
+In-Reply-To: <a1adb2ea-44c4-67ae-1044-08c4dc16bb9a@candelatech.com>
+References: <13895fa0-3685-dd2b-583d-2d6469d23cfe@candelatech.com>
+ <1507708948.1998.15.camel@sipsolutions.net>
+ <2c293255-aa79-75a0-1c28-994f864cddf4@candelatech.com>
+ <1508312033.2674.9.camel@sipsolutions.net>
+ <2ad42671-59c4-80ed-4bca-f874eb53d653@candelatech.com>
+ <8c2e0e98-f3f4-6e0c-1bf0-43dfa6e97275@rempel-privat.de>
+ <1508358869.2674.55.camel@sipsolutions.net>
+ <9791c86a-a15f-4c99-ab84-ce00b242d70f@candelatech.com>
+ <1508360527.2674.61.camel@sipsolutions.net>
+ <0bfb289d-a9fa-03d9-f9c7-cc0d01b0bd43@candelatech.com>
+ <1508944670.2421.49.camel@sipsolutions.net>
+ <db23762d-3e65-7707-ca78-ad7e7bc7dfa6@candelatech.com>
+ <1509135311.2283.12.camel@sipsolutions.net>
+ <a1adb2ea-44c4-67ae-1044-08c4dc16bb9a@candelatech.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,27 +33,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Felix Fietkau <nbd@nbd.name>, make-wifi-fast@lists.bufferbloat.net, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>, Oleksij Rempel <linux@rempel-privat.de>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, kirtika@google.com
 
-RmVsaXggRmlldGthdSA8bmJkQG5iZC5uYW1lPiB3cml0ZXM6Cgo+IE9uIDIwMTctMTEtMTAgMDE6
-NDgsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToKPj4gQ29tbWl0IDRjYTE4MDc4MTVh
-YTY4MDFhYWNlZDdmZGVmYTllZGFjYzI1MjE3NjcgZGlzYWJsZXMgdGhlIHVzZSBvZiB0aGUKPj4g
-bWFjODAyMTEgVFhRcyBmb3Igc29tZSBkZXZpY2VzIGJlY2F1c2Ugb2YgYSB0aGVvcmV0aWNhbCB0
-aHJvdWdocHV0Cj4+IHJlZ3Jlc3Npb24uIFRoZSBvcmlnaW5hbCByZWdyZXNzaW9uIHJlcG9ydFsx
-XSB3YXMgcmVsYXRlZCB0byBmcV9jb2RlbAo+PiBxZGlzYyBkcm9wIHBlcmZvcm1hbmNlLCB3aGlj
-aCB3YXMgZml4ZWQgaW4KPj4gOWQxODU2MmEyMjc4NzQyODlmZGE4Y2E1ZDExN2Q4ZjUwM2YxZGNj
-YS4gU2luY2UgdGhlbiwgd2UgaGF2ZSBub3Qgc2Vlbgo+PiB0aGUgVFhRLXJlbGF0ZWQgcmVncmVz
-c2lvbiwgc28gaXQgc2hvdWxkIGJlIHNhZmUgdG8gcmUtZW5hYmxlIFRYUXMuCj4gVGhhdCBjb21t
-aXQgaXMgdW5yZWxhdGVkIHRvIHRoZSBmcS9jb2RlbCBpbXBsZW1lbnRhdGlvbnMgaW4gbWFjODAy
-MTEsCj4gc2luY2UgbWFjODAyMTEgd2l0aCB0eHEgZG9lcyBub3QgdXNlIHFkaXNjLgoKWXVwLiBX
-aGljaCBpcyB3aHkgaXQncyBvZGQgdGhhdCB0aGUgaW5pdGlhbCBidWcgcmVwb3J0IHJlZmVycmVk
-IHRvIHRoaXM7CnRoYXQgd291bGQgaW5kaWNhdGUgdGhhdCB0aGUgcmVncmVzc2lvbiBoYWQgbm90
-aGluZyB0byBkbyB3aXRoIFRYUXMgaW4KdGhlIGZpcnN0IHBsYWNlLCBhbmQgd2UgY291bGQgaGF2
-ZSBtZXJnZWQgdGhpcyBhZ2VzIGFnbz8KCi1Ub2tlCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
-bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-YXRoMTBrCg==
+On Fri, 2017-10-27 at 13:41 -0700, Ben Greear wrote:
+
+> ath10k ignores the tx rateset pretty much entirely when sending management
+> frames, so even if you set the tx rateset to have only VHT MCS 8,
+> management frames are still sent with legacy ratesets.
+
+So that's a driver bug.
+
+> My end goal about this part is to be able to configure a single tx rate
+> and have that be allowed again, at least with ath10k.
+> 
+> Maybe a new flag for drivers like ath10k that at least somewhat ignore
+> the tx-rateset for management frames, and this flag would allow us to
+> bypass the cannot-set-single-rate check?
+
+What? No, I'm not going to put a driver bug into the API like that!
+
+johannes
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
