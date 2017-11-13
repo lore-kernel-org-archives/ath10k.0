@@ -1,21 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp87.iad3a.emailsrvr.com ([173.203.187.87])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eEJqt-0006SU-Hf
- for ath10k@lists.infradead.org; Mon, 13 Nov 2017 18:53:01 +0000
-Received: from smtp19.relay.iad3a.emailsrvr.com (localhost [127.0.0.1])
- by smtp19.relay.iad3a.emailsrvr.com (SMTP Server) with ESMTP id 871D35990
- for <ath10k@lists.infradead.org>; Mon, 13 Nov 2017 13:52:36 -0500 (EST)
-Received: by smtp19.relay.iad3a.emailsrvr.com (Authenticated sender:
- support-AT-allergycontrol.com) with ESMTPSA id F2AE054BF
- for <ath10k@lists.infradead.org>; Mon, 13 Nov 2017 13:52:35 -0500 (EST)
-Date: Mon, 13 Nov 2017 18:52:44 +0000
-From: Dennis Wright <support@allergycontrol.com>
-Message-ID: <9309656128.20171113185244@lists.infradead.org>
-Subject: Invoice number 73402986307 second Notification
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eENY1-0005ht-O1
+ for ath10k@lists.infradead.org; Mon, 13 Nov 2017 22:49:47 +0000
+Received: from [192.168.43.60] (unknown [172.58.41.246])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 798BB409E08
+ for <ath10k@lists.infradead.org>; Mon, 13 Nov 2017 14:49:18 -0800 (PST)
+Message-ID: <5A0A21C7.20505@candelatech.com>
+Date: Mon, 13 Nov 2017 14:50:47 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=_NextPart_000_0013_FF25A181.D8DB0BA1"
+Subject: Anyone get txbf to work on ath10k when using the linux driver?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +21,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-------=_NextPart_000_0013_FF25A181.D8DB0BA1
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+ From what I can tell, the 10.4 firmware will not even enable txbf unless the driver
+tells it too, and I don't think the driver is doing the correct call to enable this
+(it is a testing interface hack, it appears).
 
-HI,
-
-
-=0DCouldn=E2=80=99t get a hold of you by phone the other day. Just need you=
- to get back to me shortly on this invoice status.
-
-Invoice number 73402986307 second Notification:
-http://www.nextcmpunjab.com/Invoice/
-ath10k@lists.infradead.org
-
-
-
+But, maybe I am missing something?
 
 Thanks,
-Dennis Wright
+Ben
 
-------=_NextPart_000_0013_FF25A181.D8DB0BA1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
-------=_NextPart_000_0013_FF25A181.D8DB0BA1--
