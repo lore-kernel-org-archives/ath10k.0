@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eEQc6-0004Nw-Sm
- for ath10k@lists.infradead.org; Tue, 14 Nov 2017 02:06:13 +0000
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eERcZ-0003Me-IL
+ for ath10k@lists.infradead.org; Tue, 14 Nov 2017 03:10:45 +0000
 Subject: Re: Anyone get txbf to work on ath10k when using the linux driver?
 References: <5A0A21C7.20505@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <c685ebc0-4d7a-104d-7bf1-d143227f7d48@dd-wrt.com>
-Date: Tue, 14 Nov 2017 03:05:39 +0100
+ <c685ebc0-4d7a-104d-7bf1-d143227f7d48@dd-wrt.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <1d1fd019-cb3e-17e5-f7d5-dfe1debf95d5@candelatech.com>
+Date: Mon, 13 Nov 2017 19:10:07 -0800
 MIME-Version: 1.0
-In-Reply-To: <5A0A21C7.20505@candelatech.com>
+In-Reply-To: <c685ebc0-4d7a-104d-7bf1-d143227f7d48@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,25 +19,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org
 
-QW0gMTMuMTEuMjAxNyB1bSAyMzo1MCBzY2hyaWViIEJlbiBHcmVlYXI6Cj4gRnJvbSB3aGF0IEkg
-Y2FuIHRlbGwsIHRoZSAxMC40IGZpcm13YXJlIHdpbGwgbm90IGV2ZW4gZW5hYmxlIHR4YmYgCj4g
-dW5sZXNzIHRoZSBkcml2ZXIKPiB0ZWxscyBpdCB0b28sIGFuZCBJIGRvbid0IHRoaW5rIHRoZSBk
-cml2ZXIgaXMgZG9pbmcgdGhlIGNvcnJlY3QgY2FsbCAKPiB0byBlbmFibGUgdGhpcwo+IChpdCBp
-cyBhIHRlc3RpbmcgaW50ZXJmYWNlIGhhY2ssIGl0IGFwcGVhcnMpLgo+Cj4gQnV0LCBtYXliZSBJ
-IGFtIG1pc3Npbmcgc29tZXRoaW5nPwpzbyB0aGUgZmlybXdhcmUgZG9lcyBub3QgdGFrZSBjYXJl
-IGFib3V0IHRoZSB2aHQgZmxhZ3M/Cj4KPiBUaGFua3MsCj4gQmVuCj4KCi0tIApNaXQgZnJldW5k
-bGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5l
-d01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUgMjFh
-LCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwg
-SFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlh
-biBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdy
-dC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
-IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+
+
+On 11/13/2017 06:05 PM, Sebastian Gottschall wrote:
+> Am 13.11.2017 um 23:50 schrieb Ben Greear:
+>> From what I can tell, the 10.4 firmware will not even enable txbf unless the driver
+>> tells it too, and I don't think the driver is doing the correct call to enable this
+>> (it is a testing interface hack, it appears).
+>>
+>> But, maybe I am missing something?
+> so the firmware does not take care about the vht flags?
+
+There is a flag to enable implicit beamforming, but it is mis-defined
+in the driver as far as I can tell:
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index ff15c37..9522f22 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -5195,7 +5195,8 @@ enum wmi_10_4_vdev_param {
+  #define WMI_VDEV_PARAM_TXBF_MU_TX_BFER BIT(3)
+
+  #define WMI_TXBF_STS_CAP_OFFSET_LSB    4
+-#define WMI_TXBF_STS_CAP_OFFSET_MASK   0xf0
++#define WMI_TXBF_STS_CAP_OFFSET_MASK   0x70
++#define WMI_TXBF_CONF_IMPLICIT_BF       BIT(7)
+  #define WMI_BF_SOUND_DIM_OFFSET_LSB    8
+  #define WMI_BF_SOUND_DIM_OFFSET_MASK   0xf00
+
+
+Possibly that bit is somehow set anyway, dunno.
+
+And the other explicit-beamforming appears to need a special hack to enable
+the feature in the firmware.
+
+But, someone using my firmware gets txbf to work, so I must be missing something.
+
+I will dig into it more tomorrow.
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
