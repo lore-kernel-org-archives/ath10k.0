@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eEepy-0007Y1-VV
- for ath10k@lists.infradead.org; Tue, 14 Nov 2017 17:17:32 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  Fix invalid STS_CAP_OFFSET_MASK.
-Date: Tue, 14 Nov 2017 09:16:59 -0800
-Message-Id: <1510679819-24115-1-git-send-email-greearb@candelatech.com>
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eEfxd-0007tx-0R
+ for ath10k@lists.infradead.org; Tue, 14 Nov 2017 18:29:27 +0000
+Subject: Re: [PATCH] ath10k: Fix invalid STS_CAP_OFFSET_MASK.
+References: <1510679819-24115-1-git-send-email-greearb@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <675ba2e5-ac50-0910-f499-8fe15b686de0@dd-wrt.com>
+Date: Tue, 14 Nov 2017 19:29:00 +0100
+MIME-Version: 1.0
+In-Reply-To: <1510679819-24115-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,45 +19,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
+To: greearb@candelatech.com, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-From: Ben Greear <greearb@candelatech.com>
-
-The 10.4 firmware defines this as a 3-bit field, as does the
-mac80211 stack.  The 4th bit is defined as CONF_IMPLICIT_BF
-at least in the firmware header I have seen.  This patch
-fixes the ath10k wmi header to match the firmware.
-
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/wmi.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index ff15c37..9522f22 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -5195,7 +5195,8 @@ enum wmi_10_4_vdev_param {
- #define WMI_VDEV_PARAM_TXBF_MU_TX_BFER BIT(3)
- 
- #define WMI_TXBF_STS_CAP_OFFSET_LSB	4
--#define WMI_TXBF_STS_CAP_OFFSET_MASK	0xf0
-+#define WMI_TXBF_STS_CAP_OFFSET_MASK	0x70
-+#define WMI_TXBF_CONF_IMPLICIT_BF       BIT(7)
- #define WMI_BF_SOUND_DIM_OFFSET_LSB	8
- #define WMI_BF_SOUND_DIM_OFFSET_MASK	0xf00
- 
--- 
-2.4.11
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMTQuMTEuMjAxNyB1bSAxODoxNiBzY2hyaWViIGdyZWVhcmJAY2FuZGVsYXRlY2guY29tOgo+
+IEZyb206IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+Cj4gVGhlIDEwLjQg
+ZmlybXdhcmUgZGVmaW5lcyB0aGlzIGFzIGEgMy1iaXQgZmllbGQsIGFzIGRvZXMgdGhlCj4gbWFj
+ODAyMTEgc3RhY2suICBUaGUgNHRoIGJpdCBpcyBkZWZpbmVkIGFzIENPTkZfSU1QTElDSVRfQkYK
+PiBhdCBsZWFzdCBpbiB0aGUgZmlybXdhcmUgaGVhZGVyIEkgaGF2ZSBzZWVuLiAgVGhpcyBwYXRj
+aAo+IGZpeGVzIHRoZSBhdGgxMGsgd21pIGhlYWRlciB0byBtYXRjaCB0aGUgZmlybXdhcmUuCj4K
+PiBTaWduZWQtb2ZmLWJ5OiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPiAt
+LS0KPiAgIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmggfCAzICsrLQo+ICAg
+MSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+Cj4gZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmggYi9kcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oCj4gaW5kZXggZmYxNWMzNy4uOTUyMmYyMiAxMDA2
+NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oCj4gKysrIGIv
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaAo+IEBAIC01MTk1LDcgKzUxOTUs
+OCBAQCBlbnVtIHdtaV8xMF80X3ZkZXZfcGFyYW0gewo+ICAgI2RlZmluZSBXTUlfVkRFVl9QQVJB
+TV9UWEJGX01VX1RYX0JGRVIgQklUKDMpCj4gICAKPiAgICNkZWZpbmUgV01JX1RYQkZfU1RTX0NB
+UF9PRkZTRVRfTFNCCTQKPiAtI2RlZmluZSBXTUlfVFhCRl9TVFNfQ0FQX09GRlNFVF9NQVNLCTB4
+ZjAKPiArI2RlZmluZSBXTUlfVFhCRl9TVFNfQ0FQX09GRlNFVF9NQVNLCTB4NzAKPiArI2RlZmlu
+ZSBXTUlfVFhCRl9DT05GX0lNUExJQ0lUX0JGICAgICAgIEJJVCg3KQo+ICAgI2RlZmluZSBXTUlf
+QkZfU09VTkRfRElNX09GRlNFVF9MU0IJOAo+ICAgI2RlZmluZSBXTUlfQkZfU09VTkRfRElNX09G
+RlNFVF9NQVNLCTB4ZjAwCmkgY2FuIHZhbGlkYXRlIHRoaXMuIGdvb2QgZmluZGluZwo+ICAgCgoK
+LS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNj
+aGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQKRmlybWVuc2l0ejogIFN0dWJl
+bndhbGRhbGxlZSAyMWEsIDY0NjI1IEJlbnNoZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmlj
+aHQgRGFybXN0YWR0LCBIUkIgMjU0NzMKR2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOk
+dXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUKaHR0cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdv
+dHRzY2hhbGxAZGQtd3J0LmNvbQpUZWwuOiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01
+ODI2NTY1CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
