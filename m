@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eENY1-0005ht-O1
- for ath10k@lists.infradead.org; Mon, 13 Nov 2017 22:49:47 +0000
-Received: from [192.168.43.60] (unknown [172.58.41.246])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 798BB409E08
- for <ath10k@lists.infradead.org>; Mon, 13 Nov 2017 14:49:18 -0800 (PST)
-Message-ID: <5A0A21C7.20505@candelatech.com>
-Date: Mon, 13 Nov 2017 14:50:47 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eEQc6-0004Nw-Sm
+ for ath10k@lists.infradead.org; Tue, 14 Nov 2017 02:06:13 +0000
+Subject: Re: Anyone get txbf to work on ath10k when using the linux driver?
+References: <5A0A21C7.20505@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <c685ebc0-4d7a-104d-7bf1-d143227f7d48@dd-wrt.com>
+Date: Tue, 14 Nov 2017 03:05:39 +0100
 MIME-Version: 1.0
-Subject: Anyone get txbf to work on ath10k when using the linux driver?
+In-Reply-To: <5A0A21C7.20505@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +19,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
- From what I can tell, the 10.4 firmware will not even enable txbf unless the driver
-tells it too, and I don't think the driver is doing the correct call to enable this
-(it is a testing interface hack, it appears).
-
-But, maybe I am missing something?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMTMuMTEuMjAxNyB1bSAyMzo1MCBzY2hyaWViIEJlbiBHcmVlYXI6Cj4gRnJvbSB3aGF0IEkg
+Y2FuIHRlbGwsIHRoZSAxMC40IGZpcm13YXJlIHdpbGwgbm90IGV2ZW4gZW5hYmxlIHR4YmYgCj4g
+dW5sZXNzIHRoZSBkcml2ZXIKPiB0ZWxscyBpdCB0b28sIGFuZCBJIGRvbid0IHRoaW5rIHRoZSBk
+cml2ZXIgaXMgZG9pbmcgdGhlIGNvcnJlY3QgY2FsbCAKPiB0byBlbmFibGUgdGhpcwo+IChpdCBp
+cyBhIHRlc3RpbmcgaW50ZXJmYWNlIGhhY2ssIGl0IGFwcGVhcnMpLgo+Cj4gQnV0LCBtYXliZSBJ
+IGFtIG1pc3Npbmcgc29tZXRoaW5nPwpzbyB0aGUgZmlybXdhcmUgZG9lcyBub3QgdGFrZSBjYXJl
+IGFib3V0IHRoZSB2aHQgZmxhZ3M/Cj4KPiBUaGFua3MsCj4gQmVuCj4KCi0tIApNaXQgZnJldW5k
+bGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5l
+d01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUgMjFh
+LCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwg
+SFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlh
+biBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdy
+dC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
