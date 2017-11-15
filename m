@@ -1,19 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eEjYO-0004xp-Pq
- for ath10k@lists.infradead.org; Tue, 14 Nov 2017 22:19:39 +0000
-Subject: Re: Anyone get txbf to work on ath10k when using the linux driver?
-References: <5A0A21C7.20505@candelatech.com>
- <c685ebc0-4d7a-104d-7bf1-d143227f7d48@dd-wrt.com>
- <1d1fd019-cb3e-17e5-f7d5-dfe1debf95d5@candelatech.com>
- <36cea320-85b9-ed57-6573-bf64d0376930@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <4f7d8378-a679-523a-d42b-1e27b289ce93@dd-wrt.com>
-Date: Tue, 14 Nov 2017 23:19:14 +0100
+ id 1eEuW9-0004v0-6Z
+ for ath10k@lists.infradead.org; Wed, 15 Nov 2017 10:02:04 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: mesh point and ap mode on same interface
+Date: Wed, 15 Nov 2017 10:01:36 +0000
+Message-ID: <87po8jhncx.fsf@kamboji.qca.qualcomm.com>
+References: <e6b02c56-38c7-323e-2bc9-e2b4276b654c@tu-bs.de>
+ <cc8baced-bd74-5703-d885-6ec444eb62ce@candelatech.com>
+ <43bf6a27-be58-35e4-26fa-5e6b380353ac@bowerswilkins.com>
+ <7dc592a5-9381-f715-6ea7-0a8b8deee311@tu-bs.de>
+ <CADjYELwdUxEap_z=_HD4DS4FEQ2_2HP3w9cvDU-BTFLoOTDipg@mail.gmail.com>
+ <5c04c7fe-8cf8-ddd8-d6a7-f42629586a63@bowerswilkins.com>
+ <067d234a-59f0-4175-55af-9354617057b9@tu-bs.de>
+ <61192d3b-b4c7-f47e-2ff9-44e17595d6a9@bowerswilkins.com>
+ <fc1993f5-8b83-4e74-7866-2adcf318ff5f@tu-bs.de>
+ <03700343-7b5c-b21e-8b7b-2ac8c7d3258b@bowerswilkins.com>
+In-Reply-To: <03700343-7b5c-b21e-8b7b-2ac8c7d3258b@bowerswilkins.com> (Peter
+ Oh's message of "Wed, 8 Nov 2017 10:13:16 -0800")
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <36cea320-85b9-ed57-6573-bf64d0376930@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,97 +29,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: Peter Oh <peter.oh@bowerswilkins.com>
+Cc: "Harms, Hannes" <hannes.harms@tu-bs.de>, Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Am 14.11.2017 um 23:17 schrieb Ben Greear:
-> On 11/13/2017 07:10 PM, Ben Greear wrote:
->>
->>
->> On 11/13/2017 06:05 PM, Sebastian Gottschall wrote:
->>> Am 13.11.2017 um 23:50 schrieb Ben Greear:
->>>> From what I can tell, the 10.4 firmware will not even enable txbf =
+(adding linux-wireless for a cfg80211 question)
 
->>>> unless the driver
->>>> tells it too, and I don't think the driver is doing the correct =
-
->>>> call to enable this
->>>> (it is a testing interface hack, it appears).
->>>>
->>>> But, maybe I am missing something?
->>> so the firmware does not take care about the vht flags?
->>
->> There is a flag to enable implicit beamforming, but it is mis-defined
->> in the driver as far as I can tell:
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h =
-
->> b/drivers/net/wireless/ath/ath10k/wmi.h
->> index ff15c37..9522f22 100644
->> --- a/drivers/net/wireless/ath/ath10k/wmi.h
->> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
->> @@ -5195,7 +5195,8 @@ enum wmi_10_4_vdev_param {
->> =A0#define WMI_VDEV_PARAM_TXBF_MU_TX_BFER BIT(3)
->>
->> =A0#define WMI_TXBF_STS_CAP_OFFSET_LSB=A0=A0=A0 4
->> -#define WMI_TXBF_STS_CAP_OFFSET_MASK=A0=A0 0xf0
->> +#define WMI_TXBF_STS_CAP_OFFSET_MASK=A0=A0 0x70
->> +#define WMI_TXBF_CONF_IMPLICIT_BF=A0=A0=A0=A0=A0=A0 BIT(7)
->> =A0#define WMI_BF_SOUND_DIM_OFFSET_LSB=A0=A0=A0 8
->> =A0#define WMI_BF_SOUND_DIM_OFFSET_MASK=A0=A0 0xf00
->>
->>
->> Possibly that bit is somehow set anyway, dunno.
->>
->> And the other explicit-beamforming appears to need a special hack to =
-
->> enable
->> the feature in the firmware.
->>
->> But, someone using my firmware gets txbf to work, so I must be =
-
->> missing something.
->>
->> I will dig into it more tomorrow.
+Peter Oh <peter.oh@bowerswilkins.com> writes:
+> On 11/08/2017 04:49 AM, Harms, Hannes wrote:
 >
-> At least much of my confusion is that there is a bunch of logic in the =
-
-> rate-ctrl
-> code about txbf probing, and I was thinking that was what caused the =
-
-> sounding to happen.
+>> I found a solution for the problem:
+>>
+>> When joining the mesh with beacon interval  set  to 100
+>> both  mesh and ap interface are coming up.
+>>
+>> > iw mesh0 mesh join my_mesh beacon-interval 100
+>>
+>> The default beacon interval is 1000 for mesh interfaces.
+>> It seems that QCA9880 is not working
+>> with different beacon intervals for ap + mesh.
 >
-> I now realize that is a separate feature (that cannot be enabled w/out =
-
-> special
-> driver hacks not currently supported).
-there are several unused wmi parameters which are undocumented in major =
-
-parts. but they seem to be used for mu-mimo / txbf etc.
+> Good to hear that working. But mesh beacon interval 1000 which is
+> default value should work. Any mesh beacon intervals of multiple of AP
+> beacon intervals are supposed to work.
 >
-> Thanks,
-> Ben
->
->
+> (In other words, mesh beacon intervals that are not aligned by
+>multiple of AP beacon intervals won't work). These are valid for both
+>of QCA9880 and QCA4019 as far as I know.
 
--- =
+It would be nice if ath10k could print a warning if the beacon intervals
+are not compatible. Or is there a way to enforce the beacon interval
+with help of cfg80211 or mac80211?
 
-Mit freundlichen Gr=FCssen / Regards
-
-Sebastian Gottschall / CTO
-
-NewMedia-NET GmbH - DD-WRT
-Firmensitz:  Stubenwaldallee 21a, 64625 Bensheim
-Registergericht: Amtsgericht Darmstadt, HRB 25473
-Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
-http://www.dd-wrt.com
-email: s.gottschall@dd-wrt.com
-Tel.: +496251-582650 / Fax: +496251-5826565
-
-
+-- 
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
