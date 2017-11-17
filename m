@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eFPKS-0005mH-Jn
- for ath10k@lists.infradead.org; Thu, 16 Nov 2017 18:56:02 +0000
-Subject: Re: Anyone get txbf to work on ath10k when using the linux driver?
-References: <5A0A21C7.20505@candelatech.com>
- <c685ebc0-4d7a-104d-7bf1-d143227f7d48@dd-wrt.com>
- <1d1fd019-cb3e-17e5-f7d5-dfe1debf95d5@candelatech.com>
- <36cea320-85b9-ed57-6573-bf64d0376930@candelatech.com>
- <4f7d8378-a679-523a-d42b-1e27b289ce93@dd-wrt.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <a3f2062c-561d-9c8a-94ad-e973f0f943cf@candelatech.com>
-Date: Thu, 16 Nov 2017 10:55:35 -0800
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eFd8N-0004fk-Cs
+ for ath10k@lists.infradead.org; Fri, 17 Nov 2017 09:40:29 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: ath10k_pci / qca6174 firmware crash...
+References: <6679116b-1bb3-bace-71de-5a21eea170f9@mageia.org>
+Date: Fri, 17 Nov 2017 11:40:02 +0200
+In-Reply-To: <6679116b-1bb3-bace-71de-5a21eea170f9@mageia.org> (Thomas
+ Backlund's message of "Fri, 3 Nov 2017 18:49:43 +0200")
+Message-ID: <87fu9djlal.fsf@purkki.adurom.net>
 MIME-Version: 1.0
-In-Reply-To: <4f7d8378-a679-523a-d42b-1e27b289ce93@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,73 +19,149 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org
+To: Thomas Backlund <tmb@mageia.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 11/14/2017 02:19 PM, Sebastian Gottschall wrote:
-> Am 14.11.2017 um 23:17 schrieb Ben Greear:
->> On 11/13/2017 07:10 PM, Ben Greear wrote:
->>>
->>>
->>> On 11/13/2017 06:05 PM, Sebastian Gottschall wrote:
->>>> Am 13.11.2017 um 23:50 schrieb Ben Greear:
->>>>> From what I can tell, the 10.4 firmware will not even enable txbf unless the driver
->>>>> tells it too, and I don't think the driver is doing the correct call to enable this
->>>>> (it is a testing interface hack, it appears).
->>>>>
->>>>> But, maybe I am missing something?
->>>> so the firmware does not take care about the vht flags?
->>>
->>> There is a flag to enable implicit beamforming, but it is mis-defined
->>> in the driver as far as I can tell:
->>>
->>> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
->>> index ff15c37..9522f22 100644
->>> --- a/drivers/net/wireless/ath/ath10k/wmi.h
->>> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
->>> @@ -5195,7 +5195,8 @@ enum wmi_10_4_vdev_param {
->>>  #define WMI_VDEV_PARAM_TXBF_MU_TX_BFER BIT(3)
->>>
->>>  #define WMI_TXBF_STS_CAP_OFFSET_LSB    4
->>> -#define WMI_TXBF_STS_CAP_OFFSET_MASK   0xf0
->>> +#define WMI_TXBF_STS_CAP_OFFSET_MASK   0x70
->>> +#define WMI_TXBF_CONF_IMPLICIT_BF       BIT(7)
->>>  #define WMI_BF_SOUND_DIM_OFFSET_LSB    8
->>>  #define WMI_BF_SOUND_DIM_OFFSET_MASK   0xf00
->>>
->>>
->>> Possibly that bit is somehow set anyway, dunno.
->>>
->>> And the other explicit-beamforming appears to need a special hack to enable
->>> the feature in the firmware.
->>>
->>> But, someone using my firmware gets txbf to work, so I must be missing something.
->>>
->>> I will dig into it more tomorrow.
->>
->> At least much of my confusion is that there is a bunch of logic in the rate-ctrl
->> code about txbf probing, and I was thinking that was what caused the sounding to happen.
->>
->> I now realize that is a separate feature (that cannot be enabled w/out special
->> driver hacks not currently supported).
-> there are several unused wmi parameters which are undocumented in major parts. but they seem to be used for mu-mimo / txbf etc.
+Thomas Backlund <tmb@mageia.org> writes:
 
-In the end, I had a regression bug in my firmware that broke txbf in at least some cases.
+> I have a Lenovo Yoga 720 running linux 4.13.10
+>
+>
+> Got a firmware crash, and a reboot was needed to get the wireless back.
+>
+> is this known ?
 
-I think I have it all working properly now, but it all needs more testing since I
-did some fairly large churn while adding some additional txbf features and trying
-to fix some key leak issues in certain IBSS test cases.
+Please CC ath10k list when reporting ath10k bugs. Adding it now.
 
-Thanks,
-Ben
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/support
+
+Thomas' report:
+
+> kernel logs:
+>> [22881.494830] ath10k_pci 0000:3f:00.0: firmware crashed! (uuid n/a)
+>> [22881.494840] ath10k_pci 0000:3f:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 17aa:0827
+>> [22881.494842] ath10k_pci 0000:3f:00.0: kconfig debug 1 debugfs 0 tracing 0 dfs 0 testmode 0
+>> [22881.495227] ath10k_pci 0000:3f:00.0: firmware ver WLAN.RM.4.4.1-00051-QCARMSWP-1 api 6 features wowlan,ignore-otp crc32 c3fd4411
+>> [22881.495495] ath10k_pci 0000:3f:00.0: board_file api 2 bmi_id N/A crc32 0e26ef70
+>> [22881.495498] ath10k_pci 0000:3f:00.0: htt-ver 3.44 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+>> [22881.507606] ath10k_pci 0000:3f:00.0: failed to get memcpy hi address for firmware address 4: -16
+>> [22881.507607] ath10k_pci 0000:3f:00.0: failed to read firmware dump area: -16
+>> [22881.507609] ath10k_pci 0000:3f:00.0: Copy Engine register dump:
+>> [22881.507625] ath10k_pci 0000:3f:00.0: [00]: 0x00034400   2   2   3   3
+>> [22881.507637] ath10k_pci 0000:3f:00.0: [01]: 0x00034800  24  24 357 358
+>> [22881.507644] ath10k_pci 0000:3f:00.0: [02]: 0x00034c00  35  35  97  99
+>> [22881.507655] ath10k_pci 0000:3f:00.0: [03]: 0x00035000   2   2   4   2
+>> [22881.507663] ath10k_pci 0000:3f:00.0: [04]: 0x00035400 847 847 233 169
+>> [22881.507672] ath10k_pci 0000:3f:00.0: [05]: 0x00035800   0   0  64   0
+>> [22881.507684] ath10k_pci 0000:3f:00.0: [06]: 0x00035c00  26  26  26  26
+>> [22881.507691] ath10k_pci 0000:3f:00.0: [07]: 0x00036000   1   1   1   1
+>> [22881.571157] ieee80211 phy0: Hardware restart was requested
+>> [22882.260322] ath10k_pci 0000:3f:00.0: Unknown eventid: 118809
+>> [22882.262835] ath10k_pci 0000:3f:00.0: Unknown eventid: 90118
+>> [22882.356074] ath10k_pci 0000:3f:00.0: device successfully recovered
+>
+>
+>
+> At this point network is still broken.
+>
+> Here I tried to disable/enable wireless to recover network access :
+> (sometimes it work, but not this time)
+>
+>> [23596.617062] wlp63s0: deauthenticating from 18:8b:45:02:96:cf by local choice (Reason: 3=DEAUTH_LEAVING)
+>> [23602.583145] ath10k_pci 0000:3f:00.0: Unknown eventid: 118809
+>> [23602.585917] ath10k_pci 0000:3f:00.0: Unknown eventid: 90118
+>> [23602.642812] IPv6: ADDRCONF(NETDEV_UP): wlp63s0: link is not ready
+>> [23602.655518] IPv6: ADDRCONF(NETDEV_UP): wlp63s0: link is not ready
+>> [23609.249013] ath10k_pci 0000:3f:00.0: failed to receive control response completion, polling..
+>> [23609.281698] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0x00000001 at 0x00034430: -110
+>> [23609.314384] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x00034444: -110
+>> [23609.347066] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0x0000001e at 0x00034430: -110
+>> [23609.379755] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0x00000001 at 0x00034830: -110
+>> [23609.412449] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0x00000001 at 0x00035430: -110
+>> [23609.445129] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x00035444: -110
+>> [23609.477809] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0x0000001e at 0x00035430: -110
+>> [23609.510497] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0x0000001e at 0x00034830: -110
+>> [23609.543184] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0x00000001 at 0x00034c30: -110
+>> [23610.977362] ath10k_pci 0000:3f:00.0: ctl_resp never came in (-110)
+>> [23610.977365] ath10k_pci 0000:3f:00.0: failed to connect to HTC: -110
+>> [23614.269213] ath10k_warn: 112 callbacks suppressed
+>> [23614.269215] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0xffff0800 at 0x00035010: -110
+>> [23614.301897] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x00035010: -110
+>> [23614.334583] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0xfffeffff at 0x00035010: -110
+>> [23614.367258] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003504c: -110
+>> [23614.399936] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0x0000ffff at 0x0003504c: -110
+>> [23614.432615] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003504c: -110
+>> [23614.465293] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0xffff0020 at 0x0003504c: -110
+>> [23614.497976] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x00035444: -110
+>> [23614.530657] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003543c: -110
+>> [23614.563341] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0x0d040000 at 0x00035400: -110
+>> [23618.745947] ath10k_pci 0000:3f:00.0: failed to read device register, device is gone
+>> [23619.277892] ath10k_warn: 143 callbacks suppressed
+>> [23619.277895] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0xfffeffff at 0x00034410: -110
+>> [23619.310205] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003444c: -110
+>> [23619.342469] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0x0000ffff at 0x0003444c: -110
+>> [23619.375152] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003444c: -110
+>> [23619.407560] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0xffff0010 at 0x0003444c: -110
+>> [23619.440211] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x00034848: -110
+>> [23619.472846] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x00034840: -110
+>> [23619.505155] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0x0d03e000 at 0x00034808: -110
+>> [23619.537721] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0x00000200 at 0x0003480c: -110
+>> [23619.570447] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x00034810: -110
+>> [23624.291033] ath10k_warn: 144 callbacks suppressed
+>> [23624.291036] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23624.323722] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23624.356179] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23624.388309] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23624.420669] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23624.453327] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23624.485783] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23624.517940] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23624.550562] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23624.582722] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23624.745569] ath10k_pci 0000:3f:00.0: failed to read device register, device is gone
+>> [23626.469140] ath10k_pci 0000:3f:00.0: Could not init core: -110
+>> [23626.481714] IPv6: ADDRCONF(NETDEV_UP): wlp63s0: link is not ready
+>> [23650.593887] ath10k_warn: 59 callbacks suppressed
+>> [23650.593889] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x00080008: -110
+>> [23650.626577] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0xffffffff at 0x00080008: -110
+>> [23650.680865] ath10k_pci 0000:3f:00.0: failed to wake target for write32 of 0xfffffffe at 0x00080008: -110
+>> [23650.735049] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23650.767735] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23650.800425] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23650.833110] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23650.865796] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23650.898478] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23650.931164] ath10k_pci 0000:3f:00.0: failed to wake target for read32 at 0x0003a028: -110
+>> [23653.871963] ath10k_pci 0000:3f:00.0: failed to read device register, device is gone
+>> [23653.970010] ath10k_pci 0000:3f:00.0: firmware crashed! (uuid n/a)
+>> [23653.970013] ath10k_pci 0000:3f:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 17aa:0827
+>> [23653.970014] ath10k_pci 0000:3f:00.0: kconfig debug 1 debugfs 0 tracing 0 dfs 0 testmode 0
+>> [23653.970387] ath10k_pci 0000:3f:00.0: firmware ver WLAN.RM.4.4.1-00051-QCARMSWP-1 api 6 features wowlan,ignore-otp crc32 c3fd4411
+>> [23653.970644] ath10k_pci 0000:3f:00.0: board_file api 2 bmi_id N/A crc32 0e26ef70
+>> [23653.970645] ath10k_pci 0000:3f:00.0: htt-ver 3.44 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+>> [23654.472884] ath10k_pci 0000:3f:00.0: failed to read firmware dump area: -16
+>> [23654.472886] ath10k_pci 0000:3f:00.0: Copy Engine register dump:
+>> [23654.603625] ath10k_pci 0000:3f:00.0: [00]: 0x00034400 4294967295 4294967295 4294967295 4294967295
+>> [23654.734356] ath10k_pci 0000:3f:00.0: [01]: 0x00034800 4294967295 4294967295 4294967295 4294967295
+>> [23654.865098] ath10k_pci 0000:3f:00.0: [02]: 0x00034c00 4294967295 4294967295 4294967295 4294967295
+>> [23654.995839] ath10k_pci 0000:3f:00.0: [03]: 0x00035000 4294967295 4294967295 4294967295 4294967295
+>> [23655.126570] ath10k_pci 0000:3f:00.0: [04]: 0x00035400 4294967295 4294967295 4294967295 4294967295
+>> [23655.257293] ath10k_pci 0000:3f:00.0: [05]: 0x00035800 4294967295 4294967295 4294967295 4294967295
+>> [23655.388016] ath10k_pci 0000:3f:00.0: [06]: 0x00035c00 4294967295 4294967295 4294967295 4294967295
+>> [23655.518515] ath10k_pci 0000:3f:00.0: [07]: 0x00036000 4294967295 4294967295 4294967295 4294967295
+>> [23655.518530] ath10k_pci 0000:3f:00.0: failed to reset chip: -5
+>> [23655.518531] ath10k_pci 0000:3f:00.0: Could not init hif: -5
+>
+>
+> --
+> Thomas
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
