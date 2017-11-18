@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from james.theweblords.de ([217.11.55.87])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eGBI5-0000jx-24
- for ath10k@lists.infradead.org; Sat, 18 Nov 2017 22:08:47 +0000
-Date: Sat, 18 Nov 2017 23:08:18 +0100
-From: Peter =?UTF-8?B?R3Jvw59l?= <pegro@friiks.de>
-Subject: Support for 5/10 MHz channel width
-Message-ID: <20171118230818.5e07509a@friiks.de>
+ id 1eGCeO-0007Dt-4f
+ for ath10k@lists.infradead.org; Sat, 18 Nov 2017 23:35:55 +0000
+Subject: Re: Support for 5/10 MHz channel width
+References: <20171118230818.5e07509a@friiks.de>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <07148f03-50ac-72ef-3e34-9a93d5d75026@dd-wrt.com>
+Date: Sun, 19 Nov 2017 00:35:22 +0100
 MIME-Version: 1.0
+In-Reply-To: <20171118230818.5e07509a@friiks.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,34 +19,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Peter =?UTF-8?B?R3Jvw59l?= <pegro@friiks.de>
 
-Hi everyone.
-
-I'm curious about whether there are technical limitations or if it would be
-possible for the ath10k driver and firmware to support half-rate channel widths
-of 5 and 10 MHz?
-
-The ath9k driver supports it. It was introduced by Simon Wunderlich in 2013
-[1], also listing possible useful applications, some of which I'm interested in.
-
-From what I got looking at the ath10k driver code, the enum wmi_phy_mode used
-in mac.c:chan_to_phymode() has no corresponding values for these channel
-widths. So assume a change to the firmware would be also required.
-
-So again, I'm just curious ;)
-
-Regards
-Peter
-
-[1] https://www.spinics.net/lists/linux-wireless/msg109641.html
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+bWF5YmUgZWFzeSB0byBpbXBsZW1lbnQuIHRoZSBmaXJtd2FyZSBkb2VzIHN1cHBvcnQgaXQuCi0t
+LSB3bWkuaMKgwqDCoMKgwqDCoCAoUmV2aXNpb24gMzcyMCkKKysrIHdtaS5owqDCoMKgwqDCoMKg
+IChBcmJlaXRza29waWUpCkBAIC0xOTg2LDYgKzE5ODYsOCBAQAogwqAjZGVmaW5lIFdNSV9DSEFO
+X0ZMQUdfREZTwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAoMSA8PCAxMCkKIMKgI2RlZmluZSBXTUlf
+Q0hBTl9GTEFHX0FMTE9XX0hUwqDCoMKgwqDCoMKgICgxIDw8IDExKQogwqAjZGVmaW5lIFdNSV9D
+SEFOX0ZMQUdfQUxMT1dfVkhUwqDCoMKgwqDCoCAoMSA8PCAxMikKKyNkZWZpbmUgV01JX0NIQU5f
+RkxBR19RVUFSVEVSwqDCoMKgwqDCoMKgICgxIDw8IDEzKQorI2RlZmluZSBXTUlfQ0hBTl9GTEFH
+X0hBTEbCoMKgwqDCoMKgICgxIDw8IDE0KQoKIMKgLyogSW5kaWNhdGUgcmVhc29uIGZvciBjaGFu
+bmVsIHN3aXRjaCAqLwogwqAjZGVmaW5lIFdNSV9DSEFOTkVMX0NIQU5HRV9DQVVTRV9DU0EgKDEg
+PDwgMTMpCgp0aGlzIHNob3VsZCBoZWxwIHlvdSBvdXQgd2l0aCBwbGF5aW5nCgpBbSAxOC4xMS4y
+MDE3IHVtIDIzOjA4IHNjaHJpZWIgUGV0ZXIgR3Jvw59lOgo+IEhpIGV2ZXJ5b25lLgo+Cj4gSSdt
+IGN1cmlvdXMgYWJvdXQgd2hldGhlciB0aGVyZSBhcmUgdGVjaG5pY2FsIGxpbWl0YXRpb25zIG9y
+IGlmIGl0IHdvdWxkIGJlCj4gcG9zc2libGUgZm9yIHRoZSBhdGgxMGsgZHJpdmVyIGFuZCBmaXJt
+d2FyZSB0byBzdXBwb3J0IGhhbGYtcmF0ZSBjaGFubmVsIHdpZHRocwo+IG9mIDUgYW5kIDEwIE1I
+ej8KPgo+IFRoZSBhdGg5ayBkcml2ZXIgc3VwcG9ydHMgaXQuIEl0IHdhcyBpbnRyb2R1Y2VkIGJ5
+IFNpbW9uIFd1bmRlcmxpY2ggaW4gMjAxMwo+IFsxXSwgYWxzbyBsaXN0aW5nIHBvc3NpYmxlIHVz
+ZWZ1bCBhcHBsaWNhdGlvbnMsIHNvbWUgb2Ygd2hpY2ggSSdtIGludGVyZXN0ZWQgaW4uCj4KPiAg
+RnJvbSB3aGF0IEkgZ290IGxvb2tpbmcgYXQgdGhlIGF0aDEwayBkcml2ZXIgY29kZSwgdGhlIGVu
+dW0gd21pX3BoeV9tb2RlIHVzZWQKPiBpbiBtYWMuYzpjaGFuX3RvX3BoeW1vZGUoKSBoYXMgbm8g
+Y29ycmVzcG9uZGluZyB2YWx1ZXMgZm9yIHRoZXNlIGNoYW5uZWwKPiB3aWR0aHMuIFNvIGFzc3Vt
+ZSBhIGNoYW5nZSB0byB0aGUgZmlybXdhcmUgd291bGQgYmUgYWxzbyByZXF1aXJlZC4KPgo+IFNv
+IGFnYWluLCBJJ20ganVzdCBjdXJpb3VzIDspCj4KPiBSZWdhcmRzCj4gUGV0ZXIKPgo+IFsxXSBo
+dHRwczovL3d3dy5zcGluaWNzLm5ldC9saXN0cy9saW51eC13aXJlbGVzcy9tc2cxMDk2NDEuaHRt
+bAo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBh
+dGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+CgotLSAKTWl0IGZy
+ZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RP
+CgpOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgU3R1YmVud2FsZGFsbGVl
+IDIxYSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3Rh
+ZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJp
+c3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFsbEBk
+ZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
+bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
