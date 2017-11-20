@@ -1,16 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eGCeO-0007Dt-4f
- for ath10k@lists.infradead.org; Sat, 18 Nov 2017 23:35:55 +0000
-Subject: Re: Support for 5/10 MHz channel width
-References: <20171118230818.5e07509a@friiks.de>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <07148f03-50ac-72ef-3e34-9a93d5d75026@dd-wrt.com>
-Date: Sun, 19 Nov 2017 00:35:22 +0100
+ id 1eGkue-0002f0-9d
+ for ath10k@lists.infradead.org; Mon, 20 Nov 2017 12:10:58 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: ath10k: Fix reported HT MCS rates with NSS > 1
+Date: Mon, 20 Nov 2017 12:10:30 +0000
+Message-ID: <87po8df8wc.fsf@kamboji.qca.qualcomm.com>
+References: <20170511090930.18205-1-sven.eckelmann@openmesh.com>
+ <1728147.6Xy77nSgBU@bentobox>
+ <d27a10b1-6323-ebf0-5c2d-4a9c3b8d978d@dd-wrt.com>
+ <1960925.hkIbv4gX65@bentobox>
+ <bfcfa3eb-fb45-cb8d-ad87-a5fe6dc96fe3@bowerswilkins.com>
+In-Reply-To: <bfcfa3eb-fb45-cb8d-ad87-a5fe6dc96fe3@bowerswilkins.com> (Peter
+ Oh's message of "Mon, 6 Nov 2017 13:25:42 -0800")
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <20171118230818.5e07509a@friiks.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,44 +24,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Peter Oh <peter.oh@bowerswilkins.com>
+Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, Sven Eckelmann <sven.eckelmann@openmesh.com>
 
-bWF5YmUgZWFzeSB0byBpbXBsZW1lbnQuIHRoZSBmaXJtd2FyZSBkb2VzIHN1cHBvcnQgaXQuCi0t
-LSB3bWkuaMKgwqDCoMKgwqDCoCAoUmV2aXNpb24gMzcyMCkKKysrIHdtaS5owqDCoMKgwqDCoMKg
-IChBcmJlaXRza29waWUpCkBAIC0xOTg2LDYgKzE5ODYsOCBAQAogwqAjZGVmaW5lIFdNSV9DSEFO
-X0ZMQUdfREZTwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAoMSA8PCAxMCkKIMKgI2RlZmluZSBXTUlf
-Q0hBTl9GTEFHX0FMTE9XX0hUwqDCoMKgwqDCoMKgICgxIDw8IDExKQogwqAjZGVmaW5lIFdNSV9D
-SEFOX0ZMQUdfQUxMT1dfVkhUwqDCoMKgwqDCoCAoMSA8PCAxMikKKyNkZWZpbmUgV01JX0NIQU5f
-RkxBR19RVUFSVEVSwqDCoMKgwqDCoMKgICgxIDw8IDEzKQorI2RlZmluZSBXTUlfQ0hBTl9GTEFH
-X0hBTEbCoMKgwqDCoMKgICgxIDw8IDE0KQoKIMKgLyogSW5kaWNhdGUgcmVhc29uIGZvciBjaGFu
-bmVsIHN3aXRjaCAqLwogwqAjZGVmaW5lIFdNSV9DSEFOTkVMX0NIQU5HRV9DQVVTRV9DU0EgKDEg
-PDwgMTMpCgp0aGlzIHNob3VsZCBoZWxwIHlvdSBvdXQgd2l0aCBwbGF5aW5nCgpBbSAxOC4xMS4y
-MDE3IHVtIDIzOjA4IHNjaHJpZWIgUGV0ZXIgR3Jvw59lOgo+IEhpIGV2ZXJ5b25lLgo+Cj4gSSdt
-IGN1cmlvdXMgYWJvdXQgd2hldGhlciB0aGVyZSBhcmUgdGVjaG5pY2FsIGxpbWl0YXRpb25zIG9y
-IGlmIGl0IHdvdWxkIGJlCj4gcG9zc2libGUgZm9yIHRoZSBhdGgxMGsgZHJpdmVyIGFuZCBmaXJt
-d2FyZSB0byBzdXBwb3J0IGhhbGYtcmF0ZSBjaGFubmVsIHdpZHRocwo+IG9mIDUgYW5kIDEwIE1I
-ej8KPgo+IFRoZSBhdGg5ayBkcml2ZXIgc3VwcG9ydHMgaXQuIEl0IHdhcyBpbnRyb2R1Y2VkIGJ5
-IFNpbW9uIFd1bmRlcmxpY2ggaW4gMjAxMwo+IFsxXSwgYWxzbyBsaXN0aW5nIHBvc3NpYmxlIHVz
-ZWZ1bCBhcHBsaWNhdGlvbnMsIHNvbWUgb2Ygd2hpY2ggSSdtIGludGVyZXN0ZWQgaW4uCj4KPiAg
-RnJvbSB3aGF0IEkgZ290IGxvb2tpbmcgYXQgdGhlIGF0aDEwayBkcml2ZXIgY29kZSwgdGhlIGVu
-dW0gd21pX3BoeV9tb2RlIHVzZWQKPiBpbiBtYWMuYzpjaGFuX3RvX3BoeW1vZGUoKSBoYXMgbm8g
-Y29ycmVzcG9uZGluZyB2YWx1ZXMgZm9yIHRoZXNlIGNoYW5uZWwKPiB3aWR0aHMuIFNvIGFzc3Vt
-ZSBhIGNoYW5nZSB0byB0aGUgZmlybXdhcmUgd291bGQgYmUgYWxzbyByZXF1aXJlZC4KPgo+IFNv
-IGFnYWluLCBJJ20ganVzdCBjdXJpb3VzIDspCj4KPiBSZWdhcmRzCj4gUGV0ZXIKPgo+IFsxXSBo
-dHRwczovL3d3dy5zcGluaWNzLm5ldC9saXN0cy9saW51eC13aXJlbGVzcy9tc2cxMDk2NDEuaHRt
-bAo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBh
-dGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+CgotLSAKTWl0IGZy
-ZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RP
-CgpOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgU3R1YmVud2FsZGFsbGVl
-IDIxYSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3Rh
-ZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJp
-c3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFsbEBk
-ZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Peter Oh <peter.oh@bowerswilkins.com> writes:
+
+> On 11/06/2017 01:02 AM, Sven Eckelmann wrote:
+>> On Montag, 6. November 2017 09:28:42 CET Sebastian Gottschall wrote:
+>>> Am 06.11.2017 um 09:23 schrieb Sven Eckelmann:
+>>>> On Sonntag, 5. November 2017 10:22:22 CET Sebastian Gottschall wrote:
+>>>>> the assumption made in this patch is obviously wrong (at least for more
+>>>>> recent firmwares and 9984)
+>>>>> my log is flooded with messages like
+>>>>> [208802.803537] ath10k_pci 0001:03:00.0: Invalid VHT mcs 15 peer stats
+>>>>> [208805.108515] ath10k_pci 0001:03:00.0: Invalid VHT mcs 15 peer stats
+>>>>> [208821.747621] ath10k_pci 0001:03:00.0: Invalid VHT mcs 15 peer stats
+>>>>> [208822.516599] ath10k_pci 0001:03:00.0: Invalid VHT mcs 15 peer stats
+>>>>> [208841.257780] ath10k_pci 0001:03:00.0: Invalid VHT mcs 15 peer stats
+>> [...]
+>>>> This patch only splits WMI_RATE_PREAMBLE_HT & WMI_RATE_PREAMBLE_VHT. And for
+>>>> WMI_RATE_PREAMBLE_HT (*not VHT*), it uses a slightly different approach. But
+>>>> the WMI_RATE_PREAMBLE_VHT part (which you see in your logs) is basically
+>>>> untouched.
+>>> then a question follows up. is this check really neccessary?
+>> Until we find out what the heck VHT MCS 15 should mean in this context - maybe.
+>> But to the message - no, the message is most likely not necessary for each
+>> received "invalid" peer tx stat.
+>
+> This validation check expects peer tx stat packets from FW contain
+> reasonable values and gives warning if values are different from
+> expectation. The problem comes from the assumption that "it always
+> contains reasonable stat value" which is wrong at least based on my
+> results. For instance, the reason MCS == 15 is because all 4 bits of
+> mcs potion set to 1, not because FW really sets it to 15
+> intentionally. when the mcs potion bits are set to all 1s, the other
+> bits such as nss are also set to all 1s.
+> Hence it looks FW passed totally invalid stat info to me.
+>
+> I don't have preference on whether it's better to split VHT and HT
+> check or not, but it is more appropriate to change that warning level
+> to debug level.
+
+I think we should add a special case to not print the warning if mcs ==
+15 until we figure out what it means.
+
+-- 
+Kalle Valo
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
