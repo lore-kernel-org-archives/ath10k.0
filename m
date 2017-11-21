@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail-qk0-x22e.google.com ([2607:f8b0:400d:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eH4QC-0006RA-Vl
- for ath10k@lists.infradead.org; Tue, 21 Nov 2017 09:00:56 +0000
+ id 1eH592-0003SO-P0
+ for ath10k@lists.infradead.org; Tue, 21 Nov 2017 09:47:12 +0000
+Received: by mail-qk0-x22e.google.com with SMTP id a142so11161675qkb.5
+ for <ath10k@lists.infradead.org>; Tue, 21 Nov 2017 01:46:48 -0800 (PST)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
 Subject: Re: [PATCHv3 1/2] ath10k: add per peer htt tx stats support for 10.4
+Date: Tue, 21 Nov 2017 10:46:41 +0100
+Message-ID: <2639938.VraEUeHfYF@bentobox>
+In-Reply-To: <566f915b-0dbc-573f-3a6a-95ecf571674a@dd-wrt.com>
 References: <1479227849-10042-1-git-send-email-akolli@qti.qualcomm.com>
- <87tvxocbcn.fsf@kamboji.qca.qualcomm.com>
- <9ab6ffcf-0131-1fb1-13ef-076ec54bd582@dd-wrt.com>
- <4295821.C9ZrSID8fs@bentobox> <87h8toc9dq.fsf@kamboji.qca.qualcomm.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <566f915b-0dbc-573f-3a6a-95ecf571674a@dd-wrt.com>
-Date: Tue, 21 Nov 2017 10:00:20 +0100
+ <87h8toc9dq.fsf@kamboji.qca.qualcomm.com>
+ <566f915b-0dbc-573f-3a6a-95ecf571674a@dd-wrt.com>
 MIME-Version: 1.0
-In-Reply-To: <87h8toc9dq.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +22,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============3463223827046416424=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, Sven Eckelmann <sven.eckelmann@openmesh.com>
-Cc: Yifeng Tu <yifeng@qti.qualcomm.com>, Daniel Jeang <dyjeong@qti.qualcomm.com>, Anilkumar Kolli <akolli@qti.qualcomm.com>, "akolli@codeaurora.org" <akolli@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: Yifeng Tu <yifeng@qti.qualcomm.com>, Daniel Jeang <dyjeong@qti.qualcomm.com>, Anilkumar Kolli <akolli@qti.qualcomm.com>, "akolli@codeaurora.org" <akolli@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Kalle Valo <kvalo@qca.qualcomm.com>
 
-bWF5YmUgdGhpcyBvbmU/CgppIGhhdmUgdGhpcyBxY2E5ODh4IHN1cHBvcnRpbmcgdHgvcnggcmF0
-ZSBwYXRjaCBpbiBteSBsb2NhbCB0cmVlLiBqdXN0IApuZWVkIHRvIGV4dHJhY3QgaXQgYWdhaW4K
-CiDCoGF0aDEwazogcmVwb3J0IHBlci1zdGF0aW9uIHR4L3JhdGUgcmF0ZXMgdG8gbWFjODAyMTEK
-CkFtIDIxLjExLjIwMTcgdW0gMDk6NDAgc2NocmllYiBLYWxsZSBWYWxvOgo+IFN2ZW4gRWNrZWxt
-YW5uIDxzdmVuLmVja2VsbWFubkBvcGVubWVzaC5jb20+IHdyaXRlczoKPgo+PiBPbiBEaWVuc3Rh
-ZywgMjEuIE5vdmVtYmVyIDIwMTcgMDk6MDA6NTQgQ0VUIFNlYmFzdGlhbiBHb3R0c2NoYWxsIHdy
-b3RlOgo+PiBbLi4uXQo+Pj4+PiBXaHkgaXMgdGhlIHN1cHBvcnQgZm9yIDEwLjIuNCBmaXJtd2Fy
-ZSBub3QgdXBzdHJlYW1lZD8gSSBtZWFuIHRoZSBvbmUgd2hpY2ggaXMKPj4+Pj4gdXNpbmcgcGt0
-bG9nIHRvIHRyYW5zZmVyIHRoZSBQRUVSX1NUQVRTIGluZm9ybWF0aW9uLgo+Pj4+IEknbSBub3Qg
-c3VyZSB3aGF0IHlvdSBhcmUgYXNraW5nLiBJZiB5b3UgYXJlIGFza2luZyB0aGUgZmlybXdhcmUg
-cmVsZWFzZQo+Pj4+IG1lbnRpb25lZCBpbiB0aGUgY29tbWl0IGxvZyB0aGF0J3MgaW4gYXRoMTBr
-LWZpcm13YXJlOgo+Pj4+Cj4+Pj4gaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJt
-d2FyZS90cmVlL21hc3Rlci9RQ0E0MDE5L2h3MS4wLzMuMi4xCj4+Pj4KPj4+PiBCdXQgSSdtIHN1
-cmUgeW91IGtub3cgdGhhdCBhbHJlYWR5Lgo+Pj4gaSBiZWxpZXZlIGhlIGlzIGp1c3QgdGFsa2lu
-ZyBhYm91dCBhIHBhdGNoIHdoaWNoIGFsbG93cyB0byBnZXQgc3RhdGlvbgo+Pj4gc3RhdGlzdGlj
-cyBsaWtlIHJ4IGFuZCB0eCByYXRlIG9uIHRoZSBmaXJtYXJlIDEwLjIgc2VyaWVzIHdoaWNoIGlz
-Cj4+PiBxY2E5ODh4IG1haW5seQo+Pj4KPj4+IHRoaXMgcGF0Y2ggd2FzIHBvc3RlZCBoZXJlIG1v
-bnRocyBhZ28gYnV0IG5ldmVyIGdvdCB1cHN0cmVhbQo+PiBZZXMsIEkgd2FzIHRhbGtpbmcgYWJv
-dXQgdGhhdCBwYXRjaCAod2hpY2ggSSBkaWRuJ3QgZmluZCBvbiB0aGUKPj4gbWFpbGluZyBsaXN0
-IC0gc28gYSBsaW5rIHdvdWxkIGJlIGhlbHBmdWwpLiBRQ0EgaXMgZ2F0aGVyaW5nIGEgbG90IG9m
-Cj4+IHBhdGNoZXMgKGEwMC0qKSBhdAo+PiBodHRwczovL3NvdXJjZS5jb2RlYXVyb3JhLm9yZy9x
-dWljL3FzZGsvb3NzL3N5c3RlbS9mZWVkcy93bGFuLW9wZW4vdHJlZS9tYWM4MDIxMS9wYXRjaGVz
-P2g9Y29jb251dAo+PiB3aGljaCBhcmUgb2Z0ZW4gbm90IHVwc3RyZWFtZWQuCj4gT2gsIHRoYXQu
-IEkgaGF2ZSBhbHdheXMgdG9sZCB0aGUgdGVhbSB3b3JraW5nIG9uIHRoYXQgcmVwb3NpdG9yeSB0
-aGF0Cj4gdGhleSBzaG91bGQgdXBzdHJlYW0gZXZlcnl0aGluZyBidXQgb2J2aW91c2x5IHRoZXkg
-ZG9uJ3QgOi8KPgo+PiBUaGUgcGF0Y2gKPj4gYTAwLTAwNzUtYXRoMTBrLUFkZC1zdXBwb3J0LXRv
-LXBhcnNlLXBlci1zdGF0aW9uLXR4LXN0YXRzLWZvci5wYXRjaCBpcwo+PiB0aGUgb25lIHdoaWNo
-IGlzIHJlY2VpdmluZyB0aGUgVFggc3RhdGlzdGljcyBzdHVmZiBmcm9tIDEwLjIuCj4gSSB0cmll
-ZCB0byBmaW5kIHRoYXQgcGF0Y2ggZnJvbSB0aGUgYXRoMTBrIGxpc3QgYXJjaGl2ZXMgYnV0IGRp
-ZG4ndCBmaW5kCj4gaXQuIEkgb25seSBkaWQgYSBxdWljayBzZWFyY2ggc28gb2YgY291cnNlIGl0
-IG1pZ2h0IGJlIHN1Ym1pdHRlZCBzdGlsbCwKPiBzbyBpZiBhbnlvbmUgZmluZHMgYSBsaW5rIHBs
-ZWFzZSBsZXQgbWUga25vdy4KPgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdh
-cmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkggLSBERC1X
-UlQKRmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0NjI1IEJlbnNoZWltClJlZ2lz
-dGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0NzMKR2VzY2jDpGZ0c2bD
-vGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUKaHR0cDovL3d3dy5k
-ZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpUZWwuOiArNDk2MjUxLTU4
-MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
-aDEwawo=
+--===============3463223827046416424==
+Content-Type: multipart/signed; boundary="nextPart2760260.seSr6Edl5p"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+
+--nextPart2760260.seSr6Edl5p
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Dienstag, 21. November 2017 10:00:20 CET Sebastian Gottschall wrote:
+> maybe this one?
+> 
+> i have this qca988x supporting tx/rx rate patch in my local tree. just 
+> need to extract it again
+> 
+>   ath10k: report per-station tx/rate rates to mac80211
+
+This one sounds like https://patchwork.kernel.org/patch/8597341/ - and it is 
+something different (end is implementing get_expected_throughput "wrong" and 
+therefore overestimates the expected throughput extremely). This patch is 
+using the stuff from fw_stats to fill the station rx/tx information.
+
+It is not the worst thing to do (I want(ed) to use something similar for my 
+purposes) but there is a special pktlog message on 10.2 which contains the 
+same information as the 10.4 HTT_10_4_T2H_MSG_TYPE_PEER_STATS.
+
+Kind regards,
+	Sven 
+
+--nextPart2760260.seSr6Edl5p
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAloT9gEACgkQXYcKB8Em
+e0YR/Q/+ISKsP3zkAFNyzCfFB1fuoOkCqXuzboIoqavaV1tQF3eb5/gWaQ+iLvBn
+xWi4gDV86ustOjz18Fvi5yghHfEUwd0BoKAR7ghBm6BT/+jvtiYfiClJ03of7UDp
+hydIBzx4mibPpzpnxz08MZgxpfhJBXk/q/PTSf1x/XjPjQVqzziSI6u3KVzo9EhR
+iNmNNBNryMZ7tebT0c/xBIh/CapmYcoc0o5mLrH2wb5Gmy31eJBduhKAofeHT+Um
+2JqdDz4DmfI5pMAlOUvucNp9GR3fHgOwAFLUQYSM+LV3GI/8JtSSKPpZ9aeD6+4P
+KNVyGrkXqm62ZjzvyS+8WnCN0231nIgRJycZvFzQgbmT668gbsqcPSu6QD0gfFP5
+1HrBAfVAmF5QOYRkRds7gnYZy+DtvdQ42Anuoh2Mtdl00An+Z+7plpb6NUHYDHhp
+tyK6q3uo5lHsJu2bFfF0KmKRvGLdDj0XoPxVGd/+qz1C0m/eFqT56e67CdW8r3RV
+RczpwYHSYMerI7eLiFlj3cUElmGMKRyhyhSGVDuh9os+F6oVXbaoqyRlUl9kS+qn
+Szd0yb387nC4IEyhchxIgvfcBgogguG+s9HNtc89CWUUeQ99VXQD3kdg++KPdCAJ
+FRVuqtnoyfEcvV2adUoRj8Ex2b9kfHWYxh/R1pznW09IKVLfy4c=
+=PwzF
+-----END PGP SIGNATURE-----
+
+--nextPart2760260.seSr6Edl5p--
+
+
+
+--===============3463223827046416424==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============3463223827046416424==--
