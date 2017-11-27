@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+Received: from mout.kundenserver.de ([212.227.126.133])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eJCo3-0004kR-9w
- for ath10k@lists.infradead.org; Mon, 27 Nov 2017 06:22:51 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Kernel panic hosting 5Ghz AP
-Date: Mon, 27 Nov 2017 06:21:47 +0000
-Message-ID: <87h8tg6y2t.fsf@kamboji.qca.qualcomm.com>
-References: <CAGT1WQM6uiP6GHW9ukNUPf+JcZckENz514gg0DiR7CCO=5K+Fg@mail.gmail.com>
- <87zi7da458.fsf@kamboji.qca.qualcomm.com>
- <CAGT1WQO9y89Wz250zZs2qqGv7rut5C82Ncd4=XOKCLthnYrC3w@mail.gmail.com>
-In-Reply-To: <CAGT1WQO9y89Wz250zZs2qqGv7rut5C82Ncd4=XOKCLthnYrC3w@mail.gmail.com>
- (Konstantin Bogomolov's message of "Thu, 23 Nov 2017 11:41:54 -0500")
-Content-Language: en-US
-MIME-Version: 1.0
+ id 1eJHx0-0002H9-Aj
+ for ath10k@lists.infradead.org; Mon, 27 Nov 2017 11:51:56 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ath10k: use 64-bit crash dump timestamps
+Date: Mon, 27 Nov 2017 12:49:51 +0100
+Message-Id: <20171127115113.2831506-1-arnd@arndb.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +15,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Konstantin Bogomolov <konstantin.bogomolov@dejero.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, y2038@lists.linaro.org, Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>, Erik Stromdahl <erik.stromdahl@gmail.com>, netdev@vger.kernel.org, Marcin Rokicki <marcin.rokicki@tieto.com>, Sarada Prasanna Garnayak <c_sgarna@qti.qualcomm.com>, Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>
 
-Konstantin Bogomolov <konstantin.bogomolov@dejero.com> writes:
+The dump format uses 64-bit timestamps already, but calling
+getnstimeofday() only returns a 32-bit number on 32-bit architectures,
+so that will overflow in y2038.
 
-> Hello Kalle,
->
-> The panic happens after hostapd outputs "ACS-STARTED". Usually, the
-> first attempt for me to start hostapd fails to create the AP (I think
-> this is a separate issue with the 5Ghz AP), but the second attempt
-> always initiates a panic on Debian 4.9 drivers.
->
-> I don't think this is a regression, because I saw the same behaviour
-> on a custom 4.1 kernel. I have also tried using backported drivers
-> from 4.12.0 to both 4.1 and 4.9, where the panic was also reproducible
-> on the second hostapd attempt, but didn't happen every time as it does
-> on Debian 4.9. So the AP did work on some occasions using the
-> backports, but the panic still happened very frequently. Sadly I don't
-> have logs at this time using those backports.
->
-> I'll try and reproduce this using a recent kernel and let you know the results.
+This changes it to use ktime_get_real_ts64() instead.
 
-Also try without ACS (meaning specify a channel mannually hostapd config
-file) just to see if the crash is ACS related.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/wireless/ath/ath10k/core.h  | 2 +-
+ drivers/net/wireless/ath/ath10k/debug.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 643041ef3271..dd3c6c63aae1 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -463,7 +463,7 @@ struct ath10k_fw_crash_data {
+ 	bool crashed_since_read;
+ 
+ 	guid_t guid;
+-	struct timespec timestamp;
++	struct timespec64 timestamp;
+ 	__le32 registers[REG_DUMP_COUNT_QCA988X];
+ 	struct ath10k_ce_crash_data ce_crash_data[CE_COUNT_MAX];
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index df514507d3f1..66498e3c0f91 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -720,7 +720,7 @@ ath10k_debug_get_new_fw_crash_data(struct ath10k *ar)
+ 
+ 	crash_data->crashed_since_read = true;
+ 	guid_gen(&crash_data->guid);
+-	getnstimeofday(&crash_data->timestamp);
++	ktime_get_real_ts64(&crash_data->timestamp);
+ 
+ 	return crash_data;
+ }
 -- 
-Kalle Valo
+2.9.0
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
