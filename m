@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.126.133])
+Received: from chaos.universe-factory.net ([31.24.148.19])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eJHx0-0002H9-Aj
- for ath10k@lists.infradead.org; Mon, 27 Nov 2017 11:51:56 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ath10k: use 64-bit crash dump timestamps
-Date: Mon, 27 Nov 2017 12:49:51 +0100
-Message-Id: <20171127115113.2831506-1-arnd@arndb.de>
+ id 1eJNeN-0007AO-4j
+ for ath10k@lists.infradead.org; Mon, 27 Nov 2017 17:57:01 +0000
+From: Matthias Schiffer <mschiffer@universe-factory.net>
+Subject: [PATCH 1/3] ath9k: remove stray backslash in Makefile
+Date: Mon, 27 Nov 2017 18:56:21 +0100
+Message-Id: <e60138924429ca428efc6e3154606887b3bc5201.1511804622.git.mschiffer@universe-factory.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +20,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, y2038@lists.linaro.org, Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>, Erik Stromdahl <erik.stromdahl@gmail.com>, netdev@vger.kernel.org, Marcin Rokicki <marcin.rokicki@tieto.com>, Sarada Prasanna Garnayak <c_sgarna@qti.qualcomm.com>, Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>
+To: kvalo@qca.qualcomm.com
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, nbd@nbd.name
 
-The dump format uses 64-bit timestamps already, but calling
-getnstimeofday() only returns a 32-bit number on 32-bit architectures,
-so that will overflow in y2038.
-
-This changes it to use ktime_get_real_ts64() instead.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Matthias Schiffer <mschiffer@universe-factory.net>
 ---
- drivers/net/wireless/ath/ath10k/core.h  | 2 +-
- drivers/net/wireless/ath/ath10k/debug.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath9k/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 643041ef3271..dd3c6c63aae1 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -463,7 +463,7 @@ struct ath10k_fw_crash_data {
- 	bool crashed_since_read;
+diff --git a/drivers/net/wireless/ath/ath9k/Makefile b/drivers/net/wireless/ath/ath9k/Makefile
+index 36a40ffdce15..90e4a341076c 100644
+--- a/drivers/net/wireless/ath/ath9k/Makefile
++++ b/drivers/net/wireless/ath/ath9k/Makefile
+@@ -59,7 +59,7 @@ obj-$(CONFIG_ATH9K_HW) += ath9k_hw.o
+ obj-$(CONFIG_ATH9K_COMMON) += ath9k_common.o
+ ath9k_common-y:=	common.o \
+ 			common-init.o \
+-			common-beacon.o \
++			common-beacon.o
  
- 	guid_t guid;
--	struct timespec timestamp;
-+	struct timespec64 timestamp;
- 	__le32 registers[REG_DUMP_COUNT_QCA988X];
- 	struct ath10k_ce_crash_data ce_crash_data[CE_COUNT_MAX];
- };
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index df514507d3f1..66498e3c0f91 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -720,7 +720,7 @@ ath10k_debug_get_new_fw_crash_data(struct ath10k *ar)
- 
- 	crash_data->crashed_since_read = true;
- 	guid_gen(&crash_data->guid);
--	getnstimeofday(&crash_data->timestamp);
-+	ktime_get_real_ts64(&crash_data->timestamp);
- 
- 	return crash_data;
- }
+ ath9k_common-$(CONFIG_ATH9K_COMMON_DEBUG) += common-debug.o \
+ 					     common-spectral.o
 -- 
-2.9.0
+2.15.0
 
 
 _______________________________________________
