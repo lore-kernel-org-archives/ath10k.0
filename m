@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from chaos.universe-factory.net ([2001:678:3b8:ff00::13])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eJNeN-0007AM-BX
- for ath10k@lists.infradead.org; Mon, 27 Nov 2017 17:57:01 +0000
+ id 1eJNeN-0007AN-Cu
+ for ath10k@lists.infradead.org; Mon, 27 Nov 2017 17:57:03 +0000
 From: Matthias Schiffer <mschiffer@universe-factory.net>
-Subject: [PATCH 3/3] ath10k: move spectral scan support under a separate
- config symbol
-Date: Mon, 27 Nov 2017 18:56:23 +0100
-Message-Id: <af2dc61b09d13b393e777a661ecc528f627a6a0d.1511804622.git.mschiffer@universe-factory.net>
+Subject: [PATCH 2/3] ath9k: move spectral scan support under a separate config
+ symbol
+Date: Mon, 27 Nov 2017 18:56:22 +0100
+Message-Id: <1c982c915065a9b5ed3232eedb567f589eca261b.1511804622.git.mschiffer@universe-factory.net>
 In-Reply-To: <e60138924429ca428efc6e3154606887b3bc5201.1511804622.git.mschiffer@universe-factory.net>
 References: <e60138924429ca428efc6e3154606887b3bc5201.1511804622.git.mschiffer@universe-factory.net>
 In-Reply-To: <e60138924429ca428efc6e3154606887b3bc5201.1511804622.git.mschiffer@universe-factory.net>
@@ -29,85 +29,94 @@ To: kvalo@qca.qualcomm.com
 Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, nbd@nbd.name
 
 At the moment, spectral scan support, and with it RELAY, is always enabled
-with ATH10K_DEBUGFS. Spectral scan support is currently the only user of
-RELAY in ath10k, and it unconditionally reserves a relay channel.
+with ATH9K[_HTC]_DEBUGFS. Spectral scan support is currently the only user
+of RELAY in ath9k, and it unconditionally reserves a relay channel.
 
-Having debugfs support in ath10k is often useful even on very small
-embedded routers, where we'd rather like to avoid the code size and RAM
-usage of the relay support. While ath10k-based devices usually have more
-resources than ath9k-based ones, it makes sense to keep the configuration
-symmetric to ath9k, so the same base kernel without RELAY can be used for
-both ath9k and ath10k hardware.
+Having debugfs support in ath9k is often useful even on very small embedded
+routers, where we'd rather like to avoid the code size and RAM usage of the
+relay support.
 
 Signed-off-by: Matthias Schiffer <mschiffer@universe-factory.net>
 ---
+ drivers/net/wireless/ath/ath9k/Kconfig           | 14 ++++++++++----
+ drivers/net/wireless/ath/ath9k/Makefile          |  4 ++--
+ drivers/net/wireless/ath/ath9k/common-spectral.h |  4 ++--
+ 3 files changed, 14 insertions(+), 8 deletions(-)
 
-checkpatch.pl wants me to write a more meaningful description for
-ATH10K_SPECTRAL, but I don't actually know enough about the spectral scan
-feature to do so...
-
- drivers/net/wireless/ath/ath10k/Kconfig    | 9 ++++++++-
- drivers/net/wireless/ath/ath10k/Makefile   | 2 +-
- drivers/net/wireless/ath/ath10k/spectral.h | 4 ++--
- 3 files changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
-index 87f56d0e17a6..deb5ae21a559 100644
---- a/drivers/net/wireless/ath/ath10k/Kconfig
-+++ b/drivers/net/wireless/ath/ath10k/Kconfig
-@@ -47,12 +47,19 @@ config ATH10K_DEBUG
- config ATH10K_DEBUGFS
- 	bool "Atheros ath10k debugfs support"
- 	depends on ATH10K && DEBUG_FS
+diff --git a/drivers/net/wireless/ath/ath9k/Kconfig b/drivers/net/wireless/ath/ath9k/Kconfig
+index 783a38f1a626..1f3523019509 100644
+--- a/drivers/net/wireless/ath/ath9k/Kconfig
++++ b/drivers/net/wireless/ath/ath9k/Kconfig
+@@ -61,13 +61,12 @@ config ATH9K_DEBUGFS
+ 	depends on ATH9K && DEBUG_FS
+ 	select MAC80211_DEBUGFS
+ 	select ATH9K_COMMON_DEBUG
 -	select RELAY
  	---help---
- 	  Enabled debugfs support
+ 	  Say Y, if you need access to ath9k's statistics for
+ 	  interrupts, rate control, etc.
  
- 	  If unsure, say Y to make it easier to debug problems.
+-	  Also required for changing debug message flags at run time.
+-	  As well as access to the FFT/spectral data and TX99.
++	  Also required for changing debug message flags at run time and for
++	  TX99.
  
-+config ATH10K_SPECTRAL
-+	bool "Atheros ath10k spectral scan support"
-+	depends on ATH10K_DEBUGFS
+ config ATH9K_STATION_STATISTICS
+ 	bool "Detailed station statistics"
+@@ -177,7 +176,6 @@ config ATH9K_HTC_DEBUGFS
+ 	bool "Atheros ath9k_htc debugging"
+ 	depends on ATH9K_HTC && DEBUG_FS
+ 	select ATH9K_COMMON_DEBUG
+-	select RELAY
+ 	---help---
+ 	  Say Y, if you need access to ath9k_htc's statistics.
+ 	  As well as access to the FFT/spectral data.
+@@ -192,3 +190,11 @@ config ATH9K_HWRNG
+ 
+ 	  Say Y, feeds the entropy directly from the WiFi driver to the input
+ 	  pool.
++
++config ATH9K_COMMON_SPECTRAL
++	bool "Atheros ath9k/ath9k_htc spectral scan support"
++	depends on ATH9K_DEBUGFS || ATH9K_HTC_DEBUGFS
 +	select RELAY
 +	default n
 +	---help---
 +	  Say Y to enable access to the FFT/spectral data via debugfs.
-+
- config ATH10K_TRACING
- 	bool "Atheros ath10k tracing support"
- 	depends on ATH10K
-diff --git a/drivers/net/wireless/ath/ath10k/Makefile b/drivers/net/wireless/ath/ath10k/Makefile
-index 899b9b79f4ce..af8f11970a08 100644
---- a/drivers/net/wireless/ath/ath10k/Makefile
-+++ b/drivers/net/wireless/ath/ath10k/Makefile
-@@ -14,7 +14,7 @@ ath10k_core-y += mac.o \
- 		 p2p.o \
- 		 swap.o
+diff --git a/drivers/net/wireless/ath/ath9k/Makefile b/drivers/net/wireless/ath/ath9k/Makefile
+index 90e4a341076c..80197101eda7 100644
+--- a/drivers/net/wireless/ath/ath9k/Makefile
++++ b/drivers/net/wireless/ath/ath9k/Makefile
+@@ -61,8 +61,8 @@ ath9k_common-y:=	common.o \
+ 			common-init.o \
+ 			common-beacon.o
  
--ath10k_core-$(CONFIG_ATH10K_DEBUGFS) += spectral.o
-+ath10k_core-$(CONFIG_ATH10K_SPECTRAL) += spectral.o
- ath10k_core-$(CONFIG_NL80211_TESTMODE) += testmode.o
- ath10k_core-$(CONFIG_ATH10K_TRACING) += trace.o
- ath10k_core-$(CONFIG_THERMAL) += thermal.o
-diff --git a/drivers/net/wireless/ath/ath10k/spectral.h b/drivers/net/wireless/ath/ath10k/spectral.h
-index 89b0ad769d4f..b2a2e8ae04b8 100644
---- a/drivers/net/wireless/ath/ath10k/spectral.h
-+++ b/drivers/net/wireless/ath/ath10k/spectral.h
-@@ -44,7 +44,7 @@ enum ath10k_spectral_mode {
- 	SPECTRAL_MANUAL,
- };
+-ath9k_common-$(CONFIG_ATH9K_COMMON_DEBUG) += common-debug.o \
+-					     common-spectral.o
++ath9k_common-$(CONFIG_ATH9K_COMMON_DEBUG) += common-debug.o
++ath9k_common-$(CONFIG_ATH9K_COMMON_SPECTRAL) += common-spectral.o
  
--#ifdef CONFIG_ATH10K_DEBUGFS
-+#ifdef CONFIG_ATH10K_SPECTRAL
- 
- int ath10k_spectral_process_fft(struct ath10k *ar,
- 				struct wmi_phyerr_ev_arg *phyerr,
-@@ -85,6 +85,6 @@ static inline void ath10k_spectral_destroy(struct ath10k *ar)
- {
+ ath9k_htc-y +=	htc_hst.o \
+ 		hif_usb.o \
+diff --git a/drivers/net/wireless/ath/ath9k/common-spectral.h b/drivers/net/wireless/ath/ath9k/common-spectral.h
+index 5d1a51d83aa6..303ab470ce34 100644
+--- a/drivers/net/wireless/ath/ath9k/common-spectral.h
++++ b/drivers/net/wireless/ath/ath9k/common-spectral.h
+@@ -151,7 +151,7 @@ static inline u8 spectral_bitmap_weight(u8 *bins)
+ 	return bins[0] & 0x3f;
  }
  
--#endif /* CONFIG_ATH10K_DEBUGFS */
-+#endif /* CONFIG_ATH10K_SPECTRAL */
+-#ifdef CONFIG_ATH9K_COMMON_DEBUG
++#ifdef CONFIG_ATH9K_COMMON_SPECTRAL
+ void ath9k_cmn_spectral_init_debug(struct ath_spec_scan_priv *spec_priv, struct dentry *debugfs_phy);
+ void ath9k_cmn_spectral_deinit_debug(struct ath_spec_scan_priv *spec_priv);
+ 
+@@ -183,6 +183,6 @@ static inline int ath_cmn_process_fft(struct ath_spec_scan_priv *spec_priv,
+ {
+ 	return 0;
+ }
+-#endif /* CONFIG_ATH9K_COMMON_DEBUG */
++#endif /* CONFIG_ATH9K_COMMON_SPECTRAL */
  
  #endif /* SPECTRAL_H */
 -- 
