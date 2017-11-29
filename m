@@ -1,20 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x233.google.com ([2607:f8b0:400d:c0d::233])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eK5f8-0001oZ-Gn
- for ath10k@lists.infradead.org; Wed, 29 Nov 2017 16:56:44 +0000
-Received: by mail-qt0-x233.google.com with SMTP id a16so5192911qtj.3
- for <ath10k@lists.infradead.org>; Wed, 29 Nov 2017 08:56:21 -0800 (PST)
+ id 1eK9zS-00055L-FT
+ for ath10k@lists.infradead.org; Wed, 29 Nov 2017 21:34:00 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: unify rx processing in napi_poll
+Date: Wed, 29 Nov 2017 13:33:32 -0800
+Message-ID: <1511991212-4837-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87h8tg6y2t.fsf@kamboji.qca.qualcomm.com>
-References: <CAGT1WQM6uiP6GHW9ukNUPf+JcZckENz514gg0DiR7CCO=5K+Fg@mail.gmail.com>
- <87zi7da458.fsf@kamboji.qca.qualcomm.com>
- <CAGT1WQO9y89Wz250zZs2qqGv7rut5C82Ncd4=XOKCLthnYrC3w@mail.gmail.com>
- <87h8tg6y2t.fsf@kamboji.qca.qualcomm.com>
-From: Konstantin Bogomolov <konstantin.bogomolov@dejero.com>
-Date: Wed, 29 Nov 2017 11:56:20 -0500
-Message-ID: <CAGT1WQOGi2Aq2d1e-YhdCxZCK5oqF2Dzu3fpjkz2fqRDAVn11A@mail.gmail.com>
-Subject: Re: Kernel panic hosting 5Ghz AP
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +20,330 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, rmanohar@codeaurora.org
 
-I've been trying to reproduce the issue on 4.14.1 for a few days now,
-and it seems to have been stable so far (using ACS).
+With current NAPI implementation, NAPI poll can deliver more frames
+to net core than allotted budget. This may cause warning in napi_poll.
+Remaining quota is not accounted, while processing amsdus in
+rx_in_ord_ind and rx_ind queue. Adding num_msdus at last can not
+prevent delivering more frames to net core. With this change,
+all amdus from both in_ord_ind and rx_ind queues are processed and
+enqueued into common skb list instead of delivering into mac80211.
+Later msdus from common queue are dequeued and delivered depends on
+quota availability. This change also simplifies the rx processing in
+napi poll routine.
 
-I should mention that I've been reproducing this using a torture test
-where I first start a 2.4 Ghz AP, take it down, then start a 5 Ghz AP
-(twice), then reboot and try again.
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h   |   1 -
+ drivers/net/wireless/ath/ath10k/htt.h    |   2 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 121 ++++++++++++++++---------------
+ 3 files changed, 63 insertions(+), 61 deletions(-)
 
-I am not sure whether starting the 2.4 Ghz AP before the other one
-exacerbates the issue or not. Running the torture test on my 4.1
-kernel (with 4.12 backports) worked for a while, until the kernel
-crash happened, at which point starting the 5 Ghz AP led to a kernel
-crash every time. On the stock Debian 4.9 kernel, it never worked and
-crashed right away, until I tested it again after my 4.14.1 tests --
-at which point it seemed to work.
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 643041ef3271..6ecc58811656 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -67,7 +67,6 @@
+ 
+ /* NAPI poll budget */
+ #define ATH10K_NAPI_BUDGET      64
+-#define ATH10K_NAPI_QUOTA_LIMIT 60
+ 
+ /* SMBIOS type containing Board Data File Name Extension */
+ #define ATH10K_SMBIOS_BDF_EXT_TYPE 0xF8
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 6305308422c4..7d6143523634 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1695,7 +1695,7 @@ struct ath10k_htt {
+ 	/* This is used to group tx/rx completions separately and process them
+ 	 * in batches to reduce cache stalls
+ 	 */
+-	struct sk_buff_head rx_compl_q;
++	struct sk_buff_head rx_msdus_q;
+ 	struct sk_buff_head rx_in_ord_compl_q;
+ 	struct sk_buff_head tx_fetch_ind_q;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index e31438541ee1..d82f26dbba44 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -227,7 +227,7 @@ void ath10k_htt_rx_free(struct ath10k_htt *htt)
+ {
+ 	del_timer_sync(&htt->rx_ring.refill_retry_timer);
+ 
+-	skb_queue_purge(&htt->rx_compl_q);
++	skb_queue_purge(&htt->rx_msdus_q);
+ 	skb_queue_purge(&htt->rx_in_ord_compl_q);
+ 	skb_queue_purge(&htt->tx_fetch_ind_q);
+ 
+@@ -515,7 +515,7 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 	htt->rx_ring.sw_rd_idx.msdu_payld = 0;
+ 	hash_init(htt->rx_ring.skb_table);
+ 
+-	skb_queue_head_init(&htt->rx_compl_q);
++	skb_queue_head_init(&htt->rx_msdus_q);
+ 	skb_queue_head_init(&htt->rx_in_ord_compl_q);
+ 	skb_queue_head_init(&htt->tx_fetch_ind_q);
+ 	atomic_set(&htt->num_mpdus_ready, 0);
+@@ -951,16 +951,25 @@ static char *ath10k_get_tid(struct ieee80211_hdr *hdr, char *out, size_t size)
+ 	return out;
+ }
+ 
+-static void ath10k_process_rx(struct ath10k *ar,
+-			      struct ieee80211_rx_status *rx_status,
+-			      struct sk_buff *skb)
++static void ath10k_htt_rx_h_queue_msdu(struct ath10k *ar,
++				       struct ieee80211_rx_status *rx_status,
++				       struct sk_buff *skb)
++{
++	struct ieee80211_rx_status *status;
++
++	status = IEEE80211_SKB_RXCB(skb);
++	*status = *rx_status;
++
++	__skb_queue_tail(&ar->htt.rx_msdus_q, skb);
++}
++
++static void ath10k_process_rx(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct ieee80211_rx_status *status;
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+ 	char tid[32];
+ 
+ 	status = IEEE80211_SKB_RXCB(skb);
+-	*status = *rx_status;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_DATA,
+ 		   "rx skb %pK len %u peer %pM %s %s sn %u %s%s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i mic-err %i amsdu-more %i\n",
+@@ -1492,7 +1501,7 @@ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
+ 	}
+ }
+ 
+-static void ath10k_htt_rx_h_deliver(struct ath10k *ar,
++static void ath10k_htt_rx_h_enqueue(struct ath10k *ar,
+ 				    struct sk_buff_head *amsdu,
+ 				    struct ieee80211_rx_status *status)
+ {
+@@ -1515,7 +1524,7 @@ static void ath10k_htt_rx_h_deliver(struct ath10k *ar,
+ 			status->flag |= RX_FLAG_ALLOW_SAME_PN;
+ 		}
+ 
+-		ath10k_process_rx(ar, status, msdu);
++		ath10k_htt_rx_h_queue_msdu(ar, status, msdu);
+ 	}
+ }
+ 
+@@ -1627,7 +1636,7 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
+ 	struct ath10k *ar = htt->ar;
+ 	struct ieee80211_rx_status *rx_status = &htt->rx_status;
+ 	struct sk_buff_head amsdu;
+-	int ret, num_msdus;
++	int ret;
+ 
+ 	__skb_queue_head_init(&amsdu);
+ 
+@@ -1649,7 +1658,6 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
+ 		return ret;
+ 	}
+ 
+-	num_msdus = skb_queue_len(&amsdu);
+ 	ath10k_htt_rx_h_ppdu(ar, &amsdu, rx_status, 0xffff);
+ 
+ 	/* only for ret = 1 indicates chained msdus */
+@@ -1658,9 +1666,9 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
+ 
+ 	ath10k_htt_rx_h_filter(ar, &amsdu, rx_status);
+ 	ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status, true);
+-	ath10k_htt_rx_h_deliver(ar, &amsdu, rx_status);
++	ath10k_htt_rx_h_enqueue(ar, &amsdu, rx_status);
+ 
+-	return num_msdus;
++	return 0;
+ }
+ 
+ static void ath10k_htt_rx_proc_rx_ind(struct ath10k_htt *htt,
+@@ -1868,15 +1876,14 @@ static void ath10k_htt_rx_h_rx_offload_prot(struct ieee80211_rx_status *status,
+ 			RX_FLAG_MMIC_STRIPPED;
+ }
+ 
+-static int ath10k_htt_rx_h_rx_offload(struct ath10k *ar,
+-				      struct sk_buff_head *list)
++static void ath10k_htt_rx_h_rx_offload(struct ath10k *ar,
++				       struct sk_buff_head *list)
+ {
+ 	struct ath10k_htt *htt = &ar->htt;
+ 	struct ieee80211_rx_status *status = &htt->rx_status;
+ 	struct htt_rx_offload_msdu *rx;
+ 	struct sk_buff *msdu;
+ 	size_t offset;
+-	int num_msdu = 0;
+ 
+ 	while ((msdu = __skb_dequeue(list))) {
+ 		/* Offloaded frames don't have Rx descriptor. Instead they have
+@@ -1915,10 +1922,8 @@ static int ath10k_htt_rx_h_rx_offload(struct ath10k *ar,
+ 
+ 		ath10k_htt_rx_h_rx_offload_prot(status, msdu);
+ 		ath10k_htt_rx_h_channel(ar, status, NULL, rx->vdev_id);
+-		ath10k_process_rx(ar, status, msdu);
+-		num_msdu++;
++		ath10k_htt_rx_h_queue_msdu(ar, status, msdu);
+ 	}
+-	return num_msdu;
+ }
+ 
+ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+@@ -1934,7 +1939,7 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 	u8 tid;
+ 	bool offload;
+ 	bool frag;
+-	int ret, num_msdus = 0;
++	int ret;
+ 
+ 	lockdep_assert_held(&htt->rx_ring.lock);
+ 
+@@ -1976,7 +1981,7 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 	 * separately.
+ 	 */
+ 	if (offload)
+-		num_msdus = ath10k_htt_rx_h_rx_offload(ar, &list);
++		ath10k_htt_rx_h_rx_offload(ar, &list);
+ 
+ 	while (!skb_queue_empty(&list)) {
+ 		__skb_queue_head_init(&amsdu);
+@@ -1989,11 +1994,10 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 			 * better to report something than nothing though. This
+ 			 * should still give an idea about rx rate to the user.
+ 			 */
+-			num_msdus += skb_queue_len(&amsdu);
+ 			ath10k_htt_rx_h_ppdu(ar, &amsdu, status, vdev_id);
+ 			ath10k_htt_rx_h_filter(ar, &amsdu, status);
+ 			ath10k_htt_rx_h_mpdu(ar, &amsdu, status, false);
+-			ath10k_htt_rx_h_deliver(ar, &amsdu, status);
++			ath10k_htt_rx_h_enqueue(ar, &amsdu, status);
+ 			break;
+ 		case -EAGAIN:
+ 			/* fall through */
+@@ -2005,7 +2009,7 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
+ 			return -EIO;
+ 		}
+ 	}
+-	return num_msdus;
++	return ret;
+ }
+ 
+ static void ath10k_htt_rx_tx_fetch_resp_id_confirm(struct ath10k *ar,
+@@ -2606,6 +2610,24 @@ void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
+ }
+ EXPORT_SYMBOL(ath10k_htt_rx_pktlog_completion_handler);
+ 
++static int ath10k_htt_rx_deliver_msdu(struct ath10k *ar, int quota, int budget)
++{
++	struct sk_buff *skb;
++
++	while (quota < budget) {
++		if (skb_queue_empty(&ar->htt.rx_msdus_q))
++			break;
++
++		skb = __skb_dequeue(&ar->htt.rx_msdus_q);
++		if (!skb)
++			break;
++		ath10k_process_rx(ar, skb);
++		quota++;
++	}
++
++	return quota;
++}
++
+ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget)
+ {
+ 	struct ath10k_htt *htt = &ar->htt;
+@@ -2613,63 +2635,44 @@ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget)
+ 	struct sk_buff_head tx_ind_q;
+ 	struct sk_buff *skb;
+ 	unsigned long flags;
+-	int quota = 0, done, num_rx_msdus;
++	int quota = 0, done, ret;
+ 	bool resched_napi = false;
+ 
+ 	__skb_queue_head_init(&tx_ind_q);
+ 
+-	/* Since in-ord-ind can deliver more than 1 A-MSDU in single event,
+-	 * process it first to utilize full available quota.
++	/* Process pending frames before dequeuing more data
++	 * from hardware.
+ 	 */
+-	while (quota < budget) {
+-		if (skb_queue_empty(&htt->rx_in_ord_compl_q))
+-			break;
+-
+-		skb = __skb_dequeue(&htt->rx_in_ord_compl_q);
+-		if (!skb) {
+-			resched_napi = true;
+-			goto exit;
+-		}
++	quota = ath10k_htt_rx_deliver_msdu(ar, quota, budget);
++	if (quota == budget) {
++		resched_napi = true;
++		goto exit;
++	}
+ 
++	while ((skb = __skb_dequeue(&htt->rx_in_ord_compl_q))) {
+ 		spin_lock_bh(&htt->rx_ring.lock);
+-		num_rx_msdus = ath10k_htt_rx_in_ord_ind(ar, skb);
++		ret = ath10k_htt_rx_in_ord_ind(ar, skb);
+ 		spin_unlock_bh(&htt->rx_ring.lock);
+-		if (num_rx_msdus < 0) {
+-			resched_napi = true;
+-			goto exit;
+-		}
+ 
+ 		dev_kfree_skb_any(skb);
+-		if (num_rx_msdus > 0)
+-			quota += num_rx_msdus;
+-
+-		if ((quota > ATH10K_NAPI_QUOTA_LIMIT) &&
+-		    !skb_queue_empty(&htt->rx_in_ord_compl_q)) {
++		if (ret == -EIO) {
+ 			resched_napi = true;
+ 			goto exit;
+ 		}
+ 	}
+ 
+-	while (quota < budget) {
+-		/* no more data to receive */
+-		if (!atomic_read(&htt->num_mpdus_ready))
+-			break;
+-
+-		num_rx_msdus = ath10k_htt_rx_handle_amsdu(htt);
+-		if (num_rx_msdus < 0) {
++	while (atomic_read(&htt->num_mpdus_ready)) {
++		ret = ath10k_htt_rx_handle_amsdu(htt);
++		if (ret == -EIO) {
+ 			resched_napi = true;
+ 			goto exit;
+ 		}
+-
+-		quota += num_rx_msdus;
+ 		atomic_dec(&htt->num_mpdus_ready);
+-		if ((quota > ATH10K_NAPI_QUOTA_LIMIT) &&
+-		    atomic_read(&htt->num_mpdus_ready)) {
+-			resched_napi = true;
+-			goto exit;
+-		}
+ 	}
+ 
++	/* Deliver received data after processing data from hardware */
++	quota = ath10k_htt_rx_deliver_msdu(ar, quota, budget);
++
+ 	/* From NAPI documentation:
+ 	 *  The napi poll() function may also process TX completions, in which
+ 	 *  case if it processes the entire TX ring then it should count that
+-- 
+1.9.1
 
-So from what I've observed, the crash does not manifest itself right
-away, but once it happens once, it continues happening without fail on
-the subsequent tries. Having said that, 4.14.1 seems to be working
-well considering its been ~5 days of running the torture test, whereas
-4.1 (with 4.12 backports) crashed within 1-2 days.
-
-Konstantin
-
-On Mon, Nov 27, 2017 at 1:21 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Konstantin Bogomolov <konstantin.bogomolov@dejero.com> writes:
->
->> Hello Kalle,
->>
->> The panic happens after hostapd outputs "ACS-STARTED". Usually, the
->> first attempt for me to start hostapd fails to create the AP (I think
->> this is a separate issue with the 5Ghz AP), but the second attempt
->> always initiates a panic on Debian 4.9 drivers.
->>
->> I don't think this is a regression, because I saw the same behaviour
->> on a custom 4.1 kernel. I have also tried using backported drivers
->> from 4.12.0 to both 4.1 and 4.9, where the panic was also reproducible
->> on the second hostapd attempt, but didn't happen every time as it does
->> on Debian 4.9. So the AP did work on some occasions using the
->> backports, but the panic still happened very frequently. Sadly I don't
->> have logs at this time using those backports.
->>
->> I'll try and reproduce this using a recent kernel and let you know the results.
->
-> Also try without ACS (meaning specify a channel mannually hostapd config
-> file) just to see if the crash is ACS related.
->
-> --
-> Kalle Valo
 
 _______________________________________________
 ath10k mailing list
