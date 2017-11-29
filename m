@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eJlwN-0000fW-M2
- for ath10k@lists.infradead.org; Tue, 28 Nov 2017 19:53:13 +0000
-From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
-Subject: Re: Kernel panic hosting 5Ghz AP
-Date: Tue, 28 Nov 2017 19:52:47 +0000
-Message-ID: <4151ab35-f726-ac33-4647-39aa89694148@qti.qualcomm.com>
-References: <CAGT1WQM6uiP6GHW9ukNUPf+JcZckENz514gg0DiR7CCO=5K+Fg@mail.gmail.com>
- <87zi7da458.fsf@kamboji.qca.qualcomm.com>
- <CAGT1WQO9y89Wz250zZs2qqGv7rut5C82Ncd4=XOKCLthnYrC3w@mail.gmail.com>
- <87h8tg6y2t.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87h8tg6y2t.fsf@kamboji.qca.qualcomm.com>
-Content-Language: en-US
-Content-ID: <9EB4AAA024C07C47826AD3512052AEEA@qualcomm.com>
+ id 1eJsZV-0005lw-7Q
+ for ath10k@lists.infradead.org; Wed, 29 Nov 2017 02:58:04 +0000
+Subject: Re: [PATCH] ath10k: handling qos at STA side based on AP WMM
+ enable/disable
+References: <1511863650-9419-1-git-send-email-bpothuno@qti.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <5ec76365-7ca2-15bd-0bcc-9cc19b9f3b27@dd-wrt.com>
+Date: Wed, 29 Nov 2017 03:57:31 +0100
 MIME-Version: 1.0
+In-Reply-To: <1511863650-9419-1-git-send-email-bpothuno@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,69 +20,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: bpothuno@qti.qualcomm.com, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On 11/26/2017 10:21 PM, Kalle Valo wrote:
-
-> Konstantin Bogomolov <konstantin.bogomolov@dejero.com> writes:
->
->> Hello Kalle,
->>
->> The panic happens after hostapd outputs "ACS-STARTED". Usually, the
->> first attempt for me to start hostapd fails to create the AP (I think
->> this is a separate issue with the 5Ghz AP), but the second attempt
->> always initiates a panic on Debian 4.9 drivers.
->>
->> I don't think this is a regression, because I saw the same behaviour
->> on a custom 4.1 kernel. I have also tried using backported drivers
->> from 4.12.0 to both 4.1 and 4.9, where the panic was also reproducible
->> on the second hostapd attempt, but didn't happen every time as it does
->> on Debian 4.9. So the AP did work on some occasions using the
->> backports, but the panic still happened very frequently. Sadly I don't
->> have logs at this time using those backports.
->>
->> I'll try and reproduce this using a recent kernel and let you know the results.
-> Also try without ACS (meaning specify a channel mannually hostapd config
-> file) just to see if the crash is ACS related.
-
-I ran quick testing on my setup on 4.1.33 kernel
- - ath10k driver on top of with 4.14/4.13/4.9
- - hostapd with 2.4, 2.5 and 2.6
- - using your ap.conf
-
-I didn't see any crash, maybe you want to help to run some testing to figure out the difference?
-
---
-version:        backported from Linux (v3.18-211231-g569dbb8) using backports v4.14-rc2-1-34-g1d8cc15
-
-sudo ./hostapd /tmp/ap.conf
-Configuration file: /tmp/ap.conf
-wlan0: interface state UNINITIALIZED->COUNTRY_UPDATE
-ACS: Automatic channel selection started, this may take a bit
-wlan0: interface state COUNTRY_UPDATE->ACS
-wlan0: ACS-STARTED
-wlan0: ACS-COMPLETED freq=5785 channel=157
-Using interface wlan0 with hwaddr 00:03:7f:87:84:97 and ssid "test5_ryan"
-wlan0: interface state ACS->ENABLED
-wlan0: AP-ENABLED
-
-[1]+  Stopped                 sudo ./hostapd ~/ap.conf
-
-./hostapd -v
-hostapd v2.4
-User space daemon for IEEE 802.11 AP management,
-IEEE 802.1X/WPA/WPA2/EAP/RADIUS Authenticator
-Copyright (c) 2002-2015, Jouni Malinen <j@w1.fi> and contributors
---
-
--- 
-Ryan Hsu
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+ZGlkIHlvdSBub3RpY2XCoCB0aGF0IE1hcnZlbGwgODhXODk2NCBiYXNlZCBjbGllbnRzIHdpbGwg
+Y3Jhc2ggMTAuNC0zLjUuMyAKZmlybXdhcmVzP8KgICh0ZXN0ZWQgd2l0aCA5OTg0IGFuZCAxMC40
+LTMuNS4zLTAwMDM4KQpjbGllbnQgZGV2aWNlIHdhcyBhIGxpbmtzeXMgd3J0MzIwMGFjbSBydW5u
+aW5nIGRkLXdydCBmb3IgdGVzdGluZwoKQW0gMjguMTEuMjAxNyB1bSAxMTowNyBzY2hyaWViIGJw
+b3RodW5vQHF0aS5xdWFsY29tbS5jb206Cj4gRnJvbTogQmFsYWppIFBvdGh1bm9vcmkgPGJwb3Ro
+dW5vQHF0aS5xdWFsY29tbS5jb20+Cj4KPiBEYXRhIHBhY2tldHMgYXJlIG5vdCBzZW50IGJ5IFNU
+QSBpbiBjYXNlIG9mIFNUQSBqb2luZWQgdG8KPiBub24gUU9TIEFQIChXTU0gZGlzYWJsZWQgQVAp
+LiBUaGlzIGlzIGhhcHBlbmluZyBiZWNhdXNlIG9mIFNUQQo+IGlzIHNlbmRpbmcgZGF0YSBwYWNr
+ZXRzIHRvIGZpcm13YXJlIGZyb20gaG9zdCB3aXRoIHFvcyBlbmFibGVkCj4gYWxvbmcgd2l0aCBu
+b24gcW9zIHF1ZXVlIHZhbHVlKFRJRCA9IDE2KS4KPiBEdWUgdG8gcW9zIGVuYWJsZWQsIGZpcm13
+YXJlIGlzIGRpc2NhcmRpbmcgdGhlIHBhY2tldC4KPgo+IFRoaXMgcGF0Y2ggZml4ZXMgdGhpcyBp
+c3N1ZSBieSB1cGRhdGluZyB0aGUgcW9zIGJhc2VkIG9uIHN0YXRpb24KPiBXTUUgY2FwYWJpbGl0
+eSBmaWVsZCBpZiBXTU0gaXMgZGlzYWJsZWQgaW4gQVAuCj4KPiBUaGlzIHBhdGNoIGlzIHJlcXVp
+cmVkIGJ5IDEwLjQgZmFtaWx5IGNoaXBzZXRzIGxpa2UKPiBRQ0E0MDE5L1FDQTk4ODgvUUNBOTg4
+NC9RQ0E5OVgwLgo+IEZpcm13YXJlIFZlcnNvaW4gOiAxMC40LTMuNS4xLTAwMDE4Lgo+Cj4gRm9y
+IDEwLjIuNCBmYW1pbHkgY2hpcHNldHMgUUNBOTg4WC9RQ0E5ODg3IGFuZCBRQ0E2MTc0IHRoaXMg
+cGF0Y2gKPiBoYXMgbm8gZWZmZWN0Lgo+Cj4gU2lnbmVkLW9mZi1ieTogQmFsYWppIFBvdGh1bm9v
+cmkgPGJwb3RodW5vQHF0aS5xdWFsY29tbS5jb20+Cj4gLS0tCj4gICBkcml2ZXJzL25ldC93aXJl
+bGVzcy9hdGgvYXRoMTBrL21hYy5jIHwgICAgMiArLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5z
+ZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway9tYWMuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+bWFjLmMKPiBpbmRleCAwYTk0N2VlLi4yNjE2Yjk5IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL21hYy5jCj4gQEAgLTI1NjMsNyArMjU2Myw3IEBAIHN0YXRpYyB2b2lkIGF0aDEw
+a19wZWVyX2Fzc29jX2hfcW9zKHN0cnVjdCBhdGgxMGsgKmFyLAo+ICAgCQl9Cj4gICAJCWJyZWFr
+Owo+ICAgCWNhc2UgV01JX1ZERVZfVFlQRV9TVEE6Cj4gLQkJaWYgKHZpZi0+YnNzX2NvbmYucW9z
+KQo+ICsJCWlmIChzdGEtPndtZSkKPiAgIAkJCWFyZy0+cGVlcl9mbGFncyB8PSBhcnZpZi0+YXIt
+PndtaS5wZWVyX2ZsYWdzLT5xb3M7Cj4gICAJCWJyZWFrOwo+ICAgCWNhc2UgV01JX1ZERVZfVFlQ
+RV9JQlNTOgoKCi0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0
+aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNp
+dHo6ICBTdHViZW53YWxkYWxsZWUgMjFhLCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6
+IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRl
+ciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQpl
+bWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6
+ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
