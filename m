@@ -1,21 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail-qt0-x233.google.com ([2607:f8b0:400d:c0d::233])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eK2ZH-0006I8-Jf
- for ath10k@lists.infradead.org; Wed, 29 Nov 2017 13:38:32 +0000
-Subject: Re: [PATCH] ath10k: handling qos at STA side based on AP WMM
- enable/disable
-References: <1511863650-9419-1-git-send-email-bpothuno@qti.qualcomm.com>
- <5ec76365-7ca2-15bd-0bcc-9cc19b9f3b27@dd-wrt.com>
- <e93273148ad44a54bfb39bc7018bfcc0@aptaiexm02b.ap.qualcomm.com>
- <e84f2a95-178b-dc07-bc6e-9dc779e0db0f@dd-wrt.com>
- <8f027afc7c094e6d84ff4205384eb66d@aptaiexm02b.ap.qualcomm.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <9c0c8939-c3d6-92ed-0d2d-2bd57c9234d7@dd-wrt.com>
-Date: Wed, 29 Nov 2017 14:38:04 +0100
+ id 1eK5f8-0001oZ-Gn
+ for ath10k@lists.infradead.org; Wed, 29 Nov 2017 16:56:44 +0000
+Received: by mail-qt0-x233.google.com with SMTP id a16so5192911qtj.3
+ for <ath10k@lists.infradead.org>; Wed, 29 Nov 2017 08:56:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <8f027afc7c094e6d84ff4205384eb66d@aptaiexm02b.ap.qualcomm.com>
+In-Reply-To: <87h8tg6y2t.fsf@kamboji.qca.qualcomm.com>
+References: <CAGT1WQM6uiP6GHW9ukNUPf+JcZckENz514gg0DiR7CCO=5K+Fg@mail.gmail.com>
+ <87zi7da458.fsf@kamboji.qca.qualcomm.com>
+ <CAGT1WQO9y89Wz250zZs2qqGv7rut5C82Ncd4=XOKCLthnYrC3w@mail.gmail.com>
+ <87h8tg6y2t.fsf@kamboji.qca.qualcomm.com>
+From: Konstantin Bogomolov <konstantin.bogomolov@dejero.com>
+Date: Wed, 29 Nov 2017 11:56:20 -0500
+Message-ID: <CAGT1WQOGi2Aq2d1e-YhdCxZCK5oqF2Dzu3fpjkz2fqRDAVn11A@mail.gmail.com>
+Subject: Re: Kernel panic hosting 5Ghz AP
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,100 +23,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Balaji Pothunoori <bpothuno@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: ath10k@lists.infradead.org
 
-QW0gMjkuMTEuMjAxNyB1bSAxMToxMiBzY2hyaWViIEJhbGFqaSBQb3RodW5vb3JpOgo+Pj4gSGkg
-U2ViYXN0aWFuLAo+Pj4KPj4+IElmIEkgYW0gbm90IHdyb25nIHlvdSBhcmUgc2VlaW5nIHRoZSBp
-c3N1ZSB3aXRoIFdSVDMyMDBBQ00gKE1hcnZlbGwgODhXODk2NCkgYXMgY2xpZW50ICsgUUNBOTk4
-NCAoRlcgOiAxMC40LTMuNS4zLTAwMDM4KSBhcyBBUCB3aXRoIGJlbG93IGNoYW5nZSB5b3UgYXJl
-IHNlZWluZyB0aGUgY3Jhc2ggd2hpbGUgcnVubmluZyB0cmFmZmljIGJldHdlZW4gdGhlIFdSVDMy
-MDBBQ00gKyBRQ0E5OTg0ID8KPj4+IERvIHlvdSB1c2VkICBhbnkgb3RoZXIgY2xpZW50IGluIHBs
-YWNlIG9mIFdSVDMyMDBBQ00gPwo+PiB0aGVyZSBpcyBub3QgbXVjaCAgdHJhZmZpYyByZXF1aXJl
-ZC4gYXMgaXQgc2VlbXMgdGhlIGZpcm13YXJlIGNyYXNoZXMgaW1tZWRpYXRseSBhZnRlciBhc3Nv
-Y2lhdGlvbi4gdGhlIGlzc3VlIGlzIGFsc28gbm90IHByZXNlbnQgaW4gMTAuNC0zLjQtMDA4Mnd3
-Cj4gU3RpbGwgbXkgcXVlc3Rpb24gaXMgbm90IGNsZWFyZWQsICBmaXJtd2FyZSBjcmFzaCBpcyBk
-dWUgdG8gdGhpcyBwYXRjaCA/IEFsc28gbGV0IG1lIGtub3cgZG8geW91IG9ic2VydmVkIHNhbWUg
-YmVoYXZpb3Igd2l0aCBhbnkgb3RoZXIgY2hpcHNldCA/Cgpuby4gaXRzIHVucmVsYXRlZCB0byB0
-aGlzIHBhdGNoIGJ1dCBzaW5jZSB5b3UncmUgd29ya2luZyBmb3IgcWNhIGkgCnRob3VnaHQgaXQg
-d291bGQgbWFrZSBzZW5zZSB0byB0ZWxsIHlvdSB0aGlzIHNpbmNlIHNhdyB0aGF0IHlvdSdyZSB1
-c2luZyAKYXRoMTBrIGZpcm13YXJlcyB3aGljaCBhcmVudCBwdWJsaXNoZWQgb2ZmaWNpYWxsIGJ1
-dCBiYXNlZCBvbiB0aGUKCnFjYSBmaXJtd2FyZXMgd2hpY2ggYXJlIHB1Ymxpc2hlZCBvbiBjaGlw
-Y29kZS4gc2luY2UgaSB3YXMgdGVzdGluZ8KgIAp0aGVzZSBmaXJtd2FyZXMgdG9vIHNvbWUgd2Vl
-a3MgYWdvIGkgZm91bmQgaXRzIGEgZ29vZCBpZGVhIHRvIHRlbGwgeW91IHRoaXMKCj4KPiAgIAo+
-IFJlZ2FyZHMsCj4gQmFsYWppLgo+Cj4+IFNlYmFzdGlhbgo+Cj4+PiBSZWdhcmRzLAo+Pj4gQmFs
-YWppLgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogU2ViYXN0aWFuIEdvdHRz
-Y2hhbGwgW21haWx0bzpzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbV0KPiBTZW50OiBXZWRuZXNkYXks
-IE5vdmVtYmVyIDI5LCAyMDE3IDI6MDQgUE0KPiBUbzogQmFsYWppIFBvdGh1bm9vcmkgPGJwb3Ro
-dW5vQHF0aS5xdWFsY29tbS5jb20+OyBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IENjOiBs
-aW51eC13aXJlbGVzc0B2Z2VyLmtlcm5lbC5vcmcKPiBTdWJqZWN0OiBSZTogW1BBVENIXSBhdGgx
-MGs6IGhhbmRsaW5nIHFvcyBhdCBTVEEgc2lkZSBiYXNlZCBvbiBBUCBXTU0gZW5hYmxlL2Rpc2Fi
-bGUKPgo+IEFtIDI5LjExLjIwMTcgdW0gMDc6NTggc2NocmllYiBCYWxhamkgUG90aHVub29yaToK
-Pj4gSGkgU2ViYXN0aWFuLAo+Pgo+PiBJZiBJIGFtIG5vdCB3cm9uZyB5b3UgYXJlIHNlZWluZyB0
-aGUgaXNzdWUgd2l0aCBXUlQzMjAwQUNNIChNYXJ2ZWxsIDg4Vzg5NjQpIGFzIGNsaWVudCArIFFD
-QTk5ODQgKEZXIDogMTAuNC0zLjUuMy0wMDAzOCkgYXMgQVAgd2l0aCBiZWxvdyBjaGFuZ2UgeW91
-IGFyZSBzZWVpbmcgdGhlIGNyYXNoIHdoaWxlIHJ1bm5pbmcgdHJhZmZpYyBiZXR3ZWVuIHRoZSBX
-UlQzMjAwQUNNICsgUUNBOTk4NCA/Cj4+IERvIHlvdSB1c2VkICBhbnkgb3RoZXIgY2xpZW50IGlu
-IHBsYWNlIG9mIFdSVDMyMDBBQ00gPwo+IHRoZXJlIGlzIG5vdCBtdWNowqAgdHJhZmZpYyByZXF1
-aXJlZC4gYXMgaXQgc2VlbXMgdGhlIGZpcm13YXJlIGNyYXNoZXMgaW1tZWRpYXRseSBhZnRlciBh
-c3NvY2lhdGlvbi4gdGhlIGlzc3VlIGlzIGFsc28gbm90IHByZXNlbnQgaW4gMTAuNC0zLjQtMDA4
-Mnd3Cj4KPj4gQ2FuIHlvdSBzaGFyZSB0aGUgbW9yZSBkZXRhaWxzIG9uIGZpcm13YXJlIGNyYXNo
-ID8KPiBzbyBhIGZpcm13YXJlIGNyYXNoZHVtcCBmcm9tIGxvZz8gaSdsbCB0cnkgdG8gZ2V0IGl0
-IHdpdGhpbiB0aGUgbmV4dCBob3Vycy4ganVzdCBuZWVkIHRvIHJlc2V0dXAgdGhlIHRlc3Qgc2Nl
-bmFyaW8KPgo+Cj4gU2ViYXN0aWFuCj4KPgo+PiBSZWdhcmRzLAo+PiBCYWxhamkuCj4+Cj4+IC0t
-LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+IEZyb206IFNlYmFzdGlhbiBHb3R0c2NoYWxsIFtt
-YWlsdG86cy5nb3R0c2NoYWxsQGRkLXdydC5jb21dCj4+IFNlbnQ6IFdlZG5lc2RheSwgTm92ZW1i
-ZXIgMjksIDIwMTcgODoyOCBBTQo+PiBUbzogQmFsYWppIFBvdGh1bm9vcmkgPGJwb3RodW5vQHF0
-aS5xdWFsY29tbS5jb20+OyBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+PiBDYzogbGludXgt
-d2lyZWxlc3NAdmdlci5rZXJuZWwub3JnCj4+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGF0aDEwazog
-aGFuZGxpbmcgcW9zIGF0IFNUQSBzaWRlIGJhc2VkIG9uIEFQIFdNTSBlbmFibGUvZGlzYWJsZQo+
-Pgo+PiBkaWQgeW91IG5vdGljZcKgIHRoYXQgTWFydmVsbCA4OFc4OTY0IGJhc2VkIGNsaWVudHMg
-d2lsbCBjcmFzaCAxMC40LTMuNS4zIGZpcm13YXJlcz/CoCAodGVzdGVkIHdpdGggOTk4NCBhbmQg
-MTAuNC0zLjUuMy0wMDAzOCkgY2xpZW50IGRldmljZSB3YXMgYSBsaW5rc3lzIHdydDMyMDBhY20g
-cnVubmluZyBkZC13cnQgZm9yIHRlc3RpbmcKPj4KPj4gQW0gMjguMTEuMjAxNyB1bSAxMTowNyBz
-Y2hyaWViIGJwb3RodW5vQHF0aS5xdWFsY29tbS5jb206Cj4+PiBGcm9tOiBCYWxhamkgUG90aHVu
-b29yaSA8YnBvdGh1bm9AcXRpLnF1YWxjb21tLmNvbT4KPj4+Cj4+PiBEYXRhIHBhY2tldHMgYXJl
-IG5vdCBzZW50IGJ5IFNUQSBpbiBjYXNlIG9mIFNUQSBqb2luZWQgdG8gbm9uIFFPUyBBUAo+Pj4g
-KFdNTSBkaXNhYmxlZCBBUCkuIFRoaXMgaXMgaGFwcGVuaW5nIGJlY2F1c2Ugb2YgU1RBIGlzIHNl
-bmRpbmcgZGF0YQo+Pj4gcGFja2V0cyB0byBmaXJtd2FyZSBmcm9tIGhvc3Qgd2l0aCBxb3MgZW5h
-YmxlZCBhbG9uZyB3aXRoIG5vbiBxb3MKPj4+IHF1ZXVlIHZhbHVlKFRJRCA9IDE2KS4KPj4+IER1
-ZSB0byBxb3MgZW5hYmxlZCwgZmlybXdhcmUgaXMgZGlzY2FyZGluZyB0aGUgcGFja2V0Lgo+Pj4K
-Pj4+IFRoaXMgcGF0Y2ggZml4ZXMgdGhpcyBpc3N1ZSBieSB1cGRhdGluZyB0aGUgcW9zIGJhc2Vk
-IG9uIHN0YXRpb24gV01FCj4+PiBjYXBhYmlsaXR5IGZpZWxkIGlmIFdNTSBpcyBkaXNhYmxlZCBp
-biBBUC4KPj4+Cj4+PiBUaGlzIHBhdGNoIGlzIHJlcXVpcmVkIGJ5IDEwLjQgZmFtaWx5IGNoaXBz
-ZXRzIGxpa2UKPj4+IFFDQTQwMTkvUUNBOTg4OC9RQ0E5ODg0L1FDQTk5WDAuCj4+PiBGaXJtd2Fy
-ZSBWZXJzb2luIDogMTAuNC0zLjUuMS0wMDAxOC4KPj4+Cj4+PiBGb3IgMTAuMi40IGZhbWlseSBj
-aGlwc2V0cyBRQ0E5ODhYL1FDQTk4ODcgYW5kIFFDQTYxNzQgdGhpcyBwYXRjaCBoYXMKPj4+IG5v
-IGVmZmVjdC4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBCYWxhamkgUG90aHVub29yaSA8YnBvdGh1
-bm9AcXRpLnF1YWxjb21tLmNvbT4KPj4+IC0tLQo+Pj4gICAgIGRyaXZlcnMvbmV0L3dpcmVsZXNz
-L2F0aC9hdGgxMGsvbWFjLmMgfCAgICAyICstCj4+PiAgICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5z
-ZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4+Pgo+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0
-L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPj4+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
-L2F0aDEway9tYWMuYwo+Pj4gaW5kZXggMGE5NDdlZS4uMjYxNmI5OSAxMDA2NDQKPj4+IC0tLSBh
-L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPj4+ICsrKyBiL2RyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPj4+IEBAIC0yNTYzLDcgKzI1NjMsNyBAQCBz
-dGF0aWMgdm9pZCBhdGgxMGtfcGVlcl9hc3NvY19oX3FvcyhzdHJ1Y3QgYXRoMTBrICphciwKPj4+
-ICAgICAJCX0KPj4+ICAgICAJCWJyZWFrOwo+Pj4gICAgIAljYXNlIFdNSV9WREVWX1RZUEVfU1RB
-Ogo+Pj4gLQkJaWYgKHZpZi0+YnNzX2NvbmYucW9zKQo+Pj4gKwkJaWYgKHN0YS0+d21lKQo+Pj4g
-ICAgIAkJCWFyZy0+cGVlcl9mbGFncyB8PSBhcnZpZi0+YXItPndtaS5wZWVyX2ZsYWdzLT5xb3M7
-Cj4+PiAgICAgCQlicmVhazsKPj4+ICAgICAJY2FzZSBXTUlfVkRFVl9UWVBFX0lCU1M6Cj4+IC0t
-Cj4+IE1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCj4+Cj4+IFNlYmFzdGlhbiBH
-b3R0c2NoYWxsIC8gQ1RPCj4+Cj4+IE5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCj4+IEZpcm1l
-bnNpdHo6ICBTdHViZW53YWxkYWxsZWUgMjFhLCA2NDYyNSBCZW5zaGVpbQo+PiBSZWdpc3Rlcmdl
-cmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCj4+IEdlc2Now6RmdHNmw7xo
-cmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlIGh0dHA6Ly93d3cuZGQt
-d3J0LmNvbQo+PiBlbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KPj4gVGVsLjogKzQ5NjI1
-MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQo+PgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4g
-R3LDvHNzZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEt
-TkVUIEdtYkggLSBERC1XUlQKRmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0NjI1
-IEJlbnNoZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0
-NzMKR2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVl
-bGUKaHR0cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpU
-ZWwuOiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2F0aDEwawo=
+I've been trying to reproduce the issue on 4.14.1 for a few days now,
+and it seems to have been stable so far (using ACS).
+
+I should mention that I've been reproducing this using a torture test
+where I first start a 2.4 Ghz AP, take it down, then start a 5 Ghz AP
+(twice), then reboot and try again.
+
+I am not sure whether starting the 2.4 Ghz AP before the other one
+exacerbates the issue or not. Running the torture test on my 4.1
+kernel (with 4.12 backports) worked for a while, until the kernel
+crash happened, at which point starting the 5 Ghz AP led to a kernel
+crash every time. On the stock Debian 4.9 kernel, it never worked and
+crashed right away, until I tested it again after my 4.14.1 tests --
+at which point it seemed to work.
+
+So from what I've observed, the crash does not manifest itself right
+away, but once it happens once, it continues happening without fail on
+the subsequent tries. Having said that, 4.14.1 seems to be working
+well considering its been ~5 days of running the torture test, whereas
+4.1 (with 4.12 backports) crashed within 1-2 days.
+
+Konstantin
+
+On Mon, Nov 27, 2017 at 1:21 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Konstantin Bogomolov <konstantin.bogomolov@dejero.com> writes:
+>
+>> Hello Kalle,
+>>
+>> The panic happens after hostapd outputs "ACS-STARTED". Usually, the
+>> first attempt for me to start hostapd fails to create the AP (I think
+>> this is a separate issue with the 5Ghz AP), but the second attempt
+>> always initiates a panic on Debian 4.9 drivers.
+>>
+>> I don't think this is a regression, because I saw the same behaviour
+>> on a custom 4.1 kernel. I have also tried using backported drivers
+>> from 4.12.0 to both 4.1 and 4.9, where the panic was also reproducible
+>> on the second hostapd attempt, but didn't happen every time as it does
+>> on Debian 4.9. So the AP did work on some occasions using the
+>> backports, but the panic still happened very frequently. Sadly I don't
+>> have logs at this time using those backports.
+>>
+>> I'll try and reproduce this using a recent kernel and let you know the results.
+>
+> Also try without ACS (meaning specify a channel mannually hostapd config
+> file) just to see if the crash is ACS related.
+>
+> --
+> Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
