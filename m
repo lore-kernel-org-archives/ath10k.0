@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eJz2h-0006o7-O3
+ id 1eJz2h-0006ns-Jj
  for ath10k@lists.infradead.org; Wed, 29 Nov 2017 09:52:36 +0000
 From: Rakesh Pillai <pillair@qti.qualcomm.com>
-Subject: [PATCH 4/4] ath10k: WMI: add hw params entry for wcn3990
-Date: Wed, 29 Nov 2017 15:21:37 +0530
-Message-Id: <1511949097-524-4-git-send-email-pillair@qti.qualcomm.com>
+Subject: [PATCH 2/4] ath10k: WMI: Add management tx by reference support over
+ wmi
+Date: Wed, 29 Nov 2017 15:21:35 +0530
+Message-Id: <1511949097-524-2-git-send-email-pillair@qti.qualcomm.com>
 In-Reply-To: <1511949097-524-1-git-send-email-pillair@qti.qualcomm.com>
 References: <1511949097-524-1-git-send-email-pillair@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,91 +26,287 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
 
-Add hw params entry for wcn3990 and populate various
-target specific values for wcn3990.
+HL1.0 firmware branch, used in wcn3990, transmits management
+frames by reference over WMI.
+
+Add support for management tx by reference over WMI.
 
 Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
 Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 18 ++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.c   |  2 ++
- drivers/net/wireless/ath/ath10k/hw.h   | 10 ++++++++++
- 3 files changed, 30 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c    |  1 +
+ drivers/net/wireless/ath/ath10k/core.h    |  3 ++
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  9 +++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 78 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 67 ++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |  1 +
+ 6 files changed, 158 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index be18913..6abffb5 100644
+index b29fdbd..1e4e18e 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -405,6 +405,24 @@
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 	},
-+	{
-+		.id = WCN3990_HW_1_0_DEV_VERSION,
-+		.dev_id = 0,
-+		.name = "wcn3990 hw1.0",
-+		.continuous_frag_desc = true,
-+		.tx_chain_mask = 0x7,
-+		.rx_chain_mask = 0x7,
-+		.max_spatial_stream = 4,
-+		.fw = {
-+			.dir = WCN3990_HW_1_0_FW_DIR,
-+		},
-+		.sw_decrypt_mcast_mgmt = true,
-+		.hw_ops = &wcn3990_ops,
-+		.decap_align_bytes = 1,
-+		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
-+		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
-+		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
-+	},
+@@ -390,6 +390,7 @@
+ 	[ATH10K_FW_FEATURE_SKIP_NULL_FUNC_WAR] = "skip-null-func-war",
+ 	[ATH10K_FW_FEATURE_ALLOWS_MESH_BCAST] = "allows-mesh-bcast",
+ 	[ATH10K_FW_FEATURE_NO_PS] = "no-ps",
++	[ATH10K_FW_FEATURE_MGMT_TX_BY_REF] = "mgmt-tx-by-reference",
  };
  
- static const char *const ath10k_core_fw_feature_str[] = {
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index 88955bb..76b9b41 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -931,3 +931,5 @@ static int ath10k_qca99x0_rx_desc_get_l3_pad_bytes(struct htt_rx_desc *rxd)
- 	.set_coverage_class = ath10k_hw_qca988x_set_coverage_class,
- 	.enable_pll_clk = ath10k_hw_qca6174_enable_pll_clock,
+ static unsigned int ath10k_core_get_fw_feature_str(char *buf,
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 643041e..30c4c07 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -615,6 +615,9 @@ enum ath10k_fw_features {
+ 	/* Firmware does not support power save in station mode. */
+ 	ATH10K_FW_FEATURE_NO_PS = 17,
+ 
++	/* Firmware allows management tx by reference instead of by value. */
++	ATH10K_FW_FEATURE_MGMT_TX_BY_REF = 18,
++
+ 	/* keep last */
+ 	ATH10K_FW_FEATURE_COUNT,
  };
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index 2fc3f24..41eef94 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -377,6 +377,7 @@ struct wmi_ops {
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
+ 	struct sk_buff *skb;
+ 	int ret;
++	u32 mgmt_tx_cmdid;
+ 
+ 	if (!ar->wmi.ops->gen_mgmt_tx)
+ 		return -EOPNOTSUPP;
+@@ -385,7 +386,13 @@ struct wmi_ops {
+ 	if (IS_ERR(skb))
+ 		return PTR_ERR(skb);
+ 
+-	ret = ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->mgmt_tx_cmdid);
++	if (test_bit(ATH10K_FW_FEATURE_MGMT_TX_BY_REF,
++		     ar->running_fw->fw_file.fw_features))
++		mgmt_tx_cmdid = ar->wmi.cmd->mgmt_tx_send_cmdid;
++	else
++		mgmt_tx_cmdid = ar->wmi.cmd->mgmt_tx_cmdid;
 +
-+const struct ath10k_hw_ops wcn3990_ops = {0};
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index fedb6c7..90ad39b 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -128,6 +128,10 @@ enum qca9377_chip_id_rev {
- #define QCA4019_HW_1_0_BOARD_DATA_FILE "board.bin"
- #define QCA4019_HW_1_0_PATCH_LOAD_ADDR  0x1234
++	ret = ath10k_wmi_cmd_send(ar, skb, mgmt_tx_cmdid);
+ 	if (ret)
+ 		return ret;
  
-+/* WCN3990 1.0 definitions */
-+#define WCN3990_HW_1_0_DEV_VERSION	ATH10K_HW_WCN3990
-+#define WCN3990_HW_1_0_FW_DIR		ATH10K_FW_DIR "/WCN3990/hw3.0"
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 35bcae4..452846c 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -2484,6 +2484,82 @@ static void *ath10k_wmi_tlv_put_wmm(void *ptr,
+ }
+ 
+ static struct sk_buff *
++ath10k_wmi_tlv_op_gen_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
++{
++	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(msdu);
++	struct wmi_tlv_mgmt_tx_cmd *cmd;
++	struct wmi_tlv *tlv;
++	struct ieee80211_hdr *hdr;
++	struct sk_buff *skb;
++	void *ptr;
++	int len;
++	u32 buf_len = msdu->len;
++	u16 fc;
++	struct ath10k_vif *arvif;
++	dma_addr_t mgmt_frame_dma;
++	u32 vdev_id;
 +
- #define ATH10K_FW_FILE_BASE		"firmware"
- #define ATH10K_FW_API_MAX		6
- #define ATH10K_FW_API_MIN		2
-@@ -571,6 +575,7 @@ struct ath10k_hw_ops {
- extern const struct ath10k_hw_ops qca988x_ops;
- extern const struct ath10k_hw_ops qca99x0_ops;
- extern const struct ath10k_hw_ops qca6174_ops;
-+extern const struct ath10k_hw_ops wcn3990_ops;
- 
- extern const struct ath10k_hw_clk_params qca6174_clk[];
- 
-@@ -667,6 +672,11 @@ struct ath10k_hw_ops {
- #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
- #define TARGET_TLV_NUM_WOW_PATTERNS		22
- 
-+/* Target specific defines for WMI-HL-1.0 firmware */
-+#define TARGET_HL_10_TLV_NUM_PEERS		14
-+#define TARGET_HL_10_TLV_AST_SKID_LIMIT		6
-+#define TARGET_HL_10_TLV_NUM_WDS_ENTRIES	2
++	if (!cb->vif)
++		return ERR_PTR(-EINVAL);
 +
- /* Diagnostic Window */
- #define CE_DIAG_PIPE	7
++	hdr = (struct ieee80211_hdr *)msdu->data;
++	fc = le16_to_cpu(hdr->frame_control);
++	arvif = (void *)cb->vif->drv_priv;
++	vdev_id = arvif->vdev_id;
++
++	if (WARN_ON_ONCE(!ieee80211_is_mgmt(hdr->frame_control)))
++		return ERR_PTR(-EINVAL);
++
++	len = sizeof(*cmd) + 2 * sizeof(*tlv);
++
++	if ((ieee80211_is_action(hdr->frame_control) ||
++	     ieee80211_is_deauth(hdr->frame_control) ||
++	     ieee80211_is_disassoc(hdr->frame_control)) &&
++	     ieee80211_has_protected(hdr->frame_control)) {
++		len += IEEE80211_CCMP_MIC_LEN;
++		buf_len += IEEE80211_CCMP_MIC_LEN;
++	}
++
++	buf_len = min_t(u32, buf_len, WMI_TLV_MGMT_TX_FRAME_MAX_LEN);
++	buf_len = round_up(buf_len, 4);
++
++	len += buf_len;
++	len = round_up(len, 4);
++	skb = ath10k_wmi_alloc_skb(ar, len);
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	ptr = (void *)skb->data;
++	tlv = ptr;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_MGMT_TX_CMD);
++	tlv->len = __cpu_to_le16(sizeof(*cmd));
++	cmd = (void *)tlv->value;
++	cmd->vdev_id = vdev_id;
++	cmd->desc_id = 0;
++	cmd->chanfreq = 0;
++	cmd->buf_len = __cpu_to_le32(buf_len);
++	cmd->frame_len = __cpu_to_le32(msdu->len);
++	mgmt_frame_dma = dma_map_single(arvif->ar->dev, msdu->data,
++					msdu->len, DMA_TO_DEVICE);
++	if (!mgmt_frame_dma)
++		return ERR_PTR(-ENOMEM);
++
++	cmd->paddr = __cpu_to_le64(mgmt_frame_dma);
++
++	ptr += sizeof(*tlv);
++	ptr += sizeof(*cmd);
++
++	tlv = ptr;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_ARRAY_BYTE);
++	tlv->len = __cpu_to_le16(buf_len);
++
++	ptr += sizeof(*tlv);
++	memcpy(ptr, msdu->data, buf_len);
++
++	return skb;
++}
++
++static struct sk_buff *
+ ath10k_wmi_tlv_op_gen_force_fw_hang(struct ath10k *ar,
+ 				    enum wmi_force_fw_hang_type type,
+ 				    u32 delay_ms)
+@@ -3292,6 +3368,7 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	.bcn_filter_rx_cmdid = WMI_TLV_BCN_FILTER_RX_CMDID,
+ 	.prb_req_filter_rx_cmdid = WMI_TLV_PRB_REQ_FILTER_RX_CMDID,
+ 	.mgmt_tx_cmdid = WMI_TLV_MGMT_TX_CMDID,
++	.mgmt_tx_send_cmdid = WMI_TLV_MGMT_TX_SEND_CMD,
+ 	.prb_tmpl_cmdid = WMI_TLV_PRB_TMPL_CMDID,
+ 	.addba_clear_resp_cmdid = WMI_TLV_ADDBA_CLEAR_RESP_CMDID,
+ 	.addba_send_cmdid = WMI_TLV_ADDBA_SEND_CMDID,
+@@ -3626,6 +3703,7 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	.gen_request_stats = ath10k_wmi_tlv_op_gen_request_stats,
+ 	.gen_force_fw_hang = ath10k_wmi_tlv_op_gen_force_fw_hang,
+ 	/* .gen_mgmt_tx = not implemented; HTT is used */
++	.gen_mgmt_tx =  ath10k_wmi_tlv_op_gen_mgmt_tx,
+ 	.gen_dbglog_cfg = ath10k_wmi_tlv_op_gen_dbglog_cfg,
+ 	.gen_pktlog_enable = ath10k_wmi_tlv_op_gen_pktlog_enable,
+ 	.gen_pktlog_disable = ath10k_wmi_tlv_op_gen_pktlog_disable,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 77327a2..4faaa64 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -22,6 +22,7 @@
+ #define WMI_TLV_CMD_UNSUPPORTED 0
+ #define WMI_TLV_PDEV_PARAM_UNSUPPORTED 0
+ #define WMI_TLV_VDEV_PARAM_UNSUPPORTED 0
++#define WMI_TLV_MGMT_TX_FRAME_MAX_LEN	64
  
+ enum wmi_tlv_grp_id {
+ 	WMI_TLV_GRP_START = 0x3,
+@@ -132,6 +133,7 @@ enum wmi_tlv_cmd_id {
+ 	WMI_TLV_PRB_REQ_FILTER_RX_CMDID,
+ 	WMI_TLV_MGMT_TX_CMDID,
+ 	WMI_TLV_PRB_TMPL_CMDID,
++	WMI_TLV_MGMT_TX_SEND_CMD,
+ 	WMI_TLV_ADDBA_CLEAR_RESP_CMDID = WMI_TLV_CMD(WMI_TLV_GRP_BA_NEG),
+ 	WMI_TLV_ADDBA_SEND_CMDID,
+ 	WMI_TLV_ADDBA_STATUS_CMDID,
+@@ -890,6 +892,63 @@ enum wmi_tlv_tag {
+ 	WMI_TLV_TAG_STRUCT_SAP_OFL_DEL_STA_EVENT,
+ 	WMI_TLV_TAG_STRUCT_APFIND_CMD_PARAM,
+ 	WMI_TLV_TAG_STRUCT_APFIND_EVENT_HDR,
++	WMI_TLV_TAG_STRUCT_OCB_SET_SCHED_CMD,
++	WMI_TLV_TAG_STRUCT_OCB_SET_SCHED_EVENT,
++	WMI_TLV_TAG_STRUCT_OCB_SET_CONFIG_CMD,
++	WMI_TLV_TAG_STRUCT_OCB_SET_CONFIG_RESP_EVENT,
++	WMI_TLV_TAG_STRUCT_OCB_SET_UTC_TIME_CMD,
++	WMI_TLV_TAG_STRUCT_OCB_START_TIMING_ADVERT_CMD,
++	WMI_TLV_TAG_STRUCT_OCB_STOP_TIMING_ADVERT_CMD,
++	WMI_TLV_TAG_STRUCT_OCB_GET_TSF_TIMER_CMD,
++	WMI_TLV_TAG_STRUCT_OCB_GET_TSF_TIMER_RESP_EVENT,
++	WMI_TLV_TAG_STRUCT_DCC_GET_STATS_CMD,
++	WMI_TLV_TAG_STRUCT_DCC_CHANNEL_STATS_REQUEST,
++	WMI_TLV_TAG_STRUCT_DCC_GET_STATS_RESP_EVENT,
++	WMI_TLV_TAG_STRUCT_DCC_CLEAR_STATS_CMD,
++	WMI_TLV_TAG_STRUCT_DCC_UPDATE_NDL_CMD,
++	WMI_TLV_TAG_STRUCT_DCC_UPDATE_NDL_RESP_EVENT,
++	WMI_TLV_TAG_STRUCT_DCC_STATS_EVENT,
++	WMI_TLV_TAG_STRUCT_OCB_CHANNEL,
++	WMI_TLV_TAG_STRUCT_OCB_SCHEDULE_ELEMENT,
++	WMI_TLV_TAG_STRUCT_DCC_NDL_STATS_PER_CHANNEL,
++	WMI_TLV_TAG_STRUCT_DCC_NDL_CHAN,
++	WMI_TLV_TAG_STRUCT_QOS_PARAMETER,
++	WMI_TLV_TAG_STRUCT_DCC_NDL_ACTIVE_STATE_CONFIG,
++	WMI_TLV_TAG_STRUCT_ROAM_SCAN_EXTENDED_THRESHOLD_PARAM,
++	WMI_TLV_TAG_STRUCT_ROAM_FILTER_FIXED_PARAM,
++	WMI_TLV_TAG_STRUCT_PASSPOINT_CONFIG_CMD,
++	WMI_TLV_TAG_STRUCT_PASSPOINT_EVENT_HDR,
++	WMI_TLV_TAG_STRUCT_EXTSCAN_CONFIGURE_HOTLIST_SSID_MONITOR_CMD,
++	WMI_TLV_TAG_STRUCT_EXTSCAN_HOTLIST_SSID_MATCH_EVENT,
++	WMI_TLV_TAG_STRUCT_VDEV_TSF_TSTAMP_ACTION_CMD,
++	WMI_TLV_TAG_STRUCT_VDEV_TSF_REPORT_EVENT,
++	WMI_TLV_TAG_STRUCT_GET_FW_MEM_DUMP,
++	WMI_TLV_TAG_STRUCT_UPDATE_FW_MEM_DUMP,
++	WMI_TLV_TAG_STRUCT_FW_MEM_DUMP_PARAMS,
++	WMI_TLV_TAG_STRUCT_DEBUG_MESG_FLUSH,
++	WMI_TLV_TAG_STRUCT_DEBUG_MESG_FLUSH_COMPLETE,
++	WMI_TLV_TAG_STRUCT_PEER_SET_RATE_REPORT_CONDITION,
++	WMI_TLV_TAG_STRUCT_ROAM_SUBNET_CHANGE_CONFIG,
++	WMI_TLV_TAG_STRUCT_VDEV_SET_IE_CMD,
++	WMI_TLV_TAG_STRUCT_RSSI_BREACH_MONITOR_CONFIG,
++	WMI_TLV_TAG_STRUCT_RSSI_BREACH_EVENT,
++	WMI_TLV_TAG_STRUCT_EVENT_INITIAL_WAKEUP,
++	WMI_TLV_TAG_STRUCT_SOC_SET_PCL_CMD,
++	WMI_TLV_TAG_STRUCT_SOC_SET_HW_MODE_CMD,
++	WMI_TLV_TAG_STRUCT_SOC_SET_HW_MODE_RESPONSE_EVENT,
++	WMI_TLV_TAG_STRUCT_SOC_HW_MODE_TRANSITION_EVENT,
++	WMI_TLV_TAG_STRUCT_VDEV_TXRX_STREAMS,
++	WMI_TLV_TAG_STRUCT_SOC_SET_HW_MODE_RESPONSE_VDEV_MAC_ENTRY,
++	WMI_TLV_TAG_STRUCT_SOC_SET_DUAL_MAC_CONFIG_CMD,
++	WMI_TLV_TAG_STRUCT_SOC_SET_DUAL_MAC_CONFIG_RESPONSE_EVENT,
++	WMI_TLV_TAG_STRUCT_IOAC_SOCK_PATTERN_T,
++	WMI_TLV_TAG_STRUCT_WOW_ENABLE_ICMPV6_NA_FLT_CMD,
++	WMI_TLV_TAG_STRUCT_DIAG_EVENT_LOG_CONFIG,
++	WMI_TLV_TAG_STRUCT_DIAG_EVENT_LOG_SUPPORTED_EVENT,
++	WMI_TLV_TAG_STRUCT_PACKET_FILTER_CONFIG,
++	WMI_TLV_TAG_STRUCT_PACKET_FILTER_ENABLE,
++	WMI_TLV_TAG_STRUCT_SAP_SET_BLACKLIST_PARAM_CMD,
++	WMI_TLV_TAG_STRUCT_MGMT_TX_CMD,
+ 
+ 	WMI_TLV_TAG_MAX
+ };
+@@ -1689,4 +1748,12 @@ struct wmi_tlv_tx_pause_ev {
+ 
+ void ath10k_wmi_tlv_attach(struct ath10k *ar);
+ 
++struct wmi_tlv_mgmt_tx_cmd {
++	__le32 vdev_id;
++	__le32 desc_id;
++	__le32 chanfreq;
++	__le64 paddr;
++	__le32 frame_len;
++	__le32 buf_len;
++} __packed;
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 6c11b36..6259bd6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -798,6 +798,7 @@ struct wmi_cmd_map {
+ 	u32 bcn_filter_rx_cmdid;
+ 	u32 prb_req_filter_rx_cmdid;
+ 	u32 mgmt_tx_cmdid;
++	u32 mgmt_tx_send_cmdid;
+ 	u32 prb_tmpl_cmdid;
+ 	u32 addba_clear_resp_cmdid;
+ 	u32 addba_send_cmdid;
 -- 
 1.9.1
 
