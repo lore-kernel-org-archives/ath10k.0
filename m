@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eJxoe-00017n-3C
- for ath10k@lists.infradead.org; Wed, 29 Nov 2017 08:34:06 +0000
-Subject: Re: [PATCH] ath10k: handling qos at STA side based on AP WMM
- enable/disable
-References: <1511863650-9419-1-git-send-email-bpothuno@qti.qualcomm.com>
- <5ec76365-7ca2-15bd-0bcc-9cc19b9f3b27@dd-wrt.com>
- <e93273148ad44a54bfb39bc7018bfcc0@aptaiexm02b.ap.qualcomm.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <e84f2a95-178b-dc07-bc6e-9dc779e0db0f@dd-wrt.com>
-Date: Wed, 29 Nov 2017 09:33:36 +0100
-MIME-Version: 1.0
-In-Reply-To: <e93273148ad44a54bfb39bc7018bfcc0@aptaiexm02b.ap.qualcomm.com>
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eJz2h-0006o7-O3
+ for ath10k@lists.infradead.org; Wed, 29 Nov 2017 09:52:36 +0000
+From: Rakesh Pillai <pillair@qti.qualcomm.com>
+Subject: [PATCH 4/4] ath10k: WMI: add hw params entry for wcn3990
+Date: Wed, 29 Nov 2017 15:21:37 +0530
+Message-Id: <1511949097-524-4-git-send-email-pillair@qti.qualcomm.com>
+In-Reply-To: <1511949097-524-1-git-send-email-pillair@qti.qualcomm.com>
+References: <1511949097-524-1-git-send-email-pillair@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,73 +17,104 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Balaji Pothunoori <bpothuno@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: ath10k@lists.infradead.org
+Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
 
-QW0gMjkuMTEuMjAxNyB1bSAwNzo1OCBzY2hyaWViIEJhbGFqaSBQb3RodW5vb3JpOgo+IEhpIFNl
-YmFzdGlhbiwKPgo+IElmIEkgYW0gbm90IHdyb25nIHlvdSBhcmUgc2VlaW5nIHRoZSBpc3N1ZSB3
-aXRoIFdSVDMyMDBBQ00gKE1hcnZlbGwgODhXODk2NCkgYXMgY2xpZW50ICsgUUNBOTk4NCAoRlcg
-OiAxMC40LTMuNS4zLTAwMDM4KSBhcyBBUCB3aXRoIGJlbG93IGNoYW5nZSB5b3UgYXJlIHNlZWlu
-ZyB0aGUgY3Jhc2ggd2hpbGUgcnVubmluZyB0cmFmZmljIGJldHdlZW4gdGhlIFdSVDMyMDBBQ00g
-KyBRQ0E5OTg0ID8KPiBEbyB5b3UgdXNlZCAgYW55IG90aGVyIGNsaWVudCBpbiBwbGFjZSBvZiBX
-UlQzMjAwQUNNID8KCnRoZXJlIGlzIG5vdCBtdWNowqAgdHJhZmZpYyByZXF1aXJlZC4gYXMgaXQg
-c2VlbXMgdGhlIGZpcm13YXJlIGNyYXNoZXMgCmltbWVkaWF0bHkgYWZ0ZXIgYXNzb2NpYXRpb24u
-IHRoZSBpc3N1ZSBpcyBhbHNvIG5vdCBwcmVzZW50IGluIAoxMC40LTMuNC0wMDgyd3cKCj4gQ2Fu
-IHlvdSBzaGFyZSB0aGUgbW9yZSBkZXRhaWxzIG9uIGZpcm13YXJlIGNyYXNoID8KCnNvIGEgZmly
-bXdhcmUgY3Jhc2hkdW1wIGZyb20gbG9nPyBpJ2xsIHRyeSB0byBnZXQgaXQgd2l0aGluIHRoZSBu
-ZXh0IApob3Vycy4ganVzdCBuZWVkIHRvIHJlc2V0dXAgdGhlIHRlc3Qgc2NlbmFyaW8KCgpTZWJh
-c3RpYW4KCgo+Cj4gUmVnYXJkcywKPiBCYWxhamkuCj4KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
-LS0tLQo+IEZyb206IFNlYmFzdGlhbiBHb3R0c2NoYWxsIFttYWlsdG86cy5nb3R0c2NoYWxsQGRk
-LXdydC5jb21dCj4gU2VudDogV2VkbmVzZGF5LCBOb3ZlbWJlciAyOSwgMjAxNyA4OjI4IEFNCj4g
-VG86IEJhbGFqaSBQb3RodW5vb3JpIDxicG90aHVub0BxdGkucXVhbGNvbW0uY29tPjsgYXRoMTBr
-QGxpc3RzLmluZnJhZGVhZC5vcmcKPiBDYzogbGludXgtd2lyZWxlc3NAdmdlci5rZXJuZWwub3Jn
-Cj4gU3ViamVjdDogUmU6IFtQQVRDSF0gYXRoMTBrOiBoYW5kbGluZyBxb3MgYXQgU1RBIHNpZGUg
-YmFzZWQgb24gQVAgV01NIGVuYWJsZS9kaXNhYmxlCj4KPiBkaWQgeW91IG5vdGljZcKgIHRoYXQg
-TWFydmVsbCA4OFc4OTY0IGJhc2VkIGNsaWVudHMgd2lsbCBjcmFzaCAxMC40LTMuNS4zIGZpcm13
-YXJlcz/CoCAodGVzdGVkIHdpdGggOTk4NCBhbmQgMTAuNC0zLjUuMy0wMDAzOCkgY2xpZW50IGRl
-dmljZSB3YXMgYSBsaW5rc3lzIHdydDMyMDBhY20gcnVubmluZyBkZC13cnQgZm9yIHRlc3RpbmcK
-Pgo+IEFtIDI4LjExLjIwMTcgdW0gMTE6MDcgc2NocmllYiBicG90aHVub0BxdGkucXVhbGNvbW0u
-Y29tOgo+PiBGcm9tOiBCYWxhamkgUG90aHVub29yaSA8YnBvdGh1bm9AcXRpLnF1YWxjb21tLmNv
-bT4KPj4KPj4gRGF0YSBwYWNrZXRzIGFyZSBub3Qgc2VudCBieSBTVEEgaW4gY2FzZSBvZiBTVEEg
-am9pbmVkIHRvIG5vbiBRT1MgQVAKPj4gKFdNTSBkaXNhYmxlZCBBUCkuIFRoaXMgaXMgaGFwcGVu
-aW5nIGJlY2F1c2Ugb2YgU1RBIGlzIHNlbmRpbmcgZGF0YQo+PiBwYWNrZXRzIHRvIGZpcm13YXJl
-IGZyb20gaG9zdCB3aXRoIHFvcyBlbmFibGVkIGFsb25nIHdpdGggbm9uIHFvcwo+PiBxdWV1ZSB2
-YWx1ZShUSUQgPSAxNikuCj4+IER1ZSB0byBxb3MgZW5hYmxlZCwgZmlybXdhcmUgaXMgZGlzY2Fy
-ZGluZyB0aGUgcGFja2V0Lgo+Pgo+PiBUaGlzIHBhdGNoIGZpeGVzIHRoaXMgaXNzdWUgYnkgdXBk
-YXRpbmcgdGhlIHFvcyBiYXNlZCBvbiBzdGF0aW9uIFdNRQo+PiBjYXBhYmlsaXR5IGZpZWxkIGlm
-IFdNTSBpcyBkaXNhYmxlZCBpbiBBUC4KPj4KPj4gVGhpcyBwYXRjaCBpcyByZXF1aXJlZCBieSAx
-MC40IGZhbWlseSBjaGlwc2V0cyBsaWtlCj4+IFFDQTQwMTkvUUNBOTg4OC9RQ0E5ODg0L1FDQTk5
-WDAuCj4+IEZpcm13YXJlIFZlcnNvaW4gOiAxMC40LTMuNS4xLTAwMDE4Lgo+Pgo+PiBGb3IgMTAu
-Mi40IGZhbWlseSBjaGlwc2V0cyBRQ0E5ODhYL1FDQTk4ODcgYW5kIFFDQTYxNzQgdGhpcyBwYXRj
-aCBoYXMKPj4gbm8gZWZmZWN0Lgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBCYWxhamkgUG90aHVub29y
-aSA8YnBvdGh1bm9AcXRpLnF1YWxjb21tLmNvbT4KPj4gLS0tCj4+ICAgIGRyaXZlcnMvbmV0L3dp
-cmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMgfCAgICAyICstCj4+ICAgIDEgZmlsZSBjaGFuZ2VkLCAx
-IGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9u
-ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYwo+PiBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
-aC9hdGgxMGsvbWFjLmMKPj4gaW5kZXggMGE5NDdlZS4uMjYxNmI5OSAxMDA2NDQKPj4gLS0tIGEv
-ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYwo+PiArKysgYi9kcml2ZXJzL25l
-dC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4+IEBAIC0yNTYzLDcgKzI1NjMsNyBAQCBzdGF0
-aWMgdm9pZCBhdGgxMGtfcGVlcl9hc3NvY19oX3FvcyhzdHJ1Y3QgYXRoMTBrICphciwKPj4gICAg
-CQl9Cj4+ICAgIAkJYnJlYWs7Cj4+ICAgIAljYXNlIFdNSV9WREVWX1RZUEVfU1RBOgo+PiAtCQlp
-ZiAodmlmLT5ic3NfY29uZi5xb3MpCj4+ICsJCWlmIChzdGEtPndtZSkKPj4gICAgCQkJYXJnLT5w
-ZWVyX2ZsYWdzIHw9IGFydmlmLT5hci0+d21pLnBlZXJfZmxhZ3MtPnFvczsKPj4gICAgCQlicmVh
-azsKPj4gICAgCWNhc2UgV01JX1ZERVZfVFlQRV9JQlNTOgo+Cj4gLS0KPiBNaXQgZnJldW5kbGlj
-aGVuIEdyw7xzc2VuIC8gUmVnYXJkcwo+Cj4gU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KPgo+
-IE5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCj4gRmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxl
-ZSAyMWEsIDY0NjI1IEJlbnNoZWltCj4gUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJt
-c3RhZHQsIEhSQiAyNTQ3Mwo+IEdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIs
-IENocmlzdGlhbiBTY2hlZWxlIGh0dHA6Ly93d3cuZGQtd3J0LmNvbQo+IGVtYWlsOiBzLmdvdHRz
-Y2hhbGxAZGQtd3J0LmNvbQo+IFRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4
-MjY1NjUKPgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRzCgpTZWJhc3Rp
-YW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQKRmlybWVuc2l0
-ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0NjI1IEJlbnNoZWltClJlZ2lzdGVyZ2VyaWNodDog
-QW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0NzMKR2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVy
-IFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUKaHR0cDovL3d3dy5kZC13cnQuY29tCmVt
-YWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpUZWwuOiArNDk2MjUxLTU4MjY1MCAvIEZheDog
-KzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Add hw params entry for wcn3990 and populate various
+target specific values for wcn3990.
+
+Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
+Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 18 ++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.c   |  2 ++
+ drivers/net/wireless/ath/ath10k/hw.h   | 10 ++++++++++
+ 3 files changed, 30 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index be18913..6abffb5 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -405,6 +405,24 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 	},
++	{
++		.id = WCN3990_HW_1_0_DEV_VERSION,
++		.dev_id = 0,
++		.name = "wcn3990 hw1.0",
++		.continuous_frag_desc = true,
++		.tx_chain_mask = 0x7,
++		.rx_chain_mask = 0x7,
++		.max_spatial_stream = 4,
++		.fw = {
++			.dir = WCN3990_HW_1_0_FW_DIR,
++		},
++		.sw_decrypt_mcast_mgmt = true,
++		.hw_ops = &wcn3990_ops,
++		.decap_align_bytes = 1,
++		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
++		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
++		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
++	},
+ };
+ 
+ static const char *const ath10k_core_fw_feature_str[] = {
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index 88955bb..76b9b41 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -931,3 +931,5 @@ static int ath10k_qca99x0_rx_desc_get_l3_pad_bytes(struct htt_rx_desc *rxd)
+ 	.set_coverage_class = ath10k_hw_qca988x_set_coverage_class,
+ 	.enable_pll_clk = ath10k_hw_qca6174_enable_pll_clock,
+ };
++
++const struct ath10k_hw_ops wcn3990_ops = {0};
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index fedb6c7..90ad39b 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -128,6 +128,10 @@ enum qca9377_chip_id_rev {
+ #define QCA4019_HW_1_0_BOARD_DATA_FILE "board.bin"
+ #define QCA4019_HW_1_0_PATCH_LOAD_ADDR  0x1234
+ 
++/* WCN3990 1.0 definitions */
++#define WCN3990_HW_1_0_DEV_VERSION	ATH10K_HW_WCN3990
++#define WCN3990_HW_1_0_FW_DIR		ATH10K_FW_DIR "/WCN3990/hw3.0"
++
+ #define ATH10K_FW_FILE_BASE		"firmware"
+ #define ATH10K_FW_API_MAX		6
+ #define ATH10K_FW_API_MIN		2
+@@ -571,6 +575,7 @@ struct ath10k_hw_ops {
+ extern const struct ath10k_hw_ops qca988x_ops;
+ extern const struct ath10k_hw_ops qca99x0_ops;
+ extern const struct ath10k_hw_ops qca6174_ops;
++extern const struct ath10k_hw_ops wcn3990_ops;
+ 
+ extern const struct ath10k_hw_clk_params qca6174_clk[];
+ 
+@@ -667,6 +672,11 @@ struct ath10k_hw_ops {
+ #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
+ #define TARGET_TLV_NUM_WOW_PATTERNS		22
+ 
++/* Target specific defines for WMI-HL-1.0 firmware */
++#define TARGET_HL_10_TLV_NUM_PEERS		14
++#define TARGET_HL_10_TLV_AST_SKID_LIMIT		6
++#define TARGET_HL_10_TLV_NUM_WDS_ENTRIES	2
++
+ /* Diagnostic Window */
+ #define CE_DIAG_PIPE	7
+ 
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
