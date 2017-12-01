@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ns.iliad.fr ([212.27.33.1])
+Received: from [2001:470:dc45:1000::1] (helo=mail.toke.dk)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eKmsi-0007C9-BY
- for ath10k@lists.infradead.org; Fri, 01 Dec 2017 15:05:38 +0000
-Message-ID: <1512140710.38490.81.camel@sakura.staff.proxad.net>
+ id 1eKnGR-0000DH-MM
+ for ath10k@lists.infradead.org; Fri, 01 Dec 2017 15:30:09 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
 Subject: Re: [PATCH 2/2] ath10k: add per peer tx stats support for 10.2.4
-From: Maxime Bizon <mbizon@freebox.fr>
-Date: Fri, 01 Dec 2017 16:05:10 +0100
-In-Reply-To: <7792e2fb2c546d8745c65e48945f2535@codeaurora.org>
+In-Reply-To: <87k1y6y04i.fsf@kamboji.qca.qualcomm.com>
 References: <1512046701-14435-1-git-send-email-akolli@qti.qualcomm.com>
  <1512046701-14435-3-git-send-email-akolli@qti.qualcomm.com>
- <1512125137.38490.70.camel@sakura.staff.proxad.net>
- <7792e2fb2c546d8745c65e48945f2535@codeaurora.org>
-Mime-Version: 1.0
+ <87k1y7zqtj.fsf@kamboji.qca.qualcomm.com>
+ <DAB5EBB8-C820-4056-8AAB-063D05F38BD5@toke.dk>
+ <87bmjjzppd.fsf@kamboji.qca.qualcomm.com>
+ <5080a68538fd2d883e15bacaa969661b@codeaurora.org> <87r2se36rq.fsf@toke.dk>
+ <87k1y6y04i.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 01 Dec 2017 16:29:39 +0100
+Message-ID: <87d13y31r0.fsf@toke.dk>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,80 +24,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: mbizon@freebox.fr
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: akolli@codeaurora.org
-Cc: linux-wireless-owner@vger.kernel.org, akolli@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless-owner@vger.kernel.org" <linux-wireless-owner@vger.kernel.org>, Anilkumar Kolli <akolli@qti.qualcomm.com>, "akolli@codeaurora.org" <akolli@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-On Fri, 2017-12-01 at 19:18 +0530, akolli@codeaurora.org wrote:
+>>> tx_duration is aggregate time duration of 4 PPDU sent to STA.
+>>> FW sends these values for retry packets also.
+>>
+>> Great, that sounds like just what we need.
+>
+> Except mapping to the iee80211_tx_status() might be difficult. I'm not
+> sure how HTT_T2H_MSG_TYPE_PKTLOG events are sent in relation to
+> HTT_T2H_MSG_TYPE_TX_COMPL_IND.
 
-> Hope CONFIG_MAC80211_DEBUGFS is enabled in your build.
+Yeah, figures. Well, maybe we'll just have to support an asynchronous
+callback into mac80211 to register airtime usage. Will probably have to
+add some asynchronicity anyway to avoid doing too much work in the fast
+path.
 
-it wasn't and IMHO it's confusing because tx rate is filled by the other
-drivers without it.
+Will keep that in mind when I get around to revisiting those patches :)
 
-I now have the following warning:
-
-[   96.174967] ------------[ cut here ]------------
-[   96.179640] WARNING: CPU: 0 PID: 609 at net/wireless/util.c:1254 cfg80211_calculate_bitrate+0x174/0x220
-[   96.189538] invalid rate bw=1, mcs=9, nss=2
-[   96.219736] CPU: 0 PID: 609 Comm: hostapd Not tainted 4.14.3-00381-gec9756b0f64d #28
-[   96.227910] Hardware name: Marvell Kirkwood (Flattened Device Tree)
-[   96.235450] [<80010124>] (unwind_backtrace) from [<8000d9ec>] (show_stack+0x10/0x14)
-[   96.247180] [<8000d9ec>] (show_stack) from [<8002016c>] (__warn+0xdc/0xf8)
-[   96.254243] [<8002016c>] (__warn) from [<800201bc>] (warn_slowpath_fmt+0x34/0x44)
-[   96.262016] [<800201bc>] (warn_slowpath_fmt) from [<8064dfdc>] (cfg80211_calculate_bitrate+0x174/0x220)
-[   96.272652] [<8064dfdc>] (cfg80211_calculate_bitrate) from [<806692d4>] (nl80211_put_sta_rate+0x44/0x1dc)
-[   96.282509] [<806692d4>] (nl80211_put_sta_rate) from [<8066001c>] (nl80211_send_station+0x388/0xaf0)
-[   96.292261] [<8066001c>] (nl80211_send_station) from [<8066082c>] (nl80211_get_station+0xa8/0xec)
-[   96.304166] [<8066082c>] (nl80211_get_station) from [<80509c20>] (genl_rcv_msg+0x2dc/0x34c)
-[   96.313324] [<80509c20>] (genl_rcv_msg) from [<8050890c>] (netlink_rcv_skb+0x84/0xdc)
-[   96.321880] [<8050890c>] (netlink_rcv_skb) from [<805093c0>] (genl_rcv+0x20/0x34)
-[   96.329668] [<805093c0>] (genl_rcv) from [<80508188>] (netlink_unicast+0x12c/0x1e0)
-[   96.338408] [<80508188>] (netlink_unicast) from [<805085d8>] (netlink_sendmsg+0x2e0/0x304)
-[   96.350736] [<805085d8>] (netlink_sendmsg) from [<804b5f9c>] (sock_sendmsg+0x14/0x24)
-[   96.358656] [<804b5f9c>] (sock_sendmsg) from [<804b66e8>] (___sys_sendmsg+0x1c8/0x20c)
-[   96.367093] [<804b66e8>] (___sys_sendmsg) from [<804b739c>] (__sys_sendmsg+0x40/0x64)
-[   96.375276] [<804b739c>] (__sys_sendmsg) from [<8000a3e0>] (ret_fast_syscall+0x0/0x44)
-[   96.383455] ---[ end trace da8257d6a850e91a ]---
-
-# iw dev wlan1 station dump
-Station e4:42:a6:24:c8:95 (on wlan1)
-	inactive time:	550 ms
-	rx bytes:	41217
-	rx packets:	152
-	tx bytes:	49397
-	tx packets:	107
-	tx retries:	0
-	tx failed:	1
-	rx drop misc:	0
-	signal:  	-62 [-66, -65, -83] dBm
-	signal avg:	-61 [-65, -65, -78] dBm
-	tx bitrate:	 VHT-MCS 9 short GI VHT-NSS 2
-	rx bitrate:	360.0 MBit/s VHT-MCS 8 40MHz short GI VHT-NSS 2
-	rx duration:	0 us
-	authorized:	yes
-	authenticated:	yes
-	associated:	yes
-	preamble:	long
-	WMM/WME:	yes
-	MFP:		no
-	TDLS peer:	no
-	DTIM period:	2
-	beacon interval:96
-	short slot time:yes
-	connected time:	5 seconds
-
-Thanks
-
--- 
-Maxime
-
-
+-Toke
 
 _______________________________________________
 ath10k mailing list
