@@ -1,11 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from [2001:470:dc45:1000::1] (helo=mail.toke.dk)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:72ef::2]
+ helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eKneA-0005pI-Ex
- for ath10k@lists.infradead.org; Fri, 01 Dec 2017 15:54:41 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+ id 1eKnhs-00081C-1o
+ for ath10k@lists.infradead.org; Fri, 01 Dec 2017 15:58:31 +0000
+Message-ID: <1512143881.25588.18.camel@sipsolutions.net>
 Subject: Re: [PATCH 2/2] ath10k: add per peer tx stats support for 10.2.4
-In-Reply-To: <1512143142.25588.17.camel@sipsolutions.net>
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 01 Dec 2017 16:58:01 +0100
+In-Reply-To: <87a7z230m3.fsf@toke.dk>
 References: <1512046701-14435-1-git-send-email-akolli@qti.qualcomm.com>
  <1512046701-14435-3-git-send-email-akolli@qti.qualcomm.com>
  <87k1y7zqtj.fsf@kamboji.qca.qualcomm.com>
@@ -13,10 +16,8 @@ References: <1512046701-14435-1-git-send-email-akolli@qti.qualcomm.com>
  <87bmjjzppd.fsf@kamboji.qca.qualcomm.com>
  <5080a68538fd2d883e15bacaa969661b@codeaurora.org> <87r2se36rq.fsf@toke.dk>
  <87k1y6y04i.fsf@kamboji.qca.qualcomm.com> <87d13y31r0.fsf@toke.dk>
- <1512143142.25588.17.camel@sipsolutions.net>
-Date: Fri, 01 Dec 2017 16:54:12 +0100
-Message-ID: <87a7z230m3.fsf@toke.dk>
-MIME-Version: 1.0
+ <1512143142.25588.17.camel@sipsolutions.net> <87a7z230m3.fsf@toke.dk>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +30,22 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@qca.qualcomm.com>
+To: Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>, Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: "linux-wireless-owner@vger.kernel.org" <linux-wireless-owner@vger.kernel.org>, Anilkumar Kolli <akolli@qti.qualcomm.com>, "akolli@codeaurora.org" <akolli@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Sm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldD4gd3JpdGVzOgoKPiBPbiBG
-cmksIDIwMTctMTItMDEgYXQgMTY6MjkgKzAxMDAsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3
-cm90ZToKPj4gCj4+IFllYWgsIGZpZ3VyZXMuIFdlbGwsIG1heWJlIHdlJ2xsIGp1c3QgaGF2ZSB0
-byBzdXBwb3J0IGFuIGFzeW5jaHJvbm91cwo+PiBjYWxsYmFjayBpbnRvIG1hYzgwMjExIHRvIHJl
-Z2lzdGVyIGFpcnRpbWUgdXNhZ2UuIFdpbGwgcHJvYmFibHkgaGF2ZSB0bwo+PiBhZGQgc29tZSBh
-c3luY2hyb25pY2l0eSBhbnl3YXkgdG8gYXZvaWQgZG9pbmcgdG9vIG11Y2ggd29yayBpbiB0aGUg
-ZmFzdAo+PiBwYXRoLgo+Cj4gSSByZWFsbHkgdGhpbmsgd2Ugc2hvdWxkIGhhdmUgdGhhdCBhbnl3
-YXkuIEluIGZhY3QsIHBlcmhhcHMgd2Ugc2hvdWxkCj4ganVzdCBlbmZvcmNlIGl0IHRoYXQgd2F5
-PyBUaGVuIGF0aDlrIHdvdWxkIGhhdmUgdG8gZG8gYSBiaXQgbW9yZSB3b3JrLAo+IGJ1dCBpdCdz
-IGFsc28gdGhlIHNsb3dlciBvZiB0aGUgZGV2aWNlcyA6LSkKPgo+IEJ1dCB0aGlzIHBsYXlzIGlu
-IHdpdGggdGhlIHdob2xlIG11bHRpLXF1ZXVlIFJYIHdlIGRpc2N1c3NlZCBiZWZvcmUuCgpZZWFo
-LCB0aGF0J3Mgd2hhdCBJIG1lYW50IGJ5ICdhZGQgc29tZSBhc3luY2hyb25pY2l0eSBhbnl3YXkn
-IDopCgpJIGd1ZXNzIHRoYXQgb25jZSB3ZSBoYXZlIGFuIGFzeW5jaHJvbm91cyBzY2hlZHVsZXIg
-dGFzayBvZiBzb21lIGtpbmQsCnN1cHBvcnRpbmcgdGhlIGNhbGxiYWNrIGlzIGVhc3ksIGJ1dCBw
-dWxsaW5nIHRoZSBkYXRhIG91dCBvZiBlYWNoIHBhY2tldApuZWVkcyBtb3JlIHdvcmsuIEJ1dCBz
-aW5jZSB3ZSdsbCBoYXZlIHRvIGRvIHRoYXQgZm9yIGF0aDlrIGFueXdheSBpdApiZWNvbWVzIG1v
-cmUgYSBxdWVzdGlvbiBvZiB3aGV0aGVyIGl0J3Mgc29tZXRoaW5nIHRoYXQgc2hvdWxkIGJlCnN1
-cHBvcnRlZCBpbiBtYWM4MDIxMSBvciBpZiBpdCBzaG91bGQgYmUgaW1wbGVtZW50ZWQgaW4gZWFj
-aCBkcml2ZXIuCkJ1dCBzaW5jZSB0aGF0IGxvZ2ljIHdpbGwgaGF2ZSB0byBiZSB3cml0dGVuIGZy
-b20gc2NyYXRjaCBhbnl3YXksIGlzCnRoZXJlIGFueSByZWFzb24gdG8gbm90IGp1c3QgZG8gaXQg
-aW4gbWFjODAyMTEgZnJvbSB0aGUgYmVnaW5uaW5nPwoKLVRva2UKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
-QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hdGgxMGsK
+T24gRnJpLCAyMDE3LTEyLTAxIGF0IDE2OjU0ICswMTAwLCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5z
+ZW4gd3JvdGU6Cgo+IEkgZ3Vlc3MgdGhhdCBvbmNlIHdlIGhhdmUgYW4gYXN5bmNocm9ub3VzIHNj
+aGVkdWxlciB0YXNrIG9mIHNvbWUga2luZCwKPiBzdXBwb3J0aW5nIHRoZSBjYWxsYmFjayBpcyBl
+YXN5LCBidXQgcHVsbGluZyB0aGUgZGF0YSBvdXQgb2YgZWFjaCBwYWNrZXQKPiBuZWVkcyBtb3Jl
+IHdvcmsuCgpSaWdodC4KCgo+IEJ1dCBzaW5jZSB3ZSdsbCBoYXZlIHRvIGRvIHRoYXQgZm9yIGF0
+aDlrIGFueXdheSBpdAo+IGJlY29tZXMgbW9yZSBhIHF1ZXN0aW9uIG9mIHdoZXRoZXIgaXQncyBz
+b21ldGhpbmcgdGhhdCBzaG91bGQgYmUKPiBzdXBwb3J0ZWQgaW4gbWFjODAyMTEgb3IgaWYgaXQg
+c2hvdWxkIGJlIGltcGxlbWVudGVkIGluIGVhY2ggZHJpdmVyLgo+IEJ1dCBzaW5jZSB0aGF0IGxv
+Z2ljIHdpbGwgaGF2ZSB0byBiZSB3cml0dGVuIGZyb20gc2NyYXRjaCBhbnl3YXksIGlzCj4gdGhl
+cmUgYW55IHJlYXNvbiB0byBub3QganVzdCBkbyBpdCBpbiBtYWM4MDIxMSBmcm9tIHRoZSBiZWdp
+bm5pbmc/CgpJIHdhcyB0aGlua2luZyBpbiB0aGUgZHJpdmVyIHNvIHRoYXQgdGhlcmUncyBubyBv
+dmVyaGVhZCBmb3IgdGhlIG90aGVyCmRyaXZlcnMgdGhhdCBkb24ndCB3YW50IGl0IHRoYXQgd2F5
+LgoKRHVubm8uIEl0IHByb2JhYmx5IGRvZXNuJ3QgcmVhbGx5IG1hdHRlci4KCmpvaGFubmVzCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
+bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
