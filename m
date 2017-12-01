@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eKSZS-0001Na-Nr
- for ath10k@lists.infradead.org; Thu, 30 Nov 2017 17:24:26 +0000
-Subject: Re: ath10k; QCA9984 firmware crash
-References: <CA+_ehUwYhLUpZjUmJvcA5iwWTOt6XZKYL9q9aL=NnKhzqpFrDg@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <1328332e-5506-4cd5-f547-921316e19eee@candelatech.com>
-Date: Thu, 30 Nov 2017 09:23:56 -0800
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eKcrg-0000Jx-M9
+ for ath10k@lists.infradead.org; Fri, 01 Dec 2017 04:23:54 +0000
 MIME-Version: 1.0
-In-Reply-To: <CA+_ehUwYhLUpZjUmJvcA5iwWTOt6XZKYL9q9aL=NnKhzqpFrDg@mail.gmail.com>
+Date: Fri, 01 Dec 2017 09:53:30 +0530
+From: akolli@codeaurora.org
+Subject: Re: [PATCH 2/2] ath10k: add per peer tx stats support for 10.2.4
+In-Reply-To: <87bmjjzppd.fsf@kamboji.qca.qualcomm.com>
+References: <1512046701-14435-1-git-send-email-akolli@qti.qualcomm.com>
+ <1512046701-14435-3-git-send-email-akolli@qti.qualcomm.com>
+ <87k1y7zqtj.fsf@kamboji.qca.qualcomm.com>
+ <DAB5EBB8-C820-4056-8AAB-063D05F38BD5@toke.dk>
+ <87bmjjzppd.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <5080a68538fd2d883e15bacaa969661b@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,108 +22,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ansuel Smith <ansuelsmth@gmail.com>, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless-owner@vger.kernel.org, Anilkumar Kolli <akolli@qti.qualcomm.com>, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 11/30/2017 09:04 AM, Ansuel Smith wrote:
-> had this crash when restarting 5ghz wireless. Very bad performance and
-> stability on a netgear r7800. Near wifi are on different channel, with
-> old kernel 4.4 there were no issue. With the new kernel 4.9 i have
-> this kind of problem and a bandwidth of max 20-30 mbps. Can make any
-> test as for now i can't use it due to this problem. (Running lede with
-> latest commit)
-
-I'd be curious if the ath10k-ct driver and firmware worked better
-for you?  Should be easily selectable in LEDE.
-
-Thanks,
-Ben
-
->
->
-> Wed Nov 29 21:42:37 2017 kern.warn kernel: [ 468.251798] ath10k_pci
-> 0000:01:00.0: failed to flush transmit queue (skip 0 ar-state 1): 0
-> Wed Nov 29 21:42:37 2017 kern.warn kernel: [ 468.296253] ath10k_pci
-> 0000:01:00.0: peer-unmap-event: unknown peer id 1
-> Wed Nov 29 21:42:37 2017 kern.warn kernel: [ 468.296281] ath10k_pci
-> 0000:01:00.0: peer-unmap-event: unknown peer id 1
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.309466] ath10k_pci
-> 0000:01:00.0: firmware crashed! (guid
-> c95b3960-6710-4367-ad39-3706a2029428)
-> Wed Nov 29 21:42:37 2017 kern.info kernel: [ 468.309501] ath10k_pci
-> 0000:01:00.0: qca9984/qca9994 hw1.0 target 0x01000000 chip_id
-> 0x00000000 sub 168c:cafe
-> Wed Nov 29 21:42:37 2017 kern.info kernel: [ 468.317563] ath10k_pci
-> 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 1 testmode 1
-> Wed Nov 29 21:42:37 2017 kern.info kernel: [ 468.329756] ath10k_pci
-> 0000:01:00.0: firmware ver 10.4-3.4-00082 api 5 features
-> no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast crc32
-> f301de65
-> Wed Nov 29 21:42:37 2017 kern.info kernel: [ 468.336109] ath10k_pci
-> 0000:01:00.0: board_file api 2 bmi_id 0:1 crc32 751efba1
-> Wed Nov 29 21:42:37 2017 kern.info kernel: [ 468.349056] ath10k_pci
-> 0000:01:00.0: htt-ver 2.2 wmi-op 6 htt-op 4 cal pre-cal-file max-sta
-> 512 raw 0 hwcrypto 1
-> Wed Nov 29 21:42:37 2017 kern.warn kernel: [ 468.368374] ath10k_pci
-> 0000:01:00.0: failed to get memcpy hi address for firmware address 4:
-> -16
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.368399] ath10k_pci
-> 0000:01:00.0: failed to read firmware dump area: -16
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.376263] ath10k_pci
-> 0000:01:00.0: Copy Engine register dump:
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.382956] ath10k_pci
-> 0000:01:00.0: [00]: 0x0004a000 3735928559 3735928559 3735928559
-> 3735928559
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.388808] ath10k_pci
-> 0000:01:00.0: [01]: 0x0004a400 3735928559 3735928559 3735928559
-> 3735928559
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.397885] ath10k_pci
-> 0000:01:00.0: [02]: 0x0004a800 3735928559 3735928559 3735928559
-> 3735928559
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.406757] ath10k_pci
-> 0000:01:00.0: [03]: 0x0004ac00 3735928559 3735928559 3735928559
-> 3735928559
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.415598] ath10k_pci
-> 0000:01:00.0: [04]: 0x0004b000 3735928559 3735928559 3735928559
-> 3735928559
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.424470] ath10k_pci
-> 0000:01:00.0: [05]: 0x0004b400 3735928559 3735928559 3735928559
-> 3735928559
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.433311] ath10k_pci
-> 0000:01:00.0: [06]: 0x0004b800 3735928559 3735928559 3735928559
-> 3735928559
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.442152] ath10k_pci
-> 0000:01:00.0: [07]: 0x0004bc00 3735928559 3735928559 3735928559
-> 3735928559
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.450960] ath10k_pci
-> 0000:01:00.0: [08]: 0x0004c000 3735928559 3735928559 3735928559
-> 3735928559
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.459872] ath10k_pci
-> 0000:01:00.0: [09]: 0x0004c400 3735928559 3735928559 3735928559
-> 3735928559
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.468738] ath10k_pci
-> 0000:01:00.0: [10]: 0x0004c800 3735928559 3735928559 3735928559
-> 3735928559
-> Wed Nov 29 21:42:37 2017 kern.err kernel: [ 468.477587] ath10k_pci
-> 0000:01:00.0: [11]: 0x0004cc00 3735928559 3735928559 3735928559
-> 3735928559
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAxNy0xMS0zMCAyMjowOCwgS2FsbGUgVmFsbyB3cm90ZToKPiBUb2tlIEjDuGlsYW5kLUrD
+uHJnZW5zZW4gPHRva2VAdG9rZS5kaz4gd3JpdGVzOgo+IAo+Pj4+ICtzdHJ1Y3QgYXRoMTBrXzEw
+XzJfcGVlcl90eF9zdGF0cyB7Cj4+Pj4gKwl1OCByYXRlY29kZVtQRUVSX1NUQVRTX0ZPUl9OT19P
+Rl9QUERVU107Cj4+Pj4gKwl1OCBzdWNjZXNzX3BrdHNbUEVFUl9TVEFUU19GT1JfTk9fT0ZfUFBE
+VVNdOwo+Pj4+ICsJX19sZTE2IHN1Y2Nlc3NfYnl0ZXNbUEVFUl9TVEFUU19GT1JfTk9fT0ZfUFBE
+VVNdOwo+Pj4+ICsJdTggcmV0cnlfcGt0c1tQRUVSX1NUQVRTX0ZPUl9OT19PRl9QUERVU107Cj4+
+Pj4gKwlfX2xlMTYgcmV0cnlfYnl0ZXNbUEVFUl9TVEFUU19GT1JfTk9fT0ZfUFBEVVNdOwo+Pj4+
+ICsJdTggZmFpbGVkX3BrdHNbUEVFUl9TVEFUU19GT1JfTk9fT0ZfUFBEVVNdOwo+Pj4+ICsJX19s
+ZTE2IGZhaWxlZF9ieXRlc1tQRUVSX1NUQVRTX0ZPUl9OT19PRl9QUERVU107Cj4+Pj4gKwl1OCBm
+bGFnc1tQRUVSX1NUQVRTX0ZPUl9OT19PRl9QUERVU107Cj4+Pj4gKwlfX2xlMzIgdHhfZHVyYXRp
+b247Cj4+Pj4gKwl1OCB0eF9wcGR1X2NudDsKPj4+PiArCXU4IHBlZXJfaWQ7Cj4+Pj4gK30gX19w
+YWNrZWQ7Cj4+PiAKPj4+IFRva2UsIGhvcGVmdWxseSB0aGUgdHhfZHVyYXRpb24gdmFsdWUgaGVy
+ZSBoZWxwcyB3aXRoIEFURgo+Pj4gaW1wbGVtZW50YXRpb24KPj4+IHVzaW5nIFFDQTk4OFguCj4+
+IAo+PiBBd2Vzb21lISBXaGF0J3MgdGhlIHNlbWFudGljcyBvZiB0aGlzIGZpZWxkPyBKdXN0IHRv
+dGFsCj4+IGR1cmF0aW9uIHNwZW50IHNlcnZpbmcgdGhhdCBzdGF0aW9uIGluIHRoZSByZXBvcnRp
+bmcgaW50ZXJ2YWw/Cj4+IERvZXMgaXQgaW5jbHVkZSByZXRyeSBhdHRlbXB0cz8KPiAKPiBJIGhh
+dmUgbm8gY2x1ZSA6KSBJIGp1c3Qgbm90aWNlZCB0aGlzIHdoaWxlIEkgd2FzIHJldmlld2luZyB0
+aGUgcGF0Y2gKPiBpbnRlcm5hbGx5IGFuZCBpbW1lZGlhdGVseSByZWNhbGxlZCBvdXIgZGlzY3Vz
+c2lvbnMgYXQgU2VvdWwuIEkgY2FuIHRyeQo+IHRvIGZpbmQgb3V0LCBidXQgdGhhdCB3aWxsIHRh
+a2UgYSBsb25nIHRpbWUgYXMgSSBoYXZlIHdheSB0b28gbXVjaCAKPiBzdHVmZgo+IHBlbmRpbmcg
+YXQgdGhlIG1vbWVudC4gSG9wZWZ1bGx5IHNvbWVvbmUgbW9yZSBrbm93bGVkZ2VhYmxlIAo+IChB
+bmlsa3VtYXI/KQo+IGNhbiBjaGltZSBpbiBhbmQgaGVscC4KCnR4X2R1cmF0aW9uIGlzIGFnZ3Jl
+Z2F0ZSB0aW1lIGR1cmF0aW9uIG9mIDQgUFBEVSBzZW50IHRvIFNUQS4KRlcgc2VuZHMgdGhlc2Ug
+dmFsdWVzIGZvciByZXRyeSBwYWNrZXRzIGFsc28uCgpUaGFua3MsCkFuaWwuCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
+CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
