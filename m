@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from ns.iliad.fr ([212.27.33.1])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eKcrg-0000Jx-M9
- for ath10k@lists.infradead.org; Fri, 01 Dec 2017 04:23:54 +0000
-MIME-Version: 1.0
-Date: Fri, 01 Dec 2017 09:53:30 +0530
-From: akolli@codeaurora.org
+ id 1eKipX-00026I-Am
+ for ath10k@lists.infradead.org; Fri, 01 Dec 2017 10:46:05 +0000
+Message-ID: <1512125137.38490.70.camel@sakura.staff.proxad.net>
 Subject: Re: [PATCH 2/2] ath10k: add per peer tx stats support for 10.2.4
-In-Reply-To: <87bmjjzppd.fsf@kamboji.qca.qualcomm.com>
+From: Maxime Bizon <mbizon@freebox.fr>
+Date: Fri, 01 Dec 2017 11:45:37 +0100
+In-Reply-To: <1512046701-14435-3-git-send-email-akolli@qti.qualcomm.com>
 References: <1512046701-14435-1-git-send-email-akolli@qti.qualcomm.com>
  <1512046701-14435-3-git-send-email-akolli@qti.qualcomm.com>
- <87k1y7zqtj.fsf@kamboji.qca.qualcomm.com>
- <DAB5EBB8-C820-4056-8AAB-063D05F38BD5@toke.dk>
- <87bmjjzppd.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <5080a68538fd2d883e15bacaa969661b@codeaurora.org>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +19,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Reply-To: mbizon@freebox.fr
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless-owner@vger.kernel.org, Anilkumar Kolli <akolli@qti.qualcomm.com>, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: akolli@qti.qualcomm.com
+Cc: akolli@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjAxNy0xMS0zMCAyMjowOCwgS2FsbGUgVmFsbyB3cm90ZToKPiBUb2tlIEjDuGlsYW5kLUrD
-uHJnZW5zZW4gPHRva2VAdG9rZS5kaz4gd3JpdGVzOgo+IAo+Pj4+ICtzdHJ1Y3QgYXRoMTBrXzEw
-XzJfcGVlcl90eF9zdGF0cyB7Cj4+Pj4gKwl1OCByYXRlY29kZVtQRUVSX1NUQVRTX0ZPUl9OT19P
-Rl9QUERVU107Cj4+Pj4gKwl1OCBzdWNjZXNzX3BrdHNbUEVFUl9TVEFUU19GT1JfTk9fT0ZfUFBE
-VVNdOwo+Pj4+ICsJX19sZTE2IHN1Y2Nlc3NfYnl0ZXNbUEVFUl9TVEFUU19GT1JfTk9fT0ZfUFBE
-VVNdOwo+Pj4+ICsJdTggcmV0cnlfcGt0c1tQRUVSX1NUQVRTX0ZPUl9OT19PRl9QUERVU107Cj4+
-Pj4gKwlfX2xlMTYgcmV0cnlfYnl0ZXNbUEVFUl9TVEFUU19GT1JfTk9fT0ZfUFBEVVNdOwo+Pj4+
-ICsJdTggZmFpbGVkX3BrdHNbUEVFUl9TVEFUU19GT1JfTk9fT0ZfUFBEVVNdOwo+Pj4+ICsJX19s
-ZTE2IGZhaWxlZF9ieXRlc1tQRUVSX1NUQVRTX0ZPUl9OT19PRl9QUERVU107Cj4+Pj4gKwl1OCBm
-bGFnc1tQRUVSX1NUQVRTX0ZPUl9OT19PRl9QUERVU107Cj4+Pj4gKwlfX2xlMzIgdHhfZHVyYXRp
-b247Cj4+Pj4gKwl1OCB0eF9wcGR1X2NudDsKPj4+PiArCXU4IHBlZXJfaWQ7Cj4+Pj4gK30gX19w
-YWNrZWQ7Cj4+PiAKPj4+IFRva2UsIGhvcGVmdWxseSB0aGUgdHhfZHVyYXRpb24gdmFsdWUgaGVy
-ZSBoZWxwcyB3aXRoIEFURgo+Pj4gaW1wbGVtZW50YXRpb24KPj4+IHVzaW5nIFFDQTk4OFguCj4+
-IAo+PiBBd2Vzb21lISBXaGF0J3MgdGhlIHNlbWFudGljcyBvZiB0aGlzIGZpZWxkPyBKdXN0IHRv
-dGFsCj4+IGR1cmF0aW9uIHNwZW50IHNlcnZpbmcgdGhhdCBzdGF0aW9uIGluIHRoZSByZXBvcnRp
-bmcgaW50ZXJ2YWw/Cj4+IERvZXMgaXQgaW5jbHVkZSByZXRyeSBhdHRlbXB0cz8KPiAKPiBJIGhh
-dmUgbm8gY2x1ZSA6KSBJIGp1c3Qgbm90aWNlZCB0aGlzIHdoaWxlIEkgd2FzIHJldmlld2luZyB0
-aGUgcGF0Y2gKPiBpbnRlcm5hbGx5IGFuZCBpbW1lZGlhdGVseSByZWNhbGxlZCBvdXIgZGlzY3Vz
-c2lvbnMgYXQgU2VvdWwuIEkgY2FuIHRyeQo+IHRvIGZpbmQgb3V0LCBidXQgdGhhdCB3aWxsIHRh
-a2UgYSBsb25nIHRpbWUgYXMgSSBoYXZlIHdheSB0b28gbXVjaCAKPiBzdHVmZgo+IHBlbmRpbmcg
-YXQgdGhlIG1vbWVudC4gSG9wZWZ1bGx5IHNvbWVvbmUgbW9yZSBrbm93bGVkZ2VhYmxlIAo+IChB
-bmlsa3VtYXI/KQo+IGNhbiBjaGltZSBpbiBhbmQgaGVscC4KCnR4X2R1cmF0aW9uIGlzIGFnZ3Jl
-Z2F0ZSB0aW1lIGR1cmF0aW9uIG9mIDQgUFBEVSBzZW50IHRvIFNUQS4KRlcgc2VuZHMgdGhlc2Ug
-dmFsdWVzIGZvciByZXRyeSBwYWNrZXRzIGFsc28uCgpUaGFua3MsCkFuaWwuCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
-CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+
+On Thu, 2017-11-30 at 18:28 +0530, akolli@qti.qualcomm.com wrote:
+
+Hello,
+
+> Tested on QCA9880 with firmware version 10.2.4.70.48. This should also
+> work with firmware branch 10.2.4-1.0-00029
+
+I tried using your patch on 4.14 with firmware 10.2.4-1.0-00029
+
+> Parse peer stats from pktlog packets and update the tx rate information
+> per STA. This way user space can query about transmit rate with iw:
+
+everything works ok, ath10k_update_per_peer_tx_stats() is called and
+ath10k_sta fields are updated correctly
+
+but tx bitrate is still 6 MBit/s in station dump
+
+ # iw dev wlan1 station dump
+Station e4:42:a6:24:c8:95 (on wlan1)
+	inactive time:	0 ms
+	rx bytes:	222415
+	rx packets:	1678
+	tx bytes:	8511140
+	tx packets:	5828
+	tx retries:	0
+	tx failed:	4
+	rx drop misc:	2
+	signal:  	-39 [-54, -56, -39] dBm
+	signal avg:	-39 [-53, -55, -39] dBm
+	tx bitrate:	6.0 MBit/s
+	rx bitrate:	360.0 MBit/s VHT-MCS 8 40MHz short GI VHT-NSS 2
+	authorized:	yes
+	authenticated:	yes
+	associated:	yes
+	preamble:	long
+	WMM/WME:	yes
+	MFP:		no
+	TDLS peer:	no
+	DTIM period:	2
+	beacon interval:96
+	short slot time:yes
+	connected time:	1136 seconds
+
+I see that ath10k does not implement ->dump_station callback, so which
+part of the code updates the generic "struct station_info" fields ?
+
+Am I missing a patch ?
+
+Thanks
+
+-- 
+Maxime
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
