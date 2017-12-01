@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ns.iliad.fr ([212.27.33.1])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eKnsg-0004F0-Rz
- for ath10k@lists.infradead.org; Fri, 01 Dec 2017 16:09:40 +0000
-Message-ID: <1512144555.38490.84.camel@sakura.staff.proxad.net>
-Subject: Re: [PATCH 2/2] ath10k: add per peer tx stats support for 10.2.4
-From: Maxime Bizon <mbizon@freebox.fr>
-Date: Fri, 01 Dec 2017 17:09:15 +0100
-In-Reply-To: <6519868.NEUq8DTjxK@debian64>
-References: <1512046701-14435-1-git-send-email-akolli@qti.qualcomm.com>
- <7792e2fb2c546d8745c65e48945f2535@codeaurora.org>
- <1512140710.38490.81.camel@sakura.staff.proxad.net>
- <6519868.NEUq8DTjxK@debian64>
-Mime-Version: 1.0
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eKphR-0002cO-Bc
+ for ath10k@lists.infradead.org; Fri, 01 Dec 2017 18:06:11 +0000
+Subject: Re: ath10k; QCA9984 firmware crash
+References: <CA+_ehUwYhLUpZjUmJvcA5iwWTOt6XZKYL9q9aL=NnKhzqpFrDg@mail.gmail.com>
+ <1328332e-5506-4cd5-f547-921316e19eee@candelatech.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <786d4078-c8db-4dd8-8988-24980cdeb3e4@candelatech.com>
+Date: Fri, 1 Dec 2017 10:05:43 -0800
+MIME-Version: 1.0
+In-Reply-To: <1328332e-5506-4cd5-f547-921316e19eee@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +19,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: mbizon@freebox.fr
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Christian Lamparter <chunkeey@gmail.com>
-Cc: linux-wireless-owner@vger.kernel.org, akolli@qti.qualcomm.com, akolli@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ansuel Smith <ansuelsmth@gmail.com>, ath10k@lists.infradead.org
 
+On 11/30/2017 09:23 AM, Ben Greear wrote:
+> On 11/30/2017 09:04 AM, Ansuel Smith wrote:
+>> had this crash when restarting 5ghz wireless. Very bad performance and
+>> stability on a netgear r7800. Near wifi are on different channel, with
+>> old kernel 4.4 there were no issue. With the new kernel 4.9 i have
+>> this kind of problem and a bandwidth of max 20-30 mbps. Can make any
+>> test as for now i can't use it due to this problem. (Running lede with
+>> latest commit)
+>
+> I'd be curious if the ath10k-ct driver and firmware worked better
+> for you?  Should be easily selectable in LEDE.
+>
+> Thanks,
+> Ben
 
-On Fri, 2017-12-01 at 16:53 +0100, Christian Lamparter wrote:
+In case any QCA firmware devs are watching this...the crash in the firmware
+seems to be because a peer is being deleted while in power-save mode,
+and the send-n logic asserts.
 
-> "[PATCH] ath10k: fix recent bandwidth conversion bug"
+I think I have a fix for this for my firmware, but that does not explain
+the other problems that this user sees regarding  descriptor corruption
+messages.
 
-indeed, much better
-
-thanks
+Thanks,
+Ben
 
 -- 
-Maxime
-
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
