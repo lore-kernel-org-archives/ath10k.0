@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eL61d-0008F3-Kw
- for ath10k@lists.infradead.org; Sat, 02 Dec 2017 11:32:08 +0000
-From: Rakesh Pillai <pillair@qti.qualcomm.com>
-Subject: [PATCH v2 4/4] ath10k: WMI: add hw params entry for wcn3990
-Date: Sat,  2 Dec 2017 17:00:48 +0530
-Message-Id: <1512214248-17127-5-git-send-email-pillair@qti.qualcomm.com>
-In-Reply-To: <1512214248-17127-1-git-send-email-pillair@qti.qualcomm.com>
-References: <1512214248-17127-1-git-send-email-pillair@qti.qualcomm.com>
+ id 1eL7OO-0000rg-Sf
+ for ath10k@lists.infradead.org; Sat, 02 Dec 2017 12:59:42 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Wireless regressions in v4.15-rc1
+Date: Sat, 02 Dec 2017 14:59:15 +0200
+Message-ID: <87po7xwajg.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,102 +16,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
+To: linux-wireless@vger.kernel.org, Thorsten Leemhuis <regressions@leemhuis.info>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Add hw params entry for wcn3990 and populate various
-target specific values for wcn3990.
+Hi,
 
-Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
-Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 18 ++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.c   |  2 ++
- drivers/net/wireless/ath/ath10k/hw.h   | 10 ++++++++++
- 3 files changed, 30 insertions(+)
+just a heads up to everyone that there are multiple regressions in
+v4.15-rc1. For starters hostapd (=AP mode) doesn't work because of:
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index be18913..6abffb5 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -405,6 +405,24 @@
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
- 	},
-+	{
-+		.id = WCN3990_HW_1_0_DEV_VERSION,
-+		.dev_id = 0,
-+		.name = "wcn3990 hw1.0",
-+		.continuous_frag_desc = true,
-+		.tx_chain_mask = 0x7,
-+		.rx_chain_mask = 0x7,
-+		.max_spatial_stream = 4,
-+		.fw = {
-+			.dir = WCN3990_HW_1_0_FW_DIR,
-+		},
-+		.sw_decrypt_mcast_mgmt = true,
-+		.hw_ops = &wcn3990_ops,
-+		.decap_align_bytes = 1,
-+		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
-+		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
-+		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
-+	},
- };
- 
- static const char *const ath10k_core_fw_feature_str[] = {
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index 88955bb..76b9b41 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -931,3 +931,5 @@ static int ath10k_qca99x0_rx_desc_get_l3_pad_bytes(struct htt_rx_desc *rxd)
- 	.set_coverage_class = ath10k_hw_qca988x_set_coverage_class,
- 	.enable_pll_clk = ath10k_hw_qca6174_enable_pll_clock,
- };
-+
-+const struct ath10k_hw_ops wcn3990_ops = {0};
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index fedb6c7..90ad39b 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -128,6 +128,10 @@ enum qca9377_chip_id_rev {
- #define QCA4019_HW_1_0_BOARD_DATA_FILE "board.bin"
- #define QCA4019_HW_1_0_PATCH_LOAD_ADDR  0x1234
- 
-+/* WCN3990 1.0 definitions */
-+#define WCN3990_HW_1_0_DEV_VERSION	ATH10K_HW_WCN3990
-+#define WCN3990_HW_1_0_FW_DIR		ATH10K_FW_DIR "/WCN3990/hw3.0"
-+
- #define ATH10K_FW_FILE_BASE		"firmware"
- #define ATH10K_FW_API_MAX		6
- #define ATH10K_FW_API_MIN		2
-@@ -571,6 +575,7 @@ struct ath10k_hw_ops {
- extern const struct ath10k_hw_ops qca988x_ops;
- extern const struct ath10k_hw_ops qca99x0_ops;
- extern const struct ath10k_hw_ops qca6174_ops;
-+extern const struct ath10k_hw_ops wcn3990_ops;
- 
- extern const struct ath10k_hw_clk_params qca6174_clk[];
- 
-@@ -667,6 +672,11 @@ struct ath10k_hw_ops {
- #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
- #define TARGET_TLV_NUM_WOW_PATTERNS		22
- 
-+/* Target specific defines for WMI-HL-1.0 firmware */
-+#define TARGET_HL_10_TLV_NUM_PEERS		14
-+#define TARGET_HL_10_TLV_AST_SKID_LIMIT		6
-+#define TARGET_HL_10_TLV_NUM_WDS_ENTRIES	2
-+
- /* Diagnostic Window */
- #define CE_DIAG_PIPE	7
- 
+net: netlink: Update attr validation to require exact length for some types
+https://git.kernel.org/linus/28033ae4e0f5
+
+Jouni fixed this already in hostapd but we also need a fix for kernel so
+that old hostapd versions continue to work:
+
+https://w1.fi/cgit/hostap/commit/?id=a2426829ce426de82d2fa47071ca41ea81c43307
+
+Jouni also found a similar problem with mesh:
+
+https://w1.fi/cgit/hostap/commit/?id=963d3149abfcbab5b83f9023bc50321f777360d1
+
+And Johannes already submitted a revert related to wpa_supplicant:
+
+[net] Revert "net: core: maybe return -EEXIST in __dev_alloc_name" diffmboxseries
+https://patchwork.ozlabs.org/patch/843863/
+
+And with ath10k I'm now seeing this:
+
+[  133.175508] WARNING: CPU: 2 PID: 1743 at net/mac80211/agg-tx.c:315 ___ieee80211_stop_tx_ba_session+0x1ab/0x280 [mac80211]
+[  133.175660] Modules linked in: ctr ccm arc4 ath10k_pci(E) ath10k_core(E) ath(E) mac80211(E) cfg80211(E) snd_hda_codec_hdmi snd_hda_codec_idt snd_hda_codec_generic joydev btusb snd_hda_i
+[  133.175924] CPU: 2 PID: 1743 Comm: hostapd Tainted: G            E    4.15.0-rc1-wt-ath+ #553
+[  133.175960] Hardware name: Hewlett-Packard HP ProBook 6540b/1722, BIOS 68CDD Ver. F.04 01/27/2010
+[  133.175996] task: ffff9a1b9b6e1cc0 task.stack: ffffb13800348000
+[  133.176072] RIP: 0010:___ieee80211_stop_tx_ba_session+0x1ab/0x280 [mac80211]
+[  133.176111] RSP: 0018:ffffb1380034b8f8 EFLAGS: 00210246
+[  133.176151] RAX: 0000000000000000 RBX: ffff9a1b93e85698 RCX: 0000000000000000
+[  133.176187] RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 0000000000200246
+[  133.176223] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000001
+[  133.176259] R10: 0000000000000000 R11: 0000000000000012 R12: 0000000000000000
+[  133.176295] R13: 0000000000000003 R14: 0000000000000000 R15: ffff9a1b93060dc0
+[  133.176332] FS:  0000000000000000(0000) GS:ffff9a1bb2600000(0063) knlGS:00000000f7b69b00
+[  133.176368] CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+[  133.181034] CR2: 00000000f7dd56c0 CR3: 0000000119076000 CR4: 00000000000006e0
+[  133.181068] Call Trace:
+[  133.181191]  ieee80211_sta_tear_down_BA_sessions+0x6d/0x140 [mac80211]
+[  133.181264]  __sta_info_destroy_part1+0x5e/0x9d0 [mac80211]
+[  133.181336]  __sta_info_flush+0x129/0x190 [mac80211]
+[  133.181421]  ieee80211_stop_ap+0x14c/0x5c0 [mac80211]
+[  133.181516]  __cfg80211_stop_ap+0xdd/0x620 [cfg80211]
+[  133.181591]  cfg80211_stop_ap+0x3a/0x50 [cfg80211]
+[  133.181631]  genl_family_rcv_msg+0x1b9/0x370
+[  133.181680]  genl_rcv_msg+0x47/0x90
+[  133.181712]  ? genl_rcv+0x15/0x40
+[  133.181744]  ? genl_family_rcv_msg+0x370/0x370
+[  133.181777]  netlink_rcv_skb+0xd2/0xf0
+[  133.181816]  genl_rcv+0x24/0x40
+[  133.181850]  netlink_unicast+0x1c0/0x2e0
+[  133.181887]  netlink_sendmsg+0x2ac/0x390
+[  133.181931]  sock_sendmsg+0x30/0x40
+[  133.181965]  ___sys_sendmsg+0x2a6/0x2b0
+[  133.182003]  ? trace_hardirqs_on_caller+0x124/0x190
+[  133.182042]  ? trace_hardirqs_on_caller+0x124/0x190
+[  133.182083]  ? free_debug_processing+0x271/0x380
+[  133.182122]  ? __lock_acquire+0x52d/0x1120
+[  133.182159]  ? __lock_acquire+0x52d/0x1120
+[  133.182200]  ? __sys_sendmsg+0x41/0x70
+[  133.182231]  __sys_sendmsg+0x41/0x70
+[  133.182278]  compat_SyS_socketcall+0x2db/0x480
+[  133.182311]  ? task_work_run+0x6a/0xb0
+[  133.182366]  ? trace_hardirqs_off_thunk+0x1a/0x1c
+[  133.182406]  do_fast_syscall_32+0x9c/0x300
+[  133.182443]  entry_SYSENTER_compat+0x51/0x60
+[  133.182493] Code: 5d 41 5e 41 5f c3 c7 04 24 03 00 00 00 e9 dc fe ff ff 48 8d bf 58 09 00 00 be ff ff ff ff e8 dd 36 90 e7 85 c0 0f 85 a8 fe ff ff <0f> ff e9 a1 fe ff ff 4c 89 f7 e8 76 
+[  133.182798] ---[ end trace fb3fb3b808e4ce1b ]---
+
 -- 
-1.9.1
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
