@@ -1,23 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.toke.dk ([52.28.52.200])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eL4Uy-00027g-CJ
- for ath10k@lists.infradead.org; Sat, 02 Dec 2017 09:54:18 +0000
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH 2/2] ath10k: add per peer tx stats support for 10.2.4
-In-Reply-To: <1512143881.25588.18.camel@sipsolutions.net>
-References: <1512046701-14435-1-git-send-email-akolli@qti.qualcomm.com>
- <1512046701-14435-3-git-send-email-akolli@qti.qualcomm.com>
- <87k1y7zqtj.fsf@kamboji.qca.qualcomm.com>
- <DAB5EBB8-C820-4056-8AAB-063D05F38BD5@toke.dk>
- <87bmjjzppd.fsf@kamboji.qca.qualcomm.com>
- <5080a68538fd2d883e15bacaa969661b@codeaurora.org> <87r2se36rq.fsf@toke.dk>
- <87k1y6y04i.fsf@kamboji.qca.qualcomm.com> <87d13y31r0.fsf@toke.dk>
- <1512143142.25588.17.camel@sipsolutions.net> <87a7z230m3.fsf@toke.dk>
- <1512143881.25588.18.camel@sipsolutions.net>
-Date: Sat, 02 Dec 2017 10:53:48 +0100
-Message-ID: <87374t3177.fsf@toke.dk>
-MIME-Version: 1.0
+ id 1eL61G-0008CG-36
+ for ath10k@lists.infradead.org; Sat, 02 Dec 2017 11:31:43 +0000
+From: Rakesh Pillai <pillair@qti.qualcomm.com>
+Subject: [PATCH v2 0/4] WMI changes for wcn3990
+Date: Sat,  2 Dec 2017 17:00:44 +0530
+Message-Id: <1512214248-17127-1-git-send-email-pillair@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +15,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless-owner@vger.kernel.org" <linux-wireless-owner@vger.kernel.org>, Anilkumar Kolli <akolli@qti.qualcomm.com>, "akolli@codeaurora.org" <akolli@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
 
-Sm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldD4gd3JpdGVzOgoKPiBPbiBG
-cmksIDIwMTctMTItMDEgYXQgMTY6NTQgKzAxMDAsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3
-cm90ZToKPgo+PiBCdXQgc2luY2Ugd2UnbGwgaGF2ZSB0byBkbyB0aGF0IGZvciBhdGg5ayBhbnl3
-YXkgaXQKPj4gYmVjb21lcyBtb3JlIGEgcXVlc3Rpb24gb2Ygd2hldGhlciBpdCdzIHNvbWV0aGlu
-ZyB0aGF0IHNob3VsZCBiZQo+PiBzdXBwb3J0ZWQgaW4gbWFjODAyMTEgb3IgaWYgaXQgc2hvdWxk
-IGJlIGltcGxlbWVudGVkIGluIGVhY2ggZHJpdmVyLgo+PiBCdXQgc2luY2UgdGhhdCBsb2dpYyB3
-aWxsIGhhdmUgdG8gYmUgd3JpdHRlbiBmcm9tIHNjcmF0Y2ggYW55d2F5LCBpcwo+PiB0aGVyZSBh
-bnkgcmVhc29uIHRvIG5vdCBqdXN0IGRvIGl0IGluIG1hYzgwMjExIGZyb20gdGhlIGJlZ2lubmlu
-Zz8KPgo+IEkgd2FzIHRoaW5raW5nIGluIHRoZSBkcml2ZXIgc28gdGhhdCB0aGVyZSdzIG5vIG92
-ZXJoZWFkIGZvciB0aGUgb3RoZXIKPiBkcml2ZXJzIHRoYXQgZG9uJ3Qgd2FudCBpdCB0aGF0IHdh
-eS4KPgo+IER1bm5vLiBJdCBwcm9iYWJseSBkb2Vzbid0IHJlYWxseSBtYXR0ZXIuCgpJJ2xsIHBy
-b3RvdHlwZSBzb21ldGhpbmcsIHRoZW4gd2UgY2FuIHJldmlzaXQgdGhpcyBiYXNlZCBvbiBhY3R1
-YWwgY29kZSA6KQoKLVRva2UKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+This patchset includes the WMI changes for wcn3390 to
+Refactor service ready event parsing,
+Add management frame tx by refernce over wmi,
+Add hw parameters for wcn3990.
+
+Changes since v1:
+- Make code endian safe by using __cpu_to_le32 for hw parameters.
+
+Rakesh Pillai (4):
+  ath10k: WMI: modify svc bitmap parsing for wcn3990
+  ath10k: WMI: Add management tx by reference support over wmi
+  ath10k: WMI: get wmi init parameter values from hw params
+  ath10k: WMI: add hw params entry for wcn3990
+
+ drivers/net/wireless/ath/ath10k/core.c    |  55 ++++++++++++
+ drivers/net/wireless/ath/ath10k/core.h    |   3 +
+ drivers/net/wireless/ath/ath10k/hw.c      |   2 +
+ drivers/net/wireless/ath/ath10k/hw.h      |  14 +++
+ drivers/net/wireless/ath/ath10k/mac.c     |   4 +-
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |   9 +-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 143 ++++++++++++++++++++++++++----
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 113 +++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |   2 +
+ 9 files changed, 328 insertions(+), 17 deletions(-)
+
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
