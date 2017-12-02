@@ -1,16 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eKphR-0002cO-Bc
- for ath10k@lists.infradead.org; Fri, 01 Dec 2017 18:06:11 +0000
-Subject: Re: ath10k; QCA9984 firmware crash
-References: <CA+_ehUwYhLUpZjUmJvcA5iwWTOt6XZKYL9q9aL=NnKhzqpFrDg@mail.gmail.com>
- <1328332e-5506-4cd5-f547-921316e19eee@candelatech.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <786d4078-c8db-4dd8-8988-24980cdeb3e4@candelatech.com>
-Date: Fri, 1 Dec 2017 10:05:43 -0800
+Received: from mail.toke.dk ([52.28.52.200])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eL4Uy-00027g-CJ
+ for ath10k@lists.infradead.org; Sat, 02 Dec 2017 09:54:18 +0000
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [PATCH 2/2] ath10k: add per peer tx stats support for 10.2.4
+In-Reply-To: <1512143881.25588.18.camel@sipsolutions.net>
+References: <1512046701-14435-1-git-send-email-akolli@qti.qualcomm.com>
+ <1512046701-14435-3-git-send-email-akolli@qti.qualcomm.com>
+ <87k1y7zqtj.fsf@kamboji.qca.qualcomm.com>
+ <DAB5EBB8-C820-4056-8AAB-063D05F38BD5@toke.dk>
+ <87bmjjzppd.fsf@kamboji.qca.qualcomm.com>
+ <5080a68538fd2d883e15bacaa969661b@codeaurora.org> <87r2se36rq.fsf@toke.dk>
+ <87k1y6y04i.fsf@kamboji.qca.qualcomm.com> <87d13y31r0.fsf@toke.dk>
+ <1512143142.25588.17.camel@sipsolutions.net> <87a7z230m3.fsf@toke.dk>
+ <1512143881.25588.18.camel@sipsolutions.net>
+Date: Sat, 02 Dec 2017 10:53:48 +0100
+Message-ID: <87374t3177.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <1328332e-5506-4cd5-f547-921316e19eee@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,44 +26,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ansuel Smith <ansuelsmth@gmail.com>, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless-owner@vger.kernel.org" <linux-wireless-owner@vger.kernel.org>, Anilkumar Kolli <akolli@qti.qualcomm.com>, "akolli@codeaurora.org" <akolli@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 11/30/2017 09:23 AM, Ben Greear wrote:
-> On 11/30/2017 09:04 AM, Ansuel Smith wrote:
->> had this crash when restarting 5ghz wireless. Very bad performance and
->> stability on a netgear r7800. Near wifi are on different channel, with
->> old kernel 4.4 there were no issue. With the new kernel 4.9 i have
->> this kind of problem and a bandwidth of max 20-30 mbps. Can make any
->> test as for now i can't use it due to this problem. (Running lede with
->> latest commit)
->
-> I'd be curious if the ath10k-ct driver and firmware worked better
-> for you?  Should be easily selectable in LEDE.
->
-> Thanks,
-> Ben
-
-In case any QCA firmware devs are watching this...the crash in the firmware
-seems to be because a peer is being deleted while in power-save mode,
-and the send-n logic asserts.
-
-I think I have a fix for this for my firmware, but that does not explain
-the other problems that this user sees regarding  descriptor corruption
-messages.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Sm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRpb25zLm5ldD4gd3JpdGVzOgoKPiBPbiBG
+cmksIDIwMTctMTItMDEgYXQgMTY6NTQgKzAxMDAsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3
+cm90ZToKPgo+PiBCdXQgc2luY2Ugd2UnbGwgaGF2ZSB0byBkbyB0aGF0IGZvciBhdGg5ayBhbnl3
+YXkgaXQKPj4gYmVjb21lcyBtb3JlIGEgcXVlc3Rpb24gb2Ygd2hldGhlciBpdCdzIHNvbWV0aGlu
+ZyB0aGF0IHNob3VsZCBiZQo+PiBzdXBwb3J0ZWQgaW4gbWFjODAyMTEgb3IgaWYgaXQgc2hvdWxk
+IGJlIGltcGxlbWVudGVkIGluIGVhY2ggZHJpdmVyLgo+PiBCdXQgc2luY2UgdGhhdCBsb2dpYyB3
+aWxsIGhhdmUgdG8gYmUgd3JpdHRlbiBmcm9tIHNjcmF0Y2ggYW55d2F5LCBpcwo+PiB0aGVyZSBh
+bnkgcmVhc29uIHRvIG5vdCBqdXN0IGRvIGl0IGluIG1hYzgwMjExIGZyb20gdGhlIGJlZ2lubmlu
+Zz8KPgo+IEkgd2FzIHRoaW5raW5nIGluIHRoZSBkcml2ZXIgc28gdGhhdCB0aGVyZSdzIG5vIG92
+ZXJoZWFkIGZvciB0aGUgb3RoZXIKPiBkcml2ZXJzIHRoYXQgZG9uJ3Qgd2FudCBpdCB0aGF0IHdh
+eS4KPgo+IER1bm5vLiBJdCBwcm9iYWJseSBkb2Vzbid0IHJlYWxseSBtYXR0ZXIuCgpJJ2xsIHBy
+b3RvdHlwZSBzb21ldGhpbmcsIHRoZW4gd2UgY2FuIHJldmlzaXQgdGhpcyBiYXNlZCBvbiBhY3R1
+YWwgY29kZSA6KQoKLVRva2UKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
