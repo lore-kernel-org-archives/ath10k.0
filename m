@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMDJx-0002za-L9
- for ath10k@lists.infradead.org; Tue, 05 Dec 2017 13:31:39 +0000
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMDJs-0006AB-Dn
+ for ath10k@lists.infradead.org; Tue, 05 Dec 2017 13:31:33 +0000
 From: <akolli@qti.qualcomm.com>
-Subject: [PATCHv2 2/3] ath10k: move pktlog_filter out of ath10k_debug
-Date: Tue, 5 Dec 2017 19:01:24 +0530
-Message-ID: <1512480685-28471-3-git-send-email-akolli@qti.qualcomm.com>
+Subject: [PATCHv2 1/3] ath10k: remove MAC80211_DEBUGFS dependency on
+ ath10k_sta_statistics
+Date: Tue, 5 Dec 2017 19:01:23 +0530
+Message-ID: <1512480685-28471-2-git-send-email-akolli@qti.qualcomm.com>
 In-Reply-To: <1512480685-28471-1-git-send-email-akolli@qti.qualcomm.com>
 References: <1512480685-28471-1-git-send-email-akolli@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -27,102 +28,144 @@ Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wire
 
 From: Anilkumar Kolli <akolli@qti.qualcomm.com>
 
-Move pktlog_filter from struct ath10k_debug to struct ath10k
-so that pktlog can be enabled even when debugfs is not
-enabled, needed to enable peer tx stats for 10.2.4.
+Remove CONFIG_MAC80211_DEBUGFS dependency on ath10k_sta_statistics().
+ath10k_sta_statistics() has per sta tx/rx stats and this should not
+be dependent on MAC80211_DEBUGFS.
 
 No changes in functionality.
 
 Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h  |    2 +-
- drivers/net/wireless/ath/ath10k/debug.c |   16 ++++++++--------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h        |    2 +-
+ drivers/net/wireless/ath/ath10k/debug.h       |    3 ---
+ drivers/net/wireless/ath/ath10k/debugfs_sta.c |   27 ----------------------
+ drivers/net/wireless/ath/ath10k/mac.c         |   30 ++++++++++++++++++++++++-
+ 4 files changed, 30 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 15e386d091a4..eac9737ee407 100644
+index 643041ef3271..15e386d091a4 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -488,7 +488,6 @@ struct ath10k_debug {
+@@ -364,11 +364,11 @@ struct ath10k_sta {
+ 	struct rate_info txrate;
+ 
+ 	struct work_struct update_wk;
++	u64 rx_duration;
+ 
+ #ifdef CONFIG_MAC80211_DEBUGFS
  	/* protected by conf_mutex */
- 	u64 fw_dbglog_mask;
- 	u32 fw_dbglog_level;
--	u32 pktlog_filter;
- 	u32 reg_addr;
- 	u32 nf_cal_period;
- 	void *cal_data;
-@@ -963,6 +962,7 @@ struct ath10k {
- 	} spectral;
+ 	bool aggr_mode;
+-	u64 rx_duration;
  #endif
+ };
  
-+	u32 pktlog_filter;
- 	struct {
- 		/* protected by conf_mutex */
- 		struct ath10k_fw_components utf_mode_fw;
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index df514507d3f1..e278300b4f14 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1950,14 +1950,14 @@ int ath10k_debug_start(struct ath10k *ar)
- 				    ret);
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 548ad5483a4a..dd82a61ed1c8 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -190,9 +190,6 @@ void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 			    struct ieee80211_sta *sta, struct dentry *dir);
+ void ath10k_sta_update_rx_duration(struct ath10k *ar,
+ 				   struct ath10k_fw_stats *stats);
+-void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+-			   struct ieee80211_sta *sta,
+-			   struct station_info *sinfo);
+ #else
+ static inline
+ void ath10k_sta_update_rx_duration(struct ath10k *ar,
+diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+index d59ac6b83340..ff96f70d2282 100644
+--- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
++++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+@@ -65,33 +65,6 @@ void ath10k_sta_update_rx_duration(struct ath10k *ar,
+ 		ath10k_sta_update_stats_rx_duration(ar, stats);
+ }
  
--	if (ar->debug.pktlog_filter) {
-+	if (ar->pktlog_filter) {
- 		ret = ath10k_wmi_pdev_pktlog_enable(ar,
--						    ar->debug.pktlog_filter);
-+						    ar->pktlog_filter);
- 		if (ret)
- 			/* not serious */
- 			ath10k_warn(ar,
- 				    "failed to enable pktlog filter %x: %d\n",
--				    ar->debug.pktlog_filter, ret);
-+				    ar->pktlog_filter, ret);
- 	} else {
- 		ret = ath10k_wmi_pdev_pktlog_disable(ar);
- 		if (ret)
-@@ -2097,12 +2097,12 @@ static ssize_t ath10k_write_pktlog_filter(struct file *file,
- 	mutex_lock(&ar->conf_mutex);
+-void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+-			   struct ieee80211_sta *sta,
+-			   struct station_info *sinfo)
+-{
+-	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
+-	struct ath10k *ar = arsta->arvif->ar;
+-
+-	if (!ath10k_peer_stats_enabled(ar))
+-		return;
+-
+-	sinfo->rx_duration = arsta->rx_duration;
+-	sinfo->filled |= 1ULL << NL80211_STA_INFO_RX_DURATION;
+-
+-	if (!arsta->txrate.legacy && !arsta->txrate.nss)
+-		return;
+-
+-	if (arsta->txrate.legacy) {
+-		sinfo->txrate.legacy = arsta->txrate.legacy;
+-	} else {
+-		sinfo->txrate.mcs = arsta->txrate.mcs;
+-		sinfo->txrate.nss = arsta->txrate.nss;
+-		sinfo->txrate.bw = arsta->txrate.bw;
+-	}
+-	sinfo->txrate.flags = arsta->txrate.flags;
+-	sinfo->filled |= 1ULL << NL80211_STA_INFO_TX_BITRATE;
+-}
+-
+ static ssize_t ath10k_dbg_sta_read_aggr_mode(struct file *file,
+ 					     char __user *user_buf,
+ 					     size_t count, loff_t *ppos)
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 06383e70e009..884543026f3a 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7630,6 +7630,34 @@ static void ath10k_mac_op_sta_pre_rcu_remove(struct ieee80211_hw *hw,
+ 			peer->removed = true;
+ }
  
- 	if (ar->state != ATH10K_STATE_ON) {
--		ar->debug.pktlog_filter = filter;
-+		ar->pktlog_filter = filter;
- 		ret = count;
- 		goto out;
- 	}
++static void ath10k_sta_statistics(struct ieee80211_hw *hw,
++				  struct ieee80211_vif *vif,
++				  struct ieee80211_sta *sta,
++				  struct station_info *sinfo)
++{
++	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
++	struct ath10k *ar = arsta->arvif->ar;
++
++	if (!ath10k_peer_stats_enabled(ar))
++		return;
++
++	sinfo->rx_duration = arsta->rx_duration;
++	sinfo->filled |= 1ULL << NL80211_STA_INFO_RX_DURATION;
++
++	if (!arsta->txrate.legacy && !arsta->txrate.nss)
++		return;
++
++	if (arsta->txrate.legacy) {
++		sinfo->txrate.legacy = arsta->txrate.legacy;
++	} else {
++		sinfo->txrate.mcs = arsta->txrate.mcs;
++		sinfo->txrate.nss = arsta->txrate.nss;
++		sinfo->txrate.bw = arsta->txrate.bw;
++	}
++	sinfo->txrate.flags = arsta->txrate.flags;
++	sinfo->filled |= 1ULL << NL80211_STA_INFO_TX_BITRATE;
++}
++
+ static const struct ieee80211_ops ath10k_ops = {
+ 	.tx				= ath10k_mac_op_tx,
+ 	.wake_tx_queue			= ath10k_mac_op_wake_tx_queue,
+@@ -7671,6 +7699,7 @@ static void ath10k_mac_op_sta_pre_rcu_remove(struct ieee80211_hw *hw,
+ 	.unassign_vif_chanctx		= ath10k_mac_op_unassign_vif_chanctx,
+ 	.switch_vif_chanctx		= ath10k_mac_op_switch_vif_chanctx,
+ 	.sta_pre_rcu_remove		= ath10k_mac_op_sta_pre_rcu_remove,
++	.sta_statistics			= ath10k_sta_statistics,
  
--	if (filter == ar->debug.pktlog_filter) {
-+	if (filter == ar->pktlog_filter) {
- 		ret = count;
- 		goto out;
- 	}
-@@ -2111,7 +2111,7 @@ static ssize_t ath10k_write_pktlog_filter(struct file *file,
- 		ret = ath10k_wmi_pdev_pktlog_enable(ar, filter);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to enable pktlog filter %x: %d\n",
--				    ar->debug.pktlog_filter, ret);
-+				    ar->pktlog_filter, ret);
- 			goto out;
- 		}
- 	} else {
-@@ -2122,7 +2122,7 @@ static ssize_t ath10k_write_pktlog_filter(struct file *file,
- 		}
- 	}
+ 	CFG80211_TESTMODE_CMD(ath10k_tm_cmd)
  
--	ar->debug.pktlog_filter = filter;
-+	ar->pktlog_filter = filter;
- 	ret = count;
+@@ -7681,7 +7710,6 @@ static void ath10k_mac_op_sta_pre_rcu_remove(struct ieee80211_hw *hw,
+ #endif
+ #ifdef CONFIG_MAC80211_DEBUGFS
+ 	.sta_add_debugfs		= ath10k_sta_add_debugfs,
+-	.sta_statistics			= ath10k_sta_statistics,
+ #endif
+ };
  
- out:
-@@ -2139,7 +2139,7 @@ static ssize_t ath10k_read_pktlog_filter(struct file *file, char __user *ubuf,
- 
- 	mutex_lock(&ar->conf_mutex);
- 	len = scnprintf(buf, sizeof(buf) - len, "%08x\n",
--			ar->debug.pktlog_filter);
-+			ar->pktlog_filter);
- 	mutex_unlock(&ar->conf_mutex);
- 
- 	return simple_read_from_buffer(ubuf, count, ppos, buf, len);
 -- 
 1.7.9.5
 
