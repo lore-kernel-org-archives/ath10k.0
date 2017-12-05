@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x22f.google.com ([2607:f8b0:400d:c0d::22f])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eM9L3-0002Tw-3y
- for ath10k@lists.infradead.org; Tue, 05 Dec 2017 09:16:31 +0000
-Received: by mail-qt0-x22f.google.com with SMTP id k19so27510211qtj.6
- for <ath10k@lists.infradead.org>; Tue, 05 Dec 2017 01:16:08 -0800 (PST)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: ath10k: Fix reported HT MCS rates with NSS > 1
-Date: Tue, 05 Dec 2017 10:16:03 +0100
-Message-ID: <1552472.kPg8TR0KAa@bentobox>
-In-Reply-To: <bcebd30e279840a62b53043865d4db29@codeaurora.org>
-References: <20170511090930.18205-1-sven.eckelmann@openmesh.com>
- <87po8df8wc.fsf@kamboji.qca.qualcomm.com>
- <bcebd30e279840a62b53043865d4db29@codeaurora.org>
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMDJP-0002ue-6y
+ for ath10k@lists.infradead.org; Tue, 05 Dec 2017 13:31:15 +0000
+From: <akolli@qti.qualcomm.com>
+Subject: [PATCHv2 0/3] ath10k: tx stats for 10.2.4 
+Date: Tue, 5 Dec 2017 19:01:22 +0530
+Message-ID: <1512480685-28471-1-git-send-email-akolli@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,71 +16,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0623022247892903858=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: akolli@codeaurora.org
-Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, Peter Oh <peter.oh@bowerswilkins.com>
+To: ath10k@lists.infradead.org
+Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wireless@vger.kernel.org
 
---===============0623022247892903858==
-Content-Type: multipart/signed; boundary="nextPart6304754.KrjaKBfTbQ"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+From: Anilkumar Kolli <akolli@qti.qualcomm.com>
 
---nextPart6304754.KrjaKBfTbQ
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Add tx stats supoort for QCA988X.
+Parse peer stats from pktlog packets and update the tx rate
+information per STA.
+This way user space can query about transmit rate with iw.
 
-On Dienstag, 21. November 2017 11:43:36 CET akolli@codeaurora.org wrote:
-[...]
-> > I think we should add a special case to not print the warning if mcs ==
-> > 15 until we figure out what it means.
-> 
-> Fix identified in Firmware and will push ASAP.
+V2:
+  - Added  patch ath10k: remove MAC80211_DEBUGFS dependency on ath10k_sta_statistics
+  - No other changes
+ 
+Anilkumar Kolli (3):
+  ath10k: remove MAC80211_DEBUGFS dependency on ath10k_sta_statistics
+  ath10k: move pktlog_filter out of ath10k_debug
+  ath10k: add per peer tx stats support for 10.2.4
 
-Is it known when this will be released and for which firmware/HW versions? And 
-will this also fix the legacy rate reports? At least in the moment, 
-ath10k_htt_fetch_peer_stats seems to generate following on QCA4019 for some 
-clients:
+ drivers/net/wireless/ath/ath10k/core.h        |    4 +-
+ drivers/net/wireless/ath/ath10k/debug.c       |   16 +++----
+ drivers/net/wireless/ath/ath10k/debug.h       |   21 +++++++--
+ drivers/net/wireless/ath/ath10k/debugfs_sta.c |   27 -----------
+ drivers/net/wireless/ath/ath10k/htt.h         |   17 +++++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c      |   60 +++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/mac.c         |   40 ++++++++++++++++-
+ 7 files changed, 143 insertions(+), 42 deletions(-)
 
-    [ 1627.720177] ath10k_ahb a800000.wifi: Invalid legacy rate 26 peer stats
-    [ 1632.010290] ath10k_ahb a800000.wifi: Invalid legacy rate 26 peer stats
+-- 
+1.7.9.5
 
-Kind regards,
-	Sven
---nextPart6304754.KrjaKBfTbQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlomY9MACgkQXYcKB8Em
-e0bojA/+K+sp8iJSyLYy0+MpYzijwgMCFoJg7+pzWwhpvj1LdHMa4BBVqkom9BSm
-zAclOSW9cA5YLcwDYJnKYfOeUqqO3Pc8DJePyRdhS86cB0FXbPAQzn2dbWNoBb9b
-xL2nuSCEnfEjSgA/qPx5Xi1EwOk6Bjnqu5oVDIjsUA1K0f8A0FooAQZup37Ti0jO
-CttpwCAq+d6CeaijojzSuvujveW8wWXmhaBV+odnmBJzNNpLUfWeN5shHoKPTFrr
-yy4wqpTt3TFfuNH8LNT3lTkDbsxXu7In/P0tNxLfG2oOQC5cZ2a/kMhtX5WJ0fkz
-5Dw9++KEZF4FvAYtEeMPTCtZYVakvjmLPf1W212H8JV7o0TX9+nEyHkXjr5MrNhA
-NFz8ilsbLIVP/i+Bbi7VX4BiEDVDNy9V9W5Gqv8PAg4HsbjO0AFfS8gHVE4cYliE
-UYDDwTiLWzxsji/QidswSNZNhQnU7WiTY/vV+J5+Oqa3HN4ke9cGsBceVtygsPrw
-Ym7dqUGtE8Rg84JANoRzubr/w/C+2UCEZ+A8yYHMHNoZDJ8Idi1GbDXStP6OJX19
-P126n9TXZOQPHiwVFMT42Zt9erhdvBLdDhOdY83+eS9z0c/fros51lI/dZLiDUgz
-UrwklfveyuYhP2PRcUco6d5aVDJqqjEwl9s7FXYWRlsYK/lylPc=
-=5WIL
------END PGP SIGNATURE-----
-
---nextPart6304754.KrjaKBfTbQ--
-
-
-
---===============0623022247892903858==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============0623022247892903858==--
