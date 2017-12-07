@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMxN3-00079S-DA
- for ath10k@lists.infradead.org; Thu, 07 Dec 2017 14:41:55 +0000
-MIME-Version: 1.0
-Subject: Re: ath10k: Fix invalid STS_CAP_OFFSET_MASK.
+ id 1eMxjr-0005yN-HT
+ for ath10k@lists.infradead.org; Thu, 07 Dec 2017 15:05:29 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1510679819-24115-1-git-send-email-greearb@candelatech.com>
-References: <1510679819-24115-1-git-send-email-greearb@candelatech.com>
-Message-ID: <b186e066fba046d592be1d29008ffad6@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 7 Dec 2017 15:41:25 +0100
+Subject: Re: [PATCH v2 1/4] ath10k: WMI: modify svc bitmap parsing for wcn3990
+Date: Thu, 7 Dec 2017 15:04:55 +0000
+Message-ID: <87y3metw8f.fsf@kamboji.qca.qualcomm.com>
+References: <1512214248-17127-1-git-send-email-pillair@qti.qualcomm.com>
+ <1512214248-17127-2-git-send-email-pillair@qti.qualcomm.com>
+In-Reply-To: <1512214248-17127-2-git-send-email-pillair@qti.qualcomm.com>
+ (Rakesh Pillai's message of "Sat, 2 Dec 2017 17:00:45 +0530")
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +25,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rakesh Pillai <pillair@qti.qualcomm.com>
+Cc: Govind Singh <govinds@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> wrote:
+Rakesh Pillai <pillair@qti.qualcomm.com> writes:
 
-> The 10.4 firmware defines this as a 3-bit field, as does the
-> mac80211 stack.  The 4th bit is defined as CONF_IMPLICIT_BF
-> at least in the firmware header I have seen.  This patch
-> fixes the ath10k wmi header to match the firmware.
-> 
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> Due to the limitation of wmi tlv parsing logic, if there are
+> two parameters in a wmi event with same tlv tag, we can get only
+> the last value, as it overwrites the prev value of the same tlv tag.
+>
+> The service ready event in wcn3990 contains two parameters of the
+> same tag UINT32, due to which the svc bitmap is overwritten with the
+> DBS support parameter.
+>
+> Refactor the service ready event parsing to allow parsing two tlv
+> of the same tag UINT32 for wcn3990.
+>
+> Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
+> Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
 
-Patch applied to ath-next branch of ath.git, thanks.
+ath10k-check found a warning in this patch:
 
-8cec57f5277e ath10k: fix invalid STS_CAP_OFFSET_MASK
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:981: braces {} are not necessary for single statement blocks
 
 -- 
-https://patchwork.kernel.org/patch/10057943/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
