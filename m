@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMxlf-0007L9-N0
- for ath10k@lists.infradead.org; Thu, 07 Dec 2017 15:07:21 +0000
+ id 1eMxn2-0007XL-G5
+ for ath10k@lists.infradead.org; Thu, 07 Dec 2017 15:08:46 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 2/4] ath10k: WMI: Add management tx by reference
- support over wmi
-Date: Thu, 7 Dec 2017 15:06:48 +0000
-Message-ID: <87tvx2tw54.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 4/4] ath10k: WMI: add hw params entry for wcn3990
+Date: Thu, 7 Dec 2017 15:08:22 +0000
+Message-ID: <87po7qtw2j.fsf@kamboji.qca.qualcomm.com>
 References: <1512214248-17127-1-git-send-email-pillair@qti.qualcomm.com>
- <1512214248-17127-3-git-send-email-pillair@qti.qualcomm.com>
-In-Reply-To: <1512214248-17127-3-git-send-email-pillair@qti.qualcomm.com>
- (Rakesh Pillai's message of "Sat, 2 Dec 2017 17:00:46 +0530")
+ <1512214248-17127-5-git-send-email-pillair@qti.qualcomm.com>
+In-Reply-To: <1512214248-17127-5-git-send-email-pillair@qti.qualcomm.com>
+ (Rakesh Pillai's message of "Sat, 2 Dec 2017 17:00:48 +0530")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -31,23 +30,15 @@ Cc: Govind Singh <govinds@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <l
 
 Rakesh Pillai <pillair@qti.qualcomm.com> writes:
 
-> HL1.0 firmware branch, used in wcn3990, transmits management
-> frames by reference over WMI.
->
-> Add support for management tx by reference over WMI.
+> Add hw params entry for wcn3990 and populate various
+> target specific values for wcn3990.
 >
 > Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
 > Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
 
-This one has an endian problem:
+New warning:
 
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:2537:22: warning: incorrect type in assignment (different base types)
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:2537:22:    expected restricted __le32 [usertype] vdev_id
-drivers/net/wireless/ath/ath10k/wmi-tlv.c:2537:22:    got unsigned int [unsigned] [assigned] [usertype] vdev_id
-
-I recommend running ath10k-check before submission:
-
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/codingstyle#checking_code
+drivers/net/wireless/ath/ath10k/hw.c:935:43: warning: Using plain integer as NULL pointer
 
 -- 
 Kalle Valo
