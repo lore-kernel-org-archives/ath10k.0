@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMxCD-00087L-IM
- for ath10k@lists.infradead.org; Thu, 07 Dec 2017 14:31:12 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath9k: remove stray backslash in Makefile
-Date: Thu, 7 Dec 2017 14:30:14 +0000
-Message-ID: <87374mvcej.fsf@kamboji.qca.qualcomm.com>
-References: <e60138924429ca428efc6e3154606887b3bc5201.1511804622.git.mschiffer@universe-factory.net>
- <20171127193516.682827ea@cakuba.netronome.com>
-In-Reply-To: <20171127193516.682827ea@cakuba.netronome.com> (Jakub Kicinski's
- message of "Mon, 27 Nov 2017 19:35:16 -0800")
-Content-Language: en-US
+ id 1eMxEa-0000no-Df
+ for ath10k@lists.infradead.org; Thu, 07 Dec 2017 14:33:10 +0000
 MIME-Version: 1.0
+Subject: Re: [2/3] ath9k: move spectral scan support under a separate config
+ symbol
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <1c982c915065a9b5ed3232eedb567f589eca261b.1511804622.git.mschiffer@universe-factory.net>
+References: <1c982c915065a9b5ed3232eedb567f589eca261b.1511804622.git.mschiffer@universe-factory.net>
+Message-ID: <39b862cad21f42aa9cf855c465216cab@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 7 Dec 2017 15:32:36 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +23,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jakub Kicinski <kubakici@wp.pl>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, ath9k-devel <ath9k-devel@qca.qualcomm.com>, Matthias Schiffer <mschiffer@universe-factory.net>, "nbd@nbd.name" <nbd@nbd.name>
+To: Matthias Schiffer <mschiffer@universe-factory.net>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org, nbd@nbd.name
 
-Jakub Kicinski <kubakici@wp.pl> writes:
+Matthias Schiffer <mschiffer@universe-factory.net> wrote:
 
-> On Mon, 27 Nov 2017 18:56:21 +0100, Matthias Schiffer wrote:
->> Signed-off-by: Matthias Schiffer <mschiffer@universe-factory.net>
->> ---
->>  drivers/net/wireless/ath/ath9k/Makefile | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/drivers/net/wireless/ath/ath9k/Makefile b/drivers/net/wireless/ath/ath9k/Makefile
->> index 36a40ffdce15..90e4a341076c 100644
->> --- a/drivers/net/wireless/ath/ath9k/Makefile
->> +++ b/drivers/net/wireless/ath/ath9k/Makefile
->> @@ -59,7 +59,7 @@ obj-$(CONFIG_ATH9K_HW) += ath9k_hw.o
->>  obj-$(CONFIG_ATH9K_COMMON) += ath9k_common.o
->>  ath9k_common-y:=	common.o \
->>  			common-init.o \
->> -			common-beacon.o \
->> +			common-beacon.o
->>  
->
-> It's not necessarily stray, there is nothing on the next line so it's
-> OK, and if you add \ at the end of all lines, you don't have to touch
-> the last line every time you add/remove something.  Sort of like
-> putting a , after last enum value.
+> At the moment, spectral scan support, and with it RELAY, is always enabled
+> with ATH9K[_HTC]_DEBUGFS. Spectral scan support is currently the only user
+> of RELAY in ath9k, and it unconditionally reserves a relay channel.
+> 
+> Having debugfs support in ath9k is often useful even on very small embedded
+> routers, where we'd rather like to avoid the code size and RAM usage of the
+> relay support.
+> 
+> Signed-off-by: Matthias Schiffer <mschiffer@universe-factory.net>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-I agree with Jakub, I think the backslash is there on purpose so I
-dropped this patch.
+2 patches applied to ath-next branch of ath.git, thanks.
+
+9df7ddc3ed25 ath9k: move spectral scan support under a separate config symbol
+42e01cb9cb10 ath10k: move spectral scan support under a separate config symbol
 
 -- 
-Kalle Valo
+https://patchwork.kernel.org/patch/10077735/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
