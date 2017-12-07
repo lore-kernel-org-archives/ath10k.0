@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMDJs-0006AB-Dn
- for ath10k@lists.infradead.org; Tue, 05 Dec 2017 13:31:33 +0000
-From: <akolli@qti.qualcomm.com>
-Subject: [PATCHv2 1/3] ath10k: remove MAC80211_DEBUGFS dependency on
- ath10k_sta_statistics
-Date: Tue, 5 Dec 2017 19:01:23 +0530
-Message-ID: <1512480685-28471-2-git-send-email-akolli@qti.qualcomm.com>
-In-Reply-To: <1512480685-28471-1-git-send-email-akolli@qti.qualcomm.com>
-References: <1512480685-28471-1-git-send-email-akolli@qti.qualcomm.com>
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMx6D-0003Kg-UI
+ for ath10k@lists.infradead.org; Thu, 07 Dec 2017 14:24:31 +0000
 MIME-Version: 1.0
+Subject: Re: ath10k: use 64-bit crash dump timestamps
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+In-Reply-To: <20171127115113.2831506-1-arnd@arndb.de>
+References: <20171127115113.2831506-1-arnd@arndb.de>
+Message-ID: <688aa963236549dfb9561afcf7c7488a@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 7 Dec 2017 15:23:51 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,151 +22,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Anilkumar Kolli <akolli@qti.qualcomm.com>, akolli@codeaurora.org, linux-wireless@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: y2038@lists.linaro.org, Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>, Erik Stromdahl <erik.stromdahl@gmail.com>, netdev@vger.kernel.org, Marcin Rokicki <marcin.rokicki@tieto.com>, Sarada Prasanna Garnayak <c_sgarna@qti.qualcomm.com>, Waldemar Rymarkiewicz <ext.waldemar.rymarkiewicz@tieto.com>
 
-From: Anilkumar Kolli <akolli@qti.qualcomm.com>
+Arnd Bergmann <arnd@arndb.de> wrote:
 
-Remove CONFIG_MAC80211_DEBUGFS dependency on ath10k_sta_statistics().
-ath10k_sta_statistics() has per sta tx/rx stats and this should not
-be dependent on MAC80211_DEBUGFS.
+> The dump format uses 64-bit timestamps already, but calling
+> getnstimeofday() only returns a 32-bit number on 32-bit architectures,
+> so that will overflow in y2038.
+> 
+> This changes it to use ktime_get_real_ts64() instead.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-No changes in functionality.
+Patch applied to ath-next branch of ath.git, thanks.
 
-Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.h        |    2 +-
- drivers/net/wireless/ath/ath10k/debug.h       |    3 ---
- drivers/net/wireless/ath/ath10k/debugfs_sta.c |   27 ----------------------
- drivers/net/wireless/ath/ath10k/mac.c         |   30 ++++++++++++++++++++++++-
- 4 files changed, 30 insertions(+), 32 deletions(-)
+dafa42036012 ath10k: use 64-bit crash dump timestamps
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 643041ef3271..15e386d091a4 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -364,11 +364,11 @@ struct ath10k_sta {
- 	struct rate_info txrate;
- 
- 	struct work_struct update_wk;
-+	u64 rx_duration;
- 
- #ifdef CONFIG_MAC80211_DEBUGFS
- 	/* protected by conf_mutex */
- 	bool aggr_mode;
--	u64 rx_duration;
- #endif
- };
- 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 548ad5483a4a..dd82a61ed1c8 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -190,9 +190,6 @@ void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			    struct ieee80211_sta *sta, struct dentry *dir);
- void ath10k_sta_update_rx_duration(struct ath10k *ar,
- 				   struct ath10k_fw_stats *stats);
--void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
--			   struct ieee80211_sta *sta,
--			   struct station_info *sinfo);
- #else
- static inline
- void ath10k_sta_update_rx_duration(struct ath10k *ar,
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index d59ac6b83340..ff96f70d2282 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -65,33 +65,6 @@ void ath10k_sta_update_rx_duration(struct ath10k *ar,
- 		ath10k_sta_update_stats_rx_duration(ar, stats);
- }
- 
--void ath10k_sta_statistics(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
--			   struct ieee80211_sta *sta,
--			   struct station_info *sinfo)
--{
--	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
--	struct ath10k *ar = arsta->arvif->ar;
--
--	if (!ath10k_peer_stats_enabled(ar))
--		return;
--
--	sinfo->rx_duration = arsta->rx_duration;
--	sinfo->filled |= 1ULL << NL80211_STA_INFO_RX_DURATION;
--
--	if (!arsta->txrate.legacy && !arsta->txrate.nss)
--		return;
--
--	if (arsta->txrate.legacy) {
--		sinfo->txrate.legacy = arsta->txrate.legacy;
--	} else {
--		sinfo->txrate.mcs = arsta->txrate.mcs;
--		sinfo->txrate.nss = arsta->txrate.nss;
--		sinfo->txrate.bw = arsta->txrate.bw;
--	}
--	sinfo->txrate.flags = arsta->txrate.flags;
--	sinfo->filled |= 1ULL << NL80211_STA_INFO_TX_BITRATE;
--}
--
- static ssize_t ath10k_dbg_sta_read_aggr_mode(struct file *file,
- 					     char __user *user_buf,
- 					     size_t count, loff_t *ppos)
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 06383e70e009..884543026f3a 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7630,6 +7630,34 @@ static void ath10k_mac_op_sta_pre_rcu_remove(struct ieee80211_hw *hw,
- 			peer->removed = true;
- }
- 
-+static void ath10k_sta_statistics(struct ieee80211_hw *hw,
-+				  struct ieee80211_vif *vif,
-+				  struct ieee80211_sta *sta,
-+				  struct station_info *sinfo)
-+{
-+	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	struct ath10k *ar = arsta->arvif->ar;
-+
-+	if (!ath10k_peer_stats_enabled(ar))
-+		return;
-+
-+	sinfo->rx_duration = arsta->rx_duration;
-+	sinfo->filled |= 1ULL << NL80211_STA_INFO_RX_DURATION;
-+
-+	if (!arsta->txrate.legacy && !arsta->txrate.nss)
-+		return;
-+
-+	if (arsta->txrate.legacy) {
-+		sinfo->txrate.legacy = arsta->txrate.legacy;
-+	} else {
-+		sinfo->txrate.mcs = arsta->txrate.mcs;
-+		sinfo->txrate.nss = arsta->txrate.nss;
-+		sinfo->txrate.bw = arsta->txrate.bw;
-+	}
-+	sinfo->txrate.flags = arsta->txrate.flags;
-+	sinfo->filled |= 1ULL << NL80211_STA_INFO_TX_BITRATE;
-+}
-+
- static const struct ieee80211_ops ath10k_ops = {
- 	.tx				= ath10k_mac_op_tx,
- 	.wake_tx_queue			= ath10k_mac_op_wake_tx_queue,
-@@ -7671,6 +7699,7 @@ static void ath10k_mac_op_sta_pre_rcu_remove(struct ieee80211_hw *hw,
- 	.unassign_vif_chanctx		= ath10k_mac_op_unassign_vif_chanctx,
- 	.switch_vif_chanctx		= ath10k_mac_op_switch_vif_chanctx,
- 	.sta_pre_rcu_remove		= ath10k_mac_op_sta_pre_rcu_remove,
-+	.sta_statistics			= ath10k_sta_statistics,
- 
- 	CFG80211_TESTMODE_CMD(ath10k_tm_cmd)
- 
-@@ -7681,7 +7710,6 @@ static void ath10k_mac_op_sta_pre_rcu_remove(struct ieee80211_hw *hw,
- #endif
- #ifdef CONFIG_MAC80211_DEBUGFS
- 	.sta_add_debugfs		= ath10k_sta_add_debugfs,
--	.sta_statistics			= ath10k_sta_statistics,
- #endif
- };
- 
 -- 
-1.7.9.5
+https://patchwork.kernel.org/patch/10076697/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
