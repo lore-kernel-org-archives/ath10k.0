@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x229.google.com ([2a00:1450:400c:c0c::229])
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eNItN-00067s-Sv
- for ath10k@lists.infradead.org; Fri, 08 Dec 2017 13:40:43 +0000
-Received: by mail-wr0-x229.google.com with SMTP id g53so10869523wra.2
- for <ath10k@lists.infradead.org>; Fri, 08 Dec 2017 05:40:21 -0800 (PST)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: [PATCH] ath10k: Add BMI parameters to fix calibration from
- DT/pre-cal
-Date: Fri, 08 Dec 2017 14:40:14 +0100
-Message-ID: <3432385.m9oFIzB3n7@sven-edge>
-In-Reply-To: <637ab47b1794b409e595b7e219cd904f@codeaurora.org>
-References: <1495709483-29793-1-git-send-email-akolli@qti.qualcomm.com>
- <6476910.M9FJQ0px1r@bentobox>
- <637ab47b1794b409e595b7e219cd904f@codeaurora.org>
+ id 1eNJrK-0006HB-R5
+ for ath10k@lists.infradead.org; Fri, 08 Dec 2017 14:42:40 +0000
+Received: by mail-wr0-x244.google.com with SMTP id y21so11046451wrc.1
+ for <ath10k@lists.infradead.org>; Fri, 08 Dec 2017 06:42:18 -0800 (PST)
+Date: Fri, 8 Dec 2017 15:42:11 +0100
+From: Gary Bisson <gary.bisson@boundarydevices.com>
+Subject: Re: [08/11] ath10k_sdio: common read write
+Message-ID: <20171208144211.tionzvzndhv7d5wy@t450s.lan>
+References: <1506793068-27445-9-git-send-email-alagusankar@silex-india.com>
+ <20171005100932.vamkzfulq3dg4iav@t450s.lan>
+ <e9eb78a9e0ed5e1a3acf48af88d02119@silex-india.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <e9eb78a9e0ed5e1a3acf48af88d02119@silex-india.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,107 +23,113 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5720057855564976333=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: akolli@codeaurora.org
-Cc: akolli@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Alagu Sankar <alagusankar@silex-india.com>
+Cc: silexcommon@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
---===============5720057855564976333==
-Content-Type: multipart/signed; boundary="nextPart4558582.kxKg9Csv2l"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Hi Alagu,
 
---nextPart4558582.kxKg9Csv2l
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-On Freitag, 8. Dezember 2017 18:05:38 CET akolli@codeaurora.org wrote:
-> On 2017-12-08 17:42, Sven Eckelmann wrote:
-> > On Donnerstag, 25. Mai 2017 16:21:23 CET akolli@qti.qualcomm.com wrote:
-> >> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
-> >> 
-> >> QCA99X0, QCA9888, QCA9984 supports calibration data in
-> >> either OTP or DT/pre-cal file. Current ath10k supports
-> >> Calibration data from OTP only.
-[...]
-> > Just tried this on an QCA9984 which doesn't seem to have the
-> > calibration data in the PCI EEPROM.
-> > 
-> >     [   71.728929] ath10k_pci 0000:01:00.0: qca9984/qca9994 hw1.0
-> > target 0x01000000 chip_id 0x00000000 sub 168c:cafe
-> >     [   71.732926] ath10k_pci 0000:01:00.0: kconfig debug 1 debugfs 1
-> > tracing 0 dfs 1 testmode 1
-> >     [   71.752282] ath10k_pci 0000:01:00.0: firmware ver
-> > 10.4-ct-9984-fW-009-dfa0083 api 5 features peer-flow-ctrl crc32
-> > 7198d117
-> >     [   73.805730] ath10k_pci 0000:01:00.0: unable to read from the 
-> > device
-> >     [   73.805769] ath10k_pci 0000:01:00.0: could not execute otp for
-> > board id check: -110
-> > 
+On Thu, Oct 05, 2017 at 11:03:12PM +0530, Alagu Sankar wrote:
+> Hi Gary,
 > 
-> 'ATH10K driver <-> 10.4 firmware' expects cal data to be either in 
-> EEPROM or pre-cal-file or DT.
-> Hope the error is observed when there is no cal data loaded.
-
-The problem happens when pre-cal data file is loaded using the userspace 
-helper on the QCA9984. I was only able to use the device when I (for a test) 
-used the pre-cal data as cal-data (file).
-
-The EEPROM on the on the PCI device doesn't seem to be populated with a valid 
-pre-cal data. I've already tested it with a QCA9984 device which had pre-cal 
-data in the PCI device's EEPROM and this worked fine (without cal file and 
-without pre-cal file).
-
-> > It works when I use the pre-cal data as calibration data. The checksum 
-> > in the
-> > pre-cal seems to be correct. Also the pre-cal data from 0:ART for the 
-> > 2.4GHz
-> > and 5GHz QCA4019 seem to work perfectly fine.
-> > 
 > 
-> Do you mean this patch works for only QCA4019 and not working for 
-> QCA9984 ?
+> On 2017-10-05 15:39, Gary Bisson wrote:
+> > Hi Alagu,
+> > 
+> > On Sat, Sep 30, 2017 at 11:07:45PM +0530, silexcommon@gmail.com wrote:
+> > > From: Alagu Sankar <alagusankar@silex-india.com>
+> > > 
+> > > convert different read write functions in sdio hif to bring it under a
+> > > single read-write path. This helps in having a common dma bounce
+> > > buffer
+> > > implementation. Also helps in address modification that is required
+> > > specific to change in certain mbox addresses of sdio_write.
+> > > 
+> > > Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+> > > ---
+> > >  drivers/net/wireless/ath/ath10k/sdio.c | 131
+> > > ++++++++++++++++-----------------
+> > >  1 file changed, 64 insertions(+), 67 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/wireless/ath/ath10k/sdio.c
+> > > b/drivers/net/wireless/ath/ath10k/sdio.c
+> > > index 77d4fa4..bb6fa67 100644
+> > > --- a/drivers/net/wireless/ath/ath10k/sdio.c
+> > > +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+> > > @@ -36,6 +36,11 @@
+> > > 
+> > >  #define ATH10K_SDIO_DMA_BUF_SIZE	(32 * 1024)
+> > > 
+> > > +static int ath10k_sdio_read(struct ath10k *ar, u32 addr, void *buf,
+> > > +			    u32 len, bool incr);
+> > > +static int ath10k_sdio_write(struct ath10k *ar, u32 addr, const
+> > > void *buf,
+> > > +			     u32 len, bool incr);
+> > > +
+> > 
+> > As mentioned by Kalle, u32 needs to be size_t.
+> Yes, the compiler I used is probably a step older and did not catch this.
+> > 
+> > >  /* inlined helper functions */
+> > > 
+> > >  /* Macro to check if DMA buffer is WORD-aligned and DMA-able.
+> > > @@ -152,6 +157,7 @@ static int ath10k_sdio_config(struct ath10k *ar)
+> > >  	struct sdio_func *func = ar_sdio->func;
+> > >  	unsigned char byte, asyncintdelay = 2;
+> > >  	int ret;
+> > > +	u32 addr;
+> > > 
+> > >  	ath10k_dbg(ar, ATH10K_DBG_BOOT, "sdio configuration\n");
+> > > 
+> > > @@ -180,9 +186,8 @@ static int ath10k_sdio_config(struct ath10k *ar)
+> > >  		 CCCR_SDIO_DRIVER_STRENGTH_ENABLE_C |
+> > >  		 CCCR_SDIO_DRIVER_STRENGTH_ENABLE_D);
+> > > 
+> > > -	ret = ath10k_sdio_func0_cmd52_wr_byte(func->card,
+> > > -					      CCCR_SDIO_DRIVER_STRENGTH_ENABLE_ADDR,
+> > > -					      byte);
+> > > +	addr = CCCR_SDIO_DRIVER_STRENGTH_ENABLE_ADDR,
+> > > +	ret = ath10k_sdio_func0_cmd52_wr_byte(func->card, addr, byte);
+> > 
+> > Not sure this part is needed.
+> This is to overcome checkpatch warning. Too big a names for the function and
+> macro
+> not helping in there. Will have to move it as a separate patch.
+> > 
+> > >  	if (ret) {
+> > >  		ath10k_warn(ar, "failed to enable driver strength: %d\n", ret);
+> > >  		goto out;
+> > > @@ -233,13 +238,16 @@ static int ath10k_sdio_config(struct ath10k *ar)
+> > > 
+> > >  static int ath10k_sdio_write32(struct ath10k *ar, u32 addr, u32 val)
+> > >  {
+> > > -	struct ath10k_sdio *ar_sdio = ath10k_sdio_priv(ar);
+> > > -	struct sdio_func *func = ar_sdio->func;
+> > > +	__le32 *buf;
+> > >  	int ret;
+> > > 
+> > > -	sdio_claim_host(func);
+> > > +	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
+> > > +	if (!buf)
+> > > +		return -ENOMEM;
+> > > 
+> > > -	sdio_writel(func, val, addr, &ret);
+> > > +	*buf = cpu_to_le32(val);
+> > > +
+> > > +	ret = ath10k_sdio_write(ar, addr, &val, sizeof(val), true);
+> > 
+> > Shouldn't we use buf instead of val? buf seems pretty useless otherwise.
+> Yes, thanks for pointing this out. will be corrected in v2.
 
-Worked fine for QCA4019 and QCA9888 - but I had no luck with QCA9984. The 
-error shown above it the only thing I get.
+Do you have any timeframe on the v2?
 
-Kind regards,
-	Sven
---nextPart4558582.kxKg9Csv2l
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAloqlj8ACgkQXYcKB8Em
-e0ZmFg/+OGPTT+bnrwYoOM5Gh8WdbEKbm/XvFxjds0w7tgP60QlKN9i/dozqiBU5
-zEQynxotuwwZ36M5kH7B3Vq9bVKPZFRPjkL2kTel3tDJPSte2pPbH9EBj1zDyg3D
-FGzWxEtGQEBWb0dJzhRYcngwoqyMOZqNanfpOXGNYlC5We0U6lS/RoasgA7K0wT2
-3YYq3SuToS7LO0VZzKXRZQpCIspwz+yGV/VBfO71M1y6EAdv/fTkfyWEJ4mMMCOH
-9F2IgbZlbLeAXTvz7axv8izvwS8gnx+LCHf2BYfI04To7HBg4bl2v5Joh0j4aZtN
-2zYto1rKsGPPqNESn3uoityclogZMzAE12w6jl2h25woTkdf9U63dot5XNeKFQNf
-siztswEcj9UBz7Tl0wRhfDh2RFcpxU3rgIots7VUmKRbU6w/3is//PP91Ihg9H4S
-BOvCREqg4bljzZjQTIE2tVApA5Dtim1fRW1y1egjukpNrYQGHO8bQQOKRd/okUDV
-QlMJXI+kdwCdnKR+r7miDJqKMUGEBde+wbSHjcHftlpw+NNMzHZBxBCCuDYA0sJz
-+JVVyM7Wjid0pxnX+2LkdlZWCNdoB9F+/TecZpIOyiqmyhmwHiSC/+aUj2oNSruk
-PDFctDbyVAeihWkxqE2eRgEu/MvTbfGrgAiHSAcJABIfh2Sz4Jc=
-=OOEu
------END PGP SIGNATURE-----
-
---nextPart4558582.kxKg9Csv2l--
-
-
-
---===============5720057855564976333==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Regards,
+Gary
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============5720057855564976333==--
