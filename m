@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eNHsn-0007OQ-2N
- for ath10k@lists.infradead.org; Fri, 08 Dec 2017 12:36:04 +0000
-MIME-Version: 1.0
-Date: Fri, 08 Dec 2017 18:05:38 +0530
-From: akolli@codeaurora.org
-Subject: Re: [PATCH] ath10k: Add BMI parameters to fix calibration from
- DT/pre-cal
-In-Reply-To: <6476910.M9FJQ0px1r@bentobox>
-References: <1495709483-29793-1-git-send-email-akolli@qti.qualcomm.com>
- <6476910.M9FJQ0px1r@bentobox>
-Message-ID: <637ab47b1794b409e595b7e219cd904f@codeaurora.org>
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eNIlT-0001i2-9w
+ for ath10k@lists.infradead.org; Fri, 08 Dec 2017 13:32:33 +0000
+From: Govind Singh <govinds@qti.qualcomm.com>
+Subject: [PATCH 1/2] mac80211: Populate RSC counter in set_key method
+Date: Fri,  8 Dec 2017 19:02:02 +0530
+Message-Id: <1512739922-1529-1-git-send-email-govinds@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,81 +15,78 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Cc: linux-wireless-owner@vger.kernel.org, akolli@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-On 2017-12-08 17:42, Sven Eckelmann wrote:
-> On Donnerstag, 25. Mai 2017 16:21:23 CET akolli@qti.qualcomm.com wrote:
->> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
->> 
->> QCA99X0, QCA9888, QCA9984 supports calibration data in
->> either OTP or DT/pre-cal file. Current ath10k supports
->> Calibration data from OTP only.
->> 
->> If caldata is loaded from DT/pre-cal file, fetching board id
->> and applying calibration parameters like tx power gets failed.
->> 
->> error log:
->> [   15.733663] ath10k_pci 0000:01:00.0: failed to fetch board file: -2
->> [   15.741474] ath10k_pci 0000:01:00.0: could not probe fw (-2)
->> 
->> This patch adds calibration data support from DT/pre-cal
->> file.  Below parameters are used to get board id and
->> applying calibration parameters from cal data.
->> 
->> 		EEPROM[OTP]	FLASH[DT/pre-cal file]
->> Cal param	0x700		0x10000
->> Board id	0x10		0x8000
->> 
->> Tested on QCA9888 with pre-cal file.
->> 
->> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
->> ---
->>  drivers/net/wireless/ath/ath10k/bmi.h  |    2 ++
->>  drivers/net/wireless/ath/ath10k/core.c |   16 +++++++++++++---
->>  2 files changed, 15 insertions(+), 3 deletions(-)
-> 
-> Just tried this on an QCA9984 which doesn't seem to have the
-> calibration data in the PCI EEPROM.
-> 
->     [   71.728929] ath10k_pci 0000:01:00.0: qca9984/qca9994 hw1.0
-> target 0x01000000 chip_id 0x00000000 sub 168c:cafe
->     [   71.732926] ath10k_pci 0000:01:00.0: kconfig debug 1 debugfs 1
-> tracing 0 dfs 1 testmode 1
->     [   71.752282] ath10k_pci 0000:01:00.0: firmware ver
-> 10.4-ct-9984-fW-009-dfa0083 api 5 features peer-flow-ctrl crc32
-> 7198d117
->     [   73.805730] ath10k_pci 0000:01:00.0: unable to read from the 
-> device
->     [   73.805769] ath10k_pci 0000:01:00.0: could not execute otp for
-> board id check: -110
-> 
+Send RSC counter to driver in set_key method, so that FW/driver
+can drop the packet in PN check if received packet sequence
+no is less than current RSC counter during group keys(GTK)
+exchange.
 
-'ATH10K driver <-> 10.4 firmware' expects cal data to be either in 
-EEPROM or pre-cal-file or DT.
-Hope the error is observed when there is no cal data loaded.
+Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
+---
+ include/net/mac80211.h | 6 ++++--
+ net/mac80211/key.c     | 6 ++++++
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
-> It works when I use the pre-cal data as calibration data. The checksum 
-> in the
-> pre-cal seems to be correct. Also the pre-cal data from 0:ART for the 
-> 2.4GHz
-> and 5GHz QCA4019 seem to work perfectly fine.
-> 
-
-Do you mean this patch works for only QCA4019 and not working for 
-QCA9984 ?
-
-> Anything which I could have missed or what I could test? Btw. I've also 
-> tested
-> the non-ct firmware (aka the official one from QCA).
-> 
-
-Thanks,
-Anil.
+diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+index 2ee4af2..2f0c91d 100644
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -1564,6 +1564,8 @@ enum ieee80211_key_flags {
+ 	IEEE80211_KEY_FLAG_RESERVE_TAILROOM	= BIT(7),
+ };
+ 
++#define IEEE80211_MAX_PN_LEN	16
++
+ /**
+  * struct ieee80211_key_conf - key information
+  *
+@@ -1586,6 +1588,7 @@ enum ieee80211_key_flags {
+  * 	- Temporal Authenticator Rx MIC Key (64 bits)
+  * @icv_len: The ICV length for this key type
+  * @iv_len: The IV length for this key type
++ * @rx_pn: Last received packet number, must be in little endian.
+  */
+ struct ieee80211_key_conf {
+ 	atomic64_t tx_pn;
+@@ -1596,11 +1599,10 @@ struct ieee80211_key_conf {
+ 	u8 flags;
+ 	s8 keyidx;
+ 	u8 keylen;
++	u8 rx_pn[IEEE80211_MAX_PN_LEN];
+ 	u8 key[0];
+ };
+ 
+-#define IEEE80211_MAX_PN_LEN	16
+-
+ #define TKIP_PN_TO_IV16(pn) ((u16)(pn & 0xffff))
+ #define TKIP_PN_TO_IV32(pn) ((u32)((pn >> 16) & 0xffffffff))
+ 
+diff --git a/net/mac80211/key.c b/net/mac80211/key.c
+index 9380493..15e1822 100644
+--- a/net/mac80211/key.c
++++ b/net/mac80211/key.c
+@@ -538,6 +538,12 @@ struct ieee80211_key *
+ 	}
+ 	memcpy(key->conf.key, key_data, key_len);
+ 	INIT_LIST_HEAD(&key->list);
++	/* Assign receive packet sequence no, rx_pn remains in
++	 * little endian format as seq is guaranteed to be in little
++	 * endian format.
++	 */
++	if (seq)
++		memcpy(&key->conf.rx_pn, seq, seq_len);
+ 
+ 	return key;
+ }
+-- 
+1.9.1
 
 
 _______________________________________________
