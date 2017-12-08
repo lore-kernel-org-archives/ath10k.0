@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x242.google.com ([2607:f8b0:400d:c0d::242])
+Received: from mail-qt0-x241.google.com ([2607:f8b0:400d:c0d::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eNG2r-0002Ty-0I
- for ath10k@lists.infradead.org; Fri, 08 Dec 2017 10:38:19 +0000
-Received: by mail-qt0-x242.google.com with SMTP id i40so24861776qti.8
- for <ath10k@lists.infradead.org>; Fri, 08 Dec 2017 02:37:56 -0800 (PST)
+ id 1eNG2v-0002a0-R8
+ for ath10k@lists.infradead.org; Fri, 08 Dec 2017 10:38:23 +0000
+Received: by mail-qt0-x241.google.com with SMTP id g10so24819382qtj.12
+ for <ath10k@lists.infradead.org>; Fri, 08 Dec 2017 02:38:01 -0800 (PST)
 From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: [PATCH v2 0/2] ath10k: DT support for ath10k calibration variant
-Date: Fri,  8 Dec 2017 11:37:40 +0100
-Message-Id: <20171208103742.3181-1-sven.eckelmann@openmesh.com>
+Subject: [PATCH v2 1/2] dt: bindings: add new dt entry for ath10k calibration
+ variant
+Date: Fri,  8 Dec 2017 11:37:41 +0100
+Message-Id: <20171208103742.3181-2-sven.eckelmann@openmesh.com>
+In-Reply-To: <20171208103742.3181-1-sven.eckelmann@openmesh.com>
+References: <20171208103742.3181-1-sven.eckelmann@openmesh.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,85 +26,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, robh+dt@kernel.org, Sven Eckelmann <sven@narfation.org>, ext.waldemar.rymarkiewicz@tieto.com, kvalo@codeaurora.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, robh+dt@kernel.org, Sven Eckelmann <sven.eckelmann@openmesh.com>, ext.waldemar.rymarkiewicz@tieto.com, kvalo@codeaurora.org
 
-From: Sven Eckelmann <sven@narfation.org>
+The bus + bmi-chip-id + bmi-board-id is not enough to identify the correct
+board data file on QCA4019 based devices. Multiple different boards share
+the same values. Only the original reference designs can currently be
+identified and loaded from the board-2.bin. But these will not result in
+the correct calibration data when combined with the pre-calibration data
+from the device.
 
-Hi,
+An additional "variant" information has to be provided (via SMBIOS or DT)
+to select the correct board data for a design which was modified by an ODM.
 
-here is the second version of the qcom,ath10k-calibration-variant support
-patchset. I think the ath10k patch describes these changes the best:
+Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
+---
+ Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Board Data File (BDF) is loaded upon driver boot-up procedure. The right
-board data file is identified on QCA4019 using bus, bmi-chip-id and
-bmi-board-id.
-
-The problem, however, can occur when the (default) board data file cannot
-fulfill with the vendor requirements and it is necessary to use a different
-board data file.
-
-This problem was solved for SMBIOS by adding a special SMBIOS type 0xF8.
-Something similar has to be provided for systems without SMBIOS but with
-device trees. No solution was specified by QCA and therefore a new one has
-to be found for ath10k.
-
-The device tree requires addition strings to define the variant name
-
-    wifi@a000000 {
-    	status = "okay";
-    	qcom,ath10k-calibration-variant = "RT-AC58U";
-    };
-
-    wifi@a800000 {
-    	status = "okay";
-    	qcom,ath10k-calibration-variant = "RT-AC58U";
-    };
-
-This would create the boarddata identifiers for the board-2.bin search
-
- *  bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=RT-AC58U
- *  bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=RT-AC58U
-
-
-The discussions to the old submissions can be found in:
-
-RFC:
-====
-
-* https://patchwork.kernel.org/patch/9613615/
-
-v1:
-===
-
-* https://patchwork.kernel.org/patch/9615183/
-* https://patchwork.kernel.org/patch/9615185/
-
-Changes since v1:
-=================
-
-* check the return value of strscpy and print debug message when buffer
-  was not big enough (I would have preferred ath10k_warn but
-  ath10k_core_check_bdfext disagreed)
-
-Changes since RFC:
-==================
-
-* Split patch in DT doc and ath10k part (thanks Christian Lamparter)
-* Remove the words "bmi-chip-id" and "bmi-board-id" and replace them with
-  more generic "device specific ids"
-
-Kind regards,
-	Sven
-
-
-Sven Eckelmann (2):
-  dt: bindings: add new dt entry for ath10k calibration variant
-  ath10k: search DT for qcom,ath10k-calibration-variant
-
- .../bindings/net/wireless/qcom,ath10k.txt          |  3 ++
- drivers/net/wireless/ath/ath10k/core.c             | 40 ++++++++++++++++++----
- 2 files changed, 36 insertions(+), 7 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index 74d7f0af209c..3d2a031217da 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -41,6 +41,9 @@ Optional properties:
+ - qcom,msi_addr: MSI interrupt address.
+ - qcom,msi_base: Base value to add before writing MSI data into
+ 		MSI address register.
++- qcom,ath10k-calibration-variant: string to search for in the board-2.bin
++				   variant list with the same bus and device
++				   specific ids
+ - qcom,ath10k-calibration-data : calibration data + board specific data
+ 				 as an array, the length can vary between
+ 				 hw versions.
 -- 
 2.11.0
 
