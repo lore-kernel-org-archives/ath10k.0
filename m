@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOOzQ-0002Wh-Ce
- for ath10k@lists.infradead.org; Mon, 11 Dec 2017 14:23:30 +0000
+ id 1eOOzS-0002Wh-3r
+ for ath10k@lists.infradead.org; Mon, 11 Dec 2017 14:23:31 +0000
 From: Rakesh Pillai <pillair@qti.qualcomm.com>
-Subject: [PATCH v3 0/4] WMI changes for wcn3990
-Date: Mon, 11 Dec 2017 19:52:51 +0530
-Message-Id: <1513002175-2498-1-git-send-email-pillair@qti.qualcomm.com>
+Subject: [PATCH v3 4/4] ath10k: WMI: add hw params entry for wcn3990
+Date: Mon, 11 Dec 2017 19:52:55 +0530
+Message-Id: <1513002175-2498-5-git-send-email-pillair@qti.qualcomm.com>
+In-Reply-To: <1513002175-2498-1-git-send-email-pillair@qti.qualcomm.com>
+References: <1513002175-2498-1-git-send-email-pillair@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +23,93 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
+Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
 
-This patchset includes the WMI changes for wcn3390 to
-Refactor service ready event parsing,
-Add management frame tx by refernce over wmi,
-Add hw parameters for wcn3990.
+Add hw params entry for wcn3990 and populate various
+target specific values for wcn3990.
 
-Changes since v2
-- Fix ath-check warnings
-  1) Using plain integer as NULL pointer
-  2) incorrect type in assignment 
-  3) braces {} are not necessary for single statement blocks
+Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
+Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 18 ++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.c   |  2 ++
+ drivers/net/wireless/ath/ath10k/hw.h   | 10 ++++++++++
+ 3 files changed, 30 insertions(+)
 
-Rakesh Pillai (4):
-  ath10k: WMI: modify svc bitmap parsing for wcn3990
-  ath10k: WMI: Add management tx by reference support over wmi
-  ath10k: WMI: get wmi init parameter values from hw params
-  ath10k: WMI: add hw params entry for wcn3990
-
- drivers/net/wireless/ath/ath10k/core.c    |  55 +++++++++++
- drivers/net/wireless/ath/ath10k/core.h    |   3 +
- drivers/net/wireless/ath/ath10k/hw.c      |   2 +
- drivers/net/wireless/ath/ath10k/hw.h      |  14 +++
- drivers/net/wireless/ath/ath10k/mac.c     |   4 +-
- drivers/net/wireless/ath/ath10k/wmi-ops.h |   9 +-
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 146 ++++++++++++++++++++++++++----
- drivers/net/wireless/ath/ath10k/wmi-tlv.h | 113 +++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h     |   2 +
- 9 files changed, 329 insertions(+), 19 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index be189132623d..6abffb530027 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -405,6 +405,24 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 	},
++	{
++		.id = WCN3990_HW_1_0_DEV_VERSION,
++		.dev_id = 0,
++		.name = "wcn3990 hw1.0",
++		.continuous_frag_desc = true,
++		.tx_chain_mask = 0x7,
++		.rx_chain_mask = 0x7,
++		.max_spatial_stream = 4,
++		.fw = {
++			.dir = WCN3990_HW_1_0_FW_DIR,
++		},
++		.sw_decrypt_mcast_mgmt = true,
++		.hw_ops = &wcn3990_ops,
++		.decap_align_bytes = 1,
++		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
++		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
++		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
++	},
+ };
+ 
+ static const char *const ath10k_core_fw_feature_str[] = {
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index 88955bbe20bd..c31eea632777 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -931,3 +931,5 @@ const struct ath10k_hw_ops qca6174_ops = {
+ 	.set_coverage_class = ath10k_hw_qca988x_set_coverage_class,
+ 	.enable_pll_clk = ath10k_hw_qca6174_enable_pll_clock,
+ };
++
++const struct ath10k_hw_ops wcn3990_ops = {};
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index fedb6c799374..90ad39bdeec4 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -128,6 +128,10 @@ enum qca9377_chip_id_rev {
+ #define QCA4019_HW_1_0_BOARD_DATA_FILE "board.bin"
+ #define QCA4019_HW_1_0_PATCH_LOAD_ADDR  0x1234
+ 
++/* WCN3990 1.0 definitions */
++#define WCN3990_HW_1_0_DEV_VERSION	ATH10K_HW_WCN3990
++#define WCN3990_HW_1_0_FW_DIR		ATH10K_FW_DIR "/WCN3990/hw3.0"
++
+ #define ATH10K_FW_FILE_BASE		"firmware"
+ #define ATH10K_FW_API_MAX		6
+ #define ATH10K_FW_API_MIN		2
+@@ -571,6 +575,7 @@ struct ath10k_hw_ops {
+ extern const struct ath10k_hw_ops qca988x_ops;
+ extern const struct ath10k_hw_ops qca99x0_ops;
+ extern const struct ath10k_hw_ops qca6174_ops;
++extern const struct ath10k_hw_ops wcn3990_ops;
+ 
+ extern const struct ath10k_hw_clk_params qca6174_clk[];
+ 
+@@ -667,6 +672,11 @@ ath10k_rx_desc_get_l3_pad_bytes(struct ath10k_hw_params *hw,
+ #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
+ #define TARGET_TLV_NUM_WOW_PATTERNS		22
+ 
++/* Target specific defines for WMI-HL-1.0 firmware */
++#define TARGET_HL_10_TLV_NUM_PEERS		14
++#define TARGET_HL_10_TLV_AST_SKID_LIMIT		6
++#define TARGET_HL_10_TLV_NUM_WDS_ENTRIES	2
++
+ /* Diagnostic Window */
+ #define CE_DIAG_PIPE	7
+ 
 -- 
 2.11.0
 
