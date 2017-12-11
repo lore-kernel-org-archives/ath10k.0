@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOO0e-0006lk-Ba
- for ath10k@lists.infradead.org; Mon, 11 Dec 2017 13:20:46 +0000
-MIME-Version: 1.0
-Date: Mon, 11 Dec 2017 18:50:09 +0530
-From: akolli@codeaurora.org
-Subject: Re: [PATCH] ath10k: Add BMI parameters to fix calibration from
- DT/pre-cal
-In-Reply-To: <3432385.m9oFIzB3n7@sven-edge>
-References: <1495709483-29793-1-git-send-email-akolli@qti.qualcomm.com>
- <6476910.M9FJQ0px1r@bentobox>
- <637ab47b1794b409e595b7e219cd904f@codeaurora.org>
- <3432385.m9oFIzB3n7@sven-edge>
-Message-ID: <6b494081c2606c8e523e2c426ab949ed@codeaurora.org>
+ id 1eOOzQ-0002Wh-Ce
+ for ath10k@lists.infradead.org; Mon, 11 Dec 2017 14:23:30 +0000
+From: Rakesh Pillai <pillair@qti.qualcomm.com>
+Subject: [PATCH v3 0/4] WMI changes for wcn3990
+Date: Mon, 11 Dec 2017 19:52:51 +0530
+Message-Id: <1513002175-2498-1-git-send-email-pillair@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,103 +15,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Cc: linux-wireless-owner@vger.kernel.org, akolli@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
 
-On 2017-12-08 19:10, Sven Eckelmann wrote:
-> On Freitag, 8. Dezember 2017 18:05:38 CET akolli@codeaurora.org wrote:
->> On 2017-12-08 17:42, Sven Eckelmann wrote:
->> > On Donnerstag, 25. Mai 2017 16:21:23 CET akolli@qti.qualcomm.com wrote:
->> >> From: Anilkumar Kolli <akolli@qti.qualcomm.com>
->> >>
->> >> QCA99X0, QCA9888, QCA9984 supports calibration data in
->> >> either OTP or DT/pre-cal file. Current ath10k supports
->> >> Calibration data from OTP only.
-> [...]
->> > Just tried this on an QCA9984 which doesn't seem to have the
->> > calibration data in the PCI EEPROM.
->> >
->> >     [   71.728929] ath10k_pci 0000:01:00.0: qca9984/qca9994 hw1.0
->> > target 0x01000000 chip_id 0x00000000 sub 168c:cafe
->> >     [   71.732926] ath10k_pci 0000:01:00.0: kconfig debug 1 debugfs 1
->> > tracing 0 dfs 1 testmode 1
->> >     [   71.752282] ath10k_pci 0000:01:00.0: firmware ver
->> > 10.4-ct-9984-fW-009-dfa0083 api 5 features peer-flow-ctrl crc32
->> > 7198d117
->> >     [   73.805730] ath10k_pci 0000:01:00.0: unable to read from the
->> > device
->> >     [   73.805769] ath10k_pci 0000:01:00.0: could not execute otp for
->> > board id check: -110
->> >
->> 
->> 'ATH10K driver <-> 10.4 firmware' expects cal data to be either in
->> EEPROM or pre-cal-file or DT.
->> Hope the error is observed when there is no cal data loaded.
-> 
-> The problem happens when pre-cal data file is loaded using the 
-> userspace
-> helper on the QCA9984. I was only able to use the device when I (for a 
-> test)
-> used the pre-cal data as cal-data (file).
-> 
-> The EEPROM on the on the PCI device doesn't seem to be populated with a 
-> valid
-> pre-cal data. I've already tested it with a QCA9984 device which had 
-> pre-cal
-> data in the PCI device's EEPROM and this worked fine (without cal file 
-> and
-> without pre-cal file).
-> 
->> > It works when I use the pre-cal data as calibration data. The checksum
->> > in the
->> > pre-cal seems to be correct. Also the pre-cal data from 0:ART for the
->> > 2.4GHz
->> > and 5GHz QCA4019 seem to work perfectly fine.
->> >
->> 
->> Do you mean this patch works for only QCA4019 and not working for
->> QCA9984 ?
-> 
-> Worked fine for QCA4019 and QCA9888 - but I had no luck with QCA9984. 
-> The
-> error shown above it the only thing I get.
-> 
+This patchset includes the WMI changes for wcn3390 to
+Refactor service ready event parsing,
+Add management frame tx by refernce over wmi,
+Add hw parameters for wcn3990.
 
-I tested this on QCA9984 and it worked with below config,
+Changes since v2
+- Fix ath-check warnings
+  1) Using plain integer as NULL pointer
+  2) incorrect type in assignment 
+  3) braces {} are not necessary for single statement blocks
 
-pre-cal file location: /lib/firmware/ath10k/pre-cal-pci-0000:01:00.0.bin
-FW: 
-https://github.com/kvalo/ath10k-firmware/raw/master/QCA9984/hw1.0/firmware-5.bin_10.4-3.2-00072
-BDF: 
-https://github.com/kvalo/ath10k-firmware/raw/master/QCA9984/hw1.0/board-2.bin
+Rakesh Pillai (4):
+  ath10k: WMI: modify svc bitmap parsing for wcn3990
+  ath10k: WMI: Add management tx by reference support over wmi
+  ath10k: WMI: get wmi init parameter values from hw params
+  ath10k: WMI: add hw params entry for wcn3990
 
-Logs:
+ drivers/net/wireless/ath/ath10k/core.c    |  55 +++++++++++
+ drivers/net/wireless/ath/ath10k/core.h    |   3 +
+ drivers/net/wireless/ath/ath10k/hw.c      |   2 +
+ drivers/net/wireless/ath/ath10k/hw.h      |  14 +++
+ drivers/net/wireless/ath/ath10k/mac.c     |   4 +-
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |   9 +-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 146 ++++++++++++++++++++++++++----
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 113 +++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |   2 +
+ 9 files changed, 329 insertions(+), 19 deletions(-)
 
-ath10k_pci 0000:01:00.0: found calibration file 
-ath10k/pre-cal-pci-0000:01:00.0.bin
-ath10k_pci 0000:01:00.0: found fw version 10.4-3.2-00072
-ath10k_pci 0000:01:00.0: boot cal file downloaded
-ath10k_pci 0000:01:00.0: boot using calibration mode pre-cal-file
-ath10k_pci 0000:01:00.0: boot upload otp to 0x1234 len 8919 for board id
-bmi execute address 0x1234 param 0x8000
-ath10k_pci 0000:01:00.0: bmi execute result 0x2800
-ath10k_pci 0000:01:00.0: boot get otp board id result 0x00002800 
-board_id 10 chip_id 0
-ath10k_pci 0000:01:00.0: boot using board name 
-'bus=pci,bmi-chip-id=0,bmi-board-id=10'
-ath10k_pci 0000:01:00.0: Firmware loaded from user helper succesfully
-ath10k_pci 0000:01:00.0: boot fw request 
-'ath10k/QCA9984/hw1.0/board-2.bin': 0
-
-Kindly try with the latest firmware from Kalle's git mentioned above.
-
-Thanks
-Anil.
-
+-- 
+2.11.0
 
 
 _______________________________________________
