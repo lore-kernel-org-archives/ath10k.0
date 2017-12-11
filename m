@@ -1,15 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOOzf-0002a6-50
- for ath10k@lists.infradead.org; Mon, 11 Dec 2017 14:23:47 +0000
-From: Rakesh Pillai <pillair@qti.qualcomm.com>
-Subject: [PATCH v3 3/4] ath10k: WMI: get wmi init parameter values from hw
- params
-Date: Mon, 11 Dec 2017 19:52:54 +0530
-Message-Id: <1513002175-2498-4-git-send-email-pillair@qti.qualcomm.com>
-In-Reply-To: <1513002175-2498-1-git-send-email-pillair@qti.qualcomm.com>
-References: <1513002175-2498-1-git-send-email-pillair@qti.qualcomm.com>
+ id 1eOP4q-0005Hi-KL
+ for ath10k@lists.infradead.org; Mon, 11 Dec 2017 14:29:07 +0000
+Received: by mail-wm0-x244.google.com with SMTP id f206so14439315wmf.5
+ for <ath10k@lists.infradead.org>; Mon, 11 Dec 2017 06:28:43 -0800 (PST)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: [PATCH] ath10k: Add BMI parameters to fix calibration from
+ DT/pre-cal
+Date: Mon, 11 Dec 2017 15:28:37 +0100
+Message-ID: <108074068.BxyvveCqUm@bentobox>
+In-Reply-To: <6b494081c2606c8e523e2c426ab949ed@codeaurora.org>
+References: <1495709483-29793-1-git-send-email-akolli@qti.qualcomm.com>
+ <3432385.m9oFIzB3n7@sven-edge>
+ <6b494081c2606c8e523e2c426ab949ed@codeaurora.org>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,206 +23,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7611105539109543263=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
+To: akolli@codeaurora.org
+Cc: akolli@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-The parameter values for skid limit, number of peers and wds
-entries values which are sent in wmi init cmd are hardware
-specific.
+--===============7611105539109543263==
+Content-Type: multipart/signed; boundary="nextPart3046730.7gPZ9c07nJ"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-Add support to obtain skid limit, number of peers and wds entries
-values from hw params which will have the hw specific values
-for these parameters.
+--nextPart3046730.7gPZ9c07nJ
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
-Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c    | 36 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h      |  4 ++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  7 +++---
- 3 files changed, 44 insertions(+), 3 deletions(-)
+On Montag, 11. Dezember 2017 18:50:09 CET akolli@codeaurora.org wrote:
+[...]
+> >> > Just tried this on an QCA9984 which doesn't seem to have the
+> >> > calibration data in the PCI EEPROM.
+> >> >
+> >> >     [   71.728929] ath10k_pci 0000:01:00.0: qca9984/qca9994 hw1.0
+> >> > target 0x01000000 chip_id 0x00000000 sub 168c:cafe
+> >> >     [   71.732926] ath10k_pci 0000:01:00.0: kconfig debug 1 debugfs 1
+> >> > tracing 0 dfs 1 testmode 1
+> >> >     [   71.752282] ath10k_pci 0000:01:00.0: firmware ver
+> >> > 10.4-ct-9984-fW-009-dfa0083 api 5 features peer-flow-ctrl crc32
+> >> > 7198d117
+> >> >     [   73.805730] ath10k_pci 0000:01:00.0: unable to read from the
+> >> > device
+> >> >     [   73.805769] ath10k_pci 0000:01:00.0: could not execute otp for
+> >> > board id check: -110
+[...]
+> 
+> I tested this on QCA9984 and it worked with below config,
+[...]
+> 
+> Kindly try with the latest firmware from Kalle's git mentioned above.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 1e4e18e5edcb..be189132623d 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -75,6 +75,9 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-+		.num_peers = TARGET_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
- 	},
- 	{
- 		.id = QCA9887_HW_1_0_VERSION,
-@@ -99,6 +102,9 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-+		.num_peers = TARGET_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -122,6 +128,9 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-+		.num_peers = TARGET_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -145,6 +154,9 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-+		.num_peers = TARGET_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
- 	},
- 	{
- 		.id = QCA6174_HW_3_0_VERSION,
-@@ -168,6 +180,9 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-+		.num_peers = TARGET_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
- 	},
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
-@@ -194,6 +209,9 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-+		.num_peers = TARGET_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
- 	},
- 	{
- 		.id = QCA99X0_HW_2_0_DEV_VERSION,
-@@ -223,6 +241,9 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 11,
-+		.num_peers = TARGET_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
- 	},
- 	{
- 		.id = QCA9984_HW_1_0_DEV_VERSION,
-@@ -257,6 +278,9 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 1560,
- 		.vht160_mcs_tx_highest = 1560,
- 		.n_cipher_suites = 11,
-+		.num_peers = TARGET_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
- 	},
- 	{
- 		.id = QCA9888_HW_2_0_DEV_VERSION,
-@@ -290,6 +314,9 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 780,
- 		.vht160_mcs_tx_highest = 780,
- 		.n_cipher_suites = 11,
-+		.num_peers = TARGET_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
- 	},
- 	{
- 		.id = QCA9377_HW_1_0_DEV_VERSION,
-@@ -313,6 +340,9 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-+		.num_peers = TARGET_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
- 	},
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
-@@ -338,6 +368,9 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 8,
-+		.num_peers = TARGET_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
- 	},
- 	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
-@@ -368,6 +401,9 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.vht160_mcs_rx_highest = 0,
- 		.vht160_mcs_tx_highest = 0,
- 		.n_cipher_suites = 11,
-+		.num_peers = TARGET_TLV_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
- 	},
- };
- 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 05f26e5858ad..fedb6c799374 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -553,6 +553,10 @@ struct ath10k_hw_params {
- 
- 	/* Number of ciphers supported (i.e First N) in cipher_suites array */
- 	int n_cipher_suites;
-+
-+	u32 num_peers;
-+	u32 ast_skid_limit;
-+	u32 num_wds_entries;
- };
- 
- struct htt_rx_desc;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 9910cc65af90..8d53063bd503 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1439,7 +1439,10 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	cmd->num_host_mem_chunks = __cpu_to_le32(ar->wmi.num_mem_chunks);
- 
- 	cfg->num_vdevs = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
--	cfg->num_peers = __cpu_to_le32(TARGET_TLV_NUM_PEERS);
-+
-+	cfg->num_peers = __cpu_to_le32(ar->hw_params.num_peers);
-+	cfg->ast_skid_limit = __cpu_to_le32(ar->hw_params.ast_skid_limit);
-+	cfg->num_wds_entries = __cpu_to_le32(ar->hw_params.num_wds_entries);
- 
- 	if (test_bit(WMI_SERVICE_RX_FULL_REORDER, ar->wmi.svc_map)) {
- 		cfg->num_offload_peers = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
-@@ -1451,7 +1454,6 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 
- 	cfg->num_peer_keys = __cpu_to_le32(2);
- 	cfg->num_tids = __cpu_to_le32(TARGET_TLV_NUM_TIDS);
--	cfg->ast_skid_limit = __cpu_to_le32(0x10);
- 	cfg->tx_chain_mask = __cpu_to_le32(0x7);
- 	cfg->rx_chain_mask = __cpu_to_le32(0x7);
- 	cfg->rx_timeout_pri[0] = __cpu_to_le32(0x64);
-@@ -1467,7 +1469,6 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	cfg->num_mcast_table_elems = __cpu_to_le32(0);
- 	cfg->mcast2ucast_mode = __cpu_to_le32(0);
- 	cfg->tx_dbg_log_size = __cpu_to_le32(0x400);
--	cfg->num_wds_entries = __cpu_to_le32(0x20);
- 	cfg->dma_burst_size = __cpu_to_le32(0);
- 	cfg->mac_aggr_delim = __cpu_to_le32(0);
- 	cfg->rx_skip_defrag_timeout_dup_detection_check = __cpu_to_le32(0);
--- 
-2.11.0
+This didn't change the behavior. It was actually the OTP timeout problem on 
+the QCA9984 which Ben Greear fixed [1]. Luckily, LEDE added this patch with 
+your patch [2]
 
+Kind regards,
+	Sven
+
+[1] https://git.lede-project.org/?p=source.git;a=blob;f=package/kernel/mac80211/patches/327-ath10k-increase-BMI-timeout.patch;h=c9f493bcd8fe29afe1e08dc31b6370507b95fc72;hb=025cb640cdf27f7c68fc1d89d0698605daa06c43
+[2] https://git.lede-project.org/?p=source.git;a=commit;h=025cb640cdf27f7c68fc1d89d0698605daa06c43
+--nextPart3046730.7gPZ9c07nJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAloulhUACgkQXYcKB8Em
+e0Zx2w/9EJfcfAf4FZBcCdJp36qSreUUy8nN1wr7/gZZHcpN2NXrAnLJ5bUGUBK8
+EF/hLS+mBHMxE0whD5TpzZaffZMdFtnTLVfj6VorRTYkun0WgWEq4reShCa6NuKh
+u9mS5hFOgT/MOOACZOIrYr76DSfj3vyLraogOlSFuJCxu48tfIaTvwEaP5vVSJT6
+kcucOZTkE6xXfTAmfwNAfmQwTSK1QJbFCOTjyOsH0oLI4OTBVGgm1aMC0cSZ+6gn
+HM0povvX/BMXRgOAFkxOC0uMRE3KAVLnDh88i5h4+flSFAeE4v+6v8Eie33oalXr
+GtTVmt2cJ3Dbvpo5iDpf+0PY4t+1+MhZ8PQE9lgYDxcg16XY2mzO2C/K/mMAs6+0
+SQ4dvHF4Hw8boLJWmvXjQYa3X/E/aGdYpgV1ofJYb9DzYYNNDEy+fKpOuhRUWMLR
+i/p9VWeDAG6OV8/oWanqb4uo32CR8mrKm6O2EER7autnW5CAS4b8MuEo3YoEipQO
+zzKREhW7rs74FBEl3/DaXfiYaLAI3ZWw4ohu7nbhvTHDNzBzusjypnG3rwWNYntu
+mDoxKHtoZ1Ly8P+EWQD5E3MT1LgFxAHvD0teC3slayVfzSTw2z1c16QcFV978ubb
+5pLiNT5KEhAlz5Bp3kaOijoWYEWYPcXqFw1xYGtAL48YzC5M4+A=
+=5npb
+-----END PGP SIGNATURE-----
+
+--nextPart3046730.7gPZ9c07nJ--
+
+
+
+--===============7611105539109543263==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============7611105539109543263==--
