@@ -1,13 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eOf46-0003w3-Ck
- for ath10k@lists.infradead.org; Tue, 12 Dec 2017 07:33:28 +0000
-From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: Compilation error in ath10k driver latest code
-Date: Tue, 12 Dec 2017 12:54:11 +0530
-Message-Id: <20171212071738.M15745@cdot.in>
+Received: from mail-oi0-f67.google.com ([209.85.218.67])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eOrYf-0007Fm-1A
+ for ath10k@lists.infradead.org; Tue, 12 Dec 2017 20:53:51 +0000
+Received: by mail-oi0-f67.google.com with SMTP id r63so143626oia.6
+ for <ath10k@lists.infradead.org>; Tue, 12 Dec 2017 12:53:24 -0800 (PST)
+Date: Tue, 12 Dec 2017 14:53:22 -0600
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 1/2] dt: bindings: add new dt entry for ath10k
+ calibration variant
+Message-ID: <20171212205322.xwswit2myivd7o6h@rob-hp-laptop>
+References: <20171208103742.3181-1-sven.eckelmann@openmesh.com>
+ <20171208103742.3181-2-sven.eckelmann@openmesh.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20171208103742.3181-2-sven.eckelmann@openmesh.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,43 +23,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, backports@vger.kernel.org
+To: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, ext.waldemar.rymarkiewicz@tieto.com, kvalo@codeaurora.org
 
-aGksCgpZZXN0ZXJkYXkgSSBoYXZlIHRha2VuIGJhY2twb3J0cyBhbmQgYXRoMTBrIGNvZGUgZnJv
-bSBnaXQgYW5kIGNvbXBpbGVkLiBNeSBrZXJuZWwKdmVyc2lvbiBpcyAzLjEyLiBUaGVyZSBhcmUg
-Zm9sbG93aW5nIGNvbXBpbGF0aW9uIGVycm9ycyBkdWUgdG8gaW5jbHVkZSBmaWxlIGdlbmV0bGlu
-ay5oLgoKL2hvbWUvc2h3L2thdml0YS9iYWNrcG9ydHMvYmFja3BvcnRzLW91dHB1dC0xMURlYzE3
-L25ldC93aXJlbGVzcy9ubDgwMjExLmM6NjMyMzozNjoKZXJyb3I6IG1hY3JvICJnZW5sX2R1bXBf
-Y2hlY2tfY29uc2lzdGVudCIgcmVxdWlyZXMgMyBhcmd1bWVudHMsIGJ1dCBvbmx5IDIgZ2l2ZW4K
-L2hvbWUvc2h3L2thdml0YS9iYWNrcG9ydHMvYmFja3BvcnRzLW91dHB1dC0xMURlYzE3L25ldC93
-aXJlbGVzcy9ubDgwMjExLmM6IEluIGZ1bmN0aW9uCidubDgwMjExX3NlbmRfcmVnZG9tJzoKL2hv
-bWUvc2h3L2thdml0YS9iYWNrcG9ydHMvYmFja3BvcnRzLW91dHB1dC0xMURlYzE3L25ldC93aXJl
-bGVzcy9ubDgwMjExLmM6NjMyMzoKd2FybmluZzogc3RhdGVtZW50IHdpdGggbm8gZWZmZWN0Ci9o
-b21lL3Nody9rYXZpdGEvYmFja3BvcnRzL2JhY2twb3J0cy1vdXRwdXQtMTFEZWMxNy9uZXQvd2ly
-ZWxlc3Mvbmw4MDIxMS5jOjc3NTQ6MzY6CmVycm9yOiBtYWNybyAiZ2VubF9kdW1wX2NoZWNrX2Nv
-bnNpc3RlbnQiIHJlcXVpcmVzIDMgYXJndW1lbnRzLCBidXQgb25seSAyIGdpdmVuCi9ob21lL3No
-dy9rYXZpdGEvYmFja3BvcnRzL2JhY2twb3J0cy1vdXRwdXQtMTFEZWMxNy9uZXQvd2lyZWxlc3Mv
-bmw4MDIxMS5jOiBJbiBmdW5jdGlvbgonbmw4MDIxMV9zZW5kX2Jzcyc6Ci9ob21lL3Nody9rYXZp
-dGEvYmFja3BvcnRzL2JhY2twb3J0cy1vdXRwdXQtMTFEZWMxNy9uZXQvd2lyZWxlc3Mvbmw4MDIx
-MS5jOjc3NTQ6Cndhcm5pbmc6IHN0YXRlbWVudCB3aXRoIG5vIGVmZmVjdAptYWtlWzZdOiAqKioK
-Wy9ob21lL3Nody9rYXZpdGEvYmFja3BvcnRzL2JhY2twb3J0cy1vdXRwdXQtMTFEZWMxNy9uZXQv
-d2lyZWxlc3Mvbmw4MDIxMS5vXSBFcnJvciAxCm1ha2VbNV06ICoqKiBbL2hvbWUvc2h3L2thdml0
-YS9iYWNrcG9ydHMvYmFja3BvcnRzLW91dHB1dC0xMURlYzE3L25ldC93aXJlbGVzc10gRXJyb3Ig
-MgptYWtlWzRdOiAqKiogW19tb2R1bGVfL2hvbWUvc2h3L2thdml0YS9iYWNrcG9ydHMvYmFja3Bv
-cnRzLW91dHB1dC0xMURlYzE3XSBFcnJvciAyCgpQbGVhc2UgaGVscCBtZSB0byBjb21waWxlIGF0
-aDEwayBkcml2ZXJzLgoKCgpUaGFua3MgJiBSZWdhcmRzLArgpJXgpLXgpL/gpKTgpL4g4KSu4KS+
-4KSl4KWB4KSwIEthdml0YSBNYXRodXIgCuCkteCksOCkv+Ckt+CljeCkoCDgpIXgpKjgpYHgpLjg
-pILgpKfgpL7gpKgg4KSF4KSt4KS/4KSv4KSC4KSk4KS+ICBTZW5pb3IgUmVzZWFyY2ggRW5naW5l
-ZXIgCuCkuOClgC3gpKHgpYngpJ8gICAgICAgICAgICAgICAgICAgICAgQy1ET1QK4KSH4KSy4KWI
-4KSV4KWN4KSf4KWN4KSw4KWJ4KSo4KS/4KSV4KWN4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfgpJzg
-pLwgSSAgICAgICAgIEVsZWN0cm9uaWNzIENpdHkgUGhhc2UgSQrgpLngpYvgpLjgpYLgpLAg4KSw
-4KWL4KShLCDgpKzgpYfgpILgpJfgpLLgpYLgpLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2Fk
-LCBCZW5nYWx1cnUg4oCTIDU2MDEwMArgpKvgpYvgpKggIFBoIDA4MC0yODUyOTg5NgpEaXNjbGFp
-bWVyOgotLS0tLS0tLS0tClRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRo
-IGl0CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Fri, Dec 08, 2017 at 11:37:41AM +0100, Sven Eckelmann wrote:
+> The bus + bmi-chip-id + bmi-board-id is not enough to identify the correct
+> board data file on QCA4019 based devices. Multiple different boards share
+> the same values. Only the original reference designs can currently be
+> identified and loaded from the board-2.bin. But these will not result in
+> the correct calibration data when combined with the pre-calibration data
+> from the device.
+> 
+> An additional "variant" information has to be provided (via SMBIOS or DT)
+> to select the correct board data for a design which was modified by an ODM.
+> 
+> Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
+> ---
+>  Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt | 3 +++
+>  1 file changed, 3 insertions(+)
+
+Reviewed-by: Rob Herring <robh@kernel.org>                  
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
