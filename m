@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOP4q-0005Hi-KL
- for ath10k@lists.infradead.org; Mon, 11 Dec 2017 14:29:07 +0000
-Received: by mail-wm0-x244.google.com with SMTP id f206so14439315wmf.5
- for <ath10k@lists.infradead.org>; Mon, 11 Dec 2017 06:28:43 -0800 (PST)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: [PATCH] ath10k: Add BMI parameters to fix calibration from
- DT/pre-cal
-Date: Mon, 11 Dec 2017 15:28:37 +0100
-Message-ID: <108074068.BxyvveCqUm@bentobox>
-In-Reply-To: <6b494081c2606c8e523e2c426ab949ed@codeaurora.org>
-References: <1495709483-29793-1-git-send-email-akolli@qti.qualcomm.com>
- <3432385.m9oFIzB3n7@sven-edge>
- <6b494081c2606c8e523e2c426ab949ed@codeaurora.org>
+Received: from universe.cdot.in ([49.128.111.121])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eOf46-0003w3-Ck
+ for ath10k@lists.infradead.org; Tue, 12 Dec 2017 07:33:28 +0000
+From: "KAVITA MATHUR" <kavitam@cdot.in>
+Subject: Compilation error in ath10k driver latest code
+Date: Tue, 12 Dec 2017 12:54:11 +0530
+Message-Id: <20171212071738.M15745@cdot.in>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,86 +16,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7611105539109543263=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: akolli@codeaurora.org
-Cc: akolli@qti.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, backports@vger.kernel.org
 
---===============7611105539109543263==
-Content-Type: multipart/signed; boundary="nextPart3046730.7gPZ9c07nJ"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-
---nextPart3046730.7gPZ9c07nJ
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-On Montag, 11. Dezember 2017 18:50:09 CET akolli@codeaurora.org wrote:
-[...]
-> >> > Just tried this on an QCA9984 which doesn't seem to have the
-> >> > calibration data in the PCI EEPROM.
-> >> >
-> >> >     [   71.728929] ath10k_pci 0000:01:00.0: qca9984/qca9994 hw1.0
-> >> > target 0x01000000 chip_id 0x00000000 sub 168c:cafe
-> >> >     [   71.732926] ath10k_pci 0000:01:00.0: kconfig debug 1 debugfs 1
-> >> > tracing 0 dfs 1 testmode 1
-> >> >     [   71.752282] ath10k_pci 0000:01:00.0: firmware ver
-> >> > 10.4-ct-9984-fW-009-dfa0083 api 5 features peer-flow-ctrl crc32
-> >> > 7198d117
-> >> >     [   73.805730] ath10k_pci 0000:01:00.0: unable to read from the
-> >> > device
-> >> >     [   73.805769] ath10k_pci 0000:01:00.0: could not execute otp for
-> >> > board id check: -110
-[...]
-> 
-> I tested this on QCA9984 and it worked with below config,
-[...]
-> 
-> Kindly try with the latest firmware from Kalle's git mentioned above.
-
-This didn't change the behavior. It was actually the OTP timeout problem on 
-the QCA9984 which Ben Greear fixed [1]. Luckily, LEDE added this patch with 
-your patch [2]
-
-Kind regards,
-	Sven
-
-[1] https://git.lede-project.org/?p=source.git;a=blob;f=package/kernel/mac80211/patches/327-ath10k-increase-BMI-timeout.patch;h=c9f493bcd8fe29afe1e08dc31b6370507b95fc72;hb=025cb640cdf27f7c68fc1d89d0698605daa06c43
-[2] https://git.lede-project.org/?p=source.git;a=commit;h=025cb640cdf27f7c68fc1d89d0698605daa06c43
---nextPart3046730.7gPZ9c07nJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAloulhUACgkQXYcKB8Em
-e0Zx2w/9EJfcfAf4FZBcCdJp36qSreUUy8nN1wr7/gZZHcpN2NXrAnLJ5bUGUBK8
-EF/hLS+mBHMxE0whD5TpzZaffZMdFtnTLVfj6VorRTYkun0WgWEq4reShCa6NuKh
-u9mS5hFOgT/MOOACZOIrYr76DSfj3vyLraogOlSFuJCxu48tfIaTvwEaP5vVSJT6
-kcucOZTkE6xXfTAmfwNAfmQwTSK1QJbFCOTjyOsH0oLI4OTBVGgm1aMC0cSZ+6gn
-HM0povvX/BMXRgOAFkxOC0uMRE3KAVLnDh88i5h4+flSFAeE4v+6v8Eie33oalXr
-GtTVmt2cJ3Dbvpo5iDpf+0PY4t+1+MhZ8PQE9lgYDxcg16XY2mzO2C/K/mMAs6+0
-SQ4dvHF4Hw8boLJWmvXjQYa3X/E/aGdYpgV1ofJYb9DzYYNNDEy+fKpOuhRUWMLR
-i/p9VWeDAG6OV8/oWanqb4uo32CR8mrKm6O2EER7autnW5CAS4b8MuEo3YoEipQO
-zzKREhW7rs74FBEl3/DaXfiYaLAI3ZWw4ohu7nbhvTHDNzBzusjypnG3rwWNYntu
-mDoxKHtoZ1Ly8P+EWQD5E3MT1LgFxAHvD0teC3slayVfzSTw2z1c16QcFV978ubb
-5pLiNT5KEhAlz5Bp3kaOijoWYEWYPcXqFw1xYGtAL48YzC5M4+A=
-=5npb
------END PGP SIGNATURE-----
-
---nextPart3046730.7gPZ9c07nJ--
-
-
-
---===============7611105539109543263==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============7611105539109543263==--
+aGksCgpZZXN0ZXJkYXkgSSBoYXZlIHRha2VuIGJhY2twb3J0cyBhbmQgYXRoMTBrIGNvZGUgZnJv
+bSBnaXQgYW5kIGNvbXBpbGVkLiBNeSBrZXJuZWwKdmVyc2lvbiBpcyAzLjEyLiBUaGVyZSBhcmUg
+Zm9sbG93aW5nIGNvbXBpbGF0aW9uIGVycm9ycyBkdWUgdG8gaW5jbHVkZSBmaWxlIGdlbmV0bGlu
+ay5oLgoKL2hvbWUvc2h3L2thdml0YS9iYWNrcG9ydHMvYmFja3BvcnRzLW91dHB1dC0xMURlYzE3
+L25ldC93aXJlbGVzcy9ubDgwMjExLmM6NjMyMzozNjoKZXJyb3I6IG1hY3JvICJnZW5sX2R1bXBf
+Y2hlY2tfY29uc2lzdGVudCIgcmVxdWlyZXMgMyBhcmd1bWVudHMsIGJ1dCBvbmx5IDIgZ2l2ZW4K
+L2hvbWUvc2h3L2thdml0YS9iYWNrcG9ydHMvYmFja3BvcnRzLW91dHB1dC0xMURlYzE3L25ldC93
+aXJlbGVzcy9ubDgwMjExLmM6IEluIGZ1bmN0aW9uCidubDgwMjExX3NlbmRfcmVnZG9tJzoKL2hv
+bWUvc2h3L2thdml0YS9iYWNrcG9ydHMvYmFja3BvcnRzLW91dHB1dC0xMURlYzE3L25ldC93aXJl
+bGVzcy9ubDgwMjExLmM6NjMyMzoKd2FybmluZzogc3RhdGVtZW50IHdpdGggbm8gZWZmZWN0Ci9o
+b21lL3Nody9rYXZpdGEvYmFja3BvcnRzL2JhY2twb3J0cy1vdXRwdXQtMTFEZWMxNy9uZXQvd2ly
+ZWxlc3Mvbmw4MDIxMS5jOjc3NTQ6MzY6CmVycm9yOiBtYWNybyAiZ2VubF9kdW1wX2NoZWNrX2Nv
+bnNpc3RlbnQiIHJlcXVpcmVzIDMgYXJndW1lbnRzLCBidXQgb25seSAyIGdpdmVuCi9ob21lL3No
+dy9rYXZpdGEvYmFja3BvcnRzL2JhY2twb3J0cy1vdXRwdXQtMTFEZWMxNy9uZXQvd2lyZWxlc3Mv
+bmw4MDIxMS5jOiBJbiBmdW5jdGlvbgonbmw4MDIxMV9zZW5kX2Jzcyc6Ci9ob21lL3Nody9rYXZp
+dGEvYmFja3BvcnRzL2JhY2twb3J0cy1vdXRwdXQtMTFEZWMxNy9uZXQvd2lyZWxlc3Mvbmw4MDIx
+MS5jOjc3NTQ6Cndhcm5pbmc6IHN0YXRlbWVudCB3aXRoIG5vIGVmZmVjdAptYWtlWzZdOiAqKioK
+Wy9ob21lL3Nody9rYXZpdGEvYmFja3BvcnRzL2JhY2twb3J0cy1vdXRwdXQtMTFEZWMxNy9uZXQv
+d2lyZWxlc3Mvbmw4MDIxMS5vXSBFcnJvciAxCm1ha2VbNV06ICoqKiBbL2hvbWUvc2h3L2thdml0
+YS9iYWNrcG9ydHMvYmFja3BvcnRzLW91dHB1dC0xMURlYzE3L25ldC93aXJlbGVzc10gRXJyb3Ig
+MgptYWtlWzRdOiAqKiogW19tb2R1bGVfL2hvbWUvc2h3L2thdml0YS9iYWNrcG9ydHMvYmFja3Bv
+cnRzLW91dHB1dC0xMURlYzE3XSBFcnJvciAyCgpQbGVhc2UgaGVscCBtZSB0byBjb21waWxlIGF0
+aDEwayBkcml2ZXJzLgoKCgpUaGFua3MgJiBSZWdhcmRzLArgpJXgpLXgpL/gpKTgpL4g4KSu4KS+
+4KSl4KWB4KSwIEthdml0YSBNYXRodXIgCuCkteCksOCkv+Ckt+CljeCkoCDgpIXgpKjgpYHgpLjg
+pILgpKfgpL7gpKgg4KSF4KSt4KS/4KSv4KSC4KSk4KS+ICBTZW5pb3IgUmVzZWFyY2ggRW5naW5l
+ZXIgCuCkuOClgC3gpKHgpYngpJ8gICAgICAgICAgICAgICAgICAgICAgQy1ET1QK4KSH4KSy4KWI
+4KSV4KWN4KSf4KWN4KSw4KWJ4KSo4KS/4KSV4KWN4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfgpJzg
+pLwgSSAgICAgICAgIEVsZWN0cm9uaWNzIENpdHkgUGhhc2UgSQrgpLngpYvgpLjgpYLgpLAg4KSw
+4KWL4KShLCDgpKzgpYfgpILgpJfgpLLgpYLgpLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2Fk
+LCBCZW5nYWx1cnUg4oCTIDU2MDEwMArgpKvgpYvgpKggIFBoIDA4MC0yODUyOTg5NgpEaXNjbGFp
+bWVyOgotLS0tLS0tLS0tClRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRo
+IGl0CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
