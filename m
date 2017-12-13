@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eP0jP-0002Mf-VW
- for ath10k@lists.infradead.org; Wed, 13 Dec 2017 06:41:31 +0000
-Received: from cdot.in (localhost [127.0.0.1])
- by universe.cdot.in (8.14.4/8.13.1) with ESMTP id vBD6WJDl017625
- for <ath10k@lists.infradead.org>; Wed, 13 Dec 2017 12:02:19 +0530
-From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: regulatory.db file for ath10k
-Date: Wed, 13 Dec 2017 12:02:19 +0530
-Message-Id: <20171213063219.M10289@cdot.in>
+Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eP17k-0006D0-Ah
+ for ath10k@lists.infradead.org; Wed, 13 Dec 2017 07:06:38 +0000
+Received: by mail-wm0-x230.google.com with SMTP id n138so2896295wmg.2
+ for <ath10k@lists.infradead.org>; Tue, 12 Dec 2017 23:06:15 -0800 (PST)
 MIME-Version: 1.0
+From: mike <mike0.chen@gmail.com>
+Date: Wed, 13 Dec 2017 15:05:53 +0800
+Message-ID: <CAAT6uo4=Cb+mp=qLDPEMDNOTBm=3fpvBbb6HxnhVk8GdS8Yp7Q@mail.gmail.com>
+Subject: Is it possible to set QCA6174A as repeater in the same network?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,41 +18,16 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
-aGksCgp3aWZpIGludGVyZmFjZSBpcyBub3QgdXAgd2l0aCBhdGgxMGsgZHJpdmVyIGR1ZSB0byBt
-aXNzaW5nIHJlZ3VsYXRvcnkuZGIuSSBoYXZlIHRha2VuCmF0aDEwayBsYXRlc3QgZHJpdmVyIGNv
-ZGUgZnJvbSBiYWNrcG9ydHMgYW5kIGF0aDEwayBnaXQgb24gMTIgRGVjLiAKCgoKTG9hZGluZyBt
-b2R1bGVzIGJhY2twb3J0ZWQgZnJvbSBMaW51eCB2ZXJzaW9uIHYzLjE4LTIzOTkzMC1nMTM1ZGE2
-ZApCYWNrcG9ydCBnZW5lcmF0ZWQgYnkgYmFja3BvcnRzLmdpdCB2NC4xNC1yYzItMS0zNS1nM2Qx
-MzQ3OAphdGgxMGtfcGNpIDAwMDI6MDM6MDAuMDogcGNpIGlycSBsZWdhY3kgb3Blcl9pcnFfbW9k
-ZSAxIGlycV9tb2RlIDAgcmVzZXRfbW9kZSAwCmNmZzgwMjExOiBmYWlsZWQgdG8gbG9hZCByZWd1
-bGF0b3J5LmRiCmF0aDEwa19wY2kgMDAwMjowMzowMC4wOiBxY2E5ODh4IGh3Mi4wIHRhcmdldCAw
-eDQxMDAwMTZjIGNoaXBfaWQgMHgwNDMyMjJmZiBzdWIgMDAwMDowMDAwCmF0aDEwa19wY2kgMDAw
-MjowMzowMC4wOiBrY29uZmlnIGRlYnVnIDAgZGVidWdmcyAwIHRyYWNpbmcgMCBkZnMgMCB0ZXN0
-bW9kZSAwCmF0aDEwa19wY2kgMDAwMjowMzowMC4wOiBmaXJtd2FyZSB2ZXIgMTAuMi40LjcwLjY2
-IGFwaSA1IGZlYXR1cmVzCm5vLXAycCxyYXctbW9kZSxtZnAsYWxsb3dzLW1lc2gtYmNhc3QgY3Jj
-MzIgYzJkZDJhZDUKYXRoMTBrX3BjaSAwMDAyOjAzOjAwLjA6IGJvYXJkX2ZpbGUgYXBpIDEgYm1p
-X2lkIE4vQSBjcmMzMiBiZWJjN2MwOAphdGgxMGtfcGNpIDAwMDI6MDM6MDAuMDogaHR0LXZlciAy
-LjEgd21pLW9wIDUgaHR0LW9wIDIgY2FsIG90cCBtYXgtc3RhIDEyOCByYXcgMCBod2NyeXB0byAx
-Cgp3aWZpCnJvb3RAQ0RPVDovIyBJUHY2OiBBRERSQ09ORihORVRERVZfVVApOiB3bGFuMDogbGlu
-ayBpcyBub3QgcmVhZHkKZGV2aWNlIHdsYW4wIGVudGVyZWQgcHJvbWlzY3VvdXMgbW9kZQpkZXZp
-Y2Ugd2xhbjAgbGVmdCBwcm9taXNjdW91cyBtb2RlCmJyLWxhbjogcG9ydCAyKHdsYW4wKSBlbnRl
-cmVkIGRpc2FibGVkIHN0YXRlCgpIb3cgdG8gZ2VuZXJhdGUgcmVndWxhdG9yeS5kYiBmaWxlIG9y
-IGlzIGl0IGF2YWlsYWJsZSB0byB1c2UgaXQgZGlyZWN0bHk/IFBsZWFzZSBoZWxwIG1lCnRvIGZp
-eCBpdC4KCgoKCgoKCgpUaGFua3MgJiBSZWdhcmRzLArgpJXgpLXgpL/gpKTgpL4g4KSu4KS+4KSl
-4KWB4KSwIEthdml0YSBNYXRodXIgCuCkteCksOCkv+Ckt+CljeCkoCDgpIXgpKjgpYHgpLjgpILg
-pKfgpL7gpKgg4KSF4KSt4KS/4KSv4KSC4KSk4KS+ICBTZW5pb3IgUmVzZWFyY2ggRW5naW5lZXIg
-CuCkuOClgC3gpKHgpYngpJ8gICAgICAgICAgICAgICAgICAgICAgQy1ET1QK4KSH4KSy4KWI4KSV
-4KWN4KSf4KWN4KSw4KWJ4KSo4KS/4KSV4KWN4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfgpJzgpLwg
-SSAgICAgICAgIEVsZWN0cm9uaWNzIENpdHkgUGhhc2UgSQrgpLngpYvgpLjgpYLgpLAg4KSw4KWL
-4KShLCDgpKzgpYfgpILgpJfgpLLgpYLgpLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2FkLCBC
-ZW5nYWx1cnUg4oCTIDU2MDEwMArgpKvgpYvgpKggIFBoIDA4MC0yODUyOTg5NgpEaXNjbGFpbWVy
-OgotLS0tLS0tLS0tClRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRoIGl0
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
-IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+WiFi AP (192.168.1.1) <-> QCA6174A <-> WiFi device (Ex: notebook)
+(192.168.1.100)
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
