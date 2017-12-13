@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from universe.cdot.in ([49.128.111.121])
+Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eP2KL-0002P4-Jm
- for ath10k@lists.infradead.org; Wed, 13 Dec 2017 08:23:45 +0000
-From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: RE: regulatory.db file for ath10k
-Date: Wed, 13 Dec 2017 13:44:38 +0530
-Message-Id: <20171213081213.M75864@cdot.in>
-In-Reply-To: <240c63ef1f9745acaa0e7585be6a46de@aphydexm01f.ap.qualcomm.com>
-References: <20171213063219.M10289@cdot.in>
- <240c63ef1f9745acaa0e7585be6a46de@aphydexm01f.ap.qualcomm.com>
+ id 1ePFtp-0003Ix-LH
+ for ath10k@lists.infradead.org; Wed, 13 Dec 2017 22:53:15 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id BBBE440A7E2
+ for <ath10k@lists.infradead.org>; Wed, 13 Dec 2017 14:52:45 -0800 (PST)
+From: Ben Greear <greearb@candelatech.com>
+Subject: Potential issue in ath10k_htt_tx
+Message-ID: <80d21f29-2edb-65f0-aae5-0240d2d473dd@candelatech.com>
+Date: Wed, 13 Dec 2017 14:52:45 -0800
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,73 +21,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-VGhhbmt5b3Ugc28gbXVjaCBmb3IgdGhpcyBpbmZvcm1hdGlvbi4gCgpJIGRvIG5vdCB3YW50IHRv
-IHVzZSByZWd1bGF0b3J5LmRiLiBDYW4geW91IHBsZWFzZSBzaGFyZSB5b3VyIGF0aDEwayBidWls
-ZApjb25maWd1cmF0aW9uPyBJIG1heSBiZSBtaXNzaW5nIHNvbWV0aGluZyBpbiBjb25maWd1cmF0
-aW9uLgoKVGhhbmtzICYgUmVnYXJkcywKS2F2aXRhCgoKT24gV2VkLCAxMyBEZWMgMjAxNyAwNzo1
-NDowMCArMDAwMCwgTWFuaWthbnRhIFB1YmJpc2V0dHkgd3JvdGUKPiBQbGVhc2UgQ0MgbGludXgg
-d2lyZWxlc3Mgd2hlbiBwb3N0aW5nIHF1ZXJpZXMgb24gY2ZnL21hYzgwMjExLgo+IAo+IEF0IGxl
-YXN0LCBJIGhhdmUgbm90IGhhZCBhbnkgaXNzdWVzIGluIGludGVyZmFjZSBicmluZyB1cCBhZnRl
-ciB0aGUgbGF0ZXN0IAo+IHJlZ3VsYXRvcnkuZGIgY2hhbmdlLCBJIGhhdmUgdGVzdGVkIGl0IHdp
-dGggdmFuaWxsYSBhdGguZ2l0IGFuZCBpdCB3b3JrZWQgZXZlbiAKPiB3aXRob3V0IHJlZ3VsYXRv
-cnkuZGIgZmlsZS4gSWYgeW91IG1heSB3YW50IHRvIHJlZmVyLCBKb2hhbm5lcyBzdWJtaXR0ZWQg
-YSAKPiBwYXRjaFsxXSBmb3IgY29udmVydGluZyBkYi50eHQgdG8gZmlybXdhcmUgZmlsZSBmb3Jt
-YXQuCj4gCj4gWzFdIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvOTk5MjQ3Ny8K
-PiAKPiBta3AKPiAKPiA+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPiA+RnJvbTogYXRoMTBr
-IFttYWlsdG86YXRoMTBrLWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZ10gT24gQmVoYWxmIE9m
-Cj4gPktBVklUQSBNQVRIVVIKPiA+U2VudDogV2VkbmVzZGF5LCBEZWNlbWJlciAxMywgMjAxNyAx
-MjowMiBQTQo+ID5UbzogYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiA+U3ViamVjdDogcmVn
-dWxhdG9yeS5kYiBmaWxlIGZvciBhdGgxMGsKPiA+Cj4gPmhpLAo+ID4KPiA+d2lmaSBpbnRlcmZh
-Y2UgaXMgbm90IHVwIHdpdGggYXRoMTBrIGRyaXZlciBkdWUgdG8gbWlzc2luZyByZWd1bGF0b3J5
-LmRiLkkgaGF2ZQo+ID50YWtlbiBhdGgxMGsgbGF0ZXN0IGRyaXZlciBjb2RlIGZyb20gYmFja3Bv
-cnRzIGFuZCBhdGgxMGsgZ2l0IG9uIDEyIERlYy4KPiA+Cj4gPgo+ID4KPiA+TG9hZGluZyBtb2R1
-bGVzIGJhY2twb3J0ZWQgZnJvbSBMaW51eCB2ZXJzaW9uIHYzLjE4LTIzOTkzMC1nMTM1ZGE2ZAo+
-ID5CYWNrcG9ydCBnZW5lcmF0ZWQgYnkgYmFja3BvcnRzLmdpdCB2NC4xNC1yYzItMS0zNS1nM2Qx
-MzQ3OCBhdGgxMGtfcGNpCj4gPjAwMDI6MDM6MDAuMDogcGNpIGlycSBsZWdhY3kgb3Blcl9pcnFf
-bW9kZSAxIGlycV9tb2RlIDAgcmVzZXRfbW9kZSAwCj4gPmNmZzgwMjExOiBmYWlsZWQgdG8gbG9h
-ZCByZWd1bGF0b3J5LmRiCj4gPmF0aDEwa19wY2kgMDAwMjowMzowMC4wOiBxY2E5ODh4IGh3Mi4w
-IHRhcmdldCAweDQxMDAwMTZjIGNoaXBfaWQgMHgwNDMyMjJmZgo+ID5zdWIgMDAwMDowMDAwIGF0
-aDEwa19wY2kgMDAwMjowMzowMC4wOiBrY29uZmlnIGRlYnVnIDAgZGVidWdmcyAwIHRyYWNpbmcg
-MCBkZnMKPiA+MCB0ZXN0bW9kZSAwIGF0aDEwa19wY2kgMDAwMjowMzowMC4wOiBmaXJtd2FyZSB2
-ZXIgMTAuMi40LjcwLjY2IGFwaSA1IGZlYXR1cmVzCj4gPm5vLXAycCxyYXctbW9kZSxtZnAsYWxs
-b3dzLW1lc2gtYmNhc3QgY3JjMzIgYzJkZDJhZDUgYXRoMTBrX3BjaQo+ID4wMDAyOjAzOjAwLjA6
-IGJvYXJkX2ZpbGUgYXBpIDEgYm1pX2lkIE4vQSBjcmMzMiBiZWJjN2MwOCBhdGgxMGtfcGNpCj4g
-PjAwMDI6MDM6MDAuMDogaHR0LXZlciAyLjEgd21pLW9wIDUgaHR0LW9wIDIgY2FsIG90cCBtYXgt
-c3RhIDEyOCByYXcgMCBod2NyeXB0bwo+ID4xCj4gPgo+ID53aWZpCj4gPnJvb3RAQ0RPVDovIyBJ
-UHY2OiBBRERSQ09ORihORVRERVZfVVApOiB3bGFuMDogbGluayBpcyBub3QgcmVhZHkgZGV2aWNl
-Cj4gPndsYW4wIGVudGVyZWQgcHJvbWlzY3VvdXMgbW9kZSBkZXZpY2Ugd2xhbjAgbGVmdCBwcm9t
-aXNjdW91cyBtb2RlCj4gPmJyLWxhbjogcG9ydCAyKHdsYW4wKSBlbnRlcmVkIGRpc2FibGVkIHN0
-YXRlCj4gPgo+ID5Ib3cgdG8gZ2VuZXJhdGUgcmVndWxhdG9yeS5kYiBmaWxlIG9yIGlzIGl0IGF2
-YWlsYWJsZSB0byB1c2UgaXQgZGlyZWN0bHk/IFBsZWFzZQo+ID5oZWxwIG1lIHRvIGZpeCBpdC4K
-PiA+Cj4gPgo+ID4KPiA+Cj4gPgo+ID4KPiA+Cj4gPgo+ID5UaGFua3MgJiBSZWdhcmRzLAo+ID7g
-pJXgpLXgpL/gpKTgpL4g4KSu4KS+4KSl4KWB4KSwIEthdml0YSBNYXRodXIKPiA+4KS14KSw4KS/
-4KS34KWN4KSgIOCkheCkqOClgeCkuOCkguCkp+CkvuCkqCDgpIXgpK3gpL/gpK/gpILgpKTgpL4g
-IFNlbmlvciBSZXNlYXJjaCBFbmdpbmVlcgo+ID7gpLjgpYAt4KSh4KWJ4KSfICAgICAgICAgICAg
-ICAgICAgICAgIEMtRE9UCj4gPuCkh+CksuCliOCkleCljeCkn+CljeCksOClieCkqOCkv+CkleCl
-jeCkuCDgpLjgpL/gpJ/gpYAg4KSr4KWH4KSc4KS8IEkgICAgICAgICBFbGVjdHJvbmljcyBDaXR5
-IFBoYXNlIEkKPiA+4KS54KWL4KS44KWC4KSwIOCksOCli+CkoSwg4KSs4KWH4KSC4KSX4KSy4KWC
-4KSw4KWBICAgICAgICAgICAgICAgSG9zdXIgUm9hZCwgQmVuZ2FsdXJ1IOKAkyA1NjAxMDAKPiA+
-4KSr4KWL4KSoICBQaCAwODAtMjg1Mjk4OTYKPiA+RGlzY2xhaW1lcjoKPiA+LS0tLS0tLS0tLQo+
-ID5UaGlzIGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQgd2l0aCBpdAo+ID4KPiA+Cj4g
-Pl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPmF0aDEw
-ayBtYWlsaW5nIGxpc3QKPiA+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiA+aHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCgpUaGFua3MgJiBSZWdh
-cmRzLArgpJXgpLXgpL/gpKTgpL4g4KSu4KS+4KSl4KWB4KSwIEthdml0YSBNYXRodXIgCuCkteCk
-sOCkv+Ckt+CljeCkoCDgpIXgpKjgpYHgpLjgpILgpKfgpL7gpKgg4KSF4KSt4KS/4KSv4KSC4KSk
-4KS+ICBTZW5pb3IgUmVzZWFyY2ggRW5naW5lZXIgCuCkuOClgC3gpKHgpYngpJ8gICAgICAgICAg
-ICAgICAgICAgICAgQy1ET1QK4KSH4KSy4KWI4KSV4KWN4KSf4KWN4KSw4KWJ4KSo4KS/4KSV4KWN
-4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfgpJzgpLwgSSAgICAgICAgIEVsZWN0cm9uaWNzIENpdHkg
-UGhhc2UgSQrgpLngpYvgpLjgpYLgpLAg4KSw4KWL4KShLCDgpKzgpYfgpILgpJfgpLLgpYLgpLDg
-pYEgICAgICAgICAgICAgICBIb3N1ciBSb2FkLCBCZW5nYWx1cnUg4oCTIDU2MDEwMArgpKvgpYvg
-pKggIFBoIDA4MC0yODUyOTg5NgpEaXNjbGFpbWVyOgotLS0tLS0tLS0tClRoaXMgZW1haWwgYW5k
-IGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRoIGl0CgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2F0aDEwawo=
+While adding some support for radiotap tx-ratecode and no-ack features,
+I noticed that info->control.rates[0] is over-written in the code below:
+
+	/* NOTE:  This writes over info->control.rates[0], at least. */
+	skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
+				       DMA_TO_DEVICE);
+	res = dma_mapping_error(dev, skb_cb->paddr);
+	if (res) {
+		res = -EIO;
+		goto err_free_msdu_id;
+	}
+
+
+That made me think that the roc_freq code should be moved to the top of
+this method in case it too might be corrupted (now or in the future):
+
+	if (unlikely(info->flags & IEEE80211_TX_CTL_TX_OFFCHAN))
+		freq = ar->scan.roc_freq;
+
+My code in this method has changed a lot due to the radiotap support,
+so I do not have a clean patch to offer.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
