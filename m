@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eP17k-0006D0-Ah
- for ath10k@lists.infradead.org; Wed, 13 Dec 2017 07:06:38 +0000
-Received: by mail-wm0-x230.google.com with SMTP id n138so2896295wmg.2
- for <ath10k@lists.infradead.org>; Tue, 12 Dec 2017 23:06:15 -0800 (PST)
+ id 1eP1sA-0003Oj-1m
+ for ath10k@lists.infradead.org; Wed, 13 Dec 2017 07:54:36 +0000
+From: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
+Subject: RE: regulatory.db file for ath10k
+Date: Wed, 13 Dec 2017 07:54:00 +0000
+Message-ID: <240c63ef1f9745acaa0e7585be6a46de@aphydexm01f.ap.qualcomm.com>
+References: <20171213063219.M10289@cdot.in>
+In-Reply-To: <20171213063219.M10289@cdot.in>
+Content-Language: en-US
 MIME-Version: 1.0
-From: mike <mike0.chen@gmail.com>
-Date: Wed, 13 Dec 2017 15:05:53 +0800
-Message-ID: <CAAT6uo4=Cb+mp=qLDPEMDNOTBm=3fpvBbb6HxnhVk8GdS8Yp7Q@mail.gmail.com>
-Subject: Is it possible to set QCA6174A as repeater in the same network?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,16 +19,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: KAVITA MATHUR <kavitam@cdot.in>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-WiFi AP (192.168.1.1) <-> QCA6174A <-> WiFi device (Ex: notebook)
-(192.168.1.100)
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+UGxlYXNlIENDIGxpbnV4IHdpcmVsZXNzIHdoZW4gcG9zdGluZyBxdWVyaWVzIG9uIGNmZy9tYWM4
+MDIxMS4NCg0KQXQgbGVhc3QsIEkgaGF2ZSBub3QgaGFkIGFueSBpc3N1ZXMgaW4gaW50ZXJmYWNl
+IGJyaW5nIHVwIGFmdGVyIHRoZSBsYXRlc3QgcmVndWxhdG9yeS5kYiBjaGFuZ2UsIEkgaGF2ZSB0
+ZXN0ZWQgaXQgd2l0aCB2YW5pbGxhIGF0aC5naXQgYW5kIGl0IHdvcmtlZCBldmVuIHdpdGhvdXQg
+cmVndWxhdG9yeS5kYiBmaWxlLg0KSWYgeW91IG1heSB3YW50IHRvIHJlZmVyLCBKb2hhbm5lcyBz
+dWJtaXR0ZWQgYSBwYXRjaFsxXSBmb3IgY29udmVydGluZyBkYi50eHQgdG8gZmlybXdhcmUgZmls
+ZSBmb3JtYXQuDQoNClsxXSBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzk5OTI0
+NzcvIA0KDQpta3ANCg0KPi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+RnJvbTogYXRoMTBr
+IFttYWlsdG86YXRoMTBrLWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZ10gT24gQmVoYWxmIE9m
+DQo+S0FWSVRBIE1BVEhVUg0KPlNlbnQ6IFdlZG5lc2RheSwgRGVjZW1iZXIgMTMsIDIwMTcgMTI6
+MDIgUE0NCj5UbzogYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj5TdWJqZWN0OiByZWd1bGF0
+b3J5LmRiIGZpbGUgZm9yIGF0aDEwaw0KPg0KPmhpLA0KPg0KPndpZmkgaW50ZXJmYWNlIGlzIG5v
+dCB1cCB3aXRoIGF0aDEwayBkcml2ZXIgZHVlIHRvIG1pc3NpbmcgcmVndWxhdG9yeS5kYi5JIGhh
+dmUNCj50YWtlbiBhdGgxMGsgbGF0ZXN0IGRyaXZlciBjb2RlIGZyb20gYmFja3BvcnRzIGFuZCBh
+dGgxMGsgZ2l0IG9uIDEyIERlYy4NCj4NCj4NCj4NCj5Mb2FkaW5nIG1vZHVsZXMgYmFja3BvcnRl
+ZCBmcm9tIExpbnV4IHZlcnNpb24gdjMuMTgtMjM5OTMwLWcxMzVkYTZkDQo+QmFja3BvcnQgZ2Vu
+ZXJhdGVkIGJ5IGJhY2twb3J0cy5naXQgdjQuMTQtcmMyLTEtMzUtZzNkMTM0NzggYXRoMTBrX3Bj
+aQ0KPjAwMDI6MDM6MDAuMDogcGNpIGlycSBsZWdhY3kgb3Blcl9pcnFfbW9kZSAxIGlycV9tb2Rl
+IDAgcmVzZXRfbW9kZSAwDQo+Y2ZnODAyMTE6IGZhaWxlZCB0byBsb2FkIHJlZ3VsYXRvcnkuZGIN
+Cj5hdGgxMGtfcGNpIDAwMDI6MDM6MDAuMDogcWNhOTg4eCBodzIuMCB0YXJnZXQgMHg0MTAwMDE2
+YyBjaGlwX2lkIDB4MDQzMjIyZmYNCj5zdWIgMDAwMDowMDAwIGF0aDEwa19wY2kgMDAwMjowMzow
+MC4wOiBrY29uZmlnIGRlYnVnIDAgZGVidWdmcyAwIHRyYWNpbmcgMCBkZnMNCj4wIHRlc3Rtb2Rl
+IDAgYXRoMTBrX3BjaSAwMDAyOjAzOjAwLjA6IGZpcm13YXJlIHZlciAxMC4yLjQuNzAuNjYgYXBp
+IDUgZmVhdHVyZXMNCj5uby1wMnAscmF3LW1vZGUsbWZwLGFsbG93cy1tZXNoLWJjYXN0IGNyYzMy
+IGMyZGQyYWQ1IGF0aDEwa19wY2kNCj4wMDAyOjAzOjAwLjA6IGJvYXJkX2ZpbGUgYXBpIDEgYm1p
+X2lkIE4vQSBjcmMzMiBiZWJjN2MwOCBhdGgxMGtfcGNpDQo+MDAwMjowMzowMC4wOiBodHQtdmVy
+IDIuMSB3bWktb3AgNSBodHQtb3AgMiBjYWwgb3RwIG1heC1zdGEgMTI4IHJhdyAwIGh3Y3J5cHRv
+DQo+MQ0KPg0KPndpZmkNCj5yb290QENET1Q6LyMgSVB2NjogQUREUkNPTkYoTkVUREVWX1VQKTog
+d2xhbjA6IGxpbmsgaXMgbm90IHJlYWR5IGRldmljZQ0KPndsYW4wIGVudGVyZWQgcHJvbWlzY3Vv
+dXMgbW9kZSBkZXZpY2Ugd2xhbjAgbGVmdCBwcm9taXNjdW91cyBtb2RlDQo+YnItbGFuOiBwb3J0
+IDIod2xhbjApIGVudGVyZWQgZGlzYWJsZWQgc3RhdGUNCj4NCj5Ib3cgdG8gZ2VuZXJhdGUgcmVn
+dWxhdG9yeS5kYiBmaWxlIG9yIGlzIGl0IGF2YWlsYWJsZSB0byB1c2UgaXQgZGlyZWN0bHk/IFBs
+ZWFzZQ0KPmhlbHAgbWUgdG8gZml4IGl0Lg0KPg0KPg0KPg0KPg0KPg0KPg0KPg0KPg0KPlRoYW5r
+cyAmIFJlZ2FyZHMsDQo+4KSV4KS14KS/4KSk4KS+IOCkruCkvuCkpeClgeCksCBLYXZpdGEgTWF0
+aHVyDQo+4KS14KSw4KS/4KS34KWN4KSgIOCkheCkqOClgeCkuOCkguCkp+CkvuCkqCDgpIXgpK3g
+pL/gpK/gpILgpKTgpL4gIFNlbmlvciBSZXNlYXJjaCBFbmdpbmVlcg0KPuCkuOClgC3gpKHgpYng
+pJ8gICAgICAgICAgICAgICAgICAgICAgQy1ET1QNCj7gpIfgpLLgpYjgpJXgpY3gpJ/gpY3gpLDg
+pYngpKjgpL/gpJXgpY3gpLgg4KS44KS/4KSf4KWAIOCkq+Clh+CknOCkvCBJICAgICAgICAgRWxl
+Y3Ryb25pY3MgQ2l0eSBQaGFzZSBJDQo+4KS54KWL4KS44KWC4KSwIOCksOCli+CkoSwg4KSs4KWH
+4KSC4KSX4KSy4KWC4KSw4KWBICAgICAgICAgICAgICAgSG9zdXIgUm9hZCwgQmVuZ2FsdXJ1IOKA
+kyA1NjAxMDANCj7gpKvgpYvgpKggIFBoIDA4MC0yODUyOTg5Ng0KPkRpc2NsYWltZXI6DQo+LS0t
+LS0tLS0tLQ0KPlRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRoIGl0DQo+
+DQo+DQo+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj5h
+dGgxMGsgbWFpbGluZyBsaXN0DQo+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj5odHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwaw0KX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
