@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePVRU-00018j-V7
- for ath10k@lists.infradead.org; Thu, 14 Dec 2017 15:29:03 +0000
+ id 1ePVWl-0003fE-Jv
+ for ath10k@lists.infradead.org; Thu, 14 Dec 2017 15:34:37 +0000
 MIME-Version: 1.0
-Subject: Re: [v2,
- 1/2] dt: bindings: add new dt entry for ath10k calibration variant
+Subject: Re: [v3,1/4] ath10k: WMI: modify svc bitmap parsing for wcn3990
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <20171208103742.3181-2-sven.eckelmann@openmesh.com>
-References: <20171208103742.3181-2-sven.eckelmann@openmesh.com>
-Message-ID: <c17f0a577bcd41569831c4eb556d376e@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 14 Dec 2017 16:28:24 +0100
+In-Reply-To: <1513002175-2498-2-git-send-email-pillair@qti.qualcomm.com>
+References: <1513002175-2498-2-git-send-email-pillair@qti.qualcomm.com>
+Message-ID: <12a3a3b39947470aa861362ca4e4dcbe@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 14 Dec 2017 16:33:54 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +22,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, robh+dt@kernel.org, ext.waldemar.rymarkiewicz@tieto.com, kvalo@codeaurora.org
+To: Rakesh Pillai <pillair@qti.qualcomm.com>
+Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Sven Eckelmann <sven.eckelmann@openmesh.com> wrote:
+Rakesh Pillai <pillair@qti.qualcomm.com> wrote:
 
-> The bus + bmi-chip-id + bmi-board-id is not enough to identify the correct
-> board data file on QCA4019 based devices. Multiple different boards share
-> the same values. Only the original reference designs can currently be
-> identified and loaded from the board-2.bin. But these will not result in
-> the correct calibration data when combined with the pre-calibration data
-> from the device.
+> Due to the limitation of wmi tlv parsing logic, if there are
+> two parameters in a wmi event with same tlv tag, we can get only
+> the last value, as it overwrites the prev value of the same tlv tag.
 > 
-> An additional "variant" information has to be provided (via SMBIOS or DT)
-> to select the correct board data for a design which was modified by an ODM.
+> The service ready event in wcn3990 contains two parameters of the
+> same tag UINT32, due to which the svc bitmap is overwritten with the
+> DBS support parameter.
 > 
-> Signed-off-by: Sven Eckelmann <sven.eckelmann@openmesh.com>
+> Refactor the service ready event parsing to allow parsing two tlv
+> of the same tag UINT32 for wcn3990.
+> 
+> Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
+> Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-2 patches applied to ath-next branch of ath.git, thanks.
+4 patches applied to ath-next branch of ath.git, thanks.
 
-40fb0eab30ba dt: bindings: add new dt entry for ath10k calibration variant
-d06f26c5c8a4 ath10k: search DT for qcom,ath10k-calibration-variant
+229329ff345f ath10k: wmi: modify svc bitmap parsing for wcn3990
+1807da49733e ath10k: wmi: add management tx by reference support over wmi
+9f2992fea580 ath10k: wmi: get wmi init parameter values from hw params
+03a72288c546 ath10k: wmi: add hw params entry for wcn3990
 
 -- 
-https://patchwork.kernel.org/patch/10102249/
+https://patchwork.kernel.org/patch/10105283/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
