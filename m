@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePVJE-0004rV-Tg
- for ath10k@lists.infradead.org; Thu, 14 Dec 2017 15:20:39 +0000
+ id 1ePVQV-0000bx-5d
+ for ath10k@lists.infradead.org; Thu, 14 Dec 2017 15:28:01 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: handling qos at STA side based on AP WMM enable/disable
+Subject: Re: [PATCHv2, 1/3] ath10k: remove MAC80211_DEBUGFS dependency on
+ ath10k_sta_statistics
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1511863650-9419-1-git-send-email-bpothuno@qti.qualcomm.com>
-References: <1511863650-9419-1-git-send-email-bpothuno@qti.qualcomm.com>
-Message-ID: <da2cd6fa88db42ab94207e5551c9be69@euamsexm01a.eu.qualcomm.com>
-Date: Thu, 14 Dec 2017 16:19:41 +0100
+In-Reply-To: <1512480685-28471-2-git-send-email-akolli@qti.qualcomm.com>
+References: <1512480685-28471-2-git-send-email-akolli@qti.qualcomm.com>
+Message-ID: <7f4e7c29cceb41cd83a8aaa8188f4d0a@euamsexm01a.eu.qualcomm.com>
+Date: Thu, 14 Dec 2017 16:27:15 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +23,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: bpothuno@qti.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: akolli@qti.qualcomm.com
+Cc: akolli@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-bpothuno@qti.qualcomm.com wrote:
+akolli@qti.qualcomm.com wrote:
 
-> Data packets are not sent by STA in case of STA joined to
-> non QOS AP (WMM disabled AP). This is happening because of STA
-> is sending data packets to firmware from host with qos enabled
-> along with non qos queue value(TID = 16).
-> Due to qos enabled, firmware is discarding the packet.
+> Remove CONFIG_MAC80211_DEBUGFS dependency on ath10k_sta_statistics().
+> ath10k_sta_statistics() has per sta tx/rx stats and this should not
+> be dependent on MAC80211_DEBUGFS.
 > 
-> This patch fixes this issue by updating the qos based on station
-> WME capability field if WMM is disabled in AP.
+> No changes in functionality.
 > 
-> This patch is required by 10.4 family chipsets like
-> QCA4019/QCA9888/QCA9884/QCA99X0.
-> Firmware Versoin : 10.4-3.5.1-00018.
-> 
-> For 10.2.4 family chipsets QCA988X/QCA9887 and QCA6174 this patch
-> has no effect.
-> 
-> Signed-off-by: Balaji Pothunoori <bpothuno@qti.qualcomm.com>
+> Signed-off-by: Anilkumar Kolli <akolli@qti.qualcomm.com>
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Patch applied to ath-next branch of ath.git, thanks.
+3 patches applied to ath-next branch of ath.git, thanks.
 
-07ffb4497360 ath10k: handling qos at STA side based on AP WMM enable/disable
+6a7f891178c2 ath10k: remove MAC80211_DEBUGFS dependency on ath10k_sta_statistics
+7f9befbb555d ath10k: move pktlog_filter out of ath10k_debug
+e8123bb74c4e ath10k: add per peer tx stats support for 10.2.4
 
 -- 
-https://patchwork.kernel.org/patch/10079089/
+https://patchwork.kernel.org/patch/10092915/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
