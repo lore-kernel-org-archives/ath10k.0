@@ -1,21 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x22a.google.com ([2a00:1450:400c:c0c::22a])
+Received: from mail-qk0-x22d.google.com ([2607:f8b0:400d:c09::22d])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePbTw-0003Uc-NS
- for ath10k@lists.infradead.org; Thu, 14 Dec 2017 21:55:58 +0000
-Received: by mail-wr0-x22a.google.com with SMTP id g53so6413726wra.2
- for <ath10k@lists.infradead.org>; Thu, 14 Dec 2017 13:55:36 -0800 (PST)
+ id 1ePeE3-0003nq-0o
+ for ath10k@lists.infradead.org; Fri, 15 Dec 2017 00:51:45 +0000
+Received: by mail-qk0-x22d.google.com with SMTP id b184so8557370qkc.13
+ for <ath10k@lists.infradead.org>; Thu, 14 Dec 2017 16:51:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <007de27f-61cc-b27a-2049-e466d572b264@qti.qualcomm.com>
-References: <2025478478.2725588.1512857709726.ref@mail.yahoo.com>
- <2025478478.2725588.1512857709726@mail.yahoo.com> <4122842.1D0mIpT2Ae@uapou>
- <87bmj1moxc.fsf@kamboji.qca.qualcomm.com>
- <CAJ-VmokFG2JX=dfrrKz25WermY_EaWr2HLJiU7U+WMqEuT1YoA@mail.gmail.com>
- <007de27f-61cc-b27a-2049-e466d572b264@qti.qualcomm.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Thu, 14 Dec 2017 13:55:33 -0800
-Message-ID: <CAJ-VmokZHO6L1qN_jM0JiMNrsxudTbERZcwjAJb68xkyksa+EA@mail.gmail.com>
-Subject: Re: "htt version request timed out" with the last 4.1.1.c1 firmware
+From: Adam Porter <porter.adam@gmail.com>
+Date: Thu, 14 Dec 2017 16:51:19 -0800
+Message-ID: <CAFR5RwQrUyMgSawp0NNfYa+i6SB4_CPf4NqZc08TJaFkdWrnBA@mail.gmail.com>
+Subject: QCA6174-SDIO WMI Credit Exhaustion
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +22,64 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qti.qualcomm.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Paul Nuville <paulnuville@yahoo.fr>
+To: ath10k@lists.infradead.org
 
-Hi,
+I'm using a fairly recent version of ath10k from kernel-backports,
+along with necessary patches from the ath10k-pending-sdio-usb branch.
 
-* QSDK 4.0.8 doesn't run with QCA6174 - HTT timeout as above
-* QSDK ILQ 1.1.8 runs with QCA6174
-* The HTT debugging shows that after the HTC/HTT stuff is setup, none
-of the HTT "i'm awake" messages are coming back.
+I have an older firmware for this card, of unknown origins, but it's
+been working quite well with ath10k-sdio. ath10k reports the
+abi_version of this mystery firmware to be 344. The firmware appears
+to have a memory leak, so I got my hands on a newer firmware.
 
-I'll try the latest firmware and board data from Kalle's repository
-and see if that makes a difference. Right now I'm about 2/3rds the way
-through undoing the 1.1.8 -> 4.0.8 changes in ath10k to see if I can
-narrow down the actual regression.
+This new firmware is marked WLAN.RMH.4.1.1-00014-QCARMSWPZ-1, ath10k
+says abi_version 467
+
+ath10k is able to talk to this firmware, but when I try to bring up my
+wlan0 interface, things start timing out due to credit exhaustion:
 
 
+[   72.041885] ath10k_sdio mmc0:0001:1: htt target version 3.47
+[   72.041900] ath10k_sdio mmc0:0001:1: htt h2t aggr cfg msg amsdu 3 ampdu 64
+[   72.041949] ath10k_sdio mmc0:0001:1: sdio write addr 0x12f00 buf
+0xffffffc01b4a5580 len 256
+[   72.041957] ath10k_sdio mmc0:0001:1:
+ath10k_htc_notify_tx_completion: ep 1 skb ffffffc01c1aea00
+[   72.042242] ath10k_sdio mmc0:0001:1: wmi tlv pktlog disable
+[   72.042293] ath10k_sdio mmc0:0001:1: sdio write addr 0x12f00 buf
+0xffffffc01b4a53c0 len 256
+[   72.042301] ath10k_sdio mmc0:0001:1:
+ath10k_htc_notify_tx_completion: ep 1 skb ffffffc01cdee900
+[   72.042316] ath10k_sdio mmc0:0001:1: htc ep 2 consumed 1 credits (total 2)
+[   72.042329] ath10k_sdio mmc0:0001:1: wmi tlv pdev set param
+[   72.042377] ath10k_sdio mmc0:0001:1: sdio write addr 0x1c700 buf
+0xffffffc01b4a5200 len 256
+[   72.042384] ath10k_sdio mmc0:0001:1:
+ath10k_htc_notify_tx_completion: ep 2 skb ffffffc01c1af100
+[   72.042400] ath10k_sdio mmc0:0001:1: htc ep 2 consumed 1 credits (total 1)
+[   72.042411] ath10k_sdio mmc0:0001:1: wmi tlv pdev set param
+[   72.042457] ath10k_sdio mmc0:0001:1: sdio write addr 0x1c700 buf
+0xffffffc01b4a5040 len 256
+[   72.042464] ath10k_sdio mmc0:0001:1:
+ath10k_htc_notify_tx_completion: ep 2 skb ffffffc01b423b00
+[   72.042479] ath10k_sdio mmc0:0001:1: htc ep 2 consumed 1 credits (total 0)
+[   72.042491] ath10k_sdio mmc0:0001:1: wmi tlv adaptive qcs 1
+[   72.042538] ath10k_sdio mmc0:0001:1: sdio write addr 0x1c700 buf
+0xffffffc01b4a4e80 len 256
+[   72.042545] ath10k_sdio mmc0:0001:1:
+ath10k_htc_notify_tx_completion: ep 2 skb ffffffc01c1af100
+[   72.042560] ath10k_sdio mmc0:0001:1: htc insufficient credits ep 2
+required 1 available 0
+[   72.042568] ath10k_sdio mmc0:0001:1: htc insufficient credits ep 2
+required 1 available 0
+[   75.236012] ath10k_sdio mmc0:0001:1: htc insufficient credits ep 2
+required 1 available 0
 
+I'm not sure where to begin troubleshooting this issue. Could anyone
+point me in the right direction?
 
--adrian
+Thank you,
+Adam
 
 _______________________________________________
 ath10k mailing list
