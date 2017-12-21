@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eRwk3-0007ZN-Ig
- for ath10k@lists.infradead.org; Thu, 21 Dec 2017 09:03:12 +0000
+ id 1eRwk6-0007Y7-LL
+ for ath10k@lists.infradead.org; Thu, 21 Dec 2017 09:03:14 +0000
 From: Govind Singh <govinds@qti.qualcomm.com>
-Subject: [PATCH 06/10] ath10k: Add support for htt_data_tx_desc_64 descriptor
-Date: Thu, 21 Dec 2017 14:30:55 +0530
-Message-Id: <1513846859-23639-7-git-send-email-govinds@qti.qualcomm.com>
+Subject: [PATCH 08/10] ath10k: Add paddrs_ring_64 support for 64bit target
+Date: Thu, 21 Dec 2017 14:30:57 +0530
+Message-Id: <1513846859-23639-9-git-send-email-govinds@qti.qualcomm.com>
 In-Reply-To: <1513846859-23639-1-git-send-email-govinds@qti.qualcomm.com>
 References: <1513846859-23639-1-git-send-email-govinds@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,499 +25,267 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-WCN3990 target uses 64 bit frags_paddr in htt tx descriptor,
-which holds the physical address of SKB fragments in tx data path.
-
-In order to support 64 bit bit frags_paddr in htt tx descriptor, define
-htt_data_tx_desc_64 descriptor and ath10k_htt_tx_64 method for handling
-tx data path with new descriptor fields.
+paddrs_ring_64 holds the physical device address of the
+rx buffers that host SW provides for the MAC HW to fill.
+Since this field is used in rx ring setup and rx ring
+replenish in rx data path. Define separate methods
+for handling 64 bit ring paddr and attach them dynamically
+based on target_64bit hw param flag. Use u64 type
+while popping paddr from the rx hash table for 64bit target.
 
 Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    |  38 +++-
- drivers/net/wireless/ath/ath10k/htt_tx.c | 294 ++++++++++++++++++++++++++++---
- drivers/net/wireless/ath/ath10k/mac.c    |   2 +-
- 3 files changed, 307 insertions(+), 27 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.c    |   1 +
+ drivers/net/wireless/ath/ath10k/htt.h    |  15 ++++-
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 110 ++++++++++++++++++++++++++-----
+ 3 files changed, 109 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 881af77..ac5d720 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -187,6 +187,22 @@ struct htt_data_tx_desc {
- 	u8 prefetch[0]; /* start of frame, for FW classification engine */
- } __packed;
+diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
+index 8dc96a1..764fb26 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.c
++++ b/drivers/net/wireless/ath/ath10k/htt.c
+@@ -208,6 +208,7 @@ int ath10k_htt_init(struct ath10k *ar)
+ 		return -EINVAL;
+ 	}
+ 	ath10k_htt_set_tx_ops(htt);
++	ath10k_htt_set_rx_ops(htt);
  
-+struct htt_data_tx_desc_64 {
-+	u8 flags0; /* %HTT_DATA_TX_DESC_FLAGS0_ */
-+	__le16 flags1; /* %HTT_DATA_TX_DESC_FLAGS1_ */
-+	__le16 len;
-+	__le16 id;
-+	__le64 frags_paddr;
-+	union {
-+		__le32 peerid;
-+		struct {
-+			__le16 peerid;
-+			__le16 freq;
-+		} __packed offchan_tx;
-+	} __packed;
-+	u8 prefetch[0]; /* start of frame, for FW classification engine */
-+} __packed;
-+
- enum htt_rx_ring_flags {
- 	HTT_RX_RING_FLAGS_MAC80211_HDR = 1 << 0,
- 	HTT_RX_RING_FLAGS_MSDU_PAYLOAD = 1 << 1,
-@@ -1631,13 +1647,20 @@ struct htt_peer_unmap_event {
- 	u16 peer_id;
- };
- 
--struct ath10k_htt_txbuf {
-+struct ath10k_htt_txbuf_32 {
- 	struct htt_data_tx_desc_frag frags[2];
- 	struct ath10k_htc_hdr htc_hdr;
- 	struct htt_cmd_hdr cmd_hdr;
- 	struct htt_data_tx_desc cmd_tx;
- } __packed;
- 
-+struct ath10k_htt_txbuf_64 {
-+	struct htt_data_tx_desc_frag frags[2];
-+	struct ath10k_htc_hdr htc_hdr;
-+	struct htt_cmd_hdr cmd_hdr;
-+	struct htt_data_tx_desc_64 cmd_tx;
-+} __packed;
-+
- struct ath10k_htt {
- 	struct ath10k *ar;
- 	enum ath10k_htc_ep_id eid;
-@@ -1768,7 +1791,11 @@ struct ath10k_htt {
- 
- 	struct {
- 		dma_addr_t paddr;
--		struct ath10k_htt_txbuf *vaddr;
-+		union {
-+			struct ath10k_htt_txbuf_32 *vaddr_txbuff_32;
-+			struct ath10k_htt_txbuf_64 *vaddr_txbuff_64;
-+		};
-+		size_t size;
- 	} txbuf;
- 
- 	struct {
-@@ -1791,6 +1818,10 @@ struct ath10k_htt_tx_ops {
- 	int (*htt_send_frag_desc_bank_cfg)(struct ath10k_htt *htt);
- 	int (*htt_alloc_frag_desc)(struct ath10k_htt *htt);
- 	void (*htt_free_frag_desc)(struct ath10k_htt *htt);
-+	int (*htt_tx)(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
-+		      struct sk_buff *msdu);
-+	int (*htt_alloc_txbuff)(struct ath10k_htt *htt);
-+	void (*htt_free_txbuff)(struct ath10k_htt *htt);
- };
- 
- #define RX_HTT_HDR_STATUS_LEN 64
-@@ -1895,9 +1926,6 @@ int ath10k_htt_tx_mgmt_inc_pending(struct ath10k_htt *htt, bool is_mgmt,
- int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb);
- void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
- int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu);
--int ath10k_htt_tx(struct ath10k_htt *htt,
--		  enum ath10k_hw_txrx_mode txmode,
--		  struct sk_buff *msdu);
- void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
- 					     struct sk_buff *skb);
- int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget);
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 5989489..8faab62 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -229,30 +229,69 @@ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id)
- 	idr_remove(&htt->pending_tx, msdu_id);
- }
- 
--static void ath10k_htt_tx_free_cont_txbuf(struct ath10k_htt *htt)
-+static void ath10k_htt_tx_free_cont_txbuf_32(struct ath10k_htt *htt)
- {
- 	struct ath10k *ar = htt->ar;
- 	size_t size;
- 
--	if (!htt->txbuf.vaddr)
-+	if (!htt->txbuf.vaddr_txbuff_32)
- 		return;
- 
--	size = htt->max_num_pending_tx * sizeof(struct ath10k_htt_txbuf);
--	dma_free_coherent(ar->dev, size, htt->txbuf.vaddr, htt->txbuf.paddr);
--	htt->txbuf.vaddr = NULL;
-+	size = htt->txbuf.size;
-+	dma_free_coherent(ar->dev, size, htt->txbuf.vaddr_txbuff_32,
-+			  htt->txbuf.paddr);
-+	htt->txbuf.vaddr_txbuff_32 = NULL;
- }
- 
--static int ath10k_htt_tx_alloc_cont_txbuf(struct ath10k_htt *htt)
-+static int ath10k_htt_tx_alloc_cont_txbuf_32(struct ath10k_htt *htt)
- {
- 	struct ath10k *ar = htt->ar;
- 	size_t size;
- 
--	size = htt->max_num_pending_tx * sizeof(struct ath10k_htt_txbuf);
--	htt->txbuf.vaddr = dma_alloc_coherent(ar->dev, size, &htt->txbuf.paddr,
--					      GFP_KERNEL);
--	if (!htt->txbuf.vaddr)
-+	size = htt->max_num_pending_tx *
-+			sizeof(struct ath10k_htt_txbuf_32);
-+
-+	htt->txbuf.vaddr_txbuff_32 = dma_alloc_coherent(ar->dev, size,
-+							&htt->txbuf.paddr,
-+							GFP_KERNEL);
-+	if (!htt->txbuf.vaddr_txbuff_32)
-+		return -ENOMEM;
-+
-+	htt->txbuf.size = size;
-+
-+	return 0;
-+}
-+
-+static void ath10k_htt_tx_free_cont_txbuf_64(struct ath10k_htt *htt)
-+{
-+	struct ath10k *ar = htt->ar;
-+	size_t size;
-+
-+	if (!htt->txbuf.vaddr_txbuff_64)
-+		return;
-+
-+	size = htt->txbuf.size;
-+	dma_free_coherent(ar->dev, size, htt->txbuf.vaddr_txbuff_64,
-+			  htt->txbuf.paddr);
-+	htt->txbuf.vaddr_txbuff_64 = NULL;
-+}
-+
-+static int ath10k_htt_tx_alloc_cont_txbuf_64(struct ath10k_htt *htt)
-+{
-+	struct ath10k *ar = htt->ar;
-+	size_t size;
-+
-+	size = htt->max_num_pending_tx *
-+			sizeof(struct ath10k_htt_txbuf_64);
-+
-+	htt->txbuf.vaddr_txbuff_64 = dma_alloc_coherent(ar->dev, size,
-+							&htt->txbuf.paddr,
-+							GFP_KERNEL);
-+	if (!htt->txbuf.vaddr_txbuff_64)
- 		return -ENOMEM;
- 
-+	htt->txbuf.size = size;
-+
  	return 0;
  }
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 3a43a48..805ff89 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1708,7 +1708,10 @@ struct ath10k_htt {
+ 		 * rx buffers the host SW provides for the MAC HW to
+ 		 * fill.
+ 		 */
+-		__le32 *paddrs_ring;
++		union {
++			__le64 *paddrs_ring_64;
++			__le32 *paddrs_ring_32;
++		};
  
-@@ -404,7 +443,7 @@ static int ath10k_htt_tx_alloc_buf(struct ath10k_htt *htt)
- 	struct ath10k *ar = htt->ar;
- 	int ret;
+ 		/*
+ 		 * Base address of ring, as a "physical" device address
+@@ -1814,6 +1817,7 @@ struct ath10k_htt {
  
--	ret = ath10k_htt_tx_alloc_cont_txbuf(htt);
-+	ret = htt->tx_ops->htt_alloc_txbuff(htt);
- 	if (ret) {
- 		ath10k_err(ar, "failed to alloc cont tx buffer: %d\n", ret);
- 		return ret;
-@@ -437,7 +476,7 @@ static int ath10k_htt_tx_alloc_buf(struct ath10k_htt *htt)
- 	htt->tx_ops->htt_free_frag_desc(htt);
+ 	bool tx_mem_allocated;
+ 	const struct ath10k_htt_tx_ops *tx_ops;
++	const struct ath10k_htt_rx_ops *rx_ops;
+ };
  
- free_txbuf:
--	ath10k_htt_tx_free_cont_txbuf(htt);
-+	htt->tx_ops->htt_free_txbuff(htt);
+ struct ath10k_htt_tx_ops {
+@@ -1827,6 +1831,14 @@ struct ath10k_htt_tx_ops {
+ 	void (*htt_free_txbuff)(struct ath10k_htt *htt);
+ };
  
- 	return ret;
- }
-@@ -491,7 +530,7 @@ void ath10k_htt_tx_destroy(struct ath10k_htt *htt)
- 	if (!htt->tx_mem_allocated)
- 		return;
++struct ath10k_htt_rx_ops {
++	size_t (*htt_get_rx_ring_size)(struct ath10k_htt *htt);
++	void (*htt_config_paddrs_ring)(struct ath10k_htt *htt, void *vaddr);
++	void (*htt_set_paddrs_ring)(struct ath10k_htt *htt, dma_addr_t paddr,
++				    int idx);
++	void* (*htt_get_vaddr_ring)(struct ath10k_htt *htt);
++	void (*htt_reset_paddrs_ring)(struct ath10k_htt *htt, int idx);
++};
+ #define RX_HTT_HDR_STATUS_LEN 64
  
--	ath10k_htt_tx_free_cont_txbuf(htt);
-+	htt->tx_ops->htt_free_txbuff(htt);
- 	ath10k_htt_tx_free_txq(htt);
- 	htt->tx_ops->htt_free_frag_desc(htt);
- 	ath10k_htt_tx_free_txdone_fifo(htt);
-@@ -1097,8 +1136,9 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	return res;
- }
+ /* This structure layout is programmed via rx ring setup
+@@ -1933,4 +1945,5 @@ void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
+ 					     struct sk_buff *skb);
+ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget);
+ void ath10k_htt_set_tx_ops(struct ath10k_htt *htt);
++void ath10k_htt_set_rx_ops(struct ath10k_htt *htt);
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 6fb6751..a53e3b6 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -33,7 +33,7 @@
+ static int ath10k_htt_rx_get_csum_state(struct sk_buff *skb);
  
--int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
--		  struct sk_buff *msdu)
-+static int ath10k_htt_tx_32(struct ath10k_htt *htt,
-+			    enum ath10k_hw_txrx_mode txmode,
-+			    struct sk_buff *msdu)
+ static struct sk_buff *
+-ath10k_htt_rx_find_skb_paddr(struct ath10k *ar, u32 paddr)
++ath10k_htt_rx_find_skb_paddr(struct ath10k *ar, u64 paddr)
  {
- 	struct ath10k *ar = htt->ar;
- 	struct device *dev = ar->dev;
-@@ -1106,7 +1146,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
- 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
- 	struct ath10k_hif_sg_item sg_items[2];
--	struct ath10k_htt_txbuf *txbuf;
-+	struct ath10k_htt_txbuf_32 *txbuf;
- 	struct htt_data_tx_desc_frag *frags;
- 	bool is_eth = (txmode == ATH10K_HW_TXRX_ETHERNET);
- 	u8 vdev_id = ath10k_htt_tx_get_vdev_id(ar, msdu);
-@@ -1132,9 +1172,9 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	prefetch_len = min(htt->prefetch_len, msdu->len);
- 	prefetch_len = roundup(prefetch_len, 4);
+ 	struct ath10k_skb_rxcb *rxcb;
  
--	txbuf = &htt->txbuf.vaddr[msdu_id];
-+	txbuf = htt->txbuf.vaddr_txbuff_32 + msdu_id;
- 	txbuf_paddr = htt->txbuf.paddr +
--		      (sizeof(struct ath10k_htt_txbuf) * msdu_id);
-+		      (sizeof(struct ath10k_htt_txbuf_32) * msdu_id);
+@@ -81,6 +81,60 @@ static void ath10k_htt_rx_ring_free(struct ath10k_htt *htt)
+ 	       htt->rx_ring.size * sizeof(htt->rx_ring.netbufs_ring[0]));
+ }
  
- 	if ((ieee80211_is_action(hdr->frame_control) ||
- 	     ieee80211_is_deauth(hdr->frame_control) ||
-@@ -1259,9 +1299,215 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 
- 	trace_ath10k_htt_tx(ar, msdu_id, msdu->len, vdev_id, tid);
- 	ath10k_dbg(ar, ATH10K_DBG_HTT,
--		   "htt tx flags0 %hhu flags1 %hu len %d id %hu frags_paddr %08x, msdu_paddr %08x vdev %hhu tid %hhu freq %hu\n",
--		   flags0, flags1, msdu->len, msdu_id, frags_paddr,
--		   (u32)skb_cb->paddr, vdev_id, tid, freq);
-+		   "htt tx flags0 %hhu flags1 %hu len %d id %hu frags_paddr %pad, msdu_paddr %pad vdev %hhu tid %hhu freq %hu\n",
-+		   flags0, flags1, msdu->len, msdu_id, &frags_paddr,
-+		   &skb_cb->paddr, vdev_id, tid, freq);
-+	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt tx msdu: ",
-+			msdu->data, msdu->len);
-+	trace_ath10k_tx_hdr(ar, msdu->data, msdu->len);
-+	trace_ath10k_tx_payload(ar, msdu->data, msdu->len);
-+
-+	sg_items[0].transfer_id = 0;
-+	sg_items[0].transfer_context = NULL;
-+	sg_items[0].vaddr = &txbuf->htc_hdr;
-+	sg_items[0].paddr = txbuf_paddr +
-+			    sizeof(txbuf->frags);
-+	sg_items[0].len = sizeof(txbuf->htc_hdr) +
-+			  sizeof(txbuf->cmd_hdr) +
-+			  sizeof(txbuf->cmd_tx);
-+
-+	sg_items[1].transfer_id = 0;
-+	sg_items[1].transfer_context = NULL;
-+	sg_items[1].vaddr = msdu->data;
-+	sg_items[1].paddr = skb_cb->paddr;
-+	sg_items[1].len = prefetch_len;
-+
-+	res = ath10k_hif_tx_sg(htt->ar,
-+			       htt->ar->htc.endpoint[htt->eid].ul_pipe_id,
-+			       sg_items, ARRAY_SIZE(sg_items));
-+	if (res)
-+		goto err_unmap_msdu;
-+
-+	return 0;
-+
-+err_unmap_msdu:
-+	dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
-+err_free_msdu_id:
-+	ath10k_htt_tx_free_msdu_id(htt, msdu_id);
-+err:
-+	return res;
++static size_t ath10k_htt_get_rx_ring_size_32(struct ath10k_htt *htt)
++{
++	return htt->rx_ring.size * sizeof(htt->rx_ring.paddrs_ring_32);
 +}
 +
-+static int ath10k_htt_tx_64(struct ath10k_htt *htt,
-+			    enum ath10k_hw_txrx_mode txmode,
-+			    struct sk_buff *msdu)
++static size_t ath10k_htt_get_rx_ring_size_64(struct ath10k_htt *htt)
++{
++	return htt->rx_ring.size * sizeof(htt->rx_ring.paddrs_ring_64);
++}
++
++static void ath10k_htt_config_paddrs_ring_32(struct ath10k_htt *htt,
++					     void *vaddr)
++{
++	htt->rx_ring.paddrs_ring_32 = vaddr;
++}
++
++static void ath10k_htt_config_paddrs_ring_64(struct ath10k_htt *htt,
++					     void *vaddr)
++{
++	htt->rx_ring.paddrs_ring_64 = vaddr;
++}
++
++static void ath10k_htt_set_paddrs_ring_32(struct ath10k_htt *htt,
++					  dma_addr_t paddr, int idx)
++{
++	htt->rx_ring.paddrs_ring_32[idx] = __cpu_to_le32(paddr);
++}
++
++static void ath10k_htt_set_paddrs_ring_64(struct ath10k_htt *htt,
++					  dma_addr_t paddr, int idx)
++{
++	htt->rx_ring.paddrs_ring_64[idx] = __cpu_to_le64(paddr);
++}
++
++static void ath10k_htt_reset_paddrs_ring_32(struct ath10k_htt *htt, int idx)
++{
++	htt->rx_ring.paddrs_ring_32[idx] = 0;
++}
++
++static void ath10k_htt_reset_paddrs_ring_64(struct ath10k_htt *htt, int idx)
++{
++	htt->rx_ring.paddrs_ring_64[idx] = 0;
++}
++
++static void *ath10k_htt_get_vaddr_ring_32(struct ath10k_htt *htt)
++{
++	return (void *)htt->rx_ring.paddrs_ring_32;
++}
++
++static void *ath10k_htt_get_vaddr_ring_64(struct ath10k_htt *htt)
++{
++	return (void *)htt->rx_ring.paddrs_ring_64;
++}
++
+ static int __ath10k_htt_rx_ring_fill_n(struct ath10k_htt *htt, int num)
+ {
+ 	struct htt_rx_desc *rx_desc;
+@@ -126,13 +180,13 @@ static int __ath10k_htt_rx_ring_fill_n(struct ath10k_htt *htt, int num)
+ 		rxcb = ATH10K_SKB_RXCB(skb);
+ 		rxcb->paddr = paddr;
+ 		htt->rx_ring.netbufs_ring[idx] = skb;
+-		htt->rx_ring.paddrs_ring[idx] = __cpu_to_le32(paddr);
++		htt->rx_ops->htt_set_paddrs_ring(htt, paddr, idx);
+ 		htt->rx_ring.fill_cnt++;
+ 
+ 		if (htt->rx_ring.in_ord_rx) {
+ 			hash_add(htt->rx_ring.skb_table,
+ 				 &ATH10K_SKB_RXCB(skb)->hlist,
+-				 (u32)paddr);
++				 paddr);
+ 		}
+ 
+ 		num--;
+@@ -231,9 +285,8 @@ void ath10k_htt_rx_free(struct ath10k_htt *htt)
+ 	ath10k_htt_rx_ring_free(htt);
+ 
+ 	dma_free_coherent(htt->ar->dev,
+-			  (htt->rx_ring.size *
+-			   sizeof(htt->rx_ring.paddrs_ring)),
+-			  htt->rx_ring.paddrs_ring,
++			  htt->rx_ops->htt_get_rx_ring_size(htt),
++			  htt->rx_ops->htt_get_vaddr_ring(htt),
+ 			  htt->rx_ring.base_paddr);
+ 
+ 	dma_free_coherent(htt->ar->dev,
+@@ -260,7 +313,7 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
+ 	idx = htt->rx_ring.sw_rd_idx.msdu_payld;
+ 	msdu = htt->rx_ring.netbufs_ring[idx];
+ 	htt->rx_ring.netbufs_ring[idx] = NULL;
+-	htt->rx_ring.paddrs_ring[idx] = 0;
++	htt->rx_ops->htt_reset_paddrs_ring(htt, idx);
+ 
+ 	idx++;
+ 	idx &= htt->rx_ring.size_mask;
+@@ -380,7 +433,7 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ }
+ 
+ static struct sk_buff *ath10k_htt_rx_pop_paddr(struct ath10k_htt *htt,
+-					       u32 paddr)
++					       u64 paddr)
+ {
+ 	struct ath10k *ar = htt->ar;
+ 	struct ath10k_skb_rxcb *rxcb;
+@@ -508,7 +561,7 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ {
+ 	struct ath10k *ar = htt->ar;
+ 	dma_addr_t paddr;
+-	void *vaddr;
++	void *vaddr, *vaddr_ring;
+ 	size_t size;
+ 	struct timer_list *timer = &htt->rx_ring.refill_retry_timer;
+ 
+@@ -532,13 +585,13 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 	if (!htt->rx_ring.netbufs_ring)
+ 		goto err_netbuf;
+ 
+-	size = htt->rx_ring.size * sizeof(htt->rx_ring.paddrs_ring);
++	size = htt->rx_ops->htt_get_rx_ring_size(htt);
+ 
+-	vaddr = dma_alloc_coherent(htt->ar->dev, size, &paddr, GFP_KERNEL);
+-	if (!vaddr)
++	vaddr_ring = dma_alloc_coherent(htt->ar->dev, size, &paddr, GFP_KERNEL);
++	if (!vaddr_ring)
+ 		goto err_dma_ring;
+ 
+-	htt->rx_ring.paddrs_ring = vaddr;
++	htt->rx_ops->htt_config_paddrs_ring(htt, vaddr_ring);
+ 	htt->rx_ring.base_paddr = paddr;
+ 
+ 	vaddr = dma_alloc_coherent(htt->ar->dev,
+@@ -572,9 +625,8 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 
+ err_dma_idx:
+ 	dma_free_coherent(htt->ar->dev,
+-			  (htt->rx_ring.size *
+-			   sizeof(htt->rx_ring.paddrs_ring)),
+-			  htt->rx_ring.paddrs_ring,
++			  htt->rx_ops->htt_get_rx_ring_size(htt),
++			  vaddr_ring,
+ 			  htt->rx_ring.base_paddr);
+ err_dma_ring:
+ 	kfree(htt->rx_ring.netbufs_ring);
+@@ -2784,3 +2836,29 @@ int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget)
+ 	return done;
+ }
+ EXPORT_SYMBOL(ath10k_htt_txrx_compl_task);
++
++static const struct ath10k_htt_rx_ops htt_rx_ops_32 = {
++	.htt_get_rx_ring_size = ath10k_htt_get_rx_ring_size_32,
++	.htt_config_paddrs_ring = ath10k_htt_config_paddrs_ring_32,
++	.htt_set_paddrs_ring = ath10k_htt_set_paddrs_ring_32,
++	.htt_get_vaddr_ring = ath10k_htt_get_vaddr_ring_32,
++	.htt_reset_paddrs_ring = ath10k_htt_reset_paddrs_ring_32,
++};
++
++static const struct ath10k_htt_rx_ops htt_rx_ops_64 = {
++	.htt_get_rx_ring_size = ath10k_htt_get_rx_ring_size_64,
++	.htt_config_paddrs_ring = ath10k_htt_config_paddrs_ring_64,
++	.htt_set_paddrs_ring = ath10k_htt_set_paddrs_ring_64,
++	.htt_get_vaddr_ring = ath10k_htt_get_vaddr_ring_64,
++	.htt_reset_paddrs_ring = ath10k_htt_reset_paddrs_ring_64,
++};
++
++void ath10k_htt_set_rx_ops(struct ath10k_htt *htt)
 +{
 +	struct ath10k *ar = htt->ar;
-+	struct device *dev = ar->dev;
-+	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)msdu->data;
-+	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
-+	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
-+	struct ath10k_hif_sg_item sg_items[2];
-+	struct ath10k_htt_txbuf_64 *txbuf;
-+	struct htt_data_tx_desc_frag *frags;
-+	bool is_eth = (txmode == ATH10K_HW_TXRX_ETHERNET);
-+	u8 vdev_id = ath10k_htt_tx_get_vdev_id(ar, msdu);
-+	u8 tid = ath10k_htt_tx_get_tid(msdu, is_eth);
-+	int prefetch_len;
-+	int res;
-+	u8 flags0 = 0;
-+	u16 msdu_id, flags1 = 0;
-+	u16 freq = 0;
-+	dma_addr_t frags_paddr = 0;
-+	u32 txbuf_paddr;
-+	struct htt_msdu_ext_desc_64 *ext_desc = NULL;
-+	struct htt_msdu_ext_desc_64 *ext_desc_t = NULL;
 +
-+	spin_lock_bh(&htt->tx_lock);
-+	res = ath10k_htt_tx_alloc_msdu_id(htt, msdu);
-+	spin_unlock_bh(&htt->tx_lock);
-+	if (res < 0)
-+		goto err;
-+
-+	msdu_id = res;
-+
-+	prefetch_len = min(htt->prefetch_len, msdu->len);
-+	prefetch_len = roundup(prefetch_len, 4);
-+
-+	txbuf = htt->txbuf.vaddr_txbuff_64 + msdu_id;
-+	txbuf_paddr = htt->txbuf.paddr +
-+		      (sizeof(struct ath10k_htt_txbuf_64) * msdu_id);
-+
-+	if ((ieee80211_is_action(hdr->frame_control) ||
-+	     ieee80211_is_deauth(hdr->frame_control) ||
-+	     ieee80211_is_disassoc(hdr->frame_control)) &&
-+	     ieee80211_has_protected(hdr->frame_control)) {
-+		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+	} else if (!(skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT) &&
-+		   txmode == ATH10K_HW_TXRX_RAW &&
-+		   ieee80211_has_protected(hdr->frame_control)) {
-+		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
-+	}
-+
-+	skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
-+				       DMA_TO_DEVICE);
-+	res = dma_mapping_error(dev, skb_cb->paddr);
-+	if (res) {
-+		res = -EIO;
-+		goto err_free_msdu_id;
-+	}
-+
-+	if (unlikely(info->flags & IEEE80211_TX_CTL_TX_OFFCHAN))
-+		freq = ar->scan.roc_freq;
-+
-+	switch (txmode) {
-+	case ATH10K_HW_TXRX_RAW:
-+	case ATH10K_HW_TXRX_NATIVE_WIFI:
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
-+		/* pass through */
-+	case ATH10K_HW_TXRX_ETHERNET:
-+		if (ar->hw_params.continuous_frag_desc) {
-+			ext_desc_t = htt->frag_desc.vaddr_desc_64;
-+			memset(&ext_desc_t[msdu_id], 0,
-+			       sizeof(struct htt_msdu_ext_desc_64));
-+			frags = (struct htt_data_tx_desc_frag *)
-+				&ext_desc_t[msdu_id].frags;
-+			ext_desc = &ext_desc_t[msdu_id];
-+			frags[0].tword_addr.paddr_lo =
-+				__cpu_to_le32(skb_cb->paddr);
-+			frags[0].tword_addr.paddr_hi =
-+				__cpu_to_le16(upper_32_bits(skb_cb->paddr));
-+			frags[0].tword_addr.len_16 = __cpu_to_le16(msdu->len);
-+
-+			frags_paddr =  htt->frag_desc.paddr +
-+			   (sizeof(struct htt_msdu_ext_desc_64) * msdu_id);
-+		} else {
-+			frags = txbuf->frags;
-+			frags[0].tword_addr.paddr_lo =
-+						__cpu_to_le32(skb_cb->paddr);
-+			frags[0].tword_addr.paddr_hi =
-+				__cpu_to_le16(upper_32_bits(skb_cb->paddr));
-+			frags[0].tword_addr.len_16 = __cpu_to_le16(msdu->len);
-+			frags[1].tword_addr.paddr_lo = 0;
-+			frags[1].tword_addr.paddr_hi = 0;
-+			frags[1].tword_addr.len_16 = 0;
-+		}
-+		flags0 |= SM(txmode, HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+		break;
-+	case ATH10K_HW_TXRX_MGMT:
-+		flags0 |= SM(ATH10K_HW_TXRX_MGMT,
-+			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
-+
-+		frags_paddr = skb_cb->paddr;
-+		break;
-+	}
-+
-+	/* Normally all commands go through HTC which manages tx credits for
-+	 * each endpoint and notifies when tx is completed.
-+	 *
-+	 * HTT endpoint is creditless so there's no need to care about HTC
-+	 * flags. In that case it is trivial to fill the HTC header here.
-+	 *
-+	 * MSDU transmission is considered completed upon HTT event. This
-+	 * implies no relevant resources can be freed until after the event is
-+	 * received. That's why HTC tx completion handler itself is ignored by
-+	 * setting NULL to transfer_context for all sg items.
-+	 *
-+	 * There is simply no point in pushing HTT TX_FRM through HTC tx path
-+	 * as it's a waste of resources. By bypassing HTC it is possible to
-+	 * avoid extra memory allocations, compress data structures and thus
-+	 * improve performance.
-+	 */
-+
-+	txbuf->htc_hdr.eid = htt->eid;
-+	txbuf->htc_hdr.len = __cpu_to_le16(sizeof(txbuf->cmd_hdr) +
-+					   sizeof(txbuf->cmd_tx) +
-+					   prefetch_len);
-+	txbuf->htc_hdr.flags = 0;
-+
-+	if (skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT)
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
-+
-+	flags1 |= SM((u16)vdev_id, HTT_DATA_TX_DESC_FLAGS1_VDEV_ID);
-+	flags1 |= SM((u16)tid, HTT_DATA_TX_DESC_FLAGS1_EXT_TID);
-+	if (msdu->ip_summed == CHECKSUM_PARTIAL &&
-+	    !test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
-+		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L3_OFFLOAD;
-+		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L4_OFFLOAD;
-+		if (ar->hw_params.continuous_frag_desc)
-+			ext_desc->flags |= HTT_MSDU_CHECKSUM_ENABLE;
-+	}
-+
-+	/* Prevent firmware from sending up tx inspection requests. There's
-+	 * nothing ath10k can do with frames requested for inspection so force
-+	 * it to simply rely a regular tx completion with discard status.
-+	 */
-+	flags1 |= HTT_DATA_TX_DESC_FLAGS1_POSTPONED;
-+
-+	txbuf->cmd_hdr.msg_type = HTT_H2T_MSG_TYPE_TX_FRM;
-+	txbuf->cmd_tx.flags0 = flags0;
-+	txbuf->cmd_tx.flags1 = __cpu_to_le16(flags1);
-+	txbuf->cmd_tx.len = __cpu_to_le16(msdu->len);
-+	txbuf->cmd_tx.id = __cpu_to_le16(msdu_id);
-+
-+	/* fill fragment descriptor */
-+	txbuf->cmd_tx.frags_paddr = __cpu_to_le64(frags_paddr);
-+	if (ath10k_mac_tx_frm_has_freq(ar)) {
-+		txbuf->cmd_tx.offchan_tx.peerid =
-+				__cpu_to_le16(HTT_INVALID_PEERID);
-+		txbuf->cmd_tx.offchan_tx.freq =
-+				__cpu_to_le16(freq);
-+	} else {
-+		txbuf->cmd_tx.peerid =
-+				__cpu_to_le32(HTT_INVALID_PEERID);
-+	}
-+
-+	trace_ath10k_htt_tx(ar, msdu_id, msdu->len, vdev_id, tid);
-+	ath10k_dbg(ar, ATH10K_DBG_HTT,
-+		   "htt tx flags0 %hhu flags1 %hu len %d id %hu frags_paddr %pad, msdu_paddr %pad vdev %hhu tid %hhu freq %hu\n",
-+		   flags0, flags1, msdu->len, msdu_id, &frags_paddr,
-+		   &skb_cb->paddr, vdev_id, tid, freq);
- 	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt tx msdu: ",
- 			msdu->data, msdu->len);
- 	trace_ath10k_tx_hdr(ar, msdu->data, msdu->len);
-@@ -1303,6 +1549,9 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	.htt_send_frag_desc_bank_cfg = ath10k_htt_send_frag_desc_bank_cfg_32,
- 	.htt_alloc_frag_desc = ath10k_htt_tx_alloc_cont_frag_desc_32,
- 	.htt_free_frag_desc = ath10k_htt_tx_free_cont_frag_desc_32,
-+	.htt_tx = ath10k_htt_tx_32,
-+	.htt_alloc_txbuff = ath10k_htt_tx_alloc_cont_txbuf_32,
-+	.htt_free_txbuff = ath10k_htt_tx_free_cont_txbuf_32,
- };
- 
- static const struct ath10k_htt_tx_ops htt_tx_ops_64 = {
-@@ -1310,6 +1559,9 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- 	.htt_send_frag_desc_bank_cfg = ath10k_htt_send_frag_desc_bank_cfg_64,
- 	.htt_alloc_frag_desc = ath10k_htt_tx_alloc_cont_frag_desc_64,
- 	.htt_free_frag_desc = ath10k_htt_tx_free_cont_frag_desc_64,
-+	.htt_tx = ath10k_htt_tx_64,
-+	.htt_alloc_txbuff = ath10k_htt_tx_alloc_cont_txbuf_64,
-+	.htt_free_txbuff = ath10k_htt_tx_free_cont_txbuf_64,
- };
- 
- void ath10k_htt_set_tx_ops(struct ath10k_htt *htt)
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 57ad885..5cbff15 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3597,7 +3597,7 @@ static int ath10k_mac_tx_submit(struct ath10k *ar,
- 
- 	switch (txpath) {
- 	case ATH10K_MAC_TX_HTT:
--		ret = ath10k_htt_tx(htt, txmode, skb);
-+		ret = htt->tx_ops->htt_tx(htt, txmode, skb);
- 		break;
- 	case ATH10K_MAC_TX_HTT_MGMT:
- 		ret = ath10k_htt_mgmt_tx(htt, skb);
++	if (ar->hw_params.target_64bit)
++		htt->rx_ops = &htt_rx_ops_64;
++	else
++		htt->rx_ops = &htt_rx_ops_32;
++}
 -- 
 1.9.1
 
