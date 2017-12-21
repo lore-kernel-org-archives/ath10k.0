@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eS3Lr-0005M7-Rl
- for ath10k@lists.infradead.org; Thu, 21 Dec 2017 16:06:13 +0000
+ id 1eS3Lr-0005NF-Rj
+ for ath10k@lists.infradead.org; Thu, 21 Dec 2017 16:06:16 +0000
 From: Rakesh Pillai <pillair@qti.qualcomm.com>
-Subject: [PATCH v2 1/3] ath10k: Add SNOC bus type for WCN3990 target
-Date: Thu, 21 Dec 2017 21:35:20 +0530
-Message-Id: <1513872322-26636-2-git-send-email-pillair@qti.qualcomm.com>
+Subject: [PATCH v2 2/3] ath10k: Add debug mask for SNOC bus type
+Date: Thu, 21 Dec 2017 21:35:21 +0530
+Message-Id: <1513872322-26636-3-git-send-email-pillair@qti.qualcomm.com>
 In-Reply-To: <1513872322-26636-1-git-send-email-pillair@qti.qualcomm.com>
 References: <1513872322-26636-1-git-send-email-pillair@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,49 +27,27 @@ Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Rak
 
 From: Govind Singh <govinds@qti.qualcomm.com>
 
-WCN3990 is integrated chipset which uses system NOC.
-Add SNOC bus type and related definitions.
+WCN3990 target uses SNOC bus.
+Add debug mask for SNOC bus type.
 
 Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
 Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 1 +
- drivers/net/wireless/ath/ath10k/core.h | 3 +++
- 2 files changed, 4 insertions(+)
+ drivers/net/wireless/ath/ath10k/debug.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 042175a5653f..b6d5bad6f5ec 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1551,6 +1551,7 @@ static void ath10k_core_get_fw_name(struct ath10k *ar, char *fw_name,
- 		break;
- 	case ATH10K_BUS_PCI:
- 	case ATH10K_BUS_AHB:
-+	case ATH10K_BUS_SNOC:
- 		scnprintf(fw_name, fw_name_len, "%s-%d.bin",
- 			  ATH10K_FW_FILE_BASE, fw_api);
- 		break;
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 398cd3c57139..81285ab30a7d 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -92,6 +92,7 @@ enum ath10k_bus {
- 	ATH10K_BUS_AHB,
- 	ATH10K_BUS_SDIO,
- 	ATH10K_BUS_USB,
-+	ATH10K_BUS_SNOC,
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 5e662994c49a..134fb68ae546 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -42,6 +42,7 @@ enum ath10k_debug_mask {
+ 	ATH10K_DBG_SDIO_DUMP	= 0x00020000,
+ 	ATH10K_DBG_USB		= 0x00040000,
+ 	ATH10K_DBG_USB_BULK	= 0x00080000,
++	ATH10K_DBG_SNOC		= 0x00100000,
+ 	ATH10K_DBG_ANY		= 0xffffffff,
  };
  
- static inline const char *ath10k_bus_str(enum ath10k_bus bus)
-@@ -105,6 +106,8 @@ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
- 		return "sdio";
- 	case ATH10K_BUS_USB:
- 		return "usb";
-+	case ATH10K_BUS_SNOC:
-+		return "snoc";
- 	}
- 
- 	return "unknown";
 -- 
 2.11.0
 
