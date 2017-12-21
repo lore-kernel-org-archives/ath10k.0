@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eRwjn-0007Vk-LX
+ id 1eRwjn-0007Yd-LP
  for ath10k@lists.infradead.org; Thu, 21 Dec 2017 09:02:25 +0000
 From: Govind Singh <govinds@qti.qualcomm.com>
-Subject: [PATCH 02/10] ath10k: Update rx descriptor for WCN3990 target
-Date: Thu, 21 Dec 2017 14:30:51 +0530
-Message-Id: <1513846859-23639-3-git-send-email-govinds@qti.qualcomm.com>
+Subject: [PATCH 07/10] ath10k: Add hw param for rx ring size support
+Date: Thu, 21 Dec 2017 14:30:56 +0530
+Message-Id: <1513846859-23639-8-git-send-email-govinds@qti.qualcomm.com>
 In-Reply-To: <1513846859-23639-1-git-send-email-govinds@qti.qualcomm.com>
 References: <1513846859-23639-1-git-send-email-govinds@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,127 +25,178 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-WCN3990 rx descriptor uses different offset of msdu start, msdu end,
-ppdu end, rx pkt end and rx frag info.
-To accommodate different offsets, define respective fields in
-rx descriptor of WCN3990 target.
+WCN3990 uses larger ring size in comparison to existing
+ring size value.
+Add rx ring size hw param for supporting different rx ring
+size across multiple target.
 
 Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/rx_desc.h | 50 +++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c   | 13 +++++++++++++
+ drivers/net/wireless/ath/ath10k/htt.h    |  3 +++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  5 +----
+ drivers/net/wireless/ath/ath10k/hw.h     |  3 +++
+ 4 files changed, 20 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
-index 28da143..210e4b16 100644
---- a/drivers/net/wireless/ath/ath10k/rx_desc.h
-+++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
-@@ -210,6 +210,10 @@ struct rx_frag_info {
- 	u8 ring1_more_count;
- 	u8 ring2_more_count;
- 	u8 ring3_more_count;
-+	u8 ring4_more_count;
-+	u8 ring5_more_count;
-+	u8 ring6_more_count;
-+	u8 ring7_more_count;
- } __packed;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 031fe00..8374b05 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -79,6 +79,7 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 	},
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+@@ -107,6 +108,7 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -134,6 +136,7 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -161,6 +164,7 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -188,6 +192,7 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -218,6 +223,7 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 	},
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+@@ -251,6 +257,7 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -289,6 +296,7 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -326,6 +334,7 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -353,6 +362,7 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -382,6 +392,7 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 	},
+ 	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+@@ -416,6 +427,7 @@
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
+ 	},
+ 	{
+ 		.id = WCN3990_HW_1_0_DEV_VERSION,
+@@ -435,6 +447,7 @@
+ 		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
+ 		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
+ 		.target_64bit = true,
++		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL_DUAL_MAC,
+ 	},
+ };
  
- /*
-@@ -471,10 +475,16 @@ struct rx_msdu_start_qca99x0 {
- 	__le32 info2; /* %RX_MSDU_START_INFO2_ */
- } __packed;
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index ac5d720..3a43a48 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -224,6 +224,9 @@ enum htt_rx_ring_flags {
  
-+struct rx_msdu_start_wcn3990 {
-+	__le32 info2; /* %RX_MSDU_START_INFO2_ */
-+	__le32 info3; /* %RX_MSDU_START_INFO3_ */
-+} __packed;
+ #define HTT_RX_RING_SIZE_MIN 128
+ #define HTT_RX_RING_SIZE_MAX 2048
++#define HTT_RX_RING_SIZE HTT_RX_RING_SIZE_MAX
++#define HTT_RX_RING_FILL_LEVEL (((HTT_RX_RING_SIZE) / 2) - 1)
++#define HTT_RX_RING_FILL_LEVEL_DUAL_MAC (HTT_RX_RING_SIZE - 1)
+ 
+ struct htt_rx_ring_setup_ring32 {
+ 	__le32 fw_idx_shadow_reg_paddr;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 6402189..6fb6751 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -25,9 +25,6 @@
+ 
+ #include <linux/log2.h>
+ 
+-#define HTT_RX_RING_SIZE HTT_RX_RING_SIZE_MAX
+-#define HTT_RX_RING_FILL_LEVEL (((HTT_RX_RING_SIZE) / 2) - 1)
+-
+ /* when under memory pressure rx ring refill may fail and needs a retry */
+ #define HTT_RX_RING_REFILL_RETRY_MS 50
+ 
+@@ -522,7 +519,7 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
+ 	 */
+ 	htt->rx_ring.size = HTT_RX_RING_SIZE;
+ 	htt->rx_ring.size_mask = htt->rx_ring.size - 1;
+-	htt->rx_ring.fill_level = HTT_RX_RING_FILL_LEVEL;
++	htt->rx_ring.fill_level = ar->hw_params.rx_ring_fill_level;
+ 
+ 	if (!is_power_of_2(htt->rx_ring.size)) {
+ 		ath10k_warn(ar, "htt rx ring size is not power of 2\n");
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 5d243f3..84aedaa 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -564,6 +564,9 @@ struct ath10k_hw_params {
+ 
+ 	/* Targets supporting physical addressing capability above 32-bits */
+ 	bool target_64bit;
 +
- struct rx_msdu_start {
- 	struct rx_msdu_start_common common;
- 	union {
- 		struct rx_msdu_start_qca99x0 qca99x0;
-+		struct rx_msdu_start_wcn3990 wcn3990;
- 	} __packed;
- } __packed;
++	/* Target rx ring fill level */
++	u32 rx_ring_fill_level;
+ };
  
-@@ -595,10 +605,23 @@ struct rx_msdu_end_qca99x0 {
- 	__le32 info2;
- } __packed;
- 
-+struct rx_msdu_end_wcn3990 {
-+	__le32 ipv6_crc;
-+	__le32 tcp_seq_no;
-+	__le32 tcp_ack_no;
-+	__le32 info1;
-+	__le32 info2;
-+	__le32 rule_indication_0;
-+	__le32 rule_indication_1;
-+	__le32 rule_indication_2;
-+	__le32 rule_indication_3;
-+} __packed;
-+
- struct rx_msdu_end {
- 	struct rx_msdu_end_common common;
- 	union {
- 		struct rx_msdu_end_qca99x0 qca99x0;
-+		struct rx_msdu_end_wcn3990 wcn3990;
- 	} __packed;
- } __packed;
- 
-@@ -963,6 +986,12 @@ struct rx_pkt_end {
- 	__le32 phy_timestamp_2;
- } __packed;
- 
-+struct rx_pkt_end_wcn3990 {
-+	__le32 info0; /* %RX_PKT_END_INFO0_ */
-+	__le64 phy_timestamp_1;
-+	__le64 phy_timestamp_2;
-+} __packed;
-+
- #define RX_LOCATION_INFO0_RTT_FAC_LEGACY_MASK		0x00003fff
- #define RX_LOCATION_INFO0_RTT_FAC_LEGACY_LSB		0
- #define RX_LOCATION_INFO0_RTT_FAC_VHT_MASK		0x1fff8000
-@@ -998,6 +1027,12 @@ struct rx_location_info {
- 	__le32 rx_location_info1; /* %RX_LOCATION_INFO1_ */
- } __packed;
- 
-+struct rx_location_info_wcn3990 {
-+	__le32 rx_location_info0; /* %RX_LOCATION_INFO0_ */
-+	__le32 rx_location_info1; /* %RX_LOCATION_INFO1_ */
-+	__le32 rx_location_info2; /* %RX_LOCATION_INFO2_ */
-+} __packed;
-+
- enum rx_phy_ppdu_end_info0 {
- 	RX_PHY_PPDU_END_INFO0_ERR_RADAR           = BIT(2),
- 	RX_PHY_PPDU_END_INFO0_ERR_RX_ABORT        = BIT(3),
-@@ -1086,6 +1121,20 @@ struct rx_ppdu_end_qca9984 {
- 	__le16 info1; /* %RX_PPDU_END_INFO1_ */
- } __packed;
- 
-+struct rx_ppdu_end_wcn3990 {
-+	struct rx_pkt_end_wcn3990 rx_pkt_end;
-+	struct rx_location_info_wcn3990 rx_location_info;
-+	struct rx_phy_ppdu_end rx_phy_ppdu_end;
-+	__le32 rx_timing_offset;
-+	__le32 reserved_info_0;
-+	__le32 reserved_info_1;
-+	__le32 rx_antenna_info;
-+	__le32 rx_coex_info;
-+	__le32 rx_mpdu_cnt_info;
-+	__le64 phy_timestamp_tx;
-+	__le32 rx_bb_length;
-+} __packed;
-+
- struct rx_ppdu_end {
- 	struct rx_ppdu_end_common common;
- 	union {
-@@ -1093,6 +1142,7 @@ struct rx_ppdu_end {
- 		struct rx_ppdu_end_qca6174 qca6174;
- 		struct rx_ppdu_end_qca99x0 qca99x0;
- 		struct rx_ppdu_end_qca9984 qca9984;
-+		struct rx_ppdu_end_wcn3990 wcn3990;
- 	} __packed;
- } __packed;
- 
+ struct htt_rx_desc;
 -- 
 1.9.1
 
