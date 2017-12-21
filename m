@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eS1OC-0007LM-2G
- for ath10k@lists.infradead.org; Thu, 21 Dec 2017 14:00:01 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/3] Core changes for wcn3990
-Date: Thu, 21 Dec 2017 13:57:26 +0000
-Message-ID: <87tvwkchfe.fsf@kamboji.qca.qualcomm.com>
-References: <1513854887-10759-1-git-send-email-pillair@qti.qualcomm.com>
-In-Reply-To: <1513854887-10759-1-git-send-email-pillair@qti.qualcomm.com>
- (Rakesh Pillai's message of "Thu, 21 Dec 2017 16:44:44 +0530")
-Content-Language: en-US
+ id 1eS1ue-00055w-3A
+ for ath10k@lists.infradead.org; Thu, 21 Dec 2017 14:33:33 +0000
+From: <bpothuno@qti.qualcomm.com>
+Subject: [PATCH] ath10k: advertising tdls wider bandwidth support for 5GHz
+Date: Thu, 21 Dec 2017 20:00:42 +0530
+Message-ID: <1513866642-709-1-git-send-email-bpothuno@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,43 +20,78 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rakesh Pillai <pillair@qti.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Balaji Pothunoori <bpothuno@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-Rakesh Pillai <pillair@qti.qualcomm.com> writes:
+From: Balaji Pothunoori <bpothuno@qti.qualcomm.com>
 
-> This patchset includes the core changes for wcn3990 to
-> - Add SNOC bus type used for wcn3990 target
-> - Add the debug mask for SNOC bus type
-> - Adding fw feature flag for non-bmi firmware load, since wcn3990
->   firmware is not loaded by bmi
->
-> Govind Singh (2):
->   ath10k: Add SNOC bus type for WCN3990 target
->   ath10k: Add debug mask for SNOC bus type
->
-> Rakesh Pillai (1):
->   ath10k: Add fw feature flag for non-bmi firmware load
+This patch advertise tdls wider bandwidth support for 5GHz
+based on firmware wmi capabilties.
 
-What did you use as the baseline for these patches? While I was trying
-to get these to the pending branch for build testing I noticed they
-don't apply to any of ath.git branches and git can't even find the
-baseline sha1 information:
+This patch is required for chipset QCA9888.
+Firmware Versoin : 10.4-3.5.1-00018.
 
-$ git am -s -3 10127467.mbox
-Applying: ath10k: Add SNOC bus type for WCN3990 target
-Applying: ath10k: Add debug mask for SNOC bus type
-Applying: ath10k: Add fw feature flag for non-bmi firmware load
-fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/core.c).
-error: could not build fake ancestor
-Patch failed at 0003 ath10k: Add fw feature flag for non-bmi firmware load
-The copy of the patch that failed is found in: .git/rebase-apply/patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
+Signed-off-by: Balaji Pothunoori <bpothuno@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
+ drivers/net/wireless/ath/ath10k/wmi.h | 5 +++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 0298cce..9df455f 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -8271,7 +8271,8 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	if (test_bit(WMI_SERVICE_TDLS, ar->wmi.svc_map) ||
+ 	    test_bit(WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY, ar->wmi.svc_map)) {
+ 		ar->hw->wiphy->flags |= WIPHY_FLAG_SUPPORTS_TDLS;
+-		ieee80211_hw_set(ar->hw, TDLS_WIDER_BW);
++		if (test_bit(WMI_SERVICE_TDLS_WIDER_BANDWIDTH, ar->wmi.svc_map))
++			ieee80211_hw_set(ar->hw, TDLS_WIDER_BW);
+ 	}
+ 
+ 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index f6d60dc..0fe87ab 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -196,6 +196,7 @@ enum wmi_service {
+ 	WMI_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE,
+ 	WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
+ 	WMI_SERVICE_MGMT_TX_WMI,
++	WMI_SERVICE_TDLS_WIDER_BANDWIDTH,
+ 
+ 	/* keep last */
+ 	WMI_SERVICE_MAX,
+@@ -337,6 +338,7 @@ enum wmi_10_4_service {
+ 	WMI_10_4_SERVICE_TDLS_UAPSD_SLEEP_STA,
+ 	WMI_10_4_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE,
+ 	WMI_10_4_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
++	WMI_10_4_SERVICE_TDLS_WIDER_BANDWIDTH,
+ };
+ 
+ static inline char *wmi_service_name(int service_id)
+@@ -445,6 +447,7 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_SMART_LOGGING_SUPPORT);
+ 	SVCSTR(WMI_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE);
+ 	SVCSTR(WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY);
++	SVCSTR(WMI_SERVICE_TDLS_WIDER_BANDWIDTH);
+ 	default:
+ 		return NULL;
+ 	}
+@@ -741,6 +744,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE, len);
+ 	SVCMAP(WMI_10_4_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
+ 	       WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY, len);
++	SVCMAP(WMI_10_4_SERVICE_TDLS_WIDER_BANDWIDTH,
++	       WMI_SERVICE_TDLS_WIDER_BANDWIDTH, len);
+ }
+ 
+ #undef SVCMAP
 -- 
-Kalle Valo
+2.7.4
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
