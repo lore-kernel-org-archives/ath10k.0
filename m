@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eS1ue-00055w-3A
- for ath10k@lists.infradead.org; Thu, 21 Dec 2017 14:33:33 +0000
-From: <bpothuno@qti.qualcomm.com>
-Subject: [PATCH] ath10k: advertising tdls wider bandwidth support for 5GHz
-Date: Thu, 21 Dec 2017 20:00:42 +0530
-Message-ID: <1513866642-709-1-git-send-email-bpothuno@qti.qualcomm.com>
-MIME-Version: 1.0
+ id 1eS3Lr-0005M7-Rl
+ for ath10k@lists.infradead.org; Thu, 21 Dec 2017 16:06:13 +0000
+From: Rakesh Pillai <pillair@qti.qualcomm.com>
+Subject: [PATCH v2 1/3] ath10k: Add SNOC bus type for WCN3990 target
+Date: Thu, 21 Dec 2017 21:35:20 +0530
+Message-Id: <1513872322-26636-2-git-send-email-pillair@qti.qualcomm.com>
+In-Reply-To: <1513872322-26636-1-git-send-email-pillair@qti.qualcomm.com>
+References: <1513872322-26636-1-git-send-email-pillair@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,80 +17,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Balaji Pothunoori <bpothuno@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
 
-From: Balaji Pothunoori <bpothuno@qti.qualcomm.com>
+From: Govind Singh <govinds@qti.qualcomm.com>
 
-This patch advertise tdls wider bandwidth support for 5GHz
-based on firmware wmi capabilties.
+WCN3990 is integrated chipset which uses system NOC.
+Add SNOC bus type and related definitions.
 
-This patch is required for chipset QCA9888.
-Firmware Versoin : 10.4-3.5.1-00018.
-
-Signed-off-by: Balaji Pothunoori <bpothuno@qti.qualcomm.com>
+Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
+Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
- drivers/net/wireless/ath/ath10k/wmi.h | 5 +++++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.c | 1 +
+ drivers/net/wireless/ath/ath10k/core.h | 3 +++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0298cce..9df455f 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8271,7 +8271,8 @@ int ath10k_mac_register(struct ath10k *ar)
- 	if (test_bit(WMI_SERVICE_TDLS, ar->wmi.svc_map) ||
- 	    test_bit(WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY, ar->wmi.svc_map)) {
- 		ar->hw->wiphy->flags |= WIPHY_FLAG_SUPPORTS_TDLS;
--		ieee80211_hw_set(ar->hw, TDLS_WIDER_BW);
-+		if (test_bit(WMI_SERVICE_TDLS_WIDER_BANDWIDTH, ar->wmi.svc_map))
-+			ieee80211_hw_set(ar->hw, TDLS_WIDER_BW);
- 	}
- 
- 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index f6d60dc..0fe87ab 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -196,6 +196,7 @@ enum wmi_service {
- 	WMI_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE,
- 	WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
- 	WMI_SERVICE_MGMT_TX_WMI,
-+	WMI_SERVICE_TDLS_WIDER_BANDWIDTH,
- 
- 	/* keep last */
- 	WMI_SERVICE_MAX,
-@@ -337,6 +338,7 @@ enum wmi_10_4_service {
- 	WMI_10_4_SERVICE_TDLS_UAPSD_SLEEP_STA,
- 	WMI_10_4_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE,
- 	WMI_10_4_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
-+	WMI_10_4_SERVICE_TDLS_WIDER_BANDWIDTH,
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 042175a5653f..b6d5bad6f5ec 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1551,6 +1551,7 @@ static void ath10k_core_get_fw_name(struct ath10k *ar, char *fw_name,
+ 		break;
+ 	case ATH10K_BUS_PCI:
+ 	case ATH10K_BUS_AHB:
++	case ATH10K_BUS_SNOC:
+ 		scnprintf(fw_name, fw_name_len, "%s-%d.bin",
+ 			  ATH10K_FW_FILE_BASE, fw_api);
+ 		break;
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 398cd3c57139..81285ab30a7d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -92,6 +92,7 @@ enum ath10k_bus {
+ 	ATH10K_BUS_AHB,
+ 	ATH10K_BUS_SDIO,
+ 	ATH10K_BUS_USB,
++	ATH10K_BUS_SNOC,
  };
  
- static inline char *wmi_service_name(int service_id)
-@@ -445,6 +447,7 @@ static inline char *wmi_service_name(int service_id)
- 	SVCSTR(WMI_SERVICE_SMART_LOGGING_SUPPORT);
- 	SVCSTR(WMI_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE);
- 	SVCSTR(WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY);
-+	SVCSTR(WMI_SERVICE_TDLS_WIDER_BANDWIDTH);
- 	default:
- 		return NULL;
+ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+@@ -105,6 +106,8 @@ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
+ 		return "sdio";
+ 	case ATH10K_BUS_USB:
+ 		return "usb";
++	case ATH10K_BUS_SNOC:
++		return "snoc";
  	}
-@@ -741,6 +744,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
- 	       WMI_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE, len);
- 	SVCMAP(WMI_10_4_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
- 	       WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY, len);
-+	SVCMAP(WMI_10_4_SERVICE_TDLS_WIDER_BANDWIDTH,
-+	       WMI_SERVICE_TDLS_WIDER_BANDWIDTH, len);
- }
  
- #undef SVCMAP
+ 	return "unknown";
 -- 
-2.7.4
+2.11.0
 
 
 _______________________________________________
