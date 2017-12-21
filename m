@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eRwjn-0007Y7-LW
- for ath10k@lists.infradead.org; Thu, 21 Dec 2017 09:02:18 +0000
+ id 1eRwjn-0007Vk-LX
+ for ath10k@lists.infradead.org; Thu, 21 Dec 2017 09:02:25 +0000
 From: Govind Singh <govinds@qti.qualcomm.com>
-Subject: [PATCH 01/10] ath10k: Add hw param for 64-bit address support
-Date: Thu, 21 Dec 2017 14:30:50 +0530
-Message-Id: <1513846859-23639-2-git-send-email-govinds@qti.qualcomm.com>
+Subject: [PATCH 02/10] ath10k: Update rx descriptor for WCN3990 target
+Date: Thu, 21 Dec 2017 14:30:51 +0530
+Message-Id: <1513846859-23639-3-git-send-email-govinds@qti.qualcomm.com>
 In-Reply-To: <1513846859-23639-1-git-send-email-govinds@qti.qualcomm.com>
 References: <1513846859-23639-1-git-send-email-govinds@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -23,143 +23,129 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
+Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-From: Rakesh Pillai <pillair@qti.qualcomm.com>
+WCN3990 rx descriptor uses different offset of msdu start, msdu end,
+ppdu end, rx pkt end and rx frag info.
+To accommodate different offsets, define respective fields in
+rx descriptor of WCN3990 target.
 
-WCN3990 target supports 37-bit addressing mode. In order
-to accommodate extended address support, add hw param to
-indicate if the target supports addressing above 32-bits.
-
-Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
 Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 13 +++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
- 2 files changed, 16 insertions(+)
+ drivers/net/wireless/ath/ath10k/rx_desc.h | 50 +++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index ad61e64..031fe00 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -78,6 +78,7 @@
- 		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
-+		.target_64bit = false,
- 	},
- 	{
- 		.id = QCA9887_HW_1_0_VERSION,
-@@ -105,6 +106,7 @@
- 		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
-+		.target_64bit = false,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -131,6 +133,7 @@
- 		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
-+		.target_64bit = false,
- 	},
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
-@@ -157,6 +160,7 @@
- 		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
-+		.target_64bit = false,
- 	},
- 	{
- 		.id = QCA6174_HW_3_0_VERSION,
-@@ -183,6 +187,7 @@
- 		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
-+		.target_64bit = false,
- 	},
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
-@@ -212,6 +217,7 @@
- 		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
-+		.target_64bit = false,
- 	},
- 	{
- 		.id = QCA99X0_HW_2_0_DEV_VERSION,
-@@ -244,6 +250,7 @@
- 		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
-+		.target_64bit = false,
- 	},
- 	{
- 		.id = QCA9984_HW_1_0_DEV_VERSION,
-@@ -281,6 +288,7 @@
- 		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
-+		.target_64bit = false,
- 	},
- 	{
- 		.id = QCA9888_HW_2_0_DEV_VERSION,
-@@ -317,6 +325,7 @@
- 		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
-+		.target_64bit = false,
- 	},
- 	{
- 		.id = QCA9377_HW_1_0_DEV_VERSION,
-@@ -343,6 +352,7 @@
- 		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
-+		.target_64bit = false,
- 	},
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
-@@ -371,6 +381,7 @@
- 		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
-+		.target_64bit = false,
- 	},
- 	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
-@@ -404,6 +415,7 @@
- 		.num_peers = TARGET_TLV_NUM_PEERS,
- 		.ast_skid_limit = 0x10,
- 		.num_wds_entries = 0x20,
-+		.target_64bit = false,
- 	},
- 	{
- 		.id = WCN3990_HW_1_0_DEV_VERSION,
-@@ -422,6 +434,7 @@
- 		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
- 		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
- 		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
-+		.target_64bit = true,
- 	},
- };
+diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
+index 28da143..210e4b16 100644
+--- a/drivers/net/wireless/ath/ath10k/rx_desc.h
++++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
+@@ -210,6 +210,10 @@ struct rx_frag_info {
+ 	u8 ring1_more_count;
+ 	u8 ring2_more_count;
+ 	u8 ring3_more_count;
++	u8 ring4_more_count;
++	u8 ring5_more_count;
++	u8 ring6_more_count;
++	u8 ring7_more_count;
+ } __packed;
  
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 90ad39b..5d243f3 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -561,6 +561,9 @@ struct ath10k_hw_params {
- 	u32 num_peers;
- 	u32 ast_skid_limit;
- 	u32 num_wds_entries;
+ /*
+@@ -471,10 +475,16 @@ struct rx_msdu_start_qca99x0 {
+ 	__le32 info2; /* %RX_MSDU_START_INFO2_ */
+ } __packed;
+ 
++struct rx_msdu_start_wcn3990 {
++	__le32 info2; /* %RX_MSDU_START_INFO2_ */
++	__le32 info3; /* %RX_MSDU_START_INFO3_ */
++} __packed;
 +
-+	/* Targets supporting physical addressing capability above 32-bits */
-+	bool target_64bit;
- };
+ struct rx_msdu_start {
+ 	struct rx_msdu_start_common common;
+ 	union {
+ 		struct rx_msdu_start_qca99x0 qca99x0;
++		struct rx_msdu_start_wcn3990 wcn3990;
+ 	} __packed;
+ } __packed;
  
- struct htt_rx_desc;
+@@ -595,10 +605,23 @@ struct rx_msdu_end_qca99x0 {
+ 	__le32 info2;
+ } __packed;
+ 
++struct rx_msdu_end_wcn3990 {
++	__le32 ipv6_crc;
++	__le32 tcp_seq_no;
++	__le32 tcp_ack_no;
++	__le32 info1;
++	__le32 info2;
++	__le32 rule_indication_0;
++	__le32 rule_indication_1;
++	__le32 rule_indication_2;
++	__le32 rule_indication_3;
++} __packed;
++
+ struct rx_msdu_end {
+ 	struct rx_msdu_end_common common;
+ 	union {
+ 		struct rx_msdu_end_qca99x0 qca99x0;
++		struct rx_msdu_end_wcn3990 wcn3990;
+ 	} __packed;
+ } __packed;
+ 
+@@ -963,6 +986,12 @@ struct rx_pkt_end {
+ 	__le32 phy_timestamp_2;
+ } __packed;
+ 
++struct rx_pkt_end_wcn3990 {
++	__le32 info0; /* %RX_PKT_END_INFO0_ */
++	__le64 phy_timestamp_1;
++	__le64 phy_timestamp_2;
++} __packed;
++
+ #define RX_LOCATION_INFO0_RTT_FAC_LEGACY_MASK		0x00003fff
+ #define RX_LOCATION_INFO0_RTT_FAC_LEGACY_LSB		0
+ #define RX_LOCATION_INFO0_RTT_FAC_VHT_MASK		0x1fff8000
+@@ -998,6 +1027,12 @@ struct rx_location_info {
+ 	__le32 rx_location_info1; /* %RX_LOCATION_INFO1_ */
+ } __packed;
+ 
++struct rx_location_info_wcn3990 {
++	__le32 rx_location_info0; /* %RX_LOCATION_INFO0_ */
++	__le32 rx_location_info1; /* %RX_LOCATION_INFO1_ */
++	__le32 rx_location_info2; /* %RX_LOCATION_INFO2_ */
++} __packed;
++
+ enum rx_phy_ppdu_end_info0 {
+ 	RX_PHY_PPDU_END_INFO0_ERR_RADAR           = BIT(2),
+ 	RX_PHY_PPDU_END_INFO0_ERR_RX_ABORT        = BIT(3),
+@@ -1086,6 +1121,20 @@ struct rx_ppdu_end_qca9984 {
+ 	__le16 info1; /* %RX_PPDU_END_INFO1_ */
+ } __packed;
+ 
++struct rx_ppdu_end_wcn3990 {
++	struct rx_pkt_end_wcn3990 rx_pkt_end;
++	struct rx_location_info_wcn3990 rx_location_info;
++	struct rx_phy_ppdu_end rx_phy_ppdu_end;
++	__le32 rx_timing_offset;
++	__le32 reserved_info_0;
++	__le32 reserved_info_1;
++	__le32 rx_antenna_info;
++	__le32 rx_coex_info;
++	__le32 rx_mpdu_cnt_info;
++	__le64 phy_timestamp_tx;
++	__le32 rx_bb_length;
++} __packed;
++
+ struct rx_ppdu_end {
+ 	struct rx_ppdu_end_common common;
+ 	union {
+@@ -1093,6 +1142,7 @@ struct rx_ppdu_end {
+ 		struct rx_ppdu_end_qca6174 qca6174;
+ 		struct rx_ppdu_end_qca99x0 qca99x0;
+ 		struct rx_ppdu_end_qca9984 qca9984;
++		struct rx_ppdu_end_wcn3990 wcn3990;
+ 	} __packed;
+ } __packed;
+ 
 -- 
 1.9.1
 
