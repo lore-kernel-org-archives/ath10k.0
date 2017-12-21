@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eRwk7-0007kV-Pw
- for ath10k@lists.infradead.org; Thu, 21 Dec 2017 09:03:28 +0000
+ id 1eRwkD-0007Vk-ML
+ for ath10k@lists.infradead.org; Thu, 21 Dec 2017 09:03:29 +0000
 From: Govind Singh <govinds@qti.qualcomm.com>
-Subject: [PATCH 04/10] ath10k: Add support for 64 bit htt rx ring cfg
-Date: Thu, 21 Dec 2017 14:30:53 +0530
-Message-Id: <1513846859-23639-5-git-send-email-govinds@qti.qualcomm.com>
+Subject: [PATCH 09/10] ath10k: Use dma_addr_t for ce buffers to support 64bit
+ target
+Date: Thu, 21 Dec 2017 14:30:58 +0530
+Message-Id: <1513846859-23639-10-git-send-email-govinds@qti.qualcomm.com>
 In-Reply-To: <1513846859-23639-1-git-send-email-govinds@qti.qualcomm.com>
 References: <1513846859-23639-1-git-send-email-govinds@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,318 +26,153 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-WCN3900 target uses 64bit rx_ring_base_paddr and
-fw_idx_shadow_reg_paddr fields in HTT rx ring cfg message.
-These address points to the memory region where remote
-ring empty buffers are allocated.
-In order to add 64 bit htt rx ring cfg, define separate
-64 bit htt rx ring cfg message and attach it in runtime
-based on target_64bit hw param flag.
+CE send and receive API's are using u32 ring address, which
+truncates the address for target with 64bit addressing range.
+Use dma_addr_t for ce buffers to support target with extended
+addressing range.
 
 Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.c    |   4 +-
- drivers/net/wireless/ath/ath10k/htt.h    |  42 +++++++--
- drivers/net/wireless/ath/ath10k/htt_tx.c | 145 +++++++++++++++++++++++++++----
- 3 files changed, 168 insertions(+), 23 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.c  | 14 ++++++++------
+ drivers/net/wireless/ath/ath10k/ce.h  | 14 ++++++++------
+ drivers/net/wireless/ath/ath10k/pci.c |  4 ++--
+ 3 files changed, 18 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index cd160b1..7176b0a 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -207,6 +207,8 @@ int ath10k_htt_init(struct ath10k *ar)
- 		WARN_ON(1);
- 		return -EINVAL;
- 	}
-+	ath10k_htt_set_tx_ops(htt);
-+
- 	return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index a8afd69..9aa214b 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -329,7 +329,7 @@ static inline void ath10k_ce_engine_int_status_clear(struct ath10k *ar,
+  */
+ int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
+ 			  void *per_transfer_context,
+-			  u32 buffer,
++			  dma_addr_t buffer,
+ 			  unsigned int nbytes,
+ 			  unsigned int transfer_id,
+ 			  unsigned int flags)
+@@ -413,7 +413,7 @@ void __ath10k_ce_send_revert(struct ath10k_ce_pipe *pipe)
+ 
+ int ath10k_ce_send(struct ath10k_ce_pipe *ce_state,
+ 		   void *per_transfer_context,
+-		   u32 buffer,
++		    dma_addr_t buffer,
+ 		   unsigned int nbytes,
+ 		   unsigned int transfer_id,
+ 		   unsigned int flags)
+@@ -459,7 +459,8 @@ int __ath10k_ce_rx_num_free_bufs(struct ath10k_ce_pipe *pipe)
+ 	return CE_RING_DELTA(nentries_mask, write_index, sw_index - 1);
  }
  
-@@ -258,7 +260,7 @@ int ath10k_htt_setup(struct ath10k_htt *htt)
- 	if (status)
- 		return status;
- 
--	status = ath10k_htt_send_rx_ring_cfg_ll(htt);
-+	status = htt->tx_ops->htt_send_rx_ring_cfg(htt);
- 	if (status) {
- 		ath10k_warn(ar, "failed to setup rx ring: %d\n",
- 			    status);
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index f3d5883..6aaf1d4 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -201,7 +201,7 @@ enum htt_rx_ring_flags {
- #define HTT_RX_RING_SIZE_MIN 128
- #define HTT_RX_RING_SIZE_MAX 2048
- 
--struct htt_rx_ring_setup_ring {
-+struct htt_rx_ring_setup_ring32 {
- 	__le32 fw_idx_shadow_reg_paddr;
- 	__le32 rx_ring_base_paddr;
- 	__le16 rx_ring_len; /* in 4-byte words */
-@@ -222,14 +222,40 @@ struct htt_rx_ring_setup_ring {
- 	__le16 frag_info_offset;
- } __packed;
- 
-+struct htt_rx_ring_setup_ring64 {
-+	__le64 fw_idx_shadow_reg_paddr;
-+	__le64 rx_ring_base_paddr;
-+	__le16 rx_ring_len; /* in 4-byte words */
-+	__le16 rx_ring_bufsize; /* rx skb size - in bytes */
-+	__le16 flags; /* %HTT_RX_RING_FLAGS_ */
-+	__le16 fw_idx_init_val;
-+
-+	/* the following offsets are in 4-byte units */
-+	__le16 mac80211_hdr_offset;
-+	__le16 msdu_payload_offset;
-+	__le16 ppdu_start_offset;
-+	__le16 ppdu_end_offset;
-+	__le16 mpdu_start_offset;
-+	__le16 mpdu_end_offset;
-+	__le16 msdu_start_offset;
-+	__le16 msdu_end_offset;
-+	__le16 rx_attention_offset;
-+	__le16 frag_info_offset;
-+} __packed;
-+
- struct htt_rx_ring_setup_hdr {
- 	u8 num_rings; /* supported values: 1, 2 */
- 	__le16 rsvd0;
- } __packed;
- 
--struct htt_rx_ring_setup {
-+struct htt_rx_ring_setup_32 {
- 	struct htt_rx_ring_setup_hdr hdr;
--	struct htt_rx_ring_setup_ring rings[0];
-+	struct htt_rx_ring_setup_ring32 rings[0];
-+} __packed;
-+
-+struct htt_rx_ring_setup_64 {
-+	struct htt_rx_ring_setup_hdr hdr;
-+	struct htt_rx_ring_setup_ring64 rings[0];
- } __packed;
- 
- /*
-@@ -1524,7 +1550,8 @@ struct htt_cmd {
- 		struct htt_ver_req ver_req;
- 		struct htt_mgmt_tx_desc mgmt_tx;
- 		struct htt_data_tx_desc data_tx;
--		struct htt_rx_ring_setup rx_setup;
-+		struct htt_rx_ring_setup_32 rx_setup_32;
-+		struct htt_rx_ring_setup_64 rx_setup_64;
- 		struct htt_stats_req stats_req;
- 		struct htt_oob_sync_req oob_sync_req;
- 		struct htt_aggr_conf aggr_conf;
-@@ -1734,6 +1761,11 @@ struct ath10k_htt {
- 	} tx_q_state;
- 
- 	bool tx_mem_allocated;
-+	const struct ath10k_htt_tx_ops *tx_ops;
-+};
-+
-+struct ath10k_htt_tx_ops {
-+	int (*htt_send_rx_ring_cfg)(struct ath10k_htt *htt);
- };
- 
- #define RX_HTT_HDR_STATUS_LEN 64
-@@ -1845,5 +1877,5 @@ int ath10k_htt_tx(struct ath10k_htt *htt,
- void ath10k_htt_rx_pktlog_completion_handler(struct ath10k *ar,
- 					     struct sk_buff *skb);
- int ath10k_htt_txrx_compl_task(struct ath10k *ar, int budget);
--
-+void ath10k_htt_set_tx_ops(struct ath10k_htt *htt);
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 685faac..fad1664 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -607,12 +607,50 @@ int ath10k_htt_send_frag_desc_bank_cfg(struct ath10k_htt *htt)
- 	return 0;
- }
- 
--int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
-+static void ath10k_htt_fill_rx_desc_offset_32(void *rx_ring)
-+{
-+	struct htt_rx_ring_setup_ring32 *ring =
-+			(struct htt_rx_ring_setup_ring32 *)rx_ring;
-+
-+#define desc_offset(x) (offsetof(struct htt_rx_desc, x) / 4)
-+	ring->mac80211_hdr_offset = __cpu_to_le16(desc_offset(rx_hdr_status));
-+	ring->msdu_payload_offset = __cpu_to_le16(desc_offset(msdu_payload));
-+	ring->ppdu_start_offset = __cpu_to_le16(desc_offset(ppdu_start));
-+	ring->ppdu_end_offset = __cpu_to_le16(desc_offset(ppdu_end));
-+	ring->mpdu_start_offset = __cpu_to_le16(desc_offset(mpdu_start));
-+	ring->mpdu_end_offset = __cpu_to_le16(desc_offset(mpdu_end));
-+	ring->msdu_start_offset = __cpu_to_le16(desc_offset(msdu_start));
-+	ring->msdu_end_offset = __cpu_to_le16(desc_offset(msdu_end));
-+	ring->rx_attention_offset = __cpu_to_le16(desc_offset(attention));
-+	ring->frag_info_offset = __cpu_to_le16(desc_offset(frag_info));
-+#undef desc_offset
-+}
-+
-+static void ath10k_htt_fill_rx_desc_offset_64(void *rx_ring)
-+{
-+	struct htt_rx_ring_setup_ring64 *ring =
-+			(struct htt_rx_ring_setup_ring64 *)rx_ring;
-+
-+#define desc_offset(x) (offsetof(struct htt_rx_desc, x) / 4)
-+	ring->mac80211_hdr_offset = __cpu_to_le16(desc_offset(rx_hdr_status));
-+	ring->msdu_payload_offset = __cpu_to_le16(desc_offset(msdu_payload));
-+	ring->ppdu_start_offset = __cpu_to_le16(desc_offset(ppdu_start));
-+	ring->ppdu_end_offset = __cpu_to_le16(desc_offset(ppdu_end));
-+	ring->mpdu_start_offset = __cpu_to_le16(desc_offset(mpdu_start));
-+	ring->mpdu_end_offset = __cpu_to_le16(desc_offset(mpdu_end));
-+	ring->msdu_start_offset = __cpu_to_le16(desc_offset(msdu_start));
-+	ring->msdu_end_offset = __cpu_to_le16(desc_offset(msdu_end));
-+	ring->rx_attention_offset = __cpu_to_le16(desc_offset(attention));
-+	ring->frag_info_offset = __cpu_to_le16(desc_offset(frag_info));
-+#undef desc_offset
-+}
-+
-+static int ath10k_htt_send_rx_ring_cfg_32(struct ath10k_htt *htt)
+-int __ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr)
++int __ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx,
++			    dma_addr_t paddr)
  {
- 	struct ath10k *ar = htt->ar;
- 	struct sk_buff *skb;
- 	struct htt_cmd *cmd;
--	struct htt_rx_ring_setup_ring *ring;
-+	struct htt_rx_ring_setup_ring32 *ring;
- 	const int num_rx_ring = 1;
- 	u16 flags;
- 	u32 fw_idx;
-@@ -626,7 +664,7 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
- 	BUILD_BUG_ON(!IS_ALIGNED(HTT_RX_BUF_SIZE, 4));
- 	BUILD_BUG_ON((HTT_RX_BUF_SIZE & HTT_MAX_CACHE_LINE_SIZE_MASK) != 0);
- 
--	len = sizeof(cmd->hdr) + sizeof(cmd->rx_setup.hdr)
-+	len = sizeof(cmd->hdr) + sizeof(cmd->rx_setup_32.hdr)
- 	    + (sizeof(*ring) * num_rx_ring);
- 	skb = ath10k_htc_alloc_skb(ar, len);
- 	if (!skb)
-@@ -635,10 +673,10 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
- 	skb_put(skb, len);
- 
- 	cmd = (struct htt_cmd *)skb->data;
--	ring = &cmd->rx_setup.rings[0];
-+	ring = &cmd->rx_setup_32.rings[0];
- 
- 	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_RX_RING_CFG;
--	cmd->rx_setup.hdr.num_rings = 1;
-+	cmd->rx_setup_32.hdr.num_rings = 1;
- 
- 	/* FIXME: do we need all of this? */
- 	flags = 0;
-@@ -669,21 +707,76 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
- 	ring->flags = __cpu_to_le16(flags);
- 	ring->fw_idx_init_val = __cpu_to_le16(fw_idx);
- 
--#define desc_offset(x) (offsetof(struct htt_rx_desc, x) / 4)
-+	ath10k_htt_fill_rx_desc_offset_32(ring);
-+	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
-+	if (ret) {
-+		dev_kfree_skb_any(skb);
-+		return ret;
-+	}
- 
--	ring->mac80211_hdr_offset = __cpu_to_le16(desc_offset(rx_hdr_status));
--	ring->msdu_payload_offset = __cpu_to_le16(desc_offset(msdu_payload));
--	ring->ppdu_start_offset = __cpu_to_le16(desc_offset(ppdu_start));
--	ring->ppdu_end_offset = __cpu_to_le16(desc_offset(ppdu_end));
--	ring->mpdu_start_offset = __cpu_to_le16(desc_offset(mpdu_start));
--	ring->mpdu_end_offset = __cpu_to_le16(desc_offset(mpdu_end));
--	ring->msdu_start_offset = __cpu_to_le16(desc_offset(msdu_start));
--	ring->msdu_end_offset = __cpu_to_le16(desc_offset(msdu_end));
--	ring->rx_attention_offset = __cpu_to_le16(desc_offset(attention));
--	ring->frag_info_offset = __cpu_to_le16(desc_offset(frag_info));
-+	return 0;
-+}
- 
--#undef desc_offset
-+static int ath10k_htt_send_rx_ring_cfg_64(struct ath10k_htt *htt)
-+{
-+	struct ath10k *ar = htt->ar;
-+	struct sk_buff *skb;
-+	struct htt_cmd *cmd;
-+	struct htt_rx_ring_setup_ring64 *ring;
-+	const int num_rx_ring = 1;
-+	u16 flags;
-+	u32 fw_idx;
-+	int len;
-+	int ret;
-+
-+	/* HW expects the buffer to be an integral number of 4-byte
-+	 * "words"
-+	 */
-+	BUILD_BUG_ON(!IS_ALIGNED(HTT_RX_BUF_SIZE, 4));
-+	BUILD_BUG_ON((HTT_RX_BUF_SIZE & HTT_MAX_CACHE_LINE_SIZE_MASK) != 0);
-+
-+	len = sizeof(cmd->hdr) + sizeof(cmd->rx_setup_64.hdr)
-+	    + (sizeof(*ring) * num_rx_ring);
-+	skb = ath10k_htc_alloc_skb(ar, len);
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	skb_put(skb, len);
-+
-+	cmd = (struct htt_cmd *)skb->data;
-+	ring = &cmd->rx_setup_64.rings[0];
-+
-+	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_RX_RING_CFG;
-+	cmd->rx_setup_64.hdr.num_rings = 1;
-+
-+	flags = 0;
-+	flags |= HTT_RX_RING_FLAGS_MAC80211_HDR;
-+	flags |= HTT_RX_RING_FLAGS_MSDU_PAYLOAD;
-+	flags |= HTT_RX_RING_FLAGS_PPDU_START;
-+	flags |= HTT_RX_RING_FLAGS_PPDU_END;
-+	flags |= HTT_RX_RING_FLAGS_MPDU_START;
-+	flags |= HTT_RX_RING_FLAGS_MPDU_END;
-+	flags |= HTT_RX_RING_FLAGS_MSDU_START;
-+	flags |= HTT_RX_RING_FLAGS_MSDU_END;
-+	flags |= HTT_RX_RING_FLAGS_RX_ATTENTION;
-+	flags |= HTT_RX_RING_FLAGS_FRAG_INFO;
-+	flags |= HTT_RX_RING_FLAGS_UNICAST_RX;
-+	flags |= HTT_RX_RING_FLAGS_MULTICAST_RX;
-+	flags |= HTT_RX_RING_FLAGS_CTRL_RX;
-+	flags |= HTT_RX_RING_FLAGS_MGMT_RX;
-+	flags |= HTT_RX_RING_FLAGS_NULL_RX;
-+	flags |= HTT_RX_RING_FLAGS_PHY_DATA_RX;
-+
-+	fw_idx = __le32_to_cpu(*htt->rx_ring.alloc_idx.vaddr);
- 
-+	ring->fw_idx_shadow_reg_paddr = __cpu_to_le64(htt->rx_ring.alloc_idx.paddr);
-+	ring->rx_ring_base_paddr = __cpu_to_le64(htt->rx_ring.base_paddr);
-+	ring->rx_ring_len = __cpu_to_le16(htt->rx_ring.size);
-+	ring->rx_ring_bufsize = __cpu_to_le16(HTT_RX_BUF_SIZE);
-+	ring->flags = __cpu_to_le16(flags);
-+	ring->fw_idx_init_val = __cpu_to_le16(fw_idx);
-+
-+	ath10k_htt_fill_rx_desc_offset_64(ring);
- 	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
- 	if (ret) {
- 		dev_kfree_skb_any(skb);
-@@ -1093,3 +1186,21 @@ int ath10k_htt_tx(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
- err:
- 	return res;
+ 	struct ath10k *ar = pipe->ar;
+ 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+@@ -508,7 +509,8 @@ void ath10k_ce_rx_update_write_idx(struct ath10k_ce_pipe *pipe, u32 nentries)
+ 	dest_ring->write_index = write_index;
  }
-+
-+static const struct ath10k_htt_tx_ops htt_tx_ops_32 = {
-+	.htt_send_rx_ring_cfg = ath10k_htt_send_rx_ring_cfg_32,
-+};
-+
-+static const struct ath10k_htt_tx_ops htt_tx_ops_64 = {
-+	.htt_send_rx_ring_cfg = ath10k_htt_send_rx_ring_cfg_64,
-+};
-+
-+void ath10k_htt_set_tx_ops(struct ath10k_htt *htt)
-+{
-+	struct ath10k *ar = htt->ar;
-+
-+	if (ar->hw_params.target_64bit)
-+		htt->tx_ops = &htt_tx_ops_64;
-+	else
-+		htt->tx_ops = &htt_tx_ops_32;
-+}
+ 
+-int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr)
++int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx,
++			  dma_addr_t paddr)
+ {
+ 	struct ath10k *ar = pipe->ar;
+ 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+@@ -593,7 +595,7 @@ int ath10k_ce_completed_recv_next(struct ath10k_ce_pipe *ce_state,
+ 
+ int ath10k_ce_revoke_recv_next(struct ath10k_ce_pipe *ce_state,
+ 			       void **per_transfer_contextp,
+-			       u32 *bufferp)
++			       dma_addr_t *bufferp)
+ {
+ 	struct ath10k_ce_ring *dest_ring;
+ 	unsigned int nentries_mask;
+@@ -701,7 +703,7 @@ int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
+ /* NB: Modeled after ath10k_ce_completed_send_next */
+ int ath10k_ce_cancel_send_next(struct ath10k_ce_pipe *ce_state,
+ 			       void **per_transfer_contextp,
+-			       u32 *bufferp,
++			       dma_addr_t *bufferp,
+ 			       unsigned int *nbytesp,
+ 			       unsigned int *transfer_idp)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index bdec794..f36ad51 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -160,7 +160,7 @@ struct ath10k_ce {
+  */
+ int ath10k_ce_send(struct ath10k_ce_pipe *ce_state,
+ 		   void *per_transfer_send_context,
+-		   u32 buffer,
++		   dma_addr_t buffer,
+ 		   unsigned int nbytes,
+ 		   /* 14 bits */
+ 		   unsigned int transfer_id,
+@@ -168,7 +168,7 @@ int ath10k_ce_send(struct ath10k_ce_pipe *ce_state,
+ 
+ int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
+ 			  void *per_transfer_context,
+-			  u32 buffer,
++			  dma_addr_t buffer,
+ 			  unsigned int nbytes,
+ 			  unsigned int transfer_id,
+ 			  unsigned int flags);
+@@ -180,8 +180,10 @@ int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
+ /*==================Recv=======================*/
+ 
+ int __ath10k_ce_rx_num_free_bufs(struct ath10k_ce_pipe *pipe);
+-int __ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr);
+-int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr);
++int __ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx,
++			    dma_addr_t paddr);
++int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx,
++			  dma_addr_t paddr);
+ void ath10k_ce_rx_update_write_idx(struct ath10k_ce_pipe *pipe, u32 nentries);
+ 
+ /* recv flags */
+@@ -222,7 +224,7 @@ int ath10k_ce_alloc_pipe(struct ath10k *ar, int ce_id,
+  */
+ int ath10k_ce_revoke_recv_next(struct ath10k_ce_pipe *ce_state,
+ 			       void **per_transfer_contextp,
+-			       u32 *bufferp);
++			       dma_addr_t *bufferp);
+ 
+ int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
+ 					 void **per_transfer_contextp,
+@@ -235,7 +237,7 @@ int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
+  */
+ int ath10k_ce_cancel_send_next(struct ath10k_ce_pipe *ce_state,
+ 			       void **per_transfer_contextp,
+-			       u32 *bufferp,
++			       dma_addr_t *bufferp,
+ 			       unsigned int *nbytesp,
+ 			       unsigned int *transfer_idp);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index ffea348..4e3e7a8 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1858,7 +1858,7 @@ int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
+ 
+ 	ret = ath10k_pci_bmi_wait(ar, ce_tx, ce_rx, &xfer);
+ 	if (ret) {
+-		u32 unused_buffer;
++		dma_addr_t unused_buffer;
+ 		unsigned int unused_nbytes;
+ 		unsigned int unused_id;
+ 
+@@ -1871,7 +1871,7 @@ int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
+ 
+ err_resp:
+ 	if (resp) {
+-		u32 unused_buffer;
++		dma_addr_t unused_buffer;
+ 
+ 		ath10k_ce_revoke_recv_next(ce_rx, NULL, &unused_buffer);
+ 		dma_unmap_single(ar->dev, resp_paddr,
 -- 
 1.9.1
 
