@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eRwjn-0007ZN-La
- for ath10k@lists.infradead.org; Thu, 21 Dec 2017 09:02:15 +0000
+ id 1eRwjn-0007Y7-LW
+ for ath10k@lists.infradead.org; Thu, 21 Dec 2017 09:02:18 +0000
 From: Govind Singh <govinds@qti.qualcomm.com>
-Subject: [PATCH 03/10] ath10k: Add support for 64 bit HTT in-order indication
- msg
-Date: Thu, 21 Dec 2017 14:30:52 +0530
-Message-Id: <1513846859-23639-4-git-send-email-govinds@qti.qualcomm.com>
+Subject: [PATCH 01/10] ath10k: Add hw param for 64-bit address support
+Date: Thu, 21 Dec 2017 14:30:50 +0530
+Message-Id: <1513846859-23639-2-git-send-email-govinds@qti.qualcomm.com>
 In-Reply-To: <1513846859-23639-1-git-send-email-govinds@qti.qualcomm.com>
 References: <1513846859-23639-1-git-send-email-govinds@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -24,148 +23,143 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
 
-WCN3990 target use 64bit msdu address in htt in-order
-indication message. Add support for 64 bit msdu address in
-HTT_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND message.
+From: Rakesh Pillai <pillair@qti.qualcomm.com>
 
+WCN3990 target supports 37-bit addressing mode. In order
+to accommodate extended address support, add hw param to
+indicate if the target supports addressing above 32-bits.
+
+Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
 Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    | 12 +++++-
- drivers/net/wireless/ath/ath10k/htt_rx.c | 67 +++++++++++++++++++++++++++++---
- 2 files changed, 72 insertions(+), 7 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 13 +++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 6305308..f3d5883 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -855,13 +855,23 @@ struct htt_rx_in_ord_msdu_desc {
- 	u8 reserved;
- } __packed;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index ad61e64..031fe00 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -78,6 +78,7 @@
+ 		.num_peers = TARGET_TLV_NUM_PEERS,
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
++		.target_64bit = false,
+ 	},
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+@@ -105,6 +106,7 @@
+ 		.num_peers = TARGET_TLV_NUM_PEERS,
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
++		.target_64bit = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -131,6 +133,7 @@
+ 		.num_peers = TARGET_TLV_NUM_PEERS,
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
++		.target_64bit = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -157,6 +160,7 @@
+ 		.num_peers = TARGET_TLV_NUM_PEERS,
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
++		.target_64bit = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -183,6 +187,7 @@
+ 		.num_peers = TARGET_TLV_NUM_PEERS,
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
++		.target_64bit = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -212,6 +217,7 @@
+ 		.num_peers = TARGET_TLV_NUM_PEERS,
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
++		.target_64bit = false,
+ 	},
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+@@ -244,6 +250,7 @@
+ 		.num_peers = TARGET_TLV_NUM_PEERS,
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
++		.target_64bit = false,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -281,6 +288,7 @@
+ 		.num_peers = TARGET_TLV_NUM_PEERS,
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
++		.target_64bit = false,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -317,6 +325,7 @@
+ 		.num_peers = TARGET_TLV_NUM_PEERS,
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
++		.target_64bit = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -343,6 +352,7 @@
+ 		.num_peers = TARGET_TLV_NUM_PEERS,
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
++		.target_64bit = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -371,6 +381,7 @@
+ 		.num_peers = TARGET_TLV_NUM_PEERS,
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
++		.target_64bit = false,
+ 	},
+ 	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+@@ -404,6 +415,7 @@
+ 		.num_peers = TARGET_TLV_NUM_PEERS,
+ 		.ast_skid_limit = 0x10,
+ 		.num_wds_entries = 0x20,
++		.target_64bit = false,
+ 	},
+ 	{
+ 		.id = WCN3990_HW_1_0_DEV_VERSION,
+@@ -422,6 +434,7 @@
+ 		.num_peers = TARGET_HL_10_TLV_NUM_PEERS,
+ 		.ast_skid_limit = TARGET_HL_10_TLV_AST_SKID_LIMIT,
+ 		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
++		.target_64bit = true,
+ 	},
+ };
  
-+struct htt_rx_in_ord_msdu_desc_ext {
-+	__le64 msdu_paddr;
-+	__le16 msdu_len;
-+	u8 fw_desc;
-+	u8 reserved;
-+} __packed;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 90ad39b..5d243f3 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -561,6 +561,9 @@ struct ath10k_hw_params {
+ 	u32 num_peers;
+ 	u32 ast_skid_limit;
+ 	u32 num_wds_entries;
 +
- struct htt_rx_in_ord_ind {
- 	u8 info;
- 	__le16 peer_id;
- 	u8 vdev_id;
- 	u8 reserved;
- 	__le16 msdu_count;
--	struct htt_rx_in_ord_msdu_desc msdu_descs[0];
-+	union {
-+		struct htt_rx_in_ord_msdu_desc msdu_descs32[0];
-+		struct htt_rx_in_ord_msdu_desc_ext msdu_descs64[0];
-+	} __packed;
- } __packed;
++	/* Targets supporting physical addressing capability above 32-bits */
++	bool target_64bit;
+ };
  
- #define HTT_RX_IN_ORD_IND_INFO_TID_MASK		0x0000001f
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 7d295ee..6402189 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -408,12 +408,12 @@ static struct sk_buff *ath10k_htt_rx_pop_paddr(struct ath10k_htt *htt,
- 	return msdu;
- }
- 
--static int ath10k_htt_rx_pop_paddr_list(struct ath10k_htt *htt,
--					struct htt_rx_in_ord_ind *ev,
--					struct sk_buff_head *list)
-+static int ath10k_htt_rx_pop_paddr32_list(struct ath10k_htt *htt,
-+					  struct htt_rx_in_ord_ind *ev,
-+					  struct sk_buff_head *list)
- {
- 	struct ath10k *ar = htt->ar;
--	struct htt_rx_in_ord_msdu_desc *msdu_desc = ev->msdu_descs;
-+	struct htt_rx_in_ord_msdu_desc *msdu_desc = ev->msdu_descs32;
- 	struct htt_rx_desc *rxd;
- 	struct sk_buff *msdu;
- 	int msdu_count;
-@@ -458,6 +458,55 @@ static int ath10k_htt_rx_pop_paddr_list(struct ath10k_htt *htt,
- 	return 0;
- }
- 
-+static int ath10k_htt_rx_pop_paddr64_list(struct ath10k_htt *htt,
-+					  struct htt_rx_in_ord_ind *ev,
-+					  struct sk_buff_head *list)
-+{
-+	struct ath10k *ar = htt->ar;
-+	struct htt_rx_in_ord_msdu_desc_ext *msdu_desc = ev->msdu_descs64;
-+	struct htt_rx_desc *rxd;
-+	struct sk_buff *msdu;
-+	int msdu_count;
-+	bool is_offload;
-+	u64 paddr;
-+
-+	lockdep_assert_held(&htt->rx_ring.lock);
-+
-+	msdu_count = __le16_to_cpu(ev->msdu_count);
-+	is_offload = !!(ev->info & HTT_RX_IN_ORD_IND_INFO_OFFLOAD_MASK);
-+
-+	while (msdu_count--) {
-+		paddr = __le64_to_cpu(msdu_desc->msdu_paddr);
-+		msdu = ath10k_htt_rx_pop_paddr(htt, paddr);
-+		if (!msdu) {
-+			__skb_queue_purge(list);
-+			return -ENOENT;
-+		}
-+
-+		__skb_queue_tail(list, msdu);
-+
-+		if (!is_offload) {
-+			rxd = (void *)msdu->data;
-+
-+			trace_ath10k_htt_rx_desc(ar, rxd, sizeof(*rxd));
-+
-+			skb_put(msdu, sizeof(*rxd));
-+			skb_pull(msdu, sizeof(*rxd));
-+			skb_put(msdu, __le16_to_cpu(msdu_desc->msdu_len));
-+
-+			if (!(__le32_to_cpu(rxd->attention.flags) &
-+			      RX_ATTENTION_FLAGS_MSDU_DONE)) {
-+				ath10k_warn(htt->ar, "tried to pop an incomplete frame, oops!\n");
-+				return -EIO;
-+			}
-+		}
-+
-+		msdu_desc++;
-+	}
-+
-+	return 0;
-+}
-+
- int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
- {
- 	struct ath10k *ar = htt->ar;
-@@ -1981,7 +2030,7 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
- 		   "htt rx in ord vdev %i peer %i tid %i offload %i frag %i msdu count %i\n",
- 		   vdev_id, peer_id, tid, offload, frag, msdu_count);
- 
--	if (skb->len < msdu_count * sizeof(*resp->rx_in_ord_ind.msdu_descs)) {
-+	if (skb->len < msdu_count * sizeof(*resp->rx_in_ord_ind.msdu_descs32)) {
- 		ath10k_warn(ar, "dropping invalid in order rx indication\n");
- 		return -EINVAL;
- 	}
-@@ -1990,7 +2039,13 @@ static int ath10k_htt_rx_in_ord_ind(struct ath10k *ar, struct sk_buff *skb)
- 	 * extracted and processed.
- 	 */
- 	__skb_queue_head_init(&list);
--	ret = ath10k_htt_rx_pop_paddr_list(htt, &resp->rx_in_ord_ind, &list);
-+	if (ar->hw_params.target_64bit)
-+		ret = ath10k_htt_rx_pop_paddr64_list(htt, &resp->rx_in_ord_ind,
-+						     &list);
-+	else
-+		ret = ath10k_htt_rx_pop_paddr32_list(htt, &resp->rx_in_ord_ind,
-+						     &list);
-+
- 	if (ret < 0) {
- 		ath10k_warn(ar, "failed to pop paddr list: %d\n", ret);
- 		htt->rx_confused = true;
+ struct htt_rx_desc;
 -- 
 1.9.1
 
