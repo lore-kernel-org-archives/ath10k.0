@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eRyqy-0000Hq-Kb
- for ath10k@lists.infradead.org; Thu, 21 Dec 2017 11:17:34 +0000
-From: Rakesh Pillai <pillair@qti.qualcomm.com>
-Subject: [PATCH 1/3] ath10k: Add SNOC bus type for WCN3990 target
-Date: Thu, 21 Dec 2017 16:44:45 +0530
-Message-Id: <1513854887-10759-2-git-send-email-pillair@qti.qualcomm.com>
-In-Reply-To: <1513854887-10759-1-git-send-email-pillair@qti.qualcomm.com>
+ id 1eS1OC-0007LM-2G
+ for ath10k@lists.infradead.org; Thu, 21 Dec 2017 14:00:01 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 0/3] Core changes for wcn3990
+Date: Thu, 21 Dec 2017 13:57:26 +0000
+Message-ID: <87tvwkchfe.fsf@kamboji.qca.qualcomm.com>
 References: <1513854887-10759-1-git-send-email-pillair@qti.qualcomm.com>
+In-Reply-To: <1513854887-10759-1-git-send-email-pillair@qti.qualcomm.com>
+ (Rakesh Pillai's message of "Thu, 21 Dec 2017 16:44:44 +0530")
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,63 +20,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless@vger.kernel.org, Rakesh Pillai <pillair@qti.qualcomm.com>
+To: Rakesh Pillai <pillair@qti.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Govind Singh <govinds@qti.qualcomm.com>
+Rakesh Pillai <pillair@qti.qualcomm.com> writes:
 
-WCN3990 is integrated chipset which uses system NOC.
-Add SNOC bus type and related definitions.
+> This patchset includes the core changes for wcn3990 to
+> - Add SNOC bus type used for wcn3990 target
+> - Add the debug mask for SNOC bus type
+> - Adding fw feature flag for non-bmi firmware load, since wcn3990
+>   firmware is not loaded by bmi
+>
+> Govind Singh (2):
+>   ath10k: Add SNOC bus type for WCN3990 target
+>   ath10k: Add debug mask for SNOC bus type
+>
+> Rakesh Pillai (1):
+>   ath10k: Add fw feature flag for non-bmi firmware load
 
-Signed-off-by: Govind Singh <govinds@qti.qualcomm.com>
-Signed-off-by: Rakesh Pillai <pillair@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 1 +
- drivers/net/wireless/ath/ath10k/core.h | 3 +++
- 2 files changed, 4 insertions(+)
+What did you use as the baseline for these patches? While I was trying
+to get these to the pending branch for build testing I noticed they
+don't apply to any of ath.git branches and git can't even find the
+baseline sha1 information:
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index a5a3eeb569c5..8374b05f72b2 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1555,6 +1555,7 @@ static void ath10k_core_get_fw_name(struct ath10k *ar, char *fw_name,
- 		break;
- 	case ATH10K_BUS_PCI:
- 	case ATH10K_BUS_AHB:
-+	case ATH10K_BUS_SNOC:
- 		scnprintf(fw_name, fw_name_len, "%s-%d.bin",
- 			  ATH10K_FW_FILE_BASE, fw_api);
- 		break;
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 30c4c07658d5..aeb446b4ff58 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -93,6 +93,7 @@ enum ath10k_bus {
- 	ATH10K_BUS_AHB,
- 	ATH10K_BUS_SDIO,
- 	ATH10K_BUS_USB,
-+	ATH10K_BUS_SNOC,
- };
- 
- static inline const char *ath10k_bus_str(enum ath10k_bus bus)
-@@ -106,6 +107,8 @@ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
- 		return "sdio";
- 	case ATH10K_BUS_USB:
- 		return "usb";
-+	case ATH10K_BUS_SNOC:
-+		return "snoc";
- 	}
- 
- 	return "unknown";
+$ git am -s -3 10127467.mbox
+Applying: ath10k: Add SNOC bus type for WCN3990 target
+Applying: ath10k: Add debug mask for SNOC bus type
+Applying: ath10k: Add fw feature flag for non-bmi firmware load
+fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/core.c).
+error: could not build fake ancestor
+Patch failed at 0003 ath10k: Add fw feature flag for non-bmi firmware load
+The copy of the patch that failed is found in: .git/rebase-apply/patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
+
 -- 
-2.11.0
-
-
+Kalle Valo
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
