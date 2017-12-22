@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSP6q-0005jF-A3
- for ath10k@lists.infradead.org; Fri, 22 Dec 2017 15:19:43 +0000
+ id 1eSPCN-0001yy-UD
+ for ath10k@lists.infradead.org; Fri, 22 Dec 2017 15:25:45 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC v3 03/11] ath10k: per target configurablity of various items
-Date: Fri, 22 Dec 2017 15:19:15 +0000
-Message-ID: <87wp1eaiz0.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [RFC v3 04/11] ath10k: add start_once support
+Date: Fri, 22 Dec 2017 15:25:08 +0000
+Message-ID: <87shc2aip8.fsf@kamboji.qca.qualcomm.com>
 References: <20170917194013.8658-1-erik.stromdahl@gmail.com>
- <20170917194013.8658-4-erik.stromdahl@gmail.com>
-In-Reply-To: <20170917194013.8658-4-erik.stromdahl@gmail.com> (Erik
- Stromdahl's message of "Sun, 17 Sep 2017 21:40:05 +0200")
+ <20170917194013.8658-5-erik.stromdahl@gmail.com>
+In-Reply-To: <20170917194013.8658-5-erik.stromdahl@gmail.com> (Erik
+ Stromdahl's message of "Sun, 17 Sep 2017 21:40:06 +0200")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -30,96 +30,53 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@l
 
 Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
-> Added ability to set bus type and configure the max number of
-> peers in the ath10k_hw_params struct.
->
-> With this functionality it is possible to have a different
-> hw configuration depending on bus type for the same radio
-> chipset.
->
-> E.g. SDIO and USB devices using the same chipset as PCIe
-> devices will potentially use different board files and perhaps
-> other configuration parameters.
->
-> One such parameter is the max number of peers.
-> Instead of using a default value (suitable for PCIe devices)
-> derived from the WMI op version, a per target value can be
-> used instead.
->
-> This is needed by the QCA9377 USB device in order to prevent
-> the target fw to crash after HTT RX ring cfg is issued.
->
-> Apparently, the QCA9377 HL device does not seem to handle the
-> same amount of peers as the LL devices.
+> Add possibility to configure the driver to only start target once.
+> This can reduce startup time of SDIO devices significantly since
+> loading the firmware can take a substantial amount of time.
+
+But it also makes it impossible to restart the firmware if it crashes,
+right? Good to mention that in the commit log.
+
+> The patch is also necessary for high latency devices in general since
+> it does not seem to be possible to rerun the BMI phase (fw upload)
+> without power-cycling the device.
 >
 > Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-I was a bit torn about this, I definitely see the need for this but on
-the other hand it creates duplicate data (for example two entries for
-QCA9377 chip). I guess this is the right approach, at least I cannot
-come up anything better.
+[...]
 
-But this patch should be split into two:
-
-1) add bus field to struct ath10k_hw_params
-
-2) add max_num_peers field to struct ath10k_hw_params
-
-And it seems 2) is already implemented in commit 9f2992fea580 ("ath10k:
-wmi: get wmi init parameter values from hw params"), so hopefully we
-only need 1) anymore.
-
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -1663,9 +1663,19 @@ static int ath10k_init_hw_params(struct ath10k *ar)
->  	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
->  		hw_params = &ath10k_hw_params_list[i];
+> --- a/drivers/net/wireless/ath/ath10k/core.h
+> +++ b/drivers/net/wireless/ath/ath10k/core.h
+> @@ -784,6 +784,8 @@ struct ath10k {
 >  
-> -		if (hw_params->id == ar->target_version &&
-> -		    hw_params->dev_id == ar->dev_id)
-> -			break;
-> +		if (ar->is_high_latency) {
-> +			/* High latency devices will use different fw depending
-> +			 * on if it is a USB or SDIO device.
-> +			 */
-> +			if (hw_params->bus == ar->hif.bus &&
-> +			    hw_params->id == ar->target_version &&
-> +			    hw_params->dev_id == ar->dev_id)
-> +				break;
-> +		} else {
-> +			if (hw_params->id == ar->target_version &&
-> +			    hw_params->dev_id == ar->dev_id)
-> +				break;
-> +		}
+>  	bool is_high_latency;
+>  
+> +	bool is_started;
 
-I don't like the is_high_latency test here at all. The bus field should
-be checked with all entries, not just high latency ones. And because of
-this even most of the hw_param bus field entries were not initialised.
+Is a separate boolean really needed? State management becomes really
+difficult if an enum ath10k_state and this boolean to define the state
+of the device. Can't you use ar->state?
 
-So only thing to do is to initialise the bus field for all the entries
-and the ugly test here can be removed. Just remember that QCA4019 uses
-AHB, I think all the rest is PCI. Or do we have AHB devices supported?
-
-> @@ -550,6 +557,18 @@ struct ath10k_hw_params {
->  	 */
->  	int vht160_mcs_rx_highest;
->  	int vht160_mcs_tx_highest;
+> --- a/drivers/net/wireless/ath/ath10k/hw.h
+> +++ b/drivers/net/wireless/ath/ath10k/hw.h
+> @@ -569,6 +569,12 @@ struct ath10k_hw_params {
+>  	bool is_high_latency;
+>  
+>  	enum ath10k_bus bus;
 > +
-> +	/* max_num_peers can be used to override the setting derived from
-> +	 * the WMI op version. If this value is non-zero, it will always
-> +	 * be used instead of the default value derived from the WMI op
-> +	 * version.
+> +	/* Specifies whether or not the device should be started once.
+> +	 * If set, the device will be started once by the early fw probe
+> +	 * and it will not be terminated afterwards.
 > +	 */
-> +	int max_num_peers;
-> +
-> +	/* Specifies whether or not the device is a high latency device */
-> +	bool is_high_latency;
-> +
-> +	enum ath10k_bus bus;
+> +	bool start_once;
 >  };
 
-Please move the bus field between dev_id and name fields. It's so
-important that it should not be in the end.
+I would actually prefer that the bus driver (eg. usb.c) decides this and
+provides it though ath10k_core_register(). It might be that some SDIO
+devices have a GPIO line to reset the device etc.
+
+The struct ath10k_bus_params I mentioned earlier might be handy also
+here.
 
 -- 
 Kalle Valo
