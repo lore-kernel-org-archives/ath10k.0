@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSNX9-00022S-6Z
- for ath10k@lists.infradead.org; Fri, 22 Dec 2017 13:38:44 +0000
-Subject: [PATCH v2 0/6] ath10k: firmware ramdump support
+ id 1eSNXI-00023X-0W
+ for ath10k@lists.infradead.org; Fri, 22 Dec 2017 13:38:54 +0000
+Subject: [PATCH v2 1/6] ath10k: remove deprecated fw_crash_dump debugfs file
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Fri, 22 Dec 2017 15:38:12 +0200
-Message-ID: <151394982311.9382.1300230032038350642.stgit@potku.adurom.net>
+Date: Fri, 22 Dec 2017 15:38:29 +0200
+Message-ID: <151394990944.9382.5479713630153339961.stgit@potku.adurom.net>
+In-Reply-To: <151394982311.9382.1300230032038350642.stgit@potku.adurom.net>
+References: <151394982311.9382.1300230032038350642.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,62 +25,79 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Hi,
+The fw_crash_dump file was deprecated by commmit 727000e6af34 ("ath10k: support
+dev_coredump for crash dump") in v4.11 in favor of dev_coredump interface,
+remove it now for good. Everyone should use dev_coredump now.
 
-here are patches adding firmware ramdump support to make it easier to
-debug firmware crashes. This also removes the depracated fw_crash_dump
-debugfs file.
-
-Kalle
-
-v2:
-
-o patch 2: fix conflict in due to commit dafa42036012 ("ath10k: use 64-bit crash dump timestamps")
-
-o patch 2: fix build errors when CONFIG_DEV_COREDUMP is disabled:
-
-drivers/net/wireless/ath/ath10k/coredump.c:24:30: error: redefinition of 'ath10k_coredump_new'
-drivers/net/wireless/ath/ath10k/coredump.c:130:5: error: redefinition of 'ath10k_coredump_submit'
-
-o patch 5: fix coccinelli warning:
-
-drivers/net/wireless/ath/ath10k/pci.c:1561:2-3: Unneeded semicolon
-
-o patch 5: fix coccinelli warning:
-  
-drivers/net/wireless/ath/ath10k/pci.c:1522:6-15: WARNING: Unsigned expression compared with zero: skip_size < 0
-
-  by changing the check to:
-
-  if (cur_section->end > next_section->start) {
-
-o patch 5: fix error handling when calling ath10k_pci_set_ram_config()
-
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
+ drivers/net/wireless/ath/ath10k/debug.c |   46 -------------------------------
+ 1 file changed, 46 deletions(-)
 
-Alan Liu (1):
-      ath10k: add memory dump support for QCA6174/QCA9377
-
-Kalle Valo (5):
-      ath10k: remove deprecated fw_crash_dump debugfs file
-      ath10k: refactor firmware crashdump code to coredump.c
-      ath10k: detach coredump.c from debug.c
-      ath10k: add coredump_mask module parameter
-      ath10k: add memory dump support QCA988X
-
-
- drivers/net/wireless/ath/ath10k/Makefile   |    1 
- drivers/net/wireless/ath/ath10k/core.c     |   31 +
- drivers/net/wireless/ath/ath10k/core.h     |   18 -
- drivers/net/wireless/ath/ath10k/coredump.c |  993 ++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/coredump.h |  225 ++++++
- drivers/net/wireless/ath/ath10k/debug.c    |  275 --------
- drivers/net/wireless/ath/ath10k/debug.h    |   16 
- drivers/net/wireless/ath/ath10k/hw.h       |    1 
- drivers/net/wireless/ath/ath10k/pci.c      |  221 ++++++
- 9 files changed, 1482 insertions(+), 299 deletions(-)
- create mode 100644 drivers/net/wireless/ath/ath10k/coredump.c
- create mode 100644 drivers/net/wireless/ath/ath10k/coredump.h
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 181fd8e2e615..358c34eeb2d2 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -851,49 +851,6 @@ int ath10k_debug_fw_devcoredump(struct ath10k *ar)
+ 	return 0;
+ }
+ 
+-static int ath10k_fw_crash_dump_open(struct inode *inode, struct file *file)
+-{
+-	struct ath10k *ar = inode->i_private;
+-	struct ath10k_dump_file_data *dump;
+-
+-	ath10k_warn(ar, "fw_crash_dump debugfs file is deprecated, please use /sys/class/devcoredump instead.");
+-
+-	dump = ath10k_build_dump_file(ar, true);
+-	if (!dump)
+-		return -ENODATA;
+-
+-	file->private_data = dump;
+-
+-	return 0;
+-}
+-
+-static ssize_t ath10k_fw_crash_dump_read(struct file *file,
+-					 char __user *user_buf,
+-					 size_t count, loff_t *ppos)
+-{
+-	struct ath10k_dump_file_data *dump_file = file->private_data;
+-
+-	return simple_read_from_buffer(user_buf, count, ppos,
+-				       dump_file,
+-				       le32_to_cpu(dump_file->len));
+-}
+-
+-static int ath10k_fw_crash_dump_release(struct inode *inode,
+-					struct file *file)
+-{
+-	vfree(file->private_data);
+-
+-	return 0;
+-}
+-
+-static const struct file_operations fops_fw_crash_dump = {
+-	.open = ath10k_fw_crash_dump_open,
+-	.read = ath10k_fw_crash_dump_read,
+-	.release = ath10k_fw_crash_dump_release,
+-	.owner = THIS_MODULE,
+-	.llseek = default_llseek,
+-};
+-
+ static ssize_t ath10k_reg_addr_read(struct file *file,
+ 				    char __user *user_buf,
+ 				    size_t count, loff_t *ppos)
+@@ -2460,9 +2417,6 @@ int ath10k_debug_register(struct ath10k *ar)
+ 	debugfs_create_file("simulate_fw_crash", 0600, ar->debug.debugfs_phy, ar,
+ 			    &fops_simulate_fw_crash);
+ 
+-	debugfs_create_file("fw_crash_dump", 0400, ar->debug.debugfs_phy, ar,
+-			    &fops_fw_crash_dump);
+-
+ 	debugfs_create_file("reg_addr", 0600, ar->debug.debugfs_phy, ar,
+ 			    &fops_reg_addr);
+ 
 
 
 _______________________________________________
