@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSPfw-00036h-1Z
- for ath10k@lists.infradead.org; Fri, 22 Dec 2017 15:55:59 +0000
+ id 1eSPsV-0007jo-Po
+ for ath10k@lists.infradead.org; Fri, 22 Dec 2017 16:08:57 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC v3 00/11] ath10k high latency
-Date: Fri, 22 Dec 2017 15:55:40 +0000
-Message-ID: <87r2rm92pw.fsf@kamboji.qca.qualcomm.com>
-References: <20170917194013.8658-1-erik.stromdahl@gmail.com>
-In-Reply-To: <20170917194013.8658-1-erik.stromdahl@gmail.com> (Erik
- Stromdahl's message of "Sun, 17 Sep 2017 21:40:02 +0200")
+Subject: Re: [PATCH 03/11] ath10k_sdio: DMA bounce buffers for read write
+Date: Fri, 22 Dec 2017 16:08:40 +0000
+Message-ID: <87lghu9247.fsf@kamboji.qca.qualcomm.com>
+References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
+ <1506793068-27445-4-git-send-email-alagusankar@silex-india.com>
+In-Reply-To: <1506793068-27445-4-git-send-email-alagusankar@silex-india.com>
+ (silexcommon@gmail.com's message of "Sat, 30 Sep 2017 23:07:40 +0530")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -24,32 +25,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "silexcommon@gmail.com" <silexcommon@gmail.com>
+Cc: Alagu Sankar <alagusankar@silex-india.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Erik Stromdahl <erik.stromdahl@gmail.com> writes:
+silexcommon@gmail.com writes:
 
-> This is the third version of the high latency patches (stuff common for
-> usb and sdio).
-
-Sorry for the late review, this fall I have had difficulties to keep up
-with all the patches. This set looks pretty good, I had few smaller
-comments but nothing major really.
-
-> One major difference between this version and the previous is that the
-> num_pending_tx counter has been disabled for high latency devices (last patch).
+> From: Alagu Sankar <alagusankar@silex-india.com>
 >
-> This fixes the previous issue with the halted USB RX.
-> I have tested these patches with a Linksys WUSB6100M and it looks
-> much better than the previous version.
+> Some SD host controllers still need bounce buffers for SDIO data
+> transfers. While the transfers worked fine on x86 platforms,
+> this is found to be required for i.MX6 based systems.
+>
+> Changes are similar to and derived from the ath6kl sdio driver.
+>
+> Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
 
-I quickly tested this set few weeks ago on my test laptop and the kernel
-was crashing a lot, I don't know was it because I usually try to run all
-kernel debug features enabled or what. I don't have the logs at hand
-right now. I think we should try to investigate that before adding the
-hw_params entry for the usb device, but rest of the patches in this set
-can go in even before. Most important is that we don't create any
-regressions (including kernel crashes).
+Why is the bounce buffer needed exactly, what are the symptoms etc? To
+me this sounds like an ugly workaround for a SDIO controller driver bug.
 
 -- 
 Kalle Valo
