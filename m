@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSPYA-0007eG-Tc
- for ath10k@lists.infradead.org; Fri, 22 Dec 2017 15:47:56 +0000
+ id 1eSPa0-0007ur-Oi
+ for ath10k@lists.infradead.org; Fri, 22 Dec 2017 15:49:50 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC v3 10/11] ath10k: wmi: disable softirq's while calling
- ieee80211_rx
-Date: Fri, 22 Dec 2017 15:47:39 +0000
-Message-ID: <873742ahno.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [RFC v3 08/11] ath10k: add QCA9377 usb hw_param item
+Date: Fri, 22 Dec 2017 15:49:33 +0000
+Message-ID: <87y3lu9302.fsf@kamboji.qca.qualcomm.com>
 References: <20170917194013.8658-1-erik.stromdahl@gmail.com>
- <20170917194013.8658-11-erik.stromdahl@gmail.com>
-In-Reply-To: <20170917194013.8658-11-erik.stromdahl@gmail.com> (Erik
- Stromdahl's message of "Sun, 17 Sep 2017 21:40:12 +0200")
+ <20170917194013.8658-9-erik.stromdahl@gmail.com>
+In-Reply-To: <20170917194013.8658-9-erik.stromdahl@gmail.com> (Erik
+ Stromdahl's message of "Sun, 17 Sep 2017 21:40:10 +0200")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -31,27 +30,45 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@l
 
 Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
+> Hardware parameters for QCA9377 usb devices.
+>
 > Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Please explain in the commit log why this is needed.
+[...]
 
-> ---
->  drivers/net/wireless/ath/ath10k/wmi.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-> index 38a97086708b..10bb5be6ab00 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -2408,7 +2408,10 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
->  		   status->freq, status->band, status->signal,
->  		   status->rate_idx);
->  
-> +	local_bh_disable();
->  	ieee80211_rx(ar->hw, skb);
-> +	local_bh_enable();
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -328,6 +328,29 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+>  		.vht160_mcs_rx_highest = 0,
+>  		.vht160_mcs_tx_highest = 0,
+>  	},
+> +	{
+> +		.id = QCA9377_HW_1_1_DEV_VERSION,
+> +		.dev_id = QCA9377_1_0_DEVICE_ID,
+> +		.name = "qca9377 hw1.1 usb",
+> +		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
+> +		.uart_pin = 6,
+> +		.otp_exe_param = 0,
+> +		.channel_counters_freq_hz = 88000,
+> +		.max_probe_resp_desc_thres = 0,
+> +		.cal_data_len = 8124,
+> +		.fw = {
+> +			.dir = QCA9377_HW_1_0_FW_DIR,
+> +			.board = QCA9377_HW_1_0_BOARD_DATA_FILE_USB,
+> +			.board_size = QCA9377_BOARD_DATA_SZ,
+> +			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
+> +		},
+> +		.hw_ops = &qca988x_ops,
+> +		.decap_align_bytes = 4,
+> +		.max_num_peers = TARGET_QCA9377_HL_NUM_PEERS,
+> +		.is_high_latency = true,
+> +		.bus = ATH10K_BUS_USB,
+> +		.start_once = true,
+> +	},
 
-ieee80211_rx_ni()?
+Oh, forgot to mention that adding hw_params entry should be last in the
+patchset and only added once all fixes etc are already in place (eg
+patch 10 and 11 should be before this).
 
 -- 
 Kalle Valo
