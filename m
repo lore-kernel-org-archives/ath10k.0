@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSNXI-00023X-0W
- for ath10k@lists.infradead.org; Fri, 22 Dec 2017 13:38:54 +0000
-Subject: [PATCH v2 1/6] ath10k: remove deprecated fw_crash_dump debugfs file
+ id 1eSNXW-000285-Nb
+ for ath10k@lists.infradead.org; Fri, 22 Dec 2017 13:39:09 +0000
+Subject: [PATCH v2 2/6] ath10k: refactor firmware crashdump code to coredump.c
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Fri, 22 Dec 2017 15:38:29 +0200
-Message-ID: <151394990944.9382.5479713630153339961.stgit@potku.adurom.net>
+Date: Fri, 22 Dec 2017 15:38:43 +0200
+Message-ID: <151394992275.9382.15172888745952977168.stgit@potku.adurom.net>
 In-Reply-To: <151394982311.9382.1300230032038350642.stgit@potku.adurom.net>
 References: <151394982311.9382.1300230032038350642.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -25,79 +25,666 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-The fw_crash_dump file was deprecated by commmit 727000e6af34 ("ath10k: support
-dev_coredump for crash dump") in v4.11 in favor of dev_coredump interface,
-remove it now for good. Everyone should use dev_coredump now.
+In preparation to add RAM dump support. No functional changes, only moving code
+and renaming function names.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/debug.c |   46 -------------------------------
- 1 file changed, 46 deletions(-)
+ drivers/net/wireless/ath/ath10k/Makefile   |    1 
+ drivers/net/wireless/ath/ath10k/core.c     |    3 
+ drivers/net/wireless/ath/ath10k/coredump.c |  165 +++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/coredump.h |  121 +++++++++++++++
+ drivers/net/wireless/ath/ath10k/debug.c    |  222 ----------------------------
+ drivers/net/wireless/ath/ath10k/debug.h    |   16 --
+ drivers/net/wireless/ath/ath10k/pci.c      |    3 
+ 7 files changed, 291 insertions(+), 240 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/coredump.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/coredump.h
 
+diff --git a/drivers/net/wireless/ath/ath10k/Makefile b/drivers/net/wireless/ath/ath10k/Makefile
+index 8d9a59b7144e..4e6a396827ee 100644
+--- a/drivers/net/wireless/ath/ath10k/Makefile
++++ b/drivers/net/wireless/ath/ath10k/Makefile
+@@ -21,6 +21,7 @@ ath10k_core-$(CONFIG_ATH10K_TRACING) += trace.o
+ ath10k_core-$(CONFIG_THERMAL) += thermal.o
+ ath10k_core-$(CONFIG_MAC80211_DEBUGFS) += debugfs_sta.o
+ ath10k_core-$(CONFIG_PM) += wow.o
++ath10k_core-$(CONFIG_ATH10K_DEBUGFS) += coredump.o
+ 
+ obj-$(CONFIG_ATH10K_PCI) += ath10k_pci.o
+ ath10k_pci-y += pci.o \
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 042175a5653f..8d36bfcfcf01 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -32,6 +32,7 @@
+ #include "htt.h"
+ #include "testmode.h"
+ #include "wmi-ops.h"
++#include "coredump.h"
+ 
+ unsigned int ath10k_debug_mask;
+ static unsigned int ath10k_cryptmode_param;
+@@ -1836,7 +1837,7 @@ static void ath10k_core_restart(struct work_struct *work)
+ 
+ 	mutex_unlock(&ar->conf_mutex);
+ 
+-	ret = ath10k_debug_fw_devcoredump(ar);
++	ret = ath10k_coredump_submit(ar);
+ 	if (ret)
+ 		ath10k_warn(ar, "failed to send firmware crash dump via devcoredump: %d",
+ 			    ret);
+diff --git a/drivers/net/wireless/ath/ath10k/coredump.c b/drivers/net/wireless/ath/ath10k/coredump.c
+new file mode 100644
+index 000000000000..51b86878e733
+--- /dev/null
++++ b/drivers/net/wireless/ath/ath10k/coredump.c
+@@ -0,0 +1,165 @@
++/*
++ * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ *
++ * Permission to use, copy, modify, and/or distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++
++#include "coredump.h"
++
++#include <linux/devcoredump.h>
++#include <linux/utsname.h>
++
++#include "debug.h"
++
++#ifdef CONFIG_DEV_COREDUMP
++
++struct ath10k_fw_crash_data *ath10k_coredump_new(struct ath10k *ar)
++{
++	struct ath10k_fw_crash_data *crash_data = ar->debug.fw_crash_data;
++
++	lockdep_assert_held(&ar->data_lock);
++
++	crash_data->crashed_since_read = true;
++	guid_gen(&crash_data->guid);
++	ktime_get_real_ts64(&crash_data->timestamp);
++
++	return crash_data;
++}
++EXPORT_SYMBOL(ath10k_coredump_new);
++
++static struct ath10k_dump_file_data *ath10k_coredump_build(struct ath10k *ar,
++							   bool mark_read)
++{
++	struct ath10k_fw_crash_data *crash_data = ar->debug.fw_crash_data;
++	struct ath10k_ce_crash_hdr *ce_hdr;
++	struct ath10k_dump_file_data *dump_data;
++	struct ath10k_tlv_dump_data *dump_tlv;
++	size_t hdr_len = sizeof(*dump_data);
++	size_t len, sofar = 0;
++	unsigned char *buf;
++
++	len = hdr_len;
++	len += sizeof(*dump_tlv) + sizeof(crash_data->registers);
++	len += sizeof(*dump_tlv) + sizeof(*ce_hdr) +
++		CE_COUNT * sizeof(ce_hdr->entries[0]);
++
++	sofar += hdr_len;
++
++	/* This is going to get big when we start dumping FW RAM and such,
++	 * so go ahead and use vmalloc.
++	 */
++	buf = vzalloc(len);
++	if (!buf)
++		return NULL;
++
++	spin_lock_bh(&ar->data_lock);
++
++	if (!crash_data->crashed_since_read) {
++		spin_unlock_bh(&ar->data_lock);
++		vfree(buf);
++		return NULL;
++	}
++
++	dump_data = (struct ath10k_dump_file_data *)(buf);
++	strlcpy(dump_data->df_magic, "ATH10K-FW-DUMP",
++		sizeof(dump_data->df_magic));
++	dump_data->len = cpu_to_le32(len);
++
++	dump_data->version = cpu_to_le32(ATH10K_FW_CRASH_DUMP_VERSION);
++
++	guid_copy(&dump_data->guid, &crash_data->guid);
++	dump_data->chip_id = cpu_to_le32(ar->chip_id);
++	dump_data->bus_type = cpu_to_le32(0);
++	dump_data->target_version = cpu_to_le32(ar->target_version);
++	dump_data->fw_version_major = cpu_to_le32(ar->fw_version_major);
++	dump_data->fw_version_minor = cpu_to_le32(ar->fw_version_minor);
++	dump_data->fw_version_release = cpu_to_le32(ar->fw_version_release);
++	dump_data->fw_version_build = cpu_to_le32(ar->fw_version_build);
++	dump_data->phy_capability = cpu_to_le32(ar->phy_capability);
++	dump_data->hw_min_tx_power = cpu_to_le32(ar->hw_min_tx_power);
++	dump_data->hw_max_tx_power = cpu_to_le32(ar->hw_max_tx_power);
++	dump_data->ht_cap_info = cpu_to_le32(ar->ht_cap_info);
++	dump_data->vht_cap_info = cpu_to_le32(ar->vht_cap_info);
++	dump_data->num_rf_chains = cpu_to_le32(ar->num_rf_chains);
++
++	strlcpy(dump_data->fw_ver, ar->hw->wiphy->fw_version,
++		sizeof(dump_data->fw_ver));
++
++	dump_data->kernel_ver_code = 0;
++	strlcpy(dump_data->kernel_ver, init_utsname()->release,
++		sizeof(dump_data->kernel_ver));
++
++	dump_data->tv_sec = cpu_to_le64(crash_data->timestamp.tv_sec);
++	dump_data->tv_nsec = cpu_to_le64(crash_data->timestamp.tv_nsec);
++
++	/* Gather crash-dump */
++	dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
++	dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_REGISTERS);
++	dump_tlv->tlv_len = cpu_to_le32(sizeof(crash_data->registers));
++	memcpy(dump_tlv->tlv_data, &crash_data->registers,
++	       sizeof(crash_data->registers));
++	sofar += sizeof(*dump_tlv) + sizeof(crash_data->registers);
++
++	dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
++	dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_CE_DATA);
++	dump_tlv->tlv_len = cpu_to_le32(sizeof(*ce_hdr) +
++					CE_COUNT * sizeof(ce_hdr->entries[0]));
++	ce_hdr = (struct ath10k_ce_crash_hdr *)(dump_tlv->tlv_data);
++	ce_hdr->ce_count = cpu_to_le32(CE_COUNT);
++	memset(ce_hdr->reserved, 0, sizeof(ce_hdr->reserved));
++	memcpy(ce_hdr->entries, crash_data->ce_crash_data,
++	       CE_COUNT * sizeof(ce_hdr->entries[0]));
++	sofar += sizeof(*dump_tlv) + sizeof(*ce_hdr) +
++		 CE_COUNT * sizeof(ce_hdr->entries[0]);
++
++	ar->debug.fw_crash_data->crashed_since_read = !mark_read;
++
++	spin_unlock_bh(&ar->data_lock);
++
++	return dump_data;
++}
++
++int ath10k_coredump_submit(struct ath10k *ar)
++{
++	struct ath10k_dump_file_data *dump;
++	void *dump_ptr;
++	u32 dump_len;
++
++	/* To keep the dump file available also for debugfs don't mark the
++	 * file read, only debugfs should do that.
++	 */
++	dump = ath10k_coredump_build(ar, false);
++	if (!dump) {
++		ath10k_warn(ar, "no crash dump data found for devcoredump");
++		return -ENODATA;
++	}
++
++	/* Make a copy of the dump file for dev_coredumpv() as during the
++	 * transition period we need to own the original file. Once
++	 * fw_crash_dump debugfs file is removed no need to have a copy
++	 * anymore.
++	 */
++	dump_len = le32_to_cpu(dump->len);
++	dump_ptr = vzalloc(dump_len);
++
++	if (!dump_ptr)
++		return -ENOMEM;
++
++	memcpy(dump_ptr, dump, dump_len);
++
++	dev_coredumpv(ar->dev, dump_ptr, dump_len, GFP_KERNEL);
++
++	return 0;
++}
++
++#endif /* CONFIG_DEV_COREDUMP */
+diff --git a/drivers/net/wireless/ath/ath10k/coredump.h b/drivers/net/wireless/ath/ath10k/coredump.h
+new file mode 100644
+index 000000000000..2d2f45b5aa37
+--- /dev/null
++++ b/drivers/net/wireless/ath/ath10k/coredump.h
+@@ -0,0 +1,121 @@
++/*
++ * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ *
++ * Permission to use, copy, modify, and/or distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++
++#ifndef _COREDUMP_H_
++#define _COREDUMP_H_
++
++#include "core.h"
++
++#define ATH10K_FW_CRASH_DUMP_VERSION 1
++
++/**
++ * enum ath10k_fw_crash_dump_type - types of data in the dump file
++ * @ATH10K_FW_CRASH_DUMP_REGDUMP: Register crash dump in binary format
++ */
++enum ath10k_fw_crash_dump_type {
++	ATH10K_FW_CRASH_DUMP_REGISTERS = 0,
++	ATH10K_FW_CRASH_DUMP_CE_DATA = 1,
++
++	ATH10K_FW_CRASH_DUMP_MAX,
++};
++
++struct ath10k_tlv_dump_data {
++	/* see ath10k_fw_crash_dump_type above */
++	__le32 type;
++
++	/* in bytes */
++	__le32 tlv_len;
++
++	/* pad to 32-bit boundaries as needed */
++	u8 tlv_data[];
++} __packed;
++
++struct ath10k_dump_file_data {
++	/* dump file information */
++
++	/* "ATH10K-FW-DUMP" */
++	char df_magic[16];
++
++	__le32 len;
++
++	/* file dump version */
++	__le32 version;
++
++	/* some info we can get from ath10k struct that might help */
++
++	guid_t guid;
++
++	__le32 chip_id;
++
++	/* 0 for now, in place for later hardware */
++	__le32 bus_type;
++
++	__le32 target_version;
++	__le32 fw_version_major;
++	__le32 fw_version_minor;
++	__le32 fw_version_release;
++	__le32 fw_version_build;
++	__le32 phy_capability;
++	__le32 hw_min_tx_power;
++	__le32 hw_max_tx_power;
++	__le32 ht_cap_info;
++	__le32 vht_cap_info;
++	__le32 num_rf_chains;
++
++	/* firmware version string */
++	char fw_ver[ETHTOOL_FWVERS_LEN];
++
++	/* Kernel related information */
++
++	/* time-of-day stamp */
++	__le64 tv_sec;
++
++	/* time-of-day stamp, nano-seconds */
++	__le64 tv_nsec;
++
++	/* LINUX_VERSION_CODE */
++	__le32 kernel_ver_code;
++
++	/* VERMAGIC_STRING */
++	char kernel_ver[64];
++
++	/* room for growth w/out changing binary format */
++	u8 unused[128];
++
++	/* struct ath10k_tlv_dump_data + more */
++	u8 data[0];
++} __packed;
++
++#ifdef CONFIG_DEV_COREDUMP
++
++int ath10k_coredump_submit(struct ath10k *ar);
++struct ath10k_fw_crash_data *ath10k_coredump_new(struct ath10k *ar);
++
++#else /* CONFIG_DEV_COREDUMP */
++
++static inline int ath10k_coredump_submit(struct ath10k *ar)
++{
++	return 0;
++}
++
++static inline struct ath10k_fw_crash_data *ath10k_coredump_new(struct ath10k *ar)
++{
++	return NULL;
++}
++
++#endif /* CONFIG_DEV_COREDUMP */
++
++#endif /* _COREDUMP_H_ */
 diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 181fd8e2e615..358c34eeb2d2 100644
+index 358c34eeb2d2..f8e44882439a 100644
 --- a/drivers/net/wireless/ath/ath10k/debug.c
 +++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -851,49 +851,6 @@ int ath10k_debug_fw_devcoredump(struct ath10k *ar)
- 	return 0;
- }
+@@ -18,10 +18,8 @@
+ #include <linux/module.h>
+ #include <linux/debugfs.h>
+ #include <linux/vmalloc.h>
+-#include <linux/utsname.h>
+ #include <linux/crc32.h>
+ #include <linux/firmware.h>
+-#include <linux/devcoredump.h>
  
--static int ath10k_fw_crash_dump_open(struct inode *inode, struct file *file)
--{
--	struct ath10k *ar = inode->i_private;
--	struct ath10k_dump_file_data *dump;
+ #include "core.h"
+ #include "debug.h"
+@@ -33,86 +31,6 @@
+ 
+ #define ATH10K_DEBUG_CAL_DATA_LEN 12064
+ 
+-#define ATH10K_FW_CRASH_DUMP_VERSION 1
 -
--	ath10k_warn(ar, "fw_crash_dump debugfs file is deprecated, please use /sys/class/devcoredump instead.");
+-/**
+- * enum ath10k_fw_crash_dump_type - types of data in the dump file
+- * @ATH10K_FW_CRASH_DUMP_REGDUMP: Register crash dump in binary format
+- */
+-enum ath10k_fw_crash_dump_type {
+-	ATH10K_FW_CRASH_DUMP_REGISTERS = 0,
+-	ATH10K_FW_CRASH_DUMP_CE_DATA = 1,
 -
--	dump = ath10k_build_dump_file(ar, true);
--	if (!dump)
--		return -ENODATA;
--
--	file->private_data = dump;
--
--	return 0;
--}
--
--static ssize_t ath10k_fw_crash_dump_read(struct file *file,
--					 char __user *user_buf,
--					 size_t count, loff_t *ppos)
--{
--	struct ath10k_dump_file_data *dump_file = file->private_data;
--
--	return simple_read_from_buffer(user_buf, count, ppos,
--				       dump_file,
--				       le32_to_cpu(dump_file->len));
--}
--
--static int ath10k_fw_crash_dump_release(struct inode *inode,
--					struct file *file)
--{
--	vfree(file->private_data);
--
--	return 0;
--}
--
--static const struct file_operations fops_fw_crash_dump = {
--	.open = ath10k_fw_crash_dump_open,
--	.read = ath10k_fw_crash_dump_read,
--	.release = ath10k_fw_crash_dump_release,
--	.owner = THIS_MODULE,
--	.llseek = default_llseek,
+-	ATH10K_FW_CRASH_DUMP_MAX,
 -};
+-
+-struct ath10k_tlv_dump_data {
+-	/* see ath10k_fw_crash_dump_type above */
+-	__le32 type;
+-
+-	/* in bytes */
+-	__le32 tlv_len;
+-
+-	/* pad to 32-bit boundaries as needed */
+-	u8 tlv_data[];
+-} __packed;
+-
+-struct ath10k_dump_file_data {
+-	/* dump file information */
+-
+-	/* "ATH10K-FW-DUMP" */
+-	char df_magic[16];
+-
+-	__le32 len;
+-
+-	/* file dump version */
+-	__le32 version;
+-
+-	/* some info we can get from ath10k struct that might help */
+-
+-	guid_t guid;
+-
+-	__le32 chip_id;
+-
+-	/* 0 for now, in place for later hardware */
+-	__le32 bus_type;
+-
+-	__le32 target_version;
+-	__le32 fw_version_major;
+-	__le32 fw_version_minor;
+-	__le32 fw_version_release;
+-	__le32 fw_version_build;
+-	__le32 phy_capability;
+-	__le32 hw_min_tx_power;
+-	__le32 hw_max_tx_power;
+-	__le32 ht_cap_info;
+-	__le32 vht_cap_info;
+-	__le32 num_rf_chains;
+-
+-	/* firmware version string */
+-	char fw_ver[ETHTOOL_FWVERS_LEN];
+-
+-	/* Kernel related information */
+-
+-	/* time-of-day stamp */
+-	__le64 tv_sec;
+-
+-	/* time-of-day stamp, nano-seconds */
+-	__le64 tv_nsec;
+-
+-	/* LINUX_VERSION_CODE */
+-	__le32 kernel_ver_code;
+-
+-	/* VERMAGIC_STRING */
+-	char kernel_ver[64];
+-
+-	/* room for growth w/out changing binary format */
+-	u8 unused[128];
+-
+-	/* struct ath10k_tlv_dump_data + more */
+-	u8 data[0];
+-} __packed;
+-
+ void ath10k_info(struct ath10k *ar, const char *fmt, ...)
+ {
+ 	struct va_format vaf = {
+@@ -711,146 +629,6 @@ static const struct file_operations fops_chip_id = {
+ 	.llseek = default_llseek,
+ };
+ 
+-struct ath10k_fw_crash_data *
+-ath10k_debug_get_new_fw_crash_data(struct ath10k *ar)
+-{
+-	struct ath10k_fw_crash_data *crash_data = ar->debug.fw_crash_data;
+-
+-	lockdep_assert_held(&ar->data_lock);
+-
+-	crash_data->crashed_since_read = true;
+-	guid_gen(&crash_data->guid);
+-	ktime_get_real_ts64(&crash_data->timestamp);
+-
+-	return crash_data;
+-}
+-EXPORT_SYMBOL(ath10k_debug_get_new_fw_crash_data);
+-
+-static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar,
+-							    bool mark_read)
+-{
+-	struct ath10k_fw_crash_data *crash_data = ar->debug.fw_crash_data;
+-	struct ath10k_ce_crash_hdr *ce_hdr;
+-	struct ath10k_dump_file_data *dump_data;
+-	struct ath10k_tlv_dump_data *dump_tlv;
+-	size_t hdr_len = sizeof(*dump_data);
+-	size_t len, sofar = 0;
+-	unsigned char *buf;
+-
+-	len = hdr_len;
+-	len += sizeof(*dump_tlv) + sizeof(crash_data->registers);
+-	len += sizeof(*dump_tlv) + sizeof(*ce_hdr) +
+-		CE_COUNT * sizeof(ce_hdr->entries[0]);
+-
+-	sofar += hdr_len;
+-
+-	/* This is going to get big when we start dumping FW RAM and such,
+-	 * so go ahead and use vmalloc.
+-	 */
+-	buf = vzalloc(len);
+-	if (!buf)
+-		return NULL;
+-
+-	spin_lock_bh(&ar->data_lock);
+-
+-	if (!crash_data->crashed_since_read) {
+-		spin_unlock_bh(&ar->data_lock);
+-		vfree(buf);
+-		return NULL;
+-	}
+-
+-	dump_data = (struct ath10k_dump_file_data *)(buf);
+-	strlcpy(dump_data->df_magic, "ATH10K-FW-DUMP",
+-		sizeof(dump_data->df_magic));
+-	dump_data->len = cpu_to_le32(len);
+-
+-	dump_data->version = cpu_to_le32(ATH10K_FW_CRASH_DUMP_VERSION);
+-
+-	guid_copy(&dump_data->guid, &crash_data->guid);
+-	dump_data->chip_id = cpu_to_le32(ar->chip_id);
+-	dump_data->bus_type = cpu_to_le32(0);
+-	dump_data->target_version = cpu_to_le32(ar->target_version);
+-	dump_data->fw_version_major = cpu_to_le32(ar->fw_version_major);
+-	dump_data->fw_version_minor = cpu_to_le32(ar->fw_version_minor);
+-	dump_data->fw_version_release = cpu_to_le32(ar->fw_version_release);
+-	dump_data->fw_version_build = cpu_to_le32(ar->fw_version_build);
+-	dump_data->phy_capability = cpu_to_le32(ar->phy_capability);
+-	dump_data->hw_min_tx_power = cpu_to_le32(ar->hw_min_tx_power);
+-	dump_data->hw_max_tx_power = cpu_to_le32(ar->hw_max_tx_power);
+-	dump_data->ht_cap_info = cpu_to_le32(ar->ht_cap_info);
+-	dump_data->vht_cap_info = cpu_to_le32(ar->vht_cap_info);
+-	dump_data->num_rf_chains = cpu_to_le32(ar->num_rf_chains);
+-
+-	strlcpy(dump_data->fw_ver, ar->hw->wiphy->fw_version,
+-		sizeof(dump_data->fw_ver));
+-
+-	dump_data->kernel_ver_code = 0;
+-	strlcpy(dump_data->kernel_ver, init_utsname()->release,
+-		sizeof(dump_data->kernel_ver));
+-
+-	dump_data->tv_sec = cpu_to_le64(crash_data->timestamp.tv_sec);
+-	dump_data->tv_nsec = cpu_to_le64(crash_data->timestamp.tv_nsec);
+-
+-	/* Gather crash-dump */
+-	dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
+-	dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_REGISTERS);
+-	dump_tlv->tlv_len = cpu_to_le32(sizeof(crash_data->registers));
+-	memcpy(dump_tlv->tlv_data, &crash_data->registers,
+-	       sizeof(crash_data->registers));
+-	sofar += sizeof(*dump_tlv) + sizeof(crash_data->registers);
+-
+-	dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
+-	dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_CE_DATA);
+-	dump_tlv->tlv_len = cpu_to_le32(sizeof(*ce_hdr) +
+-					CE_COUNT * sizeof(ce_hdr->entries[0]));
+-	ce_hdr = (struct ath10k_ce_crash_hdr *)(dump_tlv->tlv_data);
+-	ce_hdr->ce_count = cpu_to_le32(CE_COUNT);
+-	memset(ce_hdr->reserved, 0, sizeof(ce_hdr->reserved));
+-	memcpy(ce_hdr->entries, crash_data->ce_crash_data,
+-	       CE_COUNT * sizeof(ce_hdr->entries[0]));
+-	sofar += sizeof(*dump_tlv) + sizeof(*ce_hdr) +
+-		 CE_COUNT * sizeof(ce_hdr->entries[0]);
+-
+-	ar->debug.fw_crash_data->crashed_since_read = !mark_read;
+-
+-	spin_unlock_bh(&ar->data_lock);
+-
+-	return dump_data;
+-}
+-
+-int ath10k_debug_fw_devcoredump(struct ath10k *ar)
+-{
+-	struct ath10k_dump_file_data *dump;
+-	void *dump_ptr;
+-	u32 dump_len;
+-
+-	/* To keep the dump file available also for debugfs don't mark the
+-	 * file read, only debugfs should do that.
+-	 */
+-	dump = ath10k_build_dump_file(ar, false);
+-	if (!dump) {
+-		ath10k_warn(ar, "no crash dump data found for devcoredump");
+-		return -ENODATA;
+-	}
+-
+-	/* Make a copy of the dump file for dev_coredumpv() as during the
+-	 * transition period we need to own the original file. Once
+-	 * fw_crash_dump debugfs file is removed no need to have a copy
+-	 * anymore.
+-	 */
+-	dump_len = le32_to_cpu(dump->len);
+-	dump_ptr = vzalloc(dump_len);
+-
+-	if (!dump_ptr)
+-		return -ENOMEM;
+-
+-	memcpy(dump_ptr, dump, dump_len);
+-
+-	dev_coredumpv(ar->dev, dump_ptr, dump_len, GFP_KERNEL);
+-
+-	return 0;
+-}
 -
  static ssize_t ath10k_reg_addr_read(struct file *file,
  				    char __user *user_buf,
  				    size_t count, loff_t *ppos)
-@@ -2460,9 +2417,6 @@ int ath10k_debug_register(struct ath10k *ar)
- 	debugfs_create_file("simulate_fw_crash", 0600, ar->debug.debugfs_phy, ar,
- 			    &fops_simulate_fw_crash);
- 
--	debugfs_create_file("fw_crash_dump", 0400, ar->debug.debugfs_phy, ar,
--			    &fops_fw_crash_dump);
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 5e662994c49a..096b64473a18 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -100,13 +100,8 @@ void ath10k_debug_unregister(struct ath10k *ar);
+ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb);
+ void ath10k_debug_tpc_stats_process(struct ath10k *ar,
+ 				    struct ath10k_tpc_stats *tpc_stats);
+-struct ath10k_fw_crash_data *
+-ath10k_debug_get_new_fw_crash_data(struct ath10k *ar);
 -
- 	debugfs_create_file("reg_addr", 0600, ar->debug.debugfs_phy, ar,
- 			    &fops_reg_addr);
+ void ath10k_debug_dbglog_add(struct ath10k *ar, u8 *buffer, int len);
  
+-int ath10k_debug_fw_devcoredump(struct ath10k *ar);
+-
+ #define ATH10K_DFS_STAT_INC(ar, c) (ar->debug.dfs_stats.c++)
+ 
+ void ath10k_debug_get_et_strings(struct ieee80211_hw *hw,
+@@ -173,12 +168,6 @@ static inline void ath10k_debug_dbglog_add(struct ath10k *ar, u8 *buffer,
+ {
+ }
+ 
+-static inline struct ath10k_fw_crash_data *
+-ath10k_debug_get_new_fw_crash_data(struct ath10k *ar)
+-{
+-	return NULL;
+-}
+-
+ static inline u64 ath10k_debug_get_fw_dbglog_mask(struct ath10k *ar)
+ {
+ 	return 0;
+@@ -189,11 +178,6 @@ static inline u32 ath10k_debug_get_fw_dbglog_level(struct ath10k *ar)
+ 	return 0;
+ }
+ 
+-static inline int ath10k_debug_fw_devcoredump(struct ath10k *ar)
+-{
+-	return 0;
+-}
+-
+ #define ATH10K_DFS_STAT_INC(ar, c) do { } while (0)
+ 
+ #define ath10k_debug_get_et_strings NULL
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index ffea348b2190..1017a06b7edf 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -23,6 +23,7 @@
+ 
+ #include "core.h"
+ #include "debug.h"
++#include "coredump.h"
+ 
+ #include "targaddrs.h"
+ #include "bmi.h"
+@@ -1470,7 +1471,7 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
+ 
+ 	ar->stats.fw_crash_counter++;
+ 
+-	crash_data = ath10k_debug_get_new_fw_crash_data(ar);
++	crash_data = ath10k_coredump_new(ar);
+ 
+ 	if (crash_data)
+ 		scnprintf(guid, sizeof(guid), "%pUl", &crash_data->guid);
 
 
 _______________________________________________
