@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSOtz-0005w0-OX
- for ath10k@lists.infradead.org; Fri, 22 Dec 2017 15:06:25 +0000
+ id 1eSP6q-0005jF-A3
+ for ath10k@lists.infradead.org; Fri, 22 Dec 2017 15:19:43 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC v3 01/11] ath10k: high_latency detection
-Date: Fri, 22 Dec 2017 15:06:02 +0000
-Message-ID: <871sjmby5h.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [RFC v3 03/11] ath10k: per target configurablity of various items
+Date: Fri, 22 Dec 2017 15:19:15 +0000
+Message-ID: <87wp1eaiz0.fsf@kamboji.qca.qualcomm.com>
 References: <20170917194013.8658-1-erik.stromdahl@gmail.com>
- <20170917194013.8658-2-erik.stromdahl@gmail.com>
-In-Reply-To: <20170917194013.8658-2-erik.stromdahl@gmail.com> (Erik
- Stromdahl's message of "Sun, 17 Sep 2017 21:40:03 +0200")
+ <20170917194013.8658-4-erik.stromdahl@gmail.com>
+In-Reply-To: <20170917194013.8658-4-erik.stromdahl@gmail.com> (Erik
+ Stromdahl's message of "Sun, 17 Sep 2017 21:40:05 +0200")
 Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -30,56 +30,96 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@l
 
 Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
-> The setup of high latency chips (USB and SDIO) is
-> sometimes different than for chips using low latency
-> interfaces.
+> Added ability to set bus type and configure the max number of
+> peers in the ath10k_hw_params struct.
 >
-> The bus type is used to determine if the interface is
-> a high latency interface.
+> With this functionality it is possible to have a different
+> hw configuration depending on bus type for the same radio
+> chipset.
+>
+> E.g. SDIO and USB devices using the same chipset as PCIe
+> devices will potentially use different board files and perhaps
+> other configuration parameters.
+>
+> One such parameter is the max number of peers.
+> Instead of using a default value (suitable for PCIe devices)
+> derived from the WMI op version, a per target value can be
+> used instead.
+>
+> This is needed by the QCA9377 USB device in order to prevent
+> the target fw to crash after HTT RX ring cfg is issued.
+>
+> Apparently, the QCA9377 HL device does not seem to handle the
+> same amount of peers as the LL devices.
 >
 > Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
-> ---
->  drivers/net/wireless/ath/ath10k/core.c | 1 +
->  drivers/net/wireless/ath/ath10k/core.h | 7 +++++++
->  2 files changed, 8 insertions(+)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index a4f635820f35..f1924c974a12 100644
+
+I was a bit torn about this, I definitely see the need for this but on
+the other hand it creates duplicate data (for example two entries for
+QCA9377 chip). I guess this is the right approach, at least I cannot
+come up anything better.
+
+But this patch should be split into two:
+
+1) add bus field to struct ath10k_hw_params
+
+2) add max_num_peers field to struct ath10k_hw_params
+
+And it seems 2) is already implemented in commit 9f2992fea580 ("ath10k:
+wmi: get wmi init parameter values from hw params"), so hopefully we
+only need 1) anymore.
+
 > --- a/drivers/net/wireless/ath/ath10k/core.c
 > +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -2496,6 +2496,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
->  	ar->hw_rev = hw_rev;
->  	ar->hif.ops = hif_ops;
->  	ar->hif.bus = bus;
-> +	ar->is_high_latency = ath10k_is_high_latency(bus);
-
-I would prefer the bus driver to provide this via a parameter in
-ath10k_core_register() call.
-
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -789,6 +789,8 @@ struct ath10k {
+> @@ -1663,9 +1663,19 @@ static int ath10k_init_hw_params(struct ath10k *ar)
+>  	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
+>  		hw_params = &ath10k_hw_params_list[i];
 >  
->  	bool p2p;
->  
+> -		if (hw_params->id == ar->target_version &&
+> -		    hw_params->dev_id == ar->dev_id)
+> -			break;
+> +		if (ar->is_high_latency) {
+> +			/* High latency devices will use different fw depending
+> +			 * on if it is a USB or SDIO device.
+> +			 */
+> +			if (hw_params->bus == ar->hif.bus &&
+> +			    hw_params->id == ar->target_version &&
+> +			    hw_params->dev_id == ar->dev_id)
+> +				break;
+> +		} else {
+> +			if (hw_params->id == ar->target_version &&
+> +			    hw_params->dev_id == ar->dev_id)
+> +				break;
+> +		}
+
+I don't like the is_high_latency test here at all. The bus field should
+be checked with all entries, not just high latency ones. And because of
+this even most of the hw_param bus field entries were not initialised.
+
+So only thing to do is to initialise the bus field for all the entries
+and the ugly test here can be removed. Just remember that QCA4019 uses
+AHB, I think all the rest is PCI. Or do we have AHB devices supported?
+
+> @@ -550,6 +557,18 @@ struct ath10k_hw_params {
+>  	 */
+>  	int vht160_mcs_rx_highest;
+>  	int vht160_mcs_tx_highest;
+> +
+> +	/* max_num_peers can be used to override the setting derived from
+> +	 * the WMI op version. If this value is non-zero, it will always
+> +	 * be used instead of the default value derived from the WMI op
+> +	 * version.
+> +	 */
+> +	int max_num_peers;
+> +
+> +	/* Specifies whether or not the device is a high latency device */
 > +	bool is_high_latency;
 > +
->  	struct {
->  		enum ath10k_bus bus;
->  		const struct ath10k_hif_ops *ops;
-> @@ -1013,6 +1015,11 @@ static inline bool ath10k_peer_stats_enabled(struct ath10k *ar)
->  	return false;
->  }
->  
-> +static inline bool ath10k_is_high_latency(enum ath10k_bus bus)
-> +{
-> +	return ((bus == ATH10K_BUS_SDIO) || (bus == ATH10K_BUS_USB));
-> +}
+> +	enum ath10k_bus bus;
+>  };
 
-That way this function is not needed.
-
-Also I'm wondering should the parameter be actually 'struct
-ath10k_bus_params' (or something like that) to make it easier to extend.
+Please move the bus field between dev_id and name fields. It's so
+important that it should not be in the end.
 
 -- 
 Kalle Valo
