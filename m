@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eU8qP-0001rr-Kk
- for ath10k@lists.infradead.org; Wed, 27 Dec 2017 10:21:56 +0000
+ id 1eU8rL-000297-91
+ for ath10k@lists.infradead.org; Wed, 27 Dec 2017 10:22:54 +0000
 MIME-Version: 1.0
-Subject: Re: [v2,1/6] ath10k: remove deprecated fw_crash_dump debugfs file
+Subject: Re: ath10k: update copyright year
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <151394990944.9382.5479713630153339961.stgit@potku.adurom.net>
-References: <151394990944.9382.5479713630153339961.stgit@potku.adurom.net>
-Message-ID: <653962c19c4c4f72a4aa11672c4f2973@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 27 Dec 2017 11:21:37 +0100
+In-Reply-To: <151396027273.24600.8839394576351249944.stgit@potku.adurom.net>
+References: <151396027273.24600.8839394576351249944.stgit@potku.adurom.net>
+Message-ID: <70cd54183d42490aa9558fcb5a808859@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 27 Dec 2017 11:22:32 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +27,16 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Kalle Valo <kvalo@qca.qualcomm.com> wrote:
 
-> The fw_crash_dump file was deprecated by commmit 727000e6af34 ("ath10k: support
-> dev_coredump for crash dump") in v4.11 in favor of dev_coredump interface,
-> remove it now for good. Everyone should use dev_coredump now.
+> Update year for Qualcomm Atheros, Inc. copyrights.
 > 
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-6 patches applied to ath-next branch of ath.git, thanks.
+Patch applied to ath-next branch of ath.git, thanks.
 
-d333bdd9b065 ath10k: remove deprecated fw_crash_dump debugfs file
-f25b9f285a0e ath10k: refactor firmware crashdump code to coredump.c
-e2fcf60c6fe8 ath10k: detach coredump.c from debug.c
-5c9d0a20202b ath10k: add coredump_mask module parameter
-703f261dd77f ath10k: add memory dump support for QCA6174/QCA9377
-1a8e5c618bfa ath10k: add memory dump support QCA988X
+8b1083d61882 ath10k: update copyright year
 
 -- 
-https://patchwork.kernel.org/patch/10130491/
+https://patchwork.kernel.org/patch/10130915/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
