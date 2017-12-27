@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eU8oA-00006d-Ik
- for ath10k@lists.infradead.org; Wed, 27 Dec 2017 10:19:36 +0000
+ id 1eU8qP-0001rr-Kk
+ for ath10k@lists.infradead.org; Wed, 27 Dec 2017 10:21:56 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: advertising tdls wider bandwidth support for 5GHz
+Subject: Re: [v2,1/6] ath10k: remove deprecated fw_crash_dump debugfs file
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-In-Reply-To: <1513866642-709-1-git-send-email-bpothuno@qti.qualcomm.com>
-References: <1513866642-709-1-git-send-email-bpothuno@qti.qualcomm.com>
-Message-ID: <497244afaa474095914d5d6821dcdf83@euamsexm01a.eu.qualcomm.com>
-Date: Wed, 27 Dec 2017 11:19:17 +0100
+In-Reply-To: <151394990944.9382.5479713630153339961.stgit@potku.adurom.net>
+References: <151394990944.9382.5479713630153339961.stgit@potku.adurom.net>
+Message-ID: <653962c19c4c4f72a4aa11672c4f2973@euamsexm01a.eu.qualcomm.com>
+Date: Wed, 27 Dec 2017 11:21:37 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +22,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: bpothuno@qti.qualcomm.com
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-bpothuno@qti.qualcomm.com wrote:
+Kalle Valo <kvalo@qca.qualcomm.com> wrote:
 
-> Enable TDLS wider bandwidth support for 5GHz based on firmware wmi capabilities.
+> The fw_crash_dump file was deprecated by commmit 727000e6af34 ("ath10k: support
+> dev_coredump for crash dump") in v4.11 in favor of dev_coredump interface,
+> remove it now for good. Everyone should use dev_coredump now.
 > 
-> This patch is required for chipset QCA9888. Tested with firmware version
-> 10.4-3.5.1-00018.
-> 
-> Signed-off-by: Balaji Pothunoori <bpothuno@qti.qualcomm.com>
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Patch applied to ath-next branch of ath.git, thanks.
+6 patches applied to ath-next branch of ath.git, thanks.
 
-14d65775687c ath10k: advertise TDLS wider bandwidth support for 5GHz
+d333bdd9b065 ath10k: remove deprecated fw_crash_dump debugfs file
+f25b9f285a0e ath10k: refactor firmware crashdump code to coredump.c
+e2fcf60c6fe8 ath10k: detach coredump.c from debug.c
+5c9d0a20202b ath10k: add coredump_mask module parameter
+703f261dd77f ath10k: add memory dump support for QCA6174/QCA9377
+1a8e5c618bfa ath10k: add memory dump support QCA988X
 
 -- 
-https://patchwork.kernel.org/patch/10127717/
+https://patchwork.kernel.org/patch/10130491/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
