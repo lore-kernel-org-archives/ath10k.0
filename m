@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-he1eur01on0061.outbound.protection.outlook.com
- ([104.47.0.61] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eUGbY-0003Pn-6Z
- for ath10k@lists.infradead.org; Wed, 27 Dec 2017 18:39:07 +0000
-Subject: Re: [PATCH] ath10k: Add tx ack signal support for management frames
-References: <1514369696-28029-1-git-send-email-vnaralas@qti.qualcomm.com>
-From: Peter Oh <peter.oh@bowerswilkins.com>
-Message-ID: <636fb1f4-6cc7-df9a-e310-8c577909590e@bowerswilkins.com>
-Date: Wed, 27 Dec 2017 10:22:57 -0800
+ id 1eUGlW-00075d-VT
+ for ath10k@lists.infradead.org; Wed, 27 Dec 2017 18:49:24 +0000
+Received: by mail-wm0-x243.google.com with SMTP id n138so40693441wmg.2
+ for <ath10k@lists.infradead.org>; Wed, 27 Dec 2017 10:49:12 -0800 (PST)
+Subject: Re: [PATCH 03/11] ath10k_sdio: DMA bounce buffers for read write
+References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
+ <1506793068-27445-4-git-send-email-alagusankar@silex-india.com>
+ <87lghu9247.fsf@kamboji.qca.qualcomm.com>
+ <5281f48b04f8f593ec06e72a041ec021@silex-india.com>
+From: Arend van Spriel <arend.vanspriel@broadcom.com>
+Message-ID: <5A43EB27.9040100@broadcom.com>
+Date: Wed, 27 Dec 2017 19:49:11 +0100
 MIME-Version: 1.0
-In-Reply-To: <1514369696-28029-1-git-send-email-vnaralas@qti.qualcomm.com>
+In-Reply-To: <5281f48b04f8f593ec06e72a041ec021@silex-india.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +27,57 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: vnaralas@qti.qualcomm.com, ath10k@lists.infradead.org
+To: Alagu Sankar <alagusankar@silex-india.com>, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: silexcommon@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
+On 12/25/2017 1:26 PM, Alagu Sankar wrote:
+> On 2017-12-22 21:38, Kalle Valo wrote:
+>> silexcommon@gmail.com writes:
+>>
+>>> From: Alagu Sankar <alagusankar@silex-india.com>
+>>>
+>>> Some SD host controllers still need bounce buffers for SDIO data
+>>> transfers. While the transfers worked fine on x86 platforms,
+>>> this is found to be required for i.MX6 based systems.
+>>>
+>>> Changes are similar to and derived from the ath6kl sdio driver.
+>>>
+>>> Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
+>>
+>> Why is the bounce buffer needed exactly, what are the symptoms etc? To
+>> me this sounds like an ugly workaround for a SDIO controller driver bug.
+>
+> We faced problems with i.MX6. The authentication frame sent by the
+> driver never reached the air. The host driver accepted the buffer, but
+> did not send out the packet to the sdio module. No errors reported
+> anywhere, but the buffer is not accepted due to alignment. The same
+> driver however works fine without bounce buffer on x86 platform with
+> stdhci drivers. To make it compliant with all host controllers, we
+> introduced the bounce buffers, similar to what was done in ath6kl_sdio
+> drivers.
 
+As mentioned by Adrian the comment from Kalle is that you are solving an 
+issue caused by the sdio host controller. Although strictly speaking it 
+may not be a driver bug, but a requirement of the host controller 
+hardware. Either way it seems the obvious place to solve this is in the 
+sdio host controller driver to which the issue applies. Or make it a 
+generic quirk which can be enabled for sdio host controller drivers that 
+need it. However, there may reasons to do it in the networking driver. 
+For instance, the buffer you want to transfer might be the data buffer 
+of an sk_buff you got from the networking stack and you want to have a 
+zero-copy solution towards the wireless device.
 
-On 12/27/2017 02:14 AM, vnaralas@qti.qualcomm.com wrote:
-> From: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
->
-> This patch add support to get RSSI from acknowledgment
-> frames for transmitted management frames.
->
-> hardware_used: QCA4019, QCA9984.
-> firmware version: 10.4-3.5.3-00052.
->
-> Signed-off-by: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
-> ---
->   drivers/net/wireless/ath/ath10k/core.h   |  2 ++
->   drivers/net/wireless/ath/ath10k/htt.h    |  9 ++++++++-
->   drivers/net/wireless/ath/ath10k/htt_rx.c |  9 +++++++++
->   drivers/net/wireless/ath/ath10k/txrx.c   |  4 ++++
->   drivers/net/wireless/ath/ath10k/wmi.h    | 18 ++++++++++++++++++
->   5 files changed, 41 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 643041e..64c23a5 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -51,6 +51,8 @@
->   /* Antenna noise floor */
->   #define ATH10K_DEFAULT_NOISE_FLOOR -95
->   
-> +#define ATH10K_INVALID_RSSI 128
-> +
->   #define ATH10K_MAX_NUM_MGMT_PENDING 128
->   
->   /* number of failed packets (20 packets with 16 sw reties each) */
-> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-> index 6305308..2168558d 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt.h
-> +++ b/drivers/net/wireless/ath/ath10k/htt.h
-> @@ -480,12 +480,18 @@ struct htt_ver_resp {
->   	u8 rsvd0;
->   } __packed;
->   
-> +#define HTT_MGMT_TX_CMPL_FLAG_ACK_RSSI BIT(0)
-> +
-> +#define HTT_MGMT_TX_CMPL_INFO_ACK_RSSI	GENMASK(7, 0)
-Better to have xxx_MASK as postfix to represent its usage.
+Your solution checks for 4-byte alignment which is a requirement for 
+ADMA as per SDIO spec. However, I have come across host controllers 
+which have different alignment requirements. Also when 
+CONFIG_ARCH_DMA_ADDR_T_64BIT is enabled the alignment changes from 4 to 
+8 bytes. So it seems you are solving a specific case you have come 
+across, but you may want to design for more flexibility.
+
+Hope this helps.
+
+Regards,
+Arend
 
 _______________________________________________
 ath10k mailing list
