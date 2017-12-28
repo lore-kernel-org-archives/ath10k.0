@@ -1,20 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eUXWv-0001mg-1u
- for ath10k@lists.infradead.org; Thu, 28 Dec 2017 12:43:33 +0000
-Received: by mail-lf0-x244.google.com with SMTP id h137so996627lfe.8
- for <ath10k@lists.infradead.org>; Thu, 28 Dec 2017 04:43:14 -0800 (PST)
-Subject: Re: [RFC v3 03/11] ath10k: per target configurablity of various items
-References: <20170917194013.8658-1-erik.stromdahl@gmail.com>
- <20170917194013.8658-4-erik.stromdahl@gmail.com>
- <87wp1eaiz0.fsf@kamboji.qca.qualcomm.com>
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Message-ID: <c34f5c79-61a9-28b2-439c-f02045d06299@gmail.com>
-Date: Thu, 28 Dec 2017 13:43:10 +0100
+ id 1eUXgK-0005zT-Fd
+ for ath10k@lists.infradead.org; Thu, 28 Dec 2017 12:53:10 +0000
+From: <vnaralas@qti.qualcomm.com>
+Subject: [PATCHv2] ath10k: Add tx ack signal support for management frames
+Date: Thu, 28 Dec 2017 18:22:38 +0530
+Message-ID: <1514465558-15861-1-git-send-email-vnaralas@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87wp1eaiz0.fsf@kamboji.qca.qualcomm.com>
-Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,133 +16,174 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
 
+From: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
 
+This patch add support to get RSSI from acknowledgment
+frames for transmitted management frames.
 
-On 2017-12-22 16:19, Kalle Valo wrote:
-> Erik Stromdahl <erik.stromdahl@gmail.com> writes:
-> 
->> Added ability to set bus type and configure the max number of
->> peers in the ath10k_hw_params struct.
->>
->> With this functionality it is possible to have a different
->> hw configuration depending on bus type for the same radio
->> chipset.
->>
->> E.g. SDIO and USB devices using the same chipset as PCIe
->> devices will potentially use different board files and perhaps
->> other configuration parameters.
->>
->> One such parameter is the max number of peers.
->> Instead of using a default value (suitable for PCIe devices)
->> derived from the WMI op version, a per target value can be
->> used instead.
->>
->> This is needed by the QCA9377 USB device in order to prevent
->> the target fw to crash after HTT RX ring cfg is issued.
->>
->> Apparently, the QCA9377 HL device does not seem to handle the
->> same amount of peers as the LL devices.
->>
->> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
-> 
-> I was a bit torn about this, I definitely see the need for this but on
-> the other hand it creates duplicate data (for example two entries for
-> QCA9377 chip). I guess this is the right approach, at least I cannot
-> come up anything better.
-> 
-> But this patch should be split into two:
-> 
-> 1) add bus field to struct ath10k_hw_params
-> 
-> 2) add max_num_peers field to struct ath10k_hw_params
-> 
-> And it seems 2) is already implemented in commit 9f2992fea580 ("ath10k:
-> wmi: get wmi init parameter values from hw params"), so hopefully we
-> only need 1) anymore.
-> 
+hardware_used: QCA4019, QCA9984.
+firmware version: 10.4-3.5.3-00052.
 
-Before commit 9f2992fea580a48135591873e5e3ac7e01444207,
-TARGET_TLV_NUM_PEERS was used both in the WMI TLV init command
-and as the value of *max_num_peers* in *struct ath10k* (ar->max_num_peers).
+Signed-off-by: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
+---
+v2:
+ * renamed HTT_MGMT_TX_CMPL_INFO_ACK_RSSI to  HTT_MGMT_TX_CMPL_INFO_ACK_RSSI_MASK
+ * removed WMI_SERVICE_TDLS_WIDER_BANDWIDTH, which has already added recently.
 
-commit 9f2992fea580a48135591873e5e3ac7e01444207 does not set
-*ar->max_num_peers* to the value of *ar->hw_param->num_peers*.
+ drivers/net/wireless/ath/ath10k/core.h   |  2 ++
+ drivers/net/wireless/ath/ath10k/htt.h    |  9 ++++++++-
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  7 +++++++
+ drivers/net/wireless/ath/ath10k/txrx.c   |  4 ++++
+ drivers/net/wireless/ath/ath10k/wmi.h    | 13 +++++++++++++
+ 5 files changed, 34 insertions(+), 1 deletion(-)
 
-Is this correct?
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index fe6b303..21d9beb 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -51,6 +51,8 @@
+ /* Antenna noise floor */
+ #define ATH10K_DEFAULT_NOISE_FLOOR -95
+ 
++#define ATH10K_INVALID_RSSI 128
++
+ #define ATH10K_MAX_NUM_MGMT_PENDING 128
+ 
+ /* number of failed packets (20 packets with 16 sw reties each) */
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 7836400..ada680c 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -533,12 +533,18 @@ struct htt_ver_resp {
+ 	u8 rsvd0;
+ } __packed;
+ 
++#define HTT_MGMT_TX_CMPL_FLAG_ACK_RSSI BIT(0)
++
++#define HTT_MGMT_TX_CMPL_INFO_ACK_RSSI_MASK	GENMASK(7, 0)
++
+ struct htt_mgmt_tx_completion {
+ 	u8 rsvd0;
+ 	u8 rsvd1;
+-	u8 rsvd2;
++	u8 flags;
+ 	__le32 desc_id;
+ 	__le32 status;
++	__le32 ppdu_id;
++	__le32 info;
+ } __packed;
+ 
+ #define HTT_RX_INDICATION_INFO0_EXT_TID_MASK  (0x1F)
+@@ -1648,6 +1654,7 @@ struct htt_resp {
+ struct htt_tx_done {
+ 	u16 msdu_id;
+ 	u16 status;
++	u8 ack_rssi;
+ };
+ 
+ enum htt_tx_compl_state {
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 6d96f95..a34d5c7d 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2668,6 +2668,13 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		switch (status) {
+ 		case HTT_MGMT_TX_STATUS_OK:
+ 			tx_done.status = HTT_TX_COMPL_STATE_ACK;
++			if (test_bit(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
++				     ar->wmi.svc_map) &&
++			    (resp->mgmt_tx_completion.flags &
++			     HTT_MGMT_TX_CMPL_FLAG_ACK_RSSI)) {
++				tx_done.ack_rssi = FIELD_GET(HTT_MGMT_TX_CMPL_INFO_ACK_RSSI_MASK,
++							     resp->mgmt_tx_completion.info);
++			}
+ 			break;
+ 		case HTT_MGMT_TX_STATUS_RETRY:
+ 			tx_done.status = HTT_TX_COMPL_STATE_NOACK;
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 5b3b021..103b8f5 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -117,6 +117,10 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 	    (info->flags & IEEE80211_TX_CTL_NO_ACK))
+ 		info->flags |= IEEE80211_TX_STAT_NOACK_TRANSMITTED;
+ 
++	if (tx_done->ack_rssi && tx_done->ack_rssi != ATH10K_INVALID_RSSI)
++		info->status.ack_signal = ATH10K_DEFAULT_NOISE_FLOOR +
++						tx_done->ack_rssi;
++
+ 	ieee80211_tx_status(htt->ar->hw, msdu);
+ 	/* we do not own the msdu anymore */
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index b0ed38c..30b77fd 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -197,6 +197,8 @@ enum wmi_service {
+ 	WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
+ 	WMI_SERVICE_MGMT_TX_WMI,
+ 	WMI_SERVICE_TDLS_WIDER_BANDWIDTH,
++	WMI_SERVICE_RESET_CHIP,
++	WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
+ 
+ 	/* keep last */
+ 	WMI_SERVICE_MAX,
+@@ -234,6 +236,8 @@ enum wmi_10x_service {
+ 	WMI_10X_SERVICE_MESH,
+ 	WMI_10X_SERVICE_EXT_RES_CFG_SUPPORT,
+ 	WMI_10X_SERVICE_PEER_STATS,
++	WMI_10X_SERVICE_RESET_CHIP,
++	WMI_10X_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
+ };
+ 
+ enum wmi_main_service {
+@@ -339,6 +343,7 @@ enum wmi_10_4_service {
+ 	WMI_10_4_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE,
+ 	WMI_10_4_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
+ 	WMI_10_4_SERVICE_TDLS_WIDER_BANDWIDTH,
++	WMI_10_4_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
+ };
+ 
+ static inline char *wmi_service_name(int service_id)
+@@ -448,6 +453,8 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE);
+ 	SVCSTR(WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY);
+ 	SVCSTR(WMI_SERVICE_TDLS_WIDER_BANDWIDTH);
++	SVCSTR(WMI_SERVICE_RESET_CHIP);
++	SVCSTR(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS);
+ 	default:
+ 		return NULL;
+ 	}
+@@ -538,6 +545,10 @@ static inline void wmi_10x_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
+ 	SVCMAP(WMI_10X_SERVICE_PEER_STATS,
+ 	       WMI_SERVICE_PEER_STATS, len);
++	SVCMAP(WMI_10X_SERVICE_RESET_CHIP,
++	       WMI_SERVICE_RESET_CHIP, len);
++	SVCMAP(WMI_10X_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
++	       WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS, len);
+ }
+ 
+ static inline void wmi_main_svc_map(const __le32 *in, unsigned long *out,
+@@ -746,6 +757,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY, len);
+ 	SVCMAP(WMI_10_4_SERVICE_TDLS_WIDER_BANDWIDTH,
+ 	       WMI_SERVICE_TDLS_WIDER_BANDWIDTH, len);
++	SVCMAP(WMI_10_4_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
++	       WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS, len);
+ }
+ 
+ #undef SVCMAP
+-- 
+2.7.4
 
-As I see it, there is a possible mismatch between what is written
-to the device in the WMI init message and the value of *ar->max_num_peers*.
-
-Do we still need *max_num_peers* in *struct ath10k* now that we have the
-*num_peers* member in *struct ath10k_hw_params*?
-
-I am currently rewriting my HL patches and I was thinking about adding
-a separate patch related to this.
-
->> --- a/drivers/net/wireless/ath/ath10k/core.c
->> +++ b/drivers/net/wireless/ath/ath10k/core.c
->> @@ -1663,9 +1663,19 @@ static int ath10k_init_hw_params(struct ath10k *ar)
->>   	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
->>   		hw_params = &ath10k_hw_params_list[i];
->>   
->> -		if (hw_params->id == ar->target_version &&
->> -		    hw_params->dev_id == ar->dev_id)
->> -			break;
->> +		if (ar->is_high_latency) {
->> +			/* High latency devices will use different fw depending
->> +			 * on if it is a USB or SDIO device.
->> +			 */
->> +			if (hw_params->bus == ar->hif.bus &&
->> +			    hw_params->id == ar->target_version &&
->> +			    hw_params->dev_id == ar->dev_id)
->> +				break;
->> +		} else {
->> +			if (hw_params->id == ar->target_version &&
->> +			    hw_params->dev_id == ar->dev_id)
->> +				break;
->> +		}
-> 
-> I don't like the is_high_latency test here at all. The bus field should
-> be checked with all entries, not just high latency ones. And because of
-> this even most of the hw_param bus field entries were not initialised.
-> 
-> So only thing to do is to initialise the bus field for all the entries
-> and the ugly test here can be removed. Just remember that QCA4019 uses
-> AHB, I think all the rest is PCI. Or do we have AHB devices supported?
-
-I noticed that there has been introduced a new bus type (SNOC).
-Do you know which devices are SNOC devices?
-Btw, what the heck is SNOC anyway?
-
-> 
->> @@ -550,6 +557,18 @@ struct ath10k_hw_params {
->>   	 */
->>   	int vht160_mcs_rx_highest;
->>   	int vht160_mcs_tx_highest;
->> +
->> +	/* max_num_peers can be used to override the setting derived from
->> +	 * the WMI op version. If this value is non-zero, it will always
->> +	 * be used instead of the default value derived from the WMI op
->> +	 * version.
->> +	 */
->> +	int max_num_peers;
->> +
->> +	/* Specifies whether or not the device is a high latency device */
->> +	bool is_high_latency;
->> +
->> +	enum ath10k_bus bus;
->>   };
-> 
-> Please move the bus field between dev_id and name fields. It's so
-> important that it should not be in the end.
-> 
 
 _______________________________________________
 ath10k mailing list
