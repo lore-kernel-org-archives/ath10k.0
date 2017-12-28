@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eUdX1-0005mM-2h
- for ath10k@lists.infradead.org; Thu, 28 Dec 2017 19:07:56 +0000
-Received: by mail-lf0-x244.google.com with SMTP id a12so9869990lfe.13
- for <ath10k@lists.infradead.org>; Thu, 28 Dec 2017 11:07:44 -0800 (PST)
+ id 1eUdX1-0005mU-UU
+ for ath10k@lists.infradead.org; Thu, 28 Dec 2017 19:07:57 +0000
+Received: by mail-lf0-x241.google.com with SMTP id u84so26196489lff.7
+ for <ath10k@lists.infradead.org>; Thu, 28 Dec 2017 11:07:47 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [PATCH 0/3] ath10k: a few minor fixes
-Date: Thu, 28 Dec 2017 20:06:42 +0100
-Message-Id: <20171228190645.25773-1-erik.stromdahl@gmail.com>
+Subject: [PATCH 3/3] ath10k: bugfix: add USB case in ath10k_core_probe_fw
+Date: Thu, 28 Dec 2017 20:06:45 +0100
+Message-Id: <20171228190645.25773-4-erik.stromdahl@gmail.com>
+In-Reply-To: <20171228190645.25773-1-erik.stromdahl@gmail.com>
+References: <20171228190645.25773-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +27,23 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-I discovered these issues while working with the next round of
-patches for High Latency devices.
-
-In order to reduce the size of that patchset, I think it is best
-if these patches could be added in advance.
-
-The last patch fixes an actual bug that was introduced in
-commit 71e9c29fbd28ec14bb8f920c7afd515a75c00234
-
-The other two are just cleanups.
-
-Erik Stromdahl (3):
-  ath10k: fix spelling error
-  ath10k: remove unused prototype
-  ath10k: bugfix: add USB case in ath10k_core_probe_fw
-
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
  drivers/net/wireless/ath/ath10k/core.c | 1 +
- drivers/net/wireless/ath/ath10k/htt.h  | 1 -
- drivers/net/wireless/ath/ath10k/wmi.h  | 2 +-
- 3 files changed, 2 insertions(+), 2 deletions(-)
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 51444d34a06c..fe9341c97f31 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2427,6 +2427,7 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 		break;
+ 	case ATH10K_BUS_PCI:
+ 	case ATH10K_BUS_AHB:
++	case ATH10K_BUS_USB:
+ 		memset(&target_info, 0, sizeof(target_info));
+ 		ret = ath10k_bmi_get_target_info(ar, &target_info);
+ 		if (ret) {
 -- 
 2.15.1
 
