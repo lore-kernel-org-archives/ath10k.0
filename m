@@ -1,13 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail.topsec.com.cn ([111.200.39.52]
+ helo=stgateway.topsec.com.cn)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eUHuf-0000V2-JD
- for ath10k@lists.infradead.org; Wed, 27 Dec 2017 20:02:55 +0000
-From: <ryanhsu@qti.qualcomm.com>
-Subject: [PATCH] ath10k: add sanity check to ie_len before parsing fw/board ie
-Date: Wed, 27 Dec 2017 12:02:11 -0800
-Message-ID: <1514404931-9078-1-git-send-email-ryanhsu@qti.qualcomm.com>
+ id 1eUV8T-0007hQ-Sg
+ for ath10k@lists.infradead.org; Thu, 28 Dec 2017 10:10:04 +0000
+Received: from mail.topsec.com.cn (localhost [192.168.66.9] (may be forged))
+ by stgateway.topsec.com.cn (8.15.2/2.57/5.78) with ESMTP id vBSA9fdl017697
+ for <ath10k@lists.infradead.org>; Thu, 28 Dec 2017 18:09:41 +0800
+Received: from 10231zhj ([192.168.23.173]) (authenticated bits=0)
+ by mail.topsec.com.cn (8.15.2/2.57/5.78) with ESMTPA id vBSA9eB4003276
+ for <ath10k@lists.infradead.org>; Thu, 28 Dec 2017 18:09:41 +0800
+From: "zhj" <zhj@topsec.com.cn>
+Subject: About promis mode
+Date: Thu, 28 Dec 2017 18:07:29 +0800
+Message-ID: <000e01d37fc3$ab4e6bf0$01eb43d0$@topsec.com.cn>
 MIME-Version: 1.0
+Content-Language: zh-cn
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,73 +24,23 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: ryanhsu@qti.qualcomm.com
+To: ath10k@lists.infradead.org
 
-From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
-
-Validate ie_len after the alignment padding before access the buffer
-to avoid potential overflow.
-
-Signed-off-by: Ryan Hsu <ryanhsu@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 042175a..2f24c17 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1240,7 +1240,10 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- 		len -= sizeof(*hdr);
- 		data = hdr->data;
- 
--		if (len < ALIGN(ie_len, 4)) {
-+		/* jump over the padding */
-+		ie_len = ALIGN(ie_len, 4);
-+
-+		if (len < ie_len) {
- 			ath10k_err(ar, "invalid length for board ie_id %d ie_len %zu len %zu\n",
- 				   ie_id, ie_len, len);
- 			ret = -EINVAL;
-@@ -1279,8 +1282,6 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- 			goto out;
- 		}
- 
--		/* jump over the padding */
--		ie_len = ALIGN(ie_len, 4);
- 
- 		len -= ie_len;
- 		data += ie_len;
-@@ -1412,6 +1413,9 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
- 		len -= sizeof(*hdr);
- 		data += sizeof(*hdr);
- 
-+		/* jump over the padding */
-+		ie_len = ALIGN(ie_len, 4);
-+
- 		if (len < ie_len) {
- 			ath10k_err(ar, "invalid length for FW IE %d (%zu < %zu)\n",
- 				   ie_id, len, ie_len);
-@@ -1517,9 +1521,6 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
- 			break;
- 		}
- 
--		/* jump over the padding */
--		ie_len = ALIGN(ie_len, 4);
--
- 		len -= ie_len;
- 		data += ie_len;
- 	}
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGmjrApJIHVzZWQgdG8gd29yayBvbiB0aGUgQVI5MzQ0K0FSOTM4MiBwbGF0Zm9ybSAodXNpbmcg
+b3BlbndydCthdGg5ayBkcml2ZXIpIHRvCmFjaGlldmUgdGhlIGZvbGxvd2luZyBmdW5jdGlvbnM6
+IHNldHRpbmcgdXAgUHJvbWlzY3VvdXMgbW9kZSwgc2Nhbm5pbmcgYWxsCmNoYW5uZWxzLGNhcHR1
+cmluZyByYWRpbyBwYWNrZXRzLCBJZiBmaW5kaW5nIEFQIGZpc2hpbmcsIHRoZW4gc2VuZGluZyBk
+ZWF1dGgKcGFja2V0cyB0byBicmVhayBpbGxlZ2FsIGNvbm5lY3Rpb25zLgoKTm93IHdlIHVzZSBh
+dGgxMGsgdG8gZHJpdmUgUUNBOTg4WCAob3BlbndydCBwbGF0Zm9ybSwgUUNBOTU2WCtRQ0E5ODhY
+KSwKd2hpY2ggY2FuIHNldCB1cCBwcm9taXNjdW91cyBtb2RlIHRvIGNhdGNoIHdpcmVsZXNzIHBh
+Y2tldHMsIGJ1dCBjYW5ub3Qgc2VuZApwYWNrZXRzIHRvIGJyZWFrIGNvbm5lY3Rpb24uIEhvd2V2
+ZXIgMi40RyB3aXJlbGVzcyBuZXR3b3JrIGNhcmQgY2FuIGFjaGlldmUKdGhlIGFib3ZlIGZ1bmN0
+aW9ucyhpbmNsdWRpbmcgdGhlIHN3aXRjaGluZyBjaGFubmVsKS4KCkNhbiB0aGlzIGJlIGRvbmUg
+b24gUUNBOTg4WD8gCldoZXJlIGlzIHRoZXJlIGEgcGF0Y2ggdG8gaW1wbGVtZW50IHRoaXMgZnVu
+Y3Rpb24/CgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
