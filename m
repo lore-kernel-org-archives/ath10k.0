@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eUXgK-0005zT-Fd
- for ath10k@lists.infradead.org; Thu, 28 Dec 2017 12:53:10 +0000
-From: <vnaralas@qti.qualcomm.com>
-Subject: [PATCHv2] ath10k: Add tx ack signal support for management frames
-Date: Thu, 28 Dec 2017 18:22:38 +0530
-Message-ID: <1514465558-15861-1-git-send-email-vnaralas@qti.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eUc5u-0002dS-4n
+ for ath10k@lists.infradead.org; Thu, 28 Dec 2017 17:35:51 +0000
+Message-ID: <5A454F78.8070502@candelatech.com>
+Date: Thu, 28 Dec 2017 12:09:28 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: About promis mode
+References: <000e01d37fc3$ab4e6bf0$01eb43d0$@topsec.com.cn>
+In-Reply-To: <000e01d37fc3$ab4e6bf0$01eb43d0$@topsec.com.cn>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,176 +18,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
+To: zhj <zhj@topsec.com.cn>, ath10k@lists.infradead.org
 
-From: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
-
-This patch add support to get RSSI from acknowledgment
-frames for transmitted management frames.
-
-hardware_used: QCA4019, QCA9984.
-firmware version: 10.4-3.5.3-00052.
-
-Signed-off-by: Venkateswara Naralasetty <vnaralas@qti.qualcomm.com>
----
-v2:
- * renamed HTT_MGMT_TX_CMPL_INFO_ACK_RSSI to  HTT_MGMT_TX_CMPL_INFO_ACK_RSSI_MASK
- * removed WMI_SERVICE_TDLS_WIDER_BANDWIDTH, which has already added recently.
-
- drivers/net/wireless/ath/ath10k/core.h   |  2 ++
- drivers/net/wireless/ath/ath10k/htt.h    |  9 ++++++++-
- drivers/net/wireless/ath/ath10k/htt_rx.c |  7 +++++++
- drivers/net/wireless/ath/ath10k/txrx.c   |  4 ++++
- drivers/net/wireless/ath/ath10k/wmi.h    | 13 +++++++++++++
- 5 files changed, 34 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index fe6b303..21d9beb 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -51,6 +51,8 @@
- /* Antenna noise floor */
- #define ATH10K_DEFAULT_NOISE_FLOOR -95
- 
-+#define ATH10K_INVALID_RSSI 128
-+
- #define ATH10K_MAX_NUM_MGMT_PENDING 128
- 
- /* number of failed packets (20 packets with 16 sw reties each) */
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 7836400..ada680c 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -533,12 +533,18 @@ struct htt_ver_resp {
- 	u8 rsvd0;
- } __packed;
- 
-+#define HTT_MGMT_TX_CMPL_FLAG_ACK_RSSI BIT(0)
-+
-+#define HTT_MGMT_TX_CMPL_INFO_ACK_RSSI_MASK	GENMASK(7, 0)
-+
- struct htt_mgmt_tx_completion {
- 	u8 rsvd0;
- 	u8 rsvd1;
--	u8 rsvd2;
-+	u8 flags;
- 	__le32 desc_id;
- 	__le32 status;
-+	__le32 ppdu_id;
-+	__le32 info;
- } __packed;
- 
- #define HTT_RX_INDICATION_INFO0_EXT_TID_MASK  (0x1F)
-@@ -1648,6 +1654,7 @@ struct htt_resp {
- struct htt_tx_done {
- 	u16 msdu_id;
- 	u16 status;
-+	u8 ack_rssi;
- };
- 
- enum htt_tx_compl_state {
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 6d96f95..a34d5c7d 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2668,6 +2668,13 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		switch (status) {
- 		case HTT_MGMT_TX_STATUS_OK:
- 			tx_done.status = HTT_TX_COMPL_STATE_ACK;
-+			if (test_bit(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
-+				     ar->wmi.svc_map) &&
-+			    (resp->mgmt_tx_completion.flags &
-+			     HTT_MGMT_TX_CMPL_FLAG_ACK_RSSI)) {
-+				tx_done.ack_rssi = FIELD_GET(HTT_MGMT_TX_CMPL_INFO_ACK_RSSI_MASK,
-+							     resp->mgmt_tx_completion.info);
-+			}
- 			break;
- 		case HTT_MGMT_TX_STATUS_RETRY:
- 			tx_done.status = HTT_TX_COMPL_STATE_NOACK;
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 5b3b021..103b8f5 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -117,6 +117,10 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 	    (info->flags & IEEE80211_TX_CTL_NO_ACK))
- 		info->flags |= IEEE80211_TX_STAT_NOACK_TRANSMITTED;
- 
-+	if (tx_done->ack_rssi && tx_done->ack_rssi != ATH10K_INVALID_RSSI)
-+		info->status.ack_signal = ATH10K_DEFAULT_NOISE_FLOOR +
-+						tx_done->ack_rssi;
-+
- 	ieee80211_tx_status(htt->ar->hw, msdu);
- 	/* we do not own the msdu anymore */
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index b0ed38c..30b77fd 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -197,6 +197,8 @@ enum wmi_service {
- 	WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
- 	WMI_SERVICE_MGMT_TX_WMI,
- 	WMI_SERVICE_TDLS_WIDER_BANDWIDTH,
-+	WMI_SERVICE_RESET_CHIP,
-+	WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
- 
- 	/* keep last */
- 	WMI_SERVICE_MAX,
-@@ -234,6 +236,8 @@ enum wmi_10x_service {
- 	WMI_10X_SERVICE_MESH,
- 	WMI_10X_SERVICE_EXT_RES_CFG_SUPPORT,
- 	WMI_10X_SERVICE_PEER_STATS,
-+	WMI_10X_SERVICE_RESET_CHIP,
-+	WMI_10X_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
- };
- 
- enum wmi_main_service {
-@@ -339,6 +343,7 @@ enum wmi_10_4_service {
- 	WMI_10_4_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE,
- 	WMI_10_4_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
- 	WMI_10_4_SERVICE_TDLS_WIDER_BANDWIDTH,
-+	WMI_10_4_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
- };
- 
- static inline char *wmi_service_name(int service_id)
-@@ -448,6 +453,8 @@ static inline char *wmi_service_name(int service_id)
- 	SVCSTR(WMI_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE);
- 	SVCSTR(WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY);
- 	SVCSTR(WMI_SERVICE_TDLS_WIDER_BANDWIDTH);
-+	SVCSTR(WMI_SERVICE_RESET_CHIP);
-+	SVCSTR(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS);
- 	default:
- 		return NULL;
- 	}
-@@ -538,6 +545,10 @@ static inline void wmi_10x_svc_map(const __le32 *in, unsigned long *out,
- 	       WMI_SERVICE_EXT_RES_CFG_SUPPORT, len);
- 	SVCMAP(WMI_10X_SERVICE_PEER_STATS,
- 	       WMI_SERVICE_PEER_STATS, len);
-+	SVCMAP(WMI_10X_SERVICE_RESET_CHIP,
-+	       WMI_SERVICE_RESET_CHIP, len);
-+	SVCMAP(WMI_10X_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
-+	       WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS, len);
- }
- 
- static inline void wmi_main_svc_map(const __le32 *in, unsigned long *out,
-@@ -746,6 +757,8 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
- 	       WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY, len);
- 	SVCMAP(WMI_10_4_SERVICE_TDLS_WIDER_BANDWIDTH,
- 	       WMI_SERVICE_TDLS_WIDER_BANDWIDTH, len);
-+	SVCMAP(WMI_10_4_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
-+	       WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS, len);
- }
- 
- #undef SVCMAP
--- 
-2.7.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTIvMjgvMjAxNyAwMjowNyBBTSwgemhqIHdyb3RlOgo+IEhpo6wKPiBJIHVzZWQgdG8gd29y
+ayBvbiB0aGUgQVI5MzQ0K0FSOTM4MiBwbGF0Zm9ybSAodXNpbmcgb3BlbndydCthdGg5ayBkcml2
+ZXIpIHRvCj4gYWNoaWV2ZSB0aGUgZm9sbG93aW5nIGZ1bmN0aW9uczogc2V0dGluZyB1cCBQcm9t
+aXNjdW91cyBtb2RlLCBzY2FubmluZyBhbGwKPiBjaGFubmVscyxjYXB0dXJpbmcgcmFkaW8gcGFj
+a2V0cywgSWYgZmluZGluZyBBUCBmaXNoaW5nLCB0aGVuIHNlbmRpbmcgZGVhdXRoCj4gcGFja2V0
+cyB0byBicmVhayBpbGxlZ2FsIGNvbm5lY3Rpb25zLgo+Cj4gTm93IHdlIHVzZSBhdGgxMGsgdG8g
+ZHJpdmUgUUNBOTg4WCAob3BlbndydCBwbGF0Zm9ybSwgUUNBOTU2WCtRQ0E5ODhYKSwKPiB3aGlj
+aCBjYW4gc2V0IHVwIHByb21pc2N1b3VzIG1vZGUgdG8gY2F0Y2ggd2lyZWxlc3MgcGFja2V0cywg
+YnV0IGNhbm5vdCBzZW5kCj4gcGFja2V0cyB0byBicmVhayBjb25uZWN0aW9uLiBIb3dldmVyIDIu
+NEcgd2lyZWxlc3MgbmV0d29yayBjYXJkIGNhbiBhY2hpZXZlCj4gdGhlIGFib3ZlIGZ1bmN0aW9u
+cyhpbmNsdWRpbmcgdGhlIHN3aXRjaGluZyBjaGFubmVsKS4KPgo+IENhbiB0aGlzIGJlIGRvbmUg
+b24gUUNBOTg4WD8KPiBXaGVyZSBpcyB0aGVyZSBhIHBhdGNoIHRvIGltcGxlbWVudCB0aGlzIGZ1
+bmN0aW9uPwoKSSB0aGluayB0aGlzIHdpbGwgcmVxdWlyZSBtb2RpZmllZCBmaXJtd2FyZS4gIEkg
+cmVjZW50bHkgdGVzdGVkIHNvbWUgaW1wcm92ZW1lbnRzCnRvIHJhdyB0eCBvbiBtb25pdG9yIGRl
+dmljZXMgd2l0aCBDVCBmaXJtd2FyZS4uLnlvdSBtaWdodCBnaXZlIGl0IGEgdHJ5LiAgSXQgaXMK
+YXZhaWxhYmxlIGluIExFREUgYWxyZWFkeSwgdGhvdWdoIHRoZSBuZXcgZmVhdHVyZXMgdGhhdCBh
+bGxvd3Mgc3BlY2lmeWluZyB0aGUgcmF0ZS1jb2RlCmlzIG9ubHkgaW4gYmV0YSB3YXZlLTEgZmly
+bXdhcmUgYW5kIGRyaXZlcnM6CgpodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbS9hdGgxMGsucGhw
+CgpUaGFua3MsCkJlbgoKPgo+Cj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFk
+ZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
+MTBrCj4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEg
+VGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
+CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
