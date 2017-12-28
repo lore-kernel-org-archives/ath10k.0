@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eUc5u-0002dS-4n
- for ath10k@lists.infradead.org; Thu, 28 Dec 2017 17:35:51 +0000
-Message-ID: <5A454F78.8070502@candelatech.com>
-Date: Thu, 28 Dec 2017 12:09:28 -0800
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: About promis mode
-References: <000e01d37fc3$ab4e6bf0$01eb43d0$@topsec.com.cn>
-In-Reply-To: <000e01d37fc3$ab4e6bf0$01eb43d0$@topsec.com.cn>
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eUdX1-0005mM-2h
+ for ath10k@lists.infradead.org; Thu, 28 Dec 2017 19:07:56 +0000
+Received: by mail-lf0-x244.google.com with SMTP id a12so9869990lfe.13
+ for <ath10k@lists.infradead.org>; Thu, 28 Dec 2017 11:07:44 -0800 (PST)
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Subject: [PATCH 0/3] ath10k: a few minor fixes
+Date: Thu, 28 Dec 2017 20:06:42 +0100
+Message-Id: <20171228190645.25773-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,35 +17,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: zhj <zhj@topsec.com.cn>, ath10k@lists.infradead.org
+To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-T24gMTIvMjgvMjAxNyAwMjowNyBBTSwgemhqIHdyb3RlOgo+IEhpo6wKPiBJIHVzZWQgdG8gd29y
-ayBvbiB0aGUgQVI5MzQ0K0FSOTM4MiBwbGF0Zm9ybSAodXNpbmcgb3BlbndydCthdGg5ayBkcml2
-ZXIpIHRvCj4gYWNoaWV2ZSB0aGUgZm9sbG93aW5nIGZ1bmN0aW9uczogc2V0dGluZyB1cCBQcm9t
-aXNjdW91cyBtb2RlLCBzY2FubmluZyBhbGwKPiBjaGFubmVscyxjYXB0dXJpbmcgcmFkaW8gcGFj
-a2V0cywgSWYgZmluZGluZyBBUCBmaXNoaW5nLCB0aGVuIHNlbmRpbmcgZGVhdXRoCj4gcGFja2V0
-cyB0byBicmVhayBpbGxlZ2FsIGNvbm5lY3Rpb25zLgo+Cj4gTm93IHdlIHVzZSBhdGgxMGsgdG8g
-ZHJpdmUgUUNBOTg4WCAob3BlbndydCBwbGF0Zm9ybSwgUUNBOTU2WCtRQ0E5ODhYKSwKPiB3aGlj
-aCBjYW4gc2V0IHVwIHByb21pc2N1b3VzIG1vZGUgdG8gY2F0Y2ggd2lyZWxlc3MgcGFja2V0cywg
-YnV0IGNhbm5vdCBzZW5kCj4gcGFja2V0cyB0byBicmVhayBjb25uZWN0aW9uLiBIb3dldmVyIDIu
-NEcgd2lyZWxlc3MgbmV0d29yayBjYXJkIGNhbiBhY2hpZXZlCj4gdGhlIGFib3ZlIGZ1bmN0aW9u
-cyhpbmNsdWRpbmcgdGhlIHN3aXRjaGluZyBjaGFubmVsKS4KPgo+IENhbiB0aGlzIGJlIGRvbmUg
-b24gUUNBOTg4WD8KPiBXaGVyZSBpcyB0aGVyZSBhIHBhdGNoIHRvIGltcGxlbWVudCB0aGlzIGZ1
-bmN0aW9uPwoKSSB0aGluayB0aGlzIHdpbGwgcmVxdWlyZSBtb2RpZmllZCBmaXJtd2FyZS4gIEkg
-cmVjZW50bHkgdGVzdGVkIHNvbWUgaW1wcm92ZW1lbnRzCnRvIHJhdyB0eCBvbiBtb25pdG9yIGRl
-dmljZXMgd2l0aCBDVCBmaXJtd2FyZS4uLnlvdSBtaWdodCBnaXZlIGl0IGEgdHJ5LiAgSXQgaXMK
-YXZhaWxhYmxlIGluIExFREUgYWxyZWFkeSwgdGhvdWdoIHRoZSBuZXcgZmVhdHVyZXMgdGhhdCBh
-bGxvd3Mgc3BlY2lmeWluZyB0aGUgcmF0ZS1jb2RlCmlzIG9ubHkgaW4gYmV0YSB3YXZlLTEgZmly
-bXdhcmUgYW5kIGRyaXZlcnM6CgpodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbS9hdGgxMGsucGhw
-CgpUaGFua3MsCkJlbgoKPgo+Cj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCj4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEg
-VGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
-CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+I discovered these issues while working with the next round of
+patches for High Latency devices.
+
+In order to reduce the size of that patchset, I think it is best
+if these patches could be added in advance.
+
+The last patch fixes an actual bug that was introduced in
+commit 71e9c29fbd28ec14bb8f920c7afd515a75c00234
+
+The other two are just cleanups.
+
+Erik Stromdahl (3):
+  ath10k: fix spelling error
+  ath10k: remove unused prototype
+  ath10k: bugfix: add USB case in ath10k_core_probe_fw
+
+ drivers/net/wireless/ath/ath10k/core.c | 1 +
+ drivers/net/wireless/ath/ath10k/htt.h  | 1 -
+ drivers/net/wireless/ath/ath10k/wmi.h  | 2 +-
+ 3 files changed, 2 insertions(+), 2 deletions(-)
+
+-- 
+2.15.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
