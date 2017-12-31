@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eVhSe-0005zj-Dz
+ id 1eVhSe-0005zJ-En
  for ath10k@lists.infradead.org; Sun, 31 Dec 2017 17:31:55 +0000
-Received: by mail-lf0-x242.google.com with SMTP id f3so16110763lfe.4
- for <ath10k@lists.infradead.org>; Sun, 31 Dec 2017 09:31:45 -0800 (PST)
+Received: by mail-lf0-x242.google.com with SMTP id h5so8624788lfj.2
+ for <ath10k@lists.infradead.org>; Sun, 31 Dec 2017 09:31:43 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v4 12/18] ath10k: htt: RX ring config HL support
-Date: Sun, 31 Dec 2017 18:29:19 +0100
-Message-Id: <20171231172925.24014-13-erik.stromdahl@gmail.com>
+Subject: [RFC v4 09/18] ath10k: add start_once support
+Date: Sun, 31 Dec 2017 18:29:16 +0100
+Message-Id: <20171231172925.24014-10-erik.stromdahl@gmail.com>
 In-Reply-To: <20171231172925.24014-1-erik.stromdahl@gmail.com>
 References: <20171231172925.24014-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,88 +27,104 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Special HTT RX ring config message used by high latency
-devices.
+Add possibility to configure the driver to only start target once.
+This can reduce startup time of SDIO devices significantly since
+loading the firmware can take a substantial amount of time.
 
-The main difference between HL and LL is that HL devices
-do not use shared memory between device and host and thus,
-no host paddr's are added to the RX config message.
+The patch is also necessary for high latency devices in general
+since it does not seem to be possible to rerun the BMI phase
+(fw upload) without power-cycling the device.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_tx.c | 52 ++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c | 19 +++++++++++++++----
+ drivers/net/wireless/ath/ath10k/core.h |  2 ++
+ drivers/net/wireless/ath/ath10k/hw.h   |  6 ++++++
+ 3 files changed, 23 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 321f131e417d..1f6470de7b8d 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -934,6 +934,57 @@ static int ath10k_htt_send_rx_ring_cfg_64(struct ath10k_htt *htt)
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 4e849ec924c6..d42f6a1e5bfc 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2130,6 +2130,9 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 	int status;
+ 	u32 val;
+ 
++	if (ar->is_started && ar->hw_params.start_once)
++		return 0;
++
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+ 	clear_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
+@@ -2364,6 +2367,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 	if (status)
+ 		goto err_hif_stop;
+ 
++	ar->is_started = true;
  	return 0;
+ 
+ err_hif_stop:
+@@ -2416,6 +2420,7 @@ void ath10k_core_stop(struct ath10k *ar)
+ 	ath10k_htt_tx_stop(&ar->htt);
+ 	ath10k_htt_rx_free(&ar->htt);
+ 	ath10k_wmi_detach(ar);
++	ar->is_started = false;
  }
+ EXPORT_SYMBOL(ath10k_core_stop);
  
-+static int ath10k_htt_send_rx_ring_cfg_hl(struct ath10k_htt *htt)
-+{
-+	struct ath10k *ar = htt->ar;
-+	struct sk_buff *skb;
-+	struct htt_cmd *cmd;
-+	struct htt_rx_ring_setup_ring32 *ring;
-+	const int num_rx_ring = 1;
-+	u16 flags;
-+	int len;
-+	int ret;
+@@ -2545,12 +2550,18 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 		goto err_unlock;
+ 	}
+ 
+-	ath10k_debug_print_boot_info(ar);
+-	ath10k_core_stop(ar);
++	/* Leave target running if hw_params.start_once is set */
++	if (ar->hw_params.start_once) {
++		mutex_unlock(&ar->conf_mutex);
++	} else {
++		ath10k_debug_print_boot_info(ar);
++		ath10k_core_stop(ar);
+ 
+-	mutex_unlock(&ar->conf_mutex);
++		mutex_unlock(&ar->conf_mutex);
 +
-+	/*
-+	 * the HW expects the buffer to be an integral number of 4-byte
-+	 * "words"
-+	 */
-+	BUILD_BUG_ON(!IS_ALIGNED(HTT_RX_BUF_SIZE, 4));
-+	BUILD_BUG_ON((HTT_RX_BUF_SIZE & HTT_MAX_CACHE_LINE_SIZE_MASK) != 0);
-+
-+	len = sizeof(cmd->hdr) + sizeof(cmd->rx_setup_32.hdr)
-+	    + (sizeof(*ring) * num_rx_ring);
-+	skb = ath10k_htc_alloc_skb(ar, len);
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	skb_put(skb, len);
-+
-+	cmd = (struct htt_cmd *)skb->data;
-+	ring = &cmd->rx_setup_32.rings[0];
-+
-+	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_RX_RING_CFG;
-+	cmd->rx_setup_32.hdr.num_rings = 1;
-+
-+	flags = 0;
-+	flags |= HTT_RX_RING_FLAGS_MSDU_PAYLOAD;
-+	flags |= HTT_RX_RING_FLAGS_UNICAST_RX;
-+	flags |= HTT_RX_RING_FLAGS_MULTICAST_RX;
-+
-+	memset(ring, 0, sizeof(*ring));
-+	ring->rx_ring_len = __cpu_to_le16(HTT_RX_RING_SIZE_MIN);
-+	ring->rx_ring_bufsize = __cpu_to_le16(HTT_RX_BUF_SIZE);
-+	ring->flags = __cpu_to_le16(flags);
-+
-+	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
-+	if (ret) {
-+		dev_kfree_skb_any(skb);
-+		return ret;
++		ath10k_hif_power_down(ar);
 +	}
+ 
+-	ath10k_hif_power_down(ar);
+ 	return 0;
+ 
+ err_unlock:
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 32cfa14d3053..ed96f9ef5209 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -798,6 +798,8 @@ struct ath10k {
+ 
+ 	bool p2p;
+ 
++	bool is_started;
 +
-+	return 0;
-+}
+ 	struct {
+ 		enum ath10k_bus bus;
+ 		const struct ath10k_hif_ops *ops;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 53276950c95c..98f9f3ccbf96 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -576,6 +576,12 @@ struct ath10k_hw_params {
+ 
+ 	/* Target rx ring fill level */
+ 	u32 rx_ring_fill_level;
 +
- int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
- 				u8 max_subfrms_ampdu,
- 				u8 max_subfrms_amsdu)
-@@ -1566,6 +1617,7 @@ static const struct ath10k_htt_tx_ops htt_tx_ops_64 = {
++	/* Specifies whether or not the device should be started once.
++	 * If set, the device will be started once by the early fw probe
++	 * and it will not be terminated afterwards.
++	 */
++	bool start_once;
  };
  
- static const struct ath10k_htt_tx_ops htt_tx_ops_hl = {
-+	.htt_send_rx_ring_cfg = ath10k_htt_send_rx_ring_cfg_hl,
- 	.htt_send_frag_desc_bank_cfg = ath10k_htt_send_frag_desc_bank_cfg_32,
- };
- 
+ struct htt_rx_desc;
 -- 
 2.15.1
 
