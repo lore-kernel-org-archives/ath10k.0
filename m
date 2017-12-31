@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eVhSe-00060p-E1
+ id 1eVhSe-0005yw-Ds
  for ath10k@lists.infradead.org; Sun, 31 Dec 2017 17:31:55 +0000
-Received: by mail-lf0-x242.google.com with SMTP id w196so34314745lff.5
- for <ath10k@lists.infradead.org>; Sun, 31 Dec 2017 09:31:47 -0800 (PST)
+Received: by mail-lf0-x242.google.com with SMTP id c19so32383624lfg.3
+ for <ath10k@lists.infradead.org>; Sun, 31 Dec 2017 09:31:39 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v4 14/18] ath10k: htt: High latency RX support
-Date: Sun, 31 Dec 2017 18:29:21 +0100
-Message-Id: <20171231172925.24014-15-erik.stromdahl@gmail.com>
+Subject: [RFC v4 05/18] ath10k: add bus type check in ath10k_init_hw_params
+Date: Sun, 31 Dec 2017 18:29:12 +0100
+Message-Id: <20171231172925.24014-6-erik.stromdahl@gmail.com>
 In-Reply-To: <20171231172925.24014-1-erik.stromdahl@gmail.com>
 References: <20171231172925.24014-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,302 +27,184 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Special HTT RX handling for high latency interfaces.
+The bus type is used together with the other hw parameters
+to find a matching entry in ath10k_hw_params_list for the device.
 
-Since no DMA physical addresses are used in the RX ring
-config message (this is not supported by the high latency
-devices), no RX ring is allocated.
-All RX skb's are allocated by the driver and passed directly
-to mac80211 in the HTT RX indication handler.
-
-A nice side effect of this is that no huge buffer will be
-allocated with dma_alloc_coherent. On embedded systems with
-limited memory resources, the allocation of the RX ring is
-prone to fail.
-
-Some tweaks made to "make it work":
-
-Removal of protected bit in 802.11 header frame control field.
-The chipset seems to do hw decryption but the frame_control
-protected bit is still set.
-
-This is necessary for mac80211 not to drop the frame.
+This is necessary since HL devices can have the same dev_id and
+target_version as a corresponding LL device (same chipset) and
+yet use a totally different configuration.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h     |  47 +++++++++++
- drivers/net/wireless/ath/ath10k/htt_rx.c  | 126 +++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/rx_desc.h |  15 ++++
- 3 files changed, 185 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 16 +++++++++++++++-
+ drivers/net/wireless/ath/ath10k/core.h |  8 --------
+ drivers/net/wireless/ath/ath10k/hw.h   |  9 +++++++++
+ 3 files changed, 24 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 3fa1be7749b2..e5fb8e0155b6 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -699,6 +699,15 @@ struct htt_rx_indication {
- 	struct htt_rx_indication_mpdu_range mpdu_ranges[0];
- } __packed;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 09b6ad481414..41e6b5a08885 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -64,6 +64,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA988X_HW_2_0_VERSION,
+ 		.dev_id = QCA988X_2_0_DEVICE_ID,
++		.bus = ATH10K_BUS_PCI,
+ 		.name = "qca988x hw2.0",
+ 		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 7,
+@@ -93,6 +94,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+ 		.dev_id = QCA9887_1_0_DEVICE_ID,
++		.bus = ATH10K_BUS_PCI,
+ 		.name = "qca9887 hw1.0",
+ 		.patch_load_addr = QCA9887_HW_1_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 7,
+@@ -122,6 +124,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+ 		.dev_id = QCA6164_2_1_DEVICE_ID,
++		.bus = ATH10K_BUS_PCI,
+ 		.name = "qca6164 hw2.1",
+ 		.patch_load_addr = QCA6174_HW_2_1_PATCH_LOAD_ADDR,
+ 		.uart_pin = 6,
+@@ -150,6 +153,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+ 		.dev_id = QCA6174_2_1_DEVICE_ID,
++		.bus = ATH10K_BUS_PCI,
+ 		.name = "qca6174 hw2.1",
+ 		.patch_load_addr = QCA6174_HW_2_1_PATCH_LOAD_ADDR,
+ 		.uart_pin = 6,
+@@ -178,6 +182,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+ 		.dev_id = QCA6174_2_1_DEVICE_ID,
++		.bus = ATH10K_BUS_PCI,
+ 		.name = "qca6174 hw3.0",
+ 		.patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 6,
+@@ -206,6 +211,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+ 		.dev_id = QCA6174_2_1_DEVICE_ID,
++		.bus = ATH10K_BUS_PCI,
+ 		.name = "qca6174 hw3.2",
+ 		.patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 6,
+@@ -237,6 +243,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+ 		.dev_id = QCA99X0_2_0_DEVICE_ID,
++		.bus = ATH10K_BUS_PCI,
+ 		.name = "qca99x0 hw2.0",
+ 		.patch_load_addr = QCA99X0_HW_2_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 7,
+@@ -271,6 +278,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+ 		.dev_id = QCA9984_1_0_DEVICE_ID,
++		.bus = ATH10K_BUS_PCI,
+ 		.name = "qca9984/qca9994 hw1.0",
+ 		.patch_load_addr = QCA9984_HW_1_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 7,
+@@ -310,6 +318,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+ 		.dev_id = QCA9888_2_0_DEVICE_ID,
++		.bus = ATH10K_BUS_PCI,
+ 		.name = "qca9888 hw2.0",
+ 		.patch_load_addr = QCA9888_HW_2_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 7,
+@@ -348,6 +357,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+ 		.dev_id = QCA9377_1_0_DEVICE_ID,
++		.bus = ATH10K_BUS_PCI,
+ 		.name = "qca9377 hw1.0",
+ 		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 6,
+@@ -376,6 +386,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+ 		.dev_id = QCA9377_1_0_DEVICE_ID,
++		.bus = ATH10K_BUS_PCI,
+ 		.name = "qca9377 hw1.1",
+ 		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 6,
+@@ -406,6 +417,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+ 		.dev_id = 0,
++		.bus = ATH10K_BUS_AHB,
+ 		.name = "qca4019 hw1.0",
+ 		.patch_load_addr = QCA4019_HW_1_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 7,
+@@ -441,6 +453,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = WCN3990_HW_1_0_DEV_VERSION,
+ 		.dev_id = 0,
++		.bus = ATH10K_BUS_PCI,
+ 		.name = "wcn3990 hw1.0",
+ 		.continuous_frag_desc = true,
+ 		.tx_chain_mask = 0x7,
+@@ -1790,7 +1803,8 @@ static int ath10k_init_hw_params(struct ath10k *ar)
+ 	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
+ 		hw_params = &ath10k_hw_params_list[i];
  
-+/* High latency version of the RX indication */
-+struct htt_rx_indication_hl {
-+	struct htt_rx_indication_hdr hdr;
-+	struct htt_rx_indication_ppdu ppdu;
-+	struct htt_rx_indication_prefix prefix;
-+	struct fw_rx_desc_hl fw_desc;
-+	struct htt_rx_indication_mpdu_range mpdu_ranges[0];
-+} __packed;
-+
- static inline struct htt_rx_indication_mpdu_range *
- 		htt_rx_ind_get_mpdu_ranges(struct htt_rx_indication *rx_ind)
+-		if (hw_params->id == ar->target_version &&
++		if (hw_params->bus == ar->hif.bus &&
++		    hw_params->id == ar->target_version &&
+ 		    hw_params->dev_id == ar->dev_id)
+ 			break;
+ 	}
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 17827ce3752d..32cfa14d3053 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -87,14 +87,6 @@
+ 
+ struct ath10k;
+ 
+-enum ath10k_bus {
+-	ATH10K_BUS_PCI,
+-	ATH10K_BUS_AHB,
+-	ATH10K_BUS_SDIO,
+-	ATH10K_BUS_USB,
+-	ATH10K_BUS_SNOC,
+-};
+-
+ static inline const char *ath10k_bus_str(enum ath10k_bus bus)
  {
-@@ -711,6 +720,18 @@ static inline struct htt_rx_indication_mpdu_range *
- 	return ptr;
- }
+ 	switch (bus) {
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 6203bc65799b..3043fd17942e 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -20,6 +20,14 @@
  
-+static inline struct htt_rx_indication_mpdu_range *
-+	htt_rx_ind_get_mpdu_ranges_hl(struct htt_rx_indication_hl *rx_ind)
-+{
-+	void *ptr = rx_ind;
-+
-+	ptr += sizeof(rx_ind->hdr)
-+	     + sizeof(rx_ind->ppdu)
-+	     + sizeof(rx_ind->prefix)
-+	     + sizeof(rx_ind->fw_desc);
-+	return ptr;
-+}
-+
- enum htt_rx_flush_mpdu_status {
- 	HTT_RX_FLUSH_MPDU_DISCARD = 0,
- 	HTT_RX_FLUSH_MPDU_REORDER = 1,
-@@ -1621,6 +1642,7 @@ struct htt_resp {
- 		struct htt_mgmt_tx_completion mgmt_tx_completion;
- 		struct htt_data_tx_completion data_tx_completion;
- 		struct htt_rx_indication rx_ind;
-+		struct htt_rx_indication_hl rx_ind_hl;
- 		struct htt_rx_fragment_indication rx_frag_ind;
- 		struct htt_rx_peer_map peer_map;
- 		struct htt_rx_peer_unmap peer_unmap;
-@@ -1973,6 +1995,31 @@ struct htt_rx_desc {
- 	u8 msdu_payload[0];
- };
+ #include "targaddrs.h"
  
-+#define HTT_RX_DESC_HL_INFO_SEQ_NUM_MASK           0x00000fff
-+#define HTT_RX_DESC_HL_INFO_SEQ_NUM_LSB            0
-+#define HTT_RX_DESC_HL_INFO_ENCRYPTED_MASK         0x00001000
-+#define HTT_RX_DESC_HL_INFO_ENCRYPTED_LSB          12
-+#define HTT_RX_DESC_HL_INFO_CHAN_INFO_PRESENT_MASK 0x00002000
-+#define HTT_RX_DESC_HL_INFO_CHAN_INFO_PRESENT_LSB  13
-+#define HTT_RX_DESC_HL_INFO_MCAST_BCAST_MASK       0x00008000
-+#define HTT_RX_DESC_HL_INFO_MCAST_BCAST_LSB        15
-+#define HTT_RX_DESC_HL_INFO_FRAGMENT_MASK          0x00010000
-+#define HTT_RX_DESC_HL_INFO_FRAGMENT_LSB           16
-+#define HTT_RX_DESC_HL_INFO_KEY_ID_OCT_MASK        0x01fe0000
-+#define HTT_RX_DESC_HL_INFO_KEY_ID_OCT_LSB         17
-+
-+struct htt_rx_desc_base_hl {
-+	__le32 info; /* HTT_RX_DESC_HL_INFO_ */
++enum ath10k_bus {
++	ATH10K_BUS_PCI,
++	ATH10K_BUS_AHB,
++	ATH10K_BUS_SDIO,
++	ATH10K_BUS_USB,
++	ATH10K_BUS_SNOC,
 +};
 +
-+struct htt_rx_chan_info {
-+	__le16 primary_chan_center_freq_mhz;
-+	__le16 contig_chan1_center_freq_mhz;
-+	__le16 contig_chan2_center_freq_mhz;
-+	u8 phy_mode;
-+	u8 reserved;
-+} __packed;
-+
- #define HTT_RX_DESC_ALIGN 8
+ #define ATH10K_FW_DIR			"ath10k"
  
- #define HTT_MAC_ADDR_LEN 6
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index f7d071ca8b76..3e0273ea9ad0 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -263,6 +263,9 @@ int ath10k_htt_rx_ring_refill(struct ath10k *ar)
- 	struct ath10k_htt *htt = &ar->htt;
- 	int ret;
- 
-+	if (ar->is_high_latency)
-+		return 0;
-+
- 	spin_lock_bh(&htt->rx_ring.lock);
- 	ret = ath10k_htt_rx_ring_fill_n(htt, (htt->rx_ring.fill_level -
- 					      htt->rx_ring.fill_cnt));
-@@ -276,6 +279,9 @@ int ath10k_htt_rx_ring_refill(struct ath10k *ar)
- 
- void ath10k_htt_rx_free(struct ath10k_htt *htt)
- {
-+	if (htt->ar->is_high_latency)
-+		return;
-+
- 	del_timer_sync(&htt->rx_ring.refill_retry_timer);
- 
- 	skb_queue_purge(&htt->rx_msdus_q);
-@@ -565,6 +571,9 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
- 	size_t size;
- 	struct timer_list *timer = &htt->rx_ring.refill_retry_timer;
- 
-+	if (ar->is_high_latency)
-+		return 0;
-+
- 	htt->rx_confused = false;
- 
- 	/* XXX: The fill level could be changed during runtime in response to
-@@ -1794,8 +1803,114 @@ static int ath10k_htt_rx_handle_amsdu(struct ath10k_htt *htt)
- 	return 0;
- }
- 
--static void ath10k_htt_rx_proc_rx_ind(struct ath10k_htt *htt,
--				      struct htt_rx_indication *rx)
-+static bool ath10k_htt_rx_proc_rx_ind_hl(struct ath10k_htt *htt,
-+					 struct htt_rx_indication_hl *rx,
-+					 struct sk_buff *skb)
-+{
-+	struct ath10k *ar = htt->ar;
-+	struct ath10k_peer *peer;
-+	struct htt_rx_indication_mpdu_range *mpdu_ranges;
-+	struct fw_rx_desc_hl *fw_desc;
-+	struct ieee80211_hdr *hdr;
-+	struct ieee80211_rx_status *rx_status;
-+	u16 peer_id;
-+	u8 rx_desc_len;
-+	int num_mpdu_ranges;
-+	size_t tot_hdr_len;
-+	struct ieee80211_channel *ch;
-+
-+	peer_id = __le16_to_cpu(rx->hdr.peer_id);
-+
-+	peer = ath10k_peer_find_by_id(ar, peer_id);
-+	if (!peer)
-+		ath10k_warn(ar, "Got RX ind from invalid peer: %u\n", peer_id);
-+
-+	num_mpdu_ranges = MS(__le32_to_cpu(rx->hdr.info1),
-+			     HTT_RX_INDICATION_INFO1_NUM_MPDU_RANGES);
-+	mpdu_ranges = htt_rx_ind_get_mpdu_ranges_hl(rx);
-+	fw_desc = &rx->fw_desc;
-+	rx_desc_len = fw_desc->len;
-+
-+	/* I have not yet seen any case where num_mpdu_ranges > 1.
-+	 * qcacld does not seem handle that case either, so we introduce the
-+	 * same limitiation here as well.
-+	 */
-+	if (num_mpdu_ranges > 1)
-+		ath10k_warn(ar,
-+			    "Unsupported number of MPDU ranges: %d, ignoring all but the first\n",
-+			    num_mpdu_ranges);
-+
-+	if (mpdu_ranges->mpdu_range_status !=
-+	    HTT_RX_IND_MPDU_STATUS_OK) {
-+		ath10k_warn(ar, "MPDU range status: %d\n",
-+			    mpdu_ranges->mpdu_range_status);
-+		goto err;
-+	}
-+
-+	/* Strip off all headers before the MAC header before delivery to
-+	 * mac80211
-+	 */
-+	tot_hdr_len = sizeof(struct htt_resp_hdr) + sizeof(rx->hdr) +
-+		      sizeof(rx->ppdu) + sizeof(rx->prefix) +
-+		      sizeof(rx->fw_desc) +
-+		      sizeof(*mpdu_ranges) * num_mpdu_ranges + rx_desc_len;
-+	skb_pull(skb, tot_hdr_len);
-+
-+	hdr = (struct ieee80211_hdr *)skb->data;
-+	rx_status = IEEE80211_SKB_RXCB(skb);
-+	rx_status->chains |= BIT(0);
-+	rx_status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
-+			    rx->ppdu.combined_rssi;
-+	rx_status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
-+
-+	spin_lock_bh(&ar->data_lock);
-+	ch = ar->scan_channel;
-+	if (!ch)
-+		ch = ar->rx_channel;
-+	if (!ch)
-+		ch = ath10k_htt_rx_h_any_channel(ar);
-+	if (!ch)
-+		ch = ar->tgt_oper_chan;
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	if (ch) {
-+		rx_status->band = ch->band;
-+		rx_status->freq = ch->center_freq;
-+	}
-+	if (rx->fw_desc.flags & FW_RX_DESC_FLAGS_LAST_MSDU)
-+		rx_status->flag &= ~RX_FLAG_AMSDU_MORE;
-+	else
-+		rx_status->flag |= RX_FLAG_AMSDU_MORE;
-+
-+	/* Not entirely sure about this, but all frames from the chipset has
-+	 * the protected flag set even though they have already been decrypted.
-+	 * Unmasking this flag is necessary in order for mac80211 not to drop
-+	 * the frame.
-+	 * TODO: Verify this is always the case or find out a way to check
-+	 * if there has been hw decryption.
-+	 */
-+	if (ieee80211_has_protected(hdr->frame_control)) {
-+		hdr->frame_control &= ~__cpu_to_le16(IEEE80211_FCTL_PROTECTED);
-+		rx_status->flag |= RX_FLAG_DECRYPTED |
-+				   RX_FLAG_IV_STRIPPED |
-+				   RX_FLAG_MMIC_STRIPPED;
-+	}
-+
-+	ieee80211_rx_ni(ar->hw, skb);
-+
-+	/* We have delivered the skb to the upper layers (mac80211) so we
-+	 * must not free it.
-+	 */
-+	return false;
-+err:
-+	/* Tell the caller that it must free the skb since we have not
-+	 * consumed it
-+	 */
-+	return true;
-+}
-+
-+static void ath10k_htt_rx_proc_rx_ind_ll(struct ath10k_htt *htt,
-+					 struct htt_rx_indication *rx)
- {
- 	struct ath10k *ar = htt->ar;
- 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
-@@ -2641,7 +2756,12 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	}
- 	case HTT_T2H_MSG_TYPE_RX_IND:
--		ath10k_htt_rx_proc_rx_ind(htt, &resp->rx_ind);
-+		if (ar->is_high_latency)
-+			return ath10k_htt_rx_proc_rx_ind_hl(htt,
-+							    &resp->rx_ind_hl,
-+							    skb);
-+		else
-+			ath10k_htt_rx_proc_rx_ind_ll(htt, &resp->rx_ind);
- 		break;
- 	case HTT_T2H_MSG_TYPE_PEER_MAP: {
- 		struct htt_peer_map_event ev = {
-diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
-index 545deb6d7af1..72cdf8c7245c 100644
---- a/drivers/net/wireless/ath/ath10k/rx_desc.h
-+++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
-@@ -1275,4 +1275,19 @@ struct fw_rx_desc_base {
- 	u8 info0;
- } __packed;
- 
-+#define FW_RX_DESC_FLAGS_FIRST_MSDU (1 << 0)
-+#define FW_RX_DESC_FLAGS_LAST_MSDU  (1 << 1)
-+#define FW_RX_DESC_C3_FAILED        (1 << 2)
-+#define FW_RX_DESC_C4_FAILED        (1 << 3)
-+#define FW_RX_DESC_IPV6             (1 << 4)
-+#define FW_RX_DESC_TCP              (1 << 5)
-+#define FW_RX_DESC_UDP              (1 << 6)
-+
-+struct fw_rx_desc_hl {
-+	u8 info0;
-+	u8 version;
-+	u8 len;
-+	u8 flags;
-+} __packed;
-+
- #endif /* _RX_DESC_H_ */
+ #define QCA988X_2_0_DEVICE_ID   (0x003c)
+@@ -491,6 +499,7 @@ struct ath10k_hw_clk_params {
+ struct ath10k_hw_params {
+ 	u32 id;
+ 	u16 dev_id;
++	enum ath10k_bus bus;
+ 	const char *name;
+ 	u32 patch_load_addr;
+ 	int uart_pin;
 -- 
 2.15.1
 
