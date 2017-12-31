@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eUdX1-0005mO-UY
- for ath10k@lists.infradead.org; Thu, 28 Dec 2017 19:07:58 +0000
-Received: by mail-lf0-x241.google.com with SMTP id h5so2507874lfj.2
- for <ath10k@lists.infradead.org>; Thu, 28 Dec 2017 11:07:46 -0800 (PST)
+ id 1eVhSd-0005z7-7w
+ for ath10k@lists.infradead.org; Sun, 31 Dec 2017 17:31:51 +0000
+Received: by mail-lf0-x241.google.com with SMTP id h5so8624765lfj.2
+ for <ath10k@lists.infradead.org>; Sun, 31 Dec 2017 09:31:42 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [PATCH 2/3] ath10k: remove unused prototype
-Date: Thu, 28 Dec 2017 20:06:44 +0100
-Message-Id: <20171228190645.25773-3-erik.stromdahl@gmail.com>
-In-Reply-To: <20171228190645.25773-1-erik.stromdahl@gmail.com>
-References: <20171228190645.25773-1-erik.stromdahl@gmail.com>
+Subject: [RFC v4 08/18] ath10k: various fixes for high latency devices
+Date: Sun, 31 Dec 2017 18:29:15 +0100
+Message-Id: <20171231172925.24014-9-erik.stromdahl@gmail.com>
+In-Reply-To: <20171231172925.24014-1-erik.stromdahl@gmail.com>
+References: <20171231172925.24014-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +27,42 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-The function does not exist and thus, the prototype can be removed.
+A few execution paths are not applicable for high latency
+devices and can be skipped.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 3 ++-
+ drivers/net/wireless/ath/ath10k/txrx.c   | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 783640032216..360c71b106d7 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1933,7 +1933,6 @@ void ath10k_htt_htc_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb);
- bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb);
- int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt);
- int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie);
--int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt);
- int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
- 				u8 max_subfrms_ampdu,
- 				u8 max_subfrms_amsdu);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 7b3d6bf015c7..1432d5b3e9d3 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2686,7 +2686,8 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	}
+ 	case HTT_T2H_MSG_TYPE_TX_COMPL_IND:
+-		ath10k_htt_rx_tx_compl_ind(htt->ar, skb);
++		if (!ar->is_high_latency)
++			ath10k_htt_rx_tx_compl_ind(htt->ar, skb);
+ 		break;
+ 	case HTT_T2H_MSG_TYPE_SEC_IND: {
+ 		struct ath10k *ar = htt->ar;
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index febc3eb93fbd..a151abe5e97b 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -90,7 +90,7 @@ int ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 
+ 	ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
+ 	ath10k_htt_tx_dec_pending(htt);
+-	if (htt->num_pending_tx == 0)
++	if (!ar->is_high_latency && (htt->num_pending_tx == 0))
+ 		wake_up(&htt->empty_tx_wq);
+ 	spin_unlock_bh(&htt->tx_lock);
+ 
 -- 
 2.15.1
 
