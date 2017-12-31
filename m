@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x229.google.com ([2a00:1450:400c:c0c::229])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eVhcA-0002JJ-Pr
- for ath10k@lists.infradead.org; Sun, 31 Dec 2017 17:41:40 +0000
-Received: by mail-wr0-x229.google.com with SMTP id p17so21594505wre.7
- for <ath10k@lists.infradead.org>; Sun, 31 Dec 2017 09:41:28 -0800 (PST)
-MIME-Version: 1.0
+ id 1eVhSc-0005ze-EL
+ for ath10k@lists.infradead.org; Sun, 31 Dec 2017 17:31:48 +0000
+Received: by mail-lf0-x244.google.com with SMTP id h5so8624822lfj.2
+ for <ath10k@lists.infradead.org>; Sun, 31 Dec 2017 09:31:45 -0800 (PST)
+From: Erik Stromdahl <erik.stromdahl@gmail.com>
+Subject: [RFC v4 11/18] ath10k: add HTT RX HL ops
+Date: Sun, 31 Dec 2017 18:29:18 +0100
+Message-Id: <20171231172925.24014-12-erik.stromdahl@gmail.com>
 In-Reply-To: <20171231172925.24014-1-erik.stromdahl@gmail.com>
 References: <20171231172925.24014-1-erik.stromdahl@gmail.com>
-From: Steve deRosier <derosier@gmail.com>
-Date: Sun, 31 Dec 2017 09:41:26 -0800
-Message-ID: <CALLGbRLrHfU6sURKOr=NQUrep9dRGhU5qsYLmCuwe0_CWnuy6w@mail.gmail.com>
-Subject: Re: [RFC v4 00/18] ath10k high latency
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +19,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Hi Erik,
+Initial (empty) HTT RX ops for high latency devices.
 
-On Sun, Dec 31, 2017 at 9:29 AM, Erik Stromdahl
-<erik.stromdahl@gmail.com> wrote:
-> Uplink test results (WUSB6100M -> other computer):
->
-> # iperf-client.sh 192.168.1.244
-> /usr/bin/iperf
-> ------------------------------------------------------------
-> Client connecting to 192.168.1.244, TCP port 1234
-> TCP window size: 85.0 KByte (default)
-> ------------------------------------------------------------
-> [  3] local 192.168.1.190 port 50524 connected with 192.168.1.244 port
-> 1234
-> [ ID] Interval       Transfer     Bandwidth
-> [  3]  0.0-10.1 sec  10.8 MBytes  8.95 Mbits/sec
->
-> The result is not so good (I expect more from an 11ac device),
-> but hopefully it is configuration related.
->
+Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Indeed. As a point of reference, an AR6004 device I have on my desk
-(which is a/b/g/n, no ac), built into a custom SBC, I can normally get
-iperf runs of >35 Mbits/sec.  So, in short, that run is showing
-there's an issue. I don't have your device so I can't really help out
-much more than that, but in the next week or so I'll try to look at
-the patches and see if something pops to my eye.
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 1432d5b3e9d3..f7d071ca8b76 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2917,11 +2917,16 @@ static const struct ath10k_htt_rx_ops htt_rx_ops_64 = {
+ 	.htt_reset_paddrs_ring = ath10k_htt_reset_paddrs_ring_64,
+ };
+ 
++static const struct ath10k_htt_rx_ops htt_rx_ops_hl = {
++};
++
+ void ath10k_htt_set_rx_ops(struct ath10k_htt *htt)
+ {
+ 	struct ath10k *ar = htt->ar;
+ 
+-	if (ar->hw_params.target_64bit)
++	if (ar->is_high_latency)
++		htt->rx_ops = &htt_rx_ops_hl;
++	else if (ar->hw_params.target_64bit)
+ 		htt->rx_ops = &htt_rx_ops_64;
+ 	else
+ 		htt->rx_ops = &htt_rx_ops_32;
+-- 
+2.15.1
 
-- Steve
 
 _______________________________________________
 ath10k mailing list
