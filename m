@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eVhSe-0005yw-Ds
- for ath10k@lists.infradead.org; Sun, 31 Dec 2017 17:31:55 +0000
-Received: by mail-lf0-x242.google.com with SMTP id c19so32383624lfg.3
- for <ath10k@lists.infradead.org>; Sun, 31 Dec 2017 09:31:39 -0800 (PST)
+ id 1eVhSe-0005zu-E3
+ for ath10k@lists.infradead.org; Sun, 31 Dec 2017 17:31:57 +0000
+Received: by mail-lf0-x242.google.com with SMTP id m20so39145432lfi.6
+ for <ath10k@lists.infradead.org>; Sun, 31 Dec 2017 09:31:46 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v4 05/18] ath10k: add bus type check in ath10k_init_hw_params
-Date: Sun, 31 Dec 2017 18:29:12 +0100
-Message-Id: <20171231172925.24014-6-erik.stromdahl@gmail.com>
+Subject: [RFC v4 13/18] ath10k: htt: High latency TX support
+Date: Sun, 31 Dec 2017 18:29:20 +0100
+Message-Id: <20171231172925.24014-14-erik.stromdahl@gmail.com>
 In-Reply-To: <20171231172925.24014-1-erik.stromdahl@gmail.com>
 References: <20171231172925.24014-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,184 +27,131 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-The bus type is used together with the other hw parameters
-to find a matching entry in ath10k_hw_params_list for the device.
-
-This is necessary since HL devices can have the same dev_id and
-target_version as a corresponding LL device (same chipset) and
-yet use a totally different configuration.
+Add HTT TX function for HL interfaces.
+Intended for SDIO and USB.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 16 +++++++++++++++-
- drivers/net/wireless/ath/ath10k/core.h |  8 --------
- drivers/net/wireless/ath/ath10k/hw.h   |  9 +++++++++
- 3 files changed, 24 insertions(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 92 ++++++++++++++++++++++++++++++++
+ 1 file changed, 92 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 09b6ad481414..41e6b5a08885 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -64,6 +64,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA988X_HW_2_0_VERSION,
- 		.dev_id = QCA988X_2_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca988x hw2.0",
- 		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-@@ -93,6 +94,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA9887_HW_1_0_VERSION,
- 		.dev_id = QCA9887_1_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca9887 hw1.0",
- 		.patch_load_addr = QCA9887_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-@@ -122,6 +124,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
- 		.dev_id = QCA6164_2_1_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca6164 hw2.1",
- 		.patch_load_addr = QCA6174_HW_2_1_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
-@@ -150,6 +153,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA6174_HW_2_1_VERSION,
- 		.dev_id = QCA6174_2_1_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca6174 hw2.1",
- 		.patch_load_addr = QCA6174_HW_2_1_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
-@@ -178,6 +182,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA6174_HW_3_0_VERSION,
- 		.dev_id = QCA6174_2_1_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca6174 hw3.0",
- 		.patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
-@@ -206,6 +211,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA6174_HW_3_2_VERSION,
- 		.dev_id = QCA6174_2_1_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca6174 hw3.2",
- 		.patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
-@@ -237,6 +243,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA99X0_HW_2_0_DEV_VERSION,
- 		.dev_id = QCA99X0_2_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca99x0 hw2.0",
- 		.patch_load_addr = QCA99X0_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-@@ -271,6 +278,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA9984_HW_1_0_DEV_VERSION,
- 		.dev_id = QCA9984_1_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca9984/qca9994 hw1.0",
- 		.patch_load_addr = QCA9984_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-@@ -310,6 +318,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA9888_HW_2_0_DEV_VERSION,
- 		.dev_id = QCA9888_2_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca9888 hw2.0",
- 		.patch_load_addr = QCA9888_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-@@ -348,6 +357,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA9377_HW_1_0_DEV_VERSION,
- 		.dev_id = QCA9377_1_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca9377 hw1.0",
- 		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
-@@ -376,6 +386,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA9377_HW_1_1_DEV_VERSION,
- 		.dev_id = QCA9377_1_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "qca9377 hw1.1",
- 		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
-@@ -406,6 +417,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
- 		.dev_id = 0,
-+		.bus = ATH10K_BUS_AHB,
- 		.name = "qca4019 hw1.0",
- 		.patch_load_addr = QCA4019_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
-@@ -441,6 +453,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = WCN3990_HW_1_0_DEV_VERSION,
- 		.dev_id = 0,
-+		.bus = ATH10K_BUS_PCI,
- 		.name = "wcn3990 hw1.0",
- 		.continuous_frag_desc = true,
- 		.tx_chain_mask = 0x7,
-@@ -1790,7 +1803,8 @@ static int ath10k_init_hw_params(struct ath10k *ar)
- 	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
- 		hw_params = &ath10k_hw_params_list[i];
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 1f6470de7b8d..7ea27454ef3f 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -495,6 +495,9 @@ int ath10k_htt_tx_start(struct ath10k_htt *htt)
+ 	if (htt->tx_mem_allocated)
+ 		return 0;
  
--		if (hw_params->id == ar->target_version &&
-+		if (hw_params->bus == ar->hif.bus &&
-+		    hw_params->id == ar->target_version &&
- 		    hw_params->dev_id == ar->dev_id)
- 			break;
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 17827ce3752d..32cfa14d3053 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -87,14 +87,6 @@
- 
- struct ath10k;
- 
--enum ath10k_bus {
--	ATH10K_BUS_PCI,
--	ATH10K_BUS_AHB,
--	ATH10K_BUS_SDIO,
--	ATH10K_BUS_USB,
--	ATH10K_BUS_SNOC,
--};
--
- static inline const char *ath10k_bus_str(enum ath10k_bus bus)
- {
- 	switch (bus) {
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 6203bc65799b..3043fd17942e 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -20,6 +20,14 @@
- 
- #include "targaddrs.h"
- 
-+enum ath10k_bus {
-+	ATH10K_BUS_PCI,
-+	ATH10K_BUS_AHB,
-+	ATH10K_BUS_SDIO,
-+	ATH10K_BUS_USB,
-+	ATH10K_BUS_SNOC,
-+};
++	if (ar->is_high_latency)
++		return 0;
 +
- #define ATH10K_FW_DIR			"ath10k"
+ 	ret = ath10k_htt_tx_alloc_buf(htt);
+ 	if (ret)
+ 		goto free_idr_pending_tx;
+@@ -1188,6 +1191,94 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	return res;
+ }
  
- #define QCA988X_2_0_DEVICE_ID   (0x003c)
-@@ -491,6 +499,7 @@ struct ath10k_hw_clk_params {
- struct ath10k_hw_params {
- 	u32 id;
- 	u16 dev_id;
-+	enum ath10k_bus bus;
- 	const char *name;
- 	u32 patch_load_addr;
- 	int uart_pin;
++#define HTT_TX_HL_NEEDED_HEADROOM \
++	(unsigned int)(sizeof(struct htt_cmd_hdr) + \
++	sizeof(struct htt_data_tx_desc) + \
++	sizeof(struct ath10k_htc_hdr))
++
++static int ath10k_htt_tx_hl(struct ath10k_htt *htt, enum ath10k_hw_txrx_mode txmode,
++			    struct sk_buff *msdu)
++{
++	struct ath10k *ar = htt->ar;
++	int res, data_len;
++	struct htt_cmd_hdr *cmd_hdr;
++	struct htt_data_tx_desc *tx_desc;
++	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
++	struct sk_buff *tmp_skb;
++	bool is_eth = (txmode == ATH10K_HW_TXRX_ETHERNET);
++	u8 vdev_id = ath10k_htt_tx_get_vdev_id(ar, msdu);
++	u8 tid = ath10k_htt_tx_get_tid(msdu, is_eth);
++	u8 flags0 = 0;
++	u16 flags1 = 0;
++
++	data_len = msdu->len;
++
++	switch (txmode) {
++	case ATH10K_HW_TXRX_RAW:
++	case ATH10K_HW_TXRX_NATIVE_WIFI:
++		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
++		/* fall through */
++	case ATH10K_HW_TXRX_ETHERNET:
++		flags0 |= SM(txmode, HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
++		break;
++	case ATH10K_HW_TXRX_MGMT:
++		flags0 |= SM(ATH10K_HW_TXRX_MGMT,
++			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
++		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
++		break;
++	}
++
++	if (skb_cb->flags & ATH10K_SKB_F_NO_HWCRYPT)
++		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
++
++	flags1 |= SM((u16)vdev_id, HTT_DATA_TX_DESC_FLAGS1_VDEV_ID);
++	flags1 |= SM((u16)tid, HTT_DATA_TX_DESC_FLAGS1_EXT_TID);
++	if (msdu->ip_summed == CHECKSUM_PARTIAL &&
++	    !test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
++		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L3_OFFLOAD;
++		flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L4_OFFLOAD;
++	}
++
++	/* Prepend the HTT header and TX desc struct to the data message
++	 * and realloc the skb if it does not have enough headroom.
++	 */
++	if (skb_headroom(msdu) < HTT_TX_HL_NEEDED_HEADROOM) {
++		tmp_skb = msdu;
++
++		ath10k_dbg(htt->ar, ATH10K_DBG_HTT,
++			   "Not enough headroom in skb. Current headroom: %u, needed: %u. Reallocating...\n",
++			   skb_headroom(msdu), HTT_TX_HL_NEEDED_HEADROOM);
++		msdu = skb_realloc_headroom(msdu, HTT_TX_HL_NEEDED_HEADROOM);
++		kfree_skb(tmp_skb);
++		if (!msdu) {
++			ath10k_warn(htt->ar, "htt hl tx: Unable to realloc skb!\n");
++			res = -ENOMEM;
++			goto out;
++		}
++	}
++
++	skb_push(msdu, sizeof(*cmd_hdr));
++	skb_push(msdu, sizeof(*tx_desc));
++	cmd_hdr = (struct htt_cmd_hdr *)msdu->data;
++	tx_desc = (struct htt_data_tx_desc *)(msdu->data + sizeof(*cmd_hdr));
++
++	cmd_hdr->msg_type = HTT_H2T_MSG_TYPE_TX_FRM;
++	tx_desc->flags0 = flags0;
++	tx_desc->flags1 = __cpu_to_le16(flags1);
++	tx_desc->len = __cpu_to_le16(data_len);
++	tx_desc->id = 0;
++	tx_desc->frags_paddr = 0; /* always zero */
++	/* Initialize peer_id to INVALID_PEER because this is NOT
++	 * Reinjection path
++	 */
++	tx_desc->peerid = __cpu_to_le32(HTT_INVALID_PEERID);
++
++	res = ath10k_htc_send(&htt->ar->htc, htt->eid, msdu);
++
++out:
++	return res;
++}
++
+ static int ath10k_htt_tx_32(struct ath10k_htt *htt,
+ 			    enum ath10k_hw_txrx_mode txmode,
+ 			    struct sk_buff *msdu)
+@@ -1619,6 +1710,7 @@ static const struct ath10k_htt_tx_ops htt_tx_ops_64 = {
+ static const struct ath10k_htt_tx_ops htt_tx_ops_hl = {
+ 	.htt_send_rx_ring_cfg = ath10k_htt_send_rx_ring_cfg_hl,
+ 	.htt_send_frag_desc_bank_cfg = ath10k_htt_send_frag_desc_bank_cfg_32,
++	.htt_tx = ath10k_htt_tx_hl,
+ };
+ 
+ void ath10k_htt_set_tx_ops(struct ath10k_htt *htt)
 -- 
 2.15.1
 
