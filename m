@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+Received: from mail-lf0-f65.google.com ([209.85.215.65])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eVhSq-00063Q-HB
- for ath10k@lists.infradead.org; Sun, 31 Dec 2017 17:32:11 +0000
-Received: by mail-lf0-x243.google.com with SMTP id m20so39145496lfi.6
+ id 1eVhSq-00063A-DO
+ for ath10k@lists.infradead.org; Sun, 31 Dec 2017 17:32:09 +0000
+Received: by mail-lf0-f65.google.com with SMTP id w196so34314788lff.5
  for <ath10k@lists.infradead.org>; Sun, 31 Dec 2017 09:31:50 -0800 (PST)
 From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v4 17/18] ath10k: add QCA9377 usb hw_param item
-Date: Sun, 31 Dec 2017 18:29:24 +0100
-Message-Id: <20171231172925.24014-18-erik.stromdahl@gmail.com>
+Subject: [RFC v4 16/18] ath10k: remove htt pending TX count for high latency
+Date: Sun, 31 Dec 2017 18:29:23 +0100
+Message-Id: <20171231172925.24014-17-erik.stromdahl@gmail.com>
 In-Reply-To: <20171231172925.24014-1-erik.stromdahl@gmail.com>
 References: <20171231172925.24014-1-erik.stromdahl@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,61 +27,42 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
 
-Hardware parameters for QCA9377 usb devices.
+High latency chipsets does not seem to send any
+HTT_T2H_MSG_TYPE_TX_COMPL_IND for outgoing frames.
+
+This means that htt->num_pending_tx will never be
+decremented and we will eventually hit the maximum
+limit. All outgoing packets will then be discarded.
 
 Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 24 ++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  1 +
- 2 files changed, 25 insertions(+)
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index d42f6a1e5bfc..bc22d8c46252 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -414,6 +414,30 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.target_64bit = false,
- 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
- 	},
-+	{
-+		.id = QCA9377_HW_1_1_DEV_VERSION,
-+		.dev_id = QCA9377_1_0_DEVICE_ID,
-+		.bus = ATH10K_BUS_USB,
-+		.name = "qca9377 hw1.1 usb",
-+		.patch_load_addr = QCA9377_HW_1_0_PATCH_LOAD_ADDR,
-+		.uart_pin = 6,
-+		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
-+		.max_probe_resp_desc_thres = 0,
-+		.cal_data_len = 8124,
-+		.fw = {
-+			.dir = QCA9377_HW_1_0_FW_DIR,
-+			.board = QCA9377_HW_1_0_BOARD_DATA_FILE_USB,
-+			.board_size = QCA9377_BOARD_DATA_SZ,
-+			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
-+		},
-+		.hw_ops = &qca988x_ops,
-+		.decap_align_bytes = 4,
-+		.start_once = true,
-+		.num_peers = TARGET_QCA9377_HL_NUM_PEERS,
-+		.ast_skid_limit = 0x10,
-+		.num_wds_entries = 0x20,
-+	},
- 	{
- 		.id = QCA4019_HW_1_0_DEV_VERSION,
- 		.dev_id = 0,
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 98f9f3ccbf96..38cecbe4ddd9 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -128,6 +128,7 @@ enum qca9377_chip_id_rev {
- /* QCA9377 1.0 definitions */
- #define QCA9377_HW_1_0_FW_DIR          ATH10K_FW_DIR "/QCA9377/hw1.0"
- #define QCA9377_HW_1_0_BOARD_DATA_FILE "board.bin"
-+#define QCA9377_HW_1_0_BOARD_DATA_FILE_USB "board-usb.bin"
- #define QCA9377_HW_1_0_PATCH_LOAD_ADDR	0x1234
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 7ea27454ef3f..0c14fb3b7181 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -153,6 +153,9 @@ void ath10k_htt_tx_txq_update(struct ieee80211_hw *hw,
  
- /* QCA4019 1.0 definitions */
+ void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt)
+ {
++	if (htt->ar->is_high_latency)
++		return;
++
+ 	lockdep_assert_held(&htt->tx_lock);
+ 
+ 	htt->num_pending_tx--;
+@@ -162,6 +165,9 @@ void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt)
+ 
+ int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt)
+ {
++	if (htt->ar->is_high_latency)
++		return 0;
++
+ 	lockdep_assert_held(&htt->tx_lock);
+ 
+ 	if (htt->num_pending_tx >= htt->max_num_pending_tx)
 -- 
 2.15.1
 
