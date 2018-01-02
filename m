@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22f.google.com ([2a00:1450:4010:c07::22f])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eVhSc-0005yP-84
- for ath10k@lists.infradead.org; Sun, 31 Dec 2017 17:31:48 +0000
-Received: by mail-lf0-x22f.google.com with SMTP id c19so32383532lfg.3
- for <ath10k@lists.infradead.org>; Sun, 31 Dec 2017 09:31:35 -0800 (PST)
-From: Erik Stromdahl <erik.stromdahl@gmail.com>
-Subject: [RFC v4 00/18] ath10k high latency
-Date: Sun, 31 Dec 2017 18:29:07 +0100
-Message-Id: <20171231172925.24014-1-erik.stromdahl@gmail.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eWQkL-000116-70
+ for ath10k@lists.infradead.org; Tue, 02 Jan 2018 17:53:06 +0000
+Received: from [192.168.100.149] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id BE86940C2BA
+ for <ath10k@lists.infradead.org>; Tue,  2 Jan 2018 09:52:49 -0800 (PST)
+From: Ben Greear <greearb@candelatech.com>
+Subject: 10.4 firmware stats struct issue
+Message-ID: <def3524e-1265-27c7-8d71-d4c99c638a9c@candelatech.com>
+Date: Tue, 2 Jan 2018 09:52:49 -0800
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,139 +21,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
+To: ath10k <ath10k@lists.infradead.org>
 
-This is the fourth version of the high latency patches (stuff common for
-usb and sdio).
+I notice that the 10.4 stats struct appears to be missing a field.  It appears
+it should be like this instead?
 
-Most of Kalles comments have been addressed, except the start_once patch
-which is identical to the previous version. I need to investigate more
-how this feature affects the case where the interface is brought up and
-down several times.
+[greearb@ben-dt3 ath10k]$ git diff
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 66b446d..93ca8e8 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -4434,6 +4434,7 @@ struct wmi_10_4_pdev_stats {
+         struct wmi_pdev_stats_base base;
+         struct wmi_10_4_pdev_stats_tx tx;
+         struct wmi_pdev_stats_rx rx;
++       __le32 pdev_rx_timeout;
+         __le32 rx_ovfl_errs;
+         struct wmi_pdev_stats_mem mem;
+         __le32 sram_free_size;
 
-The first two patches adds inline wrappers to the newly introduced htt
-ops. I think these patches could have been submitted separately (as
-PATCH and not RFC) but I decided to include them in this RFC series
-instead.
-Adding them separately would have reduced the size of the patchset
-somewhat, but since the rest of the patches are depending on the first
-two, I decided not to submit them separately.
 
-I have tested USB support and the performance is similar to previous
-versions.
+Could someone with FW src double-check this?
 
-Below are the results from iperf with a WUSB6100M:
-
-192.168.1.190: WUSB6100M
-192.168.1.244: other computer
-
-Uplink test results (WUSB6100M -> other computer):
-
-# iperf-client.sh 192.168.1.244
-/usr/bin/iperf
-------------------------------------------------------------
-Client connecting to 192.168.1.244, TCP port 1234
-TCP window size: 85.0 KByte (default)
-------------------------------------------------------------
-[  3] local 192.168.1.190 port 50524 connected with 192.168.1.244 port
-1234
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0-10.1 sec  10.8 MBytes  8.95 Mbits/sec
-
-The result is not so good (I expect more from an 11ac device),
-but hopefully it is configuration related.
-
-Downlink test results (other computer -> WUSB6100M):
-
-# iperf-server.sh
-/usr/bin/iperf
-------------------------------------------------------------
-Server listening on TCP port 1234
-TCP window size: 85.3 KByte (default)
-------------------------------------------------------------
-[  4] local 192.168.1.190 port 1234 connected with 192.168.1.244 port
-44824
-[  349.641149] usb 1-1: failed to transmit packet, dropping: -12
-[  349.643246] usb 1-1: failed to submit frame: -12
-[  349.643644] usb 1-1: failed to push frame: -12
-[  349.663267] usb 1-1: failed to transmit packet, dropping: -12
-[  349.664250] usb 1-1: failed to submit frame: -12
-[  349.665405] usb 1-1: failed to push frame: -12
-[  349.670244] usb 1-1: failed to transmit packet, dropping: -12
-[  349.670907] usb 1-1: failed to submit frame: -12
-[  349.671419] usb 1-1: failed to push frame: -12
-[  349.671887] usb 1-1: failed to transmit packet, dropping: -12
-[  350.703418] random: crng init done
-[  354.877329] ath10k_warn: 10661 callbacks suppressed
-[  354.877331] usb 1-1: failed to transmit packet, dropping: -12
-[  354.879931] usb 1-1: failed to submit frame: -12
-[  354.880307] usb 1-1: failed to push frame: -12
-[  354.940557] usb 1-1: failed to transmit packet, dropping: -12
-[  354.942516] usb 1-1: failed to submit frame: -12
-[  354.943062] usb 1-1: failed to push frame: -12
-[  355.134808] usb 1-1: failed to transmit packet, dropping: -12
-[  355.136463] usb 1-1: failed to submit frame: -12
-[  355.137425] usb 1-1: failed to push frame: -12
-[  355.159841] usb 1-1: failed to transmit packet, dropping: -12
-[ ID] Interval       Transfer     Bandwidth
-[  4]  0.0-10.0 sec   225 MBytes   188 Mbits/sec
-
-As you can see, there are a lot of ENOMEM errors in the TX path.
-I think they could be related to patch 16 (that removes the pending
-TX counter), but since I don't know how to configure the device
-to generate HTT_T2H_MSG_TYPE_TX_COMPL_IND's the sw flow control had
-to be disabled.
-
-Since I no longer have access to any SDIO hardware I have not been able
-to try the SDIO stuff, so it might be broken.
-
-Erik Stromdahl (18):
-  ath10k: add inlined wrappers for htt tx ops
-  ath10k: add inlined wrappers for htt rx ops
-  ath10k: add struct ath10k_bus_params
-  ath10k: high_latency detection
-  ath10k: add bus type check in ath10k_init_hw_params
-  ath10k: per target config of max_num_peers
-  ath10k: DMA related fixes for high latency devices
-  ath10k: various fixes for high latency devices
-  ath10k: add start_once support
-  ath10k: add HTT TX HL ops
-  ath10k: add HTT RX HL ops
-  ath10k: htt: RX ring config HL support
-  ath10k: htt: High latency TX support
-  ath10k: htt: High latency RX support
-  ath10k: wmi: disable softirq's while calling ieee80211_rx
-  ath10k: remove htt pending TX count for high latency
-  ath10k: add QCA9377 usb hw_param item
-  ath10k: add QCA9377 sdio hw_param item
-
- drivers/net/wireless/ath/ath10k/ahb.c     |   9 +-
- drivers/net/wireless/ath/ath10k/core.c    | 108 ++++++++++++++++---
- drivers/net/wireless/ath/ath10k/core.h    |  19 ++--
- drivers/net/wireless/ath/ath10k/htc.c     |  19 ++--
- drivers/net/wireless/ath/ath10k/htt.c     |   4 +-
- drivers/net/wireless/ath/ath10k/htt.h     | 136 +++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/htt_rx.c  | 150 +++++++++++++++++++++++---
- drivers/net/wireless/ath/ath10k/htt_tx.c  | 173 ++++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/hw.h      |  20 ++++
- drivers/net/wireless/ath/ath10k/mac.c     |   2 +-
- drivers/net/wireless/ath/ath10k/pci.c     |  13 +--
- drivers/net/wireless/ath/ath10k/rx_desc.h |  15 +++
- drivers/net/wireless/ath/ath10k/sdio.c    |   8 +-
- drivers/net/wireless/ath/ath10k/txrx.c    |   5 +-
- drivers/net/wireless/ath/ath10k/usb.c     |   7 +-
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |   3 +-
- drivers/net/wireless/ath/ath10k/wmi.c     |   3 +-
- 17 files changed, 622 insertions(+), 72 deletions(-)
+Thanks,
+Ben
 
 -- 
-2.15.1
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
