@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eWXH8-0005ox-Qg
- for ath10k@lists.infradead.org; Wed, 03 Jan 2018 00:51:24 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  Support use of channel 173
-Date: Tue,  2 Jan 2018 16:51:01 -0800
-Message-Id: <1514940661-13590-1-git-send-email-greearb@candelatech.com>
+Received: from mail-qt0-x235.google.com ([2607:f8b0:400d:c0d::235])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eWY9T-0003U5-Cs
+ for ath10k@lists.infradead.org; Wed, 03 Jan 2018 01:47:33 +0000
+Received: by mail-qt0-x235.google.com with SMTP id g9so557098qth.9
+ for <ath10k@lists.infradead.org>; Tue, 02 Jan 2018 17:47:20 -0800 (PST)
+MIME-Version: 1.0
+From: Robert Jones <rjones@gateworks.com>
+Date: Tue, 2 Jan 2018 17:47:18 -0800
+Message-ID: <CALAE=UAPXYsCfO+QXxPsnEe2vkcMcCoknSAc8RVyOVk85MC-8Q@mail.gmail.com>
+Subject: Bad TCP performance on WLE900VX
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,71 +18,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-From: Ben Greear <greearb@candelatech.com>
+Hello Everyone,
 
-The India regulatory domain allows CH 173, so add that to the
-available channel list.  I verified basic connectivity between
-a 9880 and 9984 NIC.
+I'm using a custom arm64 board with a Cavium CN8030 CPU and testing
+wireless card performance via iperf on Ubuntu 16.02 with a mainline
+4.14 kernel. I have two identical units connected to each other via
+60dB attenuators on all three channels. Channel is set to 161 VHT80.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/core.h | 3 ++-
- drivers/net/wireless/ath/ath10k/mac.c  | 3 +++
- drivers/net/wireless/ath/ath10k/wmi.c  | 2 +-
- 3 files changed, 6 insertions(+), 2 deletions(-)
+With UDP I see throughput upwards of 650Mbits/s, but TCP is
+~24Mbits/s. That seemed odd so I did a little more testing. Switched
+to a 4.9 kernel and still saw the poor performance, but not with a
+4.4. Before I went through the trouble of bisecting I thought to ask
+if there was something I was missing.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index bcee3ec..cdcdff1 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -46,7 +46,8 @@
- #define WMI_READY_TIMEOUT (5 * HZ)
- #define ATH10K_FLUSH_TIMEOUT_HZ (5 * HZ)
- #define ATH10K_CONNECTION_LOSS_HZ (3 * HZ)
--#define ATH10K_NUM_CHANS 40
-+#define ATH10K_NUM_CHANS 41
-+#define ATH10K_MAX_5G_CHAN 173
- 
- /* Antenna noise floor */
- #define ATH10K_DEFAULT_NOISE_FLOOR -95
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index c715ba1..3c03edf 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8540,6 +8540,9 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
- 	CHAN5G(161, 5805, 0),
- 	CHAN5G(165, 5825, 0),
- 	CHAN5G(169, 5845, 0),
-+	CHAN5G(173, 5865, 0),
-+	/* If you add more, you may need to change ATH10K_MAX_5G_CHAN */
-+	/* And you will definitely need to change ATH10K_NUM_CHANS in core.h */
- };
- 
- struct ath10k *ath10k_mac_create(size_t priv_size)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index f29ce83..905af93 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2398,7 +2398,7 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	 */
- 	if (channel >= 1 && channel <= 14) {
- 		status->band = NL80211_BAND_2GHZ;
--	} else if (channel >= 36 && channel <= 169) {
-+	} else if (channel >= 36 && channel <= ATH10K_MAX_5G_CHAN) {
- 		status->band = NL80211_BAND_5GHZ;
- 	} else {
- 		/* Shouldn't happen unless list of advertised channels to
--- 
-2.4.11
+I did come across this Ubuntu bug thread
+[https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1670041] which
+appeared to follow the same behavior I was seeing. Switched my TCP
+congestion algorithm to reno and saw throughput jump to >330Mbits/s.
+Cubic and BBR still ~24.
 
+My question now, is there a standing bug that I'm not aware of or
+could there be some sort of problem with my configuration that is
+being worked around with the reno algorithm?
+
+Thanks,
+Robert Jones
 
 _______________________________________________
 ath10k mailing list
