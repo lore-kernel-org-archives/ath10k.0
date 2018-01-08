@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail.nic.cz ([2001:1488:800:400::400])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eYMIV-0004U7-Up
- for ath10k@lists.infradead.org; Mon, 08 Jan 2018 01:32:23 +0000
+ id 1eYMkh-0007uH-HR
+ for ath10k@lists.infradead.org; Mon, 08 Jan 2018 02:01:30 +0000
+Date: Mon, 8 Jan 2018 03:00:44 +0100
+From: Marek Behun <marek.behun@nic.cz>
 Subject: Re: QCA6174 SDIO support?
+Message-ID: <20180108030044.3f5e575a@nic.cz>
+In-Reply-To: <37ba258c-77f6-eb05-0d50-5ecab93cf040@dd-wrt.com>
 References: <20180108012851.389d37c7@nic.cz>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <37ba258c-77f6-eb05-0d50-5ecab93cf040@dd-wrt.com>
-Date: Mon, 8 Jan 2018 02:31:59 +0100
+ <37ba258c-77f6-eb05-0d50-5ecab93cf040@dd-wrt.com>
 MIME-Version: 1.0
-In-Reply-To: <20180108012851.389d37c7@nic.cz>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,44 +19,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: ath10k@lists.infradead.org
 
-dHJ5IHRoaXMgYnJhbmNoCgpodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2Vy
-bmVsL2dpdC9rdmFsby9hdGguZ2l0L2xvZy8/aD1hdGgxMGstcGVuZGluZy1zZGlvLXVzYgoKQW0g
-MDguMDEuMjAxOCB1bSAwMToyOCBzY2hyaWViIE1hcmVrIEJlaHVuOgo+IEhlbGxvLAo+Cj4gd2Ug
-YXQgQ1ouTklDIGFyZSB0cnlpbmcgdGhlIGN1cnJlbnQgYXRoMTBrIGRyaXZlciB3aXRoIEhpZ2gg
-TGF0ZW5jeSArCj4gU0RJTyBzdXBwb3J0ICh3aGljaCB3YXMgZG9uZSBieSBTaWxleCBUZWNobm9s
-b2d5KSBvbiBvdXIgYm9hcmQuIFRoZQo+IHN1cHBvcnRlZCBjaGlwLCBRQ0E5Mzc3LCB3b3Jrcywg
-YnV0IHdlIG9ubHkgaGF2ZSAxeDEgTUlNTyBib2FyZHMgd2l0aAo+IHRoaXMgY2hpcC4gV2UgYXJl
-IHRyeWluZyB0byBnZXQgaXQgd29yayB3aXRoIDgyNzRCLVNSIChRQ0E2MTc0KQo+ICggaHR0cDov
-L3d3dy5mbi1saW5rLmNvbS9hLWItZy1uLWFjLXdpLWZpLWJ0LW1vZHVsZS84Mjc0Yi1zci5odG1s
-ICkKPgo+IFRoZXJlIGlzIGFscmVhZHkgc29tZSBjb2RlIGluIHNkaW8uYyBtZW50b2luaW5nIFFD
-QTYxNzQsIGJ1dCB0aGVyZSBhcmUKPiBubyBub2RlcyBpbiBhdGgxMGtfaHdfcGFyYW1zLiBCZWNh
-dXNlIFFDQTYxNzQgaXMgc3VwcG9ydGVkIHZpYSBQQ0kgYnVzLAo+IEkgdHJpZWQgdG8gd3JpdGUg
-dGhlIGF0aDEwa19od19wYXJhbXMgbm9kZSAoc2VlIHBhdGNoCj4gaHR0cDovL2JsYWNraG9sZS5z
-ay9+a2FiZWwvc3JjL3FjYTYxNzQucGF0Y2ggKSBidXQgZG8gbm90IGtub3cgaWYgdGhlCj4gY2hh
-bmdlcyBJIGRpZCBhcmUgZW5vdWdoLCBiZWNhdXNlIHRoZSBkcml2ZXIgZmFpbHMgYWZ0ZXIgbG9h
-ZGluZwo+IGZpcm13YXJlLgo+Cj4gQW5kIHRoZSBmaXJtd2FyZSBpcyBhbm90aGVyIHBvaW50OiBE
-b2VzIGJvYXJkLXNkaW8uYmluIGhhdmUgdG8gYmUKPiBkaWZmZXJlbnQgZnJvbSBib2FyZC5iaW4/
-IERvIHdlIGhhdmUgdG8gY3JlYXRlIHRoaXMgYmluYXJ5IG91cnNlbHZlcywKPiBvciBzaG91bGQg
-dGhlIDgyNzRCLVNSIGJvYXJkIG1hbnVmYWN0dXJlciBzZW50IHVzIG9uZT8gKFdlIGRpZG4ndAo+
-IHJlY2VpdmUgYW55dGhpbmcgZnJvbSBmbi1saW5rLikKPgo+IEFueSBpbmZvcm1hdGlvbiBpcyBn
-b29kLCBwbGVhc2UgbGV0IHVzIGtub3cgZXZlbiBpZiB5b3UgaGF2ZSBOREEgb24KPiB0aGlzIGFu
-ZCB0aGVyZWZvcmUgY2Fubm90IGdpdmUgYW55IG1vcmUgaW5mb3JtYXRpb24gYWJvdXQgdGhpcy4K
-Pgo+IFRoYW5rIHlvdS4KPgo+IE1hcmVrIEJlaHVuLCBDWi5OSUMKPgo+IF9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+
-IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4g
-LyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkgg
-LSBERC1XUlQKRmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0NjI1IEJlbnNoZWlt
-ClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0NzMKR2VzY2jD
-pGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUKaHR0cDov
-L3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpUZWwuOiArNDk2
-MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2F0aDEwawo=
+This branch is almost the same as mine (orig + high latency patches +
+sdio patches), therefore no QCA6174 SDIO node in ath10k_hw_params_list.
+
+On Mon, 8 Jan 2018 02:31:59 +0100
+Sebastian Gottschall <s.gottschall@dd-wrt.com> wrote:
+
+> try this branch
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/log/?h=ath10k-pending-sdio-usb
+> 
+> Am 08.01.2018 um 01:28 schrieb Marek Behun:
+> > Hello,
+> >
+> > we at CZ.NIC are trying the current ath10k driver with High Latency
+> > + SDIO support (which was done by Silex Technology) on our board.
+> > The supported chip, QCA9377, works, but we only have 1x1 MIMO
+> > boards with this chip. We are trying to get it work with 8274B-SR
+> > (QCA6174)
+> > ( http://www.fn-link.com/a-b-g-n-ac-wi-fi-bt-module/8274b-sr.html )
+> >
+> > There is already some code in sdio.c mentoining QCA6174, but there
+> > are no nodes in ath10k_hw_params. Because QCA6174 is supported via
+> > PCI bus, I tried to write the ath10k_hw_params node (see patch
+> > http://blackhole.sk/~kabel/src/qca6174.patch ) but do not know if
+> > the changes I did are enough, because the driver fails after loading
+> > firmware.
+> >
+> > And the firmware is another point: Does board-sdio.bin have to be
+> > different from board.bin? Do we have to create this binary
+> > ourselves, or should the 8274B-SR board manufacturer sent us one?
+> > (We didn't receive anything from fn-link.)
+> >
+> > Any information is good, please let us know even if you have NDA on
+> > this and therefore cannot give any more information about this.
+> >
+> > Thank you.
+> >
+> > Marek Behun, CZ.NIC
+> >
+> > _______________________________________________
+> > ath10k mailing list
+> > ath10k@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/ath10k
+> >  
+> 
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
