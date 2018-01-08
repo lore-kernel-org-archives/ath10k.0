@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eYX1G-0003Xf-Rx
- for ath10k@lists.infradead.org; Mon, 08 Jan 2018 12:59:16 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 03/11] ath10k_sdio: DMA bounce buffers for read write
-Date: Mon, 8 Jan 2018 12:58:52 +0000
-Message-ID: <87mv1o4id1.fsf@kamboji.qca.qualcomm.com>
-References: <1506793068-27445-1-git-send-email-alagusankar@silex-india.com>
- <1506793068-27445-4-git-send-email-alagusankar@silex-india.com>
- <87lghu9247.fsf@kamboji.qca.qualcomm.com>
- <5281f48b04f8f593ec06e72a041ec021@silex-india.com>
-In-Reply-To: <5281f48b04f8f593ec06e72a041ec021@silex-india.com> (Alagu
- Sankar's message of "Mon, 25 Dec 2017 17:56:50 +0530")
-Content-Language: en-US
+ id 1eYXgl-0003qD-1k
+ for ath10k@lists.infradead.org; Mon, 08 Jan 2018 13:42:08 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [RFC v3 03/11] ath10k: per target configurablity of various items
+References: <20170917194013.8658-1-erik.stromdahl@gmail.com>
+ <20170917194013.8658-4-erik.stromdahl@gmail.com>
+ <87wp1eaiz0.fsf@kamboji.qca.qualcomm.com>
+ <c34f5c79-61a9-28b2-439c-f02045d06299@gmail.com>
+Date: Mon, 08 Jan 2018 15:41:51 +0200
+In-Reply-To: <c34f5c79-61a9-28b2-439c-f02045d06299@gmail.com> (Erik
+ Stromdahl's message of "Thu, 28 Dec 2017 13:43:10 +0100")
+Message-ID: <87wp0s31sw.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,50 +26,96 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alagu Sankar <alagusankar@silex-india.com>
-Cc: "silexcommon@gmail.com" <silexcommon@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Erik Stromdahl <erik.stromdahl@gmail.com>
+Cc: Govind Singh <govinds@qti.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Rakesh Pillai <pillair@qti.qualcomm.com>
 
-Alagu Sankar <alagusankar@silex-india.com> writes:
+Erik Stromdahl <erik.stromdahl@gmail.com> writes:
 
-> On 2017-12-22 21:38, Kalle Valo wrote:
->> silexcommon@gmail.com writes:
->>
->>> From: Alagu Sankar <alagusankar@silex-india.com>
->>>
->>> Some SD host controllers still need bounce buffers for SDIO data
->>> transfers. While the transfers worked fine on x86 platforms,
->>> this is found to be required for i.MX6 based systems.
->>>
->>> Changes are similar to and derived from the ath6kl sdio driver.
->>>
->>> Signed-off-by: Alagu Sankar <alagusankar@silex-india.com>
->>
->> Why is the bounce buffer needed exactly, what are the symptoms etc? To
->> me this sounds like an ugly workaround for a SDIO controller driver
->> bug.
+> On 2017-12-22 16:19, Kalle Valo wrote:
 >
-> We faced problems with i.MX6. The authentication frame sent by the
-> driver never reached the air. The host driver accepted the buffer, but
-> did not send out the packet to the sdio module. No errors reported
-> anywhere, but the buffer is not accepted due to alignment.
+>> I was a bit torn about this, I definitely see the need for this but on
+>> the other hand it creates duplicate data (for example two entries for
+>> QCA9377 chip). I guess this is the right approach, at least I cannot
+>> come up anything better.
+>>
+>> But this patch should be split into two:
+>>
+>> 1) add bus field to struct ath10k_hw_params
+>>
+>> 2) add max_num_peers field to struct ath10k_hw_params
+>>
+>> And it seems 2) is already implemented in commit 9f2992fea580 ("ath10k:
+>> wmi: get wmi init parameter values from hw params"), so hopefully we
+>> only need 1) anymore.
+>>
+>
+> Before commit 9f2992fea580a48135591873e5e3ac7e01444207,
+> TARGET_TLV_NUM_PEERS was used both in the WMI TLV init command
+> and as the value of *max_num_peers* in *struct ath10k* (ar->max_num_peers).
+>
+> commit 9f2992fea580a48135591873e5e3ac7e01444207 does not set
+> *ar->max_num_peers* to the value of *ar->hw_param->num_peers*.
+>
+> Is this correct?
+>
+> As I see it, there is a possible mismatch between what is written
+> to the device in the WMI init message and the value of *ar->max_num_peers*.
+>
+> Do we still need *max_num_peers* in *struct ath10k* now that we have the
+> *num_peers* member in *struct ath10k_hw_params*?
 
-So what kind of alignment works with i.MX6 and how are the packets
-aligned by ath10k? Of course, this might be still a bug in ath10k but
-most likely it's elsewhere and should be properly investigated. There
-must be a much better approach to handle this problem.
+A good point, I didn't thought of that during review. No time to
+investigate this right now, but maybe Rakesh and Govind (CCed) can
+comment?
 
-> The same driver however works fine without bounce buffer on x86
-> platform with stdhci drivers. To make it compliant with all host
-> controllers, we introduced the bounce buffers, similar to what was
-> done in ath6kl_sdio drivers.
+> I am currently rewriting my HL patches and I was thinking about adding
+> a separate patch related to this.
 
-That bounce buffer was horrible in ath6kl and with the bounce buffer you
-are forcing all working platforms to suffer from a copy of every packet.
-And ath10k is getting so complex that we really need to keep the code as
-simple as possible to keep it maintainable.
+Yeah, a separate patch to sort that out is a good idea.
+
+>>> --- a/drivers/net/wireless/ath/ath10k/core.c
+>>> +++ b/drivers/net/wireless/ath/ath10k/core.c
+>>> @@ -1663,9 +1663,19 @@ static int ath10k_init_hw_params(struct ath10k *ar)
+>>>   	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
+>>>   		hw_params = &ath10k_hw_params_list[i];
+>>>   -		if (hw_params->id == ar->target_version &&
+>>> -		    hw_params->dev_id == ar->dev_id)
+>>> -			break;
+>>> +		if (ar->is_high_latency) {
+>>> +			/* High latency devices will use different fw depending
+>>> +			 * on if it is a USB or SDIO device.
+>>> +			 */
+>>> +			if (hw_params->bus == ar->hif.bus &&
+>>> +			    hw_params->id == ar->target_version &&
+>>> +			    hw_params->dev_id == ar->dev_id)
+>>> +				break;
+>>> +		} else {
+>>> +			if (hw_params->id == ar->target_version &&
+>>> +			    hw_params->dev_id == ar->dev_id)
+>>> +				break;
+>>> +		}
+>>
+>> I don't like the is_high_latency test here at all. The bus field should
+>> be checked with all entries, not just high latency ones. And because of
+>> this even most of the hw_param bus field entries were not initialised.
+>>
+>> So only thing to do is to initialise the bus field for all the entries
+>> and the ugly test here can be removed. Just remember that QCA4019 uses
+>> AHB, I think all the rest is PCI. Or do we have AHB devices supported?
+>
+> I noticed that there has been introduced a new bus type (SNOC).
+> Do you know which devices are SNOC devices?
+
+SNOC is for wcn3990.
+
+> Btw, what the heck is SNOC anyway?
+
+I have forgetten already what the acronym meant but it's basically some
+sort of shared memory communication method with the firmware.
 
 -- 
 Kalle Valo
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
