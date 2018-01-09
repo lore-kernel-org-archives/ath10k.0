@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eYp7z-0000my-Du
- for ath10k@lists.infradead.org; Tue, 09 Jan 2018 08:19:25 +0000
-MIME-Version: 1.0
-Subject: Re: [1/3] ath10k: fix spelling error
+ id 1eYvMo-000831-GH
+ for ath10k@lists.infradead.org; Tue, 09 Jan 2018 14:59:08 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20171228190645.25773-2-erik.stromdahl@gmail.com>
-References: <20171228190645.25773-2-erik.stromdahl@gmail.com>
-Message-Id: <20180109081912.71C636021C@smtp.codeaurora.org>
-Date: Tue,  9 Jan 2018 08:19:12 +0000 (UTC)
+Subject: linux-stable-4.9.y: please apply serious ath10k security
+Date: Tue, 09 Jan 2018 16:58:51 +0200
+Message-ID: <87r2qzyt78.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +20,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Erik Stromdahl <erik.stromdahl@gmail.com>
-Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: stable@vger.kernel.org
+Cc: ath10k@lists.infradead.org
 
-Erik Stromdahl <erik.stromdahl@gmail.com> wrote:
+Hi Linux stable team,
 
-> Signed-off-by: Erik Stromdahl <erik.stromdahl@gmail.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+ath10k has a replay detection problem which was fixed in v4.14. I would
+like to get the fix also to linux-stable-4.9.y but for that it depends
+on a small mac80211 patch. So then cherrypicking the fixes please take
+the mac80211 commit first:
 
-3 patches applied to ath-next branch of ath.git, thanks.
+cef0acd4d7d4 mac80211: Add RX flag to indicate ICV stripped
+7eccb738fce5 ath10k: rebuild crypto header in rx data frames
 
-5c9f07132706 ath10k: fix spelling error
-fbea11c8d583 ath10k: remove unused prototype
-e6fe214e6197 ath10k: bugfix: add USB case in ath10k_core_probe_fw
+I tested and in this order commits apply just fine to linux-4.9.y.
+
+The ath10k patch is largish but as this fixes a security issue I hope it
+still can be applied to linux-stable. Please let me know if there are
+any problems.
+
+This is the commit log describing the problem:
+
+--------------------------------------------------------------------------------
+ath10k: rebuild crypto header in rx data frames
+
+Rx data frames notified through HTT_T2H_MSG_TYPE_RX_IND and
+HTT_T2H_MSG_TYPE_RX_FRAG_IND expect PN/TSC check to be done
+on host (mac80211) rather than firmware. Rebuild cipher header
+in every received data frames (that are notified through those
+HTT interfaces) from the rx_hdr_status tlv available in the
+rx descriptor of the first msdu. Skip setting RX_FLAG_IV_STRIPPED
+flag for the packets which requires mac80211 PN/TSC check support
+and set appropriate RX_FLAG for stripped crypto tail. Hw QCA988X,
+QCA9887, QCA99X0, QCA9984, QCA9888 and QCA4019 currently need the
+rebuilding of cipher header to perform PN/TSC check for replay
+attack.
+
+Please note that removing crypto tail for CCMP-256, GCMP and GCMP-256 ciphers
+in raw mode needs to be fixed. Since Rx with these ciphers in raw
+mode does not work in the current form even without this patch and
+removing crypto tail for these chipers needs clean up, raw mode related
+issues in CCMP-256, GCMP and GCMP-256 can be addressed in follow up
+patches.
+
+Tested-by: Manikanta Pubbisetty <mpubbise@qti.qualcomm.com>
+Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+----------------------------------------------------------------------
 
 -- 
-https://patchwork.kernel.org/patch/10135791/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
