@@ -1,12 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from wsip-70-167-11-34.sd.sd.cox.net ([70.167.11.34])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eYhCz-0004H0-D6
- for ath10k@lists.infradead.org; Mon, 08 Jan 2018 23:52:02 +0000
-From: ryanhsu@codeaurora.org
-Subject: [PATCH] ath10k: add sanity check to ie_len before parsing fw/board ie
-Date: Mon,  8 Jan 2018 15:51:01 -0800
-Message-Id: <1515455461-19286-1-git-send-email-ryanhsu@codeaurora.org>
+ id 1eYhVf-0003eS-Tq
+ for ath10k@lists.infradead.org; Tue, 09 Jan 2018 00:11:21 +0000
+Received: from localhost (localhost.localhost [127.0.0.1])
+ by stc-f12aaf5322.systech.com (Postfix) with ESMTP id A75162C0080
+ for <ath10k@lists.infradead.org>; Mon,  8 Jan 2018 16:02:23 -0800 (PST)
+Received: from [172.16.4.182] (unknown [172.16.4.182])
+ by stc-f12aaf5322.systech.com (Postfix) with ESMTP id BE0E02C0062
+ for <ath10k@lists.infradead.org>; Mon,  8 Jan 2018 16:02:20 -0800 (PST)
+Subject: Re: QCA9377 USB Support
+References: <258cab35-9a7c-700d-8115-d599ced0f850@systech.com>
+ <79b74837-52d4-016f-b0ee-20662a2acc05@gmail.com>
+ <87po8ccb6k.fsf@kamboji.qca.qualcomm.com>
+From: Jay Foster <jayf0ster@roadrunner.com>
+Message-ID: <53728511-f824-3a25-19d5-8e95754086c2@roadrunner.com>
+Date: Mon, 8 Jan 2018 16:02:20 -0800
+MIME-Version: 1.0
+In-Reply-To: <87po8ccb6k.fsf@kamboji.qca.qualcomm.com>
+Content-Language: en-US
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,74 +27,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: jayfoster@ieee.org
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: ryanhsu@codeaurora.org
+To: ath10k@lists.infradead.org
 
-From: Ryan Hsu <ryanhsu@codeaurora.org>
-
-Validate ie_len after the alignment padding before access the buffer
-to avoid potential overflow.
-
-Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/core.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 51444d3..64713d1 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1276,7 +1276,10 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- 		len -= sizeof(*hdr);
- 		data = hdr->data;
- 
--		if (len < ALIGN(ie_len, 4)) {
-+		/* jump over the padding */
-+		ie_len = ALIGN(ie_len, 4);
-+
-+		if (len < ie_len) {
- 			ath10k_err(ar, "invalid length for board ie_id %d ie_len %zu len %zu\n",
- 				   ie_id, ie_len, len);
- 			ret = -EINVAL;
-@@ -1315,8 +1318,6 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- 			goto out;
- 		}
- 
--		/* jump over the padding */
--		ie_len = ALIGN(ie_len, 4);
- 
- 		len -= ie_len;
- 		data += ie_len;
-@@ -1448,6 +1449,9 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
- 		len -= sizeof(*hdr);
- 		data += sizeof(*hdr);
- 
-+		/* jump over the padding */
-+		ie_len = ALIGN(ie_len, 4);
-+
- 		if (len < ie_len) {
- 			ath10k_err(ar, "invalid length for FW IE %d (%zu < %zu)\n",
- 				   ie_id, len, ie_len);
-@@ -1553,9 +1557,6 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
- 			break;
- 		}
- 
--		/* jump over the padding */
--		ie_len = ALIGN(ie_len, 4);
--
- 		len -= ie_len;
- 		data += ie_len;
- 	}
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTEvMjEvMjAxNyAxMjowMSBBTSwgS2FsbGUgVmFsbyB3cm90ZToKPiBFcmlrIFN0cm9tZGFo
+bCA8ZXJpay5zdHJvbWRhaGxAZ21haWwuY29tPiB3cml0ZXM6Cj4KPj4gT24gMjAxNy0xMS0wNiAy
+MzoyMSwgSmF5IEZvc3RlciB3cm90ZToKPj4+IEkgYW0gbG9va2luZyBmb3IgbGludXggZHJpdmVy
+IHN1cHBvcnQgZm9yIHRoZSBRQ0E5Mzc3IFVTQiBXaS1GaQo+Pj4gZGV2aWNlICgwY2YzOjkzNzgp
+LsKgIEkgc2VlIG9uIHRoZSBtYWlsaW5nIGxpc3QgYXJjaGl2ZXMgdGhhdCBhIHBhdGNoCj4+PiAo
+aHR0cHM6Ly9tYXJjLmluZm8vP2w9bGludXgtd2lyZWxlc3MmbT0xNTA1Njc3MjQ3MTIzMzImdz0y
+KSB0byBhZGQKPj4+IHRoaXMgdG8gdGhlIGF0aDEwayBkcml2ZXIgd2FzIHBvc3RlZCBvbiBTZXB0
+ZW1iZXIgMTcsIDIwMTcuCj4+PiBBY2NvcmRpbmcgdG8gdGhlIGF0aDEwayBzb3VyY2VzIGRvY3Vt
+ZW50YXRpb24KPj4+IChodHRwczovL3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi91c2Vycy9k
+cml2ZXJzL2F0aDEway9zb3VyY2VzKQo+Pj4gc3VjaCBwYXRjaGVzIHVzdWFsbHkgdGFrZSBhIGNv
+dXBsZSBvZiB3ZWVrcyB0byBnZXQgY29tbWl0dGVkIHRvCj4+PiBlaXRoZXIgdGhlIG1hc3RlciBv
+ciBhdGgtbmV4dCBicmFuY2ggb2YgdGhlIGt2YWxvIGF0aC5naXQgdHJlZS7CoCBJCj4+PiBjbG9u
+ZWQgdGhlIHRyZWUsIGJ1dCBkbyBub3Qgc2VlIHRoaXMgcGF0Y2ggdGhlcmUgb24gYW55IGJyYW5j
+aGVzLgo+Pj4KPj4+IFdoYXQgaXMgdGhlIHN0YXR1cyBvZiBzdXBwb3J0IGZvciB0aGUgUUNBOTM3
+NyBVU0IgZGV2aWNlIHVzaW5nIGF0aDEwaz8KPj4gUGFydHMgb2YgdGhlIFVTQiBzdXBwb3J0IGhh
+dmUgYmVlbiBhZGRlZCB0byB0aGUgYXRoLmdpdCByZXBvIGFuZCB0bwo+PiBtYWlubGluZSAoYnV0
+IG5vdCB0aGUgcGF0Y2ggeW91IHdlcmUgcmVmZXJyaW5nIHRvIChhcyB5b3Ugbm90aWNlZAo+PiB5
+b3Vyc2VsZikpLgo+Pgo+PiBIb3dldmVyLCB0aGUgcGF0Y2hlcyBhcmUgYXZhaWxhYmxlIGhlcmU6
+Cj4+Cj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9lcnN0cm9tL2xpbnV4LWF0aAo+Pgo+PiBDdXJyZW50
+IHN0YXR1czoKPj4KPj4gaHR0cHM6Ly9naXRodWIuY29tL2Vyc3Ryb20vbGludXgtYXRoL3dpa2kK
+PiBCVFcsIEkgY3JlYXRlZCBhIHNlcGFyYXRlIHBhdGNoIGZvciBzZGlvIGFuZCB1c2IgdG8gbWFr
+ZSBpdCBlYXNpZXIgZm9yCj4gbWUgdG8gcmV2aWV3IGFuZCB0ZXN0IHRoZSBwYXRjaGVzOgo+Cj4g
+aHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQva3ZhbG8vYXRo
+LmdpdC9sb2cvP2g9YXRoMTBrLXBlbmRpbmctc2Rpby11c2IKPgo+IEkgZHJvcHBlZCBwYXRjaCAi
+YXRoMTBrX3NkaW86IGVuYWJsZSBmaXJtd2FyZSBjcmFzaCBkdW1wIiB0ZW1wb3JhcmlseSBhcwo+
+IGl0IGRlcGVuZHMgb24gdGhlIGNyYXNkdW1wIHNlcmllcyB3aGljaCBpcyBub3QgeWV0IGFwcGxp
+ZWQuCj4KSSdtIHRyeWluZyB0byBjb21waWxlIHRoZSBhdGgxMGsgZHJpdmVyIGZvciB1c2Ugd2l0
+aCBhIFVTQiBRQ0E5Mzc3IApkZXZpY2UuwqAgSSBhbSB1c2luZyB0aGUgYXRoMTBrIGF0aDEway1w
+ZW5kaW5nLXNkaW8tdXNiIGJyYW5jaC7CoCBUaGUgCmRyaXZlciBpcyBub3QgYmVpbmcgbG9hZGVk
+IHdoZW4gdGhlIFVTQiBkZXZpY2UgZW51bWVyYXRlcywgYnV0IEkgY2FuIAptYW51YWxseSBtb2Rw
+cm9iZSBpdCwgYnV0IGl0IGlzbid0IHNlZWluZyBteSBoYXJkd2FyZS7CoCBJIGxvb2tlZCBhdCAK
+dHJ5aW5nIHRvIGFwcGx5IHRoZSBwYXRjaCBmb3IgdGhlIFFDQTkzNzcgVVNCIGRldmljZSAoYWJv
+dmUsIGZyb20gRXJpayAKU3Ryb21kYWhsKSwgYnV0IGl0IGRvZXMgbm90IGNvbXBpbGUuCgogwqAg
+Q0MgW01dwqAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLm8KZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmM6NDI0OjM6IGVycm9yOiB1bmtub3duIGZpZWxk
+IAonbWF4X251bV9wZWVycycgc3BlY2lmaWVkIGluIGluaXRpYWxpemVyCiDCoMKgIC5tYXhfbnVt
+X3BlZXJzID0gVEFSR0VUX1FDQTkzNzdfSExfTlVNX1BFRVJTLAogwqDCoCBeCmRyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jOjQyNDoyMDogZXJyb3I6IAonVEFSR0VUX1FDQTkz
+NzdfSExfTlVNX1BFRVJTJyB1bmRlY2xhcmVkIGhlcmUgKG5vdCBpbiBhIGZ1bmN0aW9uKQogwqDC
+oCAubWF4X251bV9wZWVycyA9IFRBUkdFVF9RQ0E5Mzc3X0hMX05VTV9QRUVSUywKIMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIF4KZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
+L2F0aDEway9jb3JlLmM6NDI1OjM6IGVycm9yOiB1bmtub3duIGZpZWxkIAonaXNfaGlnaF9sYXRl
+bmN5JyBzcGVjaWZpZWQgaW4gaW5pdGlhbGl6ZXIKIMKgwqAgLmlzX2hpZ2hfbGF0ZW5jeSA9IHRy
+dWUsCiDCoMKgIF4KZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmM6NDI2OjM6
+IGVycm9yOiB1bmtub3duIGZpZWxkICdidXMnIApzcGVjaWZpZWQgaW4gaW5pdGlhbGl6ZXIKIMKg
+wqAgLmJ1cyA9IEFUSDEwS19CVVNfVVNCLAogwqDCoCBeCmRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9hdGgxMGsvY29yZS5jOjQyNzozOiBlcnJvcjogdW5rbm93biBmaWVsZCAKJ3N0YXJ0X29uY2Un
+IHNwZWNpZmllZCBpbiBpbml0aWFsaXplcgogwqDCoCAuc3RhcnRfb25jZSA9IHRydWUsCiDCoMKg
+IF4KCklzIHRoZXJlIGFuIHVwZGF0ZWQgcGF0Y2g/wqAgRG8gSSBzdGlsbCBuZWVkIHRoaXMgcGF0
+Y2g/wqAgT3Igc29tZXRoaW5nIGVsc2U/CkpheQoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
+cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
+aDEwawo=
