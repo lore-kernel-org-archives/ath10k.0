@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.linuxfoundation.org ([140.211.169.12])
+Received: from mail-it0-x234.google.com ([2607:f8b0:4001:c0b::234])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZCr8-00030H-4f
- for ath10k@lists.infradead.org; Wed, 10 Jan 2018 09:39:35 +0000
-Date: Wed, 10 Jan 2018 10:39:19 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: linux-stable-4.9.y: please apply serious ath10k security
-Message-ID: <20180110093919.GB22851@kroah.com>
-References: <87r2qzyt78.fsf@kamboji.qca.qualcomm.com>
+ id 1eZKuB-0006v4-Q1
+ for ath10k@lists.infradead.org; Wed, 10 Jan 2018 18:15:17 +0000
+Received: by mail-it0-x234.google.com with SMTP id p139so467090itb.1
+ for <ath10k@lists.infradead.org>; Wed, 10 Jan 2018 10:15:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87r2qzyt78.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87vagh7kq2.fsf@kamboji.qca.qualcomm.com>
+References: <CALAE=UAPXYsCfO+QXxPsnEe2vkcMcCoknSAc8RVyOVk85MC-8Q@mail.gmail.com>
+ <87vagh7kq2.fsf@kamboji.qca.qualcomm.com>
+From: Robert Jones <rjones@gateworks.com>
+Date: Wed, 10 Jan 2018 10:15:03 -0800
+Message-ID: <CALAE=UD3kCG8_=o16D_JJ1_fN-PqQ+b0VxjWjxU8O_Sh1uHSFA@mail.gmail.com>
+Subject: Re: Bad TCP performance on WLE900VX
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +25,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org, stable@vger.kernel.org
+To: greearb@candelatech.com
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tue, Jan 09, 2018 at 04:58:51PM +0200, Kalle Valo wrote:
-> Hi Linux stable team,
-> 
-> ath10k has a replay detection problem which was fixed in v4.14. I would
-> like to get the fix also to linux-stable-4.9.y but for that it depends
-> on a small mac80211 patch. So then cherrypicking the fixes please take
-> the mac80211 commit first:
-> 
-> cef0acd4d7d4 mac80211: Add RX flag to indicate ICV stripped
-> 7eccb738fce5 ath10k: rebuild crypto header in rx data frames
-> 
-> I tested and in this order commits apply just fine to linux-4.9.y.
-> 
-> The ath10k patch is largish but as this fixes a security issue I hope it
-> still can be applied to linux-stable. Please let me know if there are
-> any problems.
+> There are more tcp related hacks that make ath10k useful for
+> generating TCP traffic.  The tcp_tsq_limit_output_interval
+> one in particular is helpful
 
-Both now queued up, thanks.
+> You can dig through my kernel and look for a commit related to
+> tcp_tsq_limit_output_interval.  Try setting it to 5 or higher.
 
-greg k-h
+This solved the problem for me.
+
+Link to commit for anyone else looking:
+https://github.com/greearb/linux-ct-4.13/commit/dc201c3c310f805681dbf393484bdc9715745df1
+
+Thanks!
+Robert
 
 _______________________________________________
 ath10k mailing list
