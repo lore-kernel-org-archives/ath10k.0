@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x22e.google.com ([2607:f8b0:4001:c06::22e])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZhiO-0005li-B2
- for ath10k@lists.infradead.org; Thu, 11 Jan 2018 18:36:38 +0000
-Received: by mail-io0-x22e.google.com with SMTP id t63so3044244iod.0
- for <ath10k@lists.infradead.org>; Thu, 11 Jan 2018 10:36:25 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZlg0-0005g3-WE
+ for ath10k@lists.infradead.org; Thu, 11 Jan 2018 22:50:26 +0000
+Subject: Re: Bad TCP performance on WLE900VX
+References: <CALAE=UAPXYsCfO+QXxPsnEe2vkcMcCoknSAc8RVyOVk85MC-8Q@mail.gmail.com>
+ <87vagh7kq2.fsf@kamboji.qca.qualcomm.com>
+ <CALAE=UD3kCG8_=o16D_JJ1_fN-PqQ+b0VxjWjxU8O_Sh1uHSFA@mail.gmail.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <a0eebf0b-f24b-05f1-27c9-26c3a708f014@candelatech.com>
+Date: Thu, 11 Jan 2018 14:50:06 -0800
 MIME-Version: 1.0
-In-Reply-To: <87inc8tlhl.fsf@kamboji.qca.qualcomm.com>
-References: <CAEV+hqzaqrabZ2uYHHHSNxcmddyFU5Q8odyPqrPZSt-DTJye7A@mail.gmail.com>
- <87inc8tlhl.fsf@kamboji.qca.qualcomm.com>
-From: Contrib Open Source <contrib.open.source@gmail.com>
-Date: Thu, 11 Jan 2018 19:36:24 +0100
-Message-ID: <CAEV+hqzeeeyhcyowhRUTUo1+fN5vcGrhykzaA3kLQtob0Pt3eQ@mail.gmail.com>
-Subject: Re: SparkLan WPEQ-261ACN (QCA6174) : packets loss ?
+In-Reply-To: <CALAE=UD3kCG8_=o16D_JJ1_fN-PqQ+b0VxjWjxU8O_Sh1uHSFA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,66 +20,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Robert Jones <rjones@gateworks.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-OK, many thanks for these advices. ^_^
-I will try both cases:
-   *) recent board files + older firmware file
-   *) recent board + firmware files and latest ath10k thanks to
-backports project
+On 01/10/2018 10:15 AM, Robert Jones wrote:
+>> There are more tcp related hacks that make ath10k useful for
+>> generating TCP traffic.  The tcp_tsq_limit_output_interval
+>> one in particular is helpful
+>
+>> You can dig through my kernel and look for a commit related to
+>> tcp_tsq_limit_output_interval.  Try setting it to 5 or higher.
+>
+> This solved the problem for me.
+>
+> Link to commit for anyone else looking:
+> https://github.com/greearb/linux-ct-4.13/commit/dc201c3c310f805681dbf393484bdc9715745df1
 
-Moreover, do you have any clue about previous questions Q4 and Q5 ?
+Out of curiosity, did you try the patch that Kalle suggested?
 
-And finally, I know it will be difficult to answer, but:
-Q6) what is the expected throughput on Linux host ?
-from: https://www.qualcomm.com/media/documents/files/qca6174a-product-brief.pdf
-   WLAN TCP/IP Throughput
-      620Mbps/600Mbps TCP DL/UL (PCIe2.1)
-Is it true on Linux ?
+I'd be curious how that performed in comparison...
 
-Thanks again for your help,
-Contrib
+Thanks,
+Ben
 
-2018-01-11 17:21 UTC+01:00, Kalle Valo <kvalo@codeaurora.org>:
-> Contrib Open Source <contrib.open.source@gmail.com> writes:
->
->> So my questions are :
->
->> Q1) is it correct to "downgrade" firmware API in this case (symbolic
->> link firmware-5.bin) ?
->
-> It's not safe, you have to really know what you are doing and understand
-> the ath10k internals. We do these FW API increases (5 -> 6) for a
-> reason, usually because the new firmware won't work with older version
-> of ath10k.
->
-> But if you want to run latest ath10k on older kernels I recommend to
-> look at backports project:
->
-> https://backports.wiki.kernel.org/index.php/Main_Page
->
->> Q2) is it possible to use recent board files with an "older" firmware
->> file ?
->
-> To my knowledge board files are not dependent on the firmware versions.
-> So yes, you should be able to use newer board-2.bin with older firmware
-> release.
->
->> Q3) how to know which firmware files to use for my specific device ?
->
-> The firmware releases are not "device" specific (but of course it
-> depends on what you mean with device in this context). But my
-> recommendation is to always use the latest firmware which works with
-> your kernel (WITHOUT any symlink hacks etc).
->
-> --
-> Kalle Valo
->
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
