@@ -1,22 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x229.google.com ([2607:f8b0:4001:c06::229])
+Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ea334-0004ut-KV
- for ath10k@lists.infradead.org; Fri, 12 Jan 2018 17:23:24 +0000
-Received: by mail-io0-x229.google.com with SMTP id v30so6608383iov.7
- for <ath10k@lists.infradead.org>; Fri, 12 Jan 2018 09:23:10 -0800 (PST)
+ id 1ea370-0007yZ-AE
+ for ath10k@lists.infradead.org; Fri, 12 Jan 2018 17:27:27 +0000
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ath10k: remove redundant -ve check against u32 integer size
+Date: Fri, 12 Jan 2018 17:27:13 +0000
+Message-Id: <20180112172713.28252-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <284de21d-c341-b52f-a1f9-23839871dfed@dd-wrt.com>
-References: <CALAE=UAPXYsCfO+QXxPsnEe2vkcMcCoknSAc8RVyOVk85MC-8Q@mail.gmail.com>
- <87vagh7kq2.fsf@kamboji.qca.qualcomm.com>
- <CALAE=UD3kCG8_=o16D_JJ1_fN-PqQ+b0VxjWjxU8O_Sh1uHSFA@mail.gmail.com>
- <a0eebf0b-f24b-05f1-27c9-26c3a708f014@candelatech.com>
- <CALAE=UAmS33_sb1z0bVKwu-qb=WWn+m7vuRR2vYSnUFF6xLt2Q@mail.gmail.com>
- <284de21d-c341-b52f-a1f9-23839871dfed@dd-wrt.com>
-From: Robert Jones <rjones@gateworks.com>
-Date: Fri, 12 Jan 2018 09:23:09 -0800
-Message-ID: <CALAE=UB1Su4xD4ttMVLyJWL_MQDGE3iT+SVfPKJhdPOsW1DNqA@mail.gmail.com>
-Subject: Re: Bad TCP performance on WLE900VX
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +20,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 
->>> Out of curiosity, did you try the patch that Kalle suggested?
->>
->> I did not unfortunately. I have other cards to qualify but if I can
->> come back to this I'll post the results.
->
-> this patch wont change anything, since you still need to modify ath10k to
-> set a sane tsq value
-> see this additional patch from lede
-> https://git.lede-project.org/?p=openwrt/openwrt.git;a=commitdiff;h=111b49902465116a8353d29afe02eff0f56ea0a3
+From: Colin Ian King <colin.king@canonical.com>
 
-I was just planning on hardcoding a few values suggested by the
-testing done in the Kalle's commit message.
-But thank you for the LEDE patch, that will make testing this easier.
+Variable section_table.size is a u32 and so cannot be less than
+zero, hence the less than zero check is redundant and can be
+removed.
 
-Thanks,
-Robert
+Detected by CoverityScan, CID#1463855 ("Unsigned compared against 0")
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index f6a23f2d0335..355db6a0fcf3 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1478,9 +1478,6 @@ static int ath10k_pci_dump_memory_section(struct ath10k *ar,
+ 	if (!mem_region || !buf)
+ 		return 0;
+ 
+-	if (mem_region->section_table.size < 0)
+-		return 0;
+-
+ 	cur_section = &mem_region->section_table.sections[0];
+ 
+ 	if (mem_region->start > cur_section->start) {
+-- 
+2.15.1
+
 
 _______________________________________________
 ath10k mailing list
