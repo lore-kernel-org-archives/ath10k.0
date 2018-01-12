@@ -1,17 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail-io0-x229.google.com ([2607:f8b0:4001:c06::229])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ea2F3-0000ro-OC
- for ath10k@lists.infradead.org; Fri, 12 Jan 2018 16:31:45 +0000
-Subject: Re: Problems Configuring VHT160 and VHT80+80 for QCA9984
-References: <CALAE=UDvCnuTK_mFJsdPccTbb6gxHmd_aw4HmL8mdvLZ3VL_mA@mail.gmail.com>
- <0f25a0ea-de8e-e424-c335-e37384cedaaa@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <ca960145-159d-0327-c063-165321a58f3c@dd-wrt.com>
-Date: Fri, 12 Jan 2018 17:31:26 +0100
+ id 1ea334-0004ut-KV
+ for ath10k@lists.infradead.org; Fri, 12 Jan 2018 17:23:24 +0000
+Received: by mail-io0-x229.google.com with SMTP id v30so6608383iov.7
+ for <ath10k@lists.infradead.org>; Fri, 12 Jan 2018 09:23:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <0f25a0ea-de8e-e424-c335-e37384cedaaa@candelatech.com>
+In-Reply-To: <284de21d-c341-b52f-a1f9-23839871dfed@dd-wrt.com>
+References: <CALAE=UAPXYsCfO+QXxPsnEe2vkcMcCoknSAc8RVyOVk85MC-8Q@mail.gmail.com>
+ <87vagh7kq2.fsf@kamboji.qca.qualcomm.com>
+ <CALAE=UD3kCG8_=o16D_JJ1_fN-PqQ+b0VxjWjxU8O_Sh1uHSFA@mail.gmail.com>
+ <a0eebf0b-f24b-05f1-27c9-26c3a708f014@candelatech.com>
+ <CALAE=UAmS33_sb1z0bVKwu-qb=WWn+m7vuRR2vYSnUFF6xLt2Q@mail.gmail.com>
+ <284de21d-c341-b52f-a1f9-23839871dfed@dd-wrt.com>
+From: Robert Jones <rjones@gateworks.com>
+Date: Fri, 12 Jan 2018 09:23:09 -0800
+Message-ID: <CALAE=UB1Su4xD4ttMVLyJWL_MQDGE3iT+SVfPKJhdPOsW1DNqA@mail.gmail.com>
+Subject: Re: Bad TCP performance on WLE900VX
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,48 +25,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-QW0gMTIuMDEuMjAxOCB1bSAxNjoyOCBzY2hyaWViIEJlbiBHcmVlYXI6Cj4KPiBPbiAwMS8xMS8y
-MDE4IDA1OjQ2IFBNLCBSb2JlcnQgSm9uZXMgd3JvdGU6Cj4+IEhlbGxvLAo+Pgo+PiBJJ20gd29y
-a2luZyB3aXRoIGEgV0xFMTIxNlY1LTIwIGF0aDEwayB3YXZlIDIgY2FyZCB1c2luZyBRQ0E5OTg0
-Cj4+IGNoaXBzZXQgYW5kIGhhdmluZyBwcm9ibGVtcyBjb25maWd1cmluZyBhbiBBUCBmb3IgVkhU
-MTYwIG9yIDgwKzgwCj4+IG1vZGUuIFRoZSBob3N0YXBkIHYyLjYgdG9vbCBpbiBib3RoIGNhc2Vz
-IHRlbGxzIG1lIHRoYXQgdGhlICJEcml2ZXIKPj4gZG9lcyBub3Qgc3VwcG9ydCBjb25maWd1cmVk
-IFZIVCBjYXBhYmlsaXR5Ii4KPj4KPj4gSSdtIHVzaW5nIHRoZSBjdXN0b20gYm9hcmQgYW5kIGZp
-cm13YXJlIC5iaW4gZmlsZXMgZm91bmQgYXQKPj4gaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20v
-YXRoMTBrLTEwLjQucGhwLiBJIHNlZSBvbiB0aGUgc2FtZSBwYWdlCj4+IHRoYXQgdGhleSByZWNv
-bW1lbmQgdXNpbmcgb25lIG9mIEJlbiBHcmVlYXIncyBrZXJuZWxzIGJ1dCBJIHdvdWxkCj4+IHBy
-ZWZlciB0byBzdGljayB3aXRoIGEgbWFpbmxpbmUgNC4xNCBpZiBwb3NzaWJsZS4KPj4KPj4gSXMg
-dGhpcyBjYXBhYmlsaXR5IHRydWx5IG1pc3NpbmcgZnJvbSB0aGUgYXRoMTBrIGRyaXZlciBvciBh
-bSBJCj4+IG1pc2NvbmZpZ3VyaW5nIHNvbWV0aGluZyBpbiBteSBob3N0YXBkLmNvbmY/Cj4+Cj4+
-IElmIHRoZSBmb3JtZXIsIGNhbiBhbnlvbmUgcG9pbnQgbWUgdG8gYSBwYXRjaCBzZXQgdGhhdCBJ
-IGNhbiBhcHBseSB0bwo+PiB0aGUgYXRoMTBrIGRyaXZlciB0byBzdXBwb3J0IGVpdGhlciBvZiB0
-aGVzZSB0d28gbW9kZXM/Cj4KPiBFYXJseSBvbiB0aGVyZSB3YXMgYnVncyBpbiBzdG9jayBmaXJt
-d2FyZSBmb3IgaG93IGl0IGRpZCBWSFQxNjAKPiB2cyBob3cgdGhlIGRyaXZlciB0aG91Z2h0IGl0
-IGRpZC7CoCBJIGVuZGVkIHVwIGZpeGluZyB0aGUgQ1QgZmlybXdhcmUKPiB0byBtYXRjaCBjbG9z
-ZXIgdG8gaG93IHRoZSBkcml2ZXIgd2FudGVkIGl0IGRvbmUgYXQgdGhlIHRpbWUsIGJ1dAo+IEkg
-dGhpbmsgdGhhdCB0aGUgZHJpdmVyIGhhcyBzaW5jZSBjaGFuZ2VkLgo+Cj4gSSBoYXZlIG5vdCBo
-YWQgdGltZSAobm9yIG11Y2ggaW50ZXJlc3QpIHRvIHRyeSB0byBtYWtlIG15IGZpcm13YXJlIAo+
-IHdvcmsgYWdhaW4gd2l0aCBzdG9jawo+IGRyaXZlciBmb3IgVkhUMTYwLgo+Cj4gRWl0aGVyIHdh
-eSwgVkhUMTYwIGlzIGFsbW9zdCBjb21wbGV0ZWx5IHdvcnRobGVzcyBiZWNhdXNlIGl0IGNhbiBv
-bmx5Cj4gZG8gMngyIGF0IFZIVDE2MCwgd2hpY2ggaXMgbm8gZmFzdGVyIHRoYW4gVkhUODAgYXQg
-NHg0IGJ1dCB1c2VzIHR3aWNlCj4gYXMgbXVjaCBiYW5kd2lkdGguCnJlbWVtYmVyIG15IHBhdGNo
-IHRvIGdldCBpdCB0byB3b3JrIHdpdGggc3RvY2sgZmlybXdhcmUgOi0pCj4KPiBUaGFua3MsCj4g
-QmVuCj4KPj4KPj4gUmVnYXJkcywKPj4gUm9iZXJ0IEpvbmVzCj4+Cj4+IF9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IGF0aDEwayBtYWlsaW5nIGxpc3QK
-Pj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPj4KPgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LD
-vHNzZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVU
-IEdtYkggLSBERC1XUlQKRmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0NjI1IEJl
-bnNoZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0NzMK
-R2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUK
-aHR0cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpUZWwu
-OiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2F0aDEwawo=
+>>> Out of curiosity, did you try the patch that Kalle suggested?
+>>
+>> I did not unfortunately. I have other cards to qualify but if I can
+>> come back to this I'll post the results.
+>
+> this patch wont change anything, since you still need to modify ath10k to
+> set a sane tsq value
+> see this additional patch from lede
+> https://git.lede-project.org/?p=openwrt/openwrt.git;a=commitdiff;h=111b49902465116a8353d29afe02eff0f56ea0a3
+
+I was just planning on hardcoding a few values suggested by the
+testing done in the Kalle's commit message.
+But thank you for the LEDE patch, that will make testing this easier.
+
+Thanks,
+Robert
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
