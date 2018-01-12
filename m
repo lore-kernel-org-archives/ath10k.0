@@ -1,13 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from mail-io0-x22d.google.com ([2607:f8b0:4001:c06::22d])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ea370-0007yZ-AE
- for ath10k@lists.infradead.org; Fri, 12 Jan 2018 17:27:27 +0000
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ath10k: remove redundant -ve check against u32 integer size
-Date: Fri, 12 Jan 2018 17:27:13 +0000
-Message-Id: <20180112172713.28252-1-colin.king@canonical.com>
+ id 1ea3Il-0006va-L4
+ for ath10k@lists.infradead.org; Fri, 12 Jan 2018 17:39:37 +0000
+Received: by mail-io0-x22d.google.com with SMTP id v30so6659211iov.7
+ for <ath10k@lists.infradead.org>; Fri, 12 Jan 2018 09:39:25 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <ca960145-159d-0327-c063-165321a58f3c@dd-wrt.com>
+References: <CALAE=UDvCnuTK_mFJsdPccTbb6gxHmd_aw4HmL8mdvLZ3VL_mA@mail.gmail.com>
+ <0f25a0ea-de8e-e424-c335-e37384cedaaa@candelatech.com>
+ <ca960145-159d-0327-c063-165321a58f3c@dd-wrt.com>
+From: Robert Jones <rjones@gateworks.com>
+Date: Fri, 12 Jan 2018 09:39:23 -0800
+Message-ID: <CALAE=UD8Hampm2ue+J7b30aaF0Q4N3yDi4EWugY--T=jNPjvbw@mail.gmail.com>
+Subject: Re: Problems Configuring VHT160 and VHT80+80 for QCA9984
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,45 +22,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-From: Colin Ian King <colin.king@canonical.com>
-
-Variable section_table.size is a u32 and so cannot be less than
-zero, hence the less than zero check is redundant and can be
-removed.
-
-Detected by CoverityScan, CID#1463855 ("Unsigned compared against 0")
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index f6a23f2d0335..355db6a0fcf3 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1478,9 +1478,6 @@ static int ath10k_pci_dump_memory_section(struct ath10k *ar,
- 	if (!mem_region || !buf)
- 		return 0;
- 
--	if (mem_region->section_table.size < 0)
--		return 0;
--
- 	cur_section = &mem_region->section_table.sections[0];
- 
- 	if (mem_region->start > cur_section->start) {
--- 
-2.15.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gRnJpLCBKYW4gMTIsIDIwMTggYXQgODozMSBBTSwgU2ViYXN0aWFuIEdvdHRzY2hhbGwKPHMu
+Z290dHNjaGFsbEBkZC13cnQuY29tPiB3cm90ZToKPiBBbSAxMi4wMS4yMDE4IHVtIDE2OjI4IHNj
+aHJpZWIgQmVuIEdyZWVhcjoKPj4KPj4KPj4gT24gMDEvMTEvMjAxOCAwNTo0NiBQTSwgUm9iZXJ0
+IEpvbmVzIHdyb3RlOgo+Pj4KPj4+IEhlbGxvLAo+Pj4KPj4+IEknbSB3b3JraW5nIHdpdGggYSBX
+TEUxMjE2VjUtMjAgYXRoMTBrIHdhdmUgMiBjYXJkIHVzaW5nIFFDQTk5ODQKPj4+IGNoaXBzZXQg
+YW5kIGhhdmluZyBwcm9ibGVtcyBjb25maWd1cmluZyBhbiBBUCBmb3IgVkhUMTYwIG9yIDgwKzgw
+Cj4+PiBtb2RlLiBUaGUgaG9zdGFwZCB2Mi42IHRvb2wgaW4gYm90aCBjYXNlcyB0ZWxscyBtZSB0
+aGF0IHRoZSAiRHJpdmVyCj4+PiBkb2VzIG5vdCBzdXBwb3J0IGNvbmZpZ3VyZWQgVkhUIGNhcGFi
+aWxpdHkiLgo+Pj4KPj4+IEknbSB1c2luZyB0aGUgY3VzdG9tIGJvYXJkIGFuZCBmaXJtd2FyZSAu
+YmluIGZpbGVzIGZvdW5kIGF0Cj4+PiBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbS9hdGgxMGst
+MTAuNC5waHAuIEkgc2VlIG9uIHRoZSBzYW1lIHBhZ2UKPj4+IHRoYXQgdGhleSByZWNvbW1lbmQg
+dXNpbmcgb25lIG9mIEJlbiBHcmVlYXIncyBrZXJuZWxzIGJ1dCBJIHdvdWxkCj4+PiBwcmVmZXIg
+dG8gc3RpY2sgd2l0aCBhIG1haW5saW5lIDQuMTQgaWYgcG9zc2libGUuCj4+Pgo+Pj4gSXMgdGhp
+cyBjYXBhYmlsaXR5IHRydWx5IG1pc3NpbmcgZnJvbSB0aGUgYXRoMTBrIGRyaXZlciBvciBhbSBJ
+Cj4+PiBtaXNjb25maWd1cmluZyBzb21ldGhpbmcgaW4gbXkgaG9zdGFwZC5jb25mPwo+Pj4KPj4+
+IElmIHRoZSBmb3JtZXIsIGNhbiBhbnlvbmUgcG9pbnQgbWUgdG8gYSBwYXRjaCBzZXQgdGhhdCBJ
+IGNhbiBhcHBseSB0bwo+Pj4gdGhlIGF0aDEwayBkcml2ZXIgdG8gc3VwcG9ydCBlaXRoZXIgb2Yg
+dGhlc2UgdHdvIG1vZGVzPwo+Pgo+Pgo+PiBFYXJseSBvbiB0aGVyZSB3YXMgYnVncyBpbiBzdG9j
+ayBmaXJtd2FyZSBmb3IgaG93IGl0IGRpZCBWSFQxNjAKPj4gdnMgaG93IHRoZSBkcml2ZXIgdGhv
+dWdodCBpdCBkaWQuICBJIGVuZGVkIHVwIGZpeGluZyB0aGUgQ1QgZmlybXdhcmUKPj4gdG8gbWF0
+Y2ggY2xvc2VyIHRvIGhvdyB0aGUgZHJpdmVyIHdhbnRlZCBpdCBkb25lIGF0IHRoZSB0aW1lLCBi
+dXQKPj4gSSB0aGluayB0aGF0IHRoZSBkcml2ZXIgaGFzIHNpbmNlIGNoYW5nZWQuCj4+Cj4+IEkg
+aGF2ZSBub3QgaGFkIHRpbWUgKG5vciBtdWNoIGludGVyZXN0KSB0byB0cnkgdG8gbWFrZSBteSBm
+aXJtd2FyZSB3b3JrCj4+IGFnYWluIHdpdGggc3RvY2sKPj4gZHJpdmVyIGZvciBWSFQxNjAuCj4+
+Cj4+IEVpdGhlciB3YXksIFZIVDE2MCBpcyBhbG1vc3QgY29tcGxldGVseSB3b3J0aGxlc3MgYmVj
+YXVzZSBpdCBjYW4gb25seQo+PiBkbyAyeDIgYXQgVkhUMTYwLCB3aGljaCBpcyBubyBmYXN0ZXIg
+dGhhbiBWSFQ4MCBhdCA0eDQgYnV0IHVzZXMgdHdpY2UKPj4gYXMgbXVjaCBiYW5kd2lkdGguCgpS
+aWdodCwgSSBkZWZpbml0ZWx5IGFncmVlLiBJIHN1cHBvc2UgSSBqdXN0IHdhbnRlZCB0byB0ZXN0
+IG15CmNvbmZpZ3VyYXRpb24gaW4gY2FzZSBvbmUgb2Ygb3VyIGN1c3RvbWVycyBhc2tlZCBmb3Ig
+YW4gZXhhbXBsZS4KVGhpcyBpcyBhIHN0cm9uZyBhcmd1bWVudCByZWdhcmRpbmcgdGhpcyBjYXJk
+IHRob3VnaC4KCj4KPiByZW1lbWJlciBteSBwYXRjaCB0byBnZXQgaXQgdG8gd29yayB3aXRoIHN0
+b2NrIGZpcm13YXJlIDotKQo+Pgo+Pgo+PiBUaGFua3MsCj4+IEJlbgo+Pgo+Pj4KPj4+IFJlZ2Fy
+ZHMsCj4+PiBSb2JlcnQgSm9uZXMKPj4+Cj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwo+Pj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+Pj4gYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKPj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCj4+Pgo+Pgo+Cj4gLS0KPiBNaXQgZnJldW5kbGljaGVuIEdyw7xzc2Vu
+IC8gUmVnYXJkcwo+Cj4gU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KPgo+IE5ld01lZGlhLU5F
+VCBHbWJIIC0gREQtV1JUCj4gRmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0NjI1
+IEJlbnNoZWltCj4gUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAy
+NTQ3Mwo+IEdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBT
+Y2hlZWxlCj4gaHR0cDovL3d3dy5kZC13cnQuY29tCj4gZW1haWw6IHMuZ290dHNjaGFsbEBkZC13
+cnQuY29tCj4gVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQo+Cgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
+bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
