@@ -1,20 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZv8l-0008Fg-Li
- for ath10k@lists.infradead.org; Fri, 12 Jan 2018 08:56:46 +0000
-Subject: Re: Bad TCP performance on WLE900VX
-References: <CALAE=UAPXYsCfO+QXxPsnEe2vkcMcCoknSAc8RVyOVk85MC-8Q@mail.gmail.com>
- <87vagh7kq2.fsf@kamboji.qca.qualcomm.com>
- <CALAE=UD3kCG8_=o16D_JJ1_fN-PqQ+b0VxjWjxU8O_Sh1uHSFA@mail.gmail.com>
- <a0eebf0b-f24b-05f1-27c9-26c3a708f014@candelatech.com>
- <CALAE=UAmS33_sb1z0bVKwu-qb=WWn+m7vuRR2vYSnUFF6xLt2Q@mail.gmail.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <284de21d-c341-b52f-a1f9-23839871dfed@dd-wrt.com>
-Date: Fri, 12 Jan 2018 09:56:22 +0100
+ id 1eZvQW-0001Vg-ND
+ for ath10k@lists.infradead.org; Fri, 12 Jan 2018 09:15:06 +0000
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH][next] ath10k: fix spelling mistake: "addrress" -> "address"
+Date: Fri, 12 Jan 2018 09:14:50 +0000
+Message-Id: <20180112091450.8285-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <CALAE=UAmS33_sb1z0bVKwu-qb=WWn+m7vuRR2vYSnUFF6xLt2Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +16,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 
-QW0gMTIuMDEuMjAxOCB1bSAwMjoyNCBzY2hyaWViIFJvYmVydCBKb25lczoKPj4gT3V0IG9mIGN1
-cmlvc2l0eSwgZGlkIHlvdSB0cnkgdGhlIHBhdGNoIHRoYXQgS2FsbGUgc3VnZ2VzdGVkPwo+IEkg
-ZGlkIG5vdCB1bmZvcnR1bmF0ZWx5LiBJIGhhdmUgb3RoZXIgY2FyZHMgdG8gcXVhbGlmeSBidXQg
-aWYgSSBjYW4KPiBjb21lIGJhY2sgdG8gdGhpcyBJJ2xsIHBvc3QgdGhlIHJlc3VsdHMuCnRoaXMg
-cGF0Y2ggd29udCBjaGFuZ2UgYW55dGhpbmcsIHNpbmNlIHlvdSBzdGlsbCBuZWVkIHRvIG1vZGlm
-eSBhdGgxMGsgCnRvIHNldCBhIHNhbmUgdHNxIHZhbHVlCnNlZSB0aGlzIGFkZGl0aW9uYWwgcGF0
-Y2ggZnJvbSBsZWRlCmh0dHBzOi8vZ2l0LmxlZGUtcHJvamVjdC5vcmcvP3A9b3BlbndydC9vcGVu
-d3J0LmdpdDthPWNvbW1pdGRpZmY7aD0xMTFiNDk5MDI0NjUxMTZhODM1M2QyOWFmZTAyZWZmMGY1
-NmVhMGEzCj4KPiBPbiBUaHUsIEphbiAxMSwgMjAxOCBhdCAyOjUwIFBNLCBCZW4gR3JlZWFyIDxn
-cmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4+IE9uIDAxLzEwLzIwMTggMTA6MTUgQU0s
-IFJvYmVydCBKb25lcyB3cm90ZToKPj4+PiBUaGVyZSBhcmUgbW9yZSB0Y3AgcmVsYXRlZCBoYWNr
-cyB0aGF0IG1ha2UgYXRoMTBrIHVzZWZ1bCBmb3IKPj4+PiBnZW5lcmF0aW5nIFRDUCB0cmFmZmlj
-LiAgVGhlIHRjcF90c3FfbGltaXRfb3V0cHV0X2ludGVydmFsCj4+Pj4gb25lIGluIHBhcnRpY3Vs
-YXIgaXMgaGVscGZ1bAo+Pj4KPj4+PiBZb3UgY2FuIGRpZyB0aHJvdWdoIG15IGtlcm5lbCBhbmQg
-bG9vayBmb3IgYSBjb21taXQgcmVsYXRlZCB0bwo+Pj4+IHRjcF90c3FfbGltaXRfb3V0cHV0X2lu
-dGVydmFsLiAgVHJ5IHNldHRpbmcgaXQgdG8gNSBvciBoaWdoZXIuCj4+Pgo+Pj4gVGhpcyBzb2x2
-ZWQgdGhlIHByb2JsZW0gZm9yIG1lLgo+Pj4KPj4+IExpbmsgdG8gY29tbWl0IGZvciBhbnlvbmUg
-ZWxzZSBsb29raW5nOgo+Pj4KPj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9ncmVlYXJiL2xpbnV4LWN0
-LTQuMTMvY29tbWl0L2RjMjAxYzNjMzEwZjgwNTY4MWRiZjM5MzQ4NGJkYzk3MTU3NDVkZjEKPj4K
-Pj4gT3V0IG9mIGN1cmlvc2l0eSwgZGlkIHlvdSB0cnkgdGhlIHBhdGNoIHRoYXQgS2FsbGUgc3Vn
-Z2VzdGVkPwo+Pgo+PiBJJ2QgYmUgY3VyaW91cyBob3cgdGhhdCBwZXJmb3JtZWQgaW4gY29tcGFy
-aXNvbi4uLgo+Pgo+Pgo+PiBUaGFua3MsCj4+IEJlbgo+Pgo+Pgo+PiAtLQo+PiBCZW4gR3JlZWFy
-IDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4gQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBo
-dHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQo+Pgo+Cj4KCi0tIApNaXQgZnJldW5kbGljaGVuIEdy
-w7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5F
-VCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUgMjFhLCA2NDYyNSBC
-ZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDcz
-Ckdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxl
-Cmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVs
-LjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsK
+From: Colin Ian King <colin.king@canonical.com>
+
+Trivial fix to spelling mistake in warning message text.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 8abaccc25227..f6a23f2d0335 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1484,7 +1484,7 @@ static int ath10k_pci_dump_memory_section(struct ath10k *ar,
+ 	cur_section = &mem_region->section_table.sections[0];
+ 
+ 	if (mem_region->start > cur_section->start) {
+-		ath10k_warn(ar, "incorrect memdump region 0x%x with section start addrress 0x%x.\n",
++		ath10k_warn(ar, "incorrect memdump region 0x%x with section start address 0x%x.\n",
+ 			    mem_region->start, cur_section->start);
+ 		return 0;
+ 	}
+-- 
+2.15.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
