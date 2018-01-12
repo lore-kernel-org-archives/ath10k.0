@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ea1Gb-000448-5N
- for ath10k@lists.infradead.org; Fri, 12 Jan 2018 15:29:14 +0000
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1ea2F3-0000ro-OC
+ for ath10k@lists.infradead.org; Fri, 12 Jan 2018 16:31:45 +0000
 Subject: Re: Problems Configuring VHT160 and VHT80+80 for QCA9984
 References: <CALAE=UDvCnuTK_mFJsdPccTbb6gxHmd_aw4HmL8mdvLZ3VL_mA@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <0f25a0ea-de8e-e424-c335-e37384cedaaa@candelatech.com>
-Date: Fri, 12 Jan 2018 07:28:53 -0800
+ <0f25a0ea-de8e-e424-c335-e37384cedaaa@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <ca960145-159d-0327-c063-165321a58f3c@dd-wrt.com>
+Date: Fri, 12 Jan 2018 17:31:26 +0100
 MIME-Version: 1.0
-In-Reply-To: <CALAE=UDvCnuTK_mFJsdPccTbb6gxHmd_aw4HmL8mdvLZ3VL_mA@mail.gmail.com>
+In-Reply-To: <0f25a0ea-de8e-e424-c335-e37384cedaaa@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,62 +20,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Robert Jones <rjones@gateworks.com>, ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-
-On 01/11/2018 05:46 PM, Robert Jones wrote:
-> Hello,
->
-> I'm working with a WLE1216V5-20 ath10k wave 2 card using QCA9984
-> chipset and having problems configuring an AP for VHT160 or 80+80
-> mode. The hostapd v2.6 tool in both cases tells me that the "Driver
-> does not support configured VHT capability".
->
-> I'm using the custom board and firmware .bin files found at
-> http://www.candelatech.com/ath10k-10.4.php. I see on the same page
-> that they recommend using one of Ben Greear's kernels but I would
-> prefer to stick with a mainline 4.14 if possible.
->
-> Is this capability truly missing from the ath10k driver or am I
-> misconfiguring something in my hostapd.conf?
->
-> If the former, can anyone point me to a patch set that I can apply to
-> the ath10k driver to support either of these two modes?
-
-Early on there was bugs in stock firmware for how it did VHT160
-vs how the driver thought it did.  I ended up fixing the CT firmware
-to match closer to how the driver wanted it done at the time, but
-I think that the driver has since changed.
-
-I have not had time (nor much interest) to try to make my firmware work again with stock
-driver for VHT160.
-
-Either way, VHT160 is almost completely worthless because it can only
-do 2x2 at VHT160, which is no faster than VHT80 at 4x4 but uses twice
-as much bandwidth.
-
-Thanks,
-Ben
-
->
-> Regards,
-> Robert Jones
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMTIuMDEuMjAxOCB1bSAxNjoyOCBzY2hyaWViIEJlbiBHcmVlYXI6Cj4KPiBPbiAwMS8xMS8y
+MDE4IDA1OjQ2IFBNLCBSb2JlcnQgSm9uZXMgd3JvdGU6Cj4+IEhlbGxvLAo+Pgo+PiBJJ20gd29y
+a2luZyB3aXRoIGEgV0xFMTIxNlY1LTIwIGF0aDEwayB3YXZlIDIgY2FyZCB1c2luZyBRQ0E5OTg0
+Cj4+IGNoaXBzZXQgYW5kIGhhdmluZyBwcm9ibGVtcyBjb25maWd1cmluZyBhbiBBUCBmb3IgVkhU
+MTYwIG9yIDgwKzgwCj4+IG1vZGUuIFRoZSBob3N0YXBkIHYyLjYgdG9vbCBpbiBib3RoIGNhc2Vz
+IHRlbGxzIG1lIHRoYXQgdGhlICJEcml2ZXIKPj4gZG9lcyBub3Qgc3VwcG9ydCBjb25maWd1cmVk
+IFZIVCBjYXBhYmlsaXR5Ii4KPj4KPj4gSSdtIHVzaW5nIHRoZSBjdXN0b20gYm9hcmQgYW5kIGZp
+cm13YXJlIC5iaW4gZmlsZXMgZm91bmQgYXQKPj4gaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20v
+YXRoMTBrLTEwLjQucGhwLiBJIHNlZSBvbiB0aGUgc2FtZSBwYWdlCj4+IHRoYXQgdGhleSByZWNv
+bW1lbmQgdXNpbmcgb25lIG9mIEJlbiBHcmVlYXIncyBrZXJuZWxzIGJ1dCBJIHdvdWxkCj4+IHBy
+ZWZlciB0byBzdGljayB3aXRoIGEgbWFpbmxpbmUgNC4xNCBpZiBwb3NzaWJsZS4KPj4KPj4gSXMg
+dGhpcyBjYXBhYmlsaXR5IHRydWx5IG1pc3NpbmcgZnJvbSB0aGUgYXRoMTBrIGRyaXZlciBvciBh
+bSBJCj4+IG1pc2NvbmZpZ3VyaW5nIHNvbWV0aGluZyBpbiBteSBob3N0YXBkLmNvbmY/Cj4+Cj4+
+IElmIHRoZSBmb3JtZXIsIGNhbiBhbnlvbmUgcG9pbnQgbWUgdG8gYSBwYXRjaCBzZXQgdGhhdCBJ
+IGNhbiBhcHBseSB0bwo+PiB0aGUgYXRoMTBrIGRyaXZlciB0byBzdXBwb3J0IGVpdGhlciBvZiB0
+aGVzZSB0d28gbW9kZXM/Cj4KPiBFYXJseSBvbiB0aGVyZSB3YXMgYnVncyBpbiBzdG9jayBmaXJt
+d2FyZSBmb3IgaG93IGl0IGRpZCBWSFQxNjAKPiB2cyBob3cgdGhlIGRyaXZlciB0aG91Z2h0IGl0
+IGRpZC7CoCBJIGVuZGVkIHVwIGZpeGluZyB0aGUgQ1QgZmlybXdhcmUKPiB0byBtYXRjaCBjbG9z
+ZXIgdG8gaG93IHRoZSBkcml2ZXIgd2FudGVkIGl0IGRvbmUgYXQgdGhlIHRpbWUsIGJ1dAo+IEkg
+dGhpbmsgdGhhdCB0aGUgZHJpdmVyIGhhcyBzaW5jZSBjaGFuZ2VkLgo+Cj4gSSBoYXZlIG5vdCBo
+YWQgdGltZSAobm9yIG11Y2ggaW50ZXJlc3QpIHRvIHRyeSB0byBtYWtlIG15IGZpcm13YXJlIAo+
+IHdvcmsgYWdhaW4gd2l0aCBzdG9jawo+IGRyaXZlciBmb3IgVkhUMTYwLgo+Cj4gRWl0aGVyIHdh
+eSwgVkhUMTYwIGlzIGFsbW9zdCBjb21wbGV0ZWx5IHdvcnRobGVzcyBiZWNhdXNlIGl0IGNhbiBv
+bmx5Cj4gZG8gMngyIGF0IFZIVDE2MCwgd2hpY2ggaXMgbm8gZmFzdGVyIHRoYW4gVkhUODAgYXQg
+NHg0IGJ1dCB1c2VzIHR3aWNlCj4gYXMgbXVjaCBiYW5kd2lkdGguCnJlbWVtYmVyIG15IHBhdGNo
+IHRvIGdldCBpdCB0byB3b3JrIHdpdGggc3RvY2sgZmlybXdhcmUgOi0pCj4KPiBUaGFua3MsCj4g
+QmVuCj4KPj4KPj4gUmVnYXJkcywKPj4gUm9iZXJ0IEpvbmVzCj4+Cj4+IF9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IGF0aDEwayBtYWlsaW5nIGxpc3QK
+Pj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPj4KPgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LD
+vHNzZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVU
+IEdtYkggLSBERC1XUlQKRmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0NjI1IEJl
+bnNoZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0NzMK
+R2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUK
+aHR0cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpUZWwu
+OiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
+MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2F0aDEwawo=
