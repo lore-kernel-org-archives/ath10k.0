@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from aserp2130.oracle.com ([141.146.126.79])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ea86U-0005Ts-HT
- for ath10k@lists.infradead.org; Fri, 12 Jan 2018 22:47:17 +0000
-Subject: Re: Problems Configuring VHT160 and VHT80+80 for QCA9984
-References: <CALAE=UDvCnuTK_mFJsdPccTbb6gxHmd_aw4HmL8mdvLZ3VL_mA@mail.gmail.com>
- <0f25a0ea-de8e-e424-c335-e37384cedaaa@candelatech.com>
- <ca960145-159d-0327-c063-165321a58f3c@dd-wrt.com>
- <CALAE=UD8Hampm2ue+J7b30aaF0Q4N3yDi4EWugY--T=jNPjvbw@mail.gmail.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <f6715e36-b6dc-4d1c-cb2b-45236f72a295@dd-wrt.com>
-Date: Fri, 12 Jan 2018 23:46:57 +0100
+ id 1eb1ct-0005Px-0C
+ for ath10k@lists.infradead.org; Mon, 15 Jan 2018 10:04:28 +0000
+Date: Mon, 15 Jan 2018 13:00:43 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ath10k: add memory dump support for QCA6174/QCA9377
+Message-ID: <20180115100043.poxnok4cduzz6mbj@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <CALAE=UD8Hampm2ue+J7b30aaF0Q4N3yDi4EWugY--T=jNPjvbw@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,67 +17,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Robert Jones <rjones@gateworks.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: alanliu@qca.qualcomm.com
+Cc: ath10k@lists.infradead.org
 
-aSBkaXNhZ3JlZSB3aXRoIGJlbiBzaW5jZSBoaXMgYXJndW1lbnQgZG9lc250IGNvdmVyIG91dGRv
-b3IgbG9uZ3JhbmdlIApsaW5rcy4gNHg0IGlzIHdvcnRobGVzcyBmb3IgbG9uZyByYW5nZSBsaW5r
-cyBzaW5jZSBkaXNoZWQgYXJlIG9ubHkKYXZhaWxhYmxlIHdpdGggZHVhbCBwb2xhcml6YXRpb24g
-ZmVlZHMgd2l0aCBhbGxvd3Mgb25seSAyeDIKdGhlIHdvcmxkIGlzbnQganVzdCBtYWRlIG9mIHBs
-YXN0aWMgaG9tZSByb3V0ZXJzCgpBbSAxMi4wMS4yMDE4IHVtIDE4OjM5IHNjaHJpZWIgUm9iZXJ0
-IEpvbmVzOgo+IE9uIEZyaSwgSmFuIDEyLCAyMDE4IGF0IDg6MzEgQU0sIFNlYmFzdGlhbiBHb3R0
-c2NoYWxsCj4gPHMuZ290dHNjaGFsbEBkZC13cnQuY29tPiB3cm90ZToKPj4gQW0gMTIuMDEuMjAx
-OCB1bSAxNjoyOCBzY2hyaWViIEJlbiBHcmVlYXI6Cj4+Pgo+Pj4gT24gMDEvMTEvMjAxOCAwNTo0
-NiBQTSwgUm9iZXJ0IEpvbmVzIHdyb3RlOgo+Pj4+IEhlbGxvLAo+Pj4+Cj4+Pj4gSSdtIHdvcmtp
-bmcgd2l0aCBhIFdMRTEyMTZWNS0yMCBhdGgxMGsgd2F2ZSAyIGNhcmQgdXNpbmcgUUNBOTk4NAo+
-Pj4+IGNoaXBzZXQgYW5kIGhhdmluZyBwcm9ibGVtcyBjb25maWd1cmluZyBhbiBBUCBmb3IgVkhU
-MTYwIG9yIDgwKzgwCj4+Pj4gbW9kZS4gVGhlIGhvc3RhcGQgdjIuNiB0b29sIGluIGJvdGggY2Fz
-ZXMgdGVsbHMgbWUgdGhhdCB0aGUgIkRyaXZlcgo+Pj4+IGRvZXMgbm90IHN1cHBvcnQgY29uZmln
-dXJlZCBWSFQgY2FwYWJpbGl0eSIuCj4+Pj4KPj4+PiBJJ20gdXNpbmcgdGhlIGN1c3RvbSBib2Fy
-ZCBhbmQgZmlybXdhcmUgLmJpbiBmaWxlcyBmb3VuZCBhdAo+Pj4+IGh0dHA6Ly93d3cuY2FuZGVs
-YXRlY2guY29tL2F0aDEway0xMC40LnBocC4gSSBzZWUgb24gdGhlIHNhbWUgcGFnZQo+Pj4+IHRo
-YXQgdGhleSByZWNvbW1lbmQgdXNpbmcgb25lIG9mIEJlbiBHcmVlYXIncyBrZXJuZWxzIGJ1dCBJ
-IHdvdWxkCj4+Pj4gcHJlZmVyIHRvIHN0aWNrIHdpdGggYSBtYWlubGluZSA0LjE0IGlmIHBvc3Np
-YmxlLgo+Pj4+Cj4+Pj4gSXMgdGhpcyBjYXBhYmlsaXR5IHRydWx5IG1pc3NpbmcgZnJvbSB0aGUg
-YXRoMTBrIGRyaXZlciBvciBhbSBJCj4+Pj4gbWlzY29uZmlndXJpbmcgc29tZXRoaW5nIGluIG15
-IGhvc3RhcGQuY29uZj8KPj4+Pgo+Pj4+IElmIHRoZSBmb3JtZXIsIGNhbiBhbnlvbmUgcG9pbnQg
-bWUgdG8gYSBwYXRjaCBzZXQgdGhhdCBJIGNhbiBhcHBseSB0bwo+Pj4+IHRoZSBhdGgxMGsgZHJp
-dmVyIHRvIHN1cHBvcnQgZWl0aGVyIG9mIHRoZXNlIHR3byBtb2Rlcz8KPj4+Cj4+PiBFYXJseSBv
-biB0aGVyZSB3YXMgYnVncyBpbiBzdG9jayBmaXJtd2FyZSBmb3IgaG93IGl0IGRpZCBWSFQxNjAK
-Pj4+IHZzIGhvdyB0aGUgZHJpdmVyIHRob3VnaHQgaXQgZGlkLiAgSSBlbmRlZCB1cCBmaXhpbmcg
-dGhlIENUIGZpcm13YXJlCj4+PiB0byBtYXRjaCBjbG9zZXIgdG8gaG93IHRoZSBkcml2ZXIgd2Fu
-dGVkIGl0IGRvbmUgYXQgdGhlIHRpbWUsIGJ1dAo+Pj4gSSB0aGluayB0aGF0IHRoZSBkcml2ZXIg
-aGFzIHNpbmNlIGNoYW5nZWQuCj4+Pgo+Pj4gSSBoYXZlIG5vdCBoYWQgdGltZSAobm9yIG11Y2gg
-aW50ZXJlc3QpIHRvIHRyeSB0byBtYWtlIG15IGZpcm13YXJlIHdvcmsKPj4+IGFnYWluIHdpdGgg
-c3RvY2sKPj4+IGRyaXZlciBmb3IgVkhUMTYwLgo+Pj4KPj4+IEVpdGhlciB3YXksIFZIVDE2MCBp
-cyBhbG1vc3QgY29tcGxldGVseSB3b3J0aGxlc3MgYmVjYXVzZSBpdCBjYW4gb25seQo+Pj4gZG8g
-MngyIGF0IFZIVDE2MCwgd2hpY2ggaXMgbm8gZmFzdGVyIHRoYW4gVkhUODAgYXQgNHg0IGJ1dCB1
-c2VzIHR3aWNlCj4+PiBhcyBtdWNoIGJhbmR3aWR0aC4KPiBSaWdodCwgSSBkZWZpbml0ZWx5IGFn
-cmVlLiBJIHN1cHBvc2UgSSBqdXN0IHdhbnRlZCB0byB0ZXN0IG15Cj4gY29uZmlndXJhdGlvbiBp
-biBjYXNlIG9uZSBvZiBvdXIgY3VzdG9tZXJzIGFza2VkIGZvciBhbiBleGFtcGxlLgo+IFRoaXMg
-aXMgYSBzdHJvbmcgYXJndW1lbnQgcmVnYXJkaW5nIHRoaXMgY2FyZCB0aG91Z2guCj4KPj4gcmVt
-ZW1iZXIgbXkgcGF0Y2ggdG8gZ2V0IGl0IHRvIHdvcmsgd2l0aCBzdG9jayBmaXJtd2FyZSA6LSkK
-Pj4+Cj4+PiBUaGFua3MsCj4+PiBCZW4KPj4+Cj4+Pj4gUmVnYXJkcywKPj4+PiBSb2JlcnQgSm9u
-ZXMKPj4+Pgo+Pj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCj4+Pj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+Pj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCj4+Pj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsKPj4+Pgo+PiAtLQo+PiBNaXQgZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwo+Pgo+
-PiBTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwo+Pgo+PiBOZXdNZWRpYS1ORVQgR21iSCAtIERE
-LVdSVAo+PiBGaXJtZW5zaXR6OiAgU3R1YmVud2FsZGFsbGVlIDIxYSwgNjQ2MjUgQmVuc2hlaW0K
-Pj4gUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3Mwo+PiBH
-ZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQo+
-PiBodHRwOi8vd3d3LmRkLXdydC5jb20KPj4gZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29t
-Cj4+IFRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKPj4KCi0tIApN
-aXQgZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwg
-LyBDVE8KCk5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxk
-YWxsZWUgMjFhLCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERh
-cm1zdGFkdCwgSFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIs
-IENocmlzdGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2No
-YWxsQGRkLXdydC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2
-NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
-ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hello Alan Liu,
+
+The patch 703f261dd77f: "ath10k: add memory dump support for
+QCA6174/QCA9377" from Dec 22, 2017, leads to the following static
+checker warning:
+
+	drivers/net/wireless/ath/ath10k/pci.c:1481 ath10k_pci_dump_memory_section()
+	warn: unsigned 'mem_region->section_table.size' is never less than zero.
+
+drivers/net/wireless/ath/ath10k/pci.c
+  1470  static int ath10k_pci_dump_memory_section(struct ath10k *ar,
+  1471                                            const struct ath10k_mem_region *mem_region,
+  1472                                            u8 *buf, size_t buf_len)
+  1473  {
+  1474          const struct ath10k_mem_section *cur_section, *next_section;
+  1475          unsigned int count, section_size, skip_size;
+  1476          int ret, i, j;
+  1477  
+  1478          if (!mem_region || !buf)
+  1479                  return 0;
+  1480  
+  1481          if (mem_region->section_table.size < 0)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Impossible condition
+
+  1482                  return 0;
+  1483  
+  1484          cur_section = &mem_region->section_table.sections[0];
+  1485  
+  1486          if (mem_region->start > cur_section->start) {
+  1487                  ath10k_warn(ar, "incorrect memdump region 0x%x with section start addrress 0x%x.\n",
+  1488                              mem_region->start, cur_section->start);
+  1489                  return 0;
+  1490          }
+
+regards,
+dan carpenter
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
