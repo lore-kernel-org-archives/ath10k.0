@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from aserp2130.oracle.com ([141.146.126.79])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eb1ct-0005Px-0C
- for ath10k@lists.infradead.org; Mon, 15 Jan 2018 10:04:28 +0000
-Date: Mon, 15 Jan 2018 13:00:43 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [bug report] ath10k: add memory dump support for QCA6174/QCA9377
-Message-ID: <20180115100043.poxnok4cduzz6mbj@mwanda>
+ id 1ebOsx-0006UY-UN
+ for ath10k@lists.infradead.org; Tue, 16 Jan 2018 10:54:37 +0000
+Subject: [PATCH] ath10k: fix recently introduced checkpatch warnings
+From: Kalle Valo <kvalo@codeaurora.org>
+Date: Tue, 16 Jan 2018 12:54:17 +0200
+Message-ID: <151610005703.17030.17977783056615638055.stgit@potku.adurom.net>
 MIME-Version: 1.0
-Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +20,59 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: alanliu@qca.qualcomm.com
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Hello Alan Liu,
+Checkpatch found these issues:
 
-The patch 703f261dd77f: "ath10k: add memory dump support for
-QCA6174/QCA9377" from Dec 22, 2017, leads to the following static
-checker warning:
+drivers/net/wireless/ath/ath10k/ce.h:324: Please use a blank line after function/struct/union/enum declarations
+drivers/net/wireless/ath/ath10k/core.c:1321: Please don't use multiple blank lines
+drivers/net/wireless/ath/ath10k/htt.h:1859: Please use a blank line after function/struct/union/enum declarations
 
-	drivers/net/wireless/ath/ath10k/pci.c:1481 ath10k_pci_dump_memory_section()
-	warn: unsigned 'mem_region->section_table.size' is never less than zero.
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/ce.h   |    1 +
+ drivers/net/wireless/ath/ath10k/core.c |    1 -
+ drivers/net/wireless/ath/ath10k/htt.h  |    1 +
+ 3 files changed, 2 insertions(+), 1 deletion(-)
 
-drivers/net/wireless/ath/ath10k/pci.c
-  1470  static int ath10k_pci_dump_memory_section(struct ath10k *ar,
-  1471                                            const struct ath10k_mem_region *mem_region,
-  1472                                            u8 *buf, size_t buf_len)
-  1473  {
-  1474          const struct ath10k_mem_section *cur_section, *next_section;
-  1475          unsigned int count, section_size, skip_size;
-  1476          int ret, i, j;
-  1477  
-  1478          if (!mem_region || !buf)
-  1479                  return 0;
-  1480  
-  1481          if (mem_region->section_table.size < 0)
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Impossible condition
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index 06ac2eb70bf5..2c3c8f5e90ea 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -321,6 +321,7 @@ struct ath10k_ce_ops {
+ 			      dma_addr_t buffer, u32 nbytes,
+ 			      u32 transfer_id, u32 flags);
+ };
++
+ static inline u32 ath10k_ce_base_address(struct ath10k *ar, unsigned int ce_id)
+ {
+ 	return CE0_BASE_ADDRESS + (CE1_BASE_ADDRESS - CE0_BASE_ADDRESS) * ce_id;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index c60d91328b5f..b0fdc1023619 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1318,7 +1318,6 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
+ 			goto out;
+ 		}
+ 
+-
+ 		len -= ie_len;
+ 		data += ie_len;
+ 	}
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 360c71b106d7..8cc2a8b278e4 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1856,6 +1856,7 @@ struct ath10k_htt_rx_ops {
+ 	void* (*htt_get_vaddr_ring)(struct ath10k_htt *htt);
+ 	void (*htt_reset_paddrs_ring)(struct ath10k_htt *htt, int idx);
+ };
++
+ #define RX_HTT_HDR_STATUS_LEN 64
+ 
+ /* This structure layout is programmed via rx ring setup
 
-  1482                  return 0;
-  1483  
-  1484          cur_section = &mem_region->section_table.sections[0];
-  1485  
-  1486          if (mem_region->start > cur_section->start) {
-  1487                  ath10k_warn(ar, "incorrect memdump region 0x%x with section start addrress 0x%x.\n",
-  1488                              mem_region->start, cur_section->start);
-  1489                  return 0;
-  1490          }
-
-regards,
-dan carpenter
 
 _______________________________________________
 ath10k mailing list
