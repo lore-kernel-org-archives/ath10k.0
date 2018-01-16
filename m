@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ebSIM-0001Er-TL
- for ath10k@lists.infradead.org; Tue, 16 Jan 2018 14:33:00 +0000
+ id 1ebSJu-0001rW-E4
+ for ath10k@lists.infradead.org; Tue, 16 Jan 2018 14:34:36 +0000
 MIME-Version: 1.0
-Subject: Re: [next] ath10k: fix spelling mistake: "addrress" -> "address"
+Subject: Re: ath10k: remove redundant -ve check against u32 integer size
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180112091450.8285-1-colin.king@canonical.com>
-References: <20180112091450.8285-1-colin.king@canonical.com>
-Message-Id: <20180116143248.94B1360A00@smtp.codeaurora.org>
-Date: Tue, 16 Jan 2018 14:32:48 +0000 (UTC)
+In-Reply-To: <20180112172713.28252-1-colin.king@canonical.com>
+References: <20180112172713.28252-1-colin.king@canonical.com>
+Message-Id: <20180116143424.149C66083C@smtp.codeaurora.org>
+Date: Tue, 16 Jan 2018 14:34:24 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +27,21 @@ Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger
 
 Colin Ian King <colin.king@canonical.com> wrote:
 
-> Trivial fix to spelling mistake in warning message text.
+> Variable section_table.size is a u32 and so cannot be less than
+> zero, hence the less than zero check is redundant and can be
+> removed.
+> 
+> Detected by CoverityScan, CID#1463855 ("Unsigned compared against 0")
 > 
 > Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-cdd4743e9ba3 ath10k: fix spelling mistake: "addrress" -> "address"
+95f27a51ee02 ath10k: remove redundant -ve check against u32 integer size
 
 -- 
-https://patchwork.kernel.org/patch/10160107/
+https://patchwork.kernel.org/patch/10161483/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
