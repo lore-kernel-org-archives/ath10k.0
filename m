@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ebSJu-0001rW-E4
- for ath10k@lists.infradead.org; Tue, 16 Jan 2018 14:34:36 +0000
+ id 1ebSL4-0003US-AV
+ for ath10k@lists.infradead.org; Tue, 16 Jan 2018 14:35:47 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: remove redundant -ve check against u32 integer size
+Subject: Re: ath10k: fix recently introduced checkpatch warnings
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180112172713.28252-1-colin.king@canonical.com>
-References: <20180112172713.28252-1-colin.king@canonical.com>
-Message-Id: <20180116143424.149C66083C@smtp.codeaurora.org>
-Date: Tue, 16 Jan 2018 14:34:24 +0000 (UTC)
+In-Reply-To: <151610005703.17030.17977783056615638055.stgit@potku.adurom.net>
+References: <151610005703.17030.17977783056615638055.stgit@potku.adurom.net>
+Message-Id: <20180116143535.F03BD601D4@smtp.codeaurora.org>
+Date: Tue, 16 Jan 2018 14:35:35 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +22,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Colin Ian King <colin.king@canonical.com> wrote:
+Kalle Valo <kvalo@codeaurora.org> wrote:
 
-> Variable section_table.size is a u32 and so cannot be less than
-> zero, hence the less than zero check is redundant and can be
-> removed.
+> Checkpatch found these issues:
 > 
-> Detected by CoverityScan, CID#1463855 ("Unsigned compared against 0")
+> drivers/net/wireless/ath/ath10k/ce.h:324: Please use a blank line after function/struct/union/enum declarations
+> drivers/net/wireless/ath/ath10k/core.c:1321: Please don't use multiple blank lines
+> drivers/net/wireless/ath/ath10k/htt.h:1859: Please use a blank line after function/struct/union/enum declarations
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
 Patch applied to ath-next branch of ath.git, thanks.
 
-95f27a51ee02 ath10k: remove redundant -ve check against u32 integer size
+a3e712b74b5f ath10k: fix recently introduced checkpatch warnings
 
 -- 
-https://patchwork.kernel.org/patch/10161483/
+https://patchwork.kernel.org/patch/10166449/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
