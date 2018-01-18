@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ec7GN-0001BJ-Ah
- for ath10k@lists.infradead.org; Thu, 18 Jan 2018 10:17:40 +0000
+ id 1ec7HU-0001ap-Sa
+ for ath10k@lists.infradead.org; Thu, 18 Jan 2018 10:18:50 +0000
 From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
 Subject: [PATCH 1/2] cfg80211: Add tx ack signal attribute in sta info
-Date: Thu, 18 Jan 2018 15:47:23 +0530
-Message-Id: <1516270643-12833-1-git-send-email-vnaralas@codeaurora.org>
+Date: Thu, 18 Jan 2018 15:48:33 +0530
+Message-Id: <1516270713-12900-1-git-send-email-vnaralas@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
