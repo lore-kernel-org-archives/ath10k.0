@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ec2Ug-0003XP-Ni
- for ath10k@lists.infradead.org; Thu, 18 Jan 2018 05:12:08 +0000
+ id 1ec7GN-0001BJ-Ah
+ for ath10k@lists.infradead.org; Thu, 18 Jan 2018 10:17:40 +0000
 From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
-Subject: [PATCH] ath10k: fix information leak in debugfs
-Date: Thu, 18 Jan 2018 10:41:46 +0530
-Message-Id: <1516252306-21256-1-git-send-email-vnaralas@codeaurora.org>
+Subject: [PATCH 1/2] cfg80211: Add tx ack signal attribute in sta info
+Date: Thu, 18 Jan 2018 15:47:23 +0530
+Message-Id: <1516270643-12833-1-git-send-email-vnaralas@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,137 +21,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+Cc: Venkateswara Naralasetty <vnaralas@codeaurora.org>, Bhagavathi Perumal S <bperumal@codeaurora.org>
 
-During write to some of debugfs in ath10k, few variables
-exposing stack data when process user input. which leads
-to possible information leak.
+From: Bhagavathi Perumal S <bperumal@codeaurora.org>
 
-This patch fix this issue by initializing buffer and checks
-the return valure of 'simple_write_to_buffer'.
+This patch provides support for users to get ack signal
+strength of last transmitted by introducing new attribute
+'NL80211_STA_INFO_ACK_SIGNAL'.
 
+Signed-off-by: Bhagavathi Perumal S <bperumal@codeaurora.org>
 Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/debug.c       | 21 +++++++++---------
- drivers/net/wireless/ath/ath10k/debugfs_sta.c | 31 ++++++++++++++-------------
- 2 files changed, 27 insertions(+), 25 deletions(-)
+ include/net/cfg80211.h       | 2 ++
+ include/uapi/linux/nl80211.h | 2 ++
+ net/wireless/nl80211.c       | 1 +
+ 3 files changed, 5 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 6d836a2..e0120ff 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1,6 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -979,13 +980,13 @@ static ssize_t ath10k_write_htt_max_amsdu_ampdu(struct file *file,
- {
- 	struct ath10k *ar = file->private_data;
- 	int res;
--	char buf[64];
-+	char buf[64] = {0};
- 	unsigned int amsdu, ampdu;
+diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+index 3a4a1a9..1236bea 100644
+--- a/include/net/cfg80211.h
++++ b/include/net/cfg80211.h
+@@ -1145,6 +1145,7 @@ struct cfg80211_tid_stats {
+  * @rx_duration: aggregate PPDU duration(usecs) for all the frames from a peer
+  * @pertid: per-TID statistics, see &struct cfg80211_tid_stats, using the last
+  *	(IEEE80211_NUM_TIDS) index for MSDUs not encapsulated in QoS-MPDUs.
++ * @ack_signal: signal strength (in dBm) of the last ACK frame.
+  */
+ struct station_info {
+ 	u64 filled;
+@@ -1189,6 +1190,7 @@ struct station_info {
+ 	u64 rx_duration;
+ 	u8 rx_beacon_signal_avg;
+ 	struct cfg80211_tid_stats pertid[IEEE80211_NUM_TIDS + 1];
++	s8 ack_signal;
+ };
  
--	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
--
--	/* make sure that buf is null terminated */
--	buf[sizeof(buf) - 1] = 0;
-+	res = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos,
-+				     user_buf, count);
-+	if (res <= 0)
-+		return res;
+ #if IS_ENABLED(CONFIG_CFG80211)
+diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
+index c587a61..5a1568d 100644
+--- a/include/uapi/linux/nl80211.h
++++ b/include/uapi/linux/nl80211.h
+@@ -2899,6 +2899,7 @@ enum nl80211_sta_bss_param {
+  * @NL80211_STA_INFO_RX_DURATION: aggregate PPDU duration for all frames
+  *	received from the station (u64, usec)
+  * @NL80211_STA_INFO_PAD: attribute used for padding for 64-bit alignment
++ * @NL80211_STA_INFO_ACK_SIGNAL: signal strength of the last ACK frame(u8, dBm)
+  * @__NL80211_STA_INFO_AFTER_LAST: internal
+  * @NL80211_STA_INFO_MAX: highest possible station info attribute
+  */
+@@ -2937,6 +2938,7 @@ enum nl80211_sta_info {
+ 	NL80211_STA_INFO_TID_STATS,
+ 	NL80211_STA_INFO_RX_DURATION,
+ 	NL80211_STA_INFO_PAD,
++	NL80211_STA_INFO_ACK_SIGNAL,
  
- 	res = sscanf(buf, "%u %u", &amsdu, &ampdu);
+ 	/* keep last */
+ 	__NL80211_STA_INFO_AFTER_LAST,
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index b3f8970..94c623e 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -4479,6 +4479,7 @@ static int nl80211_send_station(struct sk_buff *msg, u32 cmd, u32 portid,
+ 	PUT_SINFO_U64(RX_DROP_MISC, rx_dropped_misc);
+ 	PUT_SINFO_U64(BEACON_RX, rx_beacon);
+ 	PUT_SINFO(BEACON_SIGNAL_AVG, rx_beacon_signal_avg, u8);
++	PUT_SINFO(ACK_SIGNAL, ack_signal, u8);
  
-@@ -1035,14 +1036,14 @@ static ssize_t ath10k_write_fw_dbglog(struct file *file,
- {
- 	struct ath10k *ar = file->private_data;
- 	int ret;
--	char buf[96];
-+	char buf[96] = {0};
- 	unsigned int log_level;
- 	u64 mask;
- 
--	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
--
--	/* make sure that buf is null terminated */
--	buf[sizeof(buf) - 1] = 0;
-+	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos,
-+				     user_buf, count);
-+	if (ret <= 0)
-+		return ret;
- 
- 	ret = sscanf(buf, "%llx %u", &mask, &log_level);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index b260b09..5583854 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -1,5 +1,6 @@
- /*
-  * Copyright (c) 2014-2017 Qualcomm Atheros, Inc.
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -136,12 +137,12 @@ static ssize_t ath10k_dbg_sta_write_addba(struct file *file,
- 	struct ath10k *ar = arsta->arvif->ar;
- 	u32 tid, buf_size;
- 	int ret;
--	char buf[64];
-+	char buf[64] = {0};
- 
--	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
--
--	/* make sure that buf is null terminated */
--	buf[sizeof(buf) - 1] = '\0';
-+	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos,
-+				     user_buf, count);
-+	if (ret <= 0)
-+		return ret;
- 
- 	ret = sscanf(buf, "%u %u", &tid, &buf_size);
- 	if (ret != 2)
-@@ -187,12 +188,12 @@ static ssize_t ath10k_dbg_sta_write_addba_resp(struct file *file,
- 	struct ath10k *ar = arsta->arvif->ar;
- 	u32 tid, status;
- 	int ret;
--	char buf[64];
--
--	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-+	char buf[64] = {0};
- 
--	/* make sure that buf is null terminated */
--	buf[sizeof(buf) - 1] = '\0';
-+	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos,
-+				     user_buf, count);
-+	if (ret <= 0)
-+		return ret;
- 
- 	ret = sscanf(buf, "%u %u", &tid, &status);
- 	if (ret != 2)
-@@ -237,12 +238,12 @@ static ssize_t ath10k_dbg_sta_write_delba(struct file *file,
- 	struct ath10k *ar = arsta->arvif->ar;
- 	u32 tid, initiator, reason;
- 	int ret;
--	char buf[64];
--
--	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-+	char buf[64] = {0};
- 
--	/* make sure that buf is null terminated */
--	buf[sizeof(buf) - 1] = '\0';
-+	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos,
-+				     user_buf, count);
-+	if (ret <= 0)
-+		return ret;
- 
- 	ret = sscanf(buf, "%u %u %u", &tid, &initiator, &reason);
- 	if (ret != 3)
+ #undef PUT_SINFO
+ #undef PUT_SINFO_U64
 -- 
 2.7.4
 
