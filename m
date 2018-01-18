@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ebSbb-0006Hf-T7
- for ath10k@lists.infradead.org; Tue, 16 Jan 2018 14:52:54 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [bug report] ath10k: add memory dump support for QCA6174/QCA9377
-References: <20180115100043.poxnok4cduzz6mbj@mwanda>
-Date: Tue, 16 Jan 2018 16:52:37 +0200
-In-Reply-To: <20180115100043.poxnok4cduzz6mbj@mwanda> (Dan Carpenter's message
- of "Mon, 15 Jan 2018 13:00:43 +0300")
-Message-ID: <87zi5detze.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1ec2Ug-0003XP-Ni
+ for ath10k@lists.infradead.org; Thu, 18 Jan 2018 05:12:08 +0000
+From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+Subject: [PATCH] ath10k: fix information leak in debugfs
+Date: Thu, 18 Jan 2018 10:41:46 +0530
+Message-Id: <1516252306-21256-1-git-send-email-vnaralas@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,46 +15,146 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alanliu@qca.qualcomm.com, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Venkateswara Naralasetty <vnaralas@codeaurora.org>
 
-Dan Carpenter <dan.carpenter@oracle.com> writes:
+During write to some of debugfs in ath10k, few variables
+exposing stack data when process user input. which leads
+to possible information leak.
 
-> Hello Alan Liu,
->
-> The patch 703f261dd77f: "ath10k: add memory dump support for
-> QCA6174/QCA9377" from Dec 22, 2017, leads to the following static
-> checker warning:
->
-> 	drivers/net/wireless/ath/ath10k/pci.c:1481 ath10k_pci_dump_memory_section()
-> 	warn: unsigned 'mem_region->section_table.size' is never less than zero.
->
-> drivers/net/wireless/ath/ath10k/pci.c
->   1470  static int ath10k_pci_dump_memory_section(struct ath10k *ar,
->   1471                                            const struct ath10k_mem_region *mem_region,
->   1472                                            u8 *buf, size_t buf_len)
->   1473  {
->   1474          const struct ath10k_mem_section *cur_section, *next_section;
->   1475          unsigned int count, section_size, skip_size;
->   1476          int ret, i, j;
->   1477  
->   1478          if (!mem_region || !buf)
->   1479                  return 0;
->   1480  
->   1481          if (mem_region->section_table.size < 0)
->                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> Impossible condition
+This patch fix this issue by initializing buffer and checks
+the return valure of 'simple_write_to_buffer'.
 
-Should be fixed by the commit below which I applied 20 minutes ago :)
+Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/debug.c       | 21 +++++++++---------
+ drivers/net/wireless/ath/ath10k/debugfs_sta.c | 31 ++++++++++++++-------------
+ 2 files changed, 27 insertions(+), 25 deletions(-)
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=95f27a51ee02fdd9e7afc06f090c7171673a79ac
-
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 6d836a2..e0120ff 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -979,13 +980,13 @@ static ssize_t ath10k_write_htt_max_amsdu_ampdu(struct file *file,
+ {
+ 	struct ath10k *ar = file->private_data;
+ 	int res;
+-	char buf[64];
++	char buf[64] = {0};
+ 	unsigned int amsdu, ampdu;
+ 
+-	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
+-
+-	/* make sure that buf is null terminated */
+-	buf[sizeof(buf) - 1] = 0;
++	res = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos,
++				     user_buf, count);
++	if (res <= 0)
++		return res;
+ 
+ 	res = sscanf(buf, "%u %u", &amsdu, &ampdu);
+ 
+@@ -1035,14 +1036,14 @@ static ssize_t ath10k_write_fw_dbglog(struct file *file,
+ {
+ 	struct ath10k *ar = file->private_data;
+ 	int ret;
+-	char buf[96];
++	char buf[96] = {0};
+ 	unsigned int log_level;
+ 	u64 mask;
+ 
+-	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
+-
+-	/* make sure that buf is null terminated */
+-	buf[sizeof(buf) - 1] = 0;
++	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos,
++				     user_buf, count);
++	if (ret <= 0)
++		return ret;
+ 
+ 	ret = sscanf(buf, "%llx %u", &mask, &log_level);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+index b260b09..5583854 100644
+--- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
++++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+@@ -1,5 +1,6 @@
+ /*
+  * Copyright (c) 2014-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -136,12 +137,12 @@ static ssize_t ath10k_dbg_sta_write_addba(struct file *file,
+ 	struct ath10k *ar = arsta->arvif->ar;
+ 	u32 tid, buf_size;
+ 	int ret;
+-	char buf[64];
++	char buf[64] = {0};
+ 
+-	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
+-
+-	/* make sure that buf is null terminated */
+-	buf[sizeof(buf) - 1] = '\0';
++	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos,
++				     user_buf, count);
++	if (ret <= 0)
++		return ret;
+ 
+ 	ret = sscanf(buf, "%u %u", &tid, &buf_size);
+ 	if (ret != 2)
+@@ -187,12 +188,12 @@ static ssize_t ath10k_dbg_sta_write_addba_resp(struct file *file,
+ 	struct ath10k *ar = arsta->arvif->ar;
+ 	u32 tid, status;
+ 	int ret;
+-	char buf[64];
+-
+-	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
++	char buf[64] = {0};
+ 
+-	/* make sure that buf is null terminated */
+-	buf[sizeof(buf) - 1] = '\0';
++	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos,
++				     user_buf, count);
++	if (ret <= 0)
++		return ret;
+ 
+ 	ret = sscanf(buf, "%u %u", &tid, &status);
+ 	if (ret != 2)
+@@ -237,12 +238,12 @@ static ssize_t ath10k_dbg_sta_write_delba(struct file *file,
+ 	struct ath10k *ar = arsta->arvif->ar;
+ 	u32 tid, initiator, reason;
+ 	int ret;
+-	char buf[64];
+-
+-	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
++	char buf[64] = {0};
+ 
+-	/* make sure that buf is null terminated */
+-	buf[sizeof(buf) - 1] = '\0';
++	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos,
++				     user_buf, count);
++	if (ret <= 0)
++		return ret;
+ 
+ 	ret = sscanf(buf, "%u %u %u", &tid, &initiator, &reason);
+ 	if (ret != 3)
 -- 
-Kalle Valo
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
