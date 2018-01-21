@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
+Received: from smtpimr.rockwellcollins.com ([205.175.227.29]
+ helo=da1vs02.rockwellcollins.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ecUqa-0006Do-Kl
- for ath10k@lists.infradead.org; Fri, 19 Jan 2018 11:28:43 +0000
-Received: by mail-oi0-x241.google.com with SMTP id m65so901252oig.5
- for <ath10k@lists.infradead.org>; Fri, 19 Jan 2018 03:28:25 -0800 (PST)
+ id 1ed3Ck-0003SR-Jf
+ for ath10k@lists.infradead.org; Sun, 21 Jan 2018 00:09:48 +0000
+Received: by mail-yw0-f198.google.com with SMTP id r6so3729218ywr.6
+ for <ath10k@lists.infradead.org>; Sat, 20 Jan 2018 16:09:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87d1269mes.fsf@kamboji.qca.qualcomm.com>
-References: <70aa931f-2f02-dd26-c98b-695d1321f71b@molgen.mpg.de>
- <87d1269mes.fsf@kamboji.qca.qualcomm.com>
-From: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Date: Fri, 19 Jan 2018 14:28:24 +0300
-Message-ID: <CAPAsAGz1pihgiBML7CExjKgFkVC5SLkN=+183gJJOFGv29Fd-A@mail.gmail.com>
-Subject: Re: UBSAN: Undefined behaviour in
- drivers/net/wireless/ath/ath10k/mac.c:3092:53: signed integer overflow
+From: Jared Bents <jared.bents@rockwellcollins.com>
+Date: Sat, 20 Jan 2018 18:09:33 -0600
+Message-ID: <CAM=7fbeW-Eno1vDiu7eHOvjFkufk+2Hw3NNG6+BKSpCTigZXZA@mail.gmail.com>
+Subject: ath10k could not get target info after transition from 32 bit to 64
+ bit kernel
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,67 +20,82 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: it+linux-ath10k@molgen.mpg.de, Felix Fietkau <nbd@openwrt.org>, Johannes Berg <johannes.berg@intel.com>, Mario Limonciello <mario.limonciello@dell.com>, Paul Menzel <pmenzel+linux-ath10k@molgen.mpg.de>, linux-wireless <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>
+To: ath10k@lists.infradead.org
 
-MjAxOC0wMS0xOSAxMzoyNCBHTVQrMDM6MDAgS2FsbGUgVmFsbyA8a3ZhbG9AY29kZWF1cm9yYS5v
-cmc+Ogo+IEFkZGluZyBsaW51eC13aXJlbGVzcy4KPgo+IEZvciBsaW51eC13aXJlbGVzcyB0aGUg
-ZnVsbCByZXBvcnQgaXMgaGVyZToKPgo+IGh0dHBzOi8vbGttbC5rZXJuZWwub3JnL3IvNzBhYTkz
-MWYtMmYwMi1kZDI2LWM5OGItNjk1ZDEzMjFmNzFiQG1vbGdlbi5tcGcuZGUKPgo+IFBhdWwgTWVu
-emVsIDxwbWVuemVsK2xpbnV4LWF0aDEwa0Btb2xnZW4ubXBnLmRlPiB3cml0ZXM6Cj4KPj4gSSBl
-bmFibGVkIHRoZSB1bmRlZmluZWQgYmVoYXZpb3Igc2FuaXRpemVyLCBhbmQgYnVpbHQgTGludXPi
-gJkgbWFzdGVyCj4+IGJyYW5jaCB1bmRlciBVYnVudHUgMTYuMDQgd2l0aCBnY2MgKFVidW50dSA1
-LjQuMC02dWJ1bnR1MX4xNi4wNC41KQo+PiA1LjQuMCAyMDE2MDYwOS4KPgo+IEFzIHlvdSBqdXN0
-IHJlY2VudGx5IGVuYWJsZWQgVUJTQU4gSSBndWVzcyBJIGNhbiBhc3N1bWUgdGhhdCB0aGlzIGlz
-bid0Cj4gYSBuZXcgcmVncmVzc2lvbiBidXQgaW5zdGVhZCB0aGUgYnVnIGlzIGFuIG9sZCBpc3N1
-ZT8KPgo+IENhbiB5b3UgcmVwcm9kdWNlIHRoZSBwcm9ibGVtIGVhc2lseT8gVGhhdCB3b3VsZCBo
-ZWxwIHdpdGggdGVzdGluZwo+IHBhdGNoZXMuCj4KPj4gPT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0K
-Pj4gWyAgOTYwLjczNzczMF0gVUJTQU46IFVuZGVmaW5lZCBiZWhhdmlvdXIgaW4KPj4gZHJpdmVy
-cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYzozMDkyOjUzCj4KPiBUaGlzIGxpbmUgaXMg
-ZnJvbSBhdGgxMGtfdXBkYXRlX2NoYW5uZWxfbGlzdCgpOgo+Cj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgY2gtPm1heF9hbnRlbm5hX2dhaW4gPSBjaGFubmVsLT5tYXhfYW50ZW5uYV9nYWluICog
-MjsKPgo+PiBbICA5NjAuNzM3NzMzXSBzaWduZWQgaW50ZWdlciBvdmVyZmxvdzoKPj4gWyAgOTYw
-LjczNzczNV0gMjE0NzQ4MzY0NyAqIDIgY2Fubm90IGJlIHJlcHJlc2VudGVkIGluIHR5cGUgJ2lu
-dCcKPgo+IDIxNDc0ODM2NDcgaXMgTUFYX0lOVCBidXQgSSBjYW4ndCBpbW1lYWRpdGVseSBmaWd1
-cmUgb3V0IHdoZXJlIHRoYXQncwo+IGNvbWluZyBmcm9tLiBNYXliZSB1bml0aWFsaXNlZCBzdGFj
-ayBzb21ld2hlcmU/Cj4KCkl0IGNvbWVzIGZyb20gd2lwaHlfcmVnaXN0ZXIoKSwgd2hlcmUgSU5U
-X01BWCBhc3NpZ25lZCB0byBjaGFubmVsc1tpXS5vcmlnX21hZy4KU2VlIGM0YTlmYWZjNzdhNSAo
-ImNmZzgwMjExOiBmaXggYW50ZW5uYSBnYWluIGhhbmRsaW5nIikKCkxhdGVyIC0+b3JpZ19tYWcg
-Y29waWVkIGludG8gLT5tYXhfYW50ZW5uYV9nYWluIGluIHJlc290cmVfY3VzdG9tX3JlZ19zZXR0
-aW5ncygpCkFuZCBmaW5hbGx5IGF0aDEwa191cGRhdGVfY2hhbm5lbF9saXN0KCkgbXVsdGlwbGll
-cyAtPm1heF9hbnRlbm5hX2dhaW4gYnkgMgooIHNpbmNlIGNvbW1pdCAwMjI1NjkzMGQ5YjggKCJh
-dGgxMGs6IHVzZSBwcm9wZXIgdHggcG93ZXIgdW5pdCIpICkuCgoKCj4+IFsgIDk2MC43Mzc3Mzhd
-IENQVTogMSBQSUQ6IDI2NjMgQ29tbTogY3JkYSBOb3QgdGFpbnRlZCA0LjE1LjAtcmM2KyAjMzYK
-Pj4gWyAgOTYwLjczNzczOV0gSGFyZHdhcmUgbmFtZTogRGVsbCBJbmMuIFhQUyAxMyA5MzYwLzA4
-MzlZNiwgQklPUyAyLjQuMgo+PiAxMS8yMS8yMDE3Cj4+IFsgIDk2MC43Mzc3NDBdIENhbGwgVHJh
-Y2U6Cj4+IFsgIDk2MC43Mzc3NDldICBkdW1wX3N0YWNrKzB4NzAvMHhiMgo+PiBbICA5NjAuNzM3
-NzUzXSAgdWJzYW5fZXBpbG9ndWUrMHg5LzB4NDAKPj4gWyAgOTYwLjczNzc1OF0gIGhhbmRsZV9v
-dmVyZmxvdysweGNlLzB4ZjAKPj4gWyAgOTYwLjczNzc2Ml0gID8gZWNyeXB0ZnNfZGVjb2RlX2Fu
-ZF9kZWNyeXB0X2ZpbGVuYW1lKzB4MTA0LzB4NTMwCj4+IFsgIDk2MC43Mzc3NjRdICA/IF9fa21h
-bGxvYysweDI2NS8weDM3MAo+PiBbICA5NjAuNzM3Nzc0XSAgYXRoMTBrX3JlZ2RfdXBkYXRlKzB4
-MzlkLzB4NWYwIFthdGgxMGtfY29yZV0KPj4gWyAgOTYwLjczNzc4Ml0gIGF0aDEwa19yZWdfbm90
-aWZpZXIrMHgxMTQvMHgxODAgW2F0aDEwa19jb3JlXQo+PiBbICA5NjAuNzM3ODAyXSAgc2V0X3Jl
-Z2RvbSsweDI3NS8weDkxMCBbY2ZnODAyMTFdCj4+IFsgIDk2MC43Mzc4MjFdICBubDgwMjExX3Nl
-dF9yZWcrMHgxOWMvMHg2MzAgW2NmZzgwMjExXQo+PiBbICA5NjAuNzM3ODI2XSAgZ2VubF9mYW1p
-bHlfcmN2X21zZysweDJjNC8weDYxMAo+PiBbICA5NjAuNzM3ODMwXSAgPyByYWRpeF90cmVlX25l
-eHRfY2h1bmsrMHg5Zi8weDU3MAo+PiBbICA5NjAuNzM3ODMyXSAgZ2VubF9yY3ZfbXNnKzB4NWQv
-MHhlMAo+PiBbICA5NjAuNzM3ODM1XSAgPyBfX2FsbG9jX3NrYisweDgyLzB4MjYwCj4+IFsgIDk2
-MC43Mzc4MzhdICA/IGdlbmxfZmFtaWx5X3Jjdl9tc2crMHg2MTAvMHg2MTAKPj4gWyAgOTYwLjcz
-Nzg0MF0gIG5ldGxpbmtfcmN2X3NrYisweGQ1LzB4MTMwCj4+IFsgIDk2MC43Mzc4NDJdICBnZW5s
-X3JjdisweDI0LzB4NDAKPj4gWyAgOTYwLjczNzg0NF0gIG5ldGxpbmtfdW5pY2FzdCsweDFjYy8w
-eDMwMAo+PiBbICA5NjAuNzM3ODQ3XSAgbmV0bGlua19zZW5kbXNnKzB4MjlhLzB4NWYwCj4+IFsg
-IDk2MC43Mzc4NTBdICBzb2NrX3NlbmRtc2crMHg0Yy8weGEwCj4+IFsgIDk2MC43Mzc4NTNdICBf
-X19zeXNfc2VuZG1zZysweDMwZS8weDQ0MAo+PiBbICA5NjAuNzM3ODU3XSAgPyBwYWdldmVjX2xy
-dV9tb3ZlX2ZuKzB4YzMvMHgxMzAKPj4gWyAgOTYwLjczNzg1OV0gID8gdHJhY2VfZXZlbnRfcmF3
-X2V2ZW50X21tX2xydV9hY3RpdmF0ZSsweDEwMC8weDEwMAo+PiBbICA5NjAuNzM3ODYyXSAgPyBf
-X2xydV9jYWNoZV9hZGQrMHg2YS8weGIwCj4+IFsgIDk2MC43Mzc4NjVdICA/IF9fc3lzX3NlbmRt
-c2crMHg1MS8weDkwCj4+IFsgIDk2MC43Mzc4NjhdICBfX3N5c19zZW5kbXNnKzB4NTEvMHg5MAo+
-PiBbICA5NjAuNzM3ODcyXSAgZW50cnlfU1lTQ0FMTF82NF9mYXN0cGF0aCsweDFlLzB4ODEKPgoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
-aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hello,
+
+Recently I transitioned a build from a 32 bit build to a 64 bit build.
+In the 32 bit build, the wifi modules initialized properly and could
+be used.  After moving to the 64 bit build, the modules fail to get
+the device information and load firmware.  The other devices on the
+pci bus are still working.  For reference, it is an older kernel
+version (freescale sdk v2.0 which has linux v4.1).  Just wondering if
+anyone has come across this or has any information that may help.
+I've done a side by side comparison of the linux configs and haven't
+noticed anything different that would seem to be the problem.
+
+Here are the lspci and dmesg printouts from the 32 bit build and the
+64 bit build.  As you can see, the driver is mapped to the device but
+it fails to get the device information in the 64 bit build.
+
+32 bit (working)
+
+# lspci -k
+00:00.0 Class 0604: 1957:0824 pcieport
+01:00.0 Class 0280: 168c:003c ath10k_pci
+04:00.0 Class 0604: 1957:0824 pcieport
+05:00.0 Class 0106: 1b4b:9170 ahci
+02:00.0 Class 0604: 1957:0824 pcieport
+03:00.0 Class 0280: 168c:003c ath10k_pci
+
+# dmesg
+ath10k_pci 0001:03:00.0: enabling device (0000 -> 0002)
+ath10k_pci 0001:03:00.0: pci irq msi interrupts 1 irq_mode 0 reset_mode 0
+pcieport 0002:04:00.0: Primary bus is hard wired to 0
+pci_bus 0002:05: busn_res: [bus 05] end is updated to 05
+ath10k_pci 0000:01:00.0: Direct firmware load for
+ath10k/cal-pci-0000:01:00.0.bin failed with error -2
+ath10k_pci 0001:03:00.0: Direct firmware load for
+ath10k/cal-pci-0001:03:00.0.bin failed with error -2
+ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c, 0x043222ff) fw
+10.2.4.45 api 4 htt 2.1 wmi 5 cal otp max_sta 128
+ath10k_pci 0000:01:00.0: debug 1 debugfs 1 tracing 0 dfs 0 testmode 1
+ath: EEPROM regdomain: 0x6a
+ath: EEPROM indicates we should expect a direct regpair map
+ath: Country alpha2 being used: 00
+ath: Regpair used: 0x6a
+
+
+
+64 bit (not working)
+
+# lspci -k
+00:00.0 Class 0604: 1957:0824 pcieport
+01:00.0 Class 0280: 168c:003c ath10k_pci
+04:00.0 Class 0604: 1957:0824 pcieport
+05:00.0 Class 0106: 1b4b:9170 ahci
+02:00.0 Class 0604: 1957:0824 pcieport
+03:00.0 Class 0280: 168c:003c ath10k_pci
+
+# dmesg
+ath10k_pci 0001:01:00.0: enabling device (0000 -> 0002)
+ath10k_pci 0001:01:00.0: pci irq msi interrupts 1 irq_mode 0 reset_mode 0
+pci_bus 0002:01: busn_res: [bus 01] end is updated to 01
+ath10k_pci 0000:01:00.0: unable to get target info from device
+ath10k_pci 0000:01:00.0: could not get target info (1)
+ath10k_pci 0000:01:00.0: could not probe fw (1)
+ath10k_pci 0001:01:00.0: unable to get target info from device
+ath10k_pci 0001:01:00.0: could not get target info (1)
+ath10k_pci 0001:01:00.0: could not probe fw (1)
+
+Thank you,
+Jared
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
