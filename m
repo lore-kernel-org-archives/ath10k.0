@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eeQx2-0005sm-Je
- for ath10k@lists.infradead.org; Wed, 24 Jan 2018 19:43:18 +0000
-Received: by mail-wr0-x242.google.com with SMTP id z48so5250567wrz.6
- for <ath10k@lists.infradead.org>; Wed, 24 Jan 2018 11:43:05 -0800 (PST)
+ id 1eeQxB-0005tP-Jd
+ for ath10k@lists.infradead.org; Wed, 24 Jan 2018 19:43:26 +0000
+Received: by mail-wm0-x244.google.com with SMTP id f71so10543106wmf.0
+ for <ath10k@lists.infradead.org>; Wed, 24 Jan 2018 11:43:15 -0800 (PST)
 From: Tobias Schramm <tobleminer@gmail.com>
-Subject: [PATCH 0/2] ath10: Add support for Ubiquiti-branded QCA988X
-Date: Wed, 24 Jan 2018 20:42:16 +0100
-Message-Id: <20180124194218.11408-1-tobleminer@gmail.com>
+Subject: [PATCH 1/2] pci: Add vendor id of Ubiquiti Networks
+Date: Wed, 24 Jan 2018 20:42:17 +0100
+Message-Id: <20180124194218.11408-2-tobleminer@gmail.com>
+In-Reply-To: <20180124194218.11408-1-tobleminer@gmail.com>
+References: <20180124194218.11408-1-tobleminer@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +27,24 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org, kvalo@qca.qualcomm.com
 Cc: Tobias Schramm <tobleminer@gmail.com>
 
-A lot of more modern Ubiquiti AirMAX wireless devices contain a rebranded
-QCA988X with changed PCI vendor and device id.
-This patch adds support for those chips by treating them as QCA988X rev2
-radios.
+Signed-off-by: Tobias Schramm <tobleminer@gmail.com>
+---
+ include/linux/pci_ids.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Tobias Schramm (2):
-  pci: Add vendor id of Ubiquiti Networks
-  ath10k: Add support for Uiquiti rebranded QCA988X v2
-
- drivers/net/wireless/ath/ath10k/core.c | 24 ++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  1 +
- drivers/net/wireless/ath/ath10k/pci.c  |  4 ++++
- include/linux/pci_ids.h                |  2 ++
- 4 files changed, 31 insertions(+)
-
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index ab20dc5db423..6b01ac1e9bce 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -149,6 +149,8 @@
+ #define PCI_VENDOR_ID_DYNALINK		0x0675
+ #define PCI_DEVICE_ID_DYNALINK_IS64PH	0x1702
+ 
++#define PCI_VENDOR_ID_UBNT		0x0777
++
+ #define PCI_VENDOR_ID_BERKOM			0x0871
+ #define PCI_DEVICE_ID_BERKOM_A1T		0xffa1
+ #define PCI_DEVICE_ID_BERKOM_T_CONCEPT		0xffa2
 -- 
 2.16.0
 
