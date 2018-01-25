@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eeW3b-00018f-0b
- for ath10k@lists.infradead.org; Thu, 25 Jan 2018 01:10:24 +0000
-From: ryanhsu@codeaurora.org
-Subject: [PATCH] ath10k: Update the phymode along with bandwidth change request
-Date: Wed, 24 Jan 2018 17:10:04 -0800
-Message-Id: <1516842604-31447-1-git-send-email-ryanhsu@codeaurora.org>
+ id 1eeW4E-0001FH-QV
+ for ath10k@lists.infradead.org; Thu, 25 Jan 2018 01:11:04 +0000
+From: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+Subject: Re: Firmware Crash on qca61741 hw3.2
+Date: Thu, 25 Jan 2018 01:10:47 +0000
+Message-ID: <848cf7f7-fdfc-ef85-d1b7-eefdd8672112@qti.qualcomm.com>
+References: <87h8rwd1z2.fsf@czerwinskis.de>
+In-Reply-To: <87h8rwd1z2.fsf@czerwinskis.de>
+Content-Language: en-US
+Content-ID: <4B4841CBA7E9A74B82ECCFF172DAFA52@qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,110 +20,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, rouven@czerwinskis.de
-Cc: ryanhsu@codeaurora.org
+To: Rouven Czerwinski <rouven@czerwinskis.de>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Ryan Hsu <ryanhsu@codeaurora.org>
+On 01/08/2018 03:28 AM, Rouven Czerwinski wrote:
 
-In the case of Station connects to AP with narrower bandwidth at beginning.
-And later the AP changes the bandwidth to winder bandwidth, the AP will
-beacon with wider bandwidth IE, eg VHT20->VHT40->VHT80 or VHT40->VHT80.
+> Hello,
+>
+> I just experienced a firmware crash:
+> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: firmware crashed! (guid 07b97ee6-5eb2-4196-b038-e3cad581c735)
+> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
+> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
+> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4.1-00051-QCARMSWP-1 api 6 features wowlan,ignore-otp crc32 c3fd4411
+> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: board_file api 2 bmi_id N/A crc32 0e26ef70
+> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: htt-ver 3.44 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+>
+> Complete dmesg attached.
+>
+> Is this issue fixed in newer firmware versions?
 
-Since the supported BANDWIDTH will be limited by the PHYMODE, so while
-Station receives the bandwidth change request, it will also need to
-reconfigure the PHYMODE setting to firmware instead of just configuring
-the BANDWIDTH info, otherwise it'll trigger a firmware crash with
-non-support bandwidth.
+It seems the failure is due to the BANDWIDTH information mismatch in firmware
+when the initial connection is made with narrower PHYMODE and BANDWIDTH and
+then AP changed that later.
 
-The issue was observed in WLAN.RM.4.4.1-00051-QCARMSWP-1, QCA6174 with
-below scenario.
+I've seen similar issue earlier but I can't reproduce at my setup.
 
---
-AP xxx changed bandwidth, new config is 5200 MHz, width 2 (5190/0 MHz)
-disconnect from AP xxx for new auth to yyy
-RX ReassocResp from xxx (capab=0x1111 status=0 aid=102)
-associated
+I've sent out a patch to address that, to reconfigure the PHYMODE while
+changing the BANDWIDTH.
 
-....
+Can you help to give it test to see if that helps at your end?
 
-AP xxx changed bandwidth, new config is 5200 MHz, width 2 (5190/0 MHz)
-AP xxx changed bandwidth, new config is 5200 MHz, width 3 (5210/0 MHz)
-
-....
-
-firmware register dump:
-[00]: 0x05030000 0x000015B3 0x00987291 0x00955B31
-[04]: 0x00987291 0x00060730 0x00000004 0x00000001
-[08]: 0x004089F0 0x00955A00 0x000A0B00 0x00400000
-[12]: 0x00000009 0x00000000 0x00952CD0 0x00952CE6
-[16]: 0x00952CC4 0x0098E25F 0x00000000 0x0091080D
-[20]: 0x40987291 0x0040E7A8 0x00000000 0x0041EE3C
-[24]: 0x809ABF05 0x0040E808 0x00000000 0xC0987291
-[28]: 0x809A650C 0x0040E948 0x0041FE40 0x004345C4
-[32]: 0x809A5C63 0x0040E988 0x0040E9AC 0x0042D1A8
-[36]: 0x8091D252 0x0040E9A8 0x00000002 0x00000001
-[40]: 0x809FDA9D 0x0040EA58 0x0043D554 0x0042D554
-[44]: 0x809F8B22 0x0040EA78 0x0043D554 0x00000001
-[48]: 0x80911210 0x0040EAC8 0x00000010 0x004041D0
-[52]: 0x80911154 0x0040EB28 0x00400000 0x00000000
-[56]: 0x8091122D 0x0040EB48 0x00000000 0x00400600
---
-
-Reported-by: Rouven Czerwinski <rouven@czerwinskis.de>
-Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index ebb3f1b..68a5256 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1,6 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -5996,8 +5997,18 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
- 			   ath10k_mac_max_vht_nss(vht_mcs_mask)));
- 
- 	if (changed & IEEE80211_RC_BW_CHANGED) {
--		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM peer bw %d\n",
--			   sta->addr, bw);
-+		mode = chan_to_phymode(&def);
-+
-+		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM peer bw %d phymode %d\n",
-+			   sta->addr, bw, mode);
-+
-+		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
-+						WMI_PEER_PHYMODE, mode);
-+		if (err) {
-+			ath10k_warn(ar, "failed to update STA %pM peer phymode %d: %d\n",
-+				    sta->addr, mode, err);
-+			goto exit;
-+		}
- 
- 		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
- 						WMI_PEER_CHAN_WIDTH, bw);
-@@ -6039,6 +6050,7 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
- 				    sta->addr);
- 	}
- 
-+exit:
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
 -- 
-1.9.1
-
+Ryan Hsu
 
 _______________________________________________
 ath10k mailing list
