@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x230.google.com ([2607:f8b0:400d:c0d::230])
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eeerE-0001Tp-8V
- for ath10k@lists.infradead.org; Thu, 25 Jan 2018 10:34:15 +0000
-Received: by mail-qt0-x230.google.com with SMTP id a27so18008107qtd.1
- for <ath10k@lists.infradead.org>; Thu, 25 Jan 2018 02:34:01 -0800 (PST)
+ id 1eef5P-0001ZR-Cg
+ for ath10k@lists.infradead.org; Thu, 25 Jan 2018 10:48:55 +0000
+Received: by mail-wm0-x241.google.com with SMTP id v123so14039826wmd.5
+ for <ath10k@lists.infradead.org>; Thu, 25 Jan 2018 02:48:40 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] pci: Add vendor id of Ubiquiti Networks
+References: <20180125074131.30622-1-tobleminer@gmail.com>
+ <20180125074131.30622-2-tobleminer@gmail.com>
+From: Arend van Spriel <arend.vanspriel@broadcom.com>
+Message-ID: <5A69B605.60503@broadcom.com>
+Date: Thu, 25 Jan 2018 11:48:37 +0100
 MIME-Version: 1.0
-In-Reply-To: <b0940be0-9c6e-6877-fb85-c42ddbf79767@dd-wrt.com>
-References: <20180124194218.11408-1-tobleminer@gmail.com>
- <87efmezf07.fsf@kamboji.qca.qualcomm.com>
- <b0940be0-9c6e-6877-fb85-c42ddbf79767@dd-wrt.com>
-From: Tobias Schramm <tobleminer@gmail.com>
-Date: Thu, 25 Jan 2018 11:34:00 +0100
-Message-ID: <CAM6qAzoLMi6B8bpbht=C2G9+g2UAF08JBD+yw9o8DKCSJ4S-sg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] ath10: Add support for Ubiquiti-branded QCA988X
+In-Reply-To: <20180125074131.30622-2-tobleminer@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,48 +21,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: ath10k@lists.infradead.org
+To: Tobias Schramm <tobleminer@gmail.com>, kvalo@qca.qualcomm.com, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org
 
-WWVzLCB0aGV5IGRpZCBpbiBmYWN0IGRvIHRoYXQgZm9yIHNvbWUgZGV2aWNlcyBsaWtlIHRoZSBV
-bmlGaSBBQyBMSVRFLgpCdXQgYXQgbGVhc3Qgb25lIEFpck1BWCBkZXZpY2UgLSBuYW1lbHkgdGhl
-IFViaXF1aXRpIE5hbm9TdGF0aW9uIEFDIC0KaGFzIHRoZSBQQ0kgdmVuZG9yIGlkIDA3NzcgYW5k
-IHRoZSBwY2kgZGV2aWNlIGlkIDExYWM6Cgpyb290QE9wZW5XcnQ6fiMgbHNwY2kgLW5uCjAwOjAw
-LjAgTmV0d29yayBjb250cm9sbGVyIFswMjgwXTogVWJpcXVpdGkgTmV0d29ya3MsIEluYy4gRGV2
-aWNlIFswNzc3OjExYWNdCgpJJ20gbm90IHN1cmUgd2h5IGV4YWN0bHkgdGhlIGRpZCB0aGF0IGJ1
-dCBJIGdvdCBjb25maXJtYXRpb24gZnJvbQphbm90aGVyIE9wZW5XcnQgZGV2ZWxvcGVyIHRoYXQg
-VWJpcXVpdGkgaXMgZG9pbmcgdGhlIHNhbWUgb24gdGhlCkxpdGViZWFtIDVBQy4KCjIwMTgtMDEt
-MjUgMTA6MzQgR01UKzAxOjAwIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQt
-d3J0LmNvbT46Cj4gdWJpcXVpdGkgZGlkIG5vdCBjaGFuZ2UgdGhlIHBjaSB2ZW5kb3IgYW5kIGRl
-dmljZSBpZC4ganVzdCB0aGUgc3VidmVuZG9yIGFuZAo+IHN1YmRldmljZSBpZCBpcyBpbmRpdmlk
-dWFsIGFuZCB0aGlzIGlzIG5vdCB1bnVzdWFsIGZvciBtb3N0IHZlbmRvcnMKPiBhbGwgdWJpcXVp
-dGkgY2FyZHMgaGF2ZSAweDA3NzcKPiBhbmQgeWVzIGkga25vdyBhbGwgdGhlc2UgYWlybWF4IGRl
-dmljZXMgYW5kIGhhdmUgdGhlbSBhbmQgcnVubmluZyBhdGgxMGsgb24KPiBpdCB3aXRob3V0IGFu
-eSBpc3N1ZQo+Cj4gQW0gMjUuMDEuMjAxOCB1bSAwNjoyNSBzY2hyaWViIEthbGxlIFZhbG86Cj4+
-Cj4+IFRvYmlhcyBTY2hyYW1tIDx0b2JsZW1pbmVyQGdtYWlsLmNvbT4gd3JpdGVzOgo+Pgo+Pj4g
-QSBsb3Qgb2YgbW9yZSBtb2Rlcm4gVWJpcXVpdGkgQWlyTUFYIHdpcmVsZXNzIGRldmljZXMgY29u
-dGFpbiBhIHJlYnJhbmRlZAo+Pj4gUUNBOTg4WCB3aXRoIGNoYW5nZWQgUENJIHZlbmRvciBhbmQg
-ZGV2aWNlIGlkLgo+Pj4gVGhpcyBwYXRjaCBhZGRzIHN1cHBvcnQgZm9yIHRob3NlIGNoaXBzIGJ5
-IHRyZWF0aW5nIHRoZW0gYXMgUUNBOTg4WCByZXYyCj4+PiByYWRpb3MuCj4+Pgo+Pj4gVG9iaWFz
-IFNjaHJhbW0gKDIpOgo+Pj4gICAgcGNpOiBBZGQgdmVuZG9yIGlkIG9mIFViaXF1aXRpIE5ldHdv
-cmtzCj4+PiAgICBhdGgxMGs6IEFkZCBzdXBwb3J0IGZvciBVaXF1aXRpIHJlYnJhbmRlZCBRQ0E5
-ODhYIHYyCj4+Cj4+IFBsZWFzZSByZXNlbmQgKGFzIHYyKSBhbmQgaW5jbHVkZSBtb3JlIGxpc3Rz
-L3Blb3BsZToKPj4KPj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gbGludXgtd2lyZWxl
-c3NAdmdlci5rZXJuZWwub3JnCj4+IEJqb3JuIEhlbGdhYXMgPGJoZWxnYWFzQGdvb2dsZS5jb20+
-Cj4+IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmcKPj4KPgo+IC0tCj4gTWl0IGZyZXVuZGxpY2hl
-biBHcsO8c3NlbiAvIFJlZ2FyZHMKPgo+IFNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RPCj4KPiBO
-ZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVAo+IEZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUg
-MjFhLCA2NDYyNSBCZW5zaGVpbQo+IFJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0
-YWR0LCBIUkIgMjU0NzMKPiBHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBD
-aHJpc3RpYW4gU2NoZWVsZQo+IGh0dHA6Ly93d3cuZGQtd3J0LmNvbQo+IGVtYWlsOiBzLmdvdHRz
-Y2hhbGxAZGQtd3J0LmNvbQo+IFRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4
-MjY1NjUKPgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On 1/25/2018 8:41 AM, Tobias Schramm wrote:
+> Signed-off-by: Tobias Schramm <tobleminer@gmail.com>
+> ---
+>   include/linux/pci_ids.h | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+> index ab20dc5db423..6b01ac1e9bce 100644
+> --- a/include/linux/pci_ids.h
+> +++ b/include/linux/pci_ids.h
+> @@ -149,6 +149,8 @@
+>   #define PCI_VENDOR_ID_DYNALINK		0x0675
+>   #define PCI_DEVICE_ID_DYNALINK_IS64PH	0x1702
+>
+> +#define PCI_VENDOR_ID_UBNT		0x0777
+
+Guess this is the stock symbol, but that does not seem a common approach 
+here. Why not just PCI_VENDOR_ID_UBIQUITI?
+
+Regards,
+Arend
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
