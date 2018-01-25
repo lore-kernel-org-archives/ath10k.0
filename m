@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eeQxD-0005tU-Ae
- for ath10k@lists.infradead.org; Wed, 24 Jan 2018 19:43:29 +0000
-Received: by mail-wm0-x242.google.com with SMTP id 143so10519510wma.5
- for <ath10k@lists.infradead.org>; Wed, 24 Jan 2018 11:43:16 -0800 (PST)
-From: Tobias Schramm <tobleminer@gmail.com>
-Subject: [PATCH 2/2] ath10k: Add support for Uiquiti rebranded QCA988X v2
-Date: Wed, 24 Jan 2018 20:42:18 +0100
-Message-Id: <20180124194218.11408-3-tobleminer@gmail.com>
-In-Reply-To: <20180124194218.11408-1-tobleminer@gmail.com>
-References: <20180124194218.11408-1-tobleminer@gmail.com>
+ id 1eeW3b-00018f-0b
+ for ath10k@lists.infradead.org; Thu, 25 Jan 2018 01:10:24 +0000
+From: ryanhsu@codeaurora.org
+Subject: [PATCH] ath10k: Update the phymode along with bandwidth change request
+Date: Wed, 24 Jan 2018 17:10:04 -0800
+Message-Id: <1516842604-31447-1-git-send-email-ryanhsu@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,105 +20,104 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, kvalo@qca.qualcomm.com
-Cc: Tobias Schramm <tobleminer@gmail.com>
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, rouven@czerwinskis.de
+Cc: ryanhsu@codeaurora.org
 
-Some modern Ubiquiti devices contain a rebranded QCA988X rev2 with
-a custom Ubiquiti vendor and device id. This patch adds support for
-those devices, treating them as a QCA988X v2.
+From: Ryan Hsu <ryanhsu@codeaurora.org>
 
-Signed-off-by: Tobias Schramm <tobleminer@gmail.com>
+In the case of Station connects to AP with narrower bandwidth at beginning.
+And later the AP changes the bandwidth to winder bandwidth, the AP will
+beacon with wider bandwidth IE, eg VHT20->VHT40->VHT80 or VHT40->VHT80.
+
+Since the supported BANDWIDTH will be limited by the PHYMODE, so while
+Station receives the bandwidth change request, it will also need to
+reconfigure the PHYMODE setting to firmware instead of just configuring
+the BANDWIDTH info, otherwise it'll trigger a firmware crash with
+non-support bandwidth.
+
+The issue was observed in WLAN.RM.4.4.1-00051-QCARMSWP-1, QCA6174 with
+below scenario.
+
+--
+AP xxx changed bandwidth, new config is 5200 MHz, width 2 (5190/0 MHz)
+disconnect from AP xxx for new auth to yyy
+RX ReassocResp from xxx (capab=0x1111 status=0 aid=102)
+associated
+
+....
+
+AP xxx changed bandwidth, new config is 5200 MHz, width 2 (5190/0 MHz)
+AP xxx changed bandwidth, new config is 5200 MHz, width 3 (5210/0 MHz)
+
+....
+
+firmware register dump:
+[00]: 0x05030000 0x000015B3 0x00987291 0x00955B31
+[04]: 0x00987291 0x00060730 0x00000004 0x00000001
+[08]: 0x004089F0 0x00955A00 0x000A0B00 0x00400000
+[12]: 0x00000009 0x00000000 0x00952CD0 0x00952CE6
+[16]: 0x00952CC4 0x0098E25F 0x00000000 0x0091080D
+[20]: 0x40987291 0x0040E7A8 0x00000000 0x0041EE3C
+[24]: 0x809ABF05 0x0040E808 0x00000000 0xC0987291
+[28]: 0x809A650C 0x0040E948 0x0041FE40 0x004345C4
+[32]: 0x809A5C63 0x0040E988 0x0040E9AC 0x0042D1A8
+[36]: 0x8091D252 0x0040E9A8 0x00000002 0x00000001
+[40]: 0x809FDA9D 0x0040EA58 0x0043D554 0x0042D554
+[44]: 0x809F8B22 0x0040EA78 0x0043D554 0x00000001
+[48]: 0x80911210 0x0040EAC8 0x00000010 0x004041D0
+[52]: 0x80911154 0x0040EB28 0x00400000 0x00000000
+[56]: 0x8091122D 0x0040EB48 0x00000000 0x00400600
+--
+
+Reported-by: Rouven Czerwinski <rouven@czerwinskis.de>
+Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 24 ++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  1 +
- drivers/net/wireless/ath/ath10k/pci.c  |  4 ++++
- 3 files changed, 29 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index b29fdbd21ead..9fb38f2c1d6e 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -52,6 +52,30 @@ MODULE_PARM_DESC(cryptmode, "Crypto mode: 0-hardware, 1-software");
- MODULE_PARM_DESC(rawmode, "Use raw 802.11 frame datapath");
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ebb3f1b..68a5256 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -5996,8 +5997,18 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
+ 			   ath10k_mac_max_vht_nss(vht_mcs_mask)));
  
- static const struct ath10k_hw_params ath10k_hw_params_list[] = {
-+	{
-+		.id = QCA988X_HW_2_0_VERSION,
-+		.dev_id = QCA988X_2_0_DEVICE_ID_UBNT,
-+		.name = "qca988x hw2.0",
-+		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
-+		.uart_pin = 7,
-+		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
-+		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
-+		.max_probe_resp_desc_thres = 0,
-+		.cal_data_len = 2116,
-+		.fw = {
-+			.dir = QCA988X_HW_2_0_FW_DIR,
-+			.board = QCA988X_HW_2_0_BOARD_DATA_FILE,
-+			.board_size = QCA988X_BOARD_DATA_SZ,
-+			.board_ext_size = QCA988X_BOARD_EXT_DATA_SZ,
-+		},
-+		.hw_ops = &qca988x_ops,
-+		.decap_align_bytes = 4,
-+		.spectral_bin_discard = 0,
-+		.vht160_mcs_rx_highest = 0,
-+		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
-+	},
- 	{
- 		.id = QCA988X_HW_2_0_VERSION,
- 		.dev_id = QCA988X_2_0_DEVICE_ID,
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 05f26e5858ad..5ae3b56acc19 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -22,6 +22,7 @@
+ 	if (changed & IEEE80211_RC_BW_CHANGED) {
+-		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM peer bw %d\n",
+-			   sta->addr, bw);
++		mode = chan_to_phymode(&def);
++
++		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM peer bw %d phymode %d\n",
++			   sta->addr, bw, mode);
++
++		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
++						WMI_PEER_PHYMODE, mode);
++		if (err) {
++			ath10k_warn(ar, "failed to update STA %pM peer phymode %d: %d\n",
++				    sta->addr, mode, err);
++			goto exit;
++		}
  
- #define ATH10K_FW_DIR			"ath10k"
+ 		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
+ 						WMI_PEER_CHAN_WIDTH, bw);
+@@ -6039,6 +6050,7 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
+ 				    sta->addr);
+ 	}
  
-+#define QCA988X_2_0_DEVICE_ID_UBNT   (0x11ac)
- #define QCA988X_2_0_DEVICE_ID   (0x003c)
- #define QCA6164_2_1_DEVICE_ID   (0x0041)
- #define QCA6174_2_1_DEVICE_ID   (0x003e)
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index ffea348b2190..ccac6740795d 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -52,6 +52,7 @@ MODULE_PARM_DESC(reset_mode, "0: auto, 1: warm only (default: 0)");
- #define ATH10K_PCI_NUM_WARM_RESET_ATTEMPTS 3
++exit:
+ 	mutex_unlock(&ar->conf_mutex);
+ }
  
- static const struct pci_device_id ath10k_pci_id_table[] = {
-+	{ PCI_VDEVICE(UBNT, QCA988X_2_0_DEVICE_ID_UBNT) }, /* PCI-E QCA988X V2 (Ubiquiti branded) */
- 	{ PCI_VDEVICE(ATHEROS, QCA988X_2_0_DEVICE_ID) }, /* PCI-E QCA988X V2 */
- 	{ PCI_VDEVICE(ATHEROS, QCA6164_2_1_DEVICE_ID) }, /* PCI-E QCA6164 V2.1 */
- 	{ PCI_VDEVICE(ATHEROS, QCA6174_2_1_DEVICE_ID) }, /* PCI-E QCA6174 V2.1 */
-@@ -68,6 +69,7 @@ static const struct ath10k_pci_supp_chip ath10k_pci_supp_chips[] = {
- 	 * hacks. ath10k doesn't have them and these devices crash horribly
- 	 * because of that.
- 	 */
-+	{ QCA988X_2_0_DEVICE_ID_UBNT, QCA988X_HW_2_0_CHIP_ID_REV },
- 	{ QCA988X_2_0_DEVICE_ID, QCA988X_HW_2_0_CHIP_ID_REV },
- 
- 	{ QCA6164_2_1_DEVICE_ID, QCA6174_HW_2_1_CHIP_ID_REV },
-@@ -1977,6 +1979,7 @@ static int ath10k_pci_get_num_banks(struct ath10k *ar)
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 
- 	switch (ar_pci->pdev->device) {
-+	case QCA988X_2_0_DEVICE_ID_UBNT:
- 	case QCA988X_2_0_DEVICE_ID:
- 	case QCA99X0_2_0_DEVICE_ID:
- 	case QCA9888_2_0_DEVICE_ID:
-@@ -3208,6 +3211,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	u32 (*targ_cpu_to_ce_addr)(struct ath10k *ar, u32 addr);
- 
- 	switch (pci_dev->device) {
-+	case QCA988X_2_0_DEVICE_ID_UBNT:
- 	case QCA988X_2_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA988X;
- 		pci_ps = false;
 -- 
-2.16.0
+1.9.1
 
 
 _______________________________________________
