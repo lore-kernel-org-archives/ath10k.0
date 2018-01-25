@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eefUK-0004S1-4e
- for ath10k@lists.infradead.org; Thu, 25 Jan 2018 11:14:37 +0000
-Received: by mail-wr0-x242.google.com with SMTP id s5so5914652wra.0
- for <ath10k@lists.infradead.org>; Thu, 25 Jan 2018 03:14:25 -0800 (PST)
-From: Tobias Schramm <tobleminer@gmail.com>
-Subject: [PATCH v3 2/2] ath10k: Add support for Ubiquiti rebranded QCA988X v2
-Date: Thu, 25 Jan 2018 12:13:40 +0100
-Message-Id: <20180125111340.17553-3-tobleminer@gmail.com>
-In-Reply-To: <20180125111340.17553-1-tobleminer@gmail.com>
-References: <20180125111340.17553-1-tobleminer@gmail.com>
+ id 1eeloa-0006iL-6b
+ for ath10k@lists.infradead.org; Thu, 25 Jan 2018 17:59:58 +0000
+Subject: Re: [PATCH 0/2] ath10: Add support for Ubiquiti-branded QCA988X
+References: <20180124194218.11408-1-tobleminer@gmail.com>
+ <87efmezf07.fsf@kamboji.qca.qualcomm.com>
+ <b0940be0-9c6e-6877-fb85-c42ddbf79767@dd-wrt.com>
+ <CAM6qAzoLMi6B8bpbht=C2G9+g2UAF08JBD+yw9o8DKCSJ4S-sg@mail.gmail.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <39d169a5-34ea-bd80-6e8f-e6dd251225bd@dd-wrt.com>
+Date: Thu, 25 Jan 2018 18:59:37 +0100
+MIME-Version: 1.0
+In-Reply-To: <CAM6qAzoLMi6B8bpbht=C2G9+g2UAF08JBD+yw9o8DKCSJ4S-sg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,113 +22,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org
-Cc: Tobias Schramm <tobleminer@gmail.com>
+To: Tobias Schramm <tobleminer@gmail.com>
+Cc: ath10k@lists.infradead.org
 
-Some modern Ubiquiti devices contain a rebranded QCA988X rev2 with
-a custom Ubiquiti vendor and device id. This patch adds support for
-those devices, treating them as a QCA988X v2.
-
-Signed-off-by: Tobias Schramm <tobleminer@gmail.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 24 ++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   |  1 +
- drivers/net/wireless/ath/ath10k/pci.c  |  4 ++++
- 3 files changed, 29 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index b29fdbd21ead..9fb38f2c1d6e 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -52,6 +52,30 @@ MODULE_PARM_DESC(cryptmode, "Crypto mode: 0-hardware, 1-software");
- MODULE_PARM_DESC(rawmode, "Use raw 802.11 frame datapath");
- 
- static const struct ath10k_hw_params ath10k_hw_params_list[] = {
-+	{
-+		.id = QCA988X_HW_2_0_VERSION,
-+		.dev_id = QCA988X_2_0_DEVICE_ID_UBNT,
-+		.name = "qca988x hw2.0",
-+		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
-+		.uart_pin = 7,
-+		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
-+		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
-+		.max_probe_resp_desc_thres = 0,
-+		.cal_data_len = 2116,
-+		.fw = {
-+			.dir = QCA988X_HW_2_0_FW_DIR,
-+			.board = QCA988X_HW_2_0_BOARD_DATA_FILE,
-+			.board_size = QCA988X_BOARD_DATA_SZ,
-+			.board_ext_size = QCA988X_BOARD_EXT_DATA_SZ,
-+		},
-+		.hw_ops = &qca988x_ops,
-+		.decap_align_bytes = 4,
-+		.spectral_bin_discard = 0,
-+		.vht160_mcs_rx_highest = 0,
-+		.vht160_mcs_tx_highest = 0,
-+		.n_cipher_suites = 8,
-+	},
- 	{
- 		.id = QCA988X_HW_2_0_VERSION,
- 		.dev_id = QCA988X_2_0_DEVICE_ID,
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 05f26e5858ad..5ae3b56acc19 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -22,6 +22,7 @@
- 
- #define ATH10K_FW_DIR			"ath10k"
- 
-+#define QCA988X_2_0_DEVICE_ID_UBNT   (0x11ac)
- #define QCA988X_2_0_DEVICE_ID   (0x003c)
- #define QCA6164_2_1_DEVICE_ID   (0x0041)
- #define QCA6174_2_1_DEVICE_ID   (0x003e)
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index ffea348b2190..e28e2f5f09c5 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -52,6 +52,7 @@ MODULE_PARM_DESC(reset_mode, "0: auto, 1: warm only (default: 0)");
- #define ATH10K_PCI_NUM_WARM_RESET_ATTEMPTS 3
- 
- static const struct pci_device_id ath10k_pci_id_table[] = {
-+	{ PCI_VDEVICE(UBIQUITI, QCA988X_2_0_DEVICE_ID_UBNT) }, /* PCI-E QCA988X V2 (Ubiquiti branded) */
- 	{ PCI_VDEVICE(ATHEROS, QCA988X_2_0_DEVICE_ID) }, /* PCI-E QCA988X V2 */
- 	{ PCI_VDEVICE(ATHEROS, QCA6164_2_1_DEVICE_ID) }, /* PCI-E QCA6164 V2.1 */
- 	{ PCI_VDEVICE(ATHEROS, QCA6174_2_1_DEVICE_ID) }, /* PCI-E QCA6174 V2.1 */
-@@ -68,6 +69,7 @@ static const struct ath10k_pci_supp_chip ath10k_pci_supp_chips[] = {
- 	 * hacks. ath10k doesn't have them and these devices crash horribly
- 	 * because of that.
- 	 */
-+	{ QCA988X_2_0_DEVICE_ID_UBNT, QCA988X_HW_2_0_CHIP_ID_REV },
- 	{ QCA988X_2_0_DEVICE_ID, QCA988X_HW_2_0_CHIP_ID_REV },
- 
- 	{ QCA6164_2_1_DEVICE_ID, QCA6174_HW_2_1_CHIP_ID_REV },
-@@ -1977,6 +1979,7 @@ static int ath10k_pci_get_num_banks(struct ath10k *ar)
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 
- 	switch (ar_pci->pdev->device) {
-+	case QCA988X_2_0_DEVICE_ID_UBNT:
- 	case QCA988X_2_0_DEVICE_ID:
- 	case QCA99X0_2_0_DEVICE_ID:
- 	case QCA9888_2_0_DEVICE_ID:
-@@ -3208,6 +3211,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	u32 (*targ_cpu_to_ce_addr)(struct ath10k *ar, u32 addr);
- 
- 	switch (pci_dev->device) {
-+	case QCA988X_2_0_DEVICE_ID_UBNT:
- 	case QCA988X_2_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA988X;
- 		pci_ps = false;
--- 
-2.16.0
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMjUuMDEuMjAxOCB1bSAxMTozNCBzY2hyaWViIFRvYmlhcyBTY2hyYW1tOgo+IFllcywgdGhl
+eSBkaWQgaW4gZmFjdCBkbyB0aGF0IGZvciBzb21lIGRldmljZXMgbGlrZSB0aGUgVW5pRmkgQUMg
+TElURS4KPiBCdXQgYXQgbGVhc3Qgb25lIEFpck1BWCBkZXZpY2UgLSBuYW1lbHkgdGhlIFViaXF1
+aXRpIE5hbm9TdGF0aW9uIEFDIC0KPiBoYXMgdGhlIFBDSSB2ZW5kb3IgaWQgMDc3NyBhbmQgdGhl
+IHBjaSBkZXZpY2UgaWQgMTFhYzoKPgo+IHJvb3RAT3BlbldydDp+IyBsc3BjaSAtbm4KPiAwMDow
+MC4wIE5ldHdvcmsgY29udHJvbGxlciBbMDI4MF06IFViaXF1aXRpIE5ldHdvcmtzLCBJbmMuIERl
+dmljZSBbMDc3NzoxMWFjXQo+Cj4gSSdtIG5vdCBzdXJlIHdoeSBleGFjdGx5IHRoZSBkaWQgdGhh
+dCBidXQgSSBnb3QgY29uZmlybWF0aW9uIGZyb20KPiBhbm90aGVyIE9wZW5XcnQgZGV2ZWxvcGVy
+IHRoYXQgVWJpcXVpdGkgaXMgZG9pbmcgdGhlIHNhbWUgb24gdGhlCj4gTGl0ZWJlYW0gNUFDLgp0
+aGF0IG11c3QgYmUgcmVhbGx5IG5ldyBiZWNhdXNlIGkgaGF2ZSBzdWNoIGEgZGV2aWNlIHdpdGhv
+dXQgc3VjaCBoYWNrcy4KPgo+IDIwMTgtMDEtMjUgMTA6MzQgR01UKzAxOjAwIFNlYmFzdGlhbiBH
+b3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT46Cj4+IHViaXF1aXRpIGRpZCBub3Qg
+Y2hhbmdlIHRoZSBwY2kgdmVuZG9yIGFuZCBkZXZpY2UgaWQuIGp1c3QgdGhlIHN1YnZlbmRvciBh
+bmQKPj4gc3ViZGV2aWNlIGlkIGlzIGluZGl2aWR1YWwgYW5kIHRoaXMgaXMgbm90IHVudXN1YWwg
+Zm9yIG1vc3QgdmVuZG9ycwo+PiBhbGwgdWJpcXVpdGkgY2FyZHMgaGF2ZSAweDA3NzcKPj4gYW5k
+IHllcyBpIGtub3cgYWxsIHRoZXNlIGFpcm1heCBkZXZpY2VzIGFuZCBoYXZlIHRoZW0gYW5kIHJ1
+bm5pbmcgYXRoMTBrIG9uCj4+IGl0IHdpdGhvdXQgYW55IGlzc3VlCj4+Cj4+IEFtIDI1LjAxLjIw
+MTggdW0gMDY6MjUgc2NocmllYiBLYWxsZSBWYWxvOgo+Pj4gVG9iaWFzIFNjaHJhbW0gPHRvYmxl
+bWluZXJAZ21haWwuY29tPiB3cml0ZXM6Cj4+Pgo+Pj4+IEEgbG90IG9mIG1vcmUgbW9kZXJuIFVi
+aXF1aXRpIEFpck1BWCB3aXJlbGVzcyBkZXZpY2VzIGNvbnRhaW4gYSByZWJyYW5kZWQKPj4+PiBR
+Q0E5ODhYIHdpdGggY2hhbmdlZCBQQ0kgdmVuZG9yIGFuZCBkZXZpY2UgaWQuCj4+Pj4gVGhpcyBw
+YXRjaCBhZGRzIHN1cHBvcnQgZm9yIHRob3NlIGNoaXBzIGJ5IHRyZWF0aW5nIHRoZW0gYXMgUUNB
+OTg4WCByZXYyCj4+Pj4gcmFkaW9zLgo+Pj4+Cj4+Pj4gVG9iaWFzIFNjaHJhbW0gKDIpOgo+Pj4+
+ICAgICBwY2k6IEFkZCB2ZW5kb3IgaWQgb2YgVWJpcXVpdGkgTmV0d29ya3MKPj4+PiAgICAgYXRo
+MTBrOiBBZGQgc3VwcG9ydCBmb3IgVWlxdWl0aSByZWJyYW5kZWQgUUNBOTg4WCB2Mgo+Pj4gUGxl
+YXNlIHJlc2VuZCAoYXMgdjIpIGFuZCBpbmNsdWRlIG1vcmUgbGlzdHMvcGVvcGxlOgo+Pj4KPj4+
+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+PiBsaW51eC13aXJlbGVzc0B2Z2VyLmtlcm5l
+bC5vcmcKPj4+IEJqb3JuIEhlbGdhYXMgPGJoZWxnYWFzQGdvb2dsZS5jb20+Cj4+PiBsaW51eC1w
+Y2lAdmdlci5rZXJuZWwub3JnCj4+Pgo+PiAtLQo+PiBNaXQgZnJldW5kbGljaGVuIEdyw7xzc2Vu
+IC8gUmVnYXJkcwo+Pgo+PiBTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwo+Pgo+PiBOZXdNZWRp
+YS1ORVQgR21iSCAtIERELVdSVAo+PiBGaXJtZW5zaXR6OiAgU3R1YmVud2FsZGFsbGVlIDIxYSwg
+NjQ2MjUgQmVuc2hlaW0KPj4gUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQs
+IEhSQiAyNTQ3Mwo+PiBHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJp
+c3RpYW4gU2NoZWVsZQo+PiBodHRwOi8vd3d3LmRkLXdydC5jb20KPj4gZW1haWw6IHMuZ290dHNj
+aGFsbEBkZC13cnQuY29tCj4+IFRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4
+MjY1NjUKPj4KPj4KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KPj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+Zwo+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoK
+Ci0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRz
+Y2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHVi
+ZW53YWxkYWxsZWUgMjFhLCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJp
+Y2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjD
+pHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5n
+b3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEt
+NTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
