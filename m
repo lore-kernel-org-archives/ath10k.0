@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from magratgarlick.emantor.de ([78.46.208.201]
- helo=margratgarlick.emantor.de)
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eecJF-0000YA-SF
- for ath10k@lists.infradead.org; Thu, 25 Jan 2018 07:50:59 +0000
-References: <87h8rwd1z2.fsf@czerwinskis.de>
- <848cf7f7-fdfc-ef85-d1b7-eefdd8672112@qti.qualcomm.com>
-From: Rouven Czerwinski <rouven@czerwinskis.de>
-Subject: Re: Firmware Crash on qca61741 hw3.2
-In-reply-to: <848cf7f7-fdfc-ef85-d1b7-eefdd8672112@qti.qualcomm.com>
-Date: Thu, 25 Jan 2018 08:43:36 +0100
-Message-ID: <87fu6us7rr.fsf@czerwinskis.de>
+ id 1eedw0-0004Ug-1E
+ for ath10k@lists.infradead.org; Thu, 25 Jan 2018 09:35:06 +0000
+Subject: Re: [PATCH 0/2] ath10: Add support for Ubiquiti-branded QCA988X
+References: <20180124194218.11408-1-tobleminer@gmail.com>
+ <87efmezf07.fsf@kamboji.qca.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <b0940be0-9c6e-6877-fb85-c42ddbf79767@dd-wrt.com>
+Date: Thu, 25 Jan 2018 10:34:40 +0100
 MIME-Version: 1.0
+In-Reply-To: <87efmezf07.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +20,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ryan Hsu <ryanhsu@qti.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-
-Ryan Hsu <ryanhsu@qti.qualcomm.com> writes:
-
-> On 01/08/2018 03:28 AM, Rouven Czerwinski wrote:
->
->> Hello,
->>
->> I just experienced a firmware crash:
->> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: firmware crashed! (guid 07b97ee6-5eb2-4196-b038-e3cad581c735)
->> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
->> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
->> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4.1-00051-QCARMSWP-1 api 6 features wowlan,ignore-otp crc32 c3fd4411
->> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: board_file api 2 bmi_id N/A crc32 0e26ef70
->> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: htt-ver 3.44 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
->>
->> Complete dmesg attached.
->>
->> Is this issue fixed in newer firmware versions?
->
-> It seems the failure is due to the BANDWIDTH information mismatch in firmware
-> when the initial connection is made with narrower PHYMODE and BANDWIDTH and
-> then AP changed that later.
->
-> I've seen similar issue earlier but I can't reproduce at my setup.
->
-> I've sent out a patch to address that, to reconfigure the PHYMODE while
-> changing the BANDWIDTH.
->
-> Can you help to give it test to see if that helps at your end?
-
-Sure, the failure was pretty reliable on my universities wireless
-network. I'll apply and report back, thanks!
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+dWJpcXVpdGkgZGlkIG5vdCBjaGFuZ2UgdGhlIHBjaSB2ZW5kb3IgYW5kIGRldmljZSBpZC4ganVz
+dCB0aGUgc3VidmVuZG9yIAphbmQgc3ViZGV2aWNlIGlkIGlzIGluZGl2aWR1YWwgYW5kIHRoaXMg
+aXMgbm90IHVudXN1YWwgZm9yIG1vc3QgdmVuZG9ycwphbGwgdWJpcXVpdGkgY2FyZHMgaGF2ZSAw
+eDA3NzcKYW5kIHllcyBpIGtub3cgYWxsIHRoZXNlIGFpcm1heCBkZXZpY2VzIGFuZCBoYXZlIHRo
+ZW0gYW5kIHJ1bm5pbmcgYXRoMTBrIApvbiBpdCB3aXRob3V0IGFueSBpc3N1ZQoKQW0gMjUuMDEu
+MjAxOCB1bSAwNjoyNSBzY2hyaWViIEthbGxlIFZhbG86Cj4gVG9iaWFzIFNjaHJhbW0gPHRvYmxl
+bWluZXJAZ21haWwuY29tPiB3cml0ZXM6Cj4KPj4gQSBsb3Qgb2YgbW9yZSBtb2Rlcm4gVWJpcXVp
+dGkgQWlyTUFYIHdpcmVsZXNzIGRldmljZXMgY29udGFpbiBhIHJlYnJhbmRlZAo+PiBRQ0E5ODhY
+IHdpdGggY2hhbmdlZCBQQ0kgdmVuZG9yIGFuZCBkZXZpY2UgaWQuCj4+IFRoaXMgcGF0Y2ggYWRk
+cyBzdXBwb3J0IGZvciB0aG9zZSBjaGlwcyBieSB0cmVhdGluZyB0aGVtIGFzIFFDQTk4OFggcmV2
+Mgo+PiByYWRpb3MuCj4+Cj4+IFRvYmlhcyBTY2hyYW1tICgyKToKPj4gICAgcGNpOiBBZGQgdmVu
+ZG9yIGlkIG9mIFViaXF1aXRpIE5ldHdvcmtzCj4+ICAgIGF0aDEwazogQWRkIHN1cHBvcnQgZm9y
+IFVpcXVpdGkgcmVicmFuZGVkIFFDQTk4OFggdjIKPiBQbGVhc2UgcmVzZW5kIChhcyB2MikgYW5k
+IGluY2x1ZGUgbW9yZSBsaXN0cy9wZW9wbGU6Cj4KPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+Zwo+IGxpbnV4LXdpcmVsZXNzQHZnZXIua2VybmVsLm9yZwo+IEJqb3JuIEhlbGdhYXMgPGJoZWxn
+YWFzQGdvb2dsZS5jb20+Cj4gbGludXgtcGNpQHZnZXIua2VybmVsLm9yZwo+CgotLSAKTWl0IGZy
+ZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RP
+CgpOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgU3R1YmVud2FsZGFsbGVl
+IDIxYSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3Rh
+ZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJp
+c3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFsbEBk
+ZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
+bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
