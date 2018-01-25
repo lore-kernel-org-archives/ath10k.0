@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from magratgarlick.emantor.de ([78.46.208.201]
+ helo=margratgarlick.emantor.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eecAq-0003k8-Gx
- for ath10k@lists.infradead.org; Thu, 25 Jan 2018 07:42:18 +0000
-Received: by mail-wm0-x243.google.com with SMTP id j21so21301111wmh.1
- for <ath10k@lists.infradead.org>; Wed, 24 Jan 2018 23:42:06 -0800 (PST)
-From: Tobias Schramm <tobleminer@gmail.com>
-Subject: [PATCH v2 1/2] pci: Add vendor id of Ubiquiti Networks
-Date: Thu, 25 Jan 2018 08:41:30 +0100
-Message-Id: <20180125074131.30622-2-tobleminer@gmail.com>
-In-Reply-To: <20180125074131.30622-1-tobleminer@gmail.com>
-References: <20180125074131.30622-1-tobleminer@gmail.com>
+ id 1eecJF-0000YA-SF
+ for ath10k@lists.infradead.org; Thu, 25 Jan 2018 07:50:59 +0000
+References: <87h8rwd1z2.fsf@czerwinskis.de>
+ <848cf7f7-fdfc-ef85-d1b7-eefdd8672112@qti.qualcomm.com>
+From: Rouven Czerwinski <rouven@czerwinskis.de>
+Subject: Re: Firmware Crash on qca61741 hw3.2
+In-reply-to: <848cf7f7-fdfc-ef85-d1b7-eefdd8672112@qti.qualcomm.com>
+Date: Thu, 25 Jan 2018 08:43:36 +0100
+Message-ID: <87fu6us7rr.fsf@czerwinskis.de>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,35 +20,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org
-Cc: Tobias Schramm <tobleminer@gmail.com>
+To: Ryan Hsu <ryanhsu@qti.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Signed-off-by: Tobias Schramm <tobleminer@gmail.com>
----
- include/linux/pci_ids.h | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index ab20dc5db423..6b01ac1e9bce 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -149,6 +149,8 @@
- #define PCI_VENDOR_ID_DYNALINK		0x0675
- #define PCI_DEVICE_ID_DYNALINK_IS64PH	0x1702
- 
-+#define PCI_VENDOR_ID_UBNT		0x0777
-+
- #define PCI_VENDOR_ID_BERKOM			0x0871
- #define PCI_DEVICE_ID_BERKOM_A1T		0xffa1
- #define PCI_DEVICE_ID_BERKOM_T_CONCEPT		0xffa2
--- 
-2.16.0
+Ryan Hsu <ryanhsu@qti.qualcomm.com> writes:
 
+> On 01/08/2018 03:28 AM, Rouven Czerwinski wrote:
+>
+>> Hello,
+>>
+>> I just experienced a firmware crash:
+>> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: firmware crashed! (guid 07b97ee6-5eb2-4196-b038-e3cad581c735)
+>> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: qca6174 hw3.2 target 0x05030000 chip_id 0x00340aff sub 1a56:1535
+>> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: kconfig debug 0 debugfs 1 tracing 0 dfs 0 testmode 0
+>> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: firmware ver WLAN.RM.4.4.1-00051-QCARMSWP-1 api 6 features wowlan,ignore-otp crc32 c3fd4411
+>> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: board_file api 2 bmi_id N/A crc32 0e26ef70
+>> [Mo Jan  8 12:15:44 2018] ath10k_pci 0000:01:00.0: htt-ver 3.44 wmi-op 4 htt-op 3 cal otp max-sta 32 raw 0 hwcrypto 1
+>>
+>> Complete dmesg attached.
+>>
+>> Is this issue fixed in newer firmware versions?
+>
+> It seems the failure is due to the BANDWIDTH information mismatch in firmware
+> when the initial connection is made with narrower PHYMODE and BANDWIDTH and
+> then AP changed that later.
+>
+> I've seen similar issue earlier but I can't reproduce at my setup.
+>
+> I've sent out a patch to address that, to reconfigure the PHYMODE while
+> changing the BANDWIDTH.
+>
+> Can you help to give it test to see if that helps at your end?
+
+Sure, the failure was pretty reliable on my universities wireless
+network. I'll apply and report back, thanks!
 
 _______________________________________________
 ath10k mailing list
