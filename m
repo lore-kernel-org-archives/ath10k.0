@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x235.google.com ([2607:f8b0:400d:c0d::235])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eefQd-0003uf-Gu
- for ath10k@lists.infradead.org; Thu, 25 Jan 2018 11:10:49 +0000
-Received: by mail-qt0-x235.google.com with SMTP id c2so18141548qtn.9
- for <ath10k@lists.infradead.org>; Thu, 25 Jan 2018 03:10:37 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <5A69B646.30501@broadcom.com>
-References: <20180125074131.30622-1-tobleminer@gmail.com>
- <20180125074131.30622-3-tobleminer@gmail.com>
- <5A69B646.30501@broadcom.com>
+ id 1eefU8-0004RY-8L
+ for ath10k@lists.infradead.org; Thu, 25 Jan 2018 11:14:28 +0000
+Received: by mail-wm0-x244.google.com with SMTP id r78so14233035wme.0
+ for <ath10k@lists.infradead.org>; Thu, 25 Jan 2018 03:14:13 -0800 (PST)
 From: Tobias Schramm <tobleminer@gmail.com>
-Date: Thu, 25 Jan 2018 12:10:35 +0100
-Message-ID: <CAM6qAzqwJY2jf-TkAhJoNYuW7yOyq=siyB061xnYJwVNN63VQQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ath10k: Add support for Uiquiti rebranded QCA988X
- v2
+Subject: [PATCH v3 0/2] ath10k: Add support for Ubiquiti-branded QCA988X
+Date: Thu, 25 Jan 2018 12:13:38 +0100
+Message-Id: <20180125111340.17553-1-tobleminer@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +17,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: kvalo@qca.qualcomm.com, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org
+Cc: Tobias Schramm <tobleminer@gmail.com>
 
-True, I'll fix it in v3
+A lot of more modern Ubiquiti AirMAX wireless devices contain a rebranded
+QCA988X with changed PCI vendor and device id.
+This patch adds support for those chips by treating them as QCA988X rev2
+radios.
 
-2018-01-25 11:49 GMT+01:00 Arend van Spriel <arend.vanspriel@broadcom.com>:
-> On 1/25/2018 8:41 AM, Tobias Schramm wrote:
->>
->> Some modern Ubiquiti devices contain a rebranded QCA988X rev2 with
->
->
-> You dropped a 'b' in the subject, ie. Uiquiti.
->
-> Regards,
-> Arend
->
+Changes since v1:
+ * Send patch to more people and lists
+
+Changes since v2:
+ * Rename PCI_VENDOR_ID_UBNT to PCI_VENDOR_ID_UBIQUITI
+
+Tobias Schramm (2):
+  pci: Add vendor id of Ubiquiti Networks
+  ath10k: Add support for Ubiquiti rebranded QCA988X v2
+
+ drivers/net/wireless/ath/ath10k/core.c | 24 ++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  1 +
+ drivers/net/wireless/ath/ath10k/pci.c  |  4 ++++
+ include/linux/pci_ids.h                |  2 ++
+ 4 files changed, 31 insertions(+)
+
+-- 
+2.16.0
+
 
 _______________________________________________
 ath10k mailing list
