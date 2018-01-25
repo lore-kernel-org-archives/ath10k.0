@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail-lf0-x231.google.com ([2a00:1450:4010:c07::231])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eeloa-0006iL-6b
- for ath10k@lists.infradead.org; Thu, 25 Jan 2018 17:59:58 +0000
-Subject: Re: [PATCH 0/2] ath10: Add support for Ubiquiti-branded QCA988X
-References: <20180124194218.11408-1-tobleminer@gmail.com>
- <87efmezf07.fsf@kamboji.qca.qualcomm.com>
- <b0940be0-9c6e-6877-fb85-c42ddbf79767@dd-wrt.com>
- <CAM6qAzoLMi6B8bpbht=C2G9+g2UAF08JBD+yw9o8DKCSJ4S-sg@mail.gmail.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <39d169a5-34ea-bd80-6e8f-e6dd251225bd@dd-wrt.com>
-Date: Thu, 25 Jan 2018 18:59:37 +0100
+ id 1eemwE-0005Ox-3w
+ for ath10k@lists.infradead.org; Thu, 25 Jan 2018 19:11:55 +0000
+Received: by mail-lf0-x231.google.com with SMTP id o89so11153163lfg.10
+ for <ath10k@lists.infradead.org>; Thu, 25 Jan 2018 11:11:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAM6qAzoLMi6B8bpbht=C2G9+g2UAF08JBD+yw9o8DKCSJ4S-sg@mail.gmail.com>
+From: Adam Porter <porter.adam@gmail.com>
+Date: Thu, 25 Jan 2018 11:11:37 -0800
+Message-ID: <CAFR5RwTCNV-135E16fXJLECsart-cTjVJq8QcDB3wKH+JrsHnw@mail.gmail.com>
+Subject: QCA6174 SDIO crashing after few days
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,57 +18,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tobias Schramm <tobleminer@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-QW0gMjUuMDEuMjAxOCB1bSAxMTozNCBzY2hyaWViIFRvYmlhcyBTY2hyYW1tOgo+IFllcywgdGhl
-eSBkaWQgaW4gZmFjdCBkbyB0aGF0IGZvciBzb21lIGRldmljZXMgbGlrZSB0aGUgVW5pRmkgQUMg
-TElURS4KPiBCdXQgYXQgbGVhc3Qgb25lIEFpck1BWCBkZXZpY2UgLSBuYW1lbHkgdGhlIFViaXF1
-aXRpIE5hbm9TdGF0aW9uIEFDIC0KPiBoYXMgdGhlIFBDSSB2ZW5kb3IgaWQgMDc3NyBhbmQgdGhl
-IHBjaSBkZXZpY2UgaWQgMTFhYzoKPgo+IHJvb3RAT3BlbldydDp+IyBsc3BjaSAtbm4KPiAwMDow
-MC4wIE5ldHdvcmsgY29udHJvbGxlciBbMDI4MF06IFViaXF1aXRpIE5ldHdvcmtzLCBJbmMuIERl
-dmljZSBbMDc3NzoxMWFjXQo+Cj4gSSdtIG5vdCBzdXJlIHdoeSBleGFjdGx5IHRoZSBkaWQgdGhh
-dCBidXQgSSBnb3QgY29uZmlybWF0aW9uIGZyb20KPiBhbm90aGVyIE9wZW5XcnQgZGV2ZWxvcGVy
-IHRoYXQgVWJpcXVpdGkgaXMgZG9pbmcgdGhlIHNhbWUgb24gdGhlCj4gTGl0ZWJlYW0gNUFDLgp0
-aGF0IG11c3QgYmUgcmVhbGx5IG5ldyBiZWNhdXNlIGkgaGF2ZSBzdWNoIGEgZGV2aWNlIHdpdGhv
-dXQgc3VjaCBoYWNrcy4KPgo+IDIwMTgtMDEtMjUgMTA6MzQgR01UKzAxOjAwIFNlYmFzdGlhbiBH
-b3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT46Cj4+IHViaXF1aXRpIGRpZCBub3Qg
-Y2hhbmdlIHRoZSBwY2kgdmVuZG9yIGFuZCBkZXZpY2UgaWQuIGp1c3QgdGhlIHN1YnZlbmRvciBh
-bmQKPj4gc3ViZGV2aWNlIGlkIGlzIGluZGl2aWR1YWwgYW5kIHRoaXMgaXMgbm90IHVudXN1YWwg
-Zm9yIG1vc3QgdmVuZG9ycwo+PiBhbGwgdWJpcXVpdGkgY2FyZHMgaGF2ZSAweDA3NzcKPj4gYW5k
-IHllcyBpIGtub3cgYWxsIHRoZXNlIGFpcm1heCBkZXZpY2VzIGFuZCBoYXZlIHRoZW0gYW5kIHJ1
-bm5pbmcgYXRoMTBrIG9uCj4+IGl0IHdpdGhvdXQgYW55IGlzc3VlCj4+Cj4+IEFtIDI1LjAxLjIw
-MTggdW0gMDY6MjUgc2NocmllYiBLYWxsZSBWYWxvOgo+Pj4gVG9iaWFzIFNjaHJhbW0gPHRvYmxl
-bWluZXJAZ21haWwuY29tPiB3cml0ZXM6Cj4+Pgo+Pj4+IEEgbG90IG9mIG1vcmUgbW9kZXJuIFVi
-aXF1aXRpIEFpck1BWCB3aXJlbGVzcyBkZXZpY2VzIGNvbnRhaW4gYSByZWJyYW5kZWQKPj4+PiBR
-Q0E5ODhYIHdpdGggY2hhbmdlZCBQQ0kgdmVuZG9yIGFuZCBkZXZpY2UgaWQuCj4+Pj4gVGhpcyBw
-YXRjaCBhZGRzIHN1cHBvcnQgZm9yIHRob3NlIGNoaXBzIGJ5IHRyZWF0aW5nIHRoZW0gYXMgUUNB
-OTg4WCByZXYyCj4+Pj4gcmFkaW9zLgo+Pj4+Cj4+Pj4gVG9iaWFzIFNjaHJhbW0gKDIpOgo+Pj4+
-ICAgICBwY2k6IEFkZCB2ZW5kb3IgaWQgb2YgVWJpcXVpdGkgTmV0d29ya3MKPj4+PiAgICAgYXRo
-MTBrOiBBZGQgc3VwcG9ydCBmb3IgVWlxdWl0aSByZWJyYW5kZWQgUUNBOTg4WCB2Mgo+Pj4gUGxl
-YXNlIHJlc2VuZCAoYXMgdjIpIGFuZCBpbmNsdWRlIG1vcmUgbGlzdHMvcGVvcGxlOgo+Pj4KPj4+
-IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+PiBsaW51eC13aXJlbGVzc0B2Z2VyLmtlcm5l
-bC5vcmcKPj4+IEJqb3JuIEhlbGdhYXMgPGJoZWxnYWFzQGdvb2dsZS5jb20+Cj4+PiBsaW51eC1w
-Y2lAdmdlci5rZXJuZWwub3JnCj4+Pgo+PiAtLQo+PiBNaXQgZnJldW5kbGljaGVuIEdyw7xzc2Vu
-IC8gUmVnYXJkcwo+Pgo+PiBTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwo+Pgo+PiBOZXdNZWRp
-YS1ORVQgR21iSCAtIERELVdSVAo+PiBGaXJtZW5zaXR6OiAgU3R1YmVud2FsZGFsbGVlIDIxYSwg
-NjQ2MjUgQmVuc2hlaW0KPj4gUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQs
-IEhSQiAyNTQ3Mwo+PiBHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJp
-c3RpYW4gU2NoZWVsZQo+PiBodHRwOi8vd3d3LmRkLXdydC5jb20KPj4gZW1haWw6IHMuZ290dHNj
-aGFsbEBkZC13cnQuY29tCj4+IFRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4
-MjY1NjUKPj4KPj4KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KPj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-Zwo+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoK
-Ci0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRz
-Y2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHVi
-ZW53YWxkYWxsZWUgMjFhLCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJp
-Y2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjD
-pHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5n
-b3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEt
-NTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Firmware WLAN.RMH.4.1.1-00014-QCARMSWPZ-1
+
+Using branch ath10k-pending-sdio-usb
+
+I'm using this module as an access point. After a while of uptime, it
+appears that all communication with the module ceases. Hostapd goes to
+disassociate clients due to inactivity, then I see in the log the
+resulting failures:
+
+[94216.098042] ath10k_sdio mmc0:0001:1: failed to install key for vdev
+0 peer c8:21:58:10:b3:b4: -110
+[94219.170075] ath10k_sdio mmc0:0001:1: failed to install key for vdev
+0 peer b8:27:eb:f2:52:22: -110
+[94219.191719] ath10k_sdio mmc0:0001:1: cipher 0 is not supported
+[94219.207948] ath10k_sdio mmc0:0001:1: failed to remove peer wep key 0: -95
+[94219.222155] ath10k_sdio mmc0:0001:1: failed to clear all peer wep
+keys for vdev 0: -95
+[94219.237937] ath10k_sdio mmc0:0001:1: failed to disassociate
+station: c8:21:58:10:b3:b4 vdev 0: -95
+
+It seems that I can reproduce this issue faster by connecting more
+clients and pushing a lot of throughput. So perhaps this is a resource
+leak in the firmware?
+
+I do not see this issue when using qcacld.
+
+I'm not sure how to begin debugging this issue, does anyone have any
+advice or suggestions?
+
+Thank you,
+Adam
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
