@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eex8u-0005uf-OI
- for ath10k@lists.infradead.org; Fri, 26 Jan 2018 06:05:42 +0000
-MIME-Version: 1.0
-Subject: Re: ath10k: correct the length of DRAM dump for QCA6174 hw3.x/QCA9377
- hw1.1
+ id 1ef0Qf-0001j3-BS
+ for ath10k@lists.infradead.org; Fri, 26 Jan 2018 09:36:17 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1516945221-4710-2-git-send-email-yyuwang@codeaurora.org>
-References: <1516945221-4710-2-git-send-email-yyuwang@codeaurora.org>
-Message-Id: <20180126060529.E87FB60A24@smtp.codeaurora.org>
-Date: Fri, 26 Jan 2018 06:05:29 +0000 (UTC)
+Subject: Re: QCA6174 SDIO crashing after few days
+References: <CAFR5RwTCNV-135E16fXJLECsart-cTjVJq8QcDB3wKH+JrsHnw@mail.gmail.com>
+Date: Fri, 26 Jan 2018 11:35:59 +0200
+In-Reply-To: <CAFR5RwTCNV-135E16fXJLECsart-cTjVJq8QcDB3wKH+JrsHnw@mail.gmail.com>
+ (Adam Porter's message of "Thu, 25 Jan 2018 11:11:37 -0800")
+Message-ID: <87lgglufls.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +23,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yu Wang <yyuwang@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Adam Porter <porter.adam@gmail.com>
+Cc: ath10k@lists.infradead.org
 
-Yu Wang <yyuwang@codeaurora.org> wrote:
+Adam Porter <porter.adam@gmail.com> writes:
 
-> The length of DRAM dump for QCA6174 hw3.0/hw3.2 and QCA9377 hw1.1
-> are less than the actual value, some coredump contents are missed.
-> To fix it, change the length from 0x90000 to 0xa8000.
-> 
-> Fixes: 703f261dd77f ("ath10k: add memory dump support for QCA6174/QCA9377")
-> Signed-off-by: Yu Wang <yyuwang@codeaurora.org>
+> Firmware WLAN.RMH.4.1.1-00014-QCARMSWPZ-1
+>
+> Using branch ath10k-pending-sdio-usb
 
-I'm planning to queue this to 4.16.
+What commit id? BTW, I'm planning to add a tag everytime I rebase that
+branch so that it's easier to find older commits and identify what
+version is used.
+
+> I'm using this module as an access point. After a while of uptime, it
+> appears that all communication with the module ceases. Hostapd goes to
+> disassociate clients due to inactivity, then I see in the log the
+> resulting failures:
+>
+> [94216.098042] ath10k_sdio mmc0:0001:1: failed to install key for vdev
+> 0 peer c8:21:58:10:b3:b4: -110
+> [94219.170075] ath10k_sdio mmc0:0001:1: failed to install key for vdev
+> 0 peer b8:27:eb:f2:52:22: -110
+> [94219.191719] ath10k_sdio mmc0:0001:1: cipher 0 is not supported
+> [94219.207948] ath10k_sdio mmc0:0001:1: failed to remove peer wep key 0: -95
+> [94219.222155] ath10k_sdio mmc0:0001:1: failed to clear all peer wep
+> keys for vdev 0: -95
+> [94219.237937] ath10k_sdio mmc0:0001:1: failed to disassociate
+> station: c8:21:58:10:b3:b4 vdev 0: -95
+>
+> It seems that I can reproduce this issue faster by connecting more
+> clients and pushing a lot of throughput. So perhaps this is a resource
+> leak in the firmware?
+
+I would blame ath10k first :) Can you estimate how much data needs to be
+transferred before this happens?
 
 -- 
-https://patchwork.kernel.org/patch/10185101/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
