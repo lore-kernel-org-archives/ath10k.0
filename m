@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eex38-0002U8-4p
- for ath10k@lists.infradead.org; Fri, 26 Jan 2018 05:59:43 +0000
+ id 1eex8u-0005uf-OI
+ for ath10k@lists.infradead.org; Fri, 26 Jan 2018 06:05:42 +0000
 MIME-Version: 1.0
-Subject: Re: ath10k: Update the phymode along with bandwidth change request
+Subject: Re: ath10k: correct the length of DRAM dump for QCA6174 hw3.x/QCA9377
+ hw1.1
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1516842604-31447-1-git-send-email-ryanhsu@codeaurora.org>
-References: <1516842604-31447-1-git-send-email-ryanhsu@codeaurora.org>
-Message-Id: <20180126055930.95A0660A24@smtp.codeaurora.org>
-Date: Fri, 26 Jan 2018 05:59:30 +0000 (UTC)
+In-Reply-To: <1516945221-4710-2-git-send-email-yyuwang@codeaurora.org>
+References: <1516945221-4710-2-git-send-email-yyuwang@codeaurora.org>
+Message-Id: <20180126060529.E87FB60A24@smtp.codeaurora.org>
+Date: Fri, 26 Jan 2018 06:05:29 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,43 +19,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ryanhsu@codeaurora.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, rouven@czerwinskis.de
+To: Yu Wang <yyuwang@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-cnlhbmhzdUBjb2RlYXVyb3JhLm9yZyB3cm90ZToKCj4gRnJvbTogUnlhbiBIc3UgPHJ5YW5oc3VA
-Y29kZWF1cm9yYS5vcmc+Cj4gCj4gSW4gdGhlIGNhc2Ugb2YgU3RhdGlvbiBjb25uZWN0cyB0byBB
-UCB3aXRoIG5hcnJvd2VyIGJhbmR3aWR0aCBhdCBiZWdpbm5pbmcuCj4gQW5kIGxhdGVyIHRoZSBB
-UCBjaGFuZ2VzIHRoZSBiYW5kd2lkdGggdG8gd2luZGVyIGJhbmR3aWR0aCwgdGhlIEFQIHdpbGwK
-PiBiZWFjb24gd2l0aCB3aWRlciBiYW5kd2lkdGggSUUsIGVnIFZIVDIwLT5WSFQ0MC0+VkhUODAg
-b3IgVkhUNDAtPlZIVDgwLgo+IAo+IFNpbmNlIHRoZSBzdXBwb3J0ZWQgQkFORFdJRFRIIHdpbGwg
-YmUgbGltaXRlZCBieSB0aGUgUEhZTU9ERSwgc28gd2hpbGUKPiBTdGF0aW9uIHJlY2VpdmVzIHRo
-ZSBiYW5kd2lkdGggY2hhbmdlIHJlcXVlc3QsIGl0IHdpbGwgYWxzbyBuZWVkIHRvCj4gcmVjb25m
-aWd1cmUgdGhlIFBIWU1PREUgc2V0dGluZyB0byBmaXJtd2FyZSBpbnN0ZWFkIG9mIGp1c3QgY29u
-ZmlndXJpbmcKPiB0aGUgQkFORFdJRFRIIGluZm8sIG90aGVyd2lzZSBpdCdsbCB0cmlnZ2VyIGEg
-ZmlybXdhcmUgY3Jhc2ggd2l0aAo+IG5vbi1zdXBwb3J0IGJhbmR3aWR0aC4KPiAKPiBUaGUgaXNz
-dWUgd2FzIG9ic2VydmVkIGluIFdMQU4uUk0uNC40LjEtMDAwNTEtUUNBUk1TV1AtMSwgUUNBNjE3
-NCB3aXRoCj4gYmVsb3cgc2NlbmFyaW8uCgpGYWlscyB0byBjb21waWxlOgoKZHJpdmVycy9uZXQv
-d2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYzogSW4gZnVuY3Rpb24g4oCYYXRoMTBrX3N0YV9yY191
-cGRhdGVfd2vigJk6CmRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmM6NjAwMDoz
-OiBlcnJvcjog4oCYbW9kZeKAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlv
-bikKICAgbW9kZSA9IGNoYW5fdG9fcGh5bW9kZSgmZGVmKTsKICAgXgpkcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL21hYy5jOjYwMDA6Mzogbm90ZTogZWFjaCB1bmRlY2xhcmVkIGlkZW50
-aWZpZXIgaXMgcmVwb3J0ZWQgb25seSBvbmNlIGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMg
-aW4KZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYzo2MDA2Ojc6IGVycm9yOiDi
-gJhXTUlfUEVFUl9QSFlNT0RF4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0
-aW9uKQogICAgICAgV01JX1BFRVJfUEhZTU9ERSwgbW9kZSk7CiAgICAgICBeCm1ha2VbNV06ICoq
-KiBbZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMub10gRXJyb3IgMQptYWtlWzRd
-OiAqKiogW2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGtdIEVycm9yIDIKbWFrZVszXTog
-KioqIFtkcml2ZXJzL25ldC93aXJlbGVzcy9hdGhdIEVycm9yIDIKbWFrZVsyXTogKioqIFtkcml2
-ZXJzL25ldC93aXJlbGVzc10gRXJyb3IgMgptYWtlWzFdOiAqKiogW2RyaXZlcnMvbmV0XSBFcnJv
-ciAyCm1ha2VbMV06ICoqKiBXYWl0aW5nIGZvciB1bmZpbmlzaGVkIGpvYnMuLi4uCm1ha2U6ICoq
-KiBbZHJpdmVyc10gRXJyb3IgMgoKUGF0Y2ggc2V0IHRvIENoYW5nZXMgUmVxdWVzdGVkLgoKLS0g
-Cmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTAxODM0NTMvCgpodHRwczovL3dp
-cmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi9kZXZlbG9wZXJzL2RvY3VtZW50YXRpb24vc3VibWl0
-dGluZ3BhdGNoZXMKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Yu Wang <yyuwang@codeaurora.org> wrote:
+
+> The length of DRAM dump for QCA6174 hw3.0/hw3.2 and QCA9377 hw1.1
+> are less than the actual value, some coredump contents are missed.
+> To fix it, change the length from 0x90000 to 0xa8000.
+> 
+> Fixes: 703f261dd77f ("ath10k: add memory dump support for QCA6174/QCA9377")
+> Signed-off-by: Yu Wang <yyuwang@codeaurora.org>
+
+I'm planning to queue this to 4.16.
+
+-- 
+https://patchwork.kernel.org/patch/10185101/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
