@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22d.google.com ([2a00:1450:4010:c07::22d])
+Received: from mail-ua0-x22e.google.com ([2607:f8b0:400c:c08::22e])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ef9Ps-00016r-Lr
- for ath10k@lists.infradead.org; Fri, 26 Jan 2018 19:12:02 +0000
-Received: by mail-lf0-x22d.google.com with SMTP id o89so1942961lfg.10
- for <ath10k@lists.infradead.org>; Fri, 26 Jan 2018 11:11:46 -0800 (PST)
+ id 1efHdo-0001Vv-08
+ for ath10k@lists.infradead.org; Sat, 27 Jan 2018 03:58:57 +0000
+Received: by mail-ua0-x22e.google.com with SMTP id x4so1550094uaj.11
+ for <ath10k@lists.infradead.org>; Fri, 26 Jan 2018 19:58:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87lgglufls.fsf@kamboji.qca.qualcomm.com>
-References: <CAFR5RwTCNV-135E16fXJLECsart-cTjVJq8QcDB3wKH+JrsHnw@mail.gmail.com>
- <87lgglufls.fsf@kamboji.qca.qualcomm.com>
-From: Adam Porter <porter.adam@gmail.com>
-Date: Fri, 26 Jan 2018 11:11:44 -0800
-Message-ID: <CAFR5RwRh3W4GFLz3C9PGRCQA-hv40HqtAU-43P17n6pL69aK6w@mail.gmail.com>
-Subject: Re: QCA6174 SDIO crashing after few days
+From: Nikolay Martynov <mar.kolya@gmail.com>
+Date: Fri, 26 Jan 2018 22:58:43 -0500
+Message-ID: <CALGY4fvrNGKtbtLBkvWcTSVbZcK9OaBRWs5KTrKDdf-cFbHbZg@mail.gmail.com>
+Subject: QCA988X firmware version and speed
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,62 +22,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-On Fri, Jan 26, 2018 at 1:35 AM, Kalle Valo <kvalo@codeaurora.org> wrote:
-> Adam Porter <porter.adam@gmail.com> writes:
->
->> Firmware WLAN.RMH.4.1.1-00014-QCARMSWPZ-1
->>
->> Using branch ath10k-pending-sdio-usb
->
-> What commit id? BTW, I'm planning to add a tag everytime I rebase that
-> branch so that it's easier to find older commits and identify what
-> version is used.
+Hi.
 
-I apologize for not having the specific id; I scrubbed the git info
-when I added the code to my build system.
-I grabbed the code when the branch was first published before any rebase.
+  I've got some observation about firmware version and speed that I
+would like to share.
+  I have tp-link archer c5 with 'ath10k_pci 0000:01:00.0: qca988x
+hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000' running
+Openwrt.
 
->> I'm using this module as an access point. After a while of uptime, it
->> appears that all communication with the module ceases. Hostapd goes to
->> disassociate clients due to inactivity, then I see in the log the
->> resulting failures:
->>
->> [94216.098042] ath10k_sdio mmc0:0001:1: failed to install key for vdev
->> 0 peer c8:21:58:10:b3:b4: -110
->> [94219.170075] ath10k_sdio mmc0:0001:1: failed to install key for vdev
->> 0 peer b8:27:eb:f2:52:22: -110
->> [94219.191719] ath10k_sdio mmc0:0001:1: cipher 0 is not supported
->> [94219.207948] ath10k_sdio mmc0:0001:1: failed to remove peer wep key 0: -95
->> [94219.222155] ath10k_sdio mmc0:0001:1: failed to clear all peer wep
->> keys for vdev 0: -95
->> [94219.237937] ath10k_sdio mmc0:0001:1: failed to disassociate
->> station: c8:21:58:10:b3:b4 vdev 0: -95
->>
->> It seems that I can reproduce this issue faster by connecting more
->> clients and pushing a lot of throughput. So perhaps this is a resource
->> leak in the firmware?
->
-> I would blame ath10k first :) Can you estimate how much data needs to be
-> transferred before this happens?
+  When I use firmware version 10.2.4.70.63-2 I get modulation speeds
+about twice as large as with other firmware versions. I've also tried
+10.2.4.70.66 and firmware-5.bin_10.2.4-1.0-00033 and one that was
+Openwrt/Lede stock before that - all show performance noticeably worse
+than 10.2.4.70.63-2.
+  In fact if my laptop stands on my desk (some distance away from AP)
+and I use 10.2.4.70.63-2 I get stable 2 spacial stream reception, if I
+use other versions mentioned above I usually get one 1 special stream
+as shown by 'iw' command on a client.
 
-It varies wildly. I've entered this state after 24 hours of pinging
-google, but on another test
-it took more than 48 hours with tens of gigabytes of data transferred.
-In general though, the more data being transmitted from AP to clients
-the more likely
-this issue will appear.
+  I'm not sure if that observation if helpful or not, but since it
+looks like newer FW versions have worse performance I thought I should
+share it.
 
-During debugging I found that having ATH10K_DBG_SDIO_DUMP enabled when
-using iperf to send data from AP to client triggers this state almost
-immediately.
-Receiving data from client to AP doesn't seem to trigger this.
-Not sure if this is related or some other issue.
+  Please let me know if I can provide any more information.
 
-Thank you,
-Adam
+-- 
+Martynov Nikolay.
+Email: mar.kolya@gmail.com
 
 _______________________________________________
 ath10k mailing list
