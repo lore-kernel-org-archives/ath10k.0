@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from [196.1.105.47] (helo=sandesh.cdotd.ernet.in)
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eg20x-0003TK-4a
- for ath10k@lists.infradead.org; Mon, 29 Jan 2018 05:30:04 +0000
-From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: Re: QCA988X firmware version and speed
-Date: Mon, 29 Jan 2018 10:38:22 +0530
-Message-Id: <20180129043829.M97408@cdot.in>
-In-Reply-To: <CALGY4fvrNGKtbtLBkvWcTSVbZcK9OaBRWs5KTrKDdf-cFbHbZg@mail.gmail.com>
-References: <CALGY4fvrNGKtbtLBkvWcTSVbZcK9OaBRWs5KTrKDdf-cFbHbZg@mail.gmail.com>
+Received: from mail-wr0-x22e.google.com ([2a00:1450:400c:c0c::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eg4LX-0002FO-8V
+ for ath10k@lists.infradead.org; Mon, 29 Jan 2018 07:59:21 +0000
+Received: by mail-wr0-x22e.google.com with SMTP id w50so6090235wrc.2
+ for <ath10k@lists.infradead.org>; Sun, 28 Jan 2018 23:59:08 -0800 (PST)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add OpenMesh A42 specific BDFs
+Date: Mon, 29 Jan 2018 08:59:04 +0100
+Message-ID: <1728597.VOqZ93QOv6@bentobox>
+In-Reply-To: <874ln8txhu.fsf@kamboji.qca.qualcomm.com>
+References: <6906010.WJMafUttCS@bentobox>
+ <874ln8txhu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -18,69 +21,91 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============8317587632263526096=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nikolay Martynov <mar.kolya@gmail.com>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Christian Lamparter <chunkeey@gmail.com>
 
-SGksCgpJIGFsc28gaGF2ZSBzYW1lIG9ic2VydmF0aW9ucy4gUnggcmF0ZSBpcyBub3QgZ2V0dGlu
-ZyB1cGRhdGVkIGluIGl3IHN0YXRpb24gZHVtcCBjb21tYW5kCndpdGggZmlybXdhcmUgdmVyc2lv
-biAxMC4yLjQuNzAuNjYuRGF0YSBUaHJvdWdocHV0IGlzIGFsc28gZGVncmFkZWQgYnkgMzBNYnBz
-IHdpdGggdGhpcwp2ZXJzaW9uLk15IG1lYXN1cmUgdGhyb3VnaHB1dCB3YXMgMTgwTWJwcyB3aXRo
-IGZpcm13YXJlLTUuYmluXzI1XzIuMSBmb3IgSFQ0MCBtb2RlKDJ4MikuCgoKU29tZXRpbWVzIEkg
-Y2FuIHNlZSAxIFNTIGluIHN0YXRpb24gZHVtcCB3aGlsZSBteSByYWRpbyBpcyAyeDIuSXMgdGhl
-cmUgYW55IHNwZWVkCmRpZmZlcmVuY2UgZm9yIHRoZSBGVyB2ZXJzaW9uIDEwLjIuNC43MC42Nj8K
-ClBsZWFzZSBzZWUgbXkgQVAgY29uZmlndXJhdGlvbiBiZWxvdzoKCnJvb3RAQ0RPVC1CQldUOi9j
-ZG90L2JpbiMgaXcgd2xhbjAgaW5mbwpJbnRlcmZhY2Ugd2xhbjAKICAgICAgICBpZmluZGV4IDE2
-CiAgICAgICAgd2RldiAweDMKICAgICAgICBhZGRyIDA0OmYwOjIxOjFkOjc3OjY2CiAgICAgICAg
-c3NpZCBDRE9ULVdJRkktVFMKICAgICAgICB0eXBlIEFQCiAgICAgICAgd2lwaHkgMAogICAgICAg
-IGNoYW5uZWwgMTQ5ICg1NzQ1IE1IeiksIHdpZHRoOiA0MCBNSHosIGNlbnRlcjE6IDU3NTUgTUh6
-CiAgICAgICAgdHhwb3dlciAyMC4wMCBkQm0Kcm9vdEBDRE9ULUJCV1Q6L2Nkb3QvYmluIyAKcm9v
-dEBDRE9ULUJCV1Q6L2Nkb3QvYmluIyAKcm9vdEBDRE9ULUJCV1Q6L2Nkb3QvYmluIyBpdyB3bGFu
-MCBzdGF0aW9uIGR1bXAKU3RhdGlvbiA4ODo3ODo3MzpkMjplYTo5MiAob24gd2xhbjApCiAgICAg
-ICAgaW5hY3RpdmUgdGltZTogIDEyMzgwIG1zCiAgICAgICAgcnggYnl0ZXM6ICAgICAgIDcwOAog
-ICAgICAgIHJ4IHBhY2tldHM6ICAgICAxMgogICAgICAgIHR4IGJ5dGVzOiAgICAgICAzNTIKICAg
-ICAgICB0eCBwYWNrZXRzOiAgICAgNAogICAgICAgIHR4IHJldHJpZXM6ICAgICAwCiAgICAgICAg
-dHggZmFpbGVkOiAgICAgIDEKICAgICAgICBzaWduYWw6ICAgICAgICAgLTQwIFstNDYsIC00NV0g
-ZEJtCiAgICAgICAgc2lnbmFsIGF2ZzogICAgIC00MSBbLTQ2LCAtNDRdIGRCbQogICAgICAgIHR4
-IGJpdHJhdGU6ICAgICA2LjAgTUJpdC9zCiAgICAgICAgcnggYml0cmF0ZTogICAgIDYuMCBNQml0
-L3MKICAgICAgICBhdXRob3JpemVkOiAgICAgeWVzCiAgICAgICAgYXV0aGVudGljYXRlZDogIHll
-cwogICAgICAgIHByZWFtYmxlOiAgICAgICBsb25nCiAgICAgICAgV01NL1dNRTogICAgICAgIHll
-cwogICAgICAgIE1GUDogICAgICAgICAgICBubwogICAgICAgIFRETFMgcGVlcjogICAgICBubwog
-ICAgICAgIGNvbm5lY3RlZCB0aW1lOiA0MyBzZWNvbmRzCgpUaGFua3MgJiBSZWdhcmRzLApLYXZp
-dGEKCgpPbiBGcmksIDI2IEphbiAyMDE4IDIyOjU4OjQzIC0wNTAwLCBOaWtvbGF5IE1hcnR5bm92
-IHdyb3RlCj4gSGkuCj4gCj4gICBJJ3ZlIGdvdCBzb21lIG9ic2VydmF0aW9uIGFib3V0IGZpcm13
-YXJlIHZlcnNpb24gYW5kIHNwZWVkIHRoYXQgSQo+IHdvdWxkIGxpa2UgdG8gc2hhcmUuCj4gICBJ
-IGhhdmUgdHAtbGluayBhcmNoZXIgYzUgd2l0aCAnYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHFj
-YTk4OHgKPiBodzIuMCB0YXJnZXQgMHg0MTAwMDE2YyBjaGlwX2lkIDB4MDQzMjAyZmYgc3ViIDAw
-MDA6MDAwMCcgcnVubmluZwo+IE9wZW53cnQuCj4gCj4gICBXaGVuIEkgdXNlIGZpcm13YXJlIHZl
-cnNpb24gMTAuMi40LjcwLjYzLTIgSSBnZXQgbW9kdWxhdGlvbiBzcGVlZHMKPiBhYm91dCB0d2lj
-ZSBhcyBsYXJnZSBhcyB3aXRoIG90aGVyIGZpcm13YXJlIHZlcnNpb25zLiBJJ3ZlIGFsc28gdHJp
-ZWQKPiAxMC4yLjQuNzAuNjYgYW5kIGZpcm13YXJlLTUuYmluXzEwLjIuNC0xLjAtMDAwMzMgYW5k
-IG9uZSB0aGF0IHdhcwo+IE9wZW53cnQvTGVkZSBzdG9jayBiZWZvcmUgdGhhdCAtIGFsbCBzaG93
-IHBlcmZvcm1hbmNlIG5vdGljZWFibHkgd29yc2UKPiB0aGFuIDEwLjIuNC43MC42My0yLgo+ICAg
-SW4gZmFjdCBpZiBteSBsYXB0b3Agc3RhbmRzIG9uIG15IGRlc2sgKHNvbWUgZGlzdGFuY2UgYXdh
-eSBmcm9tIEFQKQo+IGFuZCBJIHVzZSAxMC4yLjQuNzAuNjMtMiBJIGdldCBzdGFibGUgMiBzcGFj
-aWFsIHN0cmVhbSByZWNlcHRpb24sIGlmIEkKPiB1c2Ugb3RoZXIgdmVyc2lvbnMgbWVudGlvbmVk
-IGFib3ZlIEkgdXN1YWxseSBnZXQgb25lIDEgc3BlY2lhbCBzdHJlYW0KPiBhcyBzaG93biBieSAn
-aXcnIGNvbW1hbmQgb24gYSBjbGllbnQuCj4gCj4gICBJJ20gbm90IHN1cmUgaWYgdGhhdCBvYnNl
-cnZhdGlvbiBpZiBoZWxwZnVsIG9yIG5vdCwgYnV0IHNpbmNlIGl0Cj4gbG9va3MgbGlrZSBuZXdl
-ciBGVyB2ZXJzaW9ucyBoYXZlIHdvcnNlIHBlcmZvcm1hbmNlIEkgdGhvdWdodCBJIHNob3VsZAo+
-IHNoYXJlIGl0Lgo+IAo+ICAgUGxlYXNlIGxldCBtZSBrbm93IGlmIEkgY2FuIHByb3ZpZGUgYW55
-IG1vcmUgaW5mb3JtYXRpb24uCj4gCj4gLS0gCj4gTWFydHlub3YgTmlrb2xheS4KPiBFbWFpbDog
-bWFyLmtvbHlhQGdtYWlsLmNvbQo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsKCgpUaGFua3MgJiBSZWdhcmRzLArgpJXgpLXgpL/gpKTgpL4g4KSu4KS+4KSl4KWB4KSw
-IEthdml0YSBNYXRodXIgCuCkteCksOCkv+Ckt+CljeCkoCDgpIXgpKjgpYHgpLjgpILgpKfgpL7g
-pKgg4KSF4KSt4KS/4KSv4KSC4KSk4KS+ICBTZW5pb3IgUmVzZWFyY2ggRW5naW5lZXIgCuCkuOCl
-gC3gpKHgpYngpJ8gICAgICAgICAgICAgICAgICAgICAgQy1ET1QK4KSH4KSy4KWI4KSV4KWN4KSf
-4KWN4KSw4KWJ4KSo4KS/4KSV4KWN4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfgpJzgpLwgSSAgICAg
-ICAgIEVsZWN0cm9uaWNzIENpdHkgUGhhc2UgSQrgpLngpYvgpLjgpYLgpLAg4KSw4KWL4KShLCDg
-pKzgpYfgpILgpJfgpLLgpYLgpLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2FkLCBCZW5nYWx1
-cnUg4oCTIDU2MDEwMArgpKvgpYvgpKggIFBoIDA4MC0yODUyOTg5NgpEaXNjbGFpbWVyOgotLS0t
-LS0tLS0tClRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRoIGl0CgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
-bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+--===============8317587632263526096==
+Content-Type: multipart/signed; boundary="nextPart1666141.N8MMVgmz6O"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+
+--nextPart1666141.N8MMVgmz6O
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Freitag, 26. Januar 2018 16:07:10 CET Kalle Valo wrote:
+[...]
+> > * bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=OM-A42
+> >   - sha256sum: 
+> >     10700a7ac636d57fe055e5bb4bd5f7bb3f1c282a7f25a8bb2204fc36e8c317bf
+> > * bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=OM-A42
+> >   - sha256sum:
+> >     b3d9556894e509ac608b2e27c9169da12c63634670bb69c5ef21fb31583e7998
+> 
+> I added these now:
+> 
+> https://github.com/kvalo/ath10k-firmware/commit/5cd2bacd8e22217335e539b416d0cb8d59f8e312
+>
+> To make this easier I did some bigger changes in ath10k-bdencoder,
+> please check carefully that I didn't break anything.
+
+Tested it by extracting the files using the ath10k-bdencoder d278f25bc977 
+(from 2017-02-10) and then calculating the sha256sum's using
+
+    $ sha256sum bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=OM-A42.bin bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=OM-A42.bin 
+    10700a7ac636d57fe055e5bb4bd5f7bb3f1c282a7f25a8bb2204fc36e8c317bf  bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=OM-A42.bin
+    b3d9556894e509ac608b2e27c9169da12c63634670bb69c5ef21fb31583e7998  bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=OM-A42.bin
+
+It was also checked that the board-2.json only had these names attached to the 
+.bin files.
+
+I did the same with my reference files and came to the same results. I am
+assuming that the files must have been added correctly when the names are 
+correct and the content is correct.
+
+I have then extracted the version prior to the OM-A42 change and compared it 
+to the one with OM-A42. The only difference I could find are related to the 
+OM-A42. I must therefore also assume that only the relevant parts were changed 
+and the other BDFs were not touched.
+
+Thanks,
+	Sven
+--nextPart1666141.N8MMVgmz6O
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlpu1EgACgkQXYcKB8Em
+e0YGcA//XVWIy3KKxnqaVt1LdtrEKdsaCyLaHmVOCgQGmnsaygczVTov//Q82S/r
+d7jPgoOAg6O2LYM4VZF3RTFjya50mSDBD0zQMtB1QCxRvBZjrPgoLTKDTPYBsAvo
+k36Z9mF5/g4xYbRh6fx8C035h0hZGVV8KKOBPzMaUA/7R2kWH5Jv46qQDDKOJHa4
+hiylaaVL+5Q12GCII00cWFrPFkiMZ+nkZIaXLGZmDe8/mYzgqVVIc79mOuj90u5c
+h7C1tdd8+6LjIsFAUPkFATScy1QJzWT8hKuVQJuuv0t0Ot8y0MkudVqU/AJPelTR
+q7qf5u6RQY3ZnaiO2cw8ALsxltjZqrpqkY3yyOPyrixm10X4ZK5tKc5VihPIPZCQ
+PNwP/RBB/28IzcyeNF6IjUNvr8vw5ZTE2iH5cbEbZtIo3ot1JRfhAxNC5w+BH/cV
+m7ezhAfWwdGFqnL1oQj3aYq7r/lxUrYFdoEx70lR2uPJHuJnzhJdL0Xbn0+RPbrF
+pPkePQ20jny7hoFkjpz8G3kyBCCWeafCC+H1FIXmDE/KKegEVvVkoutGahvMAFOh
+Xt4Vz4i4P6nPmak/wTHgZVYJwgFfyMiKfF3H56W7L7Azdh/aUsOgfc1fntEgTNFe
+HMhSTn8kzI7T1LRa8eNIRLiWFPg9Vk0flOglAoj2pIZuBv8Yyt4=
+=+24v
+-----END PGP SIGNATURE-----
+
+--nextPart1666141.N8MMVgmz6O--
+
+
+
+--===============8317587632263526096==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============8317587632263526096==--
