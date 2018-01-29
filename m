@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1egAgM-00082u-LB
- for ath10k@lists.infradead.org; Mon, 29 Jan 2018 14:45:19 +0000
+ id 1egAhS-0000zN-Nk
+ for ath10k@lists.infradead.org; Mon, 29 Jan 2018 14:46:24 +0000
 MIME-Version: 1.0
-Subject: Re: [v3,2/2] ath10k: Add support for Ubiquiti rebranded QCA988X v2
+Subject: Re: ath10k: Make ath10k report discarded packets to mac80211
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180125111340.17553-3-tobleminer@gmail.com>
-References: <20180125111340.17553-3-tobleminer@gmail.com>
-Message-Id: <20180129144503.5903B609F2@smtp.codeaurora.org>
-Date: Mon, 29 Jan 2018 14:45:03 +0000 (UTC)
+In-Reply-To: <863ed21f-d2fe-f1e1-6f3c-b4061c777f59@aoifes.com>
+References: <863ed21f-d2fe-f1e1-6f3c-b4061c777f59@aoifes.com>
+Message-Id: <20180129144612.6046E6050D@smtp.codeaurora.org>
+Date: Mon, 29 Jan 2018 14:46:12 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,35 +18,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tobias Schramm <tobleminer@gmail.com>
-Cc: linux-pci@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, kvalo@qca.qualcomm.com, bhelgaas@google.com
+To: =?utf-8?q?Ignacio_N=C3=BA=C3=B1ez_Hernanz?= <nacho.nunez@aoifes.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Tobias Schramm <tobleminer@gmail.com> wrote:
-
-> Some modern Ubiquiti devices contain a rebranded QCA988X rev2 with
-> a custom Ubiquiti vendor and device id. This patch adds support for
-> those devices, treating them as a QCA988X v2.
-> 
-> Signed-off-by: Tobias Schramm <tobleminer@gmail.com>
-> [kvalo@codeaurora.org: rebase, add missing fields in hw_params, fix a long line in pci.c:61]
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-
-This didn't apply to ath.git so I rebased it and it did some other modifications
-(list in the commit log):
-
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=4037b395c946f94ee05ddc652421cdbd35567a3e
-
--- 
-https://patchwork.kernel.org/patch/10183909/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SWduYWNpbyBOw7rDsWV6IEhlcm5hbnogd3JvdGU6Cgo+IFdoZW5ldmVyIGF0aDEwayBmaXJtd2Fy
+ZSBkaXNjYXJkcyBhIHBhY2tldCAoSFRUX1RYX0NPTVBMX1NUQVRFX0RJU0NBUkQKPiBmbGFnKSwg
+dGhlIHNrYiBpcyBmcmVlZCBhbmQgbWFjODAyMTEgZG9lcyBub3QgZ2V0IGZlZWRiYWNrIHRocm91
+Z2gKPiBpZWVlODAyMTFfdHhfc3RhdHVzKCkuCj4gCj4gSW5zdGVhZCwgbWFrZSBzdXJlIHRoYXQg
+dGhlIElFRUU4MDIxMV9UWF9TVEFUX0FDSyBmbGFnIGlzIGRpc2FibGVkIGFuZAo+IGxldCB0aGUg
+cGFja2V0IGdvIHRocm91Z2gsIGxpa2UgYXRoOWsgZG9lcy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBJ
+Z25hY2lvIE51bmV6IEhlcm5hbnogPG5hY2hvLm51bmV6QGFvaWZlcy5jb20+Cj4gW2t2YWxvQGNv
+ZGVhdXJvcmEub3JnOiByZWJhc2UgcGF0Y2ggbWFudWFsbHldCj4gU2lnbmVkLW9mZi1ieTogS2Fs
+bGUgVmFsbyA8a3ZhbG9AY29kZWF1cm9yYS5vcmc+CgpUaGlzIGRpZG4ndCBhcHBseSBzbyBJIHJl
+d3JvdGUgdGhlIHBhdGNoIG1hbnVhbGx5LiBQbGVhc2UgY2hlY2sgaXQgZnJvbSB0aGUKcGVuZGlu
+ZyBicmFuY2g6CgpodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dp
+dC9rdmFsby9hdGguZ2l0L2NvbW1pdC8/aD1wZW5kaW5nJmlkPTc0ZTlmNjU0MjYyZTc3Njc2YzQ3
+N2YwMWNlNWE2ZjI3MjM3YjJmMjUKCi0tIApodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Bh
+dGNoLzk4NTkyMjEvCgpodHRwczovL3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi9kZXZlbG9w
+ZXJzL2RvY3VtZW50YXRpb24vc3VibWl0dGluZ3BhdGNoZXMKCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCg==
