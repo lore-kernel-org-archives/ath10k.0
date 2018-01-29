@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x22e.google.com ([2a00:1450:400c:c0c::22e])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eg4LX-0002FO-8V
- for ath10k@lists.infradead.org; Mon, 29 Jan 2018 07:59:21 +0000
-Received: by mail-wr0-x22e.google.com with SMTP id w50so6090235wrc.2
- for <ath10k@lists.infradead.org>; Sun, 28 Jan 2018 23:59:08 -0800 (PST)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: ath10k-firmware: QCA4019 hw1.0: Add OpenMesh A42 specific BDFs
-Date: Mon, 29 Jan 2018 08:59:04 +0100
-Message-ID: <1728597.VOqZ93QOv6@bentobox>
-In-Reply-To: <874ln8txhu.fsf@kamboji.qca.qualcomm.com>
-References: <6906010.WJMafUttCS@bentobox>
- <874ln8txhu.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1eg4MS-00033S-4t
+ for ath10k@lists.infradead.org; Mon, 29 Jan 2018 08:00:21 +0000
+From: Yu Wang <yyuwang@codeaurora.org>
+Subject: [PATCH] ath10k: fix kernel panic issue during pci probe
+Date: Mon, 29 Jan 2018 16:00:01 +0800
+Message-Id: <1517212801-7523-2-git-send-email-yyuwang@codeaurora.org>
+In-Reply-To: <1517212801-7523-1-git-send-email-yyuwang@codeaurora.org>
+References: <1517212801-7523-1-git-send-email-yyuwang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,91 +17,107 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8317587632263526096=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Christian Lamparter <chunkeey@gmail.com>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
---===============8317587632263526096==
-Content-Type: multipart/signed; boundary="nextPart1666141.N8MMVgmz6O"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+If device gone during chip reset, ar->normal_mode_fw.board is not
+initialized, but ath10k_debug_print_hwfw_info() will try to access its
+member, which will cause 'kernel NULL pointer' issue. This was found
+using a faulty device (pci link went down sometimes) in a random
+insmod/rmmod/other-op test.
+To fix it, check ar->normal_mode_fw.board before accessing the member.
 
---nextPart1666141.N8MMVgmz6O
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+pci 0000:02:00.0: BAR 0: assigned [mem 0xf7400000-0xf75fffff 64bit]
+ath10k_pci 0000:02:00.0: enabling device (0000 -> 0002)
+ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+ath10k_pci 0000:02:00.0: failed to read device register, device is gone
+ath10k_pci 0000:02:00.0: failed to wait for target init: -5
+ath10k_pci 0000:02:00.0: failed to warm reset: -5
+ath10k_pci 0000:02:00.0: firmware crashed during chip reset
+ath10k_pci 0000:02:00.0: firmware crashed! (uuid 5d018951-b8e1-404a-8fde-923078b4423a)
+ath10k_pci 0000:02:00.0: (null) target 0x00000000 chip_id 0x00340aff sub 0000:0000
+ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
+ath10k_pci 0000:02:00.0: firmware ver  api 0 features  crc32 00000000
+...
+BUG: unable to handle kernel NULL pointer dereference at 00000004
+...
+Call Trace:
+ [<fb4e7882>] ath10k_print_driver_info+0x12/0x20 [ath10k_core]
+ [<fb62b7dd>] ath10k_pci_fw_crashed_dump+0x6d/0x4d0 [ath10k_pci]
+ [<fb629f07>] ? ath10k_pci_sleep.part.19+0x57/0xc0 [ath10k_pci]
+ [<fb62c8ee>] ath10k_pci_hif_power_up+0x14e/0x1b0 [ath10k_pci]
+ [<c10477fb>] ? do_page_fault+0xb/0x10
+ [<fb4eb934>] ath10k_core_register_work+0x24/0x840 [ath10k_core]
+ [<c18a00d8>] ? netlbl_unlhsh_remove+0x178/0x410
+ [<c10477f0>] ? __do_page_fault+0x480/0x480
+ [<c1068e44>] process_one_work+0x114/0x3e0
+ [<c1069d07>] worker_thread+0x37/0x4a0
+ [<c106e294>] kthread+0xa4/0xc0
+ [<c1069cd0>] ? create_worker+0x180/0x180
+ [<c106e1f0>] ? kthread_park+0x50/0x50
+ [<c18ab4f7>] ret_from_fork+0x1b/0x28
+ Code: 78 80 b8 50 09 00 00 00 75 5d 8d 75 94 c7 44 24 08 aa d7 52 fb c7 44 24 04 64 00 00 00
+ 89 34 24 e8 82 52 e2 c5 8b 83 dc 08 00 00 <8b> 50 04 8b 08 31 c0 e8 20 57 e3 c5 89 44 24 10 8b 83 58 09 00
+ EIP: [<fb4e7754>]-
+ ath10k_debug_print_board_info+0x34/0xb0 [ath10k_core]
+ SS:ESP 0068:f4921d90
+ CR2: 0000000000000004
 
-On Freitag, 26. Januar 2018 16:07:10 CET Kalle Valo wrote:
-[...]
-> > * bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=OM-A42
-> >   - sha256sum: 
-> >     10700a7ac636d57fe055e5bb4bd5f7bb3f1c282a7f25a8bb2204fc36e8c317bf
-> > * bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=OM-A42
-> >   - sha256sum:
-> >     b3d9556894e509ac608b2e27c9169da12c63634670bb69c5ef21fb31583e7998
-> 
-> I added these now:
-> 
-> https://github.com/kvalo/ath10k-firmware/commit/5cd2bacd8e22217335e539b416d0cb8d59f8e312
->
-> To make this easier I did some bigger changes in ath10k-bdencoder,
-> please check carefully that I didn't break anything.
+Signed-off-by: Yu Wang <yyuwang@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/debug.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-Tested it by extracting the files using the ath10k-bdencoder d278f25bc977 
-(from 2017-02-10) and then calculating the sha256sum's using
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 6d836a2..554cd78 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -81,6 +82,8 @@ void ath10k_debug_print_hwfw_info(struct ath10k *ar)
+ void ath10k_debug_print_board_info(struct ath10k *ar)
+ {
+ 	char boardinfo[100];
++	const struct firmware *board;
++	u32 crc;
+ 
+ 	if (ar->id.bmi_ids_valid)
+ 		scnprintf(boardinfo, sizeof(boardinfo), "%d:%d",
+@@ -88,11 +91,16 @@ void ath10k_debug_print_board_info(struct ath10k *ar)
+ 	else
+ 		scnprintf(boardinfo, sizeof(boardinfo), "N/A");
+ 
++	board = ar->normal_mode_fw.board;
++	if (!IS_ERR_OR_NULL(board))
++		crc = crc32_le(0, board->data, board->size);
++	else
++		crc = 0;
++
+ 	ath10k_info(ar, "board_file api %d bmi_id %s crc32 %08x",
+ 		    ar->bd_api,
+ 		    boardinfo,
+-		    crc32_le(0, ar->normal_mode_fw.board->data,
+-			     ar->normal_mode_fw.board->size));
++		    crc);
+ }
+ 
+ void ath10k_debug_print_boot_info(struct ath10k *ar)
+-- 
+1.9.1
 
-    $ sha256sum bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=OM-A42.bin bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=OM-A42.bin 
-    10700a7ac636d57fe055e5bb4bd5f7bb3f1c282a7f25a8bb2204fc36e8c317bf  bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=OM-A42.bin
-    b3d9556894e509ac608b2e27c9169da12c63634670bb69c5ef21fb31583e7998  bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=OM-A42.bin
-
-It was also checked that the board-2.json only had these names attached to the 
-.bin files.
-
-I did the same with my reference files and came to the same results. I am
-assuming that the files must have been added correctly when the names are 
-correct and the content is correct.
-
-I have then extracted the version prior to the OM-A42 change and compared it 
-to the one with OM-A42. The only difference I could find are related to the 
-OM-A42. I must therefore also assume that only the relevant parts were changed 
-and the other BDFs were not touched.
-
-Thanks,
-	Sven
---nextPart1666141.N8MMVgmz6O
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlpu1EgACgkQXYcKB8Em
-e0YGcA//XVWIy3KKxnqaVt1LdtrEKdsaCyLaHmVOCgQGmnsaygczVTov//Q82S/r
-d7jPgoOAg6O2LYM4VZF3RTFjya50mSDBD0zQMtB1QCxRvBZjrPgoLTKDTPYBsAvo
-k36Z9mF5/g4xYbRh6fx8C035h0hZGVV8KKOBPzMaUA/7R2kWH5Jv46qQDDKOJHa4
-hiylaaVL+5Q12GCII00cWFrPFkiMZ+nkZIaXLGZmDe8/mYzgqVVIc79mOuj90u5c
-h7C1tdd8+6LjIsFAUPkFATScy1QJzWT8hKuVQJuuv0t0Ot8y0MkudVqU/AJPelTR
-q7qf5u6RQY3ZnaiO2cw8ALsxltjZqrpqkY3yyOPyrixm10X4ZK5tKc5VihPIPZCQ
-PNwP/RBB/28IzcyeNF6IjUNvr8vw5ZTE2iH5cbEbZtIo3ot1JRfhAxNC5w+BH/cV
-m7ezhAfWwdGFqnL1oQj3aYq7r/lxUrYFdoEx70lR2uPJHuJnzhJdL0Xbn0+RPbrF
-pPkePQ20jny7hoFkjpz8G3kyBCCWeafCC+H1FIXmDE/KKegEVvVkoutGahvMAFOh
-Xt4Vz4i4P6nPmak/wTHgZVYJwgFfyMiKfF3H56W7L7Azdh/aUsOgfc1fntEgTNFe
-HMhSTn8kzI7T1LRa8eNIRLiWFPg9Vk0flOglAoj2pIZuBv8Yyt4=
-=+24v
------END PGP SIGNATURE-----
-
---nextPart1666141.N8MMVgmz6O--
-
-
-
---===============8317587632263526096==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============8317587632263526096==--
