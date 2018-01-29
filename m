@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ua0-x22e.google.com ([2607:f8b0:400c:c08::22e])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1efHdo-0001Vv-08
- for ath10k@lists.infradead.org; Sat, 27 Jan 2018 03:58:57 +0000
-Received: by mail-ua0-x22e.google.com with SMTP id x4so1550094uaj.11
- for <ath10k@lists.infradead.org>; Fri, 26 Jan 2018 19:58:45 -0800 (PST)
+Received: from [196.1.105.47] (helo=sandesh.cdotd.ernet.in)
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eg20x-0003TK-4a
+ for ath10k@lists.infradead.org; Mon, 29 Jan 2018 05:30:04 +0000
+From: "KAVITA MATHUR" <kavitam@cdot.in>
+Subject: Re: QCA988X firmware version and speed
+Date: Mon, 29 Jan 2018 10:38:22 +0530
+Message-Id: <20180129043829.M97408@cdot.in>
+In-Reply-To: <CALGY4fvrNGKtbtLBkvWcTSVbZcK9OaBRWs5KTrKDdf-cFbHbZg@mail.gmail.com>
+References: <CALGY4fvrNGKtbtLBkvWcTSVbZcK9OaBRWs5KTrKDdf-cFbHbZg@mail.gmail.com>
 MIME-Version: 1.0
-From: Nikolay Martynov <mar.kolya@gmail.com>
-Date: Fri, 26 Jan 2018 22:58:43 -0500
-Message-ID: <CALGY4fvrNGKtbtLBkvWcTSVbZcK9OaBRWs5KTrKDdf-cFbHbZg@mail.gmail.com>
-Subject: QCA988X firmware version and speed
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,41 +18,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
+To: Nikolay Martynov <mar.kolya@gmail.com>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-Hi.
-
-  I've got some observation about firmware version and speed that I
-would like to share.
-  I have tp-link archer c5 with 'ath10k_pci 0000:01:00.0: qca988x
-hw2.0 target 0x4100016c chip_id 0x043202ff sub 0000:0000' running
-Openwrt.
-
-  When I use firmware version 10.2.4.70.63-2 I get modulation speeds
-about twice as large as with other firmware versions. I've also tried
-10.2.4.70.66 and firmware-5.bin_10.2.4-1.0-00033 and one that was
-Openwrt/Lede stock before that - all show performance noticeably worse
-than 10.2.4.70.63-2.
-  In fact if my laptop stands on my desk (some distance away from AP)
-and I use 10.2.4.70.63-2 I get stable 2 spacial stream reception, if I
-use other versions mentioned above I usually get one 1 special stream
-as shown by 'iw' command on a client.
-
-  I'm not sure if that observation if helpful or not, but since it
-looks like newer FW versions have worse performance I thought I should
-share it.
-
-  Please let me know if I can provide any more information.
-
--- 
-Martynov Nikolay.
-Email: mar.kolya@gmail.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCgpJIGFsc28gaGF2ZSBzYW1lIG9ic2VydmF0aW9ucy4gUnggcmF0ZSBpcyBub3QgZ2V0dGlu
+ZyB1cGRhdGVkIGluIGl3IHN0YXRpb24gZHVtcCBjb21tYW5kCndpdGggZmlybXdhcmUgdmVyc2lv
+biAxMC4yLjQuNzAuNjYuRGF0YSBUaHJvdWdocHV0IGlzIGFsc28gZGVncmFkZWQgYnkgMzBNYnBz
+IHdpdGggdGhpcwp2ZXJzaW9uLk15IG1lYXN1cmUgdGhyb3VnaHB1dCB3YXMgMTgwTWJwcyB3aXRo
+IGZpcm13YXJlLTUuYmluXzI1XzIuMSBmb3IgSFQ0MCBtb2RlKDJ4MikuCgoKU29tZXRpbWVzIEkg
+Y2FuIHNlZSAxIFNTIGluIHN0YXRpb24gZHVtcCB3aGlsZSBteSByYWRpbyBpcyAyeDIuSXMgdGhl
+cmUgYW55IHNwZWVkCmRpZmZlcmVuY2UgZm9yIHRoZSBGVyB2ZXJzaW9uIDEwLjIuNC43MC42Nj8K
+ClBsZWFzZSBzZWUgbXkgQVAgY29uZmlndXJhdGlvbiBiZWxvdzoKCnJvb3RAQ0RPVC1CQldUOi9j
+ZG90L2JpbiMgaXcgd2xhbjAgaW5mbwpJbnRlcmZhY2Ugd2xhbjAKICAgICAgICBpZmluZGV4IDE2
+CiAgICAgICAgd2RldiAweDMKICAgICAgICBhZGRyIDA0OmYwOjIxOjFkOjc3OjY2CiAgICAgICAg
+c3NpZCBDRE9ULVdJRkktVFMKICAgICAgICB0eXBlIEFQCiAgICAgICAgd2lwaHkgMAogICAgICAg
+IGNoYW5uZWwgMTQ5ICg1NzQ1IE1IeiksIHdpZHRoOiA0MCBNSHosIGNlbnRlcjE6IDU3NTUgTUh6
+CiAgICAgICAgdHhwb3dlciAyMC4wMCBkQm0Kcm9vdEBDRE9ULUJCV1Q6L2Nkb3QvYmluIyAKcm9v
+dEBDRE9ULUJCV1Q6L2Nkb3QvYmluIyAKcm9vdEBDRE9ULUJCV1Q6L2Nkb3QvYmluIyBpdyB3bGFu
+MCBzdGF0aW9uIGR1bXAKU3RhdGlvbiA4ODo3ODo3MzpkMjplYTo5MiAob24gd2xhbjApCiAgICAg
+ICAgaW5hY3RpdmUgdGltZTogIDEyMzgwIG1zCiAgICAgICAgcnggYnl0ZXM6ICAgICAgIDcwOAog
+ICAgICAgIHJ4IHBhY2tldHM6ICAgICAxMgogICAgICAgIHR4IGJ5dGVzOiAgICAgICAzNTIKICAg
+ICAgICB0eCBwYWNrZXRzOiAgICAgNAogICAgICAgIHR4IHJldHJpZXM6ICAgICAwCiAgICAgICAg
+dHggZmFpbGVkOiAgICAgIDEKICAgICAgICBzaWduYWw6ICAgICAgICAgLTQwIFstNDYsIC00NV0g
+ZEJtCiAgICAgICAgc2lnbmFsIGF2ZzogICAgIC00MSBbLTQ2LCAtNDRdIGRCbQogICAgICAgIHR4
+IGJpdHJhdGU6ICAgICA2LjAgTUJpdC9zCiAgICAgICAgcnggYml0cmF0ZTogICAgIDYuMCBNQml0
+L3MKICAgICAgICBhdXRob3JpemVkOiAgICAgeWVzCiAgICAgICAgYXV0aGVudGljYXRlZDogIHll
+cwogICAgICAgIHByZWFtYmxlOiAgICAgICBsb25nCiAgICAgICAgV01NL1dNRTogICAgICAgIHll
+cwogICAgICAgIE1GUDogICAgICAgICAgICBubwogICAgICAgIFRETFMgcGVlcjogICAgICBubwog
+ICAgICAgIGNvbm5lY3RlZCB0aW1lOiA0MyBzZWNvbmRzCgpUaGFua3MgJiBSZWdhcmRzLApLYXZp
+dGEKCgpPbiBGcmksIDI2IEphbiAyMDE4IDIyOjU4OjQzIC0wNTAwLCBOaWtvbGF5IE1hcnR5bm92
+IHdyb3RlCj4gSGkuCj4gCj4gICBJJ3ZlIGdvdCBzb21lIG9ic2VydmF0aW9uIGFib3V0IGZpcm13
+YXJlIHZlcnNpb24gYW5kIHNwZWVkIHRoYXQgSQo+IHdvdWxkIGxpa2UgdG8gc2hhcmUuCj4gICBJ
+IGhhdmUgdHAtbGluayBhcmNoZXIgYzUgd2l0aCAnYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHFj
+YTk4OHgKPiBodzIuMCB0YXJnZXQgMHg0MTAwMDE2YyBjaGlwX2lkIDB4MDQzMjAyZmYgc3ViIDAw
+MDA6MDAwMCcgcnVubmluZwo+IE9wZW53cnQuCj4gCj4gICBXaGVuIEkgdXNlIGZpcm13YXJlIHZl
+cnNpb24gMTAuMi40LjcwLjYzLTIgSSBnZXQgbW9kdWxhdGlvbiBzcGVlZHMKPiBhYm91dCB0d2lj
+ZSBhcyBsYXJnZSBhcyB3aXRoIG90aGVyIGZpcm13YXJlIHZlcnNpb25zLiBJJ3ZlIGFsc28gdHJp
+ZWQKPiAxMC4yLjQuNzAuNjYgYW5kIGZpcm13YXJlLTUuYmluXzEwLjIuNC0xLjAtMDAwMzMgYW5k
+IG9uZSB0aGF0IHdhcwo+IE9wZW53cnQvTGVkZSBzdG9jayBiZWZvcmUgdGhhdCAtIGFsbCBzaG93
+IHBlcmZvcm1hbmNlIG5vdGljZWFibHkgd29yc2UKPiB0aGFuIDEwLjIuNC43MC42My0yLgo+ICAg
+SW4gZmFjdCBpZiBteSBsYXB0b3Agc3RhbmRzIG9uIG15IGRlc2sgKHNvbWUgZGlzdGFuY2UgYXdh
+eSBmcm9tIEFQKQo+IGFuZCBJIHVzZSAxMC4yLjQuNzAuNjMtMiBJIGdldCBzdGFibGUgMiBzcGFj
+aWFsIHN0cmVhbSByZWNlcHRpb24sIGlmIEkKPiB1c2Ugb3RoZXIgdmVyc2lvbnMgbWVudGlvbmVk
+IGFib3ZlIEkgdXN1YWxseSBnZXQgb25lIDEgc3BlY2lhbCBzdHJlYW0KPiBhcyBzaG93biBieSAn
+aXcnIGNvbW1hbmQgb24gYSBjbGllbnQuCj4gCj4gICBJJ20gbm90IHN1cmUgaWYgdGhhdCBvYnNl
+cnZhdGlvbiBpZiBoZWxwZnVsIG9yIG5vdCwgYnV0IHNpbmNlIGl0Cj4gbG9va3MgbGlrZSBuZXdl
+ciBGVyB2ZXJzaW9ucyBoYXZlIHdvcnNlIHBlcmZvcm1hbmNlIEkgdGhvdWdodCBJIHNob3VsZAo+
+IHNoYXJlIGl0Lgo+IAo+ICAgUGxlYXNlIGxldCBtZSBrbm93IGlmIEkgY2FuIHByb3ZpZGUgYW55
+IG1vcmUgaW5mb3JtYXRpb24uCj4gCj4gLS0gCj4gTWFydHlub3YgTmlrb2xheS4KPiBFbWFpbDog
+bWFyLmtvbHlhQGdtYWlsLmNvbQo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsKCgpUaGFua3MgJiBSZWdhcmRzLArgpJXgpLXgpL/gpKTgpL4g4KSu4KS+4KSl4KWB4KSw
+IEthdml0YSBNYXRodXIgCuCkteCksOCkv+Ckt+CljeCkoCDgpIXgpKjgpYHgpLjgpILgpKfgpL7g
+pKgg4KSF4KSt4KS/4KSv4KSC4KSk4KS+ICBTZW5pb3IgUmVzZWFyY2ggRW5naW5lZXIgCuCkuOCl
+gC3gpKHgpYngpJ8gICAgICAgICAgICAgICAgICAgICAgQy1ET1QK4KSH4KSy4KWI4KSV4KWN4KSf
+4KWN4KSw4KWJ4KSo4KS/4KSV4KWN4KS4IOCkuOCkv+Ckn+ClgCDgpKvgpYfgpJzgpLwgSSAgICAg
+ICAgIEVsZWN0cm9uaWNzIENpdHkgUGhhc2UgSQrgpLngpYvgpLjgpYLgpLAg4KSw4KWL4KShLCDg
+pKzgpYfgpILgpJfgpLLgpYLgpLDgpYEgICAgICAgICAgICAgICBIb3N1ciBSb2FkLCBCZW5nYWx1
+cnUg4oCTIDU2MDEwMArgpKvgpYvgpKggIFBoIDA4MC0yODUyOTg5NgpEaXNjbGFpbWVyOgotLS0t
+LS0tLS0tClRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0cmFuc21pdHRlZCB3aXRoIGl0CgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
+bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
