@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ejQht-0006bB-64
- for ath10k@lists.infradead.org; Wed, 07 Feb 2018 14:28:18 +0000
-Received: by mail-qk0-x242.google.com with SMTP id 69so1291408qkz.2
- for <ath10k@lists.infradead.org>; Wed, 07 Feb 2018 06:28:06 -0800 (PST)
+ id 1ejY0K-0004UT-T8
+ for ath10k@lists.infradead.org; Wed, 07 Feb 2018 22:15:50 +0000
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+ by mx0a-00082601.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
+ w17MFau3017215
+ for <ath10k@lists.infradead.org>; Wed, 7 Feb 2018 14:15:36 -0800
+Received: from maileast.thefacebook.com ([199.201.65.23])
+ by mx0a-00082601.pphosted.com with ESMTP id 2g09j503bk-1
+ (version=TLSv1 cipher=ECDHE-RSA-AES256-SHA bits=256 verify=NOT)
+ for <ath10k@lists.infradead.org>; Wed, 07 Feb 2018 14:15:36 -0800
+From: Javier Cardona <jcardona@fb.com>
+Subject: Frames acknowledged and silently discarded in firmware
+Date: Wed, 7 Feb 2018 22:15:34 +0000
+Message-ID: <8B7D031B-8228-493D-8B2C-963C76850F4A@fb.com>
+Content-Language: en-US
+Content-ID: <32B6F0B28DE47B459F5446E94C7F525B@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <1518011483-7704-1-git-send-email-kvalo@codeaurora.org>
-References: <1518011483-7704-1-git-send-email-kvalo@codeaurora.org>
-From: Mike Lothian <mike@fireburn.co.uk>
-Date: Wed, 7 Feb 2018 14:27:45 +0000
-Message-ID: <CAHbf0-H-3xKV9tPhX1zUttPG440nKd9xNrDoMrrXSffFnbEeww@mail.gmail.com>
-Subject: Re: [PATCH] Revert "ath10k: add sanity check to ie_len before parsing
- fw/board ie"
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,107 +26,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Ryan Hsu <ryanhsu@codeaurora.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 7 February 2018 at 13:51, Kalle Valo <kvalo@codeaurora.org> wrote:
-> From: Ryan Hsu <ryanhsu@codeaurora.org>
->
-> This reverts commit 9ed4f91628737c820af6a1815b65bc06bd31518f.
->
-> The commit introduced a regression that over read the ie with
-> the padding.
->
-> - the expected IE information
->
-> ath10k_pci 0000:03:00.0: found firmware features ie (1 B)
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 6
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 7
-> ath10k_pci 0000:03:00.0: features
-> ath10k_pci 0000:03:00.0: 00000000: c0 00 00 00 00 00 00 00
->
-> - the wrong IE with padding is read (0x77)
->
-> ath10k_pci 0000:03:00.0: found firmware features ie (4 B)
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 6
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 7
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 8
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 9
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 10
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 12
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 13
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 14
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 16
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 17
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 18
-> ath10k_pci 0000:03:00.0: features
-> ath10k_pci 0000:03:00.0: 00000000: c0 77 07 00 00 00 00 00
->
-> Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/core.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index b0fdc1023619..fe9341c97f31 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -1276,10 +1276,7 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
->                 len -= sizeof(*hdr);
->                 data = hdr->data;
->
-> -               /* jump over the padding */
-> -               ie_len = ALIGN(ie_len, 4);
-> -
-> -               if (len < ie_len) {
-> +               if (len < ALIGN(ie_len, 4)) {
->                         ath10k_err(ar, "invalid length for board ie_id %d ie_len %zu len %zu\n",
->                                    ie_id, ie_len, len);
->                         ret = -EINVAL;
-> @@ -1318,6 +1315,9 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
->                         goto out;
->                 }
->
-> +               /* jump over the padding */
-> +               ie_len = ALIGN(ie_len, 4);
-> +
->                 len -= ie_len;
->                 data += ie_len;
->         }
-> @@ -1448,9 +1448,6 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
->                 len -= sizeof(*hdr);
->                 data += sizeof(*hdr);
->
-> -               /* jump over the padding */
-> -               ie_len = ALIGN(ie_len, 4);
-> -
->                 if (len < ie_len) {
->                         ath10k_err(ar, "invalid length for FW IE %d (%zu < %zu)\n",
->                                    ie_id, len, ie_len);
-> @@ -1556,6 +1553,9 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
->                         break;
->                 }
->
-> +               /* jump over the padding */
-> +               ie_len = ALIGN(ie_len, 4);
-> +
->                 len -= ie_len;
->                 data += ie_len;
->         }
-> --
-> 2.7.4
->
-
-Tested-by: Mike Lothian <mike@fireburn.co.uk>
-
-Sent at HTML the first time sorry
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksDQoNCldlIGhhdmUgb2JzZXJ2ZWQgYSBwcm9ibGVtIHdoZXJlLCB1bmRlciBjZXJ0YWluIGNv
+bmRpdGlvbnMsIHRoZSBhdGgxMGsgZmlybXdhcmUgd2lsbCBhY2tub3dsZWRnZSBmcmFtZXMgYnV0
+IG5vdCBzZW5kIHRoZW0gdXAgdG8gdGhlIGRyaXZlci4gIA0KRnJhbWVzIGFyZSBzZW50IGJ5IGEg
+bWVzaCBhY2Nlc3MgcG9pbnQgKE1BUDEpIHRvIGEgc2Vjb25kIG1lc2ggQVAgKE1BUDIpIGF0IE1D
+UyA5L05TUy0zLCB3aGljaCBhdCB0aGF0IGRpc3RhbmNlIGlzIHByb2JhYmx5IG1hcmdpbmFsLiAg
+U2luY2UgZnJhbWVzIGdldCBhY2tubG93bGVkZ2VkIGJ5IE1BUDIsIE1BUDEgd2lsbCBub3QgdHJ5
+IGEgbG93ZXIgcmF0ZS4gIEJ1dCB0aGUgZHJpdmVyIGF0IE1BUDIgZG9lcyBub3QgcmVjZWl2ZSB0
+aGUgZnJhbWVzLg0KDQpXZSBoYXZlIGNhcHR1cmVzIG9mIHRoaXMgZXhjaGFuZ2UgZm9yIGJvdGgg
+dGhlIHVuc3VjY2Vzc2Z1bCBhcyB3ZWxsIGFzIHRoZSBzdWNjZXNzZnVsIGNhc2UsIHdoaWNoIGhh
+cHBlbnMgd2hlbiB3ZSBtb3ZlIE1BUDIgY2xvc2VyIHRvIE1BUDEuICAgVGhleSBjYW4gYmUgZm91
+bmQgaGVyZToNCmh0dHBzOi8vd3d3LmRyb3Bib3guY29tL3NoLzBvcjg2Yzh2eG90eWdkYy9BQUJJ
+N1JtUTJuenRjT0JGM1VEWGJQVW1hDQoNCkluIGJvdGggc2NlbmFyaW9zLCB0aGUgZnJhbWVzIGZy
+b20gTUFQMSB0byBNQVAyIGFyZSBhY2tub3dsZWRnZWQsIGFzIG9ic2VydmVkIGluIHNuaWZmZXIg
+Y2FwdHVyZXMuDQoNCkluIHRoZSBzdWNjZXNzZnVsIHNjZW5hcmlvLCB0aGUgZHJpdmVyIGxvZ3Mg
+c2hvdyB0aGUgZnJhbWVzIGJlaW5nIHJlY2VpdmVkIGJ5IHRoZSBkcml2ZXIuICBTZXF1ZW5jZSBu
+dW1iZXJzIGluIHRoZSBkZWJ1ZyBsb2dzIG1hdGNoIHRob3NlIGluIHRoZSBzbmlmZmVyIGNhcHR1
+cmVzLg0KDQpyb290QG5iZy0zZWQ5ZGE6fiMgam91cm5hbGN0bCAta2YgfCBncmVwICJwZWVyIDYw
+OjMxOjk3OjNlOjgyOmU2IiB8IGdyZXAgdWNhc3QgfCBncmVwICdsZW4gMzc0Jw0KRmViIDA1IDA1
+OjQzOjMxIG5iZy0zZWQ5ZGEga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogcnggc2ti
+IGQ3MzRmNmMwIGxlbiAzNzQgcGVlciA2MDozMTo5NzozZTo4MjplNiB0aWQgMCAoQkUpIHVjYXN0
+IHNuIDEwMjcgdmh0IHNnaSByYXRlX2lkeCA5IHZodF9uc3MgMyBmcmVxIDU4MjUgYmFuZCAxIGZs
+YWcgMHg2MDA4MDAgZmNzLWVyciAwIG1pYy1lcnIgMCBhbXNkdS1tb3JlIDANCkZlYiAwNSAwNTo0
+Mzo0MiBuYmctM2VkOWRhIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHJ4IHNrYiBk
+NmFhYTQ4MCBsZW4gMzc0IHBlZXIgNjA6MzE6OTc6M2U6ODI6ZTYgdGlkIDAgKEJFKSB1Y2FzdCBz
+biAxMDMxIHZodCBzZ2kgcmF0ZV9pZHggOSB2aHRfbnNzIDMgZnJlcSA1ODI1IGJhbmQgMSBmbGFn
+IDB4NjAwODAwIGZjcy1lcnIgMCBtaWMtZXJyIDAgYW1zZHUtbW9yZSAwDQpGZWIgMDUgMDU6NDM6
+NTMgbmJnLTNlZDlkYSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiByeCBza2IgZDUz
+YThkODAgbGVuIDM3NCBwZWVyIDYwOjMxOjk3OjNlOjgyOmU2IHRpZCAwIChCRSkgdWNhc3Qgc24g
+MTAzNyB2aHQgc2dpIHJhdGVfaWR4IDkgdmh0X25zcyAzIGZyZXEgNTgyNSBiYW5kIDEgZmxhZyAw
+eDYwMDgwMCBmY3MtZXJyIDAgbWljLWVyciAwIGFtc2R1LW1vcmUgMA0KDQpJbiB0aGUgZmFpbHVy
+ZSBzY2VuYXJpbywgdGhlIGRyaXZlciBsb2dzIHNob3cgbm8gZnJhbWVzLCBldmVuIGlmIHRoZSBj
+YXB0dXJlIHNob3dzIHRoYXQgdGhlIGZyYW1lcyBhcmUgYWNrbm93bGVkZ2VkLg0KDQpyb290QG5i
+Zy0zZWQ5ZGE6fiMgam91cm5hbGN0bCAta2YgfCBncmVwICJwZWVyIDYwOjMxOjk3OjNlOjgyOmU2
+IiB8IGdyZXAgdWNhc3QgfCBncmVwICdsZW4gMzc0Jw0KPG5vdGhpbmcgaGVyZT4NCg0KSWYgd2Ug
+Zm9yY2UgTUFQMSB0byB1c2UgYSBzaW5nbGUgc3RyZWFtLCB0aGUgZnJhbWVzIGFyZSByZWNlaXZl
+ZCBzdWNjZXNzZnVsbHkuDQoNCiAgIyBpdyBtZXNoMCBzZXQgYml0cmF0ZXMgbGVnYWN5LTUgaHQt
+bWNzLTUgdmh0LW1jcy01IDE6MC05DQoNCkl0IHNlZW1zIGFzIGlmIHRoZSBmaXJtd2FyZSBpcyBh
+Y2tub3dsZWRnaW5nIGJ1dCBzaWxlbnRseSBkaXNjYXJkaW5nIGZyYW1lc+KApiBpcyB0aGF0IHBv
+c3NpYmxlPw0KQ2FuIGFueW9uZSBwcm92aWRlIHNvbWUgcG9pbnRlcnMgb24gaG93IHRvIHRyb3Vi
+bGVzaG9vdCB0aGlzPyAgDQoNCldlIGFyZSB1c2luZyB0aGlzIGZpcm13YXJlOiBodHRwczovL2dp
+dGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13YXJlL2Jsb2IvbWFzdGVyL1FDQTk5ODQvaHcxLjAv
+My40L2Zpcm13YXJlLTUuYmluXzEwLjQtMy40LTAwMTA0IGFuZCBrZXJuZWwgNC45LjMxIHdpdGgg
+YSBmZXcgY2hlcnJ5LXBpY2tlZCBwYXRjaGVzIGZyb20gdGhlIGF0aDEwayBicmFuY2guDQpUaGUg
+aGFyZHdhcmUgaXMgUUNBOTk0Lg0KDQpCZXN0LA0KDQpKYXZpZXINCg0KDQoNCg0KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
+dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
