@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ejQ8T-0006Ip-Gs
- for ath10k@lists.infradead.org; Wed, 07 Feb 2018 13:51:43 +0000
+ id 1ejQPa-0007Xi-9p
+ for ath10k@lists.infradead.org; Wed, 07 Feb 2018 14:09:23 +0000
+MIME-Version: 1.0
+Subject: Re: ath10k: correct the length of DRAM dump for QCA6174 hw3.x/QCA9377
+ hw1.1
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH] Revert "ath10k: add sanity check to ie_len before parsing
- fw/board ie"
-Date: Wed,  7 Feb 2018 15:51:23 +0200
-Message-Id: <1518011483-7704-1-git-send-email-kvalo@codeaurora.org>
+In-Reply-To: <1516945221-4710-2-git-send-email-yyuwang@codeaurora.org>
+References: <1516945221-4710-2-git-send-email-yyuwang@codeaurora.org>
+Message-Id: <20180207140911.6CB9760767@smtp.codeaurora.org>
+Date: Wed,  7 Feb 2018 14:09:11 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,100 +19,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Ryan Hsu <ryanhsu@codeaurora.org>
+To: Yu Wang <yyuwang@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Ryan Hsu <ryanhsu@codeaurora.org>
+Yu Wang <yyuwang@codeaurora.org> wrote:
 
-This reverts commit 9ed4f91628737c820af6a1815b65bc06bd31518f.
+> The length of DRAM dump for QCA6174 hw3.0/hw3.2 and QCA9377 hw1.1
+> are less than the actual value, some coredump contents are missed.
+> To fix it, change the length from 0x90000 to 0xa8000.
+> 
+> Fixes: 703f261dd77f ("ath10k: add memory dump support for QCA6174/QCA9377")
+> Signed-off-by: Yu Wang <yyuwang@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-The commit introduced a regression that over read the ie with
-the padding.
+Patch applied to ath-current branch of ath.git, thanks.
 
-- the expected IE information
+0a7fe718239e ath10k: correct the length of DRAM dump for QCA6174 hw3.x/QCA9377 hw1.1
 
-ath10k_pci 0000:03:00.0: found firmware features ie (1 B)
-ath10k_pci 0000:03:00.0: Enabling feature bit: 6
-ath10k_pci 0000:03:00.0: Enabling feature bit: 7
-ath10k_pci 0000:03:00.0: features
-ath10k_pci 0000:03:00.0: 00000000: c0 00 00 00 00 00 00 00
-
-- the wrong IE with padding is read (0x77)
-
-ath10k_pci 0000:03:00.0: found firmware features ie (4 B)
-ath10k_pci 0000:03:00.0: Enabling feature bit: 6
-ath10k_pci 0000:03:00.0: Enabling feature bit: 7
-ath10k_pci 0000:03:00.0: Enabling feature bit: 8
-ath10k_pci 0000:03:00.0: Enabling feature bit: 9
-ath10k_pci 0000:03:00.0: Enabling feature bit: 10
-ath10k_pci 0000:03:00.0: Enabling feature bit: 12
-ath10k_pci 0000:03:00.0: Enabling feature bit: 13
-ath10k_pci 0000:03:00.0: Enabling feature bit: 14
-ath10k_pci 0000:03:00.0: Enabling feature bit: 16
-ath10k_pci 0000:03:00.0: Enabling feature bit: 17
-ath10k_pci 0000:03:00.0: Enabling feature bit: 18
-ath10k_pci 0000:03:00.0: features
-ath10k_pci 0000:03:00.0: 00000000: c0 77 07 00 00 00 00 00
-
-Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/core.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index b0fdc1023619..fe9341c97f31 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1276,10 +1276,7 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- 		len -= sizeof(*hdr);
- 		data = hdr->data;
- 
--		/* jump over the padding */
--		ie_len = ALIGN(ie_len, 4);
--
--		if (len < ie_len) {
-+		if (len < ALIGN(ie_len, 4)) {
- 			ath10k_err(ar, "invalid length for board ie_id %d ie_len %zu len %zu\n",
- 				   ie_id, ie_len, len);
- 			ret = -EINVAL;
-@@ -1318,6 +1315,9 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- 			goto out;
- 		}
- 
-+		/* jump over the padding */
-+		ie_len = ALIGN(ie_len, 4);
-+
- 		len -= ie_len;
- 		data += ie_len;
- 	}
-@@ -1448,9 +1448,6 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
- 		len -= sizeof(*hdr);
- 		data += sizeof(*hdr);
- 
--		/* jump over the padding */
--		ie_len = ALIGN(ie_len, 4);
--
- 		if (len < ie_len) {
- 			ath10k_err(ar, "invalid length for FW IE %d (%zu < %zu)\n",
- 				   ie_id, len, ie_len);
-@@ -1556,6 +1553,9 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
- 			break;
- 		}
- 
-+		/* jump over the padding */
-+		ie_len = ALIGN(ie_len, 4);
-+
- 		len -= ie_len;
- 		data += ie_len;
- 	}
 -- 
-2.7.4
+https://patchwork.kernel.org/patch/10185101/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
