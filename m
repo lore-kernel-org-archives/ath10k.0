@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ejCFu-0003BW-K6
- for ath10k@lists.infradead.org; Tue, 06 Feb 2018 23:02:29 +0000
-From: greearb@candelatech.com
-Subject: [PATCH v2] ath10k:  Support mgt frame per-chain rssi
-Date: Tue,  6 Feb 2018 15:02:08 -0800
-Message-Id: <1517958128-12147-1-git-send-email-greearb@candelatech.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1ejQ8T-0006Ip-Gs
+ for ath10k@lists.infradead.org; Wed, 07 Feb 2018 13:51:43 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH] Revert "ath10k: add sanity check to ie_len before parsing
+ fw/board ie"
+Date: Wed,  7 Feb 2018 15:51:23 +0200
+Message-Id: <1518011483-7704-1-git-send-email-kvalo@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,98 +21,95 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Ryan Hsu <ryanhsu@codeaurora.org>
 
-From: Ben Greear <greearb@candelatech.com>
+From: Ryan Hsu <ryanhsu@codeaurora.org>
 
-This provides per-chain rssi for management frames received
-over wmi.
+This reverts commit 9ed4f91628737c820af6a1815b65bc06bd31518f.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
+The commit introduced a regression that over read the ie with
+the padding.
+
+- the expected IE information
+
+ath10k_pci 0000:03:00.0: found firmware features ie (1 B)
+ath10k_pci 0000:03:00.0: Enabling feature bit: 6
+ath10k_pci 0000:03:00.0: Enabling feature bit: 7
+ath10k_pci 0000:03:00.0: features
+ath10k_pci 0000:03:00.0: 00000000: c0 00 00 00 00 00 00 00
+
+- the wrong IE with padding is read (0x77)
+
+ath10k_pci 0000:03:00.0: found firmware features ie (4 B)
+ath10k_pci 0000:03:00.0: Enabling feature bit: 6
+ath10k_pci 0000:03:00.0: Enabling feature bit: 7
+ath10k_pci 0000:03:00.0: Enabling feature bit: 8
+ath10k_pci 0000:03:00.0: Enabling feature bit: 9
+ath10k_pci 0000:03:00.0: Enabling feature bit: 10
+ath10k_pci 0000:03:00.0: Enabling feature bit: 12
+ath10k_pci 0000:03:00.0: Enabling feature bit: 13
+ath10k_pci 0000:03:00.0: Enabling feature bit: 14
+ath10k_pci 0000:03:00.0: Enabling feature bit: 16
+ath10k_pci 0000:03:00.0: Enabling feature bit: 17
+ath10k_pci 0000:03:00.0: Enabling feature bit: 18
+ath10k_pci 0000:03:00.0: features
+ath10k_pci 0000:03:00.0: 00000000: c0 77 07 00 00 00 00 00
+
+Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 ---
+ drivers/net/wireless/ath/ath10k/core.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-v2:  Fix 'rssh' typo in commit message.
-
- drivers/net/wireless/ath/ath10k/wmi.c | 21 ++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wmi.h |  1 +
- 2 files changed, 21 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 905af93..ff37274 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2287,6 +2287,7 @@ static int ath10k_wmi_10_4_op_pull_mgmt_rx_ev(struct ath10k *ar,
- 	u32 msdu_len;
- 	struct wmi_mgmt_rx_ext_info *ext_info;
- 	u32 len;
-+	int i;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index b0fdc1023619..fe9341c97f31 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1276,10 +1276,7 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
+ 		len -= sizeof(*hdr);
+ 		data = hdr->data;
  
- 	ev = (struct wmi_10_4_mgmt_rx_event *)skb->data;
- 	ev_hdr = &ev->hdr;
-@@ -2302,6 +2303,8 @@ static int ath10k_wmi_10_4_op_pull_mgmt_rx_ev(struct ath10k *ar,
- 	arg->snr = ev_hdr->snr;
- 	arg->phy_mode = ev_hdr->phy_mode;
- 	arg->rate = ev_hdr->rate;
-+	for (i = 0; i<4; i++)
-+		arg->rssi_ctl[i] = ev_hdr->rssi_ctl[i];
+-		/* jump over the padding */
+-		ie_len = ALIGN(ie_len, 4);
+-
+-		if (len < ie_len) {
++		if (len < ALIGN(ie_len, 4)) {
+ 			ath10k_err(ar, "invalid length for board ie_id %d ie_len %zu len %zu\n",
+ 				   ie_id, ie_len, len);
+ 			ret = -EINVAL;
+@@ -1318,6 +1315,9 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
+ 			goto out;
+ 		}
  
- 	msdu_len = __le32_to_cpu(arg->buf_len);
- 	if (skb->len < msdu_len)
-@@ -2357,6 +2360,13 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	u32 buf_len;
- 	u16 fc;
- 	int ret;
-+	int i;
++		/* jump over the padding */
++		ie_len = ALIGN(ie_len, 4);
 +
-+	/* Initialize the rssi to 'ignore-me' value, stock wave-1
-+	 * firmware doesn't support it.
-+	 */
-+	for (i = 0; i<4; i++)
-+		arg.rssi_ctl[i] = 0x80;
+ 		len -= ie_len;
+ 		data += ie_len;
+ 	}
+@@ -1448,9 +1448,6 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
+ 		len -= sizeof(*hdr);
+ 		data += sizeof(*hdr);
  
- 	ret = ath10k_wmi_pull_mgmt_rx(ar, skb, &arg);
- 	if (ret) {
-@@ -2416,6 +2426,12 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+-		/* jump over the padding */
+-		ie_len = ALIGN(ie_len, 4);
+-
+ 		if (len < ie_len) {
+ 			ath10k_err(ar, "invalid length for FW IE %d (%zu < %zu)\n",
+ 				   ie_id, len, ie_len);
+@@ -1556,6 +1553,9 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
+ 			break;
+ 		}
  
- 	status->freq = ieee80211_channel_to_frequency(channel, status->band);
- 	status->signal = snr + ATH10K_DEFAULT_NOISE_FLOOR;
-+	for (i = 0; i<4; i++) {
-+		if (arg.rssi_ctl[i] != 0x80) {
-+			status->chains |= BIT(i);
-+			status->chain_signal[i] = ATH10K_DEFAULT_NOISE_FLOOR + arg.rssi_ctl[i];
-+		}
-+	}
- 	status->rate_idx = ath10k_mac_bitrate_to_idx(sband, rate / 100);
- 
- 	hdr = (struct ieee80211_hdr *)skb->data;
-@@ -2451,8 +2467,11 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 		   fc & IEEE80211_FCTL_FTYPE, fc & IEEE80211_FCTL_STYPE);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MGMT,
--		   "event mgmt rx freq %d band %d snr %d, rate_idx %d\n",
-+		   "event mgmt rx freq %d band %d snr %d chains: 0x%x(%d %d %d %d), rate_idx %d\n",
- 		   status->freq, status->band, status->signal,
-+		   status->chains,
-+		   status->chain_signal[0], status->chain_signal[1],
-+		   status->chain_signal[2], status->chain_signal[3],
- 		   status->rate_idx);
- 
- 	ieee80211_rx(ar->hw, skb);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index a3ba191..d198772 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6490,6 +6490,7 @@ struct wmi_scan_ev_arg {
- struct wmi_mgmt_rx_ev_arg {
- 	__le32 channel;
- 	__le32 snr;
-+	u8 rssi_ctl[4];
- 	__le32 rate;
- 	__le32 phy_mode;
- 	__le32 buf_len;
++		/* jump over the padding */
++		ie_len = ALIGN(ie_len, 4);
++
+ 		len -= ie_len;
+ 		data += ie_len;
+ 	}
 -- 
-2.4.11
+2.7.4
 
 
 _______________________________________________
