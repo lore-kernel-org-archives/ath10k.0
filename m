@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ejQWi-0002cz-Ff
- for ath10k@lists.infradead.org; Wed, 07 Feb 2018 14:16:46 +0000
+ id 1ejQht-0006bB-64
+ for ath10k@lists.infradead.org; Wed, 07 Feb 2018 14:28:18 +0000
+Received: by mail-qk0-x242.google.com with SMTP id 69so1291408qkz.2
+ for <ath10k@lists.infradead.org>; Wed, 07 Feb 2018 06:28:06 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: ath10k: fix kernel panic issue during pci probe
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1517212801-7523-2-git-send-email-yyuwang@codeaurora.org>
-References: <1517212801-7523-2-git-send-email-yyuwang@codeaurora.org>
-Message-Id: <20180207141634.1A0D6609FD@smtp.codeaurora.org>
-Date: Wed,  7 Feb 2018 14:16:34 +0000 (UTC)
+In-Reply-To: <1518011483-7704-1-git-send-email-kvalo@codeaurora.org>
+References: <1518011483-7704-1-git-send-email-kvalo@codeaurora.org>
+From: Mike Lothian <mike@fireburn.co.uk>
+Date: Wed, 7 Feb 2018 14:27:45 +0000
+Message-ID: <CAHbf0-H-3xKV9tPhX1zUttPG440nKd9xNrDoMrrXSffFnbEeww@mail.gmail.com>
+Subject: Re: [PATCH] Revert "ath10k: add sanity check to ie_len before parsing
+ fw/board ie"
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,66 +25,101 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yu Wang <yyuwang@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Ryan Hsu <ryanhsu@codeaurora.org>
 
-Yu Wang <yyuwang@codeaurora.org> wrote:
-
-> If device gone during chip reset, ar->normal_mode_fw.board is not
-> initialized, but ath10k_debug_print_hwfw_info() will try to access its
-> member, which will cause 'kernel NULL pointer' issue. This was found
-> using a faulty device (pci link went down sometimes) in a random
-> insmod/rmmod/other-op test.
-> To fix it, check ar->normal_mode_fw.board before accessing the member.
-> 
-> pci 0000:02:00.0: BAR 0: assigned [mem 0xf7400000-0xf75fffff 64bit]
-> ath10k_pci 0000:02:00.0: enabling device (0000 -> 0002)
-> ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
-> ath10k_pci 0000:02:00.0: failed to read device register, device is gone
-> ath10k_pci 0000:02:00.0: failed to wait for target init: -5
-> ath10k_pci 0000:02:00.0: failed to warm reset: -5
-> ath10k_pci 0000:02:00.0: firmware crashed during chip reset
-> ath10k_pci 0000:02:00.0: firmware crashed! (uuid 5d018951-b8e1-404a-8fde-923078b4423a)
-> ath10k_pci 0000:02:00.0: (null) target 0x00000000 chip_id 0x00340aff sub 0000:0000
-> ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
-> ath10k_pci 0000:02:00.0: firmware ver  api 0 features  crc32 00000000
-> ...
-> BUG: unable to handle kernel NULL pointer dereference at 00000004
-> ...
-> Call Trace:
->  [<fb4e7882>] ath10k_print_driver_info+0x12/0x20 [ath10k_core]
->  [<fb62b7dd>] ath10k_pci_fw_crashed_dump+0x6d/0x4d0 [ath10k_pci]
->  [<fb629f07>] ? ath10k_pci_sleep.part.19+0x57/0xc0 [ath10k_pci]
->  [<fb62c8ee>] ath10k_pci_hif_power_up+0x14e/0x1b0 [ath10k_pci]
->  [<c10477fb>] ? do_page_fault+0xb/0x10
->  [<fb4eb934>] ath10k_core_register_work+0x24/0x840 [ath10k_core]
->  [<c18a00d8>] ? netlbl_unlhsh_remove+0x178/0x410
->  [<c10477f0>] ? __do_page_fault+0x480/0x480
->  [<c1068e44>] process_one_work+0x114/0x3e0
->  [<c1069d07>] worker_thread+0x37/0x4a0
->  [<c106e294>] kthread+0xa4/0xc0
->  [<c1069cd0>] ? create_worker+0x180/0x180
->  [<c106e1f0>] ? kthread_park+0x50/0x50
->  [<c18ab4f7>] ret_from_fork+0x1b/0x28
->  Code: 78 80 b8 50 09 00 00 00 75 5d 8d 75 94 c7 44 24 08 aa d7 52 fb c7 44 24 04 64 00 00 00
->  89 34 24 e8 82 52 e2 c5 8b 83 dc 08 00 00 <8b> 50 04 8b 08 31 c0 e8 20 57 e3 c5 89 44 24 10 8b 83 58 09 00
->  EIP: [<fb4e7754>]-
->  ath10k_debug_print_board_info+0x34/0xb0 [ath10k_core]
->  SS:ESP 0068:f4921d90
->  CR2: 0000000000000004
-> 
-> Signed-off-by: Yu Wang <yyuwang@codeaurora.org>
+On 7 February 2018 at 13:51, Kalle Valo <kvalo@codeaurora.org> wrote:
+> From: Ryan Hsu <ryanhsu@codeaurora.org>
+>
+> This reverts commit 9ed4f91628737c820af6a1815b65bc06bd31518f.
+>
+> The commit introduced a regression that over read the ie with
+> the padding.
+>
+> - the expected IE information
+>
+> ath10k_pci 0000:03:00.0: found firmware features ie (1 B)
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 6
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 7
+> ath10k_pci 0000:03:00.0: features
+> ath10k_pci 0000:03:00.0: 00000000: c0 00 00 00 00 00 00 00
+>
+> - the wrong IE with padding is read (0x77)
+>
+> ath10k_pci 0000:03:00.0: found firmware features ie (4 B)
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 6
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 7
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 8
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 9
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 10
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 12
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 13
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 14
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 16
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 17
+> ath10k_pci 0000:03:00.0: Enabling feature bit: 18
+> ath10k_pci 0000:03:00.0: features
+> ath10k_pci 0000:03:00.0: 00000000: c0 77 07 00 00 00 00 00
+>
+> Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/core.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index b0fdc1023619..fe9341c97f31 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -1276,10 +1276,7 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
+>                 len -= sizeof(*hdr);
+>                 data = hdr->data;
+>
+> -               /* jump over the padding */
+> -               ie_len = ALIGN(ie_len, 4);
+> -
+> -               if (len < ie_len) {
+> +               if (len < ALIGN(ie_len, 4)) {
+>                         ath10k_err(ar, "invalid length for board ie_id %d ie_len %zu len %zu\n",
+>                                    ie_id, ie_len, len);
+>                         ret = -EINVAL;
+> @@ -1318,6 +1315,9 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
+>                         goto out;
+>                 }
+>
+> +               /* jump over the padding */
+> +               ie_len = ALIGN(ie_len, 4);
+> +
+>                 len -= ie_len;
+>                 data += ie_len;
+>         }
+> @@ -1448,9 +1448,6 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
+>                 len -= sizeof(*hdr);
+>                 data += sizeof(*hdr);
+>
+> -               /* jump over the padding */
+> -               ie_len = ALIGN(ie_len, 4);
+> -
+>                 if (len < ie_len) {
+>                         ath10k_err(ar, "invalid length for FW IE %d (%zu < %zu)\n",
+>                                    ie_id, len, ie_len);
+> @@ -1556,6 +1553,9 @@ int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name,
+>                         break;
+>                 }
+>
+> +               /* jump over the padding */
+> +               ie_len = ALIGN(ie_len, 4);
+> +
+>                 len -= ie_len;
+>                 data += ie_len;
+>         }
+> --
+> 2.7.4
+>
 
-Patch applied to ath-current branch of ath.git, thanks.
+Tested-by: Mike Lothian <mike@fireburn.co.uk>
 
-50e79e25250b ath10k: fix kernel panic issue during pci probe
-
--- 
-https://patchwork.kernel.org/patch/10189375/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Sent at HTML the first time sorry
 
 _______________________________________________
 ath10k mailing list
