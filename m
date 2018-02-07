@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ejQRw-0000bv-13
- for ath10k@lists.infradead.org; Wed, 07 Feb 2018 14:11:50 +0000
+ id 1ejQWi-0002cz-Ff
+ for ath10k@lists.infradead.org; Wed, 07 Feb 2018 14:16:46 +0000
 MIME-Version: 1.0
-Subject: Re: [v3,1/2] pci: Add vendor id of Ubiquiti Networks
+Subject: Re: ath10k: fix kernel panic issue during pci probe
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20180125111340.17553-2-tobleminer@gmail.com>
-References: <20180125111340.17553-2-tobleminer@gmail.com>
-Message-Id: <20180207141137.7EFAC60209@smtp.codeaurora.org>
-Date: Wed,  7 Feb 2018 14:11:37 +0000 (UTC)
+In-Reply-To: <1517212801-7523-2-git-send-email-yyuwang@codeaurora.org>
+References: <1517212801-7523-2-git-send-email-yyuwang@codeaurora.org>
+Message-Id: <20180207141634.1A0D6609FD@smtp.codeaurora.org>
+Date: Wed,  7 Feb 2018 14:16:34 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +22,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tobias Schramm <tobleminer@gmail.com>
-Cc: linux-pci@vger.kernel.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, kvalo@qca.qualcomm.com, bhelgaas@google.com
+To: Yu Wang <yyuwang@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Tobias Schramm <tobleminer@gmail.com> wrote:
+Yu Wang <yyuwang@codeaurora.org> wrote:
 
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> Signed-off-by: Tobias Schramm <tobleminer@gmail.com>
+> If device gone during chip reset, ar->normal_mode_fw.board is not
+> initialized, but ath10k_debug_print_hwfw_info() will try to access its
+> member, which will cause 'kernel NULL pointer' issue. This was found
+> using a faulty device (pci link went down sometimes) in a random
+> insmod/rmmod/other-op test.
+> To fix it, check ar->normal_mode_fw.board before accessing the member.
+> 
+> pci 0000:02:00.0: BAR 0: assigned [mem 0xf7400000-0xf75fffff 64bit]
+> ath10k_pci 0000:02:00.0: enabling device (0000 -> 0002)
+> ath10k_pci 0000:02:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+> ath10k_pci 0000:02:00.0: failed to read device register, device is gone
+> ath10k_pci 0000:02:00.0: failed to wait for target init: -5
+> ath10k_pci 0000:02:00.0: failed to warm reset: -5
+> ath10k_pci 0000:02:00.0: firmware crashed during chip reset
+> ath10k_pci 0000:02:00.0: firmware crashed! (uuid 5d018951-b8e1-404a-8fde-923078b4423a)
+> ath10k_pci 0000:02:00.0: (null) target 0x00000000 chip_id 0x00340aff sub 0000:0000
+> ath10k_pci 0000:02:00.0: kconfig debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
+> ath10k_pci 0000:02:00.0: firmware ver  api 0 features  crc32 00000000
+> ...
+> BUG: unable to handle kernel NULL pointer dereference at 00000004
+> ...
+> Call Trace:
+>  [<fb4e7882>] ath10k_print_driver_info+0x12/0x20 [ath10k_core]
+>  [<fb62b7dd>] ath10k_pci_fw_crashed_dump+0x6d/0x4d0 [ath10k_pci]
+>  [<fb629f07>] ? ath10k_pci_sleep.part.19+0x57/0xc0 [ath10k_pci]
+>  [<fb62c8ee>] ath10k_pci_hif_power_up+0x14e/0x1b0 [ath10k_pci]
+>  [<c10477fb>] ? do_page_fault+0xb/0x10
+>  [<fb4eb934>] ath10k_core_register_work+0x24/0x840 [ath10k_core]
+>  [<c18a00d8>] ? netlbl_unlhsh_remove+0x178/0x410
+>  [<c10477f0>] ? __do_page_fault+0x480/0x480
+>  [<c1068e44>] process_one_work+0x114/0x3e0
+>  [<c1069d07>] worker_thread+0x37/0x4a0
+>  [<c106e294>] kthread+0xa4/0xc0
+>  [<c1069cd0>] ? create_worker+0x180/0x180
+>  [<c106e1f0>] ? kthread_park+0x50/0x50
+>  [<c18ab4f7>] ret_from_fork+0x1b/0x28
+>  Code: 78 80 b8 50 09 00 00 00 75 5d 8d 75 94 c7 44 24 08 aa d7 52 fb c7 44 24 04 64 00 00 00
+>  89 34 24 e8 82 52 e2 c5 8b 83 dc 08 00 00 <8b> 50 04 8b 08 31 c0 e8 20 57 e3 c5 89 44 24 10 8b 83 58 09 00
+>  EIP: [<fb4e7754>]-
+>  ath10k_debug_print_board_info+0x34/0xb0 [ath10k_core]
+>  SS:ESP 0068:f4921d90
+>  CR2: 0000000000000004
+> 
+> Signed-off-by: Yu Wang <yyuwang@codeaurora.org>
 > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-2 patches applied to ath-current branch of ath.git, thanks.
+Patch applied to ath-current branch of ath.git, thanks.
 
-d5cc61119343 PCI: Add Ubiquiti Networks vendor ID
-34f1cb339cae ath10k: add support for Ubiquiti rebranded QCA988X v2
+50e79e25250b ath10k: fix kernel panic issue during pci probe
 
 -- 
-https://patchwork.kernel.org/patch/10183907/
+https://patchwork.kernel.org/patch/10189375/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
