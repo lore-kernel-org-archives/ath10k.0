@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ejlWW-0004Ai-Or
- for ath10k@lists.infradead.org; Thu, 08 Feb 2018 12:41:58 +0000
+ id 1ejtBp-0007qp-O4
+ for ath10k@lists.infradead.org; Thu, 08 Feb 2018 20:53:07 +0000
+Received: by mail-lf0-x22e.google.com with SMTP id v12so698060lfa.10
+ for <ath10k@lists.infradead.org>; Thu, 08 Feb 2018 12:52:53 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: Revert "ath10k: add sanity check to ie_len before parsing
- fw/board ie"
-From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1518011483-7704-1-git-send-email-kvalo@codeaurora.org>
-References: <1518011483-7704-1-git-send-email-kvalo@codeaurora.org>
-Message-Id: <20180208124145.CE2896081C@smtp.codeaurora.org>
-Date: Thu,  8 Feb 2018 12:41:45 +0000 (UTC)
+In-Reply-To: <CAFR5RwRh3W4GFLz3C9PGRCQA-hv40HqtAU-43P17n6pL69aK6w@mail.gmail.com>
+References: <CAFR5RwTCNV-135E16fXJLECsart-cTjVJq8QcDB3wKH+JrsHnw@mail.gmail.com>
+ <87lgglufls.fsf@kamboji.qca.qualcomm.com>
+ <CAFR5RwRh3W4GFLz3C9PGRCQA-hv40HqtAU-43P17n6pL69aK6w@mail.gmail.com>
+From: Adam Porter <porter.adam@gmail.com>
+Date: Thu, 8 Feb 2018 12:52:50 -0800
+Message-ID: <CAFR5RwTLCuWCwfuB3qo6CHDgt3K-FEQrYi=aZrVydhPSPO93_A@mail.gmail.com>
+Subject: Re: QCA6174 SDIO crashing after few days
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +27,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Ryan Hsu <ryanhsu@codeaurora.org>
+Cc: ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@codeaurora.org> wrote:
+Update to this issue, I can reliably reproduce a crash by using a
+USB-Ethernet adapter.
 
-> This reverts commit 9ed4f91628737c820af6a1815b65bc06bd31518f.
-> 
-> The commit introduced a regression that over read the ie with
-> the padding.
-> 
-> - the expected IE information
-> 
-> ath10k_pci 0000:03:00.0: found firmware features ie (1 B)
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 6
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 7
-> ath10k_pci 0000:03:00.0: features
-> ath10k_pci 0000:03:00.0: 00000000: c0 00 00 00 00 00 00 00
-> 
-> - the wrong IE with padding is read (0x77)
-> 
-> ath10k_pci 0000:03:00.0: found firmware features ie (4 B)
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 6
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 7
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 8
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 9
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 10
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 12
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 13
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 14
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 16
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 17
-> ath10k_pci 0000:03:00.0: Enabling feature bit: 18
-> ath10k_pci 0000:03:00.0: features
-> ath10k_pci 0000:03:00.0: 00000000: c0 77 07 00 00 00 00 00
-> 
-> Tested-by: Mike Lothian <mike@fireburn.co.uk>
-> Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Setup is: (c1) [ iperf client -> ethernet ] -----> (AP) [ usb-ethernet
+(wan) -> wifi (lan) ] ----> (c2) [wifi -> iperf server]
 
-Patch applied to ath-current branch of ath.git, thanks.
-
-9ce8b24aa96e Revert "ath10k: add sanity check to ie_len before parsing fw/board ie"
-
--- 
-https://patchwork.kernel.org/patch/10205215/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+This will bring down the module on the AP almost instantaneously.
 
 _______________________________________________
 ath10k mailing list
