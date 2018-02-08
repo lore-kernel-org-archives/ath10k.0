@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ejtBp-0007qp-O4
- for ath10k@lists.infradead.org; Thu, 08 Feb 2018 20:53:07 +0000
-Received: by mail-lf0-x22e.google.com with SMTP id v12so698060lfa.10
- for <ath10k@lists.infradead.org>; Thu, 08 Feb 2018 12:52:53 -0800 (PST)
+ id 1ejvXB-00038G-NG
+ for ath10k@lists.infradead.org; Thu, 08 Feb 2018 23:23:20 +0000
+Received: by mail-wm0-x233.google.com with SMTP id f71so12338440wmf.0
+ for <ath10k@lists.infradead.org>; Thu, 08 Feb 2018 15:23:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAFR5RwRh3W4GFLz3C9PGRCQA-hv40HqtAU-43P17n6pL69aK6w@mail.gmail.com>
-References: <CAFR5RwTCNV-135E16fXJLECsart-cTjVJq8QcDB3wKH+JrsHnw@mail.gmail.com>
- <87lgglufls.fsf@kamboji.qca.qualcomm.com>
- <CAFR5RwRh3W4GFLz3C9PGRCQA-hv40HqtAU-43P17n6pL69aK6w@mail.gmail.com>
-From: Adam Porter <porter.adam@gmail.com>
-Date: Thu, 8 Feb 2018 12:52:50 -0800
-Message-ID: <CAFR5RwTLCuWCwfuB3qo6CHDgt3K-FEQrYi=aZrVydhPSPO93_A@mail.gmail.com>
-Subject: Re: QCA6174 SDIO crashing after few days
+In-Reply-To: <8B7D031B-8228-493D-8B2C-963C76850F4A@fb.com>
+References: <8B7D031B-8228-493D-8B2C-963C76850F4A@fb.com>
+From: Adrian Chadd <adrian@freebsd.org>
+Date: Thu, 8 Feb 2018 15:23:03 -0800
+Message-ID: <CAJ-VmokrWbwyH7O=jNRthpWRPicRV6=O_OC+Zg8rn5jVTUAhPw@mail.gmail.com>
+Subject: Re: Frames acknowledged and silently discarded in firmware
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +20,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: ath10k@lists.infradead.org
+To: Javier Cardona <jcardona@fb.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Update to this issue, I can reliably reproduce a crash by using a
-USB-Ethernet adapter.
-
-Setup is: (c1) [ iperf client -> ethernet ] -----> (AP) [ usb-ethernet
-(wan) -> wifi (lan) ] ----> (c2) [wifi -> iperf server]
-
-This will bring down the module on the AP almost instantaneously.
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+aGksCgpkbyB5b3UgaGF2ZSBmaXJtd2FyZSBzb3VyY2UgYXQgdGhlIGN1cnJlbnQgZ2lnPyBvciBh
+Y2Nlc3MgdG8gdGhlIHBrdGxvZyB0b29scz8KCkhhdmUgeW91IHZlcmlmaWVkIHRoYXQgdGhlIGZy
+YW1lcyB3ZXJlbid0IGF0IGFsbCBpbmRpY2F0ZWQgdXAgdmlhIEhUVD8KTGlrZSBhcmUgdGhleSBh
+YnNvbHV0ZWx5IE5PVCBjb21pbmcgdXAgdmlhIEhUVCwgb3IgYXJlIHRoZXkgY29taW5nIHVwCnZp
+YSBIVFQgYnV0IGJlaW5nIHRocm93biBvdXQgYmVmb3JlIHRoZSBkcml2ZXIgaXMgcmVhZHkgdG8g
+cGFzcyB0aGVtCnVwLgoKCi1hCgoKT24gNyBGZWJydWFyeSAyMDE4IGF0IDE0OjE1LCBKYXZpZXIg
+Q2FyZG9uYSA8amNhcmRvbmFAZmIuY29tPiB3cm90ZToKPiBIaSwKPgo+IFdlIGhhdmUgb2JzZXJ2
+ZWQgYSBwcm9ibGVtIHdoZXJlLCB1bmRlciBjZXJ0YWluIGNvbmRpdGlvbnMsIHRoZSBhdGgxMGsg
+ZmlybXdhcmUgd2lsbCBhY2tub3dsZWRnZSBmcmFtZXMgYnV0IG5vdCBzZW5kIHRoZW0gdXAgdG8g
+dGhlIGRyaXZlci4KPiBGcmFtZXMgYXJlIHNlbnQgYnkgYSBtZXNoIGFjY2VzcyBwb2ludCAoTUFQ
+MSkgdG8gYSBzZWNvbmQgbWVzaCBBUCAoTUFQMikgYXQgTUNTIDkvTlNTLTMsIHdoaWNoIGF0IHRo
+YXQgZGlzdGFuY2UgaXMgcHJvYmFibHkgbWFyZ2luYWwuICBTaW5jZSBmcmFtZXMgZ2V0IGFja25s
+b3dsZWRnZWQgYnkgTUFQMiwgTUFQMSB3aWxsIG5vdCB0cnkgYSBsb3dlciByYXRlLiAgQnV0IHRo
+ZSBkcml2ZXIgYXQgTUFQMiBkb2VzIG5vdCByZWNlaXZlIHRoZSBmcmFtZXMuCj4KPiBXZSBoYXZl
+IGNhcHR1cmVzIG9mIHRoaXMgZXhjaGFuZ2UgZm9yIGJvdGggdGhlIHVuc3VjY2Vzc2Z1bCBhcyB3
+ZWxsIGFzIHRoZSBzdWNjZXNzZnVsIGNhc2UsIHdoaWNoIGhhcHBlbnMgd2hlbiB3ZSBtb3ZlIE1B
+UDIgY2xvc2VyIHRvIE1BUDEuICAgVGhleSBjYW4gYmUgZm91bmQgaGVyZToKPiBodHRwczovL3d3
+dy5kcm9wYm94LmNvbS9zaC8wb3I4NmM4dnhvdHlnZGMvQUFCSTdSbVEybnp0Y09CRjNVRFhiUFVt
+YQo+Cj4gSW4gYm90aCBzY2VuYXJpb3MsIHRoZSBmcmFtZXMgZnJvbSBNQVAxIHRvIE1BUDIgYXJl
+IGFja25vd2xlZGdlZCwgYXMgb2JzZXJ2ZWQgaW4gc25pZmZlciBjYXB0dXJlcy4KPgo+IEluIHRo
+ZSBzdWNjZXNzZnVsIHNjZW5hcmlvLCB0aGUgZHJpdmVyIGxvZ3Mgc2hvdyB0aGUgZnJhbWVzIGJl
+aW5nIHJlY2VpdmVkIGJ5IHRoZSBkcml2ZXIuICBTZXF1ZW5jZSBudW1iZXJzIGluIHRoZSBkZWJ1
+ZyBsb2dzIG1hdGNoIHRob3NlIGluIHRoZSBzbmlmZmVyIGNhcHR1cmVzLgo+Cj4gcm9vdEBuYmct
+M2VkOWRhOn4jIGpvdXJuYWxjdGwgLWtmIHwgZ3JlcCAicGVlciA2MDozMTo5NzozZTo4MjplNiIg
+fCBncmVwIHVjYXN0IHwgZ3JlcCAnbGVuIDM3NCcKPiBGZWIgMDUgMDU6NDM6MzEgbmJnLTNlZDlk
+YSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiByeCBza2IgZDczNGY2YzAgbGVuIDM3
+NCBwZWVyIDYwOjMxOjk3OjNlOjgyOmU2IHRpZCAwIChCRSkgdWNhc3Qgc24gMTAyNyB2aHQgc2dp
+IHJhdGVfaWR4IDkgdmh0X25zcyAzIGZyZXEgNTgyNSBiYW5kIDEgZmxhZyAweDYwMDgwMCBmY3Mt
+ZXJyIDAgbWljLWVyciAwIGFtc2R1LW1vcmUgMAo+IEZlYiAwNSAwNTo0Mzo0MiBuYmctM2VkOWRh
+IGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHJ4IHNrYiBkNmFhYTQ4MCBsZW4gMzc0
+IHBlZXIgNjA6MzE6OTc6M2U6ODI6ZTYgdGlkIDAgKEJFKSB1Y2FzdCBzbiAxMDMxIHZodCBzZ2kg
+cmF0ZV9pZHggOSB2aHRfbnNzIDMgZnJlcSA1ODI1IGJhbmQgMSBmbGFnIDB4NjAwODAwIGZjcy1l
+cnIgMCBtaWMtZXJyIDAgYW1zZHUtbW9yZSAwCj4gRmViIDA1IDA1OjQzOjUzIG5iZy0zZWQ5ZGEg
+a2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogcnggc2tiIGQ1M2E4ZDgwIGxlbiAzNzQg
+cGVlciA2MDozMTo5NzozZTo4MjplNiB0aWQgMCAoQkUpIHVjYXN0IHNuIDEwMzcgdmh0IHNnaSBy
+YXRlX2lkeCA5IHZodF9uc3MgMyBmcmVxIDU4MjUgYmFuZCAxIGZsYWcgMHg2MDA4MDAgZmNzLWVy
+ciAwIG1pYy1lcnIgMCBhbXNkdS1tb3JlIDAKPgo+IEluIHRoZSBmYWlsdXJlIHNjZW5hcmlvLCB0
+aGUgZHJpdmVyIGxvZ3Mgc2hvdyBubyBmcmFtZXMsIGV2ZW4gaWYgdGhlIGNhcHR1cmUgc2hvd3Mg
+dGhhdCB0aGUgZnJhbWVzIGFyZSBhY2tub3dsZWRnZWQuCj4KPiByb290QG5iZy0zZWQ5ZGE6fiMg
+am91cm5hbGN0bCAta2YgfCBncmVwICJwZWVyIDYwOjMxOjk3OjNlOjgyOmU2IiB8IGdyZXAgdWNh
+c3QgfCBncmVwICdsZW4gMzc0Jwo+IDxub3RoaW5nIGhlcmU+Cj4KPiBJZiB3ZSBmb3JjZSBNQVAx
+IHRvIHVzZSBhIHNpbmdsZSBzdHJlYW0sIHRoZSBmcmFtZXMgYXJlIHJlY2VpdmVkIHN1Y2Nlc3Nm
+dWxseS4KPgo+ICAgIyBpdyBtZXNoMCBzZXQgYml0cmF0ZXMgbGVnYWN5LTUgaHQtbWNzLTUgdmh0
+LW1jcy01IDE6MC05Cj4KPiBJdCBzZWVtcyBhcyBpZiB0aGUgZmlybXdhcmUgaXMgYWNrbm93bGVk
+Z2luZyBidXQgc2lsZW50bHkgZGlzY2FyZGluZyBmcmFtZXPigKYgaXMgdGhhdCBwb3NzaWJsZT8K
+PiBDYW4gYW55b25lIHByb3ZpZGUgc29tZSBwb2ludGVycyBvbiBob3cgdG8gdHJvdWJsZXNob290
+IHRoaXM/Cj4KPiBXZSBhcmUgdXNpbmcgdGhpcyBmaXJtd2FyZTogaHR0cHM6Ly9naXRodWIuY29t
+L2t2YWxvL2F0aDEway1maXJtd2FyZS9ibG9iL21hc3Rlci9RQ0E5OTg0L2h3MS4wLzMuNC9maXJt
+d2FyZS01LmJpbl8xMC40LTMuNC0wMDEwNCBhbmQga2VybmVsIDQuOS4zMSB3aXRoIGEgZmV3IGNo
+ZXJyeS1waWNrZWQgcGF0Y2hlcyBmcm9tIHRoZSBhdGgxMGsgYnJhbmNoLgo+IFRoZSBoYXJkd2Fy
+ZSBpcyBRQ0E5OTQuCj4KPiBCZXN0LAo+Cj4gSmF2aWVyCj4KPgo+Cj4KPiBfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QK
+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
+Cg==
