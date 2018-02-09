@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ek5Bi-0005ZX-AK
- for ath10k@lists.infradead.org; Fri, 09 Feb 2018 09:41:47 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: update the IRAM banks number for QCA9377
-References: <1518135631-29796-1-git-send-email-ryanhsu@codeaurora.org>
-Date: Fri, 09 Feb 2018 11:41:30 +0200
-In-Reply-To: <1518135631-29796-1-git-send-email-ryanhsu@codeaurora.org>
- (ryanhsu@codeaurora.org's message of "Thu, 8 Feb 2018 16:20:31 -0800")
-Message-ID: <874lmqcxf9.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1ek5Cm-0005qR-JE
+ for ath10k@lists.infradead.org; Fri, 09 Feb 2018 09:42:54 +0000
+From: pillair@codeaurora.org
+Subject: [PATCH] ath10k: dma unmap mgmt tx buffer if wmi cmd send fails
+Date: Fri,  9 Feb 2018 15:12:10 +0530
+Message-Id: <1518169330-4934-1-git-send-email-pillair@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,33 +15,228 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ryanhsu@codeaurora.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Rakesh Pillai <pillair@codeaurora.org>, linux-wireless@vger.kernel.org
 
-ryanhsu@codeaurora.org writes:
+From: Rakesh Pillai <pillair@codeaurora.org>
 
-> From: Ryan Hsu <ryanhsu@codeaurora.org>
->
-> QCA9377 firmware update the IRAM banks from 4 to 9.
->
-> Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
+WCN3990 sends mgmt frames by reference via WMI.
+The host dma maps the mgmt frame and sends the physical
+address to the firmware in the wmi command. Since the
+dma mapping is done in the gen_mgmt_tx and if the wmi
+command send fails, the corresponding mgmt frame is
+not being dma unmapped.
 
-As we discussed offline, I'll update the commit log to this:
+Fix the missing dma unmapping of mgmt tx frame when
+wmi command sending fails for mgmt tx by reference
+via WMI. The already exisiting mgmt tx using copy by
+value does not need such dma unmapping.
+Add a separate wmi-tlv op for mgmt tx via ref, which
+takes care of unmapping the dma address, in case of
+wmi command sending failure.
 
-ath10k: update the IRAM bank number for QCA9377
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c     | 28 +++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 36 ++++++++++++++++++++++++-------
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 22 ++++++++-----------
+ 3 files changed, 60 insertions(+), 26 deletions(-)
 
-Prepared for new QCA9377 firmware support. With the new
-firmware update, it required more IRAM banks, hence updated it.
-
-The IRAM banks promotion won't break any backward compatibility,
-as those IRAM banks were not getting used in previous firmware.
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ebb3f1b..7e02ca0 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -3808,6 +3809,7 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
+ {
+ 	struct ath10k *ar = container_of(work, struct ath10k, wmi_mgmt_tx_work);
+ 	struct sk_buff *skb;
++	dma_addr_t paddr;
+ 	int ret;
+ 
+ 	for (;;) {
+@@ -3815,11 +3817,27 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
+ 		if (!skb)
+ 			break;
+ 
+-		ret = ath10k_wmi_mgmt_tx(ar, skb);
+-		if (ret) {
+-			ath10k_warn(ar, "failed to transmit management frame via WMI: %d\n",
+-				    ret);
+-			ieee80211_free_txskb(ar->hw, skb);
++		if (test_bit(ATH10K_FW_FEATURE_MGMT_TX_BY_REF,
++			     ar->running_fw->fw_file.fw_features)) {
++			paddr = dma_map_single(ar->dev, skb->data,
++					       skb->len, DMA_TO_DEVICE);
++			if (!paddr)
++				continue;
++			ret = ath10k_wmi_mgmt_tx_send(ar, skb, paddr);
++			if (ret) {
++				ath10k_warn(ar, "failed to transmit management frame by ref via WMI: %d\n",
++					    ret);
++				dma_unmap_single(ar->dev, paddr, skb->len,
++						 DMA_FROM_DEVICE);
++				ieee80211_free_txskb(ar->hw, skb);
++			}
++		} else {
++			ret = ath10k_wmi_mgmt_tx(ar, skb);
++			if (ret) {
++				ath10k_warn(ar, "failed to transmit management frame via WMI: %d\n",
++					    ret);
++				ieee80211_free_txskb(ar->hw, skb);
++			}
+ 		}
+ 	}
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index 14093cf..86b92fe 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -125,6 +126,9 @@ struct wmi_ops {
+ 					     enum wmi_force_fw_hang_type type,
+ 					     u32 delay_ms);
+ 	struct sk_buff *(*gen_mgmt_tx)(struct ath10k *ar, struct sk_buff *skb);
++	struct sk_buff *(*gen_mgmt_tx_send)(struct ath10k *ar,
++					      struct sk_buff *skb,
++					      dma_addr_t paddr);
+ 	struct sk_buff *(*gen_dbglog_cfg)(struct ath10k *ar, u64 module_enable,
+ 					  u32 log_level);
+ 	struct sk_buff *(*gen_pktlog_enable)(struct ath10k *ar, u32 filter);
+@@ -372,12 +376,33 @@ struct wmi_ops {
+ }
+ 
+ static inline int
++ath10k_wmi_mgmt_tx_send(struct ath10k *ar, struct sk_buff *msdu,
++			  dma_addr_t paddr)
++{
++	struct sk_buff *skb;
++	int ret;
++
++	if (!ar->wmi.ops->gen_mgmt_tx_send)
++		return -EOPNOTSUPP;
++
++	skb = ar->wmi.ops->gen_mgmt_tx_send(ar, msdu, paddr);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
++
++	ret = ath10k_wmi_cmd_send(ar, skb,
++				  ar->wmi.cmd->mgmt_tx_send_cmdid);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static inline int
+ ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
+ {
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
+ 	struct sk_buff *skb;
+ 	int ret;
+-	u32 mgmt_tx_cmdid;
+ 
+ 	if (!ar->wmi.ops->gen_mgmt_tx)
+ 		return -EOPNOTSUPP;
+@@ -386,13 +411,8 @@ struct wmi_ops {
+ 	if (IS_ERR(skb))
+ 		return PTR_ERR(skb);
+ 
+-	if (test_bit(ATH10K_FW_FEATURE_MGMT_TX_BY_REF,
+-		     ar->running_fw->fw_file.fw_features))
+-		mgmt_tx_cmdid = ar->wmi.cmd->mgmt_tx_send_cmdid;
+-	else
+-		mgmt_tx_cmdid = ar->wmi.cmd->mgmt_tx_cmdid;
+-
+-	ret = ath10k_wmi_cmd_send(ar, skb, mgmt_tx_cmdid);
++	ret = ath10k_wmi_cmd_send(ar, skb,
++				  ar->wmi.cmd->mgmt_tx_cmdid);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index ae77a00..523af3f 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -2484,19 +2485,19 @@ static void *ath10k_wmi_tlv_put_wmm(void *ptr,
+ }
+ 
+ static struct sk_buff *
+-ath10k_wmi_tlv_op_gen_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
++ath10k_wmi_tlv_op_gen_mgmt_tx_send(struct ath10k *ar, struct sk_buff *msdu,
++				   dma_addr_t paddr)
+ {
+ 	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(msdu);
+ 	struct wmi_tlv_mgmt_tx_cmd *cmd;
+-	struct wmi_tlv *tlv;
+ 	struct ieee80211_hdr *hdr;
++	struct ath10k_vif *arvif;
++	u32 buf_len = msdu->len;
++	struct wmi_tlv *tlv;
+ 	struct sk_buff *skb;
++	u32 vdev_id;
+ 	void *ptr;
+ 	int len;
+-	u32 buf_len = msdu->len;
+-	struct ath10k_vif *arvif;
+-	dma_addr_t mgmt_frame_dma;
+-	u32 vdev_id;
+ 
+ 	if (!cb->vif)
+ 		return ERR_PTR(-EINVAL);
+@@ -2537,12 +2538,7 @@ static void *ath10k_wmi_tlv_put_wmm(void *ptr,
+ 	cmd->chanfreq = 0;
+ 	cmd->buf_len = __cpu_to_le32(buf_len);
+ 	cmd->frame_len = __cpu_to_le32(msdu->len);
+-	mgmt_frame_dma = dma_map_single(arvif->ar->dev, msdu->data,
+-					msdu->len, DMA_TO_DEVICE);
+-	if (!mgmt_frame_dma)
+-		return ERR_PTR(-ENOMEM);
+-
+-	cmd->paddr = __cpu_to_le64(mgmt_frame_dma);
++	cmd->paddr = __cpu_to_le64(paddr);
+ 
+ 	ptr += sizeof(*tlv);
+ 	ptr += sizeof(*cmd);
+@@ -3701,7 +3697,7 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	.gen_request_stats = ath10k_wmi_tlv_op_gen_request_stats,
+ 	.gen_force_fw_hang = ath10k_wmi_tlv_op_gen_force_fw_hang,
+ 	/* .gen_mgmt_tx = not implemented; HTT is used */
+-	.gen_mgmt_tx =  ath10k_wmi_tlv_op_gen_mgmt_tx,
++	.gen_mgmt_tx_send = ath10k_wmi_tlv_op_gen_mgmt_tx_send,
+ 	.gen_dbglog_cfg = ath10k_wmi_tlv_op_gen_dbglog_cfg,
+ 	.gen_pktlog_enable = ath10k_wmi_tlv_op_gen_pktlog_enable,
+ 	.gen_pktlog_disable = ath10k_wmi_tlv_op_gen_pktlog_disable,
 -- 
-Kalle Valo
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
