@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ejvXB-00038G-NG
- for ath10k@lists.infradead.org; Thu, 08 Feb 2018 23:23:20 +0000
-Received: by mail-wm0-x233.google.com with SMTP id f71so12338440wmf.0
- for <ath10k@lists.infradead.org>; Thu, 08 Feb 2018 15:23:06 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <8B7D031B-8228-493D-8B2C-963C76850F4A@fb.com>
-References: <8B7D031B-8228-493D-8B2C-963C76850F4A@fb.com>
-From: Adrian Chadd <adrian@freebsd.org>
-Date: Thu, 8 Feb 2018 15:23:03 -0800
-Message-ID: <CAJ-VmokrWbwyH7O=jNRthpWRPicRV6=O_OC+Zg8rn5jVTUAhPw@mail.gmail.com>
-Subject: Re: Frames acknowledged and silently discarded in firmware
+ id 1ejwS2-0007aR-3Z
+ for ath10k@lists.infradead.org; Fri, 09 Feb 2018 00:22:03 +0000
+From: ryanhsu@codeaurora.org
+Subject: [PATCH] ath10k: update the IRAM banks number for QCA9377
+Date: Thu,  8 Feb 2018 16:20:31 -0800
+Message-Id: <1518135631-29796-1-git-send-email-ryanhsu@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,67 +15,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Javier Cardona <jcardona@fb.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: ryanhsu@codeaurora.org
 
-aGksCgpkbyB5b3UgaGF2ZSBmaXJtd2FyZSBzb3VyY2UgYXQgdGhlIGN1cnJlbnQgZ2lnPyBvciBh
-Y2Nlc3MgdG8gdGhlIHBrdGxvZyB0b29scz8KCkhhdmUgeW91IHZlcmlmaWVkIHRoYXQgdGhlIGZy
-YW1lcyB3ZXJlbid0IGF0IGFsbCBpbmRpY2F0ZWQgdXAgdmlhIEhUVD8KTGlrZSBhcmUgdGhleSBh
-YnNvbHV0ZWx5IE5PVCBjb21pbmcgdXAgdmlhIEhUVCwgb3IgYXJlIHRoZXkgY29taW5nIHVwCnZp
-YSBIVFQgYnV0IGJlaW5nIHRocm93biBvdXQgYmVmb3JlIHRoZSBkcml2ZXIgaXMgcmVhZHkgdG8g
-cGFzcyB0aGVtCnVwLgoKCi1hCgoKT24gNyBGZWJydWFyeSAyMDE4IGF0IDE0OjE1LCBKYXZpZXIg
-Q2FyZG9uYSA8amNhcmRvbmFAZmIuY29tPiB3cm90ZToKPiBIaSwKPgo+IFdlIGhhdmUgb2JzZXJ2
-ZWQgYSBwcm9ibGVtIHdoZXJlLCB1bmRlciBjZXJ0YWluIGNvbmRpdGlvbnMsIHRoZSBhdGgxMGsg
-ZmlybXdhcmUgd2lsbCBhY2tub3dsZWRnZSBmcmFtZXMgYnV0IG5vdCBzZW5kIHRoZW0gdXAgdG8g
-dGhlIGRyaXZlci4KPiBGcmFtZXMgYXJlIHNlbnQgYnkgYSBtZXNoIGFjY2VzcyBwb2ludCAoTUFQ
-MSkgdG8gYSBzZWNvbmQgbWVzaCBBUCAoTUFQMikgYXQgTUNTIDkvTlNTLTMsIHdoaWNoIGF0IHRo
-YXQgZGlzdGFuY2UgaXMgcHJvYmFibHkgbWFyZ2luYWwuICBTaW5jZSBmcmFtZXMgZ2V0IGFja25s
-b3dsZWRnZWQgYnkgTUFQMiwgTUFQMSB3aWxsIG5vdCB0cnkgYSBsb3dlciByYXRlLiAgQnV0IHRo
-ZSBkcml2ZXIgYXQgTUFQMiBkb2VzIG5vdCByZWNlaXZlIHRoZSBmcmFtZXMuCj4KPiBXZSBoYXZl
-IGNhcHR1cmVzIG9mIHRoaXMgZXhjaGFuZ2UgZm9yIGJvdGggdGhlIHVuc3VjY2Vzc2Z1bCBhcyB3
-ZWxsIGFzIHRoZSBzdWNjZXNzZnVsIGNhc2UsIHdoaWNoIGhhcHBlbnMgd2hlbiB3ZSBtb3ZlIE1B
-UDIgY2xvc2VyIHRvIE1BUDEuICAgVGhleSBjYW4gYmUgZm91bmQgaGVyZToKPiBodHRwczovL3d3
-dy5kcm9wYm94LmNvbS9zaC8wb3I4NmM4dnhvdHlnZGMvQUFCSTdSbVEybnp0Y09CRjNVRFhiUFVt
-YQo+Cj4gSW4gYm90aCBzY2VuYXJpb3MsIHRoZSBmcmFtZXMgZnJvbSBNQVAxIHRvIE1BUDIgYXJl
-IGFja25vd2xlZGdlZCwgYXMgb2JzZXJ2ZWQgaW4gc25pZmZlciBjYXB0dXJlcy4KPgo+IEluIHRo
-ZSBzdWNjZXNzZnVsIHNjZW5hcmlvLCB0aGUgZHJpdmVyIGxvZ3Mgc2hvdyB0aGUgZnJhbWVzIGJl
-aW5nIHJlY2VpdmVkIGJ5IHRoZSBkcml2ZXIuICBTZXF1ZW5jZSBudW1iZXJzIGluIHRoZSBkZWJ1
-ZyBsb2dzIG1hdGNoIHRob3NlIGluIHRoZSBzbmlmZmVyIGNhcHR1cmVzLgo+Cj4gcm9vdEBuYmct
-M2VkOWRhOn4jIGpvdXJuYWxjdGwgLWtmIHwgZ3JlcCAicGVlciA2MDozMTo5NzozZTo4MjplNiIg
-fCBncmVwIHVjYXN0IHwgZ3JlcCAnbGVuIDM3NCcKPiBGZWIgMDUgMDU6NDM6MzEgbmJnLTNlZDlk
-YSBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiByeCBza2IgZDczNGY2YzAgbGVuIDM3
-NCBwZWVyIDYwOjMxOjk3OjNlOjgyOmU2IHRpZCAwIChCRSkgdWNhc3Qgc24gMTAyNyB2aHQgc2dp
-IHJhdGVfaWR4IDkgdmh0X25zcyAzIGZyZXEgNTgyNSBiYW5kIDEgZmxhZyAweDYwMDgwMCBmY3Mt
-ZXJyIDAgbWljLWVyciAwIGFtc2R1LW1vcmUgMAo+IEZlYiAwNSAwNTo0Mzo0MiBuYmctM2VkOWRh
-IGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IHJ4IHNrYiBkNmFhYTQ4MCBsZW4gMzc0
-IHBlZXIgNjA6MzE6OTc6M2U6ODI6ZTYgdGlkIDAgKEJFKSB1Y2FzdCBzbiAxMDMxIHZodCBzZ2kg
-cmF0ZV9pZHggOSB2aHRfbnNzIDMgZnJlcSA1ODI1IGJhbmQgMSBmbGFnIDB4NjAwODAwIGZjcy1l
-cnIgMCBtaWMtZXJyIDAgYW1zZHUtbW9yZSAwCj4gRmViIDA1IDA1OjQzOjUzIG5iZy0zZWQ5ZGEg
-a2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogcnggc2tiIGQ1M2E4ZDgwIGxlbiAzNzQg
-cGVlciA2MDozMTo5NzozZTo4MjplNiB0aWQgMCAoQkUpIHVjYXN0IHNuIDEwMzcgdmh0IHNnaSBy
-YXRlX2lkeCA5IHZodF9uc3MgMyBmcmVxIDU4MjUgYmFuZCAxIGZsYWcgMHg2MDA4MDAgZmNzLWVy
-ciAwIG1pYy1lcnIgMCBhbXNkdS1tb3JlIDAKPgo+IEluIHRoZSBmYWlsdXJlIHNjZW5hcmlvLCB0
-aGUgZHJpdmVyIGxvZ3Mgc2hvdyBubyBmcmFtZXMsIGV2ZW4gaWYgdGhlIGNhcHR1cmUgc2hvd3Mg
-dGhhdCB0aGUgZnJhbWVzIGFyZSBhY2tub3dsZWRnZWQuCj4KPiByb290QG5iZy0zZWQ5ZGE6fiMg
-am91cm5hbGN0bCAta2YgfCBncmVwICJwZWVyIDYwOjMxOjk3OjNlOjgyOmU2IiB8IGdyZXAgdWNh
-c3QgfCBncmVwICdsZW4gMzc0Jwo+IDxub3RoaW5nIGhlcmU+Cj4KPiBJZiB3ZSBmb3JjZSBNQVAx
-IHRvIHVzZSBhIHNpbmdsZSBzdHJlYW0sIHRoZSBmcmFtZXMgYXJlIHJlY2VpdmVkIHN1Y2Nlc3Nm
-dWxseS4KPgo+ICAgIyBpdyBtZXNoMCBzZXQgYml0cmF0ZXMgbGVnYWN5LTUgaHQtbWNzLTUgdmh0
-LW1jcy01IDE6MC05Cj4KPiBJdCBzZWVtcyBhcyBpZiB0aGUgZmlybXdhcmUgaXMgYWNrbm93bGVk
-Z2luZyBidXQgc2lsZW50bHkgZGlzY2FyZGluZyBmcmFtZXPigKYgaXMgdGhhdCBwb3NzaWJsZT8K
-PiBDYW4gYW55b25lIHByb3ZpZGUgc29tZSBwb2ludGVycyBvbiBob3cgdG8gdHJvdWJsZXNob290
-IHRoaXM/Cj4KPiBXZSBhcmUgdXNpbmcgdGhpcyBmaXJtd2FyZTogaHR0cHM6Ly9naXRodWIuY29t
-L2t2YWxvL2F0aDEway1maXJtd2FyZS9ibG9iL21hc3Rlci9RQ0E5OTg0L2h3MS4wLzMuNC9maXJt
-d2FyZS01LmJpbl8xMC40LTMuNC0wMDEwNCBhbmQga2VybmVsIDQuOS4zMSB3aXRoIGEgZmV3IGNo
-ZXJyeS1waWNrZWQgcGF0Y2hlcyBmcm9tIHRoZSBhdGgxMGsgYnJhbmNoLgo+IFRoZSBoYXJkd2Fy
-ZSBpcyBRQ0E5OTQuCj4KPiBCZXN0LAo+Cj4gSmF2aWVyCj4KPgo+Cj4KPiBfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QK
-PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+From: Ryan Hsu <ryanhsu@codeaurora.org>
+
+QCA9377 firmware update the IRAM banks from 4 to 9.
+
+Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 355db6a..0c1029c 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2216,7 +2216,7 @@ static int ath10k_pci_get_num_banks(struct ath10k *ar)
+ 		}
+ 		break;
+ 	case QCA9377_1_0_DEVICE_ID:
+-		return 4;
++		return 9;
+ 	}
+ 
+ 	ath10k_warn(ar, "unknown number of banks, assuming 1\n");
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
