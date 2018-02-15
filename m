@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1emFSq-00036Z-Hb
- for ath10k@lists.infradead.org; Thu, 15 Feb 2018 09:04:26 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH] ath10k: Enable IOMMU support for WCN3990 target
-Date: Thu, 15 Feb 2018 14:34:08 +0530
-Message-Id: <1518685448-15317-1-git-send-email-govinds@codeaurora.org>
+ id 1emKAp-0007aD-0j
+ for ath10k@lists.infradead.org; Thu, 15 Feb 2018 14:06:16 +0000
+Received: by mail-wm0-x243.google.com with SMTP id v123so1019220wmd.5
+ for <ath10k@lists.infradead.org>; Thu, 15 Feb 2018 06:05:55 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1518684977-14607-1-git-send-email-govinds@codeaurora.org>
+References: <1518684977-14607-1-git-send-email-govinds@codeaurora.org>
+From: Julian Calaby <julian.calaby@gmail.com>
+Date: Fri, 16 Feb 2018 01:05:33 +1100
+Message-ID: <CAGRGNgVtOuPwejDi-1Bux+1mGTTup0Mcf4ED-OBcn3z8=atpNQ@mail.gmail.com>
+Subject: Re: [PATCH 13/13] dt: bindings: add bindings for wcn3990 wifi block
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,189 +20,105 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: devicetree <devicetree@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-When an IOMMU device is available on the platform bus, allocate
-an IOMMU domain and attach the wlan target to it.
-WCN3990 target can then attach an DMA I/O virtual address
-space to scan out of bound transactions.
+Hi Govind,
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/snoc.c | 100 ++++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/snoc.h |   3 +
- 2 files changed, 101 insertions(+), 2 deletions(-)
+On Thu, Feb 15, 2018 at 7:56 PM, Govind Singh <govinds@codeaurora.org> wrote:
+> Add device tree binding documentation details for wcn3990
+> wifi block present in Qualcomm SDM845/APQ8098 SoC into
+> "qcom,ath10k.txt".
+>
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> ---
+>  .../bindings/net/wireless/qcom,ath10k.txt          | 35 ++++++++++++++++++++++
+>  1 file changed, 35 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> index 3d2a031..07b0f13 100644
+> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> @@ -4,6 +4,7 @@ Required properties:
+>  - compatible: Should be one of the following:
+>         * "qcom,ath10k"
+>         * "qcom,ipq4019-wifi"
+> +       * "qcom,wcn3990-wifi"
+>
+>  PCI based devices uses compatible string "qcom,ath10k" and takes calibration
+>  data along with board specific data via "qcom,ath10k-calibration-data".
+> @@ -18,8 +19,11 @@ In general, entry "qcom,ath10k-pre-calibration-data" and
+>  "qcom,ath10k-calibration-data" conflict with each other and only one
+>  can be provided per device.
+>
+> +SNOC based devices (i.e. wcn3990) uses compatible string "qcom,wcn3990-wifi".
+> +
+>  Optional properties:
+>  - reg: Address and length of the register set for the device.
+> +- reg-names: Names of the memory regions defined in reg entry.
+>  - resets: Must contain an entry for each entry in reset-names.
+>            See ../reset/reseti.txt for details.
+>  - reset-names: Must include the list of following reset names,
+> @@ -49,6 +53,12 @@ Optional properties:
+>                                  hw versions.
+>  - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
+>                                      the length can vary between hw versions.
+> +- qcom,<supply-name>-supply: handle to the regulator device tree node
+> +                          optional "supply-name" is "vdd-0.8-cx-mx".
+> +- qcom,<supply>-config: Specifies voltage levels for supply. Should be
+> +                         specified in pairs (min, max), units uV.  There can
+> +                          be optional load in uA and Regulator settle delay in
+> +                          uS.
+>
+>  Example (to supply the calibration data alone):
+>
+> @@ -119,3 +129,28 @@ wifi0: wifi@a000000 {
+>         qcom,msi_base = <0x40>;
+>         qcom,ath10k-pre-calibration-data = [ 01 02 03 ... ];
+>  };
+> +
+> +Example (to supply wcn3990 SoC wifi block details):
+> +
+> +qcom,msm_ath10k@18000000 {
+> +               compatible = "qcom,wcn3990-wifi";
+> +               reg = <0x18800000 0x800000>;
+> +               reg-names = "membase";
+> +               clocks = <&clock_gcc clk_aggre2_noc_clk>;
+> +               clock-names = "smmu_aggre2_noc_clk"
+> +               interrupts =
+> +                          <0 130 0 /* CE0 */ >,
+> +                          <0 131 0 /* CE1 */ >,
+> +                          <0 132 0 /* CE2 */ >,
+> +                          <0 133 0 /* CE3 */ >,
+> +                          <0 134 0 /* CE4 */ >,
+> +                          <0 135 0 /* CE5 */ >,
+> +                          <0 136 0 /* CE6 */ >,
+> +                          <0 137 0 /* CE7 */ >,
+> +                          <0 138 0 /* CE8 */ >,
+> +                          <0 139 0 /* CE9 */ >,
+> +                          <0 140 0 /* CE10 */ >,
+> +                          <0 141 0 /* CE11 */ >;
+> +               vdd-0.8-cx-mx-supply = <&pm8998_l5>;
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index cd21b25..502263d 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -26,6 +26,10 @@
- #include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
- #include <linux/clk.h>
-+#include <asm/dma-iommu.h>
-+#include <linux/iommu.h>
-+#include <linux/dma-mapping.h>
-+
- #define  WCN3990_CE_ATTR_FLAGS 0
- #define ATH10K_SNOC_RX_POST_RETRY_MS 50
- #define CE_POLL_PIPE 4
-@@ -1292,6 +1296,88 @@ static int ath10k_hw_power_off(struct ath10k *ar)
- 	return ret;
- }
- 
-+static int ath10k_smmu_attach(struct ath10k *ar)
-+{
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	struct dma_iommu_mapping *mapping;
-+	struct platform_device *pdev;
-+	int ret = 0;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_SNOC, "Initializing SMMU\n");
-+
-+	pdev = ar_snoc->dev;
-+	mapping = arm_iommu_create_mapping(&platform_bus_type,
-+					   ar_snoc->smmu_iova_start,
-+					   ar_snoc->smmu_iova_len);
-+	if (IS_ERR(mapping)) {
-+		ath10k_err(ar, "create mapping failed, err = %d\n", ret);
-+		ret = PTR_ERR(mapping);
-+		goto map_fail;
-+	}
-+
-+	ret = arm_iommu_attach_device(&pdev->dev, mapping);
-+	if (ret < 0 && ret != -EEXIST) {
-+		ath10k_err(ar, "iommu attach device failed, err = %d\n", ret);
-+		goto attach_fail;
-+	} else if (ret == -EEXIST) {
-+		ret = 0;
-+	}
-+
-+	ar_snoc->smmu_mapping = mapping;
-+
-+	return ret;
-+
-+attach_fail:
-+	arm_iommu_release_mapping(mapping);
-+map_fail:
-+	return ret;
-+}
-+
-+static void ath10k_smmu_deinit(struct ath10k *ar)
-+{
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	struct platform_device *pdev;
-+
-+	pdev = ar_snoc->dev;
-+
-+	if (!ar_snoc->smmu_mapping)
-+		return;
-+
-+	arm_iommu_detach_device(&pdev->dev);
-+	arm_iommu_release_mapping(ar_snoc->smmu_mapping);
-+
-+	ar_snoc->smmu_mapping = NULL;
-+}
-+
-+static int ath10k_smmu_init(struct ath10k *ar)
-+{
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	struct platform_device *pdev;
-+	struct resource *res;
-+	int ret = 0;
-+
-+	pdev = ar_snoc->dev;
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-+					   "smmu_iova_base");
-+	if (!res) {
-+		ath10k_err(ar, "SMMU iova base not found\n");
-+	} else {
-+		ar_snoc->smmu_iova_start = res->start;
-+		ar_snoc->smmu_iova_len = resource_size(res);
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC, "SMMU iova start: %pa, len: %zu\n",
-+			   &ar_snoc->smmu_iova_start, ar_snoc->smmu_iova_len);
-+
-+		ret = ath10k_smmu_attach(ar);
-+		if (ret < 0) {
-+			ath10k_err(ar, "SMMU init failed, err = %d, start: %pad, len: %zx\n",
-+				   ret, &ar_snoc->smmu_iova_start,
-+				   ar_snoc->smmu_iova_len);
-+		}
-+	}
-+
-+	return ret;
-+}
-+
- static const struct of_device_id ath10k_snoc_dt_match[] = {
- 	{ .compatible = "qcom,wcn3990-wifi",
- 	 .data = &drv_priv,
-@@ -1339,16 +1425,22 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
- 	ar_snoc->ce.bus_ops = &ath10k_snoc_bus_ops;
- 	ar->ce_priv = &ar_snoc->ce;
- 
-+	ret = ath10k_smmu_init(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to int SMMU: %d\n", ret);
-+		goto err_core_destroy;
-+	}
-+
- 	ath10k_snoc_resource_init(ar);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to initialize resource: %d\n", ret);
--		goto err_core_destroy;
-+		goto err_smmu_deinit;
- 	}
- 
- 	ath10k_snoc_setup_resource(ar);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to setup resource: %d\n", ret);
--		goto err_core_destroy;
-+		goto err_smmu_deinit;
- 	}
- 	ret = ath10k_snoc_request_irq(ar);
- 	if (ret) {
-@@ -1396,6 +1488,9 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
- err_release_resource:
- 	ath10k_snoc_release_resource(ar);
- 
-+err_smmu_deinit:
-+	ath10k_smmu_deinit(ar);
-+
- err_core_destroy:
- 	ath10k_core_destroy(ar);
- 
-@@ -1409,6 +1504,7 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
- 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc remove\n");
- 	ath10k_core_unregister(ar);
- 	ath10k_hw_power_off(ar);
-+	ath10k_smmu_deinit(ar);
- 	ath10k_snoc_free_irq(ar);
- 	ath10k_snoc_release_resource(ar);
- 	ath10k_core_destroy(ar);
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
-index 05dc98f..a9bca2e 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.h
-+++ b/drivers/net/wireless/ath/ath10k/snoc.h
-@@ -82,6 +82,9 @@ struct ath10k_snoc {
- 	struct timer_list rx_post_retry;
- 	struct ath10k_wcn3990_vreg_info *vreg;
- 	struct ath10k_wcn3990_clk_info *clk;
-+	struct dma_iommu_mapping *smmu_mapping;
-+	dma_addr_t smmu_iova_start;
-+	size_t smmu_iova_len;
- };
- 
- static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
+You've omitted the "qcom," you specify above.
+
+> +               qcom,vdd-0.8-cx-mx-config = <800000 800000 2400 1000>;
+> +};
+> --
+> 1.9.1
+>
+
+Thanks,
+
 -- 
-1.9.1
+Julian Calaby
 
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
 
 _______________________________________________
 ath10k mailing list
