@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1emFDW-0006Fh-2Z
- for ath10k@lists.infradead.org; Thu, 15 Feb 2018 08:49:18 +0000
+ id 1emFEE-0006lj-CB
+ for ath10k@lists.infradead.org; Thu, 15 Feb 2018 08:49:26 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 04/13] ath10k: Add HTC services for WCN3990
-Date: Thu, 15 Feb 2018 14:18:17 +0530
-Message-Id: <1518684497-5495-1-git-send-email-govinds@codeaurora.org>
+Subject: [PATCH 06/13] ath10k: Add hif power-up/power-down methods
+Date: Thu, 15 Feb 2018 14:19:02 +0530
+Message-Id: <1518684542-5604-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +23,93 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-WCN3990 target uses 3 Copy engine(CE1/CE9/CE10) in RX path
-and CE 11 for pktlog.
-Add data path HTC ep services and PKTLOG services for WCN3990.
+Add hif power-up/power-down methods for wcn3990
+target.
 
 Signed-off-by: Govind Singh <govinds@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/htc.c | 6 ++++++
- drivers/net/wireless/ath/ath10k/htc.h | 4 ++++
- 2 files changed, 10 insertions(+)
+ drivers/net/wireless/ath/ath10k/snoc.c | 61 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 492dc5b..8902720 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -542,8 +542,14 @@ static const char *htc_service_name(enum ath10k_htc_svc_id id)
- 		return "NMI Data";
- 	case ATH10K_HTC_SVC_ID_HTT_DATA_MSG:
- 		return "HTT Data";
-+	case ATH10K_HTC_SVC_ID_HTT_DATA2_MSG:
-+		return "HTT Data";
-+	case ATH10K_HTC_SVC_ID_HTT_DATA3_MSG:
-+		return "HTT Data";
- 	case ATH10K_HTC_SVC_ID_TEST_RAW_STREAMS:
- 		return "RAW";
-+	case ATH10K_HTC_SVC_ID_HTT_LOG_MSG:
-+		return "PKTLOG";
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index a39eee7..9d402e4 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -519,6 +519,65 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
+ 	return 0;
+ }
  
- 	return "Unknown";
-diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index a2f8814..3487759 100644
---- a/drivers/net/wireless/ath/ath10k/htc.h
-+++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -248,6 +248,7 @@ enum ath10k_htc_svc_gid {
- 	ATH10K_HTC_SVC_GRP_WMI = 1,
- 	ATH10K_HTC_SVC_GRP_NMI = 2,
- 	ATH10K_HTC_SVC_GRP_HTT = 3,
-+	ATH10K_LOG_SERVICE_GROUP = 6,
- 
- 	ATH10K_HTC_SVC_GRP_TEST = 254,
- 	ATH10K_HTC_SVC_GRP_LAST = 255,
-@@ -273,6 +274,9 @@ enum ath10k_htc_svc_id {
- 
- 	ATH10K_HTC_SVC_ID_HTT_DATA_MSG	= SVC(ATH10K_HTC_SVC_GRP_HTT, 0),
- 
-+	ATH10K_HTC_SVC_ID_HTT_DATA2_MSG = SVC(ATH10K_HTC_SVC_GRP_HTT, 1),
-+	ATH10K_HTC_SVC_ID_HTT_DATA3_MSG = SVC(ATH10K_HTC_SVC_GRP_HTT, 2),
-+	ATH10K_HTC_SVC_ID_HTT_LOG_MSG = SVC(ATH10K_LOG_SERVICE_GROUP, 0),
- 	/* raw stream service (i.e. flash, tcmd, calibration apps) */
- 	ATH10K_HTC_SVC_ID_TEST_RAW_STREAMS = SVC(ATH10K_HTC_SVC_GRP_TEST, 0),
++static int ath10k_snoc_init_pipes(struct ath10k *ar)
++{
++	int i, ret;
++
++	for (i = 0; i < CE_COUNT; i++) {
++		ret = ath10k_ce_init_pipe(ar, i, &host_ce_config_wlan[i]);
++		if (ret) {
++			ath10k_err(ar, "failed to initialize copy engine pipe %d: %d\n",
++				   i, ret);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int ath10k_snoc_wlan_enable(struct ath10k *ar)
++{
++	return 0;
++}
++
++static void ath10k_snoc_wlan_disable(struct ath10k *ar)
++{
++}
++
++static void ath10k_snoc_hif_power_down(struct ath10k *ar)
++{
++	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif power down\n");
++
++	ath10k_snoc_wlan_disable(ar);
++}
++
++static int ath10k_snoc_hif_power_up(struct ath10k *ar)
++{
++	int ret;
++
++	ath10k_dbg(ar, ATH10K_DBG_SNOC, "%s:WCN3990 driver state = %d\n",
++		   __func__, ar->state);
++
++	ret = ath10k_snoc_wlan_enable(ar);
++	if (ret) {
++		ath10k_err(ar, "failed to enable wcn3990: %d\n", ret);
++		return ret;
++	}
++
++	ret = ath10k_snoc_init_pipes(ar);
++	if (ret) {
++		ath10k_err(ar, "failed to initialize CE: %d\n", ret);
++		goto err_wlan_enable;
++	}
++
++	return 0;
++
++err_wlan_enable:
++	ath10k_snoc_wlan_disable(ar);
++
++	return ret;
++}
++
+ static const struct ath10k_hif_ops ath10k_snoc_hif_ops = {
+ 	.read32		= ath10k_snoc_read32,
+ 	.write32	= ath10k_snoc_write32,
+@@ -526,6 +585,8 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
+ 	.stop		= ath10k_snoc_hif_stop,
+ 	.map_service_to_pipe	= ath10k_snoc_hif_map_service_to_pipe,
+ 	.get_default_pipe	= ath10k_snoc_hif_get_default_pipe,
++	.power_up		= ath10k_snoc_hif_power_up,
++	.power_down		= ath10k_snoc_hif_power_down,
  };
+ 
+ static const struct ath10k_bus_ops ath10k_snoc_bus_ops = {
 -- 
 1.9.1
 
