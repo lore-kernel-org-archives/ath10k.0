@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eltFu-0004w0-D7
- for ath10k@lists.infradead.org; Wed, 14 Feb 2018 09:21:37 +0000
-Subject: Re: LED support for QCA9980
-References: <CABcamCAj7_duDw9_Nx74nj3xj_LTsxqybjakOtWf4UgnZbYANQ@mail.gmail.com>
- <CAKsvP2YxnCjeGutyuiHZUpeB62UXeMpa8XvWufDeJOr06ZMjwA@mail.gmail.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <fcb98f68-cb2f-4865-1644-a823bef54c7d@dd-wrt.com>
-Date: Wed, 14 Feb 2018 10:21:12 +0100
-MIME-Version: 1.0
-In-Reply-To: <CAKsvP2YxnCjeGutyuiHZUpeB62UXeMpa8XvWufDeJOr06ZMjwA@mail.gmail.com>
+ id 1emFCZ-0005Zh-LB
+ for ath10k@lists.infradead.org; Thu, 15 Feb 2018 08:47:46 +0000
+From: Govind Singh <govinds@codeaurora.org>
+Subject: [PATCH 00/13] ***Set4: Add support of WCN3990 bus layer support ***
+Date: Thu, 15 Feb 2018 14:17:15 +0530
+Message-Id: <1518684435-5288-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,79 +15,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
+To: ath10k@lists.infradead.org
+Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-aSB3cm90ZSBhIHBhdGNoIGZvciBhdGgxMGsgbm93IHdoaWNoIGltcGxlbWVudHMgYSBncGlvIGNo
-aXAgYW5kIGxlZCAKc3Vic3lzdGVtIGZvciB0aGUgYXRoMTBrIGRyaXZlci4KYWxsIGNvbW1vbiBh
-dGgxMGsgY2hpcHNldHMgYXJlIHN1cHBvcnRlZC4gc28gOTl4eCwgOTk4NCwgOTg4eCwgaXBxNDAx
-OSAKZXRjLiB3aWxsIHdvcmsgd2l0aCB0aGUgY29ycmVjdCBsZWQgcGluIGFzc2lnbm1lbnQuCmkg
-d2lsbCBwdWJsaXNoIGl0IGhlcmUgYWZ0ZXIgaSBjbGVhbmVkIGl0IHVwCgpzYW1wbGU6CnJvb3RA
-T1RBaTovc3lzL2RldmljZXMvdmlydHVhbC9sZWRzL2F0aDEway1waHkwIyBjYXQgdHJpZ2dlcgpu
-b25lIGdwaW8gc3dpdGNoMCBwaHkwcnggcGh5MHR4IHBoeTBhc3NvYyBwaHkwcmFkaW8gW3BoeTB0
-cHRdCgoKU2ViYXN0aWFuCgoKQW0gMjQuMTAuMjAxNyB1bSAyMzo1MSBzY2hyaWViIE5hdGhhbmll
-bCBGaWxhcmRvOgo+IEhpISAgWW91IG1heSBmaW5kIHRoZSBmb2xsb3dpbmcgc2NyaXB0IEkgcnVu
-IG9uIG15IGF0aDEwayBib2FyZCB1c2VmdWwuCj4KPiAjIS9iaW4vc2gKPgo+IERFVk5BTUU9JDE7
-IHNoaWZ0Cj4gREVWUEFUSD0vc3lzL2NsYXNzL25ldC8ke0RFVk5BTUV9L2RldmljZQo+Cj4gaWYg
-WyAhIC1yICR7REVWUEFUSH0vdmVuZG9yIC1vICEgLXIgJHtERVZQQVRIfS9kZXZpY2UgXTsgdGhl
-bgo+ICAgIGVjaG8gIkJhZCBkZXZpY2UgbmFtZT8gIE5vIC92ZW5kb3Igb3IgL2RldmljZSBzeXMg
-ZmlsZSBpbiAke0RFVlBBVEh9Igo+ICAgIGV4aXQgMQo+IGZpCj4KPiBQQ0lJRD0iJChjYXQgJHtE
-RVZQQVRIfS92ZW5kb3IpOiQoY2F0ICR7REVWUEFUSH0vZGV2aWNlKSIKPgo+IGlmIFsgIjB4MTY4
-YzoweDAwNDAiICE9ICIke1BDSUlEfSIgXTsgdGhlbgo+ICAgIGVjaG8gIkJhZCBQQ0kgSUQ6ICR7
-UENJSUR9OyBiYWlsaW5nIG91dCEiCj4gICAgZXhpdCAxCj4gZmkKPgo+IGRvcGNpbWVtKCkgewo+
-ICAgICMgZWNobyBwY2ltZW0gJHtERVZQQVRIfS9yZXNvdXJjZTAgJDEgdyAkMiA+JjIKPiAgICBw
-Y2ltZW0gJHtERVZQQVRIfS9yZXNvdXJjZTAgJDEgdyAkMiB8IHNlZCAtbmUgJ3MvXlZhbHVlIGF0
-IFteOl0qOgo+IFwoLipcKSQvXDEvcCcKPiB9Cj4KPiBPUklHMTg9JChkb3BjaW1lbSAweDg1MDE4
-KQo+IE9SSUcwMD0kKGRvcGNpbWVtIDB4ODUwMDApCj4KPiBjYXNlICQxIGluCj4gICAgb24pCj4g
-ICAgICAgZG9wY2ltZW0gMHg4NTAxOCAkKCgke09SSUcxOH0gfCAgMHgyMDAwMCkpICMgaW5pdAo+
-ICAgICAgIGRvcGNpbWVtIDB4ODUwMDAgJCgoJHtPUklHMDB9ICYgfjB4MjAwMDApKSAjIGFjdGl2
-ZSBsb3cKPiAgICAgICA7Owo+ICAgIG9mZikKPiAgICAgICBkb3BjaW1lbSAweDg1MDAwICQoKCR7
-T1JJRzAwfSB8ICAweDIwMDAwKSkgIyBpbmFjdGl2ZSBoaWdoCj4gICAgICAgZG9wY2ltZW0gMHg4
-NTAxOCAkKCgke09SSUcxOH0gJiB+MHgyMDAwMCkpICMgZGVpbml0Cj4gICAgICAgOzsKPiAgICAq
-KSBlY2hvICJEdW5ubyBob3cgdG8gJyQyJz8gIFRyeSAnb24nIG9yICdvZmYnIgo+ICAgICAgIGV4
-aXQgMQo+ICAgICAgIDs7Cj4gZXNhYwo+Cj4KPiBSdW4gYXMsIGZvciBleGFtcGxlLCAiLi9hdGgt
-bGVkcy5zaCB3bGFuMCBvbiIuCj4KPiBDaGVlcnMhCj4gLS1ud2Y7Cj4KPiBPbiBUdWUsIE9jdCAy
-NCwgMjAxNyBhdCA1OjMyIFBNLCBUb2xnYSBDYWtpciA8Y2V2ZWxuZXRAZ21haWwuY29tPiB3cm90
-ZToKPj4+IFRoYW5rcyB0byBzb21lIGhlcm8ncyBzbGV1dGhpbmcgYXJvdW5kIGEgR1BMIHNvdXJj
-ZSBkdW1wCj4+PiAoaHR0cHM6Ly9mb3J1bS5vcGVud3J0Lm9yZy92aWV3dG9waWMucGhwP3BpZD0z
-MzYyMzcjcDMzNjIzNykgYW5kIGEKPj4+IGxhdGVyIHN1Z2dlc3Rpb24gdG8gdHJ5IGZsaXBwaW5n
-IGJpdHMgZnJvbSB1c2Vyc3BhY2UgKHVzaW5nCj4+PiBodHRwczovL2dpdGh1Yi5jb20vYmlsbGZh
-cnJvdy9wY2ltZW0pLCBJIGNhbiByZXBvcnQgdGhhdCwgYXQgbGVhc3QgZm9yCj4+PiB0aGUgdHdv
-IFFDQTk5ODBzIGluIG15IHBvc3Nlc3Npb24gKHdpdGhpbiB0aGUgVFAtTGluayBDMjYwMCBnYXRl
-d2F5IEkKPj4+IGhhdmUpIHRoYXQgdGhlIHNwZWN1bGF0aW9uIGlzIGNvcnJlY3Q6IGtpY2tpbmcg
-b24gYml0IDE3ICh0aGUgdmFsdWUgb2YKPj4+IEFUSF9CRUVMSU5FUl9MRUQpIGluIDB4ODUwMTgg
-b2YgcmVzb3VyY2UwIG1ha2VzIGJpdCAxNyBpbiAweDg1MDAwIGFuCj4+PiBhY3RpdmUtbG93IGNv
-bnRyb2xsZXIgZm9yIHRoZSBMRURzIGF0dGFjaGVkIHRvIHRoZSBjaGlwLgo+PiBIaSEgSSd2ZSBn
-b3QgdGhlIFp5eGVsIE5CRzY4MTcsIHdoaWNoIHVzZXMgUUNBOTk4NCBTb0NzIC0gdmVyeSBzaW1p
-bGFyCj4+IHRvIHlvdXJzLiBJJ3ZlIGludmVzdGlnYXRlZCBaeXhlbCdzIE9FTSBmaXJtd2FyZSBh
-bmQgYWxzbyBjYW1lIGFjcm9zcwo+PiBRQ0E5OTg0IEdQSU8gcGluIDE3IGJlZWluZyB1c2VkIGZv
-ciB0aGUgV2lGaSAyLjRHIGFuZCA1RyBMRURzLgo+PiBJbnRlcmVzdGluZ2x5IGVub3VnaCwgTmV0
-Z2VhciBSNzgwMCBhbHNvIHVzZXMgR1BJTyBwaW4gMTcsIGFjY29yZGluZwo+PiB0byB0aGVpciBm
-aXJtd2FyZSBzb3VyY2VzLiBVbmZvcnR1bmF0ZWx5LCBJIHdhcyBub3QgYWJsZSB0byBmaW5kIG91
-dAo+PiBhbnkgYWRkcmVzcyBvciB2ZXJpZnkgeW91ciBzdXBwbGllZCBhZGRyZXNzIG9yIGZpbmQg
-YW55IG90aGVyIHdheSB0bwo+PiBtYW5pcHVsYXRlIHRoZSBXaUZpIFNvQydzIEdQSU9zLgo+Pgo+
-PiBJJ20gYSBob2JieSBwcm9ncmFtbWVyIGFuZCBoYXZlIHdvcmtlZCBvbiByZXZlcnNlLWVuZ2lu
-ZWVyaW5nIFVTQgo+PiBkZXZpY2VzIGFuZCBMaW51eCBrZXJuZWwgZHJpdmVycyBpbiB0aGUgcGFz
-dCBhbmQgYW0gbm93IGludGVyZXN0ZWQgaW4KPj4gZ2V0dGluZyB0aGlzIHRvIHdvcmsuIEknbSBm
-YW1pbGlhciB3aXRoIHRoZSBMaW51eCBMRUQgQVBJLCBidXQgSSdtCj4+IGNvbXBsZXRlbHkgbmV3
-IHRvIG5ldHdvcmtpbmcgLyBQQ0kgLyBhdGgxMGsuCj4+Cj4+IFdoYXQgSSBuZWVkIGlzIGEgaGlu
-dCwgaG93IHRvIGNsZWFubHkgYWNjZXNzIFFDQTk5ODQgR1BJT3MgKG9yIGF0bGVhc3QKPj4gR1BJ
-TyBwaW4gMTcpIHdpdGhpbiBhdGgxMGsgLyBrZXJuZWwuIEV4cG9zaW5nIHRoYXQgYWNjZXNzIHRv
-IHVzZXJzcGFjZQo+PiB2aWEgTGludXggTEVEIEFQSSBpcyBub3QgYW4gaXNzdWUgLSBJIGNhbiBk
-byB0aGF0Lgo+Pgo+PiBBbnkgaWRlYXM/IEknbSB0aGFua2Z1bCBmb3IgYW55IGhlbHAgb3IgaGlu
-dCBJIGNhbiBnZXQhCj4+Cj4+IENoZWVycywKPj4gVG9sZ2EKPiBfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCj4KCi0tIApNaXQgZnJldW5kbGljaGVuIEdyw7xzc2VuIC8gUmVn
-YXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5FVCBHbWJIIC0gREQt
-V1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUgMjFhLCA2NDYyNSBCZW5zaGVpbQpSZWdp
-c3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDczCkdlc2Now6RmdHNm
-w7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cu
-ZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVsLjogKzQ5NjI1MS01
-ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsK
+This change adds support for integrated wcn3990 chipset on
+MSM platforms. WCN3990 is 2x2 802.11ac chipset where wlan
+subsystem is interfaced over system interconnect.
+Wlan fw runs in Q6 DSP. WCN3990 chipset uses 12 copy engine
+for host to target and target to host communication. It has
+extra 2 copy engine in rx data path and packet log capability
+is exposed via new HTC service over dedicated copy engine.
+Each CE has dedicated interrupt of rx path and tx completion.
+
+    [CE0] :host->target control and raw streams
+    [CE1] :target->host HTT
+    [CE2] :target->host WMI
+    [CE3] :host->target WMI
+    [CE4] :host->target HTT
+    [CE5] :reserved
+    [CE6] :Target autonomous HIF_memcpy
+    [CE7] :reserved
+    [CE8] :reserved
+    [CE9] :target->host HTT
+    [CE10] :target->host HTT
+    [CE11] :target -> host PKTLOG
+
+
+
+Govind Singh (11):
+  ath10k: platform driver for WCN3990 SNOC WLAN module
+  ath10k: add resource init and deinit for WCN3990
+  ath10k: Add hif start/stop methods for wcn3990 snoc layer
+  ath10k: Add HTC services for WCN3990
+  ath10k: Map HTC services to tx/rx pipes for wcn3990
+  ath10k: Add hif power-up/power-down methods
+  ath10k: Add hif tx methods for wcn3990
+  ath10k: Add hif rx methods for wcn3990
+  ath10k: Modify hif tx paddr to dma_addr_t type
+  ath10k: Vote for hardware resources for WCN3990
+  dt: bindings: add bindings for wcn3990 wifi block
+
+Rakesh Pillai (2):
+  ath10k: Add support to get target info from hif ops
+  ath10k: Check all CE for data if irq summary is not retained
+
+ .../bindings/net/wireless/qcom,ath10k.txt          |   35 +
+ drivers/net/wireless/ath/ath10k/Kconfig            |    8 +
+ drivers/net/wireless/ath/ath10k/Makefile           |    4 +
+ drivers/net/wireless/ath/ath10k/ce.h               |   10 +-
+ drivers/net/wireless/ath/ath10k/core.c             |   21 +
+ drivers/net/wireless/ath/ath10k/hif.h              |   15 +-
+ drivers/net/wireless/ath/ath10k/htc.c              |    6 +
+ drivers/net/wireless/ath/ath10k/htc.h              |    4 +
+ drivers/net/wireless/ath/ath10k/hw.h               |    3 +
+ drivers/net/wireless/ath/ath10k/pci.c              |    8 +-
+ drivers/net/wireless/ath/ath10k/snoc.c             | 1450 ++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/snoc.h             |   95 ++
+ 12 files changed, 1651 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/snoc.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/snoc.h
+
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
