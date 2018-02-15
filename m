@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1emFFD-0007go-7c
- for ath10k@lists.infradead.org; Thu, 15 Feb 2018 08:50:28 +0000
+ id 1emFFQ-0008Ny-ED
+ for ath10k@lists.infradead.org; Thu, 15 Feb 2018 08:50:46 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH 10/13] ath10k: Add support to get target info from hif ops
-Date: Thu, 15 Feb 2018 14:20:03 +0530
-Message-Id: <1518684603-5812-1-git-send-email-govinds@codeaurora.org>
+Subject: [PATCH 11/13] ath10k: Check all CE for data if irq summary is not
+ retained
+Date: Thu, 15 Feb 2018 14:20:16 +0530
+Message-Id: <1518684616-5871-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,100 +26,171 @@ Cc: Rakesh Pillai <pillair@codeaurora.org>, Govind Singh <govinds@codeaurora.org
 
 From: Rakesh Pillai <pillair@codeaurora.org>
 
-wcn3990 does not use bmi.
-Add support to get target info from hif ops.
+WCN3990 has interrupts per CE and the interrupt summary
+is not retained after the interrupt handler has finished
+execution. We need to check if we received any
+ce in rx and tx completion path.
+
+Generate a interrupt summary with all CE interrupts if
+the target does not retain interrupt summary after the
+execution of interrupt handler.
 
 Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
 Signed-off-by: Govind Singh <govinds@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/core.c |  8 ++++++++
- drivers/net/wireless/ath/ath10k/hif.h  | 13 +++++++++++++
- drivers/net/wireless/ath/ath10k/snoc.c | 10 ++++++++++
- 3 files changed, 31 insertions(+)
+ drivers/net/wireless/ath/ath10k/ce.h   | 10 +++++++---
+ drivers/net/wireless/ath/ath10k/core.c | 13 +++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
+ 3 files changed, 23 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index 06ac2eb..0e70a07 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -354,14 +354,18 @@ static inline u32 ath10k_ce_base_address(struct ath10k *ar, unsigned int ce_id)
+ 	(((x) & CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_MASK) >> \
+ 		CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_LSB)
+ #define CE_WRAPPER_INTERRUPT_SUMMARY_ADDRESS			0x0000
++#define CE_INTERRUPT_SUMMARY		(GENMASK(CE_COUNT_MAX - 1, 0))
+ 
+ static inline u32 ath10k_ce_interrupt_summary(struct ath10k *ar)
+ {
+ 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+ 
+-	return CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_GET(
+-		ce->bus_ops->read32((ar), CE_WRAPPER_BASE_ADDRESS +
+-		CE_WRAPPER_INTERRUPT_SUMMARY_ADDRESS));
++	if (!ar->hw_params.per_ce_irq)
++		return CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_GET(
++			ce->bus_ops->read32((ar), CE_WRAPPER_BASE_ADDRESS +
++			CE_WRAPPER_INTERRUPT_SUMMARY_ADDRESS));
++	else
++		return CE_INTERRUPT_SUMMARY;
+ }
+ 
+ #endif /* _CE_H_ */
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 51444d3..bcce875 100644
+index bcce875..8716ea4 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2437,6 +2437,14 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
- 		ar->hw->wiphy->hw_version = target_info.version;
- 		break;
- 	case ATH10K_BUS_SNOC:
-+		memset(&target_info, 0, sizeof(target_info));
-+		ret = ath10k_hif_get_target_info(ar, &target_info);
-+		if (ret) {
-+			ath10k_err(ar, "could not get target info (%d)\n", ret);
-+			goto err_power_down;
-+		}
-+		ar->target_version = target_info.version;
-+		ar->hw->wiphy->hw_version = target_info.version;
- 		break;
- 	default:
- 		ath10k_err(ar, "incorrect hif bus type: %d\n", ar->hif.bus);
-diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
-index 7abb13c..1a59ea0 100644
---- a/drivers/net/wireless/ath/ath10k/hif.h
-+++ b/drivers/net/wireless/ath/ath10k/hif.h
-@@ -20,6 +20,7 @@
- 
- #include <linux/kernel.h>
- #include "core.h"
-+#include "bmi.h"
- #include "debug.h"
- 
- struct ath10k_hif_sg_item {
-@@ -93,6 +94,9 @@ struct ath10k_hif_ops {
- 	/* fetch calibration data from target eeprom */
- 	int (*fetch_cal_eeprom)(struct ath10k *ar, void **data,
- 				size_t *data_len);
-+
-+	int (*get_target_info)(struct ath10k *ar,
-+			       struct bmi_target_info *target_info);
+@@ -89,6 +89,7 @@
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.per_ce_irq = false,
+ 	},
+ 	{
+ 		.id = QCA9887_HW_1_0_VERSION,
+@@ -118,6 +119,7 @@
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.per_ce_irq = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -146,6 +148,7 @@
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.per_ce_irq = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_2_1_VERSION,
+@@ -174,6 +177,7 @@
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.per_ce_irq = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_0_VERSION,
+@@ -202,6 +206,7 @@
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.per_ce_irq = false,
+ 	},
+ 	{
+ 		.id = QCA6174_HW_3_2_VERSION,
+@@ -233,6 +238,7 @@
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.per_ce_irq = false,
+ 	},
+ 	{
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+@@ -267,6 +273,7 @@
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.per_ce_irq = false,
+ 	},
+ 	{
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+@@ -306,6 +313,7 @@
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.per_ce_irq = false,
+ 	},
+ 	{
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+@@ -344,6 +352,7 @@
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.per_ce_irq = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_0_DEV_VERSION,
+@@ -372,6 +381,7 @@
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.per_ce_irq = false,
+ 	},
+ 	{
+ 		.id = QCA9377_HW_1_1_DEV_VERSION,
+@@ -402,6 +412,7 @@
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.per_ce_irq = false,
+ 	},
+ 	{
+ 		.id = QCA4019_HW_1_0_DEV_VERSION,
+@@ -437,6 +448,7 @@
+ 		.num_wds_entries = 0x20,
+ 		.target_64bit = false,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL,
++		.per_ce_irq = false,
+ 	},
+ 	{
+ 		.id = WCN3990_HW_1_0_DEV_VERSION,
+@@ -457,6 +469,7 @@
+ 		.num_wds_entries = TARGET_HL_10_TLV_NUM_WDS_ENTRIES,
+ 		.target_64bit = true,
+ 		.rx_ring_fill_level = HTT_RX_RING_FILL_LEVEL_DUAL_MAC,
++		.per_ce_irq = true,
+ 	},
  };
  
- static inline int ath10k_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
-@@ -218,4 +222,13 @@ static inline int ath10k_hif_fetch_cal_eeprom(struct ath10k *ar,
- 	return ar->hif.ops->fetch_cal_eeprom(ar, data, data_len);
- }
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 6203bc6..e078621 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -567,6 +567,9 @@ struct ath10k_hw_params {
  
-+static inline int ath10k_hif_get_target_info(struct ath10k *ar,
-+					     struct bmi_target_info *tgt_info)
-+{
-+	if (!ar->hif.ops->get_target_info)
-+		return -EOPNOTSUPP;
+ 	/* Target rx ring fill level */
+ 	u32 rx_ring_fill_level;
 +
-+	return ar->hif.ops->get_target_info(ar, tgt_info);
-+}
-+
- #endif /* _HIF_H_ */
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 6d9ccce..1ef0d3b 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -528,6 +528,15 @@ static int ath10k_snoc_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
- 	return err;
- }
- 
-+static int ath10k_snoc_hif_get_target_info(struct ath10k *ar,
-+					   struct bmi_target_info *target_info)
-+{
-+	target_info->version = ATH10K_HW_WCN3990;
-+	target_info->type = ATH10K_HW_WCN3990;
-+
-+	return 0;
-+}
-+
- static u16 ath10k_snoc_hif_get_free_queue_number(struct ath10k *ar, u8 pipe)
- {
- 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-@@ -787,6 +796,7 @@ static int ath10k_snoc_hif_power_up(struct ath10k *ar)
- 	.tx_sg			= ath10k_snoc_hif_tx_sg,
- 	.send_complete_check	= ath10k_snoc_hif_send_complete_check,
- 	.get_free_queue_number	= ath10k_snoc_hif_get_free_queue_number,
-+	.get_target_info	= ath10k_snoc_hif_get_target_info,
++	/* target supporting per ce IRQ */
++	bool per_ce_irq;
  };
  
- static const struct ath10k_bus_ops ath10k_snoc_bus_ops = {
+ struct htt_rx_desc;
 -- 
 1.9.1
 
