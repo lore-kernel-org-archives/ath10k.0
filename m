@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x235.google.com ([2a00:1450:400c:c0c::235])
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1emdg5-0007Mq-5H
- for ath10k@lists.infradead.org; Fri, 16 Feb 2018 10:55:43 +0000
-Received: by mail-wr0-x235.google.com with SMTP id u15so2469768wrg.3
- for <ath10k@lists.infradead.org>; Fri, 16 Feb 2018 02:55:30 -0800 (PST)
-From: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Subject: Re: [PATCH v2 2/2] ath10k: fix CCK h/w rates for QCA99X0 and newer
- chipsets
-Date: Fri, 16 Feb 2018 11:55:26 +0100
-Message-ID: <1934280.TgFv3YZ0ZR@bentobox>
-In-Reply-To: <1464852235-13110-2-git-send-email-mohammed@qca.qualcomm.com>
-References: <1464852235-13110-1-git-send-email-mohammed@qca.qualcomm.com>
- <1464852235-13110-2-git-send-email-mohammed@qca.qualcomm.com>
+ id 1emixQ-0007Bj-NQ
+ for ath10k@lists.infradead.org; Fri, 16 Feb 2018 16:33:58 +0000
+Received: by mail-wr0-x244.google.com with SMTP id l43so3492200wrc.2
+ for <ath10k@lists.infradead.org>; Fri, 16 Feb 2018 08:33:45 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <20180216103020.5009-1-s.gottschall@dd-wrt.com>
+References: <20180216103020.5009-1-s.gottschall@dd-wrt.com>
+From: Steve deRosier <derosier@gmail.com>
+Date: Fri, 16 Feb 2018 08:33:43 -0800
+Message-ID: <CALLGbRKVpXwZ12BbntX__OGhS3VLBNvRYRnuDGwTKMzu_eiK5Q@mail.gmail.com>
+Subject: Re: [PATCH] v2 ath10k: add LED and GPIO controlling support for
+ various chipsets
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,106 +21,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1155313072418637891=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-Cc: mohammed@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: s.gottschall@dd-wrt.com
+Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
---===============1155313072418637891==
-Content-Type: multipart/signed; boundary="nextPart2072417.djJGnljY5C"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+On Fri, Feb 16, 2018 at 2:30 AM,  <s.gottschall@dd-wrt.com> wrote:
+> From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
+>
+> Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984 and ipq4019 based chipsets with on chipset connected led's
+> using WMI Firmware API.
+> The LED device will get available named as "ath10k-phyX" at sysfs and can be controlled with various triggers.
+> adds also debugfs interface for gpio control.
+>
 
---nextPart2072417.djJGnljY5C
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Hi Sebastian,
 
-On Donnerstag, 2. Juni 2016 12:53:55 CET Mohammed Shafi Shajakhan wrote:
-> From: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
-> 
-> CCK hardware table mapping from QCA99X0 onwards got revised.
-> The CCK hardware rate values are in a proper order wrt. to
-> rate and preamble as below
-> 
-> ATH10K_HW_RATE_REV2_CCK_LP_1M = 1,
-> ATH10K_HW_RATE_REV2_CCK_LP_2M = 2,
-> ATH10K_HW_RATE_REV2_CCK_LP_5_5M = 3,
-> ATH10K_HW_RATE_REV2_CCK_LP_11M = 4,
-> ATH10K_HW_RATE_REV2_CCK_SP_2M = 5,
-> ATH10K_HW_RATE_REV2_CCK_SP_5_5M = 6,
-> ATH10K_HW_RATE_REV2_CCK_SP_11M = 7,
-> 
-> This results in reporting of rx frames (with CCK rates)
-> totally wrong for QCA99X0, QCA4019. Fix this by having
-> separate CCK rate table for these chipsets with rev2 suffix
-> and registering the correct rate mapping to mac80211 based on
-> the new hw_param (introduced) 'cck_rate_map_rev2' which shall
-> be true for any newchipsets from QCA99X0 onwards
+First off, let me say I love this and the effort to make the gpios
+hanging off the wifi chip as proper system gpios. Years ago I had to
+do a hack to make some wifi-chip provided pins available to a customer
+who needed more GPIOs on our SoM. It would have been nice if provided
+hardware functionality had already been properly supported by the
+driver.
 
-I just tested it here with QCA4019 + 10.4-3.2.1-00050 for beacons. The 
-calculated HW code for 1.0 MBit/s would be 0x41 (rate_code) according to this 
-new mapping. But when I set it with 
+In looking through, it looks like you're hooking into the standard
+gpio-chip driver interface. Which is great. So, why are you providing
+a separate out-of-band debugfs access interface for gpio control?
+Seems to me to be a duplicate of the interface in sysfs that provides
+gpio access (`/sys/class/gpio`). My preference is we don't duplicate
+functionality and that we use the standard provided features. That way
+we don't possibly confuse users, and we also reduce our maintenance
+effort.
 
-    	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
-    					ar->wmi.vdev_param->mcast_data_rate,
-    					rate_code);
+Additionally, what happens when the relevant GPIO configuration
+options aren't enabled? Do we have a compilation issue? I'm more
+familiar with being a _consumer_ of gpiolib in my drivers and I know
+if CONFIG_GPIOLIB isn't checked I end up with problems. I'm unsure
+what happens when you're presenting a gpio-chip interface without the
+relevant CONFIG_ being enabled. Note that I didn't test this, I'm just
+asking the question to be sure we don't forget anything.
 
-then it sends beacons with 5.5Mbit/s and not with 1.0Mbit/s.
-
-Btw. the rate_code was calculated using:
-
-    		if (ath10k_mac_bitrate_is_cck(sband->bitrates[i].bitrate))
-    			preamble = WMI_RATE_PREAMBLE_CCK;
-    		else
-    			preamble = WMI_RATE_PREAMBLE_OFDM;
-    
-    		rate_code = ATH10K_HW_RATECODE(hw_value, 0, preamble);
-
-It works fine when using the old mapping (0x43).
-
-This made me rather curious and I've connected a client to the AP which was 
-only able to send at 1.0 Mbit/s - this actually resulted in the correctly 
-reported rates at in the rx field.
-
-Does this mean that the rates are now inconsistent because the QCA fw doesn't 
-provide a consistent interface for hw rates or did I miss anything?
-
-Kind regards,
-	Sven
---nextPart2072417.djJGnljY5C
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlqGuJ4ACgkQXYcKB8Em
-e0aEuhAAl7DE96Z10IGK7OiZJ5jd7nURAaGqVuZ9Ip5Pc9bn2Ilh1ZqKi5mOUydL
-B37+skEIrmS/8aOknBy5dJuWSttX5qHEKEmRjko1ayN82PPgB3e4EupbQ0wso9KE
-Ajhs2CL43IQgCTW87tSbtbC38PX7Y8tCcIckxvvKbeNBbDwZNyHbry9eGElWaUrh
-XMMI21dgjpFk/YxyC0g0SGoUH4fvbTzmLN+ppiyqsobbS7BIASRvV5iLneiIjJeD
-QX0+cKTe52I+AsW1p7tLzRrTsc2n9mNFwpS7wQ+lFwmfOTXMDXZGIThHb38yI+4B
-WTa+vxM89oTw/p+j5YHRCVIK8m69TXMtFUSzUUV7zEgrPAEWCkk5fIuTLU091Nu2
-04D2BjOao/1pQW7I2/QHHoYjsw0QWMFIgXM1XnftaObVWoT+uV98w5qLwKaDxJdy
-xY568H+9ZkodAgreP8tB1WazsicwHNg0B6yaVgTrPDm199peOGp5P2euZGn6QXeO
-tkyjAbczE9nuA3uXgjHtwEXOJ5F8bIby9eswz3X5l6/hLXNWqBwvSTFyvGgCQHQL
-q4f9Inx3uqCXIvdYag4hamT5JlvQ7YFAK1WsRDKftyVTnMu8h2ZUXyeWBeTfWLb0
-bUaGZSmfxLSxgvQmpEXhwfX8wa0ItqjFSKqApUzeVovbujSJvjA=
-=WfZW
------END PGP SIGNATURE-----
-
---nextPart2072417.djJGnljY5C--
-
-
-
---===============1155313072418637891==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+- Steve
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============1155313072418637891==--
