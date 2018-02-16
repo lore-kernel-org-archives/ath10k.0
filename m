@@ -2,13 +2,13 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
  helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1emjfS-0005D3-Rn
- for ath10k@lists.infradead.org; Fri, 16 Feb 2018 17:19:30 +0000
+ id 1emjh3-00075V-ID
+ for ath10k@lists.infradead.org; Fri, 16 Feb 2018 17:21:08 +0000
 From: s.gottschall@dd-wrt.com
-Subject: [PATCH] v3 ath10k: add LED and GPIO controlling support for various
+Subject: [PATCH] v4 ath10k: add LED and GPIO controlling support for various
  chipsets
-Date: Fri, 16 Feb 2018 18:19:04 +0100
-Message-Id: <20180216171904.12622-1-s.gottschall@dd-wrt.com>
+Date: Fri, 16 Feb 2018 18:20:42 +0100
+Message-Id: <20180216172042.12795-1-s.gottschall@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,32 +34,33 @@ adds also debugfs interface for gpio control.
 
 Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c    | 167 +++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/core.h    |  15 +++
- drivers/net/wireless/ath/ath10k/debug.c   | 146 ++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/core.c    | 181 +++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/core.h    |  20 +++-
+ drivers/net/wireless/ath/ath10k/debug.c   | 146 ++++++++++++++++++++++++
  drivers/net/wireless/ath/ath10k/hw.h      |   2 +
- drivers/net/wireless/ath/ath10k/mac.c     |   6 ++
- drivers/net/wireless/ath/ath10k/wmi-ops.h |  36 ++++++-
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  65 ++++++++++++
+ drivers/net/wireless/ath/ath10k/mac.c     |   6 +
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  36 +++++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  65 +++++++++++
  drivers/net/wireless/ath/ath10k/wmi.c     |  46 ++++++++
- drivers/net/wireless/ath/ath10k/wmi.h     |  36 +++++++
- 9 files changed, 516 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.h     |  36 ++++++
+ 9 files changed, 534 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index f3ec13b80b20..f849893c1cf9 100644
+index f3ec13b80b20..4a0453c0e02b 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -21,6 +21,9 @@
+@@ -21,6 +21,10 @@
  #include <linux/dmi.h>
  #include <linux/ctype.h>
  #include <asm/byteorder.h>
 +#include <linux/leds.h>
 +#include <linux/platform_device.h>
 +
++#ifdef CONFIG_GPIOLIB
  
  #include "core.h"
  #include "mac.h"
-@@ -65,6 +68,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+@@ -65,6 +69,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
  		.id = QCA988X_HW_2_0_VERSION,
  		.dev_id = QCA988X_2_0_DEVICE_ID,
  		.name = "qca988x hw2.0",
@@ -68,7 +69,7 @@ index f3ec13b80b20..f849893c1cf9 100644
  		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
  		.uart_pin = 7,
  		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
-@@ -94,6 +99,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+@@ -94,6 +100,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
  		.id = QCA988X_HW_2_0_VERSION,
  		.dev_id = QCA988X_2_0_DEVICE_ID_UBNT,
  		.name = "qca988x hw2.0 ubiquiti",
@@ -77,7 +78,7 @@ index f3ec13b80b20..f849893c1cf9 100644
  		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
  		.uart_pin = 7,
  		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
-@@ -123,6 +130,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+@@ -123,6 +131,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
  		.id = QCA9887_HW_1_0_VERSION,
  		.dev_id = QCA9887_1_0_DEVICE_ID,
  		.name = "qca9887 hw1.0",
@@ -86,7 +87,7 @@ index f3ec13b80b20..f849893c1cf9 100644
  		.patch_load_addr = QCA9887_HW_1_0_PATCH_LOAD_ADDR,
  		.uart_pin = 7,
  		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
-@@ -267,6 +276,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+@@ -267,6 +277,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
  		.id = QCA99X0_HW_2_0_DEV_VERSION,
  		.dev_id = QCA99X0_2_0_DEVICE_ID,
  		.name = "qca99x0 hw2.0",
@@ -95,7 +96,7 @@ index f3ec13b80b20..f849893c1cf9 100644
  		.patch_load_addr = QCA99X0_HW_2_0_PATCH_LOAD_ADDR,
  		.uart_pin = 7,
  		.otp_exe_param = 0x00000700,
-@@ -301,6 +312,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+@@ -301,6 +313,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
  		.id = QCA9984_HW_1_0_DEV_VERSION,
  		.dev_id = QCA9984_1_0_DEVICE_ID,
  		.name = "qca9984/qca9994 hw1.0",
@@ -104,7 +105,7 @@ index f3ec13b80b20..f849893c1cf9 100644
  		.patch_load_addr = QCA9984_HW_1_0_PATCH_LOAD_ADDR,
  		.uart_pin = 7,
  		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_EACH,
-@@ -340,6 +353,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+@@ -340,6 +354,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
  		.id = QCA9888_HW_2_0_DEV_VERSION,
  		.dev_id = QCA9888_2_0_DEVICE_ID,
  		.name = "qca9888 hw2.0",
@@ -113,7 +114,7 @@ index f3ec13b80b20..f849893c1cf9 100644
  		.patch_load_addr = QCA9888_HW_2_0_PATCH_LOAD_ADDR,
  		.uart_pin = 7,
  		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_EACH,
-@@ -2132,12 +2147,137 @@ static int ath10k_core_reset_rx_filter(struct ath10k *ar)
+@@ -2132,12 +2148,146 @@ static int ath10k_core_reset_rx_filter(struct ath10k *ar)
  	return 0;
  }
  
@@ -199,16 +200,7 @@ index f3ec13b80b20..f849893c1cf9 100644
 +	return 0;
 +}
 +
-+/* remove GPIO chip */
-+static void ath10k_unregister_gpio_chip(struct ath10k *ar)
-+{
-+	struct ath10k_gpiocontrol *gpio = ar->gpio; 
-+	if (gpio) {
-+		gpiochip_remove(&gpio->gchip);
-+		kfree(gpio);
-+	}
-+}
-+
++#ifdef CONFIG_LEDS_CLASS
 +static void ath10k_led_brightness(struct led_classdev *led_cdev,
 +			       enum led_brightness brightness)
 +{
@@ -236,12 +228,30 @@ index f3ec13b80b20..f849893c1cf9 100644
 +
 +	return 0;
 +}
++#endif
++
++#endif
++
++/* remove GPIO chip */
++static void ath10k_unregister_gpio_chip(struct ath10k *ar)
++{
++#ifdef CONFIG_GPIOLIB
++	struct ath10k_gpiocontrol *gpio = ar->gpio; 
++	if (gpio) {
++		gpiochip_remove(&gpio->gchip);
++		kfree(gpio);
++	}
++#endif
++}
 +
 +static void ath10k_unregister_led(struct ath10k *ar)
 +{
++#ifdef CONFIG_GPIOLIB
 +	if (ar->gpio)
 +		led_classdev_unregister(&ar->gpio->cdev);
++#endif
 +}
++
 +
  int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
  		      const struct ath10k_fw_components *fw)
@@ -252,11 +262,13 @@ index f3ec13b80b20..f849893c1cf9 100644
  	lockdep_assert_held(&ar->conf_mutex);
  
  	clear_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
-@@ -2372,8 +2512,28 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+@@ -2372,8 +2522,32 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
  	if (status)
  		goto err_hif_stop;
  
 -	return 0;
+ 
++#ifdef CONFIG_GPIOLIB
 +	/* LED Code */
 +	if (ar->hw_params.led_pin) { // only configure if non zero
 +		if (!ar->gpio_attached) {
@@ -264,6 +276,7 @@ index f3ec13b80b20..f849893c1cf9 100644
 +			if (status) {
 +				goto err_no_led;
 +			}
++#ifdef CONFIG_LEDS_CLASS
 +			ar->gpio_attached = 1;
 +			ar->gpio->wifi_led.active_low = 1;
 +			ar->gpio->wifi_led.gpio = ar->hw_params.led_pin;
@@ -271,18 +284,19 @@ index f3ec13b80b20..f849893c1cf9 100644
 +			ar->gpio->wifi_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
 +		
 +			ath10k_add_led(ar, &ar->gpio->wifi_led);
++#endif
 +		}
 +		ath10k_wmi_gpio_config(ar, ar->hw_params.led_pin, 0, WMI_GPIO_PULL_NONE, WMI_GPIO_INTTYPE_DISABLE); // configure to output
 +		ath10k_wmi_gpio_output(ar, ar->hw_params.led_pin, 1);
 +	}
- 
++#endif
 +err_no_led:;
 +	
 +	return 0;
  err_hif_stop:
  	ath10k_hif_stop(ar);
  err_htt_rx_detach:
-@@ -2673,6 +2833,9 @@ void ath10k_core_unregister(struct ath10k *ar)
+@@ -2673,6 +2847,9 @@ void ath10k_core_unregister(struct ath10k *ar)
  	ath10k_core_free_board_files(ar);
  
  	ath10k_debug_unregister(ar);
@@ -293,7 +307,7 @@ index f3ec13b80b20..f849893c1cf9 100644
  EXPORT_SYMBOL(ath10k_core_unregister);
  
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index c624b96f8b84..c289deb09cd9 100644
+index c624b96f8b84..7baa29e87c00 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
 @@ -25,6 +25,8 @@
@@ -305,7 +319,7 @@ index c624b96f8b84..c289deb09cd9 100644
  
  #include "htt.h"
  #include "htc.h"
-@@ -812,6 +814,17 @@ struct ath10k_per_peer_tx_stats {
+@@ -812,6 +814,19 @@ struct ath10k_per_peer_tx_stats {
  	u32	reserved2;
  };
  
@@ -314,7 +328,9 @@ index c624b96f8b84..c289deb09cd9 100644
 +	u32 gpio_set_num, gpio_num, gpio_input, gpio_pull_type, gpio_intr_mode, gpio_set; /* since we have no gpio read method, these are the state variables for debugfs.  */
 +	struct gpio_led wifi_led;
 +	struct gpio_chip gchip;
++#ifdef CONFIG_LEDS_CLASS
 +	struct led_classdev cdev;
++#endif
 +	char label[48];
 +	u32 gpio_state_dir; /* same as for debugfs, but for gpiochip implementation */
 +	u32 gpio_state_pin;
@@ -323,15 +339,18 @@ index c624b96f8b84..c289deb09cd9 100644
  struct ath10k {
  	struct ath_common ath_common;
  	struct ieee80211_hw *hw;
-@@ -840,6 +853,8 @@ struct ath10k {
+@@ -840,7 +855,10 @@ struct ath10k {
  	u32 low_5ghz_chan;
  	u32 high_5ghz_chan;
  	bool ani_enabled;
+-
++#ifdef CONFIG_GPIOLIB
 +	struct ath10k_gpiocontrol *gpio;
 +	int gpio_attached;
- 
++#endif
  	bool p2p;
  
+ 	struct {
 diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
 index 1b9c092d210f..4ed3540669ec 100644
 --- a/drivers/net/wireless/ath/ath10k/debug.c
