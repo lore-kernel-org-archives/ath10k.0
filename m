@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1emixQ-0007Bj-NQ
- for ath10k@lists.infradead.org; Fri, 16 Feb 2018 16:33:58 +0000
-Received: by mail-wr0-x244.google.com with SMTP id l43so3492200wrc.2
- for <ath10k@lists.infradead.org>; Fri, 16 Feb 2018 08:33:45 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20180216103020.5009-1-s.gottschall@dd-wrt.com>
-References: <20180216103020.5009-1-s.gottschall@dd-wrt.com>
-From: Steve deRosier <derosier@gmail.com>
-Date: Fri, 16 Feb 2018 08:33:43 -0800
-Message-ID: <CALLGbRKVpXwZ12BbntX__OGhS3VLBNvRYRnuDGwTKMzu_eiK5Q@mail.gmail.com>
+ id 1emjKO-0007br-AP
+ for ath10k@lists.infradead.org; Fri, 16 Feb 2018 16:58:28 +0000
 Subject: Re: [PATCH] v2 ath10k: add LED and GPIO controlling support for
  various chipsets
+References: <20180216103020.5009-1-s.gottschall@dd-wrt.com>
+ <CALLGbRKVpXwZ12BbntX__OGhS3VLBNvRYRnuDGwTKMzu_eiK5Q@mail.gmail.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <8191f271-b217-66de-5d23-7adf30c088a9@dd-wrt.com>
+Date: Fri, 16 Feb 2018 17:57:25 +0100
+MIME-Version: 1.0
+In-Reply-To: <CALLGbRKVpXwZ12BbntX__OGhS3VLBNvRYRnuDGwTKMzu_eiK5Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,51 +21,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: s.gottschall@dd-wrt.com
+To: Steve deRosier <derosier@gmail.com>
 Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-On Fri, Feb 16, 2018 at 2:30 AM,  <s.gottschall@dd-wrt.com> wrote:
-> From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
->
-> Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984 and ipq4019 based chipsets with on chipset connected led's
-> using WMI Firmware API.
-> The LED device will get available named as "ath10k-phyX" at sysfs and can be controlled with various triggers.
-> adds also debugfs interface for gpio control.
->
-
-Hi Sebastian,
-
-First off, let me say I love this and the effort to make the gpios
-hanging off the wifi chip as proper system gpios. Years ago I had to
-do a hack to make some wifi-chip provided pins available to a customer
-who needed more GPIOs on our SoM. It would have been nice if provided
-hardware functionality had already been properly supported by the
-driver.
-
-In looking through, it looks like you're hooking into the standard
-gpio-chip driver interface. Which is great. So, why are you providing
-a separate out-of-band debugfs access interface for gpio control?
-Seems to me to be a duplicate of the interface in sysfs that provides
-gpio access (`/sys/class/gpio`). My preference is we don't duplicate
-functionality and that we use the standard provided features. That way
-we don't possibly confuse users, and we also reduce our maintenance
-effort.
-
-Additionally, what happens when the relevant GPIO configuration
-options aren't enabled? Do we have a compilation issue? I'm more
-familiar with being a _consumer_ of gpiolib in my drivers and I know
-if CONFIG_GPIOLIB isn't checked I end up with problems. I'm unsure
-what happens when you're presenting a gpio-chip interface without the
-relevant CONFIG_ being enabled. Note that I didn't test this, I'm just
-asking the question to be sure we don't forget anything.
-
-- Steve
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMTYuMDIuMjAxOCB1bSAxNzozMyBzY2hyaWViIFN0ZXZlIGRlUm9zaWVyOgo+IE9uIEZyaSwg
+RmViIDE2LCAyMDE4IGF0IDI6MzAgQU0sICA8cy5nb3R0c2NoYWxsQGRkLXdydC5jb20+IHdyb3Rl
+Ogo+PiBGcm9tOiBTZWJhc3RpYW4gR290dHNjaGFsbCA8cy5nb3R0c2NoYWxsQG5ld21lZGlhLW5l
+dC5kZT4KPj4KPj4gQWRkcyBMRUQgYW5kIEdQSU8gQ29udHJvbCBzdXBwb3J0IGZvciA5ODh4LCA5
+ODg3LCA5ODg4LCA5OXgwLCA5OTg0IGFuZCBpcHE0MDE5IGJhc2VkIGNoaXBzZXRzIHdpdGggb24g
+Y2hpcHNldCBjb25uZWN0ZWQgbGVkJ3MKPj4gdXNpbmcgV01JIEZpcm13YXJlIEFQSS4KPj4gVGhl
+IExFRCBkZXZpY2Ugd2lsbCBnZXQgYXZhaWxhYmxlIG5hbWVkIGFzICJhdGgxMGstcGh5WCIgYXQg
+c3lzZnMgYW5kIGNhbiBiZSBjb250cm9sbGVkIHdpdGggdmFyaW91cyB0cmlnZ2Vycy4KPj4gYWRk
+cyBhbHNvIGRlYnVnZnMgaW50ZXJmYWNlIGZvciBncGlvIGNvbnRyb2wuCj4+Cj4gSGkgU2ViYXN0
+aWFuLAo+Cj4gRmlyc3Qgb2ZmLCBsZXQgbWUgc2F5IEkgbG92ZSB0aGlzIGFuZCB0aGUgZWZmb3J0
+IHRvIG1ha2UgdGhlIGdwaW9zCj4gaGFuZ2luZyBvZmYgdGhlIHdpZmkgY2hpcCBhcyBwcm9wZXIg
+c3lzdGVtIGdwaW9zLiBZZWFycyBhZ28gSSBoYWQgdG8KPiBkbyBhIGhhY2sgdG8gbWFrZSBzb21l
+IHdpZmktY2hpcCBwcm92aWRlZCBwaW5zIGF2YWlsYWJsZSB0byBhIGN1c3RvbWVyCj4gd2hvIG5l
+ZWRlZCBtb3JlIEdQSU9zIG9uIG91ciBTb00uIEl0IHdvdWxkIGhhdmUgYmVlbiBuaWNlIGlmIHBy
+b3ZpZGVkCj4gaGFyZHdhcmUgZnVuY3Rpb25hbGl0eSBoYWQgYWxyZWFkeSBiZWVuIHByb3Blcmx5
+IHN1cHBvcnRlZCBieSB0aGUKPiBkcml2ZXIuCj4KPiBJbiBsb29raW5nIHRocm91Z2gsIGl0IGxv
+b2tzIGxpa2UgeW91J3JlIGhvb2tpbmcgaW50byB0aGUgc3RhbmRhcmQKPiBncGlvLWNoaXAgZHJp
+dmVyIGludGVyZmFjZS4gV2hpY2ggaXMgZ3JlYXQuIFNvLCB3aHkgYXJlIHlvdSBwcm92aWRpbmcK
+PiBhIHNlcGFyYXRlIG91dC1vZi1iYW5kIGRlYnVnZnMgYWNjZXNzIGludGVyZmFjZSBmb3IgZ3Bp
+byBjb250cm9sPwp0aGlzIHdhcyBkZXZlbG9wZWQgZmlyc3QgYmVmb3JlIHRoZSByZWFsIGdwaW8g
+aW50ZXJmYWNlLiB0aGF0IHdheSB5b3UgCmNhbiBwb2tlIG1hbnVhbGx5IHZhbHVlcyBmb3IgdGVz
+dGluZwpsaWtlIGdwaW8gaW50ZXJydXB0IGV0Yy4gd2hpY2ggaXNudCBleHBvc2VkIGJ5IHRoZSBn
+cGlvIGFuZCBsZWQgCmludGVyZmFjZS4gaXRzIG9ubHkgZm9yIGRpYWdub3N0aWMgYW5kIGlzIG5v
+dCBuZWNjZXNzYXJ5LCBidXQKaXQgd2FzIGluIG15IGluaXRpYWwgY29kZSBzbyBpIGRpZCBpbmNs
+dWRlIGl0IGluIHRoYXQgcGF0Y2gKPiBTZWVtcyB0byBtZSB0byBiZSBhIGR1cGxpY2F0ZSBvZiB0
+aGUgaW50ZXJmYWNlIGluIHN5c2ZzIHRoYXQgcHJvdmlkZXMKPiBncGlvIGFjY2VzcyAoYC9zeXMv
+Y2xhc3MvZ3Bpb2ApLiBNeSBwcmVmZXJlbmNlIGlzIHdlIGRvbid0IGR1cGxpY2F0ZQo+IGZ1bmN0
+aW9uYWxpdHkgYW5kIHRoYXQgd2UgdXNlIHRoZSBzdGFuZGFyZCBwcm92aWRlZCBmZWF0dXJlcy4g
+VGhhdCB3YXkKPiB3ZSBkb24ndCBwb3NzaWJseSBjb25mdXNlIHVzZXJzLCBhbmQgd2UgYWxzbyBy
+ZWR1Y2Ugb3VyIG1haW50ZW5hbmNlCj4gZWZmb3J0LgppdHMgbm90IGEgZHVwbGljYXRlIGFzIGkg
+c2FpZCBiZWZvcmUgaXQgb2ZmZXJzIG1vcmUgZmxhZ3Mgd2hpY2ggYXJlbnQgCnVzZWQgYnkgdGhl
+IHJlc3QKZ3BpbyBjb25maWcgaGFzIDQgdmFsdWVzLiBncGlvIG51bSwgaW5wdXQvb3V0cHV0LCBw
+dWxsX3R5cGUsIGludGVycnVwdCBtb2RlCgpidXQgbm90IGFsbCBpcyB1c2VkIGJ5IHRoZSBncGlv
+IGNvbnRyb2xsZXIgZHJpdmVyCj4KPiBBZGRpdGlvbmFsbHksIHdoYXQgaGFwcGVucyB3aGVuIHRo
+ZSByZWxldmFudCBHUElPIGNvbmZpZ3VyYXRpb24KPiBvcHRpb25zIGFyZW4ndCBlbmFibGVkPyBE
+byB3ZSBoYXZlIGEgY29tcGlsYXRpb24gaXNzdWU/CnlvdSBtZWFuIGlmIGxlZCBhbmQgZ3BpbyBp
+cyBub3Qgc2VsZWN0ZWQuIG1taCB5b3UgZ2V0IGEgY29tcGlsZSBlcnJvciAKZm9yIHN1cmUuIGl0
+cyB1bmxpa2VsbHkgdGhhdCBpdHMgbm90IGVuYWJsZWQsIGJ1dCBpIGNhbgp0YWtlIGNhcmUgb2Yg
+aXQgaW4gdGhlIG5leHQgcGF0Y2ggdmVyc2lvbgo+IEknbSBtb3JlCj4gZmFtaWxpYXIgd2l0aCBi
+ZWluZyBhIF9jb25zdW1lcl8gb2YgZ3Bpb2xpYiBpbiBteSBkcml2ZXJzIGFuZCBJIGtub3cKPiBp
+ZiBDT05GSUdfR1BJT0xJQiBpc24ndCBjaGVja2VkIEkgZW5kIHVwIHdpdGggcHJvYmxlbXMuIEkn
+bSB1bnN1cmUKPiB3aGF0IGhhcHBlbnMgd2hlbiB5b3UncmUgcHJlc2VudGluZyBhIGdwaW8tY2hp
+cCBpbnRlcmZhY2Ugd2l0aG91dCB0aGUKPiByZWxldmFudCBDT05GSUdfIGJlaW5nIGVuYWJsZWQu
+IE5vdGUgdGhhdCBJIGRpZG4ndCB0ZXN0IHRoaXMsIEknbSBqdXN0Cj4gYXNraW5nIHRoZSBxdWVz
+dGlvbiB0byBiZSBzdXJlIHdlIGRvbid0IGZvcmdldCBhbnl0aGluZy4KeW91J3JlIGFic29sdXRl
+bGx5IHJpZ2h0LiBpIHdpbGwgYWRkIHRoZXNlIGNoZWNrcy4gaSBjYW4gc2F5IHRoYXQgaSAKdGVz
+dGVkIGl0IG9uIDk5ODQsIDk5OHggYW5kIDk4OHggZGV2aWNlcyBzbyBmYXIKYW5kIHRoZSBncGlv
+IGFuZCBsZWQgY29kZSBnZXRzIG9ubHkgcmVnaXN0ZXJlZCBvbiBrbm93biB0byBiZSB3b3JraW5n
+IApjaGlwc2V0cwoKU2ViYXN0aWFuCj4KPiAtIFN0ZXZlCj4KCi0tIApNaXQgZnJldW5kbGljaGVu
+IEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlh
+LU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUgMjFhLCA2NDYy
+NSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1
+NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hl
+ZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20K
+VGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hdGgxMGsK
