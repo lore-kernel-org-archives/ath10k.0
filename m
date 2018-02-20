@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eoB9s-0004Rm-1w
- for ath10k@lists.infradead.org; Tue, 20 Feb 2018 16:52:51 +0000
-Received: by mail-wr0-x243.google.com with SMTP id u15so16339626wrg.3
- for <ath10k@lists.infradead.org>; Tue, 20 Feb 2018 08:52:37 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20180220073259.17254-1-s.gottschall@dd-wrt.com>
-References: <20180220073259.17254-1-s.gottschall@dd-wrt.com>
-From: Steve deRosier <steve.derosier@gmail.com>
-Date: Tue, 20 Feb 2018 08:52:34 -0800
-Message-ID: <CALLGbRLwmPLTEXDbnLy8Ba0G0CYXM2HehbgDy2HEz9BdBNx1sQ@mail.gmail.com>
+ id 1eoCJB-0005Eb-N5
+ for ath10k@lists.infradead.org; Tue, 20 Feb 2018 18:06:32 +0000
 Subject: Re: [PATCH v7] ath10k: add LED and GPIO controlling support for
  various chipsets
+References: <20180220073259.17254-1-s.gottschall@dd-wrt.com>
+ <CALLGbRLwmPLTEXDbnLy8Ba0G0CYXM2HehbgDy2HEz9BdBNx1sQ@mail.gmail.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <a8958e0e-8f54-4869-d69a-2f29eae57f14@dd-wrt.com>
+Date: Tue, 20 Feb 2018 19:06:12 +0100
+MIME-Version: 1.0
+In-Reply-To: <CALLGbRLwmPLTEXDbnLy8Ba0G0CYXM2HehbgDy2HEz9BdBNx1sQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,727 +21,121 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: s.gottschall@dd-wrt.com
+To: Steve deRosier <steve.derosier@gmail.com>
 Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-Hi Sebastian,
-
-On Mon, Feb 19, 2018 at 11:32 PM,  <s.gottschall@dd-wrt.com> wrote:
-> From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
->
-> Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984 based chipsets with on chipset connected led's
-> using WMI Firmware API.
-> The LED device will get available named as "ath10k-phyX" at sysfs and can be controlled with various triggers.
-> adds also debugfs interface for gpio control.
->
-> Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
->
-> v2  add correct gpio count per chipset and remove IPQ4019 support since this chipset does not make use of specific gpios)
-> v5  fix compiling without LED_CLASS and GPIOLIB support, fix also error by kbuild test robot which does not occur in standard builds. curious
-> v6  correct return values and fix comment style
-> v7  fix ath10k_unregister_led for compiling without LED_CLASS
-> Wq
-> ---
->  drivers/net/wireless/ath/ath10k/core.c    | 183 +++++++++++++++++++++++++++++-
->  drivers/net/wireless/ath/ath10k/core.h    |  20 +++-
->  drivers/net/wireless/ath/ath10k/debug.c   | 146 ++++++++++++++++++++++++
->  drivers/net/wireless/ath/ath10k/hw.h      |   2 +
->  drivers/net/wireless/ath/ath10k/mac.c     |   6 +
->  drivers/net/wireless/ath/ath10k/wmi-ops.h |  36 +++++-
->  drivers/net/wireless/ath/ath10k/wmi-tlv.c |  65 +++++++++++
->  drivers/net/wireless/ath/ath10k/wmi.c     |  46 ++++++++
->  drivers/net/wireless/ath/ath10k/wmi.h     |  36 ++++++
->  9 files changed, 536 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index f3ec13b80b20..e50977f97b18 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-...
-> +static int ath10k_register_gpio_chip(struct ath10k *ar)
-> +{
-> +       struct ath10k_gpiocontrol *gpio;
-> +       gpio = kzalloc(sizeof(struct ath10k_gpiocontrol), GFP_KERNEL);
-> +       if (!gpio) {
-> +               return -ENOMEM;
-> +       }
-> +
-> +       snprintf(gpio->label, sizeof(gpio->label), "ath10k-%s",
-> +                wiphy_name(ar->hw->wiphy));
-> +#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
-> +       gpio->gchip.parent = ar->dev;
-> +#else
-> +       gpio->gchip.dev = ar->dev;
-> +#endif
-> +       gpio->gchip.base = -1;  /* determine base automatically */
-
-I may be wrong, but I think that version guards are unwelcome here.
-The patch is supposed to go and apply specifically to the upstream
-version, which is clearly >= KERNEL_VERSION(4,5,0). I think you can
-drop this, only use the 'gpio->gchip.parent = ar->dev;' and call it
-good. This fixup should be picked up by Backports.  I understand that
-you might need to keep it for your internal tree, but I don't think
-the maintainers want to see this.
-
-
-> +/* remove GPIO chip */
-> +static void ath10k_unregister_gpio_chip(struct ath10k *ar)
-> +{
-> +#ifdef CONFIG_GPIOLIB
-> +       struct ath10k_gpiocontrol *gpio = ar->gpio;
-> +       if (gpio) {
-> +               gpiochip_remove(&gpio->gchip);
-> +               kfree(gpio);
-> +       }
-> +#endif
-> +}
-
-Instead of entering/exiting the guards inside every function, I think
-the usually accepted way to handle this is to place a block in the
-that looks basically like:
-
-#ifdef CONFIG_GPIOLIB
-static void ath10k_unregister_gpio_chip(struct ath10k *ar) {
-       struct ath10k_gpiocontrol *gpio = ar->gpio;
-       if (gpio) {
-               gpiochip_remove(&gpio->gchip);
-               kfree(gpio);
-       }
- }
-
-next function....
-next function...
-
-#else
-static void ath10k_unregister_gpio_chip(struct ath10k *ar) {
- }
-next function....
-next function...
-#endif
-
-If they weren't static, you'd do it in the .h file, with the
-declaration of the full function there and the definition in the .c.
-
-I may be nit-picking and your style is perfectly acceptable to the
-other maintainers.
-
-
-> +
-> +static void ath10k_unregister_led(struct ath10k *ar)
-> +{
-> +#if defined (CONFIG_GPIOLIB) && defined(CONFIG_LEDS_CLASS)
-> +       if (ar->gpio)
-> +               led_classdev_unregister(&ar->gpio->cdev);
-> +#endif
-> +}
-> +
-> +
->  int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
->                       const struct ath10k_fw_components *fw)
->  {
->         int status;
->         u32 val;
-> -
->         lockdep_assert_held(&ar->conf_mutex);
->
-
-Whitespace change for no apparent reason.
-
-> @@ -2372,8 +2524,32 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
->         if (status)
->                 goto err_hif_stop;
->
-> -       return 0;
->
-> +#ifdef CONFIG_GPIOLIB
-> +       /* LED Code */
-> +       if (ar->hw_params.led_pin) { /* only attach if non zero since some chipsets are unsupported yet */
-> +               if (!ar->gpio_attached) {
-> +                       status = ath10k_register_gpio_chip(ar);
-> +                       if (status) {
-> +                               goto err_no_led;
-> +                       }
-> +#ifdef CONFIG_LEDS_CLASS
-> +                       ar->gpio_attached = 1;
-> +                       ar->gpio->wifi_led.active_low = 1;
-> +                       ar->gpio->wifi_led.gpio = ar->hw_params.led_pin;
-> +                       ar->gpio->wifi_led.name = ar->gpio->label;
-> +                       ar->gpio->wifi_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
-> +
-> +                       ath10k_add_led(ar, &ar->gpio->wifi_led);
-> +#endif
-> +               }
-> +               ath10k_wmi_gpio_config(ar, ar->hw_params.led_pin, 0, WMI_GPIO_PULL_NONE, WMI_GPIO_INTTYPE_DISABLE); /* configure to output */
-> +               ath10k_wmi_gpio_output(ar, ar->hw_params.led_pin, 1);
-> +       }
-> +err_no_led:;
-> +#endif
-> +
-> +       return 0;
->  err_hif_stop:
->         ath10k_hif_stop(ar);
->  err_htt_rx_detach:
-
-The guards make it harder to read. In this chunk, every component
-should be defined acceptably even if the CONFIG flags aren't defined
-because they're all under your control. Make sure they are, and then
-you can drop the guards here. The only trick is to be sure that any
-accessed struct members that are protected by guards are abstracted
-and only accessed inside your guarded functions. Alternately, you
-could encapsulate it into a function ath10k_core_gpios_start() and
-just have the single call there. The additional benefit being that you
-don't need the err_no_led: jump.
-
-
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index c624b96f8b84..1340904582b7 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -25,6 +25,8 @@
->  #include <linux/pci.h>
->  #include <linux/uuid.h>
->  #include <linux/time.h>
-> +#include <linux/gpio.h>
-> +#include <linux/leds.h>
->
->  #include "htt.h"
->  #include "htc.h"
-> @@ -812,6 +814,21 @@ struct ath10k_per_peer_tx_stats {
->         u32     reserved2;
->  };
->
-> +struct ath10k_gpiocontrol {
-> +       struct ath10k *ar;
-> +       u32 gpio_set_num, gpio_num, gpio_input, gpio_pull_type, gpio_intr_mode, gpio_set; /* since we have no gpio read method, these are the state variables for debugfs.  */
-> +#ifdef CONFIG_GPIOLIB
-> +       struct gpio_chip gchip;
-> +#endif
-> +#ifdef CONFIG_LEDS_CLASS
-> +       struct gpio_led wifi_led;
-> +       struct led_classdev cdev;
-> +#endif
-> +       char label[48];
-> +       u32 gpio_state_dir; /* same as for debugfs, but for gpiochip implementation */
-> +       u32 gpio_state_pin;
-> +};
-> +
->  struct ath10k {
->         struct ath_common ath_common;
->         struct ieee80211_hw *hw;
-> @@ -840,7 +857,8 @@ struct ath10k {
->         u32 low_5ghz_chan;
->         u32 high_5ghz_chan;
->         bool ani_enabled;
-> -
-> +       struct ath10k_gpiocontrol *gpio;
-> +       int gpio_attached;
->         bool p2p;
->
->         struct {
-> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-> index 1b9c092d210f..4ed3540669ec 100644
-> --- a/drivers/net/wireless/ath/ath10k/debug.c
-> +++ b/drivers/net/wireless/ath/ath10k/debug.c
-> @@ -1084,6 +1084,128 @@ static ssize_t ath10k_write_fw_dbglog(struct file *file,
->         return ret;
->  }
->
-> +
-> +static ssize_t ath10k_read_gpio_config(struct file *file, char __user *user_buf,
-> +                                     size_t count, loff_t *ppos)
-> +{
-> +       struct ath10k *ar = file->private_data;
-> +       struct ath10k_gpiocontrol *gpio = ar->gpio;
-> +       size_t len;
-> +       char buf[96];
-> +       if (!gpio)
-> +               return 0;
-> +
-> +       len = scnprintf(buf, sizeof(buf), "%u %u %u %u\n", gpio->gpio_num, gpio->gpio_input, gpio->gpio_pull_type, gpio->gpio_intr_mode);
-> +
-> +       return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-> +}
-> +
-> +
-> +static ssize_t ath10k_write_gpio_config(struct file *file,
-> +                                     const char __user *user_buf,
-> +                                     size_t count, loff_t *ppos)
-> +{
-> +       struct ath10k *ar = file->private_data;
-> +       struct ath10k_gpiocontrol *gpio = ar->gpio;
-> +       int ret;
-> +       char buf[96];
-> +       u32 gpio_num, input, pull_type, intr_mode;
-> +       if (!gpio)
-> +               return -EINVAL;
-> +
-> +       simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-> +
-> +       /* make sure that buf is null terminated */
-> +       buf[sizeof(buf) - 1] = 0;
-> +
-> +       gpio->gpio_num = gpio_num;
-> +       gpio->gpio_input = input;
-> +       gpio->gpio_pull_type = pull_type;
-> +       gpio->gpio_intr_mode = intr_mode;
-> +       ret = sscanf(buf, "%u %u %u %u", &gpio_num, &input, &pull_type, &intr_mode);
-> +
-> +       if (!ret)
-> +               return -EINVAL;
-> +
-> +
-> +       mutex_lock(&ar->conf_mutex);
-> +
-> +
-> +       ret = ath10k_wmi_gpio_config(ar, gpio_num, input, pull_type, intr_mode);
-> +
-> +       if (ret) {
-> +               ath10k_warn(ar, "gpio_config cfg failed from debugfs: %d\n", ret);
-> +               goto exit;
-> +       }
-> +       ret = count;
-> +
-> +exit:
-> +       mutex_unlock(&ar->conf_mutex);
-> +
-> +       return ret;
-> +}
-> +
-> +static ssize_t ath10k_read_gpio_output(struct file *file, char __user *user_buf,
-> +                                     size_t count, loff_t *ppos)
-> +{
-> +       struct ath10k *ar = file->private_data;
-> +       struct ath10k_gpiocontrol *gpio = ar->gpio;
-> +       size_t len;
-> +       char buf[96];
-> +       if (!gpio)
-> +               return 0;
-> +
-> +       len = scnprintf(buf, sizeof(buf), "%u %u\n", gpio->gpio_num, gpio->gpio_set);
-> +
-> +       return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-> +}
-> +
-> +
-> +static ssize_t ath10k_write_gpio_output(struct file *file,
-> +                                     const char __user *user_buf,
-> +                                     size_t count, loff_t *ppos)
-> +{
-> +       struct ath10k *ar = file->private_data;
-> +       struct ath10k_gpiocontrol *gpio = ar->gpio;
-> +       int ret;
-> +       char buf[96];
-> +       u32 gpio_num, set;
-> +       if (!gpio)
-> +               return -EINVAL;
-> +
-> +       simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-> +
-> +       /* make sure that buf is null terminated */
-> +       buf[sizeof(buf) - 1] = 0;
-> +
-> +       gpio->gpio_set_num = gpio_num;
-> +       gpio->gpio_set = set;
-> +       ret = sscanf(buf, "%u %u", &gpio_num, &set);
-> +
-> +       if (!ret)
-> +               return -EINVAL;
-> +
-> +
-> +       mutex_lock(&ar->conf_mutex);
-> +
-> +
-> +       ret = ath10k_wmi_gpio_output(ar, gpio_num, set);
-> +
-> +       if (ret) {
-> +               ath10k_warn(ar, "gpio_output cfg failed from debugfs: %d\n", ret);
-> +               goto exit;
-> +       }
-> +       ret = count;
-> +
-> +exit:
-> +       mutex_unlock(&ar->conf_mutex);
-> +
-> +       return ret;
-> +}
-> +
-> +
-> +
-> +
->  /* TODO:  Would be nice to always support ethtool stats, would need to
->   * move the stats storage out of ath10k_debug, or always have ath10k_debug
->   * struct available..
-> @@ -1252,6 +1374,24 @@ static const struct file_operations fops_fw_dbglog = {
->         .llseek = default_llseek,
->  };
->
-> +
-> +
-> +static const struct file_operations fops_gpio_output = {
-> +       .read = ath10k_read_gpio_output,
-> +       .write = ath10k_write_gpio_output,
-> +       .open = simple_open,
-> +       .owner = THIS_MODULE,
-> +       .llseek = default_llseek,
-> +};
-> +
-> +static const struct file_operations fops_gpio_config = {
-> +       .read = ath10k_read_gpio_config,
-> +       .write = ath10k_write_gpio_config,
-> +       .open = simple_open,
-> +       .owner = THIS_MODULE,
-> +       .llseek = default_llseek,
-> +};
-> +
->  static int ath10k_debug_cal_data_fetch(struct ath10k *ar)
->  {
->         u32 hi_addr;
-> @@ -2259,6 +2399,12 @@ int ath10k_debug_register(struct ath10k *ar)
->         debugfs_create_file("fw_dbglog", 0600, ar->debug.debugfs_phy, ar,
->                             &fops_fw_dbglog);
->
-> +       debugfs_create_file("gpio_output", 0600, ar->debug.debugfs_phy, ar,
-> +                           &fops_gpio_output);
-> +
-> +       debugfs_create_file("gpio_config", 0600, ar->debug.debugfs_phy, ar,
-> +                           &fops_gpio_config);
-> +
->         debugfs_create_file("cal_data", 0400, ar->debug.debugfs_phy, ar,
->                             &fops_cal_data);
->
-> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-> index 413b1b4321f7..af91d0202e45 100644
-> --- a/drivers/net/wireless/ath/ath10k/hw.h
-> +++ b/drivers/net/wireless/ath/ath10k/hw.h
-> @@ -495,6 +495,8 @@ struct ath10k_hw_params {
->         const char *name;
->         u32 patch_load_addr;
->         int uart_pin;
-> +       int led_pin; /* 1 for peregrine, 17 for beeliner */
-> +       int gpio_count; /* 24 for peregrine, 35 for beeliner */
->         u32 otp_exe_param;
->
->         /* Type of hw cycle counter wraparound logic, for more info
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index ebb3f1b046f3..f1932cc9f153 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -4601,6 +4601,12 @@ static int ath10k_start(struct ieee80211_hw *hw)
->         switch (ar->state) {
->         case ATH10K_STATE_OFF:
->                 ar->state = ATH10K_STATE_ON;
-> +
-> +               /* need to reset gpio state */
-> +               if (ar->hw_params.led_pin) {
-> +                       ath10k_wmi_gpio_config(ar, ar->hw_params.led_pin, 0, WMI_GPIO_PULL_NONE, WMI_GPIO_INTTYPE_DISABLE);
-> +                       ath10k_wmi_gpio_output(ar, ar->hw_params.led_pin, 1);
-> +               }
->                 break;
->         case ATH10K_STATE_RESTARTING:
->                 ar->state = ATH10K_STATE_RESTARTED;
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-> index 14093cfdc505..a38d6a8f7ec5 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-> +++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-> @@ -197,8 +197,13 @@ struct wmi_ops {
->                                         (struct ath10k *ar,
->                                          enum wmi_bss_survey_req_type type);
->         struct sk_buff *(*gen_echo)(struct ath10k *ar, u32 value);
-> +
-> +       struct sk_buff *(*gen_gpio_config)(struct ath10k *ar, u32 gpio_num, u32 input, u32 pull_type, u32 intr_mode);
-> +
-> +       struct sk_buff *(*gen_gpio_output)(struct ath10k *ar, u32 gpio_num, u32 set);
->  };
->
-> +
->  int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
->
->  static inline int
-> @@ -957,6 +962,35 @@ ath10k_wmi_force_fw_hang(struct ath10k *ar,
->
->         return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->force_fw_hang_cmdid);
->  }
-> +static inline int
-> +ath10k_wmi_gpio_config(struct ath10k *ar, u32 gpio_num, u32 input, u32 pull_type, u32 intr_mode)
-> +{
-> +       struct sk_buff *skb;
-> +
-> +       if (!ar->wmi.ops->gen_gpio_config)
-> +               return -EOPNOTSUPP;
-> +
-> +       skb = ar->wmi.ops->gen_gpio_config(ar, gpio_num, input, pull_type, intr_mode);
-> +       if (IS_ERR(skb))
-> +               return PTR_ERR(skb);
-> +
-> +       return ath10k_wmi_cmd_send_nowait(ar, skb, ar->wmi.cmd->gpio_config_cmdid);
-> +}
-> +
-> +static inline int
-> +ath10k_wmi_gpio_output(struct ath10k *ar, u32 gpio_num, u32 set)
-> +{
-> +       struct sk_buff *skb;
-> +
-> +       if (!ar->wmi.ops->gen_gpio_config)
-> +               return -EOPNOTSUPP;
-> +
-> +       skb = ar->wmi.ops->gen_gpio_output(ar, gpio_num, set);
-> +       if (IS_ERR(skb))
-> +               return PTR_ERR(skb);
-> +
-> +       return ath10k_wmi_cmd_send_nowait(ar, skb, ar->wmi.cmd->gpio_output_cmdid);
-> +}
->
->  static inline int
->  ath10k_wmi_dbglog_cfg(struct ath10k *ar, u64 module_enable, u32 log_level)
-> @@ -1034,7 +1068,7 @@ ath10k_wmi_pdev_get_temperature(struct ath10k *ar)
->         if (IS_ERR(skb))
->                 return PTR_ERR(skb);
->
-> -       return ath10k_wmi_cmd_send(ar, skb,
-> +       return ath10k_wmi_cmd_send_nowait(ar, skb,
->                                    ar->wmi.cmd->pdev_get_temperature_cmdid);
->  }
->
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> index ae77a007ae07..2bfba63f1dcf 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> @@ -3250,6 +3250,69 @@ ath10k_wmi_tlv_op_gen_echo(struct ath10k *ar, u32 value)
->         return skb;
->  }
->
-> +static struct sk_buff *
-> +ath10k_wmi_tlv_op_gen_gpio_config(struct ath10k *ar, u32 gpio_num, u32 input, u32 pull_type, u32 intr_mode)
-> +{
-> +    struct wmi_gpio_config_cmd *cmd;
-> +    struct wmi_tlv *tlv;
-> +    struct sk_buff *skb;
-> +    void *ptr;
-> +    size_t len;
-> +
-> +    len = sizeof(*tlv) + sizeof(*cmd);
-> +    skb = ath10k_wmi_alloc_skb(ar, len);
-> +    if (!skb)
-> +       return ERR_PTR(-ENOMEM);
-> +
-> +    ptr = (void *)skb->data;
-> +    tlv = ptr;
-> +    tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_GPIO_CONFIG_CMD);
-> +    tlv->len = __cpu_to_le16(sizeof(*cmd));
-> +
-> +    cmd = (struct wmi_gpio_config_cmd *)skb->data;
-> +    cmd->pull_type = __cpu_to_le32(pull_type);
-> +    cmd->gpio_num = __cpu_to_le32(gpio_num);
-> +    cmd->input = __cpu_to_le32(input);
-> +    cmd->intr_mode = __cpu_to_le32(intr_mode);
-> +
-> +    ptr += sizeof(*tlv);
-> +    ptr += sizeof(*cmd);
-> +
-> +    ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv gpio_config gpio_num 0x%08x input 0x%08x pull_type 0x%08x intr_mode 0x%08x\n", gpio_num, input, pull_type, intr_mode);
-> +    return skb;
-> +}
-> +
-> +static struct sk_buff *
-> +ath10k_wmi_tlv_op_gen_gpio_output(struct ath10k *ar, u32 gpio_num, u32 set)
-> +{
-> +    struct wmi_gpio_output_cmd *cmd;
-> +    struct wmi_tlv *tlv;
-> +    struct sk_buff *skb;
-> +    void *ptr;
-> +    size_t len;
-> +
-> +    len = sizeof(*tlv) + sizeof(*cmd);
-> +    skb = ath10k_wmi_alloc_skb(ar, len);
-> +    if (!skb)
-> +       return ERR_PTR(-ENOMEM);
-> +
-> +    ptr = (void *)skb->data;
-> +    tlv = ptr;
-> +    tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_GPIO_OUTPUT_CMD);
-> +    tlv->len = __cpu_to_le16(sizeof(*cmd));
-> +
-> +    cmd = (struct wmi_gpio_output_cmd *)skb->data;
-> +    cmd->gpio_num = __cpu_to_le32(gpio_num);
-> +    cmd->set = __cpu_to_le32(set);
-> +
-> +    ptr += sizeof(*tlv);
-> +    ptr += sizeof(*cmd);
-> +
-> +    ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv gpio_output gpio_num 0x%08x set 0x%08x\n", gpio_num, set);
-> +    return skb;
-> +}
-> +
-> +
->  static struct sk_buff *
->  ath10k_wmi_tlv_op_gen_vdev_spectral_conf(struct ath10k *ar,
->                                          const struct wmi_vdev_spectral_conf_arg *arg)
-> @@ -3727,6 +3790,8 @@ static const struct wmi_ops wmi_tlv_ops = {
->         .fw_stats_fill = ath10k_wmi_main_op_fw_stats_fill,
->         .get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
->         .gen_echo = ath10k_wmi_tlv_op_gen_echo,
-> +       .gen_gpio_config = ath10k_wmi_tlv_op_gen_gpio_config,
-> +       .gen_gpio_output = ath10k_wmi_tlv_op_gen_gpio_output,
->         .gen_vdev_spectral_conf = ath10k_wmi_tlv_op_gen_vdev_spectral_conf,
->         .gen_vdev_spectral_enable = ath10k_wmi_tlv_op_gen_vdev_spectral_enable,
->  };
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-> index 58dc2189ba49..b56e5a673a8c 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -6646,6 +6646,41 @@ ath10k_wmi_op_gen_peer_set_param(struct ath10k *ar, u32 vdev_id,
->         return skb;
->  }
->
-> +static struct sk_buff *
-> +ath10k_wmi_op_gen_gpio_config(struct ath10k *ar, u32 gpio_num, u32 input, u32 pull_type, u32 intr_mode)
-> +{
-> +    struct wmi_gpio_config_cmd *cmd;
-> +    struct sk_buff *skb;
-> +
-> +    skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
-> +    if (!skb)
-> +       return ERR_PTR(-ENOMEM);
-> +    cmd = (struct wmi_gpio_config_cmd *)skb->data;
-> +    cmd->pull_type = __cpu_to_le32(pull_type);
-> +    cmd->gpio_num = __cpu_to_le32(gpio_num);
-> +    cmd->input = __cpu_to_le32(input);
-> +    cmd->intr_mode = __cpu_to_le32(intr_mode);
-> +
-> +    ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi gpio_config gpio_num 0x%08x input 0x%08x pull_type 0x%08x intr_mode 0x%08x\n", gpio_num, input, pull_type, intr_mode);
-> +    return skb;
-> +}
-> +
-> +static struct sk_buff *
-> +ath10k_wmi_op_gen_gpio_output(struct ath10k *ar, u32 gpio_num, u32 set)
-> +{
-> +    struct wmi_gpio_output_cmd *cmd;
-> +    struct sk_buff *skb;
-> +
-> +    skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
-> +    if (!skb)
-> +       return ERR_PTR(-ENOMEM);
-> +    cmd = (struct wmi_gpio_output_cmd *)skb->data;
-> +    cmd->gpio_num = __cpu_to_le32(gpio_num);
-> +    cmd->set = __cpu_to_le32(set);
-> +    ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi gpio_output gpio_num 0x%08x set 0x%08x\n", gpio_num, set);
-> +    return skb;
-> +}
-> +
->  static struct sk_buff *
->  ath10k_wmi_op_gen_set_psmode(struct ath10k *ar, u32 vdev_id,
->                              enum wmi_sta_ps_mode psmode)
-> @@ -8153,6 +8188,9 @@ static const struct wmi_ops wmi_ops = {
->         .fw_stats_fill = ath10k_wmi_main_op_fw_stats_fill,
->         .get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
->         .gen_echo = ath10k_wmi_op_gen_echo,
-> +       .gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
-> +       .gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
-> +
->         /* .gen_bcn_tmpl not implemented */
->         /* .gen_prb_tmpl not implemented */
->         /* .gen_p2p_go_bcn_ie not implemented */
-> @@ -8223,6 +8261,8 @@ static const struct wmi_ops wmi_10_1_ops = {
->         .fw_stats_fill = ath10k_wmi_10x_op_fw_stats_fill,
->         .get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
->         .gen_echo = ath10k_wmi_op_gen_echo,
-> +       .gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
-> +       .gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
->         /* .gen_bcn_tmpl not implemented */
->         /* .gen_prb_tmpl not implemented */
->         /* .gen_p2p_go_bcn_ie not implemented */
-> @@ -8294,6 +8334,8 @@ static const struct wmi_ops wmi_10_2_ops = {
->         .gen_delba_send = ath10k_wmi_op_gen_delba_send,
->         .fw_stats_fill = ath10k_wmi_10x_op_fw_stats_fill,
->         .get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
-> +       .gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
-> +       .gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
->         /* .gen_pdev_enable_adaptive_cca not implemented */
->  };
->
-> @@ -8364,6 +8406,8 @@ static const struct wmi_ops wmi_10_2_4_ops = {
->         .gen_pdev_enable_adaptive_cca =
->                 ath10k_wmi_op_gen_pdev_enable_adaptive_cca,
->         .get_vdev_subtype = ath10k_wmi_10_2_4_op_get_vdev_subtype,
-> +       .gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
-> +       .gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
->         /* .gen_bcn_tmpl not implemented */
->         /* .gen_prb_tmpl not implemented */
->         /* .gen_p2p_go_bcn_ie not implemented */
-> @@ -8439,6 +8483,8 @@ static const struct wmi_ops wmi_10_4_ops = {
->         .gen_pdev_bss_chan_info_req = ath10k_wmi_10_2_op_gen_pdev_bss_chan_info,
->         .gen_echo = ath10k_wmi_op_gen_echo,
->         .gen_pdev_get_tpc_config = ath10k_wmi_10_2_4_op_gen_pdev_get_tpc_config,
-> +       .gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
-> +       .gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
->  };
->
->  int ath10k_wmi_attach(struct ath10k *ar)
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-> index c7b30ed9015d..dc180a86dc3b 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.h
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-> @@ -2906,6 +2906,42 @@ enum wmi_10_4_feature_mask {
->
->  };
->
-> +/* WMI_GPIO_CONFIG_CMDID */
-> +enum {
-> +    WMI_GPIO_PULL_NONE,
-> +    WMI_GPIO_PULL_UP,
-> +    WMI_GPIO_PULL_DOWN,
-> +};
-> +
-> +enum {
-> +    WMI_GPIO_INTTYPE_DISABLE,
-> +    WMI_GPIO_INTTYPE_RISING_EDGE,
-> +    WMI_GPIO_INTTYPE_FALLING_EDGE,
-> +    WMI_GPIO_INTTYPE_BOTH_EDGE,
-> +    WMI_GPIO_INTTYPE_LEVEL_LOW,
-> +    WMI_GPIO_INTTYPE_LEVEL_HIGH
-> +};
-> +
-> +/* WMI_GPIO_CONFIG_CMDID */
-> +struct wmi_gpio_config_cmd {
-> +    __le32 gpio_num;             /* GPIO number to be setup */
-> +    __le32 input;                /* 0 - Output/ 1 - Input */
-> +    __le32 pull_type;            /* Pull type defined above */
-> +    __le32 intr_mode;            /* Interrupt mode defined above (Input) */
-> +} __packed;
-> +
-> +/* WMI_GPIO_OUTPUT_CMDID */
-> +struct wmi_gpio_output_cmd {
-> +    __le32 gpio_num;    /* GPIO number to be setup */
-> +    __le32 set;         /* Set the GPIO pin*/
-> +} __packed;
-> +
-> +/* WMI_GPIO_INPUT_EVENTID */
-> +struct wmi_gpio_input_event {
-> +    __le32 gpio_num;    /* GPIO number which changed state */
-> +} __packed;
-> +
-> +
->  struct wmi_ext_resource_config_10_4_cmd {
->         /* contains enum wmi_host_platform_type */
->         __le32 host_platform_config;
-> --
-> 2.14.1
->
-
-The rest of this looks OK to me.
-
-- Steve
-
---
-Steve deRosier
-Cal-Sierra Consulting LLC
-https://www.cal-sierra.com/
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMjAuMDIuMjAxOCB1bSAxNzo1MiBzY2hyaWViIFN0ZXZlIGRlUm9zaWVyOgo+Cj4+ICtzdGF0
+aWMgaW50IGF0aDEwa19yZWdpc3Rlcl9ncGlvX2NoaXAoc3RydWN0IGF0aDEwayAqYXIpCj4+ICt7
+Cj4+ICsgICAgICAgc3RydWN0IGF0aDEwa19ncGlvY29udHJvbCAqZ3BpbzsKPj4gKyAgICAgICBn
+cGlvID0ga3phbGxvYyhzaXplb2Yoc3RydWN0IGF0aDEwa19ncGlvY29udHJvbCksIEdGUF9LRVJO
+RUwpOwo+PiArICAgICAgIGlmICghZ3Bpbykgewo+PiArICAgICAgICAgICAgICAgcmV0dXJuIC1F
+Tk9NRU07Cj4+ICsgICAgICAgfQo+PiArCj4+ICsgICAgICAgc25wcmludGYoZ3Bpby0+bGFiZWws
+IHNpemVvZihncGlvLT5sYWJlbCksICJhdGgxMGstJXMiLAo+PiArICAgICAgICAgICAgICAgIHdp
+cGh5X25hbWUoYXItPmh3LT53aXBoeSkpOwo+PiArI2lmIExJTlVYX1ZFUlNJT05fQ09ERSA+PSBL
+RVJORUxfVkVSU0lPTig0LDUsMCkKPj4gKyAgICAgICBncGlvLT5nY2hpcC5wYXJlbnQgPSBhci0+
+ZGV2Owo+PiArI2Vsc2UKPj4gKyAgICAgICBncGlvLT5nY2hpcC5kZXYgPSBhci0+ZGV2Owo+PiAr
+I2VuZGlmCj4+ICsgICAgICAgZ3Bpby0+Z2NoaXAuYmFzZSA9IC0xOyAgLyogZGV0ZXJtaW5lIGJh
+c2UgYXV0b21hdGljYWxseSAqLwo+IEkgbWF5IGJlIHdyb25nLCBidXQgSSB0aGluayB0aGF0IHZl
+cnNpb24gZ3VhcmRzIGFyZSB1bndlbGNvbWUgaGVyZS4KPiBUaGUgcGF0Y2ggaXMgc3VwcG9zZWQg
+dG8gZ28gYW5kIGFwcGx5IHNwZWNpZmljYWxseSB0byB0aGUgdXBzdHJlYW0KPiB2ZXJzaW9uLCB3
+aGljaCBpcyBjbGVhcmx5ID49IEtFUk5FTF9WRVJTSU9OKDQsNSwwKS4gSSB0aGluayB5b3UgY2Fu
+Cj4gZHJvcCB0aGlzLCBvbmx5IHVzZSB0aGUgJ2dwaW8tPmdjaGlwLnBhcmVudCA9IGFyLT5kZXY7
+JyBhbmQgY2FsbCBpdAo+IGdvb2QuIFRoaXMgZml4dXAgc2hvdWxkIGJlIHBpY2tlZCB1cCBieSBC
+YWNrcG9ydHMuICBJIHVuZGVyc3RhbmQgdGhhdAo+IHlvdSBtaWdodCBuZWVkIHRvIGtlZXAgaXQg
+Zm9yIHlvdXIgaW50ZXJuYWwgdHJlZSwgYnV0IEkgZG9uJ3QgdGhpbmsKPiB0aGUgbWFpbnRhaW5l
+cnMgd2FudCB0byBzZWUgdGhpcy4KdGhlIG9yaWdpbmFsIHBhdGNoIGNvbWVzIGZyb20gbXkgc291
+cmNlcyB3aGljaCBhcmUgc3VwcG9zZWQgdG8gd29yayB3aXRoIApjb21wYXQtd2lyZWxlc3MgZsO8
+ciBtdWx0aXBsZSBrZXJuZWxzLiBidXQgZm9yIHN1cmUgaSBjYW4gY2hhbmdlIHRoYXQgOi0pCj4K
+Pgo+PiArLyogcmVtb3ZlIEdQSU8gY2hpcCAqLwo+PiArc3RhdGljIHZvaWQgYXRoMTBrX3VucmVn
+aXN0ZXJfZ3Bpb19jaGlwKHN0cnVjdCBhdGgxMGsgKmFyKQo+PiArewo+PiArI2lmZGVmIENPTkZJ
+R19HUElPTElCCj4+ICsgICAgICAgc3RydWN0IGF0aDEwa19ncGlvY29udHJvbCAqZ3BpbyA9IGFy
+LT5ncGlvOwo+PiArICAgICAgIGlmIChncGlvKSB7Cj4+ICsgICAgICAgICAgICAgICBncGlvY2hp
+cF9yZW1vdmUoJmdwaW8tPmdjaGlwKTsKPj4gKyAgICAgICAgICAgICAgIGtmcmVlKGdwaW8pOwo+
+PiArICAgICAgIH0KPj4gKyNlbmRpZgo+PiArfQo+IEluc3RlYWQgb2YgZW50ZXJpbmcvZXhpdGlu
+ZyB0aGUgZ3VhcmRzIGluc2lkZSBldmVyeSBmdW5jdGlvbiwgSSB0aGluawo+IHRoZSB1c3VhbGx5
+IGFjY2VwdGVkIHdheSB0byBoYW5kbGUgdGhpcyBpcyB0byBwbGFjZSBhIGJsb2NrIGluIHRoZQo+
+IHRoYXQgbG9va3MgYmFzaWNhbGx5IGxpa2U6Cj4KPiAjaWZkZWYgQ09ORklHX0dQSU9MSUIKPiBz
+dGF0aWMgdm9pZCBhdGgxMGtfdW5yZWdpc3Rlcl9ncGlvX2NoaXAoc3RydWN0IGF0aDEwayAqYXIp
+IHsKPiAgICAgICAgIHN0cnVjdCBhdGgxMGtfZ3Bpb2NvbnRyb2wgKmdwaW8gPSBhci0+Z3BpbzsK
+PiAgICAgICAgIGlmIChncGlvKSB7Cj4gICAgICAgICAgICAgICAgIGdwaW9jaGlwX3JlbW92ZSgm
+Z3Bpby0+Z2NoaXApOwo+ICAgICAgICAgICAgICAgICBrZnJlZShncGlvKTsKPiAgICAgICAgIH0K
+PiAgIH0KPgo+IG5leHQgZnVuY3Rpb24uLi4uCj4gbmV4dCBmdW5jdGlvbi4uLgo+Cj4gI2Vsc2UK
+PiBzdGF0aWMgdm9pZCBhdGgxMGtfdW5yZWdpc3Rlcl9ncGlvX2NoaXAoc3RydWN0IGF0aDEwayAq
+YXIpIHsKPiAgIH0KPiBuZXh0IGZ1bmN0aW9uLi4uLgo+IG5leHQgZnVuY3Rpb24uLi4KPiAjZW5k
+aWYKPgo+IElmIHRoZXkgd2VyZW4ndCBzdGF0aWMsIHlvdSdkIGRvIGl0IGluIHRoZSAuaCBmaWxl
+LCB3aXRoIHRoZQo+IGRlY2xhcmF0aW9uIG9mIHRoZSBmdWxsIGZ1bmN0aW9uIHRoZXJlIGFuZCB0
+aGUgZGVmaW5pdGlvbiBpbiB0aGUgLmMuCj4KPiBJIG1heSBiZSBuaXQtcGlja2luZyBhbmQgeW91
+ciBzdHlsZSBpcyBwZXJmZWN0bHkgYWNjZXB0YWJsZSB0byB0aGUKPiBvdGhlciBtYWludGFpbmVy
+cy4KaSdtIG5vdCBhIGZhbiBvZiBibG9hdCBjb2RlLiBhbmQgbWFraW5nIGZ1bmt0aW9ucyBzdGF0
+aWMgd2hpY2ggYXJlIGp1c3QgCmNhbGxlZCBvbmUgd2lsbCBhbGxvdyB0aGUgY29tcGlsZXIgdG8g
+b3B0aW1pemUgdGhlIGNvZGUgYmV0dGVyCnRoYW4gbWFraW5nIGl0IG5vbiBzdGF0aWMuIHRoYXQg
+bWFrZXMgbm8gc2Vuc2UgaGVyZSBmb3Igc3VyZS4gaXRzIGp1c3QgYSAKcXVlc3Rpb24gaG93IHlv
+dSBoYW5kbGUgaXQuCj4KPgo+PiArCj4+ICtzdGF0aWMgdm9pZCBhdGgxMGtfdW5yZWdpc3Rlcl9s
+ZWQoc3RydWN0IGF0aDEwayAqYXIpCj4+ICt7Cj4+ICsjaWYgZGVmaW5lZCAoQ09ORklHX0dQSU9M
+SUIpICYmIGRlZmluZWQoQ09ORklHX0xFRFNfQ0xBU1MpCj4+ICsgICAgICAgaWYgKGFyLT5ncGlv
+KQo+PiArICAgICAgICAgICAgICAgbGVkX2NsYXNzZGV2X3VucmVnaXN0ZXIoJmFyLT5ncGlvLT5j
+ZGV2KTsKPj4gKyNlbmRpZgo+PiArfQo+PiArCj4+ICsKPj4gICBpbnQgYXRoMTBrX2NvcmVfc3Rh
+cnQoc3RydWN0IGF0aDEwayAqYXIsIGVudW0gYXRoMTBrX2Zpcm13YXJlX21vZGUgbW9kZSwKPj4g
+ICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3QgYXRoMTBrX2Z3X2NvbXBvbmVudHMg
+KmZ3KQo+PiAgIHsKPj4gICAgICAgICAgaW50IHN0YXR1czsKPj4gICAgICAgICAgdTMyIHZhbDsK
+Pj4gLQo+PiAgICAgICAgICBsb2NrZGVwX2Fzc2VydF9oZWxkKCZhci0+Y29uZl9tdXRleCk7Cj4+
+Cj4gV2hpdGVzcGFjZSBjaGFuZ2UgZm9yIG5vIGFwcGFyZW50IHJlYXNvbi4KY291bnQgaXQgYXMg
+dHlwbwo+Cj4+IEBAIC0yMzcyLDggKzI1MjQsMzIgQEAgaW50IGF0aDEwa19jb3JlX3N0YXJ0KHN0
+cnVjdCBhdGgxMGsgKmFyLCBlbnVtIGF0aDEwa19maXJtd2FyZV9tb2RlIG1vZGUsCj4+ICAgICAg
+ICAgIGlmIChzdGF0dXMpCj4+ICAgICAgICAgICAgICAgICAgZ290byBlcnJfaGlmX3N0b3A7Cj4+
+Cj4+IC0gICAgICAgcmV0dXJuIDA7Cj4+Cj4+ICsjaWZkZWYgQ09ORklHX0dQSU9MSUIKPj4gKyAg
+ICAgICAvKiBMRUQgQ29kZSAqLwo+PiArICAgICAgIGlmIChhci0+aHdfcGFyYW1zLmxlZF9waW4p
+IHsgLyogb25seSBhdHRhY2ggaWYgbm9uIHplcm8gc2luY2Ugc29tZSBjaGlwc2V0cyBhcmUgdW5z
+dXBwb3J0ZWQgeWV0ICovCj4+ICsgICAgICAgICAgICAgICBpZiAoIWFyLT5ncGlvX2F0dGFjaGVk
+KSB7Cj4+ICsgICAgICAgICAgICAgICAgICAgICAgIHN0YXR1cyA9IGF0aDEwa19yZWdpc3Rlcl9n
+cGlvX2NoaXAoYXIpOwo+PiArICAgICAgICAgICAgICAgICAgICAgICBpZiAoc3RhdHVzKSB7Cj4+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ290byBlcnJfbm9fbGVkOwo+PiArICAg
+ICAgICAgICAgICAgICAgICAgICB9Cj4+ICsjaWZkZWYgQ09ORklHX0xFRFNfQ0xBU1MKPj4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgYXItPmdwaW9fYXR0YWNoZWQgPSAxOwo+PiArICAgICAgICAg
+ICAgICAgICAgICAgICBhci0+Z3Bpby0+d2lmaV9sZWQuYWN0aXZlX2xvdyA9IDE7Cj4+ICsgICAg
+ICAgICAgICAgICAgICAgICAgIGFyLT5ncGlvLT53aWZpX2xlZC5ncGlvID0gYXItPmh3X3BhcmFt
+cy5sZWRfcGluOwo+PiArICAgICAgICAgICAgICAgICAgICAgICBhci0+Z3Bpby0+d2lmaV9sZWQu
+bmFtZSA9IGFyLT5ncGlvLT5sYWJlbDsKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgYXItPmdw
+aW8tPndpZmlfbGVkLmRlZmF1bHRfc3RhdGUgPSBMRURTX0dQSU9fREVGU1RBVEVfS0VFUDsKPj4g
+Kwo+PiArICAgICAgICAgICAgICAgICAgICAgICBhdGgxMGtfYWRkX2xlZChhciwgJmFyLT5ncGlv
+LT53aWZpX2xlZCk7Cj4+ICsjZW5kaWYKPj4gKyAgICAgICAgICAgICAgIH0KPj4gKyAgICAgICAg
+ICAgICAgIGF0aDEwa193bWlfZ3Bpb19jb25maWcoYXIsIGFyLT5od19wYXJhbXMubGVkX3Bpbiwg
+MCwgV01JX0dQSU9fUFVMTF9OT05FLCBXTUlfR1BJT19JTlRUWVBFX0RJU0FCTEUpOyAvKiBjb25m
+aWd1cmUgdG8gb3V0cHV0ICovCj4+ICsgICAgICAgICAgICAgICBhdGgxMGtfd21pX2dwaW9fb3V0
+cHV0KGFyLCBhci0+aHdfcGFyYW1zLmxlZF9waW4sIDEpOwo+PiArICAgICAgIH0KPj4gK2Vycl9u
+b19sZWQ6Owo+PiArI2VuZGlmCj4+ICsKPj4gKyAgICAgICByZXR1cm4gMDsKPj4gICBlcnJfaGlm
+X3N0b3A6Cj4+ICAgICAgICAgIGF0aDEwa19oaWZfc3RvcChhcik7Cj4+ICAgZXJyX2h0dF9yeF9k
+ZXRhY2g6Cj4gVGhlIGd1YXJkcyBtYWtlIGl0IGhhcmRlciB0byByZWFkLiBJbiB0aGlzIGNodW5r
+LCBldmVyeSBjb21wb25lbnQKPiBzaG91bGQgYmUgZGVmaW5lZCBhY2NlcHRhYmx5IGV2ZW4gaWYg
+dGhlIENPTkZJRyBmbGFncyBhcmVuJ3QgZGVmaW5lZAo+IGJlY2F1c2UgdGhleSdyZSBhbGwgdW5k
+ZXIgeW91ciBjb250cm9sLiBNYWtlIHN1cmUgdGhleSBhcmUsIGFuZCB0aGVuCj4geW91IGNhbiBk
+cm9wIHRoZSBndWFyZHMgaGVyZS4gVGhlIG9ubHkgdHJpY2sgaXMgdG8gYmUgc3VyZSB0aGF0IGFu
+eQo+IGFjY2Vzc2VkIHN0cnVjdCBtZW1iZXJzIHRoYXQgYXJlIHByb3RlY3RlZCBieSBndWFyZHMg
+YXJlIGFic3RyYWN0ZWQKPiBhbmQgb25seSBhY2Nlc3NlZCBpbnNpZGUgeW91ciBndWFyZGVkIGZ1
+bmN0aW9ucy4gQWx0ZXJuYXRlbHksIHlvdQo+IGNvdWxkIGVuY2Fwc3VsYXRlIGl0IGludG8gYSBm
+dW5jdGlvbiBhdGgxMGtfY29yZV9ncGlvc19zdGFydCgpIGFuZAo+IGp1c3QgaGF2ZSB0aGUgc2lu
+Z2xlIGNhbGwgdGhlcmUuIFRoZSBhZGRpdGlvbmFsIGJlbmVmaXQgYmVpbmcgdGhhdCB5b3UKPiBk
+b24ndCBuZWVkIHRoZSBlcnJfbm9fbGVkOiBqdW1wLgp0cnVlLCBidXQgY29uc2lkZXIgdGhhdCBy
+ZXF1aXJlZCBzdHJ1Y3R1cmVzIGxpa2UgZ3Bpb19jaGlwIChhci0+Z3BpbykgCmFuZCBsZWRfY2xh
+c3NkZXYgYXJlbnQgZGVmaW5lZCBpbiB0aGUga2VybmVsIGlmIHRoZXNlIENPTkZJRyBvcHRpb25z
+IAphcmVudCBjb25maWd1cmVkLiBzbyBpIG1heSBtb3ZlIGl0IGludG8gYSBzZXBhcmF0ZSBmdW5j
+dGlvbiAsYnV0IHRoZSAKZ3VhcmRzIHdpbGwgcmVtYWluLgp0aGF0cyBub3QgbXkgZmF1bHQuIHRo
+YXRzIGEgZmF1bHQgb2YgdGhlIGtlcm5lbCBhcGkuCgo+IFRoZSByZXN0IG9mIHRoaXMgbG9va3Mg
+T0sgdG8gbWUuCm9rYXkuIGkgYWxyZWFkeSBjaGFuZ2VkIHNvbWUgY29kZSwgYmFzZWQgb24geW91
+ciByZXF1ZXN0cyBidXQgd2lsbCB3YWl0IApmb3IgcmVwbHkgb2YgeW91IGFuZCBmb3Igb3RoZXIg
+Y29tbWVudHMgdW50aWwgaSBzZW5kIG91dCBhIG5ldyB2ZXJzaW9uCj4KPiAtIFN0ZXZlCj4KPiAt
+LQo+IFN0ZXZlIGRlUm9zaWVyCj4gQ2FsLVNpZXJyYSBDb25zdWx0aW5nIExMQwo+IGh0dHBzOi8v
+d3d3LmNhbC1zaWVycmEuY29tLwo+CgotLSAKTWl0IGZyZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJl
+Z2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RPCgpOZXdNZWRpYS1ORVQgR21iSCAtIERE
+LVdSVApGaXJtZW5zaXR6OiAgU3R1YmVud2FsZGFsbGVlIDIxYSwgNjQ2MjUgQmVuc2hlaW0KUmVn
+aXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRz
+ZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3
+LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tClRlbC46ICs0OTYyNTEt
+NTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
+bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+YXRoMTBrCg==
