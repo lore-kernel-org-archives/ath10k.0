@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eoIeu-0005z8-09
- for ath10k@lists.infradead.org; Wed, 21 Feb 2018 00:53:23 +0000
-From: s.gottschall@dd-wrt.com
-Subject: [PATCH v8] ath10k: add LED and GPIO controlling support for various
- chipsets
-Date: Wed, 21 Feb 2018 01:52:54 +0100
-Message-Id: <20180221005254.14806-1-s.gottschall@dd-wrt.com>
+ id 1eoUZ2-0004cy-Rw
+ for ath10k@lists.infradead.org; Wed, 21 Feb 2018 13:36:09 +0000
+From: mkenna@codeaurora.org
+Subject: [PATCH] ath10k: debugfs support to get final TPC stats for 10.4
+ variants
+Date: Wed, 21 Feb 2018 19:05:39 +0530
+Message-Id: <1519220139-10423-1-git-send-email-mkenna@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,882 +21,866 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org, kvalo@codeaurora.org
+To: ath10k@lists.infradead.org
+Cc: Maharaja Kennadyrajan <mkenna@codeaurora.org>, linux-wireless@vger.kernel.org
 
-From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
+From: Maharaja Kennadyrajan <mkenna@codeaurora.org>
 
-Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984 based chipsets with on chipset connected led's
-using WMI Firmware API.
-The LED device will get available named as "ath10k-phyX" at sysfs and can be controlled with various triggers.
-adds also debugfs interface for gpio control.
+Export the final Transmit Power Control (TPC) value, which is the
+minimum of control power and existing TPC value to user space via
+a new debugfs file "tpc_stats_final" to help with debugging.
+It works with the new wmi cmd and event introduced in 10.4 firmware
+branch.
 
-Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+WMI command ID: WMI_PDEV_GET_TPC_TABLE_CMDID
+WMI event ID: WMI_PDEV_TPC_TABLE_EVENTID
 
-v2  add correct gpio count per chipset and remove IPQ4019 support since this chipset does not make use of specific gpios)
-v5  fix compiling without LED_CLASS and GPIOLIB support, fix also error by kbuild test robot which does not occur in standard builds. curious
-v6  correct return values and fix comment style
-v7  fix ath10k_unregister_led for compiling without LED_CLASS
-v8  fix various code design issues reported by reviewers
+cat /sys/kernel/debug/ieee80211/phyX/ath10k/tpc_stats_final
+
+$ cat /sys/kernel/debug/ieee80211/phyX/ath10k/tpc_stats_final
+
+TPC config for channel 5180 mode 10
+
+CTL             =  0x 0 Reg. Domain             = 58
+Antenna Gain    =  0 Reg. Max Antenna Gain      =   0
+Power Limit     = 60 Reg. Max Power             = 60
+Num tx chains   =  2 Num supported rates        = 109
+
+******************* CDD POWER TABLE ****************
+
+No.  Preamble Rate_code tpc_value1 tpc_value2 tpc_value3
+0    CCK      0x40        0          0
+1    CCK      0x41        0          0
+[...]
+107  HTCUP    0x 0       46          46
+108  HTCUP    0x 0       46          46
+
+******************* STBC POWER TABLE ****************
+
+No.  Preamble Rate_code tpc_value1 tpc_value2 tpc_value3
+0    CCK      0x40        0          0
+1    CCK      0x41        0          0
+[...]
+107  HTCUP    0x 0        46         46
+108  HTCUP    0x 0        46         46
+
+***********************************
+TXBF not supported
+**********************************
+
+The existing tpc_stats debugfs file provides the dump
+which is minimum of target power and regulatory domain.
+
+cat /sys/kernel/debug/ieee80211/phyX/ath10k/tpc_stats
+
+Hardware_used: QCA4019
+Firmware version: firmware-5.bin_10.4-3.0-00209
+
+Signed-off-by: Maharaja Kennadyrajan <mkenna@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/core.c    | 221 +++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/core.h    |  39 +++++-
- drivers/net/wireless/ath/ath10k/debug.c   | 146 ++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h      |   2 +
- drivers/net/wireless/ath/ath10k/mac.c     |   5 +
- drivers/net/wireless/ath/ath10k/wmi-ops.h |  36 ++++-
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  65 +++++++++
- drivers/net/wireless/ath/ath10k/wmi.c     |  46 +++++++
- drivers/net/wireless/ath/ath10k/wmi.h     |  36 +++++
- 9 files changed, 593 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h    |  23 +++
+ drivers/net/wireless/ath/ath10k/debug.c   | 107 +++++++++++
+ drivers/net/wireless/ath/ath10k/debug.h   |  11 ++
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  21 ++
+ drivers/net/wireless/ath/ath10k/wmi.c     | 310 ++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.h     |  63 ++++++
+ 6 files changed, 520 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index f3ec13b80b20..769a246ad0fd 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -21,6 +21,10 @@
- #include <linux/dmi.h>
- #include <linux/ctype.h>
- #include <asm/byteorder.h>
-+#include <linux/leds.h>
-+#include <linux/platform_device.h>
-+#include <linux/version.h>
-+
- 
- #include "core.h"
- #include "mac.h"
-@@ -65,6 +69,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.id = QCA988X_HW_2_0_VERSION,
- 		.dev_id = QCA988X_2_0_DEVICE_ID,
- 		.name = "qca988x hw2.0",
-+		.led_pin = 1,
-+		.gpio_count = 24, 
- 		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
- 		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
-@@ -94,6 +100,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.id = QCA988X_HW_2_0_VERSION,
- 		.dev_id = QCA988X_2_0_DEVICE_ID_UBNT,
- 		.name = "qca988x hw2.0 ubiquiti",
-+		.led_pin = 1,
-+		.gpio_count = 24, 
- 		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
- 		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
-@@ -123,6 +131,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.id = QCA9887_HW_1_0_VERSION,
- 		.dev_id = QCA9887_1_0_DEVICE_ID,
- 		.name = "qca9887 hw1.0",
-+		.led_pin = 1,
-+		.gpio_count = 24, 
- 		.patch_load_addr = QCA9887_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
- 		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
-@@ -267,6 +277,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.id = QCA99X0_HW_2_0_DEV_VERSION,
- 		.dev_id = QCA99X0_2_0_DEVICE_ID,
- 		.name = "qca99x0 hw2.0",
-+		.led_pin = 17,
-+		.gpio_count = 35, 
- 		.patch_load_addr = QCA99X0_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
- 		.otp_exe_param = 0x00000700,
-@@ -301,6 +313,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.id = QCA9984_HW_1_0_DEV_VERSION,
- 		.dev_id = QCA9984_1_0_DEVICE_ID,
- 		.name = "qca9984/qca9994 hw1.0",
-+		.led_pin = 17,
-+		.gpio_count = 35, 
- 		.patch_load_addr = QCA9984_HW_1_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
- 		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_EACH,
-@@ -340,6 +354,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.id = QCA9888_HW_2_0_DEV_VERSION,
- 		.dev_id = QCA9888_2_0_DEVICE_ID,
- 		.name = "qca9888 hw2.0",
-+		.led_pin = 17,
-+		.gpio_count = 35, 
- 		.patch_load_addr = QCA9888_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
- 		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_EACH,
-@@ -2132,6 +2148,199 @@ static int ath10k_core_reset_rx_filter(struct ath10k *ar)
- 	return 0;
- }
- 
-+#if IS_ENABLED(CONFIG_GPIOLIB)
-+
-+static int ath10k_gpio_pin_cfg_input(struct gpio_chip *chip, unsigned offset)
-+{
-+	struct ath10k_gpiocontrol *gpio = container_of(chip, struct ath10k_gpiocontrol, gchip);
-+	ath10k_wmi_gpio_config(gpio->ar, offset, 1, WMI_GPIO_PULL_NONE, WMI_GPIO_INTTYPE_DISABLE); /* configure to input */
-+	gpio->gpio_state_dir = 1;
-+	return 0;
-+}
-+
-+/* gpio_chip handler : set GPIO to output */
-+static int ath10k_gpio_pin_cfg_output(struct gpio_chip *chip, unsigned offset,
-+				     int value)
-+{
-+	struct ath10k_gpiocontrol *gpio = container_of(chip, struct ath10k_gpiocontrol, gchip);
-+
-+	ath10k_wmi_gpio_config(gpio->ar, offset, 0, WMI_GPIO_PULL_NONE, WMI_GPIO_INTTYPE_DISABLE); /* configure to output */
-+	ath10k_wmi_gpio_output(gpio->ar, offset, value);
-+	gpio->gpio_state_dir = 0;
-+	gpio->gpio_state_pin = value;
-+	return 0;
-+}
-+
-+/* gpio_chip handler : query GPIO direction (0=out, 1=in) */
-+static int ath10k_gpio_pin_get_dir(struct gpio_chip *chip, unsigned offset)
-+{
-+	struct ath10k_gpiocontrol *gpio = container_of(chip, struct ath10k_gpiocontrol, gchip);
-+
-+	return gpio->gpio_state_dir;
-+}
-+
-+/* gpio_chip handler : get GPIO pin value */
-+static int ath10k_gpio_pin_get(struct gpio_chip *chip, unsigned offset)
-+{
-+	struct ath10k_gpiocontrol *gpio = container_of(chip, struct ath10k_gpiocontrol, gchip);
-+
-+	return gpio->gpio_state_pin;
-+}
-+
-+/* gpio_chip handler : set GPIO pin to value */
-+static void ath10k_gpio_pin_set(struct gpio_chip *chip, unsigned offset,
-+			       int value)
-+{
-+	struct ath10k_gpiocontrol *gpio = container_of(chip, struct ath10k_gpiocontrol, gchip);
-+
-+	ath10k_wmi_gpio_output(gpio->ar, offset, value);
-+	gpio->gpio_state_pin = value;
-+}
-+
-+/* register GPIO chip */
-+static int ath10k_register_gpio_chip(struct ath10k *ar)
-+{
-+	struct ath10k_gpiocontrol *gpio;
-+	gpio = kzalloc(sizeof(struct ath10k_gpiocontrol), GFP_KERNEL);
-+	if (!gpio) {
-+		return -ENOMEM;
-+	}
-+ 
-+	snprintf(gpio->label, sizeof(gpio->label), "ath10k-%s",
-+		 wiphy_name(ar->hw->wiphy));
-+	gpio->gchip.parent = ar->dev;
-+	gpio->gchip.base = -1;	/* determine base automatically */
-+	gpio->gchip.ngpio = ar->hw_params.gpio_count;
-+	gpio->gchip.label = gpio->label;
-+	gpio->gchip.direction_input = ath10k_gpio_pin_cfg_input;
-+	gpio->gchip.direction_output = ath10k_gpio_pin_cfg_output;
-+	gpio->gchip.get_direction = ath10k_gpio_pin_get_dir;
-+	gpio->gchip.get = ath10k_gpio_pin_get;
-+	gpio->gchip.set = ath10k_gpio_pin_set;
-+
-+	if (gpiochip_add(&gpio->gchip)) {
-+		printk(KERN_ERR "Error while registering gpio chip\n");
-+		return -1;
-+	}
-+	gpio->gchip.owner = NULL;
-+	ar->gpio = gpio;
-+	gpio->ar = ar;
-+	return 0;
-+}
-+
-+#if IS_ENABLED(CONFIG_LEDS_CLASS)
-+static void ath10k_led_brightness(struct led_classdev *led_cdev,
-+			       enum led_brightness brightness)
-+{
-+	struct ath10k_gpiocontrol *gpio = container_of(led_cdev, struct ath10k_gpiocontrol, cdev);
-+	struct gpio_led *led = &gpio->wifi_led;
-+	if (gpio->ar->state == ATH10K_STATE_ON) {
-+		gpio->gpio_state_pin = (brightness != LED_OFF) ^ led->active_low;
-+		ath10k_wmi_gpio_output(gpio->ar, led->gpio, gpio->gpio_state_pin);
-+	}
-+}
-+
-+static int ath10k_add_led(struct ath10k *ar, struct gpio_led *gpioled)
-+{
-+	int ret;
-+	struct ath10k_gpiocontrol *gpio = ar->gpio; 
-+	if (!gpio)
-+		return -1;
-+	gpio->cdev.name = gpioled->name;
-+	gpio->cdev.default_trigger = gpioled->default_trigger;
-+	gpio->cdev.brightness_set = ath10k_led_brightness;
-+
-+	ret = led_classdev_register(wiphy_dev(ar->hw->wiphy), &gpio->cdev);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+#endif /* CONFIG_LEDS_CLASS */
-+
-+/* remove GPIO chip */
-+static void ath10k_unregister_gpio_chip(struct ath10k *ar)
-+{
-+	struct ath10k_gpiocontrol *gpio = ar->gpio; 
-+	if (gpio) {
-+		gpiochip_remove(&gpio->gchip);
-+		kfree(gpio);
-+	}
-+}
-+
-+#else
-+
-+static void ath10k_unregister_gpio_chip(struct ath10k *ar) 
-+{
-+
-+}
-+#endif /* CONFIG_GPIOLIB */
-+
-+#if IS_ENABLED(CONFIG_GPIOLIB) && IS_ENABLED(CONFIG_LEDS_CLASS)
-+static void ath10k_unregister_led(struct ath10k *ar)
-+{
-+	if (ar->gpio)
-+		led_classdev_unregister(&ar->gpio->cdev);
-+}
-+
-+#else
-+
-+static void ath10k_unregister_led(struct ath10k *ar)
-+{
-+
-+}
-+#endif /* IS_ENABLED((CONFIG_GPIOLIB) && IS_ENABLED((CONFIG_LEDS_CLASS) */
-+
-+#if IS_ENABLED(CONFIG_GPIOLIB)
-+static int ath10k_attach_gpio(struct ath10k *ar)
-+{
-+	if (ar->hw_params.led_pin) { /* only attach if non zero since some chipsets are unsupported yet */
-+		return ath10k_register_gpio_chip(ar);
-+	}
-+
-+	return -ENODEV;
-+}
-+
-+#else
-+
-+static int ath10k_attach_gpio(struct ath10k *ar)
-+{
-+	return -ENODEV;
-+}
-+#endif
-+
-+
-+#if IS_ENABLED(CONFIG_LEDS_CLASS)
-+void ath10k_reset_led_pin(struct ath10k *ar) 
-+{
-+	/* need to reset gpio state */
-+	if (ar->hw_params.led_pin) { 
-+		ath10k_wmi_gpio_config(ar, ar->hw_params.led_pin, 0, WMI_GPIO_PULL_NONE, WMI_GPIO_INTTYPE_DISABLE);
-+		ath10k_wmi_gpio_output(ar, ar->hw_params.led_pin, 1);
-+	}
-+}
-+
-+static void ath10k_attach_led(struct ath10k *ar)
-+{
-+	if (!ar->gpio_attached) {
-+		ar->gpio->wifi_led.active_low = 1;
-+		ar->gpio->wifi_led.gpio = ar->hw_params.led_pin;
-+		ar->gpio->wifi_led.name = ar->gpio->label;
-+		ar->gpio->wifi_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
-+		
-+		ath10k_add_led(ar, &ar->gpio->wifi_led);
-+	}
-+	ath10k_reset_led_pin(ar); /* initially we need to configure the led pin to output */
-+}
-+
-+#else
-+
-+static void ath10k_attach_led(struct ath10k *ar)
-+{
-+
-+}
-+#endif
-+
- int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		      const struct ath10k_fw_components *fw)
- {
-@@ -2372,8 +2581,15 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 	if (status)
- 		goto err_hif_stop;
- 
--	return 0;
-+	
-+	status = ath10k_attach_gpio(ar);
-+	if (status)
-+		goto err_no_led;
-+
-+	ath10k_attach_led(ar);
- 
-+err_no_led:	
-+	return 0;
- err_hif_stop:
- 	ath10k_hif_stop(ar);
- err_htt_rx_detach:
-@@ -2673,6 +2889,9 @@ void ath10k_core_unregister(struct ath10k *ar)
- 	ath10k_core_free_board_files(ar);
- 
- 	ath10k_debug_unregister(ar);
-+
-+	ath10k_unregister_led(ar);
-+	ath10k_unregister_gpio_chip(ar);
- }
- EXPORT_SYMBOL(ath10k_core_unregister);
- 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index c624b96f8b84..5b6077a55a5f 100644
+index fe6b303..a7cbd79 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -25,6 +25,8 @@
- #include <linux/pci.h>
- #include <linux/uuid.h>
- #include <linux/time.h>
-+#include <linux/gpio.h>
-+#include <linux/leds.h>
- 
- #include "htt.h"
- #include "htc.h"
-@@ -812,6 +814,40 @@ struct ath10k_per_peer_tx_stats {
- 	u32	reserved2;
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -324,6 +325,27 @@ struct ath10k_tpc_stats {
+ 	struct ath10k_tpc_table tpc_table[WMI_TPC_FLAG];
  };
  
-+struct ath10k_gpiocontrol {
-+	struct ath10k *ar;
-+
-+	/* since we have no gpio read method, these are the state variables for debugfs.  */	
-+	u32 gpio_set_num;
-+	u32 gpio_num;
-+	u32 gpio_input;
-+	u32 gpio_pull_type;
-+	u32 gpio_intr_mode;
-+	u32 gpio_set; 
-+
-+#if IS_ENABLED(CONFIG_GPIOLIB)
-+	struct gpio_chip gchip;
-+#endif /* CONFIG_GPIOLIB */
-+#if IS_ENABLED(CONFIG_LEDS_CLASS)
-+	struct gpio_led wifi_led;
-+	struct led_classdev cdev;
-+#endif /* CONFIG_LEDS_CLASS */
-+	char label[48];
-+	u32 gpio_state_dir; /* same as for debugfs, but for gpiochip implementation */
-+	u32 gpio_state_pin;
++struct ath10k_tpc_table_final {
++	u32 pream_idx[WMI_TPC_FINAL_RATE_MAX];
++	u8 rate_code[WMI_TPC_FINAL_RATE_MAX];
++	char tpc_value[WMI_TPC_FINAL_RATE_MAX][WMI_TPC_TX_N_CHAIN * WMI_TPC_BUF_SIZE];
 +};
 +
-+#if IS_ENABLED(CONFIG_LEDS_CLASS)
-+void ath10k_reset_led_pin(struct ath10k *ar);
++struct ath10k_tpc_stats_final {
++	u32 reg_domain;
++	u32 chan_freq;
++	u32 phy_mode;
++	u32 twice_antenna_reduction;
++	u32 twice_max_rd_power;
++	s32 twice_antenna_gain;
++	u32 power_limit;
++	u32 num_tx_chain;
++	u32 ctl;
++	u32 rate_max;
++	u8 flag[WMI_TPC_FLAG];
++	struct ath10k_tpc_table_final tpc_table_final[WMI_TPC_FLAG];
++};
 +
-+#else
-+
-+static void inline ath10k_reset_led_pin(struct ath10k *ar)
-+{
-+
-+}
-+#endif /* CONFIG_LEDS_CLASS */
-+
- struct ath10k {
- 	struct ath_common ath_common;
- 	struct ieee80211_hw *hw;
-@@ -840,7 +876,8 @@ struct ath10k {
- 	u32 low_5ghz_chan;
- 	u32 high_5ghz_chan;
- 	bool ani_enabled;
--
-+	struct ath10k_gpiocontrol *gpio;
-+	int gpio_attached;
- 	bool p2p;
+ struct ath10k_dfs_stats {
+ 	u32 phy_errors;
+ 	u32 pulses_total;
+@@ -487,6 +509,7 @@ struct ath10k_debug {
  
- 	struct {
+ 	/* used for tpc-dump storage, protected by data-lock */
+ 	struct ath10k_tpc_stats *tpc_stats;
++	struct ath10k_tpc_stats_final *tpc_stats_final;
+ 
+ 	struct completion tpc_complete;
+ 
 diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 1b9c092d210f..4ed3540669ec 100644
+index 554cd78..a726f7c 100644
 --- a/drivers/net/wireless/ath/ath10k/debug.c
 +++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1084,6 +1084,128 @@ static ssize_t ath10k_write_fw_dbglog(struct file *file,
- 	return ret;
+@@ -1480,6 +1480,19 @@ void ath10k_debug_tpc_stats_process(struct ath10k *ar,
+ 	spin_unlock_bh(&ar->data_lock);
  }
  
-+
-+static ssize_t ath10k_read_gpio_config(struct file *file, char __user *user_buf,
-+				      size_t count, loff_t *ppos)
++void
++ath10k_debug_tpc_stats_final_process(struct ath10k *ar,
++				     struct ath10k_tpc_stats_final *tpc_stats)
 +{
-+	struct ath10k *ar = file->private_data;
-+	struct ath10k_gpiocontrol *gpio = ar->gpio; 
-+	size_t len;
-+	char buf[96];
-+	if (!gpio)
-+		return 0;
++	spin_lock_bh(&ar->data_lock);
 +
-+	len = scnprintf(buf, sizeof(buf), "%u %u %u %u\n", gpio->gpio_num, gpio->gpio_input, gpio->gpio_pull_type, gpio->gpio_intr_mode);
++	kfree(ar->debug.tpc_stats_final);
++	ar->debug.tpc_stats_final = tpc_stats;
++	complete(&ar->debug.tpc_complete);
 +
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
++	spin_unlock_bh(&ar->data_lock);
 +}
 +
-+
-+static ssize_t ath10k_write_gpio_config(struct file *file,
-+				      const char __user *user_buf,
-+				      size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	struct ath10k_gpiocontrol *gpio = ar->gpio; 
-+	int ret;
-+	char buf[96];
-+	u32 gpio_num, input, pull_type, intr_mode;
-+	if (!gpio)
-+		return -EINVAL;
-+
-+	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-+
-+	/* make sure that buf is null terminated */
-+	buf[sizeof(buf) - 1] = 0;
-+
-+	gpio->gpio_num = gpio_num;
-+	gpio->gpio_input = input;
-+	gpio->gpio_pull_type = pull_type;
-+	gpio->gpio_intr_mode = intr_mode;
-+	ret = sscanf(buf, "%u %u %u %u", &gpio_num, &input, &pull_type, &intr_mode);
-+
-+	if (!ret)
-+		return -EINVAL;
-+
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+
-+	ret = ath10k_wmi_gpio_config(ar, gpio_num, input, pull_type, intr_mode);
-+
-+	if (ret) {
-+		ath10k_warn(ar, "gpio_config cfg failed from debugfs: %d\n", ret);
-+		goto exit;
-+	}
-+	ret = count;
-+
-+exit:
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return ret;
-+}
-+
-+static ssize_t ath10k_read_gpio_output(struct file *file, char __user *user_buf,
-+				      size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	struct ath10k_gpiocontrol *gpio = ar->gpio; 
-+	size_t len;
-+	char buf[96];
-+	if (!gpio)
-+		return 0;
-+
-+	len = scnprintf(buf, sizeof(buf), "%u %u\n", gpio->gpio_num, gpio->gpio_set);
-+
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-+}
-+
-+
-+static ssize_t ath10k_write_gpio_output(struct file *file,
-+				      const char __user *user_buf,
-+				      size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	struct ath10k_gpiocontrol *gpio = ar->gpio; 
-+	int ret;
-+	char buf[96];
-+	u32 gpio_num, set;
-+	if (!gpio)
-+		return -EINVAL;
-+
-+	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-+
-+	/* make sure that buf is null terminated */
-+	buf[sizeof(buf) - 1] = 0;
-+
-+	gpio->gpio_set_num = gpio_num;
-+	gpio->gpio_set = set;
-+	ret = sscanf(buf, "%u %u", &gpio_num, &set);
-+
-+	if (!ret)
-+		return -EINVAL;
-+
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+
-+	ret = ath10k_wmi_gpio_output(ar, gpio_num, set);
-+
-+	if (ret) {
-+		ath10k_warn(ar, "gpio_output cfg failed from debugfs: %d\n", ret);
-+		goto exit;
-+	}
-+	ret = count;
-+
-+exit:
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return ret;
-+}
-+
-+
-+
-+
- /* TODO:  Would be nice to always support ethtool stats, would need to
-  * move the stats storage out of ath10k_debug, or always have ath10k_debug
-  * struct available..
-@@ -1252,6 +1374,24 @@ static const struct file_operations fops_fw_dbglog = {
+ static void ath10k_tpc_stats_print(struct ath10k_tpc_stats *tpc_stats,
+ 				   unsigned int j, char *buf, size_t *len)
+ {
+@@ -2143,6 +2156,95 @@ static ssize_t ath10k_debug_fw_checksums_read(struct file *file,
  	.llseek = default_llseek,
  };
  
++static int ath10k_debug_tpc_stats_final_request(struct ath10k *ar)
++{
++	int ret;
++	unsigned long time_left;
 +
++	lockdep_assert_held(&ar->conf_mutex);
 +
-+static const struct file_operations fops_gpio_output = {
-+	.read = ath10k_read_gpio_output,
-+	.write = ath10k_write_gpio_output,
-+	.open = simple_open,
++	reinit_completion(&ar->debug.tpc_complete);
++
++	ret = ath10k_wmi_pdev_get_tpc_table_cmdid(ar, WMI_TPC_CONFIG_PARAM);
++	if (ret) {
++		ath10k_warn(ar, "failed to request tpc table cmdid: %d\n", ret);
++		return ret;
++	}
++
++	time_left = wait_for_completion_timeout(&ar->debug.tpc_complete,
++						1 * HZ);
++	if (time_left == 0)
++		return -ETIMEDOUT;
++
++	return 0;
++}
++
++static int ath10k_tpc_stats_final_open(struct inode *inode, struct file *file)
++{
++	struct ath10k *ar = inode->i_private;
++	void *buf;
++	int ret;
++
++	mutex_lock(&ar->conf_mutex);
++
++	if (ar->state != ATH10K_STATE_ON) {
++		ret = -ENETDOWN;
++		goto err_unlock;
++	}
++
++	buf = vmalloc(ATH10K_TPC_CONFIG_BUF_SIZE);
++	if (!buf) {
++		ret = -ENOMEM;
++		goto err_unlock;
++	}
++
++	ret = ath10k_debug_tpc_stats_final_request(ar);
++	if (ret) {
++		ath10k_warn(ar, "failed to request tpc stats final: %d\n",
++			    ret);
++		goto err_free;
++	}
++
++	ath10k_tpc_stats_fill(ar, ar->debug.tpc_stats, buf);
++	file->private_data = buf;
++
++	mutex_unlock(&ar->conf_mutex);
++	return 0;
++
++err_free:
++	vfree(buf);
++
++err_unlock:
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
++static int ath10k_tpc_stats_final_release(struct inode *inode,
++					  struct file *file)
++{
++	vfree(file->private_data);
++
++	return 0;
++}
++
++static ssize_t ath10k_tpc_stats_final_read(struct file *file,
++					   char __user *user_buf,
++					   size_t count, loff_t *ppos)
++{
++	const char *buf = file->private_data;
++	unsigned int len = strlen(buf);
++
++	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
++}
++
++static const struct file_operations fops_tpc_stats_final = {
++	.open = ath10k_tpc_stats_final_open,
++	.release = ath10k_tpc_stats_final_release,
++	.read = ath10k_tpc_stats_final_read,
 +	.owner = THIS_MODULE,
 +	.llseek = default_llseek,
 +};
 +
-+static const struct file_operations fops_gpio_config = {
-+	.read = ath10k_read_gpio_config,
-+	.write = ath10k_write_gpio_config,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- static int ath10k_debug_cal_data_fetch(struct ath10k *ar)
+ int ath10k_debug_create(struct ath10k *ar)
  {
- 	u32 hi_addr;
-@@ -2259,6 +2399,12 @@ int ath10k_debug_register(struct ath10k *ar)
- 	debugfs_create_file("fw_dbglog", 0600, ar->debug.debugfs_phy, ar,
- 			    &fops_fw_dbglog);
+ 	ar->debug.cal_data = vzalloc(ATH10K_DEBUG_CAL_DATA_LEN);
+@@ -2258,6 +2360,11 @@ int ath10k_debug_register(struct ath10k *ar)
+ 	debugfs_create_file("fw_checksums", 0400, ar->debug.debugfs_phy, ar,
+ 			    &fops_fw_checksums);
  
-+	debugfs_create_file("gpio_output", 0600, ar->debug.debugfs_phy, ar,
-+			    &fops_gpio_output);
++	if (test_bit(WMI_SERVICE_TPC_STATS_FINAL, ar->wmi.svc_map))
++		debugfs_create_file("tpc_stats_final", 0400,
++				    ar->debug.debugfs_phy, ar,
++				    &fops_tpc_stats_final);
 +
-+	debugfs_create_file("gpio_config", 0600, ar->debug.debugfs_phy, ar,
-+			    &fops_gpio_config);
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index e543088..1d08afe 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -101,6 +102,9 @@ struct ath10k_pktlog_hdr {
+ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb);
+ void ath10k_debug_tpc_stats_process(struct ath10k *ar,
+ 				    struct ath10k_tpc_stats *tpc_stats);
++void
++ath10k_debug_tpc_stats_final_process(struct ath10k *ar,
++				     struct ath10k_tpc_stats_final *tpc_stats);
+ void ath10k_debug_dbglog_add(struct ath10k *ar, u8 *buffer, int len);
+ 
+ #define ATH10K_DFS_STAT_INC(ar, c) (ar->debug.dfs_stats.c++)
+@@ -164,6 +168,13 @@ static inline void ath10k_debug_tpc_stats_process(struct ath10k *ar,
+ 	kfree(tpc_stats);
+ }
+ 
++static inline void
++ath10k_debug_tpc_stats_final_process(struct ath10k *ar,
++				     struct ath10k_tpc_stats_final *tpc_stats)
++{
++	kfree(tpc_stats);
++}
 +
- 	debugfs_create_file("cal_data", 0400, ar->debug.debugfs_phy, ar,
- 			    &fops_cal_data);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 413b1b4321f7..af91d0202e45 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -495,6 +495,8 @@ struct ath10k_hw_params {
- 	const char *name;
- 	u32 patch_load_addr;
- 	int uart_pin;
-+	int led_pin; /* 1 for peregrine, 17 for beeliner */
-+	int gpio_count; /* 24 for peregrine, 35 for beeliner */
- 	u32 otp_exe_param;
- 
- 	/* Type of hw cycle counter wraparound logic, for more info
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index ebb3f1b046f3..6c4925dfcde9 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4601,6 +4601,11 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 	switch (ar->state) {
- 	case ATH10K_STATE_OFF:
- 		ar->state = ATH10K_STATE_ON;
-+		/* 
-+		 * under some circumstances, the gpio pin gets reconfigured to default state by the firmware, so we need to reconfigure it
-+		 * this behaviour has only ben seen on QCA9984 and QCA99XX devices so far
-+		 */    
-+		ath10k_reset_led_pin(ar); 
- 		break;
- 	case ATH10K_STATE_RESTARTING:
- 		ar->state = ATH10K_STATE_RESTARTED;
+ static inline void ath10k_debug_dbglog_add(struct ath10k *ar, u8 *buffer,
+ 					   int len)
+ {
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 14093cfdc505..a38d6a8f7ec5 100644
+index 14093cf..5692ef7 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -197,8 +197,13 @@ struct wmi_ops {
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -197,6 +198,9 @@ struct wmi_ops {
  					(struct ath10k *ar,
  					 enum wmi_bss_survey_req_type type);
  	struct sk_buff *(*gen_echo)(struct ath10k *ar, u32 value);
++	struct sk_buff *(*gen_pdev_get_tpc_table_cmdid)(struct ath10k *ar,
++							u32 param);
 +
-+	struct sk_buff *(*gen_gpio_config)(struct ath10k *ar, u32 gpio_num, u32 input, u32 pull_type, u32 intr_mode);
-+
-+	struct sk_buff *(*gen_gpio_output)(struct ath10k *ar, u32 gpio_num, u32 set);
  };
  
-+
  int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
- 
- static inline int
-@@ -957,6 +962,35 @@ ath10k_wmi_force_fw_hang(struct ath10k *ar,
- 
- 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->force_fw_hang_cmdid);
+@@ -1425,4 +1429,21 @@ struct wmi_ops {
+ 	return ath10k_wmi_cmd_send(ar, skb, wmi->cmd->echo_cmdid);
  }
-+static inline int 
-+ath10k_wmi_gpio_config(struct ath10k *ar, u32 gpio_num, u32 input, u32 pull_type, u32 intr_mode)
+ 
++static inline int
++ath10k_wmi_pdev_get_tpc_table_cmdid(struct ath10k *ar, u32 param)
 +{
 +	struct sk_buff *skb;
 +
-+	if (!ar->wmi.ops->gen_gpio_config)
++	if (!ar->wmi.ops->gen_pdev_get_tpc_table_cmdid)
 +		return -EOPNOTSUPP;
 +
-+	skb = ar->wmi.ops->gen_gpio_config(ar, gpio_num, input, pull_type, intr_mode);
++	skb = ar->wmi.ops->gen_pdev_get_tpc_table_cmdid(ar, param);
++
 +	if (IS_ERR(skb))
 +		return PTR_ERR(skb);
 +
-+	return ath10k_wmi_cmd_send_nowait(ar, skb, ar->wmi.cmd->gpio_config_cmdid);
++	return ath10k_wmi_cmd_send(ar, skb,
++				   ar->wmi.cmd->pdev_get_tpc_table_cmdid);
 +}
 +
-+static inline int 
-+ath10k_wmi_gpio_output(struct ath10k *ar, u32 gpio_num, u32 set)
-+{
-+	struct sk_buff *skb;
-+
-+	if (!ar->wmi.ops->gen_gpio_config)
-+		return -EOPNOTSUPP;
-+
-+	skb = ar->wmi.ops->gen_gpio_output(ar, gpio_num, set);
-+	if (IS_ERR(skb))
-+		return PTR_ERR(skb);
-+
-+	return ath10k_wmi_cmd_send_nowait(ar, skb, ar->wmi.cmd->gpio_output_cmdid);
-+}
- 
- static inline int
- ath10k_wmi_dbglog_cfg(struct ath10k *ar, u64 module_enable, u32 log_level)
-@@ -1034,7 +1068,7 @@ ath10k_wmi_pdev_get_temperature(struct ath10k *ar)
- 	if (IS_ERR(skb))
- 		return PTR_ERR(skb);
- 
--	return ath10k_wmi_cmd_send(ar, skb,
-+	return ath10k_wmi_cmd_send_nowait(ar, skb,
- 				   ar->wmi.cmd->pdev_get_temperature_cmdid);
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index ae77a007ae07..2bfba63f1dcf 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -3250,6 +3250,69 @@ ath10k_wmi_tlv_op_gen_echo(struct ath10k *ar, u32 value)
- 	return skb;
- }
- 
-+static struct sk_buff *
-+ath10k_wmi_tlv_op_gen_gpio_config(struct ath10k *ar, u32 gpio_num, u32 input, u32 pull_type, u32 intr_mode)
-+{
-+    struct wmi_gpio_config_cmd *cmd;
-+    struct wmi_tlv *tlv;
-+    struct sk_buff *skb;
-+    void *ptr; 
-+    size_t len;
-+
-+    len = sizeof(*tlv) + sizeof(*cmd);
-+    skb = ath10k_wmi_alloc_skb(ar, len);
-+    if (!skb)
-+	return ERR_PTR(-ENOMEM);
-+
-+    ptr = (void *)skb->data;
-+    tlv = ptr;
-+    tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_GPIO_CONFIG_CMD);
-+    tlv->len = __cpu_to_le16(sizeof(*cmd));
-+
-+    cmd = (struct wmi_gpio_config_cmd *)skb->data;
-+    cmd->pull_type = __cpu_to_le32(pull_type);
-+    cmd->gpio_num = __cpu_to_le32(gpio_num);
-+    cmd->input = __cpu_to_le32(input);
-+    cmd->intr_mode = __cpu_to_le32(intr_mode);
-+
-+    ptr += sizeof(*tlv);
-+    ptr += sizeof(*cmd);
-+
-+    ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv gpio_config gpio_num 0x%08x input 0x%08x pull_type 0x%08x intr_mode 0x%08x\n", gpio_num, input, pull_type, intr_mode);
-+    return skb;
-+}
-+
-+static struct sk_buff *
-+ath10k_wmi_tlv_op_gen_gpio_output(struct ath10k *ar, u32 gpio_num, u32 set)
-+{
-+    struct wmi_gpio_output_cmd *cmd;
-+    struct wmi_tlv *tlv;
-+    struct sk_buff *skb;
-+    void *ptr; 
-+    size_t len;
-+
-+    len = sizeof(*tlv) + sizeof(*cmd);
-+    skb = ath10k_wmi_alloc_skb(ar, len);
-+    if (!skb)
-+	return ERR_PTR(-ENOMEM);
-+
-+    ptr = (void *)skb->data;
-+    tlv = ptr;
-+    tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_GPIO_OUTPUT_CMD);
-+    tlv->len = __cpu_to_le16(sizeof(*cmd));
-+
-+    cmd = (struct wmi_gpio_output_cmd *)skb->data;
-+    cmd->gpio_num = __cpu_to_le32(gpio_num);
-+    cmd->set = __cpu_to_le32(set);
-+
-+    ptr += sizeof(*tlv);
-+    ptr += sizeof(*cmd);
-+
-+    ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv gpio_output gpio_num 0x%08x set 0x%08x\n", gpio_num, set);
-+    return skb;
-+}
-+
-+
- static struct sk_buff *
- ath10k_wmi_tlv_op_gen_vdev_spectral_conf(struct ath10k *ar,
- 					 const struct wmi_vdev_spectral_conf_arg *arg)
-@@ -3727,6 +3790,8 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.fw_stats_fill = ath10k_wmi_main_op_fw_stats_fill,
- 	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
- 	.gen_echo = ath10k_wmi_tlv_op_gen_echo,
-+	.gen_gpio_config = ath10k_wmi_tlv_op_gen_gpio_config,
-+	.gen_gpio_output = ath10k_wmi_tlv_op_gen_gpio_output,
- 	.gen_vdev_spectral_conf = ath10k_wmi_tlv_op_gen_vdev_spectral_conf,
- 	.gen_vdev_spectral_enable = ath10k_wmi_tlv_op_gen_vdev_spectral_enable,
- };
+ #endif
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 58dc2189ba49..b56e5a673a8c 100644
+index 58dc218..1b59937 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -6646,6 +6646,41 @@ ath10k_wmi_op_gen_peer_set_param(struct ath10k *ar, u32 vdev_id,
- 	return skb;
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -196,6 +197,7 @@
+ 	.mu_cal_start_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.set_cca_params_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.pdev_bss_chan_info_request_cmdid = WMI_CMD_UNSUPPORTED,
++	.pdev_get_tpc_table_cmdid = WMI_CMD_UNSUPPORTED,
+ };
+ 
+ /* 10.X WMI cmd track */
+@@ -362,6 +364,7 @@
+ 	.mu_cal_start_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.set_cca_params_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.pdev_bss_chan_info_request_cmdid = WMI_CMD_UNSUPPORTED,
++	.pdev_get_tpc_table_cmdid = WMI_CMD_UNSUPPORTED,
+ };
+ 
+ /* 10.2.4 WMI cmd track */
+@@ -528,6 +531,7 @@
+ 	.set_cca_params_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.pdev_bss_chan_info_request_cmdid =
+ 		WMI_10_2_PDEV_BSS_CHAN_INFO_REQUEST_CMDID,
++	.pdev_get_tpc_table_cmdid = WMI_CMD_UNSUPPORTED,
+ };
+ 
+ /* 10.4 WMI cmd track */
+@@ -737,6 +741,7 @@
+ 	.tdls_set_state_cmdid = WMI_10_4_TDLS_SET_STATE_CMDID,
+ 	.tdls_peer_update_cmdid = WMI_10_4_TDLS_PEER_UPDATE_CMDID,
+ 	.tdls_set_offchan_mode_cmdid = WMI_10_4_TDLS_SET_OFFCHAN_MODE_CMDID,
++	.pdev_get_tpc_table_cmdid = WMI_10_4_PDEV_GET_TPC_TABLE_CMDID,
+ };
+ 
+ /* MAIN WMI VDEV param map */
+@@ -1480,6 +1485,7 @@
+ 	.pdev_get_ani_cck_config_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.pdev_get_ani_ofdm_config_cmdid = WMI_CMD_UNSUPPORTED,
+ 	.pdev_reserve_ast_entry_cmdid = WMI_CMD_UNSUPPORTED,
++	.pdev_get_tpc_table_cmdid = WMI_CMD_UNSUPPORTED,
+ };
+ 
+ static struct wmi_pdev_param_map wmi_10_4_pdev_param_map = {
+@@ -4313,19 +4319,11 @@ static void ath10k_tpc_config_disp_tables(struct ath10k *ar,
+ 	}
  }
  
-+static struct sk_buff *
-+ath10k_wmi_op_gen_gpio_config(struct ath10k *ar, u32 gpio_num, u32 input, u32 pull_type, u32 intr_mode)
-+{
-+    struct wmi_gpio_config_cmd *cmd;
-+    struct sk_buff *skb;
-+
-+    skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
-+    if (!skb)
-+	return ERR_PTR(-ENOMEM);
-+    cmd = (struct wmi_gpio_config_cmd *)skb->data;
-+    cmd->pull_type = __cpu_to_le32(pull_type);
-+    cmd->gpio_num = __cpu_to_le32(gpio_num);
-+    cmd->input = __cpu_to_le32(input);
-+    cmd->intr_mode = __cpu_to_le32(intr_mode);
-+
-+    ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi gpio_config gpio_num 0x%08x input 0x%08x pull_type 0x%08x intr_mode 0x%08x\n", gpio_num, input, pull_type, intr_mode);
-+    return skb;
+-void ath10k_wmi_event_pdev_tpc_config(struct ath10k *ar, struct sk_buff *skb)
++void ath10k_wmi_tpc_config_get_rate_code(u8 *rate_code, u16 *pream_table,
++					 u32 num_tx_chain)
+ {
+-	u32 i, j, pream_idx, num_tx_chain;
+-	u8 rate_code[WMI_TPC_RATE_MAX], rate_idx;
+-	u16 pream_table[WMI_TPC_PREAM_TABLE_MAX];
+-	struct wmi_pdev_tpc_config_event *ev;
+-	struct ath10k_tpc_stats *tpc_stats;
+-
+-	ev = (struct wmi_pdev_tpc_config_event *)skb->data;
+-
+-	tpc_stats = kzalloc(sizeof(*tpc_stats), GFP_ATOMIC);
+-	if (!tpc_stats)
+-		return;
++	u32 i, j, pream_idx;
++	u8 rate_idx;
+ 
+ 	/* Create the rate code table based on the chains supported */
+ 	rate_idx = 0;
+@@ -4349,8 +4347,6 @@ void ath10k_wmi_event_pdev_tpc_config(struct ath10k *ar, struct sk_buff *skb)
+ 	pream_table[pream_idx] = rate_idx;
+ 	pream_idx++;
+ 
+-	num_tx_chain = __le32_to_cpu(ev->num_tx_chain);
+-
+ 	/* Fill HT20 rate code */
+ 	for (i = 0; i < num_tx_chain; i++) {
+ 		for (j = 0; j < 8; j++) {
+@@ -4374,7 +4370,7 @@ void ath10k_wmi_event_pdev_tpc_config(struct ath10k *ar, struct sk_buff *skb)
+ 	pream_idx++;
+ 
+ 	/* Fill VHT20 rate code */
+-	for (i = 0; i < __le32_to_cpu(ev->num_tx_chain); i++) {
++	for (i = 0; i < num_tx_chain; i++) {
+ 		for (j = 0; j < 10; j++) {
+ 			rate_code[rate_idx] =
+ 			ATH10K_HW_RATECODE(j, i, WMI_RATE_PREAMBLE_VHT);
+@@ -4418,6 +4414,27 @@ void ath10k_wmi_event_pdev_tpc_config(struct ath10k *ar, struct sk_buff *skb)
+ 		ATH10K_HW_RATECODE(0, 0, WMI_RATE_PREAMBLE_OFDM);
+ 
+ 	pream_table[pream_idx] = ATH10K_TPC_PREAM_TABLE_END;
 +}
 +
-+static struct sk_buff *
-+ath10k_wmi_op_gen_gpio_output(struct ath10k *ar, u32 gpio_num, u32 set)
-+{
-+    struct wmi_gpio_output_cmd *cmd;
-+    struct sk_buff *skb;
 +
-+    skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
-+    if (!skb)
-+	return ERR_PTR(-ENOMEM);
-+    cmd = (struct wmi_gpio_output_cmd *)skb->data;
-+    cmd->gpio_num = __cpu_to_le32(gpio_num);
-+    cmd->set = __cpu_to_le32(set);
-+    ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi gpio_output gpio_num 0x%08x set 0x%08x\n", gpio_num, set);
-+    return skb;
++void ath10k_wmi_event_pdev_tpc_config(struct ath10k *ar, struct sk_buff *skb)
++{
++	u32 num_tx_chain;
++	u8 rate_code[WMI_TPC_RATE_MAX];
++	u16 pream_table[WMI_TPC_PREAM_TABLE_MAX];
++	struct wmi_pdev_tpc_config_event *ev;
++	struct ath10k_tpc_stats *tpc_stats;
++
++	ev = (struct wmi_pdev_tpc_config_event *)skb->data;
++
++	tpc_stats = kzalloc(sizeof(*tpc_stats), GFP_ATOMIC);
++	if (!tpc_stats)
++		return;
++
++	num_tx_chain = __le32_to_cpu(ev->num_tx_chain);
++
++	ath10k_wmi_tpc_config_get_rate_code(rate_code, pream_table,
++					    num_tx_chain);
+ 
+ 	tpc_stats->chan_freq = __le32_to_cpu(ev->chan_freq);
+ 	tpc_stats->phy_mode = __le32_to_cpu(ev->phy_mode);
+@@ -4457,6 +4474,246 @@ void ath10k_wmi_event_pdev_tpc_config(struct ath10k *ar, struct sk_buff *skb)
+ 		   __le32_to_cpu(ev->rate_max));
+ }
+ 
++static u8
++ath10k_wmi_tpc_final_get_rate(struct ath10k *ar,
++			      struct wmi_pdev_tpc_final_table_event *ev,
++			      u32 rate_idx, u32 num_chains,
++			      u32 rate_code, u8 type, u32 pream_idx)
++{
++	u8 tpc, num_streams, preamble, ch, stm_idx;
++	s8 pow_agcdd, pow_agstbc, pow_agtxbf;
++	int pream;
++
++	num_streams = ATH10K_HW_NSS(rate_code);
++	preamble = ATH10K_HW_PREAMBLE(rate_code);
++	ch = num_chains - 1;
++	stm_idx = num_streams - 1;
++	pream = -1;
++
++	if (__le32_to_cpu(ev->chan_freq) <= 2483) {
++		switch (pream_idx) {
++		case WMI_TPC_PREAM_2GHZ_CCK:
++			pream = 0;
++			break;
++		case WMI_TPC_PREAM_2GHZ_OFDM:
++			pream = 1;
++			break;
++		case WMI_TPC_PREAM_2GHZ_HT20:
++		case WMI_TPC_PREAM_2GHZ_VHT20:
++			pream = 2;
++			break;
++		case WMI_TPC_PREAM_2GHZ_HT40:
++		case WMI_TPC_PREAM_2GHZ_VHT40:
++			pream = 3;
++			break;
++		case WMI_TPC_PREAM_2GHZ_VHT80:
++			pream = 4;
++			break;
++		default:
++			pream = -1;
++			break;
++		}
++	}
++
++	if (__le32_to_cpu(ev->chan_freq) >= 5180) {
++		switch (pream_idx) {
++		case WMI_TPC_PREAM_5GHZ_OFDM:
++			pream = 0;
++			break;
++		case WMI_TPC_PREAM_5GHZ_HT20:
++		case WMI_TPC_PREAM_5GHZ_VHT20:
++			pream = 1;
++			break;
++		case WMI_TPC_PREAM_5GHZ_HT40:
++		case WMI_TPC_PREAM_5GHZ_VHT40:
++			pream = 2;
++			break;
++		case WMI_TPC_PREAM_5GHZ_VHT80:
++			pream = 3;
++			break;
++		case WMI_TPC_PREAM_5GHZ_HTCUP:
++			pream = 4;
++			break;
++		default:
++			pream = -1;
++			break;
++		}
++	}
++
++	if (pream == 4)
++		tpc = min_t(u8, ev->rates_array[rate_idx],
++			    ev->max_reg_allow_pow[ch]);
++	else
++		tpc = min_t(u8, min_t(u8, ev->rates_array[rate_idx],
++				      ev->max_reg_allow_pow[ch]),
++			    ev->ctl_power_table[0][pream][stm_idx]);
++
++	if (__le32_to_cpu(ev->num_tx_chain) <= 1)
++		goto out;
++
++	if (preamble == WMI_RATE_PREAMBLE_CCK)
++		goto out;
++
++	if (num_chains <= num_streams)
++		goto out;
++
++	switch (type) {
++	case WMI_TPC_TABLE_TYPE_STBC:
++		pow_agstbc = ev->max_reg_allow_pow_agstbc[ch - 1][stm_idx];
++		if (pream == 4)
++			tpc = min_t(u8, tpc, pow_agstbc);
++		else
++			tpc = min_t(u8, min_t(u8, tpc, pow_agstbc),
++				    ev->ctl_power_table[0][pream][stm_idx]);
++		break;
++	case WMI_TPC_TABLE_TYPE_TXBF:
++		pow_agtxbf = ev->max_reg_allow_pow_agtxbf[ch - 1][stm_idx];
++		if (pream == 4)
++			tpc = min_t(u8, tpc, pow_agtxbf);
++		else
++			tpc = min_t(u8, min_t(u8, tpc, pow_agtxbf),
++				    ev->ctl_power_table[1][pream][stm_idx]);
++		break;
++	case WMI_TPC_TABLE_TYPE_CDD:
++		pow_agcdd = ev->max_reg_allow_pow_agcdd[ch - 1][stm_idx];
++		if (pream == 4)
++			tpc = min_t(u8, tpc, pow_agcdd);
++		else
++			tpc = min_t(u8, min_t(u8, tpc, pow_agcdd),
++				    ev->ctl_power_table[0][pream][stm_idx]);
++		break;
++	default:
++		ath10k_warn(ar, "unknown wmi tpc final table type: %d\n", type);
++		tpc = 0;
++		break;
++	}
++
++out:
++	return tpc;
 +}
 +
++static void
++ath10k_wmi_tpc_stats_final_disp_tables(struct ath10k *ar,
++				       struct wmi_pdev_tpc_final_table_event *ev,
++				       struct ath10k_tpc_stats_final *tpc_stats,
++				       u8 *rate_code, u16 *pream_table, u8 type)
++{
++	u32 i, j, pream_idx, flags;
++	u8 tpc[WMI_TPC_TX_N_CHAIN];
++	char tpc_value[WMI_TPC_TX_N_CHAIN * WMI_TPC_BUF_SIZE];
++	char buff[WMI_TPC_BUF_SIZE];
++
++	flags = __le32_to_cpu(ev->flags);
++
++	switch (type) {
++	case WMI_TPC_TABLE_TYPE_CDD:
++		if (!(flags & WMI_TPC_CONFIG_EVENT_FLAG_TABLE_CDD)) {
++			ath10k_dbg(ar, ATH10K_DBG_WMI, "CDD not supported\n");
++			tpc_stats->flag[type] = ATH10K_TPC_TABLE_TYPE_FLAG;
++			return;
++		}
++		break;
++	case WMI_TPC_TABLE_TYPE_STBC:
++		if (!(flags & WMI_TPC_CONFIG_EVENT_FLAG_TABLE_STBC)) {
++			ath10k_dbg(ar, ATH10K_DBG_WMI, "STBC not supported\n");
++			tpc_stats->flag[type] = ATH10K_TPC_TABLE_TYPE_FLAG;
++			return;
++		}
++		break;
++	case WMI_TPC_TABLE_TYPE_TXBF:
++		if (!(flags & WMI_TPC_CONFIG_EVENT_FLAG_TABLE_TXBF)) {
++			ath10k_dbg(ar, ATH10K_DBG_WMI, "TXBF not supported\n");
++			tpc_stats->flag[type] = ATH10K_TPC_TABLE_TYPE_FLAG;
++			return;
++		}
++		break;
++	default:
++		ath10k_dbg(ar, ATH10K_DBG_WMI,
++			   "invalid table type in wmi tpc event: %d\n", type);
++		return;
++	}
++
++	pream_idx = 0;
++	for (i = 0; i < __le32_to_cpu(ev->rate_max); i++) {
++		memset(tpc_value, 0, sizeof(tpc_value));
++		memset(buff, 0, sizeof(buff));
++		if (i == pream_table[pream_idx])
++			pream_idx++;
++
++		for (j = 0; j < WMI_TPC_TX_N_CHAIN; j++) {
++			if (j >= __le32_to_cpu(ev->num_tx_chain))
++				break;
++
++			tpc[j] = ath10k_wmi_tpc_final_get_rate(ar, ev, i, j + 1,
++							       rate_code[i],
++							       type, pream_idx);
++			snprintf(buff, sizeof(buff), "%8d ", tpc[j]);
++			strncat(tpc_value, buff, strlen(buff));
++		}
++		tpc_stats->tpc_table_final[type].pream_idx[i] = pream_idx;
++		tpc_stats->tpc_table_final[type].rate_code[i] = rate_code[i];
++		memcpy(tpc_stats->tpc_table_final[type].tpc_value[i],
++		       tpc_value, sizeof(tpc_value));
++	}
++}
++
++void ath10k_wmi_event_tpc_final_table(struct ath10k *ar, struct sk_buff *skb)
++{
++	u32 num_tx_chain;
++	u8 rate_code[WMI_TPC_FINAL_RATE_MAX];
++	u16 pream_table[WMI_TPC_PREAM_TABLE_MAX];
++	struct wmi_pdev_tpc_final_table_event *ev;
++	struct ath10k_tpc_stats_final *tpc_stats;
++
++	ev = (struct wmi_pdev_tpc_final_table_event *)skb->data;
++
++	tpc_stats = kzalloc(sizeof(*tpc_stats), GFP_ATOMIC);
++	if (!tpc_stats)
++		return;
++
++	num_tx_chain = __le32_to_cpu(ev->num_tx_chain);
++
++	ath10k_wmi_tpc_config_get_rate_code(rate_code, pream_table,
++					    num_tx_chain);
++
++	tpc_stats->chan_freq = __le32_to_cpu(ev->chan_freq);
++	tpc_stats->phy_mode = __le32_to_cpu(ev->phy_mode);
++	tpc_stats->ctl = __le32_to_cpu(ev->ctl);
++	tpc_stats->reg_domain = __le32_to_cpu(ev->reg_domain);
++	tpc_stats->twice_antenna_gain = a_sle32_to_cpu(ev->twice_antenna_gain);
++	tpc_stats->twice_antenna_reduction =
++		__le32_to_cpu(ev->twice_antenna_reduction);
++	tpc_stats->power_limit = __le32_to_cpu(ev->power_limit);
++	tpc_stats->twice_max_rd_power = __le32_to_cpu(ev->twice_max_rd_power);
++	tpc_stats->num_tx_chain = __le32_to_cpu(ev->num_tx_chain);
++	tpc_stats->rate_max = __le32_to_cpu(ev->rate_max);
++
++	ath10k_wmi_tpc_stats_final_disp_tables(ar, ev, tpc_stats,
++					       rate_code, pream_table,
++					       WMI_TPC_TABLE_TYPE_CDD);
++	ath10k_wmi_tpc_stats_final_disp_tables(ar, ev,  tpc_stats,
++					       rate_code, pream_table,
++					       WMI_TPC_TABLE_TYPE_STBC);
++	ath10k_wmi_tpc_stats_final_disp_tables(ar, ev, tpc_stats,
++					       rate_code, pream_table,
++					       WMI_TPC_TABLE_TYPE_TXBF);
++
++	ath10k_debug_tpc_stats_final_process(ar, tpc_stats);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI,
++		   "wmi event tpc final table channel %d mode %d ctl %d regd %d gain %d %d limit %d max_power %d tx_chanins %d rates %d\n",
++		   __le32_to_cpu(ev->chan_freq),
++		   __le32_to_cpu(ev->phy_mode),
++		   __le32_to_cpu(ev->ctl),
++		   __le32_to_cpu(ev->reg_domain),
++		   a_sle32_to_cpu(ev->twice_antenna_gain),
++		   __le32_to_cpu(ev->twice_antenna_reduction),
++		   __le32_to_cpu(ev->power_limit),
++		   __le32_to_cpu(ev->twice_max_rd_power) / 2,
++		   __le32_to_cpu(ev->num_tx_chain),
++		   __le32_to_cpu(ev->rate_max));
++}
++
+ static void
+ ath10k_wmi_handle_tdls_peer_event(struct ath10k *ar, struct sk_buff *skb)
+ {
+@@ -5549,6 +5806,9 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	case WMI_10_4_TDLS_PEER_EVENTID:
+ 		ath10k_wmi_handle_tdls_peer_event(ar, skb);
+ 		break;
++	case WMI_10_4_PDEV_TPC_TABLE_EVENTID:
++		ath10k_wmi_event_tpc_final_table(ar, skb);
++		break;
+ 	default:
+ 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
+ 		break;
+@@ -7990,6 +8250,24 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ }
+ 
  static struct sk_buff *
- ath10k_wmi_op_gen_set_psmode(struct ath10k *ar, u32 vdev_id,
- 			     enum wmi_sta_ps_mode psmode)
-@@ -8153,6 +8188,9 @@ static const struct wmi_ops wmi_ops = {
- 	.fw_stats_fill = ath10k_wmi_main_op_fw_stats_fill,
- 	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
- 	.gen_echo = ath10k_wmi_op_gen_echo,
-+	.gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
-+	.gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
-+	
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
- 	/* .gen_p2p_go_bcn_ie not implemented */
-@@ -8223,6 +8261,8 @@ static const struct wmi_ops wmi_10_1_ops = {
- 	.fw_stats_fill = ath10k_wmi_10x_op_fw_stats_fill,
- 	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
- 	.gen_echo = ath10k_wmi_op_gen_echo,
-+	.gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
-+	.gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
- 	/* .gen_p2p_go_bcn_ie not implemented */
-@@ -8294,6 +8334,8 @@ static const struct wmi_ops wmi_10_2_ops = {
- 	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
- 	.fw_stats_fill = ath10k_wmi_10x_op_fw_stats_fill,
- 	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
-+	.gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
-+	.gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
- 	/* .gen_pdev_enable_adaptive_cca not implemented */
- };
++ath10k_wmi_10_4_op_gen_pdev_get_tpc_table_cmdid(struct ath10k *ar, u32 param)
++{
++	struct wmi_pdev_get_tpc_table_cmd *cmd;
++	struct sk_buff *skb;
++
++	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	cmd = (struct wmi_pdev_get_tpc_table_cmd *)skb->data;
++	cmd->param = __cpu_to_le32(param);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI,
++		   "wmi pdev get tpc table param:%d\n", param);
++	return skb;
++}
++
++static struct sk_buff *
+ ath10k_wmi_10_4_gen_tdls_peer_update(struct ath10k *ar,
+ 				     const struct wmi_tdls_peer_update_cmd_arg *arg,
+ 				     const struct wmi_tdls_peer_capab_arg *cap,
+@@ -8430,6 +8708,8 @@ static u32 ath10k_wmi_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	.ext_resource_config = ath10k_wmi_10_4_ext_resource_config,
+ 	.gen_update_fw_tdls_state = ath10k_wmi_10_4_gen_update_fw_tdls_state,
+ 	.gen_tdls_peer_update = ath10k_wmi_10_4_gen_tdls_peer_update,
++	.gen_pdev_get_tpc_table_cmdid =
++			ath10k_wmi_10_4_op_gen_pdev_get_tpc_table_cmdid,
  
-@@ -8364,6 +8406,8 @@ static const struct wmi_ops wmi_10_2_4_ops = {
- 	.gen_pdev_enable_adaptive_cca =
- 		ath10k_wmi_op_gen_pdev_enable_adaptive_cca,
- 	.get_vdev_subtype = ath10k_wmi_10_2_4_op_get_vdev_subtype,
-+	.gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
-+	.gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
- 	/* .gen_p2p_go_bcn_ie not implemented */
-@@ -8439,6 +8483,8 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	.gen_pdev_bss_chan_info_req = ath10k_wmi_10_2_op_gen_pdev_bss_chan_info,
- 	.gen_echo = ath10k_wmi_op_gen_echo,
- 	.gen_pdev_get_tpc_config = ath10k_wmi_10_2_4_op_gen_pdev_get_tpc_config,
-+	.gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
-+	.gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
- };
- 
- int ath10k_wmi_attach(struct ath10k *ar)
+ 	/* shared with 10.2 */
+ 	.pull_echo_ev = ath10k_wmi_op_pull_echo_ev,
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index c7b30ed9015d..dc180a86dc3b 100644
+index c7b30ed..aa046f1 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2906,6 +2906,42 @@ enum wmi_10_4_feature_mask {
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -197,6 +198,9 @@ enum wmi_service {
+ 	WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
+ 	WMI_SERVICE_MGMT_TX_WMI,
+ 	WMI_SERVICE_TDLS_WIDER_BANDWIDTH,
++	WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
++	WMI_SERVICE_HOST_DFS_CHECK_SUPPORT,
++	WMI_SERVICE_TPC_STATS_FINAL,
  
+ 	/* keep last */
+ 	WMI_SERVICE_MAX,
+@@ -339,6 +343,9 @@ enum wmi_10_4_service {
+ 	WMI_10_4_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE,
+ 	WMI_10_4_SERVICE_TDLS_EXPLICIT_MODE_ONLY,
+ 	WMI_10_4_SERVICE_TDLS_WIDER_BANDWIDTH,
++	WMI_10_4_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
++	WMI_10_4_SERVICE_HOST_DFS_CHECK_SUPPORT,
++	WMI_10_4_SERVICE_TPC_STATS_FINAL,
  };
  
-+/* WMI_GPIO_CONFIG_CMDID */
-+enum {
-+    WMI_GPIO_PULL_NONE,
-+    WMI_GPIO_PULL_UP,
-+    WMI_GPIO_PULL_DOWN,
+ static inline char *wmi_service_name(int service_id)
+@@ -448,6 +455,9 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_TDLS_CONN_TRACKER_IN_HOST_MODE);
+ 	SVCSTR(WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY);
+ 	SVCSTR(WMI_SERVICE_TDLS_WIDER_BANDWIDTH);
++	SVCSTR(WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS);
++	SVCSTR(WMI_SERVICE_HOST_DFS_CHECK_SUPPORT);
++	SVCSTR(WMI_SERVICE_TPC_STATS_FINAL);
+ 	default:
+ 		return NULL;
+ 	}
+@@ -746,6 +756,12 @@ static inline void wmi_10_4_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_TDLS_EXPLICIT_MODE_ONLY, len);
+ 	SVCMAP(WMI_10_4_SERVICE_TDLS_WIDER_BANDWIDTH,
+ 	       WMI_SERVICE_TDLS_WIDER_BANDWIDTH, len);
++	SVCMAP(WMI_10_4_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS,
++	       WMI_SERVICE_HTT_MGMT_TX_COMP_VALID_FLAGS, len);
++	SVCMAP(WMI_10_4_SERVICE_HOST_DFS_CHECK_SUPPORT,
++	       WMI_SERVICE_HOST_DFS_CHECK_SUPPORT, len);
++	SVCMAP(WMI_10_4_SERVICE_TPC_STATS_FINAL,
++	       WMI_SERVICE_TPC_STATS_FINAL, len);
+ }
+ 
+ #undef SVCMAP
+@@ -3993,10 +4009,12 @@ struct wmi_pdev_get_tpc_config_cmd {
+ 
+ #define WMI_TPC_CONFIG_PARAM		1
+ #define WMI_TPC_RATE_MAX		160
++#define WMI_TPC_FINAL_RATE_MAX		240
+ #define WMI_TPC_TX_N_CHAIN		4
+ #define WMI_TPC_PREAM_TABLE_MAX		10
+ #define WMI_TPC_FLAG			3
+ #define WMI_TPC_BUF_SIZE		10
++#define WMI_TPC_BEAMFORMING		2
+ 
+ enum wmi_tpc_table_type {
+ 	WMI_TPC_TABLE_TYPE_CDD = 0,
+@@ -4039,6 +4057,51 @@ enum wmi_tp_scale {
+ 	WMI_TP_SCALE_SIZE   = 5,	/* max num of enum     */
+ };
+ 
++struct wmi_pdev_tpc_final_table_event {
++	__le32 reg_domain;
++	__le32 chan_freq;
++	__le32 phy_mode;
++	__le32 twice_antenna_reduction;
++	__le32 twice_max_rd_power;
++	a_sle32 twice_antenna_gain;
++	__le32 power_limit;
++	__le32 rate_max;
++	__le32 num_tx_chain;
++	__le32 ctl;
++	__le32 flags;
++	s8 max_reg_allow_pow[WMI_TPC_TX_N_CHAIN];
++	s8 max_reg_allow_pow_agcdd[WMI_TPC_TX_N_CHAIN][WMI_TPC_TX_N_CHAIN];
++	s8 max_reg_allow_pow_agstbc[WMI_TPC_TX_N_CHAIN][WMI_TPC_TX_N_CHAIN];
++	s8 max_reg_allow_pow_agtxbf[WMI_TPC_TX_N_CHAIN][WMI_TPC_TX_N_CHAIN];
++	u8 rates_array[WMI_TPC_FINAL_RATE_MAX];
++	u8 ctl_power_table[WMI_TPC_BEAMFORMING][WMI_TPC_TX_N_CHAIN]
++	   [WMI_TPC_TX_N_CHAIN];
++} __packed;
++
++struct wmi_pdev_get_tpc_table_cmd {
++	__le32 param;
++} __packed;
++
++enum wmi_tpc_pream_2ghz {
++	WMI_TPC_PREAM_2GHZ_CCK = 0,
++	WMI_TPC_PREAM_2GHZ_OFDM,
++	WMI_TPC_PREAM_2GHZ_HT20,
++	WMI_TPC_PREAM_2GHZ_HT40,
++	WMI_TPC_PREAM_2GHZ_VHT20,
++	WMI_TPC_PREAM_2GHZ_VHT40,
++	WMI_TPC_PREAM_2GHZ_VHT80,
 +};
 +
-+enum {
-+    WMI_GPIO_INTTYPE_DISABLE,
-+    WMI_GPIO_INTTYPE_RISING_EDGE,
-+    WMI_GPIO_INTTYPE_FALLING_EDGE,
-+    WMI_GPIO_INTTYPE_BOTH_EDGE,
-+    WMI_GPIO_INTTYPE_LEVEL_LOW,
-+    WMI_GPIO_INTTYPE_LEVEL_HIGH
++enum wmi_tpc_pream_5ghz {
++	WMI_TPC_PREAM_5GHZ_OFDM = 1,
++	WMI_TPC_PREAM_5GHZ_HT20,
++	WMI_TPC_PREAM_5GHZ_HT40,
++	WMI_TPC_PREAM_5GHZ_VHT20,
++	WMI_TPC_PREAM_5GHZ_VHT40,
++	WMI_TPC_PREAM_5GHZ_VHT80,
++	WMI_TPC_PREAM_5GHZ_HTCUP,
 +};
 +
-+/* WMI_GPIO_CONFIG_CMDID */
-+struct wmi_gpio_config_cmd {
-+    __le32 gpio_num;             /* GPIO number to be setup */
-+    __le32 input;                /* 0 - Output/ 1 - Input */
-+    __le32 pull_type;            /* Pull type defined above */
-+    __le32 intr_mode;            /* Interrupt mode defined above (Input) */
-+} __packed;
-+
-+/* WMI_GPIO_OUTPUT_CMDID */
-+struct wmi_gpio_output_cmd {
-+    __le32 gpio_num;    /* GPIO number to be setup */
-+    __le32 set;         /* Set the GPIO pin*/
-+} __packed;
-+
-+/* WMI_GPIO_INPUT_EVENTID */
-+struct wmi_gpio_input_event {
-+    __le32 gpio_num;    /* GPIO number which changed state */
-+} __packed;
-+
-+
- struct wmi_ext_resource_config_10_4_cmd {
- 	/* contains enum wmi_host_platform_type */
- 	__le32 host_platform_config;
+ struct wmi_pdev_chanlist_update_event {
+ 	/* number of channels */
+ 	__le32 num_chan;
 -- 
-2.14.1
+1.9.1
 
 
 _______________________________________________
