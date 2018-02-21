@@ -1,22 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qt0-x22d.google.com ([2607:f8b0:400d:c0d::22d])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eoI2K-0000vP-Km
- for ath10k@lists.infradead.org; Wed, 21 Feb 2018 00:13:30 +0000
-Received: by mail-qt0-x22d.google.com with SMTP id g60so10594782qtd.11
- for <ath10k@lists.infradead.org>; Tue, 20 Feb 2018 16:13:17 -0800 (PST)
-Received: from [10.247.140.128] ([130.64.25.56])
- by smtp.gmail.com with ESMTPSA id q20sm15088899qte.87.2018.02.20.16.13.12
- for <ath10k@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 20 Feb 2018 16:13:14 -0800 (PST)
-From: Thomas Hebb <tommyhebb@gmail.com>
-Subject: QCA4019 hw1.0 - BDFs for Netgear EX6100v2 and EX6150v2
-Message-ID: <5d098a2a-6f51-3be6-53c5-1ac7927f8edf@gmail.com>
-Date: Tue, 20 Feb 2018 19:13:11 -0500
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020B612B48693BD454BEA645"
-Content-Language: en-US
+ id 1eoIeu-0005z8-09
+ for ath10k@lists.infradead.org; Wed, 21 Feb 2018 00:53:23 +0000
+From: s.gottschall@dd-wrt.com
+Subject: [PATCH v8] ath10k: add LED and GPIO controlling support for various
+ chipsets
+Date: Wed, 21 Feb 2018 01:52:54 +0100
+Message-Id: <20180221005254.14806-1-s.gottschall@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,984 +17,890 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: linux-wireless@vger.kernel.org
+Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org, kvalo@codeaurora.org
 
-This is a multi-part message in MIME format.
---------------020B612B48693BD454BEA645
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
 
-Hi,
+Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984 based chipsets with on chipset connected led's
+using WMI Firmware API.
+The LED device will get available named as "ath10k-phyX" at sysfs and can be controlled with various triggers.
+adds also debugfs interface for gpio control.
 
-This is a set of board.bin files for the Netgear EX6100v2 [1] and 
-EX6150v2 [2] Wi-Fi range extenders. There are two files per device, one 
-for the 2.4GHz radio and one for the 5GHz one. All files were extracted 
-from Netgear's official v1.0.1.54 software update [3], which runs on 
-both devices.
+Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-The IDs to add are as follows (attachments named accordingly):
+v2  add correct gpio count per chipset and remove IPQ4019 support since this chipset does not make use of specific gpios)
+v5  fix compiling without LED_CLASS and GPIOLIB support, fix also error by kbuild test robot which does not occur in standard builds. curious
+v6  correct return values and fix comment style
+v7  fix ath10k_unregister_led for compiling without LED_CLASS
+v8  fix various code design issues reported by reviewers
+---
+ drivers/net/wireless/ath/ath10k/core.c    | 221 +++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/core.h    |  39 +++++-
+ drivers/net/wireless/ath/ath10k/debug.c   | 146 ++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h      |   2 +
+ drivers/net/wireless/ath/ath10k/mac.c     |   5 +
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  36 ++++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  65 +++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |  46 +++++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |  36 +++++
+ 9 files changed, 593 insertions(+), 3 deletions(-)
 
-- bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=Netgear-EX6100v2
-   sha1: ad3a4a9ad144805b78d057e2009c1012546aa9d6
-- bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=Netgear-EX6100v2
-   sha1: 8eccb56666c804bd95577211c843cdc5c060c98f
-- bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=Netgear-EX6150v2
-   sha1: 319cad95f0b9605065cff3a21bed96a4c6af0dfa
-- bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=Netgear-EX6150v2
-   sha1: 19a00b2ae2ff9560329c3d65697ee1d738211181
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index f3ec13b80b20..769a246ad0fd 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -21,6 +21,10 @@
+ #include <linux/dmi.h>
+ #include <linux/ctype.h>
+ #include <asm/byteorder.h>
++#include <linux/leds.h>
++#include <linux/platform_device.h>
++#include <linux/version.h>
++
+ 
+ #include "core.h"
+ #include "mac.h"
+@@ -65,6 +69,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.id = QCA988X_HW_2_0_VERSION,
+ 		.dev_id = QCA988X_2_0_DEVICE_ID,
+ 		.name = "qca988x hw2.0",
++		.led_pin = 1,
++		.gpio_count = 24, 
+ 		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 7,
+ 		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
+@@ -94,6 +100,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.id = QCA988X_HW_2_0_VERSION,
+ 		.dev_id = QCA988X_2_0_DEVICE_ID_UBNT,
+ 		.name = "qca988x hw2.0 ubiquiti",
++		.led_pin = 1,
++		.gpio_count = 24, 
+ 		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 7,
+ 		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
+@@ -123,6 +131,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.id = QCA9887_HW_1_0_VERSION,
+ 		.dev_id = QCA9887_1_0_DEVICE_ID,
+ 		.name = "qca9887 hw1.0",
++		.led_pin = 1,
++		.gpio_count = 24, 
+ 		.patch_load_addr = QCA9887_HW_1_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 7,
+ 		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
+@@ -267,6 +277,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.id = QCA99X0_HW_2_0_DEV_VERSION,
+ 		.dev_id = QCA99X0_2_0_DEVICE_ID,
+ 		.name = "qca99x0 hw2.0",
++		.led_pin = 17,
++		.gpio_count = 35, 
+ 		.patch_load_addr = QCA99X0_HW_2_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 7,
+ 		.otp_exe_param = 0x00000700,
+@@ -301,6 +313,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.id = QCA9984_HW_1_0_DEV_VERSION,
+ 		.dev_id = QCA9984_1_0_DEVICE_ID,
+ 		.name = "qca9984/qca9994 hw1.0",
++		.led_pin = 17,
++		.gpio_count = 35, 
+ 		.patch_load_addr = QCA9984_HW_1_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 7,
+ 		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_EACH,
+@@ -340,6 +354,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.id = QCA9888_HW_2_0_DEV_VERSION,
+ 		.dev_id = QCA9888_2_0_DEVICE_ID,
+ 		.name = "qca9888 hw2.0",
++		.led_pin = 17,
++		.gpio_count = 35, 
+ 		.patch_load_addr = QCA9888_HW_2_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 7,
+ 		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_EACH,
+@@ -2132,6 +2148,199 @@ static int ath10k_core_reset_rx_filter(struct ath10k *ar)
+ 	return 0;
+ }
+ 
++#if IS_ENABLED(CONFIG_GPIOLIB)
++
++static int ath10k_gpio_pin_cfg_input(struct gpio_chip *chip, unsigned offset)
++{
++	struct ath10k_gpiocontrol *gpio = container_of(chip, struct ath10k_gpiocontrol, gchip);
++	ath10k_wmi_gpio_config(gpio->ar, offset, 1, WMI_GPIO_PULL_NONE, WMI_GPIO_INTTYPE_DISABLE); /* configure to input */
++	gpio->gpio_state_dir = 1;
++	return 0;
++}
++
++/* gpio_chip handler : set GPIO to output */
++static int ath10k_gpio_pin_cfg_output(struct gpio_chip *chip, unsigned offset,
++				     int value)
++{
++	struct ath10k_gpiocontrol *gpio = container_of(chip, struct ath10k_gpiocontrol, gchip);
++
++	ath10k_wmi_gpio_config(gpio->ar, offset, 0, WMI_GPIO_PULL_NONE, WMI_GPIO_INTTYPE_DISABLE); /* configure to output */
++	ath10k_wmi_gpio_output(gpio->ar, offset, value);
++	gpio->gpio_state_dir = 0;
++	gpio->gpio_state_pin = value;
++	return 0;
++}
++
++/* gpio_chip handler : query GPIO direction (0=out, 1=in) */
++static int ath10k_gpio_pin_get_dir(struct gpio_chip *chip, unsigned offset)
++{
++	struct ath10k_gpiocontrol *gpio = container_of(chip, struct ath10k_gpiocontrol, gchip);
++
++	return gpio->gpio_state_dir;
++}
++
++/* gpio_chip handler : get GPIO pin value */
++static int ath10k_gpio_pin_get(struct gpio_chip *chip, unsigned offset)
++{
++	struct ath10k_gpiocontrol *gpio = container_of(chip, struct ath10k_gpiocontrol, gchip);
++
++	return gpio->gpio_state_pin;
++}
++
++/* gpio_chip handler : set GPIO pin to value */
++static void ath10k_gpio_pin_set(struct gpio_chip *chip, unsigned offset,
++			       int value)
++{
++	struct ath10k_gpiocontrol *gpio = container_of(chip, struct ath10k_gpiocontrol, gchip);
++
++	ath10k_wmi_gpio_output(gpio->ar, offset, value);
++	gpio->gpio_state_pin = value;
++}
++
++/* register GPIO chip */
++static int ath10k_register_gpio_chip(struct ath10k *ar)
++{
++	struct ath10k_gpiocontrol *gpio;
++	gpio = kzalloc(sizeof(struct ath10k_gpiocontrol), GFP_KERNEL);
++	if (!gpio) {
++		return -ENOMEM;
++	}
++ 
++	snprintf(gpio->label, sizeof(gpio->label), "ath10k-%s",
++		 wiphy_name(ar->hw->wiphy));
++	gpio->gchip.parent = ar->dev;
++	gpio->gchip.base = -1;	/* determine base automatically */
++	gpio->gchip.ngpio = ar->hw_params.gpio_count;
++	gpio->gchip.label = gpio->label;
++	gpio->gchip.direction_input = ath10k_gpio_pin_cfg_input;
++	gpio->gchip.direction_output = ath10k_gpio_pin_cfg_output;
++	gpio->gchip.get_direction = ath10k_gpio_pin_get_dir;
++	gpio->gchip.get = ath10k_gpio_pin_get;
++	gpio->gchip.set = ath10k_gpio_pin_set;
++
++	if (gpiochip_add(&gpio->gchip)) {
++		printk(KERN_ERR "Error while registering gpio chip\n");
++		return -1;
++	}
++	gpio->gchip.owner = NULL;
++	ar->gpio = gpio;
++	gpio->ar = ar;
++	return 0;
++}
++
++#if IS_ENABLED(CONFIG_LEDS_CLASS)
++static void ath10k_led_brightness(struct led_classdev *led_cdev,
++			       enum led_brightness brightness)
++{
++	struct ath10k_gpiocontrol *gpio = container_of(led_cdev, struct ath10k_gpiocontrol, cdev);
++	struct gpio_led *led = &gpio->wifi_led;
++	if (gpio->ar->state == ATH10K_STATE_ON) {
++		gpio->gpio_state_pin = (brightness != LED_OFF) ^ led->active_low;
++		ath10k_wmi_gpio_output(gpio->ar, led->gpio, gpio->gpio_state_pin);
++	}
++}
++
++static int ath10k_add_led(struct ath10k *ar, struct gpio_led *gpioled)
++{
++	int ret;
++	struct ath10k_gpiocontrol *gpio = ar->gpio; 
++	if (!gpio)
++		return -1;
++	gpio->cdev.name = gpioled->name;
++	gpio->cdev.default_trigger = gpioled->default_trigger;
++	gpio->cdev.brightness_set = ath10k_led_brightness;
++
++	ret = led_classdev_register(wiphy_dev(ar->hw->wiphy), &gpio->cdev);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++#endif /* CONFIG_LEDS_CLASS */
++
++/* remove GPIO chip */
++static void ath10k_unregister_gpio_chip(struct ath10k *ar)
++{
++	struct ath10k_gpiocontrol *gpio = ar->gpio; 
++	if (gpio) {
++		gpiochip_remove(&gpio->gchip);
++		kfree(gpio);
++	}
++}
++
++#else
++
++static void ath10k_unregister_gpio_chip(struct ath10k *ar) 
++{
++
++}
++#endif /* CONFIG_GPIOLIB */
++
++#if IS_ENABLED(CONFIG_GPIOLIB) && IS_ENABLED(CONFIG_LEDS_CLASS)
++static void ath10k_unregister_led(struct ath10k *ar)
++{
++	if (ar->gpio)
++		led_classdev_unregister(&ar->gpio->cdev);
++}
++
++#else
++
++static void ath10k_unregister_led(struct ath10k *ar)
++{
++
++}
++#endif /* IS_ENABLED((CONFIG_GPIOLIB) && IS_ENABLED((CONFIG_LEDS_CLASS) */
++
++#if IS_ENABLED(CONFIG_GPIOLIB)
++static int ath10k_attach_gpio(struct ath10k *ar)
++{
++	if (ar->hw_params.led_pin) { /* only attach if non zero since some chipsets are unsupported yet */
++		return ath10k_register_gpio_chip(ar);
++	}
++
++	return -ENODEV;
++}
++
++#else
++
++static int ath10k_attach_gpio(struct ath10k *ar)
++{
++	return -ENODEV;
++}
++#endif
++
++
++#if IS_ENABLED(CONFIG_LEDS_CLASS)
++void ath10k_reset_led_pin(struct ath10k *ar) 
++{
++	/* need to reset gpio state */
++	if (ar->hw_params.led_pin) { 
++		ath10k_wmi_gpio_config(ar, ar->hw_params.led_pin, 0, WMI_GPIO_PULL_NONE, WMI_GPIO_INTTYPE_DISABLE);
++		ath10k_wmi_gpio_output(ar, ar->hw_params.led_pin, 1);
++	}
++}
++
++static void ath10k_attach_led(struct ath10k *ar)
++{
++	if (!ar->gpio_attached) {
++		ar->gpio->wifi_led.active_low = 1;
++		ar->gpio->wifi_led.gpio = ar->hw_params.led_pin;
++		ar->gpio->wifi_led.name = ar->gpio->label;
++		ar->gpio->wifi_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
++		
++		ath10k_add_led(ar, &ar->gpio->wifi_led);
++	}
++	ath10k_reset_led_pin(ar); /* initially we need to configure the led pin to output */
++}
++
++#else
++
++static void ath10k_attach_led(struct ath10k *ar)
++{
++
++}
++#endif
++
+ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 		      const struct ath10k_fw_components *fw)
+ {
+@@ -2372,8 +2581,15 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 	if (status)
+ 		goto err_hif_stop;
+ 
+-	return 0;
++	
++	status = ath10k_attach_gpio(ar);
++	if (status)
++		goto err_no_led;
++
++	ath10k_attach_led(ar);
+ 
++err_no_led:	
++	return 0;
+ err_hif_stop:
+ 	ath10k_hif_stop(ar);
+ err_htt_rx_detach:
+@@ -2673,6 +2889,9 @@ void ath10k_core_unregister(struct ath10k *ar)
+ 	ath10k_core_free_board_files(ar);
+ 
+ 	ath10k_debug_unregister(ar);
++
++	ath10k_unregister_led(ar);
++	ath10k_unregister_gpio_chip(ar);
+ }
+ EXPORT_SYMBOL(ath10k_core_unregister);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index c624b96f8b84..5b6077a55a5f 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -25,6 +25,8 @@
+ #include <linux/pci.h>
+ #include <linux/uuid.h>
+ #include <linux/time.h>
++#include <linux/gpio.h>
++#include <linux/leds.h>
+ 
+ #include "htt.h"
+ #include "htc.h"
+@@ -812,6 +814,40 @@ struct ath10k_per_peer_tx_stats {
+ 	u32	reserved2;
+ };
+ 
++struct ath10k_gpiocontrol {
++	struct ath10k *ar;
++
++	/* since we have no gpio read method, these are the state variables for debugfs.  */	
++	u32 gpio_set_num;
++	u32 gpio_num;
++	u32 gpio_input;
++	u32 gpio_pull_type;
++	u32 gpio_intr_mode;
++	u32 gpio_set; 
++
++#if IS_ENABLED(CONFIG_GPIOLIB)
++	struct gpio_chip gchip;
++#endif /* CONFIG_GPIOLIB */
++#if IS_ENABLED(CONFIG_LEDS_CLASS)
++	struct gpio_led wifi_led;
++	struct led_classdev cdev;
++#endif /* CONFIG_LEDS_CLASS */
++	char label[48];
++	u32 gpio_state_dir; /* same as for debugfs, but for gpiochip implementation */
++	u32 gpio_state_pin;
++};
++
++#if IS_ENABLED(CONFIG_LEDS_CLASS)
++void ath10k_reset_led_pin(struct ath10k *ar);
++
++#else
++
++static void inline ath10k_reset_led_pin(struct ath10k *ar)
++{
++
++}
++#endif /* CONFIG_LEDS_CLASS */
++
+ struct ath10k {
+ 	struct ath_common ath_common;
+ 	struct ieee80211_hw *hw;
+@@ -840,7 +876,8 @@ struct ath10k {
+ 	u32 low_5ghz_chan;
+ 	u32 high_5ghz_chan;
+ 	bool ani_enabled;
+-
++	struct ath10k_gpiocontrol *gpio;
++	int gpio_attached;
+ 	bool p2p;
+ 
+ 	struct {
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 1b9c092d210f..4ed3540669ec 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1084,6 +1084,128 @@ static ssize_t ath10k_write_fw_dbglog(struct file *file,
+ 	return ret;
+ }
+ 
++
++static ssize_t ath10k_read_gpio_config(struct file *file, char __user *user_buf,
++				      size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	struct ath10k_gpiocontrol *gpio = ar->gpio; 
++	size_t len;
++	char buf[96];
++	if (!gpio)
++		return 0;
++
++	len = scnprintf(buf, sizeof(buf), "%u %u %u %u\n", gpio->gpio_num, gpio->gpio_input, gpio->gpio_pull_type, gpio->gpio_intr_mode);
++
++	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
++}
++
++
++static ssize_t ath10k_write_gpio_config(struct file *file,
++				      const char __user *user_buf,
++				      size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	struct ath10k_gpiocontrol *gpio = ar->gpio; 
++	int ret;
++	char buf[96];
++	u32 gpio_num, input, pull_type, intr_mode;
++	if (!gpio)
++		return -EINVAL;
++
++	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
++
++	/* make sure that buf is null terminated */
++	buf[sizeof(buf) - 1] = 0;
++
++	gpio->gpio_num = gpio_num;
++	gpio->gpio_input = input;
++	gpio->gpio_pull_type = pull_type;
++	gpio->gpio_intr_mode = intr_mode;
++	ret = sscanf(buf, "%u %u %u %u", &gpio_num, &input, &pull_type, &intr_mode);
++
++	if (!ret)
++		return -EINVAL;
++
++
++	mutex_lock(&ar->conf_mutex);
++
++
++	ret = ath10k_wmi_gpio_config(ar, gpio_num, input, pull_type, intr_mode);
++
++	if (ret) {
++		ath10k_warn(ar, "gpio_config cfg failed from debugfs: %d\n", ret);
++		goto exit;
++	}
++	ret = count;
++
++exit:
++	mutex_unlock(&ar->conf_mutex);
++
++	return ret;
++}
++
++static ssize_t ath10k_read_gpio_output(struct file *file, char __user *user_buf,
++				      size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	struct ath10k_gpiocontrol *gpio = ar->gpio; 
++	size_t len;
++	char buf[96];
++	if (!gpio)
++		return 0;
++
++	len = scnprintf(buf, sizeof(buf), "%u %u\n", gpio->gpio_num, gpio->gpio_set);
++
++	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
++}
++
++
++static ssize_t ath10k_write_gpio_output(struct file *file,
++				      const char __user *user_buf,
++				      size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	struct ath10k_gpiocontrol *gpio = ar->gpio; 
++	int ret;
++	char buf[96];
++	u32 gpio_num, set;
++	if (!gpio)
++		return -EINVAL;
++
++	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
++
++	/* make sure that buf is null terminated */
++	buf[sizeof(buf) - 1] = 0;
++
++	gpio->gpio_set_num = gpio_num;
++	gpio->gpio_set = set;
++	ret = sscanf(buf, "%u %u", &gpio_num, &set);
++
++	if (!ret)
++		return -EINVAL;
++
++
++	mutex_lock(&ar->conf_mutex);
++
++
++	ret = ath10k_wmi_gpio_output(ar, gpio_num, set);
++
++	if (ret) {
++		ath10k_warn(ar, "gpio_output cfg failed from debugfs: %d\n", ret);
++		goto exit;
++	}
++	ret = count;
++
++exit:
++	mutex_unlock(&ar->conf_mutex);
++
++	return ret;
++}
++
++
++
++
+ /* TODO:  Would be nice to always support ethtool stats, would need to
+  * move the stats storage out of ath10k_debug, or always have ath10k_debug
+  * struct available..
+@@ -1252,6 +1374,24 @@ static const struct file_operations fops_fw_dbglog = {
+ 	.llseek = default_llseek,
+ };
+ 
++
++
++static const struct file_operations fops_gpio_output = {
++	.read = ath10k_read_gpio_output,
++	.write = ath10k_write_gpio_output,
++	.open = simple_open,
++	.owner = THIS_MODULE,
++	.llseek = default_llseek,
++};
++
++static const struct file_operations fops_gpio_config = {
++	.read = ath10k_read_gpio_config,
++	.write = ath10k_write_gpio_config,
++	.open = simple_open,
++	.owner = THIS_MODULE,
++	.llseek = default_llseek,
++};
++
+ static int ath10k_debug_cal_data_fetch(struct ath10k *ar)
+ {
+ 	u32 hi_addr;
+@@ -2259,6 +2399,12 @@ int ath10k_debug_register(struct ath10k *ar)
+ 	debugfs_create_file("fw_dbglog", 0600, ar->debug.debugfs_phy, ar,
+ 			    &fops_fw_dbglog);
+ 
++	debugfs_create_file("gpio_output", 0600, ar->debug.debugfs_phy, ar,
++			    &fops_gpio_output);
++
++	debugfs_create_file("gpio_config", 0600, ar->debug.debugfs_phy, ar,
++			    &fops_gpio_config);
++
+ 	debugfs_create_file("cal_data", 0400, ar->debug.debugfs_phy, ar,
+ 			    &fops_cal_data);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 413b1b4321f7..af91d0202e45 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -495,6 +495,8 @@ struct ath10k_hw_params {
+ 	const char *name;
+ 	u32 patch_load_addr;
+ 	int uart_pin;
++	int led_pin; /* 1 for peregrine, 17 for beeliner */
++	int gpio_count; /* 24 for peregrine, 35 for beeliner */
+ 	u32 otp_exe_param;
+ 
+ 	/* Type of hw cycle counter wraparound logic, for more info
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ebb3f1b046f3..6c4925dfcde9 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4601,6 +4601,11 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 	switch (ar->state) {
+ 	case ATH10K_STATE_OFF:
+ 		ar->state = ATH10K_STATE_ON;
++		/* 
++		 * under some circumstances, the gpio pin gets reconfigured to default state by the firmware, so we need to reconfigure it
++		 * this behaviour has only ben seen on QCA9984 and QCA99XX devices so far
++		 */    
++		ath10k_reset_led_pin(ar); 
+ 		break;
+ 	case ATH10K_STATE_RESTARTING:
+ 		ar->state = ATH10K_STATE_RESTARTED;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index 14093cfdc505..a38d6a8f7ec5 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -197,8 +197,13 @@ struct wmi_ops {
+ 					(struct ath10k *ar,
+ 					 enum wmi_bss_survey_req_type type);
+ 	struct sk_buff *(*gen_echo)(struct ath10k *ar, u32 value);
++
++	struct sk_buff *(*gen_gpio_config)(struct ath10k *ar, u32 gpio_num, u32 input, u32 pull_type, u32 intr_mode);
++
++	struct sk_buff *(*gen_gpio_output)(struct ath10k *ar, u32 gpio_num, u32 set);
+ };
+ 
++
+ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
+ 
+ static inline int
+@@ -957,6 +962,35 @@ ath10k_wmi_force_fw_hang(struct ath10k *ar,
+ 
+ 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->force_fw_hang_cmdid);
+ }
++static inline int 
++ath10k_wmi_gpio_config(struct ath10k *ar, u32 gpio_num, u32 input, u32 pull_type, u32 intr_mode)
++{
++	struct sk_buff *skb;
++
++	if (!ar->wmi.ops->gen_gpio_config)
++		return -EOPNOTSUPP;
++
++	skb = ar->wmi.ops->gen_gpio_config(ar, gpio_num, input, pull_type, intr_mode);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
++
++	return ath10k_wmi_cmd_send_nowait(ar, skb, ar->wmi.cmd->gpio_config_cmdid);
++}
++
++static inline int 
++ath10k_wmi_gpio_output(struct ath10k *ar, u32 gpio_num, u32 set)
++{
++	struct sk_buff *skb;
++
++	if (!ar->wmi.ops->gen_gpio_config)
++		return -EOPNOTSUPP;
++
++	skb = ar->wmi.ops->gen_gpio_output(ar, gpio_num, set);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
++
++	return ath10k_wmi_cmd_send_nowait(ar, skb, ar->wmi.cmd->gpio_output_cmdid);
++}
+ 
+ static inline int
+ ath10k_wmi_dbglog_cfg(struct ath10k *ar, u64 module_enable, u32 log_level)
+@@ -1034,7 +1068,7 @@ ath10k_wmi_pdev_get_temperature(struct ath10k *ar)
+ 	if (IS_ERR(skb))
+ 		return PTR_ERR(skb);
+ 
+-	return ath10k_wmi_cmd_send(ar, skb,
++	return ath10k_wmi_cmd_send_nowait(ar, skb,
+ 				   ar->wmi.cmd->pdev_get_temperature_cmdid);
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index ae77a007ae07..2bfba63f1dcf 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -3250,6 +3250,69 @@ ath10k_wmi_tlv_op_gen_echo(struct ath10k *ar, u32 value)
+ 	return skb;
+ }
+ 
++static struct sk_buff *
++ath10k_wmi_tlv_op_gen_gpio_config(struct ath10k *ar, u32 gpio_num, u32 input, u32 pull_type, u32 intr_mode)
++{
++    struct wmi_gpio_config_cmd *cmd;
++    struct wmi_tlv *tlv;
++    struct sk_buff *skb;
++    void *ptr; 
++    size_t len;
++
++    len = sizeof(*tlv) + sizeof(*cmd);
++    skb = ath10k_wmi_alloc_skb(ar, len);
++    if (!skb)
++	return ERR_PTR(-ENOMEM);
++
++    ptr = (void *)skb->data;
++    tlv = ptr;
++    tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_GPIO_CONFIG_CMD);
++    tlv->len = __cpu_to_le16(sizeof(*cmd));
++
++    cmd = (struct wmi_gpio_config_cmd *)skb->data;
++    cmd->pull_type = __cpu_to_le32(pull_type);
++    cmd->gpio_num = __cpu_to_le32(gpio_num);
++    cmd->input = __cpu_to_le32(input);
++    cmd->intr_mode = __cpu_to_le32(intr_mode);
++
++    ptr += sizeof(*tlv);
++    ptr += sizeof(*cmd);
++
++    ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv gpio_config gpio_num 0x%08x input 0x%08x pull_type 0x%08x intr_mode 0x%08x\n", gpio_num, input, pull_type, intr_mode);
++    return skb;
++}
++
++static struct sk_buff *
++ath10k_wmi_tlv_op_gen_gpio_output(struct ath10k *ar, u32 gpio_num, u32 set)
++{
++    struct wmi_gpio_output_cmd *cmd;
++    struct wmi_tlv *tlv;
++    struct sk_buff *skb;
++    void *ptr; 
++    size_t len;
++
++    len = sizeof(*tlv) + sizeof(*cmd);
++    skb = ath10k_wmi_alloc_skb(ar, len);
++    if (!skb)
++	return ERR_PTR(-ENOMEM);
++
++    ptr = (void *)skb->data;
++    tlv = ptr;
++    tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_GPIO_OUTPUT_CMD);
++    tlv->len = __cpu_to_le16(sizeof(*cmd));
++
++    cmd = (struct wmi_gpio_output_cmd *)skb->data;
++    cmd->gpio_num = __cpu_to_le32(gpio_num);
++    cmd->set = __cpu_to_le32(set);
++
++    ptr += sizeof(*tlv);
++    ptr += sizeof(*cmd);
++
++    ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv gpio_output gpio_num 0x%08x set 0x%08x\n", gpio_num, set);
++    return skb;
++}
++
++
+ static struct sk_buff *
+ ath10k_wmi_tlv_op_gen_vdev_spectral_conf(struct ath10k *ar,
+ 					 const struct wmi_vdev_spectral_conf_arg *arg)
+@@ -3727,6 +3790,8 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	.fw_stats_fill = ath10k_wmi_main_op_fw_stats_fill,
+ 	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
+ 	.gen_echo = ath10k_wmi_tlv_op_gen_echo,
++	.gen_gpio_config = ath10k_wmi_tlv_op_gen_gpio_config,
++	.gen_gpio_output = ath10k_wmi_tlv_op_gen_gpio_output,
+ 	.gen_vdev_spectral_conf = ath10k_wmi_tlv_op_gen_vdev_spectral_conf,
+ 	.gen_vdev_spectral_enable = ath10k_wmi_tlv_op_gen_vdev_spectral_enable,
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 58dc2189ba49..b56e5a673a8c 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -6646,6 +6646,41 @@ ath10k_wmi_op_gen_peer_set_param(struct ath10k *ar, u32 vdev_id,
+ 	return skb;
+ }
+ 
++static struct sk_buff *
++ath10k_wmi_op_gen_gpio_config(struct ath10k *ar, u32 gpio_num, u32 input, u32 pull_type, u32 intr_mode)
++{
++    struct wmi_gpio_config_cmd *cmd;
++    struct sk_buff *skb;
++
++    skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
++    if (!skb)
++	return ERR_PTR(-ENOMEM);
++    cmd = (struct wmi_gpio_config_cmd *)skb->data;
++    cmd->pull_type = __cpu_to_le32(pull_type);
++    cmd->gpio_num = __cpu_to_le32(gpio_num);
++    cmd->input = __cpu_to_le32(input);
++    cmd->intr_mode = __cpu_to_le32(intr_mode);
++
++    ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi gpio_config gpio_num 0x%08x input 0x%08x pull_type 0x%08x intr_mode 0x%08x\n", gpio_num, input, pull_type, intr_mode);
++    return skb;
++}
++
++static struct sk_buff *
++ath10k_wmi_op_gen_gpio_output(struct ath10k *ar, u32 gpio_num, u32 set)
++{
++    struct wmi_gpio_output_cmd *cmd;
++    struct sk_buff *skb;
++
++    skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
++    if (!skb)
++	return ERR_PTR(-ENOMEM);
++    cmd = (struct wmi_gpio_output_cmd *)skb->data;
++    cmd->gpio_num = __cpu_to_le32(gpio_num);
++    cmd->set = __cpu_to_le32(set);
++    ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi gpio_output gpio_num 0x%08x set 0x%08x\n", gpio_num, set);
++    return skb;
++}
++
+ static struct sk_buff *
+ ath10k_wmi_op_gen_set_psmode(struct ath10k *ar, u32 vdev_id,
+ 			     enum wmi_sta_ps_mode psmode)
+@@ -8153,6 +8188,9 @@ static const struct wmi_ops wmi_ops = {
+ 	.fw_stats_fill = ath10k_wmi_main_op_fw_stats_fill,
+ 	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
+ 	.gen_echo = ath10k_wmi_op_gen_echo,
++	.gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
++	.gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
++	
+ 	/* .gen_bcn_tmpl not implemented */
+ 	/* .gen_prb_tmpl not implemented */
+ 	/* .gen_p2p_go_bcn_ie not implemented */
+@@ -8223,6 +8261,8 @@ static const struct wmi_ops wmi_10_1_ops = {
+ 	.fw_stats_fill = ath10k_wmi_10x_op_fw_stats_fill,
+ 	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
+ 	.gen_echo = ath10k_wmi_op_gen_echo,
++	.gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
++	.gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
+ 	/* .gen_bcn_tmpl not implemented */
+ 	/* .gen_prb_tmpl not implemented */
+ 	/* .gen_p2p_go_bcn_ie not implemented */
+@@ -8294,6 +8334,8 @@ static const struct wmi_ops wmi_10_2_ops = {
+ 	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
+ 	.fw_stats_fill = ath10k_wmi_10x_op_fw_stats_fill,
+ 	.get_vdev_subtype = ath10k_wmi_op_get_vdev_subtype,
++	.gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
++	.gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
+ 	/* .gen_pdev_enable_adaptive_cca not implemented */
+ };
+ 
+@@ -8364,6 +8406,8 @@ static const struct wmi_ops wmi_10_2_4_ops = {
+ 	.gen_pdev_enable_adaptive_cca =
+ 		ath10k_wmi_op_gen_pdev_enable_adaptive_cca,
+ 	.get_vdev_subtype = ath10k_wmi_10_2_4_op_get_vdev_subtype,
++	.gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
++	.gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
+ 	/* .gen_bcn_tmpl not implemented */
+ 	/* .gen_prb_tmpl not implemented */
+ 	/* .gen_p2p_go_bcn_ie not implemented */
+@@ -8439,6 +8483,8 @@ static const struct wmi_ops wmi_10_4_ops = {
+ 	.gen_pdev_bss_chan_info_req = ath10k_wmi_10_2_op_gen_pdev_bss_chan_info,
+ 	.gen_echo = ath10k_wmi_op_gen_echo,
+ 	.gen_pdev_get_tpc_config = ath10k_wmi_10_2_4_op_gen_pdev_get_tpc_config,
++	.gen_gpio_config = ath10k_wmi_op_gen_gpio_config,
++	.gen_gpio_output = ath10k_wmi_op_gen_gpio_output,
+ };
+ 
+ int ath10k_wmi_attach(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index c7b30ed9015d..dc180a86dc3b 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2906,6 +2906,42 @@ enum wmi_10_4_feature_mask {
+ 
+ };
+ 
++/* WMI_GPIO_CONFIG_CMDID */
++enum {
++    WMI_GPIO_PULL_NONE,
++    WMI_GPIO_PULL_UP,
++    WMI_GPIO_PULL_DOWN,
++};
++
++enum {
++    WMI_GPIO_INTTYPE_DISABLE,
++    WMI_GPIO_INTTYPE_RISING_EDGE,
++    WMI_GPIO_INTTYPE_FALLING_EDGE,
++    WMI_GPIO_INTTYPE_BOTH_EDGE,
++    WMI_GPIO_INTTYPE_LEVEL_LOW,
++    WMI_GPIO_INTTYPE_LEVEL_HIGH
++};
++
++/* WMI_GPIO_CONFIG_CMDID */
++struct wmi_gpio_config_cmd {
++    __le32 gpio_num;             /* GPIO number to be setup */
++    __le32 input;                /* 0 - Output/ 1 - Input */
++    __le32 pull_type;            /* Pull type defined above */
++    __le32 intr_mode;            /* Interrupt mode defined above (Input) */
++} __packed;
++
++/* WMI_GPIO_OUTPUT_CMDID */
++struct wmi_gpio_output_cmd {
++    __le32 gpio_num;    /* GPIO number to be setup */
++    __le32 set;         /* Set the GPIO pin*/
++} __packed;
++
++/* WMI_GPIO_INPUT_EVENTID */
++struct wmi_gpio_input_event {
++    __le32 gpio_num;    /* GPIO number which changed state */
++} __packed;
++
++
+ struct wmi_ext_resource_config_10_4_cmd {
+ 	/* contains enum wmi_host_platform_type */
+ 	__le32 host_platform_config;
+-- 
+2.14.1
 
-Let me know if you need any more information.
-
-Thanks!
--Tom
-
-[1] 
-https://www.netgear.com/home/products/networking/wifi-range-extenders/EX6100.aspx
-[2] 
-https://www.netgear.com/home/products/networking/wifi-range-extenders/EX6100.aspx
-[3] 
-http://www.downloads.netgear.com/files/GDC/EX6150v2/EX6150v2_EX6100v2-V1.0.1.54.zip
-
-
---------------020B612B48693BD454BEA645
-Content-Type: application/octet-stream;
- name="bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=Netgear-EX6100v2.bin"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename*0="bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=Netgear-EX6100";
- filename*1="v2.bin"
-
-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
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBwkLDQ8RExUX
-GRsdH/////////////////////////j4+Pj4+Pj4+Pj4+Pj4AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAQEAAAABAQICAgEBAQICAwMFBQUGBgYGBgYGBge4kGhAKMiCUCgUJCQjJCQjJSIhISMi
-ISIiVgQIAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-kJB2dlRUTEY4AAsLBgYAAAAAAAA4KSUjIiIfAAAAFAf2+P7+FQAAADgpJSMiIiIfAAAdDAcC
-BAT9AAAAAAABAJCQdnZUVExGOAALCwYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAcKxwjqwAAABwf46scH+OrAAAAAArKysrKysrKywsLCooJSIh
-HRosLCwqKCUiIR0aLCwsKiglIiEdGiwsLCooJSIhHRosLCwqKCUiIR0aLCwsKiglIiEdGiws
-LCooJSIhHRosLCwqKCUiIR0aKCgoKCgkIiAeGygoKCgoJCIgHhsoKCgoKCQiIB4bKCgoKCgk
-IiAeGygoKCgoJCIgHhsoKCgoKCQiIB4bKCgoKCgkIiAeGygoKCgoJCIgHhsAAAAAAAAAAAAA
-AAAAAAAAAAAAABEeERFBHkERMR4xEXB1en+EiY6TmHB1en+EiY6TmHB1en+EiY6TrAAsrq6u
-rq6urq0srq6urq6urq08PDw8PDw8PLw8PDw8PDw8PLwcnJycnJycnJ0cnJycnJycnJ0SHhIu
-EswSERoeGi4aTBAeEBEYHkIeQi5CzEIRSh5KLkpMQB5AEUgeMh4yLjLMMhE6HjouOkwwHjAR
-OB5wdXp/hImOk5idonB1en+EiY6TmJ2icHV6f4SJjpOYnawAJa6urq6urq6urqQlrq6urq6u
-rq6upCWurq6urq6urq6kJa6urq6urq6urqQlrq6urq6urq6upCWurq6urq6urq6kJa6urq6u
-rq6urqQkrq6urq6urq6uoySurq6urq6urq6jJK6urq6urq6urqM8PDw8PDw8PDw8vDw8PDw8
-PDw8PDy8PDw8PDw8PDw8PLw8PDw8PDw8PDw8vDw8PDw8PDw8PDy8PDw8PDw8PDw8PLw8PDw8
-PDw8PDw8vDw8PDw8PDw8PDy8PDw8PDw8PDw8PLw8PDw8PDw8PDw8vB6enp6enp6enp6eHp6e
-np6enp6enp4enp6enp6enp6enh6enp6enp6enp6eG5ubm5ubm5ubm5sbm5ubm5ubm5ubmxub
-m5ubm5ubm5ubHp6enp6enp6enp8enp6enp6enp6enxubm5ubm5ubm5ubEx4T7hMRGx4bLhtM
-Qx5D7kMRSx5LLktMMx4z7jMROx47LjtMcHV6iY6YcHV6iY6YcHV6iY6YH5+fpKSfH5+fpKSf
-H5+fpKSfH5+fpKSfH5+fpKSfH5+fpKSfPDw8PDy8PDw8PDy8PDw8PDy8PDw8PDy8PDw8PDy8
-PDw8PDy8Hp6enp6eHp6enp6eHp6enp6eG5ubm5ubG5ubm5ubG5ubm5ubAAAAAHCJnaxwiZ2s
-cImdrHCJnawlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUl
-JSUlJSUlJSUlJSUlJSUlJSUl//////////////////////////////////////////8AAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5
-eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5
-eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXMhcRHxJHIkcRTxI3IjcR
-PxIICAgICAgICAgAUmKSorLDUmKSorLDUmKSorLDPDw8PDw8HDw8PDwYPDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8FyIXER8SRyJHEU8SNyI3ET8SCQkJCQkJ
-CQkJAFJikqKyw1JikqKyw1JikqKywzw8PDw8PA48PDw8Ejw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAABMXGiMtM0AAExcaHiMoLTNTFxoeIygtM1MXGh4jKC0zS0tLSkpJiUj
-IB0tLS0pKSYlIyAdLS0tKSkmJSMgHS0tLSkpJiUjIB0tLS0pKSYlIyAdLS0tKSkmJSMgHS0t
-LSkpJiUjIB0tLS0pKSYlIyAdLS0tKSkmJSMgHS0tLSkpJiUjIB0tLS0pKSYlIyAdLS0tKSkm
-JSMgHS0tLSkpJiUjIB0tLS0pKSYlIyAdLS0tKSkmJSMgHS0tLSkpJiUjIB0rKysrKSYkIyAf
-KysrKykmJCMgHysrKyspJiQjIB8rKysrKSYkIyAfKysrKykmJCMgHysrKyspJiQjIB8rKysr
-KSYkIyAfKysrKykmJCMgHysrKyspJiQjIB8rKysrKSYkIyAfKysrKykmJCMgHysrKyspJiQj
-IB8rKysrKSYkIyAfKysrKykmJCMgHysrKyspJiQjIB8rKysrKSYkIyAfKioqKikmJCMgHSoq
-KiopJiQjIB0qKioqKSYkIyAdKioqKikmJCMgHSoqKiopJiQjIB0qKioqKSYkIyAdKioqKikm
-JCMgHSoqKiopJiQjIB0qKioqKSYkIyAdKioqKikmJCMgHSoqKiopJiQjIB0qKioqKSYkIyAd
-KioqKikmJCMgHSoqKiopJiQjIB0qKioqKSYkIyAdKioqKikmJCMgHRwcHBwcGhoYGBYcHBwc
-HBoaGBgWHBwcHBwaGhgYFhwaHBwcGhoYGBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwcHBwcGhoY
-GBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwcGhwcGhoYGBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwc
-HBwcGhoYGBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwcHBwcGhoYGBaUBxEAQDQAAIwSEQEWFhYW
-kBIRARYWFhaUEhEBFhYWFigIEQA8ADwEAAAxACMRAAAgEAAAIhIAACISAAAiEgAAPAAxAEIF
-KdBCSjXRQgcp0EIHKdBCBynQEAQRAAeABSCoADEA3tDqANfX6gDe0OoA3tDqAN7Q6gBAADEA
-ysMpgMpTKYAKhCmACoQpgAqEKYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/7AMFAIE
-ZABwiQAAAQIECJeXl5ehoaGhAAAAAAAAAAC4uLi4l5eXl6GhoaEAAAAAAAAAALi4uLiXl5eX
-oaGhoQAAAAAAAAAAuLi4uJeXl5ehoaGhAAAAAAAAAAC4uLi4TFhcaIygtMlMWFxojKC0yUxY
-XGiMoLTJTFhcaIygtMknJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUk
-JyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcm
-JSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJBAeEBEYHkAeQBFIHjAeMBE4HkxQ
-VFhcYGRojJCUmJygpKissLS4vcHFyc1MUFRYXGBkaIyQlJicoKSorLC0uL3BxcnNTFBUWFxg
-ZGiMkJSYnKCkqKywtLi9wcXJzQAtrq4urq6urq6urq6urq6urq6uri6urq4uLa6uLq6urq6u
-rq6urq6urq6urq4urq6uLi2uri6urq6urq6urq6urq6urq6uLq6uri48PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDwkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKQkJKSkpKSkpKSkpKSkpKSkpKSkpKSk
-pKSkJCGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoSEAEh4SLhJMEogSERoeGi4aTEIeQi5CTEKI
-QhFKHkouSkwyHjIuMkwyiDIROh46LjpMTFBUWFxgZGiMkJSYnKCkqKywtLi9wcXJzUxQVFhc
-YGRojJCUmJygpKissLS4vcHFyc1MUFRYXGBkaIyQlJicoKSorLC0uL3BxcnNAC2uri6urq6u
-rq6urq6urq6urq6uLq6uri4trq4urq6urq6urq6urq6urq6uri6urq4uLa6uLq6urq6urq6u
-rq6urq6urq4urq6uLi2uri6urq6urq6urq6urq6urq6uLq6uri4trq4urq6urq6urq6urq6u
-rq6uri6urq4uLa6uLq6urq6urq6urq6urq6urq4urq6uLi2uri6urq6urq6urq6urq6urq6u
-Lq6uri4trq4urq6urq6urq6urq6urq6uri6urq4uPDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDwkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKQkJKSkpKSkpKSkpKSkpKSk
-pKSkpKSkpKSkJCSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpCQkpKSkpKSkpKSkpKSkpKSkpKSk
-pKSkpKQkJKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkJCGhoaGhoaGhoaGhoaGhoaGhoaGhoaGh
-oSEhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaEhIaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhIRMe
-E+4TERseGy4bTEMeQ+5DEUseSy5LTDMeM+4zETseOy47TE5WXmaOlp6mrra/x05WXmaOlp6m
-rra/x05WXmaOlp6mrra/xycurq6urq6urq4uLicurq6urq6urq4uLicurq6urq6urq4uLicu
-rq6urq6urq4uLicurq6urq6urq4uLicurq6urq6urq4uLjw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PCSk
-pKSkpKSkpKSkJCSkpKSkpKSkpKSkJCSkpKSkpKSkpKSkJCGhoaGhoaGhoaGhISGhoaGhoaGh
-oaGhISGhoaGhoaGhoaGhIRT+FBEcHhwuHEwUAET+RBFMHkwuTExEADT+NBE8HjwuPEw0AFJi
-kqKyw1JikqKyw1JikqKywyWurq6uLiWurq6uLiWurq6uLiWurq6uLiWurq6uLiWurq6uLjw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PCSkpKSkJCSkpKSkJCGhoaGhISGh
-oaGhISGhoaGhISSkpKSkJBYyFhEeEkYyRhFOEjYyNhE+ElqaWppamjw8PDw8PDw8PDw8PDw8
-PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
---------------020B612B48693BD454BEA645
-Content-Type: application/octet-stream;
- name="bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=Netgear-EX6150v2.bin"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename*0="bus=ahb,bmi-chip-id=0,bmi-board-id=16,variant=Netgear-EX6150";
- filename*1="v2.bin"
-
-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
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBwkLDQ8RExUX
-GRsdH/////////////////////////j4+Pj4+Pj4+Pj4+Pj4AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAQEAAAABAQICAgEBAQICAwMFBQUGBgYGBgYGBge4kGhAKMiCUCgUJCQjJCQjJSIhISMi
-ISIiVgQIAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-kJB2dlRUTEY4AAsLBgYAAAAAAAA4KSUjIiIfAAAAFAf2+P7+FQAAADgpJSMiIiIfAAAdDAcC
-BAT9AAAAAAABAJCQdnZUVExGOAALCwYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAcKxwjqwAAABwf46scH+OrAAAAAArKysrKysrKywsLCooJSIh
-HRosLCwqKCUiIR0aLCwsKiglIiEdGiwsLCooJSIhHRosLCwqKCUiIR0aLCwsKiglIiEdGiws
-LCooJSIhHRosLCwqKCUiIR0aKCgoKCgkIiAeGygoKCgoJCIgHhsoKCgoKCQiIB4bKCgoKCgk
-IiAeGygoKCgoJCIgHhsoKCgoKCQiIB4bKCgoKCgkIiAeGygoKCgoJCIgHhsAAAAAAAAAAAAA
-AAAAAAAAAAAAABEeERFBHkERMR4xEXB1en+EiY6TmHB1en+EiY6TmHB1en+EiY6TrAAsrKys
-rKysrKwsrKysrKysrKw8PDw8PDw8PLw8PDw8PDw8PLwcnJycnJycnJ0cnJycnJycnJ0SHhIu
-EswSERoeGi4aTBAeEBEYHkIeQi5CzEIRSh5KLkpMQB5AEUgeMh4yLjLMMhE6HjouOkwwHjAR
-OB5wdXp/hImOk5idonB1en+EiY6TmJ2icHV6f4SJjpOYnawAJ66urq6urq6urqYnrq6urq6u
-rq6upieurq6urq6urq6mJ66urq6urq6urqYnrq6urq6urq6upieurq6urq6urq6mJ66urq6u
-rq6urqYkrq6urq6urq6uoySurq6urq6urq6jJK6urq6urq6urqM8PDw8PDw8PDw8vDw8PDw8
-PDw8PDy8PDw8PDw8PDw8PLw8PDw8PDw8PDw8vDw8PDw8PDw8PDy8PDw8PDw8PDw8PLw8PDw8
-PDw8PDw8vDw8PDw8PDw8PDy8PDw8PDw8PDw8PLw8PDw8PDw8PDw8vB6enp6enp6enp6eHp6e
-np6enp6enp4enp6enp6enp6enh6enp6enp6enp6eG5ubm5ubm5ubm5sbm5ubm5ubm5ubmxub
-m5ubm5ubm5ubHp6enp6enp6enp8enp6enp6enp6enxubm5ubm5ubm5ubEx4T7hMRGx4bLhtM
-Qx5D7kMRSx5LLktMMx4z7jMROx47LjtMcHV6iY6YcHV6iY6YcHV6iY6YHp6epKSgHp6epKSg
-Hp6epKSgHp6epKSgHp6epKSgHp6epKSgPDw8PDy8PDw8PDy8PDw8PDy8PDw8PDy8PDw8PDy8
-PDw8PDy8Hp6enp6eHp6enp6eHp6enp6eG5ubm5ubG5ubm5ubG5ubm5ubAAAAAHCJnaxwiZ2s
-cImdrHCJnawlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUl
-JSUlJSUlJSUlJSUlJSUlJSUl//////////////////////////////////////////8AAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5
-eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5
-eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXMhcRHxJHIkcRTxI3IjcR
-PxIICAgICAgICAgAUmKSorLDUmKSorLDUmKSorLDPDw8PDw8HDw8PDwYPDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8FyIXER8SRyJHEU8SNyI3ET8SCQkJCQkJ
-CQkJAFJikqKyw1JikqKyw1JikqKywzw8PDw8PA48PDw8Ejw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAABMXGiMtM0AAExcaHiMoLTNTFxoeIygtM1MXGh4jKC0zSoqKikpJiUj
-IB0qKiopKSYlIyAdKioqKSkmJSMgHSoqKikpJiUjIB0qKiopKSYlIyAdKioqKSkmJSMgHSoq
-KikpJiUjIB0qKiopKSYlIyAdKioqKSkmJSMgHSoqKikpJiUjIB0qKiopKSYlIyAdKioqKSkm
-JSMgHSoqKikpJiUjIB0qKiopKSYlIyAdKioqKSkmJSMgHSoqKikpJiUjIB0qKioqKSYkIyAf
-KioqKikmJCMgHyoqKiopJiQjIB8qKioqKSYkIyAfKioqKikmJCMgHyoqKiopJiQjIB8qKioq
-KSYkIyAfKioqKikmJCMgHyoqKiopJiQjIB8qKioqKSYkIyAfKioqKikmJCMgHyoqKiopJiQj
-IB8qKioqKSYkIyAfKioqKikmJCMgHyoqKiopJiQjIB8qKioqKSYkIyAfKioqKikmJCMgHSoq
-KiopJiQjIB0qKioqKSYkIyAdKioqKikmJCMgHSoqKiopJiQjIB0qKioqKSYkIyAdKioqKikm
-JCMgHSoqKiopJiQjIB0qKioqKSYkIyAdKioqKikmJCMgHSoqKiopJiQjIB0qKioqKSYkIyAd
-KioqKikmJCMgHSoqKiopJiQjIB0qKioqKSYkIyAdKioqKikmJCMgHRwcHBwcGhoYGBYcHBwc
-HBoaGBgWHBwcHBwaGhgYFhwaHBwcGhoYGBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwcHBwcGhoY
-GBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwcGhwcGhoYGBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwc
-HBwcGhoYGBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwcHBwcGhoYGBaUBxEAQDQAAIwSEQEWFhYW
-kBIRARYWFhaUEhEBFhYWFigIEQA8ADwEAAAxACMRAAAgEAAAIhIAACISAAAiEgAAPAAxAEIF
-KdBCSjXRQgcp0EIHKdBCBynQEAQRAAeABSCoADEA3tDqANfX6gDe0OoA3tDqAN7Q6gBAADEA
-ysMpgMpTKYAKhCmACoQpgAqEKYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/7AMFAIE
-ZABwiQAAAQIECJeXl5ehoaGhAAAAAAAAAAC4uLi4l5eXl6GhoaEAAAAAAAAAALi4uLiXl5eX
-oaGhoQAAAAAAAAAAuLi4uJeXl5ehoaGhAAAAAAAAAAC4uLi4TFhcaIygtMlMWFxojKC0yUxY
-XGiMoLTJTFhcaIygtMknJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUk
-JyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcm
-JSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJBAeEBEYHkAeQBFIHjAeMBE4HkxQ
-VFhcYGRojJCUmJygpKissLS4vcHFyc1MUFRYXGBkaIyQlJicoKSorLC0uL3BxcnNTFBUWFxg
-ZGiMkJSYnKCkqKywtLi9wcXJzQAqrq4urq6urq6urq6urq6urq6uri6urq4uKq6uLq6urq6u
-rq6urq6urq6urq4urq6uLiquri6urq6urq6urq6urq6urq6uLq6uri48PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDwkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKQkJKSkpKSkpKSkpKSkpKSkpKSkpKSk
-pKSkJCGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoSEAEh4SLhJMEogSERoeGi4aTEIeQi5CTEKI
-QhFKHkouSkwyHjIuMkwyiDIROh46LjpMTFBUWFxgZGiMkJSYnKCkqKywtLi9wcXJzUxQVFhc
-YGRojJCUmJygpKissLS4vcHFyc1MUFRYXGBkaIyQlJicoKSorLC0uL3BxcnNACquri6urq6u
-rq6urq6urq6urq6uLq6uri4qrq4urq6urq6urq6urq6urq6uri6urq4uKq6uLq6urq6urq6u
-rq6urq6urq4urq6uLiquri6urq6urq6urq6urq6urq6uLq6uri4qrq4urq6urq6urq6urq6u
-rq6uri6urq4uKq6uLq6urq6urq6urq6urq6urq4urq6uLiquri6urq6urq6urq6urq6urq6u
-Lq6uri4prq4urq6urq6urq6urq6urq6uri6urq4uPDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDwkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKQkJKSkpKSkpKSkpKSkpKSk
-pKSkpKSkpKSkJCSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpCQkpKSkpKSkpKSkpKSkpKSkpKSk
-pKSkpKQkJKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkJCGhoaGhoaGhoaGhoaGhoaGhoaGhoaGh
-oSEhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaEhIaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhIRMe
-E+4TERseGy4bTEMeQ+5DEUseSy5LTDMeM+4zETseOy47TE5WXmaOlp6mrra/x05WXmaOlp6m
-rra/x05WXmaOlp6mrra/xyUurq6urq6urq4uLiUurq6urq6urq4uLiUurq6urq6urq4uLiUu
-rq6urq6urq4uLiUurq6urq6urq4uLiUurq6urq6urq4uLjw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PCSk
-pKSkpKSkpKSkJCSkpKSkpKSkpKSkJCSkpKSkpKSkpKSkJCGhoaGhoaGhoaGhISGhoaGhoaGh
-oaGhISGhoaGhoaGhoaGhIRT+FBEcHhwuHEwUAET+RBFMHkwuTExEADT+NBE8HjwuPEw0AFJi
-kqKyw1JikqKyw1JikqKywyKsrKysLCKsrKysLCKsrKysLCKsrKysLCKsrKysLCKsrKysLDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PCSkpKSkJCSkpKSkJCGhoaGhISGh
-oaGhISGhoaGhISSkpKSkJBYyFhEeEkYyRhFOEjYyNhE+ElqaWppamjw8PDw8PDw8PDw8PDw8
-PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
---------------020B612B48693BD454BEA645
-Content-Type: application/octet-stream;
- name="bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=Netgear-EX6100v2.bin"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename*0="bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=Netgear-EX6100";
- filename*1="v2.bin"
-
-IC/tRAEBEjRWeJASAAAAABWgAAAAYAAAFQcAAAAAAAARAAAhEQAAAAAABAQAAAAAAAAAAAAA
-AAAAAAAAAAAAACNTMwEAAAAAADMzM/Ty8gA8FAYA////P////z////8/AxQAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAA
-AAAAAAAAAAAAAJABAAAAAAAA/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAA8AAAAAAEFEBAAQABAAEAAQAAAAAAAAAAAA////PwAAAAAeAAAAAAAAAAAA
-AAAAAD8UAAAAAAAAAAAAAAAAAAAAAAAAAAC2/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAgACAAIAAgAAAAAAAAAAAAAAAAAAAA
-AAAUAAAAAAAAAAAAAAAAAD8UAAAAAAAAAAAAAAAAAAAAAAAAAAC9/wAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXFxcAFxcXABcXFwAXFxcAFBQUABQUFAAU
-FBQAFBQUAAwMDAAMDAwADAwMAAwMDAAMDAwADAwMAAwMDAAMDAwADAwMAAwMDAAMDAwADAwM
-CQkODgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAUoBTQFPAVUBaAFrAW
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACrq6ur
-q6urAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////////////
-//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-eXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-YGBaVlRUTEY4ABISEA0AAAAAAAA4KSUjIiIfAAAAFAf2+P7+FQAAADgpJSMiIiIfAAAdDAcC
-BAT9AAAAAAABAJCQdmBUVExGOAANDQLyAAAAAAAAZmZaVlRUTEY4ABoaExMAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAcKxwjqwAAABwf46scH+OrAAAAAArKysrKysrKywsLCooJSIh
-HRosLCwqKCUiIR0aLCwsKiglIiEdGiwsLCooJSIhHRosLCwqKCUiIR0aLCwsKiglIiEdGiws
-LCooJSIhHRosLCwqKCUiIR0aKCgoKCgkIiAeGygoKCgoJCIgHhsoKCgoKCQiIB4bKCgoKCgk
-IiAeGygoKCgoJCIgHhsoKCgoKCQiIB4bKCgoKCgkIiAeGygoKCgoJCIgHhsAAAAAAAAAAAAA
-AAAAAAAAAAAAABEeERFBHkERMR4xEXB1en+EiY6TmHB1en+EiY6TmHB1en+EiY6TrAAsrq6u
-rq6urq0srq6urq6urq08PDw8PDw8PLw8PDw8PDw8PLwcnJycnJycnJ0cnJycnJycnJ0SHhIu
-EswSERoeGi4aTBAeEBEYHkIeQi5CzEIRSh5KLkpMQB5AEUgeMh4yLjLMMhE6HjouOkwwHjAR
-OB5wdXp/hImOk5idonB1en+EiY6TmJ2icHV6f4SJjpOYnawAJa6urq6urq6urqQlrq6urq6u
-rq6upCWurq6urq6urq6kJa6urq6urq6urqQlrq6urq6urq6upCWurq6urq6urq6kJa6urq6u
-rq6urqQkrq6urq6urq6uoySurq6urq6urq6jJK6urq6urq6urqM8PDw8PDw8PDw8vDw8PDw8
-PDw8PDy8PDw8PDw8PDw8PLw8PDw8PDw8PDw8vDw8PDw8PDw8PDy8PDw8PDw8PDw8PLw8PDw8
-PDw8PDw8vDw8PDw8PDw8PDy8PDw8PDw8PDw8PLw8PDw8PDw8PDw8vB6enp6enp6enp6eHp6e
-np6enp6enp4enp6enp6enp6enh6enp6enp6enp6eG5ubm5ubm5ubm5sbm5ubm5ubm5ubmxub
-m5ubm5ubm5ubHp6enp6enp6enp8enp6enp6enp6enxubm5ubm5ubm5ubEx4T7hMRGx4bLhtM
-Qx5D7kMRSx5LLktMMx4z7jMROx47LjtMcHV6iY6YcHV6iY6YcHV6iY6YH5+fpKSfH5+fpKSf
-H5+fpKSfH5+fpKSfH5+fpKSfH5+fpKSfPDw8PDy8PDw8PDy8PDw8PDy8PDw8PDy8PDw8PDy8
-PDw8PDy8Hp6enp6eHp6enp6eHp6enp6eG5ubm5ubG5ubm5ubG5ubm5ubAAAAAHCJnaxwiZ2s
-cImdrHCJnawlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUl
-JSUlJSUlJSUlJSUlJSUlJSUlTFJmkJ6/w83///////////////////////////////8AAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO+JzmyuTJ0xjBzviM5rrkudMowdv7adlntx
-WUY4Jb+yrqSMe2pZOBz4+Pj4nJgnKADvk855rlqdQIwt75XOe65bnUKML660naBqallOOCy/
-t52Se21ZQjgg+Pj4+J2ZJycA75rOha5nnVCMPe+fzomubJ1Vey2uuoyWanJIRDgyv7edk3ts
-WUI4IPj4+PiemScpAO+fzo2ucIxSajbvpc6TrniMWGo8rr+Mm2p0SEUoGL+3nZJ7a2pbOBz4
-+Pj4nZonKADvnc6Krmt7RFkk76LOj65yjFVqPq67jJlqdkhIKBu/uJ2Ve21ZQjgf+Pj4+J6a
-KCkA75jOg65jez5IGu+dzoiuaXtCSBuusZ2fam1IQTgvzruuoox5alc4Gvj4+PifmikmAO+W
-zoCuYHs6SBnvmc6ErmR7PEgZv7edmXt1WUs4Kc62rpqMcmpPSCT4+Pj4npopKADvj854rlh7
-MkgU75HOeq5aezJIEc65rqF7allAOB7es7+cnXdqQ0gZ+Pj4+J+aJygAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5
-eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/gAAAAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAB
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAALaJfF1FMS0cGQaliGxcNzIhHQ4IdJZGhClxGmIMRsCkZY09eyNnF1nCk3ha
-Py0mFRgFs5V8a0pCMi8bGI+gVo4xeiBqD07GqWySQIAlbRleyJppUDcnJhcAAL6femxIQy4t
-HR24qHGWQIIpchJVw6ppkz+AI2wYXsSfc2BCNiUcGAy8pWxnSEgeIhATjJtOhTF0FVcNRbmp
-YpI6fyBrFVu9nWxcUEQsJBEEtKJ2ckVIIigVGoqZT4Y0dhhZDEizq1+VOIIfbRVetJh0Y0k+
-LCMTBqqddnNJTDI4FRu0n3KOQ3wsbRZSyK9Kiyx5GWYQV7CWempPRCkiEgakmW9uUFQtNBsi
-p5lpiD51KmcTS6aob5o7hCNyFF6nj3BiRDsjHBwUmpFkZUVKLDIVGo2OV300aiJbEkCyqnOc
-To0odxhlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQcJCw0P
-ERMVFxkbHR/////////////////////////4+Pj4+Pj4+Pj4+Pj4+AAAAAAAAAAAAAAAAAAA
-AAAAAAcHBwcHBwcHBwcHBwcAAAAAAAAAAAAAAAAAAAAAAAAAwKCIYFB4WjwyKCUlJCUlJCMi
-ISAjISEiIVYFCAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXMhcRHxJHIkcRTxI3IjcR
-PxIICAgICAgICAgAUmKSorLDUmKSorLDUmKSorLDPDw8PDw8HDw8PDwYPDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8FyIXER8SRyJHEU8SNyI3ET8SCQkJCQkJ
-CQkJAFJikqKyw1JikqKyw1JikqKywzw8PDw8PA48PDw8Ejw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAABMXGiMtM0AAExcaHiMoLTNTFxoeIygtM1MXGh4jKC0zS0tLSkpJiUj
-IB0tLS0pKSYlIyAdLS0tKSkmJSMgHS0tLSkpJiUjIB0tLS0pKSYlIyAdLS0tKSkmJSMgHS0t
-LSkpJiUjIB0tLS0pKSYlIyAdLS0tKSkmJSMgHS0tLSkpJiUjIB0tLS0pKSYlIyAdLS0tKSkm
-JSMgHS0tLSkpJiUjIB0tLS0pKSYlIyAdLS0tKSkmJSMgHS0tLSkpJiUjIB0rKysrKSYkIyAf
-KysrKykmJCMgHysrKyspJiQjIB8rKysrKSYkIyAfKysrKykmJCMgHysrKyspJiQjIB8rKysr
-KSYkIyAfKysrKykmJCMgHysrKyspJiQjIB8rKysrKSYkIyAfKysrKykmJCMgHysrKyspJiQj
-IB8rKysrKSYkIyAfKysrKykmJCMgHysrKyspJiQjIB8rKysrKSYkIyAfKioqKikmJCMgHSoq
-KiopJiQjIB0qKioqKSYkIyAdKioqKikmJCMgHSoqKiopJiQjIB0qKioqKSYkIyAdKioqKikm
-JCMgHSoqKiopJiQjIB0qKioqKSYkIyAdKioqKikmJCMgHSoqKiopJiQjIB0qKioqKSYkIyAd
-KioqKikmJCMgHSoqKiopJiQjIB0qKioqKSYkIyAdKioqKikmJCMgHRwcHBwcGhoYGBYcHBwc
-HBoaGBgWHBwcHBwaGhgYFhwaHBwcGhoYGBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwcHBwcGhoY
-GBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwcGhwcGhoYGBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwc
-HBwcGhoYGBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwcHBwcGhoYGBaoABEA3tDqAAAAEQAiEgAA
-QAARAAqEKYBEADEAKjkiQSo5IkEqOR9xKjkfcSo5H6EQBDEAB4AFIAeABSAHgAogB4AFIAeA
-BSA8ADEAQgcp0EIFKdJCBSnQQgUp0EIHKdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAA/7AMFAQEZABYmKjFAQIECJeXl5ehoaGhAAAAAAAAAAC4uLi4l5eXl6GhoaEAAAAA
-AAAAALi4uLiXl5eXoaGhoQAAAAAAAAAAuLi4uJeXl5ehoaGhAAAAAAAAAAC4uLi4AAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATFhcaIygtMlMWFxojKC0yUxY
-XGiMoLTJTFhcaIygtMknJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUk
-JyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcm
-JSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJBAeEBEYHkAeQBFIHjAeMBE4HkxQ
-VFhcYGRojJCUmJygpKissLS4vcHFyc1MUFRYXGBkaIyQlJicoKSorLC0uL3BxcnNTFBUWFxg
-ZGiMkJSYnKCkqKywtLi9wcXJzQAtrq4urq6urq6urq6urq6urq6uri6urq4uLa6uLq6urq6u
-rq6urq6urq6urq4urq6uLi2uri6urq6urq6urq6urq6urq6uLq6uri48PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDwkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKQkJKSkpKSkpKSkpKSkpKSkpKSkpKSk
-pKSkJCGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoSEAEh4SLhJMEogSERoeGi4aTEIeQi5CTEKI
-QhFKHkouSkwyHjIuMkwyiDIROh46LjpMTFBUWFxgZGiMkJSYnKCkqKywtLi9wcXJzUxQVFhc
-YGRojJCUmJygpKissLS4vcHFyc1MUFRYXGBkaIyQlJicoKSorLC0uL3BxcnNAC2uri6urq6u
-rq6urq6urq6urq6uLq6uri4trq4urq6urq6urq6urq6urq6uri6urq4uLa6uLq6urq6urq6u
-rq6urq6urq4urq6uLi2uri6urq6urq6urq6urq6urq6uLq6uri4trq4urq6urq6urq6urq6u
-rq6uri6urq4uLa6uLq6urq6urq6urq6urq6urq4urq6uLi2uri6urq6urq6urq6urq6urq6u
-Lq6uri4trq4urq6urq6urq6urq6urq6uri6urq4uPDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDwkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKQkJKSkpKSkpKSkpKSkpKSk
-pKSkpKSkpKSkJCSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpCQkpKSkpKSkpKSkpKSkpKSkpKSk
-pKSkpKQkJKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkJCGhoaGhoaGhoaGhoaGhoaGhoaGhoaGh
-oSEhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaEhIaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhIRMe
-E+4TERseGy4bTEMeQ+5DEUseSy5LTDMeM+4zETseOy47TE5WXmaOlp6mrra/x05WXmaOlp6m
-rra/x05WXmaOlp6mrra/xycurq6urq6urq4uLicurq6urq6urq4uLicurq6urq6urq4uLicu
-rq6urq6urq4uLicurq6urq6urq4uLicurq6urq6urq4uLjw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PCSk
-pKSkpKSkpKSkJCSkpKSkpKSkpKSkJCSkpKSkpKSkpKSkJCGhoaGhoaGhoaGhISGhoaGhoaGh
-oaGhISGhoaGhoaGhoaGhIRT+FBEcHhwuHEwUAET+RBFMHkwuTExEADT+NBE8HjwuPEw0AFJi
-kqKyw1JikqKyw1JikqKywyWurq6uLiWurq6uLiWurq6uLiWurq6uLiWurq6uLiWurq6uLjw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PCSkpKSkJCSkpKSkJCGhoaGhISGh
-oaGhISGhoaGhISSkpKSkJBYyFhEeEkYyRhFOEjYyNhE+ElqaWppamjw8PDw8PDw8PDw8PDw8
-PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
---------------020B612B48693BD454BEA645
-Content-Type: application/octet-stream;
- name="bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=Netgear-EX6150v2.bin"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename*0="bus=ahb,bmi-chip-id=0,bmi-board-id=17,variant=Netgear-EX6150";
- filename*1="v2.bin"
-
-IC+DXwEBEjRWeJASAAAAABWgAAAAYAAAFQcAAAAAAAARAAAhMwAAAAAABAQAAAAAAAAAAAAA
-AAAAAAAAAAAAACNTMwEAAAAAADMzM/Ty8gA8FAYA////P////z////8/AxQAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAA
-AAAAAAAAAAAAAJABAAAAAAAA/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAA8AAAAAAEFEBAAQABAAEAAQAAAAAAAAAAAA////PwAAAAAeAAAAAAAAAAAA
-AAAAAD8UAAAAAAAAAAAAAAAAAAAAAAAAAAC2/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAgACAAIAAgAAAAAAAAAAAAAAAAAAAA
-AAAUAAAAAAAAAAAAAAAAAD8UAAAAAAAAAAAAAAAAAAAAAAAAAAC9/wAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXFxcAFxcXABcXFwAXFxcAFBQUABQUFAAU
-FBQAFBQUAAwMDAAMDAwADAwMAAwMDAAMDAwADAwMAAwMDAAMDAwADAwMAAwMDAAMDAwADAwM
-CQkODgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAUoBTQFPAVUBaAFrAW
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACrq6ur
-q6urAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////////////
-//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-eXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-YGBaVlRUTEY4ABISEA0AAAAAAAA4KSUjIiIfAAAAFAf2+P7+FQAAADgpJSMiIiIfAAAdDAcC
-BAT9AAAAAAABAJCQdmBUVExGOAANDQLyAAAAAAAAZmZaVlRUTEY4ABoaExMAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAcKxwjqwAAABwf46scH+OrAAAAAArKysrKysrKywsLCooJSIh
-HRosLCwqKCUiIR0aLCwsKiglIiEdGiwsLCooJSIhHRosLCwqKCUiIR0aLCwsKiglIiEdGiws
-LCooJSIhHRosLCwqKCUiIR0aKCgoKCgkIiAeGygoKCgoJCIgHhsoKCgoKCQiIB4bKCgoKCgk
-IiAeGygoKCgoJCIgHhsoKCgoKCQiIB4bKCgoKCgkIiAeGygoKCgoJCIgHhsAAAAAAAAAAAAA
-AAAAAAAAAAAAABEeERFBHkERMR4xEXB1en+EiY6TmHB1en+EiY6TmHB1en+EiY6TrAAsrKys
-rKysrKwsrKysrKysrKw8PDw8PDw8PLw8PDw8PDw8PLwcnJycnJycnJ0cnJycnJycnJ0SHhIu
-EswSERoeGi4aTBAeEBEYHkIeQi5CzEIRSh5KLkpMQB5AEUgeMh4yLjLMMhE6HjouOkwwHjAR
-OB5wdXp/hImOk5idonB1en+EiY6TmJ2icHV6f4SJjpOYnawAJ66urq6urq6urqYnrq6urq6u
-rq6upieurq6urq6urq6mJ66urq6urq6urqYnrq6urq6urq6upieurq6urq6urq6mJ66urq6u
-rq6urqYkrq6urq6urq6uoySurq6urq6urq6jJK6urq6urq6urqM8PDw8PDw8PDw8vDw8PDw8
-PDw8PDy8PDw8PDw8PDw8PLw8PDw8PDw8PDw8vDw8PDw8PDw8PDy8PDw8PDw8PDw8PLw8PDw8
-PDw8PDw8vDw8PDw8PDw8PDy8PDw8PDw8PDw8PLw8PDw8PDw8PDw8vB6enp6enp6enp6eHp6e
-np6enp6enp4enp6enp6enp6enh6enp6enp6enp6eG5ubm5ubm5ubm5sbm5ubm5ubm5ubmxub
-m5ubm5ubm5ubHp6enp6enp6enp8enp6enp6enp6enxubm5ubm5ubm5ubEx4T7hMRGx4bLhtM
-Qx5D7kMRSx5LLktMMx4z7jMROx47LjtMcHV6iY6YcHV6iY6YcHV6iY6YHp6epKSgHp6epKSg
-Hp6epKSgHp6epKSgHp6epKSgHp6epKSgPDw8PDy8PDw8PDy8PDw8PDy8PDw8PDy8PDw8PDy8
-PDw8PDy8Hp6enp6eHp6enp6eHp6enp6eG5ubm5ubG5ubm5ubG5ubm5ubAAAAAHCJnaxwiZ2s
-cImdrHCJnawlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUl
-JSUlJSUlJSUlJSUlJSUlJSUlTFhojKC0vc3///////////////////////////////8AAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO+JzmyuTJ0xjBzviM5rrkudMowdv7adlntx
-WUY4Jb+yrqSMe2pZOBz4+Pj4nJgnKADvk855rlqdQIwt75XOe65bnUKML660naBqallOOCy/
-t52Se21ZQjgg+Pj4+J2ZJycA75rOha5nnVCMPe+fzomubJ1Vey2uuoyWanJIRDgyv7edk3ts
-WUI4IPj4+PiemScpAO+fzo2ucIxSajbvpc6TrniMWGo8rr+Mm2p0SEUoGL+3nZJ7a2pbOBz4
-+Pj4nZonKADvnc6Krmt7RFkk76LOj65yjFVqPq67jJlqdkhIKBu/uJ2Ve21ZQjgf+Pj4+J6a
-KCkA75jOg65jez5IGu+dzoiuaXtCSBuusZ2fam1IQTgvzruuoox5alc4Gvj4+PifmikmAO+W
-zoCuYHs6SBnvmc6ErmR7PEgZv7edmXt1WUs4Kc62rpqMcmpPSCT4+Pj4npopKADvj854rlh7
-MkgU75HOeq5aezJIEc65rqF7allAOB7es7+cnXdqQ0gZ+Pj4+J+aJygAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5
-eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5eXl5AAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeXl5eQAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHl5eXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAALaJfF1FMS0cGQaliGxcNzIhHQ4IdJZGhClxGmIMRsCkZY09eyNnF1nCk3ha
-Py0mFRgFs5V8a0pCMi8bGI+gVo4xeiBqD07GqWySQIAlbRleyJppUDcnJhcAAL6femxIQy4t
-HR24qHGWQIIpchJVw6ppkz+AI2wYXsSfc2BCNiUcGAy8pWxnSEgeIhATjJtOhTF0FVcNRbmp
-YpI6fyBrFVu9nWxcUEQsJBEEtKJ2ckVIIigVGoqZT4Y0dhhZDEizq1+VOIIfbRVetJh0Y0k+
-LCMTBqqddnNJTDI4FRu0n3KOQ3wsbRZSyK9Kiyx5GWYQV7CWempPRCkiEgakmW9uUFQtNBsi
-p5lpiD51KmcTS6aob5o7hCNyFF6nj3BiRDsjHBwUmpFkZUVKLDIVGo2OV300aiJbEkCyqnOc
-To0odxhlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQcJCw0P
-ERMVFxkbHR/////////////////////////4+Pj4+Pj4+Pj4+Pj4+AAAAAAAAAAAAAAAAAAA
-AAAAAAcHBwcHBwcHBwcHBwcAAAAAAAAAAAAAAAAAAAAAAAAAwKCIYFB4WjwyKCUlJCUlJCMi
-ISAjISEiIVYFCAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXMhcRHxJHIkcRTxI3IjcR
-PxIICAgICAgICAgAUmKSorLDUmKSorLDUmKSorLDPDw8PDw8HDw8PDwYPDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8FyIXER8SRyJHEU8SNyI3ET8SCQkJCQkJ
-CQkJAFJikqKyw1JikqKyw1JikqKywzw8PDw8PA48PDw8Ejw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAABMXGiMtM0AAExcaHiMoLTNTFxoeIygtM1MXGh4jKC0zSoqKikpJiUj
-IB0qKiopKSYlIyAdKioqKSkmJSMgHSoqKikpJiUjIB0qKiopKSYlIyAdKioqKSkmJSMgHSoq
-KikpJiUjIB0qKiopKSYlIyAdKioqKSkmJSMgHSoqKikpJiUjIB0qKiopKSYlIyAdKioqKSkm
-JSMgHSoqKikpJiUjIB0qKiopKSYlIyAdKioqKSkmJSMgHSoqKikpJiUjIB0qKioqKSYkIyAf
-KioqKikmJCMgHyoqKiopJiQjIB8qKioqKSYkIyAfKioqKikmJCMgHyoqKiopJiQjIB8qKioq
-KSYkIyAfKioqKikmJCMgHyoqKiopJiQjIB8qKioqKSYkIyAfKioqKikmJCMgHyoqKiopJiQj
-IB8qKioqKSYkIyAfKioqKikmJCMgHyoqKiopJiQjIB8qKioqKSYkIyAfKioqKikmJCMgHSoq
-KiopJiQjIB0qKioqKSYkIyAdKioqKikmJCMgHSoqKiopJiQjIB0qKioqKSYkIyAdKioqKikm
-JCMgHSoqKiopJiQjIB0qKioqKSYkIyAdKioqKikmJCMgHSoqKiopJiQjIB0qKioqKSYkIyAd
-KioqKikmJCMgHSoqKiopJiQjIB0qKioqKSYkIyAdKioqKikmJCMgHRwcHBwcGhoYGBYcHBwc
-HBoaGBgWHBwcHBwaGhgYFhwaHBwcGhoYGBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwcHBwcGhoY
-GBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwcGhwcGhoYGBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwc
-HBwcGhoYGBYcHBwcHBoaGBgWHBwcHBwaGhgYFhwcHBwcGhoYGBaoABEA3tDqAAAAEQAiEgAA
-QAARAAqEKYBEADEAKjkiQSo5IkEqOR9xKjkfcSo5H6EQBDEAB4AFIAeABSAHgAogB4AFIAeA
-BSA8ADEAQgcp0EIFKdJCBSnQQgUp0EIHKdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAA/7AMFAQEZABYmKjFAQIECJeXl5ehoaGhAAAAAAAAAAC4uLi4l5eXl6GhoaEAAAAA
-AAAAALi4uLiXl5eXoaGhoQAAAAAAAAAAuLi4uJeXl5ehoaGhAAAAAAAAAAC4uLi4AAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATFhcaIygtMlMWFxojKC0yUxY
-XGiMoLTJTFhcaIygtMknJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUk
-JyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcm
-JSQnJiUkJyYlJCcmJSQnJiUkJyYlJCcmJSQnJiUkJyYlJBAeEBEYHkAeQBFIHjAeMBE4HkxQ
-VFhcYGRojJCUmJygpKissLS4vcHFyc1MUFRYXGBkaIyQlJicoKSorLC0uL3BxcnNTFBUWFxg
-ZGiMkJSYnKCkqKywtLi9wcXJzQAqrq4urq6urq6urq6urq6urq6uri6urq4uKq6uLq6urq6u
-rq6urq6urq6urq4urq6uLiquri6urq6urq6urq6urq6urq6uLq6uri48PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDwkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKQkJKSkpKSkpKSkpKSkpKSkpKSkpKSk
-pKSkJCGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoSEAEh4SLhJMEogSERoeGi4aTEIeQi5CTEKI
-QhFKHkouSkwyHjIuMkwyiDIROh46LjpMTFBUWFxgZGiMkJSYnKCkqKywtLi9wcXJzUxQVFhc
-YGRojJCUmJygpKissLS4vcHFyc1MUFRYXGBkaIyQlJicoKSorLC0uL3BxcnNACquri6urq6u
-rq6urq6urq6urq6uLq6uri4qrq4urq6urq6urq6urq6urq6uri6urq4uKq6uLq6urq6urq6u
-rq6urq6urq4urq6uLiquri6urq6urq6urq6urq6urq6uLq6uri4qrq4urq6urq6urq6urq6u
-rq6uri6urq4uKq6uLq6urq6urq6urq6urq6urq4urq6uLiquri6urq6urq6urq6urq6urq6u
-Lq6uri4prq4urq6urq6urq6urq6urq6uri6urq4uPDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDwkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKQkJKSkpKSkpKSkpKSkpKSk
-pKSkpKSkpKSkJCSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpCQkpKSkpKSkpKSkpKSkpKSkpKSk
-pKSkpKQkJKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkJCGhoaGhoaGhoaGhoaGhoaGhoaGhoaGh
-oSEhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaEhIaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhIRMe
-E+4TERseGy4bTEMeQ+5DEUseSy5LTDMeM+4zETseOy47TE5WXmaOlp6mrra/x05WXmaOlp6m
-rra/x05WXmaOlp6mrra/xyUurq6urq6urq4uLiUurq6urq6urq4uLiUurq6urq6urq4uLiUu
-rq6urq6urq4uLiUurq6urq6urq4uLiUurq6urq6urq4uLjw8PDw8PDw8PDw8PDw8PDw8PDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PCSk
-pKSkpKSkpKSkJCSkpKSkpKSkpKSkJCSkpKSkpKSkpKSkJCGhoaGhoaGhoaGhISGhoaGhoaGh
-oaGhISGhoaGhoaGhoaGhIRT+FBEcHhwuHEwUAET+RBFMHkwuTExEADT+NBE8HjwuPEw0AFJi
-kqKyw1JikqKyw1JikqKywyKsrKysLCKsrKysLCKsrKysLCKsrKysLCKsrKysLCKsrKysLDw8
-PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PCSkpKSkJCSkpKSkJCGhoaGhISGh
-oaGhISGhoaGhISSkpKSkJBYyFhEeEkYyRhFOEjYyNhE+ElqaWppamjw8PDw8PDw8PDw8PDw8
-PDw8PAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
---------------020B612B48693BD454BEA645
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---------------020B612B48693BD454BEA645--
