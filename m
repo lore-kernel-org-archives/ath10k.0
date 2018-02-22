@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eooMm-0002S4-Fn
- for ath10k@lists.infradead.org; Thu, 22 Feb 2018 10:45:23 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: [PULL] ath10k firmware 20180219
-Date: Thu, 22 Feb 2018 10:44:28 +0000
-Message-ID: <87y3jlxq0k.fsf@kamboji.qca.qualcomm.com>
-Content-Language: en-US
+ id 1eooas-0001EW-DE
+ for ath10k@lists.infradead.org; Thu, 22 Feb 2018 10:59:24 +0000
+Subject: Re: [PULL] ath10k firmware 20180219
+References: <87y3jlxq0k.fsf@kamboji.qca.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <0e9db63d-41e9-eeb3-00d1-73b20df4bb3f@dd-wrt.com>
+Date: Thu, 22 Feb 2018 11:59:02 +0100
 MIME-Version: 1.0
+In-Reply-To: <87y3jlxq0k.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,61 +19,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "linux-firmware@kernel.org" <linux-firmware@kernel.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, "linux-firmware@kernel.org" <linux-firmware@kernel.org>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi linux-firmware maintainers,
-
-here's a pull request for updating ath10k firmwares. Earlier I have been
-submitting these as patches but as the patches got pretty big I decided
-to try using pull requests instead.
-
-Please let me know if there are any problems.
-
-Kalle
-
-The following changes since commit 6d5131107f2ba67a13f469ac770a55f101ba654d:
-
-  rtl_bt: Add firmware and configuration files for the Bluetooth parts of RTL8821C and RTL8723D (2018-02-13 13:09:19 -0500)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20180219
-
-for you to fetch changes up to 9b3d016886a8e365f9493a724bf2945b97bcfe43:
-
-  ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.5.3-00053 (2018-02-19 12:03:36 +0200)
-
-----------------------------------------------------------------
-Kalle Valo (9):
-      ath10k: QCA4019 hw1.0: update firmware-5.bin to 10.4-3.5.3-00053
-      ath10k: QCA4019 hw1.0: update board-2.bin
-      ath10k: QCA6174 hw3.0: update firmware-6.bin to WLAN.RM.4.4.1-00079-QCARMSWPZ-1
-      ath10k: QCA6174 hw3.0: update board-2.bin
-      ath10k: QCA9377 hw1.0: update firmware-5.bin to WLAN.TF.1.0-00002-QCATFSWPZ-5
-      ath10k: QCA9887 hw1.0: update firmware-5.bin to 10.2.4-1.0-00037
-      ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.5.3-00053
-      ath10k: QCA988X hw2.0: update firmware-5.bin to 10.2.4-1.0-00037
-      ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.5.3-00053
-
- WHENCE                                            |  14 ++++++------
- ath10k/QCA4019/hw1.0/board-2.bin                  | Bin 109172 -> 133452 bytes
- ath10k/QCA4019/hw1.0/firmware-5.bin               | Bin 535412 -> 568636 bytes
- ath10k/QCA6174/hw3.0/board-2.bin                  | Bin 501748 -> 551128 bytes
- ath10k/QCA6174/hw3.0/firmware-6.bin               | Bin 727776 -> 730788 bytes
- ath10k/QCA9377/hw1.0/firmware-5.bin               | Bin 605908 -> 783336 bytes
- ath10k/QCA9377/hw1.0/notice_ath10k_firmware-5.txt |   4 ++--
- ath10k/QCA9887/hw1.0/firmware-5.bin               | Bin 235880 -> 237584 bytes
- ath10k/QCA9888/hw2.0/firmware-5.bin               | Bin 647460 -> 659708 bytes
- ath10k/QCA988X/hw2.0/firmware-5.bin               | Bin 248188 -> 248108 bytes
- ath10k/QCA988X/hw2.0/notice_ath10k_firmware-5.txt |  25 ++++++++++------------
- ath10k/QCA9984/hw1.0/firmware-5.bin               | Bin 622060 -> 647380 bytes
- 12 files changed, 20 insertions(+), 23 deletions(-)
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+b24gOTk4NCBpIHNlZSB0aGVzZSBtZXNzYWdlcyB3aXRoIHRoaXMgZmlybXdhcmUgZnJvbSB0aW1l
+IHRvIHRpbWUKClsyNzI5NzIuOTUwNzg4XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogVW5rbm93
+biBldmVudGlkOiAzNjkyNQpbMjcyOTgyLjg2ODkyMl0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6
+IFVua25vd24gZXZlbnRpZDogMzY5MjUKWzMzNTU1MC4xMjM3ODBdIGF0aDEwa19wY2kgMDAwMDow
+MTowMC4wOiBVbmtub3duIGV2ZW50aWQ6IDM2OTI1ClszMzU1NTAuMTU2MzMyXSBhdGgxMGtfcGNp
+IDAwMDA6MDE6MDAuMDogVW5rbm93biBldmVudGlkOiAzNjkyNQpbMzM1NTUwLjE1ODgxM10gYXRo
+MTBrX3BjaSAwMDAwOjAxOjAwLjA6IFVua25vd24gZXZlbnRpZDogMzY5MjUKWzMzNTU1MC4xOTMx
+NDRdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBVbmtub3duIGV2ZW50aWQ6IDM2OTI1ClszNjUx
+NTcuODY5NTQwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogVW5rbm93biBldmVudGlkOiAzNjky
+NQpbMzY1MTU3LjkwMjQ1Ml0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IFVua25vd24gZXZlbnRp
+ZDogMzY5MjUKCgphY2NvcmRpbmcgdG8gdGhlIFdNSSBoZWFkZXIgdGhpcyBtYXliZSBhIGNyaXRp
+Y2FsIGludGVybmFsIGVycm9yCgpBbSAyMi4wMi4yMDE4IHVtIDExOjQ0IHNjaHJpZWIgS2FsbGUg
+VmFsbzoKPiBIaSBsaW51eC1maXJtd2FyZSBtYWludGFpbmVycywKPgo+IGhlcmUncyBhIHB1bGwg
+cmVxdWVzdCBmb3IgdXBkYXRpbmcgYXRoMTBrIGZpcm13YXJlcy4gRWFybGllciBJIGhhdmUgYmVl
+bgo+IHN1Ym1pdHRpbmcgdGhlc2UgYXMgcGF0Y2hlcyBidXQgYXMgdGhlIHBhdGNoZXMgZ290IHBy
+ZXR0eSBiaWcgSSBkZWNpZGVkCj4gdG8gdHJ5IHVzaW5nIHB1bGwgcmVxdWVzdHMgaW5zdGVhZC4K
+Pgo+IFBsZWFzZSBsZXQgbWUga25vdyBpZiB0aGVyZSBhcmUgYW55IHByb2JsZW1zLgo+Cj4gS2Fs
+bGUKPgo+IFRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgNmQ1MTMxMTA3ZjJiYTY3
+YTEzZjQ2OWFjNzcwYTU1ZjEwMWJhNjU0ZDoKPgo+ICAgIHJ0bF9idDogQWRkIGZpcm13YXJlIGFu
+ZCBjb25maWd1cmF0aW9uIGZpbGVzIGZvciB0aGUgQmx1ZXRvb3RoIHBhcnRzIG9mIFJUTDg4MjFD
+IGFuZCBSVEw4NzIzRCAoMjAxOC0wMi0xMyAxMzowOToxOSAtMDUwMCkKPgo+IGFyZSBhdmFpbGFi
+bGUgaW4gdGhlIGdpdCByZXBvc2l0b3J5IGF0Ogo+Cj4gICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcv
+cHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2t2YWxvL2xpbnV4LWZpcm13YXJlLmdpdCBhdGgxMGst
+MjAxODAyMTkKPgo+IGZvciB5b3UgdG8gZmV0Y2ggY2hhbmdlcyB1cCB0byA5YjNkMDE2ODg2YThl
+MzY1Zjk0OTNhNzI0YmYyOTQ1Yjk3YmNmZTQzOgo+Cj4gICAgYXRoMTBrOiBRQ0E5OTg0IGh3MS4w
+OiB1cGRhdGUgZmlybXdhcmUtNS5iaW4gdG8gMTAuNC0zLjUuMy0wMDA1MyAoMjAxOC0wMi0xOSAx
+MjowMzozNiArMDIwMCkKPgo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBLYWxsZSBWYWxvICg5KToKPiAgICAgICAgYXRo
+MTBrOiBRQ0E0MDE5IGh3MS4wOiB1cGRhdGUgZmlybXdhcmUtNS5iaW4gdG8gMTAuNC0zLjUuMy0w
+MDA1Mwo+ICAgICAgICBhdGgxMGs6IFFDQTQwMTkgaHcxLjA6IHVwZGF0ZSBib2FyZC0yLmJpbgo+
+ICAgICAgICBhdGgxMGs6IFFDQTYxNzQgaHczLjA6IHVwZGF0ZSBmaXJtd2FyZS02LmJpbiB0byBX
+TEFOLlJNLjQuNC4xLTAwMDc5LVFDQVJNU1dQWi0xCj4gICAgICAgIGF0aDEwazogUUNBNjE3NCBo
+dzMuMDogdXBkYXRlIGJvYXJkLTIuYmluCj4gICAgICAgIGF0aDEwazogUUNBOTM3NyBodzEuMDog
+dXBkYXRlIGZpcm13YXJlLTUuYmluIHRvIFdMQU4uVEYuMS4wLTAwMDAyLVFDQVRGU1dQWi01Cj4g
+ICAgICAgIGF0aDEwazogUUNBOTg4NyBodzEuMDogdXBkYXRlIGZpcm13YXJlLTUuYmluIHRvIDEw
+LjIuNC0xLjAtMDAwMzcKPiAgICAgICAgYXRoMTBrOiBRQ0E5ODg4IGh3Mi4wOiB1cGRhdGUgZmly
+bXdhcmUtNS5iaW4gdG8gMTAuNC0zLjUuMy0wMDA1Mwo+ICAgICAgICBhdGgxMGs6IFFDQTk4OFgg
+aHcyLjA6IHVwZGF0ZSBmaXJtd2FyZS01LmJpbiB0byAxMC4yLjQtMS4wLTAwMDM3Cj4gICAgICAg
+IGF0aDEwazogUUNBOTk4NCBodzEuMDogdXBkYXRlIGZpcm13YXJlLTUuYmluIHRvIDEwLjQtMy41
+LjMtMDAwNTMKPgo+ICAgV0hFTkNFICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICB8ICAxNCArKysrKystLS0tLS0KPiAgIGF0aDEway9RQ0E0MDE5L2h3MS4wL2JvYXJk
+LTIuYmluICAgICAgICAgICAgICAgICAgfCBCaW4gMTA5MTcyIC0+IDEzMzQ1MiBieXRlcwo+ICAg
+YXRoMTBrL1FDQTQwMTkvaHcxLjAvZmlybXdhcmUtNS5iaW4gICAgICAgICAgICAgICB8IEJpbiA1
+MzU0MTIgLT4gNTY4NjM2IGJ5dGVzCj4gICBhdGgxMGsvUUNBNjE3NC9odzMuMC9ib2FyZC0yLmJp
+biAgICAgICAgICAgICAgICAgIHwgQmluIDUwMTc0OCAtPiA1NTExMjggYnl0ZXMKPiAgIGF0aDEw
+ay9RQ0E2MTc0L2h3My4wL2Zpcm13YXJlLTYuYmluICAgICAgICAgICAgICAgfCBCaW4gNzI3Nzc2
+IC0+IDczMDc4OCBieXRlcwo+ICAgYXRoMTBrL1FDQTkzNzcvaHcxLjAvZmlybXdhcmUtNS5iaW4g
+ICAgICAgICAgICAgICB8IEJpbiA2MDU5MDggLT4gNzgzMzM2IGJ5dGVzCj4gICBhdGgxMGsvUUNB
+OTM3Ny9odzEuMC9ub3RpY2VfYXRoMTBrX2Zpcm13YXJlLTUudHh0IHwgICA0ICsrLS0KPiAgIGF0
+aDEway9RQ0E5ODg3L2h3MS4wL2Zpcm13YXJlLTUuYmluICAgICAgICAgICAgICAgfCBCaW4gMjM1
+ODgwIC0+IDIzNzU4NCBieXRlcwo+ICAgYXRoMTBrL1FDQTk4ODgvaHcyLjAvZmlybXdhcmUtNS5i
+aW4gICAgICAgICAgICAgICB8IEJpbiA2NDc0NjAgLT4gNjU5NzA4IGJ5dGVzCj4gICBhdGgxMGsv
+UUNBOTg4WC9odzIuMC9maXJtd2FyZS01LmJpbiAgICAgICAgICAgICAgIHwgQmluIDI0ODE4OCAt
+PiAyNDgxMDggYnl0ZXMKPiAgIGF0aDEway9RQ0E5ODhYL2h3Mi4wL25vdGljZV9hdGgxMGtfZmly
+bXdhcmUtNS50eHQgfCAgMjUgKysrKysrKysrKy0tLS0tLS0tLS0tLQo+ICAgYXRoMTBrL1FDQTk5
+ODQvaHcxLjAvZmlybXdhcmUtNS5iaW4gICAgICAgICAgICAgICB8IEJpbiA2MjIwNjAgLT4gNjQ3
+MzgwIGJ5dGVzCj4gICAxMiBmaWxlcyBjaGFuZ2VkLCAyMCBpbnNlcnRpb25zKCspLCAyMyBkZWxl
+dGlvbnMoLSkKCgotLSAKTWl0IGZyZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFz
+dGlhbiBHb3R0c2NoYWxsIC8gQ1RPCgpOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5z
+aXR6OiAgU3R1YmVud2FsZGFsbGVlIDIxYSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0
+OiBBbXRzZ2VyaWNodCBEYXJtc3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0
+ZXIgU3RlaW5ow6R1c2VyLCBDaHJpc3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20K
+ZW1haWw6IHMuZ290dHNjaGFsbEBkZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4
+OiArNDk2MjUxLTU4MjY1NjUKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
