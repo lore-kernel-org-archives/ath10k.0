@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eokNF-0008Og-VV
- for ath10k@lists.infradead.org; Thu, 22 Feb 2018 06:28:59 +0000
-Date: Thu, 22 Feb 2018 14:28:29 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH] ath10k: debugfs support to get final TPC stats for 10.4
- variants
-Message-ID: <201802221335.IYmLJSh2%fengguang.wu@intel.com>
-References: <1519220139-10423-1-git-send-email-mkenna@codeaurora.org>
+ id 1eooMm-0002S4-Fn
+ for ath10k@lists.infradead.org; Thu, 22 Feb 2018 10:45:23 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: [PULL] ath10k firmware 20180219
+Date: Thu, 22 Feb 2018 10:44:28 +0000
+Message-ID: <87y3jlxq0k.fsf@kamboji.qca.qualcomm.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1519220139-10423-1-git-send-email-mkenna@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +21,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: mkenna@codeaurora.org
-Cc: linux-wireless@vger.kernel.org, kbuild-all@01.org, ath10k@lists.infradead.org
+To: "linux-firmware@kernel.org" <linux-firmware@kernel.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi Maharaja,
+Hi linux-firmware maintainers,
 
-Thank you for the patch! Perhaps something to improve:
+here's a pull request for updating ath10k firmwares. Earlier I have been
+submitting these as patches but as the patches got pretty big I decided
+to try using pull requests instead.
 
-[auto build test WARNING on ath6kl/ath-next]
-[also build test WARNING on v4.16-rc2 next-20180221]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+Please let me know if there are any problems.
 
-url:    https://github.com/0day-ci/linux/commits/mkenna-codeaurora-org/ath10k-debugfs-support-to-get-final-TPC-stats-for-10-4-variants/20180222-110854
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git ath-next
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+Kalle
 
+The following changes since commit 6d5131107f2ba67a13f469ac770a55f101ba654d:
 
-sparse warnings: (new ones prefixed by >>)
+  rtl_bt: Add firmware and configuration files for the Bluetooth parts of RTL8821C and RTL8723D (2018-02-13 13:09:19 -0500)
 
->> drivers/net/wireless/ath/ath10k/wmi.c:4322:6: sparse: symbol 'ath10k_wmi_tpc_config_get_rate_code' was not declared. Should it be
->> drivers/net/wireless/ath/ath10k/wmi.c:4660:6: sparse: symbol 'ath10k_wmi_event_tpc_final_table' was not declared. Should it be
-   drivers/net/wireless/ath/ath10k/wmi.c:738:10: sparse: Initializer entry defined twice
-   drivers/net/wireless/ath/ath10k/wmi.c:744:10: also defined here
+are available in the git repository at:
 
-Please review and possibly fold the followup patch.
+  git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20180219
 
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+for you to fetch changes up to 9b3d016886a8e365f9493a724bf2945b97bcfe43:
 
+  ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.5.3-00053 (2018-02-19 12:03:36 +0200)
+
+----------------------------------------------------------------
+Kalle Valo (9):
+      ath10k: QCA4019 hw1.0: update firmware-5.bin to 10.4-3.5.3-00053
+      ath10k: QCA4019 hw1.0: update board-2.bin
+      ath10k: QCA6174 hw3.0: update firmware-6.bin to WLAN.RM.4.4.1-00079-QCARMSWPZ-1
+      ath10k: QCA6174 hw3.0: update board-2.bin
+      ath10k: QCA9377 hw1.0: update firmware-5.bin to WLAN.TF.1.0-00002-QCATFSWPZ-5
+      ath10k: QCA9887 hw1.0: update firmware-5.bin to 10.2.4-1.0-00037
+      ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.5.3-00053
+      ath10k: QCA988X hw2.0: update firmware-5.bin to 10.2.4-1.0-00037
+      ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.5.3-00053
+
+ WHENCE                                            |  14 ++++++------
+ ath10k/QCA4019/hw1.0/board-2.bin                  | Bin 109172 -> 133452 bytes
+ ath10k/QCA4019/hw1.0/firmware-5.bin               | Bin 535412 -> 568636 bytes
+ ath10k/QCA6174/hw3.0/board-2.bin                  | Bin 501748 -> 551128 bytes
+ ath10k/QCA6174/hw3.0/firmware-6.bin               | Bin 727776 -> 730788 bytes
+ ath10k/QCA9377/hw1.0/firmware-5.bin               | Bin 605908 -> 783336 bytes
+ ath10k/QCA9377/hw1.0/notice_ath10k_firmware-5.txt |   4 ++--
+ ath10k/QCA9887/hw1.0/firmware-5.bin               | Bin 235880 -> 237584 bytes
+ ath10k/QCA9888/hw2.0/firmware-5.bin               | Bin 647460 -> 659708 bytes
+ ath10k/QCA988X/hw2.0/firmware-5.bin               | Bin 248188 -> 248108 bytes
+ ath10k/QCA988X/hw2.0/notice_ath10k_firmware-5.txt |  25 ++++++++++------------
+ ath10k/QCA9984/hw1.0/firmware-5.bin               | Bin 622060 -> 647380 bytes
+ 12 files changed, 20 insertions(+), 23 deletions(-)
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
