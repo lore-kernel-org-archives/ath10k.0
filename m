@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eopJK-0002Tt-IJ
- for ath10k@lists.infradead.org; Thu, 22 Feb 2018 11:45:40 +0000
-Received: from mail-qt0-f172.google.com (mail-qt0-f172.google.com
- [209.85.216.172])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4BB7F217A4
- for <ath10k@lists.infradead.org>; Thu, 22 Feb 2018 11:45:03 +0000 (UTC)
-Received: by mail-qt0-f172.google.com with SMTP id c19so5877926qtm.7
- for <ath10k@lists.infradead.org>; Thu, 22 Feb 2018 03:45:03 -0800 (PST)
+ id 1eozBr-0005Yu-5E
+ for ath10k@lists.infradead.org; Thu, 22 Feb 2018 22:18:12 +0000
+Received: by mail-wr0-x242.google.com with SMTP id 34so12138180wre.13
+ for <ath10k@lists.infradead.org>; Thu, 22 Feb 2018 14:18:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87y3jlxq0k.fsf@kamboji.qca.qualcomm.com>
-References: <87y3jlxq0k.fsf@kamboji.qca.qualcomm.com>
-From: Josh Boyer <jwboyer@kernel.org>
-Date: Thu, 22 Feb 2018 06:45:01 -0500
-Message-ID: <CA+5PVA7uMEHHuDWxM+HWAnOOt=nHU-meLKJ-Zv+N6ywVnLmDpQ@mail.gmail.com>
-Subject: Re: [PULL] ath10k firmware 20180219
+In-Reply-To: <20180222111534.31047-1-s.gottschall@dd-wrt.com>
+References: <20180222111534.31047-1-s.gottschall@dd-wrt.com>
+From: Steve deRosier <derosier@gmail.com>
+Date: Thu, 22 Feb 2018 14:17:58 -0800
+Message-ID: <CALLGbRKimHh39DhnJP+mxB3=fkOzPDkXzbGrdJenLOgZUYCcCg@mail.gmail.com>
+Subject: Re: [PATCH v9] ath10k: add LED and GPIO controlling support for
+ various chipsets
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,62 +25,90 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "linux-firmware@kernel.org" <linux-firmware@kernel.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-On Thu, Feb 22, 2018 at 5:44 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Hi linux-firmware maintainers,
+On Thu, Feb 22, 2018 at 3:15 AM,  <s.gottschall@dd-wrt.com> wrote:
+> From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
 >
-> here's a pull request for updating ath10k firmwares. Earlier I have been
-> submitting these as patches but as the patches got pretty big I decided
-> to try using pull requests instead.
+> Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984 based chipsets with on chipset connected led's
+> using WMI Firmware API.
+> The LED device will get available named as "ath10k-phyX" at sysfs and can be controlled with various triggers.
+> adds also debugfs interface for gpio control.
+>
+> Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+>
+> v2  add correct gpio count per chipset and remove IPQ4019 support since this chipset does not make use of specific gpios)
+> v5  fix compiling without LED_CLASS and GPIOLIB support, fix also error by kbuild test robot which does not occur in standard builds. curious
+> v6  correct return values and fix comment style
+> v7  fix ath10k_unregister_led for compiling without LED_CLASS
+> v8  fix various code design issues reported by reviewers
+> v9  move led and led code to separate sourcefile (gpio.c)
+> ---
+>  drivers/net/wireless/ath/ath10k/Kconfig   |   3 +
+>  drivers/net/wireless/ath/ath10k/Makefile  |   1 +
+>  drivers/net/wireless/ath/ath10k/core.c    |  28 ++++-
+>  drivers/net/wireless/ath/ath10k/core.h    |  33 ++++-
+>  drivers/net/wireless/ath/ath10k/debug.c   | 142 ++++++++++++++++++++++
+>  drivers/net/wireless/ath/ath10k/gpio.c    | 196 ++++++++++++++++++++++++++++++
+>  drivers/net/wireless/ath/ath10k/hw.h      |   2 +
+>  drivers/net/wireless/ath/ath10k/mac.c     |   5 +
+>  drivers/net/wireless/ath/ath10k/wmi-ops.h |  36 +++++-
+>  drivers/net/wireless/ath/ath10k/wmi-tlv.c |  65 ++++++++++
+>  drivers/net/wireless/ath/ath10k/wmi.c     |  46 +++++++
+>  drivers/net/wireless/ath/ath10k/wmi.h     |  36 ++++++
+>  12 files changed, 590 insertions(+), 3 deletions(-)
+>  create mode 100644 drivers/net/wireless/ath/ath10k/gpio.c
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
+> index deb5ae21a559..c46b7658a820 100644
+> --- a/drivers/net/wireless/ath/ath10k/Kconfig
+> +++ b/drivers/net/wireless/ath/ath10k/Kconfig
+> @@ -2,6 +2,9 @@ config ATH10K
+>          tristate "Atheros 802.11ac wireless cards support"
+>          depends on MAC80211 && HAS_DMA
+>         select ATH_COMMON
+> +        select MAC80211_LEDS
+> +        select LEDS_CLASS
+> +        select NEW_LEDS
+>         select CRC32
+>         select WANT_DEV_COREDUMP
+>          ---help---
 
-Pull requests are easier to work with as well, so thanks.  Merged and
-pushed out.
+Pure question: do we require LEDS, or is this an option? I assumed all
+along it was an optional thing - ie if GPIOs and/or LEDs were
+configured, we added this code. And if not optional, then what happens
+if we are on a platform that can't support LEDS_CLASS or NEW_LEDS,
+assuming there is such a thing?
 
-josh
 
-> Please let me know if there are any problems.
+> diff --git a/drivers/net/wireless/ath/ath10k/Makefile b/drivers/net/wireless/ath/ath10k/Makefile
+> index 6739ac26fd29..bcb234f0b940 100644
+> --- a/drivers/net/wireless/ath/ath10k/Makefile
+> +++ b/drivers/net/wireless/ath/ath10k/Makefile
+> @@ -20,6 +20,7 @@ ath10k_core-$(CONFIG_NL80211_TESTMODE) += testmode.o
+>  ath10k_core-$(CONFIG_ATH10K_TRACING) += trace.o
+>  ath10k_core-$(CONFIG_THERMAL) += thermal.o
+>  ath10k_core-$(CONFIG_MAC80211_DEBUGFS) += debugfs_sta.o
+> +ath10k_core-y += gpio.o
+>  ath10k_core-$(CONFIG_PM) += wow.o
+>  ath10k_core-$(CONFIG_DEV_COREDUMP) += coredump.o
 >
-> Kalle
->
-> The following changes since commit 6d5131107f2ba67a13f469ac770a55f101ba654d:
->
->   rtl_bt: Add firmware and configuration files for the Bluetooth parts of RTL8821C and RTL8723D (2018-02-13 13:09:19 -0500)
->
-> are available in the git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/linux-firmware.git ath10k-20180219
->
-> for you to fetch changes up to 9b3d016886a8e365f9493a724bf2945b97bcfe43:
->
->   ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.5.3-00053 (2018-02-19 12:03:36 +0200)
->
-> ----------------------------------------------------------------
-> Kalle Valo (9):
->       ath10k: QCA4019 hw1.0: update firmware-5.bin to 10.4-3.5.3-00053
->       ath10k: QCA4019 hw1.0: update board-2.bin
->       ath10k: QCA6174 hw3.0: update firmware-6.bin to WLAN.RM.4.4.1-00079-QCARMSWPZ-1
->       ath10k: QCA6174 hw3.0: update board-2.bin
->       ath10k: QCA9377 hw1.0: update firmware-5.bin to WLAN.TF.1.0-00002-QCATFSWPZ-5
->       ath10k: QCA9887 hw1.0: update firmware-5.bin to 10.2.4-1.0-00037
->       ath10k: QCA9888 hw2.0: update firmware-5.bin to 10.4-3.5.3-00053
->       ath10k: QCA988X hw2.0: update firmware-5.bin to 10.2.4-1.0-00037
->       ath10k: QCA9984 hw1.0: update firmware-5.bin to 10.4-3.5.3-00053
->
->  WHENCE                                            |  14 ++++++------
->  ath10k/QCA4019/hw1.0/board-2.bin                  | Bin 109172 -> 133452 bytes
->  ath10k/QCA4019/hw1.0/firmware-5.bin               | Bin 535412 -> 568636 bytes
->  ath10k/QCA6174/hw3.0/board-2.bin                  | Bin 501748 -> 551128 bytes
->  ath10k/QCA6174/hw3.0/firmware-6.bin               | Bin 727776 -> 730788 bytes
->  ath10k/QCA9377/hw1.0/firmware-5.bin               | Bin 605908 -> 783336 bytes
->  ath10k/QCA9377/hw1.0/notice_ath10k_firmware-5.txt |   4 ++--
->  ath10k/QCA9887/hw1.0/firmware-5.bin               | Bin 235880 -> 237584 bytes
->  ath10k/QCA9888/hw2.0/firmware-5.bin               | Bin 647460 -> 659708 bytes
->  ath10k/QCA988X/hw2.0/firmware-5.bin               | Bin 248188 -> 248108 bytes
->  ath10k/QCA988X/hw2.0/notice_ath10k_firmware-5.txt |  25 ++++++++++------------
->  ath10k/QCA9984/hw1.0/firmware-5.bin               | Bin 622060 -> 647380 bytes
->  12 files changed, 20 insertions(+), 23 deletions(-)
+
+I'd expect it would be something like `ath10k_core-$(CONFIG_GPIO) +=
+gpoi.o`.  Maybe I'm mistaken.
+(Note, I didn't look up the actual config option name, I'm guessing.
+Assume I wrote something reasonable for my example.)
+
+I only ask the above two questions, not because I think it's wrong,
+but because I don't quite know the intention and it makes me wonder.
+
+Other than those questions, which are optional as the code looks
+correct to me, the rest of it looks fine to me.
+
+Reviewed-by: Steve deRosier <derosier@cal-sierra.com>
+
+- Steve
 
 _______________________________________________
 ath10k mailing list
