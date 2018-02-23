@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ep2nd-0004gp-8o
- for ath10k@lists.infradead.org; Fri, 23 Feb 2018 02:09:27 +0000
-Subject: Re: [PATCH v9] ath10k: add LED and GPIO controlling support for
- various chipsets
+ id 1ep3uB-0005bk-PR
+ for ath10k@lists.infradead.org; Fri, 23 Feb 2018 03:20:17 +0000
+Received: by mail-wr0-x244.google.com with SMTP id s5so12661131wra.0
+ for <ath10k@lists.infradead.org>; Thu, 22 Feb 2018 19:20:05 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <8e2dae09-e8fa-b995-bd62-0f2e1533894d@dd-wrt.com>
 References: <20180222111534.31047-1-s.gottschall@dd-wrt.com>
  <CALLGbRKimHh39DhnJP+mxB3=fkOzPDkXzbGrdJenLOgZUYCcCg@mail.gmail.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <8e2dae09-e8fa-b995-bd62-0f2e1533894d@dd-wrt.com>
-Date: Fri, 23 Feb 2018 03:09:08 +0100
-MIME-Version: 1.0
-In-Reply-To: <CALLGbRKimHh39DhnJP+mxB3=fkOzPDkXzbGrdJenLOgZUYCcCg@mail.gmail.com>
+ <8e2dae09-e8fa-b995-bd62-0f2e1533894d@dd-wrt.com>
+From: Steve deRosier <derosier@gmail.com>
+Date: Thu, 22 Feb 2018 19:20:03 -0800
+Message-ID: <CALLGbRL2FRE6QYhKo=spoWM2SHDvwCgyGf=mZ=JHbt8an84Jaw@mail.gmail.com>
+Subject: Re: [PATCH v9] ath10k: add LED and GPIO controlling support for
+ various chipsets
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,113 +23,152 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Steve deRosier <derosier@gmail.com>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-QW0gMjIuMDIuMjAxOCB1bSAyMzoxNyBzY2hyaWViIFN0ZXZlIGRlUm9zaWVyOgo+IE9uIFRodSwg
-RmViIDIyLCAyMDE4IGF0IDM6MTUgQU0sICA8cy5nb3R0c2NoYWxsQGRkLXdydC5jb20+IHdyb3Rl
-Ogo+PiBGcm9tOiBTZWJhc3RpYW4gR290dHNjaGFsbCA8cy5nb3R0c2NoYWxsQG5ld21lZGlhLW5l
-dC5kZT4KPj4KPj4gQWRkcyBMRUQgYW5kIEdQSU8gQ29udHJvbCBzdXBwb3J0IGZvciA5ODh4LCA5
-ODg3LCA5ODg4LCA5OXgwLCA5OTg0IGJhc2VkIGNoaXBzZXRzIHdpdGggb24gY2hpcHNldCBjb25u
-ZWN0ZWQgbGVkJ3MKPj4gdXNpbmcgV01JIEZpcm13YXJlIEFQSS4KPj4gVGhlIExFRCBkZXZpY2Ug
-d2lsbCBnZXQgYXZhaWxhYmxlIG5hbWVkIGFzICJhdGgxMGstcGh5WCIgYXQgc3lzZnMgYW5kIGNh
-biBiZSBjb250cm9sbGVkIHdpdGggdmFyaW91cyB0cmlnZ2Vycy4KPj4gYWRkcyBhbHNvIGRlYnVn
-ZnMgaW50ZXJmYWNlIGZvciBncGlvIGNvbnRyb2wuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IFNlYmFz
-dGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4KPj4KPj4gdjIgIGFkZCBj
-b3JyZWN0IGdwaW8gY291bnQgcGVyIGNoaXBzZXQgYW5kIHJlbW92ZSBJUFE0MDE5IHN1cHBvcnQg
-c2luY2UgdGhpcyBjaGlwc2V0IGRvZXMgbm90IG1ha2UgdXNlIG9mIHNwZWNpZmljIGdwaW9zKQo+
-PiB2NSAgZml4IGNvbXBpbGluZyB3aXRob3V0IExFRF9DTEFTUyBhbmQgR1BJT0xJQiBzdXBwb3J0
-LCBmaXggYWxzbyBlcnJvciBieSBrYnVpbGQgdGVzdCByb2JvdCB3aGljaCBkb2VzIG5vdCBvY2N1
-ciBpbiBzdGFuZGFyZCBidWlsZHMuIGN1cmlvdXMKPj4gdjYgIGNvcnJlY3QgcmV0dXJuIHZhbHVl
-cyBhbmQgZml4IGNvbW1lbnQgc3R5bGUKPj4gdjcgIGZpeCBhdGgxMGtfdW5yZWdpc3Rlcl9sZWQg
-Zm9yIGNvbXBpbGluZyB3aXRob3V0IExFRF9DTEFTUwo+PiB2OCAgZml4IHZhcmlvdXMgY29kZSBk
-ZXNpZ24gaXNzdWVzIHJlcG9ydGVkIGJ5IHJldmlld2Vycwo+PiB2OSAgbW92ZSBsZWQgYW5kIGxl
-ZCBjb2RlIHRvIHNlcGFyYXRlIHNvdXJjZWZpbGUgKGdwaW8uYykKPj4gLS0tCj4+ICAgZHJpdmVy
-cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9LY29uZmlnICAgfCAgIDMgKwo+PiAgIGRyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvTWFrZWZpbGUgIHwgICAxICsKPj4gICBkcml2ZXJzL25l
-dC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYyAgICB8ICAyOCArKysrLQo+PiAgIGRyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oICAgIHwgIDMzICsrKystCj4+ICAgZHJpdmVy
-cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jICAgfCAxNDIgKysrKysrKysrKysrKysr
-KysrKysrKwo+PiAgIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZ3Bpby5jICAgIHwg
-MTk2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+PiAgIGRyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvaHcuaCAgICAgIHwgICAyICsKPj4gICBkcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL21hYy5jICAgICB8ICAgNSArCj4+ICAgZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway93bWktb3BzLmggfCAgMzYgKysrKystCj4+ICAgZHJpdmVycy9uZXQvd2lyZWxl
-c3MvYXRoL2F0aDEway93bWktdGx2LmMgfCAgNjUgKysrKysrKysrKwo+PiAgIGRyaXZlcnMvbmV0
-L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMgICAgIHwgIDQ2ICsrKysrKysKPj4gICBkcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oICAgICB8ICAzNiArKysrKysKPj4gICAxMiBm
-aWxlcyBjaGFuZ2VkLCA1OTAgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPj4gICBjcmVh
-dGUgbW9kZSAxMDA2NDQgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ncGlvLmMKPj4K
-Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvS2NvbmZpZyBi
-L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvS2NvbmZpZwo+PiBpbmRleCBkZWI1YWUy
-MWE1NTkuLmM0NmI3NjU4YTgyMCAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway9LY29uZmlnCj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
-MGsvS2NvbmZpZwo+PiBAQCAtMiw2ICsyLDkgQEAgY29uZmlnIEFUSDEwSwo+PiAgICAgICAgICAg
-dHJpc3RhdGUgIkF0aGVyb3MgODAyLjExYWMgd2lyZWxlc3MgY2FyZHMgc3VwcG9ydCIKPj4gICAg
-ICAgICAgIGRlcGVuZHMgb24gTUFDODAyMTEgJiYgSEFTX0RNQQo+PiAgICAgICAgICBzZWxlY3Qg
-QVRIX0NPTU1PTgo+PiArICAgICAgICBzZWxlY3QgTUFDODAyMTFfTEVEUwo+PiArICAgICAgICBz
-ZWxlY3QgTEVEU19DTEFTUwo+PiArICAgICAgICBzZWxlY3QgTkVXX0xFRFMKPj4gICAgICAgICAg
-c2VsZWN0IENSQzMyCj4+ICAgICAgICAgIHNlbGVjdCBXQU5UX0RFVl9DT1JFRFVNUAo+PiAgICAg
-ICAgICAgLS0taGVscC0tLQo+IFB1cmUgcXVlc3Rpb246IGRvIHdlIHJlcXVpcmUgTEVEUywgb3Ig
-aXMgdGhpcyBhbiBvcHRpb24/IEkgYXNzdW1lZCBhbGwKPiBhbG9uZyBpdCB3YXMgYW4gb3B0aW9u
-YWwgdGhpbmcgLSBpZSBpZiBHUElPcyBhbmQvb3IgTEVEcyB3ZXJlCj4gY29uZmlndXJlZCwgd2Ug
-YWRkZWQgdGhpcyBjb2RlLiBBbmQgaWYgbm90IG9wdGlvbmFsLCB0aGVuIHdoYXQgaGFwcGVucwo+
-IGlmIHdlIGFyZSBvbiBhIHBsYXRmb3JtIHRoYXQgY2FuJ3Qgc3VwcG9ydCBMRURTX0NMQVNTIG9y
-IE5FV19MRURTLAo+IGFzc3VtaW5nIHRoZXJlIGlzIHN1Y2ggYSB0aGluZz8KaSB0b29rIHRoaXMg
-YmVoYXZpb3VyIGZyb20gYXRoOWsvYXRoNWssIGJvdGggZHJpdmVyIGF1dG8gc2VsZWN0IApNQUM4
-MDIxMV9MRURTIGFuZCBMRURTX0NMQVNTIChieSB0aGUgd2F5IE1BQzgwMjExX0xFRFMgYXV0byBz
-ZWxlY3RzIApMRURTX0NMQVNTIHRvbykuwqAgb25seSBjaGlwc2V0cyB3aGljaCBhcmUga25vd24g
-dG8gaGF2ZSBwcmVjb25maWd1cmVkIApsZWRzIGFyZSB1c2VkCmFuZCBsZWQgd2lsbCBvbmx5IHR1
-cm4gb24gaWYgeW91IGVuYWJsZSBpdCBpbiBzeXNmcyBieSBhc3NpZ25pbmcgYSAKdHJpZ2dlciB0
-byB0aGUgbGVkLgpmb3Igc3VyZSB0aGlzIGNhbiBiZSByZW1vdmVkIGZyb20gdGhlIEtjb25maWcu
-IGl0IHdpbGwgY29tcGlsZSB3aXRob3V0IAppdCBhcyB3ZWxsLiBzbyB0aGlzIGlzIG9wdGlvbmFs
-LiBpIGp1c3QgYWRkZWQgaXQgc2luY2UgYWxsIG90aGVyIGRyaXZlcnMgCmJlaGF2ZSBpbiB0aGUg
-c2FtZSB3YXkuCmluIGFkZGl0aW9uLiBMRURTX0NMQVNTwqAgLyBORVdfTEVEUyBpcyBhIGtlcm5l
-bCBhcGksIG5vdCBhIGRyaXZlci4gc28gCmFsbCBwbGF0Zm9ybXMgdG8gc3VwcG9ydCBMRURTX0NM
-QVNTLiBqdXN0IGVuYWJsaW5nIExFRFNfQ0xBU1Mgd2lsbCBub3QgCmNhdXNlIGFueSBwbGF0Zm9y
-bSBzcGVjaWZpYyBkZXBlbmRlbmN5Lgo+Cj4KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dp
-cmVsZXNzL2F0aC9hdGgxMGsvTWFrZWZpbGUgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
-MTBrL01ha2VmaWxlCj4+IGluZGV4IDY3MzlhYzI2ZmQyOS4uYmNiMjM0ZjBiOTQwIDEwMDY0NAo+
-PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL01ha2VmaWxlCj4+ICsrKyBi
-L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvTWFrZWZpbGUKPj4gQEAgLTIwLDYgKzIw
-LDcgQEAgYXRoMTBrX2NvcmUtJChDT05GSUdfTkw4MDIxMV9URVNUTU9ERSkgKz0gdGVzdG1vZGUu
-bwo+PiAgIGF0aDEwa19jb3JlLSQoQ09ORklHX0FUSDEwS19UUkFDSU5HKSArPSB0cmFjZS5vCj4+
-ICAgYXRoMTBrX2NvcmUtJChDT05GSUdfVEhFUk1BTCkgKz0gdGhlcm1hbC5vCj4+ICAgYXRoMTBr
-X2NvcmUtJChDT05GSUdfTUFDODAyMTFfREVCVUdGUykgKz0gZGVidWdmc19zdGEubwo+PiArYXRo
-MTBrX2NvcmUteSArPSBncGlvLm8KPj4gICBhdGgxMGtfY29yZS0kKENPTkZJR19QTSkgKz0gd293
-Lm8KPj4gICBhdGgxMGtfY29yZS0kKENPTkZJR19ERVZfQ09SRURVTVApICs9IGNvcmVkdW1wLm8K
-Pj4KPiBJJ2QgZXhwZWN0IGl0IHdvdWxkIGJlIHNvbWV0aGluZyBsaWtlIGBhdGgxMGtfY29yZS0k
-KENPTkZJR19HUElPKSArPQo+IGdwb2kub2AuICBNYXliZSBJJ20gbWlzdGFrZW4uCmdwaW8uYyBj
-b250YWlucyB0aGUgTUFDODAyMTFfTEVEUyBjb2RlIGFuZCBoYXMgYSBndWFyZCBmb3IgR1BJT0xJ
-QiAKaW5zaWRlLiBpdCBjYW4gYmUgY29tcGlsZWQgZXZlbiBpZiBHUElPTElCIGlzIGRpc2FibGVk
-IGluIHN5c3RlbS4gKHdoaWNoIAppcyBpbmRlZWQgcGxhdGZvcm0gc3BlY2lmaWMpCmFuZCBsZWRz
-IGFyZSBzdGlsbCBzdXBwb3J0ZWQgd2l0aG91dCBncGlvIHN1cHBvcnQgc2luY2UgaXQgZG9lcyBj
-b250YWluIAphIGxlZCBvbmx5IGRyaXZlciBhbmQgYSBzZXBhcmF0ZSBncGlvIGRyaXZlci4KaSBz
-dWdnZXN0IG1vcmUgc29tZWxpa2UgbGlrZQoKYXRoMTBrX2NvcmUtJChBVEgxMEtfTEVEUykgKz0g
-Z3Bpby5vCgppZiB5b3Ugd2FudCBpdCB0b3RhbGx5IG9wdGlvbmFsIHdoaWNoIHJlcXVpcmVzIHNv
-bWUgb3RoZXIgc21hbGwgY2hhbmdlcyBhcyB3ZWxsIChtYWlubHkgcmVuYW1pbmcgc29tZSBpZmRl
-ZnMpCgo+IChOb3RlLCBJIGRpZG4ndCBsb29rIHVwIHRoZSBhY3R1YWwgY29uZmlnIG9wdGlvbiBu
-YW1lLCBJJ20gZ3Vlc3NpbmcuCj4gQXNzdW1lIEkgd3JvdGUgc29tZXRoaW5nIHJlYXNvbmFibGUg
-Zm9yIG15IGV4YW1wbGUuKQo+Cj4gSSBvbmx5IGFzayB0aGUgYWJvdmUgdHdvIHF1ZXN0aW9ucywg
-bm90IGJlY2F1c2UgSSB0aGluayBpdCdzIHdyb25nLAo+IGJ1dCBiZWNhdXNlIEkgZG9uJ3QgcXVp
-dGUga25vdyB0aGUgaW50ZW50aW9uIGFuZCBpdCBtYWtlcyBtZSB3b25kZXIuCj4KPiBPdGhlciB0
-aGFuIHRob3NlIHF1ZXN0aW9ucywgd2hpY2ggYXJlIG9wdGlvbmFsIGFzIHRoZSBjb2RlIGxvb2tz
-Cj4gY29ycmVjdCB0byBtZSwgdGhlIHJlc3Qgb2YgaXQgbG9va3MgZmluZSB0byBtZS4KaSBmdWxs
-eSB1bmRlcnN0YW5kIHlvdXIgY29uY2VybnMsIGkganVzdCBmb2xsb3dlZCBvdGhlciBkcml2ZXJz
-IApiZWhhdmlvdXIuIGZvciBzdXJlIGl0cyBtb3JlIHNhbmUgdG8gbWFrZSBpdCBvcHRpb25hbCBh
-bmQgdG8gY29tcGlsZSBpdCAKb3V0IG9mIG5vdCByZXF1aXJlZC4KYnV0IHRoZW4gaSBzdWdnZXN0
-IHRvZG8gdGhlIHNhbWUgaW4gYXRoNWsgYW5kIGF0aDlrCj4KPiBSZXZpZXdlZC1ieTogU3RldmUg
-ZGVSb3NpZXIgPGRlcm9zaWVyQGNhbC1zaWVycmEuY29tPgo+Cj4gLSBTdGV2ZQo+CgotLSAKTWl0
-IGZyZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8g
-Q1RPCgpOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgU3R1YmVud2FsZGFs
-bGVlIDIxYSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJt
-c3RhZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBD
-aHJpc3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFs
-bEBkZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUK
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hi Sebastian,
+
+On Thu, Feb 22, 2018 at 6:09 PM, Sebastian Gottschall
+<s.gottschall@dd-wrt.com> wrote:
+> Am 22.02.2018 um 23:17 schrieb Steve deRosier:
+>>
+>> On Thu, Feb 22, 2018 at 3:15 AM,  <s.gottschall@dd-wrt.com> wrote:
+>>>
+>>> From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
+>>>
+>>> Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984 based
+>>> chipsets with on chipset connected led's
+>>> using WMI Firmware API.
+>>> The LED device will get available named as "ath10k-phyX" at sysfs and can
+>>> be controlled with various triggers.
+>>> adds also debugfs interface for gpio control.
+>>>
+>>> Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+>>>
+>>> v2  add correct gpio count per chipset and remove IPQ4019 support since
+>>> this chipset does not make use of specific gpios)
+>>> v5  fix compiling without LED_CLASS and GPIOLIB support, fix also error
+>>> by kbuild test robot which does not occur in standard builds. curious
+>>> v6  correct return values and fix comment style
+>>> v7  fix ath10k_unregister_led for compiling without LED_CLASS
+>>> v8  fix various code design issues reported by reviewers
+>>> v9  move led and led code to separate sourcefile (gpio.c)
+>>> ---
+>>>   drivers/net/wireless/ath/ath10k/Kconfig   |   3 +
+>>>   drivers/net/wireless/ath/ath10k/Makefile  |   1 +
+>>>   drivers/net/wireless/ath/ath10k/core.c    |  28 ++++-
+>>>   drivers/net/wireless/ath/ath10k/core.h    |  33 ++++-
+>>>   drivers/net/wireless/ath/ath10k/debug.c   | 142 ++++++++++++++++++++++
+>>>   drivers/net/wireless/ath/ath10k/gpio.c    | 196
+>>> ++++++++++++++++++++++++++++++
+>>>   drivers/net/wireless/ath/ath10k/hw.h      |   2 +
+>>>   drivers/net/wireless/ath/ath10k/mac.c     |   5 +
+>>>   drivers/net/wireless/ath/ath10k/wmi-ops.h |  36 +++++-
+>>>   drivers/net/wireless/ath/ath10k/wmi-tlv.c |  65 ++++++++++
+>>>   drivers/net/wireless/ath/ath10k/wmi.c     |  46 +++++++
+>>>   drivers/net/wireless/ath/ath10k/wmi.h     |  36 ++++++
+>>>   12 files changed, 590 insertions(+), 3 deletions(-)
+>>>   create mode 100644 drivers/net/wireless/ath/ath10k/gpio.c
+>>>
+>>> diff --git a/drivers/net/wireless/ath/ath10k/Kconfig
+>>> b/drivers/net/wireless/ath/ath10k/Kconfig
+>>> index deb5ae21a559..c46b7658a820 100644
+>>> --- a/drivers/net/wireless/ath/ath10k/Kconfig
+>>> +++ b/drivers/net/wireless/ath/ath10k/Kconfig
+>>> @@ -2,6 +2,9 @@ config ATH10K
+>>>           tristate "Atheros 802.11ac wireless cards support"
+>>>           depends on MAC80211 && HAS_DMA
+>>>          select ATH_COMMON
+>>> +        select MAC80211_LEDS
+>>> +        select LEDS_CLASS
+>>> +        select NEW_LEDS
+>>>          select CRC32
+>>>          select WANT_DEV_COREDUMP
+>>>           ---help---
+>>
+>> Pure question: do we require LEDS, or is this an option? I assumed all
+>> along it was an optional thing - ie if GPIOs and/or LEDs were
+>> configured, we added this code. And if not optional, then what happens
+>> if we are on a platform that can't support LEDS_CLASS or NEW_LEDS,
+>> assuming there is such a thing?
+>
+> i took this behaviour from ath9k/ath5k, both driver auto select
+> MAC80211_LEDS and LEDS_CLASS (by the way MAC80211_LEDS auto selects
+> LEDS_CLASS too).  only chipsets which are known to have preconfigured leds
+> are used
+> and led will only turn on if you enable it in sysfs by assigning a trigger
+> to the led.
+> for sure this can be removed from the Kconfig. it will compile without it as
+> well. so this is optional. i just added it since all other drivers behave in
+> the same way.
+> in addition. LEDS_CLASS  / NEW_LEDS is a kernel api, not a driver. so all
+> platforms to support LEDS_CLASS. just enabling LEDS_CLASS will not cause any
+> platform specific dependency.
+>>
+>>
+>>
+>>> diff --git a/drivers/net/wireless/ath/ath10k/Makefile
+>>> b/drivers/net/wireless/ath/ath10k/Makefile
+>>> index 6739ac26fd29..bcb234f0b940 100644
+>>> --- a/drivers/net/wireless/ath/ath10k/Makefile
+>>> +++ b/drivers/net/wireless/ath/ath10k/Makefile
+>>> @@ -20,6 +20,7 @@ ath10k_core-$(CONFIG_NL80211_TESTMODE) += testmode.o
+>>>   ath10k_core-$(CONFIG_ATH10K_TRACING) += trace.o
+>>>   ath10k_core-$(CONFIG_THERMAL) += thermal.o
+>>>   ath10k_core-$(CONFIG_MAC80211_DEBUGFS) += debugfs_sta.o
+>>> +ath10k_core-y += gpio.o
+>>>   ath10k_core-$(CONFIG_PM) += wow.o
+>>>   ath10k_core-$(CONFIG_DEV_COREDUMP) += coredump.o
+>>>
+>> I'd expect it would be something like `ath10k_core-$(CONFIG_GPIO) +=
+>> gpoi.o`.  Maybe I'm mistaken.
+>
+> gpio.c contains the MAC80211_LEDS code and has a guard for GPIOLIB inside.
+> it can be compiled even if GPIOLIB is disabled in system. (which is indeed
+> platform specific)
+> and leds are still supported without gpio support since it does contain a
+> led only driver and a separate gpio driver.
+> i suggest more somelike like
+>
+> ath10k_core-$(ATH10K_LEDS) += gpio.o
+>
+> if you want it totally optional which requires some other small changes as
+> well (mainly renaming some ifdefs)
+>
+>> (Note, I didn't look up the actual config option name, I'm guessing.
+>> Assume I wrote something reasonable for my example.)
+>>
+>> I only ask the above two questions, not because I think it's wrong,
+>> but because I don't quite know the intention and it makes me wonder.
+>>
+>> Other than those questions, which are optional as the code looks
+>> correct to me, the rest of it looks fine to me.
+>
+> i fully understand your concerns, i just followed other drivers behaviour.
+> for sure its more sane to make it optional and to compile it out of not
+> required.
+> but then i suggest todo the same in ath5k and ath9k
+>
+
+Your explanation is fine with me. Consistency with other drivers makes
+perfect sense. And I happen to agree with your thought, that it should
+be fixed in the other drivers. But that doesn't seem like it should
+have to be done right now. Thanks for explaining.
+
+I think this is good to go as long as no one else has issues with it.
+
+>>
+>> Reviewed-by: Steve deRosier <derosier@cal-sierra.com>
+>>
+
+Thanks,
+- Steve
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
