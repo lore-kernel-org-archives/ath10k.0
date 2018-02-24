@@ -2,13 +2,13 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
  helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1epbXn-0000WI-Jn
- for ath10k@lists.infradead.org; Sat, 24 Feb 2018 15:15:28 +0000
+ id 1epbcb-00039B-80
+ for ath10k@lists.infradead.org; Sat, 24 Feb 2018 15:20:24 +0000
 From: s.gottschall@dd-wrt.com
-Subject: [PATCH v10] ath10k: add LED and GPIO controlling support for various
+Subject: [PATCH v11] ath10k: add LED and GPIO controlling support for various
  chipsets
-Date: Sat, 24 Feb 2018 16:14:47 +0100
-Message-Id: <20180224151447.2312-1-s.gottschall@dd-wrt.com>
+Date: Sat, 24 Feb 2018 16:20:01 +0100
+Message-Id: <20180224152001.6887-1-s.gottschall@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -41,6 +41,7 @@ v7  fix ath10k_unregister_led for compiling without LED_CLASS
 v8  fix various code design issues reported by reviewers
 v9  move led and led code to separate sourcefile (gpio.c)
 v10 compile fix if gpiolib isnt included
+v11 make register_cpio_chip static. advise by krobot
 ---
  drivers/net/wireless/ath/ath10k/Kconfig   |  10 ++
  drivers/net/wireless/ath/ath10k/Makefile  |   1 +
@@ -187,7 +188,7 @@ index f3ec13b80b20..d7f89ca98c2d 100644
  EXPORT_SYMBOL(ath10k_core_unregister);
  
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index c624b96f8b84..30136a9ea476 100644
+index c624b96f8b84..f44ced4a4a57 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
 @@ -25,6 +25,8 @@
@@ -244,7 +245,7 @@ index c624b96f8b84..30136a9ea476 100644
 +#endif
 +
 +#if IS_ENABLED(CONFIG_ATH10K_LEDS) && IS_ENABLED(CONFIG_GPIOLIB)
-+void ath10k_unregister_gpio_chip(struct ath10k *ar);
++static void ath10k_unregister_gpio_chip(struct ath10k *ar);
 +#else
 +static inline int ath10k_attach_gpio(struct ath10k *ar)
 +{
@@ -446,7 +447,7 @@ index 1b9c092d210f..a8baa7424633 100644
  
 diff --git a/drivers/net/wireless/ath/ath10k/gpio.c b/drivers/net/wireless/ath/ath10k/gpio.c
 new file mode 100644
-index 000000000000..a7603198888f
+index 000000000000..e9ce44bb21b0
 --- /dev/null
 +++ b/drivers/net/wireless/ath/ath10k/gpio.c
 @@ -0,0 +1,196 @@
@@ -533,7 +534,7 @@ index 000000000000..a7603198888f
 +}
 +
 +/* register GPIO chip */
-+int ath10k_register_gpio_chip(struct ath10k *ar)
++static int ath10k_register_gpio_chip(struct ath10k *ar)
 +{
 + 
 +	struct ath10k_gpiocontrol *gpio = ar->gpio;
