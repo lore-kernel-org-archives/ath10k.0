@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-cys01nam02on0137.outbound.protection.outlook.com
- ([104.47.37.137] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eqMBz-0000Rf-CY
- for ath10k@lists.infradead.org; Mon, 26 Feb 2018 17:04:01 +0000
-From: "Shu, Nick" <Nick.Shu@spirent.com>
-Subject: Channel 169, 173 support in India
-Date: Mon, 26 Feb 2018 17:03:46 +0000
-Message-ID: <SN2PR10MB00954E5167AB087BB26CC5F39DC10@SN2PR10MB0095.namprd10.prod.outlook.com>
-Content-Language: en-US
+ id 1eqMEh-0002ea-69
+ for ath10k@lists.infradead.org; Mon, 26 Feb 2018 17:06:50 +0000
 MIME-Version: 1.0
+Date: Mon, 26 Feb 2018 22:36:35 +0530
+From: periyasa@codeaurora.org
+Subject: Re: [PATCH] Revert "ath10k: send (re)assoc peer command when NSS
+ changed"
+In-Reply-To: <aedd8281-ee1b-e5ae-2521-fd3a7a221dd6@candelatech.com>
+References: <1519625792-12010-1-git-send-email-periyasa@codeaurora.org>
+ <aedd8281-ee1b-e5ae-2521-fd3a7a221dd6@candelatech.com>
+Message-ID: <dd7bb2acd1be43346315d7bb349b45b2@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,39 +20,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi, All:
-Does ath10k support UNII-4 band at channel 169 and channel 173 used in India?
-If yes, how to configure it? In terms of driver and firmware.
-
-Thank you in advance!
-Nick Shu
+Hi,
 
 
+> Can you share exactly which resource the firmware ran out of?  It would 
+> seem to
+> be a FW bug if it is leaking, so maybe it can be fixed as well...
+> 
 
+Firmware have total user_id = 528 (512 clients + 16 VAPs). Each user_id 
+is allocated to peer when Firmware receive the WMI_PEER_ASSOC_CMDID 
+request from host driver. Firmware free the user_id in peer delete 
+operation.
 
-Spirent Communications e-mail confidentiality.
-------------------------------------------------------------------------
-This e-mail contains confidential and / or privileged information belonging to Spirent Communications plc, its affiliates and / or subsidiaries. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution and / or the taking of any action based upon reliance on the contents of this transmission is strictly forbidden. If you have received this message in error please notify the sender by return e-mail and delete it from your system.
-
-Spirent Communications plc
-Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
-Tel No. +44 (0) 1293 767676
-Fax No. +44 (0) 1293 767677
-
-Registered in England Number 470893
-Registered at Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
-
-Or if within the US,
-
-Spirent Communications,
-27349 Agoura Road, Calabasas, CA, 91301, USA.
-Tel No. 1-818-676- 2300
+Regards,
+Karthikeyan P.
 
 _______________________________________________
 ath10k mailing list
