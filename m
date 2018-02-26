@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eqK97-0003zB-Qw
- for ath10k@lists.infradead.org; Mon, 26 Feb 2018 14:53:04 +0000
-MIME-Version: 1.0
-Subject: Re: ath10k: Make ath10k report discarded packets to mac80211
+ id 1eqKEq-0006Pb-U6
+ for ath10k@lists.infradead.org; Mon, 26 Feb 2018 14:58:55 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <863ed21f-d2fe-f1e1-6f3c-b4061c777f59@aoifes.com>
-References: <863ed21f-d2fe-f1e1-6f3c-b4061c777f59@aoifes.com>
-Message-Id: <20180226145242.BEA7D60592@smtp.codeaurora.org>
-Date: Mon, 26 Feb 2018 14:52:42 +0000 (UTC)
+Subject: Re: [PULL] ath10k firmware 20180219
+References: <87y3jlxq0k.fsf@kamboji.qca.qualcomm.com>
+ <0e9db63d-41e9-eeb3-00d1-73b20df4bb3f@dd-wrt.com>
+Date: Mon, 26 Feb 2018 16:58:33 +0200
+In-Reply-To: <0e9db63d-41e9-eeb3-00d1-73b20df4bb3f@dd-wrt.com> (Sebastian
+ Gottschall's message of "Thu, 22 Feb 2018 11:59:02 +0100")
+Message-ID: <87606ju7ae.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,26 +20,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?utf-8?q?Ignacio_N=C3=BA=C3=B1ez_Hernanz?= <nacho.nunez@aoifes.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "linux-firmware@kernel.org" <linux-firmware@kernel.org>
 
-SWduYWNpbyBOw7rDsWV6IEhlcm5hbnogd3JvdGU6Cgo+IFdoZW5ldmVyIGF0aDEwayBmaXJtd2Fy
-ZSBkaXNjYXJkcyBhIHBhY2tldCAoSFRUX1RYX0NPTVBMX1NUQVRFX0RJU0NBUkQKPiBmbGFnKSwg
-dGhlIHNrYiBpcyBmcmVlZCBhbmQgbWFjODAyMTEgZG9lcyBub3QgZ2V0IGZlZWRiYWNrIHRocm91
-Z2gKPiBpZWVlODAyMTFfdHhfc3RhdHVzKCkuCj4gCj4gSW5zdGVhZCwgbWFrZSBzdXJlIHRoYXQg
-dGhlIElFRUU4MDIxMV9UWF9TVEFUX0FDSyBmbGFnIGlzIGRpc2FibGVkIGFuZAo+IGxldCB0aGUg
-cGFja2V0IGdvIHRocm91Z2gsIGxpa2UgYXRoOWsgZG9lcy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBJ
-Z25hY2lvIE51bmV6IEhlcm5hbnogPG5hY2hvLm51bmV6QGFvaWZlcy5jb20+Cj4gW2t2YWxvQGNv
-ZGVhdXJvcmEub3JnOiByZWJhc2UgcGF0Y2ggbWFudWFsbHldCj4gU2lnbmVkLW9mZi1ieTogS2Fs
-bGUgVmFsbyA8a3ZhbG9AY29kZWF1cm9yYS5vcmc+CgpQYXRjaCBhcHBsaWVkIHRvIGF0aC1uZXh0
-IGJyYW5jaCBvZiBhdGguZ2l0LCB0aGFua3MuCgphYmIzNzRmZTg0NjAgYXRoMTBrOiBtYWtlIGF0
-aDEwayByZXBvcnQgZGlzY2FyZGVkIHBhY2tldHMgdG8gbWFjODAyMTEKCi0tIApodHRwczovL3Bh
-dGNod29yay5rZXJuZWwub3JnL3BhdGNoLzk4NTkyMjEvCgpodHRwczovL3dpcmVsZXNzLndpa2ku
-a2VybmVsLm9yZy9lbi9kZXZlbG9wZXJzL2RvY3VtZW50YXRpb24vc3VibWl0dGluZ3BhdGNoZXMK
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
+
+> on 9984 i see these messages with this firmware from time to time
+>
+> [272972.950788] ath10k_pci 0000:01:00.0: Unknown eventid: 36925
+> [272982.868922] ath10k_pci 0000:01:00.0: Unknown eventid: 36925
+> [335550.123780] ath10k_pci 0000:01:00.0: Unknown eventid: 36925
+> [335550.156332] ath10k_pci 0000:01:00.0: Unknown eventid: 36925
+> [335550.158813] ath10k_pci 0000:01:00.0: Unknown eventid: 36925
+> [335550.193144] ath10k_pci 0000:01:00.0: Unknown eventid: 36925
+> [365157.869540] ath10k_pci 0000:01:00.0: Unknown eventid: 36925
+> [365157.902452] ath10k_pci 0000:01:00.0: Unknown eventid: 36925
+>
+>
+> according to the WMI header this maybe a critical internal error
+
+Thanks for the report. We are working on a fix but just ignore the
+warning for now.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
