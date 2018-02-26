@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.net ([212.227.17.20])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eqFfo-0000MY-Ot
- for ath10k@lists.infradead.org; Mon, 26 Feb 2018 10:07:19 +0000
-Received: from localhost ([80.129.56.250]) by mail.gmx.com (mrgmx103
- [212.227.17.168]) with ESMTPSA (Nemesis) id 0LwJko-1efbU01QuE-01847P for
- <ath10k@lists.infradead.org>; Mon, 26 Feb 2018 11:06:06 +0100
-Date: Mon, 26 Feb 2018 11:06:05 +0100
-From: Stefan =?iso-8859-1?Q?Kr=FCger?= <stadtkind2@gmx.de>
-Subject: no board data for WLE650V5-18
-Message-ID: <20180226100605.GA1071@web.de>
+ id 1eqGE9-0001oh-6e
+ for ath10k@lists.infradead.org; Mon, 26 Feb 2018 10:41:58 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
+Date: Mon, 26 Feb 2018 16:11:38 +0530
+From: periyasa@codeaurora.org
+Subject: Re: [PATCH] Revert "ath10k: send (re)assoc peer command when NSS
+ changed"
+In-Reply-To: <CAJ-Vmo=xxG_Jp=uC-Cx96R0YzO8O0tOVe2G6Nyx8ceWopiwvXQ@mail.gmail.com>
+References: <1519625792-12010-1-git-send-email-periyasa@codeaurora.org>
+ <CAJ-Vmo=xxG_Jp=uC-Cx96R0YzO8O0tOVe2G6Nyx8ceWopiwvXQ@mail.gmail.com>
+Message-ID: <559965cc9735f6616957f9ee84a17e52@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +24,52 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: adrian.chadd@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+On 2018-02-26 14:15, Adrian Chadd wrote:
+> hi!
+> 
+> On 25 February 2018 at 22:16, Karthikeyan Periyasamy
+> <periyasa@codeaurora.org> wrote:
+>> This reverts commit 55884c045d31a29cf69db8332d1064a1b61dd159.
+>> 
+>> When Ath10k is in AP mode and an unassociated STA sends a VHT action 
+>> frame
+>> (Operating Mode Notification for the NSS change) periodically to AP 
+>> this causes
+>> ath10k to call ath10k_station_assoc() which sends WMI_PEER_ASSOC_CMDID 
+>> during
+>> NSS update. Over the time (with a certain client it can happen within 
+>> 15 mins
+>> when there are over 500 of these VHT action frames) continuous calls 
+>> of
+>> WMI_PEER_ASSOC_CMDID cause firmware to assert due to resource exhaust.
+>> 
+>> To my knowledge setting WMI_PEER_NSS peer param itself enough to 
+>> handle NSS
+>> updates and no need to call ath10k_station_assoc(). So revert the 
+>> original
+>> commit from 2014 as it's unclear why the change was really needed.
+>> Now the firmware assert doesn't happen anymore.
+>> 
+>> Issue observed in QCA9984 platform with firmware 
+>> version:10.4-3.5.3-00053.
+>> This Change tested in QCA9984 with firmware version: 10.4-3.5.3-00053 
+>> and
+>> QCA988x platform with firmware version: 10.2.4-1.0-00036.
+> 
+> Did you test this on any of the other major firmware variants? I
+> wonder if it snuck in because of some firmware quirk in something way
+> before dakota/cascade and 10.4 were a thing.
+> 
+> Eg, Peregrine? Rome? Maybe even earlier Beeliner, just to double check?
+> 
+Yes. I tested this on peregrine, Beeliner, Dakota and Cascade. This code 
+was introduced before Rome.
 
-I have some trouble getting my new Compex WLE650V5-18 to work.
-
-OS: Ubuntu 17.10
-Kernel: linux-generic  4.13.0.36.38 amd64
-Firmware: linux-firmware 1.169.3
-
-/lib/firmware/ath10k/QCA9888/hw2.0$ sha256sum *
-65f73a7d762dadea2f7f500151965b96988b07e867155df6a41ad7599d3473b0  board-2.bin
-8f96062e838f22a8c77f473ed66b5109581a013e2b65e837e30e89ebe6cbb71e  firmware-5.bin
-
-$ dmesg | grep ath10k
-[   11.741029] ath10k_pci 0000:04:00.0: pci irq msi oper_irq_mode 2 irq_mode 
-0 reset_mode 0
-[   11.879752] ath10k_pci 0000:04:00.0: qca9888 hw2.0 target 0x01000000 
-chip_id 0x00000000 sub 0000:0000
-[   11.879763] ath10k_pci 0000:04:00.0: kconfig debug 0 debugfs 1 tracing 1 
-dfs 0 testmode 0
-[   11.881241] ath10k_pci 0000:04:00.0: firmware ver 10.4-3.5.1-00014 api 5 
-features no-p2p,mfp,peer-flow-ctrl,allows-mesh-bcast crc32 387b6980
-[   13.872516] ath10k_pci 0000:04:00.0: failed to fetch board data for 
-bus=pci,bmi-chip-id=0,bmi-board-id=30 from ath10k/QCA9888/hw2.0/board-2.bin
-[   13.872665] ath10k_pci 0000:04:00.0: failed to fetch board-2.bin or 
-board.bin from ath10k/QCA9888/hw2.0
-[   13.872693] ath10k_pci 0000:04:00.0: failed to fetch board file: -2
-[   13.872776] ath10k_pci 0000:04:00.0: could not probe fw (-2)
-
-$ lspci -s 04:00.0 -vv
-04:00.0 Network controller: Qualcomm Atheros Device 0056
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-        Latency: 0, Cache Line Size: 64 bytes
-        Interrupt: pin A routed to IRQ 32
-        Region 0: Memory at f7600000 (64-bit, non-prefetchable) [size=2M]
-        Capabilities: <access denied>
-        Kernel driver in use: ath10k_pci
-        Kernel modules: ath10k_pci
-
-Any help is greatly appreciated.
-
-Thanks!
+Thanks,
+Karthikeyan.
 
 _______________________________________________
 ath10k mailing list
