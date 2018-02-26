@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eqMOM-00071z-Ac
- for ath10k@lists.infradead.org; Mon, 26 Feb 2018 17:16:53 +0000
-Subject: Re: Channel 169, 173 support in India
-References: <SN2PR10MB00954E5167AB087BB26CC5F39DC10@SN2PR10MB0095.namprd10.prod.outlook.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <b7a221e7-7a94-76ac-98a6-77efe9307c67@candelatech.com>
-Date: Mon, 26 Feb 2018 09:16:31 -0800
+Received: from mail-eopbgr50040.outbound.protection.outlook.com ([40.107.5.40]
+ helo=EUR03-VE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eqOHc-0005qW-Ag
+ for ath10k@lists.infradead.org; Mon, 26 Feb 2018 19:17:58 +0000
+Subject: Re: [PATCH] Revert "ath10k: send (re)assoc peer command when NSS
+ changed"
+References: <1519625792-12010-1-git-send-email-periyasa@codeaurora.org>
+From: Peter Oh <peter.oh@bowerswilkins.com>
+Message-ID: <80c73674-7508-9804-fa5b-12afcc296353@bowerswilkins.com>
+Date: Mon, 26 Feb 2018 11:17:31 -0800
 MIME-Version: 1.0
-In-Reply-To: <SN2PR10MB00954E5167AB087BB26CC5F39DC10@SN2PR10MB0095.namprd10.prod.outlook.com>
+In-Reply-To: <1519625792-12010-1-git-send-email-periyasa@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,56 +24,23 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Shu, Nick" <Nick.Shu@spirent.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Karthikeyan Periyasamy <periyasa@codeaurora.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On 02/26/2018 09:03 AM, Shu, Nick wrote:
-> Hi, All:
-> Does ath10k support UNII-4 band at channel 169 and channel 173 used in India?
-> If yes, how to configure it? In terms of driver and firmware.
+
+
+> This reverts commit 55884c045d31a29cf69db8332d1064a1b61dd159.
 >
-> Thank you in advance!
-> Nick Shu
-
-The firmware should work as is as far as I can tell.  You need at least
-this driver patch:
-
-https://patchwork.kernel.org/patch/10141515/
+> When Ath10k is in AP mode and an unassociated STA sends a VHT action frame
+> (Operating Mode Notification for the NSS change) periodically to AP this causes
+> ath10k to call ath10k_station_assoc() which sends WMI_PEER_ASSOC_CMDID during
+> NSS update. Over the time (with a certain client it can happen within 15 mins
+> when there are over 500 of these VHT action frames) continuous calls of
+> WMI_PEER_ASSOC_CMDID cause firmware to assert due to resource exhaust.
+Can you include the FW assert message in this commit?
 
 Thanks,
-Ben
-
->
->
->
->
-> Spirent Communications e-mail confidentiality.
-> ------------------------------------------------------------------------
-> This e-mail contains confidential and / or privileged information belonging to Spirent Communications plc, its affiliates and / or subsidiaries. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution and / or the taking of any action based upon reliance on the contents of this transmission is strictly forbidden. If you have received this message in error please notify the sender by return e-mail and delete it from your system.
->
-> Spirent Communications plc
-> Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
-> Tel No. +44 (0) 1293 767676
-> Fax No. +44 (0) 1293 767677
->
-> Registered in England Number 470893
-> Registered at Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
->
-> Or if within the US,
->
-> Spirent Communications,
-> 27349 Agoura Road, Calabasas, CA, 91301, USA.
-> Tel No. 1-818-676- 2300
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Peter
 
 
 _______________________________________________
