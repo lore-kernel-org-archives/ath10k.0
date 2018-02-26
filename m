@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eqL9C-0005G0-2Q
- for ath10k@lists.infradead.org; Mon, 26 Feb 2018 15:57:05 +0000
-Subject: Re: [PATCH] Revert "ath10k: send (re)assoc peer command when NSS
- changed"
-References: <1519625792-12010-1-git-send-email-periyasa@codeaurora.org>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <aedd8281-ee1b-e5ae-2521-fd3a7a221dd6@candelatech.com>
-Date: Mon, 26 Feb 2018 07:56:46 -0800
+Received: from mail-cys01nam02on0137.outbound.protection.outlook.com
+ ([104.47.37.137] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eqMBz-0000Rf-CY
+ for ath10k@lists.infradead.org; Mon, 26 Feb 2018 17:04:01 +0000
+From: "Shu, Nick" <Nick.Shu@spirent.com>
+Subject: Channel 169, 173 support in India
+Date: Mon, 26 Feb 2018 17:03:46 +0000
+Message-ID: <SN2PR10MB00954E5167AB087BB26CC5F39DC10@SN2PR10MB0095.namprd10.prod.outlook.com>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <1519625792-12010-1-git-send-email-periyasa@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,33 +18,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Karthikeyan Periyasamy <periyasa@codeaurora.org>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 02/25/2018 10:16 PM, Karthikeyan Periyasamy wrote:
-> This reverts commit 55884c045d31a29cf69db8332d1064a1b61dd159.
->
-> When Ath10k is in AP mode and an unassociated STA sends a VHT action frame
-> (Operating Mode Notification for the NSS change) periodically to AP this causes
-> ath10k to call ath10k_station_assoc() which sends WMI_PEER_ASSOC_CMDID during
-> NSS update. Over the time (with a certain client it can happen within 15 mins
-> when there are over 500 of these VHT action frames) continuous calls of
-> WMI_PEER_ASSOC_CMDID cause firmware to assert due to resource exhaust.
+Hi, All:
+Does ath10k support UNII-4 band at channel 169 and channel 173 used in India?
+If yes, how to configure it? In terms of driver and firmware.
 
-Can you share exactly which resource the firmware ran out of?  It would seem to
-be a FW bug if it is leaking, so maybe it can be fixed as well...
+Thank you in advance!
+Nick Shu
 
-Thanks,
-Ben
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
 
+
+Spirent Communications e-mail confidentiality.
+------------------------------------------------------------------------
+This e-mail contains confidential and / or privileged information belonging to Spirent Communications plc, its affiliates and / or subsidiaries. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution and / or the taking of any action based upon reliance on the contents of this transmission is strictly forbidden. If you have received this message in error please notify the sender by return e-mail and delete it from your system.
+
+Spirent Communications plc
+Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
+Tel No. +44 (0) 1293 767676
+Fax No. +44 (0) 1293 767677
+
+Registered in England Number 470893
+Registered at Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
+
+Or if within the US,
+
+Spirent Communications,
+27349 Agoura Road, Calabasas, CA, 91301, USA.
+Tel No. 1-818-676- 2300
 
 _______________________________________________
 ath10k mailing list
