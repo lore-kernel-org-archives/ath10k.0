@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from [196.1.105.47] (helo=sandesh.cdotd.ernet.in)
- by merlin.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eqcWU-00062L-LH
- for ath10k@lists.infradead.org; Tue, 27 Feb 2018 10:30:22 +0000
-From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: fixed bit rate 9Mbps set as 24Mbps in g mode(legacy)
-Date: Tue, 27 Feb 2018 14:19:49 +0530
-Message-Id: <20180227083933.M59708@cdot.in>
-In-Reply-To: <1519625792-12010-1-git-send-email-periyasa@codeaurora.org>
-References: <1519625792-12010-1-git-send-email-periyasa@codeaurora.org>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eqfDd-0007vN-Bu
+ for ath10k@lists.infradead.org; Tue, 27 Feb 2018 13:22:58 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PULL] ath10k firmware 20180219
+References: <87y3jlxq0k.fsf@kamboji.qca.qualcomm.com>
+ <0e9db63d-41e9-eeb3-00d1-73b20df4bb3f@dd-wrt.com>
+ <87606ju7ae.fsf@kamboji.qca.qualcomm.com>
+ <150ef362-418d-e571-a95d-b1fa7d6db14c@dd-wrt.com>
+Date: Tue, 27 Feb 2018 15:22:43 +0200
+In-Reply-To: <150ef362-418d-e571-a95d-b1fa7d6db14c@dd-wrt.com> (Sebastian
+ Gottschall's message of "Tue, 27 Feb 2018 10:05:38 +0100")
+Message-ID: <87woyysh24.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,25 +26,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, backports@vger.kernel.org
-Cc: linux-wireless@vger.kernel.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "linux-firmware@kernel.org" <linux-firmware@kernel.org>
 
-Hi,
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
 
-I have configured AP in g mode and tested legacy rates.All basic rates and supported
-rates(1,2,5.5,11,6,9,12,18,24,36,48,54) are set except 9Mbps.
+> what about this?
 
-When fixed bit rate 9Mbps is set, it gets set as 24 Mbps. This issue has been observed
-in backports-4.4.2-1 as well as latest git version of ath10k driver.
+It would be a lot easier if you could start a new thread (with a proper
+subject) on ath10k@lists.infradead.org for each firmware problem you
+see, instead of hijacking this thread.
 
+And no need to CC linux-firmware maintainers either.
 
-Is anybody aware of this issue? How can I fix this rate 9Mbps?
-
-
-Thanks & Regards,
-Kavita
-
-
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
