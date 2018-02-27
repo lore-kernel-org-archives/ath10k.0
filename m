@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eqifb-0006IS-J9
- for ath10k@lists.infradead.org; Tue, 27 Feb 2018 17:04:05 +0000
-Received: by mail-wr0-x242.google.com with SMTP id w77so25592948wrc.6
- for <ath10k@lists.infradead.org>; Tue, 27 Feb 2018 09:03:52 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
-References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
-From: Steve deRosier <derosier@gmail.com>
-Date: Tue, 27 Feb 2018 09:03:50 -0800
-Message-ID: <CALLGbRL6D7bSrx-AVEoCfrSCg6_C4LfWcC-Yh1e14-DpsX3Ggw@mail.gmail.com>
+ id 1eqjHy-0002Dx-Gi
+ for ath10k@lists.infradead.org; Tue, 27 Feb 2018 17:43:45 +0000
 Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
  various chipsets
+References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
+ <CALLGbRL6D7bSrx-AVEoCfrSCg6_C4LfWcC-Yh1e14-DpsX3Ggw@mail.gmail.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <8c7f1a8e-57e8-627a-724a-4aface0a5d8a@dd-wrt.com>
+Date: Tue, 27 Feb 2018 18:43:31 +0100
+MIME-Version: 1.0
+In-Reply-To: <CALLGbRL6D7bSrx-AVEoCfrSCg6_C4LfWcC-Yh1e14-DpsX3Ggw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +21,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+To: Steve deRosier <derosier@gmail.com>
 Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-On Mon, Feb 26, 2018 at 12:44 AM, <s.gottschall@dd-wrt.com> wrote:
->
-> From: Sebastian Gottschall <s.gottschall@newmedia-net.de>
->
-> Adds LED and GPIO Control support for 988x, 9887, 9888, 99x0, 9984 based chipsets with on chipset connected led's
-> using WMI Firmware API.
-> The LED device will get available named as "ath10k-phyX" at sysfs and can be controlled with various triggers.
-> adds also debugfs interface for gpio control.
->
-> Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
->
-> v2  add correct gpio count per chipset and remove IPQ4019 support since this chipset does not make use of specific gpios)
-> v5  fix compiling without LED_CLASS and GPIOLIB support, fix also error by kbuild test robot which does not occur in standard builds. curious
-> v6  correct return values and fix comment style
-> v7  fix ath10k_unregister_led for compiling without LED_CLASS
-> v8  fix various code design issues reported by reviewers
-> v9  move led and led code to separate sourcefile (gpio.c)
-> v10 compile fix if gpiolib isnt included
-> v11 make register_gpio_chip static. advise by krobot
-> v12 fix warning
-> ---
->  drivers/net/wireless/ath/ath10k/Kconfig   |  10 ++
->  drivers/net/wireless/ath/ath10k/Makefile  |   1 +
->  drivers/net/wireless/ath/ath10k/core.c    |  28 ++++-
->  drivers/net/wireless/ath/ath10k/core.h    |  62 +++++++++-
->  drivers/net/wireless/ath/ath10k/debug.c   | 146 ++++++++++++++++++++++
->  drivers/net/wireless/ath/ath10k/gpio.c    | 196 ++++++++++++++++++++++++++++++
->  drivers/net/wireless/ath/ath10k/hw.h      |   2 +
->  drivers/net/wireless/ath/ath10k/mac.c     |   5 +
->  drivers/net/wireless/ath/ath10k/wmi-ops.h |  36 +++++-
->  drivers/net/wireless/ath/ath10k/wmi-tlv.c |  65 ++++++++++
->  drivers/net/wireless/ath/ath10k/wmi.c     |  46 +++++++
->  drivers/net/wireless/ath/ath10k/wmi.h     |  36 ++++++
->  12 files changed, 630 insertions(+), 3 deletions(-)
->  create mode 100644 drivers/net/wireless/ath/ath10k/gpio.c
-
-
-Assuming that kbuild robot doesn't kick back another build-time
-warning, it looks OK to me.
-
-Reviewed-by: Steve deRosier <derosier@cal-sierra.com>
-
---
-Steve deRosier
-Cal-Sierra Consulting LLC
-https://www.cal-sierra.com/
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMjcuMDIuMjAxOCB1bSAxODowMyBzY2hyaWViIFN0ZXZlIGRlUm9zaWVyOgo+IE9uIE1vbiwg
+RmViIDI2LCAyMDE4IGF0IDEyOjQ0IEFNLCA8cy5nb3R0c2NoYWxsQGRkLXdydC5jb20+IHdyb3Rl
+Ogo+PiBGcm9tOiBTZWJhc3RpYW4gR290dHNjaGFsbCA8cy5nb3R0c2NoYWxsQG5ld21lZGlhLW5l
+dC5kZT4KPj4KPj4gQWRkcyBMRUQgYW5kIEdQSU8gQ29udHJvbCBzdXBwb3J0IGZvciA5ODh4LCA5
+ODg3LCA5ODg4LCA5OXgwLCA5OTg0IGJhc2VkIGNoaXBzZXRzIHdpdGggb24gY2hpcHNldCBjb25u
+ZWN0ZWQgbGVkJ3MKPj4gdXNpbmcgV01JIEZpcm13YXJlIEFQSS4KPj4gVGhlIExFRCBkZXZpY2Ug
+d2lsbCBnZXQgYXZhaWxhYmxlIG5hbWVkIGFzICJhdGgxMGstcGh5WCIgYXQgc3lzZnMgYW5kIGNh
+biBiZSBjb250cm9sbGVkIHdpdGggdmFyaW91cyB0cmlnZ2Vycy4KPj4gYWRkcyBhbHNvIGRlYnVn
+ZnMgaW50ZXJmYWNlIGZvciBncGlvIGNvbnRyb2wuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IFNlYmFz
+dGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4KPj4KPj4gdjIgIGFkZCBj
+b3JyZWN0IGdwaW8gY291bnQgcGVyIGNoaXBzZXQgYW5kIHJlbW92ZSBJUFE0MDE5IHN1cHBvcnQg
+c2luY2UgdGhpcyBjaGlwc2V0IGRvZXMgbm90IG1ha2UgdXNlIG9mIHNwZWNpZmljIGdwaW9zKQo+
+PiB2NSAgZml4IGNvbXBpbGluZyB3aXRob3V0IExFRF9DTEFTUyBhbmQgR1BJT0xJQiBzdXBwb3J0
+LCBmaXggYWxzbyBlcnJvciBieSBrYnVpbGQgdGVzdCByb2JvdCB3aGljaCBkb2VzIG5vdCBvY2N1
+ciBpbiBzdGFuZGFyZCBidWlsZHMuIGN1cmlvdXMKPj4gdjYgIGNvcnJlY3QgcmV0dXJuIHZhbHVl
+cyBhbmQgZml4IGNvbW1lbnQgc3R5bGUKPj4gdjcgIGZpeCBhdGgxMGtfdW5yZWdpc3Rlcl9sZWQg
+Zm9yIGNvbXBpbGluZyB3aXRob3V0IExFRF9DTEFTUwo+PiB2OCAgZml4IHZhcmlvdXMgY29kZSBk
+ZXNpZ24gaXNzdWVzIHJlcG9ydGVkIGJ5IHJldmlld2Vycwo+PiB2OSAgbW92ZSBsZWQgYW5kIGxl
+ZCBjb2RlIHRvIHNlcGFyYXRlIHNvdXJjZWZpbGUgKGdwaW8uYykKPj4gdjEwIGNvbXBpbGUgZml4
+IGlmIGdwaW9saWIgaXNudCBpbmNsdWRlZAo+PiB2MTEgbWFrZSByZWdpc3Rlcl9ncGlvX2NoaXAg
+c3RhdGljLiBhZHZpc2UgYnkga3JvYm90Cj4+IHYxMiBmaXggd2FybmluZwo+PiAtLS0KPj4gICBk
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL0tjb25maWcgICB8ICAxMCArKwo+PiAgIGRy
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvTWFrZWZpbGUgIHwgICAxICsKPj4gICBkcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYyAgICB8ICAyOCArKysrLQo+PiAgIGRy
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oICAgIHwgIDYyICsrKysrKysrKy0K
+Pj4gICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2RlYnVnLmMgICB8IDE0NiArKysr
+KysrKysrKysrKysrKysrKysrCj4+ICAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9n
+cGlvLmMgICAgfCAxOTYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4+ICAgZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9ody5oICAgICAgfCAgIDIgKwo+PiAgIGRyaXZlcnMv
+bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMgICAgIHwgICA1ICsKPj4gICBkcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS1vcHMuaCB8ICAzNiArKysrKy0KPj4gICBkcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10bHYuYyB8ICA2NSArKysrKysrKysrCj4+ICAg
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYyAgICAgfCAgNDYgKysrKysrKwo+
+PiAgIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmggICAgIHwgIDM2ICsrKysr
+Kwo+PiAgIDEyIGZpbGVzIGNoYW5nZWQsIDYzMCBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygt
+KQo+PiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L2dwaW8uYwo+Cj4gQXNzdW1pbmcgdGhhdCBrYnVpbGQgcm9ib3QgZG9lc24ndCBraWNrIGJhY2sg
+YW5vdGhlciBidWlsZC10aW1lCj4gd2FybmluZywgaXQgbG9va3MgT0sgdG8gbWUuCjotKSBzZWVt
+cyBzbwo+Cj4gUmV2aWV3ZWQtYnk6IFN0ZXZlIGRlUm9zaWVyIDxkZXJvc2llckBjYWwtc2llcnJh
+LmNvbT4KPgo+IC0tCj4gU3RldmUgZGVSb3NpZXIKPiBDYWwtU2llcnJhIENvbnN1bHRpbmcgTExD
+Cj4gaHR0cHM6Ly93d3cuY2FsLXNpZXJyYS5jb20vCj4KCi0tIApNaXQgZnJldW5kbGljaGVuIEdy
+w7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8KCk5ld01lZGlhLU5F
+VCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUgMjFhLCA2NDYyNSBC
+ZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFkdCwgSFJCIDI1NDcz
+Ckdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlzdGlhbiBTY2hlZWxl
+Cmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRkLXdydC5jb20KVGVs
+LjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
+MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsK
