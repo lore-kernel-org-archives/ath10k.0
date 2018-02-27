@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eqiKL-0004Oc-Gh
- for ath10k@lists.infradead.org; Tue, 27 Feb 2018 16:42:07 +0000
-Subject: Re: fixed bit rate 9Mbps set as 24Mbps in g mode(legacy)
-References: <1519625792-12010-1-git-send-email-periyasa@codeaurora.org>
- <20180227083933.M59708@cdot.in>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <3047f184-d600-7be7-52bc-2ed4cee37ffe@candelatech.com>
-Date: Tue, 27 Feb 2018 08:41:50 -0800
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eqiM7-00056V-R8
+ for ath10k@lists.infradead.org; Tue, 27 Feb 2018 16:43:57 +0000
 MIME-Version: 1.0
-In-Reply-To: <20180227083933.M59708@cdot.in>
+Subject: Re: ath10k: Fix log message for hif power on failure
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1517803894-4250-1-git-send-email-govinds@codeaurora.org>
+References: <1517803894-4250-1-git-send-email-govinds@codeaurora.org>
+Message-Id: <20180227164342.994AD60849@smtp.codeaurora.org>
+Date: Tue, 27 Feb 2018 16:43:42 +0000 (UTC)
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,52 +18,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: KAVITA MATHUR <kavitam@cdot.in>, ath10k@lists.infradead.org, backports@vger.kernel.org
-Cc: linux-wireless@vger.kernel.org
+To: Govind Singh <govinds@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 02/27/2018 12:49 AM, KAVITA MATHUR wrote:
-> Hi,
->
-> I have configured AP in g mode and tested legacy rates.All basic rates and supported
-> rates(1,2,5.5,11,6,9,12,18,24,36,48,54) are set except 9Mbps.
->
-> When fixed bit rate 9Mbps is set, it gets set as 24 Mbps. This issue has been observed
-> in backports-4.4.2-1 as well as latest git version of ath10k driver.
->
->
-> Is anybody aware of this issue? How can I fix this rate 9Mbps?
+Govind Singh <govinds@codeaurora.org> wrote:
 
-You should specify which firmware/chipset you are using, since this might
-easily be a firmware issue.
+> HIF power-on failure is applicable to each underlying
+> bus type. Fix log message for hif power on failure.
+> 
+> Signed-off-by: Govind Singh <govinds@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-And, how are you determining that 'it gets set to 24Mbps'.  Is that the encoding
-you see in a wifi sniff, or is the driver being set to 24Mbps improperly when
-you use iw (or whatever) to try configuring the rate?
+Patch applied to ath-next branch of ath.git, thanks.
 
-Recent upstream mac80211 has broken the ability to set a single tx rate as well,
-last I checked.
-
-Thanks,
-Ben
-
->
->
-> Thanks & Regards,
-> Kavita
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe backports" in
->
-
+cf0d37aecc06 ath10k: fix log message for hif power on failure
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+https://patchwork.kernel.org/patch/10199829/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
 _______________________________________________
