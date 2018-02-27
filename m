@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eqfOh-0003vp-CB
- for ath10k@lists.infradead.org; Tue, 27 Feb 2018 13:34:25 +0000
-Subject: Re: [PULL] ath10k firmware 20180219
-References: <87y3jlxq0k.fsf@kamboji.qca.qualcomm.com>
- <0e9db63d-41e9-eeb3-00d1-73b20df4bb3f@dd-wrt.com>
- <87606ju7ae.fsf@kamboji.qca.qualcomm.com>
- <150ef362-418d-e571-a95d-b1fa7d6db14c@dd-wrt.com>
- <87woyysh24.fsf@kamboji.qca.qualcomm.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <6c03cc1f-b1e7-a9c4-dbd8-591d9ba71bff@dd-wrt.com>
-Date: Tue, 27 Feb 2018 14:34:12 +0100
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eqiKL-0004Oc-Gh
+ for ath10k@lists.infradead.org; Tue, 27 Feb 2018 16:42:07 +0000
+Subject: Re: fixed bit rate 9Mbps set as 24Mbps in g mode(legacy)
+References: <1519625792-12010-1-git-send-email-periyasa@codeaurora.org>
+ <20180227083933.M59708@cdot.in>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <3047f184-d600-7be7-52bc-2ed4cee37ffe@candelatech.com>
+Date: Tue, 27 Feb 2018 08:41:50 -0800
 MIME-Version: 1.0
-In-Reply-To: <87woyysh24.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <20180227083933.M59708@cdot.in>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +19,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: KAVITA MATHUR <kavitam@cdot.in>, ath10k@lists.infradead.org, backports@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org
 
-dGhlIGxhdGVzdCA5OTg0IGZpcm13YXJlIGZpcm13YXJlLTUuYmluXzEwLjQtMy41LjMtMDAwNTMg
-CjxodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13YXJlL2Jsb2IvbWFzdGVyL1FD
-QTk5ODQvaHcxLjAvMy41LjMvZmlybXdhcmUtNS5iaW5fMTAuNC0zLjUuMy0wMDA1Mz4gCndpbGwg
-Y3Jhc2ggdW5kZXIgY2VydGFpbiBjb25maWd1cmF0aW9uLgppdCB3YXMgY29uZmlndXJlZCBhcyB3
-ZHMgYXAgd2l0aCB2aHQgMTYwLiBjbGllbnQgKHdkcyBzdGEpIHdhcyBhIHdydDMyMDAgCndpdGgg
-ODhXODk2NCBjaGlwc2V0Cml0IHNlZW1zIHRoYXQgdGhpcyBjcmFzaCBvbmx5IG9jY3VyZXMgd2l0
-aCB2aHQxNjAgY29uZmlndXJhdGlvbiBmcm9tIAp3aGF0IGkgaGF2ZSBzZWVuIHNvIGZhciBhbmQg
-b25seSB3aXRoIHRoaXMgY2xpZW50IGNoaXBzZXQuCmFub3RoZXIgdGVzdCBydW5uaW5nIGEgOTk4
-NCBpbiB3ZHMgc3RhIG1vZGUgZGlkIG5vdCByYWlzZSB1cCB0aGlzIGlzc3VlCgotLSAKTWl0IGZy
-ZXVuZGxpY2hlbiBHcsO8c3NlbiAvIFJlZ2FyZHMKClNlYmFzdGlhbiBHb3R0c2NoYWxsIC8gQ1RP
-CgpOZXdNZWRpYS1ORVQgR21iSCAtIERELVdSVApGaXJtZW5zaXR6OiAgU3R1YmVud2FsZGFsbGVl
-IDIxYSwgNjQ2MjUgQmVuc2hlaW0KUmVnaXN0ZXJnZXJpY2h0OiBBbXRzZ2VyaWNodCBEYXJtc3Rh
-ZHQsIEhSQiAyNTQ3MwpHZXNjaMOkZnRzZsO8aHJlcjogUGV0ZXIgU3RlaW5ow6R1c2VyLCBDaHJp
-c3RpYW4gU2NoZWVsZQpodHRwOi8vd3d3LmRkLXdydC5jb20KZW1haWw6IHMuZ290dHNjaGFsbEBk
-ZC13cnQuY29tClRlbC46ICs0OTYyNTEtNTgyNjUwIC8gRmF4OiArNDk2MjUxLTU4MjY1NjUKCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On 02/27/2018 12:49 AM, KAVITA MATHUR wrote:
+> Hi,
+>
+> I have configured AP in g mode and tested legacy rates.All basic rates and supported
+> rates(1,2,5.5,11,6,9,12,18,24,36,48,54) are set except 9Mbps.
+>
+> When fixed bit rate 9Mbps is set, it gets set as 24 Mbps. This issue has been observed
+> in backports-4.4.2-1 as well as latest git version of ath10k driver.
+>
+>
+> Is anybody aware of this issue? How can I fix this rate 9Mbps?
+
+You should specify which firmware/chipset you are using, since this might
+easily be a firmware issue.
+
+And, how are you determining that 'it gets set to 24Mbps'.  Is that the encoding
+you see in a wifi sniff, or is the driver being set to 24Mbps improperly when
+you use iw (or whatever) to try configuring the rate?
+
+Recent upstream mac80211 has broken the ability to set a single tx rate as well,
+last I checked.
+
+Thanks,
+Ben
+
+>
+>
+> Thanks & Regards,
+> Kavita
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe backports" in
+>
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
