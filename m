@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1er66S-0004w5-Hm
- for ath10k@lists.infradead.org; Wed, 28 Feb 2018 18:05:22 +0000
-Subject: Re: [RFC] ath10k: Attempt to work around napi_synchronize hang.
-References: <1519780965-15292-1-git-send-email-greearb@candelatech.com>
- <CABvG-CU1jf4xN+LZdkdejqr67Mcs-JdvGrvHnh0pB2VSJjJZzQ@mail.gmail.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <95ddec98-2613-7e6d-3ec8-d47d1aa527db@candelatech.com>
-Date: Wed, 28 Feb 2018 10:05:04 -0800
-MIME-Version: 1.0
-In-Reply-To: <CABvG-CU1jf4xN+LZdkdejqr67Mcs-JdvGrvHnh0pB2VSJjJZzQ@mail.gmail.com>
+ id 1er79Y-0004d2-NW
+ for ath10k@lists.infradead.org; Wed, 28 Feb 2018 19:12:38 +0000
+From: greearb@candelatech.com
+Subject: [PATCH] ath10k:  Attempt to work around napi_synchronize hang.
+Date: Wed, 28 Feb 2018 11:12:17 -0800
+Message-Id: <1519845137-15365-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,54 +15,129 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?Q?Micha=c5=82_Kazior?= <kazikcz@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: linux-wireless@vger.kernel.org
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-T24gMDIvMjgvMjAxOCAwOTozMSBBTSwgTWljaGHFgiBLYXppb3Igd3JvdGU6Cj4gT24gMjggRmVi
-cnVhcnkgMjAxOCBhdCAwMjoyMiwgIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4g
-Wy4uLl0KPj4gQEAgLTIwODYsOCArMjA4NywyOCBAQCBzdGF0aWMgdm9pZCBhdGgxMGtfcGNpX2hp
-Zl9zdG9wKHN0cnVjdCBhdGgxMGsgKmFyKQo+PiAgICAgICAgIGF0aDEwa19wY2lfaXJxX2Rpc2Fi
-bGUoYXIpOwo+PiAgICAgICAgIGF0aDEwa19wY2lfaXJxX3N5bmMoYXIpOwo+PiAgICAgICAgIGF0
-aDEwa19wY2lfZmx1c2goYXIpOwo+PiAtICAgICAgIG5hcGlfc3luY2hyb25pemUoJmFyLT5uYXBp
-KTsKPj4gLSAgICAgICBuYXBpX2Rpc2FibGUoJmFyLT5uYXBpKTsKPj4gKwo+PiArICAgICAgIC8q
-IENhbGxpbmcgbmFwaV9kaXNhYmxlIHR3aWNlIGluIGEgcm93ICh3L291dCBzdGFydGluZyBpdCBh
-bmQvb3Igd2l0aG91dAo+PiArICAgICAgICAqIGhhdmluZyBOQVBJIGFjdGl2ZSBsZWFkcyB0byBk
-ZWFkbG9jayBiZWNhdXNlIG5hcGlfZGlzYWJsZSBzZXRzCj4+ICsgICAgICAgICogTkFQSV9TVEFU
-RV9TQ0hFRCBhbmQgTkFQSV9TVEFURV9OUFNWQyB3aGVuIGl0IHJldHVybnMsIGFzIGZhciBhcyBJ
-Cj4+ICsgICAgICAgICogY2FuIHRlbGwuICBTbywgZ3VhcmQgdGhpcyBjYWxsIHRvIG5hcGlfZGlz
-YWJsZS4gIEkgYmVsaWV2ZSB0aGUKPj4gKyAgICAgICAgKiBmYWlsdXJlIGNhc2UgaXMgc29tZXRo
-aW5nIGxpa2UgdGhpczoKPj4gKyAgICAgICAgKiBybW1vZCBhdGgxMGtfcGNpIGF0aDEwa19jb3Jl
-Cj4+ICsgICAgICAgICogICBGaXJtd2FyZSBjcmFzaGVzIGJlZm9yZSBoaWZfc3RvcCBpcyBjYWxs
-ZWQgYnkgdGhlIHJtbW9kIHBhdGgKPj4gKyAgICAgICAgKiAgIFRoZSBjcmFzaCBoYW5kbGluZyBs
-b2dpYyBjYWxscyBoaWZfc3RvcAo+PiArICAgICAgICAgKiAgIFRoZW4gcm1tb2QgZ2V0cyBhcm91
-bmQgdG8gY2FsbGluZyBoaWZfc3RvcCwgYnV0IHNwaW5zIGVuZGxlc3NseQo+PiArICAgICAgICAq
-ICAgaW4gbmFwaV9zeW5jaHJvbml6ZS4KPj4gKyAgICAgICAgKgo+PiArICAgICAgICAqICBJIHRo
-aW5rIG9uZSB3YXkgdGhpcyBjb3VsZCBoYXBwZW4gaXMgdGhhdCBhdGgxMGtfc3RvcCBjaGVja3MK
-Pj4gKyAgICAgICAgKiAgZm9yIHN0YXRlICE9IEFUSDEwS19TVEFURV9PRkYsIGJ1dCBTVEFURV9S
-RVNUQVJUSU5HIGlzIGFsc28KPj4gKyAgICAgICAgKiAgYSBwb3NzaWJpbGl0eS4gIFRoYXQgbWln
-aHQgYmUgaG93IHdlIGNhbiBoYXZlIGhpZl9zdG9wIGNhbGxlZCB0d2ljZQo+PiArICAgICAgICAq
-ICB3aXRob3V0IGEgaGlmX3N0YXJ0IGluIGJldHdlZW4uIC0tQmVuCj4+ICsgICAgICAgICovCj4+
-ICsgICAgICAgaWYgKGFyLT5uYXBpX2VuYWJsZWQpIHsKPj4gKyAgICAgICAgICAgICAgIG5hcGlf
-c3luY2hyb25pemUoJmFyLT5uYXBpKTsKPj4gKyAgICAgICAgICAgICAgIG5hcGlfZGlzYWJsZSgm
-YXItPm5hcGkpOwo+PiArICAgICAgICAgICAgICAgYXItPm5hcGlfZW5hYmxlZCA9IGZhbHNlOwo+
-PiArICAgICAgIH0KPgo+IExvb2tpbmcgYXQgdGhlIGNvZGUgYW5kIHlvdXIgY29tbWVudCB0aGUg
-ZGVzY3JpYmVkIGZhaWwgY2FzZSBzZWVtcwo+IGxlZ2l0LiBJIHdvdWxkIGNvbnNpZGVyIHR1bmlu
-ZyBhdGgxMGtfc3RvcCgpIHNvIHRoYXQgaXQgY2FsbHMKPiBhdGgxMGtfaGFsdCgpIG9ubHkgaWYg
-YXItPnN0YXRlICE9IE9GRiAmIGFyLT5zdGF0ZSAhPSBSRVNUQVJUSU5HCj4gdGhvdWdoLiBPciBk
-aWQgeW91IHRyeSBhbHJlYWR5PwoKSSBkaWQgbm90IHRyeSB0dW5pbmcgYXRoMTBrX3N0b3AoKS4g
-IFRoZSBjb2RlIGluIHRoaXMgYXJlYSBpcyBxdWl0ZSBjb21wbGV4LAphbmQgaW4gbXkgb3Bpbmlv
-biB0cnlpbmcgdG8ga2VlcCB0aGUgc3RhcnQvc3RvcCBjYWxscyBleGFjdGx5IG1hdGNoZWQgd2l0
-aG91dAppbmRpdmlkdWFsICdoYXNfc3RhcnRlZCcgZmxhZ3Mgc2VlbXMgcmlwZSBmb3IgYnVncy4K
-Cj4gV2hpbGUgeW91ciBhcHByb2FjaCB3aWxsIHByb2JhYmx5IHdvcmsgaXQgd29uJ3QgcHJldmVu
-dCBvdGhlciBub24tTkFQSQo+IGJhZCB0aGluZ3MgZnJvbSBoYXBwZW5pbmcuIEV2ZW4gaWYgdGhl
-cmUncyBub3RoaW5nIHRvZGF5IGl0IG1pZ2h0Cj4gY3JlZXAgdXAgaW4gdGhlIGZ1dHVyZS4gQW5k
-IHlvdSdkIG5lZWQgdG8gdXBkYXRlIGFoYi5jIHRvby4KCkknbGwgdXBkYXRlIGFoYi5jIHRvIG1h
-dGNoLgoKVGhhbmtzLApCZW4KCj4KPgo+IE1pY2hhxYIKPgoKCi0tIApCZW4gR3JlZWFyIDxncmVl
-YXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3
-LmNhbmRlbGF0ZWNoLmNvbQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+From: Ben Greear <greearb@candelatech.com>
+
+Calling napi_disable twice in a row (w/out starting it and/or without
+having NAPI active leads to deadlock because napi_disable sets
+NAPI_STATE_SCHED and NAPI_STATE_NPSVC when it returns, as far as I
+can tell.  So, guard this call to napi_disable.  I believe the
+failure case is something like this:
+ rmmod ath10k_pci ath10k_core
+   Firmware crashes before hif_stop is called by the rmmod path
+   The crash handling logic calls hif_stop
+   Then rmmod gets around to calling hif_stop, but spins endlessly
+   in napi_synchronize.
+
+I think one way this could happen is that ath10k_stop checks
+for state != ATH10K_STATE_OFF, but STATE_RESTARTING is also
+a possibility.  That might be how we can have hif_stop called twice
+without a hif_start in between. --Ben
+
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+* since RFC:  Added similar code to ahb
+  This seems needed back to at least 4.9 kernels.
+
+ drivers/net/wireless/ath/ath10k/ahb.c  |  9 +++++++--
+ drivers/net/wireless/ath/ath10k/core.h |  1 +
+ drivers/net/wireless/ath/ath10k/pci.c  | 25 +++++++++++++++++++++++--
+ 3 files changed, 31 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+index da770af..f826c59 100644
+--- a/drivers/net/wireless/ath/ath10k/ahb.c
++++ b/drivers/net/wireless/ath/ath10k/ahb.c
+@@ -641,6 +641,8 @@ static int ath10k_ahb_hif_start(struct ath10k *ar)
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot ahb hif start\n");
+ 
+ 	napi_enable(&ar->napi);
++	ar->napi_enabled = true;
++
+ 	ath10k_ce_enable_interrupts(ar);
+ 	ath10k_pci_enable_legacy_irq(ar);
+ 
+@@ -660,8 +662,11 @@ static void ath10k_ahb_hif_stop(struct ath10k *ar)
+ 
+ 	ath10k_pci_flush(ar);
+ 
+-	napi_synchronize(&ar->napi);
+-	napi_disable(&ar->napi);
++	if (ar->napi_enabled) {
++		napi_synchronize(&ar->napi);
++		napi_disable(&ar->napi);
++		ar->napi_enabled = false;
++	}
+ }
+ 
+ static int ath10k_ahb_hif_power_up(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 72b4495..c7ba49f 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -1205,6 +1205,7 @@ struct ath10k {
+ 	/* NAPI */
+ 	struct net_device napi_dev;
+ 	struct napi_struct napi;
++	bool napi_enabled;
+ 
+ 	struct work_struct stop_scan_work;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 398e413..9131e15 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1956,6 +1956,7 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif start\n");
+ 
+ 	napi_enable(&ar->napi);
++	ar->napi_enabled = true;
+ 
+ 	ath10k_pci_irq_enable(ar);
+ 	ath10k_pci_rx_post(ar);
+@@ -2086,8 +2087,28 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
+ 	ath10k_pci_irq_disable(ar);
+ 	ath10k_pci_irq_sync(ar);
+ 	ath10k_pci_flush(ar);
+-	napi_synchronize(&ar->napi);
+-	napi_disable(&ar->napi);
++
++	/* Calling napi_disable twice in a row (w/out starting it and/or without
++	 * having NAPI active leads to deadlock because napi_disable sets
++	 * NAPI_STATE_SCHED and NAPI_STATE_NPSVC when it returns, as far as I
++	 * can tell.  So, guard this call to napi_disable.  I believe the
++	 * failure case is something like this:
++	 * rmmod ath10k_pci ath10k_core
++	 *   Firmware crashes before hif_stop is called by the rmmod path
++	 *   The crash handling logic calls hif_stop
++         *   Then rmmod gets around to calling hif_stop, but spins endlessly
++	 *   in napi_synchronize.
++	 *
++	 *  I think one way this could happen is that ath10k_stop checks
++	 *  for state != ATH10K_STATE_OFF, but STATE_RESTARTING is also
++	 *  a possibility.  That might be how we can have hif_stop called twice
++	 *  without a hif_start in between. --Ben
++	 */
++	if (ar->napi_enabled) {
++		napi_synchronize(&ar->napi);
++		napi_disable(&ar->napi);
++		ar->napi_enabled = false;
++	}
+ 
+ 	spin_lock_irqsave(&ar_pci->ps_lock, flags);
+ 	WARN_ON(ar_pci->ps_wake_refcount > 0);
+-- 
+2.4.11
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
