@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from [196.1.105.47] (helo=sandesh.cdotd.ernet.in)
- by merlin.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eqtB8-0004nj-FS
- for ath10k@lists.infradead.org; Wed, 28 Feb 2018 04:17:27 +0000
-From: "KAVITA MATHUR" <kavitam@cdot.in>
-Subject: Re: fixed bit rate 9Mbps set as 24Mbps in g mode(legacy)
-Date: Wed, 28 Feb 2018 09:33:16 +0530
-Message-Id: <20180228035700.M28643@cdot.in>
-In-Reply-To: <3047f184-d600-7be7-52bc-2ed4cee37ffe@candelatech.com>
-References: <1519625792-12010-1-git-send-email-periyasa@codeaurora.org>
- <20180227083933.M59708@cdot.in>
- <3047f184-d600-7be7-52bc-2ed4cee37ffe@candelatech.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1er1S9-0006Ls-7p
+ for ath10k@lists.infradead.org; Wed, 28 Feb 2018 13:07:26 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: dma unmap mgmt tx buffer if wmi cmd send fails
+References: <1518169330-4934-1-git-send-email-pillair@codeaurora.org>
+Date: Wed, 28 Feb 2018 15:07:09 +0200
+In-Reply-To: <1518169330-4934-1-git-send-email-pillair@codeaurora.org>
+ (pillair@codeaurora.org's message of "Fri, 9 Feb 2018 15:12:10 +0530")
+Message-ID: <87bmg9s1oi.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,51 +19,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org, backports@vger.kernel.org
-Cc: linux-wireless@vger.kernel.org
+To: pillair@codeaurora.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-CgoKT24gVHVlLCAyNyBGZWIgMjAxOCAwODo0MTo1MCAtMDgwMCwgQmVuIEdyZWVhciB3cm90ZQo+
-IE9uIDAyLzI3LzIwMTggMTI6NDkgQU0sIEtBVklUQSBNQVRIVVIgd3JvdGU6Cj4gPiBIaSwKPiA+
-Cj4gPiBJIGhhdmUgY29uZmlndXJlZCBBUCBpbiBnIG1vZGUgYW5kIHRlc3RlZCBsZWdhY3kgcmF0
-ZXMuQWxsIGJhc2ljIHJhdGVzIGFuZCBzdXBwb3J0ZWQKPiA+IHJhdGVzKDEsMiw1LjUsMTEsNiw5
-LDEyLDE4LDI0LDM2LDQ4LDU0KSBhcmUgc2V0IGV4Y2VwdCA5TWJwcy4KPiA+Cj4gPiBXaGVuIGZp
-eGVkIGJpdCByYXRlIDlNYnBzIGlzIHNldCwgaXQgZ2V0cyBzZXQgYXMgMjQgTWJwcy4gVGhpcyBp
-c3N1ZSBoYXMgYmVlbiBvYnNlcnZlZAo+ID4gaW4gYmFja3BvcnRzLTQuNC4yLTEgYXMgd2VsbCBh
-cyBsYXRlc3QgZ2l0IHZlcnNpb24gb2YgYXRoMTBrIGRyaXZlci4KPiA+Cj4gPgo+ID4gSXMgYW55
-Ym9keSBhd2FyZSBvZiB0aGlzIGlzc3VlPyBIb3cgY2FuIEkgZml4IHRoaXMgcmF0ZSA5TWJwcz8K
-PiAKPiBZb3Ugc2hvdWxkIHNwZWNpZnkgd2hpY2ggZmlybXdhcmUvY2hpcHNldCB5b3UgYXJlIHVz
-aW5nLCBzaW5jZSB0aGlzIG1pZ2h0Cj4gZWFzaWx5IGJlIGEgZmlybXdhcmUgaXNzdWUuCgoKQ2hp
-cHNldCA6IFFDQTk4OHgKYXRoMTBrIHZlcnNpb24gOiBnaXQgMTYgb2N0IDIwMTcodjQuMTQtcmMy
-LTEtMjQtZ2M2ZGI0NzEpCmZpcm13YXJlIHZlcnNpb24gOiBmaXJtd2FyZS01LmJpbl8xMC4yLjQu
-NzAuNjYKS2VybmVsIHZlcnNpb24gOiAzLjEyIAoKPiBBbmQsIGhvdyBhcmUgeW91IGRldGVybWlu
-aW5nIHRoYXQgJ2l0IGdldHMgc2V0IHRvIDI0TWJwcycuICBJcyB0aGF0IHRoZSAKPiBlbmNvZGlu
-ZyB5b3Ugc2VlIGluIGEgd2lmaSBzbmlmZiwgb3IgaXMgdGhlIGRyaXZlciBiZWluZyBzZXQgdG8g
-MjRNYnBzIAo+IGltcHJvcGVybHkgd2hlbiB5b3UgdXNlIGl3IChvciB3aGF0ZXZlcikgdG8gdHJ5
-IGNvbmZpZ3VyaW5nIHRoZSByYXRlPwoKSSBoYXZlIHVzZWQgY29tbWFuZCAiaXcgd2xhbjAgc3Rh
-dGlvbiBkdW1wIiB0byBzZWUgc2V0IGRhdGEgcmF0ZSBhcyB3ZWxsIGFzIEkgaGF2ZQpzbmlmZmVy
-LiBNZWFzdXJlZCBkYXRhIHRocm91Z2hwdXQgaXMgYWxzbyBhcyBwZXIgMjRNYnBzLgoKCgo+IFJl
-Y2VudCB1cHN0cmVhbSBtYWM4MDIxMSBoYXMgYnJva2VuIHRoZSBhYmlsaXR5IHRvIHNldCBhIHNp
-bmdsZSB0eCByYXRlIGFzIAo+IHdlbGwsIGxhc3QgSSBjaGVja2VkLgoKT3RoZXIgcmF0ZXMgYXJl
-IHNldCBwcm9wZXJseSBleGNlcHQgOU1icHMuQnkgZGVmYXVsdCBpdCBzZXRzIGFzIDZNYnBzLCB3
-aGVuIGRhdGEKdHJhbnNmZXIgc3RhcnRzLCB0aGVuIGl0IHNldCB0byB0aGUgbWVudGlvbmVkIGZp
-eGVkIGRhdGEgcmF0ZS4KClRoYW5rcyAmIFJlZ2FyZHMsCkthdml0YQo+IFRoYW5rcywKPiBCZW4K
-PiAKPiA+Cj4gPgo+ID4gVGhhbmtzICYgUmVnYXJkcywKPiA+IEthdml0YQo+ID4KPiA+Cj4gPiAt
-LQo+ID4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vi
-c2NyaWJlIGJhY2twb3J0cyIgaW4KPiA+Cj4gCj4gLS0gCj4gQmVuIEdyZWVhciA8Z3JlZWFyYkBj
-YW5kZWxhdGVjaC5jb20+Cj4gQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNh
-bmRlbGF0ZWNoLmNvbQoKClRoYW5rcyAmIFJlZ2FyZHMsCuCkleCkteCkv+CkpOCkviDgpK7gpL7g
-pKXgpYHgpLAgS2F2aXRhIE1hdGh1ciAK4KS14KSw4KS/4KS34KWN4KSgIOCkheCkqOClgeCkuOCk
-guCkp+CkvuCkqCDgpIXgpK3gpL/gpK/gpILgpKTgpL4gIFNlbmlvciBSZXNlYXJjaCBFbmdpbmVl
-ciAK4KS44KWALeCkoeClieCknyAgICAgICAgICAgICAgICAgICAgICBDLURPVArgpIfgpLLgpYjg
-pJXgpY3gpJ/gpY3gpLDgpYngpKjgpL/gpJXgpY3gpLgg4KS44KS/4KSf4KWAIOCkq+Clh+CknOCk
-vCBJICAgICAgICAgRWxlY3Ryb25pY3MgQ2l0eSBQaGFzZSBJCuCkueCli+CkuOClguCksCDgpLDg
-pYvgpKEsIOCkrOClh+CkguCkl+CksuClguCksOClgSAgICAgICAgICAgICAgIEhvc3VyIFJvYWQs
-IEJlbmdhbHVydSDigJMgNTYwMTAwCuCkq+Cli+CkqCAgUGggMDgwLTI4NTI5ODk2CkRpc2NsYWlt
-ZXI6Ci0tLS0tLS0tLS0KVGhpcyBlbWFpbCBhbmQgYW55IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGgg
-aXQKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+pillair@codeaurora.org writes:
+
+> From: Rakesh Pillai <pillair@codeaurora.org>
+>
+> WCN3990 sends mgmt frames by reference via WMI.
+> The host dma maps the mgmt frame and sends the physical
+> address to the firmware in the wmi command. Since the
+> dma mapping is done in the gen_mgmt_tx and if the wmi
+> command send fails, the corresponding mgmt frame is
+> not being dma unmapped.
+>
+> Fix the missing dma unmapping of mgmt tx frame when
+> wmi command sending fails for mgmt tx by reference
+> via WMI. The already exisiting mgmt tx using copy by
+> value does not need such dma unmapping.
+> Add a separate wmi-tlv op for mgmt tx via ref, which
+> takes care of unmapping the dma address, in case of
+> wmi command sending failure.
+>
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+
+ath10k-check found two warnings, I fixed those in pending branch:
+
+drivers/net/wireless/ath/ath10k/wmi-ops.h:130: Alignment should match open parenthesis
+drivers/net/wireless/ath/ath10k/wmi-ops.h:380: Alignment should match open parenthesis
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
