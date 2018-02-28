@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eqqSX-0005WO-9z
- for ath10k@lists.infradead.org; Wed, 28 Feb 2018 01:23:15 +0000
-From: greearb@candelatech.com
-Subject: [RFC] ath10k:  Attempt to work around napi_synchronize hang.
-Date: Tue, 27 Feb 2018 17:22:45 -0800
-Message-Id: <1519780965-15292-1-git-send-email-greearb@candelatech.com>
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eqqsY-0000A1-Fy
+ for ath10k@lists.infradead.org; Wed, 28 Feb 2018 01:50:02 +0000
+Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
+ various chipsets
+References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
+ <CACna6rzD6z3DC6yjMCgBxgxx+DF+GGu69Ot5QA6xpJ41Ewb2=A@mail.gmail.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <82d8ac0c-b391-6099-4c7f-991cc35445aa@dd-wrt.com>
+Date: Wed, 28 Feb 2018 02:49:44 +0100
+MIME-Version: 1.0
+In-Reply-To: <CACna6rzD6z3DC6yjMCgBxgxx+DF+GGu69Ot5QA6xpJ41Ewb2=A@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,98 +21,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>
+Cc: Sebastian Gottschall <s.gottschall@newmedia-net.de>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@codeaurora.org>
 
-From: Ben Greear <greearb@candelatech.com>
-
-Calling napi_disable twice in a row (w/out starting it and/or without
-having NAPI active leads to deadlock because napi_disable sets
-NAPI_STATE_SCHED and NAPI_STATE_NPSVC when it returns, as far as I
-can tell.  So, guard this call to napi_disable.  I believe the
-failure case is something like this:
- rmmod ath10k_pci ath10k_core
-   Firmware crashes before hif_stop is called by the rmmod path
-   The crash handling logic calls hif_stop
-   Then rmmod gets around to calling hif_stop, but spins endlessly
-   in napi_synchronize.
-
-I think one way this could happen is that ath10k_stop checks
-for state != ATH10K_STATE_OFF, but STATE_RESTARTING is also
-a possibility.  That might be how we can have hif_stop called twice
-without a hif_start in between. --Ben
-
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/core.h |  1 +
- drivers/net/wireless/ath/ath10k/pci.c  | 25 +++++++++++++++++++++++--
- 2 files changed, 24 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 72b4495..c7ba49f 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -1205,6 +1205,7 @@ struct ath10k {
- 	/* NAPI */
- 	struct net_device napi_dev;
- 	struct napi_struct napi;
-+	bool napi_enabled;
- 
- 	struct work_struct stop_scan_work;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 398e413..9131e15 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1956,6 +1956,7 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif start\n");
- 
- 	napi_enable(&ar->napi);
-+	ar->napi_enabled = true;
- 
- 	ath10k_pci_irq_enable(ar);
- 	ath10k_pci_rx_post(ar);
-@@ -2086,8 +2087,28 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
- 	ath10k_pci_irq_disable(ar);
- 	ath10k_pci_irq_sync(ar);
- 	ath10k_pci_flush(ar);
--	napi_synchronize(&ar->napi);
--	napi_disable(&ar->napi);
-+
-+	/* Calling napi_disable twice in a row (w/out starting it and/or without
-+	 * having NAPI active leads to deadlock because napi_disable sets
-+	 * NAPI_STATE_SCHED and NAPI_STATE_NPSVC when it returns, as far as I
-+	 * can tell.  So, guard this call to napi_disable.  I believe the
-+	 * failure case is something like this:
-+	 * rmmod ath10k_pci ath10k_core
-+	 *   Firmware crashes before hif_stop is called by the rmmod path
-+	 *   The crash handling logic calls hif_stop
-+         *   Then rmmod gets around to calling hif_stop, but spins endlessly
-+	 *   in napi_synchronize.
-+	 *
-+	 *  I think one way this could happen is that ath10k_stop checks
-+	 *  for state != ATH10K_STATE_OFF, but STATE_RESTARTING is also
-+	 *  a possibility.  That might be how we can have hif_stop called twice
-+	 *  without a hif_start in between. --Ben
-+	 */
-+	if (ar->napi_enabled) {
-+		napi_synchronize(&ar->napi);
-+		napi_disable(&ar->napi);
-+		ar->napi_enabled = false;
-+	}
- 
- 	spin_lock_irqsave(&ar_pci->ps_lock, flags);
- 	WARN_ON(ar_pci->ps_wake_refcount > 0);
--- 
-2.4.11
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMjcuMDIuMjAxOCB1bSAyMzowOCBzY2hyaWViIFJhZmHFgiBNacWCZWNraToKPiBPbiAyNiBG
+ZWJydWFyeSAyMDE4IGF0IDA5OjQ0LCAgPHMuZ290dHNjaGFsbEBkZC13cnQuY29tPiB3cm90ZToK
+Pj4gRnJvbTogU2ViYXN0aWFuIEdvdHRzY2hhbGwgPHMuZ290dHNjaGFsbEBuZXdtZWRpYS1uZXQu
+ZGU+Cj4+Cj4+IEFkZHMgTEVEIGFuZCBHUElPIENvbnRyb2wgc3VwcG9ydCBmb3IgOTg4eCwgOTg4
+NywgOTg4OCwgOTl4MCwgOTk4NCBiYXNlZCBjaGlwc2V0cyB3aXRoIG9uIGNoaXBzZXQgY29ubmVj
+dGVkIGxlZCdzCj4+IHVzaW5nIFdNSSBGaXJtd2FyZSBBUEkuCj4+IFRoZSBMRUQgZGV2aWNlIHdp
+bGwgZ2V0IGF2YWlsYWJsZSBuYW1lZCBhcyAiYXRoMTBrLXBoeVgiIGF0IHN5c2ZzIGFuZCBjYW4g
+YmUgY29udHJvbGxlZCB3aXRoIHZhcmlvdXMgdHJpZ2dlcnMuCj4+IGFkZHMgYWxzbyBkZWJ1Z2Zz
+IGludGVyZmFjZSBmb3IgZ3BpbyBjb250cm9sLgo+IEhpIFNlYmFzdGlhbiwKPgo+IEkganVzdCBu
+b3RpY2VkIHRoaXMgcGF0Y2ggYW5kIGhhdmUgb25lIHF1ZXN0aW9uLiBJdCBzZWVtcyB5b3UgcmVn
+aXN0ZXIKPiBHUElPIGNoaXAgYW5kIHRoYXQgV2lGaSBMRUQgaXMgY29udHJvbGxlciBieSBhIEdQ
+SU8uIFNob3VsZG4ndCB5b3UgdXNlCj4gbGVkcy1ncGlvIGRyaXZlciBhbmQganVzdCByZWdpc3Rl
+ciBwbGF0Zm9ybSBkZXZpY2Ugd2l0aAo+IGdwaW9fbGVkX3BsYXRmb3JtX2RhdGE/IFRoYXQgd2F5
+IHlvdSBjb3VsZCBhdm9pZCBzb21lIGNvZGUgZHVwbGljYXRpb24KPiBJIHRoaW5rPyBJdCBzZWVt
+cyB0byBiZSB0aGUgcHVycG9zZSBvZiBsZWRzLWdwaW8gZHJpdmVyLgpsZWRzLWdwaW8gaXMgY3Jh
+cCBhbmQgbGltaXRlZC4geW91IGNhbiBqdXN0IHJlZ2lzdGVyIG9uZSBwbGF0Zm9ybSBkYXRhIAph
+dCBrZXJuZWwgcnVudGltZSBzaW5jZSBpdHMgaWRlbnRpZmllZCBieSBpdHMgb2JqZWN0IG5hbWUg
+ImxlZC1ncGlvIiBidXQgCnRoZSBrZXJuZWwgZm9yYmlkZHMgdG8gcmVnaXN0ZXIgMiBwbGF0Zm9y
+bSBkYXRhcyB3aXRoIHRoZSBzYW1lIG5hbWUKY29uc2lkZXIgdGhlIGFyNzF4eCBkZXZpY2VzIHdp
+dGggcWNhOTg4eCB3aWZpIGNoaXBzZXRzLiB0aGV5IGFsbCBoYXZlIAphbHJlYWR5IGEgbGVkIHBs
+YXRmb3JtIGRhdGEgcmVnaXN0ZXJlZAphdCBib290dGltZS4gYSBzZWNvbmQgY2FuJ3QgYmUgcmVn
+aXN0ZXJlZCBhbnltb3JlIHNvIGdwaW9fbGVkIGlzIHVzZWxlc3MgCmF0IGFsbCBmb3IgbW9zdCBk
+ZXZlbG9wZXJzIG9uIHN1Y2ggcGxhdGZvcm1zLiBpdHMgbWFpbmx5IHVzZWQgZm9yIGVhcmx5IApr
+ZXJuZWwgcGxhdGZvcm0gZGF0YSBpbml0aWFsaXNhdGlvbiBmb3Igc3lzdGVtIGxlZHMuCmF0IHRo
+ZSBiZWdpbm5pbmcgb2YgZGV2ZWxvcG1lbnQgb2YgdGhpcyBwYXRjaCBpIHN0YXJ0ZWQgaW4gdGhh
+dCB3YXkgYW5kIApmb3VuZCBvdXQgdGhpcyBsaW1pdGF0aW9uLCBzbyBpIGhhZCB0byByZXdyaXRl
+IGV2ZXJ5dGhpbmcuCnRoZSBnb29kIHBvaW50IG5vdyBpcywgaXQgd29ya3MgZXZlbiB3aXRob3V0
+IGdwaW9saWIgc3VwcG9ydCBzaW5jZSB0aGUgCmdwaW8gZGV2aWNlIGlzIGp1c3QgYSBvcHRpb24s
+IGJ1dCBub3QgcmVxdWlyZWQgZm9yIGxlZCBjb250cm9sLgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4g
+R3LDvHNzZW4gLyBSZWdhcmRzCgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEt
+TkVUIEdtYkggLSBERC1XUlQKRmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0NjI1
+IEJlbnNoZWltClJlZ2lzdGVyZ2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0
+NzMKR2VzY2jDpGZ0c2bDvGhyZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVl
+bGUKaHR0cDovL3d3dy5kZC13cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpU
+ZWwuOiArNDk2MjUxLTU4MjY1MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
