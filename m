@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x244.google.com ([2607:f8b0:400d:c09::244])
+Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1erOFP-0000fI-7B
- for ath10k@lists.infradead.org; Thu, 01 Mar 2018 13:28:49 +0000
-Received: by mail-qk0-x244.google.com with SMTP id f25so7486200qkm.0
- for <ath10k@lists.infradead.org>; Thu, 01 Mar 2018 05:27:36 -0800 (PST)
+ id 1erY4Y-00040f-J2
+ for ath10k@lists.infradead.org; Thu, 01 Mar 2018 23:57:16 +0000
+Received: by mail-io0-x244.google.com with SMTP id l12so9027862ioc.10
+ for <ath10k@lists.infradead.org>; Thu, 01 Mar 2018 15:57:03 -0800 (PST)
+Date: Thu, 1 Mar 2018 15:56:59 -0800
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH] ath10k: fix use-after-free in ath10k_wmi_cmd_send_nowait
+Message-ID: <20180301235655.GA127455@rodete-desktop-imager.corp.google.com>
+References: <1518317805-5796-1-git-send-email-cjhuang@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <588e4d951bd84ea29dfc1a68353505e7@aphydexm01b.ap.qualcomm.com>
-References: <1518685448-15317-1-git-send-email-govinds@codeaurora.org>
- <877eqwqfml.fsf@kamboji.qca.qualcomm.com>
- <CAK8P3a1KomtVHMidxtmx_gRF+92MWdHmeG0eTbcfUpbAaDPe3g@mail.gmail.com>
- <588e4d951bd84ea29dfc1a68353505e7@aphydexm01b.ap.qualcomm.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 1 Mar 2018 14:27:35 +0100
-Message-ID: <CAK8P3a06sDwL8iech_L3Q-zGxio3_RD8c7_-L3HHmFmb=Pq2UQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Enable IOMMU support for WCN3990 target
+Content-Disposition: inline
+In-Reply-To: <1518317805-5796-1-git-send-email-cjhuang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +25,61 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Govind Singh <govinds@qti.qualcomm.com>
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Kalle Valo <kvalo@codeaurora.org>
+To: Carl Huang <cjhuang@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thu, Mar 1, 2018 at 2:18 PM, Govind Singh <govinds@qti.qualcomm.com> wrote:
->>> The asm/dma-iommu.h header file exsists only on arm32, no other architecture.
->>> I'm not sure about the purpose of the patch to start with:
->>> it's normally up to the platform code to allocate IOMMU domains, device drivers should only need to manually interact with the IOMMU layer if they need more than one domain, but this ath10k patch appears to be using the default domain and should have no effect as long as the platform code works correctly.
-> Thanks Arnd, I have fixed this and migrated to  64bit API's(iommu_attach_device/iommu_detach_device/ iommu_get_domain_for_dev), will share the next revision.
-> I tried using the default domain by adding the stream ID and mask in dt and no manual interaction, but it is resulting in TZ error and unhandled context fault.
-> Seems I need to provide explicit mapping range(aperture_start/ aperture_end) as this is only working combination for me..
+On Sun, Feb 11, 2018 at 10:56:45AM +0800, Carl Huang wrote:
+> The skb may be freed in tx completion context before
+> trace_ath10k_wmi_cmd is called. This can be easily captured
+> when KASAN(Kernel Address Sanitizer) is enabled. The fix is
+> to add a reference count to the skb and release it after
+> trace_ath10k_wmi_cmd is called.
+> 
+> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/wmi.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index 58dc218..e63aedb 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -1,6 +1,7 @@
+>  /*
+>   * Copyright (c) 2005-2011 Atheros Communications Inc.
+>   * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
+> + * Copyright (c) 2018, The Linux Foundation. All rights reserved.
 
-I don't see why you need to do that at all, can you clarify?
+I agree with Felix that this seems excessive for a 2-line bugfix. But
+I'm not a lawyer or a maintainer, and I have no power here :)
 
-The IOMMU should be set up implicitly for you here based on the iommus
-property in DT,
-with no driver changes at all. This should work on all architectures/
+(On the practical side: it's annoying that the copyright line has to be
+the one to provide conflicts when backporting.)
 
-       Arnd
+>   *
+>   * Permission to use, copy, modify, and/or distribute this software for any
+>   * purpose with or without fee is hereby granted, provided that the above
+> @@ -1742,8 +1743,10 @@ int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
+>  	cmd_hdr->cmd_id = __cpu_to_le32(cmd);
+>  
+>  	memset(skb_cb, 0, sizeof(*skb_cb));
+> +	skb_get(skb);
+>  	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb);
+>  	trace_ath10k_wmi_cmd(ar, cmd_id, skb->data, skb->len, ret);
+> +	dev_kfree_skb(skb);
+
+Tested-by: Brian Norris <briannorris@chromium.org>
+
+It does feel like capturing before the command is sent might make more
+sense. Otherwise, you may be concurrently dumping the buffer and DMA'ing
+to a device. If you really need to trace the return code, you could do
+that separately.
+
+Brian
+
+>  
+>  	if (ret)
+>  		goto err_pull;
 
 _______________________________________________
 ath10k mailing list
