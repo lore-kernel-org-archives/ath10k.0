@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ergbB-0003ZD-8b
- for ath10k@lists.infradead.org; Fri, 02 Mar 2018 09:03:32 +0000
-Date: Fri, 2 Mar 2018 10:03:12 +0100
-From: Pavel Machek <pavel@ucw.cz>
+ id 1ergta-0006oa-Li
+ for ath10k@lists.infradead.org; Fri, 02 Mar 2018 09:22:33 +0000
 Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
  various chipsets
-Message-ID: <20180302090312.GA30267@amd>
 References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
  <CACna6rzD6z3DC6yjMCgBxgxx+DF+GGu69Ot5QA6xpJ41Ewb2=A@mail.gmail.com>
  <82d8ac0c-b391-6099-4c7f-991cc35445aa@dd-wrt.com>
+ <20180302090312.GA30267@amd>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <e77d25d4-a824-380a-c51a-e81175ba6205@dd-wrt.com>
+Date: Fri, 2 Mar 2018 10:22:14 +0100
 MIME-Version: 1.0
-In-Reply-To: <82d8ac0c-b391-6099-4c7f-991cc35445aa@dd-wrt.com>
+In-Reply-To: <20180302090312.GA30267@amd>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,80 +23,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1409271423037332912=="
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, Kalle Valo <kvalo@codeaurora.org>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, Kalle Valo <kvalo@codeaurora.org>
+
+>> leds-gpio is crap and limited. you can just register one platform data at
+>> kernel runtime since its identified by its object name "led-gpio" but the
+>> kernel forbidds to register 2 platform datas with the same name
+>> consider the ar71xx devices with qca988x wifi chipsets. they all have
+>> already a led platform data registered
+>> at boottime. a second can't be registered anymore so gpio_led is useless=
+ at
+>> all for most developers on such platforms. its mainly used for early ker=
+nel
+>> platform data initialisation for system leds.
+> If leds-gpio has limitations, please fix those, rather then
+> introducing duplicated code.
+there is no duplicated code introduced and there is no solution for it. =
+
+consider that all wifi drivers with softled support
+are going that way with registering a own led driver. see ath9k for =
+
+instance. gpio-led cannot be used for it and there is no way to
+support multiple platform datas with the same name. its a kernel limitation
+
+Sebastian
+>
+> NAK.
+> 									Pavel
 
 
---===============1409271423037332912==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pWyiEgJYm5f9v55/"
-Content-Disposition: inline
+-- =
 
+Mit freundlichen Gr=FCssen / Regards
 
---pWyiEgJYm5f9v55/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sebastian Gottschall / CTO
 
-Hi!
+NewMedia-NET GmbH - DD-WRT
+Firmensitz:  Stubenwaldallee 21a, 64625 Bensheim
+Registergericht: Amtsgericht Darmstadt, HRB 25473
+Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
+http://www.dd-wrt.com
+email: s.gottschall@dd-wrt.com
+Tel.: +496251-582650 / Fax: +496251-5826565
 
-> >>adds also debugfs interface for gpio control.
-> >Hi Sebastian,
-> >
-> >I just noticed this patch and have one question. It seems you register
-> >GPIO chip and that WiFi LED is controller by a GPIO. Shouldn't you use
-> >leds-gpio driver and just register platform device with
-> >gpio_led_platform_data? That way you could avoid some code duplication
-> >I think? It seems to be the purpose of leds-gpio driver.
-
-> leds-gpio is crap and limited. you can just register one platform data at
-> kernel runtime since its identified by its object name "led-gpio" but the
-> kernel forbidds to register 2 platform datas with the same name
-> consider the ar71xx devices with qca988x wifi chipsets. they all have
-> already a led platform data registered
-> at boottime. a second can't be registered anymore so gpio_led is useless =
-at
-> all for most developers on such platforms. its mainly used for early kern=
-el
-> platform data initialisation for system leds.
-
-If leds-gpio has limitations, please fix those, rather then
-introducing duplicated code.
-
-NAK.
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---pWyiEgJYm5f9v55/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlqZE1AACgkQMOfwapXb+vIeLQCfc0gqxgg5FfWUqBHeEy5lb4Ia
-SNYAn1e8wy+tzVSTus6fTnA8FMLkNUXx
-=5wqF
------END PGP SIGNATURE-----
-
---pWyiEgJYm5f9v55/--
-
-
---===============1409271423037332912==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============1409271423037332912==--
