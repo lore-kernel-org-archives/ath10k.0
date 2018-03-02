@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eriuV-0005Sh-Uj
- for ath10k@lists.infradead.org; Fri, 02 Mar 2018 11:31:38 +0000
-From: s.gottschall@dd-wrt.com
-Subject: [PATCH v2] ath9k: fix crash in spectral scan
-Date: Fri,  2 Mar 2018 12:31:09 +0100
-Message-Id: <20180302113109.26466-1-s.gottschall@dd-wrt.com>
+ id 1erlHh-00083G-Mm
+ for ath10k@lists.infradead.org; Fri, 02 Mar 2018 14:03:49 +0000
+From: Karthikeyan Periyasamy <periyasa@codeaurora.org>
+Subject: [PATCHv2] Revert "ath10k: send (re)assoc peer command when NSS
+ changed"
+Date: Fri,  2 Mar 2018 19:33:17 +0530
+Message-Id: <1519999397-8697-1-git-send-email-periyasa@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,151 +21,156 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org, kvalo@codeaurora.org
+To: ath10k@lists.infradead.org
+Cc: Karthikeyan Periyasamy <periyasa@codeaurora.org>, linux-wireless@vger.kernel.org
 
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+This reverts commit 55884c045d31a29cf69db8332d1064a1b61dd159.
 
-fixes crash seen on arm smp systems (gateworks ventana imx6)
+When Ath10k is in AP mode and an unassociated STA sends a VHT action frame
+(Operating Mode Notification for the NSS change) periodically to AP this causes
+ath10k to call ath10k_station_assoc() which sends WMI_PEER_ASSOC_CMDID during
+NSS update. Over the time (with a certain client it can happen within 15 mins
+when there are over 500 of these VHT action frames) continuous calls of
+WMI_PEER_ASSOC_CMDID cause firmware to assert due to resource exhaust.
 
-Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+To my knowledge setting WMI_PEER_NSS peer param itself enough to handle NSS
+updates and no need to call ath10k_station_assoc(). So revert the original
+commit from 2014 as it's unclear why the change was really needed.
+Now the firmware assert doesn't happen anymore.
 
-v2: fix wrong field and add signed-off-by
+Issue observed in QCA9984 platform with firmware version:10.4-3.5.3-00053.
+This Change tested in QCA9984 with firmware version: 10.4-3.5.3-00053 and
+QCA988x platform with firmware version: 10.2.4-1.0-00036.
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000014
-pgd = 80004000
-[00000014] *pgd=00000000
-Internal error: Oops - BUG: 17 [#1] PREEMPT SMP ARM
-Modules linked in: ip6table_filter nf_conntrack_ipv6 ip6_tables nf_log_ipv6 nf_defrag_ipv6 shortcut_fe ipcomp6 xfrm_ipcomp xfrm6_tunnel xfrm6_mode_tunnel xfrm6_mode_transport xfrm6_mode_ro xfrm6_mode_beet ip6_tunnel tunnel6 mip6 ah6 esp6 xfrm_algo sit ip_tunnel tunnel4 ipv6 ath10k_pci ath10k_core ath9k ath mac80211 cfg80211 compat ath_pci ath_hal(P) caamalg authencesn authenc caamrng caamhash caam_jr caam cdc_ncm usbnet usbcore sky2 imx2_wdt
-CPU: 0 PID: 3 Comm: ksoftirqd/0 Tainted: P                4.9.85 #19
-Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-task: bf064980 task.stack: bf07c000
-PC is at relay_buf_full+0xc/0x30
-LR is at _674+0x740/0xf10 [ath9k]
-pc : [<8018bce0>]    lr : [<7f1aa604>]    psr: 80000013
-sp : bf07dbf0  ip : bf07dc00  fp : bf07dbfc
-r10: 0000003f  r9 : bf130e00  r8 : 809044b0
-r7 : 00000000  r6 : be67a9f0  r5 : 00000000  r4 : 809043e4
-r3 : c0864c24  r2 : 00000000  r1 : 00000004  r0 : 00000000
-Flags: Nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: 10c5387d  Table: 4e6a004a  DAC: 00000055
-Process ksoftirqd/0 (pid: 3, stack limit = 0xbf07c210)
-Stack: (0xbf07dbf0 to 0xbf07e000)
-dbe0:                                     bf07dd04 bf07dc00 7f1aa604 8018bce0
-dc00: 00004014 be59e010 bf07dc34 bf07dc18 7f1a7084 7f19c07c be59c010 be6470a0
-dc20: 0000096c be648954 bf07dc6c bf07dc38 7f1c286c bf07dd90 bf07dc5c bf07dc48
-dc40: 8029ea4c 0000003c 00000001 be59c010 00000094 00000000 00000000 00000000
-dc60: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-dc80: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-dca0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-dcc0: 00000000 00000000 00000000 00000000 00000000 00000000 8010ef24 00000030
-dce0: be94f5e8 be6485a0 bddf0200 be59c010 be6465a0 be6415a0 bf07ddf4 bf07dd08
-dd00: 7f1cf800 7f1aa55c 1fc38c4c 00000000 bf07dd58 cccccccd 66666667 be640bc0
-dd20: bf07dd54 be6415a0 1fc38c4c 00000000 00000000 be59c038 be67a9c0 be59e010
-dd40: be67a9f0 be647170 8090c904 be59c010 00000000 00000001 1fc38e84 00000000
-dd60: be640bc0 bddf0200 00000200 00000010 0000003f 00000002 20000013 be59c010
-dd80: 8092d940 bf7ca2c0 bf07ddb4 bf07dd98 1fc38c4c 2602003f 0100ff1b 80ff1b00
-dda0: 00808080 00000000 00000000 80808080 80808080 80808080 80808080 00008080
-ddc0: 00000000 00000000 7f1b62b8 00000002 be6470ec be6470f0 00000000 bf07de98
-dde0: 8092d940 be6415a0 bf07de94 bf07ddf8 7f1d1ed8 7f1cf1fc 00000000 00000000
-de00: bf7cc4c0 00000400 be6470f0 bf07de18 8015165c be59c010 8090453c 8090453c
-de20: bf07dec4 be6465a0 8014f614 80148884 0000619a 00000001 bf07c000 00000100
-de40: bf07de78 00000001 7f327850 00000002 afb50401 bf064980 bf07de9c bf07de68
-de60: bf064a00 803cc668 bf064a00 be6470b4 be6470b8 80844180 00000000 bf07de98
-de80: 8092d940 bf07c000 bf07dec4 bf07de98 80124d18 7f1d1c44 80124c94 00000000
-dea0: 00000006 80902098 80902080 40000006 00000100 bf07c000 bf07df24 bf07dec8
-dec0: 8012501c 80124ca0 bf7cc4c0 bf064980 be95e1c0 04208040 80902d00 000061c7
-dee0: 0000000a 80600b54 8092d940 808441f8 80902080 bf07dec8 bf03b200 bf07c000
-df00: bf03b200 8090fe54 00000000 00000000 00000000 00000000 bf07df34 bf07df28
-df20: 80125148 80124f28 bf07df5c bf07df38 8013deb4 8012511c 00000000 bf03b240
-df40: bf03b200 8013dc90 00000000 00000000 bf07dfac bf07df60 8013ad40 8013dc9c
-df60: 70448040 00000001 00000000 bf03b200 00000000 00030003 bf07df78 bf07df78
-df80: 00000000 00000000 bf07df88 bf07df88 bf03b240 8013ac48 00000000 00000000
-dfa0: 00000000 bf07dfb0 80107760 8013ac54 00000000 00000000 00000000 00000000
-dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-dfe0: 00000000 00000000 00000000 00000000 00000013 00000000 8c120004 1190ad04
-Backtrace:
-[<8018bcd4>] (relay_buf_full) from [<7f1aa604>] (_674+0x740/0xf10 [ath9k])
-[<7f1aa550>] (_674 [ath9k]) from [<7f1cf800>] (_582+0x14b4/0x3708 [ath9k])
- r10:be6415a0 r9:be6465a0 r8:be59c010 r7:bddf0200 r6:be6485a0 r5:be94f5e8
- r4:00000030
-[<7f1cf1f0>] (_582 [ath9k]) from [<7f1d1ed8>] (_735+0x2a0/0xec4 [ath9k])
- r10:be6415a0 r9:8092d940 r8:bf07de98 r7:00000000 r6:be6470f0 r5:be6470ec
- r4:00000002
-[<7f1d1c38>] (_735 [ath9k]) from [<80124d18>] (tasklet_action+0x84/0xf8)
- r10:bf07c000 r9:8092d940 r8:bf07de98 r7:00000000 r6:80844180 r5:be6470b8
- r4:be6470b4
-[<80124c94>] (tasklet_action) from [<8012501c>] (__do_softirq+0x100/0x1f4)
- r10:bf07c000 r9:00000100 r8:40000006 r7:80902080 r6:80902098 r5:00000006
- r4:00000000 r3:80124c94
-[<80124f1c>] (__do_softirq) from [<80125148>] (run_ksoftirqd+0x38/0x4c)
- r10:00000000 r9:00000000 r8:00000000 r7:00000000 r6:8090fe54 r5:bf03b200
- r4:bf07c000
-[<80125110>] (run_ksoftirqd) from [<8013deb4>] (smpboot_thread_fn+0x224/0x260)
-[<8013dc90>] (smpboot_thread_fn) from [<8013ad40>] (kthread+0xf8/0x100)
- r9:00000000 r8:00000000 r7:8013dc90 r6:bf03b200 r5:bf03b240 r4:00000000
-[<8013ac48>] (kthread) from [<80107760>] (ret_from_fork+0x14/0x34)
- r7:00000000 r6:00000000 r5:8013ac48 r4:bf03b240
-Code: e89da800 e1a0c00d e92dd800 e24cb004 (e5901014)
----[ end trace dddf11ac9111b272 ]---
-Kernel panic - not syncing: Fatal exception in interrupt
-CPU1: stopping
-CPU: 1 PID: 0 Comm: swapper/1 Tainted: P      D         4.9.85 #19
-Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-Backtrace:
-[<8010a708>] (dump_backtrace) from [<8010a99c>] (show_stack+0x18/0x1c)
- r7:bf093f58 r6:20000193 r5:809168e8 r4:00000000
-[<8010a984>] (show_stack) from [<802a09c4>] (dump_stack+0x94/0xa8)
-[<802a0930>] (dump_stack) from [<8010d184>] (handle_IPI+0xe8/0x180)
- r7:bf093f58 r6:00000000 r5:00000001 r4:808478c4
-[<8010d09c>] (handle_IPI) from [<801013e8>] (gic_handle_irq+0x78/0x7c)
- r7:f4000100 r6:bf093f58 r5:f400010c r4:8090467c
-[<80101370>] (gic_handle_irq) from [<8010b378>] (__irq_svc+0x58/0x8c)
-Exception stack(0xbf093f58 to 0xbf093fa0)
-3f40:                                                       bf7d62a0 00000000
-3f60: 0010a5f4 80113460 bf092000 809043e4 00000002 80904434 bf092008 412fc09a
-3f80: 00000000 bf093fb4 bf093fb8 bf093fa8 8010804c 80108050 60000013 ffffffff
- r9:bf092000 r8:bf092008 r7:bf093f8c r6:ffffffff r5:60000013 r4:80108050
-[<80108014>] (arch_cpu_idle) from [<80553c2c>] (default_idle_call+0x30/0x34)
-[<80553bfc>] (default_idle_call) from [<80158394>] (cpu_startup_entry+0xc4/0xfc)
-[<801582d0>] (cpu_startup_entry) from [<8010ce40>] (secondary_start_kernel+0x168/0x174)
- r7:8092d2f8 r4:80913568
-[<8010ccd8>] (secondary_start_kernel) from [<10101488>] (0x10101488)
- r5:00000055 r4:4f07806a
-Rebooting in 10 seconds..
-Reboot failed -- System halted
+Firmware Assert log:
+
+ath10k_pci 0002:01:00.0: firmware crashed! (guid e61f1274-9acd-4c5b-bcca-e032ea6e723c)
+ath10k_pci 0002:01:00.0: qca9984/qca9994 hw1.0 target 0x01000000 chip_id 0x00000000 sub 168c:cafe
+ath10k_pci 0002:01:00.0: kconfig debug 1 debugfs 1 tracing 0 dfs 1 testmode 1
+ath10k_pci 0002:01:00.0: firmware ver 10.4-3.5.3-00053 api 5 features no-p2p,mfp,peer-flow-ctrl,btcoex-param,allows-mesh-bcast crc32 4c56a386
+ath10k_pci 0002:01:00.0: board_file api 2 bmi_id 0:4 crc32 c2271344
+ath10k_pci 0002:01:00.0: htt-ver 2.2 wmi-op 6 htt-op 4 cal otp max-sta 512 raw 0 hwcrypto 1
+ath10k_pci 0002:01:00.0: firmware register dump:
+ath10k_pci 0002:01:00.0: [00]: 0x0000000A 0x000015B3 0x00981E5F 0x00975B31
+ath10k_pci 0002:01:00.0: [04]: 0x00981E5F 0x00060530 0x00000011 0x00446C60
+ath10k_pci 0002:01:00.0: [08]: 0x0042F1FC 0x00458080 0x00000017 0x00000000
+ath10k_pci 0002:01:00.0: [12]: 0x00000009 0x00000000 0x00973ABC 0x00973AD2
+ath10k_pci 0002:01:00.0: [16]: 0x00973AB0 0x00960E62 0x009606CA 0x00000000
+ath10k_pci 0002:01:00.0: [20]: 0x40981E5F 0x004066DC 0x00400000 0x00981E34
+ath10k_pci 0002:01:00.0: [24]: 0x80983B48 0x0040673C 0x000000C0 0xC0981E5F
+ath10k_pci 0002:01:00.0: [28]: 0x80993DEB 0x0040676C 0x00431AB8 0x0045D0C4
+ath10k_pci 0002:01:00.0: [32]: 0x80993E5C 0x004067AC 0x004303C0 0x0045D0C4
+ath10k_pci 0002:01:00.0: [36]: 0x80994AAB 0x004067DC 0x00000000 0x0045D0C4
+ath10k_pci 0002:01:00.0: [40]: 0x809971A0 0x0040681C 0x004303C0 0x00441B00
+ath10k_pci 0002:01:00.0: [44]: 0x80991904 0x0040688C 0x004303C0 0x0045D0C4
+ath10k_pci 0002:01:00.0: [48]: 0x80963AD3 0x00406A7C 0x004303C0 0x009918FC
+ath10k_pci 0002:01:00.0: [52]: 0x80960E80 0x00406A9C 0x0000001F 0x00400000
+ath10k_pci 0002:01:00.0: [56]: 0x80960E51 0x00406ACC 0x00400000 0x00000000
+ath10k_pci 0002:01:00.0: Copy Engine register dump:
+ath10k_pci 0002:01:00.0: index: addr: sr_wr_idx: sr_r_idx: dst_wr_idx: dst_r_idx:
+ath10k_pci 0002:01:00.0: [00]: 0x0004a000 15 15 3 3
+ath10k_pci 0002:01:00.0: [01]: 0x0004a400 17 17 212 213
+ath10k_pci 0002:01:00.0: [02]: 0x0004a800 21 21 20 21
+ath10k_pci 0002:01:00.0: [03]: 0x0004ac00 25 25 27 25
+ath10k_pci 0002:01:00.0: [04]: 0x0004b000 515 515 144 104
+ath10k_pci 0002:01:00.0: [05]: 0x0004b400 28 28 155 156
+ath10k_pci 0002:01:00.0: [06]: 0x0004b800 12 12 12 12
+ath10k_pci 0002:01:00.0: [07]: 0x0004bc00 1 1 1 1
+ath10k_pci 0002:01:00.0: [08]: 0x0004c000 0 0 127 0
+ath10k_pci 0002:01:00.0: [09]: 0x0004c400 1 1 1 1
+ath10k_pci 0002:01:00.0: [10]: 0x0004c800 0 0 0 0
+ath10k_pci 0002:01:00.0: [11]: 0x0004cc00 0 0 0 0
+ath10k_pci 0002:01:00.0: CE[1] write_index 212 sw_index 213 hw_index 0 nentries_mask 0x000001ff
+ath10k_pci 0002:01:00.0: CE[2] write_index 20 sw_index 21 hw_index 0 nentries_mask 0x0000007f
+ath10k_pci 0002:01:00.0: CE[5] write_index 155 sw_index 156 hw_index 0 nentries_mask 0x000001ff
+ath10k_pci 0002:01:00.0: DMA addr: nbytes: meta data: byte swap: gather:
+ath10k_pci 0002:01:00.0: [455]: 0x580c0042 0 0 0 0
+ath10k_pci 0002:01:00.0: [456]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [457]: 0x580c0042 0 0 0 0
+ath10k_pci 0002:01:00.0: [458]: 0x594a0038 0 0 0 1
+ath10k_pci 0002:01:00.0: [459]: 0x580c0a42 0 0 0 0
+ath10k_pci 0002:01:00.0: [460]: 0x594a0060 0 0 0 1
+ath10k_pci 0002:01:00.0: [461]: 0x580c0c42 0 0 0 0
+ath10k_pci 0002:01:00.0: [462]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [463]: 0x580c0c42 0 0 0 0
+ath10k_pci 0002:01:00.0: [464]: 0x594a0038 0 0 0 1
+ath10k_pci 0002:01:00.0: [465]: 0x580c0a42 0 0 0 0
+ath10k_pci 0002:01:00.0: [466]: 0x594a0060 0 0 0 1
+ath10k_pci 0002:01:00.0: [467]: 0x580c0042 0 0 0 0
+ath10k_pci 0002:01:00.0: [468]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [469]: 0x580c1c42 0 0 0 0
+ath10k_pci 0002:01:00.0: [470]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [471]: 0x580c1c42 0 0 0 0
+ath10k_pci 0002:01:00.0: [472]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [473]: 0x580c1c42 0 0 0 0
+ath10k_pci 0002:01:00.0: [474]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [475]: 0x580c0642 0 0 0 0
+ath10k_pci 0002:01:00.0: [476]: 0x594a0038 0 0 0 1
+ath10k_pci 0002:01:00.0: [477]: 0x580c0842 0 0 0 0
+ath10k_pci 0002:01:00.0: [478]: 0x594a0060 0 0 0 1
+ath10k_pci 0002:01:00.0: [479]: 0x580c0042 0 0 0 0
+ath10k_pci 0002:01:00.0: [480]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [481]: 0x580c0042 0 0 0 0
+ath10k_pci 0002:01:00.0: [482]: 0x594a0038 0 0 0 1
+ath10k_pci 0002:01:00.0: [483]: 0x580c0842 0 0 0 0
+ath10k_pci 0002:01:00.0: [484]: 0x594a0060 0 0 0 1
+ath10k_pci 0002:01:00.0: [485]: 0x580c0642 0 0 0 0
+ath10k_pci 0002:01:00.0: [486]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [487]: 0x580c0642 0 0 0 0
+ath10k_pci 0002:01:00.0: [488]: 0x594a0038 0 0 0 1
+ath10k_pci 0002:01:00.0: [489]: 0x580c0842 0 0 0 0
+ath10k_pci 0002:01:00.0: [490]: 0x594a0060 0 0 0 1
+ath10k_pci 0002:01:00.0: [491]: 0x580c0042 0 0 0 0
+ath10k_pci 0002:01:00.0: [492]: 0x58174040 0 1 0 0
+ath10k_pci 0002:01:00.0: [493]: 0x5a946040 0 1 0 0
+ath10k_pci 0002:01:00.0: [494]: 0x59909040 0 1 0 0
+ath10k_pci 0002:01:00.0: [495]: 0x5ae5a040 0 1 0 0
+ath10k_pci 0002:01:00.0: [496]: 0x58096040 0 1 0 0
+ath10k_pci 0002:01:00.0: [497]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [498]: 0x580c0642 0 0 0 0
+ath10k_pci 0002:01:00.0: [499]: 0x5c1e0040 0 1 0 0
+ath10k_pci 0002:01:00.0: [500]: 0x58153040 0 1 0 0
+ath10k_pci 0002:01:00.0: [501]: 0x58129040 0 1 0 0
+ath10k_pci 0002:01:00.0: [502]: 0x5952f040 0 1 0 0
+ath10k_pci 0002:01:00.0: [503]: 0x59535040 0 1 0 0
+ath10k_pci 0002:01:00.0: [504]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [505]: 0x580c0042 0 0 0 0
+ath10k_pci 0002:01:00.0: [506]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [507]: 0x580c0042 0 0 0 0
+ath10k_pci 0002:01:00.0: [508]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [509]: 0x580c0042 0 0 0 0
+ath10k_pci 0002:01:00.0: [510]: 0x594a0010 0 0 0 1
+ath10k_pci 0002:01:00.0: [511]: 0x580c0042 0 0 0 0
+ath10k_pci 0002:01:00.0: [512]: 0x5adcc040 0 1 0 0
+ath10k_pci 0002:01:00.0: [513]: 0x5cf3d040 0 1 0 0
+ath10k_pci 0002:01:00.0: [514]: 0x5c1e9040 64 1 0 0
+ath10k_pci 0002:01:00.0: [515]: 0x00000000 0 0 0 0
+
+Signed-off-by: Karthikeyan Periyasamy <periyasa@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath9k/common-spectral.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+v2: Added Firmware Assert log
 
-diff --git a/drivers/net/wireless/ath/ath9k/common-spectral.c b/drivers/net/wireless/ath/ath9k/common-spectral.c
-index 5e77fe1f5b0d..f14a94090900 100644
---- a/drivers/net/wireless/ath/ath9k/common-spectral.c
-+++ b/drivers/net/wireless/ath/ath9k/common-spectral.c
-@@ -479,14 +479,16 @@ ath_cmn_is_fft_buf_full(struct ath_spec_scan_priv *spec_priv)
- {
- 	int i = 0;
- 	int ret = 0;
-+	struct rchan_buf *buf;
- 	struct rchan *rc = spec_priv->rfs_chan_spec_scan;
+ drivers/net/wireless/ath/ath10k/mac.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ebb3f1b..800a86e 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6028,9 +6028,8 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
+ 				    sta->addr, smps, err);
+ 	}
  
--	for_each_online_cpu(i)
--		ret += relay_buf_full(*per_cpu_ptr(rc->buf, i));
--
--	i = num_online_cpus();
-+	for_each_possible_cpu(i) {
-+		if ((buf = *per_cpu_ptr(chan->buf, i))) {
-+			ret += relay_buf_full(buf);
-+		}
-+	}
+-	if (changed & IEEE80211_RC_SUPP_RATES_CHANGED ||
+-	    changed & IEEE80211_RC_NSS_CHANGED) {
+-		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM supp rates/nss\n",
++	if (changed & IEEE80211_RC_SUPP_RATES_CHANGED) {
++		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac update sta %pM supp rates\n",
+ 			   sta->addr);
  
--	if (ret == i)
-+	if (ret)
- 		return 1;
- 	else
- 		return 0;
+ 		err = ath10k_station_assoc(ar, arvif->vif, sta, true);
 -- 
-2.14.1
+1.9.1
 
 
 _______________________________________________
