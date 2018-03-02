@@ -2,12 +2,12 @@ Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
  helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1erip8-00038r-Uq
- for ath10k@lists.infradead.org; Fri, 02 Mar 2018 11:26:06 +0000
+ id 1eriuV-0005Sh-Uj
+ for ath10k@lists.infradead.org; Fri, 02 Mar 2018 11:31:38 +0000
 From: s.gottschall@dd-wrt.com
-Subject: [PATCH v1] ath9k: fix crash in spectral scan
-Date: Fri,  2 Mar 2018 12:25:35 +0100
-Message-Id: <20180302112535.25918-1-s.gottschall@dd-wrt.com>
+Subject: [PATCH v2] ath9k: fix crash in spectral scan
+Date: Fri,  2 Mar 2018 12:31:09 +0100
+Message-Id: <20180302113109.26466-1-s.gottschall@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,6 +27,10 @@ Cc: Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org, 
 From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
 fixes crash seen on arm smp systems (gateworks ventana imx6)
+
+Signed-off-by: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+
+v2: fix wrong field and add signed-off-by
 
 Unable to handle kernel NULL pointer dereference at virtual address 00000014
 pgd = 80004000
