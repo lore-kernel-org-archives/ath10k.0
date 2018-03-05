@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from narfation.org ([2001:4d88:2000:7::2] helo=v3-1039.vlinux.de)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eskm6-0004uI-Ra
- for ath10k@lists.infradead.org; Mon, 05 Mar 2018 07:43:12 +0000
-From: Sven Eckelmann <sven@narfation.org>
+ id 1esndX-0000wW-Tj
+ for ath10k@lists.infradead.org; Mon, 05 Mar 2018 10:46:37 +0000
+MIME-Version: 1.0
+Date: Mon, 05 Mar 2018 16:16:21 +0530
+From: akolli@codeaurora.org
 Subject: Re: [PATCH 2/2] ath10k: add debugfs support to configure fwtest
  parameters
-Date: Mon, 05 Mar 2018 08:42:53 +0100
-Message-ID: <1974303.3lPsqGCgIZ@bentobox>
-In-Reply-To: <1520233148-26050-3-git-send-email-akolli@codeaurora.org>
+In-Reply-To: <1974303.3lPsqGCgIZ@bentobox>
 References: <1520233148-26050-1-git-send-email-akolli@codeaurora.org>
  <1520233148-26050-3-git-send-email-akolli@codeaurora.org>
-MIME-Version: 1.0
+ <1974303.3lPsqGCgIZ@bentobox>
+Message-ID: <53a3580c002d7af01668f4716aae56bd@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,72 +21,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0881888724203347445=="
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Anilkumar Kolli <akolli@codeaurora.org>
+To: Sven Eckelmann <sven@narfation.org>
 Cc: Sathishkumar Muruganandam <murugana@codeaurora.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
---===============0881888724203347445==
-Content-Type: multipart/signed; boundary="nextPart2180520.GZCWctjGSx"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-
---nextPart2180520.GZCWctjGSx
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-
-On Montag, 5. M=E4rz 2018 12:29:08 CET Anilkumar Kolli wrote:
-> @@ -496,6 +497,8 @@ struct ath10k_debug {
->         u32 reg_addr;
->         u32 nf_cal_period;
->         void *cal_data;
-> +       u32 fw_test_param_id;
-> +       u32 fw_test_param_value;
->  };
-
-Why is it necessary to have these two values in ath10k_debug? They seem to =
-be=20
-used only in the context of ath10k_write_fw_test().
-
-Where can we find the documentation of the possible param_id and param_valu=
-es?
-
-Kind regards,
-	Sven
---nextPart2180520.GZCWctjGSx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlqc9P0ACgkQXYcKB8Em
-e0ZJWRAAuw8DpbZQ5RRZL46kjbk5cL5Ej/+A0fOl6e5KG97YrbyHp40grRR0EmbW
-Fj8wfLzeE4zUG4y+42hPArnXjIhHLF18VMwGMix/U7wfiQlHou/8kFGulqwovNXy
-qhA5K/DYcHYuOegBXfYeSxGIQqSULo9H2bIIobWlYYHpQHdYzO5ndjfojeJ/apna
-eLgZGlSzJ0fHh30qMr8pdPmsMg9+LAC8M3TKbBvRm9rMG5vyyP3lRqhXoCjR1NVH
-NSbcaaLx//kChoJJxm7H4PN52NcbmEr+0TMGgOriM2YCf+sePejHFmFvsUmVcbw0
-grYrv6XqNz7SY/quRZBQ9bfVcHjMZLhCkDQhCqt0Icn3xlQK90mIROTS1qAP2sPP
-leqHiI9HmqqP/wA3/n5y1v299ndltE7Qb/ZEWOZmBPiYhCcJr9824Cy0jiWYucK0
-gwYfKl1R7DVCajHs+yKWn64Sx3tWJv8DjO5yNVcaWDJ3hMHG7WT30WNsC1OFPBE1
-ka6z7QdhK5DP7QUf/W/GQHjiFPW3bi4H76gkyOiVxfTKzULMrciU+jSDaPxy37Ys
-rjbeCgTbplO4Ze9TxnR5botbXIFuw+o6mlHzqNix/BRnagSAU/J6NCBLlHbQy634
-qq4jMhVc3Trk9P6tQs6EIPxYq0AA2f453paeCHDwnxEMYa40io4=
-=ku7e
------END PGP SIGNATURE-----
-
---nextPart2180520.GZCWctjGSx--
-
-
-
---===============0881888724203347445==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============0881888724203347445==--
+T24gMjAxOC0wMy0wNSAxMzoxMiwgU3ZlbiBFY2tlbG1hbm4gd3JvdGU6Cj4gT24gTW9udGFnLCA1
+LiBNw6RyeiAyMDE4IDEyOjI5OjA4IENFVCBBbmlsa3VtYXIgS29sbGkgd3JvdGU6Cj4+IEBAIC00
+OTYsNiArNDk3LDggQEAgc3RydWN0IGF0aDEwa19kZWJ1ZyB7Cj4+ICAgICAgICAgdTMyIHJlZ19h
+ZGRyOwo+PiAgICAgICAgIHUzMiBuZl9jYWxfcGVyaW9kOwo+PiAgICAgICAgIHZvaWQgKmNhbF9k
+YXRhOwo+PiArICAgICAgIHUzMiBmd190ZXN0X3BhcmFtX2lkOwo+PiArICAgICAgIHUzMiBmd190
+ZXN0X3BhcmFtX3ZhbHVlOwo+PiAgfTsKPiAKPiBXaHkgaXMgaXQgbmVjZXNzYXJ5IHRvIGhhdmUg
+dGhlc2UgdHdvIHZhbHVlcyBpbiBhdGgxMGtfZGVidWc/IFRoZXkgc2VlbSAKPiB0byBiZQo+IHVz
+ZWQgb25seSBpbiB0aGUgY29udGV4dCBvZiBhdGgxMGtfd3JpdGVfZndfdGVzdCgpLgo+IApZZXMu
+IGl0IGlzIG5vdCByZXVzZWQsIHdpbGwgcmVtb3ZlIHRoaXMuCgo+IFdoZXJlIGNhbiB3ZSBmaW5k
+IHRoZSBkb2N1bWVudGF0aW9uIG9mIHRoZSBwb3NzaWJsZSBwYXJhbV9pZCBhbmQgCj4gcGFyYW1f
+dmFsdWVzPwo+IApBbGwgdGhlc2UgcGFyYW1ldGVycyBhcmUgZm9yIGV4cGVyaW1lbnRhdGlvbiBw
+dXJwb3NlLgoKVGhhbmtzLApBbmlsLgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
