@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1erlcG-0004Gc-Oj
- for ath10k@lists.infradead.org; Fri, 02 Mar 2018 14:24:59 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath10k: Add sta rx packet stats per tid
-References: <1517400072-9204-1-git-send-email-vthiagar@codeaurora.org>
- <87606hs17h.fsf@kamboji.qca.qualcomm.com>
- <b1fcd67d-e149-acc4-ebbb-23da9a06da02@qti.qualcomm.com>
-Date: Fri, 02 Mar 2018 16:24:41 +0200
-In-Reply-To: <b1fcd67d-e149-acc4-ebbb-23da9a06da02@qti.qualcomm.com>
- (Vasanthakumar Thiagarajan's message of "Fri, 2 Mar 2018 08:21:25
- +0000")
-Message-ID: <87h8pyo8ra.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1esjrC-0005H6-Nu
+ for ath10k@lists.infradead.org; Mon, 05 Mar 2018 06:44:24 +0000
+From: Carl Huang <cjhuang@codeaurora.org>
+Subject: [PATCH v2] ath10k: fix use-after-free in ath10k_wmi_cmd_send_nowait
+Date: Mon,  5 Mar 2018 14:44:02 +0800
+Message-Id: <1520232242-24132-1-git-send-email-cjhuang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +15,88 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Cc: Vasanthakumar Thiagarajan <vthiagar@codeaurora.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
+The skb may be freed in tx completion context before
+trace_ath10k_wmi_cmd is called. This can be easily captured when
+KASAN(Kernel Address Sanitizer) is enabled. The fix is to move
+trace_ath10k_wmi_cmd before the send operation. As the ret has no
+meaning in trace_ath10k_wmi_cmd then, so remove this parameter too.
 
->> This added new ath10k-check warnings, I fixed those in the pending
->> branch:
->> 
->> drivers/net/wireless/ath/ath10k/debug.h:203: Alignment should match open parenthesis
->> drivers/net/wireless/ath/ath10k/debug.h:226: Alignment should match open parenthesis
->> drivers/net/wireless/ath/ath10k/debugfs_sta.c:24: Alignment should
->> match open parenthesis
->> drivers/net/wireless/ath/ath10k/debugfs_sta.c:40: Alignment should
->> match open parenthesis
->> drivers/net/wireless/ath/ath10k/debugfs_sta.c:60: Alignment should
->> match open parenthesis
->> 
->> Also I fixed the typo "rages" in debug.h. My changes:
->
-> Thanks for fixing it. In most of the cases, fixing above warnings
-> would result in lines > 80 chars.
-> May be we need not be very strict about > 80 char limit?
+Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/trace.h | 12 ++++--------
+ drivers/net/wireless/ath/ath10k/wmi.c   |  2 +-
+ 2 files changed, 5 insertions(+), 9 deletions(-)
 
-In ath10k-check I set the limit to 90 chars, but I guess it could be
-even higher than that. But on the other it shouldn't be too long, not
-everyone like to have one huge window for editor :)
-
+diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
+index e40edce..7d2fac3 100644
+--- a/drivers/net/wireless/ath/ath10k/trace.h
++++ b/drivers/net/wireless/ath/ath10k/trace.h
+@@ -152,10 +152,9 @@ TRACE_EVENT(ath10k_log_dbg_dump,
+ );
+ 
+ TRACE_EVENT(ath10k_wmi_cmd,
+-	TP_PROTO(struct ath10k *ar, int id, const void *buf, size_t buf_len,
+-		 int ret),
++	TP_PROTO(struct ath10k *ar, int id, const void *buf, size_t buf_len),
+ 
+-	TP_ARGS(ar, id, buf, buf_len, ret),
++	TP_ARGS(ar, id, buf, buf_len),
+ 
+ 	TP_STRUCT__entry(
+ 		__string(device, dev_name(ar->dev))
+@@ -163,7 +162,6 @@ TRACE_EVENT(ath10k_wmi_cmd,
+ 		__field(unsigned int, id)
+ 		__field(size_t, buf_len)
+ 		__dynamic_array(u8, buf, buf_len)
+-		__field(int, ret)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -171,17 +169,15 @@ TRACE_EVENT(ath10k_wmi_cmd,
+ 		__assign_str(driver, dev_driver_string(ar->dev));
+ 		__entry->id = id;
+ 		__entry->buf_len = buf_len;
+-		__entry->ret = ret;
+ 		memcpy(__get_dynamic_array(buf), buf, buf_len);
+ 	),
+ 
+ 	TP_printk(
+-		"%s %s id %d len %zu ret %d",
++		"%s %s id %d len %zu",
+ 		__get_str(driver),
+ 		__get_str(device),
+ 		__entry->id,
+-		__entry->buf_len,
+-		__entry->ret
++		__entry->buf_len
+ 	)
+ );
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 58dc218..fc9f50d 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1742,8 +1742,8 @@ int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
+ 	cmd_hdr->cmd_id = __cpu_to_le32(cmd);
+ 
+ 	memset(skb_cb, 0, sizeof(*skb_cb));
++	trace_ath10k_wmi_cmd(ar, cmd_id, skb->data, skb->len);
+ 	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb);
+-	trace_ath10k_wmi_cmd(ar, cmd_id, skb->data, skb->len, ret);
+ 
+ 	if (ret)
+ 		goto err_pull;
 -- 
-Kalle Valo
+2.7.4
+
 
 _______________________________________________
 ath10k mailing list
