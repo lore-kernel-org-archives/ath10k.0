@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from mail-pl0-x244.google.com ([2607:f8b0:400e:c01::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1esvpv-0007gq-ER
- for ath10k@lists.infradead.org; Mon, 05 Mar 2018 19:31:53 +0000
-Subject: Re: [PATCH 1/2] ath10k: Add WMI FWTEST command support
-References: <1520233148-26050-1-git-send-email-akolli@codeaurora.org>
- <1520233148-26050-2-git-send-email-akolli@codeaurora.org>
- <94f133b3-ee5d-6ed8-d7e8-20dff9aaede2@bowerswilkins.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <fd392368-5535-d10e-b1bb-934e45fd9c43@dd-wrt.com>
-Date: Mon, 5 Mar 2018 20:31:33 +0100
+ id 1eszH1-000482-IK
+ for ath10k@lists.infradead.org; Mon, 05 Mar 2018 23:12:05 +0000
+Received: by mail-pl0-x244.google.com with SMTP id 93-v6so10676428plc.9
+ for <ath10k@lists.infradead.org>; Mon, 05 Mar 2018 15:11:52 -0800 (PST)
+Date: Mon, 5 Mar 2018 15:11:49 -0800
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH v2] ath10k: fix use-after-free in
+ ath10k_wmi_cmd_send_nowait
+Message-ID: <20180305231147.GA144261@rodete-desktop-imager.corp.google.com>
+References: <1520232242-24132-1-git-send-email-cjhuang@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <94f133b3-ee5d-6ed8-d7e8-20dff9aaede2@bowerswilkins.com>
+Content-Disposition: inline
+In-Reply-To: <1520232242-24132-1-git-send-email-cjhuang@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +22,90 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <peter.oh@bowerswilkins.com>, Anilkumar Kolli <akolli@codeaurora.org>, ath10k@lists.infradead.org
-Cc: Sathishkumar Muruganandam <murugana@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Carl Huang <cjhuang@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Felix Fietkau <nbd@nbd.name>
 
-Am 05.03.2018 um 19:48 schrieb Peter Oh:
-> From: Sathishkumar Muruganandam <murugana@codeaurora.org>
->> This patch adds support for WMI_FWTEST_CMD.
->> This command is used for setting the wifi parameters.
->
-> It's too lack of information in commit message.
-> You should add such what values are acceptable for which purpose by =
++ Felix, who had feedback on the last version
 
-> each param_id and param_value to make this changes meaningful to =
+On Mon, Mar 05, 2018 at 02:44:02PM +0800, Carl Huang wrote:
+> The skb may be freed in tx completion context before
+> trace_ath10k_wmi_cmd is called. This can be easily captured when
+> KASAN(Kernel Address Sanitizer) is enabled. The fix is to move
+> trace_ath10k_wmi_cmd before the send operation. As the ret has no
+> meaning in trace_ath10k_wmi_cmd then, so remove this parameter too.
+> 
+> Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/trace.h | 12 ++++--------
+>  drivers/net/wireless/ath/ath10k/wmi.c   |  2 +-
+>  2 files changed, 5 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
+> index e40edce..7d2fac3 100644
+> --- a/drivers/net/wireless/ath/ath10k/trace.h
+> +++ b/drivers/net/wireless/ath/ath10k/trace.h
+> @@ -152,10 +152,9 @@ TRACE_EVENT(ath10k_log_dbg_dump,
+>  );
+>  
+>  TRACE_EVENT(ath10k_wmi_cmd,
+> -	TP_PROTO(struct ath10k *ar, int id, const void *buf, size_t buf_len,
+> -		 int ret),
+> +	TP_PROTO(struct ath10k *ar, int id, const void *buf, size_t buf_len),
+>  
+> -	TP_ARGS(ar, id, buf, buf_len, ret),
+> +	TP_ARGS(ar, id, buf, buf_len),
+>  
+>  	TP_STRUCT__entry(
+>  		__string(device, dev_name(ar->dev))
+> @@ -163,7 +162,6 @@ TRACE_EVENT(ath10k_wmi_cmd,
+>  		__field(unsigned int, id)
+>  		__field(size_t, buf_len)
+>  		__dynamic_array(u8, buf, buf_len)
+> -		__field(int, ret)
+>  	),
+>  
+>  	TP_fast_assign(
+> @@ -171,17 +169,15 @@ TRACE_EVENT(ath10k_wmi_cmd,
+>  		__assign_str(driver, dev_driver_string(ar->dev));
+>  		__entry->id = id;
+>  		__entry->buf_len = buf_len;
+> -		__entry->ret = ret;
+>  		memcpy(__get_dynamic_array(buf), buf, buf_len);
+>  	),
+>  
+>  	TP_printk(
+> -		"%s %s id %d len %zu ret %d",
+> +		"%s %s id %d len %zu",
+>  		__get_str(driver),
+>  		__get_str(device),
+>  		__entry->id,
+> -		__entry->buf_len,
+> -		__entry->ret
+> +		__entry->buf_len
+>  	)
+>  );
+>  
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index 58dc218..fc9f50d 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -1742,8 +1742,8 @@ int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
+>  	cmd_hdr->cmd_id = __cpu_to_le32(cmd);
+>  
+>  	memset(skb_cb, 0, sizeof(*skb_cb));
+> +	trace_ath10k_wmi_cmd(ar, cmd_id, skb->data, skb->len);
+>  	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb);
+> -	trace_ath10k_wmi_cmd(ar, cmd_id, skb->data, skb->len, ret);
+>  
+>  	if (ret)
+>  		goto err_pull;
 
-> community.
-i agree. i reviewed the firmware sourcecode to find out what its doing, =
-
-but also within the firmware is almost undocumented. its a bunch of =
-
-undocumented
-numeric parameters with undocumented behaviour.
-if qca is willig to document this feature it might be included.
-
-Sebastian
-
-
--- =
-
-Mit freundlichen Gr=FCssen / Regards
-
-Sebastian Gottschall / CTO
-
-NewMedia-NET GmbH - DD-WRT
-Firmensitz:  Stubenwaldallee 21a, 64625 Bensheim
-Registergericht: Amtsgericht Darmstadt, HRB 25473
-Gesch=E4ftsf=FChrer: Peter Steinh=E4user, Christian Scheele
-http://www.dd-wrt.com
-email: s.gottschall@dd-wrt.com
-Tel.: +496251-582650 / Fax: +496251-5826565
-
+Tested-by: Brian Norris <briannorris@chromium.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
 
 _______________________________________________
 ath10k mailing list
