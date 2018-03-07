@@ -1,12 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-ot0-x241.google.com ([2607:f8b0:4003:c0f::241])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1etYrv-0008En-UD
- for ath10k@lists.infradead.org; Wed, 07 Mar 2018 13:12:34 +0000
-From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: [PATCH] ath10k: Advertize beacon_int_min_gcd
-Date: Wed,  7 Mar 2018 18:42:36 +0530
-Message-Id: <1520428356-2762-1-git-send-email-akolli@codeaurora.org>
+ id 1etbqL-0001EE-F9
+ for ath10k@lists.infradead.org; Wed, 07 Mar 2018 16:23:07 +0000
+Received: by mail-ot0-x241.google.com with SMTP id h8so2573059oti.6
+ for <ath10k@lists.infradead.org>; Wed, 07 Mar 2018 08:22:55 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <e77d25d4-a824-380a-c51a-e81175ba6205@dd-wrt.com>
+References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
+ <CACna6rzD6z3DC6yjMCgBxgxx+DF+GGu69Ot5QA6xpJ41Ewb2=A@mail.gmail.com>
+ <82d8ac0c-b391-6099-4c7f-991cc35445aa@dd-wrt.com> <20180302090312.GA30267@amd>
+ <e77d25d4-a824-380a-c51a-e81175ba6205@dd-wrt.com>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Date: Wed, 7 Mar 2018 17:22:53 +0100
+Message-ID: <CACna6rys85VEkzRGDVUAkBy7KgHS2y0DET7YvedboX-YEQHrkg@mail.gmail.com>
+Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
+ various chipsets
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,63 +24,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Anilkumar Kolli <akolli@codeaurora.org>, linux-wireless@vger.kernel.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>, Pavel Machek <pavel@ucw.cz>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, Kalle Valo <kvalo@codeaurora.org>
 
-This patch fixes regression caused by 0c317a02ca98
-("cfg80211: support virtual interfaces with different beacon intervals"),
-with this change cfg80211 expects the driver to advertize
-'beacon_int_min_gcd' to support different beacon intervals in multivap
-scenario. This support is added for, QCA988X/QCA99X0/QCA9984/QCA4019.
-
-Verifed AP + mesh bring up on QCA9984 with beacon interval 100msec and
-1000msec respectively.
-Frimware: firmware-5.bin_10.4-3.5.3-00053
-
-Fixes: 0c317a02ca98 ("cfg80211: support virtual interfaces with different beacon intervals")
-Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/mac.c |    3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index ebb3f1b046f3..9486ef7cc06b 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1,6 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -7874,6 +7875,7 @@ void ath10k_mac_destroy(struct ath10k *ar)
- 		.max_interfaces = 8,
- 		.num_different_channels = 1,
- 		.beacon_int_infra_match = true,
-+		.beacon_int_min_gcd = 1,
- #ifdef CONFIG_ATH10K_DFS_CERTIFIED
- 		.radar_detect_widths =	BIT(NL80211_CHAN_WIDTH_20_NOHT) |
- 					BIT(NL80211_CHAN_WIDTH_20) |
-@@ -7997,6 +7999,7 @@ void ath10k_mac_destroy(struct ath10k *ar)
- 		.max_interfaces = 16,
- 		.num_different_channels = 1,
- 		.beacon_int_infra_match = true,
-+		.beacon_int_min_gcd = 1,
- #ifdef CONFIG_ATH10K_DFS_CERTIFIED
- 		.radar_detect_widths =	BIT(NL80211_CHAN_WIDTH_20_NOHT) |
- 					BIT(NL80211_CHAN_WIDTH_20) |
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMiBNYXJjaCAyMDE4IGF0IDEwOjIyLCBTZWJhc3RpYW4gR290dHNjaGFsbCA8cy5nb3R0c2No
+YWxsQGRkLXdydC5jb20+IHdyb3RlOgo+Pj4gbGVkcy1ncGlvIGlzIGNyYXAgYW5kIGxpbWl0ZWQu
+IHlvdSBjYW4ganVzdCByZWdpc3RlciBvbmUgcGxhdGZvcm0gZGF0YSBhdAo+Pj4ga2VybmVsIHJ1
+bnRpbWUgc2luY2UgaXRzIGlkZW50aWZpZWQgYnkgaXRzIG9iamVjdCBuYW1lICJsZWQtZ3BpbyIg
+YnV0IHRoZQo+Pj4ga2VybmVsIGZvcmJpZGRzIHRvIHJlZ2lzdGVyIDIgcGxhdGZvcm0gZGF0YXMg
+d2l0aCB0aGUgc2FtZSBuYW1lCj4+PiBjb25zaWRlciB0aGUgYXI3MXh4IGRldmljZXMgd2l0aCBx
+Y2E5ODh4IHdpZmkgY2hpcHNldHMuIHRoZXkgYWxsIGhhdmUKPj4+IGFscmVhZHkgYSBsZWQgcGxh
+dGZvcm0gZGF0YSByZWdpc3RlcmVkCj4+PiBhdCBib290dGltZS4gYSBzZWNvbmQgY2FuJ3QgYmUg
+cmVnaXN0ZXJlZCBhbnltb3JlIHNvIGdwaW9fbGVkIGlzIHVzZWxlc3MKPj4+IGF0Cj4+PiBhbGwg
+Zm9yIG1vc3QgZGV2ZWxvcGVycyBvbiBzdWNoIHBsYXRmb3Jtcy4gaXRzIG1haW5seSB1c2VkIGZv
+ciBlYXJseQo+Pj4ga2VybmVsCj4+PiBwbGF0Zm9ybSBkYXRhIGluaXRpYWxpc2F0aW9uIGZvciBz
+eXN0ZW0gbGVkcy4KPj4KPj4gSWYgbGVkcy1ncGlvIGhhcyBsaW1pdGF0aW9ucywgcGxlYXNlIGZp
+eCB0aG9zZSwgcmF0aGVyIHRoZW4KPj4gaW50cm9kdWNpbmcgZHVwbGljYXRlZCBjb2RlLgo+Cj4g
+dGhlcmUgaXMgbm8gZHVwbGljYXRlZCBjb2RlIGludHJvZHVjZWQgYW5kIHRoZXJlIGlzIG5vIHNv
+bHV0aW9uIGZvciBpdC4KPiBjb25zaWRlciB0aGF0IGFsbCB3aWZpIGRyaXZlcnMgd2l0aCBzb2Z0
+bGVkIHN1cHBvcnQKPiBhcmUgZ29pbmcgdGhhdCB3YXkgd2l0aCByZWdpc3RlcmluZyBhIG93biBs
+ZWQgZHJpdmVyLiBzZWUgYXRoOWsgZm9yCj4gaW5zdGFuY2UuIGdwaW8tbGVkIGNhbm5vdCBiZSB1
+c2VkIGZvciBpdCBhbmQgdGhlcmUgaXMgbm8gd2F5IHRvCj4gc3VwcG9ydCBtdWx0aXBsZSBwbGF0
+Zm9ybSBkYXRhcyB3aXRoIHRoZSBzYW1lIG5hbWUuIGl0cyBhIGtlcm5lbCBsaW1pdGF0aW9uCgpJ
+IGp1c3QgcmV2aWV3ZWQgc29tZSBtaXBzIGFyY2ggcGF0Y2ggYWRkaW5nIHN1cHBvcnQgZm9yIG1v
+cmUgTEVEcyBmb3IKc2VsZWN0ZWQgZGV2aWNlczoKW1BBVENIXSBNSVBTOiBCQ000N1hYOiBBZGQg
+THV4dWwgWEFQMTUwMC9YV1IxNzUwIFdpRmkgTEVEcwpodHRwczovL3BhdGNod29yay5saW51eC1t
+aXBzLm9yZy9wYXRjaC8xODY4MS8KCkl0IHNlZW1zIHRvIGJlIHNpbXBseSBhZGRpbmcgYW5vdGhl
+ciBjYWxsIHRvIHRoZQpncGlvX2xlZF9yZWdpc3Rlcl9kZXZpY2UoKS4gSXQgc2VlbXMgdG8gbWUg
+eW91IGNhbiBjYWxsIHRoYXQgZnVuY3Rpb24KbXVsdGlwbGUgdGltZXMgYW5kIHJlZ2lzdGVyIG11
+bHRpcGxlIHN0cnVjdHMgd2l0aCBMRURzLgoKSXNuJ3QgYWxsIHlvdSBuZWVkIHNvbWV0aGluZyBs
+aWtlIHRoaXM/CgpzdGF0aWMgY29uc3Qgc3RydWN0IGdwaW9fbGVkIGF0aDEwa19sZWRzW10gPSB7
+CiAgICAgICAgewogICAgICAgICAgICAgICAgLm5hbWUgPSAiYXRoMTBrOmNvbG9yOmZ1bmN0aW9u
+IiwKICAgICAgICAgICAgICAgIC5hY3RpdmVfbG93ID0gMSwKICAgICAgICAgICAgICAgIC5kZWZh
+dWx0X3N0YXRlID0gTEVEU19HUElPX0RFRlNUQVRFX0tFRVAsCiAgICAgICAgfQp9OwoKc3RhdGlj
+IHN0cnVjdCBncGlvX2xlZF9wbGF0Zm9ybV9kYXRhIGJjbTQ3eHhfbGVkc19wZGF0YV9leHRyYSA9
+IHsKICAgICAgICBsZWRzID0gYXRoMTBrX2xlZHM7CiAgICAgICAgbnVtX2xlZHMgPSBBUlJBWV9T
+SVpFKGF0aDEwa19sZWRzKTsKfTsKCmF0aDEwa19sZWRzLmdwaW8gPSBhci0+aHdfcGFyYW1zLmxl
+ZF9waW47CmdwaW9fbGVkX3JlZ2lzdGVyX2RldmljZSgwLCAmYXRoMTBrX2xlZHMpOwoKLS0gClJh
+ZmHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
