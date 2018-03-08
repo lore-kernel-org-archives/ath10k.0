@@ -1,20 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1etw59-0007J8-0X
- for ath10k@lists.infradead.org; Thu, 08 Mar 2018 13:59:52 +0000
+ id 1etwAj-00037X-G3
+ for ath10k@lists.infradead.org; Thu, 08 Mar 2018 14:05:32 +0000
+Date: Thu, 8 Mar 2018 15:05:16 +0100
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
+ various chipsets
+Message-ID: <20180308140515.GA4889@amd>
+References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
+ <CACna6rzD6z3DC6yjMCgBxgxx+DF+GGu69Ot5QA6xpJ41Ewb2=A@mail.gmail.com>
+ <82d8ac0c-b391-6099-4c7f-991cc35445aa@dd-wrt.com>
+ <20180302090312.GA30267@amd>
+ <e77d25d4-a824-380a-c51a-e81175ba6205@dd-wrt.com>
+ <CACna6rys85VEkzRGDVUAkBy7KgHS2y0DET7YvedboX-YEQHrkg@mail.gmail.com>
+ <890a4dcc-f549-6487-2ce5-3b62874cd266@dd-wrt.com>
+ <20180308090216.GC17761@amd>
+ <d443856e-cfc8-2d50-900d-edf22e5360e3@dd-wrt.com>
 MIME-Version: 1.0
-Date: Thu, 08 Mar 2018 19:29:31 +0530
-From: govinds@codeaurora.org
-Subject: Re: [PATCH] ath10k: Enable IOMMU support for WCN3990 target
-In-Reply-To: <87k1umhe0w.fsf@kamboji.qca.qualcomm.com>
-References: <1518685448-15317-1-git-send-email-govinds@codeaurora.org>
- <877eqwqfml.fsf@kamboji.qca.qualcomm.com>
- <CAK8P3a1KomtVHMidxtmx_gRF+92MWdHmeG0eTbcfUpbAaDPe3g@mail.gmail.com>
- <588e4d951bd84ea29dfc1a68353505e7@aphydexm01b.ap.qualcomm.com>
- <CAK8P3a06sDwL8iech_L3Q-zGxio3_RD8c7_-L3HHmFmb=Pq2UQ@mail.gmail.com>
- <87k1umhe0w.fsf@kamboji.qca.qualcomm.com>
-Message-ID: <7c627e2af862e2cfdd431a499f725000@codeaurora.org>
+In-Reply-To: <d443856e-cfc8-2d50-900d-edf22e5360e3@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +27,135 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============6154827131198886836=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Govind Singh <govinds@qti.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, Kalle Valo <kvalo@codeaurora.org>
 
-On 2018-03-08 19:20, Kalle Valo wrote:
-> Arnd Bergmann <arnd@arndb.de> writes:
-> 
->> On Thu, Mar 1, 2018 at 2:18 PM, Govind Singh 
->> <govinds@qti.qualcomm.com> wrote:
->>>>> The asm/dma-iommu.h header file exsists only on arm32, no other 
->>>>> architecture.
->>>>> I'm not sure about the purpose of the patch to start with:
->>>>> it's normally up to the platform code to allocate IOMMU domains,
->>>>> device drivers should only need to manually interact with the
->>>>> IOMMU layer if they need more than one domain, but this ath10k
->>>>> patch appears to be using the default domain and should have no
->>>>> effect as long as the platform code works correctly.
->>> Thanks Arnd, I have fixed this and migrated to 64bit
->>> API's(iommu_attach_device/iommu_detach_device/
->>> iommu_get_domain_for_dev), will share the next revision.
->>> I tried using the default domain by adding the stream ID and mask in
->>> dt and no manual interaction, but it is resulting in TZ error and
->>> unhandled context fault.
->>> Seems I need to provide explicit mapping range(aperture_start/
->>> aperture_end) as this is only working combination for me..
->> 
->> I don't see why you need to do that at all, can you clarify?
->> 
->> The IOMMU should be set up implicitly for you here based on the iommus
->> property in DT, with no driver changes at all. This should work on all
->> architectures/
-> 
-> Maybe Govind is using some out-of-tree tree which is buggy in this
-> regard?
 
-Actually there is limitations in using the iova address range for wlan 
-IP.
-It can allow certain iova range and i was attaching the iommu to specify 
-the iova range.
-I am exploring if i can use "dma-ranges" in dt to avoid the manual 
-interaction apart from
-stream ID and mask.
+--===============6154827131198886836==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Content-Disposition: inline
 
-BR,
-Govind
+
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu 2018-03-08 13:33:29, Sebastian Gottschall wrote:
+> Am 08.03.2018 um 10:02 schrieb Pavel Machek:
+> >On Wed 2018-03-07 18:54:41, Sebastian Gottschall wrote:
+> >>Am 07.03.2018 um 17:22 schrieb Rafa=C5=82 Mi=C5=82ecki:
+> >>>On 2 March 2018 at 10:22, Sebastian Gottschall <s.gottschall@dd-wrt.co=
+m> wrote:
+> >>>>>>leds-gpio is crap and limited. you can just register one platform d=
+ata at
+> >>>>>>kernel runtime since its identified by its object name "led-gpio" b=
+ut the
+> >>>>>>kernel forbidds to register 2 platform datas with the same name
+> >>>>>>consider the ar71xx devices with qca988x wifi chipsets. they all ha=
+ve
+> >>>>>>already a led platform data registered
+> >>>>>>at boottime. a second can't be registered anymore so gpio_led is us=
+eless
+> >>>>>>at
+> >>>>>>all for most developers on such platforms. its mainly used for early
+> >>>>>>kernel
+> >>>>>>platform data initialisation for system leds.
+> >>>>>If leds-gpio has limitations, please fix those, rather then
+> >>>>>introducing duplicated code.
+> >>>>there is no duplicated code introduced and there is no solution for i=
+t.
+> >>>>consider that all wifi drivers with softled support
+> >>>>are going that way with registering a own led driver. see ath9k for
+> >>>>instance. gpio-led cannot be used for it and there is no way to
+> >>>>support multiple platform datas with the same name. its a kernel limi=
+tation
+> >>>I just reviewed some mips arch patch adding support for more LEDs for
+> >>>selected devices:
+> >>>[PATCH] MIPS: BCM47XX: Add Luxul XAP1500/XWR1750 WiFi LEDs
+> >>>https://patchwork.linux-mips.org/patch/18681/
+> >>>
+> >>>It seems to be simply adding another call to the
+> >>>gpio_led_register_device(). It seems to me you can call that function
+> >>>multiple times and register multiple structs with LEDs.
+> >>>
+> >>>Isn't all you need something like this?
+> >>>
+> >>>static const struct gpio_led ath10k_leds[] =3D {
+> >>>         {
+> >>>                 .name =3D "ath10k:color:function",
+> >>>                 .active_low =3D 1,
+> >>>                 .default_state =3D LEDS_GPIO_DEFSTATE_KEEP,
+> >>>         }
+> >>>};
+> >>>
+> >>>static struct gpio_led_platform_data bcm47xx_leds_pdata_extra =3D {
+> >>>         leds =3D ath10k_leds;
+> >>>         num_leds =3D ARRAY_SIZE(ath10k_leds);
+> >>>};
+> >>>
+> >>>ath10k_leds.gpio =3D ar->hw_params.led_pin;
+> >>>gpio_led_register_device(0, &ath10k_leds);
+> >>the problem are other architectures which have already registered gpio_=
+led
+> >>at system start like ar71xx
+> >>you cannot register a second one. so a independend led driver is a
+> >>requirement for direct control
+> >If the limitation indeed exists, please fix the limitation rather than
+> >working around it in each and every driver.
+> see ath9k. its exact the same implementation.
+
+Ok, so one more driver to fix.
+
+> in addition my variant does also work without gpiolib support. so it can =
+be
+> used even if the kernel is configured
+> without gpio support.
+> and not to forget, using a own led driver is more ligthweight from the ca=
+ll
+> path for each led on / off event which is important for
+> low performance embedded devices
+
+We are not going to copy&paste code because such code works without
+libraries, and we are not going to copy&paste code because that uses
+less cache during calls. Sorry.
+
+NAK. Please fix your patch.=20
+
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--envbJBWh7q8WU6mo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlqhQxsACgkQMOfwapXb+vLTpgCgks8J+FoLFdyIZz4Vq9wn2xuK
+6ZsAmgPcfT2bOWZcTAIXWKEx1/ySKQdW
+=zvis
+-----END PGP SIGNATURE-----
+
+--envbJBWh7q8WU6mo--
+
+
+--===============6154827131198886836==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============6154827131198886836==--
