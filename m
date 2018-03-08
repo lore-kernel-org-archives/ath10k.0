@@ -1,19 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx.socionext.com ([202.248.49.38])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1etjNZ-0003M0-Em
- for ath10k@lists.infradead.org; Thu, 08 Mar 2018 00:25:56 +0000
-From: <yamada.masahiro@socionext.com>
-Subject: RE: [PATCH 01/13] ath10k: platform driver for WCN3990 SNOC WLAN module
-Date: Thu, 8 Mar 2018 00:25:36 +0000
-Message-ID: <fb2c04383f024ab8b2c62dd5a4ad20ac@SOC-EX01V.e01.socionext.com>
-References: <1518684458-5338-1-git-send-email-govinds@codeaurora.org>
- <87371kqfda.fsf@kamboji.qca.qualcomm.com>
- <d396df1b09da4dd7aa14d6af2c2b2b18@aphydexm01b.ap.qualcomm.com>
- <87tvttl6kp.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87tvttl6kp.fsf@kamboji.qca.qualcomm.com>
-Content-Language: ja-JP
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1etrRX-00040m-No
+ for ath10k@lists.infradead.org; Thu, 08 Mar 2018 09:02:34 +0000
+Date: Thu, 8 Mar 2018 10:02:16 +0100
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
+ various chipsets
+Message-ID: <20180308090216.GC17761@amd>
+References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
+ <CACna6rzD6z3DC6yjMCgBxgxx+DF+GGu69Ot5QA6xpJ41Ewb2=A@mail.gmail.com>
+ <82d8ac0c-b391-6099-4c7f-991cc35445aa@dd-wrt.com>
+ <20180302090312.GA30267@amd>
+ <e77d25d4-a824-380a-c51a-e81175ba6205@dd-wrt.com>
+ <CACna6rys85VEkzRGDVUAkBy7KgHS2y0DET7YvedboX-YEQHrkg@mail.gmail.com>
+ <890a4dcc-f549-6487-2ce5-3b62874cd266@dd-wrt.com>
 MIME-Version: 1.0
+In-Reply-To: <890a4dcc-f549-6487-2ce5-3b62874cd266@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,81 +25,113 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3907696512904922257=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@codeaurora.org, govinds@codeaurora.org
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, Kalle Valo <kvalo@codeaurora.org>
 
 
+--===============3907696512904922257==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="B4IIlcmfBL/1gGOG"
+Content-Disposition: inline
 
-> -----Original Message-----
-> From: Kalle Valo [mailto:kvalo@codeaurora.org]
-> Sent: Tuesday, March 06, 2018 9:41 PM
-> To: Govind Singh <govinds@codeaurora.org>; Yamada, Masahiro/山田 真弘
-> <yamada.masahiro@socionext.com>
-> Cc: linux-wireless@vger.kernel.org; ath10k@lists.infradead.org
-> Subject: Re: [PATCH 01/13] ath10k: platform driver for WCN3990 SNOC WLAN
-> module
-> 
-> (Fixed Govind's top posting and adding Masahiro)
-> 
-> >>> WCN3990 is integrated 802.11ac chipset with SNOC bus interface. Add
-> >>> snoc layer driver registration and associated ops.
-> >>>
-> >>> WCN3990 support is not yet complete as cold-boot handshake is done
-> >>> using qmi(Qualcomm-MSM-Interface) and qmi client support will be added
-> >>> once qmi framework is available.
-> >>>
-> >>> Signed-off-by: Govind Singh <govinds@codeaurora.org>
-> >>
-> >> Kbuild bot found an odd problem with this patch:
-> >>
-> >>  include/linux/dynamic_debug.h:77:14: error: 'KBUILD_MODNAME'
-> >>  undeclared (first use in this function); did you mean
-> 'KBUILD_BASENAME'?
-> >>
-> >> Full report:
-> >>
-> >>
-> http://lists.infradead.org/pipermail/ath10k/2018-February/010907.html
-> >>
-> >> Any ideas? Is this is some unrelated issue or what? This patch is not
-> >> even touching hif.h or ce.c.
+
+--B4IIlcmfBL/1gGOG
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed 2018-03-07 18:54:41, Sebastian Gottschall wrote:
+> Am 07.03.2018 um 17:22 schrieb Rafa=C5=82 Mi=C5=82ecki:
+> >On 2 March 2018 at 10:22, Sebastian Gottschall <s.gottschall@dd-wrt.com>=
+ wrote:
+> >>>>leds-gpio is crap and limited. you can just register one platform dat=
+a at
+> >>>>kernel runtime since its identified by its object name "led-gpio" but=
+ the
+> >>>>kernel forbidds to register 2 platform datas with the same name
+> >>>>consider the ar71xx devices with qca988x wifi chipsets. they all have
+> >>>>already a led platform data registered
+> >>>>at boottime. a second can't be registered anymore so gpio_led is usel=
+ess
+> >>>>at
+> >>>>all for most developers on such platforms. its mainly used for early
+> >>>>kernel
+> >>>>platform data initialisation for system leds.
+> >>>If leds-gpio has limitations, please fix those, rather then
+> >>>introducing duplicated code.
+> >>there is no duplicated code introduced and there is no solution for it.
+> >>consider that all wifi drivers with softled support
+> >>are going that way with registering a own led driver. see ath9k for
+> >>instance. gpio-led cannot be used for it and there is no way to
+> >>support multiple platform datas with the same name. its a kernel limita=
+tion
+> >I just reviewed some mips arch patch adding support for more LEDs for
+> >selected devices:
+> >[PATCH] MIPS: BCM47XX: Add Luxul XAP1500/XWR1750 WiFi LEDs
+> >https://patchwork.linux-mips.org/patch/18681/
 > >
-> > I didn't encountered this issue as in my defconfig only
-> > CONFIG_ATH10K_SNOC was defined. This problem is coming when we define
-> > CONFIG_ATH10K_SNOC and CONFIG_ATH10K_PCI simultaneously in defconfig
-> > and this is known issue when multiple modules share objects(in this
-> > case ce.o). I saw similar reported problem and found
-> > https://patchwork.kernel.org/patch/10060825/.
+> >It seems to be simply adding another call to the
+> >gpio_led_register_device(). It seems to me you can call that function
+> >multiple times and register multiple structs with LEDs.
 > >
-> > After picking the below change issue is not seen.
-> 
-> Let's ask the kbuild maintainer. Masahiro, any chances of getting this
-> patch applied anytime soon:
-> 
-> kbuild: define KBUILD_MODNAME even if multiple modules share objects
-> 
-> https://patchwork.kernel.org/patch/10060825/
-> 
-> In ath10k we would need it as otherwise we are not able to link ce.o
-> both to ath10k_pci.ko and ath10k_snoc.ko. What do you think?
-> 
-> Full discussion and the ath10k patch here:
-> 
-> https://patchwork.kernel.org/patch/10220657/
-> 
+> >Isn't all you need something like this?
+> >
+> >static const struct gpio_led ath10k_leds[] =3D {
+> >         {
+> >                 .name =3D "ath10k:color:function",
+> >                 .active_low =3D 1,
+> >                 .default_state =3D LEDS_GPIO_DEFSTATE_KEEP,
+> >         }
+> >};
+> >
+> >static struct gpio_led_platform_data bcm47xx_leds_pdata_extra =3D {
+> >         leds =3D ath10k_leds;
+> >         num_leds =3D ARRAY_SIZE(ath10k_leds);
+> >};
+> >
+> >ath10k_leds.gpio =3D ar->hw_params.led_pin;
+> >gpio_led_register_device(0, &ath10k_leds);
+> the problem are other architectures which have already registered gpio_led
+> at system start like ar71xx
+> you cannot register a second one. so a independend led driver is a
+> requirement for direct control
 
-I plan to submit v2, but even if the undefined KBUILD_MODNAME is fixed,
-I expect another problem from this patch.
+If the limitation indeed exists, please fix the limitation rather than
+working around it in each and every driver.
+									Pavel
 
-If both CONFIG_ATH10K_PCI and CONFIG_ATH10_SNOC are 'y'
-two instances of ce.o would be linked into vmliux,
-then causes multiple definition error.
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--B4IIlcmfBL/1gGOG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlqg/BgACgkQMOfwapXb+vKFTACfdAlCxTIZdugucfyiKtdULBKM
+hNgAniR8fH5pWZJQ21aAEP3MrAQSszOO
+=A/Xe
+-----END PGP SIGNATURE-----
+
+--B4IIlcmfBL/1gGOG--
+
+
+--===============3907696512904922257==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============3907696512904922257==--
