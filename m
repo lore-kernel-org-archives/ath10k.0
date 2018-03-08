@@ -1,24 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1etujx-0001o9-Ef
- for ath10k@lists.infradead.org; Thu, 08 Mar 2018 12:33:48 +0000
-Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
- various chipsets
-References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
- <CACna6rzD6z3DC6yjMCgBxgxx+DF+GGu69Ot5QA6xpJ41Ewb2=A@mail.gmail.com>
- <82d8ac0c-b391-6099-4c7f-991cc35445aa@dd-wrt.com>
- <20180302090312.GA30267@amd>
- <e77d25d4-a824-380a-c51a-e81175ba6205@dd-wrt.com>
- <CACna6rys85VEkzRGDVUAkBy7KgHS2y0DET7YvedboX-YEQHrkg@mail.gmail.com>
- <890a4dcc-f549-6487-2ce5-3b62874cd266@dd-wrt.com>
- <20180308090216.GC17761@amd>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <d443856e-cfc8-2d50-900d-edf22e5360e3@dd-wrt.com>
-Date: Thu, 8 Mar 2018 13:33:29 +0100
+ id 1etvws-0003pB-W7
+ for ath10k@lists.infradead.org; Thu, 08 Mar 2018 13:51:12 +0000
+From: Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH] ath10k: Enable IOMMU support for WCN3990 target
+References: <1518685448-15317-1-git-send-email-govinds@codeaurora.org>
+ <877eqwqfml.fsf@kamboji.qca.qualcomm.com>
+ <CAK8P3a1KomtVHMidxtmx_gRF+92MWdHmeG0eTbcfUpbAaDPe3g@mail.gmail.com>
+ <588e4d951bd84ea29dfc1a68353505e7@aphydexm01b.ap.qualcomm.com>
+ <CAK8P3a06sDwL8iech_L3Q-zGxio3_RD8c7_-L3HHmFmb=Pq2UQ@mail.gmail.com>
+Date: Thu, 08 Mar 2018 15:50:55 +0200
+In-Reply-To: <CAK8P3a06sDwL8iech_L3Q-zGxio3_RD8c7_-L3HHmFmb=Pq2UQ@mail.gmail.com>
+ (Arnd Bergmann's message of "Thu, 1 Mar 2018 14:27:35 +0100")
+Message-ID: <87k1umhe0w.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <20180308090216.GC17761@amd>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,71 +23,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, Kalle Valo <kvalo@codeaurora.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Govind Singh <govinds@qti.qualcomm.com>, Govind Singh <govinds@codeaurora.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-QW0gMDguMDMuMjAxOCB1bSAxMDowMiBzY2hyaWViIFBhdmVsIE1hY2hlazoKPiBPbiBXZWQgMjAx
-OC0wMy0wNyAxODo1NDo0MSwgU2ViYXN0aWFuIEdvdHRzY2hhbGwgd3JvdGU6Cj4+IEFtIDA3LjAz
-LjIwMTggdW0gMTc6MjIgc2NocmllYiBSYWZhxYIgTWnFgmVja2k6Cj4+PiBPbiAyIE1hcmNoIDIw
-MTggYXQgMTA6MjIsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNv
-bT4gd3JvdGU6Cj4+Pj4+PiBsZWRzLWdwaW8gaXMgY3JhcCBhbmQgbGltaXRlZC4geW91IGNhbiBq
-dXN0IHJlZ2lzdGVyIG9uZSBwbGF0Zm9ybSBkYXRhIGF0Cj4+Pj4+PiBrZXJuZWwgcnVudGltZSBz
-aW5jZSBpdHMgaWRlbnRpZmllZCBieSBpdHMgb2JqZWN0IG5hbWUgImxlZC1ncGlvIiBidXQgdGhl
-Cj4+Pj4+PiBrZXJuZWwgZm9yYmlkZHMgdG8gcmVnaXN0ZXIgMiBwbGF0Zm9ybSBkYXRhcyB3aXRo
-IHRoZSBzYW1lIG5hbWUKPj4+Pj4+IGNvbnNpZGVyIHRoZSBhcjcxeHggZGV2aWNlcyB3aXRoIHFj
-YTk4OHggd2lmaSBjaGlwc2V0cy4gdGhleSBhbGwgaGF2ZQo+Pj4+Pj4gYWxyZWFkeSBhIGxlZCBw
-bGF0Zm9ybSBkYXRhIHJlZ2lzdGVyZWQKPj4+Pj4+IGF0IGJvb3R0aW1lLiBhIHNlY29uZCBjYW4n
-dCBiZSByZWdpc3RlcmVkIGFueW1vcmUgc28gZ3Bpb19sZWQgaXMgdXNlbGVzcwo+Pj4+Pj4gYXQK
-Pj4+Pj4+IGFsbCBmb3IgbW9zdCBkZXZlbG9wZXJzIG9uIHN1Y2ggcGxhdGZvcm1zLiBpdHMgbWFp
-bmx5IHVzZWQgZm9yIGVhcmx5Cj4+Pj4+PiBrZXJuZWwKPj4+Pj4+IHBsYXRmb3JtIGRhdGEgaW5p
-dGlhbGlzYXRpb24gZm9yIHN5c3RlbSBsZWRzLgo+Pj4+PiBJZiBsZWRzLWdwaW8gaGFzIGxpbWl0
-YXRpb25zLCBwbGVhc2UgZml4IHRob3NlLCByYXRoZXIgdGhlbgo+Pj4+PiBpbnRyb2R1Y2luZyBk
-dXBsaWNhdGVkIGNvZGUuCj4+Pj4gdGhlcmUgaXMgbm8gZHVwbGljYXRlZCBjb2RlIGludHJvZHVj
-ZWQgYW5kIHRoZXJlIGlzIG5vIHNvbHV0aW9uIGZvciBpdC4KPj4+PiBjb25zaWRlciB0aGF0IGFs
-bCB3aWZpIGRyaXZlcnMgd2l0aCBzb2Z0bGVkIHN1cHBvcnQKPj4+PiBhcmUgZ29pbmcgdGhhdCB3
-YXkgd2l0aCByZWdpc3RlcmluZyBhIG93biBsZWQgZHJpdmVyLiBzZWUgYXRoOWsgZm9yCj4+Pj4g
-aW5zdGFuY2UuIGdwaW8tbGVkIGNhbm5vdCBiZSB1c2VkIGZvciBpdCBhbmQgdGhlcmUgaXMgbm8g
-d2F5IHRvCj4+Pj4gc3VwcG9ydCBtdWx0aXBsZSBwbGF0Zm9ybSBkYXRhcyB3aXRoIHRoZSBzYW1l
-IG5hbWUuIGl0cyBhIGtlcm5lbCBsaW1pdGF0aW9uCj4+PiBJIGp1c3QgcmV2aWV3ZWQgc29tZSBt
-aXBzIGFyY2ggcGF0Y2ggYWRkaW5nIHN1cHBvcnQgZm9yIG1vcmUgTEVEcyBmb3IKPj4+IHNlbGVj
-dGVkIGRldmljZXM6Cj4+PiBbUEFUQ0hdIE1JUFM6IEJDTTQ3WFg6IEFkZCBMdXh1bCBYQVAxNTAw
-L1hXUjE3NTAgV2lGaSBMRURzCj4+PiBodHRwczovL3BhdGNod29yay5saW51eC1taXBzLm9yZy9w
-YXRjaC8xODY4MS8KPj4+Cj4+PiBJdCBzZWVtcyB0byBiZSBzaW1wbHkgYWRkaW5nIGFub3RoZXIg
-Y2FsbCB0byB0aGUKPj4+IGdwaW9fbGVkX3JlZ2lzdGVyX2RldmljZSgpLiBJdCBzZWVtcyB0byBt
-ZSB5b3UgY2FuIGNhbGwgdGhhdCBmdW5jdGlvbgo+Pj4gbXVsdGlwbGUgdGltZXMgYW5kIHJlZ2lz
-dGVyIG11bHRpcGxlIHN0cnVjdHMgd2l0aCBMRURzLgo+Pj4KPj4+IElzbid0IGFsbCB5b3UgbmVl
-ZCBzb21ldGhpbmcgbGlrZSB0aGlzPwo+Pj4KPj4+IHN0YXRpYyBjb25zdCBzdHJ1Y3QgZ3Bpb19s
-ZWQgYXRoMTBrX2xlZHNbXSA9IHsKPj4+ICAgICAgICAgIHsKPj4+ICAgICAgICAgICAgICAgICAg
-Lm5hbWUgPSAiYXRoMTBrOmNvbG9yOmZ1bmN0aW9uIiwKPj4+ICAgICAgICAgICAgICAgICAgLmFj
-dGl2ZV9sb3cgPSAxLAo+Pj4gICAgICAgICAgICAgICAgICAuZGVmYXVsdF9zdGF0ZSA9IExFRFNf
-R1BJT19ERUZTVEFURV9LRUVQLAo+Pj4gICAgICAgICAgfQo+Pj4gfTsKPj4+Cj4+PiBzdGF0aWMg
-c3RydWN0IGdwaW9fbGVkX3BsYXRmb3JtX2RhdGEgYmNtNDd4eF9sZWRzX3BkYXRhX2V4dHJhID0g
-ewo+Pj4gICAgICAgICAgbGVkcyA9IGF0aDEwa19sZWRzOwo+Pj4gICAgICAgICAgbnVtX2xlZHMg
-PSBBUlJBWV9TSVpFKGF0aDEwa19sZWRzKTsKPj4+IH07Cj4+Pgo+Pj4gYXRoMTBrX2xlZHMuZ3Bp
-byA9IGFyLT5od19wYXJhbXMubGVkX3BpbjsKPj4+IGdwaW9fbGVkX3JlZ2lzdGVyX2RldmljZSgw
-LCAmYXRoMTBrX2xlZHMpOwo+PiB0aGUgcHJvYmxlbSBhcmUgb3RoZXIgYXJjaGl0ZWN0dXJlcyB3
-aGljaCBoYXZlIGFscmVhZHkgcmVnaXN0ZXJlZCBncGlvX2xlZAo+PiBhdCBzeXN0ZW0gc3RhcnQg
-bGlrZSBhcjcxeHgKPj4geW91IGNhbm5vdCByZWdpc3RlciBhIHNlY29uZCBvbmUuIHNvIGEgaW5k
-ZXBlbmRlbmQgbGVkIGRyaXZlciBpcyBhCj4+IHJlcXVpcmVtZW50IGZvciBkaXJlY3QgY29udHJv
-bAo+IElmIHRoZSBsaW1pdGF0aW9uIGluZGVlZCBleGlzdHMsIHBsZWFzZSBmaXggdGhlIGxpbWl0
-YXRpb24gcmF0aGVyIHRoYW4KPiB3b3JraW5nIGFyb3VuZCBpdCBpbiBlYWNoIGFuZCBldmVyeSBk
-cml2ZXIuCnNlZSBhdGg5ay4gaXRzIGV4YWN0IHRoZSBzYW1lIGltcGxlbWVudGF0aW9uLgppbiBh
-ZGRpdGlvbiBteSB2YXJpYW50IGRvZXMgYWxzbyB3b3JrIHdpdGhvdXQgZ3Bpb2xpYiBzdXBwb3J0
-LiBzbyBpdCBjYW4gCmJlIHVzZWQgZXZlbiBpZiB0aGUga2VybmVsIGlzIGNvbmZpZ3VyZWQKd2l0
-aG91dCBncGlvIHN1cHBvcnQuCmFuZCBub3QgdG8gZm9yZ2V0LCB1c2luZyBhIG93biBsZWQgZHJp
-dmVyIGlzIG1vcmUgbGlndGh3ZWlnaHQgZnJvbSB0aGUgCmNhbGwgcGF0aCBmb3IgZWFjaCBsZWQg
-b24gLyBvZmYgZXZlbnQgd2hpY2ggaXMgaW1wb3J0YW50IGZvcgpsb3cgcGVyZm9ybWFuY2UgZW1i
-ZWRkZWQgZGV2aWNlcwoKClNlYmFzdGlhbgo+IAkJCQkJCQkJCVBhdmVsCj4KCi0tIApNaXQgZnJl
-dW5kbGljaGVuIEdyw7xzc2VuIC8gUmVnYXJkcwoKU2ViYXN0aWFuIEdvdHRzY2hhbGwgLyBDVE8K
-Ck5ld01lZGlhLU5FVCBHbWJIIC0gREQtV1JUCkZpcm1lbnNpdHo6ICBTdHViZW53YWxkYWxsZWUg
-MjFhLCA2NDYyNSBCZW5zaGVpbQpSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IERhcm1zdGFk
-dCwgSFJCIDI1NDczCkdlc2Now6RmdHNmw7xocmVyOiBQZXRlciBTdGVpbmjDpHVzZXIsIENocmlz
-dGlhbiBTY2hlZWxlCmh0dHA6Ly93d3cuZGQtd3J0LmNvbQplbWFpbDogcy5nb3R0c2NoYWxsQGRk
-LXdydC5jb20KVGVsLjogKzQ5NjI1MS01ODI2NTAgLyBGYXg6ICs0OTYyNTEtNTgyNjU2NQoKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
-aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Arnd Bergmann <arnd@arndb.de> writes:
+
+> On Thu, Mar 1, 2018 at 2:18 PM, Govind Singh <govinds@qti.qualcomm.com> wrote:
+>>>> The asm/dma-iommu.h header file exsists only on arm32, no other architecture.
+>>>> I'm not sure about the purpose of the patch to start with:
+>>>> it's normally up to the platform code to allocate IOMMU domains,
+>>>> device drivers should only need to manually interact with the
+>>>> IOMMU layer if they need more than one domain, but this ath10k
+>>>> patch appears to be using the default domain and should have no
+>>>> effect as long as the platform code works correctly.
+>> Thanks Arnd, I have fixed this and migrated to 64bit
+>> API's(iommu_attach_device/iommu_detach_device/
+>> iommu_get_domain_for_dev), will share the next revision.
+>> I tried using the default domain by adding the stream ID and mask in
+>> dt and no manual interaction, but it is resulting in TZ error and
+>> unhandled context fault.
+>> Seems I need to provide explicit mapping range(aperture_start/
+>> aperture_end) as this is only working combination for me..
+>
+> I don't see why you need to do that at all, can you clarify?
+>
+> The IOMMU should be set up implicitly for you here based on the iommus
+> property in DT, with no driver changes at all. This should work on all
+> architectures/
+
+Maybe Govind is using some out-of-tree tree which is buggy in this
+regard?
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
