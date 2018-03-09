@@ -1,25 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nbd.name ([2a01:4f8:221:3d45::2])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1etxkP-0000bW-Ln
- for ath10k@lists.infradead.org; Thu, 08 Mar 2018 15:46:27 +0000
-Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
- various chipsets
-References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
- <CACna6rzD6z3DC6yjMCgBxgxx+DF+GGu69Ot5QA6xpJ41Ewb2=A@mail.gmail.com>
- <82d8ac0c-b391-6099-4c7f-991cc35445aa@dd-wrt.com>
- <20180302090312.GA30267@amd>
- <e77d25d4-a824-380a-c51a-e81175ba6205@dd-wrt.com>
- <CACna6rys85VEkzRGDVUAkBy7KgHS2y0DET7YvedboX-YEQHrkg@mail.gmail.com>
- <890a4dcc-f549-6487-2ce5-3b62874cd266@dd-wrt.com>
- <20180308090216.GC17761@amd>
- <d443856e-cfc8-2d50-900d-edf22e5360e3@dd-wrt.com> <20180308140515.GA4889@amd>
-From: Felix Fietkau <nbd@nbd.name>
-Message-ID: <1b1f6344-d588-d2f2-4b3d-a0a4043e801f@nbd.name>
-Date: Thu, 8 Mar 2018 16:46:11 +0100
+Received: from smtpimr.rockwellcollins.com ([205.175.225.240]
+ helo=secvs01.rockwellcollins.com)
+ by merlin.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1euJdV-0006W0-QC
+ for ath10k@lists.infradead.org; Fri, 09 Mar 2018 15:08:46 +0000
+Received: by mail-yb0-f199.google.com with SMTP id c3-v6so5362883ybl.14
+ for <ath10k@lists.infradead.org>; Fri, 09 Mar 2018 07:08:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20180308140515.GA4889@amd>
-Content-Language: en-US
+From: Jared Bents <jared.bents@rockwellcollins.com>
+Date: Fri, 9 Mar 2018 09:08:29 -0600
+Message-ID: <CAM=7fbewAQ7tW7J4fbq811a4++H+RMz0oxC9KiOsZnPFFQcuNQ@mail.gmail.com>
+Subject: DMA issues on PowerPC64
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,80 +19,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pavel Machek <pavel@ucw.cz>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
 
-T24gMjAxOC0wMy0wOCAxNTowNSwgUGF2ZWwgTWFjaGVrIHdyb3RlOgo+IE9uIFRodSAyMDE4LTAz
-LTA4IDEzOjMzOjI5LCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4gQW0gMDguMDMuMjAx
-OCB1bSAxMDowMiBzY2hyaWViIFBhdmVsIE1hY2hlazoKPj4gPk9uIFdlZCAyMDE4LTAzLTA3IDE4
-OjU0OjQxLCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4gPj5BbSAwNy4wMy4yMDE4IHVt
-IDE3OjIyIHNjaHJpZWIgUmFmYcWCIE1pxYJlY2tpOgo+PiA+Pj5PbiAyIE1hcmNoIDIwMTggYXQg
-MTA6MjIsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbT4gd3Jv
-dGU6Cj4+ID4+Pj4+PmxlZHMtZ3BpbyBpcyBjcmFwIGFuZCBsaW1pdGVkLiB5b3UgY2FuIGp1c3Qg
-cmVnaXN0ZXIgb25lIHBsYXRmb3JtIGRhdGEgYXQKPj4gPj4+Pj4+a2VybmVsIHJ1bnRpbWUgc2lu
-Y2UgaXRzIGlkZW50aWZpZWQgYnkgaXRzIG9iamVjdCBuYW1lICJsZWQtZ3BpbyIgYnV0IHRoZQo+
-PiA+Pj4+Pj5rZXJuZWwgZm9yYmlkZHMgdG8gcmVnaXN0ZXIgMiBwbGF0Zm9ybSBkYXRhcyB3aXRo
-IHRoZSBzYW1lIG5hbWUKPj4gPj4+Pj4+Y29uc2lkZXIgdGhlIGFyNzF4eCBkZXZpY2VzIHdpdGgg
-cWNhOTg4eCB3aWZpIGNoaXBzZXRzLiB0aGV5IGFsbCBoYXZlCj4+ID4+Pj4+PmFscmVhZHkgYSBs
-ZWQgcGxhdGZvcm0gZGF0YSByZWdpc3RlcmVkCj4+ID4+Pj4+PmF0IGJvb3R0aW1lLiBhIHNlY29u
-ZCBjYW4ndCBiZSByZWdpc3RlcmVkIGFueW1vcmUgc28gZ3Bpb19sZWQgaXMgdXNlbGVzcwo+PiA+
-Pj4+Pj5hdAo+PiA+Pj4+Pj5hbGwgZm9yIG1vc3QgZGV2ZWxvcGVycyBvbiBzdWNoIHBsYXRmb3Jt
-cy4gaXRzIG1haW5seSB1c2VkIGZvciBlYXJseQo+PiA+Pj4+Pj5rZXJuZWwKPj4gPj4+Pj4+cGxh
-dGZvcm0gZGF0YSBpbml0aWFsaXNhdGlvbiBmb3Igc3lzdGVtIGxlZHMuCj4+ID4+Pj4+SWYgbGVk
-cy1ncGlvIGhhcyBsaW1pdGF0aW9ucywgcGxlYXNlIGZpeCB0aG9zZSwgcmF0aGVyIHRoZW4KPj4g
-Pj4+Pj5pbnRyb2R1Y2luZyBkdXBsaWNhdGVkIGNvZGUuCj4+ID4+Pj50aGVyZSBpcyBubyBkdXBs
-aWNhdGVkIGNvZGUgaW50cm9kdWNlZCBhbmQgdGhlcmUgaXMgbm8gc29sdXRpb24gZm9yIGl0Lgo+
-PiA+Pj4+Y29uc2lkZXIgdGhhdCBhbGwgd2lmaSBkcml2ZXJzIHdpdGggc29mdGxlZCBzdXBwb3J0
-Cj4+ID4+Pj5hcmUgZ29pbmcgdGhhdCB3YXkgd2l0aCByZWdpc3RlcmluZyBhIG93biBsZWQgZHJp
-dmVyLiBzZWUgYXRoOWsgZm9yCj4+ID4+Pj5pbnN0YW5jZS4gZ3Bpby1sZWQgY2Fubm90IGJlIHVz
-ZWQgZm9yIGl0IGFuZCB0aGVyZSBpcyBubyB3YXkgdG8KPj4gPj4+PnN1cHBvcnQgbXVsdGlwbGUg
-cGxhdGZvcm0gZGF0YXMgd2l0aCB0aGUgc2FtZSBuYW1lLiBpdHMgYSBrZXJuZWwgbGltaXRhdGlv
-bgo+PiA+Pj5JIGp1c3QgcmV2aWV3ZWQgc29tZSBtaXBzIGFyY2ggcGF0Y2ggYWRkaW5nIHN1cHBv
-cnQgZm9yIG1vcmUgTEVEcyBmb3IKPj4gPj4+c2VsZWN0ZWQgZGV2aWNlczoKPj4gPj4+W1BBVENI
-XSBNSVBTOiBCQ000N1hYOiBBZGQgTHV4dWwgWEFQMTUwMC9YV1IxNzUwIFdpRmkgTEVEcwo+PiA+
-Pj5odHRwczovL3BhdGNod29yay5saW51eC1taXBzLm9yZy9wYXRjaC8xODY4MS8KPj4gPj4+Cj4+
-ID4+Pkl0IHNlZW1zIHRvIGJlIHNpbXBseSBhZGRpbmcgYW5vdGhlciBjYWxsIHRvIHRoZQo+PiA+
-Pj5ncGlvX2xlZF9yZWdpc3Rlcl9kZXZpY2UoKS4gSXQgc2VlbXMgdG8gbWUgeW91IGNhbiBjYWxs
-IHRoYXQgZnVuY3Rpb24KPj4gPj4+bXVsdGlwbGUgdGltZXMgYW5kIHJlZ2lzdGVyIG11bHRpcGxl
-IHN0cnVjdHMgd2l0aCBMRURzLgo+PiA+Pj4KPj4gPj4+SXNuJ3QgYWxsIHlvdSBuZWVkIHNvbWV0
-aGluZyBsaWtlIHRoaXM/Cj4+ID4+Pgo+PiA+Pj5zdGF0aWMgY29uc3Qgc3RydWN0IGdwaW9fbGVk
-IGF0aDEwa19sZWRzW10gPSB7Cj4+ID4+PiAgICAgICAgIHsKPj4gPj4+ICAgICAgICAgICAgICAg
-ICAubmFtZSA9ICJhdGgxMGs6Y29sb3I6ZnVuY3Rpb24iLAo+PiA+Pj4gICAgICAgICAgICAgICAg
-IC5hY3RpdmVfbG93ID0gMSwKPj4gPj4+ICAgICAgICAgICAgICAgICAuZGVmYXVsdF9zdGF0ZSA9
-IExFRFNfR1BJT19ERUZTVEFURV9LRUVQLAo+PiA+Pj4gICAgICAgICB9Cj4+ID4+Pn07Cj4+ID4+
-Pgo+PiA+Pj5zdGF0aWMgc3RydWN0IGdwaW9fbGVkX3BsYXRmb3JtX2RhdGEgYmNtNDd4eF9sZWRz
-X3BkYXRhX2V4dHJhID0gewo+PiA+Pj4gICAgICAgICBsZWRzID0gYXRoMTBrX2xlZHM7Cj4+ID4+
-PiAgICAgICAgIG51bV9sZWRzID0gQVJSQVlfU0laRShhdGgxMGtfbGVkcyk7Cj4+ID4+Pn07Cj4+
-ID4+Pgo+PiA+Pj5hdGgxMGtfbGVkcy5ncGlvID0gYXItPmh3X3BhcmFtcy5sZWRfcGluOwo+PiA+
-Pj5ncGlvX2xlZF9yZWdpc3Rlcl9kZXZpY2UoMCwgJmF0aDEwa19sZWRzKTsKPj4gPj50aGUgcHJv
-YmxlbSBhcmUgb3RoZXIgYXJjaGl0ZWN0dXJlcyB3aGljaCBoYXZlIGFscmVhZHkgcmVnaXN0ZXJl
-ZCBncGlvX2xlZAo+PiA+PmF0IHN5c3RlbSBzdGFydCBsaWtlIGFyNzF4eAo+PiA+PnlvdSBjYW5u
-b3QgcmVnaXN0ZXIgYSBzZWNvbmQgb25lLiBzbyBhIGluZGVwZW5kZW5kIGxlZCBkcml2ZXIgaXMg
-YQo+PiA+PnJlcXVpcmVtZW50IGZvciBkaXJlY3QgY29udHJvbAo+PiA+SWYgdGhlIGxpbWl0YXRp
-b24gaW5kZWVkIGV4aXN0cywgcGxlYXNlIGZpeCB0aGUgbGltaXRhdGlvbiByYXRoZXIgdGhhbgo+
-PiA+d29ya2luZyBhcm91bmQgaXQgaW4gZWFjaCBhbmQgZXZlcnkgZHJpdmVyLgo+PiBzZWUgYXRo
-OWsuIGl0cyBleGFjdCB0aGUgc2FtZSBpbXBsZW1lbnRhdGlvbi4KPiAKPiBPaywgc28gb25lIG1v
-cmUgZHJpdmVyIHRvIGZpeC4KPiAKPj4gaW4gYWRkaXRpb24gbXkgdmFyaWFudCBkb2VzIGFsc28g
-d29yayB3aXRob3V0IGdwaW9saWIgc3VwcG9ydC4gc28gaXQgY2FuIGJlCj4+IHVzZWQgZXZlbiBp
-ZiB0aGUga2VybmVsIGlzIGNvbmZpZ3VyZWQKPj4gd2l0aG91dCBncGlvIHN1cHBvcnQuCj4+IGFu
-ZCBub3QgdG8gZm9yZ2V0LCB1c2luZyBhIG93biBsZWQgZHJpdmVyIGlzIG1vcmUgbGlndGh3ZWln
-aHQgZnJvbSB0aGUgY2FsbAo+PiBwYXRoIGZvciBlYWNoIGxlZCBvbiAvIG9mZiBldmVudCB3aGlj
-aCBpcyBpbXBvcnRhbnQgZm9yCj4+IGxvdyBwZXJmb3JtYW5jZSBlbWJlZGRlZCBkZXZpY2VzCj4g
-Cj4gV2UgYXJlIG5vdCBnb2luZyB0byBjb3B5JnBhc3RlIGNvZGUgYmVjYXVzZSBzdWNoIGNvZGUg
-d29ya3Mgd2l0aG91dAo+IGxpYnJhcmllcywgYW5kIHdlIGFyZSBub3QgZ29pbmcgdG8gY29weSZw
-YXN0ZSBjb2RlIGJlY2F1c2UgdGhhdCB1c2VzCj4gbGVzcyBjYWNoZSBkdXJpbmcgY2FsbHMuIFNv
-cnJ5Lgo+IAo+IE5BSy4gUGxlYXNlIGZpeCB5b3VyIHBhdGNoLiBTaW5jZSB0aGlzIGRpc2N1c3Np
-b24gc2VlbXMgdG8gaGF2ZSB0YWtlbiBhIHJhdGhlciB3ZWlyZCB0dXJuLCBJJ3ZlCnRha2VuIGEg
-bG9vayBhdCB0aGUgc3BlY2lmaWMgY29kZSwgYW5kIGZyb20gbXkgcG9pbnQgb2YgdmlldyB0aGUg
-Y29kZQp0aGF0IHNldHMgdXAgdGhlIExFRCAoaW5jbHVkaW5nIGNhbGxiYWNrKSBpcyBzbyB0cml2
-aWFsIHRoYXQgaXQncyBzaW1wbHkKbm90IHdvcnRoIGRlYWxpbmcgd2l0aCBhZGRpbmcgdGhlIGxl
-ZHMtZ3BpbyBkcml2ZXIgdG8gdGhlIG1peC4KSXQgYWRkcyBleHRyYSBjb21wbGV4aXR5IGFuZCBh
-biBleHRyYSBkZXBlbmRlbmN5IGZvciBubyByZWFzb24gYXQgYWxsLgpUaGVyZSdzIG5vIGV4dHJh
-IGZ1bmN0aW9uYWxpdHkgdG8gYmUgZ2FpbmVkIGJ5IHVzaW5nIGl0LgoKLSBGZWxpeAoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hi all,
+
+Some background information first.  I transitioned a build from 32 bit
+to 64 bit and discovered my wifi modules no longer work.  I am using
+fsl-v2.0-1703 on a qoriq t1042.  I sourced the problem to DMA mapping
+errors and found that it was trying to map addresses in regions not
+allowed by the kernel.
+
+ath10k_pci 0001:01:00.0: unable to get target info from device
+ath10k_pci 0001:01:00.0: could not get target info (5)
+ath10k_pci 0001:01:00.0: could not probe fw (5)
+
+
+I discovered that if I limited my memory from the actual 8GB present
+down to just 2GB with the bootarg mem=2048M, the ath10k modules
+worked.
+
+So I started poking around in ath10k/pci.c and noticed that if I ORed
+the regions specified in the memory allocations with GFP_DMA, I could
+get rid of the initial dma mapping errors.  A couple of examples are
+below.
+
+skb = __dev_alloc_skb(pipe->buf_sz, GFP_DMA | GFP_ATOMIC);
+treq = kmemdup(req, req_len, GFP_DMA | GFP_KERNEL);
+
+
+But then came across these failures which I have yet to sort out.
+
+ath10k_pci 0001:01:00.0: failed to connect htt (-5)
+ath10k_pci 0001:01:00.0: could not init core (-5)
+ath10k_pci 0001:01:00.0: could not probe fw (-5)
+
+
+I am wondering if anyone else has come across this issue and solved it
+or if somehow this is just an issue on ppc64 and I am somehow the only
+one in that use case.  Unfortunately because of the qoriq t1042, I am
+on the latest kernel I can use via the latest available sdk for my
+processor which is linux kernel version 4.1.35-rt41
+
+Thank you,
+Jared
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
