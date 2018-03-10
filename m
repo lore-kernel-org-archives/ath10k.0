@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1euakU-0002qc-IG
- for ath10k@lists.infradead.org; Sat, 10 Mar 2018 09:25:08 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: DMA issues on PowerPC64
-References: <CAM=7fbewAQ7tW7J4fbq811a4++H+RMz0oxC9KiOsZnPFFQcuNQ@mail.gmail.com>
-Date: Sat, 10 Mar 2018 11:24:50 +0200
-In-Reply-To: <CAM=7fbewAQ7tW7J4fbq811a4++H+RMz0oxC9KiOsZnPFFQcuNQ@mail.gmail.com>
- (Jared Bents's message of "Fri, 9 Mar 2018 09:08:29 -0600")
-Message-ID: <87h8pocmfx.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1eudUH-0000Ix-D2
+ for ath10k@lists.infradead.org; Sat, 10 Mar 2018 12:20:36 +0000
+From: Anilkumar Kolli <akolli@codeaurora.org>
+Subject: [PATCH] ath10k: fix recent bandwidth conversion bug
+Date: Sat, 10 Mar 2018 17:50:38 +0530
+Message-Id: <1520684438-9233-1-git-send-email-akolli@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,67 +15,121 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jared Bents <jared.bents@rockwellcollins.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Jared Bents <jared.bents@rockwellcollins.com> writes:
+From: Christian Lamparter <chunkeey@gmail.com>
 
-> Some background information first.  I transitioned a build from 32 bit
-> to 64 bit and discovered my wifi modules no longer work.  I am using
-> fsl-v2.0-1703 on a qoriq t1042.  I sourced the problem to DMA mapping
-> errors and found that it was trying to map addresses in regions not
-> allowed by the kernel.
->
-> ath10k_pci 0001:01:00.0: unable to get target info from device
-> ath10k_pci 0001:01:00.0: could not get target info (5)
-> ath10k_pci 0001:01:00.0: could not probe fw (5)
->
->
-> I discovered that if I limited my memory from the actual 8GB present
-> down to just 2GB with the bootarg mem=2048M, the ath10k modules
-> worked.
->
-> So I started poking around in ath10k/pci.c and noticed that if I ORed
-> the regions specified in the memory allocations with GFP_DMA, I could
-> get rid of the initial dma mapping errors.  A couple of examples are
-> below.
->
-> skb = __dev_alloc_skb(pipe->buf_sz, GFP_DMA | GFP_ATOMIC);
-> treq = kmemdup(req, req_len, GFP_DMA | GFP_KERNEL);
->
->
-> But then came across these failures which I have yet to sort out.
->
-> ath10k_pci 0001:01:00.0: failed to connect htt (-5)
-> ath10k_pci 0001:01:00.0: could not init core (-5)
-> ath10k_pci 0001:01:00.0: could not probe fw (-5)
+The commit "cfg80211: make RATE_INFO_BW_20 the default" changed
+the index of RATE_INFO_BW_20, but the updates to ath10k missed
+the special bandwidth calculation case in
+ath10k_update_per_peer_tx_stats().
 
-Do note that GFP_DMA is not supposed to be used anymore:
+This will fix below warning,
 
- * GFP_DMA exists for historical reasons and should be avoided where possible.
- *   The flags indicates that the caller requires that the lowest zone be
- *   used (ZONE_DMA or 16M on x86-64). Ideally, this would be removed but
- *   it would require careful auditing as some users really require it and
- *   others use the flag to avoid lowmem reserves in ZONE_DMA and treat the
- *   lowest zone as a type of emergency reserve.
+ WARNING: CPU: 0 PID: 609 at net/wireless/util.c:1254
+ cfg80211_calculate_bitrate+0x174/0x220
+ invalid rate bw=1, mcs=9, nss=2
 
-> I am wondering if anyone else has come across this issue and solved it
-> or if somehow this is just an issue on ppc64 and I am somehow the only
-> one in that use case.  Unfortunately because of the qoriq t1042, I am
-> on the latest kernel I can use via the latest available sdk for my
-> processor which is linux kernel version 4.1.35-rt41
+ (unwind_backtrace) from
+ (cfg80211_calculate_bitrate+0x174/0x220)
+ (cfg80211_calculate_bitrate) from
+ (nl80211_put_sta_rate+0x44/0x1dc)from
+ (nl80211_put_sta_rate) from
+ (nl80211_send_station+0x388/0xaf0)
+ (nl80211_get_station+0xa8/0xec)
+ [ end trace da8257d6a850e91a ]
 
-I don't know if this is a problem with ath10k or your arch, but I think
-you should ask help from wider audience, like linux-kernel, pci or ppc
-lists. Though I don't know how they will react as you are using an
-out-of-tree kernel.
+Fixes: 842be75c77cb ("cfg80211: make RATE_INFO_BW_20 the default")
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   43 +++++++++++++++++-------------
+ 1 file changed, 25 insertions(+), 18 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 6d96f9560950..47d1f2f6c6bb 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -723,6 +724,28 @@ struct amsdu_subframe_hdr {
+ 
+ #define GROUP_ID_IS_SU_MIMO(x) ((x) == 0 || (x) == 63)
+ 
++static inline u8 ath10k_bw_to_mac80211_bw(u8 bw)
++{
++	u8 ret = 0;
++
++	switch (bw) {
++	case 0:
++		ret = RATE_INFO_BW_20;
++		break;
++	case 1:
++		ret = RATE_INFO_BW_40;
++		break;
++	case 2:
++		ret = RATE_INFO_BW_80;
++		break;
++	case 3:
++		ret = RATE_INFO_BW_160;
++		break;
++	}
++
++	return ret;
++}
++
+ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
+ 				  struct ieee80211_rx_status *status,
+ 				  struct htt_rx_desc *rxd)
+@@ -825,23 +848,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
+ 		if (sgi)
+ 			status->enc_flags |= RX_ENC_FLAG_SHORT_GI;
+ 
+-		switch (bw) {
+-		/* 20MHZ */
+-		case 0:
+-			break;
+-		/* 40MHZ */
+-		case 1:
+-			status->bw = RATE_INFO_BW_40;
+-			break;
+-		/* 80MHZ */
+-		case 2:
+-			status->bw = RATE_INFO_BW_80;
+-			break;
+-		case 3:
+-			status->bw = RATE_INFO_BW_160;
+-			break;
+-		}
+-
++		status->bw = ath10k_bw_to_mac80211_bw(bw);
+ 		status->encoding = RX_ENC_VHT;
+ 		break;
+ 	default:
+@@ -2499,7 +2506,7 @@ static inline bool is_valid_legacy_rate(u8 rate)
+ 		arsta->txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
+ 
+ 	arsta->txrate.nss = txrate.nss;
+-	arsta->txrate.bw = txrate.bw + RATE_INFO_BW_20;
++	arsta->txrate.bw = ath10k_bw_to_mac80211_bw(txrate.bw);
+ }
+ 
+ static void ath10k_htt_fetch_peer_stats(struct ath10k *ar,
 -- 
-Kalle Valo
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
