@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1euaXb-0007nk-HP
- for ath10k@lists.infradead.org; Sat, 10 Mar 2018 09:11:49 +0000
+ id 1euakU-0002qc-IG
+ for ath10k@lists.infradead.org; Sat, 10 Mar 2018 09:25:08 +0000
 From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 01/13] ath10k: platform driver for WCN3990 SNOC WLAN module
-References: <1518684458-5338-1-git-send-email-govinds@codeaurora.org>
- <87371kqfda.fsf@kamboji.qca.qualcomm.com>
- <d396df1b09da4dd7aa14d6af2c2b2b18@aphydexm01b.ap.qualcomm.com>
- <87tvttl6kp.fsf@kamboji.qca.qualcomm.com>
- <fb2c04383f024ab8b2c62dd5a4ad20ac@SOC-EX01V.e01.socionext.com>
-Date: Sat, 10 Mar 2018 11:11:31 +0200
-In-Reply-To: <fb2c04383f024ab8b2c62dd5a4ad20ac@SOC-EX01V.e01.socionext.com>
- (yamada masahiro's message of "Thu, 8 Mar 2018 00:25:36 +0000")
-Message-ID: <87lgf0cn24.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: DMA issues on PowerPC64
+References: <CAM=7fbewAQ7tW7J4fbq811a4++H+RMz0oxC9KiOsZnPFFQcuNQ@mail.gmail.com>
+Date: Sat, 10 Mar 2018 11:24:50 +0200
+In-Reply-To: <CAM=7fbewAQ7tW7J4fbq811a4++H+RMz0oxC9KiOsZnPFFQcuNQ@mail.gmail.com>
+ (Jared Bents's message of "Fri, 9 Mar 2018 09:08:29 -0600")
+Message-ID: <87h8pocmfx.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,58 +23,60 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: yamada.masahiro@socionext.com
-Cc: govinds@codeaurora.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Jared Bents <jared.bents@rockwellcollins.com>
+Cc: ath10k@lists.infradead.org
 
-<yamada.masahiro@socionext.com> writes:
+Jared Bents <jared.bents@rockwellcollins.com> writes:
 
->> >> Kbuild bot found an odd problem with this patch:
->> >>
->> >>  include/linux/dynamic_debug.h:77:14: error: 'KBUILD_MODNAME'
->> >>  undeclared (first use in this function); did you mean
->> 'KBUILD_BASENAME'?
->> >>
->> >> Full report:
->> >>
->> >>
->> http://lists.infradead.org/pipermail/ath10k/2018-February/010907.html
->> >>
->> >> Any ideas? Is this is some unrelated issue or what? This patch is not
->> >> even touching hif.h or ce.c.
->> >
->> > I didn't encountered this issue as in my defconfig only
->> > CONFIG_ATH10K_SNOC was defined. This problem is coming when we define
->> > CONFIG_ATH10K_SNOC and CONFIG_ATH10K_PCI simultaneously in defconfig
->> > and this is known issue when multiple modules share objects(in this
->> > case ce.o). I saw similar reported problem and found
->> > https://patchwork.kernel.org/patch/10060825/.
->> >
->> > After picking the below change issue is not seen.
->> 
->> Let's ask the kbuild maintainer. Masahiro, any chances of getting this
->> patch applied anytime soon:
->> 
->> kbuild: define KBUILD_MODNAME even if multiple modules share objects
->> 
->> https://patchwork.kernel.org/patch/10060825/
->> 
->> In ath10k we would need it as otherwise we are not able to link ce.o
->> both to ath10k_pci.ko and ath10k_snoc.ko. What do you think?
->> 
->> Full discussion and the ath10k patch here:
->> 
->> https://patchwork.kernel.org/patch/10220657/
->> 
+> Some background information first.  I transitioned a build from 32 bit
+> to 64 bit and discovered my wifi modules no longer work.  I am using
+> fsl-v2.0-1703 on a qoriq t1042.  I sourced the problem to DMA mapping
+> errors and found that it was trying to map addresses in regions not
+> allowed by the kernel.
 >
-> I plan to submit v2, but even if the undefined KBUILD_MODNAME is fixed,
-> I expect another problem from this patch.
+> ath10k_pci 0001:01:00.0: unable to get target info from device
+> ath10k_pci 0001:01:00.0: could not get target info (5)
+> ath10k_pci 0001:01:00.0: could not probe fw (5)
 >
-> If both CONFIG_ATH10K_PCI and CONFIG_ATH10_SNOC are 'y'
-> two instances of ce.o would be linked into vmliux,
-> then causes multiple definition error.
+>
+> I discovered that if I limited my memory from the actual 8GB present
+> down to just 2GB with the bootarg mem=2048M, the ath10k modules
+> worked.
+>
+> So I started poking around in ath10k/pci.c and noticed that if I ORed
+> the regions specified in the memory allocations with GFP_DMA, I could
+> get rid of the initial dma mapping errors.  A couple of examples are
+> below.
+>
+> skb = __dev_alloc_skb(pipe->buf_sz, GFP_DMA | GFP_ATOMIC);
+> treq = kmemdup(req, req_len, GFP_DMA | GFP_KERNEL);
+>
+>
+> But then came across these failures which I have yet to sort out.
+>
+> ath10k_pci 0001:01:00.0: failed to connect htt (-5)
+> ath10k_pci 0001:01:00.0: could not init core (-5)
+> ath10k_pci 0001:01:00.0: could not probe fw (-5)
 
-Oh, I didn't realise this. Thanks for pointing it out. Govind is looking
-at other ways to fix this.
+Do note that GFP_DMA is not supposed to be used anymore:
+
+ * GFP_DMA exists for historical reasons and should be avoided where possible.
+ *   The flags indicates that the caller requires that the lowest zone be
+ *   used (ZONE_DMA or 16M on x86-64). Ideally, this would be removed but
+ *   it would require careful auditing as some users really require it and
+ *   others use the flag to avoid lowmem reserves in ZONE_DMA and treat the
+ *   lowest zone as a type of emergency reserve.
+
+> I am wondering if anyone else has come across this issue and solved it
+> or if somehow this is just an issue on ppc64 and I am somehow the only
+> one in that use case.  Unfortunately because of the qoriq t1042, I am
+> on the latest kernel I can use via the latest available sdk for my
+> processor which is linux kernel version 4.1.35-rt41
+
+I don't know if this is a problem with ath10k or your arch, but I think
+you should ask help from wider audience, like linux-kernel, pci or ppc
+lists. Though I don't know how they will react as you are using an
+out-of-tree kernel.
 
 -- 
 Kalle Valo
