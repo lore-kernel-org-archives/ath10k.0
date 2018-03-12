@@ -1,29 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
- helo=webmail.newmedia-net.de)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1evJT4-0002Rf-7B
- for ath10k@lists.infradead.org; Mon, 12 Mar 2018 09:10:18 +0000
-Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
- various chipsets
-References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
- <CACna6rzD6z3DC6yjMCgBxgxx+DF+GGu69Ot5QA6xpJ41Ewb2=A@mail.gmail.com>
- <82d8ac0c-b391-6099-4c7f-991cc35445aa@dd-wrt.com>
- <20180302090312.GA30267@amd>
- <e77d25d4-a824-380a-c51a-e81175ba6205@dd-wrt.com>
- <CACna6rys85VEkzRGDVUAkBy7KgHS2y0DET7YvedboX-YEQHrkg@mail.gmail.com>
- <890a4dcc-f549-6487-2ce5-3b62874cd266@dd-wrt.com>
- <20180308090216.GC17761@amd>
- <d443856e-cfc8-2d50-900d-edf22e5360e3@dd-wrt.com> <20180308140515.GA4889@amd>
- <1b1f6344-d588-d2f2-4b3d-a0a4043e801f@nbd.name>
- <CAGRGNgWSnObB8PomPPEGs533dmFyQQkOEsvxzyJ=BfBBcWT2Ug@mail.gmail.com>
- <40dc5bc3-d77e-397d-f3db-2efb70ff82ae@dd-wrt.com>
- <4345c367-e786-ef44-fed7-8658f519a689@kresin.me>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <a8b22f42-7953-bc60-c5f9-91469caa50b1@dd-wrt.com>
-Date: Mon, 12 Mar 2018 10:09:40 +0100
-MIME-Version: 1.0
-In-Reply-To: <4345c367-e786-ef44-fed7-8658f519a689@kresin.me>
+ id 1evLoJ-0001sQ-4C
+ for ath10k@lists.infradead.org; Mon, 12 Mar 2018 11:40:12 +0000
+From: Karthikeyan Periyasamy <periyasa@codeaurora.org>
+Subject: [PATCH] ath10k: Fix kernel panic while using worker
+ (ath10k_sta_rc_update_wk)
+Date: Mon, 12 Mar 2018 17:09:40 +0530
+Message-Id: <1520854780-11823-1-git-send-email-periyasa@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,121 +16,113 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mathias Kresin <dev@kresin.me>, Julian Calaby <julian.calaby@gmail.com>, Felix Fietkau <nbd@nbd.name>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>, Pavel Machek <pavel@ucw.cz>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, Kalle Valo <kvalo@codeaurora.org>
+To: ath10k@lists.infradead.org
+Cc: Karthikeyan Periyasamy <periyasa@codeaurora.org>, linux-wireless@vger.kernel.org
 
-QW0gMTIuMDMuMjAxOCB1bSAwODo1MyBzY2hyaWViIE1hdGhpYXMgS3Jlc2luOgo+IDEwLjAzLjIw
-MTggMDg6NTYsIFNlYmFzdGlhbiBHb3R0c2NoYWxsOgo+Pgo+Pj4+IHRha2VuIGEgbG9vayBhdCB0
-aGUgc3BlY2lmaWMgY29kZSwgYW5kIGZyb20gbXkgcG9pbnQgb2YgdmlldyB0aGUgY29kZQo+Pj4+
-IHRoYXQgc2V0cyB1cCB0aGUgTEVEIChpbmNsdWRpbmcgY2FsbGJhY2spIGlzIHNvIHRyaXZpYWwg
-dGhhdCBpdCdzIAo+Pj4+IHNpbXBseQo+Pj4+IG5vdCB3b3J0aCBkZWFsaW5nIHdpdGggYWRkaW5n
-IHRoZSBsZWRzLWdwaW8gZHJpdmVyIHRvIHRoZSBtaXguCj4+Pj4gSXQgYWRkcyBleHRyYSBjb21w
-bGV4aXR5IGFuZCBhbiBleHRyYSBkZXBlbmRlbmN5IGZvciBubyByZWFzb24gYXQgYWxsLgo+Pj4+
-IFRoZXJlJ3Mgbm8gZXh0cmEgZnVuY3Rpb25hbGl0eSB0byBiZSBnYWluZWQgYnkgdXNpbmcgaXQu
-Cj4+PiBTdHVwaWQgcXVlc3Rpb246IElmIHRoZSBMRUQgZHJpdmVyIGlzbid0IHVzaW5nIHRoZSBH
-UElPIHN1YnN5c3RlbQo+Pj4gKHdoZW4gZW5hYmxlZCksIHdoYXQgaGFwcGVucyBpZiB0aGUgdXNl
-ciB1c2VzIHRoZSBHUElPIHN1YnN5c3RlbSB0bwo+Pj4gZmlkZGxlIHdpdGggdGhlIHBpbiB0aGUg
-TEVEIGlzIGNvbm5lY3RlZCB0bz8KPj4KPj4gaW4gb3VyIGNhc2UgaGVyZSBpdCBjYW4gY29leGlz
-dCBhbmQgd2lsbCBub3QgaGF2ZSBhIG5lZ2F0aXZlIGVmZmVjdCAKPj4gc2luY2UgdGhlIGxlZCB3
-aWxsIHN0aWxsIHJ1bi4gKGV4Y2VwdCBpZiB5b3UgcmVjb25maWd1cmUgdGhlIGdwaW8gdG8gCj4+
-IGlucHV0KQo+PiBmb3Igc3VyZSBpdCBtYWtlcyBubyBzZW5zZS4KPgo+IFdlbGwsIGl0IHdpbGwg
-aGF2ZSBuZWdhdGl2ZSBlZmZlY3RzIGFzIEkgbm90aWNlZCBpbiBPcGVuV3J0LiBJZiB0aGUgCj4g
-c2FtZSBHUElPIGlzIGNvbnRyb2xsZWQgYnkgdGhlIGludGVybmFsIExFRCBmdW5jdGlvbiBpdCBj
-YW4ndCBiZSAKPiByZWFsbHkgdXNlZCB2aWEgdGhlIEdQSU8gY29udHJvbGxlciBhcyB0aGVyZSB3
-aWxsIGJlICJib2d1cyIgY2hhbmdlcyAKPiBvZiB0aGUgR1BJTyBwaW4gc3RhdGUuCnllcywgaXQg
-d2lsbCBoYXZlIGJvZ3VzIGNoYW5nZXMsIGJ1dCBpdCB3aWxsIG5vdCByYWlzZSBhbnkgb3RoZXIg
-aXNzdWVzIAp0aGFuIHRoZSBib2d1cyBjaGFuZ2VzIHlvdXIgZm9yY2VmdWxseSB0cmlnZ2VyZWQu
-IHdoeSBkaXNhbGxvd2luZyAKc29tZXRoaW5nLCBpZiB0aGVyZSBpcyBubyByZWFzb24gZm9yLgpi
-dXQgaSBnaXZlIHlvdSBhIGV4YW1wbGUgZm9yIGEgdXNlLgppZiB0aGUgd2lmaSBpbnRlcmZhY2Ug
-aXMgZG93biBvciBub3QgdXNlZCwgeW91IGNhbiBzdGlsbCB0YWtlIGNvbnRyb2wgCmFib3V0IHRo
-ZSBsZWQuIHNvIHNldCB0aGUgbGVkIHRvIGFueSBzdGF0ZSB5b3Ugd2FudCwgbm8gbWF0dGVyIGlm
-IHRoZSAKdHJpZ2dlciBpcyBzdGlsbCBpbnN0YWxsZWQKPgo+PiBidXQgaG93ZXZlciBpIGNhbiBi
-bG9jayB0aGUgZ3BpbyBmb3IgYmVlaW5nIHJldXNlZCBpZiB0aGUgbGVkIGRyaXZlciAKPj4gdG9v
-ayBpdC4gdGhpcyBoYXMgYmVlbiBtYWRlIGluIGF0aDlrIGZvciBpbnN0YW5jZS4KPgo+IE1vc3Qg
-bGlrZWx5IEknbSBub3QgYXdhcmUgb2YgdGhlIHVwc3RyZWFtIGNvZGUgeW91IGFyZSB0YWxraW5n
-IGFib3V0LiAKPiBCdXQgT3BlbldydCBoYXMgYSBjdXN0b20gcGF0Y2ggd2hpY2ggcmVnaXN0ZXJz
-IHRoZSBhdGg5ayBwaW5zIGFzIEdQSU8gCj4gY29udHJvbGxlci4KdGhhdHMgdGhlIGNvZGUgaSdt
-IHRhbGtpbmcgYWJvdXQsIGJ1dCBhcyBmYXIgYXMgaSBrbm93IHRoaXMgY29kZSBpcyAKdXBzdHJl
-YW0uCj4KPiBBcyBzb29uIGFzIHRoZXJlIGFyZSBwaW5zLCBtYW51ZmFjdHVyZXMgd2lsbCB1c2Ug
-dGhlbSBhbmQgdGhlIAo+IGFzc3VtcHRpb24gYWJvdXQgYSBkZWZhdWx0IGxlZCBjb25uZWN0ZWQg
-dG8gYSBzcGVjaWZpYyBwaW4gd2lsbCBmYWlsLgpub3BlLiBtYW51ZmFjdHVyZXMgYXJlIG1haW5s
-eSB1c2luZyB0aGUgcWNhIHByb3BlcnRpZXJ5IGRyaXZlciBhbmQgdGhpcyAKcWNhIGRyaXZlciB1
-c2VzIGZpeGVkIGhhcmRjb2RlZCBsZWQgcGlucy4KMSBmb3IgcWNhOTg4eCBhbmQgMTcgZm9yIGV2
-ZXJ5dGhpbmcgZWxzZS4gdGhlIGxlZCBwaW5zIGkgYXNzaWduZWQgYXJlIApmb2xsb3dpbmcgdGhl
-IHFjYSBzcGVjaWZpY2F0aW9uIGZvciB0aGlzIGNoaXBzZXRzIGFuZCBub3QgdG8gZm9yZ2V0Cmkg
-dGVzdGVkIGl0IG9uIG1hbnkgZGV2aWNlcwo+Cj4gSSd2ZSBzZWVuIChob21lKXJvdXRlcnMgcm91
-dGVycyB1c2luZyB0aGUgImRlZmF1bHQiIGF0aDlrIExFRCBwaW4gYXMgCj4gYnV0dG9uIG9yIGZv
-ciBMRURzIHdpdGggYSBkaWZmZXJlbnQgcHVycG9zZSB0aGFuICJ3aXJlbGVzcyIuIEkgbmV2ZXIg
-Cj4gd2FzIGFibGUgdG8gZmluZCBhbnkga2luZCBvZiBpbmZvcm1hdGlvbiB3aGljaCBleHBsYWlu
-cyB3aHkgZXhhY3RseSAKPiB0aGlzIHNwZWNpZmljIHBpbiBpcyB1c2VkIGZvciB0aGUgYXRoOWst
-bGVkLiBCdXQgdGhhdCdzIGFub3RoZXIgc3RvcnkuCmkga25vdy4gYnV0IHRoYXRzIG5vdCB0aGUg
-Y2FzZSBmb3IgYXRoMTBrIHNvIGZhciBhbmQgaSdtIGZvbGxvd2luZyBleGFjdCAKdGhlIHNhbWUg
-d2F5IHFjYSBpcyBkb2luZyBieSB0aGVtc2VsZi4KaSBqdXN0IGtub3cgMiBjYXNlcy4gdmVuZG9y
-cyB0byB1c2UgdGhlIGxlZCBwaW4gb2YgdGhlIGNoaXBzZXQgb3IgdGhleSAKZG9udCBhbmQgdXNl
-IHN0YW5kYXJkIHN5c3RlbSBsZWRzIHdpdGggYW55IGFzc2lnbm1lbnQKYW5kIGluIGFsbCBjYXNl
-cyB3aXRoIG5vIGV4Y2VwdGlvbiB0aGUgZGVmYXVsdCBsZWQgcGluIHdhcyB1c2VkLgo+Cj4gTXkg
-c29sdXRpb24gZm9yIE9wZW5XcnQgd2FzIGEgcGF0Y2ggd2hpY2ggcHJldmVudHMgdGhlIGNyZWF0
-aW9uIG9mIHRoZSAKPiBhdGg5ay1sZWQgaWYgdGhlICJkZWZhdWx0IiBwaW4gaXMgdXNlZCBhcyBH
-UElPLgppIGhhdmUgc2VlbiB0aGF0IGNvZGUsIGJ1dCBkZWNpZGVkIG5vIHRvIGZvbGxvdyBpdCBz
-aW5jZSBhbnkgZGV2ZWxvcGVyIAppcyByZXNwb25zaWJsZSBmb3IgY29uZmlndXJpbmcgd2hhdGV2
-ZXIgaGUgd2FudHMuIGlmIGl0IGRvZXNudCBsZWFkIHRvIGEgCmNyYXNoIGkgc2VlIG5vIHJlYXNv
-biBmb3IgcHJldmVudGluZyBpdC4KYnV0IHRoYXRzIG15IHBoaWxvc29waHkuCj4KPiBJZiBtYWNo
-IGZpbGVzIGFyZSB1c2VkLCB0aGUgYXRoOWsgbGVkIGlzbid0IGNyZWF0ZWQgKGF0aDlrIGxlZCBw
-aW4gaXMgCj4gc2V0IHRvIC0xKSBpbiBjYXNlIHRoZSBwbGF0Zm9ybSBkYXRhIGhhdmUgYSBidXR0
-b24gb3IgbGVkIHVzaW5nIHRoZSAKPiBzYW1lIHBpbi4gSWYgdGhlIGRldmljZSB0cmVlIGlzIHVz
-ZWQsIHRoZSBhdGg5ayBsZWQgaXNuJ3QgY3JlYXRlZCAKPiAoYXRoOWsgbGVkIHBpbiBpcyBzZXQg
-dG8gLTEpIGlmIHRoZSBkZXZpY2V0cmVlIG5vZGUgZm9yIHRoZSBhdGg5ayAKPiBkZXZpY2UgaGFz
-IHRoZSBncGlvLWNvbnRyb2xsZXIgcHJvcGVydHkuIEknbSBub3QgcmVhbGx5IHByb3VkIG9mIHRo
-ZSAKPiBjb2RlIGFuZCBpdCBjYW4gYmUgbW9zdCBsaWtlbHkgZG9uZSBiZXR0ZXIsIGJ1dCBpdCBm
-aXhlcyB0aGUgaXNzdWUgCj4gb3V0bGluZWQgYWJvdmUuCnNvdW5kcyB2ZXJ5IGluZmxleGlibGUg
-b3IgYmV0dGVyICJpbnRyYW5zcGFyZW50Ii4gZnJvbSB0aGUgYmxhY2sgYm94IAp2aWV3IGl0cyBo
-YXJkIHRvIHVuZGVyc3RhbmQgaG93IGl0cyBoYW5kbGVkIHdpdGhvdXQgcmVhZGluZyB0aGUgY29k
-ZS4gCml0cyBoYXMgbm8gY2xlYW4gbG9naWMuCmFuZCB5b3VyIGlzc3VlIGFib3ZlIGlzIG5vIGlz
-c3VlLiBpZiBhIGRldiB3YW50cyB0byBtYWtlIHN0dXBpZCB0aGluZ3MsIApsZXQgaGltIGRvLiBo
-ZSBsZWFybnMgZnJvbSBoaXMgbWlzc3Rha2VzIGFuZCBoZSBkb2VzIG5vdCBoYXJtIHRoZSAKaGFy
-ZHdhcmUgbm9yIHRoZSBzdGFiaWxpdHkuCnRoZXJlIGlzIG5vIHJlYXNvbiBmb3IgZXh0cmEgaHlw
-ZXIgc2VjdXJpdHkgYmFycmllcnMgdG8gZ3VpZGUgc29tZW9uZSAKaG93IHRvZG8gaXQuIGJ1dCBo
-ZXJlIGFyZSBzYW1wbGVzIHRvIHJldXNlIGEgZ3BpbyBmcm9tIDIgcG9pbnRzIGFzIGkgCmV4cGxh
-aW5lZCBhdCB0aGUgYmVnaW5uaW5nLgppIGNvdWxkIGltYWdpbmUgdG9kbyBhIG1hbnVhbCBlcnJv
-ciBibGlua2luZyBvciBzb21ldGhpbmcgaWYgYSBpbnRlcmZhY2UgCmlzIGRvd24uIG5vdCBzdXJl
-LCBidXQgb3RoZXIgcGVvcGxlIG1pZ2h0IGJlIG1vcmUgY3JlYXRpdmUgaGVyZS4KPgo+IEkndmUg
-ZG9uZSBpdCB0aGlzIHdheSBzaW5jZSB0aGUgdXNlIG9mIHRoZSBHUElPIGNvbnRyb2xsZXIgc2hv
-dWxkIAo+IGFsd2F5cyBvdmVycmlkZSBhbnkga2luZCBvZiBkZWZhdWx0IExFRHMuCj4KPiBJbiB0
-aGUgZW5kIGF0aFswfDEwXWstbGVkIGlzIG9ubHkgcmVxdWlyZWQgZm9yIGhhcmR3YXJlIGNvbmZp
-Z3VyYXRpb25zIAo+IHdoZXJlIHRoZSB3aXJlbGVzcyBpc24ndCBmaXhlZCBsaWtlIHdpdGggbWlu
-aVBDSWUsIFVTQiAuLi4gd2lyZWxlc3MgCj4gY2FyZHMuIElmIHRoZSBjb25maWd1cmF0aW9uIGlz
-IGZpeGVkIC0gbGlrZSBpdCBpcyBmb3IgbW9zdCBvZiB0aGUgCj4gKGhvbWUpcm91dGVycyAtIHRo
-ZSBHUElPIGNvbnRyb2xsZXIgY2FuIGJlIHJlZ2lzdGVyZWQgdmlhIHRoZSAKPiBkZXZpY2V0cmVl
-IGFuZCBncGlvLWxlZHMgY2FuIGJlIHVzZWQuIFNvbWV0aGluZyBzaW1pbGFyIGNhbiBiZSBtb3N0
-IAo+IGxpa2VseSBkb25lIHZpYSBtYWNoIGZpbGVzIChJIGJhcmVseSB0b3VjaCBtYWNoIGZpbGVz
-KS4KYXRoNzkgdXNlcyBtYWNoIGZpbGVzIGFuZCBubyBkdHMgeWV0LiBxY2EgaXBxIHBsYXRmb3Jt
-cyBhcmUgdXNpbmcgZHRzLgphbmQgaSBoYXZlIGEgbWlrcm90aWsgbWluaXBjaWUgY2FyZHMgd2l0
-aCB3aXJlbGVzcyBsZWRzIDotKQoKYWxsIDMgd2F5cyBhcmUgdmFsaWQuCmFuZCBpIGhhdmUgdG8g
-bm90ZSB0aGF0IGkgd3JvdGUgdGhhdCBwYXRjaCBmb3IgZW1iZWRkZWQgZGV2aWNlcyBsaWtlIApv
-cGVud3J0IGRvZXMuCnRoaXMgY29kZSBpcyBhIHJlcXVpcmVtZW50IHRvIGdldCB0aGUgbGVkcyB0
-byB3b3JrIG9uIHNldmVyYWwgZGV2aWNlcyAKc3VwcG9ydGVkIGJ5IG9wZW53cnQuCj4KPiBJJ20g
-YXdhcmUgb2YgdGhlIGlzc3VlIHNpbmNlIHRoZSBmaXJzdCB2ZXJzaW9uIG9mIHlvdXIgcGF0Y2gu
-IEJ1dCAKPiBzaW5jZSBJJ20gdmVyeSBpbnRlcmVzdGVkIGluIGdldHRpbmcgdGhlIGF0aDEwayBw
-aW5zIGV4cG9zZWQgYXMgZ3BpbyAKPiBjb250cm9sbGVyLCBJIHBsYW5uZWQgdG8gYWRkIGEgd29y
-a2Fyb3VuZCBzaW1pbGFyIHRvIHdoYXQgd2UgaGF2ZSBmb3IgCj4gYXRoOWsgdG8gT3BlbldydC4K
-ZmVlbCBmcmVlIHRvIG1ha2UgYW55IGFkZGl0aW9uIHBhdGNoLiBidXQgY29uc2lkZXIgdGhhdCB0
-aGUgZHJpdmVyIAphbHJlYWR5IGNvbnRhaW5zIGEgZ3BpbyBjb250cm9sZXIuIGJ1dCBpbiB0aGF0
-IGNhc2UganVzdCBhdm9pZCB1c2luZyBvZiAKdGhlIGxlZCB0cmlnZ2VyLgpidXQgZm9yIHVuaXZl
-cnNhbCB1c2UgdGhlIGdwaW8gY29udHJvbGVyIGlzbnQgZW5vdWdoIHVuZm9ydHVuYXRseS4gCihh
-dGg3OSBmb3IgaW5zdGFuY2UpCmkgbWVhbiBjcmVhdGluZyBhIGFkZGl0aW9uYWwgcGxhdGZvcm1k
-YXRhIGZvciBhdGgxMGsgdG8gaW5pdGlhbGl6ZSB0aGUgCnBpbiBpbiBtYWNoIGZpbGVzIGlzIHJl
-YWxseSBub3QgdXNlZnVsbCBpZiBpdCBjYW4gYmUgZG9uZSBmcm9tIHVzZXJzcGFjZSAKaW4gc3lz
-ZnMKPgo+IE1hdGhpYXMKPgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRz
-CgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQK
-RmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0NjI1IEJlbnNoZWltClJlZ2lzdGVy
-Z2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0NzMKR2VzY2jDpGZ0c2bDvGhy
-ZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUKaHR0cDovL3d3dy5kZC13
-cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpUZWwuOiArNDk2MjUxLTU4MjY1
-MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
-awo=
+When attempt to run worker (ath10k_sta_rc_update_wk) after the station object
+(ieee80211_sta) delete will trigger the kernel panic.
+
+This problem arise in AP + Mesh configuration, Where the current node AP VAP
+and neighbor node mesh VAP MAC address are same. When the current mesh node
+try to establish the mesh link with neighbor node, driver peer creation for
+the neighbor mesh node fails due to duplication MAC address. Already the AP
+VAP created with same MAC address.
+
+It is caused by the following scenario steps.
+
+Steps:
+1. In above condition, ath10k driver sta_state callback (ath10k_sta_state)
+   fails to do the state change for a station from IEEE80211_STA_NOTEXIST
+   to IEEE80211_STA_NONE due to peer creation fails. Sta_state callback is
+   called from ieee80211_add_station() to handle the new station
+   (neighbor mesh node) request from the wpa_supplicant.
+2. Concurrently ath10k receive the sta_rc_update callback notification from
+   the mesh_neighbour_update() to handle the beacon frames of the above
+   neighbor mesh node. since its atomic callback, ath10k driver queue the
+   work (ath10k_sta_rc_update_wk) to handle rc update.
+3. Due to driver sta_state callback fails (step 1), mac80211 free the station
+   object.
+4. When the worker (ath10k_sta_rc_update_wk) scheduled to run, it will access
+   the station object which is already deleted. so it will trigger kernel
+   panic.
+
+Added the peer exist check in sta_rc_update callback before queue the work.
+
+Kernel Panic log:
+
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+pgd = c0204000
+[00000000] *pgd=00000000
+Internal error: Oops: 17 [#1] PREEMPT SMP ARM
+CPU: 1 PID: 1833 Comm: kworker/u4:2 Not tainted 3.14.77 #1
+task: dcef0000 ti: d72b6000 task.ti: d72b6000
+PC is at pwq_activate_delayed_work+0x10/0x40
+LR is at pwq_activate_delayed_work+0xc/0x40
+pc : [<c023f988>]    lr : [<c023f984>]    psr: 40000193
+sp : d72b7f18  ip : 0000007a  fp : d72b6000
+r10: 00000000  r9 : dd404414  r8 : d8c31998
+r7 : d72b6038  r6 : 00000004  r5 : d4907ec8  r4 : dcee1300
+r3 : ffffffe0  r2 : 00000000  r1 : 00000001  r0 : 00000000
+Flags: nZcv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
+Control: 10c5787d  Table: 595bc06a  DAC: 00000015
+...
+Process kworker/u4:2 (pid: 1833, stack limit = 0xd72b6238)
+Stack: (0xd72b7f18 to 0xd72b8000)
+7f00:                                                       00000001 dcee1300
+7f20: 00000001 c02410dc d8c31980 dd404400 dd404400 c0242790 d8c31980 00000089
+7f40: 00000000 d93e1340 00000000 d8c31980 c0242568 00000000 00000000 00000000
+7f60: 00000000 c02474dc 00000000 00000000 000000f8 d8c31980 00000000 00000000
+7f80: d72b7f80 d72b7f80 00000000 00000000 d72b7f90 d72b7f90 d72b7fac d93e1340
+7fa0: c0247404 00000000 00000000 c0208d20 00000000 00000000 00000000 00000000
+7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+7fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+[<c023f988>] (pwq_activate_delayed_work) from [<c02410dc>] (pwq_dec_nr_in_flight+0x58/0xc4)
+[<c02410dc>] (pwq_dec_nr_in_flight) from [<c0242790>] (worker_thread+0x228/0x360)
+[<c0242790>] (worker_thread) from [<c02474dc>] (kthread+0xd8/0xec)
+[<c02474dc>] (kthread) from [<c0208d20>] (ret_from_fork+0x14/0x34)
+Code: e92d4038 e1a05000 ebffffbc[69210.619376] SMP: failed to stop secondary CPUs
+Rebooting in 3 seconds..
+
+Signed-off-by: Karthikeyan Periyasamy <periyasa@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ebb3f1b..91ee1eb 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7085,10 +7085,20 @@ static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
+ {
+ 	struct ath10k *ar = hw->priv;
+ 	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
++	struct ath10k_vif *arvif = (void *)vif->drv_priv;
++	struct ath10k_peer *peer;
+ 	u32 bw, smps;
+ 
+ 	spin_lock_bh(&ar->data_lock);
+ 
++	peer = ath10k_peer_find(ar, arvif->vdev_id, sta->addr);
++	if (!peer) {
++		spin_unlock_bh(&ar->data_lock);
++		ath10k_warn(ar, "mac sta rc update failed to find peer %pM on vdev %i\n",
++			    sta->addr, arvif->vdev_id);
++		return;
++	}
++
+ 	ath10k_dbg(ar, ATH10K_DBG_MAC,
+ 		   "mac sta rc update for %pM changed %08x bw %d nss %d smps %d\n",
+ 		   sta->addr, changed, sta->bandwidth, sta->rx_nss,
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
