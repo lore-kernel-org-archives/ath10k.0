@@ -1,11 +1,9 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wr0-x22f.google.com ([2a00:1450:400c:c0c::22f])
+Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1evIJb-0002Yn-IQ
- for ath10k@lists.infradead.org; Mon, 12 Mar 2018 07:56:17 +0000
-Received: by mail-wr0-x22f.google.com with SMTP id r66so7025474wrb.6
- for <ath10k@lists.infradead.org>; Mon, 12 Mar 2018 00:56:04 -0700 (PDT)
-From: Mathias Kresin <dev@kresin.me>
+ id 1evJT4-0002Rf-7B
+ for ath10k@lists.infradead.org; Mon, 12 Mar 2018 09:10:18 +0000
 Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
  various chipsets
 References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
@@ -20,11 +18,12 @@ References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
  <1b1f6344-d588-d2f2-4b3d-a0a4043e801f@nbd.name>
  <CAGRGNgWSnObB8PomPPEGs533dmFyQQkOEsvxzyJ=BfBBcWT2Ug@mail.gmail.com>
  <40dc5bc3-d77e-397d-f3db-2efb70ff82ae@dd-wrt.com>
-Message-ID: <4345c367-e786-ef44-fed7-8658f519a689@kresin.me>
-Date: Mon, 12 Mar 2018 08:53:50 +0100
+ <4345c367-e786-ef44-fed7-8658f519a689@kresin.me>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <a8b22f42-7953-bc60-c5f9-91469caa50b1@dd-wrt.com>
+Date: Mon, 12 Mar 2018 10:09:40 +0100
 MIME-Version: 1.0
-In-Reply-To: <40dc5bc3-d77e-397d-f3db-2efb70ff82ae@dd-wrt.com>
-Content-Language: en-GB
+In-Reply-To: <4345c367-e786-ef44-fed7-8658f519a689@kresin.me>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,76 +32,121 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Julian Calaby <julian.calaby@gmail.com>, Felix Fietkau <nbd@nbd.name>
+To: Mathias Kresin <dev@kresin.me>, Julian Calaby <julian.calaby@gmail.com>, Felix Fietkau <nbd@nbd.name>
 Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>, Pavel Machek <pavel@ucw.cz>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, Kalle Valo <kvalo@codeaurora.org>
 
-10.03.2018 08:56, Sebastian Gottschall:
-> 
->>> taken a look at the specific code, and from my point of view the code
->>> that sets up the LED (including callback) is so trivial that it's simply
->>> not worth dealing with adding the leds-gpio driver to the mix.
->>> It adds extra complexity and an extra dependency for no reason at all.
->>> There's no extra functionality to be gained by using it.
->> Stupid question: If the LED driver isn't using the GPIO subsystem
->> (when enabled), what happens if the user uses the GPIO subsystem to
->> fiddle with the pin the LED is connected to?
-> 
-> in our case here it can coexist and will not have a negative effect 
-> since the led will still run. (except if you reconfigure the gpio to input)
-> for sure it makes no sense.
-
-Well, it will have negative effects as I noticed in OpenWrt. If the same 
-GPIO is controlled by the internal LED function it can't be really used 
-via the GPIO controller as there will be "bogus" changes of the GPIO pin 
-state.
-
-> but however i can block the gpio for beeing reused if the led driver 
-> took it. this has been made in ath9k for instance.
-
-Most likely I'm not aware of the upstream code you are talking about. 
-But OpenWrt has a custom patch which registers the ath9k pins as GPIO 
-controller.
-
-As soon as there are pins, manufactures will use them and the assumption 
-about a default led connected to a specific pin will fail.
-
-I've seen (home)routers routers using the "default" ath9k LED pin as 
-button or for LEDs with a different purpose than "wireless". I never was 
-able to find any kind of information which explains why exactly this 
-specific pin is used for the ath9k-led. But that's another story.
-
-My solution for OpenWrt was a patch which prevents the creation of the 
-ath9k-led if the "default" pin is used as GPIO.
-
-If mach files are used, the ath9k led isn't created (ath9k led pin is 
-set to -1) in case the platform data have a button or led using the same 
-pin. If the device tree is used, the ath9k led isn't created (ath9k led 
-pin is set to -1) if the devicetree node for the ath9k device has the 
-gpio-controller property. I'm not really proud of the code and it can be 
-most likely done better, but it fixes the issue outlined above.
-
-I've done it this way since the use of the GPIO controller should always 
-override any kind of default LEDs.
-
-In the end ath[0|10]k-led is only required for hardware configurations 
-where the wireless isn't fixed like with miniPCIe, USB ... wireless 
-cards. If the configuration is fixed - like it is for most of the 
-(home)routers - the GPIO controller can be registered via the devicetree 
-and gpio-leds can be used. Something similar can be most likely done via 
-mach files (I barely touch mach files).
-
-I'm aware of the issue since the first version of your patch. But since 
-I'm very interested in getting the ath10k pins exposed as gpio 
-controller, I planned to add a workaround similar to what we have for 
-ath9k to OpenWrt.
-
-Mathias
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+QW0gMTIuMDMuMjAxOCB1bSAwODo1MyBzY2hyaWViIE1hdGhpYXMgS3Jlc2luOgo+IDEwLjAzLjIw
+MTggMDg6NTYsIFNlYmFzdGlhbiBHb3R0c2NoYWxsOgo+Pgo+Pj4+IHRha2VuIGEgbG9vayBhdCB0
+aGUgc3BlY2lmaWMgY29kZSwgYW5kIGZyb20gbXkgcG9pbnQgb2YgdmlldyB0aGUgY29kZQo+Pj4+
+IHRoYXQgc2V0cyB1cCB0aGUgTEVEIChpbmNsdWRpbmcgY2FsbGJhY2spIGlzIHNvIHRyaXZpYWwg
+dGhhdCBpdCdzIAo+Pj4+IHNpbXBseQo+Pj4+IG5vdCB3b3J0aCBkZWFsaW5nIHdpdGggYWRkaW5n
+IHRoZSBsZWRzLWdwaW8gZHJpdmVyIHRvIHRoZSBtaXguCj4+Pj4gSXQgYWRkcyBleHRyYSBjb21w
+bGV4aXR5IGFuZCBhbiBleHRyYSBkZXBlbmRlbmN5IGZvciBubyByZWFzb24gYXQgYWxsLgo+Pj4+
+IFRoZXJlJ3Mgbm8gZXh0cmEgZnVuY3Rpb25hbGl0eSB0byBiZSBnYWluZWQgYnkgdXNpbmcgaXQu
+Cj4+PiBTdHVwaWQgcXVlc3Rpb246IElmIHRoZSBMRUQgZHJpdmVyIGlzbid0IHVzaW5nIHRoZSBH
+UElPIHN1YnN5c3RlbQo+Pj4gKHdoZW4gZW5hYmxlZCksIHdoYXQgaGFwcGVucyBpZiB0aGUgdXNl
+ciB1c2VzIHRoZSBHUElPIHN1YnN5c3RlbSB0bwo+Pj4gZmlkZGxlIHdpdGggdGhlIHBpbiB0aGUg
+TEVEIGlzIGNvbm5lY3RlZCB0bz8KPj4KPj4gaW4gb3VyIGNhc2UgaGVyZSBpdCBjYW4gY29leGlz
+dCBhbmQgd2lsbCBub3QgaGF2ZSBhIG5lZ2F0aXZlIGVmZmVjdCAKPj4gc2luY2UgdGhlIGxlZCB3
+aWxsIHN0aWxsIHJ1bi4gKGV4Y2VwdCBpZiB5b3UgcmVjb25maWd1cmUgdGhlIGdwaW8gdG8gCj4+
+IGlucHV0KQo+PiBmb3Igc3VyZSBpdCBtYWtlcyBubyBzZW5zZS4KPgo+IFdlbGwsIGl0IHdpbGwg
+aGF2ZSBuZWdhdGl2ZSBlZmZlY3RzIGFzIEkgbm90aWNlZCBpbiBPcGVuV3J0LiBJZiB0aGUgCj4g
+c2FtZSBHUElPIGlzIGNvbnRyb2xsZWQgYnkgdGhlIGludGVybmFsIExFRCBmdW5jdGlvbiBpdCBj
+YW4ndCBiZSAKPiByZWFsbHkgdXNlZCB2aWEgdGhlIEdQSU8gY29udHJvbGxlciBhcyB0aGVyZSB3
+aWxsIGJlICJib2d1cyIgY2hhbmdlcyAKPiBvZiB0aGUgR1BJTyBwaW4gc3RhdGUuCnllcywgaXQg
+d2lsbCBoYXZlIGJvZ3VzIGNoYW5nZXMsIGJ1dCBpdCB3aWxsIG5vdCByYWlzZSBhbnkgb3RoZXIg
+aXNzdWVzIAp0aGFuIHRoZSBib2d1cyBjaGFuZ2VzIHlvdXIgZm9yY2VmdWxseSB0cmlnZ2VyZWQu
+IHdoeSBkaXNhbGxvd2luZyAKc29tZXRoaW5nLCBpZiB0aGVyZSBpcyBubyByZWFzb24gZm9yLgpi
+dXQgaSBnaXZlIHlvdSBhIGV4YW1wbGUgZm9yIGEgdXNlLgppZiB0aGUgd2lmaSBpbnRlcmZhY2Ug
+aXMgZG93biBvciBub3QgdXNlZCwgeW91IGNhbiBzdGlsbCB0YWtlIGNvbnRyb2wgCmFib3V0IHRo
+ZSBsZWQuIHNvIHNldCB0aGUgbGVkIHRvIGFueSBzdGF0ZSB5b3Ugd2FudCwgbm8gbWF0dGVyIGlm
+IHRoZSAKdHJpZ2dlciBpcyBzdGlsbCBpbnN0YWxsZWQKPgo+PiBidXQgaG93ZXZlciBpIGNhbiBi
+bG9jayB0aGUgZ3BpbyBmb3IgYmVlaW5nIHJldXNlZCBpZiB0aGUgbGVkIGRyaXZlciAKPj4gdG9v
+ayBpdC4gdGhpcyBoYXMgYmVlbiBtYWRlIGluIGF0aDlrIGZvciBpbnN0YW5jZS4KPgo+IE1vc3Qg
+bGlrZWx5IEknbSBub3QgYXdhcmUgb2YgdGhlIHVwc3RyZWFtIGNvZGUgeW91IGFyZSB0YWxraW5n
+IGFib3V0LiAKPiBCdXQgT3BlbldydCBoYXMgYSBjdXN0b20gcGF0Y2ggd2hpY2ggcmVnaXN0ZXJz
+IHRoZSBhdGg5ayBwaW5zIGFzIEdQSU8gCj4gY29udHJvbGxlci4KdGhhdHMgdGhlIGNvZGUgaSdt
+IHRhbGtpbmcgYWJvdXQsIGJ1dCBhcyBmYXIgYXMgaSBrbm93IHRoaXMgY29kZSBpcyAKdXBzdHJl
+YW0uCj4KPiBBcyBzb29uIGFzIHRoZXJlIGFyZSBwaW5zLCBtYW51ZmFjdHVyZXMgd2lsbCB1c2Ug
+dGhlbSBhbmQgdGhlIAo+IGFzc3VtcHRpb24gYWJvdXQgYSBkZWZhdWx0IGxlZCBjb25uZWN0ZWQg
+dG8gYSBzcGVjaWZpYyBwaW4gd2lsbCBmYWlsLgpub3BlLiBtYW51ZmFjdHVyZXMgYXJlIG1haW5s
+eSB1c2luZyB0aGUgcWNhIHByb3BlcnRpZXJ5IGRyaXZlciBhbmQgdGhpcyAKcWNhIGRyaXZlciB1
+c2VzIGZpeGVkIGhhcmRjb2RlZCBsZWQgcGlucy4KMSBmb3IgcWNhOTg4eCBhbmQgMTcgZm9yIGV2
+ZXJ5dGhpbmcgZWxzZS4gdGhlIGxlZCBwaW5zIGkgYXNzaWduZWQgYXJlIApmb2xsb3dpbmcgdGhl
+IHFjYSBzcGVjaWZpY2F0aW9uIGZvciB0aGlzIGNoaXBzZXRzIGFuZCBub3QgdG8gZm9yZ2V0Cmkg
+dGVzdGVkIGl0IG9uIG1hbnkgZGV2aWNlcwo+Cj4gSSd2ZSBzZWVuIChob21lKXJvdXRlcnMgcm91
+dGVycyB1c2luZyB0aGUgImRlZmF1bHQiIGF0aDlrIExFRCBwaW4gYXMgCj4gYnV0dG9uIG9yIGZv
+ciBMRURzIHdpdGggYSBkaWZmZXJlbnQgcHVycG9zZSB0aGFuICJ3aXJlbGVzcyIuIEkgbmV2ZXIg
+Cj4gd2FzIGFibGUgdG8gZmluZCBhbnkga2luZCBvZiBpbmZvcm1hdGlvbiB3aGljaCBleHBsYWlu
+cyB3aHkgZXhhY3RseSAKPiB0aGlzIHNwZWNpZmljIHBpbiBpcyB1c2VkIGZvciB0aGUgYXRoOWst
+bGVkLiBCdXQgdGhhdCdzIGFub3RoZXIgc3RvcnkuCmkga25vdy4gYnV0IHRoYXRzIG5vdCB0aGUg
+Y2FzZSBmb3IgYXRoMTBrIHNvIGZhciBhbmQgaSdtIGZvbGxvd2luZyBleGFjdCAKdGhlIHNhbWUg
+d2F5IHFjYSBpcyBkb2luZyBieSB0aGVtc2VsZi4KaSBqdXN0IGtub3cgMiBjYXNlcy4gdmVuZG9y
+cyB0byB1c2UgdGhlIGxlZCBwaW4gb2YgdGhlIGNoaXBzZXQgb3IgdGhleSAKZG9udCBhbmQgdXNl
+IHN0YW5kYXJkIHN5c3RlbSBsZWRzIHdpdGggYW55IGFzc2lnbm1lbnQKYW5kIGluIGFsbCBjYXNl
+cyB3aXRoIG5vIGV4Y2VwdGlvbiB0aGUgZGVmYXVsdCBsZWQgcGluIHdhcyB1c2VkLgo+Cj4gTXkg
+c29sdXRpb24gZm9yIE9wZW5XcnQgd2FzIGEgcGF0Y2ggd2hpY2ggcHJldmVudHMgdGhlIGNyZWF0
+aW9uIG9mIHRoZSAKPiBhdGg5ay1sZWQgaWYgdGhlICJkZWZhdWx0IiBwaW4gaXMgdXNlZCBhcyBH
+UElPLgppIGhhdmUgc2VlbiB0aGF0IGNvZGUsIGJ1dCBkZWNpZGVkIG5vIHRvIGZvbGxvdyBpdCBz
+aW5jZSBhbnkgZGV2ZWxvcGVyIAppcyByZXNwb25zaWJsZSBmb3IgY29uZmlndXJpbmcgd2hhdGV2
+ZXIgaGUgd2FudHMuIGlmIGl0IGRvZXNudCBsZWFkIHRvIGEgCmNyYXNoIGkgc2VlIG5vIHJlYXNv
+biBmb3IgcHJldmVudGluZyBpdC4KYnV0IHRoYXRzIG15IHBoaWxvc29waHkuCj4KPiBJZiBtYWNo
+IGZpbGVzIGFyZSB1c2VkLCB0aGUgYXRoOWsgbGVkIGlzbid0IGNyZWF0ZWQgKGF0aDlrIGxlZCBw
+aW4gaXMgCj4gc2V0IHRvIC0xKSBpbiBjYXNlIHRoZSBwbGF0Zm9ybSBkYXRhIGhhdmUgYSBidXR0
+b24gb3IgbGVkIHVzaW5nIHRoZSAKPiBzYW1lIHBpbi4gSWYgdGhlIGRldmljZSB0cmVlIGlzIHVz
+ZWQsIHRoZSBhdGg5ayBsZWQgaXNuJ3QgY3JlYXRlZCAKPiAoYXRoOWsgbGVkIHBpbiBpcyBzZXQg
+dG8gLTEpIGlmIHRoZSBkZXZpY2V0cmVlIG5vZGUgZm9yIHRoZSBhdGg5ayAKPiBkZXZpY2UgaGFz
+IHRoZSBncGlvLWNvbnRyb2xsZXIgcHJvcGVydHkuIEknbSBub3QgcmVhbGx5IHByb3VkIG9mIHRo
+ZSAKPiBjb2RlIGFuZCBpdCBjYW4gYmUgbW9zdCBsaWtlbHkgZG9uZSBiZXR0ZXIsIGJ1dCBpdCBm
+aXhlcyB0aGUgaXNzdWUgCj4gb3V0bGluZWQgYWJvdmUuCnNvdW5kcyB2ZXJ5IGluZmxleGlibGUg
+b3IgYmV0dGVyICJpbnRyYW5zcGFyZW50Ii4gZnJvbSB0aGUgYmxhY2sgYm94IAp2aWV3IGl0cyBo
+YXJkIHRvIHVuZGVyc3RhbmQgaG93IGl0cyBoYW5kbGVkIHdpdGhvdXQgcmVhZGluZyB0aGUgY29k
+ZS4gCml0cyBoYXMgbm8gY2xlYW4gbG9naWMuCmFuZCB5b3VyIGlzc3VlIGFib3ZlIGlzIG5vIGlz
+c3VlLiBpZiBhIGRldiB3YW50cyB0byBtYWtlIHN0dXBpZCB0aGluZ3MsIApsZXQgaGltIGRvLiBo
+ZSBsZWFybnMgZnJvbSBoaXMgbWlzc3Rha2VzIGFuZCBoZSBkb2VzIG5vdCBoYXJtIHRoZSAKaGFy
+ZHdhcmUgbm9yIHRoZSBzdGFiaWxpdHkuCnRoZXJlIGlzIG5vIHJlYXNvbiBmb3IgZXh0cmEgaHlw
+ZXIgc2VjdXJpdHkgYmFycmllcnMgdG8gZ3VpZGUgc29tZW9uZSAKaG93IHRvZG8gaXQuIGJ1dCBo
+ZXJlIGFyZSBzYW1wbGVzIHRvIHJldXNlIGEgZ3BpbyBmcm9tIDIgcG9pbnRzIGFzIGkgCmV4cGxh
+aW5lZCBhdCB0aGUgYmVnaW5uaW5nLgppIGNvdWxkIGltYWdpbmUgdG9kbyBhIG1hbnVhbCBlcnJv
+ciBibGlua2luZyBvciBzb21ldGhpbmcgaWYgYSBpbnRlcmZhY2UgCmlzIGRvd24uIG5vdCBzdXJl
+LCBidXQgb3RoZXIgcGVvcGxlIG1pZ2h0IGJlIG1vcmUgY3JlYXRpdmUgaGVyZS4KPgo+IEkndmUg
+ZG9uZSBpdCB0aGlzIHdheSBzaW5jZSB0aGUgdXNlIG9mIHRoZSBHUElPIGNvbnRyb2xsZXIgc2hv
+dWxkIAo+IGFsd2F5cyBvdmVycmlkZSBhbnkga2luZCBvZiBkZWZhdWx0IExFRHMuCj4KPiBJbiB0
+aGUgZW5kIGF0aFswfDEwXWstbGVkIGlzIG9ubHkgcmVxdWlyZWQgZm9yIGhhcmR3YXJlIGNvbmZp
+Z3VyYXRpb25zIAo+IHdoZXJlIHRoZSB3aXJlbGVzcyBpc24ndCBmaXhlZCBsaWtlIHdpdGggbWlu
+aVBDSWUsIFVTQiAuLi4gd2lyZWxlc3MgCj4gY2FyZHMuIElmIHRoZSBjb25maWd1cmF0aW9uIGlz
+IGZpeGVkIC0gbGlrZSBpdCBpcyBmb3IgbW9zdCBvZiB0aGUgCj4gKGhvbWUpcm91dGVycyAtIHRo
+ZSBHUElPIGNvbnRyb2xsZXIgY2FuIGJlIHJlZ2lzdGVyZWQgdmlhIHRoZSAKPiBkZXZpY2V0cmVl
+IGFuZCBncGlvLWxlZHMgY2FuIGJlIHVzZWQuIFNvbWV0aGluZyBzaW1pbGFyIGNhbiBiZSBtb3N0
+IAo+IGxpa2VseSBkb25lIHZpYSBtYWNoIGZpbGVzIChJIGJhcmVseSB0b3VjaCBtYWNoIGZpbGVz
+KS4KYXRoNzkgdXNlcyBtYWNoIGZpbGVzIGFuZCBubyBkdHMgeWV0LiBxY2EgaXBxIHBsYXRmb3Jt
+cyBhcmUgdXNpbmcgZHRzLgphbmQgaSBoYXZlIGEgbWlrcm90aWsgbWluaXBjaWUgY2FyZHMgd2l0
+aCB3aXJlbGVzcyBsZWRzIDotKQoKYWxsIDMgd2F5cyBhcmUgdmFsaWQuCmFuZCBpIGhhdmUgdG8g
+bm90ZSB0aGF0IGkgd3JvdGUgdGhhdCBwYXRjaCBmb3IgZW1iZWRkZWQgZGV2aWNlcyBsaWtlIApv
+cGVud3J0IGRvZXMuCnRoaXMgY29kZSBpcyBhIHJlcXVpcmVtZW50IHRvIGdldCB0aGUgbGVkcyB0
+byB3b3JrIG9uIHNldmVyYWwgZGV2aWNlcyAKc3VwcG9ydGVkIGJ5IG9wZW53cnQuCj4KPiBJJ20g
+YXdhcmUgb2YgdGhlIGlzc3VlIHNpbmNlIHRoZSBmaXJzdCB2ZXJzaW9uIG9mIHlvdXIgcGF0Y2gu
+IEJ1dCAKPiBzaW5jZSBJJ20gdmVyeSBpbnRlcmVzdGVkIGluIGdldHRpbmcgdGhlIGF0aDEwayBw
+aW5zIGV4cG9zZWQgYXMgZ3BpbyAKPiBjb250cm9sbGVyLCBJIHBsYW5uZWQgdG8gYWRkIGEgd29y
+a2Fyb3VuZCBzaW1pbGFyIHRvIHdoYXQgd2UgaGF2ZSBmb3IgCj4gYXRoOWsgdG8gT3BlbldydC4K
+ZmVlbCBmcmVlIHRvIG1ha2UgYW55IGFkZGl0aW9uIHBhdGNoLiBidXQgY29uc2lkZXIgdGhhdCB0
+aGUgZHJpdmVyIAphbHJlYWR5IGNvbnRhaW5zIGEgZ3BpbyBjb250cm9sZXIuIGJ1dCBpbiB0aGF0
+IGNhc2UganVzdCBhdm9pZCB1c2luZyBvZiAKdGhlIGxlZCB0cmlnZ2VyLgpidXQgZm9yIHVuaXZl
+cnNhbCB1c2UgdGhlIGdwaW8gY29udHJvbGVyIGlzbnQgZW5vdWdoIHVuZm9ydHVuYXRseS4gCihh
+dGg3OSBmb3IgaW5zdGFuY2UpCmkgbWVhbiBjcmVhdGluZyBhIGFkZGl0aW9uYWwgcGxhdGZvcm1k
+YXRhIGZvciBhdGgxMGsgdG8gaW5pdGlhbGl6ZSB0aGUgCnBpbiBpbiBtYWNoIGZpbGVzIGlzIHJl
+YWxseSBub3QgdXNlZnVsbCBpZiBpdCBjYW4gYmUgZG9uZSBmcm9tIHVzZXJzcGFjZSAKaW4gc3lz
+ZnMKPgo+IE1hdGhpYXMKPgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvHNzZW4gLyBSZWdhcmRz
+CgpTZWJhc3RpYW4gR290dHNjaGFsbCAvIENUTwoKTmV3TWVkaWEtTkVUIEdtYkggLSBERC1XUlQK
+RmlybWVuc2l0ejogIFN0dWJlbndhbGRhbGxlZSAyMWEsIDY0NjI1IEJlbnNoZWltClJlZ2lzdGVy
+Z2VyaWNodDogQW10c2dlcmljaHQgRGFybXN0YWR0LCBIUkIgMjU0NzMKR2VzY2jDpGZ0c2bDvGhy
+ZXI6IFBldGVyIFN0ZWluaMOkdXNlciwgQ2hyaXN0aWFuIFNjaGVlbGUKaHR0cDovL3d3dy5kZC13
+cnQuY29tCmVtYWlsOiBzLmdvdHRzY2hhbGxAZGQtd3J0LmNvbQpUZWwuOiArNDk2MjUxLTU4MjY1
+MCAvIEZheDogKzQ5NjI1MS01ODI2NTY1CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
+awo=
