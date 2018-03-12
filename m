@@ -1,12 +1,30 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wr0-x22f.google.com ([2a00:1450:400c:c0c::22f])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eudUH-0000Ix-D2
- for ath10k@lists.infradead.org; Sat, 10 Mar 2018 12:20:36 +0000
-From: Anilkumar Kolli <akolli@codeaurora.org>
-Subject: [PATCH] ath10k: fix recent bandwidth conversion bug
-Date: Sat, 10 Mar 2018 17:50:38 +0530
-Message-Id: <1520684438-9233-1-git-send-email-akolli@codeaurora.org>
+ id 1evIJb-0002Yn-IQ
+ for ath10k@lists.infradead.org; Mon, 12 Mar 2018 07:56:17 +0000
+Received: by mail-wr0-x22f.google.com with SMTP id r66so7025474wrb.6
+ for <ath10k@lists.infradead.org>; Mon, 12 Mar 2018 00:56:04 -0700 (PDT)
+From: Mathias Kresin <dev@kresin.me>
+Subject: Re: [PATCH v12] ath10k: add LED and GPIO controlling support for
+ various chipsets
+References: <20180226084406.2093-1-s.gottschall@dd-wrt.com>
+ <CACna6rzD6z3DC6yjMCgBxgxx+DF+GGu69Ot5QA6xpJ41Ewb2=A@mail.gmail.com>
+ <82d8ac0c-b391-6099-4c7f-991cc35445aa@dd-wrt.com>
+ <20180302090312.GA30267@amd>
+ <e77d25d4-a824-380a-c51a-e81175ba6205@dd-wrt.com>
+ <CACna6rys85VEkzRGDVUAkBy7KgHS2y0DET7YvedboX-YEQHrkg@mail.gmail.com>
+ <890a4dcc-f549-6487-2ce5-3b62874cd266@dd-wrt.com>
+ <20180308090216.GC17761@amd>
+ <d443856e-cfc8-2d50-900d-edf22e5360e3@dd-wrt.com> <20180308140515.GA4889@amd>
+ <1b1f6344-d588-d2f2-4b3d-a0a4043e801f@nbd.name>
+ <CAGRGNgWSnObB8PomPPEGs533dmFyQQkOEsvxzyJ=BfBBcWT2Ug@mail.gmail.com>
+ <40dc5bc3-d77e-397d-f3db-2efb70ff82ae@dd-wrt.com>
+Message-ID: <4345c367-e786-ef44-fed7-8658f519a689@kresin.me>
+Date: Mon, 12 Mar 2018 08:53:50 +0100
+MIME-Version: 1.0
+In-Reply-To: <40dc5bc3-d77e-397d-f3db-2efb70ff82ae@dd-wrt.com>
+Content-Language: en-GB
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,121 +33,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, Julian Calaby <julian.calaby@gmail.com>, Felix Fietkau <nbd@nbd.name>
+Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>, Pavel Machek <pavel@ucw.cz>, Sebastian Gottschall <s.gottschall@newmedia-net.de>, Kalle Valo <kvalo@codeaurora.org>
 
-From: Christian Lamparter <chunkeey@gmail.com>
+10.03.2018 08:56, Sebastian Gottschall:
+> 
+>>> taken a look at the specific code, and from my point of view the code
+>>> that sets up the LED (including callback) is so trivial that it's simply
+>>> not worth dealing with adding the leds-gpio driver to the mix.
+>>> It adds extra complexity and an extra dependency for no reason at all.
+>>> There's no extra functionality to be gained by using it.
+>> Stupid question: If the LED driver isn't using the GPIO subsystem
+>> (when enabled), what happens if the user uses the GPIO subsystem to
+>> fiddle with the pin the LED is connected to?
+> 
+> in our case here it can coexist and will not have a negative effect 
+> since the led will still run. (except if you reconfigure the gpio to input)
+> for sure it makes no sense.
 
-The commit "cfg80211: make RATE_INFO_BW_20 the default" changed
-the index of RATE_INFO_BW_20, but the updates to ath10k missed
-the special bandwidth calculation case in
-ath10k_update_per_peer_tx_stats().
+Well, it will have negative effects as I noticed in OpenWrt. If the same 
+GPIO is controlled by the internal LED function it can't be really used 
+via the GPIO controller as there will be "bogus" changes of the GPIO pin 
+state.
 
-This will fix below warning,
+> but however i can block the gpio for beeing reused if the led driver 
+> took it. this has been made in ath9k for instance.
 
- WARNING: CPU: 0 PID: 609 at net/wireless/util.c:1254
- cfg80211_calculate_bitrate+0x174/0x220
- invalid rate bw=1, mcs=9, nss=2
+Most likely I'm not aware of the upstream code you are talking about. 
+But OpenWrt has a custom patch which registers the ath9k pins as GPIO 
+controller.
 
- (unwind_backtrace) from
- (cfg80211_calculate_bitrate+0x174/0x220)
- (cfg80211_calculate_bitrate) from
- (nl80211_put_sta_rate+0x44/0x1dc)from
- (nl80211_put_sta_rate) from
- (nl80211_send_station+0x388/0xaf0)
- (nl80211_get_station+0xa8/0xec)
- [ end trace da8257d6a850e91a ]
+As soon as there are pins, manufactures will use them and the assumption 
+about a default led connected to a specific pin will fail.
 
-Fixes: 842be75c77cb ("cfg80211: make RATE_INFO_BW_20 the default")
-Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
-Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c |   43 +++++++++++++++++-------------
- 1 file changed, 25 insertions(+), 18 deletions(-)
+I've seen (home)routers routers using the "default" ath9k LED pin as 
+button or for LEDs with a different purpose than "wireless". I never was 
+able to find any kind of information which explains why exactly this 
+specific pin is used for the ath9k-led. But that's another story.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 6d96f9560950..47d1f2f6c6bb 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1,6 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -723,6 +724,28 @@ struct amsdu_subframe_hdr {
- 
- #define GROUP_ID_IS_SU_MIMO(x) ((x) == 0 || (x) == 63)
- 
-+static inline u8 ath10k_bw_to_mac80211_bw(u8 bw)
-+{
-+	u8 ret = 0;
-+
-+	switch (bw) {
-+	case 0:
-+		ret = RATE_INFO_BW_20;
-+		break;
-+	case 1:
-+		ret = RATE_INFO_BW_40;
-+		break;
-+	case 2:
-+		ret = RATE_INFO_BW_80;
-+		break;
-+	case 3:
-+		ret = RATE_INFO_BW_160;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
- static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 				  struct ieee80211_rx_status *status,
- 				  struct htt_rx_desc *rxd)
-@@ -825,23 +848,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 		if (sgi)
- 			status->enc_flags |= RX_ENC_FLAG_SHORT_GI;
- 
--		switch (bw) {
--		/* 20MHZ */
--		case 0:
--			break;
--		/* 40MHZ */
--		case 1:
--			status->bw = RATE_INFO_BW_40;
--			break;
--		/* 80MHZ */
--		case 2:
--			status->bw = RATE_INFO_BW_80;
--			break;
--		case 3:
--			status->bw = RATE_INFO_BW_160;
--			break;
--		}
--
-+		status->bw = ath10k_bw_to_mac80211_bw(bw);
- 		status->encoding = RX_ENC_VHT;
- 		break;
- 	default:
-@@ -2499,7 +2506,7 @@ static inline bool is_valid_legacy_rate(u8 rate)
- 		arsta->txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
- 
- 	arsta->txrate.nss = txrate.nss;
--	arsta->txrate.bw = txrate.bw + RATE_INFO_BW_20;
-+	arsta->txrate.bw = ath10k_bw_to_mac80211_bw(txrate.bw);
- }
- 
- static void ath10k_htt_fetch_peer_stats(struct ath10k *ar,
--- 
-1.7.9.5
+My solution for OpenWrt was a patch which prevents the creation of the 
+ath9k-led if the "default" pin is used as GPIO.
 
+If mach files are used, the ath9k led isn't created (ath9k led pin is 
+set to -1) in case the platform data have a button or led using the same 
+pin. If the device tree is used, the ath9k led isn't created (ath9k led 
+pin is set to -1) if the devicetree node for the ath9k device has the 
+gpio-controller property. I'm not really proud of the code and it can be 
+most likely done better, but it fixes the issue outlined above.
+
+I've done it this way since the use of the GPIO controller should always 
+override any kind of default LEDs.
+
+In the end ath[0|10]k-led is only required for hardware configurations 
+where the wireless isn't fixed like with miniPCIe, USB ... wireless 
+cards. If the configuration is fixed - like it is for most of the 
+(home)routers - the GPIO controller can be registered via the devicetree 
+and gpio-leds can be used. Something similar can be most likely done via 
+mach files (I barely touch mach files).
+
+I'm aware of the issue since the first version of your patch. But since 
+I'm very interested in getting the ath10k pins exposed as gpio 
+controller, I planned to add a workaround similar to what we have for 
+ath9k to OpenWrt.
+
+Mathias
 
 _______________________________________________
 ath10k mailing list
