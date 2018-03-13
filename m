@@ -1,13 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1evLoJ-0001sQ-4C
- for ath10k@lists.infradead.org; Mon, 12 Mar 2018 11:40:12 +0000
-From: Karthikeyan Periyasamy <periyasa@codeaurora.org>
-Subject: [PATCH] ath10k: Fix kernel panic while using worker
- (ath10k_sta_rc_update_wk)
-Date: Mon, 12 Mar 2018 17:09:40 +0530
-Message-Id: <1520854780-11823-1-git-send-email-periyasa@codeaurora.org>
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]
+ helo=mx0a-00082601.pphosted.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1evtZF-0006aF-6a
+ for ath10k@lists.infradead.org; Tue, 13 Mar 2018 23:42:55 +0000
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+ by m0001303.ppops.net (8.16.0.22/8.16.0.22) with SMTP id w2DNg63K012966
+ for <ath10k@lists.infradead.org>; Tue, 13 Mar 2018 16:42:38 -0700
+Received: from maileast.thefacebook.com ([199.201.65.23])
+ by m0001303.ppops.net with ESMTP id 2gppq388h3-1
+ (version=TLSv1 cipher=ECDHE-RSA-AES256-SHA bits=256 verify=NOT)
+ for <ath10k@lists.infradead.org>; Tue, 13 Mar 2018 16:42:38 -0700
+From: Javier Cardona <jcardona@fb.com>
+Subject: Re: Frames acknowledged and silently discarded in firmware
+Date: Tue, 13 Mar 2018 23:42:36 +0000
+Message-ID: <48141A86-A8E5-4DF9-A7EC-1E60802680B8@fb.com>
+References: <8B7D031B-8228-493D-8B2C-963C76850F4A@fb.com>
+In-Reply-To: <8B7D031B-8228-493D-8B2C-963C76850F4A@fb.com>
+Content-Language: en-US
+Content-ID: <3991F12F1CA9DF47A951D27B85FE3283@namprd15.prod.outlook.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,113 +28,94 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Karthikeyan Periyasamy <periyasa@codeaurora.org>, linux-wireless@vger.kernel.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-When attempt to run worker (ath10k_sta_rc_update_wk) after the station object
-(ieee80211_sta) delete will trigger the kernel panic.
-
-This problem arise in AP + Mesh configuration, Where the current node AP VAP
-and neighbor node mesh VAP MAC address are same. When the current mesh node
-try to establish the mesh link with neighbor node, driver peer creation for
-the neighbor mesh node fails due to duplication MAC address. Already the AP
-VAP created with same MAC address.
-
-It is caused by the following scenario steps.
-
-Steps:
-1. In above condition, ath10k driver sta_state callback (ath10k_sta_state)
-   fails to do the state change for a station from IEEE80211_STA_NOTEXIST
-   to IEEE80211_STA_NONE due to peer creation fails. Sta_state callback is
-   called from ieee80211_add_station() to handle the new station
-   (neighbor mesh node) request from the wpa_supplicant.
-2. Concurrently ath10k receive the sta_rc_update callback notification from
-   the mesh_neighbour_update() to handle the beacon frames of the above
-   neighbor mesh node. since its atomic callback, ath10k driver queue the
-   work (ath10k_sta_rc_update_wk) to handle rc update.
-3. Due to driver sta_state callback fails (step 1), mac80211 free the station
-   object.
-4. When the worker (ath10k_sta_rc_update_wk) scheduled to run, it will access
-   the station object which is already deleted. so it will trigger kernel
-   panic.
-
-Added the peer exist check in sta_rc_update callback before queue the work.
-
-Kernel Panic log:
-
-Unable to handle kernel NULL pointer dereference at virtual address 00000000
-pgd = c0204000
-[00000000] *pgd=00000000
-Internal error: Oops: 17 [#1] PREEMPT SMP ARM
-CPU: 1 PID: 1833 Comm: kworker/u4:2 Not tainted 3.14.77 #1
-task: dcef0000 ti: d72b6000 task.ti: d72b6000
-PC is at pwq_activate_delayed_work+0x10/0x40
-LR is at pwq_activate_delayed_work+0xc/0x40
-pc : [<c023f988>]    lr : [<c023f984>]    psr: 40000193
-sp : d72b7f18  ip : 0000007a  fp : d72b6000
-r10: 00000000  r9 : dd404414  r8 : d8c31998
-r7 : d72b6038  r6 : 00000004  r5 : d4907ec8  r4 : dcee1300
-r3 : ffffffe0  r2 : 00000000  r1 : 00000001  r0 : 00000000
-Flags: nZcv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
-Control: 10c5787d  Table: 595bc06a  DAC: 00000015
-...
-Process kworker/u4:2 (pid: 1833, stack limit = 0xd72b6238)
-Stack: (0xd72b7f18 to 0xd72b8000)
-7f00:                                                       00000001 dcee1300
-7f20: 00000001 c02410dc d8c31980 dd404400 dd404400 c0242790 d8c31980 00000089
-7f40: 00000000 d93e1340 00000000 d8c31980 c0242568 00000000 00000000 00000000
-7f60: 00000000 c02474dc 00000000 00000000 000000f8 d8c31980 00000000 00000000
-7f80: d72b7f80 d72b7f80 00000000 00000000 d72b7f90 d72b7f90 d72b7fac d93e1340
-7fa0: c0247404 00000000 00000000 c0208d20 00000000 00000000 00000000 00000000
-7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-7fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
-[<c023f988>] (pwq_activate_delayed_work) from [<c02410dc>] (pwq_dec_nr_in_flight+0x58/0xc4)
-[<c02410dc>] (pwq_dec_nr_in_flight) from [<c0242790>] (worker_thread+0x228/0x360)
-[<c0242790>] (worker_thread) from [<c02474dc>] (kthread+0xd8/0xec)
-[<c02474dc>] (kthread) from [<c0208d20>] (ret_from_fork+0x14/0x34)
-Code: e92d4038 e1a05000 ebffffbc[69210.619376] SMP: failed to stop secondary CPUs
-Rebooting in 3 seconds..
-
-Signed-off-by: Karthikeyan Periyasamy <periyasa@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index ebb3f1b..91ee1eb 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7085,10 +7085,20 @@ static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
- {
- 	struct ath10k *ar = hw->priv;
- 	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	struct ath10k_vif *arvif = (void *)vif->drv_priv;
-+	struct ath10k_peer *peer;
- 	u32 bw, smps;
- 
- 	spin_lock_bh(&ar->data_lock);
- 
-+	peer = ath10k_peer_find(ar, arvif->vdev_id, sta->addr);
-+	if (!peer) {
-+		spin_unlock_bh(&ar->data_lock);
-+		ath10k_warn(ar, "mac sta rc update failed to find peer %pM on vdev %i\n",
-+			    sta->addr, arvif->vdev_id);
-+		return;
-+	}
-+
- 	ath10k_dbg(ar, ATH10K_DBG_MAC,
- 		   "mac sta rc update for %pM changed %08x bw %d nss %d smps %d\n",
- 		   sta->addr, changed, sta->bandwidth, sta->rx_nss,
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksDQoNCldlIGhhdmUgcmVzb2x2ZWQgdGhpcyBpc3N1ZS4gIEknbSBzaGFyaW5nIHRoZSBkZXRh
+aWxzIGluIGNhc2UgdGhhdCBtaWdodCBoZWxwIG90aGVycy4NCg0KVGhlIGRlc2NyaXB0aW9uIG9m
+IHRoZSBwcm9ibGVtIHdhcyBhY2N1cmF0ZSBFWENFUFQgdGhhdCB0aGUgYWNrcyB0aGF0IHdlIG9i
+c2VydmVkIG9uIHRoZSBzbmlmZmVyIHdlcmUgbm90IGJlaW5nIHNlbnQgYnkgdGhlIGZhaWxlZCBz
+dGF0aW9uIChNQVAyLCBpbiB0aGUgY29udGV4dCBvZiBteSBvcmlnaW5hbCBlLW1haWwpIGJ1dCBi
+eSBhIHRoaXJkIHN0YXRpb24gTUFQMy4gIFRob3NlIEFja3Mgd2VyZSBzZW50IGJ5IE1BUDMgYnV0
+IHdpdGggTUFQMidzIGFkZHJlc3MgaW4gdGhlIFRyYW5zbWl0dGVyIEFkZHJlc3MgZmllbGQuDQoN
+ClRoZXNlIGFub21hbG91cyBCbG9jayBBY2tzIHdlcmUgc2VudCBiZWNhdXNlIHRoZSBNQUMtQURE
+UkVTUy1GSUxURVIgd2FzIG1pc2NvbmZpZ3VyZWQgYXQgTUFQMywgd2hpY2ggY2F1c2VkIHRoYXQg
+c3RhdGlvbiB0byByZXNwb25kIHRvIGFkZHJlc3NlcyBkaWZmZXJlbnQgdGhhbiBpdHMgb3duLiAg
+VGhlIHJlYXNvbnMgZm9yIHRoaXMgbWlzY29uZmlndXJhdGlvbiB3ZXJlOiANCiAgKDEpIGluIG1l
+c2ggKGFuZCBvdGhlcikgbW9kZShzKSwgdGhlIGRyaXZlciBjcmVhdGVzIGEgaGlkZGVuIG1vbml0
+b3IgdmlmIGFsb25nIHRoZSBtZXNoIHZpZiANCiAgKDIpIHRoaXMgc2Vjb25kIG1vbml0b3Igdmlm
+IGlzIGFzc2lnbmVkIHRoZSBkZWZhdWx0IG1hYyBhZGRyZXNzIHJlcG9ydGVkIGJ5IHRoZSBmaXJt
+d2FyZSAoYXJ2aWYtPm1hY19hZGRyKSANCiAgKDMpIHRoaXMgbWFjIGFkZHJlc3MgKHdoaWNoIHRo
+ZSBkcml2ZXIgd2FzIGdldHRpbmcgZnJvbSB0aGUgcHJlLWNhbCBmaWxlcykgaXMgWE9SJ2Qgd2l0
+aCB0aGUgbWVzaCB2aWYgYWRkcmVzcyB0byBjb25maWd1cmUgTUFDLUFERFJFU1MtRklMVEVSDQog
+ICg0KSBvbmNlIHRoYXQgaGFwcGVucywgdGhlIGhhcmR3YXJlIHdpbGwgYWNrIGFsbCBhZGRyZXNz
+ZXMgdGhhdCBwYXNzIHRoZSBNQUMtQUREUkVTUy1GSUxURVIuICBJZiB0aGUgdHdvIG1hYyBhZGRy
+ZXNzZXMgKHZpZi0+YWRkciBhbmQgYXJ2aWYtPm1hY19hZGRyKSBhcmUgdmVyeSBkaXNzaW1pbGFy
+LCB0aGF0IHdpbGwgcmVzdWx0IGluIGEgc3Rvcm0gb2YgaW52YWxpZCBCbG9jayBBY2tzDQoNCldl
+IHJlc29sdmVkIHRoZSBpc3N1ZSBieSBwYXRjaGluZyB0aGUgcHJlLWNhbCBkYXRhIHdpdGggdGhl
+IHNhbWUgYWRkcmVzcyBhcyB0aGUgbWVzaCBpbnRlcmZhY2UsIHNvIHRoYXQgdmlmLT5hZGRyID09
+IGFydmlmLT5tYWNfYWRkci4gIFRoaXMgaXMgbW9yZSBhIHdvcmthcm91bmQgdGhhbiBhIHJlYWwg
+Zml4LCBiZWNhdXNlIHRoaXMgbWlzY29uZmlndXJhdGlvbiB0aGlzIE1BQy1BRERSRVNTLUZJTFRF
+UiBjYW4gZWFzaWx5IGdvIHVubm90aWNlZC4gIEluIGZhY3QsIHdoYXQgdW5ibG9ja2VkIHVzIG9u
+IHRoaXMgaXNzdWUgd2FzIHN3aXRjaGluZyB0byBDYW5kZWxhIFRlY2gncyBjdXN0b20gZmlybXdh
+cmUgYW5kIGRyaXZlciAoYXRoMTBrLWN0KS4gIFRoaXMgcHJvdmlkZXMgYSBuaWNlIGludGVyZmFj
+ZSB0byB0aGUgaGFyZHdhcmUgcmVnaXN0ZXJzOg0KDQpjYXQgL2RlYnVnL2llZWU4MDIxMS93aXBo
+eTEvYXRoMTBrL2Z3X3JlZ3MNCg0KICAgICAgICBhdGgxMGsgVGFyZ2V0IFJlZ2lzdGVyIER1bXAN
+CiAgICAgICAgPT09PT09PT09PT09PT09PT0NCiAgICAgICAgTUFDLUZJTFRFUi1BRERSLUwzMiAw
+eGZmZmZmZmZmDQogICAgICAgIE1BQy1GSUxURVItQUREUi1VMTYgMHgwMDAwZmZmZg0KDQpXZSB3
+b3VsZCBwcm9iYWJseSBiZSBzdGlsbCB0cnlpbmcgdG8gc29sdmUgdGhpcyBpZiBCZW4gR3JlZWFy
+IGRpZCBub3QgcG9pbnQgdXMgaW4gdGhlIHJpZ2h0IGRpcmVjdGlvbi4NCg0KQ2hlZXJzLA0KDQpK
+YXZpZXINCiANCg0K77u/T24gMi83LzE4LCAyOjE1IFBNLCAiSmF2aWVyIENhcmRvbmEiIDxqY2Fy
+ZG9uYUBmYi5jb20+IHdyb3RlOg0KDQogICAgSGksDQogICAgDQogICAgV2UgaGF2ZSBvYnNlcnZl
+ZCBhIHByb2JsZW0gd2hlcmUsIHVuZGVyIGNlcnRhaW4gY29uZGl0aW9ucywgdGhlIGF0aDEwayBm
+aXJtd2FyZSB3aWxsIGFja25vd2xlZGdlIGZyYW1lcyBidXQgbm90IHNlbmQgdGhlbSB1cCB0byB0
+aGUgZHJpdmVyLiAgDQogICAgRnJhbWVzIGFyZSBzZW50IGJ5IGEgbWVzaCBhY2Nlc3MgcG9pbnQg
+KE1BUDEpIHRvIGEgc2Vjb25kIG1lc2ggQVAgKE1BUDIpIGF0IE1DUyA5L05TUy0zLCB3aGljaCBh
+dCB0aGF0IGRpc3RhbmNlIGlzIHByb2JhYmx5IG1hcmdpbmFsLiAgU2luY2UgZnJhbWVzIGdldCBh
+Y2tubG93bGVkZ2VkIGJ5IE1BUDIsIE1BUDEgd2lsbCBub3QgdHJ5IGEgbG93ZXIgcmF0ZS4gIEJ1
+dCB0aGUgZHJpdmVyIGF0IE1BUDIgZG9lcyBub3QgcmVjZWl2ZSB0aGUgZnJhbWVzLg0KICAgIA0K
+ICAgIFdlIGhhdmUgY2FwdHVyZXMgb2YgdGhpcyBleGNoYW5nZSBmb3IgYm90aCB0aGUgdW5zdWNj
+ZXNzZnVsIGFzIHdlbGwgYXMgdGhlIHN1Y2Nlc3NmdWwgY2FzZSwgd2hpY2ggaGFwcGVucyB3aGVu
+IHdlIG1vdmUgTUFQMiBjbG9zZXIgdG8gTUFQMS4gICBUaGV5IGNhbiBiZSBmb3VuZCBoZXJlOg0K
+ICAgIGh0dHBzOi8vd3d3LmRyb3Bib3guY29tL3NoLzBvcjg2Yzh2eG90eWdkYy9BQUJJN1JtUTJu
+enRjT0JGM1VEWGJQVW1hDQogICAgDQogICAgSW4gYm90aCBzY2VuYXJpb3MsIHRoZSBmcmFtZXMg
+ZnJvbSBNQVAxIHRvIE1BUDIgYXJlIGFja25vd2xlZGdlZCwgYXMgb2JzZXJ2ZWQgaW4gc25pZmZl
+ciBjYXB0dXJlcy4NCiAgICANCiAgICBJbiB0aGUgc3VjY2Vzc2Z1bCBzY2VuYXJpbywgdGhlIGRy
+aXZlciBsb2dzIHNob3cgdGhlIGZyYW1lcyBiZWluZyByZWNlaXZlZCBieSB0aGUgZHJpdmVyLiAg
+U2VxdWVuY2UgbnVtYmVycyBpbiB0aGUgZGVidWcgbG9ncyBtYXRjaCB0aG9zZSBpbiB0aGUgc25p
+ZmZlciBjYXB0dXJlcy4NCiAgICANCiAgICByb290QG5iZy0zZWQ5ZGE6fiMgam91cm5hbGN0bCAt
+a2YgfCBncmVwICJwZWVyIDYwOjMxOjk3OjNlOjgyOmU2IiB8IGdyZXAgdWNhc3QgfCBncmVwICds
+ZW4gMzc0Jw0KICAgIEZlYiAwNSAwNTo0MzozMSBuYmctM2VkOWRhIGtlcm5lbDogYXRoMTBrX3Bj
+aSAwMDAwOjAxOjAwLjA6IHJ4IHNrYiBkNzM0ZjZjMCBsZW4gMzc0IHBlZXIgNjA6MzE6OTc6M2U6
+ODI6ZTYgdGlkIDAgKEJFKSB1Y2FzdCBzbiAxMDI3IHZodCBzZ2kgcmF0ZV9pZHggOSB2aHRfbnNz
+IDMgZnJlcSA1ODI1IGJhbmQgMSBmbGFnIDB4NjAwODAwIGZjcy1lcnIgMCBtaWMtZXJyIDAgYW1z
+ZHUtbW9yZSAwDQogICAgRmViIDA1IDA1OjQzOjQyIG5iZy0zZWQ5ZGEga2VybmVsOiBhdGgxMGtf
+cGNpIDAwMDA6MDE6MDAuMDogcnggc2tiIGQ2YWFhNDgwIGxlbiAzNzQgcGVlciA2MDozMTo5Nzoz
+ZTo4MjplNiB0aWQgMCAoQkUpIHVjYXN0IHNuIDEwMzEgdmh0IHNnaSByYXRlX2lkeCA5IHZodF9u
+c3MgMyBmcmVxIDU4MjUgYmFuZCAxIGZsYWcgMHg2MDA4MDAgZmNzLWVyciAwIG1pYy1lcnIgMCBh
+bXNkdS1tb3JlIDANCiAgICBGZWIgMDUgMDU6NDM6NTMgbmJnLTNlZDlkYSBrZXJuZWw6IGF0aDEw
+a19wY2kgMDAwMDowMTowMC4wOiByeCBza2IgZDUzYThkODAgbGVuIDM3NCBwZWVyIDYwOjMxOjk3
+OjNlOjgyOmU2IHRpZCAwIChCRSkgdWNhc3Qgc24gMTAzNyB2aHQgc2dpIHJhdGVfaWR4IDkgdmh0
+X25zcyAzIGZyZXEgNTgyNSBiYW5kIDEgZmxhZyAweDYwMDgwMCBmY3MtZXJyIDAgbWljLWVyciAw
+IGFtc2R1LW1vcmUgMA0KICAgIA0KICAgIEluIHRoZSBmYWlsdXJlIHNjZW5hcmlvLCB0aGUgZHJp
+dmVyIGxvZ3Mgc2hvdyBubyBmcmFtZXMsIGV2ZW4gaWYgdGhlIGNhcHR1cmUgc2hvd3MgdGhhdCB0
+aGUgZnJhbWVzIGFyZSBhY2tub3dsZWRnZWQuDQogICAgDQogICAgcm9vdEBuYmctM2VkOWRhOn4j
+IGpvdXJuYWxjdGwgLWtmIHwgZ3JlcCAicGVlciA2MDozMTo5NzozZTo4MjplNiIgfCBncmVwIHVj
+YXN0IHwgZ3JlcCAnbGVuIDM3NCcNCiAgICA8bm90aGluZyBoZXJlPg0KICAgIA0KICAgIElmIHdl
+IGZvcmNlIE1BUDEgdG8gdXNlIGEgc2luZ2xlIHN0cmVhbSwgdGhlIGZyYW1lcyBhcmUgcmVjZWl2
+ZWQgc3VjY2Vzc2Z1bGx5Lg0KICAgIA0KICAgICAgIyBpdyBtZXNoMCBzZXQgYml0cmF0ZXMgbGVn
+YWN5LTUgaHQtbWNzLTUgdmh0LW1jcy01IDE6MC05DQogICAgDQogICAgSXQgc2VlbXMgYXMgaWYg
+dGhlIGZpcm13YXJlIGlzIGFja25vd2xlZGdpbmcgYnV0IHNpbGVudGx5IGRpc2NhcmRpbmcgZnJh
+bWVz4oCmIGlzIHRoYXQgcG9zc2libGU/DQogICAgQ2FuIGFueW9uZSBwcm92aWRlIHNvbWUgcG9p
+bnRlcnMgb24gaG93IHRvIHRyb3VibGVzaG9vdCB0aGlzPyAgDQogICAgDQogICAgV2UgYXJlIHVz
+aW5nIHRoaXMgZmlybXdhcmU6IGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgxMGstZmlybXdh
+cmUvYmxvYi9tYXN0ZXIvUUNBOTk4NC9odzEuMC8zLjQvZmlybXdhcmUtNS5iaW5fMTAuNC0zLjQt
+MDAxMDQgYW5kIGtlcm5lbCA0LjkuMzEgd2l0aCBhIGZldyBjaGVycnktcGlja2VkIHBhdGNoZXMg
+ZnJvbSB0aGUgYXRoMTBrIGJyYW5jaC4NCiAgICBUaGUgaGFyZHdhcmUgaXMgUUNBOTk0Lg0KICAg
+IA0KICAgIEJlc3QsDQogICAgDQogICAgSmF2aWVyDQogICAgDQogICAgDQogICAgDQogICAgDQog
+ICAgDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
