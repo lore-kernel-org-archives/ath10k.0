@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewjRD-0007re-LG
- for ath10k@lists.infradead.org; Fri, 16 Mar 2018 07:06:05 +0000
-From: ryanhsu@codeaurora.org
-Subject: [PATCH 1/2] ath10k: enable QCA6174/QCA9377 to read the chip
- temperature
-Date: Fri, 16 Mar 2018 00:05:41 -0700
-Message-Id: <1521183942-4291-1-git-send-email-ryanhsu@codeaurora.org>
+ id 1ewupA-0007gQ-EL
+ for ath10k@lists.infradead.org; Fri, 16 Mar 2018 19:15:35 +0000
+From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Subject: [PATCH] ath10k: fix vdev stats for 10.4 firmware
+Date: Fri, 16 Mar 2018 12:15:10 -0700
+Message-Id: <1521227710-3155-1-git-send-email-rmanohar@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,128 +20,360 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: ryanhsu@codeaurora.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@codeaurora.org>
 
-From: Ryan Hsu <ryanhsu@codeaurora.org>
+Currently vdev stats displayed in fw_stats are applicable
+only for TLV based firmware and fix it for 10.4 firmware
+as of now. The vdev stats in 10.4 firmware is split into two
+parts (vdev_stats, vdev_stats_extended). The actual stats
+are captured only in extended vdev stats. In order to enable
+vdev stats, appropriate feature bit will be set on extended
+resource config. As FTM related counters are available only on
+newer 10.4 based firmware, these counters will be displayed
+only on valid data.
 
-The firmware of QCA6174/QCA9377 already support the feature, just enable
-it to be able to handle the get_temperature command and process the event.
-
-You can read the temperature by using the hwmon interface,
-
-cat /sys/class/ieee80211/phy*/device/hwmon/hwmon2/temp1_input
-
-Verified with the following hardware and software combination,
-QCA6174, only firmware-4.bin doesn't support this, otherwise all support.
-QCA9377, all the firmwares upstreamed support this command
-
-Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
+Signed-off-by: Rajkumar Manoharan <rmanohar@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 39 +++++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/wmi-tlv.h | 11 +++++++++
- 2 files changed, 48 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c |   6 +-
+ drivers/net/wireless/ath/ath10k/core.h |  22 +++++
+ drivers/net/wireless/ath/ath10k/wmi.c  | 152 ++++++++++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/wmi.h  |  28 +++++-
+ 4 files changed, 187 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 7616c1c..9d31b97 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -412,6 +412,19 @@ static int ath10k_wmi_tlv_event_tx_pause(struct ath10k *ar,
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 830b7fe466f3..8a3020dbd4cf 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -2041,7 +2041,8 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
+ 		ar->num_tids = TARGET_10_4_TGT_NUM_TIDS;
+ 		ar->fw_stats_req_mask = WMI_10_4_STAT_PEER |
+-					WMI_10_4_STAT_PEER_EXTD;
++					WMI_10_4_STAT_PEER_EXTD |
++					WMI_10_4_STAT_VDEV_EXTD;
+ 		ar->max_spatial_stream = ar->hw_params.max_spatial_stream;
+ 		ar->max_num_tdls_vdevs = TARGET_10_4_NUM_TDLS_VDEVS;
+ 
+@@ -2282,6 +2283,9 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
+ 		if (ath10k_peer_stats_enabled(ar))
+ 			val = WMI_10_4_PEER_STATS;
+ 
++		/* Enable vdev stats by default */
++		val |= WMI_10_4_VDEV_STATS;
++
+ 		if (test_bit(WMI_SERVICE_BSS_CHANNEL_INFO_64, ar->wmi.svc_map))
+ 			val |= WMI_10_4_BSS_CHANNEL_INFO_64;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index fe6b30356d3b..2901454e30f9 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -221,6 +222,27 @@ struct ath10k_fw_stats_vdev {
+ 	u32 beacon_rssi_history[10];
+ };
+ 
++struct ath10k_fw_stats_vdev_extd {
++	struct list_head list;
++
++	u32 vdev_id;
++	u32 ppdu_aggr_cnt;
++	u32 ppdu_noack;
++	u32 mpdu_queued;
++	u32 ppdu_nonaggr_cnt;
++	u32 mpdu_sw_requeued;
++	u32 mpdu_suc_retry;
++	u32 mpdu_suc_multitry;
++	u32 mpdu_fail_retry;
++	u32 tx_ftm_suc;
++	u32 tx_ftm_suc_retry;
++	u32 tx_ftm_fail;
++	u32 rx_ftmr_cnt;
++	u32 rx_ftmr_dup_cnt;
++	u32 rx_iftmr_cnt;
++	u32 rx_iftmr_dup_cnt;
++};
++
+ struct ath10k_fw_stats_pdev {
+ 	struct list_head list;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 58dc2189ba49..f4e47340b567 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -2703,6 +2704,28 @@ void ath10k_wmi_pull_peer_stats(const struct wmi_peer_stats *src,
+ 	dst->peer_rx_rate = __le32_to_cpu(src->peer_rx_rate);
+ }
+ 
++static void
++ath10k_wmi_10_4_pull_vdev_stats(const struct wmi_vdev_stats_extd *src,
++				struct ath10k_fw_stats_vdev_extd *dst)
++{
++	dst->vdev_id = __le32_to_cpu(src->vdev_id);
++	dst->ppdu_aggr_cnt = __le32_to_cpu(src->ppdu_aggr_cnt);
++	dst->ppdu_noack = __le32_to_cpu(src->ppdu_noack);
++	dst->mpdu_queued = __le32_to_cpu(src->mpdu_queued);
++	dst->ppdu_nonaggr_cnt = __le32_to_cpu(src->ppdu_nonaggr_cnt);
++	dst->mpdu_sw_requeued = __le32_to_cpu(src->mpdu_sw_requeued);
++	dst->mpdu_suc_retry = __le32_to_cpu(src->mpdu_suc_retry);
++	dst->mpdu_suc_multitry = __le32_to_cpu(src->mpdu_suc_multitry);
++	dst->mpdu_fail_retry = __le32_to_cpu(src->mpdu_fail_retry);
++	dst->tx_ftm_suc = __le32_to_cpu(src->tx_ftm_suc);
++	dst->tx_ftm_suc_retry = __le32_to_cpu(src->tx_ftm_suc_retry);
++	dst->tx_ftm_fail = __le32_to_cpu(src->tx_ftm_fail);
++	dst->rx_ftmr_cnt = __le32_to_cpu(src->rx_ftmr_cnt);
++	dst->rx_ftmr_dup_cnt = __le32_to_cpu(src->rx_ftmr_dup_cnt);
++	dst->rx_iftmr_cnt = __le32_to_cpu(src->rx_iftmr_cnt);
++	dst->rx_iftmr_dup_cnt = __le32_to_cpu(src->rx_iftmr_dup_cnt);
++}
++
+ static int ath10k_wmi_main_op_pull_fw_stats(struct ath10k *ar,
+ 					    struct sk_buff *skb,
+ 					    struct ath10k_fw_stats *stats)
+@@ -3042,7 +3065,16 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
+ 		 */
+ 	}
+ 
+-	/* fw doesn't implement vdev stats */
++	for (i = 0; i < num_vdev_stats; i++) {
++		const struct wmi_vdev_stats *src;
++
++		/* Ignore vdev stats here as it has only vdev id. Actual vdev
++		 * stats will be retrieved from vdev extended stats.
++		 */
++		src = (void *)skb->data;
++		if (!skb_pull(skb, sizeof(*src)))
++			return -EPROTO;
++	}
+ 
+ 	for (i = 0; i < num_peer_stats; i++) {
+ 		const struct wmi_10_4_peer_stats *src;
+@@ -3074,26 +3106,43 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
+ 		 */
+ 	}
+ 
+-	if ((stats_id & WMI_10_4_STAT_PEER_EXTD) == 0)
+-		return 0;
++	if (stats_id & WMI_10_4_STAT_PEER_EXTD) {
++		stats->extended = true;
+ 
+-	stats->extended = true;
++		for (i = 0; i < num_peer_stats; i++) {
++			const struct wmi_10_4_peer_extd_stats *src;
++			struct ath10k_fw_extd_stats_peer *dst;
+ 
+-	for (i = 0; i < num_peer_stats; i++) {
+-		const struct wmi_10_4_peer_extd_stats *src;
+-		struct ath10k_fw_extd_stats_peer *dst;
++			src = (void *)skb->data;
++			if (!skb_pull(skb, sizeof(*src)))
++				return -EPROTO;
+ 
+-		src = (void *)skb->data;
+-		if (!skb_pull(skb, sizeof(*src)))
+-			return -EPROTO;
++			dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
++			if (!dst)
++				continue;
+ 
+-		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
+-		if (!dst)
+-			continue;
++			ether_addr_copy(dst->peer_macaddr,
++					src->peer_macaddr.addr);
++			dst->rx_duration = __le32_to_cpu(src->rx_duration);
++			list_add_tail(&dst->list, &stats->peers_extd);
++		}
++	}
+ 
+-		ether_addr_copy(dst->peer_macaddr, src->peer_macaddr.addr);
+-		dst->rx_duration = __le32_to_cpu(src->rx_duration);
+-		list_add_tail(&dst->list, &stats->peers_extd);
++	if (stats_id & WMI_10_4_STAT_VDEV_EXTD) {
++		for (i = 0; i < num_vdev_stats; i++) {
++			const struct wmi_vdev_stats_extd *src;
++			struct ath10k_fw_stats_vdev_extd *dst;
++
++			src = (void *)skb->data;
++			if (!skb_pull(skb, sizeof(*src)))
++				return -EPROTO;
++
++			dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
++			if (!dst)
++				continue;
++			ath10k_wmi_10_4_pull_vdev_stats(src, dst);
++			list_add_tail(&dst->list, &stats->vdevs);
++		}
+ 	}
+ 
  	return 0;
+@@ -7745,6 +7794,72 @@ void ath10k_wmi_10x_op_fw_stats_fill(struct ath10k *ar,
+ 	return skb;
  }
  
-+static int ath10k_wmi_tlv_event_temperature(struct ath10k *ar,
-+					    struct sk_buff *skb)
++static void
++ath10k_wmi_fw_vdev_stats_extd_fill(const struct ath10k_fw_stats_vdev_extd *vdev,
++				   char *buf, u32 *length)
 +{
-+	const struct wmi_tlv_pdev_temperature_event *ev;
++	u32 len = *length;
++	u32 buf_len = ATH10K_FW_STATS_BUF_SIZE;
++	u32 val;
 +
-+	ev = (struct wmi_tlv_pdev_temperature_event *)skb->data;
-+	if (WARN_ON(skb->len < sizeof(*ev)))
-+		return -EPROTO;
++	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++			 "vdev id", vdev->vdev_id);
++	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++			 "ppdu aggr count", vdev->ppdu_aggr_cnt);
++	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++			 "ppdu noack", vdev->ppdu_noack);
++	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++			 "mpdu queued", vdev->mpdu_queued);
++	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++			 "ppdu nonaggr count", vdev->ppdu_nonaggr_cnt);
++	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++			 "mpdu sw requeued", vdev->mpdu_sw_requeued);
++	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++			 "mpdu success retry", vdev->mpdu_suc_retry);
++	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++			 "mpdu success multitry", vdev->mpdu_suc_multitry);
++	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++			 "mpdu fail retry", vdev->mpdu_fail_retry);
++	val = vdev->tx_ftm_suc;
++	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
++		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++				 "tx ftm success",
++				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
++	val = vdev->tx_ftm_suc_retry;
++	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
++		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++				 "tx ftm success retry",
++				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
++	val = vdev->tx_ftm_fail;
++	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
++		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++				 "tx ftm fail",
++				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
++	val = vdev->rx_ftmr_cnt;
++	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
++		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++				 "rx ftm request count",
++				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
++	val = vdev->rx_ftmr_dup_cnt;
++	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
++		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++				 "rx ftm request dup count",
++				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
++	val = vdev->rx_iftmr_cnt;
++	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
++		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++				 "rx initial ftm req count",
++				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
++	val = vdev->rx_iftmr_dup_cnt;
++	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
++		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++				 "rx initial ftm req dup cnt",
++				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
++	len += scnprintf(buf + len, buf_len - len, "\n");
 +
-+	ath10k_thermal_event_temperature(ar, __le32_to_cpu(ev->temperature));
-+	return 0;
++	*length = len;
 +}
 +
- /***********/
- /* TLV ops */
- /***********/
-@@ -552,6 +565,9 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 	case WMI_TLV_TX_PAUSE_EVENTID:
- 		ath10k_wmi_tlv_event_tx_pause(ar, skb);
- 		break;
-+	case WMI_TLV_PDEV_TEMPERATURE_EVENTID:
-+		ath10k_wmi_tlv_event_temperature(ar, skb);
-+		break;
- 	default:
- 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
- 		break;
-@@ -2554,6 +2570,25 @@ static void *ath10k_wmi_tlv_put_wmm(void *ptr,
- }
+ void ath10k_wmi_10_4_op_fw_stats_fill(struct ath10k *ar,
+ 				      struct ath10k_fw_stats *fw_stats,
+ 				      char *buf)
+@@ -7752,7 +7867,7 @@ void ath10k_wmi_10_4_op_fw_stats_fill(struct ath10k *ar,
+ 	u32 len = 0;
+ 	u32 buf_len = ATH10K_FW_STATS_BUF_SIZE;
+ 	const struct ath10k_fw_stats_pdev *pdev;
+-	const struct ath10k_fw_stats_vdev *vdev;
++	const struct ath10k_fw_stats_vdev_extd *vdev;
+ 	const struct ath10k_fw_stats_peer *peer;
+ 	size_t num_peers;
+ 	size_t num_vdevs;
+@@ -7805,9 +7920,8 @@ void ath10k_wmi_10_4_op_fw_stats_fill(struct ath10k *ar,
+ 			"ath10k VDEV stats", num_vdevs);
+ 	len += scnprintf(buf + len, buf_len - len, "%30s\n\n",
+ 				"=================");
+-
+ 	list_for_each_entry(vdev, &fw_stats->vdevs, list) {
+-		ath10k_wmi_fw_vdev_stats_fill(vdev, buf, &len);
++		ath10k_wmi_fw_vdev_stats_extd_fill(vdev, buf, &len);
+ 	}
  
- static struct sk_buff *
-+ath10k_wmi_tlv_op_gen_pdev_get_temperature(struct ath10k *ar)
-+{
-+	struct wmi_tlv_pdev_get_temp_cmd *cmd;
-+	struct wmi_tlv *tlv;
-+	struct sk_buff *skb;
+ 	len += scnprintf(buf + len, buf_len - len, "\n");
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index c7b30ed9015d..80f93c7c68a5 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -4350,6 +4351,7 @@ enum wmi_10_4_stats_id {
+ 	WMI_10_4_STAT_AP		= BIT(1),
+ 	WMI_10_4_STAT_INST		= BIT(2),
+ 	WMI_10_4_STAT_PEER_EXTD		= BIT(3),
++	WMI_10_4_STAT_VDEV_EXTD		= BIT(4),
+ };
+ 
+ struct wlan_inst_rssi_args {
+@@ -4489,12 +4491,36 @@ struct wmi_10_4_pdev_stats {
+ 
+ /*
+  * VDEV statistics
+- * TODO: add all VDEV stats here
+  */
 +
-+	skb = ath10k_wmi_alloc_skb(ar, sizeof(*tlv) + sizeof(*cmd));
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
++#define WMI_VDEV_STATS_FTM_COUNT_VALID	BIT(31)
++#define WMI_VDEV_STATS_FTM_COUNT_LSB	0
++#define WMI_VDEV_STATS_FTM_COUNT_MASK	0x7fffffff
 +
-+	tlv = (void *)skb->data;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_PDEV_GET_TEMPERATURE_CMD);
-+	tlv->len = __cpu_to_le16(sizeof(*cmd));
-+	cmd = (void *)tlv->value;
-+	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi pdev get temperature tlv\n");
-+	return skb;
-+}
-+
-+static struct sk_buff *
- ath10k_wmi_tlv_op_gen_pktlog_disable(struct ath10k *ar)
- {
- 	struct wmi_tlv_pktlog_disable *cmd;
-@@ -3334,7 +3369,7 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
- 	.force_fw_hang_cmdid = WMI_TLV_FORCE_FW_HANG_CMDID,
- 	.gpio_config_cmdid = WMI_TLV_GPIO_CONFIG_CMDID,
- 	.gpio_output_cmdid = WMI_TLV_GPIO_OUTPUT_CMDID,
--	.pdev_get_temperature_cmdid = WMI_TLV_CMD_UNSUPPORTED,
-+	.pdev_get_temperature_cmdid = WMI_TLV_PDEV_GET_TEMPERATURE_CMDID,
- 	.vdev_set_wmm_params_cmdid = WMI_TLV_VDEV_SET_WMM_PARAMS_CMDID,
- 	.tdls_set_state_cmdid = WMI_TLV_TDLS_SET_STATE_CMDID,
- 	.tdls_peer_update_cmdid = WMI_TLV_TDLS_PEER_UPDATE_CMDID,
-@@ -3596,7 +3631,7 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
- 	.gen_pktlog_enable = ath10k_wmi_tlv_op_gen_pktlog_enable,
- 	.gen_pktlog_disable = ath10k_wmi_tlv_op_gen_pktlog_disable,
- 	/* .gen_pdev_set_quiet_mode not implemented */
--	/* .gen_pdev_get_temperature not implemented */
-+	.gen_pdev_get_temperature = ath10k_wmi_tlv_op_gen_pdev_get_temperature,
- 	/* .gen_addba_clear_resp not implemented */
- 	/* .gen_addba_send not implemented */
- 	/* .gen_addba_set_resp not implemented */
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index 22cf011..906e9e1 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1235,6 +1235,17 @@ struct wmi_tlv_init_cmd {
- 	__le32 num_host_mem_chunks;
+ struct wmi_vdev_stats {
+ 	__le32 vdev_id;
  } __packed;
  
-+struct wmi_tlv_pdev_get_temp_cmd {
-+	__le32 pdev_id; /* not used */
++struct wmi_vdev_stats_extd {
++	__le32 vdev_id;
++	__le32 ppdu_aggr_cnt;
++	__le32 ppdu_noack;
++	__le32 mpdu_queued;
++	__le32 ppdu_nonaggr_cnt;
++	__le32 mpdu_sw_requeued;
++	__le32 mpdu_suc_retry;
++	__le32 mpdu_suc_multitry;
++	__le32 mpdu_fail_retry;
++	__le32 tx_ftm_suc;
++	__le32 tx_ftm_suc_retry;
++	__le32 tx_ftm_fail;
++	__le32 rx_ftmr_cnt;
++	__le32 rx_ftmr_dup_cnt;
++	__le32 rx_iftmr_cnt;
++	__le32 rx_iftmr_dup_cnt;
++	__le32 reserved[6];
 +} __packed;
 +
-+struct wmi_tlv_pdev_temperature_event {
-+	__le32 tlv_hdr;
-+	/* temperature value in Celcius degree */
-+	__le32 temperature;
-+	__le32 pdev_id;
-+} __packed;
-+
- struct wmi_tlv_pdev_set_param_cmd {
- 	__le32 pdev_id; /* not used yet */
- 	__le32 param_id;
+ /*
+  * peer statistics.
+  * TODO: add more stats
 -- 
 1.9.1
 
