@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x22e.google.com ([2607:f8b0:4003:c06::22e])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ew9lR-0003VU-Vg
- for ath10k@lists.infradead.org; Wed, 14 Mar 2018 17:00:40 +0000
-Received: by mail-oi0-x22e.google.com with SMTP id c83so3310474oib.1
- for <ath10k@lists.infradead.org>; Wed, 14 Mar 2018 10:00:21 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1c4295b7-8d14-6637-e3b9-ece031d0936e@candelatech.com>
-References: <8B7D031B-8228-493D-8B2C-963C76850F4A@fb.com>
- <48141A86-A8E5-4DF9-A7EC-1E60802680B8@fb.com>
- <CADjYELy+LnHd77X+9YPmHFMoeb3Vx0+JVDgmPd_H1eysUF-sNQ@mail.gmail.com>
- <1c4295b7-8d14-6637-e3b9-ece031d0936e@candelatech.com>
-From: Thomas Pedersen <thomas@eero.com>
-Date: Wed, 14 Mar 2018 10:00:18 -0700
-Message-ID: <CADjYELzoKtUf+wg9BQKtSE9u6nq12cyhuhTz53b4__k8SesTSw@mail.gmail.com>
-Subject: Re: Frames acknowledged and silently discarded in firmware
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ewjRD-0007rj-UX
+ for ath10k@lists.infradead.org; Fri, 16 Mar 2018 07:06:05 +0000
+From: ryanhsu@codeaurora.org
+Subject: [PATCH 2/2] ath10k: add FW API 6 firmware image for QCA9377
+Date: Fri, 16 Mar 2018 00:05:42 -0700
+Message-Id: <1521183942-4291-2-git-send-email-ryanhsu@codeaurora.org>
+In-Reply-To: <1521183942-4291-1-git-send-email-ryanhsu@codeaurora.org>
+References: <1521183942-4291-1-git-send-email-ryanhsu@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +17,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Javier Cardona <jcardona@fb.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: ryanhsu@codeaurora.org
 
-On Wed, Mar 14, 2018 at 9:47 AM, Ben Greear <greearb@candelatech.com> wrote:
-> On 03/13/2018 05:52 PM, Thomas Pedersen wrote:
->>
->> Javier,
->>
->> On Tue, Mar 13, 2018 at 4:42 PM, Javier Cardona <jcardona@fb.com> wrote:
->>>
->>> Hi,
->>>
->>> We have resolved this issue.  I'm sharing the details in case that might
->>> help others.
->>>
->>> The description of the problem was accurate EXCEPT that the acks that we
->>> observed on the sniffer were not being sent by the failed station (MAP2, in
->>> the context of my original e-mail) but by a third station MAP3.  Those Acks
->>> were sent by MAP3 but with MAP2's address in the Transmitter Address field.
->>>
->>> These anomalous Block Acks were sent because the MAC-ADDRESS-FILTER was
->>> misconfigured at MAP3, which caused that station to respond to addresses
->>> different than its own.  The reasons for this misconfiguration were:
->>>   (1) in mesh (and other) mode(s), the driver creates a hidden monitor
->>> vif along the mesh vif
->>
->>
->> At least since some 10.4 firmware, the hidden monitor vdev is no longer
->> required. See https://www.spinics.net/lists/linux-wireless/msg156475.html
->
->
-> I'd like to fix my firmware to support this same feature (in case it does
-> not currently
-> support it) and add the pertinent firmware feature flags.
->
-> Can anyone share the filter flag name(s) that needs to be enabled in the
-> firmware for mesh
-> mode so that monitor devices are not required?
+From: Ryan Hsu <ryanhsu@codeaurora.org>
 
-It should be FIF_ALLMULTI | FIF_OTHER_BSS
+Firmware WLAN.TF.2.1-00014-QCARMSWP-1 now supports reading the board ID
+information and also required 9 IRAM bank, which older ath10k version
+don't have the support will fail to be enabled, so in order to maintain
+the backward compatibility, we need to update the FW API to 6.
 
+Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index e9c3162..d2a3acd 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3496,5 +3496,6 @@ static void __exit ath10k_pci_exit(void)
+ MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" ATH10K_BOARD_API2_FILE);
+ 
+ /* QCA9377 1.0 firmware files */
++MODULE_FIRMWARE(QCA9377_HW_1_0_FW_DIR "/" ATH10K_FW_API6_FILE);
+ MODULE_FIRMWARE(QCA9377_HW_1_0_FW_DIR "/" ATH10K_FW_API5_FILE);
+ MODULE_FIRMWARE(QCA9377_HW_1_0_FW_DIR "/" QCA9377_HW_1_0_BOARD_DATA_FILE);
 -- 
-thomas
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
