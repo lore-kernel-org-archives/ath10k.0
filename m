@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewjRD-0007rj-UX
+ id 1ewjRD-0007re-LG
  for ath10k@lists.infradead.org; Fri, 16 Mar 2018 07:06:05 +0000
 From: ryanhsu@codeaurora.org
-Subject: [PATCH 2/2] ath10k: add FW API 6 firmware image for QCA9377
-Date: Fri, 16 Mar 2018 00:05:42 -0700
-Message-Id: <1521183942-4291-2-git-send-email-ryanhsu@codeaurora.org>
-In-Reply-To: <1521183942-4291-1-git-send-email-ryanhsu@codeaurora.org>
-References: <1521183942-4291-1-git-send-email-ryanhsu@codeaurora.org>
+Subject: [PATCH 1/2] ath10k: enable QCA6174/QCA9377 to read the chip
+ temperature
+Date: Fri, 16 Mar 2018 00:05:41 -0700
+Message-Id: <1521183942-4291-1-git-send-email-ryanhsu@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,27 +26,123 @@ Cc: ryanhsu@codeaurora.org
 
 From: Ryan Hsu <ryanhsu@codeaurora.org>
 
-Firmware WLAN.TF.2.1-00014-QCARMSWP-1 now supports reading the board ID
-information and also required 9 IRAM bank, which older ath10k version
-don't have the support will fail to be enabled, so in order to maintain
-the backward compatibility, we need to update the FW API to 6.
+The firmware of QCA6174/QCA9377 already support the feature, just enable
+it to be able to handle the get_temperature command and process the event.
+
+You can read the temperature by using the hwmon interface,
+
+cat /sys/class/ieee80211/phy*/device/hwmon/hwmon2/temp1_input
+
+Verified with the following hardware and software combination,
+QCA6174, only firmware-4.bin doesn't support this, otherwise all support.
+QCA9377, all the firmwares upstreamed support this command
 
 Signed-off-by: Ryan Hsu <ryanhsu@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 39 +++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 11 +++++++++
+ 2 files changed, 48 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index e9c3162..d2a3acd 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3496,5 +3496,6 @@ static void __exit ath10k_pci_exit(void)
- MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" ATH10K_BOARD_API2_FILE);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 7616c1c..9d31b97 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -412,6 +412,19 @@ static int ath10k_wmi_tlv_event_tx_pause(struct ath10k *ar,
+ 	return 0;
+ }
  
- /* QCA9377 1.0 firmware files */
-+MODULE_FIRMWARE(QCA9377_HW_1_0_FW_DIR "/" ATH10K_FW_API6_FILE);
- MODULE_FIRMWARE(QCA9377_HW_1_0_FW_DIR "/" ATH10K_FW_API5_FILE);
- MODULE_FIRMWARE(QCA9377_HW_1_0_FW_DIR "/" QCA9377_HW_1_0_BOARD_DATA_FILE);
++static int ath10k_wmi_tlv_event_temperature(struct ath10k *ar,
++					    struct sk_buff *skb)
++{
++	const struct wmi_tlv_pdev_temperature_event *ev;
++
++	ev = (struct wmi_tlv_pdev_temperature_event *)skb->data;
++	if (WARN_ON(skb->len < sizeof(*ev)))
++		return -EPROTO;
++
++	ath10k_thermal_event_temperature(ar, __le32_to_cpu(ev->temperature));
++	return 0;
++}
++
+ /***********/
+ /* TLV ops */
+ /***********/
+@@ -552,6 +565,9 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	case WMI_TLV_TX_PAUSE_EVENTID:
+ 		ath10k_wmi_tlv_event_tx_pause(ar, skb);
+ 		break;
++	case WMI_TLV_PDEV_TEMPERATURE_EVENTID:
++		ath10k_wmi_tlv_event_temperature(ar, skb);
++		break;
+ 	default:
+ 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
+ 		break;
+@@ -2554,6 +2570,25 @@ static void *ath10k_wmi_tlv_put_wmm(void *ptr,
+ }
+ 
+ static struct sk_buff *
++ath10k_wmi_tlv_op_gen_pdev_get_temperature(struct ath10k *ar)
++{
++	struct wmi_tlv_pdev_get_temp_cmd *cmd;
++	struct wmi_tlv *tlv;
++	struct sk_buff *skb;
++
++	skb = ath10k_wmi_alloc_skb(ar, sizeof(*tlv) + sizeof(*cmd));
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	tlv = (void *)skb->data;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_PDEV_GET_TEMPERATURE_CMD);
++	tlv->len = __cpu_to_le16(sizeof(*cmd));
++	cmd = (void *)tlv->value;
++	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi pdev get temperature tlv\n");
++	return skb;
++}
++
++static struct sk_buff *
+ ath10k_wmi_tlv_op_gen_pktlog_disable(struct ath10k *ar)
+ {
+ 	struct wmi_tlv_pktlog_disable *cmd;
+@@ -3334,7 +3369,7 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	.force_fw_hang_cmdid = WMI_TLV_FORCE_FW_HANG_CMDID,
+ 	.gpio_config_cmdid = WMI_TLV_GPIO_CONFIG_CMDID,
+ 	.gpio_output_cmdid = WMI_TLV_GPIO_OUTPUT_CMDID,
+-	.pdev_get_temperature_cmdid = WMI_TLV_CMD_UNSUPPORTED,
++	.pdev_get_temperature_cmdid = WMI_TLV_PDEV_GET_TEMPERATURE_CMDID,
+ 	.vdev_set_wmm_params_cmdid = WMI_TLV_VDEV_SET_WMM_PARAMS_CMDID,
+ 	.tdls_set_state_cmdid = WMI_TLV_TDLS_SET_STATE_CMDID,
+ 	.tdls_peer_update_cmdid = WMI_TLV_TDLS_PEER_UPDATE_CMDID,
+@@ -3596,7 +3631,7 @@ static u32 ath10k_wmi_tlv_prepare_peer_qos(u8 uapsd_queues, u8 sp)
+ 	.gen_pktlog_enable = ath10k_wmi_tlv_op_gen_pktlog_enable,
+ 	.gen_pktlog_disable = ath10k_wmi_tlv_op_gen_pktlog_disable,
+ 	/* .gen_pdev_set_quiet_mode not implemented */
+-	/* .gen_pdev_get_temperature not implemented */
++	.gen_pdev_get_temperature = ath10k_wmi_tlv_op_gen_pdev_get_temperature,
+ 	/* .gen_addba_clear_resp not implemented */
+ 	/* .gen_addba_send not implemented */
+ 	/* .gen_addba_set_resp not implemented */
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 22cf011..906e9e1 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1235,6 +1235,17 @@ struct wmi_tlv_init_cmd {
+ 	__le32 num_host_mem_chunks;
+ } __packed;
+ 
++struct wmi_tlv_pdev_get_temp_cmd {
++	__le32 pdev_id; /* not used */
++} __packed;
++
++struct wmi_tlv_pdev_temperature_event {
++	__le32 tlv_hdr;
++	/* temperature value in Celcius degree */
++	__le32 temperature;
++	__le32 pdev_id;
++} __packed;
++
+ struct wmi_tlv_pdev_set_param_cmd {
+ 	__le32 pdev_id; /* not used yet */
+ 	__le32 param_id;
 -- 
 1.9.1
 
