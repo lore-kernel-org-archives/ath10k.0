@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewupA-0007gQ-EL
- for ath10k@lists.infradead.org; Fri, 16 Mar 2018 19:15:35 +0000
-From: Rajkumar Manoharan <rmanohar@codeaurora.org>
-Subject: [PATCH] ath10k: fix vdev stats for 10.4 firmware
-Date: Fri, 16 Mar 2018 12:15:10 -0700
-Message-Id: <1521227710-3155-1-git-send-email-rmanohar@codeaurora.org>
+ id 1exT5I-00035N-GH
+ for ath10k@lists.infradead.org; Sun, 18 Mar 2018 07:50:30 +0000
+Received: by mail-pf0-x241.google.com with SMTP id m68so5816757pfm.11
+ for <ath10k@lists.infradead.org>; Sun, 18 Mar 2018 00:50:18 -0700 (PDT)
+Date: Sun, 18 Mar 2018 15:50:14 +0800
+From: Kenneth Lu <kuohsianglu@gmail.com>
+Subject: [PATCH] ath10k: remove variables which set but not used
+Message-ID: <20180318075014.GA26784@blackstone>
+MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,367 +19,123 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@codeaurora.org>
+To: kvalo@qca.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Currently vdev stats displayed in fw_stats are applicable
-only for TLV based firmware and fix it for 10.4 firmware
-as of now. The vdev stats in 10.4 firmware is split into two
-parts (vdev_stats, vdev_stats_extended). The actual stats
-are captured only in extended vdev stats. In order to enable
-vdev stats, appropriate feature bit will be set on extended
-resource config. As FTM related counters are available only on
-newer 10.4 based firmware, these counters will be displayed
-only on valid data.
+Variable buf_len and num_vdev_stats are bging assigned but never read.
+These are redundant and can be remove.
 
-Signed-off-by: Rajkumar Manoharan <rmanohar@codeaurora.org>
+Signed-off-by: Kenneth Lu <kuohsianglu@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |   6 +-
- drivers/net/wireless/ath/ath10k/core.h |  22 +++++
- drivers/net/wireless/ath/ath10k/wmi.c  | 152 ++++++++++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/wmi.h  |  28 +++++-
- 4 files changed, 187 insertions(+), 21 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 830b7fe466f3..8a3020dbd4cf 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2041,7 +2041,8 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
- 		ar->num_tids = TARGET_10_4_TGT_NUM_TIDS;
- 		ar->fw_stats_req_mask = WMI_10_4_STAT_PEER |
--					WMI_10_4_STAT_PEER_EXTD;
-+					WMI_10_4_STAT_PEER_EXTD |
-+					WMI_10_4_STAT_VDEV_EXTD;
- 		ar->max_spatial_stream = ar->hw_params.max_spatial_stream;
- 		ar->max_num_tdls_vdevs = TARGET_10_4_NUM_TDLS_VDEVS;
- 
-@@ -2282,6 +2283,9 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		if (ath10k_peer_stats_enabled(ar))
- 			val = WMI_10_4_PEER_STATS;
- 
-+		/* Enable vdev stats by default */
-+		val |= WMI_10_4_VDEV_STATS;
-+
- 		if (test_bit(WMI_SERVICE_BSS_CHANNEL_INFO_64, ar->wmi.svc_map))
- 			val |= WMI_10_4_BSS_CHANNEL_INFO_64;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index fe6b30356d3b..2901454e30f9 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -1,6 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -221,6 +222,27 @@ struct ath10k_fw_stats_vdev {
- 	u32 beacon_rssi_history[10];
- };
- 
-+struct ath10k_fw_stats_vdev_extd {
-+	struct list_head list;
-+
-+	u32 vdev_id;
-+	u32 ppdu_aggr_cnt;
-+	u32 ppdu_noack;
-+	u32 mpdu_queued;
-+	u32 ppdu_nonaggr_cnt;
-+	u32 mpdu_sw_requeued;
-+	u32 mpdu_suc_retry;
-+	u32 mpdu_suc_multitry;
-+	u32 mpdu_fail_retry;
-+	u32 tx_ftm_suc;
-+	u32 tx_ftm_suc_retry;
-+	u32 tx_ftm_fail;
-+	u32 rx_ftmr_cnt;
-+	u32 rx_ftmr_dup_cnt;
-+	u32 rx_iftmr_cnt;
-+	u32 rx_iftmr_dup_cnt;
-+};
-+
- struct ath10k_fw_stats_pdev {
- 	struct list_head list;
- 
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 58dc2189ba49..f4e47340b567 100644
+index 58dc218..da9552d 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1,6 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -2703,6 +2704,28 @@ void ath10k_wmi_pull_peer_stats(const struct wmi_peer_stats *src,
- 	dst->peer_rx_rate = __le32_to_cpu(src->peer_rx_rate);
- }
+@@ -2308,7 +2308,6 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	u32 phy_mode;
+ 	u32 snr;
+ 	u32 rate;
+-	u32 buf_len;
+ 	u16 fc;
+ 	int ret;
  
-+static void
-+ath10k_wmi_10_4_pull_vdev_stats(const struct wmi_vdev_stats_extd *src,
-+				struct ath10k_fw_stats_vdev_extd *dst)
-+{
-+	dst->vdev_id = __le32_to_cpu(src->vdev_id);
-+	dst->ppdu_aggr_cnt = __le32_to_cpu(src->ppdu_aggr_cnt);
-+	dst->ppdu_noack = __le32_to_cpu(src->ppdu_noack);
-+	dst->mpdu_queued = __le32_to_cpu(src->mpdu_queued);
-+	dst->ppdu_nonaggr_cnt = __le32_to_cpu(src->ppdu_nonaggr_cnt);
-+	dst->mpdu_sw_requeued = __le32_to_cpu(src->mpdu_sw_requeued);
-+	dst->mpdu_suc_retry = __le32_to_cpu(src->mpdu_suc_retry);
-+	dst->mpdu_suc_multitry = __le32_to_cpu(src->mpdu_suc_multitry);
-+	dst->mpdu_fail_retry = __le32_to_cpu(src->mpdu_fail_retry);
-+	dst->tx_ftm_suc = __le32_to_cpu(src->tx_ftm_suc);
-+	dst->tx_ftm_suc_retry = __le32_to_cpu(src->tx_ftm_suc_retry);
-+	dst->tx_ftm_fail = __le32_to_cpu(src->tx_ftm_fail);
-+	dst->rx_ftmr_cnt = __le32_to_cpu(src->rx_ftmr_cnt);
-+	dst->rx_ftmr_dup_cnt = __le32_to_cpu(src->rx_ftmr_dup_cnt);
-+	dst->rx_iftmr_cnt = __le32_to_cpu(src->rx_iftmr_cnt);
-+	dst->rx_iftmr_dup_cnt = __le32_to_cpu(src->rx_iftmr_dup_cnt);
-+}
-+
- static int ath10k_wmi_main_op_pull_fw_stats(struct ath10k *ar,
- 					    struct sk_buff *skb,
+@@ -2320,7 +2319,6 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	}
+ 
+ 	channel = __le32_to_cpu(arg.channel);
+-	buf_len = __le32_to_cpu(arg.buf_len);
+ 	rx_status = __le32_to_cpu(arg.status);
+ 	snr = __le32_to_cpu(arg.snr);
+ 	phy_mode = __le32_to_cpu(arg.phy_mode);
+@@ -2708,14 +2706,13 @@ static int ath10k_wmi_main_op_pull_fw_stats(struct ath10k *ar,
  					    struct ath10k_fw_stats *stats)
-@@ -3042,7 +3065,16 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
- 		 */
- 	}
+ {
+ 	const struct wmi_stats_event *ev = (void *)skb->data;
+-	u32 num_pdev_stats, num_vdev_stats, num_peer_stats;
++	u32 num_pdev_stats, num_peer_stats;
+ 	int i;
  
--	/* fw doesn't implement vdev stats */
-+	for (i = 0; i < num_vdev_stats; i++) {
-+		const struct wmi_vdev_stats *src;
-+
-+		/* Ignore vdev stats here as it has only vdev id. Actual vdev
-+		 * stats will be retrieved from vdev extended stats.
-+		 */
-+		src = (void *)skb->data;
-+		if (!skb_pull(skb, sizeof(*src)))
-+			return -EPROTO;
-+	}
+ 	if (!skb_pull(skb, sizeof(*ev)))
+ 		return -EPROTO;
  
- 	for (i = 0; i < num_peer_stats; i++) {
- 		const struct wmi_10_4_peer_stats *src;
-@@ -3074,26 +3106,43 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
- 		 */
- 	}
+ 	num_pdev_stats = __le32_to_cpu(ev->num_pdev_stats);
+-	num_vdev_stats = __le32_to_cpu(ev->num_vdev_stats);
+ 	num_peer_stats = __le32_to_cpu(ev->num_peer_stats);
  
--	if ((stats_id & WMI_10_4_STAT_PEER_EXTD) == 0)
--		return 0;
-+	if (stats_id & WMI_10_4_STAT_PEER_EXTD) {
-+		stats->extended = true;
+ 	for (i = 0; i < num_pdev_stats; i++) {
+@@ -2763,14 +2760,13 @@ static int ath10k_wmi_10x_op_pull_fw_stats(struct ath10k *ar,
+ 					   struct ath10k_fw_stats *stats)
+ {
+ 	const struct wmi_stats_event *ev = (void *)skb->data;
+-	u32 num_pdev_stats, num_vdev_stats, num_peer_stats;
++	u32 num_pdev_stats, num_peer_stats;
+ 	int i;
  
--	stats->extended = true;
-+		for (i = 0; i < num_peer_stats; i++) {
-+			const struct wmi_10_4_peer_extd_stats *src;
-+			struct ath10k_fw_extd_stats_peer *dst;
+ 	if (!skb_pull(skb, sizeof(*ev)))
+ 		return -EPROTO;
  
--	for (i = 0; i < num_peer_stats; i++) {
--		const struct wmi_10_4_peer_extd_stats *src;
--		struct ath10k_fw_extd_stats_peer *dst;
-+			src = (void *)skb->data;
-+			if (!skb_pull(skb, sizeof(*src)))
-+				return -EPROTO;
+ 	num_pdev_stats = __le32_to_cpu(ev->num_pdev_stats);
+-	num_vdev_stats = __le32_to_cpu(ev->num_vdev_stats);
+ 	num_peer_stats = __le32_to_cpu(ev->num_peer_stats);
  
--		src = (void *)skb->data;
--		if (!skb_pull(skb, sizeof(*src)))
--			return -EPROTO;
-+			dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
-+			if (!dst)
-+				continue;
+ 	for (i = 0; i < num_pdev_stats; i++) {
+@@ -2824,7 +2820,6 @@ static int ath10k_wmi_10_2_op_pull_fw_stats(struct ath10k *ar,
+ 	const struct wmi_10_2_stats_event *ev = (void *)skb->data;
+ 	u32 num_pdev_stats;
+ 	u32 num_pdev_ext_stats;
+-	u32 num_vdev_stats;
+ 	u32 num_peer_stats;
+ 	int i;
  
--		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
--		if (!dst)
--			continue;
-+			ether_addr_copy(dst->peer_macaddr,
-+					src->peer_macaddr.addr);
-+			dst->rx_duration = __le32_to_cpu(src->rx_duration);
-+			list_add_tail(&dst->list, &stats->peers_extd);
-+		}
-+	}
+@@ -2833,7 +2828,6 @@ static int ath10k_wmi_10_2_op_pull_fw_stats(struct ath10k *ar,
  
--		ether_addr_copy(dst->peer_macaddr, src->peer_macaddr.addr);
--		dst->rx_duration = __le32_to_cpu(src->rx_duration);
--		list_add_tail(&dst->list, &stats->peers_extd);
-+	if (stats_id & WMI_10_4_STAT_VDEV_EXTD) {
-+		for (i = 0; i < num_vdev_stats; i++) {
-+			const struct wmi_vdev_stats_extd *src;
-+			struct ath10k_fw_stats_vdev_extd *dst;
-+
-+			src = (void *)skb->data;
-+			if (!skb_pull(skb, sizeof(*src)))
-+				return -EPROTO;
-+
-+			dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
-+			if (!dst)
-+				continue;
-+			ath10k_wmi_10_4_pull_vdev_stats(src, dst);
-+			list_add_tail(&dst->list, &stats->vdevs);
-+		}
- 	}
+ 	num_pdev_stats = __le32_to_cpu(ev->num_pdev_stats);
+ 	num_pdev_ext_stats = __le32_to_cpu(ev->num_pdev_ext_stats);
+-	num_vdev_stats = __le32_to_cpu(ev->num_vdev_stats);
+ 	num_peer_stats = __le32_to_cpu(ev->num_peer_stats);
  
- 	return 0;
-@@ -7745,6 +7794,72 @@ void ath10k_wmi_10x_op_fw_stats_fill(struct ath10k *ar,
- 	return skb;
- }
+ 	for (i = 0; i < num_pdev_stats; i++) {
+@@ -2903,7 +2897,6 @@ static int ath10k_wmi_10_2_4_op_pull_fw_stats(struct ath10k *ar,
+ 	const struct wmi_10_2_stats_event *ev = (void *)skb->data;
+ 	u32 num_pdev_stats;
+ 	u32 num_pdev_ext_stats;
+-	u32 num_vdev_stats;
+ 	u32 num_peer_stats;
+ 	int i;
  
-+static void
-+ath10k_wmi_fw_vdev_stats_extd_fill(const struct ath10k_fw_stats_vdev_extd *vdev,
-+				   char *buf, u32 *length)
-+{
-+	u32 len = *length;
-+	u32 buf_len = ATH10K_FW_STATS_BUF_SIZE;
-+	u32 val;
-+
-+	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+			 "vdev id", vdev->vdev_id);
-+	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+			 "ppdu aggr count", vdev->ppdu_aggr_cnt);
-+	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+			 "ppdu noack", vdev->ppdu_noack);
-+	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+			 "mpdu queued", vdev->mpdu_queued);
-+	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+			 "ppdu nonaggr count", vdev->ppdu_nonaggr_cnt);
-+	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+			 "mpdu sw requeued", vdev->mpdu_sw_requeued);
-+	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+			 "mpdu success retry", vdev->mpdu_suc_retry);
-+	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+			 "mpdu success multitry", vdev->mpdu_suc_multitry);
-+	len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+			 "mpdu fail retry", vdev->mpdu_fail_retry);
-+	val = vdev->tx_ftm_suc;
-+	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
-+		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+				 "tx ftm success",
-+				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
-+	val = vdev->tx_ftm_suc_retry;
-+	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
-+		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+				 "tx ftm success retry",
-+				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
-+	val = vdev->tx_ftm_fail;
-+	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
-+		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+				 "tx ftm fail",
-+				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
-+	val = vdev->rx_ftmr_cnt;
-+	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
-+		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+				 "rx ftm request count",
-+				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
-+	val = vdev->rx_ftmr_dup_cnt;
-+	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
-+		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+				 "rx ftm request dup count",
-+				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
-+	val = vdev->rx_iftmr_cnt;
-+	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
-+		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+				 "rx initial ftm req count",
-+				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
-+	val = vdev->rx_iftmr_dup_cnt;
-+	if (val & WMI_VDEV_STATS_FTM_COUNT_VALID)
-+		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+				 "rx initial ftm req dup cnt",
-+				 MS(val, WMI_VDEV_STATS_FTM_COUNT));
-+	len += scnprintf(buf + len, buf_len - len, "\n");
-+
-+	*length = len;
-+}
-+
- void ath10k_wmi_10_4_op_fw_stats_fill(struct ath10k *ar,
- 				      struct ath10k_fw_stats *fw_stats,
- 				      char *buf)
-@@ -7752,7 +7867,7 @@ void ath10k_wmi_10_4_op_fw_stats_fill(struct ath10k *ar,
- 	u32 len = 0;
- 	u32 buf_len = ATH10K_FW_STATS_BUF_SIZE;
- 	const struct ath10k_fw_stats_pdev *pdev;
--	const struct ath10k_fw_stats_vdev *vdev;
-+	const struct ath10k_fw_stats_vdev_extd *vdev;
- 	const struct ath10k_fw_stats_peer *peer;
- 	size_t num_peers;
- 	size_t num_vdevs;
-@@ -7805,9 +7920,8 @@ void ath10k_wmi_10_4_op_fw_stats_fill(struct ath10k *ar,
- 			"ath10k VDEV stats", num_vdevs);
- 	len += scnprintf(buf + len, buf_len - len, "%30s\n\n",
- 				"=================");
--
- 	list_for_each_entry(vdev, &fw_stats->vdevs, list) {
--		ath10k_wmi_fw_vdev_stats_fill(vdev, buf, &len);
-+		ath10k_wmi_fw_vdev_stats_extd_fill(vdev, buf, &len);
- 	}
+@@ -2912,7 +2905,6 @@ static int ath10k_wmi_10_2_4_op_pull_fw_stats(struct ath10k *ar,
  
- 	len += scnprintf(buf + len, buf_len - len, "\n");
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index c7b30ed9015d..80f93c7c68a5 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1,6 +1,7 @@
- /*
-  * Copyright (c) 2005-2011 Atheros Communications Inc.
-  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-  *
-  * Permission to use, copy, modify, and/or distribute this software for any
-  * purpose with or without fee is hereby granted, provided that the above
-@@ -4350,6 +4351,7 @@ enum wmi_10_4_stats_id {
- 	WMI_10_4_STAT_AP		= BIT(1),
- 	WMI_10_4_STAT_INST		= BIT(2),
- 	WMI_10_4_STAT_PEER_EXTD		= BIT(3),
-+	WMI_10_4_STAT_VDEV_EXTD		= BIT(4),
- };
+ 	num_pdev_stats = __le32_to_cpu(ev->num_pdev_stats);
+ 	num_pdev_ext_stats = __le32_to_cpu(ev->num_pdev_ext_stats);
+-	num_vdev_stats = __le32_to_cpu(ev->num_vdev_stats);
+ 	num_peer_stats = __le32_to_cpu(ev->num_peer_stats);
  
- struct wlan_inst_rssi_args {
-@@ -4489,12 +4491,36 @@ struct wmi_10_4_pdev_stats {
+ 	for (i = 0; i < num_pdev_stats; i++) {
+@@ -2991,7 +2983,6 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
+ 	const struct wmi_10_2_stats_event *ev = (void *)skb->data;
+ 	u32 num_pdev_stats;
+ 	u32 num_pdev_ext_stats;
+-	u32 num_vdev_stats;
+ 	u32 num_peer_stats;
+ 	u32 num_bcnflt_stats;
+ 	u32 stats_id;
+@@ -3002,7 +2993,6 @@ static int ath10k_wmi_10_4_op_pull_fw_stats(struct ath10k *ar,
  
- /*
-  * VDEV statistics
-- * TODO: add all VDEV stats here
-  */
-+
-+#define WMI_VDEV_STATS_FTM_COUNT_VALID	BIT(31)
-+#define WMI_VDEV_STATS_FTM_COUNT_LSB	0
-+#define WMI_VDEV_STATS_FTM_COUNT_MASK	0x7fffffff
-+
- struct wmi_vdev_stats {
- 	__le32 vdev_id;
- } __packed;
- 
-+struct wmi_vdev_stats_extd {
-+	__le32 vdev_id;
-+	__le32 ppdu_aggr_cnt;
-+	__le32 ppdu_noack;
-+	__le32 mpdu_queued;
-+	__le32 ppdu_nonaggr_cnt;
-+	__le32 mpdu_sw_requeued;
-+	__le32 mpdu_suc_retry;
-+	__le32 mpdu_suc_multitry;
-+	__le32 mpdu_fail_retry;
-+	__le32 tx_ftm_suc;
-+	__le32 tx_ftm_suc_retry;
-+	__le32 tx_ftm_fail;
-+	__le32 rx_ftmr_cnt;
-+	__le32 rx_ftmr_dup_cnt;
-+	__le32 rx_iftmr_cnt;
-+	__le32 rx_iftmr_dup_cnt;
-+	__le32 reserved[6];
-+} __packed;
-+
- /*
-  * peer statistics.
-  * TODO: add more stats
+ 	num_pdev_stats = __le32_to_cpu(ev->num_pdev_stats);
+ 	num_pdev_ext_stats = __le32_to_cpu(ev->num_pdev_ext_stats);
+-	num_vdev_stats = __le32_to_cpu(ev->num_vdev_stats);
+ 	num_peer_stats = __le32_to_cpu(ev->num_peer_stats);
+ 	num_bcnflt_stats = __le32_to_cpu(ev->num_bcnflt_stats);
+ 	stats_id = __le32_to_cpu(ev->stats_id);
 -- 
-1.9.1
+2.7.4
 
 
 _______________________________________________
