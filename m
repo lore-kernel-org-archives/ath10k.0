@@ -1,15 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyge5-0002aJ-GF
- for ath10k@lists.infradead.org; Wed, 21 Mar 2018 16:31:27 +0000
-Subject: Re: [ath10k throughput] low throughput in multi-user mode
-References: <072101d3c0b6$1a954f50$4fbfedf0$@sina.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <18864c97-63f9-3bfe-190c-24fda424c882@candelatech.com>
-Date: Wed, 21 Mar 2018 09:31:10 -0700
-MIME-Version: 1.0
-In-Reply-To: <072101d3c0b6$1a954f50$4fbfedf0$@sina.com>
+Received: from mail-it0-x231.google.com ([2607:f8b0:4001:c0b::231])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1eygkp-00054u-1q
+ for ath10k@lists.infradead.org; Wed, 21 Mar 2018 16:38:24 +0000
+Received: by mail-it0-x231.google.com with SMTP id c1-v6so6591063itj.1
+ for <ath10k@lists.infradead.org>; Wed, 21 Mar 2018 09:38:12 -0700 (PDT)
+Received: from [28.126.21.33] (66-87-143-33.pools.spcsdns.net. [66.87.143.33])
+ by smtp.gmail.com with ESMTPSA id
+ v23sm3243754iov.57.2018.03.21.09.38.09
+ for <ath10k@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 21 Mar 2018 09:38:10 -0700 (PDT)
+From: paresh chaudhary <chaudharyparesh1986@gmail.com>
+Mime-Version: 1.0 (1.0)
+Date: Wed, 21 Mar 2018 11:38:06 -0500
+Subject: [ath10k] not working in 64 bit with >2GB Ram
+Message-Id: <C8E19707-2E18-4EBE-A83F-8F9A5CC8C86E@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,52 +24,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: gary <guohuizou2000@sina.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-On 03/20/2018 06:44 PM, gary wrote:
->
-> Hi all,
-> I have run the throughput test on veriwave.(from Ethernet to wireless)
-> My AP suports 4*4, 11ac, mu-mimo.,wireless chip is QCA9984.
-> At first, the throughput is about 80Mbps only with 16 users, so I force to
-> return true in function ath10k_mac_tx_can_push().
-> As a result, when the user number is 1~16, the udp throughput is about
-> 1.2Gbps ~1.4Gbps.
-> But when the user number is 32, the udp throughput is only 520Mbps.
->
-> So I try to substitute ath10k-firmware.
-> With firmware 10.4-3.4-0082 and above, the throughput is around 520Mbps.
-> But with firmware 10.4-3.4-0072, the throughput gets 1.1Gbps.
->
-> Do I miss something in configuration?
-> Any comment is appreciated.
+Hi Team,
 
-What kernel version (or backports, if you are using that?) are you using?
+We need your help regarding ath10k module.
 
-And, I'd be curious how the latest ath10k-CT (beta) firmware compares
-if you have time to try that:
+We are using ath10k wifi module with T1040 processor. We have total 8GB DDR in a system. 
 
-http://www.candelatech.com/ath10k-10.4.php
-
-At least in upload testing, we get better throughput with lots of
-virtual stations if we tune the number of tx descriptors to be larger
-as that will generate larger AMPDUs on air.
-
-You might also check your rate-ctrl logic to make sure all of your
-stations are using higher MCS rates.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+The ath10k is working fine on a 32bit system but it's not working on 64 bit system. We are getting error ( ath10k_pci 0001:01:00.0: failed to transmit packet : drivers/net/wireless/ath/ath10k/mac.c). 
 
 
+NOTE: One interesting point is that when we set DDR size is equal to 2GB from uboot console rather than to use full 8GB  (setenv bootargs "root=/dev/ram rw console=ttyS0,115200 quiet mem=2050M") then ath10k is working fine on a 64bit machine. 
+
+
+Is it related to DMA? Do you have a patch to resolve this?
+
+
+We are using linux-fsl-sdk-v2.0 ( 4.1.35) from nxp.
+
+Regards, 
+Paresh
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
