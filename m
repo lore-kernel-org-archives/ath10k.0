@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyczR-00014U-7a
- for ath10k@lists.infradead.org; Wed, 21 Mar 2018 12:37:15 +0000
-Received: by mail-wm0-x22a.google.com with SMTP id r82so9563005wme.0
- for <ath10k@lists.infradead.org>; Wed, 21 Mar 2018 05:37:02 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1eyge5-0002aJ-GF
+ for ath10k@lists.infradead.org; Wed, 21 Mar 2018 16:31:27 +0000
+Subject: Re: [ath10k throughput] low throughput in multi-user mode
+References: <072101d3c0b6$1a954f50$4fbfedf0$@sina.com>
+From: Ben Greear <greearb@candelatech.com>
+Message-ID: <18864c97-63f9-3bfe-190c-24fda424c882@candelatech.com>
+Date: Wed, 21 Mar 2018 09:31:10 -0700
 MIME-Version: 1.0
-In-Reply-To: <9595518.JBY7pXbR5H@bentobox>
-References: <CAD-aHNOV1D_npuP_gzQoFYR+5E9fnnbfERTonoiBV74_QfGOeg@mail.gmail.com>
- <9595518.JBY7pXbR5H@bentobox>
-From: sandip sitapara <s13884neo@gmail.com>
-Date: Wed, 21 Mar 2018 18:07:00 +0530
-Message-ID: <CAD-aHNOHJKvaALmeAGBSRLu-R1bL4TJf0TOBQbzQAeb6D9o7vw@mail.gmail.com>
-Subject: Re: Spectral Scan - Received power computation
+In-Reply-To: <072101d3c0b6$1a954f50$4fbfedf0$@sina.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +18,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven.eckelmann@openmesh.com>
-Cc: ath10k@lists.infradead.org
+To: gary <guohuizou2000@sina.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gV2VkLCBNYXIgMjEsIDIwMTggYXQgMTI6NDkgUE0sIFN2ZW4gRWNrZWxtYW5uCjxzdmVuLmVj
-a2VsbWFubkBvcGVubWVzaC5jb20+IHdyb3RlOgo+Cj4gT24gRGllbnN0YWcsIDIwLiBNw6RyeiAy
-MDE4IDIxOjAyOjE4IENFVCBzYW5kaXAgc2l0YXBhcmEgd3JvdGU6Cj4gPiBJIGhhdmUgYmVlbiB0
-cnlpbmcgdG8gY2FsY3VsYXRlIHBvd2VyIGNvbXB1dGF0aW9uIGZyb20gdGhlIHNwZWN0cmFsIHNj
-YW4gZGF0YS4KPiBbLi4uXQo+ID4gU28gaXMgdGhlcmUgYW55IHdheSB0byBjYWxjdWxhdGUgdGhl
-IHBvd2VyIGNvbXB1dGF0aW9uIGZvciBhdGgxMGsgc2FtcGxlcz8KPgo+IEhhdmUgYSBsb29rIGF0
-Cj4gaHR0cHM6Ly9naXRodWIuY29tL3NpbW9ud3VuZGVybGljaC9GRlRfZXZhbC9ibG9iLzNjYzE3
-NTU3MDM3OWRhMTcyYjBiMmJjZGJiOGQyYTQyZjgzZGFkODgvZmZ0X2V2YWwuYyNMNTA1Cj4gdG9n
-ZXRoZXIgd2l0aAo+IGh0dHBzOi8vZ2l0aHViLmNvbS9zaW1vbnd1bmRlcmxpY2gvRkZUX2V2YWwv
-YmxvYi8zY2MxNzU1NzAzNzlkYTE3MmIwYjJiY2RiYjhkMmE0MmY4M2RhZDg4L2ZmdF9ldmFsLmMj
-TDMzNwoKVGhhbmtzIFN2ZW4sIEkgd2FzIGp1c3QgbG9va2luZyBpbnRvIHRoZSBGRlRfZXZhbCBj
-b2RlLiBMZXQgbWUgdHJ5IHRoYXQuCgo+Cj4gS2luZCByZWdhcmRzLAo+ICAgICAgICAgU3ZlbgoK
-CgotLSAKVGhhbmtzLApTYW5kaXAgU2l0YXBhcmEKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsK
+On 03/20/2018 06:44 PM, gary wrote:
+>
+> Hi all,
+> I have run the throughput test on veriwave.(from Ethernet to wireless)
+> My AP suports 4*4, 11ac, mu-mimo.,wireless chip is QCA9984.
+> At first, the throughput is about 80Mbps only with 16 users, so I force to
+> return true in function ath10k_mac_tx_can_push().
+> As a result, when the user number is 1~16, the udp throughput is about
+> 1.2Gbps ~1.4Gbps.
+> But when the user number is 32, the udp throughput is only 520Mbps.
+>
+> So I try to substitute ath10k-firmware.
+> With firmware 10.4-3.4-0082 and above, the throughput is around 520Mbps.
+> But with firmware 10.4-3.4-0072, the throughput gets 1.1Gbps.
+>
+> Do I miss something in configuration?
+> Any comment is appreciated.
+
+What kernel version (or backports, if you are using that?) are you using?
+
+And, I'd be curious how the latest ath10k-CT (beta) firmware compares
+if you have time to try that:
+
+http://www.candelatech.com/ath10k-10.4.php
+
+At least in upload testing, we get better throughput with lots of
+virtual stations if we tune the number of tx descriptors to be larger
+as that will generate larger AMPDUs on air.
+
+You might also check your rate-ctrl logic to make sure all of your
+stations are using higher MCS rates.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
