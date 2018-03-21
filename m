@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wr0-x22e.google.com ([2a00:1450:400c:c0c::22e])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyXdp-0006Sw-62
- for ath10k@lists.infradead.org; Wed, 21 Mar 2018 06:54:34 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH] ath10k: build ce layer in ath10k core module
-Date: Wed, 21 Mar 2018 12:24:07 +0530
-Message-Id: <1521615247-3715-1-git-send-email-govinds@codeaurora.org>
+ id 1eyY2T-0007sv-6T
+ for ath10k@lists.infradead.org; Wed, 21 Mar 2018 07:20:03 +0000
+Received: by mail-wr0-x22e.google.com with SMTP id 80so2993437wrb.2
+ for <ath10k@lists.infradead.org>; Wed, 21 Mar 2018 00:19:49 -0700 (PDT)
+From: Sven Eckelmann <sven.eckelmann@openmesh.com>
+Subject: Re: Spectral Scan - Received power computation
+Date: Wed, 21 Mar 2018 08:19:46 +0100
+Message-ID: <9595518.JBY7pXbR5H@bentobox>
+In-Reply-To: <CAD-aHNOV1D_npuP_gzQoFYR+5E9fnnbfERTonoiBV74_QfGOeg@mail.gmail.com>
+References: <CAD-aHNOV1D_npuP_gzQoFYR+5E9fnnbfERTonoiBV74_QfGOeg@mail.gmail.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,249 +20,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3572477750222483263=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: sandip sitapara <s13884neo@gmail.com>
 
-CE layer is shared between pci and snoc target and results
-in duplicate object inclusion if both modules are compiled
-together statically and undefined KBUILD_MODNAME if
-compiled as module.
+--===============3572477750222483263==
+Content-Type: multipart/signed; boundary="nextPart2582941.gmMSmIMiZu"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-Fix this by building ce layer in ath10k core module by
-adding ce object inclusion with ATH10K_CE boolean CONFIG.
+--nextPart2582941.gmMSmIMiZu
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/Kconfig  |  4 ++++
- drivers/net/wireless/ath/ath10k/Makefile |  4 ++--
- drivers/net/wireless/ath/ath10k/ce.c     | 22 ++++++++++++++++++++++
- 3 files changed, 28 insertions(+), 2 deletions(-)
+On Dienstag, 20. M=E4rz 2018 21:02:18 CET sandip sitapara wrote:
+> I have been trying to calculate power computation from the spectral scan =
+data.
+[...]
+> So is there any way to calculate the power computation for ath10k samples?
 
-diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
-index deb5ae2..d266f27 100644
---- a/drivers/net/wireless/ath/ath10k/Kconfig
-+++ b/drivers/net/wireless/ath/ath10k/Kconfig
-@@ -4,12 +4,16 @@ config ATH10K
- 	select ATH_COMMON
- 	select CRC32
- 	select WANT_DEV_COREDUMP
-+	select ATH10K_CE
-         ---help---
-           This module adds support for wireless adapters based on
-           Atheros IEEE 802.11ac family of chipsets.
- 
-           If you choose to build a module, it'll be called ath10k.
- 
-+config ATH10K_CE
-+	bool
-+
- config ATH10K_PCI
- 	tristate "Atheros ath10k PCI support"
- 	depends on ATH10K && PCI
-diff --git a/drivers/net/wireless/ath/ath10k/Makefile b/drivers/net/wireless/ath/ath10k/Makefile
-index 6739ac2..536f3df 100644
---- a/drivers/net/wireless/ath/ath10k/Makefile
-+++ b/drivers/net/wireless/ath/ath10k/Makefile
-@@ -22,10 +22,10 @@ ath10k_core-$(CONFIG_THERMAL) += thermal.o
- ath10k_core-$(CONFIG_MAC80211_DEBUGFS) += debugfs_sta.o
- ath10k_core-$(CONFIG_PM) += wow.o
- ath10k_core-$(CONFIG_DEV_COREDUMP) += coredump.o
-+ath10k_core-$(CONFIG_ATH10K_CE) += ce.o
- 
- obj-$(CONFIG_ATH10K_PCI) += ath10k_pci.o
--ath10k_pci-y += pci.o \
--		ce.o
-+ath10k_pci-y += pci.o
- 
- ath10k_pci-$(CONFIG_ATH10K_AHB) += ahb.o
- 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index b9def7b..e7e7b34 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -464,6 +464,7 @@ int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
- 	return ce_state->ops->ce_send_nolock(ce_state, per_transfer_context,
- 				    buffer, nbytes, transfer_id, flags);
- }
-+EXPORT_SYMBOL(ath10k_ce_send_nolock);
- 
- void __ath10k_ce_send_revert(struct ath10k_ce_pipe *pipe)
- {
-@@ -491,6 +492,7 @@ void __ath10k_ce_send_revert(struct ath10k_ce_pipe *pipe)
- 
- 	src_ring->per_transfer_context[src_ring->write_index] = NULL;
- }
-+EXPORT_SYMBOL(__ath10k_ce_send_revert);
- 
- int ath10k_ce_send(struct ath10k_ce_pipe *ce_state,
- 		   void *per_transfer_context,
-@@ -510,6 +512,7 @@ int ath10k_ce_send(struct ath10k_ce_pipe *ce_state,
- 
- 	return ret;
- }
-+EXPORT_SYMBOL(ath10k_ce_send);
- 
- int ath10k_ce_num_free_src_entries(struct ath10k_ce_pipe *pipe)
- {
-@@ -525,6 +528,7 @@ int ath10k_ce_num_free_src_entries(struct ath10k_ce_pipe *pipe)
- 
- 	return delta;
- }
-+EXPORT_SYMBOL(ath10k_ce_num_free_src_entries);
- 
- int __ath10k_ce_rx_num_free_bufs(struct ath10k_ce_pipe *pipe)
- {
-@@ -539,6 +543,7 @@ int __ath10k_ce_rx_num_free_bufs(struct ath10k_ce_pipe *pipe)
- 
- 	return CE_RING_DELTA(nentries_mask, write_index, sw_index - 1);
- }
-+EXPORT_SYMBOL(__ath10k_ce_rx_num_free_bufs);
- 
- static int __ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx,
- 				   dma_addr_t paddr)
-@@ -622,6 +627,7 @@ void ath10k_ce_rx_update_write_idx(struct ath10k_ce_pipe *pipe, u32 nentries)
- 	ath10k_ce_dest_ring_write_index_set(ar, ctrl_addr, write_index);
- 	dest_ring->write_index = write_index;
- }
-+EXPORT_SYMBOL(ath10k_ce_rx_update_write_idx);
- 
- int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx,
- 			  dma_addr_t paddr)
-@@ -636,6 +642,7 @@ int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx,
- 
- 	return ret;
- }
-+EXPORT_SYMBOL(ath10k_ce_rx_post_buf);
- 
- /*
-  * Guts of ath10k_ce_completed_recv_next.
-@@ -748,6 +755,7 @@ int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
- 							    per_transfer_ctx,
- 							    nbytesp);
- }
-+EXPORT_SYMBOL(ath10k_ce_completed_recv_next_nolock);
- 
- int ath10k_ce_completed_recv_next(struct ath10k_ce_pipe *ce_state,
- 				  void **per_transfer_contextp,
-@@ -766,6 +774,7 @@ int ath10k_ce_completed_recv_next(struct ath10k_ce_pipe *ce_state,
- 
- 	return ret;
- }
-+EXPORT_SYMBOL(ath10k_ce_completed_recv_next);
- 
- static int _ath10k_ce_revoke_recv_next(struct ath10k_ce_pipe *ce_state,
- 				       void **per_transfer_contextp,
-@@ -882,6 +891,7 @@ int ath10k_ce_revoke_recv_next(struct ath10k_ce_pipe *ce_state,
- 						  per_transfer_contextp,
- 						  bufferp);
- }
-+EXPORT_SYMBOL(ath10k_ce_revoke_recv_next);
- 
- /*
-  * Guts of ath10k_ce_completed_send_next.
-@@ -936,6 +946,7 @@ int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL(ath10k_ce_completed_send_next_nolock);
- 
- static void ath10k_ce_extract_desc_data(struct ath10k *ar,
- 					struct ath10k_ce_ring *src_ring,
-@@ -1025,6 +1036,7 @@ int ath10k_ce_cancel_send_next(struct ath10k_ce_pipe *ce_state,
- 
- 	return ret;
- }
-+EXPORT_SYMBOL(ath10k_ce_cancel_send_next);
- 
- int ath10k_ce_completed_send_next(struct ath10k_ce_pipe *ce_state,
- 				  void **per_transfer_contextp)
-@@ -1040,6 +1052,7 @@ int ath10k_ce_completed_send_next(struct ath10k_ce_pipe *ce_state,
- 
- 	return ret;
- }
-+EXPORT_SYMBOL(ath10k_ce_completed_send_next);
- 
- /*
-  * Guts of interrupt handler for per-engine interrupts on a particular CE.
-@@ -1078,6 +1091,7 @@ void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id)
- 
- 	spin_unlock_bh(&ce->ce_lock);
- }
-+EXPORT_SYMBOL(ath10k_ce_per_engine_service);
- 
- /*
-  * Handler for per-engine interrupts on ALL active CEs.
-@@ -1102,6 +1116,7 @@ void ath10k_ce_per_engine_service_any(struct ath10k *ar)
- 		ath10k_ce_per_engine_service(ar, ce_id);
- 	}
- }
-+EXPORT_SYMBOL(ath10k_ce_per_engine_service_any);
- 
- /*
-  * Adjust interrupts for the copy complete handler.
-@@ -1139,6 +1154,7 @@ int ath10k_ce_disable_interrupts(struct ath10k *ar)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL(ath10k_ce_disable_interrupts);
- 
- void ath10k_ce_enable_interrupts(struct ath10k *ar)
- {
-@@ -1154,6 +1170,7 @@ void ath10k_ce_enable_interrupts(struct ath10k *ar)
- 		ath10k_ce_per_engine_handler_adjust(ce_state);
- 	}
- }
-+EXPORT_SYMBOL(ath10k_ce_enable_interrupts);
- 
- static int ath10k_ce_init_src_ring(struct ath10k *ar,
- 				   unsigned int ce_id,
-@@ -1454,6 +1471,7 @@ int ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL(ath10k_ce_init_pipe);
- 
- static void ath10k_ce_deinit_src_ring(struct ath10k *ar, unsigned int ce_id)
- {
-@@ -1479,6 +1497,7 @@ void ath10k_ce_deinit_pipe(struct ath10k *ar, unsigned int ce_id)
- 	ath10k_ce_deinit_src_ring(ar, ce_id);
- 	ath10k_ce_deinit_dest_ring(ar, ce_id);
- }
-+EXPORT_SYMBOL(ath10k_ce_deinit_pipe);
- 
- static void _ath10k_ce_free_pipe(struct ath10k *ar, int ce_id)
- {
-@@ -1545,6 +1564,7 @@ void ath10k_ce_free_pipe(struct ath10k *ar, int ce_id)
- 
- 	ce_state->ops->ce_free_pipe(ar, ce_id);
- }
-+EXPORT_SYMBOL(ath10k_ce_free_pipe);
- 
- void ath10k_ce_dump_registers(struct ath10k *ar,
- 			      struct ath10k_fw_crash_data *crash_data)
-@@ -1584,6 +1604,7 @@ void ath10k_ce_dump_registers(struct ath10k *ar,
- 
- 	spin_unlock_bh(&ce->ce_lock);
- }
-+EXPORT_SYMBOL(ath10k_ce_dump_registers);
- 
- static const struct ath10k_ce_ops ce_ops = {
- 	.ce_alloc_src_ring = ath10k_ce_alloc_src_ring,
-@@ -1680,3 +1701,4 @@ int ath10k_ce_alloc_pipe(struct ath10k *ar, int ce_id,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL(ath10k_ce_alloc_pipe);
--- 
-1.9.1
+Have a look at=20
+https://github.com/simonwunderlich/FFT_eval/blob/3cc175570379da172b0b2bcdbb=
+8d2a42f83dad88/fft_eval.c#L505=20
+together with=20
+https://github.com/simonwunderlich/FFT_eval/blob/3cc175570379da172b0b2bcdbb=
+8d2a42f83dad88/fft_eval.c#L337
 
+Kind regards,
+	Sven
+--nextPart2582941.gmMSmIMiZu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAlqyB5IACgkQXYcKB8Em
+e0bmMRAAviKl9kZmLB0DkIasQQl4xqO0zhVm5AC604xOm8s3uapKh5FuHXtntRaO
+4y+4ZwTEBxD7vhHlSjpBvkhAza2+sLaC46mMvR3UlGVIyCVZdeH1uTQ3lrMD4UsL
+7hU7GcEEz3gycUFXYwhPesou8jm+QhdPwkt3VCa6VNaRGxwParwXPO7l7Kl5ZwEL
+VBI8ODgmGVm+DctnZVtaeFovmYIWcx23ViZDwPMAtJebh4VtZw2hbh/7Yh0BV2D4
+Tja9CtPfc+isZ4fUHTllE9qIBrwLwbAam35f2kOxeEG2nWYO3yxjmr0Y16ab2Yrp
+4He/LwiR7/EFpAh3teXH+2GyMwjnkwBXo/4dqfTNx/FU8hPLXNpdlMtsfB60zhqG
+u4PoiUItVDVjO5hBxpI6z65moobzYm7Xt6rRXcnNufzpUR6gbjUD+DbpeEUNTU/Q
+w+8w9epkYqLxUz43W2YPy45a2mfBsYe5zJyQTiy/c7eAStYxhWWWgqlvJ9TSSAjs
+s7rY8UHYwNx68TWXZ4x2vh20erPyM+k7KyN0WSR+hGxmXOZXilLLmBkFgYqSoEON
+7uixnjyHg5sna/uwA4baqLy7op8GFiN7CzBH+2SiczrRCGzN8jIvF1gzJU+6pC7+
+712ICnW+LPqGOywKSFddR+ioluioivhSqlkvgm5DdTqZZdSeKK0=
+=2VU1
+-----END PGP SIGNATURE-----
+
+--nextPart2582941.gmMSmIMiZu--
+
+
+
+--===============3572477750222483263==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============3572477750222483263==--
