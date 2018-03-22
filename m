@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ez3yw-0006JC-Ag
- for ath10k@lists.infradead.org; Thu, 22 Mar 2018 17:26:32 +0000
+ id 1ez45Q-0000MS-Bp
+ for ath10k@lists.infradead.org; Thu, 22 Mar 2018 17:33:15 +0000
 From: Tamizh chelvam <tamizhr@codeaurora.org>
-Subject: [PATCH] ath10k: fix kernel panic while reading tpc_stats
-Date: Thu, 22 Mar 2018 22:53:14 +0530
-Message-Id: <1521739394-15218-1-git-send-email-tamizhr@codeaurora.org>
+Subject: [PATCHv2] ath10k: fix kernel panic while reading tpc_stats
+Date: Thu, 22 Mar 2018 23:01:44 +0530
+Message-Id: <1521739904-17927-1-git-send-email-tamizhr@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -86,16 +86,19 @@ Kernel panic log :
 
 Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/debug.c | 12 +++++++++---
+v2:
+  * Removed unnecessary '\n' in the beginning of the format string 
+
+ drivers/net/wireless/ath/ath10k/debug.c |  8 +++++++-
  drivers/net/wireless/ath/ath10k/wmi.c   | 10 +++++++++-
  drivers/net/wireless/ath/ath10k/wmi.h   |  2 +-
- 3 files changed, 19 insertions(+), 5 deletions(-)
+ 3 files changed, 17 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 554cd78..8c41c81 100644
+index 554cd78..d816299 100644
 --- a/drivers/net/wireless/ath/ath10k/debug.c
 +++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1506,18 +1506,24 @@ static void ath10k_tpc_stats_print(struct ath10k_tpc_stats *tpc_stats,
+@@ -1506,7 +1506,13 @@ static void ath10k_tpc_stats_print(struct ath10k_tpc_stats *tpc_stats,
  	*len += scnprintf(buf + *len, buf_len - *len,
  			  "********************************\n");
  	*len += scnprintf(buf + *len, buf_len - *len,
@@ -110,19 +113,6 @@ index 554cd78..8c41c81 100644
  
  	for (i = 0; i < tpc_stats->rate_max; i++) {
  		*len += scnprintf(buf + *len, buf_len - *len,
--				  "%8d %s 0x%2x %s\n", i,
-+				  "%8d %s 0x%2x %s", i,
- 				  pream_str[tpc_stats->tpc_table[j].pream_idx[i]],
- 				  tpc_stats->tpc_table[j].rate_code[i],
- 				  tpc_stats->tpc_table[j].tpc_value[i]);
- 	}
- 
- 	*len += scnprintf(buf + *len, buf_len - *len,
--			  "***********************************\n");
-+			  "\n***********************************\n");
- }
- 
- static void ath10k_tpc_stats_fill(struct ath10k *ar,
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
 index 58dc218..ac9f6a5 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
