@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezEsM-0002Zx-4X
- for ath10k@lists.infradead.org; Fri, 23 Mar 2018 05:04:35 +0000
+ id 1ezEsA-0002U3-VP
+ for ath10k@lists.infradead.org; Fri, 23 Mar 2018 05:04:36 +0000
 From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v2 13/13] dt: bindings: add bindings for wcn3990 wifi block
-Date: Fri, 23 Mar 2018 10:33:44 +0530
-Message-Id: <1521781424-24972-14-git-send-email-govinds@codeaurora.org>
+Subject: [PATCH v2 07/13] ath10k: Add hif tx methods for wcn3990
+Date: Fri, 23 Mar 2018 10:33:38 +0530
+Message-Id: <1521781424-24972-8-git-send-email-govinds@codeaurora.org>
 In-Reply-To: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
 References: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,77 +25,183 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
 
-Add device tree binding documentation details for wcn3990
-wifi block present in Qualcomm SDM845/APQ8098 SoC into
-"qcom,ath10k.txt".
+Add hif tx/tx-complete methods for wcn3990
+target.
 
 Signed-off-by: Govind Singh <govinds@codeaurora.org>
 ---
- .../bindings/net/wireless/qcom,ath10k.txt          | 31 ++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ drivers/net/wireless/ath/ath10k/snoc.c | 123 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 120 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index 3d2a031..34e4f98 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -4,6 +4,7 @@ Required properties:
- - compatible: Should be one of the following:
- 	* "qcom,ath10k"
- 	* "qcom,ipq4019-wifi"
-+	* "qcom,wcn3990-wifi"
- 
- PCI based devices uses compatible string "qcom,ath10k" and takes calibration
- data along with board specific data via "qcom,ath10k-calibration-data".
-@@ -18,8 +19,12 @@ In general, entry "qcom,ath10k-pre-calibration-data" and
- "qcom,ath10k-calibration-data" conflict with each other and only one
- can be provided per device.
- 
-+SNOC based devices (i.e. wcn3990) uses compatible string "qcom,wcn3990-wifi".
-+
- Optional properties:
- - reg: Address and length of the register set for the device.
-+- reg-names: Must include the list of following reg names,
-+	     "membase"
- - resets: Must contain an entry for each entry in reset-names.
-           See ../reset/reseti.txt for details.
- - reset-names: Must include the list of following reset names,
-@@ -49,6 +54,8 @@ Optional properties:
- 				 hw versions.
- - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
- 				     the length can vary between hw versions.
-+- <supply-name>-supply: handle to the regulator device tree node
-+			   optional "supply-name" is "vdd-0.8-cx-mx".
- 
- Example (to supply the calibration data alone):
- 
-@@ -119,3 +126,27 @@ wifi0: wifi@a000000 {
- 	qcom,msi_base = <0x40>;
- 	qcom,ath10k-pre-calibration-data = [ 01 02 03 ... ];
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 9d402e4..899f0a3 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -42,6 +42,9 @@
+ 	"WLAN_CE_11",
  };
+ 
++static void ath10k_snoc_htc_tx_cb(struct ath10k_ce_pipe *ce_state);
++static void ath10k_snoc_htt_tx_cb(struct ath10k_ce_pipe *ce_state);
 +
-+Example (to supply wcn3990 SoC wifi block details):
+ static const struct ath10k_snoc_drv_priv drv_priv = {
+ 	.hw_rev = ATH10K_HW_WCN3990,
+ 	.dma_mask = DMA_BIT_MASK(37),
+@@ -54,7 +57,7 @@
+ 		.src_nentries = 16,
+ 		.src_sz_max = 2048,
+ 		.dest_nentries = 0,
+-		.send_cb = NULL,
++		.send_cb = ath10k_snoc_htc_tx_cb,
+ 	},
+ 
+ 	/* CE1: target->host HTT + HTC control */
+@@ -81,7 +84,7 @@
+ 		.src_nentries = 32,
+ 		.src_sz_max = 2048,
+ 		.dest_nentries = 0,
+-		.send_cb = NULL,
++		.send_cb = ath10k_snoc_htc_tx_cb,
+ 	},
+ 
+ 	/* CE4: host->target HTT */
+@@ -90,7 +93,7 @@
+ 		.src_nentries = 256,
+ 		.src_sz_max = 256,
+ 		.dest_nentries = 0,
+-		.send_cb = NULL,
++		.send_cb = ath10k_snoc_htt_tx_cb,
+ 	},
+ 
+ 	/* CE5: target->host HTT (ipa_uc->target ) */
+@@ -359,6 +362,117 @@ static void ath10k_snoc_rx_post(struct ath10k *ar)
+ 		ath10k_snoc_rx_post_pipe(&ar_snoc->pipe_info[i]);
+ }
+ 
++static void ath10k_snoc_htc_tx_cb(struct ath10k_ce_pipe *ce_state)
++{
++	struct ath10k *ar = ce_state->ar;
++	struct sk_buff_head list;
++	struct sk_buff *skb;
 +
-+qcom,wifi@18000000 {
-+		compatible = "qcom,wcn3990-wifi";
-+		reg = <0x18800000 0x800000>;
-+		reg-names = "membase";
-+		clocks = <&clock_gcc clk_aggre2_noc_clk>;
-+		clock-names = "smmu_aggre2_noc_clk"
-+		interrupts =
-+			   <0 130 0 /* CE0 */ >,
-+			   <0 131 0 /* CE1 */ >,
-+			   <0 132 0 /* CE2 */ >,
-+			   <0 133 0 /* CE3 */ >,
-+			   <0 134 0 /* CE4 */ >,
-+			   <0 135 0 /* CE5 */ >,
-+			   <0 136 0 /* CE6 */ >,
-+			   <0 137 0 /* CE7 */ >,
-+			   <0 138 0 /* CE8 */ >,
-+			   <0 139 0 /* CE9 */ >,
-+			   <0 140 0 /* CE10 */ >,
-+			   <0 141 0 /* CE11 */ >;
-+		vdd-0.8-cx-mx-supply = <&pm8998_l5>;
-+};
++	__skb_queue_head_init(&list);
++	while (ath10k_ce_completed_send_next(ce_state, (void **)&skb) == 0) {
++		if (!skb)
++			continue;
++
++		__skb_queue_tail(&list, skb);
++	}
++
++	while ((skb = __skb_dequeue(&list)))
++		ath10k_htc_tx_completion_handler(ar, skb);
++}
++
++static void ath10k_snoc_htt_tx_cb(struct ath10k_ce_pipe *ce_state)
++{
++	struct ath10k *ar = ce_state->ar;
++	struct sk_buff *skb;
++
++	while (ath10k_ce_completed_send_next(ce_state, (void **)&skb) == 0) {
++		if (!skb)
++			continue;
++
++		dma_unmap_single(ar->dev, ATH10K_SKB_CB(skb)->paddr,
++				 skb->len, DMA_TO_DEVICE);
++		ath10k_htt_hif_tx_complete(ar, skb);
++	}
++}
++
++static int ath10k_snoc_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
++				 struct ath10k_hif_sg_item *items, int n_items)
++{
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	struct ath10k_ce *ce = ath10k_ce_priv(ar);
++	struct ath10k_snoc_pipe *snoc_pipe;
++	struct ath10k_ce_pipe *ce_pipe;
++	int err, i = 0;
++
++	snoc_pipe = &ar_snoc->pipe_info[pipe_id];
++	ce_pipe = snoc_pipe->ce_hdl;
++	spin_lock_bh(&ce->ce_lock);
++
++	for (i = 0; i < n_items - 1; i++) {
++		ath10k_dbg(ar, ATH10K_DBG_SNOC,
++			   "snoc tx item %d paddr %pad len %d n_items %d\n",
++			   i, &items[i].paddr, items[i].len, n_items);
++
++		err = ath10k_ce_send_nolock(ce_pipe,
++					    items[i].transfer_context,
++					    items[i].paddr,
++					    items[i].len,
++					    items[i].transfer_id,
++					    CE_SEND_FLAG_GATHER);
++		if (err)
++			goto err;
++	}
++
++	ath10k_dbg(ar, ATH10K_DBG_SNOC,
++		   "snoc tx item %d paddr %pad len %d n_items %d\n",
++		   i, &items[i].paddr, items[i].len, n_items);
++
++	err = ath10k_ce_send_nolock(ce_pipe,
++				    items[i].transfer_context,
++				    items[i].paddr,
++				    items[i].len,
++				    items[i].transfer_id,
++				    0);
++	if (err)
++		goto err;
++
++	spin_unlock_bh(&ce->ce_lock);
++
++	return 0;
++
++err:
++	for (; i > 0; i--)
++		__ath10k_ce_send_revert(ce_pipe);
++
++	spin_unlock_bh(&ce->ce_lock);
++	return err;
++}
++
++static u16 ath10k_snoc_hif_get_free_queue_number(struct ath10k *ar, u8 pipe)
++{
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++
++	ath10k_dbg(ar, ATH10K_DBG_SNOC, "hif get free queue number\n");
++
++	return ath10k_ce_num_free_src_entries(ar_snoc->pipe_info[pipe].ce_hdl);
++}
++
++static void ath10k_snoc_hif_send_complete_check(struct ath10k *ar, u8 pipe,
++						int force)
++{
++	int resources;
++
++	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc hif send complete check\n");
++
++	if (!force) {
++		resources = ath10k_snoc_hif_get_free_queue_number(ar, pipe);
++
++		if (resources > (host_ce_config_wlan[pipe].src_nentries >> 1))
++			return;
++	}
++	ath10k_ce_per_engine_service(ar, pipe);
++}
++
+ static int ath10k_snoc_hif_map_service_to_pipe(struct ath10k *ar,
+ 					       u16 service_id,
+ 					       u8 *ul_pipe, u8 *dl_pipe)
+@@ -587,6 +701,9 @@ static int ath10k_snoc_hif_power_up(struct ath10k *ar)
+ 	.get_default_pipe	= ath10k_snoc_hif_get_default_pipe,
+ 	.power_up		= ath10k_snoc_hif_power_up,
+ 	.power_down		= ath10k_snoc_hif_power_down,
++	.tx_sg			= ath10k_snoc_hif_tx_sg,
++	.send_complete_check	= ath10k_snoc_hif_send_complete_check,
++	.get_free_queue_number	= ath10k_snoc_hif_get_free_queue_number,
+ };
+ 
+ static const struct ath10k_bus_ops ath10k_snoc_bus_ops = {
 -- 
 1.9.1
 
