@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezEsA-0002ZD-Vc
- for ath10k@lists.infradead.org; Fri, 23 Mar 2018 05:04:41 +0000
-From: Govind Singh <govinds@codeaurora.org>
-Subject: [PATCH v2 12/13] ath10k: Vote for hardware resources for WCN3990
-Date: Fri, 23 Mar 2018 10:33:43 +0530
-Message-Id: <1521781424-24972-13-git-send-email-govinds@codeaurora.org>
-In-Reply-To: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
-References: <1521781424-24972-1-git-send-email-govinds@codeaurora.org>
+ id 1ezHFV-0001Z3-4h
+ for ath10k@lists.infradead.org; Fri, 23 Mar 2018 07:36:30 +0000
+From: Anilkumar Kolli <akolli@codeaurora.org>
+Subject: [PATCH] ath10k: Implement get_expected_throughput callback
+Date: Fri, 23 Mar 2018 13:07:00 +0530
+Message-Id: <1521790620-12267-1-git-send-email-akolli@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,424 +21,92 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Govind Singh <govinds@codeaurora.org>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org
 
-Add clock and regulator votes for WCN3990 WLAN
-chipset.
+Enable support for 'drv_get_expected_throughput' callback.
+Export expected throughput if available to cfg80211/nl80211.
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
+Signed-off-by: Anilkumar Kolli <akolli@codeaurora.org>
+Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
 ---
- drivers/net/wireless/ath/ath10k/snoc.c | 313 ++++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/snoc.h |  19 ++
- 2 files changed, 331 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.h |    5 +++++
+ drivers/net/wireless/ath/ath10k/mac.c  |   17 +++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 1ef0d3b..2e490ff 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -24,6 +24,8 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/clk.h>
- #define  WCN3990_CE_ATTR_FLAGS 0
- #define ATH10K_SNOC_RX_POST_RETRY_MS 50
- #define CE_POLL_PIPE 4
-@@ -43,6 +45,17 @@
- 	"WLAN_CE_11",
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index fe6b30356d3b..8e10f7d83a79 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005-2011 Atheros Communications Inc.
+  * Copyright (c) 2011-2017 Qualcomm Atheros, Inc.
++ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -37,6 +38,7 @@
+ #include "thermal.h"
+ #include "wow.h"
+ #include "swap.h"
++#include <linux/average.h>
+ 
+ #define MS(_v, _f) (((_v) & _f##_MASK) >> _f##_LSB)
+ #define SM(_v, _f) (((_v) << _f##_LSB) & _f##_MASK)
+@@ -354,6 +356,8 @@ struct ath10k_txq {
+ 	unsigned long num_push_allowed;
  };
  
-+static struct ath10k_wcn3990_vreg_info vreg_cfg[] = {
-+	{NULL, "vdd-0.8-cx-mx", 800000, 800000, 0, 0, false},
-+	{NULL, "vdd-1.8-xo", 1800000, 1800000, 0, 0, false},
-+	{NULL, "vdd-1.3-rfa", 1304000, 1304000, 0, 0, false},
-+	{NULL, "vdd-3.3-ch0", 3312000, 3312000, 0, 0, false},
-+};
++DECLARE_EWMA(sta_txrate, 4, 16)
 +
-+static struct ath10k_wcn3990_clk_info clk_cfg[] = {
-+	{NULL, "cxo_ref_clk_pin", 0, false},
-+};
+ struct ath10k_sta {
+ 	struct ath10k_vif *arvif;
+ 
+@@ -367,6 +371,7 @@ struct ath10k_sta {
+ 
+ 	struct work_struct update_wk;
+ 	u64 rx_duration;
++	struct ewma_sta_txrate ave_sta_txrate;
+ 
+ #ifdef CONFIG_MAC80211_DEBUGFS
+ 	/* protected by conf_mutex */
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 7e02ca02b28e..e04fbe9ccfee 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -7686,6 +7686,22 @@ static void ath10k_sta_statistics(struct ieee80211_hw *hw,
+ 	}
+ 	sinfo->txrate.flags = arsta->txrate.flags;
+ 	sinfo->filled |= 1ULL << NL80211_STA_INFO_TX_BITRATE;
 +
- static void ath10k_snoc_htc_tx_cb(struct ath10k_ce_pipe *ce_state);
- static void ath10k_snoc_htt_tx_cb(struct ath10k_ce_pipe *ce_state);
- static void ath10k_snoc_htc_rx_cb(struct ath10k_ce_pipe *ce_state);
-@@ -969,6 +982,277 @@ static void ath10k_snoc_release_resource(struct ath10k *ar)
- 		ath10k_ce_free_pipe(ar, i);
++	sinfo->expected_throughput =
++				ewma_sta_txrate_read(&arsta->ave_sta_txrate);
++	sinfo->filled |= BIT(NL80211_STA_INFO_EXPECTED_THROUGHPUT);
++}
++
++static u32 ath10k_get_expected_throughput(struct ieee80211_hw *hw,
++					  struct ieee80211_sta *sta)
++{
++	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
++	u32 tx_bitrate;
++
++	tx_bitrate = cfg80211_calculate_bitrate(&arsta->txrate);
++	ewma_sta_txrate_add(&arsta->ave_sta_txrate, tx_bitrate);
++
++	return ewma_sta_txrate_read(&arsta->ave_sta_txrate);
  }
  
-+static int ath10k_get_vreg_info(struct ath10k *ar, struct device *dev,
-+				struct ath10k_wcn3990_vreg_info *vreg_info)
-+{
-+	struct regulator *reg;
-+	int ret = 0;
-+
-+	reg = devm_regulator_get_optional(dev, vreg_info->name);
-+
-+	if (IS_ERR(reg)) {
-+		ret = PTR_ERR(reg);
-+
-+		if (ret  == -EPROBE_DEFER) {
-+			ath10k_err(ar, "EPROBE_DEFER for regulator: %s\n",
-+				   vreg_info->name);
-+			return ret;
-+		}
-+		if (vreg_info->required) {
-+			ath10k_err(ar, "Regulator %s doesn't exist: %d\n",
-+				   vreg_info->name, ret);
-+			return ret;
-+		}
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC,
-+			   "Optional regulator %s doesn't exist: %d\n",
-+			   vreg_info->name, ret);
-+		goto done;
-+	}
-+
-+	vreg_info->reg = reg;
-+
-+done:
-+	ath10k_dbg(ar, ATH10K_DBG_SNOC,
-+		   "snog vreg %s min_v %u max_v %u load_ua %u settle_delay %lu\n",
-+		   vreg_info->name, vreg_info->min_v, vreg_info->max_v,
-+		   vreg_info->load_ua, vreg_info->settle_delay);
-+
-+	return 0;
-+}
-+
-+static int ath10k_get_clk_info(struct ath10k *ar, struct device *dev,
-+			       struct ath10k_wcn3990_clk_info *clk_info)
-+{
-+	struct clk *handle;
-+	int ret = 0;
-+
-+	handle = devm_clk_get(dev, clk_info->name);
-+	if (IS_ERR(handle)) {
-+		ret = PTR_ERR(handle);
-+		if (clk_info->required) {
-+			ath10k_err(ar, "snoc clock %s isn't available: %d\n",
-+				   clk_info->name, ret);
-+			return ret;
-+		}
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc ignoring clock %s: %d\n",
-+			   clk_info->name,
-+			   ret);
-+		return 0;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc clock %s freq %u\n",
-+		   clk_info->name, clk_info->freq);
-+
-+	clk_info->handle = handle;
-+
-+	return ret;
-+}
-+
-+static int ath10k_wcn3990_vreg_on(struct ath10k *ar)
-+{
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	struct ath10k_wcn3990_vreg_info *vreg_info;
-+	int ret = 0;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(vreg_cfg); i++) {
-+		vreg_info = &ar_snoc->vreg[i];
-+
-+		if (!vreg_info->reg)
-+			continue;
-+
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc regulator %s being enabled\n",
-+			   vreg_info->name);
-+
-+		ret = regulator_set_voltage(vreg_info->reg, vreg_info->min_v,
-+					    vreg_info->max_v);
-+		if (ret) {
-+			ath10k_err(ar,
-+				   "failed to set regulator %s voltage-min: %d voltage-max: %d\n",
-+				   vreg_info->name, vreg_info->min_v, vreg_info->max_v);
-+			goto err_reg_config;
-+		}
-+
-+		if (vreg_info->load_ua) {
-+			ret = regulator_set_load(vreg_info->reg,
-+						 vreg_info->load_ua);
-+			if (ret < 0) {
-+				ath10k_err(ar,
-+					   "failed to set regulator %s load: %d\n",
-+					   vreg_info->name,
-+					   vreg_info->load_ua);
-+				goto err_reg_config;
-+			}
-+		}
-+
-+		ret = regulator_enable(vreg_info->reg);
-+		if (ret) {
-+			ath10k_err(ar, "failed to enable regulator %s\n",
-+				   vreg_info->name);
-+			goto err_reg_config;
-+		}
-+
-+		if (vreg_info->settle_delay)
-+			udelay(vreg_info->settle_delay);
-+	}
-+
-+	return 0;
-+
-+err_reg_config:
-+	for (; i >= 0; i--) {
-+		vreg_info = &ar_snoc->vreg[i];
-+
-+		if (!vreg_info->reg)
-+			continue;
-+
-+		regulator_disable(vreg_info->reg);
-+		regulator_set_load(vreg_info->reg, 0);
-+		regulator_set_voltage(vreg_info->reg, 0, vreg_info->max_v);
-+	}
-+
-+	return ret;
-+}
-+
-+static int ath10k_wcn3990_vreg_off(struct ath10k *ar)
-+{
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	struct ath10k_wcn3990_vreg_info *vreg_info;
-+	int ret = 0;
-+	int i;
-+
-+	for (i = ARRAY_SIZE(vreg_cfg) - 1; i >= 0; i--) {
-+		vreg_info = &ar_snoc->vreg[i];
-+
-+		if (!vreg_info->reg)
-+			continue;
-+
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc regulator %s being disabled\n",
-+			   vreg_info->name);
-+
-+		ret = regulator_disable(vreg_info->reg);
-+		if (ret)
-+			ath10k_err(ar, "failed to disable regulator %s\n",
-+				   vreg_info->name);
-+
-+		ret = regulator_set_load(vreg_info->reg, 0);
-+		if (ret < 0)
-+			ath10k_err(ar, "failed to set load %s\n",
-+				   vreg_info->name);
-+
-+		ret = regulator_set_voltage(vreg_info->reg, 0,
-+					    vreg_info->max_v);
-+		if (ret)
-+			ath10k_err(ar, "failed to set voltage %s\n",
-+				   vreg_info->name);
-+	}
-+
-+	return ret;
-+}
-+
-+static int ath10k_wcn3990_clk_init(struct ath10k *ar)
-+{
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	struct ath10k_wcn3990_clk_info *clk_info;
-+	int ret = 0;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(clk_cfg); i++) {
-+		clk_info = &ar_snoc->clk[i];
-+
-+		if (!clk_info->handle)
-+			continue;
-+
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc clock %s being enabled\n",
-+			   clk_info->name);
-+
-+		if (clk_info->freq) {
-+			ret = clk_set_rate(clk_info->handle, clk_info->freq);
-+
-+			if (ret) {
-+				ath10k_err(ar, "failed to set clock %s freq %u\n",
-+					   clk_info->name, clk_info->freq);
-+				goto err_clock_config;
-+			}
-+		}
-+
-+		ret = clk_prepare_enable(clk_info->handle);
-+		if (ret) {
-+			ath10k_err(ar, "failed to enable clock %s\n",
-+				   clk_info->name);
-+			goto err_clock_config;
-+		}
-+	}
-+
-+	return 0;
-+
-+err_clock_config:
-+	for (; i >= 0; i--) {
-+		clk_info = &ar_snoc->clk[i];
-+
-+		if (!clk_info->handle)
-+			continue;
-+
-+		clk_disable_unprepare(clk_info->handle);
-+	}
-+
-+	return ret;
-+}
-+
-+static int ath10k_wcn3990_clk_deinit(struct ath10k *ar)
-+{
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-+	struct ath10k_wcn3990_clk_info *clk_info;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(clk_cfg); i++) {
-+		clk_info = &ar_snoc->clk[i];
-+
-+		if (!clk_info->handle)
-+			continue;
-+
-+		ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc clock %s being disabled\n",
-+			   clk_info->name);
-+
-+		clk_disable_unprepare(clk_info->handle);
-+	}
-+
-+	return 0;
-+}
-+
-+static int ath10k_hw_power_on(struct ath10k *ar)
-+{
-+	int ret;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_SNOC, "soc power on\n");
-+
-+	ret = ath10k_wcn3990_vreg_on(ar);
-+	if (ret)
-+		return ret;
-+
-+	ret = ath10k_wcn3990_clk_init(ar);
-+	if (ret)
-+		goto vreg_off;
-+
-+	return ret;
-+
-+vreg_off:
-+	ath10k_wcn3990_vreg_off(ar);
-+	return ret;
-+}
-+
-+static int ath10k_hw_power_off(struct ath10k *ar)
-+{
-+	int ret;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_SNOC, "soc power off\n");
-+
-+	ath10k_wcn3990_clk_deinit(ar);
-+
-+	ret = ath10k_wcn3990_vreg_off(ar);
-+
-+	return ret;
-+}
-+
- static const struct of_device_id ath10k_snoc_dt_match[] = {
- 	{ .compatible = "qcom,wcn3990-wifi",
- 	 .data = &drv_priv,
-@@ -985,6 +1269,7 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
- 	struct device *dev;
- 	struct ath10k *ar;
- 	int ret;
-+	u32 i;
+ static const struct ieee80211_ops ath10k_ops = {
+@@ -7730,6 +7746,7 @@ static void ath10k_sta_statistics(struct ieee80211_hw *hw,
+ 	.switch_vif_chanctx		= ath10k_mac_op_switch_vif_chanctx,
+ 	.sta_pre_rcu_remove		= ath10k_mac_op_sta_pre_rcu_remove,
+ 	.sta_statistics			= ath10k_sta_statistics,
++	.get_expected_throughput	= ath10k_get_expected_throughput,
  
- 	of_id = of_match_device(ath10k_snoc_dt_match, &pdev->dev);
- 	if (!of_id) {
-@@ -1031,16 +1316,41 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
- 		ath10k_warn(ar, "failed to request irqs: %d\n", ret);
- 		goto err_release_resource;
- 	}
-+
-+	ar_snoc->vreg = vreg_cfg;
-+	for (i = 0; i < ARRAY_SIZE(vreg_cfg); i++) {
-+		ret = ath10k_get_vreg_info(ar, dev, &ar_snoc->vreg[i]);
-+		if (ret)
-+			goto err_free_irq;
-+	}
-+
-+	ar_snoc->clk = clk_cfg;
-+	for (i = 0; i < ARRAY_SIZE(clk_cfg); i++) {
-+		ret = ath10k_get_clk_info(ar, dev, &ar_snoc->clk[i]);
-+		if (ret)
-+			goto err_free_irq;
-+	}
-+
-+	ret = ath10k_hw_power_on(ar);
-+	if (ret) {
-+		ath10k_err(ar, "failed to power on device: %d\n", ret);
-+		goto err_free_irq;
-+	}
-+
- 	ret = ath10k_core_register(ar, drv_data->hw_rev);
- 	if (ret) {
- 		ath10k_err(ar, "failed to register driver core: %d\n", ret);
--		goto err_free_irq;
-+		goto err_hw_power_off;
- 	}
-+
- 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
- 	ath10k_warn(ar, "Warning: SNOC support is still work-in-progress, it will not work properly!");
+ 	CFG80211_TESTMODE_CMD(ath10k_tm_cmd)
  
- 	return 0;
- 
-+err_hw_power_off:
-+	ath10k_hw_power_off(ar);
-+
- err_free_irq:
- 	ath10k_snoc_free_irq(ar);
- 
-@@ -1059,6 +1369,7 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
- 
- 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc remove\n");
- 	ath10k_core_unregister(ar);
-+	ath10k_hw_power_off(ar);
- 	ath10k_snoc_free_irq(ar);
- 	ath10k_snoc_release_resource(ar);
- 	ath10k_core_destroy(ar);
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
-index cf65b01..05dc98f 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.h
-+++ b/drivers/net/wireless/ath/ath10k/snoc.h
-@@ -52,6 +52,23 @@ struct ath10k_snoc_ce_irq {
- 	u32 irq_line;
- };
- 
-+struct ath10k_wcn3990_vreg_info {
-+	struct regulator *reg;
-+	const char *name;
-+	u32 min_v;
-+	u32 max_v;
-+	u32 load_ua;
-+	unsigned long settle_delay;
-+	bool required;
-+};
-+
-+struct ath10k_wcn3990_clk_info {
-+	struct clk *handle;
-+	const char *name;
-+	u32 freq;
-+	bool required;
-+};
-+
- struct ath10k_snoc {
- 	struct platform_device *dev;
- 	struct ath10k *ar;
-@@ -63,6 +80,8 @@ struct ath10k_snoc {
- 	struct ath10k_snoc_ce_irq ce_irqs[CE_COUNT_MAX];
- 	struct ath10k_ce ce;
- 	struct timer_list rx_post_retry;
-+	struct ath10k_wcn3990_vreg_info *vreg;
-+	struct ath10k_wcn3990_clk_info *clk;
- };
- 
- static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
 -- 
-1.9.1
+1.7.9.5
 
 
 _______________________________________________
