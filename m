@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezPCq-0006hV-QK
- for ath10k@lists.infradead.org; Fri, 23 Mar 2018 16:06:18 +0000
-Subject: Re: [ath10k throughput] low throughput in multi-user mode
-References: <072101d3c0b6$1a954f50$4fbfedf0$@sina.com>
- <18864c97-63f9-3bfe-190c-24fda424c882@candelatech.com>
- <073801d3c256$1793e220$46bba660$@sina.com>
-From: Ben Greear <greearb@candelatech.com>
-Message-ID: <9ccc3efc-3f29-a68b-fffd-6060d2e569cf@candelatech.com>
-Date: Fri, 23 Mar 2018 09:06:00 -0700
+Received: from mail-ot0-x242.google.com ([2607:f8b0:4003:c0f::242])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ezVeh-0006YN-4n
+ for ath10k@lists.infradead.org; Fri, 23 Mar 2018 22:59:29 +0000
+Received: by mail-ot0-x242.google.com with SMTP id 108-v6so14958609otv.3
+ for <ath10k@lists.infradead.org>; Fri, 23 Mar 2018 15:59:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <073801d3c256$1793e220$46bba660$@sina.com>
+In-Reply-To: <4ecc0004-f026-1682-3f19-a8e82fdb1eb5@hauke-m.de>
+References: <4ecc0004-f026-1682-3f19-a8e82fdb1eb5@hauke-m.de>
+From: Rosen Penev <rosenp@gmail.com>
+Date: Fri, 23 Mar 2018 15:59:15 -0700
+Message-ID: <CAKxU2N-rwc2noAMn+34n8wFeSAaL=Q6h=SKeUvkRx_QWsOjCrw@mail.gmail.com>
+Subject: Re: QCA9880 driver crash with FW 10.2.4-1.0-00029
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +20,262 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: gary <guohuizou2000@sina.com>, ath10k@lists.infradead.org
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: ath10k@lists.infradead.org, Felix Fietkau <nbd@nbd.name>
 
-T24gMDMvMjIvMjAxOCAwODoyMSBQTSwgZ2FyeSB3cm90ZToKPgo+IEhpIEJlbiwKPgo+IFRoYW5r
-IHlvdSBmb3IgeW91ciByZXBseS4KPiBNeSB3aXJlbGVzcyBkcml2ZXIgaXMgY29tcGF0LXdpcmVs
-ZXNzXzIwMTctMTAtNiwgYW5kIGtlcm5lbCBpcyA0LjkuNTguCj4KPiBUaGUgdGVzdCByZXN1bHQg
-d2l0aCB5b3VyIGZpcm13YXJlOgo+IEdldCB0aHJvdWdocHV0IDEuMTNHYnBzIHdpdGggMTYgdXNl
-cnMuCj4gQW5kIGdldCBhbG1vc3QgMCB3aXRoIDMyIHVzZXJzLgoKQ2FuIHlvdSB0cnkgYW4gb2xk
-ZXIga2VybmVsIHcvb3V0IGJhY2twb3J0cywgbWF5YmUgbXkgNC4xMyBvciA0LjksIG9yCnNvbWUg
-c3RvY2sga2VybmVsIHRoYXQgaXMgYSBiaXQgb2xkZXI/CgpodHRwczovL2dpdGh1Yi5jb20vZ3Jl
-ZWFyYi9saW51eC1jdC00LjkKClRoYW5rcywKQmVuCgo+Cj4gQnkgbXkgb2JzZXJ2YXRpb24sIGlu
-IG9uZSB0cnksIGF0aDEwa19odHRfcnhfdHhfbW9kZV9zd2l0Y2hfaW5kIGlzIGludm9rZWQKPiBv
-bmx5IHR3aWNlLgo+IEFzIGEgcmVzdWx0LCB0aGUgYXRoMTBrIGRyaXZlciBjYW4ndCBnZXQgdGhl
-IGxhdGVzdCBudW1fcHVzaF9hbGxvd2VkKGFsd2F5cwo+IHplcm8pLgo+Cj4gRG8geW91IGhhdmUg
-YW55IGlkZWEgb2YgaXQ/Cj4KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IGF0
-aDEwayBbbWFpbHRvOmF0aDEway1ib3VuY2VzQGxpc3RzLmluZnJhZGVhZC5vcmddIE9uIEJlaGFs
-ZiBPZiBCZW4KPiBHcmVlYXIKPiBTZW50OiAyMDE4xOoz1MIyMsjVIDA6MzEKPiBUbzogZ2FyeTsg
-bGludXgtd2lyZWxlc3NAdmdlci5rZXJuZWwub3JnOyBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-Zwo+IFN1YmplY3Q6IFJlOiBbYXRoMTBrIHRocm91Z2hwdXRdIGxvdyB0aHJvdWdocHV0IGluIG11
-bHRpLXVzZXIgbW9kZQo+Cj4KPiBPbiAwMy8yMC8yMDE4IDA2OjQ0IFBNLCBnYXJ5IHdyb3RlOgo+
-Pgo+PiBIaSBhbGwsCj4+IEkgaGF2ZSBydW4gdGhlIHRocm91Z2hwdXQgdGVzdCBvbiB2ZXJpd2F2
-ZS4oZnJvbSBFdGhlcm5ldCB0byB3aXJlbGVzcykKPj4gTXkgQVAgc3Vwb3J0cyA0KjQsIDExYWMs
-IG11LW1pbW8uLHdpcmVsZXNzIGNoaXAgaXMgUUNBOTk4NC4KPj4gQXQgZmlyc3QsIHRoZSB0aHJv
-dWdocHV0IGlzIGFib3V0IDgwTWJwcyBvbmx5IHdpdGggMTYgdXNlcnMsIHNvIEkKPj4gZm9yY2Ug
-dG8gcmV0dXJuIHRydWUgaW4gZnVuY3Rpb24gYXRoMTBrX21hY190eF9jYW5fcHVzaCgpLgo+PiBB
-cyBhIHJlc3VsdCwgd2hlbiB0aGUgdXNlciBudW1iZXIgaXMgMX4xNiwgdGhlIHVkcCB0aHJvdWdo
-cHV0IGlzIGFib3V0Cj4+IDEuMkdicHMgfjEuNEdicHMuCj4+IEJ1dCB3aGVuIHRoZSB1c2VyIG51
-bWJlciBpcyAzMiwgdGhlIHVkcCB0aHJvdWdocHV0IGlzIG9ubHkgNTIwTWJwcy4KPj4KPj4gU28g
-SSB0cnkgdG8gc3Vic3RpdHV0ZSBhdGgxMGstZmlybXdhcmUuCj4+IFdpdGggZmlybXdhcmUgMTAu
-NC0zLjQtMDA4MiBhbmQgYWJvdmUsIHRoZSB0aHJvdWdocHV0IGlzIGFyb3VuZCA1MjBNYnBzLgo+
-PiBCdXQgd2l0aCBmaXJtd2FyZSAxMC40LTMuNC0wMDcyLCB0aGUgdGhyb3VnaHB1dCBnZXRzIDEu
-MUdicHMuCj4+Cj4+IERvIEkgbWlzcyBzb21ldGhpbmcgaW4gY29uZmlndXJhdGlvbj8KPj4gQW55
-IGNvbW1lbnQgaXMgYXBwcmVjaWF0ZWQuCj4KPiBXaGF0IGtlcm5lbCB2ZXJzaW9uIChvciBiYWNr
-cG9ydHMsIGlmIHlvdSBhcmUgdXNpbmcgdGhhdD8pIGFyZSB5b3UgdXNpbmc/Cj4KPiBBbmQsIEkn
-ZCBiZSBjdXJpb3VzIGhvdyB0aGUgbGF0ZXN0IGF0aDEway1DVCAoYmV0YSkgZmlybXdhcmUgY29t
-cGFyZXMgaWYgeW91Cj4gaGF2ZSB0aW1lIHRvIHRyeSB0aGF0Ogo+Cj4gaHR0cDovL3d3dy5jYW5k
-ZWxhdGVjaC5jb20vYXRoMTBrLTEwLjQucGhwCj4KPiBBdCBsZWFzdCBpbiB1cGxvYWQgdGVzdGlu
-Zywgd2UgZ2V0IGJldHRlciB0aHJvdWdocHV0IHdpdGggbG90cyBvZiB2aXJ0dWFsCj4gc3RhdGlv
-bnMgaWYgd2UgdHVuZSB0aGUgbnVtYmVyIG9mIHR4IGRlc2NyaXB0b3JzIHRvIGJlIGxhcmdlciBh
-cyB0aGF0IHdpbGwKPiBnZW5lcmF0ZSBsYXJnZXIgQU1QRFVzIG9uIGFpci4KPgo+IFlvdSBtaWdo
-dCBhbHNvIGNoZWNrIHlvdXIgcmF0ZS1jdHJsIGxvZ2ljIHRvIG1ha2Ugc3VyZSBhbGwgb2YgeW91
-ciBzdGF0aW9ucwo+IGFyZSB1c2luZyBoaWdoZXIgTUNTIHJhdGVzLgo+Cj4gVGhhbmtzLAo+IEJl
-bgo+Cj4gLS0KPiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPiBDYW5kZWxh
-IFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCj4KPgo+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxp
-bmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPgo+Cj4KPgo+IF9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+
-IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsKPgoKCi0tIApCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRl
-bGF0ZWNoLmNvbT4KQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0
-ZWNoLmNvbQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Thu, Mar 22, 2018 at 1:30 PM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+> Hi,
+>
+> I am using a BT home Hub 5A (Lantiq VR9 MIPS BE SoC). The wifi provided
+> by the QCA9880 chip is unstable with OpenWrt master from 26. Feb 2018.
+>
+> With FW 10.2.4-1.0-00033 and 10.2.4-1.0-00037 the wifi stops working
+> after about 1 to 3 days and I do not get any error message. With FW
+> 10.2.4-1.0-00029 I got this error message. FW 10.2.4.70.54 crashes
+> immediately.
+>
+> The 2.4 GHz wifi provided by ath9k is very stable.
+>
+> The wireless drivers shipped in OpenWrt master, which I am suing, are
+> based on backports with a snapshot of wireless testing from 1. November
+> 2017, and I am running kernel 4.9.85.
+It also seems that enabling PMF (802.11w) causes issues as well. This
+is not related to PSK-SHA256 as I have that disabled (OpenWrt
+unconditionally enables PSK-SHA256 upon enabling PMF).
+>
+> .....
+> [   11.198963] Loading modules backported from Linux version
+> wt-2017-11-01-0-gfe248fc2c180
+> [   11.205607] Backport generated by backports.git v4.14-rc2-1-31-g86cf0e5d
+> ....
+> [   11.684780] PCI: Enabling device 0000:01:00.0 (0000 -> 0002)
+> [   11.689195] PCI: Enabling device 0000:02:00.0 (0000 -> 0002)
+> [   11.695034] ath10k_pci 0000:02:00.0: pci irq legacy oper_irq_mode 1
+> irq_mode 0 reset_mode 0
+> [   11.951059] ath10k_pci 0000:02:00.0: Direct firmware load for
+> ath10k/pre-cal-pci-0000:02:00.0.bin failed with error -2
+> [   11.960430] ath10k_pci 0000:02:00.0: Falling back to user helper
+> [   12.364711] firmware ath10k!pre-cal-pci-0000:02:00.0.bin:
+> firmware_loading_store: map pages failed
+> [   12.375000] ath10k_pci 0000:02:00.0: Direct firmware load for
+> ath10k/QCA988X/hw2.0/firmware-6.bin failed with error -2
+> [   12.384405] ath10k_pci 0000:02:00.0: Falling back to user helper
+> [   12.635750] firmware ath10k!QCA988X!hw2.0!firmware-6.bin:
+> firmware_loading_store: map pages failed
+> [   12.714150] ath10k_pci 0000:02:00.0: qca988x hw2.0 target 0x4100016c
+> chip_id 0x043202ff sub 0000:0000
+> [   12.722030] ath10k_pci 0000:02:00.0: kconfig debug 0 debugfs 1
+> tracing 0 dfs 1 testmode 1
+> [   12.741364] ath10k_pci 0000:02:00.0: firmware ver 10.2.4-1.0-00029
+> api 5 features no-p2p,raw-mode,mfp,allows-mesh-bcast crc32 88595bb8
+> [   12.785020] ath10k_pci 0000:02:00.0: Direct firmware load for
+> ath10k/QCA988X/hw2.0/board-2.bin failed with error -2
+> [   12.794137] ath10k_pci 0000:02:00.0: Falling back to user helper
+> [   12.959872] firmware ath10k!QCA988X!hw2.0!board-2.bin:
+> firmware_loading_store: map pages failed
+> [   13.005579] ath10k_pci 0000:02:00.0: board_file api 1 bmi_id N/A
+> crc32 bebc7c08
+> [   14.046516] ath10k_pci 0000:02:00.0: htt-ver 2.1 wmi-op 5 htt-op 2
+> cal file max-sta 128 raw 0 hwcrypto 1
+> [   14.157074] ath: EEPROM regdomain: 0x833a
+> [   14.157085] ath: EEPROM indicates we should expect a country code
+> [   14.157100] ath: doing EEPROM country->regdmn map search
+> [   14.157108] ath: country maps to regdmn code: 0x37
+> [   14.157115] ath: Country alpha2 being used: GB
+> [   14.157120] ath: Regpair used: 0x37
+> [   14.221263] PCI: Enabling device 0000:00:0e.0 (0000 -> 0002)
+> [   14.231888] ath: phy1: Ignoring endianness difference in EEPROM magic
+> bytes.
+> [   14.239421] ath: EEPROM regdomain: 0x833a
+> [   14.239434] ath: EEPROM indicates we should expect a country code
+> [   14.239455] ath: doing EEPROM country->regdmn map search
+> [   14.239468] ath: country maps to regdmn code: 0x37
+> [   14.239478] ath: Country alpha2 being used: GB
+> [   14.239487] ath: Regpair used: 0x37
+> [   14.259234] ieee80211 phy1: Selected rate control algorithm 'minstrel_ht'
+> [   14.265204] ieee80211 phy1: Atheros AR9287 Rev:2 mem=0xb8000000, irq=30
+> [   14.273585] kmodloader: done loading kernel modules from /etc/modules.d/*
+> [   21.011304] random: crng init done
+> [   24.650023] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+> [   24.662381] device eth0 entered promiscuous mode
+> [   24.669727] br-lan: port 1(eth0.1) entered blocking state
+> [   24.673834] br-lan: port 1(eth0.1) entered disabled state
+> [   24.680262] device eth0.1 entered promiscuous mode
+> [   24.689370] IPv6: ADDRCONF(NETDEV_UP): br-lan: link is not ready
+> [   27.109825] ath: EEPROM regdomain: 0x8114
+> [   27.112539] ath: EEPROM indicates we should expect a country code
+> [   27.118694] ath: doing EEPROM country->regdmn map search
+> [   27.123893] ath: country maps to regdmn code: 0x37
+> [   27.128691] ath: Country alpha2 being used: DE
+> [   27.133122] ath: Regpair used: 0x37
+> [   27.136621] ath: regdomain 0x8114 dynamically updated by user
+> [   27.142570] ath: EEPROM regdomain: 0x8114
+> [   27.146372] ath: EEPROM indicates we should expect a country code
+> [   27.152457] ath: doing EEPROM country->regdmn map search
+> [   27.157747] ath: country maps to regdmn code: 0x37
+> [   27.162550] ath: Country alpha2 being used: DE
+> [   27.167023] ath: Regpair used: 0x37
+> [   27.170494] ath: regdomain 0x8114 dynamically updated by user
+> .....
+> [175128.394427] ath10k_pci 0000:02:00.0: failed to delete peer
+> f0:27:65:3d:03:cd for vdev 0: -145
+> [175128.401703] ath10k_pci 0000:02:00.0: found sta peer
+> f0:27:65:3d:03:cd (ptr 86b89600 id 157) entry on vdev 0 after it was
+> supposedly removed
+> [175128.415066] ------------[ cut here ]------------
+> [175128.419116] WARNING: CPU: 1 PID: 3219 at
+> backports-2017-11-01/net/mac80211/sta_info.c:1001
+> sta_set_sinfo+0xa98/0xb40 [mac80211]
+> [175128.430540] Modules linked in: ltq_ptm_vr9 ath9k ath9k_common
+> ath9k_hw ath10k_pci ath10k_core ath qmi_wwan pppoe nf_conntrack_ipv6
+> mac80211 iptable_nat ipt_REJECT ipt_MASQUERADE cfg80211 xt_time
+> xt_tcpudp xt_tcpmss xt_statistic xt_state xt_recent xt_nat xt_multiport
+> xt_mark xt_mac xt_limit xt_length xt_hl xt_helper xt_hashlimit xt_ecn
+> xt_dscp xt_conntrack xt_connmark xt_connlimit xt_connbytes xt_comment
+> xt_TCPMSS xt_REDIRECT xt_LOG xt_HL xt_DSCP xt_CLASSIFY wireguard usbnet
+> pppox ppp_async owl_loader nf_reject_ipv4 nf_nat_redirect
+> nf_nat_masquerade_ipv4 nf_conntrack_ipv4 nf_nat_ipv4 nf_nat nf_log_ipv4
+> nf_defrag_ipv6 nf_defrag_ipv4 nf_conntrack_rtcache ltq_deu_vr9
+> iptable_mangle iptable_filter ipt_ECN ip_tables crc_ccitt compat cdc_wdm
+> sch_cake nf_conntrack em_nbyte cls_basic sch_prio sch_pie sch_gred
+> [175128.501425]  sch_teql sch_multiq act_ipt sch_codel em_meta em_text
+> sch_sfq act_police sch_fq em_cmp sch_red sch_dsmark act_skbedit
+> act_mirred em_u32 cls_u32 cls_tcindex cls_flow cls_route cls_fw sch_tbf
+> sch_htb sch_hfsc sch_ingress drv_dsl_cpe_api ledtrig_usbport drv_mei_cpe
+> ip6t_REJECT nf_reject_ipv6 nf_log_ipv6 nf_log_common ip6table_mangle
+> ip6table_filter ip6_tables x_tables pppoatm ppp_generic slhc msdos ifb
+> ip6_udp_tunnel udp_tunnel tun vfat fat br2684 atm nls_utf8 nls_iso8859_2
+> nls_iso8859_15 nls_iso8859_13 nls_iso8859_1 nls_cp852 nls_cp850
+> nls_cp437 nls_cp1250 drv_ifxos usb_storage dwc2 sd_mod scsi_mod
+> gpio_button_hotplug ext4 jbd2 mbcache mii crc32c_generic
+> [175128.559151] CPU: 1 PID: 3219 Comm: hostapd Not tainted 4.9.85 #0
+> [175128.565231] Stack : 00000000 00000000 806a806a 00000034 806a3d84
+> 00000000 00000000 806a0000
+> [175128.573666]         87d3f04c 8054fba7 804e296c 00000001 00000c93
+> 806a3d84 00000000 00000008
+> [175128.582108]         00000000 80070488 00000001 806a0000 80555d24
+> 80555d28 804e755c 86b3fafc
+> [175128.590552]         00000003 800ab658 00000000 00000008 00000000
+> 00010000 86ee9ff4 86b3fa00
+> [175128.598995]         00000000 00000000 00000000 00000000 00000000
+> 00000000 00000000 00000000
+> [175128.607437]         ...
+> [175128.609962] Call Trace:
+> [175128.612515] [<800101e0>] show_stack+0x70/0x8c
+> [175128.616960] [<801ec718>] dump_stack+0xd8/0x110
+> [175128.621505] [<8002e18c>] __warn+0x110/0x118
+> [175128.625757] [<8002e228>] warn_slowpath_null+0x1c/0x34
+> [175128.631020] [<86f07864>] sta_set_sinfo+0xa98/0xb40 [mac80211]
+> [175128.636927] ---[ end trace e1837456a16fffdf ]---
+> [175131.722465] ath10k_pci 0000:02:00.0: failed to wait for created wmi
+> peer f0:27:65:3d:03:cd on vdev 0: -145
+> [175131.730883] ath10k_pci 0000:02:00.0: failed to add peer
+> f0:27:65:3d:03:cd for vdev 0 when adding a new sta: -145
+> [175432.521730] ath10k_pci 0000:02:00.0: failed to install key for vdev
+> 0 peer 84:a4:66:37:80:0e: -11
+> [175432.529370] wlan0: failed to remove key (0, 84:a4:66:37:80:0e) from
+> hardware (-11)
+> [175432.552455] ath10k_pci 0000:02:00.0: cipher 0 is not supported
+> [175432.557055] ath10k_pci 0000:02:00.0: failed to remove peer wep key
+> 0: -122
+> [175432.564134] ath10k_pci 0000:02:00.0: failed to clear all peer wep
+> keys for vdev 0: -122
+> [175432.572122] ath10k_pci 0000:02:00.0: failed to disassociate station:
+> 84:a4:66:37:80:0e vdev 0: -122
+> [175432.581228] ------------[ cut here ]------------
+> [175432.586114] WARNING: CPU: 1 PID: 3219 at
+> backports-2017-11-01/net/mac80211/sta_info.c:993
+> sta_set_sinfo+0xa48/0xb40 [mac80211]
+> [175432.597398] Modules linked in: ltq_ptm_vr9 ath9k ath9k_common
+> ath9k_hw ath10k_pci ath10k_core ath qmi_wwan pppoe nf_conntrack_ipv6
+> mac80211 iptable_nat ipt_REJECT ipt_MASQUERADE cfg80211 xt_time
+> xt_tcpudp xt_tcpmss xt_statistic xt_state xt_recent xt_nat xt_multiport
+> xt_mark xt_mac xt_limit xt_length xt_hl xt_helper xt_hashlimit xt_ecn
+> xt_dscp xt_conntrack xt_connmark xt_connlimit xt_connbytes xt_comment
+> xt_TCPMSS xt_REDIRECT xt_LOG xt_HL xt_DSCP xt_CLASSIFY wireguard usbnet
+> pppox ppp_async owl_loader nf_reject_ipv4 nf_nat_redirect
+> nf_nat_masquerade_ipv4 nf_conntrack_ipv4 nf_nat_ipv4 nf_nat nf_log_ipv4
+> nf_defrag_ipv6 nf_defrag_ipv4 nf_conntrack_rtcache ltq_deu_vr9
+> iptable_mangle iptable_filter ipt_ECN ip_tables crc_ccitt compat cdc_wdm
+> sch_cake nf_conntrack em_nbyte cls_basic sch_prio sch_pie sch_gred
+> [175432.668241]  sch_teql sch_multiq act_ipt sch_codel em_meta em_text
+> sch_sfq act_police sch_fq em_cmp sch_red sch_dsmark act_skbedit
+> act_mirred em_u32 cls_u32 cls_tcindex cls_flow cls_route cls_fw sch_tbf
+> sch_htb sch_hfsc sch_ingress drv_dsl_cpe_api ledtrig_usbport drv_mei_cpe
+> ip6t_REJECT nf_reject_ipv6 nf_log_ipv6 nf_log_common ip6table_mangle
+> ip6table_filter ip6_tables x_tables pppoatm ppp_generic slhc msdos ifb
+> ip6_udp_tunnel udp_tunnel tun vfat fat br2684 atm nls_utf8 nls_iso8859_2
+> nls_iso8859_15 nls_iso8859_13 nls_iso8859_1 nls_cp852 nls_cp850
+> nls_cp437 nls_cp1250 drv_ifxos usb_storage dwc2 sd_mod scsi_mod
+> gpio_button_hotplug ext4 jbd2 mbcache mii crc32c_generic
+> [175432.725969] CPU: 1 PID: 3219 Comm: hostapd Tainted: G        W
+> 4.9.85 #0
+> [175432.733269] Stack : 00000000 00000000 806a806a 00000042 806a3d84
+> 00000000 00000000 806a0000
+> [175432.741701]         87d3f04c 8054fba7 804e296c 00000001 00000c93
+> 806a3d84 00000000 00000008
+> [175432.750144]         00000000 80070488 00000001 806a0000 80555d24
+> 80555d28 804e755c 86b3fafc
+> [175432.758586]         00000003 800ab658 00000000 00000008 8054d0a0
+> 00010000 86ee9540 86b3fa00
+> [175432.767029]         00000000 00000000 00000000 00000000 00000000
+> 00000000 00000000 00000000
+> [175432.775472]         ...
+> [175432.777998] Call Trace:
+> [175432.780569] [<800101e0>] show_stack+0x70/0x8c
+> [175432.785006] [<801ec718>] dump_stack+0xd8/0x110
+> [175432.789545] [<8002e18c>] __warn+0x110/0x118
+> [175432.793790] [<8002e228>] warn_slowpath_null+0x1c/0x34
+> [175432.799094] [<86f07814>] sta_set_sinfo+0xa48/0xb40 [mac80211]
+> [175432.804976] ---[ end trace e1837456a16fffe0 ]---
+> [175435.849699] ath10k_pci 0000:02:00.0: failed to delete peer
+> 84:a4:66:37:80:0e for vdev 0: -11
+> [175435.856913] ath10k_pci 0000:02:00.0: found sta peer
+> 84:a4:66:37:80:0e (ptr 859a5800 id 29) entry on vdev 0 after it was
+> supposedly removed
+> [175450.185529] ath10k_pci 0000:02:00.0: failed to install key for vdev
+> 0 peer 48:51:b7:d3:ec:08: -11
+> [175450.193155] wlan0: failed to remove key (0, 48:51:b7:d3:ec:08) from
+> hardware (-11)
+> [175450.203993] ath10k_pci 0000:02:00.0: cipher 0 is not supported
+> [175450.208746] ath10k_pci 0000:02:00.0: failed to remove peer wep key
+> 0: -122
+> [175450.215572] ath10k_pci 0000:02:00.0: failed to clear all peer wep
+> keys for vdev 0: -122
+> [175450.223691] ath10k_pci 0000:02:00.0: failed to disassociate station:
+> 48:51:b7:d3:ec:08 vdev 0: -122
+> [175453.257511] ath10k_pci 0000:02:00.0: failed to delete peer
+> 48:51:b7:d3:ec:08 for vdev 0: -11
+> [175453.264854] ath10k_pci 0000:02:00.0: found sta peer
+> 48:51:b7:d3:ec:08 (ptr 858d6400 id 201) entry on vdev 0 after it was
+> supposedly removed
+> [175456.332873] ath10k_pci 0000:02:00.0: failed to set beacon mode for
+> vdev 0: -11
+> [175459.401489] ath10k_pci 0000:02:00.0: failed to set dtim period for
+> vdev 0: -11
+> [175462.473491] ath10k_pci 0000:02:00.0: failed to recalculate rts/cts
+> prot for vdev 0: -11
+> [175465.545480] ath10k_pci 0000:02:00.0: failed to set cts protection
+> for vdev 0: -11
+> [175468.617494] ath10k_pci 0000:02:00.0: failed to set preamble for vdev
+> 0: -11
+> .....
+> [234340.341171] pppoe-wan: renamed from ppp0
+> [259297.905980] ath10k_pci 0000:02:00.0: failed to install key for vdev
+> 0 peer 18:62:2c:08:67:b3: -11
+> [259297.913592] wlan0: failed to remove key (2, ff:ff:ff:ff:ff:ff) from
+> hardware (-11)
+> [259300.977990] ath10k_pci 0000:02:00.0: failed to install key for vdev
+> 0 peer 18:62:2c:08:67:b3: -11
+> [259300.985606] wlan0: failed to set key (2, ff:ff:ff:ff:ff:ff) to
+> hardware (-11)
+> .....
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
